@@ -1,0 +1,38 @@
+Button {
+	-fx-padding:4 12;
+	-fx-font-size:16;
+	-fx-background-radius:0;
+}
+TableView {
+	-fx-font-size:16;
+	-fx-overflow:hidden;
+}
+Label {
+	-fx-padding:6 12;
+	-fx-font-size:12;
+}
+#name {
+	-fx-min-width:198;
+	-fx-max-width:198;
+	-fx-pref-width:198;
+}
+#status {
+	-fx-min-width:100;
+	-fx-max-width:100;
+	-fx-pref-width:100;
+}
+#progress {
+	-fx-min-width:200;
+	-fx-max-width:200;
+	-fx-pref-width:200;
+}
+#begin {
+	-fx-min-width:250;
+	-fx-max-width:250;
+	-fx-pref-width:250;
+}
+#end {
+	-fx-min-width:250;
+	-fx-max-width:250;
+	-fx-pref-width:250;
+}

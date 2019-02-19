@@ -1,0 +1,1 @@
+javaw -jar acgist-killer-1.0.0.jar

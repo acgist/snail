@@ -1,0 +1,7 @@
+GridPane {
+	-fx-padding:40 10;
+}
+Button {
+	-fx-padding:4 12;
+	-fx-font-size:16;
+}

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<BorderPane fx:controller="com.acgist.killer.window.main.MainController" stylesheets="@/style/MainPane.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
+	<top>
+		<HBox>
+			<Button fx:id="build" text="新建" onAction="#handleBuildAction" />
+			<Button fx:id="start" text="开始" onAction="#handleStartAction" />
+			<Button fx:id="pause" text="暂停" onAction="#handlePauseAction" />
+			<Button fx:id="delete" text="删除" onAction="#handleDeleteAction" />
+			<Button fx:id="about" text="关于" onAction="#handleAboutAction" />
+			<Button fx:id="setting" text="设置" onAction="#handleSettingAction" />
+		</HBox>
+	</top>
+	<center>
+		<TableView fx:id="downloadList">
+			<columns>
+				<!--
+				下载文件名称：轻音少女（点击名称查看详情）
+				-->
+				<TableColumn fx:id="name" text="名称" />
+				<!--
+				任务状态：
+					下载中：100KB/S
+					暂停：暂停
+					完成：完成
+				-->
+				<TableColumn fx:id="status" text="状态" />
+				<!--
+				下载进度：
+					下载中：20%（2G/4G）
+					完成：100%（4G）
+				-->
+				<TableColumn fx:id="progress" text="进度" />
+				<!--
+				开始时间：2019-01-01 12:10
+				-->
+				<TableColumn fx:id="begin" text="开始时间" />
+				<!--
+				完成时间：2019-01-01 12:10
+				-->
+				<TableColumn fx:id="end" text="完成时间" />
+			</columns>
+		</TableView>
+	</center>
+	<bottom>
+		<HBox>
+			<Button fx:id="all" text="全部" onAction="#handleAllAction" />
+			<Button fx:id="downloading" text="下载中" onAction="#handleDownloadingAction" />
+			<Button fx:id="complete" text="下载完成" onAction="#handleCompleteAction" />
+			<Label fx:id="speed" text="10" />
+			<Label fx:id="speed" text="200KB/S" />
+		</HBox>
+	</bottom>
+</BorderPane>

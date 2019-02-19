@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<GridPane fx:controller="com.acgist.killer.window.about.AboutController" stylesheets="@/style/AboutPane.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+alignment="center" hgap="5" vgap="3">
+	<Text fx:id="about" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="3">
+		名称：ACGIST-KILLER（勾陈一）
+	</Text>
+	<Text fx:id="about" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="3">
+		语言：Java
+	</Text>
+	<Text fx:id="about" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="3">
+		框架：JavaFX、Spring Boot
+	</Text>
+	<Text fx:id="about" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.columnSpan="3">
+		功能：下载（FTP、HTTP、BT任务）
+	</Text>
+	<Button fx:id="author" text="作者" onAction="#handleAuthorAction" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+	<Button fx:id="source" text="官网与源码" onAction="#handleSourceAction" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+	<Button fx:id="support" text="问题与建议" onAction="#handleSupportAction" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+</GridPane>
