@@ -8,6 +8,8 @@ import com.acgist.snail.window.AbstractWindow;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -36,6 +38,18 @@ public class AboutWindow extends Application implements AbstractWindow {
 		primaryStage.setTitle("关于");
 		commonStage(primaryStage);
 		primaryStage.show();
+		esc(primaryStage);
+	}
+	
+	/**
+	 * ESC隐藏窗口
+	 */
+	private void esc(Stage stage) {
+		stage.addEventHandler(KeyEvent.KEY_RELEASED, (event) -> {
+			if(event.getCode() == KeyCode.ESCAPE) {
+				INSTANCE.stage.hide();
+			}
+		});
 	}
 
 	/**
