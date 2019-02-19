@@ -6,11 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.acgist.killer.pojo.entity.TaskEntity;
-import com.acgist.killer.repository.impl.TaskRepository;
+import com.acgist.snail.pojo.entity.TaskEntity;
+import com.acgist.snail.repository.impl.TaskRepository;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = AcgistKillerApplication.class)
+@SpringBootTest(classes = AcgistSnailApplication.class)
 public class DBTests {
 
 	@Autowired

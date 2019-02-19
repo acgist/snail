@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 
-<BorderPane fx:controller="com.acgist.killer.window.main.MainController" stylesheets="@/style/MainPane.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
+<BorderPane fx:controller="com.acgist.snail.window.main.MainController" stylesheets="@/style/MainPane.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
 	<top>
 		<HBox>
 			<Button fx:id="build" text="新建" onAction="#handleBuildAction" />

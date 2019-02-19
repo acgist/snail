@@ -1,4 +1,4 @@
-# acgist-killer
+# snail（蜗牛）
 
 #### 介绍
 下载工具：FTP、HTTP、BT任务

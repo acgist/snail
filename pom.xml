@@ -13,9 +13,9 @@
 	</parent>
 	
 	<groupId>com.acgist</groupId>
-	<artifactId>acgist-killer</artifactId>
+	<artifactId>snail</artifactId>
 	
-	<name>acgist-killer</name>
+	<name>snail</name>
 	<version>1.0.0</version>
 	<description>下载工具：FTP、HTTP、BT任务</description>
 

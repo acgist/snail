@@ -1,1 +1,1 @@
-javaw -jar acgist-killer-1.0.0.jar
+javaw -jar snail-1.0.0.jar

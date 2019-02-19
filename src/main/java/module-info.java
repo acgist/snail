@@ -2,15 +2,15 @@
  * 模块化<br>
  * open：开放模块
  */
-open module acgist.killer {
+open module acgist.snail {
 	/**
 	 * 限定导出
 	 **/
 	exports com.acgist.main;
-	exports com.acgist.killer.repository;
-	exports com.acgist.killer.window.about;
-	exports com.acgist.killer.pojo.entity;
-	exports com.acgist.killer.repository.impl;
+	exports com.acgist.snail.repository;
+	exports com.acgist.snail.window.about;
+	exports com.acgist.snail.pojo.entity;
+	exports com.acgist.snail.repository.impl;
 	
 	/**
 	 * opens：开放包（深层反射），使用open module不需要此配置。<br>
