@@ -16,8 +16,11 @@ public class MainWindow extends Application implements AbstractWindow {
 
 //	private static final Logger LOGGER = LoggerFactory.getLogger(MainWindow.class);
 	
+	private static Stage stage;
+	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		MainWindow.stage = primaryStage;
 		BorderPane root = FXMLLoader.load(this.getClass().getResource("/fxml/MainPane.fxml"));
 		Scene scene = new Scene(root, 1000, 600);
 		primaryStage.setScene(scene);
@@ -32,6 +35,13 @@ public class MainWindow extends Application implements AbstractWindow {
 	 */
 	public void enableTray(Stage stage) {
 		TrayMenu.getInstance(stage);
+	}
+	
+	/**
+	 * 显示窗口
+	 */
+	public static final void show() {
+		stage.show();
 	}
 	
 	public static void main(String[] args) {

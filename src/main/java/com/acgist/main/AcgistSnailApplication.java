@@ -1,5 +1,9 @@
 package com.acgist.main;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -29,11 +33,37 @@ public class AcgistSnailApplication {
 	
 	public static void main(String[] args) {
 		LOGGER.info("蜗牛开始启动");
+//		buildCheck();
 		buildWindow(args);
 		buildSpring(args);
 		LOGGER.info("蜗牛启动完成");
 	}
 
+	/**
+	 * 检测是否已经存在进程
+	 */
+	private static final boolean buildCheck() {
+		try {
+			Socket socket = new Socket("localhost", 12345);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		try {
+			ServerSocket server = new ServerSocket(12345);
+			new Thread(() -> {
+				try {
+					server.accept();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}).start();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 	/**
 	 * 创建窗口
 	 */
