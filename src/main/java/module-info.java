@@ -2,7 +2,7 @@
  * 模块化<br>
  * open：开放模块
  */
-open module acgist.snail {
+open module snail {
 	/**
 	 * 限定导出
 	 **/
@@ -26,6 +26,25 @@ open module acgist.snail {
 	requires java.instrument;
 	requires java.annotation;
 	requires java.persistence;
+	
+	/**
+	 * jdeps 分析出来的依赖
+	 */
+//	requires java.xml;
+//	requires java.rmi;
+//	requires java.prefs;
+//	requires java.naming;
+//	requires java.logging;
+//	requires java.scripting;
+//	requires java.management;
+//	requires java.sql.rowset;
+//	requires java.datatransfer;
+//	requires java.transaction.xa;
+//
+//	requires jdk.jdi;
+//	requires jdk.attach;
+//	requires jdk.httpserver;
+//	requires jdk.unsupported;
 	
 	/**
 	 * JavaFX

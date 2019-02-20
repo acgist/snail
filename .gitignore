@@ -1,6 +1,5 @@
 #ºöÂÔÎÄ¼ş
 *.iml
-/database/
 
 #ºöÂÔÅäÖÃ
 .idea
@@ -13,5 +12,7 @@
 .apt_generated_tests
 
 #ºöÂÔÄ¿Â¼
+/java/
+/database/
 **/logs/
 **/target/
