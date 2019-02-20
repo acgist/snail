@@ -9,6 +9,10 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "acgist.system")
 public class SystemConfig {
 
+	public static final String AIO_HOST = "localhost";
+	public static final int AIO_PORT = 28888;
+	public static final String DEFAULT_CHARSET = "utf-8";
+	
 	private String author;
 	private String source;
 	private String support;

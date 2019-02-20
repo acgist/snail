@@ -1,9 +1,5 @@
 package com.acgist.main;
 
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -16,7 +12,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import com.acgist.snail.context.SpringContextUtils;
+import com.acgist.snail.utils.PlatformUtils;
+import com.acgist.snail.utils.SpringContextUtils;
 import com.acgist.snail.window.main.MainWindow;
 
 /**
@@ -33,35 +30,18 @@ public class AcgistSnailApplication {
 	
 	public static void main(String[] args) {
 		LOGGER.info("蜗牛开始启动");
-//		buildCheck();
-		buildWindow(args);
-		buildSpring(args);
+		if(listen()) {
+			buildSpring(args);
+			buildWindow(args);
+		}
 		LOGGER.info("蜗牛启动完成");
 	}
 
 	/**
 	 * 检测是否已经存在进程
 	 */
-	private static final boolean buildCheck() {
-		try {
-			Socket socket = new Socket("localhost", 12345);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		try {
-			ServerSocket server = new ServerSocket(12345);
-			new Thread(() -> {
-				try {
-					server.accept();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}).start();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return false;
+	private static final boolean listen() {
+		return PlatformUtils.listen();
 	}
 	
 	/**
@@ -72,7 +52,7 @@ public class AcgistSnailApplication {
 		Thread thread = new Thread(() -> {
 			MainWindow.main(args);
 		});
-		thread.setName("蜗牛");
+		thread.setName("蜗牛窗口");
 		thread.start();
 	}
 	

@@ -3,9 +3,9 @@ package com.acgist.snail.window.about;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import com.acgist.snail.context.SpringContextUtils;
 import com.acgist.snail.pojo.config.SystemConfig;
 import com.acgist.snail.utils.BrowseUtils;
+import com.acgist.snail.utils.SpringContextUtils;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

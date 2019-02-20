@@ -69,6 +69,9 @@ open module snail {
 	 * 其他依赖
 	 */
 	requires transitive slf4j.api; // TODO：升级SLF4J依赖
+	requires transitive jackson.annotations;
 	requires transitive org.hibernate.orm.core;
 	requires transitive org.apache.commons.lang3;
+	requires transitive com.fasterxml.jackson.core;
+	requires transitive com.fasterxml.jackson.databind;
 }
