@@ -57,6 +57,7 @@ public class ApplicationServer {
 					}
 				});
 				thread.setName("监听服务");
+				thread.setDaemon(true); // 防止阻止系统关闭
 				thread.start();
 			}
 		}
