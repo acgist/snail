@@ -1,13 +1,8 @@
 package com.acgist.snail.pojo.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
 /**
  * entity - 配置
  */
-@Entity
-@Table(name = "tb_config")
 public class ConfigEntity extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;

@@ -5,24 +5,18 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import javax.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.acgist.snail.service.ConfigService;
 
 /**
  * 下载器执行器
  */
-@Component
 public class DownloaderManager {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DownloaderManager.class);
 	
-	@Autowired
 	private ConfigService configService;
 	
 	/**
@@ -34,7 +28,6 @@ public class DownloaderManager {
 	 */
 	private Map<String, IDownloader> DOWNLOADER_MAP;
 	
-	@PostConstruct
 	private void init() {
 		LOGGER.info("初始化下载器管理");
 		int downloadSize = configService.getDownloadSize();

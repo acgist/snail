@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.pojo.config.SystemConfig;
 import com.acgist.snail.utils.BrowseUtils;
 import com.acgist.snail.utils.PlatformUtils;
-import com.acgist.snail.utils.SpringContextUtils;
 import com.acgist.snail.window.about.AboutWindow;
 import com.acgist.snail.window.main.MainWindow;
 
@@ -55,7 +54,7 @@ public class TrayMenu extends ContextMenu {
 	private TrayMenu() {
 		createMenu();
 		enableTray();
-		systemConfig = SpringContextUtils.getBean(SystemConfig.class);
+//		systemConfig = SpringContextUtils.getBean(SystemConfig.class);
 	}
 
 	/**

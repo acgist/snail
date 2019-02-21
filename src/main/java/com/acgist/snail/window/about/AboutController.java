@@ -5,7 +5,6 @@ import java.util.ResourceBundle;
 
 import com.acgist.snail.pojo.config.SystemConfig;
 import com.acgist.snail.utils.BrowseUtils;
-import com.acgist.snail.utils.SpringContextUtils;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -20,7 +19,7 @@ public class AboutController implements Initializable {
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		systemConfig = SpringContextUtils.getBean(SystemConfig.class);
+//		systemConfig = SpringContextUtils.getBean(SystemConfig.class);
 	}
 	
 	@FXML

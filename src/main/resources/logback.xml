@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="false" scanPeriod="60 seconds" debug="false">
 
-	<contextName>${system.name}</contextName>
+	<property name="system.name" value="snail" />
 
-	<springProperty scope="context" name="system.name" source="spring.application.name" />
+	<contextName>${system.name}</contextName>
 
 	<!-- 按天生成日志 -->
 	<appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">

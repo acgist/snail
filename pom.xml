@@ -5,13 +5,6 @@
 	
 	<modelVersion>4.0.0</modelVersion>
 	
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.1.2.RELEASE</version>
-		<relativePath />
-	</parent>
-	
 	<groupId>com.acgist</groupId>
 	<artifactId>snail</artifactId>
 	
@@ -22,7 +15,16 @@
 	<properties>
 		<java.version>11</java.version>
 		<acgist.encoding>UTF-8</acgist.encoding>
+		<h2.version>1.4.197</h2.version>
+		<junit.version>4.12</junit.version>
+		<lang3.version>3.8.1</lang3.version>
+		<slf4j.version>1.7.25</slf4j.version>
 		<javafx.version>11.0.2</javafx.version>
+		<logback.version>1.2.3</logback.version>
+		<jackson.version>2.9.5</jackson.version>
+		<maven.jar.version>3.1.1</maven.jar.version>
+		<maven.compiler.version>3.8.0</maven.compiler.version>
+		<maven.dependency.version>3.1.1</maven.dependency.version>
 	</properties>
 
 	<dependencies>
@@ -41,31 +43,48 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
+			<version>${h2.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
+			<version>${lang3.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
+			<version>${jackson.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
+			<version>${jackson.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-annotations</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<version>${jackson.version}</version>
 		</dependency>
 		
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -73,9 +92,52 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven.compiler.version}</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+					<encoding>${encoding}</encoding>
+				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>${maven.dependency.version}</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<stripVersion>false</stripVersion>
+							<excludeTransitive>false</excludeTransitive>
+							<outputDirectory>${project.build.directory}/lib</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>  
+                <groupId>org.apache.maven.plugins</groupId>  
+                <artifactId>maven-jar-plugin</artifactId>  
+                <version>${maven.jar.version}</version>  
+                <configuration>  
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>  
+                            <classpathPrefix>lib</classpathPrefix>  
+                            <mainClass>com.acgist.main.SnailApplication</mainClass>  
+                        </manifest>
+						<manifestEntries>
+							<Built-By>www.acgist.com</Built-By>
+							<Automatic-Module-Name>snail</Automatic-Module-Name>
+						</manifestEntries>
+                    </archive>
+                </configuration>  
+            </plugin> 
 		</plugins>
 	</build>
 

@@ -2,23 +2,16 @@ package com.acgist.snail.service;
 
 import java.util.Optional;
 
-import javax.annotation.PostConstruct;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Service;
 
 import com.acgist.snail.pojo.entity.ConfigEntity;
-import com.acgist.snail.repository.impl.ConfigRepository;
 
 /**
  * 配置，默认值从文件（application-system.properties）加载，配置修改后保存数据库，以后从数据库加载配置。<br>
  * 属性详细说明参考：application-config.properties
  */
-@Service
 public class ConfigService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigService.class);
@@ -31,12 +24,11 @@ public class ConfigService {
 	private Integer downloadSize;
 	private Integer downloadBuffer;
 	
-	@Autowired
-	private Environment environment;
-	@Autowired
-	private ConfigRepository configRepository;
+//	@Autowired
+//	private Environment environment;
+//	@Autowired
+//	private ConfigRepository configRepository;
 	
-	@PostConstruct
 	public void init() {
 		LOGGER.info("配置初始化");
 		initFromConfig();
@@ -48,22 +40,22 @@ public class ConfigService {
 	 * 配置文件加载
 	 */
 	private void initFromConfig() {
-		downloadPath = environment.getProperty(DOWNLOAD_PATH, "./download");
-		downloadSize = environment.getProperty(DOWNLOAD_SIZE, Integer.class, 4);
-		downloadBuffer = environment.getProperty(DOWNLOAD_BUFFER, Integer.class, 1024);
+//		downloadPath = environment.getProperty(DOWNLOAD_PATH, "./download");
+//		downloadSize = environment.getProperty(DOWNLOAD_SIZE, Integer.class, 4);
+//		downloadBuffer = environment.getProperty(DOWNLOAD_BUFFER, Integer.class, 1024);
 	}
 	
 	/**
 	 * 数据库初始化配置
 	 */
 	private void initFromDB() {
-		Optional<ConfigEntity> optional = null;
-		optional = configRepository.findProperty(ConfigEntity.PROPERTY_NAME, DOWNLOAD_PATH);
-		downloadPath = configString(optional, downloadPath);
-		optional = configRepository.findProperty(ConfigEntity.PROPERTY_NAME, DOWNLOAD_SIZE);
-		downloadSize = configInteger(optional, downloadSize);
-		optional = configRepository.findProperty(ConfigEntity.PROPERTY_NAME, DOWNLOAD_BUFFER);
-		downloadBuffer = configInteger(optional, downloadBuffer);
+//		Optional<ConfigEntity> optional = null;
+//		optional = configRepository.findProperty(ConfigEntity.PROPERTY_NAME, DOWNLOAD_PATH);
+//		downloadPath = configString(optional, downloadPath);
+//		optional = configRepository.findProperty(ConfigEntity.PROPERTY_NAME, DOWNLOAD_SIZE);
+//		downloadSize = configInteger(optional, downloadSize);
+//		optional = configRepository.findProperty(ConfigEntity.PROPERTY_NAME, DOWNLOAD_BUFFER);
+//		downloadBuffer = configInteger(optional, downloadBuffer);
 	}
 	
 	/**

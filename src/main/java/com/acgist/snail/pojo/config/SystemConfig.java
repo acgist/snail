@@ -1,12 +1,5 @@
 package com.acgist.snail.pojo.config;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Component;
-
-@Component
-@PropertySource("classpath:/system-config.properties")
-@ConfigurationProperties(prefix = "acgist.system")
 public class SystemConfig {
 
 	public static final String AIO_HOST = "localhost";
