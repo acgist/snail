@@ -7,6 +7,9 @@ import com.acgist.snail.module.config.SystemConfig;
 import com.acgist.snail.module.initializer.SystemInitializer;
 import com.acgist.snail.utils.PlatformUtils;
 import com.acgist.snail.window.main.MainWindow;
+import com.acgist.snail.window.menu.TrayMenu;
+
+import javafx.application.Platform;
 
 /**
  * 启动类
@@ -18,8 +21,8 @@ public class Application {
 	public static void main(String[] args) {
 		LOGGER.info("系统开始启动");
 		if(listen()) {
-			init();
-			buildWindow(args);
+			initSystem();
+			buildWindow();
 		}
 		LOGGER.info("系统启动完成");
 	}
@@ -35,21 +38,23 @@ public class Application {
 	/**
 	 * 系统初始化
 	 */
-	private static final void init() {
-		LOGGER.info("系统初始化");
+	private static final void initSystem() {
+		LOGGER.info("初始化系统");
 		SystemInitializer.init();
 	}
 	
 	/**
 	 * 创建窗口
 	 */
-	private static final void buildWindow(String[] args) {
-		LOGGER.info("窗口初始化");
-		Thread thread = new Thread(() -> {
-			MainWindow.main(args);
-		});
+	private static final void buildWindow() {
+		LOGGER.info("初始化窗口");
+		Thread thread = new Thread();
 		thread.setName(SystemConfig.getName() + "窗口");
-		thread.start();
+		Platform.startup(thread);
+		Platform.runLater(() -> {
+			TrayMenu.getInstance();
+			MainWindow.getInstance().show();
+		});
 	}
 	
 }

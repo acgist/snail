@@ -1,13 +1,11 @@
 package com.acgist.snail.utils;
 
-import java.awt.SystemTray;
-import java.awt.TrayIcon;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.module.client.launch.ApplicationNotifyClient;
 import com.acgist.snail.module.server.ApplicationServer;
+import com.acgist.snail.window.menu.TrayMenu;
 
 import javafx.application.Platform;
 
@@ -21,9 +19,11 @@ public class PlatformUtils {
 	/**
 	 * 退出平台
 	 */
-	public static final void exit(TrayIcon trayIcon) {
-		SystemTray.getSystemTray().remove(trayIcon);
+	public static final void exit() {
+		LOGGER.info("系统关闭中");
+		TrayMenu.exit();
 		Platform.exit();
+		LOGGER.info("系统已关闭");
 	}
 	
 	/**

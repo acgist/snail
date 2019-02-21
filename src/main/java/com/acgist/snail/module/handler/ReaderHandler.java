@@ -49,7 +49,7 @@ public class ReaderHandler implements CompletionHandler<Integer, ByteBuffer> {
 				send(ClientMessage.response(message.getBody()));
 			} else if(message.getType() == ClientMessage.Type.notify) {
 				Platform.runLater(() -> {
-					MainWindow.show();
+					MainWindow.getInstance().show();
 				});
 			} else if(message.getType() == ClientMessage.Type.close) {
 				AioUtils.close(socket);

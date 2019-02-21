@@ -30,13 +30,12 @@ import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 
 /**
- * 托盘按钮
+ * 托盘菜单
  */
 public class TrayMenu extends ContextMenu {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MainWindow.class);
 	
-	private Stage stage;
 	private Stage trayStage;
 	private TrayIcon trayIcon;
 	
@@ -47,13 +46,16 @@ public class TrayMenu extends ContextMenu {
 		enableTray();
 	}
 
-	public static final TrayMenu getInstance(Stage stage) {
-		if (INSTANCE == null) {
-			synchronized (TaskMenu.class) {
+	static {
+		synchronized (TaskMenu.class) {
+			if (INSTANCE == null) {
+				LOGGER.info("初始化托盘菜单");
 				INSTANCE = new TrayMenu();
 			}
 		}
-		INSTANCE.stage = stage;
+	}
+	
+	public static final TrayMenu getInstance() {
 		return INSTANCE;
 	}
 
@@ -70,22 +72,22 @@ public class TrayMenu extends ContextMenu {
 		
 		showMenu.setOnAction((event) -> {
 			Platform.runLater(() -> {
-				stage.show();
+				MainWindow.getInstance().show();
 			});
 		});
 		
 		hideMenu.setOnAction((event) -> {
 			Platform.runLater(() -> {
-				stage.hide();
+				MainWindow.getInstance().hide();
 			});
 		});
 		
 		exitMenu.setOnAction((event) -> {
-			PlatformUtils.exit(trayIcon);
+			PlatformUtils.exit();
 		});
 		
 		aboutMenu.setOnAction((event) -> {
-			AboutWindow.show();
+			AboutWindow.getInstance().show();
 		});
 		
 		sourceMenu.setOnAction((event) -> {
@@ -120,13 +122,13 @@ public class TrayMenu extends ContextMenu {
 			public void mouseClicked(java.awt.event.MouseEvent event) {
 				Platform.setImplicitExit(false);
 				if (event.getButton() == java.awt.event.MouseEvent.BUTTON1) {
-					if (stage.isShowing()) {
+					if (MainWindow.getInstance().isShowing()) {
 						Platform.runLater(() -> {
-							stage.hide();
+							MainWindow.getInstance().hide();
 						});
 					} else {
 						Platform.runLater(() -> {
-							stage.show();
+							MainWindow.getInstance().show();
 						});
 					}
 				} else if(event.getButton() == java.awt.event.MouseEvent.BUTTON3) {
@@ -144,6 +146,14 @@ public class TrayMenu extends ContextMenu {
 		} catch (Exception e) {
 			LOGGER.error("添加托盘异常", e);
 		}
+	}
+	
+	/**
+	 * 关闭托盘
+	 */
+	public static void exit() {
+		TrayIcon trayIcon = TrayMenu.getInstance().trayIcon;
+		SystemTray.getSystemTray().remove(trayIcon);
 	}
 	
 	/**

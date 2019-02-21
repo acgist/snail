@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.window.AbstractWindow;
 
-import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
@@ -15,22 +14,24 @@ import javafx.stage.Stage;
 /**
  * 关于
  */
-public class AboutWindow extends Application implements AbstractWindow {
+public class AboutWindow extends AbstractWindow {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AboutWindow.class);
-	
-	private Stage stage;
 	
 	private static AboutWindow INSTANCE;
 	
 	private AboutWindow() {
 	}
 
+	public static final AboutWindow getInstance() {
+		return INSTANCE;
+	}
+	
 	static {
 		synchronized (AboutWindow.class) {
 			if(INSTANCE == null) {
+				LOGGER.info("初始化关于窗口");
 				INSTANCE = new AboutWindow();
-				INSTANCE.stage = new Stage();
 				try {
 					INSTANCE.start(INSTANCE.stage);
 				} catch (Exception e) {
@@ -48,13 +49,6 @@ public class AboutWindow extends Application implements AbstractWindow {
 		stage.setScene(scene);
 		stage.setTitle("关于");
 		commonWindow(stage);
-	}
-	
-	/**
-	 * 显示窗口
-	 */
-	public static final void show() {
-		INSTANCE.stage.show();
 	}
 	
 }

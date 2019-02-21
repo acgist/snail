@@ -1,5 +1,8 @@
 package com.acgist.snail.window.menu;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.window.main.MainController;
 
 import javafx.scene.control.ContextMenu;
@@ -7,12 +10,12 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
 
 /**
- * 任务按钮
- * @author 28954
- *
+ * 任务菜单
  */
 public class TaskMenu extends ContextMenu {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(TaskMenu.class);
+	
 	private MainController mainController;
 	
 	private static TaskMenu INSTANCE;
@@ -20,13 +23,17 @@ public class TaskMenu extends ContextMenu {
 	private TaskMenu() {
 		createMenu();
 	}
-	
-	public static final TaskMenu getInstance(MainController mainController) {
-		if (INSTANCE == null) {
-			synchronized (TaskMenu.class) {
+
+	static {
+		synchronized (TaskMenu.class) {
+			if (INSTANCE == null) {
+				LOGGER.info("初始化任务菜单");
 				INSTANCE = new TaskMenu();
 			}
 		}
+	}
+	
+	public static final TaskMenu getInstance(MainController mainController) {
 		INSTANCE.mainController = mainController;
 		return INSTANCE;
 	}

@@ -63,7 +63,7 @@ public class MainController implements Initializable {
 	
 	@FXML
 	public void handleAboutAction(ActionEvent event) {
-		AboutWindow.show();
+		AboutWindow.getInstance().show();
 	}
 	
 	@FXML
