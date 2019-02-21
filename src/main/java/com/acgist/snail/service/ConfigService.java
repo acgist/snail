@@ -24,6 +24,10 @@ public class ConfigService {
 	private ConfigService() {
 	}
 	
+	public static final ConfigService getInstance() {
+		return INSTANCE;
+	}
+	
 	private String downloadPath;
 	private Integer downloadSize;
 	private Integer downloadBuffer;

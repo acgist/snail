@@ -3,8 +3,8 @@ package com.acgist.main;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.context.SystemContext;
 import com.acgist.snail.module.config.SystemConfig;
-import com.acgist.snail.module.initializer.SystemInitializer;
 import com.acgist.snail.utils.PlatformUtils;
 import com.acgist.snail.window.main.MainWindow;
 import com.acgist.snail.window.menu.TrayMenu;
@@ -40,7 +40,7 @@ public class Application {
 	 */
 	private static final void initSystem() {
 		LOGGER.info("初始化系统");
-		SystemInitializer.init();
+		SystemContext.init();
 	}
 	
 	/**
