@@ -21,13 +21,19 @@ open module snail {
 	requires java.sql;
 	requires java.base;
 	requires java.desktop;
-	requires java.instrument;
 	
 	/**
 	 * jdeps 分析出来的依赖
 	 */
-//	requires java.logging;
-//	requires java.scripting;
+//		java.sql
+//		java.xml
+//		java.base
+//		java.naming
+//		java.desktop
+//		java.logging
+//		java.scripting
+//		java.management
+//		jdk.unsupported
 	
 	/**
 	 * JavaFX

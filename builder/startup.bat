@@ -4,7 +4,8 @@ call config.bat
 
 set path=.\%runtime%\bin
 
-rem javaw -server -Xms256m -Xmx256m -jar %jar%
-call javaw -Xms256m -Xmx256m -jar %jar%
+
+rem call javaw -client -Xms128m -Xmx128m -jar %jar%
+call javaw -server -Xms128m -Xmx128m -jar %jar%
 
 exit

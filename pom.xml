@@ -14,7 +14,7 @@
 
 	<properties>
 		<java.version>11</java.version>
-		<acgist.encoding>UTF-8</acgist.encoding>
+		<encoding>UTF-8</encoding>
 		<h2.version>1.4.197</h2.version>
 		<junit.version>4.12</junit.version>
 		<lang3.version>3.8.1</lang3.version>
@@ -114,30 +114,31 @@
 						</goals>
 						<configuration>
 							<stripVersion>false</stripVersion>
+							<includeScope>compile</includeScope>
 							<excludeTransitive>false</excludeTransitive>
 							<outputDirectory>${project.build.directory}/lib</outputDirectory>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>  
-                <groupId>org.apache.maven.plugins</groupId>  
-                <artifactId>maven-jar-plugin</artifactId>  
-                <version>${maven.jar.version}</version>  
-                <configuration>  
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>  
-                            <classpathPrefix>lib</classpathPrefix>  
-                            <mainClass>com.acgist.main.SnailApplication</mainClass>  
-                        </manifest>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>${maven.jar.version}</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>lib</classpathPrefix>
+							<mainClass>com.acgist.main.SnailApplication</mainClass>
+						</manifest>
 						<manifestEntries>
 							<Built-By>www.acgist.com</Built-By>
 							<Automatic-Module-Name>snail</Automatic-Module-Name>
 						</manifestEntries>
-                    </archive>
-                </configuration>  
-            </plugin> 
+					</archive>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
