@@ -13,9 +13,13 @@ import javafx.scene.image.ImageView;
  */
 public class TaskMenu extends ContextMenu {
 
-	private static TaskMenu INSTANCE;
-
 	private MainController mainController;
+	
+	private static TaskMenu INSTANCE;
+	
+	private TaskMenu() {
+		createMenu();
+	}
 	
 	public static final TaskMenu getInstance(MainController mainController) {
 		if (INSTANCE == null) {
@@ -25,10 +29,6 @@ public class TaskMenu extends ContextMenu {
 		}
 		INSTANCE.mainController = mainController;
 		return INSTANCE;
-	}
-	
-	private TaskMenu() {
-		createMenu();
 	}
 
 	/**

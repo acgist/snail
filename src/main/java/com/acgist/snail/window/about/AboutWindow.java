@@ -8,8 +8,6 @@ import com.acgist.snail.window.AbstractWindow;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -26,46 +24,36 @@ public class AboutWindow extends Application implements AbstractWindow {
 	private static AboutWindow INSTANCE;
 	
 	private AboutWindow() {
-		stage = new Stage();
+	}
+
+	static {
+		synchronized (AboutWindow.class) {
+			if(INSTANCE == null) {
+				INSTANCE = new AboutWindow();
+				INSTANCE.stage = new Stage();
+				try {
+					INSTANCE.start(INSTANCE.stage);
+				} catch (Exception e) {
+					LOGGER.error("窗口初始化异常", e);
+				}
+			}
+		}
 	}
 	
 	@Override
-	public void start(Stage primaryStage) throws Exception {
+	public void start(Stage stage) throws Exception {
 		GridPane root = FXMLLoader.load(this.getClass().getResource("/fxml/AboutPane.fxml"));
 		Scene scene = new Scene(root, 600, 400);
-		primaryStage.initModality(Modality.APPLICATION_MODAL);
-		primaryStage.setScene(scene);
-		primaryStage.setTitle("关于");
-		commonStage(primaryStage);
-		primaryStage.show();
-		esc(primaryStage);
+		stage.initModality(Modality.APPLICATION_MODAL);
+		stage.setScene(scene);
+		stage.setTitle("关于");
+		commonWindow(stage);
 	}
 	
-	/**
-	 * ESC隐藏窗口
-	 */
-	private void esc(Stage stage) {
-		stage.addEventHandler(KeyEvent.KEY_RELEASED, (event) -> {
-			if(event.getCode() == KeyCode.ESCAPE) {
-				INSTANCE.stage.hide();
-			}
-		});
-	}
-
 	/**
 	 * 显示窗口
 	 */
 	public static final void show() {
-		synchronized (AboutWindow.class) {
-			if(INSTANCE == null) {
-				INSTANCE = new AboutWindow();
-				try {
-					INSTANCE.start(INSTANCE.stage);
-				} catch (Exception e) {
-					LOGGER.error("关于窗口显示异常", e);
-				}
-			}
-		}
 		INSTANCE.stage.show();
 	}
 	
