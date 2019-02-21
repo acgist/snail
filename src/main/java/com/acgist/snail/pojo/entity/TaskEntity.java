@@ -7,6 +7,8 @@ public class TaskEntity extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 
+	public static final String TABLE_NAME = "tb_task";
+	
 	public static final String PROPERTY_NAME = "name"; // 任务名称
 	
 	/**

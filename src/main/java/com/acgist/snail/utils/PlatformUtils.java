@@ -6,8 +6,8 @@ import java.awt.TrayIcon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.aio.client.ApplicationNotifyClient;
-import com.acgist.snail.aio.server.ApplicationServer;
+import com.acgist.snail.module.client.launch.ApplicationNotifyClient;
+import com.acgist.snail.module.server.ApplicationServer;
 
 import javafx.application.Platform;
 

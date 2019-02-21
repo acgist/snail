@@ -14,7 +14,9 @@ public class BrowseUtils {
 
 	private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(BrowseUtils.class);
 	
-	
+	/**
+	 * 打开网页链接
+	 */
 	public static final void open(String url) {
 		try {
 			Desktop.getDesktop().browse(new URI(url));

@@ -3,7 +3,7 @@ package com.acgist.snail.window.about;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import com.acgist.snail.pojo.config.SystemConfig;
+import com.acgist.snail.module.config.SystemConfig;
 import com.acgist.snail.utils.BrowseUtils;
 
 import javafx.event.ActionEvent;

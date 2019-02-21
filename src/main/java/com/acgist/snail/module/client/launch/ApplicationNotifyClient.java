@@ -1,4 +1,4 @@
-package com.acgist.snail.aio.client;
+package com.acgist.snail.module.client.launch;
 
 import java.net.InetSocketAddress;
 import java.net.StandardSocketOptions;
@@ -12,9 +12,9 @@ import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.aio.handler.ConnectHandler;
-import com.acgist.snail.aio.handler.WriterHandler;
-import com.acgist.snail.pojo.config.SystemConfig;
+import com.acgist.snail.module.config.SystemConfig;
+import com.acgist.snail.module.handler.ConnectHandler;
+import com.acgist.snail.module.handler.WriterHandler;
 import com.acgist.snail.pojo.message.ClientMessage;
 import com.acgist.snail.pojo.message.ClientMessage.Type;
 import com.acgist.snail.utils.AioUtils;
@@ -43,7 +43,7 @@ public class ApplicationNotifyClient {
 		} catch (Exception e) {
 			LOGGER.error("客户端连接异常", e);
 		}
-		socket.connect(new InetSocketAddress(SystemConfig.AIO_HOST, SystemConfig.AIO_PORT), socket, new ConnectHandler());
+		socket.connect(new InetSocketAddress(SystemConfig.getServerHost(), SystemConfig.getServerPort()), socket, new ConnectHandler());
 	}
 	
 	/**

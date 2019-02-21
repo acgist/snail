@@ -10,10 +10,10 @@ import java.nio.charset.CharsetDecoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.pojo.config.SystemConfig;
+import com.acgist.snail.module.config.SystemConfig;
 
 /**
- * ByteBuffer工具
+ * AIO工具
  */
 public class AioUtils {
 

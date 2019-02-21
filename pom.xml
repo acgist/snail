@@ -130,7 +130,7 @@
 						<manifest>
 							<addClasspath>true</addClasspath>
 							<classpathPrefix>lib</classpathPrefix>
-							<mainClass>com.acgist.main.SnailApplication</mainClass>
+							<mainClass>com.acgist.main.Application</mainClass>
 						</manifest>
 						<manifestEntries>
 							<Built-By>www.acgist.com</Built-By>

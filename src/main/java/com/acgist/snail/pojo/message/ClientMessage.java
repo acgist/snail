@@ -5,7 +5,7 @@ import java.io.UnsupportedEncodingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.pojo.config.SystemConfig;
+import com.acgist.snail.module.config.SystemConfig;
 import com.acgist.snail.utils.JSONUtils;
 
 /**

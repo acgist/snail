@@ -8,13 +8,13 @@
 <GridPane fx:controller="com.acgist.snail.window.about.AboutController" stylesheets="@/style/AboutPane.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
 alignment="center" hgap="5" vgap="3">
 	<Text fx:id="about" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="3">
-		名称：Snail（蜗牛）
+		名称：蜗牛（Snail）
 	</Text>
 	<Text fx:id="about" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="3">
 		语言：Java
 	</Text>
 	<Text fx:id="about" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="3">
-		框架：JavaFX、Spring Boot
+		框架：JavaFX
 	</Text>
 	<Text fx:id="about" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.columnSpan="3">
 		功能：下载（FTP、HTTP、BT任务）
