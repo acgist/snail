@@ -1,10 +1,12 @@
 package com.acgist.snail.window.main;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.module.config.SystemConfig;
 import com.acgist.snail.window.AbstractWindow;
-import com.acgist.snail.window.menu.TrayMenu;
+import com.acgist.snail.window.about.AboutWindow;
 
-import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
@@ -13,11 +15,32 @@ import javafx.stage.Stage;
 /**
  * 主界面
  */
-public class MainWindow extends Application implements AbstractWindow {
+public class MainWindow extends AbstractWindow {
 
-//	private static final Logger LOGGER = LoggerFactory.getLogger(MainWindow.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MainWindow.class);
 	
-	private static Stage stage;
+	private static MainWindow INSTANCE;
+	
+	private MainWindow() {
+	}
+
+	public static final MainWindow getInstance() {
+		return INSTANCE;
+	}
+	
+	static {
+		synchronized (AboutWindow.class) {
+			if(INSTANCE == null) {
+				LOGGER.info("初始化主窗口");
+				INSTANCE = new MainWindow();
+				try {
+					INSTANCE.start(INSTANCE.stage);
+				} catch (Exception e) {
+					LOGGER.error("窗口初始化异常", e);
+				}
+			}
+		}
+	}
 	
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -26,27 +49,6 @@ public class MainWindow extends Application implements AbstractWindow {
 		stage.setScene(scene);
 		stage.setTitle(SystemConfig.getName());
 		commonWindow(stage);
-		enableTray(stage);
-		stage.show();
-		MainWindow.stage = stage;
-	}
-	
-	/**
-	 * 系统图标
-	 */
-	private void enableTray(Stage stage) {
-		TrayMenu.getInstance(stage);
-	}
-	
-	/**
-	 * 显示窗口
-	 */
-	public static final void show() {
-		MainWindow.stage.show();
-	}
-	
-	public static void main(String[] args) {
-		launch(args);
 	}
 	
 }

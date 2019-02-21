@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 
-<GridPane fx:controller="com.acgist.snail.window.about.AboutController" stylesheets="@/style/AboutPane.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="5" vgap="3">
+<GridPane fx:controller="com.acgist.snail.window.about.AboutController" stylesheets="@/style/AboutPane.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="7" vgap="3">
 	<Text fx:id="about" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="3">
 		名称：蜗牛（Snail）
 	</Text>
@@ -18,7 +18,13 @@
 	<Text fx:id="about" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.columnSpan="3">
 		功能：下载（FTP、HTTP、BT任务）
 	</Text>
-	<Button fx:id="author" text="作者" onAction="#handleAuthorAction" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-	<Button fx:id="source" text="官网与源码" onAction="#handleSourceAction" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-	<Button fx:id="support" text="问题与建议" onAction="#handleSupportAction" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+	<Text fx:id="copyright" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="3">
+		版权：Copyright © 2019 ACGIST. All Rights Reserved.
+	</Text>
+	<Text fx:id="license" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.columnSpan="3">
+		开源协议：BSD-3-Clause
+	</Text>
+	<Button fx:id="author" text="作者" onAction="#handleAuthorAction" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+	<Button fx:id="source" text="官网与源码" onAction="#handleSourceAction" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+	<Button fx:id="support" text="问题与建议" onAction="#handleSupportAction" GridPane.columnIndex="2" GridPane.rowIndex="6" />
 </GridPane>

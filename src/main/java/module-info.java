@@ -3,6 +3,7 @@
  * open：开放模块
  */
 open module snail {
+	
 	/**
 	 * 限定导出
 	 **/
