@@ -28,6 +28,15 @@ public class DownloaderManager {
 	 */
 	private Map<String, IDownloader> DOWNLOADER_MAP;
 	
+	private static final DownloaderManager INSTANCE = new DownloaderManager();
+	
+	private DownloaderManager() {
+	}
+	
+	static {
+		INSTANCE.init();
+	}
+	
 	private void init() {
 		LOGGER.info("初始化下载器管理");
 		int downloadSize = configService.getDownloadSize();

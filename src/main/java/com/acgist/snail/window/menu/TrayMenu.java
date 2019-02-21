@@ -41,6 +41,11 @@ public class TrayMenu extends ContextMenu {
 	private TrayIcon trayIcon;
 	
 	private static TrayMenu INSTANCE;
+	
+	private TrayMenu() {
+		createMenu();
+		enableTray();
+	}
 
 	public static final TrayMenu getInstance(Stage stage) {
 		if (INSTANCE == null) {
@@ -50,11 +55,6 @@ public class TrayMenu extends ContextMenu {
 		}
 		INSTANCE.stage = stage;
 		return INSTANCE;
-	}
-	
-	private TrayMenu() {
-		createMenu();
-		enableTray();
 	}
 
 	/**

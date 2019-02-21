@@ -20,21 +20,21 @@ public class MainWindow extends Application implements AbstractWindow {
 	private static Stage stage;
 	
 	@Override
-	public void start(Stage primaryStage) throws Exception {
-		MainWindow.stage = primaryStage;
+	public void start(Stage stage) throws Exception {
 		BorderPane root = FXMLLoader.load(this.getClass().getResource("/fxml/MainPane.fxml"));
 		Scene scene = new Scene(root, 1000, 600);
-		primaryStage.setScene(scene);
-		primaryStage.setTitle(SystemConfig.getName());
-		commonStage(primaryStage);
-		enableTray(primaryStage);
-		primaryStage.show();
+		stage.setScene(scene);
+		stage.setTitle(SystemConfig.getName());
+		commonWindow(stage);
+		enableTray(stage);
+		stage.show();
+		MainWindow.stage = stage;
 	}
 	
 	/**
 	 * 系统图标
 	 */
-	public void enableTray(Stage stage) {
+	private void enableTray(Stage stage) {
 		TrayMenu.getInstance(stage);
 	}
 	
@@ -42,7 +42,7 @@ public class MainWindow extends Application implements AbstractWindow {
 	 * 显示窗口
 	 */
 	public static final void show() {
-		stage.show();
+		MainWindow.stage.show();
 	}
 	
 	public static void main(String[] args) {
