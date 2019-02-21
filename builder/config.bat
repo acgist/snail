@@ -6,5 +6,6 @@ set builder=.\builder\
 set lib=lib
 set logs=logs
 set runtime=java
+set database=database
 set jar=%project%-%version%.jar
 set modules="java.sql,java.xml,java.base,java.naming,java.desktop,java.logging,java.scripting,java.management,jdk.unsupported"
