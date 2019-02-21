@@ -6,6 +6,9 @@ import java.util.Date;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import com.acgist.snail.utils.JSONUtils;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 /**
  * Entity - 数据库实体基类<br>
  * @Transient：不需要映射数据库的字段
@@ -24,15 +27,15 @@ public class BaseEntity implements Serializable {
 	/**
 	 * ID
 	 */
-	private String id;
+	protected String id;
 	/**
 	 * 创建日期
 	 */
-	private Date createDate;
+	protected Date createDate;
 	/**
 	 * 修改日期
 	 */
-	private Date modifyDate;
+	protected Date modifyDate;
 	
 	/**
 	 * 获取ID，生成的uuid自动去掉“-”
@@ -54,6 +57,7 @@ public class BaseEntity implements Serializable {
 	 * 获取创建日期
 	 * @return 创建日期
 	 */
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm")
 	public Date getCreateDate() {
 		return createDate;
 	}
@@ -70,6 +74,7 @@ public class BaseEntity implements Serializable {
 	 * 获取修改日期
 	 * @return 修改日期
 	 */
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm")
 	public Date getModifyDate() {
 		return modifyDate;
 	}
@@ -110,6 +115,11 @@ public class BaseEntity implements Serializable {
 		return new HashCodeBuilder(17, 37)
 			.append(getId())
 			.toHashCode();
+	}
+	
+	@Override
+	public String toString() {
+		return JSONUtils.javaToJson(this);
 	}
 	
 }

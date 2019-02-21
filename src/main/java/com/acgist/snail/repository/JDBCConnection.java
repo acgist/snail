@@ -82,7 +82,7 @@ public class JDBCConnection {
 			statement = connection.prepareStatement(sql);
 			if(ArrayUtils.isNotEmpty(parameters)) {
 				for (int index = 0; index < parameters.length; index++) {
-					statement.setObject(index, parameters[index]);
+					statement.setObject(index + 1, parameters[index]);
 				}
 			}
 			result = statement.executeQuery();
@@ -106,7 +106,7 @@ public class JDBCConnection {
 			statement = connection.prepareStatement(sql);
 			if(ArrayUtils.isNotEmpty(parameters)) {
 				for (int index = 0; index < parameters.length; index++) {
-					statement.setObject(index, parameters[index]);
+					statement.setObject(index + 1, parameters[index]);
 				}
 			}
 			ok = statement.execute();
