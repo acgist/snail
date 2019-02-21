@@ -10,22 +10,22 @@ import com.acgist.snail.window.menu.TaskMenu;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.util.Callback;
 
 public class MainController implements Initializable {
 
 	@FXML
     private BorderPane root;
 	@FXML
-	public TableView<DownloadMessage> downloadList;
+	private TableView<DownloadMessage> downloadList;
 	@FXML
 	private TableColumn<DownloadMessage, String> name;
 	@FXML
@@ -39,10 +39,12 @@ public class MainController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		this.downloadListMultiple();
 		this.downloadListMapping();
 		this.downloadListData();
+		this.downloadListRow();
 	}
-	
+
 	@FXML
 	public void handleBuildAction(ActionEvent event) {
 	}
@@ -80,12 +82,17 @@ public class MainController implements Initializable {
 	public void handleCompleteAction(ActionEvent event) {
 	}
 	
+	private void downloadListMultiple() {
+		this.downloadList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+	}
+	
 	private void downloadListMapping() {
 		name.setCellValueFactory(new PropertyValueFactory<DownloadMessage, String>("name"));
 		status.setCellValueFactory(new PropertyValueFactory<DownloadMessage, String>("status"));
 		progress.setCellValueFactory(new PropertyValueFactory<DownloadMessage, String>("progress"));
 		begin.setCellValueFactory(new PropertyValueFactory<DownloadMessage, String>("begin"));
 		end.setCellValueFactory(new PropertyValueFactory<DownloadMessage, String>("end"));
+//		name();
 	}
 	
 	private void downloadListData() {
@@ -94,14 +101,36 @@ public class MainController implements Initializable {
 			list.add(new DownloadMessage("测试" + i, "ces", "ces", "ces", "ces"));
 		}
 		downloadList.setItems(list);
-		downloadList.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				if(event.getButton() == MouseButton.SECONDARY) {
-					TaskMenu.getInstance().show(root, event.getSceneX(), event.getSceneY());
-				}
-			}
-		});
 	}
+	
+	private void downloadListRow() {
+		MainController mainController = this;
+		this.downloadList.setRowFactory(new Callback<TableView<DownloadMessage>, TableRow<DownloadMessage>>() {
+			@Override
+			public TableRow<DownloadMessage> call(TableView<DownloadMessage> param) {
+				TableRow<DownloadMessage> row = new TableRow<>();
+				row.setOnMouseClicked((event) -> {
+					if(event.getClickCount() == 1) {
+						// TODO：暂停
+					}
+				});
+				row.setContextMenu(TaskMenu.getInstance(mainController));
+				return row;
+			}
+		});		
+	}
+	
+//	private void name() {
+//		name.setCellFactory(new Callback<TableColumn<DownloadMessage,String>, TableCell<DownloadMessage,String>>() {
+//			@Override
+//			public TableCell<DownloadMessage, String> call(TableColumn<DownloadMessage, String> param) {
+//				TextFieldTableCell<DownloadMessage, String> cell = new TextFieldTableCell<>();
+//				cell.setCursor(Cursor.HAND);
+//				cell.setOnMouseClicked((event) -> {
+//				});
+//				return cell;
+//			}
+//		});
+//	}
 	
 }

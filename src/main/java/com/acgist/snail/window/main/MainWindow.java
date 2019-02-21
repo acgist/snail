@@ -1,5 +1,6 @@
 package com.acgist.snail.window.main;
 
+import com.acgist.snail.module.config.SystemConfig;
 import com.acgist.snail.window.AbstractWindow;
 import com.acgist.snail.window.menu.TrayMenu;
 
@@ -24,7 +25,7 @@ public class MainWindow extends Application implements AbstractWindow {
 		BorderPane root = FXMLLoader.load(this.getClass().getResource("/fxml/MainPane.fxml"));
 		Scene scene = new Scene(root, 1000, 600);
 		primaryStage.setScene(scene);
-		primaryStage.setTitle("蜗牛");
+		primaryStage.setTitle(SystemConfig.getName());
 		commonStage(primaryStage);
 		enableTray(primaryStage);
 		primaryStage.show();

@@ -44,7 +44,7 @@ public class Application {
 	 * 创建窗口
 	 */
 	private static final void buildWindow(String[] args) {
-		LOGGER.info("初始化窗口");
+		LOGGER.info("窗口初始化");
 		Thread thread = new Thread(() -> {
 			MainWindow.main(args);
 		});

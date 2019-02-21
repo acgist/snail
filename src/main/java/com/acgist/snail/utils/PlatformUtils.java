@@ -38,7 +38,7 @@ public class PlatformUtils {
 	public static final boolean listen() {
 		boolean ok = ApplicationServer.getInstance().listen();
 		if(!ok) {
-			LOGGER.info("项目已经启动启动主窗口");
+			LOGGER.info("项目已经启动，唤醒主窗口");
 			ApplicationNotifyClient.notifyWindow();
 		}
 		return ok;

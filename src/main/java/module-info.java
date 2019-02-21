@@ -7,8 +7,6 @@ open module snail {
 	 * 限定导出
 	 **/
 	exports com.acgist.main;
-	exports com.acgist.snail.window.about;
-	exports com.acgist.snail.pojo.entity;
 	
 	/**
 	 * opens：开放包（深层反射），使用open module不需要此配置。<br>

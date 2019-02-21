@@ -44,7 +44,9 @@ public class TrayMenu extends ContextMenu {
 
 	public static final TrayMenu getInstance(Stage stage) {
 		if (INSTANCE == null) {
-			INSTANCE = new TrayMenu();
+			synchronized (TaskMenu.class) {
+				INSTANCE = new TrayMenu();
+			}
 		}
 		INSTANCE.stage = stage;
 		return INSTANCE;
