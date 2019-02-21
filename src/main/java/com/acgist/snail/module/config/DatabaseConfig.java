@@ -1,5 +1,8 @@
 package com.acgist.snail.module.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.utils.PropertiesUtils;
 
 /**
@@ -7,12 +10,15 @@ import com.acgist.snail.utils.PropertiesUtils;
  */
 public class DatabaseConfig {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseConfig.class);
+	
 	private static final DatabaseConfig INSTANCE = new DatabaseConfig();
 	
 	private DatabaseConfig() {
 	}
 
 	static {
+		LOGGER.info("初始化数据库配置");
 		PropertiesUtils propertiesUtils = PropertiesUtils.getInstance("/config/config.database.properties");
 		INSTANCE.url = propertiesUtils.getString("database.h2.url");
 		INSTANCE.driver = propertiesUtils.getString("database.h2.driver");

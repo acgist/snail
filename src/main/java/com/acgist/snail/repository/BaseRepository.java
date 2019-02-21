@@ -6,6 +6,7 @@ import java.lang.reflect.Type;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -22,6 +23,16 @@ import com.acgist.snail.utils.EntityUtils;
 public abstract class BaseRepository<T extends BaseEntity> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BaseRepository.class);
+	
+	/**
+	 * 数据库列：只允许字符串
+	 */
+	private static final Function<String, String> COLUMN = (value) -> {
+		if(value.matches("[a-zA-Z]+")) {
+			return value;
+		}
+		throw new IllegalArgumentException("数据库列格式错误");
+	};
 	
 	protected String table;
 	
@@ -100,6 +111,23 @@ public abstract class BaseRepository<T extends BaseEntity> {
 			.append(table)
 			.append(" WHERE ID = ? limit 1");
 		List<ResultSetWrapper> list = JDBCConnection.select(sql.toString(), id);
+		if(list == null || list.isEmpty()) {
+			return null;
+		}
+		T t = newInstance();
+		EntityUtils.entity(t, list.get(0));
+		return t;
+	}
+	
+	public T findOne(String property, String value) {
+		StringBuilder sql = new StringBuilder();
+		sql
+			.append("SELECT * FROM ")
+			.append(table)
+			.append(" WHERE ")
+			.append(COLUMN.apply(property))
+			.append(" = ? limit 1");
+		List<ResultSetWrapper> list = JDBCConnection.select(sql.toString(), value);
 		if(list == null || list.isEmpty()) {
 			return null;
 		}

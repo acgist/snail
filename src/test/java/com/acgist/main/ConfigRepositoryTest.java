@@ -11,6 +11,7 @@ public class ConfigRepositoryTest {
 	public void findOne() {
 		ConfigRepository repository = new ConfigRepository();
 		System.out.println(repository.findOne("47576f4a-fc42-480d-92de-183eb3f0de2d"));
+		System.out.println(repository.findOne(ConfigEntity.PROPERTY_NAME, "xxxx"));
 	}
 	
 	@Test

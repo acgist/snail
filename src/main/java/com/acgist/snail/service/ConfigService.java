@@ -1,16 +1,15 @@
 package com.acgist.snail.service;
 
-import java.util.Optional;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.entity.ConfigEntity;
+import com.acgist.snail.repository.impl.ConfigRepository;
+import com.acgist.snail.utils.PropertiesUtils;
 
 /**
- * 配置，默认值从文件（application-system.properties）加载，配置修改后保存数据库，以后从数据库加载配置。<br>
- * 属性详细说明参考：application-config.properties
+ * 默认从配置文件加载，如果数据有配置则使用数据库配置替换
  */
 public class ConfigService {
 
@@ -20,50 +19,52 @@ public class ConfigService {
 	public static final String DOWNLOAD_SIZE = "acgist.download.size";
 	public static final String DOWNLOAD_BUFFER = "acgist.download.buffer";
 	
+	private static final ConfigService INSTANCE = new ConfigService();
+	
+	private ConfigService() {
+	}
+	
 	private String downloadPath;
 	private Integer downloadSize;
 	private Integer downloadBuffer;
 	
-//	@Autowired
-//	private Environment environment;
-//	@Autowired
-//	private ConfigRepository configRepository;
-	
-	public void init() {
-		LOGGER.info("配置初始化");
-		initFromConfig();
-		initFromDB();
-		loggerInfo();
+	static {
+		LOGGER.info("初始化用户配置");
+		INSTANCE.initFromProperties();
+		INSTANCE.initFromDB();
+		INSTANCE.loggerInfo();
 	}
 	
 	/**
 	 * 配置文件加载
 	 */
-	private void initFromConfig() {
-//		downloadPath = environment.getProperty(DOWNLOAD_PATH, "./download");
-//		downloadSize = environment.getProperty(DOWNLOAD_SIZE, Integer.class, 4);
-//		downloadBuffer = environment.getProperty(DOWNLOAD_BUFFER, Integer.class, 1024);
+	private void initFromProperties() {
+		PropertiesUtils propertiesUtils = PropertiesUtils.getInstance("/config/config.properties");
+		INSTANCE.downloadPath = propertiesUtils.getString(DOWNLOAD_PATH);
+		INSTANCE.downloadSize = propertiesUtils.getInteger(DOWNLOAD_SIZE);
+		INSTANCE.downloadBuffer = propertiesUtils.getInteger(DOWNLOAD_BUFFER);
 	}
 	
 	/**
 	 * 数据库初始化配置
 	 */
 	private void initFromDB() {
-//		Optional<ConfigEntity> optional = null;
-//		optional = configRepository.findProperty(ConfigEntity.PROPERTY_NAME, DOWNLOAD_PATH);
-//		downloadPath = configString(optional, downloadPath);
-//		optional = configRepository.findProperty(ConfigEntity.PROPERTY_NAME, DOWNLOAD_SIZE);
-//		downloadSize = configInteger(optional, downloadSize);
-//		optional = configRepository.findProperty(ConfigEntity.PROPERTY_NAME, DOWNLOAD_BUFFER);
-//		downloadBuffer = configInteger(optional, downloadBuffer);
+		ConfigRepository configRepository = new ConfigRepository();
+		ConfigEntity entity = null;
+		entity = configRepository.findOne(ConfigEntity.PROPERTY_NAME, DOWNLOAD_PATH);
+		downloadPath = configString(entity, downloadPath);
+		entity = configRepository.findOne(ConfigEntity.PROPERTY_NAME, DOWNLOAD_SIZE);
+		downloadSize = configInteger(entity, downloadSize);
+		entity = configRepository.findOne(ConfigEntity.PROPERTY_NAME, DOWNLOAD_BUFFER);
+		downloadBuffer = configInteger(entity, downloadBuffer);
 	}
 	
 	/**
 	 * 获取String配置
 	 */
-	private String configString(Optional<ConfigEntity> optional, String defaultValue) {
-		if(optional.isPresent()) {
-			return optional.get().getValue();
+	private String configString(ConfigEntity entity, String defaultValue) {
+		if(entity != null) {
+			return entity.getValue();
 		}
 		return defaultValue;
 	}
@@ -71,9 +72,9 @@ public class ConfigService {
 	/**
 	 * 获取Integer配置
 	 */
-	private Integer configInteger(Optional<ConfigEntity> optional, Integer defaultValue) {
-		if(optional.isPresent()) {
-			String value = optional.get().getValue();
+	private Integer configInteger(ConfigEntity entity, Integer defaultValue) {
+		if(entity != null) {
+			String value = entity.getValue();
 			if(StringUtils.isNumeric(value)) {
 				return Integer.valueOf(value);
 			}

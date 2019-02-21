@@ -1,5 +1,8 @@
 package com.acgist.snail.module.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.utils.PropertiesUtils;
 
 /**
@@ -7,6 +10,8 @@ import com.acgist.snail.utils.PropertiesUtils;
  */
 public class SystemConfig {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseConfig.class);
+	
 	public static final String DEFAULT_CHARSET = "utf-8";
 
 	private static final SystemConfig INSTANCE = new SystemConfig();
@@ -15,6 +20,7 @@ public class SystemConfig {
 	}
 
 	static {
+		LOGGER.info("初始化数据库配置");
 		PropertiesUtils propertiesUtils = PropertiesUtils.getInstance("/config/config.system.properties");
 		INSTANCE.name = propertiesUtils.getString("acgist.system.name");
 		INSTANCE.author = propertiesUtils.getString("acgist.system.author");

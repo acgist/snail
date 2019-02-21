@@ -15,26 +15,23 @@ import javafx.fxml.Initializable;
  */
 public class AboutController implements Initializable {
 	
-	private SystemConfig systemConfig;
-	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-//		systemConfig = SpringContextUtils.getBean(SystemConfig.class);
 	}
 	
 	@FXML
 	public void handleAuthorAction(ActionEvent event) {
-		BrowseUtils.open(systemConfig.getAuthor());
+		BrowseUtils.open(SystemConfig.getAuthor());
 	}
 	
 	@FXML
 	public void handleSourceAction(ActionEvent event) {
-		BrowseUtils.open(systemConfig.getSource());
+		BrowseUtils.open(SystemConfig.getSource());
 	}
 	
 	@FXML
 	public void handleSupportAction(ActionEvent event) {
-		BrowseUtils.open(systemConfig.getSupport());
+		BrowseUtils.open(SystemConfig.getSupport());
 	}
 
 }

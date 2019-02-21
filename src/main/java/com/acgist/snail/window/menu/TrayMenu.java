@@ -39,7 +39,6 @@ public class TrayMenu extends ContextMenu {
 	private Stage stage;
 	private Stage trayStage;
 	private TrayIcon trayIcon;
-	private SystemConfig systemConfig;
 	
 	private static TrayMenu INSTANCE;
 
@@ -54,7 +53,6 @@ public class TrayMenu extends ContextMenu {
 	private TrayMenu() {
 		createMenu();
 		enableTray();
-//		systemConfig = SpringContextUtils.getBean(SystemConfig.class);
 	}
 
 	/**
@@ -89,11 +87,11 @@ public class TrayMenu extends ContextMenu {
 		});
 		
 		sourceMenu.setOnAction((event) -> {
-			BrowseUtils.open(systemConfig.getSource());
+			BrowseUtils.open(SystemConfig.getSource());
 		});
 		
 		supportMenu.setOnAction((event) -> {
-			BrowseUtils.open(systemConfig.getSupport());
+			BrowseUtils.open(SystemConfig.getSupport());
 		});
 		
 		this.addEventFilter(WindowEvent.WINDOW_HIDDEN, (event) -> { // 窗口隐藏时移除托盘显示的窗口
