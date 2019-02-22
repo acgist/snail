@@ -1,7 +1,7 @@
-GridPane {
+.about {
 	-fx-font-size:16;
-	-fx-padding:40 10;
+	-fx-alignment:center;
 }
-Button {
+.about Button {
 	-fx-padding:4 12;
 }

@@ -44,7 +44,7 @@ public class AboutWindow extends AbstractWindow {
 	@Override
 	public void start(Stage stage) throws Exception {
 		GridPane root = FXMLLoader.load(this.getClass().getResource("/fxml/AboutPane.fxml"));
-		Scene scene = new Scene(root, 600, 400);
+		Scene scene = new Scene(root, 600, 300);
 		stage.initModality(Modality.APPLICATION_MODAL);
 		stage.setScene(scene);
 		stage.setTitle("关于");

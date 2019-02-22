@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 import com.acgist.snail.pojo.message.DownloadMessage;
 import com.acgist.snail.window.about.AboutWindow;
 import com.acgist.snail.window.menu.TaskMenu;
+import com.acgist.snail.window.setting.SettingWindow;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -68,6 +69,7 @@ public class MainController implements Initializable {
 	
 	@FXML
 	public void handleSettingAction(ActionEvent event) {
+		SettingWindow.getInstance().show();
 	}
 	
 	@FXML
