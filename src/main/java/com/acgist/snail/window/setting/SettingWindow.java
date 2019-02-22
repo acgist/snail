@@ -7,7 +7,7 @@ import com.acgist.snail.window.AbstractWindow;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 
 /**
@@ -42,7 +42,7 @@ public class SettingWindow extends AbstractWindow {
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		GridPane root = FXMLLoader.load(this.getClass().getResource("/fxml/SettingPane.fxml"));
+		FlowPane root = FXMLLoader.load(this.getClass().getResource("/fxml/SettingPane.fxml"));
 		Scene scene = new Scene(root, 800, 600);
 		stage.setScene(scene);
 		stage.setTitle("设置");

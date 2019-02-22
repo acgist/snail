@@ -3,6 +3,14 @@
 	-fx-alignment:center;
 }
 .setting .name {
+	-fx-pref-width:200;
 	-fx-text-alignment:right;
-	-fx-width:200;
+}
+.setting HBox{
+	-fx-padding:10 0;
+}
+.setting .scrollPane{
+	-fx-pref-width:600;
+	-fx-background-color: transparent;
+    -fx-control-inner-background: transparent;
 }

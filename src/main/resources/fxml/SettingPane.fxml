@@ -5,64 +5,80 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 
-<GridPane
+<FlowPane
+	fx:id="root"
 	styleClass="setting" stylesheets="@/style/SettingPane.css"
-	hgap="6" vgap="3"
 	fx:controller="com.acgist.snail.window.setting.SettingController"
 	xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
 	
-	<TextFlow styleClass="name" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="1">
-	<Label>
-		下载目录：
-	</Label>
-	</TextFlow>
-	<Text fx:id="about" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.columnSpan="2">
-		蜗牛（Snail）
-	</Text>
+	<ScrollPane fx:id="scrollPane" styleClass="scrollPane" hbarPolicy="AS_NEEDED">
+		<VBox>
+			<HBox>
+				<TextFlow styleClass="name">
+					<Label>
+						下载目录：
+					</Label>
+				</TextFlow>
+				<Text fx:id="about">
+					蜗牛（Snail）
+				</Text>
+			</HBox>
+			
+			<HBox>
+				<TextFlow styleClass="name">
+					<Label>
+						同时下载任务数量：
+					</Label>
+				</TextFlow>
+				<Text fx:id="about">
+					Java
+				</Text>
+			</HBox>
+			
+			<HBox>
+				<TextFlow styleClass="name">
+					<Label>
+						单个任务下载速度：
+					</Label>
+				</TextFlow>
+				<Text fx:id="about">
+					JavaFX
+				</Text>
+			</HBox>
+				
+			<HBox>
+				<TextFlow styleClass="name">
+					<Label>
+						下载完成弹出提示：
+					</Label>
+				</TextFlow>
+				<Text fx:id="about">
+					JavaFX
+				</Text>
+			</HBox>
+			
+			<HBox>
+				<TextFlow styleClass="name">
+					<Label>
+						下载缓存：
+					</Label>
+				</TextFlow>
+				<Text fx:id="about">
+					JavaFX
+				</Text>
+			</HBox>
+		
+			<HBox>	
+				<TextFlow styleClass="name">
+					<Label>
+						启用P2P加速：
+					</Label>
+				</TextFlow>
+				<Text fx:id="about">
+					JavaFX
+				</Text>
+			</HBox>
+		</VBox>
+	</ScrollPane>
 	
-	<TextFlow styleClass="name" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="1">
-	<Label>
-		同时下载任务数量：
-	</Label>
-	</TextFlow>
-	<Text fx:id="about" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.columnSpan="2">
-		Java
-	</Text>
-	
-	<TextFlow styleClass="name" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="1">
-	<Label>
-		单个任务下载速度：
-	</Label>
-	</TextFlow>
-	<Text fx:id="about" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.columnSpan="2">
-		JavaFX
-	</Text>
-	
-	<TextFlow styleClass="name" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.columnSpan="1">
-	<Label>
-		下载完成弹出提示：
-	</Label>
-	</TextFlow>
-	<Text fx:id="about" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.columnSpan="2">
-		JavaFX
-	</Text>
-	
-	<TextFlow styleClass="name" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="1">
-	<Label>
-		下载缓存：
-	</Label>
-	</TextFlow>
-	<Text fx:id="about" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.columnSpan="2">
-		JavaFX
-	</Text>
-	
-	<TextFlow styleClass="name" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.columnSpan="1">
-	<Label>
-		启用P2P加速：
-	</Label>
-	</TextFlow>
-	<Text fx:id="about" GridPane.columnIndex="1" GridPane.rowIndex="5" GridPane.columnSpan="2">
-		JavaFX
-	</Text>
-	
-</GridPane>
+</FlowPane>

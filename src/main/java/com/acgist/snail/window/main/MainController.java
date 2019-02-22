@@ -3,7 +3,7 @@ package com.acgist.snail.window.main;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import com.acgist.snail.pojo.message.DownloadMessage;
+import com.acgist.snail.pojo.message.TaskMessage;
 import com.acgist.snail.window.about.AboutWindow;
 import com.acgist.snail.window.menu.TaskMenu;
 import com.acgist.snail.window.setting.SettingWindow;
@@ -26,24 +26,25 @@ public class MainController implements Initializable {
 	@FXML
     private BorderPane root;
 	@FXML
-	private TableView<DownloadMessage> downloadList;
+	private TableView<TaskMessage> taskTable;
 	@FXML
-	private TableColumn<DownloadMessage, String> name;
+	private TableColumn<TaskMessage, String> name;
 	@FXML
-	private TableColumn<DownloadMessage, String> status;
+	private TableColumn<TaskMessage, String> status;
 	@FXML
-	private TableColumn<DownloadMessage, String> progress;
+	private TableColumn<TaskMessage, String> progress;
 	@FXML
-	private TableColumn<DownloadMessage, String> begin;
+	private TableColumn<TaskMessage, String> begin;
 	@FXML
-	private TableColumn<DownloadMessage, String> end;
+	private TableColumn<TaskMessage, String> end;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		this.downloadListMultiple();
-		this.downloadListMapping();
-		this.downloadListData();
-		this.downloadListRow();
+		this.taskTableColumnWidth();
+		this.taskTableMultiple();
+		this.taskTableMapping();
+		this.taskTableData();
+		this.taskTableRow();
 	}
 
 	@FXML
@@ -84,35 +85,64 @@ public class MainController implements Initializable {
 	public void handleCompleteAction(ActionEvent event) {
 	}
 	
-	private void downloadListMultiple() {
-		this.downloadList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+	/**
+	 * 设置列宽
+	 */
+	private void taskTableColumnWidth() {
+		name.prefWidthProperty().bind(root.widthProperty().divide(5D));
+		status.prefWidthProperty().bind(root.widthProperty().divide(10D));
+		progress.prefWidthProperty().bind(root.widthProperty().divide(5D));
+		begin.prefWidthProperty().bind(root.widthProperty().divide(4D));
+		end.prefWidthProperty().bind(root.widthProperty().divide(4D));
+		taskTable.prefWidthProperty().bind(root.widthProperty());
 	}
 	
-	private void downloadListMapping() {
-		name.setCellValueFactory(new PropertyValueFactory<DownloadMessage, String>("name"));
-		status.setCellValueFactory(new PropertyValueFactory<DownloadMessage, String>("status"));
-		progress.setCellValueFactory(new PropertyValueFactory<DownloadMessage, String>("progress"));
-		begin.setCellValueFactory(new PropertyValueFactory<DownloadMessage, String>("begin"));
-		end.setCellValueFactory(new PropertyValueFactory<DownloadMessage, String>("end"));
+	/**
+	 * 设置多选
+	 */
+	private void taskTableMultiple() {
+		this.taskTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+	}
+	
+	/**
+	 * 数据映射
+	 */
+	private void taskTableMapping() {
+		name.setResizable(false);
+		name.setCellValueFactory(new PropertyValueFactory<TaskMessage, String>("name"));
+		status.setResizable(false);
+		status.setCellValueFactory(new PropertyValueFactory<TaskMessage, String>("status"));
+		progress.setResizable(false);
+		progress.setCellValueFactory(new PropertyValueFactory<TaskMessage, String>("progress"));
+		begin.setResizable(false);
+		begin.setCellValueFactory(new PropertyValueFactory<TaskMessage, String>("begin"));
+		end.setResizable(false);
+		end.setCellValueFactory(new PropertyValueFactory<TaskMessage, String>("end"));
 //		name();
 	}
 	
-	private void downloadListData() {
-		ObservableList<DownloadMessage> list = FXCollections.observableArrayList();
-		for (int i = 0; i < 10; i++) {
-			list.add(new DownloadMessage("测试" + i, "ces", "ces", "ces", "ces"));
+	/**
+	 * 设置数据
+	 */
+	private void taskTableData() {
+		ObservableList<TaskMessage> list = FXCollections.observableArrayList();
+		for (int i = 0; i < 100; i++) {
+			list.add(new TaskMessage("测试" + i, "ces", "ces", "ces", "ces"));
 		}
-		downloadList.setItems(list);
+		taskTable.setItems(list);
 	}
 	
-	private void downloadListRow() {
+	/**
+	 * 行事件
+	 */
+	private void taskTableRow() {
 		MainController mainController = this;
-		this.downloadList.setRowFactory(new Callback<TableView<DownloadMessage>, TableRow<DownloadMessage>>() {
+		this.taskTable.setRowFactory(new Callback<TableView<TaskMessage>, TableRow<TaskMessage>>() {
 			@Override
-			public TableRow<DownloadMessage> call(TableView<DownloadMessage> param) {
-				TableRow<DownloadMessage> row = new TableRow<>();
+			public TableRow<TaskMessage> call(TableView<TaskMessage> param) {
+				TableRow<TaskMessage> row = new TableRow<>();
 				row.setOnMouseClicked((event) -> {
-					if(event.getClickCount() == 1) {
+					if(event.getClickCount() == 2) {
 						// TODO：暂停
 					}
 				});
