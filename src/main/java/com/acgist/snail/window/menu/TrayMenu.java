@@ -51,6 +51,7 @@ public class TrayMenu extends ContextMenu {
 			if (INSTANCE == null) {
 				LOGGER.info("初始化托盘菜单");
 				INSTANCE = new TrayMenu();
+				Platform.setImplicitExit(false); // 必须设置此项，否者窗口关闭后将不能通过托盘显示
 			}
 		}
 	}
@@ -120,7 +121,6 @@ public class TrayMenu extends ContextMenu {
 	private void enableTray() {
 		MouseListener mouseListener = new MouseInputAdapter() {
 			public void mouseClicked(java.awt.event.MouseEvent event) {
-				Platform.setImplicitExit(false);
 				if (event.getButton() == java.awt.event.MouseEvent.BUTTON1) {
 					if (MainWindow.getInstance().isShowing()) {
 						Platform.runLater(() -> {
@@ -161,16 +161,16 @@ public class TrayMenu extends ContextMenu {
 	 */
 	private Stage createTrayStage() {
 		FlowPane trayPane = new FlowPane();
-		Stage trayStage = new Stage();
 		trayPane.setBackground(Background.EMPTY);
-		Scene scene = new Scene(trayPane);
-		scene.setFill(Color.TRANSPARENT);
+		Scene trayScene = new Scene(trayPane);
+		trayScene.setFill(Color.TRANSPARENT);
+		Stage trayStage = new Stage();
 		trayStage.initStyle(StageStyle.UTILITY);
 		trayStage.setOpacity(0);
 		trayStage.setMaxWidth(0);
 		trayStage.setMaxHeight(0);
 		trayStage.setAlwaysOnTop(true);
-		trayStage.setScene(scene);
+		trayStage.setScene(trayScene);
 		trayStage.show();
 		this.trayStage = trayStage;
 		return trayStage;
