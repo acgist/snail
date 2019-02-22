@@ -2,6 +2,8 @@ package com.acgist.snail.utils;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.channels.AsynchronousChannelGroup;
+import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
@@ -39,11 +41,29 @@ public class AioUtils {
 	/**
 	 * 关闭socket
 	 */
-	public static final void close(AsynchronousSocketChannel socket) {
-		try {
-			socket.close();
-		} catch (IOException e) {
-			LOGGER.error("关闭Socket异常", e);
+	public static final void close(
+		AsynchronousChannelGroup group,
+		AsynchronousServerSocketChannel server,
+		AsynchronousSocketChannel socket
+	) {
+		if(socket != null && socket.isOpen()) {
+			try {
+				socket.shutdownInput();
+				socket.shutdownOutput();
+				socket.close();
+			} catch (IOException e) {
+				LOGGER.error("关闭Socket异常", e);
+			}
+		}
+		if(server != null && server.isOpen()) {
+			try {
+				server.close();
+			} catch (IOException e) {
+				LOGGER.error("关闭Socket Server异常");
+			}
+		}
+		if(group != null && !group.isShutdown()) {
+			group.shutdown();
 		}
 	}
 	

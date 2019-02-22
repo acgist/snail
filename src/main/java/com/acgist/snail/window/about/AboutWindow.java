@@ -48,7 +48,8 @@ public class AboutWindow extends AbstractWindow {
 		stage.initModality(Modality.APPLICATION_MODAL);
 		stage.setScene(scene);
 		stage.setTitle("关于");
-		commonWindow(stage);
+		disableResize();
+		commonWindow();
 	}
 	
 }

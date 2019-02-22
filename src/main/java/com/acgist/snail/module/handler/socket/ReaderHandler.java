@@ -1,17 +1,16 @@
-package com.acgist.snail.module.handler;
+package com.acgist.snail.module.handler.socket;
 
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.module.handler.message.ClientMessageHandler;
 import com.acgist.snail.pojo.message.ClientMessage;
 import com.acgist.snail.utils.AioUtils;
-import com.acgist.snail.window.main.MainWindow;
-
-import javafx.application.Platform;
 
 /**
  * 消息读取
@@ -35,6 +34,7 @@ public class ReaderHandler implements CompletionHandler<Integer, ByteBuffer> {
 
 	/**
 	 * 处理消息
+	 * TODO：粘包拆包
 	 * @return 是否关闭
 	 */
 	private boolean doMessage(Integer result, ByteBuffer attachment) {
@@ -43,27 +43,24 @@ public class ReaderHandler implements CompletionHandler<Integer, ByteBuffer> {
 			LOGGER.info("读取空消息");
 		} else {
 			String content = AioUtils.readContent(attachment);
-			LOGGER.info("读取消息：{}", content);
-			ClientMessage message = ClientMessage.valueOf(content);
-			if(message.getType() == ClientMessage.Type.text) {
-				send(ClientMessage.response(message.getBody()));
-			} else if(message.getType() == ClientMessage.Type.notify) {
-				Platform.runLater(() -> {
-					MainWindow.getInstance().show();
-				});
-			} else if(message.getType() == ClientMessage.Type.close) {
-				AioUtils.close(socket);
+			if(StringUtils.isEmpty(content)) {
+				LOGGER.warn("读取消息内容为空关闭Socket");
 				close = true;
+				AioUtils.close(null, null, socket);
+				return close;
 			}
+			ClientMessage message = ClientMessage.valueOf(content);
+			if(message == null) {
+				LOGGER.warn("读取消息格式错误关闭Socket：{}", content);
+				close = true;
+				AioUtils.close(null, null, socket);
+				return close;
+			}
+			LOGGER.info("读取消息：{}", content);
+			ClientMessageHandler messageHandler = new ClientMessageHandler(socket, message);
+			close = messageHandler.execute();
 		}
 		return close;
-	}
-	
-	private void send(ClientMessage message) {
-		ByteBuffer buffer = ByteBuffer.wrap(message.toBytes());
-		synchronized (socket) { // 防止多线程抛异常
-			socket.write(buffer, buffer, new WriterHandler());
-		}
 	}
 	
 	private void doReader() {
