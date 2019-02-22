@@ -1,0 +1,8 @@
+.setting {
+	-fx-font-size:16;
+	-fx-alignment:center;
+}
+.setting .name {
+	-fx-text-alignment:right;
+	-fx-width:200;
+}

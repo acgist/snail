@@ -10,9 +10,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 
-/**
- * 关于
- */
 public class AboutController implements Initializable {
 	
 	@Override

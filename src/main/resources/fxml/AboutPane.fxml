@@ -5,17 +5,22 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 
-<GridPane fx:controller="com.acgist.snail.window.about.AboutController" stylesheets="@/style/AboutPane.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="7" vgap="3">
-	<Text fx:id="about" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="3">
+<GridPane
+	styleClass="about" stylesheets="@/style/AboutPane.css"
+	hgap="7" vgap="3"
+	fx:controller="com.acgist.snail.window.about.AboutController"
+	xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
+	
+	<Text fx:id="name" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="3">
 		名称：蜗牛（Snail）
 	</Text>
-	<Text fx:id="about" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="3">
+	<Text fx:id="language" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="3">
 		语言：Java
 	</Text>
-	<Text fx:id="about" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="3">
+	<Text fx:id="frame" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="3">
 		框架：JavaFX
 	</Text>
-	<Text fx:id="about" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.columnSpan="3">
+	<Text fx:id="description" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.columnSpan="3">
 		功能：下载（FTP、HTTP、BT任务）
 	</Text>
 	<Text fx:id="copyright" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="3">
@@ -27,4 +32,5 @@
 	<Button fx:id="author" text="作者" onAction="#handleAuthorAction" GridPane.columnIndex="0" GridPane.rowIndex="6" />
 	<Button fx:id="source" text="官网与源码" onAction="#handleSourceAction" GridPane.columnIndex="1" GridPane.rowIndex="6" />
 	<Button fx:id="support" text="问题与建议" onAction="#handleSupportAction" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+	
 </GridPane>
