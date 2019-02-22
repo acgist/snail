@@ -9,8 +9,12 @@ import com.acgist.snail.utils.BrowseUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.layout.GridPane;
 
 public class AboutController implements Initializable {
+	
+	@FXML
+	private GridPane root;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
