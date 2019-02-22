@@ -55,7 +55,7 @@ public class ApplicationServer {
 					LOGGER.error("监听服务等待异常", e);
 				}
 			});
-			thread.setName(SystemConfig.getName() + "监听服务");
+			thread.setName("Snail Listen Service");
 			thread.setDaemon(true); // 防止阻止系统关闭
 			thread.start();
 		}
