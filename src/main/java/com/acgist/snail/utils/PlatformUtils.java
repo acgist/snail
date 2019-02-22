@@ -30,6 +30,7 @@ public class PlatformUtils {
 	 * 启动加载
 	 */
 	public static final void loading() {
+		// TODO：加载效果
 	}
 	
 	/**

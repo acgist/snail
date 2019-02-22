@@ -20,14 +20,14 @@ public abstract class AbstractWindow extends Application {
 	/**
 	 * 设置ICON
 	 */
-	protected void icon(Stage stage) {
+	protected void icon() {
 		stage.getIcons().add(new Image("/image/logo.png"));	
 	}
 	
 	/**
 	 * ESC隐藏窗口
 	 */
-	protected void esc(Stage stage) {
+	protected void esc() {
 		stage.addEventHandler(KeyEvent.KEY_RELEASED, (event) -> {
 			if(event.getCode() == KeyCode.ESCAPE) {
 				stage.hide();
@@ -36,11 +36,18 @@ public abstract class AbstractWindow extends Application {
 	}
 	
 	/**
+	 * 禁止改变窗口大小
+	 */
+	protected void disableResize() {
+		stage.setResizable(false);
+	}
+	
+	/**
 	 * 设置通用信息
 	 */
-	protected void commonWindow(Stage stage) {
-		icon(stage);
-		esc(stage);
+	protected void commonWindow() {
+		icon();
+		esc();
 	}
 	
 	/**

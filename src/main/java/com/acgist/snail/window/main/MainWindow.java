@@ -48,7 +48,7 @@ public class MainWindow extends AbstractWindow {
 		Scene scene = new Scene(root, 1000, 600);
 		stage.setScene(scene);
 		stage.setTitle(SystemConfig.getName());
-		commonWindow(stage);
+		commonWindow();
 	}
 	
 }
