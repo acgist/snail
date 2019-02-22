@@ -54,6 +54,8 @@ public class SettingController implements Initializable {
 	@FXML
 	public void handlePathAction(ActionEvent event) {
 		DirectoryChooser chooser = new DirectoryChooser();
+		chooser.setTitle("文件保存目录");
+		chooser.setInitialDirectory(new File(ConfigService.getInstance().getDownloadPath()));
 		File file = chooser.showDialog(new Stage());
 		if (file != null) {
 			String path = file.getPath();
