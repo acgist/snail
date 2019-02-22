@@ -1,11 +1,14 @@
 package com.acgist.snail.pojo.message;
 
+import com.acgist.snail.module.config.FileTypeConfig.FileType;
+
 /**
  * 下载任务信息
  */
 public class TaskMessage {
 
 	private String name;
+	private FileType fileType;
 	private String status;
 	private String progress;
 	private String begin;
@@ -14,8 +17,9 @@ public class TaskMessage {
 	public TaskMessage() {
 	}
 
-	public TaskMessage(String name, String status, String progress, String begin, String end) {
+	public TaskMessage(String name, FileType fileType, String status, String progress, String begin, String end) {
 		this.name = name;
+		this.fileType = fileType;
 		this.status = status;
 		this.progress = progress;
 		this.begin = begin;
@@ -28,6 +32,14 @@ public class TaskMessage {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public FileType getFileType() {
+		return fileType;
+	}
+
+	public void setFileType(FileType fileType) {
+		this.fileType = fileType;
 	}
 
 	public String getStatus() {
