@@ -9,8 +9,20 @@
 .setting HBox{
 	-fx-padding:10 0;
 }
+.setting Button{
+	-fx-padding:10;
+}
+.setting .path TextFlow{
+	-fx-padding:10 0;
+}
+.setting .path .pathValue{
+	-fx-padding:10;
+}
 .setting .scrollPane{
 	-fx-pref-width:600;
 	-fx-background-color: transparent;
     -fx-control-inner-background: transparent;
+}
+.setting .slider{
+	-fx-pref-width:300;
 }

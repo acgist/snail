@@ -39,6 +39,10 @@ public class PropertiesUtils {
 		return properties;
 	}
 	
+	public Boolean getBoolean(String name) {
+		return Boolean.valueOf(getString(name));
+	}
+	
 	public Integer getInteger(String name) {
 		return Integer.valueOf(getString(name));
 	}

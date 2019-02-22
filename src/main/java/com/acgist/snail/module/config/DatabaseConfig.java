@@ -20,11 +20,11 @@ public class DatabaseConfig {
 	static {
 		LOGGER.info("初始化数据库配置");
 		PropertiesUtils propertiesUtils = PropertiesUtils.getInstance("/config/config.database.properties");
-		INSTANCE.url = propertiesUtils.getString("database.h2.url");
-		INSTANCE.driver = propertiesUtils.getString("database.h2.driver");
-		INSTANCE.user = propertiesUtils.getString("database.h2.user");
-		INSTANCE.password = propertiesUtils.getString("database.h2.password");
-		INSTANCE.tableSQL = propertiesUtils.getString("database.h2.table.sql");
+		INSTANCE.url = propertiesUtils.getString("acgist.database.h2.url");
+		INSTANCE.driver = propertiesUtils.getString("acgist.database.h2.driver");
+		INSTANCE.user = propertiesUtils.getString("acgist.database.h2.user");
+		INSTANCE.password = propertiesUtils.getString("acgist.database.h2.password");
+		INSTANCE.tableSQL = propertiesUtils.getString("acgist.database.h2.table.sql");
 	}
 	
 	private String url;

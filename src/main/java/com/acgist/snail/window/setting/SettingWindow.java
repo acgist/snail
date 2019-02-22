@@ -8,6 +8,7 @@ import com.acgist.snail.window.AbstractWindow;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.FlowPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
@@ -44,6 +45,7 @@ public class SettingWindow extends AbstractWindow {
 	public void start(Stage stage) throws Exception {
 		FlowPane root = FXMLLoader.load(this.getClass().getResource("/fxml/SettingPane.fxml"));
 		Scene scene = new Scene(root, 800, 600);
+		stage.initModality(Modality.APPLICATION_MODAL);
 		stage.setScene(scene);
 		stage.setTitle("设置");
 		commonWindow();
