@@ -2,20 +2,20 @@
 	-fx-font-size:16;
 	-fx-alignment:center;
 }
-.build .pathValue{
+.build .pathValue {
 	-fx-padding:10 0;
 }
-.build .pathValue TextFlow{
+.build .pathValue TextFlow {
 	-fx-padding:0 10 0 0;
 }
-.build .pathValue TextField{
+.build .pathValue TextField {
 	-fx-pref-width:400;
 }
-.build .option{
+.build .option {
 	-fx-alignment:center_right;
 }
-.build .option .cancel{
+.build .option .cancel {
 	-fx-padding:0 10;
 }
-.build .option .build{
+.build .option .build {
 }

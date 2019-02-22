@@ -20,8 +20,8 @@
 }
 .setting .scrollPane{
 	-fx-pref-width:600;
-	-fx-background-color: transparent;
-    -fx-control-inner-background: transparent;
+	-fx-background-color:transparent;
+    -fx-control-inner-background:transparent;
 }
 .setting .slider{
 	-fx-pref-width:300;
