@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.pojo.dto.ResultSetWrapper;
+import com.acgist.snail.pojo.wrapper.ResultSetWrapper;
 
 /**
  * 实体工具

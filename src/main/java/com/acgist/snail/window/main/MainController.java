@@ -5,6 +5,7 @@ import java.util.ResourceBundle;
 
 import com.acgist.snail.pojo.message.TaskMessage;
 import com.acgist.snail.window.about.AboutWindow;
+import com.acgist.snail.window.build.BuildWindow;
 import com.acgist.snail.window.menu.TaskMenu;
 import com.acgist.snail.window.setting.SettingWindow;
 
@@ -49,6 +50,7 @@ public class MainController implements Initializable {
 
 	@FXML
 	public void handleBuildAction(ActionEvent event) {
+		BuildWindow.getInstance().show();
 	}
 	
 	@FXML
@@ -75,6 +77,8 @@ public class MainController implements Initializable {
 	
 	@FXML
 	public void handleAllAction(ActionEvent event) {
+//		HBox bo;
+//		bo.setAlignment(Pos.CENTER_RIGHT);
 	}
 	
 	@FXML

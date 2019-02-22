@@ -1,4 +1,4 @@
-package com.acgist.snail.pojo.dto;
+package com.acgist.snail.pojo.wrapper;
 
 import java.util.Date;
 import java.util.HashMap;
