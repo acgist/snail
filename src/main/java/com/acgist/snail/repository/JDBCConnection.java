@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.module.config.DatabaseConfig;
 import com.acgist.snail.pojo.wrapper.ResultSetWrapper;
+import com.acgist.snail.utils.EntityUtils;
 
 /**
  * 数据库连接
@@ -82,7 +83,7 @@ public class JDBCConnection {
 			statement = connection.prepareStatement(sql);
 			if(ArrayUtils.isNotEmpty(parameters)) {
 				for (int index = 0; index < parameters.length; index++) {
-					statement.setObject(index + 1, parameters[index]);
+					statement.setObject(index + 1, EntityUtils.pack(parameters[index]));
 				}
 			}
 			result = statement.executeQuery();
@@ -106,7 +107,7 @@ public class JDBCConnection {
 			statement = connection.prepareStatement(sql);
 			if(ArrayUtils.isNotEmpty(parameters)) {
 				for (int index = 0; index < parameters.length; index++) {
-					statement.setObject(index + 1, parameters[index]);
+					statement.setObject(index + 1, EntityUtils.pack(parameters[index]));
 				}
 			}
 			ok = statement.execute();
@@ -146,5 +147,5 @@ public class JDBCConnection {
 		}
 		return columns;
 	}
-	
+
 }

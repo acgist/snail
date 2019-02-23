@@ -39,6 +39,7 @@ public abstract class AbstractDownloader implements IDownloader {
 			FileUtils.delete(task.getTorrent());
 		}
 		// 删除任务
+		
 	}
 	
 }

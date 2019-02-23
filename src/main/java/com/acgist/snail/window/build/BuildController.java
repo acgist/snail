@@ -6,7 +6,7 @@ import java.util.ResourceBundle;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.acgist.snail.downloader.DownloadBuilder;
+import com.acgist.snail.downloader.DownloaderBuilder;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -46,7 +46,7 @@ public class BuildController implements Initializable {
 		if(StringUtils.isEmpty(value)) {
 			return;
 		}
-		DownloadBuilder.build(value);
+		DownloaderBuilder.createBuilder(value).build();
 	}
 
 	@FXML

@@ -74,11 +74,40 @@ public class EntityUtils {
 		for (String property : properties) {
 			try {
 				PropertyDescriptor descriptor = new PropertyDescriptor(property, clazz);
-				descriptor.getWriteMethod().invoke(entity, wrapper.getObject(property));
+				Object value = unpack(descriptor.getPropertyType(), wrapper.getObject(property));
+				descriptor.getWriteMethod().invoke(entity, value);
 			} catch (IntrospectionException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 				LOGGER.info("反射设置属性异常", e);
 			}
 		}
+	}
+	
+	/**
+	 * 类型转换
+	 */
+	public static final Object pack(Object object) {
+		if(object == null) {
+			return null;
+		}
+		if(object instanceof Enum<?>) { // 枚举类型
+			Enum<?> value = (Enum<?>) object;
+			return value.name();
+		}
+		return object;
+	}
+	
+	/**
+	 * 类型转换：TODO：泛型优化
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static final Object unpack(Class<?> clazz, Object value) {
+		if(value == null) {
+			return null;
+		}
+		if(clazz.isEnum()) { // 枚举类型
+			return Enum.valueOf(((Class<Enum>) clazz), value.toString());
+		}
+		return value;
 	}
 	
 }

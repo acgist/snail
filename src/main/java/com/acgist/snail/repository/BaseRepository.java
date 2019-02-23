@@ -13,9 +13,11 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.module.exception.RepositoryException;
 import com.acgist.snail.pojo.entity.BaseEntity;
 import com.acgist.snail.pojo.wrapper.ResultSetWrapper;
 import com.acgist.snail.utils.EntityUtils;
+import com.acgist.snail.utils.JSONUtils;
 
 /**
  * 数据库
@@ -31,7 +33,7 @@ public abstract class BaseRepository<T extends BaseEntity> {
 		if(value.matches("[a-zA-Z]+")) {
 			return value;
 		}
-		throw new IllegalArgumentException("数据库列格式错误");
+		throw new RepositoryException("数据库列格式错误");
 	};
 	
 	protected String table;
@@ -41,6 +43,9 @@ public abstract class BaseRepository<T extends BaseEntity> {
 	}
 	
 	public void save(T t) {
+		if(t == null) {
+			throw new RepositoryException("保存参数异常：" + t);
+		}
 		t.setId(UUID.randomUUID().toString());
 		t.setCreateDate(new Date());
 		t.setModifyDate(new Date());
@@ -61,10 +66,17 @@ public abstract class BaseRepository<T extends BaseEntity> {
 			.append(sqlProperty)
 			.append(" VALUES ")
 			.append(sqlValue);
+		if(LOGGER.isDebugEnabled()) {
+			LOGGER.debug("SQL语句：{}", sql);
+			LOGGER.debug("SQL参数：{}", JSONUtils.javaToJson(parameters));
+		}
 		JDBCConnection.update(sql.toString(), parameters);
 	}
 
 	public void update(T t) {
+		if(t == null) {
+			throw new RepositoryException("修改参数异常：" + t);
+		}
 		t.setModifyDate(new Date());
 		final String[] properties = EntityUtils.entityProperty(t.getClass());
 		final String sqlProperty = Stream.of(properties)
@@ -92,10 +104,17 @@ public abstract class BaseRepository<T extends BaseEntity> {
 			.append(" SET ")
 			.append(sqlProperty)
 			.append(" WHERE ID = ?");
+		if(LOGGER.isDebugEnabled()) {
+			LOGGER.debug("SQL语句：{}", sql);
+			LOGGER.debug("SQL参数：{}", JSONUtils.javaToJson(parameters));
+		}
 		JDBCConnection.update(sql.toString(), parameters);
 	}
 	
 	public void delete(String id) {
+		if(id == null) {
+			throw new RepositoryException("删除参数异常：" + id);
+		}
 		StringBuilder sql = new StringBuilder();
 		sql
 			.append("DELETE FROM ")
@@ -105,6 +124,9 @@ public abstract class BaseRepository<T extends BaseEntity> {
 	}
 
 	public T findOne(String id) {
+		if(id == null) {
+			throw new RepositoryException("查询参数异常：" + id);
+		}
 		StringBuilder sql = new StringBuilder();
 		sql
 			.append("SELECT * FROM ")
@@ -120,6 +142,9 @@ public abstract class BaseRepository<T extends BaseEntity> {
 	}
 	
 	public T findOne(String property, String value) {
+		if(property == null) {
+			throw new RepositoryException("查询参数异常：" + property);
+		}
 		StringBuilder sql = new StringBuilder();
 		sql
 			.append("SELECT * FROM ")
@@ -137,7 +162,29 @@ public abstract class BaseRepository<T extends BaseEntity> {
 	}
 	
 	public List<T> findList(String sql, Object ... parameters) {
+		if(sql == null) {
+			throw new RepositoryException("查询参数异常：" + sql);
+		}
 		List<ResultSetWrapper> list = JDBCConnection.select(sql, parameters);
+		if(list == null || list.isEmpty()) {
+			return null;
+		}
+		return list
+			.stream()
+			.map(wrapper -> {
+				T t = newInstance();
+				EntityUtils.entity(t, wrapper);
+				return t;
+			})
+			.collect(Collectors.toList());
+	}
+	
+	public List<T> findAll() {
+		StringBuilder sql = new StringBuilder();
+		sql
+			.append("SELECT * FROM ")
+			.append(table);
+		List<ResultSetWrapper> list = JDBCConnection.select(sql.toString());
 		if(list == null || list.isEmpty()) {
 			return null;
 		}

@@ -13,28 +13,37 @@ import com.acgist.snail.repository.JDBCConnection;
 /**
  * 数据库建表
  */
-public class TableInitializer {
+public class TableInitializer extends Initializer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TableInitializer.class);
 	
-	public static final void init() {
+	public void init() {
 		if(exist()) {
 			return;
 		}
 		buildTable();
 	}
 	
-	private static final boolean exist() {
+	/**
+	 * 判断表是否存在
+	 */
+	private boolean exist() {
 		return JDBCConnection.hasTable(ConfigEntity.TABLE_NAME);
 	}
 
-	private static final void buildTable() {
-		LOGGER.info("初始化数据库");
+	/**
+	 * 初始化数据库表
+	 */
+	private void buildTable() {
+		LOGGER.info("初始化数据库表");
 		String sql = buildTableSQL();
 		JDBCConnection.update(sql);
 	}
 
-	private static final String buildTableSQL() {
+	/**
+	 * 读取初始化SQL
+	 */
+	private String buildTableSQL() {
 		StringBuilder sql = new StringBuilder();
 		try(InputStreamReader reader = new InputStreamReader(TableInitializer.class.getResourceAsStream(DatabaseConfig.getTableSQL()))) {
 			int count = 0;

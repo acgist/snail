@@ -3,7 +3,7 @@ package com.acgist.snail.context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.downloader.DownloaderManager;
+import com.acgist.snail.module.initializer.DownloaderInitializer;
 import com.acgist.snail.module.initializer.TableInitializer;
 
 /**
@@ -18,8 +18,8 @@ public class SystemContext {
 	 */
 	public static final void init() {
 		LOGGER.info("系统初始化");
-		TableInitializer.init();
-		DownloaderManager.getInstance();
+		new TableInitializer().initSync();
+		new DownloaderInitializer().initAsyn();
 	}
 	
 }

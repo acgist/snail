@@ -70,11 +70,4 @@ public class DownloaderManager {
 			.collect(Collectors.toList());
 	}
 
-	/**
-	 * 开始下载任务
-	 */
-	public void download(IDownloader downloader) {
-		DOWNLOADER_MAP.put(downloader.id(), downloader);
-	}
-	
 }
