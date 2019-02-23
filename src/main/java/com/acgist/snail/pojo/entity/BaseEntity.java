@@ -57,7 +57,7 @@ public class BaseEntity implements Serializable {
 	 * 获取创建日期
 	 * @return 创建日期
 	 */
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+	@JsonFormat(pattern = TIMESTAMP_FORMAT)
 	public Date getCreateDate() {
 		return createDate;
 	}
@@ -74,7 +74,7 @@ public class BaseEntity implements Serializable {
 	 * 获取修改日期
 	 * @return 修改日期
 	 */
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+	@JsonFormat(pattern = TIMESTAMP_FORMAT)
 	public Date getModifyDate() {
 		return modifyDate;
 	}

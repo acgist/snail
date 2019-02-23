@@ -1,7 +1,7 @@
 package com.acgist.snail.window.main;
 
 import com.acgist.snail.module.config.FileTypeConfig.FileType;
-import com.acgist.snail.pojo.message.TaskMessage;
+import com.acgist.snail.pojo.wrapper.TaskWrapper;
 
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -13,7 +13,7 @@ import javafx.scene.text.Text;
 /**
  * 任务单元格
  */
-public class TaskCell extends TableCell<TaskMessage, String> {
+public class TaskCell extends TableCell<TaskWrapper, String> {
 
 	private Pos pos = Pos.CENTER_LEFT;
 	private boolean name;
@@ -26,7 +26,7 @@ public class TaskCell extends TableCell<TaskMessage, String> {
 	@Override
 	public void updateItem(String value, boolean empty) {
 		super.updateItem(value, empty);
-		TaskMessage task = this.getTableRow().getItem();
+		TaskWrapper task = this.getTableRow().getItem();
 		if(task != null) {
 			HBox box = new HBox();
 			Text name = new Text(value);

@@ -31,8 +31,10 @@
 .main TableRow:selected Text {
 	-fx-fill:white;
 }
-/**糟糕的配置隐藏水平滚动*/
+/**
+糟糕的配置隐藏水平滚动
 .table-view > .virtual-flow > .scroll-bar:horizontal {
 	-fx-opacity:0;
 	-fx-padding:-10;
 }
+*/
