@@ -9,7 +9,7 @@ import java.util.ResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.service.ConfigService;
+import com.acgist.snail.module.config.DownloadConfig;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -55,23 +55,23 @@ public class SettingController implements Initializable {
 	public void handlePathAction(ActionEvent event) {
 		DirectoryChooser chooser = new DirectoryChooser();
 		chooser.setTitle("文件保存目录");
-		chooser.setInitialDirectory(new File(ConfigService.getInstance().getDownloadPath()));
+		chooser.setInitialDirectory(new File(DownloadConfig.getDownloadPath()));
 		File file = chooser.showDialog(new Stage());
 		if (file != null) {
 			String path = file.getPath();
-			ConfigService.getInstance().setDownloadPath(path);
-			pathValue.setText(ConfigService.getInstance().getDownloadPath());
+			DownloadConfig.setDownloadPath(path);
+			pathValue.setText(DownloadConfig.getDownloadPath());
 		}
 	}
 
 	@FXML
 	public void handleNoticeAction(ActionEvent event) {
-		ConfigService.getInstance().setDownloadNotice(notice.isSelected());
+		DownloadConfig.setDownloadNotice(notice.isSelected());
 	}
 	
 	@FXML
 	public void handleP2pAction(ActionEvent event) {
-		ConfigService.getInstance().setDownloadP2p(p2p.isSelected());
+		DownloadConfig.setDownloadP2p(p2p.isSelected());
 	}
 	
 	private void initScrollPane() {
@@ -83,12 +83,11 @@ public class SettingController implements Initializable {
 	 * 初始化配置项
 	 */
 	private void initSetting() {
-		ConfigService configService = ConfigService.getInstance();
-		pathValue.setText(configService.getDownloadPath());
-		size.setValue(configService.getDownloadSize());
-		buffer.setValue(configService.getDownloadBuffer());
-		notice.setSelected(configService.getDownloadNotice());
-		p2p.setSelected(configService.getDownloadP2p());
+		pathValue.setText(DownloadConfig.getDownloadPath());
+		size.setValue(DownloadConfig.getDownloadSize());
+		buffer.setValue(DownloadConfig.getDownloadBuffer());
+		notice.setSelected(DownloadConfig.getDownloadNotice());
+		p2p.setSelected(DownloadConfig.getDownloadP2p());
 	}
 	
 	/**
@@ -97,7 +96,7 @@ public class SettingController implements Initializable {
 	private void initPathValue() {
 		pathValue.setCursor(Cursor.HAND);
 		pathValue.setOnMouseClicked((event) -> {
-			File open = new File(ConfigService.getInstance().getDownloadPath());
+			File open = new File(DownloadConfig.getDownloadPath());
 			try {
 				Desktop.getDesktop().open(open);
 			} catch (IOException e) {
@@ -115,7 +114,7 @@ public class SettingController implements Initializable {
 		});
 		size.setOnMouseReleased((event) -> {
 			Double value = size.getValue();
-			ConfigService.getInstance().setDownloadSize(value.intValue());
+			DownloadConfig.setDownloadSize(value.intValue());
 		});
 		buffer.valueProperty().addListener((obs, oldval, newVal) -> {
 			int value = newVal.intValue();
@@ -126,7 +125,7 @@ public class SettingController implements Initializable {
 		});
 		buffer.setOnMouseReleased((event) -> {
 			Double value = buffer.getValue();
-			ConfigService.getInstance().setDownloadBuffer(value.intValue());
+			DownloadConfig.setDownloadBuffer(value.intValue());
 		});
 		buffer.setLabelFormatter(new StringConverter<Double>() {
 			@Override

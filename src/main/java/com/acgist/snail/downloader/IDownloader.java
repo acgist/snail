@@ -23,11 +23,6 @@ public interface IDownloader extends Runnable {
 	TaskWrapper task();
 
 	/**
-	 * 新建任务
-	 */
-	void build();
-	
-	/**
 	 * 开始任务
 	 */
 	void start();
