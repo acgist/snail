@@ -46,11 +46,11 @@
 				<!--
 				开始时间：2019-01-01 12:10
 				-->
-				<TableColumn fx:id="begin" text="开始时间" styleClass="begin" />
+				<TableColumn fx:id="createDate" text="开始时间" styleClass="createDate" />
 				<!--
 				完成时间：2019-01-01 12:10
 				-->
-				<TableColumn fx:id="end" text="完成时间" styleClass="end" />
+				<TableColumn fx:id="endDate" text="完成时间" styleClass="endDate" />
 			</columns>
 		</TableView>
 	</center>

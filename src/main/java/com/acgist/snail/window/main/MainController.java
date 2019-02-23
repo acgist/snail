@@ -1,10 +1,10 @@
 package com.acgist.snail.window.main;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
-import com.acgist.snail.module.config.FileTypeConfig.FileType;
-import com.acgist.snail.pojo.message.TaskMessage;
+import com.acgist.snail.pojo.wrapper.TaskWrapper;
 import com.acgist.snail.window.about.AboutWindow;
 import com.acgist.snail.window.build.BuildWindow;
 import com.acgist.snail.window.menu.TaskMenu;
@@ -42,24 +42,22 @@ public class MainController implements Initializable {
 	@FXML
 	private HBox fooderStatus;
 	@FXML
-	private TableView<TaskMessage> taskTable;
+	private TableView<TaskWrapper> taskTable;
 	@FXML
-	private TableColumn<TaskMessage, String> name;
+	private TableColumn<TaskWrapper, String> name;
 	@FXML
-	private TableColumn<TaskMessage, String> status;
+	private TableColumn<TaskWrapper, String> status;
 	@FXML
-	private TableColumn<TaskMessage, String> progress;
+	private TableColumn<TaskWrapper, String> progress;
 	@FXML
-	private TableColumn<TaskMessage, String> begin;
+	private TableColumn<TaskWrapper, String> createDate;
 	@FXML
-	private TableColumn<TaskMessage, String> end;
+	private TableColumn<TaskWrapper, String> endDate;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		this.taskTableColumnWidth();
 		this.taskTableMultiple();
-		this.taskTableMapping();
-		this.taskTableData();
+		this.taskTableColumn();
 		this.taskTableRow();
 		this.initView();
 	}
@@ -104,65 +102,47 @@ public class MainController implements Initializable {
 	}
 	
 	/**
-	 * 设置列宽
-	 */
-	private void taskTableColumnWidth() {
-		name.prefWidthProperty().bind(root.widthProperty().divide(5D));
-		status.prefWidthProperty().bind(root.widthProperty().divide(10D));
-		progress.prefWidthProperty().bind(root.widthProperty().divide(5D));
-		begin.prefWidthProperty().bind(root.widthProperty().divide(4D));
-		end.prefWidthProperty().bind(root.widthProperty().divide(4D));
-	}
-	
-	/**
 	 * 设置多选
 	 */
 	private void taskTableMultiple() {
 		this.taskTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 	}
-	
+
 	/**
-	 * 数据映射
+	 * 设置列
 	 */
-	private void taskTableMapping() {
+	private void taskTableColumn() {
+		name.prefWidthProperty().bind(taskTable.widthProperty().divide(5D));
+		status.prefWidthProperty().bind(taskTable.widthProperty().divide(10D));
+		progress.prefWidthProperty().bind(taskTable.widthProperty().divide(5D).subtract(20));
+		createDate.prefWidthProperty().bind(taskTable.widthProperty().divide(4D));
+		endDate.prefWidthProperty().bind(taskTable.widthProperty().divide(4D));
 		name.setResizable(false);
-		name.setCellValueFactory(new PropertyValueFactory<TaskMessage, String>("name"));
+		name.setCellValueFactory(new PropertyValueFactory<TaskWrapper, String>("nameValue"));
 		taskCell(name, Pos.CENTER_LEFT, true);
 		status.setResizable(false);
-		status.setCellValueFactory(new PropertyValueFactory<TaskMessage, String>("status"));
+		status.setCellValueFactory(new PropertyValueFactory<TaskWrapper, String>("statusValue"));
 		taskCell(status, Pos.CENTER, false);
 		progress.setResizable(false);
-		progress.setCellValueFactory(new PropertyValueFactory<TaskMessage, String>("progress"));
+		progress.setCellValueFactory(new PropertyValueFactory<TaskWrapper, String>("progressValue"));
 		taskCell(progress, Pos.CENTER_LEFT, false);
-		begin.setResizable(false);
-		begin.setCellValueFactory(new PropertyValueFactory<TaskMessage, String>("begin"));
-		taskCell(begin, Pos.CENTER, false);
-		end.setResizable(false);
-		end.setCellValueFactory(new PropertyValueFactory<TaskMessage, String>("end"));
-		taskCell(end, Pos.CENTER, false);
+		createDate.setResizable(false);
+		createDate.setCellValueFactory(new PropertyValueFactory<TaskWrapper, String>("createDateValue"));
+		taskCell(createDate, Pos.CENTER, false);
+		endDate.setResizable(false);
+		endDate.setCellValueFactory(new PropertyValueFactory<TaskWrapper, String>("endDateValue"));
+		taskCell(endDate, Pos.CENTER, false);
 	}
 	
 	/**
-	 * 设置数据
-	 */
-	private void taskTableData() {
-		ObservableList<TaskMessage> list = FXCollections.observableArrayList();
-		for (int i = 0; i < 10; i++) {
-//		for (int i = 0; i < 100; i++) {
-			list.add(new TaskMessage("测试" + i, FileType.audio, "ces", "ces", "ces", "ces"));
-		}
-		taskTable.setItems(list);
-	}
-	
-	/**
-	 * 行事件
+	 * 设置行
 	 */
 	private void taskTableRow() {
 		MainController mainController = this;
-		this.taskTable.setRowFactory(new Callback<TableView<TaskMessage>, TableRow<TaskMessage>>() {
+		this.taskTable.setRowFactory(new Callback<TableView<TaskWrapper>, TableRow<TaskWrapper>>() {
 			@Override
-			public TableRow<TaskMessage> call(TableView<TaskMessage> param) {
-				TableRow<TaskMessage> row = new TableRow<>();
+			public TableRow<TaskWrapper> call(TableView<TaskWrapper> param) {
+				TableRow<TaskWrapper> row = new TableRow<>();
 				row.setOnMouseClicked((event) -> {
 					if(event.getClickCount() == 2) {
 						// TODO：暂停
@@ -175,26 +155,39 @@ public class MainController implements Initializable {
 	}
 	
 	/**
-	 * 绑定高宽
+		 * 设置列
+		 */
+		private void taskCell(TableColumn<TaskWrapper, String> column, Pos pos, boolean name) {
+			column.setCellFactory(new Callback<TableColumn<TaskWrapper, String>, TableCell<TaskWrapper, String>>() {
+				@Override
+				public TableCell<TaskWrapper, String> call(TableColumn<TaskWrapper, String> param) {
+					return new TaskCell(pos, name);
+	//				return new TextFieldTableCell<>();
+				}
+			});
+		}
+
+	/**
+	 * 初始控件
 	 */
 	private void initView() {
 		taskTable.prefWidthProperty().bind(root.widthProperty());
-		taskTable.prefHeightProperty().bind(root.prefHeightProperty().subtract(80));
+		taskTable.prefHeightProperty().bind(root.prefHeightProperty().subtract(80D));
 		fooderButton.prefWidthProperty().bind(root.widthProperty().multiply(0.8D));
 		fooderStatus.prefWidthProperty().bind(root.widthProperty().multiply(0.2D));
+		TaskTableTimer.getInstance().newTimer(this);
 	}
 	
+	
 	/**
-	 * 设置列
+	 * 设置数据
 	 */
-	private void taskCell(TableColumn<TaskMessage, String> column, Pos pos, boolean name) {
-		column.setCellFactory(new Callback<TableColumn<TaskMessage, String>, TableCell<TaskMessage, String>>() {
-			@Override
-			public TableCell<TaskMessage, String> call(TableColumn<TaskMessage, String> param) {
-				return new TaskCell(pos, name);
-//				return new TextFieldTableCell<>();
-			}
+	public void setTaskTable(List<TaskWrapper> list) {
+		ObservableList<TaskWrapper> obs = FXCollections.observableArrayList();
+		list.forEach(wrapper -> {
+			obs.add(wrapper);
 		});
+		taskTable.setItems(obs);
 	}
 	
 }

@@ -1,6 +1,6 @@
 package com.acgist.snail.downloader;
 
-import com.acgist.snail.pojo.message.TaskMessage;
+import com.acgist.snail.pojo.wrapper.TaskWrapper;
 
 /**
  * 下载器
@@ -20,7 +20,7 @@ public interface IDownloader extends Runnable {
 	/**
 	 * 任务信息
 	 */
-	TaskMessage message();
+	TaskWrapper task();
 
 	/**
 	 * 新建任务

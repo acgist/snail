@@ -85,6 +85,20 @@ public class TaskEntity extends BaseEntity {
 	 */
 	private Date endDate;
 	
+	public TaskEntity() {
+	}
+
+	public TaskEntity(String name, Type type, FileType fileType, String file, String url, String torrent, Status status, Integer size) {
+		this.name = name;
+		this.type = type;
+		this.fileType = fileType;
+		this.file = file;
+		this.url = url;
+		this.torrent = torrent;
+		this.status = status;
+		this.size = size;
+	}
+
 	public String getName() {
 		return name;
 	}

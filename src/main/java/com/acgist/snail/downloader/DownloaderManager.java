@@ -1,13 +1,16 @@
 package com.acgist.snail.downloader;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.pojo.wrapper.TaskWrapper;
 import com.acgist.snail.service.ConfigService;
 
 /**
@@ -17,7 +20,14 @@ public class DownloaderManager {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DownloaderManager.class);
 	
-	private ConfigService configService;
+	private static final DownloaderManager INSTANCE = new DownloaderManager();
+	
+	private DownloaderManager() {
+	}
+	
+	public static final DownloaderManager getInstance() {
+		return INSTANCE;
+	}
 	
 	/**
 	 * 下载线程池
@@ -28,17 +38,13 @@ public class DownloaderManager {
 	 */
 	private Map<String, IDownloader> DOWNLOADER_MAP;
 	
-	private static final DownloaderManager INSTANCE = new DownloaderManager();
-	
-	private DownloaderManager() {
-	}
-	
 	static {
 		INSTANCE.init();
 	}
 	
 	private void init() {
 		LOGGER.info("初始化下载器管理");
+		ConfigService configService = ConfigService.getInstance();
 		int downloadSize = configService.getDownloadSize();
 		LOGGER.info("初始化下载线程池，初始大小：{}", downloadSize);
 		DOWNLOADER_EXECUTOR = Executors.newFixedThreadPool(downloadSize);
@@ -54,4 +60,22 @@ public class DownloaderManager {
 		DOWNLOADER_MAP.put(downloader.id(), downloader);
 	}
 
+	/**
+	 * 获取下载任务
+	 */
+	public List<TaskWrapper> taskTable() {
+		return DownloaderManager.getInstance().DOWNLOADER_MAP
+			.values()
+			.stream()
+			.map(IDownloader::task)
+			.collect(Collectors.toList());
+	}
+
+	/**
+	 * 开始下载任务
+	 */
+	public void download(IDownloader downloader) {
+		DOWNLOADER_MAP.put(downloader.id(), downloader);
+	}
+	
 }

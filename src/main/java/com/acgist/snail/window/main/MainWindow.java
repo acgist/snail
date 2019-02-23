@@ -51,4 +51,10 @@ public class MainWindow extends AbstractWindow {
 		commonWindow();
 	}
 	
+	@Override
+	public void show() {
+		stage.setIconified(false); // 防止缩小到任务栏导致不能显示到显示器
+		super.show();
+	}
+
 }
