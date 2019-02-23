@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.module.config.DownloadConfig;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
-import com.acgist.snail.service.ConfigService;
 
 /**
  * 下载器执行器
@@ -44,8 +44,7 @@ public class DownloaderManager {
 	
 	private void init() {
 		LOGGER.info("初始化下载器管理");
-		ConfigService configService = ConfigService.getInstance();
-		int downloadSize = configService.getDownloadSize();
+		int downloadSize = DownloadConfig.getDownloadSize();
 		LOGGER.info("初始化下载线程池，初始大小：{}", downloadSize);
 		DOWNLOADER_EXECUTOR = Executors.newFixedThreadPool(downloadSize);
 		DOWNLOADER_MAP = new ConcurrentHashMap<>(downloadSize);

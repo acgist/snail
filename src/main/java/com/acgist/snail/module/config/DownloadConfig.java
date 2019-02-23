@@ -1,6 +1,4 @@
-package com.acgist.snail.service;
-
-import java.io.File;
+package com.acgist.snail.module.config;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -8,14 +6,15 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.entity.ConfigEntity;
 import com.acgist.snail.repository.impl.ConfigRepository;
+import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.PropertiesUtils;
 
 /**
  * 默认从配置文件加载，如果数据有配置则使用数据库配置替换
  */
-public class ConfigService {
+public class DownloadConfig {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DownloadConfig.class);
 	
 	public static final String DOWNLOAD_PATH = "acgist.download.path";
 	public static final String DOWNLOAD_SIZE = "acgist.download.size";
@@ -23,13 +22,9 @@ public class ConfigService {
 	public static final String DOWNLOAD_NOTICE = "acgist.download.notice";
 	public static final String DOWNLOAD_P2P = "acgist.download.p2p";
 	
-	private static final ConfigService INSTANCE = new ConfigService();
+	private static final DownloadConfig INSTANCE = new DownloadConfig();
 	
-	private ConfigService() {
-	}
-	
-	public static final ConfigService getInstance() {
-		return INSTANCE;
+	private DownloadConfig() {
 	}
 	
 	private String downloadPath;
@@ -37,8 +32,6 @@ public class ConfigService {
 	private Integer downloadBuffer;
 	private Boolean downloadNotice;
 	private Boolean downloadP2p;
-	
-	private ConfigRepository configRepository = new ConfigRepository();
 	
 	static {
 		LOGGER.info("初始化用户配置");
@@ -63,6 +56,7 @@ public class ConfigService {
 	 * 数据库初始化配置
 	 */
 	private void initFromDB() {
+		ConfigRepository configRepository = new ConfigRepository();
 		ConfigEntity entity = null;
 		entity = configRepository.findOne(ConfigEntity.PROPERTY_NAME, DOWNLOAD_PATH);
 		downloadPath = configString(entity, downloadPath);
@@ -123,59 +117,54 @@ public class ConfigService {
 		LOGGER.info("启用P2P加速，属性：{}，值：{}", DOWNLOAD_P2P, downloadP2p);
 	}
 	
-	public void setDownloadPath(String path) {
-		this.downloadPath = path;
+	public static final void setDownloadPath(String path) {
+		ConfigRepository configRepository = new ConfigRepository();
+		INSTANCE.downloadPath = path;
 		configRepository.updateConfig(DOWNLOAD_PATH, path);
 	}
 	
-	public String getDownloadPath() {
-		File file = new File(this.downloadPath);
-		if(file.exists()) {
-			return this.downloadPath;
-		}
-		String path = System.getProperty("user.dir") + this.downloadPath;
-		file = new File(path);
-		if(file.exists()) {
-			return path;
-		}
-		file.mkdirs();
-		return path;
+	public static final String getDownloadPath() {
+		return FileUtils.folderPath(INSTANCE.downloadPath);
 	}
 	
-	public void setDownloadSize(Integer downloadSize) {
-		this.downloadSize = downloadSize;
+	public static final void setDownloadSize(Integer downloadSize) {
+		ConfigRepository configRepository = new ConfigRepository();
+		INSTANCE.downloadSize = downloadSize;
 		configRepository.updateConfig(DOWNLOAD_SIZE, String.valueOf(downloadSize));
 	}
 
-	public Integer getDownloadSize() {
-		return downloadSize;
+	public static final Integer getDownloadSize() {
+		return INSTANCE.downloadSize;
 	}
 	
-	public void setDownloadBuffer(Integer downloadBuffer) {
-		this.downloadBuffer = downloadBuffer;
+	public static final void setDownloadBuffer(Integer downloadBuffer) {
+		ConfigRepository configRepository = new ConfigRepository();
+		INSTANCE.downloadBuffer = downloadBuffer;
 		configRepository.updateConfig(DOWNLOAD_BUFFER, String.valueOf(downloadBuffer));
 	}
 	
-	public Integer getDownloadBuffer() {
-		return downloadBuffer;
+	public static final Integer getDownloadBuffer() {
+		return INSTANCE.downloadBuffer;
 	}
 
-	public void setDownloadNotice(Boolean downloadNotice) {
-		this.downloadNotice = downloadNotice;
+	public static final void setDownloadNotice(Boolean downloadNotice) {
+		ConfigRepository configRepository = new ConfigRepository();
+		INSTANCE.downloadNotice = downloadNotice;
 		configRepository.updateConfig(DOWNLOAD_NOTICE, String.valueOf(downloadNotice));
 	}
 	
-	public Boolean getDownloadNotice() {
-		return downloadNotice;
+	public static final Boolean getDownloadNotice() {
+		return INSTANCE.downloadNotice;
 	}
 	
-	public void setDownloadP2p(Boolean downloadP2p) {
-		this.downloadP2p = downloadP2p;
+	public static final void setDownloadP2p(Boolean downloadP2p) {
+		ConfigRepository configRepository = new ConfigRepository();
+		INSTANCE.downloadP2p = downloadP2p;
 		configRepository.updateConfig(DOWNLOAD_P2P, String.valueOf(downloadP2p));
 	}
 	
-	public Boolean getDownloadP2p() {
-		return downloadP2p;
+	public static final Boolean getDownloadP2p() {
+		return INSTANCE.downloadP2p;
 	}
 	
 }

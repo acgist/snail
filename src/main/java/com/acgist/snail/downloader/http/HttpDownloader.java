@@ -12,37 +12,26 @@ public class HttpDownloader extends AbstractDownloader implements IDownloader {
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public String name() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void build() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void start() {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void delete() {
-		// TODO Auto-generated method stub
 		
 	}
 
