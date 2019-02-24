@@ -13,8 +13,8 @@
 	<description>下载工具：FTP、HTTP、BT任务</description>
 
 	<properties>
-		<java.version>11</java.version>
 		<encoding>UTF-8</encoding>
+		<java.version>11</java.version>
 		<h2.version>1.4.197</h2.version>
 		<junit.version>4.12</junit.version>
 		<lang3.version>3.8.1</lang3.version>
