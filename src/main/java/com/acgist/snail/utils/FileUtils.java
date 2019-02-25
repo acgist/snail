@@ -1,10 +1,21 @@
 package com.acgist.snail.utils;
 
+import java.awt.Desktop;
 import java.io.File;
+import java.io.IOException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpRequest.BodyPublishers;
+import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandlers;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.acgist.snail.module.config.FileTypeConfig;
+import com.acgist.snail.module.config.FileTypeConfig.FileType;
 
 /**
  * 文件工具
@@ -12,7 +23,11 @@ import org.slf4j.LoggerFactory;
 public class FileUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FileUtils.class);
-
+	
+	private static final String FILENAME_REPLACE_CHAR = "";
+	private static final String FILENAME_REPLACE_REGEX = "[\\\\/:\\*\\?\\<\\>\\|]"; // 替换的字符：\、/、:、*、?、<、>、|
+	private static final String CONTENT_DISPOSITION = "Content-Disposition";
+	
 	/**
 	 * 删除文件
 	 */
@@ -44,6 +59,100 @@ public class FileUtils {
 		}
 		file.mkdirs();
 		return path;
+	}
+	
+	/**
+	 * 获取文件名称：URL
+	 */
+	public static final String fileNameFromUrl(String url) {
+		if(StringUtils.isEmpty(url)) {
+			return url;
+		}
+		url = UrlUtils.decode(url);
+		if(url.contains("\\")) {
+			url.replace("\\", "/");
+		}
+		int index = url.lastIndexOf("/");
+		if(index != -1) {
+			url = url.substring(index + 1);
+		}
+		index = url.indexOf("?");
+		if(index != -1) {
+			url = url.substring(0, index);
+		}
+		return url;
+	}
+	
+	/**
+	 * 获取文件名称：HTTP
+	 */
+	public static final String fileNameFromHttp(String url) {
+		HttpClient client = HttpUtils.newClient();
+		HttpRequest request = HttpUtils.newRequest(url)
+			.method("HEAD", BodyPublishers.noBody())
+			.build();
+		Optional<String> header = null;
+		try {
+			HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+			header = response.headers().firstValue(CONTENT_DISPOSITION);
+		} catch (IOException | InterruptedException e) {
+			LOGGER.error("HTTP请求异常", e);
+		}
+		if(header != null && header.isPresent()) {
+			String fileName = header.get();
+			final String fileNameLower = fileName.toLowerCase();
+			if(fileNameLower.contains("filename")) {
+				int index = fileName.indexOf("=");
+				if(index != -1) {
+					fileName = fileName.substring(index + 1);
+					index = fileName.indexOf("?");
+					if(index != -1) {
+						fileName = fileName.substring(0, index);
+					}
+					return fileName;
+				}
+			}
+		}
+		return FileUtils.fileNameFromUrl(url);
+	}
+
+	/**
+	 * 文件名称获取后缀
+	 */
+	public static final FileType fileType(String name) {
+		if(StringUtils.isEmpty(name)) {
+			return FileType.unknown;
+		}
+		String ext = name;
+		int index = name.lastIndexOf(".");
+		if(index != -1) {
+			ext = name.substring(index + 1);
+		}
+		return FileTypeConfig.type(ext);
+	}
+	
+	/**
+	 * 获取正确的文件下载名称：去掉不支持的字符串
+	 */
+	public static final String fileName(String name) {
+		if(StringUtils.isNotEmpty(name)) { // 去掉不支持的字符
+			name = name.replaceAll(FILENAME_REPLACE_REGEX, FILENAME_REPLACE_CHAR);
+		}
+		if(StringUtils.isEmpty(name)) { // 默认使用日期
+			name = UniqueCodeUtils.build();
+		}
+		return name.trim();
+	}
+	
+	/**
+	 * 资源管理器中打开文件
+	 */
+	public static final void openInDesktop(File file) {
+		try {
+			Desktop.getDesktop().open(file);
+		} catch (IOException e) {
+			LOGGER.error("打开系统目录异常", e);
+		}
 	}
 	
 }

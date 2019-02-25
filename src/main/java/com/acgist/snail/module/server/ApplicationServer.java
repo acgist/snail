@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.module.config.SystemConfig;
 import com.acgist.snail.module.handler.socket.AcceptHandler;
+import com.acgist.snail.utils.AioUtils;
 
 /**
  * 服务监听
@@ -62,6 +63,14 @@ public class ApplicationServer {
 		return ok;
 	}
 
+	/**
+	 * 关闭服务监听
+	 */
+	public void shutdown() {
+		LOGGER.info("关闭服务监听");
+		AioUtils.close(group, server, null);
+	}
+	
 	public static void main(String[] args) {
 		getInstance().listen();
 	}

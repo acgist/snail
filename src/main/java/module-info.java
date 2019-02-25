@@ -20,6 +20,7 @@ open module snail {
 	requires java.sql;
 	requires java.base;
 	requires java.desktop;
+	requires java.net.http;
 	
 	/**
 	 * jdeps 分析出来的依赖

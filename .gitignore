@@ -12,7 +12,7 @@
 .apt_generated_tests
 
 #ºöÂÔÄ¿Â¼
-/java/
 /database/
+/download/
 **/logs/
 **/target/

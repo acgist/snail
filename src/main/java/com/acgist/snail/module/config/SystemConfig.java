@@ -23,6 +23,8 @@ public class SystemConfig {
 		LOGGER.info("初始化数据库配置");
 		PropertiesUtils propertiesUtils = PropertiesUtils.getInstance("/config/config.system.properties");
 		INSTANCE.name = propertiesUtils.getString("acgist.system.name");
+		INSTANCE.nameEn = propertiesUtils.getString("acgist.system.name.en");
+		INSTANCE.version = propertiesUtils.getString("acgist.system.version");
 		INSTANCE.author = propertiesUtils.getString("acgist.system.author");
 		INSTANCE.source = propertiesUtils.getString("acgist.system.source");
 		INSTANCE.support = propertiesUtils.getString("acgist.system.support");
@@ -31,6 +33,8 @@ public class SystemConfig {
 	}
 	
 	private String name;
+	private String nameEn;
+	private String version;
 	private String author;
 	private String source;
 	private String support;
@@ -39,6 +43,14 @@ public class SystemConfig {
 	
 	public static final String getName() {
 		return INSTANCE.name;
+	}
+	
+	public static final String getNameEn() {
+		return INSTANCE.nameEn;
+	}
+	
+	public static final String getVersion() {
+		return INSTANCE.version;
 	}
 
 	public static final String getAuthor() {

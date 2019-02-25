@@ -5,8 +5,13 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.DownloaderBuilder;
+import com.acgist.snail.module.exception.DownloadException;
+import com.acgist.snail.window.AlertWindow;
+import com.acgist.snail.window.main.TaskTableTimer;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -19,10 +24,12 @@ import javafx.stage.Stage;
 
 public class BuildController implements Initializable {
 	
+	private static final Logger LOGGER = LoggerFactory.getLogger(BuildController.class);
+	
 	@FXML
     private FlowPane root;
 	@FXML
-	private TextField pathValue;
+	private TextField urlValue;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -36,17 +43,29 @@ public class BuildController implements Initializable {
 		chooser.getExtensionFilters().add(new ExtensionFilter("种子文件", "*.torrent"));
 		File file = chooser.showOpenDialog(new Stage());
 		if (file != null) {
-			pathValue.setText(file.getPath());
+			urlValue.setText(file.getPath());
 		}
 	}
 
 	@FXML
 	public void handleBuildAction(ActionEvent event) {
-		String value = pathValue.getText();
-		if(StringUtils.isEmpty(value)) {
+		String url = urlValue.getText();
+		if(StringUtils.isEmpty(url)) {
 			return;
 		}
-		DownloaderBuilder.createBuilder(value).build();
+		boolean ok = true;
+		try {
+			DownloaderBuilder.newBuilder(url).build();
+		} catch (DownloadException e) {
+			ok = false;
+			LOGGER.error("新建下载任务异常：{}", url, e);
+			AlertWindow.warn("下载失败", e.getMessage());
+		}
+		if(ok) {
+			urlValue.setText("");
+			BuildWindow.getInstance().hide();
+			TaskTableTimer.getInstance().refreshTaskTable();
+		}
 	}
 
 	@FXML

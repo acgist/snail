@@ -1,13 +1,19 @@
 package com.acgist.snail.window.menu;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.pojo.wrapper.TaskWrapper;
+import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.window.main.MainController;
 
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 
 /**
  * 任务菜单
@@ -51,7 +57,32 @@ public class TaskMenu extends ContextMenu {
 		MenuItem openFolderMenu = new MenuItem("打开目录", new ImageView("/image/16/folder.png"));
 
 		startMenu.setOnAction((event) -> {
-			mainController.handleStartAction(event);
+			mainController.start();
+		});
+		
+		pauseMenu.setOnAction((event) -> {
+			mainController.pause();
+		});
+		
+		deleteMenu.setOnAction((event) -> {
+			mainController.delete();
+		});
+		
+		copyURLMenu.setOnAction((event) -> {
+			List<TaskWrapper> list = mainController.selected();
+			ClipboardContent content = new ClipboardContent();
+			list.forEach(wrapper -> {
+				content.putString(wrapper.getUrl());
+			});
+			Clipboard clipboard = Clipboard.getSystemClipboard();
+			clipboard.setContent(content);
+		});
+		
+		openFolderMenu.setOnAction((event) -> {
+			List<TaskWrapper> list = mainController.selected();
+			list.forEach(wrapper -> {
+				FileUtils.openInDesktop(wrapper.getFileFolder());
+			});
 		});
 		
 		this.getItems().add(startMenu);

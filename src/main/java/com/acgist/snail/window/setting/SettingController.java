@@ -1,15 +1,11 @@
 package com.acgist.snail.window.setting;
 
-import java.awt.Desktop;
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.module.config.DownloadConfig;
+import com.acgist.snail.utils.FileUtils;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -26,7 +22,7 @@ import javafx.util.StringConverter;
 
 public class SettingController implements Initializable {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(SettingController.class);
+//	private static final Logger LOGGER = LoggerFactory.getLogger(SettingController.class);
 
 	@FXML
     private FlowPane root;
@@ -97,11 +93,7 @@ public class SettingController implements Initializable {
 		pathValue.setCursor(Cursor.HAND);
 		pathValue.setOnMouseClicked((event) -> {
 			File open = new File(DownloadConfig.getDownloadPath());
-			try {
-				Desktop.getDesktop().open(open);
-			} catch (IOException e) {
-				LOGGER.error("打开系统目录异常", e);
-			}
+			FileUtils.openInDesktop(open);
 		});
 	}
 	

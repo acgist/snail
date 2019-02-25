@@ -2,9 +2,13 @@ package com.acgist.snail.window.main;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
+import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
+import com.acgist.snail.window.AlertWindow;
 import com.acgist.snail.window.about.AboutWindow;
 import com.acgist.snail.window.build.BuildWindow;
 import com.acgist.snail.window.menu.TaskMenu;
@@ -16,6 +20,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -69,14 +75,17 @@ public class MainController implements Initializable {
 	
 	@FXML
 	public void handleStartAction(ActionEvent event) {
+		this.start();
 	}
 	
 	@FXML
 	public void handlePauseAction(ActionEvent event) {
+		this.pause();
 	}
 	
 	@FXML
 	public void handleDeleteAction(ActionEvent event) {
+		this.delete();
 	}
 	
 	@FXML
@@ -155,17 +164,17 @@ public class MainController implements Initializable {
 	}
 	
 	/**
-		 * 设置列
-		 */
-		private void taskCell(TableColumn<TaskWrapper, String> column, Pos pos, boolean name) {
-			column.setCellFactory(new Callback<TableColumn<TaskWrapper, String>, TableCell<TaskWrapper, String>>() {
-				@Override
-				public TableCell<TaskWrapper, String> call(TableColumn<TaskWrapper, String> param) {
-					return new TaskCell(pos, name);
-	//				return new TextFieldTableCell<>();
-				}
-			});
-		}
+	 * 设置列
+	 */
+	private void taskCell(TableColumn<TaskWrapper, String> column, Pos pos, boolean name) {
+		column.setCellFactory(new Callback<TableColumn<TaskWrapper, String>, TableCell<TaskWrapper, String>>() {
+			@Override
+			public TableCell<TaskWrapper, String> call(TableColumn<TaskWrapper, String> param) {
+				return new TaskCell(pos, name);
+//				return new TextFieldTableCell<>();
+			}
+		});
+	}
 
 	/**
 	 * 初始控件
@@ -173,11 +182,10 @@ public class MainController implements Initializable {
 	private void initView() {
 		taskTable.prefWidthProperty().bind(root.widthProperty());
 		taskTable.prefHeightProperty().bind(root.prefHeightProperty().subtract(80D));
-		fooderButton.prefWidthProperty().bind(root.widthProperty().multiply(0.8D));
-		fooderStatus.prefWidthProperty().bind(root.widthProperty().multiply(0.2D));
+		fooderButton.prefWidthProperty().bind(root.widthProperty().multiply(0.5D));
+		fooderStatus.prefWidthProperty().bind(root.widthProperty().multiply(0.5D));
 		TaskTableTimer.getInstance().newTimer(this);
 	}
-	
 	
 	/**
 	 * 设置数据
@@ -190,4 +198,54 @@ public class MainController implements Initializable {
 		taskTable.setItems(obs);
 	}
 	
+	/**
+	 * 设置数据
+	 */
+	public void refresh() {
+		taskTable.refresh();
+	}
+	
+	/**
+	 * 获取被选中的信息
+	 */
+	public List<TaskWrapper> selected() {
+		return this.taskTable.getSelectionModel().getSelectedItems().stream().collect(Collectors.toList());
+	}
+
+	/**
+	 * 开始任务
+	 */
+	public void start() {
+		List<TaskWrapper> list = this.selected();
+		list.forEach(wrapper -> {
+			DownloaderManager.getInstance().start(wrapper);
+		});
+		TaskTableTimer.getInstance().refreshTaskData();
+	}
+	
+	/**
+	 * 暂停任务
+	 */
+	public void pause() {
+		List<TaskWrapper> list = this.selected();
+		list.forEach(wrapper -> {
+			DownloaderManager.getInstance().pause(wrapper);
+		});
+		TaskTableTimer.getInstance().refreshTaskData();
+	}
+	
+	/**
+	 * 删除任务
+	 */
+	public void delete() {
+		Optional<ButtonType> result = AlertWindow.build(AlertType.CONFIRMATION, "删除确认", "删除选中文件？");
+		if(result.get() == ButtonType.OK) {
+			List<TaskWrapper> list = this.selected();
+			list.forEach(wrapper -> {
+				DownloaderManager.getInstance().delete(wrapper);
+			});
+			TaskTableTimer.getInstance().refreshTaskTable();
+		}
+	}
+
 }
