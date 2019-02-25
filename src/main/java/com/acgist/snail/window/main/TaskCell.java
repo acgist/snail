@@ -26,15 +26,17 @@ public class TaskCell extends TableCell<TaskWrapper, String> {
 	@Override
 	public void updateItem(String value, boolean empty) {
 		super.updateItem(value, empty);
-		TaskWrapper task = this.getTableRow().getItem();
-		if(task != null) {
+		TaskWrapper wrapper = this.getTableRow().getItem();
+		if(wrapper != null) {
 			HBox box = new HBox();
 			Text name = new Text(value);
 			if(this.name) { // 名称：添加图标和手势
-				FileType fileType = task.getFileType();
-				ImageView icon = new ImageView("/image/32/" + fileType.getIcon());
 				name.setCursor(Cursor.HAND);
-				box.getChildren().add(icon);
+				FileType fileType = wrapper.getFileType();
+				if(fileType != null) {
+					ImageView icon = new ImageView("/image/32/" + fileType.getIcon());
+					box.getChildren().add(icon);
+				}
 			}
 			box.getChildren().add(name);
 			box.setAlignment(pos);

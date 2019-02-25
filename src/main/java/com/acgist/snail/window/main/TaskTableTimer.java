@@ -29,19 +29,11 @@ public class TaskTableTimer {
 		return INSTANCE;
 	}
 	
-	private Runnable taskTableUpdater = () -> {
-		try {
-			MainController controller = INSTANCE.controller;
-			controller.setTaskTable(DownloaderManager.getInstance().taskTable());
-		} catch (Exception e) {
-			LOGGER.error("任务列表刷新任务异常", e);
-		}
-	};
-
 	/**
 	 * 新建定时器
 	 */
 	public void newTimer(MainController controller) {
+		LOGGER.info("开始任务刷新定时器");
 		this.controller = controller;
 		this.executor = Executors.newScheduledThreadPool(1, new ThreadFactory() {
 			@Override
@@ -52,13 +44,41 @@ public class TaskTableTimer {
 				return thread;
 			}
 		});
-		this.executor.scheduleAtFixedRate(taskTableUpdater, 0, 4, TimeUnit.SECONDS);
+		refreshTaskTable();
+		this.executor.scheduleAtFixedRate(() -> {
+			refreshTaskData();
+		}, 0, 4, TimeUnit.SECONDS);
 	}
 
+	/**
+	 * 刷新任务页面
+	 */
+	public void refreshTaskTable() {
+		try {
+			MainController controller = INSTANCE.controller;
+			controller.setTaskTable(DownloaderManager.getInstance().taskTable());
+		} catch (Exception e) {
+			LOGGER.error("任务列表刷新任务异常", e);
+		}
+	}
+	
+	/**
+	 * 刷新任务信息
+	 */
+	public void refreshTaskData() {
+		try {
+			MainController controller = INSTANCE.controller;
+			controller.refresh();
+		} catch (Exception e) {
+			LOGGER.error("任务列表刷新任务异常", e);
+		}
+	}
+	
 	/**
 	 * 关闭定时器
 	 */
 	public void shutdown() {
+		LOGGER.info("关闭任务刷新定时器");
 		this.executor.shutdown();
 	}
 	

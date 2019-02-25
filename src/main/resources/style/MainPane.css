@@ -1,6 +1,9 @@
 .main{
 	-fx-font-size:16;
 }
+.tooltip {
+	-fx-background-radius:0;
+}
 .main .header {
 	-fx-padding:2;
 	-fx-pref-height:40;
@@ -14,6 +17,7 @@
 	-fx-alignment:center_left;
 }
 .main .fooder .fooderStatus {
+	-fx-font-size:14;
 	-fx-alignment:center_right;
 }
 .main Button {
@@ -21,8 +25,7 @@
 	-fx-background-radius:0;
 }
 .main Label {
-	-fx-padding:6 12;
-	-fx-font-size:14;
+	-fx-padding:0 2;
 }
 .main TableView HBox {
 	-fx-padding:4;

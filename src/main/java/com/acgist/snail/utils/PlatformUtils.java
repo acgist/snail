@@ -3,8 +3,10 @@ package com.acgist.snail.utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.module.client.launch.ApplicationNotifyClient;
 import com.acgist.snail.module.server.ApplicationServer;
+import com.acgist.snail.window.main.TaskTableTimer;
 import com.acgist.snail.window.menu.TrayMenu;
 
 import javafx.application.Platform;
@@ -21,8 +23,11 @@ public class PlatformUtils {
 	 */
 	public static final void exit() {
 		LOGGER.info("系统关闭中");
-		TrayMenu.exit();
+		TaskTableTimer.getInstance().shutdown();
+		ApplicationServer.getInstance().shutdown();
+		DownloaderManager.getInstance().shutdown();
 		Platform.exit();
+		TrayMenu.exit();
 		LOGGER.info("系统已关闭");
 	}
 	

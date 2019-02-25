@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.module.config.DownloadConfig;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
+import com.acgist.snail.repository.impl.TaskRepository;
 
 /**
  * 下载器执行器
@@ -36,7 +37,7 @@ public class DownloaderManager {
 	/**
 	 * 下载任务MAP
 	 */
-	private Map<String, IDownloader> DOWNLOADER_MAP;
+	private Map<String, IDownloader> DOWNLOADER_TASK_MAP;
 	
 	static {
 		INSTANCE.init();
@@ -47,7 +48,7 @@ public class DownloaderManager {
 		int downloadSize = DownloadConfig.getDownloadSize();
 		LOGGER.info("初始化下载线程池，初始大小：{}", downloadSize);
 		DOWNLOADER_EXECUTOR = Executors.newFixedThreadPool(downloadSize);
-		DOWNLOADER_MAP = new ConcurrentHashMap<>(downloadSize);
+		DOWNLOADER_TASK_MAP = new ConcurrentHashMap<>(downloadSize);
 	}
 	
 	/**
@@ -56,18 +57,59 @@ public class DownloaderManager {
 	public void submit(IDownloader downloader) {
 		LOGGER.info("开始任务：{}", downloader.name());
 		DOWNLOADER_EXECUTOR.submit(downloader);
-		DOWNLOADER_MAP.put(downloader.id(), downloader);
+		DOWNLOADER_TASK_MAP.put(downloader.id(), downloader);
+	}
+	
+	/**
+	 * 开始任务
+	 */
+	public void start(TaskWrapper wrapper) {
+		downloader(wrapper).start();
+	}
+	
+	/**
+	 * 暂停任务
+	 */
+	public void pause(TaskWrapper wrapper) {
+		downloader(wrapper).pause();
+	}
+	
+	/**
+	 * 删除任务
+	 */
+	public void delete(TaskWrapper wrapper) {
+		LOGGER.info("删除任务：{}", wrapper.getName());
+		downloader(wrapper).delete();
+		final String id = wrapper.getId();
+		TaskRepository repository = new TaskRepository();
+		repository.delete(id);
+		DOWNLOADER_TASK_MAP.remove(id);
 	}
 
 	/**
 	 * 获取下载任务
 	 */
+	private IDownloader downloader(TaskWrapper wrapper) {
+		return DOWNLOADER_TASK_MAP.get(wrapper.getId());
+	}
+	
+	/**
+	 * 获取下载任务
+	 */
 	public List<TaskWrapper> taskTable() {
-		return DownloaderManager.getInstance().DOWNLOADER_MAP
+		return DownloaderManager.getInstance().DOWNLOADER_TASK_MAP
 			.values()
 			.stream()
-			.map(IDownloader::task)
+			.map(IDownloader::taskWrapper)
 			.collect(Collectors.toList());
 	}
 
+	/**
+	 * 停止下载
+	 */
+	public void shutdown() {
+		LOGGER.info("关闭下载器管理");
+		DOWNLOADER_EXECUTOR.shutdown();
+	}
+	
 }

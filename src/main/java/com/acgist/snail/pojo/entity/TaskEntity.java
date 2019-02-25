@@ -44,7 +44,7 @@ public class TaskEntity extends BaseEntity {
 		
 		ftp,
 		http,
-		torremt;
+		torrent;
 		
 	}
 	

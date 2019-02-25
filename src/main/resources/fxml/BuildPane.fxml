@@ -20,9 +20,9 @@
 			</TextFlow>
 		</HBox>
 		
-		<HBox styleClass="pathValue">
+		<HBox styleClass="urlValue">
 			<TextFlow>
-				<TextField fx:id="pathValue" />
+				<TextField fx:id="urlValue" />
 			</TextFlow>
 			<Button fx:id="torrent" text="选择种子" onAction="#handleTorrentAction" />
 		</HBox>

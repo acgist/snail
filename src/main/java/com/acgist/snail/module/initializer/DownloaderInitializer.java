@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.DownloaderBuilder;
+import com.acgist.snail.module.exception.DownloadException;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.repository.impl.TaskRepository;
 
@@ -21,9 +22,12 @@ public class DownloaderInitializer extends Initializer {
 		TaskRepository repository = new TaskRepository();
 		List<TaskEntity> list = repository.findAll();
 		if(list != null && !list.isEmpty()) {
-			list.forEach(entity -> {
-				DownloaderBuilder builder = DownloaderBuilder.createBuilder(entity);
-				builder.build();
+			list.stream().map(DownloaderBuilder::newBuilder).forEach(builder -> {
+				try {
+					builder.build();
+				} catch (DownloadException e) {
+					LOGGER.error("新加下载任务异常", e);
+				}
 			});
 		}
 	}

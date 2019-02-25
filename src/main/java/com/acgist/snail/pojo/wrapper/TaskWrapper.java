@@ -1,5 +1,6 @@
 package com.acgist.snail.pojo.wrapper;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -31,6 +32,20 @@ public class TaskWrapper{
 
 	public void setEntity(TaskEntity entity) {
 		this.entity = entity;
+	}
+	
+	// 功能 //
+	
+	/**
+	 * 获取下载目录
+	 */
+	public File getFileFolder() {
+		File file = new File(this.getFile());
+		if(this.getType() == Type.torrent) {
+			return file;
+		} else {
+			return file.getParentFile();
+		}
 	}
 	
 	// Table 数据 //

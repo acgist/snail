@@ -48,7 +48,9 @@
 				-->
 				<TableColumn fx:id="createDate" text="开始时间" styleClass="createDate" />
 				<!--
-				完成时间：2019-01-01 12:10
+				完成时间：
+					下载中：剩余时间：2小时
+					完成：2019-01-01 12:10
 				-->
 				<TableColumn fx:id="endDate" text="完成时间" styleClass="endDate" />
 			</columns>
@@ -63,8 +65,23 @@
 				<Button fx:id="complete" text="下载完成" onAction="#handleCompleteAction" />
 			</HBox>
 			<HBox fx:id="fooderStatus" styleClass="fooderStatus">
-				<Label fx:id="speed" text="10" />
-				<Label fx:id="speed" text="200KB/S" />
+				<Label fx:id="downloadSize" text="10">
+					<tooltip>
+						<Tooltip text="下载任务数量" />
+					</tooltip>
+				</Label>
+				<Label text="↓" />
+				<Label fx:id="downloadBuffer" text="200KB/S">
+					<tooltip>
+						<Tooltip text="下载速度" />
+					</tooltip>
+				</Label>
+				<Label text="↑" />
+				<Label fx:id="shareBuffer" text="200KB/S">
+					<tooltip>
+						<Tooltip text="上传速度" />
+					</tooltip>
+				</Label>
 			</HBox>
 		</HBox>
 	</bottom>

@@ -3,6 +3,8 @@ package com.acgist.snail.module.config;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
 
 /**
  * 文件类型配置
@@ -68,6 +70,23 @@ public class FileTypeConfig {
 		));
 		TYPES.put(FileType.unknown, List.of(
 		));
+	}
+
+	/**
+	 * 获取文件类型
+	 */
+	public static final FileType type(String ext) {
+		Optional<Entry<FileType, List<String>>> optional = TYPES
+			.entrySet()
+			.stream()
+			.filter(entity -> {
+				return entity.getValue().stream().filter(value -> value.equals(ext)).count() > 0;
+			})
+			.findFirst();
+		if(optional.isPresent()) {
+			return optional.get().getKey();
+		}
+		return FileType.unknown;
 	}
 
 }

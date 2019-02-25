@@ -6,32 +6,12 @@ import com.acgist.snail.pojo.wrapper.TaskWrapper;
 
 public class HttpDownloader extends AbstractDownloader implements IDownloader {
 
-	public HttpDownloader(TaskWrapper task) {
-		super(task);
+	public HttpDownloader(TaskWrapper wrapper) {
+		super(wrapper);
 	}
 
 	@Override
 	public void run() {
-		
-	}
-
-	@Override
-	public String name() {
-		return null;
-	}
-
-	@Override
-	public void start() {
-		
-	}
-
-	@Override
-	public void pause() {
-		
-	}
-
-	@Override
-	public void delete() {
 		
 	}
 
