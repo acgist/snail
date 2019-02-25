@@ -1,7 +1,7 @@
 package com.acgist.snail.downloader;
 
 import com.acgist.snail.downloader.http.HttpDownloader;
-import com.acgist.snail.module.decoder.DownloadUrlDecoder;
+import com.acgist.snail.module.decoder.DownloaderUrlDecoder;
 import com.acgist.snail.module.exception.DownloadException;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
@@ -14,7 +14,7 @@ public class DownloaderBuilder {
 
 	private String url;
 	private TaskWrapper wrapper;
-	private DownloadUrlDecoder decoder;
+	private DownloaderUrlDecoder decoder;
 	
 	private DownloaderBuilder(String url) {
 		this.url = url;
@@ -46,7 +46,7 @@ public class DownloaderBuilder {
 	 * 解码器
 	 */
 	private void buildDecoder() {
-		this.decoder = DownloadUrlDecoder.newDecoder(this.url);
+		this.decoder = DownloaderUrlDecoder.newDecoder(this.url);
 	}
 	
 	/**

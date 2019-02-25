@@ -19,7 +19,7 @@ import com.acgist.snail.utils.FileUtils;
 /**
  * 下载地址转换
  */
-public class DownloadUrlDecoder {
+public class DownloaderUrlDecoder {
 
 	/**
 	 * 下载类型获取
@@ -34,7 +34,7 @@ public class DownloadUrlDecoder {
 			"http://.+", "https://.+"
 		));
 		TYPE.put(Type.torrent, List.of(
-			".+\\.torrent", "magnet:\\?xt=urn:btih:.+", "thunder://.+", "[a-zA-Z0-9]{40}"
+			".+\\.torrent", "magnet:\\?xt=urn:btih:.+", "[a-zA-Z0-9]{40}"
 		));
 	}
 	
@@ -47,12 +47,12 @@ public class DownloadUrlDecoder {
 	private String torrent;
 	private Integer size;
 	
-	private DownloadUrlDecoder(String url) {
+	private DownloaderUrlDecoder(String url) {
 		this.url = url;
 	}
 	
-	public static final DownloadUrlDecoder newDecoder(String url) {
-		return new DownloadUrlDecoder(url);
+	public static final DownloaderUrlDecoder newDecoder(String url) {
+		return new DownloaderUrlDecoder(url);
 	}
 	
 	/**
@@ -76,6 +76,7 @@ public class DownloadUrlDecoder {
 	 * 预处理
 	 */
 	private void pretreatment() throws DownloadException {
+		url();
 		type();
 		fileName();
 		fileType();
@@ -83,6 +84,16 @@ public class DownloadUrlDecoder {
 		name();
 		torrent();
 		size();
+	}
+
+	/**
+	 * url处理：去空格、格式转换
+	 */
+	private void url() {
+		this.url = this.url.trim();
+		if(ThunderDecoder.verify(this.url)) {
+			this.url = ThunderDecoder.decode(this.url);
+		}
 	}
 	
 	/**
@@ -165,6 +176,7 @@ public class DownloadUrlDecoder {
 	 * 种子文件
 	 */
 	private void torrent() {
+		
 	}
 	
 	/**
