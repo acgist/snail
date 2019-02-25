@@ -5,4 +5,6 @@ package com.acgist.snail.module.decoder;
  */
 public class MagnetDecoder {
 
+	
+	
 }
