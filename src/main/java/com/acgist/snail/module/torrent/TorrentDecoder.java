@@ -1,4 +1,4 @@
-package com.acgist.snail.module.decoder.torrent;
+package com.acgist.snail.module.torrent;
 
 import java.io.File;
 import java.io.FileInputStream;

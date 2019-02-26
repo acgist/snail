@@ -1,7 +1,7 @@
 package com.acgist.snail.module.exception;
 
 /**
- * 异常
+ * 数据库异常
  */
 public class RepositoryException extends RuntimeException {
 

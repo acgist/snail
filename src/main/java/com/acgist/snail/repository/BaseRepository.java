@@ -1,6 +1,5 @@
 package com.acgist.snail.repository;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Date;
@@ -205,8 +204,8 @@ public abstract class BaseRepository<T extends BaseEntity> {
 		Class<T> clazz = entityClazz();
 		try {
 			return clazz.getDeclaredConstructor().newInstance();
-		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-			LOGGER.error("反射获取实体异常", e);
+		} catch (Exception e) {
+			LOGGER.error("反射异常", e);
 		}
 		return null;
 	}
