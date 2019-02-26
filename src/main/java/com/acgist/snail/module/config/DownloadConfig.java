@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.module.exception.DownloadException;
 import com.acgist.snail.pojo.entity.ConfigEntity;
 import com.acgist.snail.repository.impl.ConfigRepository;
 import com.acgist.snail.utils.FileUtils;
@@ -125,6 +126,13 @@ public class DownloadConfig {
 	
 	public static final String getDownloadPath() {
 		return FileUtils.folderPath(INSTANCE.downloadPath);
+	}
+	
+	public static final String getDownloadPath(String fileName) throws DownloadException {
+		if(StringUtils.isEmpty(fileName)) {
+			throw new DownloadException("无效的下载路径：" + fileName);
+		}
+		return getDownloadPath() + "/" + fileName;
 	}
 	
 	public static final void setDownloadSize(Integer downloadSize) {

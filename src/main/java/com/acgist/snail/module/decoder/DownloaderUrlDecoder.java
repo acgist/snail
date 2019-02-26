@@ -151,9 +151,8 @@ public class DownloaderUrlDecoder {
 	/**
 	 * 设置下载文件地址
 	 */
-	private void file() {
-		String downloadPath = DownloadConfig.getDownloadPath();
-		this.file = downloadPath + "/" + this.fileName;
+	private void file() throws DownloadException {
+		this.file = DownloadConfig.getDownloadPath(this.fileName);
 	}
 	
 	/**

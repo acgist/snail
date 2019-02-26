@@ -2,7 +2,9 @@ package com.acgist.snail.utils;
 
 import java.awt.Desktop;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
@@ -92,11 +94,9 @@ public class FileUtils {
 			.method("HEAD", BodyPublishers.noBody())
 			.build();
 		Optional<String> header = null;
-		try {
-			HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+		HttpResponse<String> response = HttpUtils.request(client, request, BodyHandlers.ofString());
+		if(HttpUtils.ok(response)) {
 			header = response.headers().firstValue(CONTENT_DISPOSITION);
-		} catch (IOException | InterruptedException e) {
-			LOGGER.error("HTTP请求异常", e);
 		}
 		if(header != null && header.isPresent()) {
 			String fileName = header.get();
@@ -152,6 +152,17 @@ public class FileUtils {
 			Desktop.getDesktop().open(file);
 		} catch (IOException e) {
 			LOGGER.error("打开系统目录异常", e);
+		}
+	}
+
+	/**
+	 * 文件写入
+	 */
+	public static final void write(String filePath, byte[] bytes) {
+		try(OutputStream output = new FileOutputStream(new File(filePath))) {
+			output.write(bytes);
+		} catch (IOException e) {
+			LOGGER.error("文件写入异常", e);
 		}
 	}
 	
