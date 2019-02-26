@@ -1,4 +1,4 @@
-package com.acgist.snail.module.torrent;
+package com.acgist.snail.module.decoder.torrent;
 
 import java.util.Arrays;
 import java.util.List;
@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * 磁力链接信息
+ * 种子信息
  */
 public class TorrentInfo {
 	
@@ -41,10 +41,7 @@ public class TorrentInfo {
 	private String announce;
 	private Long creationDate;
 	private List<String> announceList;
-	private Info info;
-
-	public TorrentInfo() {
-	}
+	private TorrentFileInfo info;
 
 	public static final List<String> infoKeys() {
 		return INFO_KEYS;
@@ -90,11 +87,11 @@ public class TorrentInfo {
 		this.announceList = announceList;
 	}
 
-	public Info getInfo() {
+	public TorrentFileInfo getInfo() {
 		return info;
 	}
 
-	public void setInfo(Info info) {
+	public void setInfo(TorrentFileInfo info) {
 		this.info = info;
 	}
 
@@ -102,9 +99,53 @@ public class TorrentInfo {
 		if (!INFO_KEYS.contains(key)) {
 			LOGGER.error("不存在的种子KEY：{}", key);
 		} else {
+			TorrentFile file = null;
+			List<TorrentFile> files = null;
+			if(this.getInfo() != null) {
+				files = this.getInfo().getFiles();
+			}
 			switch (key) {
+				case "name":
+					this.getInfo().setName(value.toString());
+					break;
+				case "path":
+					file = files.get(files.size() - 1);
+					file.getPath().add(value.toString());
+					break;
+				case "pieces":
+					if (StringUtils.isNumeric(value.toString())) {
+						this.getInfo().setPieces(null);
+					} else {
+						this.getInfo().setPieces((byte[]) value);
+					}
+					break;
+				case "length":
+					if (files != null) {
+						file = files.get(files.size() - 1);
+						file.setLength(Long.parseLong(value.toString()));
+					} else {
+						this.getInfo().setLength(Long.parseLong(value.toString()));
+					}
+					break;
+				case "md5sum":
+					if (files != null) {
+						file = files.get(files.size() - 1);
+						file.setMd5sum(value.toString());
+					} else {
+						this.getInfo().setMd5sum(value.toString());
+					}
+					break;
+				case "comment":
+					this.setComment(value.toString());
+					break;
 				case "announce":
 					this.setAnnounce(value.toString());
+					break;
+				case "created by":
+					this.setCreateBy(value.toString());
+					break;
+				case "piece length":
+					this.getInfo().setPiecesLength(Long.parseLong(value.toString()));
 					break;
 				case "announce-list":
 					this.getAnnounceList().add(value.toString());
@@ -115,48 +156,6 @@ public class TorrentInfo {
 					} else {
 						this.setCreationDate(0L);
 					}
-					break;
-				case "comment":
-					this.setComment(value.toString());
-					break;
-				case "created by":
-					this.setCreateBy(value.toString());
-					break;
-				case "length":
-					List<Files> filesList1 = this.getInfo().getFiles();
-					if (filesList1 != null) {
-						Files files = this.getInfo().getFiles().get(filesList1.size() - 1);
-						files.setLength(Long.parseLong(value.toString()));
-					} else {
-						this.getInfo().setLength(Long.parseLong(value.toString()));
-					}
-					break;
-				case "md5sum":
-					List<Files> filesList2 = this.getInfo().getFiles();
-					if (filesList2 != null) {
-						Files files = this.getInfo().getFiles().get(filesList2.size() - 1);
-						files.setMd5sum(value.toString());
-					} else {
-						this.getInfo().setMd5sum(value.toString());
-					}
-					break;
-				case "name":
-					this.getInfo().setName(value.toString());
-					break;
-				case "piece length":
-					this.getInfo().setPiecesLength(Long.parseLong(value.toString()));
-					break;
-				case "pieces":
-					if (StringUtils.isNumeric(value.toString())) {
-						this.getInfo().setPieces(null);
-					} else {
-						this.getInfo().setPieces((byte[]) value);
-					}
-					break;
-				case "path":
-					List<Files> filesList3 = this.getInfo().getFiles();
-					Files files3 = filesList3.get(filesList3.size() - 1);
-					files3.getPath().add(value.toString());
 					break;
 			}
 		}

@@ -1,28 +1,18 @@
-package com.acgist.snail.module.torrent;
+package com.acgist.snail.module.decoder.torrent;
 
 import java.util.List;
 
-public class Info {
+/**
+ * 文件列表信息
+ */
+public class TorrentFileInfo {
 
 	private String name;
 	private byte[] pieces;
 	private long piecesLength;
 	private long length;
 	private String md5sum;
-	private List<Files> files;
-
-	public Info() {
-	}
-
-	public Info(String name, byte[] pieces, long piecesLength, long length, String md5sum, List<Files> files) {
-		super();
-		this.name = name;
-		this.pieces = pieces;
-		this.piecesLength = piecesLength;
-		this.length = length;
-		this.md5sum = md5sum;
-		this.files = files;
-	}
+	private List<TorrentFile> files;
 
 	public String getName() {
 		return name;
@@ -64,11 +54,12 @@ public class Info {
 		this.md5sum = md5sum;
 	}
 
-	public List<Files> getFiles() {
+	public List<TorrentFile> getFiles() {
 		return files;
 	}
 
-	public void setFiles(List<Files> files) {
+	public void setFiles(List<TorrentFile> files) {
 		this.files = files;
 	}
+
 }

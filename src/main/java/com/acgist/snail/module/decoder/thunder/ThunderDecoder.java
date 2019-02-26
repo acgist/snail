@@ -1,4 +1,4 @@
-package com.acgist.snail.module.decoder;
+package com.acgist.snail.module.decoder.thunder;
 
 import java.util.Base64;
 
@@ -26,5 +26,5 @@ public class ThunderDecoder {
 		String newUrl = new String(Base64.getDecoder().decode(url));
 		return newUrl.substring(2, newUrl.length() - 2);
 	}
-	
+
 }
