@@ -8,7 +8,6 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +16,7 @@ import com.acgist.snail.module.exception.DownloadException;
 import com.acgist.snail.module.magnet.impl.BtbttvMagnetDecoder;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.HttpUtils;
+import com.acgist.snail.utils.StringUtils;
 
 /**
  * 磁力链接解码
@@ -28,7 +28,7 @@ public abstract class MagnetDecoder {
 	private static final  List<MagnetDecoder> DECODERS = new ArrayList<>();
 	
 	private static final String HASH_REGEX = "[a-zA-Z0-9]{40}";
-	private static final String MAGNET_HEADER = "magnet:?xt=urn:btih:";
+	private static final String MAGNET_PREFIX = "magnet:?xt=urn:btih:";
 	
 	protected String hash;
 	protected String magnet;
@@ -78,7 +78,7 @@ public abstract class MagnetDecoder {
 	private void init(String url) throws DownloadException {
 		if(verifyMagnet(url)) {
 			this.magnet = url;
-			String hash = url.substring(MAGNET_HEADER.length());
+			String hash = url.substring(MAGNET_PREFIX.length());
 			int index = hash.indexOf("?");
 			if(index != -1) {
 				hash = hash.substring(0, index);
@@ -86,7 +86,7 @@ public abstract class MagnetDecoder {
 			this.hash = hash;
 		} else if(verifyHash(url)) {
 			this.hash = url;
-			this.magnet = MAGNET_HEADER + this.hash;
+			this.magnet = MAGNET_PREFIX + this.hash;
 		} else {
 			throw new DownloadException("不支持的磁力链接：" + url);
 		}
@@ -124,7 +124,7 @@ public abstract class MagnetDecoder {
 	}
 	
 	public static final boolean verifyMagnet(String url) {
-		return StringUtils.startsWith(url, MAGNET_HEADER);
+		return StringUtils.startsWith(url, MAGNET_PREFIX);
 	}
 	
 	public static final boolean verifyHash(String url) {

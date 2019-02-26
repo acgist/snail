@@ -3,9 +3,10 @@ package com.acgist.snail.module.torrent;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.acgist.snail.utils.StringUtils;
 
 /**
  * 磁力链接信息

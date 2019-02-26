@@ -26,8 +26,8 @@ public class TorrentDecoder {
 		TorrentInfo info = new TorrentInfo();
 		StringBuilder builder = new StringBuilder();
 		while ((index = input.read()) != -1) {
-			char tmp = (char) index;
-			switch (tmp) {
+			char indexChar = (char) index;
+			switch (indexChar) {
 				case 'i':
 					StringBuilder iBuilder = new StringBuilder();
 					char iTmp;
@@ -46,55 +46,55 @@ public class TorrentDecoder {
 				case '7':
 				case '8':
 				case '9':
-					builder.append(tmp);
+					builder.append(indexChar);
 					break;
 				case ':':
-					int strLen = Integer.parseInt(builder.toString());
-					builder = new StringBuilder();
-					byte[] tempBytes = new byte[strLen];
-					input.read(tempBytes);
+					int tmpLength = Integer.parseInt(builder.toString());
+					builder.setLength(0);
+					byte[] bytes = new byte[tmpLength];
+					input.read(bytes);
 					if (key != null && key.equals("pieces")) {
-						info.setValue(key, tempBytes);
+						info.setValue(key, bytes);
 					} else {
-						String tempStr = new String(tempBytes);
-						if (TorrentInfo.infoKeys().contains(tempStr)) {
-							key = tempStr;
-							if (tempStr.equals("announce-list")) {
+						String tmpKey = new String(bytes);
+						if (TorrentInfo.infoKeys().contains(tmpKey)) {
+							key = tmpKey;
+							if (tmpKey.equals("announce-list")) {
 								info.setAnnounceList(new LinkedList<String>());
-							} else if (tempStr.equals("info")) {
+							} else if (tmpKey.equals("info")) {
 								info.setInfo(new Info());
-							} else if (tempStr.equals("files")) {
+							} else if (tmpKey.equals("files")) {
 								info.getInfo().setFiles(new LinkedList<Files>());
 								info.getInfo().getFiles().add(new Files());
-							} else if (tempStr.equals("length")) {
-								List<Files> tempFiles = info.getInfo().getFiles();
-								if (tempFiles != null) {
-									if (tempFiles.isEmpty() || tempFiles.get(tempFiles.size() - 1).getLength() != 0) {
-										tempFiles.add(new Files());
+							} else if (tmpKey.equals("length")) {
+								List<Files> tmpFiles = info.getInfo().getFiles();
+								if (tmpFiles != null) {
+									if (tmpFiles.isEmpty() || tmpFiles.get(tmpFiles.size() - 1).getLength() != 0) {
+										tmpFiles.add(new Files());
 									}
 								}
-							} else if (tempStr.equals("md5sum")) {
+							} else if (tmpKey.equals("md5sum")) {
 								List<Files> tempFiles = info.getInfo().getFiles();
 								if (tempFiles != null) {
 									if (tempFiles.isEmpty() || tempFiles.get(tempFiles.size() - 1).getMd5sum() != null) {
 										tempFiles.add(new Files());
 									}
 								}
-							} else if (tempStr.equals("path")) {
-								List<Files> tempFilesList = info.getInfo().getFiles();
-								if (tempFilesList.isEmpty()) {
+							} else if (tmpKey.equals("path")) {
+								List<Files> tmpFiles = info.getInfo().getFiles();
+								if (tmpFiles.isEmpty()) {
 									Files files = new Files();
 									files.setPath(new LinkedList<String>());
-									tempFilesList.add(files);
+									tmpFiles.add(files);
 								} else {
-									Files files = tempFilesList.get(tempFilesList.size() - 1);
+									Files files = tmpFiles.get(tmpFiles.size() - 1);
 									if (files.getPath() == null) {
 										files.setPath(new LinkedList<String>());
 									}
 								}
 							}
 						} else {
-							info.setValue(key, tempStr);
+							info.setValue(key, tmpKey);
 						}
 					}
 					break;
@@ -110,11 +110,11 @@ public class TorrentDecoder {
 		Info it = info.getInfo();
 		System.out.println("信息:" + it.getName() + "\t" + it.getPiecesLength() + "\t" + it.getLength() + "\t"
 			+ it.getMd5sum() + "\t" + it.getPieces());
-//		if (info.getAnnounceList().size() > 0) {
-//			for (String str : info.getAnnounceList()) {
-//				System.out.println("信息2:" + str);
-//			}
-//		}
+		if (info.getAnnounceList().size() > 0) {
+			for (String str : info.getAnnounceList()) {
+				System.out.println("信息2:" + str);
+			}
+		}
 //		if (it.getFiles().size() > 0) {
 //			for (Files file : it.getFiles()) {
 //				System.out.println("信息3:" + file.getLength() + "\t" + file.getMd5sum());

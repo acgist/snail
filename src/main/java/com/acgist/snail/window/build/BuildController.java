@@ -4,12 +4,12 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.DownloaderBuilder;
 import com.acgist.snail.module.exception.DownloadException;
+import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.window.AlertWindow;
 import com.acgist.snail.window.main.TaskTableTimer;
 

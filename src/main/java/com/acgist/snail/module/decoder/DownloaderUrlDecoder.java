@@ -33,6 +33,9 @@ public class DownloaderUrlDecoder {
 		TYPE.put(Type.http, List.of(
 			"http://.+", "https://.+"
 		));
+		TYPE.put(Type.ed2k, List.of(
+			"ed2k://\\|file\\|.+"
+		));
 		TYPE.put(Type.torrent, List.of(
 			".+\\.torrent", "magnet:\\?xt=urn:btih:.+", "[a-zA-Z0-9]{40}"
 		));
@@ -120,7 +123,7 @@ public class DownloaderUrlDecoder {
 	 * 	http：文件名
 	 * 	torrent：任务名
 	 */
-	private void fileName() {
+	private void fileName() throws DownloadException {
 		String url = this.url;
 		String fileName = null;
 		switch (this.type) {
@@ -130,6 +133,8 @@ public class DownloaderUrlDecoder {
 			case http:
 				fileName = FileUtils.fileNameFromHttp(url);
 				break;
+			case ed2k:
+				throw new DownloadException("暂时不支持的协议");
 			case torrent:
 				break;
 		}

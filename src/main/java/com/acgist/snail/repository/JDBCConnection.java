@@ -9,12 +9,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.module.config.DatabaseConfig;
 import com.acgist.snail.pojo.wrapper.ResultSetWrapper;
+import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.EntityUtils;
 
 /**
@@ -81,7 +81,7 @@ public class JDBCConnection {
 		PreparedStatement statement = null;
 		try {
 			statement = connection.prepareStatement(sql);
-			if(ArrayUtils.isNotEmpty(parameters)) {
+			if(CollectionUtils.isNotEmpty(parameters)) {
 				for (int index = 0; index < parameters.length; index++) {
 					statement.setObject(index + 1, EntityUtils.pack(parameters[index]));
 				}
@@ -105,7 +105,7 @@ public class JDBCConnection {
 		PreparedStatement statement = null;
 		try {
 			statement = connection.prepareStatement(sql);
-			if(ArrayUtils.isNotEmpty(parameters)) {
+			if(CollectionUtils.isNotEmpty(parameters)) {
 				for (int index = 0; index < parameters.length; index++) {
 					statement.setObject(index + 1, EntityUtils.pack(parameters[index]));
 				}
