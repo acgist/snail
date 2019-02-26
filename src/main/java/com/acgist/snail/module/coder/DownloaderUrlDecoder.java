@@ -1,4 +1,4 @@
-package com.acgist.snail.module.decoder;
+package com.acgist.snail.module.coder;
 
 import java.util.HashMap;
 import java.util.List;
@@ -8,9 +8,9 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.acgist.snail.module.coder.thunder.ThunderDecoder;
 import com.acgist.snail.module.config.DownloadConfig;
 import com.acgist.snail.module.config.FileTypeConfig.FileType;
-import com.acgist.snail.module.decoder.thunder.ThunderDecoder;
 import com.acgist.snail.module.exception.DownloadException;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
@@ -94,10 +94,11 @@ public class DownloaderUrlDecoder {
 	 * url处理：去空格、格式转换
 	 */
 	private void url() {
-		this.url = this.url.trim();
-		if(ThunderDecoder.verify(this.url)) {
-			this.url = ThunderDecoder.decode(this.url);
+		String url = this.url.trim();
+		if(ThunderDecoder.verify(url)) {
+			url = ThunderDecoder.decode(url);
 		}
+		this.url = url;
 	}
 	
 	/**

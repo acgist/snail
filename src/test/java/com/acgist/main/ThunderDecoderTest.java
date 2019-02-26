@@ -2,7 +2,7 @@ package com.acgist.main;
 
 import org.junit.Test;
 
-import com.acgist.snail.module.decoder.thunder.ThunderDecoder;
+import com.acgist.snail.module.coder.thunder.ThunderDecoder;
 
 public class ThunderDecoderTest {
 
