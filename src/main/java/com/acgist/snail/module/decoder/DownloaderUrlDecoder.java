@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 
 import com.acgist.snail.module.config.DownloadConfig;
 import com.acgist.snail.module.config.FileTypeConfig.FileType;
+import com.acgist.snail.module.decoder.thunder.ThunderDecoder;
 import com.acgist.snail.module.exception.DownloadException;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
