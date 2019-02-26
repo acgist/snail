@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.module.exception.RepositoryException;
 import com.acgist.snail.pojo.entity.BaseEntity;
 import com.acgist.snail.pojo.wrapper.ResultSetWrapper;
+import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.EntityUtils;
 import com.acgist.snail.utils.JSONUtils;
 
@@ -220,7 +221,7 @@ public abstract class BaseRepository<T extends BaseEntity> {
 		Type superClazz = this.getClass().getGenericSuperclass();
 		if (superClazz instanceof ParameterizedType) {
 			Type[] types = ((ParameterizedType) superClazz).getActualTypeArguments();
-			if (types != null && types.length > 0) {
+			if (CollectionUtils.isNotEmpty(types)) {
 				entitiClazz = (Class<T>) types[0];
 			}
 		}

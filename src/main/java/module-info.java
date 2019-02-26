@@ -47,7 +47,6 @@ open module snail {
 	 */
 	requires transitive h2;
 	requires transitive slf4j.api;
-	requires transitive org.apache.commons.lang3;
 	requires transitive com.fasterxml.jackson.core;
 	requires transitive com.fasterxml.jackson.databind;
 	requires transitive com.fasterxml.jackson.annotation;

@@ -1,6 +1,5 @@
 package com.acgist.snail.module.config;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,6 +8,7 @@ import com.acgist.snail.pojo.entity.ConfigEntity;
 import com.acgist.snail.repository.impl.ConfigRepository;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.PropertiesUtils;
+import com.acgist.snail.utils.StringUtils;
 
 /**
  * 默认从配置文件加载，如果数据有配置则使用数据库配置替换

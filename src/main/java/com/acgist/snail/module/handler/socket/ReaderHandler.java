@@ -4,13 +4,13 @@ import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.module.handler.message.ClientMessageHandler;
 import com.acgist.snail.pojo.message.ClientMessage;
 import com.acgist.snail.utils.AioUtils;
+import com.acgist.snail.utils.StringUtils;
 
 /**
  * 消息读取

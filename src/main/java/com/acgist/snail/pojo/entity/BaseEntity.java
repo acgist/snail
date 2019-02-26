@@ -3,9 +3,6 @@ package com.acgist.snail.pojo.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import com.acgist.snail.utils.JSONUtils;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -102,9 +99,7 @@ public class BaseEntity implements Serializable {
 			return false;
 		}
 		BaseEntity other = (BaseEntity) obj;
-		return new EqualsBuilder()
-			.append(getId(), other.getId())
-			.isEquals();
+		return getId().equals(other.getId());
 	}
 
 	/**
@@ -112,9 +107,7 @@ public class BaseEntity implements Serializable {
 	 */
 	@Override
 	public int hashCode() {
-		return new HashCodeBuilder(17, 37)
-			.append(getId())
-			.toHashCode();
+		return getId().hashCode();
 	}
 	
 	@Override
