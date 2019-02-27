@@ -32,6 +32,9 @@ public class TorrentDecoder {
 
 	/**
 	 * B编码：http://blog.sina.com.cn/s/blog_ec8c9eae0102wa9p.html
+	 * i e：long
+	 * l e：list
+	 * d e：map
 	 */
 	private TorrentInfo decode(InputStream input) throws NumberFormatException, IOException, Exception {
 		int index;
@@ -43,11 +46,14 @@ public class TorrentDecoder {
 			switch (indexChar) {
 				case 'i':
 					char tmpChar;
-					StringBuilder iBuilder = new StringBuilder();
+					StringBuilder tmpBuilder = new StringBuilder();
 					while ((tmpChar = (char) input.read()) != 'e') {
-						iBuilder.append(tmpChar);
+						tmpBuilder.append(tmpChar);
 					}
-					info.setValue(key, iBuilder.toString());
+					info.setValue(key, tmpBuilder.toString());
+					break;
+				case 'l':
+				case 'd':
 					break;
 				case '0':
 				case '1':
@@ -62,9 +68,9 @@ public class TorrentDecoder {
 					lengthBuilder.append(indexChar);
 					break;
 				case ':':
-					int tmpLength = Integer.parseInt(lengthBuilder.toString());
+					int valueLength = Integer.parseInt(lengthBuilder.toString());
 					lengthBuilder.setLength(0);
-					byte[] bytes = new byte[tmpLength];
+					byte[] bytes = new byte[valueLength];
 					input.read(bytes);
 					String tmpValue = new String(bytes);
 					if (TorrentInfo.infoKeys().contains(tmpValue)) { // 初始化
@@ -74,7 +80,7 @@ public class TorrentDecoder {
 						} else if (tmpValue.equals("files")) {
 							info.getInfo().getFiles().add(new TorrentFile());
 						} else if (tmpValue.equals("length")) {
-							if (info.hashFiles() && info.lastTorrentFile().getLength() != 0) {
+							if (info.hasFiles() && info.lastTorrentFile().getLength() != 0) {
 								info.getInfo().getFiles().add(new TorrentFile());
 							}
 						}

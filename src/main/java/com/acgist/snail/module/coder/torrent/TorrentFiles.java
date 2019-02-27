@@ -3,6 +3,8 @@ package com.acgist.snail.module.coder.torrent;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.acgist.snail.utils.StringUtils;
+
 /**
  * 文件列表信息：单文件没有files
  */
@@ -13,7 +15,7 @@ public class TorrentFiles {
 	private long length; // 大小
 	private byte[] ed2k; // ed2k
 	private byte[] filehash; // 文件hash
-	private byte[] pieces; // 特征信息
+	private byte[] pieces; // 特征信息：每个piece的hash值占用20个字节
 	private String publisher; // 发布者
 	private String publisherUtf8; // 发布者UTF8
 	private String publisherUrl; // 发布者URL
@@ -49,6 +51,10 @@ public class TorrentFiles {
 		return ed2k;
 	}
 
+	public String getEd2kHex() {
+		return StringUtils.hex(ed2k);
+	}
+	
 	public void setEd2k(byte[] ed2k) {
 		this.ed2k = ed2k;
 	}
@@ -56,11 +62,15 @@ public class TorrentFiles {
 	public byte[] getFilehash() {
 		return filehash;
 	}
+	
+	public String getFilehashHex() {
+		return StringUtils.hex(filehash);
+	}
 
 	public void setFilehash(byte[] filehash) {
 		this.filehash = filehash;
 	}
-
+	
 	public byte[] getPieces() {
 		return pieces;
 	}
