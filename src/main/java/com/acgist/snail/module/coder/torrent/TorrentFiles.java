@@ -12,7 +12,7 @@ public class TorrentFiles {
 
 	private String name; // 名称
 	private String nameUtf8; // 名称：utf8
-	private long length; // 大小
+	private Long length; // 大小
 	private byte[] ed2k; // ed2k
 	private byte[] filehash; // 文件hash
 	private byte[] pieces; // 特征信息：每个piece的hash值占用20个字节
@@ -20,7 +20,7 @@ public class TorrentFiles {
 	private String publisherUtf8; // 发布者UTF8
 	private String publisherUrl; // 发布者URL
 	private String publisherUrlUtf8; // 发布者URL UTF8
-	private long pieceLength; // 块大小
+	private Long pieceLength; // 块大小
 	private List<TorrentFile> files = new ArrayList<>(); // 多文件时存在
 
 	public String getName() {
@@ -39,11 +39,11 @@ public class TorrentFiles {
 		this.nameUtf8 = nameUtf8;
 	}
 
-	public long getLength() {
+	public Long getLength() {
 		return length;
 	}
 
-	public void setLength(long length) {
+	public void setLength(Long length) {
 		this.length = length;
 	}
 
@@ -111,11 +111,11 @@ public class TorrentFiles {
 		this.publisherUrlUtf8 = publisherUrlUtf8;
 	}
 
-	public long getPieceLength() {
+	public Long getPieceLength() {
 		return pieceLength;
 	}
 
-	public void setPieceLength(long pieceLength) {
+	public void setPieceLength(Long pieceLength) {
 		this.pieceLength = pieceLength;
 	}
 

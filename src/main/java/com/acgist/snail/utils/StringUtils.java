@@ -1,10 +1,18 @@
 package com.acgist.snail.utils;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * 字符串工具
  */
 public class StringUtils {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(StringUtils.class);
+	
 	private static final String NUMERIC_REGEX = "[0-9]+";
 	
 	/**
@@ -85,6 +93,20 @@ public class StringUtils {
 			jndex++;
 		}
 		return result;
+	}
+
+	/**
+	 * SHA1
+	 */
+	public static final String sha1(byte[] bytes) {
+		try {
+			MessageDigest digest = MessageDigest.getInstance("SHA1");
+			digest.update(bytes);
+			return StringUtils.hex(digest.digest());
+		} catch (NoSuchAlgorithmException e) {
+			LOGGER.error("SHA1计算异常", e);
+		}
+		return null;
 	}
 	
 }
