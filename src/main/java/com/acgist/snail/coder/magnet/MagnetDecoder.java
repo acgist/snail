@@ -1,4 +1,4 @@
-package com.acgist.snail.module.coder.magnet;
+package com.acgist.snail.coder.magnet;
 
 import java.io.File;
 import java.net.http.HttpClient;
@@ -11,7 +11,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.module.coder.magnet.impl.BtbttvMagnetDecoder;
+import com.acgist.snail.coder.magnet.impl.BtbttvMagnetDecoder;
 import com.acgist.snail.module.config.DownloadConfig;
 import com.acgist.snail.module.exception.DownloadException;
 import com.acgist.snail.utils.FileUtils;

@@ -1,7 +1,7 @@
 package com.acgist.snail.pojo.wrapper;
 
-import com.acgist.snail.module.coder.torrent.TorrentFiles;
-import com.acgist.snail.module.coder.torrent.TorrentInfo;
+import com.acgist.snail.coder.torrent.TorrentFiles;
+import com.acgist.snail.coder.torrent.TorrentInfo;
 import com.acgist.snail.utils.StringUtils;
 
 /**

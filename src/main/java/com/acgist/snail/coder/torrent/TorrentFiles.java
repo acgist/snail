@@ -1,4 +1,4 @@
-package com.acgist.snail.module.coder.torrent;
+package com.acgist.snail.coder.torrent;
 
 import java.util.ArrayList;
 import java.util.List;
