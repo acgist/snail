@@ -1,10 +1,10 @@
-package com.acgist.snail.module.coder.magnet.impl;
+package com.acgist.snail.coder.magnet.impl;
 
 import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.Builder;
 import java.util.Map;
 
-import com.acgist.snail.module.coder.magnet.MagnetDecoder;
+import com.acgist.snail.coder.magnet.MagnetDecoder;
 import com.acgist.snail.utils.HttpUtils;
 
 /**

@@ -4,8 +4,8 @@ import java.util.Date;
 
 import org.junit.Test;
 
-import com.acgist.snail.module.coder.torrent.TorrentDecoder;
-import com.acgist.snail.module.coder.torrent.TorrentInfo;
+import com.acgist.snail.coder.torrent.TorrentDecoder;
+import com.acgist.snail.coder.torrent.TorrentInfo;
 import com.acgist.snail.utils.JSONUtils;
 
 public class TorrentDecoderTest {

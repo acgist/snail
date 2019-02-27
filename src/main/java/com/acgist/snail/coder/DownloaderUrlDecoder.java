@@ -1,4 +1,4 @@
-package com.acgist.snail.module.coder;
+package com.acgist.snail.coder;
 
 import java.io.File;
 import java.util.HashMap;
@@ -9,9 +9,9 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.acgist.snail.module.coder.magnet.MagnetDecoder;
-import com.acgist.snail.module.coder.thunder.ThunderDecoder;
-import com.acgist.snail.module.coder.torrent.TorrentDecoder;
+import com.acgist.snail.coder.magnet.MagnetDecoder;
+import com.acgist.snail.coder.thunder.ThunderDecoder;
+import com.acgist.snail.coder.torrent.TorrentDecoder;
 import com.acgist.snail.module.config.DownloadConfig;
 import com.acgist.snail.module.config.FileTypeConfig.FileType;
 import com.acgist.snail.module.exception.DownloadException;

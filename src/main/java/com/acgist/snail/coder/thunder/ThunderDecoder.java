@@ -1,4 +1,4 @@
-package com.acgist.snail.module.coder.thunder;
+package com.acgist.snail.coder.thunder;
 
 import java.util.Base64;
 

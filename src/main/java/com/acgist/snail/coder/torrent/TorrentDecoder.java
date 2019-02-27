@@ -1,4 +1,4 @@
-package com.acgist.snail.module.coder.torrent;
+package com.acgist.snail.coder.torrent;
 
 import java.io.FileInputStream;
 import java.io.IOException;
