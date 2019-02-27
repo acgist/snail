@@ -2,7 +2,9 @@ package com.acgist.snail.module.coder.torrent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +52,6 @@ public class TorrentInfo {
 		INFO_KEYS = Arrays.asList(keys);
 	}
 
-	private String nodes; // DHT协议：暂时不处理
 	private String comment; // 注释
 	private String commentUtf8; // 注释UTF8
 	private String encoding; // 编码
@@ -58,18 +59,11 @@ public class TorrentInfo {
 	private String announce; // Tracker主服务器
 	private Long creationDate; // 创建时间
 	private List<String> announceList = new ArrayList<>(); // Tracker服务器列表
+	private Map<String, Long> nodes = new LinkedHashMap<>(); // DHT协议：暂时不处理
 	private TorrentFiles info; // 文件信息
-
+	
 	public static final List<String> infoKeys() {
 		return INFO_KEYS;
-	}
-
-	public String getNodes() {
-		return nodes;
-	}
-
-	public void setNodes(String nodes) {
-		this.nodes = nodes;
 	}
 
 	public String getComment() {
@@ -127,7 +121,15 @@ public class TorrentInfo {
 	public void setAnnounceList(List<String> announceList) {
 		this.announceList = announceList;
 	}
+	
+	public Map<String, Long> getNodes() {
+		return nodes;
+	}
 
+	public void setNodes(Map<String, Long> nodes) {
+		this.nodes = nodes;
+	}
+	
 	public TorrentFiles getInfo() {
 		return info;
 	}
@@ -136,12 +138,20 @@ public class TorrentInfo {
 		this.info = info;
 	}
 
-	public boolean hashFiles() {
+	public boolean hasFiles() {
 		return !this.info.getFiles().isEmpty();
 	}
 	
 	public TorrentFile lastTorrentFile() {
 		return this.info.lastTorrentFile();
+	}
+	
+	public boolean hasNode() {
+		return !this.nodes.isEmpty();
+	}
+	
+	public Map.Entry<String, Long> lastNode() {
+		return this.nodes.entrySet().stream().skip(this.nodes.size() - 1).findFirst().get();
 	}
 	
 	public void setValue(String key, Object value) {
@@ -156,27 +166,39 @@ public class TorrentInfo {
 					this.getInfo().setNameUtf8(value.toString());
 					break;
 				case "path":
-					if(this.hashFiles()) {
+					if(this.hasFiles()) {
 						this.lastTorrentFile().getPath().add(value.toString());
 					}
 					break;
 				case "path.utf-8":
-					if(this.hashFiles()) {
+					if(this.hasFiles()) {
 						this.lastTorrentFile().getPathUtf8().add(value.toString());
 					}
 					break;
 				case "ed2k":
-					if(this.hashFiles()) {
+					if(this.hasFiles()) {
 						this.lastTorrentFile().setEd2k((byte[]) value);
 					} else {
 						this.getInfo().setEd2k((byte[]) value);
+					}
+					break;
+				case "nodes":
+					if(this.hasNode()) {
+						var entity = this.lastNode();
+						if(entity.getValue() == null) {
+							entity.setValue(StringUtils.toLong(value.toString()));
+						} else {
+							this.nodes.put(value.toString(), null);
+						}
+					} else {
+						this.nodes.put(value.toString(), null);
 					}
 					break;
 				case "pieces":
 					this.getInfo().setPieces((byte[]) value);
 					break;
 				case "length":
-					if (this.hashFiles()) {
+					if (this.hasFiles()) {
 						this.lastTorrentFile().setLength(StringUtils.toLong(value.toString()));
 					} else {
 						this.getInfo().setLength(StringUtils.toLong(value.toString()));
@@ -189,7 +211,7 @@ public class TorrentInfo {
 					this.setCommentUtf8(value.toString());
 					break;
 				case "filehash":
-					if(this.hashFiles()) {
+					if(this.hasFiles()) {
 						this.lastTorrentFile().setFilehash((byte[]) value);
 					} else {
 						this.getInfo().setFilehash((byte[]) value);

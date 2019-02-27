@@ -3,6 +3,8 @@ package com.acgist.snail.module.coder.torrent;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.acgist.snail.utils.StringUtils;
+
 /**
  * 文件信息
  */
@@ -25,7 +27,10 @@ public class TorrentFile {
 	public byte[] getEd2k() {
 		return ed2k;
 	}
-
+	public String getEd2kHex() {
+		return StringUtils.hex(ed2k);
+	}
+	
 	public void setEd2k(byte[] ed2k) {
 		this.ed2k = ed2k;
 	}
@@ -33,7 +38,11 @@ public class TorrentFile {
 	public byte[] getFilehash() {
 		return filehash;
 	}
-
+	
+	public String getFilehashHex() {
+		return StringUtils.hex(filehash);
+	}
+	
 	public void setFilehash(byte[] filehash) {
 		this.filehash = filehash;
 	}
