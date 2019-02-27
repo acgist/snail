@@ -229,7 +229,6 @@ public class DownloaderUrlDecoder {
 	 * 文件大小：Content-Range、content-length
 	 */
 	private void size() {
-		
 	}
 	
 	/**
@@ -238,7 +237,7 @@ public class DownloaderUrlDecoder {
 	private void buildTask() {
 		if(this.type == Type.torrent) {
 			String fileName = FileUtils.fileNameFromUrl(this.torrent);
-			String newFilePath = this.file + "/" + fileName;
+			String newFilePath = FileUtils.file(this.file, fileName);
 			if(magnet) { // 磁力链接需要移动种子文件
 				File torrentFile = new File(this.torrent);
 				File newFile = new File(newFilePath);

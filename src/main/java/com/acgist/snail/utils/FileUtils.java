@@ -188,4 +188,15 @@ public class FileUtils {
 		}
 	}
 	
+	/**
+	 * 文件路径
+	 */
+	public static final String file(String folder, String fileName) {
+		if(folder == null || fileName == null) {
+			LOGGER.error("不正确的文件路径，目录：{}，文件：{}", folder, fileName);
+			throw new IllegalArgumentException("不正确的文件路径");
+		}
+		return folder + File.separator + fileName;
+	}
+	
 }
