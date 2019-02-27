@@ -17,7 +17,7 @@ public class FileTypeConfig {
 		video("视频", "video.png"),
 		audio("音频", "audio.png"),
 		script("脚本", "script.png"),
-		torrent("种子", "torrent.png"),
+		torrent("BT", "torrent.png"),
 		compress("压缩", "compress.png"),
 		document("文档", "document.png"),
 		install("安装包", "install.png"),

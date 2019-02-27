@@ -123,5 +123,5 @@ public class HttpUtils {
 			.collect(Collectors.joining("&"));
 		return BodyPublishers.ofString(body);
 	}
-	
+
 }

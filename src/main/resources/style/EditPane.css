@@ -1,28 +1,19 @@
-.setting {
+.edit {
 	-fx-font-size:16;
 	-fx-alignment:center;
 }
-.setting .scrollPane {
+.edit .scrollPane {
 	-fx-pref-width:600;
 	-fx-background-color:transparent;
     -fx-control-inner-background:transparent;
 }
-.setting .name {
+.edit .name {
 	-fx-pref-width:200;
 	-fx-text-alignment:right;
 }
-.setting HBox {
+.edit HBox {
 	-fx-padding:10 0;
 }
-.setting Button {
-	-fx-padding:10;
-}
-.setting .path TextFlow {
+.edit .path TextFlow {
 	-fx-padding:10 0;
-}
-.setting .path .pathValue {
-	-fx-padding:10;
-}
-.setting .slider {
-	-fx-pref-width:300;
 }

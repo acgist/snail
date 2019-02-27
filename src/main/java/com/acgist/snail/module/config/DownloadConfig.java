@@ -132,7 +132,7 @@ public class DownloadConfig {
 		if(StringUtils.isEmpty(fileName)) {
 			throw new DownloadException("无效的下载路径：" + fileName);
 		}
-		return getDownloadPath() + "/" + fileName;
+		return FileUtils.file(getDownloadPath(), fileName);
 	}
 	
 	public static final void setDownloadSize(Integer downloadSize) {
