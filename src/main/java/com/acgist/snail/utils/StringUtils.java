@@ -1,5 +1,6 @@
 package com.acgist.snail.utils;
 
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -107,6 +108,21 @@ public class StringUtils {
 			LOGGER.error("SHA1计算异常", e);
 		}
 		return null;
+	}
+	
+	/**
+	 * 编码
+	 */
+	public static final String charset(String value, String charset) {
+		if(StringUtils.isEmpty(value) || charset == null) {
+			return value;
+		}
+		try {
+			return new String(value.getBytes(charset));
+		} catch (UnsupportedEncodingException e) {
+			LOGGER.error("字符串解码异常：{}", value, e);
+		}
+		return value;
 	}
 	
 }

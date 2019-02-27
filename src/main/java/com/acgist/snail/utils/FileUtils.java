@@ -2,8 +2,10 @@ package com.acgist.snail.utils;
 
 import java.awt.Desktop;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -42,7 +44,10 @@ public class FileUtils {
 			return;
 		}
 		LOGGER.info("删除文件：{}", path);
-		file.delete();
+		boolean ok = file.delete();
+		if(!ok) {
+			LOGGER.warn("删除文件失败：{}", path);
+		}
 	}
 	
 	/**
@@ -71,7 +76,7 @@ public class FileUtils {
 		}
 		url = UrlUtils.decode(url);
 		if(url.contains("\\")) {
-			url.replace("\\", "/");
+			url = url.replace("\\", "/");
 		}
 		int index = url.lastIndexOf("/");
 		if(index != -1) {
@@ -162,6 +167,24 @@ public class FileUtils {
 			output.write(bytes);
 		} catch (IOException e) {
 			LOGGER.error("文件写入异常", e);
+		}
+	}
+	
+	/**
+	 * 文件拷贝
+	 */
+	public static final void copy(String src, String target) {
+		try(
+			InputStream input = new FileInputStream(src);
+			OutputStream output = new FileOutputStream(target);
+		) {
+			int index;
+			byte[] bytes = new byte[1024];
+			while((index = input.read(bytes)) != -1) {
+				output.write(bytes, 0, index);
+			}
+		} catch (IOException e) {
+			LOGGER.error("文件拷贝异常", e);
 		}
 	}
 	

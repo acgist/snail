@@ -85,11 +85,15 @@ public class TaskEntity extends BaseEntity {
 	 * 完成时间
 	 */
 	private Date endDate;
+	/**
+	 * 描述：下载其他信息
+	 */
+	private String description;
 	
 	public TaskEntity() {
 	}
-
-	public TaskEntity(String name, Type type, FileType fileType, String file, String url, String torrent, Status status, Integer size) {
+	
+	public TaskEntity(String name, Type type, FileType fileType, String file, String url, String torrent, Status status, Integer size, Date endDate, String description) {
 		this.name = name;
 		this.type = type;
 		this.fileType = fileType;
@@ -98,6 +102,8 @@ public class TaskEntity extends BaseEntity {
 		this.torrent = torrent;
 		this.status = status;
 		this.size = size;
+		this.endDate = endDate;
+		this.description = description;
 	}
 
 	public String getName() {
@@ -170,6 +176,14 @@ public class TaskEntity extends BaseEntity {
 
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 }

@@ -35,6 +35,7 @@ public class TorrentInfo {
 			"nodes",
 			"pieces",
 			"length",
+			"md5sum", // 未遇到到过这个KEY
 			"comment",
 			"comment.utf-8",
 			"filehash",
@@ -146,6 +147,10 @@ public class TorrentInfo {
 		return this.info.lastTorrentFile();
 	}
 	
+	public void newTorrentFile() {
+		this.getInfo().getFiles().add(new TorrentFile());
+	}
+	
 	public boolean hasNode() {
 		return !this.nodes.isEmpty();
 	}
@@ -177,6 +182,9 @@ public class TorrentInfo {
 					break;
 				case "ed2k":
 					if(this.hasFiles()) {
+						if(this.lastTorrentFile().getEd2k() != null) {
+							this.newTorrentFile();
+						}
 						this.lastTorrentFile().setEd2k((byte[]) value);
 					} else {
 						this.getInfo().setEd2k((byte[]) value);
@@ -199,6 +207,9 @@ public class TorrentInfo {
 					break;
 				case "length":
 					if (this.hasFiles()) {
+						if(this.lastTorrentFile().getLength() != null) {
+							this.newTorrentFile();
+						}
 						this.lastTorrentFile().setLength(StringUtils.toLong(value.toString()));
 					} else {
 						this.getInfo().setLength(StringUtils.toLong(value.toString()));
@@ -212,6 +223,9 @@ public class TorrentInfo {
 					break;
 				case "filehash":
 					if(this.hasFiles()) {
+						if(this.lastTorrentFile().getFilehash() != null) {
+							this.newTorrentFile();
+						}
 						this.lastTorrentFile().setFilehash((byte[]) value);
 					} else {
 						this.getInfo().setFilehash((byte[]) value);
