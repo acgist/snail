@@ -2,8 +2,8 @@ package com.acgist.main;
 
 import org.junit.Test;
 
+import com.acgist.snail.module.coder.magnet.MagnetDecoder;
 import com.acgist.snail.module.exception.DownloadException;
-import com.acgist.snail.module.magnet.MagnetDecoder;
 
 public class MagnetDecoderTest {
 

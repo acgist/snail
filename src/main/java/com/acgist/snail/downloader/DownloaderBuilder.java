@@ -5,7 +5,6 @@ import com.acgist.snail.module.coder.DownloaderUrlDecoder;
 import com.acgist.snail.module.exception.DownloadException;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
-import com.acgist.snail.repository.impl.TaskRepository;
 
 /**
  * 下载器构建
@@ -53,10 +52,7 @@ public class DownloaderBuilder {
 	 * 持久化到数据库
 	 */
 	private void buildWrapper() throws DownloadException {
-		TaskRepository repository = new TaskRepository();
-		TaskEntity entity = decoder.buildTaskEntity();
-		repository.save(entity);
-		this.wrapper = new TaskWrapper(entity);
+		this.wrapper = decoder.buildTaskWrapper();
 	}
 	
 	/**

@@ -7,6 +7,8 @@ import java.io.InputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.pojo.wrapper.TorrentWrapper;
+
 /**
  * 种子解码器
  */
@@ -23,7 +25,7 @@ public class TorrentDecoder {
 	/**
 	 * 解析种子文件
 	 */
-	public static final TorrentDecoder newInstance(String filePath) throws Exception {
+	public static final TorrentDecoder newInstance(String filePath) {
 		TorrentDecoder decoder = new TorrentDecoder();
 		try(InputStream input = new FileInputStream(filePath)) {
 			decoder.decode(input);
@@ -46,7 +48,14 @@ public class TorrentDecoder {
 	public TorrentInfo torrentInfo() {
 		return torrentInfo;
 	}
-
+	
+	/**
+	 * 获取种子信息
+	 */
+	public TorrentWrapper torrentWrapper() {
+		return new TorrentWrapper(torrentInfo);
+	}
+	
 	/**
 	 * 编码：http://blog.sina.com.cn/s/blog_ec8c9eae0102wa9p.html
 	 * i e：long
@@ -55,25 +64,24 @@ public class TorrentDecoder {
 	 */
 	private void decode(InputStream input) throws NumberFormatException, IOException, Exception {
 		int index;
+		char indexChar;
 		String key = null;
 		TorrentInfo torrentInfo = new TorrentInfo();
 		StringBuilder lengthBuilder = new StringBuilder();
 		TorrentHashBuilder hashBuilder = TorrentHashBuilder.newInstance();
 		while ((index = input.read()) != -1) {
-			char indexChar = (char) index;
 			hashBuilder.build(key, index);
+			indexChar = (char) index;
 			switch (indexChar) {
 				case 'i':
-					int valueIndex;
-					char valueChar;
 					StringBuilder valueBuilder = new StringBuilder();
-					while((valueIndex = input.read()) != -1) {
-						valueChar = (char) valueIndex;
-						hashBuilder.build(key, valueIndex);
-						if(valueChar == 'e') {
+					while((index = input.read()) != -1) {
+						hashBuilder.build(key, index);
+						indexChar = (char) index;
+						if(indexChar == 'e') {
 							break;
 						} else {
-							valueBuilder.append(valueChar);
+							valueBuilder.append(indexChar);
 						}
 					}
 					torrentInfo.setValue(key, valueBuilder.toString());
@@ -94,9 +102,9 @@ public class TorrentDecoder {
 					lengthBuilder.append(indexChar);
 					break;
 				case ':':
-					int valueLength = Integer.parseInt(lengthBuilder.toString());
+					int length = Integer.parseInt(lengthBuilder.toString());
 					lengthBuilder.setLength(0);
-					byte[] bytes = new byte[valueLength];
+					byte[] bytes = new byte[length];
 					input.read(bytes);
 					hashBuilder.build(key, bytes);
 					String value = new String(bytes);
@@ -105,11 +113,7 @@ public class TorrentDecoder {
 						if (value.equals("info")) {
 							torrentInfo.setInfo(new TorrentFiles());
 						} else if (value.equals("files")) {
-							torrentInfo.getInfo().getFiles().add(new TorrentFile());
-						} else if (value.equals("length")) {
-							if (torrentInfo.hasFiles() && torrentInfo.lastTorrentFile().getLength() != null) {
-								torrentInfo.getInfo().getFiles().add(new TorrentFile());
-							}
+							torrentInfo.newTorrentFile();
 						}
 					} else {
 						if(key.equals("ed2k") || key.equals("pieces") || key.equals("filehash")) {

@@ -1,4 +1,4 @@
-package com.acgist.snail.module.magnet;
+package com.acgist.snail.module.coder.magnet;
 
 import java.io.File;
 import java.net.http.HttpClient;
@@ -11,9 +11,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.module.coder.magnet.impl.BtbttvMagnetDecoder;
 import com.acgist.snail.module.config.DownloadConfig;
 import com.acgist.snail.module.exception.DownloadException;
-import com.acgist.snail.module.magnet.impl.BtbttvMagnetDecoder;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.HttpUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -129,6 +129,10 @@ public abstract class MagnetDecoder {
 	
 	public static final boolean verifyHash(String url) {
 		return url != null && url.matches(HASH_REGEX);
+	}
+	
+	public static final String buildMagnet(String hash) {
+		return MAGNET_PREFIX + hash;
 	}
 	
 }

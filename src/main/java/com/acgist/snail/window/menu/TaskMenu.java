@@ -1,5 +1,6 @@
 package com.acgist.snail.window.menu;
 
+import java.io.File;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -7,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
 import com.acgist.snail.utils.FileUtils;
+import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.window.main.MainController;
 
 import javafx.scene.control.ContextMenu;
@@ -14,6 +16,8 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.Stage;
 
 /**
  * 任务菜单
@@ -76,6 +80,23 @@ public class TaskMenu extends ContextMenu {
 			});
 			Clipboard clipboard = Clipboard.getSystemClipboard();
 			clipboard.setContent(content);
+		});
+		
+		exportTorrentMenu.setOnAction((event) -> {
+			DirectoryChooser chooser = new DirectoryChooser();
+			chooser.setTitle("文件保存目录");
+			File file = chooser.showDialog(new Stage());
+			if (file != null) {
+				List<TaskWrapper> list = mainController.selected();
+				list.forEach(wrapper -> {
+					String torrent = wrapper.getTorrent();
+					if(StringUtils.isNotEmpty(torrent)) {
+						String fileName = FileUtils.fileNameFromUrl(torrent);
+						String newFile = file.getPath() + "/" + fileName;
+						FileUtils.copy(torrent, newFile);
+					}
+				});
+			}
 		});
 		
 		openFolderMenu.setOnAction((event) -> {
