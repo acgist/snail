@@ -12,9 +12,12 @@ public class TorrentDecoderTest {
 
 	@Test
 	public void test() throws Exception {
-//		TorrentInfo info = TorrentDecoder.decode("e:/snail/82309348090ecbec8bf509b83b30b78a8d1f6454.torrent");
-//		TorrentInfo info = TorrentDecoder.decode("e:/snail/9d3854d8c6280049e5d85e490ff07de7c2bd96a2.torrent"); // 单文件
-		TorrentInfo info = TorrentDecoder.decode("e:/snail/0B156834B59B0FF64EE0C9305D4D6EDE421196E6.torrent");
+		String path = "e:/snail/82309348090ecbec8bf509b83b30b78a8d1f6454.torrent";
+//		String path = "e:/snail/9d3854d8c6280049e5d85e490ff07de7c2bd96a2.torrent";
+//		String path = "e:/snail/0B156834B59B0FF64EE0C9305D4D6EDE421196E6.torrent";
+		TorrentDecoder decoder = TorrentDecoder.newInstance(path);
+		TorrentInfo info = decoder.torrentInfo();
+		System.out.println(decoder.hash());
 		System.out.println(new Date(info.getCreationDate() * 1000));
 //		System.out.println(info.getCreationDate());
 //		System.out.println(info.getEncoding());

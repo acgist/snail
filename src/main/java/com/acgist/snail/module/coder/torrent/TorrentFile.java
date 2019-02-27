@@ -10,17 +10,17 @@ import com.acgist.snail.utils.StringUtils;
  */
 public class TorrentFile {
 
-	private long length; // 大小
+	private Long length; // 大小
 	private byte[] ed2k; // ed2k
 	private byte[] filehash; // 文件hash
 	private List<String> path = new ArrayList<>(); // 路径
 	private List<String> pathUtf8 = new ArrayList<>(); // 路径UTF8
 
-	public long getLength() {
+	public Long getLength() {
 		return length;
 	}
 
-	public void setLength(long length) {
+	public void setLength(Long length) {
 		this.length = length;
 	}
 

@@ -14,43 +14,69 @@ public class TorrentDecoder {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentDecoder.class);
 	
+	private String hash = null;
+	private TorrentInfo torrentInfo = null;
+	
 	private TorrentDecoder() {
 	}
 	
 	/**
 	 * 解析种子文件
 	 */
-	public static final TorrentInfo decode(String filePath) throws Exception {
+	public static final TorrentDecoder newInstance(String filePath) throws Exception {
+		TorrentDecoder decoder = new TorrentDecoder();
 		try(InputStream input = new FileInputStream(filePath)) {
-			TorrentDecoder decoder = new TorrentDecoder();
-			return decoder.decode(input);
+			decoder.decode(input);
 		} catch (Exception e) {
 			LOGGER.error("解析种子异常", e);
 		}
-		return null;
+		return decoder;
+	}
+	
+	/**
+	 * 获取hash
+	 */
+	public String hash() {
+		return hash;
+	}
+	
+	/**
+	 * 获取种子信息
+	 */
+	public TorrentInfo torrentInfo() {
+		return torrentInfo;
 	}
 
 	/**
-	 * B编码：http://blog.sina.com.cn/s/blog_ec8c9eae0102wa9p.html
+	 * 编码：http://blog.sina.com.cn/s/blog_ec8c9eae0102wa9p.html
 	 * i e：long
 	 * l e：list
 	 * d e：map
 	 */
-	private TorrentInfo decode(InputStream input) throws NumberFormatException, IOException, Exception {
+	private void decode(InputStream input) throws NumberFormatException, IOException, Exception {
 		int index;
 		String key = null;
-		TorrentInfo info = new TorrentInfo();
+		TorrentInfo torrentInfo = new TorrentInfo();
 		StringBuilder lengthBuilder = new StringBuilder();
+		TorrentHashBuilder hashBuilder = TorrentHashBuilder.newInstance();
 		while ((index = input.read()) != -1) {
 			char indexChar = (char) index;
+			hashBuilder.build(key, index);
 			switch (indexChar) {
 				case 'i':
-					char tmpChar;
-					StringBuilder tmpBuilder = new StringBuilder();
-					while ((tmpChar = (char) input.read()) != 'e') {
-						tmpBuilder.append(tmpChar);
+					int valueIndex;
+					char valueChar;
+					StringBuilder valueBuilder = new StringBuilder();
+					while((valueIndex = input.read()) != -1) {
+						valueChar = (char) valueIndex;
+						hashBuilder.build(key, valueIndex);
+						if(valueChar == 'e') {
+							break;
+						} else {
+							valueBuilder.append(valueChar);
+						}
 					}
-					info.setValue(key, tmpBuilder.toString());
+					torrentInfo.setValue(key, valueBuilder.toString());
 					break;
 				case 'l':
 				case 'd':
@@ -72,29 +98,31 @@ public class TorrentDecoder {
 					lengthBuilder.setLength(0);
 					byte[] bytes = new byte[valueLength];
 					input.read(bytes);
-					String tmpValue = new String(bytes);
-					if (TorrentInfo.infoKeys().contains(tmpValue)) { // 初始化
-						key = tmpValue;
-						if (tmpValue.equals("info")) {
-							info.setInfo(new TorrentFiles());
-						} else if (tmpValue.equals("files")) {
-							info.getInfo().getFiles().add(new TorrentFile());
-						} else if (tmpValue.equals("length")) {
-							if (info.hasFiles() && info.lastTorrentFile().getLength() != 0) {
-								info.getInfo().getFiles().add(new TorrentFile());
+					hashBuilder.build(key, bytes);
+					String value = new String(bytes);
+					if (TorrentInfo.infoKeys().contains(value)) { // 初始化
+						key = value;
+						if (value.equals("info")) {
+							torrentInfo.setInfo(new TorrentFiles());
+						} else if (value.equals("files")) {
+							torrentInfo.getInfo().getFiles().add(new TorrentFile());
+						} else if (value.equals("length")) {
+							if (torrentInfo.hasFiles() && torrentInfo.lastTorrentFile().getLength() != null) {
+								torrentInfo.getInfo().getFiles().add(new TorrentFile());
 							}
 						}
 					} else {
 						if(key.equals("ed2k") || key.equals("pieces") || key.equals("filehash")) {
-							info.setValue(key, bytes);
+							torrentInfo.setValue(key, bytes);
 						} else {
-							info.setValue(key, tmpValue);
+							torrentInfo.setValue(key, value);
 						}
 					}
 					break;
 			}
 		}
-		return info;
+		this.torrentInfo = torrentInfo;
+		this.hash = hashBuilder.hash();
 	}
-
+	
 }
