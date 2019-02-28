@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 
 /**
  * 主界面
+ * TODO：主页隐藏时不刷新任务列表
  */
 public class MainWindow extends AbstractWindow {
 

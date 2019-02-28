@@ -44,9 +44,20 @@ public class FileUtils {
 			return;
 		}
 		LOGGER.info("删除文件：{}", path);
-		boolean ok = file.delete();
-		if(!ok) {
-			LOGGER.warn("删除文件失败：{}", path);
+		delete(file);
+	}
+
+	/**
+	 * 删除文件
+	 */
+	private static final void delete(File file) {
+		if(file.isDirectory()) {
+			File[] files = file.listFiles();
+			for (File children : files) {
+				delete(children);
+			}
+		} else {
+			file.delete();
 		}
 	}
 	
