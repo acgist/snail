@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
 import com.acgist.snail.utils.ClipboardUtils;
-import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.window.edit.EditWindow;
 import com.acgist.snail.window.main.MainWindow;
@@ -71,10 +70,10 @@ public class TaskMenu extends ContextMenu {
 		});
 		
 		editMenu.setOnAction((event) -> {
-			List<TaskWrapper> list = MainWindow.getInstance().controller().selected();
-			if(CollectionUtils.isEmpty(list)) {
+			if(!MainWindow.getInstance().controller().hasTorrent()) {
 				return;
 			}
+			List<TaskWrapper> list = MainWindow.getInstance().controller().selected();
 			list.forEach(wrapper -> {
 				EditWindow.getInstance().controller().tree(wrapper);
 			});
@@ -89,14 +88,14 @@ public class TaskMenu extends ContextMenu {
 		});
 		
 		exportTorrentMenu.setOnAction((event) -> {
-			List<TaskWrapper> list = MainWindow.getInstance().controller().selected();
-			if(CollectionUtils.isEmpty(list)) {
+			if(!MainWindow.getInstance().controller().hasTorrent()) {
 				return;
 			}
 			DirectoryChooser chooser = new DirectoryChooser();
 			chooser.setTitle("文件保存目录");
 			File file = chooser.showDialog(new Stage());
 			if (file != null) {
+				List<TaskWrapper> list = MainWindow.getInstance().controller().selected();
 				list.forEach(wrapper -> {
 					if(wrapper.getType() == Type.torrent) {
 						String torrent = wrapper.getTorrent();

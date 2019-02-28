@@ -8,7 +8,6 @@ import com.acgist.snail.window.AbstractWindow;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.FlowPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
@@ -44,14 +43,13 @@ public class EditWindow extends AbstractWindow<EditController> {
 	@Override
 	public void start(Stage stage) throws Exception {
 		FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/fxml/EditPane.fxml"));
-		this.controller = loader.getController();
 		FlowPane root = loader.load();
-		Scene scene = new Scene(root, 600, 300);
-		stage.initModality(Modality.APPLICATION_MODAL);
+		this.controller = loader.getController();
+		Scene scene = new Scene(root, 800, 600);
 		stage.setScene(scene);
 		stage.setTitle("编辑任务");
 		disableResize();
-		commonWindow();
+		dialogWindow();
 	}
 	
 }

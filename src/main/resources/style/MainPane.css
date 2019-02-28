@@ -27,6 +27,8 @@
 .main Label {
 	-fx-padding:0 2;
 }
+.main TableView {
+}
 .main TableView HBox {
 	-fx-padding:4;
 	-fx-pref-height:40;

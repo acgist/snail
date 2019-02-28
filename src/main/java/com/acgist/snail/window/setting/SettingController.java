@@ -71,7 +71,7 @@ public class SettingController implements Initializable {
 	}
 	
 	private void initScrollPane() {
-//		scrollPane.prefWidthProperty().bind(root.widthProperty());
+		scrollPane.prefWidthProperty().bind(root.widthProperty());
 		scrollPane.prefHeightProperty().bind(root.heightProperty());
 	}
 	

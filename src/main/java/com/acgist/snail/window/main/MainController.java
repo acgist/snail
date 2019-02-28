@@ -7,8 +7,8 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 import com.acgist.snail.downloader.DownloaderManager;
+import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
-import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.window.AlertWindow;
 import com.acgist.snail.window.about.AboutWindow;
 import com.acgist.snail.window.build.BuildWindow;
@@ -184,7 +184,7 @@ public class MainController implements Initializable {
 		taskTable.prefHeightProperty().bind(root.prefHeightProperty().subtract(80D));
 		fooderButton.prefWidthProperty().bind(root.widthProperty().multiply(0.5D));
 		fooderStatus.prefWidthProperty().bind(root.widthProperty().multiply(0.5D));
-		TaskTableTimer.getInstance().newTimer(this);
+		TaskTimer.getInstance().newTimer(this);
 	}
 	
 	/**
@@ -209,7 +209,25 @@ public class MainController implements Initializable {
 	 * 获取被选中的信息
 	 */
 	public List<TaskWrapper> selected() {
-		return this.taskTable.getSelectionModel().getSelectedItems().stream().collect(Collectors.toList());
+		return this.taskTable.getSelectionModel().getSelectedItems()
+			.stream()
+			.collect(Collectors.toList());
+	}
+	
+	/**
+	 * 是否选中
+	 */
+	public boolean hasContent() {
+		return !selected().isEmpty();
+	}
+	
+	/**
+	 * 选中内容是否包含BT下载
+	 */
+	public boolean hasTorrent() {
+		return selected()
+			.stream()
+			.anyMatch(wrapper -> wrapper.getType() == Type.torrent);
 	}
 
 	/**
@@ -220,7 +238,7 @@ public class MainController implements Initializable {
 		list.forEach(wrapper -> {
 			DownloaderManager.getInstance().start(wrapper);
 		});
-		TaskTableTimer.getInstance().refreshTaskData();
+		TaskTimer.getInstance().refreshTaskData();
 	}
 	
 	/**
@@ -231,23 +249,23 @@ public class MainController implements Initializable {
 		list.forEach(wrapper -> {
 			DownloaderManager.getInstance().pause(wrapper);
 		});
-		TaskTableTimer.getInstance().refreshTaskData();
+		TaskTimer.getInstance().refreshTaskData();
 	}
 	
 	/**
 	 * 删除任务
 	 */
 	public void delete() {
-		List<TaskWrapper> list = this.selected();
-		if(CollectionUtils.isEmpty(list)) {
+		if(!this.hasContent()) {
 			return;
 		}
 		Optional<ButtonType> result = AlertWindow.build(AlertType.CONFIRMATION, "删除确认", "删除选中文件？");
 		if(result.get() == ButtonType.OK) {
+			List<TaskWrapper> list = this.selected();
 			list.forEach(wrapper -> {
 				DownloaderManager.getInstance().delete(wrapper);
 			});
-			TaskTableTimer.getInstance().refreshTaskTable();
+			TaskTimer.getInstance().refreshTaskTable();
 		}
 	}
 

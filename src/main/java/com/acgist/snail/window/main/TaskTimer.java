@@ -13,19 +13,19 @@ import com.acgist.snail.downloader.DownloaderManager;
 /**
  * 定时任务：刷新任务列表
  */
-public class TaskTableTimer {
+public class TaskTimer {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(TaskTableTimer.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TaskTimer.class);
 	
 	private MainController controller;
 	private ScheduledExecutorService executor;
 	
-	private static final TaskTableTimer INSTANCE = new TaskTableTimer();
+	private static final TaskTimer INSTANCE = new TaskTimer();
 	
-	private TaskTableTimer() {
+	private TaskTimer() {
 	}
 	
-	public static final TaskTableTimer getInstance() {
+	public static final TaskTimer getInstance() {
 		return INSTANCE;
 	}
 	

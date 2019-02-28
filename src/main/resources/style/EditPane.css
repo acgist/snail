@@ -2,18 +2,6 @@
 	-fx-font-size:16;
 	-fx-alignment:center;
 }
-.edit .scrollPane {
-	-fx-pref-width:600;
+.edit TreeView {
 	-fx-background-color:transparent;
-    -fx-control-inner-background:transparent;
-}
-.edit .name {
-	-fx-pref-width:200;
-	-fx-text-alignment:right;
-}
-.edit HBox {
-	-fx-padding:10 0;
-}
-.edit .path TextFlow {
-	-fx-padding:10 0;
 }

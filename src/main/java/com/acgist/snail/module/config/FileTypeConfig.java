@@ -76,11 +76,12 @@ public class FileTypeConfig {
 	 * 获取文件类型
 	 */
 	public static final FileType type(String ext) {
-		Optional<Entry<FileType, List<String>>> optional = TYPES
-			.entrySet()
+		Optional<Entry<FileType, List<String>>> optional = TYPES.entrySet()
 			.stream()
-			.filter(entity -> {
-				return entity.getValue().stream().filter(value -> value.equals(ext)).count() > 0;
+			.filter(entry -> {
+				return entry.getValue()
+					.stream()
+					.anyMatch(value -> value.equals(ext));
 			})
 			.findFirst();
 		if(optional.isPresent()) {
