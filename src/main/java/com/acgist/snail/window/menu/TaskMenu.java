@@ -9,9 +9,10 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
 import com.acgist.snail.utils.ClipboardUtils;
+import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.window.edit.EditWindow;
-import com.acgist.snail.window.main.MainController;
+import com.acgist.snail.window.main.MainWindow;
 
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
@@ -25,8 +26,6 @@ import javafx.stage.Stage;
 public class TaskMenu extends ContextMenu {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskMenu.class);
-	
-	private MainController mainController;
 	
 	private static TaskMenu INSTANCE;
 	
@@ -43,8 +42,7 @@ public class TaskMenu extends ContextMenu {
 		}
 	}
 	
-	public static final TaskMenu getInstance(MainController mainController) {
-		INSTANCE.mainController = mainController;
+	public static final TaskMenu getInstance() {
 		return INSTANCE;
 	}
 
@@ -61,34 +59,44 @@ public class TaskMenu extends ContextMenu {
 		MenuItem openFolderMenu = new MenuItem("打开目录", new ImageView("/image/16/folder.png"));
 
 		startMenu.setOnAction((event) -> {
-			mainController.start();
+			MainWindow.getInstance().controller().start();
 		});
 		
 		pauseMenu.setOnAction((event) -> {
-			mainController.pause();
+			MainWindow.getInstance().controller().pause();
 		});
 		
 		deleteMenu.setOnAction((event) -> {
-			mainController.delete();
+			MainWindow.getInstance().controller().delete();
 		});
 		
 		editMenu.setOnAction((event) -> {
+			List<TaskWrapper> list = MainWindow.getInstance().controller().selected();
+			if(CollectionUtils.isEmpty(list)) {
+				return;
+			}
+			list.forEach(wrapper -> {
+				EditWindow.getInstance().controller().tree(wrapper);
+			});
 			EditWindow.getInstance().show();
 		});
 		
 		copyURLMenu.setOnAction((event) -> {
-			List<TaskWrapper> list = mainController.selected();
+			List<TaskWrapper> list = MainWindow.getInstance().controller().selected();
 			list.forEach(wrapper -> {
 				ClipboardUtils.copy(wrapper.getUrl());
 			});
 		});
 		
 		exportTorrentMenu.setOnAction((event) -> {
+			List<TaskWrapper> list = MainWindow.getInstance().controller().selected();
+			if(CollectionUtils.isEmpty(list)) {
+				return;
+			}
 			DirectoryChooser chooser = new DirectoryChooser();
 			chooser.setTitle("文件保存目录");
 			File file = chooser.showDialog(new Stage());
 			if (file != null) {
-				List<TaskWrapper> list = mainController.selected();
 				list.forEach(wrapper -> {
 					if(wrapper.getType() == Type.torrent) {
 						String torrent = wrapper.getTorrent();
@@ -101,7 +109,7 @@ public class TaskMenu extends ContextMenu {
 		});
 		
 		openFolderMenu.setOnAction((event) -> {
-			List<TaskWrapper> list = mainController.selected();
+			List<TaskWrapper> list = MainWindow.getInstance().controller().selected();
 			list.forEach(wrapper -> {
 				FileUtils.openInDesktop(wrapper.getFileFolder());
 			});

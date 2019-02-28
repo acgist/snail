@@ -6,9 +6,11 @@ import java.util.ResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.coder.torrent.TorrentDecoder;
+import com.acgist.snail.pojo.wrapper.TaskWrapper;
+
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.FlowPane;
 
@@ -23,10 +25,13 @@ public class EditController implements Initializable {
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		TreeItem<String> t = new TreeItem<String>("xxx");
-		t.setExpanded(true);
-		tree.setRoot(t);
-		t.getChildren().addAll(new TreeItem<String>("1"), new TreeItem<String>("1"));
 	}
 	
+	/**
+	 * 显示信息
+	 */
+	public void tree(TaskWrapper wrapper) {
+		TorrentDecoder decoder = TorrentDecoder.newInstance(wrapper.getTorrent());
+	}
+
 }

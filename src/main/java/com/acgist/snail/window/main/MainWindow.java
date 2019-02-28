@@ -16,7 +16,7 @@ import javafx.stage.Stage;
  * 主界面
  * TODO：主页隐藏时不刷新任务列表
  */
-public class MainWindow extends AbstractWindow {
+public class MainWindow extends AbstractWindow<MainController> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MainWindow.class);
 	
@@ -45,7 +45,9 @@ public class MainWindow extends AbstractWindow {
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		BorderPane root = FXMLLoader.load(this.getClass().getResource("/fxml/MainPane.fxml"));
+		FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/fxml/MainPane.fxml"));
+		this.controller = loader.getController();
+		BorderPane root = loader.load();
 		Scene scene = new Scene(root, 1000, 600);
 		stage.setScene(scene);
 		stage.setTitle(SystemConfig.getName());

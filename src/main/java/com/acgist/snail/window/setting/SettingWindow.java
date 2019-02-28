@@ -14,7 +14,7 @@ import javafx.stage.Stage;
 /**
  * 设置窗口
  */
-public class SettingWindow extends AbstractWindow {
+public class SettingWindow extends AbstractWindow<SettingController> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SettingWindow.class);
 	
@@ -43,7 +43,9 @@ public class SettingWindow extends AbstractWindow {
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		FlowPane root = FXMLLoader.load(this.getClass().getResource("/fxml/SettingPane.fxml"));
+		FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/fxml/SettingPane.fxml"));
+		this.controller = loader.getController();
+		FlowPane root = loader.load();
 		Scene scene = new Scene(root, 800, 600);
 		stage.initModality(Modality.APPLICATION_MODAL);
 		stage.setScene(scene);

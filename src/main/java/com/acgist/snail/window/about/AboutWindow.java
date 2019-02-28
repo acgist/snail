@@ -14,7 +14,7 @@ import javafx.stage.Stage;
 /**
  * 关于
  */
-public class AboutWindow extends AbstractWindow {
+public class AboutWindow extends AbstractWindow<AboutController> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AboutWindow.class);
 	
@@ -43,7 +43,9 @@ public class AboutWindow extends AbstractWindow {
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		GridPane root = FXMLLoader.load(this.getClass().getResource("/fxml/AboutPane.fxml"));
+		FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/fxml/AboutPane.fxml"));
+		this.controller = loader.getController();
+		GridPane root = loader.load();
 		Scene scene = new Scene(root, 600, 300);
 		stage.initModality(Modality.APPLICATION_MODAL);
 		stage.setScene(scene);
