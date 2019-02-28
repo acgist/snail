@@ -11,8 +11,6 @@
 	fx:controller="com.acgist.snail.window.edit.EditController"
 	xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
 	
-	<ScrollPane fx:id="scrollPane" styleClass="scrollPane" hbarPolicy="AS_NEEDED">
-	      <TreeView fx:id="tree" prefHeight="200.0" prefWidth="200.0" />
-	</ScrollPane>
+	<TreeView fx:id="tree" />
 	
 </FlowPane>

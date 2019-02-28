@@ -114,11 +114,10 @@ public class HttpUtils {
 		if(data == null || data.isEmpty()) {
 			return BodyPublishers.noBody();
 		}
-		String body = data
-			.entrySet()
+		String body = data.entrySet()
 			.stream()
-			.map(entity -> {
-				return entity.getKey() + "=" + UrlUtils.encode(entity.getValue());
+			.map(entry -> {
+				return entry.getKey() + "=" + UrlUtils.encode(entry.getValue());
 			})
 			.collect(Collectors.joining("&"));
 		return BodyPublishers.ofString(body);

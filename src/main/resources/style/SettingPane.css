@@ -3,9 +3,7 @@
 	-fx-alignment:center;
 }
 .setting .scrollPane {
-	-fx-pref-width:600;
 	-fx-background-color:transparent;
-    -fx-control-inner-background:transparent;
 }
 .setting .name {
 	-fx-pref-width:200;

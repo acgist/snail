@@ -156,7 +156,11 @@ public class TorrentInfo {
 	}
 	
 	public Map.Entry<String, Long> lastNode() {
-		return this.nodes.entrySet().stream().skip(this.nodes.size() - 1).findFirst().get();
+		return this.nodes.entrySet()
+			.stream()
+			.skip(this.nodes.size() - 1)
+			.findFirst()
+			.get();
 	}
 	
 	public void setValue(String key, Object value) {

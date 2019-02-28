@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
@@ -27,6 +29,8 @@ public class FileUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FileUtils.class);
 	
+	private static final int SIZE_SCALE = 1024;
+	private static final String[] SIZE_UNIT = {"B", "KB", "M", "G", "T"};
 	private static final String FILENAME_REPLACE_CHAR = "";
 	private static final String FILENAME_REPLACE_REGEX = "[\\\\/:\\*\\?\\<\\>\\|]"; // 替换的字符：\、/、:、*、?、<、>、|
 	private static final String CONTENT_DISPOSITION = "Content-Disposition";
@@ -56,6 +60,7 @@ public class FileUtils {
 			for (File children : files) {
 				delete(children);
 			}
+			file.delete();
 		} else {
 			file.delete();
 		}
@@ -208,6 +213,22 @@ public class FileUtils {
 			throw new IllegalArgumentException("不正确的文件路径");
 		}
 		return folder + File.separator + fileName;
+	}
+
+	/**
+	 * 大小计算
+	 */
+	public static final String size(long size) {
+		int index = 0;
+		BigDecimal decimal = new BigDecimal(size);
+		while(decimal.longValue() > SIZE_SCALE) {
+			if(++index == SIZE_UNIT.length) {
+				index = SIZE_UNIT.length - 1;
+				break;
+			}
+			decimal = decimal.divide(new BigDecimal(SIZE_SCALE));
+		}
+		return decimal.setScale(2, RoundingMode.HALF_UP) + SIZE_UNIT[index];
 	}
 	
 }

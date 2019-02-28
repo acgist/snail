@@ -44,14 +44,14 @@ public class BuildWindow extends AbstractWindow<BuildController> {
 	@Override
 	public void start(Stage stage) throws Exception {
 		FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/fxml/BuildPane.fxml"));
-		this.controller = loader.getController();
 		FlowPane root = loader.load();
+		this.controller = loader.getController();
 		Scene scene = new Scene(root, 600, 300);
 		stage.initModality(Modality.APPLICATION_MODAL);
 		stage.setScene(scene);
 		stage.setTitle("新建下载");
 		disableResize();
-		commonWindow();
+		dialogWindow();
 	}
 	
 }

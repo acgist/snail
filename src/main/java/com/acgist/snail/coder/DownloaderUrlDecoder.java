@@ -123,13 +123,17 @@ public class DownloaderUrlDecoder {
 	 */
 	private void type() throws DownloadException {
 		String url = this.url;
-		Optional<Entry<Type, List<String>>> optional = TYPE.entrySet().stream().filter((entity) -> {
-			return entity.getValue().stream().filter(value -> {
-				Pattern pattern = Pattern.compile(value, Pattern.CASE_INSENSITIVE);
-				Matcher matcher = pattern.matcher(url);
-				return matcher.matches();
-			}).count() > 0;
-		}).findFirst(); // 如果多个选择第一个
+		Optional<Entry<Type, List<String>>> optional = TYPE.entrySet()
+			.stream()
+			.filter(entry -> {
+				return entry.getValue()
+					.stream()
+					.anyMatch(value -> {
+						Pattern pattern = Pattern.compile(value, Pattern.CASE_INSENSITIVE);
+						Matcher matcher = pattern.matcher(url);
+						return matcher.matches();
+					});
+			}).findFirst(); // 如果多个选择第一个
 		if(optional.isEmpty()) {
 			throw new DownloadException("不支持的下载协议：" + url);
 		}
@@ -141,22 +145,24 @@ public class DownloaderUrlDecoder {
 	 * 种子文件：解析种子
 	 */
 	private void torrent() throws DownloadException {
-		String url = this.url;
-		TorrentDecoder decoder = null;
-		if(MagnetDecoder.verify(url)) { // 磁力链接
-			File file = MagnetDecoder.download(url);
-			if(file == null) {
-				throw new DownloadException("下载种子失败：" + url);
+		if(this.type == Type.torrent) {
+			String url = this.url;
+			TorrentDecoder decoder = null;
+			if(MagnetDecoder.verify(url)) { // 磁力链接
+				File file = MagnetDecoder.download(url);
+				if(file == null) {
+					throw new DownloadException("下载种子失败：" + url);
+				}
+				this.torrent = file.getPath();
+				decoder = TorrentDecoder.newInstance(this.torrent);
+				magnet = true;
+			} else {
+				decoder = TorrentDecoder.newInstance(url);
+				this.url = MagnetDecoder.buildMagnet(decoder.hash());
+				this.torrent = url;
 			}
-			this.torrent = file.getPath();
-			decoder = TorrentDecoder.newInstance(this.torrent);
-			magnet = true;
-		} else {
-			decoder = TorrentDecoder.newInstance(url);
-			this.url = MagnetDecoder.buildMagnet(decoder.hash());
-			this.torrent = url;
+			torrentWrapper = decoder.torrentWrapper();
 		}
-		torrentWrapper = decoder.torrentWrapper();
 	}
 	
 	/**

@@ -46,12 +46,12 @@ public class MainWindow extends AbstractWindow<MainController> {
 	@Override
 	public void start(Stage stage) throws Exception {
 		FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/fxml/MainPane.fxml"));
-		this.controller = loader.getController();
 		BorderPane root = loader.load();
+		this.controller = loader.getController();
 		Scene scene = new Scene(root, 1000, 600);
 		stage.setScene(scene);
 		stage.setTitle(SystemConfig.getName());
-		commonWindow();
+		icon();
 	}
 	
 	@Override

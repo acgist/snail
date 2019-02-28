@@ -173,5 +173,13 @@ public class TaskWrapper{
 	public void setEndDate(Date endDate) {
 		entity.setEndDate(endDate);
 	}
+	
+	public String getDescription() {
+		return entity.getDescription();
+	}
 
+	public void setDescription(String description) {
+		entity.setDescription(description);
+	}
+	
 }

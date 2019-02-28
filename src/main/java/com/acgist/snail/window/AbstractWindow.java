@@ -47,7 +47,7 @@ public abstract class AbstractWindow<T extends Initializable> extends Applicatio
 	/**
 	 * 设置通用信息
 	 */
-	protected void commonWindow() {
+	protected void dialogWindow() {
 		icon();
 		esc();
 	}

@@ -11,7 +11,7 @@ import com.acgist.snail.downloader.DownloaderBuilder;
 import com.acgist.snail.module.exception.DownloadException;
 import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.window.AlertWindow;
-import com.acgist.snail.window.main.TaskTableTimer;
+import com.acgist.snail.window.main.TaskTimer;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -64,7 +64,7 @@ public class BuildController implements Initializable {
 		if(ok) {
 			urlValue.setText("");
 			BuildWindow.getInstance().hide();
-			TaskTableTimer.getInstance().refreshTaskTable();
+			TaskTimer.getInstance().refreshTaskTable();
 		}
 	}
 

@@ -98,8 +98,7 @@ public class DownloaderManager {
 	 * 获取下载任务
 	 */
 	public List<TaskWrapper> taskTable() {
-		return DownloaderManager.getInstance().DOWNLOADER_TASK_MAP
-			.values()
+		return DownloaderManager.getInstance().DOWNLOADER_TASK_MAP.values()
 			.stream()
 			.map(IDownloader::taskWrapper)
 			.collect(Collectors.toList());

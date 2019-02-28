@@ -3,6 +3,7 @@ package com.acgist.snail.coder.torrent;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -63,4 +64,11 @@ public class TorrentFile {
 		this.pathUtf8 = pathUtf8;
 	}
 
+	public String path() {
+		if(CollectionUtils.isNotEmpty(pathUtf8)) {
+			return String.join("/", this.pathUtf8);
+		}
+		return String.join("/", this.path);
+	}
+	
 }
