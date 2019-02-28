@@ -20,10 +20,7 @@
 		<slf4j.version>1.7.25</slf4j.version>
 		<logback.version>1.2.3</logback.version>
 		<jackson.version>2.9.5</jackson.version>
-		<!--
 		<javafx.version>11.0.2</javafx.version>
-		-->
-		<javafx.version>12-ea+13</javafx.version>
 		<maven.jar.version>3.1.1</maven.jar.version>
 		<maven.compiler.version>3.8.0</maven.compiler.version>
 		<maven.dependency.version>3.1.1</maven.dependency.version>

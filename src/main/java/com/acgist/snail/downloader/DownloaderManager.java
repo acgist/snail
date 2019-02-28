@@ -16,6 +16,7 @@ import com.acgist.snail.repository.impl.TaskRepository;
 
 /**
  * 下载器执行器
+ * TODO：下载限速
  */
 public class DownloaderManager {
 
