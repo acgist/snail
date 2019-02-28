@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
+import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.window.AlertWindow;
 import com.acgist.snail.window.about.AboutWindow;
 import com.acgist.snail.window.build.BuildWindow;
@@ -147,7 +148,6 @@ public class MainController implements Initializable {
 	 * 设置行
 	 */
 	private void taskTableRow() {
-		MainController mainController = this;
 		this.taskTable.setRowFactory(new Callback<TableView<TaskWrapper>, TableRow<TaskWrapper>>() {
 			@Override
 			public TableRow<TaskWrapper> call(TableView<TaskWrapper> param) {
@@ -157,7 +157,7 @@ public class MainController implements Initializable {
 						// TODO：暂停
 					}
 				});
-				row.setContextMenu(TaskMenu.getInstance(mainController));
+				row.setContextMenu(TaskMenu.getInstance());
 				return row;
 			}
 		});		
@@ -238,9 +238,12 @@ public class MainController implements Initializable {
 	 * 删除任务
 	 */
 	public void delete() {
+		List<TaskWrapper> list = this.selected();
+		if(CollectionUtils.isEmpty(list)) {
+			return;
+		}
 		Optional<ButtonType> result = AlertWindow.build(AlertType.CONFIRMATION, "删除确认", "删除选中文件？");
 		if(result.get() == ButtonType.OK) {
-			List<TaskWrapper> list = this.selected();
 			list.forEach(wrapper -> {
 				DownloaderManager.getInstance().delete(wrapper);
 			});

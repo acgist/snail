@@ -1,6 +1,7 @@
 package com.acgist.snail.window;
 
 import javafx.application.Application;
+import javafx.fxml.Initializable;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -9,8 +10,9 @@ import javafx.stage.Stage;
 /**
  * 抽象窗口
  */
-public abstract class AbstractWindow extends Application {
+public abstract class AbstractWindow<T extends Initializable> extends Application {
 
+	protected T controller;
 	protected Stage stage;
 	
 	public AbstractWindow() {
@@ -69,6 +71,13 @@ public abstract class AbstractWindow extends Application {
 	 */
 	public boolean isShowing() {
 		return stage.isShowing();
+	}
+	
+	/**
+	 * 获取控制器
+	 */
+	public T controller() {
+		return controller;
 	}
 	
 }

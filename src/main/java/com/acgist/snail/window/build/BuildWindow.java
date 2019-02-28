@@ -14,7 +14,7 @@ import javafx.stage.Stage;
 /**
  * 新建窗口
  */
-public class BuildWindow extends AbstractWindow {
+public class BuildWindow extends AbstractWindow<BuildController> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BuildWindow.class);
 	
@@ -43,7 +43,9 @@ public class BuildWindow extends AbstractWindow {
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		FlowPane root = FXMLLoader.load(this.getClass().getResource("/fxml/BuildPane.fxml"));
+		FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/fxml/BuildPane.fxml"));
+		this.controller = loader.getController();
+		FlowPane root = loader.load();
 		Scene scene = new Scene(root, 600, 300);
 		stage.initModality(Modality.APPLICATION_MODAL);
 		stage.setScene(scene);

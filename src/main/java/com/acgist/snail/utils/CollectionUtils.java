@@ -1,5 +1,7 @@
 package com.acgist.snail.utils;
 
+import java.util.List;
+
 /**
  * 数组集合工具
  */
@@ -17,6 +19,14 @@ public class CollectionUtils {
 	 */
 	public static final boolean isNotEmpty(Object[] objects) {
 		return !isEmpty(objects);
+	}
+	
+	public static final boolean isEmpty(List<?> list) {
+		return list == null || list.isEmpty();
+	}
+	
+	public static final boolean isNotEmpty(List<?> list) {
+		return !isEmpty(list);
 	}
 	
 }
