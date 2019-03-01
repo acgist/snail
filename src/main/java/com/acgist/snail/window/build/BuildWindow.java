@@ -54,4 +54,9 @@ public class BuildWindow extends AbstractWindow<BuildController> {
 		dialogWindow();
 	}
 	
+	public void show(String url) {
+		controller.setUrl(url);
+		this.show();
+	}
+	
 }

@@ -1,11 +1,13 @@
 package com.acgist.snail.window.main;
 
+import java.io.File;
 import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import com.acgist.snail.coder.torrent.TorrentDecoder;
 import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
@@ -19,6 +21,7 @@ import javafx.beans.binding.DoubleBinding;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -30,6 +33,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.util.Callback;
@@ -79,6 +85,9 @@ public class MainController implements Initializable {
 		taskTable.prefHeightProperty().bind(root.prefHeightProperty().subtract(80D));
 		footerButton.prefWidthProperty().bind(root.widthProperty().multiply(0.5D));
 		footerStatus.prefWidthProperty().bind(root.widthProperty().multiply(0.5D));
+		// 文件拖拽
+		taskTable.setOnDragOver(dragOverAction);
+		taskTable.setOnDragDropped(dragDroppedAction);
 		// 设置定时刷新
 		TaskTimer.getInstance().newTimer(this);
 	}
@@ -239,6 +248,33 @@ public class MainController implements Initializable {
 			row.setContextMenu(TaskMenu.getInstance());
 			return row;
 		}
+	};
+	
+	private EventHandler<DragEvent> dragOverAction = (event) -> {
+		if (event.getGestureSource() != taskTable) {
+			Dragboard dragboard = event.getDragboard();
+			if(dragboard.hasFiles()) {
+				File file = dragboard.getFiles().get(0);
+				if(TorrentDecoder.verify(file.getPath())) {
+					event.acceptTransferModes(TransferMode.COPY);
+				} else {
+					event.acceptTransferModes(TransferMode.NONE);
+				}
+			} else {
+				event.acceptTransferModes(TransferMode.NONE);
+			}
+		}
+		event.consume();
+	};
+	
+	private EventHandler<DragEvent> dragDroppedAction = (event) -> {
+		Dragboard dragboard = event.getDragboard();
+		if (dragboard.hasFiles()) {
+			File file = dragboard.getFiles().get(0);
+			BuildWindow.getInstance().show(file.getPath());
+		}
+		event.setDropCompleted(true);
+		event.consume();
 	};
 	
 }

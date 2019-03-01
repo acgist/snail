@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.module.exception.DownloadException;
 import com.acgist.snail.pojo.wrapper.TorrentWrapper;
+import com.acgist.snail.utils.StringUtils;
 
 /**
  * 种子解码器
@@ -16,6 +17,8 @@ import com.acgist.snail.pojo.wrapper.TorrentWrapper;
 public class TorrentDecoder {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentDecoder.class);
+	
+	public static final String TORRENT_SUFFIX = ".torrent"; // 文件后缀
 	
 	private String hash = null;
 	private TorrentInfo torrentInfo = null;
@@ -128,6 +131,10 @@ public class TorrentDecoder {
 		}
 		this.torrentInfo = torrentInfo;
 		this.hash = hashBuilder.hash();
+	}
+	
+	public static final boolean verify(String url) {
+		return StringUtils.endsWith(url, TORRENT_SUFFIX);
 	}
 	
 }
