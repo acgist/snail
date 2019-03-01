@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.DownloaderBuilder;
+import com.acgist.snail.module.config.DownloadConfig;
 import com.acgist.snail.module.exception.DownloadException;
 import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.window.AlertWindow;
@@ -39,10 +40,11 @@ public class BuildController implements Initializable {
 	public void handleTorrentAction(ActionEvent event) {
 		FileChooser chooser = new FileChooser();
 		chooser.setTitle("选择种子文件");
-//		chooser.setSelectedExtensionFilter(new ExtensionFilter("种子文件", "*.torrent")); // 无效写法
+		DownloadConfig.lastPath(chooser);
 		chooser.getExtensionFilters().add(new ExtensionFilter("种子文件", "*.torrent"));
 		File file = chooser.showOpenDialog(new Stage());
 		if (file != null) {
+			DownloadConfig.setDownloadLastPath(file.getParent());
 			urlValue.setText(file.getPath());
 		}
 	}
