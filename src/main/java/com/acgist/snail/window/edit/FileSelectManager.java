@@ -4,11 +4,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 import com.acgist.snail.utils.FileUtils;
-import com.acgist.snail.utils.StringUtils;
 
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -20,15 +21,18 @@ import javafx.scene.text.Text;
  */
 public class FileSelectManager {
 
+	private Button download;
 	private TreeItem<HBox> root;
+	private Map<CheckBox, Long> sizeMap = new HashMap<>();
 	private Map<String, CheckBox> checkBoxMap = new HashMap<>();
 	private Map<String, TreeItem<HBox>> treeItemMap = new HashMap<>();
 
-	public FileSelectManager(String name, TreeView<HBox> tree) {
+	public FileSelectManager(String name, Button download, TreeView<HBox> tree) {
 		TreeItem<HBox> root = builcTreeItem(null, "", name, null);
 		root.setExpanded(true);
 		tree.setRoot(root);
 		this.root = root;
+		this.download = download;
 	}
 
 	public void build(String path, Long size) {
@@ -64,6 +68,7 @@ public class FileSelectManager {
 		HBox box = new HBox(checkBox);
 		if(size != null) {
 			Text text = new Text(FileUtils.size(size));
+			sizeMap.put(checkBox, size);
 			box.getChildren().add(text);
 		}
 		check(checkBox);
@@ -91,19 +96,29 @@ public class FileSelectManager {
 			}).forEach(entry -> {
 				entry.getValue().setSelected(selected);
 			});
+			AtomicLong totalSize = new AtomicLong(0L);
+			checkBoxMap.entrySet()
+			.stream()
+			.filter(entry -> entry.getValue().isSelected())
+			.forEach(entry -> {
+				Long size = sizeMap.get(entry.getValue());
+				if(size != null) {
+					totalSize.addAndGet(size);
+				}
+			});
+			download.setText("下载（" + FileUtils.size(totalSize.longValue()) + "）");
 		});
 	}
 	
 	/**
 	 * 获取选择的文件
 	 */
-	public List<String> selected() {
+	public List<String> description() {
 		return checkBoxMap.entrySet()
 		.stream()
+		.filter(entry -> sizeMap.containsKey(entry.getValue()))
 		.filter(entry -> entry.getValue().isSelected())
 		.map(Entry::getKey)
-		.filter(path -> StringUtils.isNotEmpty(path))
-		.filter(path -> !path.endsWith("/"))
 		.collect(Collectors.toList());
 	}
 	

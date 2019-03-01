@@ -7,7 +7,7 @@
 
 <FlowPane
 	fx:id="root"
-	styleClass="build" stylesheets="@/style/BuildPane.css"
+	styleClass="root,build" stylesheets="@/style/fxml.css"
 	fx:controller="com.acgist.snail.window.build.BuildController"
 	xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
 

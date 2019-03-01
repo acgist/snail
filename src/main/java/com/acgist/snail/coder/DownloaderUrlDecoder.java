@@ -22,6 +22,7 @@ import com.acgist.snail.pojo.wrapper.TaskWrapper;
 import com.acgist.snail.pojo.wrapper.TorrentWrapper;
 import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.utils.FileUtils;
+import com.acgist.snail.window.edit.EditWindow;
 
 /**
  * 下载地址转换：
@@ -78,6 +79,7 @@ public class DownloaderUrlDecoder {
 		buildMessage();
 		buildWrapper();
 		buildTask();
+		selectTorrentFile();
 		return taskWrapper;
 	}
 
@@ -106,7 +108,7 @@ public class DownloaderUrlDecoder {
 		entity.setSize(size);
 		this.taskWrapper = new TaskWrapper(entity);
 	}
-	
+
 	/**
 	 * 预处理：去空格、格式转换
 	 */
@@ -255,6 +257,13 @@ public class DownloaderUrlDecoder {
 		}
 		TaskRepository repository = new TaskRepository();
 		repository.save(this.taskWrapper.getEntity());
+	}
+	
+	/**
+	 * BT下载选择下载文件
+	 */
+	private void selectTorrentFile() {
+		EditWindow.getInstance().show(this.taskWrapper);
 	}
 	
 }

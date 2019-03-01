@@ -8,7 +8,7 @@
 
 <BorderPane
 	fx:id="root"
-	styleClass="main" stylesheets="@/style/MainPane.css"
+	styleClass="root,main" stylesheets="@/style/fxml.css"
 	fx:controller="com.acgist.snail.window.main.MainController"
 	xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
 	
@@ -24,7 +24,7 @@
 	</top>
 	
 	<center>
-		<TableView fx:id="taskTable">
+		<TableView fx:id="taskTable" styleClass="taskTable">
 			<columns>
 				<!--
 				下载文件名称：轻音少女（点击名称查看详情）
@@ -58,13 +58,13 @@
 	</center>
 	
 	<bottom>
-		<HBox fx:id="fooder" styleClass="fooder">
-			<HBox fx:id="fooderButton" styleClass="fooderButton">
+		<HBox fx:id="footer" styleClass="footer">
+			<HBox fx:id="footerButton" styleClass="footerButton">
 				<Button fx:id="all" text="全部" onAction="#handleAllAction" />
 				<Button fx:id="downloading" text="下载中" onAction="#handleDownloadingAction" />
 				<Button fx:id="complete" text="下载完成" onAction="#handleCompleteAction" />
 			</HBox>
-			<HBox fx:id="fooderStatus" styleClass="fooderStatus">
+			<HBox fx:id="footerStatus" styleClass="footerStatus">
 				<Label fx:id="downloadSize" text="10">
 					<tooltip>
 						<Tooltip text="下载任务数量" />

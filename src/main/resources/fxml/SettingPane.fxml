@@ -7,7 +7,7 @@
 
 <FlowPane
 	fx:id="root"
-	styleClass="setting" stylesheets="@/style/SettingPane.css"
+	styleClass="root,setting" stylesheets="@/style/fxml.css"
 	fx:controller="com.acgist.snail.window.setting.SettingController"
 	xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
 	

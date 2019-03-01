@@ -1,0 +1,96 @@
+/**通用样式*/
+.root {
+	-fx-font-size:16;
+	-fx-alignment:center;
+}
+.root .tooltip {
+	-fx-background-radius:0;
+}
+.root Button {
+	/**
+	-fx-background-radius:0;
+	*/
+}
+/**MainPane.fxml*/
+.main .header {
+	-fx-padding:2;
+	-fx-pref-height:40;
+	-fx-alignment:center_left;
+}
+.main .footer {
+	-fx-padding:2;
+	-fx-pref-height:40;
+}
+.main .footer .footerButton {
+	-fx-alignment:center_left;
+}
+.main .footer .footerStatus {
+	-fx-font-size:14;
+	-fx-alignment:center_right;
+}
+.main .footer .footerStatus Label {
+	-fx-padding:0 2;
+}
+.main .taskTable HBox {
+	-fx-padding:4;
+	-fx-pref-height:40;
+}
+.main .taskTable TableRow:selected Text {
+	-fx-fill:white;
+}
+/**
+糟糕的配置隐藏水平滚动
+.table-view > .virtual-flow > .scroll-bar:horizontal {
+	-fx-opacity:0;
+	-fx-padding:-10;
+}
+*/
+/**AboutPane.fxml*/
+.about {
+}
+/**BuildPane.fxml*/
+.build .urlValue {
+	-fx-padding:10 0;
+}
+.build .urlValue TextFlow {
+	-fx-padding:0 10 0 0;
+}
+.build .urlValue TextField {
+	-fx-pref-width:400;
+}
+.build .option {
+	-fx-alignment:center_right;
+}
+.build .option .cancel {
+	-fx-padding:0 10;
+}
+/**EditPane.fxml*/
+.edit .tree {
+	-fx-background-color:transparent;
+}
+.edit .downloadBox {
+	-fx-alignment:center;
+}
+/**SettingPane.fxml*/
+.setting .scrollPane {
+	-fx-background-color:transparent;
+}
+.setting HBox {
+	-fx-padding:6 0;
+}
+.setting .name {
+	-fx-pref-width:200;
+	-fx-text-alignment:right;
+}
+.setting .slider {
+	-fx-pref-width:300;
+}
+.setting .path Button {
+	-fx-padding:6 10;
+}
+.setting .path TextFlow {
+	-fx-padding:6 0;
+}
+.setting .path .pathValue {
+	-fx-padding:6;
+}

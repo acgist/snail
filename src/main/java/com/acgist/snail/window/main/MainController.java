@@ -43,11 +43,11 @@ public class MainController implements Initializable {
 	@FXML
 	private HBox header;
 	@FXML
-	private HBox fooder;
+	private HBox footer;
 	@FXML
-	private HBox fooderButton;
+	private HBox footerButton;
 	@FXML
-	private HBox fooderStatus;
+	private HBox footerStatus;
 	@FXML
 	private TableView<TaskWrapper> taskTable;
 	@FXML
@@ -182,8 +182,8 @@ public class MainController implements Initializable {
 	private void initView() {
 		taskTable.prefWidthProperty().bind(root.widthProperty());
 		taskTable.prefHeightProperty().bind(root.prefHeightProperty().subtract(80D));
-		fooderButton.prefWidthProperty().bind(root.widthProperty().multiply(0.5D));
-		fooderStatus.prefWidthProperty().bind(root.widthProperty().multiply(0.5D));
+		footerButton.prefWidthProperty().bind(root.widthProperty().multiply(0.5D));
+		footerStatus.prefWidthProperty().bind(root.widthProperty().multiply(0.5D));
 		TaskTimer.getInstance().newTimer(this);
 	}
 	

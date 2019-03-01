@@ -3,11 +3,13 @@ package com.acgist.snail.window.edit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.pojo.wrapper.TaskWrapper;
 import com.acgist.snail.window.AbstractWindow;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.FlowPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
@@ -46,10 +48,16 @@ public class EditWindow extends AbstractWindow<EditController> {
 		FlowPane root = loader.load();
 		this.controller = loader.getController();
 		Scene scene = new Scene(root, 800, 600);
+		stage.initModality(Modality.APPLICATION_MODAL);
 		stage.setScene(scene);
 		stage.setTitle("编辑任务");
 		disableResize();
 		dialogWindow();
+	}
+	
+	public void show(TaskWrapper wrapper) {
+		this.controller.tree(wrapper);
+		this.show();
 	}
 	
 }

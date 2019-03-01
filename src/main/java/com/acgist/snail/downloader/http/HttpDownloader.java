@@ -12,7 +12,10 @@ public class HttpDownloader extends AbstractDownloader implements IDownloader {
 
 	@Override
 	public void run() {
-		
+	}
+
+	@Override
+	public void refresh() {
 	}
 
 }
