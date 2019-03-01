@@ -3,11 +3,14 @@ package com.acgist.snail.pojo.wrapper;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import com.acgist.snail.module.config.FileTypeConfig.FileType;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
+import com.acgist.snail.utils.JSONUtils;
+import com.acgist.snail.utils.StringUtils;
 
 /**
  * TaskEntity封装
@@ -45,6 +48,22 @@ public class TaskWrapper{
 			return file;
 		} else {
 			return file.getParentFile();
+		}
+	}
+	
+	/**
+	 * 获取已选择的下载文件
+	 * TODO：泛型
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> files() {
+		if(this.getType() != Type.torrent) {
+			return List.of();
+		}
+		if(StringUtils.isEmpty(this.getDescription())) {
+			return List.of();
+		} else {
+			return JSONUtils.jsonToJava(this.getDescription(), List.class);
 		}
 	}
 	

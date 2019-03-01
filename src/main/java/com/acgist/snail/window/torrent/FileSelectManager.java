@@ -25,9 +25,9 @@ public class FileSelectManager {
 
 	private Button download;
 	private TreeItem<HBox> root;
-	private Map<CheckBox, Long> sizeMap = new HashMap<>();
-	private Map<String, CheckBox> checkBoxMap = new HashMap<>();
-	private Map<String, TreeItem<HBox>> treeItemMap = new HashMap<>();
+	private Map<CheckBox, Long> sizeMap;
+	private Map<String, CheckBox> checkBoxMap;
+	private Map<String, TreeItem<HBox>> treeItemMap;
 
 	/**
 	 * 选择器
@@ -36,6 +36,9 @@ public class FileSelectManager {
 	 * @param tree 属性菜单
 	 */
 	public FileSelectManager(String name, Button download, TreeView<HBox> tree) {
+		this.sizeMap = new HashMap<>();
+		this.checkBoxMap = new HashMap<>();
+		this.treeItemMap = new HashMap<>();
 		TreeItem<HBox> root = builcTreeItem(null, "", name, null);
 		root.setExpanded(true);
 		tree.setRoot(root);
@@ -76,6 +79,24 @@ public class FileSelectManager {
 		.filter(entry -> entry.getValue().isSelected())
 		.map(Entry::getKey)
 		.collect(Collectors.toList());
+	}
+
+	/**
+	 * 设置已选中信息
+	 */
+	public void select(List<String> list) {
+		if(list == null) {
+			this.download.setText("下载");
+			return;
+		}
+		checkBoxMap.entrySet()
+		.stream()
+		.forEach(entry -> {
+			if(list.contains(entry.getKey())) {
+				entry.getValue().setSelected(true);
+			}
+		});
+		this.selectSize();
 	}
 	
 	/**
@@ -124,14 +145,13 @@ public class FileSelectManager {
 		}).forEach(entry -> {
 			entry.getValue().setSelected(selected);
 		});
-		long totalSize = selectSize();
-		download.setText("下载（" + FileUtils.size(totalSize) + "）");
+		selectSize();
 	};
 	
 	/**
 	 * 已选择文件总大小
 	 */
-	private long selectSize() {
+	private void selectSize() {
 		AtomicLong totalSize = new AtomicLong(0L);
 		checkBoxMap.entrySet()
 		.stream()
@@ -142,7 +162,7 @@ public class FileSelectManager {
 				totalSize.addAndGet(size);
 			}
 		});
-		return totalSize.longValue();
+		download.setText("下载（" + FileUtils.size(totalSize.longValue()) + "）");
 	}
 	
 }

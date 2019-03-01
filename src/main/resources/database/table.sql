@@ -20,6 +20,6 @@ create table tb_task (
     `status` VARCHAR(32) DEFAULT NULL,
     `size` INT(11) DEFAULT NULL,
     `endDate` TIMESTAMP DEFAULT NULL,
-    `description` VARCHAR(1024) DEFAULT NULL,
+    `description` VARCHAR(10240) DEFAULT NULL,
 	PRIMARY KEY (`id`)
 );

@@ -2,6 +2,7 @@ package com.acgist.snail.pojo.wrapper;
 
 import com.acgist.snail.coder.torrent.TorrentFiles;
 import com.acgist.snail.coder.torrent.TorrentInfo;
+import com.acgist.snail.module.exception.DownloadException;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -11,7 +12,10 @@ public class TorrentWrapper {
 
 	private TorrentInfo torrentInfo;
 
-	public TorrentWrapper(TorrentInfo torrentInfo) {
+	public TorrentWrapper(TorrentInfo torrentInfo) throws DownloadException {
+		if(torrentInfo == null) {
+			throw new DownloadException("解析种子文件异常");
+		}
 		this.torrentInfo = torrentInfo;
 	}
 

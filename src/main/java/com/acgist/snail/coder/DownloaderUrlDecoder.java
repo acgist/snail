@@ -21,6 +21,7 @@ import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
 import com.acgist.snail.pojo.wrapper.TorrentWrapper;
 import com.acgist.snail.repository.impl.TaskRepository;
+import com.acgist.snail.service.TaskService;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.window.torrent.TorrentWindow;
 
@@ -31,6 +32,8 @@ import com.acgist.snail.window.torrent.TorrentWindow;
  */
 public class DownloaderUrlDecoder {
 
+//	private static final Logger LOGGER = LoggerFactory.getLogger(DownloaderUrlDecoder.class);
+	
 	/**
 	 * 下载类型获取
 	 */
@@ -209,6 +212,10 @@ public class DownloaderUrlDecoder {
 	 */
 	private void file() throws DownloadException {
 		this.file = DownloadConfig.getDownloadPath(this.fileName);
+		File file = new File(this.file);
+		if(file.exists()) {
+			throw new DownloadException("下载文件已存在：" + this.file);
+		}
 		if(this.type == Type.torrent) {
 			File folder = new File(this.file);
 			if(!folder.exists()) {
@@ -263,7 +270,14 @@ public class DownloaderUrlDecoder {
 	 * BT下载选择下载文件
 	 */
 	private void selectTorrentFile() {
-		TorrentWindow.getInstance().show(this.taskWrapper);
+		if(this.type == Type.torrent) {
+			TorrentWindow.getInstance().show(this.taskWrapper);
+			if(taskWrapper.files().isEmpty()) {
+				TaskService service = new TaskService();
+				service.delete(taskWrapper);
+				this.taskWrapper = null;
+			}
+		}
 	}
 	
 }
