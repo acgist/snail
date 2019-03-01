@@ -57,7 +57,7 @@ public class TorrentWindow extends AbstractWindow<TorrentController> {
 	
 	public void show(TaskWrapper wrapper) {
 		this.controller.tree(wrapper);
-		this.show();
+		this.showAndWait();
 	}
 	
 }

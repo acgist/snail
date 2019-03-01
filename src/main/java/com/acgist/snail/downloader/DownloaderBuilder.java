@@ -59,7 +59,9 @@ public class DownloaderBuilder {
 	 * 执行下载
 	 */
 	private void builderDownloader() {
-		DownloaderManager.getInstance().submit(new HttpDownloader(wrapper));
+		if(wrapper != null) {
+			DownloaderManager.getInstance().submit(new HttpDownloader(wrapper));
+		}
 	}
 	
 }

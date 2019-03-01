@@ -11,5 +11,5 @@ public class TaskRepository extends BaseRepository<TaskEntity> {
 	public TaskRepository() {
 		super(TaskEntity.TABLE_NAME);
 	}
-
+	
 }

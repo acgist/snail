@@ -126,9 +126,30 @@ public class TorrentFiles {
 	public void setFiles(List<TorrentFile> files) {
 		this.files = files;
 	}
-
+	
 	public TorrentFile lastTorrentFile() {
 		return this.files.get(this.files.size() - 1);
+	}
+	
+	/**
+	 * 列出下载文件（兼容单个文件）
+	 */
+	public List<TorrentFile> files() {
+		if(files.isEmpty()) {
+			TorrentFile file = new TorrentFile();
+			file.setEd2k(this.ed2k);
+			file.setFilehash(this.filehash);
+			file.setLength(this.length);
+			if(this.name != null) {
+				file.setPath(List.of(this.name));
+			}
+			if(this.nameUtf8 != null) {
+				file.setPathUtf8(List.of(this.nameUtf8));
+			}
+			return List.of(file);
+		} else {
+			return files;
+		}
 	}
 	
 }

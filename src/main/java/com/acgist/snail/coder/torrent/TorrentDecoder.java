@@ -7,6 +7,7 @@ import java.io.InputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.module.exception.DownloadException;
 import com.acgist.snail.pojo.wrapper.TorrentWrapper;
 
 /**
@@ -52,7 +53,7 @@ public class TorrentDecoder {
 	/**
 	 * 获取种子信息
 	 */
-	public TorrentWrapper torrentWrapper() {
+	public TorrentWrapper torrentWrapper() throws DownloadException {
 		return new TorrentWrapper(torrentInfo);
 	}
 	

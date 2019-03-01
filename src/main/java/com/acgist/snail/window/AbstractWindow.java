@@ -60,6 +60,13 @@ public abstract class AbstractWindow<T extends Initializable> extends Applicatio
 	}
 	
 	/**
+	 * 显示窗口
+	 */
+	public void showAndWait() {
+		stage.showAndWait();
+	}
+	
+	/**
 	 * 隐藏窗口
 	 */
 	public void hide() {

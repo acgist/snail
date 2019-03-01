@@ -58,9 +58,14 @@ public class TorrentController implements Initializable {
 		this.wrapper = wrapper;
 		TreeView<HBox> tree = buildTree();
 		TorrentDecoder decoder = TorrentDecoder.newInstance(wrapper.getTorrent());
-		TorrentFiles files = decoder.torrentInfo().getInfo();
+		var info = decoder.torrentInfo();
+		if(info == null) {
+			AlertWindow.warn("下载出错", "种子文件解析异常");
+			return;
+		}
+		TorrentFiles files = info.getInfo();
 		manager = new FileSelectManager(files.getName(), download, tree);
-		files.getFiles()
+		files.files()
 		.stream()
 		.filter(file -> !file.path().startsWith(HIDE_FILE_PREFIX))
 		.sorted((a, b) -> {
@@ -69,6 +74,7 @@ public class TorrentController implements Initializable {
 		.forEach(file -> {
 			manager.build(file.path(), file.getLength());
 		});
+		manager.select(wrapper.files());
 	}
 	
 	/**
