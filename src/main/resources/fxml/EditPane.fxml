@@ -7,10 +7,13 @@
 
 <FlowPane
 	fx:id="root"
-	styleClass="edit" stylesheets="@/style/EditPane.css"
+	styleClass="root,edit" stylesheets="@/style/fxml.css"
 	fx:controller="com.acgist.snail.window.edit.EditController"
 	xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
 	
-	<TreeView fx:id="tree" />
+	<VBox fx:id="treeBox"></VBox>
+	<VBox fx:id="downloadBox" styleClass="downloadBox">
+		<Button fx:id="download">下载</Button>
+	</VBox>
 	
 </FlowPane>

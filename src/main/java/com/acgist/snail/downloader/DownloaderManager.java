@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.module.config.DownloadConfig;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
-import com.acgist.snail.repository.impl.TaskRepository;
 
 /**
  * 下载器执行器
@@ -81,12 +80,16 @@ public class DownloaderManager {
 	public void delete(TaskWrapper wrapper) {
 		LOGGER.info("删除任务：{}", wrapper.getName());
 		downloader(wrapper).delete();
-		final String id = wrapper.getId();
-		TaskRepository repository = new TaskRepository();
-		repository.delete(id);
-		DOWNLOADER_TASK_MAP.remove(id);
+		DOWNLOADER_TASK_MAP.remove(wrapper.getId());
 	}
 
+	/**
+	 * 刷新任务
+	 */
+	public void refresh(TaskWrapper wrapper) {
+		downloader(wrapper).refresh();
+	}
+	
 	/**
 	 * 获取下载任务
 	 */

@@ -8,7 +8,7 @@
 <GridPane
 	fx:id="root"
 	hgap="7" vgap="3"
-	styleClass="about" stylesheets="@/style/AboutPane.css"
+	styleClass="root,about" stylesheets="@/style/fxml.css"
 	fx:controller="com.acgist.snail.window.about.AboutController"
 	xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
 	

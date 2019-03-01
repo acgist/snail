@@ -37,4 +37,9 @@ public interface IDownloader extends Runnable {
 	 */
 	void delete();
 	
+	/**
+	 * 刷新任务
+	 */
+	void refresh();
+	
 }

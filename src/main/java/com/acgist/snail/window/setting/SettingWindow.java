@@ -50,6 +50,7 @@ public class SettingWindow extends AbstractWindow<SettingController> {
 		stage.initModality(Modality.APPLICATION_MODAL);
 		stage.setScene(scene);
 		stage.setTitle("设置");
+		disableResize();
 		dialogWindow();
 	}
 	
