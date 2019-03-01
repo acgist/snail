@@ -15,6 +15,7 @@ import com.acgist.snail.window.build.BuildWindow;
 import com.acgist.snail.window.menu.TaskMenu;
 import com.acgist.snail.window.setting.SettingWindow;
 
+import javafx.beans.binding.DoubleBinding;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -63,10 +64,23 @@ public class MainController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		this.taskTableMultiple();
-		this.taskTableColumn();
-		this.taskTableRow();
-		this.initView();
+		// 设置多选
+		this.taskTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+		// 设置列
+		taskCell(name, Pos.CENTER_LEFT, true, "nameValue", taskTable.widthProperty().divide(5D));
+		taskCell(status, Pos.CENTER, false, "statusValue", taskTable.widthProperty().divide(10D));
+		taskCell(progress, Pos.CENTER_LEFT, false, "progressValue", taskTable.widthProperty().divide(5D).subtract(20));
+		taskCell(createDate, Pos.CENTER, false, "createDateValue", taskTable.widthProperty().divide(4D));
+		taskCell(endDate, Pos.CENTER, false, "endDateValue", taskTable.widthProperty().divide(4D));
+		// 设置行
+		this.taskTable.setRowFactory(rowFactory);		
+		// 绑定属性
+		taskTable.prefWidthProperty().bind(root.widthProperty());
+		taskTable.prefHeightProperty().bind(root.prefHeightProperty().subtract(80D));
+		footerButton.prefWidthProperty().bind(root.widthProperty().multiply(0.5D));
+		footerStatus.prefWidthProperty().bind(root.widthProperty().multiply(0.5D));
+		// 设置定时刷新
+		TaskTimer.getInstance().newTimer(this);
 	}
 
 	@FXML
@@ -112,85 +126,9 @@ public class MainController implements Initializable {
 	}
 	
 	/**
-	 * 设置多选
-	 */
-	private void taskTableMultiple() {
-		this.taskTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-	}
-
-	/**
-	 * 设置列
-	 */
-	private void taskTableColumn() {
-		name.prefWidthProperty().bind(taskTable.widthProperty().divide(5D));
-		status.prefWidthProperty().bind(taskTable.widthProperty().divide(10D));
-		progress.prefWidthProperty().bind(taskTable.widthProperty().divide(5D).subtract(20));
-		createDate.prefWidthProperty().bind(taskTable.widthProperty().divide(4D));
-		endDate.prefWidthProperty().bind(taskTable.widthProperty().divide(4D));
-		name.setResizable(false);
-		name.setCellValueFactory(new PropertyValueFactory<TaskWrapper, String>("nameValue"));
-		taskCell(name, Pos.CENTER_LEFT, true);
-		status.setResizable(false);
-		status.setCellValueFactory(new PropertyValueFactory<TaskWrapper, String>("statusValue"));
-		taskCell(status, Pos.CENTER, false);
-		progress.setResizable(false);
-		progress.setCellValueFactory(new PropertyValueFactory<TaskWrapper, String>("progressValue"));
-		taskCell(progress, Pos.CENTER_LEFT, false);
-		createDate.setResizable(false);
-		createDate.setCellValueFactory(new PropertyValueFactory<TaskWrapper, String>("createDateValue"));
-		taskCell(createDate, Pos.CENTER, false);
-		endDate.setResizable(false);
-		endDate.setCellValueFactory(new PropertyValueFactory<TaskWrapper, String>("endDateValue"));
-		taskCell(endDate, Pos.CENTER, false);
-	}
-	
-	/**
-	 * 设置行
-	 */
-	private void taskTableRow() {
-		this.taskTable.setRowFactory(new Callback<TableView<TaskWrapper>, TableRow<TaskWrapper>>() {
-			@Override
-			public TableRow<TaskWrapper> call(TableView<TaskWrapper> param) {
-				TableRow<TaskWrapper> row = new TableRow<>();
-				row.setOnMouseClicked((event) -> {
-					if(event.getClickCount() == 2) {
-						// TODO：暂停
-					}
-				});
-				row.setContextMenu(TaskMenu.getInstance());
-				return row;
-			}
-		});		
-	}
-	
-	/**
-	 * 设置列
-	 */
-	private void taskCell(TableColumn<TaskWrapper, String> column, Pos pos, boolean name) {
-		column.setCellFactory(new Callback<TableColumn<TaskWrapper, String>, TableCell<TaskWrapper, String>>() {
-			@Override
-			public TableCell<TaskWrapper, String> call(TableColumn<TaskWrapper, String> param) {
-				return new TaskCell(pos, name);
-//				return new TextFieldTableCell<>();
-			}
-		});
-	}
-
-	/**
-	 * 初始控件
-	 */
-	private void initView() {
-		taskTable.prefWidthProperty().bind(root.widthProperty());
-		taskTable.prefHeightProperty().bind(root.prefHeightProperty().subtract(80D));
-		footerButton.prefWidthProperty().bind(root.widthProperty().multiply(0.5D));
-		footerStatus.prefWidthProperty().bind(root.widthProperty().multiply(0.5D));
-		TaskTimer.getInstance().newTimer(this);
-	}
-	
-	/**
 	 * 设置数据
 	 */
-	public void setTaskTable(List<TaskWrapper> list) {
+	public void taskTable(List<TaskWrapper> list) {
 		ObservableList<TaskWrapper> obs = FXCollections.observableArrayList();
 		list.forEach(wrapper -> {
 			obs.add(wrapper);
@@ -199,14 +137,14 @@ public class MainController implements Initializable {
 	}
 	
 	/**
-	 * 设置数据
+	 * 刷新数据
 	 */
 	public void refresh() {
 		taskTable.refresh();
 	}
 	
 	/**
-	 * 获取被选中的信息
+	 * 选中数据
 	 */
 	public List<TaskWrapper> selected() {
 		return this.taskTable.getSelectionModel().getSelectedItems()
@@ -215,17 +153,17 @@ public class MainController implements Initializable {
 	}
 	
 	/**
-	 * 是否选中
+	 * 是否选中数据
 	 */
 	public boolean hasContent() {
-		return !selected().isEmpty();
+		return !this.selected().isEmpty();
 	}
 	
 	/**
-	 * 选中内容是否包含BT下载
+	 * 选中数据是否包含BT下载
 	 */
 	public boolean hasTorrent() {
-		return selected()
+		return this.selected()
 			.stream()
 			.anyMatch(wrapper -> wrapper.getType() == Type.torrent);
 	}
@@ -234,8 +172,8 @@ public class MainController implements Initializable {
 	 * 开始任务
 	 */
 	public void start() {
-		List<TaskWrapper> list = this.selected();
-		list.forEach(wrapper -> {
+		this.selected()
+		.forEach(wrapper -> {
 			DownloaderManager.getInstance().start(wrapper);
 		});
 		TaskTimer.getInstance().refreshTaskData();
@@ -245,8 +183,8 @@ public class MainController implements Initializable {
 	 * 暂停任务
 	 */
 	public void pause() {
-		List<TaskWrapper> list = this.selected();
-		list.forEach(wrapper -> {
+		this.selected()
+		.forEach(wrapper -> {
 			DownloaderManager.getInstance().pause(wrapper);
 		});
 		TaskTimer.getInstance().refreshTaskData();
@@ -261,12 +199,46 @@ public class MainController implements Initializable {
 		}
 		Optional<ButtonType> result = AlertWindow.build(AlertType.CONFIRMATION, "删除确认", "删除选中文件？");
 		if(result.get() == ButtonType.OK) {
-			List<TaskWrapper> list = this.selected();
-			list.forEach(wrapper -> {
+			this.selected()
+			.forEach(wrapper -> {
 				DownloaderManager.getInstance().delete(wrapper);
 			});
 			TaskTimer.getInstance().refreshTaskTable();
 		}
 	}
 
+	/**
+	 * 设置列
+	 * @param column 列
+	 * @param pos 对齐
+	 * @param name 列名
+	 * @param propertyBinding 属性绑定
+	 * @param widthBinding 宽度绑定
+	 */
+	private void taskCell(TableColumn<TaskWrapper, String> column, Pos pos, boolean name, String propertyBinding, DoubleBinding widthBinding) {
+		column.prefWidthProperty().bind(widthBinding);
+		column.setResizable(false);
+		column.setCellValueFactory(new PropertyValueFactory<TaskWrapper, String>(propertyBinding));
+		column.setCellFactory(new Callback<TableColumn<TaskWrapper, String>, TableCell<TaskWrapper, String>>() {
+			@Override
+			public TableCell<TaskWrapper, String> call(TableColumn<TaskWrapper, String> param) {
+				return new TaskCell(pos, name);
+			}
+		});
+	}
+	
+	private Callback<TableView<TaskWrapper>, TableRow<TaskWrapper>> rowFactory = new Callback<TableView<TaskWrapper>, TableRow<TaskWrapper>>() {
+		@Override
+		public TableRow<TaskWrapper> call(TableView<TaskWrapper> param) {
+			TableRow<TaskWrapper> row = new TableRow<>();
+			row.setOnMouseClicked((event) -> {
+				if(event.getClickCount() == 2) {
+					// TODO：暂停
+				}
+			});
+			row.setContextMenu(TaskMenu.getInstance());
+			return row;
+		}
+	};
+	
 }

@@ -43,7 +43,7 @@ public class BuildWindow extends AbstractWindow<BuildController> {
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/fxml/BuildPane.fxml"));
+		FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/fxml/build.fxml"));
 		FlowPane root = loader.load();
 		this.controller = loader.getController();
 		Scene scene = new Scene(root, 600, 300);

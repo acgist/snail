@@ -18,6 +18,8 @@ import com.acgist.snail.window.about.AboutWindow;
 import com.acgist.snail.window.main.MainWindow;
 
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
@@ -71,41 +73,14 @@ public class TrayMenu extends ContextMenu {
 		MenuItem sourceMenu = new MenuItem("官网与源码", new ImageView("/image/16/source.png"));
 		MenuItem supportMenu = new MenuItem("问题与建议", new ImageView("/image/16/support.png"));
 		
-		showMenu.setOnAction((event) -> {
-			Platform.runLater(() -> {
-				MainWindow.getInstance().show();
-			});
-		});
+		showMenu.setOnAction(showAction);
+		hideMenu.setOnAction(hideAction);
+		exitMenu.setOnAction(exitAction);
+		aboutMenu.setOnAction(aboutAction);
+		sourceMenu.setOnAction(sourceAction);
+		supportMenu.setOnAction(supportAction);
 		
-		hideMenu.setOnAction((event) -> {
-			Platform.runLater(() -> {
-				MainWindow.getInstance().hide();
-			});
-		});
-		
-		exitMenu.setOnAction((event) -> {
-			PlatformUtils.exit();
-		});
-		
-		aboutMenu.setOnAction((event) -> {
-			AboutWindow.getInstance().show();
-		});
-		
-		sourceMenu.setOnAction((event) -> {
-			BrowseUtils.open(SystemConfig.getSource());
-		});
-		
-		supportMenu.setOnAction((event) -> {
-			BrowseUtils.open(SystemConfig.getSupport());
-		});
-		
-		this.addEventFilter(WindowEvent.WINDOW_HIDDEN, (event) -> { // 窗口隐藏时移除托盘显示的窗口
-			Platform.runLater(() -> {
-				if(trayStage != null) {
-					trayStage.close();
-				}
-			});
-		});
+		this.addEventFilter(WindowEvent.WINDOW_HIDDEN, windowHiddenAction);
 		
 		this.getItems().add(showMenu);
 		this.getItems().add(hideMenu);
@@ -151,7 +126,7 @@ public class TrayMenu extends ContextMenu {
 	/**
 	 * 关闭托盘
 	 */
-	public static void exit() {
+	public static final void exit() {
 		TrayIcon trayIcon = TrayMenu.getInstance().trayIcon;
 		SystemTray.getSystemTray().remove(trayIcon);
 	}
@@ -175,5 +150,42 @@ public class TrayMenu extends ContextMenu {
 		this.trayStage = trayStage;
 		return trayStage;
 	}
+	
+	private EventHandler<ActionEvent> showAction = (event) -> {
+		Platform.runLater(() -> {
+			MainWindow.getInstance().show();
+		});
+	};
+	
+	private EventHandler<ActionEvent> hideAction = (event) -> {
+		Platform.runLater(() -> {
+			MainWindow.getInstance().hide();
+		});
+	};
+	
+	private EventHandler<ActionEvent> exitAction = (event) -> {
+		PlatformUtils.exit();
+	};
+	
+	private EventHandler<ActionEvent> aboutAction = (event) -> {
+		AboutWindow.getInstance().show();
+	};
+	
+	private EventHandler<ActionEvent> sourceAction = (event) -> {
+		BrowseUtils.open(SystemConfig.getSource());
+	};
+	
+	private EventHandler<ActionEvent> supportAction = (event) -> {
+		BrowseUtils.open(SystemConfig.getSupport());
+	};
+	
+	// 窗口隐藏时移除托盘显示的Stage
+	private EventHandler<WindowEvent> windowHiddenAction = (event) -> {
+		Platform.runLater(() -> {
+			if(trayStage != null) {
+				trayStage.close();
+			}
+		});
+	};
 	
 }

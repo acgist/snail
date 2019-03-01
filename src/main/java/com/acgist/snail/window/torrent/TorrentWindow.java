@@ -1,4 +1,4 @@
-package com.acgist.snail.window.edit;
+package com.acgist.snail.window.torrent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,24 +15,24 @@ import javafx.stage.Stage;
 /**
  * 编辑任务窗口
  */
-public class EditWindow extends AbstractWindow<EditController> {
+public class TorrentWindow extends AbstractWindow<TorrentController> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(EditWindow.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentWindow.class);
 	
-	private static EditWindow INSTANCE;
+	private static TorrentWindow INSTANCE;
 	
-	private EditWindow() {
+	private TorrentWindow() {
 	}
 
-	public static final EditWindow getInstance() {
+	public static final TorrentWindow getInstance() {
 		return INSTANCE;
 	}
 	
 	static {
-		synchronized (EditWindow.class) {
+		synchronized (TorrentWindow.class) {
 			if(INSTANCE == null) {
 				LOGGER.info("初始化编辑任务窗口");
-				INSTANCE = new EditWindow();
+				INSTANCE = new TorrentWindow();
 				try {
 					INSTANCE.start(INSTANCE.stage);
 				} catch (Exception e) {
@@ -44,7 +44,7 @@ public class EditWindow extends AbstractWindow<EditController> {
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/fxml/EditPane.fxml"));
+		FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/fxml/torrent.fxml"));
 		FlowPane root = loader.load();
 		this.controller = loader.getController();
 		Scene scene = new Scene(root, 800, 600);

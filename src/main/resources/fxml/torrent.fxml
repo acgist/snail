@@ -7,8 +7,8 @@
 
 <FlowPane
 	fx:id="root"
-	styleClass="root,edit" stylesheets="@/style/fxml.css"
-	fx:controller="com.acgist.snail.window.edit.EditController"
+	styleClass="root,torrent" stylesheets="@/style/fxml.css"
+	fx:controller="com.acgist.snail.window.torrent.TorrentController"
 	xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
 	
 	<VBox fx:id="treeBox"></VBox>

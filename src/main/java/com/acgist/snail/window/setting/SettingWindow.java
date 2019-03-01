@@ -43,7 +43,7 @@ public class SettingWindow extends AbstractWindow<SettingController> {
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/fxml/SettingPane.fxml"));
+		FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/fxml/setting.fxml"));
 		FlowPane root = loader.load();
 		this.controller = loader.getController();
 		Scene scene = new Scene(root, 600, 600);

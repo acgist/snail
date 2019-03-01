@@ -29,6 +29,7 @@ public class TaskCell extends TableCell<TaskWrapper, String> {
 		TaskWrapper wrapper = this.getTableRow().getItem();
 		if(wrapper != null) {
 			HBox box = new HBox();
+			box.setAlignment(pos);
 			Text name = new Text(value);
 			if(this.name) { // 名称：添加图标和手势
 				name.setCursor(Cursor.HAND);
@@ -39,7 +40,6 @@ public class TaskCell extends TableCell<TaskWrapper, String> {
 				}
 			}
 			box.getChildren().add(name);
-			box.setAlignment(pos);
 			this.setGraphic(box);
 		} else {
 			this.setGraphic(new HBox());

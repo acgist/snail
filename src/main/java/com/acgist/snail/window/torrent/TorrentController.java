@@ -1,4 +1,4 @@
-package com.acgist.snail.window.edit;
+package com.acgist.snail.window.torrent;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -22,9 +22,9 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-public class EditController implements Initializable {
+public class TorrentController implements Initializable {
 	
-//	private static final Logger LOGGER = LoggerFactory.getLogger(EditController.class);
+//	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentController.class);
 	
 	private static final String HIDE_FILE_PREFIX = "_____padding_file"; // 不需要下载的文件前缀
 	
@@ -42,10 +42,12 @@ public class EditController implements Initializable {
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		// 设置属性
 		downloadBox.prefWidthProperty().bind(root.widthProperty());
 		treeBox.prefWidthProperty().bind(root.widthProperty());
 		downloadBox.prefHeightProperty().setValue(40D);;
 		treeBox.prefHeightProperty().bind(root.heightProperty().subtract(40D));
+		// 绑定事件
 		download.setOnAction(downloadEvent);
 	}
 
@@ -53,14 +55,8 @@ public class EditController implements Initializable {
 	 * 显示信息
 	 */
 	public void tree(TaskWrapper wrapper) {
-		TreeView<HBox> tree = new TreeView<>();
-		tree.setId("tree");
-		tree.getStyleClass().add("tree");
-		treeBox.getChildren().clear();
-		treeBox.getChildren().add(tree);
-		tree.prefWidthProperty().bind(root.widthProperty());
-		tree.prefHeightProperty().bind(treeBox.heightProperty());
 		this.wrapper = wrapper;
+		TreeView<HBox> tree = buildTree();
 		TorrentDecoder decoder = TorrentDecoder.newInstance(wrapper.getTorrent());
 		TorrentFiles files = decoder.torrentInfo().getInfo();
 		manager = new FileSelectManager(files.getName(), download, tree);
@@ -73,6 +69,20 @@ public class EditController implements Initializable {
 		.forEach(file -> {
 			manager.build(file.path(), file.getLength());
 		});
+	}
+	
+	/**
+	 * 新建树形菜单
+	 */
+	private TreeView<HBox> buildTree() {
+		TreeView<HBox> tree = new TreeView<>();
+		tree.setId("tree");
+		tree.getStyleClass().add("tree");
+		tree.prefWidthProperty().bind(root.widthProperty());
+		tree.prefHeightProperty().bind(treeBox.heightProperty());
+		treeBox.getChildren().clear();
+		treeBox.getChildren().add(tree);
+		return tree;
 	}
 	
 	/**
@@ -89,7 +99,7 @@ public class EditController implements Initializable {
 		TaskRepository repository = new TaskRepository();
 		repository.update(entity);
 		DownloaderManager.getInstance().refresh(wrapper);
-		EditWindow.getInstance().hide();
+		TorrentWindow.getInstance().hide();
 	};
 	
 }

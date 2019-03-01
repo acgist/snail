@@ -22,7 +22,7 @@ import com.acgist.snail.pojo.wrapper.TaskWrapper;
 import com.acgist.snail.pojo.wrapper.TorrentWrapper;
 import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.utils.FileUtils;
-import com.acgist.snail.window.edit.EditWindow;
+import com.acgist.snail.window.torrent.TorrentWindow;
 
 /**
  * 下载地址转换：
@@ -263,7 +263,7 @@ public class DownloaderUrlDecoder {
 	 * BT下载选择下载文件
 	 */
 	private void selectTorrentFile() {
-		EditWindow.getInstance().show(this.taskWrapper);
+		TorrentWindow.getInstance().show(this.taskWrapper);
 	}
 	
 }
