@@ -43,7 +43,7 @@ public class AboutWindow extends AbstractWindow<AboutController> {
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/fxml/AboutPane.fxml"));
+		FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/fxml/about.fxml"));
 		GridPane root = loader.load();
 		this.controller = loader.getController();
 		Scene scene = new Scene(root, 600, 300);

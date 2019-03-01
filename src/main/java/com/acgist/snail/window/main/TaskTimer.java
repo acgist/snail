@@ -56,7 +56,7 @@ public class TaskTimer {
 	public void refreshTaskTable() {
 		try {
 			MainController controller = INSTANCE.controller;
-			controller.setTaskTable(DownloaderManager.getInstance().taskTable());
+			controller.taskTable(DownloaderManager.getInstance().taskTable());
 		} catch (Exception e) {
 			LOGGER.error("任务列表刷新任务异常", e);
 		}

@@ -7,13 +7,16 @@ import java.util.ResourceBundle;
 import com.acgist.snail.module.config.DownloadConfig;
 import com.acgist.snail.utils.FileUtils;
 
+import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
@@ -41,10 +44,12 @@ public class SettingController implements Initializable {
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		initScrollPane();
-		initPathValue();
-		initSlider();
+		// 绑定宽高
+		scrollPane.prefWidthProperty().bind(root.widthProperty());
+		scrollPane.prefHeightProperty().bind(root.heightProperty());
+		// 初始化
 		initSetting();
+		initControl();
 	}
 
 	@FXML
@@ -70,13 +75,8 @@ public class SettingController implements Initializable {
 		DownloadConfig.setDownloadP2p(p2p.isSelected());
 	}
 	
-	private void initScrollPane() {
-		scrollPane.prefWidthProperty().bind(root.widthProperty());
-		scrollPane.prefHeightProperty().bind(root.heightProperty());
-	}
-	
 	/**
-	 * 初始化配置项
+	 * 初始化配置
 	 */
 	private void initSetting() {
 		pathValue.setText(DownloadConfig.getDownloadPath());
@@ -87,48 +87,57 @@ public class SettingController implements Initializable {
 	}
 	
 	/**
-	 * 初始化下载目录显示
+	 * 初始化控件
 	 */
-	private void initPathValue() {
+	private void initControl() {
+		// 初始化下载地址选择
 		pathValue.setCursor(Cursor.HAND);
-		pathValue.setOnMouseClicked((event) -> {
-			File open = new File(DownloadConfig.getDownloadPath());
-			FileUtils.openInDesktop(open);
-		});
+		pathValue.setOnMouseClicked(openDownloadPath);
+		// 初始化下载大小设置
+		size.valueProperty().addListener(sizeListener);
+		size.setOnMouseReleased(sizeAction);
+		// 初始化下载速度设置
+		buffer.valueProperty().addListener(bufferListener);
+		buffer.setOnMouseReleased(bufferAction);
+		buffer.setLabelFormatter(bufferFormatter);
 	}
 	
-	/**
-	 * 初始化滑动选择项
-	 */
-	private void initSlider() {
-		size.valueProperty().addListener((obs, oldval, newVal) -> {
-			size.setValue(newVal.intValue()); // 设置整数个任务
-		});
-		size.setOnMouseReleased((event) -> {
-			Double value = size.getValue();
-			DownloadConfig.setDownloadSize(value.intValue());
-		});
-		buffer.valueProperty().addListener((obs, oldval, newVal) -> {
-			int value = newVal.intValue();
-			if(value > 512) { // 512KB以上时设置为512整数倍
-				value = value / 512 * 512;
-			}
-			buffer.setValue(value);
-		});
-		buffer.setOnMouseReleased((event) -> {
-			Double value = buffer.getValue();
-			DownloadConfig.setDownloadBuffer(value.intValue());
-		});
-		buffer.setLabelFormatter(new StringConverter<Double>() {
-			@Override
-			public String toString(Double value) {
-				return (value / 1024) + "M";
-			}
-			@Override
-			public Double fromString(String label) {
-				return Double.valueOf(label.substring(0, label.length() - 1)) * 1024;
-			}
-		});
-	}
+	private EventHandler<MouseEvent> openDownloadPath = (event) -> {
+		File open = new File(DownloadConfig.getDownloadPath());
+		FileUtils.openInDesktop(open);
+	};
 
+	private ChangeListener<? super Number> sizeListener = (obs, oldVal, newVal) -> {
+		size.setValue(newVal.intValue()); // 设置整数个任务
+	};
+	
+	private EventHandler<MouseEvent> sizeAction = (event) -> {
+		Double value = size.getValue();
+		DownloadConfig.setDownloadSize(value.intValue());
+	};
+	
+	private ChangeListener<? super Number> bufferListener = (obs, oldVal, newVal) -> {
+		int value = newVal.intValue();
+		if(value > 512) { // 512KB以上时设置为512整数倍
+			value = value / 512 * 512;
+		}
+		buffer.setValue(value);
+	};
+	
+	private EventHandler<MouseEvent> bufferAction = (event) -> {
+		Double value = buffer.getValue();
+		DownloadConfig.setDownloadBuffer(value.intValue());
+	};
+	
+	private StringConverter<Double> bufferFormatter = new StringConverter<Double>() {
+		@Override
+		public String toString(Double value) {
+			return (value / 1024) + "M";
+		}
+		@Override
+		public Double fromString(String label) {
+			return Double.valueOf(label.substring(0, label.length() - 1)) * 1024;
+		}
+	};
+	
 }

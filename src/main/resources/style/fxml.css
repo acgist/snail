@@ -11,7 +11,7 @@
 	-fx-background-radius:0;
 	*/
 }
-/**MainPane.fxml*/
+/**main.fxml*/
 .main .header {
 	-fx-padding:2;
 	-fx-pref-height:40;
@@ -45,10 +45,10 @@
 	-fx-padding:-10;
 }
 */
-/**AboutPane.fxml*/
+/**about.fxml*/
 .about {
 }
-/**BuildPane.fxml*/
+/**build.fxml*/
 .build .urlValue {
 	-fx-padding:10 0;
 }
@@ -64,14 +64,14 @@
 .build .option .cancel {
 	-fx-padding:0 10;
 }
-/**EditPane.fxml*/
-.edit .tree {
+/**torrent.fxml*/
+.torrent .tree {
 	-fx-background-color:transparent;
 }
-.edit .downloadBox {
+.torrent .downloadBox {
 	-fx-alignment:center;
 }
-/**SettingPane.fxml*/
+/**setting.fxml*/
 .setting .scrollPane {
 	-fx-background-color:transparent;
 }

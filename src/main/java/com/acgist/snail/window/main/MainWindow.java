@@ -45,7 +45,7 @@ public class MainWindow extends AbstractWindow<MainController> {
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/fxml/MainPane.fxml"));
+		FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/fxml/main.fxml"));
 		BorderPane root = loader.load();
 		this.controller = loader.getController();
 		Scene scene = new Scene(root, 1000, 600);
