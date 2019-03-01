@@ -45,6 +45,13 @@ public class StringUtils {
 	}
 	
 	/**
+	 * 字符串结束
+	 */
+	public static final boolean endsWith(String value, String suffix) {
+		return value != null && suffix != null && value.endsWith(suffix);
+	}
+	
+	/**
 	 * 转为LONG
 	 */
 	public static final long toLong(String value) {
