@@ -5,6 +5,7 @@ import java.io.File;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.module.config.DownloadConfig;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.utils.ClipboardUtils;
 import com.acgist.snail.utils.FileUtils;
@@ -109,9 +110,11 @@ public class TaskMenu extends ContextMenu {
 			return;
 		}
 		DirectoryChooser chooser = new DirectoryChooser();
-		chooser.setTitle("文件保存目录");
+		chooser.setTitle("种子文件保存目录");
+		DownloadConfig.lastPath(chooser);
 		File file = chooser.showDialog(new Stage());
 		if (file != null) {
+			DownloadConfig.setDownloadLastPath(file.getPath());
 			MainWindow.getInstance().controller().selected()
 			.forEach(wrapper -> {
 				if(wrapper.getType() == Type.torrent) {

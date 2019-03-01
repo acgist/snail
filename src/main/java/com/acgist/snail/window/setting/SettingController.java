@@ -56,9 +56,10 @@ public class SettingController implements Initializable {
 	public void handlePathAction(ActionEvent event) {
 		DirectoryChooser chooser = new DirectoryChooser();
 		chooser.setTitle("文件保存目录");
-		chooser.setInitialDirectory(new File(DownloadConfig.getDownloadPath()));
+		DownloadConfig.lastPath(chooser);
 		File file = chooser.showDialog(new Stage());
 		if (file != null) {
+			DownloadConfig.setDownloadLastPath(file.getPath());
 			String path = file.getPath();
 			DownloadConfig.setDownloadPath(path);
 			pathValue.setText(DownloadConfig.getDownloadPath());

@@ -1,5 +1,7 @@
 package com.acgist.snail.module.config;
 
+import java.io.File;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,6 +11,9 @@ import com.acgist.snail.repository.impl.ConfigRepository;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.PropertiesUtils;
 import com.acgist.snail.utils.StringUtils;
+
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 
 /**
  * 默认从配置文件加载，如果数据有配置则使用数据库配置替换
@@ -22,6 +27,7 @@ public class DownloadConfig {
 	public static final String DOWNLOAD_BUFFER = "acgist.download.buffer";
 	public static final String DOWNLOAD_NOTICE = "acgist.download.notice";
 	public static final String DOWNLOAD_P2P = "acgist.download.p2p";
+	public static final String DOWNLOAD_LAST_PATH = "acgist.download.last.path";
 	
 	private static final DownloadConfig INSTANCE = new DownloadConfig();
 	
@@ -33,6 +39,7 @@ public class DownloadConfig {
 	private Integer downloadBuffer;
 	private Boolean downloadNotice;
 	private Boolean downloadP2p;
+	private String downloadLastPath;
 	
 	static {
 		LOGGER.info("初始化用户配置");
@@ -51,6 +58,7 @@ public class DownloadConfig {
 		INSTANCE.downloadBuffer = propertiesUtils.getInteger(DOWNLOAD_BUFFER);
 		INSTANCE.downloadNotice = propertiesUtils.getBoolean(DOWNLOAD_NOTICE);
 		INSTANCE.downloadP2p = propertiesUtils.getBoolean(DOWNLOAD_P2P);
+		INSTANCE.downloadLastPath = propertiesUtils.getString(DOWNLOAD_LAST_PATH);
 	}
 	
 	/**
@@ -69,6 +77,8 @@ public class DownloadConfig {
 		downloadNotice = configBoolean(entity, downloadNotice);
 		entity = configRepository.findOne(ConfigEntity.PROPERTY_NAME, DOWNLOAD_P2P);
 		downloadP2p = configBoolean(entity, downloadP2p);
+		entity = configRepository.findOne(ConfigEntity.PROPERTY_NAME, DOWNLOAD_LAST_PATH);
+		downloadLastPath = configString(entity, downloadLastPath);
 	}
 	
 	/**
@@ -116,6 +126,7 @@ public class DownloadConfig {
 		LOGGER.info("单个任务下载速度（KB），属性：{}，值：{}", DOWNLOAD_BUFFER, downloadBuffer);
 		LOGGER.info("下载完成弹出提示，属性：{}，值：{}", DOWNLOAD_NOTICE, downloadNotice);
 		LOGGER.info("启用P2P加速，属性：{}，值：{}", DOWNLOAD_P2P, downloadP2p);
+		LOGGER.info("最后一次选择文件目录，属性：{}，值：{}", DOWNLOAD_LAST_PATH, downloadLastPath);
 	}
 	
 	public static final void setDownloadPath(String path) {
@@ -173,6 +184,40 @@ public class DownloadConfig {
 	
 	public static final Boolean getDownloadP2p() {
 		return INSTANCE.downloadP2p;
+	}
+	
+	public static final void setDownloadLastPath(String downloadLastPath) {
+		ConfigRepository configRepository = new ConfigRepository();
+		INSTANCE.downloadLastPath = downloadLastPath;
+		configRepository.updateConfig(DOWNLOAD_P2P, downloadLastPath);
+	}
+	
+	public static final String getDownloadLastPath() {
+		return INSTANCE.downloadLastPath;
+	}
+	
+	private static final File lastPath() {
+		File file = null;
+		if(StringUtils.isEmpty(INSTANCE.downloadLastPath)) {
+			file = new File(INSTANCE.downloadPath);
+		} else {
+			file = new File(INSTANCE.downloadLastPath);
+		}
+		return file;
+	}
+	
+	public static final void lastPath(FileChooser chooser) {
+		File file = lastPath();
+		if(file != null && file.exists()) {
+			chooser.setInitialDirectory(file);
+		}
+	}
+	
+	public static final void lastPath(DirectoryChooser chooser) {
+		File file = lastPath();
+		if(file != null && file.exists()) {
+			chooser.setInitialDirectory(file);
+		}
 	}
 	
 }
