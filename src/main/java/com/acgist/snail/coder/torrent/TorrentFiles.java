@@ -6,7 +6,7 @@ import java.util.List;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * 文件列表信息：单文件没有files
+ * 文件列表信息：单文件时files为空
  */
 public class TorrentFiles {
 

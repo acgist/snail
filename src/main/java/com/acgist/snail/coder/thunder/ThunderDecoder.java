@@ -5,7 +5,7 @@ import java.util.Base64;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * 迅雷链接解码
+ * 迅雷链接解析器
  */
 public class ThunderDecoder {
 

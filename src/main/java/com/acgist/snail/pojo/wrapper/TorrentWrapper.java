@@ -6,7 +6,7 @@ import com.acgist.snail.module.exception.DownloadException;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * 种子包装
+ * wrapper - 种子
  */
 public class TorrentWrapper {
 
@@ -20,7 +20,7 @@ public class TorrentWrapper {
 	}
 
 	/**
-	 * 
+	 * 下载名称
 	 */
 	public String name() {
 		TorrentFiles files = torrentInfo.getInfo();
@@ -29,6 +29,10 @@ public class TorrentWrapper {
 			name = StringUtils.charset(files.getName(), torrentInfo.getEncoding());
 		}
 		return name;
+	}
+	
+	public TorrentInfo torrentInfo() {
+		return this.torrentInfo;
 	}
 	
 }

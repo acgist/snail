@@ -16,7 +16,7 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 
 /**
- * 默认从配置文件加载，如果数据有配置则使用数据库配置替换
+ * 下载配置（用户配置）：默认从配置文件加载，如果数据有配置则使用数据库配置替换
  */
 public class DownloadConfig {
 

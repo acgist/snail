@@ -8,7 +8,7 @@ import java.net.URISyntaxException;
 import org.slf4j.Logger;
 
 /**
- * 浏览器工具
+ * utils - 浏览器
  */
 public class BrowseUtils {
 

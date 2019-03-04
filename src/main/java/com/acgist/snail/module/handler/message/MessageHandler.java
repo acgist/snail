@@ -13,11 +13,11 @@ import com.acgist.snail.module.handler.socket.WriterHandler;
 import com.acgist.snail.pojo.message.ClientMessage;
 
 /**
- * 消息输出
+ * 抽象消息
  */
-public abstract class ClientMessageSenderHandler {
+public abstract class MessageHandler {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ClientMessageSenderHandler.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MessageHandler.class);
 	
 	private Lock lock = new ReentrantLock(); // 线程锁
 	private Semaphore semaphore = new Semaphore(1); // 信号量

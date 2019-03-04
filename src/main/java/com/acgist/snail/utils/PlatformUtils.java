@@ -12,7 +12,7 @@ import com.acgist.snail.window.menu.TrayMenu;
 import javafx.application.Platform;
 
 /**
- * 平台工具
+ * utils - 平台
  */
 public class PlatformUtils {
 

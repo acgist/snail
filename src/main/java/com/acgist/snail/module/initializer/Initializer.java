@@ -1,7 +1,7 @@
 package com.acgist.snail.module.initializer;
 
 /**
- * 实例化
+ * 初始化
  */
 public abstract class Initializer {
 
@@ -27,6 +27,6 @@ public abstract class Initializer {
 	/**
 	 * 初始化
 	 */
-	abstract void init();
+	protected abstract void init();
 	
 }

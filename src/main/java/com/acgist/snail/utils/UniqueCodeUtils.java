@@ -3,7 +3,7 @@ package com.acgist.snail.utils;
 import java.util.Date;
 
 /**
- * 唯一编号生成器
+ * utils - 唯一编号
  */
 public class UniqueCodeUtils {
 

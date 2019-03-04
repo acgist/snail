@@ -13,7 +13,7 @@ import com.acgist.snail.utils.JSONUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * TaskEntity封装
+ * wrapper - 任务
  */
 public class TaskWrapper{
 
@@ -177,11 +177,11 @@ public class TaskWrapper{
 		entity.setStatus(status);
 	}
 
-	public Integer getSize() {
+	public Long getSize() {
 		return entity.getSize();
 	}
 
-	public void setSize(Integer size) {
+	public void setSize(Long size) {
 		entity.setSize(size);
 	}
 

@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 配置工具
+ * utils - 配置
  */
 public class PropertiesUtils {
 

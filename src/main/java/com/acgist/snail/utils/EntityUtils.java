@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.pojo.wrapper.ResultSetWrapper;
 
 /**
- * 实体工具
+ * utils - 实体
  */
 public class EntityUtils {
 

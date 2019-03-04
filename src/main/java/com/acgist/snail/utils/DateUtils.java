@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * 日期工具
+ * utils - 日期
  */
 public class DateUtils {
 

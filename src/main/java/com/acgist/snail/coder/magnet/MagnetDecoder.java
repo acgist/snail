@@ -20,7 +20,7 @@ import com.acgist.snail.utils.HttpUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * 磁力链接解码
+ * 磁力链接解析器：磁力链接转种子文件
  */
 public abstract class MagnetDecoder {
 	
@@ -28,11 +28,11 @@ public abstract class MagnetDecoder {
 	
 	private static final  List<MagnetDecoder> DECODERS = new ArrayList<>();
 	
-	private static final String HASH_REGEX = "[a-zA-Z0-9]{40}";
-	private static final String MAGNET_PREFIX = "magnet:?xt=urn:btih:";
+	private static final String HASH_REGEX = "[a-zA-Z0-9]{40}"; // 磁力链接HASH
+	private static final String MAGNET_PREFIX = "magnet:?xt=urn:btih:"; // 磁力链接
 	
-	protected String hash;
-	protected String magnet;
+	protected String hash; // HASH
+	protected String magnet; // 完整磁力链接
 	
 	static {
 		MagnetDecoder.putDecoder(new BtbttvMagnetDecoder());
@@ -102,7 +102,7 @@ public abstract class MagnetDecoder {
 	}
 
 	/**
-	 * 下载
+	 * 下载种子文件
 	 */
 	public static final File download(String url) throws DownloadException {
 		synchronized (DECODERS) {
@@ -123,16 +123,28 @@ public abstract class MagnetDecoder {
 	public static final boolean verify(String url) {
 		return verifyMagnet(url) && verifyHash(url);
 	}
-	
+
+	/**
+	 * 验证磁力链接
+	 */
 	public static final boolean verifyMagnet(String url) {
 		return StringUtils.startsWith(url, MAGNET_PREFIX);
 	}
 	
+	/**
+	 * 验证磁力链接HASH
+	 */
 	public static final boolean verifyHash(String url) {
 		return url != null && url.matches(HASH_REGEX);
 	}
 	
+	/**
+	 * 将HASH转为MAGNET链接
+	 */
 	public static final String buildMagnet(String hash) {
+		if(verifyMagnet(hash)) {
+			return hash;
+		}
 		return MAGNET_PREFIX + hash;
 	}
 	

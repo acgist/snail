@@ -7,7 +7,7 @@ import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * 文件信息
+ * 下载文件信息
  */
 public class TorrentFile {
 

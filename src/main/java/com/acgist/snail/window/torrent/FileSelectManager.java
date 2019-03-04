@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
+import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.FileUtils;
 
 import javafx.event.ActionEvent;
@@ -70,7 +71,7 @@ public class FileSelectManager {
 	}
 	
 	/**
-	 * 选择的文件
+	 * 选择文件的列表
 	 */
 	public List<String> description() {
 		return checkBoxMap.entrySet()
@@ -80,23 +81,32 @@ public class FileSelectManager {
 		.map(Entry::getKey)
 		.collect(Collectors.toList());
 	}
+	
+	/**
+	 * 选择文件的大小
+	 */
+	public Long size() {
+		AtomicLong totalSize = new AtomicLong(0L);
+		checkBoxMap.entrySet()
+		.stream()
+		.filter(entry -> entry.getValue().isSelected())
+		.map(entry -> sizeMap.get(entry.getValue()))
+		.filter(size -> size != null)
+		.forEach(size -> totalSize.addAndGet(size));
+		return totalSize.longValue();
+	}
 
 	/**
 	 * 设置已选中信息
 	 */
 	public void select(List<String> list) {
-		if(list == null) {
-			this.download.setText("下载");
-			return;
+		if(CollectionUtils.isNotEmpty(list)) {
+			checkBoxMap.entrySet()
+			.stream()
+			.filter(entry -> list.contains(entry.getKey()))
+			.forEach(entry -> entry.getValue().setSelected(true));
 		}
-		checkBoxMap.entrySet()
-		.stream()
-		.forEach(entry -> {
-			if(list.contains(entry.getKey())) {
-				entry.getValue().setSelected(true);
-			}
-		});
-		this.selectSize();
+		buttonSize();
 	}
 	
 	/**
@@ -140,29 +150,16 @@ public class FileSelectManager {
 		.findFirst().get();
 		checkBoxMap.entrySet()
 		.stream()
-		.filter(entry -> {
-			return entry.getKey().startsWith(prefix);
-		}).forEach(entry -> {
-			entry.getValue().setSelected(selected);
-		});
-		selectSize();
+		.filter(entry -> entry.getKey().startsWith(prefix))
+		.forEach(entry -> entry.getValue().setSelected(selected));
+		buttonSize();
 	};
 	
 	/**
-	 * 已选择文件总大小
+	 * 设置按钮文本
 	 */
-	private void selectSize() {
-		AtomicLong totalSize = new AtomicLong(0L);
-		checkBoxMap.entrySet()
-		.stream()
-		.filter(entry -> entry.getValue().isSelected())
-		.forEach(entry -> {
-			Long size = sizeMap.get(entry.getValue());
-			if(size != null) {
-				totalSize.addAndGet(size);
-			}
-		});
-		download.setText("下载（" + FileUtils.size(totalSize.longValue()) + "）");
+	private void buttonSize() {
+		download.setText("下载（" + FileUtils.size(size()) + "）");
 	}
 	
 }

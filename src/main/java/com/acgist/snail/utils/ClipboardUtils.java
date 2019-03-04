@@ -4,7 +4,7 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 
 /**
- * 剪切板
+ * utils - 剪切板
  */
 public class ClipboardUtils {
 

@@ -28,6 +28,7 @@ import com.acgist.snail.window.torrent.TorrentWindow;
 /**
  * 下载地址转换：
  * ftp、http：单文件下载
+ * ed2k：
  * torrent：下载目录为文件夹，文件夹里面包含下载文件
  */
 public class DownloaderUrlDecoder {
@@ -55,6 +56,7 @@ public class DownloaderUrlDecoder {
 	}
 	
 	private boolean magnet = false; // 磁力链接
+	
 	private String url; // 下载地址
 	private Type type; // 下载类型
 	private String fileName; // 文件名称
@@ -62,7 +64,8 @@ public class DownloaderUrlDecoder {
 	private String file; // 下载文件
 	private String name; // 任务名称
 	private String torrent; // 种子文件
-	private Integer size; // 大小
+	private Long size; // 文件大小
+	
 	private TaskWrapper taskWrapper;
 	private TorrentWrapper torrentWrapper;
 	
@@ -75,19 +78,29 @@ public class DownloaderUrlDecoder {
 	}
 	
 	/**
-	 * 新建任务实体：url、name、type、fileType、file、torrent、size	
+	 * 新建任务
 	 */
 	public TaskWrapper buildTaskWrapper() throws DownloadException {
 		pretreatment();
 		buildMessage();
 		buildWrapper();
 		buildTask();
-		selectTorrentFile();
 		return taskWrapper;
 	}
 
 	/**
-	 * 新建信息
+	 * 预处理：去空格、格式转换
+	 */
+	private void pretreatment() {
+		String url = this.url.trim();
+		if(ThunderDecoder.verify(url)) {
+			url = ThunderDecoder.decode(url);
+		}
+		this.url = url;
+	}
+	
+	/**
+	 * 任务信息
 	 */
 	private void buildMessage() throws DownloadException {
 		type();
@@ -112,17 +125,6 @@ public class DownloaderUrlDecoder {
 		this.taskWrapper = new TaskWrapper(entity);
 	}
 
-	/**
-	 * 预处理：去空格、格式转换
-	 */
-	private void pretreatment() {
-		String url = this.url.trim();
-		if(ThunderDecoder.verify(url)) {
-			url = ThunderDecoder.decode(url);
-		}
-		this.url = url;
-	}
-	
 	/**
 	 * 获取下载类型
 	 */
@@ -216,12 +218,6 @@ public class DownloaderUrlDecoder {
 		if(file.exists()) {
 			throw new DownloadException("下载文件已存在：" + this.file);
 		}
-		if(this.type == Type.torrent) {
-			File folder = new File(this.file);
-			if(!folder.exists()) {
-				folder.mkdirs();
-			}
-		}
 	}
 	
 	/**
@@ -247,36 +243,53 @@ public class DownloaderUrlDecoder {
 	}
 	
 	/**
-	 * 生成其他信息
+	 * 生成任务：处理各种下载、保存下载任务
 	 */
 	private void buildTask() {
 		if(this.type == Type.torrent) {
-			String fileName = FileUtils.fileNameFromUrl(this.torrent);
-			String newFilePath = FileUtils.file(this.file, fileName);
-			if(magnet) { // 磁力链接需要移动种子文件
-				File torrentFile = new File(this.torrent);
-				File newFile = new File(newFilePath);
-				torrentFile.renameTo(newFile);
-			} else {
-				FileUtils.copy(this.torrent, newFilePath);
-			}
-			this.taskWrapper.setTorrent(newFilePath);
+			buildTorrentFile();
+			moveTorrentFile();
+			selectTorrentFile();
 		}
 		TaskRepository repository = new TaskRepository();
 		repository.save(this.taskWrapper.getEntity());
 	}
 	
 	/**
-	 * BT下载选择下载文件
+	 * 生成torrent下载目录
+	 */
+	private void buildTorrentFile() {
+		File folder = new File(this.file);
+		if(!folder.exists()) {
+			folder.mkdirs();
+		}
+	}
+	
+	/**
+	 * 生成torrent下载：移动下载种子文件到下载目录
+	 */
+	private void moveTorrentFile() {
+		String fileName = FileUtils.fileNameFromUrl(this.torrent);
+		String newFilePath = FileUtils.file(this.file, fileName);
+		if(magnet) { // 磁力链接需要移动种子文件
+			File torrentFile = new File(this.torrent);
+			File newFile = new File(newFilePath);
+			torrentFile.renameTo(newFile);
+		} else {
+			FileUtils.copy(this.torrent, newFilePath);
+		}
+		this.taskWrapper.setTorrent(newFilePath);
+	}
+	
+	/**
+	 * 选择torrent下载文件
 	 */
 	private void selectTorrentFile() {
-		if(this.type == Type.torrent) {
-			TorrentWindow.getInstance().show(this.taskWrapper);
-			if(taskWrapper.files().isEmpty()) {
-				TaskService service = new TaskService();
-				service.delete(taskWrapper);
-				this.taskWrapper = null;
-			}
+		TorrentWindow.getInstance().show(this.taskWrapper);
+		if(taskWrapper.files().isEmpty()) {
+			TaskService service = new TaskService();
+			service.delete(taskWrapper);
+			this.taskWrapper = null;
 		}
 	}
 	

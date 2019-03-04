@@ -12,7 +12,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
- * 新建窗口
+ * 新建
  */
 public class BuildWindow extends AbstractWindow<BuildController> {
 

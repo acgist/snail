@@ -268,5 +268,5 @@ public class TorrentInfo {
 			}
 		}
 	}
-	
+
 }

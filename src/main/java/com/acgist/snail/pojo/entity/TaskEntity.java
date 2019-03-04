@@ -78,9 +78,9 @@ public class TaskEntity extends BaseEntity {
 	 */
 	private Status status;
 	/**
-	 * 大小（KB）
+	 * 大小（B）
 	 */
-	private Integer size;
+	private Long size;
 	/**
 	 * 完成时间
 	 */
@@ -93,7 +93,8 @@ public class TaskEntity extends BaseEntity {
 	public TaskEntity() {
 	}
 	
-	public TaskEntity(String name, Type type, FileType fileType, String file, String url, String torrent, Status status, Integer size, Date endDate, String description) {
+	public TaskEntity(String name, Type type, FileType fileType, String file, String url,
+		String torrent, Status status, Long size, Date endDate, String description) {
 		this.name = name;
 		this.type = type;
 		this.fileType = fileType;
@@ -162,11 +163,11 @@ public class TaskEntity extends BaseEntity {
 		this.status = status;
 	}
 
-	public Integer getSize() {
+	public Long getSize() {
 		return size;
 	}
 
-	public void setSize(Integer size) {
+	public void setSize(Long size) {
 		this.size = size;
 	}
 
