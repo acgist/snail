@@ -41,7 +41,7 @@ public class TaskTimer {
 	}
 
 	/**
-	 * 刷新任务页面
+	 * 刷新任务数据
 	 */
 	public void refreshTaskTable() {
 		try {
@@ -53,7 +53,7 @@ public class TaskTimer {
 	}
 	
 	/**
-	 * 刷新任务信息
+	 * 刷新任务状态
 	 */
 	public void refreshTaskData() {
 		try {
