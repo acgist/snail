@@ -9,6 +9,7 @@ import com.acgist.snail.module.config.FileTypeConfig.FileType;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
+import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.JSONUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -78,7 +79,7 @@ public class TaskWrapper{
 	}
 	
 	public String getProgressValue() {
-		return "10G/23G";
+		return FileUtils.size(getSize());
 	}
 	
 	public String getCreateDateValue() {

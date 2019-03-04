@@ -23,6 +23,10 @@ public class ResultSetWrapper {
 		return (Integer) getObject(key);
 	}
 	
+	public Long getLong(String key) {
+		return (Long) getObject(key);
+	}
+	
 	public Date getDate(String key) {
 		return (Date) getObject(key);
 	}

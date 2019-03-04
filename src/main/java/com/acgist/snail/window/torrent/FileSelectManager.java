@@ -71,18 +71,6 @@ public class FileSelectManager {
 	}
 	
 	/**
-	 * 选择文件的列表
-	 */
-	public List<String> description() {
-		return checkBoxMap.entrySet()
-		.stream()
-		.filter(entry -> sizeMap.containsKey(entry.getValue()))
-		.filter(entry -> entry.getValue().isSelected())
-		.map(Entry::getKey)
-		.collect(Collectors.toList());
-	}
-	
-	/**
 	 * 选择文件的大小
 	 */
 	public Long size() {
@@ -94,6 +82,18 @@ public class FileSelectManager {
 		.filter(size -> size != null)
 		.forEach(size -> totalSize.addAndGet(size));
 		return totalSize.longValue();
+	}
+	
+	/**
+	 * 选择文件的列表
+	 */
+	public List<String> description() {
+		return checkBoxMap.entrySet()
+		.stream()
+		.filter(entry -> sizeMap.containsKey(entry.getValue()))
+		.filter(entry -> entry.getValue().isSelected())
+		.map(Entry::getKey)
+		.collect(Collectors.toList());
 	}
 
 	/**

@@ -3,6 +3,7 @@ package com.acgist.main;
 import org.junit.Test;
 
 import com.acgist.snail.utils.FileUtils;
+import com.acgist.snail.utils.HttpUtils;
 
 public class FileUtilsTest {
 
@@ -14,7 +15,9 @@ public class FileUtilsTest {
 	
 	@Test
 	public void fileNameHttp() {
-		System.out.println(FileUtils.fileNameFromHttp("https://www.acgist.com/demo/weixin/view"));
+		HttpUtils.httpHeader("https://www.acgist.com/demo/weixin/view").map().forEach((key, value) -> {
+			System.out.println(key + "-" + value);
+		});
 	}
 	
 	@Test

@@ -53,7 +53,7 @@ public class BuildController implements Initializable {
 		File file = chooser.showOpenDialog(new Stage());
 		if (file != null) {
 			DownloadConfig.setDownloadLastPath(file.getParent());
-			urlValue.setText(file.getPath());
+			setUrl(file.getPath());
 		}
 	}
 
@@ -72,7 +72,7 @@ public class BuildController implements Initializable {
 			AlertWindow.warn("下载失败", e.getMessage());
 		}
 		if(ok) {
-			urlValue.setText("");
+			setUrl("");
 			BuildWindow.getInstance().hide();
 			TaskTimer.getInstance().refreshTaskTable();
 		}
@@ -80,6 +80,7 @@ public class BuildController implements Initializable {
 
 	@FXML
 	public void handleCancelAction(ActionEvent event) {
+		setUrl("");
 		BuildWindow.getInstance().hide();
 	}
 	

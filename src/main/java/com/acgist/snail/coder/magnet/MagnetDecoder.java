@@ -128,7 +128,7 @@ public abstract class MagnetDecoder {
 	 * 验证磁力链接
 	 */
 	public static final boolean verifyMagnet(String url) {
-		return StringUtils.startsWith(url, MAGNET_PREFIX);
+		return StringUtils.startsWith(url.toLowerCase(), MAGNET_PREFIX);
 	}
 	
 	/**
@@ -145,7 +145,7 @@ public abstract class MagnetDecoder {
 		if(verifyMagnet(hash)) {
 			return hash;
 		}
-		return MAGNET_PREFIX + hash;
+		return MAGNET_PREFIX + hash.toLowerCase();
 	}
 	
 }

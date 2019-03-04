@@ -88,10 +88,7 @@ public class DownloaderManager {
 	 * 刷新任务
 	 */
 	public void refresh(TaskWrapper wrapper) {
-		var downloader = downloader(wrapper);
-		if(downloader != null) {
-			downloader.refresh();
-		}
+		downloader(wrapper).refresh();
 	}
 	
 	/**

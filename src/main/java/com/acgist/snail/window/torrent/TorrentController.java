@@ -16,6 +16,7 @@ import com.acgist.snail.pojo.wrapper.TaskWrapper;
 import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.utils.JSONUtils;
 import com.acgist.snail.window.AlertWindow;
+import com.acgist.snail.window.main.TaskTimer;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -107,10 +108,14 @@ public class TorrentController implements Initializable {
 			AlertWindow.warn("下载提示", "请选择下载文件");
 			return;
 		}
+		entity.setSize(manager.size());
 		entity.setDescription(JSONUtils.javaToJson(list));
-		TaskRepository repository = new TaskRepository();
-		repository.update(entity);
-		DownloaderManager.getInstance().refresh(wrapper);
+		if(entity.getId() != null) { // 已经添加数据库
+			TaskRepository repository = new TaskRepository();
+			repository.update(entity);
+			DownloaderManager.getInstance().refresh(wrapper);
+		}
+		TaskTimer.getInstance().refreshTaskData();
 		TorrentWindow.getInstance().hide();
 	};
 	

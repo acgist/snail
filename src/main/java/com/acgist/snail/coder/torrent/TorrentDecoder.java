@@ -127,7 +127,7 @@ public class TorrentDecoder {
 	}
 	
 	public static final boolean verify(String url) {
-		return StringUtils.endsWith(url, TORRENT_SUFFIX);
+		return StringUtils.endsWith(url.toLowerCase(), TORRENT_SUFFIX);
 	}
 	
 }

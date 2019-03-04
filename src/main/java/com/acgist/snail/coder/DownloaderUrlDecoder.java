@@ -9,6 +9,10 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.acgist.snail.coder.http.HttpDecoder;
 import com.acgist.snail.coder.magnet.MagnetDecoder;
 import com.acgist.snail.coder.thunder.ThunderDecoder;
 import com.acgist.snail.coder.torrent.TorrentDecoder;
@@ -18,11 +22,12 @@ import com.acgist.snail.module.exception.DownloadException;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
+import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
 import com.acgist.snail.pojo.wrapper.TorrentWrapper;
 import com.acgist.snail.repository.impl.TaskRepository;
-import com.acgist.snail.service.TaskService;
 import com.acgist.snail.utils.FileUtils;
+import com.acgist.snail.utils.HttpUtils;
 import com.acgist.snail.window.torrent.TorrentWindow;
 
 /**
@@ -33,7 +38,7 @@ import com.acgist.snail.window.torrent.TorrentWindow;
  */
 public class DownloaderUrlDecoder {
 
-//	private static final Logger LOGGER = LoggerFactory.getLogger(DownloaderUrlDecoder.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DownloaderUrlDecoder.class);
 	
 	/**
 	 * 下载类型获取
@@ -64,10 +69,10 @@ public class DownloaderUrlDecoder {
 	private String file; // 下载文件
 	private String name; // 任务名称
 	private String torrent; // 种子文件
-	private Long size; // 文件大小
 	
 	private TaskWrapper taskWrapper;
 	private TorrentWrapper torrentWrapper;
+	private HttpHeaderWrapper httpHeaderWrapper;
 	
 	private DownloaderUrlDecoder(String url) {
 		this.url = url;
@@ -76,7 +81,7 @@ public class DownloaderUrlDecoder {
 	public static final DownloaderUrlDecoder newDecoder(String url) {
 		return new DownloaderUrlDecoder(url);
 	}
-	
+
 	/**
 	 * 新建任务
 	 */
@@ -96,6 +101,9 @@ public class DownloaderUrlDecoder {
 		if(ThunderDecoder.verify(url)) {
 			url = ThunderDecoder.decode(url);
 		}
+		if(HttpDecoder.verify(url)) {
+			this.httpHeaderWrapper = HttpUtils.httpHeader(url);
+		}
 		this.url = url;
 	}
 	
@@ -109,7 +117,6 @@ public class DownloaderUrlDecoder {
 		fileType();
 		file();
 		name();
-		size();
 	}
 
 	private void buildWrapper() {
@@ -121,7 +128,7 @@ public class DownloaderUrlDecoder {
 		entity.setFile(this.file);
 		entity.setName(this.name);
 		entity.setTorrent(torrent);
-		entity.setSize(size);
+		entity.setSize(0L);
 		this.taskWrapper = new TaskWrapper(entity);
 	}
 
@@ -186,7 +193,8 @@ public class DownloaderUrlDecoder {
 				fileName = FileUtils.fileNameFromUrl(url);
 				break;
 			case http:
-				fileName = FileUtils.fileNameFromHttp(url);
+				fileName = FileUtils.fileNameFromUrl(url);
+				fileName = httpHeaderWrapper.fileName(fileName);
 				break;
 			case ed2k:
 				throw new DownloadException("暂时不支持的协议");
@@ -237,12 +245,6 @@ public class DownloaderUrlDecoder {
 	}
 	
 	/**
-	 * 文件大小：Content-Range、content-length
-	 */
-	private void size() {
-	}
-	
-	/**
 	 * 生成任务：处理各种下载、保存下载任务
 	 */
 	private void buildTask() {
@@ -250,9 +252,13 @@ public class DownloaderUrlDecoder {
 			buildTorrentFile();
 			moveTorrentFile();
 			selectTorrentFile();
+		} else if(this.type == Type.http) {
+			buildHttpSize();
 		}
-		TaskRepository repository = new TaskRepository();
-		repository.save(this.taskWrapper.getEntity());
+		if(this.taskWrapper != null) {
+			TaskRepository repository = new TaskRepository();
+			repository.save(this.taskWrapper.getEntity());
+		}
 	}
 	
 	/**
@@ -282,15 +288,22 @@ public class DownloaderUrlDecoder {
 	}
 	
 	/**
-	 * 选择torrent下载文件
+	 * 选择torrent下载文件和设置文件大小
 	 */
 	private void selectTorrentFile() {
 		TorrentWindow.getInstance().show(this.taskWrapper);
 		if(taskWrapper.files().isEmpty()) {
-			TaskService service = new TaskService();
-			service.delete(taskWrapper);
+			LOGGER.info("用户未选择下载文件取消下载");
+			FileUtils.delete(taskWrapper.getFile());
 			this.taskWrapper = null;
 		}
+	}
+	
+	/**
+	 * 设置HTTP下载文件大小
+	 */
+	private void buildHttpSize() {
+		taskWrapper.setSize(httpHeaderWrapper.fileSize());
 	}
 	
 }

@@ -7,7 +7,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 
 /**
- * 提示窗口
+ * 提示
  */
 public class AlertWindow {
 
@@ -26,5 +26,5 @@ public class AlertWindow {
 		alert.setContentText(content);
 		return alert.showAndWait();
 	}
-	
+
 }
