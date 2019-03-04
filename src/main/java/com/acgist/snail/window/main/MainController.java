@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import com.acgist.snail.coder.torrent.TorrentDecoder;
 import com.acgist.snail.downloader.DownloaderManager;
+import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
 import com.acgist.snail.window.AlertWindow;
@@ -35,6 +36,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -240,11 +242,7 @@ public class MainController implements Initializable {
 		@Override
 		public TableRow<TaskWrapper> call(TableView<TaskWrapper> param) {
 			TableRow<TaskWrapper> row = new TableRow<>();
-			row.setOnMouseClicked((event) -> {
-				if(event.getClickCount() == 2) {
-					// TODO：暂停
-				}
-			});
+			row.setOnMouseClicked(rowClickAction); // 双击修改任务状态
 			row.setContextMenu(TaskMenu.getInstance());
 			return row;
 		}
@@ -275,6 +273,21 @@ public class MainController implements Initializable {
 		}
 		event.setDropCompleted(true);
 		event.consume();
+	};
+	
+	@SuppressWarnings("unchecked")
+	private EventHandler<MouseEvent> rowClickAction = (event) -> {
+		if(event.getClickCount() == 2) {
+			TableRow<TaskWrapper> row = (TableRow<TaskWrapper>) event.getSource();
+			var wrapper = row.getItem();
+			var status = wrapper.getStatus();
+			if(status == Status.await || status == Status.download) {
+				DownloaderManager.getInstance().pause(wrapper);
+			} else {
+				DownloaderManager.getInstance().start(wrapper);
+			}
+			TaskTimer.getInstance().refreshTaskData();
+		}
 	};
 	
 }
