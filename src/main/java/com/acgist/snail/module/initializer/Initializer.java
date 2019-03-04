@@ -19,7 +19,7 @@ public abstract class Initializer {
 		Thread thread = new Thread(() -> {
 			this.init();
 		});
-		thread.setName("Asyn Initializer");
+		thread.setName("Asyn Initializer Thread");
 		thread.setDaemon(true);
 		thread.start();
 	}
