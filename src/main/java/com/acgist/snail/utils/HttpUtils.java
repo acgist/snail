@@ -9,6 +9,7 @@ import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpRequest.Builder;
 import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -18,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.module.config.SystemConfig;
+import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
 
 /**
  * utils - http
@@ -26,7 +28,8 @@ public class HttpUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(HttpUtils.class);
 
-	public static final int HTTP_OK = 200;
+	public static final int HTTP_OK = 200; // OK
+	public static final int HTTP_PARTIAL_CONTENT = 206; // 端点续传
 	
 	private static final String USER_AGENT;
 	
@@ -104,7 +107,9 @@ public class HttpUtils {
 	 * 判断请求是否成功
 	 */
 	public static final <T> boolean ok(HttpResponse<T> response) {
-		return response != null && response.statusCode() == HTTP_OK;
+		return response != null && (
+				response.statusCode() == HTTP_OK ||
+				response.statusCode() == HTTP_PARTIAL_CONTENT);
 	}
 
 	/**
@@ -121,6 +126,21 @@ public class HttpUtils {
 			})
 			.collect(Collectors.joining("&"));
 		return BodyPublishers.ofString(body);
+	}
+	
+	/**
+	 * 获取header信息
+	 */
+	public static final HttpHeaderWrapper httpHeader(String url) {
+		HttpClient client = HttpUtils.newClient();
+		HttpRequest request = HttpUtils.newRequest(url)
+			.method("HEAD", BodyPublishers.noBody())
+			.build();
+		HttpResponse<String> response = HttpUtils.request(client, request, BodyHandlers.ofString());
+		if(HttpUtils.ok(response)) {
+			return HttpHeaderWrapper.newInstance(response.headers());
+		}
+		return HttpHeaderWrapper.newInstance(null);
 	}
 
 }

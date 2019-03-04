@@ -11,6 +11,7 @@ import com.acgist.snail.module.initializer.Initializer;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.utils.CollectionUtils;
+import com.acgist.snail.window.main.TaskTimer;
 
 /**
  * 初始化：下载器
@@ -34,6 +35,7 @@ public class DownloaderInitializer extends Initializer {
 					LOGGER.error("新加下载任务异常", e);
 				}
 			});
+			TaskTimer.getInstance().refreshTaskTable();
 		}
 	}
 	

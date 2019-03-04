@@ -45,8 +45,8 @@ open module snail {
 	/**
 	 * 其他依赖
 	 */
-	requires transitive h2;
 	requires transitive slf4j.api;
+	requires transitive com.h2database;
 	requires transitive com.fasterxml.jackson.core;
 	requires transitive com.fasterxml.jackson.databind;
 	requires transitive com.fasterxml.jackson.annotation;

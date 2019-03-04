@@ -15,7 +15,7 @@ public class ThunderDecoder {
 	 * 验证
 	 */
 	public static final boolean verify(String url) {
-		return StringUtils.startsWith(url, THUNDER_PREFIX);
+		return StringUtils.startsWith(url.toLowerCase(), THUNDER_PREFIX);
 	}
 	
 	/**

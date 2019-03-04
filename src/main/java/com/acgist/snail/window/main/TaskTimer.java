@@ -36,7 +36,6 @@ public class TaskTimer {
 		LOGGER.info("开始任务刷新定时器");
 		this.controller = controller;
 		this.executor = Executors.newScheduledThreadPool(1, ThreadUtils.newThreadFactory("Task Timer Thread"));
-		refreshTaskTable();
 		this.executor.scheduleAtFixedRate(() -> refreshTaskData(), 0, 4, TimeUnit.SECONDS);
 	}
 
@@ -46,6 +45,10 @@ public class TaskTimer {
 	public void refreshTaskTable() {
 		try {
 			MainController controller = INSTANCE.controller;
+			while(controller == null) {
+				Thread.yield();
+				controller = INSTANCE.controller;
+			}
 			controller.taskTable(DownloaderManager.getInstance().taskTable());
 		} catch (Exception e) {
 			LOGGER.error("任务列表刷新任务异常", e);

@@ -9,12 +9,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpRequest.BodyPublishers;
-import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +27,6 @@ public class FileUtils {
 	private static final String[] SIZE_UNIT = {"B", "KB", "M", "G", "T"};
 	private static final String FILENAME_REPLACE_CHAR = "";
 	private static final String FILENAME_REPLACE_REGEX = "[\\\\/:\\*\\?\\<\\>\\|]"; // 替换的字符：\、/、:、*、?、<、>、|
-	private static final String CONTENT_DISPOSITION = "Content-Disposition";
 	
 	/**
 	 * 删除文件
@@ -52,7 +45,7 @@ public class FileUtils {
 	}
 
 	/**
-	 * 删除文件
+	 * 递归删除文件
 	 */
 	private static final void delete(File file) {
 		if(file.isDirectory()) {
@@ -105,37 +98,6 @@ public class FileUtils {
 		return url;
 	}
 	
-	/**
-	 * 获取文件名称：HTTP
-	 */
-	public static final String fileNameFromHttp(String url) {
-		HttpClient client = HttpUtils.newClient();
-		HttpRequest request = HttpUtils.newRequest(url)
-			.method("HEAD", BodyPublishers.noBody())
-			.build();
-		Optional<String> header = null;
-		HttpResponse<String> response = HttpUtils.request(client, request, BodyHandlers.ofString());
-		if(HttpUtils.ok(response)) {
-			header = response.headers().firstValue(CONTENT_DISPOSITION);
-		}
-		if(header != null && header.isPresent()) {
-			String fileName = header.get();
-			final String fileNameLower = fileName.toLowerCase();
-			if(fileNameLower.contains("filename")) {
-				int index = fileName.indexOf("=");
-				if(index != -1) {
-					fileName = fileName.substring(index + 1);
-					index = fileName.indexOf("?");
-					if(index != -1) {
-						fileName = fileName.substring(0, index);
-					}
-					return fileName;
-				}
-			}
-		}
-		return FileUtils.fileNameFromUrl(url);
-	}
-
 	/**
 	 * 文件名称获取后缀
 	 */
@@ -218,7 +180,10 @@ public class FileUtils {
 	/**
 	 * 大小计算
 	 */
-	public static final String size(long size) {
+	public static final String size(Long size) {
+		if(size == null || size == 0L) {
+			return "未知";
+		}
 		int index = 0;
 		BigDecimal decimal = new BigDecimal(size);
 		while(decimal.longValue() > SIZE_SCALE) {
