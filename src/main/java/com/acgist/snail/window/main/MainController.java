@@ -34,12 +34,16 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.util.Callback;
 
 /**
@@ -47,6 +51,17 @@ import javafx.util.Callback;
  */
 public class MainController implements Initializable {
 
+	/**
+	 * 显示过滤
+	 */
+	public enum Filter {
+		all,
+		download,
+		complete
+	}
+	
+	private Filter filter = Filter.all;
+	
 	@FXML
     private BorderPane root;
 	@FXML
@@ -74,6 +89,13 @@ public class MainController implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		// 设置多选
 		this.taskTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+		// 设置无数据内容
+		ImageView noticeImage = new ImageView("/image/64/download_01.png");
+		Text noticeText = new Text("点击新建按钮或者拖动种子文件开始下载");
+		noticeText.setFill(Color.rgb(198, 198, 198));
+		VBox placeholderBox = new VBox(noticeImage, noticeText);
+		placeholderBox.setAlignment(Pos.CENTER);
+		this.taskTable.setPlaceholder(placeholderBox);
 		// 设置列
 		taskCell(name, Pos.CENTER_LEFT, true, "nameValue", taskTable.widthProperty().divide(5D));
 		taskCell(status, Pos.CENTER, false, "statusValue", taskTable.widthProperty().divide(10D));
@@ -126,14 +148,20 @@ public class MainController implements Initializable {
 	
 	@FXML
 	public void handleAllAction(ActionEvent event) {
+		this.filter = Filter.all;
+		TaskTimer.getInstance().refreshTaskTable();
 	}
 	
 	@FXML
-	public void handleDownloadingAction(ActionEvent event) {
+	public void handleDownloadAction(ActionEvent event) {
+		this.filter = Filter.download;
+		TaskTimer.getInstance().refreshTaskTable();
 	}
 	
 	@FXML
 	public void handleCompleteAction(ActionEvent event) {
+		this.filter = Filter.complete;
+		TaskTimer.getInstance().refreshTaskTable();
 	}
 	
 	/**
@@ -141,7 +169,21 @@ public class MainController implements Initializable {
 	 */
 	public void taskTable(List<TaskWrapper> list) {
 		ObservableList<TaskWrapper> obs = FXCollections.observableArrayList();
-		list.forEach(wrapper -> {
+		list
+		.stream()
+		.filter(wrapper -> {
+			var status = wrapper.getStatus();
+			if(filter == Filter.all) {
+				return true;
+			} else if(filter == Filter.download) {
+				return status == Status.download || status == Status.await;
+			} else if(filter == Filter.complete) {
+				return status == Status.complete;
+			} else {
+				return true;
+			}
+		})
+		.forEach(wrapper -> {
 			obs.add(wrapper);
 		});
 		taskTable.setItems(obs);
