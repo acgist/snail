@@ -1,10 +1,11 @@
-package com.acgist.snail.module.handler.message;
+package com.acgist.snail.module.handler.message.impl;
 
 import java.nio.channels.AsynchronousSocketChannel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.module.handler.message.MessageHandler;
 import com.acgist.snail.pojo.message.ClientMessage;
 import com.acgist.snail.utils.AioUtils;
 import com.acgist.snail.window.main.MainWindow;
@@ -12,9 +13,9 @@ import com.acgist.snail.window.main.MainWindow;
 import javafx.application.Platform;
 
 /**
- * 消息处理
+ * 消息：Client消息
  */
-public class ClientMessageHandler extends ClientMessageSenderHandler {
+public class ClientMessageHandler extends MessageHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClientMessageHandler.class);
 	
@@ -62,5 +63,5 @@ public class ClientMessageHandler extends ClientMessageSenderHandler {
 	private void responseMessage() {
 		LOGGER.info("收到响应：{}", message.getBody());
 	}
-	
+
 }

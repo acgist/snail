@@ -1,4 +1,4 @@
-package com.acgist.snail.module.initializer;
+package com.acgist.snail.module.initializer.impl;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -7,11 +7,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.module.config.DatabaseConfig;
+import com.acgist.snail.module.initializer.Initializer;
 import com.acgist.snail.pojo.entity.ConfigEntity;
 import com.acgist.snail.repository.JDBCConnection;
 
 /**
- * 数据库建表
+ * 初始化：数据库建表
  */
 public class TableInitializer extends Initializer {
 

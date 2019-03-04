@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 字符串工具
+ * utils - 字符串
  */
 public class StringUtils {
 

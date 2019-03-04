@@ -3,7 +3,7 @@ package com.acgist.snail.utils;
 import java.util.List;
 
 /**
- * 数组集合工具
+ * utils - 数组、集合
  */
 public class CollectionUtils {
 

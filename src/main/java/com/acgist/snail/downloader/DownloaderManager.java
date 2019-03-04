@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.module.config.DownloadConfig;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
+import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * 下载器执行器
@@ -47,7 +48,7 @@ public class DownloaderManager {
 		LOGGER.info("初始化下载器管理");
 		int downloadSize = DownloadConfig.getDownloadSize();
 		LOGGER.info("初始化下载线程池，初始大小：{}", downloadSize);
-		DOWNLOADER_EXECUTOR = Executors.newFixedThreadPool(downloadSize);
+		DOWNLOADER_EXECUTOR = Executors.newFixedThreadPool(downloadSize, ThreadUtils.newThreadFactory("Downloader Thread"));
 		DOWNLOADER_TASK_MAP = new ConcurrentHashMap<>(downloadSize);
 	}
 	

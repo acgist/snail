@@ -11,24 +11,33 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.module.config.SystemConfig;
-import com.acgist.snail.module.handler.message.ClientMessageSenderHandler;
+import com.acgist.snail.module.handler.message.MessageHandler;
 import com.acgist.snail.module.handler.socket.ConnectHandler;
 import com.acgist.snail.utils.AioUtils;
+import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * 抽象客户端
  */
-public abstract class AbstractClient extends ClientMessageSenderHandler {
+public abstract class AbstractClient extends MessageHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractClient.class);
 	
+	private ExecutorService executor; // 线程池
 	protected AsynchronousChannelGroup group;
 	
 	/**
-	 * 连接
+	 * @param poolSize 线程池大小
+	 * @param poolName 线程池名称
+	 */
+	protected AbstractClient(int poolSize, String poolName) {
+		executor = Executors.newFixedThreadPool(poolSize, ThreadUtils.newThreadFactory(poolName));
+	}
+	
+	/**
+	 * 连接：
 	 */
 	public void connect() {
-		ExecutorService executor = Executors.newFixedThreadPool(10);
 		try {
 			group = AsynchronousChannelGroup.withThreadPool(executor);
 			socket = AsynchronousSocketChannel.open(group);
@@ -47,6 +56,9 @@ public abstract class AbstractClient extends ClientMessageSenderHandler {
 	 */
 	public void close() {
 		AioUtils.close(group, null, socket);
+		if(executor != null) {
+			executor.shutdown();
+		}
 	}
 	
 }

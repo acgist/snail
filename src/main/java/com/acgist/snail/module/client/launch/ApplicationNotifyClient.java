@@ -10,11 +10,15 @@ import com.acgist.snail.pojo.message.ClientMessage;
 import com.acgist.snail.pojo.message.ClientMessage.Type;
 
 /**
- * 窗口唤醒客户端
+ * 启动检测：如果已经启动实例，通过这个方法唤醒已启动的窗口
  */
 public class ApplicationNotifyClient extends AbstractClient {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationNotifyClient.class);
+	
+	protected ApplicationNotifyClient() {
+		super(1, "Notify Client Thread");
+	}
 	
 	/**
 	 * 用户输入传输

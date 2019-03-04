@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * JSON工具
+ * utils - JSON
  */
 public class JSONUtils {
 

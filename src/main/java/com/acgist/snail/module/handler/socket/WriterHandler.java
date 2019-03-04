@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.utils.AioUtils;
 
 /**
- * 发送消息
+ * 消息发送
  */
 public class WriterHandler implements CompletionHandler<Integer, ByteBuffer> {
 

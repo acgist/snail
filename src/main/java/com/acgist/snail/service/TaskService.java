@@ -4,6 +4,9 @@ import com.acgist.snail.pojo.wrapper.TaskWrapper;
 import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.utils.FileUtils;
 
+/**
+ * service - 任务
+ */
 public class TaskService {
 
 	private TaskRepository repository = new TaskRepository();
@@ -14,5 +17,5 @@ public class TaskService {
 		// 删除任务
 		repository.delete(wrapper.getId());
 	}
-	
+
 }

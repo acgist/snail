@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.module.config.SystemConfig;
 
 /**
- * http工具
+ * utils - http
  */
 public class HttpUtils {
 

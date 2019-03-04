@@ -16,11 +16,11 @@ import javafx.scene.text.Text;
 public class TaskCell extends TableCell<TaskWrapper, String> {
 
 	private Pos pos = Pos.CENTER_LEFT;
-	private boolean name;
+	private boolean icon;
 	
-	public TaskCell(Pos pos, boolean name) {
+	public TaskCell(Pos pos, boolean icon) {
 		this.pos = pos;
-		this.name = name;
+		this.icon = icon;
 	}
 	
 	@Override
@@ -31,7 +31,7 @@ public class TaskCell extends TableCell<TaskWrapper, String> {
 			HBox box = new HBox();
 			box.setAlignment(pos);
 			Text name = new Text(value);
-			if(this.name) { // 名称：添加图标和手势
+			if(this.icon) { // 名称：添加图标和手势
 				name.setCursor(Cursor.HAND);
 				FileType fileType = wrapper.getFileType();
 				if(fileType != null) {

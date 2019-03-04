@@ -32,7 +32,7 @@ import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 
 /**
- * 托盘菜单
+ * 菜单 - 托盘
  */
 public class TrayMenu extends ContextMenu {
 

@@ -2,13 +2,13 @@ package com.acgist.snail.window.main;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.DownloaderManager;
+import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * 定时任务：刷新任务列表
@@ -35,19 +35,9 @@ public class TaskTimer {
 	public void newTimer(MainController controller) {
 		LOGGER.info("开始任务刷新定时器");
 		this.controller = controller;
-		this.executor = Executors.newScheduledThreadPool(1, new ThreadFactory() {
-			@Override
-			public Thread newThread(Runnable runnable) {
-				Thread thread = new Thread(runnable);
-				thread.setName("Task Table Updater");
-				thread.setDaemon(true);
-				return thread;
-			}
-		});
+		this.executor = Executors.newScheduledThreadPool(1, ThreadUtils.newThreadFactory("Task Timer Thread"));
 		refreshTaskTable();
-		this.executor.scheduleAtFixedRate(() -> {
-			refreshTaskData();
-		}, 0, 4, TimeUnit.SECONDS);
+		this.executor.scheduleAtFixedRate(() -> refreshTaskData(), 0, 4, TimeUnit.SECONDS);
 	}
 
 	/**

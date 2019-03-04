@@ -3,9 +3,14 @@ package com.acgist.snail.window.torrent;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.coder.torrent.TorrentDecoder;
 import com.acgist.snail.coder.torrent.TorrentFiles;
+import com.acgist.snail.coder.torrent.TorrentInfo;
 import com.acgist.snail.downloader.DownloaderManager;
+import com.acgist.snail.module.exception.DownloadException;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
 import com.acgist.snail.repository.impl.TaskRepository;
@@ -24,7 +29,7 @@ import javafx.scene.layout.VBox;
 
 public class TorrentController implements Initializable {
 	
-//	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentController.class);
 	
 	private static final String HIDE_FILE_PREFIX = "_____padding_file"; // 不需要下载的文件前缀
 	
@@ -56,9 +61,14 @@ public class TorrentController implements Initializable {
 	 */
 	public void tree(TaskWrapper wrapper) {
 		this.wrapper = wrapper;
+		TorrentInfo info = null;
 		TreeView<HBox> tree = buildTree();
 		TorrentDecoder decoder = TorrentDecoder.newInstance(wrapper.getTorrent());
-		var info = decoder.torrentInfo();
+		try {
+			info = decoder.torrentWrapper().torrentInfo();
+		} catch (DownloadException e) {
+			LOGGER.error("显示下载列表异常", e);
+		}
 		if(info == null) {
 			AlertWindow.warn("下载出错", "种子文件解析异常");
 			return;
@@ -68,12 +78,8 @@ public class TorrentController implements Initializable {
 		files.files()
 		.stream()
 		.filter(file -> !file.path().startsWith(HIDE_FILE_PREFIX))
-		.sorted((a, b) -> {
-			return a.path().compareTo(b.path());
-		})
-		.forEach(file -> {
-			manager.build(file.path(), file.getLength());
-		});
+		.sorted((a, b) -> a.path().compareTo(b.path()))
+		.forEach(file -> manager.build(file.path(), file.getLength()));
 		manager.select(wrapper.files());
 	}
 	

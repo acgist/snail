@@ -220,18 +220,18 @@ public class MainController implements Initializable {
 	 * 设置列
 	 * @param column 列
 	 * @param pos 对齐
-	 * @param name 列名
+	 * @param icon 显示ICON
 	 * @param propertyBinding 属性绑定
 	 * @param widthBinding 宽度绑定
 	 */
-	private void taskCell(TableColumn<TaskWrapper, String> column, Pos pos, boolean name, String propertyBinding, DoubleBinding widthBinding) {
+	private void taskCell(TableColumn<TaskWrapper, String> column, Pos pos, boolean icon, String propertyBinding, DoubleBinding widthBinding) {
 		column.prefWidthProperty().bind(widthBinding);
 		column.setResizable(false);
 		column.setCellValueFactory(new PropertyValueFactory<TaskWrapper, String>(propertyBinding));
 		column.setCellFactory(new Callback<TableColumn<TaskWrapper, String>, TableCell<TaskWrapper, String>>() {
 			@Override
 			public TableCell<TaskWrapper, String> call(TableColumn<TaskWrapper, String> param) {
-				return new TaskCell(pos, name);
+				return new TaskCell(pos, icon);
 			}
 		});
 	}

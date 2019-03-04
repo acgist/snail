@@ -4,7 +4,7 @@ import com.acgist.snail.utils.StringUtils;
 import com.fasterxml.jackson.core.util.ByteArrayBuilder;
 
 /**
- * hash生成器
+ * 种子磁力链接HASH生成器
  */
 public class TorrentHashBuilder {
 
@@ -52,5 +52,5 @@ public class TorrentHashBuilder {
 		System.arraycopy(byteArray, 0, bytes, 0, byteArray.length - 7);
 		return StringUtils.sha1(bytes);
 	}
-	
+
 }

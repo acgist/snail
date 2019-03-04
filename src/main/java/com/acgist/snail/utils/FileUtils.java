@@ -23,7 +23,7 @@ import com.acgist.snail.module.config.FileTypeConfig;
 import com.acgist.snail.module.config.FileTypeConfig.FileType;
 
 /**
- * 文件工具
+ * utils - 文件
  */
 public class FileUtils {
 

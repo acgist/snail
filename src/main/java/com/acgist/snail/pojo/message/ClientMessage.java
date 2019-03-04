@@ -28,7 +28,13 @@ public class ClientMessage {
 
 	}
 
+	/**
+	 * 类型
+	 */
 	private Type type;
+	/**
+	 * 消息内容
+	 */
 	private String body;
 
 	

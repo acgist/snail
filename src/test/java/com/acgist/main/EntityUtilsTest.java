@@ -18,7 +18,7 @@ public class EntityUtilsTest {
 
 	@Test
 	public void property() {
-		TaskEntity entity = new TaskEntity("测试", Type.http, FileType.image, "test", "xx", "xx", Status.await, 100, null, "");
+		TaskEntity entity = new TaskEntity("测试", Type.http, FileType.image, "test", "xx", "xx", Status.await, 100L, null, "");
 		final String[] properties = EntityUtils.entityProperty(entity.getClass());
 		final String sqlProperty = Stream.of(properties)
 			.map(property -> "`" + property + "`")

@@ -3,8 +3,8 @@ package com.acgist.snail.context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.module.initializer.DownloaderInitializer;
-import com.acgist.snail.module.initializer.TableInitializer;
+import com.acgist.snail.module.initializer.impl.DownloaderInitializer;
+import com.acgist.snail.module.initializer.impl.TableInitializer;
 
 /**
  * 系统上下文

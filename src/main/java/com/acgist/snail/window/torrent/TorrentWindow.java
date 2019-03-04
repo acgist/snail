@@ -13,7 +13,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
- * 编辑任务窗口
+ * 下载文件选择
  */
 public class TorrentWindow extends AbstractWindow<TorrentController> {
 

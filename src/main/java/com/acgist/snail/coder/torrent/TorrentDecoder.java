@@ -12,7 +12,7 @@ import com.acgist.snail.pojo.wrapper.TorrentWrapper;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * 种子解码器
+ * 种子解析器
  */
 public class TorrentDecoder {
 	
@@ -20,8 +20,8 @@ public class TorrentDecoder {
 	
 	public static final String TORRENT_SUFFIX = ".torrent"; // 文件后缀
 	
-	private String hash = null;
-	private TorrentInfo torrentInfo = null;
+	private String hash = null; // 磁力链接HASH
+	private TorrentInfo torrentInfo = null; // 种子文件信息
 	
 	private TorrentDecoder() {
 	}
@@ -40,17 +40,10 @@ public class TorrentDecoder {
 	}
 	
 	/**
-	 * 获取hash
+	 * 获取磁力链接HASH
 	 */
 	public String hash() {
 		return hash;
-	}
-	
-	/**
-	 * 获取种子信息
-	 */
-	public TorrentInfo torrentInfo() {
-		return torrentInfo;
 	}
 	
 	/**

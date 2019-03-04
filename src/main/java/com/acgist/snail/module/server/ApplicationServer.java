@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.module.config.SystemConfig;
 import com.acgist.snail.module.handler.socket.AcceptHandler;
 import com.acgist.snail.utils.AioUtils;
+import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * 服务监听
@@ -23,6 +24,7 @@ public class ApplicationServer {
 	
 	private static final ApplicationServer INSTANCE = new ApplicationServer();
 	
+	private ExecutorService executor;
 	private AsynchronousChannelGroup group;
 	private AsynchronousServerSocketChannel server;
 	
@@ -34,11 +36,11 @@ public class ApplicationServer {
 	}
 	
 	/**
-	 * 开启监听
+	 * 开启监听，线程大小根据客户类型优化
 	 */
 	public boolean listen() {
 		boolean ok = true;
-		ExecutorService executor = Executors.newFixedThreadPool(10);
+		executor = Executors.newFixedThreadPool(1, ThreadUtils.newThreadFactory("Server Thread"));
 		try {
 			group = AsynchronousChannelGroup.withThreadPool(executor);
 			server = AsynchronousServerSocketChannel.open(group).bind(new InetSocketAddress(SystemConfig.getServerHost(), SystemConfig.getServerPort()));
@@ -69,6 +71,9 @@ public class ApplicationServer {
 	public void shutdown() {
 		LOGGER.info("关闭服务监听");
 		AioUtils.close(group, server, null);
+		if(executor != null) {
+			executor.shutdown();
+		}
 	}
 	
 	public static void main(String[] args) {

@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 结果集封装
+ * wrapper - 数据库结果集
  */
 public class ResultSetWrapper {
 
