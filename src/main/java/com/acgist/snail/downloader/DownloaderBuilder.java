@@ -58,7 +58,7 @@ public class DownloaderBuilder {
 	/**
 	 * 执行下载
 	 */
-	private void builderDownloader() {
+	private void builderDownloader() throws DownloadException {
 		if(wrapper != null) {
 			DownloaderManager.getInstance().submit(new HttpDownloader(wrapper));
 		}

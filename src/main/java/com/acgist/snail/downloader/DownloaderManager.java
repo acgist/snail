@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.module.config.DownloadConfig;
+import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
 import com.acgist.snail.utils.ThreadUtils;
 
@@ -56,6 +57,10 @@ public class DownloaderManager {
 	 * 提交下载任务
 	 */
 	public void submit(IDownloader downloader) {
+		TaskWrapper wrapper = downloader.taskWrapper();
+		if(wrapper.getStatus() == Status.complete) {
+			return;
+		}
 		LOGGER.info("开始任务：{}", downloader.name());
 		DOWNLOADER_EXECUTOR.submit(downloader);
 		DOWNLOADER_TASK_MAP.put(downloader.id(), downloader);
@@ -65,7 +70,9 @@ public class DownloaderManager {
 	 * 开始任务
 	 */
 	public void start(TaskWrapper wrapper) {
-		downloader(wrapper).start();
+		var downloader = downloader(wrapper);
+		downloader.start();
+		submit(downloader);
 	}
 	
 	/**

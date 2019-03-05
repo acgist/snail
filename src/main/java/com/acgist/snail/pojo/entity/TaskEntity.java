@@ -23,7 +23,8 @@ public class TaskEntity extends BaseEntity {
 		await("等待中"),
 		download("下载中"),
 		pause("暂停"),
-		complete("完成");
+		complete("完成"),
+		fail("失败");
 		
 		private String value;
 
