@@ -61,7 +61,7 @@ public class DownloadConfig {
 	
 	private String downloadPath; // 下载路径
 	private Integer downloadSize; // 同时下载任务数量
-	private Integer downloadBuffer; // 单个任务下载速度
+	private Integer downloadBuffer; // 单个任务下载速度（KB）
 	private Boolean downloadNotice; // 下载完成弹出提示
 	private Boolean downloadP2p; // 启用P2P加速
 	private String downloadLastPath; // 最后一次选择文件目录
@@ -150,6 +150,10 @@ public class DownloadConfig {
 	}
 	
 	public static final void setDownloadBuffer(Integer downloadBuffer) {
+		if(downloadBuffer == 0) {
+			LOGGER.warn("下载速度不能：0，设置为最小值：1");
+			downloadBuffer = 1; // 下载速度不能设置：0
+		}
 		ConfigRepository configRepository = new ConfigRepository();
 		INSTANCE.downloadBuffer = downloadBuffer;
 		configRepository.updateConfig(DOWNLOAD_BUFFER, String.valueOf(downloadBuffer));
@@ -212,5 +216,5 @@ public class DownloadConfig {
 			chooser.setInitialDirectory(file);
 		}
 	}
-
+	
 }
