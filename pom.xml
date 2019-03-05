@@ -84,6 +84,7 @@
 	</dependencies>
 
 	<build>
+		<!-- launch4j-maven-plugin -->
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
