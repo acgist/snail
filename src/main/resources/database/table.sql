@@ -1,6 +1,6 @@
 -- 建表
 create table tb_config (
-	`id` varchar(36) NOT NULL,
+	`id` VARCHAR(36) NOT NULL,
     `createDate` TIMESTAMP NOT NULL,
     `modifyDate` TIMESTAMP NOT NULL,
     `name` VARCHAR(256) DEFAULT NULL,
@@ -8,7 +8,7 @@ create table tb_config (
 	PRIMARY KEY (`id`)
 );
 create table tb_task (
-	`id` varchar(36) NOT NULL,
+	`id` VARCHAR(36) NOT NULL,
     `createDate` TIMESTAMP NOT NULL,
     `modifyDate` TIMESTAMP NOT NULL,
     `name` VARCHAR(256) DEFAULT NULL,
@@ -18,7 +18,7 @@ create table tb_task (
     `url` VARCHAR(1024) DEFAULT NULL,
     `torrent` VARCHAR(512) DEFAULT NULL,
     `status` VARCHAR(32) DEFAULT NULL,
-    `size` BIGINT(11) DEFAULT NULL,
+    `size` BIGINT DEFAULT NULL,
     `endDate` TIMESTAMP DEFAULT NULL,
     `description` VARCHAR(10240) DEFAULT NULL,
 	PRIMARY KEY (`id`)

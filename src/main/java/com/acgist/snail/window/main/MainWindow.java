@@ -15,6 +15,8 @@ import javafx.stage.Stage;
 /**
  * 主界面
  * TODO：主页隐藏时不刷新任务列表
+ * 任务栏按钮
+ * 托盘气泡通知
  */
 public class MainWindow extends AbstractWindow<MainController> {
 
@@ -56,7 +58,7 @@ public class MainWindow extends AbstractWindow<MainController> {
 	
 	@Override
 	public void show() {
-		stage.setIconified(false); // 防止缩小到任务栏导致不能显示到显示器
+		stage.setIconified(false); // 设置最大化：防止最小化后从托盘显示出来不能正常显示
 		super.show();
 	}
 

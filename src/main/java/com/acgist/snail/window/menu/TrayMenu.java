@@ -2,6 +2,7 @@ package com.acgist.snail.window.menu;
 
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
+import java.awt.TrayIcon.MessageType;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 
@@ -115,13 +116,28 @@ public class TrayMenu extends ContextMenu {
 		};
 		try {
 			BufferedImage image = ImageIO.read(MainWindow.class.getResourceAsStream("/image/16/logo.png"));
-			trayIcon = new TrayIcon(image, "蜗牛");
+			trayIcon = new TrayIcon(image, SystemConfig.getName());
 			trayIcon.addMouseListener(mouseListener);
 			SystemTray.getSystemTray().add(trayIcon);
 		} catch (Exception e) {
 			LOGGER.error("添加托盘异常", e);
 		}
 	}
+	
+	/**
+	 * 提示信息
+	 */
+	public void notice(String title, String content) {
+		notice(title, content, MessageType.INFO);
+	}
+
+	/**
+	 * 提示信息
+	 */
+	public void notice(String title, String content, MessageType type) {
+		trayIcon.displayMessage(title, content, type);
+	}
+	
 	
 	/**
 	 * 关闭托盘

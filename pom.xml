@@ -15,7 +15,7 @@
 	<properties>
 		<encoding>UTF-8</encoding>
 		<java.version>11</java.version>
-		<h2.version>1.4.198</h2.version>
+		<h2.version>1.4.198</h2.version><!-- TODO：1.4.198这个版本很慢，但是支持模块化，暂时忍受一下 -->
 		<junit.version>4.12</junit.version>
 		<slf4j.version>1.7.26</slf4j.version>
 		<javafx.version>11.0.2</javafx.version>
