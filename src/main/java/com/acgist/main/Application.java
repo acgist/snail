@@ -23,6 +23,7 @@ public class Application {
 			initSystem();
 			buildWindow();
 		}
+		TrayMenu.getInstance().notice("ceshi", ":cdd");
 		LOGGER.info("系统启动完成");
 	}
 	

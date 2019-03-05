@@ -32,14 +32,14 @@ public class SystemConfig {
 		INSTANCE.serverHost = propertiesUtils.getString("acgist.server.host");
 	}
 	
-	private String name;
-	private String nameEn;
-	private String version;
-	private String author;
-	private String source;
-	private String support;
-	private Integer serverPort;
-	private String serverHost;
+	private String name; // 名称
+	private String nameEn; // 英文名称
+	private String version; // 版本
+	private String author; // 作者
+	private String source; // 源码
+	private String support; // 支持
+	private Integer serverPort; // 服务端口
+	private String serverHost; // 服务地址
 	
 	public static final String getName() {
 		return INSTANCE.name;

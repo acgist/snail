@@ -34,18 +34,16 @@ public class DownloadConfig {
 	private DownloadConfig() {
 	}
 	
-	private String downloadPath;
-	private Integer downloadSize;
-	private Integer downloadBuffer;
-	private Boolean downloadNotice;
-	private Boolean downloadP2p;
-	private String downloadLastPath;
-	
 	static {
 		LOGGER.info("初始化用户配置");
 		INSTANCE.initFromProperties();
 		INSTANCE.initFromDB();
-		INSTANCE.loggerInfo();
+		LOGGER.info("下载路径：{}", DOWNLOAD_PATH, INSTANCE.downloadPath);
+		LOGGER.info("同时下载任务数量：{}", DOWNLOAD_SIZE, INSTANCE.downloadSize);
+		LOGGER.info("单个任务下载速度（KB）：{}", DOWNLOAD_BUFFER, INSTANCE.downloadBuffer);
+		LOGGER.info("下载完成弹出提示：{}", DOWNLOAD_NOTICE, INSTANCE.downloadNotice);
+		LOGGER.info("启用P2P加速：{}", DOWNLOAD_P2P, INSTANCE.downloadP2p);
+		LOGGER.info("最后一次选择文件目录：{}", DOWNLOAD_LAST_PATH, INSTANCE.downloadLastPath);
 	}
 	
 	/**
@@ -60,6 +58,13 @@ public class DownloadConfig {
 		INSTANCE.downloadP2p = propertiesUtils.getBoolean(DOWNLOAD_P2P);
 		INSTANCE.downloadLastPath = propertiesUtils.getString(DOWNLOAD_LAST_PATH);
 	}
+	
+	private String downloadPath; // 下载路径
+	private Integer downloadSize; // 同时下载任务数量
+	private Integer downloadBuffer; // 单个任务下载速度
+	private Boolean downloadNotice; // 下载完成弹出提示
+	private Boolean downloadP2p; // 启用P2P加速
+	private String downloadLastPath; // 最后一次选择文件目录
 	
 	/**
 	 * 数据库初始化配置
@@ -115,18 +120,6 @@ public class DownloadConfig {
 			}
 		}
 		return defaultValue;
-	}
-	
-	/**
-	 * 日志记录
-	 */
-	private void loggerInfo() {
-		LOGGER.info("下载路径，属性：{}，值：{}", DOWNLOAD_PATH, downloadPath);
-		LOGGER.info("同时下载任务数量，属性：{}，值：{}", DOWNLOAD_SIZE, downloadSize);
-		LOGGER.info("单个任务下载速度（KB），属性：{}，值：{}", DOWNLOAD_BUFFER, downloadBuffer);
-		LOGGER.info("下载完成弹出提示，属性：{}，值：{}", DOWNLOAD_NOTICE, downloadNotice);
-		LOGGER.info("启用P2P加速，属性：{}，值：{}", DOWNLOAD_P2P, downloadP2p);
-		LOGGER.info("最后一次选择文件目录，属性：{}，值：{}", DOWNLOAD_LAST_PATH, downloadLastPath);
 	}
 	
 	public static final void setDownloadPath(String path) {
@@ -199,7 +192,7 @@ public class DownloadConfig {
 	private static final File lastPath() {
 		File file = null;
 		if(StringUtils.isEmpty(INSTANCE.downloadLastPath)) {
-			file = new File(INSTANCE.downloadPath);
+			file = new File(getDownloadPath());
 		} else {
 			file = new File(INSTANCE.downloadLastPath);
 		}
@@ -219,5 +212,5 @@ public class DownloadConfig {
 			chooser.setInitialDirectory(file);
 		}
 	}
-	
+
 }

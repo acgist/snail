@@ -23,7 +23,7 @@ import com.acgist.snail.utils.EntityUtils;
 public class JDBCConnection {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(JDBCConnection.class);
-	
+
 	public static final Connection connection() {
 		Connection connection = null;
 		try {

@@ -20,6 +20,13 @@ public class DownloaderInitializer extends Initializer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DownloaderInitializer.class);
 	
+	private DownloaderInitializer() {
+	}
+	
+	public static final DownloaderInitializer newInstance() {
+		return new DownloaderInitializer();
+	}
+	
 	public void init() {
 		LOGGER.info("初始化下载器");
 		TaskRepository repository = new TaskRepository();

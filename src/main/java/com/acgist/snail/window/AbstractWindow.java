@@ -23,7 +23,7 @@ public abstract class AbstractWindow<T extends Initializable> extends Applicatio
 	 * 设置ICON
 	 */
 	protected void icon() {
-		stage.getIcons().add(new Image("/image/logo.png"));	
+		stage.getIcons().add(new Image("/image/logo.png"));
 	}
 	
 	/**

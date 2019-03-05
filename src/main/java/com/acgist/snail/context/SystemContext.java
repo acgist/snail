@@ -18,8 +18,8 @@ public class SystemContext {
 	 */
 	public static final void init() {
 		LOGGER.info("系统初始化");
-		new TableInitializer().initSync();
-		new DownloaderInitializer().initAsyn();
+		TableInitializer.newInstance().initSync();
+		DownloaderInitializer.newInstance().initAsyn();
 	}
 	
 }

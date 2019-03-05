@@ -25,6 +25,11 @@ public class DatabaseConfig {
 		INSTANCE.user = propertiesUtils.getString("acgist.database.h2.user");
 		INSTANCE.password = propertiesUtils.getString("acgist.database.h2.password");
 		INSTANCE.tableSQL = propertiesUtils.getString("acgist.database.h2.table.sql");
+		LOGGER.info("数据库地址：{}", INSTANCE.url);
+		LOGGER.info("数据库驱动：{}", INSTANCE.driver);
+		LOGGER.info("数据库用户：{}", INSTANCE.user);
+		LOGGER.info("数据库密码：{}", INSTANCE.password);
+		LOGGER.info("数据库建表语句：{}", INSTANCE.tableSQL);
 	}
 	
 	private String url;

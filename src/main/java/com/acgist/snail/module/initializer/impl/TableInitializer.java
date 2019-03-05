@@ -18,6 +18,13 @@ public class TableInitializer extends Initializer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TableInitializer.class);
 	
+	private TableInitializer() {
+	}
+	
+	public static final TableInitializer newInstance() {
+		return new TableInitializer();
+	}
+	
 	public void init() {
 		if(exist()) {
 			return;
