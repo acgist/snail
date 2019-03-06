@@ -95,6 +95,7 @@ public abstract class AbstractDownloader implements IDownloader {
 			try {
 				this.download();
 			} catch (Exception e) {
+				fail();
 				LOGGER.error("下载异常", e);
 			}
 			this.release();
