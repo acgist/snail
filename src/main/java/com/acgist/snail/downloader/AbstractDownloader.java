@@ -27,7 +27,7 @@ public abstract class AbstractDownloader implements IDownloader {
 	}
 	
 	@Override
-	public TaskWrapper taskWrapper() {
+	public TaskWrapper wrapper() {
 		return wrapper;
 	}
 

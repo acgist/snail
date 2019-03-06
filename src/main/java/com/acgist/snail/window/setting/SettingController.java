@@ -109,7 +109,11 @@ public class SettingController implements Initializable {
 	};
 
 	private ChangeListener<? super Number> sizeListener = (obs, oldVal, newVal) -> {
-		size.setValue(newVal.intValue()); // 设置整数个任务
+		int value = newVal.intValue(); // 设置整数个任务
+		if(value == 0) { // 不能设置：0
+			value = 1;
+		}
+		size.setValue(value);
 	};
 	
 	private EventHandler<MouseEvent> sizeAction = (event) -> {
@@ -121,6 +125,8 @@ public class SettingController implements Initializable {
 		int value = newVal.intValue();
 		if(value > 512) { // 512KB以上时设置为512整数倍
 			value = value / 512 * 512;
+		} else if(value == 0) { // 不能设置：0
+			value = 1;
 		}
 		buffer.setValue(value);
 	};

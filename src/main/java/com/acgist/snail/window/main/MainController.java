@@ -7,8 +7,12 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.coder.torrent.TorrentDecoder;
 import com.acgist.snail.downloader.DownloaderManager;
+import com.acgist.snail.module.exception.DownloadException;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
@@ -51,6 +55,8 @@ import javafx.util.Callback;
  */
 public class MainController implements Initializable {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
+	
 	/**
 	 * 显示过滤
 	 */
@@ -227,7 +233,11 @@ public class MainController implements Initializable {
 	public void start() {
 		this.selected()
 		.forEach(wrapper -> {
-			DownloaderManager.getInstance().start(wrapper);
+			try {
+				DownloaderManager.getInstance().start(wrapper);
+			} catch (DownloadException e) {
+				LOGGER.error("添加下载任务异常", e);
+			}
 		});
 		TaskTimer.getInstance().refreshTaskData();
 	}
@@ -326,7 +336,11 @@ public class MainController implements Initializable {
 			if(status == Status.await || status == Status.download) {
 				DownloaderManager.getInstance().pause(wrapper);
 			} else {
-				DownloaderManager.getInstance().start(wrapper);
+				try {
+					DownloaderManager.getInstance().start(wrapper);
+				} catch (DownloadException e) {
+					LOGGER.error("添加下载任务异常", e);
+				}
 			}
 			TaskTimer.getInstance().refreshTaskData();
 		}
