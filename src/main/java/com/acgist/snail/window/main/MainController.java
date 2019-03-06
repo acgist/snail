@@ -41,7 +41,6 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
@@ -109,11 +108,11 @@ public class MainController implements Initializable {
 		placeholderBox.setAlignment(Pos.CENTER);
 		this.taskTable.setPlaceholder(placeholderBox);
 		// 设置列
-		taskCell(name, Pos.CENTER_LEFT, true, "nameValue", taskTable.widthProperty().divide(5D));
-		taskCell(status, Pos.CENTER, false, "statusValue", taskTable.widthProperty().divide(10D));
-		taskCell(progress, Pos.CENTER_LEFT, false, "progressValue", taskTable.widthProperty().divide(5D).subtract(20));
-		taskCell(createDate, Pos.CENTER, false, "createDateValue", taskTable.widthProperty().divide(4D));
-		taskCell(endDate, Pos.CENTER, false, "endDateValue", taskTable.widthProperty().divide(4D));
+		taskCell(name, Pos.CENTER_LEFT, true, taskTable.widthProperty().divide(5D));
+		taskCell(status, Pos.CENTER, false, taskTable.widthProperty().divide(10D));
+		taskCell(progress, Pos.CENTER_LEFT, false, taskTable.widthProperty().divide(5D).subtract(20));
+		taskCell(createDate, Pos.CENTER, false, taskTable.widthProperty().divide(4D));
+		taskCell(endDate, Pos.CENTER, false, taskTable.widthProperty().divide(4D));
 		// 设置行
 		this.taskTable.setRowFactory(rowFactory);		
 		// 绑定属性
@@ -207,7 +206,7 @@ public class MainController implements Initializable {
 	public void refreshData() {
 		taskTable.refresh(); // 刷新table
 		Platform.runLater(() -> {
-			downloadBuffer.setText(SystemStatistical.downloadBufferStatus()); // 下载速度
+			downloadBuffer.setText(SystemStatistical.getInstance().downloadBufferSecond()); // 下载速度
 		});
 	}
 	
@@ -282,13 +281,11 @@ public class MainController implements Initializable {
 	 * @param column 列
 	 * @param pos 对齐
 	 * @param icon 显示ICON
-	 * @param propertyBinding 属性绑定
 	 * @param widthBinding 宽度绑定
 	 */
-	private void taskCell(TableColumn<TaskWrapper, String> column, Pos pos, boolean icon, String propertyBinding, DoubleBinding widthBinding) {
+	private void taskCell(TableColumn<TaskWrapper, String> column, Pos pos, boolean icon, DoubleBinding widthBinding) {
 		column.prefWidthProperty().bind(widthBinding);
 		column.setResizable(false);
-		column.setCellValueFactory(new PropertyValueFactory<TaskWrapper, String>(propertyBinding));
 		column.setCellFactory(new Callback<TableColumn<TaskWrapper, String>, TableCell<TaskWrapper, String>>() {
 			@Override
 			public TableCell<TaskWrapper, String> call(TableColumn<TaskWrapper, String> param) {
