@@ -23,6 +23,8 @@ import com.acgist.snail.utils.HttpUtils;
  * 		range: bytes=begin-end
  * 		content-range: bytes begin-end/total
  * 测试：http://my.163.com/zmb/
+ * 
+ * TODO：任务状态、断点续传
  */
 public class HttpDownloader extends AbstractDownloader implements IDownloader {
 
@@ -38,15 +40,16 @@ public class HttpDownloader extends AbstractDownloader implements IDownloader {
 		
 	@Override
 	public void open() {
+		var entity = wrapper.entity();
 		bytes = new byte[DownloadConfig.getDownloadBuffer() * 1024];
 		try {
-			output = new FileOutputStream(wrapper.getFile());
+			output = new FileOutputStream(entity.getFile());
 		} catch (FileNotFoundException e) {
 			LOGGER.error("打开下载文件流失败", e);
 			fail();
 		}
 		HttpClient client = HttpUtils.newClient();
-		var request = HttpUtils.newRequest(this.wrapper.getUrl()).GET().build();
+		var request = HttpUtils.newRequest(entity.getUrl()).GET().build();
 		var response = HttpUtils.request(client, request, BodyHandlers.ofInputStream());
 		if(HttpUtils.ok(response)) {
 			input = response.body();
@@ -60,9 +63,13 @@ public class HttpDownloader extends AbstractDownloader implements IDownloader {
 		int index = 0;
 		long begin, end;
 		while(true) {
+			if(!downloading()) {
+				break;
+			}
 			begin = System.currentTimeMillis();
 			index = input.read(bytes);
 			if(index == -1) {
+				complete = true;
 				break;
 			}
 			output.write(bytes, 0, index);

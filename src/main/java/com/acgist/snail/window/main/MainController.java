@@ -172,7 +172,7 @@ public class MainController implements Initializable {
 		list
 		.stream()
 		.filter(wrapper -> {
-			var status = wrapper.getStatus();
+			var status = wrapper.entity().getStatus();
 			if(filter == Filter.all) {
 				return true;
 			} else if(filter == Filter.download) {
@@ -218,7 +218,7 @@ public class MainController implements Initializable {
 	public boolean hasTorrent() {
 		return this.selected()
 			.stream()
-			.anyMatch(wrapper -> wrapper.getType() == Type.torrent);
+			.anyMatch(wrapper -> wrapper.entity().getType() == Type.torrent);
 	}
 
 	/**
@@ -322,7 +322,7 @@ public class MainController implements Initializable {
 		if(event.getClickCount() == 2) {
 			TableRow<TaskWrapper> row = (TableRow<TaskWrapper>) event.getSource();
 			var wrapper = row.getItem();
-			var status = wrapper.getStatus();
+			var status = wrapper.entity().getStatus();
 			if(status == Status.await || status == Status.download) {
 				DownloaderManager.getInstance().pause(wrapper);
 			} else {

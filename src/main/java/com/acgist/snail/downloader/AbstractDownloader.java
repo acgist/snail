@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
-import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
@@ -20,56 +19,50 @@ public abstract class AbstractDownloader implements IDownloader {
 	
 	private static final long ONE_MINUTE = 1000L; // 一分钟
 	
+	protected boolean complete = false;
 	protected TaskWrapper wrapper;
 
 	public AbstractDownloader(TaskWrapper wrapper) {
 		this.wrapper = wrapper;
-	}
-
-	@Override
-	public String id() {
-		return wrapper.getId();
 	}
 	
 	@Override
 	public TaskWrapper taskWrapper() {
 		return wrapper;
 	}
+
+	@Override
+	public String id() {
+		return wrapper.entity().getId();
+	}
 	
 	@Override
 	public String name() {
-		return wrapper.getName();
+		return wrapper.entity().getName();
 	}
 	
 	@Override
 	public void start() {
-		TaskRepository repository = new TaskRepository();
-		this.wrapper.setStatus(Status.await);
-		repository.update(this.wrapper.getEntity());
+		this.wrapper.updateStatus(Status.await);
 	}
 	
 	@Override
 	public void pause() {
-		TaskRepository repository = new TaskRepository();
-		this.wrapper.setStatus(Status.pause);
-		repository.update(this.wrapper.getEntity());
+		this.wrapper.updateStatus(Status.pause);
 	}
 	
 	@Override
 	public void fail() {
-		TaskRepository repository = new TaskRepository();
-		this.wrapper.setStatus(Status.fail);
-		repository.update(this.wrapper.getEntity());
+		this.wrapper.updateStatus(Status.fail);
 	}
 	
 	@Override
 	public void delete() {
 		this.pause(); // 暂停
+		var entity = wrapper.entity();
 		// 删除文件：注意不删除种子文件，下载时已经将种子文件拷贝到下载目录了
-		FileUtils.delete(wrapper.getFile());
-		TaskRepository repository = new TaskRepository();
-		// 删除任务
-		repository.delete(wrapper.getId());
+		FileUtils.delete(entity.getFile());
+		this.wrapper.delete();
 	}
 	
 	@Override
@@ -78,25 +71,22 @@ public abstract class AbstractDownloader implements IDownloader {
 	
 	@Override
 	public void complete() {
-		TaskRepository repository = new TaskRepository();
-		this.wrapper.setStatus(Status.complete);
-		repository.update(this.wrapper.getEntity());
+		this.wrapper.updateStatus(Status.complete);
 	}
 	
 	@Override
 	public void run() {
-		LOGGER.info("开始下载：{}", this.wrapper.getName());
-		this.wrapper.setStatus(Status.download);
+		var entity = this.wrapper.entity();
+		LOGGER.info("开始下载：{}", entity.getName());
+		entity.setStatus(Status.download);
 		this.open();
-		boolean ok = true;
 		try {
 			this.download();
 		} catch (IOException e) {
-			ok = false;
 			LOGGER.error("下载异常", e);
 		}
 		this.release();
-		if(ok) {
+		if(complete) {
 			this.complete();
 		}
 	}
@@ -111,4 +101,12 @@ public abstract class AbstractDownloader implements IDownloader {
 		ThreadUtils.sleep(ONE_MINUTE - time);
 	}
 	
+	/**
+	 * 下载中
+	 */
+	protected boolean downloading() {
+		var entity = this.wrapper.entity();
+		return entity.getStatus() == Status.download;
+	}
+
 }

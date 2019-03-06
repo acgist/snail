@@ -101,7 +101,7 @@ public class TaskMenu extends ContextMenu {
 	private EventHandler<ActionEvent> copyUrlEvent = (event) -> {
 		MainWindow.getInstance().controller().selected()
 		.forEach(wrapper -> {
-			ClipboardUtils.copy(wrapper.getUrl());
+			ClipboardUtils.copy(wrapper.entity().getUrl());
 		});
 	};
 	
@@ -117,8 +117,8 @@ public class TaskMenu extends ContextMenu {
 			DownloadConfig.setDownloadLastPath(file.getPath());
 			MainWindow.getInstance().controller().selected()
 			.forEach(wrapper -> {
-				if(wrapper.getType() == Type.torrent) {
-					String torrent = wrapper.getTorrent();
+				if(wrapper.entity().getType() == Type.torrent) {
+					String torrent = wrapper.entity().getTorrent();
 					String fileName = FileUtils.fileNameFromUrl(torrent);
 					String newFile = FileUtils.file(file.getPath(), fileName);
 					FileUtils.copy(torrent, newFile);
@@ -130,7 +130,7 @@ public class TaskMenu extends ContextMenu {
 	private EventHandler<ActionEvent> openFolderEvent = (event) -> {
 		MainWindow.getInstance().controller().selected()
 		.forEach(wrapper -> {
-			FileUtils.openInDesktop(wrapper.getFileFolder());
+			FileUtils.openInDesktop(wrapper.downloadFileFolder());
 		});
 	};
 	

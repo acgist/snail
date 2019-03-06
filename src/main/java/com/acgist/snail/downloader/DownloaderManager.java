@@ -57,8 +57,9 @@ public class DownloaderManager {
 	 * 提交下载任务
 	 */
 	public void submit(IDownloader downloader) {
-		TaskWrapper wrapper = downloader.taskWrapper();
-		if(wrapper.getStatus() == Status.complete) {
+		var wrapper = downloader.taskWrapper();
+		var entity = wrapper.entity();
+		if(entity.getStatus() == Status.complete) {
 			return;
 		}
 		LOGGER.info("开始任务：{}", downloader.name());
@@ -86,9 +87,10 @@ public class DownloaderManager {
 	 * 删除任务
 	 */
 	public void delete(TaskWrapper wrapper) {
-		LOGGER.info("删除任务：{}", wrapper.getName());
+		var entity = wrapper.entity();
+		LOGGER.info("删除任务：{}", entity.getName());
 		downloader(wrapper).delete();
-		DOWNLOADER_TASK_MAP.remove(wrapper.getId());
+		DOWNLOADER_TASK_MAP.remove(entity.getId());
 	}
 
 	/**
@@ -102,7 +104,8 @@ public class DownloaderManager {
 	 * 获取下载任务
 	 */
 	private IDownloader downloader(TaskWrapper wrapper) {
-		return DOWNLOADER_TASK_MAP.get(wrapper.getId());
+		var entity = wrapper.entity();
+		return DOWNLOADER_TASK_MAP.get(entity.getId());
 	}
 	
 	/**

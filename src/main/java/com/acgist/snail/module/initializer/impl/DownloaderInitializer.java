@@ -34,7 +34,15 @@ public class DownloaderInitializer extends Initializer {
 		if(CollectionUtils.isNotEmpty(list)) {
 			list
 			.stream()
-			.map(DownloaderBuilder::newBuilder)
+			.map(entity -> {
+				try {
+					return DownloaderBuilder.newBuilder(entity);
+				} catch (DownloadException e) {
+					LOGGER.error("创建下载任务异常", e);
+				}
+				return null;
+			})
+			.filter(builder -> builder != null)
 			.forEach(builder -> {
 				try {
 					builder.build();

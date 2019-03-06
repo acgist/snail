@@ -33,7 +33,7 @@ public class TaskCell extends TableCell<TaskWrapper, String> {
 			Text name = new Text(value);
 			if(this.icon) { // 名称：添加图标和手势
 				name.setCursor(Cursor.HAND);
-				FileType fileType = wrapper.getFileType();
+				FileType fileType = wrapper.entity().getFileType();
 				if(fileType != null) {
 					ImageView icon = new ImageView("/image/32/" + fileType.getIcon());
 					box.getChildren().add(icon);

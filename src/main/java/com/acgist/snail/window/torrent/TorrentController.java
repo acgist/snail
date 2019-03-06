@@ -61,10 +61,11 @@ public class TorrentController implements Initializable {
 	 * 显示信息
 	 */
 	public void tree(TaskWrapper wrapper) {
+		var entity = wrapper.entity();
 		this.wrapper = wrapper;
 		TorrentInfo info = null;
 		TreeView<HBox> tree = buildTree();
-		TorrentDecoder decoder = TorrentDecoder.newInstance(wrapper.getTorrent());
+		TorrentDecoder decoder = TorrentDecoder.newInstance(entity.getTorrent());
 		try {
 			info = decoder.torrentWrapper().torrentInfo();
 		} catch (DownloadException e) {
@@ -81,7 +82,7 @@ public class TorrentController implements Initializable {
 		.filter(file -> !file.path().startsWith(HIDE_FILE_PREFIX))
 		.sorted((a, b) -> a.path().compareTo(b.path()))
 		.forEach(file -> manager.build(file.path(), file.getLength()));
-		manager.select(wrapper.files());
+		manager.select(wrapper.torrentDownloadFiles());
 	}
 	
 	/**
@@ -102,7 +103,7 @@ public class TorrentController implements Initializable {
 	 * 下载按钮事件
 	 */
 	private EventHandler<ActionEvent> downloadEvent = (event) -> {
-		TaskEntity entity = wrapper.getEntity();
+		TaskEntity entity = wrapper.entity();
 		var list = manager.description();
 		if(list.isEmpty()) {
 			AlertWindow.warn("下载提示", "请选择下载文件");
