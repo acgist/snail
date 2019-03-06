@@ -81,7 +81,6 @@ public abstract class AbstractDownloader implements IDownloader {
 			this.wrapper.updateStatus(Status.complete);
 			TrayMenu.getInstance().notice("下载完成", name() + "已经下载完成");
 		}
-		running = false;
 	}
 	
 	@Override
@@ -100,6 +99,7 @@ public abstract class AbstractDownloader implements IDownloader {
 			}
 			this.release();
 			this.complete();
+			running = false;
 		}
 	}
 	

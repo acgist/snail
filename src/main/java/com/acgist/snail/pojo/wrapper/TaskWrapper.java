@@ -90,6 +90,7 @@ public class TaskWrapper {
 		}
 		this.entity.setStatus(status);
 		repository.update(this.entity);
+		TaskTimer.getInstance().refreshTaskData(); // 刷新状态
 	}
 	
 	/**
