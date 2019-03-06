@@ -64,8 +64,7 @@ public class DownloaderManager {
 		.stream()
 		.map(Entry::getValue)
 		.filter(downloader -> {
-			var entity = downloader.wrapper().entity();
-			return entity.getStatus() == Status.await || entity.getStatus() == Status.download;
+			return downloader.wrapper().run();
 		})
 		.collect(Collectors.toList());
 		list.forEach(downloader -> {
@@ -83,16 +82,31 @@ public class DownloaderManager {
 	}
 	
 	/**
-	 * 开始任务
+	 * 开始下载任务
 	 */
 	public void start(IDownloader downloader) throws DownloadException {
 		this.start(downloader.wrapper());
 	}
 	
 	/**
-	 * 开始任务
+	 * 开始下载任务
 	 */
 	public void start(TaskWrapper wrapper) throws DownloadException {
+		wrapper.updateStatus(Status.await);
+		this.submit(wrapper);
+	}
+	
+	/**
+	 * 添加任务，不修改状态
+	 */
+	public void submit(IDownloader downloader) throws DownloadException {
+		this.submit(downloader.wrapper());
+	}
+	
+	/**
+	 * 添加任务，不修改状态
+	 */
+	public void submit(TaskWrapper wrapper) throws DownloadException {
 		if(wrapper == null) {
 			return;
 		}
@@ -104,7 +118,6 @@ public class DownloaderManager {
 		if(downloader == null) {
 			downloader = DownloaderBuilder.build(wrapper);
 		}
-		downloader.start();
 		LOGGER.info("开始任务：{}", entity.getName());
 		DOWNLOADER_EXECUTOR.submit(downloader);
 		DOWNLOADER_TASK_MAP.put(downloader.id(), downloader);

@@ -123,7 +123,7 @@ public class FileSelectManager {
 		checkBox.setPrefWidth(400);
 		HBox box = new HBox(checkBox);
 		if(size != null) {
-			Text text = new Text(FileUtils.size(size));
+			Text text = new Text(FileUtils.formatSize(size));
 			sizeMap.put(checkBox, size);
 			box.getChildren().add(text);
 		}
@@ -159,7 +159,7 @@ public class FileSelectManager {
 	 * 设置按钮文本
 	 */
 	private void buttonSize() {
-		download.setText("下载（" + FileUtils.size(size()) + "）");
+		download.setText("下载（" + FileUtils.formatSize(size()) + "）");
 	}
 	
 }

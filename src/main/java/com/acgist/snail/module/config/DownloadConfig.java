@@ -38,12 +38,12 @@ public class DownloadConfig {
 		LOGGER.info("初始化用户配置");
 		INSTANCE.initFromProperties();
 		INSTANCE.initFromDB();
-		LOGGER.info("下载路径：{}", DOWNLOAD_PATH, INSTANCE.downloadPath);
-		LOGGER.info("同时下载任务数量：{}", DOWNLOAD_SIZE, INSTANCE.downloadSize);
-		LOGGER.info("单个任务下载速度（KB）：{}", DOWNLOAD_BUFFER, INSTANCE.downloadBuffer);
-		LOGGER.info("下载完成弹出提示：{}", DOWNLOAD_NOTICE, INSTANCE.downloadNotice);
-		LOGGER.info("启用P2P加速：{}", DOWNLOAD_P2P, INSTANCE.downloadP2p);
-		LOGGER.info("最后一次选择文件目录：{}", DOWNLOAD_LAST_PATH, INSTANCE.downloadLastPath);
+		LOGGER.info("下载路径：{}", INSTANCE.downloadPath);
+		LOGGER.info("同时下载任务数量：{}", INSTANCE.downloadSize);
+		LOGGER.info("单个任务下载速度（KB）：{}", INSTANCE.downloadBuffer);
+		LOGGER.info("下载完成弹出提示：{}", INSTANCE.downloadNotice);
+		LOGGER.info("启用P2P加速：{}", INSTANCE.downloadP2p);
+		LOGGER.info("最后一次选择文件目录：{}", INSTANCE.downloadLastPath);
 	}
 	
 	/**

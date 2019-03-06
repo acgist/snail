@@ -7,7 +7,6 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
@@ -16,6 +15,11 @@ import com.acgist.snail.utils.ThreadUtils;
 public class TaskTimer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskTimer.class);
+	
+	/**
+	 * 任务列表刷新时间、下载速度采样时间
+	 */
+	public static final int REFRESH_TIME = 4;
 	
 	private MainController controller;
 	private ScheduledExecutorService executor;
@@ -36,7 +40,7 @@ public class TaskTimer {
 		LOGGER.info("开始任务刷新定时器");
 		this.controller = controller;
 		this.executor = Executors.newScheduledThreadPool(1, ThreadUtils.newThreadFactory("Task Timer Thread"));
-		this.executor.scheduleAtFixedRate(() -> refreshTaskData(), 0, 4, TimeUnit.SECONDS);
+		this.executor.scheduleAtFixedRate(() -> refreshTaskData(), 0, REFRESH_TIME, TimeUnit.SECONDS);
 	}
 
 	/**
@@ -49,7 +53,7 @@ public class TaskTimer {
 				Thread.yield();
 				controller = INSTANCE.controller;
 			}
-			controller.taskTable(DownloaderManager.getInstance().taskTable());
+			controller.refreshTable();
 		} catch (Exception e) {
 			LOGGER.error("任务列表刷新任务异常", e);
 		}
@@ -61,7 +65,11 @@ public class TaskTimer {
 	public void refreshTaskData() {
 		try {
 			MainController controller = INSTANCE.controller;
-			controller.refresh();
+			while(controller == null) {
+				Thread.yield();
+				controller = INSTANCE.controller;
+			}
+			controller.refreshData();
 		} catch (Exception e) {
 			LOGGER.error("任务列表刷新任务异常", e);
 		}

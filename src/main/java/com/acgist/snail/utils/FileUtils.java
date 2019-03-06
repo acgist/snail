@@ -180,7 +180,7 @@ public class FileUtils {
 	/**
 	 * 大小计算
 	 */
-	public static final String size(Long size) {
+	public static final String formatSize(Long size) {
 		if(size == null || size == 0L) {
 			return "未知";
 		}
