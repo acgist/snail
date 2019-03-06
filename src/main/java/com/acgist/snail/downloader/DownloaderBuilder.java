@@ -38,7 +38,7 @@ public class DownloaderBuilder {
 			this.buildDecoder();
 			this.buildWrapper();
 		}
-		this.builderDownloader();
+		this.start();
 	}
 	
 	/**
@@ -58,10 +58,26 @@ public class DownloaderBuilder {
 	/**
 	 * 执行下载
 	 */
-	private void builderDownloader() throws DownloadException {
-		if(wrapper != null) {
-			DownloaderManager.getInstance().submit(new HttpDownloader(wrapper));
+	private void start() throws DownloadException {
+		DownloaderManager.getInstance().start(wrapper);
+	}
+
+	/**
+	 * 新建下载
+	 */
+	public static final IDownloader build(TaskWrapper wrapper) throws DownloadException {
+		var type = wrapper.entity().getType();
+		switch (type) {
+			case ftp:
+				return null;
+			case ed2k:
+				return null;
+			case http:
+				return HttpDownloader.newInstance(wrapper);
+			case torrent:
+				return null;
 		}
+		throw new DownloadException("不支持的下载类型：" + type);
 	}
 	
 }

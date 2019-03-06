@@ -34,10 +34,14 @@ public class HttpDownloader extends AbstractDownloader implements IDownloader {
 	private InputStream input;
 	private OutputStream output;
 	
-	public HttpDownloader(TaskWrapper wrapper) {
+	private HttpDownloader(TaskWrapper wrapper) {
 		super(wrapper);
 	}
-		
+
+	public static final HttpDownloader newInstance(TaskWrapper wrapper) {
+		return new HttpDownloader(wrapper);
+	}
+	
 	@Override
 	public void open() {
 		var entity = wrapper.entity();

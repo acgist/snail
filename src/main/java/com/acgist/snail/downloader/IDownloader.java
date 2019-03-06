@@ -12,7 +12,7 @@ public interface IDownloader extends Runnable {
 	/**
 	 * 任务信息
 	 */
-	TaskWrapper taskWrapper();
+	TaskWrapper wrapper();
 	
 	/**
 	 * 任务ID

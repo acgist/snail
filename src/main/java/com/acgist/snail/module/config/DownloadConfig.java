@@ -150,10 +150,6 @@ public class DownloadConfig {
 	}
 	
 	public static final void setDownloadBuffer(Integer downloadBuffer) {
-		if(downloadBuffer == 0) {
-			LOGGER.warn("下载速度不能：0，设置为最小值：1");
-			downloadBuffer = 1; // 下载速度不能设置：0
-		}
 		ConfigRepository configRepository = new ConfigRepository();
 		INSTANCE.downloadBuffer = downloadBuffer;
 		configRepository.updateConfig(DOWNLOAD_BUFFER, String.valueOf(downloadBuffer));
