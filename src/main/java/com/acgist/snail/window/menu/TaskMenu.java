@@ -130,7 +130,7 @@ public class TaskMenu extends ContextMenu {
 	private EventHandler<ActionEvent> openFolderEvent = (event) -> {
 		MainWindow.getInstance().controller().selected()
 		.forEach(wrapper -> {
-			FileUtils.openInDesktop(wrapper.downloadFileFolder());
+			FileUtils.openInDesktop(wrapper.downloadFolder());
 		});
 	};
 	

@@ -41,34 +41,58 @@ public class SystemConfig {
 	private Integer serverPort; // 服务端口
 	private String serverHost; // 服务地址
 	
+	/**
+	 * 名称
+	 */
 	public static final String getName() {
 		return INSTANCE.name;
 	}
-	
+
+	/**
+	 * 英文名称
+	 */
 	public static final String getNameEn() {
 		return INSTANCE.nameEn;
 	}
-	
+
+	/**
+	 * 版本
+	 */
 	public static final String getVersion() {
 		return INSTANCE.version;
 	}
 
+	/**
+	 * 作者
+	 */
 	public static final String getAuthor() {
 		return INSTANCE.author;
 	}
 
+	/**
+	 * 源码
+	 */
 	public static final String getSource() {
 		return INSTANCE.source;
 	}
 
+	/**
+	 * 支持
+	 */
 	public static final String getSupport() {
 		return INSTANCE.support;
 	}
 
+	/**
+	 * 服务端口
+	 */
 	public static final Integer getServerPort() {
 		return INSTANCE.serverPort;
 	}
 
+	/**
+	 * 服务地址
+	 */
 	public static final String getServerHost() {
 		return INSTANCE.serverHost;
 	}

@@ -28,7 +28,7 @@
 			<HBox>
 				<TextFlow styleClass="name">
 					<Label>
-						同时下载任务数量：
+						下载任务数量：
 					</Label>
 				</TextFlow>
 				<Slider fx:id="size" styleClass="slider" min="0" max="8" value="2" blockIncrement="1" majorTickUnit="1" minorTickCount="1" showTickLabels="true" showTickMarks="true" />
@@ -37,16 +37,25 @@
 			<HBox>
 				<TextFlow styleClass="name">
 					<Label>
-						单个任务下载速度：
+						下载速度（单个）：
 					</Label>
 				</TextFlow>
 				<Slider fx:id="buffer" styleClass="slider" min="0" max="10240" value="2048" blockIncrement="1024" majorTickUnit="1024" minorTickCount="1" showTickLabels="true" showTickMarks="true" />
+			</HBox>
+			
+			<HBox>
+				<TextFlow styleClass="name">
+					<Label>
+						磁盘缓存（单个）：
+					</Label>
+				</TextFlow>
+				<Slider fx:id="memoryBuffer" styleClass="slider" min="16" max="128" value="16" blockIncrement="16" majorTickUnit="16" minorTickCount="1" showTickLabels="true" showTickMarks="true" />
 			</HBox>
 				
 			<HBox>
 				<TextFlow styleClass="name">
 					<Label>
-						下载完成弹出提示：
+						消息提示：
 					</Label>
 				</TextFlow>
 				<CheckBox fx:id="notice" onAction="#handleNoticeAction" />

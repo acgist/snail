@@ -88,7 +88,7 @@ public class HttpUtils {
 		try {
 			return client.send(request, handler);
 		} catch (IOException | InterruptedException e) {
-			LOGGER.info("执行请求异常", e);
+			LOGGER.error("执行请求异常", e);
 		}
 		return null;
 	}
@@ -113,7 +113,7 @@ public class HttpUtils {
 	}
 
 	/**
-	 * post数据
+	 * 获取post数据
 	 */
 	public static final BodyPublisher formBodyPublisher(Map<String, String> data) {
 		if(data == null || data.isEmpty()) {

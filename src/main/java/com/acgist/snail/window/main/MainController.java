@@ -11,17 +11,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.coder.torrent.TorrentDecoder;
+import com.acgist.snail.context.SystemStatistical;
 import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.module.exception.DownloadException;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
+import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.window.AlertWindow;
 import com.acgist.snail.window.about.AboutWindow;
 import com.acgist.snail.window.build.BuildWindow;
 import com.acgist.snail.window.menu.TaskMenu;
 import com.acgist.snail.window.setting.SettingWindow;
 
+import javafx.application.Platform;
 import javafx.beans.binding.DoubleBinding;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -32,6 +35,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -78,6 +82,8 @@ public class MainController implements Initializable {
 	private HBox footerButton;
 	@FXML
 	private HBox footerStatus;
+	@FXML
+	private Label downloadBuffer;
 	@FXML
 	private TableView<TaskWrapper> taskTable;
 	@FXML
@@ -200,6 +206,9 @@ public class MainController implements Initializable {
 	 */
 	public void refreshData() {
 		taskTable.refresh(); // 刷新table
+		Platform.runLater(() -> {
+			downloadBuffer.setText(SystemStatistical.downloadBufferStatus()); // 下载速度
+		});
 	}
 	
 	/**
@@ -329,12 +338,14 @@ public class MainController implements Initializable {
 	
 	@SuppressWarnings("unchecked")
 	private EventHandler<MouseEvent> rowClickAction = (event) -> {
-		if(event.getClickCount() == 2) {
+		if(event.getClickCount() == 2) { // 双击
 			TableRow<TaskWrapper> row = (TableRow<TaskWrapper>) event.getSource();
 			var wrapper = row.getItem();
-			if(wrapper.run()) {
+			if(wrapper.complete()) { // 下载完成=打开文件
+				FileUtils.openInDesktop(new File(wrapper.entity().getFile()));
+			} else if(wrapper.run()) { // 下载中=暂停下载
 				DownloaderManager.getInstance().pause(wrapper);
-			} else {
+			} else { // 其他=开始下载
 				try {
 					DownloaderManager.getInstance().start(wrapper);
 				} catch (DownloadException e) {

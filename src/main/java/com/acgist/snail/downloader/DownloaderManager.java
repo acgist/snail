@@ -13,13 +13,11 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.module.config.DownloadConfig;
 import com.acgist.snail.module.exception.DownloadException;
-import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
- * 下载器执行器
- * TODO：下载限速
+ * 下载器管理器
  */
 public class DownloaderManager {
 
@@ -50,8 +48,7 @@ public class DownloaderManager {
 	private void init() {
 		LOGGER.info("初始化下载器管理");
 		int downloadSize = DownloadConfig.getDownloadSize();
-		LOGGER.info("初始化下载线程池，初始大小：{}", downloadSize);
-		DOWNLOADER_EXECUTOR = Executors.newFixedThreadPool(downloadSize, ThreadUtils.newThreadFactory("Downloader Thread"));
+		buildExecutor(downloadSize);
 		DOWNLOADER_TASK_MAP = new ConcurrentHashMap<>(downloadSize);
 	}
 
@@ -70,8 +67,7 @@ public class DownloaderManager {
 		list.forEach(downloader -> {
 			downloader.pause();
 		});
-		DOWNLOADER_EXECUTOR.shutdown();
-		DOWNLOADER_EXECUTOR = Executors.newFixedThreadPool(downloadSize, ThreadUtils.newThreadFactory("Downloader Thread"));
+		buildExecutor(downloadSize);
 		list.forEach(downloader -> {
 			try {
 				start(downloader);
@@ -92,8 +88,7 @@ public class DownloaderManager {
 	 * 开始下载任务
 	 */
 	public void start(TaskWrapper wrapper) throws DownloadException {
-		wrapper.updateStatus(Status.await);
-		this.submit(wrapper);
+		this.submit(wrapper).start();
 	}
 	
 	/**
@@ -106,21 +101,19 @@ public class DownloaderManager {
 	/**
 	 * 添加任务，不修改状态
 	 */
-	public void submit(TaskWrapper wrapper) throws DownloadException {
+	public IDownloader submit(TaskWrapper wrapper) throws DownloadException {
 		if(wrapper == null) {
-			return;
+			return null;
 		}
 		var entity = wrapper.entity();
-		if(entity.getStatus() == Status.complete) {
-			return;
-		}
 		IDownloader downloader = downloader(wrapper);
 		if(downloader == null) {
 			downloader = DownloaderBuilder.build(wrapper);
 		}
-		LOGGER.info("开始任务：{}", entity.getName());
+		LOGGER.info("添加任务：{}", entity.getName());
 		DOWNLOADER_EXECUTOR.submit(downloader);
 		DOWNLOADER_TASK_MAP.put(downloader.id(), downloader);
+		return downloader;
 	}
 	
 	/**
@@ -151,8 +144,7 @@ public class DownloaderManager {
 	 * 获取下载任务
 	 */
 	private IDownloader downloader(TaskWrapper wrapper) {
-		var entity = wrapper.entity();
-		return DOWNLOADER_TASK_MAP.get(entity.getId());
+		return DOWNLOADER_TASK_MAP.get(wrapper.entity().getId());
 	}
 	
 	/**
@@ -171,6 +163,17 @@ public class DownloaderManager {
 	public void shutdown() {
 		LOGGER.info("关闭下载器管理");
 		DOWNLOADER_EXECUTOR.shutdown();
+	}
+
+	/**
+	 * 创建下载线程池
+	 */
+	private void buildExecutor(int downloadSize) {
+		if(DOWNLOADER_EXECUTOR != null) {
+			shutdown();
+		}
+		LOGGER.info("初始化下载线程池，初始大小：{}", downloadSize);
+		DOWNLOADER_EXECUTOR = Executors.newFixedThreadPool(downloadSize, ThreadUtils.newThreadFactory("Downloader Thread"));
 	}
 	
 }

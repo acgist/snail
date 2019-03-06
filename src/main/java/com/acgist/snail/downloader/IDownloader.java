@@ -50,7 +50,10 @@ public interface IDownloader extends Runnable {
 	void refresh();
 	
 	/**
-	 * 打开下载任务
+	 * 打开任务：
+	 * 	设置已下载大小
+	 * 	获取下载文件流
+	 * 	打开本地下载文件流
 	 */
 	void open();
 	

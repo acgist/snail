@@ -36,6 +36,20 @@ public class HttpHeaderWrapper {
 	}
 	
 	/**
+	 * 是否未包含数据
+	 */
+	public boolean isEmpty() {
+		return headers == null || headers.isEmpty();
+	}
+	
+	/**
+	 * 是否包含数据
+	 */
+	public boolean isNotEmpty() {
+		return !isEmpty();
+	}
+	
+	/**
 	 * 文件名称
 	 */
 	public String fileName(String defaultName) {
