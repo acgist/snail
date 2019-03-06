@@ -19,7 +19,7 @@ public class DownloaderBuilder {
 		this.url = url;
 	}
 	
-	private DownloaderBuilder(TaskEntity entity) {
+	private DownloaderBuilder(TaskEntity entity) throws DownloadException {
 		this.wrapper = new TaskWrapper(entity);
 	}
 	
@@ -28,7 +28,7 @@ public class DownloaderBuilder {
 		return builder;
 	}
 	
-	public static final DownloaderBuilder newBuilder(TaskEntity entity) {
+	public static final DownloaderBuilder newBuilder(TaskEntity entity) throws DownloadException {
 		final DownloaderBuilder builder = new DownloaderBuilder(entity);
 		return builder;
 	}

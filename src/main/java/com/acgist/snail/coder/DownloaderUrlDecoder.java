@@ -70,6 +70,7 @@ public class DownloaderUrlDecoder {
 	private String name; // 任务名称
 	private String torrent; // 种子文件
 	
+	private TaskEntity taskEntity;
 	private TaskWrapper taskWrapper;
 	private TorrentWrapper torrentWrapper;
 	private HttpHeaderWrapper httpHeaderWrapper;
@@ -119,17 +120,17 @@ public class DownloaderUrlDecoder {
 		name();
 	}
 
-	private void buildWrapper() {
-		TaskEntity entity = new TaskEntity();
-		entity.setUrl(this.url);
-		entity.setStatus(Status.await);
-		entity.setType(this.type);
-		entity.setFileType(this.fileType);
-		entity.setFile(this.file);
-		entity.setName(this.name);
-		entity.setTorrent(torrent);
-		entity.setSize(0L);
-		this.taskWrapper = new TaskWrapper(entity);
+	private void buildWrapper() throws DownloadException {
+		this.taskEntity = new TaskEntity();
+		this.taskEntity.setUrl(this.url);
+		this.taskEntity.setStatus(Status.await);
+		this.taskEntity.setType(this.type);
+		this.taskEntity.setFileType(this.fileType);
+		this.taskEntity.setFile(this.file);
+		this.taskEntity.setName(this.name);
+		this.taskEntity.setTorrent(torrent);
+		this.taskEntity.setSize(0L);
+		this.taskWrapper = new TaskWrapper(this.taskEntity);
 	}
 
 	/**
@@ -255,9 +256,9 @@ public class DownloaderUrlDecoder {
 		} else if(this.type == Type.http) {
 			buildHttpSize();
 		}
-		if(this.taskWrapper != null) {
+		if(this.taskEntity != null) {
 			TaskRepository repository = new TaskRepository();
-			repository.save(this.taskWrapper.getEntity());
+			repository.save(this.taskEntity);
 		}
 	}
 	
@@ -284,7 +285,7 @@ public class DownloaderUrlDecoder {
 		} else {
 			FileUtils.copy(this.torrent, newFilePath);
 		}
-		this.taskWrapper.setTorrent(newFilePath);
+		this.taskEntity.setTorrent(newFilePath);
 	}
 	
 	/**
@@ -292,9 +293,10 @@ public class DownloaderUrlDecoder {
 	 */
 	private void selectTorrentFile() {
 		TorrentWindow.getInstance().show(this.taskWrapper);
-		if(taskWrapper.files().isEmpty()) {
+		if(this.taskWrapper.torrentDownloadFiles().isEmpty()) {
 			LOGGER.info("用户未选择下载文件取消下载");
-			FileUtils.delete(taskWrapper.getFile());
+			FileUtils.delete(this.taskEntity.getFile());
+			this.taskEntity = null;
 			this.taskWrapper = null;
 		}
 	}
@@ -303,7 +305,7 @@ public class DownloaderUrlDecoder {
 	 * 设置HTTP下载文件大小
 	 */
 	private void buildHttpSize() {
-		taskWrapper.setSize(httpHeaderWrapper.fileSize());
+		this.taskEntity.setSize(httpHeaderWrapper.fileSize());
 	}
 	
 }

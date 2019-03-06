@@ -10,6 +10,11 @@ import com.acgist.snail.pojo.wrapper.TaskWrapper;
 public interface IDownloader extends Runnable {
 	
 	/**
+	 * 任务信息
+	 */
+	TaskWrapper taskWrapper();
+	
+	/**
 	 * 任务ID
 	 */
 	String id();
@@ -18,11 +23,6 @@ public interface IDownloader extends Runnable {
 	 * 任务名称
 	 */
 	String name();
-	
-	/**
-	 * 任务信息
-	 */
-	TaskWrapper taskWrapper();
 
 	/**
 	 * 开始任务
