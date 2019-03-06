@@ -81,7 +81,7 @@ public class TaskWrapper {
 	 * 更新状态
 	 */
 	public void updateStatus(Status status) {
-		if(this.entity.getStatus() == Status.complete) {
+		if(complete()) {
 			return;
 		}
 		TaskRepository repository = new TaskRepository();
