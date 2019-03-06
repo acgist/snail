@@ -248,7 +248,6 @@ public class MainController implements Initializable {
 				LOGGER.error("添加下载任务异常", e);
 			}
 		});
-		TaskTimer.getInstance().refreshTaskData();
 	}
 	
 	/**
@@ -259,7 +258,6 @@ public class MainController implements Initializable {
 		.forEach(wrapper -> {
 			DownloaderManager.getInstance().pause(wrapper);
 		});
-		TaskTimer.getInstance().refreshTaskData();
 	}
 	
 	/**
@@ -352,7 +350,6 @@ public class MainController implements Initializable {
 					LOGGER.error("添加下载任务异常", e);
 				}
 			}
-			TaskTimer.getInstance().refreshTaskData();
 		}
 	};
 	
