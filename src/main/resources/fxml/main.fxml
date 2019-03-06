@@ -5,6 +5,7 @@
 <?import javafx.scene.text.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.*?>
 
 <BorderPane
 	fx:id="root"
@@ -29,30 +30,50 @@
 				<!--
 				下载文件名称：轻音少女（点击名称查看详情）
 				-->
-				<TableColumn fx:id="name" text="名称" styleClass="name" />
+				<TableColumn fx:id="name" text="名称" styleClass="name">
+					<cellValueFactory>
+						<PropertyValueFactory property="nameValue" />
+					</cellValueFactory>
+				</TableColumn>
 				<!--
 				任务状态：
 					下载中：100KB/S
 					暂停：暂停
 					完成：完成
 				-->
-				<TableColumn fx:id="status" text="状态" styleClass="status" />
+				<TableColumn fx:id="status" text="状态" styleClass="status">
+					<cellValueFactory>
+						<PropertyValueFactory property="statusValue" />
+					</cellValueFactory>
+				</TableColumn>
 				<!--
 				下载进度：
 					下载中：20%（2G/4G）
 					完成：100%（4G）
 				-->
-				<TableColumn fx:id="progress" text="进度" styleClass="progress" />
+				<TableColumn fx:id="progress" text="进度" styleClass="progress">
+					<cellValueFactory>
+						<PropertyValueFactory property="progressValue" />
+					</cellValueFactory>
+				</TableColumn>
 				<!--
 				开始时间：2019-01-01 12:10
 				-->
-				<TableColumn fx:id="createDate" text="开始时间" styleClass="createDate" />
+				<TableColumn fx:id="createDate" text="开始时间" styleClass="createDate">
+					<cellValueFactory>
+						<PropertyValueFactory property="createDateValue" />
+					</cellValueFactory>
+				</TableColumn>
 				<!--
 				完成时间：
 					下载中：剩余时间：2小时
 					完成：2019-01-01 12:10
 				-->
-				<TableColumn fx:id="endDate" text="完成时间" styleClass="endDate" />
+				<TableColumn fx:id="endDate" text="完成时间" styleClass="endDate">
+					<cellValueFactory>
+						<PropertyValueFactory property="endDateValue" />
+					</cellValueFactory>
+				</TableColumn>
 			</columns>
 		</TableView>
 	</center>

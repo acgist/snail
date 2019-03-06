@@ -31,7 +31,8 @@ public class TaskWrapper {
 	
 	private TaskEntity entity;
 	
-	private Long sizeSecond = 0L; // 每秒下载速度
+	private Long lastTime = System.currentTimeMillis(); // 最后一次统计时间
+	private Long bufferSecond = 0L; // 每秒下载速度
 	private AtomicLong downloadSize = new AtomicLong(0); // 已经下载大小
 	private AtomicLong downloadBuffer = new AtomicLong(0); // 下载速度采样
 
@@ -104,10 +105,17 @@ public class TaskWrapper {
 	/**
 	 * 下载统计
 	 */
-	public void statistical(long size) {
-		downloadSize.addAndGet(size);
-		downloadBuffer.addAndGet(size);
-		SystemStatistical.statistical(size);
+	public void statistical(long buffer) {
+		downloadSize.addAndGet(buffer);
+		downloadBuffer.addAndGet(buffer);
+		long now = System.currentTimeMillis();
+		long interval = now - lastTime;
+		if(interval > TaskTimer.REFRESH_TIME_MILLIS) {
+			long oldBuffer = downloadBuffer.getAndSet(0);
+			bufferSecond = oldBuffer * 1000 / interval;
+			lastTime = now;
+		}
+		SystemStatistical.getInstance().statistical(buffer);
 	}
 	
 	/**
@@ -159,12 +167,10 @@ public class TaskWrapper {
 	 */
 	public String getStatusValue() {
 		if(download()) {
-			long size = downloadBuffer.getAndSet(0);
-			sizeSecond = size / TaskTimer.REFRESH_TIME;
-			if(sizeSecond == 0L) {
+			if(bufferSecond == 0L) {
 				return Status.download.getValue();
 			} else {
-				return FileUtils.formatSize(sizeSecond) + "/S";
+				return FileUtils.formatSize(bufferSecond) + "/S";
 			}
 		} else {
 			return entity.getStatus().getValue();
@@ -198,10 +204,10 @@ public class TaskWrapper {
 	public String getEndDateValue() {
 		if(entity.getEndDate() == null) {
 			if(download()) {
-				if(sizeSecond == 0L) {
+				if(bufferSecond == 0L) {
 					return "-";
 				} else {
-					long second = (entity.getSize() - downloadSize.longValue()) / sizeSecond;
+					long second = (entity.getSize() - downloadSize.longValue()) / bufferSecond;
 					return DateUtils.formatSecond(second);
 				}
 			} else {

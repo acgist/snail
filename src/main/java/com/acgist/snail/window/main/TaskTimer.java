@@ -19,7 +19,8 @@ public class TaskTimer {
 	/**
 	 * 任务列表刷新时间、下载速度采样时间
 	 */
-	public static final int REFRESH_TIME = 4;
+	public static final int REFRESH_TIME_SECOND = 4;
+	public static final int REFRESH_TIME_MILLIS = REFRESH_TIME_SECOND * 1000;
 	
 	private MainController controller;
 	private ScheduledExecutorService executor;
@@ -40,7 +41,7 @@ public class TaskTimer {
 		LOGGER.info("开始任务刷新定时器");
 		this.controller = controller;
 		this.executor = Executors.newScheduledThreadPool(1, ThreadUtils.newThreadFactory("Task Timer Thread"));
-		this.executor.scheduleAtFixedRate(() -> refreshTaskData(), 0, REFRESH_TIME, TimeUnit.SECONDS);
+		this.executor.scheduleAtFixedRate(() -> refreshTaskData(), 0, REFRESH_TIME_SECOND, TimeUnit.SECONDS);
 	}
 
 	/**

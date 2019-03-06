@@ -10,6 +10,8 @@ import com.acgist.snail.window.main.TaskTimer;
  */
 public class SystemStatistical {
 
+	private Long lastTime = System.currentTimeMillis(); // 最后一次统计时间
+	private Long bufferSecond = 0L; // 每秒下载速度
 	private AtomicLong downloadSize; // 累计下载大小
 	private AtomicLong downloadBuffer; // 下载速度采样
 
@@ -20,21 +22,30 @@ public class SystemStatistical {
 		downloadBuffer = new AtomicLong(0);
 	}
 	
+	public static final SystemStatistical getInstance() {
+		return INSTANCE;
+	}
+	
 	/**
 	 * 下载统计
 	 */
-	public static final void statistical(long size) {
-		INSTANCE.downloadSize.addAndGet(size);
-		INSTANCE.downloadBuffer.addAndGet(size);
+	public void statistical(long size) {
+		downloadSize.addAndGet(size);
+		downloadBuffer.addAndGet(size);
+		long now = System.currentTimeMillis();
+		long interval = now - lastTime;
+		if(interval > TaskTimer.REFRESH_TIME_MILLIS) {
+			long oldBuffer = downloadBuffer.getAndSet(0);
+			bufferSecond = oldBuffer * 1000 / interval;
+			lastTime = now;
+		}
 	}
 
 	/**
 	 * 平均下载速度
 	 */
-	public static final String downloadBufferStatus() {
-		long size = INSTANCE.downloadBuffer.getAndSet(0);
-		long sizeSecond = size / TaskTimer.REFRESH_TIME;
-		return FileUtils.formatSize(sizeSecond) + "/S";
+	public String downloadBufferSecond() {
+		return FileUtils.formatSize(bufferSecond) + "/S";
 	}
 	
 }
