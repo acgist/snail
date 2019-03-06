@@ -38,7 +38,7 @@ public class DownloaderBuilder {
 			this.buildDecoder();
 			this.buildWrapper();
 		}
-		this.start();
+		this.submit();
 	}
 	
 	/**
@@ -58,8 +58,8 @@ public class DownloaderBuilder {
 	/**
 	 * 执行下载
 	 */
-	private void start() throws DownloadException {
-		DownloaderManager.getInstance().start(wrapper);
+	private void submit() throws DownloadException {
+		DownloaderManager.getInstance().submit(wrapper);
 	}
 
 	/**

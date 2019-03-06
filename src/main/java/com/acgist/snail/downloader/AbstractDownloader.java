@@ -65,6 +65,13 @@ public abstract class AbstractDownloader implements IDownloader {
 		this.wrapper.delete();
 	}
 	
+	/**
+	 * 下载速度
+	 */
+	public void downloadSize(long size) {
+		this.wrapper.downloadSize(size);
+	}
+	
 	@Override
 	public void refresh() {
 	}
@@ -77,6 +84,9 @@ public abstract class AbstractDownloader implements IDownloader {
 	@Override
 	public void run() {
 		var entity = this.wrapper.entity();
+		if(!wrapper.await()) {
+			return;
+		}
 		LOGGER.info("开始下载：{}", entity.getName());
 		entity.setStatus(Status.download);
 		this.open();
@@ -101,12 +111,4 @@ public abstract class AbstractDownloader implements IDownloader {
 		ThreadUtils.sleep(ONE_MINUTE - time);
 	}
 	
-	/**
-	 * 下载中
-	 */
-	protected boolean downloading() {
-		var entity = this.wrapper.entity();
-		return entity.getStatus() == Status.download;
-	}
-
 }

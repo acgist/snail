@@ -173,16 +173,16 @@ public class MainController implements Initializable {
 	/**
 	 * 设置数据
 	 */
-	public void taskTable(List<TaskWrapper> list) {
+	public void refreshTable() {
 		ObservableList<TaskWrapper> obs = FXCollections.observableArrayList();
-		list
+		DownloaderManager.getInstance().taskTable()
 		.stream()
 		.filter(wrapper -> {
 			var status = wrapper.entity().getStatus();
 			if(filter == Filter.all) {
 				return true;
 			} else if(filter == Filter.download) {
-				return status == Status.download || status == Status.await;
+				return status == Status.await || status == Status.download;
 			} else if(filter == Filter.complete) {
 				return status == Status.complete;
 			} else {
@@ -198,8 +198,8 @@ public class MainController implements Initializable {
 	/**
 	 * 刷新数据
 	 */
-	public void refresh() {
-		taskTable.refresh();
+	public void refreshData() {
+		taskTable.refresh(); // 刷新table
 	}
 	
 	/**
@@ -332,8 +332,7 @@ public class MainController implements Initializable {
 		if(event.getClickCount() == 2) {
 			TableRow<TaskWrapper> row = (TableRow<TaskWrapper>) event.getSource();
 			var wrapper = row.getItem();
-			var status = wrapper.entity().getStatus();
-			if(status == Status.await || status == Status.download) {
+			if(wrapper.run()) {
 				DownloaderManager.getInstance().pause(wrapper);
 			} else {
 				try {

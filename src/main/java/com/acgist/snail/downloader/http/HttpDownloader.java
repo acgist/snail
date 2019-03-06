@@ -1,10 +1,10 @@
 package com.acgist.snail.downloader.http;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.http.HttpClient;
 import java.net.http.HttpResponse.BodyHandlers;
 
@@ -31,8 +31,8 @@ public class HttpDownloader extends AbstractDownloader implements IDownloader {
 	private static final Logger LOGGER = LoggerFactory.getLogger(HttpDownloader.class);
 	
 	private byte[] bytes;
-	private InputStream input;
-	private OutputStream output;
+	private BufferedInputStream input;
+	private BufferedOutputStream output;
 	
 	private HttpDownloader(TaskWrapper wrapper) {
 		super(wrapper);
@@ -47,7 +47,7 @@ public class HttpDownloader extends AbstractDownloader implements IDownloader {
 		var entity = wrapper.entity();
 		bytes = new byte[DownloadConfig.getDownloadBuffer() * 1024];
 		try {
-			output = new FileOutputStream(entity.getFile());
+			output = new BufferedOutputStream(new FileOutputStream(entity.getFile()));
 		} catch (FileNotFoundException e) {
 			LOGGER.error("打开下载文件流失败", e);
 			fail();
@@ -56,7 +56,7 @@ public class HttpDownloader extends AbstractDownloader implements IDownloader {
 		var request = HttpUtils.newRequest(entity.getUrl()).GET().build();
 		var response = HttpUtils.request(client, request, BodyHandlers.ofInputStream());
 		if(HttpUtils.ok(response)) {
-			input = response.body();
+			input = new BufferedInputStream(response.body());
 		} else {
 			fail();
 		}
@@ -64,19 +64,20 @@ public class HttpDownloader extends AbstractDownloader implements IDownloader {
 	
 	@Override
 	public void download() throws IOException {
-		int index = 0;
+		int length = 0;
 		long begin, end;
 		while(true) {
-			if(!downloading()) {
+			if(!wrapper.download()) {
 				break;
 			}
 			begin = System.currentTimeMillis();
-			index = input.read(bytes);
-			if(index == -1) {
+			length = input.readNBytes(bytes, 0, bytes.length);
+			if(length == -1) {
 				complete = true;
 				break;
 			}
-			output.write(bytes, 0, index);
+			output.write(bytes, 0, length);
+			downloadSize(length);
 			end = System.currentTimeMillis();
 			yield(end - begin);
 		}
