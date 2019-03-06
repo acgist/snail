@@ -97,13 +97,13 @@ public class DownloaderUrlDecoder {
 	/**
 	 * 预处理：去空格、格式转换
 	 */
-	private void pretreatment() {
+	private void pretreatment() throws DownloadException {
 		String url = this.url.trim();
 		if(ThunderDecoder.verify(url)) {
 			url = ThunderDecoder.decode(url);
 		}
 		if(HttpDecoder.verify(url)) {
-			this.httpHeaderWrapper = HttpUtils.httpHeader(url);
+			buildHttpHeader();
 		}
 		this.url = url;
 	}
@@ -293,7 +293,7 @@ public class DownloaderUrlDecoder {
 	 */
 	private void selectTorrentFile() {
 		TorrentWindow.getInstance().show(this.taskWrapper);
-		if(this.taskWrapper.torrentDownloadFiles().isEmpty()) {
+		if(this.taskWrapper.downloadTorrentFiles().isEmpty()) {
 			LOGGER.info("用户未选择下载文件取消下载");
 			FileUtils.delete(this.taskEntity.getFile());
 			this.taskEntity = null;
@@ -306,6 +306,26 @@ public class DownloaderUrlDecoder {
 	 */
 	private void buildHttpSize() {
 		this.taskEntity.setSize(httpHeaderWrapper.fileSize());
+	}
+	
+	/**
+	 * HTTP请求头：重试三次
+	 */
+	private void buildHttpHeader() throws DownloadException {
+		int index = 0;
+		while(true) {
+			index++;
+			this.httpHeaderWrapper = HttpUtils.httpHeader(url);
+			if(this.httpHeaderWrapper.isNotEmpty()) {
+				break;
+			}
+			if(index >= 3) {
+				break;
+			}
+		}
+		if(httpHeaderWrapper.isEmpty()) {
+			throw new DownloadException("添加下载任务异常");
+		}
 	}
 	
 }

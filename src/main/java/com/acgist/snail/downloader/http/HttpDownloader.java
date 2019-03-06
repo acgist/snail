@@ -30,9 +30,9 @@ public class HttpDownloader extends AbstractDownloader implements IDownloader {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(HttpDownloader.class);
 	
-	private byte[] bytes;
-	private BufferedInputStream input;
-	private BufferedOutputStream output;
+	private byte[] bytes; // 速度byte
+	private BufferedInputStream input; // 输入流
+	private BufferedOutputStream output; // 输出流
 	
 	private HttpDownloader(TaskWrapper wrapper) {
 		super(wrapper);
@@ -45,9 +45,9 @@ public class HttpDownloader extends AbstractDownloader implements IDownloader {
 	@Override
 	public void open() {
 		var entity = wrapper.entity();
-		bytes = new byte[DownloadConfig.getDownloadBuffer() * 1024];
+		bytes = new byte[DownloadConfig.getDownloadBufferByte()];
 		try {
-			output = new BufferedOutputStream(new FileOutputStream(entity.getFile()));
+			output = new BufferedOutputStream(new FileOutputStream(entity.getFile()), DownloadConfig.getDownloadMemoryBufferByte());
 		} catch (FileNotFoundException e) {
 			LOGGER.error("打开下载文件流失败", e);
 			fail();
@@ -72,12 +72,12 @@ public class HttpDownloader extends AbstractDownloader implements IDownloader {
 			}
 			begin = System.currentTimeMillis();
 			length = input.readNBytes(bytes, 0, bytes.length);
-			if(length == -1) {
+			if(isComplete(length)) {
 				complete = true;
 				break;
 			}
 			output.write(bytes, 0, length);
-			downloadSize(length);
+			statistical(length);
 			end = System.currentTimeMillis();
 			yield(end - begin);
 		}
@@ -97,4 +97,13 @@ public class HttpDownloader extends AbstractDownloader implements IDownloader {
 		}
 	}
 	
+	/**
+	 * 任务是否完成：长度-1或者下载数据等于任务长度
+	 */
+	private boolean isComplete(int length) {
+		long size = wrapper.entity().getSize();
+		long downloadSize = wrapper.downloadSize();
+		return length == -1 || size == downloadSize;
+	}
+
 }

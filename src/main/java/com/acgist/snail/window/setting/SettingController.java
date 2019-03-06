@@ -36,6 +36,8 @@ public class SettingController implements Initializable {
 	@FXML
 	private Slider buffer;
 	@FXML
+	private Slider memoryBuffer;
+	@FXML
 	private Text pathValue;
 	@FXML
 	private CheckBox notice;
@@ -83,6 +85,7 @@ public class SettingController implements Initializable {
 		pathValue.setText(DownloadConfig.getDownloadPath());
 		size.setValue(DownloadConfig.getDownloadSize());
 		buffer.setValue(DownloadConfig.getDownloadBuffer());
+		memoryBuffer.setValue(DownloadConfig.getDownloadMemoryBuffer());
 		notice.setSelected(DownloadConfig.getDownloadNotice());
 		p2p.setSelected(DownloadConfig.getDownloadP2p());
 	}
@@ -101,6 +104,10 @@ public class SettingController implements Initializable {
 		buffer.valueProperty().addListener(bufferListener);
 		buffer.setOnMouseReleased(bufferAction);
 		buffer.setLabelFormatter(bufferFormatter);
+		// 初始化下载磁盘缓存设置
+		memoryBuffer.valueProperty().addListener(memoryBufferListener);
+		memoryBuffer.setOnMouseReleased(memoryBufferAction);
+		memoryBuffer.setLabelFormatter(memoryBufferFormatter);
 	}
 	
 	private EventHandler<MouseEvent> openDownloadPath = (event) -> {
@@ -139,11 +146,32 @@ public class SettingController implements Initializable {
 	private StringConverter<Double> bufferFormatter = new StringConverter<Double>() {
 		@Override
 		public String toString(Double value) {
-			return (value / 1024) + "M";
+			return (value.intValue() / 1024) + "M";
 		}
 		@Override
 		public Double fromString(String label) {
 			return Double.valueOf(label.substring(0, label.length() - 1)) * 1024;
+		}
+	};
+	
+	private ChangeListener<? super Number> memoryBufferListener = (obs, oldVal, newVal) -> {
+		int value = newVal.intValue() / 8 * 8;
+		memoryBuffer.setValue(value);
+	};
+	
+	private EventHandler<MouseEvent> memoryBufferAction = (event) -> {
+		Double value = memoryBuffer.getValue();
+		DownloadConfig.setDownloadMemoryBuffer(value.intValue());
+	};
+	
+	private StringConverter<Double> memoryBufferFormatter = new StringConverter<Double>() {
+		@Override
+		public String toString(Double value) {
+			return value.intValue() + "M";
+		}
+		@Override
+		public Double fromString(String label) {
+			return Double.valueOf(label.substring(0, label.length() - 1));
 		}
 	};
 	

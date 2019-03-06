@@ -38,22 +38,38 @@ public class DatabaseConfig {
 	private String password;
 	private String tableSQL;
 
+	/**
+	 * 数据库地址
+	 */
 	public static final String getUrl() {
 		return INSTANCE.url;
 	}
 	
+	/**
+	 * 数据库驱动
+	 */
 	public static final String getDriver() {
 		return INSTANCE.driver;
 	}
-	
+
+	/**
+	 * 数据库用户账号
+	 */
 	public static final String getUser() {
 		return INSTANCE.user;
 	}
-	
+
+	/**
+	 * 数据库用户密码
+	 * @return
+	 */
 	public static final String getPassword() {
 		return INSTANCE.password;
 	}
 	
+	/**
+	 * 数据库建表SQL文件
+	 */
 	public static final String getTableSQL() {
 		return INSTANCE.tableSQL;
 	}

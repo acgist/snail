@@ -2,9 +2,11 @@ package com.acgist.snail.pojo.wrapper;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.acgist.snail.context.SystemStatistical;
 import com.acgist.snail.module.exception.DownloadException;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
@@ -30,8 +32,8 @@ public class TaskWrapper {
 	private TaskEntity entity;
 	
 	private Long sizeSecond = 0L; // 每秒下载速度
-	private AtomicLong downloadSize = new AtomicLong(0); // 下载速度采样
-	private static final AtomicLong downloadTotalSize = new AtomicLong(0); // 总下载速度采样
+	private AtomicLong downloadSize = new AtomicLong(0); // 已经下载大小
+	private AtomicLong downloadBuffer = new AtomicLong(0); // 下载速度采样
 
 	public TaskWrapper(TaskEntity entity) throws DownloadException {
 		if(entity == null) {
@@ -39,17 +41,17 @@ public class TaskWrapper {
 		}
 		this.entity = entity;
 	}
+	
+	// 功能 //
 
 	public TaskEntity entity() {
 		return entity;
 	}
-
-	// 功能 //
 	
 	/**
 	 * 获取下载目录
 	 */
-	public File downloadFileFolder() {
+	public File downloadFolder() {
 		File file = new File(entity.getFile());
 		if(entity.getType() == Type.torrent) {
 			return file;
@@ -63,7 +65,7 @@ public class TaskWrapper {
 	 * TODO：泛型
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> torrentDownloadFiles() {
+	public List<String> downloadTorrentFiles() {
 		if(entity.getType() != Type.torrent) {
 			return List.of();
 		}
@@ -79,7 +81,13 @@ public class TaskWrapper {
 	 * 更新状态
 	 */
 	public void updateStatus(Status status) {
+		if(this.entity.getStatus() == Status.complete) {
+			return;
+		}
 		TaskRepository repository = new TaskRepository();
+		if(status == Status.complete) {
+			this.entity.setEndDate(new Date()); // 设置完成时间
+		}
 		this.entity.setStatus(status);
 		repository.update(this.entity);
 	}
@@ -93,11 +101,19 @@ public class TaskWrapper {
 	}
 	
 	/**
-	 * 下载速度
+	 * 下载统计
 	 */
-	public void downloadSize(long size) {
+	public void statistical(long size) {
 		downloadSize.addAndGet(size);
-		downloadTotalSize.addAndGet(size);
+		downloadBuffer.addAndGet(size);
+		SystemStatistical.statistical(size);
+	}
+	
+	/**
+	 * 累计下载大小
+	 */
+	public long downloadSize() {
+		return downloadSize.get();
 	}
 	
 	/**
@@ -115,6 +131,13 @@ public class TaskWrapper {
 	}
 	
 	/**
+	 * 完成状态
+	 */
+	public boolean complete() {
+		return entity.getStatus() == Status.complete;
+	}
+	
+	/**
 	 * 任务执行状态：等待中或者下载中
 	 */
 	public boolean run() {
@@ -123,13 +146,19 @@ public class TaskWrapper {
 	
 	// Table 数据 //
 	
+	/**
+	 * 任务名称
+	 */
 	public String getNameValue() {
 		return entity.getName();
 	}
-	
+
+	/**
+	 * 任务状态
+	 */
 	public String getStatusValue() {
 		if(download()) {
-			long size = downloadSize.getAndSet(0);
+			long size = downloadBuffer.getAndSet(0);
 			sizeSecond = size / TaskTimer.REFRESH_TIME;
 			if(sizeSecond == 0L) {
 				return Status.download.getValue();
@@ -141,10 +170,20 @@ public class TaskWrapper {
 		}
 	}
 	
+	/**
+	 * 任务进度
+	 */
 	public String getProgressValue() {
-		return FileUtils.formatSize(entity.getSize());
+		if(complete()) {
+			return FileUtils.formatSize(entity.getSize());
+		} else {
+			return FileUtils.formatSize(downloadSize.longValue()) + "/" + FileUtils.formatSize(entity.getSize());
+		}
 	}
-	
+
+	/**
+	 * 创建时间
+	 */
 	public String getCreateDateValue() {
 		if(entity.getCreateDate() == null) {
 			return "-";
@@ -152,13 +191,16 @@ public class TaskWrapper {
 		return formater.get().format(entity.getCreateDate());
 	}
 	
+	/**
+	 * 完成时间
+	 */
 	public String getEndDateValue() {
 		if(entity.getEndDate() == null) {
 			if(download()) {
 				if(sizeSecond == 0L) {
 					return "-";
 				} else {
-					long second = entity.getSize() / sizeSecond;
+					long second = (entity.getSize() - downloadSize.longValue()) / sizeSecond;
 					return DateUtils.formatSecond(second);
 				}
 			} else {

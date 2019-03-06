@@ -82,7 +82,7 @@ public class TorrentController implements Initializable {
 		.filter(file -> !file.path().startsWith(HIDE_FILE_PREFIX))
 		.sorted((a, b) -> a.path().compareTo(b.path()))
 		.forEach(file -> manager.build(file.path(), file.getLength()));
-		manager.select(wrapper.torrentDownloadFiles());
+		manager.select(wrapper.downloadTorrentFiles());
 	}
 	
 	/**

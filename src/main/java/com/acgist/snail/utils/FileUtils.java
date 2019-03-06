@@ -1,6 +1,8 @@
 package com.acgist.snail.utils;
 
 import java.awt.Desktop;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -141,7 +143,7 @@ public class FileUtils {
 	 * 文件写入
 	 */
 	public static final void write(String filePath, byte[] bytes) {
-		try(OutputStream output = new FileOutputStream(new File(filePath))) {
+		try(OutputStream output = new FileOutputStream(filePath)) {
 			output.write(bytes);
 		} catch (IOException e) {
 			LOGGER.error("文件写入异常", e);
@@ -153,14 +155,10 @@ public class FileUtils {
 	 */
 	public static final void copy(String src, String target) {
 		try(
-			InputStream input = new FileInputStream(src);
-			OutputStream output = new FileOutputStream(target);
+			InputStream input = new BufferedInputStream(new FileInputStream(src));
+			OutputStream output = new BufferedOutputStream(new FileOutputStream(target));
 		) {
-			int index;
-			byte[] bytes = new byte[1024];
-			while((index = input.read(bytes)) != -1) {
-				output.write(bytes, 0, index);
-			}
+			input.transferTo(output);
 		} catch (IOException e) {
 			LOGGER.error("文件拷贝异常", e);
 		}
@@ -182,7 +180,7 @@ public class FileUtils {
 	 */
 	public static final String formatSize(Long size) {
 		if(size == null || size == 0L) {
-			return "未知";
+			return "0B";
 		}
 		int index = 0;
 		BigDecimal decimal = new BigDecimal(size);
