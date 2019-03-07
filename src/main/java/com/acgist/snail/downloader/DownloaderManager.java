@@ -60,9 +60,7 @@ public class DownloaderManager {
 		var list = DOWNLOADER_TASK_MAP.entrySet()
 		.stream()
 		.map(Entry::getValue)
-		.filter(downloader -> {
-			return downloader.wrapper().run();
-		})
+		.filter(downloader -> downloader.wrapper().run())
 		.collect(Collectors.toList());
 		list.forEach(downloader -> {
 			downloader.pause();
@@ -158,10 +156,17 @@ public class DownloaderManager {
 	}
 
 	/**
-	 * 停止下载
+	 * 停止下载：<br>
+	 * 暂停任务<br>
+	 * 关闭下载线程池
 	 */
 	public void shutdown() {
 		LOGGER.info("关闭下载器管理");
+		DOWNLOADER_TASK_MAP.entrySet()
+		.stream()
+		.map(Entry::getValue)
+		.filter(downloader -> downloader.wrapper().run())
+		.forEach(downloader -> downloader.pause());
 		DOWNLOADER_EXECUTOR.shutdown();
 	}
 
@@ -170,7 +175,7 @@ public class DownloaderManager {
 	 */
 	private void buildExecutor(int downloadSize) {
 		if(DOWNLOADER_EXECUTOR != null) {
-			shutdown();
+			DOWNLOADER_EXECUTOR.shutdown();
 		}
 		LOGGER.info("初始化下载线程池，初始大小：{}", downloadSize);
 		DOWNLOADER_EXECUTOR = Executors.newFixedThreadPool(downloadSize, ThreadUtils.newThreadFactory("Downloader Thread"));
