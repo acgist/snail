@@ -45,6 +45,11 @@ public class SystemStatistical {
 	 * 平均下载速度
 	 */
 	public String downloadBufferSecond() {
+		long now = System.currentTimeMillis();
+		long interval = now - lastTime;
+		if(interval > TaskTimer.REFRESH_TIME_MILLIS) {
+			return "0KB/S";
+		}
 		return FileUtils.formatSize(bufferSecond) + "/S";
 	}
 	
