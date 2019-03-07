@@ -1,17 +1,23 @@
 package com.acgist.snail.window.menu;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.context.SystemAsynContext;
 import com.acgist.snail.module.config.DownloadConfig;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.utils.ClipboardUtils;
 import com.acgist.snail.utils.FileUtils;
+import com.acgist.snail.utils.FileVerifyUtils;
+import com.acgist.snail.window.AlertWindow;
 import com.acgist.snail.window.main.MainWindow;
 import com.acgist.snail.window.torrent.TorrentWindow;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
@@ -87,7 +93,7 @@ public class TaskMenu extends ContextMenu {
 		copyUrlMenu.setOnAction(copyUrlEvent);
 		torrentMenu.setOnAction(torrentEvent);
 		exportTorrentMenu.setOnAction(exportTorrentEvent);
-		verifyMenu.setOnAction(torrentEvent);
+		verifyMenu.setOnAction(verifyEvent);
 		openFolderMenu.setOnAction(openFolderEvent);
 		
 		this.getItems().add(startMenu);
@@ -112,6 +118,13 @@ public class TaskMenu extends ContextMenu {
 		MainWindow.getInstance().controller().delete();
 	};
 	
+	private EventHandler<ActionEvent> copyUrlEvent = (event) -> {
+		MainWindow.getInstance().controller().selected()
+		.forEach(wrapper -> {
+			ClipboardUtils.copy(wrapper.entity().getUrl());
+		});
+	};
+	
 	private EventHandler<ActionEvent> torrentEvent = (event) -> {
 		if(!MainWindow.getInstance().controller().hasTorrent()) {
 			return;
@@ -123,13 +136,6 @@ public class TaskMenu extends ContextMenu {
 			}
 		});
 		TorrentWindow.getInstance().show();
-	};
-	
-	private EventHandler<ActionEvent> copyUrlEvent = (event) -> {
-		MainWindow.getInstance().controller().selected()
-		.forEach(wrapper -> {
-			ClipboardUtils.copy(wrapper.entity().getUrl());
-		});
 	};
 	
 	private EventHandler<ActionEvent> exportTorrentEvent = (event) -> {
@@ -152,6 +158,19 @@ public class TaskMenu extends ContextMenu {
 				}
 			});
 		}
+	};
+	
+	private EventHandler<ActionEvent> verifyEvent = (event) -> {
+		SystemAsynContext.runasyn("File Verify Thread", () -> {
+			Map<String, String> hash = new HashMap<>();
+			MainWindow.getInstance().controller().selected()
+			.forEach(wrapper -> {
+				hash.putAll(FileVerifyUtils.sha1(wrapper.entity().getFile()));
+			});
+			Platform.runLater(() -> {
+				AlertWindow.info("文件校验", hash.toString());
+			});
+		});
 	};
 	
 	private EventHandler<ActionEvent> openFolderEvent = (event) -> {
