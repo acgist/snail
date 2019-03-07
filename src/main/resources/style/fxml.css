@@ -17,6 +17,9 @@
 	-fx-pref-height:40;
 	-fx-alignment:center_left;
 }
+.main .taskMenu {
+	-fx-padding:2;
+}
 .main .footer {
 	-fx-padding:2;
 	-fx-pref-height:40;

@@ -4,9 +4,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.module.exception.DownloadException;
 import com.acgist.snail.pojo.wrapper.TorrentWrapper;
 import com.acgist.snail.utils.StringUtils;
@@ -15,8 +12,6 @@ import com.acgist.snail.utils.StringUtils;
  * 种子解析器
  */
 public class TorrentDecoder {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentDecoder.class);
 	
 	public static final String TORRENT_SUFFIX = ".torrent"; // 文件后缀
 	
@@ -29,12 +24,12 @@ public class TorrentDecoder {
 	/**
 	 * 解析种子文件
 	 */
-	public static final TorrentDecoder newInstance(String filePath) {
+	public static final TorrentDecoder newInstance(String filePath) throws DownloadException {
 		TorrentDecoder decoder = new TorrentDecoder();
 		try(InputStream input = new FileInputStream(filePath)) {
 			decoder.decode(input);
 		} catch (Exception e) {
-			LOGGER.error("解析种子异常", e);
+			throw new DownloadException("解析种子异常", e);
 		}
 		return decoder;
 	}
