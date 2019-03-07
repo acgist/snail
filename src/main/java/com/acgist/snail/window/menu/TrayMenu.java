@@ -57,6 +57,8 @@ public class TrayMenu extends ContextMenu {
 			if (INSTANCE == null) {
 				LOGGER.info("初始化托盘菜单");
 				INSTANCE = new TrayMenu();
+				INSTANCE.setOpacity(0.94);
+				INSTANCE.setStyle("-fx-padding:1;");
 				Platform.setImplicitExit(false); // 必须设置此项，否者窗口关闭后将不能通过托盘显示
 			}
 		}
@@ -66,16 +68,23 @@ public class TrayMenu extends ContextMenu {
 		return INSTANCE;
 	}
 
+	private MenuItem showMenu;
+	private MenuItem hideMenu;
+	private MenuItem exitMenu;
+	private MenuItem aboutMenu;
+	private MenuItem sourceMenu;
+	private MenuItem supportMenu;
+
 	/**
 	 * 创建菜单
 	 */
 	private void createMenu() {
-		MenuItem showMenu = new MenuItem("显示", new ImageView("/image/16/show.png"));
-		MenuItem hideMenu = new MenuItem("隐藏", new ImageView("/image/16/hide.png"));
-		MenuItem exitMenu = new MenuItem("退出", new ImageView("/image/16/exit.png"));
-		MenuItem aboutMenu = new MenuItem("关于", new ImageView("/image/16/about.png"));
-		MenuItem sourceMenu = new MenuItem("官网与源码", new ImageView("/image/16/source.png"));
-		MenuItem supportMenu = new MenuItem("问题与建议", new ImageView("/image/16/support.png"));
+		this.showMenu = new MenuItem("显示", new ImageView("/image/16/show.png"));
+		this.hideMenu = new MenuItem("隐藏", new ImageView("/image/16/hide.png"));
+		this.exitMenu = new MenuItem("退出", new ImageView("/image/16/exit.png"));
+		this.aboutMenu = new MenuItem("关于", new ImageView("/image/16/about.png"));
+		this.sourceMenu = new MenuItem("官网与源码", new ImageView("/image/16/source.png"));
+		this.supportMenu = new MenuItem("问题与建议", new ImageView("/image/16/support.png"));
 		
 		showMenu.setOnAction(showAction);
 		hideMenu.setOnAction(hideAction);

@@ -55,19 +55,20 @@ import javafx.util.Callback;
 
 /**
  * TODO：太多列滚动条优化
- * TODO：文件校验
+ * TODO：文件校验（MD5/SHA-1）
+ * TODO：内存优化
  */
 public class MainController implements Initializable {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
 	
 	/**
-	 * 显示过滤
+	 * 过滤
 	 */
 	public enum Filter {
 		all,
 		download,
-		complete
+		complete;
 	}
 	
 	private Filter filter = Filter.all;
