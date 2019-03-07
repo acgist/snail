@@ -12,6 +12,7 @@ import javax.swing.event.MouseInputAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.module.config.DownloadConfig;
 import com.acgist.snail.module.config.SystemConfig;
 import com.acgist.snail.utils.BrowseUtils;
 import com.acgist.snail.utils.PlatformUtils;
@@ -139,7 +140,9 @@ public class TrayMenu extends ContextMenu {
 	 * 提示信息
 	 */
 	public void notice(String title, String content, MessageType type) {
-		trayIcon.displayMessage(title, content, type);
+		if(DownloadConfig.getDownloadNotice()) {
+			trayIcon.displayMessage(title, content, type);
+		}
 	}
 	
 	
