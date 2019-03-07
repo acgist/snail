@@ -108,6 +108,9 @@ public final class DownloaderManager {
 		if(downloader == null) {
 			downloader = DownloaderBuilder.build(wrapper);
 		}
+		if(downloader == null) {
+			throw new DownloadException("添加下载任务失败");
+		}
 		LOGGER.info("添加任务：{}", entity.getName());
 		DOWNLOADER_EXECUTOR.submit(downloader);
 		DOWNLOADER_TASK_MAP.put(downloader.id(), downloader);

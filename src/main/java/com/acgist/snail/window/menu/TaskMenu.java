@@ -38,26 +38,43 @@ public class TaskMenu extends ContextMenu {
 			if (INSTANCE == null) {
 				LOGGER.info("初始化任务菜单");
 				INSTANCE = new TaskMenu();
+				INSTANCE.setOpacity(0.94);
+				INSTANCE.getStyleClass().add("taskMenu");
 			}
 		}
 	}
 	
 	public static final TaskMenu getInstance() {
+		if(MainWindow.getInstance().controller().hasTorrent()) {
+			INSTANCE.torrentMenu.setDisable(false);
+			INSTANCE.exportTorrentMenu.setDisable(false);
+		} else {
+			INSTANCE.torrentMenu.setDisable(true);
+			INSTANCE.exportTorrentMenu.setDisable(true);
+		}
 		return INSTANCE;
 	}
 
+	private MenuItem startMenu;
+	private MenuItem pauseMenu;
+	private MenuItem deleteMenu;
+	private MenuItem torrentMenu;
+	private MenuItem copyUrlMenu;
+	private MenuItem exportTorrentMenu;
+	private MenuItem openFolderMenu;
+	
 	/**
 	 * 创建菜单
 	 */
 	private void createMenu() {
-		MenuItem startMenu = new MenuItem("开始", new ImageView("/image/16/start.png"));
-		MenuItem pauseMenu = new MenuItem("暂停", new ImageView("/image/16/pause.png"));
-		MenuItem deleteMenu = new MenuItem("删除", new ImageView("/image/16/delete.png"));
-		MenuItem torrentMenu = new MenuItem("文件选择", new ImageView("/image/16/edit.png"));
-		MenuItem copyUrlMenu = new MenuItem("复制下载地址", new ImageView("/image/16/download.png"));
-		MenuItem exportTorrentMenu = new MenuItem("导出种子", new ImageView("/image/16/export.png"));
-		MenuItem openFolderMenu = new MenuItem("打开目录", new ImageView("/image/16/folder.png"));
-
+		this.startMenu = new MenuItem("开始", new ImageView("/image/16/start.png"));
+		this.pauseMenu = new MenuItem("暂停", new ImageView("/image/16/pause.png"));
+		this.deleteMenu = new MenuItem("删除", new ImageView("/image/16/delete.png"));
+		this.torrentMenu = new MenuItem("文件选择", new ImageView("/image/16/edit.png"));
+		this.copyUrlMenu = new MenuItem("复制下载地址", new ImageView("/image/16/download.png"));
+		this.exportTorrentMenu = new MenuItem("导出种子", new ImageView("/image/16/export.png"));
+		this.openFolderMenu = new MenuItem("打开目录", new ImageView("/image/16/folder.png"));
+		
 		startMenu.setOnAction(startEvent);
 		pauseMenu.setOnAction(pauseEvent);
 		deleteMenu.setOnAction(deleteEvent);
@@ -93,7 +110,9 @@ public class TaskMenu extends ContextMenu {
 		}
 		MainWindow.getInstance().controller().selected()
 		.forEach(wrapper -> {
-			TorrentWindow.getInstance().controller().tree(wrapper);
+			if(wrapper.entity().getType() == Type.torrent) {
+				TorrentWindow.getInstance().controller().tree(wrapper);
+			}
 		});
 		TorrentWindow.getInstance().show();
 	};
