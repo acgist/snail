@@ -20,7 +20,7 @@ public class DownloaderBuilder {
 	}
 	
 	private DownloaderBuilder(TaskEntity entity) throws DownloadException {
-		this.wrapper = new TaskWrapper(entity);
+		this.wrapper = TaskWrapper.newInstance(entity);
 	}
 	
 	/**

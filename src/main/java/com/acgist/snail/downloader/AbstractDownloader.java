@@ -20,8 +20,8 @@ public abstract class AbstractDownloader implements IDownloader {
 	
 	private static final long ONE_MINUTE = 1000L; // 一分钟
 	
+	protected boolean running = false; // 下载中
 	protected boolean complete = false; // 下载完成
-	protected boolean running = false; // 下载运行中
 	protected TaskWrapper wrapper;
 
 	public AbstractDownloader(TaskWrapper wrapper) {
@@ -85,10 +85,14 @@ public abstract class AbstractDownloader implements IDownloader {
 	
 	@Override
 	public void run() {
+		if(wrapper.download()) { // 任务已经处于下载中直接跳过，防止多次点击暂停开始导致后面线程阻塞导致不能下载其他任务
+			LOGGER.info("任务已经在下载中，停止执行：{}", name());
+			return;
+		}
 		synchronized (wrapper) {
 			var entity = this.wrapper.entity();
 			if(wrapper.await()) {
-				LOGGER.info("开始下载：{}", entity.getName());
+				LOGGER.info("开始下载：{}", name());
 				running = true; // 标记开始下载
 				entity.setStatus(Status.download);
 				this.open();
