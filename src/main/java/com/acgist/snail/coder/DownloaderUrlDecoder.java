@@ -129,7 +129,7 @@ public class DownloaderUrlDecoder {
 		this.taskEntity.setFile(this.file);
 		this.taskEntity.setName(this.name);
 		this.taskEntity.setTorrent(this.torrent);
-		this.taskWrapper = new TaskWrapper(this.taskEntity);
+		this.taskWrapper = TaskWrapper.newInstance(this.taskEntity);
 	}
 
 	/**

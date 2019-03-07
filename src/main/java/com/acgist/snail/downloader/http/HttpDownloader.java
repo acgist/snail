@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.AbstractDownloader;
-import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.module.config.DownloadConfig;
 import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
@@ -22,7 +21,7 @@ import com.acgist.snail.utils.HttpUtils;
 /**
  * HTTP下载
  */
-public class HttpDownloader extends AbstractDownloader implements IDownloader {
+public class HttpDownloader extends AbstractDownloader {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(HttpDownloader.class);
 	
@@ -50,13 +49,14 @@ public class HttpDownloader extends AbstractDownloader implements IDownloader {
 	public void download() throws IOException {
 		int length = 0;
 		long begin, end;
-		while(true) {
-			if(!wrapper.download()) {
+		final boolean ok = !complete; // 下载前没有标记完成
+		while(ok) {
+			if(!wrapper.download()) { // 已经不是下载状态
 				break;
 			}
 			begin = System.currentTimeMillis();
 			length = input.readNBytes(bytes, 0, bytes.length);
-			if(isComplete(length)) {
+			if(isComplete(length)) { // 是否完成
 				complete = true;
 				break;
 			}
@@ -70,13 +70,17 @@ public class HttpDownloader extends AbstractDownloader implements IDownloader {
 	@Override
 	public void release() {
 		try {
-			input.close();
+			if(input != null) {
+				input.close();
+			}
 		} catch (IOException e) {
 			LOGGER.error("关闭输入流异常", e);
 		}
 		try {
-			output.flush(); // 刷新
-			output.close();
+			if(output != null) {
+				output.flush(); // 刷新
+				output.close();
+			}
 		} catch (IOException e) {
 			LOGGER.error("关闭文件流失败", e);
 		}
@@ -120,6 +124,12 @@ public class HttpDownloader extends AbstractDownloader implements IDownloader {
 				wrapper.downloadSize(size);
 			} else {
 				wrapper.downloadSize(0L);
+			}
+		} else if(HttpUtils.rangeNotSatisfiable(response)) { // 无法满足的请求范围
+			if(wrapper.downloadSize() == entity.getSize()) {
+				complete = true;
+			} else {
+				fail();
 			}
 		} else {
 			fail();

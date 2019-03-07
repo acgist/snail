@@ -19,7 +19,7 @@ import com.acgist.snail.utils.ThreadUtils;
 /**
  * 下载器管理器
  */
-public class DownloaderManager {
+public final class DownloaderManager {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DownloaderManager.class);
 	

@@ -30,6 +30,7 @@ public class HttpUtils {
 
 	public static final int HTTP_OK = 200; // OK
 	public static final int HTTP_PARTIAL_CONTENT = 206; // 端点续传
+	public static final int HTTP_RANGE_NOT_SATISFIABLE= 416; // 无法满足请求范围
 	
 	private static final String USER_AGENT;
 	
@@ -112,6 +113,13 @@ public class HttpUtils {
 				response.statusCode() == HTTP_PARTIAL_CONTENT);
 	}
 
+	/**
+	 * 无法满足请求范围
+	 */
+	public static final <T> boolean rangeNotSatisfiable(HttpResponse<T> response) {
+		return response != null && response.statusCode() == HTTP_RANGE_NOT_SATISFIABLE;
+	}
+	
 	/**
 	 * 获取post数据
 	 */

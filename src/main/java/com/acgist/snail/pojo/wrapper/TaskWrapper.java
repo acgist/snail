@@ -36,7 +36,7 @@ public class TaskWrapper {
 	private AtomicLong downloadSize = new AtomicLong(0); // 已经下载大小
 	private AtomicLong downloadBuffer = new AtomicLong(0); // 下载速度采样
 
-	public TaskWrapper(TaskEntity entity) throws DownloadException {
+	private TaskWrapper(TaskEntity entity) throws DownloadException {
 		if(entity == null) {
 			throw new DownloadException("创建下载任务失败");
 		}
@@ -45,6 +45,10 @@ public class TaskWrapper {
 	
 	// 功能 //
 
+	public static final TaskWrapper newInstance(TaskEntity entity) throws DownloadException {
+		return new TaskWrapper(entity);
+	}
+	
 	public TaskEntity entity() {
 		return entity;
 	}
