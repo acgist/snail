@@ -66,7 +66,7 @@ public abstract class MagnetDecoder {
 		HttpResponse<byte[]> response = HttpUtils.request(client, request, BodyHandlers.ofByteArray());
 		if(HttpUtils.ok(response)) {
 			byte[] bytes = response.body();
-			String path = DownloadConfig.getDownloadPath(this.hash + TorrentDecoder.TORRENT_SUFFIX);
+			String path = DownloadConfig.getPath(this.hash + TorrentDecoder.TORRENT_SUFFIX);
 			FileUtils.write(path, bytes);
 			return new File(path);
 		}

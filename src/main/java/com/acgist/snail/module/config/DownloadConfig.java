@@ -39,13 +39,13 @@ public class DownloadConfig {
 		LOGGER.info("初始化用户配置");
 		INSTANCE.initFromProperties();
 		INSTANCE.initFromDB();
-		LOGGER.info("下载目录：{}", INSTANCE.downloadPath);
-		LOGGER.info("下载任务数量：{}", INSTANCE.downloadSize);
-		LOGGER.info("下载速度（单个）（KB）：{}", INSTANCE.downloadBuffer);
-		LOGGER.info("磁盘缓存（单个）（MB）：{}", INSTANCE.downloadMemoryBuffer);
-		LOGGER.info("消息提示：{}", INSTANCE.downloadNotice);
-		LOGGER.info("启用P2P加速：{}", INSTANCE.downloadP2p);
-		LOGGER.info("最后一次选择目录：{}", INSTANCE.downloadLastPath);
+		LOGGER.info("下载目录：{}", INSTANCE.path);
+		LOGGER.info("下载任务数量：{}", INSTANCE.size);
+		LOGGER.info("下载速度（单个）（KB）：{}", INSTANCE.buffer);
+		LOGGER.info("磁盘缓存（单个）（MB）：{}", INSTANCE.memoryBuffer);
+		LOGGER.info("消息提示：{}", INSTANCE.notice);
+		LOGGER.info("启用P2P加速：{}", INSTANCE.p2p);
+		LOGGER.info("最后一次选择目录：{}", INSTANCE.lastPath);
 	}
 	
 	/**
@@ -53,22 +53,22 @@ public class DownloadConfig {
 	 */
 	private void initFromProperties() {
 		PropertiesUtils propertiesUtils = PropertiesUtils.getInstance("/config/config.download.properties");
-		INSTANCE.downloadPath = propertiesUtils.getString(DOWNLOAD_PATH);
-		INSTANCE.downloadSize = propertiesUtils.getInteger(DOWNLOAD_SIZE);
-		INSTANCE.downloadBuffer = propertiesUtils.getInteger(DOWNLOAD_BUFFER);
-		INSTANCE.downloadMemoryBuffer = propertiesUtils.getInteger(DOWNLOAD_MEMORY_BUFFER);
-		INSTANCE.downloadNotice = propertiesUtils.getBoolean(DOWNLOAD_NOTICE);
-		INSTANCE.downloadP2p = propertiesUtils.getBoolean(DOWNLOAD_P2P);
-		INSTANCE.downloadLastPath = propertiesUtils.getString(DOWNLOAD_LAST_PATH);
+		INSTANCE.path = propertiesUtils.getString(DOWNLOAD_PATH);
+		INSTANCE.size = propertiesUtils.getInteger(DOWNLOAD_SIZE);
+		INSTANCE.buffer = propertiesUtils.getInteger(DOWNLOAD_BUFFER);
+		INSTANCE.memoryBuffer = propertiesUtils.getInteger(DOWNLOAD_MEMORY_BUFFER);
+		INSTANCE.notice = propertiesUtils.getBoolean(DOWNLOAD_NOTICE);
+		INSTANCE.p2p = propertiesUtils.getBoolean(DOWNLOAD_P2P);
+		INSTANCE.lastPath = propertiesUtils.getString(DOWNLOAD_LAST_PATH);
 	}
 	
-	private String downloadPath; // 下载目录
-	private Integer downloadSize; // 下载任务数量
-	private Integer downloadBuffer; // 下载速度（单个）（KB）
-	private Integer downloadMemoryBuffer; // 磁盘缓存（单个）（MB）
-	private Boolean downloadNotice; // 消息提示
-	private Boolean downloadP2p; // 启用P2P加速
-	private String downloadLastPath; // 最后一次选择目录
+	private String path; // 下载目录
+	private Integer size; // 下载任务数量
+	private Integer buffer; // 下载速度（单个）（KB）
+	private Integer memoryBuffer; // 磁盘缓存（单个）（MB）
+	private Boolean notice; // 消息提示
+	private Boolean p2p; // 启用P2P加速
+	private String lastPath; // 最后一次选择目录
 	
 	/**
 	 * 数据库初始化配置
@@ -77,19 +77,19 @@ public class DownloadConfig {
 		ConfigRepository configRepository = new ConfigRepository();
 		ConfigEntity entity = null;
 		entity = configRepository.findOne(ConfigEntity.PROPERTY_NAME, DOWNLOAD_PATH);
-		downloadPath = configString(entity, downloadPath);
+		path = configString(entity, path);
 		entity = configRepository.findOne(ConfigEntity.PROPERTY_NAME, DOWNLOAD_SIZE);
-		downloadSize = configInteger(entity, downloadSize);
+		size = configInteger(entity, size);
 		entity = configRepository.findOne(ConfigEntity.PROPERTY_NAME, DOWNLOAD_BUFFER);
-		downloadBuffer = configInteger(entity, downloadBuffer);
+		buffer = configInteger(entity, buffer);
 		entity = configRepository.findOne(ConfigEntity.PROPERTY_NAME, DOWNLOAD_MEMORY_BUFFER);
-		downloadMemoryBuffer = configInteger(entity, downloadMemoryBuffer);
+		memoryBuffer = configInteger(entity, memoryBuffer);
 		entity = configRepository.findOne(ConfigEntity.PROPERTY_NAME, DOWNLOAD_NOTICE);
-		downloadNotice = configBoolean(entity, downloadNotice);
+		notice = configBoolean(entity, notice);
 		entity = configRepository.findOne(ConfigEntity.PROPERTY_NAME, DOWNLOAD_P2P);
-		downloadP2p = configBoolean(entity, downloadP2p);
+		p2p = configBoolean(entity, p2p);
 		entity = configRepository.findOne(ConfigEntity.PROPERTY_NAME, DOWNLOAD_LAST_PATH);
-		downloadLastPath = configString(entity, downloadLastPath);
+		lastPath = configString(entity, lastPath);
 	}
 	
 	/**
@@ -131,137 +131,137 @@ public class DownloadConfig {
 	/**
 	 * 设置下载目录
 	 */
-	public static final void setDownloadPath(String path) {
+	public static final void setPath(String path) {
 		ConfigRepository configRepository = new ConfigRepository();
-		INSTANCE.downloadPath = path;
+		INSTANCE.path = path;
 		configRepository.updateConfig(DOWNLOAD_PATH, path);
 	}
 	
 	/**
 	 * 下载目录
 	 */
-	public static final String getDownloadPath() {
-		return FileUtils.folderPath(INSTANCE.downloadPath);
+	public static final String getPath() {
+		return FileUtils.folderPath(INSTANCE.path);
 	}
 
 	/**
 	 * 获取下载目录：下载目录+文件名称
 	 */
-	public static final String getDownloadPath(String fileName) throws DownloadException {
+	public static final String getPath(String fileName) throws DownloadException {
 		if(StringUtils.isEmpty(fileName)) {
 			throw new DownloadException("无效的下载路径：" + fileName);
 		}
-		return FileUtils.file(getDownloadPath(), fileName);
+		return FileUtils.file(getPath(), fileName);
 	}
 	
 	/**
 	 * 设置下载任务数量
 	 */
-	public static final void setDownloadSize(Integer downloadSize) {
+	public static final void setSize(Integer size) {
 		ConfigRepository configRepository = new ConfigRepository();
-		INSTANCE.downloadSize = downloadSize;
-		configRepository.updateConfig(DOWNLOAD_SIZE, String.valueOf(downloadSize));
+		INSTANCE.size = size;
+		configRepository.updateConfig(DOWNLOAD_SIZE, String.valueOf(size));
 	}
 
 	/**
 	 * 下载任务数量
 	 */
-	public static final Integer getDownloadSize() {
-		return INSTANCE.downloadSize;
+	public static final Integer getSize() {
+		return INSTANCE.size;
 	}
 	
 	/**
 	 * 设置下载速度（单个）（KB）
 	 */
-	public static final void setDownloadBuffer(Integer downloadBuffer) {
+	public static final void setBuffer(Integer buffer) {
 		ConfigRepository configRepository = new ConfigRepository();
-		INSTANCE.downloadBuffer = downloadBuffer;
-		configRepository.updateConfig(DOWNLOAD_BUFFER, String.valueOf(downloadBuffer));
+		INSTANCE.buffer = buffer;
+		configRepository.updateConfig(DOWNLOAD_BUFFER, String.valueOf(buffer));
 	}
 	
 	/**
 	 * 下载速度（单个）（KB）
 	 */
-	public static final Integer getDownloadBuffer() {
-		return INSTANCE.downloadBuffer;
+	public static final Integer getBuffer() {
+		return INSTANCE.buffer;
 	}
 
 	/**
 	 * 下载速度（单个）（B）
 	 */
-	public static final Integer getDownloadBufferByte() {
-		return INSTANCE.downloadBuffer * 1024;
+	public static final Integer getBufferByte() {
+		return INSTANCE.buffer * 1024;
 	}
 	
 	/**
 	 * 磁盘缓存（单个）（MB）
 	 */
-	public static final void setDownloadMemoryBuffer(Integer downloadMemoryBuffer) {
+	public static final void setMemoryBuffer(Integer memoryBuffer) {
 		ConfigRepository configRepository = new ConfigRepository();
-		INSTANCE.downloadMemoryBuffer = downloadMemoryBuffer;
-		configRepository.updateConfig(DOWNLOAD_MEMORY_BUFFER, String.valueOf(downloadMemoryBuffer));
+		INSTANCE.memoryBuffer = memoryBuffer;
+		configRepository.updateConfig(DOWNLOAD_MEMORY_BUFFER, String.valueOf(memoryBuffer));
 	}
 
 	/**
 	 * 磁盘缓存（单个）（MB）
 	 */
-	public static final Integer getDownloadMemoryBuffer() {
-		return INSTANCE.downloadMemoryBuffer;
+	public static final Integer getMemoryBuffer() {
+		return INSTANCE.memoryBuffer;
 	}
 
 	/**
 	 * 磁盘缓存（单个）（B）
 	 */
-	public static final Integer getDownloadMemoryBufferByte() {
-		return INSTANCE.downloadMemoryBuffer * 1024 * 1024;
+	public static final Integer getMemoryBufferByte() {
+		return INSTANCE.memoryBuffer * 1024 * 1024;
 	}
 
 	/**
 	 * 设置消息提示
 	 */
-	public static final void setDownloadNotice(Boolean downloadNotice) {
+	public static final void setNotice(Boolean notice) {
 		ConfigRepository configRepository = new ConfigRepository();
-		INSTANCE.downloadNotice = downloadNotice;
-		configRepository.updateConfig(DOWNLOAD_NOTICE, String.valueOf(downloadNotice));
+		INSTANCE.notice = notice;
+		configRepository.updateConfig(DOWNLOAD_NOTICE, String.valueOf(notice));
 	}
 
 	/**
 	 * 消息提示
 	 */
-	public static final Boolean getDownloadNotice() {
-		return INSTANCE.downloadNotice;
+	public static final Boolean getNotice() {
+		return INSTANCE.notice;
 	}
 	
 	/**
 	 * 设置启用P2P加速
 	 */
-	public static final void setDownloadP2p(Boolean downloadP2p) {
+	public static final void setP2p(Boolean p2p) {
 		ConfigRepository configRepository = new ConfigRepository();
-		INSTANCE.downloadP2p = downloadP2p;
-		configRepository.updateConfig(DOWNLOAD_P2P, String.valueOf(downloadP2p));
+		INSTANCE.p2p = p2p;
+		configRepository.updateConfig(DOWNLOAD_P2P, String.valueOf(p2p));
 	}
 	
 	/**
 	 * 启用P2P加速
 	 */
-	public static final Boolean getDownloadP2p() {
-		return INSTANCE.downloadP2p;
+	public static final Boolean getP2p() {
+		return INSTANCE.p2p;
 	}
 	
 	/**
 	 * 设置最后一次选择目录
 	 */
-	public static final void setDownloadLastPath(String downloadLastPath) {
+	public static final void setLastPath(String lastPath) {
 		ConfigRepository configRepository = new ConfigRepository();
-		INSTANCE.downloadLastPath = downloadLastPath;
-		configRepository.updateConfig(DOWNLOAD_P2P, downloadLastPath);
+		INSTANCE.lastPath = lastPath;
+		configRepository.updateConfig(DOWNLOAD_P2P, lastPath);
 	}
 	
 	/**
 	 * 最后一次选择目录
 	 */
-	public static final String getDownloadLastPath() {
-		return INSTANCE.downloadLastPath;
+	public static final String getLastPath() {
+		return INSTANCE.lastPath;
 	}
 
 	/**
@@ -269,10 +269,10 @@ public class DownloadConfig {
 	 */
 	private static final File lastPath() {
 		File file = null;
-		if(StringUtils.isEmpty(INSTANCE.downloadLastPath)) {
-			file = new File(getDownloadPath());
+		if(StringUtils.isEmpty(INSTANCE.lastPath)) {
+			file = new File(getPath());
 		} else {
-			file = new File(INSTANCE.downloadLastPath);
+			file = new File(INSTANCE.lastPath);
 		}
 		return file;
 	}

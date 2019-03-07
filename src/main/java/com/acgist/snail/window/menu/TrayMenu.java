@@ -140,7 +140,7 @@ public class TrayMenu extends ContextMenu {
 	 * 提示信息
 	 */
 	public void notice(String title, String content, MessageType type) {
-		if(DownloadConfig.getDownloadNotice()) {
+		if(DownloadConfig.getNotice()) {
 			trayIcon.displayMessage(title, content, type);
 		}
 	}

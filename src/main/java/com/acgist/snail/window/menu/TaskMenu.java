@@ -114,7 +114,7 @@ public class TaskMenu extends ContextMenu {
 		DownloadConfig.lastPath(chooser);
 		File file = chooser.showDialog(new Stage());
 		if (file != null) {
-			DownloadConfig.setDownloadLastPath(file.getPath());
+			DownloadConfig.setLastPath(file.getPath());
 			MainWindow.getInstance().controller().selected()
 			.forEach(wrapper -> {
 				if(wrapper.entity().getType() == Type.torrent) {

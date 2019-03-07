@@ -52,7 +52,7 @@ public class BuildController implements Initializable {
 		chooser.getExtensionFilters().add(new ExtensionFilter("种子文件", "*.torrent"));
 		File file = chooser.showOpenDialog(new Stage());
 		if (file != null) {
-			DownloadConfig.setDownloadLastPath(file.getParent());
+			DownloadConfig.setLastPath(file.getParent());
 			setUrl(file.getPath());
 		}
 	}

@@ -41,7 +41,7 @@ public class HttpDownloader extends AbstractDownloader implements IDownloader {
 	
 	@Override
 	public void open() {
-		bytes = new byte[DownloadConfig.getDownloadBufferByte()];
+		bytes = new byte[DownloadConfig.getBufferByte()];
 		buildInput();
 		buildOutput();
 	}
@@ -131,9 +131,9 @@ public class HttpDownloader extends AbstractDownloader implements IDownloader {
 		try {
 			long size = wrapper.downloadSize();
 			if(size == 0L) {
-				output = new BufferedOutputStream(new FileOutputStream(entity.getFile()), DownloadConfig.getDownloadMemoryBufferByte());
+				output = new BufferedOutputStream(new FileOutputStream(entity.getFile()), DownloadConfig.getMemoryBufferByte());
 			} else { // 支持续传
-				output = new BufferedOutputStream(new FileOutputStream(entity.getFile(), true), DownloadConfig.getDownloadMemoryBufferByte());
+				output = new BufferedOutputStream(new FileOutputStream(entity.getFile(), true), DownloadConfig.getMemoryBufferByte());
 			}
 		} catch (FileNotFoundException e) {
 			LOGGER.error("打开下载文件流失败", e);

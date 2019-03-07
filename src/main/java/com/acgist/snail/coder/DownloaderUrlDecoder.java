@@ -221,7 +221,7 @@ public class DownloaderUrlDecoder {
 	 * 设置下载文件地址
 	 */
 	private void file() throws DownloadException {
-		this.file = DownloadConfig.getDownloadPath(this.fileName);
+		this.file = DownloadConfig.getPath(this.fileName);
 		File file = new File(this.file);
 		if(file.exists()) {
 			throw new DownloadException("下载文件已存在：" + this.file);
