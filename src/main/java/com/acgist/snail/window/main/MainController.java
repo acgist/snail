@@ -55,6 +55,7 @@ import javafx.util.Callback;
 
 /**
  * TODO：太多列滚动条优化
+ * TODO：文件校验
  */
 public class MainController implements Initializable {
 
@@ -101,7 +102,7 @@ public class MainController implements Initializable {
 		// 设置多选
 		this.taskTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		// 设置无数据内容
-		ImageView noticeImage = new ImageView("/image/64/download_01.png");
+		ImageView noticeImage = new ImageView("/image/64/download_02.png");
 		Text noticeText = new Text("点击新建按钮或者拖动种子文件开始下载");
 		noticeText.setFill(Color.rgb(198, 198, 198));
 		VBox placeholderBox = new VBox(noticeImage, noticeText);
