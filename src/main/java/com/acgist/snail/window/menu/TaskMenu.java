@@ -29,10 +29,6 @@ import javafx.stage.Stage;
 /**
  * 菜单 - 任务
  */
-/**
- * @author 28954
- *
- */
 public class TaskMenu extends ContextMenu {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskMenu.class);
