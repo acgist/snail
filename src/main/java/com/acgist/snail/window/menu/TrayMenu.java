@@ -38,6 +38,8 @@ import javafx.stage.WindowEvent;
 public class TrayMenu extends ContextMenu {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MainWindow.class);
+
+	private static final int MENU_WINDOW_HEIGHT = 150; // 窗口高度
 	
 	private Stage trayStage;
 	private TrayIcon trayIcon;
@@ -109,7 +111,9 @@ public class TrayMenu extends ContextMenu {
 					}
 				} else if(event.getButton() == java.awt.event.MouseEvent.BUTTON3) {
 					Platform.runLater(() -> {
-						TrayMenu.INSTANCE.show(createTrayStage(), event.getXOnScreen(), event.getYOnScreen());
+						int x = event.getXOnScreen();
+						int y = event.getYOnScreen() - MENU_WINDOW_HEIGHT;
+						TrayMenu.INSTANCE.show(createTrayStage(), x, y);
 					});
 				}
 			}
