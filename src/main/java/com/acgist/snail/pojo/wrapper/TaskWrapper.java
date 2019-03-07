@@ -31,8 +31,8 @@ public class TaskWrapper {
 	
 	private TaskEntity entity;
 	
-	private Long lastTime = System.currentTimeMillis(); // 最后一次统计时间
-	private Long bufferSecond = 0L; // 每秒下载速度
+	private long lastTime = System.currentTimeMillis(); // 最后一次统计时间
+	private long bufferSecond = 0L; // 每秒下载速度
 	private AtomicLong downloadSize = new AtomicLong(0); // 已经下载大小
 	private AtomicLong downloadBuffer = new AtomicLong(0); // 下载速度采样
 
@@ -126,6 +126,13 @@ public class TaskWrapper {
 	}
 	
 	/**
+	 * 设置累计下载大小
+	 */
+	public void downloadSize(long size) {
+		downloadSize.set(size);
+	}
+	
+	/**
 	 * 等待状态
 	 */
 	public boolean await() {
@@ -167,11 +174,7 @@ public class TaskWrapper {
 	 */
 	public String getStatusValue() {
 		if(download()) {
-			if(bufferSecond == 0L) {
-				return Status.download.getValue();
-			} else {
-				return FileUtils.formatSize(bufferSecond) + "/S";
-			}
+			return FileUtils.formatSize(bufferSecond) + "/S";
 		} else {
 			return entity.getStatus().getValue();
 		}

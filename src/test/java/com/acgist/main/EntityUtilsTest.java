@@ -7,10 +7,7 @@ import java.util.stream.Stream;
 
 import org.junit.Test;
 
-import com.acgist.snail.module.config.FileTypeConfig.FileType;
 import com.acgist.snail.pojo.entity.TaskEntity;
-import com.acgist.snail.pojo.entity.TaskEntity.Status;
-import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.utils.EntityUtils;
 import com.acgist.snail.utils.JSONUtils;
 
@@ -18,7 +15,8 @@ public class EntityUtilsTest {
 
 	@Test
 	public void property() {
-		TaskEntity entity = new TaskEntity("测试", Type.http, FileType.image, "test", "xx", "xx", Status.await, 100L, null, "");
+		TaskEntity entity = new TaskEntity();
+		entity.setName("测试");
 		final String[] properties = EntityUtils.entityProperty(entity.getClass());
 		final String sqlProperty = Stream.of(properties)
 			.map(property -> "`" + property + "`")

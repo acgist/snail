@@ -20,10 +20,25 @@ public class TaskEntity extends BaseEntity {
 	 */
 	public enum Status {
 		
+		/**
+		 * 任务添加进入下载前的状态
+		 */
 		await("等待中"),
+		/**
+		 * 任务下载时的状态，不能直接设置为此状态，有下载管理器自动修改为下载中
+		 */
 		download("下载中"),
+		/**
+		 * 任务暂停
+		 */
 		pause("暂停"),
+		/**
+		 * 任务完成，完成状态不能转换为其他任何状态
+		 */
 		complete("完成"),
+		/**
+		 * 任务失败
+		 */
 		fail("失败");
 		
 		private String value;
@@ -42,12 +57,12 @@ public class TaskEntity extends BaseEntity {
 	 * 下载类型
 	 */
 	public enum Type {
-		
+
 		ftp,
 		http,
 		ed2k,
 		torrent;
-		
+
 	}
 	
 	/**
@@ -67,15 +82,17 @@ public class TaskEntity extends BaseEntity {
 	 */
 	private String file;
 	/**
-	 * 下载地址：FTP、HTTP、磁力链接
+	 * 下载地址：FTP、HTTP、ED2K、磁力链接<br>
+	 * 迅雷下载链接直接转换为实际地址保存
 	 */
 	private String url;
 	/**
-	 * 种子文件路径
+	 * BT任务种子文件路径<br>
+	 * 种子文件下载时默认复制一份保存到下载目录
 	 */
 	private String torrent;
 	/**
-	 * 状态
+	 * 任务状态
 	 */
 	private Status status;
 	/**
@@ -87,27 +104,14 @@ public class TaskEntity extends BaseEntity {
 	 */
 	private Date endDate;
 	/**
-	 * 描述：下载其他信息
+	 * 描述：<br>
+	 * BT下载保存选择的下载文件
 	 */
 	private String description;
 	
 	public TaskEntity() {
 	}
 	
-	public TaskEntity(String name, Type type, FileType fileType, String file, String url,
-		String torrent, Status status, Long size, Date endDate, String description) {
-		this.name = name;
-		this.type = type;
-		this.fileType = fileType;
-		this.file = file;
-		this.url = url;
-		this.torrent = torrent;
-		this.status = status;
-		this.size = size;
-		this.endDate = endDate;
-		this.description = description;
-	}
-
 	public String getName() {
 		return name;
 	}
