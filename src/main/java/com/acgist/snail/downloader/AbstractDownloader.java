@@ -85,21 +85,23 @@ public abstract class AbstractDownloader implements IDownloader {
 	
 	@Override
 	public void run() {
-		var entity = this.wrapper.entity();
-		if(wrapper.await()) {
-			LOGGER.info("开始下载：{}", entity.getName());
-			running = true; // 标记开始下载
-			entity.setStatus(Status.download);
-			this.open();
-			try {
-				this.download();
-			} catch (Exception e) {
-				fail();
-				LOGGER.error("下载异常", e);
+		synchronized (wrapper) {
+			var entity = this.wrapper.entity();
+			if(wrapper.await()) {
+				LOGGER.info("开始下载：{}", entity.getName());
+				running = true; // 标记开始下载
+				entity.setStatus(Status.download);
+				this.open();
+				try {
+					this.download();
+				} catch (Exception e) {
+					fail();
+					LOGGER.error("下载异常", e);
+				}
+				this.release();
+				this.complete();
+				running = false;
 			}
-			this.release();
-			this.complete();
-			running = false;
 		}
 	}
 	

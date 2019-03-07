@@ -133,6 +133,16 @@ public class TaskWrapper {
 	}
 	
 	/**
+	 * 获取已下载大小
+	 */
+	public void loadDownloadSize() {
+		if(entity.getType() == Type.http) {
+			long size = FileUtils.fileSize(entity.getFile());
+			downloadSize(size);
+		}
+	}
+	
+	/**
 	 * 等待状态
 	 */
 	public boolean await() {
@@ -219,5 +229,5 @@ public class TaskWrapper {
 		}
 		return formater.get().format(entity.getEndDate());
 	}
-
+	
 }
