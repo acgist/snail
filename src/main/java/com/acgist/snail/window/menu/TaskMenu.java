@@ -23,6 +23,10 @@ import javafx.stage.Stage;
 /**
  * 菜单 - 任务
  */
+/**
+ * @author 28954
+ *
+ */
 public class TaskMenu extends ContextMenu {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskMenu.class);
@@ -58,9 +62,10 @@ public class TaskMenu extends ContextMenu {
 	private MenuItem startMenu;
 	private MenuItem pauseMenu;
 	private MenuItem deleteMenu;
-	private MenuItem torrentMenu;
 	private MenuItem copyUrlMenu;
+	private MenuItem torrentMenu;
 	private MenuItem exportTorrentMenu;
+	private MenuItem verifyMenu;
 	private MenuItem openFolderMenu;
 	
 	/**
@@ -70,25 +75,28 @@ public class TaskMenu extends ContextMenu {
 		this.startMenu = new MenuItem("开始", new ImageView("/image/16/start.png"));
 		this.pauseMenu = new MenuItem("暂停", new ImageView("/image/16/pause.png"));
 		this.deleteMenu = new MenuItem("删除", new ImageView("/image/16/delete.png"));
+		this.copyUrlMenu = new MenuItem("复制地址", new ImageView("/image/16/download.png"));
 		this.torrentMenu = new MenuItem("文件选择", new ImageView("/image/16/edit.png"));
-		this.copyUrlMenu = new MenuItem("复制下载地址", new ImageView("/image/16/download.png"));
 		this.exportTorrentMenu = new MenuItem("导出种子", new ImageView("/image/16/export.png"));
+		this.verifyMenu = new MenuItem("文件校验", new ImageView("/image/16/verify.png"));
 		this.openFolderMenu = new MenuItem("打开目录", new ImageView("/image/16/folder.png"));
 		
 		startMenu.setOnAction(startEvent);
 		pauseMenu.setOnAction(pauseEvent);
 		deleteMenu.setOnAction(deleteEvent);
-		torrentMenu.setOnAction(torrentEvent);
 		copyUrlMenu.setOnAction(copyUrlEvent);
+		torrentMenu.setOnAction(torrentEvent);
 		exportTorrentMenu.setOnAction(exportTorrentEvent);
+		verifyMenu.setOnAction(torrentEvent);
 		openFolderMenu.setOnAction(openFolderEvent);
 		
 		this.getItems().add(startMenu);
 		this.getItems().add(pauseMenu);
 		this.getItems().add(deleteMenu);
-		this.getItems().add(torrentMenu);
 		this.getItems().add(copyUrlMenu);
+		this.getItems().add(torrentMenu);
 		this.getItems().add(exportTorrentMenu);
+		this.getItems().add(verifyMenu);
 		this.getItems().add(openFolderMenu);
 	}
 	
