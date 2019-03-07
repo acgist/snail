@@ -23,13 +23,20 @@ public class DownloaderBuilder {
 		this.wrapper = new TaskWrapper(entity);
 	}
 	
+	/**
+	 * 新建下载任务
+	 */
 	public static final DownloaderBuilder newBuilder(String url) {
 		final DownloaderBuilder builder = new DownloaderBuilder(url);
 		return builder;
 	}
-	
+
+	/**
+	 * 数据库加载下载任务
+	 */
 	public static final DownloaderBuilder newBuilder(TaskEntity entity) throws DownloadException {
 		final DownloaderBuilder builder = new DownloaderBuilder(entity);
+		builder.wrapper.loadDownloadSize(); // 加载已下载大小
 		return builder;
 	}
 	
