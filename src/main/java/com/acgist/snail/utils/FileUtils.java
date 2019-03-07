@@ -11,6 +11,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,23 +83,23 @@ public class FileUtils {
 	/**
 	 * 获取文件名称：URL
 	 */
-	public static final String fileNameFromUrl(String url) {
+	public static final String fileNameFromUrl(final String url) {
 		if(StringUtils.isEmpty(url)) {
 			return url;
 		}
-		url = UrlUtils.decode(url);
-		if(url.contains("\\")) {
-			url = url.replace("\\", "/");
+		String fileName = UrlUtils.decode(url);
+		if(fileName.contains("\\")) {
+			fileName = fileName.replace("\\", "/");
 		}
-		int index = url.lastIndexOf("/");
+		int index = fileName.lastIndexOf("/");
 		if(index != -1) {
-			url = url.substring(index + 1);
+			fileName = fileName.substring(index + 1);
 		}
-		index = url.indexOf("?");
+		index = fileName.indexOf("?");
 		if(index != -1) {
-			url = url.substring(0, index);
+			fileName = fileName.substring(0, index);
 		}
-		return url;
+		return fileName;
 	}
 	
 	/**
@@ -192,6 +194,22 @@ public class FileUtils {
 			decimal = decimal.divide(new BigDecimal(SIZE_SCALE));
 		}
 		return decimal.setScale(2, RoundingMode.HALF_UP) + SIZE_UNIT[index];
+	}
+	
+	/**
+	 * 获取文件大小
+	 */
+	public static final long fileSize(String path) {
+		File file = new File(path);
+		if(!file.exists()) {
+			return 0L;
+		}
+		try {
+			return Files.size(Paths.get(path));
+		} catch (IOException e) {
+			LOGGER.error("获取文件大小异常", e);
+		}
+		return 0L;
 	}
 	
 }

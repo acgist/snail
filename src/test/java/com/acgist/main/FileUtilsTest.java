@@ -25,4 +25,9 @@ public class FileUtilsTest {
 		System.out.println(FileUtils.fileType("http://casd/fds.mpe"));
 	}
 	
+	@Test
+	public void size() {
+		System.out.println(FileUtils.fileSize("E:\\gitee\\snail\\download\\MY-1.211.0.exe"));
+	}
+	
 }

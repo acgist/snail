@@ -128,8 +128,7 @@ public class DownloaderUrlDecoder {
 		this.taskEntity.setFileType(this.fileType);
 		this.taskEntity.setFile(this.file);
 		this.taskEntity.setName(this.name);
-		this.taskEntity.setTorrent(torrent);
-		this.taskEntity.setSize(0L);
+		this.taskEntity.setTorrent(this.torrent);
 		this.taskWrapper = new TaskWrapper(this.taskEntity);
 	}
 
