@@ -61,33 +61,33 @@ public class SettingController implements Initializable {
 		DownloadConfig.lastPath(chooser);
 		File file = chooser.showDialog(new Stage());
 		if (file != null) {
-			DownloadConfig.setDownloadLastPath(file.getPath());
+			DownloadConfig.setLastPath(file.getPath());
 			String path = file.getPath();
-			DownloadConfig.setDownloadPath(path);
-			pathValue.setText(DownloadConfig.getDownloadPath());
+			DownloadConfig.setPath(path);
+			pathValue.setText(DownloadConfig.getPath());
 		}
 	}
 
 	@FXML
 	public void handleNoticeAction(ActionEvent event) {
-		DownloadConfig.setDownloadNotice(notice.isSelected());
+		DownloadConfig.setNotice(notice.isSelected());
 	}
 	
 	@FXML
 	public void handleP2pAction(ActionEvent event) {
-		DownloadConfig.setDownloadP2p(p2p.isSelected());
+		DownloadConfig.setP2p(p2p.isSelected());
 	}
 	
 	/**
 	 * 初始化配置
 	 */
 	private void initSetting() {
-		pathValue.setText(DownloadConfig.getDownloadPath());
-		size.setValue(DownloadConfig.getDownloadSize());
-		buffer.setValue(DownloadConfig.getDownloadBuffer());
-		memoryBuffer.setValue(DownloadConfig.getDownloadMemoryBuffer());
-		notice.setSelected(DownloadConfig.getDownloadNotice());
-		p2p.setSelected(DownloadConfig.getDownloadP2p());
+		pathValue.setText(DownloadConfig.getPath());
+		size.setValue(DownloadConfig.getSize());
+		buffer.setValue(DownloadConfig.getBuffer());
+		memoryBuffer.setValue(DownloadConfig.getMemoryBuffer());
+		notice.setSelected(DownloadConfig.getNotice());
+		p2p.setSelected(DownloadConfig.getP2p());
 	}
 	
 	/**
@@ -111,7 +111,7 @@ public class SettingController implements Initializable {
 	}
 	
 	private EventHandler<MouseEvent> openDownloadPath = (event) -> {
-		File open = new File(DownloadConfig.getDownloadPath());
+		File open = new File(DownloadConfig.getPath());
 		FileUtils.openInDesktop(open);
 	};
 
@@ -125,7 +125,7 @@ public class SettingController implements Initializable {
 	
 	private EventHandler<MouseEvent> sizeAction = (event) -> {
 		Double value = size.getValue();
-		DownloadConfig.setDownloadSize(value.intValue());
+		DownloadConfig.setSize(value.intValue());
 	};
 	
 	private ChangeListener<? super Number> bufferListener = (obs, oldVal, newVal) -> {
@@ -140,7 +140,7 @@ public class SettingController implements Initializable {
 	
 	private EventHandler<MouseEvent> bufferAction = (event) -> {
 		Double value = buffer.getValue();
-		DownloadConfig.setDownloadBuffer(value.intValue());
+		DownloadConfig.setBuffer(value.intValue());
 	};
 	
 	private StringConverter<Double> bufferFormatter = new StringConverter<Double>() {
@@ -161,7 +161,7 @@ public class SettingController implements Initializable {
 	
 	private EventHandler<MouseEvent> memoryBufferAction = (event) -> {
 		Double value = memoryBuffer.getValue();
-		DownloadConfig.setDownloadMemoryBuffer(value.intValue());
+		DownloadConfig.setMemoryBuffer(value.intValue());
 	};
 	
 	private StringConverter<Double> memoryBufferFormatter = new StringConverter<Double>() {

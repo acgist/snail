@@ -47,7 +47,7 @@ public class DownloaderManager {
 	
 	private void init() {
 		LOGGER.info("初始化下载器管理");
-		int downloadSize = DownloadConfig.getDownloadSize();
+		int downloadSize = DownloadConfig.getSize();
 		buildExecutor(downloadSize);
 		DOWNLOADER_TASK_MAP = new ConcurrentHashMap<>(downloadSize);
 	}
@@ -56,7 +56,7 @@ public class DownloaderManager {
 	 * 修改同时下载任务数量：暂停所有任务-停止线程池-重新设置线程池大小-添加任务
 	 */
 	public void updateDownloadSize() {
-		int downloadSize = DownloadConfig.getDownloadSize();
+		int downloadSize = DownloadConfig.getSize();
 		var list = DOWNLOADER_TASK_MAP.entrySet()
 		.stream()
 		.map(Entry::getValue)

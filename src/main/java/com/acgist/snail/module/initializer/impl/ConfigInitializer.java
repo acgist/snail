@@ -27,7 +27,7 @@ public class ConfigInitializer extends Initializer {
 		LOGGER.info("初始化配置信息");
 		SystemConfig.getAuthor();
 		DatabaseConfig.getDriver();
-		DownloadConfig.getDownloadBuffer();
+		DownloadConfig.getBuffer();
 	}
 
 }
