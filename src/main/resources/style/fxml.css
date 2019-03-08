@@ -3,6 +3,7 @@
 	-fx-font-size:16;
 	-fx-alignment:center;
 	/**
+	默认边框背景样式
 	-fx-background-insets:0;
 	-fx-background-color:#F4F4F4;
 	*/
@@ -25,12 +26,12 @@
 }
 /**main.fxml*/
 .main .header {
-	-fx-padding:2;
+	-fx-padding:1 2;
 	-fx-pref-height:40;
 	-fx-alignment:center_left;
 }
 .main .footer {
-	-fx-padding:2;
+	-fx-padding:1 2;
 	-fx-pref-height:40;
 }
 .main .footer .footerButton {
@@ -44,8 +45,9 @@
 	-fx-padding:0 2;
 }
 .main .taskTable {
+	/**修改边框样式*/
 	-fx-padding:0;
-	-fx-border-width:1px;
+	-fx-border-width:1px 0 1px 0;
 	-fx-border-color:#c8c8c8;
 	-fx-background-insets:0;
 }

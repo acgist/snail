@@ -112,7 +112,7 @@ public class MainController implements Initializable {
 		// 设置列
 		taskCell(name, Pos.CENTER_LEFT, true, taskTable.widthProperty().divide(5D));
 		taskCell(status, Pos.CENTER, false, taskTable.widthProperty().divide(10D));
-		taskCell(progress, Pos.CENTER_LEFT, false, taskTable.widthProperty().divide(5D).subtract(20));
+		taskCell(progress, Pos.CENTER_LEFT, false, taskTable.widthProperty().divide(5D).subtract(4));
 		taskCell(createDate, Pos.CENTER, false, taskTable.widthProperty().divide(4D));
 		taskCell(endDate, Pos.CENTER, false, taskTable.widthProperty().divide(4D));
 		// 设置行
