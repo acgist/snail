@@ -14,7 +14,6 @@ import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.module.config.SystemConfig;
 import com.acgist.snail.module.handler.socket.AcceptHandler;
 import com.acgist.snail.utils.AioUtils;
-import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * 服务监听
@@ -41,7 +40,7 @@ public class ApplicationServer {
 	 */
 	public boolean listen() {
 		boolean ok = true;
-		executor = Executors.newFixedThreadPool(1, ThreadUtils.newThreadFactory("Server Thread"));
+		executor = Executors.newFixedThreadPool(1, SystemThreadContext.newThreadFactory("Server Thread"));
 		try {
 			group = AsynchronousChannelGroup.withThreadPool(executor);
 			server = AsynchronousServerSocketChannel.open(group).bind(new InetSocketAddress(SystemConfig.getServerHost(), SystemConfig.getServerPort()));
@@ -51,7 +50,7 @@ public class ApplicationServer {
 			LOGGER.error("开启服务监听异常", e);
 		}
 		if(ok) {
-			SystemThreadContext.runasyn("Listen Server Thread", () -> {
+			SystemThreadContext.runasyn(() -> {
 				try {
 					LOGGER.info("开启监听服务线程");
 					group.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);

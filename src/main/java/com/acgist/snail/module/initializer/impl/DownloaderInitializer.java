@@ -47,6 +47,12 @@ public class DownloaderInitializer extends Initializer {
 				try {
 					builder.build();
 				} catch (DownloadException e) {
+					var wrapper = builder.wrapper();
+					if(wrapper != null) {
+						var entity = wrapper.entity();
+						wrapper.delete();
+						LOGGER.info("删除任务：{}", entity.getName());
+					}
 					LOGGER.error("新加下载任务异常", e);
 				}
 			});

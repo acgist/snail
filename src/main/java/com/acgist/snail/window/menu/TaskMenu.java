@@ -157,7 +157,7 @@ public class TaskMenu extends ContextMenu {
 	};
 	
 	private EventHandler<ActionEvent> verifyEvent = (event) -> {
-		SystemThreadContext.runasyn("File Verify Thread", () -> {
+		SystemThreadContext.runasyn(() -> {
 			Map<String, String> hash = new HashMap<>();
 			MainWindow.getInstance().controller().selected()
 			.forEach(wrapper -> {

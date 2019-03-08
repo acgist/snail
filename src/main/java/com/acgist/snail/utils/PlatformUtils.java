@@ -3,6 +3,7 @@ package com.acgist.snail.utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.module.client.launch.ApplicationNotifyClient;
 import com.acgist.snail.module.server.ApplicationServer;
@@ -26,6 +27,7 @@ public class PlatformUtils {
 		TaskTimer.getInstance().shutdown();
 		ApplicationServer.getInstance().shutdown();
 		DownloaderManager.getInstance().shutdown();
+		SystemThreadContext.shutdown();
 		Platform.exit();
 		TrayMenu.exit();
 		LOGGER.info("系统已关闭");

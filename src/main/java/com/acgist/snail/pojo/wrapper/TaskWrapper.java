@@ -174,7 +174,7 @@ public class TaskWrapper {
 		return await() || download();
 	}
 	
-	// Table 数据 //
+	// Table数据绑定 //
 	
 	/**
 	 * 任务名称

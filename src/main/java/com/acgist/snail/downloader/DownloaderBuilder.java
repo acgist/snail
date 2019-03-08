@@ -40,12 +40,22 @@ public class DownloaderBuilder {
 		return builder;
 	}
 	
+	/**
+	 * 新建下载任务
+	 */
 	public void build() throws DownloadException {
 		if(wrapper == null) {
 			this.buildDecoder();
 			this.buildWrapper();
 		}
 		this.submit();
+	}
+	
+	/**
+	 * 获取下载任务
+	 */
+	public TaskWrapper wrapper() {
+		return this.wrapper;
 	}
 	
 	/**

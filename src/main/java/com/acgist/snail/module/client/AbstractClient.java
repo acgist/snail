@@ -10,11 +10,11 @@ import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.module.config.SystemConfig;
 import com.acgist.snail.module.handler.message.MessageHandler;
 import com.acgist.snail.module.handler.socket.ConnectHandler;
 import com.acgist.snail.utils.AioUtils;
-import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * 抽象客户端
@@ -31,7 +31,7 @@ public abstract class AbstractClient extends MessageHandler {
 	 * @param poolName 线程池名称
 	 */
 	protected AbstractClient(int poolSize, String poolName) {
-		executor = Executors.newFixedThreadPool(poolSize, ThreadUtils.newThreadFactory(poolName));
+		executor = Executors.newFixedThreadPool(poolSize, SystemThreadContext.newThreadFactory(poolName));
 	}
 	
 	/**
