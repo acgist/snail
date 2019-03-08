@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.utils.ThreadUtils;
+import com.acgist.snail.context.SystemThreadContext;
 
 /**
  * 定时任务：刷新任务列表
@@ -40,7 +40,7 @@ public class TaskTimer {
 	public void newTimer(MainController controller) {
 		LOGGER.info("开始任务刷新定时器");
 		this.controller = controller;
-		this.executor = Executors.newScheduledThreadPool(1, ThreadUtils.newThreadFactory("Task Timer Thread"));
+		this.executor = Executors.newScheduledThreadPool(1, SystemThreadContext.newThreadFactory("Task Timer Thread"));
 		this.executor.scheduleAtFixedRate(() -> refreshTaskData(), 0, REFRESH_TIME_SECOND, TimeUnit.SECONDS);
 	}
 

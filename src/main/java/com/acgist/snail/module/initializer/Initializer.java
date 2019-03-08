@@ -18,7 +18,7 @@ public abstract class Initializer {
 	 * 异步执行
 	 */
 	public void initAsyn() {
-		SystemThreadContext.runasyn("Asyn Initializer Thread", () -> {
+		SystemThreadContext.runasyn(() -> {
 			this.init();
 		});
 	}

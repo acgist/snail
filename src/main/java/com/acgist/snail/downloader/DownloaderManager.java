@@ -11,10 +11,10 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.module.config.DownloadConfig;
 import com.acgist.snail.module.exception.DownloadException;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
-import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * 下载器管理器
@@ -181,7 +181,7 @@ public final class DownloaderManager {
 			DOWNLOADER_EXECUTOR.shutdown();
 		}
 		LOGGER.info("初始化下载线程池，初始大小：{}", downloadSize);
-		DOWNLOADER_EXECUTOR = Executors.newFixedThreadPool(downloadSize, ThreadUtils.newThreadFactory("Downloader Thread"));
+		DOWNLOADER_EXECUTOR = Executors.newFixedThreadPool(downloadSize, SystemThreadContext.newThreadFactory("Downloader Thread"));
 	}
 	
 }
