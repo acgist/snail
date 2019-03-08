@@ -15,7 +15,6 @@ import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.FileVerifyUtils;
 import com.acgist.snail.window.AbstractMenu;
 import com.acgist.snail.window.alert.AlertWindow;
-import com.acgist.snail.window.alert.VerifyWindow;
 import com.acgist.snail.window.main.MainWindow;
 import com.acgist.snail.window.torrent.TorrentWindow;
 
@@ -157,7 +156,6 @@ public class TaskMenu extends AbstractMenu {
 	};
 	
 	private EventHandler<ActionEvent> verifyEvent = (event) -> {
-		VerifyWindow.build();
 		SystemThreadContext.runasyn(() -> {
 			Map<String, String> hash = new HashMap<>();
 			MainWindow.getInstance().controller().selected()
@@ -172,7 +170,11 @@ public class TaskMenu extends AbstractMenu {
 				});
 			} else {
 				Platform.runLater(() -> {
-//					AlertWindow.info("文件SHA-1校验", hash.toString());
+					StringBuilder builder = new StringBuilder();
+					hash.forEach((key, value) -> {
+						builder.append(value).append("=").append(key).append("\n");
+					});
+					AlertWindow.info("文件SHA-1校验", builder.toString());
 				});
 			}
 		});
