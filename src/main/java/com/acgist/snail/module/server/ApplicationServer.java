@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.module.config.SystemConfig;
 import com.acgist.snail.module.handler.socket.AcceptHandler;
 import com.acgist.snail.utils.AioUtils;
@@ -50,7 +51,7 @@ public class ApplicationServer {
 			LOGGER.error("开启服务监听异常", e);
 		}
 		if(ok) {
-			Thread thread = new Thread(() -> {
+			SystemThreadContext.runasyn("Listen Server Thread", () -> {
 				try {
 					LOGGER.info("开启监听服务线程");
 					group.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
@@ -58,9 +59,6 @@ public class ApplicationServer {
 					LOGGER.error("监听服务等待异常", e);
 				}
 			});
-			thread.setName("Listen Server Thread");
-			thread.setDaemon(true); // 防止阻止系统关闭
-			thread.start();
 		}
 		return ok;
 	}

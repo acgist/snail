@@ -5,6 +5,8 @@ import java.util.concurrent.ThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.context.SystemThreadContext;
+
 /**
  * utils - 线程
  */
@@ -31,10 +33,7 @@ public class ThreadUtils {
 		return new ThreadFactory() {
 			@Override
 			public Thread newThread(Runnable runnable) {
-				Thread thread = new Thread(runnable);
-				thread.setName(poolName);
-				thread.setDaemon(true);
-				return thread;
+				return SystemThreadContext.thread(poolName, runnable);
 			}
 		};
 	}

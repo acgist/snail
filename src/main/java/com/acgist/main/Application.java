@@ -49,6 +49,7 @@ public class Application {
 		LOGGER.info("初始化窗口");
 		Thread thread = new Thread();
 		thread.setName("Snail Main Window");
+		thread.setDaemon(true);
 		Platform.startup(thread);
 		Platform.runLater(() -> {
 			TrayMenu.getInstance();

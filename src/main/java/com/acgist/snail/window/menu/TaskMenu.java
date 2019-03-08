@@ -7,7 +7,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.context.SystemAsynContext;
+import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.module.config.DownloadConfig;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.utils.ClipboardUtils;
@@ -157,7 +157,7 @@ public class TaskMenu extends ContextMenu {
 	};
 	
 	private EventHandler<ActionEvent> verifyEvent = (event) -> {
-		SystemAsynContext.runasyn("File Verify Thread", () -> {
+		SystemThreadContext.runasyn("File Verify Thread", () -> {
 			Map<String, String> hash = new HashMap<>();
 			MainWindow.getInstance().controller().selected()
 			.forEach(wrapper -> {
