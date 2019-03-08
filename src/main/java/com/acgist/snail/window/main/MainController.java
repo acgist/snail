@@ -57,6 +57,7 @@ import javafx.util.Callback;
  * TODO：太多列滚动条优化
  * TODO：文件校验（MD5/SHA-1）
  * TODO：内存优化
+ * TODO：下键空白
  */
 public class MainController implements Initializable {
 
@@ -112,11 +113,11 @@ public class MainController implements Initializable {
 		// 设置列
 		taskCell(name, Pos.CENTER_LEFT, true, taskTable.widthProperty().divide(5D));
 		taskCell(status, Pos.CENTER, false, taskTable.widthProperty().divide(10D));
-		taskCell(progress, Pos.CENTER_LEFT, false, taskTable.widthProperty().divide(5D).subtract(4));
+		taskCell(progress, Pos.CENTER_LEFT, false, taskTable.widthProperty().divide(5D).subtract(20));
 		taskCell(createDate, Pos.CENTER, false, taskTable.widthProperty().divide(4D));
 		taskCell(endDate, Pos.CENTER, false, taskTable.widthProperty().divide(4D));
 		// 设置行
-		this.taskTable.setRowFactory(rowFactory);		
+		this.taskTable.setRowFactory(rowFactory);
 		// 绑定属性
 		taskTable.prefWidthProperty().bind(root.widthProperty());
 		taskTable.prefHeightProperty().bind(root.prefHeightProperty().subtract(80D));
