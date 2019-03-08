@@ -13,6 +13,7 @@ import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.utils.ClipboardUtils;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.FileVerifyUtils;
+import com.acgist.snail.window.AbstractMenu;
 import com.acgist.snail.window.AlertWindow;
 import com.acgist.snail.window.main.MainWindow;
 import com.acgist.snail.window.torrent.TorrentWindow;
@@ -20,7 +21,6 @@ import com.acgist.snail.window.torrent.TorrentWindow;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
 import javafx.stage.DirectoryChooser;
@@ -29,14 +29,15 @@ import javafx.stage.Stage;
 /**
  * 菜单 - 任务
  */
-public class TaskMenu extends ContextMenu {
+public class TaskMenu extends AbstractMenu {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskMenu.class);
 	
 	private static TaskMenu INSTANCE;
 	
 	private TaskMenu() {
-		createMenu();
+		init();
+		buildMenu();
 	}
 
 	static {
@@ -44,8 +45,6 @@ public class TaskMenu extends ContextMenu {
 			if (INSTANCE == null) {
 				LOGGER.info("初始化任务菜单");
 				INSTANCE = new TaskMenu();
-				INSTANCE.setOpacity(0.94);
-				INSTANCE.getStyleClass().add("taskMenu");
 			}
 		}
 	}
@@ -73,7 +72,7 @@ public class TaskMenu extends ContextMenu {
 	/**
 	 * 创建菜单
 	 */
-	private void createMenu() {
+	protected void buildMenu() {
 		this.startMenu = new MenuItem("开始", new ImageView("/image/16/start.png"));
 		this.pauseMenu = new MenuItem("暂停", new ImageView("/image/16/pause.png"));
 		this.deleteMenu = new MenuItem("删除", new ImageView("/image/16/delete.png"));
@@ -92,14 +91,14 @@ public class TaskMenu extends ContextMenu {
 		verifyMenu.setOnAction(verifyEvent);
 		openFolderMenu.setOnAction(openFolderEvent);
 		
-		this.getItems().add(startMenu);
-		this.getItems().add(pauseMenu);
-		this.getItems().add(deleteMenu);
-		this.getItems().add(copyUrlMenu);
-		this.getItems().add(torrentMenu);
-		this.getItems().add(exportTorrentMenu);
-		this.getItems().add(verifyMenu);
-		this.getItems().add(openFolderMenu);
+		addMenu(startMenu);
+		addMenu(pauseMenu);
+		addMenu(deleteMenu);
+		addMenu(copyUrlMenu);
+		addMenu(torrentMenu);
+		addMenu(exportTorrentMenu);
+		addMenu(verifyMenu);
+		addMenu(openFolderMenu);
 	}
 	
 	private EventHandler<ActionEvent> startEvent = (event) -> {

@@ -16,6 +16,7 @@ import com.acgist.snail.module.config.DownloadConfig;
 import com.acgist.snail.module.config.SystemConfig;
 import com.acgist.snail.utils.BrowseUtils;
 import com.acgist.snail.utils.PlatformUtils;
+import com.acgist.snail.window.AbstractMenu;
 import com.acgist.snail.window.about.AboutWindow;
 import com.acgist.snail.window.main.MainWindow;
 
@@ -23,7 +24,6 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
@@ -36,7 +36,7 @@ import javafx.stage.WindowEvent;
 /**
  * 菜单 - 托盘
  */
-public class TrayMenu extends ContextMenu {
+public class TrayMenu extends AbstractMenu {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MainWindow.class);
 
@@ -48,7 +48,8 @@ public class TrayMenu extends ContextMenu {
 	private static TrayMenu INSTANCE;
 	
 	private TrayMenu() {
-		createMenu();
+		init();
+		buildMenu();
 		enableTray();
 	}
 
@@ -57,8 +58,6 @@ public class TrayMenu extends ContextMenu {
 			if (INSTANCE == null) {
 				LOGGER.info("初始化托盘菜单");
 				INSTANCE = new TrayMenu();
-				INSTANCE.setOpacity(0.94);
-				INSTANCE.setStyle("-fx-padding:1;");
 				Platform.setImplicitExit(false); // 必须设置此项，否者窗口关闭后将不能通过托盘显示
 			}
 		}
@@ -78,7 +77,7 @@ public class TrayMenu extends ContextMenu {
 	/**
 	 * 创建菜单
 	 */
-	private void createMenu() {
+	protected void buildMenu() {
 		this.showMenu = new MenuItem("显示", new ImageView("/image/16/show.png"));
 		this.hideMenu = new MenuItem("隐藏", new ImageView("/image/16/hide.png"));
 		this.exitMenu = new MenuItem("退出", new ImageView("/image/16/exit.png"));
@@ -95,12 +94,12 @@ public class TrayMenu extends ContextMenu {
 		
 		this.addEventFilter(WindowEvent.WINDOW_HIDDEN, windowHiddenAction);
 		
-		this.getItems().add(showMenu);
-		this.getItems().add(hideMenu);
-		this.getItems().add(sourceMenu);
-		this.getItems().add(supportMenu);
-		this.getItems().add(aboutMenu);
-		this.getItems().add(exitMenu);
+		addMenu(showMenu);
+		addMenu(hideMenu);
+		addMenu(sourceMenu);
+		addMenu(supportMenu);
+		addMenu(aboutMenu);
+		addMenu(exitMenu);
 	}
 	
 	/**
