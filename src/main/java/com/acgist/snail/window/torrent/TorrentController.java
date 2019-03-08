@@ -12,7 +12,7 @@ import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
 import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.utils.JSONUtils;
-import com.acgist.snail.window.AlertWindow;
+import com.acgist.snail.window.alert.AlertWindow;
 import com.acgist.snail.window.main.TaskTimer;
 
 import javafx.event.ActionEvent;

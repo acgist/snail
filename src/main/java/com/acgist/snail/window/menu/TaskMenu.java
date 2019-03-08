@@ -14,7 +14,8 @@ import com.acgist.snail.utils.ClipboardUtils;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.FileVerifyUtils;
 import com.acgist.snail.window.AbstractMenu;
-import com.acgist.snail.window.AlertWindow;
+import com.acgist.snail.window.alert.AlertWindow;
+import com.acgist.snail.window.alert.VerifyWindow;
 import com.acgist.snail.window.main.MainWindow;
 import com.acgist.snail.window.torrent.TorrentWindow;
 
@@ -156,15 +157,24 @@ public class TaskMenu extends AbstractMenu {
 	};
 	
 	private EventHandler<ActionEvent> verifyEvent = (event) -> {
+		VerifyWindow.build();
 		SystemThreadContext.runasyn(() -> {
 			Map<String, String> hash = new HashMap<>();
 			MainWindow.getInstance().controller().selected()
 			.forEach(wrapper -> {
-				hash.putAll(FileVerifyUtils.sha1(wrapper.entity().getFile()));
+				if(wrapper.complete()) {
+					hash.putAll(FileVerifyUtils.sha1(wrapper.entity().getFile()));
+				}
 			});
-			Platform.runLater(() -> {
-				AlertWindow.info("文件校验", hash.toString());
-			});
+			if(hash.isEmpty()) {
+				Platform.runLater(() -> {
+					AlertWindow.warn("文件SHA-1校验", "请等待任务下载完成");
+				});
+			} else {
+				Platform.runLater(() -> {
+//					AlertWindow.info("文件SHA-1校验", hash.toString());
+				});
+			}
 		});
 	};
 	

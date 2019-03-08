@@ -12,7 +12,7 @@ import com.acgist.snail.downloader.DownloaderBuilder;
 import com.acgist.snail.module.config.DownloadConfig;
 import com.acgist.snail.module.exception.DownloadException;
 import com.acgist.snail.utils.StringUtils;
-import com.acgist.snail.window.AlertWindow;
+import com.acgist.snail.window.alert.AlertWindow;
 import com.acgist.snail.window.main.TaskTimer;
 
 import javafx.event.ActionEvent;
