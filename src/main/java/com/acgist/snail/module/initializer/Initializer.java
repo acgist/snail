@@ -1,5 +1,7 @@
 package com.acgist.snail.module.initializer;
 
+import com.acgist.snail.context.SystemThreadContext;
+
 /**
  * 初始化
  */
@@ -16,12 +18,9 @@ public abstract class Initializer {
 	 * 异步执行
 	 */
 	public void initAsyn() {
-		Thread thread = new Thread(() -> {
+		SystemThreadContext.runasyn("Asyn Initializer Thread", () -> {
 			this.init();
 		});
-		thread.setName("Asyn Initializer Thread");
-		thread.setDaemon(true);
-		thread.start();
 	}
 	
 	/**
