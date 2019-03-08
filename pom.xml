@@ -14,6 +14,7 @@
 
 	<properties>
 		<encoding>UTF-8</encoding>
+		<os.version>win</os.version><!-- 系统：win、mac、linux -->
 		<java.version>11</java.version>
 		<h2.version>1.4.198</h2.version><!-- TODO：1.4.198这个版本很慢，但是支持模块化，暂时忍受一下 -->
 		<junit.version>4.12</junit.version>
@@ -31,13 +32,13 @@
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-fxml</artifactId>
 			<version>${javafx.version}</version>
-			<classifier>win</classifier>
+			<classifier>${os.version}</classifier>
 		</dependency>
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-controls</artifactId>
 			<version>${javafx.version}</version>
-			<classifier>win</classifier>
+			<classifier>${os.version}</classifier>
 		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>

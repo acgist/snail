@@ -18,8 +18,8 @@ import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
 import com.acgist.snail.utils.FileUtils;
-import com.acgist.snail.window.AlertWindow;
 import com.acgist.snail.window.about.AboutWindow;
+import com.acgist.snail.window.alert.AlertWindow;
 import com.acgist.snail.window.build.BuildWindow;
 import com.acgist.snail.window.menu.TaskMenu;
 import com.acgist.snail.window.setting.SettingWindow;
@@ -338,6 +338,9 @@ public class MainController implements Initializable {
 		if(event.getClickCount() == 2) { // 双击
 			TableRow<TaskWrapper> row = (TableRow<TaskWrapper>) event.getSource();
 			var wrapper = row.getItem();
+			if(wrapper == null) {
+				return;
+			}
 			if(wrapper.complete()) { // 下载完成=打开文件
 				FileUtils.openInDesktop(new File(wrapper.entity().getFile()));
 			} else if(wrapper.run()) { // 下载中=暂停下载
