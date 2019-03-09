@@ -23,11 +23,13 @@
 		<logback.version>1.2.3</logback.version>
 		<jackson.version>2.9.5</jackson.version>
 		<maven.jar.version>3.1.1</maven.jar.version>
+		<commons.net.version>3.6</commons.net.version>
 		<maven.compiler.version>3.8.0</maven.compiler.version>
 		<maven.dependency.version>3.1.1</maven.dependency.version>
 	</properties>
 
 	<dependencies>
+		<!-- JAVAFX -->
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-fxml</artifactId>
@@ -40,11 +42,13 @@
 			<version>${javafx.version}</version>
 			<classifier>${os.version}</classifier>
 		</dependency>
+		<!-- 数据库：H2 -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<version>${h2.version}</version>
 		</dependency>
+		<!-- 日志：logback、slf4j -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -60,6 +64,7 @@
 			<artifactId>logback-classic</artifactId>
 			<version>${logback.version}</version>
 		</dependency>
+		<!-- JSON：jackson -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
@@ -74,6 +79,12 @@
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-annotations</artifactId>
 			<version>${jackson.version}</version>
+		</dependency>
+		<!-- Apache Net -->
+		<dependency>
+			<groupId>commons-net</groupId>
+			<artifactId>commons-net</artifactId>
+			<version>${commons.net.version}</version>
 		</dependency>
 		
 		<dependency>
