@@ -17,9 +17,10 @@ public class Application {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 	
-	public static void main(String[] args) {
+	public static final void main(String[] args) {
 		LOGGER.info("系统开始启动");
-		if(listen()) {
+		final boolean enable = listen();
+		if(enable) {
 			initSystem();
 			buildWindow();
 		}

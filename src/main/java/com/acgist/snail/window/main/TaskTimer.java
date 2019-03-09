@@ -38,7 +38,7 @@ public class TaskTimer {
 	 * 新建定时器
 	 */
 	public void newTimer(MainController controller) {
-		LOGGER.info("开始任务刷新定时器");
+		LOGGER.info("启动任务刷新定时器");
 		this.controller = controller;
 		this.executor = Executors.newScheduledThreadPool(1, SystemThreadContext.newThreadFactory("Task Timer Thread"));
 		this.executor.scheduleAtFixedRate(() -> refreshTaskData(), 0, REFRESH_TIME_SECOND, TimeUnit.SECONDS);
@@ -56,7 +56,7 @@ public class TaskTimer {
 			}
 			controller.refreshTable();
 		} catch (Exception e) {
-			LOGGER.error("任务列表刷新任务异常", e);
+			LOGGER.error("刷新任务数据异常", e);
 		}
 	}
 	
@@ -72,7 +72,7 @@ public class TaskTimer {
 			}
 			controller.refreshData();
 		} catch (Exception e) {
-			LOGGER.error("任务列表刷新任务异常", e);
+			LOGGER.error("刷新任务状态异常", e);
 		}
 	}
 	

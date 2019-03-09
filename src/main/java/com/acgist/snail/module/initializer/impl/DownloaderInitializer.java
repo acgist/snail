@@ -38,7 +38,7 @@ public class DownloaderInitializer extends Initializer {
 				try {
 					return DownloaderBuilder.newBuilder(entity);
 				} catch (DownloadException e) {
-					LOGGER.error("创建下载任务异常", e);
+					LOGGER.error("添加下载任务异常", e);
 				}
 				return null;
 			})
@@ -51,9 +51,9 @@ public class DownloaderInitializer extends Initializer {
 					if(wrapper != null) {
 						var entity = wrapper.entity();
 						wrapper.delete();
-						LOGGER.info("删除任务：{}", entity.getName());
+						LOGGER.info("删除下载任务：{}", entity.getName());
 					}
-					LOGGER.error("新加下载任务异常", e);
+					LOGGER.error("添加下载任务异常", e);
 				}
 			});
 			TaskTimer.getInstance().refreshTaskTable();

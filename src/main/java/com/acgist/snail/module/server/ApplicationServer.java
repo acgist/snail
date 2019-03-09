@@ -16,7 +16,7 @@ import com.acgist.snail.module.handler.socket.AcceptHandler;
 import com.acgist.snail.utils.AioUtils;
 
 /**
- * 服务监听
+ * 系统监听
  */
 public class ApplicationServer {
 
@@ -47,15 +47,15 @@ public class ApplicationServer {
 			server.accept(server, new AcceptHandler());
 		} catch (Exception e) {
 			ok = false;
-			LOGGER.error("开启服务监听异常", e);
+			LOGGER.error("启动系统监听异常", e);
 		}
 		if(ok) {
 			SystemThreadContext.runasyn(() -> {
 				try {
-					LOGGER.info("开启监听服务线程");
+					LOGGER.info("启动系统监听线程");
 					group.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
 				} catch (InterruptedException e) {
-					LOGGER.error("监听服务等待异常", e);
+					LOGGER.error("系统监听异常", e);
 				}
 			});
 		}
@@ -66,7 +66,7 @@ public class ApplicationServer {
 	 * 关闭服务监听
 	 */
 	public void shutdown() {
-		LOGGER.info("关闭服务监听");
+		LOGGER.info("关闭系统监听");
 		AioUtils.close(group, server, null);
 		if(executor != null) {
 			executor.shutdown();
@@ -74,7 +74,7 @@ public class ApplicationServer {
 	}
 	
 	public static void main(String[] args) {
-		getInstance().listen();
+		ApplicationServer.getInstance().listen();
 	}
 	
 }
