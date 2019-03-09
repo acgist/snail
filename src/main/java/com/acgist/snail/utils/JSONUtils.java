@@ -38,7 +38,7 @@ public class JSONUtils {
 	}
 	
 	/**
-	 * JSON字符串转MAP对象
+	 * JSON字符串转List对象
 	 */
 	public static final <T> List<T> toList(String json, Class<T> clazz) {
 		if (json == null) {
