@@ -30,7 +30,7 @@ public class EntityUtilsTest {
 		
 		System.out.println(sqlProperty);
 		System.out.println(sqlValue);
-		System.out.println(JSONUtils.javaToJson(parameters));
+		System.out.println(JSONUtils.toJSON(parameters));
 	}
 	
 	@Test

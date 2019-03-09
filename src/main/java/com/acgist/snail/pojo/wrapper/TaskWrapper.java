@@ -67,9 +67,7 @@ public class TaskWrapper {
 	
 	/**
 	 * 获取已选择的下载文件
-	 * TODO：泛型
 	 */
-	@SuppressWarnings("unchecked")
 	public List<String> downloadTorrentFiles() {
 		if(entity.getType() != Type.torrent) {
 			return List.of();
@@ -78,7 +76,7 @@ public class TaskWrapper {
 		if(StringUtils.isEmpty(description)) {
 			return List.of();
 		} else {
-			return JSONUtils.jsonToJava(description, List.class);
+			return JSONUtils.toList(description, String.class);
 		}
 	}
 

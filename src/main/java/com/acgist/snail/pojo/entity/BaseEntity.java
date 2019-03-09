@@ -110,9 +110,12 @@ public class BaseEntity implements Serializable {
 		return getId().hashCode();
 	}
 	
+	/**
+	 * 重写toString方法
+	 */
 	@Override
 	public String toString() {
-		return JSONUtils.javaToJson(this);
+		return JSONUtils.toJSON(this);
 	}
 	
 }
