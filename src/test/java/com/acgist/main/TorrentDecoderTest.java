@@ -51,7 +51,7 @@ public class TorrentDecoderTest {
 //				}
 //			}
 //		}
-		System.out.println(JSONUtils.javaToJson(info));
+		System.out.println(JSONUtils.toJSON(info));
 	}
 	
 }

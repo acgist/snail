@@ -68,7 +68,7 @@ public abstract class BaseRepository<T extends BaseEntity> {
 			.append(sqlValue);
 		if(LOGGER.isDebugEnabled()) {
 			LOGGER.debug("SQL语句：{}", sql);
-			LOGGER.debug("SQL参数：{}", JSONUtils.javaToJson(parameters));
+			LOGGER.debug("SQL参数：{}", JSONUtils.toJSON(parameters));
 		}
 		JDBCConnection.update(sql.toString(), parameters);
 	}
@@ -106,7 +106,7 @@ public abstract class BaseRepository<T extends BaseEntity> {
 			.append(" WHERE ID = ?");
 		if(LOGGER.isDebugEnabled()) {
 			LOGGER.debug("SQL语句：{}", sql);
-			LOGGER.debug("SQL参数：{}", JSONUtils.javaToJson(parameters));
+			LOGGER.debug("SQL参数：{}", JSONUtils.toJSON(parameters));
 		}
 		JDBCConnection.update(sql.toString(), parameters);
 	}

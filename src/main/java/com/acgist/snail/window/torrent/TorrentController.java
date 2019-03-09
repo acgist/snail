@@ -103,7 +103,7 @@ public class TorrentController implements Initializable {
 			return;
 		}
 		entity.setSize(manager.size());
-		entity.setDescription(JSONUtils.javaToJson(list));
+		entity.setDescription(JSONUtils.toJSON(list));
 		if(entity.getId() != null) { // 已经添加数据库
 			TaskRepository repository = new TaskRepository();
 			repository.update(entity);

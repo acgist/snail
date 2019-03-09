@@ -69,8 +69,8 @@ public class ClientMessage {
 	/**
 	 * 转换为JSON字符串
 	 */
-	public String toJson() {
-		return JSONUtils.javaToJson(this);
+	public String toJSON() {
+		return JSONUtils.toJSON(this);
 	}
 	
 	/**
@@ -78,18 +78,18 @@ public class ClientMessage {
 	 */
 	public byte[] toBytes() {
 		try {
-			return this.toJson().getBytes(SystemConfig.DEFAULT_CHARSET);
+			return this.toJSON().getBytes(SystemConfig.DEFAULT_CHARSET);
 		} catch (UnsupportedEncodingException e) {
 			LOGGER.error("编码异常", e);
 		}
-		return this.toJson().getBytes();
+		return this.toJSON().getBytes();
 	}
 	
 	/**
 	 * JSON字符串变成ClientMessage对象
 	 */
 	public static final ClientMessage valueOf(String content) {
-		return JSONUtils.jsonToJava(content, ClientMessage.class);
+		return JSONUtils.toJava(content, ClientMessage.class);
 	}
 	
 	/**
