@@ -17,7 +17,7 @@ import com.acgist.snail.module.exception.DownloadException;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
 
 /**
- * 下载器管理器
+ * 下载器管理
  */
 public final class DownloaderManager {
 
@@ -46,7 +46,7 @@ public final class DownloaderManager {
 	}
 	
 	private void init() {
-		LOGGER.info("初始化下载器管理");
+		LOGGER.info("启动下载器管理");
 		int downloadSize = DownloadConfig.getSize();
 		buildExecutor(downloadSize);
 		DOWNLOADER_TASK_MAP = new ConcurrentHashMap<>(downloadSize);
@@ -109,9 +109,9 @@ public final class DownloaderManager {
 			downloader = DownloaderBuilder.build(wrapper);
 		}
 		if(downloader == null) {
-			throw new DownloadException("添加下载任务失败");
+			throw new DownloadException("添加下载任务失败（下载任务为空）");
 		}
-		LOGGER.info("添加任务：{}", entity.getName());
+		LOGGER.info("添加下载任务：{}", entity.getName());
 		DOWNLOADER_EXECUTOR.submit(downloader);
 		DOWNLOADER_TASK_MAP.put(downloader.id(), downloader);
 		return downloader;
@@ -129,7 +129,7 @@ public final class DownloaderManager {
 	 */
 	public void delete(TaskWrapper wrapper) {
 		var entity = wrapper.entity();
-		LOGGER.info("删除任务：{}", entity.getName());
+		LOGGER.info("删除下载任务：{}", entity.getName());
 		downloader(wrapper).delete();
 		DOWNLOADER_TASK_MAP.remove(entity.getId());
 	}
@@ -180,7 +180,7 @@ public final class DownloaderManager {
 		if(DOWNLOADER_EXECUTOR != null) {
 			DOWNLOADER_EXECUTOR.shutdown();
 		}
-		LOGGER.info("初始化下载线程池，初始大小：{}", downloadSize);
+		LOGGER.info("启动下载线程池，初始大小：{}", downloadSize);
 		DOWNLOADER_EXECUTOR = Executors.newFixedThreadPool(downloadSize, SystemThreadContext.newThreadFactory("Downloader Thread"));
 	}
 	

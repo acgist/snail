@@ -23,41 +23,6 @@ import com.acgist.snail.utils.EntityUtils;
 public class JDBCConnection {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(JDBCConnection.class);
-
-	public static final Connection connection() {
-		Connection connection = null;
-		try {
-			Class.forName(DatabaseConfig.getDriver());
-			connection = DriverManager.getConnection(DatabaseConfig.getUrl(), DatabaseConfig.getUser(), DatabaseConfig.getPassword());
-		} catch (ClassNotFoundException | SQLException e) {
-			LOGGER.error("打开JDBC连接异常", e);
-		}
-		return connection;
-	}
-	
-	public static final void close(ResultSet result, PreparedStatement statement, Connection connection) {
-		if(result != null) {
-			try {
-				result.close();
-			} catch (SQLException e) {
-				LOGGER.error("JDBC结果集关闭异常", e);
-			}
-		}
-		if(statement != null) {
-			try {
-				statement.close();
-			} catch (SQLException e) {
-				LOGGER.error("JDBC语句执行器关闭异常", e);
-			}
-		}
-		if(connection != null) {
-			try {
-				connection.close();
-			} catch (SQLException e) {
-				LOGGER.error("JDBC链接关闭异常", e);
-			}
-		}
-	}
 	
 	/**
 	 * 查询表是否存在
@@ -148,4 +113,39 @@ public class JDBCConnection {
 		return columns;
 	}
 
+	private static final Connection connection() {
+		Connection connection = null;
+		try {
+			Class.forName(DatabaseConfig.getDriver());
+			connection = DriverManager.getConnection(DatabaseConfig.getUrl(), DatabaseConfig.getUser(), DatabaseConfig.getPassword());
+		} catch (ClassNotFoundException | SQLException e) {
+			LOGGER.error("打开JDBC连接异常", e);
+		}
+		return connection;
+	}
+	
+	private static final void close(ResultSet result, PreparedStatement statement, Connection connection) {
+		if(result != null) {
+			try {
+				result.close();
+			} catch (SQLException e) {
+				LOGGER.error("JDBC结果集关闭异常", e);
+			}
+		}
+		if(statement != null) {
+			try {
+				statement.close();
+			} catch (SQLException e) {
+				LOGGER.error("JDBC语句执行器关闭异常", e);
+			}
+		}
+		if(connection != null) {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				LOGGER.error("JDBC链接关闭异常", e);
+			}
+		}
+	}
+	
 }

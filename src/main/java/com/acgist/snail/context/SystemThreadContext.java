@@ -4,12 +4,22 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
- * 异步执行
+ * 系统线程
  */
 public class SystemThreadContext {
 
-	private static final ExecutorService SYSTEM_EXECUTOR = Executors.newCachedThreadPool(newThreadFactory("System Thread"));
+	private static final Logger LOGGER = LoggerFactory.getLogger(SystemThreadContext.class);
+	
+	private static final ExecutorService SYSTEM_EXECUTOR;
+	
+	static {
+		LOGGER.info("启动系统线程");
+		SYSTEM_EXECUTOR = Executors.newCachedThreadPool(newThreadFactory("System Thread"));
+	}
 	
 	/**
 	 * 异步执行线程：<br>
@@ -39,6 +49,7 @@ public class SystemThreadContext {
 	 * 关闭线程
 	 */
 	public static final void shutdown() {
+		LOGGER.info("关闭系统线程池");
 		SYSTEM_EXECUTOR.shutdown();
 	}
 	
