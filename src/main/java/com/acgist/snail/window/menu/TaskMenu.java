@@ -166,7 +166,7 @@ public class TaskMenu extends AbstractMenu {
 			});
 			if(hash.isEmpty()) {
 				Platform.runLater(() -> {
-					AlertWindow.warn("文件SHA-1校验", "请等待任务下载完成");
+					AlertWindow.warn("校验失败", "请等待任务下载完成");
 				});
 			} else {
 				Platform.runLater(() -> {
