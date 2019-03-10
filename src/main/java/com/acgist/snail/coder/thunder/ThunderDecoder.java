@@ -9,7 +9,7 @@ import com.acgist.snail.utils.StringUtils;
  */
 public class ThunderDecoder {
 
-	private static final String THUNDER_PREFIX = "thunder://";
+	public static final String THUNDER_PREFIX = "thunder://";
 
 	/**
 	 * 验证

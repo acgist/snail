@@ -22,7 +22,7 @@
 		框架：JavaFX
 	</Text>
 	<Text fx:id="description" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.columnSpan="3">
-		功能：下载（FTP、HTTP、BT任务）
+		功能：下载（BT、FTP、HTTP、ED2K）
 	</Text>
 	<Text fx:id="copyright" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="3">
 		版权：Copyright © 2019 ACGIST. All Rights Reserved.

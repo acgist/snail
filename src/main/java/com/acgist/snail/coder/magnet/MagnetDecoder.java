@@ -28,8 +28,9 @@ public abstract class MagnetDecoder {
 	
 	private static final  List<MagnetDecoder> DECODERS = new ArrayList<>();
 	
-	private static final String HASH_REGEX = "[a-zA-Z0-9]{40}"; // 磁力链接HASH
-	private static final String MAGNET_PREFIX = "magnet:?xt=urn:btih:"; // 磁力链接
+	public static final String MAGNET_REGEX = "magnet:\\?xt=urn:btih:.+"; // 磁力链接正则表达式
+	public static final String MAGNET_PREFIX = "magnet:?xt=urn:btih:"; // 磁力链接前缀
+	public static final String MAGNET_HASH_REGEX = "[a-zA-Z0-9]{40}"; // 磁力链接HASH正则表达式
 	
 	protected String hash; // HASH
 	protected String magnet; // 完整磁力链接
@@ -85,7 +86,7 @@ public abstract class MagnetDecoder {
 				hash = hash.substring(0, index);
 			}
 			this.hash = hash;
-		} else if(verifyHash(url)) {
+		} else if(verifyMagnetHash(url)) {
 			this.hash = url;
 			this.magnet = MAGNET_PREFIX + this.hash;
 		} else {
@@ -118,10 +119,10 @@ public abstract class MagnetDecoder {
 	}
 	
 	/**
-	 * 验证
+	 * 验证磁力链接
 	 */
 	public static final boolean verify(String url) {
-		return verifyMagnet(url) && verifyHash(url);
+		return verifyMagnet(url) && verifyMagnetHash(url);
 	}
 
 	/**
@@ -134,12 +135,12 @@ public abstract class MagnetDecoder {
 	/**
 	 * 验证磁力链接HASH
 	 */
-	public static final boolean verifyHash(String url) {
-		return url != null && url.matches(HASH_REGEX);
+	public static final boolean verifyMagnetHash(String url) {
+		return url != null && url.matches(MAGNET_HASH_REGEX);
 	}
 	
 	/**
-	 * 将HASH转为MAGNET链接
+	 * 将磁力链接HASH转为磁力链接
 	 */
 	public static final String buildMagnet(String hash) {
 		if(verifyMagnet(hash)) {

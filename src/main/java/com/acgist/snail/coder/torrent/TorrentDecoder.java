@@ -14,6 +14,7 @@ import com.acgist.snail.utils.StringUtils;
 public class TorrentDecoder {
 	
 	public static final String TORRENT_SUFFIX = ".torrent"; // 文件后缀
+	public static final String TORRENT_REGEX = ".+\\.torrent"; // 正则表达式
 	
 	private String hash = null; // 磁力链接HASH
 	private TorrentInfo torrentInfo = null; // 种子文件信息
@@ -121,6 +122,9 @@ public class TorrentDecoder {
 		this.hash = hashBuilder.hash();
 	}
 	
+	/**
+	 * 验证BT种子
+	 */
 	public static final boolean verify(String url) {
 		return StringUtils.endsWith(url.toLowerCase(), TORRENT_SUFFIX);
 	}
