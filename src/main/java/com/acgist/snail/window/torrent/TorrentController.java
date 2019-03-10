@@ -25,6 +25,10 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+/**
+ * TODO：根据文件大小自动选择文件
+ * 大于文件平均值
+ */
 public class TorrentController implements Initializable {
 	
 	private static final String HIDE_FILE_PREFIX = "_____padding_file"; // 不需要下载的文件前缀
