@@ -95,8 +95,10 @@ public class TaskMenu extends AbstractMenu {
 		addMenu(pauseMenu);
 		addMenu(deleteMenu);
 		addMenu(copyUrlMenu);
+		this.addSeparator();
 		addMenu(torrentMenu);
 		addMenu(exportTorrentMenu);
+		this.addSeparator();
 		addMenu(verifyMenu);
 		addMenu(openFolderMenu);
 	}

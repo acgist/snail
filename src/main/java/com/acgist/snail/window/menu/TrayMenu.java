@@ -80,10 +80,10 @@ public class TrayMenu extends AbstractMenu {
 	protected void buildMenu() {
 		this.showMenu = new MenuItem("显示", new ImageView("/image/16/show.png"));
 		this.hideMenu = new MenuItem("隐藏", new ImageView("/image/16/hide.png"));
-		this.exitMenu = new MenuItem("退出", new ImageView("/image/16/exit.png"));
-		this.aboutMenu = new MenuItem("关于", new ImageView("/image/16/about.png"));
 		this.sourceMenu = new MenuItem("官网与源码", new ImageView("/image/16/source.png"));
 		this.supportMenu = new MenuItem("问题与建议", new ImageView("/image/16/support.png"));
+		this.aboutMenu = new MenuItem("关于", new ImageView("/image/16/about.png"));
+		this.exitMenu = new MenuItem("退出", new ImageView("/image/16/exit.png"));
 		
 		showMenu.setOnAction(showAction);
 		hideMenu.setOnAction(hideAction);
@@ -99,6 +99,7 @@ public class TrayMenu extends AbstractMenu {
 		addMenu(sourceMenu);
 		addMenu(supportMenu);
 		addMenu(aboutMenu);
+		this.addSeparator();
 		addMenu(exitMenu);
 	}
 	

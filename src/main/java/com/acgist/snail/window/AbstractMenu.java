@@ -2,6 +2,7 @@ package com.acgist.snail.window;
 
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 
 /**
  * 抽象菜单
@@ -23,6 +24,13 @@ public abstract class AbstractMenu extends ContextMenu {
 	 */
 	protected void addMenu(MenuItem menuItem) {
 		this.getItems().add(menuItem);
+	}
+	
+	/**
+	 * 添加分割线
+	 */
+	protected void addSeparator() {
+		this.addMenu(new SeparatorMenuItem());
 	}
 	
 	protected abstract void buildMenu();
