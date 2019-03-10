@@ -16,6 +16,7 @@
 jdeps --list-deps *.jar
 
 #### TODO
+* 实现协议：FTP/BT/DHT
 * BT下载
 * FTP下载
 * ED2K下载
