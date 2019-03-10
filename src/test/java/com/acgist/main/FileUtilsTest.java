@@ -2,8 +2,8 @@ package com.acgist.main;
 
 import org.junit.Test;
 
+import com.acgist.snail.net.http.HttpUtils;
 import com.acgist.snail.utils.FileUtils;
-import com.acgist.snail.utils.HttpUtils;
 
 public class FileUtilsTest {
 

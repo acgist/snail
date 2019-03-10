@@ -5,7 +5,7 @@ import java.net.http.HttpRequest.Builder;
 import java.util.Map;
 
 import com.acgist.snail.coder.magnet.MagnetDecoder;
-import com.acgist.snail.utils.HttpUtils;
+import com.acgist.snail.net.http.HttpUtils;
 
 /**
  * http://www.btbttv.cc/torrent.html

@@ -1,4 +1,4 @@
-package com.acgist.snail.utils;
+package com.acgist.snail.net.http;
 
 import java.io.IOException;
 import java.net.URI;
@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.module.config.SystemConfig;
 import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
+import com.acgist.snail.utils.UrlUtils;
 
 /**
  * utils - http
@@ -55,7 +56,8 @@ public class HttpUtils {
 	public static final HttpClient newClient() {
 		return HttpClient
 			.newBuilder()
-			.followRedirects(Redirect.NORMAL)
+//			.followRedirects(Redirect.NORMAL)
+			.followRedirects(Redirect.ALWAYS)
 			.connectTimeout(Duration.ofSeconds(5))
 			.build();
 	}
