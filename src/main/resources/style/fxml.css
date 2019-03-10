@@ -1,3 +1,6 @@
+/**
+ * 常用CSS选择器：https://www.jianshu.com/p/0aa0c405f492
+/*
 /**通用样式*/
 .root {
 	-fx-font-size:16;
@@ -19,10 +22,13 @@
 .root .tooltip {
 	-fx-background-radius:0;
 }
-.root Button {
+.root .button {
 	/**
 	-fx-background-radius:0;
 	*/
+}
+.root .context-menu {
+	-fx-padding:1;
 }
 /**main.fxml*/
 .main .header {
