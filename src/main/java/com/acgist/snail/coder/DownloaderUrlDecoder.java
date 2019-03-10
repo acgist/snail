@@ -12,6 +12,8 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.coder.ed2k.Ed2kDecoder;
+import com.acgist.snail.coder.ftp.FtpDecoder;
 import com.acgist.snail.coder.http.HttpDecoder;
 import com.acgist.snail.coder.magnet.MagnetDecoder;
 import com.acgist.snail.coder.thunder.ThunderDecoder;
@@ -47,16 +49,16 @@ public class DownloaderUrlDecoder {
 	
 	static {
 		TYPE.put(Type.ftp, List.of(
-			"ftp://.+"
+			FtpDecoder.FTP_REGEX
 		));
 		TYPE.put(Type.http, List.of(
-			"http://.+", "https://.+"
+			HttpDecoder.HTTP_REGEX, HttpDecoder.HTTPS_REGEX
 		));
 		TYPE.put(Type.ed2k, List.of(
-			"ed2k://\\|file\\|.+"
+			Ed2kDecoder.ED2K_REGEX
 		));
 		TYPE.put(Type.torrent, List.of(
-			".+\\.torrent", "magnet:\\?xt=urn:btih:.+", "[a-zA-Z0-9]{40}"
+			TorrentDecoder.TORRENT_REGEX, MagnetDecoder.MAGNET_REGEX, MagnetDecoder.MAGNET_HASH_REGEX
 		));
 	}
 	
@@ -95,21 +97,15 @@ public class DownloaderUrlDecoder {
 	}
 
 	/**
-	 * 预处理：去空格、格式转换
+	 * 预处理：链接解码，获取其他信息
 	 */
 	private void pretreatment() throws DownloadException {
-		String url = this.url.trim();
-		if(ThunderDecoder.verify(url)) {
-			url = ThunderDecoder.decode(url);
-		}
-		if(HttpDecoder.verify(url)) {
-			buildHttpHeader();
-		}
-		this.url = url;
+		decodeUrl();
+		buildHttpHeader();
 	}
 	
 	/**
-	 * 任务信息
+	 * 获取下载任务信息
 	 */
 	private void buildMessage() throws DownloadException {
 		type();
@@ -120,6 +116,9 @@ public class DownloaderUrlDecoder {
 		name();
 	}
 
+	/**
+	 * 生成wrapper
+	 */
 	private void buildWrapper() throws DownloadException {
 		this.taskEntity = new TaskEntity();
 		this.taskEntity.setUrl(this.url);
@@ -131,7 +130,24 @@ public class DownloaderUrlDecoder {
 		this.taskEntity.setTorrent(this.torrent);
 		this.taskWrapper = TaskWrapper.newInstance(this.taskEntity);
 	}
-
+	
+	/**
+	 * 生成任务：处理各种下载、保存下载任务
+	 */
+	private void buildTask() {
+		if(this.type == Type.torrent) {
+			buildTorrentFile();
+			moveTorrentFile();
+			selectTorrentFile();
+		} else if(this.type == Type.http) {
+			buildHttpSize();
+		}
+		if(this.taskEntity != null) {
+			TaskRepository repository = new TaskRepository();
+			repository.save(this.taskEntity);
+		}
+	}
+	
 	/**
 	 * 获取下载类型
 	 */
@@ -245,23 +261,6 @@ public class DownloaderUrlDecoder {
 	}
 	
 	/**
-	 * 生成任务：处理各种下载、保存下载任务
-	 */
-	private void buildTask() {
-		if(this.type == Type.torrent) {
-			buildTorrentFile();
-			moveTorrentFile();
-			selectTorrentFile();
-		} else if(this.type == Type.http) {
-			buildHttpSize();
-		}
-		if(this.taskEntity != null) {
-			TaskRepository repository = new TaskRepository();
-			repository.save(this.taskEntity);
-		}
-	}
-	
-	/**
 	 * 生成torrent下载目录
 	 */
 	private void buildTorrentFile() {
@@ -308,9 +307,23 @@ public class DownloaderUrlDecoder {
 	}
 	
 	/**
-	 * HTTP请求头：重试三次
+	 * URL解码
+	 */
+	private void decodeUrl() {
+		String url = this.url.trim();
+		if(ThunderDecoder.verify(url)) {
+			url = ThunderDecoder.decode(url);
+		}
+		this.url = url;
+	}
+	
+	/**
+	 * 创建HTTP请求头，失败重试三次
 	 */
 	private void buildHttpHeader() throws DownloadException {
+		if(!HttpDecoder.verify(url)) {
+			return;
+		}
 		int index = 0;
 		while(true) {
 			index++;
