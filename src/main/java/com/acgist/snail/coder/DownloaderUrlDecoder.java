@@ -21,6 +21,7 @@ import com.acgist.snail.coder.torrent.TorrentDecoder;
 import com.acgist.snail.module.config.DownloadConfig;
 import com.acgist.snail.module.config.FileTypeConfig.FileType;
 import com.acgist.snail.module.exception.DownloadException;
+import com.acgist.snail.net.http.HttpUtils;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
@@ -29,7 +30,6 @@ import com.acgist.snail.pojo.wrapper.TaskWrapper;
 import com.acgist.snail.pojo.wrapper.TorrentWrapper;
 import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.utils.FileUtils;
-import com.acgist.snail.utils.HttpUtils;
 import com.acgist.snail.window.torrent.TorrentWindow;
 
 /**

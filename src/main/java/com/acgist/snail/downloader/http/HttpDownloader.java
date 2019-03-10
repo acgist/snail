@@ -13,10 +13,10 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.AbstractDownloader;
 import com.acgist.snail.module.config.DownloadConfig;
+import com.acgist.snail.net.http.HttpUtils;
 import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
 import com.acgist.snail.utils.FileUtils;
-import com.acgist.snail.utils.HttpUtils;
 
 /**
  * HTTP下载
