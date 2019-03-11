@@ -26,13 +26,13 @@ public class FtpClient extends AbstractClient {
 	
 	public static void main(String[] args) throws InterruptedException {
 		FtpClient c = new FtpClient();
-		c.connect("192.168.1.100", 21, new FtpMessageHandler());
+		c.connect("192.168.43.10", 21, new FtpMessageHandler());
 		c.command("USER anonymous");
 		c.command("PASS anonymous");
 		c.command("cwd /elk");
 		c.command("cwd /elk/fds");
+		c.command("cwd /");
 		c.command("PASV");
-//		c.command("LIST");
 		Thread.sleep(1000000);
 	}
 

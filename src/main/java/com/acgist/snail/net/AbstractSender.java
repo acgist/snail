@@ -14,12 +14,16 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.system.config.SystemConfig;
 
 /**
- * 消息粘包处理
+ * 消息发送<br>
+ * 发送消息时添加分割信息进行粘包拆包操作
  */
 public abstract class AbstractSender {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSender.class);
 	
+	/**
+	 * 消息分隔符
+	 */
 	private String split;
 	protected AsynchronousSocketChannel socket;
 	
@@ -31,7 +35,8 @@ public abstract class AbstractSender {
 	}
 	
 	/**
-	 * 发送消息
+	 * 发送消息<br>
+	 * 使用分隔符对消息进行分隔
 	 */
 	protected void send(String message) {
 		String splitMessage = message + split;
