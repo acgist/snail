@@ -21,34 +21,53 @@ public class ClientMessageHandler extends AbstractMessageHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClientMessageHandler.class);
 	
+	public static final String SPLIT = "\r\n"; // 处理粘包分隔符
+	
+	private StringBuffer contentBuffer = new StringBuffer();
+	
+	public ClientMessageHandler() {
+		super(SPLIT);
+	}
+	
 	/**
 	 * 客户端消息
 	 */
 	@Override
-	public boolean doMessage(AsynchronousSocketChannel socket, Integer result, ByteBuffer attachment) {
+	public boolean doMessage(Integer result, ByteBuffer attachment) {
 		boolean doNext = true; // 是否继续处理消息
 		if (result == 0) {
 			LOGGER.info("读取空消息");
 		} else {
 			String content = IoUtils.readContent(attachment);
-			if(StringUtils.isEmpty(content)) {
-				LOGGER.warn("读取消息内容为空关闭Socket");
-				doNext = false;
-				IoUtils.closeSocket(socket);
-				return doNext;
+			if(content.contains(SPLIT)) {
+				int index = content.indexOf(SPLIT);
+				while(index >= 0) {
+					contentBuffer.append(content.substring(0, index));
+					doNext = oneMessage(socket, contentBuffer.toString());
+					contentBuffer.setLength(0);
+					content = content.substring(index + SPLIT.length());
+					index = content.indexOf(SPLIT);
+				}
 			}
-			ClientMessage message = ClientMessage.valueOf(content);
-			if(message == null) {
-				LOGGER.warn("读取消息格式错误关闭Socket：{}", content);
-				doNext = false;
-				IoUtils.closeSocket(socket);
-				return doNext;
-			}
-			LOGGER.info("读取消息：{}", content);
-			doNext = !this.execute(socket, message);
+			contentBuffer.append(content);
 		}
 		return doNext;
 	};
+	
+	private boolean oneMessage(AsynchronousSocketChannel socket, String content) {
+		content = content.trim();
+		if(StringUtils.isEmpty(content)) {
+			LOGGER.warn("读取消息内容为空");
+			return true;
+		}
+		ClientMessage message = ClientMessage.valueOf(content);
+		if(message == null) {
+			LOGGER.warn("读取消息格式错误：{}", content);
+			return true;
+		}
+		LOGGER.info("读取消息：{}", content);
+		return !this.execute(socket, message);
+	}
 	
 	/**
 	 * 处理消息
@@ -57,7 +76,7 @@ public class ClientMessageHandler extends AbstractMessageHandler {
 	private boolean execute(AsynchronousSocketChannel socket, ClientMessage message) {
 		boolean close = false; // 是否关闭
 		if(message.getType() == ClientMessage.Type.text) { // 文本信息：直接原因返回
-			send(socket, ClientMessage.response(message.getBody()));
+			send(ClientMessage.response(message.getBody()));
 		} else if(message.getType() == ClientMessage.Type.notify) { // 唤醒主窗口
 			Platform.runLater(() -> {
 				MainWindow.getInstance().show();
@@ -71,6 +90,10 @@ public class ClientMessageHandler extends AbstractMessageHandler {
 			LOGGER.warn("未适配的消息类型：{}", message.getType());
 		}
 		return close;
+	}
+
+	private void send(ClientMessage message) {
+		send(message.toJson());
 	}
 
 }

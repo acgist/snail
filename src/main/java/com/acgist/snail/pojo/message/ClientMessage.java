@@ -1,11 +1,5 @@
 package com.acgist.snail.pojo.message;
 
-import java.io.UnsupportedEncodingException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.JsonUtils;
 
 /**
@@ -13,7 +7,7 @@ import com.acgist.snail.utils.JsonUtils;
  */
 public class ClientMessage {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ClientMessage.class);
+//	private static final Logger LOGGER = LoggerFactory.getLogger(ClientMessage.class);
 	
 	/**
 	 * 消息类型
@@ -68,20 +62,8 @@ public class ClientMessage {
 	/**
 	 * 转换为JSON字符串
 	 */
-	public String toJSON() {
+	public String toJson() {
 		return JsonUtils.toJson(this);
-	}
-	
-	/**
-	 * 转换为byte数组
-	 */
-	public byte[] toBytes() {
-		try {
-			return this.toJSON().getBytes(SystemConfig.DEFAULT_CHARSET);
-		} catch (UnsupportedEncodingException e) {
-			LOGGER.error("编码异常", e);
-		}
-		return this.toJSON().getBytes();
 	}
 	
 	/**
