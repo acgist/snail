@@ -1,6 +1,5 @@
-package com.acgist.snail.net.socket.impl;
+package com.acgist.snail.net.server;
 
-import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
@@ -9,17 +8,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.message.AbstractMessageHandler;
-import com.acgist.snail.net.socket.SocketHandler;
 
 /**
  * 客户端连接
  */
-public class AcceptHandler extends SocketHandler implements CompletionHandler<AsynchronousSocketChannel, AsynchronousServerSocketChannel> {
+public class AcceptHandler implements CompletionHandler<AsynchronousSocketChannel, AsynchronousServerSocketChannel> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AcceptHandler.class);
 	
+	private AbstractMessageHandler messageHandler;
+	
 	public AcceptHandler(AbstractMessageHandler messageHandler) {
-		super(messageHandler);
+		this.messageHandler = messageHandler;
 	}
 	
 	@Override
@@ -35,12 +35,11 @@ public class AcceptHandler extends SocketHandler implements CompletionHandler<As
 	}
 	
 	private void doReader(AsynchronousSocketChannel result) {
-		ByteBuffer buffer = ByteBuffer.allocate(1024);
-		result.read(buffer, buffer, new ReaderHandler(result, messageHandler));
+		messageHandler.handler(result);
 	}
 	
 	private void doAccept(AsynchronousServerSocketChannel attachment) {
 		attachment.accept(attachment, this);
 	}
-	
+
 }
