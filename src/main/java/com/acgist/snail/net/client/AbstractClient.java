@@ -7,6 +7,7 @@ import java.nio.channels.AsynchronousSocketChannel;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,13 +18,16 @@ import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.IoUtils;
 
 /**
- * 抽象客户端
+ * Aio Socket客户端
  */
 public abstract class AbstractClient extends AbstractSender {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractClient.class);
 	
-	private static final ExecutorService EXECUTOR; // 线程池
+	/**
+	 * 所有客户端公用一个线程池，线程池大小等于客户端类型数量
+	 */
+	private static final ExecutorService EXECUTOR;
 	
 	private AsynchronousChannelGroup group;
 
@@ -42,11 +46,16 @@ public abstract class AbstractClient extends AbstractSender {
 	
 	/**
 	 * 连接服务端
+	 * @param host 服务端地址
+	 * @param port 服务端端口
 	 */
 	public abstract void connect(String host, int port);
 	
 	/**
 	 * 连接服务端
+	 * @param host 服务端地址
+	 * @param port 服务端端口
+	 * @param messageHandler 消息处理代理
 	 */
 	protected void connect(String host, int port, AbstractMessageHandler messageHandler) {
 		try {
@@ -56,16 +65,12 @@ public abstract class AbstractClient extends AbstractSender {
 			socket.setOption(StandardSocketOptions.SO_REUSEADDR, true);
 			socket.setOption(StandardSocketOptions.SO_KEEPALIVE, true);
 			Future<Void> future = socket.connect(new InetSocketAddress(host, port));
-			future.get();
+			future.get(5, TimeUnit.SECONDS);
 			messageHandler.handler(socket);
 		} catch (Exception e) {
 			LOGGER.error("客户端连接异常", e);
 			close();
 		}
-	}
-	
-	protected void send(String message) {
-		super.send(message);
 	}
 	
 	/**
