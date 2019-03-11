@@ -8,6 +8,7 @@ import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CodingErrorAction;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +27,7 @@ public class IoUtils {
 	 */
 	public static final String readContent(ByteBuffer attachment) {
 		CharsetDecoder decoder = Charset.forName(SystemConfig.DEFAULT_CHARSET).newDecoder();
-//		decoder.onMalformedInput(CodingErrorAction.IGNORE);
+		decoder.onMalformedInput(CodingErrorAction.IGNORE);
 		String content = null;
 		try {
 			attachment.flip();

@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.message.AbstractMessageHandler;
-import com.acgist.snail.net.socket.impl.AcceptHandler;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.IoUtils;
 
@@ -25,13 +24,13 @@ public abstract class AbstractServer {
 	
 	private static final ExecutorService EXECUTOR;
 	
-	static {
-		EXECUTOR = Executors.newFixedThreadPool(1, SystemThreadContext.newThreadFactory("Application Server Thread"));
-	}
-	
 	private String name;
 	private AsynchronousChannelGroup group;
 	private AsynchronousServerSocketChannel server;
+	
+	static {
+		EXECUTOR = Executors.newFixedThreadPool(1, SystemThreadContext.newThreadFactory("Application Server Thread"));
+	}
 	
 	/**
 	 * 线程大小根据客户类型优化
