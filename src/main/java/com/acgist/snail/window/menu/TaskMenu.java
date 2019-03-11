@@ -7,9 +7,9 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.context.SystemThreadContext;
-import com.acgist.snail.module.config.DownloadConfig;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
+import com.acgist.snail.system.config.DownloadConfig;
+import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.ClipboardUtils;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.FileVerifyUtils;

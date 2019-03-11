@@ -12,8 +12,8 @@ import javax.swing.event.MouseInputAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.module.config.DownloadConfig;
-import com.acgist.snail.module.config.SystemConfig;
+import com.acgist.snail.system.config.DownloadConfig;
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.BrowseUtils;
 import com.acgist.snail.utils.PlatformUtils;
 import com.acgist.snail.window.AbstractMenu;

@@ -9,8 +9,8 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.coder.torrent.TorrentDecoder;
 import com.acgist.snail.downloader.DownloaderBuilder;
-import com.acgist.snail.module.config.DownloadConfig;
-import com.acgist.snail.module.exception.DownloadException;
+import com.acgist.snail.system.config.DownloadConfig;
+import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.window.alert.AlertWindow;
 import com.acgist.snail.window.main.TaskTimer;

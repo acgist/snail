@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.module.config.SystemConfig;
 import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.UrlUtils;
 
 /**

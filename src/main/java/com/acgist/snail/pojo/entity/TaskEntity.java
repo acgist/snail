@@ -2,7 +2,7 @@ package com.acgist.snail.pojo.entity;
 
 import java.util.Date;
 
-import com.acgist.snail.module.config.FileTypeConfig.FileType;
+import com.acgist.snail.system.config.FileTypeConfig.FileType;
 
 /**
  * entity - 任务

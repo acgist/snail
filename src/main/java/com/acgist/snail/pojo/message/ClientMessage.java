@@ -5,8 +5,8 @@ import java.io.UnsupportedEncodingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.module.config.SystemConfig;
-import com.acgist.snail.utils.JSONUtils;
+import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.utils.JsonUtils;
 
 /**
  * 客户端消息
@@ -70,7 +70,7 @@ public class ClientMessage {
 	 * 转换为JSON字符串
 	 */
 	public String toJSON() {
-		return JSONUtils.toJSON(this);
+		return JsonUtils.toJson(this);
 	}
 	
 	/**
@@ -89,7 +89,7 @@ public class ClientMessage {
 	 * JSON字符串变成ClientMessage对象
 	 */
 	public static final ClientMessage valueOf(String content) {
-		return JSONUtils.toJava(content, ClientMessage.class);
+		return JsonUtils.toJava(content, ClientMessage.class);
 	}
 	
 	/**

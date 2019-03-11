@@ -6,15 +6,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
-import com.acgist.snail.context.SystemStatistical;
-import com.acgist.snail.module.exception.DownloadException;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.repository.impl.TaskRepository;
+import com.acgist.snail.system.context.SystemStatistical;
+import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.DateUtils;
 import com.acgist.snail.utils.FileUtils;
-import com.acgist.snail.utils.JSONUtils;
+import com.acgist.snail.utils.JsonUtils;
 import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.window.main.TaskTimer;
 
@@ -76,7 +76,7 @@ public class TaskWrapper {
 		if(StringUtils.isEmpty(description)) {
 			return List.of();
 		} else {
-			return JSONUtils.toList(description, String.class);
+			return JsonUtils.toList(description, String.class);
 		}
 	}
 

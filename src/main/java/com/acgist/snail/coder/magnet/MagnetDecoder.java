@@ -13,9 +13,9 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.coder.magnet.impl.BtbttvMagnetDecoder;
 import com.acgist.snail.coder.torrent.TorrentDecoder;
-import com.acgist.snail.module.config.DownloadConfig;
-import com.acgist.snail.module.exception.DownloadException;
 import com.acgist.snail.net.http.HttpUtils;
+import com.acgist.snail.system.config.DownloadConfig;
+import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 

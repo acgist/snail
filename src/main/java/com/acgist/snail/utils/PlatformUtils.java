@@ -3,10 +3,10 @@ package com.acgist.snail.utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.downloader.DownloaderManager;
-import com.acgist.snail.module.client.launch.ApplicationNotifyClient;
-import com.acgist.snail.module.server.ApplicationServer;
+import com.acgist.snail.net.client.launch.ApplicationNotifyClient;
+import com.acgist.snail.net.server.ApplicationServer;
+import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.window.main.TaskTimer;
 import com.acgist.snail.window.menu.TrayMenu;
 

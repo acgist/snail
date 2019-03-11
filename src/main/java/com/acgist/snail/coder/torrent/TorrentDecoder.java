@@ -4,8 +4,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.acgist.snail.module.exception.DownloadException;
 import com.acgist.snail.pojo.wrapper.TorrentWrapper;
+import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.StringUtils;
 
 /**

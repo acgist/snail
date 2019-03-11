@@ -7,7 +7,7 @@ import java.net.URLEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.module.config.SystemConfig;
+import com.acgist.snail.system.config.SystemConfig;
 
 /**
  * utils - URL

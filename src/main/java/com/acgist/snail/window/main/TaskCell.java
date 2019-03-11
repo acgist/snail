@@ -1,7 +1,7 @@
 package com.acgist.snail.window.main;
 
-import com.acgist.snail.module.config.FileTypeConfig.FileType;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
+import com.acgist.snail.system.config.FileTypeConfig.FileType;
 
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;

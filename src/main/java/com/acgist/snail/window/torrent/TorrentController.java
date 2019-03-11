@@ -7,11 +7,11 @@ import com.acgist.snail.coder.torrent.TorrentDecoder;
 import com.acgist.snail.coder.torrent.TorrentFiles;
 import com.acgist.snail.coder.torrent.TorrentInfo;
 import com.acgist.snail.downloader.DownloaderManager;
-import com.acgist.snail.module.exception.DownloadException;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
 import com.acgist.snail.repository.impl.TaskRepository;
-import com.acgist.snail.utils.JSONUtils;
+import com.acgist.snail.system.exception.DownloadException;
+import com.acgist.snail.utils.JsonUtils;
 import com.acgist.snail.window.alert.AlertWindow;
 import com.acgist.snail.window.main.TaskTimer;
 
@@ -107,7 +107,7 @@ public class TorrentController implements Initializable {
 			return;
 		}
 		entity.setSize(manager.size());
-		entity.setDescription(JSONUtils.toJSON(list));
+		entity.setDescription(JsonUtils.toJson(list));
 		if(entity.getId() != null) { // 已经添加数据库
 			TaskRepository repository = new TaskRepository();
 			repository.update(entity);

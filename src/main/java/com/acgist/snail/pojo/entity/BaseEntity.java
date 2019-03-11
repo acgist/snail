@@ -3,7 +3,7 @@ package com.acgist.snail.pojo.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-import com.acgist.snail.utils.JSONUtils;
+import com.acgist.snail.utils.JsonUtils;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
@@ -115,7 +115,7 @@ public class BaseEntity implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return JSONUtils.toJSON(this);
+		return JsonUtils.toJson(this);
 	}
 	
 }

@@ -11,12 +11,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.coder.torrent.TorrentDecoder;
-import com.acgist.snail.context.SystemStatistical;
 import com.acgist.snail.downloader.DownloaderManager;
-import com.acgist.snail.module.exception.DownloadException;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
+import com.acgist.snail.system.context.SystemStatistical;
+import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.window.about.AboutWindow;
 import com.acgist.snail.window.alert.AlertWindow;
