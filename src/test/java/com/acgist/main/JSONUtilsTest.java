@@ -4,18 +4,18 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.acgist.snail.utils.JSONUtils;
+import com.acgist.snail.utils.JsonUtils;
 
 public class JSONUtilsTest {
 
 	@Test
 	public void map() {
-		System.out.println(JSONUtils.toMap("{\"x\":\"x\"}"));
+		System.out.println(JsonUtils.toMap("{\"x\":\"x\"}"));
 	}
 	
 	@Test
 	public void list() {
-		List<String> list = JSONUtils.toList("[\"x\",\"x\"]", String.class);
+		List<String> list = JsonUtils.toList("[\"x\",\"x\"]", String.class);
 		System.out.println(list);
 	}
 	

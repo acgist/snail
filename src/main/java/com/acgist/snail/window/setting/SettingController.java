@@ -4,7 +4,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import com.acgist.snail.module.config.DownloadConfig;
+import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.utils.FileUtils;
 
 import javafx.beans.value.ChangeListener;

@@ -17,8 +17,8 @@ import java.nio.file.Paths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.module.config.FileTypeConfig;
-import com.acgist.snail.module.config.FileTypeConfig.FileType;
+import com.acgist.snail.system.config.FileTypeConfig;
+import com.acgist.snail.system.config.FileTypeConfig.FileType;
 
 /**
  * utils - 文件

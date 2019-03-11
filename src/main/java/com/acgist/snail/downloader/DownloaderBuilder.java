@@ -2,9 +2,9 @@ package com.acgist.snail.downloader;
 
 import com.acgist.snail.coder.DownloaderUrlDecoder;
 import com.acgist.snail.downloader.http.HttpDownloader;
-import com.acgist.snail.module.exception.DownloadException;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
+import com.acgist.snail.system.exception.DownloadException;
 
 /**
  * 下载器构建

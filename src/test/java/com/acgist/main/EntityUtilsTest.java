@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.utils.EntityUtils;
-import com.acgist.snail.utils.JSONUtils;
+import com.acgist.snail.utils.JsonUtils;
 
 public class EntityUtilsTest {
 
@@ -30,7 +30,7 @@ public class EntityUtilsTest {
 		
 		System.out.println(sqlProperty);
 		System.out.println(sqlValue);
-		System.out.println(JSONUtils.toJSON(parameters));
+		System.out.println(JsonUtils.toJson(parameters));
 	}
 	
 	@Test

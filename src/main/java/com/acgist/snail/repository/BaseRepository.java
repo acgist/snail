@@ -12,12 +12,12 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.module.exception.RepositoryException;
 import com.acgist.snail.pojo.entity.BaseEntity;
 import com.acgist.snail.pojo.wrapper.ResultSetWrapper;
+import com.acgist.snail.system.exception.RepositoryException;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.EntityUtils;
-import com.acgist.snail.utils.JSONUtils;
+import com.acgist.snail.utils.JsonUtils;
 
 /**
  * 数据库
@@ -68,7 +68,7 @@ public abstract class BaseRepository<T extends BaseEntity> {
 			.append(sqlValue);
 		if(LOGGER.isDebugEnabled()) {
 			LOGGER.debug("SQL语句：{}", sql);
-			LOGGER.debug("SQL参数：{}", JSONUtils.toJSON(parameters));
+			LOGGER.debug("SQL参数：{}", JsonUtils.toJson(parameters));
 		}
 		JDBCConnection.update(sql.toString(), parameters);
 	}
@@ -106,7 +106,7 @@ public abstract class BaseRepository<T extends BaseEntity> {
 			.append(" WHERE ID = ?");
 		if(LOGGER.isDebugEnabled()) {
 			LOGGER.debug("SQL语句：{}", sql);
-			LOGGER.debug("SQL参数：{}", JSONUtils.toJSON(parameters));
+			LOGGER.debug("SQL参数：{}", JsonUtils.toJson(parameters));
 		}
 		JDBCConnection.update(sql.toString(), parameters);
 	}

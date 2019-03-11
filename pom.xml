@@ -13,8 +13,8 @@
 	<description>下载工具：FTP、HTTP、BT任务</description>
 
 	<properties>
+		<os.name>win</os.name><!-- 系统名称：win、mac、linux -->
 		<encoding>UTF-8</encoding>
-		<os.version>win</os.version><!-- 系统：win、mac、linux -->
 		<java.version>11</java.version>
 		<h2.version>1.4.198</h2.version><!-- TODO：1.4.198这个版本很慢，但是支持模块化，暂时忍受一下 -->
 		<junit.version>4.12</junit.version>
@@ -23,7 +23,6 @@
 		<logback.version>1.2.3</logback.version>
 		<jackson.version>2.9.5</jackson.version>
 		<maven.jar.version>3.1.1</maven.jar.version>
-		<commons.net.version>3.6</commons.net.version>
 		<maven.compiler.version>3.8.0</maven.compiler.version>
 		<maven.dependency.version>3.1.1</maven.dependency.version>
 	</properties>
@@ -34,13 +33,13 @@
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-fxml</artifactId>
 			<version>${javafx.version}</version>
-			<classifier>${os.version}</classifier>
+			<classifier>${os.name}</classifier>
 		</dependency>
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-controls</artifactId>
 			<version>${javafx.version}</version>
-			<classifier>${os.version}</classifier>
+			<classifier>${os.name}</classifier>
 		</dependency>
 		<!-- 数据库：H2 -->
 		<dependency>
@@ -79,12 +78,6 @@
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-annotations</artifactId>
 			<version>${jackson.version}</version>
-		</dependency>
-		<!-- Apache Net -->
-		<dependency>
-			<groupId>commons-net</groupId>
-			<artifactId>commons-net</artifactId>
-			<version>${commons.net.version}</version>
 		</dependency>
 		
 		<dependency>
