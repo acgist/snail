@@ -2,43 +2,38 @@ package com.acgist.snail.net.client;
 
 import java.net.InetSocketAddress;
 import java.net.StandardSocketOptions;
-import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.net.AbstractSender;
 import com.acgist.snail.net.message.AbstractMessageHandler;
-import com.acgist.snail.net.socket.impl.ConnectHandler;
-import com.acgist.snail.net.socket.impl.WriterHandler;
-import com.acgist.snail.pojo.message.ClientMessage;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.IoUtils;
 
 /**
  * 抽象客户端
  */
-public abstract class AbstractClient {
+public abstract class AbstractClient extends AbstractSender {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractClient.class);
 	
 	private static final ExecutorService EXECUTOR; // 线程池
+	
+	private AsynchronousChannelGroup group;
 
 	static {
 		EXECUTOR = Executors.newFixedThreadPool(2, SystemThreadContext.newThreadFactory("Application Client Thread"));
 	}
 	
-	private Lock lock = new ReentrantLock(); // 线程锁
-	private Semaphore semaphore = new Semaphore(1); // 信号量
-	
-	protected AsynchronousChannelGroup group;
-	protected AsynchronousSocketChannel socket;
+	public AbstractClient(String split) {
+		super(split);
+	}
 	
 	/**
 	 * 连接服务端
@@ -60,28 +55,17 @@ public abstract class AbstractClient {
 			socket.setOption(StandardSocketOptions.TCP_NODELAY, true);
 			socket.setOption(StandardSocketOptions.SO_REUSEADDR, true);
 			socket.setOption(StandardSocketOptions.SO_KEEPALIVE, true);
-			socket.connect(new InetSocketAddress(host, port), socket, new ConnectHandler(messageHandler));
+			Future<Void> future = socket.connect(new InetSocketAddress(host, port));
+			future.get();
+			messageHandler.handler(socket);
 		} catch (Exception e) {
 			LOGGER.error("客户端连接异常", e);
 			close();
 		}
 	}
 	
-	/**
-	 * 发送消息
-	 */
-	protected void send(ClientMessage message) {
-		ByteBuffer buffer = ByteBuffer.wrap(message.toBytes());
-		this.lock.lock();
-		try {
-			semaphore.acquire(); // 每次发送一条消息，防止异常：IllegalMonitorStateException
-			WriterHandler handler = new WriterHandler(semaphore);
-			socket.write(buffer, buffer, handler);
-		} catch (Exception e) {
-			LOGGER.error("消息发送异常", e);
-		} finally {
-			this.lock.unlock();
-		}
+	protected void send(String message) {
+		super.send(message);
 	}
 	
 	/**

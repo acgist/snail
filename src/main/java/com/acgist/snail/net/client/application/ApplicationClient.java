@@ -18,6 +18,10 @@ public class ApplicationClient extends AbstractClient {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationClient.class);
 	
+	public ApplicationClient() {
+		super(ClientMessageHandler.SPLIT);
+	}
+	
 	@Override
 	public void connect() {
 		this.connect(SystemConfig.getServerHost(), SystemConfig.getServerPort());
@@ -26,6 +30,10 @@ public class ApplicationClient extends AbstractClient {
 	@Override
 	public void connect(String host, int port) {
 		this.connect(host, port, new ClientMessageHandler());
+	}
+
+	private void send(ClientMessage message) {
+		send(message.toJson());
 	}
 	
 	/**
