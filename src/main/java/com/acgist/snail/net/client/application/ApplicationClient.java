@@ -1,4 +1,4 @@
-package com.acgist.snail.net.client.launch;
+package com.acgist.snail.net.client.application;
 
 import java.util.Scanner;
 
@@ -6,18 +6,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.client.AbstractClient;
+import com.acgist.snail.net.message.impl.ClientMessageHandler;
 import com.acgist.snail.pojo.message.ClientMessage;
 import com.acgist.snail.pojo.message.ClientMessage.Type;
+import com.acgist.snail.system.config.SystemConfig;
 
 /**
  * 启动检测：如果已经启动实例，通过这个方法唤醒已启动的窗口
  */
-public class ApplicationNotifyClient extends AbstractClient {
+public class ApplicationClient extends AbstractClient {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationNotifyClient.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationClient.class);
 	
-	protected ApplicationNotifyClient() {
-		super(1, "Notify Client Thread");
+	@Override
+	public void connect() {
+		this.connect(SystemConfig.getServerHost(), SystemConfig.getServerPort());
+	}
+	
+	@Override
+	public void connect(String host, int port) {
+		this.connect(host, port, new ClientMessageHandler());
 	}
 	
 	/**
@@ -32,9 +40,7 @@ public class ApplicationNotifyClient extends AbstractClient {
 				close();
 				break;
 			} else {
-				for (int i = 0; i < 10; i++) {
-					send(ClientMessage.text(message));
-				}
+				send(ClientMessage.text(message));
 			}
 		}
 		scanner.close();
@@ -44,7 +50,7 @@ public class ApplicationNotifyClient extends AbstractClient {
 	 * 唤起主窗口
 	 */
 	public static final void notifyWindow() {
-		ApplicationNotifyClient client = new ApplicationNotifyClient();
+		ApplicationClient client = new ApplicationClient();
 		try {
 			client.connect();
 			client.send(ClientMessage.message(ClientMessage.Type.notify));
@@ -56,8 +62,8 @@ public class ApplicationNotifyClient extends AbstractClient {
 		}
 	}
 	
-	public static void main(String[] args) {
-		ApplicationNotifyClient client = new ApplicationNotifyClient();
+	public static final void main(String[] args) {
+		ApplicationClient client = new ApplicationClient();
 		client.connect();
 		client.readin();
 	}
