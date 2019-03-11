@@ -23,7 +23,6 @@ public class ClientMessage {
 		text, // 文本
 		close, // 关闭
 		notify, // 唤醒
-		download, // 下载
 		response; // 响应
 
 	}

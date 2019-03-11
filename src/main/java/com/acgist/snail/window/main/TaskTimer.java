@@ -40,8 +40,10 @@ public class TaskTimer {
 	public void newTimer(MainController controller) {
 		LOGGER.info("启动任务刷新定时器");
 		this.controller = controller;
-		this.executor = Executors.newScheduledThreadPool(1, SystemThreadContext.newThreadFactory("Task Timer Thread"));
-		this.executor.scheduleAtFixedRate(() -> refreshTaskData(), 0, REFRESH_TIME_SECOND, TimeUnit.SECONDS);
+		if(this.executor == null) {
+			this.executor = Executors.newScheduledThreadPool(1, SystemThreadContext.newThreadFactory("Task Timer Thread"));
+			this.executor.scheduleAtFixedRate(() -> refreshTaskData(), 0, REFRESH_TIME_SECOND, TimeUnit.SECONDS);
+		}
 	}
 
 	/**
@@ -81,7 +83,7 @@ public class TaskTimer {
 	 */
 	public void shutdown() {
 		LOGGER.info("关闭任务刷新定时器");
-		this.executor.shutdown();
+		SystemThreadContext.shutdown(executor);
 	}
 	
 }

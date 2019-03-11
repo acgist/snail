@@ -14,11 +14,11 @@ public class SystemThreadContext {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SystemThreadContext.class);
 	
-	private static final ExecutorService SYSTEM_EXECUTOR;
+	private static final ExecutorService EXECUTOR;
 	
 	static {
 		LOGGER.info("启动系统线程");
-		SYSTEM_EXECUTOR = Executors.newCachedThreadPool(newThreadFactory("System Thread"));
+		EXECUTOR = Executors.newCachedThreadPool(newThreadFactory("System Thread"));
 	}
 	
 	/**
@@ -26,7 +26,7 @@ public class SystemThreadContext {
 	 * 处理一些比较消耗资源，导致卡住窗口的操作，例如：文件校验
 	 */
 	public static final void runasyn(Runnable runnable) {
-		SYSTEM_EXECUTOR.submit(runnable);
+		EXECUTOR.submit(runnable);
 	}
 	
 	/**
@@ -50,7 +50,16 @@ public class SystemThreadContext {
 	 */
 	public static final void shutdown() {
 		LOGGER.info("关闭系统线程池");
-		SYSTEM_EXECUTOR.shutdown();
+		shutdown(EXECUTOR);
+	}
+	
+	/**
+	 * 关闭线程池
+	 */
+	public static final void shutdown(ExecutorService executor) {
+		if(executor != null && !executor.isShutdown()) {
+			executor.shutdown();
+		}
 	}
 	
 }

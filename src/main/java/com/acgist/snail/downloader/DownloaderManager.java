@@ -35,11 +35,11 @@ public final class DownloaderManager {
 	/**
 	 * 下载线程池
 	 */
-	private ExecutorService DOWNLOADER_EXECUTOR;
+	private ExecutorService EXECUTOR;
 	/**
 	 * 下载任务MAP
 	 */
-	private Map<String, IDownloader> DOWNLOADER_TASK_MAP;
+	private Map<String, IDownloader> TASK_MAP;
 	
 	static {
 		INSTANCE.init();
@@ -49,7 +49,7 @@ public final class DownloaderManager {
 		LOGGER.info("启动下载器管理");
 		int downloadSize = DownloadConfig.getSize();
 		buildExecutor(downloadSize);
-		DOWNLOADER_TASK_MAP = new ConcurrentHashMap<>(downloadSize);
+		TASK_MAP = new ConcurrentHashMap<>(downloadSize);
 	}
 
 	/**
@@ -57,7 +57,7 @@ public final class DownloaderManager {
 	 */
 	public void updateDownloadSize() {
 		int downloadSize = DownloadConfig.getSize();
-		var list = DOWNLOADER_TASK_MAP.entrySet()
+		var list = TASK_MAP.entrySet()
 		.stream()
 		.map(Entry::getValue)
 		.filter(downloader -> downloader.wrapper().run())
@@ -112,8 +112,8 @@ public final class DownloaderManager {
 			throw new DownloadException("添加下载任务失败（下载任务为空）");
 		}
 		LOGGER.info("添加下载任务：{}", entity.getName());
-		DOWNLOADER_EXECUTOR.submit(downloader);
-		DOWNLOADER_TASK_MAP.put(downloader.id(), downloader);
+		EXECUTOR.submit(downloader);
+		TASK_MAP.put(downloader.id(), downloader);
 		return downloader;
 	}
 	
@@ -131,7 +131,7 @@ public final class DownloaderManager {
 		var entity = wrapper.entity();
 		LOGGER.info("删除下载任务：{}", entity.getName());
 		downloader(wrapper).delete();
-		DOWNLOADER_TASK_MAP.remove(entity.getId());
+		TASK_MAP.remove(entity.getId());
 	}
 
 	/**
@@ -145,14 +145,14 @@ public final class DownloaderManager {
 	 * 获取下载任务
 	 */
 	private IDownloader downloader(TaskWrapper wrapper) {
-		return DOWNLOADER_TASK_MAP.get(wrapper.entity().getId());
+		return TASK_MAP.get(wrapper.entity().getId());
 	}
 	
 	/**
 	 * 获取下载任务
 	 */
 	public List<TaskWrapper> taskTable() {
-		return DownloaderManager.getInstance().DOWNLOADER_TASK_MAP.values()
+		return DownloaderManager.getInstance().TASK_MAP.values()
 			.stream()
 			.map(IDownloader::wrapper)
 			.collect(Collectors.toList());
@@ -165,23 +165,21 @@ public final class DownloaderManager {
 	 */
 	public void shutdown() {
 		LOGGER.info("关闭下载器管理");
-		DOWNLOADER_TASK_MAP.entrySet()
+		TASK_MAP.entrySet()
 		.stream()
 		.map(Entry::getValue)
 		.filter(downloader -> downloader.wrapper().run())
 		.forEach(downloader -> downloader.pause());
-		DOWNLOADER_EXECUTOR.shutdown();
+		EXECUTOR.shutdown();
 	}
 
 	/**
 	 * 创建下载线程池
 	 */
 	private void buildExecutor(int downloadSize) {
-		if(DOWNLOADER_EXECUTOR != null) {
-			DOWNLOADER_EXECUTOR.shutdown();
-		}
+		SystemThreadContext.shutdown(EXECUTOR);
 		LOGGER.info("启动下载线程池，初始大小：{}", downloadSize);
-		DOWNLOADER_EXECUTOR = Executors.newFixedThreadPool(downloadSize, SystemThreadContext.newThreadFactory("Downloader Thread"));
+		EXECUTOR = Executors.newFixedThreadPool(downloadSize, SystemThreadContext.newThreadFactory("Downloader Thread"));
 	}
 	
 }

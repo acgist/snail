@@ -4,8 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.DownloaderManager;
-import com.acgist.snail.net.client.launch.ApplicationNotifyClient;
-import com.acgist.snail.net.server.ApplicationServer;
+import com.acgist.snail.net.client.application.ApplicationClient;
+import com.acgist.snail.net.server.impl.ApplicationServer;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.window.main.TaskTimer;
 import com.acgist.snail.window.menu.TrayMenu;
@@ -47,7 +47,7 @@ public class PlatformUtils {
 		boolean ok = ApplicationServer.getInstance().listen();
 		if(!ok) {
 			LOGGER.info("已有系统实例，唤醒系统窗口");
-			ApplicationNotifyClient.notifyWindow();
+			ApplicationClient.notifyWindow();
 		}
 		return ok;
 	}
