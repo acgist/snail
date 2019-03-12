@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.system.context.SystemThreadContext;
+import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * 定时任务：刷新任务列表
@@ -51,7 +52,7 @@ public class TaskDisplay {
 		try {
 			MainController controller = INSTANCE.controller;
 			while(controller == null) {
-				Thread.yield();
+				ThreadUtils.sleep(100);
 				controller = INSTANCE.controller;
 			}
 			controller.refreshTable();
@@ -67,7 +68,7 @@ public class TaskDisplay {
 		try {
 			MainController controller = INSTANCE.controller;
 			while(controller == null) {
-				Thread.yield();
+				ThreadUtils.sleep(100);
 				controller = INSTANCE.controller;
 			}
 			controller.refreshData();

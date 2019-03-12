@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.net.message.AbstractMessageHandler;
 import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.StringUtils;
+import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * FTP消息
@@ -121,12 +122,9 @@ public class FtpMessageHandler extends AbstractMessageHandler {
 	 * 获取输入流，阻塞线程
 	 */
 	public InputStream inputStream() {
-		while(this.inputStream == null) {
-			Thread.yield();
-			if(fail) {
-				break;
-			}
-		}
+		ThreadUtils.timeout(5000, () -> {
+			return this.inputStream != null || this.fail;
+		});
 		return this.inputStream;
 	}
 	
