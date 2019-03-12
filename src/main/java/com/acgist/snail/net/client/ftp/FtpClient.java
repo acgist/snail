@@ -104,8 +104,8 @@ public class FtpClient extends AbstractClient<FtpMessageHandler> {
 		if(!ok) {
 			return;
 		}
-		command("QUIT");
-		messageHandler.close();
+		command("QUIT"); // 退出命令
+		messageHandler.close(); // 关闭
 		super.close();
 	}
 	

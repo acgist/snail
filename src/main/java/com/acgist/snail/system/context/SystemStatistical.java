@@ -3,7 +3,7 @@ package com.acgist.snail.system.context;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.acgist.snail.utils.FileUtils;
-import com.acgist.snail.window.main.TaskTimer;
+import com.acgist.snail.window.main.TaskDisplay;
 
 /**
  * 系统统计：累计下载、累计上传、速度采样
@@ -34,7 +34,7 @@ public class SystemStatistical {
 		downloadBuffer.addAndGet(buffer);
 		long now = System.currentTimeMillis();
 		long interval = now - lastTime;
-		if(interval > TaskTimer.REFRESH_TIME_MILLIS) {
+		if(interval > TaskDisplay.REFRESH_TIME_MILLIS) {
 			long oldBuffer = downloadBuffer.getAndSet(0);
 			bufferSecond = oldBuffer * 1000 / interval;
 			lastTime = now;
@@ -47,7 +47,7 @@ public class SystemStatistical {
 	public String downloadBufferSecond() {
 		long now = System.currentTimeMillis();
 		long interval = now - lastTime;
-		if(interval > TaskTimer.REFRESH_TIME_MILLIS) {
+		if(interval > TaskDisplay.REFRESH_TIME_MILLIS) {
 			return "0KB/S";
 		}
 		return FileUtils.formatSize(bufferSecond) + "/S";

@@ -40,7 +40,7 @@ public class IoUtils {
 	}
 	
 	/**
-	 * 关闭socket
+	 * 关闭Aio Socket
 	 */
 	public static final void close(
 		AsynchronousChannelGroup group,

@@ -29,7 +29,7 @@ public abstract class AbstractServer {
 	private AsynchronousServerSocketChannel server;
 	
 	static {
-		EXECUTOR = Executors.newFixedThreadPool(1, SystemThreadContext.newThreadFactory("Application Server Thread"));
+		EXECUTOR = Executors.newFixedThreadPool(2, SystemThreadContext.newThreadFactory("Application Server Thread"));
 	}
 	
 	/**
@@ -73,17 +73,24 @@ public abstract class AbstractServer {
 				}
 			});
 		} else {
-			this.shutdown();
+			close();
 		}
 		return ok;
 	}
 
 	/**
-	 * 关闭服务监听
+	 * 关闭资源
 	 */
-	public void shutdown() {
+	public void close() {
 		LOGGER.info("关闭{}", name);
 		IoUtils.close(group, server, null);
+	}
+	
+	/**
+	 * 关闭Server线程池
+	 */
+	public static final void shutdown() {
+		LOGGER.info("关闭Server线程池");
 		SystemThreadContext.shutdown(EXECUTOR);
 	}
 	

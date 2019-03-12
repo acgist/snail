@@ -74,7 +74,7 @@ public class ClientMessageHandler extends AbstractMessageHandler {
 	 */
 	private boolean execute(ClientMessage message) {
 		boolean close = false; // 是否关闭
-		if(message.getType() == ClientMessage.Type.text) { // 文本信息：直接原因返回
+		if(message.getType() == ClientMessage.Type.text) { // 文本信息：直接原样返回
 			send(ClientMessage.response(message.getBody()));
 		} else if(message.getType() == ClientMessage.Type.notify) { // 唤醒主窗口
 			Platform.runLater(() -> {

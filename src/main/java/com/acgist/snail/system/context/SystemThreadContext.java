@@ -2,7 +2,9 @@ package com.acgist.snail.system.context;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,11 +16,21 @@ public class SystemThreadContext {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SystemThreadContext.class);
 	
+	private static final int TIMER_EXECUTOR_SIZE = 2; // 定时线程池
+	
+	/**
+	 * 线程池
+	 */
 	private static final ExecutorService EXECUTOR;
+	/**
+	 * 定时线程池
+	 */
+	private static final ScheduledExecutorService TIMER_EXECUTOR;
 	
 	static {
-		LOGGER.info("启动系统线程");
+		LOGGER.info("启动系统线程池");
 		EXECUTOR = Executors.newCachedThreadPool(newThreadFactory("System Thread"));
+		TIMER_EXECUTOR = Executors.newScheduledThreadPool(TIMER_EXECUTOR_SIZE, SystemThreadContext.newThreadFactory("System Timer Thread"));
 	}
 	
 	/**
@@ -27,6 +39,13 @@ public class SystemThreadContext {
 	 */
 	public static final void runasyn(Runnable runnable) {
 		EXECUTOR.submit(runnable);
+	}
+	
+	/**
+	 * 定时任务
+	 */
+	public static final void timer(long delay, long period, TimeUnit unit, Runnable runnable) {
+		TIMER_EXECUTOR.scheduleAtFixedRate(runnable, delay, period, unit);
 	}
 	
 	/**
@@ -51,6 +70,7 @@ public class SystemThreadContext {
 	public static final void shutdown() {
 		LOGGER.info("关闭系统线程池");
 		shutdown(EXECUTOR);
+		shutdown(TIMER_EXECUTOR);
 	}
 	
 	/**

@@ -16,7 +16,7 @@ import com.acgist.snail.utils.DateUtils;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.JsonUtils;
 import com.acgist.snail.utils.StringUtils;
-import com.acgist.snail.window.main.TaskTimer;
+import com.acgist.snail.window.main.TaskDisplay;
 
 /**
  * wrapper - 任务
@@ -93,7 +93,7 @@ public class TaskWrapper {
 		}
 		this.entity.setStatus(status);
 		repository.update(this.entity);
-		TaskTimer.getInstance().refreshTaskData(); // 刷新状态
+		TaskDisplay.getInstance().refreshTaskData(); // 刷新状态
 	}
 	
 	/**
@@ -112,7 +112,7 @@ public class TaskWrapper {
 		downloadBuffer.addAndGet(buffer);
 		long now = System.currentTimeMillis();
 		long interval = now - lastTime;
-		if(interval > TaskTimer.REFRESH_TIME_MILLIS) {
+		if(interval > TaskDisplay.REFRESH_TIME_MILLIS) {
 			long oldBuffer = downloadBuffer.getAndSet(0);
 			bufferSecond = oldBuffer * 1000 / interval;
 			lastTime = now;
