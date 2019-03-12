@@ -60,18 +60,19 @@ public class FtpMessageHandler extends AbstractMessageHandler {
 	 * 处理单条消息
 	 */
 	private boolean oneMessage(String message) {
+		System.out.println(message);
 		if(fail) {
 			return !fail;
 		}
 		if(StringUtils.startsWith(message, "530 ")) { // 登陆失败
-			fail = true;
-			failMessage = "服务器需要登陆授权";
+			this.fail = true;
+			this.failMessage = "服务器需要登陆授权";
 		} else if(StringUtils.startsWith(message, "550 ")) { // 文件不存在
-			fail = true;
-			failMessage = "文件不存在";
+			this.fail = true;
+			this.failMessage = "文件不存在";
 		} else if(StringUtils.startsWith(message, "421 ")) { // Socket打开失败
-			fail = true;
-			failMessage = "打开连接失败";
+			this.fail = true;
+			this.failMessage = "打开连接失败";
 		} else if(StringUtils.startsWith(message, "350 ")) { // 端点续传
 			append = true;
 		} else if(StringUtils.startsWith(message, "220 ")) { // 退出系统

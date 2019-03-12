@@ -51,7 +51,9 @@ public abstract class AbstractMessageHandler extends AbstractSender implements C
 	 */
 	private void loopRead() {
 		ByteBuffer buffer = ByteBuffer.allocate(1024);
-		socket.read(buffer, buffer, this);
+		if(socket.isOpen()) {
+			socket.read(buffer, buffer, this);
+		}
 	}
 
 }
