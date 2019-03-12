@@ -55,8 +55,21 @@ public abstract class AbstractDownloader implements IDownloader {
 	
 	@Override
 	public void fail() {
+		fail(null);
+	}
+	
+	@Override
+	public void fail(String message) {
 		this.wrapper.updateStatus(Status.fail);
-		TrayMenu.getInstance().notice("下载失败", name() + "下载失败", MessageType.WARNING);
+		StringBuilder noticeMessage = new StringBuilder();
+		noticeMessage.append(name())
+			.append("下载失败，失败原因：");
+		if(message != null) {
+			noticeMessage.append(message);
+		} else {
+			noticeMessage.append("未知错误");
+		}
+		TrayMenu.getInstance().notice("下载失败", noticeMessage.toString(), MessageType.WARNING);
 	}
 	
 	@Override
@@ -99,7 +112,7 @@ public abstract class AbstractDownloader implements IDownloader {
 				try {
 					this.download();
 				} catch (Exception e) {
-					fail();
+					fail(e.getMessage());
 					LOGGER.error("下载异常", e);
 				}
 				this.release();

@@ -18,6 +18,7 @@ import com.acgist.snail.coder.http.HttpDecoder;
 import com.acgist.snail.coder.magnet.MagnetDecoder;
 import com.acgist.snail.coder.thunder.ThunderDecoder;
 import com.acgist.snail.coder.torrent.TorrentDecoder;
+import com.acgist.snail.net.client.ftp.FtpClient;
 import com.acgist.snail.net.ftp.FtpManager;
 import com.acgist.snail.net.http.HttpUtils;
 import com.acgist.snail.pojo.entity.TaskEntity;
@@ -314,12 +315,15 @@ public class DownloaderUrlDecoder {
 	 * 设置FTP下载文件大小
 	 */
 	private void buildFtpSize() throws DownloadException {
-		FtpManager ftpManager = new FtpManager(this.url);
+		FtpClient client = FtpManager.buildClient(this.url);
 		long size = 0L;
 		try {
-			size = ftpManager.size();
+			client.connect();
+			size = client.size();
 		} catch (NetException e) {
 			throw new DownloadException(e.getMessage(), e);
+		} finally {
+			client.close();
 		}
 		this.taskEntity.setSize(size);
 	}
