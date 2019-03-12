@@ -127,7 +127,7 @@ public class MainController implements Initializable {
 		taskTable.setOnDragOver(dragOverAction);
 		taskTable.setOnDragDropped(dragDroppedAction);
 		// 设置定时刷新
-		TaskTimer.getInstance().newTimer(this);
+		TaskDisplay.getInstance().newTimer(this);
 	}
 
 	@FXML
@@ -163,19 +163,19 @@ public class MainController implements Initializable {
 	@FXML
 	public void handleAllAction(ActionEvent event) {
 		this.filter = Filter.all;
-		TaskTimer.getInstance().refreshTaskTable();
+		TaskDisplay.getInstance().refreshTaskTable();
 	}
 	
 	@FXML
 	public void handleDownloadAction(ActionEvent event) {
 		this.filter = Filter.download;
-		TaskTimer.getInstance().refreshTaskTable();
+		TaskDisplay.getInstance().refreshTaskTable();
 	}
 	
 	@FXML
 	public void handleCompleteAction(ActionEvent event) {
 		this.filter = Filter.complete;
-		TaskTimer.getInstance().refreshTaskTable();
+		TaskDisplay.getInstance().refreshTaskTable();
 	}
 	
 	/**
@@ -275,7 +275,7 @@ public class MainController implements Initializable {
 			.forEach(wrapper -> {
 				DownloaderManager.getInstance().delete(wrapper);
 			});
-			TaskTimer.getInstance().refreshTaskTable();
+			TaskDisplay.getInstance().refreshTaskTable();
 		}
 	}
 

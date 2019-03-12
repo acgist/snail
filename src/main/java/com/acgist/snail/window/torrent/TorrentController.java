@@ -13,7 +13,7 @@ import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.JsonUtils;
 import com.acgist.snail.window.alert.AlertWindow;
-import com.acgist.snail.window.main.TaskTimer;
+import com.acgist.snail.window.main.TaskDisplay;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -113,7 +113,7 @@ public class TorrentController implements Initializable {
 			repository.update(entity);
 			DownloaderManager.getInstance().refresh(wrapper);
 		}
-		TaskTimer.getInstance().refreshTaskData();
+		TaskDisplay.getInstance().refreshTaskData();
 		TorrentWindow.getInstance().hide();
 	};
 	

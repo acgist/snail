@@ -1,7 +1,5 @@
 package com.acgist.snail.window.main;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -12,9 +10,9 @@ import com.acgist.snail.system.context.SystemThreadContext;
 /**
  * 定时任务：刷新任务列表
  */
-public class TaskTimer {
+public class TaskDisplay {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(TaskTimer.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TaskDisplay.class);
 	
 	/**
 	 * 任务列表刷新时间、下载速度采样时间
@@ -23,14 +21,13 @@ public class TaskTimer {
 	public static final int REFRESH_TIME_MILLIS = REFRESH_TIME_SECOND * 1000;
 	
 	private MainController controller;
-	private ScheduledExecutorService executor;
 	
-	private static final TaskTimer INSTANCE = new TaskTimer();
+	private static final TaskDisplay INSTANCE = new TaskDisplay();
 	
-	private TaskTimer() {
+	private TaskDisplay() {
 	}
 	
-	public static final TaskTimer getInstance() {
+	public static final TaskDisplay getInstance() {
 		return INSTANCE;
 	}
 	
@@ -39,10 +36,11 @@ public class TaskTimer {
 	 */
 	public void newTimer(MainController controller) {
 		LOGGER.info("启动任务刷新定时器");
-		this.controller = controller;
-		if(this.executor == null) {
-			this.executor = Executors.newScheduledThreadPool(1, SystemThreadContext.newThreadFactory("Task Timer Thread"));
-			this.executor.scheduleAtFixedRate(() -> refreshTaskData(), 0, REFRESH_TIME_SECOND, TimeUnit.SECONDS);
+		synchronized (TaskDisplay.class) {
+			if(this.controller == null) {
+				this.controller = controller;
+				SystemThreadContext.timer(0, REFRESH_TIME_SECOND, TimeUnit.SECONDS, () -> refreshTaskData());
+			}
 		}
 	}
 
@@ -76,14 +74,6 @@ public class TaskTimer {
 		} catch (Exception e) {
 			LOGGER.error("刷新任务状态异常", e);
 		}
-	}
-	
-	/**
-	 * 关闭定时器
-	 */
-	public void shutdown() {
-		LOGGER.info("关闭任务刷新定时器");
-		SystemThreadContext.shutdown(executor);
 	}
 	
 }

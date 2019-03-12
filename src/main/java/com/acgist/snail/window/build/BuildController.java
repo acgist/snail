@@ -13,7 +13,7 @@ import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.window.alert.AlertWindow;
-import com.acgist.snail.window.main.TaskTimer;
+import com.acgist.snail.window.main.TaskDisplay;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -74,7 +74,7 @@ public class BuildController implements Initializable {
 		if(ok) {
 			setUrl("");
 			BuildWindow.getInstance().hide();
-			TaskTimer.getInstance().refreshTaskTable();
+			TaskDisplay.getInstance().refreshTaskTable();
 		}
 	}
 

@@ -29,7 +29,11 @@ public abstract class AbstractClient<T extends AbstractMessageHandler> extends A
 	 */
 	private static final ExecutorService EXECUTOR;
 	
+	/**
+	 * 消息代理
+	 */
 	protected T messageHandler;
+	
 	private AsynchronousChannelGroup group;
 
 	static {
@@ -63,9 +67,13 @@ public abstract class AbstractClient<T extends AbstractMessageHandler> extends A
 			future.get(5, TimeUnit.SECONDS);
 			messageHandler.handler(socket);
 		} catch (Exception e) {
-			close();
 			ok = false;
 			LOGGER.error("客户端连接异常", e);
+		}
+		if(ok) {
+			// 连接成功
+		} else {
+			close();
 		}
 		return ok;
 	}
@@ -75,6 +83,13 @@ public abstract class AbstractClient<T extends AbstractMessageHandler> extends A
 	 */
 	public void close() {
 		IoUtils.close(group, null, socket);
+	}
+
+	/**
+	 * 关闭Client线程池
+	 */
+	public static final void shutdown() {
+		LOGGER.info("关闭Client线程池");
 		SystemThreadContext.shutdown(EXECUTOR);
 	}
 	
