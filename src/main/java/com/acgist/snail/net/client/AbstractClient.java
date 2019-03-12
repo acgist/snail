@@ -7,6 +7,7 @@ import java.nio.channels.AsynchronousSocketChannel;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,36 +20,34 @@ import com.acgist.snail.utils.IoUtils;
 /**
  * 抽象客户端
  */
-public abstract class AbstractClient extends AbstractSender {
+public abstract class AbstractClient<T extends AbstractMessageHandler> extends AbstractSender {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractClient.class);
 	
 	private static final ExecutorService EXECUTOR; // 线程池
 	
+	protected T messageHandler;
 	private AsynchronousChannelGroup group;
 
 	static {
 		EXECUTOR = Executors.newFixedThreadPool(2, SystemThreadContext.newThreadFactory("Application Client Thread"));
 	}
 	
-	public AbstractClient(String split) {
+	public AbstractClient(String split, T messageHandler) {
 		super(split);
+		this.messageHandler = messageHandler;
 	}
 	
 	/**
 	 * 连接服务端
 	 */
-	public abstract void connect();
+	public abstract boolean connect();
 	
 	/**
 	 * 连接服务端
 	 */
-	public abstract void connect(String host, int port);
-	
-	/**
-	 * 连接服务端
-	 */
-	protected void connect(String host, int port, AbstractMessageHandler messageHandler) {
+	protected boolean connect(String host, int port) {
+		boolean ok = true;
 		try {
 			group = AsynchronousChannelGroup.withThreadPool(EXECUTOR);
 			socket = AsynchronousSocketChannel.open(group);
@@ -56,12 +55,14 @@ public abstract class AbstractClient extends AbstractSender {
 			socket.setOption(StandardSocketOptions.SO_REUSEADDR, true);
 			socket.setOption(StandardSocketOptions.SO_KEEPALIVE, true);
 			Future<Void> future = socket.connect(new InetSocketAddress(host, port));
-			future.get();
+			future.get(5, TimeUnit.SECONDS);
 			messageHandler.handler(socket);
 		} catch (Exception e) {
-			LOGGER.error("客户端连接异常", e);
 			close();
+			ok = false;
+			LOGGER.error("客户端连接异常", e);
 		}
+		return ok;
 	}
 	
 	protected void send(String message) {

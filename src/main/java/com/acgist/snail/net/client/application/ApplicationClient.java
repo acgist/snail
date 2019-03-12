@@ -14,24 +14,19 @@ import com.acgist.snail.system.config.SystemConfig;
 /**
  * 启动检测：如果已经启动实例，通过这个方法唤醒已启动的窗口
  */
-public class ApplicationClient extends AbstractClient {
+public class ApplicationClient extends AbstractClient<ClientMessageHandler> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationClient.class);
 	
 	public ApplicationClient() {
-		super(ClientMessageHandler.SPLIT);
+		super(ClientMessageHandler.SPLIT, new ClientMessageHandler());
 	}
 	
 	@Override
-	public void connect() {
-		this.connect(SystemConfig.getServerHost(), SystemConfig.getServerPort());
+	public boolean connect() {
+		return connect(SystemConfig.getServerHost(), SystemConfig.getServerPort());
 	}
 	
-	@Override
-	public void connect(String host, int port) {
-		this.connect(host, port, new ClientMessageHandler());
-	}
-
 	private void send(ClientMessage message) {
 		send(message.toJson());
 	}
