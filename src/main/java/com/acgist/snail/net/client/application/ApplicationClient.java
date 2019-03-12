@@ -27,6 +27,9 @@ public class ApplicationClient extends AbstractClient<ClientMessageHandler> {
 		return connect(SystemConfig.getServerHost(), SystemConfig.getServerPort());
 	}
 	
+	/**
+	 * 发送客户端消息
+	 */
 	private void send(ClientMessage message) {
 		send(message.toJson());
 	}
@@ -34,7 +37,7 @@ public class ApplicationClient extends AbstractClient<ClientMessageHandler> {
 	/**
 	 * 用户输入传输
 	 */
-	public void readin() {
+	private void readin() {
 		Scanner scanner = new Scanner(System.in);
 		String message = null;
 		while ((message = scanner.next()) != null) {

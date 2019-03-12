@@ -98,5 +98,5 @@ public class FtpClient extends AbstractClient<FtpMessageHandler> {
 	private void command(String command) {
 		send(command);
 	}
-	
+
 }
