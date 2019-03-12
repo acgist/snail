@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.message.AbstractMessageHandler;
-import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -24,11 +23,12 @@ public class FtpMessageHandler extends AbstractMessageHandler {
 	public static final String SPLIT = "\r\n"; // 处理粘包分隔符
 	
 	private boolean fail = false; // 失败
+	private boolean append = false; // 断点续传
 	private String failMessage; // 错误信息
-	private StringBuffer contentBuffer = new StringBuffer();
-	
 	private Socket socket; // Socket
 	private InputStream inputStream; // 输入流
+	
+	private StringBuffer contentBuffer = new StringBuffer();
 	
 	public FtpMessageHandler() {
 		super(SPLIT);
@@ -60,6 +60,7 @@ public class FtpMessageHandler extends AbstractMessageHandler {
 	 * 处理单条消息
 	 */
 	private boolean oneMessage(String message) {
+		System.out.println(message);
 		if(fail) {
 			return !fail;
 		}
@@ -72,9 +73,12 @@ public class FtpMessageHandler extends AbstractMessageHandler {
 		} else if(StringUtils.startsWith(message, "421 ")) { // Socket打开失败
 			fail = true;
 			failMessage = "打开连接失败";
+		} else if(StringUtils.startsWith(message, "350 ")) { // 端点续传
+			append = true;
 		} else if(StringUtils.startsWith(message, "220 ")) { // 退出系统
 		} else if(StringUtils.startsWith(message, "226 ")) { // 下载完成
 		} else if(StringUtils.startsWith(message, "227 ")) { // 进入被动模式：获取远程IP和端口
+			this.inputStream = null; // 清除输入流
 			int opening = message.indexOf('(');
 			int closing = message.indexOf(')', opening + 1);
 			if (closing > 0) {
@@ -86,17 +90,24 @@ public class FtpMessageHandler extends AbstractMessageHandler {
 				try {
 					socket = new Socket(ip, port);
 				} catch (IOException e) {
-					throw new NetException("打开远程Socket失败", e);
+					LOGGER.error("打开远程Socket失败", e);
 				}
 			}
 		} else if(StringUtils.startsWith(message, "150 ")) { // 下载完成
 			try {
 				this.inputStream = socket.getInputStream();
 			} catch (IOException e) {
-				throw new NetException("打开远程输入流失败", e);
+				LOGGER.error("打开远程输入流失败", e);
 			}
 		}
 		return !fail;
+	}
+	
+	/**
+	 * 是否支持断点续传
+	 */
+	public boolean append() {
+		return this.append;
 	}
 	
 	/**

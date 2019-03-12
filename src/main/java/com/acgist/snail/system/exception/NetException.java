@@ -3,7 +3,7 @@ package com.acgist.snail.system.exception;
 /**
  * 网络异常
  */
-public class NetException extends RuntimeException {
+public class NetException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 

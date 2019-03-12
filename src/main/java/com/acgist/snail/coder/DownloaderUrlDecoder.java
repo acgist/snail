@@ -18,6 +18,7 @@ import com.acgist.snail.coder.http.HttpDecoder;
 import com.acgist.snail.coder.magnet.MagnetDecoder;
 import com.acgist.snail.coder.thunder.ThunderDecoder;
 import com.acgist.snail.coder.torrent.TorrentDecoder;
+import com.acgist.snail.net.ftp.FtpManager;
 import com.acgist.snail.net.http.HttpUtils;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
@@ -29,6 +30,7 @@ import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.config.FileTypeConfig.FileType;
 import com.acgist.snail.system.exception.DownloadException;
+import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.window.torrent.TorrentWindow;
 
@@ -134,13 +136,15 @@ public class DownloaderUrlDecoder {
 	/**
 	 * 生成任务：处理各种下载、保存下载任务
 	 */
-	private void buildTask() {
+	private void buildTask() throws DownloadException {
 		if(this.type == Type.torrent) {
 			buildTorrentFile();
 			moveTorrentFile();
 			selectTorrentFile();
 		} else if(this.type == Type.http) {
 			buildHttpSize();
+		} else if(this.type == Type.ftp) {
+			buildFtpSize();
 		}
 		if(this.taskEntity != null) {
 			TaskRepository repository = new TaskRepository();
@@ -304,6 +308,20 @@ public class DownloaderUrlDecoder {
 	 */
 	private void buildHttpSize() {
 		this.taskEntity.setSize(httpHeaderWrapper.fileSize());
+	}
+	
+	/**
+	 * 设置FTP下载文件大小
+	 */
+	private void buildFtpSize() throws DownloadException {
+		FtpManager ftpManager = new FtpManager(this.url);
+		long size = 0L;
+		try {
+			size = ftpManager.size();
+		} catch (NetException e) {
+			throw new DownloadException(e.getMessage(), e);
+		}
+		this.taskEntity.setSize(size);
 	}
 	
 	/**
