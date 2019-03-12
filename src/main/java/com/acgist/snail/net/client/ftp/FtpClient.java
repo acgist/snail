@@ -60,7 +60,7 @@ public class FtpClient extends AbstractClient<FtpMessageHandler> {
 	public InputStream download(Long downloadSize) {
 		this.changeMode();
 		command("TYPE I");
-		if(downloadSize != null) {
+		if(downloadSize != null && downloadSize != 0L) {
 			command("REST " + downloadSize);
 		}
 		command("RETR " + this.filePath);
