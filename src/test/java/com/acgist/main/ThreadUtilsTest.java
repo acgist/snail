@@ -1,7 +1,5 @@
 package com.acgist.main;
 
-import java.util.Date;
-
 import com.acgist.snail.utils.ThreadUtils;
 
 public class ThreadUtilsTest {
