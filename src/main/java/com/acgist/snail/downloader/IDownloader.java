@@ -40,6 +40,11 @@ public interface IDownloader extends Runnable {
 	void fail();
 	
 	/**
+	 * 失败任务
+	 */
+	void fail(String message);
+	
+	/**
 	 * 删除任务
 	 */
 	void delete();

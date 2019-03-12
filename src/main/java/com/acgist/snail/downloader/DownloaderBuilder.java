@@ -1,6 +1,7 @@
 package com.acgist.snail.downloader;
 
 import com.acgist.snail.coder.DownloaderUrlDecoder;
+import com.acgist.snail.downloader.ftp.FtpDownloader;
 import com.acgist.snail.downloader.http.HttpDownloader;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
@@ -86,7 +87,7 @@ public class DownloaderBuilder {
 		var type = wrapper.entity().getType();
 		switch (type) {
 			case ftp:
-				return null;
+				return FtpDownloader.newInstance(wrapper);
 			case ed2k:
 				return null;
 			case http:

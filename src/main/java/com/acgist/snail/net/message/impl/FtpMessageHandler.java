@@ -60,7 +60,6 @@ public class FtpMessageHandler extends AbstractMessageHandler {
 	 * 处理单条消息
 	 */
 	private boolean oneMessage(String message) {
-		System.out.println(message);
 		if(fail) {
 			return !fail;
 		}

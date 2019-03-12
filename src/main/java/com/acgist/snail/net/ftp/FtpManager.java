@@ -1,10 +1,8 @@
 package com.acgist.snail.net.ftp;
 
-import java.io.InputStream;
 import java.net.URI;
 
 import com.acgist.snail.net.client.ftp.FtpClient;
-import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -21,34 +19,20 @@ public class FtpManager {
 	private String user;
 	private String password;
 	
-	private FtpClient client;
-
-	public FtpManager(String url) {
-		this.url = url;
-		decodeUrl();
-		client = new FtpClient(host, port, user, password, filePath);
-		client.connect();
+	private FtpManager() {
 	}
 	
-	/**
-	 * 获取文件大小
-	 */
-	public Long size() throws NetException {
-		return client.size();
-	}
-	
-	/**
-	 * 下载文件
-	 */
-	public InputStream download() {
-		return client.download();
-	}
-
-	/**
-	 * 关闭
-	 */
-	public void close() {
-		client.close();
+	public static final FtpClient buildClient(String url) {
+		FtpManager manager = new FtpManager();
+		manager.url = url;
+		manager.decodeUrl();
+		return new FtpClient(
+			manager.host,
+			manager.port,
+			manager.user,
+			manager.password,
+			manager.filePath
+		);
 	}
 	
 	/**
