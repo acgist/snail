@@ -1,5 +1,7 @@
 package com.acgist.snail.utils;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -130,6 +132,26 @@ public class StringUtils {
 			LOGGER.error("字符串解码异常：{}", value, e);
 		}
 		return value;
+	}
+	
+	/**
+	 * 流转为字符串
+	 */
+	public static final String ofInputStream(InputStream input) {
+		if(input == null) {
+			return null;
+		}
+		StringBuilder builder = new StringBuilder();
+		int index;
+		byte[] bytes = new byte[1024];
+		try {
+			while((index = input.read(bytes)) != -1) {
+				builder.append(new String(bytes, 0, index));
+			}
+		} catch (IOException e) {
+			LOGGER.error("读取输入流异常", e);
+		}
+		return builder.toString();
 	}
 	
 }

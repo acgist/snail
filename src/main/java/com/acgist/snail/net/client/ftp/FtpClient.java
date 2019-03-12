@@ -1,9 +1,13 @@
 package com.acgist.snail.net.client.ftp;
 
 import java.io.InputStream;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import com.acgist.snail.net.client.AbstractClient;
 import com.acgist.snail.net.message.impl.FtpMessageHandler;
+import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.utils.StringUtils;
 
 /**
  * FTP
@@ -38,17 +42,58 @@ public class FtpClient extends AbstractClient<FtpMessageHandler> {
 		boolean ok = connect(host, port);
 		if(ok) {
 			this.login();
-			this.changeMode();
-			this.download();
 		}
 		return ok;
 	}
 	
 	/**
-	 * 获取输入流，阻塞线程
+	 * 开始下载
 	 */
-	public InputStream inputStream() {
+	public InputStream download() {
+		return this.download(null);
+	}
+	
+	/**
+	 * 开始下载
+	 * @param downloadSize 已下载大小
+	 */
+	public InputStream download(Long downloadSize) {
+		this.changeMode();
+		command("TYPE I");
+		if(downloadSize != null) {
+			command("REST " + downloadSize);
+		}
+		command("RETR " + this.filePath);
 		return messageHandler.inputStream();
+	}
+
+	/**
+	 * 是否支持断点续传
+	 */
+	public boolean append() {
+		return messageHandler.append();
+	}
+	
+	/**
+	 * 获取大小
+	 */
+	public Long size() throws NetException {
+		this.changeMode();
+		command("TYPE A");
+		command("LIST " + this.filePath);
+		InputStream inputStream = messageHandler.inputStream();
+		String data = StringUtils.ofInputStream(inputStream);
+		if(data == null) {
+			throw new NetException(failMessage());
+		}
+		Optional<String> optional = Stream.of(data.split(" "))
+			.map(String::trim)
+			.filter(StringUtils::isNotEmpty)
+			.skip(4).findFirst();
+		if(optional.isPresent()) {
+			return Long.valueOf(optional.get());
+		}
+		return 0L;
 	}
 	
 	/**
@@ -81,15 +126,6 @@ public class FtpClient extends AbstractClient<FtpMessageHandler> {
 	 */
 	private void changeMode() {
 		command("PASV");
-	}
-	
-	/**
-	 * 开始下载
-	 */
-	private void download() {
-		command("TYPE I");
-		command("RETR " + this.filePath);
-		command("REST 100000");
 	}
 	
 	/**
