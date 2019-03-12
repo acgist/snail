@@ -35,6 +35,8 @@ public abstract class AbstractMessageHandler extends AbstractSender implements C
 	public void completed(Integer result, ByteBuffer attachment) {
 		if(doMessage(result, attachment)) {
 			loop();
+		} else {
+			LOGGER.info("退出循环读取");
 		}
 	}
 	
