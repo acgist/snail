@@ -16,6 +16,7 @@ public class FtpClient extends AbstractClient<FtpMessageHandler> {
 
 	public static final String ANONYMOUS = "anonymous"; // 匿名用户名
 	
+	private boolean ok = false; // 连接成功
 	private String host; // 服务器地址
 	private int port; // 服务器端口
 	private String user; // FTP用户
@@ -39,7 +40,7 @@ public class FtpClient extends AbstractClient<FtpMessageHandler> {
 
 	@Override
 	public boolean connect() {
-		boolean ok = connect(host, port);
+		this.ok = connect(host, port);
 		if(ok) {
 			this.login();
 		}
@@ -58,6 +59,9 @@ public class FtpClient extends AbstractClient<FtpMessageHandler> {
 	 * @param downloadSize 已下载大小
 	 */
 	public InputStream download(Long downloadSize) {
+		if(!ok) {
+			return null;
+		}
 		this.changeMode();
 		command("TYPE I");
 		if(downloadSize != null && downloadSize != 0L) {
@@ -66,18 +70,14 @@ public class FtpClient extends AbstractClient<FtpMessageHandler> {
 		command("RETR " + this.filePath);
 		return messageHandler.inputStream();
 	}
-
-	/**
-	 * 是否支持断点续传
-	 */
-	public boolean append() {
-		return messageHandler.append();
-	}
 	
 	/**
 	 * 获取大小
 	 */
 	public Long size() throws NetException {
+		if(!ok) {
+			return 0L;
+		}
 		this.changeMode();
 		command("TYPE A");
 		command("LIST " + this.filePath);
@@ -97,18 +97,30 @@ public class FtpClient extends AbstractClient<FtpMessageHandler> {
 	}
 	
 	/**
+	 * 关闭系统
+	 */
+	@Override
+	public void close() {
+		if(!ok) {
+			return;
+		}
+		command("QUIT");
+		messageHandler.close();
+		super.close();
+	}
+	
+	/**
+	 * 是否支持断点续传
+	 */
+	public boolean append() {
+		return messageHandler.append();
+	}
+	
+	/**
 	 * 错误信息
 	 */
 	public String failMessage() {
 		return messageHandler.failMessage();
-	}
-	
-	/**
-	 * 关闭系统
-	 */
-	public void close() {
-		command("QUIT");
-		messageHandler.close();
 	}
 	
 	/**

@@ -94,17 +94,21 @@ public class FtpDownloader extends AbstractDownloader {
 		var entity = wrapper.entity();
 		long size = FileUtils.fileSize(entity.getFile()); // 已下载大小
 		client = FtpManager.buildClient(entity.getUrl());
-		client.connect();
-		InputStream inputStream = client.download(size);
-		if(inputStream == null) {
-			fail(client.failMessage());
-		} else {
-			this.input = new BufferedInputStream(inputStream);
-			if(client.append()) {
-				wrapper.downloadSize(size);
+		boolean ok = client.connect();
+		if(ok) {
+			InputStream inputStream = client.download(size);
+			if(inputStream == null) {
+				fail(client.failMessage());
 			} else {
-				wrapper.downloadSize(0L);
+				this.input = new BufferedInputStream(inputStream);
+				if(client.append()) {
+					wrapper.downloadSize(size);
+				} else {
+					wrapper.downloadSize(0L);
+				}
 			}
+		} else {
+			fail("FTP服务器连接失败");
 		}
 	}
 	
