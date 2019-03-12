@@ -18,13 +18,16 @@ import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.IoUtils;
 
 /**
- * 抽象客户端
+ * Aio Socket客户端
  */
 public abstract class AbstractClient<T extends AbstractMessageHandler> extends AbstractSender {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractClient.class);
 	
-	private static final ExecutorService EXECUTOR; // 线程池
+	/**
+	 * 所有客户端公用一个线程池，线程池大小等于客户端类型数量
+	 */
+	private static final ExecutorService EXECUTOR;
 	
 	protected T messageHandler;
 	private AsynchronousChannelGroup group;
@@ -45,6 +48,8 @@ public abstract class AbstractClient<T extends AbstractMessageHandler> extends A
 	
 	/**
 	 * 连接服务端
+	 * @param host 服务端地址
+	 * @param port 服务端端口
 	 */
 	protected boolean connect(String host, int port) {
 		boolean ok = true;
@@ -63,10 +68,6 @@ public abstract class AbstractClient<T extends AbstractMessageHandler> extends A
 			LOGGER.error("客户端连接异常", e);
 		}
 		return ok;
-	}
-	
-	protected void send(String message) {
-		super.send(message);
 	}
 	
 	/**

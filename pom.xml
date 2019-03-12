@@ -10,7 +10,7 @@
 	
 	<name>snail</name>
 	<version>1.0.0</version>
-	<description>下载工具：FTP、HTTP、BT任务</description>
+	<description>基于JAVA/JAVAFX的下载工具，支持下载协议：BT、FTP、HTTP、ED2K。</description>
 
 	<properties>
 		<os.name>win</os.name><!-- 系统名称：win、mac、linux -->
@@ -128,13 +128,20 @@
 				<configuration>
 					<archive>
 						<manifest>
+							<mainClass>com.acgist.main.Application</mainClass>
 							<addClasspath>true</addClasspath>
 							<classpathPrefix>lib</classpathPrefix>
-							<mainClass>com.acgist.main.Application</mainClass>
 						</manifest>
 						<manifestEntries>
-							<Built-By>www.acgist.com</Built-By>
-							<Automatic-Module-Name>snail</Automatic-Module-Name>
+							<Built-By>https://www.acgist.com</Built-By>
+							<Automatic-Module-Name>${project.artifactId}</Automatic-Module-Name>
+							<Implementation-Title>${project.artifactId}</Implementation-Title>
+							<Implementation-Vendor>${project.groupId}</Implementation-Vendor>
+							<Implementation-Vendor-Id>${project.groupId}</Implementation-Vendor-Id>
+							<Implementation-Version>${project.version}</Implementation-Version>
+							<Specification-Title>${project.artifactId}</Specification-Title>
+							<Specification-Vendor>${project.groupId}</Specification-Vendor>
+							<Specification-Version>${project.version}</Specification-Version>
 						</manifestEntries>
 					</archive>
 				</configuration>

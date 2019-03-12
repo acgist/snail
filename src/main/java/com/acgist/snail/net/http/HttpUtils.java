@@ -36,8 +36,8 @@ public class HttpUtils {
 	private static final String USER_AGENT;
 	
 	static {
-		StringBuilder builder = new StringBuilder();
-		builder
+		StringBuilder userAgentBuilder = new StringBuilder(); // 客户端信息
+		userAgentBuilder
 			.append("Mozilla/5.0")
 			.append(" ")
 			.append("(compatible; ")
@@ -47,7 +47,7 @@ public class HttpUtils {
 			.append("; ")
 			.append(SystemConfig.getSupport())
 			.append(")");
-		USER_AGENT = builder.toString();
+		USER_AGENT = userAgentBuilder.toString();
 	}
 	
 	/**
@@ -111,8 +111,9 @@ public class HttpUtils {
 	 */
 	public static final <T> boolean ok(HttpResponse<T> response) {
 		return response != null && (
-				response.statusCode() == HTTP_OK ||
-				response.statusCode() == HTTP_PARTIAL_CONTENT);
+			response.statusCode() == HTTP_OK ||
+			response.statusCode() == HTTP_PARTIAL_CONTENT
+		);
 	}
 
 	/**

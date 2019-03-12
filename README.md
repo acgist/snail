@@ -1,7 +1,7 @@
 # Snail（蜗牛）
 
 #### 介绍
-一款下载工具，主要支持下载类型：BT、FTP、HTTP、ED2K。
+基于JAVA/JAVAFX的下载工具，支持下载协议：BT、FTP、HTTP、ED2K。
 
 #### 技术
 |技术|版本|

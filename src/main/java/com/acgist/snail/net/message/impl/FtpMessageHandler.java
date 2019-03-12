@@ -63,7 +63,6 @@ public class FtpMessageHandler extends AbstractMessageHandler {
 		if(fail) {
 			return !fail;
 		}
-		System.out.println(message);
 		if(StringUtils.startsWith(message, "530 ")) { // 登陆失败
 			fail = true;
 			failMessage = "服务器需要登陆授权";

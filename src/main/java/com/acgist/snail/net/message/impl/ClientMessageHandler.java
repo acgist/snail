@@ -28,9 +28,6 @@ public class ClientMessageHandler extends AbstractMessageHandler {
 		super(SPLIT);
 	}
 	
-	/**
-	 * 客户端消息
-	 */
 	@Override
 	public boolean doMessage(Integer result, ByteBuffer attachment) {
 		boolean doNext = true; // 是否继续处理消息
@@ -53,18 +50,21 @@ public class ClientMessageHandler extends AbstractMessageHandler {
 		return doNext;
 	};
 	
-	private boolean oneMessage(String content) {
-		content = content.trim();
-		if(StringUtils.isEmpty(content)) {
+	/**
+	 * 单挑消息处理
+	 */
+	private boolean oneMessage(String json) {
+		json = json.trim();
+		if(StringUtils.isEmpty(json)) {
 			LOGGER.warn("读取消息内容为空");
 			return true;
 		}
-		ClientMessage message = ClientMessage.valueOf(content);
+		ClientMessage message = ClientMessage.valueOf(json);
 		if(message == null) {
-			LOGGER.warn("读取消息格式错误：{}", content);
+			LOGGER.warn("读取消息格式错误：{}", json);
 			return true;
 		}
-		LOGGER.info("读取消息：{}", content);
+		LOGGER.info("读取消息：{}", json);
 		return !this.execute(message);
 	}
 	
@@ -91,6 +91,9 @@ public class ClientMessageHandler extends AbstractMessageHandler {
 		return close;
 	}
 
+	/**
+	 * 发送消息
+	 */
 	private void send(ClientMessage message) {
 		send(message.toJson());
 	}

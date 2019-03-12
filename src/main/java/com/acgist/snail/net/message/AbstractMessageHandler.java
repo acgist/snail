@@ -22,21 +22,22 @@ public abstract class AbstractMessageHandler extends AbstractSender implements C
 
 	/**
 	 * 处理消息
-	 * @return 是否继续读取：true-是；false-不继续
+	 * @return 是否继续循环读取：true-是；false-不继续
 	 */
 	public abstract boolean doMessage(Integer result, ByteBuffer attachment);
 	
+	/**
+	 * 消息代理
+	 */
 	public void handler(AsynchronousSocketChannel socket) {
 		this.socket = socket;
-		loop();
+		loopRead();
 	}
 
 	@Override
 	public void completed(Integer result, ByteBuffer attachment) {
 		if(doMessage(result, attachment)) {
-			loop();
-		} else {
-			LOGGER.info("退出循环读取");
+			loopRead();
 		}
 	}
 	
@@ -45,7 +46,10 @@ public abstract class AbstractMessageHandler extends AbstractSender implements C
 		LOGGER.error("消息处理异常", exc);
 	}
 	
-	private void loop() {
+	/**
+	 * 循环读
+	 */
+	private void loopRead() {
 		ByteBuffer buffer = ByteBuffer.allocate(1024);
 		socket.read(buffer, buffer, this);
 	}
