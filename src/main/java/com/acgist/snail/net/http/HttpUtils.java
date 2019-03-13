@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpClient.Redirect;
+import java.net.http.HttpClient.Version;
 import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpRequest.BodyPublishers;
@@ -69,6 +70,7 @@ public class HttpUtils {
 		return HttpRequest
 			.newBuilder()
 			.uri(URI.create(url))
+			.version(Version.HTTP_1_1) // 暂时使用1.1版本协议
 			.timeout(Duration.ofSeconds(10))
 			.header("User-Agent", USER_AGENT);
 	}
