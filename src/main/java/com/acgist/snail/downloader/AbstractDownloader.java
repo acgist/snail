@@ -75,9 +75,9 @@ public abstract class AbstractDownloader implements IDownloader {
 	@Override
 	public void delete() {
 		this.pause(); // 暂停
-		while(running) { // 等待下载线程结束
-			yield(500);
-		}
+		ThreadUtils.timeout(5000, () -> { // 等待下载线程结束
+			return !this.running;
+		});
 		var entity = wrapper.entity();
 		// 删除文件：注意不删除种子文件，下载时已经将种子文件拷贝到下载目录了
 		FileUtils.delete(entity.getFile());
