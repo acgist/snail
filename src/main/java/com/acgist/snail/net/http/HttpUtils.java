@@ -71,7 +71,7 @@ public class HttpUtils {
 			.newBuilder()
 			.uri(URI.create(url))
 			.version(Version.HTTP_1_1) // 暂时使用1.1版本协议
-			.timeout(Duration.ofSeconds(10))
+			.timeout(Duration.ofSeconds(100))
 			.header("User-Agent", USER_AGENT);
 	}
 	

@@ -11,7 +11,7 @@ public class TrackerHttpClient {
 	
 	public static void main(String[] args) {
 		TrackerHttpClient c = new TrackerHttpClient();
-		c.decode("http://btfile.sdo.com:6961/announce", null);
+		c.decode("http://t.acg.rip:6699/announce", null);
 	}
 	
 	/**
@@ -34,18 +34,18 @@ public class TrackerHttpClient {
 	}
 	
 	/**
-	 * 构建请求URL
-	 * info_hash：与种子文件中info关键字对应的值，通过Sha1算法计算其hash值，该hash值就是info_hash参数对应的值，该hash值的长度固定为20字节
-	 * peer_id：每个客户端在下载文件前以随机的方式生成的20字节的标识符，用于标识自己，它的长度也是固定不变的
-	 * port：监听端口号，用于接收其他peer的连接请求
-	 * uploaded：当前总的上传量，以字节为单位
-	 * downloaded：当前总的下载量，以字节为单位
-	 * left：还剩余多少字节需要下载，以字节为单位
-	 * compact：该参数的值一般为1
-	 * event：它的值为started、completed、stopped其中之一。客户端第一次与Tracker进行通信时，该值为started；下载完成时，该值为completed；客户端即将关闭时，该值为stopped
-	 * ip：可选，将客户端的IP地址告知给Tracker，Tracker可以通过分析客户端发给Tracker的IP数据包来获取客户端的IP地址，因此该参数是可选的，一般不用指明客户端的IP
-	 * numwant：可选，希望Tracker返回多少个peer的IP地址和端口号。如果该参数缺省，则默认返回50个peer的IP地址和端口号
-	 * key：可选，它的值为一个随机数，用于进一步标识客户端。因为已经由peer_id来标识客户端，因此该参数一般不使用
+	 * 构建请求URL<br>
+	 * info_hash：种子hash，长度固定为20字节<br>
+	 * peer_id：客户端在下载文件前以随机的方式生成的20字节的标识符，用于标识自己<br>
+	 * port：监听端口号，用于接收其他peer的连接请求<br>
+	 * uploaded：当前总的上传量，以字节为单位<br>
+	 * downloaded：当前总的下载量，以字节为单位<br>
+	 * left：剩余需要下载量，以字节为单位<br>
+	 * compact：一般默认：1<br>
+	 * event：选择以下值：started、completed、stopped。第一次交互：started；下载完成：completed；客户端即将关闭：stopped<br>
+	 * ip：可选，客户端IP<br>
+	 * numwant：可选，希望返回的peer数，默认：50<br>
+	 * key：可选，一个随机数，用于进一步标识客户端<br>
 	 * trackerid：可选，一般不使用
 	 */
 	private String buildUrl(String trackerUrl) {
