@@ -9,6 +9,7 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CodingErrorAction;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,7 +70,7 @@ public class IoUtils {
 			try {
 				server.close();
 			} catch (IOException e) {
-				LOGGER.error("关闭Socket Server异常");
+				LOGGER.error("关闭Socket Server异常", e);
 			}
 		}
 	}
@@ -77,6 +78,11 @@ public class IoUtils {
 	public static final void closeGroup(AsynchronousChannelGroup group) {
 		if(group != null && !group.isShutdown()) {
 			group.shutdown();
+			try {
+				group.awaitTermination(5, TimeUnit.SECONDS);
+			} catch (InterruptedException e) {
+				LOGGER.error("关闭Group异常", e);
+			}
 		}
 	}
 	
