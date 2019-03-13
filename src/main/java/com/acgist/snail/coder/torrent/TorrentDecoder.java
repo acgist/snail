@@ -19,6 +19,7 @@ public class TorrentDecoder {
 	public static final String TORRENT_REGEX = ".+\\.torrent"; // 正则表达式
 	
 	private String hash = null; // 磁力链接HASH
+	private String infoHash = null; // 20位infoHash
 	private Torrent torrent = null; // 种子文件信息
 	
 	private TorrentDecoder() {
@@ -42,6 +43,13 @@ public class TorrentDecoder {
 	 */
 	public String hash() {
 		return hash;
+	}
+	
+	/**
+	 * 获取20位infoHash
+	 */
+	public String infoHash() {
+		return infoHash;
 	}
 	
 	/**
@@ -121,7 +129,9 @@ public class TorrentDecoder {
 			}
 		}
 		this.torrent = torrent;
+		hashBuilder.buildHash();
 		this.hash = hashBuilder.hash();
+		this.infoHash = hashBuilder.infoHash();
 	}
 	
 	/**
