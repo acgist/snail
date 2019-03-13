@@ -1,4 +1,4 @@
-package com.acgist.snail.coder.torrent;
+package com.acgist.snail.coder.torrent.pojo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,9 +14,9 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * 种子信息
  */
-public class TorrentInfo {
+public class Torrent {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentInfo.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Torrent.class);
 	
 	/**
 	 * 属性：https://www.cnblogs.com/EasonJim/p/6601047.html
@@ -59,9 +59,9 @@ public class TorrentInfo {
 	private String createBy; // 创建者
 	private String announce; // Tracker主服务器
 	private Long creationDate; // 创建时间
+	private TorrentInfo info; // 文件信息
 	private List<String> announceList = new ArrayList<>(); // Tracker服务器列表
 	private Map<String, Long> nodes = new LinkedHashMap<>(); // DHT协议：暂时不处理
-	private TorrentFiles info; // 文件信息
 	
 	public static final List<String> infoKeys() {
 		return INFO_KEYS;
@@ -131,11 +131,11 @@ public class TorrentInfo {
 		this.nodes = nodes;
 	}
 	
-	public TorrentFiles getInfo() {
+	public TorrentInfo getInfo() {
 		return info;
 	}
 
-	public void setInfo(TorrentFiles info) {
+	public void setInfo(TorrentInfo info) {
 		this.info = info;
 	}
 

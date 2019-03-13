@@ -1,4 +1,4 @@
-package com.acgist.snail.coder.torrent;
+package com.acgist.snail.coder.torrent.pojo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +8,7 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * 文件列表信息：单文件时files为空
  */
-public class TorrentFiles {
+public class TorrentInfo {
 
 	private String name; // 名称
 	private String nameUtf8; // 名称：utf8

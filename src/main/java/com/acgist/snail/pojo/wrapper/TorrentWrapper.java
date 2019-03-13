@@ -1,7 +1,7 @@
 package com.acgist.snail.pojo.wrapper;
 
-import com.acgist.snail.coder.torrent.TorrentFiles;
-import com.acgist.snail.coder.torrent.TorrentInfo;
+import com.acgist.snail.coder.torrent.pojo.Torrent;
+import com.acgist.snail.coder.torrent.pojo.TorrentInfo;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.StringUtils;
 
@@ -10,29 +10,29 @@ import com.acgist.snail.utils.StringUtils;
  */
 public class TorrentWrapper {
 
-	private TorrentInfo torrentInfo;
+	private Torrent torrent;
 
-	public TorrentWrapper(TorrentInfo torrentInfo) throws DownloadException {
-		if(torrentInfo == null) {
+	public TorrentWrapper(Torrent torrent) throws DownloadException {
+		if(torrent == null) {
 			throw new DownloadException("解析种子文件异常");
 		}
-		this.torrentInfo = torrentInfo;
+		this.torrent = torrent;
 	}
 
 	/**
 	 * 下载名称
 	 */
 	public String name() {
-		TorrentFiles files = torrentInfo.getInfo();
-		String name = files.getNameUtf8();
+		TorrentInfo torrentInfo = torrent.getInfo();
+		String name = torrentInfo.getNameUtf8();
 		if(StringUtils.isEmpty(name)) {
-			name = StringUtils.charset(files.getName(), torrentInfo.getEncoding());
+			name = StringUtils.charset(torrentInfo.getName(), torrent.getEncoding());
 		}
 		return name;
 	}
 	
-	public TorrentInfo torrentInfo() {
-		return this.torrentInfo;
+	public Torrent torrent() {
+		return this.torrent;
 	}
 	
 }

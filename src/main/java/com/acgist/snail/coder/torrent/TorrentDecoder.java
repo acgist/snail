@@ -4,6 +4,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import com.acgist.snail.coder.torrent.pojo.Torrent;
+import com.acgist.snail.coder.torrent.pojo.TorrentInfo;
 import com.acgist.snail.pojo.wrapper.TorrentWrapper;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.StringUtils;
@@ -17,7 +19,7 @@ public class TorrentDecoder {
 	public static final String TORRENT_REGEX = ".+\\.torrent"; // 正则表达式
 	
 	private String hash = null; // 磁力链接HASH
-	private TorrentInfo torrentInfo = null; // 种子文件信息
+	private Torrent torrent = null; // 种子文件信息
 	
 	private TorrentDecoder() {
 	}
@@ -46,7 +48,7 @@ public class TorrentDecoder {
 	 * 获取种子信息
 	 */
 	public TorrentWrapper torrentWrapper() throws DownloadException {
-		return new TorrentWrapper(torrentInfo);
+		return new TorrentWrapper(torrent);
 	}
 	
 	/**
@@ -59,7 +61,7 @@ public class TorrentDecoder {
 		int index;
 		char indexChar;
 		String key = null;
-		TorrentInfo torrentInfo = new TorrentInfo();
+		Torrent torrent = new Torrent();
 		StringBuilder lengthBuilder = new StringBuilder();
 		TorrentHashBuilder hashBuilder = TorrentHashBuilder.newInstance();
 		while ((index = input.read()) != -1) {
@@ -77,7 +79,7 @@ public class TorrentDecoder {
 							valueBuilder.append(indexChar);
 						}
 					}
-					torrentInfo.setValue(key, valueBuilder.toString());
+					torrent.setValue(key, valueBuilder.toString());
 					break;
 				case 'l':
 				case 'd':
@@ -101,24 +103,24 @@ public class TorrentDecoder {
 					input.read(bytes);
 					hashBuilder.build(key, bytes);
 					String value = new String(bytes);
-					if (TorrentInfo.infoKeys().contains(value)) { // 初始化
+					if (Torrent.infoKeys().contains(value)) { // 初始化
 						key = value;
 						if (value.equals("info")) {
-							torrentInfo.setInfo(new TorrentFiles());
+							torrent.setInfo(new TorrentInfo());
 						} else if (value.equals("files")) {
-							torrentInfo.newTorrentFile();
+							torrent.newTorrentFile();
 						}
 					} else {
 						if(key.equals("ed2k") || key.equals("pieces") || key.equals("filehash")) {
-							torrentInfo.setValue(key, bytes);
+							torrent.setValue(key, bytes);
 						} else {
-							torrentInfo.setValue(key, value);
+							torrent.setValue(key, value);
 						}
 					}
 					break;
 			}
 		}
-		this.torrentInfo = torrentInfo;
+		this.torrent = torrent;
 		this.hash = hashBuilder.hash();
 	}
 	
