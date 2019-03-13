@@ -170,7 +170,7 @@ public final class DownloaderManager {
 		.map(Entry::getValue)
 		.filter(downloader -> downloader.wrapper().run())
 		.forEach(downloader -> downloader.pause());
-		EXECUTOR.shutdown();
+		SystemThreadContext.shutdown(EXECUTOR);
 	}
 
 	/**
