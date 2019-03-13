@@ -4,8 +4,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import com.acgist.snail.coder.torrent.TorrentDecoder;
-import com.acgist.snail.coder.torrent.TorrentFiles;
-import com.acgist.snail.coder.torrent.TorrentInfo;
+import com.acgist.snail.coder.torrent.pojo.Torrent;
+import com.acgist.snail.coder.torrent.pojo.TorrentInfo;
 import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
@@ -63,18 +63,18 @@ public class TorrentController implements Initializable {
 		var entity = wrapper.entity();
 		this.wrapper = wrapper;
 		TreeView<HBox> tree = buildTree();
-		TorrentInfo info = null;
+		Torrent torrent = null;
 		TorrentDecoder decoder = null;
 		try {
 			decoder = TorrentDecoder.newInstance(entity.getTorrent());
-			info = decoder.torrentWrapper().torrentInfo();
+			torrent = decoder.torrentWrapper().torrent();
 		} catch (DownloadException e) {
 			AlertWindow.warn("下载出错", "种子文件解析异常");
 			return;
 		}
-		TorrentFiles files = info.getInfo();
-		manager = new FileSelectManager(files.getName(), download, tree);
-		files.files()
+		TorrentInfo torrentInfo = torrent.getInfo();
+		manager = new FileSelectManager(torrentInfo.getName(), download, tree);
+		torrentInfo.files()
 		.stream()
 		.filter(file -> !file.path().startsWith(HIDE_FILE_PREFIX))
 		.sorted((a, b) -> a.path().compareTo(b.path()))
