@@ -1,4 +1,4 @@
-package com.acgist.snail.net.bt.tracker;
+package com.acgist.snail.net.tracker;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

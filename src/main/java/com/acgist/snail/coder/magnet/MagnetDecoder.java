@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.coder.magnet.impl.BtbttvMagnetDecoder;
 import com.acgist.snail.coder.torrent.TorrentDecoder;
-import com.acgist.snail.net.http.HttpUtils;
+import com.acgist.snail.net.http.HttpManager;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.FileUtils;
@@ -36,7 +36,7 @@ public abstract class MagnetDecoder {
 	protected String magnet; // 完整磁力链接
 	
 	static {
-		MagnetDecoder.putDecoder(new BtbttvMagnetDecoder());
+		MagnetDecoder.putDecoder(BtbttvMagnetDecoder.newInstance());
 		DECODERS.sort((a, b) -> {
 			return a.order().compareTo(b.order());
 		});
@@ -62,10 +62,10 @@ public abstract class MagnetDecoder {
 	 */
 	public File execute(String url) throws DownloadException {
 		this.init(url);
-		HttpClient client = HttpUtils.newClient();
+		HttpClient client = HttpManager.newClient();
 		HttpRequest request = request();
-		HttpResponse<byte[]> response = HttpUtils.request(client, request, BodyHandlers.ofByteArray());
-		if(HttpUtils.ok(response)) {
+		HttpResponse<byte[]> response = HttpManager.request(client, request, BodyHandlers.ofByteArray());
+		if(HttpManager.ok(response)) {
 			byte[] bytes = response.body();
 			String path = DownloadConfig.getPath(this.hash + TorrentDecoder.TORRENT_SUFFIX);
 			FileUtils.write(path, bytes);

@@ -1,8 +1,8 @@
-package com.acgist.snail.net.bt.tracker;
+package com.acgist.snail.net.tracker;
 
 import java.net.http.HttpResponse.BodyHandlers;
 
-import com.acgist.snail.net.http.HttpUtils;
+import com.acgist.snail.net.http.HttpManager;
 
 /**
  * tracker http 客户端
@@ -19,15 +19,15 @@ public class TrackerHttpClient {
 	 */
 	public void decode(String trackerUrl, String hash) {
 		String requestUrl = buildUrl(trackerUrl);
-		var client = HttpUtils.newClient();
+		var client = HttpManager.newClient();
 		System.out.println(requestUrl);
-		var request = HttpUtils.newRequest(requestUrl)
+		var request = HttpManager.newRequest(requestUrl)
 			.GET()
 			.build();
 		request.headers().map().forEach((key, value) -> {
 			System.out.println(key + "=" + value);
 		});
-		var response = HttpUtils.request(client, request, BodyHandlers.ofString());
+		var response = HttpManager.request(client, request, BodyHandlers.ofString());
 		if(response != null) {
 			System.out.println(response.body());
 		}

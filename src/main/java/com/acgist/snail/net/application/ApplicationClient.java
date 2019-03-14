@@ -18,8 +18,12 @@ public class ApplicationClient extends AbstractTcpClient<ClientMessageHandler> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationClient.class);
 	
-	public ApplicationClient() {
+	private ApplicationClient() {
 		super(ClientMessageHandler.SPLIT, new ClientMessageHandler());
+	}
+	
+	public static final ApplicationClient newInstance() {
+		return new ApplicationClient();
 	}
 	
 	@Override
@@ -56,7 +60,7 @@ public class ApplicationClient extends AbstractTcpClient<ClientMessageHandler> {
 	 * 唤起主窗口
 	 */
 	public static final void notifyWindow() {
-		ApplicationClient client = new ApplicationClient();
+		ApplicationClient client = ApplicationClient.newInstance();
 		try {
 			client.connect();
 			client.send(ClientMessage.message(ClientMessage.Type.notify));
@@ -69,7 +73,7 @@ public class ApplicationClient extends AbstractTcpClient<ClientMessageHandler> {
 	}
 	
 	public static final void main(String[] args) {
-		ApplicationClient client = new ApplicationClient();
+		ApplicationClient client = ApplicationClient.newInstance();
 		client.connect();
 		client.readin();
 	}

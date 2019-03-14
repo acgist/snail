@@ -26,9 +26,9 @@ import com.acgist.snail.utils.UrlUtils;
 /**
  * utils - http
  */
-public class HttpUtils {
+public class HttpManager {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(HttpUtils.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(HttpManager.class);
 
 	public static final int HTTP_OK = 200; // OK
 	public static final int HTTP_PARTIAL_CONTENT = 206; // 端点续传
@@ -145,12 +145,12 @@ public class HttpUtils {
 	 * 获取header信息
 	 */
 	public static final HttpHeaderWrapper httpHeader(String url) {
-		HttpClient client = HttpUtils.newClient();
-		HttpRequest request = HttpUtils.newRequest(url)
+		HttpClient client = HttpManager.newClient();
+		HttpRequest request = HttpManager.newRequest(url)
 			.method("HEAD", BodyPublishers.noBody())
 			.build();
-		HttpResponse<String> response = HttpUtils.request(client, request, BodyHandlers.ofString());
-		if(HttpUtils.ok(response)) {
+		HttpResponse<String> response = HttpManager.request(client, request, BodyHandlers.ofString());
+		if(HttpManager.ok(response)) {
 			return HttpHeaderWrapper.newInstance(response.headers());
 		}
 		return HttpHeaderWrapper.newInstance(null);
