@@ -4,10 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.DownloaderManager;
-import com.acgist.snail.net.client.AbstractClient;
-import com.acgist.snail.net.client.application.ApplicationClient;
-import com.acgist.snail.net.server.AbstractServer;
-import com.acgist.snail.net.server.impl.ApplicationServer;
+import com.acgist.snail.net.AbstractTcpClient;
+import com.acgist.snail.net.AbstractTcpServer;
+import com.acgist.snail.net.application.ApplicationClient;
+import com.acgist.snail.net.application.ApplicationServer;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.window.menu.TrayMenu;
 
@@ -26,9 +26,9 @@ public class PlatformUtils {
 	public static final void exit() {
 		LOGGER.info("系统关闭中");
 		/**系统线程都是后台线程以下操作可以不执行**/
-		AbstractClient.shutdown();
+		AbstractTcpClient.shutdown();
 		ApplicationServer.getInstance().close();
-		AbstractServer.shutdown();
+		AbstractTcpServer.shutdown();
 		DownloaderManager.getInstance().shutdown();
 		SystemThreadContext.shutdown();
 		/**系统线程都是后台线程以上操作可以不执行**/
