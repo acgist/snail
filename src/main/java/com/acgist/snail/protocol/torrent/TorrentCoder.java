@@ -13,20 +13,20 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * 种子解析器
  */
-public class TorrentDecoder {
+public class TorrentCoder {
 	
 	private String hash = null; // 磁力链接HASH
 	private String infoHash = null; // 20位infoHash
 	private Torrent torrent = null; // 种子文件信息
 	
-	private TorrentDecoder() {
+	private TorrentCoder() {
 	}
 	
 	/**
 	 * 解析种子文件
 	 */
-	public static final TorrentDecoder newInstance(String filePath) throws DownloadException {
-		TorrentDecoder decoder = new TorrentDecoder();
+	public static final TorrentCoder newInstance(String filePath) throws DownloadException {
+		TorrentCoder decoder = new TorrentCoder();
 		try(InputStream input = new FileInputStream(filePath)) {
 			decoder.decode(input);
 		} catch (Exception e) {
@@ -68,7 +68,7 @@ public class TorrentDecoder {
 		String key = null;
 		Torrent torrent = new Torrent();
 		StringBuilder lengthBuilder = new StringBuilder();
-		TorrentHashBuilder hashBuilder = TorrentHashBuilder.newInstance();
+		HashBuilder hashBuilder = HashBuilder.newInstance();
 		while ((index = input.read()) != -1) {
 			hashBuilder.build(key, index);
 			indexChar = (char) index;

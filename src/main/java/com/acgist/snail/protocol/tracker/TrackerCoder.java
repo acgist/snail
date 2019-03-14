@@ -16,11 +16,11 @@ import org.slf4j.LoggerFactory;
  * l：列表：list<br>
  * d：字典：map
  */
-public class TrackerDecoder {
+public class TrackerCoder {
 	
 	private static final List<String> KEYS = new ArrayList<>();
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerDecoder.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerCoder.class);
 	
 	static {
 		KEYS.add("failure reason"); // 失败原因
@@ -35,8 +35,8 @@ public class TrackerDecoder {
 	
 	private Map<String, String> data = new HashMap<>();
 	
-	public static final TrackerDecoder newInstance() {
-		return new TrackerDecoder();
+	public static final TrackerCoder newInstance() {
+		return new TrackerCoder();
 	}
 
 	/**

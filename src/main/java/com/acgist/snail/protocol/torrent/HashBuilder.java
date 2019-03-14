@@ -8,7 +8,7 @@ import com.fasterxml.jackson.core.util.ByteArrayBuilder;
  * 40位hash：sha1生成，磁力链接使用
  * 20位hash：sha1生成编码为20位，tracker使用
  */
-public class TorrentHashBuilder {
+public class HashBuilder {
 
 	private boolean begin;
 	private ByteArrayBuilder builder;
@@ -16,13 +16,13 @@ public class TorrentHashBuilder {
 	private String hash;
 	private String infoHash;
 	
-	private TorrentHashBuilder() {
+	private HashBuilder() {
 		begin = false;
 		builder = new ByteArrayBuilder();
 	}
 	
-	public static final TorrentHashBuilder newInstance() {
-		return new TorrentHashBuilder();
+	public static final HashBuilder newInstance() {
+		return new HashBuilder();
 	}
 	
 	public void build(String key, byte[] values) {

@@ -9,7 +9,7 @@ import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
 import com.acgist.snail.pojo.wrapper.TorrentWrapper;
 import com.acgist.snail.protocol.Protocol;
-import com.acgist.snail.protocol.magnet.MagnetDecoder;
+import com.acgist.snail.protocol.magnet.MagnetCoder;
 import com.acgist.snail.system.config.FileTypeConfig.FileType;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.FileUtils;
@@ -78,8 +78,8 @@ public class TorrentProtocol extends Protocol {
 	private void torrent() throws DownloadException {
 		this.torrent = this.url;
 		String url = this.url;
-		TorrentDecoder decoder = TorrentDecoder.newInstance(url);
-		this.url = MagnetDecoder.buildMagnet(decoder.hash());
+		TorrentCoder decoder = TorrentCoder.newInstance(url);
+		this.url = MagnetCoder.buildMagnet(decoder.hash());
 		this.torrentWrapper = decoder.torrentWrapper();
 	}
 	
