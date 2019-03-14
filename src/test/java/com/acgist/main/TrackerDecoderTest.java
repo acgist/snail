@@ -2,13 +2,13 @@ package com.acgist.main;
 
 import org.junit.Test;
 
-import com.acgist.snail.protocol.tracker.TrackerDecoder;
+import com.acgist.snail.protocol.tracker.TrackerCoder;
 
 public class TrackerDecoderTest {
 
 	@Test
 	public void test() {
-		TrackerDecoder decoder = TrackerDecoder.newInstance();
+		TrackerCoder decoder = TrackerCoder.newInstance();
 		decoder.decode("d8:intervali1800e12:min intervali600e5:peers0:e");
 //		decoder.decode("d14:failure reason63:Requested download is not authorized for use with this tracker.e");
 		System.out.println(decoder.data());

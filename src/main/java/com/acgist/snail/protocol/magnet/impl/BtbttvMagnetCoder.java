@@ -5,18 +5,18 @@ import java.net.http.HttpRequest.Builder;
 import java.util.Map;
 
 import com.acgist.snail.net.http.HttpManager;
-import com.acgist.snail.protocol.magnet.MagnetDecoder;
+import com.acgist.snail.protocol.magnet.MagnetCoder;
 
 /**
  * http://www.btbttv.cc/torrent.html
  */
-public class BtbttvMagnetDecoder extends MagnetDecoder {
+public class BtbttvMagnetCoder extends MagnetCoder {
 
-	private BtbttvMagnetDecoder() {
+	private BtbttvMagnetCoder() {
 	}
 	
-	public static final BtbttvMagnetDecoder newInstance() {
-		return new BtbttvMagnetDecoder();
+	public static final BtbttvMagnetCoder newInstance() {
+		return new BtbttvMagnetCoder();
 	}
 	
 	@Override

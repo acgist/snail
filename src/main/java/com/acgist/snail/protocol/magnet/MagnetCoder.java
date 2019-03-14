@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.http.HttpManager;
-import com.acgist.snail.protocol.magnet.impl.BtbttvMagnetDecoder;
+import com.acgist.snail.protocol.magnet.impl.BtbttvMagnetCoder;
 import com.acgist.snail.protocol.torrent.TorrentProtocol;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.exception.DownloadException;
@@ -22,11 +22,11 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * 磁力链接解析器：磁力链接转种子文件
  */
-public abstract class MagnetDecoder {
+public abstract class MagnetCoder {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(MagnetDecoder.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MagnetCoder.class);
 	
-	private static final  List<MagnetDecoder> DECODERS = new ArrayList<>();
+	private static final  List<MagnetCoder> DECODERS = new ArrayList<>();
 	
 	public static final String MAGNET_REGEX = "magnet:\\?xt=urn:btih:.+"; // 磁力链接正则表达式
 	public static final String MAGNET_PREFIX = "magnet:?xt=urn:btih:"; // 磁力链接前缀
@@ -36,7 +36,7 @@ public abstract class MagnetDecoder {
 	protected String magnet; // 完整磁力链接
 	
 	static {
-		MagnetDecoder.putDecoder(BtbttvMagnetDecoder.newInstance());
+		MagnetCoder.putDecoder(BtbttvMagnetCoder.newInstance());
 		DECODERS.sort((a, b) -> {
 			return a.order().compareTo(b.order());
 		});
@@ -97,7 +97,7 @@ public abstract class MagnetDecoder {
 	/**
 	 * 设置解码器排序
 	 */
-	private static final void putDecoder(MagnetDecoder decoder) {
+	private static final void putDecoder(MagnetCoder decoder) {
 		LOGGER.info("添加磁力链接解码器：{}", decoder.name());
 		DECODERS.add(decoder);
 	}
@@ -108,7 +108,7 @@ public abstract class MagnetDecoder {
 	public static final File download(String url) throws DownloadException {
 		synchronized (DECODERS) {
 			File file = null;
-			for (MagnetDecoder decoder : DECODERS) {
+			for (MagnetCoder decoder : DECODERS) {
 				file = decoder.execute(url);
 				if(file != null) {
 					break;

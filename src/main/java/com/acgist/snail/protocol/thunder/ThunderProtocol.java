@@ -7,7 +7,7 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * 迅雷链接解析器
  */
-public class ThunderDecoder {
+public class ThunderProtocol {
 
 	public static final String THUNDER_PREFIX = "thunder://";
 
