@@ -82,7 +82,7 @@ public class ClientMessageHandler extends AbstractMessageHandler {
 			});
 		} else if(message.getType() == ClientMessage.Type.close) { // 关闭
 			close = true;
-			IoUtils.closeSocket(socket);
+			IoUtils.close(socket);
 		} else if(message.getType() == ClientMessage.Type.response) { // 响应内容
 			LOGGER.info("收到响应：{}", message.getBody());
 		} else {

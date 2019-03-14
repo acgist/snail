@@ -1,5 +1,6 @@
 package com.acgist.snail.net;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousServerSocketChannel;
@@ -23,13 +24,20 @@ public abstract class AbstractTcpServer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractTcpServer.class);
 	
 	private static final ExecutorService EXECUTOR;
+	private static final AsynchronousChannelGroup GROUP;
 	
 	private String name;
-	private AsynchronousChannelGroup group;
 	private AsynchronousServerSocketChannel server;
 	
 	static {
 		EXECUTOR = Executors.newFixedThreadPool(2, SystemThreadContext.newThreadFactory("Application Server Thread"));
+		AsynchronousChannelGroup group = null;
+		try {
+			group = AsynchronousChannelGroup.withThreadPool(EXECUTOR);
+		} catch (IOException e) {
+			LOGGER.error("启动TCP Server Group异常");
+		}
+		GROUP = group;
 	}
 	
 	/**
@@ -56,8 +64,7 @@ public abstract class AbstractTcpServer {
 		LOGGER.info("启动{}", name);
 		boolean ok = true;
 		try {
-			group = AsynchronousChannelGroup.withThreadPool(EXECUTOR);
-			server = AsynchronousServerSocketChannel.open(group).bind(new InetSocketAddress(host, port));
+			server = AsynchronousServerSocketChannel.open(GROUP).bind(new InetSocketAddress(host, port));
 			server.accept(server, new AcceptHandler(messageHandler));
 		} catch (Exception e) {
 			ok = false;
@@ -67,7 +74,7 @@ public abstract class AbstractTcpServer {
 			SystemThreadContext.runasyn(() -> {
 				try {
 					LOGGER.info("启动{}线程", name);
-					group.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
+					GROUP.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
 				} catch (InterruptedException e) {
 					LOGGER.error("启动{}异常", name, e);
 				}
@@ -83,7 +90,7 @@ public abstract class AbstractTcpServer {
 	 */
 	public void close() {
 		LOGGER.info("关闭{}", name);
-		IoUtils.close(group, server, null);
+		IoUtils.close(server);
 	}
 	
 	/**
@@ -91,6 +98,7 @@ public abstract class AbstractTcpServer {
 	 */
 	public static final void shutdown() {
 		LOGGER.info("关闭Server线程池");
+		IoUtils.close(GROUP);
 		SystemThreadContext.shutdown(EXECUTOR);
 	}
 	

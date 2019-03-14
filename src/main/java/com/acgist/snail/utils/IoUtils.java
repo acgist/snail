@@ -40,20 +40,7 @@ public class IoUtils {
 		return content;
 	}
 	
-	/**
-	 * 关闭Aio Socket
-	 */
-	public static final void close(
-		AsynchronousChannelGroup group,
-		AsynchronousServerSocketChannel server,
-		AsynchronousSocketChannel socket
-	) {
-		closeSocket(socket);
-		closeServer(server);
-		closeGroup(group);
-	}
-	
-	public static final void closeSocket(AsynchronousSocketChannel socket) {
+	public static final void close(AsynchronousSocketChannel socket) {
 		if(socket != null && socket.isOpen()) {
 			try {
 				socket.shutdownInput();
@@ -65,7 +52,7 @@ public class IoUtils {
 		}
 	}
 	
-	public static final void closeServer(AsynchronousServerSocketChannel server) {
+	public static final void close(AsynchronousServerSocketChannel server) {
 		if(server != null && server.isOpen()) {
 			try {
 				server.close();
@@ -75,7 +62,7 @@ public class IoUtils {
 		}
 	}
 	
-	public static final void closeGroup(AsynchronousChannelGroup group) {
+	public static final void close(AsynchronousChannelGroup group) {
 		if(group != null && !group.isShutdown()) {
 			group.shutdown();
 			try {

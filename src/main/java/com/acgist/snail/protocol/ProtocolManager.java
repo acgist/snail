@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.acgist.snail.downloader.IDownloader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.acgist.snail.pojo.wrapper.TaskWrapper;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.ThreadUtils;
 
@@ -12,6 +15,8 @@ import com.acgist.snail.utils.ThreadUtils;
  * 下载协议管理器
  */
 public class ProtocolManager {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ProtocolManager.class);
 
 	private static final ProtocolManager INSTANCE = new ProtocolManager();
 	
@@ -31,6 +36,7 @@ public class ProtocolManager {
 	 * 注册协议
 	 */
 	public <T extends Protocol> void register(Protocol protocol) {
+		LOGGER.info("注册下载协议：{}", protocol.name());
 		protocols.add(protocol);
 	}
 	
@@ -44,7 +50,7 @@ public class ProtocolManager {
 	/**
 	 * 新建下载任务
 	 */
-	public IDownloader buildDownloader(String url) throws DownloadException {
+	public TaskWrapper build(String url) throws DownloadException {
 		synchronized (protocols) {
 			Optional<Protocol> optional = protocols.stream()
 				.filter(protocol -> protocol.available())
@@ -55,7 +61,7 @@ public class ProtocolManager {
 				throw new DownloadException("不支持的下载协议：" + url);
 			}
 			Protocol protocol = optional.get();
-			return protocol.downloader();
+			return protocol.build();
 		}
 	}
 

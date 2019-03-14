@@ -6,6 +6,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.acgist.snail.downloader.IDownloader;
+import com.acgist.snail.downloader.ed2k.Ed2kDownloader;
+import com.acgist.snail.downloader.ftp.FtpDownloader;
+import com.acgist.snail.downloader.http.HttpDownloader;
+import com.acgist.snail.downloader.torrent.TorrentDownloader;
 import com.acgist.snail.gui.main.TaskDisplay;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
@@ -172,6 +177,24 @@ public class TaskWrapper {
 		return await() || download();
 	}
 	
+	/**
+	 * 获取下载任务
+	 */
+	public IDownloader downloader() throws DownloadException {
+		var type = this.entity().getType();
+		switch (type) {
+			case ftp:
+				return FtpDownloader.newInstance(this);
+			case ed2k:
+				return Ed2kDownloader.newInstance(this);
+			case http:
+				return HttpDownloader.newInstance(this);
+			case torrent:
+				return TorrentDownloader.newInstance(this);
+		}
+		throw new DownloadException("不支持的下载类型：" + type);
+	}
+	
 	// Table数据绑定 //
 	
 	/**
@@ -231,5 +254,7 @@ public class TaskWrapper {
 		}
 		return formater.get().format(entity.getEndDate());
 	}
+	
+	
 	
 }

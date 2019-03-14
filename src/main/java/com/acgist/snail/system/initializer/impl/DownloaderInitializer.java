@@ -38,7 +38,7 @@ public class DownloaderInitializer extends Initializer {
 			.stream()
 			.map(entity -> {
 				try {
-					return DownloaderFactory.newBuilder(entity);
+					return DownloaderFactory.newInstance(entity);
 				} catch (DownloadException e) {
 					LOGGER.error("添加下载任务异常", e);
 				}

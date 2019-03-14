@@ -1,5 +1,6 @@
 package com.acgist.snail.net;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.StandardSocketOptions;
 import java.nio.channels.AsynchronousChannelGroup;
@@ -27,16 +28,22 @@ public abstract class AbstractTcpClient<T extends AbstractMessageHandler> extend
 	 * 所有客户端公用一个线程池，线程池大小等于客户端类型数量
 	 */
 	private static final ExecutorService EXECUTOR;
+	private static final AsynchronousChannelGroup GROUP;
 	
 	/**
 	 * 消息代理
 	 */
 	protected T messageHandler;
-	
-	private AsynchronousChannelGroup group;
 
 	static {
 		EXECUTOR = Executors.newFixedThreadPool(2, SystemThreadContext.newThreadFactory("Application Client Thread"));
+		AsynchronousChannelGroup group = null;
+		try {
+			group = AsynchronousChannelGroup.withThreadPool(EXECUTOR);
+		} catch (IOException e) {
+			LOGGER.error("启动TCP Client Group异常", e);
+		}
+		GROUP = group;
 	}
 	
 	public AbstractTcpClient(String split, T messageHandler) {
@@ -57,8 +64,7 @@ public abstract class AbstractTcpClient<T extends AbstractMessageHandler> extend
 	protected boolean connect(String host, int port) {
 		boolean ok = true;
 		try {
-			group = AsynchronousChannelGroup.withThreadPool(EXECUTOR);
-			socket = AsynchronousSocketChannel.open(group);
+			socket = AsynchronousSocketChannel.open(GROUP);
 			socket.setOption(StandardSocketOptions.TCP_NODELAY, true);
 			socket.setOption(StandardSocketOptions.SO_REUSEADDR, true);
 			socket.setOption(StandardSocketOptions.SO_KEEPALIVE, true);
@@ -81,7 +87,7 @@ public abstract class AbstractTcpClient<T extends AbstractMessageHandler> extend
 	 * 关闭资源
 	 */
 	public void close() {
-		IoUtils.close(group, null, socket);
+		IoUtils.close(socket);
 	}
 
 	/**
@@ -89,6 +95,7 @@ public abstract class AbstractTcpClient<T extends AbstractMessageHandler> extend
 	 */
 	public static final void shutdown() {
 		LOGGER.info("关闭Client线程池");
+		IoUtils.close(GROUP);
 		SystemThreadContext.shutdown(EXECUTOR);
 	}
 	
