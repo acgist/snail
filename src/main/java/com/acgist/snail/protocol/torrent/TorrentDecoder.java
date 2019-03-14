@@ -1,12 +1,12 @@
-package com.acgist.snail.coder.torrent;
+package com.acgist.snail.protocol.torrent;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.acgist.snail.coder.torrent.pojo.Torrent;
-import com.acgist.snail.coder.torrent.pojo.TorrentInfo;
 import com.acgist.snail.pojo.wrapper.TorrentWrapper;
+import com.acgist.snail.protocol.torrent.pojo.Torrent;
+import com.acgist.snail.protocol.torrent.pojo.TorrentInfo;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.StringUtils;
 
@@ -14,9 +14,6 @@ import com.acgist.snail.utils.StringUtils;
  * 种子解析器
  */
 public class TorrentDecoder {
-	
-	public static final String TORRENT_SUFFIX = ".torrent"; // 文件后缀
-	public static final String TORRENT_REGEX = ".+\\.torrent"; // 正则表达式
 	
 	private String hash = null; // 磁力链接HASH
 	private String infoHash = null; // 20位infoHash
@@ -138,7 +135,7 @@ public class TorrentDecoder {
 	 * 验证BT种子
 	 */
 	public static final boolean verify(String url) {
-		return StringUtils.endsWith(url.toLowerCase(), TORRENT_SUFFIX);
+		return StringUtils.endsWith(url.toLowerCase(), TorrentProtocol.TORRENT_SUFFIX);
 	}
 	
 }

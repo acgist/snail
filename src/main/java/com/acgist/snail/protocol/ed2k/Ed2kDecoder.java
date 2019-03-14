@@ -1,4 +1,4 @@
-package com.acgist.snail.coder.ed2k;
+package com.acgist.snail.protocol.ed2k;
 
 /**
  * ED2K解析器

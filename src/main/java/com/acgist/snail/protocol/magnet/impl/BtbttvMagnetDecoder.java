@@ -1,11 +1,11 @@
-package com.acgist.snail.coder.magnet.impl;
+package com.acgist.snail.protocol.magnet.impl;
 
 import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.Builder;
 import java.util.Map;
 
-import com.acgist.snail.coder.magnet.MagnetDecoder;
 import com.acgist.snail.net.http.HttpManager;
+import com.acgist.snail.protocol.magnet.MagnetDecoder;
 
 /**
  * http://www.btbttv.cc/torrent.html

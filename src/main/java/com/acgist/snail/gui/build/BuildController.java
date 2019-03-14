@@ -7,10 +7,10 @@ import java.util.ResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.coder.torrent.TorrentDecoder;
-import com.acgist.snail.downloader.DownloaderBuilder;
+import com.acgist.snail.downloader.DownloaderFactory;
 import com.acgist.snail.gui.alert.AlertWindow;
 import com.acgist.snail.gui.main.TaskDisplay;
+import com.acgist.snail.protocol.torrent.TorrentDecoder;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.StringUtils;
@@ -65,7 +65,7 @@ public class BuildController implements Initializable {
 		}
 		boolean ok = true;
 		try {
-			DownloaderBuilder.newBuilder(url).build();
+			DownloaderFactory.newBuilder(url).build();
 		} catch (DownloadException e) {
 			LOGGER.error("新建下载任务异常：{}", url, e);
 			ok = false;

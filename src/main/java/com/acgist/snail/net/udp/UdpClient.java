@@ -34,22 +34,27 @@ public class UdpClient {
 		bBuffer.putLong(1234567890L); // connection_id
 		bBuffer.putInt(1);
 		bBuffer.putInt(12345);
+		System.out.println("xxxx");
+		channel.send(bBuffer, new InetSocketAddress("exodus.desync.com", 6969));
+		bBuffer = ByteBuffer.allocate(1024);
+		bBuffer.putLong(1234567890L); // connection_id
+		bBuffer.putInt(0);
+		bBuffer.putInt(12345);
 		bBuffer.put("12345678901234567890".getBytes());// <<<< what you asked.. adding the infoHash which is byte[]
 		bBuffer.put("12345678901234567890".getBytes());
-		bBuffer.putLong(0);
-		bBuffer.putLong(0);
-		bBuffer.putLong(0);
-		bBuffer.putInt(1);
-		bBuffer.put((byte)0);// ip, 0 = default
-		bBuffer.putInt(0);// key
-		bBuffer.putInt(10);// num_want
-        final byte[] portBytes = new byte[] {
-            (byte)(8888 >>> 8),
-            (byte)(8888 - (8888 >>> 8))};
-		bBuffer.put(portBytes); // port
+		bBuffer.putLong(0L);//download
+		bBuffer.putLong(0L);//left
+		bBuffer.putLong(0L);//uploaded
+		bBuffer.putInt(1);//event
+		bBuffer.putInt(0);// local ip
+		bBuffer.putInt(0);//secret key
+		bBuffer.putInt(50);//numwant
+		bBuffer.putShort((short)8888);//numwant
+		bBuffer.putShort((short)0);
 //		channel.write(buf);
-		System.out.println(new String(bBuffer.array()));
-		channel.send(bBuffer, new InetSocketAddress("208.67.16.113", 8000));
+//		System.out.println(new String(bBuffer.array()));
+		System.out.println("xxxx");
+		channel.send(bBuffer, new InetSocketAddress("exodus.desync.com", 6969));
 //		int bytesWritten = channel.write(buf);
 //		buf = ByteBuffer.allocate(1024);
 //		byte[] bytes = baos.toByteArray();

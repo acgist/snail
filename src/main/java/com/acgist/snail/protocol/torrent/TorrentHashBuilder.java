@@ -1,4 +1,4 @@
-package com.acgist.snail.coder.torrent;
+package com.acgist.snail.protocol.torrent;
 
 import com.acgist.snail.utils.StringUtils;
 import com.fasterxml.jackson.core.util.ByteArrayBuilder;

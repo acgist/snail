@@ -1,42 +1,43 @@
 package com.acgist.snail.downloader;
 
-import com.acgist.snail.coder.DownloaderUrlDecoder;
 import com.acgist.snail.downloader.ftp.FtpDownloader;
 import com.acgist.snail.downloader.http.HttpDownloader;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
+import com.acgist.snail.protocol.DownloaderUrlDecoder;
+import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.system.exception.DownloadException;
 
 /**
  * 下载器构建
  */
-public class DownloaderBuilder {
+public class DownloaderFactory {
 
 	private String url;
 	private TaskWrapper wrapper;
-	private DownloaderUrlDecoder decoder;
+	private ProtocolManager manager = ProtocolManager.getInstance();
 	
-	private DownloaderBuilder(String url) {
+	private DownloaderFactory(String url) {
 		this.url = url;
 	}
 	
-	private DownloaderBuilder(TaskEntity entity) throws DownloadException {
+	private DownloaderFactory(TaskEntity entity) throws DownloadException {
 		this.wrapper = TaskWrapper.newInstance(entity);
 	}
 	
 	/**
 	 * 新建下载任务
 	 */
-	public static final DownloaderBuilder newBuilder(String url) {
-		final DownloaderBuilder builder = new DownloaderBuilder(url);
+	public static final DownloaderFactory newBuilder(String url) {
+		final DownloaderFactory builder = new DownloaderFactory(url);
 		return builder;
 	}
 
 	/**
 	 * 数据库加载下载任务
 	 */
-	public static final DownloaderBuilder newBuilder(TaskEntity entity) throws DownloadException {
-		final DownloaderBuilder builder = new DownloaderBuilder(entity);
+	public static final DownloaderFactory newBuilder(TaskEntity entity) throws DownloadException {
+		final DownloaderFactory builder = new DownloaderFactory(entity);
 		builder.wrapper.loadDownloadSize(); // 加载已下载大小
 		return builder;
 	}
@@ -63,6 +64,7 @@ public class DownloaderBuilder {
 	 * 解码器
 	 */
 	private void buildDecoder() {
+		manager.buildDownloader(url);
 		this.decoder = DownloaderUrlDecoder.newDecoder(this.url);
 	}
 	
