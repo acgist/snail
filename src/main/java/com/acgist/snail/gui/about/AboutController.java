@@ -1,4 +1,4 @@
-package com.acgist.snail.window.about;
+package com.acgist.snail.gui.about;
 
 import java.net.URL;
 import java.util.ResourceBundle;

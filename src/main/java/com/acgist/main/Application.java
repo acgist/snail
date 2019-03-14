@@ -3,10 +3,10 @@ package com.acgist.main;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.gui.main.MainWindow;
+import com.acgist.snail.gui.menu.TrayMenu;
 import com.acgist.snail.system.context.SystemContext;
 import com.acgist.snail.utils.PlatformUtils;
-import com.acgist.snail.window.main.MainWindow;
-import com.acgist.snail.window.menu.TrayMenu;
 
 import javafx.application.Platform;
 

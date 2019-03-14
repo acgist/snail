@@ -1,9 +1,9 @@
-package com.acgist.snail.window.build;
+package com.acgist.snail.gui.build;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.window.AbstractWindow;
+import com.acgist.snail.gui.AbstractWindow;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;

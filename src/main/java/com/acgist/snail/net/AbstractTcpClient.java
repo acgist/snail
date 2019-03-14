@@ -19,7 +19,7 @@ import com.acgist.snail.utils.IoUtils;
 /**
  * Aio Socket客户端
  */
-public abstract class AbstractTcpClient<T extends AbstractMessageHandler> extends AbstractSender {
+public abstract class AbstractTcpClient<T extends AbstractMessageHandler> extends AbstractTcpSender {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractTcpClient.class);
 	

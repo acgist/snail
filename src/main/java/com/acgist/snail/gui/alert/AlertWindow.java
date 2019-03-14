@@ -1,4 +1,4 @@
-package com.acgist.snail.window.alert;
+package com.acgist.snail.gui.alert;
 
 import java.util.Optional;
 

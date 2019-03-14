@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.AbstractDownloader;
 import com.acgist.snail.net.ftp.FtpClient;
-import com.acgist.snail.net.ftp.FtpManager;
+import com.acgist.snail.net.ftp.FtpClientBuilder;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.utils.FileUtils;
@@ -93,7 +93,7 @@ public class FtpDownloader extends AbstractDownloader {
 	private void buildInput() {
 		var entity = wrapper.entity();
 		long size = FileUtils.fileSize(entity.getFile()); // 已下载大小
-		client = FtpManager.buildClient(entity.getUrl());
+		client = FtpClientBuilder.buildClient(entity.getUrl());
 		boolean ok = client.connect();
 		if(ok) {
 			InputStream inputStream = client.download(size);

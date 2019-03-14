@@ -1,4 +1,4 @@
-package com.acgist.snail.window.build;
+package com.acgist.snail.gui.build;
 
 import java.io.File;
 import java.net.URL;
@@ -9,11 +9,11 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.coder.torrent.TorrentDecoder;
 import com.acgist.snail.downloader.DownloaderBuilder;
+import com.acgist.snail.gui.alert.AlertWindow;
+import com.acgist.snail.gui.main.TaskDisplay;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.StringUtils;
-import com.acgist.snail.window.alert.AlertWindow;
-import com.acgist.snail.window.main.TaskDisplay;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

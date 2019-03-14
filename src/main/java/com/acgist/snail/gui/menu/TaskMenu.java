@@ -1,4 +1,4 @@
-package com.acgist.snail.window.menu;
+package com.acgist.snail.gui.menu;
 
 import java.io.File;
 import java.util.HashMap;
@@ -7,16 +7,16 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.gui.AbstractMenu;
+import com.acgist.snail.gui.alert.AlertWindow;
+import com.acgist.snail.gui.main.MainWindow;
+import com.acgist.snail.gui.torrent.TorrentWindow;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.ClipboardUtils;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.FileVerifyUtils;
-import com.acgist.snail.window.AbstractMenu;
-import com.acgist.snail.window.alert.AlertWindow;
-import com.acgist.snail.window.main.MainWindow;
-import com.acgist.snail.window.torrent.TorrentWindow;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;

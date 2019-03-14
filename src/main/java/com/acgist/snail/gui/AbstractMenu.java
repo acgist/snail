@@ -1,4 +1,4 @@
-package com.acgist.snail.window;
+package com.acgist.snail.gui;
 
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;

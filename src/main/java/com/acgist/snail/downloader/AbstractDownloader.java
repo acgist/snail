@@ -5,11 +5,11 @@ import java.awt.TrayIcon.MessageType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.gui.menu.TrayMenu;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.ThreadUtils;
-import com.acgist.snail.window.menu.TrayMenu;
 
 /**
  * 抽象下载器

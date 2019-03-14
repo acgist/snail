@@ -6,12 +6,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.DownloaderBuilder;
+import com.acgist.snail.gui.main.TaskDisplay;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.initializer.Initializer;
 import com.acgist.snail.utils.CollectionUtils;
-import com.acgist.snail.window.main.TaskDisplay;
 
 /**
  * 初始化：下载器

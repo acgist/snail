@@ -1,12 +1,15 @@
 package com.acgist.main;
 
+import org.junit.Test;
+
 import com.acgist.snail.utils.ThreadUtils;
 
 public class ThreadUtilsTest {
 
 	private String name;
 	
-	public static void main(String[] args) {
+	@Test
+	public void test() {
 		ThreadUtilsTest t = new ThreadUtilsTest();
 		System.out.println(System.currentTimeMillis());
 		new Thread(() -> {

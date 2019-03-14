@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.acgist.snail.gui.main.TaskDisplay;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
@@ -16,7 +17,6 @@ import com.acgist.snail.utils.DateUtils;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.JsonUtils;
 import com.acgist.snail.utils.StringUtils;
-import com.acgist.snail.window.main.TaskDisplay;
 
 /**
  * wrapper - 任务
@@ -112,7 +112,7 @@ public class TaskWrapper {
 		downloadBuffer.addAndGet(buffer);
 		long now = System.currentTimeMillis();
 		long interval = now - lastTime;
-		if(interval > TaskDisplay.REFRESH_TIME_MILLIS) {
+		if(interval > TaskDisplay.REFRESH_TIME.toMillis()) {
 			long oldBuffer = downloadBuffer.getAndSet(0);
 			bufferSecond = oldBuffer * 1000 / interval;
 			lastTime = now;

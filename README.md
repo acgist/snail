@@ -22,3 +22,6 @@ jdeps --list-deps *.jar
 * ED2K下载
 * P2P分享
 * 多线程下载
+
+#### BT参考项目
+https://github.com/atomashpolskiy/bt

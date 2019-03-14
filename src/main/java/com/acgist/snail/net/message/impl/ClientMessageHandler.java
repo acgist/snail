@@ -5,11 +5,11 @@ import java.nio.ByteBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.gui.main.MainWindow;
 import com.acgist.snail.net.message.AbstractMessageHandler;
 import com.acgist.snail.pojo.message.ClientMessage;
 import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.StringUtils;
-import com.acgist.snail.window.main.MainWindow;
 
 import javafx.application.Platform;
 

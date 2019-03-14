@@ -5,9 +5,9 @@ import java.net.URI;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * FTP工具
+ * FTP客户端创建工具
  */
-public class FtpManager {
+public class FtpClientBuilder {
 
 	private static final int FTP_DEFAULT_PORT = 21;
 	
@@ -18,19 +18,19 @@ public class FtpManager {
 	private String user;
 	private String password;
 	
-	private FtpManager() {
+	private FtpClientBuilder() {
 	}
 	
 	public static final FtpClient buildClient(String url) {
-		FtpManager manager = new FtpManager();
-		manager.url = url;
-		manager.decodeUrl();
+		FtpClientBuilder builder = new FtpClientBuilder();
+		builder.url = url;
+		builder.decodeUrl();
 		return new FtpClient(
-			manager.host,
-			manager.port,
-			manager.user,
-			manager.password,
-			manager.filePath
+			builder.host,
+			builder.port,
+			builder.user,
+			builder.password,
+			builder.filePath
 		);
 	}
 	
