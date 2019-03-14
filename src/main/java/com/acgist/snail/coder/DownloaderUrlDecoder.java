@@ -20,7 +20,7 @@ import com.acgist.snail.coder.thunder.ThunderDecoder;
 import com.acgist.snail.coder.torrent.TorrentDecoder;
 import com.acgist.snail.net.ftp.FtpClient;
 import com.acgist.snail.net.ftp.FtpManager;
-import com.acgist.snail.net.http.HttpUtils;
+import com.acgist.snail.net.http.HttpManager;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
@@ -349,7 +349,7 @@ public class DownloaderUrlDecoder {
 		int index = 0;
 		while(true) {
 			index++;
-			this.httpHeaderWrapper = HttpUtils.httpHeader(url);
+			this.httpHeaderWrapper = HttpManager.httpHeader(url);
 			if(this.httpHeaderWrapper.isNotEmpty()) {
 				break;
 			}

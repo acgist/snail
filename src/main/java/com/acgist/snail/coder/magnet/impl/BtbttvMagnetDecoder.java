@@ -5,13 +5,20 @@ import java.net.http.HttpRequest.Builder;
 import java.util.Map;
 
 import com.acgist.snail.coder.magnet.MagnetDecoder;
-import com.acgist.snail.net.http.HttpUtils;
+import com.acgist.snail.net.http.HttpManager;
 
 /**
  * http://www.btbttv.cc/torrent.html
  */
 public class BtbttvMagnetDecoder extends MagnetDecoder {
 
+	private BtbttvMagnetDecoder() {
+	}
+	
+	public static final BtbttvMagnetDecoder newInstance() {
+		return new BtbttvMagnetDecoder();
+	}
+	
 	@Override
 	public String name() {
 		return "btbttv";
@@ -29,8 +36,8 @@ public class BtbttvMagnetDecoder extends MagnetDecoder {
 			"route", "3",
 			"hash", this.hash
 		);
-		Builder builder = HttpUtils.newFormRequest("http://www.btbttv.cc/torrent.html");
-		return builder.POST(HttpUtils.formBodyPublisher(data)).build();
+		Builder builder = HttpManager.newFormRequest("http://www.btbttv.cc/torrent.html");
+		return builder.POST(HttpManager.formBodyPublisher(data)).build();
 	}
 
 }
