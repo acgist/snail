@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.AbstractDownloader;
-import com.acgist.snail.net.client.ftp.FtpClient;
+import com.acgist.snail.net.ftp.FtpClient;
 import com.acgist.snail.net.ftp.FtpManager;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
 import com.acgist.snail.system.config.DownloadConfig;

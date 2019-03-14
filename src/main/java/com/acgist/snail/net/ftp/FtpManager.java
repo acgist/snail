@@ -2,7 +2,6 @@ package com.acgist.snail.net.ftp;
 
 import java.net.URI;
 
-import com.acgist.snail.net.client.ftp.FtpClient;
 import com.acgist.snail.utils.StringUtils;
 
 /**

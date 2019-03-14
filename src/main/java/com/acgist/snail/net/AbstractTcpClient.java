@@ -1,4 +1,4 @@
-package com.acgist.snail.net.client;
+package com.acgist.snail.net;
 
 import java.net.InetSocketAddress;
 import java.net.StandardSocketOptions;
@@ -12,7 +12,6 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.AbstractSender;
 import com.acgist.snail.net.message.AbstractMessageHandler;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.IoUtils;
@@ -20,9 +19,9 @@ import com.acgist.snail.utils.IoUtils;
 /**
  * Aio Socket客户端
  */
-public abstract class AbstractClient<T extends AbstractMessageHandler> extends AbstractSender {
+public abstract class AbstractTcpClient<T extends AbstractMessageHandler> extends AbstractSender {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractClient.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractTcpClient.class);
 	
 	/**
 	 * 所有客户端公用一个线程池，线程池大小等于客户端类型数量
@@ -40,7 +39,7 @@ public abstract class AbstractClient<T extends AbstractMessageHandler> extends A
 		EXECUTOR = Executors.newFixedThreadPool(2, SystemThreadContext.newThreadFactory("Application Client Thread"));
 	}
 	
-	public AbstractClient(String split, T messageHandler) {
+	public AbstractTcpClient(String split, T messageHandler) {
 		super(split);
 		this.messageHandler = messageHandler;
 	}

@@ -1,13 +1,13 @@
-package com.acgist.snail.net.server.impl;
+package com.acgist.snail.net.application;
 
+import com.acgist.snail.net.AbstractTcpServer;
 import com.acgist.snail.net.message.impl.ClientMessageHandler;
-import com.acgist.snail.net.server.AbstractServer;
 import com.acgist.snail.system.config.SystemConfig;
 
 /**
  * 系统监听
  */
-public class ApplicationServer extends AbstractServer {
+public class ApplicationServer extends AbstractTcpServer {
 
 	private static final ApplicationServer INSTANCE = new ApplicationServer();
 	

@@ -1,4 +1,4 @@
-package com.acgist.snail.net.client.p2p;
+package com.acgist.snail.net.p2p;
 
 /**
  * P2P客户端

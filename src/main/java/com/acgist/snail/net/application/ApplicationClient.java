@@ -1,11 +1,11 @@
-package com.acgist.snail.net.client.application;
+package com.acgist.snail.net.application;
 
 import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.client.AbstractClient;
+import com.acgist.snail.net.AbstractTcpClient;
 import com.acgist.snail.net.message.impl.ClientMessageHandler;
 import com.acgist.snail.pojo.message.ClientMessage;
 import com.acgist.snail.pojo.message.ClientMessage.Type;
@@ -14,7 +14,7 @@ import com.acgist.snail.system.config.SystemConfig;
 /**
  * 启动检测：如果已经启动实例，通过这个方法唤醒已启动的窗口
  */
-public class ApplicationClient extends AbstractClient<ClientMessageHandler> {
+public class ApplicationClient extends AbstractTcpClient<ClientMessageHandler> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationClient.class);
 	

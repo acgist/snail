@@ -1,10 +1,10 @@
-package com.acgist.snail.net.client.ftp;
+package com.acgist.snail.net.ftp;
 
 import java.io.InputStream;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import com.acgist.snail.net.client.AbstractClient;
+import com.acgist.snail.net.AbstractTcpClient;
 import com.acgist.snail.net.message.impl.FtpMessageHandler;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.StringUtils;
@@ -12,7 +12,7 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * FTP
  */
-public class FtpClient extends AbstractClient<FtpMessageHandler> {
+public class FtpClient extends AbstractTcpClient<FtpMessageHandler> {
 
 	public static final String ANONYMOUS = "anonymous"; // 匿名用户名
 	

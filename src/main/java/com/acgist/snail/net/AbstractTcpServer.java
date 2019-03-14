@@ -1,4 +1,4 @@
-package com.acgist.snail.net.server;
+package com.acgist.snail.net;
 
 import java.net.InetSocketAddress;
 import java.nio.channels.AsynchronousChannelGroup;
@@ -18,9 +18,9 @@ import com.acgist.snail.utils.IoUtils;
  * 服务端超类
  * TODO：BT任务服务端口
  */
-public abstract class AbstractServer {
+public abstract class AbstractTcpServer {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractServer.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractTcpServer.class);
 	
 	private static final ExecutorService EXECUTOR;
 	
@@ -35,7 +35,7 @@ public abstract class AbstractServer {
 	/**
 	 * 线程大小根据客户类型优化
 	 */
-	protected AbstractServer(String name) {
+	protected AbstractTcpServer(String name) {
 		this.name = name;
 	}
 

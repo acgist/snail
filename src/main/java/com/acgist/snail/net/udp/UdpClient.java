@@ -24,11 +24,11 @@ public class UdpClient {
 	 */
 	public void connect() throws IOException {
 		DatagramChannel channel = DatagramChannel.open();
-		channel.bind(new InetSocketAddress(28888));
+		channel.bind(new InetSocketAddress(8888));
 //		channel.configureBlocking(false);
-		Selector selector = Selector.open();
+//		Selector selector = Selector.open();
 //		channel.register(selector, SelectionKey.OP_READ);
-		channel.connect(new InetSocketAddress("tracker.opentrackr.org", 1337));
+		channel.connect(new InetSocketAddress("tr.bangumi.moe", 6969));
 		ByteBuffer buf = null;
 		System.out.println("xx");
 //		int x = channel.write(buf);

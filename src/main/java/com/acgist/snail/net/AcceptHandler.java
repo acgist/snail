@@ -1,4 +1,4 @@
-package com.acgist.snail.net.server;
+package com.acgist.snail.net;
 
 import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;

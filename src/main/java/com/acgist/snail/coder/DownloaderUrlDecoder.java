@@ -18,7 +18,7 @@ import com.acgist.snail.coder.http.HttpDecoder;
 import com.acgist.snail.coder.magnet.MagnetDecoder;
 import com.acgist.snail.coder.thunder.ThunderDecoder;
 import com.acgist.snail.coder.torrent.TorrentDecoder;
-import com.acgist.snail.net.client.ftp.FtpClient;
+import com.acgist.snail.net.ftp.FtpClient;
 import com.acgist.snail.net.ftp.FtpManager;
 import com.acgist.snail.net.http.HttpUtils;
 import com.acgist.snail.pojo.entity.TaskEntity;
