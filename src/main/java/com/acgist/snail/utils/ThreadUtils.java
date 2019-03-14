@@ -1,5 +1,10 @@
 package com.acgist.snail.utils;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,16 +36,18 @@ public class ThreadUtils {
 	 * @param timeout 超时时间（毫秒）
 	 */
 	public static final void timeout(long timeout, ConditionFunction function) {
-		long start = System.currentTimeMillis();
-		while(true) {
-			if(function.condition()) {
-				break;
-			}
-//			Thread.yield(); // 使用休眠占用资源较少
-			ThreadUtils.sleep(10);
-			if(System.currentTimeMillis() - start > timeout) {
-				break;
-			}
+		try {
+			CompletableFuture.runAsync(() -> {
+				while(true) {
+					if(function.condition()) {
+						break;
+					}
+//					Thread.yield(); // 使用休眠占用资源较少
+					ThreadUtils.sleep(100);
+				}
+			}).get(timeout, TimeUnit.MILLISECONDS);
+		} catch (InterruptedException | ExecutionException | TimeoutException e) {
+			LOGGER.error("线程超时", e);
 		}
 	}
 

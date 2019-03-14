@@ -1,4 +1,4 @@
-package com.acgist.snail.coder.magnet;
+package com.acgist.snail.protocol.magnet;
 
 import java.io.File;
 import java.net.http.HttpClient;
@@ -11,9 +11,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.coder.magnet.impl.BtbttvMagnetDecoder;
-import com.acgist.snail.coder.torrent.TorrentDecoder;
 import com.acgist.snail.net.http.HttpManager;
+import com.acgist.snail.protocol.magnet.impl.BtbttvMagnetDecoder;
+import com.acgist.snail.protocol.torrent.TorrentProtocol;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.FileUtils;
@@ -67,7 +67,7 @@ public abstract class MagnetDecoder {
 		HttpResponse<byte[]> response = HttpManager.request(client, request, BodyHandlers.ofByteArray());
 		if(HttpManager.ok(response)) {
 			byte[] bytes = response.body();
-			String path = DownloadConfig.getPath(this.hash + TorrentDecoder.TORRENT_SUFFIX);
+			String path = DownloadConfig.getPath(this.hash + TorrentProtocol.TORRENT_SUFFIX);
 			FileUtils.write(path, bytes);
 			return new File(path);
 		}

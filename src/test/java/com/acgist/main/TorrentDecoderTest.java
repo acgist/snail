@@ -2,8 +2,8 @@ package com.acgist.main;
 
 import org.junit.Test;
 
-import com.acgist.snail.coder.torrent.TorrentDecoder;
-import com.acgist.snail.coder.torrent.pojo.Torrent;
+import com.acgist.snail.protocol.torrent.TorrentDecoder;
+import com.acgist.snail.protocol.torrent.pojo.Torrent;
 
 public class TorrentDecoderTest {
 
