@@ -1,4 +1,4 @@
-package com.acgist.snail.window.menu;
+package com.acgist.snail.gui.menu;
 
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
@@ -12,13 +12,13 @@ import javax.swing.event.MouseInputAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.gui.AbstractMenu;
+import com.acgist.snail.gui.about.AboutWindow;
+import com.acgist.snail.gui.main.MainWindow;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.BrowseUtils;
 import com.acgist.snail.utils.PlatformUtils;
-import com.acgist.snail.window.AbstractMenu;
-import com.acgist.snail.window.about.AboutWindow;
-import com.acgist.snail.window.main.MainWindow;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;

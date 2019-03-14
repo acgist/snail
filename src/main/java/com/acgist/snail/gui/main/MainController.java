@@ -1,4 +1,4 @@
-package com.acgist.snail.window.main;
+package com.acgist.snail.gui.main;
 
 import java.io.File;
 import java.net.URL;
@@ -12,17 +12,17 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.coder.torrent.TorrentDecoder;
 import com.acgist.snail.downloader.DownloaderManager;
+import com.acgist.snail.gui.about.AboutWindow;
+import com.acgist.snail.gui.alert.AlertWindow;
+import com.acgist.snail.gui.build.BuildWindow;
+import com.acgist.snail.gui.menu.TaskMenu;
+import com.acgist.snail.gui.setting.SettingWindow;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
 import com.acgist.snail.system.context.SystemStatistical;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.FileUtils;
-import com.acgist.snail.window.about.AboutWindow;
-import com.acgist.snail.window.alert.AlertWindow;
-import com.acgist.snail.window.build.BuildWindow;
-import com.acgist.snail.window.menu.TaskMenu;
-import com.acgist.snail.window.setting.SettingWindow;
 
 import javafx.application.Platform;
 import javafx.beans.binding.DoubleBinding;

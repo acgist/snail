@@ -10,7 +10,7 @@ import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * FTP
+ * FTP客户端
  */
 public class FtpClient extends AbstractTcpClient<FtpMessageHandler> {
 

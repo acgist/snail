@@ -1,4 +1,4 @@
-package com.acgist.snail.window.main;
+package com.acgist.snail.gui.main;
 
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
 import com.acgist.snail.system.config.FileTypeConfig.FileType;

@@ -87,7 +87,8 @@ public class FtpMessageHandler extends AbstractMessageHandler {
 				String data = message.substring(opening + 1, closing);
 				StringTokenizer tokenizer = new StringTokenizer(data, ",");
 				String ip = tokenizer.nextToken() + "." + tokenizer.nextToken() + "." + tokenizer.nextToken() + "." + tokenizer.nextToken();
-				int port = Integer.parseInt(tokenizer.nextToken()) * 256 + Integer.parseInt(tokenizer.nextToken());
+//				int port = Integer.parseInt(tokenizer.nextToken()) * 256 + Integer.parseInt(tokenizer.nextToken());
+				int port = (Integer.parseInt(tokenizer.nextToken()) << 8) + Integer.parseInt(tokenizer.nextToken());
 				try {
 					socket = new Socket(ip, port);
 				} catch (IOException e) {

@@ -25,8 +25,8 @@ public class AcceptHandler implements CompletionHandler<AsynchronousSocketChanne
 	@Override
 	public void completed(AsynchronousSocketChannel result, AsynchronousServerSocketChannel attachment) {
 		LOGGER.info("客户端连接成功");
-		doReader(result);
-		doAccept(attachment);
+		reader(result);
+		accept(attachment);
 	}
 	
 	@Override
@@ -34,11 +34,11 @@ public class AcceptHandler implements CompletionHandler<AsynchronousSocketChanne
 		LOGGER.error("客户端连接异常", exc);
 	}
 	
-	private void doReader(AsynchronousSocketChannel result) {
+	private void reader(AsynchronousSocketChannel result) {
 		messageHandler.handler(result);
 	}
 	
-	private void doAccept(AsynchronousServerSocketChannel attachment) {
+	private void accept(AsynchronousServerSocketChannel attachment) {
 		attachment.accept(attachment, this);
 	}
 

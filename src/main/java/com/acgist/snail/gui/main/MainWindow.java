@@ -1,11 +1,11 @@
-package com.acgist.snail.window.main;
+package com.acgist.snail.gui.main;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.gui.AbstractWindow;
+import com.acgist.snail.gui.about.AboutWindow;
 import com.acgist.snail.system.config.SystemConfig;
-import com.acgist.snail.window.AbstractWindow;
-import com.acgist.snail.window.about.AboutWindow;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;

@@ -1,4 +1,4 @@
-package com.acgist.snail.window.setting;
+package com.acgist.snail.gui.setting;
 
 import java.io.File;
 import java.net.URL;

@@ -1,10 +1,10 @@
-package com.acgist.snail.window.torrent;
+package com.acgist.snail.gui.torrent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.gui.AbstractWindow;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
-import com.acgist.snail.window.AbstractWindow;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;

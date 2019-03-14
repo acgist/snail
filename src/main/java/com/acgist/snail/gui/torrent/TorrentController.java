@@ -1,4 +1,4 @@
-package com.acgist.snail.window.torrent;
+package com.acgist.snail.gui.torrent;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -7,13 +7,13 @@ import com.acgist.snail.coder.torrent.TorrentDecoder;
 import com.acgist.snail.coder.torrent.pojo.Torrent;
 import com.acgist.snail.coder.torrent.pojo.TorrentInfo;
 import com.acgist.snail.downloader.DownloaderManager;
+import com.acgist.snail.gui.alert.AlertWindow;
+import com.acgist.snail.gui.main.TaskDisplay;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.wrapper.TaskWrapper;
 import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.JsonUtils;
-import com.acgist.snail.window.alert.AlertWindow;
-import com.acgist.snail.window.main.TaskDisplay;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

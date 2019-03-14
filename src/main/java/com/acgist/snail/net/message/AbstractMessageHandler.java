@@ -7,12 +7,12 @@ import java.nio.channels.CompletionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.AbstractSender;
+import com.acgist.snail.net.AbstractTcpSender;
 
 /**
  * 消息处理
  */
-public abstract class AbstractMessageHandler extends AbstractSender implements CompletionHandler<Integer, ByteBuffer> {
+public abstract class AbstractMessageHandler extends AbstractTcpSender implements CompletionHandler<Integer, ByteBuffer> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractMessageHandler.class);
 	
