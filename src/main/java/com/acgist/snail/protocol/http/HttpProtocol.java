@@ -1,7 +1,5 @@
 package com.acgist.snail.protocol.http;
 
-import com.acgist.snail.downloader.IDownloader;
-import com.acgist.snail.downloader.http.HttpDownloader;
 import com.acgist.snail.net.http.HttpManager;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
@@ -25,8 +23,14 @@ public class HttpProtocol extends Protocol {
 
 	private HttpHeaderWrapper httpHeaderWrapper;
 	
+	private static final HttpProtocol INSTANCE = new HttpProtocol();
+	
 	private HttpProtocol() {
 		super(Type.http, HTTP_REGEX, HTTPS_REGEX);
+	}
+	
+	public static final HttpProtocol getInstance() {
+		return INSTANCE;
 	}
 	
 	@Override
@@ -40,7 +44,7 @@ public class HttpProtocol extends Protocol {
 	}
 
 	@Override
-	protected void buildTaskEntity() throws DownloadException {
+	protected boolean buildTaskEntity() throws DownloadException {
 		buildHeader();
 		TaskEntity taskEntity = new TaskEntity();
 		String fileName = buildFileName(); // 文件名称
@@ -52,11 +56,7 @@ public class HttpProtocol extends Protocol {
 		taskEntity.setFileType(FileUtils.fileType(fileName));
 		taskEntity.setSize(buildSize());
 		this.taskEntity = taskEntity;
-	}
-
-	@Override
-	protected IDownloader buildDownloader() {
-		return HttpDownloader.newInstance(this.taskWrapper);
+		return true;
 	}
 
 	@Override

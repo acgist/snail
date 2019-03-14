@@ -1,7 +1,5 @@
 package com.acgist.snail.protocol.magnet;
 
-import java.io.File;
-
 public class MagnetProtocol {
 
 //	File file = MagnetDecoder.download(url);

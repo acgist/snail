@@ -69,24 +69,25 @@ public abstract class Protocol {
 	 * 构建下载
 	 */
 	public TaskWrapper build() throws DownloadException {
-		buildTaskEntity();
-		persistentTaskEntity();
-		return buildTaskWrapper();
+		boolean ok = buildTaskEntity();
+		if(ok) {
+			persistentTaskEntity();
+			return buildTaskWrapper();
+		} else {
+			return null;
+		}
 	}
 	
 	/**
 	 * 创建下载任务
 	 */
-	protected abstract void buildTaskEntity() throws DownloadException;
+	protected abstract boolean buildTaskEntity() throws DownloadException;
 	
 	/**
 	 * 持久化任务
 	 */
-	protected void persistentTaskEntity() throws DownloadException {
+	protected void persistentTaskEntity() {
 		TaskRepository repository = new TaskRepository();
-		if(this.taskEntity == null) {
-			throw new DownloadException("添加下载任务失败");
-		}
 		repository.save(this.taskEntity);
 	}
 	

@@ -106,7 +106,7 @@ public final class DownloaderManager {
 		var entity = wrapper.entity();
 		IDownloader downloader = downloader(wrapper);
 		if(downloader == null) {
-			downloader = DownloaderFactory.build(wrapper);
+			downloader = wrapper.downloader();
 		}
 		if(downloader == null) {
 			throw new DownloadException("添加下载任务失败（下载任务为空）");

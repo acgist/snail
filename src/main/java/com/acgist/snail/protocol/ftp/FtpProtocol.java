@@ -1,7 +1,5 @@
 package com.acgist.snail.protocol.ftp;
 
-import com.acgist.snail.downloader.IDownloader;
-import com.acgist.snail.downloader.ftp.FtpDownloader;
 import com.acgist.snail.net.ftp.FtpClient;
 import com.acgist.snail.net.ftp.FtpClientBuilder;
 import com.acgist.snail.pojo.entity.TaskEntity;
@@ -40,7 +38,7 @@ public class FtpProtocol extends Protocol {
 	}
 
 	@Override
-	protected void buildTaskEntity() throws DownloadException {
+	protected boolean buildTaskEntity() throws DownloadException {
 		TaskEntity taskEntity = new TaskEntity();
 		String fileName = buildFileName(); // 文件名称
 		taskEntity.setUrl(this.url);
@@ -51,13 +49,9 @@ public class FtpProtocol extends Protocol {
 		taskEntity.setFileType(FileUtils.fileType(fileName));
 		taskEntity.setSize(buildSize());
 		this.taskEntity = taskEntity;
+		return true;
 	}
 
-	@Override
-	protected IDownloader buildDownloader() {
-		return FtpDownloader.newInstance(this.taskWrapper);
-	}
-	
 	@Override
 	protected void cleanMessage() {
 	}

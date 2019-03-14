@@ -65,7 +65,7 @@ public class BuildController implements Initializable {
 		}
 		boolean ok = true;
 		try {
-			DownloaderFactory.newBuilder(url).build();
+			DownloaderFactory.newInstance(url).build();
 		} catch (DownloadException e) {
 			LOGGER.error("新建下载任务异常：{}", url, e);
 			ok = false;
