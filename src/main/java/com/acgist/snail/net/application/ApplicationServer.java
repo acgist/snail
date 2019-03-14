@@ -24,7 +24,7 @@ public class ApplicationServer extends AbstractTcpServer {
 	}
 	
 	public boolean listen(String host, int port) {
-		return listen(host, port, new ClientMessageHandler());
+		return listen(host, port, ClientMessageHandler.class);
 	}
 	
 	public static final void main(String[] args) throws InterruptedException {
