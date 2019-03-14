@@ -18,6 +18,7 @@ import com.acgist.snail.utils.IoUtils;
 /**
  * 服务端超类
  * TODO：BT任务服务端口
+ * TODO：多客户端链接异常
  */
 public abstract class AbstractTcpServer {
 
