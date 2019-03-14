@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.message.AbstractMessageHandler;
+import com.acgist.snail.net.message.AcceptHandler;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.IoUtils;
 
@@ -61,12 +62,12 @@ public abstract class AbstractTcpServer {
 	/**
 	 * 开启监听
 	 */
-	protected boolean listen(String host, int port, AbstractMessageHandler messageHandler) {
+	protected <T extends AbstractMessageHandler> boolean listen(String host, int port, Class<T> clazz) {
 		LOGGER.info("启动{}", name);
 		boolean ok = true;
 		try {
 			server = AsynchronousServerSocketChannel.open(GROUP).bind(new InetSocketAddress(host, port));
-			server.accept(server, new AcceptHandler(messageHandler));
+			server.accept(server, new AcceptHandler<>(clazz));
 		} catch (Exception e) {
 			ok = false;
 			LOGGER.error("启动{}异常", name, e);

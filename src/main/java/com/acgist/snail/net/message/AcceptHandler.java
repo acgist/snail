@@ -1,4 +1,4 @@
-package com.acgist.snail.net;
+package com.acgist.snail.net.message;
 
 import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
@@ -7,26 +7,26 @@ import java.nio.channels.CompletionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.message.AbstractMessageHandler;
+import com.acgist.snail.utils.BeanUtils;
 
 /**
  * 客户端连接
  */
-public class AcceptHandler implements CompletionHandler<AsynchronousSocketChannel, AsynchronousServerSocketChannel> {
+public class AcceptHandler<T extends AbstractMessageHandler> implements CompletionHandler<AsynchronousSocketChannel, AsynchronousServerSocketChannel> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AcceptHandler.class);
 	
-	private AbstractMessageHandler messageHandler;
+	private Class<T> clazz;
 	
-	public AcceptHandler(AbstractMessageHandler messageHandler) {
-		this.messageHandler = messageHandler;
+	public AcceptHandler(Class<T> clazz) {
+		this.clazz = clazz;
 	}
 	
 	@Override
 	public void completed(AsynchronousSocketChannel result, AsynchronousServerSocketChannel attachment) {
 		LOGGER.info("客户端连接成功");
-		reader(result);
 		accept(attachment);
+		reader(result);
 	}
 	
 	@Override
@@ -35,7 +35,7 @@ public class AcceptHandler implements CompletionHandler<AsynchronousSocketChanne
 	}
 	
 	private void reader(AsynchronousSocketChannel result) {
-		messageHandler.handler(result);
+		BeanUtils.newInstance(clazz).handler(result);
 	}
 	
 	private void accept(AsynchronousServerSocketChannel attachment) {
