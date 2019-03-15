@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.pojo.wrapper.TaskWrapper;
+import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.exception.DownloadException;
@@ -60,7 +60,7 @@ public final class DownloaderManager {
 		var list = TASK_MAP.entrySet()
 		.stream()
 		.map(Entry::getValue)
-		.filter(downloader -> downloader.wrapper().run())
+		.filter(downloader -> downloader.task().run())
 		.collect(Collectors.toList());
 		list.forEach(downloader -> {
 			downloader.pause();
@@ -79,34 +79,34 @@ public final class DownloaderManager {
 	 * 开始下载任务
 	 */
 	public void start(IDownloader downloader) throws DownloadException {
-		this.start(downloader.wrapper());
+		this.start(downloader.task());
 	}
 	
 	/**
 	 * 开始下载任务
 	 */
-	public void start(TaskWrapper wrapper) throws DownloadException {
-		this.submit(wrapper).start();
+	public void start(TaskSession session) throws DownloadException {
+		this.submit(session).start();
 	}
 	
 	/**
 	 * 添加任务，不修改状态
 	 */
 	public void submit(IDownloader downloader) throws DownloadException {
-		this.submit(downloader.wrapper());
+		this.submit(downloader.task());
 	}
 	
 	/**
 	 * 添加任务，不修改状态
 	 */
-	public IDownloader submit(TaskWrapper wrapper) throws DownloadException {
-		if(wrapper == null) {
+	public IDownloader submit(TaskSession session) throws DownloadException {
+		if(session == null) {
 			return null;
 		}
-		var entity = wrapper.entity();
-		IDownloader downloader = downloader(wrapper);
+		var entity = session.entity();
+		IDownloader downloader = downloader(session);
 		if(downloader == null) {
-			downloader = wrapper.downloader();
+			downloader = session.downloader();
 		}
 		if(downloader == null) {
 			throw new DownloadException("添加下载任务失败（下载任务为空）");
@@ -120,41 +120,41 @@ public final class DownloaderManager {
 	/**
 	 * 暂停任务
 	 */
-	public void pause(TaskWrapper wrapper) {
-		downloader(wrapper).pause();
+	public void pause(TaskSession session) {
+		downloader(session).pause();
 	}
 	
 	/**
 	 * 删除任务
 	 */
-	public void delete(TaskWrapper wrapper) {
-		var entity = wrapper.entity();
+	public void delete(TaskSession session) {
+		var entity = session.entity();
 		LOGGER.info("删除下载任务：{}", entity.getName());
-		downloader(wrapper).delete();
+		downloader(session).delete();
 		TASK_MAP.remove(entity.getId());
 	}
 
 	/**
 	 * 刷新任务
 	 */
-	public void refresh(TaskWrapper wrapper) {
-		downloader(wrapper).refresh();
+	public void refresh(TaskSession session) {
+		downloader(session).refresh();
 	}
 	
 	/**
 	 * 获取下载任务
 	 */
-	private IDownloader downloader(TaskWrapper wrapper) {
-		return TASK_MAP.get(wrapper.entity().getId());
+	private IDownloader downloader(TaskSession session) {
+		return TASK_MAP.get(session.entity().getId());
 	}
 	
 	/**
 	 * 获取下载任务
 	 */
-	public List<TaskWrapper> taskTable() {
+	public List<TaskSession> tasks() {
 		return DownloaderManager.getInstance().TASK_MAP.values()
 			.stream()
-			.map(IDownloader::wrapper)
+			.map(IDownloader::task)
 			.collect(Collectors.toList());
 	}
 
@@ -168,7 +168,7 @@ public final class DownloaderManager {
 		TASK_MAP.entrySet()
 		.stream()
 		.map(Entry::getValue)
-		.filter(downloader -> downloader.wrapper().run())
+		.filter(downloader -> downloader.task().run())
 		.forEach(downloader -> downloader.pause());
 		SystemThreadContext.shutdown(EXECUTOR);
 	}

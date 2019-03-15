@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
-import com.acgist.snail.pojo.wrapper.TaskWrapper;
+import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.exception.DownloadException;
@@ -68,11 +68,11 @@ public abstract class Protocol {
 	/**
 	 * 构建下载
 	 */
-	public TaskWrapper build() throws DownloadException {
+	public TaskSession build() throws DownloadException {
 		boolean ok = buildTaskEntity();
 		if(ok) {
 			persistentTaskEntity();
-			return buildTaskWrapper();
+			return buildTaskSession();
 		} else {
 			return null;
 		}
@@ -94,10 +94,10 @@ public abstract class Protocol {
 	/**
 	 * 新建任务代理
 	 */
-	protected TaskWrapper buildTaskWrapper() throws DownloadException {
-		TaskWrapper wrapper = TaskWrapper.newInstance(this.taskEntity);
+	protected TaskSession buildTaskSession() throws DownloadException {
+		TaskSession session = TaskSession.newInstance(this.taskEntity);
 		this.clean();
-		return wrapper;
+		return session;
 	}
 
 	/**

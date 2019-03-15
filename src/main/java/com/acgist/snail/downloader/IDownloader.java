@@ -2,7 +2,7 @@ package com.acgist.snail.downloader;
 
 import java.io.IOException;
 
-import com.acgist.snail.pojo.wrapper.TaskWrapper;
+import com.acgist.snail.pojo.session.TaskSession;
 
 /**
  * 下载器
@@ -12,7 +12,7 @@ public interface IDownloader extends Runnable {
 	/**
 	 * 任务信息
 	 */
-	TaskWrapper wrapper();
+	TaskSession task();
 	
 	/**
 	 * 任务ID

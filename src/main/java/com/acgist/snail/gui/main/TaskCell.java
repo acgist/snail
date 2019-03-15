@@ -1,6 +1,6 @@
 package com.acgist.snail.gui.main;
 
-import com.acgist.snail.pojo.wrapper.TaskWrapper;
+import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.system.config.FileTypeConfig.FileType;
 
 import javafx.geometry.Pos;
@@ -13,7 +13,7 @@ import javafx.scene.text.Text;
 /**
  * 任务单元格
  */
-public class TaskCell extends TableCell<TaskWrapper, String> {
+public class TaskCell extends TableCell<TaskSession, String> {
 
 	private Pos pos = Pos.CENTER_LEFT;
 	private boolean icon;
@@ -26,14 +26,14 @@ public class TaskCell extends TableCell<TaskWrapper, String> {
 	@Override
 	public void updateItem(String value, boolean empty) {
 		super.updateItem(value, empty);
-		TaskWrapper wrapper = this.getTableRow().getItem();
-		if(wrapper != null) {
+		TaskSession session = this.getTableRow().getItem();
+		if(session != null) {
 			HBox box = new HBox();
 			box.setAlignment(pos);
 			Text name = new Text(value);
 			if(this.icon) { // 名称：添加图标和手势
 				name.setCursor(Cursor.HAND);
-				FileType fileType = wrapper.entity().getFileType();
+				FileType fileType = session.entity().getFileType();
 				if(fileType != null) {
 					ImageView icon = new ImageView("/image/32/" + fileType.getIcon());
 					box.getChildren().add(icon);

@@ -3,7 +3,7 @@ package com.acgist.snail.pojo.message;
 import com.acgist.snail.utils.JsonUtils;
 
 /**
- * 客户端消息
+ * 客户端消息，主要用来多个客户端之间进行通信。
  */
 public class ClientMessage {
 
@@ -16,7 +16,7 @@ public class ClientMessage {
 
 		text, // 文本
 		close, // 关闭
-		notify, // 唤醒
+		notify, // 唤醒：唤醒已有主窗口
 		response; // 响应
 
 	}

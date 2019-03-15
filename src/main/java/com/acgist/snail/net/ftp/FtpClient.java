@@ -23,13 +23,17 @@ public class FtpClient extends AbstractTcpClient<FtpMessageHandler> {
 	private String password; // FTP密码
 	private String filePath; // 文件路径
 
-	public FtpClient(String host, int port, String user, String password, String filePath) {
+	private FtpClient(String host, int port, String user, String password, String filePath) {
 		super(FtpMessageHandler.SPLIT, new FtpMessageHandler());
 		this.host = host;
 		this.port = port;
 		this.user = user;
 		this.password = password;
 		this.filePath = filePath;
+	}
+	
+	public static final FtpClient newInstance(String host, int port, String user, String password, String filePath) {
+		return new FtpClient(host, port, user, password, filePath);
 	}
 
 	@Override

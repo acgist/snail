@@ -49,10 +49,10 @@ public class DownloaderInitializer extends Initializer {
 				try {
 					builder.build();
 				} catch (DownloadException e) {
-					var wrapper = builder.wrapper();
-					if(wrapper != null) {
-						var entity = wrapper.entity();
-						wrapper.delete();
+					var session = builder.task();
+					if(session != null) {
+						var entity = session.entity();
+						session.delete();
 						LOGGER.info("删除下载任务：{}", entity.getName());
 					}
 					LOGGER.error("添加下载任务异常", e);

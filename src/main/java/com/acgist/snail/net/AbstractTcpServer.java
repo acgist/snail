@@ -67,7 +67,7 @@ public abstract class AbstractTcpServer {
 		boolean ok = true;
 		try {
 			server = AsynchronousServerSocketChannel.open(GROUP).bind(new InetSocketAddress(host, port));
-			server.accept(server, new AcceptHandler<>(clazz));
+			server.accept(server, AcceptHandler.newInstance(clazz));
 		} catch (Exception e) {
 			ok = false;
 			LOGGER.error("启动{}异常", name, e);

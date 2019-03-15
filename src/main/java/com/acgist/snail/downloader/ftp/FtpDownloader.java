@@ -12,8 +12,8 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.AbstractDownloader;
 import com.acgist.snail.net.ftp.FtpClient;
-import com.acgist.snail.net.ftp.FtpClientBuilder;
-import com.acgist.snail.pojo.wrapper.TaskWrapper;
+import com.acgist.snail.net.ftp.FtpClientFactory;
+import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.utils.FileUtils;
 
@@ -29,12 +29,12 @@ public class FtpDownloader extends AbstractDownloader {
 	private BufferedInputStream input; // 输入流
 	private BufferedOutputStream output; // 输出流
 	
-	private FtpDownloader(TaskWrapper wrapper) {
-		super(wrapper);
+	private FtpDownloader(TaskSession session) {
+		super(session);
 	}
 
-	public static final FtpDownloader newInstance(TaskWrapper wrapper) {
-		return new FtpDownloader(wrapper);
+	public static final FtpDownloader newInstance(TaskSession session) {
+		return new FtpDownloader(session);
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class FtpDownloader extends AbstractDownloader {
 		long begin, end;
 		final boolean ok = !complete; // 下载前没有标记完成
 		while(ok) {
-			if(!wrapper.download()) { // 已经不是下载状态
+			if(!session.download()) { // 已经不是下载状态
 				break;
 			}
 			begin = System.currentTimeMillis();
@@ -85,15 +85,15 @@ public class FtpDownloader extends AbstractDownloader {
 	 * 任务是否完成：长度-1或者下载数据等于任务长度
 	 */
 	private boolean isComplete(int length) {
-		long size = wrapper.entity().getSize();
-		long downloadSize = wrapper.downloadSize();
+		long size = session.entity().getSize();
+		long downloadSize = session.downloadSize();
 		return length == -1 || size == downloadSize;
 	}
 	
 	private void buildInput() {
-		var entity = wrapper.entity();
+		var entity = session.entity();
 		long size = FileUtils.fileSize(entity.getFile()); // 已下载大小
-		client = FtpClientBuilder.buildClient(entity.getUrl());
+		client = FtpClientFactory.buildClient(entity.getUrl());
 		boolean ok = client.connect();
 		if(ok) {
 			InputStream inputStream = client.download(size);
@@ -102,9 +102,9 @@ public class FtpDownloader extends AbstractDownloader {
 			} else {
 				this.input = new BufferedInputStream(inputStream);
 				if(client.append()) {
-					wrapper.downloadSize(size);
+					session.downloadSize(size);
 				} else {
-					wrapper.downloadSize(0L);
+					session.downloadSize(0L);
 				}
 			}
 		} else {
@@ -113,9 +113,9 @@ public class FtpDownloader extends AbstractDownloader {
 	}
 	
 	private void buildOutput() {
-		var entity = wrapper.entity();
+		var entity = session.entity();
 		try {
-			long size = wrapper.downloadSize();
+			long size = session.downloadSize();
 			if(size == 0L) {
 				output = new BufferedOutputStream(new FileOutputStream(entity.getFile()), DownloadConfig.getMemoryBufferByte());
 			} else { // 支持续传

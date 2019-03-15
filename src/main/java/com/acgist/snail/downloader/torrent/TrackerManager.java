@@ -2,7 +2,7 @@ package com.acgist.snail.downloader.torrent;
 
 import java.util.List;
 
-import com.acgist.snail.pojo.bo.Tracker;
+import com.acgist.snail.pojo.bean.Tracker;
 
 /**
  * tracker管理器：<br>
@@ -13,5 +13,5 @@ import com.acgist.snail.pojo.bo.Tracker;
 public class TrackerManager {
 
 	private List<Tracker> trackers;
-	
+
 }

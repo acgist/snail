@@ -7,7 +7,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.pojo.wrapper.TaskWrapper;
+import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.ThreadUtils;
 
@@ -50,7 +50,7 @@ public class ProtocolManager {
 	/**
 	 * 新建下载任务
 	 */
-	public TaskWrapper build(String url) throws DownloadException {
+	public TaskSession build(String url) throws DownloadException {
 		synchronized (protocols) {
 			Optional<Protocol> optional = protocols.stream()
 				.filter(protocol -> protocol.available())

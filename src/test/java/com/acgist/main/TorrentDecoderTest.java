@@ -15,7 +15,7 @@ public class TorrentDecoderTest {
 		String path = "e:/snail/868f1199b18d05bf103aa8a8321f6428854d712e.torrent";
 //		String path = "e:/snail/0B156834B59B0FF64EE0C9305D4D6EDE421196E6.torrent";
 		TorrentCoder decoder = TorrentCoder.newInstance(path);
-		Torrent torrent = decoder.torrentWrapper().torrent();
+		Torrent torrent = decoder.wrapper().torrent();
 		System.out.println(decoder.hash());
 		System.out.println(decoder.infoHash());
 //		System.out.println(new Date(torrent.getCreationDate() * 1000));

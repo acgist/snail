@@ -1,7 +1,7 @@
 package com.acgist.snail.downloader;
 
 import com.acgist.snail.pojo.entity.TaskEntity;
-import com.acgist.snail.pojo.wrapper.TaskWrapper;
+import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.system.exception.DownloadException;
 
@@ -11,7 +11,7 @@ import com.acgist.snail.system.exception.DownloadException;
 public class DownloaderFactory {
 
 	private String url;
-	private TaskWrapper wrapper;
+	private TaskSession session;
 	private ProtocolManager manager = ProtocolManager.getInstance();
 	
 	private DownloaderFactory(String url) {
@@ -19,7 +19,7 @@ public class DownloaderFactory {
 	}
 	
 	private DownloaderFactory(TaskEntity entity) throws DownloadException {
-		this.wrapper = TaskWrapper.newInstance(entity);
+		this.session = TaskSession.newInstance(entity);
 	}
 	
 	/**
@@ -37,7 +37,7 @@ public class DownloaderFactory {
 	 */
 	public static final DownloaderFactory newInstance(TaskEntity entity) throws DownloadException {
 		final DownloaderFactory builder = new DownloaderFactory(entity);
-		builder.wrapper.loadDownloadSize(); // 加载已下载大小
+		builder.session.loadDownloadSize(); // 加载已下载大小
 		return builder;
 	}
 	
@@ -45,8 +45,8 @@ public class DownloaderFactory {
 	 * 新建下载任务
 	 */
 	public void build() throws DownloadException {
-		if(wrapper == null) {
-			this.buildWrapper();
+		if(session == null) {
+			this.buildTaskSession();
 		}
 		this.submit();
 	}
@@ -54,22 +54,22 @@ public class DownloaderFactory {
 	/**
 	 * 获取下载任务
 	 */
-	public TaskWrapper wrapper() {
-		return this.wrapper;
+	public TaskSession task() {
+		return this.session;
 	}
 	
 	/**
 	 * 持久化到数据库
 	 */
-	private void buildWrapper() throws DownloadException {
-		this.wrapper = manager.build(url);
+	private void buildTaskSession() throws DownloadException {
+		this.session = manager.build(url);
 	}
 	
 	/**
 	 * 执行下载
 	 */
 	private void submit() throws DownloadException {
-		DownloaderManager.getInstance().submit(wrapper);
+		DownloaderManager.getInstance().submit(session);
 	}
 
 }

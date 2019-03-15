@@ -13,8 +13,8 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.AbstractDownloader;
 import com.acgist.snail.net.http.HttpManager;
+import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
-import com.acgist.snail.pojo.wrapper.TaskWrapper;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.utils.FileUtils;
 
@@ -30,12 +30,12 @@ public class HttpDownloader extends AbstractDownloader {
 	private BufferedOutputStream output; // 输出流
 	private HttpHeaderWrapper responseHeader; // 响应头
 	
-	private HttpDownloader(TaskWrapper wrapper) {
-		super(wrapper);
+	private HttpDownloader(TaskSession session) {
+		super(session);
 	}
 
-	public static final HttpDownloader newInstance(TaskWrapper wrapper) {
-		return new HttpDownloader(wrapper);
+	public static final HttpDownloader newInstance(TaskSession session) {
+		return new HttpDownloader(session);
 	}
 	
 	@Override
@@ -51,7 +51,7 @@ public class HttpDownloader extends AbstractDownloader {
 		long begin, end;
 		final boolean ok = !complete; // 下载前没有标记完成
 		while(ok) {
-			if(!wrapper.download()) { // 已经不是下载状态
+			if(!session.download()) { // 已经不是下载状态
 				break;
 			}
 			begin = System.currentTimeMillis();
@@ -90,8 +90,8 @@ public class HttpDownloader extends AbstractDownloader {
 	 * 任务是否完成：长度-1或者下载数据等于任务长度
 	 */
 	private boolean isComplete(int length) {
-		long size = wrapper.entity().getSize();
-		long downloadSize = wrapper.downloadSize();
+		long size = session.entity().getSize();
+		long downloadSize = session.downloadSize();
 		return length == -1 || size == downloadSize;
 	}
 	
@@ -105,7 +105,7 @@ public class HttpDownloader extends AbstractDownloader {
 	 * Range: bytes=500-600,601-999 同时指定几个范围<br>
 	 */
 	private void buildInput() {
-		var entity = wrapper.entity();
+		var entity = session.entity();
 		long size = FileUtils.fileSize(entity.getFile()); // 已下载大小
 		HttpClient client = HttpManager.newClient();
 		var request = HttpManager.newRequest(entity.getUrl())
@@ -119,14 +119,14 @@ public class HttpDownloader extends AbstractDownloader {
 			if(responseHeader.range()) { // 支持断点续传
 				long begin = responseHeader.beginRange();
 				if(size != begin) {
-					LOGGER.warn("已下载大小和开始下载位置不相等，已下载大小：{}，开始下载位置：{}，响应头：{}", size, begin, responseHeader.map());
+					LOGGER.warn("已下载大小和开始下载位置不相等，已下载大小：{}，开始下载位置：{}，响应头：{}", size, begin, responseHeader.headers());
 				}
-				wrapper.downloadSize(size);
+				session.downloadSize(size);
 			} else {
-				wrapper.downloadSize(0L);
+				session.downloadSize(0L);
 			}
 		} else if(HttpManager.rangeNotSatisfiable(response)) { // 无法满足的请求范围
-			if(wrapper.downloadSize() == entity.getSize()) {
+			if(session.downloadSize() == entity.getSize()) {
 				complete = true;
 			} else {
 				fail();
@@ -137,9 +137,9 @@ public class HttpDownloader extends AbstractDownloader {
 	}
 
 	private void buildOutput() {
-		var entity = wrapper.entity();
+		var entity = session.entity();
 		try {
-			long size = wrapper.downloadSize();
+			long size = session.downloadSize();
 			if(size == 0L) {
 				output = new BufferedOutputStream(new FileOutputStream(entity.getFile()), DownloadConfig.getMemoryBufferByte());
 			} else { // 支持续传

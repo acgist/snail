@@ -25,6 +25,7 @@ public abstract class AbstractTcpSender {
 	 * 消息分隔符
 	 */
 	private String split;
+	
 	protected AsynchronousSocketChannel socket;
 	
 	public AbstractTcpSender(String split) {
