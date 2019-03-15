@@ -1,6 +1,6 @@
 package com.acgist.snail.protocol.torrent;
 
-import com.acgist.snail.utils.StringUtils;
+import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.fasterxml.jackson.core.util.ByteArrayBuilder;
 
 /**
@@ -8,21 +8,18 @@ import com.fasterxml.jackson.core.util.ByteArrayBuilder;
  * 40位hash：sha1生成，磁力链接使用
  * 20位hash：sha1生成编码为20位，tracker使用
  */
-public class HashBuilder {
+public class InfoHashBuilder {
 
 	private boolean begin;
 	private ByteArrayBuilder builder;
 	
-	private String hash;
-	private String infoHash;
-	
-	private HashBuilder() {
+	private InfoHashBuilder() {
 		begin = false;
 		builder = new ByteArrayBuilder();
 	}
 	
-	public static final HashBuilder newInstance() {
-		return new HashBuilder();
+	public static final InfoHashBuilder newInstance() {
+		return new InfoHashBuilder();
 	}
 	
 	public void build(String key, byte[] values) {
@@ -52,29 +49,13 @@ public class HashBuilder {
 	}
 
 	/**
-	 * 创建hash
+	 * 创建infoHash
 	 */
-	public void buildHash() {
+	public InfoHash buildInfoHash() {
 		byte[] byteArray = builder.toByteArray();
 		byte[] bytes = new byte[byteArray.length - 7];
 		System.arraycopy(byteArray, 0, bytes, 0, byteArray.length - 7);
-		this.hash = StringUtils.sha1(bytes);
-		int index = 0;
-		final int length = this.hash.length();
-		StringBuilder builder = new StringBuilder();
-		do {
-			builder.append("%").append(this.hash.substring(index, index + 2));
-			index+=2;
-		} while (index < length);
-		this.infoHash = builder.toString();
-	}
-	
-	public String hash() {
-		return this.hash;
-	}
-	
-	public String infoHash() {
-		return this.infoHash;
+		return InfoHash.newInstance(bytes);
 	}
 
 }

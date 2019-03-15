@@ -5,8 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import com.acgist.snail.pojo.wrapper.TorrentWrapper;
-import com.acgist.snail.protocol.torrent.pojo.Torrent;
-import com.acgist.snail.protocol.torrent.pojo.TorrentInfo;
+import com.acgist.snail.protocol.torrent.bean.InfoHash;
+import com.acgist.snail.protocol.torrent.bean.Torrent;
+import com.acgist.snail.protocol.torrent.bean.TorrentInfo;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.StringUtils;
 
@@ -15,9 +16,8 @@ import com.acgist.snail.utils.StringUtils;
  */
 public class TorrentCoder {
 	
-	private String hash = null; // 磁力链接HASH
-	private String infoHash = null; // 20位infoHash
 	private Torrent torrent = null; // 种子文件信息
+	private InfoHash infoHash = null; // infoHash
 	
 	private TorrentCoder() {
 	}
@@ -39,14 +39,7 @@ public class TorrentCoder {
 	 * 获取磁力链接HASH
 	 */
 	public String hash() {
-		return hash;
-	}
-	
-	/**
-	 * 获取20位infoHash
-	 */
-	public String infoHash() {
-		return infoHash;
+		return infoHash.hash();
 	}
 	
 	/**
@@ -68,15 +61,15 @@ public class TorrentCoder {
 		String key = null;
 		Torrent torrent = new Torrent();
 		StringBuilder lengthBuilder = new StringBuilder();
-		HashBuilder hashBuilder = HashBuilder.newInstance();
+		InfoHashBuilder infoHashBuilder = InfoHashBuilder.newInstance();
 		while ((index = input.read()) != -1) {
-			hashBuilder.build(key, index);
+			infoHashBuilder.build(key, index);
 			indexChar = (char) index;
 			switch (indexChar) {
 				case 'i':
 					StringBuilder valueBuilder = new StringBuilder();
 					while((index = input.read()) != -1) {
-						hashBuilder.build(key, index);
+						infoHashBuilder.build(key, index);
 						indexChar = (char) index;
 						if(indexChar == 'e') {
 							break;
@@ -106,7 +99,7 @@ public class TorrentCoder {
 					lengthBuilder.setLength(0);
 					byte[] bytes = new byte[length];
 					input.read(bytes);
-					hashBuilder.build(key, bytes);
+					infoHashBuilder.build(key, bytes);
 					String value = new String(bytes);
 					if (Torrent.infoKeys().contains(value)) { // 初始化
 						key = value;
@@ -126,9 +119,7 @@ public class TorrentCoder {
 			}
 		}
 		this.torrent = torrent;
-		hashBuilder.buildHash();
-		this.hash = hashBuilder.hash();
-		this.infoHash = hashBuilder.infoHash();
+		this.infoHash = infoHashBuilder.buildInfoHash();
 	}
 	
 	/**

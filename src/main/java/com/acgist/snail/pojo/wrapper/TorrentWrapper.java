@@ -1,7 +1,7 @@
 package com.acgist.snail.pojo.wrapper;
 
-import com.acgist.snail.protocol.torrent.pojo.Torrent;
-import com.acgist.snail.protocol.torrent.pojo.TorrentInfo;
+import com.acgist.snail.protocol.torrent.bean.Torrent;
+import com.acgist.snail.protocol.torrent.bean.TorrentInfo;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.StringUtils;
 
