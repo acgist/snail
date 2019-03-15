@@ -24,7 +24,7 @@ public class TorrentProtocol extends Protocol {
 	
 	private static final TorrentProtocol INSTANCE = new TorrentProtocol();
 	
-	public TorrentProtocol() {
+	private TorrentProtocol() {
 		super(Type.torrent, TORRENT_REGEX);
 	}
 	
@@ -105,6 +105,7 @@ public class TorrentProtocol extends Protocol {
 	
 	/**
 	 * 选择torrent下载文件和设置文件大小
+	 * @return true-已选择下载文件；false-未选择下载文件
 	 */
 	private boolean selectTorrentFile() throws DownloadException {
 		TaskSession session = TaskSession.newInstance(this.taskEntity);

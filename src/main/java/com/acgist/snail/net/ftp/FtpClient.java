@@ -74,7 +74,7 @@ public class FtpClient extends AbstractTcpClient<FtpMessageHandler> {
 	 */
 	public Long size() throws NetException {
 		if(!ok) {
-			return 0L;
+			throw new NetException("获取下载大小失败");
 		}
 		this.changeMode();
 		command("TYPE A");
@@ -91,7 +91,7 @@ public class FtpClient extends AbstractTcpClient<FtpMessageHandler> {
 		if(optional.isPresent()) {
 			return Long.valueOf(optional.get());
 		}
-		return 0L;
+		throw new NetException("获取下载大小失败");
 	}
 	
 	/**

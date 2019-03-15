@@ -55,11 +55,6 @@ public abstract class AbstractDownloader implements IDownloader {
 	}
 	
 	@Override
-	public void fail() {
-		fail(null);
-	}
-	
-	@Override
 	public void fail(String message) {
 		this.session.updateStatus(Status.fail);
 		StringBuilder noticeMessage = new StringBuilder();
