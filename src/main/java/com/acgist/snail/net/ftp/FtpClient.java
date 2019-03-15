@@ -95,7 +95,7 @@ public class FtpClient extends AbstractTcpClient<FtpMessageHandler> {
 	}
 	
 	/**
-	 * 关闭系统
+	 * 关闭资源
 	 */
 	@Override
 	public void close() {
@@ -103,8 +103,15 @@ public class FtpClient extends AbstractTcpClient<FtpMessageHandler> {
 			return;
 		}
 		command("QUIT"); // 退出命令
-		handler.close(); // 关闭
+		handler.release();
 		super.close();
+	}
+	
+	/**
+	 * 释放资源
+	 */
+	public void release() {
+		handler.release();
 	}
 	
 	/**

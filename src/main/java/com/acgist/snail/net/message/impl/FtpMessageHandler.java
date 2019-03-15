@@ -78,7 +78,7 @@ public class FtpMessageHandler extends AbstractMessageHandler {
 		} else if(StringUtils.startsWith(message, "220 ")) { // 退出系统
 		} else if(StringUtils.startsWith(message, "226 ")) { // 下载完成
 		} else if(StringUtils.startsWith(message, "227 ")) { // 进入被动模式：获取远程IP和端口
-			this.inputStream = null; // 清除输入流
+			release();
 			int opening = message.indexOf('(');
 			int closing = message.indexOf(')', opening + 1);
 			if (closing > 0) {
@@ -132,18 +132,13 @@ public class FtpMessageHandler extends AbstractMessageHandler {
 	}
 	
 	/**
-	 * 关闭线程
+	 * 释放资源
 	 */
-	public void close() {
-		try {
-			if(socket != null && !socket.isClosed()) {
-				socket.shutdownInput();
-				socket.shutdownOutput();
-				socket.close();
-			}
-		} catch (IOException e) {
-			LOGGER.error("关闭Socket异常", e);
-		}
+	public void release() {
+		IoUtils.close(this.inputStream);
+		this.inputStream = null;
+		IoUtils.close(this.socket);
+		this.socket = null;
 	}
 
 }
