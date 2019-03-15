@@ -61,6 +61,7 @@ public class FtpMessageHandler extends AbstractMessageHandler {
 	 * 处理单条消息
 	 */
 	private boolean oneMessage(String message) {
+//		LOGGER.info("收到FTP响应：{}", message);
 		if(fail) {
 			return !fail;
 		}
@@ -125,7 +126,7 @@ public class FtpMessageHandler extends AbstractMessageHandler {
 		ThreadUtils.timeout(5000, () -> {
 			return this.inputStream != null || this.fail;
 		});
-		if(this.inputStream == null) {
+		if(this.inputStream == null && failMessage == null) {
 			failMessage = "下载失败";
 		}
 		return this.inputStream;
