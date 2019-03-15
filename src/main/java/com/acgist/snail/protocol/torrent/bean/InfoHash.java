@@ -24,19 +24,25 @@ public class InfoHash {
 	public static final InfoHash newInstance(String hash) throws DownloadException {
 		hash = Objects.requireNonNull(hash, "不支持的hash");
 		if(hash.length() == 40) {
-			return newInstance(StringUtils.unhex(hash));
+			return new InfoHash(StringUtils.unhex(hash));
 		} else if(hash.length() == 32) {
-			byte[] data = Base32Utils.decode(hash);
-			return newInstance(data);
+			return new InfoHash(Base32Utils.decode(hash));
 		} else {
 			throw new DownloadException("不支持的hash：" + hash);
 		}
 	}
 	
 	/**
+	 * hash byte（20位）
+	 */
+	public byte[] hash() {
+		return data;
+	}
+	
+	/**
 	 * 磁力链接hash（40位）
 	 */
-	public String hash() {
+	public String hashHex() {
 		return StringUtils.sha1(data);
 	}
 	
@@ -44,7 +50,7 @@ public class InfoHash {
 	 * 种子ID（网络传输使用）
 	 */
 	public String hashId() {
-		final String magnetHash = hash();
+		final String magnetHash = hashHex();
 		int index = 0;
 		final int length = magnetHash.length();
 		final StringBuilder builder = new StringBuilder();

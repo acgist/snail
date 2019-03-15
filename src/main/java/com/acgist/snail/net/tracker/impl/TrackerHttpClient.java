@@ -11,7 +11,7 @@ public class TrackerHttpClient {
 	
 	public static void main(String[] args) {
 		TrackerHttpClient c = new TrackerHttpClient();
-		c.decode("http://t.acg.rip:6699/announce", null);
+		c.decode("http://exodus.desync.com:6969/announce", null);
 	}
 	
 	/**
