@@ -6,7 +6,6 @@ import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousServerSocketChannel;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +18,6 @@ import com.acgist.snail.utils.IoUtils;
 /**
  * 服务端超类
  * TODO：BT任务服务端口
- * TODO：多客户端链接异常
  */
 public abstract class AbstractTcpServer {
 
@@ -73,14 +71,14 @@ public abstract class AbstractTcpServer {
 			LOGGER.error("启动{}异常", name, e);
 		}
 		if(ok) {
-			SystemThreadContext.runasyn(() -> {
-				try {
-					LOGGER.info("启动{}线程", name);
-					GROUP.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
-				} catch (InterruptedException e) {
-					LOGGER.error("启动{}异常", name, e);
-				}
-			});
+//			SystemThreadContext.runasyn(() -> {
+//				try {
+//					LOGGER.info("启动{}线程", name);
+//					GROUP.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
+//				} catch (InterruptedException e) {
+//					LOGGER.error("启动{}异常", name, e);
+//				}
+//			});
 		} else {
 			close();
 		}
