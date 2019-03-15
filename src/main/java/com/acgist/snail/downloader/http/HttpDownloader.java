@@ -129,10 +129,10 @@ public class HttpDownloader extends AbstractDownloader {
 			if(session.downloadSize() == entity.getSize()) {
 				complete = true;
 			} else {
-				fail();
+				fail("无法满足文件下载范围");
 			}
 		} else {
-			fail();
+			fail("失败代码（" + response.statusCode() + "）");
 		}
 	}
 
@@ -147,7 +147,7 @@ public class HttpDownloader extends AbstractDownloader {
 			}
 		} catch (FileNotFoundException e) {
 			LOGGER.error("打开下载文件流失败", e);
-			fail();
+			fail("文件打开失败");
 		}
 	}
 	

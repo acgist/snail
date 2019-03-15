@@ -1,5 +1,7 @@
 package com.acgist.main;
 
+import java.util.Base64;
+
 import org.junit.Test;
 
 import com.acgist.snail.protocol.thunder.ThunderProtocol;
@@ -8,9 +10,12 @@ public class ThunderDecoderTest {
 
 	@Test
 	public void test() {
-		String url = "thunder://QUFtYWduZXQ6P3h0PXVybjpidGloOmY5YTlhZjg0ZGI4NDMxYTcwNTIzNTZhMjNlNmY5MDg5MjYyM2Y3ZGRaWg==";
-		System.out.println(ThunderProtocol.verify(url));
-		System.out.println(ThunderProtocol.decode(url));
+		String url = "thunder://ZGRmdHA6Ly9sb2NhbGhvc3QvRlRQc2VydmVyLmV4ZWNj";
+		url = url.substring(ThunderProtocol.THUNDER_PREFIX.length());
+		String newUrl = new String(Base64.getDecoder().decode(url));
+		newUrl = newUrl.substring(2, newUrl.length() - 2);
+		
+		System.out.println(newUrl);
 	}
 	
 }

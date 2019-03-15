@@ -52,19 +52,25 @@ public class ProtocolManager {
 	 */
 	public TaskSession build(String url) throws DownloadException {
 		synchronized (protocols) {
-			Optional<Protocol> optional = protocols.stream()
-				.filter(protocol -> protocol.available())
-				.map(protocol -> protocol.init(url))
-				.filter(protocol -> protocol.verify())
-				.findFirst();
-			if(optional.isEmpty()) {
-				throw new DownloadException("不支持的下载协议：" + url);
-			}
-			Protocol protocol = optional.get();
-			return protocol.build();
+			return protocol(url).build();
 		}
 	}
 
+	/**
+	 * 获取下载协议
+	 */
+	public Protocol protocol(String url) throws DownloadException {
+		Optional<Protocol> optional = protocols.stream()
+			.filter(protocol -> protocol.available())
+			.map(protocol -> protocol.init(url))
+			.filter(protocol -> protocol.verify())
+			.findFirst();
+		if(optional.isEmpty()) {
+			throw new DownloadException("不支持的下载协议：" + url);
+		}
+		return optional.get();
+	}
+	
 	/**
 	 * 是否可用，阻塞线程
 	 */

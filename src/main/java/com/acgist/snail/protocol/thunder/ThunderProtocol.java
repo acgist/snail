@@ -2,29 +2,55 @@ package com.acgist.snail.protocol.thunder;
 
 import java.util.Base64;
 
-import com.acgist.snail.utils.StringUtils;
+import com.acgist.snail.pojo.entity.TaskEntity.Type;
+import com.acgist.snail.protocol.Protocol;
+import com.acgist.snail.protocol.ProtocolManager;
+import com.acgist.snail.system.exception.DownloadException;
 
 /**
- * 迅雷链接解析器
+ * 迅雷下载协议
  */
-public class ThunderProtocol {
+public class ThunderProtocol extends Protocol {
 
+	public static final String THUNDER_REGEX = "thunder://.+";
+	
 	public static final String THUNDER_PREFIX = "thunder://";
-
-	/**
-	 * 验证
-	 */
-	public static final boolean verify(String url) {
-		return StringUtils.startsWith(url.toLowerCase(), THUNDER_PREFIX);
+	
+	private static final ThunderProtocol INSTANCE = new ThunderProtocol();
+	
+	private ThunderProtocol() {
+		super(Type.thunder, THUNDER_REGEX);
 	}
 	
-	/**
-	 * 解码
-	 */
-	public static final String decode(String url) {
-		url = url.substring(THUNDER_PREFIX.length());
+	public static final ThunderProtocol getInstance() {
+		return INSTANCE;
+	}
+	
+	@Override
+	public String name() {
+		return "迅雷";
+	}
+
+	@Override
+	public boolean available() {
+		return true;
+	}
+	
+	@Override
+	protected Protocol convert() throws DownloadException {
+		String url = this.url.substring(THUNDER_PREFIX.length());
 		String newUrl = new String(Base64.getDecoder().decode(url));
-		return newUrl.substring(2, newUrl.length() - 2);
+		newUrl = newUrl.substring(2, newUrl.length() - 2);
+		return ProtocolManager.getInstance().protocol(newUrl);
+	}
+
+	@Override
+	protected boolean buildTaskEntity() throws DownloadException {
+		return false;
+	}
+
+	@Override
+	protected void cleanMessage() {
 	}
 
 }

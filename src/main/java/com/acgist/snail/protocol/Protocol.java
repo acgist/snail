@@ -69,6 +69,10 @@ public abstract class Protocol {
 	 * 构建下载
 	 */
 	public TaskSession build() throws DownloadException {
+		Protocol convert = convert();
+		if(convert != null) {
+			return convert.build();
+		}
 		boolean ok = buildTaskEntity();
 		if(ok) {
 			persistentTaskEntity();
@@ -76,6 +80,14 @@ public abstract class Protocol {
 		} else {
 			return null;
 		}
+	}
+
+	/**
+	 * 协议转换<br>
+	 * 如果返回值不为空，则使用返回的协议进行下载
+	 */
+	protected Protocol convert() throws DownloadException {
+		return null;
 	}
 	
 	/**

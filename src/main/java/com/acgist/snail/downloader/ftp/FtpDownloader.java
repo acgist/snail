@@ -123,7 +123,7 @@ public class FtpDownloader extends AbstractDownloader {
 			}
 		} catch (FileNotFoundException e) {
 			LOGGER.error("打开下载文件流失败", e);
-			fail();
+			fail("文件打开失败");
 		}
 	}
 	
