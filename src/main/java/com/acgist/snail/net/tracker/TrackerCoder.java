@@ -1,4 +1,4 @@
-package com.acgist.snail.protocol.tracker;
+package com.acgist.snail.net.tracker;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

@@ -9,6 +9,16 @@
 |JAVA|11|
 |JAVAFX|11.0.2|
 
+#### 包
+|包路径|作用说明|
+|:-|:-|
+|com.acgist.snail.downloader|下载实现|
+|com.acgist.snail.gui|图形界面|
+|com.acgist.snail.net|网络协议|
+|com.acgist.snail.protocol|下载协议|
+|com.acgist.snail.repository|持久层|
+|com.acgist.snail.system|系统|
+
 #### 文档
 [帮助](https://gitee.com/acgist/snail/wikis/帮助)
 

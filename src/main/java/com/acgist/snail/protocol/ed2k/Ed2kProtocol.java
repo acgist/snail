@@ -1,7 +1,7 @@
 package com.acgist.snail.protocol.ed2k;
 
 /**
- * ED2K解析器
+ * ED2K协议
  */
 public class Ed2kProtocol {
 

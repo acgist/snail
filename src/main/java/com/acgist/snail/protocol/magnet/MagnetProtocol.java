@@ -1,5 +1,8 @@
 package com.acgist.snail.protocol.magnet;
 
+/**
+ * 磁力链接协议
+ */
 public class MagnetProtocol {
 
 //	File file = MagnetDecoder.download(url);

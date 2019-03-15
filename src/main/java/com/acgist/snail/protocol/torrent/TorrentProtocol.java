@@ -14,6 +14,9 @@ import com.acgist.snail.system.config.FileTypeConfig.FileType;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.FileUtils;
 
+/**
+ * BT协议
+ */
 public class TorrentProtocol extends Protocol {
 
 	public static final String TORRENT_SUFFIX = ".torrent"; // 文件后缀

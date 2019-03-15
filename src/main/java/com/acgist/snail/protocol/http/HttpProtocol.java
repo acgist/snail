@@ -11,7 +11,7 @@ import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * HTTP解析器
+ * HTTP协议
  */
 public class HttpProtocol extends Protocol {
 
