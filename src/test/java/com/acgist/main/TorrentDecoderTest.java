@@ -3,7 +3,7 @@ package com.acgist.main;
 import org.junit.Test;
 
 import com.acgist.snail.protocol.torrent.TorrentCoder;
-import com.acgist.snail.protocol.torrent.pojo.Torrent;
+import com.acgist.snail.protocol.torrent.bean.Torrent;
 
 public class TorrentDecoderTest {
 
@@ -17,7 +17,6 @@ public class TorrentDecoderTest {
 		TorrentCoder decoder = TorrentCoder.newInstance(path);
 		Torrent torrent = decoder.wrapper().torrent();
 		System.out.println(decoder.hash());
-		System.out.println(decoder.infoHash());
 //		System.out.println(new Date(torrent.getCreationDate() * 1000));
 //		System.out.println(torrent.getCreationDate());
 //		System.out.println(torrent.getEncoding());

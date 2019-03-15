@@ -25,13 +25,5 @@
 #### 依赖模块
 jdeps --list-deps *.jar
 
-#### TODO
-* 实现协议：FTP/BT/DHT
-* BT下载
-* FTP下载
-* ED2K下载
-* P2P分享
-* 多线程下载
-
 #### BT参考项目
 https://github.com/atomashpolskiy/bt

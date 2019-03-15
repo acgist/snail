@@ -82,7 +82,7 @@ public class TorrentProtocol extends Protocol {
 		this.torrent = this.url;
 		String url = this.url;
 		TorrentCoder decoder = TorrentCoder.newInstance(url);
-		this.url = MagnetCoder.buildMagnet(decoder.hash());
+		this.url = MagnetCoder.buildMagnet(decoder.hash()); // 生成磁力链接
 		this.torrentWrapper = decoder.wrapper();
 	}
 	

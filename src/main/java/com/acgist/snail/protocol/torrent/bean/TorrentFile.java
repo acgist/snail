@@ -1,4 +1,4 @@
-package com.acgist.snail.protocol.torrent.pojo;
+package com.acgist.snail.protocol.torrent.bean;
 
 import java.util.ArrayList;
 import java.util.List;
