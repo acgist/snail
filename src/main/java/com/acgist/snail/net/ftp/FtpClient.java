@@ -74,7 +74,7 @@ public class FtpClient extends AbstractTcpClient<FtpMessageHandler> {
 	 */
 	public Long size() throws NetException {
 		if(!ok) {
-			throw new NetException("获取下载大小失败");
+			throw new NetException("下载失败");
 		}
 		this.changeMode();
 		command("TYPE A");
@@ -91,7 +91,7 @@ public class FtpClient extends AbstractTcpClient<FtpMessageHandler> {
 		if(optional.isPresent()) {
 			return Long.valueOf(optional.get());
 		}
-		throw new NetException("获取下载大小失败");
+		throw new NetException("下载失败");
 	}
 	
 	/**
@@ -134,6 +134,7 @@ public class FtpClient extends AbstractTcpClient<FtpMessageHandler> {
 	private void login() {
 		command("USER " + this.user);
 		command("PASS " + this.password);
+//		command("QUOTE OPTS UTF8 ON");
 	}
 	
 	/**
