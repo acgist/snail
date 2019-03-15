@@ -1,7 +1,8 @@
 package com.acgist.snail.net.peer;
 
 /**
- * 抽象客户端
+ * Peer客户端<br>
+ * 基本协议：TCP
  */
 public interface IPeerClient {
 
