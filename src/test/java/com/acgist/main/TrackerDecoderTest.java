@@ -2,7 +2,7 @@ package com.acgist.main;
 
 import org.junit.Test;
 
-import com.acgist.snail.protocol.tracker.TrackerCoder;
+import com.acgist.snail.net.tracker.TrackerCoder;
 
 public class TrackerDecoderTest {
 

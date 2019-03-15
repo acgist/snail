@@ -8,7 +8,7 @@ import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.system.exception.DownloadException;
 
 /**
- * 迅雷下载协议
+ * 迅雷协议
  */
 public class ThunderProtocol extends Protocol {
 

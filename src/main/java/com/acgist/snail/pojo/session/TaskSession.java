@@ -192,8 +192,9 @@ public class TaskSession {
 				return HttpDownloader.newInstance(this);
 			case torrent:
 				return TorrentDownloader.newInstance(this);
+			default:
+				throw new DownloadException("不支持的下载类型：" + type);
 		}
-		throw new DownloadException("不支持的下载类型：" + type);
 	}
 	
 	// Table数据绑定 //
