@@ -39,7 +39,7 @@ public class TorrentCoder {
 	 * 获取磁力链接HASH
 	 */
 	public String hash() {
-		return infoHash.hash();
+		return infoHash.hashHex();
 	}
 	
 	/**

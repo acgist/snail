@@ -88,7 +88,7 @@ public abstract class MagnetCoder {
 			this.hash = buildHash(url);
 		} else if(verifyMagnetHash32(url)) { // 32位转为正常40位
 			InfoHash infoHash = InfoHash.newInstance(url);
-			this.hash = infoHash.hash();
+			this.hash = infoHash.hashHex();
 		} else if(verifyMagnetHash40(url)) {
 			this.hash = url;
 		}
@@ -115,7 +115,7 @@ public abstract class MagnetCoder {
 					String hash = value.substring(HASH_PREFIX.length());
 					if(verifyMagnetHash32(hash)) {
 						InfoHash infoHash = InfoHash.newInstance(hash);
-						hash = infoHash.hash();
+						hash = infoHash.hashHex();
 					}
 					return hash;
 				}
