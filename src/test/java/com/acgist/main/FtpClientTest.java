@@ -19,11 +19,16 @@ public class FtpClientTest {
 			System.out.println("FTP服务器连接失败");
 			return;
 		}
+		System.out.println(client.size());
+		client.release();
 		var input = client.download();
 		if(input == null) {
 			System.out.println(client.failMessage());
 		} else {
-			input.transferTo(new FileOutputStream("e://ftp"));
+			var output = new FileOutputStream("e://ftp");
+			input.transferTo(output);
+			output.flush();
+			output.close();
 		}
 		client.close();
 		System.out.println("OK");

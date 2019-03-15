@@ -1,6 +1,8 @@
 package com.acgist.snail.utils;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousServerSocketChannel;
@@ -38,6 +40,28 @@ public class IoUtils {
 			LOGGER.error("ByteBuffer解码异常", e);
 		}
 		return content;
+	}
+	
+	public static final void close(InputStream input) {
+		try {
+			if(input != null) {
+				input.close();
+			}
+		} catch (IOException e) {
+			LOGGER.error("关闭输入流异常", e);
+		}
+	}
+	
+	public static final void close(Socket socket) {
+		try {
+			if(socket != null && !socket.isClosed()) {
+				socket.shutdownInput();
+				socket.shutdownOutput();
+				socket.close();
+			}
+		} catch (IOException e) {
+			LOGGER.error("关闭Socket异常", e);
+		}
 	}
 	
 	public static final void close(AsynchronousSocketChannel socket) {
