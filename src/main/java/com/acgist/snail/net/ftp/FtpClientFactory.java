@@ -7,7 +7,7 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * FTP客户端创建工具
  */
-public class FtpClientBuilder {
+public class FtpClientFactory {
 
 	private static final int FTP_DEFAULT_PORT = 21;
 	
@@ -18,14 +18,14 @@ public class FtpClientBuilder {
 	private String user;
 	private String password;
 	
-	private FtpClientBuilder() {
+	private FtpClientFactory() {
 	}
 	
 	public static final FtpClient buildClient(String url) {
-		FtpClientBuilder builder = new FtpClientBuilder();
+		FtpClientFactory builder = new FtpClientFactory();
 		builder.url = url;
 		builder.decodeUrl();
-		return new FtpClient(
+		return FtpClient.newInstance(
 			builder.host,
 			builder.port,
 			builder.user,

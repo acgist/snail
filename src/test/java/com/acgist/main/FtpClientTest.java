@@ -6,14 +6,14 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import com.acgist.snail.net.ftp.FtpClientBuilder;
+import com.acgist.snail.net.ftp.FtpClientFactory;
 import com.acgist.snail.system.exception.NetException;
 
 public class FtpClientTest {
 
 	@Test
 	public void download() throws FileNotFoundException, IOException, NetException {
-		var client = FtpClientBuilder.buildClient("ftp://localhost/FTPserver.exe");
+		var client = FtpClientFactory.buildClient("ftp://localhost/FTPserver.exe");
 		var ok = client.connect();
 		if(!ok) {
 			System.out.println("FTP服务器连接失败");

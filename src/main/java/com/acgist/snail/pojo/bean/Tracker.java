@@ -1,4 +1,4 @@
-package com.acgist.snail.pojo.bo;
+package com.acgist.snail.pojo.bean;
 
 import java.util.List;
 

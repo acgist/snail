@@ -1,4 +1,4 @@
-package com.acgist.snail.pojo.wrapper;
+package com.acgist.snail.pojo.session;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -24,9 +24,10 @@ import com.acgist.snail.utils.JsonUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * wrapper - 任务
+ * session - 任务<br>
+ * 下载任务信息统计
  */
-public class TaskWrapper {
+public class TaskSession {
 
 	private ThreadLocal<SimpleDateFormat> formater = new ThreadLocal<>() {
 		protected SimpleDateFormat initialValue() {
@@ -41,7 +42,7 @@ public class TaskWrapper {
 	private AtomicLong downloadSize = new AtomicLong(0); // 已经下载大小
 	private AtomicLong downloadBuffer = new AtomicLong(0); // 下载速度采样
 
-	private TaskWrapper(TaskEntity entity) throws DownloadException {
+	private TaskSession(TaskEntity entity) throws DownloadException {
 		if(entity == null) {
 			throw new DownloadException("创建下载任务失败");
 		}
@@ -50,8 +51,8 @@ public class TaskWrapper {
 	
 	// 功能 //
 
-	public static final TaskWrapper newInstance(TaskEntity entity) throws DownloadException {
-		return new TaskWrapper(entity);
+	public static final TaskSession newInstance(TaskEntity entity) throws DownloadException {
+		return new TaskSession(entity);
 	}
 	
 	public TaskEntity entity() {

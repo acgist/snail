@@ -11,12 +11,16 @@ import com.acgist.snail.utils.StringUtils;
 public class TorrentWrapper {
 
 	private Torrent torrent;
-
-	public TorrentWrapper(Torrent torrent) throws DownloadException {
+	
+	private TorrentWrapper(Torrent torrent) throws DownloadException {
 		if(torrent == null) {
 			throw new DownloadException("解析种子文件异常");
 		}
 		this.torrent = torrent;
+	}
+	
+	public static final TorrentWrapper newInstance(Torrent torrent) throws DownloadException {
+		return new TorrentWrapper(torrent);
 	}
 
 	/**

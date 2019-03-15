@@ -9,7 +9,7 @@ import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.UrlUtils;
 
 /**
- * HTTP请求头
+ * wrapper - HTTP请求头
  */
 public class HttpHeaderWrapper {
 
@@ -46,7 +46,10 @@ public class HttpHeaderWrapper {
 		return wrapper;
 	}
 	
-	public Map<String, String> map() {
+	/**
+	 * 获取所有header数据
+	 */
+	public Map<String, String> headers() {
 		return headers;
 	}
 	
@@ -65,7 +68,7 @@ public class HttpHeaderWrapper {
 	}
 	
 	/**
-	 * 文件名称
+	 * 下载文件名称
 	 */
 	public String fileName(final String defaultName) {
 		if(isEmpty()) {
@@ -97,7 +100,7 @@ public class HttpHeaderWrapper {
 	}
 	
 	/**
-	 * 文件大小：Content-Length：102400
+	 * 下载文件大小：Content-Length：102400
 	 */
 	public Long fileSize() {
 		Long size = 0L;

@@ -15,7 +15,7 @@ public class FileUtilsTest {
 	
 	@Test
 	public void fileNameHttp() {
-		HttpManager.httpHeader("https://www.acgist.com/demo/weixin/view").map().forEach((key, value) -> {
+		HttpManager.httpHeader("https://www.acgist.com/demo/weixin/view").headers().forEach((key, value) -> {
 			System.out.println(key + "-" + value);
 		});
 	}

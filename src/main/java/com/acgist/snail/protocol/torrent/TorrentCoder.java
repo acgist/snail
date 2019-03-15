@@ -52,8 +52,8 @@ public class TorrentCoder {
 	/**
 	 * 获取种子信息
 	 */
-	public TorrentWrapper torrentWrapper() throws DownloadException {
-		return new TorrentWrapper(torrent);
+	public TorrentWrapper wrapper() throws DownloadException {
+		return TorrentWrapper.newInstance(torrent);
 	}
 	
 	/**

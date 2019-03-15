@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.gui.menu.TrayMenu;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
-import com.acgist.snail.pojo.wrapper.TaskWrapper;
+import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
@@ -22,35 +22,36 @@ public abstract class AbstractDownloader implements IDownloader {
 	
 	protected boolean running = false; // 下载中
 	protected boolean complete = false; // 下载完成
-	protected TaskWrapper wrapper;
+	
+	protected TaskSession session;
 
-	public AbstractDownloader(TaskWrapper wrapper) {
-		this.wrapper = wrapper;
+	public AbstractDownloader(TaskSession session) {
+		this.session = session;
 	}
 	
 	@Override
-	public TaskWrapper wrapper() {
-		return wrapper;
+	public TaskSession task() {
+		return session;
 	}
 
 	@Override
 	public String id() {
-		return wrapper.entity().getId();
+		return session.entity().getId();
 	}
 	
 	@Override
 	public String name() {
-		return wrapper.entity().getName();
+		return session.entity().getName();
 	}
 	
 	@Override
 	public void start() {
-		this.wrapper.updateStatus(Status.await);
+		this.session.updateStatus(Status.await);
 	}
 	
 	@Override
 	public void pause() {
-		this.wrapper.updateStatus(Status.pause);
+		this.session.updateStatus(Status.pause);
 	}
 	
 	@Override
@@ -60,7 +61,7 @@ public abstract class AbstractDownloader implements IDownloader {
 	
 	@Override
 	public void fail(String message) {
-		this.wrapper.updateStatus(Status.fail);
+		this.session.updateStatus(Status.fail);
 		StringBuilder noticeMessage = new StringBuilder();
 		noticeMessage.append(name())
 			.append("下载失败，失败原因：");
@@ -78,10 +79,10 @@ public abstract class AbstractDownloader implements IDownloader {
 		ThreadUtils.timeout(5000, () -> { // 等待下载线程结束
 			return !this.running;
 		});
-		var entity = wrapper.entity();
+		var entity = session.entity();
 		// 删除文件：注意不删除种子文件，下载时已经将种子文件拷贝到下载目录了
 		FileUtils.delete(entity.getFile());
-		this.wrapper.delete();
+		this.session.delete();
 	}
 	
 	@Override
@@ -91,20 +92,20 @@ public abstract class AbstractDownloader implements IDownloader {
 	@Override
 	public void complete() {
 		if(complete) {
-			this.wrapper.updateStatus(Status.complete);
+			this.session.updateStatus(Status.complete);
 			TrayMenu.getInstance().notice("下载完成", name() + "已经下载完成");
 		}
 	}
 	
 	@Override
 	public void run() {
-		if(wrapper.download()) { // 任务已经处于下载中直接跳过，防止多次点击暂停开始导致后面线程阻塞导致不能下载其他任务
+		if(session.download()) { // 任务已经处于下载中直接跳过，防止多次点击暂停开始导致后面线程阻塞导致不能下载其他任务
 			LOGGER.info("任务已经在下载中，停止执行：{}", name());
 			return;
 		}
-		synchronized (wrapper) {
-			var entity = this.wrapper.entity();
-			if(wrapper.await()) {
+		synchronized (session) {
+			var entity = this.session.entity();
+			if(session.await()) {
 				LOGGER.info("开始下载：{}", name());
 				running = true; // 标记开始下载
 				entity.setStatus(Status.download);
@@ -126,7 +127,7 @@ public abstract class AbstractDownloader implements IDownloader {
 	 * 下载统计
 	 */
 	protected void statistical(long size) {
-		this.wrapper.statistical(size);
+		this.session.statistical(size);
 	}
 	
 	/**

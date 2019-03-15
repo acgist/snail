@@ -6,7 +6,7 @@ import com.acgist.snail.gui.torrent.TorrentWindow;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
-import com.acgist.snail.pojo.wrapper.TaskWrapper;
+import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.wrapper.TorrentWrapper;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.protocol.magnet.MagnetCoder;
@@ -80,7 +80,7 @@ public class TorrentProtocol extends Protocol {
 		String url = this.url;
 		TorrentCoder decoder = TorrentCoder.newInstance(url);
 		this.url = MagnetCoder.buildMagnet(decoder.hash());
-		this.torrentWrapper = decoder.torrentWrapper();
+		this.torrentWrapper = decoder.wrapper();
 	}
 	
 	/**
@@ -107,9 +107,9 @@ public class TorrentProtocol extends Protocol {
 	 * 选择torrent下载文件和设置文件大小
 	 */
 	private boolean selectTorrentFile() throws DownloadException {
-		TaskWrapper taskWrapper = TaskWrapper.newInstance(this.taskEntity);
-		TorrentWindow.getInstance().show(taskWrapper);
-		if(taskWrapper.downloadTorrentFiles().isEmpty()) { // 没有选择下载文件
+		TaskSession session = TaskSession.newInstance(this.taskEntity);
+		TorrentWindow.getInstance().show(session);
+		if(session.downloadTorrentFiles().isEmpty()) { // 没有选择下载文件
 			FileUtils.delete(this.taskEntity.getFile());
 			return false;
 		}

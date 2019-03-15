@@ -7,7 +7,7 @@ import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.gui.alert.AlertWindow;
 import com.acgist.snail.gui.main.TaskDisplay;
 import com.acgist.snail.pojo.entity.TaskEntity;
-import com.acgist.snail.pojo.wrapper.TaskWrapper;
+import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.protocol.torrent.TorrentCoder;
 import com.acgist.snail.protocol.torrent.pojo.Torrent;
 import com.acgist.snail.protocol.torrent.pojo.TorrentInfo;
@@ -42,7 +42,7 @@ public class TorrentController implements Initializable {
 	@FXML
 	private VBox downloadBox;
 	
-	private TaskWrapper wrapper;
+	private TaskSession session;
 	private FileSelectManager manager;
 	
 	@Override
@@ -59,15 +59,15 @@ public class TorrentController implements Initializable {
 	/**
 	 * 显示信息
 	 */
-	public void tree(TaskWrapper wrapper) {
-		var entity = wrapper.entity();
-		this.wrapper = wrapper;
+	public void tree(TaskSession session) {
+		var entity = session.entity();
+		this.session = session;
 		TreeView<HBox> tree = buildTree();
 		Torrent torrent = null;
 		TorrentCoder decoder = null;
 		try {
 			decoder = TorrentCoder.newInstance(entity.getTorrent());
-			torrent = decoder.torrentWrapper().torrent();
+			torrent = decoder.wrapper().torrent();
 		} catch (DownloadException e) {
 			AlertWindow.warn("下载出错", "种子文件解析异常");
 			return;
@@ -79,7 +79,7 @@ public class TorrentController implements Initializable {
 		.filter(file -> !file.path().startsWith(HIDE_FILE_PREFIX))
 		.sorted((a, b) -> a.path().compareTo(b.path()))
 		.forEach(file -> manager.build(file.path(), file.getLength()));
-		manager.select(wrapper.downloadTorrentFiles());
+		manager.select(session.downloadTorrentFiles());
 	}
 	
 	/**
@@ -100,7 +100,7 @@ public class TorrentController implements Initializable {
 	 * 下载按钮事件
 	 */
 	private EventHandler<ActionEvent> downloadEvent = (event) -> {
-		TaskEntity entity = wrapper.entity();
+		TaskEntity entity = session.entity();
 		var list = manager.description();
 		if(list.isEmpty()) {
 			AlertWindow.warn("下载提示", "请选择下载文件");
@@ -111,7 +111,7 @@ public class TorrentController implements Initializable {
 		if(entity.getId() != null) { // 已经添加数据库
 			TaskRepository repository = new TaskRepository();
 			repository.update(entity);
-			DownloaderManager.getInstance().refresh(wrapper);
+			DownloaderManager.getInstance().refresh(session);
 		}
 		TaskDisplay.getInstance().refreshTaskData();
 		TorrentWindow.getInstance().hide();

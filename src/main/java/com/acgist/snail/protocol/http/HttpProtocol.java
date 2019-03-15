@@ -45,7 +45,7 @@ public class HttpProtocol extends Protocol {
 
 	@Override
 	protected boolean buildTaskEntity() throws DownloadException {
-		buildHeader();
+		buildHttpHeader();
 		TaskEntity taskEntity = new TaskEntity();
 		String fileName = buildFileName(); // 文件名称
 		taskEntity.setUrl(this.url);
@@ -67,7 +67,7 @@ public class HttpProtocol extends Protocol {
 	/**
 	 * 获取下载响应头
 	 */
-	private void buildHeader() throws DownloadException {
+	private void buildHttpHeader() throws DownloadException {
 		int index = 0;
 		while(true) {
 			index++;

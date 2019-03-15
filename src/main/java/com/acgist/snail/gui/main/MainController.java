@@ -18,7 +18,7 @@ import com.acgist.snail.gui.menu.TaskMenu;
 import com.acgist.snail.gui.setting.SettingWindow;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
-import com.acgist.snail.pojo.wrapper.TaskWrapper;
+import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.protocol.torrent.TorrentCoder;
 import com.acgist.snail.system.context.SystemStatistical;
 import com.acgist.snail.system.exception.DownloadException;
@@ -87,17 +87,17 @@ public class MainController implements Initializable {
 	@FXML
 	private Label downloadBuffer;
 	@FXML
-	private TableView<TaskWrapper> taskTable;
+	private TableView<TaskSession> taskTable;
 	@FXML
-	private TableColumn<TaskWrapper, String> name;
+	private TableColumn<TaskSession, String> name;
 	@FXML
-	private TableColumn<TaskWrapper, String> status;
+	private TableColumn<TaskSession, String> status;
 	@FXML
-	private TableColumn<TaskWrapper, String> progress;
+	private TableColumn<TaskSession, String> progress;
 	@FXML
-	private TableColumn<TaskWrapper, String> createDate;
+	private TableColumn<TaskSession, String> createDate;
 	@FXML
-	private TableColumn<TaskWrapper, String> endDate;
+	private TableColumn<TaskSession, String> endDate;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -182,8 +182,8 @@ public class MainController implements Initializable {
 	 * 设置数据
 	 */
 	public void refreshTable() {
-		ObservableList<TaskWrapper> obs = FXCollections.observableArrayList();
-		DownloaderManager.getInstance().taskTable()
+		ObservableList<TaskSession> obs = FXCollections.observableArrayList();
+		DownloaderManager.getInstance().tasks()
 		.stream()
 		.filter(wrapper -> {
 			var status = wrapper.entity().getStatus();
@@ -216,7 +216,7 @@ public class MainController implements Initializable {
 	/**
 	 * 选中数据
 	 */
-	public List<TaskWrapper> selected() {
+	public List<TaskSession> selected() {
 		return this.taskTable.getSelectionModel().getSelectedItems()
 			.stream()
 			.collect(Collectors.toList());
@@ -286,21 +286,21 @@ public class MainController implements Initializable {
 	 * @param icon 显示ICON
 	 * @param widthBinding 宽度绑定
 	 */
-	private void taskCell(TableColumn<TaskWrapper, String> column, Pos pos, boolean icon, DoubleBinding widthBinding) {
+	private void taskCell(TableColumn<TaskSession, String> column, Pos pos, boolean icon, DoubleBinding widthBinding) {
 		column.prefWidthProperty().bind(widthBinding);
 		column.setResizable(false);
-		column.setCellFactory(new Callback<TableColumn<TaskWrapper, String>, TableCell<TaskWrapper, String>>() {
+		column.setCellFactory(new Callback<TableColumn<TaskSession, String>, TableCell<TaskSession, String>>() {
 			@Override
-			public TableCell<TaskWrapper, String> call(TableColumn<TaskWrapper, String> param) {
+			public TableCell<TaskSession, String> call(TableColumn<TaskSession, String> param) {
 				return new TaskCell(pos, icon);
 			}
 		});
 	}
 	
-	private Callback<TableView<TaskWrapper>, TableRow<TaskWrapper>> rowFactory = new Callback<TableView<TaskWrapper>, TableRow<TaskWrapper>>() {
+	private Callback<TableView<TaskSession>, TableRow<TaskSession>> rowFactory = new Callback<TableView<TaskSession>, TableRow<TaskSession>>() {
 		@Override
-		public TableRow<TaskWrapper> call(TableView<TaskWrapper> param) {
-			TableRow<TaskWrapper> row = new TableRow<>();
+		public TableRow<TaskSession> call(TableView<TaskSession> param) {
+			TableRow<TaskSession> row = new TableRow<>();
 			row.setOnMouseClicked(rowClickAction); // 双击修改任务状态
 			row.setContextMenu(TaskMenu.getInstance());
 			return row;
@@ -337,7 +337,7 @@ public class MainController implements Initializable {
 	@SuppressWarnings("unchecked")
 	private EventHandler<MouseEvent> rowClickAction = (event) -> {
 		if(event.getClickCount() == 2) { // 双击
-			TableRow<TaskWrapper> row = (TableRow<TaskWrapper>) event.getSource();
+			TableRow<TaskSession> row = (TableRow<TaskSession>) event.getSource();
 			var wrapper = row.getItem();
 			if(wrapper == null) {
 				return;

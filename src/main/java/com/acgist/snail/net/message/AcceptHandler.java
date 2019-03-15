@@ -18,8 +18,12 @@ public class AcceptHandler<T extends AbstractMessageHandler> implements Completi
 	
 	private Class<T> clazz;
 	
-	public AcceptHandler(Class<T> clazz) {
+	private AcceptHandler(Class<T> clazz) {
 		this.clazz = clazz;
+	}
+	
+	public static final <T extends AbstractMessageHandler> AcceptHandler<T> newInstance(Class<T> clazz) {
+		return new AcceptHandler<>(clazz);
 	}
 	
 	@Override

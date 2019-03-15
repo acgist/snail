@@ -125,6 +125,9 @@ public class FtpMessageHandler extends AbstractMessageHandler {
 		ThreadUtils.timeout(5000, () -> {
 			return this.inputStream != null || this.fail;
 		});
+		if(this.inputStream == null) {
+			failMessage = "下载失败";
+		}
 		return this.inputStream;
 	}
 	
