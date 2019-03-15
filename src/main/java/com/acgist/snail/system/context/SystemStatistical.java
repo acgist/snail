@@ -34,7 +34,7 @@ public class SystemStatistical {
 		downloadBuffer.addAndGet(buffer);
 		long now = System.currentTimeMillis();
 		long interval = now - lastTime;
-		if(interval > TaskDisplay.REFRESH_TIME.toMillis()) {
+		if(interval > TaskDisplay.REFRESH_INTERVAL.toMillis()) {
 			long oldBuffer = downloadBuffer.getAndSet(0);
 			bufferSecond = oldBuffer * 1000 / interval;
 			lastTime = now;
@@ -47,7 +47,7 @@ public class SystemStatistical {
 	public String downloadBufferSecond() {
 		long now = System.currentTimeMillis();
 		long interval = now - lastTime;
-		if(interval > TaskDisplay.REFRESH_TIME.toMillis()) {
+		if(interval > TaskDisplay.REFRESH_INTERVAL.toMillis()) {
 			return "0KB/S";
 		}
 		return FileUtils.formatSize(bufferSecond) + "/S";

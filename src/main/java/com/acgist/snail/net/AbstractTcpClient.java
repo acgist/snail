@@ -33,7 +33,7 @@ public abstract class AbstractTcpClient<T extends AbstractMessageHandler> extend
 	/**
 	 * 消息代理
 	 */
-	protected T messageHandler;
+	protected T handler;
 
 	static {
 		EXECUTOR = Executors.newFixedThreadPool(2, SystemThreadContext.newThreadFactory("Application Client Thread"));
@@ -46,9 +46,9 @@ public abstract class AbstractTcpClient<T extends AbstractMessageHandler> extend
 		GROUP = group;
 	}
 	
-	public AbstractTcpClient(String split, T messageHandler) {
+	public AbstractTcpClient(String split, T handler) {
 		super(split);
-		this.messageHandler = messageHandler;
+		this.handler = handler;
 	}
 	
 	/**
@@ -70,7 +70,7 @@ public abstract class AbstractTcpClient<T extends AbstractMessageHandler> extend
 			socket.setOption(StandardSocketOptions.SO_KEEPALIVE, true);
 			Future<Void> future = socket.connect(new InetSocketAddress(host, port));
 			future.get(5, TimeUnit.SECONDS);
-			messageHandler.handler(socket);
+			handler.handler(socket);
 		} catch (Exception e) {
 			ok = false;
 			LOGGER.error("客户端连接异常", e);

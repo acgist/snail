@@ -66,7 +66,7 @@ public class FtpClient extends AbstractTcpClient<FtpMessageHandler> {
 			command("REST " + downloadSize);
 		}
 		command("RETR " + this.filePath);
-		return messageHandler.inputStream();
+		return handler.inputStream();
 	}
 	
 	/**
@@ -79,7 +79,7 @@ public class FtpClient extends AbstractTcpClient<FtpMessageHandler> {
 		this.changeMode();
 		command("TYPE A");
 		command("LIST " + this.filePath);
-		InputStream inputStream = messageHandler.inputStream();
+		InputStream inputStream = handler.inputStream();
 		String data = StringUtils.ofInputStream(inputStream);
 		if(data == null) {
 			throw new NetException(failMessage());
@@ -103,7 +103,7 @@ public class FtpClient extends AbstractTcpClient<FtpMessageHandler> {
 			return;
 		}
 		command("QUIT"); // 退出命令
-		messageHandler.close(); // 关闭
+		handler.close(); // 关闭
 		super.close();
 	}
 	
@@ -111,14 +111,14 @@ public class FtpClient extends AbstractTcpClient<FtpMessageHandler> {
 	 * 是否支持断点续传
 	 */
 	public boolean append() {
-		return messageHandler.append();
+		return handler.append();
 	}
 	
 	/**
 	 * 错误信息
 	 */
 	public String failMessage() {
-		return messageHandler.failMessage();
+		return handler.failMessage();
 	}
 	
 	/**
