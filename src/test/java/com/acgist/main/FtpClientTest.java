@@ -20,7 +20,6 @@ public class FtpClientTest {
 			return;
 		}
 		System.out.println(client.size());
-		client.release();
 		var input = client.download();
 		if(input == null) {
 			System.out.println(client.failMessage());
