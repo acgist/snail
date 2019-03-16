@@ -10,6 +10,7 @@ import com.acgist.snail.net.AbstractTcpServer;
 import com.acgist.snail.net.AbstractUdpClient;
 import com.acgist.snail.net.application.ApplicationClient;
 import com.acgist.snail.net.application.ApplicationServer;
+import com.acgist.snail.net.udp.TrackerUdpClient;
 import com.acgist.snail.system.context.SystemThreadContext;
 
 import javafx.application.Platform;
@@ -28,6 +29,7 @@ public class PlatformUtils {
 		LOGGER.info("系统关闭中");
 		/**系统线程都是后台线程以下操作可以不执行**/
 		AbstractUdpClient.shutdown();
+		TrackerUdpClient.getInstance().close();
 		AbstractTcpClient.shutdown();
 		ApplicationServer.getInstance().close();
 		AbstractTcpServer.shutdown();

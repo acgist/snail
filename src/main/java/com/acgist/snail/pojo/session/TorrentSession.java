@@ -14,55 +14,11 @@ import com.acgist.snail.utils.UniqueCodeUtils;
  * 种子session
  */
 public class TorrentSession {
-
-	/**
-	 * announce事件
-	 */
-	public enum Event {
-		
-		none(0), // none
-		completed(1), // 完成
-		started(2), // 开始
-		stopped(3); // 停止
-		
-		private int event;
-
-		private Event(int event) {
-			this.event = event;
-		}
-
-		public int event() {
-			return this.event;
-		}
-		
-	}
 	
 	/**
-	 * 动作
+	 * id：transaction_id（获取peer时使用）
 	 */
-	public enum Action {
-		
-		connect(0), // 连接
-		announce(1), // 获取信息
-		scrape(2), // 刷新信息
-		error(3); // 错误
-		
-		private int action;
-
-		private Action(int action) {
-			this.action = action;
-		}
-		
-		public int action() {
-			return this.action;
-		}
-		
-	}
-	
-	/**
-	 * id：transaction_id
-	 */
-	private Long id;
+	private Integer id;
 	/**
 	 * 种子信息
 	 */
@@ -80,7 +36,7 @@ public class TorrentSession {
 		if(torrent == null || infoHash == null) {
 			throw new DownloadException("解析种子文件异常");
 		}
-		this.id = UniqueCodeUtils.buildLong();
+		this.id = UniqueCodeUtils.buildInteger();
 		this.torrent = torrent;
 		this.infoHash = infoHash;
 	}
@@ -101,7 +57,7 @@ public class TorrentSession {
 		return name;
 	}
 
-	public Long id() {
+	public Integer id() {
 		return id;
 	}
 	

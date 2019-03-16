@@ -96,5 +96,14 @@ public class HttpProtocol extends Protocol {
 	private long buildSize() {
 		return httpHeaderWrapper.fileSize();
 	}
+	
+	/**
+	 * 验证HTTP协议
+	 */
+	public static final boolean verify(String url) {
+		return
+			StringUtils.regex(url, HTTP_REGEX, true) ||
+			StringUtils.regex(url, HTTPS_REGEX, true);
+	}
 
 }

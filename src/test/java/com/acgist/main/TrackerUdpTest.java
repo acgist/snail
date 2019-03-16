@@ -1,4 +1,4 @@
-package com.acgist.snail.net.udp;
+package com.acgist.main;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -12,16 +12,15 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.junit.Test;
+
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.NetUtils;
 
-public class UdpClient {
+public class TrackerUdpTest {
 
-	public static void main(String[] args) throws IOException, DownloadException, InterruptedException {
-		new UdpClient().connect();
-	}
-	
+	@Test
 	public void connect() throws IOException, DownloadException, InterruptedException {
 		CountDownLatch down = new CountDownLatch(1);
 //		SocketAddress address = new InetSocketAddress("explodie.org", 6969);
@@ -119,12 +118,13 @@ public class UdpClient {
 		bBuffer.putInt(0);// local ip
 		bBuffer.putInt(0);//secret key
 		bBuffer.putInt(50);//numwant
-		bBuffer.putShort((short)8888);//numwant
+		bBuffer.putShort((short)8888);//port
 		bBuffer.flip();
 		System.out.println("发送hash");
 //		channel.write(bBuffer);
 		channel.send(bBuffer, address);
 		System.out.println("OK");
+		Thread.sleep(100000);
 	}
 	
 }
