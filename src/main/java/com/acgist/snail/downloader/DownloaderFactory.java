@@ -27,8 +27,7 @@ public class DownloaderFactory {
 	 * 通过下载链接生成下载任务
 	 */
 	public static final DownloaderFactory newInstance(String url) {
-		final DownloaderFactory builder = new DownloaderFactory(url);
-		return builder;
+		return new DownloaderFactory(url);
 	}
 
 	/**
@@ -36,9 +35,7 @@ public class DownloaderFactory {
 	 * 已经存在下载任务
 	 */
 	public static final DownloaderFactory newInstance(TaskEntity entity) throws DownloadException {
-		final DownloaderFactory builder = new DownloaderFactory(entity);
-		builder.session.loadDownloadSize(); // 加载已下载大小
-		return builder;
+		return new DownloaderFactory(entity);
 	}
 	
 	/**
