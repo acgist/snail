@@ -19,6 +19,7 @@ public class Application {
 	
 	public static final void main(String[] args) {
 		LOGGER.info("系统开始启动");
+		SystemContext.info();
 		final boolean enable = listen();
 		if(enable) {
 			initSystem();
