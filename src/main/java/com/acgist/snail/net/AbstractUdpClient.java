@@ -69,7 +69,7 @@ public abstract class AbstractUdpClient<T extends AbstractUdpMessageHandler> {
 		buffer.flip();
 		try {
 			channel.send(buffer, address);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new NetException(e);
 		}
 	}
