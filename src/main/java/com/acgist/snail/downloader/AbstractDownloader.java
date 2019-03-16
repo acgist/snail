@@ -27,6 +27,7 @@ public abstract class AbstractDownloader implements IDownloader {
 
 	public AbstractDownloader(TaskSession session) {
 		this.session = session;
+		session.loadDownloadSize(); // 加载已下载大小
 	}
 	
 	@Override
