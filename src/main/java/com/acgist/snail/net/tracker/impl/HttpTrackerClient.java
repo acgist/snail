@@ -29,6 +29,16 @@ public class HttpTrackerClient extends AbstractTrackerClient {
 	}
 
 	@Override
+	public void complete(TorrentSession session) {
+		// TODO
+	}
+	
+	@Override
+	public void stop(TorrentSession session) {
+		// TODO
+	}
+	
+	@Override
 	public void scrape(TorrentSession session) throws NetException {
 	}
 	

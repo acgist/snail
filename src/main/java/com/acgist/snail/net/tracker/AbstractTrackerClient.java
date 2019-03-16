@@ -130,9 +130,19 @@ public abstract class AbstractTrackerClient {
 	}
 	
 	/**
-	 * 跟踪
+	 * 跟踪：开始
 	 */
 	public abstract void announce(TorrentSession session) throws NetException;
+	
+	/**
+	 * 完成
+	 */
+	public abstract void complete(TorrentSession session);
+	
+	/**
+	 * 停止
+	 */
+	public abstract void stop(TorrentSession session);
 	
 	/**
 	 * 刮檫

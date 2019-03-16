@@ -60,6 +60,16 @@ public class UdpTrackerClient extends AbstractTrackerClient {
 	}
 
 	@Override
+	public void complete(TorrentSession session) {
+		// TODO:complete
+	}
+	
+	@Override
+	public void stop(TorrentSession session) {
+		// TODO:stop
+	}
+	
+	@Override
 	public void scrape(TorrentSession session) throws NetException {
 	}
 
