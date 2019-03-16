@@ -209,7 +209,7 @@ public class MainController implements Initializable {
 	public void refreshData() {
 		taskTable.refresh(); // 刷新table
 		Platform.runLater(() -> {
-			downloadBuffer.setText(SystemStatistical.getInstance().downloadBufferSecond()); // 下载速度
+			downloadBuffer.setText(SystemStatistical.getInstance().bufferSecond()); // 下载速度
 		});
 	}
 	

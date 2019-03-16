@@ -14,6 +14,7 @@ public class StatisticsSession {
 	private long bufferSecond = 0L; // 每秒下载速度
 	private AtomicLong downloadSize = new AtomicLong(0); // 已经下载大小
 	private AtomicLong downloadBuffer = new AtomicLong(0); // 下载速度采样
+	private AtomicLong uploadSize = new AtomicLong(0); // 已上传大小
 	
 	/**
 	 * 下载统计
@@ -50,6 +51,21 @@ public class StatisticsSession {
 	 */
 	public void downloadSize(long size) {
 		downloadSize.set(size);
+	}
+	
+	/**
+	 * 累计上传大小
+	 */
+	public long uploadSize() {
+		return uploadSize.get();
+	}
+
+	/**
+	 * 设置累计上传大小
+	 * @param size
+	 */
+	public void uploadSize(long size) {
+		uploadSize.set(size);
 	}
 	
 }

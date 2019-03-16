@@ -6,7 +6,7 @@ import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.system.exception.DownloadException;
 
 /**
- * 下载器构建
+ * 下载器工厂
  */
 public class DownloaderFactory {
 
