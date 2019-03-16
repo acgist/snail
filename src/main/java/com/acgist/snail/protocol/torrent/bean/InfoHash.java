@@ -18,7 +18,7 @@ public class InfoHash {
 	}
 
 	public static final InfoHash newInstance(byte[] data) {
-		return new InfoHash(data);
+		return new InfoHash(StringUtils.sha1(data));
 	}
 	
 	public static final InfoHash newInstance(String hash) throws DownloadException {
@@ -43,7 +43,7 @@ public class InfoHash {
 	 * 磁力链接hash（40位）
 	 */
 	public String hashHex() {
-		return StringUtils.sha1(data);
+		return StringUtils.hex(data);
 	}
 	
 	/**

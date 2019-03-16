@@ -1,38 +1,35 @@
 package com.acgist.snail.net.tracker.impl;
 
 import java.net.http.HttpResponse.BodyHandlers;
-import java.util.List;
 
 import com.acgist.snail.net.http.HttpManager;
 import com.acgist.snail.net.tracker.AbstractTrackerClient;
-import com.acgist.snail.pojo.bean.Peer;
 import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.system.exception.NetException;
 
 /**
  * tracker http 客户端
  */
-public class TrackerHttpClient extends AbstractTrackerClient {
+public class HttpTrackerClient extends AbstractTrackerClient {
 
 	private static final String SCRAPE_URL_SUFFIX = "/scrape";
 	private static final String ANNOUNCE_URL_SUFFIX = "/announce";
 	
-	public TrackerHttpClient(String scrapeUrl, String announceUrl) {
-		super(scrapeUrl, announceUrl);
+	private HttpTrackerClient(String scrapeUrl, String announceUrl) throws NetException {
+		super(scrapeUrl, announceUrl, Type.http);
 	}
 	
-	public static final TrackerHttpClient newInstance(String url) {
-		String announceUrl = url;
-		String scrapeUrl = announceUrlToScrapeUrl(url);
-		return new TrackerHttpClient(announceUrl, scrapeUrl);
+	public static final HttpTrackerClient newInstance(String announceUrl) throws NetException {
+		final String scrapeUrl = announceUrlToScrapeUrl(announceUrl);
+		return new HttpTrackerClient(announceUrl, scrapeUrl);
 	}
 
 	@Override
-	public List<Peer> announce(TorrentSession session) {
-		return null;
+	public void announce(TorrentSession session) throws NetException {
 	}
 
 	@Override
-	public void scrape(TorrentSession session) {
+	public void scrape(TorrentSession session) throws NetException {
 	}
 	
 	/**

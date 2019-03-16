@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +38,7 @@ public class StringUtils {
 	 * 数字字符串
 	 */
 	public static final boolean isNumeric(String value) {
-		return value != null && value.matches(NUMERIC_REGEX);
+		return StringUtils.regex(value, NUMERIC_REGEX, true);
 	}
 
 	/**
@@ -108,15 +110,22 @@ public class StringUtils {
 	/**
 	 * SHA1
 	 */
-	public static final String sha1(byte[] bytes) {
+	public static final byte[] sha1(byte[] bytes) {
 		try {
 			MessageDigest digest = MessageDigest.getInstance("SHA1");
 			digest.update(bytes);
-			return StringUtils.hex(digest.digest());
+			return digest.digest();
 		} catch (NoSuchAlgorithmException e) {
 			LOGGER.error("SHA1计算异常", e);
 		}
 		return null;
+	}
+	
+	/**
+	 * SHA1
+	 */
+	public static final String sha1Hex(byte[] bytes) {
+		return StringUtils.hex(sha1(bytes));
 	}
 	
 	/**
@@ -152,6 +161,26 @@ public class StringUtils {
 			LOGGER.error("读取输入流异常", e);
 		}
 		return builder.toString();
+	}
+
+	/**
+	 * 正则表达式验证
+	 * @param value 字符串
+	 * @param regex 正则表达式
+	 * @param ignoreCase 忽略大小写
+	 */
+	public static final boolean regex(String value, String regex, boolean ignoreCase) {
+		if(value == null) {
+			return false;
+		}
+		Pattern pattern;
+		if(ignoreCase) {
+			pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+		} else {
+			pattern = Pattern.compile(regex);
+		}
+		Matcher matcher = pattern.matcher(value);
+		return matcher.matches();
 	}
 	
 }
