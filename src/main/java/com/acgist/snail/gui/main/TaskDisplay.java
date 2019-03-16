@@ -11,6 +11,7 @@ import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * 定时任务：刷新任务列表
+ * TODO：隐藏、任务完成后刷新时间变短
  */
 public class TaskDisplay {
 

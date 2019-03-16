@@ -1,20 +1,44 @@
 package com.acgist.snail.net.tracker.impl;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.nio.channels.DatagramChannel;
+import java.net.URI;
+import java.util.List;
+
+import com.acgist.snail.net.tracker.AbstractTrackerClient;
+import com.acgist.snail.pojo.bean.Peer;
+import com.acgist.snail.pojo.session.TorrentSession;
 
 /**
  * tracker udp 客户端
+ * 必须实现线程安全（每次只能处理一个beer）
  */
-public class TrackerUdpClient {
+public class TrackerUdpClient extends AbstractTrackerClient {
 
-	public static void main(String[] args) {
+	private final String host;
+	private final int port;
+	
+	/**
+	 * 连接ID
+	 */
+	private Long connectionId;
+	
+	private TrackerUdpClient(String scrapeUrl, String announceUrl) {
+		super(scrapeUrl, announceUrl);
+		URI uri = URI.create(announceUrl);
+		this.host = uri.getHost();
+		this.port = uri.getPort();
 	}
 
-	public void decode(String trackerUrl) throws IOException {
-		DatagramChannel channel = DatagramChannel.open();
-		channel.socket().bind(new InetSocketAddress(9999));
+	public static final TrackerHttpClient newInstance(String url) {
+		return new TrackerHttpClient(url, url);
+	}
+	
+	@Override
+	public List<Peer> announce(TorrentSession session) {
+		return null;
+	}
+
+	@Override
+	public void scrape(TorrentSession session) {
 	}
 
 }

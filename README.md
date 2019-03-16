@@ -27,3 +27,8 @@ jdeps --list-deps *.jar
 
 #### BT参考项目
 https://github.com/atomashpolskiy/bt
+
+#### TODO
+tracker
+peer
+dht

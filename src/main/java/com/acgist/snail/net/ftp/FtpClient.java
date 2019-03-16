@@ -11,6 +11,7 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * FTP客户端
+ * TODO：中文路径
  */
 public class FtpClient extends AbstractTcpClient<FtpMessageHandler> {
 

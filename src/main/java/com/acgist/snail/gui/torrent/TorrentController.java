@@ -67,7 +67,7 @@ public class TorrentController implements Initializable {
 		TorrentCoder decoder = null;
 		try {
 			decoder = TorrentCoder.newInstance(entity.getTorrent());
-			torrent = decoder.wrapper().torrent();
+			torrent = decoder.torrentSession().torrent();
 		} catch (DownloadException e) {
 			AlertWindow.warn("下载出错", "种子文件解析异常");
 			return;
