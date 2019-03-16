@@ -12,6 +12,9 @@ public class SystemConfig {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseConfig.class);
 	
+	/**
+	 * 系统默认编码（file.encoding）
+	 */
 	public static final String DEFAULT_CHARSET = "utf-8";
 
 	private static final SystemConfig INSTANCE = new SystemConfig();
