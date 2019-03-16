@@ -29,6 +29,9 @@ public abstract class AbstractUdpMessageHandler {
 	public void handle(DatagramChannel channel) throws IOException {
 		ByteBuffer buffer = null;
 		Selector selector = Selector.open();
+		if(channel == null || !channel.isOpen()) {
+			return;
+		}
 		channel.register(selector, SelectionKey.OP_READ);
 		while (true) {
 			if(selector.select() > 0) {
