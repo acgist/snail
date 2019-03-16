@@ -1,8 +1,8 @@
 package com.acgist.snail.net.tracker;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +23,7 @@ public class TrackerClientManager {
 	private static final TrackerClientManager INSTANCE = new TrackerClientManager();
 	
 	private TrackerClientManager() {
-		TRACKER_CLIENT_MAP = new HashMap<>();
+		TRACKER_CLIENT_MAP = new ConcurrentHashMap<>();
 	}
 
 	public static final TrackerClientManager getInstance() {
@@ -36,16 +36,18 @@ public class TrackerClientManager {
 	 * 获取tracker，如果已经存在返回tracker，否者注册tracker
 	 */
 	public AbstractTrackerClient tracker(String announceUrl) throws NetException {
-		Optional<AbstractTrackerClient> optional = TRACKER_CLIENT_MAP.values().stream()
-			.filter(client -> {
-				return client.announceUrl().equals(announceUrl);
-			}).findFirst();
-		if(optional.isPresent()) {
-			return optional.get();
+		synchronized (TRACKER_CLIENT_MAP) {
+			Optional<AbstractTrackerClient> optional = TRACKER_CLIENT_MAP.values().stream()
+				.filter(client -> {
+					return client.announceUrl().equals(announceUrl);
+				}).findFirst();
+			if(optional.isPresent()) {
+				return optional.get();
+			}
+			AbstractTrackerClient client = buildClient(announceUrl);
+			register(client);
+			return client;
 		}
-		AbstractTrackerClient client = buildClient(announceUrl);
-		register(client);
-		return client;
 	}
 	
 	/**
