@@ -1,17 +1,38 @@
 package com.acgist.snail.net.tracker.impl;
 
 import java.net.http.HttpResponse.BodyHandlers;
+import java.util.List;
 
 import com.acgist.snail.net.http.HttpManager;
+import com.acgist.snail.net.tracker.AbstractTrackerClient;
+import com.acgist.snail.pojo.bean.Peer;
+import com.acgist.snail.pojo.session.TorrentSession;
 
 /**
  * tracker http 客户端
  */
-public class TrackerHttpClient {
+public class TrackerHttpClient extends AbstractTrackerClient {
+
+	private static final String SCRAPE_URL_SUFFIX = "/scrape";
+	private static final String ANNOUNCE_URL_SUFFIX = "/announce";
 	
-	public static void main(String[] args) {
-		TrackerHttpClient c = new TrackerHttpClient();
-		c.decode("http://exodus.desync.com:6969/announce", null);
+	public TrackerHttpClient(String scrapeUrl, String announceUrl) {
+		super(scrapeUrl, announceUrl);
+	}
+	
+	public static final TrackerHttpClient newInstance(String url) {
+		String announceUrl = url;
+		String scrapeUrl = announceUrlToScrapeUrl(url);
+		return new TrackerHttpClient(announceUrl, scrapeUrl);
+	}
+
+	@Override
+	public List<Peer> announce(TorrentSession session) {
+		return null;
+	}
+
+	@Override
+	public void scrape(TorrentSession session) {
 	}
 	
 	/**
@@ -60,6 +81,23 @@ public class TrackerHttpClient {
 		.append("compact").append("=").append("1").append("&")
 		.append("event").append("=").append("started");
 		return builder.toString();
+	}
+	
+	/**
+	 * announceUrl转换ScrapeUrl<br>
+	 *		~http://example.com/announce			-> ~http://example.com/scrape
+	 *		~http://example.com/x/announce			-> ~http://example.com/x/scrape
+	 *		~http://example.com/announce.php		-> ~http://example.com/scrape.php
+	 *		~http://example.com/a					-> (scrape not supported)
+	 *		~http://example.com/announce?x2%0644	-> ~http://example.com/scrape?x2%0644
+	 *		~http://example.com/announce?x=2/4		-> (scrape not supported)
+	 *		~http://example.com/x%064announce		-> (scrape not supported)
+	 */
+	private static final String announceUrlToScrapeUrl(String url) {
+		if(url.contains(ANNOUNCE_URL_SUFFIX)) {
+			return url.replace(ANNOUNCE_URL_SUFFIX, SCRAPE_URL_SUFFIX);
+		}
+		return null;
 	}
 
 }

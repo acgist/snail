@@ -13,7 +13,7 @@ public class UniqueCodeUtils {
 	private static int index = MIN_INDEX;
 	
 	/**
-	 * 生成唯一编号
+	 * 生成唯一编号（String）
 	 */
 	public static final String build() {
 		StringBuilder builder = new StringBuilder();
@@ -27,6 +27,13 @@ public class UniqueCodeUtils {
 			UniqueCodeUtils.index = index;
 		}
 		return builder.toString();
+	}
+	
+	/**
+	 * 生成唯一编号（Long）
+	 */
+	public static final Long buildLong() {
+		return Long.valueOf(build());
 	}
 	
 }

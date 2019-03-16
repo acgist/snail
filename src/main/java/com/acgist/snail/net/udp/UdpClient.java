@@ -12,10 +12,8 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicLong;
 
-import com.acgist.snail.net.tracker.TrackerCoder;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.NetUtils;
 
 public class UdpClient {
@@ -26,11 +24,11 @@ public class UdpClient {
 	
 	public void connect() throws IOException, DownloadException, InterruptedException {
 		CountDownLatch down = new CountDownLatch(1);
-		SocketAddress address = new InetSocketAddress("explodie.org", 6969);
+//		SocketAddress address = new InetSocketAddress("explodie.org", 6969);
 //		SocketAddress address = new InetSocketAddress("thetracker.org", 80);
-//		SocketAddress address = new InetSocketAddress("exodus.desync.com", 6969);
+		SocketAddress address = new InetSocketAddress("exodus.desync.com", 6969);
 		DatagramChannel channel = DatagramChannel.open();
-		channel.bind(new InetSocketAddress(8888));
+//		channel.bind(new InetSocketAddress(8888));
 		AtomicLong id = new AtomicLong(0);
 		channel.configureBlocking(false);
 		Selector selector = Selector.open();

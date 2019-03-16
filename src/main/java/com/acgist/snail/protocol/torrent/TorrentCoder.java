@@ -4,7 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.acgist.snail.pojo.wrapper.TorrentWrapper;
+import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
 import com.acgist.snail.protocol.torrent.bean.TorrentInfo;
@@ -36,17 +36,10 @@ public class TorrentCoder {
 	}
 	
 	/**
-	 * 获取磁力链接HASH
-	 */
-	public String hash() {
-		return infoHash.hashHex();
-	}
-	
-	/**
 	 * 获取种子信息
 	 */
-	public TorrentWrapper wrapper() throws DownloadException {
-		return TorrentWrapper.newInstance(torrent);
+	public TorrentSession torrentSession() throws DownloadException {
+		return TorrentSessionFactory.getInstance().newSession(torrent, infoHash);
 	}
 	
 	/**

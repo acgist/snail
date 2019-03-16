@@ -13,14 +13,14 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.message.AbstractMessageHandler;
+import com.acgist.snail.net.message.AbstractTcpMessageHandler;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.IoUtils;
 
 /**
  * Aio Socket客户端
  */
-public abstract class AbstractTcpClient<T extends AbstractMessageHandler> extends AbstractTcpSender {
+public abstract class AbstractTcpClient<T extends AbstractTcpMessageHandler> extends AbstractTcpSender {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractTcpClient.class);
 	
@@ -36,7 +36,7 @@ public abstract class AbstractTcpClient<T extends AbstractMessageHandler> extend
 	protected T handler;
 
 	static {
-		EXECUTOR = Executors.newFixedThreadPool(2, SystemThreadContext.newThreadFactory("Application Client Thread"));
+		EXECUTOR = Executors.newFixedThreadPool(2, SystemThreadContext.newThreadFactory("Application Tcp Client Thread"));
 		AsynchronousChannelGroup group = null;
 		try {
 			group = AsynchronousChannelGroup.withThreadPool(EXECUTOR);
@@ -70,7 +70,7 @@ public abstract class AbstractTcpClient<T extends AbstractMessageHandler> extend
 			socket.setOption(StandardSocketOptions.SO_KEEPALIVE, true);
 			Future<Void> future = socket.connect(new InetSocketAddress(host, port));
 			future.get(5, TimeUnit.SECONDS);
-			handler.handler(socket);
+			handler.handle(socket);
 		} catch (Exception e) {
 			ok = false;
 			LOGGER.error("客户端连接异常", e);

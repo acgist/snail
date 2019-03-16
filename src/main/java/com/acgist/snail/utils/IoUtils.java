@@ -7,6 +7,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
+import java.nio.channels.DatagramChannel;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
@@ -93,6 +94,16 @@ public class IoUtils {
 				group.awaitTermination(5, TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
 				LOGGER.error("关闭Group异常", e);
+			}
+		}
+	}
+	
+	public static final void close(DatagramChannel channel) {
+		if(channel != null && channel.isOpen()) {
+			try {
+				channel.close();
+			} catch (IOException e) {
+				LOGGER.error("关闭UDP Channel异常", e);
 			}
 		}
 	}
