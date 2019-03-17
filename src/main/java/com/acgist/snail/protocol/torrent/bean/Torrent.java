@@ -5,23 +5,16 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.acgist.snail.utils.StringUtils;
+import com.acgist.snail.utils.BCodeUtils;
 
 /**
  * 种子信息
  */
 public class Torrent {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(Torrent.class);
-	
-	/**
-	 * 属性：https://www.cnblogs.com/EasonJim/p/6601047.html
-	 */
-	private static final List<String> INFO_KEYS;
+
+	public static final List<String> INFO_KEYS;
 	
 	static {
 		String[] keys = {
@@ -60,13 +53,62 @@ public class Torrent {
 	private String announce; // Tracker主服务器
 	private Long creationDate; // 创建时间
 	private TorrentInfo info; // 文件信息
-	private List<String> announceList = new ArrayList<>(); // Tracker服务器列表
-	private Map<String, Long> nodes = new LinkedHashMap<>(); // DHT协议：暂时不处理
-	
-	public static final List<String> infoKeys() {
-		return INFO_KEYS;
-	}
+	private List<String> announceList; // Tracker服务器列表
+	private Map<String, Long> nodes; // DHT协议：暂时不处理
 
+	protected Torrent() {
+	}
+	
+	public static final Torrent valueOf(Map<String, Object> map) {
+		final Torrent torrent = new Torrent();
+		torrent.setComment(BCodeUtils.getString(map, "comment"));
+		torrent.setCommentUtf8(BCodeUtils.getString(map, "comment.utf-8"));
+		torrent.setEncoding(BCodeUtils.getString(map, "encoding"));
+		torrent.setCreateBy(BCodeUtils.getString(map, "created by"));
+		torrent.setAnnounce(BCodeUtils.getString(map, "announce"));
+		torrent.setCreationDate(BCodeUtils.getLong(map, "creation date"));
+		List<?> announceList = (List<?>) map.get("announce-list");
+		if(announceList != null) {
+			torrent.setAnnounceList(
+				announceList.stream()
+				.flatMap(value -> {
+					List<?> values = (List<?>) value;
+					return values.stream();
+				})
+				.map(value -> BCodeUtils.getString(value))
+				.collect(Collectors.toList())
+			);
+		} else {
+			torrent.setAnnounceList(new ArrayList<>(0));
+		}
+		List<?> nodes = (List<?>) map.get("nodes");
+		if(nodes != null) {
+			torrent.setNodes(
+				nodes.stream()
+				.map(value -> {
+					List<?> values = (List<?>) value;
+					if(values.size() == 2) {
+						String ip = BCodeUtils.getString(values.get(0));
+						Long port = (Long) values.get(1);
+						return Map.entry(ip, port);
+					} else {
+						return null;
+					}
+				})
+				.filter(value -> value != null)
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new))
+			);
+		} else {
+			torrent.setNodes(new LinkedHashMap<>());
+		}
+		Map<?, ?> info = (Map<?, ?>) map.get("info");
+		if(info != null) {
+			TorrentInfo torrentInfo = TorrentInfo.valueOf(info);
+			torrent.setInfo(torrentInfo);
+		}
+		return torrent;
+	}
+	
 	public String getComment() {
 		return comment;
 	}
@@ -115,22 +157,6 @@ public class Torrent {
 		this.creationDate = creationDate;
 	}
 
-	public List<String> getAnnounceList() {
-		return announceList;
-	}
-
-	public void setAnnounceList(List<String> announceList) {
-		this.announceList = announceList;
-	}
-	
-	public Map<String, Long> getNodes() {
-		return nodes;
-	}
-
-	public void setNodes(Map<String, Long> nodes) {
-		this.nodes = nodes;
-	}
-	
 	public TorrentInfo getInfo() {
 		return info;
 	}
@@ -139,134 +165,20 @@ public class Torrent {
 		this.info = info;
 	}
 
-	public boolean hasFiles() {
-		return !this.info.getFiles().isEmpty();
-	}
-	
-	public TorrentFile lastTorrentFile() {
-		return this.info.lastTorrentFile();
-	}
-	
-	public void newTorrentFile() {
-		this.getInfo().getFiles().add(new TorrentFile());
-	}
-	
-	public boolean hasNode() {
-		return !this.nodes.isEmpty();
-	}
-	
-	public Map.Entry<String, Long> lastNode() {
-		return this.nodes.entrySet()
-			.stream()
-			.skip(this.nodes.size() - 1)
-			.findFirst()
-			.get();
-	}
-	
-	public void setValue(String key, Object value) {
-		if (!INFO_KEYS.contains(key)) {
-			LOGGER.error("不存在的种子KEY：{}", key);
-		} else {
-			switch (key) {
-				case "name":
-					this.getInfo().setName(value.toString());
-					break;
-				case "name.utf-8":
-					this.getInfo().setNameUtf8(value.toString());
-					break;
-				case "path":
-					if(this.hasFiles()) {
-						this.lastTorrentFile().getPath().add(value.toString());
-					}
-					break;
-				case "path.utf-8":
-					if(this.hasFiles()) {
-						this.lastTorrentFile().getPathUtf8().add(value.toString());
-					}
-					break;
-				case "ed2k":
-					if(this.hasFiles()) {
-						if(this.lastTorrentFile().getEd2k() != null) {
-							this.newTorrentFile();
-						}
-						this.lastTorrentFile().setEd2k((byte[]) value);
-					} else {
-						this.getInfo().setEd2k((byte[]) value);
-					}
-					break;
-				case "nodes":
-					if(this.hasNode()) {
-						var entity = this.lastNode();
-						if(entity.getValue() == null) {
-							entity.setValue(StringUtils.toLong(value.toString()));
-						} else {
-							this.nodes.put(value.toString(), null);
-						}
-					} else {
-						this.nodes.put(value.toString(), null);
-					}
-					break;
-				case "pieces":
-					this.getInfo().setPieces((byte[]) value);
-					break;
-				case "length":
-					if (this.hasFiles()) {
-						if(this.lastTorrentFile().getLength() != null) {
-							this.newTorrentFile();
-						}
-						this.lastTorrentFile().setLength(StringUtils.toLong(value.toString()));
-					} else {
-						this.getInfo().setLength(StringUtils.toLong(value.toString()));
-					}
-					break;
-				case "comment":
-					this.setComment(value.toString());
-					break;
-				case "comment.utf-8":
-					this.setCommentUtf8(value.toString());
-					break;
-				case "filehash":
-					if(this.hasFiles()) {
-						if(this.lastTorrentFile().getFilehash() != null) {
-							this.newTorrentFile();
-						}
-						this.lastTorrentFile().setFilehash((byte[]) value);
-					} else {
-						this.getInfo().setFilehash((byte[]) value);
-					}
-					break;
-				case "encoding":
-					this.setEncoding(value.toString());
-					break;
-				case "announce":
-					this.setAnnounce(value.toString());
-					break;
-				case "publisher":
-					this.getInfo().setPublisher(value.toString());
-					break;
-				case "publisher.utf-8":
-					this.getInfo().setPublisherUtf8(value.toString());
-					break;
-				case "publisher-url":
-					this.getInfo().setPublisherUrl(value.toString());
-					break;
-				case "publisher-url.utf-8":
-					this.getInfo().setPublisherUrlUtf8(value.toString());
-					break;
-				case "created by":
-					this.setCreateBy(value.toString());
-					break;
-				case "piece length":
-					this.getInfo().setPieceLength(StringUtils.toLong(value.toString()));
-					break;
-				case "creation date":
-					this.setCreationDate(StringUtils.toLong(value.toString()));
-					break;
-				case "announce-list":
-					this.getAnnounceList().add(value.toString());
-					break;
-			}
-		}
+	public List<String> getAnnounceList() {
+		return announceList;
 	}
 
+	public void setAnnounceList(List<String> announceList) {
+		this.announceList = announceList;
+	}
+
+	public Map<String, Long> getNodes() {
+		return nodes;
+	}
+
+	public void setNodes(Map<String, Long> nodes) {
+		this.nodes = nodes;
+	}
+	
 }
