@@ -1,5 +1,11 @@
 package com.acgist.snail.protocol.torrent;
 
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.fasterxml.jackson.core.util.ByteArrayBuilder;
 
@@ -10,52 +16,81 @@ import com.fasterxml.jackson.core.util.ByteArrayBuilder;
  */
 public class InfoHashBuilder {
 
-	private boolean begin;
+	private static final Logger LOGGER = LoggerFactory.getLogger(InfoHashBuilder.class);
+	
 	private ByteArrayBuilder builder;
 	
 	private InfoHashBuilder() {
-		begin = false;
 		builder = new ByteArrayBuilder();
 	}
 	
 	public static final InfoHashBuilder newInstance() {
 		return new InfoHashBuilder();
 	}
-	
-	public void build(String key, byte[] values) {
-		for (byte value : values) {
-			build(key, value);
-		}
+
+	/**
+	 * 获取infoHash
+	 */
+	public InfoHashBuilder build(Map<?, ?> map) {
+		builder.write('d');
+		map.forEach((key, value) -> {
+			String keyValue = (String) key;
+			builder.write(String.valueOf(keyValue.getBytes().length).getBytes());
+			builder.write(':');
+			builder.write(keyValue.getBytes());
+			if(value instanceof Long) {
+				builder.write('i');
+				builder.write(value.toString().getBytes());
+				builder.write('e');
+			} else if(value instanceof Map) {
+				build((Map<?, ?>) value);
+			} else if(value instanceof List) {
+				build((List<?>) value);
+			} else if(value instanceof byte[]) {
+				byte[] bytes = (byte[]) value;
+				builder.write(String.valueOf(bytes.length).getBytes());
+				builder.write(':');
+				builder.write(bytes);
+			} else {
+				LOGGER.warn("InfoHash不支持的类型，key：{}，value：{}", key, value);
+			}
+		});
+		builder.write('e');
+		return this;
 	}
-	
-	public void build(String key, int value) {
-		build(key, (byte) value);
-	}
-	
-	public void build(String key, byte value) {
-		if(key == null) {
-			return;
-		}
-		if("info".equals(key)) {
-			begin = true;
-		}
-		if("nodes".equals(key)) {
-			begin = false;
-			return;
-		}
-		if(begin) {
-			builder.append(value);
-		}
+
+	/**
+	 * 获取infoHash
+	 */
+	public InfoHashBuilder build(List<?> list) {
+		builder.write('l');
+		list.forEach(value -> {
+			if(value instanceof Long) {
+				builder.write('i');
+				builder.write(value.toString().getBytes());
+				builder.write('e');
+			} else if(value instanceof Map) {
+				build((Map<?, ?>) value);
+			} else if(value instanceof List) {
+				build((List<?>) value);
+			} else if(value instanceof byte[]) {
+				byte[] bytes = (byte[]) value;
+				builder.write(String.valueOf(bytes.length).getBytes());
+				builder.write(':');
+				builder.write(bytes);
+			} else {
+				LOGGER.warn("InfoHash不支持的类型，value：{}", value);
+			}
+		});
+		builder.write('e');
+		return this;
 	}
 
 	/**
 	 * 创建infoHash
 	 */
 	public InfoHash buildInfoHash() {
-		byte[] byteArray = builder.toByteArray();
-		byte[] bytes = new byte[byteArray.length - 7];
-		System.arraycopy(byteArray, 0, bytes, 0, byteArray.length - 7);
-		return InfoHash.newInstance(bytes);
+		return InfoHash.newInstance(builder.toByteArray());
 	}
 
 }

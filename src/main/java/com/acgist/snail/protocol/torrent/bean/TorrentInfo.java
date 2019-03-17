@@ -2,7 +2,10 @@ package com.acgist.snail.protocol.torrent.bean;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import com.acgist.snail.utils.BCodeUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -16,13 +19,78 @@ public class TorrentInfo {
 	private byte[] ed2k; // ed2k
 	private byte[] filehash; // 文件hash
 	private byte[] pieces; // 特征信息：每个piece的hash值占用20个字节
+	private Long pieceLength; // 块大小
 	private String publisher; // 发布者
 	private String publisherUtf8; // 发布者UTF8
 	private String publisherUrl; // 发布者URL
 	private String publisherUrlUtf8; // 发布者URL UTF8
-	private Long pieceLength; // 块大小
-	private List<TorrentFile> files = new ArrayList<>(); // 多文件时存在
+	private List<TorrentFile> files; // 多文件时存在
 
+	protected TorrentInfo() {
+	}
+
+	public static final TorrentInfo valueOf(Map<?, ?> map) {
+		if(map == null) {
+			return null;
+		}
+		TorrentInfo info = new TorrentInfo();
+		info.setName(BCodeUtils.getString(map, "name"));
+		info.setNameUtf8(BCodeUtils.getString(map, "name.utf-8"));
+		info.setLength(BCodeUtils.getLong(map, "length"));
+		info.setEd2k(BCodeUtils.getBytes(map, "ed2k"));
+		info.setFilehash(BCodeUtils.getBytes(map, "filehash"));
+		info.setPieces(BCodeUtils.getBytes(map, "pieces"));
+		info.setPieceLength(BCodeUtils.getLong(map, "piece length"));
+		info.setPublisher(BCodeUtils.getString(map, "publisher"));
+		info.setPublisherUtf8(BCodeUtils.getString(map, "publisher.utf-8"));
+		info.setPublisherUrl(BCodeUtils.getString(map, "publisher-url"));
+		info.setPublisherUrlUtf8(BCodeUtils.getString(map, "publisher-url.utf-8"));
+		List<?> files = (List<?>) map.get("files");
+		if(files != null) {
+			info.setFiles(
+				files.stream()
+				.map(value -> {
+					return (Map<?, ?>) value;
+				})
+				.map(value -> {
+					return TorrentFile.valueOf(value);
+				}).collect(Collectors.toList())
+			);
+		} else {
+			info.setFiles(new ArrayList<>());
+		}
+		return info;
+	}
+	
+	/**
+	 * 列出下载文件（兼容单个文件）
+	 */
+	public List<TorrentFile> files() {
+		if (files.isEmpty()) {
+			TorrentFile file = new TorrentFile();
+			file.setEd2k(this.ed2k);
+			file.setFilehash(this.filehash);
+			file.setLength(this.length);
+			if (this.name != null) {
+				file.setPath(List.of(this.name));
+			}
+			if (this.nameUtf8 != null) {
+				file.setPathUtf8(List.of(this.nameUtf8));
+			}
+			return List.of(file);
+		} else {
+			return files;
+		}
+	}
+	
+	public String ed2kHex() {
+		return StringUtils.hex(this.ed2k);
+	}
+	
+	public String filehashHex() {
+		return StringUtils.hex(this.filehash);
+	}
+	
 	public String getName() {
 		return name;
 	}
@@ -50,10 +118,6 @@ public class TorrentInfo {
 	public byte[] getEd2k() {
 		return ed2k;
 	}
-
-	public String getEd2kHex() {
-		return StringUtils.hex(ed2k);
-	}
 	
 	public void setEd2k(byte[] ed2k) {
 		this.ed2k = ed2k;
@@ -62,15 +126,11 @@ public class TorrentInfo {
 	public byte[] getFilehash() {
 		return filehash;
 	}
-	
-	public String getFilehashHex() {
-		return StringUtils.hex(filehash);
-	}
 
 	public void setFilehash(byte[] filehash) {
 		this.filehash = filehash;
 	}
-	
+
 	public byte[] getPieces() {
 		return pieces;
 	}
@@ -126,30 +186,5 @@ public class TorrentInfo {
 	public void setFiles(List<TorrentFile> files) {
 		this.files = files;
 	}
-	
-	public TorrentFile lastTorrentFile() {
-		return this.files.get(this.files.size() - 1);
-	}
-	
-	/**
-	 * 列出下载文件（兼容单个文件）
-	 */
-	public List<TorrentFile> files() {
-		if(files.isEmpty()) {
-			TorrentFile file = new TorrentFile();
-			file.setEd2k(this.ed2k);
-			file.setFilehash(this.filehash);
-			file.setLength(this.length);
-			if(this.name != null) {
-				file.setPath(List.of(this.name));
-			}
-			if(this.nameUtf8 != null) {
-				file.setPathUtf8(List.of(this.nameUtf8));
-			}
-			return List.of(file);
-		} else {
-			return files;
-		}
-	}
-	
+
 }

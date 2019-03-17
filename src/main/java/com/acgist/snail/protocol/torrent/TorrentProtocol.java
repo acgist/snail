@@ -79,11 +79,10 @@ public class TorrentProtocol extends Protocol {
 	 * 解析种子
 	 */
 	private void torrent() throws DownloadException {
-		this.torrent = this.url;
-		String url = this.url;
-		TorrentCoder decoder = TorrentCoder.newInstance(url);
-		TorrentSession torrentSession = decoder.torrentSession();
+		final String torrentFile = this.url;
+		TorrentSession torrentSession = TorrentSessionFactory.getInstance().buildSession(torrentFile);
 		this.url = MagnetCoder.buildMagnet(torrentSession.infoHash().hashHex()); // 生成磁力链接
+		this.torrent = torrentFile;
 		this.torrentSession = torrentSession;
 	}
 	
