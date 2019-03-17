@@ -13,10 +13,11 @@
 	<description>基于JAVA/JAVAFX的下载工具，支持下载协议：BT、FTP、HTTP、ED2K。</description>
 
 	<properties>
-		<os.name>win</os.name><!-- 系统名称：win、mac、linux -->
+		<home>https://gitee.com/acgist/snail</home>
 		<encoding>UTF-8</encoding>
+		<os.name>win</os.name><!-- 系统名称：win、mac、linux -->
 		<java.version>11</java.version>
-		<h2.version>1.4.198</h2.version><!-- TODO：1.4.198这个版本很慢，但是支持模块化，暂时忍受一下 -->
+		<h2.version>1.4.199</h2.version><!-- TODO：1.4.199这个版本很慢，但是支持模块化，暂时忍受一下 -->
 		<junit.version>4.12</junit.version>
 		<slf4j.version>1.7.26</slf4j.version>
 		<javafx.version>11.0.2</javafx.version>
@@ -133,7 +134,7 @@
 							<classpathPrefix>lib</classpathPrefix>
 						</manifest>
 						<manifestEntries>
-							<Built-By>https://www.acgist.com</Built-By>
+							<Built-By>${home}</Built-By>
 							<Automatic-Module-Name>${project.artifactId}</Automatic-Module-Name>
 							<Implementation-Title>${project.artifactId}</Implementation-Title>
 							<Implementation-Vendor>${project.groupId}</Implementation-Vendor>
