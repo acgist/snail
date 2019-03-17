@@ -1,5 +1,6 @@
 package com.acgist.snail.utils;
 
+import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -51,4 +52,15 @@ public class ThreadUtils {
 		}
 	}
 
+	/**
+	 * 线程等待
+	 */
+	public static final void wait(Object obj, Duration timeout) {
+		try {
+			obj.wait(timeout.toMillis());
+		} catch (InterruptedException e) {
+			LOGGER.error("线程等待异常", e);
+		}
+	}
+	
 }

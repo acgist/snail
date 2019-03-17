@@ -4,7 +4,6 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.downloader.ed2k.Ed2kDownloader;
@@ -16,7 +15,6 @@ import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.repository.impl.TaskRepository;
-import com.acgist.snail.system.context.SystemStatistical;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.DateUtils;
 import com.acgist.snail.utils.FileUtils;
@@ -35,18 +33,15 @@ public class TaskSession {
 		};
 	};
 	
-	private TaskEntity entity;
+	private TaskEntity entity; // 任务
+	private StatisticsSession statistics; // 统计
 	
-	private long lastTime = System.currentTimeMillis(); // 最后一次统计时间
-	private long bufferSecond = 0L; // 每秒下载速度
-	private AtomicLong downloadSize = new AtomicLong(0); // 已经下载大小
-	private AtomicLong downloadBuffer = new AtomicLong(0); // 下载速度采样
-
 	private TaskSession(TaskEntity entity) throws DownloadException {
 		if(entity == null) {
 			throw new DownloadException("创建下载任务失败");
 		}
 		this.entity = entity;
+		this.statistics = new StatisticsSession();
 	}
 	
 	// 功能 //
@@ -103,51 +98,33 @@ public class TaskSession {
 	}
 	
 	/**
-	 * 删除数据
-	 */
-	public void delete() {
-		TaskRepository repository = new TaskRepository();
-		repository.delete(entity.getId());
-	}
-	
-	/**
-	 * 下载统计
-	 */
-	public void statistical(long buffer) {
-		downloadSize.addAndGet(buffer);
-		downloadBuffer.addAndGet(buffer);
-		long now = System.currentTimeMillis();
-		long interval = now - lastTime;
-		if(interval > TaskDisplay.REFRESH_INTERVAL.toMillis()) {
-			long oldBuffer = downloadBuffer.getAndSet(0);
-			bufferSecond = oldBuffer * 1000 / interval;
-			lastTime = now;
-		}
-		SystemStatistical.getInstance().statistical(buffer);
-	}
-	
-	/**
-	 * 累计下载大小
-	 */
-	public long downloadSize() {
-		return downloadSize.get();
-	}
-	
-	/**
-	 * 设置累计下载大小
-	 */
-	public void downloadSize(long size) {
-		downloadSize.set(size);
-	}
-	
-	/**
 	 * 获取已下载大小
 	 */
 	public void loadDownloadSize() {
 		if(entity.getType() == Type.http) {
 			long size = FileUtils.fileSize(entity.getFile());
-			downloadSize(size);
+			statistics.downloadSize(size);
 		}
+	}
+
+	public void statistical(long buffer) {
+		statistics.statistical(buffer);
+	}
+	
+	public long downloadSize() {
+		return statistics.downloadSize();
+	}
+	
+	public void downloadSize(long size) {
+		statistics.downloadSize(size);
+	}
+	
+	/**
+	 * 删除数据
+	 */
+	public void delete() {
+		TaskRepository repository = new TaskRepository();
+		repository.delete(entity.getId());
 	}
 	
 	/**
@@ -211,7 +188,7 @@ public class TaskSession {
 	 */
 	public String getStatusValue() {
 		if(download()) {
-			return FileUtils.formatSize(bufferSecond) + "/S";
+			return FileUtils.formatSize(statistics.bufferSecond()) + "/S";
 		} else {
 			return entity.getStatus().getValue();
 		}
@@ -224,7 +201,7 @@ public class TaskSession {
 		if(complete()) {
 			return FileUtils.formatSize(entity.getSize());
 		} else {
-			return FileUtils.formatSize(downloadSize.longValue()) + "/" + FileUtils.formatSize(entity.getSize());
+			return FileUtils.formatSize(statistics.downloadSize()) + "/" + FileUtils.formatSize(entity.getSize());
 		}
 	}
 
@@ -243,11 +220,12 @@ public class TaskSession {
 	 */
 	public String getEndDateValue() {
 		if(entity.getEndDate() == null) {
+			long bufferSecond = statistics.bufferSecond();
 			if(download()) {
 				if(bufferSecond == 0L) {
 					return "-";
 				} else {
-					long second = (entity.getSize() - downloadSize.longValue()) / bufferSecond;
+					long second = (entity.getSize() - statistics.downloadSize()) / bufferSecond;
 					return DateUtils.formatSecond(second);
 				}
 			} else {

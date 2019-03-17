@@ -12,6 +12,8 @@ import javafx.application.Platform;
 
 /**
  * 启动类
+ * TODO:https://blog.csdn.net/sf0407/article/details/53924174
+ * 修改进程名称，使用c++启动jvm
  */
 public class Application {
 
@@ -19,6 +21,7 @@ public class Application {
 	
 	public static final void main(String[] args) {
 		LOGGER.info("系统开始启动");
+		SystemContext.info();
 		final boolean enable = listen();
 		if(enable) {
 			initSystem();

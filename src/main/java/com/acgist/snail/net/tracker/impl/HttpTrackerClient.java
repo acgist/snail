@@ -3,15 +3,43 @@ package com.acgist.snail.net.tracker.impl;
 import java.net.http.HttpResponse.BodyHandlers;
 
 import com.acgist.snail.net.http.HttpManager;
+import com.acgist.snail.net.tracker.AbstractTrackerClient;
+import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.system.exception.NetException;
 
 /**
  * tracker http 客户端
  */
-public class TrackerHttpClient {
+public class HttpTrackerClient extends AbstractTrackerClient {
+
+	private static final String SCRAPE_URL_SUFFIX = "/scrape";
+	private static final String ANNOUNCE_URL_SUFFIX = "/announce";
 	
-	public static void main(String[] args) {
-		TrackerHttpClient c = new TrackerHttpClient();
-		c.decode("http://t.acg.rip:6699/announce", null);
+	private HttpTrackerClient(String scrapeUrl, String announceUrl) throws NetException {
+		super(scrapeUrl, announceUrl, Type.http);
+	}
+	
+	public static final HttpTrackerClient newInstance(String announceUrl) throws NetException {
+		final String scrapeUrl = announceUrlToScrapeUrl(announceUrl);
+		return new HttpTrackerClient(announceUrl, scrapeUrl);
+	}
+
+	@Override
+	public void announce(TorrentSession session) throws NetException {
+	}
+
+	@Override
+	public void complete(TorrentSession session) {
+		// TODO
+	}
+	
+	@Override
+	public void stop(TorrentSession session) {
+		// TODO
+	}
+	
+	@Override
+	public void scrape(TorrentSession session) throws NetException {
 	}
 	
 	/**
@@ -60,6 +88,23 @@ public class TrackerHttpClient {
 		.append("compact").append("=").append("1").append("&")
 		.append("event").append("=").append("started");
 		return builder.toString();
+	}
+	
+	/**
+	 * announceUrl转换ScrapeUrl<br>
+	 *		~http://example.com/announce			-> ~http://example.com/scrape
+	 *		~http://example.com/x/announce			-> ~http://example.com/x/scrape
+	 *		~http://example.com/announce.php		-> ~http://example.com/scrape.php
+	 *		~http://example.com/a					-> (scrape not supported)
+	 *		~http://example.com/announce?x2%0644	-> ~http://example.com/scrape?x2%0644
+	 *		~http://example.com/announce?x=2/4		-> (scrape not supported)
+	 *		~http://example.com/x%064announce		-> (scrape not supported)
+	 */
+	private static final String announceUrlToScrapeUrl(String url) {
+		if(url.contains(ANNOUNCE_URL_SUFFIX)) {
+			return url.replace(ANNOUNCE_URL_SUFFIX, SCRAPE_URL_SUFFIX);
+		}
+		return null;
 	}
 
 }

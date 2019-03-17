@@ -44,7 +44,7 @@ public class SystemStatistical {
 	/**
 	 * 平均下载速度
 	 */
-	public String downloadBufferSecond() {
+	public String bufferSecond() {
 		long now = System.currentTimeMillis();
 		long interval = now - lastTime;
 		if(interval > TaskDisplay.REFRESH_INTERVAL.toMillis()) {

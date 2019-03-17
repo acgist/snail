@@ -10,13 +10,13 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.net.AbstractTcpSender;
 
 /**
- * 消息处理
+ * TCP消息处理
  */
-public abstract class AbstractMessageHandler extends AbstractTcpSender implements CompletionHandler<Integer, ByteBuffer> {
+public abstract class AbstractTcpMessageHandler extends AbstractTcpSender implements CompletionHandler<Integer, ByteBuffer> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractMessageHandler.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractTcpMessageHandler.class);
 	
-	public AbstractMessageHandler(String split) {
+	public AbstractTcpMessageHandler(String split) {
 		super(split);
 	}
 
@@ -29,7 +29,7 @@ public abstract class AbstractMessageHandler extends AbstractTcpSender implement
 	/**
 	 * 消息代理
 	 */
-	public void handler(AsynchronousSocketChannel socket) {
+	public void handle(AsynchronousSocketChannel socket) {
 		this.socket = socket;
 		loopRead();
 	}
