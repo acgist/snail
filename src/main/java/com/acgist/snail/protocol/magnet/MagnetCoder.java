@@ -19,6 +19,7 @@ import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.FileUtils;
+import com.acgist.snail.utils.StringUtils;
 
 /**
  * 磁力链接解析器：磁力链接转种子文件
@@ -88,7 +89,7 @@ public abstract class MagnetCoder {
 			this.hash = buildHash(url);
 		} else if(verifyMagnetHash32(url)) { // 32位转为正常40位
 			InfoHash infoHash = InfoHash.newInstance(url);
-			this.hash = infoHash.hash();
+			this.hash = infoHash.hashHex();
 		} else if(verifyMagnetHash40(url)) {
 			this.hash = url;
 		}
@@ -115,7 +116,7 @@ public abstract class MagnetCoder {
 					String hash = value.substring(HASH_PREFIX.length());
 					if(verifyMagnetHash32(hash)) {
 						InfoHash infoHash = InfoHash.newInstance(hash);
-						hash = infoHash.hash();
+						hash = infoHash.hashHex();
 					}
 					return hash;
 				}
@@ -162,21 +163,21 @@ public abstract class MagnetCoder {
 	 * 验证磁力链接
 	 */
 	public static final boolean verifyMagnet(String url) {
-		return url != null && url.matches(MAGNET_REGEX);
+		return StringUtils.regex(url, MAGNET_REGEX, true);
 	}
 	
 	/**
 	 * 验证32位磁力链接HASH
 	 */
 	public static final boolean verifyMagnetHash32(String url) {
-		return url != null && url.matches(MAGNET_HASH_32_REGEX);
+		return StringUtils.regex(url, MAGNET_HASH_32_REGEX, true);
 	}
 	
 	/**
 	 * 验证40位磁力链接HASH
 	 */
 	public static final boolean verifyMagnetHash40(String url) {
-		return url != null && url.matches(MAGNET_HASH_40_REGEX);
+		return StringUtils.regex(url, MAGNET_HASH_40_REGEX, true);
 	}
 	
 	/**

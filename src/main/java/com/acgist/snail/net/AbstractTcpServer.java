@@ -10,7 +10,7 @@ import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.message.AbstractMessageHandler;
+import com.acgist.snail.net.message.AbstractTcpMessageHandler;
 import com.acgist.snail.net.message.AcceptHandler;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.IoUtils;
@@ -30,7 +30,7 @@ public abstract class AbstractTcpServer {
 	private AsynchronousServerSocketChannel server;
 	
 	static {
-		EXECUTOR = Executors.newFixedThreadPool(2, SystemThreadContext.newThreadFactory("Application Server Thread"));
+		EXECUTOR = Executors.newFixedThreadPool(2, SystemThreadContext.newThreadFactory("Application Tcp Server Thread"));
 		AsynchronousChannelGroup group = null;
 		try {
 			group = AsynchronousChannelGroup.withThreadPool(EXECUTOR);
@@ -60,7 +60,7 @@ public abstract class AbstractTcpServer {
 	/**
 	 * 开启监听
 	 */
-	protected <T extends AbstractMessageHandler> boolean listen(String host, int port, Class<T> clazz) {
+	protected <T extends AbstractTcpMessageHandler> boolean listen(String host, int port, Class<T> clazz) {
 		LOGGER.info("启动{}", name);
 		boolean ok = true;
 		try {

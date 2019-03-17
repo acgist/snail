@@ -9,7 +9,7 @@ import java.util.StringTokenizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.message.AbstractMessageHandler;
+import com.acgist.snail.net.message.AbstractTcpMessageHandler;
 import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.ThreadUtils;
@@ -17,7 +17,7 @@ import com.acgist.snail.utils.ThreadUtils;
 /**
  * FTP消息
  */
-public class FtpMessageHandler extends AbstractMessageHandler {
+public class FtpMessageHandler extends AbstractTcpMessageHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FtpMessageHandler.class);
 	

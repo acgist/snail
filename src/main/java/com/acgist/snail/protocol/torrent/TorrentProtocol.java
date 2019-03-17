@@ -7,7 +7,7 @@ import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.session.TaskSession;
-import com.acgist.snail.pojo.wrapper.TorrentWrapper;
+import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.protocol.magnet.MagnetCoder;
 import com.acgist.snail.system.config.FileTypeConfig.FileType;
@@ -23,7 +23,7 @@ public class TorrentProtocol extends Protocol {
 	public static final String TORRENT_REGEX = ".+\\.torrent"; // 正则表达式
 	
 	private String torrent; // 种子文件路径
-	private TorrentWrapper torrentWrapper; // 种子文件信息
+	private TorrentSession torrentSession; // 种子文件信息
 	
 	private static final TorrentProtocol INSTANCE = new TorrentProtocol();
 	
@@ -67,23 +67,23 @@ public class TorrentProtocol extends Protocol {
 	@Override
 	protected void cleanMessage() {
 		this.torrent = null;
-		this.torrentWrapper = null;
+		this.torrentSession = null;
 	}
 	
 	@Override
 	protected String buildFileName() {
-		return torrentWrapper.name();
+		return torrentSession.name();
 	}
 
 	/**
 	 * 解析种子
 	 */
 	private void torrent() throws DownloadException {
-		this.torrent = this.url;
-		String url = this.url;
-		TorrentCoder decoder = TorrentCoder.newInstance(url);
-		this.url = MagnetCoder.buildMagnet(decoder.hash()); // 生成磁力链接
-		this.torrentWrapper = decoder.wrapper();
+		final String torrentFile = this.url;
+		TorrentSession torrentSession = TorrentSessionFactory.getInstance().buildSession(torrentFile);
+		this.url = MagnetCoder.buildMagnet(torrentSession.infoHash().hashHex()); // 生成磁力链接
+		this.torrent = torrentFile;
+		this.torrentSession = torrentSession;
 	}
 	
 	/**

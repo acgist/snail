@@ -7,6 +7,8 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.system.config.SystemConfig;
+
 /**
  * utils - 配置
  */
@@ -31,7 +33,7 @@ public class PropertiesUtils {
 	
 	private static final Properties load(String file) {
 		Properties properties = new Properties();
-		try(InputStreamReader input = new InputStreamReader(PropertiesUtils.class.getResourceAsStream(file), "UTF-8")) {
+		try(InputStreamReader input = new InputStreamReader(PropertiesUtils.class.getResourceAsStream(file), SystemConfig.DEFAULT_CHARSET)) {
 			properties.load(input);
 		} catch (IOException e) {
 			LOGGER.error("读取配置文件异常，文件路径：{}", file, e);

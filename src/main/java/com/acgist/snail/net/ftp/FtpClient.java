@@ -11,6 +11,7 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * FTP客户端
+ * TODO：中文路径
  */
 public class FtpClient extends AbstractTcpClient<FtpMessageHandler> {
 
@@ -60,13 +61,15 @@ public class FtpClient extends AbstractTcpClient<FtpMessageHandler> {
 		if(!ok) {
 			return null;
 		}
-		this.changeMode();
-		command("TYPE I");
-		if(downloadSize != null && downloadSize != 0L) {
-			command("REST " + downloadSize);
+		synchronized (this) {
+			this.changeMode();
+			command("TYPE I");
+			if(downloadSize != null && downloadSize != 0L) {
+				command("REST " + downloadSize);
+			}
+			command("RETR " + this.filePath);
+			return handler.inputStream();
 		}
-		command("RETR " + this.filePath);
-		return handler.inputStream();
 	}
 	
 	/**
@@ -76,22 +79,24 @@ public class FtpClient extends AbstractTcpClient<FtpMessageHandler> {
 		if(!ok) {
 			throw new NetException("下载失败");
 		}
-		this.changeMode();
-		command("TYPE A");
-		command("LIST " + this.filePath);
-		InputStream inputStream = handler.inputStream();
-		String data = StringUtils.ofInputStream(inputStream);
-		if(data == null) {
-			throw new NetException(failMessage());
+		synchronized (this) {
+			this.changeMode();
+			command("TYPE A");
+			command("LIST " + this.filePath);
+			InputStream inputStream = handler.inputStream();
+			String data = StringUtils.ofInputStream(inputStream);
+			if(data == null) {
+				throw new NetException(failMessage());
+			}
+			Optional<String> optional = Stream.of(data.split(" "))
+				.map(String::trim)
+				.filter(StringUtils::isNotEmpty)
+				.skip(4).findFirst();
+			if(optional.isPresent()) {
+				return Long.valueOf(optional.get());
+			}
+			throw new NetException("获取下载大小失败");
 		}
-		Optional<String> optional = Stream.of(data.split(" "))
-			.map(String::trim)
-			.filter(StringUtils::isNotEmpty)
-			.skip(4).findFirst();
-		if(optional.isPresent()) {
-			return Long.valueOf(optional.get());
-		}
-		throw new NetException("下载失败");
 	}
 	
 	/**
@@ -105,13 +110,6 @@ public class FtpClient extends AbstractTcpClient<FtpMessageHandler> {
 		command("QUIT"); // 退出命令
 		handler.release();
 		super.close();
-	}
-	
-	/**
-	 * 释放资源
-	 */
-	public void release() {
-		handler.release();
 	}
 	
 	/**

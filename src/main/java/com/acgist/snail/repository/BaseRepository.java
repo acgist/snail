@@ -18,6 +18,7 @@ import com.acgist.snail.system.exception.RepositoryException;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.EntityUtils;
 import com.acgist.snail.utils.JsonUtils;
+import com.acgist.snail.utils.StringUtils;
 
 /**
  * 数据库
@@ -26,11 +27,13 @@ public abstract class BaseRepository<T extends BaseEntity> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BaseRepository.class);
 	
+	private static final String COLUMN_REGEX = "[a-zA-Z]+";
+	
 	/**
 	 * 数据库列：只允许字符串
 	 */
 	private static final Function<String, String> COLUMN = (value) -> {
-		if(value.matches("[a-zA-Z]+")) {
+		if(StringUtils.regex(value, COLUMN_REGEX, true)) {
 			return value;
 		}
 		throw new RepositoryException("数据库列格式错误");

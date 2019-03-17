@@ -1,8 +1,6 @@
 package com.acgist.snail.protocol;
 
 import java.io.File;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
@@ -11,6 +9,7 @@ import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.FileUtils;
+import com.acgist.snail.utils.StringUtils;
 
 /***
  * 下载协议
@@ -50,9 +49,7 @@ public abstract class Protocol {
 			return false;
 		}
 		for (String regex : regexs) {
-			Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-			Matcher matcher = pattern.matcher(this.url);
-			boolean match = matcher.matches();
+			boolean match = StringUtils.regex(this.url, regex, true);
 			if(match) {
 				return true;
 			}
