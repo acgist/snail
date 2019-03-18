@@ -35,3 +35,4 @@ win：start.bat、SnailLauncher.exe、SnailLauncher_auto.exe，随便选择一�
 tracker
 peer
 dht
+cpp更新
