@@ -28,6 +28,9 @@ jdeps --list-deps *.jar
 #### BT参考项目
 https://github.com/atomashpolskiy/bt
 
+#### 使用
+win：start.bat、SnailLauncher.exe、SnailLauncher_auto.exe，随便选择一个双击运行。
+
 #### TODO
 tracker
 peer
