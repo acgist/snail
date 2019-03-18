@@ -9,11 +9,11 @@ public class PeerServer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerServer.class);
 	
-	private static final String ID_SUFFIX = "Snail-ID-";
+	private static final String ID_SUFFIX = "-AS8888-";
 	/**
 	 * 20位系统ID
 	 */
-	public static final String ID;
+	public static final String PEER_ID;
 	public static final short PORT = 8888;
 	
 	static {
@@ -23,8 +23,8 @@ public class PeerServer {
 		for (int index = 0; index < length; index++) {
 			builder.append(random.nextInt(10));
 		}
-		ID = builder.toString();
-		LOGGER.info("系统PeerID：{}，长度：{}", ID, ID.length());
+		PEER_ID = builder.toString();
+		LOGGER.info("系统PeerID：{}，长度：{}", PEER_ID, PEER_ID.length());
 	}
-	
+
 }

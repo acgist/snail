@@ -126,7 +126,7 @@ public class UdpTrackerClient extends AbstractTrackerClient {
 		buffer.putInt(AbstractTrackerClient.Action.announce.action());
 		buffer.putInt(session.id()); // transaction_id
 		buffer.put(session.infoHash().hash()); // infoHash
-		buffer.put(PeerServer.ID.getBytes()); //
+		buffer.put(PeerServer.PEER_ID.getBytes()); // 
 		buffer.putLong(0L); // 已下载大小
 		buffer.putLong(0L); // 剩余下载大小
 		buffer.putLong(0L); // 已上传大小
