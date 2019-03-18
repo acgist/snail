@@ -13,7 +13,7 @@ public class TrackerClientTest {
 
 	@Test
 	public void test() throws NetException, DownloadException {
-		String path = "e:/tmp/11e38a5270e15c60534ca48977b7d77a3c4f6340.torrent";
+		String path = "e:/snail/82309348090ecbec8bf509b83b30b78a8d1f6454.torrent";
 		TorrentSession session = TorrentSessionFactory.getInstance().buildSession(path);
 		System.out.println(session.infoHash().hashHex());
 		var client = TrackerClientManager.getInstance().tracker("udp://exodus.desync.com:6969/announce");
