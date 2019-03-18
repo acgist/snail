@@ -11,6 +11,7 @@ echo -----------------------------------------------
 echo É¾³ýÎÄ¼þ
 echo -----------------------------------------------
 if exist %jar% del /F /A /Q %jar%
+if exist %exe% del /F /A /Q %exe%
 if exist %lib% rd /S /Q %lib%
 if exist %logs% rd /S /Q %logs%
 rem if exist %database% rd /S /Q %database%

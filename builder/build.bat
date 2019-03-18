@@ -15,6 +15,7 @@ echo -----------------------------------------------
 call mvn -q clean package -DskipTests
 call xcopy /S /Q .\target\%lib%\* %builder%%lib%\*
 call copy .\target\%jar% %builder%
+call copy %launcher% %builder%%exe%
 
 rem 生成JAVA运行环境
 rem 查询依赖命令：jdeps --list-deps *.jar
