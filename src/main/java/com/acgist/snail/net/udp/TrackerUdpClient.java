@@ -18,5 +18,5 @@ public class TrackerUdpClient extends AbstractUdpClient<TrackerMessageHandler> {
 	public static final TrackerUdpClient getInstance() {
 		return INSTANCE;
 	}
-	
+
 }
