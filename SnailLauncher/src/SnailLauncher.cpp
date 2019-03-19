@@ -1,6 +1,7 @@
 // Snail启动器：SnailLauncher
 
 #include "stdafx.h"
+#include "afxwin.h"
 #include "SnailLauncher.h"
 #include "jni.h"
 
@@ -51,7 +52,7 @@ int SnailLauncher::ExitInstance()
 bool startJVM(){
 	// JVM动态库
 	TCHAR* jvmPath = _T(".\\java\\bin\\server\\jvm.dll");
- 
+
 	//JVM启动参数
 	const int jvmOptionCount = 4;
 	JavaVMOption jvmOptions[jvmOptionCount];
@@ -59,7 +60,7 @@ bool startJVM(){
 	jvmOptions[1].optionString = "-Xmx128M";
 	jvmOptions[2].optionString = "-Xmx128m";
 	jvmOptions[3].optionString = "-Djava.class.path=.\\snail-1.0.0.jar";
- 
+
 	JavaVMInitArgs jvmInitArgs;
 	jvmInitArgs.version = JNI_VERSION_10;
 	jvmInitArgs.options = jvmOptions;
@@ -67,7 +68,7 @@ bool startJVM(){
 
 	// 忽略无法识别jvm的情况
 	jvmInitArgs.ignoreUnrecognized = JNI_TRUE;
- 
+
 	// 设置启动类，注意分隔符：（/），不能设置（.）
 	const char startClass[] = "com/acgist/main/Application";
 
@@ -77,20 +78,19 @@ bool startJVM(){
 	// 传入参数
 	// int nParamCount = 2;
 	// const char* params[nParamCount] = {"a","b"};
- 
-	// 加载JVM DLL动态链接库
+
+	// 加载JVM动态链接库
 	HINSTANCE jvmDLL = LoadLibrary(jvmPath);
 	if(jvmDLL == NULL){
-		DWORD x = GetLastError();
-		//outLog("加载JVM动态库错误",GetLastError());
+		::MessageBox(NULL, _T("加载JVM动态链接库失败"), _T("启动失败"), MB_OK);
 		return false;
 	}
- 
+
 	// 初始化JVM
 	JNICREATEPROC jvmProcAddress = (JNICREATEPROC) GetProcAddress(jvmDLL, "JNI_CreateJavaVM");
 	if(jvmDLL == NULL){
 		FreeLibrary(jvmDLL);
-		//outLog("初始化JVM物理地址失败", GetLastError());
+		::MessageBox(NULL, _T("初始化JVM失败"), _T("启动失败"), MB_OK);
 		return false;
 	}
 
@@ -100,32 +100,32 @@ bool startJVM(){
 	jint jvmProc = (jvmProcAddress) (&jvm, (void**) &env, &jvmInitArgs);
 	if(jvmProc < 0 || jvm == NULL ||env == NULL){
 		FreeLibrary(jvmDLL);
-	//	outLog("创建JVM错误",GetLastError());
+		::MessageBox(NULL, _T("创建JVM失败"), _T("启动失败"), MB_OK);
 		return false;
 	}
- 
+
 	// 加载启动类
 	jclass mainClass = env -> FindClass(startClass);
 	if(env -> ExceptionCheck() == JNI_TRUE || mainClass == NULL){
 		env -> ExceptionDescribe();
 		env -> ExceptionClear();
 		FreeLibrary(jvmDLL);
-	//	outLog("加载启动类失败",GetLastError());
+		::MessageBox(NULL, _T("加载Java Class失败"), _T("启动失败"), MB_OK);
 		return false;
 	}
- 
+
 	// 加载启动方法
 	jmethodID methedID = env -> GetStaticMethodID(mainClass, startMethod, "([Ljava/lang/String;)V");
 	if(env -> ExceptionCheck() == JNI_TRUE || methedID == NULL){
 		env -> ExceptionDescribe();
 		env -> ExceptionClear();
 		FreeLibrary(jvmDLL);
-	//	outLog("加载启动方法失败",GetLastError());
+		::MessageBox(NULL, _T("启动Java Main方法失败"), _T("启动失败"), MB_OK);
 		return false;
 	}
-	
+
 	env -> CallStaticVoidMethod(mainClass, methedID, NULL);
- 
+
 	// 释放JVM
 	jvm -> DestroyJavaVM();
 
