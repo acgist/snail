@@ -7,7 +7,7 @@
 |技术|版本|
 |:-|:-|
 |JAVA|11|
-|JAVAFX|11.0.2|
+|JAVAFX|12|
 
 #### 包
 |包路径|作用说明|
@@ -35,4 +35,3 @@ win：start.bat、SnailLauncher.exe、SnailLauncher_auto.exe，随便选择一�
 tracker
 peer
 dht
-cpp更新
