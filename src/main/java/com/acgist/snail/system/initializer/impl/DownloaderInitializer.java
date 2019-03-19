@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.downloader.DownloaderFactory;
 import com.acgist.snail.gui.main.TaskDisplay;
 import com.acgist.snail.pojo.entity.TaskEntity;
-import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.initializer.Initializer;
@@ -29,7 +28,6 @@ public class DownloaderInitializer extends Initializer {
 	}
 	
 	public void init() {
-		ProtocolManager.getInstance().available();
 		LOGGER.info("初始化下载器");
 		TaskRepository repository = new TaskRepository();
 		List<TaskEntity> list = repository.findAll();
@@ -61,5 +59,5 @@ public class DownloaderInitializer extends Initializer {
 			TaskDisplay.getInstance().refreshTaskTable();
 		}
 	}
-	
+
 }
