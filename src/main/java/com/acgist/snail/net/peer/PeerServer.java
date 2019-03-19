@@ -5,16 +5,24 @@ import java.util.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.system.config.SystemConfig;
+
 public class PeerServer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerServer.class);
 	
+	/**
+	 * PeerId前缀
+	 */
 	private static final String ID_SUFFIX = "-AS8888-";
 	/**
 	 * 20位系统ID
 	 */
 	public static final String PEER_ID;
-	public static final short PORT = 8888;
+	/**
+	 * 服务器端口
+	 */
+	public static final short PORT = SystemConfig.getPeerPort().shortValue();
 	
 	static {
 		final Random random = new Random();

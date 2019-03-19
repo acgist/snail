@@ -33,6 +33,8 @@ public class SystemConfig {
 		INSTANCE.support = propertiesUtils.getString("acgist.system.support");
 		INSTANCE.serverPort = propertiesUtils.getInteger("acgist.server.port");
 		INSTANCE.serverHost = propertiesUtils.getString("acgist.server.host");
+		INSTANCE.peerPort = propertiesUtils.getInteger("acgist.peer.port");
+		INSTANCE.dhtPort = propertiesUtils.getInteger("acgist.dht.port");
 	}
 	
 	private String name; // 名称
@@ -43,6 +45,8 @@ public class SystemConfig {
 	private String support; // 支持
 	private Integer serverPort; // 服务端口
 	private String serverHost; // 服务地址
+	private Integer peerPort; // Peer端口
+	private Integer dhtPort; // DHT端口
 	
 	/**
 	 * 名称
@@ -98,6 +102,20 @@ public class SystemConfig {
 	 */
 	public static final String getServerHost() {
 		return INSTANCE.serverHost;
+	}
+
+	/**
+	 * Peer端口
+	 */
+	public static final Integer getPeerPort() {
+		return INSTANCE.peerPort;
+	}
+
+	/**
+	 * DHT端口
+	 */
+	public static final Integer getDhtPort() {
+		return INSTANCE.dhtPort;
 	}
 
 }

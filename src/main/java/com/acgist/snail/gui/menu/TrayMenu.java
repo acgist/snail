@@ -38,7 +38,7 @@ import javafx.stage.WindowEvent;
  */
 public class TrayMenu extends AbstractMenu {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractMenu.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TrayMenu.class);
 
 	private static final int MENU_WINDOW_HEIGHT = 150; // 窗口高度
 	

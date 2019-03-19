@@ -25,12 +25,12 @@ public class TorrentDecoderTest {
 //		System.out.println(torrent.getEncoding());
 //		System.out.println(torrent.getCreateBy());
 //		System.out.println(torrent.getInfo().getLength());
-//		System.out.println(torrent.getAnnounce());
-//		if (torrent.getAnnounceList().size() > 0) {
-//			for (String tmp : torrent.getAnnounceList()) {
-//				System.out.println(tmp);
-//			}
-//		}
+		System.out.println(torrent.getAnnounce());
+		if (torrent.getAnnounceList().size() > 0) {
+			for (String tmp : torrent.getAnnounceList()) {
+				System.out.println(tmp);
+			}
+		}
 //		System.out.println(torrent.getNodes());
 //		TorrentInfo torrentInfo = torrent.getInfo();
 //		System.out.println(torrentInfo.getName());
