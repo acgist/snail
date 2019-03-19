@@ -14,15 +14,15 @@ import com.acgist.snail.system.initializer.Initializer;
 /**
  * 初始化：数据库建表
  */
-public class TableInitializer extends Initializer {
+public class DbInitializer extends Initializer {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(TableInitializer.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DbInitializer.class);
 	
-	private TableInitializer() {
+	private DbInitializer() {
 	}
 	
-	public static final TableInitializer newInstance() {
-		return new TableInitializer();
+	public static final DbInitializer newInstance() {
+		return new DbInitializer();
 	}
 	
 	public void init() {
@@ -53,7 +53,7 @@ public class TableInitializer extends Initializer {
 	 */
 	private String buildTableSQL() {
 		StringBuilder sql = new StringBuilder();
-		try(InputStreamReader reader = new InputStreamReader(TableInitializer.class.getResourceAsStream(DatabaseConfig.getTableSQL()))) {
+		try(InputStreamReader reader = new InputStreamReader(DbInitializer.class.getResourceAsStream(DatabaseConfig.getTableSQL()))) {
 			int count = 0;
 			char[] chars = new char[1024];
 			while((count = reader.read(chars)) != -1) {
