@@ -13,9 +13,9 @@ import com.acgist.snail.utils.UniqueCodeUtils;
 
 /**
  * tracker协议<br>
- * 基本协议：TCP（HTTP）、UDP
- * DOC：https://wiki.theory.org/index.php/BitTorrentSpecification
- * UDP：https://www.libtorrent.org/udp_tracker_protocol.html
+ * 基本协议：TCP（HTTP）、UDP<br>
+ * DOC：https://wiki.theory.org/index.php/BitTorrentSpecification<br>
+ * UDP：https://www.libtorrent.org/udp_tracker_protocol.html<br>
  */
 public abstract class AbstractTrackerClient {
 

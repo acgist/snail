@@ -7,8 +7,6 @@ import com.acgist.snail.utils.JsonUtils;
  */
 public class ClientMessage {
 
-//	private static final Logger LOGGER = LoggerFactory.getLogger(ClientMessage.class);
-	
 	/**
 	 * 消息类型
 	 */

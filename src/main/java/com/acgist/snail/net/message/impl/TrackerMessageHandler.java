@@ -1,6 +1,7 @@
 package com.acgist.snail.net.message.impl;
 
 import java.nio.ByteBuffer;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.net.message.AbstractUdpMessageHandler;
 import com.acgist.snail.net.tracker.AbstractTrackerClient;
 import com.acgist.snail.net.tracker.TrackerClientManager;
-import com.acgist.snail.utils.NetUtils;
+import com.acgist.snail.utils.PeerUtils;
 
 /**
  * UDP Tracker消息
@@ -53,11 +54,8 @@ public class TrackerMessageHandler extends AbstractUdpMessageHandler {
 		System.out.println("时间间隔：" + buffer.getInt());
 		System.out.println("未完成Peer数量：" + buffer.getInt()); // peer数量
 		System.out.println("已完成Peer数量：" + buffer.getInt()); // peer数量
-		while (buffer.position() < size) {
-			int ip = buffer.getInt();
-			System.out.println(ip);
-			System.out.println("Peer（IP:PORT）：" + NetUtils.intToIp(ip) + ":" + buffer.getShort());
-		}
+		Map<String, Integer> peers = PeerUtils.read(buffer, size);
+		System.out.println("IP：PORT=" + peers);
 	}
 
 }

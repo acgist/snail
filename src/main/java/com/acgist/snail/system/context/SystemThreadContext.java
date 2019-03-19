@@ -18,8 +18,8 @@ public class SystemThreadContext {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SystemThreadContext.class);
 	
-	private static final String THREAD_POOL_NAME = "System Thread";
-	private static final String TIMER_THREAD_POOL_NAME = "System Timer Thread";
+	private static final String THREAD_POOL_NAME = "Snail Thread";
+	private static final String TIMER_THREAD_POOL_NAME = "Snail Timer Thread";
 	
 	/**
 	 * 线程池
@@ -33,12 +33,12 @@ public class SystemThreadContext {
 	static {
 		LOGGER.info("启动系统线程池");
 		EXECUTOR = new ThreadPoolExecutor(
-			4,
-			Integer.MAX_VALUE,
-			60L,
-			TimeUnit.SECONDS,
-			new SynchronousQueue<Runnable>(),
-			SystemThreadContext.newThreadFactory(THREAD_POOL_NAME)
+			4, // 初始线程数量
+			100, // 最大线程数量
+			60L, // 空闲时间
+			TimeUnit.SECONDS, // 空闲时间单位
+			new SynchronousQueue<Runnable>(), // 等待线程
+			SystemThreadContext.newThreadFactory(THREAD_POOL_NAME) // 线程工厂
 		);
 		TIMER_EXECUTOR = Executors.newScheduledThreadPool(
 			2,
