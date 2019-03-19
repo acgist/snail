@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.session.TaskSession;
+import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.exception.DownloadException;
@@ -68,20 +69,24 @@ public final class DownloaderManager {
 	 * 添加任务，不修改状态
 	 */
 	public IDownloader submit(TaskSession session) throws DownloadException {
-		synchronized (this) {
-			if(session == null) {
-				throw new DownloadException("下载任务不存在");
+		if(ProtocolManager.getInstance().available()) {
+			synchronized (this) {
+				if(session == null) {
+					throw new DownloadException("下载任务不存在");
+				}
+				IDownloader downloader = downloader(session);
+				if(downloader == null) {
+					downloader = session.downloader();
+				}
+				if(downloader == null) {
+					throw new DownloadException("添加下载任务失败（下载任务为空）");
+				}
+				TASK_MAP.put(downloader.id(), downloader);
+				refresh(); // 刷新下载任务
+				return downloader;
 			}
-			IDownloader downloader = downloader(session);
-			if(downloader == null) {
-				downloader = session.downloader();
-			}
-			if(downloader == null) {
-				throw new DownloadException("添加下载任务失败（下载任务为空）");
-			}
-			TASK_MAP.put(downloader.id(), downloader);
-			refresh(); // 刷新下载任务
-			return downloader;
+		} else {
+			throw new DownloadException("下载协议未初始化");
 		}
 	}
 	

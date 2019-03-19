@@ -4,9 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.system.initializer.impl.ConfigInitializer;
+import com.acgist.snail.system.initializer.impl.DbInitializer;
 import com.acgist.snail.system.initializer.impl.DownloaderInitializer;
 import com.acgist.snail.system.initializer.impl.ProtocolInitializer;
-import com.acgist.snail.system.initializer.impl.DbInitializer;
 import com.acgist.snail.utils.FileUtils;
 
 /**

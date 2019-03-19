@@ -3,6 +3,7 @@ package com.acgist.snail.protocol;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,11 +21,11 @@ public class ProtocolManager {
 
 	private static final ProtocolManager INSTANCE = new ProtocolManager();
 	
-	private boolean available; // 初始化完成
+	private AtomicBoolean available; // 是否可用
 	private List<Protocol> protocols;
 	
 	private ProtocolManager() {
-		available = false;
+		available = new AtomicBoolean(false);
 		protocols = new ArrayList<>();
 	}
 	
@@ -44,7 +45,7 @@ public class ProtocolManager {
 	 * 设置状态
 	 */
 	public void available(boolean available) {
-		this.available = available;
+		this.available.set(true);
 	}
 
 	/**
@@ -74,10 +75,11 @@ public class ProtocolManager {
 	/**
 	 * 是否可用，阻塞线程
 	 */
-	public void available() {
-		while(!available) {
+	public boolean available() {
+		while(!available.get()) {
 			ThreadUtils.sleep(100);
 		}
+		return true;
 	}
 	
 }

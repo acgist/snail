@@ -24,10 +24,24 @@ public class JDBCConnection {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(JDBCConnection.class);
 	
+	private static final JDBCConnection INSTANCE = new JDBCConnection();
+	
+	private JDBCConnection() {
+	}
+	
+	public static final JDBCConnection getInstance() {
+		return INSTANCE;
+	}
+	
+	/**
+	 * 连接
+	 */
+	private Connection connection;
+	
 	/**
 	 * 查询表是否存在
 	 */
-	public static final boolean hasTable(String table) {
+	public boolean hasTable(String table) {
 		List<ResultSetWrapper> list = select("show tables");
 		for (ResultSetWrapper resultSetWrapper : list) {
 			if(table.equalsIgnoreCase(resultSetWrapper.getString("TABLE_NAME"))) {
@@ -40,11 +54,11 @@ public class JDBCConnection {
 	/**
 	 * 查询
 	 */
-	public static final List<ResultSetWrapper> select(String sql, Object ... parameters) {
-		Connection connection = connection();
+	public List<ResultSetWrapper> select(String sql, Object ... parameters) {
 		ResultSet result = null;
 		PreparedStatement statement = null;
 		try {
+			final Connection connection = connection();
 			statement = connection.prepareStatement(sql);
 			if(CollectionUtils.isNotEmpty(parameters)) {
 				for (int index = 0; index < parameters.length; index++) {
@@ -55,8 +69,9 @@ public class JDBCConnection {
 			return wrapperResultSet(result);
 		} catch (SQLException e) {
 			LOGGER.error("执行SQL查询异常", e);
+			closeConnection();
 		} finally {
-			close(result, statement, connection);
+			close(result, statement);
 		}
 		return null;
 	}
@@ -64,11 +79,11 @@ public class JDBCConnection {
 	/**
 	 * 更新
 	 */
-	public static final boolean update(String sql, Object ... parameters) {
+	public boolean update(String sql, Object ... parameters) {
 		boolean ok = false;
-		Connection connection = connection();
 		PreparedStatement statement = null;
 		try {
+			final Connection connection = connection();
 			statement = connection.prepareStatement(sql);
 			if(CollectionUtils.isNotEmpty(parameters)) {
 				for (int index = 0; index < parameters.length; index++) {
@@ -78,8 +93,9 @@ public class JDBCConnection {
 			ok = statement.execute();
 		} catch (SQLException e) {
 			LOGGER.error("执行SQL更新异常", e);
+			closeConnection();
 		} finally {
-			close(null, statement, connection);
+			close(null, statement);
 		}
 		return ok;
 	}
@@ -87,7 +103,7 @@ public class JDBCConnection {
 	/**
 	 * 结果集封装
 	 */
-	private static final List<ResultSetWrapper> wrapperResultSet(ResultSet result) throws SQLException {
+	private List<ResultSetWrapper> wrapperResultSet(ResultSet result) throws SQLException {
 		String[] columns = columnNames(result);
 		List<ResultSetWrapper> list = new ArrayList<>();
 		while(result.next()) {
@@ -103,7 +119,7 @@ public class JDBCConnection {
 	/**
 	 * 获取列名
 	 */
-	private static final String[] columnNames(ResultSet result) throws SQLException {
+	private String[] columnNames(ResultSet result) throws SQLException {
 		final ResultSetMetaData meta = result.getMetaData();
 		final int count = meta.getColumnCount();
 		final String[] columns = new String[count];
@@ -113,18 +129,27 @@ public class JDBCConnection {
 		return columns;
 	}
 
-	private static final Connection connection() {
-		Connection connection = null;
-		try {
-			Class.forName(DatabaseConfig.getDriver());
-			connection = DriverManager.getConnection(DatabaseConfig.getUrl(), DatabaseConfig.getUser(), DatabaseConfig.getPassword());
-		} catch (ClassNotFoundException | SQLException e) {
-			LOGGER.error("打开JDBC连接异常", e);
+	/**
+	 * 获取连接
+	 */
+	private Connection connection() throws SQLException {
+		if(connection != null) {
+			return connection;
 		}
-		return connection;
+		synchronized (this) {
+			if(this.connection == null) {
+				try {
+					Class.forName(DatabaseConfig.getDriver());
+					this.connection = DriverManager.getConnection(DatabaseConfig.getUrl(), DatabaseConfig.getUser(), DatabaseConfig.getPassword());
+				} catch (ClassNotFoundException | SQLException e) {
+					LOGGER.error("打开JDBC连接异常", e);
+				}
+			}
+		}
+		return connection();
 	}
 	
-	private static final void close(ResultSet result, PreparedStatement statement, Connection connection) {
+	private void close(ResultSet result, PreparedStatement statement) {
 		if(result != null) {
 			try {
 				result.close();
@@ -139,12 +164,16 @@ public class JDBCConnection {
 				LOGGER.error("JDBC语句执行器关闭异常", e);
 			}
 		}
-		if(connection != null) {
-			try {
+	}
+	
+	private void closeConnection() {
+		try {
+			if(connection != null && !connection.isClosed()) {
 				connection.close();
-			} catch (SQLException e) {
-				LOGGER.error("JDBC链接关闭异常", e);
 			}
+			connection = null;
+		} catch (SQLException e) {
+			LOGGER.error("JDBC链接关闭异常", e);
 		}
 	}
 	

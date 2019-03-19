@@ -29,6 +29,8 @@ public abstract class BaseRepository<T extends BaseEntity> {
 	
 	private static final String COLUMN_REGEX = "[a-zA-Z]+";
 	
+	private JDBCConnection jdbcConnection = JDBCConnection.getInstance();
+	
 	/**
 	 * 数据库列：只允许字符串
 	 */
@@ -73,7 +75,7 @@ public abstract class BaseRepository<T extends BaseEntity> {
 			LOGGER.debug("SQL语句：{}", sql);
 			LOGGER.debug("SQL参数：{}", JsonUtils.toJson(parameters));
 		}
-		JDBCConnection.update(sql.toString(), parameters);
+		jdbcConnection.update(sql.toString(), parameters);
 	}
 
 	public void update(T t) {
@@ -111,7 +113,7 @@ public abstract class BaseRepository<T extends BaseEntity> {
 			LOGGER.debug("SQL语句：{}", sql);
 			LOGGER.debug("SQL参数：{}", JsonUtils.toJson(parameters));
 		}
-		JDBCConnection.update(sql.toString(), parameters);
+		jdbcConnection.update(sql.toString(), parameters);
 	}
 	
 	public void delete(String id) {
@@ -123,7 +125,7 @@ public abstract class BaseRepository<T extends BaseEntity> {
 			.append("DELETE FROM ")
 			.append(table)
 			.append(" WHERE ID = ?");
-		JDBCConnection.update(sql.toString(), id);
+		jdbcConnection.update(sql.toString(), id);
 	}
 
 	public T findOne(String id) {
@@ -135,7 +137,7 @@ public abstract class BaseRepository<T extends BaseEntity> {
 			.append("SELECT * FROM ")
 			.append(table)
 			.append(" WHERE ID = ? limit 1");
-		List<ResultSetWrapper> list = JDBCConnection.select(sql.toString(), id);
+		List<ResultSetWrapper> list = jdbcConnection.select(sql.toString(), id);
 		if(list == null || list.isEmpty()) {
 			return null;
 		}
@@ -155,7 +157,7 @@ public abstract class BaseRepository<T extends BaseEntity> {
 			.append(" WHERE ")
 			.append(COLUMN.apply(property))
 			.append(" = ? limit 1");
-		List<ResultSetWrapper> list = JDBCConnection.select(sql.toString(), value);
+		List<ResultSetWrapper> list = jdbcConnection.select(sql.toString(), value);
 		if(list == null || list.isEmpty()) {
 			return null;
 		}
@@ -168,7 +170,7 @@ public abstract class BaseRepository<T extends BaseEntity> {
 		if(sql == null) {
 			throw new RepositoryException("查询参数异常：" + sql);
 		}
-		List<ResultSetWrapper> list = JDBCConnection.select(sql, parameters);
+		List<ResultSetWrapper> list = jdbcConnection.select(sql, parameters);
 		if(list == null || list.isEmpty()) {
 			return null;
 		}
@@ -187,7 +189,7 @@ public abstract class BaseRepository<T extends BaseEntity> {
 		sql
 			.append("SELECT * FROM ")
 			.append(table);
-		List<ResultSetWrapper> list = JDBCConnection.select(sql.toString());
+		List<ResultSetWrapper> list = jdbcConnection.select(sql.toString());
 		if(list == null || list.isEmpty()) {
 			return null;
 		}
