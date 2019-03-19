@@ -158,7 +158,7 @@ public class TaskMenu extends AbstractMenu {
 	};
 	
 	private EventHandler<ActionEvent> verifyEvent = (event) -> {
-		SystemThreadContext.runasyn(() -> {
+		SystemThreadContext.submit(() -> {
 			Map<String, String> hash = new HashMap<>();
 			MainWindow.getInstance().controller().selected()
 			.forEach(wrapper -> {

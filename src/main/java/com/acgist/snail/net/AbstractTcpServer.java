@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousServerSocketChannel;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,17 +21,15 @@ public abstract class AbstractTcpServer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractTcpServer.class);
 	
-	private static final ExecutorService EXECUTOR;
 	private static final AsynchronousChannelGroup GROUP;
 	
 	private String name;
 	private AsynchronousServerSocketChannel server;
 	
 	static {
-		EXECUTOR = Executors.newFixedThreadPool(2, SystemThreadContext.newThreadFactory("Application Tcp Server Thread"));
 		AsynchronousChannelGroup group = null;
 		try {
-			group = AsynchronousChannelGroup.withThreadPool(EXECUTOR);
+			group = AsynchronousChannelGroup.withThreadPool(SystemThreadContext.executor());
 		} catch (IOException e) {
 			LOGGER.error("启动TCP Server Group异常");
 		}
@@ -99,7 +95,6 @@ public abstract class AbstractTcpServer {
 	public static final void shutdown() {
 		LOGGER.info("关闭Server线程池");
 		IoUtils.close(GROUP);
-		SystemThreadContext.shutdown(EXECUTOR);
 	}
 	
 }

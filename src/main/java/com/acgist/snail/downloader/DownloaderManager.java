@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -33,10 +31,6 @@ public final class DownloaderManager {
 	}
 	
 	/**
-	 * 下载线程池
-	 */
-	private ExecutorService EXECUTOR;
-	/**
 	 * 下载任务MAP
 	 */
 	private Map<String, IDownloader> TASK_MAP;
@@ -48,7 +42,6 @@ public final class DownloaderManager {
 	private void init() {
 		LOGGER.info("启动下载器管理");
 		int downloadSize = DownloadConfig.getSize();
-		buildExecutor(downloadSize);
 		TASK_MAP = new ConcurrentHashMap<>(downloadSize);
 	}
 
@@ -56,7 +49,6 @@ public final class DownloaderManager {
 	 * 修改同时下载任务数量：暂停所有任务-停止线程池-重新设置线程池大小-添加任务
 	 */
 	public void updateDownloadSize() {
-		int downloadSize = DownloadConfig.getSize();
 		var list = TASK_MAP.entrySet()
 		.stream()
 		.map(Entry::getValue)
@@ -65,7 +57,6 @@ public final class DownloaderManager {
 		list.forEach(downloader -> {
 			downloader.pause();
 		});
-		buildExecutor(downloadSize);
 		list.forEach(downloader -> {
 			try {
 				start(downloader);
@@ -100,21 +91,26 @@ public final class DownloaderManager {
 	 * 添加任务，不修改状态
 	 */
 	public IDownloader submit(TaskSession session) throws DownloadException {
-		if(session == null) {
-			return null;
+		synchronized (this) {
+			if(session == null) {
+				throw new DownloadException("下载任务不存在");
+			}
+			var entity = session.entity();
+			IDownloader downloader = downloader(session);
+			if(downloader == null) {
+				downloader = session.downloader();
+			}
+			if(downloader == null) {
+				throw new DownloadException("添加下载任务失败（下载任务为空）");
+			}
+			if(downloader.running()) {
+				return downloader;
+			}
+			LOGGER.info("添加下载任务：{}", entity.getName());
+			SystemThreadContext.submit(downloader);
+			TASK_MAP.put(downloader.id(), downloader);
+			return downloader;
 		}
-		var entity = session.entity();
-		IDownloader downloader = downloader(session);
-		if(downloader == null) {
-			downloader = session.downloader();
-		}
-		if(downloader == null) {
-			throw new DownloadException("添加下载任务失败（下载任务为空）");
-		}
-		LOGGER.info("添加下载任务：{}", entity.getName());
-		EXECUTOR.submit(downloader);
-		TASK_MAP.put(downloader.id(), downloader);
-		return downloader;
 	}
 	
 	/**
@@ -170,16 +166,6 @@ public final class DownloaderManager {
 		.map(Entry::getValue)
 		.filter(downloader -> downloader.task().run())
 		.forEach(downloader -> downloader.pause());
-		SystemThreadContext.shutdown(EXECUTOR);
-	}
-
-	/**
-	 * 创建下载线程池
-	 */
-	private void buildExecutor(int downloadSize) {
-		SystemThreadContext.shutdown(EXECUTOR);
-		LOGGER.info("启动下载线程池，初始大小：{}", downloadSize);
-		EXECUTOR = Executors.newFixedThreadPool(downloadSize, SystemThreadContext.newThreadFactory("Downloader Thread"));
 	}
 	
 }

@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,14 +23,8 @@ public abstract class AbstractUdpClient<T extends AbstractUdpMessageHandler> {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractUdpClient.class);
 
-	private static final ExecutorService EXECUTOR;
-	
 	private DatagramChannel channel;
 	
-	static {
-		EXECUTOR = Executors.newFixedThreadPool(2, SystemThreadContext.newThreadFactory("Application Udp Client Thread"));
-	}
-
 	/**
 	 * 打开客户端
 	 */
@@ -53,7 +45,7 @@ public abstract class AbstractUdpClient<T extends AbstractUdpMessageHandler> {
 	 * 绑定消息处理器
 	 */
 	public void bindMessageHandler(T handler) {
-		EXECUTOR.submit(() -> {
+		SystemThreadContext.submit(() -> {
 			try {
 				handler.handle(channel);
 			} catch (IOException e) {
@@ -81,15 +73,7 @@ public abstract class AbstractUdpClient<T extends AbstractUdpMessageHandler> {
 		LOGGER.info("关闭UDP Client通道");
 		IoUtils.close(channel);
 	}
-	
-	/**
-	 * 关闭线程池
-	 */
-	public static final void shutdown() {
-		LOGGER.info("关闭UDP Client线程池");
-		SystemThreadContext.shutdown(EXECUTOR);
-	}
-	
+
 	/**
 	 * 验证UCP协议
 	 */
