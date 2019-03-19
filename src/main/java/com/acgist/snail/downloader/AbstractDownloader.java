@@ -72,6 +72,7 @@ public abstract class AbstractDownloader implements IDownloader {
 			noticeMessage.append("未知错误");
 		}
 		TrayMenu.getInstance().notice("下载失败", noticeMessage.toString(), MessageType.WARNING);
+		DownloaderManager.getInstance().refresh();
 	}
 	
 	@Override
@@ -96,6 +97,7 @@ public abstract class AbstractDownloader implements IDownloader {
 			this.session.updateStatus(Status.complete);
 			TrayMenu.getInstance().notice("下载完成", name() + "已经下载完成");
 		}
+		DownloaderManager.getInstance().refresh();
 	}
 	
 	@Override
