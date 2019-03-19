@@ -13,7 +13,8 @@
 	<description>基于JAVA/JAVAFX的下载工具，支持下载协议：BT、FTP、HTTP、ED2K。</description>
 
 	<properties>
-		<home>https://gitee.com/acgist/snail</home>
+		<vendor>acgist</vendor>
+		<module>${project.groupId}.${project.artifactId}</module>
 		<encoding>UTF-8</encoding>
 		<os.name>win</os.name><!-- 系统名称：win、mac、linux -->
 		<java.version>11</java.version>
@@ -25,7 +26,9 @@
 		<jackson.version>2.9.8</jackson.version>
 		<maven.jar.version>3.1.1</maven.jar.version>
 		<maven.compiler.version>3.8.0</maven.compiler.version>
+		<maven.resources.version>3.1.0</maven.resources.version>
 		<maven.dependency.version>3.1.1</maven.dependency.version>
+		<project.build.sourceEncoding>${encoding}</project.build.sourceEncoding><!-- 资源文件编码 -->
 	</properties>
 
 	<dependencies>
@@ -89,9 +92,44 @@
 		</dependency>
 	</dependencies>
 
+	<!-- 环境：mvn clean package -DskipTests -Pdevelop -->
+	<profiles>
+		<profile>
+			<id>develop</id>
+			<!-- 设置默认 -->
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<package.environment>develop</package.environment>
+			</properties>
+		</profile>
+		<profile>
+			<id>release</id>
+			<properties>
+				<package.environment>release</package.environment>
+			</properties>
+		</profile>
+	</profiles>
+	
 	<build>
-		<!-- launch4j-maven-plugin -->
+		<!-- 资源 -->
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>**</include>
+				</includes>
+				<!-- 排除环境文件 -->
+				<excludes>
+					<exclude>profiles/**</exclude>
+				</excludes>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<!-- 插件 -->
 		<plugins>
+			<!-- 编译 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -102,6 +140,35 @@
 					<encoding>${encoding}</encoding>
 				</configuration>
 			</plugin>
+			<!-- 资源文件 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>${maven.resources.version}</version>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<!-- 覆盖文件 -->
+							<overwrite>true</overwrite>
+							<outputDirectory>${project.build.outputDirectory}</outputDirectory>
+							<resources>
+								<!-- 环境 -->
+								<resource>
+									<directory>src/main/resources/profiles/${package.environment}</directory>
+									<filtering>false</filtering>
+								</resource>
+							</resources>
+						</configuration>
+						<inherited></inherited>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- 依赖打包 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
@@ -122,6 +189,7 @@
 					</execution>
 				</executions>
 			</plugin>
+			<!-- 打包属性 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -134,14 +202,14 @@
 							<classpathPrefix>lib</classpathPrefix>
 						</manifest>
 						<manifestEntries>
-							<Built-By>${home}</Built-By>
-							<Automatic-Module-Name>${project.artifactId}</Automatic-Module-Name>
+							<Built-By>${vendor}</Built-By>
+							<Automatic-Module-Name>${module}</Automatic-Module-Name>
 							<Implementation-Title>${project.artifactId}</Implementation-Title>
-							<Implementation-Vendor>${project.groupId}</Implementation-Vendor>
-							<Implementation-Vendor-Id>${project.groupId}</Implementation-Vendor-Id>
+							<Implementation-Vendor>${vendor}</Implementation-Vendor>
+							<Implementation-Vendor-Id>${vendor}</Implementation-Vendor-Id>
 							<Implementation-Version>${project.version}</Implementation-Version>
 							<Specification-Title>${project.artifactId}</Specification-Title>
-							<Specification-Vendor>${project.groupId}</Specification-Vendor>
+							<Specification-Vendor>${vendor}</Specification-Vendor>
 							<Specification-Version>${project.version}</Specification-Version>
 						</manifestEntries>
 					</archive>

@@ -2,7 +2,7 @@
  * 模块化<br>
  * open：开放模块
  */
-open module snail {
+open module com.acgist.snail {
 	
 	/**
 	 * 限定导出
