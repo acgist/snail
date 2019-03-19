@@ -27,32 +27,31 @@ public abstract class AbstractUdpMessageHandler {
 	 * 代理
 	 */
 	public void handle(DatagramChannel channel) throws IOException {
-		ByteBuffer buffer = null;
-		Selector selector = Selector.open();
+		final Selector selector = Selector.open();
 		if(channel == null || !channel.isOpen()) {
 			return;
 		}
 		channel.register(selector, SelectionKey.OP_READ);
 		while (true) {
-			if(selector.select() > 0) {
-				buffer = ByteBuffer.allocate(1024);
-				final Set<SelectionKey> keys = selector.selectedKeys();
-				final Iterator<SelectionKey> keysIterator = keys.iterator();
-				while (keysIterator.hasNext()) {
-					final SelectionKey selectedKey = keysIterator.next();
-					keysIterator.remove();
-					if (selectedKey.isValid() && selectedKey.isReadable()) {
-						try {
+			try {
+				if(selector.select() > 0) {
+					final ByteBuffer buffer = ByteBuffer.allocate(1024);
+					final Set<SelectionKey> keys = selector.selectedKeys();
+					final Iterator<SelectionKey> keysIterator = keys.iterator();
+					while (keysIterator.hasNext()) {
+						final SelectionKey selectedKey = keysIterator.next();
+						keysIterator.remove();
+						if (selectedKey.isValid() && selectedKey.isReadable()) {
 							channel.receive(buffer);
-						} catch (IOException e) {
-							LOGGER.error("消息读取异常", e);
-							continue;
+							doMessage(buffer);
 						}
-						doMessage(buffer);
 					}
 				}
+			} catch (IOException e) {
+				LOGGER.error("消息读取异常", e);
+				continue;
 			}
 		}
 	}
-	
+
 }

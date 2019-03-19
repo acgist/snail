@@ -7,8 +7,6 @@ import com.acgist.snail.pojo.session.TaskSession;
 
 public class TorrentDownloader extends AbstractDownloader {
 
-	private TrackerManager manager;
-	
 	private TorrentDownloader(TaskSession session) {
 		super(session);
 	}

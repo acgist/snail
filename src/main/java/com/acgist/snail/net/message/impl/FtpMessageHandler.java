@@ -25,8 +25,8 @@ public class FtpMessageHandler extends AbstractTcpMessageHandler {
 	
 	private boolean fail = false; // 失败
 	private boolean append = false; // 断点续传
-	private String failMessage; // 错误信息
 	private Socket socket; // Socket
+	private String failMessage; // 错误信息
 	private InputStream inputStream; // 输入流
 	
 	private StringBuffer contentBuffer = new StringBuffer();

@@ -79,7 +79,7 @@ public abstract class AbstractTrackerClient {
 	protected final Type type; // 类型
 	protected final String scrapeUrl; // 刮檫URL
 	protected final String announceUrl; // 声明URL
-	
+
 	/**
 	 * 是否可用
 	 */
