@@ -15,6 +15,7 @@ import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.repository.impl.TaskRepository;
+import com.acgist.snail.system.context.SystemStatistics;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.DateUtils;
 import com.acgist.snail.utils.FileUtils;
@@ -41,7 +42,7 @@ public class TaskSession {
 			throw new DownloadException("创建下载任务失败");
 		}
 		this.entity = entity;
-		this.statistics = new StatisticsSession();
+		this.statistics = new StatisticsSession(SystemStatistics.getInstance().getSystemStatistics());
 	}
 	
 	// 功能 //
@@ -108,7 +109,7 @@ public class TaskSession {
 	}
 
 	public void statistical(long buffer) {
-		statistics.statistical(buffer);
+		statistics.download(buffer);
 	}
 	
 	public long downloadSize() {
@@ -151,7 +152,7 @@ public class TaskSession {
 	/**
 	 * 任务执行状态：等待中或者下载中
 	 */
-	public boolean run() {
+	public boolean coming() {
 		return await() || download();
 	}
 	
@@ -188,7 +189,7 @@ public class TaskSession {
 	 */
 	public String getStatusValue() {
 		if(download()) {
-			return FileUtils.formatSize(statistics.bufferSecond()) + "/S";
+			return FileUtils.formatSize(statistics.downloadSecond()) + "/S";
 		} else {
 			return entity.getStatus().getValue();
 		}
@@ -220,7 +221,7 @@ public class TaskSession {
 	 */
 	public String getEndDateValue() {
 		if(entity.getEndDate() == null) {
-			long bufferSecond = statistics.bufferSecond();
+			long bufferSecond = statistics.downloadSecond();
 			if(download()) {
 				if(bufferSecond == 0L) {
 					return "-";
@@ -234,7 +235,5 @@ public class TaskSession {
 		}
 		return formater.get().format(entity.getEndDate());
 	}
-	
-	
 	
 }

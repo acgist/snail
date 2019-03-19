@@ -159,7 +159,7 @@ public final class DownloaderManager {
 	public void shutdown() {
 		LOGGER.info("关闭下载器管理");
 		TASK_MAP.values().stream()
-		.filter(downloader -> downloader.task().run())
+		.filter(downloader -> downloader.task().coming())
 		.forEach(downloader -> downloader.pause());
 	}
 	

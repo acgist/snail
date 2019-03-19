@@ -37,11 +37,17 @@ public class AcceptHandler<T extends AbstractTcpMessageHandler> implements Compl
 	public void failed(Throwable exc, AsynchronousServerSocketChannel client) {
 		LOGGER.error("客户端连接异常", exc);
 	}
-	
+
+	/**
+	 * 读取消息代理
+	 */
 	private void reader(AsynchronousSocketChannel result) {
 		BeanUtils.newInstance(clazz).handle(result);
 	}
 	
+	/**
+	 * 接收请求
+	 */
 	private void accept(AsynchronousServerSocketChannel attachment) {
 		attachment.accept(attachment, this);
 	}

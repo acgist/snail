@@ -20,7 +20,7 @@ import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.protocol.torrent.TorrentSessionFactory;
-import com.acgist.snail.system.context.SystemStatistical;
+import com.acgist.snail.system.context.SystemStatistics;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.FileUtils;
 
@@ -209,7 +209,8 @@ public class MainController implements Initializable {
 	public void refreshData() {
 		taskTable.refresh(); // 刷新table
 		Platform.runLater(() -> {
-			downloadBuffer.setText(SystemStatistical.getInstance().bufferSecond()); // 下载速度
+			long downloadSecond = SystemStatistics.getInstance().downloadSecond();
+			downloadBuffer.setText(FileUtils.formatSize(downloadSecond)); // 下载速度
 		});
 	}
 	
@@ -344,7 +345,7 @@ public class MainController implements Initializable {
 			}
 			if(wrapper.complete()) { // 下载完成=打开文件
 				FileUtils.openInDesktop(new File(wrapper.entity().getFile()));
-			} else if(wrapper.run()) { // 下载中=暂停下载
+			} else if(wrapper.coming()) { // 准备中=暂停下载
 				DownloaderManager.getInstance().pause(wrapper);
 			} else { // 其他=开始下载
 				try {

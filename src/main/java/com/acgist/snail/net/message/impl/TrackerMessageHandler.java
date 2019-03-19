@@ -10,6 +10,9 @@ import com.acgist.snail.net.tracker.AbstractTrackerClient;
 import com.acgist.snail.net.tracker.TrackerClientManager;
 import com.acgist.snail.utils.NetUtils;
 
+/**
+ * UDP Tracker消息
+ */
 public class TrackerMessageHandler extends AbstractUdpMessageHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerMessageHandler.class);
