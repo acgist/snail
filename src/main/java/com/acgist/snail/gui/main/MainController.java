@@ -210,7 +210,7 @@ public class MainController implements Initializable {
 		taskTable.refresh(); // 刷新table
 		Platform.runLater(() -> {
 			long downloadSecond = SystemStatistics.getInstance().downloadSecond();
-			downloadBuffer.setText(FileUtils.formatSize(downloadSecond)); // 下载速度
+			downloadBuffer.setText(FileUtils.formatSize(downloadSecond) + "/S"); // 下载速度
 		});
 	}
 	

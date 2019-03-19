@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.system.initializer.impl.ConfigInitializer;
 import com.acgist.snail.system.initializer.impl.DownloaderInitializer;
 import com.acgist.snail.system.initializer.impl.ProtocolInitializer;
-import com.acgist.snail.system.initializer.impl.TableInitializer;
+import com.acgist.snail.system.initializer.impl.DbInitializer;
 import com.acgist.snail.utils.FileUtils;
 
 /**
@@ -21,7 +21,7 @@ public class SystemContext {
 	 */
 	public static final void init() {
 		LOGGER.info("系统初始化");
-		TableInitializer.newInstance().initSync();
+		DbInitializer.newInstance().initSync();
 		ProtocolInitializer.newInstance().initAsyn();
 		DownloaderInitializer.newInstance().initAsyn();
 		ConfigInitializer.newInstance().initAsyn();
