@@ -2,7 +2,6 @@ package com.acgist.snail.downloader;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -41,29 +40,7 @@ public final class DownloaderManager {
 	
 	private void init() {
 		LOGGER.info("启动下载器管理");
-		int downloadSize = DownloadConfig.getSize();
-		TASK_MAP = new ConcurrentHashMap<>(downloadSize);
-	}
-
-	/**
-	 * 修改同时下载任务数量：暂停所有任务-停止线程池-重新设置线程池大小-添加任务
-	 */
-	public void updateDownloadSize() {
-		var list = TASK_MAP.entrySet()
-		.stream()
-		.map(Entry::getValue)
-		.filter(downloader -> downloader.task().run())
-		.collect(Collectors.toList());
-		list.forEach(downloader -> {
-			downloader.pause();
-		});
-		list.forEach(downloader -> {
-			try {
-				start(downloader);
-			} catch (DownloadException e) {
-				LOGGER.error("添加下载任务异常", e);
-			}
-		});
+		TASK_MAP = new ConcurrentHashMap<>(DownloadConfig.getSize());
 	}
 	
 	/**
@@ -95,7 +72,6 @@ public final class DownloaderManager {
 			if(session == null) {
 				throw new DownloadException("下载任务不存在");
 			}
-			var entity = session.entity();
 			IDownloader downloader = downloader(session);
 			if(downloader == null) {
 				downloader = session.downloader();
@@ -103,12 +79,8 @@ public final class DownloaderManager {
 			if(downloader == null) {
 				throw new DownloadException("添加下载任务失败（下载任务为空）");
 			}
-			if(downloader.running()) {
-				return downloader;
-			}
-			LOGGER.info("添加下载任务：{}", entity.getName());
-			SystemThreadContext.submit(downloader);
 			TASK_MAP.put(downloader.id(), downloader);
+			refresh(); // 刷新下载任务
 			return downloader;
 		}
 	}
@@ -118,6 +90,7 @@ public final class DownloaderManager {
 	 */
 	public void pause(TaskSession session) {
 		downloader(session).pause();
+		refresh(); // 刷新下载任务
 	}
 	
 	/**
@@ -128,6 +101,7 @@ public final class DownloaderManager {
 		LOGGER.info("删除下载任务：{}", entity.getName());
 		downloader(session).delete();
 		TASK_MAP.remove(entity.getId());
+		refresh(); // 刷新下载任务
 	}
 
 	/**
@@ -148,12 +122,35 @@ public final class DownloaderManager {
 	 * 获取下载任务
 	 */
 	public List<TaskSession> tasks() {
-		return DownloaderManager.getInstance().TASK_MAP.values()
-			.stream()
+		return TASK_MAP.values().stream()
 			.map(IDownloader::task)
 			.collect(Collectors.toList());
 	}
-
+	
+	/**
+	 * 刷新下载<br>
+	 * 下载完成，暂停等操作时刷新下载任务
+	 */
+	public void refresh() {
+		synchronized (this) {
+			// 当前下载数量
+			var downloaders = TASK_MAP.values();
+			long count = downloaders.stream().filter(IDownloader::running).count();
+			int downloadSize = DownloadConfig.getSize();
+			if(count == downloadSize) { // 不操作
+			} else if(count > downloadSize) { // 暂停部分操作
+				downloaders.stream()
+				.filter(IDownloader::running)
+				.skip(downloadSize)
+				.forEach(IDownloader::pause);
+			} else { // 开始准备任务
+				downloaders.stream()
+				.filter(downloader -> downloader.task().await())
+				.forEach(downloader -> SystemThreadContext.submit(downloader));
+			}
+		}
+	}
+	
 	/**
 	 * 停止下载：<br>
 	 * 暂停任务<br>
@@ -161,9 +158,7 @@ public final class DownloaderManager {
 	 */
 	public void shutdown() {
 		LOGGER.info("关闭下载器管理");
-		TASK_MAP.entrySet()
-		.stream()
-		.map(Entry::getValue)
+		TASK_MAP.values().stream()
 		.filter(downloader -> downloader.task().run())
 		.forEach(downloader -> downloader.pause());
 	}
