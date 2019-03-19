@@ -5,8 +5,6 @@ import java.net.InetSocketAddress;
 import java.net.StandardSocketOptions;
 import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousSocketChannel;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -27,7 +25,6 @@ public abstract class AbstractTcpClient<T extends AbstractTcpMessageHandler> ext
 	/**
 	 * 所有客户端公用一个线程池，线程池大小等于客户端类型数量
 	 */
-	private static final ExecutorService EXECUTOR;
 	private static final AsynchronousChannelGroup GROUP;
 	
 	/**
@@ -36,10 +33,9 @@ public abstract class AbstractTcpClient<T extends AbstractTcpMessageHandler> ext
 	protected T handler;
 
 	static {
-		EXECUTOR = Executors.newFixedThreadPool(2, SystemThreadContext.newThreadFactory("Application Tcp Client Thread"));
 		AsynchronousChannelGroup group = null;
 		try {
-			group = AsynchronousChannelGroup.withThreadPool(EXECUTOR);
+			group = AsynchronousChannelGroup.withThreadPool(SystemThreadContext.executor());
 		} catch (IOException e) {
 			LOGGER.error("启动TCP Client Group异常", e);
 		}
@@ -96,7 +92,6 @@ public abstract class AbstractTcpClient<T extends AbstractTcpMessageHandler> ext
 	public static final void shutdown() {
 		LOGGER.info("关闭Client线程池");
 		IoUtils.close(GROUP);
-		SystemThreadContext.shutdown(EXECUTOR);
 	}
 	
 }

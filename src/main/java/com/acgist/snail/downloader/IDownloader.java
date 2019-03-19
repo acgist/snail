@@ -10,6 +10,11 @@ import com.acgist.snail.pojo.session.TaskSession;
 public interface IDownloader extends Runnable {
 	
 	/**
+	 * 运行中
+	 */
+	boolean running();
+	
+	/**
 	 * 任务信息
 	 */
 	TaskSession task();

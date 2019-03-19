@@ -31,6 +31,11 @@ public abstract class AbstractDownloader implements IDownloader {
 	}
 	
 	@Override
+	public boolean running() {
+		return running;
+	}
+	
+	@Override
 	public TaskSession task() {
 		return session;
 	}

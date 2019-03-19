@@ -3,7 +3,9 @@ package com.acgist.snail.system.context;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -16,7 +18,8 @@ public class SystemThreadContext {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SystemThreadContext.class);
 	
-	private static final int TIMER_EXECUTOR_SIZE = 2; // 定时线程池
+	private static final String THREAD_POOL_NAME = "System Thread";
+	private static final String TIMER_THREAD_POOL_NAME = "System Timer Thread";
 	
 	/**
 	 * 线程池
@@ -29,15 +32,25 @@ public class SystemThreadContext {
 	
 	static {
 		LOGGER.info("启动系统线程池");
-		EXECUTOR = Executors.newCachedThreadPool(newThreadFactory("System Thread"));
-		TIMER_EXECUTOR = Executors.newScheduledThreadPool(TIMER_EXECUTOR_SIZE, SystemThreadContext.newThreadFactory("System Timer Thread"));
+		EXECUTOR = new ThreadPoolExecutor(
+			4,
+			Integer.MAX_VALUE,
+			60L,
+			TimeUnit.SECONDS,
+			new SynchronousQueue<Runnable>(),
+			SystemThreadContext.newThreadFactory(THREAD_POOL_NAME)
+		);
+		TIMER_EXECUTOR = Executors.newScheduledThreadPool(
+			2,
+			SystemThreadContext.newThreadFactory(TIMER_THREAD_POOL_NAME)
+		);
 	}
 	
 	/**
 	 * 异步执行线程：<br>
 	 * 处理一些比较消耗资源，导致卡住窗口的操作，例如：文件校验
 	 */
-	public static final void runasyn(Runnable runnable) {
+	public static final void submit(Runnable runnable) {
 		EXECUTOR.submit(runnable);
 	}
 	
@@ -47,12 +60,19 @@ public class SystemThreadContext {
 	public static final void timer(long delay, long period, TimeUnit unit, Runnable runnable) {
 		TIMER_EXECUTOR.scheduleAtFixedRate(runnable, delay, period, unit);
 	}
+
+	/**
+	 * 获取系统线程池
+	 */
+	public static final ExecutorService executor() {
+		return EXECUTOR;
+	}
 	
 	/**
 	 * 新建线程池工厂
 	 * @param poolName 线程池名称
 	 */
-	public static final ThreadFactory newThreadFactory(String poolName) {
+	private static final ThreadFactory newThreadFactory(String poolName) {
 		return new ThreadFactory() {
 			@Override
 			public Thread newThread(Runnable runnable) {
