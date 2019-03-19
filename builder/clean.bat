@@ -3,12 +3,12 @@
 call config.bat
 
 rem 用户确认
-set /p input=请确认删除全部内容（Y/N）？
-if /i %input%==Y (echo 开始删除) else (exit)
+set /p input=请确认清除已生成的内容（Y/N）？
+if /i %input%==Y (echo 开始清除) else (exit)
 
-rem 删除文件
+rem 清除文件
 echo -----------------------------------------------
-echo 删除文件
+echo 清除文件
 echo -----------------------------------------------
 if exist %jar% del /F /A /Q %jar%
 if exist %exe% del /F /A /Q %exe%
