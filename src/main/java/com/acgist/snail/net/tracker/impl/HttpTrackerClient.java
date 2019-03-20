@@ -4,7 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.util.Map;
 
-import com.acgist.snail.net.http.HttpManager;
+import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.net.peer.PeerServer;
 import com.acgist.snail.net.tracker.AbstractTrackerClient;
 import com.acgist.snail.net.tracker.bean.HttpTracker;
@@ -27,7 +27,7 @@ public class HttpTrackerClient extends AbstractTrackerClient {
 	private HttpTrackerClient(String scrapeUrl, String announceUrl) throws NetException {
 		super(scrapeUrl, announceUrl, Type.http);
 	}
-	
+
 	public static final HttpTrackerClient newInstance(String announceUrl) throws NetException {
 		final String scrapeUrl = announceUrlToScrapeUrl(announceUrl);
 		return new HttpTrackerClient(scrapeUrl, announceUrl);
@@ -36,11 +36,11 @@ public class HttpTrackerClient extends AbstractTrackerClient {
 	@Override
 	public void announce(TorrentSession session) throws NetException {
 		final String requestUrl = buildAnnounceUrl(session);
-		var client = HttpManager.newClient();
-		var request = HttpManager.newRequest(requestUrl)
+		var client = HTTPClient.newClient();
+		var request = HTTPClient.newRequest(requestUrl)
 			.GET()
 			.build();
-		var response = HttpManager.request(client, request, BodyHandlers.ofString());
+		var response = HTTPClient.request(client, request, BodyHandlers.ofString());
 		if(response == null) {
 			throw new NetException("获取Peer异常");
 		}

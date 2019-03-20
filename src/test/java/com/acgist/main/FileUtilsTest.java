@@ -2,7 +2,7 @@ package com.acgist.main;
 
 import org.junit.Test;
 
-import com.acgist.snail.net.http.HttpManager;
+import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.utils.FileUtils;
 
 public class FileUtilsTest {
@@ -15,7 +15,7 @@ public class FileUtilsTest {
 	
 	@Test
 	public void fileNameHttp() {
-		HttpManager.httpHeader("https://www.acgist.com/demo/weixin/view").headers().forEach((key, value) -> {
+		HTTPClient.httpHeader("https://www.acgist.com/demo/weixin/view").headers().forEach((key, value) -> {
 			System.out.println(key + "-" + value);
 		});
 	}

@@ -1,4 +1,4 @@
-package com.acgist.snail.protocol.torrent;
+package com.acgist.snail.system.manager;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.protocol.torrent.InfoHashBuilder;
+import com.acgist.snail.protocol.torrent.TorrentProtocol;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
 import com.acgist.snail.system.exception.DownloadException;

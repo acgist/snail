@@ -4,7 +4,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.Builder;
 import java.util.Map;
 
-import com.acgist.snail.net.http.HttpManager;
+import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.protocol.magnet.MagnetCoder;
 
 /**
@@ -36,8 +36,8 @@ public class BtbttvMagnetCoder extends MagnetCoder {
 			"route", "3",
 			"hash", this.hash
 		);
-		Builder builder = HttpManager.newFormRequest("http://www.btbttv.cc/torrent.html");
-		return builder.POST(HttpManager.formBodyPublisher(data)).build();
+		Builder builder = HTTPClient.newFormRequest("http://www.btbttv.cc/torrent.html");
+		return builder.POST(HTTPClient.formBodyPublisher(data)).build();
 	}
 
 }

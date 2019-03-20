@@ -1,4 +1,4 @@
-package com.acgist.snail.net.peer.bean;
+package com.acgist.snail.net.peer;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -3,7 +3,6 @@ package com.acgist.snail.utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.gui.menu.TrayMenu;
 import com.acgist.snail.net.AbstractTcpClient;
 import com.acgist.snail.net.AbstractTcpServer;
@@ -11,6 +10,7 @@ import com.acgist.snail.net.application.ApplicationClient;
 import com.acgist.snail.net.application.ApplicationServer;
 import com.acgist.snail.net.udp.TrackerUdpClient;
 import com.acgist.snail.system.context.SystemThreadContext;
+import com.acgist.snail.system.manager.DownloaderManager;
 
 import javafx.application.Platform;
 

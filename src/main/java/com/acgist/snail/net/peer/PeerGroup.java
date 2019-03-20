@@ -1,4 +1,4 @@
-package com.acgist.snail.pojo.bean;
+package com.acgist.snail.net.peer;
 
 import java.util.ArrayList;
 import java.util.Collections;

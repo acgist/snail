@@ -22,7 +22,7 @@ import javafx.scene.text.Text;
 /**
  * 路径选择器
  */
-public class FileSelectManager {
+public class FileSelecter {
 
 	private Button download;
 	private TreeItem<HBox> root;
@@ -36,7 +36,7 @@ public class FileSelectManager {
 	 * @param download 下载按钮
 	 * @param tree 属性菜单
 	 */
-	public FileSelectManager(String name, Button download, TreeView<HBox> tree) {
+	public FileSelecter(String name, Button download, TreeView<HBox> tree) {
 		this.sizeMap = new HashMap<>();
 		this.checkBoxMap = new HashMap<>();
 		this.treeItemMap = new HashMap<>();

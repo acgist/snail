@@ -1,4 +1,4 @@
-package com.acgist.snail.net.tracker;
+package com.acgist.snail.system.manager;
 
 import java.util.Map;
 import java.util.Optional;
@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.AbstractUdpClient;
+import com.acgist.snail.net.tracker.AbstractTrackerClient;
 import com.acgist.snail.net.tracker.AbstractTrackerClient.Type;
 import com.acgist.snail.net.tracker.impl.HttpTrackerClient;
 import com.acgist.snail.net.tracker.impl.UdpTrackerClient;
@@ -55,7 +56,7 @@ public class TrackerClientManager {
 	 */
 	public void connectionId(int trackerId, long connectionId) {
 		var client = TRACKER_CLIENT_MAP.get(trackerId);
-		if(client != null && client.type == Type.udp) {
+		if(client != null && client.type() == Type.udp) {
 			UdpTrackerClient udpTrackerClient = (UdpTrackerClient) client;
 			udpTrackerClient.connectionId(connectionId);
 		}
@@ -78,7 +79,7 @@ public class TrackerClientManager {
 	 * client注册
 	 */
 	private void register(AbstractTrackerClient client) {
-		LOGGER.info("注册tracker client，id：{}，announceUrl：{}", client.id, client.announceUrl());
+		LOGGER.info("注册tracker client，id：{}，announceUrl：{}", client.id(), client.announceUrl());
 		TRACKER_CLIENT_MAP.put(client.id(), client);
 	}
 	

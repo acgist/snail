@@ -12,7 +12,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.http.HttpManager;
+import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.protocol.magnet.impl.BtbttvMagnetCoder;
 import com.acgist.snail.protocol.torrent.TorrentProtocol;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
@@ -69,10 +69,10 @@ public abstract class MagnetCoder {
 	 */
 	public File execute(String url) throws DownloadException {
 		this.init(url);
-		HttpClient client = HttpManager.newClient();
+		HttpClient client = HTTPClient.newClient();
 		HttpRequest request = request();
-		HttpResponse<byte[]> response = HttpManager.request(client, request, BodyHandlers.ofByteArray());
-		if(HttpManager.ok(response)) {
+		HttpResponse<byte[]> response = HTTPClient.request(client, request, BodyHandlers.ofByteArray());
+		if(HTTPClient.ok(response)) {
 			byte[] bytes = response.body();
 			String path = DownloadConfig.getPath(this.hash + TorrentProtocol.TORRENT_SUFFIX);
 			FileUtils.write(path, bytes);

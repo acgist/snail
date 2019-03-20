@@ -3,8 +3,8 @@ package com.acgist.main;
 import org.junit.Test;
 
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.protocol.torrent.TorrentSessionManager;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
+import com.acgist.snail.system.manager.TorrentSessionManager;
 
 public class TorrentDecoderTest {
 

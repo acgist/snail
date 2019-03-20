@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.AbstractDownloader;
-import com.acgist.snail.net.http.HttpManager;
+import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
 import com.acgist.snail.system.config.DownloadConfig;
@@ -107,14 +107,14 @@ public class HttpDownloader extends AbstractDownloader {
 	private void buildInput() {
 		var entity = session.entity();
 		long size = FileUtils.fileSize(entity.getFile()); // 已下载大小
-		HttpClient client = HttpManager.newClient();
-		var request = HttpManager.newRequest(entity.getUrl())
+		HttpClient client = HTTPClient.newClient();
+		var request = HTTPClient.newRequest(entity.getUrl())
 			.header("Range", "bytes=" + size + "-") // 端点续传
 			.GET()
 			.build();
-		var response = HttpManager.request(client, request, BodyHandlers.ofInputStream());
+		var response = HTTPClient.request(client, request, BodyHandlers.ofInputStream());
 		this.responseHeader = HttpHeaderWrapper.newInstance(response.headers());
-		if(HttpManager.ok(response)) {
+		if(HTTPClient.ok(response)) {
 			input = new BufferedInputStream(response.body());
 			if(responseHeader.range()) { // 支持断点续传
 				long begin = responseHeader.beginRange();
@@ -125,7 +125,7 @@ public class HttpDownloader extends AbstractDownloader {
 			} else {
 				session.downloadSize(0L);
 			}
-		} else if(HttpManager.rangeNotSatisfiable(response)) { // 无法满足的请求范围
+		} else if(HTTPClient.rangeNotSatisfiable(response)) { // 无法满足的请求范围
 			if(session.downloadSize() == entity.getSize()) {
 				complete = true;
 			} else {

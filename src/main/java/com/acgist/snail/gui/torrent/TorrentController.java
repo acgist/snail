@@ -3,16 +3,16 @@ package com.acgist.snail.gui.torrent;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.gui.alert.AlertWindow;
 import com.acgist.snail.gui.main.TaskDisplay;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.session.TaskSession;
-import com.acgist.snail.protocol.torrent.TorrentSessionManager;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
 import com.acgist.snail.protocol.torrent.bean.TorrentInfo;
 import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.system.exception.DownloadException;
+import com.acgist.snail.system.manager.DownloaderManager;
+import com.acgist.snail.system.manager.TorrentSessionManager;
 import com.acgist.snail.utils.JsonUtils;
 
 import javafx.event.ActionEvent;
@@ -43,7 +43,7 @@ public class TorrentController implements Initializable {
 	private VBox downloadBox;
 	
 	private TaskSession session;
-	private FileSelectManager manager;
+	private FileSelecter selecter;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -71,13 +71,13 @@ public class TorrentController implements Initializable {
 			return;
 		}
 		TorrentInfo torrentInfo = torrent.getInfo();
-		manager = new FileSelectManager(torrentInfo.getName(), download, tree);
+		selecter = new FileSelecter(torrentInfo.getName(), download, tree);
 		torrentInfo.files()
 		.stream()
 		.filter(file -> !file.path().startsWith(HIDE_FILE_PREFIX))
 		.sorted((a, b) -> a.path().compareTo(b.path()))
-		.forEach(file -> manager.build(file.path(), file.getLength()));
-		manager.select(session.downloadTorrentFiles());
+		.forEach(file -> selecter.build(file.path(), file.getLength()));
+		selecter.select(session.downloadTorrentFiles());
 	}
 	
 	/**
@@ -99,12 +99,12 @@ public class TorrentController implements Initializable {
 	 */
 	private EventHandler<ActionEvent> downloadEvent = (event) -> {
 		TaskEntity entity = session.entity();
-		var list = manager.description();
+		var list = selecter.description();
 		if(list.isEmpty()) {
 			AlertWindow.warn("下载提示", "请选择下载文件");
 			return;
 		}
-		entity.setSize(manager.size());
+		entity.setSize(selecter.size());
 		entity.setDescription(JsonUtils.toJson(list));
 		if(entity.getId() != null) { // 已经添加数据库
 			TaskRepository repository = new TaskRepository();
