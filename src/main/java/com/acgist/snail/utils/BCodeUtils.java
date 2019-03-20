@@ -171,6 +171,14 @@ public class BCodeUtils {
 		return new String(bytes);
 	}
 	
+	public static final Integer getInteger(Map<?, ?> map, String key) {
+		Long value = getLong(map, key);
+		if(value == null) {
+			return null;
+		}
+		return value.intValue();
+	}
+	
 	public static final Long getLong(Map<?, ?> map, String key) {
 		return (Long) map.get(key);
 	}

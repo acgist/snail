@@ -1,13 +1,13 @@
 package com.acgist.snail.net.message.impl;
 
 import java.nio.ByteBuffer;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.message.AbstractUdpMessageHandler;
 import com.acgist.snail.net.tracker.AbstractTrackerClient;
+import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.system.manager.TrackerClientManager;
 import com.acgist.snail.utils.PeerUtils;
 
@@ -45,17 +45,15 @@ public class TrackerMessageHandler extends AbstractUdpMessageHandler {
 	}
 
 	/**
-	 * 处理peer
+	 * 处理peer：https://www.libtorrent.org/udp_tracker_protocol.html
 	 */
 	private void doAnnounce(ByteBuffer buffer, int size) {
-		System.out.println("Peer返回：");
-		int sessionId = buffer.getInt();
-		System.out.println("sessionId：" + sessionId);
-		System.out.println("时间间隔：" + buffer.getInt());
-		System.out.println("未完成Peer数量：" + buffer.getInt()); // peer数量
-		System.out.println("已完成Peer数量：" + buffer.getInt()); // peer数量
-		Map<String, Integer> peers = PeerUtils.read(buffer, size);
-		System.out.println("IP：PORT=" + peers);
+		AnnounceMessage message = new AnnounceMessage();
+		message.setId(buffer.getInt());
+		message.setInterval(buffer.getInt());
+		message.setUndone(buffer.getInt());
+		message.setDone(buffer.getInt());
+		message.setPeers(PeerUtils.read(buffer, size));
 	}
 
 }

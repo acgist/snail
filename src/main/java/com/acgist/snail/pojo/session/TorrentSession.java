@@ -1,22 +1,17 @@
 package com.acgist.snail.pojo.session;
 
-import com.acgist.snail.net.peer.PeerClientGroup;
+import com.acgist.snail.net.tracker.TrackerGroup;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
 import com.acgist.snail.protocol.torrent.bean.TorrentInfo;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.StringUtils;
-import com.acgist.snail.utils.UniqueCodeUtils;
 
 /**
  * 种子session
  */
 public class TorrentSession {
 	
-	/**
-	 * id：transaction_id（获取peer时使用）
-	 */
-	private Integer id;
 	/**
 	 * 种子
 	 */
@@ -26,17 +21,17 @@ public class TorrentSession {
 	 */
 	private InfoHash infoHash;
 	/**
-	 * Peer客户端
+	 * Tracker组
 	 */
-	private PeerClientGroup peerClientGroup;
+	private TrackerGroup trackerGroup;
 
 	private TorrentSession(Torrent torrent, InfoHash infoHash) throws DownloadException {
 		if(torrent == null || infoHash == null) {
 			throw new DownloadException("解析种子文件异常");
 		}
-		this.id = UniqueCodeUtils.buildInteger();
 		this.torrent = torrent;
 		this.infoHash = infoHash;
+		this.trackerGroup = new TrackerGroup();
 	}
 
 	public static final TorrentSession newInstance(Torrent torrent, InfoHash infoHash) throws DownloadException {
@@ -55,10 +50,6 @@ public class TorrentSession {
 		return name;
 	}
 
-	public Integer id() {
-		return id;
-	}
-	
 	public Torrent torrent() {
 		return this.torrent;
 	}
@@ -67,8 +58,8 @@ public class TorrentSession {
 		return this.infoHash;
 	}
 	
-	public PeerClientGroup peerClientGroup() {
-		return this.peerClientGroup;
+	public TrackerGroup trackerGroup() {
+		return this.trackerGroup;
 	}
 
 }
