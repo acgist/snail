@@ -17,8 +17,9 @@ import com.acgist.snail.utils.UniqueCodeUtils;
  * 基本协议：TCP（HTTP）、UDP<br>
  * DOC：https://wiki.theory.org/index.php/BitTorrentSpecification<br>
  * UDP：https://www.libtorrent.org/udp_tracker_protocol.html<br>
+ * sid：每一个torrent和tracker服务器对应的id
  */
-public abstract class AbstractTrackerClient {
+public abstract class AbstractTrackerClient implements Comparable<AbstractTrackerClient> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractTrackerClient.class);
 	
@@ -26,7 +27,7 @@ public abstract class AbstractTrackerClient {
 		udp,
 		http;
 	}
-	
+
 	/**
 	 * announce事件
 	 */
@@ -76,7 +77,8 @@ public abstract class AbstractTrackerClient {
 	 */
 	private static final int MAX_FAIL_TIMES = 5;
 	
-	protected final Integer id; // trackerId：transaction_id（连接时使用）
+	protected int weight; // 权重
+	protected final Integer id; // trackerId：transaction_id（UDP连接时使用）
 	protected final Type type; // 类型
 	protected final String scrapeUrl; // 刮檫URL
 	protected final String announceUrl; // 声明URL
@@ -100,6 +102,7 @@ public abstract class AbstractTrackerClient {
 		}
 		this.id = UniqueCodeUtils.buildInteger();
 		this.type = type;
+		this.weight = 0;
 		this.scrapeUrl = scrapeUrl;
 		this.announceUrl = announceUrl;
 	}
@@ -114,14 +117,16 @@ public abstract class AbstractTrackerClient {
 	/**
 	 * 查找Peer，查找结果直接设置到session
 	 */
-	public void findPeers(TorrentSession session) {
+	public void findPeers(Integer sid, TorrentSession session) {
 		if(!available()) { // 不可用直接返回null
 			return;
 		}
 		try {
-			announce(session);
+			announce(sid, session);
 			failTimes.set(0);
+			weight--;
 		} catch (Exception e) {
+			weight++;
 			if(failTimes.incrementAndGet() > MAX_FAIL_TIMES) {
 				available.set(false);
 				failMessage = e.getMessage();
@@ -133,22 +138,22 @@ public abstract class AbstractTrackerClient {
 	/**
 	 * 跟踪：开始
 	 */
-	public abstract void announce(TorrentSession session) throws NetException;
+	public abstract void announce(Integer sid, TorrentSession session) throws NetException;
 	
 	/**
 	 * 完成
 	 */
-	public abstract void complete(TorrentSession session);
+	public abstract void complete(Integer sid, TorrentSession session);
 	
 	/**
 	 * 停止
 	 */
-	public abstract void stop(TorrentSession session);
+	public abstract void stop(Integer sid, TorrentSession session);
 	
 	/**
 	 * 刮檫
 	 */
-	public abstract void scrape(TorrentSession session) throws NetException;
+	public abstract void scrape(Integer sid, TorrentSession session) throws NetException;
 	
 	public Integer id() {
 		return this.id;
@@ -166,9 +171,22 @@ public abstract class AbstractTrackerClient {
 		return this.failMessage;
 	}
 	
+	/**
+	 * 判断是否存在
+	 */
+	public boolean exist(String announceUrl) {
+		return this.announceUrl.equals(announceUrl);
+	}
+	
+	@Override
+	public int compareTo(AbstractTrackerClient client) {
+		return this.weight == client.weight ? 0 :
+			this.weight > client.weight ? 1 : -1;
+	}
+	
 	@Override
 	public int hashCode() {
-		return ObjectUtils.hashCode(this.id, this.announceUrl);
+		return ObjectUtils.hashCode(this.announceUrl);
 	}
 	
 	@Override
@@ -178,8 +196,8 @@ public abstract class AbstractTrackerClient {
 		}
 		if(ObjectUtils.equalsClazz(this, object)) {
 			AbstractTrackerClient client = (AbstractTrackerClient) object;
-			return ObjectUtils.equalsBuilder(this.id, this.announceUrl)
-				.equals(ObjectUtils.equalsBuilder(client.id, client.announceUrl));
+			return ObjectUtils.equalsBuilder(this.announceUrl)
+				.equals(ObjectUtils.equalsBuilder(client.announceUrl));
 		}
 		return false;
 	}

@@ -1,8 +1,11 @@
 package com.acgist.snail.system.manager;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,14 +17,18 @@ import com.acgist.snail.net.tracker.impl.HttpTrackerClient;
 import com.acgist.snail.net.tracker.impl.UdpTrackerClient;
 import com.acgist.snail.protocol.http.HttpProtocol;
 import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.utils.CollectionUtils;
+import com.acgist.snail.utils.StringUtils;
 
 /**
- * tracker管理器
+ * Tracker Client管理器，所有的tracker都可以被使用
  */
 public class TrackerClientManager {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerClientManager.class);
 	private static final TrackerClientManager INSTANCE = new TrackerClientManager();
+
+	private static final int MAX_CLIENT_SIZE = 40; // TODO：默认返回的数量
 	
 	private TrackerClientManager() {
 		TRACKER_CLIENT_MAP = new ConcurrentHashMap<>();
@@ -30,17 +37,71 @@ public class TrackerClientManager {
 	public static final TrackerClientManager getInstance() {
 		return INSTANCE;
 	}
-	
+
 	private Map<Integer, AbstractTrackerClient> TRACKER_CLIENT_MAP;
+
+	/**
+	 * 获取可用的tracker client，传入announce的返回有用的，然后补充不足的的数量
+	 */
+	public List<AbstractTrackerClient> clients(String announceUrl, List<String> announceUrls) throws NetException {
+		List<AbstractTrackerClient> clients = register(announceUrl, announceUrls);
+		final int size = clients.size();
+		if(size < MAX_CLIENT_SIZE) {
+			clients.addAll(clients(MAX_CLIENT_SIZE - size));
+		}
+		return clients;
+	}
 	
 	/**
-	 * 获取tracker，如果已经存在返回tracker，否者注册tracker
+	 * 获取可用的tracker client，获取权重排在前面的tracker client
+	 * @param size 返回可用client数量
 	 */
-	public AbstractTrackerClient tracker(String announceUrl) throws NetException {
+	public List<AbstractTrackerClient> clients(int size) {
+		return TRACKER_CLIENT_MAP.values().stream()
+			.filter(client -> client.available())
+			.sorted()
+			.limit(size)
+			.collect(Collectors.toList());
+	}
+	
+	/**
+	 * 注册tracker client列表
+	 */
+	public List<AbstractTrackerClient> register(String announceUrl, List<String> announceUrls) throws NetException {
+		final List<String> announces = new ArrayList<>();
+		if(StringUtils.isNotEmpty(announceUrl)) {
+			announces.add(announceUrl);
+		}
+		if(CollectionUtils.isNotEmpty(announceUrls)) {
+			announces.addAll(announceUrls);
+		}
+		if(announces.size() == 0) {
+			throw new NetException("announceUrl不合法");
+		}
+		return announces.stream()
+		.map(announce -> {
+			try {
+				return register(announce);
+			} catch (NetException e) {
+				LOGGER.error("tracker获取异常", e);
+			}
+			return null;
+		})
+		.filter(client -> client != null)
+		.collect(Collectors.toList());
+	}
+
+	/**
+	 * 注册tracker client，如果已经注册直接返回
+	 */
+	public AbstractTrackerClient register(String announceUrl) throws NetException {
+		if(StringUtils.isEmpty(announceUrl)) {
+			return null;
+		}
 		synchronized (TRACKER_CLIENT_MAP) {
 			Optional<AbstractTrackerClient> optional = TRACKER_CLIENT_MAP.values().stream()
 				.filter(client -> {
-					return client.announceUrl().equals(announceUrl);
+					return client.exist(announceUrl);
 				}).findFirst();
 			if(optional.isPresent()) {
 				return optional.get();
@@ -50,7 +111,7 @@ public class TrackerClientManager {
 			return client;
 		}
 	}
-	
+
 	/**
 	 * 设置udp的connectionId
 	 */
@@ -74,7 +135,7 @@ public class TrackerClientManager {
 			throw new NetException("不支持的Tracker协议：" + announceUrl);
 		}
 	}
-	
+
 	/**
 	 * client注册
 	 */
@@ -82,5 +143,5 @@ public class TrackerClientManager {
 		LOGGER.info("注册tracker client，id：{}，announceUrl：{}", client.id(), client.announceUrl());
 		TRACKER_CLIENT_MAP.put(client.id(), client);
 	}
-	
+
 }

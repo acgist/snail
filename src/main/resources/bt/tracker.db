@@ -1,1 +1,3 @@
 # tracker列表：（HTTP/UDP）
+udp://tracker.uw0.xyz:6969/announce
+udp://exodus.desync.com:6969/announce

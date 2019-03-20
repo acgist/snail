@@ -1,6 +1,7 @@
 package com.acgist.snail.utils;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * utils - 数组、集合
@@ -27,6 +28,14 @@ public class CollectionUtils {
 	
 	public static final boolean isNotEmpty(List<?> list) {
 		return !isEmpty(list);
+	}
+	
+	public static final boolean isEmpty(Map<?, ?> map) {
+		return map == null || map.isEmpty();
+	}
+	
+	public static final boolean isNotEmpty(Map<?, ?> map) {
+		return !isEmpty(map);
 	}
 	
 }

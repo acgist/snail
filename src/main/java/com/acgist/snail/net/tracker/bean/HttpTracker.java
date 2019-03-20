@@ -12,22 +12,22 @@ public class HttpTracker {
 
 	private String failureReason; // 失败原因
 	private String warngingMessage; // 警告信息
-	private Long interval; // 下一次连接等待时间
-	private Long minInterval; // 下一次连接等待最小时间
+	private Integer interval; // 下一次连接等待时间
+	private Integer minInterval; // 下一次连接等待最小时间
 	private String trackerId; // trackerId，返回后以后的请求需要上送这个字段
-	private Long complete; // 已完成下载的Peer数量
-	private Long incomplete; // 还没有完成下载的Peer数量
+	private Integer complete; // 已完成下载的Peer数量
+	private Integer incomplete; // 还没有完成下载的Peer数量
 	private Map<String, Integer> peers; // Peer的IP和端口
 
 	public static final HttpTracker valueOf(Map<?, ?> map) {
 		final HttpTracker tracker = new HttpTracker();
 		tracker.setFailureReason(BCodeUtils.getString(map, "failure reason"));
 		tracker.setWarngingMessage(BCodeUtils.getString(map, "warnging message"));
-		tracker.setInterval(BCodeUtils.getLong(map, "interval"));
-		tracker.setMinInterval(BCodeUtils.getLong(map, "min interval"));
+		tracker.setInterval(BCodeUtils.getInteger(map, "interval"));
+		tracker.setMinInterval(BCodeUtils.getInteger(map, "min interval"));
 		tracker.setTrackerId(BCodeUtils.getString(map, "tracker id"));
-		tracker.setComplete(BCodeUtils.getLong(map, "complete"));
-		tracker.setIncomplete(BCodeUtils.getLong(map, "incomplete"));
+		tracker.setComplete(BCodeUtils.getInteger(map, "complete"));
+		tracker.setIncomplete(BCodeUtils.getInteger(map, "incomplete"));
 		tracker.setPeers(PeerUtils.read(BCodeUtils.getBytes(map, "peers")));
 		return tracker;
 	}
@@ -48,19 +48,19 @@ public class HttpTracker {
 		this.warngingMessage = warngingMessage;
 	}
 
-	public Long getInterval() {
+	public Integer getInterval() {
 		return interval;
 	}
 
-	public void setInterval(Long interval) {
+	public void setInterval(Integer interval) {
 		this.interval = interval;
 	}
 
-	public Long getMinInterval() {
+	public Integer getMinInterval() {
 		return minInterval;
 	}
 
-	public void setMinInterval(Long minInterval) {
+	public void setMinInterval(Integer minInterval) {
 		this.minInterval = minInterval;
 	}
 
@@ -72,19 +72,19 @@ public class HttpTracker {
 		this.trackerId = trackerId;
 	}
 
-	public Long getComplete() {
+	public Integer getComplete() {
 		return complete;
 	}
 
-	public void setComplete(Long complete) {
+	public void setComplete(Integer complete) {
 		this.complete = complete;
 	}
 
-	public Long getIncomplete() {
+	public Integer getIncomplete() {
 		return incomplete;
 	}
 
-	public void setIncomplete(Long incomplete) {
+	public void setIncomplete(Integer incomplete) {
 		this.incomplete = incomplete;
 	}
 

@@ -22,6 +22,8 @@ import com.acgist.snail.utils.StringUtils;
  */
 public class TorrentSessionManager {
 
+//	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentSessionManager.class);
+	
 	private static final TorrentSessionManager INSTANCE = new TorrentSessionManager();
 	
 	/**

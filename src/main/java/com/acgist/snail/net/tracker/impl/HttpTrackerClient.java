@@ -8,10 +8,11 @@ import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.net.peer.PeerServer;
 import com.acgist.snail.net.tracker.AbstractTrackerClient;
 import com.acgist.snail.net.tracker.bean.HttpTracker;
+import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.system.manager.TrackerSessionManager;
 import com.acgist.snail.utils.BCodeUtils;
-import com.acgist.snail.utils.JsonUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -34,8 +35,8 @@ public class HttpTrackerClient extends AbstractTrackerClient {
 	}
 
 	@Override
-	public void announce(TorrentSession session) throws NetException {
-		final String requestUrl = buildAnnounceUrl(session);
+	public void announce(Integer sid, TorrentSession session) throws NetException {
+		final String requestUrl = buildAnnounceUrl(sid, session);
 		var client = HTTPClient.newClient();
 		var request = HTTPClient.newRequest(requestUrl)
 			.GET()
@@ -45,37 +46,41 @@ public class HttpTrackerClient extends AbstractTrackerClient {
 			throw new NetException("获取Peer异常");
 		}
 		final String body = response.body();
-		System.out.println(body);
 		final ByteArrayInputStream input = new ByteArrayInputStream(body.getBytes());
 		if(BCodeUtils.isMap(input)) {
 			Map<String, Object> map = BCodeUtils.d(input);
 			var tracker = HttpTracker.valueOf(map);
-			System.out.println(map);
-			System.out.println(JsonUtils.toJson(tracker));
+			AnnounceMessage message = new AnnounceMessage();
+			message.setId(sid);
+			message.setInterval(tracker.getInterval());
+			message.setDone(tracker.getComplete());
+			message.setUndone(tracker.getIncomplete());
+			message.setPeers(tracker.getPeers());
+			TrackerSessionManager.getInstance().announce(message);
 		} else {
 			throw new NetException("错误的返回内容：" + body);
 		}
 	}
 
 	@Override
-	public void complete(TorrentSession session) {
+	public void complete(Integer sid, TorrentSession session) {
 		// TODO
 	}
 	
 	@Override
-	public void stop(TorrentSession session) {
+	public void stop(Integer sid, TorrentSession session) {
 		// TODO
 	}
 	
 	@Override
-	public void scrape(TorrentSession session) throws NetException {
+	public void scrape(Integer sid, TorrentSession session) throws NetException {
 		// TODO
 	}
 	
 	/**
 	 * 构建请求URL<br>
 	 */
-	private String buildAnnounceUrl(TorrentSession session) {
+	private String buildAnnounceUrl(Integer sid, TorrentSession session) {
 		StringBuilder builder = new StringBuilder(this.announceUrl);
 		builder.append("?")
 		// 种子HASH

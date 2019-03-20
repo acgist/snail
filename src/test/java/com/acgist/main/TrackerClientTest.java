@@ -16,9 +16,9 @@ public class TrackerClientTest {
 		String path = "e:/snail/82309348090ecbec8bf509b83b30b78a8d1f6454.torrent";
 		TorrentSession session = TorrentSessionManager.getInstance().buildSession(path);
 		System.out.println(session.infoHash().hashHex());
-		var client = TrackerClientManager.getInstance().tracker("udp://exodus.desync.com:6969/announce");
+		var client = TrackerClientManager.getInstance().register("udp://exodus.desync.com:6969/announce");
 		client.announce(session);
-		client = TrackerClientManager.getInstance().tracker("udp://tracker.uw0.xyz:6969/announce");
+		client = TrackerClientManager.getInstance().register("udp://tracker.uw0.xyz:6969/announce");
 		client.announce(session);
 		ThreadUtils.sleep(1000000);
 	}
