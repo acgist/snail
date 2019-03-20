@@ -40,9 +40,5 @@ public class ResultSetWrapper {
 	public Object getObject(String key) {
 		return data.get(key.toUpperCase());
 	}
-
-	public String toString() {
-		return this.data.toString();
-	}
 	
 }

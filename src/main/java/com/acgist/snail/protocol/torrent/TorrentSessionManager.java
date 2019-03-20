@@ -5,8 +5,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
@@ -28,13 +28,13 @@ public class TorrentSessionManager {
 	private Map<String, TorrentSession> TORRENT_SESSION_MAP;
 	
 	private TorrentSessionManager() {
-		TORRENT_SESSION_MAP = new HashMap<>();
+		TORRENT_SESSION_MAP = new ConcurrentHashMap<>();
 	}
 	
 	public static final TorrentSessionManager getInstance() {
 		return INSTANCE;
 	}
-	
+
 	/**
 	 * 新建session
 	 * @param path torrent文件

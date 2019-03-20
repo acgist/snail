@@ -17,6 +17,7 @@ import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.system.context.SystemStatistics;
 import com.acgist.snail.system.exception.DownloadException;
+import com.acgist.snail.system.interfaces.IStatistical;
 import com.acgist.snail.utils.DateUtils;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.JsonUtils;
@@ -26,7 +27,7 @@ import com.acgist.snail.utils.StringUtils;
  * session - 任务<br>
  * 下载任务信息统计
  */
-public class TaskSession {
+public class TaskSession implements IStatistical {
 
 	private ThreadLocal<SimpleDateFormat> formater = new ThreadLocal<>() {
 		protected SimpleDateFormat initialValue() {
@@ -102,12 +103,16 @@ public class TaskSession {
 	 * 获取已下载大小
 	 */
 	public void loadDownloadSize() {
+		long size = 0L;
 		if(entity.getType() == Type.http) {
-			long size = FileUtils.fileSize(entity.getFile());
-			statistics.downloadSize(size);
+			size = FileUtils.fileSize(entity.getFile());
+		} else if(entity.getType() == Type.ftp) {
+			size = FileUtils.fileSize(entity.getFile());
 		}
+		statistics.downloadSize(size);
 	}
 
+	@Override
 	public void statistical(long buffer) {
 		statistics.download(buffer);
 	}
@@ -119,15 +124,7 @@ public class TaskSession {
 	public void downloadSize(long size) {
 		statistics.downloadSize(size);
 	}
-	
-	/**
-	 * 删除数据
-	 */
-	public void delete() {
-		TaskRepository repository = new TaskRepository();
-		repository.delete(entity.getId());
-	}
-	
+
 	/**
 	 * 等待状态
 	 */
