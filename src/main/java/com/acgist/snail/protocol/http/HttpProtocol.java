@@ -1,6 +1,6 @@
 package com.acgist.snail.protocol.http;
 
-import com.acgist.snail.net.http.HttpManager;
+import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
@@ -71,7 +71,7 @@ public class HttpProtocol extends Protocol {
 		int index = 0;
 		while(true) {
 			index++;
-			this.httpHeaderWrapper = HttpManager.httpHeader(url);
+			this.httpHeaderWrapper = HTTPClient.httpHeader(url);
 			if(this.httpHeaderWrapper.isNotEmpty()) {
 				break;
 			}

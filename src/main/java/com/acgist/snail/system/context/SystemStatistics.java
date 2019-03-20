@@ -1,8 +1,8 @@
 package com.acgist.snail.system.context;
 
-import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.pojo.session.StatisticsSession;
 import com.acgist.snail.pojo.session.TaskSession;
+import com.acgist.snail.system.manager.DownloaderManager;
 
 /**
  * 系统统计：累计下载、累计上传、速度采样

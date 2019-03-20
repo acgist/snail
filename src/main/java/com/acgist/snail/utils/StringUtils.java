@@ -80,7 +80,7 @@ public class StringUtils {
 			}
 			builder.append(hex);
 		}
-		return builder.toString();
+		return builder.toString().toLowerCase();
 	}
 
 	/**

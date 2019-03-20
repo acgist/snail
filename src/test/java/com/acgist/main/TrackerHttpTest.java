@@ -4,9 +4,9 @@ import org.junit.Test;
 
 import com.acgist.snail.net.tracker.impl.HttpTrackerClient;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.protocol.torrent.TorrentSessionManager;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.system.manager.TorrentSessionManager;
 
 public class TrackerHttpTest {
 

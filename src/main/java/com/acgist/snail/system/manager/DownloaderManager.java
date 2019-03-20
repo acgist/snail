@@ -1,4 +1,4 @@
-package com.acgist.snail.downloader;
+package com.acgist.snail.system.manager;
 
 import java.util.List;
 import java.util.Map;
@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.pojo.session.TaskSession;
-import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.exception.DownloadException;

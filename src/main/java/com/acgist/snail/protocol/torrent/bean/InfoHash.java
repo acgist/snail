@@ -40,7 +40,7 @@ public class InfoHash {
 	}
 	
 	/**
-	 * 磁力链接hash（40位）
+	 * 磁力链接hash（小写）（40位）
 	 */
 	public String hashHex() {
 		return StringUtils.hex(data);

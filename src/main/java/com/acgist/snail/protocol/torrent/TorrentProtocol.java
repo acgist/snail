@@ -12,6 +12,7 @@ import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.protocol.magnet.MagnetCoder;
 import com.acgist.snail.system.config.FileTypeConfig.FileType;
 import com.acgist.snail.system.exception.DownloadException;
+import com.acgist.snail.system.manager.TorrentSessionManager;
 import com.acgist.snail.utils.FileUtils;
 
 /**

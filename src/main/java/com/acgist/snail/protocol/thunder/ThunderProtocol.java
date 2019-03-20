@@ -4,8 +4,8 @@ import java.util.Base64;
 
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.protocol.Protocol;
-import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.system.exception.DownloadException;
+import com.acgist.snail.system.manager.ProtocolManager;
 
 /**
  * 迅雷协议
