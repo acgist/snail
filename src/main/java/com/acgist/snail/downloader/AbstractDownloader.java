@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.gui.menu.TrayMenu;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.session.TaskSession;
-import com.acgist.snail.utils.FileUtils;
+import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
@@ -81,10 +81,8 @@ public abstract class AbstractDownloader implements IDownloader {
 		ThreadUtils.timeout(5000, () -> { // 等待下载线程结束
 			return !this.running;
 		});
-		var entity = session.entity();
-		// 删除文件：注意不删除种子文件，下载时已经将种子文件拷贝到下载目录了
-		FileUtils.delete(entity.getFile());
-		this.session.delete();
+		TaskRepository repository = new TaskRepository();
+		repository.delete(session.entity());
 	}
 	
 	@Override

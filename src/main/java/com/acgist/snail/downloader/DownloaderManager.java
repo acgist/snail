@@ -103,7 +103,6 @@ public final class DownloaderManager {
 	 */
 	public void delete(TaskSession session) {
 		var entity = session.entity();
-		LOGGER.info("删除下载任务：{}", entity.getName());
 		downloader(session).delete();
 		TASK_MAP.remove(entity.getId());
 		refresh(); // 刷新下载任务
@@ -154,6 +153,16 @@ public final class DownloaderManager {
 				.forEach(downloader -> SystemThreadContext.submit(downloader));
 			}
 		}
+	}
+
+	/**
+	 * 新建下载任务<br>
+	 * 通过下载链接生成下载任务
+	 */
+	public static final void submit(String url) throws DownloadException {
+		ProtocolManager manager = ProtocolManager.getInstance();
+		var session = manager.build(url);
+		DownloaderManager.getInstance().submit(session);
 	}
 	
 	/**

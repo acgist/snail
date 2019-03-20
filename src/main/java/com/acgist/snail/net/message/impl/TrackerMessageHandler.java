@@ -50,7 +50,7 @@ public class TrackerMessageHandler extends AbstractUdpMessageHandler {
 	private void doAnnounce(ByteBuffer buffer, int size) {
 		System.out.println("Peer返回：");
 		int sessionId = buffer.getInt();
-		System.out.println("trackerId：" + sessionId);
+		System.out.println("sessionId：" + sessionId);
 		System.out.println("时间间隔：" + buffer.getInt());
 		System.out.println("未完成Peer数量：" + buffer.getInt()); // peer数量
 		System.out.println("已完成Peer数量：" + buffer.getInt()); // peer数量

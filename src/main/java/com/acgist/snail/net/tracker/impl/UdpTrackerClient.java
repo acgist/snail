@@ -55,22 +55,22 @@ public class UdpTrackerClient extends AbstractTrackerClient {
 				}
 			}
 		}
-		ByteBuffer buffer = buildAnnounce(session);
-		send(buffer);
+		send(buildAnnounce(session));
 	}
 
 	@Override
 	public void complete(TorrentSession session) {
-		// TODO:complete
+		// TODO
 	}
 	
 	@Override
 	public void stop(TorrentSession session) {
-		// TODO:stop
+		// TODO
 	}
 	
 	@Override
 	public void scrape(TorrentSession session) throws NetException {
+		// TODO
 	}
 
 	/**
@@ -87,8 +87,7 @@ public class UdpTrackerClient extends AbstractTrackerClient {
 	 * 开始获取connectionId
 	 */
 	private void buildConnectionId() throws NetException {
-		ByteBuffer buffer = buildConnect();
-		send(buffer);
+		send(buildConnect());
 	}
 	
 	/**

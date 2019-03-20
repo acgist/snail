@@ -69,6 +69,7 @@ public class HttpTrackerClient extends AbstractTrackerClient {
 	
 	@Override
 	public void scrape(TorrentSession session) throws NetException {
+		// TODO
 	}
 	
 	/**

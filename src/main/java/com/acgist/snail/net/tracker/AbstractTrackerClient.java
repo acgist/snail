@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.utils.ObjectUtils;
 import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.UniqueCodeUtils;
 
@@ -166,18 +167,19 @@ public abstract class AbstractTrackerClient {
 	}
 	
 	@Override
-	public boolean equals(Object obj) {
-		if(obj == null) {
-			return false;
-		}
-		if(obj == this) {
+	public int hashCode() {
+		return ObjectUtils.hashCode(this.id, this.announceUrl);
+	}
+	
+	@Override
+	public boolean equals(Object object) {
+		if(ObjectUtils.equals(this, object)) {
 			return true;
 		}
-		if(obj instanceof AbstractTrackerClient) {
-			AbstractTrackerClient client = (AbstractTrackerClient) obj;
-			return
-				client.id.equals(this.id) ||
-				client.announceUrl.equals(this.announceUrl);
+		if(ObjectUtils.equalsClazz(this, object)) {
+			AbstractTrackerClient client = (AbstractTrackerClient) object;
+			return ObjectUtils.equalsBuilder(this.id, this.announceUrl)
+				.equals(ObjectUtils.equalsBuilder(client.id, client.announceUrl));
 		}
 		return false;
 	}

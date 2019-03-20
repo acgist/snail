@@ -3,7 +3,7 @@ package com.acgist.snail.pojo.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-import com.acgist.snail.utils.JsonUtils;
+import com.acgist.snail.utils.ObjectUtils;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
@@ -85,29 +85,27 @@ public class BaseEntity implements Serializable {
 	}
 
 	/**
-	 * 重写equals方法
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (this == obj) {
-			return true;
-		}
-		if (!BaseEntity.class.isAssignableFrom(obj.getClass())) {
-			return false;
-		}
-		BaseEntity other = (BaseEntity) obj;
-		return getId().equals(other.getId());
-	}
-
-	/**
 	 * 重写hashCode方法
 	 */
 	@Override
 	public int hashCode() {
-		return getId().hashCode();
+		return ObjectUtils.hashCode(this.id);
+	}
+	
+	/**
+	 * 重写equals方法
+	 */
+	@Override
+	public boolean equals(Object object) {
+		if(ObjectUtils.equals(this, object)) {
+			return true;
+		}
+		if(ObjectUtils.equalsClazz(this, object)) {
+			BaseEntity entity = (BaseEntity) object;
+			return ObjectUtils.equalsBuilder(this.id)
+				.equals(ObjectUtils.equalsBuilder(entity.id));
+		}
+		return false;
 	}
 	
 	/**
@@ -115,7 +113,7 @@ public class BaseEntity implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return JsonUtils.toJson(this);
+		return ObjectUtils.toString(this);
 	}
 	
 }
