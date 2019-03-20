@@ -19,7 +19,7 @@ import com.acgist.snail.gui.setting.SettingWindow;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.session.TaskSession;
-import com.acgist.snail.protocol.torrent.TorrentSessionFactory;
+import com.acgist.snail.protocol.torrent.TorrentSessionManager;
 import com.acgist.snail.system.context.SystemStatistics;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.FileUtils;
@@ -313,7 +313,7 @@ public class MainController implements Initializable {
 			Dragboard dragboard = event.getDragboard();
 			if(dragboard.hasFiles()) {
 				File file = dragboard.getFiles().get(0);
-				if(TorrentSessionFactory.verify(file.getPath())) {
+				if(TorrentSessionManager.verify(file.getPath())) {
 					event.acceptTransferModes(TransferMode.COPY);
 				} else {
 					event.acceptTransferModes(TransferMode.NONE);

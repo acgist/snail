@@ -3,7 +3,7 @@ package com.acgist.main;
 import org.junit.Test;
 
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.protocol.torrent.TorrentSessionFactory;
+import com.acgist.snail.protocol.torrent.TorrentSessionManager;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
 
 public class TorrentDecoderTest {
@@ -16,7 +16,7 @@ public class TorrentDecoderTest {
 //		String path = "e:/snail/868f1199b18d05bf103aa8a8321f6428854d712e.torrent";
 //		String path = "e:/snail/11e38a5270e15c60534ca48977b7d77a3c4f6340.torrent";
 //		String path = "e:/snail/0B156834B59B0FF64EE0C9305D4D6EDE421196E6.torrent";
-		TorrentSession session = TorrentSessionFactory.getInstance().buildSession(path);
+		TorrentSession session = TorrentSessionManager.getInstance().buildSession(path);
 		Torrent torrent = session.torrent();
 		System.out.println(torrent.getComment());
 		System.out.println("种子HASH：" + session.infoHash().hashHex());

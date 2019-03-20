@@ -2,6 +2,7 @@ package com.acgist.snail.net.peer;
 
 import com.acgist.snail.net.AbstractTcpClient;
 import com.acgist.snail.net.message.impl.PeerMessageHandler;
+import com.acgist.snail.pojo.session.PeerSession;
 
 /**
  * Peer客户端<br>
@@ -11,6 +12,8 @@ import com.acgist.snail.net.message.impl.PeerMessageHandler;
  */
 public class PeerClient extends AbstractTcpClient<PeerMessageHandler> {
 
+	private PeerSession session;
+	
 	public PeerClient() {
 		super("", new PeerMessageHandler());
 	}

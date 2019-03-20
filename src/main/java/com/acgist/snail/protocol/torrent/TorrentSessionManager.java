@@ -18,20 +18,20 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * TorrentSession工厂
  */
-public class TorrentSessionFactory {
+public class TorrentSessionManager {
 
-	private static final TorrentSessionFactory INSTANCE = new TorrentSessionFactory();
+	private static final TorrentSessionManager INSTANCE = new TorrentSessionManager();
 	
 	/**
 	 * hashHex作为key
 	 */
 	private Map<String, TorrentSession> TORRENT_SESSION_MAP;
 	
-	private TorrentSessionFactory() {
+	private TorrentSessionManager() {
 		TORRENT_SESSION_MAP = new HashMap<>();
 	}
 	
-	public static final TorrentSessionFactory getInstance() {
+	public static final TorrentSessionManager getInstance() {
 		return INSTANCE;
 	}
 	
