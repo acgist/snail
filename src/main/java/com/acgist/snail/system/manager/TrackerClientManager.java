@@ -88,6 +88,7 @@ public class TrackerClientManager {
 			return null;
 		})
 		.filter(client -> client != null)
+		.filter(client -> client.available())
 		.collect(Collectors.toList());
 	}
 
