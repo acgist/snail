@@ -1,7 +1,7 @@
 package com.acgist.snail.pojo.session;
 
-import java.util.List;
-
+import com.acgist.snail.net.peer.PeerClientGroup;
+import com.acgist.snail.pojo.bean.PeerGroup;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
 import com.acgist.snail.protocol.torrent.bean.TorrentInfo;
@@ -29,7 +29,11 @@ public class TorrentSession {
 	/**
 	 * Peers
 	 */
-	private List<PeerSession> peers;
+	private PeerGroup peers;
+	/**
+	 * Peer客户端
+	 */
+	private PeerClientGroup peerClients;
 
 	private TorrentSession(Torrent torrent, InfoHash infoHash) throws DownloadException {
 		if(torrent == null || infoHash == null) {

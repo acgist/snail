@@ -80,7 +80,7 @@ public class TorrentProtocol extends Protocol {
 	 */
 	private void torrent() throws DownloadException {
 		final String torrentFile = this.url;
-		TorrentSession torrentSession = TorrentSessionFactory.getInstance().buildSession(torrentFile);
+		TorrentSession torrentSession = TorrentSessionManager.getInstance().buildSession(torrentFile);
 		this.url = MagnetCoder.buildMagnet(torrentSession.infoHash().hashHex()); // 生成磁力链接
 		this.torrent = torrentFile;
 		this.torrentSession = torrentSession;
