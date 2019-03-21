@@ -9,6 +9,7 @@ import com.acgist.snail.net.message.AbstractUdpMessageHandler;
 import com.acgist.snail.net.tracker.AbstractTrackerClient;
 import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.system.manager.TrackerClientManager;
+import com.acgist.snail.system.manager.TrackerSessionManager;
 import com.acgist.snail.utils.PeerUtils;
 
 /**
@@ -54,6 +55,7 @@ public class TrackerMessageHandler extends AbstractUdpMessageHandler {
 		message.setUndone(buffer.getInt());
 		message.setDone(buffer.getInt());
 		message.setPeers(PeerUtils.read(buffer, size));
+		TrackerSessionManager.getInstance().announce(message);
 	}
 
 }
