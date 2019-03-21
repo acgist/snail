@@ -5,6 +5,8 @@ import java.io.IOException;
 import com.acgist.snail.downloader.AbstractDownloader;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.protocol.magnet.MagnetProtocol;
+import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.manager.TorrentSessionManager;
 
 public class TorrentDownloader extends AbstractDownloader {
@@ -21,8 +23,7 @@ public class TorrentDownloader extends AbstractDownloader {
 
 	@Override
 	public void open() {
-		this.session.entity().getUrl();
-		torrentSession = TorrentSessionManager.getInstance().buildSession(path);
+		buildTracker();
 	}
 
 	@Override
@@ -31,6 +32,18 @@ public class TorrentDownloader extends AbstractDownloader {
 
 	@Override
 	public void release() {
+	}
+	
+	private void buildTracker() {
+		var entity = this.session.entity();
+		String path = entity.getTorrent();
+		try {
+			String hashHex = MagnetProtocol.buildHash(entity.getUrl());
+			torrentSession = TorrentSessionManager.getInstance().buildSession(hashHex, path);
+			torrentSession.loadTracker(this.session);
+		} catch (DownloadException e) {
+			fail("获取Tracker失败");
+		}
 	}
 	
 }

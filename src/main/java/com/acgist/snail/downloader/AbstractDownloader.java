@@ -21,6 +21,7 @@ public abstract class AbstractDownloader implements IDownloader {
 	
 	private static final long ONE_MINUTE = 1000L; // 一分钟
 	
+	protected boolean fail = false; // 失败状态
 	protected boolean running = false; // 下载中
 	protected boolean complete = false; // 下载完成
 	
@@ -63,6 +64,7 @@ public abstract class AbstractDownloader implements IDownloader {
 	
 	@Override
 	public void fail(String message) {
+		this.fail = true;
 		this.session.updateStatus(Status.fail);
 		StringBuilder noticeMessage = new StringBuilder();
 		noticeMessage.append(name())
@@ -140,6 +142,16 @@ public abstract class AbstractDownloader implements IDownloader {
 			return;
 		}
 		ThreadUtils.sleep(ONE_MINUTE - time);
+	}
+	
+	/**
+	 * 判断是否可以下载<br>
+	 * 一下情况不能继续下载：<br>
+	 * 	1.任务状态不是下载中
+	 * 	2.失败标记=true
+	 */
+	protected boolean ok() {
+		return !fail && !session.download();
 	}
 	
 }

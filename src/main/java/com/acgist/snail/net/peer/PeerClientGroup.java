@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.StatisticsSession;
 
@@ -13,6 +16,8 @@ import com.acgist.snail.pojo.session.StatisticsSession;
  */
 public class PeerClientGroup {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(PeerClientGroup.class);
+	
 	private List<PeerSession> peers = Collections.synchronizedList(new ArrayList<>());
 	private List<PeerLauncher> launchers;
 
@@ -33,6 +38,7 @@ public class PeerClientGroup {
 			if(exist) {
 				return;
 			}
+			LOGGER.debug("添加Peer，HOST：{}，PORT：{}", host, port);
 			peers.add(new PeerSession(parent, host, port));
 		}
 	}

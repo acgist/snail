@@ -47,7 +47,9 @@ public class TorrentSession {
 	/**
 	 * 开始加载tracker
 	 */
-	public void loadTracker() {
+	public void loadTracker(TaskSession session) throws DownloadException {
+		this.taskSession = session;
+		this.trackerGroup.loadTracker(this);
 	}
 
 	/**

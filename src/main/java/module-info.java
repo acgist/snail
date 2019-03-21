@@ -25,15 +25,15 @@ open module com.acgist.snail {
 	/**
 	 * jdeps 分析出来的依赖
 	 */
-//		java.sql
-//		java.xml
-//		java.base
-//		java.naming
-//		java.desktop
-//		java.logging
-//		java.scripting
-//		java.management
-//		jdk.unsupported
+//	java.sql
+//	java.xml
+//	java.base
+//	java.naming
+//	java.desktop
+//	java.logging
+//	java.scripting
+//	java.management
+//	jdk.unsupported
 	
 	/**
 	 * JavaFX
