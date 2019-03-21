@@ -153,6 +153,17 @@ public class FileUtils {
 	}
 	
 	/**
+	 * 文件移动
+	 */
+	public static final void move(String src, String target) {
+		final File srcFile = new File(src);
+		final File targetFile = new File(target);
+		if(!srcFile.renameTo(targetFile)) {
+			LOGGER.warn("文件移动失败，源文件：{}，目标文件：{}", src, target);
+		}
+	}
+	
+	/**
 	 * 文件拷贝
 	 */
 	public static final void copy(String src, String target) {

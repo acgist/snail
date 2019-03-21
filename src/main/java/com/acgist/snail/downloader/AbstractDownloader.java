@@ -128,8 +128,8 @@ public abstract class AbstractDownloader implements IDownloader {
 	/**
 	 * 下载统计
 	 */
-	protected void statistical(long size) {
-		this.session.statistical(size);
+	protected void statistics(long size) {
+		this.session.statistics(size);
 	}
 	
 	/**

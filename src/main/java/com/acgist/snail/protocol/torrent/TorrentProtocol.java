@@ -9,7 +9,7 @@ import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.Protocol;
-import com.acgist.snail.protocol.magnet.MagnetCoder;
+import com.acgist.snail.protocol.magnet.MagnetProtocol;
 import com.acgist.snail.system.config.FileTypeConfig.FileType;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.manager.TorrentSessionManager;
@@ -20,9 +20,18 @@ import com.acgist.snail.utils.FileUtils;
  */
 public class TorrentProtocol extends Protocol {
 
+	/**
+	 * 种子文件操作
+	 */
+	public enum TorrentFileOperation {
+		copy, // 拷贝
+		move; // 移动
+	}
+	
 	public static final String TORRENT_SUFFIX = ".torrent"; // 文件后缀
 	public static final String TORRENT_REGEX = ".+\\.torrent"; // 正则表达式
 	
+	private TorrentFileOperation operation = TorrentFileOperation.copy; // 种子文件操作类型
 	private String torrent; // 种子文件路径
 	private TorrentSession torrentSession; // 种子文件信息
 	
@@ -36,6 +45,13 @@ public class TorrentProtocol extends Protocol {
 		return INSTANCE;
 	}
 
+	/**
+	 * 设置种子文件操作类型
+	 */
+	public void operation(TorrentFileOperation operation) {
+		this.operation = operation;
+	}
+	
 	@Override
 	public String name() {
 		return "BT";
@@ -60,7 +76,7 @@ public class TorrentProtocol extends Protocol {
 		taskEntity.setFileType(FileType.torrent);
 		this.taskEntity = taskEntity;
 		buildTorrentFolder();
-		moveTorrentFile();
+		torrentFileOperation();
 		ok = selectTorrentFile();
 		return ok;
 	}
@@ -82,7 +98,7 @@ public class TorrentProtocol extends Protocol {
 	private void torrent() throws DownloadException {
 		final String torrentFile = this.url;
 		TorrentSession torrentSession = TorrentSessionManager.getInstance().buildSession(torrentFile);
-		this.url = MagnetCoder.buildMagnet(torrentSession.infoHash().hashHex()); // 生成磁力链接
+		this.url = MagnetProtocol.buildMagnet(torrentSession.infoHash().hashHex()); // 生成磁力链接
 		this.torrent = torrentFile;
 		this.torrentSession = torrentSession;
 	}
@@ -96,17 +112,21 @@ public class TorrentProtocol extends Protocol {
 			folder.mkdirs();
 		}
 	}
-	
+
 	/**
-	 * 移动下载种子文件到下载目录
+	 * 种子文件操作：拷贝、移动
 	 */
-	private void moveTorrentFile() {
+	private void torrentFileOperation() {
 		String fileName = FileUtils.fileNameFromUrl(this.torrent);
 		String newFilePath = FileUtils.file(this.taskEntity.getFile(), fileName);
-		FileUtils.copy(this.torrent, newFilePath);
+		if(operation == TorrentFileOperation.move) {
+			FileUtils.move(this.torrent, newFilePath);
+		} else {
+			FileUtils.copy(this.torrent, newFilePath);
+		}
 		this.taskEntity.setTorrent(newFilePath);
 	}
-	
+
 	/**
 	 * 选择torrent下载文件和设置文件大小
 	 * @return true-已选择下载文件；false-未选择下载文件

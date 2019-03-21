@@ -9,7 +9,7 @@ import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.initializer.Initializer;
 
 /**
- * 配置初始化
+ * 初始化：配置
  */
 public class ConfigInitializer extends Initializer {
 

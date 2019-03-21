@@ -29,8 +29,8 @@ public class PeerUtils {
 		}
 		final Map<String, Integer> data = new HashMap<>();
 		while (buffer.position() < size) {
-			int ip = buffer.getInt();
-			data.put(NetUtils.intToIp(ip), Short.valueOf(buffer.getShort()).intValue());
+			int ipNumber = buffer.getInt();
+			data.put(NetUtils.intToIp(ipNumber), Short.valueOf(buffer.getShort()).intValue());
 		}
 		return data;
 	}

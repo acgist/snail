@@ -60,7 +60,7 @@ public class FtpDownloader extends AbstractDownloader {
 				break;
 			}
 			output.write(bytes, 0, length);
-			statistical(length);
+			statistics(length);
 			end = System.currentTimeMillis();
 			yield(end - begin);
 		}

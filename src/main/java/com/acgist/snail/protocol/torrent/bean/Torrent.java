@@ -88,9 +88,9 @@ public class Torrent {
 				.map(value -> {
 					List<?> values = (List<?>) value;
 					if(values.size() == 2) {
-						String ip = BCodeUtils.getString(values.get(0));
+						String host = BCodeUtils.getString(values.get(0));
 						Long port = (Long) values.get(1);
-						return Map.entry(ip, port);
+						return Map.entry(host, port);
 					} else {
 						return null;
 					}

@@ -45,10 +45,10 @@ open module com.acgist.snail {
 	/**
 	 * 其他依赖
 	 */
-	requires transitive slf4j.api;
-	requires transitive logback.core;
-	requires transitive logback.classic;
+	requires transitive org.slf4j;
 	requires transitive com.h2database;
+	requires transitive ch.qos.logback.core;
+	requires transitive ch.qos.logback.classic;
 	requires transitive com.fasterxml.jackson.core;
 	requires transitive com.fasterxml.jackson.databind;
 	requires transitive com.fasterxml.jackson.annotation;

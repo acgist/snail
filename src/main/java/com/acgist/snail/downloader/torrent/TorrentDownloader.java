@@ -5,6 +5,7 @@ import java.io.IOException;
 import com.acgist.snail.downloader.AbstractDownloader;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.system.manager.TorrentSessionManager;
 
 public class TorrentDownloader extends AbstractDownloader {
 
@@ -20,6 +21,8 @@ public class TorrentDownloader extends AbstractDownloader {
 
 	@Override
 	public void open() {
+		this.session.entity().getUrl();
+		torrentSession = TorrentSessionManager.getInstance().buildSession(path);
 	}
 
 	@Override

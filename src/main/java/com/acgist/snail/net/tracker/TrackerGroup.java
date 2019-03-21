@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.acgist.snail.net.peer.PeerClientGroup;
+import com.acgist.snail.pojo.session.StatisticsSession;
+import com.acgist.snail.utils.CollectionUtils;
 
 /**
  * tracker分组<br>
@@ -29,7 +31,13 @@ public class TrackerGroup {
 	/**
 	 * 设置Peer
 	 */
-	public void peer(Map<String, Integer> peers) {
+	public void peer(StatisticsSession statistics, Map<String, Integer> peers) {
+		if(CollectionUtils.isEmpty(peers)) {
+			return;
+		}
+		peers.forEach((host, port) -> {
+			peerClientGroup.put(statistics, host, port);
+		});
 	}
 
 }
