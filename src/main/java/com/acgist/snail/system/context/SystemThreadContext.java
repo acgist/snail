@@ -55,12 +55,23 @@ public class SystemThreadContext {
 	}
 	
 	/**
-	 * 定时任务
+	 * 定时任务（重复）
 	 */
 	public static final void timer(long delay, long period, TimeUnit unit, Runnable runnable) {
-		TIMER_EXECUTOR.scheduleAtFixedRate(runnable, delay, period, unit);
+		if(delay >= 0) {
+			TIMER_EXECUTOR.scheduleAtFixedRate(runnable, delay, period, unit);
+		}
 	}
 
+	/**
+	 * 定时任务（不重复）
+	 */
+	public static final void timer(long delay, TimeUnit unit, Runnable runnable) {
+		if(delay >= 0) {
+			TIMER_EXECUTOR.schedule(runnable, delay, unit);
+		}
+	}
+	
 	/**
 	 * 获取系统线程池
 	 */

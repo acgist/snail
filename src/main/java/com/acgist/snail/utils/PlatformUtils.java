@@ -39,6 +39,7 @@ public class PlatformUtils {
 		Platform.exit();
 		TrayMenu.exit();
 		LOGGER.info("系统已关闭");
+		LoggerUtils.shutdown();
 	}
 	
 	/**

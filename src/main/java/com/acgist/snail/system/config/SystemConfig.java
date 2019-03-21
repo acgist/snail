@@ -24,17 +24,8 @@ public class SystemConfig {
 
 	static {
 		LOGGER.info("初始化数据库配置");
-		PropertiesUtils propertiesUtils = PropertiesUtils.getInstance("/config/config.system.properties");
-		INSTANCE.name = propertiesUtils.getString("acgist.system.name");
-		INSTANCE.nameEn = propertiesUtils.getString("acgist.system.name.en");
-		INSTANCE.version = propertiesUtils.getString("acgist.system.version");
-		INSTANCE.author = propertiesUtils.getString("acgist.system.author");
-		INSTANCE.source = propertiesUtils.getString("acgist.system.source");
-		INSTANCE.support = propertiesUtils.getString("acgist.system.support");
-		INSTANCE.serverPort = propertiesUtils.getInteger("acgist.server.port");
-		INSTANCE.serverHost = propertiesUtils.getString("acgist.server.host");
-		INSTANCE.peerPort = propertiesUtils.getInteger("acgist.peer.port");
-		INSTANCE.dhtPort = propertiesUtils.getInteger("acgist.dht.port");
+		INSTANCE.init();
+		INSTANCE.logger();
 	}
 	
 	private String name; // 名称
@@ -47,6 +38,36 @@ public class SystemConfig {
 	private String serverHost; // 服务地址
 	private Integer peerPort; // Peer端口
 	private Integer dhtPort; // DHT端口
+	private Integer trackerSize; // 单个任务Tracker数量
+	private Integer peerSize; // 单个任务Peer数量
+	private Integer peerOptimizeInterval; // 单个任务Peer优化周期（秒）
+
+	/**
+	 * 初始化
+	 */
+	private void init() {
+		PropertiesUtils propertiesUtils = PropertiesUtils.getInstance("/config/config.system.properties");
+		INSTANCE.name = propertiesUtils.getString("acgist.system.name");
+		INSTANCE.nameEn = propertiesUtils.getString("acgist.system.name.en");
+		INSTANCE.version = propertiesUtils.getString("acgist.system.version");
+		INSTANCE.author = propertiesUtils.getString("acgist.system.author");
+		INSTANCE.source = propertiesUtils.getString("acgist.system.source");
+		INSTANCE.support = propertiesUtils.getString("acgist.system.support");
+		INSTANCE.serverPort = propertiesUtils.getInteger("acgist.server.port");
+		INSTANCE.serverHost = propertiesUtils.getString("acgist.server.host");
+		INSTANCE.peerPort = propertiesUtils.getInteger("acgist.peer.port");
+		INSTANCE.dhtPort = propertiesUtils.getInteger("acgist.dht.port");
+		INSTANCE.trackerSize = propertiesUtils.getInteger("acgist.tracker.size");
+		INSTANCE.peerSize = propertiesUtils.getInteger("acgist.peer.size");
+		INSTANCE.peerOptimizeInterval = propertiesUtils.getInteger("acgist.peer.optimize.interval");
+	}
+
+	/**
+	 * 日志
+	 */
+	private void logger() {
+		LOGGER.info("");
+	}
 	
 	/**
 	 * 名称
@@ -116,6 +137,27 @@ public class SystemConfig {
 	 */
 	public static final Integer getDhtPort() {
 		return INSTANCE.dhtPort;
+	}
+
+	/**
+	 * 单个任务tracker数量
+	 */
+	public static final Integer getTrackerSize() {
+		return INSTANCE.trackerSize;
+	}
+
+	/**
+	 * 单个任务Peer数量
+	 */
+	public static final Integer getPeerSize() {
+		return INSTANCE.peerSize;
+	}
+
+	/**
+	 * 单个任务Peer优化周期
+	 */
+	public static final Integer getPeerOptimizeInterval() {
+		return INSTANCE.peerOptimizeInterval;
 	}
 
 }

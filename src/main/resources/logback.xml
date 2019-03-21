@@ -7,7 +7,7 @@
 
 	<contextName>${system.name}</contextName>
 
-	<!-- 按天生成日志 -->
+	<!-- 文件日志 -->
 	<appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<file>logs/${system.name}.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -20,13 +20,17 @@
 			<pattern>${system.pattern}</pattern>
 		</layout>
 		-->
+		<!-- 缓存大小：8KB -->
+		<bufferSize>8192</bufferSize>
+		<!-- 不立即刷新，缓存默认：8KB（系统关闭时请关闭日志框架，防止日志不能flush导致丢失） -->
+		<immediateFlush>false</immediateFlush>
 		<encoder>
 			<charset>${system.charset}</charset>
 			<pattern>${system.pattern}</pattern>
 		</encoder>  
 	</appender>
-	
-	<!-- 输出到控制台 -->
+
+	<!-- 控制台日志 -->
 	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
 		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
 			<level>INFO</level>
@@ -36,10 +40,10 @@
 			<pattern>${system.pattern}</pattern>
 		</encoder>  
 	</appender>
-	
+
 	<root level="INFO">
 		<appender-ref ref="file" />
 		<appender-ref ref="console" />
 	</root>
-	
+
 </configuration>

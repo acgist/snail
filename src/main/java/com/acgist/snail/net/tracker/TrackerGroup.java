@@ -2,6 +2,7 @@ package com.acgist.snail.net.tracker;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.acgist.snail.net.peer.PeerClientGroup;
 
@@ -25,6 +26,10 @@ public class TrackerGroup {
 		this.peerClientGroup = new PeerClientGroup();
 	}
 
-	
-	
+	/**
+	 * 设置Peer
+	 */
+	public void peer(Map<String, Integer> peers) {
+	}
+
 }

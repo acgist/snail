@@ -16,6 +16,9 @@ public class PeerClientGroup {
 	private List<PeerSession> peers = Collections.synchronizedList(new ArrayList<>());
 	private List<PeerLauncher> launchers;
 	
+//	private PeerSession next() {
+//	}
+	
 	/**
 	 * 新增Peer
 	 * @param parent torrent下载统计
