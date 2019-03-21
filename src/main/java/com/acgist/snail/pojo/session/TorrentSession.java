@@ -1,5 +1,7 @@
 package com.acgist.snail.pojo.session;
 
+import java.util.Map;
+
 import com.acgist.snail.net.tracker.TrackerGroup;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
@@ -60,6 +62,13 @@ public class TorrentSession {
 	
 	public TrackerGroup trackerGroup() {
 		return this.trackerGroup;
+	}
+
+	/**
+	 * 设置Peer
+	 */
+	public void peer(Map<String, Integer> peers) {
+		trackerGroup.peer(peers);
 	}
 
 }

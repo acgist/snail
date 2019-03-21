@@ -39,14 +39,16 @@ public class DownloadConfig {
 		LOGGER.info("初始化用户配置");
 		INSTANCE.initFromProperties();
 		INSTANCE.initFromDB();
-		LOGGER.info("下载目录：{}", INSTANCE.path);
-		LOGGER.info("下载任务数量：{}", INSTANCE.size);
-		LOGGER.info("下载速度（单个）（KB）：{}", INSTANCE.buffer);
-		LOGGER.info("磁盘缓存（单个）（MB）：{}", INSTANCE.memoryBuffer);
-		LOGGER.info("消息提示：{}", INSTANCE.notice);
-		LOGGER.info("启用P2P加速：{}", INSTANCE.p2p);
-		LOGGER.info("最后一次选择目录：{}", INSTANCE.lastPath);
+		INSTANCE.logger();
 	}
+	
+	private String path; // 下载目录
+	private Integer size; // 下载任务数量
+	private Integer buffer; // 下载速度（单个）（KB）
+	private Integer memoryBuffer; // 磁盘缓存（单个）（MB）
+	private Boolean notice; // 消息提示
+	private Boolean p2p; // 启用P2P加速
+	private String lastPath; // 最后一次选择目录
 	
 	/**
 	 * 配置文件加载
@@ -61,14 +63,6 @@ public class DownloadConfig {
 		INSTANCE.p2p = propertiesUtils.getBoolean(DOWNLOAD_P2P);
 		INSTANCE.lastPath = propertiesUtils.getString(DOWNLOAD_LAST_PATH);
 	}
-	
-	private String path; // 下载目录
-	private Integer size; // 下载任务数量
-	private Integer buffer; // 下载速度（单个）（KB）
-	private Integer memoryBuffer; // 磁盘缓存（单个）（MB）
-	private Boolean notice; // 消息提示
-	private Boolean p2p; // 启用P2P加速
-	private String lastPath; // 最后一次选择目录
 	
 	/**
 	 * 数据库初始化配置
@@ -90,6 +84,19 @@ public class DownloadConfig {
 		p2p = configBoolean(entity, p2p);
 		entity = configRepository.findOne(ConfigEntity.PROPERTY_NAME, DOWNLOAD_LAST_PATH);
 		lastPath = configString(entity, lastPath);
+	}
+	
+	/**
+	 * 日志
+	 */
+	private void logger() {
+		LOGGER.info("下载目录：{}", INSTANCE.path);
+		LOGGER.info("下载任务数量：{}", INSTANCE.size);
+		LOGGER.info("下载速度（单个）（KB）：{}", INSTANCE.buffer);
+		LOGGER.info("磁盘缓存（单个）（MB）：{}", INSTANCE.memoryBuffer);
+		LOGGER.info("消息提示：{}", INSTANCE.notice);
+		LOGGER.info("启用P2P加速：{}", INSTANCE.p2p);
+		LOGGER.info("最后一次选择目录：{}", INSTANCE.lastPath);
 	}
 	
 	/**

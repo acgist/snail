@@ -16,6 +16,7 @@ import com.acgist.snail.net.tracker.AbstractTrackerClient.Type;
 import com.acgist.snail.net.tracker.impl.HttpTrackerClient;
 import com.acgist.snail.net.tracker.impl.UdpTrackerClient;
 import com.acgist.snail.protocol.http.HttpProtocol;
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -28,7 +29,7 @@ public class TrackerClientManager {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerClientManager.class);
 	private static final TrackerClientManager INSTANCE = new TrackerClientManager();
 
-	private static final int MAX_CLIENT_SIZE = 40; // TODO：默认返回的数量
+	private static final int MAX_CLIENT_SIZE = SystemConfig.getTrackerSize();
 	
 	private TrackerClientManager() {
 		TRACKER_CLIENT_MAP = new ConcurrentHashMap<>();

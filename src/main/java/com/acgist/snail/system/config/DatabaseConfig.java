@@ -19,17 +19,8 @@ public class DatabaseConfig {
 
 	static {
 		LOGGER.info("初始化数据库配置");
-		PropertiesUtils propertiesUtils = PropertiesUtils.getInstance("/config/config.database.properties");
-		INSTANCE.url = propertiesUtils.getString("acgist.database.h2.url");
-		INSTANCE.driver = propertiesUtils.getString("acgist.database.h2.driver");
-		INSTANCE.user = propertiesUtils.getString("acgist.database.h2.user");
-		INSTANCE.password = propertiesUtils.getString("acgist.database.h2.password");
-		INSTANCE.tableSQL = propertiesUtils.getString("acgist.database.h2.table.sql");
-		LOGGER.info("数据库地址：{}", INSTANCE.url);
-		LOGGER.info("数据库驱动：{}", INSTANCE.driver);
-		LOGGER.info("数据库用户：{}", INSTANCE.user);
-		LOGGER.info("数据库密码：{}", INSTANCE.password);
-		LOGGER.info("数据库建表语句：{}", INSTANCE.tableSQL);
+		INSTANCE.init();
+		INSTANCE.logger();
 	}
 	
 	private String url;
@@ -38,6 +29,29 @@ public class DatabaseConfig {
 	private String password;
 	private String tableSQL;
 
+	/**
+	 * 初始化
+	 */
+	private void init() {
+		PropertiesUtils propertiesUtils = PropertiesUtils.getInstance("/config/config.database.properties");
+		INSTANCE.url = propertiesUtils.getString("acgist.database.h2.url");
+		INSTANCE.driver = propertiesUtils.getString("acgist.database.h2.driver");
+		INSTANCE.user = propertiesUtils.getString("acgist.database.h2.user");
+		INSTANCE.password = propertiesUtils.getString("acgist.database.h2.password");
+		INSTANCE.tableSQL = propertiesUtils.getString("acgist.database.h2.table.sql");
+	}
+	
+	/**
+	 * 日志
+	 */
+	private void logger() {
+		LOGGER.info("数据库地址：{}", INSTANCE.url);
+		LOGGER.info("数据库驱动：{}", INSTANCE.driver);
+		LOGGER.info("数据库用户：{}", INSTANCE.user);
+		LOGGER.info("数据库密码：{}", INSTANCE.password);
+		LOGGER.info("数据库建表语句：{}", INSTANCE.tableSQL);
+	}
+	
 	/**
 	 * 数据库地址
 	 */
