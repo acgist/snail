@@ -29,7 +29,7 @@ public abstract class AbstractTcpServer {
 	static {
 		AsynchronousChannelGroup group = null;
 		try {
-			group = AsynchronousChannelGroup.withThreadPool(SystemThreadContext.executor());
+			group = AsynchronousChannelGroup.withThreadPool(SystemThreadContext.systemExecutor());
 		} catch (IOException e) {
 			LOGGER.error("启动TCP Server Group异常");
 		}

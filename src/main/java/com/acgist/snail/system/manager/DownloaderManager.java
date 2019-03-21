@@ -82,7 +82,6 @@ public final class DownloaderManager {
 					throw new DownloadException("添加下载任务失败（下载任务为空）");
 				}
 				TASK_MAP.put(downloader.id(), downloader);
-				refresh(); // 刷新下载任务
 				return downloader;
 			}
 		} else {
@@ -95,7 +94,6 @@ public final class DownloaderManager {
 	 */
 	public void pause(TaskSession session) {
 		downloader(session).pause();
-		refresh(); // 刷新下载任务
 	}
 	
 	/**
@@ -105,7 +103,6 @@ public final class DownloaderManager {
 		var entity = session.entity();
 		downloader(session).delete();
 		TASK_MAP.remove(entity.getId());
-		refresh(); // 刷新下载任务
 	}
 
 	/**
@@ -163,6 +160,7 @@ public final class DownloaderManager {
 		ProtocolManager manager = ProtocolManager.getInstance();
 		var session = manager.build(url);
 		DownloaderManager.getInstance().submit(session);
+		DownloaderManager.getInstance().refresh(); // 刷新下载
 	}
 	
 	/**

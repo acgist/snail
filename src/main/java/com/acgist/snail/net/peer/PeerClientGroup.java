@@ -12,18 +12,27 @@ import com.acgist.snail.pojo.session.StatisticsSession;
 
 /**
  * PeerClient分组<br>
- * 每次剔除下载速度最低的一个PeerClient<br>
+ * 每次剔除权重的一个PeerClient<br>
  */
 public class PeerClientGroup {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerClientGroup.class);
 	
-	private List<PeerSession> peers = Collections.synchronizedList(new ArrayList<>());
-	private List<PeerLauncher> launchers;
+	private final List<PeerSession> peers;
+	private final List<PeerLauncher> launchers;
 
-//	private PeerSession next() {
-//	}
+	public PeerClientGroup() {
+		this.peers = Collections.synchronizedList(new ArrayList<>());
+		this.launchers = Collections.synchronizedList(new ArrayList<>());
+	}
 
+	/**
+	 * 优化下载Peer，权重最低的剔除，切换另外一个
+	 */
+	private void optimize() {
+		
+	}
+	
 	/**
 	 * 新增Peer
 	 * @param parent torrent下载统计

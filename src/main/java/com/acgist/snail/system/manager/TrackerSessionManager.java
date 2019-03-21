@@ -6,13 +6,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.net.tracker.AbstractTrackerClient;
 import com.acgist.snail.net.tracker.TrackerLauncher;
 import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.utils.CollectionUtils;
 
 /**
- * tracker session管理
+ * tracker session管理<br>
  */
 public class TrackerSessionManager {
 	
@@ -36,7 +36,10 @@ public class TrackerSessionManager {
 	/**
 	 * 新建
 	 */
-	public void build(TorrentSession torrentSession) {
+	public TrackerLauncher build(AbstractTrackerClient client, TorrentSession session) {
+		final TrackerLauncher launcher = new TrackerLauncher(client, session);
+		TRACKER_TORRENT_MAP.put(launcher.id(), launcher);
+		return launcher;
 	}
 
 	/**
@@ -51,7 +54,7 @@ public class TrackerSessionManager {
 		if(session != null) {
 			session.announce(message);
 		} else {
-			LOGGER.warn("不存在的TorrentSession，ID：{}", id);
+			LOGGER.warn("不存在的TorrentSession，AnnounceMessage：{}", message);
 		}
 	}
 	

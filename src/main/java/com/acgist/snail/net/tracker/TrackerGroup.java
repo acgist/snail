@@ -15,6 +15,7 @@ import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.system.manager.TrackerClientManager;
+import com.acgist.snail.system.manager.TrackerSessionManager;
 import com.acgist.snail.utils.CollectionUtils;
 
 /**
@@ -67,10 +68,10 @@ public class TrackerGroup {
 				});
 			}
 			this.trackers = clients.stream()
-			.map(client -> new TrackerLauncher(client, session))
+			.map(client -> TrackerSessionManager.getInstance().build(client, session))
 			.collect(Collectors.toList());
 			this.trackers.forEach(launcher -> {
-				SystemThreadContext.submit(launcher);
+				SystemThreadContext.submitTracker(launcher);
 			});
 		} catch (NetException e) {
 			throw new DownloadException(e);

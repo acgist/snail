@@ -130,8 +130,9 @@ public abstract class AbstractTrackerClient implements Comparable<AbstractTracke
 			if(failTimes.incrementAndGet() > MAX_FAIL_TIMES) {
 				available.set(false);
 				failMessage = e.getMessage();
+				LOGGER.info("停用Tracker Client，announceUrl：{}", this.announceUrl);
 			}
-			LOGGER.info("查找Peer异常", e);
+			LOGGER.error("查找Peer异常，当前失败次数：{}", failTimes.get(), e);
 		}
 	}
 	

@@ -98,7 +98,6 @@ public abstract class AbstractDownloader implements IDownloader {
 			this.session.updateStatus(Status.complete);
 			TrayMenu.getInstance().notice("下载完成", name() + "已经下载完成");
 		}
-		DownloaderManager.getInstance().refresh();
 	}
 	
 	@Override
@@ -111,6 +110,7 @@ public abstract class AbstractDownloader implements IDownloader {
 			var entity = this.session.entity();
 			if(session.await()) {
 				LOGGER.info("开始下载：{}", name());
+				fail = false; // 标记下载失败
 				running = true; // 标记开始下载
 				entity.setStatus(Status.download);
 				this.open();
