@@ -15,10 +15,10 @@ public class PeerClientGroup {
 
 	private List<PeerSession> peers = Collections.synchronizedList(new ArrayList<>());
 	private List<PeerLauncher> launchers;
-	
+
 //	private PeerSession next() {
 //	}
-	
+
 	/**
 	 * 新增Peer
 	 * @param parent torrent下载统计
@@ -26,7 +26,15 @@ public class PeerClientGroup {
 	 * @param port 端口
 	 */
 	public void put(StatisticsSession parent, String host, Integer port) {
+		synchronized (peers) {
+			final boolean exist = peers.stream().anyMatch(peer -> {
+				return peer.exist(host, port);
+			});
+			if(exist) {
+				return;
+			}
+			peers.add(new PeerSession(parent, host, port));
+		}
 	}
-	
-	
+
 }

@@ -23,6 +23,10 @@ public class TorrentSession {
 	 */
 	private InfoHash infoHash;
 	/**
+	 * 任务
+	 */
+	private TaskSession taskSession;
+	/**
 	 * Tracker组
 	 */
 	private TrackerGroup trackerGroup;
@@ -38,6 +42,12 @@ public class TorrentSession {
 
 	public static final TorrentSession newInstance(Torrent torrent, InfoHash infoHash) throws DownloadException {
 		return new TorrentSession(torrent, infoHash);
+	}
+	
+	/**
+	 * 开始加载tracker
+	 */
+	public void loadTracker() {
 	}
 
 	/**
@@ -68,7 +78,7 @@ public class TorrentSession {
 	 * 设置Peer
 	 */
 	public void peer(Map<String, Integer> peers) {
-		trackerGroup.peer(peers);
+		trackerGroup.peer(taskSession.statistics(), peers);
 	}
 
 }

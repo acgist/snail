@@ -17,7 +17,7 @@ import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.system.context.SystemStatistics;
 import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.system.interfaces.IStatistical;
+import com.acgist.snail.system.interfaces.IStatistics;
 import com.acgist.snail.utils.DateUtils;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.JsonUtils;
@@ -27,7 +27,7 @@ import com.acgist.snail.utils.StringUtils;
  * session - 任务<br>
  * 下载任务信息统计
  */
-public class TaskSession implements IStatistical {
+public class TaskSession implements IStatistics {
 
 	private ThreadLocal<SimpleDateFormat> formater = new ThreadLocal<>() {
 		protected SimpleDateFormat initialValue() {
@@ -112,8 +112,12 @@ public class TaskSession implements IStatistical {
 		statistics.downloadSize(size);
 	}
 
+	public StatisticsSession statistics() {
+		return statistics;
+	}
+	
 	@Override
-	public void statistical(long buffer) {
+	public void statistics(long buffer) {
 		statistics.download(buffer);
 	}
 	
@@ -124,7 +128,7 @@ public class TaskSession implements IStatistical {
 	public void downloadSize(long size) {
 		statistics.downloadSize(size);
 	}
-
+	
 	/**
 	 * 等待状态
 	 */

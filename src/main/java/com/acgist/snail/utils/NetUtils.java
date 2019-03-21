@@ -1,5 +1,8 @@
 package com.acgist.snail.utils;
 
+/**
+ * utils - net
+ */
 public class NetUtils {
 
 	/**
@@ -18,8 +21,8 @@ public class NetUtils {
 	/**
 	 * int转IP
 	 */
-	public static final String intToIp(int ip) {
-		return ((ip >> 24) & 0xFF) + "." + ((ip >> 16) & 0xFF) + "." + ((ip >> 8) & 0xFF) + "." + (ip & 0xFF);
+	public static final String intToIp(int ipNumber) {
+		return ((ipNumber >> 24) & 0xFF) + "." + ((ipNumber >> 16) & 0xFF) + "." + ((ipNumber >> 8) & 0xFF) + "." + (ipNumber & 0xFF);
 	}
 
 }

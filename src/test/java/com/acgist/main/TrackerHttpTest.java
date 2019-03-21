@@ -16,7 +16,7 @@ public class TrackerHttpTest {
 		TorrentSession session = TorrentSessionManager.getInstance().buildSession(path);
 //		HttpTrackerClient client = HttpTrackerClient.newInstance("http://anidex.moe:6969/announce");
 		HttpTrackerClient client = HttpTrackerClient.newInstance("http://t.nyaatracker.com/announce");
-		client.announce(session);
+		client.announce(1000, session);
 	}
 	
 }

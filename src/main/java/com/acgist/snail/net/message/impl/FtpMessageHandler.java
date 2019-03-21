@@ -86,11 +86,11 @@ public class FtpMessageHandler extends AbstractTcpMessageHandler {
 				// 创建远程Socket
 				String data = message.substring(opening + 1, closing);
 				StringTokenizer tokenizer = new StringTokenizer(data, ",");
-				String ip = tokenizer.nextToken() + "." + tokenizer.nextToken() + "." + tokenizer.nextToken() + "." + tokenizer.nextToken();
+				String host = tokenizer.nextToken() + "." + tokenizer.nextToken() + "." + tokenizer.nextToken() + "." + tokenizer.nextToken();
 //				int port = Integer.parseInt(tokenizer.nextToken()) * 256 + Integer.parseInt(tokenizer.nextToken());
 				int port = (Integer.parseInt(tokenizer.nextToken()) << 8) + Integer.parseInt(tokenizer.nextToken());
 				try {
-					socket = new Socket(ip, port);
+					socket = new Socket(host, port);
 				} catch (IOException e) {
 					LOGGER.error("打开远程Socket失败", e);
 				}

@@ -38,6 +38,17 @@ public class TorrentSessionManager {
 	public static final TorrentSessionManager getInstance() {
 		return INSTANCE;
 	}
+	
+	/**
+	 * 新建session，如果已经存在hashHex，直接返回反之使用path加载
+	 */
+	public TorrentSession buildSession(String hashHex, String path) throws DownloadException {
+		var session = TORRENT_SESSION_MAP.get(hashHex);
+		if(session != null) {
+			return session;
+		}
+		return buildSession(path);
+	}
 
 	/**
 	 * 新建session

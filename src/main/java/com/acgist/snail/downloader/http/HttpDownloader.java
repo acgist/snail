@@ -61,7 +61,7 @@ public class HttpDownloader extends AbstractDownloader {
 				break;
 			}
 			output.write(bytes, 0, length);
-			statistical(length);
+			statistics(length);
 			end = System.currentTimeMillis();
 			yield(end - begin);
 		}
