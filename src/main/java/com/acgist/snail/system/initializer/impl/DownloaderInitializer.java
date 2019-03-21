@@ -44,6 +44,7 @@ public class DownloaderInitializer extends Initializer {
 					repository.delete(entity);
 				}
 			});
+			DownloaderManager.getInstance().refresh(); // 刷新下载
 			TaskDisplay.getInstance().refreshTaskTable();
 		}
 	}

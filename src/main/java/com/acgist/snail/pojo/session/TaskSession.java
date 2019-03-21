@@ -18,6 +18,7 @@ import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.system.context.SystemStatistics;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.interfaces.IStatistics;
+import com.acgist.snail.system.manager.DownloaderManager;
 import com.acgist.snail.utils.DateUtils;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.JsonUtils;
@@ -96,6 +97,7 @@ public class TaskSession implements IStatistics {
 		}
 		this.entity.setStatus(status);
 		repository.update(this.entity);
+		DownloaderManager.getInstance().refresh(); // 刷新下载
 		TaskDisplay.getInstance().refreshTaskData(); // 刷新状态
 	}
 	

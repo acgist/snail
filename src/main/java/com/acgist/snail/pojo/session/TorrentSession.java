@@ -72,6 +72,10 @@ public class TorrentSession {
 		return this.infoHash;
 	}
 	
+	public TaskSession taskSession() {
+		return this.taskSession;
+	}
+	
 	public TrackerGroup trackerGroup() {
 		return this.trackerGroup;
 	}

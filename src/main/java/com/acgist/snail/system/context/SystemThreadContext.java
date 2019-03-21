@@ -18,13 +18,18 @@ public class SystemThreadContext {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SystemThreadContext.class);
 	
-	private static final String THREAD_POOL_NAME = "Snail Thread";
-	private static final String TIMER_THREAD_POOL_NAME = "Snail Timer Thread";
+	private static final String SYSTEM_THREAD = "Snail Thread";
+	private static final String TRACKER_THREAD = "Snail Tracker Thread";
+	private static final String TIMER_THREAD = "Snail Timer Thread";
 	
 	/**
 	 * 线程池
 	 */
 	private static final ExecutorService EXECUTOR;
+	/**
+	 * Tracker Client线程池
+	 */
+	private static final ExecutorService TRACKER_EXECUTOR;
 	/**
 	 * 定时线程池
 	 */
@@ -32,18 +37,9 @@ public class SystemThreadContext {
 	
 	static {
 		LOGGER.info("启动系统线程池");
-		EXECUTOR = new ThreadPoolExecutor(
-			4, // 初始线程数量
-			100, // 最大线程数量
-			60L, // 空闲时间
-			TimeUnit.SECONDS, // 空闲时间单位
-			new SynchronousQueue<Runnable>(), // 等待线程
-			SystemThreadContext.newThreadFactory(THREAD_POOL_NAME) // 线程工厂
-		);
-		TIMER_EXECUTOR = Executors.newScheduledThreadPool(
-			2,
-			SystemThreadContext.newThreadFactory(TIMER_THREAD_POOL_NAME)
-		);
+		EXECUTOR = newExecutor(4, 100, 60L, SYSTEM_THREAD);
+		TRACKER_EXECUTOR = newExecutor(0, 10, 60L, TRACKER_THREAD);
+		TIMER_EXECUTOR = newScheduledExecutor(2, TIMER_THREAD);
 	}
 	
 	/**
@@ -52,6 +48,13 @@ public class SystemThreadContext {
 	 */
 	public static final void submit(Runnable runnable) {
 		EXECUTOR.submit(runnable);
+	}
+	
+	/**
+	 * 提交Tracker Client任务
+	 */
+	public static final void submitTracker(Runnable runnable) {
+		TRACKER_EXECUTOR.submit(runnable);
 	}
 	
 	/**
@@ -75,8 +78,32 @@ public class SystemThreadContext {
 	/**
 	 * 获取系统线程池
 	 */
-	public static final ExecutorService executor() {
+	public static final ExecutorService systemExecutor() {
 		return EXECUTOR;
+	}
+	
+	/**
+	 * 新建线程池
+	 */
+	public static final ExecutorService newExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, String name) {
+		return new ThreadPoolExecutor(
+			corePoolSize, // 初始线程数量
+			maximumPoolSize, // 最大线程数量
+			keepAliveTime, // 空闲时间
+			TimeUnit.SECONDS, // 空闲时间单位
+			new SynchronousQueue<Runnable>(), // 等待线程
+			SystemThreadContext.newThreadFactory(name) // 线程工厂
+		);
+	}
+	
+	/**
+	 * 新建定时线程池
+	 */
+	public static final ScheduledExecutorService newScheduledExecutor(int corePoolSize, String name) {
+		return Executors.newScheduledThreadPool(
+			corePoolSize,
+			SystemThreadContext.newThreadFactory(name)
+		);
 	}
 	
 	/**
@@ -101,6 +128,7 @@ public class SystemThreadContext {
 	public static final void shutdown() {
 		LOGGER.info("关闭系统线程池");
 		shutdown(EXECUTOR);
+		shutdown(TRACKER_EXECUTOR);
 		shutdown(TIMER_EXECUTOR);
 	}
 	

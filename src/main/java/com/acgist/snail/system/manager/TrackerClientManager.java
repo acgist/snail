@@ -142,7 +142,7 @@ public class TrackerClientManager {
 	 * client注册
 	 */
 	private void register(AbstractTrackerClient client) {
-		LOGGER.info("注册tracker client，id：{}，announceUrl：{}", client.id(), client.announceUrl());
+		LOGGER.debug("注册tracker client，id：{}，announceUrl：{}", client.id(), client.announceUrl());
 		TRACKER_CLIENT_MAP.put(client.id(), client);
 	}
 

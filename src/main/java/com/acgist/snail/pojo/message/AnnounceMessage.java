@@ -2,6 +2,8 @@ package com.acgist.snail.pojo.message;
 
 import java.util.Map;
 
+import com.acgist.snail.utils.ObjectUtils;
+
 /**
  * tracker announce返回信息
  */
@@ -51,6 +53,11 @@ public class AnnounceMessage {
 
 	public void setPeers(Map<String, Integer> peers) {
 		this.peers = peers;
+	}
+	
+	@Override
+	public String toString() {
+		return ObjectUtils.toString(this);
 	}
 
 }
