@@ -132,9 +132,9 @@ public class TorrentProtocol extends Protocol {
 	 * @return true-已选择下载文件；false-未选择下载文件
 	 */
 	private boolean selectTorrentFile() throws DownloadException {
-		TaskSession session = TaskSession.newInstance(this.taskEntity);
-		TorrentWindow.getInstance().show(session);
-		if(session.downloadTorrentFiles().isEmpty()) { // 没有选择下载文件
+		TaskSession taskSession = TaskSession.newInstance(this.taskEntity);
+		TorrentWindow.getInstance().show(taskSession);
+		if(taskSession.downloadTorrentFiles().isEmpty()) { // 没有选择下载文件
 			FileUtils.delete(this.taskEntity.getFile());
 			return false;
 		}

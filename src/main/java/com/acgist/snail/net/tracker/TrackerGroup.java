@@ -3,13 +3,13 @@ package com.acgist.snail.net.tracker;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.peer.PeerClientGroup;
 import com.acgist.snail.pojo.session.StatisticsSession;
+import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.exception.DownloadException;
@@ -26,18 +26,23 @@ public class TrackerGroup {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerGroup.class);
 	
-	/**
-	 * tracker信息
-	 */
-	private List<TrackerLauncher> trackers;
+	private final TaskSession taskSession;
+	private final TorrentSession torrentSession;
 	/**
 	 * Peer组
 	 */
-	private PeerClientGroup peerClientGroup;
+	private final PeerClientGroup peerClientGroup;
+	/**
+	 * tracker信息
+	 */
+	private final List<TrackerLauncher> trackerLaunchers;
 	
-	public TrackerGroup() {
-		this.trackers = new ArrayList<>();
-		this.peerClientGroup = new PeerClientGroup();
+	public TrackerGroup(TorrentSession torrentSession) throws DownloadException {
+		this.taskSession = torrentSession.taskSession();
+		this.torrentSession = torrentSession;
+		this.trackerLaunchers = new ArrayList<>();
+		this.peerClientGroup = new PeerClientGroup(torrentSession);
+		loadTracker();
 	}
 
 	/**
@@ -55,22 +60,20 @@ public class TrackerGroup {
 	/**
 	 * 开始加载tracker
 	 */
-	public void loadTracker(TorrentSession session) throws DownloadException {
-		var torrent = session.torrent();
+	public void loadTracker() throws DownloadException {
+		var torrent = torrentSession.torrent();
 		if(torrent == null) {
 			throw new DownloadException("无效种子文件");
 		}
 		try {
 			List<AbstractTrackerClient> clients = TrackerClientManager.getInstance().clients(torrent.getAnnounce(), torrent.getAnnounceList());
-			if(LOGGER.isDebugEnabled()) {
-				clients.forEach(client -> {
-					LOGGER.debug("添加Tracker Client，ID：{}，announce：{}", client.id, client.announceUrl);
-				});
-			}
-			this.trackers = clients.stream()
-			.map(client -> TrackerSessionManager.getInstance().build(client, session))
-			.collect(Collectors.toList());
-			this.trackers.forEach(launcher -> {
+			clients.stream()
+			.map(client -> {
+				LOGGER.debug("添加Tracker Client，ID：{}，announce：{}", client.id, client.announceUrl);
+				return TrackerSessionManager.getInstance().build(client, torrentSession);
+			})
+			.forEach(launcher -> this.trackerLaunchers.add(launcher));
+			this.trackerLaunchers.forEach(launcher -> {
 				SystemThreadContext.submitTracker(launcher);
 			});
 		} catch (NetException e) {

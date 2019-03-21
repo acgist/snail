@@ -13,17 +13,17 @@ public class TorrentDownloader extends AbstractDownloader {
 
 	private TorrentSession torrentSession;
 	
-	private TorrentDownloader(TaskSession session) {
-		super(session);
+	private TorrentDownloader(TaskSession taskSession) {
+		super(taskSession);
 	}
 
-	public static final TorrentDownloader newInstance(TaskSession session) {
-		return new TorrentDownloader(session);
+	public static final TorrentDownloader newInstance(TaskSession taskSession) {
+		return new TorrentDownloader(taskSession);
 	}
 
 	@Override
 	public void open() {
-		buildTracker();
+		build();
 	}
 
 	@Override
@@ -34,13 +34,13 @@ public class TorrentDownloader extends AbstractDownloader {
 	public void release() {
 	}
 	
-	private void buildTracker() {
-		var entity = this.session.entity();
+	private void build() {
+		var entity = this.taskSession.entity();
 		String path = entity.getTorrent();
 		try {
 			String hashHex = MagnetProtocol.buildHash(entity.getUrl());
 			torrentSession = TorrentSessionManager.getInstance().buildSession(hashHex, path);
-			torrentSession.loadTracker(this.session);
+			torrentSession.build(this.taskSession);
 		} catch (DownloadException e) {
 			fail("获取Tracker失败");
 		}

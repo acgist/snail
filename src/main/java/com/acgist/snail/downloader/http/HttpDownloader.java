@@ -30,12 +30,12 @@ public class HttpDownloader extends AbstractDownloader {
 	private BufferedOutputStream output; // 输出流
 	private HttpHeaderWrapper responseHeader; // 响应头
 	
-	private HttpDownloader(TaskSession session) {
-		super(session);
+	private HttpDownloader(TaskSession taskSession) {
+		super(taskSession);
 	}
 
-	public static final HttpDownloader newInstance(TaskSession session) {
-		return new HttpDownloader(session);
+	public static final HttpDownloader newInstance(TaskSession taskSession) {
+		return new HttpDownloader(taskSession);
 	}
 	
 	@Override
@@ -86,8 +86,8 @@ public class HttpDownloader extends AbstractDownloader {
 	 * 任务是否完成：长度-1或者下载数据等于任务长度
 	 */
 	private boolean isComplete(int length) {
-		long size = session.entity().getSize();
-		long downloadSize = session.downloadSize();
+		long size = taskSession.entity().getSize();
+		long downloadSize = taskSession.downloadSize();
 		return length == -1 || size == downloadSize;
 	}
 	
@@ -101,7 +101,7 @@ public class HttpDownloader extends AbstractDownloader {
 	 * Range: bytes=500-600,601-999 同时指定几个范围<br>
 	 */
 	private void buildInput() {
-		var entity = session.entity();
+		var entity = taskSession.entity();
 		long size = FileUtils.fileSize(entity.getFile()); // 已下载大小
 		HttpClient client = HTTPClient.newClient();
 		var request = HTTPClient.newRequest(entity.getUrl())
@@ -117,12 +117,12 @@ public class HttpDownloader extends AbstractDownloader {
 				if(size != begin) {
 					LOGGER.warn("已下载大小和开始下载位置不相等，已下载大小：{}，开始下载位置：{}，响应头：{}", size, begin, responseHeader.headers());
 				}
-				session.downloadSize(size);
+				taskSession.downloadSize(size);
 			} else {
-				session.downloadSize(0L);
+				taskSession.downloadSize(0L);
 			}
 		} else if(HTTPClient.rangeNotSatisfiable(response)) { // 无法满足的请求范围
-			if(session.downloadSize() == entity.getSize()) {
+			if(taskSession.downloadSize() == entity.getSize()) {
 				complete = true;
 			} else {
 				fail("无法满足文件下载范围");
@@ -133,9 +133,9 @@ public class HttpDownloader extends AbstractDownloader {
 	}
 
 	private void buildOutput() {
-		var entity = session.entity();
+		var entity = taskSession.entity();
 		try {
-			long size = session.downloadSize();
+			long size = taskSession.downloadSize();
 			if(size == 0L) {
 				output = new BufferedOutputStream(new FileOutputStream(entity.getFile()), DownloadConfig.getMemoryBufferByte());
 			} else { // 支持续传

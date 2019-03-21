@@ -29,12 +29,12 @@ public class FtpDownloader extends AbstractDownloader {
 	private BufferedInputStream input; // 输入流
 	private BufferedOutputStream output; // 输出流
 	
-	private FtpDownloader(TaskSession session) {
-		super(session);
+	private FtpDownloader(TaskSession taskSession) {
+		super(taskSession);
 	}
 
-	public static final FtpDownloader newInstance(TaskSession session) {
-		return new FtpDownloader(session);
+	public static final FtpDownloader newInstance(TaskSession taskSession) {
+		return new FtpDownloader(taskSession);
 	}
 
 	@Override
@@ -81,13 +81,13 @@ public class FtpDownloader extends AbstractDownloader {
 	 * 任务是否完成：长度-1或者下载数据等于任务长度
 	 */
 	private boolean isComplete(int length) {
-		long size = session.entity().getSize();
-		long downloadSize = session.downloadSize();
+		long size = taskSession.entity().getSize();
+		long downloadSize = taskSession.downloadSize();
 		return length == -1 || size == downloadSize;
 	}
 	
 	private void buildInput() {
-		var entity = session.entity();
+		var entity = taskSession.entity();
 		long size = FileUtils.fileSize(entity.getFile()); // 已下载大小
 		client = FtpClientFactory.buildClient(entity.getUrl());
 		boolean ok = client.connect();
@@ -98,9 +98,9 @@ public class FtpDownloader extends AbstractDownloader {
 			} else {
 				this.input = new BufferedInputStream(inputStream);
 				if(client.append()) {
-					session.downloadSize(size);
+					taskSession.downloadSize(size);
 				} else {
-					session.downloadSize(0L);
+					taskSession.downloadSize(0L);
 				}
 			}
 		} else {
@@ -109,9 +109,9 @@ public class FtpDownloader extends AbstractDownloader {
 	}
 	
 	private void buildOutput() {
-		var entity = session.entity();
+		var entity = taskSession.entity();
 		try {
-			long size = session.downloadSize();
+			long size = taskSession.downloadSize();
 			if(size == 0L) {
 				output = new BufferedOutputStream(new FileOutputStream(entity.getFile()), DownloadConfig.getMemoryBufferByte());
 			} else { // 支持续传

@@ -42,7 +42,7 @@ public class TorrentController implements Initializable {
 	@FXML
 	private VBox downloadBox;
 	
-	private TaskSession session;
+	private TaskSession taskSession;
 	private FileSelecter selecter;
 	
 	@Override
@@ -59,9 +59,9 @@ public class TorrentController implements Initializable {
 	/**
 	 * 显示信息
 	 */
-	public void tree(TaskSession session) {
-		var entity = session.entity();
-		this.session = session;
+	public void tree(TaskSession taskSession) {
+		var entity = taskSession.entity();
+		this.taskSession = taskSession;
 		TreeView<HBox> tree = buildTree();
 		Torrent torrent = null;
 		try {
@@ -77,7 +77,7 @@ public class TorrentController implements Initializable {
 		.filter(file -> !file.path().startsWith(HIDE_FILE_PREFIX))
 		.sorted((a, b) -> a.path().compareTo(b.path()))
 		.forEach(file -> selecter.build(file.path(), file.getLength()));
-		selecter.select(session.downloadTorrentFiles());
+		selecter.select(taskSession.downloadTorrentFiles());
 	}
 	
 	/**
@@ -98,7 +98,7 @@ public class TorrentController implements Initializable {
 	 * 下载按钮事件
 	 */
 	private EventHandler<ActionEvent> downloadEvent = (event) -> {
-		TaskEntity entity = session.entity();
+		TaskEntity entity = taskSession.entity();
 		var list = selecter.description();
 		if(list.isEmpty()) {
 			AlertWindow.warn("下载提示", "请选择下载文件");
@@ -109,7 +109,7 @@ public class TorrentController implements Initializable {
 		if(entity.getId() != null) { // 已经添加数据库
 			TaskRepository repository = new TaskRepository();
 			repository.update(entity);
-			DownloaderManager.getInstance().refresh(session);
+			DownloaderManager.getInstance().refresh(taskSession);
 		}
 		TaskDisplay.getInstance().refreshTaskData();
 		TorrentWindow.getInstance().hide();

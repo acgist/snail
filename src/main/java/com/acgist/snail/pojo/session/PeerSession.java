@@ -58,9 +58,9 @@ public class PeerSession implements IStatistics {
 			return true;
 		}
 		if(ObjectUtils.equalsClazz(this, object)) {
-			PeerSession session = (PeerSession) object;
+			PeerSession peerSession = (PeerSession) object;
 			return ObjectUtils.equalsBuilder(this.host, this.port)
-				.equals(ObjectUtils.equalsBuilder(session.host, session.port));
+				.equals(ObjectUtils.equalsBuilder(peerSession.host, peerSession.port));
 		}
 		return false;
 	}

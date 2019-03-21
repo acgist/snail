@@ -17,11 +17,11 @@ public class TorrentSession {
 	/**
 	 * 种子
 	 */
-	private Torrent torrent;
+	private final Torrent torrent;
 	/**
 	 * 种子信息
 	 */
-	private InfoHash infoHash;
+	private final InfoHash infoHash;
 	/**
 	 * 任务
 	 */
@@ -37,7 +37,6 @@ public class TorrentSession {
 		}
 		this.torrent = torrent;
 		this.infoHash = infoHash;
-		this.trackerGroup = new TrackerGroup();
 	}
 
 	public static final TorrentSession newInstance(Torrent torrent, InfoHash infoHash) throws DownloadException {
@@ -45,11 +44,11 @@ public class TorrentSession {
 	}
 	
 	/**
-	 * 开始加载tracker
+	 * 开始下载任务：获取tracker、peer
 	 */
-	public void loadTracker(TaskSession session) throws DownloadException {
-		this.taskSession = session;
-		this.trackerGroup.loadTracker(this);
+	public void build(TaskSession taskSession) throws DownloadException {
+		this.taskSession = taskSession;
+		this.trackerGroup = new TrackerGroup(this);
 	}
 
 	/**

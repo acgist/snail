@@ -10,12 +10,12 @@ import com.acgist.snail.pojo.session.TaskSession;
  */
 public class Ed2kDownloader extends AbstractDownloader {
 
-	private Ed2kDownloader(TaskSession session) {
-		super(session);
+	private Ed2kDownloader(TaskSession taskSession) {
+		super(taskSession);
 	}
 
-	public static final Ed2kDownloader newInstance(TaskSession session) {
-		return new Ed2kDownloader(session);
+	public static final Ed2kDownloader newInstance(TaskSession taskSession) {
+		return new Ed2kDownloader(taskSession);
 	}
 
 	@Override
