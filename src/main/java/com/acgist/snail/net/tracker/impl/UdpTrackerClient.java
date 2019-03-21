@@ -43,7 +43,7 @@ public class UdpTrackerClient extends AbstractTrackerClient {
 	}
 	
 	@Override
-	public void announce(Integer sid, TorrentSession session) throws NetException {
+	public void announce(Integer sid, TorrentSession torrentSession) throws NetException {
 		if(connectionId == null) { // 重试一次
 			synchronized (this) {
 				if(connectionId == null) {
@@ -55,21 +55,21 @@ public class UdpTrackerClient extends AbstractTrackerClient {
 				}
 			}
 		}
-		send(buildAnnounce(sid, session));
+		send(buildAnnounce(sid, torrentSession));
 	}
 
 	@Override
-	public void complete(Integer sid, TorrentSession session) {
+	public void complete(Integer sid, TorrentSession torrentSession) {
 		// TODO
 	}
 	
 	@Override
-	public void stop(Integer sid, TorrentSession session) {
+	public void stop(Integer sid, TorrentSession torrentSession) {
 		// TODO
 	}
 	
 	@Override
-	public void scrape(Integer sid, TorrentSession session) throws NetException {
+	public void scrape(Integer sid, TorrentSession torrentSession) throws NetException {
 		// TODO
 	}
 
@@ -119,12 +119,12 @@ public class UdpTrackerClient extends AbstractTrackerClient {
 	/**
 	 * peer请求
 	 */
-	private ByteBuffer buildAnnounce(Integer sid, TorrentSession session) {
+	private ByteBuffer buildAnnounce(Integer sid, TorrentSession torrentSession) {
 		ByteBuffer buffer = ByteBuffer.allocate(98);
 		buffer.putLong(this.connectionId); // connection_id
 		buffer.putInt(AbstractTrackerClient.Action.announce.action());
 		buffer.putInt(sid); // transaction_id
-		buffer.put(session.infoHash().hash()); // infoHash
+		buffer.put(torrentSession.infoHash().hash()); // infoHash
 		buffer.put(PeerServer.PEER_ID.getBytes()); // 
 		buffer.putLong(0L); // 已下载大小
 		buffer.putLong(0L); // 剩余下载大小

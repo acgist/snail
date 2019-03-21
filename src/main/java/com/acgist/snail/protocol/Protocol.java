@@ -104,9 +104,9 @@ public abstract class Protocol {
 	 * 新建任务代理
 	 */
 	protected TaskSession buildTaskSession() throws DownloadException {
-		TaskSession session = TaskSession.newInstance(this.taskEntity);
+		TaskSession taskSession = TaskSession.newInstance(this.taskEntity);
 		this.clean();
-		return session;
+		return taskSession;
 	}
 
 	/**

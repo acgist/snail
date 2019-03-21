@@ -54,8 +54,8 @@ public final class DownloaderManager {
 	/**
 	 * 开始下载任务
 	 */
-	public void start(TaskSession session) throws DownloadException {
-		this.submit(session).start();
+	public void start(TaskSession taskSession) throws DownloadException {
+		this.submit(taskSession).start();
 	}
 	
 	/**
@@ -68,15 +68,15 @@ public final class DownloaderManager {
 	/**
 	 * 添加任务，不修改状态
 	 */
-	public IDownloader submit(TaskSession session) throws DownloadException {
+	public IDownloader submit(TaskSession taskSession) throws DownloadException {
 		if(ProtocolManager.getInstance().available()) {
 			synchronized (this) {
-				if(session == null) {
+				if(taskSession == null) {
 					throw new DownloadException("下载任务不存在");
 				}
-				IDownloader downloader = downloader(session);
+				IDownloader downloader = downloader(taskSession);
 				if(downloader == null) {
-					downloader = session.downloader();
+					downloader = taskSession.downloader();
 				}
 				if(downloader == null) {
 					throw new DownloadException("添加下载任务失败（下载任务为空）");
@@ -92,31 +92,31 @@ public final class DownloaderManager {
 	/**
 	 * 暂停任务
 	 */
-	public void pause(TaskSession session) {
-		downloader(session).pause();
+	public void pause(TaskSession taskSession) {
+		downloader(taskSession).pause();
 	}
 	
 	/**
 	 * 删除任务
 	 */
-	public void delete(TaskSession session) {
-		var entity = session.entity();
-		downloader(session).delete();
+	public void delete(TaskSession taskSession) {
+		var entity = taskSession.entity();
+		downloader(taskSession).delete();
 		TASK_MAP.remove(entity.getId());
 	}
 
 	/**
 	 * 刷新任务
 	 */
-	public void refresh(TaskSession session) {
-		downloader(session).refresh();
+	public void refresh(TaskSession taskSession) {
+		downloader(taskSession).refresh();
 	}
 	
 	/**
 	 * 获取下载任务
 	 */
-	private IDownloader downloader(TaskSession session) {
-		return TASK_MAP.get(session.entity().getId());
+	private IDownloader downloader(TaskSession taskSession) {
+		return TASK_MAP.get(taskSession.entity().getId());
 	}
 	
 	/**

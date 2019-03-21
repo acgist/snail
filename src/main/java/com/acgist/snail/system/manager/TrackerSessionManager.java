@@ -36,8 +36,8 @@ public class TrackerSessionManager {
 	/**
 	 * 新建
 	 */
-	public TrackerLauncher build(AbstractTrackerClient client, TorrentSession session) {
-		final TrackerLauncher launcher = new TrackerLauncher(client, session);
+	public TrackerLauncher build(AbstractTrackerClient client, TorrentSession torrentSession) {
+		final TrackerLauncher launcher = new TrackerLauncher(client, torrentSession);
 		TRACKER_TORRENT_MAP.put(launcher.id(), launcher);
 		return launcher;
 	}
@@ -50,9 +50,9 @@ public class TrackerSessionManager {
 			return;
 		}
 		final Integer id = message.getId();
-		TrackerLauncher session = TRACKER_TORRENT_MAP.get(id);
-		if(session != null) {
-			session.announce(message);
+		TrackerLauncher trackerLauncher = TRACKER_TORRENT_MAP.get(id);
+		if(trackerLauncher != null) {
+			trackerLauncher.announce(message);
 		} else {
 			LOGGER.warn("不存在的TorrentSession，AnnounceMessage：{}", message);
 		}

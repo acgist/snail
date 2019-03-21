@@ -35,8 +35,8 @@ public class HttpTrackerClient extends AbstractTrackerClient {
 	}
 
 	@Override
-	public void announce(Integer sid, TorrentSession session) throws NetException {
-		final String requestUrl = buildAnnounceUrl(sid, session);
+	public void announce(Integer sid, TorrentSession torrentSession) throws NetException {
+		final String requestUrl = buildAnnounceUrl(sid, torrentSession);
 		var client = HTTPClient.newClient();
 		var request = HTTPClient.newRequest(requestUrl)
 			.GET()
@@ -63,28 +63,28 @@ public class HttpTrackerClient extends AbstractTrackerClient {
 	}
 
 	@Override
-	public void complete(Integer sid, TorrentSession session) {
+	public void complete(Integer sid, TorrentSession torrentSession) {
 		// TODO
 	}
 	
 	@Override
-	public void stop(Integer sid, TorrentSession session) {
+	public void stop(Integer sid, TorrentSession torrentSession) {
 		// TODO
 	}
 	
 	@Override
-	public void scrape(Integer sid, TorrentSession session) throws NetException {
+	public void scrape(Integer sid, TorrentSession torrentSession) throws NetException {
 		// TODO
 	}
 	
 	/**
 	 * 构建请求URL<br>
 	 */
-	private String buildAnnounceUrl(Integer sid, TorrentSession session) {
+	private String buildAnnounceUrl(Integer sid, TorrentSession torrentSession) {
 		StringBuilder builder = new StringBuilder(this.announceUrl);
 		builder.append("?")
 		// 种子HASH
-		.append("info_hash").append("=").append(session.infoHash().hashId()).append("&")
+		.append("info_hash").append("=").append(torrentSession.infoHash().hashId()).append("&")
 		// 客户度ID
 		.append("peer_id").append("=").append(PeerServer.PEER_ID).append("&")
 		// 客户端监听端口，用于和其他Peer连接

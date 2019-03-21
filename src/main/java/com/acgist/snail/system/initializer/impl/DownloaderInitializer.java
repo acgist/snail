@@ -35,10 +35,10 @@ public class DownloaderInitializer extends Initializer {
 		if(CollectionUtils.isNotEmpty(list)) {
 			list.stream()
 			.forEach(entity -> {
-				TaskSession session = null;
+				TaskSession taskSession = null;
 				try {
-					session = TaskSession.newInstance(entity);
-					DownloaderManager.getInstance().submit(session);
+					taskSession = TaskSession.newInstance(entity);
+					DownloaderManager.getInstance().submit(taskSession);
 				} catch (DownloadException e) {
 					LOGGER.error("添加下载任务异常", e);
 					repository.delete(entity);

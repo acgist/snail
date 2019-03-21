@@ -117,12 +117,12 @@ public abstract class AbstractTrackerClient implements Comparable<AbstractTracke
 	/**
 	 * 查找Peer，查找结果直接设置到session
 	 */
-	public void findPeers(Integer sid, TorrentSession session) {
+	public void findPeers(Integer sid, TorrentSession torrentSession) {
 		if(!available()) { // 不可用直接返回null
 			return;
 		}
 		try {
-			announce(sid, session);
+			announce(sid, torrentSession);
 			failTimes.set(0);
 			weight--;
 		} catch (Exception e) {
@@ -139,22 +139,22 @@ public abstract class AbstractTrackerClient implements Comparable<AbstractTracke
 	/**
 	 * 跟踪：开始
 	 */
-	public abstract void announce(Integer sid, TorrentSession session) throws NetException;
+	public abstract void announce(Integer sid, TorrentSession torrentSession) throws NetException;
 	
 	/**
 	 * 完成
 	 */
-	public abstract void complete(Integer sid, TorrentSession session);
+	public abstract void complete(Integer sid, TorrentSession torrentSession);
 	
 	/**
 	 * 停止
 	 */
-	public abstract void stop(Integer sid, TorrentSession session);
+	public abstract void stop(Integer sid, TorrentSession torrentSession);
 	
 	/**
 	 * 刮檫
 	 */
-	public abstract void scrape(Integer sid, TorrentSession session) throws NetException;
+	public abstract void scrape(Integer sid, TorrentSession torrentSession) throws NetException;
 	
 	public Integer id() {
 		return this.id;

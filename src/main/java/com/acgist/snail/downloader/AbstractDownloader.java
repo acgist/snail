@@ -25,11 +25,11 @@ public abstract class AbstractDownloader implements IDownloader {
 	protected boolean running = false; // 下载中
 	protected boolean complete = false; // 下载完成
 	
-	protected TaskSession session;
+	protected TaskSession taskSession;
 
-	public AbstractDownloader(TaskSession session) {
-		this.session = session;
-		session.loadDownloadSize(); // 加载已下载大小
+	public AbstractDownloader(TaskSession taskSession) {
+		this.taskSession = taskSession;
+		taskSession.loadDownloadSize(); // 加载已下载大小
 	}
 	
 	@Override
@@ -39,33 +39,33 @@ public abstract class AbstractDownloader implements IDownloader {
 	
 	@Override
 	public TaskSession task() {
-		return session;
+		return taskSession;
 	}
 
 	@Override
 	public String id() {
-		return session.entity().getId();
+		return taskSession.entity().getId();
 	}
 	
 	@Override
 	public String name() {
-		return session.entity().getName();
+		return taskSession.entity().getName();
 	}
 	
 	@Override
 	public void start() {
-		this.session.updateStatus(Status.await);
+		this.taskSession.updateStatus(Status.await);
 	}
 	
 	@Override
 	public void pause() {
-		this.session.updateStatus(Status.pause);
+		this.taskSession.updateStatus(Status.pause);
 	}
 	
 	@Override
 	public void fail(String message) {
 		this.fail = true;
-		this.session.updateStatus(Status.fail);
+		this.taskSession.updateStatus(Status.fail);
 		StringBuilder noticeMessage = new StringBuilder();
 		noticeMessage.append(name())
 			.append("下载失败，失败原因：");
@@ -85,7 +85,7 @@ public abstract class AbstractDownloader implements IDownloader {
 			return !this.running;
 		});
 		TaskRepository repository = new TaskRepository();
-		repository.delete(session.entity());
+		repository.delete(taskSession.entity());
 	}
 	
 	@Override
@@ -95,20 +95,20 @@ public abstract class AbstractDownloader implements IDownloader {
 	@Override
 	public void complete() {
 		if(complete) {
-			this.session.updateStatus(Status.complete);
+			this.taskSession.updateStatus(Status.complete);
 			TrayMenu.getInstance().notice("下载完成", name() + "已经下载完成");
 		}
 	}
 	
 	@Override
 	public void run() {
-		if(session.download()) { // 任务已经处于下载中直接跳过，防止多次点击暂停开始导致后面线程阻塞导致不能下载其他任务
+		if(taskSession.download()) { // 任务已经处于下载中直接跳过，防止多次点击暂停开始导致后面线程阻塞导致不能下载其他任务
 			LOGGER.info("任务已经在下载中，停止执行：{}", name());
 			return;
 		}
-		synchronized (session) {
-			var entity = this.session.entity();
-			if(session.await()) {
+		synchronized (taskSession) {
+			var entity = this.taskSession.entity();
+			if(taskSession.await()) {
 				LOGGER.info("开始下载：{}", name());
 				fail = false; // 标记下载失败
 				running = true; // 标记开始下载
@@ -131,7 +131,7 @@ public abstract class AbstractDownloader implements IDownloader {
 	 * 下载统计
 	 */
 	protected void statistics(long size) {
-		this.session.statistics(size);
+		this.taskSession.statistics(size);
 	}
 	
 	/**
@@ -151,7 +151,7 @@ public abstract class AbstractDownloader implements IDownloader {
 	 * 	2.失败标记=true
 	 */
 	protected boolean ok() {
-		return !fail && !session.download();
+		return !fail && !taskSession.download();
 	}
 	
 }

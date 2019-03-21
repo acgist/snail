@@ -55,8 +55,8 @@ public class TorrentWindow extends AbstractWindow<TorrentController> {
 		dialogWindow();
 	}
 	
-	public void show(TaskSession session) {
-		this.controller.tree(session);
+	public void show(TaskSession taskSession) {
+		this.controller.tree(taskSession);
 		this.showAndWait();
 	}
 	

@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import com.acgist.snail.gui.main.TaskDisplay;
 
 /**
- * 统计 session<br>
+ * session - 统计<br>
  * 如果父类统计存在时更新同时更新父类统计
  */
 public class StatisticsSession {

@@ -12,7 +12,7 @@ import com.acgist.snail.pojo.session.PeerSession;
  */
 public class PeerClient extends AbstractTcpClient<PeerMessageHandler> {
 
-	private PeerSession session;
+	private PeerSession peerSession;
 	
 	public PeerClient() {
 		super("", new PeerMessageHandler());
@@ -22,5 +22,5 @@ public class PeerClient extends AbstractTcpClient<PeerMessageHandler> {
 	public boolean connect() {
 		return false;
 	}
-	
+
 }
