@@ -21,19 +21,21 @@ public class TrackerLauncher implements Runnable {
 	
 	private AbstractTrackerClient client; // 客户端
 
-	private TorrentSession torrentSession; // torrent session
+	private TorrentSession session; // torrent session
 	
 	private final Integer id; // id：transaction_id（获取peer时使用）
 	private Integer interval; // 下次等待时间
 	private Integer done; // 已完成数量
 	private Integer undone; // 未完成数量
 
-	public TrackerLauncher() {
+	public TrackerLauncher(AbstractTrackerClient client, TorrentSession session) {
 		this.id = UniqueCodeUtils.buildInteger();
+		this.client = client;
+		this.session = session;
 	}
 	
 	public TorrentSession torrentSession() {
-		return this.torrentSession;
+		return this.session;
 	}
 	
 	public Integer id() {
@@ -43,7 +45,7 @@ public class TrackerLauncher implements Runnable {
 	@Override
 	public void run() {
 		try {
-			client.announce(this.id, this.torrentSession);
+			client.announce(this.id, this.session);
 		} catch (NetException e) {
 			LOGGER.error("Tracker获取announce信息异常", e);
 		}
@@ -59,7 +61,7 @@ public class TrackerLauncher implements Runnable {
 		this.interval = message.getInterval();
 		this.done = message.getDone();
 		this.undone = message.getUndone();
-		torrentSession.peer(message.getPeers());
+		session.peer(message.getPeers());
 		LOGGER.info("已完成Peer数量：{}，未完成的Peer数量：{}，下次请求时间：{}", this.done, this.undone, this.interval);
 		if(this.interval != null) { // 添加重复执行
 			SystemThreadContext.timer(this.interval, TimeUnit.SECONDS, this);

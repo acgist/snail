@@ -49,11 +49,7 @@ public class HttpDownloader extends AbstractDownloader {
 	public void download() throws IOException {
 		int length = 0;
 		long begin, end;
-		final boolean ok = !complete; // 下载前没有标记完成
-		while(ok) {
-			if(!session.download()) { // 已经不是下载状态
-				break;
-			}
+		while(ok()) {
 			begin = System.currentTimeMillis();
 			length = input.readNBytes(bytes, 0, bytes.length);
 			if(isComplete(length)) { // 是否完成

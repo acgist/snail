@@ -63,7 +63,7 @@ public class TorrentSessionManager {
 			InfoHash infoHash = InfoHashBuilder.newInstance().build(info).buildInfoHash();
 			return buildSession(torrent, infoHash);
 		} else {
-			throw new DownloadException("不支持的种子");
+			throw new DownloadException("种子解析失败");
 		}
 	}
 	
