@@ -105,12 +105,7 @@ public class TaskSession implements IStatistics {
 	 * 获取已下载大小
 	 */
 	public void loadDownloadSize() {
-		long size = 0L;
-		if(entity.getType() == Type.http) {
-			size = FileUtils.fileSize(entity.getFile());
-		} else if(entity.getType() == Type.ftp) {
-			size = FileUtils.fileSize(entity.getFile());
-		}
+		final long size = FileUtils.fileSize(entity.getFile());
 		statistics.downloadSize(size);
 	}
 

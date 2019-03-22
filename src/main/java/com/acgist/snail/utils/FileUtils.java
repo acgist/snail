@@ -211,16 +211,24 @@ public class FileUtils {
 	 * 获取文件大小
 	 */
 	public static final long fileSize(String path) {
+		long size = 0L;
 		File file = new File(path);
 		if(!file.exists()) {
 			return 0L;
 		}
-		try {
-			return Files.size(Paths.get(path));
-		} catch (IOException e) {
-			LOGGER.error("获取文件大小异常", e);
+		if(file.isFile()) {
+			try {
+				size = Files.size(Paths.get(path));
+			} catch (IOException e) {
+				LOGGER.error("获取文件大小异常", e);
+			}
+		} else {
+			File[] files = file.listFiles();
+			for (File children : files) {
+				size += fileSize(children.getPath());
+			}
 		}
-		return 0L;
+		return size;
 	}
 	
 }

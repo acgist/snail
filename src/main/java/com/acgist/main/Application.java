@@ -12,8 +12,6 @@ import javafx.application.Platform;
 
 /**
  * 启动类
- * TODO:https://blog.csdn.net/sf0407/article/details/53924174
- * 修改进程名称，使用c++启动jvm
  */
 public class Application {
 

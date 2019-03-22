@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.protocol.Protocol;
+import com.acgist.snail.system.context.SystemContext;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.ThreadUtils;
 
@@ -76,11 +77,15 @@ public class ProtocolManager {
 	/**
 	 * 是否可用，阻塞线程
 	 */
-	public boolean available() {
+	public boolean available() throws DownloadException {
 		while(!available.get()) {
 			ThreadUtils.sleep(100);
 		}
-		return true;
+		if(SystemContext.available()) {
+			return true;
+		} else {
+			throw new DownloadException("系统正在关闭中");
+		}
 	}
 	
 }

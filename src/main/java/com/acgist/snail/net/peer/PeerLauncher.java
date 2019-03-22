@@ -7,6 +7,7 @@ import com.acgist.snail.pojo.session.TorrentSession;
 /**
  * Peer下载<br>
  * 权重计算：稀有度>速度
+ * 没下载完成一个Piece才会写入文件
  */
 public class PeerLauncher {
 
