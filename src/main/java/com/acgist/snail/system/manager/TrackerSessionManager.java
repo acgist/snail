@@ -16,7 +16,7 @@ import com.acgist.snail.pojo.session.TorrentSession;
  */
 public class TrackerSessionManager {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentSessionManager.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerSessionManager.class);
 	
 	private static final TrackerSessionManager INSTANCE = new TrackerSessionManager();
 	
@@ -38,8 +38,16 @@ public class TrackerSessionManager {
 	 */
 	public TrackerLauncher build(TrackerClient client, TorrentSession torrentSession) {
 		final TrackerLauncher launcher = new TrackerLauncher(client, torrentSession);
-		TRACKER_TORRENT_MAP.put(launcher.id(), launcher);
+		register(launcher);
 		return launcher;
+	}
+	
+	/**
+	 * 注册
+	 */
+	private void register(TrackerLauncher launcher) {
+		LOGGER.debug("注册TrackerLauncher，ID：{}", launcher.id());
+		TRACKER_TORRENT_MAP.put(launcher.id(), launcher);
 	}
 
 	/**

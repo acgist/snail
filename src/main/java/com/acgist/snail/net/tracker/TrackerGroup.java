@@ -41,7 +41,6 @@ public class TrackerGroup {
 		this.torrentSession = torrentSession;
 		this.trackerLaunchers = new ArrayList<>();
 		this.peerGroup = new PeerGroup(torrentSession);
-		loadTracker();
 	}
 
 	/**
