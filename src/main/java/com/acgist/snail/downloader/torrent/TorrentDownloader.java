@@ -32,6 +32,7 @@ public class TorrentDownloader extends AbstractDownloader {
 
 	@Override
 	public void release() {
+		torrentSession.release();
 	}
 	
 	private void build() {

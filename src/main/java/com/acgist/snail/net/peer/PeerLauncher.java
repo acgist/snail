@@ -16,6 +16,8 @@ public class PeerLauncher {
 	private final TaskSession taskSession;
 	private final TorrentSession torrentSession;
 	
+	private boolean available = true; // 可用
+	
 	public PeerLauncher(PeerSession peerSession, TorrentSession torrentSession) {
 		this.peerSession = peerSession;
 		this.taskSession = torrentSession.taskSession();
@@ -26,4 +28,11 @@ public class PeerLauncher {
 		return peerSession;
 	}
 
+	/**
+	 * 释放资源
+	 */
+	public void release() {
+		this.available = false;
+	}
+	
 }

@@ -80,6 +80,13 @@ public class TorrentSession {
 	}
 
 	/**
+	 * 释放资源
+	 */
+	public void release() {
+		trackerGroup.release();
+	}
+	
+	/**
 	 * 设置Peer
 	 */
 	public void peer(Map<String, Integer> peers) {

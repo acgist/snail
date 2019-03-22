@@ -21,23 +21,23 @@ import com.acgist.snail.system.context.SystemThreadContext;
  * PeerClient分组<br>
  * 每次剔除权重的一个PeerClient<br>
  */
-public class PeerClientGroup {
+public class PeerGroup {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(PeerClientGroup.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PeerGroup.class);
 	
 	private final TaskSession taskSession;
 	private final TorrentSession torrentSession;
 	/**
 	 * 双端队列，新加入插入队尾，剔除的Peer插入对头
 	 */
-	private final Deque<PeerSession> peers;
-	private final List<PeerLauncher> launchers;
+	private final Deque<PeerSession> peerSessions;
+	private final List<PeerLauncher> peerLaunchers;
 	
-	public PeerClientGroup(TorrentSession torrentSession) {
+	public PeerGroup(TorrentSession torrentSession) {
 		this.taskSession = torrentSession.taskSession();
 		this.torrentSession = torrentSession;
-		this.peers = new LinkedBlockingDeque<>();
-		this.launchers = Collections.synchronizedList(new ArrayList<>());
+		this.peerSessions = new LinkedBlockingDeque<>();
+		this.peerLaunchers = Collections.synchronizedList(new ArrayList<>());
 	}
 	
 	/**
@@ -45,7 +45,7 @@ public class PeerClientGroup {
 	 */
 	private void launchers() {
 		final int size = SystemConfig.getPeerSize();
-		if(this.launchers.size() > size) {
+		if(this.peerLaunchers.size() > size) {
 			return;
 		}
 		buildPeerLauncher();
@@ -55,7 +55,7 @@ public class PeerClientGroup {
 	 * 拿去最后一个session创建launcher
 	 */
 	private void buildPeerLauncher() {
-		PeerSession peerSession = peers.pollLast();
+		PeerSession peerSession = peerSessions.pollLast();
 		if(peerSession == null) {
 			// TODO
 			return;
@@ -75,7 +75,7 @@ public class PeerClientGroup {
 	 */
 	public void optimize() {
 		PeerLauncher launcher = inferiorLauncher();
-		peers.offerFirst(launcher.peerSession());
+		peerSessions.offerFirst(launcher.peerSession());
 		buildPeerLauncher();
 		if(taskSession.download()) {
 			// TODO：暂停，然后开始导致多个重复线程
@@ -93,17 +93,24 @@ public class PeerClientGroup {
 	 * @param port 端口
 	 */
 	public void put(StatisticsSession parent, String host, Integer port) {
-		synchronized (peers) {
-			final boolean exist = peers.stream().anyMatch(peer -> {
+		synchronized (peerSessions) {
+			final boolean exist = peerSessions.stream().anyMatch(peer -> {
 				return peer.exist(host, port);
 			});
 			if(exist) {
 				return;
 			}
 			LOGGER.debug("添加Peer，HOST：{}，PORT：{}", host, port);
-			peers.offerLast(new PeerSession(parent, host, port));
+			peerSessions.offerLast(new PeerSession(parent, host, port));
 			launchers();
 		}
+	}
+
+	/**
+	 * 资源释放
+	 */
+	public void release() {
+		peerLaunchers.forEach(launcher -> launcher.release());
 	}
 
 }
