@@ -1,4 +1,4 @@
-package com.acgist.snail.net.message.impl;
+package com.acgist.snail.net.application;
 
 import java.nio.ByteBuffer;
 
@@ -6,8 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.gui.main.MainWindow;
-import com.acgist.snail.net.message.TcpMessageHandler;
-import com.acgist.snail.pojo.message.ClientMessage;
+import com.acgist.snail.net.TcpMessageHandler;
+import com.acgist.snail.pojo.message.ApplicationMessage;
 import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -16,15 +16,15 @@ import javafx.application.Platform;
 /**
  * 客户端消息
  */
-public class ClientMessageHandler extends TcpMessageHandler {
+public class ApplicationMessageHandler extends TcpMessageHandler {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ClientMessageHandler.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationMessageHandler.class);
 	
 	public static final String SPLIT = "\r\n"; // 处理粘包分隔符
 	
 	private StringBuffer contentBuffer = new StringBuffer();
 	
-	public ClientMessageHandler() {
+	public ApplicationMessageHandler() {
 		super(SPLIT);
 	}
 	
@@ -59,7 +59,7 @@ public class ClientMessageHandler extends TcpMessageHandler {
 			LOGGER.warn("读取消息内容为空");
 			return true;
 		}
-		ClientMessage message = ClientMessage.valueOf(json);
+		ApplicationMessage message = ApplicationMessage.valueOf(json);
 		if(message == null) {
 			LOGGER.warn("读取消息格式错误：{}", json);
 			return true;
@@ -72,18 +72,18 @@ public class ClientMessageHandler extends TcpMessageHandler {
 	 * 处理消息
 	 * @return 是否关闭socket：true-关闭；false-继续
 	 */
-	private boolean execute(ClientMessage message) {
+	private boolean execute(ApplicationMessage message) {
 		boolean close = false; // 是否关闭
-		if(message.getType() == ClientMessage.Type.text) { // 文本信息：直接原样返回
-			send(ClientMessage.response(message.getBody()));
-		} else if(message.getType() == ClientMessage.Type.notify) { // 唤醒主窗口
+		if(message.getType() == ApplicationMessage.Type.text) { // 文本信息：直接原样返回
+			send(ApplicationMessage.response(message.getBody()));
+		} else if(message.getType() == ApplicationMessage.Type.notify) { // 唤醒主窗口
 			Platform.runLater(() -> {
 				MainWindow.getInstance().show();
 			});
-		} else if(message.getType() == ClientMessage.Type.close) { // 关闭
+		} else if(message.getType() == ApplicationMessage.Type.close) { // 关闭
 			close = true;
 			IoUtils.close(socket);
-		} else if(message.getType() == ClientMessage.Type.response) { // 响应内容
+		} else if(message.getType() == ApplicationMessage.Type.response) { // 响应内容
 			LOGGER.info("收到响应：{}", message.getBody());
 		} else {
 			LOGGER.warn("未适配的消息类型：{}", message.getType());
@@ -94,7 +94,7 @@ public class ClientMessageHandler extends TcpMessageHandler {
 	/**
 	 * 发送消息
 	 */
-	private void send(ClientMessage message) {
+	private void send(ApplicationMessage message) {
 		send(message.toJson());
 	}
 

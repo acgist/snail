@@ -1,4 +1,4 @@
-package com.acgist.snail.net.message;
+package com.acgist.snail.net;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;

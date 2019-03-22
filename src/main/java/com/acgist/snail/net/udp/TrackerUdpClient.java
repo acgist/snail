@@ -1,7 +1,7 @@
 package com.acgist.snail.net.udp;
 
 import com.acgist.snail.net.UdpClient;
-import com.acgist.snail.net.message.impl.TrackerMessageHandler;
+import com.acgist.snail.net.tracker.TrackerMessageHandler;
 
 /**
  * tracker udp client

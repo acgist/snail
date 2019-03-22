@@ -5,7 +5,7 @@ import com.acgist.snail.utils.JsonUtils;
 /**
  * 客户端消息，主要用来多个客户端之间进行通信。
  */
-public class ClientMessage {
+public class ApplicationMessage {
 
 	/**
 	 * 消息类型
@@ -29,14 +29,14 @@ public class ClientMessage {
 	private String body;
 
 	
-	public ClientMessage() {
+	public ApplicationMessage() {
 	}
 	
-	public ClientMessage(Type type) {
+	public ApplicationMessage(Type type) {
 		this.type = type;
 	}
 
-	public ClientMessage(Type type, String body) {
+	public ApplicationMessage(Type type, String body) {
 		this.type = type;
 		this.body = body;
 	}
@@ -65,24 +65,24 @@ public class ClientMessage {
 	}
 	
 	/**
-	 * JSON字符串变成ClientMessage对象
+	 * JSON字符串变成ApplicationMessage对象
 	 */
-	public static final ClientMessage valueOf(String content) {
-		return JsonUtils.toJava(content, ClientMessage.class);
+	public static final ApplicationMessage valueOf(String content) {
+		return JsonUtils.toJava(content, ApplicationMessage.class);
 	}
 	
 	/**
 	 * 消息
 	 */
-	public static final ClientMessage message(Type type) {
+	public static final ApplicationMessage message(Type type) {
 		return message(type, null);
 	}
 	
 	/**
 	 * 消息
 	 */
-	public static final ClientMessage message(Type type, String body) {
-		ClientMessage message = new ClientMessage(type);
+	public static final ApplicationMessage message(Type type, String body) {
+		ApplicationMessage message = new ApplicationMessage(type);
 		message.setBody(body);
 		return message;
 	}
@@ -90,14 +90,14 @@ public class ClientMessage {
 	/**
 	 * 文本
 	 */
-	public static final ClientMessage text(String body) {
+	public static final ApplicationMessage text(String body) {
 		return message(Type.text, body);
 	}
 	
 	/**
 	 * 响应
 	 */
-	public static final ClientMessage response(String body) {
+	public static final ApplicationMessage response(String body) {
 		return message(Type.response, body);
 	}
 	

@@ -10,8 +10,9 @@ public class TorrentPiece {
 	 */
 	public static final int SLICE_SIZE = 16 * 1024;
 	
-	private int index;
-	private int begin;
-	private int length;
-
+	private int index; // piece的索引
+	private int begin; // piece内的偏移
+	private int length; // 数据的长度
+	private byte[] bytes; // 数据
+	
 }
