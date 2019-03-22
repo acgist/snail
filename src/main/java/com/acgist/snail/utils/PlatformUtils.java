@@ -9,6 +9,7 @@ import com.acgist.snail.net.TcpServer;
 import com.acgist.snail.net.application.ApplicationClient;
 import com.acgist.snail.net.application.ApplicationServer;
 import com.acgist.snail.net.udp.TrackerUdpClient;
+import com.acgist.snail.system.context.SystemContext;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.manager.DownloaderManager;
 
@@ -27,19 +28,24 @@ public class PlatformUtils {
 	 * 如果需要手动shutdown，那么必须关闭系统资源，否者会导致卡顿。
 	 */
 	public static final void exit() {
-		LOGGER.info("系统关闭中");
-		/**系统线程都是后台线程以下操作可以不执行**/
-		TrackerUdpClient.getInstance().close();
-		TcpClient.shutdown();
-		ApplicationServer.getInstance().close();
-		TcpServer.shutdown();
-		DownloaderManager.getInstance().shutdown();
-		SystemThreadContext.shutdown();
-		/**系统线程都是后台线程以上操作可以不执行**/
-		Platform.exit();
-		TrayMenu.exit();
-		LOGGER.info("系统已关闭");
-		LoggerUtils.shutdown();
+		if(SystemContext.available()) {
+			SystemContext.shutdown();
+			SystemThreadContext.submit(() -> {
+				LOGGER.info("系统关闭中");
+				/**系统线程都是后台线程以下操作可以不执行**/
+				TrackerUdpClient.getInstance().close();
+				TcpClient.shutdown();
+				ApplicationServer.getInstance().close();
+				TcpServer.shutdown();
+				DownloaderManager.getInstance().shutdown();
+				SystemThreadContext.shutdown();
+				/**系统线程都是后台线程以上操作可以不执行**/
+				Platform.exit();
+				TrayMenu.exit();
+				LOGGER.info("系统已关闭");
+				LoggerUtils.shutdown();
+			});
+		}
 	}
 	
 	/**

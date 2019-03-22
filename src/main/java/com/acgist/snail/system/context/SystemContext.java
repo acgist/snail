@@ -17,6 +17,11 @@ public class SystemContext {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SystemContext.class);
 
 	/**
+	 * 系统状态
+	 */
+	private static boolean shutdown = false;
+	
+	/**
 	 * 系统初始化
 	 */
 	public static final void init() {
@@ -45,6 +50,20 @@ public class SystemContext {
 		LOGGER.info("用户主目录：{}", System.getProperty("user.home"));
 		LOGGER.info("用户工作目录：{}", System.getProperty("user.dir"));
 		LOGGER.info("文件编码：{}", System.getProperty("file.encoding"));
+	}
+	
+	/**
+	 * 系统是否可用
+	 */
+	public static final boolean available() {
+		return !shutdown;
+	}
+
+	/**
+	 * 关闭系统
+	 */
+	public static final void shutdown() {
+		shutdown = true;
 	}
 	
 }

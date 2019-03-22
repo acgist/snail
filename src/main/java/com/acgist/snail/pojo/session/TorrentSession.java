@@ -1,5 +1,6 @@
 package com.acgist.snail.pojo.session;
 
+import java.util.BitSet;
 import java.util.Map;
 
 import com.acgist.snail.net.tracker.TrackerGroup;
@@ -14,6 +15,14 @@ import com.acgist.snail.utils.StringUtils;
  */
 public class TorrentSession {
 	
+	/**
+	 * 已下载的块位图
+	 */
+	private final BitSet pieces;
+	/**
+	 * 当前下载的块位图
+	 */
+	private final BitSet downloadPieces;
 	/**
 	 * 种子
 	 */
@@ -35,6 +44,8 @@ public class TorrentSession {
 		if(torrent == null || infoHash == null) {
 			throw new DownloadException("解析种子文件异常");
 		}
+		this.pieces = new BitSet();
+		this.downloadPieces = new BitSet();
 		this.torrent = torrent;
 		this.infoHash = infoHash;
 	}
@@ -64,6 +75,14 @@ public class TorrentSession {
 		return name;
 	}
 
+	public BitSet pieces() {
+		return this.pieces;
+	}
+	
+	public BitSet downloadPieces() {
+		return this.downloadPieces;
+	}
+	
 	public Torrent torrent() {
 		return this.torrent;
 	}

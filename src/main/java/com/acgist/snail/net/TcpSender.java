@@ -52,6 +52,13 @@ public abstract class TcpSender {
 	/**
 	 * 发送消息
 	 */
+	protected void send(ByteBuffer buffer) {
+		send(buffer.array());
+	}
+	
+	/**
+	 * 发送消息
+	 */
 	protected void send(byte[] bytes) {
 		ByteBuffer buffer = ByteBuffer.wrap(bytes);
 		Future<Integer> future = socket.write(buffer);
