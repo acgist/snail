@@ -4,8 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.gui.menu.TrayMenu;
-import com.acgist.snail.net.AbstractTcpClient;
-import com.acgist.snail.net.AbstractTcpServer;
+import com.acgist.snail.net.ATcpClient;
+import com.acgist.snail.net.ATcpServer;
 import com.acgist.snail.net.application.ApplicationClient;
 import com.acgist.snail.net.application.ApplicationServer;
 import com.acgist.snail.net.udp.TrackerUdpClient;
@@ -30,9 +30,9 @@ public class PlatformUtils {
 		LOGGER.info("系统关闭中");
 		/**系统线程都是后台线程以下操作可以不执行**/
 		TrackerUdpClient.getInstance().close();
-		AbstractTcpClient.shutdown();
+		ATcpClient.shutdown();
 		ApplicationServer.getInstance().close();
-		AbstractTcpServer.shutdown();
+		ATcpServer.shutdown();
 		DownloaderManager.getInstance().shutdown();
 		SystemThreadContext.shutdown();
 		/**系统线程都是后台线程以上操作可以不执行**/

@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.gui.main.MainWindow;
-import com.acgist.snail.net.message.AbstractTcpMessageHandler;
+import com.acgist.snail.net.message.ATcpMessageHandler;
 import com.acgist.snail.pojo.message.ClientMessage;
 import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -16,7 +16,7 @@ import javafx.application.Platform;
 /**
  * 客户端消息
  */
-public class ClientMessageHandler extends AbstractTcpMessageHandler {
+public class ClientMessageHandler extends ATcpMessageHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClientMessageHandler.class);
 	

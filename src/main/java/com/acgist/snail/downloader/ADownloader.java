@@ -15,9 +15,9 @@ import com.acgist.snail.utils.ThreadUtils;
 /**
  * 抽象下载器
  */
-public abstract class AbstractDownloader implements IDownloader {
+public abstract class ADownloader implements IDownloader {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractDownloader.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ADownloader.class);
 	
 	private static final long ONE_MINUTE = 1000L; // 一分钟
 	
@@ -27,7 +27,7 @@ public abstract class AbstractDownloader implements IDownloader {
 	
 	protected TaskSession taskSession;
 
-	public AbstractDownloader(TaskSession taskSession) {
+	public ADownloader(TaskSession taskSession) {
 		this.taskSession = taskSession;
 		taskSession.loadDownloadSize(); // 加载已下载大小
 	}

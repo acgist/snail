@@ -3,14 +3,14 @@ package com.acgist.snail.protocol.thunder;
 import java.util.Base64;
 
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
-import com.acgist.snail.protocol.Protocol;
+import com.acgist.snail.protocol.AProtocol;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.manager.ProtocolManager;
 
 /**
  * 迅雷协议
  */
-public class ThunderProtocol extends Protocol {
+public class ThunderProtocol extends AProtocol {
 
 	public static final String THUNDER_REGEX = "thunder://.+";
 	
@@ -37,7 +37,7 @@ public class ThunderProtocol extends Protocol {
 	}
 	
 	@Override
-	protected Protocol convert() throws DownloadException {
+	protected AProtocol convert() throws DownloadException {
 		String url = this.url.substring(THUNDER_PREFIX.length());
 		String newUrl = new String(Base64.getDecoder().decode(url));
 		newUrl = newUrl.substring(2, newUrl.length() - 2);

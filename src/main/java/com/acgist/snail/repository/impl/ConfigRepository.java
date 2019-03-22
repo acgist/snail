@@ -1,12 +1,12 @@
 package com.acgist.snail.repository.impl;
 
 import com.acgist.snail.pojo.entity.ConfigEntity;
-import com.acgist.snail.repository.BaseRepository;
+import com.acgist.snail.repository.ARepository;
 
 /**
  * 配置
  */
-public class ConfigRepository extends BaseRepository<ConfigEntity> {
+public class ConfigRepository extends ARepository<ConfigEntity> {
 
 	public ConfigRepository() {
 		super(ConfigEntity.TABLE_NAME);

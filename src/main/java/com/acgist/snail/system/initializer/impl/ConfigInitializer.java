@@ -6,12 +6,12 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.system.config.DatabaseConfig;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.config.SystemConfig;
-import com.acgist.snail.system.initializer.Initializer;
+import com.acgist.snail.system.initializer.AInitializer;
 
 /**
  * 初始化：配置
  */
-public class ConfigInitializer extends Initializer {
+public class ConfigInitializer extends AInitializer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigInitializer.class);
 	

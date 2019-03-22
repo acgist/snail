@@ -14,9 +14,9 @@ import org.slf4j.LoggerFactory;
 /**
  * UDP消息
  */
-public abstract class AbstractUdpMessageHandler {
+public abstract class AUdpMessageHandler {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractUdpMessageHandler.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AUdpMessageHandler.class);
 
 	/**
 	 * 消息处理

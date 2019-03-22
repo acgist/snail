@@ -14,7 +14,7 @@ import com.acgist.snail.utils.StringUtils;
 /***
  * 下载协议
  */
-public abstract class Protocol {
+public abstract class AProtocol {
 
 	protected final Type type; // 下载任务类型
 	protected final String[] regexs; // 协议正则表达式
@@ -23,7 +23,7 @@ public abstract class Protocol {
 	
 	protected TaskEntity taskEntity;
 	
-	public Protocol(Type type, String ... regexs) {
+	public AProtocol(Type type, String ... regexs) {
 		this.type = type;
 		this.regexs = regexs;
 	}
@@ -31,7 +31,7 @@ public abstract class Protocol {
 	/**
 	 * 初始化
 	 */
-	public Protocol init(String url) {
+	public AProtocol init(String url) {
 		this.url = url.trim();
 		return this;
 	}
@@ -66,7 +66,7 @@ public abstract class Protocol {
 	 * 构建下载
 	 */
 	public TaskSession build() throws DownloadException {
-		Protocol convert = convert();
+		AProtocol convert = convert();
 		if(convert != null) {
 			return convert.build();
 		}
@@ -83,7 +83,7 @@ public abstract class Protocol {
 	 * 协议转换<br>
 	 * 如果返回值不为空，则使用返回的协议进行下载
 	 */
-	protected Protocol convert() throws DownloadException {
+	protected AProtocol convert() throws DownloadException {
 		return null;
 	}
 	

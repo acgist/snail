@@ -6,7 +6,7 @@ import java.util.Map;
 
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.net.peer.PeerServer;
-import com.acgist.snail.net.tracker.AbstractTrackerClient;
+import com.acgist.snail.net.tracker.ATrackerClient;
 import com.acgist.snail.net.tracker.bean.HttpTracker;
 import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.session.TorrentSession;
@@ -18,7 +18,7 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * tracker http 客户端
  */
-public class HttpTrackerClient extends AbstractTrackerClient {
+public class HttpTrackerClient extends ATrackerClient {
 
 	private static final String SCRAPE_URL_SUFFIX = "/scrape";
 	private static final String ANNOUNCE_URL_SUFFIX = "/announce";
@@ -98,7 +98,7 @@ public class HttpTrackerClient extends AbstractTrackerClient {
 		// 默认：1
 		.append("compact").append("=").append("1").append("&")
 		// 时间：started、completed、stopped
-		.append("event").append("=").append(AbstractTrackerClient.Event.started.name()).append("&")
+		.append("event").append("=").append(ATrackerClient.Event.started.name()).append("&")
 		// 想要获取的Peer数量
 		.append("numwant").append("=").append("50");
 		if(StringUtils.isNotEmpty(trackerId)) {

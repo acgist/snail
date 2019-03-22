@@ -8,7 +8,7 @@ import java.nio.channels.DatagramChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.message.AbstractUdpMessageHandler;
+import com.acgist.snail.net.message.AUdpMessageHandler;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.IoUtils;
@@ -17,11 +17,11 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * UDP客户端
  */
-public abstract class AbstractUdpClient<T extends AbstractUdpMessageHandler> {
+public abstract class AUdpClient<T extends AUdpMessageHandler> {
 	
 	public static final String UDP_REGEX = "udp://.*";
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractUdpClient.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AUdpClient.class);
 
 	private DatagramChannel channel;
 	

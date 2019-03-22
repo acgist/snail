@@ -3,7 +3,7 @@ package com.acgist.snail.gui.torrent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.gui.AbstractWindow;
+import com.acgist.snail.gui.AWindow;
 import com.acgist.snail.pojo.session.TaskSession;
 
 import javafx.fxml.FXMLLoader;
@@ -15,7 +15,7 @@ import javafx.stage.Stage;
 /**
  * 下载文件选择
  */
-public class TorrentWindow extends AbstractWindow<TorrentController> {
+public class TorrentWindow extends AWindow<TorrentController> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentWindow.class);
 	

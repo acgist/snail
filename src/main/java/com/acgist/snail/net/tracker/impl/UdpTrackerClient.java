@@ -7,7 +7,7 @@ import java.nio.ByteBuffer;
 import java.time.Duration;
 
 import com.acgist.snail.net.peer.PeerServer;
-import com.acgist.snail.net.tracker.AbstractTrackerClient;
+import com.acgist.snail.net.tracker.ATrackerClient;
 import com.acgist.snail.net.udp.TrackerUdpClient;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.exception.NetException;
@@ -18,7 +18,7 @@ import com.acgist.snail.utils.UniqueCodeUtils;
  * tracker udp 客户端
  * 必须实现线程安全（每次只能处理一个beer）
  */
-public class UdpTrackerClient extends AbstractTrackerClient {
+public class UdpTrackerClient extends ATrackerClient {
 
 //	private static final Logger LOGGER = LoggerFactory.getLogger(UdpTrackerClient.class);
 	
@@ -111,7 +111,7 @@ public class UdpTrackerClient extends AbstractTrackerClient {
 	private ByteBuffer buildConnect() {
 		ByteBuffer buffer = ByteBuffer.allocate(16);
 		buffer.putLong(4497486125440L); // 必须等于：0x41727101980
-		buffer.putInt(AbstractTrackerClient.Action.connect.action());
+		buffer.putInt(ATrackerClient.Action.connect.action());
 		buffer.putInt(this.id);
 		return buffer;
 	}
@@ -122,14 +122,14 @@ public class UdpTrackerClient extends AbstractTrackerClient {
 	private ByteBuffer buildAnnounce(Integer sid, TorrentSession torrentSession) {
 		ByteBuffer buffer = ByteBuffer.allocate(98);
 		buffer.putLong(this.connectionId); // connection_id
-		buffer.putInt(AbstractTrackerClient.Action.announce.action());
+		buffer.putInt(ATrackerClient.Action.announce.action());
 		buffer.putInt(sid); // transaction_id
 		buffer.put(torrentSession.infoHash().hash()); // infoHash
 		buffer.put(PeerServer.PEER_ID.getBytes()); // 
 		buffer.putLong(0L); // 已下载大小
 		buffer.putLong(0L); // 剩余下载大小
 		buffer.putLong(0L); // 已上传大小
-		buffer.putInt(AbstractTrackerClient.Event.started.event()); // 事件
+		buffer.putInt(ATrackerClient.Event.started.event()); // 事件
 		buffer.putInt(0); // 本机IP：0（服务器自动获取）
 		buffer.putInt(UniqueCodeUtils.buildInteger()); // 系统分配唯一键
 		buffer.putInt(50); // 想要获取的Peer数量
