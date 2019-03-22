@@ -1,7 +1,6 @@
 package com.acgist.snail.net.application;
 
 import com.acgist.snail.net.TcpServer;
-import com.acgist.snail.net.message.impl.ClientMessageHandler;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.ThreadUtils;
 
@@ -25,7 +24,7 @@ public class ApplicationServer extends TcpServer {
 	}
 	
 	public boolean listen(String host, int port) {
-		return listen(host, port, ClientMessageHandler.class);
+		return listen(host, port, ApplicationMessageHandler.class);
 	}
 	
 	public static final void main(String[] args) {

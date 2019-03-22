@@ -1,4 +1,4 @@
-package com.acgist.snail.net.message;
+package com.acgist.snail.net;
 
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
@@ -6,8 +6,6 @@ import java.nio.channels.CompletionHandler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.acgist.snail.net.TcpSender;
 
 /**
  * TCP消息处理

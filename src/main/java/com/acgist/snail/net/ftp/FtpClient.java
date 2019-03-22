@@ -5,7 +5,6 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.acgist.snail.net.TcpClient;
-import com.acgist.snail.net.message.impl.FtpMessageHandler;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.StringUtils;
 

@@ -1,4 +1,4 @@
-package com.acgist.snail.net.message.impl;
+package com.acgist.snail.net.ftp;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,7 +9,7 @@ import java.util.StringTokenizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.message.TcpMessageHandler;
+import com.acgist.snail.net.TcpMessageHandler;
 import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.ThreadUtils;

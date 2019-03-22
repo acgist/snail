@@ -1,10 +1,9 @@
-package com.acgist.snail.net.message.impl;
+package com.acgist.snail.net.peer;
 
 import java.nio.ByteBuffer;
 import java.util.BitSet;
 
-import com.acgist.snail.net.message.TcpMessageHandler;
-import com.acgist.snail.net.peer.PeerServer;
+import com.acgist.snail.net.TcpMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 

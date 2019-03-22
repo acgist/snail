@@ -6,20 +6,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.TcpClient;
-import com.acgist.snail.net.message.impl.ClientMessageHandler;
-import com.acgist.snail.pojo.message.ClientMessage;
-import com.acgist.snail.pojo.message.ClientMessage.Type;
+import com.acgist.snail.pojo.message.ApplicationMessage;
+import com.acgist.snail.pojo.message.ApplicationMessage.Type;
 import com.acgist.snail.system.config.SystemConfig;
 
 /**
  * 启动检测：如果已经启动实例，通过这个方法唤醒已启动的窗口
  */
-public class ApplicationClient extends TcpClient<ClientMessageHandler> {
+public class ApplicationClient extends TcpClient<ApplicationMessageHandler> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationClient.class);
 	
 	private ApplicationClient() {
-		super(ClientMessageHandler.SPLIT, new ClientMessageHandler());
+		super(ApplicationMessageHandler.SPLIT, new ApplicationMessageHandler());
 	}
 	
 	public static final ApplicationClient newInstance() {
@@ -34,7 +33,7 @@ public class ApplicationClient extends TcpClient<ClientMessageHandler> {
 	/**
 	 * 发送客户端消息
 	 */
-	private void send(ClientMessage message) {
+	private void send(ApplicationMessage message) {
 		send(message.toJson());
 	}
 	
@@ -46,11 +45,11 @@ public class ApplicationClient extends TcpClient<ClientMessageHandler> {
 		String message = null;
 		while ((message = scanner.next()) != null) {
 			if(message.equals("close")) {
-				send(ClientMessage.message(Type.close, message));
+				send(ApplicationMessage.message(Type.close, message));
 				close();
 				break;
 			} else {
-				send(ClientMessage.text(message));
+				send(ApplicationMessage.text(message));
 			}
 		}
 		scanner.close();
@@ -63,8 +62,8 @@ public class ApplicationClient extends TcpClient<ClientMessageHandler> {
 		ApplicationClient client = ApplicationClient.newInstance();
 		try {
 			client.connect();
-			client.send(ClientMessage.message(ClientMessage.Type.notify));
-			client.send(ClientMessage.message(ClientMessage.Type.close));
+			client.send(ApplicationMessage.message(ApplicationMessage.Type.notify));
+			client.send(ApplicationMessage.message(ApplicationMessage.Type.close));
 		} catch (Exception e) {
 			LOGGER.error("通知主窗口异常", e);
 		} finally {
