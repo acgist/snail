@@ -7,13 +7,13 @@ import com.acgist.snail.protocol.ftp.FtpProtocol;
 import com.acgist.snail.protocol.http.HttpProtocol;
 import com.acgist.snail.protocol.thunder.ThunderProtocol;
 import com.acgist.snail.protocol.torrent.TorrentProtocol;
-import com.acgist.snail.system.initializer.AInitializer;
+import com.acgist.snail.system.initializer.Initializer;
 import com.acgist.snail.system.manager.ProtocolManager;
 
 /**
  * 初始化：下载协议
  */
-public class ProtocolInitializer extends AInitializer {
+public class ProtocolInitializer extends Initializer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ProtocolInitializer.class);
 	

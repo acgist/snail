@@ -7,7 +7,7 @@ import javafx.scene.control.SeparatorMenuItem;
 /**
  * 抽象菜单
  */
-public abstract class AMenu extends ContextMenu {
+public abstract class Menu extends ContextMenu {
 
 	/**
 	 * 初始化基本样式：<br>

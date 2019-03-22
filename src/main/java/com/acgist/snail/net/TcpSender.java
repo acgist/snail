@@ -17,9 +17,9 @@ import com.acgist.snail.system.config.SystemConfig;
  * 消息发送<br>
  * 发送消息时添加分割信息进行粘包拆包操作
  */
-public abstract class ATcpSender {
+public abstract class TcpSender {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ATcpSender.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TcpSender.class);
 	
 	/**
 	 * 消息分隔符
@@ -28,7 +28,7 @@ public abstract class ATcpSender {
 	
 	protected AsynchronousSocketChannel socket;
 	
-	public ATcpSender(String split) {
+	public TcpSender(String split) {
 		if(split == null) {
 			split = "";
 		}

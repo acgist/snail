@@ -4,7 +4,7 @@ import java.io.File;
 import java.net.URI;
 
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
-import com.acgist.snail.protocol.AProtocol;
+import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.protocol.torrent.TorrentProtocol;
 import com.acgist.snail.protocol.torrent.TorrentProtocol.TorrentFileOperation;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
@@ -16,7 +16,7 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * 磁力链接协议
  */
-public class MagnetProtocol extends AProtocol {
+public class MagnetProtocol extends Protocol {
 
 	private static final String HASH_KEY = "xt";
 	private static final String HASH_PREFIX = "urn:btih:";
@@ -48,7 +48,7 @@ public class MagnetProtocol extends AProtocol {
 	}
 	
 	@Override
-	protected AProtocol convert() throws DownloadException {
+	protected Protocol convert() throws DownloadException {
 		File file = MagnetResolverManager.getInstance().download(url);
 		if(file == null) {
 			throw new DownloadException("下载种子失败：" + url);

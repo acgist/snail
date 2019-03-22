@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.tracker.ATrackerClient;
+import com.acgist.snail.net.tracker.TrackerClient;
 import com.acgist.snail.net.tracker.TrackerLauncher;
 import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.session.TorrentSession;
@@ -36,7 +36,7 @@ public class TrackerSessionManager {
 	/**
 	 * 新建
 	 */
-	public TrackerLauncher build(ATrackerClient client, TorrentSession torrentSession) {
+	public TrackerLauncher build(TrackerClient client, TorrentSession torrentSession) {
 		final TrackerLauncher launcher = new TrackerLauncher(client, torrentSession);
 		TRACKER_TORRENT_MAP.put(launcher.id(), launcher);
 		return launcher;

@@ -12,7 +12,7 @@ import javax.swing.event.MouseInputAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.gui.AMenu;
+import com.acgist.snail.gui.Menu;
 import com.acgist.snail.gui.about.AboutWindow;
 import com.acgist.snail.gui.main.MainWindow;
 import com.acgist.snail.system.config.DownloadConfig;
@@ -36,7 +36,7 @@ import javafx.stage.WindowEvent;
 /**
  * 菜单 - 托盘
  */
-public class TrayMenu extends AMenu {
+public class TrayMenu extends Menu {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrayMenu.class);
 

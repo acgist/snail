@@ -18,7 +18,7 @@ public class TrackerLauncher implements Runnable {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerLauncher.class);
 	
-	private ATrackerClient client; // 客户端
+	private TrackerClient client; // 客户端
 
 //	private final TaskSession taskSession;
 	private final TorrentSession torrentSession;
@@ -29,7 +29,7 @@ public class TrackerLauncher implements Runnable {
 	private Integer undone; // 未完成数量
 	private boolean available = true; // 可用
 
-	public TrackerLauncher(ATrackerClient client, TorrentSession torrentSession) {
+	public TrackerLauncher(TrackerClient client, TorrentSession torrentSession) {
 		this.id = UniqueCodeUtils.buildInteger();
 		this.client = client;
 //		this.taskSession = torrentSession.taskSession();

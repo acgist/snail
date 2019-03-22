@@ -10,12 +10,12 @@ import javafx.stage.Stage;
 /**
  * 抽象窗口
  */
-public abstract class AWindow<T extends Initializable> extends Application {
+public abstract class Window<T extends Initializable> extends Application {
 
 	protected T controller;
 	protected Stage stage;
 	
-	public AWindow() {
+	public Window() {
 		stage = new Stage();
 	}
 	

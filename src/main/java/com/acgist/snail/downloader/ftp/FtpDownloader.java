@@ -10,7 +10,7 @@ import java.io.InputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.downloader.ADownloader;
+import com.acgist.snail.downloader.Downloader;
 import com.acgist.snail.net.ftp.FtpClient;
 import com.acgist.snail.net.ftp.FtpClientFactory;
 import com.acgist.snail.pojo.session.TaskSession;
@@ -20,7 +20,7 @@ import com.acgist.snail.utils.FileUtils;
 /**
  * FTP下载
  */
-public class FtpDownloader extends ADownloader {
+public class FtpDownloader extends Downloader {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(FtpDownloader.class);
 

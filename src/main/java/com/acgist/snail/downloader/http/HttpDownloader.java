@@ -11,7 +11,7 @@ import java.net.http.HttpResponse.BodyHandlers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.downloader.ADownloader;
+import com.acgist.snail.downloader.Downloader;
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
@@ -21,7 +21,7 @@ import com.acgist.snail.utils.FileUtils;
 /**
  * HTTP下载
  */
-public class HttpDownloader extends ADownloader {
+public class HttpDownloader extends Downloader {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(HttpDownloader.class);
 	

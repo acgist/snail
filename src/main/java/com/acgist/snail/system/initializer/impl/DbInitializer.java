@@ -7,18 +7,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.entity.ConfigEntity;
-import com.acgist.snail.repository.JDBCConnection;
 import com.acgist.snail.system.config.DatabaseConfig;
-import com.acgist.snail.system.initializer.AInitializer;
+import com.acgist.snail.system.initializer.Initializer;
+import com.acgist.snail.system.manager.DatabaseManager;
 
 /**
  * 初始化：数据库建表
  */
-public class DbInitializer extends AInitializer {
+public class DbInitializer extends Initializer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DbInitializer.class);
 	
-	private JDBCConnection jdbcConnection = JDBCConnection.getInstance();
+	private DatabaseManager jdbcConnection = DatabaseManager.getInstance();
 	
 	private DbInitializer() {
 	}

@@ -5,12 +5,12 @@ import java.net.http.HttpRequest.Builder;
 import java.util.Map;
 
 import com.acgist.snail.net.http.HTTPClient;
-import com.acgist.snail.protocol.magnet.AMagnetResolver;
+import com.acgist.snail.protocol.magnet.MagnetResolver;
 
 /**
  * http://www.btbttv.cc/torrent.html
  */
-public class BtbttvMagnetResolver extends AMagnetResolver {
+public class BtbttvMagnetResolver extends MagnetResolver {
 
 	private BtbttvMagnetResolver() {
 	}

@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.pojo.entity.BaseEntity;
 import com.acgist.snail.pojo.wrapper.ResultSetWrapper;
 import com.acgist.snail.system.exception.RepositoryException;
+import com.acgist.snail.system.manager.DatabaseManager;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.EntityUtils;
 import com.acgist.snail.utils.JsonUtils;
@@ -23,13 +24,13 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * 数据库
  */
-public abstract class ARepository<T extends BaseEntity> {
+public abstract class Repository<T extends BaseEntity> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ARepository.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Repository.class);
 	
 	private static final String COLUMN_REGEX = "[a-zA-Z]+";
 	
-	private JDBCConnection jdbcConnection = JDBCConnection.getInstance();
+	private DatabaseManager jdbcConnection = DatabaseManager.getInstance();
 	
 	/**
 	 * 数据库列：只允许字符串
@@ -43,7 +44,7 @@ public abstract class ARepository<T extends BaseEntity> {
 	
 	protected String table;
 	
-	protected ARepository(String table) {
+	protected Repository(String table) {
 		this.table = table;
 	}
 	

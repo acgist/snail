@@ -12,7 +12,7 @@ import com.acgist.snail.utils.BeanUtils;
 /**
  * 客户端连接
  */
-public class AcceptHandler<T extends ATcpMessageHandler> implements CompletionHandler<AsynchronousSocketChannel, AsynchronousServerSocketChannel> {
+public class AcceptHandler<T extends TcpMessageHandler> implements CompletionHandler<AsynchronousSocketChannel, AsynchronousServerSocketChannel> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AcceptHandler.class);
 	
@@ -22,7 +22,7 @@ public class AcceptHandler<T extends ATcpMessageHandler> implements CompletionHa
 		this.clazz = clazz;
 	}
 	
-	public static final <T extends ATcpMessageHandler> AcceptHandler<T> newInstance(Class<T> clazz) {
+	public static final <T extends TcpMessageHandler> AcceptHandler<T> newInstance(Class<T> clazz) {
 		return new AcceptHandler<>(clazz);
 	}
 	

@@ -10,14 +10,14 @@ import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.system.initializer.AInitializer;
+import com.acgist.snail.system.initializer.Initializer;
 import com.acgist.snail.system.manager.DownloaderManager;
 import com.acgist.snail.utils.CollectionUtils;
 
 /**
  * 初始化：下载器
  */
-public class DownloaderInitializer extends AInitializer {
+public class DownloaderInitializer extends Initializer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DownloaderInitializer.class);
 	

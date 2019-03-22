@@ -5,7 +5,7 @@ import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
-import com.acgist.snail.protocol.AProtocol;
+import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -13,7 +13,7 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * HTTP协议
  */
-public class HttpProtocol extends AProtocol {
+public class HttpProtocol extends Protocol {
 
 	public static final String HTTP_REGEX = "http://.+";
 	public static final String HTTPS_REGEX = "https://.+";

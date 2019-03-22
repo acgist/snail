@@ -7,7 +7,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.protocol.magnet.AMagnetResolver;
+import com.acgist.snail.protocol.magnet.MagnetResolver;
 import com.acgist.snail.system.exception.DownloadException;
 
 /**
@@ -26,7 +26,7 @@ public class MagnetResolverManager {
 		return INSTANCE;
 	}
 	
-	private List<AMagnetResolver> RESOLVERS = new ArrayList<>();
+	private List<MagnetResolver> RESOLVERS = new ArrayList<>();
 
 	/**
 	 * 下载种子文件
@@ -34,7 +34,7 @@ public class MagnetResolverManager {
 	public File download(String url) throws DownloadException {
 		synchronized (RESOLVERS) {
 			File file = null;
-			for (AMagnetResolver coder : RESOLVERS) {
+			for (MagnetResolver coder : RESOLVERS) {
 				file = coder.execute(url);
 				if(file != null) {
 					break;
@@ -47,7 +47,7 @@ public class MagnetResolverManager {
 	/**
 	 * 设置解码器排序
 	 */
-	public void register(AMagnetResolver resolver) {
+	public void register(MagnetResolver resolver) {
 		LOGGER.info("注册磁力链接解码器：{}", resolver.name());
 		RESOLVERS.add(resolver);
 	}
