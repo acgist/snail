@@ -10,7 +10,7 @@ import com.acgist.snail.system.manager.TorrentSessionManager;
 import com.acgist.snail.system.manager.TrackerClientManager;
 import com.acgist.snail.utils.ThreadUtils;
 
-public class TrackerClientTest {
+public class TrackerClientUdpTest {
 
 	@Test
 	public void test() throws NetException, DownloadException {

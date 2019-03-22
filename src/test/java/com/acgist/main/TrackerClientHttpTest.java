@@ -8,7 +8,7 @@ import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.system.manager.TorrentSessionManager;
 
-public class TrackerHttpTest {
+public class TrackerClientHttpTest {
 
 	@Test
 	public void test() throws DownloadException, NetException {

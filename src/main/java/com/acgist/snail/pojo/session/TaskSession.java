@@ -26,7 +26,7 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * session - 任务<br>
- * 下载任务信息统计
+ * 下载任务信息统计<br>
  */
 public class TaskSession implements IStatistics {
 

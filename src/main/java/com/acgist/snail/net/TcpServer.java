@@ -8,8 +8,8 @@ import java.nio.channels.AsynchronousServerSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.message.TcpMessageHandler;
 import com.acgist.snail.net.message.AcceptHandler;
+import com.acgist.snail.net.message.TcpMessageHandler;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.IoUtils;
 
@@ -67,20 +67,14 @@ public abstract class TcpServer {
 			LOGGER.error("启动{}异常", name, e);
 		}
 		if(ok) {
-//			SystemThreadContext.runasyn(() -> {
-//				try {
-//					LOGGER.info("启动{}线程", name);
-//					GROUP.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
-//				} catch (InterruptedException e) {
-//					LOGGER.error("启动{}异常", name, e);
-//				}
-//			});
+//			阻止线程关闭
+//			GROUP.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
 		} else {
 			close();
 		}
 		return ok;
 	}
-
+	
 	/**
 	 * 关闭资源
 	 */

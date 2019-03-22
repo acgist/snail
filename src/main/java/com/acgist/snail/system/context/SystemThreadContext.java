@@ -138,11 +138,6 @@ public class SystemThreadContext {
 	public static final void shutdown(ExecutorService executor) {
 		if(executor != null && !executor.isShutdown()) {
 			executor.shutdown();
-			try {
-				executor.awaitTermination(5, TimeUnit.SECONDS);
-			} catch (InterruptedException e) {
-				LOGGER.error("线程池关闭等待异常", e);
-			}
 		}
 	}
 	

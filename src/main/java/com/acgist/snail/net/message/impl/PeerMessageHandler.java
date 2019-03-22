@@ -3,19 +3,29 @@ package com.acgist.snail.net.message.impl;
 import java.nio.ByteBuffer;
 
 import com.acgist.snail.net.message.TcpMessageHandler;
+import com.acgist.snail.net.peer.PeerServer;
+import com.acgist.snail.pojo.session.TorrentSession;
 
 /**
  * Peer消息处理
  */
 public class PeerMessageHandler extends TcpMessageHandler {
 
-	public PeerMessageHandler() {
+	/**
+	 * 握手协议名称
+	 */
+	public static final String HANDSHAKE_NAME = "BitTorrent protocol";
+	
+	private TorrentSession torrentSession;
+	
+	public PeerMessageHandler(TorrentSession torrentSession) {
 		super("");
+		this.torrentSession = torrentSession;
 	}
 
 	@Override
 	public boolean doMessage(Integer result, ByteBuffer attachment) {
-		return false;
+		return true;
 	}
 
 	/**
@@ -27,19 +37,16 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 * info_hash：info_hash<br>
 	 * peer_id：peer_id
 	 */
-	private void handshake() {
+	public void handshake() {
+		ByteBuffer buffer = ByteBuffer.allocate(71);
+		buffer.putInt(19);
+		buffer.put(HANDSHAKE_NAME.getBytes());
+		buffer.put("00000000".getBytes());
+		buffer.put(torrentSession.infoHash().hash());
+		buffer.put(PeerServer.PEER_ID.getBytes());
+		send(buffer.array());
 	}
 
-	/**
-	 * 发送消息：
-	 * 消息格式：<length prefix><message ID><payload>
-	 * length prefix：4字节：message id和payload的长度和<br>
-	 * message id：1字节：指明消息的编号<br>
-	 * payload：消息内容
-	 */
-	public void message() {
-	}
-	
 	/**
 	 * 消息持久：<len=0000>
 	 * 只有消息长度，没有消息编号和负载
@@ -77,4 +84,30 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	public void have() {
 	}
 	
+	/**
+	 * 消息：
+	 * 消息格式：&lt;length prefix&gt;&lt;message ID&gt;&lt;payload&gt;<br>
+	 * length prefix：4字节：message id和payload的长度和<br>
+	 * message id：1字节：指明消息的编号<br>
+	 * payload：消息内容
+	 */
+	public ByteBuffer buildMessage(Integer length, Byte id, byte[] payload) {
+		int capacity = 4;
+		if(id != null) {
+			capacity += 1;
+		}
+		if(payload != null) {
+			capacity += payload.length;
+		}
+		ByteBuffer buffer = ByteBuffer.allocate(capacity);
+		buffer.putInt(length);
+		if(id != null) {
+			buffer.put(id);
+		}
+		if(payload != null) {
+			buffer.put(payload);
+		}
+		return buffer;
+	}
+
 }

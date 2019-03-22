@@ -5,7 +5,7 @@ import org.junit.Test;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.manager.MagnetResolverManager;
 
-public class MagnetDecoderTest {
+public class MagnetTest {
 
 	@Test
 	public void download() throws DownloadException {

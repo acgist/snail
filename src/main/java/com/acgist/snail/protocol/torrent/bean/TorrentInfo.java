@@ -19,7 +19,7 @@ public class TorrentInfo {
 	private byte[] ed2k; // ed2k
 	private byte[] filehash; // 文件hash
 	private byte[] pieces; // 特征信息：每个piece的hash值占用20个字节
-	private Long pieceLength; // 块大小
+	private Long pieceLength; // 每个块大小
 	private String publisher; // 发布者
 	private String publisherUtf8; // 发布者UTF8
 	private String publisherUrl; // 发布者URL

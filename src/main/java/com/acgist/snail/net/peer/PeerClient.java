@@ -3,6 +3,8 @@ package com.acgist.snail.net.peer;
 import com.acgist.snail.net.TcpClient;
 import com.acgist.snail.net.message.impl.PeerMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
+import com.acgist.snail.pojo.session.TaskSession;
+import com.acgist.snail.pojo.session.TorrentSession;
 
 /**
  * Peer客户端<br>
@@ -13,9 +15,14 @@ import com.acgist.snail.pojo.session.PeerSession;
 public class PeerClient extends TcpClient<PeerMessageHandler> {
 
 	private PeerSession peerSession;
+	private TaskSession taskSession;
+	private TorrentSession torrentSession;
 	
-	public PeerClient() {
-		super("", new PeerMessageHandler());
+	public PeerClient(PeerSession peerSession, TorrentSession torrentSession) {
+		super("", new PeerMessageHandler(torrentSession));
+		this.peerSession = peerSession;
+		this.taskSession = torrentSession.taskSession();
+		this.torrentSession = torrentSession;
 	}
 
 	@Override
