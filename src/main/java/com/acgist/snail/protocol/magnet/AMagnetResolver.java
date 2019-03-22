@@ -16,7 +16,7 @@ import com.acgist.snail.utils.FileUtils;
 /**
  * 磁力链接解析器：磁力链接转种子文件
  */
-public abstract class MagnetResolver {
+public abstract class AMagnetResolver {
 	
 	protected String hash; // HASH
 	protected String magnet; // 完整磁力链接

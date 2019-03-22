@@ -11,16 +11,16 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.message.AbstractTcpMessageHandler;
+import com.acgist.snail.net.message.ATcpMessageHandler;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.IoUtils;
 
 /**
  * Aio Socket客户端
  */
-public abstract class AbstractTcpClient<T extends AbstractTcpMessageHandler> extends AbstractTcpSender {
+public abstract class ATcpClient<T extends ATcpMessageHandler> extends ATcpSender {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractTcpClient.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ATcpClient.class);
 	
 	/**
 	 * 所有客户端公用一个线程池，线程池大小等于客户端类型数量
@@ -42,7 +42,7 @@ public abstract class AbstractTcpClient<T extends AbstractTcpMessageHandler> ext
 		GROUP = group;
 	}
 	
-	public AbstractTcpClient(String split, T handler) {
+	public ATcpClient(String split, T handler) {
 		super(split);
 		this.handler = handler;
 	}

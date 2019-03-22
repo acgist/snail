@@ -5,7 +5,7 @@ import com.acgist.snail.system.context.SystemThreadContext;
 /**
  * 初始化
  */
-public abstract class Initializer {
+public abstract class AInitializer {
 
 	/**
 	 * 同步执行

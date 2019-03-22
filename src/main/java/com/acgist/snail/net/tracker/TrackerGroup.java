@@ -65,7 +65,7 @@ public class TrackerGroup {
 			throw new DownloadException("无效种子文件");
 		}
 		try {
-			List<AbstractTrackerClient> clients = TrackerClientManager.getInstance().clients(torrent.getAnnounce(), torrent.getAnnounceList());
+			List<ATrackerClient> clients = TrackerClientManager.getInstance().clients(torrent.getAnnounce(), torrent.getAnnounceList());
 			clients.stream()
 			.map(client -> {
 				LOGGER.debug("添加Tracker Client，ID：{}，announce：{}", client.id, client.announceUrl);

@@ -5,8 +5,8 @@ import java.nio.ByteBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.message.AbstractUdpMessageHandler;
-import com.acgist.snail.net.tracker.AbstractTrackerClient;
+import com.acgist.snail.net.message.AUdpMessageHandler;
+import com.acgist.snail.net.tracker.ATrackerClient;
 import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.system.manager.TrackerClientManager;
 import com.acgist.snail.system.manager.TrackerSessionManager;
@@ -15,7 +15,7 @@ import com.acgist.snail.utils.PeerUtils;
 /**
  * UDP Tracker消息
  */
-public class TrackerMessageHandler extends AbstractUdpMessageHandler {
+public class TrackerMessageHandler extends AUdpMessageHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerMessageHandler.class);
 	
@@ -24,13 +24,13 @@ public class TrackerMessageHandler extends AbstractUdpMessageHandler {
 		final int size = buffer.position();
 		buffer.flip();
 		final int action = buffer.getInt();
-		if (action == AbstractTrackerClient.Action.connect.action()) {
+		if (action == ATrackerClient.Action.connect.action()) {
 			doConnect(buffer);
-		} else if(action == AbstractTrackerClient.Action.announce.action()) {
+		} else if(action == ATrackerClient.Action.announce.action()) {
 			doAnnounce(buffer, size);
-		} else if(action == AbstractTrackerClient.Action.scrape.action()) {
+		} else if(action == ATrackerClient.Action.scrape.action()) {
 			// 刮檫
-		} else if(action == AbstractTrackerClient.Action.error.action()) {
+		} else if(action == ATrackerClient.Action.error.action()) {
 			LOGGER.warn("发生错误");
 		}
 		buffer.clear();

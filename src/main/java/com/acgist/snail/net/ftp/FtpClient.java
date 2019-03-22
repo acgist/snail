@@ -4,7 +4,7 @@ import java.io.InputStream;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import com.acgist.snail.net.AbstractTcpClient;
+import com.acgist.snail.net.ATcpClient;
 import com.acgist.snail.net.message.impl.FtpMessageHandler;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.StringUtils;
@@ -13,7 +13,7 @@ import com.acgist.snail.utils.StringUtils;
  * FTP客户端
  * TODO：中文路径
  */
-public class FtpClient extends AbstractTcpClient<FtpMessageHandler> {
+public class FtpClient extends ATcpClient<FtpMessageHandler> {
 
 	public static final String ANONYMOUS = "anonymous"; // 匿名用户名
 	

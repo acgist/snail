@@ -23,9 +23,9 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * 数据库
  */
-public abstract class BaseRepository<T extends BaseEntity> {
+public abstract class ARepository<T extends BaseEntity> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(BaseRepository.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ARepository.class);
 	
 	private static final String COLUMN_REGEX = "[a-zA-Z]+";
 	
@@ -43,7 +43,7 @@ public abstract class BaseRepository<T extends BaseEntity> {
 	
 	protected String table;
 	
-	protected BaseRepository(String table) {
+	protected ARepository(String table) {
 		this.table = table;
 	}
 	

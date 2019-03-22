@@ -7,16 +7,16 @@ import java.nio.channels.CompletionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.AbstractTcpSender;
+import com.acgist.snail.net.ATcpSender;
 
 /**
  * TCP消息处理
  */
-public abstract class AbstractTcpMessageHandler extends AbstractTcpSender implements CompletionHandler<Integer, ByteBuffer> {
+public abstract class ATcpMessageHandler extends ATcpSender implements CompletionHandler<Integer, ByteBuffer> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractTcpMessageHandler.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ATcpMessageHandler.class);
 	
-	public AbstractTcpMessageHandler(String split) {
+	public ATcpMessageHandler(String split) {
 		super(split);
 	}
 

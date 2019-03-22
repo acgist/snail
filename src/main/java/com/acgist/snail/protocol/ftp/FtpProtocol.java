@@ -5,7 +5,7 @@ import com.acgist.snail.net.ftp.FtpClientFactory;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
-import com.acgist.snail.protocol.Protocol;
+import com.acgist.snail.protocol.AProtocol;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.FileUtils;
@@ -13,7 +13,7 @@ import com.acgist.snail.utils.FileUtils;
 /**
  * FTP协议
  */
-public class FtpProtocol extends Protocol {
+public class FtpProtocol extends AProtocol {
 	
 	public static final String FTP_REGEX = "ftp://.+";
 	

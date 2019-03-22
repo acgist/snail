@@ -4,13 +4,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.entity.TaskEntity;
-import com.acgist.snail.repository.BaseRepository;
+import com.acgist.snail.repository.ARepository;
 import com.acgist.snail.utils.FileUtils;
 
 /**
  * 任务
  */
-public class TaskRepository extends BaseRepository<TaskEntity> {
+public class TaskRepository extends ARepository<TaskEntity> {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskRepository.class);
 

@@ -9,12 +9,12 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.pojo.entity.ConfigEntity;
 import com.acgist.snail.repository.JDBCConnection;
 import com.acgist.snail.system.config.DatabaseConfig;
-import com.acgist.snail.system.initializer.Initializer;
+import com.acgist.snail.system.initializer.AInitializer;
 
 /**
  * 初始化：数据库建表
  */
-public class DbInitializer extends Initializer {
+public class DbInitializer extends AInitializer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DbInitializer.class);
 	
