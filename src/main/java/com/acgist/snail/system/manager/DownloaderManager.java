@@ -72,7 +72,7 @@ public final class DownloaderManager {
 		if(ProtocolManager.getInstance().available()) {
 			synchronized (this) {
 				if(taskSession == null) {
-					throw new DownloadException("下载任务不存在");
+					return null;
 				}
 				IDownloader downloader = downloader(taskSession);
 				if(downloader == null) {

@@ -39,6 +39,7 @@ public class SystemConfig {
 	private Integer peerPort; // Peer端口
 	private Integer dhtPort; // DHT端口
 	private Integer trackerSize; // 单个任务Tracker数量
+	private Integer trackerMaxFailTimes; // Tracker失败次数
 	private Integer peerSize; // 单个任务Peer数量
 	private Integer peerOptimizeInterval; // 单个任务Peer优化周期（秒）
 
@@ -58,6 +59,7 @@ public class SystemConfig {
 		INSTANCE.peerPort = propertiesUtils.getInteger("acgist.peer.port");
 		INSTANCE.dhtPort = propertiesUtils.getInteger("acgist.dht.port");
 		INSTANCE.trackerSize = propertiesUtils.getInteger("acgist.tracker.size");
+		INSTANCE.trackerMaxFailTimes = propertiesUtils.getInteger("acgist.tracker.max.fail.times");
 		INSTANCE.peerSize = propertiesUtils.getInteger("acgist.peer.size");
 		INSTANCE.peerOptimizeInterval = propertiesUtils.getInteger("acgist.peer.optimize.interval");
 	}
@@ -144,6 +146,13 @@ public class SystemConfig {
 	 */
 	public static final Integer getTrackerSize() {
 		return INSTANCE.trackerSize;
+	}
+	
+	/**
+	 * Tracker失败次数
+	 */
+	public static final Integer getTrackerMaxFailTimes() {
+		return INSTANCE.trackerMaxFailTimes;
 	}
 
 	/**

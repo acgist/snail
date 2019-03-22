@@ -49,6 +49,7 @@ public class TorrentSession {
 	public void build(TaskSession taskSession) throws DownloadException {
 		this.taskSession = taskSession;
 		this.trackerGroup = new TrackerGroup(this);
+		this.trackerGroup.loadTracker();
 	}
 
 	/**
