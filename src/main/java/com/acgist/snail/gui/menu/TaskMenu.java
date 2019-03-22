@@ -7,7 +7,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.gui.AMenu;
+import com.acgist.snail.gui.Menu;
 import com.acgist.snail.gui.alert.AlertWindow;
 import com.acgist.snail.gui.main.MainWindow;
 import com.acgist.snail.gui.torrent.TorrentWindow;
@@ -29,7 +29,7 @@ import javafx.stage.Stage;
 /**
  * 菜单 - 任务
  */
-public class TaskMenu extends AMenu {
+public class TaskMenu extends Menu {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskMenu.class);
 	

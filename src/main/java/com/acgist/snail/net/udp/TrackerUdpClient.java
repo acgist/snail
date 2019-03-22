@@ -1,12 +1,12 @@
 package com.acgist.snail.net.udp;
 
-import com.acgist.snail.net.AUdpClient;
+import com.acgist.snail.net.UdpClient;
 import com.acgist.snail.net.message.impl.TrackerMessageHandler;
 
 /**
  * tracker udp client
  */
-public class TrackerUdpClient extends AUdpClient<TrackerMessageHandler> {
+public class TrackerUdpClient extends UdpClient<TrackerMessageHandler> {
 
 	private static final TrackerUdpClient INSTANCE = new TrackerUdpClient();
 

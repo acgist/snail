@@ -2,13 +2,13 @@ package com.acgist.snail.downloader.ed2k;
 
 import java.io.IOException;
 
-import com.acgist.snail.downloader.ADownloader;
+import com.acgist.snail.downloader.Downloader;
 import com.acgist.snail.pojo.session.TaskSession;
 
 /**
  * ED2K下载器
  */
-public class Ed2kDownloader extends ADownloader {
+public class Ed2kDownloader extends Downloader {
 
 	private Ed2kDownloader(TaskSession taskSession) {
 		super(taskSession);

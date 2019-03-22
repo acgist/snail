@@ -1,4 +1,4 @@
-package com.acgist.snail.repository;
+package com.acgist.snail.system.manager;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -18,18 +18,18 @@ import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.EntityUtils;
 
 /**
- * 数据库连接
+ * 数据库管理器
  */
-public class JDBCConnection {
+public class DatabaseManager {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(JDBCConnection.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseManager.class);
 	
-	private static final JDBCConnection INSTANCE = new JDBCConnection();
+	private static final DatabaseManager INSTANCE = new DatabaseManager();
 	
-	private JDBCConnection() {
+	private DatabaseManager() {
 	}
 	
-	public static final JDBCConnection getInstance() {
+	public static final DatabaseManager getInstance() {
 		return INSTANCE;
 	}
 	

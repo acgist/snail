@@ -8,7 +8,7 @@ import java.nio.channels.AsynchronousServerSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.message.ATcpMessageHandler;
+import com.acgist.snail.net.message.TcpMessageHandler;
 import com.acgist.snail.net.message.AcceptHandler;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.IoUtils;
@@ -17,9 +17,9 @@ import com.acgist.snail.utils.IoUtils;
  * 服务端超类
  * TODO：BT任务服务端口
  */
-public abstract class ATcpServer {
+public abstract class TcpServer {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ATcpServer.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TcpServer.class);
 	
 	private static final AsynchronousChannelGroup GROUP;
 	
@@ -39,7 +39,7 @@ public abstract class ATcpServer {
 	/**
 	 * 线程大小根据客户类型优化
 	 */
-	protected ATcpServer(String name) {
+	protected TcpServer(String name) {
 		this.name = name;
 	}
 
@@ -56,7 +56,7 @@ public abstract class ATcpServer {
 	/**
 	 * 开启监听
 	 */
-	protected <T extends ATcpMessageHandler> boolean listen(String host, int port, Class<T> clazz) {
+	protected <T extends TcpMessageHandler> boolean listen(String host, int port, Class<T> clazz) {
 		LOGGER.info("启动{}", name);
 		boolean ok = true;
 		try {

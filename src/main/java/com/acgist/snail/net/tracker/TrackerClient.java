@@ -19,9 +19,9 @@ import com.acgist.snail.utils.UniqueCodeUtils;
  * UDP：https://www.libtorrent.org/udp_tracker_protocol.html<br>
  * sid：每一个torrent和tracker服务器对应的id
  */
-public abstract class ATrackerClient implements Comparable<ATrackerClient> {
+public abstract class TrackerClient implements Comparable<TrackerClient> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ATrackerClient.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerClient.class);
 	
 	public enum Type {
 		udp,
@@ -96,7 +96,7 @@ public abstract class ATrackerClient implements Comparable<ATrackerClient> {
 	 */
 	private String failMessage;
 	
-	public ATrackerClient(String scrapeUrl, String announceUrl, Type type) throws NetException {
+	public TrackerClient(String scrapeUrl, String announceUrl, Type type) throws NetException {
 		if(StringUtils.isEmpty(announceUrl)) {
 			throw new NetException("不支持的Tracker announceUrl：" + announceUrl);
 		}
@@ -180,7 +180,7 @@ public abstract class ATrackerClient implements Comparable<ATrackerClient> {
 	}
 	
 	@Override
-	public int compareTo(ATrackerClient client) {
+	public int compareTo(TrackerClient client) {
 		return this.weight == client.weight ? 0 :
 			this.weight > client.weight ? 1 : -1;
 	}
@@ -196,7 +196,7 @@ public abstract class ATrackerClient implements Comparable<ATrackerClient> {
 			return true;
 		}
 		if(ObjectUtils.equalsClazz(this, object)) {
-			ATrackerClient client = (ATrackerClient) object;
+			TrackerClient client = (TrackerClient) object;
 			return ObjectUtils.equalsBuilder(this.announceUrl)
 				.equals(ObjectUtils.equalsBuilder(client.announceUrl));
 		}

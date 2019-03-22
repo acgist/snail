@@ -1,6 +1,6 @@
 package com.acgist.snail.net.peer;
 
-import com.acgist.snail.net.ATcpClient;
+import com.acgist.snail.net.TcpClient;
 import com.acgist.snail.net.message.impl.PeerMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 
@@ -10,7 +10,7 @@ import com.acgist.snail.pojo.session.PeerSession;
  * 位操作：BitSet<br>
  * https://blog.csdn.net/p312011150/article/details/81478237
  */
-public class PeerClient extends ATcpClient<PeerMessageHandler> {
+public class PeerClient extends TcpClient<PeerMessageHandler> {
 
 	private PeerSession peerSession;
 	

@@ -3,7 +3,7 @@ package com.acgist.snail.gui.main;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.gui.AWindow;
+import com.acgist.snail.gui.Window;
 import com.acgist.snail.gui.about.AboutWindow;
 import com.acgist.snail.system.config.SystemConfig;
 
@@ -18,7 +18,7 @@ import javafx.stage.Stage;
  * 任务栏按钮
  * 托盘气泡通知
  */
-public class MainWindow extends AWindow<MainController> {
+public class MainWindow extends Window<MainController> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MainWindow.class);
 	

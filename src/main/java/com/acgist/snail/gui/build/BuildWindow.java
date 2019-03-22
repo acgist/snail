@@ -3,7 +3,7 @@ package com.acgist.snail.gui.build;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.gui.AWindow;
+import com.acgist.snail.gui.Window;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -14,7 +14,7 @@ import javafx.stage.Stage;
 /**
  * 新建
  */
-public class BuildWindow extends AWindow<BuildController> {
+public class BuildWindow extends Window<BuildController> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BuildWindow.class);
 	

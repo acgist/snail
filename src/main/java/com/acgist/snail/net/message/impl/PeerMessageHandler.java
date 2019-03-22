@@ -2,12 +2,12 @@ package com.acgist.snail.net.message.impl;
 
 import java.nio.ByteBuffer;
 
-import com.acgist.snail.net.message.ATcpMessageHandler;
+import com.acgist.snail.net.message.TcpMessageHandler;
 
 /**
  * Peer消息处理
  */
-public class PeerMessageHandler extends ATcpMessageHandler {
+public class PeerMessageHandler extends TcpMessageHandler {
 
 	public PeerMessageHandler() {
 		super("");

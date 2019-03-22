@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.session.TaskSession;
-import com.acgist.snail.protocol.AProtocol;
+import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.ThreadUtils;
 
@@ -23,7 +23,7 @@ public class ProtocolManager {
 	private static final ProtocolManager INSTANCE = new ProtocolManager();
 	
 	private AtomicBoolean available; // 是否可用
-	private List<AProtocol> protocols;
+	private List<Protocol> protocols;
 	
 	private ProtocolManager() {
 		available = new AtomicBoolean(false);
@@ -37,7 +37,7 @@ public class ProtocolManager {
 	/**
 	 * 注册协议
 	 */
-	public <T extends AProtocol> void register(AProtocol protocol) {
+	public <T extends Protocol> void register(Protocol protocol) {
 		LOGGER.info("注册下载协议：{}", protocol.name());
 		protocols.add(protocol);
 	}
@@ -61,8 +61,8 @@ public class ProtocolManager {
 	/**
 	 * 获取下载协议
 	 */
-	public AProtocol protocol(String url) throws DownloadException {
-		Optional<AProtocol> optional = protocols.stream()
+	public Protocol protocol(String url) throws DownloadException {
+		Optional<Protocol> optional = protocols.stream()
 			.filter(protocol -> protocol.available())
 			.map(protocol -> protocol.init(url))
 			.filter(protocol -> protocol.verify())

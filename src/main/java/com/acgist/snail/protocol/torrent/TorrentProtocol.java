@@ -8,7 +8,7 @@ import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.protocol.AProtocol;
+import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.protocol.magnet.MagnetProtocol;
 import com.acgist.snail.system.config.FileTypeConfig.FileType;
 import com.acgist.snail.system.exception.DownloadException;
@@ -18,7 +18,7 @@ import com.acgist.snail.utils.FileUtils;
 /**
  * BT协议
  */
-public class TorrentProtocol extends AProtocol {
+public class TorrentProtocol extends Protocol {
 
 	/**
 	 * 种子文件操作

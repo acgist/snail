@@ -2,14 +2,14 @@ package com.acgist.snail.downloader.torrent;
 
 import java.io.IOException;
 
-import com.acgist.snail.downloader.ADownloader;
+import com.acgist.snail.downloader.Downloader;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.magnet.MagnetProtocol;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.manager.TorrentSessionManager;
 
-public class TorrentDownloader extends ADownloader {
+public class TorrentDownloader extends Downloader {
 
 	private TorrentSession torrentSession;
 	
