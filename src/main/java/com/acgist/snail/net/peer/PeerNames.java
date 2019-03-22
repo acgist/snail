@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * Peer终端名称
  */
-public class PeerTerminalNames {
+public class PeerNames {
 	
 	private static final String UNKNOWN = "unknown"; // 未知中断
 	private static final Map<String, String> PEER_NAMES = new HashMap<>();

@@ -7,9 +7,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.peer.PeerClientGroup;
+import com.acgist.snail.net.peer.PeerGroup;
 import com.acgist.snail.pojo.session.StatisticsSession;
-import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.exception.DownloadException;
@@ -26,22 +25,22 @@ public class TrackerGroup {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerGroup.class);
 	
-	private final TaskSession taskSession;
+//	private final TaskSession taskSession;
 	private final TorrentSession torrentSession;
 	/**
 	 * Peer组
 	 */
-	private final PeerClientGroup peerClientGroup;
+	private final PeerGroup peerGroup;
 	/**
 	 * tracker信息
 	 */
 	private final List<TrackerLauncher> trackerLaunchers;
 	
 	public TrackerGroup(TorrentSession torrentSession) throws DownloadException {
-		this.taskSession = torrentSession.taskSession();
+//		this.taskSession = torrentSession.taskSession();
 		this.torrentSession = torrentSession;
 		this.trackerLaunchers = new ArrayList<>();
-		this.peerClientGroup = new PeerClientGroup(torrentSession);
+		this.peerGroup = new PeerGroup(torrentSession);
 		loadTracker();
 	}
 
@@ -53,7 +52,7 @@ public class TrackerGroup {
 			return;
 		}
 		peers.forEach((host, port) -> {
-			peerClientGroup.put(statistics, host, port);
+			peerGroup.put(statistics, host, port);
 		});
 	}
 
@@ -81,4 +80,12 @@ public class TrackerGroup {
 		}
 	}
 
+	/**
+	 * 释放资源
+	 */
+	public void release() {
+		trackerLaunchers.forEach(launcher -> launcher.release());
+		peerGroup.release();
+	}
+	
 }
