@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import com.acgist.snail.protocol.thunder.ThunderProtocol;
 
-public class ThunderDecoderTest {
+public class ThunderTest {
 
 	@Test
 	public void test() {

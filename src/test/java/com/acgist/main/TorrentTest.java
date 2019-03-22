@@ -6,7 +6,7 @@ import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
 import com.acgist.snail.system.manager.TorrentSessionManager;
 
-public class TorrentDecoderTest {
+public class TorrentTest {
 
 	@Test
 	public void test() throws Exception {
@@ -25,6 +25,8 @@ public class TorrentDecoderTest {
 //		System.out.println(torrent.getEncoding());
 //		System.out.println(torrent.getCreateBy());
 //		System.out.println(torrent.getInfo().getLength());
+		System.out.println(torrent.getInfo().getPieceLength());
+		System.out.println(torrent.getInfo().getPieces().length);
 		System.out.println(torrent.getAnnounce());
 		if (torrent.getAnnounceList().size() > 0) {
 			for (String tmp : torrent.getAnnounceList()) {

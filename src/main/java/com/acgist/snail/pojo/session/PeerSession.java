@@ -12,11 +12,20 @@ public class PeerSession implements IStatistics {
 
 	private String host;
 	private Integer port;
+	
+	private Boolean amChocking; // 客户端将Peer阻塞：阻塞（不允许下载）-1（true）、非阻塞-0
+	private Boolean amInterested; // 客户端对Peer感兴趣：感兴趣（Peer有客户端没有的piece）-1（true）、不感兴趣-0
+	private Boolean peerChocking; // Peer将客户阻塞：阻塞（Peer不允许客户端下载）-1（true）、非阻塞-0
+	private Boolean peerInterested; // Peer对客户端感兴趣：感兴趣-1、不感兴趣-0
 
 	public PeerSession(StatisticsSession parent, String host, Integer port) {
 		this.statistics = new StatisticsSession(parent);
 		this.host = host;
 		this.port = port;
+		amChocking = true;
+		amInterested = false;
+		peerChocking = true;
+		peerInterested = false;
 	}
 
 	/**
@@ -45,6 +54,20 @@ public class PeerSession implements IStatistics {
 
 	public Integer getPort() {
 		return port;
+	}
+	
+	/**
+	 * 可以下载：客户端对Peer感兴趣并且Peer未阻塞客户端
+	 */
+	public boolean download() {
+		return this.amInterested && !this.peerChocking;
+	}
+	
+	/**
+	 * 可以上传：Peer对客户端感兴趣并且客户端未阻塞Peer
+	 */
+	public boolean uplaod() {
+		return this.peerInterested && !this.amChocking;
 	}
 
 	@Override
