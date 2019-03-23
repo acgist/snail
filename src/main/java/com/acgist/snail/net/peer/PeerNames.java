@@ -9,6 +9,7 @@ import java.util.Map;
 public class PeerNames {
 	
 	private static final String UNKNOWN = "unknown"; // 未知中断
+	
 	private static final Map<String, String> PEER_NAMES = new HashMap<>();
 
 	static {
