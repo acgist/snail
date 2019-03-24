@@ -58,5 +58,5 @@ public class Application {
 			MainWindow.getInstance().show();
 		});
 	}
-	
+
 }
