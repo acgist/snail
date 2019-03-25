@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -18,13 +19,15 @@ import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.CollectionUtils;
 
 /**
- * torrent文件流
+ * torrent文件流<br>
+ * 写文件
  */
 public class TorrentStream {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentStream.class);
 	
 	// 固定值
+	private final int pieceSize; // 块数量
 	private final long pieceLength; // 每个块的大小
 	
 	// 初始值：变化值
@@ -34,19 +37,26 @@ public class TorrentStream {
 	
 	// 初始值：不变值
 	private long size; // 文件大小
+	private long begin; // 文件开始
 	private String file; // 文件路径
 	private RandomAccessFile stream; // 文件流
 
-	public TorrentStream(long pieceLength) {
+	/**
+	 * @param pieceSize 块数量
+	 * @param pieceLength 块大小
+	 */
+	public TorrentStream(int pieceSize, long pieceLength) {
+		this.pieceSize = pieceSize;
 		this.pieceLength = pieceLength;
 	}
 	
 	/**
 	 * 创建新的文件
 	 */
-	public void newFile(String file, long size) throws DownloadException {
+	public void newFile(String file, long size, long begin) throws DownloadException {
 		this.file = file;
 		this.size = size;
+		this.begin = begin;
 		buffer = new AtomicLong(0);
 		downloadSize = new AtomicLong(0);
 		pieces = new LinkedBlockingQueue<>();
@@ -56,7 +66,11 @@ public class TorrentStream {
 			throw new DownloadException("创建文件流失败", e);
 		}
 	}
-
+	
+	public BitSet index() {
+		return null;
+	}
+	
 	/**
 	 * 添加Piece
 	 */
@@ -97,6 +111,20 @@ public class TorrentStream {
 		} catch (IOException e) {
 			LOGGER.error("关闭流异常", e);
 		}
+	}
+	
+	/**
+	 * 按照块读取
+	 */
+	public byte[] read(int index) {
+		byte[] bytes = new byte[(int) pieceLength];
+		try {
+			stream.seek(pieceLength * index);
+			stream.read(bytes);
+		} catch (IOException e) {
+			LOGGER.error("读取块信息异常");
+		}
+		return bytes;
 	}
 	
 	/**
