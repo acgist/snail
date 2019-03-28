@@ -8,7 +8,7 @@ import com.acgist.snail.net.TcpClient;
 import com.acgist.snail.net.TcpServer;
 import com.acgist.snail.net.application.ApplicationClient;
 import com.acgist.snail.net.application.ApplicationServer;
-import com.acgist.snail.net.udp.TrackerUdpClient;
+import com.acgist.snail.net.tracker.TrackerUdpClient;
 import com.acgist.snail.system.context.SystemContext;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.manager.DownloaderManager;
