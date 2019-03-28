@@ -51,7 +51,7 @@ public class ApplicationMessageHandler extends TcpMessageHandler {
 	};
 	
 	/**
-	 * 单挑消息处理
+	 * 单条消息处理
 	 */
 	private boolean oneMessage(String json) {
 		json = json.trim();
