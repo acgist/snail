@@ -26,6 +26,7 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends TcpSender {
 	 */
 	private static final AsynchronousChannelGroup GROUP;
 	
+	private String name;
 	/**
 	 * 消息代理
 	 */
@@ -41,8 +42,9 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends TcpSender {
 		GROUP = group;
 	}
 	
-	public TcpClient(String split, T handler) {
+	public TcpClient(String name, String split, T handler) {
 		super(split);
+		this.name = name;
 		this.handler = handler;
 	}
 	
@@ -82,6 +84,7 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends TcpSender {
 	 * 关闭资源
 	 */
 	public void close() {
+		LOGGER.info("关闭TCP Client：{}", this.name);
 		IoUtils.close(socket);
 	}
 

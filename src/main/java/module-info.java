@@ -18,6 +18,7 @@ open module com.acgist.snail {
 	 * Java
 	 */
 	requires java.sql;
+	requires java.xml;
 	requires java.base;
 	requires java.desktop;
 	requires java.net.http;

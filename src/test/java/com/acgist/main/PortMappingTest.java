@@ -3,20 +3,15 @@ package com.acgist.main;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
-import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.net.StandardProtocolFamily;
 import java.net.UnknownHostException;
-import java.nio.ByteBuffer;
-import java.nio.channels.DatagramChannel;
 import java.util.Scanner;
 
 import org.junit.Test;
 
 public class PortMappingTest {
-
+	
 	@Test
 	public void MSEARCH() throws UnknownHostException, SocketException, IOException {
 		final MulticastSocket socket = join("239.255.255.250", 1900);
@@ -39,7 +34,12 @@ public class PortMappingTest {
 					).getBytes(), "239.255.255.250");
 				while(true) {
 					Scanner scanner = new Scanner(System.in);
-					sendData(socket, scanner.nextLine().getBytes(), "239.255.255.250");
+					String text = scanner.nextLine();
+					if("exit".equals(text)) {
+						scanner.close();
+					} else {
+						sendData(socket, scanner.nextLine().getBytes(), "239.255.255.250");
+					}
 				}
 			}
 		}).start();
@@ -51,7 +51,7 @@ public class PortMappingTest {
 
 	public static MulticastSocket join(String group, int port) {
 		try {
-			MulticastSocket socket = new MulticastSocket(8888);
+			MulticastSocket socket = new MulticastSocket();
 			socket.setTimeToLive(2);
 			socket.setSoTimeout(5 * 1000);
 			socket.joinGroup(InetAddress.getByName(group));
