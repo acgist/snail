@@ -29,9 +29,9 @@ public class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	 */
 	public void upnp() {
 		open();
-		join(UPNP_HOST);
+//		join(UPNP_HOST);
+		bindMessageHandler();
 		try {
-			bindMessageHandler();
 			send(mSearch(), new InetSocketAddress(UPNP_HOST, UPNP_PORT));
 		} catch (NetException e) {
 			LOGGER.error("发送UPNP异常", e);

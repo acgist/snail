@@ -42,9 +42,8 @@ public abstract class UdpClient<T extends UdpMessageHandler> {
 	public boolean open() {
 		boolean ok = true;
 		try {
-			// TPv4
-			this.channel = DatagramChannel.open(StandardProtocolFamily.INET);
-			channel.configureBlocking(false); // 不阻塞
+			this.channel = DatagramChannel.open(StandardProtocolFamily.INET); // TPv4
+			this.channel.configureBlocking(false); // 不阻塞
 		} catch (IOException e) {
 			close();
 			ok = false;
@@ -58,13 +57,13 @@ public abstract class UdpClient<T extends UdpMessageHandler> {
 	 */
 	public void join(String group) {
 		try {
-			channel.setOption(StandardSocketOptions.IP_MULTICAST_TTL, 2);
-			channel.join(InetAddress.getByName(group), NetUtils.defaultNetworkInterface());
+			this.channel.setOption(StandardSocketOptions.IP_MULTICAST_TTL, 2);
+			this.channel.join(InetAddress.getByName(group), NetUtils.defaultNetworkInterface());
 		} catch (IOException e) {
 			LOGGER.info("多播异常", e);
 		}
 	}
-	
+
 	/**
 	 * 绑定消息处理器
 	 */
@@ -82,7 +81,9 @@ public abstract class UdpClient<T extends UdpMessageHandler> {
 	 * 发送消息
 	 */
 	public void send(ByteBuffer buffer, SocketAddress address) throws NetException {
-		buffer.flip();
+		if(buffer.position() != 0) { //  重置标记
+			buffer.flip();
+		}
 		try {
 			channel.send(buffer, address);
 		} catch (Exception e) {
