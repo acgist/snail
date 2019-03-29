@@ -5,6 +5,8 @@ import com.acgist.snail.utils.XMLUtils;
 
 public class UpnpResponse {
 
+	private static final String SERVICE_ID = "urn:upnp-org:serviceId:WANIPConnection"; // 服务ID
+	
 //	返回报文：
 //	<?xml version="1.0"?>
 //	<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">

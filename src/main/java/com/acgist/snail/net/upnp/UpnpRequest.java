@@ -10,8 +10,8 @@ import com.acgist.snail.utils.XMLUtils;
  */
 public class UpnpRequest {
 
-	public static final String NAMESPACE_URI = "http://schemas.xmlsoap.org/soap/envelope/";
-	public static final String ENCODING_STYLE = "http://schemas.xmlsoap.org/soap/encoding/";
+	private static final String NAMESPACE_URI = "http://schemas.xmlsoap.org/soap/envelope/";
+	private static final String ENCODING_STYLE = "http://schemas.xmlsoap.org/soap/encoding/";
 	
 	private XMLUtils xml;
 	private Element body;

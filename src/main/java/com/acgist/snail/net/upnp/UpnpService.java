@@ -18,8 +18,6 @@ public class UpnpService {
 		UDP;
 	}
 	
-	private static final String SERVICE_ID = "urn:upnp-org:serviceId:WANIPConnection"; // 服务ID
-	
 	private String location; // 描述文件地址
 	private String controlURL; // 控制URL
 	private String serviceType; // 服务类型
@@ -33,7 +31,7 @@ public class UpnpService {
 			.GET()
 			.build();
 		var response = HTTPClient.request(client, request, BodyHandlers.ofString());
-		String body = response.body();
+		final String body = response.body();
 	}
 
 	/**
@@ -45,7 +43,7 @@ public class UpnpService {
 		String xml = upnpRequest.buildGetExternalIPAddress();
 		var client = HTTPClient.newClient();
 		var request = HTTPClient.newRequest(controlURL)
-			.header("SOAPAction", "\"urn:schemas-upnp-org:service:WANIPConnection:1#GetExternalIPAddress\"")
+			.header("SOAPAction", "\"" + serviceType + "#GetExternalIPAddress\"")
 			.POST(BodyPublishers.ofString(xml))
 			.build();
 		var response = HTTPClient.request(client, request, BodyHandlers.ofString());
@@ -63,7 +61,7 @@ public class UpnpService {
 		String xml = upnpRequest.buildGetSpecificPortMappingEntry(port, protocol);
 		var client = HTTPClient.newClient();
 		var request = HTTPClient.newRequest(controlURL)
-			.header("SOAPAction", "\"urn:schemas-upnp-org:service:WANIPConnection:1#GetSpecificPortMappingEntry\"")
+			.header("SOAPAction", "\"" + serviceType + "#GetSpecificPortMappingEntry\"")
 			.POST(BodyPublishers.ofString(xml))
 			.build();
 		var response = HTTPClient.request(client, request, BodyHandlers.ofString());
@@ -79,7 +77,7 @@ public class UpnpService {
 		String xml = upnpRequest.buildAddPortMapping(port, address, protocol);
 		var client = HTTPClient.newClient();
 		var request = HTTPClient.newRequest(controlURL)
-			.header("SOAPAction", "\"urn:schemas-upnp-org:service:WANIPConnection:1#GetSpecificPortMappingEntry\"")
+			.header("SOAPAction", "\"" + serviceType + "#AddPortMapping\"")
 			.POST(BodyPublishers.ofString(xml))
 			.build();
 		var response = HTTPClient.request(client, request, BodyHandlers.ofString());
