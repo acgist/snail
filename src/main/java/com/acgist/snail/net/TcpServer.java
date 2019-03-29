@@ -22,6 +22,7 @@ public abstract class TcpServer {
 	private static final AsynchronousChannelGroup GROUP;
 	
 	private String name;
+	
 	private AsynchronousServerSocketChannel server;
 	
 	static {

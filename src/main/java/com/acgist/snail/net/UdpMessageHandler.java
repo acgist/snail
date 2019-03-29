@@ -18,6 +18,8 @@ public abstract class UdpMessageHandler {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpMessageHandler.class);
 
+	private DatagramChannel channel;
+	
 	/**
 	 * 消息处理
 	 */
@@ -27,6 +29,14 @@ public abstract class UdpMessageHandler {
 	 * 代理
 	 */
 	public void handle(DatagramChannel channel) throws IOException {
+		this.channel = channel;
+		loopMessage();
+	}
+
+	/**
+	 * 循环读取消息
+	 */
+	private void loopMessage() throws IOException {
 		final Selector selector = Selector.open();
 		if(channel == null || !channel.isOpen()) {
 			return;

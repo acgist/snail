@@ -1,7 +1,10 @@
 package com.acgist.snail.net;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.SocketAddress;
+import java.net.StandardProtocolFamily;
+import java.net.StandardSocketOptions;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 
@@ -11,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.IoUtils;
+import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -22,15 +26,24 @@ public abstract class UdpClient<T extends UdpMessageHandler> {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpClient.class);
 
+	private String name;
+	
+	private T handler;
 	private DatagramChannel channel;
 	
+	public UdpClient(String name, T handler) {
+		this.name = name;
+		this.handler = handler;
+	}
+
 	/**
 	 * 打开客户端
 	 */
 	public boolean open() {
 		boolean ok = true;
 		try {
-			this.channel = DatagramChannel.open();
+			// TPv4
+			this.channel = DatagramChannel.open(StandardProtocolFamily.INET);
 			channel.configureBlocking(false); // 不阻塞
 		} catch (IOException e) {
 			close();
@@ -41,12 +54,24 @@ public abstract class UdpClient<T extends UdpMessageHandler> {
 	}
 
 	/**
+	 * 多播分组
+	 */
+	public void join(String group) {
+		try {
+			channel.setOption(StandardSocketOptions.IP_MULTICAST_TTL, 2);
+			channel.join(InetAddress.getByName(group), NetUtils.defaultNetworkInterface());
+		} catch (IOException e) {
+			LOGGER.info("多播异常", e);
+		}
+	}
+	
+	/**
 	 * 绑定消息处理器
 	 */
-	public void bindMessageHandler(T handler) {
+	public void bindMessageHandler() {
 		SystemThreadContext.submit(() -> {
 			try {
-				handler.handle(channel);
+				this.handler.handle(channel);
 			} catch (IOException e) {
 				LOGGER.error("消息代理异常", e);
 			}
@@ -69,7 +94,7 @@ public abstract class UdpClient<T extends UdpMessageHandler> {
 	 * 关闭channel
 	 */
 	public void close() {
-		LOGGER.info("关闭UDP Client通道");
+		LOGGER.info("关闭UDP Client通道：{}", this.name);
 		IoUtils.close(channel);
 	}
 
@@ -79,5 +104,5 @@ public abstract class UdpClient<T extends UdpMessageHandler> {
 	public static final boolean verify(String url) {
 		return StringUtils.regex(url, UDP_REGEX, true);
 	}
-	
+
 }

@@ -18,7 +18,7 @@ public class ApplicationClient extends TcpClient<ApplicationMessageHandler> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationClient.class);
 	
 	private ApplicationClient() {
-		super(ApplicationMessageHandler.SPLIT, new ApplicationMessageHandler());
+		super("Application", ApplicationMessageHandler.SPLIT, new ApplicationMessageHandler());
 	}
 	
 	public static final ApplicationClient newInstance() {
