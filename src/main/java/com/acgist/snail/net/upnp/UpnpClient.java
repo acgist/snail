@@ -29,7 +29,7 @@ public class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	 */
 	public void upnp() {
 		open();
-//		join(UPNP_HOST);
+		join(UPNP_HOST);
 		bindMessageHandler();
 		try {
 			send(mSearch(), new InetSocketAddress(UPNP_HOST, UPNP_PORT));

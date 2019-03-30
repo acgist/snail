@@ -11,7 +11,6 @@ public class UpnpMessageHandler extends UdpMessageHandler {
 
 	@Override
 	public void doMessage(ByteBuffer buffer) {
-		System.out.println("xx");
 		System.out.println(new String(buffer.array()));
 	}
 
