@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -119,6 +121,22 @@ public class XMLUtils {
 			return null;
 		}
 		return list.item(0).getTextContent();
+	}
+
+	/**
+	 * 读取节点值
+	 */
+	public List<String> elementValues(String name) {
+		NodeList list = this.document.getElementsByTagName(name);
+		int length = list.getLength();
+		if(length == 0) {
+			return null;
+		}
+		List<String> values = new ArrayList<>(length);
+		for (int index = 0; index < length; index++) {
+			values.add(list.item(index).getTextContent());
+		}
+		return values;
 	}
 	
 	/**
