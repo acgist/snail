@@ -11,7 +11,8 @@ import com.acgist.snail.utils.PlatformUtils;
 import javafx.application.Platform;
 
 /**
- * 启动类
+ * 系统启动
+ * TODO：启动检测、端口、外网端口
  */
 public class Application {
 
