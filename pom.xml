@@ -25,6 +25,7 @@
 		<logback.version>1.3.0-alpha4</logback.version>
 		<jackson.version>2.9.8</jackson.version>
 		<maven.jar.version>3.1.1</maven.jar.version>
+		<maven.source.version>3.0.1</maven.source.version>
 		<maven.javadoc.version>3.1.0</maven.javadoc.version>
 		<maven.compiler.version>3.8.0</maven.compiler.version>
 		<maven.resources.version>3.1.0</maven.resources.version>
@@ -130,7 +131,7 @@
 		</resources>
 		<!-- 插件 -->
 		<plugins>
-			<!-- 编译 -->
+			<!-- 编译代码 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -169,27 +170,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- 依赖打包 -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>${maven.dependency.version}</version>
-				<executions>
-					<execution>
-						<id>copy-dependencies</id>
-						<phase>package</phase>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<stripVersion>false</stripVersion>
-							<includeScope>compile</includeScope>
-							<excludeTransitive>false</excludeTransitive>
-							<outputDirectory>${project.build.directory}/lib</outputDirectory>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 			<!-- 打包属性 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -216,10 +196,67 @@
 					</archive>
 				</configuration>
 			</plugin>
+			<!-- 依赖打包 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>${maven.dependency.version}</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<stripVersion>false</stripVersion>
+							<includeScope>compile</includeScope>
+							<excludeTransitive>false</excludeTransitive>
+							<outputDirectory>${project.build.directory}/lib</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- 源代码包：mvn source:jar-no-fork -->
+			<!-- 问题：release环境不能正确包含环境配置 -->
+			<plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-source-plugin</artifactId>
+			    <version>${maven.source.version}</version>
+				<executions>
+					<execution>
+						<id>jar-no-fork</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+						<configuration>
+							<attach>true</attach>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- JAVADOC 跳过：mvn -Dmaven.javadoc.skip=true -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>${maven.javadoc.version}</version>
+				<executions>
+					<execution>
+						<id>javadoc</id>
+						<phase>package</phase>
+						<goals>
+							<goal>javadoc</goal>
+						</goals>
+						<configuration>
+							<doclint>all,-missing</doclint>
+							<aggregate>true</aggregate>
+							<charset>${encoding}</charset>
+							<encoding>${encoding}</encoding>
+							<docencoding>${encoding}</docencoding>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
