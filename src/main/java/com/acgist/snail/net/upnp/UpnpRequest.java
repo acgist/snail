@@ -82,7 +82,7 @@ public class UpnpRequest {
 //				<NewInternalPort>8080</NewInternalPort><!-- 内网端口 -->
 //				<NewInternalClient>192.168.1.100</NewInternalClient><!-- 外网地址 -->
 //				<NewEnabled>1</NewEnabled>
-//				<NewPortMappingDescription>JUAN UPNP</NewPortMappingDescription>
+//				<NewPortMappingDescription>描述</NewPortMappingDescription>
 //				<NewLeaseDuration>0</NewLeaseDuration>
 //			</u:AddPortMapping>
 //		</s:Body>
@@ -91,15 +91,26 @@ public class UpnpRequest {
 	 * 添加端口映射
 	 */
 	public String buildAddPortMapping(int port, String address, Protocol protocol) {
-		Element mapping = xml.elementNS(body, "u:GetSpecificPortMappingEntry", serviceType);
+		Element mapping = xml.elementNS(body, "u:AddPortMapping", serviceType);
 		xml.element(mapping, "NewRemoteHost", "");
 		xml.element(mapping, "NewExternalPort", String.valueOf(port));
 		xml.element(mapping, "NewProtocol", protocol.name());
 		xml.element(mapping, "NewInternalPort", String.valueOf(port));
 		xml.element(mapping, "NewInternalClient", address);
 		xml.element(mapping, "NewEnabled", "1");
-		xml.element(mapping, "NewPortMappingDescription", "JUAN UPNP");
+		xml.element(mapping, "NewPortMappingDescription", "SNAIL UPNP");
 		xml.element(mapping, "NewLeaseDuration", "0");
+		return xml();
+	}
+	
+	/**
+	 * 删除端口映射
+	 */
+	public String buildDeletePortMapping(int port, Protocol protocol) {
+		Element mapping = xml.elementNS(body, "u:DeletePortMapping", serviceType);
+		xml.element(mapping, "NewRemoteHost", "");
+		xml.element(mapping, "NewExternalPort", String.valueOf(port));
+		xml.element(mapping, "NewProtocol", protocol.name());
 		return xml();
 	}
 	
