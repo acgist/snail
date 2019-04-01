@@ -32,7 +32,6 @@ public class Application {
 	 * 启动系统监听
 	 */
 	private static final boolean listen() {
-		LOGGER.info("启动系统监听");
 		return SystemContext.listen();
 	}
 	
@@ -40,7 +39,6 @@ public class Application {
 	 * 系统初始化
 	 */
 	private static final void initSystem() {
-		LOGGER.info("初始化系统");
 		SystemContext.init();
 	}
 	
