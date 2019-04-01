@@ -12,8 +12,8 @@ public class UpnpClientTest {
 
 	@Test
 	public void test() throws InterruptedException {
-		UpnpClient client = new UpnpClient();
-		client.upnp();
+		UpnpClient client = UpnpClient.newInstance();
+		client.config();
 		Thread.sleep(10 * 1000);
 	}
 

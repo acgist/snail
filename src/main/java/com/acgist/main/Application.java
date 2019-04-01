@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.gui.main.MainWindow;
 import com.acgist.snail.gui.menu.TrayMenu;
 import com.acgist.snail.system.context.SystemContext;
-import com.acgist.snail.utils.PlatformUtils;
 
 import javafx.application.Platform;
 
@@ -34,7 +33,7 @@ public class Application {
 	 */
 	private static final boolean listen() {
 		LOGGER.info("启动系统监听");
-		return PlatformUtils.listen();
+		return SystemContext.listen();
 	}
 	
 	/**

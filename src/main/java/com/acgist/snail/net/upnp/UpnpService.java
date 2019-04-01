@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.XMLUtils;
 
@@ -54,7 +55,7 @@ public class UpnpService {
 	/**
 	 * 加载信息
 	 */
-	public void load(String location) {
+	public UpnpService load(String location) {
 		LOGGER.info("设置UPNP，地址：{}", location);
 		this.location = location;
 		var client = HTTPClient.newClient();
@@ -66,22 +67,22 @@ public class UpnpService {
 		final XMLUtils xml = XMLUtils.load(body);
 		final List<String> serviceTypes = xml.elementValues("serviceType");
 		final List<String> controlURLs = xml.elementValues("controlURL");
-		if(controlURLs == null) {
+		if(CollectionUtils.isEmpty(serviceTypes)) {
 			LOGGER.warn("加载UPNP信息失败");
-			return;
+			return this;
 		}
 		for (int index = 0; index < serviceTypes.size(); index++) {
 			String serviceType = serviceTypes.get(index);
 			if(SERVICE_TYPE.equals(serviceType)) {
 				this.serviceType = serviceType;
 				this.controlURL = controlURLs.get(index);
-				this.initControlURL();
+				this.controlURL();
 				LOGGER.info("服务类型：{}", this.serviceType);
 				LOGGER.info("控制地址：{}", this.controlURL);
 				break;
 			}
 		}
-		this.init();
+		return this;
 	}
 
 	/**
@@ -149,27 +150,35 @@ public class UpnpService {
 		var response = HTTPClient.request(client, request, BodyHandlers.ofString());
 		return response.statusCode() == 200;
 	}
-
+	
+	/**
+	 * 设置：本机IP，端口绑定等操作
+	 */
+	public void setting() {
+		portMapping();
+		externalIpAddress();
+	}
+	
 	/**
 	 * 端口释放
 	 */
 	public void release() {
-		LOGGER.info("端口释放：DHT、Peer");
-		this.deletePortMapping(SystemConfig.getDhtPort(), Protocol.UDP);
-		this.deletePortMapping(SystemConfig.getPeerPort(), Protocol.TCP);
+		boolean dhtOk = this.deletePortMapping(SystemConfig.getDhtPort(), Protocol.UDP);
+		boolean peerOk = this.deletePortMapping(SystemConfig.getPeerPort(), Protocol.TCP);
+		LOGGER.info("端口释放：DHT：{}、Peer：{}", dhtOk, peerOk);
 	}
 	
 	/**
-	 * 初始化
+	 * 设置控制地址
 	 */
-	private void initControlURL() {
+	private void controlURL() {
 		URL url = null;
 		try {
 			url = new URL(this.location);
 		} catch (MalformedURLException e) {
 			LOGGER.error("获取URL失败", e);
 		}
-		StringBuilder builder = new StringBuilder();
+		final StringBuilder builder = new StringBuilder();
 		builder.append(url.getProtocol())
 			.append("://")
 			.append(url.getAuthority())
@@ -178,15 +187,21 @@ public class UpnpService {
 	}
 	
 	/**
-	 * 初始化：本机IP，端口绑定等操作
+	 * 端口映射
 	 */
-	private void init() {
+	private void portMapping() {
 		if(!init) {
-			LOGGER.info("端口映射：DHT：{}、Peer：{}", SystemConfig.getDhtPort(), SystemConfig.getPeerPort());
-			String ipAddress = NetUtils.inetHostAddress();
-			this.addPortMapping(SystemConfig.getDhtPort(), ipAddress, Protocol.UDP);
-			this.addPortMapping(SystemConfig.getPeerPort(), ipAddress, Protocol.TCP);
+			final String ipAddress = NetUtils.inetHostAddress();
+			boolean dhtOk = this.addPortMapping(SystemConfig.getDhtPort(), ipAddress, Protocol.UDP);
+			boolean peerOk = this.addPortMapping(SystemConfig.getPeerPort(), ipAddress, Protocol.TCP);
+			LOGGER.info("端口映射：DHT：{}-{}、Peer：{}-{}", SystemConfig.getDhtPort(), dhtOk, SystemConfig.getPeerPort(), peerOk);
 		}
+	}
+	
+	/**
+	 * 外网IP地址
+	 */
+	private void externalIpAddress() {
 		final String externalIpAddress = this.getExternalIPAddress();
 		LOGGER.info("外网IP地址：{}", externalIpAddress);
 		if(this.externalIpAddress == null) {
@@ -203,5 +218,5 @@ public class UpnpService {
 	private void change() {
 		LOGGER.info("外网IP地址发生变化");
 	}
-	
+
 }

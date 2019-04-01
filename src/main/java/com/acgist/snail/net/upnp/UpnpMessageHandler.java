@@ -28,7 +28,7 @@ public class UpnpMessageHandler extends UdpMessageHandler {
 			if(header.toLowerCase().startsWith(HEADER_LOCATION)) {
 				final int index = header.indexOf(":") + 1;
 				final String location = header.substring(index).trim();
-				UpnpService.getInstance().load(location);
+				UpnpService.getInstance().load(location).setting();
 				break;
 			}
 		}

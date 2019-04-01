@@ -28,7 +28,8 @@ public class DownloaderInitializer extends Initializer {
 		return new DownloaderInitializer();
 	}
 	
-	public void init() {
+	@Override
+	protected void init() {
 		LOGGER.info("初始化下载器");
 		TaskRepository repository = new TaskRepository();
 		List<TaskEntity> list = repository.findAll();

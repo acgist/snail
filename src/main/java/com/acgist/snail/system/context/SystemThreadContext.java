@@ -59,6 +59,10 @@ public class SystemThreadContext {
 	
 	/**
 	 * 定时任务（重复）
+	 * @param delay 延迟时间
+	 * @param period 周期时间
+	 * @param unit 时间单位
+	 * @param runnable 任务
 	 */
 	public static final void timer(long delay, long period, TimeUnit unit, Runnable runnable) {
 		if(delay >= 0) {
