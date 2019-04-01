@@ -12,9 +12,9 @@ public class ClipboardUtils {
 	 * 剪切板拷贝
 	 */
 	public static final void copy(String value) {
-		ClipboardContent content = new ClipboardContent();
+		final ClipboardContent content = new ClipboardContent();
 		content.putString(value);
-		Clipboard clipboard = Clipboard.getSystemClipboard();
+		final Clipboard clipboard = Clipboard.getSystemClipboard();
 		clipboard.setContent(content);
 	}
 	

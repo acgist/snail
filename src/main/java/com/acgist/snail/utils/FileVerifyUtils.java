@@ -55,10 +55,16 @@ public class FileVerifyUtils {
 		}
 	}
 	
+	/**
+	 * MD5散列算法
+	 */
 	public static final Map<String, String> md5(String path) {
 		return hash(path, "MD5");
 	}
-	
+
+	/**
+	 * SHA1散列算法
+	 */
 	public static final Map<String, String> sha1(String path) {
 		return hash(path, "SHA1");
 	}
