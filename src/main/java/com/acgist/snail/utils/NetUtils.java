@@ -38,6 +38,7 @@ public class NetUtils {
 	
 	/**
 	 * 获取本机名称
+	 * TODO：初始化一次
 	 */
 	public static final String inetHostName() {
 		try {
@@ -51,6 +52,7 @@ public class NetUtils {
 
 	/**
 	 * 获取本机地址
+	 * TODO：初始化一次
 	 */
 	public static final String inetHostAddress() {
 		try {
@@ -64,6 +66,7 @@ public class NetUtils {
 	
 	/**
 	 * 获取网络接口
+	 * TODO：初始化一次
 	 */
 	public static final NetworkInterface defaultNetworkInterface() {
 		final String hostAddress = inetHostAddress();

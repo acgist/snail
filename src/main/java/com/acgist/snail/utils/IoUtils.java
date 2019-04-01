@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.system.config.SystemConfig;
 
 /**
- * utils - AIO
+ * utils - IO
  */
 public class IoUtils {
 
