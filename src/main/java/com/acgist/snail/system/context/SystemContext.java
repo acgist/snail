@@ -122,7 +122,7 @@ public class SystemContext {
 	public static final boolean listen() {
 		boolean ok = ApplicationServer.getInstance().listen();
 		if(!ok) {
-			LOGGER.info("已有系统实例，唤醒系统窗口");
+			LOGGER.info("已有系统实例，唤醒主窗口");
 			ApplicationClient.notifyWindow();
 		}
 		return ok;
