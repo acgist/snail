@@ -250,7 +250,7 @@
 							<goal>javadoc</goal>
 						</goals>
 						<configuration>
-							<doclint>all,-missing</doclint>
+							<doclint>none</doclint>
 							<aggregate>true</aggregate>
 							<charset>${encoding}</charset>
 							<encoding>${encoding}</encoding>
