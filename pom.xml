@@ -100,6 +100,7 @@
 			<id>develop</id>
 			<!-- 设置默认 -->
 			<activation>
+				<!-- 如果配置JDK标签会导致环境配置失效 -->
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<properties>
