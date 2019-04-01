@@ -17,8 +17,8 @@ import com.acgist.snail.gui.about.AboutWindow;
 import com.acgist.snail.gui.main.MainWindow;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.system.context.SystemContext;
 import com.acgist.snail.utils.BrowseUtils;
-import com.acgist.snail.utils.PlatformUtils;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -196,7 +196,7 @@ public class TrayMenu extends Menu {
 	};
 	
 	private EventHandler<ActionEvent> exitAction = (event) -> {
-		PlatformUtils.exit();
+		SystemContext.exit();
 	};
 	
 	private EventHandler<ActionEvent> aboutAction = (event) -> {

@@ -22,19 +22,19 @@ public class UpnpServiceTest {
 	@Test
 	public void getSpecificPortMappingEntry() {
 		UpnpService.getInstance().load(serviceUrl);
-		System.out.println(UpnpService.getInstance().getSpecificPortMappingEntry(16688, Protocol.TCP));
+		System.out.println(UpnpService.getInstance().getSpecificPortMappingEntry(17888, Protocol.TCP));
 	}
 
 	@Test
 	public void addPortMapping() {
 		UpnpService.getInstance().load(serviceUrl);
-		System.out.println(UpnpService.getInstance().addPortMapping(16688, NetUtils.inetHostAddress(), Protocol.TCP));
+		System.out.println(UpnpService.getInstance().addPortMapping(17888, NetUtils.inetHostAddress(), Protocol.TCP));
 	}
 
 	@Test
 	public void deletePortMapping() {
 		UpnpService.getInstance().load("http://192.168.1.1:10087/rootDesc.xml");
-		System.out.println(UpnpService.getInstance().deletePortMapping(16688, Protocol.TCP));
+		System.out.println(UpnpService.getInstance().deletePortMapping(17888, Protocol.TCP));
 	}
 
 }

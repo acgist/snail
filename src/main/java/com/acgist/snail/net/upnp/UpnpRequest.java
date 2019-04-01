@@ -13,8 +13,8 @@ public class UpnpRequest {
 	private static final String NAMESPACE_URI = "http://schemas.xmlsoap.org/soap/envelope/";
 	private static final String ENCODING_STYLE = "http://schemas.xmlsoap.org/soap/encoding/";
 	
-	private XMLUtils xml;
-	private Element body;
+	private XMLUtils xml; // XML工具
+	private Element body; // 主要内容
 	private String serviceType;
 	
 	public static final UpnpRequest newRequest(String serviceType) {
@@ -37,9 +37,9 @@ public class UpnpRequest {
 //	请求报文：
 //	<?xml version="1.0"?>
 //	<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
-//	<s:Body>
-//	<u:GetExternalIPAddress xmlns:u="urn:schemas-upnp-org:service:WANIPConnection:1"></u:GetExternalIPAddress>
-//	</s:Body>
+//		<s:Body>
+//			<u:GetExternalIPAddress xmlns:u="urn:schemas-upnp-org:service:WANIPConnection:1"></u:GetExternalIPAddress>
+//		</s:Body>
 //	</s:Envelope>
 	/**
 	 * 获取外网IP请求
@@ -113,12 +113,12 @@ public class UpnpRequest {
 		xml.element(mapping, "NewProtocol", protocol.name());
 		return xml();
 	}
-	
+
 	/**
 	 * XML文本输出
 	 */
 	private String xml() {
 		return xml.xml(true);
 	}
-	
+
 }

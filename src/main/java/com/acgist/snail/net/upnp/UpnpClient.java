@@ -20,14 +20,19 @@ public class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	private static final int UPNP_PORT = 1900;
 	private static final String UPNP_HOST = "239.255.255.250";
 	
-	public UpnpClient() {
+	private UpnpClient() {
 		super("UPNP", new UpnpMessageHandler());
+	}
+	
+	public static final UpnpClient newInstance() {
+		return new UpnpClient();
 	}
 
 	/**
-	 * 获取UPNP信息
+	 * 配置UPNP
 	 */
-	public void upnp() {
+	public void config() {
+		LOGGER.info("配置UPNP");
 		open();
 		join(UPNP_HOST);
 		bindMessageHandler();

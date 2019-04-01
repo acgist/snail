@@ -27,7 +27,8 @@ public class DbInitializer extends Initializer {
 		return new DbInitializer();
 	}
 	
-	public void init() {
+	@Override
+	protected void init() {
 		if(exist()) {
 			return;
 		}
