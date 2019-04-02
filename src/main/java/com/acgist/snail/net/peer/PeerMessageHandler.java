@@ -3,6 +3,9 @@ package com.acgist.snail.net.peer;
 import java.nio.ByteBuffer;
 import java.util.BitSet;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.net.TcpMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
@@ -12,10 +15,15 @@ import com.acgist.snail.pojo.session.TorrentSession;
  */
 public class PeerMessageHandler extends TcpMessageHandler {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(PeerMessageHandler.class);
+	
 	/**
 	 * 握手协议名称
 	 */
 	public static final String HANDSHAKE_NAME = "BitTorrent protocol";
+	
+	private boolean handshake = false; // 是否握手
+	private ByteBuffer buffer;
 	
 	private PeerSession peerSession;
 	private TorrentSession torrentSession;
@@ -27,6 +35,44 @@ public class PeerMessageHandler extends TcpMessageHandler {
 
 	@Override
 	public boolean doMessage(Integer result, ByteBuffer attachment) {
+		boolean doNext = true; // 是否继续处理消息
+		if (result == 0) {
+			LOGGER.info("读取空消息");
+		} else {
+			while(true) {
+				int length = 0;
+				int capacity = attachment.capacity();
+				if(buffer == null) {
+					length = attachment.getInt();
+					buffer = ByteBuffer.allocate(length);
+				} else {
+					length = buffer.capacity() - buffer.position();
+				}
+				if(capacity > length) { // 包含一个完整消息
+					byte[] bytes = new byte[length];
+					attachment.get(bytes);
+					buffer.put(bytes);
+					oneMessage(buffer);
+					buffer = null;
+				} else if(capacity == length) { // 刚好一个完整消息
+					byte[] bytes = new byte[length];
+					attachment.get(bytes);
+					buffer.put(bytes);
+					oneMessage(buffer);
+					buffer = null;
+					break;
+				} else if(capacity < length) { // 不是完整消息
+					byte[] bytes = new byte[capacity];
+					attachment.get(bytes);
+					buffer.put(bytes);
+					break;
+				}
+			}
+		}
+		return doNext;
+	}
+	
+	private boolean oneMessage(final ByteBuffer buffer) {
 		return true;
 	}
 
@@ -50,7 +96,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	}
 
 	/**
-	 * 消息持久：len=0000
+	 * 4字节：消息持久：len=0000
 	 * 只有消息长度，没有消息编号和负载
 	 */
 	public void keepAlive() {

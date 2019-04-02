@@ -8,7 +8,7 @@ import java.util.Map;
  */
 public class PeerNames {
 	
-	private static final String UNKNOWN = "unknown"; // 未知中断
+	private static final String UNKNOWN = "unknown"; // 未知终端
 	
 	private static final Map<String, String> PEER_NAMES = new HashMap<>();
 
@@ -18,26 +18,29 @@ public class PeerNames {
 		PEER_NAMES.put("-AG", "Ares");
 		PEER_NAMES.put("-A~", "Ares");
 		PEER_NAMES.put("-AR", "Arctic");
-		PEER_NAMES.put("-AT", "Artemis");
 		PEER_NAMES.put("-AV", "Avicora");
+		PEER_NAMES.put("-AT", "Artemis");
 		PEER_NAMES.put("-AX", "BitPump");
 		PEER_NAMES.put("-AZ", "Azureus");
-		PEER_NAMES.put("-AS", "Snail");
+		PEER_NAMES.put("-AS", "Acgist Snail");
 		PEER_NAMES.put("-BB", "BitBuddy");
 		PEER_NAMES.put("-BC", "BitComet");
 		PEER_NAMES.put("-BE", "Baretorrent");
 		PEER_NAMES.put("-BF", "Bitflu");
 		PEER_NAMES.put("-BG", "BTG");
+		PEER_NAMES.put("-BL", "BitCometLite");
 		PEER_NAMES.put("-BL", "BitBlinder");
 		PEER_NAMES.put("-BP", "BitTorrent Pro");
 		PEER_NAMES.put("-BR", "BitRocket");
 		PEER_NAMES.put("-BS", "BTSlave");
-		PEER_NAMES.put("-BT", "BitTorrent");
+		PEER_NAMES.put("-BT", "mainline BitTorrent");
+		PEER_NAMES.put("-BT", "BBtor");
+		PEER_NAMES.put("-Bt", "Bt");
 		PEER_NAMES.put("-BW", "BitWombat");
 		PEER_NAMES.put("-BX", "~Bittorrent X");
 		PEER_NAMES.put("-CD", "Enhanced CTorrent");
 		PEER_NAMES.put("-CT", "CTorrent");
-		PEER_NAMES.put("-DE", "Deluge");
+		PEER_NAMES.put("-DE", "DelugeTorrent");
 		PEER_NAMES.put("-DP", "Propagate Data Client");
 		PEER_NAMES.put("-EB", "EBit");
 		PEER_NAMES.put("-ES", "electric sheep");
@@ -53,7 +56,6 @@ public class PeerNames {
 		PEER_NAMES.put("-IL", "iLivid");
 		PEER_NAMES.put("-JS", "Justseed.it client");
 		PEER_NAMES.put("-JT", "JavaTorrent");
-		PEER_NAMES.put("-JX", "Trabos");
 		PEER_NAMES.put("-KG", "KGet");
 		PEER_NAMES.put("-KT", "KTorrent");
 		PEER_NAMES.put("-LC", "LeechCraft");
@@ -77,7 +79,7 @@ public class PeerNames {
 		PEER_NAMES.put("-PT", "PHPTracker");
 		PEER_NAMES.put("-qB", "qBittorrent");
 		PEER_NAMES.put("-QD", "QQDownload");
-		PEER_NAMES.put("-QT", "Qt4 Torrent");
+		PEER_NAMES.put("-QT", "Qt 4 Torrent example");
 		PEER_NAMES.put("-RT", "Retriever");
 		PEER_NAMES.put("-RZ", "RezTorrent");
 		PEER_NAMES.put("-S~", "Shareaza alpha/beta");
@@ -92,13 +94,13 @@ public class PeerNames {
 		PEER_NAMES.put("-TB", "Torch");
 		PEER_NAMES.put("-TE", "terasaur Seed Bank");
 		PEER_NAMES.put("-TL", "Tribler");
-		PEER_NAMES.put("-TN", "TorrentDotNet");
+		PEER_NAMES.put("-TN", "TorrentDotNET");
 		PEER_NAMES.put("-TR", "Transmission");
 		PEER_NAMES.put("-TS", "Torrentstorm");
 		PEER_NAMES.put("-TT", "TuoTu");
 		PEER_NAMES.put("-UL", "uLeecher!");
-		PEER_NAMES.put("-UT", "\u03BCTorrent");
-		PEER_NAMES.put("-UM", "\u03BCTorrent for Mac");
+		PEER_NAMES.put("-UM", "µTorrent for Mac");
+		PEER_NAMES.put("-UT", "µTorrent");
 		PEER_NAMES.put("-VG", "Vagaa");
 		PEER_NAMES.put("-WD", "WebTorrent Desktop");
 		PEER_NAMES.put("-WT", "BitLet");

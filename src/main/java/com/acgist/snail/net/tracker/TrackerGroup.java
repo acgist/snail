@@ -32,7 +32,7 @@ public class TrackerGroup {
 	 */
 	private final PeerGroup peerGroup;
 	/**
-	 * tracker信息
+	 * tracker
 	 */
 	private final List<TrackerLauncher> trackerLaunchers;
 	

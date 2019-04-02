@@ -48,7 +48,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 		public int event() {
 			return this.event;
 		}
-		
+
 	}
 	
 	/**

@@ -100,6 +100,20 @@ public class TorrentSession {
 	}
 
 	/**
+	 * 获取下一个未下载的Piece
+	 */
+	public int nextPiece(int index) {
+		return pieces.nextClearBit(index);
+	}
+	
+	/**
+	 * 设置已下载的Piece
+	 */
+	public void piece(int index) {
+		pieces.set(index, true);
+	}
+	
+	/**
 	 * 释放资源
 	 */
 	public void release() {
