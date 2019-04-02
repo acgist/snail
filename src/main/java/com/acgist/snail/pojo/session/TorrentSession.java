@@ -3,6 +3,7 @@ package com.acgist.snail.pojo.session;
 import java.util.BitSet;
 import java.util.Map;
 
+import com.acgist.snail.downloader.torrent.TorrentStream;
 import com.acgist.snail.net.tracker.TrackerGroup;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
@@ -20,10 +21,6 @@ public class TorrentSession {
 	 */
 	private final BitSet pieces;
 	/**
-	 * 当前下载的块位图
-	 */
-	private final BitSet downloadPieces;
-	/**
 	 * 种子
 	 */
 	private final Torrent torrent;
@@ -39,13 +36,16 @@ public class TorrentSession {
 	 * Tracker组
 	 */
 	private TrackerGroup trackerGroup;
+	/**
+	 * 下载文件
+	 */
+	private TorrentStream torrentStream;
 
 	private TorrentSession(Torrent torrent, InfoHash infoHash) throws DownloadException {
 		if(torrent == null || infoHash == null) {
 			throw new DownloadException("解析种子文件异常");
 		}
 		this.pieces = new BitSet();
-		this.downloadPieces = new BitSet();
 		this.torrent = torrent;
 		this.infoHash = infoHash;
 	}
@@ -79,10 +79,6 @@ public class TorrentSession {
 		return this.pieces;
 	}
 	
-	public BitSet downloadPieces() {
-		return this.downloadPieces;
-	}
-	
 	public Torrent torrent() {
 		return this.torrent;
 	}
@@ -97,6 +93,10 @@ public class TorrentSession {
 	
 	public TrackerGroup trackerGroup() {
 		return this.trackerGroup;
+	}
+
+	public TorrentStream torrentStream() {
+		return torrentStream;
 	}
 
 	/**
