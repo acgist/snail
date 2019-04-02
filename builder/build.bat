@@ -12,7 +12,7 @@ rem 打包项目
 echo -----------------------------------------------
 echo 打包项目
 echo -----------------------------------------------
-call mvn -q clean package -DskipTests
+call mvn -q clean package -Prelease -DskipTests
 call xcopy /S /Q .\target\%lib%\* %builder%%lib%\*
 call copy .\target\%jar% %builder%
 call copy %launcher% %builder%%exe%
