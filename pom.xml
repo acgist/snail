@@ -255,6 +255,7 @@
 							<charset>${encoding}</charset>
 							<encoding>${encoding}</encoding>
 							<docencoding>${encoding}</docencoding>
+							<description>${project.description}</description>
 						</configuration>
 					</execution>
 				</executions>
