@@ -67,7 +67,7 @@ public class SystemContext {
 		LOGGER.info("本机名称：{}", NetUtils.inetHostName());
 		LOGGER.info("本机地址：{}", NetUtils.inetHostAddress());
 	}
-	
+
 	/**
 	 * 系统是否可用
 	 */
@@ -81,7 +81,7 @@ public class SystemContext {
 	public static final void shutdown() {
 		shutdown = true;
 	}
-	
+
 	/**
 	 * 退出平台<br>
 	 * 所有系统线程均是守护线程，所以可以不用手动shutdown。<br>
@@ -120,7 +120,7 @@ public class SystemContext {
 	 * 开启监听：开启失败表示已经启动了一个项目，唤醒之前的窗口
 	 */
 	public static final boolean listen() {
-		boolean ok = ApplicationServer.getInstance().listen();
+		final boolean ok = ApplicationServer.getInstance().listen();
 		if(!ok) {
 			LOGGER.info("已有系统实例，唤醒主窗口");
 			ApplicationClient.notifyWindow();
