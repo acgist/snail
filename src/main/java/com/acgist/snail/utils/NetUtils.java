@@ -16,15 +16,28 @@ public class NetUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(NetUtils.class);
 	
+	// A类私用地址
+	private static final long A_IP_BEGIN = ipToInt("10.0.0.0");
+	private static final long A_IP_END = ipToInt("10.255.255.255");
+	// B类私用地址
+	private static final long B_IP_BEGIN = ipToInt("172.16.0.0");
+	private static final long B_IP_END = ipToInt("172.31.255.255");
+	// C类私用地址
+	private static final long C_IP_BEGIN = ipToInt("192.168.0.0");
+	private static final long C_IP_END = ipToInt("192.168.255.255");
+	// 系统环回地址
+	private static final long L_IP_BEGIN = ipToInt("127.0.0.0");
+	private static final long L_IP_END = ipToInt("127.255.255.255");
+	
 	/**
 	 * IP转int
 	 */
 	public static final long ipToInt(String address) {
 		long result = 0;
 		final String[] array = address.split("\\.");
-		for (int i = 3; i >= 0; i--) {
-			long ip = Long.parseLong(array[3 - i]);
-			result |= ip << (i * 8);
+		for (int index = 3; index >= 0; index--) {
+			long ip = Long.parseLong(array[3 - index]);
+			result |= ip << (index * 8);
 		}
 		return result;
 	}
@@ -84,6 +97,18 @@ public class NetUtils {
 			return null;
 		}
 		return optional.get();
+	}
+
+	/**
+	 * 判断是否是本地IP
+	 */
+	public static final boolean localIp(String ip) {
+		final long value = ipToInt(ip);
+		return
+			(A_IP_BEGIN < value && value < A_IP_END) ||
+			(B_IP_BEGIN < value && value < B_IP_END) ||
+			(C_IP_BEGIN < value && value < C_IP_END) ||
+			(L_IP_BEGIN < value && value < L_IP_END);
 	}
 
 }

@@ -1,5 +1,7 @@
 package com.acgist.snail.pojo.session;
 
+import java.util.BitSet;
+
 import com.acgist.snail.system.interfaces.IStatistics;
 import com.acgist.snail.utils.ObjectUtils;
 
@@ -12,6 +14,8 @@ public class PeerSession implements IStatistics {
 
 	private String host;
 	private Integer port;
+	
+	private BitSet bitSet; // 文件下载位图
 	
 	private Boolean amChocking; // 客户端将Peer阻塞：阻塞（不允许下载）-1（true）、非阻塞-0
 	private Boolean amInterested; // 客户端对Peer感兴趣：感兴趣（Peer有客户端没有的piece）-1（true）、不感兴趣-0
