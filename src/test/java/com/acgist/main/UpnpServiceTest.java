@@ -11,7 +11,7 @@ import com.acgist.snail.utils.NetUtils;
  */
 public class UpnpServiceTest {
 
-	private String serviceUrl = "http://192.168.1.1:10087/rootDesc.xml";
+	private String serviceUrl = "http://192.168.1.1:5351/rootDesc.xml";
 	
 	@Test
 	public void getExternalIPAddress() {
@@ -33,7 +33,7 @@ public class UpnpServiceTest {
 
 	@Test
 	public void deletePortMapping() {
-		UpnpService.getInstance().load("http://192.168.1.1:10087/rootDesc.xml");
+		UpnpService.getInstance().load(serviceUrl);
 		System.out.println(UpnpService.getInstance().deletePortMapping(17888, Protocol.TCP));
 	}
 
