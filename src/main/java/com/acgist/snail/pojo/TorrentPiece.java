@@ -11,10 +11,17 @@ public class TorrentPiece {
 	public static final int SLICE_SIZE = 16 * 1024;
 
 	private int index; // piece的索引
-	private int begin; // piece内的偏移
+	private int pos; // piece内的偏移
 	private int length; // 数据的长度
 	private byte[] data; // 数据
 
+	/**
+	 * 偏移位置
+	 */
+	public long filePos(long pieceLength) {
+		return pieceLength * this.getIndex() + pos;
+	}
+	
 	public int getIndex() {
 		return index;
 	}
@@ -23,12 +30,12 @@ public class TorrentPiece {
 		this.index = index;
 	}
 
-	public int getBegin() {
-		return begin;
+	public int getPos() {
+		return pos;
 	}
 
-	public void setBegin(int begin) {
-		this.begin = begin;
+	public void setPos(int pos) {
+		this.pos = pos;
 	}
 
 	public int getLength() {

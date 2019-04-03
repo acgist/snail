@@ -123,4 +123,11 @@ public class TorrentSession {
 		trackerGroup.peer(taskSession.statistics(), peers);
 	}
 
+	/**
+	 * 获取已下载大小
+	 */
+	public long size() {
+		return torrentStreamGroup.size();
+	}
+
 }

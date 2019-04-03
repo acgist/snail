@@ -42,6 +42,7 @@ public class SystemConfig {
 	private Integer trackerMaxFailTimes; // Tracker失败次数
 	private Integer peerSize; // 单个任务Peer数量
 	private Integer peerOptimizeInterval; // 单个任务Peer优化周期（秒）
+	private Integer peerDownloadSize; // 同时下载的Peer数量
 
 	/**
 	 * 初始化
@@ -62,13 +63,14 @@ public class SystemConfig {
 		INSTANCE.trackerMaxFailTimes = propertiesUtils.getInteger("acgist.tracker.max.fail.times");
 		INSTANCE.peerSize = propertiesUtils.getInteger("acgist.peer.size");
 		INSTANCE.peerOptimizeInterval = propertiesUtils.getInteger("acgist.peer.optimize.interval");
+		INSTANCE.peerDownloadSize = propertiesUtils.getInteger("acgist.peer.download.size");
 	}
 
 	/**
 	 * 日志
 	 */
 	private void logger() {
-		LOGGER.info("");
+		LOGGER.info("-");
 	}
 	
 	/**
@@ -167,6 +169,13 @@ public class SystemConfig {
 	 */
 	public static final Integer getPeerOptimizeInterval() {
 		return INSTANCE.peerOptimizeInterval;
+	}
+
+	/**
+	 * 同时下载的Peer数量
+	 */
+	public static final Integer getPeerDownloadSize() {
+		return INSTANCE.peerDownloadSize;
 	}
 
 }
