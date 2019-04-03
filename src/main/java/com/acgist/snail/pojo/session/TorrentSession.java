@@ -1,12 +1,13 @@
 package com.acgist.snail.pojo.session;
 
-import java.util.BitSet;
+import java.util.List;
 import java.util.Map;
 
-import com.acgist.snail.downloader.torrent.TorrentStream;
+import com.acgist.snail.downloader.torrent.bootstrap.TorrentStreamGroup;
 import com.acgist.snail.net.tracker.TrackerGroup;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
+import com.acgist.snail.protocol.torrent.bean.TorrentFile;
 import com.acgist.snail.protocol.torrent.bean.TorrentInfo;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.StringUtils;
@@ -16,10 +17,6 @@ import com.acgist.snail.utils.StringUtils;
  */
 public class TorrentSession {
 	
-	/**
-	 * 已下载的块位图
-	 */
-	private final BitSet pieces;
 	/**
 	 * 种子
 	 */
@@ -37,15 +34,14 @@ public class TorrentSession {
 	 */
 	private TrackerGroup trackerGroup;
 	/**
-	 * 下载文件
+	 * 文件下载组
 	 */
-	private TorrentStream torrentStream;
+	private TorrentStreamGroup torrentStreamGroup;
 
 	private TorrentSession(Torrent torrent, InfoHash infoHash) throws DownloadException {
 		if(torrent == null || infoHash == null) {
 			throw new DownloadException("解析种子文件异常");
 		}
-		this.pieces = new BitSet();
 		this.torrent = torrent;
 		this.infoHash = infoHash;
 	}
@@ -61,6 +57,7 @@ public class TorrentSession {
 		this.taskSession = taskSession;
 		this.trackerGroup = new TrackerGroup(this);
 		this.trackerGroup.loadTracker();
+		this.torrentStreamGroup = TorrentStreamGroup.newInstance(taskSession.downloadFolder().getPath(), torrent, selectFiles());
 	}
 
 	/**
@@ -73,10 +70,6 @@ public class TorrentSession {
 			name = StringUtils.charset(torrentInfo.getName(), torrent.getEncoding());
 		}
 		return name;
-	}
-
-	public BitSet pieces() {
-		return this.pieces;
 	}
 	
 	public Torrent torrent() {
@@ -94,23 +87,26 @@ public class TorrentSession {
 	public TrackerGroup trackerGroup() {
 		return this.trackerGroup;
 	}
-
-	public TorrentStream torrentStream() {
-		return torrentStream;
-	}
-
-	/**
-	 * 获取下一个未下载的Piece
-	 */
-	public int nextPiece(int index) {
-		return pieces.nextClearBit(index);
+	
+	public TorrentStreamGroup torrentStreamGroup() {
+		return this.torrentStreamGroup;
 	}
 	
 	/**
-	 * 设置已下载的Piece
+	 * 获取选择的下载文件
 	 */
-	public void piece(int index) {
-		pieces.set(index, true);
+	public List<TorrentFile> selectFiles() {
+		final TorrentInfo info = torrent.getInfo();
+		final List<TorrentFile> files = info.files();
+		final List<String> selectedFiles = taskSession.downloadTorrentFiles();
+		for (TorrentFile file : files) {
+			if(selectedFiles.contains(file.path())) {
+				file.select(true);
+			} else {
+				file.select(false);
+			}
+		}
+		return files;
 	}
 	
 	/**

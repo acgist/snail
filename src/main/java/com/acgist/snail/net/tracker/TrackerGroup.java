@@ -7,7 +7,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.peer.PeerGroup;
+import com.acgist.snail.downloader.torrent.bootstrap.PeerGroup;
 import com.acgist.snail.pojo.session.StatisticsSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.context.SystemThreadContext;
