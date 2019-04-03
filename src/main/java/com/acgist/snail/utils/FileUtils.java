@@ -64,23 +64,6 @@ public class FileUtils {
 	}
 	
 	/**
-	 * 获取文件路径：如果文件路径存在返回文件路径，如果不存在获取user.dir路径+文件路径
-	 */
-	public static final String folderPath(String path) {
-		File file = new File(path);
-		if(file.exists()) {
-			return path;
-		}
-		path = System.getProperty("user.dir") + path;
-		file = new File(path);
-		if(file.exists()) {
-			return path;
-		}
-		file.mkdirs();
-		return path;
-	}
-	
-	/**
 	 * 获取文件名称：URL
 	 */
 	public static final String fileNameFromUrl(final String url) {
@@ -229,6 +212,24 @@ public class FileUtils {
 			}
 		}
 		return size;
+	}
+	
+	/**
+	 * 创建文件夹，如果路径是文件夹，创建父目录，否者直接创建路径目录
+	 * @param path 路径
+	 * @param file 是否是文件：true-文件；false-文件夹
+	 */
+	public static final void buildFolder(String path, boolean file) {
+		File opt = new File(path);
+		if(opt.exists()) {
+			return;
+		}
+		if(file) {
+			opt = opt.getParentFile();
+		}
+		if(!opt.exists()) {
+			opt.mkdirs();
+		}
 	}
 	
 }

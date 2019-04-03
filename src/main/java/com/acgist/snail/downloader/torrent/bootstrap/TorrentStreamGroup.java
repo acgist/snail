@@ -1,6 +1,5 @@
 package com.acgist.snail.downloader.torrent.bootstrap;
 
-import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -39,19 +38,19 @@ public class TorrentStreamGroup {
 		if(CollectionUtils.isNotEmpty(files)) {
 			long pos = 0;
 			final List<TorrentStream> streams = new ArrayList<>(files.size());
+			final TorrentInfo info = torrent.getInfo();
+			group.pieceSize = info.pieceSize();
 			for (TorrentFile file : files) {
-				TorrentInfo info = torrent.getInfo();
-				group.pieceSize = info.pieceSize();
 				try {
-					pos+=file.getLength();
 					if(file.selected()) {
 						TorrentStream stream = new TorrentStream(info.getPieceLength(), group);
-						stream.buildFile(Paths.get(folder + file.path()).toString(), file.getLength(), pos);
+						stream.buildFile(Paths.get(folder, file.path()).toString(), file.getLength(), pos);
 						streams.add(stream);
 					}
-				} catch (IOException e) {
+				} catch (Exception e) {
 					LOGGER.error("创建文件异常", e);
 				}
+				pos += file.getLength();
 			}
 			group.streams = streams;
 		}
@@ -63,41 +62,18 @@ public class TorrentStreamGroup {
 
 	/**
 	 * 挑选一个下载
-	 * 设置为已经下载
 	 */
 	public int pick(int index) {
 		synchronized (this) {
 			int pickIndex = -1;
-			while(true) {
-				pickIndex = nextPiece(index);
-				if(!downloading(pickIndex)) {
+			for (TorrentStream torrentStream : streams) {
+				pickIndex = torrentStream.pick(index);
+				if(pickIndex != -1) {
 					break;
 				}
 			}
-			if(pickIndex > pieceSize) {
-				return -1;
-			}
 			return pickIndex;
 		}
-	}
-
-	/**
-	 * 是否在下载中
-	 */
-	private boolean downloading(int index) {
-		for (TorrentStream torrentStream : streams) {
-			if(torrentStream.downloading(index)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * 获取下一个未下载的Piece
-	 */
-	public int nextPiece(int index) {
-		return pieces.nextClearBit(index);
 	}
 
 	/**
@@ -107,14 +83,4 @@ public class TorrentStreamGroup {
 		pieces.set(index, true);
 	}
 
-	/**
-	 * 获取下载文件路径
-	 * @param folder 文件地址
-	 * @param path 文件路径
-	 */
-	private static final String file(String folder, String path) {
-//		Paths.get(first, more)
-		return null;
-	}
-	
 }
