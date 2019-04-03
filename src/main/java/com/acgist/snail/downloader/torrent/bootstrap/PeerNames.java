@@ -1,4 +1,4 @@
-package com.acgist.snail.net.peer;
+package com.acgist.snail.downloader.torrent.bootstrap;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package com.acgist.snail.downloader.torrent;
+package com.acgist.snail.downloader.torrent.bootstrap;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -12,8 +12,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.downloader.torrent.bean.TorrentPiece;
-import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.pojo.TorrentPiece;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.utils.CollectionUtils;
 
@@ -33,9 +32,8 @@ public class TorrentStream {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentStream.class);
 	
 	// 固定值
-	private final int pieceSize; // 块数量
 	private final long pieceLength; // 每个块的大小
-	private TorrentSession torrentSession; // 下载任务
+	private final TorrentStreamGroup torrentStreamGroup; // 下载文件组
 	
 	// 初始值：变化值
 	private AtomicLong fileBuffer; // 缓冲大小：插入queue时修改
@@ -54,16 +52,15 @@ public class TorrentStream {
 	private int fileEndPieceSize; // 结束块大小
 	private int fileBeginPieceIndex; // 文件Piece开始序号
 	private int fileEndPieceIndex; // 文件Piece结束序号
-	private BitSet downloadingBitSet; // 下载中的位图
+	private BitSet bitSet; // 当前文件位图：下标从零开始，需要转换
+	private BitSet downloadingBitSet; // 下载中的位图：下标从零开始，需要转换
 	
 	/**
-	 * @param pieceSize 块数量
 	 * @param pieceLength 块大小
 	 */
-	public TorrentStream(int pieceSize, long pieceLength, TorrentSession torrentSession) {
-		this.pieceSize = pieceSize;
+	public TorrentStream(long pieceLength, TorrentStreamGroup torrentStreamGroup) {
 		this.pieceLength = pieceLength;
-		this.torrentSession = torrentSession;
+		this.torrentStreamGroup = torrentStreamGroup;
 	}
 	
 	/**
@@ -72,7 +69,7 @@ public class TorrentStream {
 	 * @param size 文件大小
 	 * @param pos 文件开始位置
 	 */
-	public void newFile(String file, long size, long pos) throws IOException {
+	public void buildFile(String file, long size, long pos) throws IOException {
 		if(filePieces != null && filePieces.size() > 0) {
 			throw new IOException("Torrent文件未被释放");
 		}
@@ -95,8 +92,8 @@ public class TorrentStream {
 		List<TorrentPiece> list = null;
 		synchronized (filePieces) {
 			if(filePieces.offer(piece)) {
-				torrentSession.piece(piece.getIndex()); // 下载完成
-				unset(piece.getIndex());
+				download(piece.getIndex());
+				torrentStreamGroup.piece(piece.getIndex()); // 下载完成
 				fileBuffer.addAndGet(piece.getLength());
 				// 刷新缓存
 				long bufferSize = fileBuffer.get();
@@ -115,31 +112,52 @@ public class TorrentStream {
 		}
 		write(list);
 	}
-
+	
 	/**
-	 * 挑选一个下载
-	 * 设置为已经下载
+	 * 是否含有Piece
+	 * @param index 整个文件中的序号
 	 */
-	public int pick(int index) {
-		synchronized (downloadingBitSet) {
-			int pickIndex = 0;
-			while(true) {
-				pickIndex = torrentSession.nextPiece(index);
-				if(!downloadingBitSet.get(pickIndex)) {
-					break;
-				}
-			}
-			return pickIndex;
+	public boolean hasPiece(int index) {
+		synchronized (bitSet) {
+			return bitSet.get(indexIn(index));
 		}
 	}
 	
 	/**
-	 * 清空下载索引
+	 * 是否下载中
+	 * @param index 整个文件中的序号
 	 */
-	public void unset(int index) {
+	public boolean downloading(int index) {
 		synchronized (downloadingBitSet) {
-			downloadingBitSet.clear(index);
+			return downloadingBitSet.get(indexIn(index));
 		}
+	}
+	
+	/**
+	 * 下载完成
+	 * @param index 整个文件中的序号
+	 */
+	private void download(int index) {
+		bitSet.set(indexIn(index), true); // 下载成功
+		downloadingBitSet.clear(indexIn(index)); // 去掉下载状态
+	}
+	
+	/**
+	 * 序号转换
+	 * @param index 整个任务的序号
+	 * @return 当前文件的序号
+	 */
+	private int indexIn(int index) {
+		return index - this.fileBeginPieceIndex;
+	}
+	
+	/**
+	 * 序号转换
+	 * @param index 当前文件的序号
+	 * @return 整个任务的序号
+	 */
+	private int indexOut(int index) {
+		return index + this.fileBeginPieceIndex;
 	}
 	
 	/**
@@ -185,7 +203,7 @@ public class TorrentStream {
 	 * 第一块数据下标：0
 	 */
 	public byte[] read(int index, int size, int pos) {
-		if(index >= this.filePieceSize) {
+		if(index >= this.fileEndPieceSize || index <= this.fileBeginPieceIndex) {
 			throw new IndexOutOfBoundsException("读取文件块超限");
 		}
 		if(index == this.fileBeginPieceIndex && this.fileBeginPieceSize != 0) {
@@ -206,6 +224,13 @@ public class TorrentStream {
 			LOGGER.error("读取块信息异常");
 		}
 		return bytes;
+	}
+	
+	/**
+	 * 获取大小
+	 */
+	public long size() {
+		return 0L;
 	}
 	
 	/**
@@ -246,28 +271,30 @@ public class TorrentStream {
 	 * 初始化：开始块大小，结束块大小
 	 */
 	private void initFilePiece() {
+		bitSet = new BitSet();
+		downloadingBitSet = new BitSet();
 		int pieceSize = 0; // 总块数
 		this.fileBeginPieceIndex = (int) (this.filePos / this.pieceLength);
-		int beginSize = (int) (this.filePos % this.pieceSize);
 		if(this.fileSize <= this.pieceLength) {
 			this.fileBeginPieceSize = (int) this.fileSize;
 			this.fileEndPieceSize = 0;
 			this.filePieceSize = 1;
 		} else {
+			int beginSize = (int) (this.filePos % this.pieceLength);
 			if(beginSize == 0) {
 				this.fileBeginPieceSize = 0;
 			} else {
-				this.fileBeginPieceSize = this.pieceSize - beginSize;
+				this.fileBeginPieceSize = (int) (this.pieceLength - beginSize);
 				pieceSize++;
 			}
-			int endSize = (int) ((this.fileSize + this.filePos) % this.pieceSize);
+			int endSize = (int) ((this.fileSize + this.filePos) % this.pieceLength);
 			if(endSize == 0) {
 				this.fileEndPieceSize = 0;
 			} else {
 				this.fileEndPieceSize = endSize;
 				pieceSize++;
 			}
-			this.filePieceSize = (int) (pieceSize + ((this.fileSize - this.fileBeginPieceSize - this.fileEndPieceSize) / this.pieceSize));
+			this.filePieceSize = (int) (pieceSize + ((this.fileSize - this.fileBeginPieceSize - this.fileEndPieceSize) / this.pieceLength));
 		}
 		this.fileEndPieceIndex = this.fileBeginPieceIndex + this.filePieceSize;
 	}
@@ -277,10 +304,11 @@ public class TorrentStream {
 	 */
 	private void initFileBitSet() {
 		byte[] bytes = null;
-		BitSet bitSet = new BitSet();
 		for (int index = this.fileBeginPieceIndex; index < this.fileEndPieceIndex; index++) {
 			bytes = read(index, VERIFY_SIZE);
-			bitSet.set(index, hasData(bytes));
+			if(hasData(bytes)) {
+				torrentStreamGroup.piece(index);
+			}
 		}
 	}
 	

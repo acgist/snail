@@ -1,5 +1,6 @@
-package com.acgist.snail.net.peer;
+package com.acgist.snail.downloader.torrent.bootstrap;
 
+import com.acgist.snail.net.peer.PeerClient;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;

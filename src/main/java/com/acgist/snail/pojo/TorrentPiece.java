@@ -1,4 +1,4 @@
-package com.acgist.snail.downloader.torrent.bean;
+package com.acgist.snail.pojo;
 
 /**
  * Piece信息

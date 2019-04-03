@@ -13,6 +13,8 @@ import com.acgist.snail.utils.StringUtils;
  */
 public class TorrentInfo {
 
+	private static final int PIECE_SIZE = 20; // 每个Piece的hash字节数
+	
 	private String name; // 名称
 	private String nameUtf8; // 名称：utf8
 	private Long length; // 大小
@@ -89,6 +91,13 @@ public class TorrentInfo {
 	
 	public String filehashHex() {
 		return StringUtils.hex(this.filehash);
+	}
+	
+	/**
+	 * 获取Piece数量
+	 */
+	public Integer pieceSize() {
+		return this.pieces.length / PIECE_SIZE;
 	}
 	
 	public String getName() {

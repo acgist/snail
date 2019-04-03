@@ -6,8 +6,8 @@ import java.util.BitSet;
 
 import org.junit.Test;
 
-import com.acgist.snail.downloader.torrent.TorrentStream;
-import com.acgist.snail.downloader.torrent.bean.TorrentPiece;
+import com.acgist.snail.downloader.torrent.bootstrap.TorrentStream;
+import com.acgist.snail.pojo.TorrentPiece;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.FileUtils;
 
@@ -28,15 +28,15 @@ public class TorrentStreamTest {
 	@Test
 	public void newFile() throws IOException, DownloadException {
 		String file = "e://resteasy-jaxrs-3.0.13.Final-all-corrected.zip";
-		TorrentStream stream = new TorrentStream(1024 * 1024, 100, null);
-		stream.newFile(file, FileUtils.fileSize(file), 100);
+		TorrentStream stream = new TorrentStream(1024L * 1024, null);
+		stream.buildFile(file, FileUtils.fileSize(file), 100);
 	}
 
 	@Test
 	public void write() throws IOException {
 		String file = "e://torrent.piece";
-		TorrentStream stream = new TorrentStream(1024 * 1024, 1024, null);
-		stream.newFile(file, 1024L * 1024 * 1024, 100);
+		TorrentStream stream = new TorrentStream(1024L * 1024, null);
+		stream.buildFile(file, 1024L * 1024 * 1024, 100);
 		TorrentPiece piece = new TorrentPiece();
 		piece.setIndex(0);
 		piece.setBegin(104);

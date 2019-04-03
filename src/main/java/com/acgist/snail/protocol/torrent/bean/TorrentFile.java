@@ -14,6 +14,8 @@ import com.acgist.snail.utils.StringUtils;
  */
 public class TorrentFile {
 
+	private boolean selected = false; // 是否选择
+	
 	private Long length; // 大小
 	private byte[] ed2k; // ed2k
 	private byte[] filehash; // 文件hash
@@ -60,13 +62,27 @@ public class TorrentFile {
 		}
 		return String.join("/", this.path);
 	}
-	
+
 	public String ed2kHex() {
 		return StringUtils.hex(this.ed2k);
 	}
 	
 	public String filehashHex() {
 		return StringUtils.hex(this.filehash);
+	}
+
+	/**
+	 * 是否选中
+	 */
+	public boolean selected() {
+		return this.selected;
+	}
+	
+	/**
+	 * 设置选中
+	 */
+	public void select(boolean selected) {
+		this.selected = selected;
 	}
 	
 	public Long getLength() {
