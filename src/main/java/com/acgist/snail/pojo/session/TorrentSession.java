@@ -56,7 +56,7 @@ public class TorrentSession {
 	public void build(TaskSession taskSession) throws DownloadException {
 		this.taskSession = taskSession;
 		this.trackerGroup = new TrackerGroup(this);
-		this.trackerGroup.loadTracker();
+//		this.trackerGroup.loadTracker(); // TODO：加载Tracker
 		this.torrentStreamGroup = TorrentStreamGroup.newInstance(taskSession.downloadFolder().getPath(), torrent, selectFiles());
 	}
 

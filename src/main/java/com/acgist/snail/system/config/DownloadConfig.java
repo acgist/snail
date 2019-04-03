@@ -145,10 +145,17 @@ public class DownloadConfig {
 	}
 	
 	/**
-	 * 下载目录
+	 * 下载目录：如果文件路径存在返回文件路径，如果不存在获取user.dir路径+文件路径
 	 */
 	public static final String getPath() {
-		return FileUtils.folderPath(INSTANCE.path);
+		String path = INSTANCE.path;
+		final File file = new File(path);
+		if(file.exists()) {
+			return path;
+		}
+		path = System.getProperty("user.dir") + path;
+		FileUtils.buildFolder(path, false);
+		return path;
 	}
 
 	/**

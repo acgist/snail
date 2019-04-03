@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.pojo.TorrentPiece;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.utils.CollectionUtils;
+import com.acgist.snail.utils.FileUtils;
 
 /**
  * torrent文件流<br>
@@ -79,9 +80,24 @@ public class TorrentStream {
 		fileBuffer = new AtomicLong(0);
 		fileDownloadSize = new AtomicLong(0);
 		filePieces = new LinkedBlockingQueue<>();
+		FileUtils.buildFolder(this.file, true); // 创建文件父目录，否者会抛出FileNotFoundException
 		fileStream = new RandomAccessFile(this.file, "rw");
 		initFilePiece();
 		initFileBitSet();
+		if(LOGGER.isDebugEnabled()) {
+			LOGGER.debug(
+				"TorrentStream信息，块大小：{}，文件路径：{}，文件大小：{}，文件开始偏移：{}，文件Piece数量：{}，开始块大小：{}，结束块大小：{}，文件Piece开始序号：{}，文件Piece结束序号：{}",
+				this.pieceLength,
+				this.file,
+				this.fileSize,
+				this.filePos,
+				this.filePieceSize,
+				this.fileBeginPieceSize,
+				this.fileEndPieceSize,
+				this.fileBeginPieceIndex,
+				this.fileEndPieceIndex
+			);
+		}
 	}
 	
 	/**
@@ -118,18 +134,38 @@ public class TorrentStream {
 	 * @param index 整个文件中的序号
 	 */
 	public boolean hasPiece(int index) {
-		synchronized (bitSet) {
+		synchronized (this) {
 			return bitSet.get(indexIn(index));
 		}
 	}
 	
 	/**
-	 * 是否下载中
+	 * 选择未下载的Piece序号，设置为下载状态
 	 * @param index 整个文件中的序号
 	 */
-	public boolean downloading(int index) {
-		synchronized (downloadingBitSet) {
-			return downloadingBitSet.get(indexIn(index));
+	public int pick(int index) {
+		synchronized (this) {
+			int pickIndex = indexIn(index);
+			if(pickIndex >= 0) {
+				while(true) {
+					pickIndex = bitSet.nextClearBit(pickIndex);
+					if(pickIndex <= this.filePieceSize) {
+						if(downloadingBitSet.get(pickIndex)) {
+							pickIndex++;
+							continue;
+						}
+						downloadingBitSet.set(pickIndex);
+						pickIndex = indexOut(pickIndex);
+						break;
+					} else {
+						pickIndex = -1;
+						break;
+					}
+				}
+			} else {
+				pickIndex = -1;
+			}
+			return pickIndex;
 		}
 	}
 	
@@ -159,7 +195,7 @@ public class TorrentStream {
 	private int indexOut(int index) {
 		return index + this.fileBeginPieceIndex;
 	}
-	
+
 	/**
 	 * 关闭资源
 	 */
@@ -203,7 +239,7 @@ public class TorrentStream {
 	 * 第一块数据下标：0
 	 */
 	public byte[] read(int index, int size, int pos) {
-		if(index >= this.fileEndPieceSize || index <= this.fileBeginPieceIndex) {
+		if(index > this.fileEndPieceIndex || index < this.fileBeginPieceIndex) {
 			throw new IndexOutOfBoundsException("读取文件块超限");
 		}
 		if(index == this.fileBeginPieceIndex && this.fileBeginPieceSize != 0) {
@@ -216,12 +252,12 @@ public class TorrentStream {
 			}
 		}
 		final byte[] bytes = new byte[size];
+		final long seek = (pieceLength * (index + 1)) - this.filePos + pos; // 跳过字节数
 		try {
-			final long seek = (pieceLength * index) - this.filePos + pos; // 跳过字节数
 			fileStream.seek(seek);
 			fileStream.read(bytes);
 		} catch (IOException e) {
-			LOGGER.error("读取块信息异常");
+			LOGGER.error("读取块信息异常", e);
 		}
 		return bytes;
 	}
@@ -271,32 +307,24 @@ public class TorrentStream {
 	 * 初始化：开始块大小，结束块大小
 	 */
 	private void initFilePiece() {
-		bitSet = new BitSet();
-		downloadingBitSet = new BitSet();
-		int pieceSize = 0; // 总块数
 		this.fileBeginPieceIndex = (int) (this.filePos / this.pieceLength);
-		if(this.fileSize <= this.pieceLength) {
-			this.fileBeginPieceSize = (int) this.fileSize;
-			this.fileEndPieceSize = 0;
-			this.filePieceSize = 1;
+		int beginPieceSize = (int) (this.filePos % this.pieceLength);
+		if(beginPieceSize == 0) {
+			this.fileBeginPieceSize = 0;
 		} else {
-			int beginSize = (int) (this.filePos % this.pieceLength);
-			if(beginSize == 0) {
-				this.fileBeginPieceSize = 0;
-			} else {
-				this.fileBeginPieceSize = (int) (this.pieceLength - beginSize);
-				pieceSize++;
-			}
-			int endSize = (int) ((this.fileSize + this.filePos) % this.pieceLength);
-			if(endSize == 0) {
-				this.fileEndPieceSize = 0;
-			} else {
-				this.fileEndPieceSize = endSize;
-				pieceSize++;
-			}
-			this.filePieceSize = (int) (pieceSize + ((this.fileSize - this.fileBeginPieceSize - this.fileEndPieceSize) / this.pieceLength));
+			this.fileBeginPieceSize = (int) (this.pieceLength - beginPieceSize);
 		}
-		this.fileEndPieceIndex = this.fileBeginPieceIndex + this.filePieceSize;
+		int endPieceSize = (int) ((this.fileSize + this.filePos) % this.pieceLength);
+		this.fileEndPieceIndex = (int) ((this.fileSize + this.filePos) / this.pieceLength);
+		if(endPieceSize == 0) {
+			this.fileEndPieceSize = 0;
+			this.fileEndPieceIndex--;
+		} else {
+			this.fileEndPieceSize = endPieceSize;
+		}
+		this.filePieceSize = this.fileEndPieceIndex - this.fileBeginPieceIndex + 1;
+		bitSet = new BitSet(this.filePieceSize);
+		downloadingBitSet = new BitSet(this.filePieceSize);
 	}
 	
 	/**
@@ -304,10 +332,13 @@ public class TorrentStream {
 	 */
 	private void initFileBitSet() {
 		byte[] bytes = null;
-		for (int index = this.fileBeginPieceIndex; index < this.fileEndPieceIndex; index++) {
-			bytes = read(index, VERIFY_SIZE);
+		int pieceIndex = 0;
+		for (int index = 0; index < this.filePieceSize; index++) {
+			pieceIndex = index + this.fileBeginPieceIndex;
+			bytes = read(index + this.fileBeginPieceIndex, VERIFY_SIZE);
 			if(hasData(bytes)) {
-				torrentStreamGroup.piece(index);
+				download(index);
+				torrentStreamGroup.piece(pieceIndex);
 			}
 		}
 	}

@@ -1,7 +1,5 @@
 package com.acgist.snail.protocol.torrent;
 
-import java.io.File;
-
 import com.acgist.snail.gui.torrent.TorrentWindow;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
@@ -107,10 +105,7 @@ public class TorrentProtocol extends Protocol {
 	 * 创建下载目录
 	 */
 	private void buildTorrentFolder() {
-		File folder = new File(this.taskEntity.getFile());
-		if(!folder.exists()) {
-			folder.mkdirs();
-		}
+		FileUtils.buildFolder(this.taskEntity.getFile(), false);
 	}
 
 	/**
