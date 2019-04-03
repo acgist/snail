@@ -10,6 +10,7 @@ import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.system.manager.DownloaderManager;
+import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
@@ -29,7 +30,7 @@ public abstract class Downloader implements IDownloader {
 
 	public Downloader(TaskSession taskSession) {
 		this.taskSession = taskSession;
-		taskSession.loadDownloadSize(); // 加载已下载大小
+		taskSession.downloadSize(downloadSize()); // 加载已下载大小
 	}
 	
 	@Override
@@ -98,6 +99,11 @@ public abstract class Downloader implements IDownloader {
 			this.taskSession.updateStatus(Status.complete);
 			TrayMenu.getInstance().notice("下载完成", name() + "已经下载完成");
 		}
+	}
+	
+	@Override
+	public long downloadSize() {
+		return FileUtils.fileSize(taskSession.entity().getFile());
 	}
 	
 	@Override

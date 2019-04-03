@@ -101,14 +101,6 @@ public class TaskSession implements IStatistics {
 		TaskDisplay.getInstance().refreshTaskData(); // 刷新状态
 	}
 	
-	/**
-	 * 获取已下载大小
-	 */
-	public void loadDownloadSize() {
-		final long size = FileUtils.fileSize(entity.getFile());
-		statistics.downloadSize(size);
-	}
-
 	public StatisticsSession statistics() {
 		return statistics;
 	}
@@ -125,7 +117,7 @@ public class TaskSession implements IStatistics {
 	public void downloadSize(long size) {
 		statistics.downloadSize(size);
 	}
-	
+
 	/**
 	 * 等待状态
 	 */

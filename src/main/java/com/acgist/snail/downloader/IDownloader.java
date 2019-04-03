@@ -77,4 +77,9 @@ public interface IDownloader extends Runnable {
 	 */
 	void complete();
 	
+	/**
+	 * 获取已下载文件大小
+	 */
+	long downloadSize();
+	
 }

@@ -229,6 +229,13 @@ public class DownloadConfig {
 	public static final Integer getMemoryBufferByte() {
 		return INSTANCE.memoryBuffer * 1024 * 1024;
 	}
+	
+	/**
+	 * 磁盘缓存（单个-Peer）（B）
+	 */
+	public static final Integer getPeerMemoryBufferByte() {
+		return INSTANCE.memoryBuffer * 1024 * 1024 / SystemConfig.getPeerDownloadSize();
+	}
 
 	/**
 	 * 设置消息提示

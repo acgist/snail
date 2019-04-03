@@ -8,6 +8,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.pojo.TorrentPiece;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
 import com.acgist.snail.protocol.torrent.bean.TorrentFile;
 import com.acgist.snail.protocol.torrent.bean.TorrentInfo;
@@ -20,10 +21,6 @@ public class TorrentStreamGroup {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentStreamGroup.class);
 
-	/**
-	 * 块数量
-	 */
-	private int pieceSize;
 	/**
 	 * 已下载的块位图
 	 */
@@ -39,7 +36,6 @@ public class TorrentStreamGroup {
 			long pos = 0;
 			final List<TorrentStream> streams = new ArrayList<>(files.size());
 			final TorrentInfo info = torrent.getInfo();
-			group.pieceSize = info.pieceSize();
 			for (TorrentFile file : files) {
 				try {
 					if(file.selected()) {
@@ -53,6 +49,7 @@ public class TorrentStreamGroup {
 				pos += file.getLength();
 			}
 			group.streams = streams;
+			group.pieces = new BitSet(info.pieceSize());
 		}
 		return group;
 	}
@@ -64,16 +61,14 @@ public class TorrentStreamGroup {
 	 * 挑选一个下载
 	 */
 	public int pick(int index) {
-		synchronized (this) {
-			int pickIndex = -1;
-			for (TorrentStream torrentStream : streams) {
-				pickIndex = torrentStream.pick(index);
-				if(pickIndex != -1) {
-					break;
-				}
+		int pickIndex = -1;
+		for (TorrentStream torrentStream : streams) {
+			pickIndex = torrentStream.pick(index);
+			if(pickIndex != -1) {
+				break;
 			}
-			return pickIndex;
 		}
+		return pickIndex;
 	}
 
 	/**
@@ -81,6 +76,35 @@ public class TorrentStreamGroup {
 	 */
 	public void piece(int index) {
 		pieces.set(index, true);
+	}
+	
+	/**
+	 * 获取下载文件大小
+	 */
+	public long size() {
+		long size = 0L;
+		for (TorrentStream torrentStream : streams) {
+			size += torrentStream.size();
+		}
+		return size;
+	}
+
+	/**
+	 * 保存Piece
+	 */
+	public void pieces(TorrentPiece piece) {
+		for (TorrentStream torrentStream : streams) {
+			torrentStream.pieces(piece);
+		}
+	}
+	
+	/**
+	 * 资源释放
+	 */
+	public void release() {
+		for (TorrentStream torrentStream : streams) {
+			torrentStream.release();
+		}
 	}
 
 }
