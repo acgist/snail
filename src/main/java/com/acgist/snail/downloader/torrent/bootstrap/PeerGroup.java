@@ -2,20 +2,15 @@ package com.acgist.snail.downloader.torrent.bootstrap;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Deque;
 import java.util.List;
-import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.pojo.session.PeerSession;
-import com.acgist.snail.pojo.session.StatisticsSession;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
+import com.acgist.snail.system.manager.PeerManager;
 
 /**
  * PeerClient分组<br>
@@ -23,59 +18,61 @@ import com.acgist.snail.system.context.SystemThreadContext;
  */
 public class PeerGroup {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(PeerGroup.class);
+//	private static final Logger LOGGER = LoggerFactory.getLogger(PeerGroup.class);
 	
+	private final PeerManager peerManager;
 	private final TaskSession taskSession;
 	private final TorrentSession torrentSession;
-	/**
-	 * 双端队列，新加入插入队尾，剔除的Peer插入对头
-	 */
-	private final Deque<PeerSession> peerSessions;
+	
 	private final List<PeerLauncher> peerLaunchers;
 	
 	public PeerGroup(TorrentSession torrentSession) {
+		this.peerManager = PeerManager.getInstance();
 		this.taskSession = torrentSession.taskSession();
 		this.torrentSession = torrentSession;
-		this.peerSessions = new LinkedBlockingDeque<>();
 		this.peerLaunchers = Collections.synchronizedList(new ArrayList<>());
 	}
 	
 	/**
 	 * 初始化下载线程
 	 */
-	private void launchers() {
+	public void launchers() {
 		final int size = SystemConfig.getPeerSize();
-		if(this.peerLaunchers.size() > size) {
-			return;
+		synchronized (this) {
+			while(true) {
+				if(this.peerLaunchers.size() > size) {
+					break;
+				}
+				buildPeerLauncher();
+			}
 		}
-		buildPeerLauncher();
 	}
 	
 	/**
 	 * 拿去最后一个session创建launcher
 	 */
 	private void buildPeerLauncher() {
-		PeerSession peerSession = peerSessions.pollLast();
-		if(peerSession == null) {
+		final PeerSession peerSession = peerManager.pick(torrentSession.infoHashHex());
+		if(peerSession != null) {
 			// TODO
 			return;
 		}
 	}
 	
 	/**
-	 * 获取劣质的launcher
+	 * 劣质的launcher
 	 */
-	private PeerLauncher inferiorLauncher() {
+	private void inferiorLauncher() {
 		// TODO
-		return null;
+		PeerLauncher launcher = null;
+		peerManager.inferior(torrentSession.infoHashHex(), launcher.peerSession());
 	}
 
 	/**
 	 * 优化下载Peer，权重最低的剔除，然后插入队列头部，然后启动队列最后一个Peer
 	 */
 	public void optimize() {
-		PeerLauncher launcher = inferiorLauncher();
-		peerSessions.offerFirst(launcher.peerSession());
+		inferiorLauncher();
 		buildPeerLauncher();
 		if(taskSession.download()) {
 			// TODO：暂停，然后开始导致多个重复线程
@@ -83,26 +80,6 @@ public class PeerGroup {
 			SystemThreadContext.timer(interval, TimeUnit.SECONDS, () -> {
 				optimize(); // 定时优化
 			});
-		}
-	}
-	
-	/**
-	 * 新增Peer
-	 * @param parent torrent下载统计
-	 * @param host 地址
-	 * @param port 端口
-	 */
-	public void put(StatisticsSession parent, String host, Integer port) {
-		synchronized (peerSessions) {
-			final boolean exist = peerSessions.stream().anyMatch(peer -> {
-				return peer.exist(host, port);
-			});
-			if(exist) {
-				return;
-			}
-			LOGGER.debug("添加Peer，HOST：{}，PORT：{}", host, port);
-			peerSessions.offerLast(new PeerSession(parent, host, port));
-			launchers();
 		}
 	}
 

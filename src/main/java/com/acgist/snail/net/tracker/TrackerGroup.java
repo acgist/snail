@@ -13,6 +13,7 @@ import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.system.manager.PeerManager;
 import com.acgist.snail.system.manager.TrackerClientManager;
 import com.acgist.snail.system.manager.TrackerSessionManager;
 import com.acgist.snail.utils.CollectionUtils;
@@ -50,9 +51,11 @@ public class TrackerGroup {
 		if(CollectionUtils.isEmpty(peers)) {
 			return;
 		}
+		PeerManager peerManager = PeerManager.getInstance();
 		peers.forEach((host, port) -> {
-			peerGroup.put(statistics, host, port);
+			peerManager.newPeer(torrentSession.infoHashHex(), statistics, host, port);
 		});
+		peerGroup.launchers();
 	}
 
 	/**
