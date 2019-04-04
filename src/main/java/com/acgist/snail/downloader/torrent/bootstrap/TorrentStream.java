@@ -50,6 +50,7 @@ public class TorrentStream {
 	
 	// 初始值：计算
 	private int filePieceSize; // 文件Piece数量
+	private int fileBeginPiecePos; // 开始块文件偏移
 	private int fileBeginPieceSize; // 开始块大小
 	private int fileEndPieceSize; // 结束块大小
 	private int fileBeginPieceIndex; // 文件Piece开始序号
@@ -155,7 +156,7 @@ public class TorrentStream {
 			if(pickIndex >= 0) {
 				while(true) {
 					pickIndex = bitSet.nextClearBit(pickIndex);
-					if(pickIndex <= this.filePieceSize) {
+					if(pickIndex < this.filePieceSize) {
 						if(downloadingBitSet.get(pickIndex)) {
 							pickIndex++;
 							continue;
@@ -231,7 +232,7 @@ public class TorrentStream {
 			}
 		}
 		final byte[] bytes = new byte[size];
-		final long seek = (pieceLength * (index + 1)) - this.fileBeginPos + pos; // 跳过字节数
+		final long seek = (pieceLength * index + this.fileBeginPiecePos) - this.fileBeginPos + pos; // 跳过字节数
 		try {
 			fileStream.seek(seek);
 			fileStream.read(bytes);
@@ -304,21 +305,23 @@ public class TorrentStream {
 	 */
 	private void initFilePiece() {
 		this.fileBeginPieceIndex = (int) (this.fileBeginPos / this.pieceLength);
-		int beginPieceSize = (int) (this.fileBeginPos % this.pieceLength);
-		if(beginPieceSize == 0) {
+		this.fileBeginPiecePos = (int) (this.fileBeginPos % this.pieceLength);
+		if(this.fileBeginPiecePos == 0) {
 			this.fileBeginPieceSize = 0;
 		} else {
-			this.fileBeginPieceSize = (int) (this.pieceLength - beginPieceSize);
+			this.fileBeginPieceSize = (int) (this.pieceLength - this.fileBeginPiecePos);
 		}
 		int endPieceSize = (int) (this.fileEndPos % this.pieceLength);
 		this.fileEndPieceIndex = (int) (this.fileEndPos / this.pieceLength);
 		if(endPieceSize == 0) {
 			this.fileEndPieceSize = 0;
-			this.fileEndPieceIndex--;
 		} else {
 			this.fileEndPieceSize = endPieceSize;
 		}
-		this.filePieceSize = this.fileEndPieceIndex - this.fileBeginPieceIndex + 1;
+		this.filePieceSize = this.fileEndPieceIndex - this.fileBeginPieceIndex;
+		if(endPieceSize > 0) {
+			this.filePieceSize++;
+		}
 		bitSet = new BitSet(this.filePieceSize);
 		downloadingBitSet = new BitSet(this.filePieceSize);
 	}
@@ -331,7 +334,7 @@ public class TorrentStream {
 		int pieceIndex = 0;
 		for (int index = 0; index < this.filePieceSize; index++) {
 			pieceIndex = index + this.fileBeginPieceIndex;
-			bytes = read(index + this.fileBeginPieceIndex, VERIFY_SIZE);
+			bytes = read(pieceIndex, VERIFY_SIZE);
 			if(hasData(bytes)) {
 				download(index);
 				torrentStreamGroup.piece(pieceIndex);

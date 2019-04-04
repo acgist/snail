@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import org.junit.Test;
 
 import com.acgist.snail.downloader.torrent.bootstrap.TorrentStreamGroup;
-import com.acgist.snail.pojo.TorrentPiece;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.manager.TorrentSessionManager;
@@ -25,12 +24,16 @@ public class TorrentStreamGroupTest {
 			file.select(true);
 		});
 		TorrentStreamGroup group = TorrentStreamGroup.newInstance("e://tmp", session.torrent(), files);
-		TorrentPiece piece = new TorrentPiece();
-		piece.setIndex(10);
-		piece.setPos(10);
-		piece.setData("0000".getBytes());
-		piece.setLength(4);
-		group.pieces(piece);
+//		TorrentPiece piece = new TorrentPiece();
+//		piece.setIndex(0);
+//		piece.setPos(0);
+//		piece.setData("1234".getBytes());
+////		ByteBuffer buffer = ByteBuffer.allocate(4);
+////		buffer.putInt(1);
+////		piece.setData(buffer.array());
+//		piece.setLength(4);
+//		group.pieces(piece);
+		System.out.println(group.pieces());
 		group.release();
 	}
 	
