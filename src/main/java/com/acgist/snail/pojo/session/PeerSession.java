@@ -15,6 +15,9 @@ public class PeerSession implements IStatistics {
 	private String host;
 	private Integer port;
 	
+	private String id; // Peer id
+	private String clientName; // Peer客户端名称
+	
 	private BitSet bitSet; // 文件下载位图
 	
 	private Boolean amChocking; // 客户端将Peer阻塞：阻塞（不允许下载）-1（true）、非阻塞-0
@@ -26,10 +29,10 @@ public class PeerSession implements IStatistics {
 		this.statistics = new StatisticsSession(parent);
 		this.host = host;
 		this.port = port;
-		amChocking = true;
-		amInterested = false;
-		peerChocking = true;
-		peerInterested = false;
+		this.amChocking = true;
+		this.amInterested = false;
+		this.peerChocking = true;
+		this.peerInterested = false;
 	}
 
 	/**

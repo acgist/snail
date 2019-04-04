@@ -8,7 +8,6 @@ import com.acgist.snail.pojo.session.TorrentSession;
 /**
  * Peer客户端<br>
  * 基本协议：TCP<br>
- * 位操作：BitSet<br>
  * https://blog.csdn.net/li6322511/article/details/79002753
  * https://blog.csdn.net/p312011150/article/details/81478237
  */
@@ -19,7 +18,7 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	private TorrentSession torrentSession;
 	
 	public PeerClient(PeerSession peerSession, TorrentSession torrentSession) {
-		super("Peer", "", new PeerMessageHandler(torrentSession));
+		super("Peer", new PeerMessageHandler(torrentSession));
 		this.peerSession = peerSession;
 		this.taskSession = torrentSession.taskSession();
 		this.torrentSession = torrentSession;

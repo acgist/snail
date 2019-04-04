@@ -42,6 +42,12 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends TcpSender {
 		GROUP = group;
 	}
 	
+	public TcpClient(String name, T handler) {
+		super(null);
+		this.name = name;
+		this.handler = handler;
+	}
+	
 	public TcpClient(String name, String split, T handler) {
 		super(split);
 		this.name = name;

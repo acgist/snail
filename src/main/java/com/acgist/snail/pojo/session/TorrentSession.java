@@ -80,6 +80,10 @@ public class TorrentSession {
 		return this.infoHash;
 	}
 	
+	public String infoHashHex() {
+		return this.infoHash.hashHex();
+	}
+	
 	public TaskSession taskSession() {
 		return this.taskSession;
 	}
