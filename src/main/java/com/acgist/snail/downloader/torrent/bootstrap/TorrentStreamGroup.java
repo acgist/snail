@@ -36,6 +36,7 @@ public class TorrentStreamGroup {
 			long pos = 0;
 			final List<TorrentStream> streams = new ArrayList<>(files.size());
 			final TorrentInfo info = torrent.getInfo();
+			group.pieces = new BitSet(info.pieceSize());
 			for (TorrentFile file : files) {
 				try {
 					if(file.selected()) {
@@ -49,7 +50,6 @@ public class TorrentStreamGroup {
 				pos += file.getLength();
 			}
 			group.streams = streams;
-			group.pieces = new BitSet(info.pieceSize());
 		}
 		return group;
 	}
@@ -76,6 +76,13 @@ public class TorrentStreamGroup {
 	 */
 	public void piece(int index) {
 		pieces.set(index, true);
+	}
+	
+	/**
+	 * 获取已下载位图
+	 */
+	public BitSet pieces() {
+		return pieces;
 	}
 	
 	/**
