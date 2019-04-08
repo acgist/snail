@@ -13,16 +13,18 @@ public class PeerClientTest {
 
 	@Test
 	public void test() throws DownloadException, InterruptedException {
-		String path = "e:/snail/82309348090ecbec8bf509b83b30b78a8d1f6454.torrent";
+		String path = "e:/snail/1234.torrent";
 		TorrentSession torrentSession = TorrentSessionManager.getInstance().buildSession(path);
-//		String host = "171.36.194.224";
-//		Integer port = 9001;
+//		String host = "219.137.239.191";
+//		Integer port = 48623;
 		String host = "127.0.0.1";
-		Integer port = 17114;
+//		Integer port = 9080;
+//		Integer port = 15000;
+		Integer port = 54321;
 		PeerSession peerSession = new PeerSession(new StatisticsSession(), host, port);
 		PeerClient client = new PeerClient(peerSession, torrentSession);
 		client.connect();
 		Thread.sleep(Long.MAX_VALUE);
 	}
-	
+
 }

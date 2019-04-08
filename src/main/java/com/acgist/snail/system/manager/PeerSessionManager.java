@@ -6,9 +6,6 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.StatisticsSession;
 
@@ -17,7 +14,7 @@ import com.acgist.snail.pojo.session.StatisticsSession;
  */
 public class PeerSessionManager {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(PeerSessionManager.class);
+//	private static final Logger LOGGER = LoggerFactory.getLogger(PeerSessionManager.class);
 
 	private static final PeerSessionManager INSTANCE = new PeerSessionManager();
 	
@@ -55,7 +52,6 @@ public class PeerSessionManager {
 			if(optional.isPresent()) {
 				return optional.get();
 			}
-			LOGGER.debug("添加Peer，HOST：{}，PORT：{}", host, port);
 			final PeerSession peerSession = new PeerSession(parent, host, port);
 			deque.offerLast(peerSession);
 			return peerSession;

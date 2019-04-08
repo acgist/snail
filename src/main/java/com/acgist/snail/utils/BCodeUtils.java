@@ -67,17 +67,29 @@ public class BCodeUtils {
 			indexChar = (char) index;
 			switch (indexChar) {
 				case TYPE_I:
-					map.put(key, i(input));
+					if(key != null) {
+						map.put(key, i(input));
+					} else {
+						LOGGER.warn("key=null跳过");
+					}
 					key = null;
 					break;
 				case TYPE_E:
 					return map;
 				case TYPE_L:
-					map.put(key, l(input));
+					if(key != null) {
+						map.put(key, l(input));
+					} else {
+						LOGGER.warn("key=null跳过");
+					}
 					key = null;
 					break;
 				case TYPE_D:
-					map.put(key, d(input));
+					if(key != null) {
+						map.put(key, d(input));
+					} else {
+						LOGGER.warn("key=null跳过");
+					}
 					key = null;
 					break;
 				case '0':
@@ -93,22 +105,26 @@ public class BCodeUtils {
 					lengthBuilder.append(indexChar);
 					break;
 				case ':':
-					int length = Integer.parseInt(lengthBuilder.toString());
-					lengthBuilder.setLength(0);
-					byte[] bytes = new byte[length];
-					try {
-						input.read(bytes);
-					} catch (IOException e) {
-						LOGGER.error("B编码读取异常", e);
+					if(lengthBuilder.length() > 0) {
+						final int length = Integer.parseInt(lengthBuilder.toString());
+						lengthBuilder.setLength(0);
+						final byte[] bytes = new byte[length];
+						try {
+							input.read(bytes);
+						} catch (IOException e) {
+							LOGGER.error("B编码读取异常", e);
+						}
+						final String value = new String(bytes);
+						if (key == null) {
+							key = value;
+						} else {
+							if(key != null) {
+								map.put(key, bytes);
+							}
+							key = null;
+						}
+						break;
 					}
-					String value = new String(bytes);
-					if (key == null) {
-						key = value;
-					} else {
-						map.put(key, bytes);
-						key = null;
-					}
-					break;
 			}
 		}
 		return map;
@@ -149,15 +165,18 @@ public class BCodeUtils {
 					lengthBuilder.append(indexChar);
 					break;
 				case ':':
-					int length = Integer.parseInt(lengthBuilder.toString());
-					lengthBuilder.setLength(0);
-					byte[] bytes = new byte[length];
-					try {
-						input.read(bytes);
-					} catch (IOException e) {
-						LOGGER.error("B编码读取异常", e);
+					if(lengthBuilder.length() > 0) {
+						final int length = Integer.parseInt(lengthBuilder.toString());
+						lengthBuilder.setLength(0);
+						final byte[] bytes = new byte[length];
+						try {
+							input.read(bytes);
+						} catch (IOException e) {
+							LOGGER.error("B编码读取异常", e);
+						}
+						list.add(bytes);
+						break;
 					}
-					list.add(bytes);
 			}
 		}
 		return list;
