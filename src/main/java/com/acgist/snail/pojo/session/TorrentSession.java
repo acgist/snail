@@ -3,6 +3,9 @@ package com.acgist.snail.pojo.session;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.downloader.torrent.bootstrap.PeerGroup;
 import com.acgist.snail.downloader.torrent.bootstrap.TorrentStreamGroup;
 import com.acgist.snail.net.tracker.TrackerGroup;
@@ -19,6 +22,8 @@ import com.acgist.snail.utils.StringUtils;
  * 种子session
  */
 public class TorrentSession {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentSession.class);
 	
 	/**
 	 * 种子
@@ -142,6 +147,7 @@ public class TorrentSession {
 		}
 		final PeerSessionManager manager = PeerSessionManager.getInstance();
 		peers.forEach((host, port) -> {
+			LOGGER.debug("添加Peer，HOST：{}，PORT：{}", host, port);
 			manager.newPeer(this.infoHashHex(), taskSession.statistics(), host, port);
 		});
 		peerGroup.launchers();

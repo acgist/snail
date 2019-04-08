@@ -43,8 +43,12 @@ public class PeerMessageHandler extends TcpMessageHandler {
 			while(true) {
 				int length = 0;
 				int capacity = attachment.capacity();
+				System.out.println(attachment.position() + "-" + attachment.limit() + "-" + attachment.capacity());
 				if(buffer == null) {
 					length = attachment.getInt();
+					if(length == 0) {
+						break;
+					}
 					buffer = ByteBuffer.allocate(length);
 				} else {
 					length = buffer.capacity() - buffer.position();
