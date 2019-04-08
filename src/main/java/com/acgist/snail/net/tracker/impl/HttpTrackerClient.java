@@ -11,7 +11,7 @@ import com.acgist.snail.net.tracker.bean.HttpTracker;
 import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.system.manager.TrackerSessionManager;
+import com.acgist.snail.system.manager.TrackerLauncherManager;
 import com.acgist.snail.utils.BCodeUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -56,7 +56,7 @@ public class HttpTrackerClient extends TrackerClient {
 			message.setDone(tracker.getComplete());
 			message.setUndone(tracker.getIncomplete());
 			message.setPeers(tracker.getPeers());
-			TrackerSessionManager.getInstance().announce(message);
+			TrackerLauncherManager.getInstance().announce(message);
 		} else {
 			throw new NetException("错误的返回内容：" + body);
 		}

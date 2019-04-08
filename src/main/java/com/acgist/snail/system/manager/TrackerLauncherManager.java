@@ -14,17 +14,17 @@ import com.acgist.snail.pojo.session.TorrentSession;
 /**
  * tracker session管理<br>
  */
-public class TrackerSessionManager {
+public class TrackerLauncherManager {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerSessionManager.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerLauncherManager.class);
 	
-	private static final TrackerSessionManager INSTANCE = new TrackerSessionManager();
+	private static final TrackerLauncherManager INSTANCE = new TrackerLauncherManager();
 	
-	private TrackerSessionManager() {
+	private TrackerLauncherManager() {
 		TRACKER_TORRENT_MAP = new ConcurrentHashMap<>();
 	}
 
-	public static final TrackerSessionManager getInstance() {
+	public static final TrackerLauncherManager getInstance() {
 		return INSTANCE;
 	}
 	
@@ -37,7 +37,7 @@ public class TrackerSessionManager {
 	 * 新建
 	 */
 	public TrackerLauncher build(TrackerClient client, TorrentSession torrentSession) {
-		final TrackerLauncher launcher = new TrackerLauncher(client, torrentSession);
+		final TrackerLauncher launcher = TrackerLauncher.newInstance(client, torrentSession);
 		register(launcher);
 		return launcher;
 	}
@@ -58,12 +58,12 @@ public class TrackerSessionManager {
 			return;
 		}
 		final Integer id = message.getId();
-		TrackerLauncher trackerLauncher = TRACKER_TORRENT_MAP.get(id);
+		final TrackerLauncher trackerLauncher = TRACKER_TORRENT_MAP.get(id);
 		if(trackerLauncher != null) {
 			trackerLauncher.announce(message);
 		} else {
 			LOGGER.warn("不存在的TorrentSession，AnnounceMessage：{}", message);
 		}
 	}
-	
+
 }
