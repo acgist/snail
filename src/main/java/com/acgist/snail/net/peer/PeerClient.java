@@ -26,7 +26,11 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 
 	@Override
 	public boolean connect() {
-		return false;
+		boolean ok = connect(peerSession.host(), peerSession.port());
+		if(ok) {
+			handler.handshake();
+		}
+		return ok;
 	}
 
 }

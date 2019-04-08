@@ -90,6 +90,9 @@ public class UpnpService {
 	 * 请求头：SOAPAction:"urn:schemas-upnp-org:service:WANIPConnection:1#GetExternalIPAddress"
 	 */
 	public String getExternalIPAddress() {
+		if(!init) {
+			return null;
+		}
 		UpnpRequest upnpRequest = UpnpRequest.newRequest(serviceType);
 		String xml = upnpRequest.buildGetExternalIPAddress();
 		var client = HTTPClient.newClient();
@@ -108,6 +111,9 @@ public class UpnpService {
 	 * 如果没有映射：返回500错误代码
 	 */
 	public boolean getSpecificPortMappingEntry(int port, Protocol protocol) {
+		if(!init) {
+			return false;
+		}
 		UpnpRequest upnpRequest = UpnpRequest.newRequest(serviceType);
 		String xml = upnpRequest.buildGetSpecificPortMappingEntry(port, protocol);
 		var client = HTTPClient.newClient();
@@ -124,6 +130,9 @@ public class UpnpService {
 	 * 请求头：SOAPAction:"urn:schemas-upnp-org:service:WANIPConnection:1#AddPortMapping"
 	 */
 	public boolean addPortMapping(int port, String address, Protocol protocol) {
+		if(!init) {
+			return false;
+		}
 		UpnpRequest upnpRequest = UpnpRequest.newRequest(serviceType);
 		String xml = upnpRequest.buildAddPortMapping(port, address, protocol);
 		var client = HTTPClient.newClient();
@@ -140,6 +149,9 @@ public class UpnpService {
 	 * 请求头：SOAPAction:"urn:schemas-upnp-org:service:WANIPConnection:1#DeletePortMapping"
 	 */
 	public boolean deletePortMapping(int port, Protocol protocol) {
+		if(!init) {
+			return false;
+		}
 		UpnpRequest upnpRequest = UpnpRequest.newRequest(serviceType);
 		String xml = upnpRequest.buildDeletePortMapping(port, protocol);
 		var client = HTTPClient.newClient();

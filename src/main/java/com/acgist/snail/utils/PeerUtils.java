@@ -9,6 +9,8 @@ import java.util.Map;
  */
 public class PeerUtils {
 
+	private static final int MAX_PORT = (int) Math.pow(2, 16);
+	
 	/**
 	 * 读取IP和端口信息
 	 */
@@ -29,8 +31,12 @@ public class PeerUtils {
 		}
 		final Map<String, Integer> data = new HashMap<>();
 		while (buffer.position() < size) {
-			int ipNumber = buffer.getInt();
-			data.put(NetUtils.intToIp(ipNumber), Short.valueOf(buffer.getShort()).intValue());
+			int ipValue = buffer.getInt();
+			int port = Short.valueOf(buffer.getShort()).intValue();
+			if(port < 0) {
+				port = MAX_PORT + port;
+			}
+			data.put(NetUtils.intToIp(ipValue), port);
 		}
 		return data;
 	}

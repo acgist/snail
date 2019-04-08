@@ -3,7 +3,6 @@ package com.acgist.main;
 import org.junit.Test;
 
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.system.context.SystemContext;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.system.manager.TorrentSessionManager;
@@ -15,8 +14,7 @@ public class TrackerClientUdpTest {
 
 	@Test
 	public void test() throws NetException, DownloadException {
-		SystemContext.init();
-		String path = "e:/snail/82309348090ecbec8bf509b83b30b78a8d1f6454.torrent";
+		String path = "e:/snail/1234.torrent";
 		TorrentSession session = TorrentSessionManager.getInstance().buildSession(path);
 		var client = TrackerClientManager.getInstance().register("udp://exodus.desync.com:6969/announce");
 		var launcher = TrackerLauncherManager.getInstance().build(client, session);

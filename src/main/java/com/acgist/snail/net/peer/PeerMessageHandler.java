@@ -35,6 +35,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 
 	@Override
 	public boolean doMessage(Integer result, ByteBuffer attachment) {
+		System.out.println("----");
 		boolean doNext = true; // 是否继续处理消息
 		if (result == 0) {
 			LOGGER.info("读取空消息");
