@@ -2,8 +2,8 @@ package com.acgist.snail.system.context;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -95,7 +95,7 @@ public class SystemThreadContext {
 			maximumPoolSize, // 最大线程数量
 			keepAliveTime, // 空闲时间
 			TimeUnit.SECONDS, // 空闲时间单位
-			new SynchronousQueue<Runnable>(), // 等待线程
+			new LinkedBlockingQueue<Runnable>(), // 等待线程
 			SystemThreadContext.newThreadFactory(name) // 线程工厂
 		);
 	}

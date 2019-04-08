@@ -2,6 +2,7 @@ package com.acgist.snail.pojo.session;
 
 import java.util.BitSet;
 
+import com.acgist.snail.downloader.torrent.bootstrap.PeerNames;
 import com.acgist.snail.system.interfaces.IStatistics;
 import com.acgist.snail.utils.ObjectUtils;
 
@@ -51,18 +52,6 @@ public class PeerSession implements IStatistics {
 		statistics.download(buffer);
 	}
 	
-	public StatisticsSession getStatistics() {
-		return statistics;
-	}
-
-	public String getHost() {
-		return host;
-	}
-
-	public Integer getPort() {
-		return port;
-	}
-	
 	/**
 	 * 可以下载：客户端对Peer感兴趣并且Peer未阻塞客户端
 	 */
@@ -76,7 +65,28 @@ public class PeerSession implements IStatistics {
 	public boolean uplaod() {
 		return this.peerInterested && !this.amChocking;
 	}
-
+	
+	public void id(String id) {
+		this.id = id;
+		this.clientName = PeerNames.name(this.id);
+	}
+	
+	public String host() {
+		return this.host;
+	}
+	
+	public Integer port() {
+		return this.port;
+	}
+	
+	public String clientName() {
+		return this.clientName;
+	}
+	
+	public BitSet bitSet() {
+		return this.bitSet;
+	}
+	
 	@Override
 	public int hashCode() {
 		return ObjectUtils.hashCode(this.host, this.port);

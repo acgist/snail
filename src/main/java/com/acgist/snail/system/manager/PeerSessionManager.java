@@ -49,14 +49,14 @@ public class PeerSessionManager {
 				deque = new LinkedBlockingDeque<>();
 				peers.put(infoHashHex, deque);
 			}
-			Optional<PeerSession> optional = deque.stream().filter(peer -> {
+			final Optional<PeerSession> optional = deque.stream().filter(peer -> {
 				return peer.exist(host, port);
 			}).findFirst();
 			if(optional.isPresent()) {
 				return optional.get();
 			}
 			LOGGER.debug("添加Peer，HOST：{}，PORT：{}", host, port);
-			PeerSession peerSession = new PeerSession(parent, host, port);
+			final PeerSession peerSession = new PeerSession(parent, host, port);
 			deque.offerLast(peerSession);
 			return peerSession;
 		}

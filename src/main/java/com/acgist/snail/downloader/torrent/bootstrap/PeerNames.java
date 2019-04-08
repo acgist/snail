@@ -119,10 +119,7 @@ public class PeerNames {
 	 * @param peerId 客户端ID
 	 */
 	public static final String name(String peerId) {
-		if(peerId == null) {
-			return UNKNOWN;
-		}
-		if(peerId.length() < 3) {
+		if(peerId == null || peerId.length() < 3) {
 			return UNKNOWN;
 		}
 		final String key = peerId.substring(0, 3);

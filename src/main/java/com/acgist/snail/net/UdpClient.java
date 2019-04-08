@@ -85,7 +85,10 @@ public abstract class UdpClient<T extends UdpMessageHandler> {
 			buffer.flip();
 		}
 		try {
-			channel.send(buffer, address);
+			final int size = channel.send(buffer, address);
+			if(size <= 0) {
+				LOGGER.warn("发送数据为空");
+			}
 		} catch (Exception e) {
 			throw new NetException(e);
 		}

@@ -40,7 +40,7 @@ public abstract class TcpSender {
 	 * 使用分隔符对消息进行分隔
 	 */
 	protected void send(String message) {
-		String splitMessage = message + split;
+		final String splitMessage = message + split;
 		try {
 			send(splitMessage.getBytes(SystemConfig.DEFAULT_CHARSET));
 		} catch (UnsupportedEncodingException e) {
@@ -52,18 +52,23 @@ public abstract class TcpSender {
 	/**
 	 * 发送消息
 	 */
-	protected void send(ByteBuffer buffer) {
-		send(buffer.array());
+	protected void send(byte[] bytes) {
+		send(ByteBuffer.wrap(bytes));
 	}
 	
 	/**
 	 * 发送消息
 	 */
-	protected void send(byte[] bytes) {
-		ByteBuffer buffer = ByteBuffer.wrap(bytes);
-		Future<Integer> future = socket.write(buffer);
+	protected void send(ByteBuffer buffer) {
+		if(buffer.position() != 0) { //  重置标记
+			buffer.flip();
+		}
+		final Future<Integer> future = socket.write(buffer);
 		try {
-			future.get(5, TimeUnit.SECONDS); // 阻塞线程防止，防止多线程写入时抛出异常：IllegalMonitorStateException
+			final int size = future.get(5, TimeUnit.SECONDS); // 阻塞线程防止，防止多线程写入时抛出异常：IllegalMonitorStateException
+			if(size <= 0) {
+				LOGGER.warn("发送数据为空");
+			}
 		} catch (InterruptedException | ExecutionException | TimeoutException e) {
 			LOGGER.error("发送消息异常", e);
 		}
