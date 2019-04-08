@@ -3,6 +3,7 @@ package com.acgist.snail.pojo.session;
 import java.util.List;
 import java.util.Map;
 
+import com.acgist.snail.downloader.torrent.bootstrap.PeerGroup;
 import com.acgist.snail.downloader.torrent.bootstrap.TorrentStreamGroup;
 import com.acgist.snail.net.tracker.TrackerGroup;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
@@ -10,6 +11,8 @@ import com.acgist.snail.protocol.torrent.bean.Torrent;
 import com.acgist.snail.protocol.torrent.bean.TorrentFile;
 import com.acgist.snail.protocol.torrent.bean.TorrentInfo;
 import com.acgist.snail.system.exception.DownloadException;
+import com.acgist.snail.system.manager.PeerSessionManager;
+import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -30,13 +33,21 @@ public class TorrentSession {
 	 */
 	private TaskSession taskSession;
 	/**
+	 * Peer组
+	 */
+	private PeerGroup peerGroup;
+	/**
 	 * Tracker组
 	 */
 	private TrackerGroup trackerGroup;
 	/**
-	 * 文件下载组
+	 * 文件组
 	 */
 	private TorrentStreamGroup torrentStreamGroup;
+	
+	public static final TorrentSession newInstance(Torrent torrent, InfoHash infoHash) throws DownloadException {
+		return new TorrentSession(torrent, infoHash);
+	}
 
 	private TorrentSession(Torrent torrent, InfoHash infoHash) throws DownloadException {
 		if(torrent == null || infoHash == null) {
@@ -45,18 +56,15 @@ public class TorrentSession {
 		this.torrent = torrent;
 		this.infoHash = infoHash;
 	}
-
-	public static final TorrentSession newInstance(Torrent torrent, InfoHash infoHash) throws DownloadException {
-		return new TorrentSession(torrent, infoHash);
-	}
 	
 	/**
 	 * 开始下载任务：获取tracker、peer
 	 */
 	public void build(TaskSession taskSession) throws DownloadException {
 		this.taskSession = taskSession;
+		this.peerGroup = new PeerGroup(this);
 		this.trackerGroup = new TrackerGroup(this);
-//		this.trackerGroup.loadTracker(); // TODO：加载Tracker
+		this.trackerGroup.loadTracker();
 		this.torrentStreamGroup = TorrentStreamGroup.newInstance(taskSession.downloadFolder().getPath(), torrent, selectFiles());
 	}
 
@@ -88,6 +96,10 @@ public class TorrentSession {
 		return this.taskSession;
 	}
 	
+	public PeerGroup peerGroup() {
+		return this.peerGroup;
+	}
+	
 	public TrackerGroup trackerGroup() {
 		return this.trackerGroup;
 	}
@@ -117,6 +129,7 @@ public class TorrentSession {
 	 * 释放资源
 	 */
 	public void release() {
+		peerGroup.release();
 		trackerGroup.release();
 	}
 	
@@ -124,7 +137,14 @@ public class TorrentSession {
 	 * 设置Peer
 	 */
 	public void peer(Map<String, Integer> peers) {
-		trackerGroup.peer(taskSession.statistics(), peers);
+		if(CollectionUtils.isEmpty(peers)) {
+			return;
+		}
+		final PeerSessionManager manager = PeerSessionManager.getInstance();
+		peers.forEach((host, port) -> {
+			manager.newPeer(this.infoHashHex(), taskSession.statistics(), host, port);
+		});
+		peerGroup.launchers();
 	}
 
 	/**

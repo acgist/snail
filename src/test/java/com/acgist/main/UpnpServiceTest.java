@@ -11,7 +11,7 @@ import com.acgist.snail.utils.NetUtils;
  */
 public class UpnpServiceTest {
 
-	private String serviceUrl = "http://192.168.1.1:5351/rootDesc.xml";
+	private String serviceUrl = "http://192.168.1.1:10087/rootDesc.xml";
 	
 	@Test
 	public void getExternalIPAddress() {

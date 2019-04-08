@@ -27,9 +27,12 @@ import com.acgist.snail.utils.StringUtils;
 public class TrackerClientManager {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerClientManager.class);
+	
 	private static final TrackerClientManager INSTANCE = new TrackerClientManager();
 
 	private static final int MAX_CLIENT_SIZE = SystemConfig.getTrackerSize();
+	
+	private Map<Integer, TrackerClient> TRACKER_CLIENT_MAP;
 	
 	private TrackerClientManager() {
 		TRACKER_CLIENT_MAP = new ConcurrentHashMap<>();
@@ -38,8 +41,6 @@ public class TrackerClientManager {
 	public static final TrackerClientManager getInstance() {
 		return INSTANCE;
 	}
-
-	private Map<Integer, TrackerClient> TRACKER_CLIENT_MAP;
 
 	/**
 	 * 获取可用的tracker client，传入announce的返回有用的，然后补充不足的的数量
@@ -142,7 +143,7 @@ public class TrackerClientManager {
 	 * client注册
 	 */
 	private void register(TrackerClient client) {
-		LOGGER.debug("注册tracker client，id：{}，announceUrl：{}", client.id(), client.announceUrl());
+		LOGGER.debug("注册Tracker Client，ID：{}，announceUrl：{}", client.id(), client.announceUrl());
 		TRACKER_CLIENT_MAP.put(client.id(), client);
 	}
 

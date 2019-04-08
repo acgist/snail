@@ -15,23 +15,23 @@ import com.acgist.snail.pojo.session.StatisticsSession;
 /**
  * Peer管理器
  */
-public class PeerManager {
+public class PeerSessionManager {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(PeerManager.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PeerSessionManager.class);
 
-	private static final PeerManager INSTANCE = new PeerManager();
+	private static final PeerSessionManager INSTANCE = new PeerSessionManager();
 	
 	/**
 	 * Peer Map<br>
-	 * key=infoHashHex
+	 * key=infoHashHex<br>
 	 * value=Peers：双端队列，新加入插入队尾，剔除的Peer插入对头
 	 */
 	private Map<String, Deque<PeerSession>> peers = new ConcurrentHashMap<>();
 	
-	private PeerManager() {
+	private PeerSessionManager() {
 	}
 	
-	public static final PeerManager getInstance() {
+	public static final PeerSessionManager getInstance() {
 		return INSTANCE;
 	}
 	
