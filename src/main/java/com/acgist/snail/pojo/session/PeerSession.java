@@ -36,6 +36,22 @@ public class PeerSession implements IStatistics {
 		this.peerInterested = false;
 	}
 
+	public void choke() {
+		this.peerChocking = true;
+	}
+	
+	public void unchoke() {
+		this.peerChocking = false;
+	}
+	
+	public void interested() {
+		this.peerInterested = true;
+	}
+	
+	public void notInterested() {
+		this.peerInterested = false;
+	}
+	
 	/**
 	 * 判断是否存在
 	 */
@@ -85,6 +101,18 @@ public class PeerSession implements IStatistics {
 	
 	public BitSet bitSet() {
 		return this.bitSet;
+	}
+	
+	public void bitSet(BitSet bitSet) {
+		this.bitSet = bitSet;
+	}
+	
+	public void have(int index) {
+		this.bitSet.set(index, true);
+	}
+	
+	public boolean isAmChocking() {
+		return this.amChocking;
 	}
 	
 	@Override
