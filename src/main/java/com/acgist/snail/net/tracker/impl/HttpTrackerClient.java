@@ -83,27 +83,17 @@ public class HttpTrackerClient extends TrackerClient {
 	private String buildAnnounceUrl(Integer sid, TorrentSession torrentSession) {
 		StringBuilder builder = new StringBuilder(this.announceUrl);
 		builder.append("?")
-		// 种子HASH
-		.append("info_hash").append("=").append(torrentSession.infoHash().hashId()).append("&")
-		// 客户度ID
-		.append("peer_id").append("=").append(PeerServer.PEER_ID).append("&")
-		// 客户端监听端口，用于和其他Peer连接
-		.append("port").append("=").append(PeerServer.PORT).append("&")
-		// 已上传大小
-		.append("uploaded").append("=").append("0").append("&")
-		// 已下载大小
-		.append("downloaded").append("=").append("0").append("&")
-		// 剩余下载大小
-		.append("left").append("=").append("0").append("&")
-		// 默认：1
-		.append("compact").append("=").append("1").append("&")
-		// 时间：started、completed、stopped
-		.append("event").append("=").append(TrackerClient.Event.started.name()).append("&")
-		// 想要获取的Peer数量
-		.append("numwant").append("=").append("50");
+		.append("info_hash").append("=").append(torrentSession.infoHash().hashId()).append("&") // 种子HASH
+		.append("peer_id").append("=").append(PeerServer.PEER_ID).append("&") // 客户端ID
+		.append("port").append("=").append(PeerServer.PORT).append("&") // 客户端监听端口
+		.append("uploaded").append("=").append("0").append("&") // 已上传大小
+		.append("downloaded").append("=").append("0").append("&") // 已下载大小
+		.append("left").append("=").append("0").append("&") // 剩余下载大小
+		.append("compact").append("=").append("1").append("&") // 默认：1
+		.append("event").append("=").append(TrackerClient.Event.started.name()).append("&") // 事件：started、completed、stopped
+		.append("numwant").append("=").append("50"); // 想要获取的Peer数量
 		if(StringUtils.isNotEmpty(trackerId)) {
-			// 跟踪器id
-			builder.append("&").append("trackerid").append("=").append(trackerId);
+			builder.append("&").append("trackerid").append("=").append(trackerId); // 跟踪器ID
 		}
 		return builder.toString();
 	}

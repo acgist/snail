@@ -18,18 +18,21 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerMessageHandler.class);
 	
 	/**
-	 * 握手协议名称
+	 * 协议名称
 	 */
-	public static final String HANDSHAKE_NAME = "BitTorrent protocol";
+	public static final byte[] HANDSHAKE_NAME = "BitTorrent protocol".getBytes();
+	private static final byte[] HANDSHAKE_RESERVED = {0, 0, 0, 0, 0, 0, 0, 0};
+	private static final int HANDSHAKE_LENGTH = 68;
 	
-	private boolean handshake = false; // 是否握手
+	private volatile boolean handshake = false; // 是否握手
 	private ByteBuffer buffer;
 	
-	private PeerSession peerSession;
-	private TorrentSession torrentSession;
+	private final PeerSession peerSession;
+	private final TorrentSession torrentSession;
 	
-	public PeerMessageHandler(TorrentSession torrentSession) {
+	public PeerMessageHandler(PeerSession peerSession, TorrentSession torrentSession) {
 		super("");
+		this.peerSession = peerSession;
 		this.torrentSession = torrentSession;
 	}
 
@@ -40,12 +43,15 @@ public class PeerMessageHandler extends TcpMessageHandler {
 			LOGGER.info("读取空消息");
 		} else {
 			while(true) {
-				System.out.println(new String(attachment.array()));
-				System.out.println(attachment.position() + "-" + attachment.limit() + "-" + attachment.capacity());
 				int length = 0;
-				int capacity = attachment.capacity();
+				final int position = attachment.position();
+				attachment.flip();
 				if(buffer == null) {
-					length = attachment.getInt();
+					if(handshake) {
+						length = attachment.getInt();
+					} else { // 握手
+						length = HANDSHAKE_LENGTH;
+					}
 					if(length == 0) {
 						break;
 					}
@@ -53,21 +59,21 @@ public class PeerMessageHandler extends TcpMessageHandler {
 				} else {
 					length = buffer.capacity() - buffer.position();
 				}
-				if(capacity > length) { // 包含一个完整消息
+				if(position > length) { // 包含一个完整消息
 					byte[] bytes = new byte[length];
 					attachment.get(bytes);
 					buffer.put(bytes);
 					oneMessage(buffer);
 					buffer = null;
-				} else if(capacity == length) { // 刚好一个完整消息
+				} else if(position == length) { // 刚好一个完整消息
 					byte[] bytes = new byte[length];
 					attachment.get(bytes);
 					buffer.put(bytes);
 					oneMessage(buffer);
 					buffer = null;
 					break;
-				} else if(capacity < length) { // 不是完整消息
-					byte[] bytes = new byte[capacity];
+				} else if(position < length) { // 不是完整消息
+					byte[] bytes = new byte[position];
 					attachment.get(bytes);
 					buffer.put(bytes);
 					break;
@@ -78,6 +84,11 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	}
 	
 	private boolean oneMessage(final ByteBuffer buffer) {
+		buffer.flip();
+		if(!handshake) {
+			handshake = true;
+			handshake(buffer);
+		}
 		return true;
 	}
 
@@ -91,13 +102,23 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 * peer_id：peer_id
 	 */
 	public void handshake() {
-		ByteBuffer buffer = ByteBuffer.allocate(71);
-		buffer.putInt(19);
-		buffer.put(HANDSHAKE_NAME.getBytes());
-		buffer.put("00000000".getBytes());
+		ByteBuffer buffer = ByteBuffer.allocate(HANDSHAKE_LENGTH);
+		buffer.put((byte) HANDSHAKE_NAME.length);
+		buffer.put(HANDSHAKE_NAME);
+		buffer.put(HANDSHAKE_RESERVED);
 		buffer.put(torrentSession.infoHash().hash());
 		buffer.put(PeerServer.PEER_ID.getBytes());
 		send(buffer);
+	}
+	
+	/**
+	 * 处理握手
+	 */
+	private void handshake(ByteBuffer buffer) {
+		final byte[] peerIds = new byte[20];
+		buffer.position(48);
+		buffer.get(peerIds);
+		peerSession.id(new String(peerIds));
 	}
 	
 	/**

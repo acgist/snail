@@ -27,6 +27,7 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends TcpSender {
 	private static final AsynchronousChannelGroup GROUP;
 	
 	private String name;
+	private int timeout;
 	/**
 	 * 消息代理
 	 */
@@ -42,15 +43,17 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends TcpSender {
 		GROUP = group;
 	}
 	
-	public TcpClient(String name, T handler) {
+	public TcpClient(String name, int timeout, T handler) {
 		super(null);
 		this.name = name;
+		this.timeout = timeout;
 		this.handler = handler;
 	}
 	
-	public TcpClient(String name, String split, T handler) {
+	public TcpClient(String name, int timeout, String split, T handler) {
 		super(split);
 		this.name = name;
+		this.timeout = timeout;
 		this.handler = handler;
 	}
 	
@@ -72,7 +75,7 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends TcpSender {
 			socket.setOption(StandardSocketOptions.SO_REUSEADDR, true);
 			socket.setOption(StandardSocketOptions.SO_KEEPALIVE, true);
 			Future<Void> future = socket.connect(new InetSocketAddress(host, port));
-			future.get(5, TimeUnit.SECONDS);
+			future.get(this.timeout, TimeUnit.SECONDS);
 			handler.handle(socket);
 		} catch (Exception e) {
 			ok = false;
