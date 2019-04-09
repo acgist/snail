@@ -63,6 +63,10 @@ public abstract class TcpSender {
 		if(buffer.position() != 0) { //  重置标记
 			buffer.flip();
 		}
+		if(buffer.limit() == 0) {
+			LOGGER.warn("发送消息为空");
+			return;
+		}
 		final Future<Integer> future = socket.write(buffer);
 		try {
 			final int size = future.get(5, TimeUnit.SECONDS); // 阻塞线程防止，防止多线程写入时抛出异常：IllegalMonitorStateException
