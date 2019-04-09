@@ -50,11 +50,10 @@ public class TorrentStream {
 	
 	// 初始值：计算
 	private int filePieceSize; // 文件Piece数量
-	private int fileBeginPiecePos; // 开始块文件偏移
 	private int fileBeginPieceSize; // 开始块大小
 	private int fileEndPieceSize; // 结束块大小
-	private int fileBeginPieceIndex; // 文件Piece开始序号
-	private int fileEndPieceIndex; // 文件Piece结束序号
+	private int fileBeginPieceIndex; // 文件Piece开始索引
+	private int fileEndPieceIndex; // 文件Piece结束索引
 	private BitSet bitSet; // 当前文件位图：下标从零开始，需要转换
 	private BitSet downloadingBitSet; // 下载中的位图：下标从零开始，需要转换
 	
@@ -89,7 +88,7 @@ public class TorrentStream {
 		initFileBitSet();
 		if(LOGGER.isDebugEnabled()) {
 			LOGGER.debug(
-				"TorrentStream信息，块大小：{}，文件路径：{}，文件大小：{}，文件开始偏移：{}，文件Piece数量：{}，开始块大小：{}，结束块大小：{}，文件Piece开始序号：{}，文件Piece结束序号：{}",
+				"TorrentStream信息，块大小：{}，文件路径：{}，文件大小：{}，文件开始偏移：{}，文件Piece数量：{}，开始块大小：{}，结束块大小：{}，文件Piece开始索引：{}，文件Piece结束索引：{}",
 				this.pieceLength,
 				this.file,
 				this.fileSize,
@@ -108,8 +107,7 @@ public class TorrentStream {
 	 * 每次下载一个完成的Piece
 	 */
 	public void pieces(TorrentPiece piece) {
-		final long pos = piece.filePos(this.pieceLength);
-		if(pos < this.fileBeginPos || pos > this.fileEndPos) { // 不符合当前文件位置
+		if(!piece.contain(this.fileBeginPos, this.fileEndPos, this.pieceLength)) { // 不符合当前文件位置
 			return;
 		}
 		List<TorrentPiece> list = null;
@@ -135,22 +133,33 @@ public class TorrentStream {
 		}
 		write(list);
 	}
+
+	/**
+	 * 判断是否包含块索引
+	 * @param index 文件索引
+	 */
+	private boolean hasIndex(int index) {
+		if(index < this.fileBeginPieceIndex || index > this.fileEndPieceIndex) { // 不符合当前文件位置
+			return false;
+		}
+		return true;
+	}
 	
 	/**
-	 * 是否含有Piece
-	 * @param index 整个文件中的序号
+	 * 是否含有Piece数据
+	 * @param index 整个文件中的索引
 	 */
-	public boolean hasPiece(int index) {
+	private boolean hasPiece(int index) {
 		synchronized (this) {
 			return bitSet.get(indexIn(index));
 		}
 	}
 	
 	/**
-	 * 选择未下载的Piece序号，设置为下载状态
-	 * @param index 整个文件中的序号
+	 * 选择未下载的Piece索引，设置为下载状态
+	 * @param index 整个文件中的索引
 	 */
-	public int pick(int index) {
+	public TorrentPiece pick(int index) {
 		synchronized (this) {
 			int pickIndex = indexIn(index);
 			if(pickIndex >= 0) {
@@ -172,7 +181,18 @@ public class TorrentStream {
 			} else {
 				pickIndex = -1;
 			}
-			return pickIndex;
+			if(pickIndex == -1) {
+				return null;
+			}
+			int begin = 0; // TODO：优化判断
+			if(pickIndex == this.fileBeginPieceIndex) {
+				begin = (int) (this.pieceLength - this.fileBeginPieceSize);
+			}
+			int end = (int) this.pieceLength; // TODO：优化判断
+			if(pickIndex == this.fileEndPieceIndex) {
+				end = this.fileEndPieceSize;
+			}
+			return new TorrentPiece(pickIndex, begin, end);
 		}
 	}
 
@@ -198,13 +218,7 @@ public class TorrentStream {
 	 * 如果文件开始和结束都不是一个完整的piece大小，修改为实际大小
 	 */
 	public byte[] read(int index) {
-		int size = (int) this.pieceLength;
-		if(index == this.fileBeginPieceIndex && this.fileBeginPieceSize != 0) {
-			size = this.fileBeginPieceSize;
-		} else if(this.fileEndPieceSize != 0 && index == (this.fileEndPieceIndex - 1)) {
-			size = this.fileEndPieceSize;
-		}
-		return read(index, size);
+		return read(index, (int) this.pieceLength);
 	}
 	
 	/**
@@ -219,20 +233,29 @@ public class TorrentStream {
 	 * 第一块数据下标：0
 	 */
 	public byte[] read(int index, int size, int pos) {
-		if(index > this.fileEndPieceIndex || index < this.fileBeginPieceIndex) {
-			throw new IndexOutOfBoundsException("读取文件块超限");
+		if(!hasIndex(index)) {
+			return null;
 		}
-		if(index == this.fileBeginPieceIndex && this.fileBeginPieceSize != 0) {
-			if(size > this.fileBeginPieceSize) {
-				size = this.fileBeginPieceSize;
-			}
-		} else if(this.fileEndPieceSize != 0 && index == (this.fileEndPieceIndex - 1)) {
-			if(size > this.fileEndPieceSize) {
-				size = this.fileEndPieceSize;
-			}
+		if(!hasPiece(index)) {
+			return null;
+		}
+		long beginPos = pieceLength * index + pos;
+		long seek = beginPos - this.fileBeginPos;
+		if(beginPos < this.fileBeginPos) {
+			seek = 0;
+			beginPos = this.fileBeginPos;
+		}
+		long endPos = beginPos + size;
+		if(endPos > this.fileEndPos) {
+			endPos = this.fileEndPos;
+		}
+		if(endPos - beginPos < size) {
+			size = (int) (endPos - beginPos);
+		}
+		if(size <= 0) {
+			return null;
 		}
 		final byte[] bytes = new byte[size];
-		final long seek = (pieceLength * index + this.fileBeginPiecePos) - this.fileBeginPos + pos; // 跳过字节数
 		try {
 			fileStream.seek(seek);
 			fileStream.read(bytes);
@@ -288,12 +311,25 @@ public class TorrentStream {
 				piece.getIndex() < this.fileBeginPieceIndex ||
 				piece.getIndex() > this.fileEndPieceIndex
 			) {
-				throw new IllegalArgumentException("写入块索引超出文件索引");
+				LOGGER.warn("写入文件索引错误");
+				return;
 			}
-			long begin = pieceLength * (piece.getIndex() - this.fileBeginPieceIndex) + piece.getPos(); 
+			int offset = 0;
+			int length = piece.getLength();
+			long beginPos = piece.beginPos(pieceLength);
+			long seek = beginPos - this.fileBeginPos;
+			if(beginPos < this.fileBeginPos) {
+				offset = (int) Math.abs(seek);
+				seek = 0;
+				length = length - offset;
+			}
+			long endPos = piece.endPos(pieceLength);
+			if(endPos > this.fileEndPos) {
+				length = (int) (length - (endPos - this.fileEndPos));
+			}
 			try {
-				fileStream.seek(begin);
-				fileStream.write(piece.getData(), 0, piece.getLength());
+				fileStream.seek(seek);
+				fileStream.write(piece.getData(), offset, length);
 			} catch (IOException e) {
 				LOGGER.error("文件流写入失败", e);
 			}
@@ -305,11 +341,11 @@ public class TorrentStream {
 	 */
 	private void initFilePiece() {
 		this.fileBeginPieceIndex = (int) (this.fileBeginPos / this.pieceLength);
-		this.fileBeginPiecePos = (int) (this.fileBeginPos % this.pieceLength);
-		if(this.fileBeginPiecePos == 0) {
+		int fileBeginPiecePos = (int) (this.fileBeginPos % this.pieceLength);
+		if(fileBeginPiecePos == 0) {
 			this.fileBeginPieceSize = 0;
 		} else {
-			this.fileBeginPieceSize = (int) (this.pieceLength - this.fileBeginPiecePos);
+			this.fileBeginPieceSize = (int) (this.pieceLength - fileBeginPiecePos);
 		}
 		int endPieceSize = (int) (this.fileEndPos % this.pieceLength);
 		this.fileEndPieceIndex = (int) (this.fileEndPos / this.pieceLength);
@@ -346,6 +382,9 @@ public class TorrentStream {
 	 * 是否有数据
 	 */
 	private boolean hasData(byte[] bytes) {
+		if(bytes == null) {
+			return false;
+		}
 		for (byte value : bytes) {
 			if(value != 0) {
 				return true;
@@ -356,7 +395,7 @@ public class TorrentStream {
 	
 	/**
 	 * 下载完成
-	 * @param index 整个文件中的序号
+	 * @param index 整个文件中的索引
 	 */
 	private void download(int index) {
 		bitSet.set(indexIn(index), true); // 下载成功
@@ -364,18 +403,18 @@ public class TorrentStream {
 	}
 	
 	/**
-	 * 序号转换
-	 * @param index 整个任务的序号
-	 * @return 当前文件的序号
+	 * 索引转换
+	 * @param index 整个任务的索引
+	 * @return 当前文件的索引
 	 */
 	private int indexIn(int index) {
 		return index - this.fileBeginPieceIndex;
 	}
 	
 	/**
-	 * 序号转换
-	 * @param index 当前文件的序号
-	 * @return 整个任务的序号
+	 * 索引转换
+	 * @param index 当前文件的索引
+	 * @return 整个任务的索引
 	 */
 	private int indexOut(int index) {
 		return index + this.fileBeginPieceIndex;

@@ -1,5 +1,6 @@
 package com.acgist.snail.downloader.torrent.bootstrap;
 
+import java.nio.ByteBuffer;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -60,15 +61,15 @@ public class TorrentStreamGroup {
 	/**
 	 * 挑选一个下载
 	 */
-	public int pick(int index) {
-		int pickIndex = -1;
+	public TorrentPiece pick(int index) {
+		TorrentPiece pickPiece = null;
 		for (TorrentStream torrentStream : streams) {
-			pickIndex = torrentStream.pick(index);
-			if(pickIndex != -1) {
+			pickPiece = torrentStream.pick(index);
+			if(pickPiece != null) {
 				break;
 			}
 		}
-		return pickIndex;
+		return pickPiece;
 	}
 
 	/**
@@ -112,6 +113,31 @@ public class TorrentStreamGroup {
 		for (TorrentStream torrentStream : streams) {
 			torrentStream.release();
 		}
+	}
+
+	/**
+	 * 判断是否有块数据
+	 * @param index 块索引
+	 */
+	public boolean have(int index) {
+		return pieces.get(index);
+	}
+
+	/**
+	 * 读取块数据
+	 * @param index 块索引
+	 * @param begin 块偏移
+	 * @param length 数据长度
+	 */
+	public byte[] read(int index, int begin, int length) {
+		ByteBuffer buffer = ByteBuffer.allocate(length);
+		for (TorrentStream torrentStream : streams) {
+			byte[] bytes = torrentStream.read(index, length, begin);
+			if(bytes != null) {
+				buffer.put(bytes);
+			}
+		}
+		return buffer.array();
 	}
 
 }
