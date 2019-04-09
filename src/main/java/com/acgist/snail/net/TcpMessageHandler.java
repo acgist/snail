@@ -34,11 +34,11 @@ public abstract class TcpMessageHandler extends TcpSender implements CompletionH
 
 	@Override
 	public void completed(Integer result, ByteBuffer attachment) {
-		synchronized (this) {
+//		synchronized (this) {
 			if(doMessage(result, attachment)) {
 				loopRead();
 			}
-		}
+//		}
 	}
 	
 	@Override

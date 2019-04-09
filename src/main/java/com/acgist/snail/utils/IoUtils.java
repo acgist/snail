@@ -42,6 +42,9 @@ public class IoUtils {
 		return content;
 	}
 	
+	/**
+	 * 关闭输入流
+	 */
 	public static final void close(InputStream input) {
 		try {
 			if(input != null) {
@@ -52,11 +55,18 @@ public class IoUtils {
 		}
 	}
 	
+	/**
+	 * 关闭Socket
+	 */
 	public static final void close(Socket socket) {
 		try {
-			if(socket != null && !socket.isClosed()) {
+			if(socket != null && !socket.isInputShutdown()) {
 				socket.shutdownInput();
+			}
+			if(socket != null && !socket.isOutputShutdown()) {
 				socket.shutdownOutput();
+			}
+			if(socket != null && !socket.isClosed()) {
 				socket.close();
 			}
 		} catch (IOException e) {
@@ -64,11 +74,18 @@ public class IoUtils {
 		}
 	}
 	
+	/**
+	 * 关闭异步Socket通道
+	 */
 	public static final void close(AsynchronousSocketChannel socket) {
 		if(socket != null && socket.isOpen()) {
 			try {
 				socket.shutdownInput();
 				socket.shutdownOutput();
+			} catch (Exception e) {
+				LOGGER.error("关闭Socket输入输出流异常", e);
+			}
+			try {
 				socket.close();
 			} catch (IOException e) {
 				LOGGER.error("关闭Socket异常", e);
@@ -76,6 +93,9 @@ public class IoUtils {
 		}
 	}
 	
+	/**
+	 * 关闭异步SocketServer通道
+	 */
 	public static final void close(AsynchronousServerSocketChannel server) {
 		if(server != null && server.isOpen()) {
 			try {
@@ -86,12 +106,18 @@ public class IoUtils {
 		}
 	}
 	
+	/**
+	 * 关闭异步通道组
+	 */
 	public static final void close(AsynchronousChannelGroup group) {
 		if(group != null && !group.isShutdown()) {
 			group.shutdown();
 		}
 	}
 	
+	/**
+	 * 关闭组播通道
+	 */
 	public static final void close(DatagramChannel channel) {
 		if(channel != null && channel.isOpen()) {
 			try {
