@@ -104,10 +104,12 @@ public class TorrentStream {
 	 */
 	public void pieces(TorrentPiece piece) {
 		if(!piece.contain(this.fileBeginPos, this.fileEndPos)) { // 不符合当前文件位置
+			System.out.println("----");
 			return;
 		}
 		List<TorrentPiece> list = null;
-		synchronized (filePieces) {
+		synchronized (this) {
+			System.out.println("->");
 			if(filePieces.offer(piece)) {
 				download(piece.getIndex());
 				torrentStreamGroup.piece(piece.getIndex()); // 下载完成
@@ -139,15 +141,19 @@ public class TorrentStream {
 			return null;
 		}
 		synchronized (this) {
-			int index = -1; // 整个文件的索引
+			System.out.println("-->");
+			int index = this.fileBeginPieceIndex; // 整个文件的索引
 			while(true) {
-				index = peerBitSet.nextSetBit(this.fileBeginPieceIndex);
+				System.out.println("----");
+				index = peerBitSet.nextSetBit(index);
 				if(index < this.fileEndPieceIndex) {
 					int indexIn = indexIn(index); // 当前文件索引
 					if(bitSet.get(indexIn)) {
+						index++;
 						continue;
 					}
 					if(downloadingBitSet.get(indexIn)) { // 已处于下载中
+						index++;
 						continue;
 					}
 					downloadingBitSet.set(indexIn);
@@ -258,7 +264,8 @@ public class TorrentStream {
 	 */
 	public void release() {
 		List<TorrentPiece> list = null;
-		synchronized (filePieces) {
+		synchronized (this) {
+			System.out.println("--->");
 			list = flush();
 		}
 		write(list);
@@ -426,6 +433,7 @@ public class TorrentStream {
 	 */
 	private boolean hasPiece(int index) {
 		synchronized (this) {
+			System.out.println("---->");
 			return bitSet.get(indexIn(index));
 		}
 	}

@@ -61,8 +61,10 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 		boolean over = downloadPiece.put(begin, bytes);
 		if(over) {
 			pick();
+			request();
+			count.set(0);
 		}
-		if(count.addAndGet(-1) == 0) {
+		if(count.addAndGet(-1) <= 0) {
 			request();
 		}
 	}
@@ -86,10 +88,10 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 		}
 		final int index = this.downloadPiece.getIndex();
 		while(true) {
-			if(count.addAndGet(1) > MAX_SLICE_SIZE) {
-				count.addAndGet(-1);
+			if(count.get() >= MAX_SLICE_SIZE) {
 				break;
 			}
+			count.addAndGet(1);
 			int begin = this.downloadPiece.position();
 			int length = this.downloadPiece.length();
 			if(length == 0) {
