@@ -90,6 +90,13 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends TcpSender {
 	}
 	
 	/**
+	 * 消息处理器
+	 */
+	public T handler() {
+		return this.handler;
+	}
+	
+	/**
 	 * 关闭资源
 	 */
 	public void close() {

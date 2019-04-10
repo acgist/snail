@@ -77,6 +77,7 @@ public class TorrentStreamGroup {
 	 */
 	public void piece(int index) {
 		pieces.set(index, true);
+		// TODO：have消息
 	}
 	
 	/**

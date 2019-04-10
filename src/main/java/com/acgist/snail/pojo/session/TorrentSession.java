@@ -6,7 +6,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.downloader.torrent.bootstrap.PeerGroup;
+import com.acgist.snail.downloader.torrent.bootstrap.PeerClientGroup;
 import com.acgist.snail.downloader.torrent.bootstrap.TorrentStreamGroup;
 import com.acgist.snail.net.tracker.TrackerGroup;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
@@ -38,13 +38,13 @@ public class TorrentSession {
 	 */
 	private TaskSession taskSession;
 	/**
-	 * Peer组
-	 */
-	private PeerGroup peerGroup;
-	/**
 	 * Tracker组
 	 */
 	private TrackerGroup trackerGroup;
+	/**
+	 * Peer组
+	 */
+	private PeerClientGroup peerClientGroup;
 	/**
 	 * 文件组
 	 */
@@ -67,8 +67,8 @@ public class TorrentSession {
 	 */
 	public void build(TaskSession taskSession) throws DownloadException {
 		this.taskSession = taskSession;
-		this.peerGroup = new PeerGroup(this);
 		this.trackerGroup = new TrackerGroup(this);
+		this.peerClientGroup = new PeerClientGroup(this);
 		this.trackerGroup.loadTracker();
 		this.torrentStreamGroup = TorrentStreamGroup.newInstance(taskSession.downloadFolder().getPath(), torrent, selectFiles());
 	}
@@ -101,12 +101,12 @@ public class TorrentSession {
 		return this.taskSession;
 	}
 	
-	public PeerGroup peerGroup() {
-		return this.peerGroup;
-	}
-	
 	public TrackerGroup trackerGroup() {
 		return this.trackerGroup;
+	}
+	
+	public PeerClientGroup peerClientGroup() {
+		return this.peerClientGroup;
 	}
 	
 	public TorrentStreamGroup torrentStreamGroup() {
@@ -134,7 +134,7 @@ public class TorrentSession {
 	 * 释放资源
 	 */
 	public void release() {
-		peerGroup.release();
+		peerClientGroup.release();
 		trackerGroup.release();
 	}
 	
@@ -150,7 +150,7 @@ public class TorrentSession {
 			LOGGER.debug("添加Peer，HOST：{}，PORT：{}", host, port);
 			manager.newPeer(this.infoHashHex(), taskSession.statistics(), host, port);
 		});
-		peerGroup.launchers();
+		peerClientGroup.launchers();
 	}
 
 	/**
