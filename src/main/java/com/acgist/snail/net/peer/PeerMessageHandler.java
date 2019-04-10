@@ -13,6 +13,8 @@ import com.acgist.snail.pojo.session.TorrentSession;
 
 /**
  * Peer消息处理
+ * https://blog.csdn.net/li6322511/article/details/79002753
+ * https://blog.csdn.net/p312011150/article/details/81478237
  */
 public class PeerMessageHandler extends TcpMessageHandler {
 
@@ -27,6 +29,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	
 	private volatile boolean handshake = false; // 是否握手
 	private ByteBuffer buffer;
+	private PeerClient peerClient;
 	
 	private final PeerSession peerSession;
 	private final TorrentSession torrentSession;
@@ -163,7 +166,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		buffer.position(48);
 		buffer.get(peerIds);
 		peerSession.id(new String(peerIds));
-//		bitfield();
+		bitfield();
 	}
 	
 	/**
@@ -179,11 +182,13 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 * 阻塞
 	 */
 	public void choke() {
+		peerSession.amChoke();
 		send(buildMessage(Byte.decode("0"), null));
 	}
 
 	private void choke(ByteBuffer buffer) {
-		peerSession.choke();
+		peerSession.peerChoke();
+		peerClient.close();
 	}
 	
 	/**
@@ -191,12 +196,13 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 * 解除阻塞
 	 */
 	public void unchoke() {
+		peerSession.amUnchoke();
 		send(buildMessage(Byte.decode("1"), null));
 	}
 	
-	public void unchoke(ByteBuffer buffer) {
-		peerSession.unchoke();
-		// TODO:request
+	private void unchoke(ByteBuffer buffer) {
+		peerSession.peerUnchoke();
+		peerClient.request(); // 开始下载
 	}
 	
 	/**
@@ -204,25 +210,27 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 * 收到have消息时，客户端对Peer感兴趣
 	 */
 	public void interested() {
+		peerSession.amInterested();
 		send(buildMessage(Byte.decode("2"), null));
 	}
-	
+
 	private void interested(ByteBuffer buffer) {
-		peerSession.interested();
+		peerSession.peerInterested();
 	}
-	
+
 	/**
 	 * 5字节：len=0001 id=3
 	 * 客户端对Peer不感兴趣
 	 */
 	public void notInterested() {
+		peerSession.amNotInterested();
 		send(buildMessage(Byte.decode("3"), null));
 	}
-	
-	public void notInterested(ByteBuffer buffer) {
-		peerSession.notInterested();
+
+	private void notInterested(ByteBuffer buffer) {
+		peerSession.peerNotInterested();
 	}
-	
+
 	/**
 	 * 5字节：len=0005 id=4 piece_index
 	 * piece index：piece下标，每当客户端下载完piece，发出have消息告诉所有与客户端连接的Peer
@@ -230,13 +238,17 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	public void have(int index) {
 		send(buildMessage(Byte.decode("4"), ByteBuffer.allocate(4).putInt(index).array()));
 	}
-	
+
 	private void have(ByteBuffer buffer) {
 		int index = buffer.getInt();
-		peerSession.have(index);
-		// TODO:fasong
+		peerSession.bitSet(index);
+		if(torrentStreamGroup.have(index)) { // 已有=不感兴趣
+			notInterested();
+		} else { // 没有=感兴趣
+			interested();
+		}
 	}
-	
+
 	/**
 	 * 长度不固定：len=0001+X id=5 bitfield
 	 * 交换位图：X=bitfield.length，握手后交换位图，每个piece占一位
@@ -254,9 +266,8 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		buffer.get(bytes);
 		final BitSet bitSet = BitSet.valueOf(bytes);
 		peerSession.bitSet(bitSet);
-		LOGGER.debug("交换位图：{}", bitSet);
 	}
-	
+
 	/**
 	 * 13字节：len=0013 id=6 index begin length
 	 * index：piece的索引
@@ -265,20 +276,23 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 * 当客户端收到Peer的unchoke请求后即可构建request消息，一般交换数据是以slice（长度16KB的块）为单位的
 	 */
 	public void request(int index, int begin, int length) {
+		if(peerSession.isPeerChocking()) {
+			return; // 被阻塞不发送请求
+		}
 		ByteBuffer buffer = ByteBuffer.allocate(12);
 		buffer.putInt(index);
 		buffer.putInt(begin);
 		buffer.putInt(length);
 		send(buildMessage(Byte.decode("6"), buffer.array()));
 	}
-	
+
 	private void request(ByteBuffer buffer) {
-		int index = buffer.getInt();
-		int begin = buffer.getInt();
-		int length = buffer.getInt();
 		if(peerSession.isAmChocking()) { // 被阻塞不操作
 			return;
 		}
+		int index = buffer.getInt();
+		int begin = buffer.getInt();
+		int length = buffer.getInt();
 		if(torrentStreamGroup.have(index)) {
 			byte[] bytes = torrentStreamGroup.read(index, begin, length);
 			if(bytes != null) {
@@ -286,7 +300,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 			}
 		}
 	}
-	
+
 	/**
 	 * 长度不固定：len=0009+X id=7 index begin block
 	 * piece消息：X=block长度（一般为16KB），收到request消息，如果没有Peer未被阻塞，且存在slice，则返回数据
@@ -298,11 +312,15 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		buffer.put(bytes);
 		send(buildMessage(Byte.decode("7"), buffer.array()));
 	}
-	
+
 	private void piece(ByteBuffer buffer) {
-		// TODO
+		int index = buffer.getInt();
+		int begin = buffer.getInt();
+		final byte[] bytes = new byte[buffer.remaining()];
+		buffer.get(bytes);
+		peerClient.piece(index, begin, bytes);
 	}
-	
+
 	/**
 	 * 13字节：len=0013 id=8 index begin length
 	 * 与request作用相反，取消下载

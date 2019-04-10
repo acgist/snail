@@ -1,6 +1,7 @@
 package com.acgist.snail.net.peer;
 
 import com.acgist.snail.net.TcpClient;
+import com.acgist.snail.pojo.TorrentPiece;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
@@ -8,11 +9,11 @@ import com.acgist.snail.pojo.session.TorrentSession;
 /**
  * Peer客户端<br>
  * 基本协议：TCP<br>
- * https://blog.csdn.net/li6322511/article/details/79002753
- * https://blog.csdn.net/p312011150/article/details/81478237
  */
 public class PeerClient extends TcpClient<PeerMessageHandler> {
 
+	private TorrentPiece downloadPiece; // 下载的Piece信息
+	
 	private PeerSession peerSession;
 	private TaskSession taskSession;
 	private TorrentSession torrentSession;
@@ -31,6 +32,22 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 			handler.handshake();
 		}
 		return ok;
+	}
+	
+	public PeerSession peerSession() {
+		return this.peerSession;
+	}
+	
+	public void release() {
+	}
+
+	public void piece(int index, int begin, byte[] bytes) {
+	}
+
+	/**
+	 * 开始
+	 */
+	public void request() {
 	}
 
 }

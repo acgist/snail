@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import com.acgist.snail.net.peer.PeerClient;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
@@ -16,21 +17,21 @@ import com.acgist.snail.system.manager.PeerSessionManager;
  * Peer组<br>
  * 每次剔除权重的一个PeerClient<br>
  */
-public class PeerGroup {
+public class PeerClientGroup {
 
 //	private static final Logger LOGGER = LoggerFactory.getLogger(PeerGroup.class);
 	
 	private final TaskSession taskSession;
 	private final TorrentSession torrentSession;
 	
-	private final List<PeerLauncher> peerLaunchers;
+	private final List<PeerClient> peerClients;
 	
 	private final PeerSessionManager peerSessionManager;
 	
-	public PeerGroup(TorrentSession torrentSession) {
+	public PeerClientGroup(TorrentSession torrentSession) {
 		this.taskSession = torrentSession.taskSession();
 		this.torrentSession = torrentSession;
-		this.peerLaunchers = Collections.synchronizedList(new ArrayList<>());
+		this.peerClients = Collections.synchronizedList(new ArrayList<>());
 		this.peerSessionManager = PeerSessionManager.getInstance();
 	}
 	
@@ -41,7 +42,7 @@ public class PeerGroup {
 		final int size = SystemConfig.getPeerSize();
 		synchronized (this) {
 			while(true) {
-				if(this.peerLaunchers.size() > size) {
+				if(this.peerClients.size() > size) {
 					break;
 				}
 				buildPeerLauncher();
@@ -65,8 +66,8 @@ public class PeerGroup {
 	 */
 	private void inferiorLauncher() {
 		// TODO
-		PeerLauncher launcher = null;
-		peerSessionManager.inferior(torrentSession.infoHashHex(), launcher.peerSession());
+		PeerClient peerClient = null;
+		peerSessionManager.inferior(torrentSession.infoHashHex(), peerClient.peerSession());
 	}
 
 	/**
@@ -88,7 +89,7 @@ public class PeerGroup {
 	 * 资源释放
 	 */
 	public void release() {
-		peerLaunchers.forEach(launcher -> launcher.release());
+		peerClients.forEach(client -> client.release());
 	}
 
 }
