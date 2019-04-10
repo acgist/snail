@@ -69,7 +69,7 @@ public class TorrentSession {
 		this.taskSession = taskSession;
 		this.trackerGroup = new TrackerGroup(this);
 		this.peerClientGroup = new PeerClientGroup(this);
-		this.trackerGroup.loadTracker();
+//		this.trackerGroup.loadTracker(); // TODO：非测试时需要打开
 		this.torrentStreamGroup = TorrentStreamGroup.newInstance(taskSession.downloadFolder().getPath(), torrent, selectFiles());
 	}
 

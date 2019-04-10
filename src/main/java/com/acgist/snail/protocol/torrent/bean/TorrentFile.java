@@ -77,7 +77,7 @@ public class TorrentFile {
 	public boolean selected() {
 		return this.selected;
 	}
-	
+
 	/**
 	 * 设置选中
 	 */
