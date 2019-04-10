@@ -60,7 +60,7 @@ public class TorrentSessionManager {
 			final Map<String, Object> map = BCodeUtils.d(input);
 			final Torrent torrent = Torrent.valueOf(map);
 			final Map<?, ?> info = (Map<?, ?>) map.get("info"); // 只需要数据不符
-			InfoHash infoHash = InfoHashBuilder.newInstance().build(info).buildInfoHash();
+			final InfoHash infoHash = InfoHashBuilder.newInstance().build(info).buildInfoHash();
 			return buildSession(torrent, infoHash);
 		} else {
 			throw new DownloadException("种子解析失败");

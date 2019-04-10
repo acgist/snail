@@ -51,11 +51,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 			int length = 0;
 			attachment.flip();
 			while(true) {
-				final int remaining = attachment.remaining();
 				if(buffer == null) {
-					if(remaining == 0) { // 读取完毕
-						break;
-					}
 					if(handshake) {
 						length = attachment.getInt();
 					} else { // 握手
@@ -69,6 +65,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 				} else {
 					length = buffer.capacity() - buffer.position();
 				}
+				final int remaining = attachment.remaining();
 				if(remaining > length) { // 包含一个完整消息
 					byte[] bytes = new byte[length];
 					attachment.get(bytes);
@@ -148,7 +145,8 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 * info_hash：info_hash<br>
 	 * peer_id：peer_id
 	 */
-	public void handshake() {
+	public void handshake(PeerClient peerClient) {
+		this.peerClient = peerClient;
 		ByteBuffer buffer = ByteBuffer.allocate(HANDSHAKE_LENGTH);
 		buffer.put((byte) HANDSHAKE_NAME.length);
 		buffer.put(HANDSHAKE_NAME);
@@ -202,7 +200,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	
 	private void unchoke(ByteBuffer buffer) {
 		peerSession.peerUnchoke();
-		peerClient.request(); // 开始下载
+		peerClient.launcher(); // 开始下载
 	}
 	
 	/**

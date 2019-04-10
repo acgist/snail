@@ -61,10 +61,10 @@ public class TorrentStreamGroup {
 	/**
 	 * 挑选一个下载
 	 */
-	public TorrentPiece pick(int index) {
+	public TorrentPiece pick(final BitSet peerBitSet) {
 		TorrentPiece pickPiece = null;
 		for (TorrentStream torrentStream : streams) {
-			pickPiece = torrentStream.pick(index);
+			pickPiece = torrentStream.pick(peerBitSet);
 			if(pickPiece != null) {
 				break;
 			}
@@ -101,7 +101,7 @@ public class TorrentStreamGroup {
 	/**
 	 * 保存Piece
 	 */
-	public void pieces(TorrentPiece piece) {
+	public void piece(TorrentPiece piece) {
 		for (TorrentStream torrentStream : streams) {
 			torrentStream.pieces(piece);
 		}

@@ -132,42 +132,43 @@ public class TorrentStream {
 	
 	/**
 	 * 选择未下载的Piece索引，设置为下载状态
-	 * @param index 整个文件中的索引
+	 * @param peerBitSet Peer含有的位图
 	 */
-	public TorrentPiece pick(int index) {
+	public TorrentPiece pick(final BitSet peerBitSet) {
+		if(peerBitSet.cardinality() == 0) {
+			return null;
+		}
 		synchronized (this) {
-			int pickIndex = indexIn(index);
-			if(pickIndex >= 0) {
-				while(true) {
-					pickIndex = bitSet.nextClearBit(pickIndex);
-					if(pickIndex < this.filePieceSize) {
-						if(downloadingBitSet.get(pickIndex)) {
-							pickIndex++;
-							continue;
-						}
-						downloadingBitSet.set(pickIndex);
-						pickIndex = indexOut(pickIndex);
-						break;
-					} else {
-						pickIndex = -1;
-						break;
+			int index = -1; // 整个文件的索引
+			while(true) {
+				index = peerBitSet.nextSetBit(this.fileBeginPieceIndex);
+				if(index < this.fileEndPieceIndex) {
+					int indexIn = indexIn(index); // 当前文件索引
+					if(bitSet.get(indexIn)) {
+						continue;
 					}
+					if(downloadingBitSet.get(indexIn)) { // 已处于下载中
+						continue;
+					}
+					downloadingBitSet.set(indexIn);
+					break;
+				} else {
+					index = -1;
+					break;
 				}
-			} else {
-				pickIndex = -1;
 			}
-			if(pickIndex == -1) {
+			if(index == -1) {
 				return null;
 			}
 			int begin = 0;
-			if(pickIndex == this.fileBeginPieceIndex) {
-				begin = firstPieceSize();
+			if(index == this.fileBeginPieceIndex) {
+				begin = firstPiecePos();
 			}
 			int end = (int) this.pieceLength;
-			if(pickIndex == this.fileEndPieceIndex) {
+			if(index == this.fileEndPieceIndex) {
 				end = lastPieceSize();
 			}
-			return new TorrentPiece(this.pieceLength, pickIndex, begin, end);
+			return new TorrentPiece(this.pieceLength, index, begin, end);
 		}
 	}
 
@@ -388,15 +389,6 @@ public class TorrentStream {
 	}
 	
 	/**
-	 * 索引转换
-	 * @param index 当前文件的索引
-	 * @return 整个任务的索引
-	 */
-	private int indexOut(int index) {
-		return index + this.fileBeginPieceIndex;
-	}
-	
-	/**
 	 * 第一块的偏移
 	 */
 	private int firstPiecePos() {
@@ -411,7 +403,7 @@ public class TorrentStream {
 	}
 	
 	/**
-	 * 结束块的大小
+	 * 结束块的大小=偏移
 	 */
 	private int lastPieceSize() {
 		return (int) (this.fileEndPos - (this.pieceLength * this.fileEndPieceIndex));
