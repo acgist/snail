@@ -293,9 +293,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		int length = buffer.getInt();
 		if(torrentStreamGroup.have(index)) {
 			byte[] bytes = torrentStreamGroup.read(index, begin, length);
-			if(bytes != null) {
-				piece(index, begin, bytes);
-			}
+			piece(index, begin, bytes); // bytes == null也要发送数据
 		}
 	}
 
@@ -312,10 +310,14 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	}
 
 	private void piece(ByteBuffer buffer) {
-		int index = buffer.getInt();
-		int begin = buffer.getInt();
-		final byte[] bytes = new byte[buffer.remaining()];
-		buffer.get(bytes);
+		final int index = buffer.getInt();
+		final int begin = buffer.getInt();
+		final int remaining = buffer.remaining();
+		byte[] bytes = null;
+		if(remaining > 0) {
+			bytes = new byte[remaining];
+			buffer.get(bytes);
+		}
 		peerClient.piece(index, begin, bytes);
 	}
 

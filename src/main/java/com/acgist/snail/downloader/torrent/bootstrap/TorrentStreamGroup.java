@@ -123,6 +123,16 @@ public class TorrentStreamGroup {
 	public boolean have(int index) {
 		return pieces.get(index);
 	}
+	
+	/**
+	 * 设置下载失败
+	 * @param index 块索引
+	 */
+	public void undone(int index) {
+		for (TorrentStream torrentStream : streams) {
+			torrentStream.undone(index);
+		}
+	}
 
 	/**
 	 * 读取块数据

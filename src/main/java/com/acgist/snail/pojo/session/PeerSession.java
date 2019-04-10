@@ -123,8 +123,18 @@ public class PeerSession implements IStatistics {
 		this.bitSet = bitSet;
 	}
 	
+	/**
+	 * 设置已有块
+	 */
 	public void bitSet(int index) {
 		this.bitSet.set(index, true);
+	}
+	
+	/**
+	 * 清除坏块
+	 */
+	public void unBitSet(int index) {
+		this.bitSet.clear(index);
 	}
 	
 	public boolean isAmChocking() {

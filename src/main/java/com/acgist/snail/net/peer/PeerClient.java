@@ -53,16 +53,20 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	}
 
 	public void piece(int index, int begin, byte[] bytes) {
-		LOGGER.debug("响应：index：{}，begin：{}，length：{}", index, begin, bytes.length);
+		LOGGER.debug("响应：index：{}，begin：{}，length：{}", index, begin, (bytes == null ? null : bytes.length));
+		if(bytes == null) { // 数据不完整抛弃当前块，重新选择下载块
+			peerSession.unBitSet(index);
+			torrentStreamGroup.undone(index);
+			repick();
+			return;
+		}
 		if(index != downloadPiece.getIndex()) {
 			LOGGER.warn("下载的Piece索引不符");
 			return;
 		}
 		boolean over = downloadPiece.put(begin, bytes);
-		if(over) {
-			pick();
-			request();
-			count.set(0);
+		if(over) { // 下载完成
+			repick();
 		}
 		if(count.addAndGet(-1) <= 0) {
 			request();
@@ -75,15 +79,18 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	public void launcher() {
 		synchronized (this) {
 			if(downloadPiece == null) {
-				pick();
-				request();
+				repick();
 			}
 		}
 	}
 	
+	/**
+	 * 请求数据
+	 */
 	private void request() {
 		if(this.downloadPiece == null) {
 			LOGGER.debug("没有找到Peer块下载");
+			// TODO：close()
 			return;
 		}
 		final int index = this.downloadPiece.getIndex();
@@ -93,8 +100,8 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 			}
 			count.addAndGet(1);
 			int begin = this.downloadPiece.position();
-			int length = this.downloadPiece.length();
-			if(length == 0) {
+			int length = this.downloadPiece.length(); // 顺序不能调换
+			if(length == 0) { // 已经下载完成
 				break;
 			}
 			LOGGER.debug("请求：begin：{}，length：{}", begin, length);
@@ -108,11 +115,13 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	/**
 	 * 选择下载Piece
 	 */
-	private void pick() {
+	private void repick() {
 		if(this.downloadPiece != null && this.downloadPiece.over()) {
 			torrentStreamGroup.piece(downloadPiece); // 保存数据
 		}
 		this.downloadPiece = torrentStreamGroup.pick(peerSession.bitSet());
+		request();
+		count.set(0);
 	}
 
 }
