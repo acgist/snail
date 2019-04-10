@@ -129,13 +129,19 @@ public class TorrentStreamGroup {
 	 * @param begin 块偏移
 	 * @param length 数据长度
 	 */
-	public byte[] read(int index, int begin, int length) {
-		ByteBuffer buffer = ByteBuffer.allocate(length);
+	public byte[] read(final int index, final int begin, final int length) {
+		final ByteBuffer buffer = ByteBuffer.allocate(length);
 		for (TorrentStream torrentStream : streams) {
 			byte[] bytes = torrentStream.read(index, length, begin);
 			if(bytes != null) {
 				buffer.put(bytes);
+				if(buffer.position() >= length) {
+					break;
+				}
 			}
+		}
+		if(buffer.position() < length) {
+			return null;
 		}
 		return buffer.array();
 	}
