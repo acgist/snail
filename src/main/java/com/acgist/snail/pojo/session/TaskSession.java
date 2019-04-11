@@ -44,7 +44,7 @@ public class TaskSession implements IStatistics {
 			throw new DownloadException("创建下载任务失败");
 		}
 		this.entity = entity;
-		this.statistics = new StatisticsSession(SystemStatistics.getInstance().getSystemStatistics());
+		this.statistics = new StatisticsSession(true, SystemStatistics.getInstance().getSystemStatistics());
 	}
 	
 	// 功能 //

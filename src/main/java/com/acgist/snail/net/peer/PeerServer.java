@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.net.TcpServer;
 import com.acgist.snail.system.config.SystemConfig;
 
+/**
+ * Peer服务端
+ */
 public class PeerServer extends TcpServer {
 
 	protected PeerServer() {

@@ -14,15 +14,25 @@ public abstract class TcpMessageHandler extends TcpSender implements CompletionH
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TcpMessageHandler.class);
 	
+	protected boolean server = false; // 是否是服务端
+	
 	public TcpMessageHandler(String split) {
 		super(split);
 	}
-
+	
 	/**
 	 * 处理消息
 	 * @return 是否继续循环读取：true-是；false-不继续
 	 */
 	public abstract boolean doMessage(Integer result, ByteBuffer attachment);
+	
+	/**
+	 * 设置为服务端
+	 */
+	public TcpMessageHandler server() {
+		this.server = true;
+		return this;
+	}
 	
 	/**
 	 * 消息代理
@@ -35,9 +45,9 @@ public abstract class TcpMessageHandler extends TcpSender implements CompletionH
 	@Override
 	public void completed(Integer result, ByteBuffer attachment) {
 //		synchronized (this) {
-			if(doMessage(result, attachment)) {
-				loopRead();
-			}
+		if(doMessage(result, attachment)) {
+			loopRead();
+		}
 //		}
 	}
 	

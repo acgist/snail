@@ -39,7 +39,7 @@ public class FtpDownloader extends Downloader {
 
 	@Override
 	public void open() {
-		bytes = new byte[DownloadConfig.getBufferByte()];
+		bytes = new byte[1024 * 1024];
 		buildInput();
 		buildOutput();
 	}
@@ -47,9 +47,7 @@ public class FtpDownloader extends Downloader {
 	@Override
 	public void download() throws IOException {
 		int length = 0;
-		long begin, end;
 		while(ok()) {
-			begin = System.currentTimeMillis();
 			length = input.readNBytes(bytes, 0, bytes.length);
 			if(isComplete(length)) { // 是否完成
 				complete = true;
@@ -57,8 +55,6 @@ public class FtpDownloader extends Downloader {
 			}
 			output.write(bytes, 0, length);
 			statistics(length);
-			end = System.currentTimeMillis();
-			yield(end - begin);
 		}
 	}
 

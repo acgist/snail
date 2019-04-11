@@ -102,7 +102,7 @@ public class TorrentStream {
 	 * 添加Piece
 	 * 每次下载一个完成的Piece
 	 */
-	public void pieces(TorrentPiece piece) {
+	public void piece(TorrentPiece piece) {
 		if(!piece.contain(this.fileBeginPos, this.fileEndPos)) { // 不符合当前文件位置
 			return;
 		}

@@ -180,7 +180,7 @@ public class FileUtils {
 		}
 		int index = 0;
 		BigDecimal decimal = new BigDecimal(size);
-		while(decimal.longValue() > SIZE_SCALE) {
+		while(decimal.longValue() >= SIZE_SCALE) {
 			if(++index == SIZE_UNIT.length) {
 				index = SIZE_UNIT.length - 1;
 				break;

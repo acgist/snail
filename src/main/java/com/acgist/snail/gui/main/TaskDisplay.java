@@ -20,10 +20,10 @@ public class TaskDisplay {
 	/**
 	 * 任务列表刷新时间、下载速度采样时间
 	 */
-	public static final Duration REFRESH_INTERVAL = Duration.ofSeconds(5);
-	
+	private static final Duration REFRESH_INTERVAL = Duration.ofSeconds(5);
+
 	private MainController controller;
-	
+
 	private static final TaskDisplay INSTANCE = new TaskDisplay();
 	
 	private TaskDisplay() {

@@ -30,7 +30,7 @@ public class AcceptHandler<T extends TcpMessageHandler> implements CompletionHan
 	public void completed(AsynchronousSocketChannel result, AsynchronousServerSocketChannel attachment) {
 		LOGGER.info("客户端连接成功");
 		accept(attachment);
-		reader(result);
+		read(result);
 	}
 	
 	@Override
@@ -41,8 +41,8 @@ public class AcceptHandler<T extends TcpMessageHandler> implements CompletionHan
 	/**
 	 * 读取消息代理
 	 */
-	private void reader(AsynchronousSocketChannel result) {
-		BeanUtils.newInstance(clazz).handle(result);
+	private void read(AsynchronousSocketChannel result) {
+		BeanUtils.newInstance(clazz).server().handle(result);
 	}
 	
 	/**
