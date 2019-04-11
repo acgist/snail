@@ -13,7 +13,7 @@ public class TorrentStreamGroupTest {
 
 	@Test
 	public void test() throws DownloadException, FileNotFoundException {
-		String path = "e:/snail/123456.torrent";
+		String path = "e:/snail/1234.torrent";
 //		String path = "e:/snail/0B156834B59B0FF64EE0C9305D4D6EDE421196E6.torrent";
 //		String path = "e:/snail/82309348090ecbec8bf509b83b30b78a8d1f6454.torrent";
 //		String path = "e:/snail/9d3854d8c6280049e5d85e490ff07de7c2bd96a2.torrent";
@@ -25,7 +25,7 @@ public class TorrentStreamGroupTest {
 		files.forEach(file -> {
 			file.select(true);
 		});
-		TorrentStreamGroup group = TorrentStreamGroup.newInstance("e://tmp", session.torrent(), files);
+		TorrentStreamGroup group = TorrentStreamGroup.newInstance("e://tmp//test", session.torrent(), files);
 //		TorrentPiece piece = new TorrentPiece();
 //		piece.setIndex(0);
 //		piece.setPos(0);

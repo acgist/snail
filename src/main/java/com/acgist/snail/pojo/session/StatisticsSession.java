@@ -9,13 +9,14 @@ import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * session - 统计<br>
- * 如果父类统计存在时更新同时更新父类统计
+ * 如果父类统计存在时更新同时更新父类统计<br>
+ * 限速模块
  */
 public class StatisticsSession {
 
 	private static final long ONE_SECOND = 1000L; // 一秒钟
 	
-	private final boolean limit; // 限速
+	private final boolean limit; // 限速开关
 	private final StatisticsSession parent; // 父类统计
 	
 	private AtomicLong uploadSize = new AtomicLong(0); // 已上传大小
@@ -120,8 +121,8 @@ public class StatisticsSession {
 					long interval = System.currentTimeMillis() - lastDownloadTime;
 					if(limit) {
 						final long expectTime = BigDecimal.valueOf(oldDownloadBuffer)
-							.divide(BigDecimal.valueOf(limitSize), RoundingMode.HALF_UP)
 							.multiply(BigDecimal.valueOf(ONE_SECOND))
+							.divide(BigDecimal.valueOf(limitSize), RoundingMode.HALF_UP)
 							.longValue();
 						if(interval < expectTime) { // 限速
 							ThreadUtils.sleep(expectTime - interval);
@@ -133,6 +134,9 @@ public class StatisticsSession {
 					downloadBuffer.set(0); // 清空
 				}
 			}
+		} else if(downloadSecond == 0) {
+			long interval = System.currentTimeMillis() - lastDownloadTime;
+			downloadSecond = oldDownloadBuffer * 1000 / interval;
 		}
 	}
 	
@@ -148,8 +152,8 @@ public class StatisticsSession {
 					long interval = System.currentTimeMillis() - lastUploadTime;
 					if(limit) {
 						final long expectTime = BigDecimal.valueOf(oldUploadBuffer)
-							.divide(BigDecimal.valueOf(limitSize), RoundingMode.HALF_UP)
 							.multiply(BigDecimal.valueOf(ONE_SECOND))
+							.divide(BigDecimal.valueOf(limitSize), RoundingMode.HALF_UP)
 							.longValue();
 						if(interval < expectTime) { // 限速
 							ThreadUtils.sleep(expectTime - interval);
@@ -161,6 +165,9 @@ public class StatisticsSession {
 					uploadBuffer.set(0); // 清空
 				}
 			}
+		} else if(uploadSecond == 0) {
+			long interval = System.currentTimeMillis() - lastUploadTime;
+			uploadSecond = oldUploadBuffer * 1000 / interval;
 		}
 	}
 	

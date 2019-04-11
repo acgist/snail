@@ -190,15 +190,20 @@ public class TorrentStream {
 		return read(index, size, 0);
 	}
 	
+	public byte[] read(int index, int size, int pos) {
+		return read(index, size, pos, false);
+	}
+	
 	/**
 	 * 读取块数据<br>
 	 * 第一块数据下标：0
+	 * @param ignoreBitSet 忽略已下载位图
 	 */
-	public byte[] read(int index, int size, int pos) {
+	private byte[] read(int index, int size, int pos, boolean ignoreBitSet) {
 		if(!hasIndex(index)) {
 			return null;
 		}
-		if(!hasPiece(index)) {
+		if(!ignoreBitSet && !hasPiece(index)) {
 			return null;
 		}
 		long seek = 0L;
@@ -359,7 +364,7 @@ public class TorrentStream {
 				pos = firstPiecePos();
 			}
 			pieceIndex = index + this.fileBeginPieceIndex;
-			bytes = read(pieceIndex, VERIFY_SIZE, pos); // 第一块需要偏移
+			bytes = read(pieceIndex, VERIFY_SIZE, pos, true); // 第一块需要偏移
 			if(hasData(bytes)) {
 				download(index);
 				torrentStreamGroup.piece(pieceIndex);

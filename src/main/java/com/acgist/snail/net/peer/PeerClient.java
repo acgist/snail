@@ -63,7 +63,7 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 			LOGGER.warn("下载的Piece索引不符");
 			return;
 		}
-		boolean over = downloadPiece.put(begin, bytes);
+		final boolean over = downloadPiece.put(begin, bytes);
 		if(over) { // 下载完成
 			repick();
 		}
