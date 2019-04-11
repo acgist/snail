@@ -165,6 +165,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		buffer.get(peerIds);
 		peerSession.id(new String(peerIds));
 		bitfield();
+		// TODO：判断连接数量，阻塞|不阻塞
 	}
 	
 	/**
@@ -264,6 +265,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		buffer.get(bytes);
 		final BitSet bitSet = BitSet.valueOf(bytes);
 		peerSession.bitSet(bitSet);
+		LOGGER.debug("交换位图：{}", bitSet);
 	}
 
 	/**

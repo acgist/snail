@@ -103,7 +103,7 @@ public class TorrentStreamGroup {
 	 */
 	public void piece(TorrentPiece piece) {
 		for (TorrentStream torrentStream : streams) {
-			torrentStream.pieces(piece);
+			torrentStream.piece(piece);
 		}
 	}
 	

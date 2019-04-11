@@ -9,7 +9,6 @@ import com.acgist.snail.downloader.torrent.bootstrap.TorrentStreamGroup;
 import com.acgist.snail.net.TcpClient;
 import com.acgist.snail.pojo.TorrentPiece;
 import com.acgist.snail.pojo.session.PeerSession;
-import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 
 /**
@@ -27,15 +26,15 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	private AtomicInteger count = new AtomicInteger(0);
 	
 	private final PeerSession peerSession;
-	private final TaskSession taskSession;
-	private final TorrentSession torrentSession;
+//	private final TaskSession taskSession;
+//	private final TorrentSession torrentSession;
 	private final TorrentStreamGroup torrentStreamGroup;
 	
 	public PeerClient(PeerSession peerSession, TorrentSession torrentSession) {
 		super("Peer", 10, new PeerMessageHandler(peerSession, torrentSession));
 		this.peerSession = peerSession;
-		this.taskSession = torrentSession.taskSession();
-		this.torrentSession = torrentSession;
+//		this.taskSession = torrentSession.taskSession();
+//		this.torrentSession = torrentSession;
 		this.torrentStreamGroup = torrentSession.torrentStreamGroup();
 	}
 
@@ -90,7 +89,7 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	private void request() {
 		if(this.downloadPiece == null) {
 			LOGGER.debug("没有找到Peer块下载");
-			// TODO：close()
+			// TODO：close()：group.优化
 			return;
 		}
 		final int index = this.downloadPiece.getIndex();
@@ -104,7 +103,7 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 			if(length == 0) { // 已经下载完成
 				break;
 			}
-			LOGGER.debug("请求：begin：{}，length：{}", begin, length);
+			LOGGER.debug("请求：index：{}，begin：{}，length：{}", index, begin, length);
 			handler.request(index, begin, length);
 		}
 	}
@@ -117,6 +116,7 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	 */
 	private void repick() {
 		if(this.downloadPiece != null && this.downloadPiece.over()) {
+			peerSession.statistics(downloadPiece.getLength()); // 统计
 			torrentStreamGroup.piece(downloadPiece); // 保存数据
 		}
 		this.downloadPiece = torrentStreamGroup.pick(peerSession.bitSet());
