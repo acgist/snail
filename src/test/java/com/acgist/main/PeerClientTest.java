@@ -20,7 +20,8 @@ public class PeerClientTest {
 	
 	@Test
 	public void test() throws DownloadException, InterruptedException {
-		String path = "e:/snail/123456.torrent";
+		String path = "e:/snail/1234.torrent";
+//		String path = "e:/snail/123456.torrent";
 		TorrentSession torrentSession = TorrentSessionManager.getInstance().buildSession(path);
 		var files = torrentSession.torrent().getInfo().files();
 		List<String> list = new ArrayList<>();

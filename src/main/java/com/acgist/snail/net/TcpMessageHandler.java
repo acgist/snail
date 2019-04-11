@@ -60,7 +60,7 @@ public abstract class TcpMessageHandler extends TcpSender implements CompletionH
 	 * 循环读
 	 */
 	private void loopRead() {
-		ByteBuffer buffer = ByteBuffer.allocate(1024);
+		final ByteBuffer buffer = ByteBuffer.allocate(1024);
 		if(socket.isOpen()) {
 			socket.read(buffer, buffer, this);
 		}

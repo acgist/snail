@@ -96,7 +96,8 @@ public class PeerMessageHandler extends TcpMessageHandler {
 			handshake = true;
 			handshake(buffer);
 		} else {
-			byte type = buffer.get();
+			final byte type = buffer.get();
+			LOGGER.debug("消息类型：{}", type);
 			switch (type) {
 			case 0:
 				choke(buffer);
