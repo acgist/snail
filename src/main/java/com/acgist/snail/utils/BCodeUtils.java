@@ -32,6 +32,9 @@ public class BCodeUtils {
 	 * 判断是否是map类型
 	 */
 	public static final boolean isMap(ByteArrayInputStream input) {
+		if(input == null || input.available() <= 0) {
+			return false;
+		}
 		char type = (char) input.read();
 		return type == TYPE_D;
 	}

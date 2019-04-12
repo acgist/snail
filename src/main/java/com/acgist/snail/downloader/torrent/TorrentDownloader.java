@@ -39,8 +39,8 @@ public class TorrentDownloader extends Downloader {
 		var entity = this.taskSession.entity();
 		final String path = entity.getTorrent();
 		try {
-			final String hashHex = MagnetProtocol.buildHash(entity.getUrl());
-			torrentSession = TorrentSessionManager.getInstance().buildSession(hashHex, path);
+			final String infoHashHex = MagnetProtocol.buildHash(entity.getUrl());
+			torrentSession = TorrentSessionManager.getInstance().buildSession(infoHashHex, path);
 			torrentSession.build(this.taskSession);
 			taskSession.downloadSize(torrentSession.size());
 		} catch (DownloadException e) {

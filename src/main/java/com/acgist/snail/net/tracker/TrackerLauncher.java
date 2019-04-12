@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.message.AnnounceMessage;
+import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.UniqueCodeUtils;
@@ -20,7 +21,7 @@ public class TrackerLauncher implements Runnable {
 	
 	private final TrackerClient client; // 客户端
 	
-//	private final TaskSession taskSession;
+	private final TaskSession taskSession;
 	private final TorrentSession torrentSession;
 	
 	private final Integer id; // id：transaction_id（获取peer时使用）
@@ -36,7 +37,7 @@ public class TrackerLauncher implements Runnable {
 	private TrackerLauncher(TrackerClient client, TorrentSession torrentSession) {
 		this.id = UniqueCodeUtils.buildInteger();
 		this.client = client;
-//		this.taskSession = torrentSession.taskSession();
+		this.taskSession = torrentSession.taskSession();
 		this.torrentSession = torrentSession;
 	}
 	
@@ -80,6 +81,10 @@ public class TrackerLauncher implements Runnable {
 	 */
 	public void release() {
 		this.available = false;
+		this.client.stop(this.id, this.torrentSession);
+		if(this.taskSession.complete()) { // 任务完成
+			this.client.complete(this.id, this.torrentSession);
+		}
 	}
 	
 	/**

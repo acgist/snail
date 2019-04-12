@@ -28,10 +28,10 @@ public abstract class TcpSender {
 	
 	protected AsynchronousSocketChannel socket;
 	
+	public TcpSender() {
+	}
+
 	public TcpSender(String split) {
-		if(split == null) {
-			split = "";
-		}
 		this.split = split;
 	}
 	
@@ -39,8 +39,11 @@ public abstract class TcpSender {
 	 * 发送消息<br>
 	 * 使用分隔符对消息进行分隔
 	 */
-	protected void send(String message) {
-		final String splitMessage = message + split;
+	protected void send(final String message) {
+		String splitMessage = message;
+		if(this.split != null) {
+			splitMessage += this.split;
+		}
 		try {
 			send(splitMessage.getBytes(SystemConfig.DEFAULT_CHARSET));
 		} catch (UnsupportedEncodingException e) {

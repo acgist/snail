@@ -19,7 +19,7 @@ public class TorrentTest {
 		TorrentSession session = TorrentSessionManager.getInstance().buildSession(path);
 		Torrent torrent = session.torrent();
 		System.out.println(torrent.getComment());
-		System.out.println("种子HASH：" + session.infoHash().hashHex());
+		System.out.println("种子HASH：" + session.infoHash().infoHashHex());
 //		System.out.println(new Date(torrent.getCreationDate() * 1000));
 //		System.out.println(torrent.getCreationDate());
 //		System.out.println(torrent.getEncoding());

@@ -35,22 +35,22 @@ public class InfoHash {
 	/**
 	 * hash byte（20位）
 	 */
-	public byte[] hash() {
+	public byte[] infoHash() {
 		return data;
 	}
 	
 	/**
 	 * 磁力链接hash（小写）（40位）
 	 */
-	public String hashHex() {
+	public String infoHashHex() {
 		return StringUtils.hex(data);
 	}
 	
 	/**
 	 * 种子ID（网络传输使用）
 	 */
-	public String hashId() {
-		final String magnetHash = hashHex();
+	public String infoHashURL() {
+		final String magnetHash = infoHashHex();
 		int index = 0;
 		final int length = magnetHash.length();
 		final StringBuilder builder = new StringBuilder();

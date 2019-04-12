@@ -1,5 +1,7 @@
 package com.acgist.snail.net.peer;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.util.BitSet;
 
@@ -9,7 +11,11 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.downloader.torrent.bootstrap.TorrentStreamGroup;
 import com.acgist.snail.net.TcpMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
+import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.system.manager.PeerSessionManager;
+import com.acgist.snail.system.manager.TorrentSessionManager;
+import com.acgist.snail.utils.StringUtils;
 
 /**
  * Peer消息处理
@@ -23,25 +29,62 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	/**
 	 * 协议名称
 	 */
-	private static final byte[] HANDSHAKE_NAME = "BitTorrent protocol".getBytes();
+	private static final String HANDSHAKE_NAME = "BitTorrent protocol";
+	private static final byte[] HANDSHAKE_NAME_BYTES = HANDSHAKE_NAME.getBytes();
 	private static final byte[] HANDSHAKE_RESERVED = {0, 0, 0, 0, 0, 0, 0, 0};
 	private static final int HANDSHAKE_LENGTH = 68;
 	
+	private volatile boolean init = false; // 初始化
 	private volatile boolean handshake = false; // 是否握手
 	private ByteBuffer buffer;
 	private PeerClient peerClient;
 	
-	private final PeerSession peerSession;
-	private final TorrentSession torrentSession;
-	private final TorrentStreamGroup torrentStreamGroup;
+	private PeerSession peerSession;
+	private TorrentSession torrentSession;
+	private TorrentStreamGroup torrentStreamGroup;
 	
+	public PeerMessageHandler() {
+	}
+
 	public PeerMessageHandler(PeerSession peerSession, TorrentSession torrentSession) {
-		super("");
+		init(peerSession, torrentSession);
+	}
+
+	/**
+	 * 初始化
+	 */
+	private void init(PeerSession peerSession, TorrentSession torrentSession) {
+		init = true;
 		this.peerSession = peerSession;
 		this.torrentSession = torrentSession;
 		this.torrentStreamGroup = torrentSession.torrentStreamGroup();
 	}
 
+	/**
+	 * 初始化
+	 */
+	private void init(String infoHashHex, String peerId) {
+		final TorrentSession torrentSession = TorrentSessionManager.getInstance().torrentSession(infoHashHex);
+		if(torrentSession == null) { // 不存在
+			return;
+		}
+		final TaskSession taskSession = torrentSession.taskSession();
+		if(taskSession == null) {
+			return;
+		}
+		InetSocketAddress address = null;
+		try {
+			address = (InetSocketAddress) socket.getRemoteAddress();
+		} catch (IOException e) {
+			LOGGER.error("获取远程客户端端口异常", e);
+		}
+		if(address == null) {
+			return;
+		}
+		final PeerSession peerSession = PeerSessionManager.getInstance().newPeer(infoHashHex, taskSession.statistics(), address.getHostString(), address.getPort());
+		init(peerSession, torrentSession);
+	}
+	
 	@Override
 	public boolean doMessage(Integer result, ByteBuffer attachment) {
 		boolean doNext = true; // 是否继续处理消息
@@ -149,10 +192,10 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	public void handshake(PeerClient peerClient) {
 		this.peerClient = peerClient;
 		ByteBuffer buffer = ByteBuffer.allocate(HANDSHAKE_LENGTH);
-		buffer.put((byte) HANDSHAKE_NAME.length);
-		buffer.put(HANDSHAKE_NAME);
+		buffer.put((byte) HANDSHAKE_NAME_BYTES.length);
+		buffer.put(HANDSHAKE_NAME_BYTES);
 		buffer.put(HANDSHAKE_RESERVED);
-		buffer.put(torrentSession.infoHash().hash());
+		buffer.put(torrentSession.infoHash().infoHash());
 		buffer.put(PeerServer.PEER_ID.getBytes());
 		send(buffer);
 	}
@@ -161,12 +204,31 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 * 处理握手
 	 */
 	private void handshake(ByteBuffer buffer) {
+		final byte length = buffer.get();
+		final byte[] names = new byte[length];
+		buffer.get(names);
+		final String name = new String(names);
+		if(!HANDSHAKE_NAME.equals(name)) {
+			LOGGER.warn("下载协议错误：{}", name);
+		}
+		final byte[] infoHashs = new byte[20];
+		buffer.get(infoHashs);
+		final String infoHashHex = StringUtils.hex(infoHashs);
 		final byte[] peerIds = new byte[20];
-		buffer.position(48);
 		buffer.get(peerIds);
-		peerSession.id(new String(peerIds));
-		bitfield();
-		// TODO：判断连接数量，阻塞|不阻塞
+		final String peerId = new String(peerIds);
+		if(!init) {
+			init(infoHashHex, peerId);
+		} else {
+			peerSession.id(peerId);
+		}
+		bitfield(); // 交换位图
+		if(server) { // TODO：服务端：判断连接数量，阻塞|不阻塞
+			if(init) {
+			} else { // 没有初始化
+				choke();
+			}
+		}
 	}
 	
 	/**
@@ -188,7 +250,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 
 	private void choke(ByteBuffer buffer) {
 		peerSession.peerChoke();
-		peerClient.close();
+		peerClient.release();
 	}
 	
 	/**

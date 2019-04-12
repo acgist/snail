@@ -43,7 +43,7 @@ public class PeerClientTest {
 //		Integer port = 54321;
 		PeerSession peerSession = new PeerSession(new StatisticsSession(), host, port);
 		PeerClient client = new PeerClient(peerSession, torrentSession);
-		client.connect();
+		client.download();
 		Thread.sleep(Long.MAX_VALUE);
 	}
 

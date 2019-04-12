@@ -87,7 +87,7 @@ public class MagnetProtocol extends Protocol {
 					String hash = value.substring(HASH_PREFIX.length());
 					if(verifyMagnetHash32(hash)) {
 						InfoHash infoHash = InfoHash.newInstance(hash);
-						hash = infoHash.hashHex();
+						hash = infoHash.infoHashHex();
 					}
 					return hash;
 				}

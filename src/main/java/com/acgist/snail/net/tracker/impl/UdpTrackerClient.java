@@ -6,6 +6,9 @@ import java.net.URI;
 import java.nio.ByteBuffer;
 import java.time.Duration;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.net.peer.PeerServer;
 import com.acgist.snail.net.tracker.TrackerClient;
 import com.acgist.snail.net.tracker.TrackerUdpClient;
@@ -20,7 +23,7 @@ import com.acgist.snail.utils.UniqueCodeUtils;
  */
 public class UdpTrackerClient extends TrackerClient {
 
-//	private static final Logger LOGGER = LoggerFactory.getLogger(UdpTrackerClient.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(UdpTrackerClient.class);
 	
 	private final String host;
 	private final int port;
@@ -55,22 +58,34 @@ public class UdpTrackerClient extends TrackerClient {
 				}
 			}
 		}
-		send(buildAnnounce(sid, torrentSession));
+		send(buildAnnounceMessage(sid, torrentSession, TrackerClient.Event.started));
 	}
 
 	@Override
 	public void complete(Integer sid, TorrentSession torrentSession) {
-		// TODO
+		if(this.connectionId != null) {
+			try {
+				send(buildAnnounceMessage(sid, torrentSession, TrackerClient.Event.completed));
+			} catch (NetException e) {
+				LOGGER.error("Tracker完成消息异常", e);
+			}
+		}
 	}
 	
 	@Override
 	public void stop(Integer sid, TorrentSession torrentSession) {
-		// TODO
+		if(this.connectionId != null) {
+			try {
+				send(buildAnnounceMessage(sid, torrentSession, TrackerClient.Event.stopped));
+			} catch (NetException e) {
+				LOGGER.error("Tracker暂停消息异常", e);
+			}
+		}
 	}
 	
 	@Override
 	public void scrape(Integer sid, TorrentSession torrentSession) throws NetException {
-		// TODO
+		// TODO：刮檫
 	}
 
 	/**
@@ -87,7 +102,7 @@ public class UdpTrackerClient extends TrackerClient {
 	 * 开始获取connectionId
 	 */
 	private void buildConnectionId() throws NetException {
-		send(buildConnect());
+		send(buildConnectMessage());
 	}
 	
 	/**
@@ -108,7 +123,7 @@ public class UdpTrackerClient extends TrackerClient {
 	/**
 	 * 连接请求
 	 */
-	private ByteBuffer buildConnect() {
+	private ByteBuffer buildConnectMessage() {
 		ByteBuffer buffer = ByteBuffer.allocate(16);
 		buffer.putLong(4497486125440L); // 必须等于：0x41727101980
 		buffer.putInt(TrackerClient.Action.connect.action());
@@ -117,23 +132,31 @@ public class UdpTrackerClient extends TrackerClient {
 	}
 	
 	/**
-	 * peer请求
+	 * Announce请求
 	 */
-	private ByteBuffer buildAnnounce(Integer sid, TorrentSession torrentSession) {
+	private ByteBuffer buildAnnounceMessage(Integer sid, TorrentSession torrentSession, Event event) {
+		long download = 0L, remain = 0L, upload = 0L;
+		final var taskSession = torrentSession.taskSession();
+		if(taskSession != null) {
+			var statistics = taskSession.statistics();
+			download = statistics.downloadSize();
+			remain = taskSession.entity().getSize() - download;
+			upload = statistics.uploadSize();
+		}
 		ByteBuffer buffer = ByteBuffer.allocate(98);
 		buffer.putLong(this.connectionId); // connection_id
 		buffer.putInt(TrackerClient.Action.announce.action());
 		buffer.putInt(sid); // transaction_id
-		buffer.put(torrentSession.infoHash().hash()); // infoHash
-		buffer.put(PeerServer.PEER_ID.getBytes()); // 
-		buffer.putLong(0L); // 已下载大小
-		buffer.putLong(0L); // 剩余下载大小
-		buffer.putLong(0L); // 已上传大小
-		buffer.putInt(TrackerClient.Event.started.event()); // 事件
+		buffer.put(torrentSession.infoHash().infoHash()); // infoHash
+		buffer.put(PeerServer.PEER_ID.getBytes()); // PeerId
+		buffer.putLong(download); // 已下载大小
+		buffer.putLong(remain); // 剩余下载大小
+		buffer.putLong(upload); // 已上传大小
+		buffer.putInt(event.event()); // 事件
 		buffer.putInt(0); // 本机IP：0（服务器自动获取）
 		buffer.putInt(UniqueCodeUtils.buildInteger()); // 系统分配唯一键
 		buffer.putInt(50); // 想要获取的Peer数量
-		buffer.putShort(PeerServer.PORT); // 本机Peer端口
+		buffer.putShort(PeerServer.PEER_PORT); // 本机Peer端口
 		return buffer;
 	}
 

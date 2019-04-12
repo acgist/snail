@@ -61,7 +61,7 @@ public abstract class MagnetResolver {
 			this.hash = MagnetProtocol.buildHash(url);
 		} else if(MagnetProtocol.verifyMagnetHash32(url)) { // 32位转为正常40位
 			InfoHash infoHash = InfoHash.newInstance(url);
-			this.hash = infoHash.hashHex();
+			this.hash = infoHash.infoHashHex();
 		} else if(MagnetProtocol.verifyMagnetHash40(url)) {
 			this.hash = url;
 		}

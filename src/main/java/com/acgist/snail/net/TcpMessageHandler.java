@@ -16,6 +16,9 @@ public abstract class TcpMessageHandler extends TcpSender implements CompletionH
 	
 	protected boolean server = false; // 是否是服务端
 	
+	public TcpMessageHandler() {
+	}
+
 	public TcpMessageHandler(String split) {
 		super(split);
 	}

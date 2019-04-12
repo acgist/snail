@@ -124,8 +124,8 @@ public abstract class Downloader implements IDownloader {
 					fail(e.getMessage());
 					LOGGER.error("下载异常", e);
 				}
-				this.release();
 				this.complete();
+				this.release(); // 最后释放资源
 				running = false;
 			}
 		}
