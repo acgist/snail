@@ -28,6 +28,7 @@ public class TrackerLauncher implements Runnable {
 	private Integer interval; // 下次等待时间
 	private Integer done; // 已完成数量
 	private Integer undone; // 未完成数量
+	private boolean run = false; // 是否已经运行
 	private boolean available = true; // 可用
 
 	public static final TrackerLauncher newInstance(TrackerClient client, TorrentSession torrentSession) {
@@ -51,7 +52,9 @@ public class TrackerLauncher implements Runnable {
 
 	@Override
 	public void run() {
+		run = true;
 		if(available()) {
+			LOGGER.debug("TrackerClient查找Peer：{}", client.announceUrl);
 			client.findPeers(this.id, this.torrentSession);
 		}
 	}
@@ -81,9 +84,11 @@ public class TrackerLauncher implements Runnable {
 	 */
 	public void release() {
 		this.available = false;
-		this.client.stop(this.id, this.torrentSession);
-		if(this.taskSession.complete()) { // 任务完成
-			this.client.complete(this.id, this.torrentSession);
+		if(run) {
+			this.client.stop(this.id, this.torrentSession);
+			if(this.taskSession.complete()) { // 任务完成
+				this.client.complete(this.id, this.torrentSession);
+			}
 		}
 	}
 	

@@ -34,8 +34,16 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	private static final byte[] HANDSHAKE_RESERVED = {0, 0, 0, 0, 0, 0, 0, 0};
 	private static final int HANDSHAKE_LENGTH = 68;
 	
+	private static final int INT_BYTE_LENGTH = 4;
+	
 	private volatile boolean init = false; // 初始化
 	private volatile boolean handshake = false; // 是否握手
+	
+	/**
+	 * 如果消息长度不够一个长度时使用
+	 */
+	private ByteBuffer lengthStick = ByteBuffer.allocate(4);
+	
 	private ByteBuffer buffer;
 	private PeerClient peerClient;
 	
@@ -96,6 +104,12 @@ public class PeerMessageHandler extends TcpMessageHandler {
 			while(true) {
 				if(buffer == null) {
 					if(handshake) {
+						if(attachment.limit() < 4) {
+							lengthPos = attachment.limit();
+							attachment.get(lengthBytes, 0, lengthPos);
+						} else {
+							
+						}
 						length = attachment.getInt();
 					} else { // 握手
 						length = HANDSHAKE_LENGTH;

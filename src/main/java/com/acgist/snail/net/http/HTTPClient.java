@@ -1,6 +1,5 @@
 package com.acgist.snail.net.http;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpClient.Redirect;
@@ -14,6 +13,7 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.UrlUtils;
 
 /**
@@ -29,12 +30,16 @@ import com.acgist.snail.utils.UrlUtils;
 public class HTTPClient {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(HTTPClient.class);
+	
+	public static final int TIMEOUT = 5;
 
 	public static final int HTTP_OK = 200; // OK
 	public static final int HTTP_PARTIAL_CONTENT = 206; // 端点续传
 	public static final int HTTP_RANGE_NOT_SATISFIABLE= 416; // 无法满足请求范围
 	
 	private static final String USER_AGENT;
+	
+	private static final ExecutorService HTTP_EXECUTOR = SystemThreadContext.newExecutor(4, 200, 60L, SystemThreadContext.SNAIL_THREAD_HTTP);
 	
 	static {
 		final StringBuilder userAgentBuilder = new StringBuilder(); // 客户端信息
@@ -51,27 +56,36 @@ public class HTTPClient {
 		USER_AGENT = userAgentBuilder.toString();
 	}
 	
+	public static final HttpClient newClient() {
+		return newClient(TIMEOUT);
+	}
+	
 	/**
 	 * HTTPClient
 	 */
-	public static final HttpClient newClient() {
+	public static final HttpClient newClient(int timeout) {
 		return HttpClient
 			.newBuilder()
+			.executor(HTTP_EXECUTOR)
 //			.followRedirects(Redirect.NORMAL)
 			.followRedirects(Redirect.ALWAYS)
-			.connectTimeout(Duration.ofSeconds(5))
+			.connectTimeout(Duration.ofSeconds(timeout))
 			.build();
+	}
+	
+	public static final Builder newRequest(String url) {
+		return newRequest(url, TIMEOUT);
 	}
 	
 	/**
 	 * 请求
 	 */
-	public static final Builder newRequest(String url) {
+	public static final Builder newRequest(String url, int timeout) {
 		return HttpRequest
 			.newBuilder()
 			.uri(URI.create(url))
 			.version(Version.HTTP_1_1) // 暂时使用1.1版本协议
-			.timeout(Duration.ofSeconds(100))
+			.timeout(Duration.ofSeconds(timeout))
 			.header("User-Agent", USER_AGENT);
 	}
 	
@@ -83,12 +97,16 @@ public class HTTPClient {
 			.header("Content-type", "application/x-www-form-urlencoded;charset=" + SystemConfig.DEFAULT_CHARSET);
 	}
 	
+	public static final <T> HttpResponse<T> get(String requestUrl, HttpResponse.BodyHandler<T> handler) {
+		return get(requestUrl, handler, TIMEOUT);
+	}
+	
 	/**
 	 * GET请求
 	 */
-	public static final <T> HttpResponse<T> get(String requestUrl, HttpResponse.BodyHandler<T> handler) {
-		final var client = HTTPClient.newClient();
-		final var request = HTTPClient.newRequest(requestUrl)
+	public static final <T> HttpResponse<T> get(String requestUrl, HttpResponse.BodyHandler<T> handler, int timeout) {
+		final var client = HTTPClient.newClient(timeout);
+		final var request = HTTPClient.newRequest(requestUrl, timeout)
 			.GET()
 			.build();
 		return HTTPClient.request(client, request, handler);
@@ -129,7 +147,7 @@ public class HTTPClient {
 		}
 		try {
 			return client.send(request, handler);
-		} catch (IOException | InterruptedException e) {
+		} catch (Exception e) {
 			LOGGER.error("执行请求异常", e);
 		}
 		return null;

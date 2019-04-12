@@ -46,21 +46,31 @@ public class TrackerClientManager {
 	 * 获取可用的tracker client，传入announce的返回有用的，然后补充不足的的数量
 	 */
 	public List<TrackerClient> clients(String announceUrl, List<String> announceUrls) throws NetException {
-		List<TrackerClient> clients = register(announceUrl, announceUrls);
+		final List<TrackerClient> clients = register(announceUrl, announceUrls);
 		final int size = clients.size();
 		if(size < MAX_CLIENT_SIZE) {
-			clients.addAll(clients(MAX_CLIENT_SIZE - size));
+			final var subjoin = clients(MAX_CLIENT_SIZE - size, clients);
+			if(!subjoin.isEmpty()) {
+				clients.addAll(subjoin);
+			}
 		}
 		return clients;
+	}
+	
+	public List<TrackerClient> clients(int size) {
+		return clients(size, null);
 	}
 	
 	/**
 	 * 获取可用的tracker client，获取权重排在前面的tracker client
 	 * @param size 返回可用client数量
+	 * @param clients 已有的Client
 	 */
-	public List<TrackerClient> clients(int size) {
+	public List<TrackerClient> clients(int size, List<TrackerClient> clients) {
 		return TRACKER_CLIENT_MAP.values().stream()
-			.filter(client -> client.available())
+			.filter(client -> {
+				return client.available() && (clients != null && !clients.contains(client));
+			})
 			.sorted()
 			.limit(size)
 			.collect(Collectors.toList());
@@ -127,7 +137,7 @@ public class TrackerClientManager {
 	}
 
 	/**
-	 * 创建client
+	 * 创建Client
 	 */
 	private TrackerClient buildClient(String announceUrl) throws NetException {
 		if(HttpProtocol.verify(announceUrl)) {

@@ -136,8 +136,9 @@ public class TorrentSession {
 	public void release() {
 		trackerGroup.release();
 		peerClientGroup.release();
+		torrentStreamGroup.release();
 	}
-	
+
 	/**
 	 * 设置Peer
 	 */

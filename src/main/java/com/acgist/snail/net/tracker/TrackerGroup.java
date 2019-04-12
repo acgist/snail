@@ -2,6 +2,7 @@ package com.acgist.snail.net.tracker;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,10 @@ public class TrackerGroup {
 //	private final TaskSession taskSession;
 	private final TorrentSession torrentSession;
 	/**
+	 * 线程池
+	 */
+	private final ExecutorService trackerExecutor;
+	/**
 	 * tracker
 	 */
 	private final List<TrackerLauncher> trackerLaunchers;
@@ -32,6 +37,8 @@ public class TrackerGroup {
 //		this.taskSession = torrentSession.taskSession();
 		this.torrentSession = torrentSession;
 		this.trackerLaunchers = new ArrayList<>();
+		final String name = SystemThreadContext.SNAIL_THREAD_TRACKER + "-" + torrentSession.infoHashHex();
+		this.trackerExecutor = SystemThreadContext.newExecutor(10, 10, 60L, name);
 	}
 
 	/**
@@ -49,9 +56,13 @@ public class TrackerGroup {
 				LOGGER.debug("添加Tracker Client，ID：{}，announce：{}", client.id, client.announceUrl);
 				return TrackerLauncherManager.getInstance().build(client, torrentSession);
 			})
-			.forEach(launcher -> this.trackerLaunchers.add(launcher));
-			this.trackerLaunchers.forEach(launcher -> {
-				SystemThreadContext.submitTracker(launcher);
+			.forEach(launcher -> {
+				try {
+					this.trackerLaunchers.add(launcher);	
+					this.trackerExecutor.submit(launcher);
+				} catch (Exception e) {
+					LOGGER.error("Tracker执行异常", e);
+				}
 			});
 		} catch (NetException e) {
 			throw new DownloadException(e);
@@ -62,7 +73,12 @@ public class TrackerGroup {
 	 * 释放资源
 	 */
 	public void release() {
-		trackerLaunchers.forEach(launcher -> launcher.release());
+		trackerLaunchers.forEach(launcher -> {
+			SystemThreadContext.submit(() -> {
+				launcher.release();
+			});
+		});
+		trackerExecutor.shutdown();
 	}
 	
 }
