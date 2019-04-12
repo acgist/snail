@@ -5,7 +5,6 @@ import java.io.BufferedOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.http.HttpClient;
 import java.net.http.HttpResponse.BodyHandlers;
 
 import org.slf4j.Logger;
@@ -99,12 +98,12 @@ public class HttpDownloader extends Downloader {
 	private void buildInput() {
 		var entity = taskSession.entity();
 		long size = FileUtils.fileSize(entity.getFile()); // 已下载大小
-		HttpClient client = HTTPClient.newClient();
-		var request = HTTPClient.newRequest(entity.getUrl())
+		final var client = HTTPClient.newClient();
+		final var request = HTTPClient.newRequest(entity.getUrl())
 			.header("Range", "bytes=" + size + "-") // 端点续传
 			.GET()
 			.build();
-		var response = HTTPClient.request(client, request, BodyHandlers.ofInputStream());
+		final var response = HTTPClient.request(client, request, BodyHandlers.ofInputStream());
 		this.responseHeader = HttpHeaderWrapper.newInstance(response.headers());
 		if(HTTPClient.ok(response)) {
 			input = new BufferedInputStream(response.body());

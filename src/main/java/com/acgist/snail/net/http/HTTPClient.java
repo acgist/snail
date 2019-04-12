@@ -24,7 +24,7 @@ import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.UrlUtils;
 
 /**
- * utils - http
+ * Client - http
  */
 public class HTTPClient {
 
@@ -37,7 +37,7 @@ public class HTTPClient {
 	private static final String USER_AGENT;
 	
 	static {
-		StringBuilder userAgentBuilder = new StringBuilder(); // 客户端信息
+		final StringBuilder userAgentBuilder = new StringBuilder(); // 客户端信息
 		userAgentBuilder
 			.append("Mozilla/5.0")
 			.append(" ")
@@ -64,7 +64,7 @@ public class HTTPClient {
 	}
 	
 	/**
-	 * request
+	 * 请求
 	 */
 	public static final Builder newRequest(String url) {
 		return HttpRequest
@@ -86,12 +86,38 @@ public class HTTPClient {
 	/**
 	 * GET请求
 	 */
-	public static final HttpResponse<String> get(String requestUrl) {
-		var client = HTTPClient.newClient();
-		var request = HTTPClient.newRequest(requestUrl)
+	public static final <T> HttpResponse<T> get(String requestUrl, HttpResponse.BodyHandler<T> handler) {
+		final var client = HTTPClient.newClient();
+		final var request = HTTPClient.newRequest(requestUrl)
 			.GET()
 			.build();
-		return HTTPClient.request(client, request, BodyHandlers.ofString());
+		return HTTPClient.request(client, request, handler);
+	}
+	
+	/**
+	 * POST请求
+	 */
+	public static final <T> HttpResponse<T> post(String requestUrl, Map<String, String> data, HttpResponse.BodyHandler<T> handler) {
+		final var client = HTTPClient.newClient();
+		final var request = HTTPClient.newRequest(requestUrl)
+			.POST(formBodyPublisher(data))
+			.build();
+		return HTTPClient.request(client, request, handler);
+	}
+	
+	/**
+	 * HEAD请求
+	 */
+	public static final HttpHeaderWrapper head(String requestUrl) {
+		final var client = HTTPClient.newClient();
+		final var request = HTTPClient.newRequest(requestUrl)
+			.method("HEAD", BodyPublishers.noBody())
+			.build();
+		final var response = HTTPClient.request(client, request, BodyHandlers.ofString());
+		if(HTTPClient.ok(response)) {
+			return HttpHeaderWrapper.newInstance(response.headers());
+		}
+		return HttpHeaderWrapper.newInstance(null);
 	}
 	
 	/**
@@ -123,10 +149,11 @@ public class HTTPClient {
 	 * 判断请求是否成功
 	 */
 	public static final <T> boolean ok(HttpResponse<T> response) {
-		return response != null && (
-			response.statusCode() == HTTP_OK ||
-			response.statusCode() == HTTP_PARTIAL_CONTENT
-		);
+		return response != null &&
+			(
+				response.statusCode() == HTTP_OK ||
+				response.statusCode() == HTTP_PARTIAL_CONTENT
+			);
 	}
 
 	/**
@@ -137,13 +164,13 @@ public class HTTPClient {
 	}
 	
 	/**
-	 * 获取post数据
+	 * 表单数据
 	 */
 	public static final BodyPublisher formBodyPublisher(Map<String, String> data) {
 		if(data == null || data.isEmpty()) {
 			return BodyPublishers.noBody();
 		}
-		String body = data.entrySet()
+		final String body = data.entrySet()
 			.stream()
 			.map(entry -> {
 				return entry.getKey() + "=" + UrlUtils.encode(entry.getValue());
@@ -152,19 +179,4 @@ public class HTTPClient {
 		return BodyPublishers.ofString(body);
 	}
 	
-	/**
-	 * 获取header信息
-	 */
-	public static final HttpHeaderWrapper httpHeader(String url) {
-		HttpClient client = HTTPClient.newClient();
-		HttpRequest request = HTTPClient.newRequest(url)
-			.method("HEAD", BodyPublishers.noBody())
-			.build();
-		HttpResponse<String> response = HTTPClient.request(client, request, BodyHandlers.ofString());
-		if(HTTPClient.ok(response)) {
-			return HttpHeaderWrapper.newInstance(response.headers());
-		}
-		return HttpHeaderWrapper.newInstance(null);
-	}
-
 }
