@@ -1,10 +1,8 @@
 package com.acgist.snail.protocol.magnet;
 
 import java.io.File;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.util.Map;
 
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.protocol.torrent.TorrentProtocol;
@@ -32,18 +30,21 @@ public abstract class MagnetResolver {
 	public abstract Integer order();
 	
 	/**
+	 * 下载地址
+	 */
+	public abstract String requestUrl();
+	
+	/**
 	 * 下载请求
 	 */
-	public abstract HttpRequest request();
+	public abstract Map<String, String> formData();
 
 	/**
 	 * 下载种子
 	 */
 	public File execute(String url) throws DownloadException {
 		this.init(url);
-		HttpClient client = HTTPClient.newClient();
-		HttpRequest request = request();
-		HttpResponse<byte[]> response = HTTPClient.request(client, request, BodyHandlers.ofByteArray());
+		final var response = HTTPClient.post(requestUrl(), formData(), BodyHandlers.ofByteArray());
 		if(HTTPClient.ok(response)) {
 			byte[] bytes = response.body();
 			String path = DownloadConfig.getPath(this.hash + TorrentProtocol.TORRENT_SUFFIX);

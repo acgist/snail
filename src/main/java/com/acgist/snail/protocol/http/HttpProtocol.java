@@ -71,7 +71,7 @@ public class HttpProtocol extends Protocol {
 		int index = 0;
 		while(true) {
 			index++;
-			this.httpHeaderWrapper = HTTPClient.httpHeader(url);
+			this.httpHeaderWrapper = HTTPClient.head(url);
 			if(this.httpHeaderWrapper.isNotEmpty()) {
 				break;
 			}

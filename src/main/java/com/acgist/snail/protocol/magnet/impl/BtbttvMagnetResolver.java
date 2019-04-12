@@ -1,10 +1,7 @@
 package com.acgist.snail.protocol.magnet.impl;
 
-import java.net.http.HttpRequest;
-import java.net.http.HttpRequest.Builder;
 import java.util.Map;
 
-import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.protocol.magnet.MagnetResolver;
 
 /**
@@ -28,16 +25,19 @@ public class BtbttvMagnetResolver extends MagnetResolver {
 	public Integer order() {
 		return 0;
 	}
+	
+	@Override
+	public String requestUrl() {
+		return "http://www.btbttv.cc/torrent.html";
+	}
 
 	@Override
-	public HttpRequest request() {
-		Map<String, String> data = Map.of(
+	public Map<String, String> formData() {
+		return Map.of(
 			"vid", "0",
 			"route", "3",
 			"hash", this.hash
 		);
-		Builder builder = HTTPClient.newFormRequest("http://www.btbttv.cc/torrent.html");
-		return builder.POST(HTTPClient.formBodyPublisher(data)).build();
 	}
 
 }
