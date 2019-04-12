@@ -48,9 +48,11 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	 * 开始下载
 	 */
 	public boolean download() {
+		LOGGER.debug("Peer连接：{}:{}", peerSession.host(), peerSession.port());
 		final boolean ok = connect();
 		if(ok) {
 			handler.handshake(this);
+			LOGGER.debug("Peer握手：{}:{}", peerSession.host(), peerSession.port());
 		}
 		this.available = ok;
 		return ok;
@@ -59,7 +61,6 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	@Override
 	public boolean connect() {
 		return connect(peerSession.host(), peerSession.port());
-
 	}
 	
 	public PeerSession peerSession() {

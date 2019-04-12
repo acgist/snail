@@ -52,7 +52,7 @@ public class UdpTrackerClient extends TrackerClient {
 				if(connectionId == null) {
 					buildConnectionId();
 				}
-				ThreadUtils.wait(this, Duration.ofSeconds(20));
+				ThreadUtils.wait(this, Duration.ofSeconds(TrackerClient.TIMEOUT));
 				if(connectionId == null) {
 					throw new NetException("获取Tracker connectionId失败");
 				}

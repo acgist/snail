@@ -8,6 +8,7 @@ import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.magnet.MagnetProtocol;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.manager.TorrentSessionManager;
+import com.acgist.snail.utils.ThreadUtils;
 
 public class TorrentDownloader extends Downloader {
 
@@ -28,6 +29,9 @@ public class TorrentDownloader extends Downloader {
 
 	@Override
 	public void download() throws IOException {
+		while(ok()) {
+			ThreadUtils.sleep(1000);
+		}
 	}
 
 	@Override

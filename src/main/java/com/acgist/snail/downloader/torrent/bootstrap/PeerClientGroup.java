@@ -48,7 +48,10 @@ public class PeerClientGroup {
 				if(this.peerClients.size() >= size) {
 					break;
 				}
-				buildPeerClient();
+				final boolean ok = buildPeerClient();
+				if(!ok) {
+					break;
+				}
 			}
 		}
 	}
@@ -77,16 +80,21 @@ public class PeerClientGroup {
 	 */
 	public void release() {
 		synchronized (peerClients) {
-			peerClients.forEach(PeerClient::release);
+			peerClients.forEach(client -> {
+				SystemThreadContext.submit(() -> {
+					LOGGER.debug("Peer关闭：{}:{}", client.peerSession().host(), client.peerSession().port());
+					client.release();
+				});
+			});
 		}
 	}
 	
 	/**
 	 * 拿去最后一个session创建PeerClient
 	 */
-	private void buildPeerClient() {
+	private boolean buildPeerClient() {
 		if(!taskSession.download()) {
-			return;
+			return false;
 		}
 		final PeerSession peerSession = peerSessionManager.pick(torrentSession.infoHashHex());
 		if(peerSession != null) {
@@ -95,7 +103,9 @@ public class PeerClientGroup {
 			if(ok) {
 				peerClients.add(client);
 			}
+			return true;
 		}
+		return false;
 	}
 	
 	/**

@@ -18,18 +18,15 @@ public class SystemThreadContext {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SystemThreadContext.class);
 	
-	private static final String SYSTEM_THREAD = "Snail Thread";
-	private static final String TRACKER_THREAD = "Snail Tracker Thread";
-	private static final String TIMER_THREAD = "Snail Timer Thread";
+	public static final String SNAIL_THREAD = "Snail-Thread";
+	public static final String SNAIL_THREAD_HTTP = SNAIL_THREAD + "-HTTP";
+	public static final String SNAIL_THREAD_TIMER = SNAIL_THREAD + "-Timer";
+	public static final String SNAIL_THREAD_TRACKER = SNAIL_THREAD + "-Tracker";
 	
 	/**
 	 * 线程池
 	 */
 	private static final ExecutorService EXECUTOR;
-	/**
-	 * Tracker Client线程池
-	 */
-	private static final ExecutorService TRACKER_EXECUTOR;
 	/**
 	 * 定时线程池
 	 */
@@ -37,9 +34,8 @@ public class SystemThreadContext {
 	
 	static {
 		LOGGER.info("启动系统线程池");
-		EXECUTOR = newExecutor(4, 100, 60L, SYSTEM_THREAD);
-		TRACKER_EXECUTOR = newExecutor(0, 10, 60L, TRACKER_THREAD);
-		TIMER_EXECUTOR = newScheduledExecutor(2, TIMER_THREAD);
+		EXECUTOR = newExecutor(4, 100, 60L, SNAIL_THREAD);
+		TIMER_EXECUTOR = newScheduledExecutor(2, SNAIL_THREAD_TIMER);
 	}
 	
 	/**
@@ -48,13 +44,6 @@ public class SystemThreadContext {
 	 */
 	public static final void submit(Runnable runnable) {
 		EXECUTOR.submit(runnable);
-	}
-	
-	/**
-	 * 提交Tracker Client任务
-	 */
-	public static final void submitTracker(Runnable runnable) {
-		TRACKER_EXECUTOR.submit(runnable);
 	}
 	
 	/**
@@ -132,7 +121,6 @@ public class SystemThreadContext {
 	public static final void shutdown() {
 		LOGGER.info("关闭系统线程池");
 		shutdown(EXECUTOR);
-		shutdown(TRACKER_EXECUTOR);
 		shutdown(TIMER_EXECUTOR);
 	}
 	

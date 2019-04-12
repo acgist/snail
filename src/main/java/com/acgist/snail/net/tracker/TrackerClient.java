@@ -22,6 +22,8 @@ import com.acgist.snail.utils.UniqueCodeUtils;
  */
 public abstract class TrackerClient implements Comparable<TrackerClient> {
 
+	public static final int TIMEOUT = 4; // 超时时间
+	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerClient.class);
 	
 	public enum Type {
