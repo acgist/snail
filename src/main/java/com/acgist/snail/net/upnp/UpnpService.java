@@ -82,6 +82,7 @@ public class UpnpService {
 				break;
 			}
 		}
+		init = true;
 		return this;
 	}
 
@@ -203,12 +204,12 @@ public class UpnpService {
 	 */
 	private void portMapping() {
 		if(!init) {
-			init = true;
-			final String ipAddress = NetUtils.inetHostAddress();
-			boolean dhtOk = this.addPortMapping(SystemConfig.getDhtPort(), ipAddress, Protocol.UDP);
-			boolean peerOk = this.addPortMapping(SystemConfig.getPeerPort(), ipAddress, Protocol.TCP);
-			LOGGER.info("端口映射：DHT（{}-{}）、Peer（{}-{}）", SystemConfig.getDhtPort(), dhtOk, SystemConfig.getPeerPort(), peerOk);
+			return;
 		}
+		final String ipAddress = NetUtils.inetHostAddress();
+		boolean dhtOk = this.addPortMapping(SystemConfig.getDhtPort(), ipAddress, Protocol.UDP);
+		boolean peerOk = this.addPortMapping(SystemConfig.getPeerPort(), ipAddress, Protocol.TCP);
+		LOGGER.info("端口映射：DHT（{}-{}）、Peer（{}-{}）", SystemConfig.getDhtPort(), dhtOk, SystemConfig.getPeerPort(), peerOk);
 	}
 	
 	/**

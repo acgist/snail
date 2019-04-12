@@ -96,7 +96,7 @@ public class TorrentProtocol extends Protocol {
 	private void torrent() throws DownloadException {
 		final String torrentFile = this.url;
 		TorrentSession torrentSession = TorrentSessionManager.getInstance().buildSession(torrentFile);
-		this.url = MagnetProtocol.buildMagnet(torrentSession.infoHash().hashHex()); // 生成磁力链接
+		this.url = MagnetProtocol.buildMagnet(torrentSession.infoHash().infoHashHex()); // 生成磁力链接
 		this.torrent = torrentFile;
 		this.torrentSession = torrentSession;
 	}

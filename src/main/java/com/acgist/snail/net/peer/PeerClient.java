@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.downloader.torrent.bootstrap.PeerClientGroup;
 import com.acgist.snail.downloader.torrent.bootstrap.TorrentStreamGroup;
 import com.acgist.snail.net.TcpClient;
 import com.acgist.snail.pojo.TorrentPiece;
@@ -21,13 +22,17 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerClient.class);
 	
+	private boolean available = false; // 状态
 	private TorrentPiece downloadPiece; // 下载的Piece信息
+	
+	private AtomicInteger mark = new AtomicInteger(0); // 评分：下载速度
 	
 	private AtomicInteger count = new AtomicInteger(0);
 	
 	private final PeerSession peerSession;
 //	private final TaskSession taskSession;
 //	private final TorrentSession torrentSession;
+	private final PeerClientGroup peerClientGroup;
 	private final TorrentStreamGroup torrentStreamGroup;
 	
 	public PeerClient(PeerSession peerSession, TorrentSession torrentSession) {
@@ -35,16 +40,26 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 		this.peerSession = peerSession;
 //		this.taskSession = torrentSession.taskSession();
 //		this.torrentSession = torrentSession;
+		this.peerClientGroup = torrentSession.peerClientGroup();
 		this.torrentStreamGroup = torrentSession.torrentStreamGroup();
 	}
 
-	@Override
-	public boolean connect() {
-		boolean ok = connect(peerSession.host(), peerSession.port());
+	/**
+	 * 开始下载
+	 */
+	public boolean download() {
+		final boolean ok = connect();
 		if(ok) {
 			handler.handshake(this);
 		}
+		this.available = ok;
 		return ok;
+	}
+	
+	@Override
+	public boolean connect() {
+		return connect(peerSession.host(), peerSession.port());
+
 	}
 	
 	public PeerSession peerSession() {
@@ -89,11 +104,12 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	private void request() {
 		if(this.downloadPiece == null) {
 			LOGGER.debug("没有找到Peer块下载");
-			// TODO：close()：group.优化
+			release(); //  释放资源
+			peerClientGroup.launchers();
 			return;
 		}
 		final int index = this.downloadPiece.getIndex();
-		while(true) {
+		while(available) {
 			if(count.get() >= MAX_SLICE_SIZE) {
 				break;
 			}
@@ -107,15 +123,29 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 			handler.request(index, begin, length);
 		}
 	}
+
+	@Override
+	public void close() {
+		super.close();
+	}
 	
+	/**
+	 * 资源释放
+	 */
 	public void release() {
+		available = false;
+		close();
 	}
 	
 	/**
 	 * 选择下载Piece
 	 */
 	private void repick() {
+		if(!available) { // 不可用
+			return;
+		}
 		if(this.downloadPiece != null && this.downloadPiece.over()) {
+			mark(downloadPiece.getLength());
 			peerSession.statistics(downloadPiece.getLength()); // 统计
 			torrentStreamGroup.piece(downloadPiece); // 保存数据
 		}
@@ -123,5 +153,20 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 		request();
 		count.set(0);
 	}
+	
+	/**
+	 * 获取评分<br>
+	 * 每次获取后清空
+	 */
+	public int mark() {
+		return mark.getAndSet(0);
+	}
 
+	/**
+	 * 计算评分：下载速度
+	 */
+	private void mark(int buffer) {
+		mark.addAndGet(buffer); // 计算评分
+	}
+	
 }

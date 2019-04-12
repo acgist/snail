@@ -27,7 +27,7 @@ public class TorrentSessionManager {
 	private static final TorrentSessionManager INSTANCE = new TorrentSessionManager();
 	
 	/**
-	 * hashHex作为key
+	 * infoHashHex作为key
 	 */
 	private Map<String, TorrentSession> TORRENT_SESSION_MAP;
 	
@@ -40,10 +40,17 @@ public class TorrentSessionManager {
 	}
 	
 	/**
-	 * 新建session，如果已经存在hashHex，直接返回反之使用path加载
+	 * 通过infoHash获取TorrentSession
 	 */
-	public TorrentSession buildSession(String hashHex, String path) throws DownloadException {
-		var session = TORRENT_SESSION_MAP.get(hashHex);
+	public TorrentSession torrentSession(String infoHashHex) {
+		return TORRENT_SESSION_MAP.get(infoHashHex);
+	}
+	
+	/**
+	 * 新建session，如果已经存在infoHashHex，直接返回反之使用path加载
+	 */
+	public TorrentSession buildSession(String infoHashHex, String path) throws DownloadException {
+		var session = torrentSession(infoHashHex);
 		if(session != null) {
 			return session;
 		}
@@ -74,7 +81,7 @@ public class TorrentSessionManager {
 		if(infoHash == null) {
 			throw new DownloadException("infoHash不合法");
 		}
-		String key = infoHash.hashHex();
+		String key = infoHash.infoHashHex();
 		var session = TORRENT_SESSION_MAP.get(key);
 		if(session == null) {
 			session = TorrentSession.newInstance(torrent, infoHash);

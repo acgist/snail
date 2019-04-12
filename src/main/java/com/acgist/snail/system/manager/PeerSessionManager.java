@@ -47,7 +47,7 @@ public class PeerSessionManager {
 				peers.put(infoHashHex, deque);
 			}
 			final Optional<PeerSession> optional = deque.stream().filter(peer -> {
-				return peer.exist(host, port);
+				return peer.exist(host);
 			}).findFirst();
 			if(optional.isPresent()) {
 				return optional.get();

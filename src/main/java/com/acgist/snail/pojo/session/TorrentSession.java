@@ -69,7 +69,7 @@ public class TorrentSession {
 		this.taskSession = taskSession;
 		this.trackerGroup = new TrackerGroup(this);
 		this.peerClientGroup = new PeerClientGroup(this);
-//		this.trackerGroup.loadTracker(); // TODO：非测试时需要打开
+		this.trackerGroup.loadTracker();
 		this.torrentStreamGroup = TorrentStreamGroup.newInstance(taskSession.downloadFolder().getPath(), torrent, selectFiles());
 	}
 
@@ -94,7 +94,7 @@ public class TorrentSession {
 	}
 	
 	public String infoHashHex() {
-		return this.infoHash.hashHex();
+		return this.infoHash.infoHashHex();
 	}
 	
 	public TaskSession taskSession() {
@@ -134,8 +134,8 @@ public class TorrentSession {
 	 * 释放资源
 	 */
 	public void release() {
-		peerClientGroup.release();
 		trackerGroup.release();
+		peerClientGroup.release();
 	}
 	
 	/**

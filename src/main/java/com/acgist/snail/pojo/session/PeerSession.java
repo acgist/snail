@@ -69,11 +69,11 @@ public class PeerSession implements IStatistics {
 	}
 	
 	/**
-	 * 判断是否存在
+	 * 判断是否存在：判断IP，不判断端口
 	 */
-	public boolean exist(String host, Integer port) {
-		return ObjectUtils.equalsBuilder(this.host, this.port)
-			.equals(ObjectUtils.equalsBuilder(host, port));
+	public boolean exist(String host) {
+		return ObjectUtils.equalsBuilder(this.host)
+			.equals(ObjectUtils.equalsBuilder(host));
 	}
 	
 	/**

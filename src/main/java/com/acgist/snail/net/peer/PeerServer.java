@@ -30,7 +30,7 @@ public class PeerServer extends TcpServer {
 	/**
 	 * 服务器端口
 	 */
-	public static final short PORT = SystemConfig.getPeerPort().shortValue();
+	public static final short PEER_PORT;
 	
 	static {
 		final Random random = new Random();
@@ -40,6 +40,7 @@ public class PeerServer extends TcpServer {
 			builder.append(random.nextInt(10));
 		}
 		PEER_ID = builder.toString();
+		PEER_PORT = SystemConfig.getPeerPort().shortValue();
 		LOGGER.info("系统PeerID：{}，长度：{}", PEER_ID, PEER_ID.length());
 	}
 

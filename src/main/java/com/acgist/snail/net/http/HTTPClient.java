@@ -84,6 +84,17 @@ public class HTTPClient {
 	}
 	
 	/**
+	 * GET请求
+	 */
+	public static final HttpResponse<String> get(String requestUrl) {
+		var client = HTTPClient.newClient();
+		var request = HTTPClient.newRequest(requestUrl)
+			.GET()
+			.build();
+		return HTTPClient.request(client, request, BodyHandlers.ofString());
+	}
+	
+	/**
 	 * 执行请求
 	 */
 	public static final <T> HttpResponse<T> request(HttpClient client, HttpRequest request, HttpResponse.BodyHandler<T> handler) {
