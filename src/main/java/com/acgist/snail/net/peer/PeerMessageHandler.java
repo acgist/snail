@@ -40,7 +40,8 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	/**
 	 * 如果消息长度不够一个Integer长度时使用
 	 */
-	private ByteBuffer lengthStick = ByteBuffer.allocate(4);
+	private static final int INTEGER_BYTE_LENGTH = 4;
+	private ByteBuffer lengthStick = ByteBuffer.allocate(INTEGER_BYTE_LENGTH);
 	
 	private ByteBuffer buffer;
 	private PeerClient peerClient;
@@ -104,18 +105,17 @@ public class PeerMessageHandler extends TcpMessageHandler {
 					if(handshake) {
 						for (int index = 0; index < attachment.limit(); index++) {
 							lengthStick.put(attachment.get());
-							if(lengthStick.limit() == 0) {
+							if(lengthStick.position() == INTEGER_BYTE_LENGTH) {
 								break;
 							}
 						}
-						if(lengthStick.limit() == 0) {
+						if(lengthStick.position() == INTEGER_BYTE_LENGTH) {
 							lengthStick.flip();
 							length = lengthStick.getInt();
 							lengthStick.compact();
 						} else {
 							break;
 						}
-//						length = attachment.getInt();
 					} else { // 握手
 						length = HANDSHAKE_LENGTH;
 					}
