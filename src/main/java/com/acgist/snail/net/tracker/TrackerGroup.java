@@ -78,7 +78,7 @@ public class TrackerGroup {
 				launcher.release();
 			});
 		});
-		trackerExecutor.shutdown();
+		trackerExecutor.shutdownNow();
 	}
 	
 }
