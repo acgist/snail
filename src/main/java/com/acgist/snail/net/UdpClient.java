@@ -68,7 +68,7 @@ public abstract class UdpClient<T extends UdpMessageHandler> {
 	 * 绑定消息处理器
 	 */
 	public void bindMessageHandler() {
-		SystemThreadContext.submit(() -> {
+		SystemThreadContext.submitCache(() -> {
 			try {
 				this.handler.handle(channel);
 			} catch (IOException e) {

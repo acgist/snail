@@ -13,10 +13,6 @@ import com.acgist.snail.system.config.SystemConfig;
  */
 public class PeerServer extends TcpServer {
 
-	protected PeerServer() {
-		super("Peer服务");
-	}
-
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerServer.class);
 	
 	/**
@@ -44,6 +40,17 @@ public class PeerServer extends TcpServer {
 		LOGGER.info("系统PeerID：{}，长度：{}", PEER_ID, PEER_ID.length());
 	}
 
+	
+	private PeerServer() {
+		super("Peer服务");
+	}
+
+	private static final PeerServer INSTANCE = new PeerServer();
+	
+	public static final PeerServer getInstance() {
+		return INSTANCE;
+	}
+	
 	@Override
 	public boolean listen() {
 		return this.listen(SystemConfig.getServerHost(), SystemConfig.getPeerPort());

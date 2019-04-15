@@ -46,6 +46,7 @@ public class FtpDownloader extends Downloader {
 
 	@Override
 	public void download() throws IOException {
+		LOGGER.debug("FTP任务开始下载");
 		int length = 0;
 		while(ok()) {
 			length = input.readNBytes(bytes, 0, bytes.length);
@@ -69,7 +70,7 @@ public class FtpDownloader extends Downloader {
 				output.close();
 			}
 		} catch (IOException e) {
-			LOGGER.error("关闭文件流失败", e);
+			LOGGER.error("关闭文件流异常", e);
 		}
 	}
 

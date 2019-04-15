@@ -36,12 +36,12 @@ public class TorrentStreamGroup {
 		if(CollectionUtils.isNotEmpty(files)) {
 			long pos = 0;
 			final List<TorrentStream> streams = new ArrayList<>(files.size());
-			final TorrentInfo info = torrent.getInfo();
-			group.pieces = new BitSet(info.pieceSize());
+			final TorrentInfo torrentInfo = torrent.getInfo();
+			group.pieces = new BitSet(torrentInfo.pieceSize());
 			for (TorrentFile file : files) {
 				try {
 					if(file.selected()) {
-						TorrentStream stream = new TorrentStream(info.getPieceLength(), group);
+						TorrentStream stream = new TorrentStream(torrentInfo.getPieceLength(), group);
 						stream.buildFile(Paths.get(folder, file.path()).toString(), file.getLength(), pos);
 						streams.add(stream);
 					}
@@ -111,6 +111,7 @@ public class TorrentStreamGroup {
 	 * 资源释放
 	 */
 	public void release() {
+		LOGGER.debug("释放TorrentStreamGroup");
 		for (TorrentStream torrentStream : streams) {
 			torrentStream.release();
 		}

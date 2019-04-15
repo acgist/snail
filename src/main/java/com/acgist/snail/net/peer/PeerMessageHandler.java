@@ -88,7 +88,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		if(address == null) {
 			return;
 		}
-		final PeerSession peerSession = PeerSessionManager.getInstance().newPeer(infoHashHex, taskSession.statistics(), address.getHostString(), address.getPort());
+		final PeerSession peerSession = PeerSessionManager.getInstance().newPeerSession(infoHashHex, taskSession.statistics(), address.getHostString(), address.getPort());
 		init(peerSession, torrentSession);
 	}
 	
