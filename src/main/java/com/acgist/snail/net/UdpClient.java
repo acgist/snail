@@ -7,6 +7,7 @@ import java.net.StandardProtocolFamily;
 import java.net.StandardSocketOptions;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
+import java.util.concurrent.ExecutorService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,14 +27,16 @@ public abstract class UdpClient<T extends UdpMessageHandler> {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpClient.class);
 
-	private String name;
+	private final String name;
+	private final T handler;
+	private final ExecutorService executor;
 	
-	private T handler;
 	private DatagramChannel channel;
 	
 	public UdpClient(String name, T handler) {
 		this.name = name;
 		this.handler = handler;
+		this.executor = SystemThreadContext.newCacheExecutor(SystemThreadContext.SNAIL_THREAD_UDP_CLIENT);
 	}
 
 	/**
@@ -68,7 +71,7 @@ public abstract class UdpClient<T extends UdpMessageHandler> {
 	 * 绑定消息处理器
 	 */
 	public void bindMessageHandler() {
-		SystemThreadContext.submitCache(() -> {
+		executor.submit(() -> {
 			try {
 				this.handler.handle(channel);
 			} catch (IOException e) {

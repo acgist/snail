@@ -82,7 +82,7 @@ public class PeerClientGroup {
 		LOGGER.debug("释放PeerClientGroup");
 		synchronized (peerClients) {
 			peerClients.forEach(client -> {
-				SystemThreadContext.submitCache(() -> {
+				SystemThreadContext.submit(() -> {
 					LOGGER.debug("Peer关闭：{}:{}", client.peerSession().host(), client.peerSession().port());
 					client.release();
 				});

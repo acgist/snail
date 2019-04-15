@@ -20,19 +20,18 @@ public class SystemThreadContext {
 	
 	public static final String SNAIL_THREAD = "Snail-Thread";
 	public static final String SNAIL_THREAD_HTTP = SNAIL_THREAD + "-HTTP";
-	public static final String SNAIL_THREAD_CACHE = SNAIL_THREAD + "-Cache";
 	public static final String SNAIL_THREAD_TIMER = SNAIL_THREAD + "-Timer";
 	public static final String SNAIL_THREAD_TRACKER = SNAIL_THREAD + "-Tracker";
 	public static final String SNAIL_THREAD_PLATFORM = SNAIL_THREAD + "-Platform";
+	public static final String SNAIL_THREAD_DOWNLOADER = SNAIL_THREAD + "-Downloader";
+	public static final String SNAIL_THREAD_TCP_CLIENT = SNAIL_THREAD + "-TCP-Client";
+	public static final String SNAIL_THREAD_TCP_SERVER = SNAIL_THREAD + "-TCP-Server";
+	public static final String SNAIL_THREAD_UDP_CLIENT = SNAIL_THREAD + "-UDP-Client";
 	
 	/**
 	 * 线程池：大小限制，主要用来处理一些不是非常急用的任务
 	 */
 	private static final ExecutorService EXECUTOR;
-	/**
-	 * 无限线程池：不限制大小
-	 */
-	private static final ExecutorService EXECUTOR_CACHE;
 	/**
 	 * 定时线程池：定时任务
 	 */
@@ -41,7 +40,6 @@ public class SystemThreadContext {
 	static {
 		LOGGER.info("启动系统线程池");
 		EXECUTOR = newExecutor(10, 100, 100, 60L, SNAIL_THREAD);
-		EXECUTOR_CACHE = newCacheExecutor(SNAIL_THREAD_CACHE);
 		EXECUTOR_TIMER = newScheduledExecutor(10, SNAIL_THREAD_TIMER);
 	}
 	
@@ -51,13 +49,6 @@ public class SystemThreadContext {
 	 */
 	public static final void submit(Runnable runnable) {
 		EXECUTOR.submit(runnable);
-	}
-	
-	/**
-	 * 提交无限线程池
-	 */
-	public static final void submitCache(Runnable runnable) {
-		EXECUTOR_CACHE.submit(runnable);
 	}
 	
 	/**
@@ -80,13 +71,6 @@ public class SystemThreadContext {
 		if(delay >= 0) {
 			EXECUTOR_TIMER.scheduleAtFixedRate(runnable, delay, period, unit);
 		}
-	}
-	
-	/**
-	 * 获取无限线程池
-	 */
-	public static final ExecutorService executorCache() {
-		return EXECUTOR_CACHE;
 	}
 	
 	/**
@@ -142,7 +126,6 @@ public class SystemThreadContext {
 	public static final void shutdown() {
 		LOGGER.info("关闭系统线程池");
 		shutdown(EXECUTOR);
-		shutdown(EXECUTOR_CACHE);
 		shutdown(EXECUTOR_TIMER);
 	}
 	
