@@ -2,6 +2,7 @@ package com.acgist.snail.downloader.torrent.bootstrap;
 
 import java.time.Duration;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -28,6 +29,11 @@ public class PeerClientGroup {
 	
 	private long lastOptimizeTime = System.currentTimeMillis();
 	
+	/**
+	 * 线程池
+	 */
+	private final ExecutorService executor;
+	
 	private final TaskSession taskSession;
 	private final TorrentSession torrentSession;
 	private final BlockingQueue<PeerClient> peerClients;
@@ -38,23 +44,19 @@ public class PeerClientGroup {
 		this.torrentSession = torrentSession;
 		this.peerClients = new LinkedBlockingQueue<>();
 		this.peerSessionManager = PeerSessionManager.getInstance();
+		this.executor = SystemThreadContext.newExecutor(10, 10, 100, 60L, SystemThreadContext.SNAIL_THREAD_PEER);
 		optimizeTimer(); // 优化
 	}
 	
 	/**
 	 * 创建下载线程
 	 */
-	public void launchers() {
-		final int size = SystemConfig.getPeerSize();
+	public void launchers(int size) {
 		synchronized (peerClients) {
-			while(true) {
-				if(this.peerClients.size() >= size) {
-					break;
-				}
-				final boolean ok = buildPeerClient();
-				if(!ok) {
-					break;
-				}
+			for (int index = 0; index < size; index++) {
+				executor.submit(() -> {
+					buildPeerClient();
+				});
 			}
 		}
 	}
@@ -87,7 +89,7 @@ public class PeerClientGroup {
 			LOGGER.debug("优化PeerClient");
 			final boolean ok = inferiorPeerClient();
 			if(ok) {
-				buildPeerClient();
+				launchers(1);
 			}
 		}
 	}
@@ -104,16 +106,19 @@ public class PeerClientGroup {
 					client.release();
 				});
 			});
+			executor.shutdownNow();
 		}
 	}
 	
 	/**
 	 * 拿去最后一个session创建PeerClient
-	 * @return true-有可用的PeerClient；false-没有可用的PeerClient
 	 */
-	private boolean buildPeerClient() {
+	private void buildPeerClient() {
 		if(!taskSession.download()) {
-			return false;
+			return;
+		}
+		if(this.peerClients.size() >= SystemConfig.getPeerSize()) {
+			return;
 		}
 		final PeerSession peerSession = peerSessionManager.pick(torrentSession.infoHashHex());
 		if(peerSession != null) {
@@ -123,9 +128,7 @@ public class PeerClientGroup {
 			if(ok) {
 				peerClients.add(client);
 			}
-			return true;
 		}
-		return false;
 	}
 	
 	/**

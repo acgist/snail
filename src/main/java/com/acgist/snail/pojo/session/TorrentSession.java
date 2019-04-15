@@ -157,7 +157,7 @@ public class TorrentSession {
 			LOGGER.debug("添加PeerSession，HOST：{}，PORT：{}", host, port);
 			manager.newPeerSession(this.infoHashHex(), taskSession.statistics(), host, port);
 		});
-		peerClientGroup.launchers();
+		peerClientGroup.launchers(peers.size());
 	}
 
 	/**
