@@ -88,6 +88,9 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		if(address == null) {
 			return;
 		}
+		if(LOGGER.isDebugEnabled()) {
+			LOGGER.debug("远程Peer客户端连接：{}:{}", address.getHostString(), address.getPort());
+		}
 		final PeerSession peerSession = PeerSessionManager.getInstance().newPeerSession(infoHashHex, taskSession.statistics(), address.getHostString(), address.getPort());
 		init(peerSession, torrentSession);
 		handshake((PeerClient) null);
@@ -160,7 +163,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 			handshake(buffer);
 		} else {
 			final byte type = buffer.get();
-			LOGGER.debug("消息类型：{}", type);
+			LOGGER.debug("Peer消息类型：{}", type);
 			switch (type) {
 			case 0:
 				choke(buffer);
