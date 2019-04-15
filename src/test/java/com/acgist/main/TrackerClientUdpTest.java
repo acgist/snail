@@ -2,7 +2,7 @@ package com.acgist.main;
 
 import org.junit.Test;
 
-import com.acgist.snail.net.tracker.TrackerGroup;
+import com.acgist.snail.downloader.torrent.bootstrap.TrackerLauncherGroup;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
@@ -15,7 +15,7 @@ public class TrackerClientUdpTest {
 	public void test() throws NetException, DownloadException {
 		String path = "e:/snail/1234.torrent";
 		TorrentSession session = TorrentSessionManager.getInstance().buildSession(path);
-		TrackerGroup group = new TrackerGroup(session);
+		TrackerLauncherGroup group = new TrackerLauncherGroup(session);
 		group.loadTracker();
 //		var client = TrackerClientManager.getInstance().register("udp://exodus.desync.com:6969/announce");
 //		var launcher = TrackerLauncherManager.getInstance().build(client, session);

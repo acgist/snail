@@ -1,10 +1,11 @@
-package com.acgist.snail.net.tracker;
+package com.acgist.snail.downloader.torrent.bootstrap;
 
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.net.tracker.TrackerClient;
 import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
@@ -54,7 +55,7 @@ public class TrackerLauncher implements Runnable {
 	public void run() {
 		run = true;
 		if(available()) {
-			LOGGER.debug("TrackerClient查找Peer：{}", client.announceUrl);
+			LOGGER.debug("TrackerClient查找Peer：{}", client.announceUrl());
 			client.findPeers(this.id, this.torrentSession);
 		}
 	}

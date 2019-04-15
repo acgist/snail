@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.torrent.bootstrap.PeerClientGroup;
 import com.acgist.snail.downloader.torrent.bootstrap.TorrentStreamGroup;
-import com.acgist.snail.net.tracker.TrackerGroup;
+import com.acgist.snail.downloader.torrent.bootstrap.TrackerLauncherGroup;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
 import com.acgist.snail.protocol.torrent.bean.TorrentFile;
@@ -38,10 +38,6 @@ public class TorrentSession {
 	 */
 	private TaskSession taskSession;
 	/**
-	 * Tracker组
-	 */
-	private TrackerGroup trackerGroup;
-	/**
 	 * Peer组
 	 */
 	private PeerClientGroup peerClientGroup;
@@ -49,6 +45,10 @@ public class TorrentSession {
 	 * 文件组
 	 */
 	private TorrentStreamGroup torrentStreamGroup;
+	/**
+	 * Tracker组
+	 */
+	private TrackerLauncherGroup trackerLauncherGroup;
 	
 	public static final TorrentSession newInstance(Torrent torrent, InfoHash infoHash) throws DownloadException {
 		return new TorrentSession(torrent, infoHash);
@@ -65,12 +65,18 @@ public class TorrentSession {
 	/**
 	 * 开始下载任务：获取tracker、peer
 	 */
-	public void build(TaskSession taskSession) throws DownloadException {
+	public void build(TaskSession taskSession) {
 		this.taskSession = taskSession;
-		this.trackerGroup = new TrackerGroup(this);
 		this.peerClientGroup = new PeerClientGroup(this);
-		this.trackerGroup.loadTracker();
+		this.trackerLauncherGroup = new TrackerLauncherGroup(this);
 		this.torrentStreamGroup = TorrentStreamGroup.newInstance(taskSession.downloadFolder().getPath(), torrent, selectFiles());
+	}
+	
+	/**
+	 * 加载tracker
+	 */
+	public void loadTracker() throws DownloadException {
+		this.trackerLauncherGroup.loadTracker();
 	}
 
 	/**
@@ -101,16 +107,16 @@ public class TorrentSession {
 		return this.taskSession;
 	}
 	
-	public TrackerGroup trackerGroup() {
-		return this.trackerGroup;
-	}
-	
 	public PeerClientGroup peerClientGroup() {
 		return this.peerClientGroup;
 	}
 	
 	public TorrentStreamGroup torrentStreamGroup() {
 		return this.torrentStreamGroup;
+	}
+	
+	public TrackerLauncherGroup trackerLauncherGroup() {
+		return this.trackerLauncherGroup;
 	}
 	
 	/**
@@ -134,7 +140,7 @@ public class TorrentSession {
 	 * 释放资源
 	 */
 	public void release() {
-		trackerGroup.release();
+		trackerLauncherGroup.release();
 		peerClientGroup.release();
 		torrentStreamGroup.release();
 	}
