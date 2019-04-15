@@ -20,6 +20,7 @@ import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
+import com.acgist.snail.utils.UrlUtils;
 
 /**
  * Tracker Client管理器，所有的tracker都可以被使用
@@ -119,7 +120,7 @@ public class TrackerClientManager {
 			if(optional.isPresent()) {
 				return optional.get();
 			}
-			TrackerClient client = buildClient(announceUrl);
+			TrackerClient client = buildClientProxy(announceUrl);
 			register(client);
 			return client;
 		}
@@ -139,14 +140,24 @@ public class TrackerClientManager {
 	/**
 	 * 创建Client
 	 */
-	private TrackerClient buildClient(String announceUrl) throws NetException {
+	private TrackerClient buildClientProxy(final String announceUrl) throws NetException {
+		TrackerClient client = buildClient(announceUrl);
+		if(client == null) {
+			client = buildClient(UrlUtils.decode(announceUrl));
+		}
+		if(client == null) {
+			throw new NetException("不支持的Tracker协议：" + announceUrl);
+		}
+		return client;
+	}
+	
+	private TrackerClient buildClient(final String announceUrl) throws NetException {
 		if(HttpProtocol.verify(announceUrl)) {
 			return HttpTrackerClient.newInstance(announceUrl);
 		} else if(UdpClient.verify(announceUrl)) {
 			return UdpTrackerClient.newInstance(announceUrl);
-		} else {
-			throw new NetException("不支持的Tracker协议：" + announceUrl);
 		}
+		return null;
 	}
 	
 	/**

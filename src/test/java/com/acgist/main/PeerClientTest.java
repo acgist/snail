@@ -35,11 +35,11 @@ public class PeerClientTest {
 		entity.setType(Type.torrent);
 		entity.setDescription(JsonUtils.toJson(list));
 		torrentSession.build(TaskSession.newInstance(entity));
-//		String host = "118.239.191.189";
-//		Integer port = 61375;
-		String host = "192.168.1.100";
+		String host = "185.45.195.167";
+		Integer port = 20009;
+//		String host = "192.168.1.100";
 //		Integer port = 9080;
-		Integer port = 15000; // 本地迅雷测试端口
+//		Integer port = 15000; // 本地迅雷测试端口
 //		Integer port = 54321;
 		PeerSession peerSession = new PeerSession(new StatisticsSession(), host, port);
 		PeerClient client = new PeerClient(peerSession, torrentSession);
