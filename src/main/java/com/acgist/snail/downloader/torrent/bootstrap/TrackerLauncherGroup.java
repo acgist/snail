@@ -2,7 +2,9 @@ package com.acgist.snail.downloader.torrent.bootstrap;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +30,7 @@ public class TrackerLauncherGroup {
 	/**
 	 * 线程池
 	 */
-	private final ExecutorService trackerExecutor;
+	private final ScheduledExecutorService executor;
 	/**
 	 * tracker
 	 */
@@ -39,7 +41,7 @@ public class TrackerLauncherGroup {
 		this.torrentSession = torrentSession;
 		this.trackerLaunchers = new ArrayList<>();
 		final String name = SystemThreadContext.SNAIL_THREAD_TRACKER + "-" + torrentSession.infoHashHex();
-		this.trackerExecutor = SystemThreadContext.newExecutor(10, 10, 60L, name);
+		this.executor = SystemThreadContext.newScheduledExecutor(10, name);
 	}
 
 	/**
@@ -50,26 +52,34 @@ public class TrackerLauncherGroup {
 		if(torrent == null) {
 			throw new DownloadException("无效种子文件");
 		}
+		List<TrackerClient> clients = null;
 		try {
-			final List<TrackerClient> clients = TrackerClientManager.getInstance().clients(torrent.getAnnounce(), torrent.getAnnounceList());
-			clients.stream()
-			.map(client -> {
-				LOGGER.debug("添加Tracker Client，ID：{}，announce：{}", client.id(), client.announceUrl());
-				return TrackerLauncherManager.getInstance().build(client, torrentSession);
-			})
-			.forEach(launcher -> {
-				try {
-					this.trackerLaunchers.add(launcher);	
-					this.trackerExecutor.submit(launcher);
-				} catch (Exception e) {
-					LOGGER.error("Tracker执行异常", e);
-				}
-			});
+			clients = TrackerClientManager.getInstance().clients(torrent.getAnnounce(), torrent.getAnnounceList());
 		} catch (NetException e) {
 			throw new DownloadException(e);
 		}
+		AtomicInteger index = new AtomicInteger(0);
+		clients.stream()
+		.map(client -> {
+			LOGGER.debug("添加Tracker Client，ID：{}，announce：{}", client.id(), client.announceUrl());
+			return TrackerLauncherManager.getInstance().build(client, torrentSession);
+		}).forEach(launcher -> {
+			try {
+				this.trackerLaunchers.add(launcher);	
+				this.timer(index.get() / 10 * TrackerClient.TIMEOUT, TimeUnit.SECONDS, launcher);
+				index.incrementAndGet();
+			} catch (Exception e) {
+				LOGGER.error("Tracker执行异常", e);
+			}
+		});
 	}
 
+	public void timer(long delay, TimeUnit unit, Runnable runnable) {
+		if(delay >= 0) {
+			executor.schedule(runnable, delay, unit);
+		}
+	}
+	
 	/**
 	 * 释放资源
 	 */
@@ -79,7 +89,7 @@ public class TrackerLauncherGroup {
 				launcher.release();
 			});
 		});
-		trackerExecutor.shutdownNow();
+		executor.shutdownNow();
 	}
 	
 }

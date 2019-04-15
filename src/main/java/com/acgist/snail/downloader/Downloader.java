@@ -127,6 +127,7 @@ public abstract class Downloader implements IDownloader {
 				this.complete();
 				this.release(); // 最后释放资源
 				running = false;
+				LOGGER.info("下载结束：{}", name());
 			}
 		}
 	}

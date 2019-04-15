@@ -9,7 +9,6 @@ import com.acgist.snail.net.tracker.TrackerClient;
 import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.UniqueCodeUtils;
 
 /**
@@ -24,6 +23,7 @@ public class TrackerLauncher implements Runnable {
 	
 	private final TaskSession taskSession;
 	private final TorrentSession torrentSession;
+	private final TrackerLauncherGroup trackerLauncherGroup;
 	
 	private final Integer id; // id：transaction_id（获取peer时使用）
 	private Integer interval; // 下次等待时间
@@ -41,6 +41,7 @@ public class TrackerLauncher implements Runnable {
 		this.client = client;
 		this.taskSession = torrentSession.taskSession();
 		this.torrentSession = torrentSession;
+		this.trackerLauncherGroup = torrentSession.trackerLauncherGroup();
 	}
 	
 	public TorrentSession torrentSession() {
@@ -76,7 +77,7 @@ public class TrackerLauncher implements Runnable {
 		this.torrentSession.peer(message.getPeers());
 		LOGGER.debug("已完成Peer数量：{}，未完成的Peer数量：{}，下次请求时间：{}", this.done, this.undone, this.interval);
 		if(this.interval != null) { // 添加重复执行
-			SystemThreadContext.timer(this.interval, TimeUnit.SECONDS, this);
+			trackerLauncherGroup.timer(this.interval, TimeUnit.SECONDS, this);
 		}
 	}
 

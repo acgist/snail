@@ -1,5 +1,8 @@
 package com.acgist.snail.protocol.http;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
@@ -7,6 +10,7 @@ import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.system.exception.DownloadException;
+import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -15,6 +19,8 @@ import com.acgist.snail.utils.StringUtils;
  */
 public class HttpProtocol extends Protocol {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(HttpProtocol.class);
+	
 	public static final String HTTP_REGEX = "http://.+";
 	public static final String HTTPS_REGEX = "https://.+";
 	
@@ -71,8 +77,12 @@ public class HttpProtocol extends Protocol {
 		int index = 0;
 		while(true) {
 			index++;
-			this.httpHeaderWrapper = HTTPClient.head(url);
-			if(this.httpHeaderWrapper.isNotEmpty()) {
+			try {
+				this.httpHeaderWrapper = HTTPClient.head(url);
+			} catch (NetException e) {
+				LOGGER.error("获取HTTP下载请求头信息异常", e);
+			}
+			if(this.httpHeaderWrapper != null && this.httpHeaderWrapper.isNotEmpty()) {
 				break;
 			}
 			if(index >= 3) {

@@ -3,6 +3,7 @@ package com.acgist.main;
 import org.junit.Test;
 
 import com.acgist.snail.net.http.HTTPClient;
+import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.FileUtils;
 
 public class FileUtilsTest {
@@ -14,7 +15,7 @@ public class FileUtilsTest {
 	}
 	
 	@Test
-	public void fileNameHttp() {
+	public void fileNameHttp() throws NetException {
 		HTTPClient.head("https://www.acgist.com/demo/weixin/view").headers().forEach((key, value) -> {
 			System.out.println(key + "-" + value);
 		});

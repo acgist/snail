@@ -16,12 +16,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
+import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.UrlUtils;
 
 /**
@@ -29,7 +27,7 @@ import com.acgist.snail.utils.UrlUtils;
  */
 public class HTTPClient {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(HTTPClient.class);
+//	private static final Logger LOGGER = LoggerFactory.getLogger(HTTPClient.class);
 	
 	public static final int TIMEOUT = 5;
 
@@ -97,14 +95,17 @@ public class HTTPClient {
 			.header("Content-type", "application/x-www-form-urlencoded;charset=" + SystemConfig.DEFAULT_CHARSET);
 	}
 	
-	public static final <T> HttpResponse<T> get(String requestUrl, HttpResponse.BodyHandler<T> handler) {
+	/**
+	 * GET请求
+	 */
+	public static final <T> HttpResponse<T> get(String requestUrl, HttpResponse.BodyHandler<T> handler) throws NetException {
 		return get(requestUrl, handler, TIMEOUT);
 	}
 	
 	/**
 	 * GET请求
 	 */
-	public static final <T> HttpResponse<T> get(String requestUrl, HttpResponse.BodyHandler<T> handler, int timeout) {
+	public static final <T> HttpResponse<T> get(String requestUrl, HttpResponse.BodyHandler<T> handler, int timeout) throws NetException {
 		final var client = HTTPClient.newClient(timeout);
 		final var request = HTTPClient.newRequest(requestUrl, timeout)
 			.GET()
@@ -115,7 +116,7 @@ public class HTTPClient {
 	/**
 	 * POST请求
 	 */
-	public static final <T> HttpResponse<T> post(String requestUrl, Map<String, String> data, HttpResponse.BodyHandler<T> handler) {
+	public static final <T> HttpResponse<T> post(String requestUrl, Map<String, String> data, HttpResponse.BodyHandler<T> handler) throws NetException {
 		final var client = HTTPClient.newClient();
 		final var request = HTTPClient.newRequest(requestUrl)
 			.POST(formBodyPublisher(data))
@@ -126,7 +127,7 @@ public class HTTPClient {
 	/**
 	 * HEAD请求
 	 */
-	public static final HttpHeaderWrapper head(String requestUrl) {
+	public static final HttpHeaderWrapper head(String requestUrl) throws NetException {
 		final var client = HTTPClient.newClient();
 		final var request = HTTPClient.newRequest(requestUrl)
 			.method("HEAD", BodyPublishers.noBody())
@@ -141,16 +142,15 @@ public class HTTPClient {
 	/**
 	 * 执行请求
 	 */
-	public static final <T> HttpResponse<T> request(HttpClient client, HttpRequest request, HttpResponse.BodyHandler<T> handler) {
+	public static final <T> HttpResponse<T> request(HttpClient client, HttpRequest request, HttpResponse.BodyHandler<T> handler) throws NetException {
 		if(client == null || request == null) {
 			return null;
 		}
 		try {
 			return client.send(request, handler);
 		} catch (Exception e) {
-			LOGGER.error("执行请求异常", e);
+			throw new NetException(e);
 		}
-		return null;
 	}
 	
 	/**

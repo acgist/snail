@@ -22,6 +22,7 @@ public class SystemThreadContext {
 	public static final String SNAIL_THREAD_HTTP = SNAIL_THREAD + "-HTTP";
 	public static final String SNAIL_THREAD_TIMER = SNAIL_THREAD + "-Timer";
 	public static final String SNAIL_THREAD_TRACKER = SNAIL_THREAD + "-Tracker";
+	public static final String SNAIL_THREAD_PLATFORM = SNAIL_THREAD + "-Platform";
 	
 	/**
 	 * 线程池
@@ -30,12 +31,12 @@ public class SystemThreadContext {
 	/**
 	 * 定时线程池
 	 */
-	private static final ScheduledExecutorService TIMER_EXECUTOR;
+	private static final ScheduledExecutorService EXECUTOR_TIMER;
 	
 	static {
 		LOGGER.info("启动系统线程池");
 		EXECUTOR = newExecutor(4, 100, 60L, SNAIL_THREAD);
-		TIMER_EXECUTOR = newScheduledExecutor(2, SNAIL_THREAD_TIMER);
+		EXECUTOR_TIMER = newScheduledExecutor(2, SNAIL_THREAD_TIMER);
 	}
 	
 	/**
@@ -55,7 +56,7 @@ public class SystemThreadContext {
 	 */
 	public static final void timer(long delay, long period, TimeUnit unit, Runnable runnable) {
 		if(delay >= 0) {
-			TIMER_EXECUTOR.scheduleAtFixedRate(runnable, delay, period, unit);
+			EXECUTOR_TIMER.scheduleAtFixedRate(runnable, delay, period, unit);
 		}
 	}
 
@@ -64,7 +65,7 @@ public class SystemThreadContext {
 	 */
 	public static final void timer(long delay, TimeUnit unit, Runnable runnable) {
 		if(delay >= 0) {
-			TIMER_EXECUTOR.schedule(runnable, delay, unit);
+			EXECUTOR_TIMER.schedule(runnable, delay, unit);
 		}
 	}
 	
@@ -121,7 +122,7 @@ public class SystemThreadContext {
 	public static final void shutdown() {
 		LOGGER.info("关闭系统线程池");
 		shutdown(EXECUTOR);
-		shutdown(TIMER_EXECUTOR);
+		shutdown(EXECUTOR_TIMER);
 	}
 	
 	/**
