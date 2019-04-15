@@ -4,6 +4,9 @@ import java.io.ByteArrayInputStream;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.net.peer.PeerServer;
 import com.acgist.snail.net.tracker.TrackerClient;
@@ -20,6 +23,8 @@ import com.acgist.snail.utils.StringUtils;
  */
 public class HttpTrackerClient extends TrackerClient {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(HttpTrackerClient.class);
+	
 	private static final String SCRAPE_URL_SUFFIX = "/scrape";
 	private static final String ANNOUNCE_URL_SUFFIX = "/announce";
 	
@@ -61,13 +66,21 @@ public class HttpTrackerClient extends TrackerClient {
 	@Override
 	public void complete(Integer sid, TorrentSession torrentSession) {
 		final String requestUrl = buildAnnounceUrl(sid, torrentSession, TrackerClient.Event.completed);
-		HTTPClient.get(requestUrl, BodyHandlers.ofString(), TrackerClient.TIMEOUT);
+		try {
+			HTTPClient.get(requestUrl, BodyHandlers.ofString(), TrackerClient.TIMEOUT);
+		} catch (NetException e) {
+			LOGGER.error("HTTP请求异常", e);
+		}
 	}
 	
 	@Override
 	public void stop(Integer sid, TorrentSession torrentSession) {
 		final String requestUrl = buildAnnounceUrl(sid, torrentSession, TrackerClient.Event.stopped);
-		HTTPClient.get(requestUrl, BodyHandlers.ofString(), TrackerClient.TIMEOUT);
+		try {
+			HTTPClient.get(requestUrl, BodyHandlers.ofString(), TrackerClient.TIMEOUT);
+		} catch (NetException e) {
+			LOGGER.error("HTTP请求异常", e);
+		}
 	}
 	
 	@Override

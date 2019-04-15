@@ -5,6 +5,8 @@ import java.io.BufferedOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 
 import org.slf4j.Logger;
@@ -15,6 +17,7 @@ import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
 import com.acgist.snail.system.config.DownloadConfig;
+import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.FileUtils;
 
 /**
@@ -103,9 +106,16 @@ public class HttpDownloader extends Downloader {
 			.header("Range", "bytes=" + size + "-") // 端点续传
 			.GET()
 			.build();
-		final var response = HTTPClient.request(client, request, BodyHandlers.ofInputStream());
-		this.responseHeader = HttpHeaderWrapper.newInstance(response.headers());
+		HttpResponse<InputStream> response = null;
+		try {
+			response = HTTPClient.request(client, request, BodyHandlers.ofInputStream());
+		} catch (NetException e) {
+			fail("HTTP请求失败");
+			LOGGER.error("HTTP请求异常", e);
+			return;
+		}
 		if(HTTPClient.ok(response)) {
+			this.responseHeader = HttpHeaderWrapper.newInstance(response.headers());
 			input = new BufferedInputStream(response.body());
 			if(responseHeader.range()) { // 支持断点续传
 				long begin = responseHeader.beginRange();

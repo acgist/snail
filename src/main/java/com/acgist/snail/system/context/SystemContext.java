@@ -91,7 +91,7 @@ public class SystemContext {
 		if(SystemContext.available()) {
 			SystemContext.shutdown();
 			SystemThreadContext.submit(() -> {
-				LOGGER.info("系统关闭中");
+				LOGGER.info("系统关闭...");
 				/**系统线程都是后台线程以下操作可以不执行**/
 				TrackerUdpClient.getInstance().close();
 				TcpClient.shutdown();

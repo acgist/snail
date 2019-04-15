@@ -1,20 +1,28 @@
 package com.acgist.snail.protocol.magnet;
 
 import java.io.File;
+import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.util.Map;
+
+import org.slf4j.LoggerFactory;
+
+import org.slf4j.Logger;
 
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.protocol.torrent.TorrentProtocol;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.exception.DownloadException;
+import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.FileUtils;
 
 /**
  * 磁力链接解析器：磁力链接转种子文件
  */
 public abstract class MagnetResolver {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(MagnetResolver.class);
 	
 	protected String hash; // HASH
 	protected String magnet; // 完整磁力链接
@@ -44,7 +52,12 @@ public abstract class MagnetResolver {
 	 */
 	public File execute(String url) throws DownloadException {
 		this.init(url);
-		final var response = HTTPClient.post(requestUrl(), formData(), BodyHandlers.ofByteArray());
+		HttpResponse<byte[]> response = null;
+		try {
+			response = HTTPClient.post(requestUrl(), formData(), BodyHandlers.ofByteArray());
+		} catch (NetException e) {
+			LOGGER.error("HTTP请求异常", e);
+		}
 		if(HTTPClient.ok(response)) {
 			byte[] bytes = response.body();
 			String path = DownloadConfig.getPath(this.hash + TorrentProtocol.TORRENT_SUFFIX);

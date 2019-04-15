@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.XMLUtils;
@@ -55,7 +56,7 @@ public class UpnpService {
 	/**
 	 * 加载信息
 	 */
-	public UpnpService load(String location) {
+	public UpnpService load(String location) throws NetException {
 		LOGGER.info("设置UPNP，地址：{}", location);
 		this.location = location;
 		var client = HTTPClient.newClient();
@@ -90,7 +91,7 @@ public class UpnpService {
 	 * 获取外网IP：GetExternalIPAddress
 	 * 请求头：SOAPAction:"urn:schemas-upnp-org:service:WANIPConnection:1#GetExternalIPAddress"
 	 */
-	public String getExternalIPAddress() {
+	public String getExternalIPAddress() throws NetException {
 		if(!init) {
 			return null;
 		}
@@ -111,7 +112,7 @@ public class UpnpService {
 	 * 请求头：SOAPAction:"urn:schemas-upnp-org:service:WANIPConnection:1#GetSpecificPortMappingEntry"
 	 * 如果没有映射：返回500错误代码
 	 */
-	public boolean getSpecificPortMappingEntry(int port, Protocol protocol) {
+	public boolean getSpecificPortMappingEntry(int port, Protocol protocol) throws NetException {
 		if(!init) {
 			return false;
 		}
@@ -130,7 +131,7 @@ public class UpnpService {
 	 * 添加端口映射：AddPortMapping
 	 * 请求头：SOAPAction:"urn:schemas-upnp-org:service:WANIPConnection:1#AddPortMapping"
 	 */
-	public boolean addPortMapping(int port, String address, Protocol protocol) {
+	public boolean addPortMapping(int port, String address, Protocol protocol) throws NetException {
 		if(!init) {
 			return false;
 		}
@@ -149,7 +150,7 @@ public class UpnpService {
 	 * 删除端口映射：DeletePortMapping
 	 * 请求头：SOAPAction:"urn:schemas-upnp-org:service:WANIPConnection:1#DeletePortMapping"
 	 */
-	public boolean deletePortMapping(int port, Protocol protocol) {
+	public boolean deletePortMapping(int port, Protocol protocol) throws NetException {
 		if(!init) {
 			return false;
 		}
@@ -167,7 +168,7 @@ public class UpnpService {
 	/**
 	 * 设置：本机IP，端口绑定等操作
 	 */
-	public void setting() {
+	public void setting() throws NetException {
 		portMapping();
 		externalIpAddress();
 	}
@@ -176,9 +177,13 @@ public class UpnpService {
 	 * 端口释放
 	 */
 	public void release() {
-		boolean dhtOk = this.deletePortMapping(SystemConfig.getDhtPort(), Protocol.UDP);
-		boolean peerOk = this.deletePortMapping(SystemConfig.getPeerPort(), Protocol.TCP);
-		LOGGER.info("端口释放：DHT：{}、Peer：{}", dhtOk, peerOk);
+		try {
+			boolean dhtOk = this.deletePortMapping(SystemConfig.getDhtPort(), Protocol.UDP);
+			boolean peerOk = this.deletePortMapping(SystemConfig.getPeerPort(), Protocol.TCP);
+			LOGGER.info("端口释放：DHT：{}、Peer：{}", dhtOk, peerOk);
+		} catch (NetException e) {
+			LOGGER.error("UPNP端口释放异常", e);
+		}
 	}
 	
 	/**
@@ -202,7 +207,7 @@ public class UpnpService {
 	/**
 	 * 端口映射
 	 */
-	private void portMapping() {
+	private void portMapping() throws NetException {
 		if(!init) {
 			return;
 		}
@@ -215,7 +220,7 @@ public class UpnpService {
 	/**
 	 * 外网IP地址
 	 */
-	private void externalIpAddress() {
+	private void externalIpAddress() throws NetException {
 		final String externalIpAddress = this.getExternalIPAddress();
 		LOGGER.info("外网IP地址：{}", externalIpAddress);
 		if(this.externalIpAddress == null) {

@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.gui.main.MainWindow;
 import com.acgist.snail.gui.menu.TrayMenu;
 import com.acgist.snail.system.context.SystemContext;
+import com.acgist.snail.system.context.SystemThreadContext;
 
 import javafx.application.Platform;
 
@@ -48,7 +49,7 @@ public class Application {
 	private static final void buildWindow() {
 		LOGGER.info("初始化窗口");
 		Thread thread = new Thread();
-		thread.setName("Snail Platform Thread");
+		thread.setName(SystemThreadContext.SNAIL_THREAD_PLATFORM);
 		thread.setDaemon(true);
 		Platform.startup(thread);
 		Platform.runLater(() -> {
