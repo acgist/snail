@@ -2,7 +2,7 @@ package com.acgist.snail.pojo.session;
 
 import java.util.BitSet;
 
-import com.acgist.snail.downloader.torrent.bootstrap.PeerNames;
+import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.interfaces.IStatistics;
 import com.acgist.snail.utils.ObjectUtils;
 
@@ -100,7 +100,7 @@ public class PeerSession implements IStatistics {
 	
 	public void id(String id) {
 		this.id = id;
-		this.clientName = PeerNames.name(this.id);
+		this.clientName = PeerConfig.name(this.id);
 	}
 	
 	public String host() {

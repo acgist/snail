@@ -1,4 +1,4 @@
-package com.acgist.snail.downloader.torrent.bootstrap;
+package com.acgist.snail.system.config;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * Peer终端名称
  */
-public class PeerNames {
+public class PeerConfig {
 	
 	private static final String UNKNOWN = "unknown"; // 未知终端
 	

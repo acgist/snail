@@ -46,6 +46,7 @@ public class TorrentDownloader extends Downloader {
 			final String infoHashHex = MagnetProtocol.buildHash(entity.getUrl());
 			torrentSession = TorrentSessionManager.getInstance().buildSession(infoHashHex, path);
 			torrentSession.build(this.taskSession);
+			torrentSession.loadTracker();
 			taskSession.downloadSize(torrentSession.size());
 		} catch (DownloadException e) {
 			fail("获取Tracker失败");
