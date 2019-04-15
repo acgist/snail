@@ -42,7 +42,7 @@ public abstract class UdpMessageHandler {
 			return;
 		}
 		channel.register(selector, SelectionKey.OP_READ);
-		while (true) {
+		while (channel.isOpen()) {
 			try {
 				if(selector.select() > 0) {
 					final ByteBuffer buffer = ByteBuffer.allocate(1024);

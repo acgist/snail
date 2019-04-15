@@ -37,7 +37,7 @@ public class HTTPClient {
 	
 	private static final String USER_AGENT;
 	
-	private static final ExecutorService EXECUTOR_HTTP = SystemThreadContext.newExecutor(10, 100, 100, 60L, SystemThreadContext.SNAIL_THREAD_HTTP);
+	private static final ExecutorService EXECUTOR_HTTP = SystemThreadContext.newCacheExecutor(SystemThreadContext.SNAIL_THREAD_HTTP);
 	
 	static {
 		final StringBuilder userAgentBuilder = new StringBuilder(); // 客户端信息
