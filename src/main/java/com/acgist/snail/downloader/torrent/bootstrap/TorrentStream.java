@@ -370,6 +370,12 @@ public class TorrentStream {
 				torrentStreamGroup.piece(pieceIndex);
 			}
 		}
+		if(LOGGER.isDebugEnabled()) {
+			LOGGER.debug("当前文件已下载Piece数量：{}，剩余下载Piece数量：{}",
+				bitSet.cardinality(),
+				this.filePieceSize - bitSet.cardinality()
+			);
+		}
 	}
 	
 	/**

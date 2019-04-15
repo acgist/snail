@@ -90,6 +90,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		}
 		final PeerSession peerSession = PeerSessionManager.getInstance().newPeerSession(infoHashHex, taskSession.statistics(), address.getHostString(), address.getPort());
 		init(peerSession, torrentSession);
+		handshake((PeerClient) null);
 	}
 	
 	@Override
@@ -230,6 +231,10 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		if(!HANDSHAKE_NAME.equals(name)) {
 			LOGGER.warn("下载协议错误：{}", name);
 		}
+		final byte[] reserveds = new byte[8];
+		buffer.get(reserveds);
+//		final String reserved = new String(reserveds);
+//		LOGGER.debug("reserved：{}", reserved);
 		final byte[] infoHashs = new byte[20];
 		buffer.get(infoHashs);
 		final String infoHashHex = StringUtils.hex(infoHashs);
@@ -244,6 +249,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		bitfield(); // 交换位图
 		if(server) { // TODO：服务端：判断连接数量，阻塞|不阻塞
 			if(init) {
+				unchoke();
 			} else { // 没有初始化
 				choke();
 			}
@@ -269,7 +275,9 @@ public class PeerMessageHandler extends TcpMessageHandler {
 
 	private void choke(ByteBuffer buffer) {
 		peerSession.peerChoke();
-		peerClient.release();
+		if(peerClient != null) {
+			peerClient.release();
+		}
 	}
 	
 	/**
@@ -283,7 +291,9 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	
 	private void unchoke(ByteBuffer buffer) {
 		peerSession.peerUnchoke();
-		peerClient.launcher(); // 开始下载
+		if(peerClient != null) {
+			peerClient.launcher(); // 开始下载
+		}
 	}
 	
 	/**
@@ -402,7 +412,9 @@ public class PeerMessageHandler extends TcpMessageHandler {
 			bytes = new byte[remaining];
 			buffer.get(bytes);
 		}
-		peerClient.piece(index, begin, bytes);
+		if(peerClient != null) {
+			peerClient.piece(index, begin, bytes);
+		}
 	}
 
 	/**

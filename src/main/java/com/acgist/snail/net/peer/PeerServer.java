@@ -37,7 +37,7 @@ public class PeerServer extends TcpServer {
 		}
 		PEER_ID = builder.toString();
 		PEER_PORT = SystemConfig.getPeerPort().shortValue();
-		LOGGER.info("系统PeerID：{}，长度：{}", PEER_ID, PEER_ID.length());
+		LOGGER.info("系统PeerID：{}，长度：{}，端口：{}", PEER_ID, PEER_ID.length(), PEER_PORT);
 	}
 
 	
