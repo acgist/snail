@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.tracker.TrackerClient;
 import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
@@ -41,7 +42,7 @@ public class TrackerLauncherGroup {
 		this.torrentSession = torrentSession;
 		this.trackerLaunchers = new ArrayList<>();
 		final String name = SystemThreadContext.SNAIL_THREAD_TRACKER + "-" + torrentSession.infoHashHex();
-		this.executor = SystemThreadContext.newScheduledExecutor(10, name);
+		this.executor = SystemThreadContext.newScheduledExecutor(SystemConfig.getTrackerSize(), name);
 	}
 
 	/**
@@ -59,14 +60,16 @@ public class TrackerLauncherGroup {
 			throw new DownloadException(e);
 		}
 		AtomicInteger index = new AtomicInteger(0);
+		final int trackerSize = SystemConfig.getTrackerSize();
 		clients.stream()
 		.map(client -> {
-			LOGGER.debug("添加Tracker Client，ID：{}，announce：{}", client.id(), client.announceUrl());
+			LOGGER.debug("添加TrackerClient，ID：{}，announceUrl：{}", client.id(), client.announceUrl());
 			return TrackerLauncherManager.getInstance().build(client, torrentSession);
 		}).forEach(launcher -> {
 			try {
-				this.trackerLaunchers.add(launcher);	
-				this.timer(index.get() / 10 * TrackerClient.TIMEOUT, TimeUnit.SECONDS, launcher);
+				this.trackerLaunchers.add(launcher);
+				// 计算每个任务执行时间
+				this.timer(index.get() / trackerSize * TrackerClient.TIMEOUT, TimeUnit.SECONDS, launcher);
 				index.incrementAndGet();
 			} catch (Exception e) {
 				LOGGER.error("Tracker执行异常", e);
@@ -84,10 +87,9 @@ public class TrackerLauncherGroup {
 	 * 释放资源
 	 */
 	public void release() {
+		LOGGER.debug("释放TrackerLauncherGroup");
 		trackerLaunchers.forEach(launcher -> {
-			SystemThreadContext.submit(() -> {
-				launcher.release();
-			});
+			launcher.release();
 		});
 		executor.shutdownNow();
 	}

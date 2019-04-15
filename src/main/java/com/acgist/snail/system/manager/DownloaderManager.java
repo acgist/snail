@@ -147,7 +147,7 @@ public final class DownloaderManager {
 			} else { // 开始准备任务
 				downloaders.stream()
 				.filter(downloader -> downloader.task().await())
-				.forEach(downloader -> SystemThreadContext.submit(downloader));
+				.forEach(downloader -> SystemThreadContext.submitCache(downloader));
 			}
 		}
 	}

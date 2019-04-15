@@ -37,7 +37,7 @@ public class HTTPClient {
 	
 	private static final String USER_AGENT;
 	
-	private static final ExecutorService HTTP_EXECUTOR = SystemThreadContext.newExecutor(4, 200, 60L, SystemThreadContext.SNAIL_THREAD_HTTP);
+	private static final ExecutorService EXECUTOR_HTTP = SystemThreadContext.newExecutor(10, 100, 100, 60L, SystemThreadContext.SNAIL_THREAD_HTTP);
 	
 	static {
 		final StringBuilder userAgentBuilder = new StringBuilder(); // 客户端信息
@@ -64,7 +64,7 @@ public class HTTPClient {
 	public static final HttpClient newClient(int timeout) {
 		return HttpClient
 			.newBuilder()
-			.executor(HTTP_EXECUTOR)
+			.executor(EXECUTOR_HTTP)
 //			.followRedirects(Redirect.NORMAL)
 			.followRedirects(Redirect.ALWAYS)
 			.connectTimeout(Duration.ofSeconds(timeout))

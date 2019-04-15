@@ -104,7 +104,7 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	 */
 	private void request() {
 		if(this.downloadPiece == null) {
-			LOGGER.debug("没有找到Peer块下载");
+			LOGGER.debug("没有匹配Peer块下载");
 			release(); //  释放资源
 			peerClientGroup.launchers();
 			return;

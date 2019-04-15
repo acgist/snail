@@ -36,7 +36,7 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends TcpSender {
 	static {
 		AsynchronousChannelGroup group = null;
 		try {
-			group = AsynchronousChannelGroup.withThreadPool(SystemThreadContext.systemExecutor());
+			group = AsynchronousChannelGroup.withThreadPool(SystemThreadContext.executorCache());
 		} catch (IOException e) {
 			LOGGER.error("启动TCP Client Group异常", e);
 		}

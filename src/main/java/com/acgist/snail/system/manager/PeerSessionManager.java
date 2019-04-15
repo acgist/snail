@@ -39,7 +39,7 @@ public class PeerSessionManager {
 	 * @param host 地址
 	 * @param port 端口
 	 */
-	public PeerSession newPeer(String infoHashHex, StatisticsSession parent, String host, Integer port) {
+	public PeerSession newPeerSession(String infoHashHex, StatisticsSession parent, String host, Integer port) {
 		synchronized (peers) {
 			var deque = peers.get(infoHashHex);
 			if(deque == null) {

@@ -49,6 +49,7 @@ public class HttpDownloader extends Downloader {
 	
 	@Override
 	public void download() throws IOException {
+		LOGGER.debug("HTTP任务开始下载");
 		int length = 0;
 		while(ok()) {
 			length = input.readNBytes(bytes, 0, bytes.length);
@@ -76,7 +77,7 @@ public class HttpDownloader extends Downloader {
 				output.close();
 			}
 		} catch (IOException e) {
-			LOGGER.error("关闭文件流失败", e);
+			LOGGER.error("关闭文件流异常", e);
 		}
 	}
 	
@@ -133,7 +134,7 @@ public class HttpDownloader extends Downloader {
 				fail("无法满足文件下载范围");
 			}
 		} else {
-			fail("失败代码（" + response.statusCode() + "）");
+			fail("HTTP请求失败（" + response.statusCode() + "）");
 		}
 	}
 
@@ -147,8 +148,8 @@ public class HttpDownloader extends Downloader {
 				output = new BufferedOutputStream(new FileOutputStream(entity.getFile(), true), DownloadConfig.getMemoryBufferByte());
 			}
 		} catch (FileNotFoundException e) {
-			LOGGER.error("打开下载文件流失败", e);
-			fail("文件打开失败");
+			fail("打开下载文件失败");
+			LOGGER.error("打开下载文件流异常", e);
 		}
 	}
 	

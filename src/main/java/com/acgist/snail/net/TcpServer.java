@@ -28,7 +28,7 @@ public abstract class TcpServer {
 	static {
 		AsynchronousChannelGroup group = null;
 		try {
-			group = AsynchronousChannelGroup.withThreadPool(SystemThreadContext.systemExecutor());
+			group = AsynchronousChannelGroup.withThreadPool(SystemThreadContext.executorCache());
 		} catch (IOException e) {
 			LOGGER.error("启动TCP Server Group异常");
 		}
@@ -56,7 +56,7 @@ public abstract class TcpServer {
 	 * 开启监听
 	 */
 	protected <T extends TcpMessageHandler> boolean listen(String host, int port, Class<T> clazz) {
-		LOGGER.info("启动{}", name);
+		LOGGER.info("启动服务端：{}", name);
 		boolean ok = true;
 		try {
 			server = AsynchronousServerSocketChannel.open(GROUP).bind(new InetSocketAddress(host, port));

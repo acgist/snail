@@ -2,6 +2,9 @@ package com.acgist.snail.downloader.ed2k;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.downloader.Downloader;
 import com.acgist.snail.pojo.session.TaskSession;
 
@@ -10,6 +13,8 @@ import com.acgist.snail.pojo.session.TaskSession;
  */
 public class Ed2kDownloader extends Downloader {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(Ed2kDownloader.class);
+	
 	private Ed2kDownloader(TaskSession taskSession) {
 		super(taskSession);
 	}
@@ -24,6 +29,7 @@ public class Ed2kDownloader extends Downloader {
 
 	@Override
 	public void download() throws IOException {
+		LOGGER.debug("ED2K任务开始下载");
 	}
 
 	@Override

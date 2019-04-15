@@ -20,23 +20,29 @@ public class SystemThreadContext {
 	
 	public static final String SNAIL_THREAD = "Snail-Thread";
 	public static final String SNAIL_THREAD_HTTP = SNAIL_THREAD + "-HTTP";
+	public static final String SNAIL_THREAD_CACHE = SNAIL_THREAD + "-Cache";
 	public static final String SNAIL_THREAD_TIMER = SNAIL_THREAD + "-Timer";
 	public static final String SNAIL_THREAD_TRACKER = SNAIL_THREAD + "-Tracker";
 	public static final String SNAIL_THREAD_PLATFORM = SNAIL_THREAD + "-Platform";
 	
 	/**
-	 * 线程池
+	 * 线程池：大小限制，主要用来处理一些不是非常急用的任务
 	 */
 	private static final ExecutorService EXECUTOR;
 	/**
-	 * 定时线程池
+	 * 无限线程池：不限制大小
+	 */
+	private static final ExecutorService EXECUTOR_CACHE;
+	/**
+	 * 定时线程池：定时任务
 	 */
 	private static final ScheduledExecutorService EXECUTOR_TIMER;
 	
 	static {
 		LOGGER.info("启动系统线程池");
-		EXECUTOR = newExecutor(4, 100, 60L, SNAIL_THREAD);
-		EXECUTOR_TIMER = newScheduledExecutor(2, SNAIL_THREAD_TIMER);
+		EXECUTOR = newExecutor(10, 100, 100, 60L, SNAIL_THREAD);
+		EXECUTOR_CACHE = newCacheExecutor(SNAIL_THREAD_CACHE);
+		EXECUTOR_TIMER = newScheduledExecutor(10, SNAIL_THREAD_TIMER);
 	}
 	
 	/**
@@ -45,6 +51,22 @@ public class SystemThreadContext {
 	 */
 	public static final void submit(Runnable runnable) {
 		EXECUTOR.submit(runnable);
+	}
+	
+	/**
+	 * 提交无限线程池
+	 */
+	public static final void submitCache(Runnable runnable) {
+		EXECUTOR_CACHE.submit(runnable);
+	}
+	
+	/**
+	 * 定时任务（不重复）
+	 */
+	public static final void timer(long delay, TimeUnit unit, Runnable runnable) {
+		if(delay >= 0) {
+			EXECUTOR_TIMER.schedule(runnable, delay, unit);
+		}
 	}
 	
 	/**
@@ -59,39 +81,37 @@ public class SystemThreadContext {
 			EXECUTOR_TIMER.scheduleAtFixedRate(runnable, delay, period, unit);
 		}
 	}
-
+	
 	/**
-	 * 定时任务（不重复）
+	 * 获取无限线程池
 	 */
-	public static final void timer(long delay, TimeUnit unit, Runnable runnable) {
-		if(delay >= 0) {
-			EXECUTOR_TIMER.schedule(runnable, delay, unit);
-		}
+	public static final ExecutorService executorCache() {
+		return EXECUTOR_CACHE;
 	}
 	
 	/**
-	 * 获取系统线程池
+	 * 线程池
 	 */
-	public static final ExecutorService systemExecutor() {
-		return EXECUTOR;
-	}
-	
-	/**
-	 * 新建线程池
-	 */
-	public static final ExecutorService newExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, String name) {
+	public static final ExecutorService newExecutor(int corePoolSize, int maximumPoolSize, int queueSize, long keepAliveTime, String name) {
 		return new ThreadPoolExecutor(
 			corePoolSize, // 初始线程数量
 			maximumPoolSize, // 最大线程数量
 			keepAliveTime, // 空闲时间
 			TimeUnit.SECONDS, // 空闲时间单位
-			new LinkedBlockingQueue<Runnable>(), // 等待线程
+			new LinkedBlockingQueue<Runnable>(queueSize), // 等待线程
 			SystemThreadContext.newThreadFactory(name) // 线程工厂
 		);
 	}
 	
 	/**
-	 * 新建定时线程池
+	 * 无限线程池
+	 */
+	public static final ExecutorService newCacheExecutor(String name) {
+		return Executors.newCachedThreadPool(SystemThreadContext.newThreadFactory(name));
+	}
+	
+	/**
+	 * 定时线程池
 	 */
 	public static final ScheduledExecutorService newScheduledExecutor(int corePoolSize, String name) {
 		return Executors.newScheduledThreadPool(
@@ -101,7 +121,7 @@ public class SystemThreadContext {
 	}
 	
 	/**
-	 * 新建线程池工厂
+	 * 线程池工厂
 	 * @param poolName 线程池名称
 	 */
 	private static final ThreadFactory newThreadFactory(String poolName) {
@@ -122,6 +142,7 @@ public class SystemThreadContext {
 	public static final void shutdown() {
 		LOGGER.info("关闭系统线程池");
 		shutdown(EXECUTOR);
+		shutdown(EXECUTOR_CACHE);
 		shutdown(EXECUTOR_TIMER);
 	}
 	

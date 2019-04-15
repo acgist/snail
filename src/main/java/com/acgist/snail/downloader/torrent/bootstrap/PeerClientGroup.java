@@ -61,7 +61,7 @@ public class PeerClientGroup {
 	 */
 	public void optimize() {
 		synchronized (peerClients) {
-			LOGGER.debug("优化Peer");
+			LOGGER.debug("优化PeerClient");
 			final boolean ok = inferiorPeerClient();
 			if(ok) {
 				buildPeerClient();
@@ -79,9 +79,10 @@ public class PeerClientGroup {
 	 * 资源释放
 	 */
 	public void release() {
+		LOGGER.debug("释放PeerClientGroup");
 		synchronized (peerClients) {
 			peerClients.forEach(client -> {
-				SystemThreadContext.submit(() -> {
+				SystemThreadContext.submitCache(() -> {
 					LOGGER.debug("Peer关闭：{}:{}", client.peerSession().host(), client.peerSession().port());
 					client.release();
 				});

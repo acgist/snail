@@ -154,8 +154,8 @@ public class TorrentSession {
 		}
 		final PeerSessionManager manager = PeerSessionManager.getInstance();
 		peers.forEach((host, port) -> {
-			LOGGER.debug("添加Peer，HOST：{}，PORT：{}", host, port);
-			manager.newPeer(this.infoHashHex(), taskSession.statistics(), host, port);
+			LOGGER.debug("添加PeerSession，HOST：{}，PORT：{}", host, port);
+			manager.newPeerSession(this.infoHashHex(), taskSession.statistics(), host, port);
 		});
 		peerClientGroup.launchers();
 	}
