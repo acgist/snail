@@ -5,7 +5,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.downloader.torrent.bootstrap.PeerClientGroup;
 import com.acgist.snail.downloader.torrent.bootstrap.TorrentStreamGroup;
 import com.acgist.snail.net.TcpClient;
 import com.acgist.snail.pojo.TorrentPiece;
@@ -26,21 +25,20 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	private TorrentPiece downloadPiece; // 下载的Piece信息
 	
 	private AtomicInteger mark = new AtomicInteger(0); // 评分：下载速度
-	
 	private AtomicInteger count = new AtomicInteger(0);
 	
 	private final PeerSession peerSession;
 //	private final TaskSession taskSession;
-//	private final TorrentSession torrentSession;
-	private final PeerClientGroup peerClientGroup;
+	private final TorrentSession torrentSession;
+//	private final PeerClientGroup peerClientGroup;
 	private final TorrentStreamGroup torrentStreamGroup;
 	
 	public PeerClient(PeerSession peerSession, TorrentSession torrentSession) {
 		super("Peer", 10, new PeerMessageHandler(peerSession, torrentSession));
 		this.peerSession = peerSession;
 //		this.taskSession = torrentSession.taskSession();
-//		this.torrentSession = torrentSession;
-		this.peerClientGroup = torrentSession.peerClientGroup();
+		this.torrentSession = torrentSession;
+//		this.peerClientGroup = torrentSession.peerClientGroup();
 		this.torrentStreamGroup = torrentSession.torrentStreamGroup();
 	}
 
@@ -105,8 +103,8 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	private void request() {
 		if(this.downloadPiece == null) {
 			LOGGER.debug("没有匹配Peer块下载");
-			release(); //  释放资源
-			peerClientGroup.launchers();
+			this.release();
+			torrentSession.over();
 			return;
 		}
 		final int index = this.downloadPiece.getIndex();
@@ -134,8 +132,17 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	 * 资源释放
 	 */
 	public void release() {
-		available = false;
-		close();
+		if(available) {
+			available = false;
+			close();
+		}
+	}
+	
+	/**
+	 * 是否可用，Peer优化时如果有不可用的直接剔除
+	 */
+	public boolean available() {
+		return available;
 	}
 	
 	/**

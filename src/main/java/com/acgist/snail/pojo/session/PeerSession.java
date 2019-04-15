@@ -147,7 +147,7 @@ public class PeerSession implements IStatistics {
 	
 	@Override
 	public int hashCode() {
-		return ObjectUtils.hashCode(this.host, this.port);
+		return ObjectUtils.hashCode(this.host);
 	}
 	
 	@Override
@@ -157,8 +157,8 @@ public class PeerSession implements IStatistics {
 		}
 		if(ObjectUtils.equalsClazz(this, object)) {
 			PeerSession peerSession = (PeerSession) object;
-			return ObjectUtils.equalsBuilder(this.host, this.port)
-				.equals(ObjectUtils.equalsBuilder(peerSession.host, peerSession.port));
+			return ObjectUtils.equalsBuilder(this.host)
+				.equals(ObjectUtils.equalsBuilder(peerSession.host));
 		}
 		return false;
 	}

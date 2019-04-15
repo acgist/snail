@@ -1,5 +1,6 @@
 package com.acgist.snail.downloader.torrent.bootstrap;
 
+import java.time.Duration;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -23,11 +24,13 @@ public class PeerClientGroup {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerClientGroup.class);
 	
+	private static final Duration INTERVAL = Duration.ofSeconds(SystemConfig.getPeerOptimizeInterval());
+	
+	private long lastOptimizeTime = System.currentTimeMillis();
+	
 	private final TaskSession taskSession;
 	private final TorrentSession torrentSession;
-	
 	private final BlockingQueue<PeerClient> peerClients;
-	
 	private final PeerSessionManager peerSessionManager;
 	
 	public PeerClientGroup(TorrentSession torrentSession) {
@@ -35,7 +38,7 @@ public class PeerClientGroup {
 		this.torrentSession = torrentSession;
 		this.peerClients = new LinkedBlockingQueue<>();
 		this.peerSessionManager = PeerSessionManager.getInstance();
-		optimize(); // 优化
+		optimizeTimer(); // 优化
 	}
 	
 	/**
@@ -55,22 +58,36 @@ public class PeerClientGroup {
 			}
 		}
 	}
+	
+	/**
+	 * 定时优化线程
+	 */
+	public void optimizeTimer() {
+		synchronized (peerClients) {
+			optimize();
+			if(taskSession.download()) {
+				SystemThreadContext.timer(INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
+					optimizeTimer(); // 定时优化
+				});
+			}		
+		}
+	}
 
 	/**
 	 * 优化下载Peer，权重最低的剔除，然后插入队列头部，然后启动队列最后一个Peer
 	 */
 	public void optimize() {
 		synchronized (peerClients) {
+			final long now = System.currentTimeMillis();
+			if(now - lastOptimizeTime >= INTERVAL.toMillis()) {
+				lastOptimizeTime = now;
+			} else {
+				return;
+			}
 			LOGGER.debug("优化PeerClient");
 			final boolean ok = inferiorPeerClient();
 			if(ok) {
 				buildPeerClient();
-			}
-			if(taskSession.download()) {
-				final int interval = SystemConfig.getPeerOptimizeInterval();
-				SystemThreadContext.timer(interval, TimeUnit.SECONDS, () -> {
-					optimize(); // 定时优化
-				});
 			}
 		}
 	}
@@ -92,6 +109,7 @@ public class PeerClientGroup {
 	
 	/**
 	 * 拿去最后一个session创建PeerClient
+	 * @return true-有可用的PeerClient；false-没有可用的PeerClient
 	 */
 	private boolean buildPeerClient() {
 		if(!taskSession.download()) {
@@ -100,6 +118,7 @@ public class PeerClientGroup {
 		final PeerSession peerSession = peerSessionManager.pick(torrentSession.infoHashHex());
 		if(peerSession != null) {
 			final PeerClient client = new PeerClient(peerSession, torrentSession);
+			// TODO：验证是否含有对应未下载的Piece
 			final boolean ok = client.download();
 			if(ok) {
 				peerClients.add(client);
@@ -111,26 +130,32 @@ public class PeerClientGroup {
 	
 	/**
 	 * 劣质的PeerClient
+	 * @return true-剔除成功；false-剔除失败
 	 */
 	private boolean inferiorPeerClient() {
 		if(peerClients.isEmpty()) {
 			return false;
 		}
-		PeerClient peerClient = pickInferior();
+		final PeerClient peerClient = pickInferiorPeerClient();
 		if(peerClient != null) {
 			LOGGER.debug("剔除劣质PeerClient：{}:{}", peerClient.peerSession().host(), peerClient.peerSession().port());
+			peerClient.release();
 			peerSessionManager.inferior(torrentSession.infoHashHex(), peerClient.peerSession());
 			return true;
 		}
 		return false;
 	}
 	
-	private PeerClient pickInferior() {
+	/***
+	 * 选择劣质PeerClient
+	 */
+	private PeerClient pickInferiorPeerClient() {
 		final int size = peerClients.size();
 		if(size < SystemConfig.getPeerSize()) {
 			return null;
 		}
 		int index = 0;
+		int mark = 0, minMark = 0;
 		PeerClient tmp = null; // 临时
 		PeerClient inferior = null; // 劣质Client
 		while(true) {
@@ -141,13 +166,19 @@ public class PeerClientGroup {
 			if(tmp == null) {
 				break;
 			}
+			mark = tmp.mark(); // 清空分数
+			if(inferior != null && !inferior.available()) { // 如果当前挑选的是不可用的PeerClient不执行后面操作
+				continue;
+			}
 			if(inferior == null) {
 				inferior = tmp;
-			} else if(tmp.mark() < inferior.mark()) {
-				if(inferior != null) {
-					peerClients.offer(inferior);
-				}
+				minMark = mark;
+			} else if(!tmp.available()) {
 				inferior = tmp;
+			} else if(mark < minMark) {
+				peerClients.offer(inferior);
+				inferior = tmp;
+				minMark = mark;
 			} else {
 				peerClients.offer(tmp);
 			}

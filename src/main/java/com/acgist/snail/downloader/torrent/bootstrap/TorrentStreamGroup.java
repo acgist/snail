@@ -79,6 +79,18 @@ public class TorrentStreamGroup {
 	}
 
 	/**
+	 * 检测是否下载完成
+	 */
+	public boolean over() {
+		for (TorrentStream torrentStream : streams) {
+			if(!torrentStream.over()) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	/**
 	 * 设置已下载的Piece
 	 */
 	public void piece(int index) {
