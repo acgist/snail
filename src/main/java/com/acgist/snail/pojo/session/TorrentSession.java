@@ -167,4 +167,16 @@ public class TorrentSession {
 		return torrentStreamGroup.size();
 	}
 
+	/**
+	 * 检测是否完成下载
+	 */
+	public void over() {
+		if(torrentStreamGroup.over()) {
+			LOGGER.debug("任务下载完成：{}", name());
+			torrentStreamGroup.release();
+		} else {
+			peerClientGroup.optimize();
+		}
+	}
+
 }

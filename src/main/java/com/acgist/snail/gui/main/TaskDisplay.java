@@ -20,7 +20,7 @@ public class TaskDisplay {
 	/**
 	 * 任务列表刷新时间、下载速度采样时间
 	 */
-	private static final Duration REFRESH_INTERVAL = Duration.ofSeconds(3);
+	private static final Duration INTERVAL = Duration.ofSeconds(3);
 
 	private MainController controller;
 
@@ -41,7 +41,7 @@ public class TaskDisplay {
 		synchronized (TaskDisplay.class) {
 			if(this.controller == null) {
 				this.controller = controller;
-				SystemThreadContext.timer(0, REFRESH_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> refreshTaskData());
+				SystemThreadContext.timer(0, INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> refreshTaskData());
 			}
 		}
 	}

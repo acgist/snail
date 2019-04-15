@@ -139,27 +139,15 @@ public class TorrentStream {
 			return null;
 		}
 		synchronized (this) {
-			int index = this.fileBeginPieceIndex; // 整个文件的索引
-			while(true) {
-				index = peerBitSet.nextSetBit(index);
-				if(index < this.fileEndPieceIndex) {
-					int indexIn = indexIn(index); // 当前文件索引
-					if(bitSet.get(indexIn)) {
-						index++;
-						continue;
-					}
-					if(downloadingBitSet.get(indexIn)) { // 已处于下载中
-						index++;
-						continue;
-					}
-					downloadingBitSet.set(indexIn);
-					break;
-				} else {
-					index = -1;
-					break;
-				}
+			final BitSet pickBitSet = new BitSet();
+			pickBitSet.or(peerBitSet);
+			pickBitSet.andNot(this.bitSet);
+			pickBitSet.andNot(this.downloadingBitSet);
+			if(pickBitSet.cardinality() == 0) {
+				return null;
 			}
-			if(index == -1) {
+			int index = pickBitSet.nextSetBit(this.fileBeginPieceIndex);
+			if(index > this.fileEndPieceIndex) {
 				return null;
 			}
 			int begin = 0;
