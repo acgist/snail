@@ -51,6 +51,12 @@ public class TorrentStreamGroup {
 				pos += file.getLength();
 			}
 			group.streams = streams;
+			if(LOGGER.isDebugEnabled()) {
+				LOGGER.debug("当前任务已下载Piece数量：{}，剩余下载Piece数量：{}",
+					group.pieces.cardinality(),
+					torrentInfo.pieceSize() - group.pieces.cardinality()
+				);
+			}
 		}
 		return group;
 	}
