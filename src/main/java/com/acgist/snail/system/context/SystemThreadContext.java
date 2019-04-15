@@ -19,6 +19,7 @@ public class SystemThreadContext {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SystemThreadContext.class);
 	
 	public static final String SNAIL_THREAD = "Snail-Thread";
+	public static final String SNAIL_THREAD_PEER = SNAIL_THREAD + "-Peer";
 	public static final String SNAIL_THREAD_HTTP = SNAIL_THREAD + "-HTTP";
 	public static final String SNAIL_THREAD_TIMER = SNAIL_THREAD + "-Timer";
 	public static final String SNAIL_THREAD_TRACKER = SNAIL_THREAD + "-Tracker";
