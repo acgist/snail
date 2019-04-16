@@ -31,6 +31,8 @@ public class PeerClientTest {
 		files.forEach(file -> {
 			if(!file.path().contains("_____padding_file")) {
 				list.add(file.path());
+				if(file.path().contains("Menus")) {
+				}
 			}
 			size.addAndGet(file.getLength());
 		});
