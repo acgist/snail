@@ -87,6 +87,10 @@ public class TorrentPiece {
 		return this.size >= this.length;
 	}
 	
+	public boolean hasNext() {
+		return this.position < this.length;
+	}
+	
 	/**
 	 * 获取当前整个Piece的偏移
 	 */

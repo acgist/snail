@@ -301,7 +301,9 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		LOGGER.debug("被解除阻塞");
 		peerSession.peerUnchoke();
 		if(peerClient != null) {
-			peerClient.launcher(); // 开始下载
+			torrentSession.submit(() -> {
+				peerClient.launcher(); // 开始下载
+			});
 		}
 	}
 	
