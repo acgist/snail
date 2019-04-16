@@ -162,6 +162,11 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 			torrentStreamGroup.piece(downloadPiece); // 保存数据
 		}
 		this.downloadPiece = torrentStreamGroup.pick(peerSession.bitSet());
+		if(LOGGER.isDebugEnabled()) {
+			if(downloadPiece != null) {
+				LOGGER.debug("选取Piece：{}-{}-{}", downloadPiece.getIndex(), downloadPiece.getBegin(), downloadPiece.getEnd());
+			}
+		}
 		request();
 		count.set(0);
 	}

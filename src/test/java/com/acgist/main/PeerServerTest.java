@@ -22,7 +22,8 @@ public class PeerServerTest {
 	
 	@Test
 	public void server() throws DownloadException {
-		String path = "e:/snail/1234.torrent";
+//		String path = "e:/snail/1234.torrent";
+		String path = "e:/snail/12345.torrent";
 //		String path = "e:/snail/123456.torrent";
 		TorrentSession torrentSession = TorrentSessionManager.getInstance().buildSession(path);
 		var files = torrentSession.torrent().getInfo().files();
@@ -44,14 +45,17 @@ public class PeerServerTest {
 
 	@Test
 	public void client() throws DownloadException {
-		String path = "e:/snail/1234.torrent";
+//		String path = "e:/snail/1234.torrent";
+		String path = "e:/snail/12345.torrent";
 //		String path = "e:/snail/123456.torrent";
 		TorrentSession torrentSession = TorrentSessionManager.getInstance().buildSession(path);
 		var files = torrentSession.torrent().getInfo().files();
 		List<String> list = new ArrayList<>();
 		files.forEach(file -> {
 			if(!file.path().contains("_____padding_file")) {
-				list.add(file.path());
+				if(file.path().contains("Menus")) {
+					list.add(file.path());
+				}
 			}
 		});
 		TaskEntity entity = new TaskEntity();

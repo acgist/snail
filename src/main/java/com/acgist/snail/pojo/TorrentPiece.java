@@ -54,7 +54,7 @@ public class TorrentPiece {
 	public boolean contain(long fileBeginPos, long fileEndPos) {
 		long beginPos = beginPos();
 		long endPos = endPos();
-		if(endPos < fileBeginPos) {
+		if(endPos <= fileBeginPos) {
 			return false;
 		}
 		if(beginPos > fileEndPos) {

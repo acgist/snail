@@ -44,16 +44,16 @@ public class TorrentStream {
 	// 初始值：不变值
 	private String file; // 文件路径
 	private long fileSize; // 文件大小
-	private long fileBeginPos; // 文件开始偏移
-	private long fileEndPos; // 文件结束偏移
+	private long fileBeginPos; // 文件开始偏移：包含该值
+	private long fileEndPos; // 文件结束偏移：不包含该值
 	private RandomAccessFile fileStream; // 文件流
 	
 	// 初始值：计算
 	private int filePieceSize; // 文件Piece数量
 	private int fileBeginPieceIndex; // 文件Piece开始索引
 	private int fileEndPieceIndex; // 文件Piece结束索引
-	private BitSet bitSet; // 当前文件位图：下标从零开始，需要转换
-	private BitSet downloadingBitSet; // 下载中的位图：下标从零开始，需要转换
+	private BitSet bitSet; // 当前文件位图
+	private BitSet downloadingBitSet; // 下载中的位图
 	
 	/**
 	 * @param pieceLength 块大小
@@ -197,7 +197,7 @@ public class TorrentStream {
 		long seek = 0L;
 		final long beginPos = pieceLength * index + pos;
 		final long endPos = beginPos + size;
-		if(beginPos > this.fileEndPos) {
+		if(beginPos >= this.fileEndPos) {
 			return null;
 		}
 		if(endPos < this.fileBeginPos) {
@@ -208,7 +208,7 @@ public class TorrentStream {
 		} else {
 			seek = beginPos - this.fileBeginPos;
 		}
-		if(endPos > this.fileEndPos) {
+		if(endPos >= this.fileEndPos) {
 			size = (int) (size - (endPos - this.fileEndPos));
 		}
 		if(size <= 0) {
@@ -250,11 +250,10 @@ public class TorrentStream {
 	
 	/**
 	 * 取消下载
-	 * @param index 块索引
 	 */
 	public void undone(int index) {
 		synchronized (this) {
-			this.downloadingBitSet.clear(indexIn(index));
+			this.downloadingBitSet.clear(index);
 		}
 	}
 	
@@ -310,7 +309,7 @@ public class TorrentStream {
 			} else {
 				seek = beginPos - this.fileBeginPos;
 			}
-			if(endPos > this.fileEndPos) {
+			if(endPos >= this.fileEndPos) {
 				length = (int) (length - (endPos - this.fileEndPos));
 			}
 			if(length <= 0) {
@@ -336,8 +335,8 @@ public class TorrentStream {
 		if(endPieceSize > 0) {
 			this.filePieceSize++;
 		}
-		bitSet = new BitSet(this.filePieceSize);
-		downloadingBitSet = new BitSet(this.filePieceSize);
+		bitSet = new BitSet();
+		downloadingBitSet = new BitSet();
 	}
 	
 	/**
@@ -345,17 +344,17 @@ public class TorrentStream {
 	 */
 	private void initFileBitSet() {
 		int pos = 0;
-		int pieceIndex = 0;
 		byte[] bytes = null;
-		for (int index = 0; index < this.filePieceSize; index++) {
-			if(index == 0) {
+		for (int index = this.fileBeginPieceIndex; index <= this.fileEndPieceIndex; index++) {
+			if(index == this.fileBeginPieceIndex) {
 				pos = firstPiecePos();
+			} else {
+				pos = 0;
 			}
-			pieceIndex = index + this.fileBeginPieceIndex;
-			bytes = read(pieceIndex, VERIFY_SIZE, pos, true); // 第一块需要偏移
+			bytes = read(index, VERIFY_SIZE, pos, true); // 第一块需要偏移
 			if(hasData(bytes)) {
 				download(index);
-				torrentStreamGroup.piece(pieceIndex);
+				torrentStreamGroup.piece(index);
 			}
 		}
 		if(LOGGER.isDebugEnabled()) {
@@ -383,20 +382,10 @@ public class TorrentStream {
 	
 	/**
 	 * 下载完成
-	 * @param index 整个文件中的索引
 	 */
 	private void download(int index) {
-		bitSet.set(indexIn(index), true); // 下载成功
-		downloadingBitSet.clear(indexIn(index)); // 去掉下载状态
-	}
-	
-	/**
-	 * 索引转换
-	 * @param index 整个任务的索引
-	 * @return 当前文件的索引
-	 */
-	private int indexIn(int index) {
-		return index - this.fileBeginPieceIndex;
+		bitSet.set(index, true); // 下载成功
+		downloadingBitSet.clear(index); // 去掉下载状态
 	}
 	
 	/**
@@ -433,11 +422,10 @@ public class TorrentStream {
 	
 	/**
 	 * 是否含有Piece数据
-	 * @param index 整个文件中的索引
 	 */
 	private boolean hasPiece(int index) {
 		synchronized (this) {
-			return bitSet.get(indexIn(index));
+			return bitSet.get(index);
 		}
 	}
 

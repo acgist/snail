@@ -433,6 +433,9 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 * piece消息：X=block长度（一般为16KB），收到request消息，如果没有Peer未被阻塞，且存在slice，则返回数据
 	 */
 	public void piece(int index, int begin, byte[] bytes) {
+		if(bytes == null) {
+			return;
+		}
 		LOGGER.debug("发送响应：{}-{}", index, begin);
 		ByteBuffer buffer = ByteBuffer.allocate(8 + bytes.length);
 		buffer.putInt(index);
