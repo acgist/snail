@@ -146,6 +146,13 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	}
 	
 	/**
+	 * 发送have消息
+	 */
+	public void have(int index) {
+		handler.have(index);
+	}
+	
+	/**
 	 * 选择下载Piece
 	 */
 	private void repick() {
@@ -176,5 +183,5 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	private void mark(int buffer) {
 		mark.addAndGet(buffer); // 计算评分
 	}
-	
+
 }

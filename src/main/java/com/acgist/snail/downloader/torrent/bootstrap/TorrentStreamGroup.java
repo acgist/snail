@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.TorrentPiece;
+import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
 import com.acgist.snail.protocol.torrent.bean.TorrentFile;
 import com.acgist.snail.protocol.torrent.bean.TorrentInfo;
@@ -23,21 +24,28 @@ public class TorrentStreamGroup {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentStreamGroup.class);
 
 	/**
-	 * 已下载的块位图
+	 * 已下载Piece位图
 	 */
-	private BitSet pieces;
+	private final BitSet pieces;
 	/**
 	 * 文件流
 	 */
-	private List<TorrentStream> streams;
+	private final List<TorrentStream> streams;
+	private final TorrentSession torrentSession;
 
-	public static final TorrentStreamGroup newInstance(String folder, Torrent torrent, List<TorrentFile> files) {
-		TorrentStreamGroup group = new TorrentStreamGroup();
+	private TorrentStreamGroup(BitSet pieces, List<TorrentStream> streams, TorrentSession torrentSession) {
+		this.pieces = pieces;
+		this.streams = streams;
+		this.torrentSession = torrentSession;
+	}
+	
+	public static final TorrentStreamGroup newInstance(String folder, Torrent torrent, List<TorrentFile> files, TorrentSession torrentSession) {
+		final TorrentInfo torrentInfo = torrent.getInfo();
+		final BitSet pieces = new BitSet(torrentInfo.pieceSize());
+		final List<TorrentStream> streams = new ArrayList<>(files.size());
+		final TorrentStreamGroup group = new TorrentStreamGroup(pieces, streams, torrentSession);
 		if(CollectionUtils.isNotEmpty(files)) {
 			long pos = 0;
-			final List<TorrentStream> streams = new ArrayList<>(files.size());
-			final TorrentInfo torrentInfo = torrent.getInfo();
-			group.pieces = new BitSet(torrentInfo.pieceSize());
 			for (TorrentFile file : files) {
 				try {
 					if(file.selected()) {
@@ -50,7 +58,6 @@ public class TorrentStreamGroup {
 				}
 				pos += file.getLength();
 			}
-			group.streams = streams;
 			if(LOGGER.isDebugEnabled()) {
 				LOGGER.debug("当前任务已下载Piece数量：{}，剩余下载Piece数量：{}",
 					group.pieces.cardinality(),
@@ -61,9 +68,6 @@ public class TorrentStreamGroup {
 		return group;
 	}
 	
-	private TorrentStreamGroup() {
-	}
-
 	/**
 	 * 挑选一个下载
 	 */
@@ -95,7 +99,7 @@ public class TorrentStreamGroup {
 	 */
 	public void piece(int index) {
 		pieces.set(index, true);
-		// TODO：have消息
+		torrentSession.have(index);
 	}
 	
 	/**

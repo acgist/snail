@@ -25,7 +25,7 @@ public class TorrentStreamGroupTest {
 		files.forEach(file -> {
 			file.select(true);
 		});
-		TorrentStreamGroup group = TorrentStreamGroup.newInstance("e://tmp//test", session.torrent(), files);
+		TorrentStreamGroup group = TorrentStreamGroup.newInstance("e://tmp//test", session.torrent(), files, session);
 //		TorrentPiece piece = new TorrentPiece();
 //		piece.setIndex(0);
 //		piece.setPos(0);
