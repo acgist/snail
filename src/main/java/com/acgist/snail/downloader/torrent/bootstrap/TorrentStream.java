@@ -132,21 +132,21 @@ public class TorrentStream {
 	
 	/**
 	 * 选择未下载的Piece索引，设置为下载状态
-	 * @param peerBitSet Peer含有的位图
+	 * @param peerPieces Peer含有的位图
 	 */
-	public TorrentPiece pick(final BitSet peerBitSet) {
-		if(peerBitSet.cardinality() == 0) {
+	public TorrentPiece pick(final BitSet peerPieces) {
+		if(peerPieces.cardinality() == 0) {
 			return null;
 		}
 		synchronized (this) {
-			final BitSet pickBitSet = new BitSet();
-			pickBitSet.or(peerBitSet);
-			pickBitSet.andNot(this.bitSet);
-			pickBitSet.andNot(this.downloadingBitSet);
-			if(pickBitSet.cardinality() == 0) {
+			final BitSet pickPieces = new BitSet();
+			pickPieces.or(peerPieces);
+			pickPieces.andNot(this.bitSet);
+			pickPieces.andNot(this.downloadingBitSet);
+			if(pickPieces.cardinality() == 0) {
 				return null;
 			}
-			int index = pickBitSet.nextSetBit(this.fileBeginPieceIndex);
+			int index = pickPieces.nextSetBit(this.fileBeginPieceIndex);
 			if(index > this.fileEndPieceIndex) {
 				return null;
 			}

@@ -1,5 +1,7 @@
 package com.acgist.snail.net.peer;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
@@ -18,14 +20,17 @@ import com.acgist.snail.pojo.session.TorrentSession;
 public class PeerClient extends TcpClient<PeerMessageHandler> {
 	
 	private static final int MAX_SLICE_SIZE = 10; // 单次请求10个SLICE
+	
+	private static final int SLICE_AWAIT_TIME = 16; // 等待时间
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerClient.class);
 	
 	private boolean available = false; // 状态
 	private TorrentPiece downloadPiece; // 下载的Piece信息
 	
+	private CountDownLatch count;
+	
 	private AtomicInteger mark = new AtomicInteger(0); // 评分：下载速度
-	private AtomicInteger count = new AtomicInteger(0);
 	
 	private final PeerSession peerSession;
 //	private final TaskSession taskSession;
@@ -42,6 +47,27 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 		this.torrentStreamGroup = torrentSession.torrentStreamGroup();
 	}
 
+	public PeerSession peerSession() {
+		return this.peerSession;
+	}
+
+	@Override
+	public boolean connect() {
+		return connect(peerSession.host(), peerSession.port());
+	}
+
+	/**
+	 * 开始
+	 */
+	public void launcher() {
+		synchronized (this) {
+			if(downloadPiece == null) {
+				repick();
+				request();
+			}
+		}
+	}
+
 	/**
 	 * 开始下载
 	 */
@@ -55,46 +81,69 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 		return ok;
 	}
 	
-	@Override
-	public boolean connect() {
-		return connect(peerSession.host(), peerSession.port());
-	}
-	
-	public PeerSession peerSession() {
-		return this.peerSession;
-	}
-
+	/**
+	 * 下载数据
+	 */
 	public void piece(int index, int begin, byte[] bytes) {
 		if(bytes == null) { // 数据不完整抛弃当前块，重新选择下载块
-			peerSession.unBitSet(index);
-			torrentStreamGroup.undone(index);
-			repick();
+			undone(index);
 			return;
 		}
 		if(index != downloadPiece.getIndex()) {
 			LOGGER.warn("下载的Piece索引不符");
 			return;
 		}
+		mark(bytes.length); // 每次获取到都需要打分
 		final boolean over = downloadPiece.put(begin, bytes);
 		if(over) { // 下载完成
 			repick();
-		}
-		if(count.addAndGet(-1) <= 0) {
 			request();
 		}
+		count.countDown();
 	}
-
+	
 	/**
-	 * 开始
+	 * 资源释放
 	 */
-	public void launcher() {
-		synchronized (this) {
-			if(downloadPiece == null) {
-				repick();
-			}
+	public void release() {
+		if(available) {
+			this.available = false;
+			super.close();
 		}
 	}
 	
+	/**
+	 * 是否可用，Peer优化时如果有不可用的直接剔除
+	 */
+	public boolean available() {
+		return this.available;
+	}
+	
+	/**
+	 * 发送have消息
+	 */
+	public void have(int index) {
+		handler.have(index);
+	}
+	
+	/**
+	 * 获取评分<br>
+	 * 每次获取后清空
+	 */
+	public int mark() {
+		return mark.getAndSet(0);
+	}
+
+	/**
+	 * 下载失败
+	 */
+	private void undone(final int index) {
+		peerSession.unBitSet(index);
+		torrentStreamGroup.undone(index);
+		repick();
+		request();
+	}
+
 	/**
 	 * 请求数据
 	 */
@@ -106,11 +155,23 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 			return;
 		}
 		final int index = this.downloadPiece.getIndex();
+		int sliceIndex = 0;
 		while(available) {
-			if(count.get() >= MAX_SLICE_SIZE) {
-				break;
+			if(sliceIndex >= MAX_SLICE_SIZE) {
+				count = new CountDownLatch(MAX_SLICE_SIZE);
+				try {
+					count.await(SLICE_AWAIT_TIME, TimeUnit.SECONDS);
+				} catch (InterruptedException e) {
+					LOGGER.error("等待异常", e);
+				}
+				if(count.getCount() == MAX_SLICE_SIZE) { // 一个都没有返回
+					undone(index);
+					break;
+				} else { // 部分返回继续请求
+					sliceIndex = (int) (MAX_SLICE_SIZE - count.getCount());
+				}
 			}
-			count.addAndGet(1);
+			sliceIndex++;
 			int begin = this.downloadPiece.position();
 			int length = this.downloadPiece.length(); // 顺序不能调换
 			if(length == 0) { // 已经下载完成
@@ -120,35 +181,6 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 		}
 	}
 
-	@Override
-	public void close() {
-		super.close();
-	}
-	
-	/**
-	 * 资源释放
-	 */
-	public void release() {
-		if(available) {
-			available = false;
-			close();
-		}
-	}
-	
-	/**
-	 * 是否可用，Peer优化时如果有不可用的直接剔除
-	 */
-	public boolean available() {
-		return available;
-	}
-	
-	/**
-	 * 发送have消息
-	 */
-	public void have(int index) {
-		handler.have(index);
-	}
-	
 	/**
 	 * 选择下载Piece
 	 */
@@ -157,7 +189,6 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 			return;
 		}
 		if(this.downloadPiece != null && this.downloadPiece.over()) {
-			mark(downloadPiece.getLength());
 			peerSession.statistics(downloadPiece.getLength()); // 统计
 			torrentStreamGroup.piece(downloadPiece); // 保存数据
 		}
@@ -167,18 +198,8 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 				LOGGER.debug("选取Piece：{}-{}-{}", downloadPiece.getIndex(), downloadPiece.getBegin(), downloadPiece.getEnd());
 			}
 		}
-		request();
-		count.set(0);
 	}
 	
-	/**
-	 * 获取评分<br>
-	 * 每次获取后清空
-	 */
-	public int mark() {
-		return mark.getAndSet(0);
-	}
-
 	/**
 	 * 计算评分：下载速度
 	 */
