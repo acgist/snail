@@ -2,7 +2,6 @@ package com.acgist.snail.downloader.torrent.bootstrap;
 
 import java.time.Duration;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -29,11 +28,6 @@ public class PeerClientGroup {
 	
 	private long lastOptimizeTime = System.currentTimeMillis();
 	
-	/**
-	 * 线程池
-	 */
-	private final ExecutorService executor;
-	
 	private final TaskSession taskSession;
 	private final TorrentSession torrentSession;
 	private final BlockingQueue<PeerClient> peerClients;
@@ -44,7 +38,6 @@ public class PeerClientGroup {
 		this.torrentSession = torrentSession;
 		this.peerClients = new LinkedBlockingQueue<>();
 		this.peerSessionManager = PeerSessionManager.getInstance();
-		this.executor = SystemThreadContext.newExecutor(10, 10, 100, 60L, SystemThreadContext.SNAIL_THREAD_PEER);
 		optimizeTimer(); // 优化
 	}
 	
@@ -54,7 +47,7 @@ public class PeerClientGroup {
 	public void launchers(int size) {
 		synchronized (peerClients) {
 			for (int index = 0; index < size; index++) {
-				executor.submit(() -> {
+				torrentSession.submit(() -> {
 					buildPeerClient();
 				});
 			}
@@ -119,7 +112,6 @@ public class PeerClientGroup {
 					client.release();
 				});
 			});
-			executor.shutdownNow();
 		}
 	}
 	

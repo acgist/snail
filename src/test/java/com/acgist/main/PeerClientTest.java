@@ -30,8 +30,8 @@ public class PeerClientTest {
 		AtomicLong size = new AtomicLong(0);
 		files.forEach(file -> {
 			if(!file.path().contains("_____padding_file")) {
-				list.add(file.path());
 				if(file.path().contains("Menus")) {
+					list.add(file.path());
 				}
 			}
 			size.addAndGet(file.getLength());
@@ -47,6 +47,7 @@ public class PeerClientTest {
 //		Integer port = 20009;
 		String host = "192.168.1.100";
 		Integer port = 15000; // 本地迅雷测试端口
+		System.out.println("已下载：" + torrentSession.torrentStreamGroup().pieces());
 		PeerSession peerSession = new PeerSession(new StatisticsSession(), host, port);
 		PeerClient client = new PeerClient(peerSession, torrentSession);
 		client.download();
