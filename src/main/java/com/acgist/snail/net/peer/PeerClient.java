@@ -1,7 +1,5 @@
 package com.acgist.snail.net.peer;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
@@ -21,16 +19,13 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	
 	private static final int MAX_SLICE_SIZE = 10; // 单次请求10个SLICE
 	
-	private static final int SLICE_AWAIT_TIME = 16; // 等待时间
-
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerClient.class);
 	
 	private boolean available = false; // 状态
 	private TorrentPiece downloadPiece; // 下载的Piece信息
 	
-	private CountDownLatch count;
-	
 	private AtomicInteger mark = new AtomicInteger(0); // 评分：下载速度
+	private AtomicInteger count = new AtomicInteger(0);
 	
 	private final PeerSession peerSession;
 //	private final TaskSession taskSession;
@@ -99,7 +94,9 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 			repick();
 			request();
 		}
-		count.countDown();
+		if(count.addAndGet(-1) <= 0) {
+			request();
+		}
 	}
 	
 	/**
@@ -155,23 +152,11 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 			return;
 		}
 		final int index = this.downloadPiece.getIndex();
-		int sliceIndex = 0;
 		while(available) {
-			if(sliceIndex >= MAX_SLICE_SIZE) {
-				count = new CountDownLatch(MAX_SLICE_SIZE);
-				try {
-					count.await(SLICE_AWAIT_TIME, TimeUnit.SECONDS);
-				} catch (InterruptedException e) {
-					LOGGER.error("等待异常", e);
-				}
-				if(count.getCount() == MAX_SLICE_SIZE) { // 一个都没有返回
-					undone(index);
-					break;
-				} else { // 部分返回继续请求
-					sliceIndex = (int) (MAX_SLICE_SIZE - count.getCount());
-				}
+			if(count.get() >= MAX_SLICE_SIZE) {
+				break;
 			}
-			sliceIndex++;
+			count.addAndGet(1);
 			int begin = this.downloadPiece.position();
 			int length = this.downloadPiece.length(); // 顺序不能调换
 			if(length == 0) { // 已经下载完成
@@ -198,6 +183,7 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 				LOGGER.debug("选取Piece：{}-{}-{}", downloadPiece.getIndex(), downloadPiece.getBegin(), downloadPiece.getEnd());
 			}
 		}
+		count.set(0);
 	}
 	
 	/**

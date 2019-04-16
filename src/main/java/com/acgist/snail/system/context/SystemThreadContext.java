@@ -139,4 +139,13 @@ public class SystemThreadContext {
 		}
 	}
 	
+	/**
+	 * 关闭线程池
+	 */
+	public static final void shutdownNow(ExecutorService executor) {
+		if(executor != null && !executor.isShutdown()) {
+			executor.shutdownNow();
+		}
+	}
+	
 }

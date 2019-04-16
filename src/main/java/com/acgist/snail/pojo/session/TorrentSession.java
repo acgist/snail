@@ -2,6 +2,9 @@ package com.acgist.snail.pojo.session;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +16,7 @@ import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
 import com.acgist.snail.protocol.torrent.bean.TorrentFile;
 import com.acgist.snail.protocol.torrent.bean.TorrentInfo;
+import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.manager.PeerSessionManager;
 import com.acgist.snail.utils.CollectionUtils;
@@ -50,6 +54,15 @@ public class TorrentSession {
 	 */
 	private TrackerLauncherGroup trackerLauncherGroup;
 	
+	/**
+	 * 线程池
+	 */
+	private ExecutorService executor;
+	/**
+	 * 定时线程池
+	 */
+	private ScheduledExecutorService executorTimer;
+	
 	public static final TorrentSession newInstance(Torrent torrent, InfoHash infoHash) throws DownloadException {
 		return new TorrentSession(torrent, infoHash);
 	}
@@ -70,8 +83,11 @@ public class TorrentSession {
 		this.peerClientGroup = new PeerClientGroup(this);
 		this.trackerLauncherGroup = new TrackerLauncherGroup(this);
 		this.torrentStreamGroup = TorrentStreamGroup.newInstance(taskSession.downloadFolder().getPath(), torrent, selectFiles(), this);
+		this.executor = SystemThreadContext.newExecutor(10, 10, 100, 60L, SystemThreadContext.SNAIL_THREAD_PEER);
+		final String executorTimerName = SystemThreadContext.SNAIL_THREAD_TRACKER + "-" + this.infoHashHex();
+		this.executorTimer = SystemThreadContext.newScheduledExecutor(4, executorTimerName);
 	}
-	
+
 	/**
 	 * 加载tracker
 	 */
@@ -119,6 +135,16 @@ public class TorrentSession {
 		return this.trackerLauncherGroup;
 	}
 	
+	public void submit(Runnable runnable) {
+		executor.submit(runnable);
+	}
+	
+	public void timer(long delay, TimeUnit unit, Runnable runnable) {
+		if(delay >= 0) {
+			executorTimer.schedule(runnable, delay, unit);
+		}
+	}
+	
 	/**
 	 * 获取选择的下载文件
 	 */
@@ -143,6 +169,8 @@ public class TorrentSession {
 		trackerLauncherGroup.release();
 		peerClientGroup.release();
 		torrentStreamGroup.release();
+		SystemThreadContext.shutdownNow(executor);
+		SystemThreadContext.shutdownNow(executorTimer);
 	}
 
 	/**
