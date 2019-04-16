@@ -69,7 +69,7 @@ public class TorrentSession {
 		this.taskSession = taskSession;
 		this.peerClientGroup = new PeerClientGroup(this);
 		this.trackerLauncherGroup = new TrackerLauncherGroup(this);
-		this.torrentStreamGroup = TorrentStreamGroup.newInstance(taskSession.downloadFolder().getPath(), torrent, selectFiles());
+		this.torrentStreamGroup = TorrentStreamGroup.newInstance(taskSession.downloadFolder().getPath(), torrent, selectFiles(), this);
 	}
 	
 	/**
@@ -177,6 +177,13 @@ public class TorrentSession {
 		} else {
 			peerClientGroup.optimize();
 		}
+	}
+
+	/**
+	 * 发送have消息
+	 */
+	public void have(int index) {
+		peerClientGroup.have(index);
 	}
 
 }

@@ -95,6 +95,19 @@ public class PeerClientGroup {
 	}
 
 	/**
+	 * 发送have消息
+	 */
+	public void have(int index) {
+		synchronized (peerClients) {
+			peerClients.forEach(client -> {
+				if(client.available()) {
+					client.have(index);
+				}
+			});
+		}
+	}
+	
+	/**
 	 * 资源释放
 	 */
 	public void release() {

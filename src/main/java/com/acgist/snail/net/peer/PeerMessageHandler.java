@@ -361,6 +361,15 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		final BitSet bitSet = BitSet.valueOf(bytes);
 		peerSession.bitSet(bitSet);
 		LOGGER.debug("交换位图：{}", bitSet);
+//		final BitSet notHave = new BitSet();
+//		notHave.or(bitSet);
+//		notHave.andNot(torrentStreamGroup.pieces());
+//		LOGGER.debug("感兴趣的位图：{}", notHave);
+//		if(notHave.cardinality() == 0) {
+//			notInterested();
+//		} else {
+//			interested();
+//		}
 	}
 
 	/**
