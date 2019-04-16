@@ -275,6 +275,9 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 */
 	public void choke() {
 		LOGGER.debug("阻塞");
+		if(peerSession.isAmChocking()) { // 已经阻塞
+			return;
+		}
 		peerSession.amChoke();
 		send(buildMessage(Byte.decode("0"), null));
 	}
@@ -293,8 +296,10 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 */
 	public void unchoke() {
 		LOGGER.debug("解除阻塞");
-		peerSession.amUnchoke();
-		send(buildMessage(Byte.decode("1"), null));
+		if(peerSession.isAmChocking()) {
+			peerSession.amUnchoke();
+			send(buildMessage(Byte.decode("1"), null));
+		}
 	}
 	
 	private void unchoke(ByteBuffer buffer) {
@@ -311,6 +316,9 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 */
 	public void interested() {
 		LOGGER.debug("感兴趣");
+		if(peerSession.isAmInterested()) {
+			return;
+		}
 		peerSession.amInterested();
 		send(buildMessage(Byte.decode("2"), null));
 	}
@@ -326,8 +334,10 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 */
 	public void notInterested() {
 		LOGGER.debug("不感兴趣");
-		peerSession.amNotInterested();
-		send(buildMessage(Byte.decode("3"), null));
+		if(peerSession.isAmInterested()) {
+			peerSession.amNotInterested();
+			send(buildMessage(Byte.decode("3"), null));
+		}
 	}
 
 	private void notInterested(ByteBuffer buffer) {

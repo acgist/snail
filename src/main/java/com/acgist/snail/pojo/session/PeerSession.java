@@ -141,6 +141,10 @@ public class PeerSession implements IStatistics {
 		return this.amChocking;
 	}
 	
+	public boolean isAmInterested() {
+		return this.amInterested;
+	}
+	
 	public boolean isPeerChocking() {
 		return this.peerChocking;
 	}
@@ -162,5 +166,5 @@ public class PeerSession implements IStatistics {
 		}
 		return false;
 	}
-	
+
 }
