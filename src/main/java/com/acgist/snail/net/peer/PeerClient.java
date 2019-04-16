@@ -50,7 +50,6 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 		final boolean ok = connect();
 		if(ok) {
 			handler.handshake(this);
-			LOGGER.debug("Peer握手：{}:{}", peerSession.host(), peerSession.port());
 		}
 		this.available = ok;
 		return ok;
@@ -66,7 +65,6 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	}
 
 	public void piece(int index, int begin, byte[] bytes) {
-		LOGGER.debug("响应：index：{}，begin：{}，length：{}", index, begin, (bytes == null ? null : bytes.length));
 		if(bytes == null) { // 数据不完整抛弃当前块，重新选择下载块
 			peerSession.unBitSet(index);
 			torrentStreamGroup.undone(index);
@@ -118,7 +116,6 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 			if(length == 0) { // 已经下载完成
 				break;
 			}
-			LOGGER.debug("请求：index：{}，begin：{}，length：{}", index, begin, length);
 			handler.request(index, begin, length);
 		}
 	}

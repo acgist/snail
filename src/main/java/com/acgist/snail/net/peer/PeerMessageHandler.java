@@ -213,6 +213,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 * peer_id：peer_id
 	 */
 	public void handshake(PeerClient peerClient) {
+		LOGGER.debug("握手");
 		this.peerClient = peerClient;
 		ByteBuffer buffer = ByteBuffer.allocate(HANDSHAKE_LENGTH);
 		buffer.put((byte) HANDSHAKE_NAME_BYTES.length);
@@ -227,6 +228,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 * 处理握手
 	 */
 	private void handshake(ByteBuffer buffer) {
+		LOGGER.debug("被握手");
 		final byte length = buffer.get();
 		final byte[] names = new byte[length];
 		buffer.get(names);
@@ -272,11 +274,13 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 * 阻塞
 	 */
 	public void choke() {
+		LOGGER.debug("阻塞");
 		peerSession.amChoke();
 		send(buildMessage(Byte.decode("0"), null));
 	}
 
 	private void choke(ByteBuffer buffer) {
+		LOGGER.debug("被阻塞");
 		peerSession.peerChoke();
 		if(peerClient != null) {
 			peerClient.release();
@@ -288,11 +292,13 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 * 解除阻塞
 	 */
 	public void unchoke() {
+		LOGGER.debug("解除阻塞");
 		peerSession.amUnchoke();
 		send(buildMessage(Byte.decode("1"), null));
 	}
 	
 	private void unchoke(ByteBuffer buffer) {
+		LOGGER.debug("被解除阻塞");
 		peerSession.peerUnchoke();
 		if(peerClient != null) {
 			peerClient.launcher(); // 开始下载
@@ -304,11 +310,13 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 * 收到have消息时，客户端对Peer感兴趣
 	 */
 	public void interested() {
+		LOGGER.debug("感兴趣");
 		peerSession.amInterested();
 		send(buildMessage(Byte.decode("2"), null));
 	}
 
 	private void interested(ByteBuffer buffer) {
+		LOGGER.debug("被感兴趣");
 		peerSession.peerInterested();
 	}
 
@@ -317,11 +325,13 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 * 客户端对Peer不感兴趣
 	 */
 	public void notInterested() {
+		LOGGER.debug("不感兴趣");
 		peerSession.amNotInterested();
 		send(buildMessage(Byte.decode("3"), null));
 	}
 
 	private void notInterested(ByteBuffer buffer) {
+		LOGGER.debug("被不感兴趣");
 		peerSession.peerNotInterested();
 	}
 
@@ -330,11 +340,13 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 * piece index：piece下标，每当客户端下载完piece，发出have消息告诉所有与客户端连接的Peer
 	 */
 	public void have(int index) {
+		LOGGER.debug("发送have消息：{}", index);
 		send(buildMessage(Byte.decode("4"), ByteBuffer.allocate(4).putInt(index).array()));
 	}
 
 	private void have(ByteBuffer buffer) {
-		int index = buffer.getInt();
+		final int index = buffer.getInt();
+		LOGGER.debug("收到have消息：{}", index);
 		peerSession.bitSet(index);
 		if(torrentStreamGroup.have(index)) { // 已有=不感兴趣
 			notInterested();
@@ -349,6 +361,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 */
 	public void bitfield() {
 		final BitSet pieces = torrentStreamGroup.pieces();
+		LOGGER.debug("发送位图：{}", pieces);
 		send(buildMessage(Byte.decode("5"), pieces.toByteArray()));
 	}
 
@@ -358,13 +371,13 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	private void bitfield(ByteBuffer buffer) {
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
-		final BitSet bitSet = BitSet.valueOf(bytes);
-		peerSession.bitSet(bitSet);
-		LOGGER.debug("交换位图：{}", bitSet);
+		final BitSet pieces = BitSet.valueOf(bytes);
+		peerSession.bitSet(pieces);
+		LOGGER.debug("收到位图：{}", pieces);
 //		final BitSet notHave = new BitSet();
-//		notHave.or(bitSet);
+//		notHave.or(pieces);
 //		notHave.andNot(torrentStreamGroup.pieces());
-//		LOGGER.debug("感兴趣的位图：{}", notHave);
+//		LOGGER.debug("感兴趣位图：{}", notHave);
 //		if(notHave.cardinality() == 0) {
 //			notInterested();
 //		} else {
@@ -383,6 +396,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		if(peerSession.isPeerChocking()) {
 			return; // 被阻塞不发送请求
 		}
+		LOGGER.debug("发送请求：{}-{}-{}", index, begin, length);
 		ByteBuffer buffer = ByteBuffer.allocate(12);
 		buffer.putInt(index);
 		buffer.putInt(begin);
@@ -394,9 +408,10 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		if(peerSession.isAmChocking()) { // 被阻塞不操作
 			return;
 		}
-		int index = buffer.getInt();
-		int begin = buffer.getInt();
-		int length = buffer.getInt();
+		final int index = buffer.getInt();
+		final int begin = buffer.getInt();
+		final int length = buffer.getInt();
+		LOGGER.debug("收到请求：{}-{}-{}", index, begin, length);
 		if(torrentStreamGroup.have(index)) {
 			byte[] bytes = torrentStreamGroup.read(index, begin, length);
 			piece(index, begin, bytes); // bytes == null也要发送数据
@@ -408,6 +423,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 * piece消息：X=block长度（一般为16KB），收到request消息，如果没有Peer未被阻塞，且存在slice，则返回数据
 	 */
 	public void piece(int index, int begin, byte[] bytes) {
+		LOGGER.debug("发送响应：{}-{}", index, begin);
 		ByteBuffer buffer = ByteBuffer.allocate(8 + bytes.length);
 		buffer.putInt(index);
 		buffer.putInt(begin);
@@ -418,6 +434,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	private void piece(ByteBuffer buffer) {
 		final int index = buffer.getInt();
 		final int begin = buffer.getInt();
+		LOGGER.debug("收到响应：{}-{}", index, begin);
 		final int remaining = buffer.remaining();
 		byte[] bytes = null;
 		if(remaining > 0) {
