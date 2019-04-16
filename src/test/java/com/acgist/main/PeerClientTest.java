@@ -30,7 +30,7 @@ public class PeerClientTest {
 		AtomicLong size = new AtomicLong(0);
 		files.forEach(file -> {
 			if(!file.path().contains("_____padding_file")) {
-				if(file.path().contains("Menus")) {
+				if(file.path().contains("Scans")) {
 					list.add(file.path());
 				}
 			}
