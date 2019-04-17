@@ -90,6 +90,19 @@ public class TorrentPiece {
 	public boolean hasNext() {
 		return this.position < this.length;
 	}
+
+	public int limit() {
+		return this.length - this.position;
+	}
+	
+	public int limitSlice() {
+		final int limit = limit();
+		final int size = (limit) / SLICE_SIZE;
+		if(limit % SLICE_SIZE == 0) {
+			return size;
+		}
+		return size + 1;
+	}
 	
 	/**
 	 * 获取当前整个Piece的偏移
