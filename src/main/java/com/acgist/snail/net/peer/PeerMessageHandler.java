@@ -301,9 +301,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		LOGGER.debug("被解除阻塞");
 		peerSession.peerUnchoke();
 		if(peerClient != null) {
-			torrentSession.submit(() -> {
-				peerClient.launcher(); // 开始下载
-			});
+			peerClient.launcher(); // 开始下载
 		}
 	}
 	
@@ -349,7 +347,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	private void have(ByteBuffer buffer) {
 		final int index = buffer.getInt();
 		LOGGER.debug("收到have消息：{}", index);
-		peerSession.bitSet(index);
+		peerSession.piece(index);
 		if(torrentStreamGroup.have(index)) { // 已有=不感兴趣
 			notInterested();
 		} else { // 没有=感兴趣
@@ -374,7 +372,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
 		final BitSet pieces = BitSet.valueOf(bytes);
-		peerSession.bitSet(pieces);
+		peerSession.pieces(pieces);
 		LOGGER.debug("收到位图：{}", pieces);
 //		final BitSet notHave = new BitSet();
 //		notHave.or(pieces);
