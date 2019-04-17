@@ -52,8 +52,8 @@ public class TorrentStream {
 	private int filePieceSize; // 文件Piece数量
 	private int fileBeginPieceIndex; // 文件Piece开始索引
 	private int fileEndPieceIndex; // 文件Piece结束索引
-	private BitSet bitSet; // 当前文件位图
-	private BitSet downloadingBitSet; // 下载中的位图
+	private BitSet pieces; // 当前文件位图
+	private BitSet downloadingPieces; // 下载中的位图
 	
 	/**
 	 * @param pieceLength 块大小
@@ -141,8 +141,8 @@ public class TorrentStream {
 		synchronized (this) {
 			final BitSet pickPieces = new BitSet();
 			pickPieces.or(peerPieces);
-			pickPieces.andNot(this.bitSet);
-			pickPieces.andNot(this.downloadingBitSet);
+			pickPieces.andNot(this.pieces);
+			pickPieces.andNot(this.downloadingPieces);
 			if(pickPieces.cardinality() == 0) {
 				return null;
 			}
@@ -185,13 +185,13 @@ public class TorrentStream {
 	/**
 	 * 读取块数据<br>
 	 * 第一块数据下标：0
-	 * @param ignoreBitSet 忽略已下载位图
+	 * @param ignorePieces 忽略已下载位图
 	 */
-	private byte[] read(int index, int size, int pos, boolean ignoreBitSet) {
+	private byte[] read(int index, int size, int pos, boolean ignorePieces) {
 		if(!hasIndex(index)) {
 			return null;
 		}
-		if(!ignoreBitSet && !hasPiece(index)) {
+		if(!ignorePieces && !hasPiece(index)) {
 			return null;
 		}
 		long seek = 0L;
@@ -229,7 +229,7 @@ public class TorrentStream {
 	 */
 	public long size() {
 		long size = 0L;
-		int downloadPieceSize = this.bitSet.cardinality();
+		int downloadPieceSize = this.pieces.cardinality();
 		if(hasPiece(this.fileBeginPieceIndex)) {
 			size += firstPieceSize();
 			downloadPieceSize--;
@@ -245,7 +245,7 @@ public class TorrentStream {
 	 * 是否下载完成
 	 */
 	public boolean over() {
-		return bitSet.cardinality() >= this.filePieceSize;
+		return pieces.cardinality() >= this.filePieceSize;
 	}
 	
 	/**
@@ -253,7 +253,7 @@ public class TorrentStream {
 	 */
 	public void undone(int index) {
 		synchronized (this) {
-			this.downloadingBitSet.clear(index);
+			this.downloadingPieces.clear(index);
 		}
 	}
 	
@@ -335,8 +335,8 @@ public class TorrentStream {
 		if(endPieceSize > 0) {
 			this.filePieceSize++;
 		}
-		bitSet = new BitSet();
-		downloadingBitSet = new BitSet();
+		pieces = new BitSet();
+		downloadingPieces = new BitSet();
 	}
 	
 	/**
@@ -359,8 +359,8 @@ public class TorrentStream {
 		}
 		if(LOGGER.isDebugEnabled()) {
 			LOGGER.debug("当前文件已下载Piece数量：{}，剩余下载Piece数量：{}",
-				bitSet.cardinality(),
-				this.filePieceSize - bitSet.cardinality()
+				pieces.cardinality(),
+				this.filePieceSize - pieces.cardinality()
 			);
 		}
 	}
@@ -384,8 +384,8 @@ public class TorrentStream {
 	 * 下载完成
 	 */
 	private void download(int index) {
-		bitSet.set(index, true); // 下载成功
-		downloadingBitSet.clear(index); // 去掉下载状态
+		pieces.set(index, true); // 下载成功
+		downloadingPieces.clear(index); // 去掉下载状态
 	}
 	
 	/**
@@ -425,7 +425,7 @@ public class TorrentStream {
 	 */
 	private boolean hasPiece(int index) {
 		synchronized (this) {
-			return bitSet.get(index);
+			return pieces.get(index);
 		}
 	}
 

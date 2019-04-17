@@ -21,8 +21,8 @@ public class PeerClientTest {
 	
 	@Test
 	public void test() throws DownloadException, InterruptedException {
-//		String path = "e:/snail/1234.torrent";
-		String path = "e:/snail/12345.torrent";
+		String path = "e:/snail/1234.torrent";
+//		String path = "e:/snail/12345.torrent";
 //		String path = "e:/snail/123456.torrent";
 		TorrentSession torrentSession = TorrentSessionManager.getInstance().buildSession(path);
 		var files = torrentSession.torrent().getInfo().files();
@@ -30,8 +30,8 @@ public class PeerClientTest {
 		AtomicLong size = new AtomicLong(0);
 		files.forEach(file -> {
 			if(!file.path().contains("_____padding_file")) {
+				list.add(file.path());
 				if(file.path().contains("Scans")) {
-					list.add(file.path());
 				}
 			}
 			size.addAndGet(file.getLength());

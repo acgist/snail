@@ -54,6 +54,7 @@ public class ThreadUtils {
 
 	/**
 	 * 线程等待
+	 * wait会让出CPU执行其他的任务，线程池中同样会让出线程
 	 */
 	public static final void wait(Object obj, Duration timeout) {
 		try {
