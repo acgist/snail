@@ -95,7 +95,7 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	 */
 	public void piece(int index, int begin, byte[] bytes) {
 		if(bytes == null) { // 数据不完整抛弃当前块，重新选择下载块
-			undone(index);
+			undone();
 			return;
 		}
 		if(index != downloadPiece.getIndex()) {
@@ -103,17 +103,16 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 			return;
 		}
 		mark(bytes.length); // 每次获取到都需要打分
-		final boolean over = downloadPiece.put(begin, bytes);
-		if(over) { // 下载完成
+		synchronized (countLock) { // 唤醒request
+			if (countLock.addAndGet(-1) <= 0) {
+				countLock.notifyAll();
+			}
+		}
+		final boolean over = downloadPiece.put(begin, bytes); // 下载完成
+		if(over) { // 唤醒下载完成
 			synchronized (overLock) {
 				if (overLock.getAndSet(true)) {
 					overLock.notifyAll();
-				}
-			}
-		} else { // 唤醒request
-			synchronized (countLock) {
-				if (countLock.addAndGet(-1) <= 0) {
-					countLock.notifyAll();
 				}
 			}
 		}
@@ -154,10 +153,9 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	/**
 	 * 下载失败
 	 */
-	private void undone(final int index) {
-		LOGGER.debug("下载失败：{}", index);
-		peerSession.undone(index);
-		torrentStreamGroup.undone(index);
+	private void undone() {
+		LOGGER.debug("下载失败：{}", this.downloadPiece.getIndex());
+		torrentStreamGroup.undone(this.downloadPiece);
 	}
 
 	/**
@@ -195,7 +193,7 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 			}
 		}
 		if(countLock.get() > 0) { // 没有下载完成
-			undone(index);
+			undone();
 		}
 		request();
 	}
