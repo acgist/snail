@@ -130,13 +130,6 @@ public class PeerSession implements IStatistics {
 		this.pieces.set(index, true);
 	}
 	
-	/**
-	 * 清除坏块
-	 */
-	public void undone(int index) {
-		this.pieces.clear(index);
-	}
-	
 	public boolean isAmChocking() {
 		return this.amChocking;
 	}

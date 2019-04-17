@@ -53,8 +53,8 @@ public class PeerServerTest {
 		List<String> list = new ArrayList<>();
 		files.forEach(file -> {
 			if(!file.path().contains("_____padding_file")) {
-				if(file.path().contains("Menus")) {
-					list.add(file.path());
+				list.add(file.path());
+				if(file.path().contains("Vol.1")) {
 				}
 			}
 		});

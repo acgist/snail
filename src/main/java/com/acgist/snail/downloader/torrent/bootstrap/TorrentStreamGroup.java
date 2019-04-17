@@ -144,16 +144,18 @@ public class TorrentStreamGroup {
 	 * @param index 块索引
 	 */
 	public boolean have(int index) {
+		if(index < 0) {
+			return false;
+		}
 		return pieces.get(index);
 	}
 	
 	/**
 	 * 设置下载失败
-	 * @param index 块索引
 	 */
-	public void undone(int index) {
+	public void undone(TorrentPiece piece) {
 		for (TorrentStream torrentStream : streams) {
-			torrentStream.undone(index);
+			torrentStream.undone(piece);
 		}
 	}
 
