@@ -22,7 +22,8 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	
 	private static final int SLICE_MAX_SIZE = 10; // 单次请求10个SLICE
 	
-	private static final int SLICE_AWAIT_TIME = 4; // 等待时间
+	private static final int SLICE_AWAIT_TIME = 4; // SLICE每批等待时间
+	private static final int PIECE_AWAIT_TIME = 4; // PIECE完成等待时间
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerClient.class);
 	
@@ -176,7 +177,6 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 				if (countLock.get() >= SLICE_MAX_SIZE) {
 					ThreadUtils.wait(countLock, Duration.ofSeconds(SLICE_AWAIT_TIME));
 					if (countLock.get() == SLICE_MAX_SIZE) { // 一个都没有返回
-						undone(index);
 						break;
 					}
 				}
@@ -191,8 +191,11 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 		}
 		synchronized (overLock) {
 			if(!overLock.getAndSet(true)) {
-				ThreadUtils.wait(overLock, Duration.ofSeconds(SLICE_AWAIT_TIME));
+				ThreadUtils.wait(overLock, Duration.ofSeconds(PIECE_AWAIT_TIME));
 			}
+		}
+		if(countLock.get() > 0) { // 没有下载完成
+			undone(index);
 		}
 		request();
 	}
