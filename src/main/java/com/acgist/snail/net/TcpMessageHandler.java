@@ -27,7 +27,7 @@ public abstract class TcpMessageHandler extends TcpSender implements CompletionH
 	 * 处理消息
 	 * @return 是否继续循环读取：true-是；false-不继续
 	 */
-	public abstract boolean doMessage(ByteBuffer attachment);
+	public abstract boolean onMessage(ByteBuffer attachment);
 	
 	/**
 	 * 设置为服务端
@@ -56,7 +56,7 @@ public abstract class TcpMessageHandler extends TcpSender implements CompletionH
 		} else if(result == 0) {
 			loop = true;
 		} else {
-			loop = doMessage(attachment);
+			loop = onMessage(attachment);
 		}
 		if(loop) {
 			loopRead();

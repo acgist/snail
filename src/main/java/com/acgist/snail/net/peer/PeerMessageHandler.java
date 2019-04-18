@@ -59,14 +59,12 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	private TorrentSession torrentSession;
 	private TorrentStreamGroup torrentStreamGroup;
 	
-	private final ExtensionMessageHandler extensionMessageHandler;
+	private ExtensionMessageHandler extensionMessageHandler;
 	
 	public PeerMessageHandler() {
-		this.extensionMessageHandler = new ExtensionMessageHandler();
 	}
 
 	public PeerMessageHandler(PeerSession peerSession, TorrentSession torrentSession) {
-		this();
 		init(peerSession, torrentSession);
 	}
 
@@ -78,6 +76,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		this.peerSession = peerSession;
 		this.torrentSession = torrentSession;
 		this.torrentStreamGroup = torrentSession.torrentStreamGroup();
+		this.extensionMessageHandler = ExtensionMessageHandler.newInstance(this.peerSession, this.torrentSession);
 	}
 
 	/**
@@ -110,7 +109,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	}
 	
 	@Override
-	public boolean doMessage(ByteBuffer attachment) {
+	public boolean onMessage(ByteBuffer attachment) {
 		boolean doNext = true; // 是否继续处理消息
 		int length = 0;
 		attachment.flip();
@@ -227,13 +226,14 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	public void handshake(PeerClient peerClient) {
 		LOGGER.debug("握手");
 		this.peerClient = peerClient;
-		ByteBuffer buffer = ByteBuffer.allocate(HANDSHAKE_LENGTH);
+		final ByteBuffer buffer = ByteBuffer.allocate(HANDSHAKE_LENGTH);
 		buffer.put((byte) HANDSHAKE_NAME_BYTES.length);
 		buffer.put(HANDSHAKE_NAME_BYTES);
 		buffer.put(HANDSHAKE_RESERVED);
 		buffer.put(torrentSession.infoHash().infoHash());
 		buffer.put(PeerServer.PEER_ID.getBytes());
 		send(buffer);
+		extension(); // 扩展信息
 	}
 	
 	/**
@@ -495,11 +495,13 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 * 扩展消息：len=unknow id=20 消息
 	 */
 	public void extension() {
+		LOGGER.debug("发送扩展消息");
 		send(buildMessage(Byte.decode("20"), extensionMessageHandler.extension()));
 	}
 	
 	private void extension(ByteBuffer buffer) {
-		
+		LOGGER.debug("收到扩展消息");
+		extensionMessageHandler.onMessage(buffer);
 	}
 	
 	/**
@@ -528,6 +530,14 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		return buffer;
 	}
 
+	@Override
+	public TcpMessageHandler server() {
+		if(this.extensionMessageHandler != null) {
+			this.extensionMessageHandler.server();
+		}
+		return super.server();
+	}
+	
 	@Override
 	public void failed(Throwable exc, ByteBuffer attachment) {
 		super.failed(exc, attachment);

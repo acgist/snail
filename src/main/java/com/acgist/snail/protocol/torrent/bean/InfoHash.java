@@ -11,14 +11,20 @@ import com.acgist.snail.utils.StringUtils;
  */
 public class InfoHash {
 
+	private int size; // 种子文件info数据的长度
 	private final byte[] data;
 	
 	private InfoHash(byte[] data) {
 		this.data = data;
 	}
+	
+	private InfoHash(byte[] data, int size) {
+		this.data = data;
+		this.size = size;
+	}
 
 	public static final InfoHash newInstance(byte[] data) {
-		return new InfoHash(StringUtils.sha1(data));
+		return new InfoHash(StringUtils.sha1(data), data.length);
 	}
 	
 	public static final InfoHash newInstance(String hash) throws DownloadException {
@@ -30,6 +36,14 @@ public class InfoHash {
 		} else {
 			throw new DownloadException("不支持的hash：" + hash);
 		}
+	}
+	
+	public int size() {
+		return this.size;
+	}
+	
+	public void size(int size) {
+		this.size = size;
 	}
 	
 	/**

@@ -23,7 +23,7 @@ public abstract class UdpMessageHandler {
 	/**
 	 * 消息处理
 	 */
-	public abstract void doMessage(ByteBuffer buffer);
+	public abstract void onMessage(ByteBuffer buffer);
 	
 	/**
 	 * 代理
@@ -53,7 +53,7 @@ public abstract class UdpMessageHandler {
 						keysIterator.remove();
 						if (selectedKey.isValid() && selectedKey.isReadable()) {
 							channel.receive(buffer);
-							doMessage(buffer);
+							onMessage(buffer);
 						}
 					}
 				}
