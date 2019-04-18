@@ -1,7 +1,10 @@
 package com.acgist.snail.pojo.session;
 
+import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.List;
 
+import com.acgist.snail.net.peer.extension.EMType;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.interfaces.IStatistics;
 import com.acgist.snail.utils.ObjectUtils;
@@ -25,6 +28,8 @@ public class PeerSession implements IStatistics {
 	private Boolean amInterested; // 客户端对Peer感兴趣：感兴趣（Peer有客户端没有的piece）-1（true）、不感兴趣-0
 	private Boolean peerChocking; // Peer将客户阻塞：阻塞（Peer不允许客户端下载）-1（true）、非阻塞-0
 	private Boolean peerInterested; // Peer对客户端感兴趣：感兴趣-1、不感兴趣-0
+	
+	private final List<EMType> extension; // 支持的扩展协议
 
 	public PeerSession(StatisticsSession parent, String host, Integer port) {
 		this.statistics = new StatisticsSession(parent);
@@ -34,6 +39,7 @@ public class PeerSession implements IStatistics {
 		this.amInterested = false;
 		this.peerChocking = true;
 		this.peerInterested = false;
+		this.extension = new ArrayList<>();
 	}
 	
 	public void amChoke() {

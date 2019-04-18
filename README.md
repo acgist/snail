@@ -32,4 +32,5 @@ https://github.com/atomashpolskiy/bt
 win：start.bat、SnailLauncher.exe、SnailLauncher_auto.exe，随便选择一个双击运行。
 
 #### TODO
-dht
+dht：http://www.bittorrent.org/beps/bep_0005.html
+local search：http://www.bittorrent.org/beps/bep_0014.html
