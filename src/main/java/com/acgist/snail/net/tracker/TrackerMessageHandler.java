@@ -19,7 +19,7 @@ public class TrackerMessageHandler extends UdpMessageHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerMessageHandler.class);
 	
 	@Override
-	public void doMessage(ByteBuffer buffer) {
+	public void onMessage(ByteBuffer buffer) {
 		final int size = buffer.position();
 		buffer.flip();
 		final int action = buffer.getInt();

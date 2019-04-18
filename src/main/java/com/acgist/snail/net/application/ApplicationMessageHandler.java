@@ -29,7 +29,7 @@ public class ApplicationMessageHandler extends TcpMessageHandler {
 	}
 	
 	@Override
-	public boolean doMessage(ByteBuffer attachment) {
+	public boolean onMessage(ByteBuffer attachment) {
 		boolean doNext = true; // 是否继续处理消息
 		String content = IoUtils.readContent(attachment);
 		if(content.contains(SPLIT)) {

@@ -18,7 +18,7 @@ public class UpnpMessageHandler extends UdpMessageHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UpnpMessageHandler.class);
 	
 	@Override
-	public void doMessage(ByteBuffer buffer) {
+	public void onMessage(ByteBuffer buffer) {
 		final String content = new String(buffer.array());
 		this.initUpnpService(content);
 	}

@@ -10,23 +10,23 @@ public class EMType {
 		ut_metadata;
 	}
 
-	public static final EMType newInstance(Type type, Integer value) {
+	public static final EMType newInstance(Type type, byte value) {
 		return new EMType(type, value);
 	}
 	
-	private EMType(Type type, Integer value) {
+	private EMType(Type type, byte value) {
 		this.type = type;
 		this.value = value;
 	}
 
 	private final Type type; // 消息类型
-	private final Integer value; // 消息值
+	private final byte value; // 消息值
 
 	public Type getType() {
 		return type;
 	}
 
-	public Integer getValue() {
+	public byte getValue() {
 		return value;
 	}
 

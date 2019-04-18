@@ -37,7 +37,7 @@ public class BCodeBuilder {
 			builder.write(String.valueOf(keyValue.getBytes().length).getBytes());
 			builder.write(':');
 			builder.write(keyValue.getBytes());
-			if(value instanceof Long) {
+			if(value instanceof Number) {
 				builder.write('i');
 				builder.write(value.toString().getBytes());
 				builder.write('e');
@@ -45,13 +45,20 @@ public class BCodeBuilder {
 				build((Map<?, ?>) value);
 			} else if(value instanceof List) {
 				build((List<?>) value);
-			} else if(value instanceof byte[]) {
-				byte[] bytes = (byte[]) value;
-				builder.write(String.valueOf(bytes.length).getBytes());
-				builder.write(':');
-				builder.write(bytes);
 			} else {
-				LOGGER.warn("BCode不支持的类型，key：{}，value：{}", key, value);
+				byte[] bytes = null;
+				if(value instanceof byte[]) {
+					bytes = (byte[]) value;
+				} else if(value instanceof String) {
+					bytes = ((String) value).getBytes();
+				} else {
+					LOGGER.warn("BCode不支持的类型，key：{}，value：{}", key, value);
+				}
+				if(bytes != null) {
+					builder.write(String.valueOf(bytes.length).getBytes());
+					builder.write(':');
+					builder.write(bytes);
+				}
 			}
 		});
 		builder.write('e');
@@ -64,7 +71,7 @@ public class BCodeBuilder {
 	public BCodeBuilder build(List<?> list) {
 		builder.write('l');
 		list.forEach(value -> {
-			if(value instanceof Long) {
+			if(value instanceof Number) {
 				builder.write('i');
 				builder.write(value.toString().getBytes());
 				builder.write('e');
@@ -72,13 +79,20 @@ public class BCodeBuilder {
 				build((Map<?, ?>) value);
 			} else if(value instanceof List) {
 				build((List<?>) value);
-			} else if(value instanceof byte[]) {
-				byte[] bytes = (byte[]) value;
-				builder.write(String.valueOf(bytes.length).getBytes());
-				builder.write(':');
-				builder.write(bytes);
 			} else {
-				LOGGER.warn("BCode不支持的类型，value：{}", value);
+				byte[] bytes = null;
+				if(value instanceof byte[]) {
+					bytes = (byte[]) value;
+				} else if(value instanceof String) {
+					bytes = ((String) value).getBytes();
+				} else {
+					LOGGER.warn("BCode不支持的类型，value：{}", value);
+				}
+				if(bytes != null) {
+					builder.write(String.valueOf(bytes.length).getBytes());
+					builder.write(':');
+					builder.write(bytes);
+				}
 			}
 		});
 		builder.write('e');

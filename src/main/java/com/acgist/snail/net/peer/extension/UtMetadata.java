@@ -9,9 +9,11 @@ public class UtMetadata {
 	 * 顺序不可变
 	 */
 	public enum Type {
+		
 		request,
 		data,
 		reject;
+		
 	}
 	
 	public void request() {
