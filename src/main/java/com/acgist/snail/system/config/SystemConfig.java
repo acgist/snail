@@ -177,5 +177,12 @@ public class SystemConfig {
 	public static final Integer getPeerDownloadSize() {
 		return INSTANCE.peerDownloadSize;
 	}
+	
+	/**
+	 * 获取名称和版本信息："名称 版本"
+	 */
+	public static final String getNameAndVersion() {
+		return INSTANCE.nameEn + " " + INSTANCE.version;
+	}
 
 }

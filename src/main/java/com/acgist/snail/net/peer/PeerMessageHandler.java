@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.torrent.bootstrap.TorrentStreamGroup;
 import com.acgist.snail.net.TcpMessageHandler;
+import com.acgist.snail.net.peer.extension.ExtensionMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
@@ -19,8 +20,15 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * Peer消息处理
+ * http://www.bittorrent.org/beps/bep_0003.html
+ * http://www.bittorrent.org/beps/bep_0004.html
+ * http://www.bittorrent.org/beps/bep_0009.html
+ * http://www.bittorrent.org/beps/bep_0010.html
+ * http://www.bittorrent.org/beps/bep_0011.html
+ * https://wiki.theory.org/index.php/BitTorrentSpecification
  * https://blog.csdn.net/li6322511/article/details/79002753
  * https://blog.csdn.net/p312011150/article/details/81478237
+ * https://blog.csdn.net/weixin_41310209/article/details/87165399
  * TODO：实现Exctended消息
  */
 public class PeerMessageHandler extends TcpMessageHandler {
@@ -51,10 +59,14 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	private TorrentSession torrentSession;
 	private TorrentStreamGroup torrentStreamGroup;
 	
+	private final ExtensionMessageHandler extensionMessageHandler;
+	
 	public PeerMessageHandler() {
+		this.extensionMessageHandler = new ExtensionMessageHandler();
 	}
 
 	public PeerMessageHandler(PeerSession peerSession, TorrentSession torrentSession) {
+		this();
 		init(peerSession, torrentSession);
 	}
 
@@ -191,6 +203,9 @@ public class PeerMessageHandler extends TcpMessageHandler {
 				break;
 			case 9:
 				port(buffer);
+				break;
+			case 20:
+				extension(buffer);
 				break;
 			default:
 				LOGGER.warn("不支持的类型：{}", type);
@@ -474,6 +489,17 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	
 	private void port(ByteBuffer buffer) {
 		// TODO：DHT
+	}
+
+	/**
+	 * 扩展消息：len=unknow id=20 消息
+	 */
+	public void extension() {
+		send(buildMessage(Byte.decode("20"), extensionMessageHandler.extension()));
+	}
+	
+	private void extension(ByteBuffer buffer) {
+		
 	}
 	
 	/**

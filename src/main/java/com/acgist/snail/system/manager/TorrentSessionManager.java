@@ -9,11 +9,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.protocol.torrent.InfoHashBuilder;
 import com.acgist.snail.protocol.torrent.TorrentProtocol;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
 import com.acgist.snail.system.exception.DownloadException;
+import com.acgist.snail.utils.BCodeBuilder;
 import com.acgist.snail.utils.BCodeUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -67,7 +67,7 @@ public class TorrentSessionManager {
 			final Map<String, Object> map = BCodeUtils.d(input);
 			final Torrent torrent = Torrent.valueOf(map);
 			final Map<?, ?> info = (Map<?, ?>) map.get("info"); // 只需要数据不符
-			final InfoHash infoHash = InfoHashBuilder.newInstance().build(info).buildInfoHash();
+			final InfoHash infoHash = InfoHash.newInstance(BCodeBuilder.newInstance().build(info).bytes());
 			return buildSession(torrent, infoHash);
 		} else {
 			throw new DownloadException("种子解析失败");

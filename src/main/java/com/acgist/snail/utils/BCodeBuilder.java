@@ -1,4 +1,4 @@
-package com.acgist.snail.protocol.torrent;
+package com.acgist.snail.utils;
 
 import java.util.List;
 import java.util.Map;
@@ -6,7 +6,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.fasterxml.jackson.core.util.ByteArrayBuilder;
 
 /**
@@ -14,24 +13,24 @@ import com.fasterxml.jackson.core.util.ByteArrayBuilder;
  * 40位hash：sha1生成，磁力链接使用
  * 20位hash：sha1生成编码为20位，tracker使用
  */
-public class InfoHashBuilder {
+public class BCodeBuilder {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(InfoHashBuilder.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(BCodeBuilder.class);
 	
 	private ByteArrayBuilder builder;
 	
-	private InfoHashBuilder() {
+	private BCodeBuilder() {
 		builder = new ByteArrayBuilder();
 	}
 	
-	public static final InfoHashBuilder newInstance() {
-		return new InfoHashBuilder();
+	public static final BCodeBuilder newInstance() {
+		return new BCodeBuilder();
 	}
 
 	/**
-	 * 获取infoHash
+	 * 获取map
 	 */
-	public InfoHashBuilder build(Map<?, ?> map) {
+	public BCodeBuilder build(Map<?, ?> map) {
 		builder.write('d');
 		map.forEach((key, value) -> {
 			String keyValue = (String) key;
@@ -52,7 +51,7 @@ public class InfoHashBuilder {
 				builder.write(':');
 				builder.write(bytes);
 			} else {
-				LOGGER.warn("InfoHash不支持的类型，key：{}，value：{}", key, value);
+				LOGGER.warn("BCode不支持的类型，key：{}，value：{}", key, value);
 			}
 		});
 		builder.write('e');
@@ -60,9 +59,9 @@ public class InfoHashBuilder {
 	}
 
 	/**
-	 * 获取infoHash
+	 * 获取list
 	 */
-	public InfoHashBuilder build(List<?> list) {
+	public BCodeBuilder build(List<?> list) {
 		builder.write('l');
 		list.forEach(value -> {
 			if(value instanceof Long) {
@@ -79,18 +78,15 @@ public class InfoHashBuilder {
 				builder.write(':');
 				builder.write(bytes);
 			} else {
-				LOGGER.warn("InfoHash不支持的类型，value：{}", value);
+				LOGGER.warn("BCode不支持的类型，value：{}", value);
 			}
 		});
 		builder.write('e');
 		return this;
 	}
-
-	/**
-	 * 创建infoHash
-	 */
-	public InfoHash buildInfoHash() {
-		return InfoHash.newInstance(builder.toByteArray());
+	
+	public byte[] bytes() {
+		return builder.toByteArray();
 	}
 
 }

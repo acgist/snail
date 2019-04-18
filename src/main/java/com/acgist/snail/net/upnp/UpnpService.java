@@ -19,6 +19,7 @@ import com.acgist.snail.utils.XMLUtils;
 /**
  * UPNP操作
  * TODO：定时刷新本地IP
+ * TODO：多路由环境获取IP
  */
 public class UpnpService {
 	
@@ -87,6 +88,13 @@ public class UpnpService {
 		return this;
 	}
 
+	/**
+	 * 外网IP地址
+	 */
+	public String externalIpAddress() {
+		return this.externalIpAddress;
+	}
+	
 	/**
 	 * 获取外网IP：GetExternalIPAddress
 	 * 请求头：SOAPAction:"urn:schemas-upnp-org:service:WANIPConnection:1#GetExternalIPAddress"
@@ -169,8 +177,8 @@ public class UpnpService {
 	 * 设置：本机IP，端口绑定等操作
 	 */
 	public void setting() throws NetException {
-		portMapping();
-		externalIpAddress();
+		setPortMapping();
+		setExternalIpAddress();
 	}
 	
 	/**
@@ -207,7 +215,7 @@ public class UpnpService {
 	/**
 	 * 端口映射
 	 */
-	private void portMapping() throws NetException {
+	private void setPortMapping() throws NetException {
 		if(!init) {
 			return;
 		}
@@ -220,7 +228,7 @@ public class UpnpService {
 	/**
 	 * 外网IP地址
 	 */
-	private void externalIpAddress() throws NetException {
+	private void setExternalIpAddress() throws NetException {
 		final String externalIpAddress = this.getExternalIPAddress();
 		LOGGER.info("外网IP地址：{}", externalIpAddress);
 		if(this.externalIpAddress == null) {

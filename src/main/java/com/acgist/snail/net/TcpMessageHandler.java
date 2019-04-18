@@ -60,6 +60,8 @@ public abstract class TcpMessageHandler extends TcpSender implements CompletionH
 		}
 		if(loop) {
 			loopRead();
+		} else {
+			LOGGER.debug("TCP消息代理跳出循环：{}", result);
 		}
 //		}
 	}
