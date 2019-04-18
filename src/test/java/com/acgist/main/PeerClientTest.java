@@ -21,8 +21,9 @@ public class PeerClientTest {
 	
 	@Test
 	public void test() throws DownloadException, InterruptedException {
+		String path = "e:/snail/123.torrent";
 //		String path = "e:/snail/1234.torrent";
-		String path = "e:/snail/12345.torrent";
+//		String path = "e:/snail/12345.torrent";
 //		String path = "e:/snail/123456.torrent";
 		TorrentSession torrentSession = TorrentSessionManager.getInstance().buildSession(path);
 		var files = torrentSession.torrent().getInfo().files();
@@ -36,8 +37,6 @@ public class PeerClientTest {
 			}
 			size.addAndGet(file.getLength());
 		});
-		System.out.println(list.size());
-		System.out.println("大小：" + size.get());
 		TaskEntity entity = new TaskEntity();
 		entity.setFile("e://tmp/test/");
 		entity.setType(Type.torrent);
@@ -46,7 +45,8 @@ public class PeerClientTest {
 //		String host = "185.45.195.167";
 //		Integer port = 20009;
 		String host = "192.168.1.100";
-		Integer port = 15000; // 本地迅雷测试端口
+		Integer port = 49160; // FDM测试端口
+//		Integer port = 15000; // 本地迅雷测试端口
 		System.out.println("已下载：" + torrentSession.torrentStreamGroup().pieces());
 		PeerSession peerSession = new PeerSession(new StatisticsSession(), host, port);
 		PeerClient client = new PeerClient(peerSession, torrentSession);

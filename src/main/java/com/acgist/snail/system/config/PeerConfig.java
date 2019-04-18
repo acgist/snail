@@ -5,6 +5,8 @@ import java.util.Map;
 
 /**
  * Peer终端名称
+ * Azureus-style：-名称（2）+版本（4）-随机数
+ * Shadow's-style：名称（1）+版本（4）----随机数
  */
 public class PeerConfig {
 	

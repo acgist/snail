@@ -18,7 +18,7 @@ public class PeerServer extends TcpServer {
 	/**
 	 * PeerId前缀
 	 */
-	private static final String ID_SUFFIX = "-AS8888-";
+	private static final String ID_LOGO = "AS";
 	/**
 	 * 20位系统ID
 	 */
@@ -30,16 +30,24 @@ public class PeerServer extends TcpServer {
 	
 	static {
 		final Random random = new Random();
-		final StringBuilder builder = new StringBuilder(ID_SUFFIX);
-		final int length = 20 - ID_SUFFIX.length();
-		for (int index = 0; index < length; index++) {
-			builder.append(random.nextInt(10));
+		final StringBuilder peerIdBuilder = new StringBuilder();
+		peerIdBuilder.append("-").append(ID_LOGO);
+		String version = SystemConfig.getVersion().replace(".", "");
+		if(version.length() > 4) {
+			peerIdBuilder.append(version.substring(0, 4));
+		} else {
+			peerIdBuilder.append("0".repeat(4 - version.length()));
+			peerIdBuilder.append(version);
 		}
-		PEER_ID = builder.toString();
+		peerIdBuilder.append("-");
+		final int length = 20 - peerIdBuilder.length();
+		for (int index = 0; index < length; index++) {
+			peerIdBuilder.append(random.nextInt(10));
+		}
+		PEER_ID = peerIdBuilder.toString();
 		PEER_PORT = SystemConfig.getPeerPort().shortValue();
 		LOGGER.info("系统PeerID：{}，长度：{}，端口：{}", PEER_ID, PEER_ID.length(), PEER_PORT);
 	}
-
 	
 	private PeerServer() {
 		super("Peer服务");

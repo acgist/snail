@@ -36,24 +36,20 @@ public class FtpMessageHandler extends TcpMessageHandler {
 	}
 
 	@Override
-	public boolean doMessage(Integer result, ByteBuffer attachment) {
+	public boolean doMessage(ByteBuffer attachment) {
 		boolean doNext = true; // 是否继续处理消息
-		if (result == 0) {
-			LOGGER.info("读取空消息");
-		} else {
-			String content = IoUtils.readContent(attachment);
-			if(content.contains(SPLIT)) {
-				int index = content.indexOf(SPLIT);
-				while(index >= 0) {
-					contentBuffer.append(content.substring(0, index));
-					doNext = oneMessage(contentBuffer.toString());
-					contentBuffer.setLength(0);
-					content = content.substring(index + SPLIT.length());
-					index = content.indexOf(SPLIT);
-				}
+		String content = IoUtils.readContent(attachment);
+		if(content.contains(SPLIT)) {
+			int index = content.indexOf(SPLIT);
+			while(index >= 0) {
+				contentBuffer.append(content.substring(0, index));
+				doNext = oneMessage(contentBuffer.toString());
+				contentBuffer.setLength(0);
+				content = content.substring(index + SPLIT.length());
+				index = content.indexOf(SPLIT);
 			}
-			contentBuffer.append(content);
 		}
+		contentBuffer.append(content);
 		return doNext;
 	}
 	
