@@ -41,7 +41,7 @@ public class SystemThreadContext {
 	static {
 		LOGGER.info("启动系统线程池");
 		EXECUTOR = newExecutor(10, 100, 100, 60L, SNAIL_THREAD);
-		EXECUTOR_TIMER = newScheduledExecutor(10, SNAIL_THREAD_TIMER);
+		EXECUTOR_TIMER = newScheduledExecutor(4, SNAIL_THREAD_TIMER);
 	}
 	
 	/**

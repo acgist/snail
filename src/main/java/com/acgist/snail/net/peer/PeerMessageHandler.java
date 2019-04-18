@@ -21,6 +21,7 @@ import com.acgist.snail.utils.StringUtils;
  * Peer消息处理
  * https://blog.csdn.net/li6322511/article/details/79002753
  * https://blog.csdn.net/p312011150/article/details/81478237
+ * TODO：实现Exctended消息
  */
 public class PeerMessageHandler extends TcpMessageHandler {
 
@@ -97,60 +98,56 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	}
 	
 	@Override
-	public boolean doMessage(Integer result, ByteBuffer attachment) {
+	public boolean doMessage(ByteBuffer attachment) {
 		boolean doNext = true; // 是否继续处理消息
-		if (result == 0) {
-			LOGGER.info("读取空消息");
-		} else {
-			int length = 0;
-			attachment.flip();
-			while(true) {
-				if(buffer == null) {
-					if(handshake) {
-						for (int index = 0; index < attachment.limit(); index++) {
-							lengthStick.put(attachment.get());
-							if(lengthStick.position() == INTEGER_BYTE_LENGTH) {
-								break;
-							}
-						}
+		int length = 0;
+		attachment.flip();
+		while(true) {
+			if(buffer == null) {
+				if(handshake) {
+					for (int index = 0; index < attachment.limit(); index++) {
+						lengthStick.put(attachment.get());
 						if(lengthStick.position() == INTEGER_BYTE_LENGTH) {
-							lengthStick.flip();
-							length = lengthStick.getInt();
-							lengthStick.compact();
-						} else {
 							break;
 						}
-					} else { // 握手
-						length = HANDSHAKE_LENGTH;
 					}
-					if(length == 0) { // 心跳
-						keepAlive();
+					if(lengthStick.position() == INTEGER_BYTE_LENGTH) {
+						lengthStick.flip();
+						length = lengthStick.getInt();
+						lengthStick.compact();
+					} else {
 						break;
 					}
-					buffer = ByteBuffer.allocate(length);
-				} else {
-					length = buffer.capacity() - buffer.position();
+				} else { // 握手
+					length = HANDSHAKE_LENGTH;
 				}
-				final int remaining = attachment.remaining();
-				if(remaining > length) { // 包含一个完整消息
-					byte[] bytes = new byte[length];
-					attachment.get(bytes);
-					buffer.put(bytes);
-					oneMessage(buffer);
-					buffer = null;
-				} else if(remaining == length) { // 刚好一个完整消息
-					byte[] bytes = new byte[length];
-					attachment.get(bytes);
-					buffer.put(bytes);
-					oneMessage(buffer);
-					buffer = null;
-					break;
-				} else if(remaining < length) { // 不是完整消息
-					byte[] bytes = new byte[remaining];
-					attachment.get(bytes);
-					buffer.put(bytes);
+				if(length == 0) { // 心跳
+					keepAlive();
 					break;
 				}
+				buffer = ByteBuffer.allocate(length);
+			} else {
+				length = buffer.capacity() - buffer.position();
+			}
+			final int remaining = attachment.remaining();
+			if(remaining > length) { // 包含一个完整消息
+				byte[] bytes = new byte[length];
+				attachment.get(bytes);
+				buffer.put(bytes);
+				oneMessage(buffer);
+				buffer = null;
+			} else if(remaining == length) { // 刚好一个完整消息
+				byte[] bytes = new byte[length];
+				attachment.get(bytes);
+				buffer.put(bytes);
+				oneMessage(buffer);
+				buffer = null;
+				break;
+			} else if(remaining < length) { // 不是完整消息
+				byte[] bytes = new byte[remaining];
+				attachment.get(bytes);
+				buffer.put(bytes);
+				break;
 			}
 		}
 		return doNext;
@@ -374,15 +371,15 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		final BitSet pieces = BitSet.valueOf(bytes);
 		peerSession.pieces(pieces);
 		LOGGER.debug("收到位图：{}", pieces);
-//		final BitSet notHave = new BitSet();
-//		notHave.or(pieces);
-//		notHave.andNot(torrentStreamGroup.pieces());
-//		LOGGER.debug("感兴趣位图：{}", notHave);
-//		if(notHave.cardinality() == 0) {
-//			notInterested();
-//		} else {
-//			interested();
-//		}
+		final BitSet notHave = new BitSet();
+		notHave.or(pieces);
+		notHave.andNot(torrentStreamGroup.pieces());
+		LOGGER.debug("感兴趣位图：{}", notHave);
+		if(notHave.cardinality() == 0) {
+			notInterested();
+		} else {
+			interested();
+		}
 	}
 
 	/**
@@ -391,6 +388,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 * begin：piece内的偏移
 	 * length：请求Peer发送的数据的长度
 	 * 当客户端收到Peer的unchoke请求后即可构建request消息，一般交换数据是以slice（长度16KB的块）为单位的
+	 * TODO：流水线处理
 	 */
 	public void request(int index, int begin, int length) {
 		if(peerSession.isPeerChocking()) {
@@ -504,4 +502,10 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		return buffer;
 	}
 
+	@Override
+	public void failed(Throwable exc, ByteBuffer attachment) {
+		super.failed(exc, attachment);
+		peerClient.release();
+	}
+	
 }
