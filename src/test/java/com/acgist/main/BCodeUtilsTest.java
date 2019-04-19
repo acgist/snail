@@ -19,8 +19,8 @@ public class BCodeUtilsTest {
 //		{"key1":"val1","key2":100,"key3":["item1",-100,["item1",-100],{"key1":"val1","key2":100}]}
 //		var input = new ByteArrayInputStream("d4:key14:val14:key2i100e4:key3l5:item1i-100el5:item1i-100eed4:key14:val14:key2i100eeee".getBytes());
 //		var input = new ByteArrayInputStream("d1:ei0e1:md11:ut_metadatai1e6:ut_pexi2ee13:metadata_sizei37541e1:pi4444e4:reqqi50e1:v13:BitComet 1.556:yourip4:·s;e".getBytes());
-		var input = new ByteArrayInputStream("d1:ei0e1:md11:ut_metadatai2e6:ut_pexi1ee13:metadata_sizei10424e1:pi15000e4:reqqi255e1:v20:-XL0012-Q�'�4��xe".getBytes());
-		input.read();
+		var input = new ByteArrayInputStream("d12:complete_agoi911e1:md11:lt_donthavei7e10:share_modei8e11:upload_onlyi3e12:ut_holepunchi4e11:ut_metadatai2ee13:metadata_sizei37541e4:reqqi500e1:v10:FDM 5.1.386:yourip4:tzåe".getBytes());
+		System.out.println("类型：" + BCodeUtils.isMap(input));
 		var data = BCodeUtils.d(input);
 		System.out.println(data);
 		System.out.println(JsonUtils.toJson(data));

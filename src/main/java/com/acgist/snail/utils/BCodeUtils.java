@@ -10,6 +10,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.system.exception.ArgumentException;
+
 /**
  * B编码解码器<br>
  * i：数字（Long）<br>
@@ -55,6 +57,14 @@ public class BCodeUtils {
 			}
 		}
 		return 0L;
+	}
+	
+	public static final Map<String, Object> d(byte[] bytes) {
+		final ByteArrayInputStream input = new ByteArrayInputStream(bytes);
+		if(isMap(input)) {
+			return d(input);
+		}
+		throw new ArgumentException("传入类型错误" + bytes[0]);
 	}
 	
 	/**
@@ -191,6 +201,14 @@ public class BCodeUtils {
 		}
 		byte[] bytes = (byte[]) object;
 		return new String(bytes);
+	}
+	
+	public static final Byte getByte(Map<?, ?> map, String key) {
+		Long value = getLong(map, key);
+		if(value == null) {
+			return null;
+		}
+		return value.byteValue();
 	}
 	
 	public static final Integer getInteger(Map<?, ?> map, String key) {

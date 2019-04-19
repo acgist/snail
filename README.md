@@ -19,17 +19,18 @@
 |com.acgist.snail.repository|持久层|
 |com.acgist.snail.system|系统|
 
-#### 文档
-[帮助](https://gitee.com/acgist/snail/wikis/帮助)
+#### BitTorrent
+[BitTorrent](http://www.bittorrent.org/beps/bep_0000.html)
+[Kademlia、DHT、KRPC、BitTorrent 协议、DHT Sniffer](https://www.cnblogs.com/LittleHann/p/6180296.html)
 
 #### 依赖模块
 jdeps --list-deps *.jar
 
-#### BT参考项目
-https://github.com/atomashpolskiy/bt
-
 #### 使用
 win：start.bat、SnailLauncher.exe、SnailLauncher_auto.exe，随便选择一个双击运行。
+
+#### 文档
+[帮助](https://gitee.com/acgist/snail/wikis/帮助)
 
 #### TODO
 dht：http://www.bittorrent.org/beps/bep_0005.html

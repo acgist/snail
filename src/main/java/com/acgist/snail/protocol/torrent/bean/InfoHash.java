@@ -12,19 +12,18 @@ import com.acgist.snail.utils.StringUtils;
 public class InfoHash {
 
 	private int size; // 种子文件info数据的长度
-	private final byte[] data;
+	private byte[] info; // 种子文件info数据
+	private final byte[] infoHash;
 	
-	private InfoHash(byte[] data) {
-		this.data = data;
-	}
-	
-	private InfoHash(byte[] data, int size) {
-		this.data = data;
-		this.size = size;
+	private InfoHash(byte[] infoHash) {
+		this.infoHash = infoHash;
 	}
 
 	public static final InfoHash newInstance(byte[] data) {
-		return new InfoHash(StringUtils.sha1(data), data.length);
+		final InfoHash infoHash = new InfoHash(StringUtils.sha1(data));
+		infoHash.info = data;
+		infoHash.size = data.length;
+		return infoHash;
 	}
 	
 	public static final InfoHash newInstance(String hash) throws DownloadException {
@@ -46,18 +45,26 @@ public class InfoHash {
 		this.size = size;
 	}
 	
+	public byte[] info() {
+		return this.info;
+	}
+	
+	public void info(byte[] info) {
+		this.info = info;
+	}
+
 	/**
 	 * hash byte（20位）
 	 */
 	public byte[] infoHash() {
-		return data;
+		return infoHash;
 	}
 	
 	/**
 	 * 磁力链接hash（小写）（40位）
 	 */
 	public String infoHashHex() {
-		return StringUtils.hex(data);
+		return StringUtils.hex(infoHash);
 	}
 	
 	/**

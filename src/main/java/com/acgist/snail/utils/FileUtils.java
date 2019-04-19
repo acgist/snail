@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.system.config.FileTypeConfig;
 import com.acgist.snail.system.config.FileTypeConfig.FileType;
+import com.acgist.snail.system.exception.ArgumentException;
 
 /**
  * utils - 文件
@@ -166,7 +167,7 @@ public class FileUtils {
 	public static final String file(String folder, String fileName) {
 		if(folder == null || fileName == null) {
 			LOGGER.error("不正确的文件路径，目录：{}，文件：{}", folder, fileName);
-			throw new IllegalArgumentException("不正确的文件路径");
+			throw new ArgumentException("不正确的文件路径");
 		}
 		return folder + File.separator + fileName;
 	}

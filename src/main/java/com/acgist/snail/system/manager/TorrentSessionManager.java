@@ -62,7 +62,7 @@ public class TorrentSessionManager {
 	 * @param path torrent文件
 	 */
 	public TorrentSession buildSession(String path) throws DownloadException {
-		ByteArrayInputStream input = loadTorrent(path);
+		final ByteArrayInputStream input = loadTorrent(path);
 		if(BCodeUtils.isMap(input)) {
 			final Map<String, Object> map = BCodeUtils.d(input);
 			final Torrent torrent = Torrent.valueOf(map);

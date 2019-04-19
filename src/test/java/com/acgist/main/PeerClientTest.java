@@ -20,7 +20,7 @@ import com.acgist.snail.utils.JsonUtils;
 public class PeerClientTest {
 	
 	@Test
-	public void test() throws DownloadException, InterruptedException {
+	public void download() throws DownloadException, InterruptedException {
 //		String path = "e:/snail/123.torrent";
 		String path = "e:/snail/1234.torrent";
 //		String path = "e:/snail/12345.torrent";
@@ -49,6 +49,26 @@ public class PeerClientTest {
 		PeerSession peerSession = new PeerSession(new StatisticsSession(), host, port);
 		PeerClient client = new PeerClient(peerSession, torrentSession);
 		client.download();
+		Thread.sleep(Long.MAX_VALUE);
+	}
+	
+	@Test
+	public void torrent() throws DownloadException, InterruptedException {
+//		String path = "e:/snail/123.torrent";
+		String path = "e:/snail/1234.torrent";
+//		String path = "e:/snail/12345.torrent";
+//		String path = "e:/snail/123456.torrent";
+		TorrentSession torrentSession = TorrentSessionManager.getInstance().buildSession(path);
+		TaskEntity entity = new TaskEntity();
+		entity.setFile("e://tmp/test/");
+		entity.setType(Type.torrent);
+		torrentSession.build(TaskSession.newInstance(entity));
+		String host = "192.168.1.100";
+//		Integer port = 49160; // FDM测试端口
+		Integer port = 15000; // 本地迅雷测试端口
+		PeerSession peerSession = new PeerSession(new StatisticsSession(), host, port);
+		PeerClient client = new PeerClient(peerSession, torrentSession);
+		client.torrent();
 		Thread.sleep(Long.MAX_VALUE);
 	}
 

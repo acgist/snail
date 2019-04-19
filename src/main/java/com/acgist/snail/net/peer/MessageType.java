@@ -48,18 +48,86 @@ public class MessageType {
 	 * 扩展消息类型
 	 */
 	public enum ExtensionType {
-		ut_pex,
-		ut_metadata;
+		
+		handshake((byte) 0, false), // 默认
+		ut_pex((byte) 1, false),
+		ut_metadata((byte) 2, true);
+		
+		ExtensionType(byte value, boolean support) {
+			this.value = value;
+			this.support = support;
+		}
+
+		private byte value;
+		private boolean support;
+		
+		public byte value() {
+			return this.value;
+		}
+		
+		public boolean support() {
+			return this.support;
+		}
+		
+		public static final ExtensionType valueOf(byte value) {
+			ExtensionType[] types = ExtensionType.values();
+			for (ExtensionType type : types) {
+				if(type.value() == value) {
+					return type;
+				}
+			}
+			return null;
+		}
+		
+		public static final ExtensionType valueOfName(String name) {
+			final ExtensionType[] types = ExtensionType.values();
+			for (ExtensionType type : types) {
+				if(type.name().equals(name)) {
+					return type;
+				}
+			}
+			return null;
+		}
+		
 	}
 	
 	/**
-	 * 注意顺序
 	 * UtMetadata消息类型
 	 */
 	public enum UtMetadataType {
-		request,
-		data,
-		reject;
+		
+		request((byte) 0),
+		data((byte) 1),
+		reject((byte) 2);
+		
+		UtMetadataType(byte value) {
+			this.value = value;
+		}
+		
+		private byte value;
+		
+		public byte value() {
+			return this.value;
+		}
+		
+		public static final UtMetadataType valueOf(byte value) {
+			UtMetadataType[] types = UtMetadataType.values();
+			for (UtMetadataType type : types) {
+				if(type.value() == value) {
+					return type;
+				}
+			}
+			return null;
+		}
+		
+	}
+	
+	/**
+	 * PeerClient动作
+	 */
+	public enum Action {
+		download, // 下载文件
+		torrent; // 下载种子
 	}
 
 }

@@ -38,6 +38,13 @@ public abstract class TcpMessageHandler extends TcpSender implements CompletionH
 	}
 	
 	/**
+	 * 判断是否是服务端
+	 */
+	public boolean isServer() {
+		return this.server;
+	}
+	
+	/**
 	 * 消息代理
 	 */
 	public void handle(AsynchronousSocketChannel socket) {
