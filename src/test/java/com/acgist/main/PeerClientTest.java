@@ -16,6 +16,7 @@ import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.manager.TorrentSessionManager;
 import com.acgist.snail.utils.JsonUtils;
+import com.acgist.snail.utils.ThreadUtils;
 
 public class PeerClientTest {
 	
@@ -42,20 +43,27 @@ public class PeerClientTest {
 		entity.setType(Type.torrent);
 		entity.setDescription(JsonUtils.toJson(list));
 		torrentSession.build(TaskSession.newInstance(entity));
-		String host = "192.168.1.100";
+		String host = "127.0.0.1";
 //		Integer port = 49160; // FDM测试端口
 		Integer port = 15000; // 本地迅雷测试端口
 		System.out.println("已下载：" + torrentSession.torrentStreamGroup().pieces());
-		PeerSession peerSession = new PeerSession(new StatisticsSession(), host, port);
+		StatisticsSession statisticsSession = new StatisticsSession();
+		PeerSession peerSession = new PeerSession(statisticsSession, host, port);
 		PeerClient client = new PeerClient(peerSession, torrentSession);
 		client.download();
+		new Thread(() -> {
+			while(true) {
+				System.out.println("下载速度：" + statisticsSession.downloadSecond());
+				ThreadUtils.sleep(1000);
+			}
+		}).start();
 		Thread.sleep(Long.MAX_VALUE);
 	}
-	
+
 	@Test
 	public void torrent() throws DownloadException, InterruptedException {
-//		String path = "e:/snail/123.torrent";
-		String path = "e:/snail/1234.torrent";
+		String path = "e:/snail/123.torrent";
+//		String path = "e:/snail/1234.torrent";
 //		String path = "e:/snail/12345.torrent";
 //		String path = "e:/snail/123456.torrent";
 		TorrentSession torrentSession = TorrentSessionManager.getInstance().buildSession(path);
@@ -63,9 +71,9 @@ public class PeerClientTest {
 		entity.setFile("e://tmp/test/");
 		entity.setType(Type.torrent);
 		torrentSession.build(TaskSession.newInstance(entity));
-		String host = "192.168.1.100";
-//		Integer port = 49160; // FDM测试端口
-		Integer port = 15000; // 本地迅雷测试端口
+		String host = "127.0.0.1";
+		Integer port = 49160; // FDM测试端口
+//		Integer port = 15000; // 本地迅雷测试端口
 		PeerSession peerSession = new PeerSession(new StatisticsSession(), host, port);
 		PeerClient client = new PeerClient(peerSession, torrentSession);
 		client.torrent();
