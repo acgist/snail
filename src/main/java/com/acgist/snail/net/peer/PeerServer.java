@@ -22,33 +22,34 @@ public class PeerServer extends TcpServer {
 	/**
 	 * 20位系统ID
 	 */
-	public static final String PEER_ID;
+	public static final byte[] PEER_ID;
 	/**
 	 * 服务器端口
 	 */
 	public static final short PEER_PORT;
 	
 	static {
-		final Random random = new Random();
-		final StringBuilder peerIdBuilder = new StringBuilder();
-		peerIdBuilder.append("-").append(ID_LOGO);
+		PEER_ID = new byte[20];
+		PEER_PORT = SystemConfig.getPeerPort().shortValue();
+		final StringBuilder builder = new StringBuilder();
+		builder.append("-").append(ID_LOGO);
 		String version = SystemConfig.getVersion().replace(".", "");
 		if(version.length() > 4) {
-			peerIdBuilder.append(version.substring(0, 4));
+			builder.append(version.substring(0, 4));
 		} else {
-			peerIdBuilder.append("0".repeat(4 - version.length()));
-			peerIdBuilder.append(version);
+			builder.append("0".repeat(4 - version.length()));
+			builder.append(version);
 		}
-		peerIdBuilder.append("-");
-		final int length = 20 - peerIdBuilder.length();
-		for (int index = 0; index < length; index++) {
-			peerIdBuilder.append(random.nextInt(10));
+		builder.append("-");
+		final String peerId = builder.toString();
+		System.arraycopy(peerId.getBytes(), 0, PEER_ID, 0, peerId.length());
+		final Random random = new Random();
+		for (int index = peerId.length(); index < 20; index++) {
+			PEER_ID[index] = (byte) random.nextInt(Byte.MAX_VALUE);
 		}
-		PEER_ID = peerIdBuilder.toString();
-		PEER_PORT = SystemConfig.getPeerPort().shortValue();
-		LOGGER.info("系统PeerID：{}，长度：{}，端口：{}", PEER_ID, PEER_ID.length(), PEER_PORT);
+		LOGGER.info("系统PeerID：{}，长度：{}，端口：{}", new String(PEER_ID), PEER_ID.length, PEER_PORT);
 	}
-	
+
 	private PeerServer() {
 		super("Peer服务");
 	}

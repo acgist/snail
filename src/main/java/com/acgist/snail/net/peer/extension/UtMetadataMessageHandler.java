@@ -96,14 +96,16 @@ public class UtMetadataMessageHandler {
 	public void data(int piece) {
 		final byte[] bytes = infoHash.info();
 		if(bytes == null) {
+			reject();
 			return;
 		}
 		final int begin = piece * INFO_SLICE_SIZE;
 		final int end = begin + INFO_SLICE_SIZE;
 		if(begin > bytes.length) {
+			reject();
 			return;
 		}
-		int length = end;
+		int length = INFO_SLICE_SIZE;
 		if(end > bytes.length) {
 			length = bytes.length - begin;
 		}
@@ -123,7 +125,7 @@ public class UtMetadataMessageHandler {
 		if(begin > bytes.length) {
 			return;
 		}
-		int length = end;
+		int length = INFO_SLICE_SIZE;
 		if(end > bytes.length) {
 			length = bytes.length - begin;
 		}
@@ -153,6 +155,7 @@ public class UtMetadataMessageHandler {
 	 */
 	private void pushMessage(Byte type, Map<String, Object> data) {
 		if (type == null) {
+			LOGGER.warn("不支持UtMetadata扩展协议");
 			return;
 		}
 		final BCodeBuilder builder = BCodeBuilder.newInstance();

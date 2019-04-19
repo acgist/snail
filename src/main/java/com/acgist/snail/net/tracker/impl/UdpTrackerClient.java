@@ -148,7 +148,7 @@ public class UdpTrackerClient extends TrackerClient {
 		buffer.putInt(TrackerClient.Action.announce.action());
 		buffer.putInt(sid); // transaction_id
 		buffer.put(torrentSession.infoHash().infoHash()); // infoHash
-		buffer.put(PeerServer.PEER_ID.getBytes()); // PeerId
+		buffer.put(PeerServer.PEER_ID); // PeerId
 		buffer.putLong(download); // 已下载大小
 		buffer.putLong(remain); // 剩余下载大小
 		buffer.putLong(upload); // 已上传大小

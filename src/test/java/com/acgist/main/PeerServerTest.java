@@ -68,7 +68,7 @@ public class PeerServerTest {
 		StatisticsSession statisticsSession = new StatisticsSession();
 		PeerSession peerSession = new PeerSession(statisticsSession, host, port);
 		PeerClient client = new PeerClient(peerSession, torrentSession);
-		client.download();
+		client.torrent();
 		ThreadUtils.sleep(Long.MAX_VALUE);
 	}
 

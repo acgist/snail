@@ -85,7 +85,7 @@ public class ExtensionMessageHandler {
 		data.put("m", supportType); // 扩展协议以及编号
 		final int size = this.infoHash.size();
 		if(size > 0) {
-//			data.put("metadata_size", size); // 种子info数据长度
+			data.put("metadata_size", size); // 种子info数据长度
 		}
 		data.put("v", SystemConfig.getNameAndVersion()); // 客户端信息（名称、版本）
 //		final String ipAddress = UpnpService.getInstance().externalIpAddress();
@@ -119,8 +119,9 @@ public class ExtensionMessageHandler {
 				final Long typeValue = (Long) entry.getValue();
 				final MessageType.ExtensionType extensionType = MessageType.ExtensionType.valueOfName(type);
 				if(extensionType == null) {
-					LOGGER.debug("不支持的扩展协议：{}", type);
+					LOGGER.debug("不支持的扩展协议：{}-{}", type, typeValue);
 				} else {
+					LOGGER.debug("添加扩展协议：{}-{}", extensionType, typeValue);
 					peerSession.addExtensionType(extensionType, typeValue.byteValue());
 				}
 			});

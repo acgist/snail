@@ -17,6 +17,7 @@ import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.manager.PeerSessionManager;
 import com.acgist.snail.system.manager.TorrentSessionManager;
+import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -30,6 +31,22 @@ import com.acgist.snail.utils.StringUtils;
  * https://blog.csdn.net/li6322511/article/details/79002753
  * https://blog.csdn.net/p312011150/article/details/81478237
  * https://blog.csdn.net/weixin_41310209/article/details/87165399
+ * 常见状态：https://baike.baidu.com/item/uTorrent
+ * D = 目前正在下载（有需要的文件部份且没有禁止连接）
+ * d = 客户端请求下载，但用户拒绝传输（有需要的文件部份但连接被禁止）
+ * U = 目前正在上传（需要的文件部份且没有禁止连接）
+ * u = 用户请求客户端上传，但客户端拒绝（有需要的文件部份但连接被禁止）
+ * O = 刷新并接受禁止连接的用户
+ * S = 用户被拒（一段时间没有传送任何数据的用户，一般是60秒)
+ * I = 用户为传入连接
+ * K = 客户端没有用户需要的文件部份
+ * ? = 用户没有客户端需要的文件部份
+ * X = 通过Peer Exchange（PEX）获取的用户列表所包含的用户或IPv6用户通知客户端其IPv4地址
+ * H = 通过DHT连接的用户
+ * E = 用户正使用协议加密连接（全部流量）
+ * e = 用户正使用协议加密连接（握手）
+ * P = 用户正使用uTP连接
+ * L = 用户是本地的（通过网络广播或是保留的本地IP范围发现）
  * TODO：实现Exctended消息
  */
 public class PeerMessageHandler extends TcpMessageHandler {
@@ -49,12 +66,12 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	
 	private volatile boolean handshake = false; // 是否握手
 	
-	private static final int DHT_PROTOCOL = 1; // 0x01
-	private static final int EXTENSION_PROTOCOL = 1 << 4; // 0x10
+	private static final byte DHT_PROTOCOL = 1; // 0x01
+	private static final byte EXTENSION_PROTOCOL = 1 << 4; // 0x10
 	
 	static {
 		HANDSHAKE_RESERVED[5] |= EXTENSION_PROTOCOL; // Extension Protocol
-//		HANDSHAKE_RESERVED[7] |= DHT_PROTOCOL; // DHT Protocol
+		HANDSHAKE_RESERVED[7] |= DHT_PROTOCOL; // DHT Protocol
 	}
 
 	/**
@@ -75,6 +92,9 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	
 	private ExtensionMessageHandler extensionMessageHandler;
 	
+	public PeerMessageHandler() {
+	}
+
 	public PeerMessageHandler(PeerSession peerSession, TorrentSession torrentSession) {
 		this.action = Action.download;
 		init(peerSession, torrentSession);
@@ -243,7 +263,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		buffer.put(HANDSHAKE_NAME_BYTES);
 		buffer.put(HANDSHAKE_RESERVED);
 		buffer.put(torrentSession.infoHash().infoHash());
-		buffer.put(PeerServer.PEER_ID.getBytes());
+		buffer.put(PeerServer.PEER_ID);
 		send(buffer);
 	}
 	
@@ -272,7 +292,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		} else { // 客户端
 			peerSession.id(peerId);
 		}
-		extension();
+		extension(); // 发送扩展
 		bitfield(); // 交换位图
 		if(server) { // TODO：服务端：判断连接数量，阻塞|不阻塞
 			unchoke();
@@ -382,7 +402,15 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	public void bitfield() {
 		final BitSet pieces = torrentStreamGroup.pieces();
 		LOGGER.debug("发送位图：{}", pieces);
-		pushMessage(MessageType.Type.bitfield, pieces.toByteArray());
+		final int pieceSize = torrentSession.torrent().getInfo().pieceSize();
+		final int bitSize = NumberUtils.divideUp(pieceSize, 8);
+		final int length = bitSize * 8;
+		pieces.set(length + 1);
+		byte[] bytes = new byte[length];
+		System.arraycopy(pieces.toByteArray(), 0, bytes, 0, length);
+		pushMessage(MessageType.Type.bitfield, bytes);
+		System.out.println(bytes[0]);
+		System.out.println(bytes[length]);
 	}
 
 	/**
@@ -391,6 +419,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	private void bitfield(ByteBuffer buffer) {
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
+		System.out.println("位图长度" + bytes.length);
 		final BitSet pieces = BitSet.valueOf(bytes);
 		peerSession.pieces(pieces);
 		LOGGER.debug("收到位图：{}", pieces);
@@ -545,7 +574,12 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 * payload：消息内容
 	 */
 	private ByteBuffer buildMessage(MessageType.Type type, byte[] payload) {
-		final Byte id = type.value();
+		if(LOGGER.isDebugEnabled()) {
+			if(payload != null) {
+				LOGGER.debug("发送Peer消息：{}-{}", type, new String(payload));
+			}
+		}
+		final Byte id = type == null ? null : type.value();
 		int capacity = 0;
 		if(id != null) {
 			capacity += 1;
