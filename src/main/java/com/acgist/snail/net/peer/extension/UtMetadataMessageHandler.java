@@ -3,7 +3,7 @@ package com.acgist.snail.net.peer.extension;
 /**
  * http://www.bittorrent.org/beps/bep_0009.html
  */
-public class UtMetadata {
+public class UtMetadataMessageHandler {
 
 	/**
 	 * 顺序不可变

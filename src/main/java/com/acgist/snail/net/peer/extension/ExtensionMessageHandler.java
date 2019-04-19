@@ -2,16 +2,17 @@ package com.acgist.snail.net.peer.extension;
 
 import java.io.ByteArrayInputStream;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.peer.extension.EMType.Type;
+import com.acgist.snail.net.peer.MessageType;
+import com.acgist.snail.net.peer.MessageType.ExtensionType;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
@@ -49,17 +50,14 @@ public class ExtensionMessageHandler {
 	/**
 	 * 支持的扩展协议
 	 */
-	private static final List<EMType> SUPPORT_EM_TYPES;
+	private static final Map<Byte, MessageType.ExtensionType> SUPPORT_EM_TYPES;
 	
 	private static final byte HANDSHAKE = 0;
 	
-	private static final EMType utPex = EMType.newInstance(Type.ut_pex, (byte) 1);
-	private static final EMType utMetadata = EMType.newInstance(Type.ut_metadata, (byte) 2);
-	
 	static {
-		SUPPORT_EM_TYPES = new ArrayList<>();
-		SUPPORT_EM_TYPES.add(utPex);
-		SUPPORT_EM_TYPES.add(utMetadata);
+		SUPPORT_EM_TYPES = new HashMap<>();
+		SUPPORT_EM_TYPES.put((byte) 1, MessageType.ExtensionType.ut_pex);
+		SUPPORT_EM_TYPES.put((byte) 2, MessageType.ExtensionType.ut_metadata);
 	}
 	
 	public ExtensionMessageHandler server() {
@@ -80,12 +78,12 @@ public class ExtensionMessageHandler {
 			}
 			return;
 		}
-		final EMType emType = emType(type);
-		if(emType == null) {
+		final ExtensionType extensionType = extensionType(type);
+		if(extensionType == null) {
 			LOGGER.error("不支持扩展类型：{}", type);
 			return;
 		}
-		switch (emType.getType()) {
+		switch (extensionType) {
 		case ut_pex:
 			break;
 		case ut_metadata:
@@ -103,9 +101,9 @@ public class ExtensionMessageHandler {
 		data.put("e", 0); // 加密
 		final Map<String, Object> emTypeData = new LinkedHashMap<>();
 		if(CollectionUtils.isNotEmpty(SUPPORT_EM_TYPES)) {
-			for (EMType type : SUPPORT_EM_TYPES) {
-				emTypeData.put(type.getType().name(), type.getValue());
-			}
+			SUPPORT_EM_TYPES.entrySet().stream().forEach(entry -> {
+				emTypeData.put(entry.getValue().name(), entry.getKey());
+			});
 		}
 		data.put("m", emTypeData); // 扩展协议以及编号
 		final int size = this.infoHash.size();
@@ -154,14 +152,14 @@ public class ExtensionMessageHandler {
 	/**
 	 * 获取类型
 	 */
-	private EMType emType(byte type) {
-		Optional<EMType> optional = SUPPORT_EM_TYPES.stream().filter(value -> {
-			return value.getValue() == type;
+	private ExtensionType extensionType(byte type) {
+		Optional<Entry<Byte, ExtensionType>> optional = SUPPORT_EM_TYPES.entrySet().stream().filter(entry -> {
+			return entry.getKey() == type;
 		}).findFirst();
 		if(optional.isEmpty()) {
 			return null;
 		}
-		return optional.get();
+		return optional.get().getValue();
 	}
 	
 }
