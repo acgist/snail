@@ -170,40 +170,40 @@ public class PeerMessageHandler extends TcpMessageHandler {
 			handshake = true;
 			handshake(buffer);
 		} else {
-			final byte type = buffer.get();
+			MessageType.Type type = MessageType.Type.valueOf(buffer.get());
 			LOGGER.debug("Peer消息类型：{}", type);
 			switch (type) {
-			case 0:
+			case choke:
 				choke(buffer);
 				break;
-			case 1:
+			case unchoke:
 				unchoke(buffer);
 				break;
-			case 2:
+			case interested:
 				interested(buffer);
 				break;
-			case 3:
+			case notInterested:
 				notInterested(buffer);
 				break;
-			case 4:
+			case have:
 				have(buffer);
 				break;
-			case 5:
+			case bitfield:
 				bitfield(buffer);
 				break;
-			case 6:
+			case request:
 				request(buffer);
 				break;
-			case 7:
+			case piece:
 				piece(buffer);
 				break;
-			case 8:
+			case cancel:
 				cancel(buffer);
 				break;
-			case 9:
+			case port:
 				port(buffer);
 				break;
-			case 20:
+			case extension:
 				extension(buffer);
 				break;
 			default:
@@ -288,7 +288,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	public void choke() {
 		LOGGER.debug("阻塞");
 		peerSession.amChoke();
-		send(buildMessage(Byte.decode("0"), null));
+		send(buildMessage(MessageType.Type.choke.value(), null));
 	}
 
 	private void choke(ByteBuffer buffer) {
@@ -306,7 +306,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	public void unchoke() {
 		LOGGER.debug("解除阻塞");
 		peerSession.amUnchoke();
-		send(buildMessage(Byte.decode("1"), null));
+		send(buildMessage(MessageType.Type.unchoke.value(), null));
 	}
 	
 	private void unchoke(ByteBuffer buffer) {
@@ -324,7 +324,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	public void interested() {
 		LOGGER.debug("感兴趣");
 		peerSession.amInterested();
-		send(buildMessage(Byte.decode("2"), null));
+		send(buildMessage(MessageType.Type.interested.value(), null));
 	}
 
 	private void interested(ByteBuffer buffer) {
@@ -339,7 +339,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	public void notInterested() {
 		LOGGER.debug("不感兴趣");
 		peerSession.amNotInterested();
-		send(buildMessage(Byte.decode("3"), null));
+		send(buildMessage(MessageType.Type.notInterested.value(), null));
 	}
 
 	private void notInterested(ByteBuffer buffer) {
@@ -353,7 +353,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 */
 	public void have(int index) {
 		LOGGER.debug("发送have消息：{}", index);
-		send(buildMessage(Byte.decode("4"), ByteBuffer.allocate(4).putInt(index).array()));
+		send(buildMessage(MessageType.Type.have.value(), ByteBuffer.allocate(4).putInt(index).array()));
 	}
 
 	private void have(ByteBuffer buffer) {
@@ -374,7 +374,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	public void bitfield() {
 		final BitSet pieces = torrentStreamGroup.pieces();
 		LOGGER.debug("发送位图：{}", pieces);
-		send(buildMessage(Byte.decode("5"), pieces.toByteArray()));
+		send(buildMessage(MessageType.Type.bitfield.value(), pieces.toByteArray()));
 	}
 
 	/**
@@ -414,7 +414,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		buffer.putInt(index);
 		buffer.putInt(begin);
 		buffer.putInt(length);
-		send(buildMessage(Byte.decode("6"), buffer.array()));
+		send(buildMessage(MessageType.Type.request.value(), buffer.array()));
 	}
 
 	private void request(ByteBuffer buffer) {
@@ -444,7 +444,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		buffer.putInt(index);
 		buffer.putInt(begin);
 		buffer.put(bytes);
-		send(buildMessage(Byte.decode("7"), buffer.array()));
+		send(buildMessage(MessageType.Type.piece.value(), buffer.array()));
 	}
 
 	private void piece(ByteBuffer buffer) {
@@ -471,7 +471,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		buffer.putInt(index);
 		buffer.putInt(begin);
 		buffer.putInt(length);
-		send(buildMessage(Byte.decode("8"), buffer.array()));
+		send(buildMessage(MessageType.Type.cancel.value(), buffer.array()));
 	}
 	
 	private void cancel(ByteBuffer buffer) {
@@ -484,7 +484,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 * 支持DHT的客户端使用，指明DHT监听的端口
 	 */
 	public void port(short port) {
-		send(buildMessage(Byte.decode("9"), ByteBuffer.allocate(4).putShort(port).array()));
+		send(buildMessage(MessageType.Type.port.value(), ByteBuffer.allocate(4).putShort(port).array()));
 	}
 	
 	private void port(ByteBuffer buffer) {
@@ -496,7 +496,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 */
 	public void extension() {
 		LOGGER.debug("发送扩展消息");
-		send(buildMessage(Byte.decode("20"), extensionMessageHandler.extension()));
+		send(buildMessage(MessageType.Type.extension.value(), extensionMessageHandler.extension()));
 	}
 	
 	private void extension(ByteBuffer buffer) {
