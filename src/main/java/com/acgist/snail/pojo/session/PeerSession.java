@@ -29,7 +29,7 @@ public class PeerSession implements IStatistics {
 	private Boolean peerChocking; // Peer将客户阻塞：阻塞（Peer不允许客户端下载）-1（true）、非阻塞-0
 	private Boolean peerInterested; // Peer对客户端感兴趣：感兴趣-1、不感兴趣-0
 	
-	private final Map<Byte, MessageType.ExtensionType> extension; // 支持的扩展协议
+	private final Map<MessageType.ExtensionType, Byte> extension; // 支持的扩展协议
 
 	public PeerSession(StatisticsSession parent, String host, Integer port) {
 		this.statistics = new StatisticsSession(parent);
@@ -146,6 +146,27 @@ public class PeerSession implements IStatistics {
 	
 	public boolean isPeerChocking() {
 		return this.peerChocking;
+	}
+	
+	/**
+	 * 添加扩展类型
+	 */
+	public void addExtensionType(MessageType.ExtensionType type, byte typeValue) {
+		this.extension.put(type, typeValue);
+	}
+	
+	/**
+	 * 是否支持扩展协议
+	 */
+	public boolean support(MessageType.ExtensionType type) {
+		return this.extension.containsKey(type);
+	}
+
+	/**
+	 * 获取扩展协议编号
+	 */
+	public Byte extensionTypeValue(MessageType.ExtensionType type) {
+		return this.extension.get(type);
 	}
 	
 	@Override

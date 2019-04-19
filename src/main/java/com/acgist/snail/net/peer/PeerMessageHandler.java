@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.torrent.bootstrap.TorrentStreamGroup;
 import com.acgist.snail.net.TcpMessageHandler;
+import com.acgist.snail.net.peer.MessageType.Action;
 import com.acgist.snail.net.peer.extension.ExtensionMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TaskSession;
@@ -40,20 +41,33 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 */
 	private static final String HANDSHAKE_NAME = "BitTorrent protocol";
 	private static final byte[] HANDSHAKE_NAME_BYTES = HANDSHAKE_NAME.getBytes();
+	/**
+	 * 保留位：http://www.bittorrent.org/beps/bep_0004.html
+	 */
 	private static final byte[] HANDSHAKE_RESERVED = {0, 0, 0, 0, 0, 0, 0, 0};
 	private static final int HANDSHAKE_LENGTH = 68;
 	
-	private volatile boolean init = false; // 初始化
 	private volatile boolean handshake = false; // 是否握手
 	
+	private static final int DHT_PROTOCOL = 1; // 0x01
+	private static final int EXTENSION_PROTOCOL = 1 << 4; // 0x10
+	
+	static {
+		HANDSHAKE_RESERVED[5] |= EXTENSION_PROTOCOL; // Extension Protocol
+//		HANDSHAKE_RESERVED[7] |= DHT_PROTOCOL; // DHT Protocol
+	}
+
 	/**
 	 * 如果消息长度不够一个Integer长度时使用
 	 */
 	private static final int INTEGER_BYTE_LENGTH = 4;
 	private ByteBuffer lengthStick = ByteBuffer.allocate(INTEGER_BYTE_LENGTH);
 	
+	private byte[] reserved = new byte[8];
 	private ByteBuffer buffer;
 	private PeerClient peerClient;
+	
+	private MessageType.Action action; // 客户端动作，默认：下载
 	
 	private PeerSession peerSession;
 	private TorrentSession torrentSession;
@@ -61,10 +75,8 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	
 	private ExtensionMessageHandler extensionMessageHandler;
 	
-	public PeerMessageHandler() {
-	}
-
 	public PeerMessageHandler(PeerSession peerSession, TorrentSession torrentSession) {
+		this.action = Action.download;
 		init(peerSession, torrentSession);
 	}
 
@@ -72,11 +84,10 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 * 初始化
 	 */
 	private void init(PeerSession peerSession, TorrentSession torrentSession) {
-		init = true;
 		this.peerSession = peerSession;
 		this.torrentSession = torrentSession;
 		this.torrentStreamGroup = torrentSession.torrentStreamGroup();
-		this.extensionMessageHandler = ExtensionMessageHandler.newInstance(this.peerSession, this.torrentSession);
+		this.extensionMessageHandler = ExtensionMessageHandler.newInstance(this.peerSession, this.torrentSession, this);
 	}
 
 	/**
@@ -105,7 +116,6 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		}
 		final PeerSession peerSession = PeerSessionManager.getInstance().newPeerSession(infoHashHex, taskSession.statistics(), address.getHostString(), address.getPort());
 		init(peerSession, torrentSession);
-		handshake((PeerClient) null);
 	}
 	
 	@Override
@@ -170,7 +180,12 @@ public class PeerMessageHandler extends TcpMessageHandler {
 			handshake = true;
 			handshake(buffer);
 		} else {
-			MessageType.Type type = MessageType.Type.valueOf(buffer.get());
+			final byte typeValue = buffer.get();
+			final MessageType.Type type = MessageType.Type.valueOf(typeValue);
+			if(type == null) {
+				LOGGER.warn("不支持的类型：{}", typeValue);
+				return true;
+			}
 			LOGGER.debug("Peer消息类型：{}", type);
 			switch (type) {
 			case choke:
@@ -206,9 +221,6 @@ public class PeerMessageHandler extends TcpMessageHandler {
 			case extension:
 				extension(buffer);
 				break;
-			default:
-				LOGGER.warn("不支持的类型：{}", type);
-				break;
 			}
 		}
 		return true;
@@ -233,7 +245,6 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		buffer.put(torrentSession.infoHash().infoHash());
 		buffer.put(PeerServer.PEER_ID.getBytes());
 		send(buffer);
-		extension(); // 扩展信息
 	}
 	
 	/**
@@ -248,37 +259,32 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		if(!HANDSHAKE_NAME.equals(name)) {
 			LOGGER.warn("下载协议错误：{}", name);
 		}
-		final byte[] reserveds = new byte[8];
-		buffer.get(reserveds);
-//		final String reserved = new String(reserveds);
-//		LOGGER.debug("reserved：{}", reserved);
+		buffer.get(this.reserved);
 		final byte[] infoHashs = new byte[20];
 		buffer.get(infoHashs);
 		final String infoHashHex = StringUtils.hex(infoHashs);
 		final byte[] peerIds = new byte[20];
 		buffer.get(peerIds);
 		final String peerId = new String(peerIds);
-		if(!init) {
+		if(server) { // 服务端
 			init(infoHashHex, peerId);
-		} else {
+			handshake((PeerClient) null); // 握手
+		} else { // 客户端
 			peerSession.id(peerId);
 		}
+		extension();
 		bitfield(); // 交换位图
 		if(server) { // TODO：服务端：判断连接数量，阻塞|不阻塞
-			if(init) {
-				unchoke();
-			} else { // 没有初始化
-				choke();
-			}
+			unchoke();
 		}
 	}
-	
+
 	/**
 	 * 4字节：消息持久：len=0000
 	 * 只有消息长度，没有消息编号和负载
 	 */
 	public void keepAlive() {
-		send(buildMessage(null, null));
+		pushMessage(null, null);
 	}
 	
 	/**
@@ -288,7 +294,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	public void choke() {
 		LOGGER.debug("阻塞");
 		peerSession.amChoke();
-		send(buildMessage(MessageType.Type.choke.value(), null));
+		pushMessage(MessageType.Type.choke, null);
 	}
 
 	private void choke(ByteBuffer buffer) {
@@ -306,14 +312,16 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	public void unchoke() {
 		LOGGER.debug("解除阻塞");
 		peerSession.amUnchoke();
-		send(buildMessage(MessageType.Type.unchoke.value(), null));
+		pushMessage(MessageType.Type.unchoke, null);
 	}
 	
 	private void unchoke(ByteBuffer buffer) {
 		LOGGER.debug("被解除阻塞");
 		peerSession.peerUnchoke();
-		if(peerClient != null) {
-			peerClient.launcher(); // 开始下载
+		if(action == Action.download) {
+			if(peerClient != null) {
+				peerClient.launcher(); // 开始下载
+			}
 		}
 	}
 	
@@ -324,7 +332,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	public void interested() {
 		LOGGER.debug("感兴趣");
 		peerSession.amInterested();
-		send(buildMessage(MessageType.Type.interested.value(), null));
+		pushMessage(MessageType.Type.interested, null);
 	}
 
 	private void interested(ByteBuffer buffer) {
@@ -339,7 +347,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	public void notInterested() {
 		LOGGER.debug("不感兴趣");
 		peerSession.amNotInterested();
-		send(buildMessage(MessageType.Type.notInterested.value(), null));
+		pushMessage(MessageType.Type.notInterested, null);
 	}
 
 	private void notInterested(ByteBuffer buffer) {
@@ -353,7 +361,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 */
 	public void have(int index) {
 		LOGGER.debug("发送have消息：{}", index);
-		send(buildMessage(MessageType.Type.have.value(), ByteBuffer.allocate(4).putInt(index).array()));
+		pushMessage(MessageType.Type.have, ByteBuffer.allocate(4).putInt(index).array());
 	}
 
 	private void have(ByteBuffer buffer) {
@@ -374,7 +382,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	public void bitfield() {
 		final BitSet pieces = torrentStreamGroup.pieces();
 		LOGGER.debug("发送位图：{}", pieces);
-		send(buildMessage(MessageType.Type.bitfield.value(), pieces.toByteArray()));
+		pushMessage(MessageType.Type.bitfield, pieces.toByteArray());
 	}
 
 	/**
@@ -414,7 +422,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		buffer.putInt(index);
 		buffer.putInt(begin);
 		buffer.putInt(length);
-		send(buildMessage(MessageType.Type.request.value(), buffer.array()));
+		pushMessage(MessageType.Type.request, buffer.array());
 	}
 
 	private void request(ByteBuffer buffer) {
@@ -444,7 +452,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		buffer.putInt(index);
 		buffer.putInt(begin);
 		buffer.put(bytes);
-		send(buildMessage(MessageType.Type.piece.value(), buffer.array()));
+		pushMessage(MessageType.Type.piece, buffer.array());
 	}
 
 	private void piece(ByteBuffer buffer) {
@@ -471,7 +479,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		buffer.putInt(index);
 		buffer.putInt(begin);
 		buffer.putInt(length);
-		send(buildMessage(MessageType.Type.cancel.value(), buffer.array()));
+		pushMessage(MessageType.Type.cancel, buffer.array());
 	}
 	
 	private void cancel(ByteBuffer buffer) {
@@ -484,7 +492,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 * 支持DHT的客户端使用，指明DHT监听的端口
 	 */
 	public void port(short port) {
-		send(buildMessage(MessageType.Type.port.value(), ByteBuffer.allocate(4).putShort(port).array()));
+		pushMessage(MessageType.Type.port, ByteBuffer.allocate(4).putShort(port).array());
 	}
 	
 	private void port(ByteBuffer buffer) {
@@ -495,8 +503,10 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 * 扩展消息：len=unknow id=20 消息
 	 */
 	public void extension() {
-		LOGGER.debug("发送扩展消息");
-		send(buildMessage(MessageType.Type.extension.value(), extensionMessageHandler.extension()));
+		if(supportExtensionProtocol()) {
+			LOGGER.debug("发送扩展消息");
+			extensionMessageHandler.handshake();
+		}
 	}
 	
 	private void extension(ByteBuffer buffer) {
@@ -504,14 +514,38 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		extensionMessageHandler.onMessage(buffer);
 	}
 	
+	public void download() {
+		action(Action.download);
+	}
+	
+	public void torrent() {
+		action(Action.torrent);
+	}
+	
+	public Action action() {
+		return this.action;
+	}
+	
+	public void action(Action action) {
+		this.action = action;
+	}
+	
 	/**
-	 * 消息：
+	 * 发送消息
+	 */
+	public void pushMessage(MessageType.Type type, byte[] payload) {
+		send(buildMessage(type, payload));
+	}
+	
+	/**
+	 * 创建消息：
 	 * 消息格式：length_prefix message_ID payload<br>
 	 * length prefix：4字节：message id和payload的长度和<br>
 	 * message id：1字节：指明消息的编号<br>
 	 * payload：消息内容
 	 */
-	public ByteBuffer buildMessage(Byte id, byte[] payload) {
+	private ByteBuffer buildMessage(MessageType.Type type, byte[] payload) {
+		final Byte id = type.value();
 		int capacity = 0;
 		if(id != null) {
 			capacity += 1;
@@ -519,7 +553,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		if(payload != null) {
 			capacity += payload.length;
 		}
-		ByteBuffer buffer = ByteBuffer.allocate(capacity + 4); // +4=length prefix
+		final ByteBuffer buffer = ByteBuffer.allocate(capacity + 4); // +4=length prefix
 		buffer.putInt(capacity);
 		if(id != null) {
 			buffer.put(id);
@@ -529,19 +563,20 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		}
 		return buffer;
 	}
-
-	@Override
-	public TcpMessageHandler server() {
-		if(this.extensionMessageHandler != null) {
-			this.extensionMessageHandler.server();
+	
+	private boolean supportExtensionProtocol() {
+		if(this.reserved != null) {
+			return (this.reserved[5] & EXTENSION_PROTOCOL) != 0;
 		}
-		return super.server();
+		return false;
 	}
 	
 	@Override
 	public void failed(Throwable exc, ByteBuffer attachment) {
 		super.failed(exc, attachment);
-		peerClient.release();
+		if(peerClient != null) {
+			peerClient.release();
+		}
 	}
 	
 }

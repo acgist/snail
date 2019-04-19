@@ -1,5 +1,7 @@
 package com.acgist.snail.pojo;
 
+import com.acgist.snail.utils.NumberUtils;
+
 /**
  * Piece信息
  * 保存时必须是一个完成的Piece：end - begin == length == data.length && pos == begin
@@ -97,11 +99,7 @@ public class TorrentPiece {
 	
 	public int limitSlice() {
 		final int limit = limit();
-		final int size = (limit) / SLICE_SIZE;
-		if(limit % SLICE_SIZE == 0) {
-			return size;
-		}
-		return size + 1;
+		return NumberUtils.divideUp(limit, SLICE_SIZE);
 	}
 	
 	/**

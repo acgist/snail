@@ -91,6 +91,14 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	}
 	
 	/**
+	 * 下载种子
+	 */
+	public boolean torrent() {
+		handler.torrent();
+		return download();
+	}
+	
+	/**
 	 * 下载数据
 	 */
 	public void piece(int index, int begin, byte[] bytes) {
