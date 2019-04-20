@@ -409,25 +409,6 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		final byte[] bytes = new byte[bitSize];
 		System.arraycopy(pieces.toByteArray(), 0, bytes, 0, bitSize);
 		pushMessage(MessageType.Type.bitfield, bytes);
-		System.out.println(bytes[0]);
-		System.out.println(bytes[length]);
-	}
-	
-	public static void main(String[] args) {
-		BitSet pieces = new BitSet();
-		pieces.set(4, 9);
-		final int bitSize = NumberUtils.divideUp(11, 8);
-		final int length = bitSize * 8;
-		pieces.set(length + 1);
-		final byte[] bytes = new byte[bitSize];
-		System.arraycopy(pieces.toByteArray(), 0, bytes, 0, bitSize);
-		System.out.println(bytes.length);
-		System.out.println(Byte.toUnsignedInt((byte) -1));
-		for (byte b : bytes) {
-			System.out.println("=--");
-			System.out.println(Integer.toUnsignedString(b));
-			System.out.println(Integer.toBinaryString(b));
-		}
 	}
 	
 	/**
