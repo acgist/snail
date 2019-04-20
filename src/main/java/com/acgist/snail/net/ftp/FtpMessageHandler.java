@@ -23,55 +23,51 @@ public class FtpMessageHandler extends TcpMessageHandler {
 	
 	public static final String SPLIT = "\r\n"; // 处理粘包分隔符
 	
-	private boolean fail = false; // 失败
 	private boolean append = false; // 断点续传
-	private Socket socket; // Socket
+	
 	private String failMessage; // 错误信息
+	
+	private Socket socket; // Socket
 	private InputStream inputStream; // 输入流
 	
-	private StringBuffer contentBuffer = new StringBuffer();
+	private StringBuffer commandBuffer = new StringBuffer();
 	
 	public FtpMessageHandler() {
 		super(SPLIT);
 	}
 
 	@Override
-	public boolean onMessage(ByteBuffer attachment) {
-		boolean doNext = true; // 是否继续处理消息
-		String content = IoUtils.readContent(attachment);
-		if(content.contains(SPLIT)) {
-			int index = content.indexOf(SPLIT);
+	public void onMessage(ByteBuffer attachment) {
+		String command = IoUtils.readContent(attachment);
+		if(command.contains(SPLIT)) {
+			int index = command.indexOf(SPLIT);
 			while(index >= 0) {
-				contentBuffer.append(content.substring(0, index));
-				doNext = oneMessage(contentBuffer.toString());
-				contentBuffer.setLength(0);
-				content = content.substring(index + SPLIT.length());
-				index = content.indexOf(SPLIT);
+				commandBuffer.append(command.substring(0, index));
+				oneMessage(commandBuffer.toString());
+				commandBuffer.setLength(0);
+				command = command.substring(index + SPLIT.length());
+				index = command.indexOf(SPLIT);
 			}
 		}
-		contentBuffer.append(content);
-		return doNext;
+		commandBuffer.append(command);
 	}
 	
 	/**
 	 * 处理单条消息
 	 */
-	private boolean oneMessage(String message) {
-//		LOGGER.info("收到FTP响应：{}", message);
-		if(fail) {
-			return !fail;
-		}
+	private void oneMessage(String message) {
+		LOGGER.debug("收到FTP响应：{}", message);
 		if(StringUtils.startsWith(message, "530 ")) { // 登陆失败
-			this.fail = true;
+			this.close();
 			this.failMessage = "服务器需要登陆授权";
 		} else if(StringUtils.startsWith(message, "550 ")) { // 文件不存在
-			this.fail = true;
+			this.close();
 			this.failMessage = "文件不存在";
 		} else if(StringUtils.startsWith(message, "421 ")) { // Socket打开失败
-			this.fail = true;
+			this.close();
 			this.failMessage = "打开连接失败";
 		} else if(StringUtils.startsWith(message, "350 ")) { // 端点续传
-			append = true;
+			this.append = true;
 		} else if(StringUtils.startsWith(message, "220 ")) { // 退出系统
 		} else if(StringUtils.startsWith(message, "226 ")) { // 下载完成
 		} else if(StringUtils.startsWith(message, "227 ")) { // 进入被动模式：获取远程IP和端口
@@ -80,11 +76,11 @@ public class FtpMessageHandler extends TcpMessageHandler {
 			int closing = message.indexOf(')', opening + 1);
 			if (closing > 0) {
 				// 创建远程Socket
-				String data = message.substring(opening + 1, closing);
-				StringTokenizer tokenizer = new StringTokenizer(data, ",");
-				String host = tokenizer.nextToken() + "." + tokenizer.nextToken() + "." + tokenizer.nextToken() + "." + tokenizer.nextToken();
-//				int port = Integer.parseInt(tokenizer.nextToken()) * 256 + Integer.parseInt(tokenizer.nextToken());
-				int port = (Integer.parseInt(tokenizer.nextToken()) << 8) + Integer.parseInt(tokenizer.nextToken());
+				final String data = message.substring(opening + 1, closing);
+				final StringTokenizer tokenizer = new StringTokenizer(data, ",");
+				final String host = tokenizer.nextToken() + "." + tokenizer.nextToken() + "." + tokenizer.nextToken() + "." + tokenizer.nextToken();
+//				final int port = Integer.parseInt(tokenizer.nextToken()) * 256 + Integer.parseInt(tokenizer.nextToken());
+				final int port = (Integer.parseInt(tokenizer.nextToken()) << 8) + Integer.parseInt(tokenizer.nextToken());
 				try {
 					socket = new Socket(host, port);
 				} catch (IOException e) {
@@ -98,7 +94,6 @@ public class FtpMessageHandler extends TcpMessageHandler {
 				LOGGER.error("打开远程输入流失败", e);
 			}
 		}
-		return !fail;
 	}
 	
 	/**
@@ -117,10 +112,11 @@ public class FtpMessageHandler extends TcpMessageHandler {
 	
 	/**
 	 * 获取输入流，阻塞线程
+	 * TODO：修改wait
 	 */
 	public InputStream inputStream() {
 		ThreadUtils.timeout(5000, () -> {
-			return this.inputStream != null || this.fail;
+			return this.inputStream != null || this.close;
 		});
 		if(this.inputStream == null && failMessage == null) {
 			failMessage = "下载失败";
@@ -129,7 +125,7 @@ public class FtpMessageHandler extends TcpMessageHandler {
 	}
 	
 	/**
-	 * 释放资源
+	 * 释放资源：注意释放FTP下载连接资源，不关闭命令通道
 	 */
 	public void release() {
 		IoUtils.close(this.inputStream);

@@ -48,6 +48,7 @@ import com.acgist.snail.utils.StringUtils;
  * P = 用户正使用uTP连接
  * L = 用户是本地的（通过网络广播或是保留的本地IP范围发现）
  * TODO：实现Exctended消息
+ * TODO：实现流水线
  */
 public class PeerMessageHandler extends TcpMessageHandler {
 
@@ -139,8 +140,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	}
 	
 	@Override
-	public boolean onMessage(ByteBuffer attachment) {
-		boolean doNext = true; // 是否继续处理消息
+	public void onMessage(ByteBuffer attachment) {
 		int length = 0;
 		attachment.flip();
 		while(true) {
@@ -191,10 +191,12 @@ public class PeerMessageHandler extends TcpMessageHandler {
 				break;
 			}
 		}
-		return doNext;
 	}
 	
-	private boolean oneMessage(final ByteBuffer buffer) {
+	/**
+	 * 处理单挑
+	 */
+	private void oneMessage(final ByteBuffer buffer) {
 		buffer.flip();
 		if(!handshake) {
 			handshake = true;
@@ -204,7 +206,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 			final MessageType.Type type = MessageType.Type.valueOf(typeValue);
 			if(type == null) {
 				LOGGER.warn("不支持的类型：{}", typeValue);
-				return true;
+				return;
 			}
 			LOGGER.debug("Peer消息类型：{}", type);
 			switch (type) {
@@ -243,7 +245,6 @@ public class PeerMessageHandler extends TcpMessageHandler {
 				break;
 			}
 		}
-		return true;
 	}
 
 	/**

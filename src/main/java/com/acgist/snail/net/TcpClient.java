@@ -84,7 +84,7 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends TcpSender {
 		if(ok) {
 			// 连接成功
 		} else {
-			close();
+			this.close();
 		}
 		return ok;
 	}
@@ -101,7 +101,7 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends TcpSender {
 	 */
 	public void close() {
 		LOGGER.info("关闭TCP Client：{}", this.name);
-		IoUtils.close(socket);
+		handler.close();
 	}
 
 	/**
