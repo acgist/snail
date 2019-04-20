@@ -29,7 +29,7 @@ public class IoUtils {
 	 * 读取内容
 	 */
 	public static final String readContent(ByteBuffer attachment) {
-		CharsetDecoder decoder = Charset.forName(SystemConfig.DEFAULT_CHARSET).newDecoder();
+		final CharsetDecoder decoder = Charset.forName(SystemConfig.DEFAULT_CHARSET).newDecoder();
 		decoder.onMalformedInput(CodingErrorAction.IGNORE);
 		String content = null;
 		try {
@@ -59,18 +59,26 @@ public class IoUtils {
 	 * 关闭Socket
 	 */
 	public static final void close(Socket socket) {
-		try {
-			if(socket != null && !socket.isInputShutdown()) {
-				socket.shutdownInput();
+		if(socket != null && !socket.isClosed()) {
+			try {
+				if(!socket.isInputShutdown()) {
+					socket.shutdownInput();
+				}
+			} catch (IOException e) {
+				LOGGER.error("关闭Socket输入流异常", e);
 			}
-			if(socket != null && !socket.isOutputShutdown()) {
-				socket.shutdownOutput();
+			try {
+				if(!socket.isOutputShutdown()) {
+					socket.shutdownOutput();
+				}
+			} catch (IOException e) {
+				LOGGER.error("关闭Socket输出流异常", e);
 			}
-			if(socket != null) {
+			try {
 				socket.close(); // 不用判断是否close
+			} catch (IOException e) {
+				LOGGER.error("关闭Socket异常", e);
 			}
-		} catch (IOException e) {
-			LOGGER.error("关闭Socket异常", e);
 		}
 	}
 	

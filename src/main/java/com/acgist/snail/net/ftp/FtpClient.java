@@ -82,12 +82,12 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 			this.changeMode();
 			command("TYPE A");
 			command("LIST " + this.filePath);
-			InputStream inputStream = handler.inputStream();
-			String data = StringUtils.ofInputStream(inputStream);
+			final InputStream inputStream = handler.inputStream();
+			final String data = StringUtils.ofInputStream(inputStream);
 			if(data == null) {
 				throw new NetException(failMessage());
 			}
-			Optional<String> optional = Stream.of(data.split(" "))
+			final Optional<String> optional = Stream.of(data.split(" "))
 				.map(String::trim)
 				.filter(StringUtils::isNotEmpty)
 				.skip(4).findFirst();
@@ -107,7 +107,6 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 			return;
 		}
 		command("QUIT"); // 退出命令
-		handler.release();
 		super.close();
 	}
 	
