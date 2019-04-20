@@ -1,6 +1,7 @@
 package com.acgist.snail.downloader;
 
 import java.awt.TrayIcon.MessageType;
+import java.time.Duration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,8 @@ public abstract class Downloader implements IDownloader {
 	protected boolean fail = false; // 失败状态
 	protected boolean running = false; // 下载中
 	protected boolean complete = false; // 下载完成
+	
+	private Object deleteLock = new Object();
 	
 	protected TaskSession taskSession;
 
@@ -80,9 +83,9 @@ public abstract class Downloader implements IDownloader {
 	@Override
 	public void delete() {
 		this.pause(); // 暂停
-		ThreadUtils.timeout(5000, () -> { // 等待下载线程结束
-			return !this.running;
-		});
+		synchronized (this.deleteLock) {
+			ThreadUtils.wait(this.deleteLock, Duration.ofSeconds(5));
+		}
 		TaskRepository repository = new TaskRepository();
 		repository.delete(taskSession.entity());
 	}
@@ -127,6 +130,7 @@ public abstract class Downloader implements IDownloader {
 				this.complete();
 				this.release(); // 最后释放资源
 				running = false;
+				this.unlockDelete();
 				LOGGER.info("下载结束：{}", name());
 			}
 		}
@@ -147,6 +151,16 @@ public abstract class Downloader implements IDownloader {
 	 */
 	protected boolean ok() {
 		return !fail && taskSession.download();
+	}
+	
+	/**
+	 * 唤醒删除
+	 * TODO：测试
+	 */
+	private void unlockDelete() {
+		synchronized (this.deleteLock) {
+			this.deleteLock.notifyAll();
+		}
 	}
 	
 }
