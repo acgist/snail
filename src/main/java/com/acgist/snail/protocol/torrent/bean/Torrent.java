@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.acgist.snail.utils.BCodeUtils;
+import com.acgist.snail.net.bcode.BCodeDecoder;
 
 /**
  * 种子信息
@@ -61,12 +61,12 @@ public class Torrent {
 	
 	public static final Torrent valueOf(Map<String, Object> map) {
 		final Torrent torrent = new Torrent();
-		torrent.setComment(BCodeUtils.getString(map, "comment"));
-		torrent.setCommentUtf8(BCodeUtils.getString(map, "comment.utf-8"));
-		torrent.setEncoding(BCodeUtils.getString(map, "encoding"));
-		torrent.setCreateBy(BCodeUtils.getString(map, "created by"));
-		torrent.setAnnounce(BCodeUtils.getString(map, "announce"));
-		torrent.setCreationDate(BCodeUtils.getLong(map, "creation date"));
+		torrent.setComment(BCodeDecoder.getString(map, "comment"));
+		torrent.setCommentUtf8(BCodeDecoder.getString(map, "comment.utf-8"));
+		torrent.setEncoding(BCodeDecoder.getString(map, "encoding"));
+		torrent.setCreateBy(BCodeDecoder.getString(map, "created by"));
+		torrent.setAnnounce(BCodeDecoder.getString(map, "announce"));
+		torrent.setCreationDate(BCodeDecoder.getLong(map, "creation date"));
 		List<?> announceList = (List<?>) map.get("announce-list");
 		if(announceList != null) {
 			torrent.setAnnounceList(
@@ -75,7 +75,7 @@ public class Torrent {
 					List<?> values = (List<?>) value;
 					return values.stream();
 				})
-				.map(value -> BCodeUtils.getString(value))
+				.map(value -> BCodeDecoder.getString(value))
 				.collect(Collectors.toList())
 			);
 		} else {
@@ -88,7 +88,7 @@ public class Torrent {
 				.map(value -> {
 					List<?> values = (List<?>) value;
 					if(values.size() == 2) {
-						String host = BCodeUtils.getString(values.get(0));
+						String host = BCodeDecoder.getString(values.get(0));
 						Long port = (Long) values.get(1);
 						return Map.entry(host, port);
 					} else {

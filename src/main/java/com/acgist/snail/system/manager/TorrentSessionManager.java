@@ -1,6 +1,5 @@
 package com.acgist.snail.system.manager;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -8,13 +7,13 @@ import java.nio.file.Paths;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.acgist.snail.net.bcode.BCodeDecoder;
+import com.acgist.snail.net.bcode.BCodeEncoder;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.TorrentProtocol;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
 import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.utils.BCodeBuilder;
-import com.acgist.snail.utils.BCodeUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -62,16 +61,13 @@ public class TorrentSessionManager {
 	 * @param path torrent文件
 	 */
 	public TorrentSession buildSession(String path) throws DownloadException {
-		final ByteArrayInputStream input = loadTorrent(path);
-		if(BCodeUtils.isMap(input)) {
-			final Map<String, Object> map = BCodeUtils.d(input);
-			final Torrent torrent = Torrent.valueOf(map);
-			final Map<?, ?> info = (Map<?, ?>) map.get("info"); // 只需要数据不符
-			final InfoHash infoHash = InfoHash.newInstance(BCodeBuilder.newInstance().build(info).bytes());
-			return buildSession(torrent, infoHash);
-		} else {
-			throw new DownloadException("种子解析失败");
-		}
+		final var bytes = loadTorrent(path);
+		final BCodeDecoder decoder = BCodeDecoder.newInstance(bytes);
+		final Map<String, Object> map = decoder.mustMap();
+		final Torrent torrent = Torrent.valueOf(map);
+		final Map<?, ?> info = (Map<?, ?>) map.get("info"); // 只需要数据不符
+		final InfoHash infoHash = InfoHash.newInstance(BCodeEncoder.newInstance().build(info).bytes());
+		return buildSession(torrent, infoHash);
 	}
 	
 	/**
@@ -107,13 +103,13 @@ public class TorrentSessionManager {
 	 * 加载种子文件
 	 * @param path 文件地址
 	 */
-	private ByteArrayInputStream loadTorrent(String path) throws DownloadException {
+	private byte[] loadTorrent(String path) throws DownloadException {
 		File file = new File(path);
 		if(!file.exists()) {
 			throw new DownloadException("种子文件不存在");
 		}
 		try {
-			return new ByteArrayInputStream(Files.readAllBytes(Paths.get(file.getPath())));
+			return Files.readAllBytes(Paths.get(file.getPath()));
 		} catch (IOException e) {
 			throw new DownloadException("种子文件读取失败", e);
 		}

@@ -1,4 +1,4 @@
-package com.acgist.snail.utils;
+package com.acgist.snail.net.bcode;
 
 import java.util.List;
 import java.util.Map;
@@ -13,34 +13,34 @@ import com.fasterxml.jackson.core.util.ByteArrayBuilder;
  * 40位hash：sha1生成，磁力链接使用
  * 20位hash：sha1生成编码为20位，tracker使用
  */
-public class BCodeBuilder {
+public class BCodeEncoder {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(BCodeBuilder.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(BCodeEncoder.class);
 	
 	private ByteArrayBuilder builder;
 	
-	private BCodeBuilder() {
+	private BCodeEncoder() {
 		builder = new ByteArrayBuilder();
 	}
 	
-	public static final BCodeBuilder newInstance() {
-		return new BCodeBuilder();
+	public static final BCodeEncoder newInstance() {
+		return new BCodeEncoder();
 	}
 
 	/**
 	 * 获取map
 	 */
-	public BCodeBuilder build(Map<?, ?> map) {
-		builder.write('d');
+	public BCodeEncoder build(Map<?, ?> map) {
+		builder.write(BCodeDecoder.TYPE_D);
 		map.forEach((key, value) -> {
 			String keyValue = (String) key;
 			builder.write(String.valueOf(keyValue.getBytes().length).getBytes());
-			builder.write(':');
+			builder.write(BCodeDecoder.SEPARATOR);
 			builder.write(keyValue.getBytes());
 			if(value instanceof Number) {
-				builder.write('i');
+				builder.write(BCodeDecoder.TYPE_I);
 				builder.write(value.toString().getBytes());
-				builder.write('e');
+				builder.write(BCodeDecoder.TYPE_E);
 			} else if(value instanceof Map) {
 				build((Map<?, ?>) value);
 			} else if(value instanceof List) {
@@ -56,25 +56,25 @@ public class BCodeBuilder {
 				}
 				if(bytes != null) {
 					builder.write(String.valueOf(bytes.length).getBytes());
-					builder.write(':');
+					builder.write(BCodeDecoder.SEPARATOR);
 					builder.write(bytes);
 				}
 			}
 		});
-		builder.write('e');
+		builder.write(BCodeDecoder.TYPE_E);
 		return this;
 	}
 
 	/**
 	 * 获取list
 	 */
-	public BCodeBuilder build(List<?> list) {
-		builder.write('l');
+	public BCodeEncoder build(List<?> list) {
+		builder.write(BCodeDecoder.TYPE_L);
 		list.forEach(value -> {
 			if(value instanceof Number) {
-				builder.write('i');
+				builder.write(BCodeDecoder.TYPE_I);
 				builder.write(value.toString().getBytes());
-				builder.write('e');
+				builder.write(BCodeDecoder.TYPE_E);
 			} else if(value instanceof Map) {
 				build((Map<?, ?>) value);
 			} else if(value instanceof List) {
@@ -90,12 +90,12 @@ public class BCodeBuilder {
 				}
 				if(bytes != null) {
 					builder.write(String.valueOf(bytes.length).getBytes());
-					builder.write(':');
+					builder.write(BCodeDecoder.SEPARATOR);
 					builder.write(bytes);
 				}
 			}
 		});
-		builder.write('e');
+		builder.write(BCodeDecoder.TYPE_E);
 		return this;
 	}
 	

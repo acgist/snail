@@ -1,12 +1,12 @@
 package com.acgist.snail.net.tracker.impl;
 
-import java.io.ByteArrayInputStream;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.net.bcode.BCodeDecoder;
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.net.peer.PeerServer;
 import com.acgist.snail.net.tracker.TrackerClient;
@@ -15,7 +15,6 @@ import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.system.manager.TrackerLauncherManager;
-import com.acgist.snail.utils.BCodeUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -47,20 +46,16 @@ public class HttpTrackerClient extends TrackerClient {
 			throw new NetException("获取Peer异常");
 		}
 		final String body = response.body();
-		final ByteArrayInputStream input = new ByteArrayInputStream(body.getBytes());
-		if(BCodeUtils.isMap(input)) {
-			Map<String, Object> map = BCodeUtils.d(input);
-			var tracker = HttpTracker.valueOf(map);
-			AnnounceMessage message = new AnnounceMessage();
-			message.setId(sid);
-			message.setInterval(tracker.getInterval());
-			message.setDone(tracker.getComplete());
-			message.setUndone(tracker.getIncomplete());
-			message.setPeers(tracker.getPeers());
-			TrackerLauncherManager.getInstance().announce(message);
-		} else {
-			throw new NetException("错误的返回内容：" + body);
-		}
+		final BCodeDecoder decoder = BCodeDecoder.newInstance(body.getBytes());
+		final Map<String, Object> map = decoder.mustMap();
+		final var tracker = HttpTracker.valueOf(map);
+		final AnnounceMessage message = new AnnounceMessage();
+		message.setId(sid);
+		message.setInterval(tracker.getInterval());
+		message.setDone(tracker.getComplete());
+		message.setUndone(tracker.getIncomplete());
+		message.setPeers(tracker.getPeers());
+		TrackerLauncherManager.getInstance().announce(message);
 	}
 
 	@Override

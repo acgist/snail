@@ -417,7 +417,6 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	private void bitfield(ByteBuffer buffer) {
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
-		System.out.println("位图长度" + bytes.length);
 		final BitSet pieces = BitSet.valueOf(bytes);
 		peerSession.pieces(pieces);
 		LOGGER.debug("收到位图：{}", pieces);

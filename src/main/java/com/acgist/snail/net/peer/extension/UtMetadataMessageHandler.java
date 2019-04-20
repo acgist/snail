@@ -7,14 +7,14 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.net.bcode.BCodeDecoder;
+import com.acgist.snail.net.bcode.BCodeEncoder;
 import com.acgist.snail.net.peer.MessageType;
 import com.acgist.snail.net.peer.MessageType.ExtensionType;
 import com.acgist.snail.net.peer.MessageType.UtMetadataType;
 import com.acgist.snail.net.peer.PeerMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
-import com.acgist.snail.utils.BCodeBuilder;
-import com.acgist.snail.utils.BCodeUtils;
 import com.acgist.snail.utils.NumberUtils;
 
 /**
@@ -58,8 +58,9 @@ public class UtMetadataMessageHandler {
 	public void onMessage(ByteBuffer buffer) {
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
-		final Map<String, Object> data = BCodeUtils.d(bytes);
-		final Byte typeValue = BCodeUtils.getByte(data, ARG_MSG_TYPE);
+		final BCodeDecoder decoder = BCodeDecoder.newInstance(bytes);
+		final Map<String, Object> data = decoder.mustMap();
+		final Byte typeValue = BCodeDecoder.getByte(data, ARG_MSG_TYPE);
 		final UtMetadataType type = MessageType.UtMetadataType.valueOf(typeValue);
 		if(type == null) {
 			LOGGER.warn("不支持的UtMetadata消息类型：{}", typeValue);
@@ -71,7 +72,7 @@ public class UtMetadataMessageHandler {
 			request(data);
 			break;
 		case data:
-			data(data);
+			data(data, decoder);
 			break;
 		case reject:
 			reject(data);
@@ -89,7 +90,7 @@ public class UtMetadataMessageHandler {
 	}
 	
 	private void request(Map<String, Object> data) {
-		final int piece = BCodeUtils.getInteger(data, ARG_PIECE);
+		final int piece = BCodeDecoder.getInteger(data, ARG_PIECE);
 		data(piece);
 	}
 
@@ -117,8 +118,8 @@ public class UtMetadataMessageHandler {
 		pushMessage(utMetadataType(), data);
 	}
 
-	private void data(Map<String, Object> data) {
-		final int piece = BCodeUtils.getInteger(data, ARG_PIECE);
+	private void data(Map<String, Object> data, BCodeDecoder decoder) {
+		final int piece = BCodeDecoder.getInteger(data, ARG_PIECE);
 		final byte[] bytes = infoHash.info();
 		final int begin = piece * INFO_SLICE_SIZE;
 		final int end = begin + INFO_SLICE_SIZE;
@@ -129,7 +130,7 @@ public class UtMetadataMessageHandler {
 		if(end > bytes.length) {
 			length = bytes.length - begin;
 		}
-		final byte[] x = BCodeUtils.getBytes(data, ARG_X);
+		final byte[] x = decoder.oddBytes();
 		System.arraycopy(x, 0, bytes, begin, length);
 	}
 	
@@ -158,8 +159,8 @@ public class UtMetadataMessageHandler {
 			LOGGER.warn("不支持UtMetadata扩展协议");
 			return;
 		}
-		final BCodeBuilder builder = BCodeBuilder.newInstance();
-		final byte[] bytes = builder.build(data).bytes();
+		final BCodeEncoder encoder = BCodeEncoder.newInstance();
+		final byte[] bytes = encoder.build(data).bytes();
 		final byte[] pushBytes = extensionMessageHandler.buildMessage(type, bytes);
 		peerMessageHandler.pushMessage(MessageType.Type.extension, pushBytes);
 	}

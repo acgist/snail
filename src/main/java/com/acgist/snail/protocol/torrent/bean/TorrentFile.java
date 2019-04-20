@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.acgist.snail.utils.BCodeUtils;
+import com.acgist.snail.net.bcode.BCodeDecoder;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -30,14 +30,14 @@ public class TorrentFile {
 			return null;
 		}
 		TorrentFile file = new TorrentFile();
-		file.setLength(BCodeUtils.getLong(map, "length"));
-		file.setEd2k(BCodeUtils.getBytes(map, "ed2k"));
-		file.setFilehash(BCodeUtils.getBytes(map, "filehash"));
+		file.setLength(BCodeDecoder.getLong(map, "length"));
+		file.setEd2k(BCodeDecoder.getBytes(map, "ed2k"));
+		file.setFilehash(BCodeDecoder.getBytes(map, "filehash"));
 		List<?> path = (List<?>) map.get("path");
 		if(path != null) {
 			file.setPath(
 				path.stream()
-				.map(value -> BCodeUtils.getString(value))
+				.map(value -> BCodeDecoder.getString(value))
 				.collect(Collectors.toList())
 			);
 		} else {
@@ -47,7 +47,7 @@ public class TorrentFile {
 		if(pathUtf8 != null) {
 			file.setPathUtf8(
 				pathUtf8.stream()
-				.map(value -> BCodeUtils.getString(value))
+				.map(value -> BCodeDecoder.getString(value))
 				.collect(Collectors.toList())
 				);
 		} else {

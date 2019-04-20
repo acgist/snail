@@ -2,7 +2,7 @@ package com.acgist.snail.net.tracker.bean;
 
 import java.util.Map;
 
-import com.acgist.snail.utils.BCodeUtils;
+import com.acgist.snail.net.bcode.BCodeDecoder;
 import com.acgist.snail.utils.PeerUtils;
 
 /**
@@ -21,14 +21,14 @@ public class HttpTracker {
 
 	public static final HttpTracker valueOf(Map<?, ?> map) {
 		final HttpTracker tracker = new HttpTracker();
-		tracker.setFailureReason(BCodeUtils.getString(map, "failure reason"));
-		tracker.setWarngingMessage(BCodeUtils.getString(map, "warnging message"));
-		tracker.setInterval(BCodeUtils.getInteger(map, "interval"));
-		tracker.setMinInterval(BCodeUtils.getInteger(map, "min interval"));
-		tracker.setTrackerId(BCodeUtils.getString(map, "tracker id"));
-		tracker.setComplete(BCodeUtils.getInteger(map, "complete"));
-		tracker.setIncomplete(BCodeUtils.getInteger(map, "incomplete"));
-		tracker.setPeers(PeerUtils.read(BCodeUtils.getBytes(map, "peers")));
+		tracker.setFailureReason(BCodeDecoder.getString(map, "failure reason"));
+		tracker.setWarngingMessage(BCodeDecoder.getString(map, "warnging message"));
+		tracker.setInterval(BCodeDecoder.getInteger(map, "interval"));
+		tracker.setMinInterval(BCodeDecoder.getInteger(map, "min interval"));
+		tracker.setTrackerId(BCodeDecoder.getString(map, "tracker id"));
+		tracker.setComplete(BCodeDecoder.getInteger(map, "complete"));
+		tracker.setIncomplete(BCodeDecoder.getInteger(map, "incomplete"));
+		tracker.setPeers(PeerUtils.read(BCodeDecoder.getBytes(map, "peers")));
 		return tracker;
 	}
 	
