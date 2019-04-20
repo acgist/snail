@@ -44,8 +44,8 @@ public class PeerClientTest {
 		entity.setDescription(JsonUtils.toJson(list));
 		torrentSession.build(TaskSession.newInstance(entity));
 		String host = "127.0.0.1";
-//		Integer port = 49160; // FDM测试端口
-		Integer port = 15000; // 本地迅雷测试端口
+		Integer port = 49160; // FDM测试端口
+//		Integer port = 15000; // 本地迅雷测试端口
 		System.out.println("已下载：" + torrentSession.torrentStreamGroup().pieces());
 		StatisticsSession statisticsSession = new StatisticsSession();
 		PeerSession peerSession = new PeerSession(statisticsSession, host, port);
@@ -62,9 +62,8 @@ public class PeerClientTest {
 
 	@Test
 	public void torrent() throws DownloadException, InterruptedException {
-		String path = "e:/snail/11e38a5270e15c60534ca48977b7d77a3c4f6340.torrent";
 //		String path = "e:/snail/123.torrent";
-//		String path = "e:/snail/1234.torrent";
+		String path = "e:/snail/1234.torrent";
 //		String path = "e:/snail/12345.torrent";
 //		String path = "e:/snail/123456.torrent";
 		TorrentSession torrentSession = TorrentSessionManager.getInstance().buildSession(path);

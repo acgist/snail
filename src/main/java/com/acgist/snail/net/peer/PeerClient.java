@@ -22,8 +22,8 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	
 	private static final int SLICE_MAX_SIZE = 10; // 单次请求10个SLICE
 	
-	private static final int SLICE_AWAIT_TIME = 4000; // SLICE每批等待时间
-	private static final int PIECE_AWAIT_TIME = 4000; // PIECE完成等待时间
+	private static final int SLICE_AWAIT_TIME = 4; // SLICE每批等待时间
+	private static final int PIECE_AWAIT_TIME = 4; // PIECE完成等待时间
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerClient.class);
 	
