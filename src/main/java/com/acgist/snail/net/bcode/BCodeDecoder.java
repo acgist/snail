@@ -1,4 +1,4 @@
-package com.acgist.snail.utils;
+package com.acgist.snail.net.bcode;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -21,24 +21,75 @@ import com.acgist.snail.system.exception.ArgumentException;
  * 所有值除了Long，其他均为byte[]<br>
  * 读取前必须取出第一个字符
  */
-public class BCodeUtils {
+public class BCodeDecoder {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(BCodeUtils.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(BCodeDecoder.class);
 	
 	public static final char TYPE_E = 'e';
 	public static final char TYPE_I = 'i';
 	public static final char TYPE_L = 'l';
 	public static final char TYPE_D = 'd';
+	public static final char SEPARATOR = ':';
+	
+	public enum Type {
+		map, // map
+		list, // list
+		none; // 未知
+	}
+	
+	private Map<String, Object> map;
+	
+	private final ByteArrayInputStream input;
+	
+	public static final BCodeDecoder newInstance(byte[] bytes) {
+		return new BCodeDecoder(bytes);
+	}
+	
+	private BCodeDecoder(byte[] bytes) {
+		this.input = new ByteArrayInputStream(bytes);
+	}
 	
 	/**
-	 * 判断是否是map类型
+	 * 是否含有更多数据
 	 */
-	public static final boolean isMap(ByteArrayInputStream input) {
+	public boolean hasMore() {
+		return input.available() > 0;
+	}
+	
+	/**
+	 * 下一个数据类型
+	 */
+	public Type nextType() {
 		if(input == null || input.available() <= 0) {
-			return false;
+			return Type.none;
 		}
 		char type = (char) input.read();
-		return type == TYPE_D;
+		switch (type) {
+		case TYPE_D:
+			return Type.map;
+		case TYPE_L:
+			return Type.list;
+		default:
+			return Type.none;
+		}
+	}
+	
+	/**
+	 * 获取下一个map，必须先验证类型
+	 */
+	public Map<String, Object> nextMap() {
+		this.map = d(input);
+		return this.map;
+	}
+	
+	/**
+	 * 获取下一个map，如果类型错误抛出异常
+	 */
+	public Map<String, Object> mustMap() {
+		if(nextType() == Type.map) {
+			return nextMap();
+		}
+		throw new ArgumentException("类型错误");
 	}
 	
 	/**
@@ -57,14 +108,6 @@ public class BCodeUtils {
 			}
 		}
 		return 0L;
-	}
-	
-	public static final Map<String, Object> d(byte[] bytes) {
-		final ByteArrayInputStream input = new ByteArrayInputStream(bytes);
-		if(isMap(input)) {
-			return d(input);
-		}
-		throw new ArgumentException("传入类型错误" + bytes[0]);
 	}
 	
 	/**
@@ -195,6 +238,10 @@ public class BCodeUtils {
 		return list;
 	}
 	
+	public byte[] oddBytes() {
+		return input.readAllBytes();
+	}
+	
 	public static final String getString(Object object) {
 		if(object == null) {
 			return null;
@@ -203,32 +250,52 @@ public class BCodeUtils {
 		return new String(bytes);
 	}
 	
+	public Byte getByte(String key) {
+		return getByte(this.map, key);
+	}
+	
 	public static final Byte getByte(Map<?, ?> map, String key) {
-		Long value = getLong(map, key);
+		final Long value = getLong(map, key);
 		if(value == null) {
 			return null;
 		}
 		return value.byteValue();
 	}
 	
+	public Integer getInteger(String key) {
+		return getInteger(this.map, key);
+	}
+	
 	public static final Integer getInteger(Map<?, ?> map, String key) {
-		Long value = getLong(map, key);
+		final Long value = getLong(map, key);
 		if(value == null) {
 			return null;
 		}
 		return value.intValue();
 	}
 	
+	public Long getLong(String key) {
+		return getLong(this.map, key);
+	}
+	
 	public static final Long getLong(Map<?, ?> map, String key) {
 		return (Long) map.get(key);
 	}
 	
+	public String getString(String key) {
+		return getString(this.map, key);
+	}
+	
 	public static final String getString(Map<?, ?> map, String key) {
-		var bytes = getBytes(map, key);
+		final var bytes = getBytes(map, key);
 		if(bytes == null) {
 			return null;
 		}
 		return new String(bytes);
+	}
+	
+	public byte[] getBytes(String key) {
+		return getBytes(this.map, key);
 	}
 	
 	public static final byte[] getBytes(Map<?, ?> map, String key) {

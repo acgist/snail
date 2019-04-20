@@ -62,7 +62,8 @@ public class PeerClientTest {
 
 	@Test
 	public void torrent() throws DownloadException, InterruptedException {
-		String path = "e:/snail/123.torrent";
+		String path = "e:/snail/11e38a5270e15c60534ca48977b7d77a3c4f6340.torrent";
+//		String path = "e:/snail/123.torrent";
 //		String path = "e:/snail/1234.torrent";
 //		String path = "e:/snail/12345.torrent";
 //		String path = "e:/snail/123456.torrent";

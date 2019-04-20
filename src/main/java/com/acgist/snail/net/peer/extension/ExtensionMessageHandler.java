@@ -7,6 +7,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.net.bcode.BCodeDecoder;
+import com.acgist.snail.net.bcode.BCodeEncoder;
 import com.acgist.snail.net.peer.MessageType;
 import com.acgist.snail.net.peer.MessageType.Action;
 import com.acgist.snail.net.peer.MessageType.ExtensionType;
@@ -15,8 +17,6 @@ import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.config.SystemConfig;
-import com.acgist.snail.utils.BCodeBuilder;
-import com.acgist.snail.utils.BCodeUtils;
 import com.acgist.snail.utils.CollectionUtils;
 
 /**
@@ -96,8 +96,8 @@ public class ExtensionMessageHandler {
 //			data.put("yourip", ipBuffer.array()); // 本机的IP地址
 //		}
 		data.put("reqq", 255); // TODO：详细意思未知
-		final BCodeBuilder builder = BCodeBuilder.newInstance();
-		final byte[] bytes = buildMessage(ExtensionType.handshake.value(), builder.build(data).bytes());
+		final BCodeEncoder encoder = BCodeEncoder.newInstance();
+		final byte[] bytes = buildMessage(ExtensionType.handshake.value(), encoder.build(data).bytes());
 		peerMessageHandler.pushMessage(MessageType.Type.extension, bytes);
 	}
 	
@@ -107,7 +107,8 @@ public class ExtensionMessageHandler {
 	private void handshake(ByteBuffer buffer) {
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
-		final Map<String, Object> data = BCodeUtils.d(bytes);
+		final BCodeDecoder decoder = BCodeDecoder.newInstance(bytes);
+		final Map<String, Object> data = decoder.mustMap();
 		final Object size = data.get("metadata_size");
 		if(size != null && this.infoHash.size() == 0) {
 			this.infoHash.size((int) size);

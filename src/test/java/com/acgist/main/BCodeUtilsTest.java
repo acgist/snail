@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 
 import org.junit.Test;
 
-import com.acgist.snail.utils.BCodeUtils;
+import com.acgist.snail.net.bcode.BCodeDecoder;
 import com.acgist.snail.utils.JsonUtils;
 import com.acgist.snail.utils.NetUtils;
 
@@ -20,15 +20,17 @@ public class BCodeUtilsTest {
 //		var input = new ByteArrayInputStream("d4:key14:val14:key2i100e4:key3l5:item1i-100el5:item1i-100eed4:key14:val14:key2i100eeee".getBytes());
 //		var input = new ByteArrayInputStream("d1:ei0e1:md11:ut_metadatai1e6:ut_pexi2ee13:metadata_sizei37541e1:pi4444e4:reqqi50e1:v13:BitComet 1.556:yourip4:·s;e".getBytes());
 		var input = new ByteArrayInputStream("d12:complete_agoi911e1:md11:lt_donthavei7e10:share_modei8e11:upload_onlyi3e12:ut_holepunchi4e11:ut_metadatai2ee13:metadata_sizei37541e4:reqqi500e1:v10:FDM 5.1.386:yourip4:tzåe".getBytes());
-		System.out.println("类型：" + BCodeUtils.isMap(input));
-		var data = BCodeUtils.d(input);
-		System.out.println(data);
-		System.out.println(JsonUtils.toJson(data));
-		
-		System.out.println(BCodeUtils.getString(data, "v"));
-		System.out.println(new String((byte[]) data.get("v")));
-		ByteBuffer ipAddress = ByteBuffer.wrap((byte[]) data.get("yourip"));
-		System.out.println(NetUtils.encodeIntToIp(ipAddress.getInt()));
+		final BCodeDecoder decoder = BCodeDecoder.newInstance(input.readAllBytes());
+		while (decoder.hasMore()) {
+			var data = decoder.mustMap();
+			System.out.println(data);
+			System.out.println(JsonUtils.toJson(data));
+			
+			System.out.println(BCodeDecoder.getString(data, "v"));
+			System.out.println(new String((byte[]) data.get("v")));
+			ByteBuffer ipAddress = ByteBuffer.wrap((byte[]) data.get("yourip"));
+			System.out.println(NetUtils.encodeIntToIp(ipAddress.getInt()));
+		}
 	}
 	
 }

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.acgist.snail.utils.BCodeUtils;
+import com.acgist.snail.net.bcode.BCodeDecoder;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -36,17 +36,17 @@ public class TorrentInfo {
 			return null;
 		}
 		TorrentInfo info = new TorrentInfo();
-		info.setName(BCodeUtils.getString(map, "name"));
-		info.setNameUtf8(BCodeUtils.getString(map, "name.utf-8"));
-		info.setLength(BCodeUtils.getLong(map, "length"));
-		info.setEd2k(BCodeUtils.getBytes(map, "ed2k"));
-		info.setFilehash(BCodeUtils.getBytes(map, "filehash"));
-		info.setPieces(BCodeUtils.getBytes(map, "pieces"));
-		info.setPieceLength(BCodeUtils.getLong(map, "piece length"));
-		info.setPublisher(BCodeUtils.getString(map, "publisher"));
-		info.setPublisherUtf8(BCodeUtils.getString(map, "publisher.utf-8"));
-		info.setPublisherUrl(BCodeUtils.getString(map, "publisher-url"));
-		info.setPublisherUrlUtf8(BCodeUtils.getString(map, "publisher-url.utf-8"));
+		info.setName(BCodeDecoder.getString(map, "name"));
+		info.setNameUtf8(BCodeDecoder.getString(map, "name.utf-8"));
+		info.setLength(BCodeDecoder.getLong(map, "length"));
+		info.setEd2k(BCodeDecoder.getBytes(map, "ed2k"));
+		info.setFilehash(BCodeDecoder.getBytes(map, "filehash"));
+		info.setPieces(BCodeDecoder.getBytes(map, "pieces"));
+		info.setPieceLength(BCodeDecoder.getLong(map, "piece length"));
+		info.setPublisher(BCodeDecoder.getString(map, "publisher"));
+		info.setPublisherUtf8(BCodeDecoder.getString(map, "publisher.utf-8"));
+		info.setPublisherUrl(BCodeDecoder.getString(map, "publisher-url"));
+		info.setPublisherUrlUtf8(BCodeDecoder.getString(map, "publisher-url.utf-8"));
 		List<?> files = (List<?>) map.get("files");
 		if(files != null) {
 			info.setFiles(
