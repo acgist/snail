@@ -29,47 +29,44 @@ public class ApplicationMessageHandler extends TcpMessageHandler {
 	}
 	
 	@Override
-	public boolean onMessage(ByteBuffer attachment) {
-		boolean doNext = true; // 是否继续处理消息
+	public void onMessage(ByteBuffer attachment) {
 		String content = IoUtils.readContent(attachment);
 		if(content.contains(SPLIT)) {
 			int index = content.indexOf(SPLIT);
 			while(index >= 0) {
 				contentBuffer.append(content.substring(0, index));
-				doNext = oneMessage(contentBuffer.toString());
+				oneMessage(contentBuffer.toString());
 				contentBuffer.setLength(0);
 				content = content.substring(index + SPLIT.length());
 				index = content.indexOf(SPLIT);
 			}
 		}
 		contentBuffer.append(content);
-		return doNext;
 	};
 	
 	/**
 	 * 单条消息处理
 	 */
-	private boolean oneMessage(String json) {
+	private void oneMessage(String json) {
 		json = json.trim();
 		if(StringUtils.isEmpty(json)) {
 			LOGGER.warn("读取消息内容为空");
-			return true;
+			return;
 		}
 		ApplicationMessage message = ApplicationMessage.valueOf(json);
 		if(message == null) {
 			LOGGER.warn("读取消息格式错误：{}", json);
-			return true;
+			return;
 		}
 		LOGGER.info("读取消息：{}", json);
-		return !this.execute(message);
+		this.execute(message);
 	}
 	
 	/**
 	 * 处理消息
 	 * @return 是否关闭socket：true-关闭；false-继续
 	 */
-	private boolean execute(ApplicationMessage message) {
-		boolean close = false; // 是否关闭
+	private void execute(ApplicationMessage message) {
 		if(message.getType() == ApplicationMessage.Type.text) { // 文本信息：直接原样返回
 			send(ApplicationMessage.response(message.getBody()));
 		} else if(message.getType() == ApplicationMessage.Type.notify) { // 唤醒主窗口
@@ -77,14 +74,12 @@ public class ApplicationMessageHandler extends TcpMessageHandler {
 				MainWindow.getInstance().show();
 			});
 		} else if(message.getType() == ApplicationMessage.Type.close) { // 关闭
-			close = true;
-			IoUtils.close(socket);
+			this.close();
 		} else if(message.getType() == ApplicationMessage.Type.response) { // 响应内容
 			LOGGER.info("收到响应：{}", message.getBody());
 		} else {
 			LOGGER.warn("未适配的消息类型：{}", message.getType());
 		}
-		return close;
 	}
 
 	/**

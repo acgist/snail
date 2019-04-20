@@ -35,6 +35,7 @@ public class ThreadUtils {
 	 * 1.满足跳出条件<br>
 	 * 2.超过超时时间
 	 * @param timeout 超时时间（毫秒）
+	 * TODO：使用wait
 	 */
 	public static final void timeout(long timeout, ConditionFunction function) {
 		try {
