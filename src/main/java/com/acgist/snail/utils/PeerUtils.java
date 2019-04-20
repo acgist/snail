@@ -30,8 +30,8 @@ public class PeerUtils {
 		final Map<String, Integer> data = new HashMap<>();
 		while (buffer.position() < size) {
 			final int ipValue = buffer.getInt();
-			final int port = NetUtils.shortToIntPort(Short.valueOf(buffer.getShort()));
-			data.put(NetUtils.intToIp(ipValue), port);
+			final int port = NetUtils.decodePort(Short.valueOf(buffer.getShort()));
+			data.put(NetUtils.encodeIntToIp(ipValue), port);
 		}
 		return data;
 	}
