@@ -571,11 +571,11 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 * payload：消息内容
 	 */
 	private ByteBuffer buildMessage(MessageType.Type type, byte[] payload) {
-		if(LOGGER.isDebugEnabled()) {
-			if(payload != null) {
-				LOGGER.debug("发送Peer消息：{}-{}", type, new String(payload));
-			}
-		}
+//		if(LOGGER.isDebugEnabled()) {
+//			if(payload != null) {
+//				LOGGER.debug("发送Peer消息：{}-{}", type, new String(payload));
+//			}
+//		}
 		final Byte id = type == null ? null : type.value();
 		int capacity = 0;
 		if(id != null) {
