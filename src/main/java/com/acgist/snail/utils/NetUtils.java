@@ -16,77 +16,47 @@ public class NetUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(NetUtils.class);
 	
-	private static final int MAX_PORT = (int) Math.pow(2, 16);
-	private static final long MAX_IP = (long) Math.pow(2, 32);
-	
 	// A类私用地址
-	private static final long A_IP_BEGIN = ipToLong("10.0.0.0");
-	private static final long A_IP_END = ipToLong("10.255.255.255");
+	private static final long A_IP_BEGIN = decodeIpToLong("10.0.0.0");
+	private static final long A_IP_END = decodeIpToLong("10.255.255.255");
 	// B类私用地址
-	private static final long B_IP_BEGIN = ipToLong("172.16.0.0");
-	private static final long B_IP_END = ipToLong("172.31.255.255");
+	private static final long B_IP_BEGIN = decodeIpToLong("172.16.0.0");
+	private static final long B_IP_END = decodeIpToLong("172.31.255.255");
 	// C类私用地址
-	private static final long C_IP_BEGIN = ipToLong("192.168.0.0");
-	private static final long C_IP_END = ipToLong("192.168.255.255");
+	private static final long C_IP_BEGIN = decodeIpToLong("192.168.0.0");
+	private static final long C_IP_END = decodeIpToLong("192.168.255.255");
 	// 系统环回地址
-	private static final long L_IP_BEGIN = ipToLong("127.0.0.0");
-	private static final long L_IP_END = ipToLong("127.255.255.255");
+	private static final long L_IP_BEGIN = decodeIpToLong("127.0.0.0");
+	private static final long L_IP_END = decodeIpToLong("127.255.255.255");
 
-	public static final int shortToIntPort(short port) {
-		int value = port;
-		if(value <= 0) {
-			value = MAX_PORT + value;
-		}
-		return value;
+	public static final int decodePort(short port) {
+		return Short.toUnsignedInt(port);
 	}
 	
-	public static final short intToShortPort(int port) {
-		if(port > Short.MAX_VALUE) {
-			port = port - MAX_PORT;
-		}
+	public static final short encodePort(int port) {
 		return (short) port;
 	}
 	
-	/**
-	 * IP转long
-	 */
-	public static final long ipToLong(String ipAddress) {
-		long result = 0;
+	public static final int decodeIpToInt(String ipAddress) {
+		return (int) decodeIpToLong(ipAddress);
+	}
+	
+	public static final long decodeIpToLong(String ipAddress) {
+		long result = 0, tmp;
 		final String[] array = ipAddress.split("\\.");
 		for (int index = 3; index >= 0; index--) {
-			long ip = Long.parseLong(array[3 - index]);
-			result |= ip << (index * 8);
+			tmp = Long.parseLong(array[3 - index]);
+			result |= tmp << (index * 8);
 		}
 		return result;
 	}
+
+	public static final String encodeIntToIp(int ipNumber) {
+		return encodeLongToIp(Integer.toUnsignedLong(ipNumber));
+	}
 	
-	/**
-	 * IP转int
-	 */
-	public static final int ipToInt(String ipAddress) {
-		long result = ipToLong(ipAddress);
-		if(result > Integer.MAX_VALUE) {
-			result = result - MAX_IP;
-		}
-		return (int) result;
-	}
-
-	/**
-	 * long转IP
-	 */
-	public static final String longToIp(long ipNumber) {
+	public static final String encodeLongToIp(long ipNumber) {
 		return ((ipNumber >> 24) & 0xFF) + "." + ((ipNumber >> 16) & 0xFF) + "." + ((ipNumber >> 8) & 0xFF) + "." + (ipNumber & 0xFF);
-	}
-
-	/**
-	 * int转IP
-	 */
-	public static final String intToIp(int ipNumber) {
-		long value = ipNumber;
-		if(value <= 0) {
-			value = MAX_IP + value;
-		}
-		return longToIp(value);
 	}
 	
 	/**
@@ -143,7 +113,7 @@ public class NetUtils {
 	 * 判断是否是本地IP
 	 */
 	public static final boolean isLocalIp(String ipAddress) {
-		final long value = ipToLong(ipAddress);
+		final long value = decodeIpToLong(ipAddress);
 		return
 			(A_IP_BEGIN < value && value < A_IP_END) ||
 			(B_IP_BEGIN < value && value < B_IP_END) ||

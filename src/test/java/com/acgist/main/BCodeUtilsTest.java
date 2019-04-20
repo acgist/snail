@@ -28,7 +28,7 @@ public class BCodeUtilsTest {
 		System.out.println(BCodeUtils.getString(data, "v"));
 		System.out.println(new String((byte[]) data.get("v")));
 		ByteBuffer ipAddress = ByteBuffer.wrap((byte[]) data.get("yourip"));
-		System.out.println(NetUtils.intToIp(ipAddress.getInt()));
+		System.out.println(NetUtils.encodeIntToIp(ipAddress.getInt()));
 	}
 	
 }
