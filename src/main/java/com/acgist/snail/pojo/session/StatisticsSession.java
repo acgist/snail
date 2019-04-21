@@ -115,10 +115,10 @@ public class StatisticsSession {
 	private void limitDownload(long buffer) {
 		final int limitSize = DownloadConfig.getBufferByte();
 		final long oldDownloadBuffer = downloadBuffer.addAndGet(buffer);
-		if(oldDownloadBuffer > limitSize) { // 超过限速
+		long interval = System.currentTimeMillis() - lastDownloadTime; // 时间间隔
+		if(oldDownloadBuffer > limitSize || interval >= ONE_SECOND) { // 超过限速获取时间超过一秒钟
 			synchronized (this) {
 				if(oldDownloadBuffer == downloadBuffer.get()) {
-					long interval = System.currentTimeMillis() - lastDownloadTime;
 					if(limit) {
 						final long expectTime = BigDecimal.valueOf(oldDownloadBuffer)
 							.multiply(BigDecimal.valueOf(ONE_SECOND))
@@ -134,9 +134,6 @@ public class StatisticsSession {
 					downloadBuffer.set(0); // 清空
 				}
 			}
-		} else if(downloadSecond == 0) {
-			long interval = System.currentTimeMillis() - lastDownloadTime;
-			downloadSecond = oldDownloadBuffer * 1000 / interval;
 		}
 	}
 	
@@ -146,10 +143,10 @@ public class StatisticsSession {
 	private void limitUpload(long buffer) {
 		final int limitSize = DownloadConfig.getBufferByte();
 		final long oldUploadBuffer = uploadBuffer.addAndGet(buffer);
-		if(oldUploadBuffer > limitSize) { // 超过限速
+		long interval = System.currentTimeMillis() - lastUploadTime;
+		if(oldUploadBuffer > limitSize || interval >= ONE_SECOND) { // 超过限速
 			synchronized (this) {
 				if(oldUploadBuffer == uploadBuffer.get()) {
-					long interval = System.currentTimeMillis() - lastUploadTime;
 					if(limit) {
 						final long expectTime = BigDecimal.valueOf(oldUploadBuffer)
 							.multiply(BigDecimal.valueOf(ONE_SECOND))
@@ -165,9 +162,6 @@ public class StatisticsSession {
 					uploadBuffer.set(0); // 清空
 				}
 			}
-		} else if(uploadSecond == 0) {
-			long interval = System.currentTimeMillis() - lastUploadTime;
-			uploadSecond = oldUploadBuffer * 1000 / interval;
 		}
 	}
 	
