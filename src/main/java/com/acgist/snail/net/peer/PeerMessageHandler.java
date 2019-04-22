@@ -71,12 +71,12 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	
 	private static final byte DHT_PROTOCOL = 1; // 0x01
 	private static final byte EXTENSION_PROTOCOL = 1 << 4; // 0x10
-	private static final byte PEER_EXCHANGE = 1 << 1; // 0x02
+//	private static final byte PEER_EXCHANGE = 1 << 1; // 0x02
 	
 	static {
 		HANDSHAKE_RESERVED[5] |= EXTENSION_PROTOCOL; // Extension Protocol
 		HANDSHAKE_RESERVED[7] |= DHT_PROTOCOL; // DHT Protocol
-		HANDSHAKE_RESERVED[7] |= PEER_EXCHANGE; // Peer Exchange
+//		HANDSHAKE_RESERVED[7] |= PEER_EXCHANGE; // Peer Exchange
 	}
 
 	/**
@@ -118,14 +118,16 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	/**
 	 * 初始化
 	 */
-	private void init(String infoHashHex, String peerId) {
+	private boolean init(String infoHashHex, String peerId) {
 		final TorrentSession torrentSession = TorrentSessionManager.getInstance().torrentSession(infoHashHex);
-		if(torrentSession == null) { // 不存在
-			return;
+		if(torrentSession == null) {
+			LOGGER.debug("初始化失败，不存在的种子信息");
+			return false;
 		}
 		final TaskSession taskSession = torrentSession.taskSession();
 		if(taskSession == null) {
-			return;
+			LOGGER.debug("初始化失败，不存在的任务信息");
+			return false;
 		}
 		InetSocketAddress address = null;
 		try {
@@ -134,13 +136,12 @@ public class PeerMessageHandler extends TcpMessageHandler {
 			LOGGER.error("Peer远程客户端信息获取异常", e);
 		}
 		if(address == null) {
-			return;
-		}
-		if(LOGGER.isDebugEnabled()) {
-			LOGGER.debug("远程Peer客户端连接：{}:{}", address.getHostString());
+			LOGGER.debug("初始化失败，获取远程Peer信息失败");
+			return false;
 		}
 		final PeerSession peerSession = PeerSessionManager.getInstance().newPeerSession(infoHashHex, taskSession.statistics(), address.getHostString(), null);
 		init(peerSession, torrentSession);
+		return true;
 	}
 	
 	@Override
@@ -292,7 +293,10 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		buffer.get(peerIds);
 		final String peerId = new String(peerIds);
 		if(server) { // 服务端
-			init(infoHashHex, peerId);
+			boolean init = init(infoHashHex, peerId);
+			if(!init) {
+				return;
+			}
 			handshake((PeerClient) null); // 握手
 		} else { // 客户端
 			peerSession.id(peerId);
