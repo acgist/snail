@@ -24,7 +24,10 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	
 	private static final int SLICE_AWAIT_TIME = 10; // SLICE每批等待时间
 	private static final int PIECE_AWAIT_TIME = 60; // PIECE完成等待时间
-	private static final int CLOSE_AWAIT_TIME = 20; // 关闭等待时间
+	private static final int CLOSE_AWAIT_TIME = 60; // 关闭等待时间
+	
+//	private static final int SLICE_AWAIT_TIME = 4; // SLICE每批等待时间
+//	private static final int PIECE_AWAIT_TIME = 4; // PIECE完成等待时间
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerClient.class);
 	
@@ -208,6 +211,9 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 				break;
 			}
 		}
+		/*
+		 * 此处不论是否有数据返回都需要进行结束等待，防止数据刚刚只有一个slice时直接跳出了slice wait导致响应还没有收到就直接结束了
+		 */
 		synchronized (overLock) {
 			if(!overLock.getAndSet(true)) {
 				ThreadUtils.wait(overLock, Duration.ofSeconds(PIECE_AWAIT_TIME));
