@@ -1,15 +1,11 @@
 package com.acgist.snail.protocol.magnet;
 
-import java.io.File;
 import java.net.URI;
 
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.protocol.Protocol;
-import com.acgist.snail.protocol.torrent.TorrentProtocol;
-import com.acgist.snail.protocol.torrent.TorrentProtocol.TorrentFileOperation;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.system.manager.ProtocolManager;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -49,16 +45,17 @@ public class MagnetProtocol extends Protocol {
 	
 	@Override
 	protected Protocol convert() throws DownloadException {
-		final File file = null; // TODO：下载
-		if(file == null) {
-			throw new DownloadException("下载种子失败：" + url);
-		}
-		var protocol = ProtocolManager.getInstance().protocol(file.getPath());
-		if(protocol instanceof TorrentProtocol) { // 设置种子文件操作类型：移动
-			TorrentProtocol torrentProtocol = (TorrentProtocol) protocol;
-			torrentProtocol.operation(TorrentFileOperation.move);
-		}
-		return protocol;
+//		final File file = null; // TODO：下载
+//		if(file == null) {
+//			throw new DownloadException("下载种子失败：" + url);
+//		}
+//		var protocol = ProtocolManager.getInstance().protocol(file.getPath());
+//		if(protocol instanceof TorrentProtocol) { // 设置种子文件操作类型：移动
+//			TorrentProtocol torrentProtocol = (TorrentProtocol) protocol;
+//			torrentProtocol.operation(TorrentFileOperation.move);
+//		}
+//		return protocol;
+		return null;
 	}
 	
 	@Override

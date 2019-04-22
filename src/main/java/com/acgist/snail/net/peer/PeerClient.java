@@ -92,6 +92,8 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 		final boolean ok = connect();
 		if(ok) {
 			handler.handshake(this);
+		} else {
+			peerSession.fail();
 		}
 		this.available = ok;
 		return ok;

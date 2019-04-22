@@ -14,8 +14,12 @@ import com.acgist.snail.utils.ObjectUtils;
  */
 public class PeerSession implements IStatistics {
 
+	private static final int MAX_FAIL_TIMES = 2;
+	
 	private StatisticsSession statistics;
 
+	private int failTimes = 0; // 失败次数：如果失败次数过多不在连接
+	
 	private String host;
 	private Integer port;
 	
@@ -167,6 +171,17 @@ public class PeerSession implements IStatistics {
 	 */
 	public Byte extensionTypeValue(MessageType.ExtensionType type) {
 		return this.extension.get(type);
+	}
+	
+	public void fail() {
+		this.failTimes++;
+	}
+	
+	/**
+	 * 是否可用：失败次数小于最大失败次数
+	 */
+	public boolean usable() {
+		return this.failTimes < MAX_FAIL_TIMES;
 	}
 	
 	@Override

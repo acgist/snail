@@ -77,7 +77,20 @@ public class PeerSessionManager {
 		synchronized (peers) {
 			var deque = peers.get(infoHashHex);
 			if(deque != null) {
-				return deque.pollLast();
+				int size = deque.size();
+				int index = 0;
+				PeerSession peerSession = null;
+				while(true) {
+					if(++index > size) {
+						break;
+					}
+					peerSession = deque.pollLast();
+					if(peerSession.usable()) { // 可用
+						return peerSession;
+					} else {
+						deque.offerFirst(peerSession);
+					}
+				}
 			}
 			return null;
 		}
