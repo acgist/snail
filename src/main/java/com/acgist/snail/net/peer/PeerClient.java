@@ -29,8 +29,8 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerClient.class);
 	
 	private boolean launcher = false; // 是否启动
-	private boolean available = false; // 状态：连接是否成功
-	private boolean havePieceMessage = false; // 状态：是否返回数据
+	private volatile boolean available = false; // 状态：连接是否成功
+	private volatile boolean havePieceMessage = false; // 状态：是否返回数据
 	
 	private TorrentPiece downloadPiece; // 下载的Piece信息
 	
@@ -213,7 +213,7 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 				ThreadUtils.wait(overLock, Duration.ofSeconds(PIECE_AWAIT_TIME));
 			}
 		}
-		if(!available) {
+		if(!available) { // 已经关闭
 			synchronized (closeLock) {
 				closeLock.notifyAll();
 			}

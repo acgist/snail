@@ -34,7 +34,6 @@ public class UtMetadataMessageHandler {
 	private static final String ARG_MSG_TYPE = "msg_type";
 	private static final String ARG_PIECE = "piece";
 	private static final String ARG_TOTAL_SIZE = "total_size";
-	private static final String ARG_X = "x";
 	
 	private final InfoHash infoHash;
 	private final PeerSession peerSession;
@@ -114,8 +113,7 @@ public class UtMetadataMessageHandler {
 		System.arraycopy(bytes, begin, x, 0, length);
 		final var data = buildMessage(MessageType.UtMetadataType.data, piece);
 		data.put(ARG_TOTAL_SIZE, infoHash.size());
-		data.put(ARG_X, x);
-		pushMessage(utMetadataType(), data);
+		pushMessage(utMetadataType(), data, x);
 	}
 
 	private void data(Map<String, Object> data, BCodeDecoder decoder) {
@@ -150,17 +148,31 @@ public class UtMetadataMessageHandler {
 		return peerSession.extensionTypeValue(ExtensionType.ut_metadata);
 	}
 	
+	private void pushMessage(Byte type, Map<String, Object> data) {
+		this.pushMessage(type, data, null);
+	}
+	
 	/**
 	 * 创建消息
 	 * @param type 扩展消息类型：注意客户端和服务的类型不同
 	 */
-	private void pushMessage(Byte type, Map<String, Object> data) {
+	private void pushMessage(Byte type, Map<String, Object> data, byte[] x) {
 		if (type == null) {
 			LOGGER.warn("不支持UtMetadata扩展协议");
 			return;
 		}
+		int length = 0;
 		final BCodeEncoder encoder = BCodeEncoder.newInstance();
-		final byte[] bytes = encoder.build(data).bytes();
+		final byte[] dataBytes = encoder.build(data).bytes();
+		length += dataBytes.length;
+		if(x != null) {
+			length += x.length;
+		}
+		final byte[] bytes = new byte[length];
+		System.arraycopy(dataBytes, 0, bytes, 0, bytes.length);
+		if(x != null) {
+			System.arraycopy(x, 0, bytes, bytes.length, x.length);
+		}
 		final byte[] pushBytes = extensionMessageHandler.buildMessage(type, bytes);
 		peerMessageHandler.pushMessage(MessageType.Type.extension, pushBytes);
 	}
