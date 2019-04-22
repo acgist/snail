@@ -1,6 +1,6 @@
 /**
- * 模块化<br>
- * open：开放模块
+ * Sanil下载工具，支持下载协议：BT、FTP、HTTP、ED2K。<br>
+ * open：开放模块<br>
  */
 open module com.acgist.snail {
 	
@@ -11,7 +11,7 @@ open module com.acgist.snail {
 	
 	/**
 	 * opens：开放包（反射时需要，使用open module不需要此配置）<br>
-	 * opens com.acgist.main
+	 * opens com.acgist.main;
 	 */
 
 	/**
@@ -23,8 +23,8 @@ open module com.acgist.snail {
 	requires java.desktop;
 	requires java.net.http;
 	
-	/**
-	 * jdeps 分析出来的依赖
+	/*
+	 * jdeps分析出来的依赖：
 	 */
 //	java.sql
 //	java.xml

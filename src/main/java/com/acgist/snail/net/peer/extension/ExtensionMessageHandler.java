@@ -43,6 +43,7 @@ public class ExtensionMessageHandler {
 	private final TorrentSession torrentSession;
 	private final PeerMessageHandler peerMessageHandler;
 	private final UtMetadataMessageHandler utMetadataMessageHandler;
+	private final UtPeerExchangeMessageHandler utPeerExchangeMessageHandler;
 	
 	public static final ExtensionMessageHandler newInstance(PeerSession peerSession, TorrentSession torrentSession, PeerMessageHandler peerMessageHandler) {
 		return new ExtensionMessageHandler(peerSession, torrentSession, peerMessageHandler);
@@ -54,6 +55,7 @@ public class ExtensionMessageHandler {
 		this.torrentSession = torrentSession;
 		this.peerMessageHandler = peerMessageHandler;
 		this.utMetadataMessageHandler = UtMetadataMessageHandler.newInstance(this.torrentSession, this.peerSession, peerMessageHandler, this);
+		this.utPeerExchangeMessageHandler = UtPeerExchangeMessageHandler.newInstance();
 	}
 	
 	/**
@@ -72,6 +74,7 @@ public class ExtensionMessageHandler {
 			handshake(buffer);
 			break;
 		case ut_pex:
+			utPex(buffer);
 			break;
 		case ut_metadata:
 			utMetadata(buffer);
@@ -156,7 +159,14 @@ public class ExtensionMessageHandler {
 	}
 	
 	/**
-	 * 种子信息
+	 * ut_pex
+	 */
+	private void utPex(ByteBuffer buffer) {
+		utPeerExchangeMessageHandler.onMessage(buffer);
+	}
+	
+	/**
+	 * ut_metadata
 	 */
 	private void utMetadata(ByteBuffer buffer) {
 		utMetadataMessageHandler.onMessage(buffer);
