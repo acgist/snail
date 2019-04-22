@@ -192,10 +192,10 @@ public class TorrentStream {
 	 * @param ignorePieces 忽略已下载位图
 	 */
 	private byte[] read(int index, int size, int pos, boolean ignorePieces) {
-		if(!hasIndex(index)) {
+		if(!haveIndex(index)) {
 			return null;
 		}
-		if(!ignorePieces && !hasPiece(index)) {
+		if(!ignorePieces && !havePiece(index)) {
 			return null;
 		}
 		long seek = 0L;
@@ -351,7 +351,7 @@ public class TorrentStream {
 				pos = 0;
 			}
 			bytes = read(index, VERIFY_SIZE, pos, true); // 第一块需要偏移
-			if(hasData(bytes)) {
+			if(haveData(bytes)) {
 				download(index);
 				torrentStreamGroup.piece(index);
 			}
@@ -370,11 +370,11 @@ public class TorrentStream {
 	private void initDownloadSize() {
 		long size = 0L;
 		int downloadPieceSize = this.pieces.cardinality();
-		if(hasPiece(this.fileBeginPieceIndex)) {
+		if(havePiece(this.fileBeginPieceIndex)) {
 			size += firstPieceSize();
 			downloadPieceSize--;
 		}
-		if(hasPiece(this.fileEndPieceIndex)) {
+		if(havePiece(this.fileEndPieceIndex)) {
 			size += lastPieceSize();
 			downloadPieceSize--;
 		}
@@ -384,7 +384,7 @@ public class TorrentStream {
 	/**
 	 * 是否有数据
 	 */
-	private boolean hasData(byte[] bytes) {
+	private boolean haveData(byte[] bytes) {
 		if(bytes == null) {
 			return false;
 		}
@@ -429,7 +429,7 @@ public class TorrentStream {
 	 * 判断是否包含块索引
 	 * @param index 文件索引
 	 */
-	private boolean hasIndex(int index) {
+	private boolean haveIndex(int index) {
 		if(index < this.fileBeginPieceIndex || index > this.fileEndPieceIndex) { // 不符合当前文件位置
 			return false;
 		}
@@ -439,7 +439,7 @@ public class TorrentStream {
 	/**
 	 * 是否含有Piece数据
 	 */
-	private boolean hasPiece(int index) {
+	private boolean havePiece(int index) {
 		synchronized (this) {
 			return pieces.get(index);
 		}

@@ -39,7 +39,7 @@ public class DbInitializer extends Initializer {
 	 * 判断表是否存在
 	 */
 	private boolean exist() {
-		return jdbcConnection.hasTable(ConfigEntity.TABLE_NAME);
+		return jdbcConnection.haveTable(ConfigEntity.TABLE_NAME);
 	}
 
 	/**
