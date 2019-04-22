@@ -89,6 +89,7 @@ public class PeerClientGroup {
 
 	/**
 	 * 发送have消息
+	 * TODO：客户端也需要通知
 	 */
 	public void have(int index) {
 		synchronized (peerClients) {

@@ -7,6 +7,7 @@ import com.acgist.snail.utils.NetUtils;
 
 /**
  * 系统配置
+ * TODO：UPNP映射端口时，如果已经映射需要修改端口
  */
 public class SystemConfig extends PropertiesConfig {
 

@@ -3,6 +3,16 @@
 #### 介绍
 基于JAVA/JAVAFX的下载工具，支持下载协议：BT、FTP、HTTP、ED2K。
 
+#### 进度
+|包路径|作用说明|
+|:-|:-|
+|com.acgist.snail.downloader|下载器|
+|com.acgist.snail.gui|图形界面|
+|com.acgist.snail.net|网络协议|
+|com.acgist.snail.protocol|下载协议|
+|com.acgist.snail.repository|持久层|
+|com.acgist.snail.system|系统|
+
 #### 技术
 |技术|版本|
 |:-|:-|
@@ -34,6 +44,6 @@ win：start.bat、SnailLauncher.exe、SnailLauncher_auto.exe，随便选择一�
 
 #### TODO
 PEX：http://www.bittorrent.org/beps/bep_0011.html   
-dht：http://www.bittorrent.org/beps/bep_0005.html   
+DHT：http://www.bittorrent.org/beps/bep_0005.html   
 UTP：http://www.bittorrent.org/beps/bep_0029.html   
 local search：http://www.bittorrent.org/beps/bep_0014.html   
