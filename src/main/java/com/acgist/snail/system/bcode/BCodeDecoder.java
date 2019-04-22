@@ -86,10 +86,11 @@ public class BCodeDecoder {
 	 * 获取下一个map，如果类型错误抛出异常
 	 */
 	public Map<String, Object> mustMap() {
-		if(nextType() == Type.map) {
+		var type = nextType();
+		if(type == Type.map) {
 			return nextMap();
 		}
-		throw new ArgumentException("类型错误");
+		throw new ArgumentException("BCode解析Map类型错误：" + type);
 	}
 	
 	/**

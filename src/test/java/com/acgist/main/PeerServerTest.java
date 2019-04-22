@@ -66,7 +66,7 @@ public class PeerServerTest {
 		String host = "127.0.0.1";
 		Integer port = 17888;
 		StatisticsSession statisticsSession = new StatisticsSession();
-		PeerSession peerSession = new PeerSession(statisticsSession, host, port);
+		PeerSession peerSession = PeerSession.newInstance(statisticsSession, host, port);
 		PeerClient client = new PeerClient(peerSession, torrentSession);
 //		client.torrent();
 		client.download();

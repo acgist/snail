@@ -15,8 +15,10 @@ import com.acgist.snail.net.peer.extension.ExtensionMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.manager.PeerSessionManager;
 import com.acgist.snail.system.manager.TorrentSessionManager;
+import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -133,9 +135,9 @@ public class PeerMessageHandler extends TcpMessageHandler {
 			return;
 		}
 		if(LOGGER.isDebugEnabled()) {
-			LOGGER.debug("远程Peer客户端连接：{}:{}", address.getHostString(), address.getPort());
+			LOGGER.debug("远程Peer客户端连接：{}:{}", address.getHostString());
 		}
-		final PeerSession peerSession = PeerSessionManager.getInstance().newPeerSession(infoHashHex, taskSession.statistics(), address.getHostString(), address.getPort());
+		final PeerSession peerSession = PeerSessionManager.getInstance().newPeerSession(infoHashHex, taskSession.statistics(), address.getHostString(), null);
 		init(peerSession, torrentSession);
 	}
 	
@@ -294,6 +296,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 			peerSession.id(peerId);
 		}
 		extension(); // 发送扩展
+		port(); // 发送DHT端口
 		bitfield(); // 交换位图
 		if(server) { // TODO：服务端：判断连接数量，阻塞|不阻塞
 			unchoke();
@@ -518,12 +521,18 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 * listen-port：两字节
 	 * 支持DHT的客户端使用，指明DHT监听的端口
 	 */
-	public void port(short port) {
-		pushMessage(MessageType.Type.port, ByteBuffer.allocate(4).putShort(port).array());
+	public void port() {
+		if(supportDhtProtocol()) {
+			LOGGER.debug("发送DHTPort消息");
+			final short port = NetUtils.encodePort(SystemConfig.getDhtPort());
+			pushMessage(MessageType.Type.port, ByteBuffer.allocate(2).putShort(port).array());
+		}
 	}
 	
 	private void port(ByteBuffer buffer) {
-		// TODO：DHT
+		LOGGER.debug("收到DHTPort消息");
+		final short port = buffer.getShort();
+		peerSession.dhtPort(NetUtils.decodePort(port));
 	}
 
 	/**
@@ -594,6 +603,13 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	private boolean supportExtensionProtocol() {
 		if(this.reserved != null) {
 			return (this.reserved[5] & EXTENSION_PROTOCOL) != 0;
+		}
+		return false;
+	}
+	
+	private boolean supportDhtProtocol() {
+		if(this.reserved != null) {
+			return (this.reserved[7] & DHT_PROTOCOL) != 0;
 		}
 		return false;
 	}

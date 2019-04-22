@@ -20,8 +20,9 @@ public class PeerSession implements IStatistics {
 
 	private int failTimes = 0; // 失败次数：如果失败次数过多不在连接
 	
-	private String host;
-	private Integer port;
+	private String host; // 地址
+	private Integer port; // 端口
+	private Integer dhtPort; // DHT端口
 	
 	private String id; // Peer id
 	private String clientName; // Peer客户端名称
@@ -35,7 +36,11 @@ public class PeerSession implements IStatistics {
 	
 	private final Map<MessageType.ExtensionType, Byte> extension; // 支持的扩展协议
 
-	public PeerSession(StatisticsSession parent, String host, Integer port) {
+	public static final PeerSession newInstance(StatisticsSession parent, String host, Integer port) {
+		return new PeerSession(parent, host, port);
+	}
+	
+	private PeerSession(StatisticsSession parent, String host, Integer port) {
 		this.statistics = new StatisticsSession(parent);
 		this.host = host;
 		this.port = port;
@@ -121,6 +126,10 @@ public class PeerSession implements IStatistics {
 		return this.port;
 	}
 	
+	public void port(Integer port) {
+		this.port = port;
+	}
+	
 	public String clientName() {
 		return this.clientName;
 	}
@@ -178,10 +187,22 @@ public class PeerSession implements IStatistics {
 	}
 	
 	/**
-	 * 是否可用：失败次数小于最大失败次数
+	 * 是否可用：
+	 * 	失败次数小于最大失败次数
+	 * 	有可用端口（如果是主动连接上来的客户端可能没有获取到端口号）
 	 */
 	public boolean usable() {
-		return this.failTimes < MAX_FAIL_TIMES;
+		return
+			this.failTimes < MAX_FAIL_TIMES &&
+			this.port != null;
+	}
+	
+	public Integer dhtPort() {
+		return this.dhtPort;
+	}
+	
+	public void dhtPort(Integer dhtPort) {
+		this.dhtPort = dhtPort;
 	}
 	
 	@Override

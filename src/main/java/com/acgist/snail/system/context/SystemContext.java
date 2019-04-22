@@ -92,14 +92,12 @@ public class SystemContext {
 			SystemContext.shutdown();
 			SystemThreadContext.submit(() -> {
 				LOGGER.info("系统关闭...");
-				/**系统线程都是后台线程以下操作可以不执行**/
+				DownloaderManager.getInstance().shutdown();
 				TrackerUdpClient.getInstance().close();
 				TcpClient.shutdown();
 				ApplicationServer.getInstance().close();
 				TcpServer.shutdown();
-				DownloaderManager.getInstance().shutdown();
 				SystemThreadContext.shutdown();
-				/**系统线程都是后台线程以上操作可以不执行**/
 				UpnpService.getInstance().release();
 				Platform.exit();
 				TrayMenu.exit();
