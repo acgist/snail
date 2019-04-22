@@ -7,14 +7,15 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.bcode.BCodeDecoder;
-import com.acgist.snail.net.bcode.BCodeEncoder;
 import com.acgist.snail.net.peer.MessageType;
 import com.acgist.snail.net.peer.MessageType.ExtensionType;
 import com.acgist.snail.net.peer.MessageType.UtMetadataType;
 import com.acgist.snail.net.peer.PeerMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
+import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
+import com.acgist.snail.system.bcode.BCodeDecoder;
+import com.acgist.snail.system.bcode.BCodeEncoder;
 import com.acgist.snail.utils.NumberUtils;
 
 /**
@@ -37,16 +38,18 @@ public class UtMetadataMessageHandler {
 	
 	private final InfoHash infoHash;
 	private final PeerSession peerSession;
+	private final TorrentSession torrentSession;
 	private final PeerMessageHandler peerMessageHandler;
 	private final ExtensionMessageHandler extensionMessageHandler;
 	
-	public static final UtMetadataMessageHandler newInstance(InfoHash infoHash, PeerSession peerSession, PeerMessageHandler peerMessageHandler, ExtensionMessageHandler extensionMessageHandler) {
-		return new UtMetadataMessageHandler(infoHash, peerSession, peerMessageHandler, extensionMessageHandler);
+	public static final UtMetadataMessageHandler newInstance(TorrentSession torrentSession, PeerSession peerSession, PeerMessageHandler peerMessageHandler, ExtensionMessageHandler extensionMessageHandler) {
+		return new UtMetadataMessageHandler(torrentSession, peerSession, peerMessageHandler, extensionMessageHandler);
 	}
 	
-	private UtMetadataMessageHandler(InfoHash infoHash, PeerSession peerSession, PeerMessageHandler peerMessageHandler, ExtensionMessageHandler extensionMessageHandler) {
-		this.infoHash = infoHash;
+	private UtMetadataMessageHandler(TorrentSession torrentSession, PeerSession peerSession, PeerMessageHandler peerMessageHandler, ExtensionMessageHandler extensionMessageHandler) {
+		this.infoHash = torrentSession.infoHash();
 		this.peerSession = peerSession;
+		this.torrentSession = torrentSession;
 		this.peerMessageHandler = peerMessageHandler;
 		this.extensionMessageHandler = extensionMessageHandler;
 	}
@@ -106,7 +109,7 @@ public class UtMetadataMessageHandler {
 			return;
 		}
 		int length = INFO_SLICE_SIZE;
-		if(end > bytes.length) {
+		if(end >= bytes.length) {
 			length = bytes.length - begin;
 		}
 		final byte[] x = new byte[length];
@@ -117,6 +120,7 @@ public class UtMetadataMessageHandler {
 	}
 
 	private void data(Map<String, Object> data, BCodeDecoder decoder) {
+		boolean over = false; // 下载完成
 		final int piece = BCodeDecoder.getInteger(data, ARG_PIECE);
 		final byte[] bytes = infoHash.info();
 		final int begin = piece * INFO_SLICE_SIZE;
@@ -125,11 +129,15 @@ public class UtMetadataMessageHandler {
 			return;
 		}
 		int length = INFO_SLICE_SIZE;
-		if(end > bytes.length) {
+		if(end >= bytes.length) {
+			over = true;
 			length = bytes.length - begin;
 		}
 		final byte[] x = decoder.oddBytes();
 		System.arraycopy(x, 0, bytes, begin, length);
+		if(over) {
+			this.torrentSession.saveTorrentFile();
+		}
 	}
 	
 	public void reject() {
@@ -169,9 +177,9 @@ public class UtMetadataMessageHandler {
 			length += x.length;
 		}
 		final byte[] bytes = new byte[length];
-		System.arraycopy(dataBytes, 0, bytes, 0, bytes.length);
+		System.arraycopy(dataBytes, 0, bytes, 0, dataBytes.length);
 		if(x != null) {
-			System.arraycopy(x, 0, bytes, bytes.length, x.length);
+			System.arraycopy(x, 0, bytes, dataBytes.length, x.length);
 		}
 		final byte[] pushBytes = extensionMessageHandler.buildMessage(type, bytes);
 		peerMessageHandler.pushMessage(MessageType.Type.extension, pushBytes);

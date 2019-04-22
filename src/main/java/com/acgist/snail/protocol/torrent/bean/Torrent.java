@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.acgist.snail.net.bcode.BCodeDecoder;
+import com.acgist.snail.system.bcode.BCodeDecoder;
 
 /**
  * 种子信息
@@ -49,7 +49,7 @@ public class Torrent {
 	private String comment; // 注释
 	private String commentUtf8; // 注释UTF8
 	private String encoding; // 编码
-	private String createBy; // 创建者
+	private String createdBy; // 创建者
 	private String announce; // Tracker主服务器
 	private Long creationDate; // 创建时间
 	private TorrentInfo info; // 文件信息
@@ -64,10 +64,10 @@ public class Torrent {
 		torrent.setComment(BCodeDecoder.getString(map, "comment"));
 		torrent.setCommentUtf8(BCodeDecoder.getString(map, "comment.utf-8"));
 		torrent.setEncoding(BCodeDecoder.getString(map, "encoding"));
-		torrent.setCreateBy(BCodeDecoder.getString(map, "created by"));
+		torrent.setCreatedBy(BCodeDecoder.getString(map, "created by"));
 		torrent.setAnnounce(BCodeDecoder.getString(map, "announce"));
 		torrent.setCreationDate(BCodeDecoder.getLong(map, "creation date"));
-		List<?> announceList = (List<?>) map.get("announce-list");
+		final List<?> announceList = (List<?>) map.get("announce-list");
 		if(announceList != null) {
 			torrent.setAnnounceList(
 				announceList.stream()
@@ -81,7 +81,7 @@ public class Torrent {
 		} else {
 			torrent.setAnnounceList(new ArrayList<>(0));
 		}
-		List<?> nodes = (List<?>) map.get("nodes");
+		final List<?> nodes = (List<?>) map.get("nodes");
 		if(nodes != null) {
 			torrent.setNodes(
 				nodes.stream()
@@ -133,12 +133,12 @@ public class Torrent {
 		this.encoding = encoding;
 	}
 
-	public String getCreateBy() {
-		return createBy;
+	public String getCreatedBy() {
+		return createdBy;
 	}
 
-	public void setCreateBy(String createBy) {
-		this.createBy = createBy;
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
 	}
 
 	public String getAnnounce() {

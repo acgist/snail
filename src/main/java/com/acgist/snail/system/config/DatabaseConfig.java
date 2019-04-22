@@ -3,24 +3,27 @@ package com.acgist.snail.system.config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.utils.PropertiesUtils;
-
 /**
  * 数据库配置
  */
-public class DatabaseConfig {
+public class DatabaseConfig extends PropertiesConfig {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseConfig.class);
 	
 	private static final DatabaseConfig INSTANCE = new DatabaseConfig();
 	
 	private DatabaseConfig() {
+		super("/config/config.database.properties");
 	}
 
 	static {
 		LOGGER.info("初始化数据库配置");
 		INSTANCE.init();
 		INSTANCE.logger();
+	}
+	
+	public static final DatabaseConfig getInstance() {
+		return INSTANCE;
 	}
 	
 	private String url;
@@ -33,12 +36,11 @@ public class DatabaseConfig {
 	 * 初始化
 	 */
 	private void init() {
-		PropertiesUtils propertiesUtils = PropertiesUtils.getInstance("/config/config.database.properties");
-		INSTANCE.url = propertiesUtils.getString("acgist.database.h2.url");
-		INSTANCE.driver = propertiesUtils.getString("acgist.database.h2.driver");
-		INSTANCE.user = propertiesUtils.getString("acgist.database.h2.user");
-		INSTANCE.password = propertiesUtils.getString("acgist.database.h2.password");
-		INSTANCE.tableSQL = propertiesUtils.getString("acgist.database.h2.table.sql");
+		INSTANCE.url = getString("acgist.database.h2.url");
+		INSTANCE.driver = getString("acgist.database.h2.driver");
+		INSTANCE.user = getString("acgist.database.h2.user");
+		INSTANCE.password = getString("acgist.database.h2.password");
+		INSTANCE.tableSQL = getString("acgist.database.h2.table.sql");
 	}
 	
 	/**

@@ -1,4 +1,4 @@
-package com.acgist.snail.net.bcode;
+package com.acgist.snail.system.bcode;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

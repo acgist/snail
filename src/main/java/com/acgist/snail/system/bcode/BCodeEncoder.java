@@ -1,4 +1,4 @@
-package com.acgist.snail.net.bcode;
+package com.acgist.snail.system.bcode;
 
 import java.util.List;
 import java.util.Map;

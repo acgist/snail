@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.system.config.DatabaseConfig;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.system.config.TrackerConfig;
 import com.acgist.snail.system.initializer.Initializer;
 
 /**
@@ -25,9 +26,11 @@ public class ConfigInitializer extends Initializer {
 	@Override
 	protected void init() {
 		LOGGER.info("初始化配置信息");
-		SystemConfig.getAuthor();
-		DatabaseConfig.getDriver();
-		DownloadConfig.getBuffer();
+		SystemConfig.getInstance();
+		DatabaseConfig.getInstance();
+		DownloadConfig.getInstance();
+//		DhtConfig.getInstance();
+		TrackerConfig.getInstance();
 	}
 
 }

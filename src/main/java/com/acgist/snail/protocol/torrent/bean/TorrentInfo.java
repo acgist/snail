@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.acgist.snail.net.bcode.BCodeDecoder;
+import com.acgist.snail.system.bcode.BCodeDecoder;
 import com.acgist.snail.utils.StringUtils;
 
 /**

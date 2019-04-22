@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 
 import org.junit.Test;
 
-import com.acgist.snail.net.bcode.BCodeDecoder;
+import com.acgist.snail.system.bcode.BCodeDecoder;
 import com.acgist.snail.utils.JsonUtils;
 import com.acgist.snail.utils.NetUtils;
 

@@ -5,22 +5,24 @@ import org.junit.Test;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
 import com.acgist.snail.system.manager.TorrentSessionManager;
+import com.acgist.snail.utils.DataUtils;
 
 public class TorrentTest {
 
 	@Test
 	public void test() throws Exception {
 //		String path = "e:/snail/5b293c290c78c503bcd59bc0fbf78fd213ce21a4.torrent";
-		String path = "e:/snail/543/c15417e6aeab33732a59085d826edd29978f9afa.torrent";
+		String path = "e:/snail/902ffaa29ee632c8dc966ed9ab573409ba9a518e.torrent";
 //		String path = "e:/snail/9d3854d8c6280049e5d85e490ff07de7c2bd96a2.torrent";
 //		String path = "e:/snail/868f1199b18d05bf103aa8a8321f6428854d712e.torrent";
 //		String path = "e:/snail/11e38a5270e15c60534ca48977b7d77a3c4f6340.torrent";
 //		String path = "e:/snail/0B156834B59B0FF64EE0C9305D4D6EDE421196E6.torrent";
+//		String path = "e:/snail/543/c15417e6aeab33732a59085d826edd29978f9afa.torrent";
 		TorrentSession session = TorrentSessionManager.getInstance().buildSession(path);
 		Torrent torrent = session.torrent();
 		System.out.println(torrent.getComment());
 		System.out.println("种子HASH：" + session.infoHash().infoHashHex());
-//		System.out.println(new Date(torrent.getCreationDate() * 1000));
+		System.out.println(DataUtils.unixToJavaDate(torrent.getCreationDate()));
 //		System.out.println(torrent.getCreationDate());
 //		System.out.println(torrent.getEncoding());
 //		System.out.println(torrent.getCreateBy());

@@ -7,8 +7,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.bcode.BCodeDecoder;
-import com.acgist.snail.net.bcode.BCodeEncoder;
 import com.acgist.snail.net.peer.MessageType;
 import com.acgist.snail.net.peer.MessageType.Action;
 import com.acgist.snail.net.peer.MessageType.ExtensionType;
@@ -16,6 +14,8 @@ import com.acgist.snail.net.peer.PeerMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
+import com.acgist.snail.system.bcode.BCodeDecoder;
+import com.acgist.snail.system.bcode.BCodeEncoder;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.CollectionUtils;
 
@@ -31,7 +31,7 @@ public class ExtensionMessageHandler {
 
 	private final InfoHash infoHash;
 	private final PeerSession peerSession;
-//	private final TorrentSession torrentSession;
+	private final TorrentSession torrentSession;
 	private final PeerMessageHandler peerMessageHandler;
 	private final UtMetadataMessageHandler utMetadataMessageHandler;
 	
@@ -42,9 +42,9 @@ public class ExtensionMessageHandler {
 	private ExtensionMessageHandler(PeerSession peerSession, TorrentSession torrentSession, PeerMessageHandler peerMessageHandler) {
 		this.infoHash = torrentSession.infoHash();
 		this.peerSession = peerSession;
-//		this.torrentSession = torrentSession;
+		this.torrentSession = torrentSession;
 		this.peerMessageHandler = peerMessageHandler;
-		this.utMetadataMessageHandler = UtMetadataMessageHandler.newInstance(this.infoHash, this.peerSession, peerMessageHandler, this);
+		this.utMetadataMessageHandler = UtMetadataMessageHandler.newInstance(this.torrentSession, this.peerSession, peerMessageHandler, this);
 	}
 	
 	/**

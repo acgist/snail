@@ -12,6 +12,10 @@ public class ConfigRepository extends Repository<ConfigEntity> {
 		super(ConfigEntity.TABLE_NAME);
 	}
 
+	public ConfigEntity findName(String name) {
+		return findOne(ConfigEntity.PROPERTY_NAME, name);
+	}
+	
 	/**
 	 * 更新配置：如果不存在保存，如果存在更新
 	 */

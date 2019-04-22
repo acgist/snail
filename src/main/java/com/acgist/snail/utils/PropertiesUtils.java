@@ -31,9 +31,16 @@ public class PropertiesUtils {
 		return instance;
 	}
 	
+	/**
+	 * 加载数据，如果文件不存在返回null
+	 */
 	private static final Properties load(String file) {
-		Properties properties = new Properties();
+		if(PropertiesUtils.class.getResource(file) == null) {
+			return null;
+		}
+		Properties properties = null;
 		try(InputStreamReader input = new InputStreamReader(PropertiesUtils.class.getResourceAsStream(file), SystemConfig.DEFAULT_CHARSET)) {
+			properties = new Properties();
 			properties.load(input);
 		} catch (IOException e) {
 			LOGGER.error("读取配置文件异常，文件路径：{}", file, e);
@@ -51,6 +58,20 @@ public class PropertiesUtils {
 	
 	public String getString(String name) {
 		return properties.getProperty(name);
+	}
+	
+	/**
+	 * 判断是否有数据
+	 */
+	public boolean haveProperties() {
+		return this.properties != null;
+	}
+	
+	/**
+	 * 获取数据
+	 */
+	public Properties properties() {
+		return this.properties;
 	}
 	
 }

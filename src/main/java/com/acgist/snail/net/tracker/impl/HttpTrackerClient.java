@@ -6,13 +6,13 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.bcode.BCodeDecoder;
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.net.peer.PeerServer;
 import com.acgist.snail.net.tracker.TrackerClient;
 import com.acgist.snail.net.tracker.bean.HttpTracker;
 import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.system.bcode.BCodeDecoder;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.system.manager.TrackerLauncherManager;
 import com.acgist.snail.utils.StringUtils;

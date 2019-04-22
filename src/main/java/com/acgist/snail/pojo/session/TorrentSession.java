@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.downloader.torrent.bootstrap.PeerClientGroup;
 import com.acgist.snail.downloader.torrent.bootstrap.TorrentStreamGroup;
 import com.acgist.snail.downloader.torrent.bootstrap.TrackerLauncherGroup;
+import com.acgist.snail.protocol.torrent.TorrentBuilder;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
 import com.acgist.snail.protocol.torrent.bean.TorrentFile;
@@ -212,6 +213,21 @@ public class TorrentSession {
 	 */
 	public void have(int index) {
 		peerClientGroup.have(index);
+	}
+
+	/**
+	 * 保存种子文件
+	 */
+	public void saveTorrentFile() {
+		if(this.taskSession == null) {
+			return;
+		}
+		final var entity = this.taskSession.entity();
+		if(entity == null) {
+			return;
+		}
+		final TorrentBuilder builder = TorrentBuilder.newInstance(this.infoHash);
+		builder.buildFile(entity.getFile());
 	}
 
 }
