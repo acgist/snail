@@ -114,7 +114,7 @@ public class ExtensionMessageHandler {
 		final byte[] bytes = buildMessage(ExtensionType.handshake.value(), encoder.build(data).bytes());
 		peerMessageHandler.pushMessage(MessageType.Type.extension, bytes);
 	}
-	
+
 	/**
 	 * 扩展消息握手
 	 */

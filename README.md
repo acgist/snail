@@ -34,4 +34,5 @@ win：start.bat、SnailLauncher.exe、SnailLauncher_auto.exe，随便选择一�
 
 #### TODO
 dht：http://www.bittorrent.org/beps/bep_0005.html   
-local search：http://www.bittorrent.org/beps/bep_0014.html
+local search：http://www.bittorrent.org/beps/bep_0014.html   
+PEX
