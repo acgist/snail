@@ -22,15 +22,19 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	
 	private static final int SLICE_MAX_SIZE = 10; // 单次请求10个SLICE
 	
-	private static final int SLICE_AWAIT_TIME = 4; // SLICE每批等待时间
-	private static final int SLICE_AWAIT_A_TIME = 4; // PIECE完成等待时间
+	private static final int SLICE_AWAIT_TIME = 10; // SLICE每批等待时间
+	private static final int PIECE_AWAIT_TIME = 60; // PIECE完成等待时间
+	private static final int CLOSE_AWAIT_TIME = 20; // 关闭等待时间
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerClient.class);
 	
 	private boolean launcher = false; // 是否启动
-	private boolean available = false; // 状态
+	private boolean available = false; // 状态：连接是否成功
+	private boolean havePieceMessage = false; // 状态：是否返回数据
+	
 	private TorrentPiece downloadPiece; // 下载的Piece信息
 	
+	private Object closeLock = new Object(); // 关闭锁
 	private AtomicBoolean overLock = new AtomicBoolean(false); // Piece完成锁
 	private AtomicInteger countLock = new AtomicInteger(0); // Piece分片锁
 	
@@ -110,6 +114,7 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 			LOGGER.warn("下载的Piece索引不符");
 			return;
 		}
+		this.havePieceMessage = true;
 		mark(bytes.length); // 每次获取到都需要打分
 		synchronized (countLock) { // 唤醒request
 			if (countLock.addAndGet(-1) <= 0) {
@@ -132,6 +137,11 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	public void release() {
 		if(available()) {
 			this.available = false;
+			if(!overLock.get()) { // 没有完成：等待下载完成
+				synchronized (closeLock) {
+					ThreadUtils.wait(closeLock, Duration.ofSeconds(CLOSE_AWAIT_TIME));
+				}
+			}
 			super.close();
 		}
 	}
@@ -185,7 +195,7 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 			synchronized (countLock) {
 				if (countLock.get() >= SLICE_MAX_SIZE) {
 					ThreadUtils.wait(countLock, Duration.ofSeconds(SLICE_AWAIT_TIME));
-					if (countLock.get() == SLICE_MAX_SIZE) { // 一个都没有返回
+					if (!this.havePieceMessage) { // 没有数据返回
 						break;
 					}
 				}
@@ -194,13 +204,18 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 			int begin = this.downloadPiece.position();
 			int length = this.downloadPiece.length(); // 顺序不能调换
 			handler.request(index, begin, length);
-			if(!downloadPiece.hasNext()) { // 是否还有更多SLICE
+			if(!downloadPiece.more()) { // 是否还有更多SLICE
 				break;
 			}
 		}
 		synchronized (overLock) {
 			if(!overLock.getAndSet(true)) {
-				ThreadUtils.wait(overLock, Duration.ofSeconds(SLICE_AWAIT_A_TIME));
+				ThreadUtils.wait(overLock, Duration.ofSeconds(PIECE_AWAIT_TIME));
+			}
+		}
+		if(!available) {
+			synchronized (closeLock) {
+				closeLock.notifyAll();
 			}
 		}
 		if(countLock.get() > 0) { // 没有下载完成
@@ -232,6 +247,7 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 		synchronized (countLock) {
 			countLock.set(0);
 		}
+		this.havePieceMessage = false;
 	}
 	
 	/**

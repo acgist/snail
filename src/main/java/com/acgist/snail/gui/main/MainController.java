@@ -226,14 +226,14 @@ public class MainController implements Initializable {
 	/**
 	 * 是否选中数据
 	 */
-	public boolean hasContent() {
+	public boolean haveContent() {
 		return !this.selected().isEmpty();
 	}
 	
 	/**
 	 * 选中数据是否包含BT下载
 	 */
-	public boolean hasTorrent() {
+	public boolean haveTorrent() {
 		return this.selected()
 			.stream()
 			.anyMatch(wrapper -> wrapper.entity().getType() == Type.torrent);
@@ -267,7 +267,7 @@ public class MainController implements Initializable {
 	 * 删除任务
 	 */
 	public void delete() {
-		if(!this.hasContent()) {
+		if(!this.haveContent()) {
 			return;
 		}
 		Optional<ButtonType> result = AlertWindow.build(AlertType.CONFIRMATION, "删除确认", "删除选中文件？");

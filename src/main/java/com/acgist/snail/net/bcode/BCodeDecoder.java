@@ -52,7 +52,7 @@ public class BCodeDecoder {
 	/**
 	 * 是否含有更多数据
 	 */
-	public boolean hasMore() {
+	public boolean more() {
 		return input.available() > 0;
 	}
 	

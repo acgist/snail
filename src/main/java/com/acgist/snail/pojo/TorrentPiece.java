@@ -89,7 +89,7 @@ public class TorrentPiece {
 		return this.size >= this.length;
 	}
 	
-	public boolean hasNext() {
+	public boolean more() {
 		return this.position < this.length;
 	}
 

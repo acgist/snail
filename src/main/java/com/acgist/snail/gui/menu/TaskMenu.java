@@ -50,7 +50,7 @@ public class TaskMenu extends Menu {
 	}
 	
 	public static final TaskMenu getInstance() {
-		if(MainWindow.getInstance().controller().hasTorrent()) {
+		if(MainWindow.getInstance().controller().haveTorrent()) {
 			INSTANCE.torrentMenu.setDisable(false);
 			INSTANCE.exportTorrentMenu.setDisable(false);
 		} else {
@@ -123,7 +123,7 @@ public class TaskMenu extends Menu {
 	};
 	
 	private EventHandler<ActionEvent> torrentEvent = (event) -> {
-		if(!MainWindow.getInstance().controller().hasTorrent()) {
+		if(!MainWindow.getInstance().controller().haveTorrent()) {
 			return;
 		}
 		MainWindow.getInstance().controller().selected()
@@ -136,7 +136,7 @@ public class TaskMenu extends Menu {
 	};
 	
 	private EventHandler<ActionEvent> exportTorrentEvent = (event) -> {
-		if(!MainWindow.getInstance().controller().hasTorrent()) {
+		if(!MainWindow.getInstance().controller().haveTorrent()) {
 			return;
 		}
 		DirectoryChooser chooser = new DirectoryChooser();
