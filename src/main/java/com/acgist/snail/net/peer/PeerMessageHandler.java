@@ -572,11 +572,6 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 * payload：消息内容
 	 */
 	private ByteBuffer buildMessage(MessageType.Type type, byte[] payload) {
-//		if(LOGGER.isDebugEnabled()) {
-//			if(payload != null) {
-//				LOGGER.debug("发送Peer消息：{}-{}", type, new String(payload));
-//			}
-//		}
 		final Byte id = type == null ? null : type.value();
 		int capacity = 0;
 		if(id != null) {
@@ -585,7 +580,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		if(payload != null) {
 			capacity += payload.length;
 		}
-		final ByteBuffer buffer = ByteBuffer.allocate(capacity + 4); // +4=length prefix
+		final ByteBuffer buffer = ByteBuffer.allocate(capacity + 4); // +4 = length prefix
 		buffer.putInt(capacity);
 		if(id != null) {
 			buffer.put(id);

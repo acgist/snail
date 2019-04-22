@@ -1,7 +1,6 @@
 package com.acgist.snail.downloader.torrent.bootstrap;
 
 import java.nio.ByteBuffer;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
@@ -15,6 +14,7 @@ import com.acgist.snail.protocol.torrent.bean.Torrent;
 import com.acgist.snail.protocol.torrent.bean.TorrentFile;
 import com.acgist.snail.protocol.torrent.bean.TorrentInfo;
 import com.acgist.snail.utils.CollectionUtils;
+import com.acgist.snail.utils.FileUtils;
 
 /**
  * 文件组
@@ -50,7 +50,7 @@ public class TorrentStreamGroup {
 				try {
 					if(file.selected()) {
 						TorrentStream stream = new TorrentStream(torrentInfo.getPieceLength(), group);
-						stream.buildFile(Paths.get(folder, file.path()).toString(), file.getLength(), pos);
+						stream.buildFile(FileUtils.file(folder, file.path()), file.getLength(), pos);
 						streams.add(stream);
 					}
 				} catch (Exception e) {

@@ -9,7 +9,6 @@ import com.acgist.snail.pojo.entity.ConfigEntity;
 import com.acgist.snail.repository.impl.ConfigRepository;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.FileUtils;
-import com.acgist.snail.utils.PropertiesUtils;
 import com.acgist.snail.utils.StringUtils;
 
 import javafx.stage.DirectoryChooser;
@@ -18,7 +17,7 @@ import javafx.stage.FileChooser;
 /**
  * 下载配置（用户配置）：默认从配置文件加载，如果数据有配置则使用数据库配置替换
  */
-public class DownloadConfig {
+public class DownloadConfig extends PropertiesConfig {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DownloadConfig.class);
 	
@@ -33,6 +32,7 @@ public class DownloadConfig {
 	private static final DownloadConfig INSTANCE = new DownloadConfig();
 	
 	private DownloadConfig() {
+		super("/config/config.download.properties");
 	}
 	
 	static {
@@ -40,6 +40,10 @@ public class DownloadConfig {
 		INSTANCE.initFromProperties();
 		INSTANCE.initFromDB();
 		INSTANCE.logger();
+	}
+	
+	public static final DownloadConfig getInstance() {
+		return INSTANCE;
 	}
 	
 	private String path; // 下载目录
@@ -54,14 +58,13 @@ public class DownloadConfig {
 	 * 配置文件加载
 	 */
 	private void initFromProperties() {
-		PropertiesUtils propertiesUtils = PropertiesUtils.getInstance("/config/config.download.properties");
-		INSTANCE.path = propertiesUtils.getString(DOWNLOAD_PATH);
-		INSTANCE.size = propertiesUtils.getInteger(DOWNLOAD_SIZE);
-		INSTANCE.buffer = propertiesUtils.getInteger(DOWNLOAD_BUFFER);
-		INSTANCE.memoryBuffer = propertiesUtils.getInteger(DOWNLOAD_MEMORY_BUFFER);
-		INSTANCE.notice = propertiesUtils.getBoolean(DOWNLOAD_NOTICE);
-		INSTANCE.p2p = propertiesUtils.getBoolean(DOWNLOAD_P2P);
-		INSTANCE.lastPath = propertiesUtils.getString(DOWNLOAD_LAST_PATH);
+		INSTANCE.path = getString(DOWNLOAD_PATH);
+		INSTANCE.size = getInteger(DOWNLOAD_SIZE);
+		INSTANCE.buffer = getInteger(DOWNLOAD_BUFFER);
+		INSTANCE.memoryBuffer = getInteger(DOWNLOAD_MEMORY_BUFFER);
+		INSTANCE.notice = getBoolean(DOWNLOAD_NOTICE);
+		INSTANCE.p2p = getBoolean(DOWNLOAD_P2P);
+		INSTANCE.lastPath = getString(DOWNLOAD_LAST_PATH);
 	}
 	
 	/**
@@ -70,19 +73,19 @@ public class DownloadConfig {
 	private void initFromDB() {
 		ConfigRepository configRepository = new ConfigRepository();
 		ConfigEntity entity = null;
-		entity = configRepository.findOne(ConfigEntity.PROPERTY_NAME, DOWNLOAD_PATH);
+		entity = configRepository.findName(DOWNLOAD_PATH);
 		path = configString(entity, path);
-		entity = configRepository.findOne(ConfigEntity.PROPERTY_NAME, DOWNLOAD_SIZE);
+		entity = configRepository.findName(DOWNLOAD_SIZE);
 		size = configInteger(entity, size);
-		entity = configRepository.findOne(ConfigEntity.PROPERTY_NAME, DOWNLOAD_BUFFER);
+		entity = configRepository.findName(DOWNLOAD_BUFFER);
 		buffer = configInteger(entity, buffer);
-		entity = configRepository.findOne(ConfigEntity.PROPERTY_NAME, DOWNLOAD_MEMORY_BUFFER);
+		entity = configRepository.findName(DOWNLOAD_MEMORY_BUFFER);
 		memoryBuffer = configInteger(entity, memoryBuffer);
-		entity = configRepository.findOne(ConfigEntity.PROPERTY_NAME, DOWNLOAD_NOTICE);
+		entity = configRepository.findName(DOWNLOAD_NOTICE);
 		notice = configBoolean(entity, notice);
-		entity = configRepository.findOne(ConfigEntity.PROPERTY_NAME, DOWNLOAD_P2P);
+		entity = configRepository.findName(DOWNLOAD_P2P);
 		p2p = configBoolean(entity, p2p);
-		entity = configRepository.findOne(ConfigEntity.PROPERTY_NAME, DOWNLOAD_LAST_PATH);
+		entity = configRepository.findName(DOWNLOAD_LAST_PATH);
 		lastPath = configString(entity, lastPath);
 	}
 	
@@ -97,42 +100,6 @@ public class DownloadConfig {
 		LOGGER.info("消息提示：{}", INSTANCE.notice);
 		LOGGER.info("启用P2P加速：{}", INSTANCE.p2p);
 		LOGGER.info("最后一次选择目录：{}", INSTANCE.lastPath);
-	}
-	
-	/**
-	 * 获取String配置
-	 */
-	private String configString(ConfigEntity entity, String defaultValue) {
-		if(entity != null) {
-			return entity.getValue();
-		}
-		return defaultValue;
-	}
-	
-	/**
-	 * 获取Integer配置
-	 */
-	private Integer configInteger(ConfigEntity entity, Integer defaultValue) {
-		if(entity != null) {
-			String value = entity.getValue();
-			if(StringUtils.isNumeric(value)) {
-				return Integer.valueOf(value);
-			}
-		}
-		return defaultValue;
-	}
-	
-	/**
-	 * 获取Integer配置
-	 */
-	private Boolean configBoolean(ConfigEntity entity, Boolean defaultValue) {
-		if(entity != null) {
-			String value = entity.getValue();
-			if(StringUtils.isNotEmpty(value)) {
-				return Boolean.valueOf(value);
-			}
-		}
-		return defaultValue;
 	}
 	
 	/**
@@ -288,7 +255,7 @@ public class DownloadConfig {
 	/**
 	 * 最后一次选择目录文件，如果没有选择默认使用下载目录
 	 */
-	private static final File lastPath() {
+	public static final File lastPath() {
 		File file = null;
 		if(StringUtils.isEmpty(INSTANCE.lastPath)) {
 			file = new File(getPath());

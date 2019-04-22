@@ -129,6 +129,7 @@ public class FileUtils {
 	 * 文件写入
 	 */
 	public static final void write(String filePath, byte[] bytes) {
+		buildFolder(filePath, true);
 		try(OutputStream output = new FileOutputStream(filePath)) {
 			output.write(bytes);
 		} catch (IOException e) {
@@ -169,7 +170,8 @@ public class FileUtils {
 			LOGGER.error("不正确的文件路径，目录：{}，文件：{}", folder, fileName);
 			throw new ArgumentException("不正确的文件路径");
 		}
-		return folder + File.separator + fileName;
+		return Paths.get(folder, fileName).toString();
+//		return folder + File.separator + fileName;
 	}
 
 	/**

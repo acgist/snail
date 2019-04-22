@@ -2,7 +2,7 @@ package com.acgist.snail.net.tracker.bean;
 
 import java.util.Map;
 
-import com.acgist.snail.net.bcode.BCodeDecoder;
+import com.acgist.snail.system.bcode.BCodeDecoder;
 import com.acgist.snail.utils.PeerUtils;
 
 /**

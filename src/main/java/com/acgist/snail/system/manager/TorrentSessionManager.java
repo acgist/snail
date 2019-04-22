@@ -7,12 +7,12 @@ import java.nio.file.Paths;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.acgist.snail.net.bcode.BCodeDecoder;
-import com.acgist.snail.net.bcode.BCodeEncoder;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.TorrentProtocol;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
+import com.acgist.snail.system.bcode.BCodeDecoder;
+import com.acgist.snail.system.bcode.BCodeEncoder;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.StringUtils;
 

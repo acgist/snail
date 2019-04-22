@@ -3,12 +3,12 @@ package com.acgist.snail.system.config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.utils.PropertiesUtils;
+import com.acgist.snail.utils.NetUtils;
 
 /**
  * 系统配置
  */
-public class SystemConfig {
+public class SystemConfig extends PropertiesConfig {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseConfig.class);
 	
@@ -20,12 +20,17 @@ public class SystemConfig {
 	private static final SystemConfig INSTANCE = new SystemConfig();
 	
 	private SystemConfig() {
+		super("/config/config.system.properties");
 	}
 
 	static {
 		LOGGER.info("初始化数据库配置");
 		INSTANCE.init();
 		INSTANCE.logger();
+	}
+
+	public static final SystemConfig getInstance() {
+		return INSTANCE;
 	}
 	
 	private String name; // 名称
@@ -48,29 +53,42 @@ public class SystemConfig {
 	 * 初始化
 	 */
 	private void init() {
-		PropertiesUtils propertiesUtils = PropertiesUtils.getInstance("/config/config.system.properties");
-		INSTANCE.name = propertiesUtils.getString("acgist.system.name");
-		INSTANCE.nameEn = propertiesUtils.getString("acgist.system.name.en");
-		INSTANCE.version = propertiesUtils.getString("acgist.system.version");
-		INSTANCE.author = propertiesUtils.getString("acgist.system.author");
-		INSTANCE.source = propertiesUtils.getString("acgist.system.source");
-		INSTANCE.support = propertiesUtils.getString("acgist.system.support");
-		INSTANCE.serverPort = propertiesUtils.getInteger("acgist.server.port");
-		INSTANCE.serverHost = propertiesUtils.getString("acgist.server.host");
-		INSTANCE.peerPort = propertiesUtils.getInteger("acgist.peer.port");
-		INSTANCE.dhtPort = propertiesUtils.getInteger("acgist.dht.port");
-		INSTANCE.trackerSize = propertiesUtils.getInteger("acgist.tracker.size");
-		INSTANCE.trackerMaxFailTimes = propertiesUtils.getInteger("acgist.tracker.max.fail.times");
-		INSTANCE.peerSize = propertiesUtils.getInteger("acgist.peer.size");
-		INSTANCE.peerOptimizeInterval = propertiesUtils.getInteger("acgist.peer.optimize.interval");
-		INSTANCE.peerDownloadSize = propertiesUtils.getInteger("acgist.peer.download.size");
+		INSTANCE.name = getString("acgist.system.name");
+		INSTANCE.nameEn = getString("acgist.system.name.en");
+		INSTANCE.version = getString("acgist.system.version");
+		INSTANCE.author = getString("acgist.system.author");
+		INSTANCE.source = getString("acgist.system.source");
+		INSTANCE.support = getString("acgist.system.support");
+		INSTANCE.serverPort = getInteger("acgist.server.port");
+		INSTANCE.serverHost = getString("acgist.server.host");
+		INSTANCE.peerPort = getInteger("acgist.peer.port");
+		INSTANCE.dhtPort = getInteger("acgist.dht.port");
+		INSTANCE.trackerSize = getInteger("acgist.tracker.size");
+		INSTANCE.trackerMaxFailTimes = getInteger("acgist.tracker.max.fail.times");
+		INSTANCE.peerSize = getInteger("acgist.peer.size");
+		INSTANCE.peerOptimizeInterval = getInteger("acgist.peer.optimize.interval");
+		INSTANCE.peerDownloadSize = getInteger("acgist.peer.download.size");
 	}
 
 	/**
 	 * 日志
 	 */
 	private void logger() {
-		LOGGER.info("-");
+		LOGGER.info("名称：{}", this.name);
+		LOGGER.info("英文名称：{}", this.nameEn);
+		LOGGER.info("版本：{}", this.version);
+		LOGGER.info("作者：{}", this.author);
+		LOGGER.info("源码：{}", this.source);
+		LOGGER.info("支持：{}", this.support);
+		LOGGER.info("服务端口：{}", this.serverPort);
+		LOGGER.info("服务地址：{}", this.serverHost);
+		LOGGER.info("Peer端口：{}", this.peerPort);
+		LOGGER.info("DHT端口：{}", this.dhtPort);
+		LOGGER.info("单个任务Tracker数量：{}", this.trackerSize);
+		LOGGER.info("Tracker失败次数：{}", this.trackerMaxFailTimes);
+		LOGGER.info("单个任务Peer数量：{}", this.peerSize);
+		LOGGER.info("单个任务Peer优化周期（秒）：{}", this.peerOptimizeInterval);
+		LOGGER.info("同时下载的Peer数量：{}", this.peerDownloadSize);
 	}
 	
 	/**
@@ -134,6 +152,13 @@ public class SystemConfig {
 	 */
 	public static final Integer getPeerPort() {
 		return INSTANCE.peerPort;
+	}
+	
+	/**
+	 * Peer端口：short
+	 */
+	public static final Short getPeerPortShort() {
+		return NetUtils.encodePort(getPeerPort());
 	}
 
 	/**
