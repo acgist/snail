@@ -71,10 +71,12 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	
 	private static final byte DHT_PROTOCOL = 1; // 0x01
 	private static final byte EXTENSION_PROTOCOL = 1 << 4; // 0x10
+	private static final byte PEER_EXCHANGE = 1 << 1; // 0x02
 	
 	static {
 		HANDSHAKE_RESERVED[5] |= EXTENSION_PROTOCOL; // Extension Protocol
 		HANDSHAKE_RESERVED[7] |= DHT_PROTOCOL; // DHT Protocol
+		HANDSHAKE_RESERVED[7] |= PEER_EXCHANGE; // Peer Exchange
 	}
 
 	/**

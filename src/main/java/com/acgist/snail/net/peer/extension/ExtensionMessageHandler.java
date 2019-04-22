@@ -28,6 +28,15 @@ import com.acgist.snail.utils.CollectionUtils;
 public class ExtensionMessageHandler {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ExtensionMessageHandler.class);
+	
+	public static final String EX_M = "m"; // 扩展协议信息
+	public static final String EX_V = "v"; // 版本
+	public static final String EX_P = "p"; // 端口
+	public static final String EX_REQQ = "reqq"; // 含义：未知：TODO：了解清楚
+	public static final String EX_YOURIP = "yourip"; // 地址
+	
+	public static final String EX_E = "e"; // ut_pex：加密
+	public static final String EX_METADATA_SIZE = "metadata_size"; // ut_metadata：种子info数据大小
 
 	private final InfoHash infoHash;
 	private final PeerSession peerSession;
@@ -75,27 +84,32 @@ public class ExtensionMessageHandler {
 	 */
 	public void handshake() {
 		final Map<String, Object> data = new LinkedHashMap<>();
-//		data.put("e", 0); // ut_pex：加密
 		final Map<String, Object> supportType = new LinkedHashMap<>();
 		for (var type : MessageType.ExtensionType.values()) {
-			if(type.support()) {
+			if(type.mSupport()) {
 				supportType.put(type.name(), type.value());
 			}
 		}
-		data.put("m", supportType); // 扩展协议以及编号
-		final int size = this.infoHash.size();
-		if(size > 0) {
-			data.put("metadata_size", size); // 种子info数据长度
-		}
-		data.put("v", SystemConfig.getNameAndVersion()); // 客户端信息（名称、版本）
-		data.put("p", SystemConfig.getPeerPort()); // 本机监听TCP端口
+		data.put(EX_M, supportType); // 扩展协议以及编号
+		data.put(EX_V, SystemConfig.getNameAndVersion()); // 客户端信息（名称、版本）
+		data.put(EX_P, SystemConfig.getPeerPort()); // 本机监听TCP端口
+		// 客户端自动获取
 //		final String ipAddress = UpnpService.getInstance().externalIpAddress();
 //		if(StringUtils.isNotEmpty(ipAddress)) {
-//			ByteBuffer ipBuffer = ByteBuffer.allocate(4);
-//			ipBuffer.putInt(NetUtils.ipToInt(UpnpService.getInstance().externalIpAddress()));
-//			data.put("yourip", ipBuffer.array()); // 本机的IP地址
+//			final ByteBuffer youripBuffer = ByteBuffer.allocate(4);
+//			youripBuffer.putInt(NetUtils.decodeIpToInt(UpnpService.getInstance().externalIpAddress()));
+//			data.put(EX_YOURIP, youripBuffer.array()); // 本机的IP地址
 //		}
-		data.put("reqq", 255); // TODO：详细意思未知
+		data.put(EX_REQQ, 255);
+		if(MessageType.ExtensionType.ut_pex.mSupport()) {
+			data.put(EX_E, 0); // ut_pex：加密
+		}
+		if(MessageType.ExtensionType.ut_metadata.mSupport()) {
+			final int size = this.infoHash.size();
+			if(size > 0) {
+				data.put(EX_METADATA_SIZE, size); // 种子info数据长度
+			}
+		}
 		final BCodeEncoder encoder = BCodeEncoder.newInstance();
 		final byte[] bytes = buildMessage(ExtensionType.handshake.value(), encoder.build(data).bytes());
 		peerMessageHandler.pushMessage(MessageType.Type.extension, bytes);
@@ -109,15 +123,15 @@ public class ExtensionMessageHandler {
 		buffer.get(bytes);
 		final BCodeDecoder decoder = BCodeDecoder.newInstance(bytes);
 		final Map<String, Object> data = decoder.mustMap();
-		final Object size = data.get("metadata_size");
-		if(size != null && this.infoHash.size() == 0) {
+		final Object port = data.get(EX_P);
+		if(port != null && peerSession.port() == null) { // 获取端口
+			peerSession.port(((Long) port).intValue());
+		}
+		final Object size = data.get(EX_METADATA_SIZE);
+		if(size != null && this.infoHash.size() == 0) { // 获取种子info大小
 			this.infoHash.size((int) size);
 		}
-		final Object port = data.get("p");
-		if(port != null && peerSession.port() == null) { // 获取端口
-			peerSession.port((Integer) port);
-		}
-		final Map<?, ?> mData = (Map<?, ?>) data.get("m");
+		final Map<?, ?> mData = (Map<?, ?>) data.get(EX_M);
 		if(CollectionUtils.isNotEmpty(mData)) {
 			mData.entrySet().forEach(entry -> {
 				final String type = (String) entry.getKey();
