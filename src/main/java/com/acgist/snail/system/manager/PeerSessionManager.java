@@ -52,7 +52,7 @@ public class PeerSessionManager {
 			if(optional.isPresent()) {
 				return optional.get();
 			}
-			final PeerSession peerSession = new PeerSession(parent, host, port);
+			final PeerSession peerSession = PeerSession.newInstance(parent, host, port);
 			deque.offerLast(peerSession);
 			return peerSession;
 		}

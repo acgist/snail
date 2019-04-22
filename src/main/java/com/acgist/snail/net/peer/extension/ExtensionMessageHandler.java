@@ -88,9 +88,9 @@ public class ExtensionMessageHandler {
 			data.put("metadata_size", size); // 种子info数据长度
 		}
 		data.put("v", SystemConfig.getNameAndVersion()); // 客户端信息（名称、版本）
+		data.put("p", SystemConfig.getPeerPort()); // 本机监听TCP端口
 //		final String ipAddress = UpnpService.getInstance().externalIpAddress();
 //		if(StringUtils.isNotEmpty(ipAddress)) {
-//			data.put("p", SystemConfig.getPeerPort()); // 本机监听TCP端口
 //			ByteBuffer ipBuffer = ByteBuffer.allocate(4);
 //			ipBuffer.putInt(NetUtils.ipToInt(UpnpService.getInstance().externalIpAddress()));
 //			data.put("yourip", ipBuffer.array()); // 本机的IP地址
@@ -112,6 +112,10 @@ public class ExtensionMessageHandler {
 		final Object size = data.get("metadata_size");
 		if(size != null && this.infoHash.size() == 0) {
 			this.infoHash.size((int) size);
+		}
+		final Object port = data.get("p");
+		if(port != null && peerSession.port() == null) { // 获取端口
+			peerSession.port((Integer) port);
 		}
 		final Map<?, ?> mData = (Map<?, ?>) data.get("m");
 		if(CollectionUtils.isNotEmpty(mData)) {

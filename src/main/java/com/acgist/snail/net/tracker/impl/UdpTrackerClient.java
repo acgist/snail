@@ -143,7 +143,7 @@ public class UdpTrackerClient extends TrackerClient {
 			remain = taskSession.entity().getSize() - download;
 			upload = statistics.uploadSize();
 		}
-		ByteBuffer buffer = ByteBuffer.allocate(98);
+		final ByteBuffer buffer = ByteBuffer.allocate(98);
 		buffer.putLong(this.connectionId); // connection_id
 		buffer.putInt(TrackerClient.Action.announce.action());
 		buffer.putInt(sid); // transaction_id

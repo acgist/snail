@@ -95,7 +95,7 @@ public class HttpTrackerClient extends TrackerClient {
 			remain = taskSession.entity().getSize() - download;
 			upload = statistics.uploadSize();
 		}
-		StringBuilder builder = new StringBuilder(this.announceUrl);
+		final StringBuilder builder = new StringBuilder(this.announceUrl);
 		builder.append("?")
 		.append("info_hash").append("=").append(torrentSession.infoHash().infoHashURL()).append("&") // 种子HASH
 		.append("peer_id").append("=").append(PeerServer.PEER_ID).append("&") // 客户端ID

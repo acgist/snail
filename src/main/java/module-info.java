@@ -10,7 +10,7 @@ open module com.acgist.snail {
 	exports com.acgist.main;
 	
 	/**
-	 * opens：开放包（深层反射），使用open module不需要此配置。<br>
+	 * opens：开放包（反射时需要，使用open module不需要此配置）<br>
 	 * opens com.acgist.main
 	 */
 
