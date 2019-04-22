@@ -67,7 +67,7 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends TcpSender {
 	 * @param host 服务端地址
 	 * @param port 服务端端口
 	 */
-	protected boolean connect(String host, int port) {
+	protected boolean connect(final String host, final int port) {
 		boolean ok = true;
 		try {
 			socket = AsynchronousSocketChannel.open(GROUP);
@@ -79,7 +79,7 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends TcpSender {
 			handler.handle(socket);
 		} catch (Exception e) {
 			ok = false;
-			LOGGER.error("客户端连接异常", e);
+			LOGGER.error("客户端连接异常：{}:{}", host, port, e);
 		}
 		if(ok) {
 			// 连接成功
@@ -100,7 +100,7 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends TcpSender {
 	 * 关闭资源
 	 */
 	public void close() {
-		LOGGER.info("关闭TCP Client：{}", this.name);
+		LOGGER.info("TCP Client关闭：{}", this.name);
 		handler.close();
 	}
 
@@ -108,7 +108,7 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends TcpSender {
 	 * 关闭Client线程池
 	 */
 	public static final void shutdown() {
-		LOGGER.info("关闭Client线程池");
+		LOGGER.info("关闭TCP Client线程池");
 		IoUtils.close(GROUP);
 	}
 	

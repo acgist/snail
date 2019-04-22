@@ -58,7 +58,7 @@ public abstract class UdpMessageHandler {
 					}
 				}
 			} catch (IOException e) {
-				LOGGER.error("消息读取异常", e);
+				LOGGER.error("UDP消息读取异常", e);
 				continue;
 			}
 		}

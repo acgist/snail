@@ -59,7 +59,7 @@ public class ApplicationClient extends TcpClient<ApplicationMessageHandler> {
 	 * 唤起主窗口
 	 */
 	public static final void notifyWindow() {
-		ApplicationClient client = ApplicationClient.newInstance();
+		final ApplicationClient client = ApplicationClient.newInstance();
 		try {
 			client.connect();
 			client.send(ApplicationMessage.message(ApplicationMessage.Type.notify));
@@ -72,7 +72,7 @@ public class ApplicationClient extends TcpClient<ApplicationMessageHandler> {
 	}
 	
 	public static final void main(String[] args) {
-		ApplicationClient client = ApplicationClient.newInstance();
+		final ApplicationClient client = ApplicationClient.newInstance();
 		client.connect();
 		client.readin();
 	}

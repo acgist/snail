@@ -164,7 +164,7 @@ public class XMLUtils {
 			serializer.write(this.document, output);
 			return out.toString();
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | ClassCastException e) {
-			LOGGER.error("XML格式化异常", e);
+			LOGGER.error("XML输出异常", e);
 		}
 		return null;
 	}

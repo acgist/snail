@@ -80,7 +80,7 @@ public class HttpProtocol extends Protocol {
 			try {
 				this.httpHeaderWrapper = HTTPClient.head(url);
 			} catch (NetException e) {
-				LOGGER.error("获取HTTP下载请求头信息异常", e);
+				LOGGER.error("HTTP下载请求头获取异常", e);
 			}
 			if(this.httpHeaderWrapper != null && this.httpHeaderWrapper.isNotEmpty()) {
 				break;

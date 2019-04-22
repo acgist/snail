@@ -206,7 +206,7 @@ public class FileUtils {
 			try {
 				size = Files.size(Paths.get(path));
 			} catch (IOException e) {
-				LOGGER.error("获取文件大小异常", e);
+				LOGGER.error("文件大小获取异常", e);
 			}
 		} else {
 			File[] files = file.listFiles();

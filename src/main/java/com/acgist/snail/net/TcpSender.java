@@ -3,10 +3,8 @@ package com.acgist.snail.net;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,8 +45,8 @@ public abstract class TcpSender {
 		try {
 			send(splitMessage.getBytes(SystemConfig.DEFAULT_CHARSET));
 		} catch (UnsupportedEncodingException e) {
+			LOGGER.error("TCP消息编码异常：{}", splitMessage, e);
 			send(splitMessage.getBytes());
-			LOGGER.error("编码异常", e);
 		}
 	}
 	
@@ -63,6 +61,10 @@ public abstract class TcpSender {
 	 * 发送消息
 	 */
 	protected void send(ByteBuffer buffer) {
+		if(!socket.isOpen()) {
+			LOGGER.debug("发送消息时Socket已经关闭");
+			return;
+		}
 		if(buffer.position() != 0) { //  重置标记
 			buffer.flip();
 		}
@@ -76,8 +78,8 @@ public abstract class TcpSender {
 			if(size <= 0) {
 				LOGGER.warn("发送数据为空");
 			}
-		} catch (InterruptedException | ExecutionException | TimeoutException e) {
-			LOGGER.error("发送消息异常", e);
+		} catch (Exception e) {
+			LOGGER.error("发送TCP消息异常", e);
 		}
 	}
 

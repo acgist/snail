@@ -68,7 +68,7 @@ public class DatabaseManager {
 			result = statement.executeQuery();
 			return wrapperResultSet(result);
 		} catch (SQLException e) {
-			LOGGER.error("执行SQL查询异常", e);
+			LOGGER.error("执行SQL查询异常：{}", sql, e);
 			closeConnection();
 		} finally {
 			close(result, statement);
@@ -92,7 +92,7 @@ public class DatabaseManager {
 			}
 			ok = statement.execute();
 		} catch (SQLException e) {
-			LOGGER.error("执行SQL更新异常", e);
+			LOGGER.error("执行SQL更新异常：{}", sql, e);
 			closeConnection();
 		} finally {
 			close(null, statement);
@@ -161,7 +161,7 @@ public class DatabaseManager {
 			try {
 				statement.close();
 			} catch (SQLException e) {
-				LOGGER.error("JDBC语句执行器关闭异常", e);
+				LOGGER.error("JDBC处理器关闭异常", e);
 			}
 		}
 	}
@@ -173,7 +173,7 @@ public class DatabaseManager {
 			}
 			connection = null;
 		} catch (SQLException e) {
-			LOGGER.error("JDBC链接关闭异常", e);
+			LOGGER.error("JDBC连接关闭异常", e);
 		}
 	}
 	

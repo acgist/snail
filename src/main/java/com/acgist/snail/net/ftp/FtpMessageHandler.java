@@ -90,7 +90,7 @@ public class FtpMessageHandler extends TcpMessageHandler {
 				try {
 					socket = new Socket(host, port);
 				} catch (IOException e) {
-					LOGGER.error("打开远程Socket失败", e);
+					LOGGER.error("打开FTP远程Socket异常", e);
 				}
 			}
 		} else if(StringUtils.startsWith(message, "150 ")) { // 下载完成
@@ -98,7 +98,7 @@ public class FtpMessageHandler extends TcpMessageHandler {
 				this.inputStream = socket.getInputStream();
 				this.unlockInputStream();
 			} catch (IOException e) {
-				LOGGER.error("打开远程输入流失败", e);
+				LOGGER.error("打开FTP远程输入流异常", e);
 			}
 		}
 	}

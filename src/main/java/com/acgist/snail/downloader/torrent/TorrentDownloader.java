@@ -53,15 +53,15 @@ public class TorrentDownloader extends Downloader {
 			torrentSession = TorrentSessionManager.getInstance().buildSession(infoHashHex, path);
 		} catch (DownloadException e) {
 			fail("获取种子信息失败");
-			LOGGER.error("获取种子信息失败", e);
+			LOGGER.error("获取种子信息异常", e);
 			return;
 		}
 		torrentSession.build(this.taskSession);
 		try {
 			torrentSession.loadTracker();
 		} catch (DownloadException e) {
-			fail("获取Tracker失败");
-			LOGGER.error("获取Tracker异常", e);
+			fail("Tracker加载失败");
+			LOGGER.error("Tracker加载异常", e);
 			return;
 		}
 		taskSession.downloadSize(torrentSession.size());

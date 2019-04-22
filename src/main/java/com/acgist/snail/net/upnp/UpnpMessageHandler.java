@@ -35,7 +35,7 @@ public class UpnpMessageHandler extends UdpMessageHandler {
 				try {
 					UpnpService.getInstance().load(location).setting();
 				} catch (NetException e) {
-					LOGGER.error("UPNP设置异常", e);
+					LOGGER.error("设置UPNP异常", e);
 				}
 				break;
 			}

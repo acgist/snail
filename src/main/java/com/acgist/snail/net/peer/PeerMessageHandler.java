@@ -127,7 +127,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		try {
 			address = (InetSocketAddress) socket.getRemoteAddress();
 		} catch (IOException e) {
-			LOGGER.error("获取远程客户端端口异常", e);
+			LOGGER.error("Peer远程客户端信息获取异常", e);
 		}
 		if(address == null) {
 			return;

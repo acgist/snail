@@ -69,7 +69,7 @@ public class HttpDownloader extends Downloader {
 				input.close();
 			}
 		} catch (IOException e) {
-			LOGGER.error("关闭输入流异常", e);
+			LOGGER.error("关闭HTTP输入流异常", e);
 		}
 		try {
 			if(output != null) {
@@ -77,7 +77,7 @@ public class HttpDownloader extends Downloader {
 				output.close();
 			}
 		} catch (IOException e) {
-			LOGGER.error("关闭文件流异常", e);
+			LOGGER.error("关闭HTTP输出流异常", e);
 		}
 	}
 	
@@ -149,7 +149,7 @@ public class HttpDownloader extends Downloader {
 			}
 		} catch (FileNotFoundException e) {
 			fail("打开下载文件失败");
-			LOGGER.error("打开下载文件流异常", e);
+			LOGGER.error("打开HTTP文件流异常", e);
 		}
 	}
 	

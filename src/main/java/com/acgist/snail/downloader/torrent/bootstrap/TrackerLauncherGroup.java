@@ -3,7 +3,6 @@ package com.acgist.snail.downloader.torrent.bootstrap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +49,6 @@ public class TrackerLauncherGroup {
 		} catch (NetException e) {
 			throw new DownloadException(e);
 		}
-		AtomicInteger index = new AtomicInteger(0);
 		clients.stream()
 		.map(client -> {
 			LOGGER.debug("添加TrackerClient，ID：{}，announceUrl：{}", client.id(), client.announceUrl());
@@ -58,9 +56,7 @@ public class TrackerLauncherGroup {
 		}).forEach(launcher -> {
 			try {
 				this.trackerLaunchers.add(launcher);
-				// 计算每个任务执行时间
-				torrentSession.timer(0, TimeUnit.SECONDS, launcher);
-				index.incrementAndGet();
+				this.torrentSession.timer(0, TimeUnit.SECONDS, launcher);
 			} catch (Exception e) {
 				LOGGER.error("Tracker执行异常", e);
 			}

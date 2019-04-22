@@ -39,7 +39,7 @@ public class UpnpClient extends UdpClient<UpnpMessageHandler> {
 		try {
 			send(mSearch(), new InetSocketAddress(UPNP_HOST, UPNP_PORT));
 		} catch (NetException e) {
-			LOGGER.error("发送UPNP异常", e);
+			LOGGER.error("发送UPNP消息异常", e);
 		}
 	}
 	

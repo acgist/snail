@@ -208,11 +208,11 @@ public abstract class Repository<T extends BaseEntity> {
 	 * 新实体
 	 */
 	private T newInstance() {
-		Class<T> clazz = entityClazz();
+		final Class<T> clazz = entityClazz();
 		try {
 			return clazz.getDeclaredConstructor().newInstance();
 		} catch (Exception e) {
-			LOGGER.error("反射异常", e);
+			LOGGER.error("反射异常：{}", clazz, e);
 		}
 		return null;
 	}
