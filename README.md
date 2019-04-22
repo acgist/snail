@@ -33,6 +33,7 @@ win：start.bat、SnailLauncher.exe、SnailLauncher_auto.exe，随便选择一�
 [帮助](https://gitee.com/acgist/snail/wikis/帮助)
 
 #### TODO
+PEX：http://www.bittorrent.org/beps/bep_0011.html   
 dht：http://www.bittorrent.org/beps/bep_0005.html   
+UTP：http://www.bittorrent.org/beps/bep_0029.html   
 local search：http://www.bittorrent.org/beps/bep_0014.html   
-PEX
