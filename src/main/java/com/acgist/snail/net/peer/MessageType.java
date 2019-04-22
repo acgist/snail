@@ -49,17 +49,19 @@ public class MessageType {
 	 */
 	public enum ExtensionType {
 		
-		handshake((byte) 0, false), // 默认
-		ut_pex((byte) 1, false),
-		ut_metadata((byte) 2, true);
+		handshake((byte) 0, true, false), // 默认
+		ut_pex((byte) 1, false, false),
+		ut_metadata((byte) 2, true, true);
 		
-		ExtensionType(byte value, boolean support) {
+		ExtensionType(byte value, boolean support, boolean mSupport) {
 			this.value = value;
 			this.support = support;
+			this.mSupport = mSupport;
 		}
 
 		private byte value;
-		private boolean support;
+		private boolean support; // 是否支持
+		private boolean mSupport; // 是否通知Peer
 		
 		public byte value() {
 			return this.value;
@@ -67,6 +69,10 @@ public class MessageType {
 		
 		public boolean support() {
 			return this.support;
+		}
+		
+		public boolean mSupport() {
+			return this.mSupport;
 		}
 		
 		public static final ExtensionType valueOf(byte value) {

@@ -72,8 +72,8 @@ public class PeerClientTest {
 		entity.setType(Type.torrent);
 		torrentSession.build(TaskSession.newInstance(entity));
 		String host = "127.0.0.1";
-		Integer port = 49160; // FDM测试端口
-//		Integer port = 15000; // 本地迅雷测试端口
+//		Integer port = 49160; // FDM测试端口
+		Integer port = 15000; // 本地迅雷测试端口
 		PeerSession peerSession = PeerSession.newInstance(new StatisticsSession(), host, port);
 		PeerClient client = new PeerClient(peerSession, torrentSession);
 		client.torrent();
