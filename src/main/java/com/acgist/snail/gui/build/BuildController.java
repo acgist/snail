@@ -71,7 +71,7 @@ public class BuildController implements Initializable {
 			ok = false;
 			AlertWindow.warn("下载失败", e.getMessage());
 		}
-		if(ok) {
+		if(ok) { // 下载成功
 			setUrl("");
 			BuildWindow.getInstance().hide();
 			TaskDisplay.getInstance().refreshTaskTable();

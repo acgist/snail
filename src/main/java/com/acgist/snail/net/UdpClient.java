@@ -63,7 +63,7 @@ public abstract class UdpClient<T extends UdpMessageHandler> {
 			this.channel.setOption(StandardSocketOptions.IP_MULTICAST_TTL, 2);
 			this.channel.join(InetAddress.getByName(group), NetUtils.defaultNetworkInterface());
 		} catch (IOException e) {
-			LOGGER.info("多播异常", e);
+			LOGGER.info("UDP多播异常：{}", group, e);
 		}
 	}
 
@@ -75,7 +75,7 @@ public abstract class UdpClient<T extends UdpMessageHandler> {
 			try {
 				this.handler.handle(channel);
 			} catch (IOException e) {
-				LOGGER.error("消息代理异常", e);
+				LOGGER.error("UDP消息代理异常", e);
 			}
 		});
 	}
@@ -84,6 +84,10 @@ public abstract class UdpClient<T extends UdpMessageHandler> {
 	 * 发送消息
 	 */
 	public void send(ByteBuffer buffer, SocketAddress address) throws NetException {
+		if(!channel.isOpen()) {
+			LOGGER.debug("发送消息时Socket已经关闭");
+			return;
+		}
 		if(buffer.position() != 0) { //  重置标记
 			buffer.flip();
 		}
@@ -105,7 +109,7 @@ public abstract class UdpClient<T extends UdpMessageHandler> {
 	 * 关闭channel
 	 */
 	public void close() {
-		LOGGER.info("关闭UDP Client通道：{}", this.name);
+		LOGGER.info("UDP Client关闭：{}", this.name);
 		IoUtils.close(channel);
 	}
 

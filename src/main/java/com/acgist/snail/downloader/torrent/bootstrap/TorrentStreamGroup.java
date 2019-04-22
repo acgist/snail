@@ -54,7 +54,7 @@ public class TorrentStreamGroup {
 						streams.add(stream);
 					}
 				} catch (Exception e) {
-					LOGGER.error("创建文件异常", e);
+					LOGGER.error("TorrentStream文件创建异常：{}", file.path(), e);
 				}
 				pos += file.getLength();
 			}

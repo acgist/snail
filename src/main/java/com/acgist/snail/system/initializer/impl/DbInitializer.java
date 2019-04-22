@@ -55,15 +55,16 @@ public class DbInitializer extends Initializer {
 	 * 读取初始化SQL
 	 */
 	private String buildTableSQL() {
-		StringBuilder sql = new StringBuilder();
-		try(InputStreamReader reader = new InputStreamReader(DbInitializer.class.getResourceAsStream(DatabaseConfig.getTableSQL()))) {
+		final StringBuilder sql = new StringBuilder();
+		final String sqlFilePath = DatabaseConfig.getTableSQL();
+		try(InputStreamReader reader = new InputStreamReader(DbInitializer.class.getResourceAsStream(sqlFilePath))) {
 			int count = 0;
 			char[] chars = new char[1024];
 			while((count = reader.read(chars)) != -1) {
 				sql.append(new String(chars, 0, count));
 			}
 		} catch (IOException e) {
-			LOGGER.error("读取建表SQL异常", e);
+			LOGGER.error("建表SQL读取异常：{}", sqlFilePath, e);
 		}
 		return sql.toString();
 	}

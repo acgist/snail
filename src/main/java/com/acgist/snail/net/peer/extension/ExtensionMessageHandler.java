@@ -54,7 +54,7 @@ public class ExtensionMessageHandler {
 		final byte typeValue = buffer.get();
 		final ExtensionType extensionType = ExtensionType.valueOf(typeValue);
 		if(extensionType == null) {
-			LOGGER.error("不支持扩展类型：{}", typeValue);
+			LOGGER.warn("不支持扩展类型：{}", typeValue);
 			return;
 		}
 		LOGGER.debug("扩展消息类型：{}", extensionType);

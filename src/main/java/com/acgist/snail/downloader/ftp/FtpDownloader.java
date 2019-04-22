@@ -70,7 +70,7 @@ public class FtpDownloader extends Downloader {
 				output.close();
 			}
 		} catch (IOException e) {
-			LOGGER.error("关闭文件流异常", e);
+			LOGGER.error("关闭FTP文件流异常", e);
 		}
 	}
 
@@ -115,8 +115,8 @@ public class FtpDownloader extends Downloader {
 				output = new BufferedOutputStream(new FileOutputStream(entity.getFile(), true), DownloadConfig.getMemoryBufferByte());
 			}
 		} catch (FileNotFoundException e) {
-			LOGGER.error("打开下载文件流失败", e);
 			fail("文件打开失败");
+			LOGGER.error("打开FTP文件流失败", e);
 		}
 	}
 	

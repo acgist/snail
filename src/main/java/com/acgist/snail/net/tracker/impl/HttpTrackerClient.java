@@ -64,7 +64,7 @@ public class HttpTrackerClient extends TrackerClient {
 		try {
 			HTTPClient.get(requestUrl, BodyHandlers.ofString(), TrackerClient.TIMEOUT);
 		} catch (NetException e) {
-			LOGGER.error("HTTP请求异常", e);
+			LOGGER.error("Tracker发送完成消息异常", e);
 		}
 	}
 	
@@ -74,7 +74,7 @@ public class HttpTrackerClient extends TrackerClient {
 		try {
 			HTTPClient.get(requestUrl, BodyHandlers.ofString(), TrackerClient.TIMEOUT);
 		} catch (NetException e) {
-			LOGGER.error("HTTP请求异常", e);
+			LOGGER.error("Tracker发送暂停消息异常", e);
 		}
 	}
 	

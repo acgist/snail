@@ -190,7 +190,7 @@ public class UpnpService {
 			boolean peerOk = this.deletePortMapping(SystemConfig.getPeerPort(), Protocol.TCP);
 			LOGGER.info("端口释放：DHT：{}、Peer：{}", dhtOk, peerOk);
 		} catch (NetException e) {
-			LOGGER.error("UPNP端口释放异常", e);
+			LOGGER.error("释放UPNP端口异常", e);
 		}
 	}
 	
@@ -202,7 +202,7 @@ public class UpnpService {
 		try {
 			url = new URL(this.location);
 		} catch (MalformedURLException e) {
-			LOGGER.error("获取URL失败", e);
+			LOGGER.error("UPNP获取控制URL异常：{}", this.location, e);
 		}
 		final StringBuilder builder = new StringBuilder();
 		builder.append(url.getProtocol())

@@ -46,7 +46,7 @@ public class FileVerifyUtils {
 					digest.update(bytes, 0, length);
 				}
 			} catch (Exception e) {
-				LOGGER.error("HASH计算失败", e);
+				LOGGER.error("文件HASH计算异常", e);
 				return data;
 			}
 			BigInteger hex = new BigInteger(1, digest.digest());

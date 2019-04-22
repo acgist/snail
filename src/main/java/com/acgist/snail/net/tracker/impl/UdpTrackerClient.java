@@ -67,7 +67,7 @@ public class UdpTrackerClient extends TrackerClient {
 			try {
 				send(buildAnnounceMessage(sid, torrentSession, TrackerClient.Event.completed));
 			} catch (NetException e) {
-				LOGGER.error("Tracker完成消息异常", e);
+				LOGGER.error("Tracker发送完成消息异常", e);
 			}
 		}
 	}
@@ -78,7 +78,7 @@ public class UdpTrackerClient extends TrackerClient {
 			try {
 				send(buildAnnounceMessage(sid, torrentSession, TrackerClient.Event.stopped));
 			} catch (NetException e) {
-				LOGGER.error("Tracker暂停消息异常", e);
+				LOGGER.error("Tracker发送暂停消息异常", e);
 			}
 		}
 	}

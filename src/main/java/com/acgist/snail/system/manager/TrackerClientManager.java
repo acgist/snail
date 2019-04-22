@@ -33,6 +33,9 @@ public class TrackerClientManager {
 
 	private static final int MAX_CLIENT_SIZE = SystemConfig.getTrackerSize();
 	
+	/**
+	 * key：trackerId：连接时使用
+	 */
 	private Map<Integer, TrackerClient> TRACKER_CLIENT_MAP;
 	
 	private TrackerClientManager() {
@@ -96,7 +99,7 @@ public class TrackerClientManager {
 			try {
 				return register(announce);
 			} catch (NetException e) {
-				LOGGER.error("tracker获取异常", e);
+				LOGGER.error("Tracker注册异常：{}", announce, e);
 			}
 			return null;
 		})
@@ -113,14 +116,14 @@ public class TrackerClientManager {
 			return null;
 		}
 		synchronized (TRACKER_CLIENT_MAP) {
-			Optional<TrackerClient> optional = TRACKER_CLIENT_MAP.values().stream()
+			final Optional<TrackerClient> optional = TRACKER_CLIENT_MAP.values().stream()
 				.filter(client -> {
 					return client.exist(announceUrl);
 				}).findFirst();
 			if(optional.isPresent()) {
 				return optional.get();
 			}
-			TrackerClient client = buildClientProxy(announceUrl);
+			final TrackerClient client = buildClientProxy(announceUrl);
 			register(client);
 			return client;
 		}

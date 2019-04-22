@@ -63,7 +63,7 @@ public abstract class TcpServer {
 			server.accept(server, AcceptHandler.newInstance(clazz));
 		} catch (Exception e) {
 			ok = false;
-			LOGGER.error("启动{}异常", name, e);
+			LOGGER.error("TCP Server启动异常：{}", this.name, e);
 		}
 		if(ok) {
 //			阻止线程关闭
@@ -78,7 +78,7 @@ public abstract class TcpServer {
 	 * 关闭资源
 	 */
 	public void close() {
-		LOGGER.info("关闭{}", name);
+		LOGGER.info("TCP Server关闭：{}", name);
 		IoUtils.close(server);
 	}
 	
@@ -86,7 +86,7 @@ public abstract class TcpServer {
 	 * 关闭Server线程池
 	 */
 	public static final void shutdown() {
-		LOGGER.info("关闭Server线程池");
+		LOGGER.info("关闭TCP Server线程池");
 		IoUtils.close(GROUP);
 	}
 	

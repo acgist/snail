@@ -9,12 +9,12 @@ import com.acgist.snail.protocol.torrent.TorrentProtocol;
 import com.acgist.snail.protocol.torrent.TorrentProtocol.TorrentFileOperation;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.system.manager.MagnetResolverManager;
 import com.acgist.snail.system.manager.ProtocolManager;
 import com.acgist.snail.utils.StringUtils;
 
 /**
  * 磁力链接协议
+ * TODO：磁力链接转种子
  */
 public class MagnetProtocol extends Protocol {
 
@@ -49,7 +49,7 @@ public class MagnetProtocol extends Protocol {
 	
 	@Override
 	protected Protocol convert() throws DownloadException {
-		File file = MagnetResolverManager.getInstance().download(url);
+		final File file = null; // TODO：下载
 		if(file == null) {
 			throw new DownloadException("下载种子失败：" + url);
 		}

@@ -60,7 +60,7 @@ public class EntityUtils {
 			PropertyDescriptor descriptor = new PropertyDescriptor(property, clazz);
 			return descriptor.getReadMethod().invoke(entity);
 		} catch (IntrospectionException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			LOGGER.error("反射获取属性异常", e);
+			LOGGER.error("反射属性获取异常", e);
 		}
 		return null;
 	}

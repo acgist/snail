@@ -49,7 +49,7 @@ public class JsonUtils {
 			final JavaType type = mapper.getTypeFactory().constructParametricType(List.class, clazz);
 			return mapper.readValue(json, type);
 		} catch (IOException e) {
-			LOGGER.error("JSON转List异常，内容：" + json, e);
+			LOGGER.error("JSON转List异常，内容：{}", json, e);
 		}
 		return null;
 	}
@@ -67,7 +67,7 @@ public class JsonUtils {
 			final JavaType type = mapper.getTypeFactory().constructParametricType(Map.class, String.class, Object.class);
 			return mapper.readValue(json, type);
 		} catch (IOException e) {
-			LOGGER.error("JSON转Map异常，内容：" + json, e);
+			LOGGER.error("JSON转Map异常，内容：{}", json, e);
 		}
 		return null;
 	}

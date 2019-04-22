@@ -41,7 +41,7 @@ public class DownloaderInitializer extends Initializer {
 					taskSession = TaskSession.newInstance(entity);
 					DownloaderManager.getInstance().submit(taskSession);
 				} catch (DownloadException e) {
-					LOGGER.error("添加下载任务异常", e);
+					LOGGER.error("添加下载任务异常：{}", entity.getName(), e);
 					repository.delete(entity);
 				}
 			});

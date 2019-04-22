@@ -29,6 +29,7 @@ public class TorrentStream {
 	 * 校验文件的字节数
 	 */
 	private static final int VERIFY_SIZE = 10;
+//	private static final int VERIFY_SIZE_CHECK = 20; // 再次矫正
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentStream.class);
 	
@@ -126,7 +127,7 @@ public class TorrentStream {
 				}
 			} else {
 				// TODO：重新返回Piece位图
-				LOGGER.error("添加Piece失败");
+				LOGGER.error("Piece保存失败");
 			}
 		}
 		write(list);
@@ -223,7 +224,7 @@ public class TorrentStream {
 			fileStream.seek(seek);
 			fileStream.read(bytes);
 		} catch (IOException e) {
-			LOGGER.error("读取块信息异常", e);
+			LOGGER.error("Piece读取异常：{}-{}-{}-{}", index, size, pos, ignorePieces, e);
 		}
 		return bytes;
 	}
@@ -267,7 +268,7 @@ public class TorrentStream {
 		try {
 			fileStream.close();
 		} catch (IOException e) {
-			LOGGER.error("关闭流异常", e);
+			LOGGER.error("TorrentStream关闭异常", e);
 		}
 	}
 
@@ -317,7 +318,7 @@ public class TorrentStream {
 				fileStream.seek(seek);
 				fileStream.write(piece.getData(), offset, length);
 			} catch (IOException e) {
-				LOGGER.error("文件流写入失败", e);
+				LOGGER.error("TorrentStream写入异常", e);
 			}
 		});
 	}
@@ -354,6 +355,12 @@ public class TorrentStream {
 			if(haveData(bytes)) {
 				download(index);
 				torrentStreamGroup.piece(index);
+//			} else { // 再次校验：TODO：是否需要优化
+//				bytes = read(index, VERIFY_SIZE_CHECK, pos, true); // 第一块需要偏移
+//				if(haveData(bytes)) {
+//					download(index);
+//					torrentStreamGroup.piece(index);
+//				}
 			}
 		}
 		if(LOGGER.isDebugEnabled()) {
