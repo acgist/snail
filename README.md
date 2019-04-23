@@ -22,6 +22,8 @@
 |DHT Protocol|×|
 |Local Service Discovery|×|
 
+*说明：√=完成、○-进行中、×-未开始*
+
 #### 技术
 |技术|版本|
 |:-|:-|
