@@ -23,6 +23,12 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
+/**
+ * 设置窗口控制器
+ * 
+ * @author acgist
+ * @since 1.0.0
+ */
 public class SettingController implements Initializable {
 	
 //	private static final Logger LOGGER = LoggerFactory.getLogger(SettingController.class);

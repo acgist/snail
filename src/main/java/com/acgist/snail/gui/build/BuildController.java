@@ -28,6 +28,12 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
+/**
+ * 新建窗口控制器
+ * 
+ * @author acgist
+ * @since 1.0.0
+ */
 public class BuildController implements Initializable {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(BuildController.class);
@@ -44,6 +50,9 @@ public class BuildController implements Initializable {
 		root.setOnDragDropped(dragDroppedAction);
 	}
 	
+	/**
+	 * 选择种子按钮
+	 */
 	@FXML
 	public void handleTorrentAction(ActionEvent event) {
 		FileChooser chooser = new FileChooser();
@@ -57,6 +66,9 @@ public class BuildController implements Initializable {
 		}
 	}
 
+	/**
+	 * 确认下载按钮
+	 */
 	@FXML
 	public void handleBuildAction(ActionEvent event) {
 		String url = urlValue.getText();
@@ -78,12 +90,18 @@ public class BuildController implements Initializable {
 		}
 	}
 
+	/**
+	 * 取消下载按钮
+	 */
 	@FXML
 	public void handleCancelAction(ActionEvent event) {
 		setUrl("");
 		BuildWindow.getInstance().hide();
 	}
 	
+	/**
+	 * 设置下载地址
+	 */
 	public void setUrl(String url) {
 		urlValue.setText(url);
 	}

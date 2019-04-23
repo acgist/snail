@@ -54,10 +54,13 @@ import javafx.scene.text.Text;
 import javafx.util.Callback;
 
 /**
+ * 主窗口控制器
  * TODO：太多列滚动条优化
- * TODO：文件校验（MD5/SHA-1）
  * TODO：内存优化
  * TODO：下键空白
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class MainController implements Initializable {
 
@@ -130,48 +133,75 @@ public class MainController implements Initializable {
 		TaskDisplay.getInstance().newTimer(this);
 	}
 
+	/**
+	 * 新建按钮
+	 */
 	@FXML
 	public void handleBuildAction(ActionEvent event) {
 		BuildWindow.getInstance().show();
 	}
-	
+
+	/**
+	 * 开始按钮
+	 */
 	@FXML
 	public void handleStartAction(ActionEvent event) {
 		this.start();
 	}
-	
+
+	/**
+	 * 暂停按钮
+	 */
 	@FXML
 	public void handlePauseAction(ActionEvent event) {
 		this.pause();
 	}
 	
+	/**
+	 * 删除按钮
+	 */
 	@FXML
 	public void handleDeleteAction(ActionEvent event) {
 		this.delete();
 	}
 	
+	/**
+	 * 关于按钮
+	 */
 	@FXML
 	public void handleAboutAction(ActionEvent event) {
 		AboutWindow.getInstance().show();
 	}
 	
+	/**
+	 * 设置按钮
+	 */
 	@FXML
 	public void handleSettingAction(ActionEvent event) {
 		SettingWindow.getInstance().show();
 	}
 	
+	/**
+	 * 全部任务按钮
+	 */
 	@FXML
 	public void handleAllAction(ActionEvent event) {
 		this.filter = Filter.all;
 		TaskDisplay.getInstance().refreshTaskTable();
 	}
-	
+
+	/**
+	 * 下载中任务按钮
+	 */
 	@FXML
 	public void handleDownloadAction(ActionEvent event) {
 		this.filter = Filter.download;
 		TaskDisplay.getInstance().refreshTaskTable();
 	}
 	
+	/**
+	 * 下载完成任务按钮
+	 */
 	@FXML
 	public void handleCompleteAction(ActionEvent event) {
 		this.filter = Filter.complete;
@@ -179,10 +209,10 @@ public class MainController implements Initializable {
 	}
 	
 	/**
-	 * 设置数据
+	 * 刷新Table
 	 */
 	public void refreshTable() {
-		ObservableList<TaskSession> obs = FXCollections.observableArrayList();
+		final ObservableList<TaskSession> obs = FXCollections.observableArrayList();
 		DownloaderManager.getInstance().tasks()
 		.stream()
 		.filter(wrapper -> {
@@ -215,7 +245,7 @@ public class MainController implements Initializable {
 	}
 	
 	/**
-	 * 选中数据
+	 * 获取选中任务
 	 */
 	public List<TaskSession> selected() {
 		return this.taskTable.getSelectionModel().getSelectedItems()
@@ -224,14 +254,14 @@ public class MainController implements Initializable {
 	}
 	
 	/**
-	 * 是否选中数据
+	 * 是否有选中任务
 	 */
 	public boolean haveContent() {
 		return !this.selected().isEmpty();
 	}
 	
 	/**
-	 * 选中数据是否包含BT下载
+	 * 选中任务是否包含BT下载
 	 */
 	public boolean haveTorrent() {
 		return this.selected()
@@ -240,7 +270,7 @@ public class MainController implements Initializable {
 	}
 
 	/**
-	 * 开始任务
+	 * 开始选中任务
 	 */
 	public void start() {
 		this.selected()
@@ -254,7 +284,7 @@ public class MainController implements Initializable {
 	}
 	
 	/**
-	 * 暂停任务
+	 * 暂停选中任务
 	 */
 	public void pause() {
 		this.selected()
@@ -264,13 +294,13 @@ public class MainController implements Initializable {
 	}
 	
 	/**
-	 * 删除任务
+	 * 删除选中任务
 	 */
 	public void delete() {
 		if(!this.haveContent()) {
 			return;
 		}
-		Optional<ButtonType> result = AlertWindow.build(AlertType.CONFIRMATION, "删除确认", "删除选中文件？");
+		final Optional<ButtonType> result = AlertWindow.build(AlertType.CONFIRMATION, "删除确认", "删除选中文件？");
 		if(result.get() == ButtonType.OK) {
 			this.selected()
 			.forEach(wrapper -> {
@@ -281,7 +311,8 @@ public class MainController implements Initializable {
 	}
 
 	/**
-	 * 设置列
+	 * 设置数据列
+	 * 
 	 * @param column 列
 	 * @param pos 对齐
 	 * @param icon 显示ICON

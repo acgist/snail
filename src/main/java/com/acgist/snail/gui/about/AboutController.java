@@ -11,6 +11,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.GridPane;
 
+/**
+ * 关于窗口控制器
+ * 
+ * @author acgist
+ * @since 1.0.0
+ */
 public class AboutController implements Initializable {
 	
 	@FXML
@@ -20,16 +26,25 @@ public class AboutController implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 	}
 	
+	/**
+	 * 作者按钮
+	 */
 	@FXML
 	public void handleAuthorAction(ActionEvent event) {
 		BrowseUtils.open(SystemConfig.getAuthor());
 	}
 	
+	/**
+	 * 源码按钮
+	 */
 	@FXML
 	public void handleSourceAction(ActionEvent event) {
 		BrowseUtils.open(SystemConfig.getSource());
 	}
 	
+	/**
+	 * 支持按钮
+	 */
 	@FXML
 	public void handleSupportAction(ActionEvent event) {
 		BrowseUtils.open(SystemConfig.getSupport());

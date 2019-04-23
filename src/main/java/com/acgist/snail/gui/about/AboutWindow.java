@@ -12,7 +12,10 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
- * 关于
+ * 关于窗口
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class AboutWindow extends Window<AboutController> {
 

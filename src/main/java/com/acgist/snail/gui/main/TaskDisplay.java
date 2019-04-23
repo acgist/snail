@@ -10,21 +10,25 @@ import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
- * 定时任务：刷新任务列表
+ * <p>任务刷新器</p>
+ * TODO：主页隐藏时不刷新任务列表
  * TODO：隐藏、任务完成后刷新时间变短
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class TaskDisplay {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskDisplay.class);
 	
 	/**
-	 * 任务列表刷新时间、下载速度采样时间
+	 * 任务列表刷新时间
 	 */
-	private static final Duration INTERVAL = Duration.ofSeconds(3);
-
-	private MainController controller;
+	private static final Duration INTERVAL = Duration.ofSeconds(4);
 
 	private static final TaskDisplay INSTANCE = new TaskDisplay();
+	
+	private MainController controller;
 	
 	private TaskDisplay() {
 	}
