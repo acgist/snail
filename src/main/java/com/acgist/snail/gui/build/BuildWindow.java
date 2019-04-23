@@ -12,7 +12,10 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
- * 新建
+ * 新建窗口
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class BuildWindow extends Window<BuildController> {
 
@@ -43,10 +46,10 @@ public class BuildWindow extends Window<BuildController> {
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/fxml/build.fxml"));
-		FlowPane root = loader.load();
+		final FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/fxml/build.fxml"));
+		final FlowPane root = loader.load();
 		this.controller = loader.getController();
-		Scene scene = new Scene(root, 600, 300);
+		final Scene scene = new Scene(root, 600, 300);
 		stage.initModality(Modality.APPLICATION_MODAL);
 		stage.setScene(scene);
 		stage.setTitle("新建下载");
@@ -54,6 +57,11 @@ public class BuildWindow extends Window<BuildController> {
 		dialogWindow();
 	}
 	
+	/**
+	 * 显示窗口同时设置下载地址
+	 * 
+	 * @param url 下载地址
+	 */
 	public void show(String url) {
 		controller.setUrl(url);
 		this.show();

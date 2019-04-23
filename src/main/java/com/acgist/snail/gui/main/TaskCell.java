@@ -12,10 +12,19 @@ import javafx.scene.text.Text;
 
 /**
  * 任务单元格
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class TaskCell extends TableCell<TaskSession, String> {
 
+	/**
+	 * 对齐
+	 */
 	private Pos pos = Pos.CENTER_LEFT;
+	/**
+	 * 是否显示ICON
+	 */
 	private boolean icon;
 	
 	public TaskCell(Pos pos, boolean icon) {
@@ -26,23 +35,24 @@ public class TaskCell extends TableCell<TaskSession, String> {
 	@Override
 	public void updateItem(String value, boolean empty) {
 		super.updateItem(value, empty);
-		TaskSession taskSession = this.getTableRow().getItem();
+		final TaskSession taskSession = this.getTableRow().getItem();
 		if(taskSession != null) {
-			HBox box = new HBox();
+			final HBox box = new HBox();
 			box.setAlignment(pos);
-			Text name = new Text(value);
+			final Text name = new Text(value);
 			if(this.icon) { // 名称：添加图标和手势
 				name.setCursor(Cursor.HAND);
-				FileType fileType = taskSession.entity().getFileType();
+				final FileType fileType = taskSession.entity().getFileType();
 				if(fileType != null) {
-					ImageView icon = new ImageView("/image/32/" + fileType.getIcon());
+					final ImageView icon = new ImageView("/image/32/" + fileType.getIcon());
 					box.getChildren().add(icon);
 				}
 			}
 			box.getChildren().add(name);
 			this.setGraphic(box);
 		} else {
-			this.setGraphic(new HBox());
+			final HBox box = new HBox();
+			this.setGraphic(box);
 		}
 	}
 	

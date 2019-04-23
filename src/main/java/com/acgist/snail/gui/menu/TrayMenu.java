@@ -35,6 +35,9 @@ import javafx.stage.WindowEvent;
 
 /**
  * 菜单 - 托盘
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class TrayMenu extends Menu {
 
@@ -211,7 +214,9 @@ public class TrayMenu extends Menu {
 		BrowseUtils.open(SystemConfig.getSupport());
 	};
 	
-	// 窗口隐藏时移除托盘显示的Stage
+	/**
+	 * 窗口隐藏时移除托盘显示的Stage
+	 */
 	private EventHandler<WindowEvent> windowHiddenAction = (event) -> {
 		Platform.runLater(() -> {
 			if(trayStage != null) {

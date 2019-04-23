@@ -13,10 +13,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 /**
- * 主界面
- * TODO：主页隐藏时不刷新任务列表
- * 任务栏按钮
- * 托盘气泡通知
+ * 主窗口
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class MainWindow extends Window<MainController> {
 
