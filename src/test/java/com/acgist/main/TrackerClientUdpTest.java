@@ -15,7 +15,7 @@ public class TrackerClientUdpTest {
 	public void test() throws NetException, DownloadException {
 		String path = "e:/snail/1234.torrent";
 		TorrentSession session = TorrentSessionManager.getInstance().buildSession(path);
-		TrackerLauncherGroup group = new TrackerLauncherGroup(session);
+		TrackerLauncherGroup group = TrackerLauncherGroup.newInstance(session);
 		group.loadTracker();
 //		var client = TrackerClientManager.getInstance().register("udp://exodus.desync.com:6969/announce");
 //		var launcher = TrackerLauncherManager.getInstance().build(client, session);

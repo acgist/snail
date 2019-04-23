@@ -21,7 +21,10 @@ import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.FileUtils;
 
 /**
- * HTTP下载
+ * <p>HTTP下载器</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class HttpDownloader extends Downloader {
 
@@ -85,23 +88,25 @@ public class HttpDownloader extends Downloader {
 	 * 任务是否完成：长度-1或者下载数据等于任务长度
 	 */
 	private boolean isComplete(int length) {
-		long size = taskSession.entity().getSize();
-		long downloadSize = taskSession.downloadSize();
+		final long size = taskSession.entity().getSize();
+		final long downloadSize = taskSession.downloadSize();
 		return length == -1 || size == downloadSize;
 	}
 	
 	/**
-	 * 端点续传：<br>
-	 * Range: bytes=0-499 表示第 0-499 字节范围的内容<br>
-	 * Range: bytes=500-999 表示第 500-999 字节范围的内容<br>
-	 * Range: bytes=-500 表示最后 500 字节的内容<br>
-	 * Range: bytes=500- 表示从第 500 字节开始到文件结束部分的内容<br>
-	 * Range: bytes=0-0,-1 表示第一个和最后一个字节<br>
-	 * Range: bytes=500-600,601-999 同时指定几个范围<br>
+	 * <p>端点续传：</p>
+	 * <p>
+	 * Range：bytes=0-499：第 0-499 字节范围的内容<br>
+	 * Range：bytes=500-999：第 500-999 字节范围的内容<br>
+	 * Range：bytes=-500：最后 500 字节的内容<br>
+	 * Range：bytes=500-：从第 500 字节开始到文件结束部分的内容<br>
+	 * Range：bytes=0-0,-1：第一个和最后一个字节的内容<br>
+	 * Range：bytes=500-600,601-999：同时指定几个范围的内容<br>
+	 * </p>
 	 */
 	private void buildInput() {
-		var entity = taskSession.entity();
-		long size = FileUtils.fileSize(entity.getFile()); // 已下载大小
+		final var entity = taskSession.entity();
+		final long size = FileUtils.fileSize(entity.getFile()); // 已下载大小
 		final var client = HTTPClient.newClient();
 		final var request = HTTPClient.newRequest(entity.getUrl())
 			.header("Range", "bytes=" + size + "-") // 端点续传
@@ -139,9 +144,9 @@ public class HttpDownloader extends Downloader {
 	}
 
 	private void buildOutput() {
-		var entity = taskSession.entity();
+		final var entity = taskSession.entity();
 		try {
-			long size = taskSession.downloadSize();
+			final long size = taskSession.downloadSize();
 			if(size == 0L) {
 				output = new BufferedOutputStream(new FileOutputStream(entity.getFile()), DownloadConfig.getMemoryBufferByte());
 			} else { // 支持续传

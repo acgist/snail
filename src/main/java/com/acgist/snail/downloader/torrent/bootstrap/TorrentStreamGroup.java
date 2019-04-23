@@ -49,7 +49,7 @@ public class TorrentStreamGroup {
 			for (TorrentFile file : files) {
 				try {
 					if(file.selected()) {
-						TorrentStream stream = new TorrentStream(torrentInfo.getPieceLength(), group);
+						final TorrentStream stream = TorrentStream.newInstance(torrentInfo.getPieceLength(), group);
 						stream.buildFile(FileUtils.file(folder, file.path()), file.getLength(), pos);
 						streams.add(stream);
 					}

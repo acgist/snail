@@ -17,8 +17,17 @@ import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.manager.PeerSessionManager;
 
 /**
- * Peer组<br>
- * 每次剔除权重的一个PeerClient<br>
+ * <p>PeerClient组</p>
+ * <p>
+ * 对正在进行下载的PeerClient管理：<br>
+ * <ul>
+ * 	<li>创建PeerClient。</li>
+ * 	<li>定时替换下载最慢的PeerClient。</li>
+ * </ul>
+ * </p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class PeerClientGroup {
 
@@ -30,10 +39,13 @@ public class PeerClientGroup {
 	
 	private final TaskSession taskSession;
 	private final TorrentSession torrentSession;
+	/**
+	 * PeerClient下载队列
+	 */
 	private final BlockingQueue<PeerClient> peerClients;
 	private final PeerSessionManager peerSessionManager;
 	
-	public PeerClientGroup(TorrentSession torrentSession) {
+	private PeerClientGroup(TorrentSession torrentSession) {
 		this.taskSession = torrentSession.taskSession();
 		this.torrentSession = torrentSession;
 		this.peerClients = new LinkedBlockingQueue<>();
@@ -41,8 +53,14 @@ public class PeerClientGroup {
 		optimizeTimer(); // 优化
 	}
 	
+	public static final PeerClientGroup newInstance(TorrentSession torrentSession) {
+		return new PeerClientGroup(torrentSession);
+	}
+	
 	/**
-	 * 创建下载线程
+	 * <p>创建下载线程（异步生成）</p>
+	 * 
+	 * @param size 指定生成数量
 	 */
 	public void launchers(int size) {
 		synchronized (peerClients) {
@@ -55,21 +73,22 @@ public class PeerClientGroup {
 	}
 	
 	/**
-	 * 定时优化线程
+	 * <p>定时优化线程</p>
 	 */
 	public void optimizeTimer() {
-		synchronized (peerClients) {
-			optimize();
-			if(taskSession.download()) {
-				SystemThreadContext.timer(INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
-					optimizeTimer(); // 定时优化
-				});
-			}		
-		}
+		optimize(); // 优化PeerClient
+		if(taskSession.download()) {
+			SystemThreadContext.timer(INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
+				optimizeTimer(); // 定时优化
+			});
+		}		
 	}
 
 	/**
-	 * 优化下载Peer，权重最低的剔除，然后插入队列头部，然后启动队列最后一个Peer
+	 * <p>优化PeerClient</p>
+	 * <p>
+	 * 挑选权重最低的PeerClient，剔除下载队列，将剔除的Peer插入到Peer队列头部，然后重新生成一个PeerClient。
+	 * </p>
 	 */
 	public void optimize() {
 		synchronized (peerClients) {
@@ -88,8 +107,10 @@ public class PeerClientGroup {
 	}
 
 	/**
-	 * 发送have消息
+	 * <p>发送have消息，通知所有已连接的Peer已下载对应的Piece</p>
 	 * TODO：客户端也需要通知
+	 * 
+	 * @param index Piece序号
 	 */
 	public void have(int index) {
 		synchronized (peerClients) {
@@ -102,14 +123,14 @@ public class PeerClientGroup {
 	}
 	
 	/**
-	 * 资源释放
+	 * <p>资源释放</p>
+	 * <p>释放所有正在下载的PeerClient。</p>
 	 */
 	public void release() {
 		LOGGER.debug("释放PeerClientGroup");
 		synchronized (peerClients) {
 			peerClients.forEach(client -> {
 				SystemThreadContext.submit(() -> {
-					LOGGER.debug("Peer关闭：{}:{}", client.peerSession().host(), client.peerSession().port());
 					client.release();
 				});
 			});
@@ -117,7 +138,8 @@ public class PeerClientGroup {
 	}
 	
 	/**
-	 * 拿去最后一个session创建PeerClient
+	 * <p>新建PeerClient加入下载队列</p>
+	 * <p>从Peer列表尾部拿出一个Peer创建下载</p>
 	 */
 	private void buildPeerClient() {
 		if(!taskSession.download()) {
@@ -138,7 +160,9 @@ public class PeerClientGroup {
 	}
 	
 	/**
-	 * 劣质的PeerClient
+	 * <p>剔除劣质PeerClient</p>
+	 * <p>选择劣质PeerClient，释放资源，然后放入Peer队列头部。</p>
+	 * 
 	 * @return true-剔除成功；false-剔除失败
 	 */
 	private boolean inferiorPeerClient() {
@@ -156,7 +180,11 @@ public class PeerClientGroup {
 	}
 	
 	/***
-	 * 选择劣质PeerClient
+	 * <p>选择劣质PeerClient</p>
+	 * <p>
+	 * 挑选权重最低的PeerClient作为劣质Peer，如果其中含有不可用的PeerClient，直接剔除该PeerClient，
+	 * 但是依旧需要循环完所有的PeerClient，清除权重进行新一轮的权重计算。
+	 * </p>
 	 */
 	private PeerClient pickInferiorPeerClient() {
 		final int size = peerClients.size();
@@ -166,7 +194,7 @@ public class PeerClientGroup {
 		int index = 0;
 		int mark = 0, minMark = 0;
 		PeerClient tmp = null; // 临时
-		PeerClient inferior = null; // 劣质Client
+		PeerClient inferior = null; // 劣质PeerClient
 		while(true) {
 			if(index++ >= size) {
 				break;
@@ -175,7 +203,7 @@ public class PeerClientGroup {
 			if(tmp == null) {
 				break;
 			}
-			mark = tmp.mark(); // 清空分数
+			mark = tmp.mark(); // 清空权重
 			if(inferior != null && !inferior.available()) { // 如果当前挑选的是不可用的PeerClient不执行后面操作
 				continue;
 			}
