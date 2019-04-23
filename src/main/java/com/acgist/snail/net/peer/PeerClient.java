@@ -141,6 +141,7 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	 */
 	public void release() {
 		if(available()) {
+			LOGGER.debug("Peer关闭：{}:{}", peerSession.host(), peerSession.port());
 			this.available = false;
 			if(!overLock.get()) { // 没有完成：等待下载完成
 				synchronized (closeLock) {

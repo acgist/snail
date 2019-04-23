@@ -18,7 +18,10 @@ import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.utils.FileUtils;
 
 /**
- * FTP下载
+ * <p>FTP下载器</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class FtpDownloader extends Downloader {
 	
@@ -78,8 +81,8 @@ public class FtpDownloader extends Downloader {
 	 * 任务是否完成：长度-1或者下载数据等于任务长度
 	 */
 	private boolean isComplete(int length) {
-		long size = taskSession.entity().getSize();
-		long downloadSize = taskSession.downloadSize();
+		final long size = taskSession.entity().getSize();
+		final long downloadSize = taskSession.downloadSize();
 		return length == -1 || size == downloadSize;
 	}
 	

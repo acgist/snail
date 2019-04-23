@@ -9,7 +9,10 @@ import com.acgist.snail.downloader.Downloader;
 import com.acgist.snail.pojo.session.TaskSession;
 
 /**
- * ED2K下载器
+ * <p>ED2K下载器</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class Ed2kDownloader extends Downloader {
 
@@ -35,5 +38,5 @@ public class Ed2kDownloader extends Downloader {
 	@Override
 	public void release() {
 	}
-	
+
 }

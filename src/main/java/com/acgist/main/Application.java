@@ -11,13 +11,20 @@ import com.acgist.snail.system.context.SystemThreadContext;
 import javafx.application.Platform;
 
 /**
- * 系统启动
- * TODO：启动检测、端口、外网端口
+ * <h1>Snail系统启动类。</h1>
+ * <p>Snail（蜗牛）是一款下载软件，支持下载协议：BT、FTP、HTTP、ED2K。</p>
+ * TODO：启动检测、端口、外网端口。
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class Application {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 	
+	/**
+	 * 启动
+	 */
 	public static final void main(String[] args) {
 		LOGGER.info("系统开始启动");
 		SystemContext.info();
@@ -37,18 +44,18 @@ public class Application {
 	}
 	
 	/**
-	 * 系统初始化
+	 * 初始化系统
 	 */
 	private static final void initSystem() {
 		SystemContext.init();
 	}
 	
 	/**
-	 * 创建窗口
+	 * 初始化窗口
 	 */
 	private static final void buildWindow() {
 		LOGGER.info("初始化窗口");
-		Thread thread = new Thread();
+		final Thread thread = new Thread();
 		thread.setName(SystemThreadContext.SNAIL_THREAD_PLATFORM);
 		thread.setDaemon(true);
 		Platform.startup(thread);

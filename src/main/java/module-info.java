@@ -1,20 +1,21 @@
 /**
- * Sanil下载工具，支持下载协议：BT、FTP、HTTP、ED2K。<br>
- * open：开放模块<br>
+ * <h1>Sanil（蜗牛）下载工具</h1>
+ * <p>支持下载协议：BT、FTP、HTTP、ED2K。</p>
+ * <p>方法注解（author、since）没有时，默认使用类注解。</p>
  */
 open module com.acgist.snail {
 	
-	/**
-	 * 限定导出（main方法）
-	 **/
+	/*
+	 * 限定导出
+	 */
 	exports com.acgist.main;
 	
-	/**
+	/*
 	 * opens：开放包（反射时需要，使用open module不需要此配置）<br>
 	 * opens com.acgist.main;
 	 */
 
-	/**
+	/*
 	 * Java
 	 */
 	requires java.sql;
@@ -36,14 +37,14 @@ open module com.acgist.snail {
 	 * jdk.unsupported
 	 */
 	
-	/**
+	/*
 	 * JavaFX
 	 */
 	requires transitive javafx.fxml;
 	requires transitive javafx.controls;
 	requires transitive javafx.graphics;
 	
-	/**
+	/*
 	 * 其他：数据库、日志、JSON
 	 */
 	requires transitive org.slf4j;

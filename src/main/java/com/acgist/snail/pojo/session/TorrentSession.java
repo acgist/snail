@@ -54,7 +54,6 @@ public class TorrentSession {
 	 * Tracker组
 	 */
 	private TrackerLauncherGroup trackerLauncherGroup;
-	
 	/**
 	 * 线程池
 	 */
@@ -81,8 +80,8 @@ public class TorrentSession {
 	 */
 	public void build(TaskSession taskSession) {
 		this.taskSession = taskSession;
-		this.peerClientGroup = new PeerClientGroup(this);
-		this.trackerLauncherGroup = new TrackerLauncherGroup(this);
+		this.peerClientGroup = PeerClientGroup.newInstance(this);
+		this.trackerLauncherGroup = TrackerLauncherGroup.newInstance(this);
 		this.torrentStreamGroup = TorrentStreamGroup.newInstance(taskSession.downloadFolder().getPath(), torrent, selectFiles(), this);
 		this.executor = SystemThreadContext.newExecutor(10, 10, 100, 60L, SystemThreadContext.SNAIL_THREAD_PEER);
 		final String executorTimerName = SystemThreadContext.SNAIL_THREAD_TRACKER + "-" + this.infoHashHex();

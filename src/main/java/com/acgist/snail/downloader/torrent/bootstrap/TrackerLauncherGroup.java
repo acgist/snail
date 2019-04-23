@@ -29,10 +29,14 @@ public class TrackerLauncherGroup {
 	 */
 	private final List<TrackerLauncher> trackerLaunchers;
 	
-	public TrackerLauncherGroup(TorrentSession torrentSession) {
+	private TrackerLauncherGroup(TorrentSession torrentSession) {
 //		this.taskSession = torrentSession.taskSession();
 		this.torrentSession = torrentSession;
 		this.trackerLaunchers = new ArrayList<>();
+	}
+	
+	public static final TrackerLauncherGroup newInstance(TorrentSession torrentSession) {
+		return new TrackerLauncherGroup(torrentSession);
 	}
 
 	/**
