@@ -5,7 +5,7 @@
 open module com.acgist.snail {
 	
 	/**
-	 * 限定导出
+	 * 限定导出（main方法）
 	 **/
 	exports com.acgist.main;
 	
@@ -24,17 +24,17 @@ open module com.acgist.snail {
 	requires java.net.http;
 	
 	/*
-	 * jdeps分析出来的依赖：
+	 * jdeps（jdeps --list-deps *.jar）分析出来的依赖：
+	 * java.sql
+	 * java.xml
+	 * java.base
+	 * java.naming
+	 * java.desktop
+	 * java.logging
+	 * java.scripting
+	 * java.management
+	 * jdk.unsupported
 	 */
-//	java.sql
-//	java.xml
-//	java.base
-//	java.naming
-//	java.desktop
-//	java.logging
-//	java.scripting
-//	java.management
-//	jdk.unsupported
 	
 	/**
 	 * JavaFX
@@ -44,7 +44,7 @@ open module com.acgist.snail {
 	requires transitive javafx.graphics;
 	
 	/**
-	 * 其他依赖
+	 * 其他：数据库、日志、JSON
 	 */
 	requires transitive org.slf4j;
 	requires transitive com.h2database;
