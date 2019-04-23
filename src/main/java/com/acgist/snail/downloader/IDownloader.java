@@ -5,12 +5,21 @@ import java.io.IOException;
 import com.acgist.snail.pojo.session.TaskSession;
 
 /**
- * 下载器
+ * <p>下载器接口</p>
+ * TODO：下载失败时间
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public interface IDownloader extends Runnable {
 	
 	/**
-	 * 运行中
+	 * 任务ID，数据库ID
+	 */
+	String id();
+	
+	/**
+	 * 任务是否运行中（下载中）
 	 */
 	boolean running();
 	
@@ -18,11 +27,6 @@ public interface IDownloader extends Runnable {
 	 * 任务信息
 	 */
 	TaskSession task();
-	
-	/**
-	 * 任务ID
-	 */
-	String id();
 	
 	/**
 	 * 任务名称
@@ -40,12 +44,16 @@ public interface IDownloader extends Runnable {
 	void pause();
 
 	/**
-	 * 失败任务
+	 * <p>失败任务</p>
+	 * <p>设置失败标记，提示失败信息。</p>
+	 * 
+	 * @param message 失败信息
 	 */
 	void fail(String message);
 	
 	/**
-	 * 删除任务
+	 * <p>删除任务</p>
+	 * <p>先暂停任务，然后等待任务正常结束，然后删除任务。</p>
 	 */
 	void delete();
 	
@@ -55,10 +63,17 @@ public interface IDownloader extends Runnable {
 	void refresh();
 	
 	/**
-	 * 打开任务：
-	 * 	设置已下载大小
-	 * 	获取下载文件流
-	 * 	打开本地下载文件流
+	 * <p>解锁下载</p>
+	 * <p>解除下载等待</p>
+	 */
+	void unlockDownload();
+	
+	/**
+	 * <p>打开任务（初始下载）</p>
+	 * <ul>
+	 * 	<li>获取下载数据</li>
+	 * 	<li>打开本地文件流</li>
+	 * </ul>
 	 */
 	void open();
 	
@@ -78,7 +93,8 @@ public interface IDownloader extends Runnable {
 	void complete();
 	
 	/**
-	 * 获取已下载文件大小
+	 * <p>获取已下载文件大小</p>
+	 * <p>直接通过本地文件获取大小，可能出现误差。</p>
 	 */
 	long downloadSize();
 	

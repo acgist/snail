@@ -15,8 +15,11 @@ import com.acgist.snail.system.manager.TrackerClientManager;
 import com.acgist.snail.system.manager.TrackerLauncherManager;
 
 /**
- * tracker组<br>
- * 定时循环
+ * <p>TrackerLauncher组</p>
+ * <p>加载TrackerClient管理，获取Peer。</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class TrackerLauncherGroup {
 
@@ -24,9 +27,6 @@ public class TrackerLauncherGroup {
 	
 //	private final TaskSession taskSession;
 	private final TorrentSession torrentSession;
-	/**
-	 * tracker
-	 */
 	private final List<TrackerLauncher> trackerLaunchers;
 	
 	private TrackerLauncherGroup(TorrentSession torrentSession) {
@@ -40,7 +40,11 @@ public class TrackerLauncherGroup {
 	}
 
 	/**
-	 * 开始加载tracker
+	 * <p>加载TrackerClient</p>
+	 * <p>
+	 * 加载TrackerClient，优先使用种子的Tracker，如果不够可以继续从系统Tracker列表添加。
+	 * 获取到Tracker列表加入定时线程池执行。
+	 * </p>
 	 */
 	public void loadTracker() throws DownloadException {
 		var torrent = torrentSession.torrent();

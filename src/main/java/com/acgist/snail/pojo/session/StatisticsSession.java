@@ -8,7 +8,7 @@ import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
- * session - 统计<br>
+ * session - 统计、限速<br>
  * 如果父类统计存在时更新同时更新父类统计<br>
  * 限速模块
  */
