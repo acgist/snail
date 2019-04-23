@@ -1,6 +1,7 @@
 package com.acgist.snail.downloader.torrent;
 
 import java.io.IOException;
+import java.time.Duration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,11 +14,20 @@ import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.manager.TorrentSessionManager;
 import com.acgist.snail.utils.ThreadUtils;
 
+/**
+ * <p>BT下载器</p>
+ * TODO：下载完成向Tracker发送complete消息。
+ * 
+ * @author acgist
+ * @since 1.0.0
+ */
 public class TorrentDownloader extends Downloader {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentDownloader.class);
 	
 	private TorrentSession torrentSession;
+	
+	private Object downloadLock = new Object(); // 下载锁
 	
 	private TorrentDownloader(TaskSession taskSession) {
 		super(taskSession);
@@ -35,17 +45,26 @@ public class TorrentDownloader extends Downloader {
 	@Override
 	public void download() throws IOException {
 		while(ok()) {
-			ThreadUtils.sleep(1000);
+			synchronized (downloadLock) {
+				ThreadUtils.wait(downloadLock, Duration.ofSeconds(Long.MAX_VALUE));
+			}
 		}
 	}
 
+	@Override
+	public void unlockDownload() {
+		synchronized (downloadLock) {
+			downloadLock.notifyAll();
+		}
+	}
+	
 	@Override
 	public void release() {
 		torrentSession.release();
 	}
 	
 	private void build() {
-		var entity = this.taskSession.entity();
+		final var entity = this.taskSession.entity();
 		final String path = entity.getTorrent();
 		String infoHashHex = null;
 		try {

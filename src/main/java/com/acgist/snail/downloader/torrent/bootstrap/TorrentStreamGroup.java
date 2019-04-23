@@ -17,7 +17,11 @@ import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.FileUtils;
 
 /**
- * 文件组
+ * <p>TorrentStream组</p>
+ * <p>Torrent任务对下载文件进行管理。</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class TorrentStreamGroup {
 	
@@ -27,9 +31,6 @@ public class TorrentStreamGroup {
 	 * 已下载Piece位图
 	 */
 	private final BitSet pieces;
-	/**
-	 * 文件流
-	 */
 	private final List<TorrentStream> streams;
 	private final TorrentSession torrentSession;
 
@@ -69,7 +70,7 @@ public class TorrentStreamGroup {
 	}
 	
 	/**
-	 * 挑选一个下载
+	 * <p>挑选一个Piece下载</p>
 	 */
 	public TorrentPiece pick(final BitSet peerPieces) {
 		TorrentPiece pickPiece = null;
@@ -83,7 +84,8 @@ public class TorrentStreamGroup {
 	}
 
 	/**
-	 * 检测是否下载完成
+	 * <p>检测是否下载完成</p>
+	 * <p>所有的TorrentStream完成才能判断为完成。</p>
 	 */
 	public boolean over() {
 		for (TorrentStream torrentStream : streams) {
@@ -95,7 +97,7 @@ public class TorrentStreamGroup {
 	}
 	
 	/**
-	 * 设置已下载的Piece
+	 * <p>设置已下载的Piece，同时发出have消息。</p>
 	 */
 	public void piece(int index) {
 		pieces.set(index, true);
@@ -103,14 +105,14 @@ public class TorrentStreamGroup {
 	}
 	
 	/**
-	 * 获取已下载位图
+	 * 已下载位图
 	 */
 	public BitSet pieces() {
 		return pieces;
 	}
 	
 	/**
-	 * 获取下载文件大小
+	 * 下载文件大小
 	 */
 	public long size() {
 		long size = 0L;
@@ -140,8 +142,9 @@ public class TorrentStreamGroup {
 	}
 
 	/**
-	 * 判断是否有块数据
-	 * @param index 块索引
+	 * 是否已下载Piece
+	 * 
+	 * @param index Piece序号
 	 */
 	public boolean have(int index) {
 		if(index < 0) {
@@ -151,7 +154,7 @@ public class TorrentStreamGroup {
 	}
 	
 	/**
-	 * 设置下载失败
+	 * 下载失败
 	 */
 	public void undone(TorrentPiece piece) {
 		for (TorrentStream torrentStream : streams) {
@@ -160,15 +163,17 @@ public class TorrentStreamGroup {
 	}
 
 	/**
-	 * 读取块数据
-	 * @param index 块索引
+	 * <p>读取Piece数据</p>
+	 * <p>如果跨多个文件则合并返回</p>
+	 * 
+	 * @param index 块序号
 	 * @param begin 块偏移
 	 * @param length 数据长度
 	 */
 	public byte[] read(final int index, final int begin, final int length) {
 		final ByteBuffer buffer = ByteBuffer.allocate(length);
 		for (TorrentStream torrentStream : streams) {
-			byte[] bytes = torrentStream.read(index, length, begin);
+			final byte[] bytes = torrentStream.read(index, length, begin);
 			if(bytes != null) {
 				buffer.put(bytes);
 				if(buffer.position() >= length) {
@@ -176,7 +181,7 @@ public class TorrentStreamGroup {
 				}
 			}
 		}
-		if(buffer.position() < length) {
+		if(buffer.position() < length) { // 如果数据读取不满足要求
 			return null;
 		}
 		return buffer.array();

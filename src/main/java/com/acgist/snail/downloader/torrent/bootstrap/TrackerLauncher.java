@@ -13,8 +13,11 @@ import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.UniqueCodeUtils;
 
 /**
- * tracker<br>
- * 定时循环查询
+ * <p>TrackerClient发射器</p>
+ * <p>定时循环查询Peer信息。</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class TrackerLauncher implements Runnable {
 
@@ -32,10 +35,6 @@ public class TrackerLauncher implements Runnable {
 	private Integer undone; // 未完成数量
 	private boolean run = false; // 是否已经运行
 	private boolean available = true; // 可用
-
-	public static final TrackerLauncher newInstance(TrackerClient client, TorrentSession torrentSession) {
-		return new TrackerLauncher(client, torrentSession);
-	}
 	
 	private TrackerLauncher(TrackerClient client, TorrentSession torrentSession) {
 		this.id = UniqueCodeUtils.buildInteger();
@@ -45,10 +44,10 @@ public class TrackerLauncher implements Runnable {
 //		this.trackerLauncherGroup = torrentSession.trackerLauncherGroup();
 	}
 	
-	public TorrentSession torrentSession() {
-		return this.torrentSession;
+	public static final TrackerLauncher newInstance(TrackerClient client, TorrentSession torrentSession) {
+		return new TrackerLauncher(client, torrentSession);
 	}
-	
+
 	public Integer id() {
 		return this.id;
 	}
@@ -63,7 +62,8 @@ public class TrackerLauncher implements Runnable {
 	}
 
 	/**
-	 * announce信息<br>根据返回信息定时查询
+	 * <p>解析announce信息</p>
+	 * <p>添加Peer，同时设置下次查询定时任务。</p>
 	 */
 	public void announce(AnnounceMessage message) {
 		if(message == null) {
@@ -83,7 +83,8 @@ public class TrackerLauncher implements Runnable {
 	}
 
 	/**
-	 * 释放资源
+	 * <p>释放资源</p>
+	 * <p>发送Tracker stop消息，如果下载完成的发送complete信息。</p>
 	 */
 	public void release() {
 		this.available = false;
@@ -98,7 +99,7 @@ public class TrackerLauncher implements Runnable {
 	}
 	
 	/**
-	 * 可用状态
+	 * <p>可用状态：TrackerClient可用并且没有释放资源。</p>
 	 */
 	private boolean available() {
 		return client.available() && available;

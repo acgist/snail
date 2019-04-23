@@ -15,15 +15,18 @@ import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
- * 抽象下载器
+ * <p>下载器抽象类</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public abstract class Downloader implements IDownloader {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Downloader.class);
 	
-	protected boolean fail = false; // 失败状态
-	protected boolean running = false; // 下载中
-	protected boolean complete = false; // 下载完成
+	protected volatile boolean fail = false; // 失败状态
+	protected volatile boolean running = false; // 下载中
+	protected volatile boolean complete = false; // 下载完成
 	
 	private Object deleteLock = new Object();
 	
@@ -35,6 +38,11 @@ public abstract class Downloader implements IDownloader {
 	}
 	
 	@Override
+	public String id() {
+		return taskSession.entity().getId();
+	}
+	
+	@Override
 	public boolean running() {
 		return running;
 	}
@@ -42,11 +50,6 @@ public abstract class Downloader implements IDownloader {
 	@Override
 	public TaskSession task() {
 		return taskSession;
-	}
-
-	@Override
-	public String id() {
-		return taskSession.entity().getId();
 	}
 	
 	@Override
@@ -68,7 +71,7 @@ public abstract class Downloader implements IDownloader {
 	public void fail(String message) {
 		this.fail = true;
 		this.taskSession.updateStatus(Status.fail);
-		StringBuilder noticeMessage = new StringBuilder();
+		final StringBuilder noticeMessage = new StringBuilder();
 		noticeMessage.append(name())
 			.append("下载失败，失败原因：");
 		if(message != null) {
@@ -92,6 +95,10 @@ public abstract class Downloader implements IDownloader {
 	
 	@Override
 	public void refresh() {
+	}
+	
+	@Override
+	public void unlockDownload() {
 	}
 	
 	@Override
@@ -137,24 +144,26 @@ public abstract class Downloader implements IDownloader {
 	}
 	
 	/**
-	 * 下载统计
+	 * 下载统计：统计、限速
 	 */
 	protected void statistics(long size) {
 		this.taskSession.statistics(size);
 	}
 	
 	/**
-	 * 判断是否可以下载<br>
-	 * 一下情况不能继续下载：<br>
-	 * 	1.任务状态不是下载中
-	 * 	2.失败标记=true
+	 * <p>判断是否可以下载：</p>
+	 * <ul>
+	 * 	<li>未被标记失败</li>
+	 * 	<li>任务状态处于下载中</li>
+	 * </ul>
 	 */
 	protected boolean ok() {
 		return !fail && taskSession.download();
 	}
-	
+
 	/**
-	 * 唤醒删除
+	 * <p>唤醒删除</p>
+	 * <p>如果任务被删除，需要等待下载正常结束。</p>
 	 * TODO：测试
 	 */
 	private void unlockDelete() {
