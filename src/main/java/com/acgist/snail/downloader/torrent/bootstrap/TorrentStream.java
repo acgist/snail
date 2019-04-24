@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.pojo.TorrentPiece;
+import com.acgist.snail.pojo.bean.TorrentPiece;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.FileUtils;

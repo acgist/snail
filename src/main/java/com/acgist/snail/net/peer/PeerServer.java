@@ -37,8 +37,8 @@ public class PeerServer extends TcpServer {
 		if(version.length() > 4) {
 			builder.append(version.substring(0, 4));
 		} else {
-			builder.append("0".repeat(4 - version.length()));
 			builder.append(version);
+			builder.append("0".repeat(4 - version.length()));
 		}
 		builder.append("-");
 		final String peerId = builder.toString();

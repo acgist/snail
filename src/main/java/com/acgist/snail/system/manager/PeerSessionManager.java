@@ -40,8 +40,8 @@ public class PeerSessionManager {
 	 * @param port 端口
 	 */
 	public PeerSession newPeerSession(String infoHashHex, StatisticsSession parent, String host, Integer port) {
+		var deque = peers.get(infoHashHex);
 		synchronized (peers) {
-			var deque = peers.get(infoHashHex);
 			if(deque == null) {
 				deque = new LinkedBlockingDeque<>();
 				peers.put(infoHashHex, deque);
@@ -93,6 +93,17 @@ public class PeerSessionManager {
 				}
 			}
 			return null;
+		}
+	}
+	
+	private Deque<PeerSession> deque(String infoHashHex) {
+		synchronized (peers) {
+			Deque<PeerSession> deque = peers.get(infoHashHex);
+			if(deque == null) {
+				deque = new LinkedBlockingDeque<>();
+				peers.put(infoHashHex, deque);
+			}
+			return deque;
 		}
 	}
 
