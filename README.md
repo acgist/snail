@@ -1,23 +1,28 @@
 <h1 align="center">Snail（蜗牛）</h1>
 
+<p align="center">
 基于JAVA/JAVAFX的下载工具，支持下载协议：BT、FTP、HTTP、ED2K。
+</p>
 
 <p align="center">
+	<a href="#">
+		<img alt="Build" src="https://img.shields.io/badge/build-passing-success.svg?style=flat-square" />
+	</a>
+	<a href="#">
+		<img alt="Version" src="https://img.shields.io/badge/version-1.0.0-blue.svg?style=flat-square" />
+	</a>
 	<a href="https://www.acgist.com">
 		<img alt="Author" src="https://img.shields.io/badge/author-acgist-red.svg?style=flat-square" />
 	</a>
 	<a href="#">
-		<img alt="JDK" src="https://img.shields.io/badge/JDK-11-yellow.svg?style=flat-square" />
+		<img alt="Java" src="https://img.shields.io/badge/java-11-yellow.svg?style=flat-square" />
+	</a>
+	<a href="#">
+		<img alt="JavaFX" src="https://img.shields.io/badge/javaFX-12-green.svg?style=flat-square" />
 	</a>
 </p>
 
 ----
-
-## 技术
-|技术|版本|
-|:-|:-|
-|JAVA|11|
-|JAVAFX|12|
 
 ## 进度
 |功能|进度|优先级|
