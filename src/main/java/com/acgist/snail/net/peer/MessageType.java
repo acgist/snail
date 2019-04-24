@@ -33,7 +33,7 @@ public class MessageType {
 		}
 		
 		public static final Type valueOf(byte value) {
-			Type[] types = Type.values();
+			final Type[] types = Type.values();
 			for (Type type : types) {
 				if(type.value() == value) {
 					return type;
@@ -50,18 +50,18 @@ public class MessageType {
 	public enum ExtensionType {
 		
 		handshake((byte) 0, true, false), // 默认
-		ut_pex((byte) 1, false, false),
+		ut_pex((byte) 1, true, true),
 		ut_metadata((byte) 2, true, true);
 		
-		ExtensionType(byte value, boolean support, boolean mSupport) {
+		ExtensionType(byte value, boolean support, boolean notice) {
 			this.value = value;
 			this.support = support;
-			this.mSupport = mSupport;
+			this.notice = notice;
 		}
 
 		private byte value;
 		private boolean support; // 是否支持
-		private boolean mSupport; // 是否通知Peer
+		private boolean notice; // 是否通知Peer
 		
 		public byte value() {
 			return this.value;
@@ -71,12 +71,12 @@ public class MessageType {
 			return this.support;
 		}
 		
-		public boolean mSupport() {
-			return this.mSupport;
+		public boolean notice() {
+			return this.notice;
 		}
 		
 		public static final ExtensionType valueOf(byte value) {
-			ExtensionType[] types = ExtensionType.values();
+			final ExtensionType[] types = ExtensionType.values();
 			for (ExtensionType type : types) {
 				if(type.value() == value) {
 					return type;
@@ -117,7 +117,7 @@ public class MessageType {
 		}
 		
 		public static final UtMetadataType valueOf(byte value) {
-			UtMetadataType[] types = UtMetadataType.values();
+			final UtMetadataType[] types = UtMetadataType.values();
 			for (UtMetadataType type : types) {
 				if(type.value() == value) {
 					return type;

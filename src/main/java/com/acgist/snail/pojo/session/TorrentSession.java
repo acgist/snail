@@ -55,11 +55,11 @@ public class TorrentSession {
 	 */
 	private TrackerLauncherGroup trackerLauncherGroup;
 	/**
-	 * 线程池
+	 * 线程池：PeerClient和新建PeerClient时使用
 	 */
 	private ExecutorService executor;
 	/**
-	 * 定时线程池
+	 * 定时线程池：TrackerClient定时刷新
 	 */
 	private ScheduledExecutorService executorTimer;
 	
@@ -89,7 +89,7 @@ public class TorrentSession {
 	}
 
 	/**
-	 * 加载tracker
+	 * 加载Tracker
 	 */
 	public void loadTracker() throws DownloadException {
 		this.trackerLauncherGroup.loadTracker();

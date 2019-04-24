@@ -51,6 +51,7 @@ import com.acgist.snail.utils.StringUtils;
  * L = 用户是本地的（通过网络广播或是保留的本地IP范围发现）
  * TODO：实现Exctended消息
  * TODO：实现流水线
+ * TODO：加密
  */
 public class PeerMessageHandler extends TcpMessageHandler {
 

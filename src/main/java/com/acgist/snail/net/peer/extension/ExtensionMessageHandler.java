@@ -36,6 +36,7 @@ public class ExtensionMessageHandler {
 	public static final String EX_YOURIP = "yourip"; // 地址
 	
 	public static final String EX_E = "e"; // ut_pex：加密
+	
 	public static final String EX_METADATA_SIZE = "metadata_size"; // ut_metadata：种子info数据大小
 
 	private final InfoHash infoHash;
@@ -89,7 +90,7 @@ public class ExtensionMessageHandler {
 		final Map<String, Object> data = new LinkedHashMap<>();
 		final Map<String, Object> supportType = new LinkedHashMap<>();
 		for (var type : MessageType.ExtensionType.values()) {
-			if(type.mSupport()) {
+			if(type.notice()) {
 				supportType.put(type.name(), type.value());
 			}
 		}
@@ -104,10 +105,10 @@ public class ExtensionMessageHandler {
 //			data.put(EX_YOURIP, youripBuffer.array()); // 本机的IP地址
 //		}
 		data.put(EX_REQQ, 255);
-		if(MessageType.ExtensionType.ut_pex.mSupport()) {
+		if(MessageType.ExtensionType.ut_pex.notice()) {
 			data.put(EX_E, 0); // ut_pex：加密
 		}
-		if(MessageType.ExtensionType.ut_metadata.mSupport()) {
+		if(MessageType.ExtensionType.ut_metadata.notice()) {
 			final int size = this.infoHash.size();
 			if(size > 0) {
 				data.put(EX_METADATA_SIZE, size); // 种子info数据长度

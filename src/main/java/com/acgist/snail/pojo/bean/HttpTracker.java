@@ -1,4 +1,4 @@
-package com.acgist.snail.net.tracker.bean;
+package com.acgist.snail.pojo.bean;
 
 import java.util.Map;
 

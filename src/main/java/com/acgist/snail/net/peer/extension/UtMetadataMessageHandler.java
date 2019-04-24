@@ -21,7 +21,6 @@ import com.acgist.snail.utils.NumberUtils;
 /**
  * http://www.bittorrent.org/beps/bep_0009.html
  * TODO：大量请求时拒绝请求
- * TODO：消息流水线
  */
 public class UtMetadataMessageHandler {
 

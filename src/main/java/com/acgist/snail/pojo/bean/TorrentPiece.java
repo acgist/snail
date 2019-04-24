@@ -1,4 +1,4 @@
-package com.acgist.snail.pojo;
+package com.acgist.snail.pojo.bean;
 
 import com.acgist.snail.utils.NumberUtils;
 
