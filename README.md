@@ -50,8 +50,29 @@
 
 *说明：√=完成、○-进行中、×-未开始*
 
-## WIKI
-[wiki](https://gitee.com/acgist/snail/wikis)
+## 使用
+
+#### 构建
+```dos
+# Windows构建
+./builder/build.bat
+```
+```bash
+# Linux构建
+-
+```
+
+*lib=第三方库、java=java运行环境*
+
+#### Java启动
+```
+javaw -server -Xms128m -Xmx128m -jar snail-{version}.jar
+```
+
+#### 启动器启动
+Windows直接点击SnailLauncher.exe即可运行。   
+*执行程序和jar、lib、java必须处于同一个目录*   
+*SnailLauncher_min.exe需要自带MFC动态链接库*
 
 ## TODO
 PEX：http://www.bittorrent.org/beps/bep_0011.html   
