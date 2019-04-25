@@ -5,25 +5,25 @@
 </p>
 
 <p align="center">
-	<a href="#">
+	<a>
 		<img alt="Build" src="https://img.shields.io/badge/Build-passing-success.svg?style=flat-square" />
 	</a>
-	<a href="#">
+	<a>
 		<img alt="Version" src="https://img.shields.io/badge/Version-1.0.0-blue.svg?style=flat-square" />
 	</a>
-	<a href="https://www.acgist.com">
+	<a href="_blank" href="https://www.acgist.com">
 		<img alt="Author" src="https://img.shields.io/badge/Author-acgist-red.svg?style=flat-square" />
 	</a>
-	<a href="#">
+	<a href="_blank" href="https://openjdk.java.net/">
 		<img alt="Java" src="https://img.shields.io/badge/Java-11-yellow.svg?style=flat-square" />
 	</a>
-	<a href="#">
+	<a href="_blank" href="https://openjfx.io/">
 		<img alt="JavaFX" src="https://img.shields.io/badge/JavaFX-12-green.svg?style=flat-square" />
 	</a>
-	<a href="https://www.bittorrent.org/beps/bep_0000.html">
+	<a href="_blank" href="https://www.bittorrent.org/beps/bep_0000.html">
 		<img alt="BitTorrent" src="https://img.shields.io/badge/BitTorrent-BEP-orange.svg?style=flat-square" />
 	</a>
-	<a href="https://gitee.com/acgist/snail/releases/v1.0.0">
+	<a href="_blank" href="https://gitee.com/acgist/snail/releases/v1.0.0">
 		<img alt="Release" src="https://img.shields.io/badge/Release-1.0.0-blueviolet.svg?style=flat-square" />
 	</a>
 </p>
