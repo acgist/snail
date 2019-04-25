@@ -58,8 +58,8 @@
 #### 构建
 ```bash
 # Windows构建
-
 ./builder/build.bat
+
 # Linux构建
 -
 ```
