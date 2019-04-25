@@ -6,19 +6,22 @@
 
 <p align="center">
 	<a href="#">
-		<img alt="Build" src="https://img.shields.io/badge/build-passing-success.svg?style=flat-square" />
+		<img alt="Build" src="https://img.shields.io/badge/Build-passing-success.svg?style=flat-square" />
 	</a>
 	<a href="#">
-		<img alt="Version" src="https://img.shields.io/badge/version-1.0.0-blue.svg?style=flat-square" />
+		<img alt="Version" src="https://img.shields.io/badge/Version-1.0.0-blue.svg?style=flat-square" />
 	</a>
 	<a href="https://www.acgist.com">
-		<img alt="Author" src="https://img.shields.io/badge/author-acgist-red.svg?style=flat-square" />
+		<img alt="Author" src="https://img.shields.io/badge/Author-acgist-red.svg?style=flat-square" />
 	</a>
 	<a href="#">
-		<img alt="Java" src="https://img.shields.io/badge/java-11-yellow.svg?style=flat-square" />
+		<img alt="Java" src="https://img.shields.io/badge/Java-11-yellow.svg?style=flat-square" />
 	</a>
 	<a href="#">
-		<img alt="JavaFX" src="https://img.shields.io/badge/javaFX-12-green.svg?style=flat-square" />
+		<img alt="JavaFX" src="https://img.shields.io/badge/JavaFX-12-green.svg?style=flat-square" />
+	</a>
+	<a href="https://www.bittorrent.org/beps/bep_0000.html">
+		<img alt="BitTorrent" src="https://img.shields.io/badge/BitTorrent-BEP-orange.svg?style=flat-square" />
 	</a>
 </p>
 
@@ -43,17 +46,15 @@
 |uTorrent transport protocol（uTP）|×|6|
 |Extension for Peers to Send Metadata Files|√|3|
 
+#### ED2K进度
+
 *说明：√=完成、○-进行中、×-未开始*
+
+## WIKI
+[wiki](https://gitee.com/acgist/snail/wikis)
 
 ## TODO
 PEX：http://www.bittorrent.org/beps/bep_0011.html   
 DHT：http://www.bittorrent.org/beps/bep_0005.html   
 UTP：http://www.bittorrent.org/beps/bep_0029.html   
 local search：http://www.bittorrent.org/beps/bep_0014.html   
-
-## BitTorrent
-[BitTorrent](http://www.bittorrent.org/beps/bep_0000.html)   
-[Kademlia、DHT、KRPC、BitTorrent 协议、DHT Sniffer](https://www.cnblogs.com/LittleHann/p/6180296.html)
-
-## 文档
-[帮助](https://gitee.com/acgist/snail/wikis/帮助)
