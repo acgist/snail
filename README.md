@@ -23,6 +23,9 @@
 	<a href="https://www.bittorrent.org/beps/bep_0000.html">
 		<img alt="BitTorrent" src="https://img.shields.io/badge/BitTorrent-BEP-orange.svg?style=flat-square" />
 	</a>
+	<a href="https://gitee.com/acgist/snail/releases/v1.0.0">
+		<img alt="Release" src="https://img.shields.io/badge/Release-1.0.0-blueviolet.svg?style=flat-square" />
+	</a>
 </p>
 
 ----
@@ -48,16 +51,14 @@
 
 #### ED2K进度
 
-*说明：√=完成、○-进行中、×-未开始*
+*√=完成、○-进行中、×-未开始*
 
 ## 使用
 
 #### 构建
-```dos
-rem Windows构建
-./builder/build.bat
-```
 ```bash
+# Windows构建
+./builder/build.bat
 # Linux构建
 -
 ```
