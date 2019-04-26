@@ -26,6 +26,9 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends TcpSender {
 	 */
 	private static final AsynchronousChannelGroup GROUP;
 	
+	/**
+	 * 客户端名称
+	 */
 	private String name;
 	private int timeout;
 	/**

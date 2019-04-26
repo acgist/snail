@@ -77,14 +77,16 @@ public abstract class TcpSender {
 			LOGGER.warn("发送消息为空");
 			return;
 		}
-		final Future<Integer> future = socket.write(buffer);
-		try {
-			final int size = future.get(5, TimeUnit.SECONDS); // 阻塞线程防止，防止多线程写入时抛出异常：IllegalMonitorStateException
-			if(size <= 0) {
-				LOGGER.warn("发送数据为空");
+		synchronized (socket) { // 保证顺序
+			final Future<Integer> future = socket.write(buffer);
+			try {
+				final int size = future.get(5, TimeUnit.SECONDS); // 阻塞线程防止，防止多线程写入时抛出异常：IllegalMonitorStateException
+				if(size <= 0) {
+					LOGGER.warn("发送数据为空");
+				}
+			} catch (Exception e) {
+				LOGGER.error("发送TCP消息异常", e);
 			}
-		} catch (Exception e) {
-			LOGGER.error("发送TCP消息异常", e);
 		}
 	}
 
