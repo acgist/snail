@@ -2,10 +2,8 @@ package com.acgist.snail.net;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.SocketAddress;
 import java.net.StandardProtocolFamily;
 import java.net.StandardSocketOptions;
-import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.util.concurrent.ExecutorService;
 
@@ -13,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.system.context.SystemThreadContext;
-import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -21,7 +18,7 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * UDP客户端
  */
-public abstract class UdpClient<T extends UdpMessageHandler> {
+public abstract class UdpClient<T extends UdpMessageHandler> extends UdpSender {
 	
 	public static final String UDP_REGEX = "udp://.*";
 	
@@ -38,8 +35,6 @@ public abstract class UdpClient<T extends UdpMessageHandler> {
 	static {
 		EXECUTOR = SystemThreadContext.newCacheExecutor(SystemThreadContext.SNAIL_THREAD_UDP_CLIENT);
 	}
-	
-	private DatagramChannel channel;
 	
 	public UdpClient(String name, T handler) {
 		this.name = name;
@@ -91,32 +86,6 @@ public abstract class UdpClient<T extends UdpMessageHandler> {
 		});
 	}
 	
-	/**
-	 * 发送消息
-	 */
-	public void send(ByteBuffer buffer, SocketAddress address) throws NetException {
-		if(!channel.isOpen()) {
-			LOGGER.debug("发送消息时Socket已经关闭");
-			return;
-		}
-		if(buffer.position() != 0) { //  重置标记
-			buffer.flip();
-		}
-		if(buffer.limit() == 0) {
-			LOGGER.warn("发送消息为空");
-			return;
-		}
-		// 不用保证顺序
-		try {
-			final int size = channel.send(buffer, address);
-			if(size <= 0) {
-				LOGGER.warn("发送数据为空");
-			}
-		} catch (Exception e) {
-			throw new NetException(e);
-		}
-	}
-
 	/**
 	 * 关闭channel
 	 */

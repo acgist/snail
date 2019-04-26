@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.gui.main.MainWindow;
 import com.acgist.snail.net.TcpMessageHandler;
 import com.acgist.snail.pojo.message.ApplicationMessage;
+import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -86,7 +87,11 @@ public class ApplicationMessageHandler extends TcpMessageHandler {
 	 * 发送消息
 	 */
 	private void send(ApplicationMessage message) {
-		send(message.toJson());
+		try {
+			send(message.toJson());
+		} catch (NetException e) {
+			LOGGER.error("发送Application消息异常", e);
+		}
 	}
 
 }
