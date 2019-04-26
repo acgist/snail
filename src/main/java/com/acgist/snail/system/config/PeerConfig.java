@@ -12,6 +12,29 @@ import java.util.Map;
 public class PeerConfig {
 	
 	private static final String UNKNOWN = "unknown"; // 未知终端
+
+	/**
+	 * 保留位：http://www.bittorrent.org/beps/bep_0004.html
+	 */
+	public static final byte[] HANDSHAKE_RESERVED = {0, 0, 0, 0, 0, 0, 0, 0};
+	
+	public static final byte DHT_PROTOCOL = 1 << 0; // 0x01
+	public static final byte EXTENSION_PROTOCOL = 1 << 4; // 0x10
+//	public static final byte PEER_EXCHANGE = 1 << 1; // 0x02
+	
+	static {
+		HANDSHAKE_RESERVED[5] |= EXTENSION_PROTOCOL; // Extension Protocol
+		HANDSHAKE_RESERVED[7] |= DHT_PROTOCOL; // DHT Protocol
+//		HANDSHAKE_RESERVED[7] |= PEER_EXCHANGE; // Peer Exchange
+	}
+	
+	/**
+	 * Peer来源
+	 */
+	public static final byte SOURCE_TRACKER = 1 << 0; // Tracker
+	public static final byte SOURCE_PEX = 1 << 1; // PEX
+	public static final byte SOURCE_DHT = 1 << 2; // DHT
+	public static final byte SOURCE_CONNECT = 1 << 3; // 客户端连接
 	
 	private static final Map<String, String> PEER_NAMES = new HashMap<>();
 
@@ -94,5 +117,5 @@ public class PeerConfig {
 		final String key = peerId.substring(0, 3);
 		return PEER_NAMES.getOrDefault(key, UNKNOWN);
 	}
-
+	
 }

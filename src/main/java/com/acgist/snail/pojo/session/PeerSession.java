@@ -4,8 +4,9 @@ import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.acgist.snail.net.peer.MessageType;
+import com.acgist.snail.net.peer.PeerMessageHandler;
 import com.acgist.snail.system.config.PeerConfig;
+import com.acgist.snail.system.config.PeerMessageConfig;
 import com.acgist.snail.system.interfaces.IStatistics;
 import com.acgist.snail.utils.ObjectUtils;
 
@@ -19,6 +20,11 @@ public class PeerSession implements IStatistics {
 	private StatisticsSession statistics;
 
 	private int failTimes = 0; // 失败次数：如果失败次数过多不在连接
+	
+	private byte[] reserved; // 保留位
+	
+	private byte source = 0; // 来源属性
+	private byte pex = 0; // PEX属性
 	
 	private String host; // 地址
 	private Integer port; // 端口
@@ -34,7 +40,9 @@ public class PeerSession implements IStatistics {
 	private Boolean peerChocking; // Peer将客户阻塞：阻塞（Peer不允许客户端下载）-1（true）、非阻塞-0
 	private Boolean peerInterested; // Peer对客户端感兴趣：感兴趣-1、不感兴趣-0
 	
-	private final Map<MessageType.ExtensionType, Byte> extension; // 支持的扩展协议
+	private PeerMessageHandler peerMessageHandler;
+	
+	private final Map<PeerMessageConfig.ExtensionType, Byte> extension; // 支持的扩展协议
 
 	public static final PeerSession newInstance(StatisticsSession parent, String host, Integer port) {
 		return new PeerSession(parent, host, port);
@@ -97,6 +105,14 @@ public class PeerSession implements IStatistics {
 	@Override
 	public void statistics(long buffer) {
 		statistics.download(buffer);
+	}
+	
+	public PeerMessageHandler peerMessageHandler() {
+		return this.peerMessageHandler;
+	}
+	
+	public void peerMessageHandler(PeerMessageHandler peerMessageHandler) {
+		this.peerMessageHandler = peerMessageHandler;
 	}
 	
 	/**
@@ -164,21 +180,21 @@ public class PeerSession implements IStatistics {
 	/**
 	 * 添加扩展类型
 	 */
-	public void addExtensionType(MessageType.ExtensionType type, byte typeValue) {
+	public void addExtensionType(PeerMessageConfig.ExtensionType type, byte typeValue) {
 		this.extension.put(type, typeValue);
 	}
 	
 	/**
 	 * 是否支持扩展协议
 	 */
-	public boolean support(MessageType.ExtensionType type) {
+	public boolean support(PeerMessageConfig.ExtensionType type) {
 		return this.extension.containsKey(type);
 	}
 
 	/**
 	 * 获取扩展协议编号
 	 */
-	public Byte extensionTypeValue(MessageType.ExtensionType type) {
+	public Byte extensionTypeValue(PeerMessageConfig.ExtensionType type) {
 		return this.extension.get(type);
 	}
 	
@@ -203,6 +219,38 @@ public class PeerSession implements IStatistics {
 	
 	public void dhtPort(Integer dhtPort) {
 		this.dhtPort = dhtPort;
+	}
+	
+	public void reserved(byte[] reserved) {
+		this.reserved = reserved;
+	}
+	
+	/**
+	 * 设置来源
+	 */
+	public void source(byte source) {
+		this.source = (byte) (this.source | source);
+	}
+	
+	/**
+	 * 配置Pex属性
+	 */
+	public void pex(byte pex) {
+		this.pex = (byte) (this.pex | pex);
+	}
+	
+	/**
+	 * 是否支持扩展协议
+	 */
+	public boolean supportExtensionProtocol() {
+		return this.reserved != null && (this.reserved[5] & PeerConfig.EXTENSION_PROTOCOL) != 0;
+	}
+
+	/**
+	 * 是否执行DHT扩展协议
+	 */
+	public boolean supportDhtProtocol() {
+		return this.reserved != null && (this.reserved[7] & PeerConfig.DHT_PROTOCOL) != 0;
 	}
 	
 	@Override

@@ -1,12 +1,13 @@
-package com.acgist.snail.net.peer;
+package com.acgist.snail.system.config;
 
 /**
  * 消息类型
  */
-public class MessageType {
+public class PeerMessageConfig {
 
 	/**
 	 * Peer消息类型
+	 * http://www.bittorrent.org/beps/bep_0004.html
 	 */
 	public enum Type {
 		
@@ -19,7 +20,9 @@ public class MessageType {
 		request((byte) 6),
 		piece((byte) 7),
 		cancel((byte) 8),
-		port((byte) 9),
+		
+		dht((byte) 9),
+		
 		extension((byte) 20);
 		
 		Type(byte value) {
@@ -51,7 +54,8 @@ public class MessageType {
 		
 		handshake((byte) 0, true, false), // 默认
 		ut_pex((byte) 1, true, true),
-		ut_metadata((byte) 2, true, true);
+		ut_metadata((byte) 2, true, true),
+		ut_holepunch((byte) 3, false, false);
 		
 		ExtensionType(byte value, boolean support, boolean notice) {
 			this.value = value;

@@ -10,15 +10,16 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.torrent.bootstrap.TorrentStreamGroup;
 import com.acgist.snail.net.TcpMessageHandler;
-import com.acgist.snail.net.peer.MessageType.Action;
-import com.acgist.snail.net.peer.extension.ExtensionMessageHandler;
+import com.acgist.snail.net.peer.dht.DhtExtensionMessageHandler;
+import com.acgist.snail.net.peer.ltep.ExtensionMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.system.config.PeerConfig;
+import com.acgist.snail.system.config.PeerMessageConfig;
+import com.acgist.snail.system.config.PeerMessageConfig.Action;
 import com.acgist.snail.system.manager.PeerSessionManager;
 import com.acgist.snail.system.manager.TorrentSessionManager;
-import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -57,69 +58,55 @@ public class PeerMessageHandler extends TcpMessageHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerMessageHandler.class);
 	
-	/**
-	 * 协议名称
-	 */
-	private static final String HANDSHAKE_NAME = "BitTorrent protocol";
-	private static final byte[] HANDSHAKE_NAME_BYTES = HANDSHAKE_NAME.getBytes();
-	/**
-	 * 保留位：http://www.bittorrent.org/beps/bep_0004.html
-	 */
-	private static final byte[] HANDSHAKE_RESERVED = {0, 0, 0, 0, 0, 0, 0, 0};
 	private static final int HANDSHAKE_LENGTH = 68;
-	
+	private static final String HANDSHAKE_NAME = "BitTorrent protocol"; // 协议名称
+	private static final byte[] HANDSHAKE_NAME_BYTES = HANDSHAKE_NAME.getBytes();
+
 	private volatile boolean handshake = false; // 是否握手
-	
-	private static final byte DHT_PROTOCOL = 1; // 0x01
-	private static final byte EXTENSION_PROTOCOL = 1 << 4; // 0x10
-//	private static final byte PEER_EXCHANGE = 1 << 1; // 0x02
-	
-	static {
-		HANDSHAKE_RESERVED[5] |= EXTENSION_PROTOCOL; // Extension Protocol
-		HANDSHAKE_RESERVED[7] |= DHT_PROTOCOL; // DHT Protocol
-//		HANDSHAKE_RESERVED[7] |= PEER_EXCHANGE; // Peer Exchange
-	}
 
 	/**
 	 * 如果消息长度不够一个Integer长度时使用
 	 */
 	private static final int INTEGER_BYTE_LENGTH = 4;
-	private ByteBuffer lengthStick = ByteBuffer.allocate(INTEGER_BYTE_LENGTH);
+	private final ByteBuffer lengthStick = ByteBuffer.allocate(INTEGER_BYTE_LENGTH);
 	
-	private byte[] reserved = new byte[8];
 	private ByteBuffer buffer;
 	private PeerClient peerClient;
 	
-	private MessageType.Action action; // 客户端动作，默认：下载
+	private PeerMessageConfig.Action action; // 客户端动作，默认：下载
 	
 	private PeerSession peerSession;
 	private TorrentSession torrentSession;
 	private TorrentStreamGroup torrentStreamGroup;
 	
 	private ExtensionMessageHandler extensionMessageHandler;
+	private DhtExtensionMessageHandler dhtExtensionMessageHandler;
 	
 	public PeerMessageHandler() {
 	}
 
 	public PeerMessageHandler(PeerSession peerSession, TorrentSession torrentSession) {
 		this.action = Action.download;
-		init(peerSession, torrentSession);
+		init(peerSession, torrentSession, PeerConfig.HANDSHAKE_RESERVED);
 	}
 
 	/**
 	 * 初始化
 	 */
-	private void init(PeerSession peerSession, TorrentSession torrentSession) {
+	private void init(PeerSession peerSession, TorrentSession torrentSession, byte[] reserved) {
+		peerSession.reserved(reserved);
+		peerSession.peerMessageHandler(this);
 		this.peerSession = peerSession;
 		this.torrentSession = torrentSession;
 		this.torrentStreamGroup = torrentSession.torrentStreamGroup();
 		this.extensionMessageHandler = ExtensionMessageHandler.newInstance(this.peerSession, this.torrentSession, this);
+		this.dhtExtensionMessageHandler = DhtExtensionMessageHandler.newInstance(this.peerSession, this);
 	}
 
 	/**
 	 * 初始化
 	 */
-	private boolean init(String infoHashHex, String peerId) {
+	private boolean init(String infoHashHex, String peerId, byte[] reserved) {
 		final TorrentSession torrentSession = TorrentSessionManager.getInstance().torrentSession(infoHashHex);
 		if(torrentSession == null) {
 			LOGGER.debug("初始化失败，不存在的种子信息");
@@ -140,8 +127,8 @@ public class PeerMessageHandler extends TcpMessageHandler {
 			LOGGER.debug("初始化失败，获取远程Peer信息失败");
 			return false;
 		}
-		final PeerSession peerSession = PeerSessionManager.getInstance().newPeerSession(infoHashHex, taskSession.statistics(), address.getHostString(), null);
-		init(peerSession, torrentSession);
+		final PeerSession peerSession = PeerSessionManager.getInstance().newPeerSession(infoHashHex, taskSession.statistics(), address.getHostString(), null, PeerConfig.SOURCE_CONNECT);
+		init(peerSession, torrentSession, reserved);
 		return true;
 	}
 	
@@ -209,7 +196,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 			handshake(buffer);
 		} else {
 			final byte typeValue = buffer.get();
-			final MessageType.Type type = MessageType.Type.valueOf(typeValue);
+			final PeerMessageConfig.Type type = PeerMessageConfig.Type.valueOf(typeValue);
 			if(type == null) {
 				LOGGER.warn("不支持的类型：{}", typeValue);
 				return;
@@ -243,8 +230,8 @@ public class PeerMessageHandler extends TcpMessageHandler {
 			case cancel:
 				cancel(buffer);
 				break;
-			case port:
-				port(buffer);
+			case dht:
+				dht(buffer);
 				break;
 			case extension:
 				extension(buffer);
@@ -268,7 +255,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		final ByteBuffer buffer = ByteBuffer.allocate(HANDSHAKE_LENGTH);
 		buffer.put((byte) HANDSHAKE_NAME_BYTES.length);
 		buffer.put(HANDSHAKE_NAME_BYTES);
-		buffer.put(HANDSHAKE_RESERVED);
+		buffer.put(PeerConfig.HANDSHAKE_RESERVED);
 		buffer.put(torrentSession.infoHash().infoHash());
 		buffer.put(PeerServer.PEER_ID);
 		send(buffer);
@@ -286,7 +273,8 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		if(!HANDSHAKE_NAME.equals(name)) {
 			LOGGER.warn("下载协议错误：{}", name);
 		}
-		buffer.get(this.reserved);
+		final byte[] reserved = new byte[8];
+		buffer.get(reserved);
 		final byte[] infoHashs = new byte[20];
 		buffer.get(infoHashs);
 		final String infoHashHex = StringUtils.hex(infoHashs);
@@ -294,7 +282,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		buffer.get(peerIds);
 		final String peerId = new String(peerIds);
 		if(server) { // 服务端
-			boolean init = init(infoHashHex, peerId);
+			boolean init = init(infoHashHex, peerId, reserved);
 			if(!init) {
 				return;
 			}
@@ -303,7 +291,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 			peerSession.id(peerId);
 		}
 		extension(); // 发送扩展
-		port(); // 发送DHT端口
+		dht(); // 发送DHT端口
 		bitfield(); // 交换位图
 		if(server) { // TODO：服务端：判断连接数量，阻塞|不阻塞
 			unchoke();
@@ -325,7 +313,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	public void choke() {
 		LOGGER.debug("阻塞");
 		peerSession.amChoke();
-		pushMessage(MessageType.Type.choke, null);
+		pushMessage(PeerMessageConfig.Type.choke, null);
 	}
 
 	private void choke(ByteBuffer buffer) {
@@ -343,7 +331,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	public void unchoke() {
 		LOGGER.debug("解除阻塞");
 		peerSession.amUnchoke();
-		pushMessage(MessageType.Type.unchoke, null);
+		pushMessage(PeerMessageConfig.Type.unchoke, null);
 	}
 	
 	private void unchoke(ByteBuffer buffer) {
@@ -363,7 +351,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	public void interested() {
 		LOGGER.debug("感兴趣");
 		peerSession.amInterested();
-		pushMessage(MessageType.Type.interested, null);
+		pushMessage(PeerMessageConfig.Type.interested, null);
 	}
 
 	private void interested(ByteBuffer buffer) {
@@ -378,7 +366,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	public void notInterested() {
 		LOGGER.debug("不感兴趣");
 		peerSession.amNotInterested();
-		pushMessage(MessageType.Type.notInterested, null);
+		pushMessage(PeerMessageConfig.Type.notInterested, null);
 	}
 
 	private void notInterested(ByteBuffer buffer) {
@@ -392,7 +380,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 */
 	public void have(int index) {
 		LOGGER.debug("发送have消息：{}", index);
-		pushMessage(MessageType.Type.have, ByteBuffer.allocate(4).putInt(index).array());
+		pushMessage(PeerMessageConfig.Type.have, ByteBuffer.allocate(4).putInt(index).array());
 	}
 
 	private void have(ByteBuffer buffer) {
@@ -419,7 +407,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		pieces.set(length + 1);
 		final byte[] bytes = new byte[bitSize];
 		System.arraycopy(pieces.toByteArray(), 0, bytes, 0, bitSize);
-		pushMessage(MessageType.Type.bitfield, bytes);
+		pushMessage(PeerMessageConfig.Type.bitfield, bytes);
 	}
 	
 	/**
@@ -459,7 +447,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		buffer.putInt(index);
 		buffer.putInt(begin);
 		buffer.putInt(length);
-		pushMessage(MessageType.Type.request, buffer.array());
+		pushMessage(PeerMessageConfig.Type.request, buffer.array());
 	}
 
 	private void request(ByteBuffer buffer) {
@@ -489,7 +477,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		buffer.putInt(index);
 		buffer.putInt(begin);
 		buffer.put(bytes);
-		pushMessage(MessageType.Type.piece, buffer.array());
+		pushMessage(PeerMessageConfig.Type.piece, buffer.array());
 	}
 
 	private void piece(ByteBuffer buffer) {
@@ -516,7 +504,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		buffer.putInt(index);
 		buffer.putInt(begin);
 		buffer.putInt(length);
-		pushMessage(MessageType.Type.cancel, buffer.array());
+		pushMessage(PeerMessageConfig.Type.cancel, buffer.array());
 	}
 	
 	private void cancel(ByteBuffer buffer) {
@@ -528,25 +516,23 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 * listen-port：两字节
 	 * 支持DHT的客户端使用，指明DHT监听的端口
 	 */
-	public void port() {
-		if(supportDhtProtocol()) {
-			LOGGER.debug("发送DHTPort消息");
-			final short port = NetUtils.encodePort(SystemConfig.getDhtPort());
-			pushMessage(MessageType.Type.port, ByteBuffer.allocate(2).putShort(port).array());
+	public void dht() {
+		if(this.peerSession.supportDhtProtocol()) {
+			LOGGER.debug("发送DHT消息");
+			dhtExtensionMessageHandler.port();
 		}
 	}
 	
-	private void port(ByteBuffer buffer) {
-		LOGGER.debug("收到DHTPort消息");
-		final short port = buffer.getShort();
-		peerSession.dhtPort(NetUtils.decodePort(port));
+	private void dht(ByteBuffer buffer) {
+		LOGGER.debug("收到DHT消息");
+		dhtExtensionMessageHandler.onMessage(buffer);
 	}
 
 	/**
 	 * 扩展消息：len=unknow id=20 消息
 	 */
 	public void extension() {
-		if(supportExtensionProtocol()) {
+		if(this.peerSession.supportExtensionProtocol()) {
 			LOGGER.debug("发送扩展消息");
 			extensionMessageHandler.handshake();
 		}
@@ -576,7 +562,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	/**
 	 * 发送消息
 	 */
-	public void pushMessage(MessageType.Type type, byte[] payload) {
+	public void pushMessage(PeerMessageConfig.Type type, byte[] payload) {
 		send(buildMessage(type, payload));
 	}
 	
@@ -587,7 +573,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 * message id：1字节：指明消息的编号<br>
 	 * payload：消息内容
 	 */
-	private ByteBuffer buildMessage(MessageType.Type type, byte[] payload) {
+	private ByteBuffer buildMessage(PeerMessageConfig.Type type, byte[] payload) {
 		final Byte id = type == null ? null : type.value();
 		int capacity = 0;
 		if(id != null) {
@@ -605,20 +591,6 @@ public class PeerMessageHandler extends TcpMessageHandler {
 			buffer.put(payload);
 		}
 		return buffer;
-	}
-	
-	private boolean supportExtensionProtocol() {
-		if(this.reserved != null) {
-			return (this.reserved[5] & EXTENSION_PROTOCOL) != 0;
-		}
-		return false;
-	}
-	
-	private boolean supportDhtProtocol() {
-		if(this.reserved != null) {
-			return (this.reserved[7] & DHT_PROTOCOL) != 0;
-		}
-		return false;
 	}
 	
 	@Override

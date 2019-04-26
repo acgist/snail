@@ -16,7 +16,7 @@ public class PeerUtils {
 		if(bytes == null) {
 			return null;
 		}
-		ByteBuffer buffer = ByteBuffer.wrap(bytes);
+		final ByteBuffer buffer = ByteBuffer.wrap(bytes);
 		return read(buffer, bytes.length);
 	}
 	
@@ -31,7 +31,7 @@ public class PeerUtils {
 		while (buffer.position() < size) {
 			final int ipValue = buffer.getInt();
 			final int port = NetUtils.decodePort(Short.valueOf(buffer.getShort()));
-			data.put(NetUtils.encodeIntToIp(ipValue), port);
+			data.put(NetUtils.decodeIntToIp(ipValue), port);
 		}
 		return data;
 	}

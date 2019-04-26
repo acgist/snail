@@ -107,22 +107,6 @@ public class PeerClientGroup {
 	}
 
 	/**
-	 * <p>发送have消息，通知所有已连接的Peer已下载对应的Piece</p>
-	 * TODO：客户端也需要通知
-	 * 
-	 * @param index Piece序号
-	 */
-	public void have(int index) {
-		synchronized (peerClients) {
-			peerClients.forEach(client -> {
-				if(client.available()) {
-					client.have(index);
-				}
-			});
-		}
-	}
-	
-	/**
 	 * <p>资源释放</p>
 	 * <p>释放所有正在下载的PeerClient。</p>
 	 */

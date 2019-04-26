@@ -31,23 +31,26 @@
 ----
 
 ## 进度
-|功能|进度|优先级|
-|:-|:-|:-|
-|BT|○|3|
-|FTP|√|2|
-|HTTP|√|1|
-|ED2K|×|4|
+|功能|进度|
+|:-|:-|
+|BT|○|
+|FTP|√|
+|HTTP|√|
+|ED2K|×|
 
 #### BT进度
-|协议|进度|优先级|
-|:-|:-|:-|
-|DHT Protocol|×|5|
-|Peer Exchange（PEX）|×|4|
-|Local Service Discovery|×|7|
-|Peer wire protocol（TCP）|√|2|
-|Tracker Protocol（UDP/HTTP）|√|1|
-|uTorrent transport protocol（uTP）|×|6|
-|Extension for Peers to Send Metadata Files|√|3|
+|协议|进度|
+|:-|:-|
+|DHT Protocol|×|
+|Fast Extension|×|
+|Extension Protocol|√|
+|Peer Exchange（PEX）|×|
+|Holepunch extension|×|
+|Local Service Discovery|×|
+|Peer wire protocol（TCP）|√|
+|Tracker Protocol（UDP/HTTP）|√|
+|uTorrent transport protocol（uTP）|×|
+|Extension for Peers to Send Metadata Files|√|
 
 #### ED2K进度
 

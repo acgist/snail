@@ -17,6 +17,7 @@ import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
 import com.acgist.snail.protocol.torrent.bean.TorrentFile;
 import com.acgist.snail.protocol.torrent.bean.TorrentInfo;
+import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.manager.PeerSessionManager;
@@ -182,8 +183,7 @@ public class TorrentSession {
 		}
 		final PeerSessionManager manager = PeerSessionManager.getInstance();
 		peers.forEach((host, port) -> {
-			LOGGER.debug("添加PeerSession，HOST：{}，PORT：{}", host, port);
-			manager.newPeerSession(this.infoHashHex(), taskSession.statistics(), host, port);
+			manager.newPeerSession(this.infoHashHex(), taskSession.statistics(), host, port, PeerConfig.SOURCE_TRACKER);
 		});
 		peerClientGroup.launchers(peers.size());
 	}
@@ -208,10 +208,12 @@ public class TorrentSession {
 	}
 
 	/**
-	 * 发送have消息
+	 * <p>发送have消息，通知所有已连接的Peer已下载对应的Piece</p>
+	 * 
+	 * @param index Piece序号
 	 */
 	public void have(int index) {
-		peerClientGroup.have(index);
+		PeerSessionManager.getInstance().have(infoHash.infoHashHex(), index);
 	}
 
 	/**
