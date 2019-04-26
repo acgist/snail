@@ -21,6 +21,9 @@ public abstract class TcpServer {
 	
 	private static final AsynchronousChannelGroup GROUP;
 	
+	/**
+	 * 服务端名称
+	 */
 	private String name;
 	
 	private AsynchronousServerSocketChannel server;

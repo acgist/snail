@@ -95,6 +95,7 @@ public abstract class UdpClient<T extends UdpMessageHandler> {
 			LOGGER.warn("发送消息为空");
 			return;
 		}
+		// 不用保证顺序
 		try {
 			final int size = channel.send(buffer, address);
 			if(size <= 0) {
