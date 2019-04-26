@@ -1,4 +1,4 @@
-package com.acgist.snail.net.tracker.impl;
+package com.acgist.snail.net.tracker.bootstrap.impl;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -10,8 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.peer.PeerServer;
-import com.acgist.snail.net.tracker.TrackerClient;
-import com.acgist.snail.net.tracker.TrackerUdpClient;
+import com.acgist.snail.net.tracker.bootstrap.TrackerClient;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.ThreadUtils;
@@ -27,6 +26,8 @@ public class UdpTrackerClient extends TrackerClient {
 	
 	private final String host;
 	private final int port;
+	
+	private static final com.acgist.snail.net.tracker.TrackerClient TRACKER_CLIENT = com.acgist.snail.net.tracker.TrackerClient.getInstance();
 	
 	/**
 	 * 连接ID
@@ -109,8 +110,7 @@ public class UdpTrackerClient extends TrackerClient {
 	 * 发送数据
 	 */
 	private void send(ByteBuffer buffer) throws NetException {
-		TrackerUdpClient client = TrackerUdpClient.getInstance();
-		client.send(buffer, buildSocketAddress());
+		TRACKER_CLIENT.send(buffer, buildSocketAddress());
 	}
 
 	/**

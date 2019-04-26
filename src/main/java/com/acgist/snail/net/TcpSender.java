@@ -38,6 +38,10 @@ public abstract class TcpSender {
 		this.split = split;
 	}
 	
+	public String split() {
+		return this.split;
+	}
+	
 	/**
 	 * 发送消息<br>
 	 * 使用分隔符对消息进行分隔

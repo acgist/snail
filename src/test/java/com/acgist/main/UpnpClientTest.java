@@ -3,9 +3,9 @@ package com.acgist.main;
 import org.junit.Test;
 
 import com.acgist.snail.net.upnp.UpnpClient;
-import com.acgist.snail.net.upnp.UpnpRequest;
-import com.acgist.snail.net.upnp.UpnpResponse;
-import com.acgist.snail.net.upnp.UpnpService.Protocol;
+import com.acgist.snail.net.upnp.bootstrap.UpnpRequest;
+import com.acgist.snail.net.upnp.bootstrap.UpnpResponse;
+import com.acgist.snail.net.upnp.bootstrap.UpnpService.Protocol;
 import com.acgist.snail.utils.NetUtils;
 
 public class UpnpClientTest {

@@ -3,6 +3,8 @@ package com.acgist.main;
 import org.junit.Test;
 
 import com.acgist.snail.downloader.torrent.bootstrap.TrackerLauncherGroup;
+import com.acgist.snail.pojo.entity.TaskEntity;
+import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
@@ -16,13 +18,11 @@ public class TrackerClientUdpTest {
 		String path = "e:/snail/1234.torrent";
 		TorrentSession session = TorrentSessionManager.getInstance().buildSession(path);
 		TrackerLauncherGroup group = TrackerLauncherGroup.newInstance(session);
+		TaskEntity entity = new TaskEntity();
+		entity.setFile("e://tmp/test");
+		entity.setSize(100L);
+		session.build(TaskSession.newInstance(entity));
 		group.loadTracker();
-//		var client = TrackerClientManager.getInstance().register("udp://exodus.desync.com:6969/announce");
-//		var launcher = TrackerLauncherManager.getInstance().build(client, session);
-//		client.announce(launcher.id(), session);
-//		client = TrackerClientManager.getInstance().register("udp://tracker.uw0.xyz:6969/announce");
-//		launcher = TrackerLauncherManager.getInstance().build(client, session);
-//		client.announce(launcher.id(), session);
 		ThreadUtils.sleep(Long.MAX_VALUE);
 	}
 

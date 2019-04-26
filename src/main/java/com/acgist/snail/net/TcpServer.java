@@ -63,14 +63,13 @@ public abstract class TcpServer {
 		boolean ok = true;
 		try {
 			server = AsynchronousServerSocketChannel.open(GROUP).bind(new InetSocketAddress(host, port));
-			server.accept(server, AcceptHandler.newInstance(clazz));
+			server.accept(server, TcpAcceptHandler.newInstance(clazz));
 		} catch (Exception e) {
 			ok = false;
 			LOGGER.error("TCP Server启动异常：{}", this.name, e);
 		}
 		if(ok) {
-//			阻止线程关闭
-//			GROUP.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
+//			GROUP.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS); // 阻止线程关闭
 		} else {
 			close();
 		}

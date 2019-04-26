@@ -1,4 +1,4 @@
-package com.acgist.snail.net.upnp;
+package com.acgist.snail.net.upnp.bootstrap;
 
 import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.XMLUtils;

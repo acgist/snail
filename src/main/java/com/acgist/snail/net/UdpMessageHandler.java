@@ -18,6 +18,8 @@ public abstract class UdpMessageHandler {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpMessageHandler.class);
 
+	protected boolean server = false; // 是否是服务端
+	
 	private DatagramChannel channel;
 	
 	/**
@@ -33,6 +35,14 @@ public abstract class UdpMessageHandler {
 		loopMessage();
 	}
 
+	/**
+	 * 设置为服务端
+	 */
+	public UdpMessageHandler server() {
+		this.server = true;
+		return this;
+	}
+	
 	/**
 	 * 循环读取消息
 	 */

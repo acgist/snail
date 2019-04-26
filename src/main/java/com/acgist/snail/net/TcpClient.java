@@ -47,14 +47,7 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends TcpSender {
 	}
 	
 	public TcpClient(String name, int timeout, T handler) {
-		super(null);
-		this.name = name;
-		this.timeout = timeout;
-		this.handler = handler;
-	}
-	
-	public TcpClient(String name, int timeout, String split, T handler) {
-		super(split);
+		super(handler.split());
 		this.name = name;
 		this.timeout = timeout;
 		this.handler = handler;
@@ -100,10 +93,11 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends TcpSender {
 	}
 	
 	/**
-	 * 关闭资源
+	 * 关闭资源：重写使用消息处理器关闭
 	 */
+	@Override
 	public void close() {
-		LOGGER.info("TCP Client关闭：{}", this.name);
+		LOGGER.debug("TCP Client关闭：{}", this.name);
 		handler.close();
 	}
 

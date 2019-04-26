@@ -21,7 +21,10 @@ public class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	private static final String UPNP_HOST = "239.255.255.250";
 	
 	private UpnpClient() {
-		super("UPNP", new UpnpMessageHandler());
+		super("UPNP Client", new UpnpMessageHandler());
+		open();
+		join(UPNP_HOST);
+		handle();
 	}
 	
 	public static final UpnpClient newInstance() {
@@ -33,9 +36,6 @@ public class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	 */
 	public void config() {
 		LOGGER.info("配置UPNP");
-		open();
-		join(UPNP_HOST);
-		bindMessageHandler();
 		try {
 			send(mSearch(), new InetSocketAddress(UPNP_HOST, UPNP_PORT));
 		} catch (NetException e) {

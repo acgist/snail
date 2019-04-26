@@ -27,16 +27,23 @@ public abstract class UdpClient<T extends UdpMessageHandler> {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpClient.class);
 
+	/**
+	 * 客户端名称
+	 */
 	private final String name;
 	private final T handler;
-	private final ExecutorService executor;
+	
+	private static final ExecutorService EXECUTOR;
+	
+	static {
+		EXECUTOR = SystemThreadContext.newCacheExecutor(SystemThreadContext.SNAIL_THREAD_UDP_CLIENT);
+	}
 	
 	private DatagramChannel channel;
 	
 	public UdpClient(String name, T handler) {
 		this.name = name;
 		this.handler = handler;
-		this.executor = SystemThreadContext.newCacheExecutor(SystemThreadContext.SNAIL_THREAD_UDP_CLIENT);
 	}
 
 	/**
@@ -47,10 +54,14 @@ public abstract class UdpClient<T extends UdpMessageHandler> {
 		try {
 			this.channel = DatagramChannel.open(StandardProtocolFamily.INET); // TPv4
 			this.channel.configureBlocking(false); // 不阻塞
+//			this.channel.connect(new InetSocketAddress(host, port)); // 连接后使用：read、write
 		} catch (IOException e) {
-			close();
 			ok = false;
 			LOGGER.error("UDP打开端口异常", e);
+		}
+		if(ok) {
+		} else {
+			this.close();
 		}
 		return ok;
 	}
@@ -70,8 +81,8 @@ public abstract class UdpClient<T extends UdpMessageHandler> {
 	/**
 	 * 绑定消息处理器
 	 */
-	public void bindMessageHandler() {
-		executor.submit(() -> {
+	public void handle() {
+		EXECUTOR.submit(() -> {
 			try {
 				this.handler.handle(channel);
 			} catch (IOException e) {
@@ -110,7 +121,7 @@ public abstract class UdpClient<T extends UdpMessageHandler> {
 	 * 关闭channel
 	 */
 	public void close() {
-		LOGGER.info("UDP Client关闭：{}", this.name);
+		LOGGER.debug("UDP Client关闭：{}", this.name);
 		IoUtils.close(channel);
 	}
 
@@ -121,4 +132,12 @@ public abstract class UdpClient<T extends UdpMessageHandler> {
 		return StringUtils.regex(url, UDP_REGEX, true);
 	}
 
+	/**
+	 * 关闭Client线程池
+	 */
+	public static final void shutdown() {
+		LOGGER.info("关闭UDP Client线程池");
+		SystemThreadContext.shutdown(EXECUTOR);
+	}
+	
 }

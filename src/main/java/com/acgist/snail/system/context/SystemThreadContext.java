@@ -28,6 +28,7 @@ public class SystemThreadContext {
 	public static final String SNAIL_THREAD_TCP_CLIENT = SNAIL_THREAD + "-TCP-Client";
 	public static final String SNAIL_THREAD_TCP_SERVER = SNAIL_THREAD + "-TCP-Server";
 	public static final String SNAIL_THREAD_UDP_CLIENT = SNAIL_THREAD + "-UDP-Client";
+	public static final String SNAIL_THREAD_UDP_SERVER = SNAIL_THREAD + "-UDP-Server";
 	
 	/**
 	 * 线程池：大小限制，主要用来处理一些不是非常急用的任务

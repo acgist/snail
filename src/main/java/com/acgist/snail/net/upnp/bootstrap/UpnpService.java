@@ -1,4 +1,4 @@
-package com.acgist.snail.net.upnp;
+package com.acgist.snail.net.upnp.bootstrap;
 
 import java.net.MalformedURLException;
 import java.net.URL;

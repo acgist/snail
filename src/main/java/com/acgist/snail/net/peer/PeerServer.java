@@ -51,7 +51,7 @@ public class PeerServer extends TcpServer {
 	}
 
 	private PeerServer() {
-		super("Peer服务");
+		super("Peer Server");
 	}
 
 	private static final PeerServer INSTANCE = new PeerServer();

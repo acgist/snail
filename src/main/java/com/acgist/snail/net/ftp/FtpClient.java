@@ -24,7 +24,7 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	private String filePath; // 文件路径
 
 	private FtpClient(String host, int port, String user, String password, String filePath) {
-		super("FTP", 5, FtpMessageHandler.SPLIT, new FtpMessageHandler());
+		super("FTP Client", 5, new FtpMessageHandler());
 		this.host = host;
 		this.port = port;
 		this.user = user;
