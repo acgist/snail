@@ -1,6 +1,8 @@
 package com.acgist.snail.downloader.torrent.bootstrap;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -44,6 +46,10 @@ public class PeerClientGroup {
 	 */
 	private final BlockingQueue<PeerClient> peerClients;
 	private final PeerSessionManager peerSessionManager;
+	/**
+	 * 优选的Peer，每次优化时挑选出来可以进行下载的Peer，在优化后发送ut_pex消息发送给连接的Peer，发送完成后清空
+	 */
+	private final List<PeerSession> optimize = new ArrayList<>();
 	
 	private PeerClientGroup(TorrentSession torrentSession) {
 		this.taskSession = torrentSession.taskSession();
@@ -104,6 +110,7 @@ public class PeerClientGroup {
 				launchers(1);
 			}
 		}
+		peerSessionManager.exchange(torrentSession.infoHashHex(), optimize);
 	}
 
 	/**
@@ -188,6 +195,9 @@ public class PeerClientGroup {
 				break;
 			}
 			mark = tmp.mark(); // 清空权重
+			if(mark > 0) {
+				optimize.add(tmp.peerSession());
+			}
 			if(inferior != null && !inferior.available()) { // 如果当前挑选的是不可用的PeerClient不执行后面操作
 				continue;
 			}

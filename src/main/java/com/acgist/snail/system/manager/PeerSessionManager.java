@@ -11,6 +11,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.net.peer.ltep.UtPeerExchangeMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.StatisticsSession;
 
@@ -97,12 +98,33 @@ public class PeerSessionManager {
 		}
 	}
 	
+	/**
+	 * 发送have消息
+	 */
 	public void have(String infoHashHex, int index) {
 		var list = list(infoHashHex);
 		list.forEach(session -> {
 			var handler = session.peerMessageHandler();
 			if(handler != null && handler.available()) {
 				handler.have(index);
+			}
+		});
+	}
+	
+	/**
+	 * 发送pex消息
+	 */
+	public void exchange(String infoHashHex, List<PeerSession> optimize) {
+		final byte[] bytes = UtPeerExchangeMessageHandler.buildMessage(optimize);
+		if(bytes == null) {
+			return;
+		}
+		optimize.clear(); // 清空
+		var list = list(infoHashHex);
+		list.forEach(session -> {
+			var handler = session.peerMessageHandler();
+			if(handler != null && handler.available()) {
+				handler.exchange(bytes);
 			}
 		});
 	}

@@ -132,6 +132,22 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		return true;
 	}
 	
+	public void download() {
+		action(Action.download);
+	}
+	
+	public void torrent() {
+		action(Action.torrent);
+	}
+	
+	public Action action() {
+		return this.action;
+	}
+	
+	public void action(Action action) {
+		this.action = action;
+	}
+	
 	@Override
 	public void onMessage(ByteBuffer attachment) {
 		int length = 0;
@@ -543,20 +559,11 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		extensionMessageHandler.onMessage(buffer);
 	}
 	
-	public void download() {
-		action(Action.download);
-	}
-	
-	public void torrent() {
-		action(Action.torrent);
-	}
-	
-	public Action action() {
-		return this.action;
-	}
-	
-	public void action(Action action) {
-		this.action = action;
+	/**
+	 * 扩展信息：ut_pex
+	 */
+	public void exchange(byte[] bytes) {
+		extensionMessageHandler.exchange(bytes);
 	}
 	
 	/**
@@ -600,5 +607,5 @@ public class PeerMessageHandler extends TcpMessageHandler {
 			peerClient.release();
 		}
 	}
-	
+
 }
