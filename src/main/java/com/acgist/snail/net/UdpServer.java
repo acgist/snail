@@ -54,6 +54,7 @@ public abstract class UdpServer {
 		boolean ok = true;
 		try {
 			this.channel = DatagramChannel.open(StandardProtocolFamily.INET);
+			this.channel.configureBlocking(false); // 不阻塞
 			this.channel.bind(new InetSocketAddress(host, port));
 		} catch (IOException e) {
 			ok = false;

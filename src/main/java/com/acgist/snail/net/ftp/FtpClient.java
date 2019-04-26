@@ -146,7 +146,11 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	 * 发送命令
 	 */
 	private void command(String command) {
-		send(command);
+		try {
+			send(command);
+		} catch (NetException e) {
+			logger
+		}
 	}
 
 }

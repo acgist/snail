@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.IoUtils;
 
 /**
@@ -23,7 +24,7 @@ public abstract class TcpSender {
 	/**
 	 * 消息分隔符
 	 */
-	private String split;
+	private final String split;
 	/**
 	 * 是否关闭
 	 */
@@ -32,6 +33,7 @@ public abstract class TcpSender {
 	protected AsynchronousSocketChannel socket;
 	
 	public TcpSender() {
+		this(null);
 	}
 
 	public TcpSender(String split) {
@@ -46,7 +48,7 @@ public abstract class TcpSender {
 	 * 发送消息<br>
 	 * 使用分隔符对消息进行分隔
 	 */
-	protected void send(final String message) {
+	protected void send(final String message) throws NetException {
 		String splitMessage = message;
 		if(this.split != null) {
 			splitMessage += this.split;
@@ -62,14 +64,14 @@ public abstract class TcpSender {
 	/**
 	 * 发送消息
 	 */
-	protected void send(byte[] bytes) {
+	protected void send(byte[] bytes) throws NetException {
 		send(ByteBuffer.wrap(bytes));
 	}
 	
 	/**
 	 * 发送消息
 	 */
-	protected void send(ByteBuffer buffer) {
+	protected void send(ByteBuffer buffer) throws NetException {
 		if(!available()) {
 			LOGGER.debug("发送消息时Socket已经不可用");
 			return;
@@ -89,7 +91,7 @@ public abstract class TcpSender {
 					LOGGER.warn("发送数据为空");
 				}
 			} catch (Exception e) {
-				LOGGER.error("发送TCP消息异常", e);
+				throw new NetException(e);
 			}
 		}
 	}
