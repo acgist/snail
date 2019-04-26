@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.UdpMessageHandler;
+import com.acgist.snail.net.upnp.bootstrap.UpnpService;
 import com.acgist.snail.system.exception.NetException;
 
 /**

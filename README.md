@@ -44,7 +44,7 @@
 |DHT Protocol|×|
 |Fast Extension|×|
 |Extension Protocol|√|
-|Peer Exchange（PEX）|×|
+|Peer Exchange（PEX）|√|
 |Holepunch extension|×|
 |Local Service Discovery|×|
 |Peer wire protocol（TCP）|√|

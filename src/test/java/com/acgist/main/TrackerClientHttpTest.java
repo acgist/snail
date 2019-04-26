@@ -2,7 +2,7 @@ package com.acgist.main;
 
 import org.junit.Test;
 
-import com.acgist.snail.net.tracker.impl.HttpTrackerClient;
+import com.acgist.snail.net.tracker.bootstrap.impl.HttpTrackerClient;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;

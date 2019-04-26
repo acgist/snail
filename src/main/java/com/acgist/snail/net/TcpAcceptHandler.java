@@ -12,18 +12,18 @@ import com.acgist.snail.utils.BeanUtils;
 /**
  * 客户端连接
  */
-public class AcceptHandler<T extends TcpMessageHandler> implements CompletionHandler<AsynchronousSocketChannel, AsynchronousServerSocketChannel> {
+public class TcpAcceptHandler<T extends TcpMessageHandler> implements CompletionHandler<AsynchronousSocketChannel, AsynchronousServerSocketChannel> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AcceptHandler.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TcpAcceptHandler.class);
 	
 	private Class<T> clazz;
 	
-	private AcceptHandler(Class<T> clazz) {
+	private TcpAcceptHandler(Class<T> clazz) {
 		this.clazz = clazz;
 	}
 	
-	public static final <T extends TcpMessageHandler> AcceptHandler<T> newInstance(Class<T> clazz) {
-		return new AcceptHandler<>(clazz);
+	public static final <T extends TcpMessageHandler> TcpAcceptHandler<T> newInstance(Class<T> clazz) {
+		return new TcpAcceptHandler<>(clazz);
 	}
 	
 	@Override

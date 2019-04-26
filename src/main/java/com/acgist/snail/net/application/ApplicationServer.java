@@ -12,7 +12,7 @@ public class ApplicationServer extends TcpServer {
 	private static final ApplicationServer INSTANCE = new ApplicationServer();
 	
 	private ApplicationServer() {
-		super("系统监听");
+		super("Application Server");
 	}
 	
 	public static final ApplicationServer getInstance() {

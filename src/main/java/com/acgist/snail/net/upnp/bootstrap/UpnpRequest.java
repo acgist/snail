@@ -1,8 +1,8 @@
-package com.acgist.snail.net.upnp;
+package com.acgist.snail.net.upnp.bootstrap;
 
 import org.w3c.dom.Element;
 
-import com.acgist.snail.net.upnp.UpnpService.Protocol;
+import com.acgist.snail.net.upnp.bootstrap.UpnpService.Protocol;
 import com.acgist.snail.utils.XMLUtils;
 
 /**

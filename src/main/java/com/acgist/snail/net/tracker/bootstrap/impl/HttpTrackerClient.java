@@ -1,4 +1,4 @@
-package com.acgist.snail.net.tracker.impl;
+package com.acgist.snail.net.tracker.bootstrap.impl;
 
 import java.net.http.HttpResponse.BodyHandlers;
 import java.util.Map;
@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.net.peer.PeerServer;
-import com.acgist.snail.net.tracker.TrackerClient;
+import com.acgist.snail.net.tracker.bootstrap.TrackerClient;
 import com.acgist.snail.pojo.bean.HttpTracker;
 import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.session.TorrentSession;

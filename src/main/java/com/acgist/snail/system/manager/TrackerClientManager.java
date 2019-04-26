@@ -11,10 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.UdpClient;
-import com.acgist.snail.net.tracker.TrackerClient;
-import com.acgist.snail.net.tracker.TrackerClient.Type;
-import com.acgist.snail.net.tracker.impl.HttpTrackerClient;
-import com.acgist.snail.net.tracker.impl.UdpTrackerClient;
+import com.acgist.snail.net.tracker.bootstrap.TrackerClient;
+import com.acgist.snail.net.tracker.bootstrap.TrackerClient.Type;
+import com.acgist.snail.net.tracker.bootstrap.impl.HttpTrackerClient;
+import com.acgist.snail.net.tracker.bootstrap.impl.UdpTrackerClient;
 import com.acgist.snail.protocol.http.HttpProtocol;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;

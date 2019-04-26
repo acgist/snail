@@ -2,8 +2,8 @@ package com.acgist.main;
 
 import org.junit.Test;
 
-import com.acgist.snail.net.upnp.UpnpService;
-import com.acgist.snail.net.upnp.UpnpService.Protocol;
+import com.acgist.snail.net.upnp.bootstrap.UpnpService;
+import com.acgist.snail.net.upnp.bootstrap.UpnpService.Protocol;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.NetUtils;
 
