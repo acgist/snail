@@ -160,13 +160,6 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	}
 	
 	/**
-	 * 发送have消息
-	 */
-	public void have(int index) {
-		handler.have(index);
-	}
-	
-	/**
 	 * 获取评分<br>
 	 * 每次获取后清空
 	 */

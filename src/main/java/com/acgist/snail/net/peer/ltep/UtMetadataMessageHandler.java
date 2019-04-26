@@ -1,4 +1,4 @@
-package com.acgist.snail.net.peer.extension;
+package com.acgist.snail.net.peer.ltep;
 
 import java.nio.ByteBuffer;
 import java.util.LinkedHashMap;
@@ -7,15 +7,15 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.peer.MessageType;
-import com.acgist.snail.net.peer.MessageType.ExtensionType;
-import com.acgist.snail.net.peer.MessageType.UtMetadataType;
 import com.acgist.snail.net.peer.PeerMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.bcode.BCodeDecoder;
 import com.acgist.snail.system.bcode.BCodeEncoder;
+import com.acgist.snail.system.config.PeerMessageConfig;
+import com.acgist.snail.system.config.PeerMessageConfig.ExtensionType;
+import com.acgist.snail.system.config.PeerMessageConfig.UtMetadataType;
 import com.acgist.snail.utils.NumberUtils;
 
 /**
@@ -62,7 +62,7 @@ public class UtMetadataMessageHandler {
 		final BCodeDecoder decoder = BCodeDecoder.newInstance(bytes);
 		final Map<String, Object> data = decoder.mustMap();
 		final Byte typeValue = BCodeDecoder.getByte(data, ARG_MSG_TYPE);
-		final UtMetadataType type = MessageType.UtMetadataType.valueOf(typeValue);
+		final UtMetadataType type = PeerMessageConfig.UtMetadataType.valueOf(typeValue);
 		if(type == null) {
 			LOGGER.warn("不支持的UtMetadata消息类型：{}", typeValue);
 			return;
@@ -85,7 +85,7 @@ public class UtMetadataMessageHandler {
 		final int size = infoHash.size();
 		final int messageSize = NumberUtils.divideUp(size, INFO_SLICE_SIZE);
 		for (int index = 0; index < messageSize; index++) {
-			final var request = buildMessage(MessageType.UtMetadataType.request, index);
+			final var request = buildMessage(PeerMessageConfig.UtMetadataType.request, index);
 			pushMessage(utMetadataType(), request);
 		}
 	}
@@ -113,7 +113,7 @@ public class UtMetadataMessageHandler {
 		}
 		final byte[] x = new byte[length];
 		System.arraycopy(bytes, begin, x, 0, length);
-		final var data = buildMessage(MessageType.UtMetadataType.data, piece);
+		final var data = buildMessage(PeerMessageConfig.UtMetadataType.data, piece);
 		data.put(ARG_TOTAL_SIZE, infoHash.size());
 		pushMessage(utMetadataType(), data, x);
 	}
@@ -140,7 +140,7 @@ public class UtMetadataMessageHandler {
 	}
 	
 	public void reject() {
-		final var reject = buildMessage(MessageType.UtMetadataType.reject, 0);
+		final var reject = buildMessage(PeerMessageConfig.UtMetadataType.reject, 0);
 		pushMessage(utMetadataType(), reject);
 	}
 	
@@ -181,14 +181,14 @@ public class UtMetadataMessageHandler {
 			System.arraycopy(x, 0, bytes, dataBytes.length, x.length);
 		}
 		final byte[] pushBytes = extensionMessageHandler.buildMessage(type, bytes);
-		peerMessageHandler.pushMessage(MessageType.Type.extension, pushBytes);
+		peerMessageHandler.pushMessage(PeerMessageConfig.Type.extension, pushBytes);
 	}
 	
 	/**
 	 * 创建消息
 	 * @param type UtMetadata类型
 	 */
-	private Map<String, Object> buildMessage(MessageType.UtMetadataType type, int piece) {
+	private Map<String, Object> buildMessage(PeerMessageConfig.UtMetadataType type, int piece) {
 		final Map<String, Object> message = new LinkedHashMap<>();
 		message.put(ARG_MSG_TYPE, type.value());
 		message.put(ARG_PIECE, piece);

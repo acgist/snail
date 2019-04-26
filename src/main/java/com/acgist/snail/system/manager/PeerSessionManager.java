@@ -1,10 +1,15 @@
 package com.acgist.snail.system.manager;
 
+import java.util.ArrayList;
 import java.util.Deque;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.StatisticsSession;
@@ -14,7 +19,7 @@ import com.acgist.snail.pojo.session.StatisticsSession;
  */
 public class PeerSessionManager {
 	
-//	private static final Logger LOGGER = LoggerFactory.getLogger(PeerSessionManager.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PeerSessionManager.class);
 
 	private static final PeerSessionManager INSTANCE = new PeerSessionManager();
 	
@@ -39,21 +44,21 @@ public class PeerSessionManager {
 	 * @param host 地址
 	 * @param port 端口
 	 */
-	public PeerSession newPeerSession(String infoHashHex, StatisticsSession parent, String host, Integer port) {
-		var deque = peers.get(infoHashHex);
-		synchronized (peers) {
-			if(deque == null) {
-				deque = new LinkedBlockingDeque<>();
-				peers.put(infoHashHex, deque);
-			}
+	public PeerSession newPeerSession(String infoHashHex, StatisticsSession parent, String host, Integer port, byte source) {
+		LOGGER.debug("添加PeerSession，HOST：{}，PORT：{}", host, port);
+		var deque = deque(infoHashHex);
+		synchronized (deque) {
 			final Optional<PeerSession> optional = deque.stream().filter(peer -> {
 				return peer.exist(host);
 			}).findFirst();
+			PeerSession peerSession;
 			if(optional.isPresent()) {
-				return optional.get();
+				peerSession = optional.get();
+			} else {
+				peerSession = PeerSession.newInstance(parent, host, port);
+				deque.offerLast(peerSession);
 			}
-			final PeerSession peerSession = PeerSession.newInstance(parent, host, port);
-			deque.offerLast(peerSession);
+			peerSession.source(source); // 设置来源
 			return peerSession;
 		}
 	}
@@ -62,11 +67,9 @@ public class PeerSessionManager {
 	 * 放入一个优化的Peer，插入头部
 	 */
 	public void inferior(String infoHashHex, PeerSession peerSession) {
-		synchronized (peers) {
-			var deque = peers.get(infoHashHex);
-			if(deque != null) {
-				deque.offerFirst(peerSession);
-			}
+		var deque = deque(infoHashHex);
+		synchronized (deque) {
+			deque.offerFirst(peerSession);
 		}
 	}
 	
@@ -74,25 +77,43 @@ public class PeerSessionManager {
 	 * 选择一个Peer下载
 	 */
 	public PeerSession pick(String infoHashHex) {
-		synchronized (peers) {
-			var deque = peers.get(infoHashHex);
-			if(deque != null) {
-				int size = deque.size();
-				int index = 0;
-				PeerSession peerSession = null;
-				while(true) {
-					if(++index > size) {
-						break;
-					}
-					peerSession = deque.pollLast();
-					if(peerSession.usable()) { // 可用
-						return peerSession;
-					} else {
-						deque.offerFirst(peerSession);
-					}
+		var deque = deque(infoHashHex);
+		synchronized (deque) {
+			int index = 0;
+			int size = deque.size();
+			PeerSession peerSession = null;
+			while(true) {
+				if(++index > size) {
+					break;
+				}
+				peerSession = deque.pollLast();
+				if(peerSession.usable()) { // 可用
+					return peerSession;
+				} else {
+					deque.offerFirst(peerSession);
 				}
 			}
 			return null;
+		}
+	}
+	
+	public void have(String infoHashHex, int index) {
+		var list = list(infoHashHex);
+		list.forEach(session -> {
+			var handler = session.peerMessageHandler();
+			if(handler != null && handler.available()) {
+				handler.have(index);
+			}
+		});
+	}
+	
+	/**
+	 * 获取对应的一个临时的PeerSession列表
+	 */
+	public List<PeerSession> list(String infoHashHex) {
+		final var deque = deque(infoHashHex);
+		synchronized (deque) {
+			return new ArrayList<>(deque);
 		}
 	}
 	

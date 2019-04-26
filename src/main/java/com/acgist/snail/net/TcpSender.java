@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.utils.IoUtils;
 
 /**
  * 消息发送<br>
@@ -23,6 +24,10 @@ public abstract class TcpSender {
 	 * 消息分隔符
 	 */
 	private String split;
+	/**
+	 * 是否关闭
+	 */
+	protected boolean close = false;
 	
 	protected AsynchronousSocketChannel socket;
 	
@@ -61,8 +66,8 @@ public abstract class TcpSender {
 	 * 发送消息
 	 */
 	protected void send(ByteBuffer buffer) {
-		if(!socket.isOpen()) {
-			LOGGER.debug("发送消息时Socket已经关闭");
+		if(!available()) {
+			LOGGER.debug("发送消息时Socket已经不可用");
 			return;
 		}
 		if(buffer.position() != 0) { //  重置标记
@@ -83,4 +88,19 @@ public abstract class TcpSender {
 		}
 	}
 
+	/**
+	 * 可用的：没有被关闭
+	 */
+	public boolean available() {
+		return !close && socket.isOpen();
+	}
+	
+	/**
+	 * 关闭SOCKET
+	 */
+	public void close() {
+		this.close = true;
+		IoUtils.close(this.socket);
+	}
+	
 }

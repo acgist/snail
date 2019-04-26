@@ -7,8 +7,6 @@ import java.nio.channels.CompletionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.utils.IoUtils;
-
 /**
  * TCP消息处理
  */
@@ -17,8 +15,6 @@ public abstract class TcpMessageHandler extends TcpSender implements CompletionH
 	private static final Logger LOGGER = LoggerFactory.getLogger(TcpMessageHandler.class);
 	
 	protected boolean server = false; // 是否是服务端
-	
-	protected boolean close = false; // 是否关闭
 	
 	public TcpMessageHandler() {
 	}
@@ -56,14 +52,6 @@ public abstract class TcpMessageHandler extends TcpSender implements CompletionH
 		loopRead();
 	}
 
-	/**
-	 * 关闭SOCKET
-	 */
-	public void close() {
-		this.close = true;
-		IoUtils.close(this.socket);
-	}
-	
 	@Override
 	public void completed(Integer result, ByteBuffer attachment) {
 //		synchronized (this) {
@@ -94,9 +82,9 @@ public abstract class TcpMessageHandler extends TcpSender implements CompletionH
 	 */
 	private void loopRead() {
 		final ByteBuffer buffer = ByteBuffer.allocate(1024);
-		if(socket.isOpen()) {
+		if(available()) {
 			socket.read(buffer, buffer, this);
 		}
 	}
-
+	
 }

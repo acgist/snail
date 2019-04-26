@@ -1,4 +1,4 @@
-package com.acgist.snail.net.peer.extension;
+package com.acgist.snail.net.peer.ltep;
 
 import java.nio.ByteBuffer;
 import java.util.LinkedHashMap;
@@ -7,19 +7,20 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.peer.MessageType;
-import com.acgist.snail.net.peer.MessageType.Action;
-import com.acgist.snail.net.peer.MessageType.ExtensionType;
 import com.acgist.snail.net.peer.PeerMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.bcode.BCodeDecoder;
 import com.acgist.snail.system.bcode.BCodeEncoder;
+import com.acgist.snail.system.config.PeerMessageConfig;
+import com.acgist.snail.system.config.PeerMessageConfig.Action;
+import com.acgist.snail.system.config.PeerMessageConfig.ExtensionType;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.CollectionUtils;
 
 /**
+ * LTEP（Libtorrent Extension Protocol）扩展协议
  * http://www.bittorrent.org/beps/bep_0009.html
  * http://www.bittorrent.org/beps/bep_0010.html
  * http://www.bittorrent.org/beps/bep_0011.html
@@ -55,8 +56,8 @@ public class ExtensionMessageHandler {
 		this.peerSession = peerSession;
 		this.torrentSession = torrentSession;
 		this.peerMessageHandler = peerMessageHandler;
-		this.utMetadataMessageHandler = UtMetadataMessageHandler.newInstance(this.torrentSession, this.peerSession, peerMessageHandler, this);
-		this.utPeerExchangeMessageHandler = UtPeerExchangeMessageHandler.newInstance();
+		this.utMetadataMessageHandler = UtMetadataMessageHandler.newInstance(this.torrentSession, this.peerSession, this.peerMessageHandler, this);
+		this.utPeerExchangeMessageHandler = UtPeerExchangeMessageHandler.newInstance(this.torrentSession, this.peerSession, this.peerMessageHandler, this);
 	}
 	
 	/**
@@ -80,6 +81,8 @@ public class ExtensionMessageHandler {
 		case ut_metadata:
 			utMetadata(buffer);
 			break;
+		case ut_holepunch:
+			break;
 		}
 	}
 	
@@ -89,7 +92,7 @@ public class ExtensionMessageHandler {
 	public void handshake() {
 		final Map<String, Object> data = new LinkedHashMap<>();
 		final Map<String, Object> supportType = new LinkedHashMap<>();
-		for (var type : MessageType.ExtensionType.values()) {
+		for (var type : PeerMessageConfig.ExtensionType.values()) {
 			if(type.notice()) {
 				supportType.put(type.name(), type.value());
 			}
@@ -105,10 +108,10 @@ public class ExtensionMessageHandler {
 //			data.put(EX_YOURIP, youripBuffer.array()); // 本机的IP地址
 //		}
 		data.put(EX_REQQ, 255);
-		if(MessageType.ExtensionType.ut_pex.notice()) {
+		if(PeerMessageConfig.ExtensionType.ut_pex.notice()) {
 			data.put(EX_E, 0); // ut_pex：加密
 		}
-		if(MessageType.ExtensionType.ut_metadata.notice()) {
+		if(PeerMessageConfig.ExtensionType.ut_metadata.notice()) {
 			final int size = this.infoHash.size();
 			if(size > 0) {
 				data.put(EX_METADATA_SIZE, size); // 种子info数据长度
@@ -116,7 +119,7 @@ public class ExtensionMessageHandler {
 		}
 		final BCodeEncoder encoder = BCodeEncoder.newInstance();
 		final byte[] bytes = buildMessage(ExtensionType.handshake.value(), encoder.build(data).bytes());
-		peerMessageHandler.pushMessage(MessageType.Type.extension, bytes);
+		peerMessageHandler.pushMessage(PeerMessageConfig.Type.extension, bytes);
 	}
 
 	/**
@@ -140,7 +143,7 @@ public class ExtensionMessageHandler {
 			mData.entrySet().forEach(entry -> {
 				final String type = (String) entry.getKey();
 				final Long typeValue = (Long) entry.getValue();
-				final MessageType.ExtensionType extensionType = MessageType.ExtensionType.valueOfName(type);
+				final PeerMessageConfig.ExtensionType extensionType = PeerMessageConfig.ExtensionType.valueOfName(type);
 				if(extensionType == null) {
 					LOGGER.debug("不支持的扩展协议：{}-{}", type, typeValue);
 				} else {
