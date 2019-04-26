@@ -35,7 +35,7 @@ public class DhtExtensionMessageHandler {
 		this.peerMessageHandler.pushMessage(PeerMessageConfig.Type.dht, ByteBuffer.allocate(2).putShort(port).array());
 	}
 	
-	public void port(ByteBuffer buffer) {
+	private void port(ByteBuffer buffer) {
 		final int port = NetUtils.decodePort(buffer.getShort());
 		this.peerSession.dhtPort(port);
 	}

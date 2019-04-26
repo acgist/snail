@@ -7,7 +7,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.peer.PeerMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
@@ -38,18 +37,16 @@ public class UtMetadataMessageHandler {
 	private final InfoHash infoHash;
 	private final PeerSession peerSession;
 	private final TorrentSession torrentSession;
-	private final PeerMessageHandler peerMessageHandler;
 	private final ExtensionMessageHandler extensionMessageHandler;
 	
-	public static final UtMetadataMessageHandler newInstance(TorrentSession torrentSession, PeerSession peerSession, PeerMessageHandler peerMessageHandler, ExtensionMessageHandler extensionMessageHandler) {
-		return new UtMetadataMessageHandler(torrentSession, peerSession, peerMessageHandler, extensionMessageHandler);
+	public static final UtMetadataMessageHandler newInstance(TorrentSession torrentSession, PeerSession peerSession, ExtensionMessageHandler extensionMessageHandler) {
+		return new UtMetadataMessageHandler(torrentSession, peerSession, extensionMessageHandler);
 	}
 	
-	private UtMetadataMessageHandler(TorrentSession torrentSession, PeerSession peerSession, PeerMessageHandler peerMessageHandler, ExtensionMessageHandler extensionMessageHandler) {
+	private UtMetadataMessageHandler(TorrentSession torrentSession, PeerSession peerSession, ExtensionMessageHandler extensionMessageHandler) {
 		this.infoHash = torrentSession.infoHash();
 		this.peerSession = peerSession;
 		this.torrentSession = torrentSession;
-		this.peerMessageHandler = peerMessageHandler;
 		this.extensionMessageHandler = extensionMessageHandler;
 	}
 
@@ -86,7 +83,7 @@ public class UtMetadataMessageHandler {
 		final int messageSize = NumberUtils.divideUp(size, INFO_SLICE_SIZE);
 		for (int index = 0; index < messageSize; index++) {
 			final var request = buildMessage(PeerMessageConfig.UtMetadataType.request, index);
-			pushMessage(utMetadataType(), request);
+			pushMessage(request);
 		}
 	}
 	
@@ -115,7 +112,7 @@ public class UtMetadataMessageHandler {
 		System.arraycopy(bytes, begin, x, 0, length);
 		final var data = buildMessage(PeerMessageConfig.UtMetadataType.data, piece);
 		data.put(ARG_TOTAL_SIZE, infoHash.size());
-		pushMessage(utMetadataType(), data, x);
+		pushMessage(data, x);
 	}
 
 	private void data(Map<String, Object> data, BCodeDecoder decoder) {
@@ -141,7 +138,7 @@ public class UtMetadataMessageHandler {
 	
 	public void reject() {
 		final var reject = buildMessage(PeerMessageConfig.UtMetadataType.reject, 0);
-		pushMessage(utMetadataType(), reject);
+		pushMessage(reject);
 	}
 	
 	private void reject(Map<String, Object> data) {
@@ -155,15 +152,29 @@ public class UtMetadataMessageHandler {
 		return peerSession.extensionTypeValue(ExtensionType.ut_metadata);
 	}
 	
-	private void pushMessage(Byte type, Map<String, Object> data) {
-		this.pushMessage(type, data, null);
+	/**
+	 * 创建消息
+	 * @param type UtMetadata类型
+	 */
+	private Map<String, Object> buildMessage(PeerMessageConfig.UtMetadataType type, int piece) {
+		final Map<String, Object> message = new LinkedHashMap<>();
+		message.put(ARG_MSG_TYPE, type.value());
+		message.put(ARG_PIECE, piece);
+		return message;
 	}
 	
 	/**
-	 * 创建消息
-	 * @param type 扩展消息类型：注意客户端和服务的类型不同
+	 * 发送消息
 	 */
-	private void pushMessage(Byte type, Map<String, Object> data, byte[] x) {
+	private void pushMessage(Map<String, Object> data) {
+		this.pushMessage(data, null);
+	}
+	
+	/**
+	 * 发送消息
+	 */
+	private void pushMessage(Map<String, Object> data, byte[] x) {
+		final Byte type = utMetadataType(); // 扩展消息类型
 		if (type == null) {
 			LOGGER.warn("不支持UtMetadata扩展协议");
 			return;
@@ -180,19 +191,7 @@ public class UtMetadataMessageHandler {
 		if(x != null) {
 			System.arraycopy(x, 0, bytes, dataBytes.length, x.length);
 		}
-		final byte[] pushBytes = extensionMessageHandler.buildMessage(type, bytes);
-		peerMessageHandler.pushMessage(PeerMessageConfig.Type.extension, pushBytes);
+		extensionMessageHandler.pushMessage(type, bytes);
 	}
 	
-	/**
-	 * 创建消息
-	 * @param type UtMetadata类型
-	 */
-	private Map<String, Object> buildMessage(PeerMessageConfig.UtMetadataType type, int piece) {
-		final Map<String, Object> message = new LinkedHashMap<>();
-		message.put(ARG_MSG_TYPE, type.value());
-		message.put(ARG_PIECE, piece);
-		return message;
-	}
-
 }

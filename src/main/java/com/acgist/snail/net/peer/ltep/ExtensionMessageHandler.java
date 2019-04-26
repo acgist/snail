@@ -56,8 +56,8 @@ public class ExtensionMessageHandler {
 		this.peerSession = peerSession;
 		this.torrentSession = torrentSession;
 		this.peerMessageHandler = peerMessageHandler;
-		this.utMetadataMessageHandler = UtMetadataMessageHandler.newInstance(this.torrentSession, this.peerSession, this.peerMessageHandler, this);
-		this.utPeerExchangeMessageHandler = UtPeerExchangeMessageHandler.newInstance(this.torrentSession, this.peerSession, this.peerMessageHandler, this);
+		this.utMetadataMessageHandler = UtMetadataMessageHandler.newInstance(this.torrentSession, this.peerSession, this);
+		this.utPeerExchangeMessageHandler = UtPeerExchangeMessageHandler.newInstance(this.peerSession, this.torrentSession, this);
 	}
 	
 	/**
@@ -118,8 +118,7 @@ public class ExtensionMessageHandler {
 			}
 		}
 		final BCodeEncoder encoder = BCodeEncoder.newInstance();
-		final byte[] bytes = buildMessage(ExtensionType.handshake.value(), encoder.build(data).bytes());
-		peerMessageHandler.pushMessage(PeerMessageConfig.Type.extension, bytes);
+		this.pushMessage(ExtensionType.handshake.value(), encoder.build(data).bytes());
 	}
 
 	/**
@@ -162,6 +161,10 @@ public class ExtensionMessageHandler {
 		}
 	}
 	
+	public void exchange(byte[] bytes) {
+		utPeerExchangeMessageHandler.exchange(bytes);
+	}
+	
 	/**
 	 * ut_pex
 	 */
@@ -181,11 +184,19 @@ public class ExtensionMessageHandler {
 	 * @param type 扩展类型
 	 * @param bytes 扩展数据
 	 */
-	public byte[] buildMessage(byte type, byte[] bytes) {
-		final ByteBuffer buffer = ByteBuffer.allocate(bytes.length + 1);
-		buffer.put(type);
-		buffer.put(bytes);
-		return buffer.array();
+	private byte[] buildMessage(byte type, byte[] bytes) {
+		final byte[] message = new byte[bytes.length + 1];
+		message[0] = type;
+		System.arraycopy(bytes, 0, message, 1, bytes.length);
+		return message;
 	}
 	
+	/**
+	 * 发送消息
+	 * @param type 扩展消息类型：需要和Peer的标记一致
+	 */
+	public void pushMessage(byte type, byte[] bytes) {
+		peerMessageHandler.pushMessage(PeerMessageConfig.Type.extension, buildMessage(type, bytes));
+	}
+
 }

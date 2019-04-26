@@ -68,8 +68,11 @@ public class PeerServerTest {
 		StatisticsSession statisticsSession = new StatisticsSession();
 		PeerSession peerSession = PeerSession.newInstance(statisticsSession, host, port);
 		PeerClient client = new PeerClient(peerSession, torrentSession);
-//		client.torrent();
-		client.download();
+		client.torrent();
+//		client.download();
+//		ThreadUtils.sleep(4000); // 等待信息交换
+//		var pexMessage = UtPeerExchangeMessageHandler.buildMessage(List.of(peerSession));
+//		client.handler().utPex(pexMessage);
 		ThreadUtils.sleep(Long.MAX_VALUE);
 	}
 
