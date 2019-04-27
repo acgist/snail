@@ -9,6 +9,7 @@ import com.acgist.snail.net.TcpClient;
 import com.acgist.snail.pojo.message.ApplicationMessage;
 import com.acgist.snail.pojo.message.ApplicationMessage.Type;
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.system.exception.NetException;
 
 /**
  * 启动检测：如果已经启动实例，通过这个方法唤醒已启动的窗口
@@ -34,7 +35,11 @@ public class ApplicationClient extends TcpClient<ApplicationMessageHandler> {
 	 * 发送客户端消息
 	 */
 	private void send(ApplicationMessage message) {
-		send(message.toJson());
+		try {
+			send(message.toJson());
+		} catch (NetException e) {
+			LOGGER.error("Application消息发送异常", e);
+		}
 	}
 	
 	/**

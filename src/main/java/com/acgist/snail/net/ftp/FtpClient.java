@@ -4,6 +4,9 @@ import java.io.InputStream;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.net.TcpClient;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.StringUtils;
@@ -14,6 +17,8 @@ import com.acgist.snail.utils.StringUtils;
  */
 public class FtpClient extends TcpClient<FtpMessageHandler> {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(FtpClient.class);
+	
 	public static final String ANONYMOUS = "anonymous"; // 匿名用户名
 	
 	private boolean ok = false; // 连接成功
@@ -149,7 +154,7 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 		try {
 			send(command);
 		} catch (NetException e) {
-			logger
+			LOGGER.error("Ftp命令发送异常", e);
 		}
 	}
 
