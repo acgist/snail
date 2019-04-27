@@ -18,6 +18,7 @@ import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.PeerMessageConfig;
 import com.acgist.snail.system.config.PeerMessageConfig.Action;
+import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.system.manager.PeerSessionManager;
 import com.acgist.snail.system.manager.TorrentSessionManager;
 import com.acgist.snail.utils.NumberUtils;
@@ -274,7 +275,11 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		buffer.put(PeerConfig.HANDSHAKE_RESERVED);
 		buffer.put(torrentSession.infoHash().infoHash());
 		buffer.put(PeerServer.PEER_ID);
-		send(buffer);
+		try {
+			send(buffer);
+		} catch (NetException e) {
+			LOGGER.error("Peer握手发送异常", e);
+		}
 	}
 	
 	/**
@@ -570,7 +575,11 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 * 发送消息
 	 */
 	public void pushMessage(PeerMessageConfig.Type type, byte[] payload) {
-		send(buildMessage(type, payload));
+		try {
+			send(buildMessage(type, payload));
+		} catch (NetException e) {
+			LOGGER.error("Peer消息发送异常", e);
+		}
 	}
 	
 	/**
