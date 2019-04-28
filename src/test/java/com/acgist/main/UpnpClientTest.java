@@ -7,14 +7,15 @@ import com.acgist.snail.net.upnp.bootstrap.UpnpRequest;
 import com.acgist.snail.net.upnp.bootstrap.UpnpResponse;
 import com.acgist.snail.net.upnp.bootstrap.UpnpService.Protocol;
 import com.acgist.snail.utils.NetUtils;
+import com.acgist.snail.utils.ThreadUtils;
 
 public class UpnpClientTest {
 
 	@Test
-	public void test() throws InterruptedException {
+	public void test() {
 		UpnpClient client = UpnpClient.newInstance();
 		client.config();
-		Thread.sleep(Long.MAX_VALUE);
+		ThreadUtils.sleep(Long.MAX_VALUE);
 	}
 
 	@Test

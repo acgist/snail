@@ -46,7 +46,7 @@ public class TorrentDownloader extends Downloader {
 	public void download() throws IOException {
 		while(ok()) {
 			synchronized (downloadLock) {
-				ThreadUtils.wait(downloadLock, Duration.ofSeconds(Long.MAX_VALUE));
+				ThreadUtils.wait(downloadLock, Duration.ofSeconds(Integer.MAX_VALUE));
 			}
 		}
 	}

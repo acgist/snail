@@ -29,8 +29,10 @@ public class TaskDisplay {
 	private static final TaskDisplay INSTANCE = new TaskDisplay();
 	
 	private MainController controller;
+	private final Object lock;
 	
 	private TaskDisplay() {
+		lock = new Object();
 	}
 	
 	public static final TaskDisplay getInstance() {
@@ -46,6 +48,9 @@ public class TaskDisplay {
 			if(this.controller == null) {
 				this.controller = controller;
 				SystemThreadContext.timer(0, INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> refreshTaskData());
+				synchronized (lock) {
+					lock.notifyAll();
+				}
 			}
 		}
 	}
@@ -56,8 +61,10 @@ public class TaskDisplay {
 	public void refreshTaskTable() {
 		try {
 			MainController controller = INSTANCE.controller;
-			while(controller == null) {
-				ThreadUtils.sleep(100);
+			if(controller == null) {
+				synchronized (lock) {
+					ThreadUtils.wait(lock, Duration.ofSeconds(Byte.MAX_VALUE));
+				}
 				controller = INSTANCE.controller;
 			}
 			controller.refreshTable();
@@ -72,8 +79,10 @@ public class TaskDisplay {
 	public void refreshTaskData() {
 		try {
 			MainController controller = INSTANCE.controller;
-			while(controller == null) {
-				ThreadUtils.sleep(100);
+			if(controller == null) {
+				synchronized (lock) {
+					ThreadUtils.wait(lock, Duration.ofSeconds(Byte.MAX_VALUE));
+				}
 				controller = INSTANCE.controller;
 			}
 			controller.refreshData();

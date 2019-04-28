@@ -25,7 +25,7 @@ public class UDPTest {
 			}
 		};
 		server.listen();
-		ThreadUtils.sleep(1000000);
+		ThreadUtils.sleep(Long.MAX_VALUE);
 	}
 
 	@Test
