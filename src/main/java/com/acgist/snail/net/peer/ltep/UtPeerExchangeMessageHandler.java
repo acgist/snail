@@ -83,7 +83,7 @@ public class UtPeerExchangeMessageHandler {
 		if(CollectionUtils.isNotEmpty(peers)) {
 			final AtomicInteger index = new AtomicInteger(0);
 			peers.forEach((host, port) -> {
-				PeerSession peerSession = PeerSessionManager.getInstance().newPeerSession(infoHash.infoHashHex(), taskSession.statistics(), host, port, PeerConfig.SOURCE_PEX);
+				final PeerSession peerSession = PeerSessionManager.getInstance().newPeerSession(infoHash.infoHashHex(), taskSession.statistics(), host, port, PeerConfig.SOURCE_PEX);
 				if(addedf != null) {
 					peerSession.peerExchange(addedf[index.getAndIncrement()]);
 				}
