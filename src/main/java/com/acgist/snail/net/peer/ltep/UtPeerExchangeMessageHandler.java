@@ -113,7 +113,7 @@ public class UtPeerExchangeMessageHandler {
 			addedBuffer.putShort(NetUtils.encodePort(session.port()));
 		});
 		data.put(ADDED, addedBuffer.array());
-		return BCodeEncoder.newInstance().build(data).bytes();
+		return BCodeEncoder.mapToBytes(data);
 	}
 	
 }

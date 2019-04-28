@@ -18,6 +18,29 @@ public class DhtConfig extends PropertiesConfig {
 	private static final String DHT_CONFIG_USER = "/config/dht.user.properties";
 	private static final String DHT_CONFIG = "/config/dht.properties";
 	
+	public static final String KEY_T = "t"; // 标记ID：请求ID，默认两个字节
+	public static final String KEY_Y = "y"; // 消息类型：请求、响应
+	public static final String KEY_Q = "q"; // 请求、请求类型
+	public static final String KEY_A = "a"; // 请求参数
+	public static final String KEY_R = "r"; // 响应、响应参数
+	public static final String KEY_E = "e"; // 错误
+	public static final String KEY_ID = "id"; // NODE ID
+	public static final String KEY_NODES = "nodes"; // 节点信息
+	public static final String KEY_TOKEN = "token"; // announce_peer token
+	public static final String KEY_TARGET = "target"; // node
+	public static final String KEY_INFO_HASH = "info_hash"; // 种子hash
+	
+	
+	/**
+	 * 请求类型
+	 */
+	public enum QType {
+		ping,
+		find_node,
+		get_peers,
+		announce_peer;
+	}
+	
 	public DhtConfig() {
 		super(DHT_CONFIG_USER, DHT_CONFIG);
 	}

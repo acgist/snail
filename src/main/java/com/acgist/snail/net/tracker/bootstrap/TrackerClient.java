@@ -14,12 +14,10 @@ import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.UniqueCodeUtils;
 
 /**
- * tracker协议<br>
+ * Tracker协议<br>
  * 基本协议：TCP（HTTP）、UDP<br>
  * http://www.bittorrent.org/beps/bep_0015.html<br>
  * http://www.bittorrent.org/beps/bep_0023.html<br>
- * https://www.libtorrent.org/udp_tracker_protocol.html<br>
- * https://wiki.theory.org/index.php/BitTorrentSpecification<br>
  * sid：每一个torrent和tracker服务器对应的id
  */
 public abstract class TrackerClient implements Comparable<TrackerClient> {

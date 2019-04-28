@@ -75,7 +75,7 @@ public class BCodeDecoder {
 	}
 	
 	/**
-	 * 获取下一个map，必须先验证类型
+	 * 获取下一个map，必须先验证类型nextType
 	 */
 	public Map<String, Object> nextMap() {
 		this.map = d(input);
@@ -301,6 +301,22 @@ public class BCodeDecoder {
 	
 	public static final byte[] getBytes(Map<?, ?> map, String key) {
 		return (byte[]) map.get(key);
+	}
+	
+	public List<?> getList(String key) {
+		return getList(this.map, key);
+	}
+	
+	public static final List<?> getList(Map<?, ?> map, String key) {
+		return (List<?>) map.get(key);
+	}
+	
+	public Map<?, ?> getMap(String key) {
+		return getMap(this.map, key);
+	}
+	
+	public static final Map<?, ?> getMap(Map<?, ?> map, String key) {
+		return (Map<?, ?>) map.get(key);
 	}
 	
 }

@@ -1,5 +1,6 @@
 package com.acgist.main;
 
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
 import com.acgist.snail.net.UdpMessageHandler;
@@ -11,7 +12,8 @@ public class UdpTestMessageHandler extends UdpMessageHandler {
 	}
 	
 	@Override
-	public void onMessage(ByteBuffer buffer) {
+	public void onMessage(InetSocketAddress address, ByteBuffer buffer) {
+		System.out.println(address + "-" + address.getClass());
 		System.out.println("收到消息：" + IoUtils.readContent(buffer));
 	}
 	

@@ -26,6 +26,13 @@ public class BCodeEncoder {
 	public static final BCodeEncoder newInstance() {
 		return new BCodeEncoder();
 	}
+	
+	/**
+	 * Map转为字符数组
+	 */
+	public static final byte[] mapToBytes(Map<?, ?> map) {
+		return newInstance().build(map).bytes();
+	}
 
 	/**
 	 * 获取map

@@ -88,7 +88,7 @@ public class TorrentBuilder {
 	}
 
 	/**
-	 * 保存文件
+	 * 保存种子文件
 	 * @param filePath 文件路径
 	 * @param data 数据
 	 */
@@ -97,8 +97,7 @@ public class TorrentBuilder {
 		if(file.exists()) { // 文件已存在
 			return;
 		}
-		final BCodeEncoder encoder = BCodeEncoder.newInstance();
-		final byte[] bytes = encoder.build(data).bytes();
+		final byte[] bytes = BCodeEncoder.mapToBytes(data);
 		FileUtils.write(filePath, bytes);
 	}
 

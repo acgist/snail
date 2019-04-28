@@ -1,5 +1,6 @@
 package com.acgist.snail.net.tracker;
 
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
 import org.slf4j.Logger;
@@ -20,7 +21,7 @@ public class TrackerMessageHandler extends UdpMessageHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerMessageHandler.class);
 	
 	@Override
-	public void onMessage(ByteBuffer buffer) {
+	public void onMessage(InetSocketAddress address, ByteBuffer buffer) {
 		final int size = buffer.position();
 		buffer.flip();
 		final int action = buffer.getInt();
@@ -46,10 +47,10 @@ public class TrackerMessageHandler extends UdpMessageHandler {
 	}
 
 	/**
-	 * 处理peer：https://www.libtorrent.org/udp_tracker_protocol.html
+	 * 处理Peer
 	 */
 	private void doAnnounce(ByteBuffer buffer, int size) {
-		AnnounceMessage message = new AnnounceMessage();
+		final AnnounceMessage message = new AnnounceMessage();
 		message.setId(buffer.getInt());
 		message.setInterval(buffer.getInt());
 		message.setUndone(buffer.getInt());

@@ -3,7 +3,7 @@ package com.acgist.snail.net.tracker;
 import com.acgist.snail.net.UdpClient;
 
 /**
- * tracker client
+ * Tracker Client
  */
 public class TrackerClient extends UdpClient<TrackerMessageHandler> {
 
