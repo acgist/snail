@@ -1,5 +1,6 @@
 package com.acgist.snail.system.manager;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,12 +24,12 @@ public class ProtocolManager {
 
 	private static final ProtocolManager INSTANCE = new ProtocolManager();
 	
-	private AtomicBoolean available; // 是否可用
-	private List<Protocol> protocols;
+	private final List<Protocol> protocols;
+	private final AtomicBoolean availableLock;
 	
 	private ProtocolManager() {
-		available = new AtomicBoolean(false);
 		protocols = new ArrayList<>();
+		availableLock = new AtomicBoolean(false);
 	}
 	
 	public static final ProtocolManager getInstance() {
@@ -47,7 +48,10 @@ public class ProtocolManager {
 	 * 设置状态
 	 */
 	public void available(boolean available) {
-		this.available.set(true);
+		synchronized (availableLock) {
+			this.availableLock.set(true);
+			availableLock.notifyAll();
+		}
 	}
 
 	/**
@@ -78,8 +82,10 @@ public class ProtocolManager {
 	 * 是否可用，阻塞线程
 	 */
 	public boolean available() throws DownloadException {
-		while(!available.get()) {
-			ThreadUtils.sleep(100);
+		if(!availableLock.get()) {
+			synchronized (availableLock) {
+				ThreadUtils.wait(availableLock, Duration.ofSeconds(Byte.MAX_VALUE));
+			}
 		}
 		if(SystemContext.available()) {
 			return true;

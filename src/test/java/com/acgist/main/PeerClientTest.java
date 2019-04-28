@@ -21,7 +21,7 @@ import com.acgist.snail.utils.ThreadUtils;
 public class PeerClientTest {
 	
 	@Test
-	public void download() throws DownloadException, InterruptedException {
+	public void download() throws DownloadException {
 		String path = "e:/snail/123.torrent";
 //		String path = "e:/snail/1234.torrent";
 //		String path = "e:/snail/12345.torrent";
@@ -57,11 +57,11 @@ public class PeerClientTest {
 				ThreadUtils.sleep(1000);
 			}
 		}).start();
-		Thread.sleep(Long.MAX_VALUE);
+		ThreadUtils.sleep(Long.MAX_VALUE);
 	}
 
 	@Test
-	public void torrent() throws DownloadException, InterruptedException {
+	public void torrent() throws DownloadException {
 		String path = "e:/snail/123.torrent";
 //		String path = "e:/snail/1234.torrent";
 //		String path = "e:/snail/12345.torrent";
@@ -77,7 +77,7 @@ public class PeerClientTest {
 		PeerSession peerSession = PeerSession.newInstance(new StatisticsSession(), host, port);
 		PeerClient client = new PeerClient(peerSession, torrentSession);
 		client.torrent();
-		Thread.sleep(Long.MAX_VALUE);
+		ThreadUtils.sleep(Long.MAX_VALUE);
 	}
 
 }
