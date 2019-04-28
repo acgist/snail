@@ -1,5 +1,6 @@
 package com.acgist.snail.net.upnp;
 
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
 import org.slf4j.Logger;
@@ -19,7 +20,7 @@ public class UpnpMessageHandler extends UdpMessageHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UpnpMessageHandler.class);
 	
 	@Override
-	public void onMessage(ByteBuffer buffer) {
+	public void onMessage(InetSocketAddress address, ByteBuffer buffer) {
 		final String content = new String(buffer.array());
 		this.initUpnpService(content);
 	}

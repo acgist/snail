@@ -9,7 +9,7 @@ import java.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.peer.PeerServer;
+import com.acgist.snail.net.peer.bootstrap.PeerService;
 import com.acgist.snail.net.tracker.bootstrap.TrackerClient;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.exception.NetException;
@@ -148,7 +148,7 @@ public class UdpTrackerClient extends TrackerClient {
 		buffer.putInt(TrackerClient.Action.announce.action());
 		buffer.putInt(sid); // transaction_id
 		buffer.put(torrentSession.infoHash().infoHash()); // infoHash
-		buffer.put(PeerServer.PEER_ID); // PeerId
+		buffer.put(PeerService.getInstance().id()); // PeerId
 		buffer.putLong(download); // 已下载大小
 		buffer.putLong(remain); // 剩余下载大小
 		buffer.putLong(upload); // 已上传大小
@@ -156,7 +156,7 @@ public class UdpTrackerClient extends TrackerClient {
 		buffer.putInt(0); // 本机IP：0（服务器自动获取）
 		buffer.putInt(UniqueCodeUtils.buildInteger()); // 系统分配唯一键
 		buffer.putInt(50); // 想要获取的Peer数量
-		buffer.putShort(PeerServer.PEER_PORT); // 本机Peer端口
+		buffer.putShort(PeerService.getInstance().port()); // 本机Peer端口
 		return buffer;
 	}
 

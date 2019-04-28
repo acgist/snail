@@ -24,7 +24,6 @@ import com.acgist.snail.utils.CollectionUtils;
  * http://www.bittorrent.org/beps/bep_0009.html
  * http://www.bittorrent.org/beps/bep_0010.html
  * http://www.bittorrent.org/beps/bep_0011.html
- * https://www.cnblogs.com/LittleHann/p/6180296.html
  */
 public class ExtensionMessageHandler {
 	
@@ -117,8 +116,7 @@ public class ExtensionMessageHandler {
 				data.put(EX_METADATA_SIZE, size); // 种子info数据长度
 			}
 		}
-		final BCodeEncoder encoder = BCodeEncoder.newInstance();
-		this.pushMessage(ExtensionType.handshake.value(), encoder.build(data).bytes());
+		this.pushMessage(ExtensionType.handshake.value(), BCodeEncoder.mapToBytes(data));
 	}
 
 	/**

@@ -180,16 +180,15 @@ public class UtMetadataMessageHandler {
 			return;
 		}
 		int length = 0;
-		final BCodeEncoder encoder = BCodeEncoder.newInstance();
-		final byte[] dataBytes = encoder.build(data).bytes();
-		length += dataBytes.length;
+		final byte[] pushBytes = BCodeEncoder.mapToBytes(data);
+		length += pushBytes.length;
 		if(x != null) {
 			length += x.length;
 		}
 		final byte[] bytes = new byte[length];
-		System.arraycopy(dataBytes, 0, bytes, 0, dataBytes.length);
+		System.arraycopy(pushBytes, 0, bytes, 0, pushBytes.length);
 		if(x != null) {
-			System.arraycopy(x, 0, bytes, dataBytes.length, x.length);
+			System.arraycopy(x, 0, bytes, pushBytes.length, x.length);
 		}
 		extensionMessageHandler.pushMessage(type, bytes);
 	}

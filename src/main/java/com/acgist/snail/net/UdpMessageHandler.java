@@ -1,6 +1,7 @@
 package com.acgist.snail.net;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.SelectionKey;
@@ -25,7 +26,7 @@ public abstract class UdpMessageHandler {
 	/**
 	 * 消息处理
 	 */
-	public abstract void onMessage(ByteBuffer buffer);
+	public abstract void onMessage(InetSocketAddress address, ByteBuffer buffer);
 	
 	/**
 	 * 代理
@@ -62,8 +63,8 @@ public abstract class UdpMessageHandler {
 						final SelectionKey selectedKey = keysIterator.next();
 						keysIterator.remove();
 						if (selectedKey.isValid() && selectedKey.isReadable()) {
-							channel.receive(buffer);
-							onMessage(buffer);
+							final InetSocketAddress address = (InetSocketAddress) channel.receive(buffer);
+							onMessage(address, buffer);
 						}
 					}
 				}

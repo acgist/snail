@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.torrent.bootstrap.TorrentStreamGroup;
 import com.acgist.snail.net.TcpMessageHandler;
+import com.acgist.snail.net.peer.bootstrap.PeerService;
 import com.acgist.snail.net.peer.dht.DhtExtensionMessageHandler;
 import com.acgist.snail.net.peer.ltep.ExtensionMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
@@ -31,11 +32,6 @@ import com.acgist.snail.utils.StringUtils;
  * http://www.bittorrent.org/beps/bep_0009.html
  * http://www.bittorrent.org/beps/bep_0010.html
  * http://www.bittorrent.org/beps/bep_0011.html
- * https://wiki.theory.org/index.php/BitTorrentSpecification
- * https://blog.csdn.net/li6322511/article/details/79002753
- * https://blog.csdn.net/p312011150/article/details/81478237
- * https://blog.csdn.net/weixin_41310209/article/details/87165399
- * 常见状态：https://baike.baidu.com/item/uTorrent
  * D = 目前正在下载（有需要的文件部份且没有禁止连接）
  * d = 客户端请求下载，但用户拒绝传输（有需要的文件部份但连接被禁止）
  * U = 目前正在上传（需要的文件部份且没有禁止连接）
@@ -274,7 +270,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		buffer.put(HANDSHAKE_NAME_BYTES);
 		buffer.put(PeerConfig.HANDSHAKE_RESERVED);
 		buffer.put(torrentSession.infoHash().infoHash());
-		buffer.put(PeerServer.PEER_ID);
+		buffer.put(PeerService.getInstance().id());
 		try {
 			send(buffer);
 		} catch (NetException e) {
