@@ -1,7 +1,6 @@
 package com.acgist.snail.net;
 
 import java.io.IOException;
-import java.net.StandardProtocolFamily;
 import java.nio.channels.DatagramChannel;
 import java.util.concurrent.ExecutorService;
 
@@ -57,22 +56,23 @@ public abstract class UdpServer {
 	 * 开启监听
 	 */
 	protected <T extends UdpMessageHandler> boolean listen(String host, int port, Class<T> clazz) {
+		final DatagramChannel channel = NetUtils.buildUdpChannel(host, port);
+		return listen(channel, clazz);
+	}
+	
+	/**
+	 * 打开监听：客户端和服务的使用同一个端口
+	 */
+	protected <T extends UdpMessageHandler> boolean listen(DatagramChannel channel, Class<T> clazz) {
 		LOGGER.info("启动服务端：{}", name);
-		boolean ok = true;
-		try {
-			this.channel = DatagramChannel.open(StandardProtocolFamily.INET);
-			this.channel.configureBlocking(false); // 不阻塞
-			this.channel.bind(NetUtils.buildSocketAddress(host, port));
-		} catch (IOException e) {
-			ok = false;
-			LOGGER.error("UDP Server启动异常：{}", this.name, e);
-		}
-		if(ok) {
-			handle(clazz);
-		} else {
+		if(channel == null) {
+			LOGGER.error("UDP Server启动失败：{}", this.name);
 			this.close();
+			return false;
 		}
-		return ok;
+		this.channel = channel;
+		handle(clazz); // 消息代理
+		return true;
 	}
 
 	/**
