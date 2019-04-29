@@ -53,7 +53,6 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends UdpSender {
 	 */
 	protected boolean open(DatagramChannel channel) {
 		if(channel == null) {
-			this.close();
 			return false;
 		}
 		this.channel = channel;

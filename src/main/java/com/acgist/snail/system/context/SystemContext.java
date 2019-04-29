@@ -10,6 +10,7 @@ import com.acgist.snail.net.UdpClient;
 import com.acgist.snail.net.UdpServer;
 import com.acgist.snail.net.application.ApplicationClient;
 import com.acgist.snail.net.application.ApplicationServer;
+import com.acgist.snail.net.dht.bootstrap.DhtService;
 import com.acgist.snail.net.tracker.TrackerClient;
 import com.acgist.snail.net.upnp.bootstrap.UpnpService;
 import com.acgist.snail.system.initializer.impl.ConfigInitializer;
@@ -98,6 +99,7 @@ public class SystemContext {
 				ApplicationServer.getInstance().close();
 				TrackerClient.getInstance().close();
 				UpnpService.getInstance().release();
+				DhtService.getInstance().close();
 				TcpClient.shutdown();
 				TcpServer.shutdown();
 				UdpClient.shutdown();

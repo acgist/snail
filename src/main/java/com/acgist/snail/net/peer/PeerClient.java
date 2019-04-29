@@ -49,13 +49,17 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 //	private final PeerClientGroup peerClientGroup;
 	private final TorrentStreamGroup torrentStreamGroup;
 	
-	public PeerClient(PeerSession peerSession, TorrentSession torrentSession) {
+	private PeerClient(PeerSession peerSession, TorrentSession torrentSession) {
 		super("Peer Client", 4, new PeerMessageHandler(peerSession, torrentSession));
 		this.peerSession = peerSession;
 //		this.taskSession = torrentSession.taskSession();
 		this.torrentSession = torrentSession;
 //		this.peerClientGroup = torrentSession.peerClientGroup();
 		this.torrentStreamGroup = torrentSession.torrentStreamGroup();
+	}
+	
+	public static final PeerClient newInstance(PeerSession peerSession, TorrentSession torrentSession) {
+		return new PeerClient(peerSession, torrentSession);
 	}
 
 	public PeerSession peerSession() {

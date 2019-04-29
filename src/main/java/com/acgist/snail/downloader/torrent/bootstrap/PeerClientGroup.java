@@ -141,7 +141,7 @@ public class PeerClientGroup {
 		}
 		final PeerSession peerSession = peerSessionManager.pick(torrentSession.infoHashHex());
 		if(peerSession != null) {
-			final PeerClient client = new PeerClient(peerSession, torrentSession);
+			final PeerClient client = PeerClient.newInstance(peerSession, torrentSession);
 			// TODO：验证是否含有对应未下载的Piece
 			final boolean ok = client.download();
 			if(ok) {

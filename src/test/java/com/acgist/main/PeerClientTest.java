@@ -49,7 +49,7 @@ public class PeerClientTest {
 		System.out.println("已下载：" + torrentSession.torrentStreamGroup().pieces());
 		StatisticsSession statisticsSession = new StatisticsSession();
 		PeerSession peerSession = PeerSession.newInstance(statisticsSession, host, port);
-		PeerClient client = new PeerClient(peerSession, torrentSession);
+		PeerClient client = PeerClient.newInstance(peerSession, torrentSession);
 		client.download();
 		new Thread(() -> {
 			while(true) {
@@ -75,7 +75,7 @@ public class PeerClientTest {
 		Integer port = 49160; // FDM测试端口
 //		Integer port = 15000; // 本地迅雷测试端口
 		PeerSession peerSession = PeerSession.newInstance(new StatisticsSession(), host, port);
-		PeerClient client = new PeerClient(peerSession, torrentSession);
+		PeerClient client = PeerClient.newInstance(peerSession, torrentSession);
 		client.torrent();
 		ThreadUtils.sleep(Long.MAX_VALUE);
 	}
