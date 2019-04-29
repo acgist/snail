@@ -98,8 +98,8 @@ public class HttpTrackerClient extends TrackerClient {
 		final StringBuilder builder = new StringBuilder(this.announceUrl);
 		builder.append("?")
 		.append("info_hash").append("=").append(torrentSession.infoHash().infoHashURL()).append("&") // 种子HASH
-		.append("peer_id").append("=").append(PeerService.getInstance().id()).append("&") // 客户端ID
-		.append("port").append("=").append(PeerService.getInstance().port()).append("&") // 客户端监听端口
+		.append("peer_id").append("=").append(PeerService.getInstance().peerId()).append("&") // 客户端ID
+		.append("port").append("=").append(PeerService.getInstance().peerPort()).append("&") // 客户端监听端口
 		.append("uploaded").append("=").append(upload).append("&") // 已上传大小
 		.append("downloaded").append("=").append(download).append("&") // 已下载大小
 		.append("left").append("=").append(remain).append("&") // 剩余下载大小

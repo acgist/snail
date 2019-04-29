@@ -1,7 +1,6 @@
 package com.acgist.snail.net;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.net.StandardSocketOptions;
 import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousSocketChannel;
@@ -13,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.IoUtils;
+import com.acgist.snail.utils.NetUtils;
 
 /**
  * Aio Socket客户端
@@ -70,7 +70,7 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends TcpSender {
 			socket.setOption(StandardSocketOptions.TCP_NODELAY, true);
 			socket.setOption(StandardSocketOptions.SO_REUSEADDR, true);
 			socket.setOption(StandardSocketOptions.SO_KEEPALIVE, true);
-			Future<Void> future = socket.connect(new InetSocketAddress(host, port));
+			Future<Void> future = socket.connect(NetUtils.buildSocketAddress(host, port));
 			future.get(this.timeout, TimeUnit.SECONDS);
 			handler.handle(socket);
 		} catch (Exception e) {

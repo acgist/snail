@@ -1,7 +1,5 @@
 package com.acgist.snail.net.tracker.bootstrap.impl;
 
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.time.Duration;
@@ -13,6 +11,7 @@ import com.acgist.snail.net.peer.bootstrap.PeerService;
 import com.acgist.snail.net.tracker.bootstrap.TrackerClient;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.ThreadUtils;
 import com.acgist.snail.utils.UniqueCodeUtils;
 
@@ -110,14 +109,7 @@ public class UdpTrackerClient extends TrackerClient {
 	 * 发送数据
 	 */
 	private void send(ByteBuffer buffer) throws NetException {
-		TRACKER_CLIENT.send(buffer, buildSocketAddress());
-	}
-
-	/**
-	 * socket address
-	 */
-	private SocketAddress buildSocketAddress() {
-		return new InetSocketAddress(host, port);
+		TRACKER_CLIENT.send(buffer, NetUtils.buildSocketAddress(this.host, this.port));
 	}
 
 	/**
@@ -148,7 +140,7 @@ public class UdpTrackerClient extends TrackerClient {
 		buffer.putInt(TrackerClient.Action.announce.action());
 		buffer.putInt(sid); // transaction_id
 		buffer.put(torrentSession.infoHash().infoHash()); // infoHash
-		buffer.put(PeerService.getInstance().id()); // PeerId
+		buffer.put(PeerService.getInstance().peerId()); // PeerId
 		buffer.putLong(download); // 已下载大小
 		buffer.putLong(remain); // 剩余下载大小
 		buffer.putLong(upload); // 已上传大小
@@ -156,7 +148,7 @@ public class UdpTrackerClient extends TrackerClient {
 		buffer.putInt(0); // 本机IP：0（服务器自动获取）
 		buffer.putInt(UniqueCodeUtils.buildInteger()); // 系统分配唯一键
 		buffer.putInt(50); // 想要获取的Peer数量
-		buffer.putShort(PeerService.getInstance().port()); // 本机Peer端口
+		buffer.putShort(PeerService.getInstance().peerPort()); // 本机Peer端口
 		return buffer;
 	}
 

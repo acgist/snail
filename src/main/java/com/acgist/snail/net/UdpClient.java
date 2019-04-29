@@ -49,7 +49,7 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends UdpSender {
 		try {
 			this.channel = DatagramChannel.open(StandardProtocolFamily.INET); // TPv4
 			this.channel.configureBlocking(false); // 不阻塞
-//			this.channel.connect(new InetSocketAddress(host, port)); // 连接后使用：read、write
+//			this.channel.connect(NetUtils.buildSocketAddress(host, port)); // 连接后使用：read、write
 		} catch (IOException e) {
 			ok = false;
 			LOGGER.error("UDP打开端口异常", e);

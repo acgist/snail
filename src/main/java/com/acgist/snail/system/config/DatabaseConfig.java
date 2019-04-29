@@ -10,10 +10,12 @@ public class DatabaseConfig extends PropertiesConfig {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseConfig.class);
 	
+	private static final String DATABASE_CONFIG = "/config/database.properties";
+	
 	private static final DatabaseConfig INSTANCE = new DatabaseConfig();
 	
 	private DatabaseConfig() {
-		super("/config/config.database.properties");
+		super(DATABASE_CONFIG);
 	}
 
 	static {

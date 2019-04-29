@@ -51,11 +51,11 @@ public class PeerService {
 		return peerId;
 	}
 	
-	public byte[] id() {
+	public byte[] peerId() {
 		return this.peerId;
 	}
 	
-	public short port() {
+	public short peerPort() {
 		return this.peerPort;
 	}
 	
