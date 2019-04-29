@@ -67,7 +67,6 @@ public abstract class UdpServer {
 		LOGGER.info("启动服务端：{}", name);
 		if(channel == null) {
 			LOGGER.error("UDP Server启动失败：{}", this.name);
-			this.close();
 			return false;
 		}
 		this.channel = channel;

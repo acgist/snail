@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.system.bcode.BCodeDecoder;
+import com.acgist.snail.utils.IoUtils;
 
 /**
  * http://www.bittorrent.org/beps/bep_0005.html
@@ -14,7 +15,8 @@ public class DhtMessageHandler extends UdpMessageHandler {
 
 	@Override
 	public void onMessage(InetSocketAddress address, ByteBuffer buffer) {
-		
+		System.out.println(address + "-" + address.getClass());
+		System.out.println("收到消息：" + IoUtils.readContent(buffer));
 	}
 	
 	/**

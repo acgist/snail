@@ -67,7 +67,7 @@ public class PeerServerTest {
 		Integer port = 17888;
 		StatisticsSession statisticsSession = new StatisticsSession();
 		PeerSession peerSession = PeerSession.newInstance(statisticsSession, host, port);
-		PeerClient client = new PeerClient(peerSession, torrentSession);
+		PeerClient client = PeerClient.newInstance(peerSession, torrentSession);
 		client.torrent();
 //		client.download();
 //		ThreadUtils.sleep(4000); // 等待信息交换

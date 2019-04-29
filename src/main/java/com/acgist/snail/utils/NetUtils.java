@@ -150,7 +150,14 @@ public class NetUtils {
 	 * 创建UDP通道
 	 */
 	public static final DatagramChannel buildUdpChannel() {
-		return buildUdpChannel(null, -1);
+		return buildUdpChannel(-1);
+	}
+	
+	/**
+	 * 创建UDP通道
+	 */
+	public static final DatagramChannel buildUdpChannel(final int port) {
+		return buildUdpChannel(null, port);
 	}
 	
 	/**
