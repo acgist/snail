@@ -45,6 +45,18 @@ public class Request {
 		return this.a.get(key);
 	}
 	
+	public Integer getInteger(String key) {
+		final Long value = getLong(key);
+		if(value == null) {
+			return null;
+		}
+		return value.intValue();
+	}
+	
+	public Long getLong(String key) {
+		return (Long) this.get(key);
+	}
+	
 	public String getString(String key) {
 		return (String) this.get(key);
 	}

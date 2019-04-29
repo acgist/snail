@@ -10,11 +10,14 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.downloader.torrent.bootstrap.TrackerLauncher;
 import com.acgist.snail.net.UdpClient;
 import com.acgist.snail.net.tracker.bootstrap.TrackerClient;
 import com.acgist.snail.net.tracker.bootstrap.TrackerClient.Type;
 import com.acgist.snail.net.tracker.bootstrap.impl.HttpTrackerClient;
 import com.acgist.snail.net.tracker.bootstrap.impl.UdpTrackerClient;
+import com.acgist.snail.pojo.message.AnnounceMessage;
+import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.http.HttpProtocol;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
@@ -33,19 +36,43 @@ public class TrackerClientManager {
 
 	private static final int MAX_CLIENT_SIZE = SystemConfig.getTrackerSize();
 	
-	/**
-	 * key：trackerId：连接时使用
-	 */
-	private Map<Integer, TrackerClient> TRACKER_CLIENT_MAP;
+	private final Map<Integer, TrackerClient> trackerClients;
+	private final Map<Integer, TrackerLauncher> trackerLaunchers;
 	
 	private TrackerClientManager() {
-		TRACKER_CLIENT_MAP = new ConcurrentHashMap<>();
+		trackerClients = new ConcurrentHashMap<>();
+		trackerLaunchers = new ConcurrentHashMap<>();
 	}
 
 	public static final TrackerClientManager getInstance() {
 		return INSTANCE;
 	}
 
+	/**
+	 * 新建TrackerLauncher
+	 */
+	public TrackerLauncher build(TrackerClient client, TorrentSession torrentSession) {
+		final TrackerLauncher launcher = TrackerLauncher.newInstance(client, torrentSession);
+		trackerLaunchers.put(launcher.id(), launcher);
+		return launcher;
+	}
+	
+	/**
+	 * 处理announce信息
+	 */
+	public void announce(final AnnounceMessage message) {
+		if(message == null) {
+			return;
+		}
+		final Integer id = message.getId();
+		final TrackerLauncher trackerLauncher = trackerLaunchers.get(id);
+		if(trackerLauncher != null) {
+			trackerLauncher.announce(message);
+		} else {
+			LOGGER.warn("不存在的TorrentSession，AnnounceMessage：{}", message);
+		}
+	}
+	
 	/**
 	 * 获取可用的tracker client，传入announce的返回有用的，然后补充不足的的数量
 	 */
@@ -70,8 +97,8 @@ public class TrackerClientManager {
 	 * @param size 返回可用client数量
 	 * @param clients 已有的Client
 	 */
-	public List<TrackerClient> clients(int size, List<TrackerClient> clients) {
-		return TRACKER_CLIENT_MAP.values().stream()
+	private List<TrackerClient> clients(int size, List<TrackerClient> clients) {
+		return trackerClients.values().stream()
 			.filter(client -> {
 				return client.available() && (clients != null && !clients.contains(client));
 			})
@@ -83,7 +110,7 @@ public class TrackerClientManager {
 	/**
 	 * 注册tracker client列表
 	 */
-	public List<TrackerClient> register(String announceUrl, List<String> announceUrls) throws NetException {
+	private List<TrackerClient> register(String announceUrl, List<String> announceUrls) throws NetException {
 		final List<String> announces = new ArrayList<>();
 		if(StringUtils.isNotEmpty(announceUrl)) {
 			announces.add(announceUrl);
@@ -111,12 +138,12 @@ public class TrackerClientManager {
 	/**
 	 * 注册tracker client，如果已经注册直接返回
 	 */
-	public TrackerClient register(String announceUrl) throws NetException {
+	private TrackerClient register(String announceUrl) throws NetException {
 		if(StringUtils.isEmpty(announceUrl)) {
 			return null;
 		}
-		synchronized (TRACKER_CLIENT_MAP) {
-			final Optional<TrackerClient> optional = TRACKER_CLIENT_MAP.values().stream()
+		synchronized (trackerClients) {
+			final Optional<TrackerClient> optional = trackerClients.values().stream()
 				.filter(client -> {
 					return client.exist(announceUrl);
 				}).findFirst();
@@ -133,9 +160,9 @@ public class TrackerClientManager {
 	 * 设置udp的connectionId
 	 */
 	public void connectionId(int trackerId, long connectionId) {
-		var client = TRACKER_CLIENT_MAP.get(trackerId);
+		var client = trackerClients.get(trackerId);
 		if(client != null && client.type() == Type.udp) {
-			UdpTrackerClient udpTrackerClient = (UdpTrackerClient) client;
+			final UdpTrackerClient udpTrackerClient = (UdpTrackerClient) client;
 			udpTrackerClient.connectionId(connectionId);
 		}
 	}
@@ -168,7 +195,7 @@ public class TrackerClientManager {
 	 */
 	private void register(TrackerClient client) {
 		LOGGER.debug("注册Tracker Client，ID：{}，announceUrl：{}", client.id(), client.announceUrl());
-		TRACKER_CLIENT_MAP.put(client.id(), client);
+		trackerClients.put(client.id(), client);
 	}
 
 }

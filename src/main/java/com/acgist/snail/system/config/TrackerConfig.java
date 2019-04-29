@@ -13,6 +13,51 @@ public class TrackerConfig extends PropertiesConfig {
 	
 //	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerConfig.class);
 	
+
+	/**
+	 * announce事件
+	 */
+	public enum Event {
+		
+		none(0), // none
+		completed(1), // 完成
+		started(2), // 开始
+		stopped(3); // 停止
+		
+		private int event;
+
+		private Event(int event) {
+			this.event = event;
+		}
+
+		public int event() {
+			return this.event;
+		}
+
+	}
+	
+	/**
+	 * 动作
+	 */
+	public enum Action {
+		
+		connect(0), // 连接
+		announce(1), // 获取信息
+		scrape(2), // 刷新信息
+		error(3); // 错误
+		
+		private int action;
+
+		private Action(int action) {
+			this.action = action;
+		}
+		
+		public int action() {
+			return this.action;
+		}
+		
+	}
+	
 	private static final TrackerConfig INSTANCE = new TrackerConfig();
 	
 	private static final String TRACKER_CONFIG = "/config/tracker.properties";

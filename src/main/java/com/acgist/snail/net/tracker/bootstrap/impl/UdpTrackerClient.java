@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.net.peer.bootstrap.PeerService;
 import com.acgist.snail.net.tracker.bootstrap.TrackerClient;
 import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.system.config.TrackerConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.ThreadUtils;
@@ -58,14 +59,14 @@ public class UdpTrackerClient extends TrackerClient {
 				}
 			}
 		}
-		send(buildAnnounceMessage(sid, torrentSession, TrackerClient.Event.started));
+		send(buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.started));
 	}
 
 	@Override
 	public void complete(Integer sid, TorrentSession torrentSession) {
 		if(this.connectionId != null) {
 			try {
-				send(buildAnnounceMessage(sid, torrentSession, TrackerClient.Event.completed));
+				send(buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.completed));
 			} catch (NetException e) {
 				LOGGER.error("Tracker发送完成消息异常", e);
 			}
@@ -76,7 +77,7 @@ public class UdpTrackerClient extends TrackerClient {
 	public void stop(Integer sid, TorrentSession torrentSession) {
 		if(this.connectionId != null) {
 			try {
-				send(buildAnnounceMessage(sid, torrentSession, TrackerClient.Event.stopped));
+				send(buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.stopped));
 			} catch (NetException e) {
 				LOGGER.error("Tracker发送暂停消息异常", e);
 			}
@@ -118,7 +119,7 @@ public class UdpTrackerClient extends TrackerClient {
 	private ByteBuffer buildConnectMessage() {
 		ByteBuffer buffer = ByteBuffer.allocate(16);
 		buffer.putLong(4497486125440L); // 必须等于：0x41727101980
-		buffer.putInt(TrackerClient.Action.connect.action());
+		buffer.putInt(TrackerConfig.Action.connect.action());
 		buffer.putInt(this.id);
 		return buffer;
 	}
@@ -126,7 +127,7 @@ public class UdpTrackerClient extends TrackerClient {
 	/**
 	 * Announce请求
 	 */
-	private ByteBuffer buildAnnounceMessage(Integer sid, TorrentSession torrentSession, Event event) {
+	private ByteBuffer buildAnnounceMessage(Integer sid, TorrentSession torrentSession, TrackerConfig.Event event) {
 		long download = 0L, remain = 0L, upload = 0L;
 		final var taskSession = torrentSession.taskSession();
 		if(taskSession != null) {
@@ -137,7 +138,7 @@ public class UdpTrackerClient extends TrackerClient {
 		}
 		final ByteBuffer buffer = ByteBuffer.allocate(98);
 		buffer.putLong(this.connectionId); // connection_id
-		buffer.putInt(TrackerClient.Action.announce.action());
+		buffer.putInt(TrackerConfig.Action.announce.action());
 		buffer.putInt(sid); // transaction_id
 		buffer.put(torrentSession.infoHash().infoHash()); // infoHash
 		buffer.put(PeerService.getInstance().peerId()); // PeerId

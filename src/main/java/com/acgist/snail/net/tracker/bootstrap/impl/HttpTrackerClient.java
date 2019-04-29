@@ -13,8 +13,9 @@ import com.acgist.snail.pojo.bean.HttpTracker;
 import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.bcode.BCodeDecoder;
+import com.acgist.snail.system.config.TrackerConfig;
 import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.system.manager.TrackerLauncherManager;
+import com.acgist.snail.system.manager.TrackerClientManager;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -40,7 +41,7 @@ public class HttpTrackerClient extends TrackerClient {
 
 	@Override
 	public void announce(Integer sid, TorrentSession torrentSession) throws NetException {
-		final String requestUrl = buildAnnounceUrl(sid, torrentSession, TrackerClient.Event.started);
+		final String requestUrl = buildAnnounceUrl(sid, torrentSession, TrackerConfig.Event.started);
 		var response = HTTPClient.get(requestUrl, BodyHandlers.ofString(), TrackerClient.TIMEOUT);
 		if(response == null) {
 			throw new NetException("获取Peer异常");
@@ -55,12 +56,12 @@ public class HttpTrackerClient extends TrackerClient {
 		message.setDone(tracker.getComplete());
 		message.setUndone(tracker.getIncomplete());
 		message.setPeers(tracker.getPeers());
-		TrackerLauncherManager.getInstance().announce(message);
+		TrackerClientManager.getInstance().announce(message);
 	}
 
 	@Override
 	public void complete(Integer sid, TorrentSession torrentSession) {
-		final String requestUrl = buildAnnounceUrl(sid, torrentSession, TrackerClient.Event.completed);
+		final String requestUrl = buildAnnounceUrl(sid, torrentSession, TrackerConfig.Event.completed);
 		try {
 			HTTPClient.get(requestUrl, BodyHandlers.ofString(), TrackerClient.TIMEOUT);
 		} catch (NetException e) {
@@ -70,7 +71,7 @@ public class HttpTrackerClient extends TrackerClient {
 	
 	@Override
 	public void stop(Integer sid, TorrentSession torrentSession) {
-		final String requestUrl = buildAnnounceUrl(sid, torrentSession, TrackerClient.Event.stopped);
+		final String requestUrl = buildAnnounceUrl(sid, torrentSession, TrackerConfig.Event.stopped);
 		try {
 			HTTPClient.get(requestUrl, BodyHandlers.ofString(), TrackerClient.TIMEOUT);
 		} catch (NetException e) {
@@ -86,7 +87,7 @@ public class HttpTrackerClient extends TrackerClient {
 	/**
 	 * 构建请求URL<br>
 	 */
-	private String buildAnnounceUrl(Integer sid, TorrentSession torrentSession, Event event) {
+	private String buildAnnounceUrl(Integer sid, TorrentSession torrentSession, TrackerConfig.Event event) {
 		long download = 0L, remain = 0L, upload = 0L;
 		final var taskSession = torrentSession.taskSession();
 		if(taskSession != null) {

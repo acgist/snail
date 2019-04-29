@@ -7,10 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.UdpMessageHandler;
-import com.acgist.snail.net.tracker.bootstrap.TrackerClient;
 import com.acgist.snail.pojo.message.AnnounceMessage;
+import com.acgist.snail.system.config.TrackerConfig;
 import com.acgist.snail.system.manager.TrackerClientManager;
-import com.acgist.snail.system.manager.TrackerLauncherManager;
 import com.acgist.snail.utils.PeerUtils;
 
 /**
@@ -25,13 +24,13 @@ public class TrackerMessageHandler extends UdpMessageHandler {
 		final int size = buffer.position();
 		buffer.flip();
 		final int action = buffer.getInt();
-		if (action == TrackerClient.Action.connect.action()) {
+		if (action == TrackerConfig.Action.connect.action()) {
 			doConnect(buffer);
-		} else if(action == TrackerClient.Action.announce.action()) {
+		} else if(action == TrackerConfig.Action.announce.action()) {
 			doAnnounce(buffer, size);
-		} else if(action == TrackerClient.Action.scrape.action()) {
+		} else if(action == TrackerConfig.Action.scrape.action()) {
 			// 刮檫
-		} else if(action == TrackerClient.Action.error.action()) {
+		} else if(action == TrackerConfig.Action.error.action()) {
 			LOGGER.warn("发生错误");
 		}
 		buffer.clear();
@@ -56,7 +55,7 @@ public class TrackerMessageHandler extends UdpMessageHandler {
 		message.setUndone(buffer.getInt());
 		message.setDone(buffer.getInt());
 		message.setPeers(PeerUtils.read(buffer, size));
-		TrackerLauncherManager.getInstance().announce(message);
+		TrackerClientManager.getInstance().announce(message);
 	}
 
 }
