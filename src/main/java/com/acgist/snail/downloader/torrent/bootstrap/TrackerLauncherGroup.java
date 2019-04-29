@@ -12,7 +12,6 @@ import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.system.manager.TrackerClientManager;
-import com.acgist.snail.system.manager.TrackerLauncherManager;
 
 /**
  * <p>TrackerLauncher组</p>
@@ -60,7 +59,7 @@ public class TrackerLauncherGroup {
 		clients.stream()
 		.map(client -> {
 			LOGGER.debug("添加TrackerClient，ID：{}，announceUrl：{}", client.id(), client.announceUrl());
-			return TrackerLauncherManager.getInstance().build(client, torrentSession);
+			return TrackerClientManager.getInstance().build(client, torrentSession);
 		}).forEach(launcher -> {
 			try {
 				this.trackerLaunchers.add(launcher);
