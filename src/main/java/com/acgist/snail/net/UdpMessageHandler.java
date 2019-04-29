@@ -27,15 +27,14 @@ public abstract class UdpMessageHandler extends UdpSender {
 	/**
 	 * 代理
 	 */
-	public void handle(DatagramChannel channel) throws IOException {
+	public void handle(DatagramChannel channel) {
 		this.channel = channel;
-		loopMessage();
 	}
 
 	/**
 	 * 循环读取消息
 	 */
-	private void loopMessage() throws IOException {
+	public void loopMessage() throws IOException {
 		final Selector selector = Selector.open();
 		if(channel == null || !channel.isOpen()) {
 			return;

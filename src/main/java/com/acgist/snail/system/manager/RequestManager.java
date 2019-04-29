@@ -1,6 +1,5 @@
 package com.acgist.snail.system.manager;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 

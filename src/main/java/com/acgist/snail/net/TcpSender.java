@@ -83,8 +83,8 @@ public abstract class TcpSender {
 			LOGGER.warn("发送消息为空");
 			return;
 		}
-		synchronized (socket) { // 保证顺序
-			final Future<Integer> future = socket.write(buffer);
+		synchronized (this.socket) { // 保证顺序
+			final Future<Integer> future = this.socket.write(buffer);
 			try {
 				final int size = future.get(5, TimeUnit.SECONDS); // 阻塞线程防止，防止多线程写入时抛出异常：IllegalMonitorStateException
 				if(size <= 0) {

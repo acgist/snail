@@ -15,7 +15,6 @@ public class UDPTest {
 
 	@Test
 	public void client() {
-		
 		final int port = 18888;
 		DatagramChannel channel = NetUtils.buildUdpChannel(port);
 		UdpTestMessageHandler handler = new UdpTestMessageHandler();
