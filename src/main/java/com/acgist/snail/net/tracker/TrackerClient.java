@@ -9,14 +9,17 @@ public class TrackerClient extends UdpClient<TrackerMessageHandler> {
 
 	private static final TrackerClient INSTANCE = new TrackerClient();
 
+	static {
+		UdpClient.bindServerHandler(new TrackerMessageHandler(), INSTANCE.channel);
+	}
+	
 	private TrackerClient() {
 		super("Tracker Client", new TrackerMessageHandler());
 		this.open();
-		this.handle();
 	}
 	
 	public static final TrackerClient getInstance() {
 		return INSTANCE;
 	}
-
+	
 }

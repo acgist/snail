@@ -69,7 +69,7 @@ public class TrackerClientManager {
 		if(trackerLauncher != null) {
 			trackerLauncher.announce(message);
 		} else {
-			LOGGER.warn("不存在的TorrentSession，AnnounceMessage：{}", message);
+			LOGGER.warn("不存在的TrackerLauncher，AnnounceMessage：{}", message);
 		}
 	}
 	
@@ -136,7 +136,7 @@ public class TrackerClientManager {
 	}
 
 	/**
-	 * 注册tracker client，如果已经注册直接返回
+	 * 注册Tracker Client，如果已经注册直接返回
 	 */
 	private TrackerClient register(String announceUrl) throws NetException {
 		if(StringUtils.isEmpty(announceUrl)) {
@@ -151,7 +151,8 @@ public class TrackerClientManager {
 				return optional.get();
 			}
 			final TrackerClient client = buildClientProxy(announceUrl);
-			register(client);
+			LOGGER.debug("注册Tracker Client，ID：{}，announceUrl：{}", client.id(), client.announceUrl());
+			trackerClients.put(client.id(), client);
 			return client;
 		}
 	}
@@ -190,12 +191,4 @@ public class TrackerClientManager {
 		return null;
 	}
 	
-	/**
-	 * client注册
-	 */
-	private void register(TrackerClient client) {
-		LOGGER.debug("注册Tracker Client，ID：{}，announceUrl：{}", client.id(), client.announceUrl());
-		trackerClients.put(client.id(), client);
-	}
-
 }

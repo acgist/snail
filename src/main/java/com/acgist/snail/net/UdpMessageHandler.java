@@ -15,14 +15,10 @@ import org.slf4j.LoggerFactory;
 /**
  * UDP消息
  */
-public abstract class UdpMessageHandler {
+public abstract class UdpMessageHandler extends UdpSender {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpMessageHandler.class);
 
-	protected boolean server = false; // 是否是服务端
-	
-	private DatagramChannel channel;
-	
 	/**
 	 * 消息处理
 	 */
@@ -37,14 +33,6 @@ public abstract class UdpMessageHandler {
 	}
 
 	/**
-	 * 设置为服务端
-	 */
-	public UdpMessageHandler server() {
-		this.server = true;
-		return this;
-	}
-	
-	/**
 	 * 循环读取消息
 	 */
 	private void loopMessage() throws IOException {
@@ -56,15 +44,19 @@ public abstract class UdpMessageHandler {
 		while (channel.isOpen()) {
 			try {
 				if(selector.select() > 0) {
-					final ByteBuffer buffer = ByteBuffer.allocate(1024);
 					final Set<SelectionKey> keys = selector.selectedKeys();
 					final Iterator<SelectionKey> keysIterator = keys.iterator();
 					while (keysIterator.hasNext()) {
 						final SelectionKey selectedKey = keysIterator.next();
 						keysIterator.remove();
 						if (selectedKey.isValid() && selectedKey.isReadable()) {
+							final ByteBuffer buffer = ByteBuffer.allocate(1024);
 							final InetSocketAddress address = (InetSocketAddress) channel.receive(buffer);
-							onMessage(address, buffer);
+							try {
+								onMessage(address, buffer);
+							} catch (Exception e) {
+								LOGGER.error("UDP消息处理异常", e);
+							}
 						}
 					}
 				}

@@ -140,8 +140,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	
 	@Override
 	public int compareTo(TrackerClient client) {
-		return this.weight == client.weight ? 0 :
-			this.weight > client.weight ? 1 : -1;
+		return this.weight == client.weight ? 0 : this.weight > client.weight ? 1 : -1;
 	}
 	
 	@Override
