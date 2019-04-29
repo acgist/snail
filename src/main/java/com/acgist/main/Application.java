@@ -14,6 +14,7 @@ import javafx.application.Platform;
  * <h1>Snail系统启动类。</h1>
  * <p>Snail（蜗牛）是一款下载软件，支持下载协议：BT、FTP、HTTP、ED2K。</p>
  * TODO：启动检测、端口、外网端口。
+ * TODO：端口被关闭提示重启或者自动重新监听
  * 
  * @author acgist
  * @since 1.0.0
