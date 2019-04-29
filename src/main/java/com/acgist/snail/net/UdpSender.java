@@ -58,7 +58,7 @@ public class UdpSender {
 	 * 发送消息
 	 */
 	public void send(ByteBuffer buffer, SocketAddress address) throws NetException {
-		if(!channel.isOpen()) {
+		if(!this.channel.isOpen()) {
 			LOGGER.debug("发送消息时Socket已经关闭");
 			return;
 		}
@@ -71,7 +71,7 @@ public class UdpSender {
 		}
 		// 不用保证顺序
 		try {
-			final int size = channel.send(buffer, address);
+			final int size = this.channel.send(buffer, address);
 			if(size <= 0) {
 				LOGGER.warn("发送数据为空");
 			}

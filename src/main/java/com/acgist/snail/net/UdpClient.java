@@ -75,6 +75,7 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends UdpSender {
 			return false;
 		}
 		this.channel = channel;
+		this.handler.handle(this.channel);
 		return true;
 	}
 	
@@ -112,6 +113,7 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends UdpSender {
 		EXECUTOR.submit(() -> {
 			try {
 				handler.handle(channel);
+				handler.loopMessage();
 			} catch (IOException e) {
 				LOGGER.error("UDP消息代理异常", e);
 			}
