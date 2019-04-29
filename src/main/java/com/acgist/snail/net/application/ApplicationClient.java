@@ -10,6 +10,7 @@ import com.acgist.snail.pojo.message.ApplicationMessage;
 import com.acgist.snail.pojo.message.ApplicationMessage.Type;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.utils.NetUtils;
 
 /**
  * 启动检测：如果已经启动实例，通过这个方法唤醒已启动的窗口
@@ -28,7 +29,7 @@ public class ApplicationClient extends TcpClient<ApplicationMessageHandler> {
 	
 	@Override
 	public boolean connect() {
-		return connect(SystemConfig.getServerHost(), SystemConfig.getServerPort());
+		return connect(NetUtils.LOCAL_IP, SystemConfig.getServerPort());
 	}
 	
 	/**

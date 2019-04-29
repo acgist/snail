@@ -1,7 +1,6 @@
 package com.acgist.snail.net;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousServerSocketChannel;
 
@@ -10,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.IoUtils;
+import com.acgist.snail.utils.NetUtils;
 
 /**
  * 服务端超类
@@ -53,6 +53,13 @@ public abstract class TcpServer {
 	/**
 	 * 开启监听
 	 */
+	public boolean listen(int port) {
+		return this.listen(null, port);
+	}
+	
+	/**
+	 * 开启监听
+	 */
 	public abstract boolean listen(String host, int port);
 	
 	/**
@@ -62,7 +69,7 @@ public abstract class TcpServer {
 		LOGGER.info("启动服务端：{}", name);
 		boolean ok = true;
 		try {
-			server = AsynchronousServerSocketChannel.open(GROUP).bind(new InetSocketAddress(host, port));
+			server = AsynchronousServerSocketChannel.open(GROUP).bind(NetUtils.buildSocketAddress(host, port));
 			server.accept(server, TcpAcceptHandler.newInstance(clazz));
 		} catch (Exception e) {
 			ok = false;

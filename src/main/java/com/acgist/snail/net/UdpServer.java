@@ -1,7 +1,6 @@
 package com.acgist.snail.net;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.net.StandardProtocolFamily;
 import java.nio.channels.DatagramChannel;
 import java.util.concurrent.ExecutorService;
@@ -12,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.BeanUtils;
 import com.acgist.snail.utils.IoUtils;
+import com.acgist.snail.utils.NetUtils;
 
 /**
  * UDP服务端
@@ -44,6 +44,13 @@ public abstract class UdpServer {
 	/**
 	 * 开启监听
 	 */
+	public boolean listen(int port) {
+		return this.listen(null, port);
+	}
+	
+	/**
+	 * 开启监听
+	 */
 	public abstract boolean listen(String host, int port);
 	
 	/**
@@ -55,7 +62,7 @@ public abstract class UdpServer {
 		try {
 			this.channel = DatagramChannel.open(StandardProtocolFamily.INET);
 			this.channel.configureBlocking(false); // 不阻塞
-			this.channel.bind(new InetSocketAddress(host, port));
+			this.channel.bind(NetUtils.buildSocketAddress(host, port));
 		} catch (IOException e) {
 			ok = false;
 			LOGGER.error("UDP Server启动异常：{}", this.name, e);

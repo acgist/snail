@@ -20,7 +20,7 @@ public class ApplicationServer extends TcpServer {
 	}
 	
 	public boolean listen() {
-		return listen(SystemConfig.getServerHost(), SystemConfig.getServerPort());
+		return listen(SystemConfig.getServerPort());
 	}
 	
 	public boolean listen(String host, int port) {

@@ -1,7 +1,9 @@
 package com.acgist.snail.utils;
 
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
+import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Optional;
@@ -15,6 +17,9 @@ import org.slf4j.LoggerFactory;
 public class NetUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(NetUtils.class);
+	
+	public static final String LOCAL_IP = "127.0.0.1";
+	public static final String LOCAL_HOST = "localhost";
 	
 	// A类私用地址
 	private static final long A_IP_BEGIN = encodeIpToLong("10.0.0.0");
@@ -119,6 +124,19 @@ public class NetUtils {
 			(B_IP_BEGIN < value && value < B_IP_END) ||
 			(C_IP_BEGIN < value && value < C_IP_END) ||
 			(L_IP_BEGIN < value && value < L_IP_END);
+	}
+	
+	/**
+	 * 创建socket地址
+	 * @param host 地址
+	 * @param port 端口
+	 */
+	public static final SocketAddress buildSocketAddress(final String host, final int port) {
+		if(StringUtils.isEmpty(host)) {
+			return new InetSocketAddress(port);
+		} else {
+			return new InetSocketAddress(host, port);
+		}
 	}
 
 }

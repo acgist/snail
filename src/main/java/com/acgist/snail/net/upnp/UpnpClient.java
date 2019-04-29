@@ -1,6 +1,5 @@
 package com.acgist.snail.net.upnp;
 
-import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
 import org.slf4j.Logger;
@@ -8,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.UdpClient;
 import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.utils.NetUtils;
 
 /**
  * UPNP客户
@@ -37,7 +37,7 @@ public class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	public void config() {
 		LOGGER.info("配置UPNP");
 		try {
-			send(mSearch(), new InetSocketAddress(UPNP_HOST, UPNP_PORT));
+			send(mSearch(), NetUtils.buildSocketAddress(UPNP_HOST, UPNP_PORT));
 		} catch (NetException e) {
 			LOGGER.error("发送UPNP消息异常", e);
 		}

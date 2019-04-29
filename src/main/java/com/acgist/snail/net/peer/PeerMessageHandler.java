@@ -270,7 +270,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		buffer.put(HANDSHAKE_NAME_BYTES);
 		buffer.put(PeerConfig.HANDSHAKE_RESERVED);
 		buffer.put(torrentSession.infoHash().infoHash());
-		buffer.put(PeerService.getInstance().id());
+		buffer.put(PeerService.getInstance().peerId());
 		try {
 			send(buffer);
 		} catch (NetException e) {

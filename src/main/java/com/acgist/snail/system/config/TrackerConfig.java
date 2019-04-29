@@ -15,8 +15,8 @@ public class TrackerConfig extends PropertiesConfig {
 	
 	private static final TrackerConfig INSTANCE = new TrackerConfig();
 	
-	private static final String TRACKER_CONFIG_USER = "/config/tracker.user.properties";
 	private static final String TRACKER_CONFIG = "/config/tracker.properties";
+	private static final String TRACKER_CONFIG_USER = "/config/tracker.user.properties";
 	
 	public TrackerConfig() {
 		super(TRACKER_CONFIG_USER, TRACKER_CONFIG);

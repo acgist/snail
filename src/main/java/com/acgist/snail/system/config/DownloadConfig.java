@@ -21,6 +21,8 @@ public class DownloadConfig extends PropertiesConfig {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DownloadConfig.class);
 	
+	private static final String DOWNLOAD_CONFIG = "/config/download.properties";
+	
 	public static final String DOWNLOAD_PATH = "acgist.download.path";
 	public static final String DOWNLOAD_SIZE = "acgist.download.size";
 	public static final String DOWNLOAD_BUFFER = "acgist.download.buffer";
@@ -32,7 +34,7 @@ public class DownloadConfig extends PropertiesConfig {
 	private static final DownloadConfig INSTANCE = new DownloadConfig();
 	
 	private DownloadConfig() {
-		super("/config/config.download.properties");
+		super(DOWNLOAD_CONFIG);
 	}
 	
 	static {

@@ -13,6 +13,8 @@ public class SystemConfig extends PropertiesConfig {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseConfig.class);
 	
+	private static final String SYSTEM_CONFIG = "/config/system.properties";
+	
 	/**
 	 * 系统默认编码（file.encoding）
 	 */
@@ -25,7 +27,7 @@ public class SystemConfig extends PropertiesConfig {
 	private static final SystemConfig INSTANCE = new SystemConfig();
 	
 	private SystemConfig() {
-		super("/config/config.system.properties");
+		super(SYSTEM_CONFIG);
 	}
 
 	static {
@@ -45,7 +47,6 @@ public class SystemConfig extends PropertiesConfig {
 	private String source; // 源码
 	private String support; // 支持
 	private Integer serverPort; // 服务端口
-	private String serverHost; // 服务地址
 	private Integer peerPort; // Peer端口
 	private Integer dhtPort; // DHT端口
 	private Integer trackerSize; // 单个任务Tracker数量
@@ -65,7 +66,6 @@ public class SystemConfig extends PropertiesConfig {
 		INSTANCE.source = getString("acgist.system.source");
 		INSTANCE.support = getString("acgist.system.support");
 		INSTANCE.serverPort = getInteger("acgist.server.port");
-		INSTANCE.serverHost = getString("acgist.server.host");
 		INSTANCE.peerPort = getInteger("acgist.peer.port");
 		INSTANCE.dhtPort = getInteger("acgist.dht.port");
 		INSTANCE.trackerSize = getInteger("acgist.tracker.size");
@@ -86,7 +86,6 @@ public class SystemConfig extends PropertiesConfig {
 		LOGGER.info("源码：{}", this.source);
 		LOGGER.info("支持：{}", this.support);
 		LOGGER.info("服务端口：{}", this.serverPort);
-		LOGGER.info("服务地址：{}", this.serverHost);
 		LOGGER.info("Peer端口：{}", this.peerPort);
 		LOGGER.info("DHT端口：{}", this.dhtPort);
 		LOGGER.info("单个任务Tracker数量：{}", this.trackerSize);
@@ -143,13 +142,6 @@ public class SystemConfig extends PropertiesConfig {
 	 */
 	public static final Integer getServerPort() {
 		return INSTANCE.serverPort;
-	}
-
-	/**
-	 * 服务地址
-	 */
-	public static final String getServerHost() {
-		return INSTANCE.serverHost;
 	}
 
 	/**
