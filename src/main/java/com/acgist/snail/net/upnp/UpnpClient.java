@@ -11,6 +11,7 @@ import com.acgist.snail.utils.NetUtils;
 
 /**
  * UPNP客户
+ * TODO:close
  */
 public class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	
@@ -20,15 +21,20 @@ public class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	private static final int UPNP_PORT = 1900;
 	private static final String UPNP_HOST = "239.255.255.250";
 	
+	private static final UpnpClient INSTANCE = new UpnpClient();
+	
+	static {
+		UdpClient.bindServerHandler(new UpnpMessageHandler(), INSTANCE.channel);
+	}
+	
 	private UpnpClient() {
 		super("UPNP Client", new UpnpMessageHandler());
 		open();
 		join(UPNP_HOST);
-		handle();
 	}
 	
-	public static final UpnpClient newInstance() {
-		return new UpnpClient();
+	public static final UpnpClient getInstance() {
+		return INSTANCE;
 	}
 
 	/**

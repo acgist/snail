@@ -1,28 +1,41 @@
 package com.acgist.snail.net.dht;
 
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.nio.ByteBuffer;
-import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.UdpMessageHandler;
-import com.acgist.snail.system.bcode.BCodeDecoder;
-import com.acgist.snail.utils.IoUtils;
+import com.acgist.snail.net.dht.bootstrap.Request;
+import com.acgist.snail.net.dht.bootstrap.Response;
+import com.acgist.snail.net.dht.bootstrap.request.PingRequest;
+import com.acgist.snail.system.exception.NetException;
 
 /**
  * http://www.bittorrent.org/beps/bep_0005.html
  */
 public class DhtMessageHandler extends UdpMessageHandler {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(DhtMessageHandler.class);
 
 	@Override
 	public void onMessage(InetSocketAddress address, ByteBuffer buffer) {
-		System.out.println(address + "-" + address.getClass());
-		System.out.println("收到消息：" + IoUtils.readContent(buffer));
+		LOGGER.debug("DHT消息，地址：{}", address);
+		buffer.flip();
+		byte[] bytes = new byte[buffer.remaining()];
+		buffer.get(bytes);
+		final Response response = Response.valueOf(bytes);
+		System.out.println(response);
 	}
 	
 	/**
 	 * 检测节点是否可达
 	 */
-	public void ping() {
+	public void ping(SocketAddress address) {
+		final PingRequest request = PingRequest.newRequest();
+		pushMessage(request, address);
 	}
 
 	/**
@@ -43,13 +56,13 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	public void announcePeer() {
 	}
 	
-	private void contactEncoding() {
-	}
-
-	private void response(byte[] bytes) {
-		final BCodeDecoder decoder = BCodeDecoder.newInstance(bytes);
-		final Map<String, Object> response = decoder.mustMap();
-		
+	private void pushMessage(Request request, SocketAddress address) {
+		final ByteBuffer buffer = ByteBuffer.wrap(request.toBytes());
+		try {
+			this.send(buffer, address);
+		} catch (NetException e) {
+			LOGGER.error("发送UDP消息异常", e);
+		}
 	}
 
 	/**

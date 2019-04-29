@@ -62,7 +62,11 @@ public abstract class TcpMessageHandler extends TcpSender implements CompletionH
 		} else if(result == 0) { // 未遇到过这个情况
 			LOGGER.debug("消息长度为零");
 		} else {
-			onMessage(attachment);
+			try {
+				onMessage(attachment);
+			} catch (Exception e) {
+				LOGGER.error("TCP消息处理异常", e);
+			}
 		}
 		if(close) {
 			LOGGER.debug("TCP消息代理跳出循环：{}", result);

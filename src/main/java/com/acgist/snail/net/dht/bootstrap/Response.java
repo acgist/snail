@@ -23,7 +23,7 @@ public class Response {
 
 	public static final Response valueOf(byte[] bytes) {
 		final BCodeDecoder decoder = BCodeDecoder.newInstance(bytes);
-		decoder.nextType();
+		decoder.mustMap();
 		final String t = decoder.getString(DhtConfig.KEY_T);
 		final String y = decoder.getString(DhtConfig.KEY_Y);
 		final Map<?, ?> r = decoder.getMap(DhtConfig.KEY_R);

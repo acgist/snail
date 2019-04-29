@@ -10,20 +10,15 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.utils.IoUtils;
 
 public class UdpSender {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(UdpServer.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(UdpSender.class);
 	
 	/**
 	 * 消息分隔符
 	 */
 	private final String split;
-	/**
-	 * 是否关闭
-	 */
-	protected boolean close = false;
 	
 	protected DatagramChannel channel;
 	
@@ -84,20 +79,5 @@ public class UdpSender {
 			throw new NetException(e);
 		}
 	}
-	
-	/**
-	 * 可用的：没有被关闭
-	 */
-	public boolean available() {
-		return !close && channel.isOpen();
-	}
-	
-	/**
-	 * 关闭SOCKET
-	 */
-	public void close() {
-		this.close = true;
-		IoUtils.close(this.channel);
-	}
-	
+		
 }

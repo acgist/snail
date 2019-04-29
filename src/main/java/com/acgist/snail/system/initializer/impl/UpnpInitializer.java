@@ -27,7 +27,7 @@ public class UpnpInitializer extends Initializer {
 	protected void init() {
 		LOGGER.info("初始化UPNP配置");
 		SystemThreadContext.timer(0, 10, TimeUnit.MINUTES, () -> {
-			UpnpClient.newInstance().config();
+			UpnpClient.getInstance().config();
 		});
 	}
 
