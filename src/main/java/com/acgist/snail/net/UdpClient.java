@@ -2,7 +2,6 @@ package com.acgist.snail.net;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.StandardProtocolFamily;
 import java.net.StandardSocketOptions;
 import java.nio.channels.DatagramChannel;
 import java.util.concurrent.ExecutorService;
@@ -45,22 +44,22 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends UdpSender {
 	 * 打开客户端
 	 */
 	public boolean open() {
-		boolean ok = true;
-		try {
-			this.channel = DatagramChannel.open(StandardProtocolFamily.INET); // TPv4
-			this.channel.configureBlocking(false); // 不阻塞
-//			this.channel.connect(NetUtils.buildSocketAddress(host, port)); // 连接后使用：read、write
-		} catch (IOException e) {
-			ok = false;
-			LOGGER.error("UDP打开端口异常", e);
-		}
-		if(ok) {
-		} else {
-			this.close();
-		}
-		return ok;
+		final DatagramChannel channel = NetUtils.buildUdpChannel();
+		return open(channel);
 	}
 
+	/**
+	 * 打开客户端：客户端和服务的使用同一个端口
+	 */
+	protected boolean open(DatagramChannel channel) {
+		if(channel == null) {
+			this.close();
+			return false;
+		}
+		this.channel = channel;
+		return true;
+	}
+	
 	/**
 	 * 多播分组
 	 */

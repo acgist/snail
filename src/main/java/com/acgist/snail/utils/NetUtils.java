@@ -1,11 +1,14 @@
 package com.acgist.snail.utils;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
 import java.net.SocketAddress;
 import java.net.SocketException;
+import java.net.StandardProtocolFamily;
 import java.net.UnknownHostException;
+import java.nio.channels.DatagramChannel;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -126,6 +129,10 @@ public class NetUtils {
 			(L_IP_BEGIN < value && value < L_IP_END);
 	}
 	
+	public static final SocketAddress buildSocketAddress(final int port) {
+		return buildSocketAddress(null, port);
+	}
+	
 	/**
 	 * 创建socket地址
 	 * @param host 地址
@@ -137,6 +144,34 @@ public class NetUtils {
 		} else {
 			return new InetSocketAddress(host, port);
 		}
+	}
+	
+	/**
+	 * 创建UDP通道
+	 */
+	public static final DatagramChannel buildUdpChannel() {
+		return buildUdpChannel(null, -1);
+	}
+	
+	/**
+	 * 创建UDP通道
+	 * @param port -1=不绑定端口
+	 */
+	public static final DatagramChannel buildUdpChannel(final String host, final int port) {
+		DatagramChannel channel = null;
+		try {
+			channel = DatagramChannel.open(StandardProtocolFamily.INET); // TPv4
+			channel.configureBlocking(false); // 不阻塞
+//			channel.connect(NetUtils.buildSocketAddress(host, port)); // 连接后使用：read、write
+			if(port >= 0) {
+				channel.bind(NetUtils.buildSocketAddress(host, port)); // 监听端口：UDP服务端和客户端使用同一个端口
+			}
+		} catch (IOException e) {
+			IoUtils.close(channel);
+			channel = null;
+			LOGGER.error("打开UDP通道异常", e);
+		}
+		return channel;
 	}
 
 }
