@@ -7,9 +7,9 @@ import java.util.ResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.gui.alert.AlertWindow;
+import com.acgist.snail.gui.Alerts;
+import com.acgist.snail.gui.Choosers;
 import com.acgist.snail.gui.main.TaskDisplay;
-import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.manager.DownloaderManager;
 import com.acgist.snail.system.manager.TorrentSessionManager;
@@ -24,9 +24,6 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.FlowPane;
-import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
-import javafx.stage.Stage;
 
 /**
  * 新建窗口控制器
@@ -55,13 +52,8 @@ public class BuildController implements Initializable {
 	 */
 	@FXML
 	public void handleTorrentAction(ActionEvent event) {
-		FileChooser chooser = new FileChooser();
-		chooser.setTitle("选择种子文件");
-		DownloadConfig.lastPath(chooser);
-		chooser.getExtensionFilters().add(new ExtensionFilter("种子文件", "*.torrent"));
-		File file = chooser.showOpenDialog(new Stage());
+		final File file = Choosers.chooseFile(BuildWindow.getInstance().stage(), "选择种子文件", "种子文件", "*.torrent");
 		if (file != null) {
-			DownloadConfig.setLastPath(file.getParent());
 			setUrl(file.getPath());
 		}
 	}
@@ -81,7 +73,7 @@ public class BuildController implements Initializable {
 		} catch (DownloadException e) {
 			LOGGER.error("新建下载任务异常：{}", url, e);
 			ok = false;
-			AlertWindow.warn("下载失败", e.getMessage());
+			Alerts.warn("下载失败", e.getMessage());
 		}
 		if(ok) { // 下载成功
 			setUrl("");

@@ -81,6 +81,13 @@ public abstract class Window<T extends Initializable> extends Application {
 	}
 	
 	/**
+	 * 返回容器
+	 */
+	public Stage stage() {
+		return this.stage;
+	}
+	
+	/**
 	 * 获取控制器
 	 */
 	public T controller() {

@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.gui.Alerts;
 import com.acgist.snail.gui.about.AboutWindow;
-import com.acgist.snail.gui.alert.AlertWindow;
 import com.acgist.snail.gui.build.BuildWindow;
 import com.acgist.snail.gui.menu.TaskMenu;
 import com.acgist.snail.gui.setting.SettingWindow;
@@ -300,7 +300,7 @@ public class MainController implements Initializable {
 		if(!this.haveContent()) {
 			return;
 		}
-		final Optional<ButtonType> result = AlertWindow.build(AlertType.CONFIRMATION, "删除确认", "删除选中文件？");
+		final Optional<ButtonType> result = Alerts.build(AlertType.CONFIRMATION, "删除确认", "删除选中文件？");
 		if(result.get() == ButtonType.OK) {
 			this.selected()
 			.forEach(wrapper -> {

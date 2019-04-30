@@ -3,7 +3,7 @@ package com.acgist.snail.gui.torrent;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import com.acgist.snail.gui.alert.AlertWindow;
+import com.acgist.snail.gui.Alerts;
 import com.acgist.snail.gui.main.TaskDisplay;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.session.TaskSession;
@@ -67,7 +67,7 @@ public class TorrentController implements Initializable {
 		try {
 			torrent = TorrentSessionManager.getInstance().buildSession(entity.getTorrent()).torrent();
 		} catch (DownloadException e) {
-			AlertWindow.warn("下载出错", "种子文件解析异常");
+			Alerts.warn("下载出错", "种子文件解析异常");
 			return;
 		}
 		TorrentInfo torrentInfo = torrent.getInfo();
@@ -101,7 +101,7 @@ public class TorrentController implements Initializable {
 		TaskEntity entity = taskSession.entity();
 		var list = selecter.description();
 		if(list.isEmpty()) {
-			AlertWindow.warn("下载提示", "请选择下载文件");
+			Alerts.warn("下载提示", "请选择下载文件");
 			return;
 		}
 		entity.setSize(selecter.size());

@@ -7,12 +7,12 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.gui.Alerts;
+import com.acgist.snail.gui.Choosers;
 import com.acgist.snail.gui.Menu;
-import com.acgist.snail.gui.alert.AlertWindow;
 import com.acgist.snail.gui.main.MainWindow;
 import com.acgist.snail.gui.torrent.TorrentWindow;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
-import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.ClipboardUtils;
 import com.acgist.snail.utils.FileUtils;
@@ -23,8 +23,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
-import javafx.stage.DirectoryChooser;
-import javafx.stage.Stage;
 
 /**
  * 菜单 - 任务
@@ -142,12 +140,8 @@ public class TaskMenu extends Menu {
 		if(!MainWindow.getInstance().controller().haveTorrent()) {
 			return;
 		}
-		DirectoryChooser chooser = new DirectoryChooser();
-		chooser.setTitle("种子文件保存目录");
-		DownloadConfig.lastPath(chooser);
-		File file = chooser.showDialog(new Stage());
+		final File file = Choosers.chooseDirectory(MainWindow.getInstance().stage(), "种子文件保存目录");
 		if (file != null) {
-			DownloadConfig.setLastPath(file.getPath());
 			MainWindow.getInstance().controller().selected()
 			.forEach(wrapper -> {
 				if(wrapper.entity().getType() == Type.torrent) {
@@ -171,7 +165,7 @@ public class TaskMenu extends Menu {
 			});
 			if(hash.isEmpty()) {
 				Platform.runLater(() -> {
-					AlertWindow.warn("校验失败", "请等待任务下载完成");
+					Alerts.warn("校验失败", "请等待任务下载完成");
 				});
 			} else {
 				Platform.runLater(() -> {
@@ -179,7 +173,7 @@ public class TaskMenu extends Menu {
 					hash.forEach((key, value) -> {
 						builder.append(value).append("=").append(key).append("\n");
 					});
-					AlertWindow.info("文件SHA-1校验", builder.toString());
+					Alerts.info("文件SHA-1校验", builder.toString());
 				});
 			}
 		});
