@@ -28,7 +28,6 @@ public class DownloadConfig extends PropertiesConfig {
 	public static final String DOWNLOAD_BUFFER = "acgist.download.buffer";
 	public static final String DOWNLOAD_MEMORY_BUFFER = "acgist.download.memory.buffer";
 	public static final String DOWNLOAD_NOTICE = "acgist.download.notice";
-	public static final String DOWNLOAD_P2P = "acgist.download.p2p";
 	public static final String DOWNLOAD_LAST_PATH = "acgist.download.last.path";
 	
 	private static final DownloadConfig INSTANCE = new DownloadConfig();
@@ -53,7 +52,6 @@ public class DownloadConfig extends PropertiesConfig {
 	private Integer buffer; // 下载速度（单个）（KB）
 	private Integer memoryBuffer; // 磁盘缓存（单个）（MB）
 	private Boolean notice; // 消息提示
-	private Boolean p2p; // 启用P2P加速
 	private String lastPath; // 最后一次选择目录
 	
 	/**
@@ -65,7 +63,6 @@ public class DownloadConfig extends PropertiesConfig {
 		INSTANCE.buffer = getInteger(DOWNLOAD_BUFFER);
 		INSTANCE.memoryBuffer = getInteger(DOWNLOAD_MEMORY_BUFFER);
 		INSTANCE.notice = getBoolean(DOWNLOAD_NOTICE);
-		INSTANCE.p2p = getBoolean(DOWNLOAD_P2P);
 		INSTANCE.lastPath = getString(DOWNLOAD_LAST_PATH);
 	}
 	
@@ -85,8 +82,6 @@ public class DownloadConfig extends PropertiesConfig {
 		memoryBuffer = configInteger(entity, memoryBuffer);
 		entity = configRepository.findName(DOWNLOAD_NOTICE);
 		notice = configBoolean(entity, notice);
-		entity = configRepository.findName(DOWNLOAD_P2P);
-		p2p = configBoolean(entity, p2p);
 		entity = configRepository.findName(DOWNLOAD_LAST_PATH);
 		lastPath = configString(entity, lastPath);
 	}
@@ -100,7 +95,6 @@ public class DownloadConfig extends PropertiesConfig {
 		LOGGER.info("下载速度（单个）（KB）：{}", INSTANCE.buffer);
 		LOGGER.info("磁盘缓存（单个）（MB）：{}", INSTANCE.memoryBuffer);
 		LOGGER.info("消息提示：{}", INSTANCE.notice);
-		LOGGER.info("启用P2P加速：{}", INSTANCE.p2p);
 		LOGGER.info("最后一次选择目录：{}", INSTANCE.lastPath);
 	}
 	
@@ -221,30 +215,14 @@ public class DownloadConfig extends PropertiesConfig {
 	public static final Boolean getNotice() {
 		return INSTANCE.notice;
 	}
-	
-	/**
-	 * 设置启用P2P加速
-	 */
-	public static final void setP2p(Boolean p2p) {
-		ConfigRepository configRepository = new ConfigRepository();
-		INSTANCE.p2p = p2p;
-		configRepository.updateConfig(DOWNLOAD_P2P, String.valueOf(p2p));
-	}
-	
-	/**
-	 * 启用P2P加速
-	 */
-	public static final Boolean getP2p() {
-		return INSTANCE.p2p;
-	}
-	
+		
 	/**
 	 * 设置最后一次选择目录
 	 */
 	public static final void setLastPath(String lastPath) {
 		ConfigRepository configRepository = new ConfigRepository();
 		INSTANCE.lastPath = lastPath;
-		configRepository.updateConfig(DOWNLOAD_P2P, lastPath);
+		configRepository.updateConfig(DOWNLOAD_LAST_PATH, lastPath);
 	}
 	
 	/**

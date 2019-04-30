@@ -27,6 +27,9 @@ public class RequestManager {
 		return INSTANCE;
 	}
 	
+	/**
+	 * 放入请求
+	 */
 	public void put(Request request) {
 		if(request == null) {
 			return;
@@ -36,6 +39,13 @@ public class RequestManager {
 		if(old != null) {
 			LOGGER.warn("旧请求没有收到响应（剔除）");
 		}
+	}
+	
+	/**
+	 * 获取请求，同时删除
+	 */
+	public Request take(String id) {
+		return requests.remove(id);
 	}
 	
 }
