@@ -25,7 +25,7 @@ public abstract class UdpMessageHandler extends UdpSender {
 	public abstract void onMessage(InetSocketAddress address, ByteBuffer buffer);
 	
 	/**
-	 * 代理
+	 * 代理Channel
 	 */
 	public void handle(DatagramChannel channel) {
 		this.channel = channel;

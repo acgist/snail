@@ -79,11 +79,6 @@ public class SettingController implements Initializable {
 		DownloadConfig.setNotice(notice.isSelected());
 	}
 	
-	@FXML
-	public void handleP2pAction(ActionEvent event) {
-		DownloadConfig.setP2p(p2p.isSelected());
-	}
-	
 	/**
 	 * 初始化配置
 	 */
@@ -93,7 +88,6 @@ public class SettingController implements Initializable {
 		buffer.setValue(DownloadConfig.getBuffer());
 		memoryBuffer.setValue(DownloadConfig.getMemoryBuffer());
 		notice.setSelected(DownloadConfig.getNotice());
-		p2p.setSelected(DownloadConfig.getP2p());
 	}
 	
 	/**

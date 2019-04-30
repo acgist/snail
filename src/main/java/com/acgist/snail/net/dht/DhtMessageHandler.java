@@ -24,7 +24,7 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	public void onMessage(InetSocketAddress address, ByteBuffer buffer) {
 		LOGGER.debug("DHT消息，地址：{}", address);
 		buffer.flip();
-		byte[] bytes = new byte[buffer.remaining()];
+		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
 		final Response response = Response.valueOf(bytes);
 		System.out.println(response);

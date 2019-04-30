@@ -60,15 +60,6 @@
 				</TextFlow>
 				<CheckBox fx:id="notice" onAction="#handleNoticeAction" />
 			</HBox>
-			
-			<HBox>	
-				<TextFlow styleClass="name">
-					<Label>
-						启用P2P加速：
-					</Label>
-				</TextFlow>
-				<CheckBox fx:id="p2p" onAction="#handleP2pAction" />
-			</HBox>
 		</VBox>
 	</ScrollPane>
 	
