@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import com.acgist.snail.gui.Choosers;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.utils.FileUtils;
 
@@ -19,8 +20,6 @@ import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.text.Text;
-import javafx.stage.DirectoryChooser;
-import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
 /**
@@ -62,13 +61,9 @@ public class SettingController implements Initializable {
 
 	@FXML
 	public void handlePathAction(ActionEvent event) {
-		DirectoryChooser chooser = new DirectoryChooser();
-		chooser.setTitle("文件保存目录");
-		DownloadConfig.lastPath(chooser);
-		File file = chooser.showDialog(new Stage());
+		final File file = Choosers.chooseDirectory(SettingWindow.getInstance().stage(), "文件保存目录");
 		if (file != null) {
-			DownloadConfig.setLastPath(file.getPath());
-			String path = file.getPath();
+			final String path = file.getPath();
 			DownloadConfig.setPath(path);
 			pathValue.setText(DownloadConfig.getPath());
 		}

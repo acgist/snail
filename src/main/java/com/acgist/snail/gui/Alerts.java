@@ -1,4 +1,4 @@
-package com.acgist.snail.gui.alert;
+package com.acgist.snail.gui;
 
 import java.util.Optional;
 
@@ -14,7 +14,7 @@ import javafx.stage.Stage;
  * @author acgist
  * @since 1.0.0
  */
-public class AlertWindow {
+public class Alerts {
 
 	/**
 	 * 提示
