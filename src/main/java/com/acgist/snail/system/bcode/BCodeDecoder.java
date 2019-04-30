@@ -161,7 +161,7 @@ public class BCodeDecoder {
 				case '9':
 					lengthBuilder.append(indexChar);
 					break;
-				case ':':
+				case SEPARATOR:
 					if(lengthBuilder.length() > 0) {
 						final int length = Integer.parseInt(lengthBuilder.toString());
 						lengthBuilder.setLength(0);
@@ -221,7 +221,7 @@ public class BCodeDecoder {
 				case '9':
 					lengthBuilder.append(indexChar);
 					break;
-				case ':':
+				case SEPARATOR:
 					if(lengthBuilder.length() > 0) {
 						final int length = Integer.parseInt(lengthBuilder.toString());
 						lengthBuilder.setLength(0);
@@ -303,20 +303,24 @@ public class BCodeDecoder {
 		return (byte[]) map.get(key);
 	}
 	
-	public List<?> getList(String key) {
+	public List<Object> getList(String key) {
 		return getList(this.map, key);
 	}
 	
-	public static final List<?> getList(Map<?, ?> map, String key) {
-		return (List<?>) map.get(key);
+	// TODO：泛型优化
+	@SuppressWarnings("unchecked")
+	public static final List<Object> getList(Map<?, ?> map, String key) {
+		return (List<Object>) map.get(key);
 	}
 	
-	public Map<?, ?> getMap(String key) {
+	public Map<String, Object> getMap(String key) {
 		return getMap(this.map, key);
 	}
 	
-	public static final Map<?, ?> getMap(Map<?, ?> map, String key) {
-		return (Map<?, ?>) map.get(key);
+	// TODO：泛型优化
+	@SuppressWarnings("unchecked")
+	public static final Map<String, Object> getMap(Map<?, ?> map, String key) {
+		return (Map<String, Object>) map.get(key);
 	}
 	
 }

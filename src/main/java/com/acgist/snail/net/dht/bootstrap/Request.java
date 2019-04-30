@@ -3,25 +3,48 @@ package com.acgist.snail.net.dht.bootstrap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.acgist.snail.system.bcode.BCodeDecoder;
 import com.acgist.snail.system.bcode.BCodeEncoder;
 import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.system.config.DhtConfig.QType;
+import com.acgist.snail.utils.StringUtils;
 
 public class Request {
 
-	private final String t;
+	private final byte[] t;
 	private final String y;
 	private final DhtConfig.QType q;
 	private final Map<String, Object> a;
 	
-	protected Request(String t, DhtConfig.QType q) {
+	private Response response;
+	
+	protected Request(byte[] t, DhtConfig.QType q) {
+		this(t, DhtConfig.KEY_Q, q, new LinkedHashMap<>());
+	}
+	
+	protected Request(byte[] t, String y, DhtConfig.QType q, Map<String, Object> a) {
 		this.t = t;
-		this.y = DhtConfig.KEY_Q;
+		this.y = y;
 		this.q = q;
-		this.a = new LinkedHashMap<>();
+		this.a = a;
 	}
 
-	public String getT() {
+	public static final Request valueOf(byte[] bytes) {
+		final BCodeDecoder decoder = BCodeDecoder.newInstance(bytes);
+		decoder.mustMap();
+		return valueOf(decoder);
+	}
+	
+	public static final Request valueOf(final BCodeDecoder decoder) {
+		final byte[] t = decoder.getBytes(DhtConfig.KEY_T);
+		final String y = decoder.getString(DhtConfig.KEY_Y);
+		final String q = decoder.getString(DhtConfig.KEY_Q);
+		final QType type = DhtConfig.QType.valueOf(q);
+		final Map<String, Object> a = decoder.getMap(DhtConfig.KEY_A);
+		return new Request(t, y, type, a);
+	}
+	
+	public byte[] getT() {
 		return t;
 	}
 
@@ -33,8 +56,23 @@ public class Request {
 		return q;
 	}
 
-	public Map<String, Object> getA() {
+	public Map<?, ?> getA() {
 		return a;
+	}
+	
+	public Response getResponse() {
+		return response;
+	}
+
+	public void setResponse(Response response) {
+		this.response = response;
+	}
+
+	/**
+	 * 是否已经响应
+	 */
+	public boolean response() {
+		return this.response != null;
 	}
 	
 	public void put(String key, Object value) {
@@ -42,6 +80,9 @@ public class Request {
 	}
 
 	public Object get(String key) {
+		if(this.a == null) {
+			return null;
+		}
 		return this.a.get(key);
 	}
 	
@@ -57,18 +98,30 @@ public class Request {
 		return (Long) this.get(key);
 	}
 	
-	public String getString(String key) {
-		return (String) this.get(key);
+	public byte[] getBytes(String key) {
+		return (byte[]) this.get(key);
 	}
 	
-	public String getId() {
-		return getString(DhtConfig.KEY_ID);
+	public String getString(String key) {
+		final byte[] bytes = getBytes(key);
+		if(bytes == null) {
+			return null;
+		}
+		return new String(bytes);
+	}
+	
+	public String getIdHex() {
+		return StringUtils.hex(getT());
+	}
+	
+	public byte[] getNodeId() {
+		return getBytes(DhtConfig.KEY_ID);
 	}
 	
 	public byte[] toBytes() {
 		final Map<String, Object> request = new LinkedHashMap<>();
 		request.put(DhtConfig.KEY_T, this.t);
-		request.put(DhtConfig.KEY_Y, DhtConfig.KEY_Q);
+		request.put(DhtConfig.KEY_Y, this.y);
 		request.put(DhtConfig.KEY_Q, this.q.name());
 		request.put(DhtConfig.KEY_A, this.a);
 		return BCodeEncoder.mapToBytes(request);

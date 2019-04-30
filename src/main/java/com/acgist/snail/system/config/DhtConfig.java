@@ -25,11 +25,11 @@ public class DhtConfig extends PropertiesConfig {
 	public static final String KEY_R = "r"; // 响应、响应参数
 	public static final String KEY_E = "e"; // 错误
 	public static final String KEY_V = "v"; // 客户端版本：不一定存在
-	public static final String KEY_ID = "id"; // NODE ID
+	public static final String KEY_ID = "id"; // node id
 	public static final String KEY_PORT = "port"; // 下载端口
 	public static final String KEY_NODES = "nodes"; // 节点信息
 	public static final String KEY_TOKEN = "token"; // announce_peer token
-	public static final String KEY_TARGET = "target"; // node
+	public static final String KEY_TARGET = "target"; // 被查找的node id
 	public static final String KEY_INFO_HASH = "info_hash"; // infoHash
 	/**
 	 * 0|1：存在且非0=忽略端口参数，使用UDP包的源端口为对等端端口，支持uTP。
