@@ -20,6 +20,11 @@ public class SystemConfig extends PropertiesConfig {
 	 */
 	public static final String DEFAULT_CHARSET = "utf-8";
 	
+	/**
+	 * 无符号BYTE的大小
+	 */
+	public static final int UNSIGNED_BYTE_SIZE = 2 << 7;
+	
 	public static final String DIGIT = "0123456789";
 	public static final String LETTER = "abcdefghijklmnopqrstuvwxyz";
 	public static final String LETTER_UPPER = LETTER.toUpperCase();

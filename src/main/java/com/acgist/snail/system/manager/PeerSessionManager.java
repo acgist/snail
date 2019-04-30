@@ -29,9 +29,10 @@ public class PeerSessionManager {
 	 * key=infoHashHex<br>
 	 * value=Peers：双端队列，新加入插入队尾，剔除的Peer插入对头
 	 */
-	private Map<String, Deque<PeerSession>> peers = new ConcurrentHashMap<>();
+	private final Map<String, Deque<PeerSession>> peers;
 	
 	private PeerSessionManager() {
+		peers = new ConcurrentHashMap<>();
 	}
 	
 	public static final PeerSessionManager getInstance() {

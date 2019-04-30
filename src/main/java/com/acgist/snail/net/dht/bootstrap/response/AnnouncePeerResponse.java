@@ -8,8 +8,8 @@ public class AnnouncePeerResponse extends Response {
 		super(response.getT(), response.getY(), response.getR(), response.getE());
 	}
 
-	public static final AnnouncePeerResponse newInstance(byte[] bytes) {
-		return new AnnouncePeerResponse(Response.valueOf(bytes));
+	public static final AnnouncePeerResponse newInstance(Response response) {
+		return new AnnouncePeerResponse(response);
 	}
 
 }

@@ -22,7 +22,7 @@ public class DhtService {
 	/**
 	 * 生成一个两字节的ID
 	 */
-	public String id() {
+	public byte[] id() {
 		final byte[] bytes = new byte[2];
 		synchronized (this) {
 			if(++id >= MAX_VALUE) {
@@ -31,7 +31,7 @@ public class DhtService {
 			bytes[0] = (byte) (id / UNSIGNED_BYTE_MAX);
 			bytes[1] = (byte) (id % UNSIGNED_BYTE_MAX);
 		}
-		return new String(bytes);
+		return bytes;
 	}
 	
 }

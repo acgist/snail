@@ -11,10 +11,12 @@ import com.acgist.snail.net.UdpClient;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.NetUtils;
+import com.acgist.snail.utils.StringUtils;
 
 /**
  * DHT协议<br>
  * 基本协议：UDP
+ * 每次取出最近的16个进行轮番查询Peer，然后定时查询
  */
 public class DhtClient extends UdpClient<DhtMessageHandler> {
 
@@ -51,8 +53,19 @@ public class DhtClient extends UdpClient<DhtMessageHandler> {
 		return open(CHANNEL);
 	}
 	
-	public void ping() {
-		this.handler.ping(this.address);
+	public boolean ping() {
+		return this.handler.ping(this.address);
+	}
+	
+	/**
+	 * @param target hex编码的infoHash
+	 */
+	public void findNode(String target) {
+		this.findNode(StringUtils.unhex(target));
+	}
+	
+	public void findNode(byte[] target) {
+		this.handler.findNode(this.address, target);
 	}
 	
 	public static final void release() {

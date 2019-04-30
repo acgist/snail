@@ -13,7 +13,7 @@ import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.ThreadUtils;
 
-public class DhtTest {
+public class DhtClientTest {
 
 	@Test
 	public void client() {
@@ -32,12 +32,22 @@ public class DhtTest {
 		}
 	}
 	
+	private static final String host = "127.0.0.1";
+	private static final int port = 49160; // FDM测试端口
+	
 	@Test
 	public void ping() {
-		String host = "127.0.0.1";
-		Integer port = 49160; // FDM测试端口
 		DhtClient client = DhtClient.newInstance(host, port);
-		client.ping();
+		boolean ping = client.ping();
+		System.out.println(ping);
+		ThreadUtils.sleep(Long.MAX_VALUE);
+	}
+	
+	@Test
+	public void findNode() {
+		DhtClient client = DhtClient.newInstance(host, port);
+		final String target = "5E5324691812CAA0032EA76E813CCFC4D04E7E9E";
+		client.findNode(target);
 		ThreadUtils.sleep(Long.MAX_VALUE);
 	}
 	
