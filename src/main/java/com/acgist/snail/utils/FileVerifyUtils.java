@@ -25,13 +25,13 @@ public class FileVerifyUtils {
 	 * @param algo 算法：MD5/SHA1
 	 */
 	private static final Map<String, String> hash(String path, String algo) {
-		File file = new File(path);
+		final File file = new File(path);
 		if(!file.exists()) {
 			return null;
 		}
-		Map<String, String> data = new HashMap<>();
+		final Map<String, String> data = new HashMap<>();
 		if (!file.isFile()) {
-			File[] files = file.listFiles();
+			final File[] files = file.listFiles();
 			for (File children : files) {
 				data.putAll(hash(children.getPath(), algo));
 			}
@@ -49,7 +49,7 @@ public class FileVerifyUtils {
 				LOGGER.error("文件HASH计算异常", e);
 				return data;
 			}
-			BigInteger hex = new BigInteger(1, digest.digest());
+			final BigInteger hex = new BigInteger(1, digest.digest());
 			data.put(path, hex.toString(16));
 			return data;
 		}
