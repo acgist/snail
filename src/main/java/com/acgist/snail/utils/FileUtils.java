@@ -36,16 +36,16 @@ public class FileUtils {
 	/**
 	 * 删除文件
 	 */
-	public static final void delete(final String path) {
-		if(StringUtils.isEmpty(path)) {
+	public static final void delete(final String filePath) {
+		if(StringUtils.isEmpty(filePath)) {
 			return;
 		}
-		final File file = new File(path);
+		final File file = new File(filePath);
 		if(!file.exists()) {
-			LOGGER.warn("删除文件不存在：{}", path);
+			LOGGER.warn("删除文件不存在：{}", filePath);
 			return;
 		}
-		LOGGER.info("删除文件：{}", path);
+		LOGGER.info("删除文件：{}", filePath);
 		delete(file);
 	}
 

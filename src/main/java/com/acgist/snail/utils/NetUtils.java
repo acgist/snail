@@ -36,19 +36,31 @@ public class NetUtils {
 	// 系统环回地址
 	private static final long L_IP_BEGIN = encodeIpToLong("127.0.0.0");
 	private static final long L_IP_END = encodeIpToLong("127.255.255.255");
+	
+	/**
+	 * 端口编码
+	 */
+	public static final short encodePort(int port) {
+		return (short) port;
+	}
 
+	/**
+	 * 端口解码
+	 */
 	public static final int decodePort(short port) {
 		return Short.toUnsignedInt(port);
 	}
 	
-	public static final short encodePort(int port) {
-		return (short) port;
-	}
-	
+	/**
+	 * IP编码
+	 */
 	public static final int encodeIpToInt(String ipAddress) {
 		return (int) encodeIpToLong(ipAddress);
 	}
 	
+	/**
+	 * IP编码
+	 */
 	public static final long encodeIpToLong(String ipAddress) {
 		long result = 0, tmp;
 		final String[] array = ipAddress.split("\\.");
@@ -59,10 +71,16 @@ public class NetUtils {
 		return result;
 	}
 
+	/**
+	 * IP解码
+	 */
 	public static final String decodeIntToIp(int ipNumber) {
 		return decodeLongToIp(Integer.toUnsignedLong(ipNumber));
 	}
 	
+	/**
+	 * IP解码
+	 */
 	public static final String decodeLongToIp(long ipNumber) {
 		return ((ipNumber >> 24) & 0xFF) + "." + ((ipNumber >> 16) & 0xFF) + "." + ((ipNumber >> 8) & 0xFF) + "." + (ipNumber & 0xFF);
 	}
@@ -73,7 +91,7 @@ public class NetUtils {
 	 */
 	public static final String inetHostName() {
 		try {
-			InetAddress address = InetAddress.getLocalHost();
+			final InetAddress address = InetAddress.getLocalHost();
 			return address.getHostName();
 		} catch (UnknownHostException e) {
 			LOGGER.error("获取本机名称异常", e);
@@ -87,7 +105,7 @@ public class NetUtils {
 	 */
 	public static final String inetHostAddress() {
 		try {
-			InetAddress address = InetAddress.getLocalHost();
+			final InetAddress address = InetAddress.getLocalHost();
 			return address.getHostAddress();
 		} catch (UnknownHostException e) {
 			LOGGER.error("获取本机地址异常", e);
