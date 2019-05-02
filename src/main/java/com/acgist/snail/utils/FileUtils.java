@@ -22,7 +22,7 @@ import com.acgist.snail.system.config.FileTypeConfig.FileType;
 import com.acgist.snail.system.exception.ArgumentException;
 
 /**
- * utils - 文件
+ * 文件工具
  */
 public class FileUtils {
 
@@ -36,11 +36,11 @@ public class FileUtils {
 	/**
 	 * 删除文件
 	 */
-	public static final void delete(String path) {
+	public static final void delete(final String path) {
 		if(StringUtils.isEmpty(path)) {
 			return;
 		}
-		File file = new File(path);
+		final File file = new File(path);
 		if(!file.exists()) {
 			LOGGER.warn("删除文件不存在：{}", path);
 			return;
@@ -52,20 +52,20 @@ public class FileUtils {
 	/**
 	 * 递归删除文件
 	 */
-	private static final void delete(File file) {
+	private static final void delete(final File file) {
 		if(file.isDirectory()) {
-			File[] files = file.listFiles();
+			final File[] files = file.listFiles();
 			for (File children : files) {
 				delete(children);
 			}
-			file.delete();
+			file.delete(); // 目录删除
 		} else {
-			file.delete();
+			file.delete(); // 文件删除
 		}
 	}
 	
 	/**
-	 * 获取文件名称：URL
+	 * 通过URL获取文件名称
 	 */
 	public static final String fileNameFromUrl(final String url) {
 		if(StringUtils.isEmpty(url)) {

@@ -217,7 +217,7 @@ public class TaskSession implements IStatistics {
 					return "-";
 				} else {
 					long second = (entity.getSize() - statistics.downloadSize()) / bufferSecond;
-					return DateUtils.formatSecond(second);
+					return DateUtils.secondToString(second);
 				}
 			} else {
 				return "-";

@@ -22,7 +22,7 @@ public class UniqueCodeUtils {
 	 */
 	public static final String build() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(DateUtils.format(new Date(), "yyMMddHHmmss"));
+		builder.append(DateUtils.dateToString(new Date(), "yyMMddHHmmss"));
 		synchronized(UniqueCodeUtils.class) {
 			int index = UniqueCodeUtils.index;
 			builder.append(index);
@@ -49,7 +49,7 @@ public class UniqueCodeUtils {
 			}
 			UniqueCodeUtils.int_index = index;
 		}
-		builder.append(DateUtils.format(new Date(), "mmss"));
+		builder.append(DateUtils.dateToString(new Date(), "mmss"));
 		return Integer.valueOf(builder.toString());
 	}
 	

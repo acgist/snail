@@ -12,7 +12,7 @@ import com.acgist.snail.system.bcode.BCodeEncoder;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.config.TrackerConfig;
 import com.acgist.snail.utils.CollectionUtils;
-import com.acgist.snail.utils.DataUtils;
+import com.acgist.snail.utils.DateUtils;
 import com.acgist.snail.utils.FileUtils;
 
 /**
@@ -49,7 +49,7 @@ public class TorrentBuilder {
 		data.put("comment.utf-8", "ACGIST Snail通过磁力链接下载创建");
 		data.put("encoding", SystemConfig.DEFAULT_CHARSET);
 		data.put("created by", SystemConfig.getNameAndVersion());
-		data.put("creation date", DataUtils.unixTimestamp());
+		data.put("creation date", DateUtils.unixTimestamp());
 		announce(data);
 		infoHash(data);
 //		data.put("nodes", value); // DHT

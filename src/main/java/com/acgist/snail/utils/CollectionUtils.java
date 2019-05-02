@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * utils - 数组、集合
+ * 数组、集合、Map工具
  */
 public class CollectionUtils {
 
