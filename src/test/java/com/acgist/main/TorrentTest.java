@@ -5,7 +5,7 @@ import org.junit.Test;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
 import com.acgist.snail.system.manager.TorrentSessionManager;
-import com.acgist.snail.utils.DataUtils;
+import com.acgist.snail.utils.DateUtils;
 
 public class TorrentTest {
 
@@ -21,7 +21,7 @@ public class TorrentTest {
 		Torrent torrent = session.torrent();
 		System.out.println(torrent.getComment());
 		System.out.println("种子HASH：" + session.infoHash().infoHashHex());
-		System.out.println(DataUtils.unixToJavaDate(torrent.getCreationDate()));
+		System.out.println(DateUtils.unixToJavaDate(torrent.getCreationDate()));
 //		System.out.println(torrent.getCreationDate());
 //		System.out.println(torrent.getEncoding());
 //		System.out.println(torrent.getCreateBy());

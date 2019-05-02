@@ -1,27 +1,26 @@
 package com.acgist.snail.utils;
 
 import java.awt.Desktop;
-import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * utils - 浏览器
+ * 浏览器工具
  */
 public class BrowseUtils {
 
-	private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(BrowseUtils.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(BrowseUtils.class);
 	
 	/**
-	 * 打开网页链接
+	 * 浏览器打开网页
 	 */
-	public static final void open(String url) {
+	public static final void open(final String url) {
 		try {
-			Desktop.getDesktop().browse(new URI(url));
-		} catch (IOException | URISyntaxException e) {
-			LOGGER.error("打开网页链接异常");
+			Desktop.getDesktop().browse(URI.create(url));
+		} catch (Exception e) {
+			LOGGER.error("浏览器打开网页异常：{}", url, e);
 		}
 	}
 	

@@ -1,9 +1,7 @@
 package com.acgist.snail.utils;
 
-import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.stream.Stream;
 
@@ -13,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.pojo.wrapper.ResultSetWrapper;
 
 /**
- * utils - 实体
+ * 实体工具
  */
 public class EntityUtils {
 
@@ -24,18 +22,18 @@ public class EntityUtils {
 	 */
 	public static final String[] entityProperty(Class<?> clazz) {
 		String[] properties = null;
-		Class<?> superClazz = clazz.getSuperclass();
+		final Class<?> superClazz = clazz.getSuperclass();
 		if(superClazz != null) {
 			properties = entityProperty(superClazz);
 		} else {
 			properties = new String[0];
 		}
-		Field[] fields = clazz.getDeclaredFields();
+		final Field[] fields = clazz.getDeclaredFields();
 		return Stream.concat(
 			Stream
 				.of(fields)
 				.filter(field -> {
-					return !Modifier.isStatic(field.getModifiers());
+					return !Modifier.isStatic(field.getModifiers()); // 非静态属性
 				})
 				.map(field -> field.getName()),
 			Stream.of(properties)
@@ -46,20 +44,21 @@ public class EntityUtils {
 	 * 获取属性值
 	 */
 	public static final Object[] entityPropertyValue(Object entity, String[] properties) {
-		return Stream.of(properties)
-		.map(property -> entityPropertyValue(entity, property))
-		.toArray();
+		return Stream
+			.of(properties)
+			.map(property -> entityPropertyValue(entity, property))
+			.toArray();
 	}
 	
 	/**
 	 * 获取属性值
 	 */
 	public static final Object entityPropertyValue(Object entity, String property) {
-		Class<?> clazz = entity.getClass();
+		final Class<?> clazz = entity.getClass();
 		try {
-			PropertyDescriptor descriptor = new PropertyDescriptor(property, clazz);
+			final PropertyDescriptor descriptor = new PropertyDescriptor(property, clazz);
 			return descriptor.getReadMethod().invoke(entity);
-		} catch (IntrospectionException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+		} catch (Exception e) {
 			LOGGER.error("反射属性获取异常", e);
 		}
 		return null;
@@ -69,15 +68,15 @@ public class EntityUtils {
 	 * 属性装配
 	 */
 	public static final void entity(Object entity, ResultSetWrapper wrapper) {
-		Class<?> clazz = entity.getClass();
-		String[] properties = entityProperty(clazz);
+		final Class<?> clazz = entity.getClass();
+		final String[] properties = entityProperty(clazz);
 		for (String property : properties) {
 			try {
-				PropertyDescriptor descriptor = new PropertyDescriptor(property, clazz);
-				Object value = unpack(descriptor.getPropertyType(), wrapper.getObject(property));
+				final PropertyDescriptor descriptor = new PropertyDescriptor(property, clazz);
+				final Object value = unpack(descriptor.getPropertyType(), wrapper.getObject(property));
 				descriptor.getWriteMethod().invoke(entity, value);
-			} catch (IntrospectionException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-				LOGGER.info("反射设置属性异常", e);
+			} catch (Exception e) {
+				LOGGER.info("反射属性装配异常", e);
 			}
 		}
 	}
@@ -90,7 +89,7 @@ public class EntityUtils {
 			return null;
 		}
 		if(object instanceof Enum<?>) { // 枚举类型
-			Enum<?> value = (Enum<?>) object;
+			final Enum<?> value = (Enum<?>) object;
 			return value.name();
 		}
 		return object;
@@ -105,7 +104,7 @@ public class EntityUtils {
 			return null;
 		}
 		if(clazz.isEnum()) { // 枚举类型
-			return Enum.valueOf(((Class<Enum>) clazz), value.toString());
+			return Enum.valueOf((Class<Enum>) clazz, value.toString());
 		}
 		return value;
 	}
