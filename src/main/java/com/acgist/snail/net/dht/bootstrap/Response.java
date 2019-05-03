@@ -1,14 +1,17 @@
 package com.acgist.snail.net.dht.bootstrap;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.system.bcode.BCodeDecoder;
 import com.acgist.snail.system.bcode.BCodeEncoder;
 import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.utils.CollectionUtils;
+import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -138,6 +141,18 @@ public class Response {
 			response.put(DhtConfig.KEY_Q, this.e);
 		}
 		return BCodeEncoder.mapToBytes(response);
+	}
+	
+	protected NodeSession readNode(ByteBuffer buffer) {
+		if(buffer.hasRemaining()) {
+			final byte[] id = new byte[20];
+			buffer.get(id);
+			final String host = NetUtils.decodeIntToIp(buffer.getInt());
+			final int port = NetUtils.decodePort(buffer.getShort());
+			final NodeSession nodeSession = NodeSession.newInstance(id, host, port);
+			return nodeSession;
+		}
+		return null;
 	}
 	
 }

@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.UdpClient;
+import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.NetUtils;
@@ -66,6 +67,10 @@ public class DhtClient extends UdpClient<DhtMessageHandler> {
 	
 	public void findNode(byte[] target) {
 		this.handler.findNode(this.address, target);
+	}
+	
+	public void getPeers(InfoHash infoHash) {
+		this.handler.getPeers(this.address, infoHash.infoHash());
 	}
 	
 	public static final void release() {

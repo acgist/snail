@@ -8,8 +8,10 @@ import java.util.Map;
 import org.junit.Test;
 
 import com.acgist.snail.net.dht.DhtClient;
+import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.bcode.BCodeEncoder;
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.ThreadUtils;
 
@@ -48,6 +50,15 @@ public class DhtClientTest {
 		DhtClient client = DhtClient.newInstance(host, port);
 		final String target = "5E5324691812CAA0032EA76E813CCFC4D04E7E9E";
 		client.findNode(target);
+		ThreadUtils.sleep(Long.MAX_VALUE);
+	}
+	
+	@Test
+	public void getPeers() throws DownloadException {
+		DhtClient client = DhtClient.newInstance(host, port);
+		final String hash = "f3f8adb9cadbaa56c6e0e537872dc6edd1f45337";
+		final InfoHash infoHash = InfoHash.newInstance(hash);
+		client.getPeers(infoHash);
 		ThreadUtils.sleep(Long.MAX_VALUE);
 	}
 	

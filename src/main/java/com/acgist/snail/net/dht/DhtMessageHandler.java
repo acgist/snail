@@ -16,6 +16,7 @@ import com.acgist.snail.net.dht.bootstrap.request.FindNodeRequest;
 import com.acgist.snail.net.dht.bootstrap.request.GetPeersRequest;
 import com.acgist.snail.net.dht.bootstrap.request.PingRequest;
 import com.acgist.snail.net.dht.bootstrap.response.FindNodeResponse;
+import com.acgist.snail.net.dht.bootstrap.response.GetPeersResponse;
 import com.acgist.snail.net.dht.bootstrap.response.PingResponse;
 import com.acgist.snail.system.bcode.BCodeDecoder;
 import com.acgist.snail.system.config.DhtConfig;
@@ -104,10 +105,10 @@ public class DhtMessageHandler extends UdpMessageHandler {
 			findNode(request, response);
 			break;
 		case get_peers:
-			findNode(request, response);
+			getPeers(request, response);
 			break;
 		case announce_peer:
-			findNode(request, response);
+			announcePeer(request, response);
 			break;
 		}
 	}
@@ -164,17 +165,20 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	}
 
 	private Response getPeers(Request request) {
-		return null;
+		return GetPeersResponse.newInstance(request);
 	}
 	
 	private void getPeers(Request request, Response response) {
-//		waitResponse(request);
-//		take(request);
-//		final Response response = RESPONSE.apply(request);
-//		if(SUCCESS.apply(response)) {
-//			return FindNodeResponse.newInstance(response).getNodes();
-//		}
-//		return null;
+		take(request);
+		if(SUCCESS.apply(response)) {
+			final GetPeersResponse getPeersResponse = GetPeersResponse.newInstance(response);
+			if(getPeersResponse.havePeers()) {
+				var peers = getPeersResponse.getPeers();
+			} else {
+				var nodes = getPeersResponse.getNodes();
+				System.out.println(nodes);
+			}
+		}
 	}
 	
 	/**

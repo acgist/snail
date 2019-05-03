@@ -12,6 +12,8 @@ public class NodeSession {
 	private final byte[] id;
 	private final String host;
 	private final int port;
+	
+	private String token; // 广播时使用
 
 	private NodeSession(byte[] id, String host, int port) {
 		this.id = id;
@@ -37,6 +39,14 @@ public class NodeSession {
 
 	public int getPort() {
 		return port;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 
 	@Override
