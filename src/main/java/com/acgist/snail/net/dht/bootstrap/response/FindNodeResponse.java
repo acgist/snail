@@ -8,8 +8,10 @@ import com.acgist.snail.net.dht.bootstrap.Request;
 import com.acgist.snail.net.dht.bootstrap.Response;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.system.config.DhtConfig;
-import com.acgist.snail.utils.NetUtils;
 
+/**
+ * 8个最近的节点
+ */
 public class FindNodeResponse extends Response {
 
 	public FindNodeResponse(byte[] t) {
@@ -24,6 +26,7 @@ public class FindNodeResponse extends Response {
 		return new FindNodeResponse(response);
 	}
 
+	// TODO：
 	public static final FindNodeResponse newInstance(Request request) {
 		final FindNodeResponse response = new FindNodeResponse(request.getT());
 		response.put(DhtConfig.KEY_NODES, "1234");
@@ -45,18 +48,6 @@ public class FindNodeResponse extends Response {
 			list.add(session);
 		}
 		return list;
-	}
-	
-	private NodeSession readNode(ByteBuffer buffer) {
-		if(buffer.hasRemaining()) {
-			final byte[] id = new byte[20];
-			buffer.get(id);
-			final String host = NetUtils.decodeIntToIp(buffer.getInt());
-			final int port = NetUtils.decodePort(buffer.getShort());
-			final NodeSession nodeSession = NodeSession.newInstance(id, host, port);
-			return nodeSession;
-		}
-		return null;
 	}
 	
 }

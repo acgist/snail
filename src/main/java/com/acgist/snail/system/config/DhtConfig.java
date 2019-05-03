@@ -29,6 +29,7 @@ public class DhtConfig extends PropertiesConfig {
 	public static final String KEY_PORT = "port"; // 下载端口
 	public static final String KEY_NODES = "nodes"; // 节点信息
 	public static final String KEY_TOKEN = "token"; // announce_peer token
+	public static final String KEY_VALUES = "values"; // Peers
 	public static final String KEY_TARGET = "target"; // 被查找的node id
 	public static final String KEY_INFO_HASH = "info_hash"; // infoHash
 	/**

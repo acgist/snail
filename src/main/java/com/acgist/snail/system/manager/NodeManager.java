@@ -22,11 +22,14 @@ public class NodeManager {
 	 * Node最大数量，超过这个数量会均匀剔除多余Node
 	 */
 	private static final int MAX_NODES = 10240;
+	private static final int TOKEN_LENGTH = 8;
 	
+	private final byte[] token;
 	private final byte[] nodeId;
 	private final List<NodeSession> nodes;
 	
 	private NodeManager() {
+		this.token = token();
 		this.nodeId = buildNodeId();
 		this.nodes = new ArrayList<>();
 	}
@@ -51,6 +54,17 @@ public class NodeManager {
 			bytes[i] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_SIZE);
 		}
 		return bytes;
+	}
+	
+	private byte[] token() {
+		final byte[] token = new byte[TOKEN_LENGTH];
+		final byte[] bytes = (SystemConfig.LETTER + SystemConfig.LETTER_UPPER + SystemConfig.DIGIT).getBytes();
+		final int length = bytes.length;
+		final Random random = new Random();
+		for (int index = 0; index < TOKEN_LENGTH; index++) {
+			token[index] = bytes[random.nextInt(length)];
+		}
+		return token;
 	}
 	
 	public void put(List<NodeSession> nodes) {
