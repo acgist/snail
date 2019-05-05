@@ -13,7 +13,7 @@ public class AnnouncePeerRequest extends Request {
 		this.put(DhtConfig.KEY_ID, NodeManager.getInstance().nodeId());
 	}
 	
-	public static final AnnouncePeerRequest newRequest(String token, String infoHashHex) {
+	public static final AnnouncePeerRequest newRequest(byte[] token, String infoHashHex) {
 		final AnnouncePeerRequest request = new AnnouncePeerRequest();
 		request.put(DhtConfig.KEY_PORT, SystemConfig.getPeerPort());
 		request.put(DhtConfig.KEY_TOKEN, token);

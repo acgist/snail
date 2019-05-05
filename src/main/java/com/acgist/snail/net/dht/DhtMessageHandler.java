@@ -185,7 +185,9 @@ public class DhtMessageHandler extends UdpMessageHandler {
 				final var nodes = getPeersResponse.getNodes();
 				NodeManager.getInstance().put(nodes);
 			}
-			
+			final byte[] token = getPeersResponse.getToken();
+			final byte[] nodeId = getPeersResponse.getNodeId();
+			NodeManager.getInstance().token(nodeId, request, token);
 		}
 	}
 	
@@ -230,6 +232,7 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	}
 	
 	private void pushMessage(Request request, SocketAddress address) {
+		request.setAddress(address);
 		RequestManager.getInstance().put(request);
 		final ByteBuffer buffer = ByteBuffer.wrap(request.toBytes());
 		pushMessage(buffer, address);

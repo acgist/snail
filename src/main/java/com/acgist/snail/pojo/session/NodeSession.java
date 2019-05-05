@@ -1,5 +1,6 @@
 package com.acgist.snail.pojo.session;
 
+import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.JsonUtils;
 import com.acgist.snail.utils.ObjectUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -13,7 +14,7 @@ public class NodeSession implements Comparable<NodeSession> {
 	private final String host;
 	private final int port;
 	
-	private String token; // 广播时使用
+	private byte[] token; // 广播时使用
 
 	private NodeSession(byte[] id, String host, int port) {
 		this.id = id;
@@ -41,11 +42,11 @@ public class NodeSession implements Comparable<NodeSession> {
 		return port;
 	}
 
-	public String getToken() {
+	public byte[] getToken() {
 		return token;
 	}
 
-	public void setToken(String token) {
+	public void setToken(byte[] token) {
 		this.token = token;
 	}
 
@@ -56,13 +57,9 @@ public class NodeSession implements Comparable<NodeSession> {
 		}
 		if(ObjectUtils.equalsClazz(this, object)) {
 			NodeSession session = (NodeSession) object;
-			for (int index = 0; index < id.length; index++) {
-				if(id[index] != session.id[index]) {
-					return false;
-				}
-			}
+			return ArrayUtils.equals(this.id, session.id);
 		}
-		return true;
+		return false;
 	}
 	
 	@Override

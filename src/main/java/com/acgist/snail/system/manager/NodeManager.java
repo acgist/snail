@@ -1,5 +1,6 @@
 package com.acgist.snail.system.manager;
 
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -11,13 +12,16 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.net.dht.bootstrap.Request;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
  * Node信息
+ * TODO：连接失败时剔除、定时剔除多余数据
  */
 public class NodeManager {
 	
@@ -26,12 +30,13 @@ public class NodeManager {
 	/**
 	 * Node最大数量，超过这个数量会均匀剔除多余Node
 	 */
-	private static final int NODE_MAX_SIZE = 1024;
-	private static final int TOKEN_LENGTH = 8;
-	private static final int NODE_ID_LENGTH = 20;
-	private static final int NODE_FIND_SIZE = 8;
-	private static final int NODE_FIND_SLICE = 3; // 分片大小
-	private static final int NODE_FIND_SLICE_SIZE = NODE_FIND_SIZE * NODE_FIND_SLICE;
+	public static final int NODE_MAX_SIZE = 1024;
+	public static final int NODE_ID_LENGTH = 20;
+	public static final int TOKEN_LENGTH = 8;
+	public static final int GET_PEER_LENGTH = 100;
+	public static final int NODE_FIND_SIZE = 8;
+	public static final int NODE_FIND_SLICE = 3; // 分片大小
+	public static final int NODE_FIND_SLICE_SIZE = NODE_FIND_SIZE * NODE_FIND_SLICE;
 	
 	private final byte[] token;
 	private final byte[] nodeId;
@@ -178,9 +183,30 @@ public class NodeManager {
 	}
 	
 	/**
+	 * 设置token，如果对应nodeId不存在，这加入网络
+	 */
+	public void token(byte[] nodeId, Request request, byte[] token) {
+		final InetSocketAddress address = (InetSocketAddress) request.getAddress();
+		synchronized (this.nodes) {
+			NodeSession old = null;
+			for (NodeSession nodeSession : this.nodes) {
+				if(ArrayUtils.equals(nodeId, nodeSession.getId())) {
+					old = nodeSession;
+					break;
+				}
+			}
+			if(old == null) {
+				old = NodeSession.newInstance(nodeId, address.getHostString(), address.getPort());
+				this.nodes.add(old);
+			}
+			old.setToken(token);
+		}
+	}
+	
+	/**
 	 * 异或运算
 	 */
-	private static final String xor(byte[] source, byte[] target) {
+	public static final String xor(byte[] source, byte[] target) {
 		final byte[] value = new byte[NODE_ID_LENGTH];
 		for (int index = 0; index < NODE_ID_LENGTH; index++) {
 			value[index] = (byte) (source[index] ^ target[index]);
@@ -191,7 +217,7 @@ public class NodeManager {
 	/**
 	 * 获取不同的序号
 	 */
-	private static final int index(byte[] source, byte[] target) {
+	public static final int index(byte[] source, byte[] target) {
 		for (int index = 0; index < NODE_ID_LENGTH; index++) {
 			if(source[index] != target[index]) {
 				return index;
