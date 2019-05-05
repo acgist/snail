@@ -34,6 +34,9 @@ public class DhtMessageHandler extends UdpMessageHandler {
 
 	private static final Duration TIMEOUT = Duration.ofSeconds(4);
 	
+	/**
+	 * 获取响应
+	 */
 	private static final Function<Request, Response> RESPONSE = (request) -> {
 		if(request == null) {
 			return null;
@@ -47,6 +50,9 @@ public class DhtMessageHandler extends UdpMessageHandler {
 		return response;
 	};
 	
+	/**
+	 * 判断响应是否成功
+	 */
 	public static final Function<Response, Boolean> SUCCESS = (response) -> {
 		return response != null && response.success();
 	};

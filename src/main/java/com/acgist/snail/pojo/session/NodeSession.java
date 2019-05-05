@@ -7,7 +7,7 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * Node信息
  */
-public class NodeSession {
+public class NodeSession implements Comparable<NodeSession> {
 
 	private final byte[] id;
 	private final String host;
@@ -56,11 +56,13 @@ public class NodeSession {
 		}
 		if(ObjectUtils.equalsClazz(this, object)) {
 			NodeSession session = (NodeSession) object;
-			
-			return ObjectUtils.equalsBuilder(this.getIdHex())
-				.equals(ObjectUtils.equalsBuilder(session.getIdHex()));
+			for (int index = 0; index < id.length; index++) {
+				if(id[index] != session.id[index]) {
+					return false;
+				}
+			}
 		}
-		return false;
+		return true;
 	}
 	
 	@Override
@@ -71,6 +73,18 @@ public class NodeSession {
 	@Override
 	public String toString() {
 		return JsonUtils.toJson(this);
+	}
+
+	@Override
+	public int compareTo(NodeSession that) {
+		final byte[] thisId = this.id;
+		final byte[] thatId = that.id;
+		for (int index = 0; index < thisId.length; index++) {
+			if(thisId[index] != thatId[index]) {
+				return thisId[index] - thatId[index];
+			}
+		}
+		return 0;
 	}
 	
 }

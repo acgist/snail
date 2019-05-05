@@ -4,7 +4,6 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +38,7 @@ public class FileVerifyUtils {
 		} else {
 			MessageDigest digest = null;
 			int length;
-			byte bytes[] = new byte[1024];
+			byte bytes[] = new byte[10240];
 			try (InputStream input = new BufferedInputStream(new FileInputStream(file))) {
 				digest = MessageDigest.getInstance(algo);
 				while ((length = input.read(bytes)) != -1) {
@@ -49,12 +48,11 @@ public class FileVerifyUtils {
 				LOGGER.error("文件HASH计算异常", e);
 				return data;
 			}
-			final BigInteger hex = new BigInteger(1, digest.digest());
-			data.put(path, hex.toString(16));
+			data.put(path, StringUtils.hex(digest.digest()));
 			return data;
 		}
 	}
-	
+
 	/**
 	 * MD5散列算法
 	 */

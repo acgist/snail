@@ -72,7 +72,7 @@ public class StringUtils {
 		if(bytes == null) {
 			return null;
 		}
-		StringBuilder builder = new StringBuilder();
+		final StringBuilder builder = new StringBuilder();
 		for (int index = 0; index < bytes.length; index++) {
 			String hex = Integer.toHexString(bytes[index] & 0xFF);
 			if (hex.length() < 2) {
@@ -112,7 +112,7 @@ public class StringUtils {
 	 */
 	public static final byte[] sha1(byte[] bytes) {
 		try {
-			MessageDigest digest = MessageDigest.getInstance("SHA1");
+			final MessageDigest digest = MessageDigest.getInstance("SHA1");
 			digest.update(bytes);
 			return digest.digest();
 		} catch (NoSuchAlgorithmException e) {

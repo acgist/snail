@@ -48,7 +48,7 @@ public class DhtClientTest {
 	@Test
 	public void findNode() {
 		DhtClient client = DhtClient.newInstance(host, port);
-		final String target = "5E5324691812CAA0032EA76E813CCFC4D04E7E9E";
+		final String target = "5E5324691812EAA0032EA76E813CCFC4D04E7E9E";
 		client.findNode(target);
 		ThreadUtils.sleep(Long.MAX_VALUE);
 	}
