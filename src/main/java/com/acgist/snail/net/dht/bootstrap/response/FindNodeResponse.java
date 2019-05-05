@@ -8,6 +8,8 @@ import com.acgist.snail.net.dht.bootstrap.Request;
 import com.acgist.snail.net.dht.bootstrap.Response;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.system.config.DhtConfig;
+import com.acgist.snail.system.manager.NodeManager;
+import com.acgist.snail.utils.CollectionUtils;
 
 /**
  * 8个最近的节点
@@ -26,10 +28,14 @@ public class FindNodeResponse extends Response {
 		return new FindNodeResponse(response);
 	}
 
-	// TODO：
 	public static final FindNodeResponse newInstance(Request request) {
+		final byte[] target = request.getBytes(DhtConfig.KEY_TARGET);
+		final var nodes = NodeManager.getInstance().findNode(target);
+		if(CollectionUtils.isEmpty(nodes)) {
+			return FindNodeResponse.newInstance(Response.error(request.getT(), 201, "没有找到Node"));
+		}
 		final FindNodeResponse response = new FindNodeResponse(request.getT());
-		response.put(DhtConfig.KEY_NODES, "1234");
+		response.put(DhtConfig.KEY_NODES, writeNode(nodes));
 		return response;
 	}
 	

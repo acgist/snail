@@ -13,7 +13,8 @@ public class DhtServerTest {
 	@Test
 	public void ping() {
 		DhtClient client = DhtClient.newInstance(host, port);
-		client.ping();
+		boolean ping = client.ping();
+		System.out.println(ping);
 		ThreadUtils.sleep(Long.MAX_VALUE);
 	}
 	

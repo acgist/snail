@@ -135,15 +135,18 @@ public class Response {
 		response.put(DhtConfig.KEY_T, this.t);
 		response.put(DhtConfig.KEY_Y, this.y);
 		if(this.r != null) {
-			response.put(DhtConfig.KEY_Q, this.r);
+			response.put(DhtConfig.KEY_R, this.r);
 		}
 		if(this.e != null) {
-			response.put(DhtConfig.KEY_Q, this.e);
+			response.put(DhtConfig.KEY_E, this.e);
 		}
 		return BCodeEncoder.mapToBytes(response);
 	}
 	
-	protected NodeSession readNode(ByteBuffer buffer) {
+	/**
+	 * 读取Node
+	 */
+	protected static final NodeSession readNode(ByteBuffer buffer) {
 		if(buffer.hasRemaining()) {
 			final byte[] id = new byte[20];
 			buffer.get(id);
@@ -153,6 +156,19 @@ public class Response {
 			return nodeSession;
 		}
 		return null;
+	}
+	
+	/**
+	 * 输出Node
+	 */
+	protected static final byte[] writeNode(List<NodeSession> nodes) {
+		final ByteBuffer buffer = ByteBuffer.allocate(26 * nodes.size());
+		for (NodeSession node : nodes) {
+			buffer.put(node.getId());
+			buffer.putInt(NetUtils.encodeIpToInt(node.getHost()));
+			buffer.putShort(NetUtils.encodePort(node.getPort()));
+		}
+		return buffer.array();
 	}
 	
 }
