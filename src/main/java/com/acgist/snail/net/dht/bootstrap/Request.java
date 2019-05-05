@@ -1,5 +1,6 @@
 package com.acgist.snail.net.dht.bootstrap;
 
+import java.net.SocketAddress;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -17,6 +18,7 @@ public class Request {
 	private final Map<String, Object> a;
 	
 	private Response response;
+	private SocketAddress address;
 	
 	protected Request(byte[] t, DhtConfig.QType q) {
 		this(t, DhtConfig.KEY_Q, q, new LinkedHashMap<>());
@@ -66,6 +68,14 @@ public class Request {
 
 	public void setResponse(Response response) {
 		this.response = response;
+	}
+
+	public SocketAddress getAddress() {
+		return address;
+	}
+
+	public void setAddress(SocketAddress address) {
+		this.address = address;
 	}
 
 	/**
