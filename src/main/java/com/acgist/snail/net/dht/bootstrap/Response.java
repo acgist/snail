@@ -86,6 +86,10 @@ public class Response {
 		return (byte[]) this.get(key);
 	}
 	
+	public List<?> getList(String key) {
+		return (List<?>) this.get(key);
+	}
+	
 	public String getString(String key) {
 		final byte[] bytes = getBytes(key);
 		if(bytes == null) {

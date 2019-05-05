@@ -13,6 +13,7 @@ import com.acgist.snail.system.bcode.BCodeEncoder;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.system.manager.NodeManager;
 import com.acgist.snail.utils.ThreadUtils;
 
 public class DhtClientTest {
@@ -56,10 +57,18 @@ public class DhtClientTest {
 	@Test
 	public void getPeers() throws DownloadException {
 		DhtClient client = DhtClient.newInstance(host, port);
-		final String hash = "f3f8adb9cadbaa56c6e0e537872dc6edd1f45337";
+		final String hash = "c15417e6aeab33732a59085d826edd29978f9afa";
 		final InfoHash infoHash = InfoHash.newInstance(hash);
 		client.getPeers(infoHash);
-		ThreadUtils.sleep(Long.MAX_VALUE);
+		while(true) {
+			var nodes = NodeManager.getInstance().findNode(hash);
+			nodes.forEach(node -> {
+				DhtClient clientx = DhtClient.newInstance(node.getHost(), node.getPort());
+				clientx.getPeers(infoHash);
+			});
+			ThreadUtils.sleep(5000);
+		}
+//		ThreadUtils.sleep(Long.MAX_VALUE);
 	}
 	
 }

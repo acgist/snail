@@ -157,8 +157,8 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	private void findNode(Request request, Response response) {
 		take(request);
 		if(SUCCESS.apply(response)) {
-			final var list = FindNodeResponse.newInstance(response).getNodes();
-			NodeManager.getInstance().put(list);
+			final var nodes = FindNodeResponse.newInstance(response).getNodes();
+			NodeManager.getInstance().put(nodes);
 		}
 	}
 
@@ -179,11 +179,13 @@ public class DhtMessageHandler extends UdpMessageHandler {
 		if(SUCCESS.apply(response)) {
 			final GetPeersResponse getPeersResponse = GetPeersResponse.newInstance(response);
 			if(getPeersResponse.havePeers()) {
-				var peers = getPeersResponse.getPeers();
-			} else {
-				var nodes = getPeersResponse.getNodes();
-				System.out.println(nodes);
+				getPeersResponse.putPeers(request);
 			}
+			if(getPeersResponse.haveNodes()) {
+				final var nodes = getPeersResponse.getNodes();
+				NodeManager.getInstance().put(nodes);
+			}
+			
 		}
 	}
 	

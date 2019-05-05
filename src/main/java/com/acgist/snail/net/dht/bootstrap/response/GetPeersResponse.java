@@ -8,7 +8,13 @@ import com.acgist.snail.net.dht.bootstrap.Request;
 import com.acgist.snail.net.dht.bootstrap.Response;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.pojo.session.PeerSession;
+import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.DhtConfig;
+import com.acgist.snail.system.config.PeerConfig;
+import com.acgist.snail.system.manager.PeerSessionManager;
+import com.acgist.snail.system.manager.TorrentSessionManager;
+import com.acgist.snail.utils.NetUtils;
+import com.acgist.snail.utils.StringUtils;
 
 /**
  * 如果有Peer，返回Peer，否者返回最近的Node
@@ -51,22 +57,40 @@ public class GetPeersResponse extends Response {
 		return list;
 	}
 	
-	public List<PeerSession> getPeers() {
-		return this.getValues();
+	public List<PeerSession> putPeers(Request request) {
+		return this.getValues(request);
 	}
 	
-	public List<PeerSession> getValues() {
-		final byte[] bytes = this.getBytes(DhtConfig.KEY_VALUES);
-		if(bytes == null) {
+	public List<PeerSession> getValues(Request request) {
+		final byte[] infoHash = request.getBytes(DhtConfig.KEY_INFO_HASH);
+		final String infoHashHex = StringUtils.hex(infoHash);
+		final TorrentSession torrentSession = TorrentSessionManager.getInstance().torrentSession(infoHashHex);
+		if(torrentSession == null) {
+			return null;
 		}
-		return null;
+		final List<?> values = this.getList(DhtConfig.KEY_VALUES);
+		if(values == null) {
+			return null;
+		}
+		byte[] bytes;
+		ByteBuffer buffer;
+		PeerSession session;
+		final List<PeerSession> list = new ArrayList<>();
+		for (Object object : values) {
+			bytes = (byte[]) object;
+			buffer = ByteBuffer.wrap(bytes);
+			session = PeerSessionManager.getInstance().newPeerSession(infoHashHex, null, NetUtils.decodeIntToIp(buffer.getInt()), NetUtils.decodePort(buffer.getShort()), PeerConfig.SOURCE_DHT);
+			list.add(session);
+		}
+		return list;
 	}
 	
-	/**
-	 * 是否含有Peers
-	 */
 	public boolean havePeers() {
 		return get(DhtConfig.KEY_VALUES) != null;
+	}
+	
+	public boolean haveNodes() {
+		return get(DhtConfig.KEY_NODES) != null;
 	}
 	
 }
