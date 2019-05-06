@@ -22,7 +22,7 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	
 	private static final int SLICE_MAX_SIZE = 10; // 单次请求10个SLICE
 	
-	private static final int SLICE_AWAIT_TIME = 10; // SLICE每批等待时间
+	private static final int SLICE_AWAIT_TIME = 30; // SLICE每批等待时间
 	private static final int PIECE_AWAIT_TIME = 60; // PIECE完成等待时间
 	private static final int CLOSE_AWAIT_TIME = 60; // 关闭等待时间
 	

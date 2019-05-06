@@ -102,7 +102,7 @@ public class TorrentSession {
 	 */
 	private void loadDhtLauncher() {
 		this.dhtLauncher = DhtLauncher.newInstance(this);
-		this.timer(INTERVAL, TimeUnit.SECONDS, this.dhtLauncher);
+		this.timer(INTERVAL, INTERVAL, TimeUnit.SECONDS, this.dhtLauncher);
 	}
 
 	/**
@@ -163,6 +163,12 @@ public class TorrentSession {
 	public void timer(long delay, TimeUnit unit, Runnable runnable) {
 		if(delay >= 0) {
 			executorTimer.schedule(runnable, delay, unit);
+		}
+	}
+	
+	public void timer(long delay, long period, TimeUnit unit, Runnable runnable) {
+		if(delay >= 0) {
+			executorTimer.scheduleAtFixedRate(runnable, delay, period, unit);
 		}
 	}
 	
