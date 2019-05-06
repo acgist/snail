@@ -10,12 +10,14 @@ import com.acgist.snail.net.UdpClient;
 import com.acgist.snail.net.application.ApplicationClient;
 import com.acgist.snail.net.application.ApplicationServer;
 import com.acgist.snail.net.dht.DhtClient;
+import com.acgist.snail.net.peer.PeerServer;
 import com.acgist.snail.net.tracker.TrackerClient;
 import com.acgist.snail.net.upnp.UpnpClient;
 import com.acgist.snail.net.upnp.bootstrap.UpnpService;
 import com.acgist.snail.system.initializer.impl.ConfigInitializer;
 import com.acgist.snail.system.initializer.impl.DbInitializer;
 import com.acgist.snail.system.initializer.impl.DownloaderInitializer;
+import com.acgist.snail.system.initializer.impl.PeerInitializer;
 import com.acgist.snail.system.initializer.impl.ProtocolInitializer;
 import com.acgist.snail.system.initializer.impl.UpnpInitializer;
 import com.acgist.snail.system.manager.DownloaderManager;
@@ -45,6 +47,7 @@ public class SystemContext {
 		DbInitializer.newInstance().initSync();
 		ConfigInitializer.newInstance().initAsyn();
 		ProtocolInitializer.newInstance().initAsyn();
+		PeerInitializer.newInstance().initAsyn();
 		DownloaderInitializer.newInstance().initAsyn();
 		UpnpInitializer.newInstance().initAsyn();
 	}
@@ -104,6 +107,7 @@ public class SystemContext {
 				TcpClient.shutdown();
 				TcpServer.shutdown();
 				UdpClient.shutdown();
+				PeerServer.shutdown();
 				SystemThreadContext.shutdown();
 				Platform.exit();
 				TrayMenu.exit();
