@@ -7,35 +7,28 @@ import java.util.BitSet;
  */
 public class BitfieldUtils {
 
-	public static final byte[] toBytes(int pieceSize, BitSet pieces) {
-		final int bitSize = NumberUtils.divideUp(pieceSize, 8);
-		final byte[] result = new byte[bitSize];
+	public static final byte[] toBytes(final int pieceSize, final BitSet pieces) {
+		final int byteSize = NumberUtils.divideUp(pieceSize, 8);
+		final byte[] bitfield = new byte[byteSize];
 		final byte[] value = pieces.toByteArray();
-		System.arraycopy(value, 0, result, 0, value.length);
-		return result;
+		for (int index = 0; index < value.length; index++) {
+			value[index] = reverse(value[index]);
+		}
+		System.arraycopy(value, 0, bitfield, 0, value.length);
+		return bitfield;
 	}
 	
-	public static void main(String[] args) {
-		BitSet x = new BitSet();
-		x.set(300);
-		System.out.println(x.length());
-		System.out.println(x.size());
-		byte[] a = new byte[1];
-		a[0] = 1;
-		byte[] b = new byte[2];
-		System.arraycopy(a, 0, b, 0, a.length);
-		System.out.println(b[0]);
-		System.out.println(b[1]);
-	}
-	
-	public static final BitSet toPieces(byte[] bytes) {
-		return null;
+	public static final BitSet toPieces(final byte[] bitfield) {
+		for (int index = 0; index < bitfield.length; index++) {
+			bitfield[index] = reverse(bitfield[index]);
+		}
+		return BitSet.valueOf(bitfield);
 	}
 	
 	/**
 	 * 高低位互换
 	 */
-	public static final byte reverse(byte value) {
+	private static final byte reverse(byte value) {
 		int opt = value;
 		opt = (opt & 0B11110000) >> 4 | (opt & 0B00001111) << 4;
 		opt = (opt & 0B11001100) >> 2 | (opt & 0B00110011) << 2;
