@@ -22,7 +22,7 @@ import com.acgist.snail.system.config.PeerMessageConfig.Action;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.system.manager.PeerSessionManager;
 import com.acgist.snail.system.manager.TorrentSessionManager;
-import com.acgist.snail.utils.NumberUtils;
+import com.acgist.snail.utils.BitfieldUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -419,8 +419,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		final BitSet pieces = torrentStreamGroup.pieces();
 		LOGGER.debug("发送位图：{}", pieces);
 		final int pieceSize = torrentSession.torrent().getInfo().pieceSize();
-		// TODO:
-		pushMessage(PeerMessageConfig.Type.bitfield, bytes);
+		pushMessage(PeerMessageConfig.Type.bitfield, BitfieldUtils.toBytes(pieceSize, pieces));
 	}
 	
 	/**
@@ -429,7 +428,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	private void bitfield(ByteBuffer buffer) {
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
-		final BitSet pieces = BitSet.valueOf(bytes);
+		final BitSet pieces = BitfieldUtils.toPieces(bytes);
 		peerSession.pieces(pieces);
 		LOGGER.debug("收到位图：{}", pieces);
 		final BitSet notHave = new BitSet();
