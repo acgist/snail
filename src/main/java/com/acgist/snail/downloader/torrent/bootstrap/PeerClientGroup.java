@@ -105,10 +105,8 @@ public class PeerClientGroup {
 				return;
 			}
 			LOGGER.debug("优化PeerClient");
-			final boolean ok = inferiorPeerClient();
-			if(ok) {
-				launchers();
-			}
+			inferiorPeerClient();
+			launchers();
 		}
 		peerSessionManager.exchange(torrentSession.infoHashHex(), optimize);
 	}
@@ -150,38 +148,18 @@ public class PeerClientGroup {
 		}
 	}
 	
-	/**
+	/***
 	 * <p>剔除劣质PeerClient</p>
 	 * <p>选择劣质PeerClient，释放资源，然后放入Peer队列头部。</p>
-	 * 
-	 * @return true-剔除成功；false-剔除失败
-	 */
-	private boolean inferiorPeerClient() {
-		if(peerClients.isEmpty()) {
-			return false;
-		}
-		final PeerClient peerClient = pickInferiorPeerClient();
-		if(peerClient != null) {
-			LOGGER.debug("剔除劣质PeerClient：{}:{}", peerClient.peerSession().host(), peerClient.peerSession().port());
-			peerClient.release();
-			peerSessionManager.inferior(torrentSession.infoHashHex(), peerClient.peerSession());
-			return true;
-		}
-		return false;
-	}
-	
-	/***
-	 * <p>选择劣质PeerClient</p>
 	 * <p>
 	 * 挑选权重最低的PeerClient作为劣质Peer，如果其中含有不可用的PeerClient，直接剔除该PeerClient，
 	 * 但是依旧需要循环完所有的PeerClient，清除权重进行新一轮的权重计算。
 	 * </p>
-	 * TODO：优化如果没有速度直接剔除
 	 */
-	private PeerClient pickInferiorPeerClient() {
+	private void inferiorPeerClient() {
 		final int size = peerClients.size();
 		if(size < SystemConfig.getPeerSize()) {
-			return null;
+			return;
 		}
 		int index = 0;
 		int mark = 0, minMark = 0;
@@ -195,18 +173,20 @@ public class PeerClientGroup {
 			if(tmp == null) {
 				break;
 			}
-			mark = tmp.mark(); // 清空权重
-			if(mark > 0) {
-				optimize.add(tmp.peerSession());
+			if(!tmp.available()) { // 如果当前挑选的是不可用的PeerClient不执行后面操作
+				release(tmp);
+				continue;
 			}
-			if(inferior != null && !inferior.available()) { // 如果当前挑选的是不可用的PeerClient不执行后面操作
+			mark = tmp.mark(); // 清空权重
+			if(mark > 0) { // 添加可用
+				optimize.add(tmp.peerSession());
+			} else { // 如果速度=0，直接剔除
+				release(tmp);
 				continue;
 			}
 			if(inferior == null) {
 				inferior = tmp;
 				minMark = mark;
-			} else if(!tmp.available()) {
-				inferior = tmp;
 			} else if(mark < minMark) {
 				peerClients.offer(inferior);
 				inferior = tmp;
@@ -215,7 +195,14 @@ public class PeerClientGroup {
 				peerClients.offer(tmp);
 			}
 		}
-		return inferior;
+	}
+	
+	private void release(PeerClient peerClient) {
+		if(peerClient != null) {
+			LOGGER.debug("剔除劣质PeerClient：{}:{}", peerClient.peerSession().host(), peerClient.peerSession().port());
+			peerClient.release();
+			peerSessionManager.inferior(torrentSession.infoHashHex(), peerClient.peerSession());
+		}
 	}
 
 }
