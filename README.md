@@ -41,7 +41,7 @@
 #### BT进度
 |协议|进度|
 |:-|:-|
-|DHT Protocol|×|
+|DHT Protocol|○|
 |Fast Extension|×|
 |Extension Protocol|√|
 |Peer Exchange（PEX）|√|
@@ -49,7 +49,7 @@
 |Local Service Discovery|×|
 |Peer wire protocol（TCP）|√|
 |Tracker Protocol（UDP/HTTP）|√|
-|uTorrent transport protocol（uTP）|×|
+|uTorrent transport protocol（uTP）|○|
 |Extension for Peers to Send Metadata Files|√|
 
 #### ED2K进度

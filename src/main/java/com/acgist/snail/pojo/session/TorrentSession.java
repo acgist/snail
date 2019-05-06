@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.downloader.torrent.bootstrap.DhtLauncher;
 import com.acgist.snail.downloader.torrent.bootstrap.PeerClientGroup;
 import com.acgist.snail.downloader.torrent.bootstrap.TorrentStreamGroup;
 import com.acgist.snail.downloader.torrent.bootstrap.TrackerLauncherGroup;
@@ -31,6 +32,8 @@ public class TorrentSession {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentSession.class);
 	
+	private static final int INTERVAL = 30;
+	
 	/**
 	 * 种子
 	 */
@@ -43,6 +46,10 @@ public class TorrentSession {
 	 * 任务
 	 */
 	private TaskSession taskSession;
+	/**
+	 * DHT任务
+	 */
+	private DhtLauncher dhtLauncher;
 	/**
 	 * Peer组
 	 */
@@ -87,6 +94,15 @@ public class TorrentSession {
 		this.executor = SystemThreadContext.newExecutor(10, 10, 100, 60L, SystemThreadContext.SNAIL_THREAD_PEER);
 		final String executorTimerName = SystemThreadContext.SNAIL_THREAD_TRACKER + "-" + this.infoHashHex();
 		this.executorTimer = SystemThreadContext.newScheduledExecutor(4, executorTimerName);
+		this.loadDhtLauncher();
+	}
+
+	/**
+	 * 加载DHT定时任务
+	 */
+	private void loadDhtLauncher() {
+		this.dhtLauncher = DhtLauncher.newInstance(this);
+		this.timer(INTERVAL, TimeUnit.SECONDS, this.dhtLauncher);
 	}
 
 	/**
@@ -122,6 +138,10 @@ public class TorrentSession {
 	
 	public TaskSession taskSession() {
 		return this.taskSession;
+	}
+	
+	public DhtLauncher dhtLauncher() {
+		return this.dhtLauncher;
 	}
 	
 	public PeerClientGroup peerClientGroup() {
@@ -185,7 +205,7 @@ public class TorrentSession {
 		peers.forEach((host, port) -> {
 			manager.newPeerSession(this.infoHashHex(), taskSession.statistics(), host, port, PeerConfig.SOURCE_TRACKER);
 		});
-		peerClientGroup.launchers(peers.size());
+		peerClientGroup.launchers();
 	}
 
 	/**

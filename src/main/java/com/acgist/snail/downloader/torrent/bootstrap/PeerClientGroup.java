@@ -68,9 +68,9 @@ public class PeerClientGroup {
 	 * 
 	 * @param size 指定生成数量
 	 */
-	public void launchers(int size) {
+	public void launchers() {
 		synchronized (peerClients) {
-			for (int index = 0; index < size; index++) {
+			for (int index = 0; index < SystemConfig.getPeerSize(); index++) {
 				torrentSession.submit(() -> {
 					buildPeerClient();
 				});
@@ -107,7 +107,7 @@ public class PeerClientGroup {
 			LOGGER.debug("优化PeerClient");
 			final boolean ok = inferiorPeerClient();
 			if(ok) {
-				launchers(1);
+				launchers();
 			}
 		}
 		peerSessionManager.exchange(torrentSession.infoHashHex(), optimize);
@@ -176,6 +176,7 @@ public class PeerClientGroup {
 	 * 挑选权重最低的PeerClient作为劣质Peer，如果其中含有不可用的PeerClient，直接剔除该PeerClient，
 	 * 但是依旧需要循环完所有的PeerClient，清除权重进行新一轮的权重计算。
 	 * </p>
+	 * TODO：优化如果没有速度直接剔除
 	 */
 	private PeerClient pickInferiorPeerClient() {
 		final int size = peerClients.size();

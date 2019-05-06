@@ -16,6 +16,9 @@ import com.acgist.snail.system.manager.TorrentSessionManager;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.StringUtils;
 
+/**
+ * TODO：通知
+ */
 public class AnnouncePeerRequest extends Request {
 
 	private AnnouncePeerRequest() {
