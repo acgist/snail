@@ -1,7 +1,6 @@
 package com.acgist.snail.net.dht;
 
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.nio.channels.DatagramChannel;
 
 import org.slf4j.Logger;
@@ -23,7 +22,7 @@ public class DhtClient extends UdpClient<DhtMessageHandler> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DhtClient.class);
 	
-	private final SocketAddress address;
+	private final InetSocketAddress address;
 	
 	private static final DatagramChannel CHANNEL;
 	
@@ -32,7 +31,7 @@ public class DhtClient extends UdpClient<DhtMessageHandler> {
 		UdpClient.bindServerHandler(new DhtMessageHandler(), CHANNEL);
 	}
 	
-	private DhtClient(SocketAddress address) {
+	private DhtClient(InetSocketAddress address) {
 		super("DHT Client", new DhtMessageHandler());
 		this.open();
 		this.address = address;
@@ -42,7 +41,7 @@ public class DhtClient extends UdpClient<DhtMessageHandler> {
 		return newInstance(new InetSocketAddress(host, port));
 	}
 	
-	public static final DhtClient newInstance(SocketAddress address) {
+	public static final DhtClient newInstance(InetSocketAddress address) {
 		return new DhtClient(address);
 	}
 
@@ -70,7 +69,19 @@ public class DhtClient extends UdpClient<DhtMessageHandler> {
 	}
 	
 	public void getPeers(InfoHash infoHash) {
-		this.handler.getPeers(this.address, infoHash.infoHash());
+		this.getPeers(infoHash.infoHash());
+	}
+	
+	public void getPeers(byte[] infoHash) {
+		this.handler.getPeers(this.address, infoHash);
+	}
+	
+	public void announcePeer(byte[] token, InfoHash infoHash) {
+		this.announcePeer(token, infoHash.infoHash());
+	}
+	
+	public void announcePeer(byte[] token, byte[] infoHash) {
+		this.handler.announcePeer(this.address, token, infoHash);
 	}
 	
 	public static final void release() {

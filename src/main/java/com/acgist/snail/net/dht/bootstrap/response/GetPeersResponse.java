@@ -3,7 +3,6 @@ package com.acgist.snail.net.dht.bootstrap.response;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.acgist.snail.net.dht.bootstrap.Request;
 import com.acgist.snail.net.dht.bootstrap.Response;
@@ -15,7 +14,6 @@ import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.manager.NodeManager;
 import com.acgist.snail.system.manager.PeerSessionManager;
 import com.acgist.snail.system.manager.TorrentSessionManager;
-import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -25,7 +23,13 @@ import com.acgist.snail.utils.StringUtils;
  */
 public class GetPeersResponse extends Response {
 
-	public GetPeersResponse(Response response) {
+	private GetPeersResponse(byte[] t) {
+		super(t);
+		this.put(DhtConfig.KEY_ID, NodeManager.getInstance().nodeId());
+		this.put(DhtConfig.KEY_TOKEN, NodeManager.getInstance().token());
+	}
+	
+	private GetPeersResponse(Response response) {
 		super(response.getT(), response.getY(), response.getR(), response.getE());
 	}
 
@@ -33,34 +37,10 @@ public class GetPeersResponse extends Response {
 		return new GetPeersResponse(response);
 	}
 
-	public static final FindNodeResponse newInstance(Request request) {
-		final FindNodeResponse response = new FindNodeResponse(request.getT());
-		final byte[] infoHash = request.getBytes(DhtConfig.KEY_INFO_HASH);
-		final String infoHashHex = StringUtils.hex(infoHash);
-		TorrentSession session = TorrentSessionManager.getInstance().torrentSession(infoHashHex);
-		response.put(DhtConfig.KEY_TOKEN, NodeManager.getInstance().token());
-		final ByteBuffer buffer = ByteBuffer.allocate(6);
-		if(session != null) {
-			final var list = PeerSessionManager.getInstance().list(infoHashHex);
-			if(CollectionUtils.isNotEmpty(list)) {
-				final var values = list.stream()
-					.limit(NodeManager.GET_PEER_LENGTH)
-					.map(peer -> {
-						// TODO：测试
-						buffer.putInt(NetUtils.encodeIpToInt(peer.host()));
-						buffer.putShort(NetUtils.encodePort(peer.port()));
-						buffer.flip();
-						return buffer.array();
-					})
-					.collect(Collectors.toList());
-				response.put(DhtConfig.KEY_VALUES, values);
-			}
-		}
-		final var nodes = NodeManager.getInstance().findNode(infoHash);
-		response.put(DhtConfig.KEY_NODES, writeNode(nodes));
-		return response;
+	public static final GetPeersResponse newInstance(Request request) {
+		return new GetPeersResponse(request.getT());
 	}
-		
+	
 	public byte[] getToken() {
 		return getBytes(DhtConfig.KEY_TOKEN);
 	}
@@ -82,10 +62,16 @@ public class GetPeersResponse extends Response {
 		return list;
 	}
 	
-	public List<PeerSession> putPeers(Request request) {
+	/**
+	 * 获取Peer同时添加到Peer列表
+	 */
+	public List<PeerSession> getPeers(Request request) {
 		return this.getValues(request);
 	}
 	
+	/**
+	 * 获取Peer同时添加到Peer列表
+	 */
 	public List<PeerSession> getValues(Request request) {
 		final byte[] infoHash = request.getBytes(DhtConfig.KEY_INFO_HASH);
 		final String infoHashHex = StringUtils.hex(infoHash);
@@ -104,7 +90,12 @@ public class GetPeersResponse extends Response {
 		for (Object object : values) {
 			bytes = (byte[]) object;
 			buffer = ByteBuffer.wrap(bytes);
-			session = PeerSessionManager.getInstance().newPeerSession(infoHashHex, null, NetUtils.decodeIntToIp(buffer.getInt()), NetUtils.decodePort(buffer.getShort()), PeerConfig.SOURCE_DHT);
+			session = PeerSessionManager.getInstance().newPeerSession(
+				infoHashHex,
+				torrentSession.taskSession().statistics(),
+				NetUtils.decodeIntToIp(buffer.getInt()),
+				NetUtils.decodePort(buffer.getShort()),
+				PeerConfig.SOURCE_DHT);
 			list.add(session);
 		}
 		return list;

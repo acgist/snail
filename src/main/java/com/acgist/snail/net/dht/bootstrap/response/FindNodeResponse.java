@@ -15,11 +15,12 @@ import com.acgist.snail.system.manager.NodeManager;
  */
 public class FindNodeResponse extends Response {
 
-	public FindNodeResponse(byte[] t) {
+	private FindNodeResponse(byte[] t) {
 		super(t);
+		this.put(DhtConfig.KEY_ID, NodeManager.getInstance().nodeId());
 	}
 	
-	public FindNodeResponse(Response response) {
+	private FindNodeResponse(Response response) {
 		super(response.getT(), response.getY(), response.getR(), response.getE());
 	}
 
@@ -28,11 +29,7 @@ public class FindNodeResponse extends Response {
 	}
 
 	public static final FindNodeResponse newInstance(Request request) {
-		final FindNodeResponse response = new FindNodeResponse(request.getT());
-		final byte[] target = request.getBytes(DhtConfig.KEY_TARGET);
-		final var nodes = NodeManager.getInstance().findNode(target);
-		response.put(DhtConfig.KEY_NODES, writeNode(nodes));
-		return response;
+		return new FindNodeResponse(request.getT());
 	}
 	
 	public List<NodeSession> getNodes() {

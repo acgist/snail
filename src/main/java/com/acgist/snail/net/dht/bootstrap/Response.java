@@ -1,5 +1,6 @@
 package com.acgist.snail.net.dht.bootstrap;
 
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -29,6 +30,8 @@ public class Response {
 	private final String y;
 	private final Map<String, Object> r;
 	private final List<Object> e;
+	
+	private InetSocketAddress address;
 
 	protected Response(byte[] t) {
 		this(t, DhtConfig.KEY_R, new LinkedHashMap<>(), null);
@@ -71,6 +74,14 @@ public class Response {
 		return e;
 	}
 	
+	public InetSocketAddress getAddress() {
+		return address;
+	}
+
+	public void setAddress(InetSocketAddress address) {
+		this.address = address;
+	}
+
 	public void put(String key, Object value) {
 		this.r.put(key, value);
 	}
@@ -160,19 +171,6 @@ public class Response {
 			return nodeSession;
 		}
 		return null;
-	}
-	
-	/**
-	 * 输出Node
-	 */
-	protected static final byte[] writeNode(List<NodeSession> nodes) {
-		final ByteBuffer buffer = ByteBuffer.allocate(26 * nodes.size());
-		for (NodeSession node : nodes) {
-			buffer.put(node.getId());
-			buffer.putInt(NetUtils.encodeIpToInt(node.getHost()));
-			buffer.putShort(NetUtils.encodePort(node.getPort()));
-		}
-		return buffer.array();
 	}
 	
 }

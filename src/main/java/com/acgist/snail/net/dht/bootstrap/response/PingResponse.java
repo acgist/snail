@@ -6,12 +6,13 @@ import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.system.manager.NodeManager;
 
 public class PingResponse extends Response {
-
-	public PingResponse(byte[] t) {
+	
+	private PingResponse(byte[] t) {
 		super(t);
+		this.put(DhtConfig.KEY_ID, NodeManager.getInstance().nodeId());
 	}
 
-	public PingResponse(Response response) {
+	private PingResponse(Response response) {
 		super(response.getT(), response.getY(), response.getR(), response.getE());
 	}
 
@@ -20,9 +21,7 @@ public class PingResponse extends Response {
 	}
 
 	public static final PingResponse newInstance(Request request) {
-		final PingResponse response = new PingResponse(request.getT());
-		response.put(DhtConfig.KEY_ID, NodeManager.getInstance().nodeId());
-		return response;
+		return new PingResponse(request.getT());
 	}
 	
 }
