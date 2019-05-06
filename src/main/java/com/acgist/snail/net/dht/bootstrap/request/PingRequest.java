@@ -2,6 +2,7 @@ package com.acgist.snail.net.dht.bootstrap.request;
 
 import com.acgist.snail.net.dht.bootstrap.DhtService;
 import com.acgist.snail.net.dht.bootstrap.Request;
+import com.acgist.snail.net.dht.bootstrap.response.PingResponse;
 import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.system.manager.NodeManager;
 
@@ -13,8 +14,11 @@ public class PingRequest extends Request {
 	}
 	
 	public static final PingRequest newRequest() {
-		final PingRequest request = new PingRequest();
-		return request;
+		return new PingRequest();
+	}
+
+	public static final PingResponse execute(Request request) {
+		return PingResponse.newInstance(request);
 	}
 	
 }

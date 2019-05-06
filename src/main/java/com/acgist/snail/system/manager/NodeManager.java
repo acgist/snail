@@ -186,7 +186,7 @@ public class NodeManager {
 	 * 设置token，如果对应nodeId不存在，这加入网络
 	 */
 	public void token(byte[] nodeId, Request request, byte[] token) {
-		final InetSocketAddress address = (InetSocketAddress) request.getAddress();
+		final InetSocketAddress address = request.getAddress();
 		synchronized (this.nodes) {
 			NodeSession old = null;
 			for (NodeSession nodeSession : this.nodes) {

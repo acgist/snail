@@ -1,13 +1,17 @@
 package com.acgist.snail.net.dht.bootstrap;
 
-import java.net.SocketAddress;
+import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
+import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.system.bcode.BCodeDecoder;
 import com.acgist.snail.system.bcode.BCodeEncoder;
 import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.system.config.DhtConfig.QType;
+import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
 
 public class Request {
@@ -18,7 +22,7 @@ public class Request {
 	private final Map<String, Object> a;
 	
 	private Response response;
-	private SocketAddress address;
+	private InetSocketAddress address;
 	
 	protected Request(byte[] t, DhtConfig.QType q) {
 		this(t, DhtConfig.KEY_Q, q, new LinkedHashMap<>());
@@ -70,11 +74,11 @@ public class Request {
 		this.response = response;
 	}
 
-	public SocketAddress getAddress() {
+	public InetSocketAddress getAddress() {
 		return address;
 	}
 
-	public void setAddress(SocketAddress address) {
+	public void setAddress(InetSocketAddress address) {
 		this.address = address;
 	}
 
@@ -135,6 +139,19 @@ public class Request {
 		request.put(DhtConfig.KEY_Q, this.q.name());
 		request.put(DhtConfig.KEY_A, this.a);
 		return BCodeEncoder.mapToBytes(request);
+	}
+	
+	/**
+	 * 输出Node
+	 */
+	protected static final byte[] writeNode(List<NodeSession> nodes) {
+		final ByteBuffer buffer = ByteBuffer.allocate(26 * nodes.size());
+		for (NodeSession node : nodes) {
+			buffer.put(node.getId());
+			buffer.putInt(NetUtils.encodeIpToInt(node.getHost()));
+			buffer.putShort(NetUtils.encodePort(node.getPort()));
+		}
+		return buffer.array();
 	}
 	
 }

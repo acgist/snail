@@ -22,7 +22,7 @@ public abstract class UdpMessageHandler extends UdpSender {
 	/**
 	 * 消息处理
 	 */
-	public abstract void onMessage(InetSocketAddress address, ByteBuffer buffer);
+	public abstract void onMessage(ByteBuffer buffer, InetSocketAddress address);
 	
 	/**
 	 * 代理Channel
@@ -52,7 +52,7 @@ public abstract class UdpMessageHandler extends UdpSender {
 							final ByteBuffer buffer = ByteBuffer.allocate(1024);
 							final InetSocketAddress address = (InetSocketAddress) channel.receive(buffer);
 							try {
-								onMessage(address, buffer);
+								onMessage(buffer, address);
 							} catch (Exception e) {
 								LOGGER.error("UDP消息处理异常", e);
 							}

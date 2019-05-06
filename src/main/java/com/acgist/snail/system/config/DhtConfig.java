@@ -38,6 +38,9 @@ public class DhtConfig extends PropertiesConfig {
 	 */
 	public static final String KEY_IMPLIED_PORT = "implied_port";
 	
+	public static final Integer IMPLIED_PORT_AUTO = 1; // 自动获取
+	public static final Integer IMPLIED_PORT_CONFIG = 0; // 使用配置
+	
 	/**
 	 * 请求类型
 	 */
