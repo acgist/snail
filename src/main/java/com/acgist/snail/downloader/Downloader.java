@@ -65,6 +65,7 @@ public abstract class Downloader implements IDownloader {
 	@Override
 	public void pause() {
 		this.taskSession.updateStatus(Status.pause);
+		this.unlockDownload();
 	}
 	
 	@Override

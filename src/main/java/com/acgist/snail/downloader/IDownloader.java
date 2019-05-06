@@ -65,6 +65,7 @@ public interface IDownloader extends Runnable {
 	/**
 	 * <p>解锁下载</p>
 	 * <p>解除下载等待</p>
+	 * TODO：暂停、失败等优化
 	 */
 	void unlockDownload();
 	

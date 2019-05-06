@@ -193,6 +193,7 @@ public class TorrentSession {
 	 * 释放资源
 	 */
 	public void release() {
+		LOGGER.debug("Torrent释放资源");
 		trackerLauncherGroup.release();
 		peerClientGroup.release();
 		torrentStreamGroup.release();
