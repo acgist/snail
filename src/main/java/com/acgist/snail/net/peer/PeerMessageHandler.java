@@ -97,7 +97,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		this.torrentSession = torrentSession;
 		this.torrentStreamGroup = torrentSession.torrentStreamGroup();
 		this.extensionMessageHandler = ExtensionMessageHandler.newInstance(this.peerSession, this.torrentSession, this);
-		this.dhtExtensionMessageHandler = DhtExtensionMessageHandler.newInstance(this.peerSession, this);
+		this.dhtExtensionMessageHandler = DhtExtensionMessageHandler.newInstance(this.peerSession, torrentSession.dhtLauncher(), this);
 	}
 
 	/**
