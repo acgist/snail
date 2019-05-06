@@ -419,11 +419,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		final BitSet pieces = torrentStreamGroup.pieces();
 		LOGGER.debug("发送位图：{}", pieces);
 		final int pieceSize = torrentSession.torrent().getInfo().pieceSize();
-		final int bitSize = NumberUtils.divideUp(pieceSize, 8);
-		final int length = bitSize * 8;
-		pieces.set(length + 1);
-		final byte[] bytes = new byte[bitSize];
-		System.arraycopy(pieces.toByteArray(), 0, bytes, 0, bitSize);
+		// TODO:
 		pushMessage(PeerMessageConfig.Type.bitfield, bytes);
 	}
 	
@@ -490,6 +486,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 			return;
 		}
 		LOGGER.debug("发送响应：{}-{}", index, begin);
+		peerSession.upload(bytes.length);
 		ByteBuffer buffer = ByteBuffer.allocate(8 + bytes.length);
 		buffer.putInt(index);
 		buffer.putInt(begin);

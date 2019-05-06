@@ -107,6 +107,10 @@ public class PeerSession implements IStatistics {
 		statistics.download(buffer);
 	}
 	
+	public void upload(long buffer) {
+		statistics.upload(buffer);
+	}
+	
 	public PeerMessageHandler peerMessageHandler() {
 		return this.peerMessageHandler;
 	}
