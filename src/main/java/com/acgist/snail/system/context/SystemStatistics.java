@@ -4,11 +4,12 @@ import com.acgist.snail.pojo.session.StatisticsSession;
 
 /**
  * 系统统计：累计下载、累计上传、速度采样
+ * 当前系统设置的是限制单个任务的速度，如果想要限制整个软件的速度，可以打开全局统计
  */
 public class SystemStatistics {
 	
 	/**
-	 * 系统统计
+	 * 系统全局统计
 	 */
 	private StatisticsSession systemStatistics;
 	
