@@ -68,17 +68,21 @@ public class StatisticsSession {
 	}
 	
 	/**
-	 * 下载速度
+	 * 下载速度，获取完成后设置为0
 	 */
 	public long downloadSecond() {
-		return downloadSecond;
+		final long tmp = this.downloadSecond;
+		this.downloadSecond = 0L;
+		return tmp;
 	}
 	
 	/**
-	 * 上传速度
+	 * 上传速度，获取完成后设置为0
 	 */
 	public long uploadSecond() {
-		return uploadSecond;
+		final long tmp = this.uploadSecond;
+		this.uploadSecond = 0L;
+		return tmp;
 	}
 	
 	/**
