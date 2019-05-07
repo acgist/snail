@@ -42,7 +42,7 @@ public class PeerClientTest {
 		entity.setFile("e://tmp/test/");
 		entity.setType(Type.torrent);
 		entity.setDescription(JsonUtils.toJson(list));
-		torrentSession.loadTask(TaskSession.newInstance(entity));
+		torrentSession.download(TaskSession.newInstance(entity), false);
 		String host = "127.0.0.1";
 		Integer port = 49160; // FDM测试端口
 //		Integer port = 15000; // 本地迅雷测试端口
@@ -71,7 +71,7 @@ public class PeerClientTest {
 		TaskEntity entity = new TaskEntity();
 		entity.setFile("e://tmp/test/");
 		entity.setType(Type.torrent);
-		torrentSession.loadTask(TaskSession.newInstance(entity));
+		torrentSession.download(TaskSession.newInstance(entity), false);
 		String host = "127.0.0.1";
 //		Integer port = 17888;
 //		Integer port = 49160; // FDM测试端口

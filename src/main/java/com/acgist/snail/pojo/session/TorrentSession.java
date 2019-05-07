@@ -83,30 +83,42 @@ public class TorrentSession {
 		this.infoHash = infoHash;
 	}
 	
+	public boolean download(TaskSession taskSession) throws DownloadException {
+		return download(taskSession, true);
+	}
+	
 	/**
-	 * 开始下载：初始化Tracker、DHT、线程池
-	 * @param taskSession
+	 * 开始下载：加载线程池、Peer、Tracker、DHT
+	 * 如果文件已经下载完成或者任务已经完成不会再加载线程池、Peer、Tracker、DHT
+	 * @param findPeer 是否查找Peer：true-使用Tracker、DHT查找Peer，false-不查找
+	 * @return true-下载完成；false-未完成
 	 */
-	public void download(TaskSession taskSession) throws DownloadException {
+	public boolean download(TaskSession taskSession, boolean findPeer) throws DownloadException {
 		this.loadTask(taskSession);
 		this.loadTorrentStream();
+		if(taskSession.complete() || this.torrentStreamGroup.complete()) {
+			return true;
+		}
 		this.loadExecutor();
 		this.loadPeer();
-		this.loadTrackerLauncher();
-		this.loadDhtLauncher();
+		if(findPeer) {
+			this.loadTrackerLauncher();
+			this.loadDhtLauncher();
+		}
+		return false;
 	}
 	
 	/**
 	 * 加载Task
 	 */
-	public void loadTask(TaskSession taskSession) {
+	private void loadTask(TaskSession taskSession) {
 		this.taskSession = taskSession;
 	}
 
 	/**
 	 * 加载文件流
 	 */
-	public void loadTorrentStream() throws DownloadException {
+	private void loadTorrentStream() throws DownloadException {
 		if(this.taskSession == null) {
 			throw new DownloadException("BT任务不存在");
 		}
@@ -229,8 +241,8 @@ public class TorrentSession {
 	/**
 	 * 检测是否完成下载，释放资源
 	 */
-	public void over() {
-		if(torrentStreamGroup.over()) {
+	public void complete() {
+		if(torrentStreamGroup.complete()) {
 			LOGGER.debug("任务下载完成：{}", name());
 			taskSession.downloader().unlockDownload();
 		} else {

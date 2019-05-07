@@ -87,9 +87,9 @@ public class TorrentStreamGroup {
 	 * <p>检测是否下载完成</p>
 	 * <p>所有的TorrentStream完成才能判断为完成。</p>
 	 */
-	public boolean over() {
+	public boolean complete() {
 		for (TorrentStream torrentStream : streams) {
-			if(!torrentStream.over()) {
+			if(!torrentStream.complete()) {
 				return false;
 			}
 		}

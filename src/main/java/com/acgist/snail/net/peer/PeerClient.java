@@ -38,8 +38,8 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	private TorrentPiece downloadPiece; // 下载的Piece信息
 	
 	private Object closeLock = new Object(); // 关闭锁
-	private AtomicBoolean overLock = new AtomicBoolean(false); // Piece完成锁
 	private AtomicInteger countLock = new AtomicInteger(0); // Piece分片锁
+	private AtomicBoolean completeLock = new AtomicBoolean(false); // Piece完成锁
 	
 	private AtomicInteger mark = new AtomicInteger(0); // 评分：下载速度
 	
@@ -130,11 +130,11 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 				countLock.notifyAll();
 			}
 		}
-		final boolean over = downloadPiece.put(begin, bytes); // 下载完成
-		if(over) { // 唤醒下载完成
-			synchronized (overLock) {
-				if (overLock.getAndSet(true)) {
-					overLock.notifyAll();
+		final boolean complete = downloadPiece.put(begin, bytes); // 下载完成
+		if(complete) { // 唤醒下载完成
+			synchronized (completeLock) {
+				if (completeLock.getAndSet(true)) {
+					completeLock.notifyAll();
 				}
 			}
 		}
@@ -147,7 +147,7 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 		if(available()) {
 			LOGGER.debug("Peer关闭：{}:{}", peerSession.host(), peerSession.port());
 			this.available = false;
-			if(!overLock.get()) { // 没有完成：等待下载完成
+			if(!completeLock.get()) { // 没有完成：等待下载完成
 				synchronized (closeLock) {
 					ThreadUtils.wait(closeLock, Duration.ofSeconds(CLOSE_AWAIT_TIME));
 				}
@@ -190,7 +190,7 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 		if(this.downloadPiece == null) {
 			LOGGER.debug("没有匹配Peer块下载");
 			this.release();
-			torrentSession.over();
+			torrentSession.complete();
 			return;
 		}
 		final int index = this.downloadPiece.getIndex();
@@ -214,9 +214,9 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 		/*
 		 * 此处不论是否有数据返回都需要进行结束等待，防止数据刚刚只有一个slice时直接跳出了slice wait导致响应还没有收到就直接结束了
 		 */
-		synchronized (overLock) {
-			if(!overLock.getAndSet(true)) {
-				ThreadUtils.wait(overLock, Duration.ofSeconds(PIECE_AWAIT_TIME));
+		synchronized (completeLock) {
+			if(!completeLock.getAndSet(true)) {
+				ThreadUtils.wait(completeLock, Duration.ofSeconds(PIECE_AWAIT_TIME));
 			}
 		}
 		if(!available) { // 已经关闭
@@ -237,7 +237,7 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 		if(!available()) { // 不可用
 			return;
 		}
-		if(this.downloadPiece != null && this.downloadPiece.over()) {
+		if(this.downloadPiece != null && this.downloadPiece.complete()) {
 			peerSession.statistics(downloadPiece.getLength()); // 统计
 			torrentStreamGroup.piece(downloadPiece); // 保存数据
 		}
@@ -247,8 +247,8 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 				LOGGER.debug("选取Piece：{}-{}-{}", downloadPiece.getIndex(), downloadPiece.getBegin(), downloadPiece.getEnd());
 			}
 		}
-		synchronized (overLock) {
-			overLock.set(false);
+		synchronized (completeLock) {
+			completeLock.set(false);
 		}
 		synchronized (countLock) {
 			countLock.set(0);

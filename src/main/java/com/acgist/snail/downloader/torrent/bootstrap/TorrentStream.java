@@ -254,7 +254,7 @@ public class TorrentStream {
 	/**
 	 * 是否下载完成
 	 */
-	public boolean over() {
+	public boolean complete() {
 		return pieces.cardinality() >= this.filePieceSize;
 	}
 	
