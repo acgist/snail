@@ -83,8 +83,20 @@ public class TorrentSession {
 		this.infoHash = infoHash;
 	}
 	
-	public boolean download(TaskSession taskSession) throws DownloadException {
-		return download(taskSession, true);
+	/**
+	 * 加载Task，同时加载文件流
+	 */
+	public TorrentSession loadTask(TaskSession taskSession) throws DownloadException {
+		this.taskSession = taskSession;
+		this.loadTorrentStream();
+		return this;
+	}
+	
+	/**
+	 * 开始下载
+	 */
+	public boolean download() throws DownloadException {
+		return download(true);
 	}
 	
 	/**
@@ -93,9 +105,7 @@ public class TorrentSession {
 	 * @param findPeer 是否查找Peer：true-使用Tracker、DHT查找Peer，false-不查找
 	 * @return true-下载完成；false-未完成
 	 */
-	public boolean download(TaskSession taskSession, boolean findPeer) throws DownloadException {
-		this.loadTask(taskSession);
-		this.loadTorrentStream();
+	public boolean download(boolean findPeer) throws DownloadException {
 		if(taskSession.complete() || this.torrentStreamGroup.complete()) {
 			return true;
 		}
@@ -108,13 +118,6 @@ public class TorrentSession {
 		return false;
 	}
 	
-	/**
-	 * 加载Task
-	 */
-	private void loadTask(TaskSession taskSession) {
-		this.taskSession = taskSession;
-	}
-
 	/**
 	 * 加载文件流
 	 */
