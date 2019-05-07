@@ -85,7 +85,7 @@ public class TorrentPiece {
 		return data;
 	}
 	
-	public boolean over() {
+	public boolean complete() {
 		return this.size >= this.length;
 	}
 	
@@ -129,13 +129,13 @@ public class TorrentPiece {
 	 * 放入数据
 	 * @param begin 数据开始位移
 	 * @param bytes 数据
-	 * @return 是否完成
+	 * @return true-完成；false-未完成
 	 */
 	public boolean put(final int begin, final byte[] bytes) {
 		synchronized (this) {
 			System.arraycopy(bytes, 0, this.data, begin - this.begin, bytes.length);
 			this.size += bytes.length;
-			return over();
+			return complete();
 		}
 	}
 

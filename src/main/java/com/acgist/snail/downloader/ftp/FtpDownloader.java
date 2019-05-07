@@ -54,7 +54,7 @@ public class FtpDownloader extends Downloader {
 		while(ok()) {
 			length = input.readNBytes(bytes, 0, bytes.length);
 			if(isComplete(length)) { // 是否完成
-				complete = true;
+				this.complete = true;
 				break;
 			}
 			output.write(bytes, 0, length);
@@ -92,7 +92,7 @@ public class FtpDownloader extends Downloader {
 		client = FtpClientFactory.buildClient(entity.getUrl());
 		boolean ok = client.connect();
 		if(ok) {
-			InputStream inputStream = client.download(size);
+			final InputStream inputStream = client.download(size);
 			if(inputStream == null) {
 				fail(client.failMessage());
 			} else {

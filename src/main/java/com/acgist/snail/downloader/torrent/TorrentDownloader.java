@@ -47,7 +47,7 @@ public class TorrentDownloader extends Downloader {
 		while(ok()) {
 			synchronized (downloadLock) {
 				ThreadUtils.wait(downloadLock, Duration.ofSeconds(Integer.MAX_VALUE));
-				complete = torrentSession.torrentStreamGroup().over();
+				this.complete = torrentSession.torrentStreamGroup().complete();
 			}
 		}
 	}
@@ -77,7 +77,7 @@ public class TorrentDownloader extends Downloader {
 			return;
 		}
 		try {
-			torrentSession.download(this.taskSession);
+			this.complete = torrentSession.download(this.taskSession);
 		} catch (DownloadException e) {
 			fail("BT任务加载失败");
 			LOGGER.error("BT任务加载异常", e);

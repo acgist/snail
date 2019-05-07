@@ -116,7 +116,7 @@ public class UtMetadataMessageHandler {
 	}
 
 	private void data(Map<String, Object> data, BCodeDecoder decoder) {
-		boolean over = false; // 下载完成
+		boolean complete = false; // 下载完成
 		final int piece = BCodeDecoder.getInteger(data, ARG_PIECE);
 		final byte[] bytes = infoHash.info();
 		final int begin = piece * INFO_SLICE_SIZE;
@@ -126,12 +126,12 @@ public class UtMetadataMessageHandler {
 		}
 		int length = INFO_SLICE_SIZE;
 		if(end >= bytes.length) {
-			over = true;
+			complete = true;
 			length = bytes.length - begin;
 		}
 		final byte[] x = decoder.oddBytes();
 		System.arraycopy(x, 0, bytes, begin, length);
-		if(over) {
+		if(complete) {
 			this.torrentSession.saveTorrentFile();
 		}
 	}

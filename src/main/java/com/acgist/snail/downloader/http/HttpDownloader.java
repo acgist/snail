@@ -57,7 +57,7 @@ public class HttpDownloader extends Downloader {
 		while(ok()) {
 			length = input.readNBytes(bytes, 0, bytes.length);
 			if(isComplete(length)) { // 是否完成
-				complete = true;
+				this.complete = true;
 				break;
 			}
 			output.write(bytes, 0, length);
@@ -134,7 +134,7 @@ public class HttpDownloader extends Downloader {
 			}
 		} else if(HTTPClient.rangeNotSatisfiable(response)) { // 无法满足的请求范围
 			if(taskSession.downloadSize() == entity.getSize()) {
-				complete = true;
+				this.complete = true;
 			} else {
 				fail("无法满足文件下载范围");
 			}

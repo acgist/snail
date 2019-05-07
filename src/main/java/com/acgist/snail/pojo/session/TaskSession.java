@@ -159,6 +159,9 @@ public class TaskSession implements IStatistics {
 	 * 获取下载任务
 	 */
 	public IDownloader newDownloader() throws DownloadException {
+		if(this.downloader != null) {
+			return this.downloader;
+		}
 		var type = this.entity().getType();
 		switch (type) {
 			case ftp:

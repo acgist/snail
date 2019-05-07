@@ -104,7 +104,7 @@ public abstract class Downloader implements IDownloader {
 	
 	@Override
 	public void complete() {
-		if(complete) {
+		if(this.complete) {
 			this.updateStatus(Status.complete);
 			TrayMenu.getInstance().notice("下载完成", name() + "已经下载完成");
 		}
@@ -155,11 +155,12 @@ public abstract class Downloader implements IDownloader {
 	 * <p>判断是否可以下载：</p>
 	 * <ul>
 	 * 	<li>未被标记失败</li>
+	 * 	<li>未被标记完成</li>
 	 * 	<li>任务状态处于下载中</li>
 	 * </ul>
 	 */
 	protected boolean ok() {
-		return !fail && taskSession.download();
+		return !fail && !complete && taskSession.download();
 	}
 
 	/**
