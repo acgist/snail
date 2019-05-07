@@ -47,6 +47,7 @@ public class TorrentDownloader extends Downloader {
 		while(ok()) {
 			synchronized (downloadLock) {
 				ThreadUtils.wait(downloadLock, Duration.ofSeconds(Integer.MAX_VALUE));
+				complete = torrentSession.torrentStreamGroup().over();
 			}
 		}
 	}
@@ -75,12 +76,11 @@ public class TorrentDownloader extends Downloader {
 			LOGGER.error("获取种子信息异常", e);
 			return;
 		}
-		torrentSession.build(this.taskSession);
 		try {
-			torrentSession.loadTracker();
+			torrentSession.download(this.taskSession);
 		} catch (DownloadException e) {
-			fail("Tracker加载失败");
-			LOGGER.error("Tracker加载异常", e);
+			fail("BT任务加载失败");
+			LOGGER.error("BT任务加载异常", e);
 			return;
 		}
 		taskSession.downloadSize(torrentSession.size());

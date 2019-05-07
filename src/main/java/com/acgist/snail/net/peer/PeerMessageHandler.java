@@ -485,7 +485,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 			return;
 		}
 		LOGGER.debug("发送响应：{}-{}", index, begin);
-		peerSession.upload(bytes.length);
+		peerSession.upload(bytes.length); // 上传
 		ByteBuffer buffer = ByteBuffer.allocate(8 + bytes.length);
 		buffer.putInt(index);
 		buffer.putInt(begin);
