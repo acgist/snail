@@ -71,4 +71,13 @@ public class DhtClientTest {
 //		ThreadUtils.sleep(Long.MAX_VALUE);
 	}
 	
+	@Test
+	public void getPeersOther() throws DownloadException {
+		DhtClient client = DhtClient.newInstance("192.168.1.1", 1863);
+		final String hash = "c15417e6aeab33732a59085d826edd29978f9afa";
+		final InfoHash infoHash = InfoHash.newInstance(hash);
+		client.getPeers(infoHash);
+		ThreadUtils.sleep(Long.MAX_VALUE);
+	}
+	
 }
