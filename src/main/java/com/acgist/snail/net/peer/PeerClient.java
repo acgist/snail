@@ -238,7 +238,7 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 			return;
 		}
 		if(this.downloadPiece != null && this.downloadPiece.complete()) {
-			peerSession.statistics(downloadPiece.getLength()); // 统计
+			peerSession.download(downloadPiece.getLength()); // 统计
 			torrentStreamGroup.piece(downloadPiece); // 保存数据
 		}
 		this.downloadPiece = torrentStreamGroup.pick(peerSession.pieces());

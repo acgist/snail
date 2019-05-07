@@ -98,15 +98,13 @@ public class PeerSession implements IStatistics {
 		return ObjectUtils.equalsBuilder(this.host)
 			.equals(ObjectUtils.equalsBuilder(host));
 	}
-	
-	/**
-	 * 统计
-	 */
+
 	@Override
-	public void statistics(long buffer) {
+	public void download(long buffer) {
 		statistics.download(buffer);
 	}
 	
+	@Override
 	public void upload(long buffer) {
 		statistics.upload(buffer);
 	}

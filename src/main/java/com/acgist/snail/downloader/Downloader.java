@@ -10,6 +10,7 @@ import com.acgist.snail.gui.menu.TrayMenu;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.repository.impl.TaskRepository;
+import com.acgist.snail.system.interfaces.IStatistics;
 import com.acgist.snail.system.manager.DownloaderManager;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.ThreadUtils;
@@ -20,7 +21,7 @@ import com.acgist.snail.utils.ThreadUtils;
  * @author acgist
  * @since 1.0.0
  */
-public abstract class Downloader implements IDownloader {
+public abstract class Downloader implements IDownloader, IStatistics {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Downloader.class);
 	
@@ -144,11 +145,14 @@ public abstract class Downloader implements IDownloader {
 		}
 	}
 	
-	/**
-	 * 下载统计：统计、限速
-	 */
-	protected void statistics(long size) {
-		this.taskSession.statistics(size);
+	@Override
+	public void download(long buffer) {
+		taskSession.statistics().download(buffer);
+	}
+
+	@Override
+	public void upload(long buffer) {
+		taskSession.statistics().upload(buffer);
 	}
 	
 	/**
