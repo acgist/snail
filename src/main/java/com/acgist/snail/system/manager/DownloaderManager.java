@@ -99,7 +99,9 @@ public final class DownloaderManager {
 	 */
 	public void delete(TaskSession taskSession) {
 		var entity = taskSession.entity();
-		downloader(taskSession).delete();
+		SystemThreadContext.submit(() -> {
+			downloader(taskSession).delete();
+		});
 		downloaderMap.remove(entity.getId());
 	}
 
