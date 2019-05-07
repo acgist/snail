@@ -61,7 +61,7 @@ public class HttpDownloader extends Downloader {
 				break;
 			}
 			output.write(bytes, 0, length);
-			statistics(length);
+			this.download(length);
 		}
 	}
 
