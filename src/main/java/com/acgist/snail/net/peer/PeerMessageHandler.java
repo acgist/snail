@@ -168,7 +168,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 				} else { // 握手
 					length = HANDSHAKE_LENGTH;
 				}
-				if(length == 0) { // 心跳
+				if(length <= 0) { // 心跳
 					keepAlive();
 					break;
 				}

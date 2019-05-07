@@ -33,7 +33,7 @@ public class PeerSession implements IStatistics {
 	private String id; // Peer id
 	private String clientName; // Peer客户端名称
 	
-	private BitSet pieces; // 文件下载位图
+	private final BitSet pieces; // 文件下载位图
 	
 	private Boolean amChocking; // 客户端将Peer阻塞：阻塞（不允许下载）-1（true）、非阻塞-0
 	private Boolean amInterested; // 客户端对Peer感兴趣：感兴趣（Peer有客户端没有的piece）-1（true）、不感兴趣-0
@@ -56,6 +56,7 @@ public class PeerSession implements IStatistics {
 		this.amInterested = false;
 		this.peerChocking = true;
 		this.peerInterested = false;
+		this.pieces = new BitSet();
 		this.extension = new HashMap<>();
 	}
 	
@@ -157,7 +158,7 @@ public class PeerSession implements IStatistics {
 	}
 	
 	public void pieces(BitSet pieces) {
-		this.pieces = pieces;
+		this.pieces.or(pieces);;
 	}
 	
 	/**

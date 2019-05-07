@@ -47,7 +47,7 @@ public class PeerSessionManager {
 	 * @param port 端口
 	 */
 	public PeerSession newPeerSession(String infoHashHex, StatisticsSession parent, String host, Integer port, byte source) {
-		LOGGER.debug("添加PeerSession，HOST：{}，PORT：{}", host, port);
+		LOGGER.debug("添加PeerSession，{}-{}，来源：{}", host, port, source);
 		var deque = deque(infoHashHex);
 		synchronized (deque) {
 			final Optional<PeerSession> optional = deque.stream().filter(peer -> {
