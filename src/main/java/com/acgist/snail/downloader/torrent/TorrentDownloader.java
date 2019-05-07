@@ -31,6 +31,7 @@ public class TorrentDownloader extends Downloader {
 	
 	private TorrentDownloader(TaskSession taskSession) {
 		super(taskSession);
+		load();
 	}
 
 	public static final TorrentDownloader newInstance(TaskSession taskSession) {
@@ -39,7 +40,7 @@ public class TorrentDownloader extends Downloader {
 
 	@Override
 	public void open() {
-		build();
+		loadDownload();
 	}
 
 	@Override
@@ -63,27 +64,36 @@ public class TorrentDownloader extends Downloader {
 	public void release() {
 		torrentSession.release();
 	}
-	
-	private void build() {
+
+	/**
+	 * 加载任务
+	 */
+	private void load() {
 		final var entity = this.taskSession.entity();
 		final String path = entity.getTorrent();
-		String infoHashHex = null;
 		try {
-			infoHashHex = MagnetProtocol.buildHash(entity.getUrl());
-			torrentSession = TorrentSessionManager.getInstance().buildSession(infoHashHex, path);
+			final String infoHashHex = MagnetProtocol.buildHash(entity.getUrl());
+			this.torrentSession = TorrentSessionManager.getInstance().buildSession(infoHashHex, path);
+			this.torrentSession.loadTask(this.taskSession);
 		} catch (DownloadException e) {
-			fail("获取种子信息失败");
-			LOGGER.error("获取种子信息异常", e);
+			fail("任务加载失败");
+			LOGGER.error("任务加载异常", e);
 			return;
 		}
+	}
+	
+	/**
+	 * 加载下载
+	 */
+	private void loadDownload() {
 		try {
-			this.complete = torrentSession.download(this.taskSession);
+			this.complete = this.torrentSession.download();
 		} catch (DownloadException e) {
-			fail("BT任务加载失败");
-			LOGGER.error("BT任务加载异常", e);
+			fail("任务加载失败");
+			LOGGER.error("任务加载异常", e);
 			return;
 		}
 		taskSession.downloadSize(torrentSession.size());
 	}
-	
+
 }
