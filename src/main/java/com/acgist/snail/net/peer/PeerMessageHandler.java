@@ -211,7 +211,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 			final byte typeValue = buffer.get();
 			final PeerMessageConfig.Type type = PeerMessageConfig.Type.valueOf(typeValue);
 			if(type == null) {
-				LOGGER.warn("不支持的类型：{}", typeValue);
+				LOGGER.warn("不支持的Peer消息类型：{}", typeValue);
 				return;
 			}
 			LOGGER.debug("Peer消息类型：{}", type);

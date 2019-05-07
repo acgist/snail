@@ -22,7 +22,8 @@ public class PeerClientTest {
 	
 	@Test
 	public void download() throws DownloadException {
-		String path = "e:/snail/12.torrent";
+		String path = "e:/snail/1.torrent";
+//		String path = "e:/snail/12.torrent";
 //		String path = "e:/snail/123.torrent";
 //		String path = "e:/snail/1234.torrent";
 //		String path = "e:/snail/12345.torrent";
@@ -44,8 +45,10 @@ public class PeerClientTest {
 		entity.setType(Type.torrent);
 		entity.setDescription(JsonUtils.toJson(list));
 		torrentSession.loadTask(TaskSession.newInstance(entity)).download(false);
-		String host = "127.0.0.1";
-		Integer port = 17888;
+		String host = "112.104.140.94";
+		Integer port = 51413;
+//		String host = "127.0.0.1";
+//		Integer port = 17888;
 //		Integer port = 49160; // FDM测试端口
 //		Integer port = 15000; // 本地迅雷测试端口
 		System.out.println("已下载：" + torrentSession.torrentStreamGroup().pieces());
