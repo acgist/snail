@@ -90,6 +90,8 @@ public class MainController implements Initializable {
 	@FXML
 	private Label downloadBuffer;
 	@FXML
+	private Label uploadBuffer;
+	@FXML
 	private TableView<TaskSession> taskTable;
 	@FXML
 	private TableColumn<TaskSession, String> name;
@@ -241,6 +243,8 @@ public class MainController implements Initializable {
 		Platform.runLater(() -> {
 			long downloadSecond = SystemStatistics.getInstance().downloadSecond();
 			downloadBuffer.setText(FileUtils.formatSize(downloadSecond) + "/S"); // 下载速度
+			long uploadSecond = SystemStatistics.getInstance().uploadSecond();
+			uploadBuffer.setText(FileUtils.formatSize(uploadSecond) + "/S"); // 上传速度
 		});
 	}
 	

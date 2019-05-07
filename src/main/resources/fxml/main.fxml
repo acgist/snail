@@ -89,7 +89,7 @@
 				<Label text="下载速度：" />
 				<Label fx:id="downloadBuffer" text="0KB/S" />
 				<Label text="上传速度：" />
-				<Label fx:id="shareBuffer" text="0KB/S" />
+				<Label fx:id="uploadBuffer" text="0KB/S" />
 			</HBox>
 		</HBox>
 	</bottom>

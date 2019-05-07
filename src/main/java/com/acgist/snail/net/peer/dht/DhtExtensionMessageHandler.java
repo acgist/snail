@@ -38,10 +38,13 @@ public class DhtExtensionMessageHandler {
 		this.peerMessageHandler.pushMessage(PeerMessageConfig.Type.dht, ByteBuffer.allocate(2).putShort(port).array());
 	}
 	
+	// TODO：如果没有dht，加入到NODE、ping
 	private void port(ByteBuffer buffer) {
 		final int port = NetUtils.decodePort(buffer.getShort());
 		this.peerSession.dhtPort(port);
-		dhtLauncher.put(peerSession.host(), port);
+		if(dhtLauncher != null) {
+			dhtLauncher.put(peerSession.host(), port);
+		}
 	}
 
 }
