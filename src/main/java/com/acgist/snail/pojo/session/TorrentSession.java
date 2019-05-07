@@ -84,32 +84,69 @@ public class TorrentSession {
 	}
 	
 	/**
-	 * 开始下载任务：获取tracker、peer
+	 * 开始下载：初始化Tracker、DHT、线程池
+	 * @param taskSession
 	 */
-	public void build(TaskSession taskSession) {
+	public void download(TaskSession taskSession) throws DownloadException {
+		this.loadTask(taskSession);
+		this.loadTorrentStream();
+		this.loadExecutor();
+		this.loadPeer();
+		this.loadTrackerLauncher();
+		this.loadDhtLauncher();
+	}
+	
+	/**
+	 * 加载Task
+	 */
+	public void loadTask(TaskSession taskSession) {
 		this.taskSession = taskSession;
-		this.peerClientGroup = PeerClientGroup.newInstance(this);
-		this.trackerLauncherGroup = TrackerLauncherGroup.newInstance(this);
-		this.torrentStreamGroup = TorrentStreamGroup.newInstance(taskSession.downloadFolder().getPath(), torrent, selectFiles(), this);
+	}
+
+	/**
+	 * 加载文件流
+	 */
+	public void loadTorrentStream() throws DownloadException {
+		if(this.taskSession == null) {
+			throw new DownloadException("BT任务不存在");
+		}
+		this.torrentStreamGroup = TorrentStreamGroup.newInstance(
+			this.taskSession.downloadFolder().getPath(),
+			this.torrent,
+			selectFiles(),
+			this);
+	}
+	
+	/**
+	 * 加载线程池
+	 */
+	private void loadExecutor() {
 		this.executor = SystemThreadContext.newExecutor(10, 10, 100, 60L, SystemThreadContext.SNAIL_THREAD_PEER);
 		final String executorTimerName = SystemThreadContext.SNAIL_THREAD_TRACKER + "-" + this.infoHashHex();
 		this.executorTimer = SystemThreadContext.newScheduledExecutor(4, executorTimerName);
-		this.loadDhtLauncher();
 	}
-
+	
+	/**
+	 * 加载Peer
+	 */
+	private void loadPeer() {
+		this.peerClientGroup = PeerClientGroup.newInstance(this);
+	}
+	
+	/**
+	 * 加载Tracker
+	 */
+	private void loadTrackerLauncher() throws DownloadException {
+		this.trackerLauncherGroup = TrackerLauncherGroup.newInstance(this);
+		this.trackerLauncherGroup.loadTracker();
+	}
+	
 	/**
 	 * 加载DHT定时任务
 	 */
 	private void loadDhtLauncher() {
 		this.dhtLauncher = DhtLauncher.newInstance(this);
 		this.timer(INTERVAL, INTERVAL, TimeUnit.SECONDS, this.dhtLauncher);
-	}
-
-	/**
-	 * 加载Tracker
-	 */
-	public void loadTracker() throws DownloadException {
-		this.trackerLauncherGroup.loadTracker();
 	}
 
 	/**
@@ -188,6 +225,18 @@ public class TorrentSession {
 		}
 		return files;
 	}
+
+	/**
+	 * 检测是否完成下载，释放资源
+	 */
+	public void over() {
+		if(torrentStreamGroup.over()) {
+			LOGGER.debug("任务下载完成：{}", name());
+			taskSession.downloader().unlockDownload();
+		} else {
+			peerClientGroup.optimize();
+		}
+	}
 	
 	/**
 	 * 释放资源
@@ -220,18 +269,6 @@ public class TorrentSession {
 	 */
 	public long size() {
 		return torrentStreamGroup.size();
-	}
-
-	/**
-	 * 检测是否完成下载
-	 */
-	public void over() {
-		if(torrentStreamGroup.over()) {
-			LOGGER.debug("任务下载完成：{}", name());
-			torrentStreamGroup.release();
-		} else {
-			peerClientGroup.optimize();
-		}
 	}
 
 	/**

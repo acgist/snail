@@ -37,6 +37,7 @@ public class TaskSession implements IStatistics {
 	};
 	
 	private TaskEntity entity; // 任务
+	private IDownloader downloader; // 下载器
 	private StatisticsSession statistics; // 统计
 	
 	private TaskSession(TaskEntity entity) throws DownloadException {
@@ -55,6 +56,14 @@ public class TaskSession implements IStatistics {
 	
 	public TaskEntity entity() {
 		return entity;
+	}
+	
+	public IDownloader downloader() {
+		return this.downloader;
+	}
+	
+	public void downloader(IDownloader downloader) {
+		this.downloader = downloader;
 	}
 	
 	/**
@@ -149,7 +158,7 @@ public class TaskSession implements IStatistics {
 	/**
 	 * 获取下载任务
 	 */
-	public IDownloader downloader() throws DownloadException {
+	public IDownloader newDownloader() throws DownloadException {
 		var type = this.entity().getType();
 		switch (type) {
 			case ftp:

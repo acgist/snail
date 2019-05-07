@@ -34,7 +34,8 @@ public abstract class Downloader implements IDownloader {
 
 	public Downloader(TaskSession taskSession) {
 		this.taskSession = taskSession;
-		taskSession.downloadSize(downloadSize()); // 加载已下载大小
+		this.taskSession.downloader(this);
+		this.taskSession.downloadSize(downloadSize()); // 加载已下载大小
 	}
 	
 	@Override
@@ -59,19 +60,18 @@ public abstract class Downloader implements IDownloader {
 	
 	@Override
 	public void start() {
-		this.taskSession.updateStatus(Status.await);
+		this.updateStatus(Status.await);
 	}
 	
 	@Override
 	public void pause() {
-		this.taskSession.updateStatus(Status.pause);
-		this.unlockDownload();
+		this.updateStatus(Status.pause);
 	}
 	
 	@Override
 	public void fail(String message) {
 		this.fail = true;
-		this.taskSession.updateStatus(Status.fail);
+		this.updateStatus(Status.fail);
 		final StringBuilder noticeMessage = new StringBuilder();
 		noticeMessage.append(name())
 			.append("下载失败，失败原因：");
@@ -105,7 +105,7 @@ public abstract class Downloader implements IDownloader {
 	@Override
 	public void complete() {
 		if(complete) {
-			this.taskSession.updateStatus(Status.complete);
+			this.updateStatus(Status.complete);
 			TrayMenu.getInstance().notice("下载完成", name() + "已经下载完成");
 		}
 	}
@@ -171,6 +171,15 @@ public abstract class Downloader implements IDownloader {
 		synchronized (this.deleteLock) {
 			this.deleteLock.notifyAll();
 		}
+	}
+	
+	/**
+	 * 更新状态唤醒下载等待线程
+	 * @param status 状态
+	 */
+	private void updateStatus(Status status) {
+		this.taskSession.updateStatus(status);
+		this.unlockDownload();
 	}
 	
 }
