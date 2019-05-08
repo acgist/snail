@@ -12,7 +12,7 @@ import com.acgist.snail.protocol.torrent.bean.TorrentInfo;
 import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.manager.DownloaderManager;
-import com.acgist.snail.system.manager.TorrentSessionManager;
+import com.acgist.snail.system.manager.TorrentManager;
 import com.acgist.snail.utils.JsonUtils;
 
 import javafx.event.ActionEvent;
@@ -65,7 +65,7 @@ public class TorrentController implements Initializable {
 		TreeView<HBox> tree = buildTree();
 		Torrent torrent = null;
 		try {
-			torrent = TorrentSessionManager.getInstance().buildSession(entity.getTorrent()).torrent();
+			torrent = TorrentManager.getInstance().buildSession(entity.getTorrent()).torrent();
 		} catch (DownloadException e) {
 			Alerts.warn("下载出错", "种子文件解析异常");
 			return;

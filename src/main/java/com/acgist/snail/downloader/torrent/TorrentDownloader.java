@@ -11,7 +11,7 @@ import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.magnet.MagnetProtocol;
 import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.system.manager.TorrentSessionManager;
+import com.acgist.snail.system.manager.TorrentManager;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
@@ -73,7 +73,7 @@ public class TorrentDownloader extends Downloader {
 		final String path = entity.getTorrent();
 		try {
 			final String infoHashHex = MagnetProtocol.buildHash(entity.getUrl());
-			this.torrentSession = TorrentSessionManager.getInstance().buildSession(infoHashHex, path);
+			this.torrentSession = TorrentManager.getInstance().buildSession(infoHashHex, path);
 			this.torrentSession.loadTask(this.taskSession);
 		} catch (DownloadException e) {
 			fail("任务加载失败");

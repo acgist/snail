@@ -9,8 +9,8 @@ import com.acgist.snail.net.dht.bootstrap.response.GetPeersResponse;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.system.manager.NodeManager;
-import com.acgist.snail.system.manager.PeerSessionManager;
-import com.acgist.snail.system.manager.TorrentSessionManager;
+import com.acgist.snail.system.manager.PeerManager;
+import com.acgist.snail.system.manager.TorrentManager;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -36,10 +36,10 @@ public class GetPeersRequest extends Request {
 		final GetPeersResponse response = GetPeersResponse.newInstance(request);
 		final byte[] infoHash = request.getBytes(DhtConfig.KEY_INFO_HASH);
 		final String infoHashHex = StringUtils.hex(infoHash);
-		final TorrentSession session = TorrentSessionManager.getInstance().torrentSession(infoHashHex);
+		final TorrentSession session = TorrentManager.getInstance().torrentSession(infoHashHex);
 		if(session != null) {
 			final ByteBuffer buffer = ByteBuffer.allocate(6);
-			final var list = PeerSessionManager.getInstance().list(infoHashHex);
+			final var list = PeerManager.getInstance().list(infoHashHex);
 			if(CollectionUtils.isNotEmpty(list)) {
 				final var values = list.stream()
 					.limit(NodeManager.GET_PEER_LENGTH)

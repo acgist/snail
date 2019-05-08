@@ -21,7 +21,7 @@ import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.system.context.SystemStatistics;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.manager.DownloaderManager;
-import com.acgist.snail.system.manager.TorrentSessionManager;
+import com.acgist.snail.system.manager.TorrentManager;
 import com.acgist.snail.utils.FileUtils;
 
 import javafx.application.Platform;
@@ -348,7 +348,7 @@ public class MainController implements Initializable {
 			Dragboard dragboard = event.getDragboard();
 			if(dragboard.hasFiles()) {
 				File file = dragboard.getFiles().get(0);
-				if(TorrentSessionManager.verify(file.getPath())) {
+				if(TorrentManager.verify(file.getPath())) {
 					event.acceptTransferModes(TransferMode.COPY);
 				} else {
 					event.acceptTransferModes(TransferMode.NONE);

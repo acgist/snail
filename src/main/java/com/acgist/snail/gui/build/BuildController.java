@@ -12,7 +12,7 @@ import com.acgist.snail.gui.Choosers;
 import com.acgist.snail.gui.main.TaskDisplay;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.manager.DownloaderManager;
-import com.acgist.snail.system.manager.TorrentSessionManager;
+import com.acgist.snail.system.manager.TorrentManager;
 import com.acgist.snail.utils.StringUtils;
 
 import javafx.event.ActionEvent;
@@ -103,7 +103,7 @@ public class BuildController implements Initializable {
 			Dragboard dragboard = event.getDragboard();
 			if(dragboard.hasFiles()) {
 				File file = dragboard.getFiles().get(0);
-				if(TorrentSessionManager.verify(file.getPath())) {
+				if(TorrentManager.verify(file.getPath())) {
 					event.acceptTransferModes(TransferMode.COPY);
 				} else {
 					event.acceptTransferModes(TransferMode.NONE);
