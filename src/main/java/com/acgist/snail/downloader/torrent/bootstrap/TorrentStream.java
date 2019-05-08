@@ -122,7 +122,7 @@ public class TorrentStream {
 		List<TorrentPiece> list = null; // 写入文件的Piece
 		synchronized (this) {
 			if(filePieces.offer(piece)) {
-				this.download(piece.getIndex());
+				this.done(piece.getIndex());
 				this.torrentStreamGroup.piece(piece.getIndex());
 				final long bufferSize = this.fileBuffer.addAndGet(piece.getLength());
 				final long downloadSize = this.fileDownloadSize.addAndGet(piece.getLength());
@@ -165,6 +165,7 @@ public class TorrentStream {
 			if(index == -1 || index > this.fileEndPieceIndex) {
 				return null;
 			}
+			this.downloadPieces.set(index);
 			int begin = 0;
 			if(index == this.fileBeginPieceIndex) { // 第一块获取开始偏移
 				begin = firstPiecePos();
@@ -258,6 +259,14 @@ public class TorrentStream {
 		return pieces.cardinality() >= this.filePieceSize;
 	}
 	
+	/**
+	 * 下载完成
+	 */
+	private void done(int index) {
+		pieces.set(index, true); // 下载成功
+		downloadPieces.clear(index); // 去掉下载状态
+	}
+
 	/**
 	 * 下载失败
 	 * 
@@ -372,7 +381,7 @@ public class TorrentStream {
 			}
 			bytes = read(index, VERIFY_SIZE, pos, true); // 第一块需要偏移
 			if(haveData(bytes)) {
-				download(index);
+				done(index);
 				torrentStreamGroup.piece(index);
 //			} else { // 再次校验：TODO：是否需要优化
 //				bytes = read(index, VERIFY_SIZE_CHECK, pos, true); // 第一块需要偏移
@@ -420,14 +429,6 @@ public class TorrentStream {
 			}
 		}
 		return false;
-	}
-	
-	/**
-	 * 下载块
-	 */
-	private void download(int index) {
-		pieces.set(index, true); // 下载成功
-		downloadPieces.clear(index); // 去掉下载状态
 	}
 	
 	/**
