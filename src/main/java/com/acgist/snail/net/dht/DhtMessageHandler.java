@@ -17,6 +17,7 @@ import com.acgist.snail.net.dht.bootstrap.request.GetPeersRequest;
 import com.acgist.snail.net.dht.bootstrap.request.PingRequest;
 import com.acgist.snail.net.dht.bootstrap.response.FindNodeResponse;
 import com.acgist.snail.net.dht.bootstrap.response.GetPeersResponse;
+import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.system.bcode.BCodeDecoder;
 import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.system.exception.NetException;
@@ -124,16 +125,16 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	 * 发送请求
 	 * 检测节点是否可达：阻塞
 	 */
-	public boolean ping(InetSocketAddress address) {
+	public NodeSession ping(InetSocketAddress address) {
 		final PingRequest request = PingRequest.newRequest();
 		pushMessage(request, address);
 		waitResponse(request);
 		take(request);
 		final Response response = RESPONSE.apply(request);
 		if(SUCCESS.apply(response)) {
-			return true;
+			return NodeSession.newInstance(response.getNodeId(), address.getHostString(), address.getPort());
 		}
-		return false;
+		return null;
 	}
 
 	/**

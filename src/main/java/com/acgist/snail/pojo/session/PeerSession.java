@@ -12,6 +12,7 @@ import com.acgist.snail.utils.ObjectUtils;
 
 /**
  * Peer：保存peer信息，ip、端口、下载统计等
+ * TODO：上传限速、限个数等操作
  */
 public class PeerSession implements IStatistics {
 

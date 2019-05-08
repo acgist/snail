@@ -32,7 +32,10 @@ public class TorrentSession {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentSession.class);
 	
-	private static final int INTERVAL = 30;
+	/**
+	 * DHT任务执行周期
+	 */
+	private static final int INTERVAL = 60;
 	
 	/**
 	 * 种子

@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.net.dht.DhtClient;
 import com.acgist.snail.net.dht.bootstrap.Request;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.system.config.SystemConfig;
@@ -88,23 +89,66 @@ public class NodeManager {
 		return token;
 	}
 	
+	/**
+	 * 添加Node
+	 */
 	public void put(List<NodeSession> nodes) {
 		if(CollectionUtils.isEmpty(nodes)) {
 			return;
 		}
-		synchronized (this.nodes) {
-			for (NodeSession node : nodes) {
-				if(!this.nodes.contains(node) && node.getId().length == NODE_ID_LENGTH) {
-					if(LOGGER.isDebugEnabled()) {
-						LOGGER.debug("添加Node：{}-{}:{}", node.getIdHex(), node.getHost(), node.getPort());
-					}
-					this.nodes.add(node);
+		for (NodeSession node : nodes) {
+			NodeSession nodeSession = verify(node);
+			if(nodeSession == null) {
+				if(LOGGER.isDebugEnabled()) {
+					LOGGER.debug("无效Node：{}-{}:{}", node.getIdHex(), node.getHost(), node.getPort());
 				}
+			} else {
+				addNode(nodeSession);
 			}
+		}
+		synchronized (this.nodes) {
 			Collections.sort(this.nodes); // 排序
 		}
 	}
+	
+	/**
+	 * 添加DHT节点，使用Ping然后添加到列表
+	 */
+	public void put(String host, Integer port) {
+		final NodeSession nodeSession = verify(host, port);
+		if(nodeSession != null) {
+			addNode(nodeSession);
+		}
+	}
 
+	private NodeSession verify(NodeSession node) {
+		return verify(node.getHost(), node.getPort());
+	}
+	
+	/**
+	 * Node验证
+	 */
+	private NodeSession verify(String host, Integer port) {
+		final DhtClient client = DhtClient.newInstance(host, port);
+		try {
+			return client.ping();
+		} catch (Exception e) {
+			LOGGER.error("DHT Ping异常", e);
+		}
+		return null;
+	}
+	
+	private void addNode(NodeSession nodeSession) {
+		synchronized (this.nodes) {
+			if(nodeSession.getId().length == NODE_ID_LENGTH && !this.nodes.contains(nodeSession)) {
+				if(LOGGER.isDebugEnabled()) {
+					LOGGER.debug("添加Node：{}-{}:{}", nodeSession.getIdHex(), nodeSession.getHost(), nodeSession.getPort());
+				}
+				this.nodes.add(nodeSession);
+			}
+		}
+	}
+	
 	/**
 	 * 查找Node，查找到最近的一段区域，然后异或运算获取最近
 	 * @param target NodeId
