@@ -39,8 +39,6 @@ public class TaskSession {
 	private IDownloader downloader; // 下载器
 	private StatisticsSession statistics; // 统计
 	
-	private long downloadSecond;
-	
 	private TaskSession(TaskEntity entity) throws DownloadException {
 		if(entity == null) {
 			throw new DownloadException("创建下载任务失败");
@@ -187,10 +185,8 @@ public class TaskSession {
 	 */
 	public String getStatusValue() {
 		if(download()) {
-			this.downloadSecond = statistics.downloadSecond();
-			return FileUtils.formatSize(downloadSecond) + "/S";
+			return FileUtils.formatSize(statistics.downloadSecond()) + "/S";
 		} else {
-			this.downloadSecond = 0L;
 			return entity.getStatus().getValue();
 		}
 	}
@@ -222,11 +218,11 @@ public class TaskSession {
 	public String getEndDateValue() {
 		if(entity.getEndDate() == null) {
 			if(download()) {
-				long bufferSecond = this.downloadSecond;
-				if(bufferSecond == 0L) {
+				final long downloadSecond = statistics.downloadSecond();
+				if(downloadSecond == 0L) {
 					return "-";
 				} else {
-					long second = (entity.getSize() - statistics.downloadSize()) / bufferSecond;
+					long second = (entity.getSize() - statistics.downloadSize()) / downloadSecond;
 					return DateUtils.secondToString(second);
 				}
 			} else {
