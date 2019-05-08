@@ -8,6 +8,7 @@ import java.util.Map;
 import org.junit.Test;
 
 import com.acgist.snail.net.dht.DhtClient;
+import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.bcode.BCodeEncoder;
 import com.acgist.snail.system.config.SystemConfig;
@@ -41,8 +42,8 @@ public class DhtClientTest {
 	@Test
 	public void ping() {
 		DhtClient client = DhtClient.newInstance(host, port);
-		boolean ping = client.ping();
-		System.out.println(ping);
+		NodeSession node = client.ping();
+		System.out.println(node);
 		ThreadUtils.sleep(Long.MAX_VALUE);
 	}
 	

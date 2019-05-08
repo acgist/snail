@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.UdpClient;
+import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.IoUtils;
@@ -53,7 +54,7 @@ public class DhtClient extends UdpClient<DhtMessageHandler> {
 		return open(CHANNEL);
 	}
 	
-	public boolean ping() {
+	public NodeSession ping() {
 		return this.handler.ping(this.address);
 	}
 	
