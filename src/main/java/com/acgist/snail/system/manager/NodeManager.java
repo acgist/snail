@@ -23,6 +23,7 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * Node信息
  * TODO：连接失败时剔除、定时剔除多余数据
+ * TODO：统一都在这里生产Node
  */
 public class NodeManager {
 	
