@@ -10,7 +10,7 @@ import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.protocol.magnet.MagnetProtocol;
 import com.acgist.snail.system.config.FileTypeConfig.FileType;
 import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.system.manager.TorrentSessionManager;
+import com.acgist.snail.system.manager.TorrentManager;
 import com.acgist.snail.utils.FileUtils;
 
 /**
@@ -95,7 +95,7 @@ public class TorrentProtocol extends Protocol {
 	 */
 	private void torrent() throws DownloadException {
 		final String torrentFile = this.url;
-		TorrentSession torrentSession = TorrentSessionManager.getInstance().buildSession(torrentFile);
+		TorrentSession torrentSession = TorrentManager.getInstance().buildSession(torrentFile);
 		this.url = MagnetProtocol.buildMagnet(torrentSession.infoHash().infoHashHex()); // 生成磁力链接
 		this.torrent = torrentFile;
 		this.torrentSession = torrentSession;

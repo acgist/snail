@@ -20,8 +20,8 @@ import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.PeerMessageConfig;
 import com.acgist.snail.system.config.PeerMessageConfig.Action;
 import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.system.manager.PeerSessionManager;
-import com.acgist.snail.system.manager.TorrentSessionManager;
+import com.acgist.snail.system.manager.PeerManager;
+import com.acgist.snail.system.manager.TorrentManager;
 import com.acgist.snail.utils.BitfieldUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -104,7 +104,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 * 初始化
 	 */
 	private boolean init(String infoHashHex, String peerId, byte[] reserved) {
-		final TorrentSession torrentSession = TorrentSessionManager.getInstance().torrentSession(infoHashHex);
+		final TorrentSession torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
 		if(torrentSession == null) {
 			LOGGER.debug("初始化失败，不存在的种子信息");
 			return false;
@@ -124,7 +124,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 			LOGGER.debug("初始化失败，获取远程Peer信息失败");
 			return false;
 		}
-		final PeerSession peerSession = PeerSessionManager.getInstance().newPeerSession(infoHashHex, taskSession.statistics(), address.getHostString(), null, PeerConfig.SOURCE_CONNECT);
+		final PeerSession peerSession = PeerManager.getInstance().newPeerSession(infoHashHex, taskSession.statistics(), address.getHostString(), null, PeerConfig.SOURCE_CONNECT);
 		init(peerSession, torrentSession, reserved);
 		return true;
 	}

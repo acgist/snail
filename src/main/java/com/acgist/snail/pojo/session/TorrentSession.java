@@ -21,7 +21,7 @@ import com.acgist.snail.protocol.torrent.bean.TorrentInfo;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.system.manager.PeerSessionManager;
+import com.acgist.snail.system.manager.PeerManager;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -275,7 +275,7 @@ public class TorrentSession {
 		if(CollectionUtils.isEmpty(peers)) {
 			return;
 		}
-		final PeerSessionManager manager = PeerSessionManager.getInstance();
+		final PeerManager manager = PeerManager.getInstance();
 		peers.forEach((host, port) -> {
 			manager.newPeerSession(this.infoHashHex(), taskSession.statistics(), host, port, PeerConfig.SOURCE_TRACKER);
 		});
@@ -295,7 +295,7 @@ public class TorrentSession {
 	 * @param index Piece序号
 	 */
 	public void have(int index) {
-		PeerSessionManager.getInstance().have(infoHash.infoHashHex(), index);
+		PeerManager.getInstance().have(infoHash.infoHashHex(), index);
 	}
 
 	/**

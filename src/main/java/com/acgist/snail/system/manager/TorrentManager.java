@@ -19,22 +19,22 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * TorrentSession工厂
  */
-public class TorrentSessionManager {
+public class TorrentManager {
 
-//	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentSessionManager.class);
+//	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentManager.class);
 	
-	private static final TorrentSessionManager INSTANCE = new TorrentSessionManager();
+	private static final TorrentManager INSTANCE = new TorrentManager();
 	
 	/**
 	 * infoHashHex作为key
 	 */
 	private Map<String, TorrentSession> TORRENT_SESSION_MAP;
 	
-	private TorrentSessionManager() {
+	private TorrentManager() {
 		TORRENT_SESSION_MAP = new ConcurrentHashMap<>();
 	}
 	
-	public static final TorrentSessionManager getInstance() {
+	public static final TorrentManager getInstance() {
 		return INSTANCE;
 	}
 	

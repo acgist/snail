@@ -11,8 +11,8 @@ import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.manager.NodeManager;
-import com.acgist.snail.system.manager.PeerSessionManager;
-import com.acgist.snail.system.manager.TorrentSessionManager;
+import com.acgist.snail.system.manager.PeerManager;
+import com.acgist.snail.system.manager.TorrentManager;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -42,7 +42,7 @@ public class AnnouncePeerRequest extends Request {
 		}
 		final byte[] infoHash = request.getBytes(DhtConfig.KEY_INFO_HASH);
 		final String infoHashHex = StringUtils.hex(infoHash);
-		final TorrentSession torrentSession = TorrentSessionManager.getInstance().torrentSession(infoHashHex);
+		final TorrentSession torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
 		if(torrentSession != null) {
 			final Integer port = request.getInteger(DhtConfig.KEY_PORT);
 			final Integer impliedPort = request.getInteger(DhtConfig.KEY_IMPLIED_PORT);
@@ -52,7 +52,7 @@ public class AnnouncePeerRequest extends Request {
 			if(DhtConfig.IMPLIED_PORT_AUTO.equals(impliedPort)) {
 				peerPort = address.getPort();
 			}
-			PeerSessionManager.getInstance().newPeerSession(
+			PeerManager.getInstance().newPeerSession(
 				infoHashHex,
 				torrentSession.taskSession().statistics(),
 				peerHost,

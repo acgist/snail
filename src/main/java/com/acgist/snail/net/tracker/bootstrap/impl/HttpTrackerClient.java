@@ -15,7 +15,7 @@ import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.bcode.BCodeDecoder;
 import com.acgist.snail.system.config.TrackerConfig;
 import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.system.manager.TrackerClientManager;
+import com.acgist.snail.system.manager.TrackerManager;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -56,7 +56,7 @@ public class HttpTrackerClient extends TrackerClient {
 		message.setDone(tracker.getComplete());
 		message.setUndone(tracker.getIncomplete());
 		message.setPeers(tracker.getPeers());
-		TrackerClientManager.getInstance().announce(message);
+		TrackerManager.getInstance().announce(message);
 	}
 
 	@Override

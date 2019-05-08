@@ -14,7 +14,7 @@ import com.acgist.snail.pojo.session.StatisticsSession;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.system.manager.TorrentSessionManager;
+import com.acgist.snail.system.manager.TorrentManager;
 import com.acgist.snail.utils.JsonUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
@@ -25,7 +25,7 @@ public class PeerServerTest {
 //		String path = "e:/snail/1234.torrent";
 		String path = "e:/snail/12345.torrent";
 //		String path = "e:/snail/123456.torrent";
-		TorrentSession torrentSession = TorrentSessionManager.getInstance().buildSession(path);
+		TorrentSession torrentSession = TorrentManager.getInstance().buildSession(path);
 		var files = torrentSession.torrent().getInfo().files();
 		List<String> list = new ArrayList<>();
 		files.forEach(file -> {
@@ -48,7 +48,7 @@ public class PeerServerTest {
 //		String path = "e:/snail/1234.torrent";
 		String path = "e:/snail/12345.torrent";
 //		String path = "e:/snail/123456.torrent";
-		TorrentSession torrentSession = TorrentSessionManager.getInstance().buildSession(path);
+		TorrentSession torrentSession = TorrentManager.getInstance().buildSession(path);
 		var files = torrentSession.torrent().getInfo().files();
 		List<String> list = new ArrayList<>();
 		files.forEach(file -> {

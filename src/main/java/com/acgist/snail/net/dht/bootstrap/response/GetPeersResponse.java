@@ -12,8 +12,8 @@ import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.manager.NodeManager;
-import com.acgist.snail.system.manager.PeerSessionManager;
-import com.acgist.snail.system.manager.TorrentSessionManager;
+import com.acgist.snail.system.manager.PeerManager;
+import com.acgist.snail.system.manager.TorrentManager;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -75,7 +75,7 @@ public class GetPeersResponse extends Response {
 	public List<PeerSession> getValues(Request request) {
 		final byte[] infoHash = request.getBytes(DhtConfig.KEY_INFO_HASH);
 		final String infoHashHex = StringUtils.hex(infoHash);
-		final TorrentSession torrentSession = TorrentSessionManager.getInstance().torrentSession(infoHashHex);
+		final TorrentSession torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
 		if(torrentSession == null) {
 			return null;
 		}
@@ -90,7 +90,7 @@ public class GetPeersResponse extends Response {
 		for (Object object : values) {
 			bytes = (byte[]) object;
 			buffer = ByteBuffer.wrap(bytes);
-			session = PeerSessionManager.getInstance().newPeerSession(
+			session = PeerManager.getInstance().newPeerSession(
 				infoHashHex,
 				torrentSession.taskSession().statistics(),
 				NetUtils.decodeIntToIp(buffer.getInt()),

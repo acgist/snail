@@ -18,11 +18,11 @@ import com.acgist.snail.pojo.session.StatisticsSession;
 /**
  * Peer管理器
  */
-public class PeerSessionManager {
+public class PeerManager {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(PeerSessionManager.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PeerManager.class);
 
-	private static final PeerSessionManager INSTANCE = new PeerSessionManager();
+	private static final PeerManager INSTANCE = new PeerManager();
 	
 	/**
 	 * Peer Map<br>
@@ -31,11 +31,11 @@ public class PeerSessionManager {
 	 */
 	private final Map<String, Deque<PeerSession>> peers;
 	
-	private PeerSessionManager() {
+	private PeerManager() {
 		peers = new ConcurrentHashMap<>();
 	}
 	
-	public static final PeerSessionManager getInstance() {
+	public static final PeerManager getInstance() {
 		return INSTANCE;
 	}
 	

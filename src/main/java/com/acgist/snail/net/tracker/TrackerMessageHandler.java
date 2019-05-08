@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.system.config.TrackerConfig;
-import com.acgist.snail.system.manager.TrackerClientManager;
+import com.acgist.snail.system.manager.TrackerManager;
 import com.acgist.snail.utils.PeerUtils;
 
 /**
@@ -42,7 +42,7 @@ public class TrackerMessageHandler extends UdpMessageHandler {
 	private void doConnect(ByteBuffer buffer) {
 		int trackerId = buffer.getInt();
 		long connectionId = buffer.getLong();
-		TrackerClientManager.getInstance().connectionId(trackerId, connectionId);
+		TrackerManager.getInstance().connectionId(trackerId, connectionId);
 	}
 
 	/**
@@ -55,7 +55,7 @@ public class TrackerMessageHandler extends UdpMessageHandler {
 		message.setUndone(buffer.getInt());
 		message.setDone(buffer.getInt());
 		message.setPeers(PeerUtils.read(buffer, size));
-		TrackerClientManager.getInstance().announce(message);
+		TrackerManager.getInstance().announce(message);
 	}
 
 }

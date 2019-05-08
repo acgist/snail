@@ -16,7 +16,7 @@ import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
-import com.acgist.snail.system.manager.PeerSessionManager;
+import com.acgist.snail.system.manager.PeerManager;
 
 /**
  * <p>PeerClient组</p>
@@ -45,7 +45,7 @@ public class PeerClientGroup {
 	 * PeerClient下载队列
 	 */
 	private final BlockingQueue<PeerClient> peerClients;
-	private final PeerSessionManager peerSessionManager;
+	private final PeerManager peerManager;
 	/**
 	 * 优选的Peer，每次优化时挑选出来可以进行下载的Peer，在优化后发送ut_pex消息发送给连接的Peer，发送完成后清空
 	 */
@@ -55,7 +55,7 @@ public class PeerClientGroup {
 		this.taskSession = torrentSession.taskSession();
 		this.torrentSession = torrentSession;
 		this.peerClients = new LinkedBlockingQueue<>();
-		this.peerSessionManager = PeerSessionManager.getInstance();
+		this.peerManager = PeerManager.getInstance();
 		optimizeTimer(); // 优化
 	}
 	
@@ -108,7 +108,7 @@ public class PeerClientGroup {
 			inferiorPeerClient();
 			launchers();
 		}
-		peerSessionManager.exchange(torrentSession.infoHashHex(), optimize);
+		peerManager.exchange(torrentSession.infoHashHex(), optimize);
 	}
 
 	/**
@@ -137,7 +137,7 @@ public class PeerClientGroup {
 		if(this.peerClients.size() >= SystemConfig.getPeerSize()) {
 			return;
 		}
-		final PeerSession peerSession = peerSessionManager.pick(torrentSession.infoHashHex());
+		final PeerSession peerSession = peerManager.pick(torrentSession.infoHashHex());
 		if(peerSession != null) {
 			final PeerClient client = PeerClient.newInstance(peerSession, torrentSession);
 			// TODO：验证是否含有对应未下载的Piece
@@ -201,7 +201,7 @@ public class PeerClientGroup {
 		if(peerClient != null) {
 			LOGGER.debug("剔除劣质PeerClient：{}:{}", peerClient.peerSession().host(), peerClient.peerSession().port());
 			peerClient.release();
-			peerSessionManager.inferior(torrentSession.infoHashHex(), peerClient.peerSession());
+			peerManager.inferior(torrentSession.infoHashHex(), peerClient.peerSession());
 		}
 	}
 

@@ -28,23 +28,23 @@ import com.acgist.snail.utils.UrlUtils;
 /**
  * Tracker Client管理器，所有的tracker都可以被使用
  */
-public class TrackerClientManager {
+public class TrackerManager {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerClientManager.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerManager.class);
 	
-	private static final TrackerClientManager INSTANCE = new TrackerClientManager();
+	private static final TrackerManager INSTANCE = new TrackerManager();
 
 	private static final int MAX_CLIENT_SIZE = SystemConfig.getTrackerSize();
 	
 	private final Map<Integer, TrackerClient> trackerClients;
 	private final Map<Integer, TrackerLauncher> trackerLaunchers;
 	
-	private TrackerClientManager() {
+	private TrackerManager() {
 		trackerClients = new ConcurrentHashMap<>();
 		trackerLaunchers = new ConcurrentHashMap<>();
 	}
 
-	public static final TrackerClientManager getInstance() {
+	public static final TrackerManager getInstance() {
 		return INSTANCE;
 	}
 
