@@ -15,6 +15,7 @@ import com.acgist.snail.utils.ThreadUtils;
 public class StatisticsSession {
 
 	private static final long ONE_SECOND = 1000L; // 一秒钟
+	private static final long CACHE_SECOND = 2000L; // 两秒钟
 	
 	private final boolean limit; // 限速开关
 	private final StatisticsSession parent; // 父类统计
@@ -68,21 +69,23 @@ public class StatisticsSession {
 	}
 	
 	/**
-	 * 下载速度，获取完成后设置为0
+	 * 下载速度，超过一定时间设置0
 	 */
 	public long downloadSecond() {
-		final long tmp = this.downloadSecond;
-		this.downloadSecond = 0L;
-		return tmp;
+		if(System.currentTimeMillis() - this.lastDownloadTime > CACHE_SECOND) {
+			this.downloadSecond = 0L;
+		}
+		return this.downloadSecond;
 	}
 	
 	/**
-	 * 上传速度，获取完成后设置为0
+	 * 上传速度，超过一定时间设置0
 	 */
 	public long uploadSecond() {
-		final long tmp = this.uploadSecond;
-		this.uploadSecond = 0L;
-		return tmp;
+		if(System.currentTimeMillis() - this.lastUploadTime > CACHE_SECOND) {
+			this.uploadSecond = 0L;
+		}
+		return this.uploadSecond;
 	}
 	
 	/**
