@@ -43,7 +43,7 @@ public class DhtMessageHandler extends UdpMessageHandler {
 		}
 		final Response response = request.getResponse();
 		if(response == null) {
-			LOGGER.warn("响应超时");
+			LOGGER.warn("DHT响应超时");
 		} else if(!response.success()) {
 			LOGGER.warn("DHT响应返回失败：{}-{}", response.errorCode(), response.errorMessage());
 		}
