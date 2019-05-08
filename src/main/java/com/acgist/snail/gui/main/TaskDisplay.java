@@ -24,7 +24,7 @@ public class TaskDisplay {
 	/**
 	 * 任务列表刷新时间
 	 */
-	private static final Duration INTERVAL = Duration.ofSeconds(4);
+	public static final Duration INTERVAL = Duration.ofSeconds(4);
 
 	private static final TaskDisplay INSTANCE = new TaskDisplay();
 	

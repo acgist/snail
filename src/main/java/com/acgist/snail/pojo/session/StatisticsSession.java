@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.acgist.snail.gui.main.TaskDisplay;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.utils.ThreadUtils;
 
@@ -15,7 +16,7 @@ import com.acgist.snail.utils.ThreadUtils;
 public class StatisticsSession {
 
 	private static final long ONE_SECOND = 1000L; // 一秒钟
-	private static final long CACHE_SECOND = 2000L; // 两秒钟
+	private static final long CACHE_SECOND = TaskDisplay.INTERVAL.toMillis();
 	
 	private final boolean limit; // 限速开关
 	private final StatisticsSession parent; // 父类统计
