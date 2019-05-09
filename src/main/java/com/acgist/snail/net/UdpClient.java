@@ -46,7 +46,7 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends UdpSender {
 	}
 
 	/**
-	 * 打开客户端
+	 * 打开客户端，随机端口
 	 */
 	public boolean open() {
 		return this.open(-1);

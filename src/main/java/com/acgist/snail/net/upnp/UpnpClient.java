@@ -11,7 +11,7 @@ import com.acgist.snail.utils.NetUtils;
 
 /**
  * UPNP客户
- * TODO:close
+ * 随机端口
  */
 public class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	

@@ -4,6 +4,7 @@ import com.acgist.snail.net.UdpClient;
 
 /**
  * Tracker Client
+ * 随机端口
  */
 public class TrackerClient extends UdpClient<TrackerMessageHandler> {
 
