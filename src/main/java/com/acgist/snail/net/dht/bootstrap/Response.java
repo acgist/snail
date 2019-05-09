@@ -11,9 +11,9 @@ import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.system.bcode.BCodeDecoder;
 import com.acgist.snail.system.bcode.BCodeEncoder;
 import com.acgist.snail.system.config.DhtConfig;
+import com.acgist.snail.system.manager.NodeManager;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NetUtils;
-import com.acgist.snail.utils.StringUtils;
 
 /**
  * 错误：e是一个列表：
@@ -109,8 +109,8 @@ public class Response {
 		return new String(bytes);
 	}
 	
-	public String getIdHex() {
-		return StringUtils.hex(getT());
+	public byte[] getId() {
+		return getT();
 	}
 	
 	public byte[] getNodeId() {
@@ -159,7 +159,7 @@ public class Response {
 	}
 	
 	/**
-	 * 读取Node
+	 * 读取Node，同时添加列表
 	 */
 	protected static final NodeSession readNode(ByteBuffer buffer) {
 		if(buffer.hasRemaining()) {
@@ -167,7 +167,7 @@ public class Response {
 			buffer.get(id);
 			final String host = NetUtils.decodeIntToIp(buffer.getInt());
 			final int port = NetUtils.decodePort(buffer.getShort());
-			final NodeSession nodeSession = NodeSession.newInstance(id, host, port);
+			final NodeSession nodeSession = NodeManager.getInstance().newNodeSession(id, host, port);
 			return nodeSession;
 		}
 		return null;

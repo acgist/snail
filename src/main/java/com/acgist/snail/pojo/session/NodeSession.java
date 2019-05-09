@@ -3,23 +3,38 @@ package com.acgist.snail.pojo.session;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.JsonUtils;
 import com.acgist.snail.utils.ObjectUtils;
-import com.acgist.snail.utils.StringUtils;
 
 /**
  * Node信息
  */
 public class NodeSession implements Comparable<NodeSession> {
 
+	/**
+	 * 未使用
+	 */
+	public static final byte STATUS_UNUSE = 0;
+	/**
+	 * 验证：使用过一次，但是未标记有效
+	 */
+	public static final byte STATUS_VERIFY = -1;
+	/**
+	 * 有效：使用过并且可用
+	 */
+	public static final byte STATUS_AVAILABLE = 1;
+	
 	private final byte[] id;
 	private final String host;
 	private final int port;
 	
 	private byte[] token; // 广播时使用
+	
+	private byte status;
 
 	private NodeSession(byte[] id, String host, int port) {
 		this.id = id;
 		this.host = host;
 		this.port = port;
+		this.status = STATUS_UNUSE;
 	}
 	
 	public static final NodeSession newInstance(byte[] id, String host, int port) {
@@ -30,10 +45,6 @@ public class NodeSession implements Comparable<NodeSession> {
 		return id;
 	}
 
-	public String getIdHex() {
-		return StringUtils.hex(this.id);
-	}
-	
 	public String getHost() {
 		return host;
 	}
@@ -48,6 +59,14 @@ public class NodeSession implements Comparable<NodeSession> {
 
 	public void setToken(byte[] token) {
 		this.token = token;
+	}
+
+	public byte getStatus() {
+		return status;
+	}
+
+	public void setStatus(byte status) {
+		this.status = status;
 	}
 
 	@Override

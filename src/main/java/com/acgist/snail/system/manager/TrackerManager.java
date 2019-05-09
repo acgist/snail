@@ -51,7 +51,7 @@ public class TrackerManager {
 	/**
 	 * 新建TrackerLauncher
 	 */
-	public TrackerLauncher build(TrackerClient client, TorrentSession torrentSession) {
+	public TrackerLauncher newTrackerLauncher(TrackerClient client, TorrentSession torrentSession) {
 		final TrackerLauncher launcher = TrackerLauncher.newInstance(client, torrentSession);
 		trackerLaunchers.put(launcher.id(), launcher);
 		return launcher;

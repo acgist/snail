@@ -65,7 +65,7 @@ public class TorrentController implements Initializable {
 		TreeView<HBox> tree = buildTree();
 		Torrent torrent = null;
 		try {
-			torrent = TorrentManager.getInstance().buildSession(entity.getTorrent()).torrent();
+			torrent = TorrentManager.getInstance().newTorrentSession(entity.getTorrent()).torrent();
 		} catch (DownloadException e) {
 			Alerts.warn("下载出错", "种子文件解析异常");
 			return;

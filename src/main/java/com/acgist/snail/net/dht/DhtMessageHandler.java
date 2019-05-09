@@ -129,10 +129,9 @@ public class DhtMessageHandler extends UdpMessageHandler {
 		final PingRequest request = PingRequest.newRequest();
 		pushMessage(request, address);
 		waitResponse(request);
-		take(request);
 		final Response response = RESPONSE.apply(request);
 		if(SUCCESS.apply(response)) {
-			return NodeSession.newInstance(response.getNodeId(), address.getHostString(), address.getPort());
+			return NodeManager.getInstance().newNodeSession(response.getNodeId(), address.getHostString(), address.getPort());
 		}
 		return null;
 	}
@@ -171,10 +170,8 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	 * 处理响应
 	 */
 	private void findNode(Request request, Response response) {
-		take(request);
 		if(SUCCESS.apply(response)) {
-			final var nodes = FindNodeResponse.newInstance(response).getNodes();
-			NodeManager.getInstance().put(nodes);
+			FindNodeResponse.newInstance(response).getNodes();
 		}
 	}
 
@@ -198,15 +195,13 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	 * 处理响应
 	 */
 	private void getPeers(Request request, Response response) {
-		take(request);
 		if(SUCCESS.apply(response)) {
 			final GetPeersResponse getPeersResponse = GetPeersResponse.newInstance(response);
 			if(getPeersResponse.havePeers()) {
 				getPeersResponse.getPeers(request);
 			}
 			if(getPeersResponse.haveNodes()) {
-				final var nodes = getPeersResponse.getNodes();
-				NodeManager.getInstance().put(nodes);
+				getPeersResponse.getNodes();
 			}
 			final byte[] token = getPeersResponse.getToken();
 			final byte[] nodeId = getPeersResponse.getNodeId();
@@ -226,25 +221,17 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	/**
 	 * 执行请求
 	 */
-	public Response announcePeer(Request request) {
+	private Response announcePeer(Request request) {
 		return AnnouncePeerRequest.execute(request);
 	}
 
 	/**
 	 * 处理响应
 	 */
-	public void announcePeer(Request request, Response response) {
-		take(request);
+	private void announcePeer(Request request, Response response) {
 		if(SUCCESS.apply(response)) {
 			// TODO：处理成功
 		}
-	}
-	
-	/**
-	 * 取走响应
-	 */
-	private Request take(Request request) {
-		return RequestManager.getInstance().take(request);
 	}
 
 	/**
