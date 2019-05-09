@@ -1,36 +1,23 @@
 package com.acgist.snail.net.dht;
 
 import java.net.InetSocketAddress;
-import java.nio.channels.DatagramChannel;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.UdpClient;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
-import com.acgist.snail.system.config.SystemConfig;
-import com.acgist.snail.utils.IoUtils;
-import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
  * DHT协议<br>
+ * 固定端口
  * 基本协议：UDP
  * 每次取出最近的16个进行轮番查询Peer，然后定时查询
  */
 public class DhtClient extends UdpClient<DhtMessageHandler> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(DhtClient.class);
+//	private static final Logger LOGGER = LoggerFactory.getLogger(DhtClient.class);
 	
 	private final InetSocketAddress address;
-	
-	private static final DatagramChannel CHANNEL;
-	
-	static {
-		CHANNEL = NetUtils.buildUdpChannel(SystemConfig.getDhtPort());
-		UdpClient.bindServerHandler(new DhtMessageHandler(), CHANNEL);
-	}
 	
 	private DhtClient(InetSocketAddress address) {
 		super("DHT Client", new DhtMessageHandler());
@@ -51,7 +38,7 @@ public class DhtClient extends UdpClient<DhtMessageHandler> {
 	 */
 	@Override
 	public boolean open() {
-		return open(CHANNEL);
+		return open(DhtServer.getInstance().channel());
 	}
 	
 	public NodeSession ping() {
@@ -85,9 +72,4 @@ public class DhtClient extends UdpClient<DhtMessageHandler> {
 		this.handler.announcePeer(this.address, token, infoHash);
 	}
 	
-	public static final void release() {
-		LOGGER.info("UDP Client关闭：DHT Client");
-		IoUtils.close(CHANNEL);
-	}
-
 }

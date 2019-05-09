@@ -9,7 +9,7 @@ import com.acgist.snail.net.TcpServer;
 import com.acgist.snail.net.UdpClient;
 import com.acgist.snail.net.application.ApplicationClient;
 import com.acgist.snail.net.application.ApplicationServer;
-import com.acgist.snail.net.dht.DhtClient;
+import com.acgist.snail.net.dht.DhtServer;
 import com.acgist.snail.net.peer.PeerServer;
 import com.acgist.snail.net.tracker.TrackerClient;
 import com.acgist.snail.net.upnp.UpnpClient;
@@ -78,14 +78,7 @@ public class SystemContext {
 	 * 系统是否可用
 	 */
 	public static final boolean available() {
-		return !shutdown;
-	}
-
-	/**
-	 * 关闭系统
-	 */
-	public static final void shutdown() {
-		shutdown = true;
+		return !SystemContext.shutdown;
 	}
 
 	/**
@@ -93,17 +86,17 @@ public class SystemContext {
 	 * 所有系统线程均是守护线程，所以可以不用手动shutdown。<br>
 	 * 如果需要手动shutdown，那么必须关闭系统资源，否者会导致卡顿。
 	 */
-	public static final void exit() {
+	public static final void shutdown() {
 		if(SystemContext.available()) {
-			SystemContext.shutdown();
+			SystemContext.shutdown = true;
 			SystemThreadContext.submit(() -> {
 				LOGGER.info("系统关闭...");
 				DownloaderManager.getInstance().shutdown();
 				ApplicationServer.getInstance().close();
 				TrackerClient.getInstance().close();
+				DhtServer.getInstance().shutdown();
 				UpnpService.getInstance().release();
 				UpnpClient.getInstance().close();
-				DhtClient.release();
 				TcpClient.shutdown();
 				TcpServer.shutdown();
 				UdpClient.shutdown();
@@ -118,13 +111,6 @@ public class SystemContext {
 	}
 
 	/**
-	 * 启动加载
-	 */
-	public static final void loading() {
-		// TODO：加载效果
-	}
-
-	/**
 	 * 开启监听：开启失败表示已经启动了一个项目，唤醒之前的窗口
 	 */
 	public static final boolean listen() {
@@ -134,6 +120,13 @@ public class SystemContext {
 			ApplicationClient.notifyWindow();
 		}
 		return ok;
+	}
+
+	/**
+	 * 启动加载
+	 */
+	public static final void loading() {
+		// TODO：加载效果
 	}
 
 }

@@ -199,7 +199,7 @@ public class TrayMenu extends Menu {
 	};
 	
 	private EventHandler<ActionEvent> exitAction = (event) -> {
-		SystemContext.exit();
+		SystemContext.shutdown();
 	};
 	
 	private EventHandler<ActionEvent> aboutAction = (event) -> {
