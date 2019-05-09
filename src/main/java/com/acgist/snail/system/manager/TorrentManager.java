@@ -48,32 +48,32 @@ public class TorrentManager {
 	/**
 	 * 新建session，如果已经存在infoHashHex，直接返回反之使用path加载
 	 */
-	public TorrentSession buildSession(String infoHashHex, String path) throws DownloadException {
+	public TorrentSession newTorrentSession(String infoHashHex, String path) throws DownloadException {
 		var session = torrentSession(infoHashHex);
 		if(session != null) {
 			return session;
 		}
-		return buildSession(path);
+		return newTorrentSession(path);
 	}
 
 	/**
 	 * 新建session
 	 * @param path torrent文件
 	 */
-	public TorrentSession buildSession(String path) throws DownloadException {
+	public TorrentSession newTorrentSession(String path) throws DownloadException {
 		final var bytes = loadTorrent(path);
 		final BCodeDecoder decoder = BCodeDecoder.newInstance(bytes);
 		final Map<String, Object> map = decoder.mustMap();
 		final Torrent torrent = Torrent.valueOf(map);
 		final Map<?, ?> info = (Map<?, ?>) map.get("info"); // 只需要数据不符
 		final InfoHash infoHash = InfoHash.newInstance(BCodeEncoder.mapToBytes(info));
-		return buildSession(torrent, infoHash);
+		return newTorrentSession(torrent, infoHash);
 	}
 	
 	/**
 	 * 新建session，如果已经存在返回已存在session
 	 */
-	private TorrentSession buildSession(Torrent torrent, InfoHash infoHash) throws DownloadException {
+	private TorrentSession newTorrentSession(Torrent torrent, InfoHash infoHash) throws DownloadException {
 		if(infoHash == null) {
 			throw new DownloadException("infoHash不合法");
 		}

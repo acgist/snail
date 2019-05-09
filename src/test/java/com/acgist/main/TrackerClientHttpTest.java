@@ -13,7 +13,7 @@ public class TrackerClientHttpTest {
 	@Test
 	public void test() throws DownloadException, NetException {
 		String path = "e:/snail/82309348090ecbec8bf509b83b30b78a8d1f6454.torrent";
-		TorrentSession session = TorrentManager.getInstance().buildSession(path);
+		TorrentSession session = TorrentManager.getInstance().newTorrentSession(path);
 //		HttpTrackerClient client = HttpTrackerClient.newInstance("http://anidex.moe:6969/announce");
 		HttpTrackerClient client = HttpTrackerClient.newInstance("http://t.nyaatracker.com/announce");
 		client.announce(1000, session);

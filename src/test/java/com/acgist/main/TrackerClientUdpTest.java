@@ -16,7 +16,7 @@ public class TrackerClientUdpTest {
 	@Test
 	public void test() throws NetException, DownloadException {
 		String path = "e:/snail/1234.torrent";
-		TorrentSession session = TorrentManager.getInstance().buildSession(path);
+		TorrentSession session = TorrentManager.getInstance().newTorrentSession(path);
 		TrackerLauncherGroup group = TrackerLauncherGroup.newInstance(session);
 		TaskEntity entity = new TaskEntity();
 		entity.setFile("e://tmp/test");

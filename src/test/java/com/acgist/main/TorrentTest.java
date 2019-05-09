@@ -18,7 +18,7 @@ public class TorrentTest {
 //		String path = "e:/snail/11e38a5270e15c60534ca48977b7d77a3c4f6340.torrent";
 //		String path = "e:/snail/0B156834B59B0FF64EE0C9305D4D6EDE421196E6.torrent";
 //		String path = "e:/snail/543/c15417e6aeab33732a59085d826edd29978f9afa.torrent";
-		TorrentSession session = TorrentManager.getInstance().buildSession(path);
+		TorrentSession session = TorrentManager.getInstance().newTorrentSession(path);
 		Torrent torrent = session.torrent();
 		System.out.println(torrent.getComment());
 		System.out.println(torrent.getInfo().pieceSize());

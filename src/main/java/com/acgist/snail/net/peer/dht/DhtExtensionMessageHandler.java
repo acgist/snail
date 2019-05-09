@@ -45,7 +45,7 @@ public class DhtExtensionMessageHandler {
 		if(dhtLauncher != null) {
 			dhtLauncher.put(peerSession.host(), port);
 		}
-		NodeManager.getInstance().put(peerSession.host(), port);
+		NodeManager.getInstance().newNodeSession(peerSession.host(), port);
 	}
 
 }

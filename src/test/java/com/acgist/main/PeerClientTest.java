@@ -28,7 +28,7 @@ public class PeerClientTest {
 //		String path = "e:/snail/1234.torrent";
 //		String path = "e:/snail/12345.torrent";
 //		String path = "e:/snail/123456.torrent";
-		TorrentSession torrentSession = TorrentManager.getInstance().buildSession(path);
+		TorrentSession torrentSession = TorrentManager.getInstance().newTorrentSession(path);
 		var files = torrentSession.torrent().getInfo().files();
 		List<String> list = new ArrayList<>();
 		AtomicLong size = new AtomicLong(0);
@@ -72,7 +72,7 @@ public class PeerClientTest {
 //		String path = "e:/snail/1234.torrent";
 //		String path = "e:/snail/12345.torrent";
 //		String path = "e:/snail/123456.torrent";
-		TorrentSession torrentSession = TorrentManager.getInstance().buildSession(path);
+		TorrentSession torrentSession = TorrentManager.getInstance().newTorrentSession(path);
 		TaskEntity entity = new TaskEntity();
 		entity.setFile("e://tmp/test/");
 		entity.setType(Type.torrent);

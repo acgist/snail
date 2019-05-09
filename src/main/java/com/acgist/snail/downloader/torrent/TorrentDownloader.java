@@ -73,7 +73,7 @@ public class TorrentDownloader extends Downloader {
 		final String path = entity.getTorrent();
 		try {
 			final String infoHashHex = MagnetProtocol.buildHash(entity.getUrl());
-			this.torrentSession = TorrentManager.getInstance().buildSession(infoHashHex, path);
+			this.torrentSession = TorrentManager.getInstance().newTorrentSession(infoHashHex, path);
 			this.torrentSession.loadTask(this.taskSession);
 		} catch (DownloadException e) {
 			fail("任务加载失败");

@@ -12,7 +12,6 @@ import com.acgist.snail.system.bcode.BCodeEncoder;
 import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.system.config.DhtConfig.QType;
 import com.acgist.snail.utils.NetUtils;
-import com.acgist.snail.utils.StringUtils;
 
 public class Request {
 
@@ -124,8 +123,8 @@ public class Request {
 		return new String(bytes);
 	}
 	
-	public String getIdHex() {
-		return StringUtils.hex(getT());
+	public byte[] getId() {
+		return getT();
 	}
 	
 	public byte[] getNodeId() {

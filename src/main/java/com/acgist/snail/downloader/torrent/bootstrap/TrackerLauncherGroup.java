@@ -59,7 +59,7 @@ public class TrackerLauncherGroup {
 		clients.stream()
 		.map(client -> {
 			LOGGER.debug("添加TrackerClient，ID：{}，announceUrl：{}", client.id(), client.announceUrl());
-			return TrackerManager.getInstance().build(client, torrentSession);
+			return TrackerManager.getInstance().newTrackerLauncher(client, torrentSession);
 		}).forEach(launcher -> {
 			try {
 				this.trackerLaunchers.add(launcher);

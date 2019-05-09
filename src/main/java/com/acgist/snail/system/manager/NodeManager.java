@@ -14,10 +14,10 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.dht.DhtClient;
 import com.acgist.snail.net.dht.bootstrap.Request;
+import com.acgist.snail.net.dht.bootstrap.Response;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.ArrayUtils;
-import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -91,39 +91,36 @@ public class NodeManager {
 	}
 	
 	/**
-	 * 添加Node
+	 * 新建Node
 	 */
-	public void put(List<NodeSession> nodes) {
-		if(CollectionUtils.isEmpty(nodes)) {
-			return;
-		}
-		for (NodeSession node : nodes) {
-			NodeSession nodeSession = verify(node);
-			if(nodeSession == null) {
-				if(LOGGER.isDebugEnabled()) {
-					LOGGER.debug("无效Node：{}-{}:{}", node.getIdHex(), node.getHost(), node.getPort());
-				}
-			} else {
-				addNode(nodeSession);
-			}
-		}
+	public NodeSession newNodeSession(byte[] nodeId, String host, Integer port) {
 		synchronized (this.nodes) {
+			NodeSession nodeSession = select(nodeId);
+			if(nodeSession != null) {
+				return nodeSession;
+			}
+			if(nodeSession == null) {
+				nodeSession = NodeSession.newInstance(nodeId, host, port);
+				if(nodeSession.getId().length == NODE_ID_LENGTH) {
+					if(LOGGER.isDebugEnabled()) {
+						LOGGER.debug("添加Node：{}:{}", nodeSession.getHost(), nodeSession.getPort());
+					}
+					this.nodes.add(nodeSession);
+				}
+			}
 			Collections.sort(this.nodes); // 排序
+			return nodeSession;
 		}
 	}
 	
 	/**
 	 * 添加DHT节点，使用Ping然后添加到列表
 	 */
-	public void put(String host, Integer port) {
+	public void newNodeSession(String host, Integer port) {
 		final NodeSession nodeSession = verify(host, port);
 		if(nodeSession != null) {
-			addNode(nodeSession);
+			nodeSession.setStatus(NodeSession.STATUS_AVAILABLE); // 标记有效
 		}
-	}
-
-	private NodeSession verify(NodeSession node) {
-		return verify(node.getHost(), node.getPort());
 	}
 	
 	/**
@@ -138,20 +135,10 @@ public class NodeManager {
 		}
 		return null;
 	}
-	
-	private void addNode(NodeSession nodeSession) {
-		synchronized (this.nodes) {
-			if(nodeSession.getId().length == NODE_ID_LENGTH && !this.nodes.contains(nodeSession)) {
-				if(LOGGER.isDebugEnabled()) {
-					LOGGER.debug("添加Node：{}-{}:{}", nodeSession.getIdHex(), nodeSession.getHost(), nodeSession.getPort());
-				}
-				this.nodes.add(nodeSession);
-			}
-		}
-	}
-	
+
 	/**
 	 * 查找Node，查找到最近的一段区域，然后异或运算获取最近
+	 * 不选择使用中的Node
 	 * @param target NodeId
 	 * @return Node
 	 */
@@ -159,8 +146,18 @@ public class NodeManager {
 		return this.findNode(StringUtils.unhex(target));
 	}
 	
+	/**
+	 * 查找Node
+	 * 不选择使用中的Node
+	 */
 	public List<NodeSession> findNode(byte[] target) {
-		return this.findNode(target, 0, this.nodes.size());
+		List<NodeSession> nodes;
+		synchronized (this.nodes) {
+			nodes = this.nodes.stream()
+				.filter(node -> node.getStatus() != NodeSession.STATUS_VERIFY)
+				.collect(Collectors.toList());
+		}
+		return this.findNode(nodes, target, 0, nodes.size());
 	}
 
 	/**
@@ -170,15 +167,15 @@ public class NodeManager {
 	 * @param end 结束序号
 	 * @return 节点
 	 */
-	private List<NodeSession> findNode(final byte[] id, final int begin, final int end) {
+	private List<NodeSession> findNode(final List<NodeSession> nodes, final byte[] id, final int begin, final int end) {
 		int size;
 		if(end > begin) {
 			size = end - begin;
 		} else {
-			size = end + this.nodes.size() - begin;
+			size = end + nodes.size() - begin;
 		}
 		if(size < NODE_FIND_SLICE_SIZE) { // 获取
-			return selectNode(id, begin, end);
+			return selectNode(nodes, id, begin, end);
 		} else { // 分片
 			// 下标
 			final int sliceSize = (end - begin) / NODE_FIND_SLICE;
@@ -186,44 +183,52 @@ public class NodeManager {
 			final int sliceB = sliceA + sliceSize;
 			final int sliceC = sliceB + sliceSize;
 			// 节点
-			final var nodeA = this.nodes.get(sliceA);
-			final var nodeB = this.nodes.get(sliceB);
-			final var nodeC = this.nodes.get(sliceC);
+			final var nodeA = nodes.get(sliceA);
+			final var nodeB = nodes.get(sliceB);
+			final var nodeC = nodes.get(sliceC);
 			// 节点相差
 			final int indexA = index(nodeA.getId(), id);
 			final int indexB = index(nodeB.getId(), id);
 			final int indexC = index(nodeC.getId(), id);
 			if(indexA > indexB && indexA > indexC) {
-				return findNode(id, sliceC, sliceB);
+				return findNode(nodes, id, sliceC, sliceB);
 			} else if(indexB > indexA && indexB > indexC) {
-				return findNode(id, sliceA, sliceC);
+				return findNode(nodes, id, sliceA, sliceC);
 			} else if(indexC > indexA && indexC > indexB) {
-				return findNode(id, sliceB, sliceA);
+				return findNode(nodes, id, sliceB, sliceA);
 			} else {
-				return this.selectNode(id, begin, end);
+				return this.selectNode(nodes, id, begin, end);
 			}
 		}
 	}
 
-	private List<NodeSession> selectNode(final byte[] id, final int begin, final int end) {
+	/**
+	 * 选择节点，选中的节点如果没有使用过标记为使用中
+	 */
+	private List<NodeSession> selectNode(final List<NodeSession> nodes, final byte[] id, final int begin, final int end) {
 		Stream<NodeSession> select;
 		if(begin < end) {
-			select = this.nodes.stream().skip(begin).limit(end - begin);
+			select = nodes.stream().skip(begin).limit(end - begin);
 		} else {
-			select = Stream.concat(this.nodes.stream().limit(end), this.nodes.stream().skip(begin));
+			select = Stream.concat(nodes.stream().limit(end), nodes.stream().skip(begin));
 		}
-		final Map<String, NodeSession> nodes = select
+		final Map<String, NodeSession> selectNodes = select
 			.collect(Collectors.toMap(node -> {
 				return xor(node.getId(), id);
 			}, node -> {
 				return node;
 			}));
-		return nodes.entrySet().stream()
+		return selectNodes.entrySet().stream()
 			.sorted((a, b) -> {
 				return a.getKey().compareTo(b.getKey());
 			})
 			.map(Map.Entry::getValue)
 			.limit(NODE_FIND_SIZE)
+			.peek(node -> {
+				if(node.getStatus() == NodeSession.STATUS_UNUSE) {
+					node.setStatus(NodeSession.STATUS_VERIFY);
+				}
+			})
 			.collect(Collectors.toList());
 	}
 	
@@ -233,19 +238,39 @@ public class NodeManager {
 	public void token(byte[] nodeId, Request request, byte[] token) {
 		final InetSocketAddress address = request.getAddress();
 		synchronized (this.nodes) {
-			NodeSession old = null;
-			for (NodeSession nodeSession : this.nodes) {
-				if(ArrayUtils.equals(nodeId, nodeSession.getId())) {
-					old = nodeSession;
-					break;
-				}
-			}
+			NodeSession old = select(nodeId);
 			if(old == null) {
 				old = NodeSession.newInstance(nodeId, address.getHostString(), address.getPort());
 				this.nodes.add(old);
 			}
 			old.setToken(token);
 		}
+	}
+	
+	/**
+	 * 标记可用节点：有相应的节点标记为可用节点
+	 */
+	public void available(Response response) {
+		if(response != null) {
+			synchronized (this.nodes) {
+				NodeSession node = select(response.getNodeId());
+				if(node != null) {
+					node.setStatus(NodeSession.STATUS_AVAILABLE);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * 选择Node
+	 */
+	private NodeSession select(byte[] nodeId) {
+		for (NodeSession nodeSession : this.nodes) {
+			if(ArrayUtils.equals(nodeId, nodeSession.getId())) {
+				return nodeSession;
+			}
+		}
+		return null;
 	}
 	
 	/**

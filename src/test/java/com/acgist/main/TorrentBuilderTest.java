@@ -13,7 +13,7 @@ public class TorrentBuilderTest {
 	@Test
 	public void test() throws DownloadException {
 		String path = "e:/snail/12345.torrent";
-		TorrentSession session = TorrentManager.getInstance().buildSession(path);
+		TorrentSession session = TorrentManager.getInstance().newTorrentSession(path);
 		InfoHash infoHash = session.infoHash();
 		TorrentBuilder builder = TorrentBuilder.newInstance(infoHash);
 		builder.buildFile("e:/snail");
