@@ -87,7 +87,7 @@ public class TorrentManager {
 	}
 	
 	/**
-	 * 下载完成去掉下载信息
+	 * TODO：下载完成去掉下载信息
 	 */
 	public void complate() {
 	}

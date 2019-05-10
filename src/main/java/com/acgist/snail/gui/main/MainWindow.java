@@ -6,9 +6,13 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.gui.Window;
 import com.acgist.snail.gui.about.AboutWindow;
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.system.context.SystemConsole;
+import com.acgist.snail.utils.BrowseUtils;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -54,6 +58,8 @@ public class MainWindow extends Window<MainController> {
 		stage.setScene(scene);
 		stage.setTitle(SystemConfig.getName());
 		icon();
+		help();
+		console();
 	}
 	
 	@Override
@@ -62,4 +68,26 @@ public class MainWindow extends Window<MainController> {
 		super.show();
 	}
 
+	/**
+	 * F1帮助
+	 */
+	private void help() {
+		stage.addEventHandler(KeyEvent.KEY_RELEASED, (event) -> {
+			if(event.getCode() == KeyCode.F1) {
+				BrowseUtils.open(SystemConfig.getSupport());
+			}
+		});
+	}
+	
+	/**
+	 * F12控制台
+	 */
+	private void console() {
+		stage.addEventHandler(KeyEvent.KEY_RELEASED, (event) -> {
+			if(event.getCode() == KeyCode.F12) {
+				SystemConsole.getInstance().console();
+			}
+		});
+	}
+	
 }

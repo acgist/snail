@@ -93,7 +93,7 @@ public class TaskSession {
 	}
 
 	/**
-	 * 更新状态
+	 * 更新状态，刷新下载
 	 */
 	public void updateStatus(Status status) {
 		if(complete()) {

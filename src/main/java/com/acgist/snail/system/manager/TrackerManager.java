@@ -49,6 +49,13 @@ public class TrackerManager {
 	}
 
 	/**
+	 * 所有的TrackerClient
+	 */
+	public List<TrackerClient> clients() {
+		return new ArrayList<>(trackerClients.values());
+	}
+	
+	/**
 	 * 新建TrackerLauncher
 	 */
 	public TrackerLauncher newTrackerLauncher(TrackerClient client, TorrentSession torrentSession) {

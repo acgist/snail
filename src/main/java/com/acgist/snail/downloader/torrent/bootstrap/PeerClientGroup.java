@@ -39,13 +39,13 @@ public class PeerClientGroup {
 	
 	private long lastOptimizeTime = System.currentTimeMillis();
 	
+	private final PeerManager peerManager;
 	private final TaskSession taskSession;
 	private final TorrentSession torrentSession;
 	/**
 	 * PeerClient下载队列
 	 */
 	private final BlockingQueue<PeerClient> peerClients;
-	private final PeerManager peerManager;
 	/**
 	 * 优选的Peer，每次优化时挑选出来可以进行下载的Peer，在优化后发送ut_pex消息发送给连接的Peer，发送完成后清空
 	 */
@@ -61,6 +61,13 @@ public class PeerClientGroup {
 	
 	public static final PeerClientGroup newInstance(TorrentSession torrentSession) {
 		return new PeerClientGroup(torrentSession);
+	}
+
+	/**
+	 * 获取当前下载PeerClient数量
+	 */
+	public int peerClientSize() {
+		return this.peerClients.size();
 	}
 	
 	/**
@@ -123,6 +130,7 @@ public class PeerClientGroup {
 					client.release();
 				});
 			});
+			peerClients.clear();
 		}
 	}
 	

@@ -304,7 +304,7 @@ public class MainController implements Initializable {
 		if(!this.haveContent()) {
 			return;
 		}
-		final Optional<ButtonType> result = Alerts.build(AlertType.CONFIRMATION, "删除确认", "删除选中文件？");
+		final Optional<ButtonType> result = Alerts.build(AlertType.CONFIRMATION, "删除确认", "删除选中文件（不可恢复）？");
 		if(result.get() == ButtonType.OK) {
 			this.selected()
 			.forEach(wrapper -> {
