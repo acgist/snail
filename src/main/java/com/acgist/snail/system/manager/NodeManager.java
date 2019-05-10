@@ -91,7 +91,17 @@ public class NodeManager {
 	}
 	
 	/**
-	 * 新建Node
+	 * 添加DHT节点，使用Ping然后添加到列表
+	 */
+	public void newNodeSession(String host, Integer port) {
+		final NodeSession nodeSession = verify(host, port);
+		if(nodeSession != null) {
+			nodeSession.setStatus(NodeSession.STATUS_AVAILABLE); // 标记有效
+		}
+	}
+	
+	/**
+	 * 新建Node，新建完成后需要调用{@link #sortNodes()}进行排序
 	 */
 	public NodeSession newNodeSession(byte[] nodeId, String host, Integer port) {
 		synchronized (this.nodes) {
@@ -103,23 +113,21 @@ public class NodeManager {
 				nodeSession = NodeSession.newInstance(nodeId, host, port);
 				if(nodeSession.getId().length == NODE_ID_LENGTH) {
 					if(LOGGER.isDebugEnabled()) {
-						LOGGER.debug("添加Node：{}:{}", nodeSession.getHost(), nodeSession.getPort());
+//						LOGGER.debug("添加Node：{}:{}", nodeSession.getHost(), nodeSession.getPort());
 					}
 					this.nodes.add(nodeSession);
 				}
 			}
-			Collections.sort(this.nodes); // 排序
 			return nodeSession;
 		}
 	}
-	
+
 	/**
-	 * 添加DHT节点，使用Ping然后添加到列表
+	 * 排序：在调用{@link #newNodeSession(byte[], String, Integer)}后需要进行排序
 	 */
-	public void newNodeSession(String host, Integer port) {
-		final NodeSession nodeSession = verify(host, port);
-		if(nodeSession != null) {
-			nodeSession.setStatus(NodeSession.STATUS_AVAILABLE); // 标记有效
+	public void sortNodes() {
+		synchronized (this.nodes) {
+			Collections.sort(this.nodes); // 排序
 		}
 	}
 	
@@ -253,7 +261,7 @@ public class NodeManager {
 	public void available(Response response) {
 		if(response != null) {
 			synchronized (this.nodes) {
-				NodeSession node = select(response.getNodeId());
+				final NodeSession node = select(response.getNodeId());
 				if(node != null) {
 					node.setStatus(NodeSession.STATUS_AVAILABLE);
 				}
@@ -274,7 +282,7 @@ public class NodeManager {
 	}
 	
 	/**
-	 * 异或运算
+	 * 异或运算，返回十六进制字符串
 	 */
 	public static final String xor(byte[] source, byte[] target) {
 		final byte[] value = new byte[NODE_ID_LENGTH];

@@ -12,8 +12,11 @@ import com.acgist.snail.system.bcode.BCodeDecoder;
 import com.acgist.snail.system.bcode.BCodeEncoder;
 import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.system.manager.NodeManager;
+import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.CollectionUtils;
+import com.acgist.snail.utils.JsonUtils;
 import com.acgist.snail.utils.NetUtils;
+import com.acgist.snail.utils.ObjectUtils;
 
 /**
  * 错误：e是一个列表：
@@ -171,6 +174,28 @@ public class Response {
 			return nodeSession;
 		}
 		return null;
+	}
+	
+	@Override
+	public int hashCode() {
+		return this.t.hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object object) {
+		if(ObjectUtils.equals(this, object)) {
+			return true;
+		}
+		if(ObjectUtils.equalsClazz(this, object)) {
+			Response response = (Response) object;
+			return ArrayUtils.equals(this.t, response.t);
+		}
+		return false;
+	}
+	
+	@Override
+	public String toString() {
+		return JsonUtils.toJson(this);
 	}
 	
 }

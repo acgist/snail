@@ -11,7 +11,10 @@ import com.acgist.snail.system.bcode.BCodeDecoder;
 import com.acgist.snail.system.bcode.BCodeEncoder;
 import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.system.config.DhtConfig.QType;
+import com.acgist.snail.utils.ArrayUtils;
+import com.acgist.snail.utils.JsonUtils;
 import com.acgist.snail.utils.NetUtils;
+import com.acgist.snail.utils.ObjectUtils;
 
 public class Request {
 
@@ -151,6 +154,28 @@ public class Request {
 			buffer.putShort(NetUtils.encodePort(node.getPort()));
 		}
 		return buffer.array();
+	}
+	
+	@Override
+	public int hashCode() {
+		return this.t.hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object object) {
+		if(ObjectUtils.equals(this, object)) {
+			return true;
+		}
+		if(ObjectUtils.equalsClazz(this, object)) {
+			Request request = (Request) object;
+			return ArrayUtils.equals(this.t, request.t);
+		}
+		return false;
+	}
+	
+	@Override
+	public String toString() {
+		return JsonUtils.toJson(this);
 	}
 	
 }

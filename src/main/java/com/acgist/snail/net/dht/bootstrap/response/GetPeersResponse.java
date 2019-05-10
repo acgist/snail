@@ -59,6 +59,7 @@ public class GetPeersResponse extends Response {
 			}
 			list.add(session);
 		}
+		NodeManager.getInstance().sortNodes();
 		return list;
 	}
 	
