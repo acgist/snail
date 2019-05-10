@@ -20,10 +20,13 @@ import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.CollectionUtils;
 
 /**
- * LTEP（Libtorrent Extension Protocol）扩展协议
- * http://www.bittorrent.org/beps/bep_0009.html
- * http://www.bittorrent.org/beps/bep_0010.html
- * http://www.bittorrent.org/beps/bep_0011.html
+ * <p>LTEP（Libtorrent Extension Protocol）扩展协议</p>
+ * <p>协议链接：http://www.bittorrent.org/beps/bep_0009.html</p>
+ * <p>协议链接：http://www.bittorrent.org/beps/bep_0010.html</p>
+ * <p>协议链接：http://www.bittorrent.org/beps/bep_0011.html</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class ExtensionMessageHandler {
 	
@@ -86,7 +89,7 @@ public class ExtensionMessageHandler {
 	}
 	
 	/**
-	 * 扩展消息握手
+	 * 扩展握手消息
 	 */
 	public void handshake() {
 		final Map<String, Object> data = new LinkedHashMap<>();
@@ -120,7 +123,7 @@ public class ExtensionMessageHandler {
 	}
 
 	/**
-	 * 扩展消息握手
+	 * 扩展握手消息
 	 */
 	private void handshake(ByteBuffer buffer) {
 		final byte[] bytes = new byte[buffer.remaining()];
@@ -159,19 +162,22 @@ public class ExtensionMessageHandler {
 		}
 	}
 	
+	/**
+	 * Pex请求
+	 */
 	public void exchange(byte[] bytes) {
 		utPeerExchangeMessageHandler.exchange(bytes);
 	}
 	
 	/**
-	 * ut_pex
+	 * ut_pex消息
 	 */
 	private void utPex(ByteBuffer buffer) {
 		utPeerExchangeMessageHandler.onMessage(buffer);
 	}
 	
 	/**
-	 * ut_metadata
+	 * ut_metadata消息
 	 */
 	private void utMetadata(ByteBuffer buffer) {
 		utMetadataMessageHandler.onMessage(buffer);
@@ -179,6 +185,7 @@ public class ExtensionMessageHandler {
 
 	/**
 	 * 数据打包
+	 * 
 	 * @param type 扩展类型
 	 * @param bytes 扩展数据
 	 */
@@ -191,6 +198,7 @@ public class ExtensionMessageHandler {
 	
 	/**
 	 * 发送消息
+	 * 
 	 * @param type 扩展消息类型：需要和Peer的标记一致
 	 */
 	public void pushMessage(byte type, byte[] bytes) {

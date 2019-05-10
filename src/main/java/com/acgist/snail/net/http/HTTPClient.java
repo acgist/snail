@@ -23,7 +23,10 @@ import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.UrlUtils;
 
 /**
- * Client - http
+ * HTTP客户端
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class HTTPClient {
 
@@ -37,6 +40,9 @@ public class HTTPClient {
 	
 	private static final String USER_AGENT;
 	
+	/**
+	 * HTTP线程池
+	 */
 	private static final ExecutorService EXECUTOR_HTTP = SystemThreadContext.newCacheExecutor(SystemThreadContext.SNAIL_THREAD_HTTP);
 	
 	static {
@@ -54,12 +60,15 @@ public class HTTPClient {
 		USER_AGENT = userAgentBuilder.toString();
 	}
 	
+	/**
+	 * 新建客户端
+	 */
 	public static final HttpClient newClient() {
 		return newClient(TIMEOUT);
 	}
 	
 	/**
-	 * HTTPClient
+	 * 新建客户端
 	 */
 	public static final HttpClient newClient(int timeout) {
 		return HttpClient
@@ -71,12 +80,15 @@ public class HTTPClient {
 			.build();
 	}
 	
+	/**
+	 * 新建请求
+	 */
 	public static final Builder newRequest(String url) {
 		return newRequest(url, TIMEOUT);
 	}
 	
 	/**
-	 * 请求
+	 * 新建请求
 	 */
 	public static final Builder newRequest(String url, int timeout) {
 		return HttpRequest
@@ -164,7 +176,8 @@ public class HTTPClient {
 	}
 	
 	/**
-	 * 判断请求是否成功
+	 * <p>判断请求是否成功</p>
+	 * <p>响应状态码：{@link #HTTP_OK}、{@link #HTTP_PARTIAL_CONTENT}。</p>
 	 */
 	public static final <T> boolean ok(HttpResponse<T> response) {
 		return response != null &&
@@ -175,7 +188,7 @@ public class HTTPClient {
 	}
 
 	/**
-	 * 无法满足请求范围
+	 * 无法满足请求范围，响应状态码[{@link #HTTP_RANGE_NOT_SATISFIABLE}
 	 */
 	public static final <T> boolean rangeNotSatisfiable(HttpResponse<T> response) {
 		return response != null && response.statusCode() == HTTP_RANGE_NOT_SATISFIABLE;

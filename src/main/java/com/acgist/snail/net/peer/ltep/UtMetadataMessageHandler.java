@@ -18,15 +18,20 @@ import com.acgist.snail.system.config.PeerMessageConfig.UtMetadataType;
 import com.acgist.snail.utils.NumberUtils;
 
 /**
- * http://www.bittorrent.org/beps/bep_0009.html
+ * <p>Extension for Peers to Send Metadata Files</p>
+ * <p>infoHash交换种子文件信息。</p>
+ * <p>协议链接：http://www.bittorrent.org/beps/bep_0009.html</p>
  * TODO：大量请求时拒绝请求
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class UtMetadataMessageHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UtMetadataMessageHandler.class);
 	
 	/**
-	 * 16KB
+	 * 数据交换每块大小：16KB
 	 */
 	public static final int INFO_SLICE_SIZE = 16 * 1024;
 	
@@ -78,6 +83,9 @@ public class UtMetadataMessageHandler {
 		}
 	}
 	
+	/**
+	 * 发出请求：request
+	 */
 	public void request() {
 		final int size = infoHash.size();
 		final int messageSize = NumberUtils.divideUp(size, INFO_SLICE_SIZE);
@@ -87,11 +95,19 @@ public class UtMetadataMessageHandler {
 		}
 	}
 	
+	/**
+	 * 处理请求：request
+	 */
 	private void request(Map<String, Object> data) {
 		final int piece = BCodeDecoder.getInteger(data, ARG_PIECE);
 		data(piece);
 	}
 
+	/**
+	 * 发出请求：data
+	 * 
+	 * @param piece 种子块索引
+	 */
 	public void data(int piece) {
 		final byte[] bytes = infoHash.info();
 		if(bytes == null) {
@@ -115,6 +131,12 @@ public class UtMetadataMessageHandler {
 		pushMessage(data, x);
 	}
 
+	/**
+	 * 处理请求：data
+	 * 
+	 * @param data 请求数据
+	 * @param decoder B编码数据
+	 */
 	private void data(Map<String, Object> data, BCodeDecoder decoder) {
 		boolean complete = false; // 下载完成
 		final int piece = BCodeDecoder.getInteger(data, ARG_PIECE);
@@ -136,11 +158,17 @@ public class UtMetadataMessageHandler {
 		}
 	}
 	
+	/**
+	 * 发出请求：reject
+	 */
 	public void reject() {
 		final var reject = buildMessage(PeerMessageConfig.UtMetadataType.reject, 0);
 		pushMessage(reject);
 	}
 	
+	/**
+	 * 处理请求：reject
+	 */
 	private void reject(Map<String, Object> data) {
 		LOGGER.warn("UtMetadata被拒绝");
 	}
@@ -154,6 +182,7 @@ public class UtMetadataMessageHandler {
 	
 	/**
 	 * 创建消息
+	 * 
 	 * @param type UtMetadata类型
 	 */
 	private Map<String, Object> buildMessage(PeerMessageConfig.UtMetadataType type, int piece) {

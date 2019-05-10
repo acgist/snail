@@ -26,12 +26,13 @@ import com.acgist.snail.utils.BitfieldUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * Peer消息处理
- * http://www.bittorrent.org/beps/bep_0003.html
- * http://www.bittorrent.org/beps/bep_0004.html
- * http://www.bittorrent.org/beps/bep_0009.html
- * http://www.bittorrent.org/beps/bep_0010.html
- * http://www.bittorrent.org/beps/bep_0011.html
+ * <p>Peer消息处理</p>
+ * <p>协议链接：http://www.bittorrent.org/beps/bep_0003.html</p>
+ * <p>协议链接：http://www.bittorrent.org/beps/bep_0004.html</p>
+ * <p>协议链接：http://www.bittorrent.org/beps/bep_0009.html</p>
+ * <p>协议链接：http://www.bittorrent.org/beps/bep_0010.html</p>
+ * <p>协议链接：http://www.bittorrent.org/beps/bep_0011.html</p>
+ * <pre>
  * D = 目前正在下载（有需要的文件部份且没有禁止连接）
  * d = 客户端请求下载，但用户拒绝传输（有需要的文件部份但连接被禁止）
  * U = 目前正在上传（需要的文件部份且没有禁止连接）
@@ -47,9 +48,12 @@ import com.acgist.snail.utils.StringUtils;
  * e = 用户正使用协议加密连接（握手）
  * P = 用户正使用uTP连接
  * L = 用户是本地的（通过网络广播或是保留的本地IP范围发现）
- * TODO：实现Exctended消息
- * TODO：实现流水线
+ * </pre>
  * TODO：加密
+ * TODO：实现流水线
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class PeerMessageHandler extends TcpMessageHandler {
 
@@ -101,7 +105,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	}
 
 	/**
-	 * 初始化
+	 * 初始化：客户端连接，加入到Peer列表。
 	 */
 	private boolean init(String infoHashHex, String peerId, byte[] reserved) {
 		final TorrentSession torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
@@ -129,18 +133,30 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		return true;
 	}
 	
+	/**
+	 * 下载文件
+	 */
 	public void download() {
 		action(Action.download);
 	}
 	
+	/**
+	 * 下载种子
+	 */
 	public void torrent() {
 		action(Action.torrent);
 	}
 	
+	/**
+	 * 当前动作
+	 */
 	public Action action() {
 		return this.action;
 	}
 	
+	/**
+	 * 设置动作
+	 */
 	public void action(Action action) {
 		this.action = action;
 	}
@@ -200,7 +216,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	}
 	
 	/**
-	 * 处理单挑
+	 * 处理单条消息
 	 */
 	private void oneMessage(final ByteBuffer buffer) {
 		buffer.flip();
@@ -254,13 +270,14 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	}
 
 	/**
-	 * 握手：
-	 * 消息格式：pstrlen pstr reserved info_hash peer_id
+	 * <p>发送握手消息</p>
+	 * <p>消息格式：pstrlen pstr reserved info_hash peer_id<br>
 	 * pstrlen：pstr的长度：19<br>
 	 * pstr：BitTorrent协议的关键字：BitTorrent protocol<br>
 	 * reserved：8字节，用于扩展BT协议，一般都设置：0<br>
 	 * info_hash：info_hash<br>
 	 * peer_id：peer_id
+	 * </p>
 	 */
 	public void handshake(PeerClient peerClient) {
 		LOGGER.debug("握手");
@@ -279,7 +296,10 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	}
 	
 	/**
-	 * 处理握手
+	 * <p>处理握手消息</p>
+	 * <p>服务端：初始化、握手、解除阻塞。</p>
+	 * <p>客户端：设置id。</p>
+	 * <p>然后发送扩展消息、DHT消息、交换位图。</p>
 	 */
 	private void handshake(ByteBuffer buffer) {
 		LOGGER.debug("被握手");
@@ -316,16 +336,19 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	}
 
 	/**
-	 * 4字节：消息持久：len=0000
+	 * <p>发送心跳消息</p>
+	 * <p>
+	 * 4字节：消息持久：len=0000<br>
 	 * 只有消息长度，没有消息编号和负载
+	 * </p>
 	 */
 	public void keepAlive() {
 		pushMessage(null, null);
 	}
 	
 	/**
-	 * 5字节：len=0001 id=0
-	 * 阻塞
+	 * <p>发送阻塞消息</p>
+	 * <p>5字节：len=0001 id=0</p>
 	 */
 	public void choke() {
 		LOGGER.debug("阻塞");
@@ -333,6 +356,9 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		pushMessage(PeerMessageConfig.Type.choke, null);
 	}
 
+	/**
+	 * <p>处理阻塞消息</p>
+	 */
 	private void choke(ByteBuffer buffer) {
 		LOGGER.debug("被阻塞");
 		peerSession.peerChoke();
@@ -343,8 +369,11 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	}
 	
 	/**
-	 * 5字节：len=0001 id=1
+	 * <p>发送解除阻塞消息</p>
+	 * <p>
+	 * 5字节：len=0001 id=1<br>
 	 * 解除阻塞
+	 * </p>
 	 */
 	public void unchoke() {
 		LOGGER.debug("解除阻塞");
@@ -352,6 +381,10 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		pushMessage(PeerMessageConfig.Type.unchoke, null);
 	}
 	
+	/**
+	 * <p>处理解除阻塞消息</p>
+	 * <p>被解除阻塞后开始发送下载请求。</p>
+	 */
 	private void unchoke(ByteBuffer buffer) {
 		LOGGER.debug("被解除阻塞");
 		peerSession.peerUnchoke();
@@ -363,8 +396,11 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	}
 	
 	/**
-	 * 5字节：len=0001 id=2
+	 * <p>发送感兴趣消息</p>
+	 * <p>
+	 * 5字节：len=0001 id=2<br>
 	 * 收到have消息时，客户端对Peer感兴趣
+	 * </p>
 	 */
 	public void interested() {
 		LOGGER.debug("感兴趣");
@@ -372,14 +408,20 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		pushMessage(PeerMessageConfig.Type.interested, null);
 	}
 
+	/**
+	 * <p>处理感兴趣消息</p>
+	 */
 	private void interested(ByteBuffer buffer) {
 		LOGGER.debug("被感兴趣");
 		peerSession.peerInterested();
 	}
 
 	/**
-	 * 5字节：len=0001 id=3
+	 * <p>发送不感兴趣消息</p>
+	 * <p>
+	 * 5字节：len=0001 id=3<br>
 	 * 客户端对Peer不感兴趣
+	 * </p>
 	 */
 	public void notInterested() {
 		LOGGER.debug("不感兴趣");

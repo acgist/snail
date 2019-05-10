@@ -12,8 +12,11 @@ import com.acgist.snail.system.manager.NodeManager;
 import com.acgist.snail.utils.NetUtils;
 
 /**
- * DHT Protocol
- * http://www.bittorrent.org/beps/bep_0005.html
+ * <p>DHT Protocol</p>
+ * <p>协议链接：http://www.bittorrent.org/beps/bep_0005.html</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class DhtExtensionMessageHandler {
 	

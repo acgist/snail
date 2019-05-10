@@ -23,8 +23,12 @@ import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.PeerUtils;
 
 /**
- * 在优化PeerClient时通知此消息
- * http://www.bittorrent.org/beps/bep_0011.html
+ * <p>Peer Exchange (PEX)</p>
+ * <p>Peer交换。在优化PeerClient后获取有效的Peer发送此消息。</p>
+ * <p>协议链接：http://www.bittorrent.org/beps/bep_0011.html</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class UtPeerExchangeMessageHandler {
 	
@@ -63,6 +67,9 @@ public class UtPeerExchangeMessageHandler {
 		exchange(buffer);
 	}
 
+	/**
+	 * 发送请求
+	 */
 	public void exchange(byte[] bytes) {
 		final Byte type = utPeerExchangeType(); // 扩展消息类型
 		if (type == null) {
@@ -72,6 +79,9 @@ public class UtPeerExchangeMessageHandler {
 		extensionMessageHandler.pushMessage(type, bytes);
 	}
 	
+	/**
+	 * 处理请求，将获取的Peer加入到列表。
+	 */
 	private void exchange(ByteBuffer buffer) {
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);

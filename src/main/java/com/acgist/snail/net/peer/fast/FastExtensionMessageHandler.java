@@ -1,8 +1,11 @@
 package com.acgist.snail.net.peer.fast;
 
 /**
- * Fast Extension
- * http://www.bittorrent.org/beps/bep_0006.html
+ * <p>Fast Extension</p>
+ * <p>协议链接：http://www.bittorrent.org/beps/bep_0006.html</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class FastExtensionMessageHandler {
 
