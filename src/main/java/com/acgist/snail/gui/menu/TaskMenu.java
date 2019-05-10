@@ -3,6 +3,7 @@ package com.acgist.snail.gui.menu;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,7 @@ import com.acgist.snail.utils.FileVerifyUtils;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
 
@@ -171,9 +173,12 @@ public class TaskMenu extends Menu {
 				Platform.runLater(() -> {
 					StringBuilder builder = new StringBuilder();
 					hash.forEach((key, value) -> {
-						builder.append(value).append("=").append(key).append("\n");
+						builder.append(value).append("=").append(FileUtils.fileNameFromUrl(key)).append("\n");
 					});
-					Alerts.info("文件SHA-1校验", builder.toString());
+					final Optional<ButtonType> optional = Alerts.info("文件SHA-1校验", builder.toString());
+					if(optional.isPresent() && ButtonType.OK == optional.get()) {
+						ClipboardUtils.copy(builder.toString());
+					}
 				});
 			}
 		});
