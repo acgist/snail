@@ -26,8 +26,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 /**
+ * BT任务窗口控制器
  * TODO：根据文件大小自动选择文件
  * 大于文件平均值
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class TorrentController implements Initializable {
 	
@@ -71,7 +75,7 @@ public class TorrentController implements Initializable {
 			return;
 		}
 		TorrentInfo torrentInfo = torrent.getInfo();
-		selecter = new FileSelecter(torrentInfo.getName(), download, tree);
+		selecter = FileSelecter.newInstance(torrentInfo.getName(), download, tree);
 		torrentInfo.files()
 		.stream()
 		.filter(file -> !file.path().startsWith(HIDE_FILE_PREFIX))

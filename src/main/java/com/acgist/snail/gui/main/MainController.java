@@ -75,6 +75,9 @@ public class MainController implements Initializable {
 		complete;
 	}
 	
+	/**
+	 * 显示列表过滤器
+	 */
 	private Filter filter = Filter.all;
 	
 	@FXML
@@ -343,6 +346,9 @@ public class MainController implements Initializable {
 		}
 	};
 	
+	/**
+	 * 拖入文件事件（显示）
+	 */
 	private EventHandler<DragEvent> dragOverAction = (event) -> {
 		if (event.getGestureSource() != taskTable) {
 			Dragboard dragboard = event.getDragboard();
@@ -360,6 +366,9 @@ public class MainController implements Initializable {
 		event.consume();
 	};
 	
+	/**
+	 * 拖入文件事件（加载）
+	 */
 	private EventHandler<DragEvent> dragDroppedAction = (event) -> {
 		Dragboard dragboard = event.getDragboard();
 		if (dragboard.hasFiles()) {
@@ -370,6 +379,9 @@ public class MainController implements Initializable {
 		event.consume();
 	};
 	
+	/**
+	 * 列双击事件
+	 */
 	@SuppressWarnings("unchecked")
 	private EventHandler<MouseEvent> rowClickAction = (event) -> {
 		if(event.getClickCount() == 2) { // 双击

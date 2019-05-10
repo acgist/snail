@@ -273,7 +273,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		buffer.put(PeerService.getInstance().peerId());
 		try {
 			send(buffer);
-		} catch (NetException e) {
+		} catch (Exception e) {
 			LOGGER.error("Peer握手发送异常", e);
 		}
 	}

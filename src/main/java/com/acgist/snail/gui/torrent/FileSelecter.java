@@ -20,23 +20,42 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
 /**
- * 路径选择器
+ * BT文件选择器
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class FileSelecter {
 
+	/**
+	 * 下载按钮
+	 */
 	private Button download;
+	/**
+	 * 树状文件选择
+	 */
 	private TreeItem<HBox> root;
+	/**
+	 * 选择Box-文件大小
+	 */
 	private Map<CheckBox, Long> sizeMap;
+	/**
+	 * 文件路径-选择Box
+	 */
 	private Map<String, CheckBox> checkBoxMap;
+	/**
+	 * 文件路径-子树
+	 */
 	private Map<String, TreeItem<HBox>> treeItemMap;
 
 	/**
 	 * 选择器
+	 * 
 	 * @param name 任务名称
 	 * @param download 下载按钮
 	 * @param tree 属性菜单
 	 */
-	public FileSelecter(String name, Button download, TreeView<HBox> tree) {
+	private FileSelecter(String name, Button download, TreeView<HBox> tree) {
 		this.sizeMap = new HashMap<>();
 		this.checkBoxMap = new HashMap<>();
 		this.treeItemMap = new HashMap<>();
@@ -46,9 +65,14 @@ public class FileSelecter {
 		this.root = root;
 		this.download = download;
 	}
+	
+	public static final FileSelecter newInstance(String name, Button download, TreeView<HBox> tree) {
+		return new FileSelecter(name, download, tree);
+	}
 
 	/**
 	 * 新建树形菜单
+	 * 
 	 * @param path 文件路径
 	 * @param size 文件大小
 	 */
@@ -75,8 +99,7 @@ public class FileSelecter {
 	 */
 	public Long size() {
 		AtomicLong totalSize = new AtomicLong(0L);
-		checkBoxMap.entrySet()
-		.stream()
+		checkBoxMap.entrySet().stream()
 		.filter(entry -> entry.getValue().isSelected())
 		.map(entry -> sizeMap.get(entry.getValue()))
 		.filter(size -> size != null)
@@ -88,8 +111,7 @@ public class FileSelecter {
 	 * 选择文件的列表
 	 */
 	public List<String> description() {
-		return checkBoxMap.entrySet()
-		.stream()
+		return checkBoxMap.entrySet().stream()
 		.filter(entry -> sizeMap.containsKey(entry.getValue()))
 		.filter(entry -> entry.getValue().isSelected())
 		.map(Entry::getKey)
@@ -101,8 +123,7 @@ public class FileSelecter {
 	 */
 	public void select(List<String> list) {
 		if(CollectionUtils.isNotEmpty(list)) {
-			checkBoxMap.entrySet()
-			.stream()
+			checkBoxMap.entrySet().stream()
 			.filter(entry -> list.contains(entry.getKey()))
 			.forEach(entry -> entry.getValue().setSelected(true));
 		}
@@ -143,13 +164,11 @@ public class FileSelecter {
 	private EventHandler<ActionEvent> selectAction = (event) -> {
 		CheckBox checkBox = (CheckBox) event.getSource();
 		boolean selected = checkBox.isSelected();
-		String prefix = checkBoxMap.entrySet()
-		.stream()
+		String prefix = checkBoxMap.entrySet().stream()
 		.filter(entry -> entry.getValue() == checkBox)
 		.map(entry -> entry.getKey())
 		.findFirst().get();
-		checkBoxMap.entrySet()
-		.stream()
+		checkBoxMap.entrySet().stream()
 		.filter(entry -> entry.getKey().startsWith(prefix))
 		.forEach(entry -> entry.getValue().setSelected(selected));
 		buttonSize();
