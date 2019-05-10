@@ -9,7 +9,7 @@
 	<artifactId>snail</artifactId>
 	
 	<name>snail</name>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<description>基于JAVA/JAVAFX的下载工具，支持下载协议：BT、FTP、HTTP、ED2K。</description>
 
 	<properties>

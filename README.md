@@ -9,7 +9,7 @@
 		<img alt="Build" src="https://img.shields.io/badge/Build-passing-success.svg?style=flat-square" />
 	</a>
 	<a>
-		<img alt="Version" src="https://img.shields.io/badge/Version-1.0.0-blue.svg?style=flat-square" />
+		<img alt="Version" src="https://img.shields.io/badge/Version-1.0.1-blue.svg?style=flat-square" />
 	</a>
 	<a target="_blank" href="https://www.acgist.com">
 		<img alt="Author" src="https://img.shields.io/badge/Author-acgist-red.svg?style=flat-square" />
@@ -23,8 +23,8 @@
 	<a target="_blank" href="https://www.bittorrent.org/beps/bep_0000.html">
 		<img alt="BitTorrent" src="https://img.shields.io/badge/BitTorrent-BEP-orange.svg?style=flat-square" />
 	</a>
-	<a target="_blank" href="https://gitee.com/acgist/snail/releases/v1.0.0">
-		<img alt="Release" src="https://img.shields.io/badge/Release-1.0.0-blueviolet.svg?style=flat-square" />
+	<a target="_blank" href="https://gitee.com/acgist/snail/releases/v1.0.1">
+		<img alt="Release" src="https://img.shields.io/badge/Release-1.0.1-blueviolet.svg?style=flat-square" />
 	</a>
 </p>
 
