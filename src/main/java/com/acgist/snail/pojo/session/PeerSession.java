@@ -235,6 +235,29 @@ public class PeerSession implements IStatistics {
 	public void source(byte source) {
 		this.source = (byte) (this.source | source);
 	}
+
+	public boolean dht() {
+		return verifySource(PeerConfig.SOURCE_DHT);
+	}
+	
+	public boolean pex() {
+		return verifySource(PeerConfig.SOURCE_PEX);
+	}
+	
+	public boolean tracker() {
+		return verifySource(PeerConfig.SOURCE_TRACKER);
+	}
+	
+	public boolean connect() {
+		return verifySource(PeerConfig.SOURCE_CONNECT);
+	}
+	
+	/**
+	 * 验证来源
+	 */
+	public boolean verifySource(byte source) {
+		return (this.source & source) != 0;
+	}
 	
 	/**
 	 * 配置Pex属性

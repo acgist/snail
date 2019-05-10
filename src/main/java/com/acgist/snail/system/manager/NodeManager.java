@@ -57,14 +57,14 @@ public class NodeManager {
 	}
 	
 	/**
-	 * 获取当前nodeId
+	 * 当前系统nodeId
 	 */
 	public byte[] nodeId() {
 		return nodeId;
 	}
 	
 	/**
-	 * 获取当前token
+	 * 当前系统token
 	 */
 	public byte[] token() {
 		return token;
@@ -91,6 +91,15 @@ public class NodeManager {
 	}
 	
 	/**
+	 * 所有的Nodes
+	 */
+	public List<NodeSession> nodes() {
+		synchronized (this.nodes) {
+			return new ArrayList<>(this.nodes);
+		}
+	}
+
+	/**
 	 * 添加DHT节点，使用Ping然后添加到列表
 	 */
 	public void newNodeSession(String host, Integer port) {
@@ -113,7 +122,7 @@ public class NodeManager {
 				nodeSession = NodeSession.newInstance(nodeId, host, port);
 				if(nodeSession.getId().length == NODE_ID_LENGTH) {
 					if(LOGGER.isDebugEnabled()) {
-//						LOGGER.debug("添加Node：{}:{}", nodeSession.getHost(), nodeSession.getPort());
+						LOGGER.debug("添加Node：{}:{}", nodeSession.getHost(), nodeSession.getPort());
 					}
 					this.nodes.add(nodeSession);
 				}
@@ -248,8 +257,8 @@ public class NodeManager {
 		synchronized (this.nodes) {
 			NodeSession old = select(nodeId);
 			if(old == null) {
-				old = NodeSession.newInstance(nodeId, address.getHostString(), address.getPort());
-				this.nodes.add(old);
+				old = newNodeSession(nodeId, address.getHostString(), address.getPort());
+				this.sortNodes();
 			}
 			old.setToken(token);
 		}

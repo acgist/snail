@@ -11,7 +11,6 @@ import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.system.interfaces.IStatistics;
-import com.acgist.snail.system.manager.DownloaderManager;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
@@ -82,7 +81,6 @@ public abstract class Downloader implements IDownloader, IStatistics {
 			noticeMessage.append("未知错误");
 		}
 		TrayMenu.getInstance().notice("下载失败", noticeMessage.toString(), MessageType.WARNING);
-		DownloaderManager.getInstance().refresh();
 	}
 	
 	@Override
@@ -183,8 +181,8 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	 * @param status 状态
 	 */
 	private void updateStatus(Status status) {
-		this.taskSession.updateStatus(status);
 		this.unlockDownload();
+		this.taskSession.updateStatus(status);
 	}
 	
 }

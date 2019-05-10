@@ -25,6 +25,7 @@ public final class DownloaderManager {
 	private static final DownloaderManager INSTANCE = new DownloaderManager();
 	
 	private DownloaderManager() {
+		manager = ProtocolManager.getInstance();
 		executor = SystemThreadContext.newCacheExecutor(SystemThreadContext.SNAIL_THREAD_DOWNLOADER);
 		downloaderMap = new ConcurrentHashMap<>(DownloadConfig.getSize());
 	}
@@ -34,6 +35,10 @@ public final class DownloaderManager {
 	}
 	
 	/**
+	 * 协议管理器
+	 */
+	private final ProtocolManager manager;
+	/**
 	 * 任务线程池
 	 */
 	private final ExecutorService executor;
@@ -41,6 +46,15 @@ public final class DownloaderManager {
 	 * 下载任务MAP
 	 */
 	private final Map<String, IDownloader> downloaderMap;
+	
+	/**
+	 * 新建下载任务<br>
+	 * 通过下载链接生成下载任务
+	 */
+	public void submit(String url) throws DownloadException {
+		final var session = this.manager.build(url);
+		this.start(session);
+	}
 	
 	/**
 	 * 开始下载任务
@@ -130,7 +144,7 @@ public final class DownloaderManager {
 	}
 	
 	/**
-	 * 刷新下载<br>
+	 * 刷新下载：如果没满下载任务数量，加入下载线程<br>
 	 * 下载完成，暂停等操作时刷新下载任务
 	 */
 	public void refresh() {
@@ -153,17 +167,6 @@ public final class DownloaderManager {
 		}
 	}
 
-	/**
-	 * 新建下载任务<br>
-	 * 通过下载链接生成下载任务
-	 */
-	public static final void submit(String url) throws DownloadException {
-		ProtocolManager manager = ProtocolManager.getInstance();
-		var session = manager.build(url);
-		DownloaderManager.getInstance().submit(session);
-		DownloaderManager.getInstance().refresh(); // 刷新下载
-	}
-	
 	/**
 	 * 停止下载：<br>
 	 * 暂停任务<br>

@@ -46,7 +46,7 @@ public class DownloaderInitializer extends Initializer {
 				}
 			});
 			DownloaderManager.getInstance().refresh(); // 刷新下载
-			TaskDisplay.getInstance().refreshTaskTable();
+			TaskDisplay.getInstance().refreshTaskTable(); // 刷新状态
 		}
 	}
 

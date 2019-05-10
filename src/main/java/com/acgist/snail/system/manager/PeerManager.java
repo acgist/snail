@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +41,17 @@ public class PeerManager {
 	}
 	
 	/**
+	 * 获取所有Peer
+	 */
+	public Map<String, List<PeerSession>> peers() {
+		synchronized (this.peers) {
+			return peers.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> {
+				return new ArrayList<>(entry.getValue());
+			}));
+		}
+	}
+	
+	/**
 	 * 新增Peer，插入尾部
 	 * @param infoHashHex 下载文件infoHashHex
 	 * @param parent torrent下载统计
@@ -47,7 +59,6 @@ public class PeerManager {
 	 * @param port 端口
 	 */
 	public PeerSession newPeerSession(String infoHashHex, StatisticsSession parent, String host, Integer port, byte source) {
-		LOGGER.debug("添加PeerSession，{}-{}，来源：{}", host, port, source);
 		var deque = deque(infoHashHex);
 		synchronized (deque) {
 			final Optional<PeerSession> optional = deque.stream().filter(peer -> {
@@ -57,6 +68,7 @@ public class PeerManager {
 			if(optional.isPresent()) {
 				peerSession = optional.get();
 			} else {
+				LOGGER.debug("添加PeerSession，{}-{}，来源：{}", host, port, source);
 				peerSession = PeerSession.newInstance(parent, host, port);
 				deque.offerLast(peerSession);
 			}
@@ -140,12 +152,15 @@ public class PeerManager {
 		}
 	}
 	
+	/**
+	 * 获取对应的Peer列表
+	 */
 	private Deque<PeerSession> deque(String infoHashHex) {
-		synchronized (peers) {
-			Deque<PeerSession> deque = peers.get(infoHashHex);
+		synchronized (this.peers) {
+			Deque<PeerSession> deque = this.peers.get(infoHashHex);
 			if(deque == null) {
 				deque = new LinkedBlockingDeque<>();
-				peers.put(infoHashHex, deque);
+				this.peers.put(infoHashHex, deque);
 			}
 			return deque;
 		}
