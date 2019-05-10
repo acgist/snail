@@ -5,13 +5,16 @@ import java.net.InetSocketAddress;
 import com.acgist.snail.net.UdpClient;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * DHT协议<br>
- * 固定端口
- * 基本协议：UDP
- * 每次取出最近的16个进行轮番查询Peer，然后定时查询
+ * <p>DHT客户端</p>
+ * <p>客户端和服务的都是用同一个固定端口{@link SystemConfig#getDhtPort()}。</p>
+ * <p>基本协议：UDP</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class DhtClient extends UdpClient<DhtMessageHandler> {
 
@@ -34,7 +37,7 @@ public class DhtClient extends UdpClient<DhtMessageHandler> {
 	}
 
 	/**
-	 * 使用和DHT Server一条的通道
+	 * 使用和DHT Server一条的通道。
 	 */
 	@Override
 	public boolean open() {
@@ -46,30 +49,49 @@ public class DhtClient extends UdpClient<DhtMessageHandler> {
 	}
 	
 	/**
-	 * @param target hex编码的infoHash
+	 * 查询节点
+	 * 
+	 * @param target infoHashHex
 	 */
 	public void findNode(String target) {
 		this.findNode(StringUtils.unhex(target));
 	}
 	
+	/**
+	 * 查询节点
+	 * 
+	 * @param target NodeId或者infoHash
+	 */
 	public void findNode(byte[] target) {
 		this.handler.findNode(this.address, target);
 	}
 	
+	/**
+	 * 查询Peer
+	 */
 	public void getPeers(InfoHash infoHash) {
 		this.getPeers(infoHash.infoHash());
 	}
-	
+
+	/**
+	 * 查询Peer
+	 */
 	public void getPeers(byte[] infoHash) {
 		this.handler.getPeers(this.address, infoHash);
 	}
-	
+
+	/**
+	 * 声明Peer
+	 */
 	public void announcePeer(byte[] token, InfoHash infoHash) {
 		this.announcePeer(token, infoHash.infoHash());
 	}
-	
+
+	/**
+	 * 声明Peer
+	 */
 	public void announcePeer(byte[] token, byte[] infoHash) {
 		this.handler.announcePeer(this.address, token, infoHash);
 	}
-	
+
 }

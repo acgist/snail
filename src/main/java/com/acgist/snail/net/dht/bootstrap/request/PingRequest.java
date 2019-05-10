@@ -6,10 +6,16 @@ import com.acgist.snail.net.dht.bootstrap.response.PingResponse;
 import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.system.manager.NodeManager;
 
+/**
+ * Ping
+ * 
+ * @author acgist
+ * @since 1.0.0
+ */
 public class PingRequest extends Request {
 
 	private PingRequest() {
-		super(DhtService.getInstance().id(), DhtConfig.QType.ping);
+		super(DhtService.getInstance().requestId(), DhtConfig.QType.ping);
 		this.put(DhtConfig.KEY_ID, NodeManager.getInstance().nodeId());
 	}
 	

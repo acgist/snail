@@ -45,7 +45,7 @@ public class RequestManager {
 	}
 	
 	/**
-	 * 设置响应，删除响应
+	 * 设置响应，删除响应，同时设置Node为可用状态。
 	 */
 	public Request response(Response response) {
 		if(response == null) {

@@ -17,6 +17,9 @@ import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * FTP消息
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class FtpMessageHandler extends TcpMessageHandler {
 
@@ -131,7 +134,7 @@ public class FtpMessageHandler extends TcpMessageHandler {
 	}
 	
 	/**
-	 * 释放资源：注意释放FTP下载连接资源，不关闭命令通道
+	 * 释放资源：注意释放FTP下载连接资源（文件流、socket），不关闭命令通道
 	 */
 	public void release() {
 		IoUtils.close(this.inputStream);
@@ -144,6 +147,9 @@ public class FtpMessageHandler extends TcpMessageHandler {
 		super.close();
 	}
 	
+	/**
+	 * 唤醒文件流等待
+	 */
 	private void unlockInputStream() {
 		synchronized (this.inputStreamLock) {
 			this.inputStreamLock.notifyAll();

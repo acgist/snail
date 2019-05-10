@@ -1,11 +1,16 @@
-package com.acgist.snail.net.ftp;
+package com.acgist.snail.net.ftp.bootstrap;
 
 import java.net.URI;
 
+import com.acgist.snail.net.ftp.FtpClient;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * FTP客户端创建工具
+ * <p>FtpClient工厂</p>
+ * <p>根据url创建FTP客户端。</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class FtpClientFactory {
 
@@ -21,8 +26,8 @@ public class FtpClientFactory {
 	private FtpClientFactory() {
 	}
 	
-	public static final FtpClient buildClient(String url) {
-		FtpClientFactory builder = new FtpClientFactory();
+	public static final FtpClient build(String url) {
+		final FtpClientFactory builder = new FtpClientFactory();
 		builder.url = url;
 		builder.decodeUrl();
 		return FtpClient.newInstance(
@@ -35,7 +40,7 @@ public class FtpClientFactory {
 	}
 	
 	/**
-	 * 解码：获取信息
+	 * 解码URL，设置地址、端口、用户、文件等信息。
 	 */
 	private void decodeUrl() {
 		URI uri= URI.create(this.url);

@@ -19,21 +19,44 @@ import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.ObjectUtils;
 
 /**
- * 错误：e是一个列表：
- * 	[0]：错误代码：
- * 		201：一般错误
- * 		202：服务错误
- * 		203：协议错误，不规范的包、无效参数、错误token
- * 		204：未知方法
- * 	[1]：错误描述
+ * DHT响应
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class Response {
 
+	/**
+	 * 响应ID
+	 */
 	private final byte[] t;
+	/**
+	 * 类型：请求、响应
+	 */
 	private final String y;
+	/**
+	 * 响应参数
+	 */
 	private final Map<String, Object> r;
+	/**
+	 * <p>错误参数（列表）：</p>
+	 * <ul>
+	 *	<li>
+	 * 	[0]：错误代码：
+	 * 		<ul>
+	 *			<li>201：一般错误</li>
+	 *			<li>202：服务错误</li>
+	 *			<li>203：协议错误，不规范的包、无效参数、错误token</li>
+	 *			<li>204：未知方法</li>
+	 * 		</ul>
+	 *	</li>
+	 *	<li>[1]：错误描述</li>
+	 * </ul>
+	 */
 	private final List<Object> e;
-	
+	/**
+	 * 响应地址
+	 */
 	private InetSocketAddress address;
 
 	protected Response(byte[] t) {
@@ -85,10 +108,23 @@ public class Response {
 		this.address = address;
 	}
 
+	/**
+	 * 设置响应参数
+	 * 
+	 * @param key 参数名称
+	 * @param value 参数值
+	 */
 	public void put(String key, Object value) {
 		this.r.put(key, value);
 	}
 	
+	/**
+	 * 获取响应参数
+	 * 
+	 * @param key 参数名称
+	 * 
+	 * @return 参数值
+	 */
 	public Object get(String key) {
 		if(this.r == null) {
 			return null;
@@ -96,14 +132,23 @@ public class Response {
 		return this.r.get(key);
 	}
 	
+	/**
+	 * 获取byte数组响应参数
+	 */
 	public byte[] getBytes(String key) {
 		return (byte[]) this.get(key);
 	}
 	
+	/**
+	 * 获取List响应参数
+	 */
 	public List<?> getList(String key) {
 		return (List<?>) this.get(key);
 	}
-	
+
+	/**
+	 * 获取字符串响应参数
+	 */
 	public String getString(String key) {
 		final byte[] bytes = getBytes(key);
 		if(bytes == null) {
@@ -112,10 +157,16 @@ public class Response {
 		return new String(bytes);
 	}
 	
+	/**
+	 * 获取响应ID
+	 */
 	public byte[] getId() {
 		return getT();
 	}
-	
+
+	/**
+	 * 获取NodeId
+	 */
 	public byte[] getNodeId() {
 		return getBytes(DhtConfig.KEY_ID);
 	}
@@ -141,6 +192,12 @@ public class Response {
 		return new String((byte[]) this.e.get(1));
 	}
 
+	/**
+	 * 错误响应
+	 * @param id 响应ID
+	 * @param code 错误编码
+	 * @param message 错误描述
+	 */
 	public static final Response error(byte[] id, int code, String message) {
 		final List<Object> list = new ArrayList<>(2);
 		list.add(code);
@@ -148,6 +205,9 @@ public class Response {
 		return new Response(id, DhtConfig.KEY_R, null, list);
 	}
 	
+	/**
+	 * B编码后的字节数组
+	 */
 	public byte[] toBytes() {
 		final Map<String, Object> response = new LinkedHashMap<>();
 		response.put(DhtConfig.KEY_T, this.t);

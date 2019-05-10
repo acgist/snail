@@ -14,6 +14,9 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * FTP客户端
  * TODO：中文路径
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class FtpClient extends TcpClient<FtpMessageHandler> {
 
@@ -59,6 +62,7 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	
 	/**
 	 * 开始下载
+	 * 
 	 * @param downloadSize 已下载大小
 	 */
 	public InputStream download(Long downloadSize) {
@@ -77,7 +81,7 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	}
 	
 	/**
-	 * 获取大小
+	 * 获取文件大小
 	 */
 	public Long size() throws NetException {
 		if(!ok) {
@@ -135,13 +139,11 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	private void login() {
 		command("USER " + this.user);
 		command("PASS " + this.password);
-//		command("QUOTE OPTS UTF8 ON");
+//		command("QUOTE OPTS UTF8 ON"); // 设置编码：无效
 	}
 	
 	/**
-	 * 切换模式：<br>
-	 * 切换被动模式<br>
-	 * 切换到二进制输出
+	 * 切换被动模式
 	 */
 	private void changeMode() {
 		command("PASV");

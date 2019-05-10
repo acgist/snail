@@ -17,15 +17,25 @@ import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
+ * 声明Peer
  * TODO：通知
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class AnnouncePeerRequest extends Request {
 
 	private AnnouncePeerRequest() {
-		super(DhtService.getInstance().id(), DhtConfig.QType.announce_peer);
+		super(DhtService.getInstance().requestId(), DhtConfig.QType.announce_peer);
 		this.put(DhtConfig.KEY_ID, NodeManager.getInstance().nodeId());
 	}
 	
+	/**
+	 * 创建请求
+	 * 
+	 * @param token token
+	 * @param infoHash infoHash
+	 */
 	public static final AnnouncePeerRequest newRequest(byte[] token, byte[] infoHash) {
 		final AnnouncePeerRequest request = new AnnouncePeerRequest();
 		request.put(DhtConfig.KEY_PORT, SystemConfig.getPeerPort());
@@ -35,10 +45,14 @@ public class AnnouncePeerRequest extends Request {
 		return request;
 	}
 	
+	/**
+	 * <p>处理Peer声明</p>
+	 * <p>将客户端保存到Peer列表。</p>
+	 */
 	public static final AnnouncePeerResponse execute(Request request) {
 		final byte[] token = request.getBytes(DhtConfig.KEY_TOKEN);
 		if(!ArrayUtils.equals(token, NodeManager.getInstance().nodeId())) {
-			return AnnouncePeerResponse.newInstance(Response.error(request.getT(), 201, "Token错误"));
+			return AnnouncePeerResponse.newInstance(Response.error(request.getT(), 203, "Token错误"));
 		}
 		final byte[] infoHash = request.getBytes(DhtConfig.KEY_INFO_HASH);
 		final String infoHashHex = StringUtils.hex(infoHash);
@@ -47,7 +61,7 @@ public class AnnouncePeerRequest extends Request {
 			final Integer port = request.getInteger(DhtConfig.KEY_PORT);
 			final Integer impliedPort = request.getInteger(DhtConfig.KEY_IMPLIED_PORT);
 			final InetSocketAddress address = request.getAddress();
-			String peerHost = address.getHostString();
+			final String peerHost = address.getHostString();
 			Integer peerPort = port;
 			if(DhtConfig.IMPLIED_PORT_AUTO.equals(impliedPort)) {
 				peerPort = address.getPort();
@@ -59,8 +73,7 @@ public class AnnouncePeerRequest extends Request {
 				peerPort,
 				PeerConfig.SOURCE_DHT);
 		}
-		final AnnouncePeerResponse response = AnnouncePeerResponse.newInstance(request);
-		return response;
+		return AnnouncePeerResponse.newInstance(request);
 	}
 	
 	public Integer getPort() {

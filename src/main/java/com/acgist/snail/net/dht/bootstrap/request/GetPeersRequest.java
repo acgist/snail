@@ -15,13 +15,24 @@ import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
 
+/**
+ * 查找Peer
+ * 
+ * @author acgist
+ * @since 1.0.0
+ */
 public class GetPeersRequest extends Request {
 
 	private GetPeersRequest() {
-		super(DhtService.getInstance().id(), DhtConfig.QType.get_peers);
+		super(DhtService.getInstance().requestId(), DhtConfig.QType.get_peers);
 		this.put(DhtConfig.KEY_ID, NodeManager.getInstance().nodeId());
 	}
 	
+	/**
+	 * 创建请求
+	 * 
+	 * @param infoHash infoHash
+	 */
 	public static final GetPeersRequest newRequest(byte[] infoHash) {
 		final GetPeersRequest request = new GetPeersRequest();
 		request.put(DhtConfig.KEY_INFO_HASH, infoHash);
@@ -32,6 +43,9 @@ public class GetPeersRequest extends Request {
 		return getString(DhtConfig.KEY_INFO_HASH);
 	}
 
+	/**
+	 * 将Peer和Node加入到列表
+	 */
 	public static final GetPeersResponse execute(Request request) {
 		final GetPeersResponse response = GetPeersResponse.newInstance(request);
 		final byte[] infoHash = request.getBytes(DhtConfig.KEY_INFO_HASH);
@@ -44,7 +58,6 @@ public class GetPeersRequest extends Request {
 				final var values = list.stream()
 					.limit(NodeManager.GET_PEER_LENGTH)
 					.map(peer -> {
-						// TODO：测试
 						buffer.putInt(NetUtils.encodeIpToInt(peer.host()));
 						buffer.putShort(NetUtils.encodePort(peer.port()));
 						buffer.flip();

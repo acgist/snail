@@ -26,7 +26,11 @@ import com.acgist.snail.system.manager.RequestManager;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
- * http://www.bittorrent.org/beps/bep_0005.html
+ * <p>DHT消息</p>
+ * <p>协议链接：http://www.bittorrent.org/beps/bep_0005.html</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class DhtMessageHandler extends UdpMessageHandler {
 	
@@ -80,6 +84,12 @@ public class DhtMessageHandler extends UdpMessageHandler {
 		}
 	}
 	
+	/**
+	 * 处理请求
+	 * 
+	 * @param request 请求
+	 * @param address 客户端地址
+	 */
 	private void onRequest(final Request request, final InetSocketAddress address) {
 		Response response = null;
 		switch (request.getQ()) {
@@ -99,6 +109,12 @@ public class DhtMessageHandler extends UdpMessageHandler {
 		pushMessage(response, address);
 	}
 	
+	/**
+	 * <p>处理响应</p>
+	 * <p>处理响应，同时删除请求列表中的请求。</p>
+	 * 
+	 * @param response 响应
+	 */
 	private void onResponse(final Response response) {
 		final Request request = RequestManager.getInstance().response(response);
 		if(request == null) {
@@ -122,8 +138,8 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	}
 	
 	/**
-	 * 发送请求
-	 * 检测节点是否可达：阻塞
+	 * <p>发送请求：Ping</p>
+	 * <p>检测节点是否可达，该方法同步阻塞。响应后添加列表</p>
 	 */
 	public NodeSession ping(InetSocketAddress address) {
 		final PingRequest request = PingRequest.newRequest();
@@ -139,22 +155,21 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	}
 
 	/**
-	 * 执行请求
+	 * 处理请求：Ping
 	 */
 	private Response ping(Request request) {
 		return PingRequest.execute(request);
 	}
 
 	/**
-	 * 处理响应
+	 * 处理响应：Ping，唤醒Ping等待。
 	 */
 	private void ping(Request request, Response response) {
 		notifyRequest(request);
 	}
 	
 	/**
-	 * 发送请求
-	 * 查找给定ID的DHT节点的联系信息，回复被请求节点的路由表中距离请求target最接近的K个node的ID和INFO
+	 * 发送请求：findNode
 	 */
 	public void findNode(InetSocketAddress address, byte[] target) {
 		final FindNodeRequest request = FindNodeRequest.newRequest(target);
@@ -162,14 +177,14 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	}
 	
 	/**
-	 * 执行请求
+	 * 处理请求：findNode
 	 */
 	private Response findNode(Request request) {
 		return FindNodeRequest.execute(request);
 	}
 	
 	/**
-	 * 处理响应
+	 * 处理响应：findNode
 	 */
 	private void findNode(Request request, Response response) {
 		if(SUCCESS.apply(response)) {
@@ -178,8 +193,7 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	}
 
 	/**
-	 * 发送请求
-	 * 获取Peer
+	 * 发送请求：getPeers
 	 */
 	public void getPeers(InetSocketAddress address, byte[] infoHash) {
 		final GetPeersRequest request = GetPeersRequest.newRequest(infoHash);
@@ -187,14 +201,14 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	}
 
 	/**
-	 * 执行请求
+	 * 处理请求：getPeers
 	 */
 	private Response getPeers(Request request) {
 		return GetPeersRequest.execute(request);
 	}
 
 	/**
-	 * 处理响应
+	 * 处理响应：getPeers，同时设置Node Token。
 	 */
 	private void getPeers(Request request, Response response) {
 		if(SUCCESS.apply(response)) {
@@ -212,8 +226,7 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	}
 	
 	/**
-	 * 发送请求
-	 * 表明发出announce_peer请求的节点，正在某个端口下载torrent文件
+	 * 发送请求：announcePeer
 	 */
 	public void announcePeer(InetSocketAddress address, byte[] token, byte[] infoHash) {
 		final AnnouncePeerRequest request = AnnouncePeerRequest.newRequest(token, infoHash);
@@ -221,18 +234,17 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	}
 	
 	/**
-	 * 执行请求
+	 * 处理请求：announcePeer
 	 */
 	private Response announcePeer(Request request) {
 		return AnnouncePeerRequest.execute(request);
 	}
 
 	/**
-	 * 处理响应
+	 * 处理响应：announcePeer
 	 */
 	private void announcePeer(Request request, Response response) {
 		if(SUCCESS.apply(response)) {
-			// TODO：处理成功
 		}
 	}
 
@@ -248,7 +260,7 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	}
 	
 	/**
-	 * 唤醒等待
+	 * 唤醒响应等待
 	 */
 	private void notifyRequest(Request request) {
 		synchronized (request) {
@@ -256,6 +268,9 @@ public class DhtMessageHandler extends UdpMessageHandler {
 		}
 	}
 	
+	/**
+	 * 发送请求
+	 */
 	private void pushMessage(Request request, InetSocketAddress address) {
 		request.setAddress(address);
 		RequestManager.getInstance().put(request);
@@ -263,11 +278,17 @@ public class DhtMessageHandler extends UdpMessageHandler {
 		pushMessage(buffer, address);
 	}
 	
+	/**
+	 * 发送响应
+	 */
 	private void pushMessage(Response response, InetSocketAddress address) {
 		final ByteBuffer buffer = ByteBuffer.wrap(response.toBytes());
 		pushMessage(buffer, address);
 	}
 	
+	/**
+	 * 发送数据
+	 */
 	private void pushMessage(ByteBuffer buffer, InetSocketAddress address) {
 		try {
 			this.send(buffer, address);

@@ -5,6 +5,12 @@ import com.acgist.snail.net.dht.bootstrap.Response;
 import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.system.manager.NodeManager;
 
+/**
+ * Ping
+ * 
+ * @author acgist
+ * @since 1.0.0
+ */
 public class PingResponse extends Response {
 	
 	private PingResponse(byte[] t) {

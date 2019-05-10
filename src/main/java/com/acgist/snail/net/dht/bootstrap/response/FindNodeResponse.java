@@ -11,7 +11,10 @@ import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.system.manager.NodeManager;
 
 /**
- * 8个最近的节点
+ * 返回最近的8个Node
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class FindNodeResponse extends Response {
 
@@ -32,6 +35,9 @@ public class FindNodeResponse extends Response {
 		return new FindNodeResponse(request.getT());
 	}
 	
+	/**
+	 * 获取响应Node，同时加入到Node列表。
+	 */
 	public List<NodeSession> getNodes() {
 		final byte[] bytes = this.getBytes(DhtConfig.KEY_NODES);
 		if(bytes == null) {
