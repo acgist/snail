@@ -23,7 +23,7 @@ END_MESSAGE_MAP()
 SnailLauncher::SnailLauncher()
 {
 	// 应用程序 ID：CompanyName.ProductName.SubProduct.VersionInformation
-	SetAppID(_T("acgist.Snail.SnailLauncher.1.0.0"));
+	SetAppID(_T("acgist.Snail.SnailLauncher.1.0.1"));
 }
 
 // 唯一的一个 SnailLauncher 对象
@@ -51,15 +51,16 @@ int SnailLauncher::ExitInstance()
 // 启动JVM
 bool startJVM(){
 	// JVM动态库
-	TCHAR* jvmPath = _T(".\\java\\bin\\server\\jvm.dll");
+	TCHAR* jvmPath = _T("./java/bin/server/jvm.dll");
 
 	//JVM启动参数
-	const int jvmOptionCount = 4;
+	const int jvmOptionCount = 5;
 	JavaVMOption jvmOptions[jvmOptionCount];
 	jvmOptions[0].optionString = "-server";
 	jvmOptions[1].optionString = "-Xmx128M";
 	jvmOptions[2].optionString = "-Xmx128m";
-	jvmOptions[3].optionString = "-Djava.class.path=.\\snail-1.0.0.jar";
+	jvmOptions[3].optionString = "-Dfile.encoding=UTF-8";
+	jvmOptions[4].optionString = "-Djava.class.path=./snail-1.0.1.jar";
 
 	JavaVMInitArgs jvmInitArgs;
 	jvmInitArgs.version = JNI_VERSION_10;
