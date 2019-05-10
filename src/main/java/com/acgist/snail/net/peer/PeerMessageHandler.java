@@ -336,9 +336,10 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	private void choke(ByteBuffer buffer) {
 		LOGGER.debug("被阻塞");
 		peerSession.peerChoke();
-		if(peerClient != null) {
-			peerClient.release();
-		}
+		// TODO：不释放资源暂时，让系统自动优化剔除
+//		if(peerClient != null) {
+//			peerClient.release();
+//		}
 	}
 	
 	/**
