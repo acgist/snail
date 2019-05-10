@@ -14,11 +14,14 @@ import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.UniqueCodeUtils;
 
 /**
- * Tracker协议<br>
- * 基本协议：TCP（HTTP）、UDP<br>
- * http://www.bittorrent.org/beps/bep_0015.html<br>
- * http://www.bittorrent.org/beps/bep_0023.html<br>
- * sid：每一个torrent和tracker服务器对应的id
+ * <p>Tracker客户端</p>
+ * <p>基本协议：TCP（HTTP）、UDP</p>
+ * <p>失败次数超过{@link #MAX_FAIL_TIMES}时为无效客户端，不可再使用。</p>
+ * <p>每次成功查询都会使这个Tracker的权重增加。</p>
+ * <p>sid：每一个Torrent和Tracker服务器对应的id。</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public abstract class TrackerClient implements Comparable<TrackerClient> {
 
@@ -37,7 +40,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	private static final int MAX_FAIL_TIMES = SystemConfig.getTrackerMaxFailTimes();
 	
 	protected int weight; // 权重
-	protected final Integer id; // trackerId：transaction_id（UDP连接时使用）
+	protected final Integer id; // ID
 	protected final Type type; // 类型
 	protected final String scrapeUrl; // 刮檫URL
 	protected final String announceUrl; // 声明URL
@@ -74,7 +77,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	}
 	
 	/**
-	 * 查找Peer，查找结果直接设置到session
+	 * 查找Peer，查找到的结果放入Peer列表。
 	 */
 	public void findPeers(Integer sid, TorrentSession torrentSession) {
 		if(!available()) { // 不可用直接返回null
@@ -132,7 +135,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	}
 	
 	/**
-	 * 判断是否存在
+	 * 判断当前Client的声明URL和声明URL是否一致。
 	 */
 	public boolean exist(String announceUrl) {
 		return this.announceUrl.equals(announceUrl);
@@ -148,6 +151,9 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 		return ObjectUtils.hashCode(this.announceUrl);
 	}
 	
+	/**
+	 * 如果声明URL一致即为相等
+	 */
 	@Override
 	public boolean equals(Object object) {
 		if(ObjectUtils.equals(this, object)) {

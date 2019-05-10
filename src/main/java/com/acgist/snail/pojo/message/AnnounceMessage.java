@@ -5,7 +5,10 @@ import java.util.Map;
 import com.acgist.snail.utils.ObjectUtils;
 
 /**
- * tracker announce返回信息
+ * Tracker Announce返回信息
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class AnnounceMessage {
 

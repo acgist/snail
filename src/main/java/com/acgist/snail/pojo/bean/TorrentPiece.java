@@ -3,8 +3,11 @@ package com.acgist.snail.pojo.bean;
 import com.acgist.snail.utils.NumberUtils;
 
 /**
- * Piece信息
- * 保存时必须是一个完成的Piece：end - begin == length == data.length && pos == begin
+ * <p>Piece信息</p>
+ * <p>保存时必须是一个完成的Piece：end - begin == length == data.length && pos == begin</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class TorrentPiece {
 
@@ -50,6 +53,7 @@ public class TorrentPiece {
 	
 	/**
 	 * 判断文件是否包含当前Piece
+	 * 
 	 * @param fileBeginPos 文件开始偏移
 	 * @param fileEndPos 文件结束偏移
 	 */
@@ -110,7 +114,7 @@ public class TorrentPiece {
 	}
 	
 	/**
-	 * 获取本次获取数据大小，返回0时表示已经发送所有请求
+	 * 获取本次获取数据大小，返回0时表示已经发送所有请求。
 	 */
 	public int length() {
 		if(this.position == this.length) {
@@ -127,6 +131,7 @@ public class TorrentPiece {
 	
 	/**
 	 * 放入数据
+	 * 
 	 * @param begin 数据开始位移
 	 * @param bytes 数据
 	 * @return true-完成；false-未完成

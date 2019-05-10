@@ -19,7 +19,11 @@ import com.acgist.snail.system.manager.TrackerManager;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * tracker http 客户端
+ * <p>Tracker HTTP 客户端</p>
+ * <p>协议链接：http://www.bittorrent.org/beps/bep_0023.html</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class HttpTrackerClient extends TrackerClient {
 
@@ -85,7 +89,7 @@ public class HttpTrackerClient extends TrackerClient {
 	}
 	
 	/**
-	 * 构建请求URL<br>
+	 * 构建请求URL
 	 */
 	private String buildAnnounceUrl(Integer sid, TorrentSession torrentSession, TrackerConfig.Event event) {
 		long download = 0L, remain = 0L, upload = 0L;
@@ -114,14 +118,16 @@ public class HttpTrackerClient extends TrackerClient {
 	}
 	
 	/**
-	 * announceUrl转换ScrapeUrl<br>
-	 *		~http://example.com/announce			-> ~http://example.com/scrape
-	 *		~http://example.com/x/announce			-> ~http://example.com/x/scrape
-	 *		~http://example.com/announce.php		-> ~http://example.com/scrape.php
-	 *		~http://example.com/a					-> (scrape not supported)
-	 *		~http://example.com/announce?x2%0644	-> ~http://example.com/scrape?x2%0644
-	 *		~http://example.com/announce?x=2/4		-> (scrape not supported)
-	 *		~http://example.com/x%064announce		-> (scrape not supported)
+	 * <p>announceUrl转换ScrapeUrl：</p>
+	 * <pre>
+	 *	~http://example.com/announce			-> ~http://example.com/scrape
+	 *	~http://example.com/x/announce			-> ~http://example.com/x/scrape
+	 *	~http://example.com/announce.php		-> ~http://example.com/scrape.php
+	 *	~http://example.com/a					-> (scrape not supported)
+	 *	~http://example.com/announce?x2%0644	-> ~http://example.com/scrape?x2%0644
+	 *	~http://example.com/announce?x=2/4		-> (scrape not supported)
+	 *	~http://example.com/x%064announce		-> (scrape not supported)
+	 * </pre>
 	 */
 	private static final String announceUrlToScrapeUrl(String url) {
 		if(url.contains(ANNOUNCE_URL_SUFFIX)) {

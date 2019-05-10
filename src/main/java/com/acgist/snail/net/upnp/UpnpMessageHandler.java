@@ -12,6 +12,9 @@ import com.acgist.snail.system.exception.NetException;
 
 /**
  * UPNP消息
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class UpnpMessageHandler extends UdpMessageHandler {
 
@@ -22,13 +25,13 @@ public class UpnpMessageHandler extends UdpMessageHandler {
 	@Override
 	public void onMessage(ByteBuffer buffer, InetSocketAddress address) {
 		final String content = new String(buffer.array());
-		this.initUpnpService(content);
+		this.configUpnp(content);
 	}
 	
 	/**
-	 * 初始化UpnpService
+	 * 配置UPNP
 	 */
-	private void initUpnpService(String content) {
+	private void configUpnp(String content) {
 		final String[] headers = content.split("\n");
 		for (String header : headers) {
 			if(header.toLowerCase().startsWith(HEADER_LOCATION)) {

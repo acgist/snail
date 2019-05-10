@@ -14,6 +14,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * UDP消息
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public abstract class UdpMessageHandler extends UdpSender {
 	

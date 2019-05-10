@@ -14,8 +14,11 @@ import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.IoUtils;
 
 /**
- * 消息发送<br>
- * 发送消息时添加分割信息进行粘包拆包操作
+ * <p>TCP Aio Socket发送器</p>
+ * <p>发送消息时添加分割信息进行粘包拆包操作。</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public abstract class TcpSender {
 
@@ -45,8 +48,8 @@ public abstract class TcpSender {
 	}
 	
 	/**
-	 * 发送消息<br>
-	 * 使用分隔符对消息进行分隔
+	 * <p>发送消息</p>
+	 * <p>使用分隔符对消息进行分隔</p>
 	 */
 	protected void send(final String message) throws NetException {
 		String splitMessage = message;

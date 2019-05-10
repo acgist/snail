@@ -26,7 +26,10 @@ import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * 种子session
+ * Torrent Session
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class TorrentSession {
 	

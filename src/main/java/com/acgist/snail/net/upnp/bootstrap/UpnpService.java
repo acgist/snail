@@ -17,9 +17,11 @@ import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.XMLUtils;
 
 /**
- * UPNP操作
- * TODO：定时刷新本地IP
+ * UPNP Service
  * TODO：多路由环境获取IP
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class UpnpService {
 	
@@ -96,8 +98,8 @@ public class UpnpService {
 	}
 	
 	/**
-	 * 获取外网IP：GetExternalIPAddress
-	 * 请求头：SOAPAction:"urn:schemas-upnp-org:service:WANIPConnection:1#GetExternalIPAddress"
+	 * <p>获取外网IP：GetExternalIPAddress</p>
+	 * <p>请求头：SOAPAction:"urn:schemas-upnp-org:service:WANIPConnection:1#GetExternalIPAddress"</p>
 	 */
 	public String getExternalIPAddress() throws NetException {
 		if(!init) {
@@ -116,9 +118,9 @@ public class UpnpService {
 	}
 
 	/**
-	 * 获取端口映射情况：GetSpecificPortMappingEntry
-	 * 请求头：SOAPAction:"urn:schemas-upnp-org:service:WANIPConnection:1#GetSpecificPortMappingEntry"
-	 * 如果没有映射：返回500错误代码
+	 * <p>获取端口映射情况：GetSpecificPortMappingEntry</p>
+	 * <p>请求头：SOAPAction:"urn:schemas-upnp-org:service:WANIPConnection:1#GetSpecificPortMappingEntry"</p>
+	 * <p>如果没有映射：返回500错误代码</p>
 	 */
 	public boolean getSpecificPortMappingEntry(int port, Protocol protocol) throws NetException {
 		if(!init) {
@@ -136,8 +138,8 @@ public class UpnpService {
 	}
 	
 	/**
-	 * 添加端口映射：AddPortMapping
-	 * 请求头：SOAPAction:"urn:schemas-upnp-org:service:WANIPConnection:1#AddPortMapping"
+	 * <p>添加端口映射：AddPortMapping</p>
+	 * <p>请求头：SOAPAction:"urn:schemas-upnp-org:service:WANIPConnection:1#AddPortMapping"</p>
 	 */
 	public boolean addPortMapping(int port, String address, Protocol protocol) throws NetException {
 		if(!init) {
@@ -155,8 +157,8 @@ public class UpnpService {
 	}
 	
 	/**
-	 * 删除端口映射：DeletePortMapping
-	 * 请求头：SOAPAction:"urn:schemas-upnp-org:service:WANIPConnection:1#DeletePortMapping"
+	 * <p>删除端口映射：DeletePortMapping</p>
+	 * <p>请求头：SOAPAction:"urn:schemas-upnp-org:service:WANIPConnection:1#DeletePortMapping"</p>
 	 */
 	public boolean deletePortMapping(int port, Protocol protocol) throws NetException {
 		if(!init) {

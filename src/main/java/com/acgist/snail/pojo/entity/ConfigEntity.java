@@ -1,7 +1,10 @@
 package com.acgist.snail.pojo.entity;
 
 /**
- * entity - 配置
+ * Entity - 配置
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class ConfigEntity extends BaseEntity {
 

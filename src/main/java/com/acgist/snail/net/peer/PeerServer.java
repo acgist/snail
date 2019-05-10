@@ -5,6 +5,9 @@ import com.acgist.snail.system.config.SystemConfig;
 
 /**
  * Peer服务端
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class PeerServer extends TcpServer {
 

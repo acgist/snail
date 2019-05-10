@@ -15,11 +15,18 @@ import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * UDP客户端
- * UDP客户端、服务端通道都是一个
+ * <p>UDP客户端</p>
+ * <p>UDP客户端、服务端通道都是一个。</p>
+ * <p>
  * 实现（消息处理）：
- * 	1.单例
- * 	2.UDP通道单例
+ * <ul>
+ * 	<li>单例</li>
+ * 	<li>UDP通道单例</li>
+ * </ul>
+ * </p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public abstract class UdpClient<T extends UdpMessageHandler> extends UdpSender {
 	

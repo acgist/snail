@@ -11,6 +11,12 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
 
+/**
+ * UDP发送器
+ * 
+ * @author acgist
+ * @since 1.0.0
+ */
 public class UdpSender {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpSender.class);
@@ -31,8 +37,8 @@ public class UdpSender {
 	}
 
 	/**
-	 * 发送消息<br>
-	 * 使用分隔符对消息进行分隔
+	 * <p>发送消息</p>
+	 * <p>使用分隔符对消息进行分隔</p>
 	 */
 	protected void send(final String message, SocketAddress address) throws NetException {
 		String splitMessage = message;

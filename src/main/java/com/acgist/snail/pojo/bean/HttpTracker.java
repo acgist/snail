@@ -6,7 +6,10 @@ import com.acgist.snail.system.bcode.BCodeDecoder;
 import com.acgist.snail.utils.PeerUtils;
 
 /**
- * HTTP Tracker返回
+ * HTTP Tracker
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class HttpTracker {
 

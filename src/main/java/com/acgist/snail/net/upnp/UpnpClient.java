@@ -10,8 +10,11 @@ import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.NetUtils;
 
 /**
- * UPNP客户
- * 随机端口
+ * <p>UPNP客户端</p>
+ * <p>UDP协议、随机端口。</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	

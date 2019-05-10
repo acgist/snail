@@ -8,7 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TCP消息处理
+ * TCP消息
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public abstract class TcpMessageHandler extends TcpSender implements CompletionHandler<Integer, ByteBuffer> {
 
@@ -25,6 +28,7 @@ public abstract class TcpMessageHandler extends TcpSender implements CompletionH
 	
 	/**
 	 * 处理消息
+	 * 
 	 * @return 是否继续循环读取：true-是；false-不继续
 	 */
 	public abstract void onMessage(ByteBuffer attachment);
