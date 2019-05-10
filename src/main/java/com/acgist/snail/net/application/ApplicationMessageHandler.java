@@ -15,7 +15,10 @@ import com.acgist.snail.utils.StringUtils;
 import javafx.application.Platform;
 
 /**
- * 客户端消息
+ * Application消息
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class ApplicationMessageHandler extends TcpMessageHandler {
 
@@ -65,7 +68,6 @@ public class ApplicationMessageHandler extends TcpMessageHandler {
 	
 	/**
 	 * 处理消息
-	 * @return 是否关闭socket：true-关闭；false-继续
 	 */
 	private void execute(ApplicationMessage message) {
 		if(message.getType() == ApplicationMessage.Type.text) { // 文本信息：直接原样返回

@@ -18,8 +18,14 @@ import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * 如果有Peer，返回Peer，否者返回最近的Node
- * 返回8个Node或者100个Peer
+ * <p>返回Peer和Node</p>
+ * <p>
+ * 返回8个最近的Node。<br>
+ * 如果有Peer也需要返回，返回的Peer最大数量100个。
+ * </p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class GetPeersResponse extends Response {
 
@@ -45,6 +51,9 @@ public class GetPeersResponse extends Response {
 		return getBytes(DhtConfig.KEY_TOKEN);
 	}
 	
+	/**
+	 * 返回Node，同时加入列表。
+	 */
 	public List<NodeSession> getNodes() {
 		final byte[] bytes = this.getBytes(DhtConfig.KEY_NODES);
 		if(bytes == null) {
@@ -64,14 +73,14 @@ public class GetPeersResponse extends Response {
 	}
 	
 	/**
-	 * 获取Peer同时添加到Peer列表
+	 * 获取Peer，同时添加到列表。
 	 */
 	public List<PeerSession> getPeers(Request request) {
 		return this.getValues(request);
 	}
 	
 	/**
-	 * 获取Peer同时添加到Peer列表
+	 * 获取Peer，同时添加到列表。
 	 */
 	public List<PeerSession> getValues(Request request) {
 		final byte[] infoHash = request.getBytes(DhtConfig.KEY_INFO_HASH);
@@ -102,12 +111,18 @@ public class GetPeersResponse extends Response {
 		return list;
 	}
 	
-	public boolean havePeers() {
-		return get(DhtConfig.KEY_VALUES) != null;
-	}
-	
+	/**
+	 * 是否含有Node
+	 */
 	public boolean haveNodes() {
 		return get(DhtConfig.KEY_NODES) != null;
+	}
+	
+	/**
+	 * 是否含有Peer
+	 */
+	public boolean havePeers() {
+		return get(DhtConfig.KEY_VALUES) != null;
 	}
 	
 }

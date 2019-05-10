@@ -16,11 +16,30 @@ import com.acgist.snail.utils.JsonUtils;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.ObjectUtils;
 
+/**
+ * DHT请求
+ * TODO：request、response抽象超类
+ * 
+ * @author acgist
+ * @since 1.0.0
+ */
 public class Request {
 
+	/**
+	 * 请求ID
+	 */
 	private final byte[] t;
+	/**
+	 * 类型：请求、响应
+	 */
 	private final String y;
+	/**
+	 * 请求类型
+	 */
 	private final DhtConfig.QType q;
+	/**
+	 * 请求参数
+	 */
 	private final Map<String, Object> a;
 	
 	private Response response;
@@ -91,10 +110,23 @@ public class Request {
 		return this.response != null;
 	}
 	
+	/**
+	 * 设置请求参数
+	 * 
+	 * @param key 参数名称
+	 * @param value 参数值
+	 */
 	public void put(String key, Object value) {
 		this.a.put(key, value);
 	}
 
+	/**
+	 * 获取请求参数
+	 * 
+	 * @param key 参数名称
+	 * 
+	 * @return 参数值
+	 */
 	public Object get(String key) {
 		if(this.a == null) {
 			return null;
@@ -102,6 +134,9 @@ public class Request {
 		return this.a.get(key);
 	}
 	
+	/**
+	 * 获取Integer请求参数
+	 */
 	public Integer getInteger(String key) {
 		final Long value = getLong(key);
 		if(value == null) {
@@ -110,14 +145,23 @@ public class Request {
 		return value.intValue();
 	}
 	
+	/**
+	 * 获取Long请求参数
+	 */
 	public Long getLong(String key) {
 		return (Long) this.get(key);
 	}
 	
+	/**
+	 * 获取byte数组请求参数
+	 */
 	public byte[] getBytes(String key) {
 		return (byte[]) this.get(key);
 	}
 	
+	/**
+	 * 获取字符串请求参数
+	 */
 	public String getString(String key) {
 		final byte[] bytes = getBytes(key);
 		if(bytes == null) {
@@ -126,14 +170,23 @@ public class Request {
 		return new String(bytes);
 	}
 	
+	/**
+	 * 获取请求ID
+	 */
 	public byte[] getId() {
 		return getT();
 	}
-	
+
+	/**
+	 * 获取NodeId
+	 */
 	public byte[] getNodeId() {
 		return getBytes(DhtConfig.KEY_ID);
 	}
 	
+	/**
+	 * B编码后的字节数组
+	 */
 	public byte[] toBytes() {
 		final Map<String, Object> request = new LinkedHashMap<>();
 		request.put(DhtConfig.KEY_T, this.t);

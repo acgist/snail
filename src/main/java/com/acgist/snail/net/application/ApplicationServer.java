@@ -6,6 +6,9 @@ import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * 系统监听
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class ApplicationServer extends TcpServer {
 

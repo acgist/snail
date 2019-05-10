@@ -6,7 +6,10 @@ import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.system.manager.NodeManager;
 
 /**
- * 广播下载地址：广播上面一级
+ * 声明
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class AnnouncePeerResponse extends Response {
 

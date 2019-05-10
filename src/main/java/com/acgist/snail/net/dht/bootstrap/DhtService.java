@@ -1,5 +1,11 @@
 package com.acgist.snail.net.dht.bootstrap;
 
+/**
+ * DHT Service
+ * 
+ * @author acgist
+ * @since 1.0.0
+ */
 public class DhtService {
 
 //	private static final Logger LOGGER = LoggerFactory.getLogger(DhtService.class);
@@ -8,7 +14,7 @@ public class DhtService {
 	private static final int MAX_VALUE = 2 << 15;
 	private static final int UNSIGNED_BYTE_MAX = 2 << 7;
 
-	private int id = MIN_VALUE;
+	private int requestId = MIN_VALUE;
 	
 	private static final DhtService INSTANCE = new DhtService();
 
@@ -20,16 +26,17 @@ public class DhtService {
 	}
 
 	/**
-	 * 生成一个两字节的ID
+	 * <p>生成一个两字节的请求ID</p>
+	 * <p>如果大于最大值{@linkplain #MAX_VALUE}则设置为最小值{@linkplain #MIN_VALUE}重新开始生成。</p>
 	 */
-	public byte[] id() {
+	public byte[] requestId() {
 		final byte[] bytes = new byte[2];
 		synchronized (this) {
-			if(++id >= MAX_VALUE) {
-				id = MIN_VALUE;
+			if(++requestId >= MAX_VALUE) {
+				requestId = MIN_VALUE;
 			}
-			bytes[0] = (byte) (id / UNSIGNED_BYTE_MAX);
-			bytes[1] = (byte) (id % UNSIGNED_BYTE_MAX);
+			bytes[0] = (byte) (requestId / UNSIGNED_BYTE_MAX);
+			bytes[1] = (byte) (requestId % UNSIGNED_BYTE_MAX);
 		}
 		return bytes;
 	}
