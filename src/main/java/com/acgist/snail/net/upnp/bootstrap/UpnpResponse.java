@@ -3,6 +3,12 @@ package com.acgist.snail.net.upnp.bootstrap;
 import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.XMLUtils;
 
+/**
+ * UPNP响应
+ * 
+ * @author acgist
+ * @since 1.0.0
+ */
 public class UpnpResponse {
 
 //	返回报文：

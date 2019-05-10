@@ -15,7 +15,10 @@ import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.NetUtils;
 
 /**
- * Aio Socket客户端
+ * TCP Aio Socket客户端
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public abstract class TcpClient<T extends TcpMessageHandler> extends TcpSender {
 
@@ -60,6 +63,7 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends TcpSender {
 	
 	/**
 	 * 连接服务端
+	 * 
 	 * @param host 服务端地址
 	 * @param port 服务端端口
 	 */

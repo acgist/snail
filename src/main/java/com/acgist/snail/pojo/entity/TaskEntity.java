@@ -5,7 +5,10 @@ import java.util.Date;
 import com.acgist.snail.system.config.FileTypeConfig.FileType;
 
 /**
- * entity - 任务
+ * Entity - 任务
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class TaskEntity extends BaseEntity {
 

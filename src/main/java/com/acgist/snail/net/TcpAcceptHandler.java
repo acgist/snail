@@ -11,6 +11,9 @@ import com.acgist.snail.utils.BeanUtils;
 
 /**
  * 客户端连接
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class TcpAcceptHandler<T extends TcpMessageHandler> implements CompletionHandler<AsynchronousSocketChannel, AsynchronousServerSocketChannel> {
 

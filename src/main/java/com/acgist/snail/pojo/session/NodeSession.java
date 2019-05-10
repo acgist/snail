@@ -5,7 +5,10 @@ import com.acgist.snail.utils.JsonUtils;
 import com.acgist.snail.utils.ObjectUtils;
 
 /**
- * Node信息
+ * Node Session
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class NodeSession implements Comparable<NodeSession> {
 

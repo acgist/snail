@@ -3,8 +3,11 @@ package com.acgist.snail.net.tracker;
 import com.acgist.snail.net.UdpClient;
 
 /**
- * Tracker Client
- * 随机端口
+ * <p>Tracker Client</p>
+ * <p>UDP协议、随机端口。</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class TrackerClient extends UdpClient<TrackerMessageHandler> {
 

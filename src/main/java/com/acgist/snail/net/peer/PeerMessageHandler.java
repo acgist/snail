@@ -429,20 +429,29 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		pushMessage(PeerMessageConfig.Type.notInterested, null);
 	}
 
+	/**
+	 * <p>处理不感兴趣消息</p>
+	 */
 	private void notInterested(ByteBuffer buffer) {
 		LOGGER.debug("被不感兴趣");
 		peerSession.peerNotInterested();
 	}
 
 	/**
-	 * 5字节：len=0005 id=4 piece_index
+	 * <p>发送have消息</p>
+	 * <p>
+	 * 5字节：len=0005 id=4 piece_index<br>
 	 * piece index：piece下标，每当客户端下载完piece，发出have消息告诉所有与客户端连接的Peer
+	 * </p>
 	 */
 	public void have(int index) {
 		LOGGER.debug("发送have消息：{}", index);
 		pushMessage(PeerMessageConfig.Type.have, ByteBuffer.allocate(4).putInt(index).array());
 	}
 
+	/**
+	 * <p>处理have消息</p>
+	 */
 	private void have(ByteBuffer buffer) {
 		final int index = buffer.getInt();
 		LOGGER.debug("收到have消息：{}", index);
@@ -455,8 +464,11 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	}
 
 	/**
-	 * 长度不固定：len=0001+X id=5 bitfield
+	 * <p>发送位图消息</p>
+	 * <p>
+	 * 长度不固定：len=0001+X id=5 bitfield<br>
 	 * 交换位图：X=bitfield.length，握手后交换位图，每个piece占一位
+	 * </p>
 	 */
 	public void bitfield() {
 		final BitSet pieces = torrentStreamGroup.pieces();
@@ -466,7 +478,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	}
 	
 	/**
-	 * 交换位图
+	 * <p>处理位图消息</p>
 	 */
 	private void bitfield(ByteBuffer buffer) {
 		final byte[] bytes = new byte[buffer.remaining()];
@@ -486,12 +498,14 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	}
 
 	/**
-	 * 13字节：len=0013 id=6 index begin length
-	 * index：piece的索引
-	 * begin：piece内的偏移
-	 * length：请求Peer发送的数据的长度
-	 * 当客户端收到Peer的unchoke请求后即可构建request消息，一般交换数据是以slice（长度16KB的块）为单位的
-	 * TODO：流水线处理
+	 * <p>发送request消息</p>
+	 * <p>
+	 * 13字节：len=0013 id=6 index begin length<br>
+	 * index：piece的索引<br>
+	 * begin：piece内的偏移<br>
+	 * length：请求Peer发送的数据的长度<br>
+	 * 当客户端收到Peer的unchoke请求后即可构建request消息，一般交换数据是以slice（长度16KB的块）为单位的<br>
+	 * </p>
 	 */
 	public void request(int index, int begin, int length) {
 		if(peerSession.isPeerChocking()) {
@@ -505,6 +519,9 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		pushMessage(PeerMessageConfig.Type.request, buffer.array());
 	}
 
+	/**
+	 * <p>处理request消息</p>
+	 */
 	private void request(ByteBuffer buffer) {
 		if(peerSession.isAmChocking()) { // 被阻塞不操作
 			return;
@@ -520,8 +537,11 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	}
 
 	/**
-	 * 长度不固定：len=0009+X id=7 index begin block
+	 * <p>发送piece消息</p>
+	 * <p>
+	 * 长度不固定：len=0009+X id=7 index begin block<br>
 	 * piece消息：X=block长度（一般为16KB），收到request消息，如果没有Peer未被阻塞，且存在slice，则返回数据
+	 * </p>
 	 */
 	public void piece(int index, int begin, byte[] bytes) {
 		if(bytes == null) {
@@ -536,6 +556,9 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		pushMessage(PeerMessageConfig.Type.piece, buffer.array());
 	}
 
+	/**
+	 * <p>处理piece消息</p>
+	 */
 	private void piece(ByteBuffer buffer) {
 		final int index = buffer.getInt();
 		final int begin = buffer.getInt();
@@ -552,8 +575,11 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	}
 
 	/**
-	 * 13字节：len=0013 id=8 index begin length
+	 * <p>发送cancel消息</p>
+	 * <p>
+	 * 13字节：len=0013 id=8 index begin length<br>
 	 * 与request作用相反，取消下载
+	 * </p>
 	 */
 	public void cancel(int index, int begin, int length) {
 		ByteBuffer buffer = ByteBuffer.allocate(12);
@@ -563,14 +589,20 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		pushMessage(PeerMessageConfig.Type.cancel, buffer.array());
 	}
 	
+	/**
+	 * <p>处理cancel消息</p>
+	 */
 	private void cancel(ByteBuffer buffer) {
-		// 不处理
+		// TODO：不处理
 	}
 	
 	/**
-	 * 3字节：len=0003 id=9 listen-port
-	 * listen-port：两字节
+	 * <p>发送DHT消息</p>
+	 * <p>
+	 * 3字节：len=0003 id=9 listen-port<br>
+	 * listen-port：两字节<br>
 	 * 支持DHT的客户端使用，指明DHT监听的端口
+	 * </p>
 	 */
 	public void dht() {
 		if(this.peerSession.supportDhtProtocol()) {
@@ -579,13 +611,17 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		}
 	}
 	
+	/**
+	 * <p>处理DHT消息</p>
+	 */
 	private void dht(ByteBuffer buffer) {
 		LOGGER.debug("收到DHT消息");
 		dhtExtensionMessageHandler.onMessage(buffer);
 	}
 
 	/**
-	 * 扩展消息：len=unknow id=20 消息
+	 * <p>发送扩展消息</p>
+	 * <p>扩展消息：len=unknow id=20 消息</p>
 	 */
 	public void extension() {
 		if(this.peerSession.supportExtensionProtocol()) {
@@ -594,13 +630,16 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		}
 	}
 	
+	/**
+	 * <p>处理扩展信息</p>
+	 */
 	private void extension(ByteBuffer buffer) {
 		LOGGER.debug("收到扩展消息");
 		extensionMessageHandler.onMessage(buffer);
 	}
 	
 	/**
-	 * 扩展信息：ut_pex
+	 * 发送扩展信息：ut_pex
 	 */
 	public void exchange(byte[] bytes) {
 		extensionMessageHandler.exchange(bytes);
@@ -618,11 +657,13 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	}
 	
 	/**
-	 * 创建消息：
+	 * <p>创建消息</p>
+	 * <p>
 	 * 消息格式：length_prefix message_ID payload<br>
 	 * length prefix：4字节：message id和payload的长度和<br>
 	 * message id：1字节：指明消息的编号<br>
 	 * payload：消息内容
+	 * </p>
 	 */
 	private ByteBuffer buildMessage(PeerMessageConfig.Type type, byte[] payload) {
 		final Byte id = type == null ? null : type.value();

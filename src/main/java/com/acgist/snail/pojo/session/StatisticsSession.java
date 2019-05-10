@@ -9,9 +9,11 @@ import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
- * session - 统计、限速<br>
- * 如果父类统计存在时更新同时更新父类统计<br>
- * 限速模块
+ * <p>Statistics Session</p>
+ * <p>下载统计：速度、限速、统计等</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class StatisticsSession {
 
@@ -48,7 +50,7 @@ public class StatisticsSession {
 	}
 
 	/**
-	 * 下载统计
+	 * 下载统计，如果存在父类更新父类数据
 	 */
 	public void download(long buffer) {
 		downloadSize.addAndGet(buffer);
@@ -59,7 +61,7 @@ public class StatisticsSession {
 	}
 	
 	/**
-	 * 下载统计
+	 * 下载统计，如果存在父类更新父类数据
 	 */
 	public void upload(long buffer) {
 		uploadSize.addAndGet(buffer);

@@ -3,7 +3,10 @@ package com.acgist.snail.pojo.message;
 import com.acgist.snail.utils.JsonUtils;
 
 /**
- * 客户端消息，主要用来多个客户端之间进行通信。
+ * Application消息
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class ApplicationMessage {
 

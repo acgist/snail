@@ -7,8 +7,10 @@ import com.acgist.snail.utils.ObjectUtils;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
- * Entity - 数据库实体基类<br>
- * @Transient：不需要映射数据库的字段
+ * Entity - 数据库实体基类
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class BaseEntity implements Serializable {
 

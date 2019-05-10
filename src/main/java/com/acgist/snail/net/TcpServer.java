@@ -12,8 +12,10 @@ import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.NetUtils;
 
 /**
- * 服务端超类
- * TODO：BT任务服务端口
+ * <p>TCP Aio Socket服务端</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public abstract class TcpServer {
 

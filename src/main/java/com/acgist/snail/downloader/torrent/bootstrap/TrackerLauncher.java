@@ -29,7 +29,7 @@ public class TrackerLauncher implements Runnable {
 	private final TorrentSession torrentSession;
 //	private final TrackerLauncherGroup trackerLauncherGroup;
 	
-	private final Integer id; // id：transaction_id：获取Peer时（announce）使用
+	private final Integer id; // id：transaction_id：连接时使用
 	private Integer interval; // 下次等待时间
 	private Integer done; // 已完成数量
 	private Integer undone; // 未完成数量

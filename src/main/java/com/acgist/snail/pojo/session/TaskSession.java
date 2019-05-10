@@ -24,8 +24,10 @@ import com.acgist.snail.utils.JsonUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * session - 任务<br>
- * 下载任务信息统计<br>
+ * Task Session
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class TaskSession {
 

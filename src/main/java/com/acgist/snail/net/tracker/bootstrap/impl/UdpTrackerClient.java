@@ -17,8 +17,11 @@ import com.acgist.snail.utils.ThreadUtils;
 import com.acgist.snail.utils.UniqueCodeUtils;
 
 /**
- * tracker udp 客户端
- * 必须实现线程安全（每次只能处理一个beer）
+ * <p>Tracker UDP 客户端</p>
+ * <p>协议链接：http://www.bittorrent.org/beps/bep_0015.html</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class UdpTrackerClient extends TrackerClient {
 
@@ -30,7 +33,7 @@ public class UdpTrackerClient extends TrackerClient {
 	private static final com.acgist.snail.net.tracker.TrackerClient TRACKER_CLIENT = com.acgist.snail.net.tracker.TrackerClient.getInstance();
 	
 	/**
-	 * 连接ID
+	 * 连接ID：获取Peer时使用。
 	 */
 	private Long connectionId;
 
