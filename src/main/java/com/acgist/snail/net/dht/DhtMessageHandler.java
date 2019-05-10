@@ -131,7 +131,9 @@ public class DhtMessageHandler extends UdpMessageHandler {
 		waitResponse(request);
 		final Response response = RESPONSE.apply(request);
 		if(SUCCESS.apply(response)) {
-			return NodeManager.getInstance().newNodeSession(response.getNodeId(), address.getHostString(), address.getPort());
+			final NodeSession nodeSession = NodeManager.getInstance().newNodeSession(response.getNodeId(), address.getHostString(), address.getPort());
+			NodeManager.getInstance().sortNodes();
+			return nodeSession;
 		}
 		return null;
 	}

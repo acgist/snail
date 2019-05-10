@@ -25,10 +25,17 @@ public class NodeManagerTest {
 		for (int index = 100000; index < 110000; index++) {
 			nodes.add(NodeManager.getInstance().newNodeSession(StringUtils.unhex("1111111111111111111111111111111111" + index), "0", 0));
 		}
-		System.out.println(nodes.contains(NodeManager.getInstance().newNodeSession(StringUtils.unhex("1111111111111111111111111111111111102022"), "0", 0)));
+		NodeManager.getInstance().sortNodes();
+		System.out.println(nodes.contains(NodeManager.getInstance().newNodeSession(StringUtils.unhex("1111111111111111111111111111111111101111"), "0", 0)));
 		var list = NodeManager.getInstance().findNode("1111111111111111111111111111111111112023");
 		list.forEach(node -> {
 			System.out.println(node);
+			System.out.println(StringUtils.hex(node.getId()));
+		});
+		list = NodeManager.getInstance().findNode("1111111111111111111111111111111111112023");
+		list.forEach(node -> {
+			System.out.println(node);
+			System.out.println(StringUtils.hex(node.getId()));
 		});
 	}
 	

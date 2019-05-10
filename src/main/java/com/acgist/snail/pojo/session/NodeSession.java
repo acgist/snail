@@ -70,6 +70,11 @@ public class NodeSession implements Comparable<NodeSession> {
 	}
 
 	@Override
+	public int hashCode() {
+		return this.id.hashCode();
+	}
+	
+	@Override
 	public boolean equals(Object object) {
 		if(ObjectUtils.equals(this, object)) {
 			return true;
@@ -79,11 +84,6 @@ public class NodeSession implements Comparable<NodeSession> {
 			return ArrayUtils.equals(this.id, session.id);
 		}
 		return false;
-	}
-	
-	@Override
-	public int hashCode() {
-		return this.id.hashCode();
 	}
 	
 	@Override
