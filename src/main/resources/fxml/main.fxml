@@ -86,9 +86,9 @@
 				<Button fx:id="complete" text="下载完成" onAction="#handleCompleteAction" />
 			</HBox>
 			<HBox fx:id="footerStatus" styleClass="footerStatus">
-				<Label text="下载速度：" />
+				<Label text="↓" />
 				<Label fx:id="downloadBuffer" text="0KB/S" />
-				<Label text="上传速度：" />
+				<Label text="↑" />
 				<Label fx:id="uploadBuffer" text="0KB/S" />
 			</HBox>
 		</HBox>
