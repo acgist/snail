@@ -16,7 +16,6 @@ call mvn clean package -q -Prelease -DskipTests
 call xcopy /S /Q .\target\%lib%\* %builder%%lib%\*
 call copy .\target\%jar% %builder%
 call copy %launcher% %builder%%exe%
-call copy %launcherMin% %builder%%exeMin%
 
 rem 生成JAVA运行环境
 rem 查询依赖命令：jdeps --list-deps *.jar
