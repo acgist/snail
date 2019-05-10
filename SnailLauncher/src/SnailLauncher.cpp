@@ -70,7 +70,7 @@ bool startJVM(){
 	// 忽略无法识别jvm的情况
 	jvmInitArgs.ignoreUnrecognized = JNI_TRUE;
 
-	// 设置启动类，注意分隔符：（/），不能设置（.）
+	// 设置启动类，注意分隔符（/），不能设置（.）
 	const char startClass[] = "com/acgist/main/Application";
 
 	// 启动方法，设置main函数
@@ -78,7 +78,7 @@ bool startJVM(){
 
 	// 传入参数
 	// int nParamCount = 2;
-	// const char* params[nParamCount] = {"a","b"};
+	// const char* params[nParamCount] = {"a", "b"};
 
 	// 加载JVM动态链接库
 	HINSTANCE jvmDLL = LoadLibrary(jvmPath);
