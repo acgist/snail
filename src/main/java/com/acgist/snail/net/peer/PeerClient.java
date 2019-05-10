@@ -15,8 +15,11 @@ import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
- * Peer客户端<br>
- * 基本协议：TCP<br>
+ * <p>Peer客户端</p>
+ * <p>基本协议：TCP</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class PeerClient extends TcpClient<PeerMessageHandler> {
 	
@@ -72,7 +75,7 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	}
 
 	/**
-	 * 开始
+	 * 开始下载：发送请求
 	 */
 	public void launcher() {
 		if(launcher) {
@@ -89,7 +92,7 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	}
 
 	/**
-	 * 开始下载
+	 * 开始下载：连接、握手
 	 */
 	public boolean download() {
 		LOGGER.debug("Peer连接：{}:{}", peerSession.host(), peerSession.port());
@@ -104,7 +107,7 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	}
 	
 	/**
-	 * 下载种子
+	 * 开始下载：下载种子
 	 */
 	public boolean torrent() {
 		handler.torrent();
@@ -164,8 +167,8 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	}
 	
 	/**
-	 * 获取评分<br>
-	 * 每次获取后清空
+	 * <p>获取评分</p>
+	 * <p>每次获取后清空，调用后清空重新开始计算。</p>
 	 */
 	public int mark() {
 		return mark.getAndSet(0);
@@ -180,7 +183,11 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	}
 
 	/**
-	 * 请求数据
+	 * <p>请求数据</p>
+	 * <p>每次发送{@link #SLICE_MAX_SIZE}个请求，进入等待，当全部数据响应后，又开始发送请求，直到Piece下载完成。</p>
+	 * <p>请求发送完成后进入完成等待。</p>
+	 * <p>如果等待时间超过{@link #SLICE_AWAIT_TIME}跳出下载。</p>
+	 * <p>如果最后Piece没有下载完成标记为失败。</p>
 	 */
 	private void request() {
 		if(!available()) {

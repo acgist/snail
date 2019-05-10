@@ -7,6 +7,13 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.system.config.SystemConfig;
 
+/**
+ * <p>Peer Service</p>
+ * <p>管理Peer的ID和端口。</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
+ */
 public class PeerService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerService.class);
@@ -35,6 +42,9 @@ public class PeerService {
 		return INSTANCE;
 	}
 	
+	/**
+	 * 生成PeerId
+	 */
 	private byte[] buildPeerId() {
 		final byte[] peerId = new byte[20];
 		final StringBuilder builder = new StringBuilder(8);
