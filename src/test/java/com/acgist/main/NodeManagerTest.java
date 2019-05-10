@@ -32,6 +32,7 @@ public class NodeManagerTest {
 			System.out.println(node);
 			System.out.println(StringUtils.hex(node.getId()));
 		});
+		System.out.println("--------");
 		list = NodeManager.getInstance().findNode("1111111111111111111111111111111111112023");
 		list.forEach(node -> {
 			System.out.println(node);
