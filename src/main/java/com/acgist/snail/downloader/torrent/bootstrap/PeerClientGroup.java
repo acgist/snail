@@ -37,6 +37,9 @@ public class PeerClientGroup {
 	
 	private static final Duration INTERVAL = Duration.ofSeconds(SystemConfig.getPeerOptimizeInterval());
 	
+	/**
+	 * 最后优化时间
+	 */
 	private long lastOptimizeTime = System.currentTimeMillis();
 	
 	private final PeerManager peerManager;
@@ -47,7 +50,7 @@ public class PeerClientGroup {
 	 */
 	private final BlockingQueue<PeerClient> peerClients;
 	/**
-	 * 优选的Peer，每次优化时挑选出来可以进行下载的Peer，在优化后发送ut_pex消息发送给连接的Peer，发送完成后清空
+	 * 优选的Peer，每次优化时挑选出来可以进行下载的Peer，在优化后发送ut_pex消息发送给连接的Peer，发送完成后清空。
 	 */
 	private final List<PeerSession> optimize = new ArrayList<>();
 	
@@ -64,7 +67,7 @@ public class PeerClientGroup {
 	}
 
 	/**
-	 * 获取当前下载PeerClient数量
+	 * 当前下载中的PeerClient数量
 	 */
 	public int peerClientSize() {
 		return this.peerClients.size();
@@ -72,16 +75,12 @@ public class PeerClientGroup {
 	
 	/**
 	 * <p>创建下载线程（异步生成）</p>
-	 * 
-	 * @param size 指定生成数量
 	 */
 	public void launchers() {
 		synchronized (peerClients) {
-			for (int index = 0; index < SystemConfig.getPeerSize(); index++) {
-				torrentSession.submit(() -> {
-					buildPeerClient();
-				});
-			}
+			torrentSession.submit(() -> {
+				buildPeerClients();
+			});
 		}
 	}
 	
@@ -106,14 +105,14 @@ public class PeerClientGroup {
 	public void optimize() {
 		synchronized (peerClients) {
 			final long now = System.currentTimeMillis();
-			if(now - lastOptimizeTime >= INTERVAL.toMillis()) {
-				lastOptimizeTime = now;
+			if(now - this.lastOptimizeTime >= INTERVAL.toMillis()) {
+				this.lastOptimizeTime = now;
 			} else {
 				return;
 			}
 			LOGGER.debug("优化PeerClient");
 			inferiorPeerClient();
-			launchers();
+			buildPeerClients();
 		}
 		peerManager.exchange(torrentSession.infoHashHex(), optimize);
 	}
@@ -124,26 +123,40 @@ public class PeerClientGroup {
 	 */
 	public void release() {
 		LOGGER.debug("释放PeerClientGroup");
-		synchronized (peerClients) {
-			peerClients.forEach(client -> {
+		synchronized (this.peerClients) {
+			this.peerClients.forEach(client -> {
 				SystemThreadContext.submit(() -> {
 					client.release();
 				});
 			});
-			peerClients.clear();
+			this.peerClients.clear();
 		}
 	}
 	
 	/**
-	 * <p>新建PeerClient加入下载队列</p>
-	 * <p>从Peer列表尾部拿出一个Peer创建下载</p>
+	 * 生成PeerClient列表，生成到不能继续生成为止。
 	 */
-	private void buildPeerClient() {
+	private void buildPeerClients() {
+		while(true) {
+			final boolean ok = buildPeerClient();
+			if(!ok) {
+				break;
+			}
+		}
+	}
+	
+	/**
+	 * <p>新建PeerClient加入下载队列，从Peer列表尾部拿出一个Peer创建下载。</p>
+	 * <p>如果任务不处于下载状态、已经处于下载的PeerClient大于等于配置的最大PeerClient数量、不能查找到更多的Peer时返回不能继续生成。</p>
+	 * 
+	 * @return true-继续生成；false-不继续生成
+	 */
+	private boolean buildPeerClient() {
 		if(!taskSession.download()) {
-			return;
+			return false;
 		}
 		if(this.peerClients.size() >= SystemConfig.getPeerSize()) {
-			return;
+			return false;
 		}
 		final PeerSession peerSession = peerManager.pick(torrentSession.infoHashHex());
 		if(peerSession != null) {
@@ -153,19 +166,24 @@ public class PeerClientGroup {
 			if(ok) {
 				peerClients.add(client);
 			}
+			return true;
+		} else {
+			return false;
 		}
 	}
 	
 	/***
-	 * <p>剔除劣质PeerClient</p>
-	 * <p>选择劣质PeerClient，释放资源，然后放入Peer队列头部。</p>
+	 * <p>选择劣质Peer，释放资源，然后将劣质Peer放入Peer队列头部。</p>
 	 * <p>
 	 * 挑选权重最低的PeerClient作为劣质Peer，如果其中含有不可用的PeerClient，直接剔除该PeerClient，
 	 * 但是依旧需要循环完所有的PeerClient，清除权重进行新一轮的权重计算。
 	 * </p>
+	 * <p>
+	 * 不可用的Peer：状态不可用或者下载量=0。
+	 * </p>
 	 */
 	private void inferiorPeerClient() {
-		final int size = peerClients.size();
+		final int size = this.peerClients.size();
 		if(size < SystemConfig.getPeerSize()) {
 			return;
 		}
@@ -177,35 +195,39 @@ public class PeerClientGroup {
 			if(index++ >= size) {
 				break;
 			}
-			tmp = peerClients.poll();
+			tmp = this.peerClients.poll();
 			if(tmp == null) {
 				break;
 			}
 			if(!tmp.available()) { // 如果当前挑选的是不可用的PeerClient不执行后面操作
-				release(tmp);
+				inferiorPeerClient(tmp);
 				continue;
 			}
 			mark = tmp.mark(); // 清空权重
 			if(mark > 0) { // 添加可用
-				optimize.add(tmp.peerSession());
+				this.optimize.add(tmp.peerSession());
 			} else { // 如果速度=0，直接剔除
-				release(tmp);
+				inferiorPeerClient(tmp);
 				continue;
 			}
 			if(inferior == null) {
 				inferior = tmp;
 				minMark = mark;
 			} else if(mark < minMark) {
-				peerClients.offer(inferior);
+				this.peerClients.offer(inferior);
 				inferior = tmp;
 				minMark = mark;
 			} else {
-				peerClients.offer(tmp);
+				this.peerClients.offer(tmp);
 			}
 		}
+		inferiorPeerClient(inferior);
 	}
 	
-	private void release(PeerClient peerClient) {
+	/**
+	 * 剔除劣质Peer，释放资源，放入Peer队列头部。
+	 */
+	private void inferiorPeerClient(PeerClient peerClient) {
 		if(peerClient != null) {
 			LOGGER.debug("剔除劣质PeerClient：{}:{}", peerClient.peerSession().host(), peerClient.peerSession().port());
 			peerClient.release();
