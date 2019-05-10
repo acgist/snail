@@ -86,6 +86,9 @@ public class FtpDownloader extends Downloader {
 		return length == -1 || size == downloadSize;
 	}
 	
+	/**
+	 * 创建FTP输入流、设置已下载文件大小
+	 */
 	private void buildInput() {
 		var entity = taskSession.entity();
 		long size = FileUtils.fileSize(entity.getFile()); // 已下载大小
@@ -108,6 +111,9 @@ public class FtpDownloader extends Downloader {
 		}
 	}
 	
+	/**
+	 * 创建输出流
+	 */
 	private void buildOutput() {
 		var entity = taskSession.entity();
 		try {

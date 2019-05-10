@@ -77,9 +77,7 @@ public class TrayMenu extends Menu {
 	private MenuItem sourceMenu;
 	private MenuItem supportMenu;
 
-	/**
-	 * 创建菜单
-	 */
+	@Override
 	protected void buildMenu() {
 		this.showMenu = new MenuItem("显示", new ImageView("/image/16/show.png"));
 		this.hideMenu = new MenuItem("隐藏", new ImageView("/image/16/hide.png"));

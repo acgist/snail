@@ -13,7 +13,10 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
- * 下载文件选择
+ * BT任务窗口
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class TorrentWindow extends Window<TorrentController> {
 
@@ -55,6 +58,9 @@ public class TorrentWindow extends Window<TorrentController> {
 		dialogWindow();
 	}
 	
+	/**
+	 * 显示下载任务信息
+	 */
 	public void show(TaskSession taskSession) {
 		this.controller.tree(taskSession);
 		this.showAndWait();

@@ -10,14 +10,23 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Window;
 
 /**
- * 选择时默认都会设置为上一次选择的目录，选择后会修改上次选择目录
+ * <p>目录、文件选择器</p>
+ * <p>选择时默认都会设置为上一次选择的目录，选择后会修改上次选择目录为当前选择目录。</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class Choosers {
 
 	/**
 	 * 选择文件
+	 * 
+	 * @param window 当前窗体：模态
 	 * @param title 标题
-	 * @param filters 过滤器：文件类型名称、后缀
+	 * @param description 过滤器描述
+	 * @param filters 过滤器：文件类型名称、后缀：*.torrent
+	 * 
+	 * @return 文件
 	 */
 	public static final File chooseFile(Window window, String title, String description, String ... filters) {
 		final FileChooser chooser = new FileChooser();
@@ -33,6 +42,11 @@ public class Choosers {
 	
 	/**
 	 * 选择文件目录
+	 * 
+	 * @param window 当前窗体：模态
+	 * @param title 标题
+	 * 
+	 * @return 文件目录
 	 */
 	public static final File chooseDirectory(Window window, String title) {
 		final DirectoryChooser chooser = new DirectoryChooser();

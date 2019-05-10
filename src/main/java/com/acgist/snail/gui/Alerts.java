@@ -21,6 +21,7 @@ public class Alerts {
 	 * 
 	 * @param title 标题
 	 * @param content 内容
+	 * 
 	 * @return 点击按钮
 	 */
 	public static final Optional<ButtonType> info(String title, String content) {
@@ -32,6 +33,7 @@ public class Alerts {
 	 * 
 	 * @param title 标题
 	 * @param content 内容
+	 * 
 	 * @return 点击按钮
 	 */
 	public static final Optional<ButtonType> warn(String title, String content) {
@@ -44,6 +46,7 @@ public class Alerts {
 	 * @param type 提示类型
 	 * @param title 标题
 	 * @param content 内容
+	 * 
 	 * @return 点击按钮
 	 */
 	public static final Optional<ButtonType> build(AlertType type, String title, String content) {

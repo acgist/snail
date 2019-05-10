@@ -80,7 +80,7 @@ public class MainWindow extends Window<MainController> {
 	}
 	
 	/**
-	 * F12控制台
+	 * F12控制台（输出系统状态信息到日志）
 	 */
 	private void console() {
 		stage.addEventHandler(KeyEvent.KEY_RELEASED, (event) -> {

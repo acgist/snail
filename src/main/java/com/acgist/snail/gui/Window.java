@@ -9,10 +9,19 @@ import javafx.stage.Stage;
 
 /**
  * 抽象窗口
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public abstract class Window<T extends Initializable> extends Application {
 
+	/**
+	 * 控制器
+	 */
 	protected T controller;
+	/**
+	 * 容器
+	 */
 	protected Stage stage;
 	
 	public Window() {
@@ -45,7 +54,7 @@ public abstract class Window<T extends Initializable> extends Application {
 	}
 	
 	/**
-	 * 设置通用信息
+	 * 设置通用信息：{@link #icon}、{@link #esc}
 	 */
 	protected void dialogWindow() {
 		icon();
@@ -53,14 +62,14 @@ public abstract class Window<T extends Initializable> extends Application {
 	}
 	
 	/**
-	 * 显示窗口
+	 * 显示窗口（异步）
 	 */
 	public void show() {
 		stage.show();
 	}
 	
 	/**
-	 * 显示窗口
+	 * 显示窗口（同步）
 	 */
 	public void showAndWait() {
 		stage.showAndWait();
@@ -81,14 +90,14 @@ public abstract class Window<T extends Initializable> extends Application {
 	}
 	
 	/**
-	 * 返回容器
+	 * 容器
 	 */
 	public Stage stage() {
 		return this.stage;
 	}
 	
 	/**
-	 * 获取控制器
+	 * 控制器
 	 */
 	public T controller() {
 		return controller;

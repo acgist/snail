@@ -6,13 +6,18 @@ import javafx.scene.control.SeparatorMenuItem;
 
 /**
  * 抽象菜单
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public abstract class Menu extends ContextMenu {
 
 	/**
-	 * 初始化基本样式：<br>
-	 * 	边框：1
-	 * 	透明：0.98
+	 * <p>初始化基本样式：</p>
+	 * <ul>
+	 * 	<li>边框：1</li>
+	 * 	<li>透明：0.98</li>
+	 * </ul>
 	 */
 	protected void init() {
 		this.setOpacity(0.94);
@@ -33,6 +38,9 @@ public abstract class Menu extends ContextMenu {
 		this.addMenu(new SeparatorMenuItem());
 	}
 	
+	/**
+	 * 创建菜单
+	 */
 	protected abstract void buildMenu();
 	
 }

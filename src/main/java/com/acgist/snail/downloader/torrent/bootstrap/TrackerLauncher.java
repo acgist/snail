@@ -48,6 +48,9 @@ public class TrackerLauncher implements Runnable {
 		return new TrackerLauncher(client, torrentSession);
 	}
 
+	/**
+	 * 获取当前TrackerLauncher的ID
+	 */
 	public Integer id() {
 		return this.id;
 	}
@@ -104,5 +107,5 @@ public class TrackerLauncher implements Runnable {
 	private boolean available() {
 		return client.available() && available;
 	}
-	
+
 }

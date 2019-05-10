@@ -72,9 +72,7 @@ public class TaskMenu extends Menu {
 	private MenuItem verifyMenu;
 	private MenuItem openFolderMenu;
 	
-	/**
-	 * 创建菜单
-	 */
+	@Override
 	protected void buildMenu() {
 		this.startMenu = new MenuItem("开始", new ImageView("/image/16/start.png"));
 		this.pauseMenu = new MenuItem("暂停", new ImageView("/image/16/pause.png"));

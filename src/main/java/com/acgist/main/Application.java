@@ -32,7 +32,7 @@ public class Application {
 		SystemContext.info();
 		final boolean enable = listen();
 		if(enable) {
-			initSystem();
+			initContext();
 			buildWindow();
 		}
 		LOGGER.info("系统启动完成");
@@ -46,14 +46,14 @@ public class Application {
 	}
 	
 	/**
-	 * 初始化系统
+	 * 初始化系统上下文
 	 */
-	private static final void initSystem() {
+	private static final void initContext() {
 		SystemContext.init();
 	}
 	
 	/**
-	 * 初始化窗口
+	 * 初始化JavaFX平台
 	 */
 	private static final void buildWindow() {
 		LOGGER.info("初始化窗口");

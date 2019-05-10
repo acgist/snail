@@ -7,6 +7,7 @@ import com.acgist.snail.net.peer.PeerMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.system.config.PeerMessageConfig;
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.manager.NodeManager;
 import com.acgist.snail.utils.NetUtils;
 
@@ -45,7 +46,9 @@ public class DhtExtensionMessageHandler {
 		if(dhtLauncher != null) {
 			dhtLauncher.put(peerSession.host(), port);
 		}
-		NodeManager.getInstance().newNodeSession(peerSession.host(), port);
+		SystemThreadContext.submit(() -> {
+			NodeManager.getInstance().newNodeSession(peerSession.host(), port);
+		});
 	}
 
 }

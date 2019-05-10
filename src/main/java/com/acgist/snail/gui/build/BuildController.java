@@ -98,11 +98,14 @@ public class BuildController implements Initializable {
 		urlValue.setText(url);
 	}
 	
+	/**
+	 * 拖入文件事件（显示）
+	 */
 	private EventHandler<DragEvent> dragOverAction = (event) -> {
 		if (event.getGestureSource() != root) {
 			Dragboard dragboard = event.getDragboard();
 			if(dragboard.hasFiles()) {
-				File file = dragboard.getFiles().get(0);
+				final File file = dragboard.getFiles().get(0);
 				if(TorrentManager.verify(file.getPath())) {
 					event.acceptTransferModes(TransferMode.COPY);
 				} else {
@@ -115,6 +118,9 @@ public class BuildController implements Initializable {
 		event.consume();
 	};
 	
+	/**
+	 * 拖入文件事件（加载）
+	 */
 	private EventHandler<DragEvent> dragDroppedAction = (event) -> {
 		Dragboard dragboard = event.getDragboard();
 		if (dragboard.hasFiles()) {

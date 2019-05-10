@@ -123,7 +123,8 @@ public class TorrentStreamGroup {
 	}
 
 	/**
-	 * 保存Piece
+	 * <p>保存Piece</p>
+	 * <p>调用每个{@link TorrentStream#piece}进行保存。</p>
 	 */
 	public void piece(TorrentPiece piece) {
 		for (TorrentStream torrentStream : streams) {
@@ -154,7 +155,8 @@ public class TorrentStreamGroup {
 	}
 	
 	/**
-	 * 下载失败
+	 * <p>Piece下载失败</p>
+	 * <p>调用每个{@link TorrentStream#undone}进行设置。</p>
 	 */
 	public void undone(TorrentPiece piece) {
 		for (TorrentStream torrentStream : streams) {

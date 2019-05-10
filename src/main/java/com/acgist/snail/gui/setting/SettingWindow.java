@@ -12,7 +12,10 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
- * 设置
+ * 设置窗口
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class SettingWindow extends Window<SettingController> {
 

@@ -16,7 +16,6 @@ import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * <p>BT下载器</p>
- * TODO：下载完成向Tracker发送complete消息。
  * 
  * @author acgist
  * @since 1.0.0
@@ -31,7 +30,7 @@ public class TorrentDownloader extends Downloader {
 	
 	private TorrentDownloader(TaskSession taskSession) {
 		super(taskSession);
-		load();
+		loadTask();
 	}
 
 	public static final TorrentDownloader newInstance(TaskSession taskSession) {
@@ -66,9 +65,10 @@ public class TorrentDownloader extends Downloader {
 	}
 
 	/**
-	 * 加载任务
+	 * <p>加载任务</p>
+	 * <p>创建时立即加载任务，使任务可以被分享。</p>
 	 */
-	private void load() {
+	private void loadTask() {
 		final var entity = this.taskSession.entity();
 		final String path = entity.getTorrent();
 		try {

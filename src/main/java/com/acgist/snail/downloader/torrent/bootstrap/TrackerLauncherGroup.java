@@ -78,6 +78,7 @@ public class TrackerLauncherGroup {
 		trackerLaunchers.forEach(launcher -> {
 			launcher.release();
 		});
+		trackerLaunchers.clear();
 	}
 	
 }

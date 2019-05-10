@@ -168,7 +168,6 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	/**
 	 * <p>唤醒删除</p>
 	 * <p>如果任务被删除，需要等待下载正常结束。</p>
-	 * TODO：测试
 	 */
 	private void unlockDelete() {
 		synchronized (this.deleteLock) {
@@ -177,7 +176,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	}
 	
 	/**
-	 * 更新状态唤醒下载等待线程
+	 * 唤醒下载等待线程、更新状态
 	 * @param status 状态
 	 */
 	private void updateStatus(Status status) {

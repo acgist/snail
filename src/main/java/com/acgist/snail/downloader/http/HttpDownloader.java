@@ -94,8 +94,9 @@ public class HttpDownloader extends Downloader {
 	}
 	
 	/**
-	 * <p>端点续传：</p>
+	 * <p>创建下载流</p>
 	 * <p>
+	 * 端点续传设置（Range）：<br>
 	 * Range：bytes=0-499：第 0-499 字节范围的内容<br>
 	 * Range：bytes=500-999：第 500-999 字节范围的内容<br>
 	 * Range：bytes=-500：最后 500 字节的内容<br>
@@ -143,6 +144,9 @@ public class HttpDownloader extends Downloader {
 		}
 	}
 
+	/**
+	 * 创建输出流
+	 */
 	private void buildOutput() {
 		final var entity = taskSession.entity();
 		try {

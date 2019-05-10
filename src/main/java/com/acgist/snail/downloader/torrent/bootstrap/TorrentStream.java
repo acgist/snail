@@ -75,7 +75,9 @@ public class TorrentStream {
 	}
 	
 	/**
-	 * 设置文件信息
+	 * <p>设置文件信息</p>
+	 * <p>初始化已下载Piece，已下载文件大小，创建本地文件流等</p>
+	 * 
 	 * @param file 文件路径
 	 * @param size 文件大小
 	 * @param pos 文件开始偏移
@@ -180,7 +182,7 @@ public class TorrentStream {
 
 	/**
 	 * <p>读取块数据</p>
-	 * <p>默认数据块大小：{@linkplain TorrentStream#pieceLength 块大小}，默认偏移：0</p>
+	 * <p>数据大小：{@link #pieceLength}，默认偏移：0</p>
 	 */
 	public byte[] read(int index) {
 		return read(index, (int) this.pieceLength);
@@ -189,6 +191,8 @@ public class TorrentStream {
 	/**
 	 * <p>读取块数据</p>
 	 * <p>默认偏移：0</p>
+	 * 
+	 * @param size 数据大小
 	 */
 	public byte[] read(int index, int size) {
 		return read(index, size, 0);
@@ -196,6 +200,9 @@ public class TorrentStream {
 	
 	/**
 	 * <p>读取块数据</p>
+	 * 
+	 * @param size 数据大小
+	 * @param pos 数据偏移
 	 */
 	public byte[] read(int index, int size, int pos) {
 		return read(index, size, pos, false);
@@ -206,6 +213,8 @@ public class TorrentStream {
 	 * <p>如果选择的Piece不在文件范围内返回null。</p>
 	 * <p>如果读取数据只有部分符合文件的范围，会自动修正范围，读取符合部分数据返回。</p>
 	 * 
+	 * @param size 数据大小
+	 * @param pos 数据偏移
 	 * @param ignorePieces 忽略已下载位图，读取文件验证
 	 */
 	private byte[] read(int index, int size, int pos, boolean ignorePieces) {
@@ -254,23 +263,27 @@ public class TorrentStream {
 	
 	/**
 	 * 是否下载完成
+	 * 
+	 * @return true-完成；false-未完成
 	 */
 	public boolean complete() {
 		return pieces.cardinality() >= this.filePieceSize;
 	}
 	
 	/**
-	 * 下载完成
+	 * Piece下载完成
 	 */
 	private void done(int index) {
-		pieces.set(index, true); // 下载成功
-		downloadPieces.clear(index); // 去掉下载状态
+		synchronized (this) {
+			pieces.set(index, true); // 下载成功
+			downloadPieces.clear(index); // 去掉下载状态
+		}
 	}
 
 	/**
-	 * 下载失败
+	 * Piece下载失败
 	 * 
-	 * @param piece 下载失败块
+	 * @param piece 下载失败的块
 	 */
 	public void undone(TorrentPiece piece) {
 		if(!piece.contain(this.fileBeginPos, this.fileEndPos)) { // 不符合当前文件位置
@@ -383,7 +396,7 @@ public class TorrentStream {
 			if(haveData(bytes)) {
 				done(index);
 				torrentStreamGroup.piece(index);
-//			} else { // 再次校验：TODO：是否需要优化
+//			} else { // TODO：再次校验
 //				bytes = read(index, VERIFY_SIZE_CHECK, pos, true); // 第一块需要偏移
 //				if(haveData(bytes)) {
 //					download(index);
