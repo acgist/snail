@@ -67,6 +67,8 @@ public class TrackerLauncher implements Runnable {
 	/**
 	 * <p>解析announce信息</p>
 	 * <p>添加Peer，同时设置下次查询定时任务。</p>
+	 * 
+	 * TODO：定时优化
 	 */
 	public void announce(AnnounceMessage message) {
 		if(message == null) {
