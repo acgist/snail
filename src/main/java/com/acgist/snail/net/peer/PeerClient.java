@@ -85,7 +85,7 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 			if(!launcher) {
 				launcher = true;
 				torrentSession.submit(() -> {
-					request();
+					requests();
 				});
 			}
 		}
@@ -183,22 +183,34 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	}
 
 	/**
+	 * 一直进行下载直到结束
+	 */
+	private void requests() {
+		boolean ok = true;
+		while(ok) {
+			ok = request();
+		}
+	}
+	
+	/**
 	 * <p>请求数据</p>
 	 * <p>每次发送{@link #SLICE_MAX_SIZE}个请求，进入等待，当全部数据响应后，又开始发送请求，直到Piece下载完成。</p>
 	 * <p>请求发送完成后进入完成等待。</p>
 	 * <p>如果等待时间超过{@link #SLICE_AWAIT_TIME}跳出下载。</p>
 	 * <p>如果最后Piece没有下载完成标记为失败。</p>
+	 * 
+	 * @return 是否可以继续下载
 	 */
-	private void request() {
+	private boolean request() {
 		if(!available()) {
-			return;
+			return false;
 		}
 		pickDownloadPiece();
 		if(this.downloadPiece == null) {
 			LOGGER.debug("没有匹配Peer块下载");
 			this.release();
 			torrentSession.complete();
-			return;
+			return false;
 		}
 		final int index = this.downloadPiece.getIndex();
 		while(available()) {
@@ -234,7 +246,7 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 		if(countLock.get() > 0) { // 没有下载完成
 			undone();
 		}
-		request();
+		return true;
 	}
 
 	/**

@@ -137,11 +137,9 @@ public class PeerClientGroup {
 	 * 生成PeerClient列表，生成到不能继续生成为止。
 	 */
 	private void buildPeerClients() {
-		while(true) {
-			final boolean ok = buildPeerClient();
-			if(!ok) {
-				break;
-			}
+		boolean ok = true;
+		while(ok) {
+			ok = buildPeerClient();
 		}
 	}
 	
