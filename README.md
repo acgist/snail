@@ -1,7 +1,7 @@
 <h1 align="center">Snail（蜗牛）</h1>
 
 <p align="center">
-基于JAVA/JAVAFX的下载工具，支持下载协议：BT、FTP、HTTP、ED2K。
+基于Java/JavaFX的下载工具，支持下载协议：BT、FTP、HTTP、ED2K。
 </p>
 
 <p align="center">
@@ -71,7 +71,7 @@
 ```
 
 > lib：第三方库   
-> java：java运行环境
+> java：Java运行环境
 
 #### Java启动
 
