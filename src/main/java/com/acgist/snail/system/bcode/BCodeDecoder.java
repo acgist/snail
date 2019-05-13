@@ -10,8 +10,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.system.exception.ArgumentException;
-
 /**
  * B编码解码器<br>
  * i：数字（Long）<br>
@@ -37,6 +35,7 @@ public class BCodeDecoder {
 		none; // 未知
 	}
 	
+	private List<Object> list;
 	private Map<String, Object> map;
 	
 	private final ByteArrayInputStream input;
@@ -59,15 +58,17 @@ public class BCodeDecoder {
 	/**
 	 * 下一个数据类型
 	 */
-	public Type nextType() {
+	private Type nextType() {
 		if(input == null || input.available() <= 0) {
 			return Type.none;
 		}
 		char type = (char) input.read();
 		switch (type) {
 		case TYPE_D:
+			this.map = d(input);
 			return Type.map;
 		case TYPE_L:
+			this.list = l(input);
 			return Type.list;
 		default:
 			LOGGER.warn("不支持B编码类型：{}", type);
@@ -76,22 +77,25 @@ public class BCodeDecoder {
 	}
 	
 	/**
-	 * 获取下一个map，必须先验证类型nextType
+	 * 获取下一个Map，如果不是Map返回null
 	 */
 	public Map<String, Object> nextMap() {
-		this.map = d(input);
-		return this.map;
+		var type = nextType();
+		if(type == Type.map) {
+			return this.map;
+		}
+		return null;
 	}
 	
 	/**
-	 * 获取下一个map，如果类型错误抛出异常
+	 * 获取下一个List，如果不是List返回null
 	 */
-	public Map<String, Object> mustMap() {
+	public List<Object> nextList() {
 		var type = nextType();
-		if(type == Type.map) {
-			return nextMap();
+		if(type == Type.list) {
+			return this.list;
 		}
-		throw new ArgumentException("BCode解析Map类型错误：" + type);
+		return null;
 	}
 	
 	/**
@@ -242,6 +246,13 @@ public class BCodeDecoder {
 	
 	public byte[] oddBytes() {
 		return input.readAllBytes();
+	}
+	
+	/**
+	 * 错误格式信息输出
+	 */
+	public String obbString() {
+		return new String(oddBytes());
 	}
 	
 	public static final String getString(Object object) {

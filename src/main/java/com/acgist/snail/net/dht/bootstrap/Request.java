@@ -56,12 +56,6 @@ public class Request {
 		this.a = a;
 	}
 
-	public static final Request valueOf(byte[] bytes) {
-		final BCodeDecoder decoder = BCodeDecoder.newInstance(bytes);
-		decoder.mustMap();
-		return valueOf(decoder);
-	}
-	
 	public static final Request valueOf(final BCodeDecoder decoder) {
 		final byte[] t = decoder.getBytes(DhtConfig.KEY_T);
 		final String y = decoder.getString(DhtConfig.KEY_Y);

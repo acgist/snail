@@ -62,7 +62,11 @@ public class UtMetadataMessageHandler {
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
 		final BCodeDecoder decoder = BCodeDecoder.newInstance(bytes);
-		final Map<String, Object> data = decoder.mustMap();
+		final Map<String, Object> data = decoder.nextMap();
+		if(data == null) {
+			LOGGER.warn("UtMetadata消息格式错误：{}", decoder.obbString());
+			return;
+		}
 		final Byte typeValue = BCodeDecoder.getByte(data, ARG_MSG_TYPE);
 		final UtMetadataType type = PeerMessageConfig.UtMetadataType.valueOf(typeValue);
 		if(type == null) {

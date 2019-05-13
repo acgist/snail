@@ -19,7 +19,7 @@ public class BCodeUtilsTest {
 		var input = new ByteArrayInputStream("d2:ip6:  I1:rd2:id20:{HyRHߌU,~M1:pi18888ee1:t2: 1:v4:LT1:y1:re".getBytes());
 		final BCodeDecoder decoder = BCodeDecoder.newInstance(input.readAllBytes());
 		while (decoder.more()) {
-			var data = decoder.mustMap();
+			var data = decoder.nextMap();
 			System.out.println(data);
 		}
 	}

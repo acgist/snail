@@ -86,7 +86,11 @@ public class UtPeerExchangeMessageHandler {
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
 		final BCodeDecoder decoder = BCodeDecoder.newInstance(bytes);
-		final Map<String, Object> data = decoder.mustMap();
+		final Map<String, Object> data = decoder.nextMap();
+		if(data == null) {
+			LOGGER.warn("UtPeerExchange消息格式错误：{}", decoder.obbString());
+			return;
+		}
 		final byte[] added = (byte[]) data.get(ADDED);
 		final byte[] addedf = (byte[]) data.get(ADDEDF);
 		final var peers = PeerUtils.read(added);
