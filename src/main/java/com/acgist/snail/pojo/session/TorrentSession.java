@@ -254,8 +254,6 @@ public class TorrentSession {
 		if(torrentStreamGroup.complete()) {
 			LOGGER.debug("任务下载完成：{}", name());
 			taskSession.downloader().unlockDownload();
-		} else {
-			peerClientGroup.optimize();
 		}
 	}
 	
@@ -282,7 +280,6 @@ public class TorrentSession {
 		peers.forEach((host, port) -> {
 			manager.newPeerSession(this.infoHashHex(), taskSession.statistics(), host, port, PeerConfig.SOURCE_TRACKER);
 		});
-		peerClientGroup.launchers();
 	}
 
 	/**

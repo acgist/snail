@@ -60,7 +60,9 @@ public class PeerClientGroup {
 		this.torrentSession = torrentSession;
 		this.peerClients = new LinkedBlockingQueue<>();
 		this.peerManager = PeerManager.getInstance();
-		optimizeTimer(); // 优化
+		SystemThreadContext.timer(INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
+			this.optimize(); // 定时优化
+		});
 	}
 	
 	public static final PeerClientGroup newInstance(TorrentSession torrentSession) {
@@ -73,29 +75,6 @@ public class PeerClientGroup {
 	public int peerClientSize() {
 		return this.peerClients.size();
 	}
-	
-	/**
-	 * <p>创建下载线程（异步生成）</p>
-	 */
-	public void launchers() {
-		synchronized (peerClients) {
-			torrentSession.submit(() -> {
-				buildPeerClients();
-			});
-		}
-	}
-	
-	/**
-	 * <p>定时优化线程</p>
-	 */
-	public void optimizeTimer() {
-		optimize(); // 优化PeerClient
-		if(taskSession.download()) {
-			SystemThreadContext.timer(INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
-				optimizeTimer(); // 定时优化
-			});
-		}		
-	}
 
 	/**
 	 * <p>优化PeerClient</p>
@@ -103,7 +82,7 @@ public class PeerClientGroup {
 	 * 挑选权重最低的PeerClient，剔除下载队列，将剔除的Peer插入到Peer队列头部，然后重新生成一个PeerClient。
 	 * </p>
 	 */
-	public void optimize() {
+	private void optimize() {
 		synchronized (peerClients) {
 			final long now = System.currentTimeMillis();
 			if(now - this.lastOptimizeTime >= INTERVAL.toMillis()) {
