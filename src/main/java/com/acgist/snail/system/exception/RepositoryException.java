@@ -2,13 +2,16 @@ package com.acgist.snail.system.exception;
 
 /**
  * 数据库异常
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class RepositoryException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
 	public RepositoryException() {
-		super();
+		super("数据库错误");
 	}
 
 	public RepositoryException(String message) {

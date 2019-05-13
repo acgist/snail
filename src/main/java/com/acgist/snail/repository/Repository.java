@@ -50,7 +50,7 @@ public abstract class Repository<T extends BaseEntity> {
 	
 	public void save(T t) {
 		if(t == null) {
-			throw new RepositoryException("保存参数异常：" + t);
+			throw new RepositoryException("保存参数错误：" + t);
 		}
 		t.setId(UUID.randomUUID().toString());
 		t.setCreateDate(new Date());
@@ -81,7 +81,7 @@ public abstract class Repository<T extends BaseEntity> {
 
 	public void update(T t) {
 		if(t == null) {
-			throw new RepositoryException("修改参数异常：" + t);
+			throw new RepositoryException("修改参数错误：" + t);
 		}
 		t.setModifyDate(new Date());
 		final String[] properties = EntityUtils.entityProperty(t.getClass());
@@ -119,7 +119,7 @@ public abstract class Repository<T extends BaseEntity> {
 	
 	public void delete(String id) {
 		if(id == null) {
-			throw new RepositoryException("删除参数异常：" + id);
+			throw new RepositoryException("删除参数错误：" + id);
 		}
 		StringBuilder sql = new StringBuilder();
 		sql
@@ -131,7 +131,7 @@ public abstract class Repository<T extends BaseEntity> {
 
 	public T findOne(String id) {
 		if(id == null) {
-			throw new RepositoryException("查询参数异常：" + id);
+			throw new RepositoryException("查询参数错误：" + id);
 		}
 		StringBuilder sql = new StringBuilder();
 		sql
@@ -149,7 +149,7 @@ public abstract class Repository<T extends BaseEntity> {
 	
 	public T findOne(String property, String value) {
 		if(property == null) {
-			throw new RepositoryException("查询参数异常：" + property);
+			throw new RepositoryException("查询参数错误：" + property);
 		}
 		StringBuilder sql = new StringBuilder();
 		sql
@@ -169,7 +169,7 @@ public abstract class Repository<T extends BaseEntity> {
 	
 	public List<T> findList(String sql, Object ... parameters) {
 		if(sql == null) {
-			throw new RepositoryException("查询参数异常：" + sql);
+			throw new RepositoryException("查询参数错误：" + sql);
 		}
 		List<ResultSetWrapper> list = jdbcConnection.select(sql, parameters);
 		if(list == null || list.isEmpty()) {

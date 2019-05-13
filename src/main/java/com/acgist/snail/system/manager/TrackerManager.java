@@ -20,6 +20,7 @@ import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.http.HttpProtocol;
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -83,7 +84,7 @@ public class TrackerManager {
 	/**
 	 * 获取可用的tracker client，传入announce的返回有用的，然后补充不足的的数量
 	 */
-	public List<TrackerClient> clients(String announceUrl, List<String> announceUrls) throws NetException {
+	public List<TrackerClient> clients(String announceUrl, List<String> announceUrls) throws DownloadException {
 		final List<TrackerClient> clients = register(announceUrl, announceUrls);
 		final int size = clients.size();
 		if(size < MAX_CLIENT_SIZE) {
@@ -117,7 +118,7 @@ public class TrackerManager {
 	/**
 	 * 注册tracker client列表
 	 */
-	private List<TrackerClient> register(String announceUrl, List<String> announceUrls) throws NetException {
+	private List<TrackerClient> register(String announceUrl, List<String> announceUrls) throws DownloadException {
 		final List<String> announces = new ArrayList<>();
 		if(StringUtils.isNotEmpty(announceUrl)) {
 			announces.add(announceUrl);
@@ -126,13 +127,13 @@ public class TrackerManager {
 			announces.addAll(announceUrls);
 		}
 		if(announces.size() == 0) {
-			throw new NetException("announceUrl不合法");
+			throw new DownloadException("announceUrl不合法");
 		}
 		return announces.stream()
 		.map(announce -> {
 			try {
 				return register(announce);
-			} catch (NetException e) {
+			} catch (DownloadException e) {
 				LOGGER.error("Tracker注册异常：{}", announce, e);
 			}
 			return null;
@@ -145,7 +146,7 @@ public class TrackerManager {
 	/**
 	 * 注册Tracker Client，如果已经注册直接返回
 	 */
-	private TrackerClient register(String announceUrl) throws NetException {
+	private TrackerClient register(String announceUrl) throws DownloadException {
 		if(StringUtils.isEmpty(announceUrl)) {
 			return null;
 		}
@@ -178,22 +179,30 @@ public class TrackerManager {
 	/**
 	 * 创建Client
 	 */
-	private TrackerClient buildClientProxy(final String announceUrl) throws NetException {
+	private TrackerClient buildClientProxy(final String announceUrl) throws DownloadException {
 		TrackerClient client = buildClient(announceUrl);
 		if(client == null) {
 			client = buildClient(UrlUtils.decode(announceUrl));
 		}
 		if(client == null) {
-			throw new NetException("不支持的Tracker协议：" + announceUrl);
+			throw new DownloadException("不支持的Tracker协议：" + announceUrl);
 		}
 		return client;
 	}
 	
-	private TrackerClient buildClient(final String announceUrl) throws NetException {
+	private TrackerClient buildClient(final String announceUrl) throws DownloadException {
 		if(HttpProtocol.verify(announceUrl)) {
-			return HttpTrackerClient.newInstance(announceUrl);
+			try {
+				return HttpTrackerClient.newInstance(announceUrl);
+			} catch (NetException e) {
+				throw new DownloadException(e);
+			}
 		} else if(UdpClient.verify(announceUrl)) {
-			return UdpTrackerClient.newInstance(announceUrl);
+			try {
+				return UdpTrackerClient.newInstance(announceUrl);
+			} catch (NetException e) {
+				throw new DownloadException(e);
+			}
 		}
 		return null;
 	}

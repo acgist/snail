@@ -7,10 +7,8 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.tracker.bootstrap.TrackerClient;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.system.manager.TrackerManager;
 
 /**
@@ -50,13 +48,7 @@ public class TrackerLauncherGroup {
 		if(torrent == null) {
 			throw new DownloadException("无效种子文件");
 		}
-		List<TrackerClient> clients = null;
-		try {
-			clients = TrackerManager.getInstance().clients(torrent.getAnnounce(), torrent.getAnnounceList());
-		} catch (NetException e) {
-			throw new DownloadException(e);
-		}
-		clients.stream()
+		TrackerManager.getInstance().clients(torrent.getAnnounce(), torrent.getAnnounceList()).stream()
 		.map(client -> {
 			LOGGER.debug("添加TrackerClient，ID：{}，announceUrl：{}", client.id(), client.announceUrl());
 			return TrackerManager.getInstance().newTrackerLauncher(client, torrentSession);
