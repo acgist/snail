@@ -63,6 +63,7 @@ public class SystemContext {
 		LOGGER.info("操作系统可用处理器数量：{}", runtime.availableProcessors());
 		LOGGER.info("Java版本：{}", System.getProperty("java.version"));
 		LOGGER.info("Java主目录：{}", System.getProperty("java.home"));
+		LOGGER.info("Java包目录：{}", System.getProperty("java.library.path"));
 		LOGGER.info("虚拟机名称：{}", System.getProperty("java.vm.name"));
 		LOGGER.info("虚拟机最大内存：{}", FileUtils.formatSize(runtime.maxMemory()));
 		LOGGER.info("虚拟机已用内存：{}", FileUtils.formatSize(runtime.totalMemory()));

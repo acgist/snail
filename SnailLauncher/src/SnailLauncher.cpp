@@ -41,6 +41,8 @@ int SnailLauncher::ExitInstance() {
 
 // 启动JVM
 bool startJVM() {
+	// 修改环境变量，设置java.lib.path无效
+	SetEnvironmentVariable(_T("Path"), configEx(_T("java.path")));
 	// JVM动态库
 	TCHAR* jvmPath = configEx(_T("jvm.file.path"));
 	// JVM启动参数
@@ -51,6 +53,7 @@ bool startJVM() {
 	jvmOptions[2].optionString = config(_T("xmx"));
 	jvmOptions[3].optionString = config(_T("file.encoding"));
 	jvmOptions[4].optionString = config(_T("jar.file.path"));
+	// jvmOptions[5].optionString = config(_T("java.lib.path")); // 无效直接设置环境变量
 	// 设置JVM启动参数
 	JavaVMInitArgs jvmInitArgs;
 	jvmInitArgs.version = JNI_VERSION_10;
