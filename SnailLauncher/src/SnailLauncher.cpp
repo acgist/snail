@@ -1,134 +1,148 @@
-// SnailÆô¶¯Æ÷£ºSnailLauncher
+ï»¿// Snailå¯åŠ¨å™¨ï¼šSnailLauncher
+//
 
+#include "jni.h"
 #include "stdafx.h"
 #include "afxwin.h"
 #include "SnailLauncher.h"
-#include "jni.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
-
-// ¼ÓÔØJVMÆô¶¯JAVA³ÌĞò
+// å¯åŠ¨JVM
 bool startJVM();
+// è¯»å–é…ç½®
+char* config(LPCWSTR name);
+TCHAR* configEx(LPCWSTR name);
+
 typedef jint(JNICALL* JNICREATEPROC) (JavaVM**, void**, void*);
 
 // SnailLauncher
-
 BEGIN_MESSAGE_MAP(SnailLauncher, CWinApp)
 END_MESSAGE_MAP()
 
-// SnailLauncher ¹¹Ôì
-
-SnailLauncher::SnailLauncher()
-{
-	// Ó¦ÓÃ³ÌĞò ID£ºCompanyName.ProductName.SubProduct.VersionInformation
-	SetAppID(_T("acgist.Snail.SnailLauncher.1.0.1"));
+// SnailLauncher æ„é€ 
+SnailLauncher::SnailLauncher() {
+	// åº”ç”¨ç¨‹åº IDï¼šCompanyName.ProductName.SubProduct.VersionInformation
+	SetAppID(_T("acgist.Snail.SnailLauncher.1.0.0.0"));
 }
 
-// Î¨Ò»µÄÒ»¸ö SnailLauncher ¶ÔÏó
-
+// å”¯ä¸€çš„ä¸€ä¸ª SnailLauncher å¯¹è±¡
 SnailLauncher launcher;
 
-// SnailLauncher ³õÊ¼»¯
-
-BOOL SnailLauncher::InitInstance()
-{
+// SnailLauncher åˆå§‹åŒ–
+BOOL SnailLauncher::InitInstance() {
 	CWinApp::InitInstance();
-
 	EnableTaskbarInteraction(FALSE);
-
 	startJVM();
-
 	return TRUE;
 }
 
-int SnailLauncher::ExitInstance()
-{
+int SnailLauncher::ExitInstance() {
 	return CWinApp::ExitInstance();
 }
 
-// Æô¶¯JVM
-bool startJVM(){
-	// JVM¶¯Ì¬¿â
-	TCHAR* jvmPath = _T("./java/bin/server/jvm.dll");
-
-	//JVMÆô¶¯²ÎÊı
+// å¯åŠ¨JVM
+bool startJVM() {
+	// JVMåŠ¨æ€åº“
+	TCHAR* jvmPath = configEx(_T("jvm.file.path"));
+	// JVMå¯åŠ¨å‚æ•°
 	const int jvmOptionCount = 5;
 	JavaVMOption jvmOptions[jvmOptionCount];
-	jvmOptions[0].optionString = "-server";
-	jvmOptions[1].optionString = "-Xmx128M";
-	jvmOptions[2].optionString = "-Xmx128m";
-	jvmOptions[3].optionString = "-Dfile.encoding=UTF-8";
-	jvmOptions[4].optionString = "-Djava.class.path=./snail-1.0.1.jar";
-
+	jvmOptions[0].optionString = config(_T("model"));
+	jvmOptions[1].optionString = config(_T("xms"));
+	jvmOptions[2].optionString = config(_T("xmx"));
+	jvmOptions[3].optionString = config(_T("file.encoding"));
+	jvmOptions[4].optionString = config(_T("jar.file.path"));
+	// è®¾ç½®JVMå¯åŠ¨å‚æ•°
 	JavaVMInitArgs jvmInitArgs;
 	jvmInitArgs.version = JNI_VERSION_10;
 	jvmInitArgs.options = jvmOptions;
 	jvmInitArgs.nOptions = jvmOptionCount;
-
-	// ºöÂÔÎŞ·¨Ê¶±ğjvmµÄÇé¿ö
+	// å¿½ç•¥æ— æ³•è¯†åˆ«JVMçš„æƒ…å†µ
 	jvmInitArgs.ignoreUnrecognized = JNI_TRUE;
-
-	// ÉèÖÃÆô¶¯Àà£¬×¢Òâ·Ö¸ô·û£¨/£©£¬²»ÄÜÉèÖÃ£¨.£©
+	// è®¾ç½®å¯åŠ¨ç±»ï¼Œæ³¨æ„åˆ†éš”ç¬¦ï¼ˆ/ï¼‰ï¼Œä¸èƒ½è®¾ç½®ï¼ˆ.ï¼‰
 	const char startClass[] = "com/acgist/main/Application";
-
-	// Æô¶¯·½·¨£¬ÉèÖÃmainº¯Êı
+	// å¯åŠ¨æ–¹æ³•ï¼Œè®¾ç½®mainå‡½æ•°
 	const char startMethod[] = "main";
-
-	// ´«Èë²ÎÊı
-	// int nParamCount = 2;
-	// const char* params[nParamCount] = {"a", "b"};
-
-	// ¼ÓÔØJVM¶¯Ì¬Á´½Ó¿â
+	// å¯åŠ¨å‚æ•°
+	// int paramCount = 2;
+	// const char* params[paramCount] = {"a", "b"};
+	// åŠ è½½JVMåŠ¨æ€é“¾æ¥åº“
 	HINSTANCE jvmDLL = LoadLibrary(jvmPath);
-	if(jvmDLL == NULL){
-		::MessageBox(NULL, _T("¼ÓÔØJVM¶¯Ì¬Á´½Ó¿âÊ§°Ü"), _T("Æô¶¯Ê§°Ü"), MB_OK);
+	if(jvmDLL == NULL) {
+		::MessageBox(NULL, _T("JVMåŠ¨æ€é“¾æ¥åº“åŠ è½½å¤±è´¥"), _T("å¯åŠ¨å¤±è´¥"), MB_OK);
 		return false;
 	}
-
-	// ³õÊ¼»¯JVM
+	// åˆå§‹åŒ–JVM
 	JNICREATEPROC jvmProcAddress = (JNICREATEPROC) GetProcAddress(jvmDLL, "JNI_CreateJavaVM");
-	if(jvmDLL == NULL){
+	if(jvmDLL == NULL) {
 		FreeLibrary(jvmDLL);
-		::MessageBox(NULL, _T("³õÊ¼»¯JVMÊ§°Ü"), _T("Æô¶¯Ê§°Ü"), MB_OK);
+		::MessageBox(NULL, _T("JVMåˆå§‹åŒ–å¤±è´¥"), _T("å¯åŠ¨å¤±è´¥"), MB_OK);
 		return false;
 	}
-
-	// ´´½¨JVM
+	// åˆ›å»ºJVM
 	JNIEnv* env;
 	JavaVM* jvm;
 	jint jvmProc = (jvmProcAddress) (&jvm, (void**) &env, &jvmInitArgs);
-	if(jvmProc < 0 || jvm == NULL ||env == NULL){
+	if(jvmProc < 0 || jvm == NULL ||env == NULL) {
 		FreeLibrary(jvmDLL);
-		::MessageBox(NULL, _T("´´½¨JVMÊ§°Ü"), _T("Æô¶¯Ê§°Ü"), MB_OK);
+		::MessageBox(NULL, _T("JVMåˆ›å»ºå¤±è´¥"), _T("å¯åŠ¨å¤±è´¥"), MB_OK);
 		return false;
 	}
-
-	// ¼ÓÔØÆô¶¯Àà
+	// åŠ è½½å¯åŠ¨ç±»
 	jclass mainClass = env -> FindClass(startClass);
-	if(env -> ExceptionCheck() == JNI_TRUE || mainClass == NULL){
+	if(env -> ExceptionCheck() == JNI_TRUE || mainClass == NULL) {
 		env -> ExceptionDescribe();
 		env -> ExceptionClear();
 		FreeLibrary(jvmDLL);
-		::MessageBox(NULL, _T("¼ÓÔØJava ClassÊ§°Ü"), _T("Æô¶¯Ê§°Ü"), MB_OK);
+		::MessageBox(NULL, _T("JavaMainClassåŠ è½½å¤±è´¥"), _T("å¯åŠ¨å¤±è´¥"), MB_OK);
 		return false;
 	}
-
-	// ¼ÓÔØÆô¶¯·½·¨
+	// åŠ è½½å¯åŠ¨æ–¹æ³•
 	jmethodID methedID = env -> GetStaticMethodID(mainClass, startMethod, "([Ljava/lang/String;)V");
-	if(env -> ExceptionCheck() == JNI_TRUE || methedID == NULL){
+	if(env -> ExceptionCheck() == JNI_TRUE || methedID == NULL) {
 		env -> ExceptionDescribe();
 		env -> ExceptionClear();
 		FreeLibrary(jvmDLL);
-		::MessageBox(NULL, _T("Æô¶¯Java Main·½·¨Ê§°Ü"), _T("Æô¶¯Ê§°Ü"), MB_OK);
+		::MessageBox(NULL, _T("JavaMainMethodåŠ è½½å¤±è´¥"), _T("å¯åŠ¨å¤±è´¥"), MB_OK);
 		return false;
 	}
-
+	// å¯åŠ¨JVM
 	env -> CallStaticVoidMethod(mainClass, methedID, NULL);
-
-	// ÊÍ·ÅJVM
+	// é‡Šæ”¾JVM
 	jvm -> DestroyJavaVM();
-
 	return true;
 }
+
+// è¯»å–é…ç½®
+char* config(LPCWSTR name) {
+	// é…ç½®æ–‡ä»¶ã€ä¸´æ—¶å˜é‡
+	CString configPath = _T("./snail.ini"), value;
+	// è¯»å–é…ç½®ï¼Œconfig=èŠ‚ï¼Œname=é”®ï¼Œvalue=å€¼
+	GetPrivateProfileString(_T("config"), name, NULL, value.GetBuffer(128), 128, configPath);
+	int length = WideCharToMultiByte(CP_ACP, 0, value, -1, NULL, 0, NULL, NULL);
+	char* buffer = new char[sizeof(char) * length];
+	WideCharToMultiByte(CP_ACP, 0, value, -1, buffer, length, NULL, NULL);
+	return buffer;
+}
+
+TCHAR* configEx(LPCWSTR name) {
+	char* value = config(name);
+	int length = MultiByteToWideChar(CP_ACP, 0, value, -1, NULL, 0);
+	TCHAR* buffer = new TCHAR[length * sizeof(TCHAR)];
+	MultiByteToWideChar(CP_ACP, 0, value, -1, buffer, length);
+	delete value;
+	return buffer;
+}
+
+// TCHAR -> char
+/*
+	int length = WideCharToMultiByte(CP_ACP, 0, value, -1, NULL, 0, NULL, NULL);
+	char* buffer = new char[sizeof(char) * length];
+	WideCharToMultiByte(CP_ACP, 0, value, -1, buffer, length, NULL, NULL);
+*/
+
+// char -> TCHAR
+/*
+	int length = MultiByteToWideChar(CP_ACP, 0, value, -1, NULL, 0);
+	TCHAR* buffer = new TCHAR[length * sizeof(TCHAR)];
+	MultiByteToWideChar(CP_ACP, 0, value, -1, buffer, length);
+*/
