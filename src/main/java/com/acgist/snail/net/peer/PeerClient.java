@@ -238,7 +238,7 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 				ThreadUtils.wait(completeLock, Duration.ofSeconds(PIECE_AWAIT_TIME));
 			}
 		}
-		if(!available) { // 已经关闭
+		if(!available) { // 已经关闭唤醒关闭
 			synchronized (closeLock) {
 				closeLock.notifyAll();
 			}
