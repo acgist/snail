@@ -31,6 +31,7 @@
 ----
 
 ## 进度
+
 |功能|进度|
 |:-|:-|
 |BT|○|
@@ -39,6 +40,7 @@
 |ED2K|×|
 
 #### BT进度
+
 |协议|进度|
 |:-|:-|
 |DHT Protocol|○|
@@ -59,6 +61,7 @@
 ## 使用
 
 #### 构建
+
 ```bash
 # Windows构建
 ./builder/build.bat
@@ -71,6 +74,7 @@
 > java：java运行环境
 
 #### Java启动
+
 ```
 javaw -server -Xms128m -Xmx128m -jar snail-{version}.jar
 ```
@@ -80,7 +84,6 @@ javaw -server -Xms128m -Xmx128m -jar snail-{version}.jar
 Windows直接点击SnailLauncher.exe即可运行。
 
 > 执行程序和jar、lib、java必须处于同一个目录   
-> SnailLauncher.min.exe需要系统自带MFC动态链接库
 
 ## 界面
 ![界面](http://files.git.oschina.net/group1/M00/07/A8/PaAvDFzYyi2ASAO4AAB_FmF2HkI377.png "界面") 
