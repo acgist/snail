@@ -26,7 +26,7 @@ import com.acgist.snail.utils.FileUtils;
  * <p>
  * 块是否下载：判断每个块前面10字节数据。
  * </p>
- * TODO：文件校验
+ * TODO：文件校验，Piece校验
  * 
  * @author acgist
  * @since 1.0.0
