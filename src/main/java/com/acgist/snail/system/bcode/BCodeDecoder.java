@@ -70,6 +70,7 @@ public class BCodeDecoder {
 		case TYPE_L:
 			return Type.list;
 		default:
+			LOGGER.warn("不支持B编码类型：{}", type);
 			return Type.none;
 		}
 	}

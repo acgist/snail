@@ -87,6 +87,7 @@ public class UtMetadataMessageHandler {
 	 * 发出请求：request
 	 */
 	public void request() {
+		LOGGER.debug("发送UtMetadata消息-request");
 		final int size = infoHash.size();
 		final int messageSize = NumberUtils.divideUp(size, INFO_SLICE_SIZE);
 		for (int index = 0; index < messageSize; index++) {
@@ -99,6 +100,7 @@ public class UtMetadataMessageHandler {
 	 * 处理请求：request
 	 */
 	private void request(Map<String, Object> data) {
+		LOGGER.warn("收到UtMetadata消息-request");
 		final int piece = BCodeDecoder.getInteger(data, ARG_PIECE);
 		data(piece);
 	}
@@ -109,6 +111,7 @@ public class UtMetadataMessageHandler {
 	 * @param piece 种子块索引
 	 */
 	public void data(int piece) {
+		LOGGER.warn("发送UtMetadata消息-data");
 		final byte[] bytes = infoHash.info();
 		if(bytes == null) {
 			reject();
@@ -138,6 +141,7 @@ public class UtMetadataMessageHandler {
 	 * @param decoder B编码数据
 	 */
 	private void data(Map<String, Object> data, BCodeDecoder decoder) {
+		LOGGER.warn("收到UtMetadata消息-data");
 		boolean complete = false; // 下载完成
 		final int piece = BCodeDecoder.getInteger(data, ARG_PIECE);
 		final byte[] bytes = infoHash.info();
@@ -162,6 +166,7 @@ public class UtMetadataMessageHandler {
 	 * 发出请求：reject
 	 */
 	public void reject() {
+		LOGGER.warn("发送UtMetadata消息-reject");
 		final var reject = buildMessage(PeerMessageConfig.UtMetadataType.reject, 0);
 		pushMessage(reject);
 	}
@@ -170,7 +175,7 @@ public class UtMetadataMessageHandler {
 	 * 处理请求：reject
 	 */
 	private void reject(Map<String, Object> data) {
-		LOGGER.warn("UtMetadata被拒绝");
+		LOGGER.warn("收到UtMetadata消息-reject");
 	}
 	
 	/**
