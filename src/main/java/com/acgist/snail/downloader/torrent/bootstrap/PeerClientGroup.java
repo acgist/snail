@@ -27,7 +27,6 @@ import com.acgist.snail.system.manager.PeerManager;
  * 	<li>定时替换下载最慢的PeerClient。</li>
  * </ul>
  * </p>
- * TODO：Peer优化时间变短，计算时间调整、调整无效Peer
  * 
  * @author acgist
  * @since 1.0.0
