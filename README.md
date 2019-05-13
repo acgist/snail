@@ -81,3 +81,6 @@ Windows直接点击SnailLauncher.exe即可运行。
 
 > 执行程序和jar、lib、java必须处于同一个目录   
 > SnailLauncher.min.exe需要系统自带MFC动态链接库
+
+## 界面
+![界面](http://files.git.oschina.net/group1/M00/07/A8/PaAvDFzYyi2ASAO4AAB_FmF2HkI377.png "界面") 
