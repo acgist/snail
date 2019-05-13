@@ -52,7 +52,11 @@ public class HttpTrackerClient extends TrackerClient {
 		}
 		final String body = response.body();
 		final BCodeDecoder decoder = BCodeDecoder.newInstance(body.getBytes());
-		final Map<String, Object> map = decoder.mustMap();
+		final Map<String, Object> map = decoder.nextMap();
+		if(map == null) {
+			LOGGER.warn("HttpTracker消息格式错误：{}", decoder.obbString());
+			return;
+		}
 		final var tracker = HttpTracker.valueOf(map);
 		final AnnounceMessage message = new AnnounceMessage();
 		message.setId(sid);

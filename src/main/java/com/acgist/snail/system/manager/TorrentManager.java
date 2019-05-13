@@ -63,7 +63,10 @@ public class TorrentManager {
 	public TorrentSession newTorrentSession(String path) throws DownloadException {
 		final var bytes = loadTorrent(path);
 		final BCodeDecoder decoder = BCodeDecoder.newInstance(bytes);
-		final Map<String, Object> map = decoder.mustMap();
+		final Map<String, Object> map = decoder.nextMap();
+		if(map == null) {
+			throw new DownloadException("种子文件格式错误");
+		}
 		final Torrent torrent = Torrent.valueOf(map);
 		final Map<?, ?> info = (Map<?, ?>) map.get("info"); // 只需要数据不符
 		final InfoHash infoHash = InfoHash.newInstance(BCodeEncoder.mapToBytes(info));

@@ -16,6 +16,7 @@ import javafx.application.Platform;
  * TODO：启动检测、端口、外网端口。
  * TODO：端口被关闭提示重启或者自动重新监听
  * TODO：问题：BT任务下载统计错误，内存泄露
+ * TODO：文件校验
  * 
  * @author acgist
  * @since 1.0.0

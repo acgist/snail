@@ -129,7 +129,11 @@ public class ExtensionMessageHandler {
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
 		final BCodeDecoder decoder = BCodeDecoder.newInstance(bytes);
-		final Map<String, Object> data = decoder.mustMap();
+		final Map<String, Object> data = decoder.nextMap();
+		if(data == null) {
+			LOGGER.warn("扩展握手消息格式错误：{}", decoder.obbString());
+			return;
+		}
 		final Object port = data.get(EX_P);
 		if(port != null && peerSession.port() == null) { // 获取端口
 			peerSession.port(((Long) port).intValue());

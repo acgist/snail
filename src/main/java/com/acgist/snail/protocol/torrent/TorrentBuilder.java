@@ -77,7 +77,7 @@ public class TorrentBuilder {
 	 */
 	private void infoHash(Map<String, Object> data) {
 		final BCodeDecoder decoder = BCodeDecoder.newInstance(infoHash.info());
-		data.put("info", decoder.mustMap());
+		data.put("info", decoder.nextMap());
 	}
 
 	/**
