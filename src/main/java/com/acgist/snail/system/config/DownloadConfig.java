@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.entity.ConfigEntity;
 import com.acgist.snail.repository.impl.ConfigRepository;
-import com.acgist.snail.system.exception.DownloadException;
+import com.acgist.snail.system.exception.ArgumentException;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -124,9 +124,9 @@ public class DownloadConfig extends PropertiesConfig {
 	/**
 	 * 获取下载目录：下载目录+文件名称
 	 */
-	public static final String getPath(String fileName) throws DownloadException {
+	public static final String getPath(String fileName) {
 		if(StringUtils.isEmpty(fileName)) {
-			throw new DownloadException("无效的下载路径：" + fileName);
+			throw new ArgumentException("无效的下载路径：" + fileName);
 		}
 		return FileUtils.file(getPath(), fileName);
 	}

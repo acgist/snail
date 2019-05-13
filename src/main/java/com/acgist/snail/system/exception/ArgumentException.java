@@ -2,6 +2,9 @@ package com.acgist.snail.system.exception;
 
 /**
  * 参数错误
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class ArgumentException extends RuntimeException {
 
