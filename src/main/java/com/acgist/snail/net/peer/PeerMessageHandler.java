@@ -642,6 +642,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 * 发送扩展信息：ut_pex
 	 */
 	public void exchange(byte[] bytes) {
+		LOGGER.debug("发送PEX消息");
 		extensionMessageHandler.exchange(bytes);
 	}
 	
