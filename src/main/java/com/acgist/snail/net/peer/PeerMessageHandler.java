@@ -50,6 +50,7 @@ import com.acgist.snail.utils.StringUtils;
  * L = 用户是本地的（通过网络广播或是保留的本地IP范围发现）
  * </pre>
  * TODO：加密
+ * TODO：限制连接数量
  * TODO：实现流水线
  * 
  * @author acgist
@@ -642,7 +643,6 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 * 发送扩展信息：ut_pex
 	 */
 	public void exchange(byte[] bytes) {
-		LOGGER.debug("发送PEX消息");
 		extensionMessageHandler.exchange(bytes);
 	}
 	

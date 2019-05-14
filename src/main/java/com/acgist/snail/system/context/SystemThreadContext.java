@@ -62,7 +62,7 @@ public class SystemThreadContext {
 	}
 	
 	/**
-	 * 定时任务（重复）
+	 * 定时任务（重复），固定时间（周期不受执行时间影响）
 	 * @param delay 延迟时间
 	 * @param period 周期时间
 	 * @param unit 时间单位
@@ -71,6 +71,19 @@ public class SystemThreadContext {
 	public static final void timer(long delay, long period, TimeUnit unit, Runnable runnable) {
 		if(delay >= 0) {
 			EXECUTOR_TIMER.scheduleAtFixedRate(runnable, delay, period, unit);
+		}
+	}
+	
+	/**
+	 * 定时任务（重复），固定周期（周期受到执行时间影响）
+	 * @param delay 延迟时间
+	 * @param period 周期时间
+	 * @param unit 时间单位
+	 * @param runnable 任务
+	 */
+	public static final void timerFixedDelay(long delay, long period, TimeUnit unit, Runnable runnable) {
+		if(delay >= 0) {
+			EXECUTOR_TIMER.scheduleWithFixedDelay(runnable, delay, period, unit);
 		}
 	}
 	

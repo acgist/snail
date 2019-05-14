@@ -125,7 +125,7 @@ public class PeerManager {
 	}
 	
 	/**
-	 * 发送pex消息
+	 * 发送PEX消息
 	 */
 	public void exchange(String infoHashHex, List<PeerSession> optimize) {
 		final byte[] bytes = UtPeerExchangeMessageHandler.buildMessage(optimize);
@@ -133,7 +133,8 @@ public class PeerManager {
 			return;
 		}
 		optimize.clear(); // 清空
-		var list = list(infoHashHex);
+		final var list = list(infoHashHex);
+		LOGGER.debug("发送PEX消息，Peer数量：{}，通知Peer数量：{}", optimize.size(), list.size());
 		list.forEach(session -> {
 			var handler = session.peerMessageHandler();
 			if(handler != null && handler.available()) {
