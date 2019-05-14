@@ -57,6 +57,7 @@ public class SystemConfig extends PropertiesConfig {
 	private Integer trackerSize; // 单个任务Tracker数量
 	private Integer trackerMaxFailTimes; // Tracker失败次数
 	private Integer peerSize; // 单个任务Peer数量
+	private Integer pexInterval; // PEX执行周期（秒）
 	private Integer dhtInterval; // DHT执行周期（秒）
 	private Integer peerOptimizeInterval; // 单个任务Peer优化周期（秒）
 	private Integer peerDownloadSize; // 同时下载的Peer数量
@@ -77,6 +78,7 @@ public class SystemConfig extends PropertiesConfig {
 		INSTANCE.trackerSize = getInteger("acgist.tracker.size");
 		INSTANCE.trackerMaxFailTimes = getInteger("acgist.tracker.max.fail.times");
 		INSTANCE.peerSize = getInteger("acgist.peer.size");
+		INSTANCE.pexInterval = getInteger("acgist.pex.interval");
 		INSTANCE.dhtInterval = getInteger("acgist.dht.interval");
 		INSTANCE.peerOptimizeInterval = getInteger("acgist.peer.optimize.interval");
 		INSTANCE.peerDownloadSize = getInteger("acgist.peer.download.size");
@@ -98,6 +100,7 @@ public class SystemConfig extends PropertiesConfig {
 		LOGGER.info("单个任务Tracker数量：{}", this.trackerSize);
 		LOGGER.info("Tracker失败次数：{}", this.trackerMaxFailTimes);
 		LOGGER.info("单个任务Peer数量：{}", this.peerSize);
+		LOGGER.info("PEX执行周期（秒）：{}", this.pexInterval);
 		LOGGER.info("DHT执行周期（秒）：{}", this.dhtInterval);
 		LOGGER.info("单个任务Peer优化周期（秒）：{}", this.peerOptimizeInterval);
 		LOGGER.info("同时下载的Peer数量：{}", this.peerDownloadSize);
@@ -192,6 +195,13 @@ public class SystemConfig extends PropertiesConfig {
 	 */
 	public static final Integer getPeerSize() {
 		return INSTANCE.peerSize;
+	}
+	
+	/**
+	 * PEX执行周期（秒）
+	 */
+	public static final Integer getPexInterval() {
+		return INSTANCE.pexInterval;
 	}
 	
 	/**

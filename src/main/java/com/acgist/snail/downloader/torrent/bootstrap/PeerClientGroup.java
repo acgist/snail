@@ -65,12 +65,22 @@ public class PeerClientGroup {
 	 * 
 	 * @return 当前可以使用的PeerSession
 	 */
-	public List<PeerSession> optimize() {
+	public void optimize() {
+		LOGGER.debug("优化PeerClient");
 		synchronized (peerClients) {
-			LOGGER.debug("优化PeerClient");
-			inferiorPeerClient();
-			buildPeerClients();
+			try {
+				inferiorPeerClient();
+				buildPeerClients();
+			} catch (Exception e) {
+				LOGGER.error("优化PeerClient异常", e);
+			}
 		}
+	}
+	
+	/**
+	 * 获取优秀的PeerSession
+	 */
+	public List<PeerSession> optimizePeerSession() {
 		return this.optimize;
 	}
 
@@ -94,6 +104,7 @@ public class PeerClientGroup {
 	 * 生成PeerClient列表，生成到不能继续生成为止。
 	 */
 	private void buildPeerClients() {
+		LOGGER.debug("优化PeerClient-创建下载PeerClient");
 		boolean ok = true;
 		while(ok) {
 			ok = buildPeerClient();
@@ -120,8 +131,8 @@ public class PeerClientGroup {
 			if(ok) {
 				peerSession.status(PeerConfig.STATUS_DOWNLOAD); // 设置下载中
 				peerClients.add(client);
-			} else {
-				// 失败是否需要放回
+			} else { // 失败后需要放回队列
+				peerManager.inferior(torrentSession.infoHashHex(), peerSession);
 			}
 			return true;
 		} else {
@@ -140,6 +151,7 @@ public class PeerClientGroup {
 	 * </p>
 	 */
 	private void inferiorPeerClient() {
+		LOGGER.debug("优化PeerClient-剔除劣质PeerClient");
 		final int size = this.peerClients.size();
 		if(size < SystemConfig.getPeerSize()) {
 			return;
