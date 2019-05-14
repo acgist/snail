@@ -26,13 +26,13 @@ public class PeerManager {
 	private static final PeerManager INSTANCE = new PeerManager();
 	
 	/**
-	 * Peer Map<br>
+	 * Peer Map：使用中，下载的Peer从中间剔除<br>
 	 * key=infoHashHex<br>
 	 * value=Peers：双端队列，新加入插入队尾，剔除的Peer插入对头
 	 */
 	private final Map<String, Deque<PeerSession>> peers;
 	/**
-	 * 只用来记录数据
+	 * 只用来记录Peer：记录所有的Peer
 	 */
 	private final Map<String, List<PeerSession>> storagePeers;
 	
@@ -49,10 +49,23 @@ public class PeerManager {
 	 * 获取所有Peer
 	 */
 	public Map<String, List<PeerSession>> peers() {
-		synchronized (this.peers) {
-			return peers.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> {
+		synchronized (this.storagePeers) {
+			return storagePeers.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> {
 				return new ArrayList<>(entry.getValue());
 			}));
+		}
+	}
+	
+	/**
+	 * 获取对应的一个临时的PeerSession列表
+	 */
+	public List<PeerSession> list(String infoHashHex) {
+		final var list = this.storagePeers.get(infoHashHex);
+		if(list == null) {
+			return null;
+		}
+		synchronized (list) {
+			return new ArrayList<>(list);
 		}
 	}
 	
@@ -76,6 +89,7 @@ public class PeerManager {
 				LOGGER.debug("添加PeerSession，{}-{}，来源：{}", host, port, source);
 				peerSession = PeerSession.newInstance(parent, host, port);
 				deque.offerLast(peerSession);
+				this.storage(infoHashHex, peerSession);
 			}
 			peerSession.source(source); // 设置来源
 			return peerSession;
@@ -122,6 +136,9 @@ public class PeerManager {
 	 */
 	public void have(String infoHashHex, int index) {
 		final var list = list(infoHashHex);
+		if(list == null) {
+			return;
+		}
 		list.stream()
 		.filter(session -> session.uploading() || session.downloading())
 		.forEach(session -> {
@@ -143,6 +160,9 @@ public class PeerManager {
 		}
 		optimize.clear(); // 清空
 		final var list = list(infoHashHex);
+		if(list == null) {
+			return;
+		}
 		LOGGER.debug("发送PEX消息，Peer数量：{}，通知Peer数量：{}", optimize.size(), list.size());
 		list.stream()
 		.filter(session -> session.uploading() || session.downloading())
@@ -152,16 +172,6 @@ public class PeerManager {
 				handler.exchange(bytes);
 			}
 		});
-	}
-	
-	/**
-	 * 获取对应的一个临时的PeerSession列表
-	 */
-	public List<PeerSession> list(String infoHashHex) {
-		final var deque = deque(infoHashHex);
-		synchronized (deque) {
-			return new ArrayList<>(deque);
-		}
 	}
 	
 	/**
@@ -175,6 +185,20 @@ public class PeerManager {
 				this.peers.put(infoHashHex, deque);
 			}
 			return deque;
+		}
+	}
+	
+	/**
+	 * 添加对应的Peer列表
+	 */
+	private void storage(String infoHashHex, PeerSession peerSession) {
+		List<PeerSession> list = this.storagePeers.get(infoHashHex);
+		if(list == null) {
+			list = new ArrayList<>();
+			this.storagePeers.put(infoHashHex, list);	
+		}
+		synchronized (list) {
+			list.add(peerSession);
 		}
 	}
 
