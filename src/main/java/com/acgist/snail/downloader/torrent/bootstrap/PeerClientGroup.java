@@ -59,7 +59,7 @@ public class PeerClientGroup {
 		this.torrentSession = torrentSession;
 		this.peerClients = new LinkedBlockingQueue<>();
 		this.peerManager = PeerManager.getInstance();
-		SystemThreadContext.timer(INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
+		SystemThreadContext.timer(INTERVAL.toSeconds(), INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
 			this.optimize(); // 定时优化
 		});
 	}
