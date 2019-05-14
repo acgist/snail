@@ -79,7 +79,7 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends TcpSender {
 			handler.handle(socket);
 		} catch (Exception e) {
 			ok = false;
-			LOGGER.error("客户端连接异常：{}:{}", host, port, e);
+			LOGGER.error("客户端连接异常：{}-{}", host, port, e);
 		}
 		if(ok) {
 			// 连接成功

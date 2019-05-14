@@ -13,7 +13,6 @@ import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.system.manager.NodeManager;
 import com.acgist.snail.system.manager.PeerManager;
-import com.acgist.snail.system.manager.TorrentManager;
 import com.acgist.snail.system.manager.TrackerManager;
 import com.acgist.snail.utils.FileUtils;
 
@@ -87,15 +86,16 @@ public class SystemConsole {
 	 */
 	private void peer() {
 		final Map<String, List<PeerSession>> peers = PeerManager.getInstance().peers();
-		peers.entrySet().stream().forEach(entry -> {
+		final var dht = new AtomicInteger(0);
+		final var pex = new AtomicInteger(0);
+		final var tracker = new AtomicInteger(0);
+		final var connect = new AtomicInteger(0);
+		final var upload = new AtomicInteger(0);
+		final var download = new AtomicInteger(0);
+		peers.entrySet().stream()
+		.filter(entry -> entry.getValue() != null)
+		.forEach(entry -> {
 			final var list = entry.getValue();
-			final var dht = new AtomicInteger(0);
-			final var pex = new AtomicInteger(0);
-			final var tracker = new AtomicInteger(0);
-			final var connect = new AtomicInteger(0);
-			final var torrentSession = TorrentManager.getInstance().torrentSession(entry.getKey());
-			final var peerClientGroup = torrentSession == null ? null : torrentSession.peerClientGroup();
-			final var peerClientSize = peerClientGroup == null ? 0 : peerClientGroup.peerClientSize();
 			list.forEach(peer -> {
 				if(peer.dht()) {
 					dht.incrementAndGet();
@@ -109,15 +109,23 @@ public class SystemConsole {
 				if(peer.connect()) {
 					connect.incrementAndGet();
 				}
+				if(peer.uploading()) {
+					upload.incrementAndGet();
+				}
+				if(peer.downloading()) {
+					download.incrementAndGet();
+				}
 			});
-			builder.append("Peer InfoHashHex：").append(entry.getKey())
-				.append("，Peer数量：").append(list.size())
-				.append("，来源：")
-				.append("DHT-").append(dht.get()).append("、")
-				.append("PEX-").append(pex.get()).append("、")
-				.append("Tracker-").append(tracker.get()).append("、")
-				.append("Connect-").append(connect.get()).append("，")
-				.append("下载中：").append(peerClientSize).append(NEW_LINE);
+			builder
+				.append("Peer InfoHashHex：").append(entry.getKey()).append("，")
+				.append("Peer数量：").append(list.size()).append("，")
+				.append("来源：")
+				.append("DHT-").append(dht.getAndSet(0)).append("、")
+				.append("PEX-").append(pex.getAndSet(0)).append("、")
+				.append("Tracker-").append(tracker.getAndSet(0)).append("、")
+				.append("Connect-").append(connect.getAndSet(0)).append("，")
+				.append("上传中：").append(upload.getAndSet(0)).append("，")
+				.append("下载中：").append(download.getAndSet(0)).append(NEW_LINE);
 		});
 	}
 

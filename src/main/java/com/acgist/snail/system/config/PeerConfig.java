@@ -36,6 +36,12 @@ public class PeerConfig {
 	public static final byte SOURCE_DHT = 1 << 2; // DHT
 	public static final byte SOURCE_CONNECT = 1 << 3; // 客户端连接
 	
+	/**
+	 * 状态
+	 */
+	public static final byte STATUS_UPLOAD = 1 << 1; // 上传
+	public static final byte STATUS_DOWNLOAD = 1 << 0; // 下载
+	
 	private static final Map<String, String> PEER_NAMES = new HashMap<>();
 
 	static {

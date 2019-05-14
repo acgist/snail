@@ -27,6 +27,7 @@ public class PeerSession implements IStatistics {
 	
 	private byte[] reserved; // 保留位
 	
+	private byte status = 0; // 状态
 	private byte source = 0; // 来源属性
 	private byte peerExchange = 0; // ut_pex属性
 	
@@ -48,10 +49,6 @@ public class PeerSession implements IStatistics {
 	
 	private final Map<PeerMessageConfig.ExtensionType, Byte> extension; // 支持的扩展协议
 
-	public static final PeerSession newInstance(StatisticsSession parent, String host, Integer port) {
-		return new PeerSession(parent, host, port);
-	}
-	
 	private PeerSession(StatisticsSession parent, String host, Integer port) {
 		this.statistics = new StatisticsSession(parent);
 		this.host = host;
@@ -62,6 +59,10 @@ public class PeerSession implements IStatistics {
 		this.peerInterested = false;
 		this.pieces = new BitSet();
 		this.extension = new HashMap<>();
+	}
+	
+	public static final PeerSession newInstance(StatisticsSession parent, String host, Integer port) {
+		return new PeerSession(parent, host, port);
 	}
 	
 	public void amChoke() {
@@ -114,6 +115,10 @@ public class PeerSession implements IStatistics {
 		statistics.upload(buffer);
 	}
 	
+	public StatisticsSession statistics() {
+		return this.statistics;
+	}
+	
 	public PeerMessageHandler peerMessageHandler() {
 		return this.peerMessageHandler;
 	}
@@ -123,17 +128,17 @@ public class PeerSession implements IStatistics {
 	}
 	
 	/**
-	 * 可以下载：客户端对Peer感兴趣并且Peer未阻塞客户端
+	 * 可以上传：Peer对客户端感兴趣并且客户端未阻塞Peer
 	 */
-	public boolean download() {
-		return this.amInterested && !this.peerChocking;
+	public boolean uploadable() {
+		return this.peerInterested && !this.amChocking;
 	}
 	
 	/**
-	 * 可以上传：Peer对客户端感兴趣并且客户端未阻塞Peer
+	 * 可以下载：客户端对Peer感兴趣并且Peer未阻塞客户端
 	 */
-	public boolean uplaod() {
-		return this.peerInterested && !this.amChocking;
+	public boolean downloadable() {
+		return this.amInterested && !this.peerChocking;
 	}
 	
 	public void id(String id) {
@@ -182,6 +187,10 @@ public class PeerSession implements IStatistics {
 	
 	public boolean isPeerChocking() {
 		return this.peerChocking;
+	}
+	
+	public boolean isPeerInterested() {
+		return this.peerInterested;
 	}
 	
 	/**
@@ -239,27 +248,74 @@ public class PeerSession implements IStatistics {
 		this.source = (byte) (this.source | source);
 	}
 
+	/**
+	 * 来源：DHT
+	 */
 	public boolean dht() {
 		return verifySource(PeerConfig.SOURCE_DHT);
 	}
 	
+	/**
+	 * 来源：Pex
+	 */
 	public boolean pex() {
 		return verifySource(PeerConfig.SOURCE_PEX);
 	}
-	
+
+	/**
+	 * 来源：Tracker
+	 */
 	public boolean tracker() {
 		return verifySource(PeerConfig.SOURCE_TRACKER);
 	}
 	
+	/**
+	 * 来源：连接
+	 */
 	public boolean connect() {
 		return verifySource(PeerConfig.SOURCE_CONNECT);
 	}
 	
 	/**
-	 * 验证来源
+	 * 判断是否包含该来源
 	 */
 	public boolean verifySource(byte source) {
 		return (this.source & source) != 0;
+	}
+	
+	/**
+	 * 设置状态
+	 */
+	public void status(byte status) {
+		this.status = (byte) (this.status | status);
+	}
+	
+	/**
+	 * 取消状态
+	 */
+	public void unstatus(byte status) {
+		this.status = (byte) (this.status ^ status);
+	}
+
+	/**
+	 * 是否上传中
+	 */
+	public boolean uploading() {
+		return verifyStatus(PeerConfig.STATUS_UPLOAD);
+	}
+	
+	/**
+	 * 是否下载中
+	 */
+	public boolean downloading() {
+		return verifyStatus(PeerConfig.STATUS_DOWNLOAD);
+	}
+	
+	/**
+	 * 判断是否包含该状态
+	 */
+	public boolean verifyStatus(byte status) {
+		return (this.status & status) != 0;
 	}
 	
 	/**

@@ -44,7 +44,10 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	private AtomicInteger countLock = new AtomicInteger(0); // Piece分片锁
 	private AtomicBoolean completeLock = new AtomicBoolean(false); // Piece完成锁
 	
-	private AtomicInteger mark = new AtomicInteger(0); // 评分：下载速度
+	/**
+	 * 评分：每次收到Piece更新该值，评分时清零。
+	 */
+	private AtomicInteger mark = new AtomicInteger(0);
 	
 	private final PeerSession peerSession;
 //	private final TaskSession taskSession;
@@ -95,7 +98,7 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	 * 开始下载：连接、握手
 	 */
 	public boolean download() {
-		LOGGER.debug("Peer连接：{}:{}", peerSession.host(), peerSession.port());
+		LOGGER.debug("Peer连接：{}-{}", peerSession.host(), peerSession.port());
 		final boolean ok = connect();
 		if(ok) {
 			handler.handshake(this);
@@ -148,7 +151,7 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	 */
 	public void release() {
 		if(available()) {
-			LOGGER.debug("Peer关闭：{}:{}", peerSession.host(), peerSession.port());
+			LOGGER.debug("Peer关闭：{}-{}", peerSession.host(), peerSession.port());
 			this.available = false;
 			if(!completeLock.get()) { // 没有完成：等待下载完成
 				synchronized (closeLock) {
