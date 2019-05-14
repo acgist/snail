@@ -130,6 +130,7 @@ public class PeerClientGroup {
 			final boolean ok = client.download();
 			if(ok) {
 				peerSession.status(PeerConfig.STATUS_DOWNLOAD); // 设置下载中
+				System.out.println(peerSession.downloading());
 				peerClients.add(client);
 			} else { // 失败后需要放回队列
 				peerManager.inferior(torrentSession.infoHashHex(), peerSession);
@@ -200,7 +201,9 @@ public class PeerClientGroup {
 		if(peerClient != null) {
 			final PeerSession peerSession = peerClient.peerSession();
 			LOGGER.debug("剔除劣质PeerClient：{}-{}", peerSession.host(), peerSession.port());
-			peerClient.release();
+			SystemThreadContext.submit(() -> {
+				peerClient.release();
+			});
 			peerSession.unstatus(PeerConfig.STATUS_DOWNLOAD);
 			peerSession.peerMessageHandler(null);
 			peerManager.inferior(torrentSession.infoHashHex(), peerClient.peerSession());
