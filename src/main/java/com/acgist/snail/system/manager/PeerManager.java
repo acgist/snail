@@ -31,9 +31,14 @@ public class PeerManager {
 	 * value=Peers：双端队列，新加入插入队尾，剔除的Peer插入对头
 	 */
 	private final Map<String, Deque<PeerSession>> peers;
+	/**
+	 * 只用来记录数据
+	 */
+	private final Map<String, List<PeerSession>> storagePeers;
 	
 	private PeerManager() {
 		peers = new ConcurrentHashMap<>();
+		storagePeers = new ConcurrentHashMap<>();
 	}
 	
 	public static final PeerManager getInstance() {

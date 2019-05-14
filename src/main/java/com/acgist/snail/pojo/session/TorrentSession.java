@@ -117,6 +117,9 @@ public class TorrentSession {
 		return this;
 	}
 	
+	/**
+	 * 开始下载
+	 */
 	public boolean download() throws DownloadException {
 		return this.download(true);
 	}
@@ -199,14 +202,14 @@ public class TorrentSession {
 	 * 加载Peer定时优化任务
 	 */
 	private void loadPeerOptimizer() {
-		this.timerFixedDelay(0L, PEER_OPTIMIZE_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
-			this.peerClientGroup.optimize(); // 优化下载Peer下载
+		this.timerFixedDelay(PEX_INTERVAL.toSeconds(), PEX_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
+			PeerManager.getInstance().exchange(this.infoHashHex(), this.peerClientGroup.optimizePeerSession()); // PEX消息
 		});
 		this.timerFixedDelay(PEER_OPTIMIZE_INTERVAL.toSeconds(), PEER_OPTIMIZE_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
 			this.peerConnectGroup.optimize(); // 优化连接Peer连接
 		});
-		this.timerFixedDelay(PEX_INTERVAL.toSeconds(), PEX_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
-			PeerManager.getInstance().exchange(this.infoHashHex(), this.peerClientGroup.optimizePeerSession()); // PEX消息
+		this.timerFixedDelay(0L, PEER_OPTIMIZE_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
+			this.peerClientGroup.optimize(); // 优化下载Peer下载
 		});
 	}
 	
