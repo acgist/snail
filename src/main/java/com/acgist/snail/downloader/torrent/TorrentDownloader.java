@@ -65,6 +65,15 @@ public class TorrentDownloader extends Downloader {
 	}
 
 	/**
+	 * 删除时需要释放文件资源
+	 */
+	@Override
+	public void delete() {
+		torrentSession.torrentStreamGroup().release();
+		super.delete();
+	}
+	
+	/**
 	 * <p>加载任务</p>
 	 * <p>创建时立即加载任务，使任务可以被分享。</p>
 	 */

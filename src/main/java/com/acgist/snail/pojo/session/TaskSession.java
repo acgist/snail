@@ -50,7 +50,6 @@ public class TaskSession {
 	}
 	
 	// 功能 //
-
 	public static final TaskSession newInstance(TaskEntity entity) throws DownloadException {
 		return new TaskSession(entity);
 	}

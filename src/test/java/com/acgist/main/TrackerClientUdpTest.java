@@ -21,7 +21,7 @@ public class TrackerClientUdpTest {
 		TaskEntity entity = new TaskEntity();
 		entity.setFile("e://tmp/test");
 		entity.setSize(100L);
-		session.loadTask(TaskSession.newInstance(entity)).download(false);;
+		session.loadTask(TaskSession.newInstance(entity)).download(false);
 		group.loadTracker();
 		ThreadUtils.sleep(Long.MAX_VALUE);
 	}

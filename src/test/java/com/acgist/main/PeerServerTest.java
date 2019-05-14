@@ -62,7 +62,7 @@ public class PeerServerTest {
 		entity.setFile("e://tmp/client/");
 		entity.setType(Type.torrent);
 		entity.setDescription(JsonUtils.toJson(list));
-		torrentSession.loadTask(TaskSession.newInstance(entity)).download(false);;
+		torrentSession.loadTask(TaskSession.newInstance(entity)).download(false);
 		String host = "127.0.0.1";
 		Integer port = 17888;
 		StatisticsSession statisticsSession = new StatisticsSession();
