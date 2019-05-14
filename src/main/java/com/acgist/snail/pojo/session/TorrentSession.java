@@ -39,6 +39,11 @@ public class TorrentSession {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentSession.class);
 	
 	/**
+	 * PEX优化定时
+	 */
+	private static final Duration PEX_INTERVAL = Duration.ofSeconds(SystemConfig.getPexInterval());
+	
+	/**
 	 * DHT任务执行周期
 	 */
 	private static final Duration DHT_INTERVAL = Duration.ofSeconds(SystemConfig.getDhtInterval());
@@ -134,7 +139,6 @@ public class TorrentSession {
 			this.loadDhtLauncher();
 		}
 		this.loadPeerOptimizer();
-		this.peerClientGroup.optimize(); // 开始下载
 		return false;
 	}
 
@@ -188,21 +192,21 @@ public class TorrentSession {
 	 */
 	private void loadDhtLauncher() {
 		this.dhtLauncher = DhtLauncher.newInstance(this);
-		this.timer(DHT_INTERVAL.getSeconds(), DHT_INTERVAL.getSeconds(), TimeUnit.SECONDS, this.dhtLauncher);
+		this.timerFixedDelay(DHT_INTERVAL.getSeconds(), DHT_INTERVAL.getSeconds(), TimeUnit.SECONDS, this.dhtLauncher);
 	}
 
 	/**
 	 * 加载Peer定时优化任务
 	 */
 	private void loadPeerOptimizer() {
+		this.timerFixedDelay(0L, PEER_OPTIMIZE_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
+			this.peerClientGroup.optimize(); // 优化下载Peer下载
+		});
 		this.timerFixedDelay(PEER_OPTIMIZE_INTERVAL.toSeconds(), PEER_OPTIMIZE_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
-			try {
-				final var optimize = this.peerClientGroup.optimize(); // 优化下载Peer
-				this.peerConnectGroup.optimize(); // 优化连接Peer
-				PeerManager.getInstance().exchange(this.infoHashHex(), optimize); // PEX消息
-			} catch (Exception e) {
-				LOGGER.error("Peer定时优化任务异常", e);
-			}
+			this.peerConnectGroup.optimize(); // 优化连接Peer连接
+		});
+		this.timerFixedDelay(PEX_INTERVAL.toSeconds(), PEX_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
+			PeerManager.getInstance().exchange(this.infoHashHex(), this.peerClientGroup.optimizePeerSession()); // PEX消息
 		});
 	}
 	

@@ -25,10 +25,6 @@ public class PeerManager {
 
 	private static final PeerManager INSTANCE = new PeerManager();
 	
-	private static final int MIN_PEX_TIME = 60 * 1000; // PEX消息最短时间间隔
-	
-	private long lastPexTime = System.currentTimeMillis();
-	
 	/**
 	 * Peer Map<br>
 	 * key=infoHashHex<br>
@@ -92,7 +88,7 @@ public class PeerManager {
 	}
 	
 	/**
-	 * 选择一个Peer下载
+	 * 选择一个Peer下载，选择可用状态的Peer。
 	 */
 	public PeerSession pick(String infoHashHex) {
 		var deque = deque(infoHashHex);
@@ -136,12 +132,6 @@ public class PeerManager {
 	 * <p>只发送给当前上传和下载的Peer。</p>
 	 */
 	public void exchange(String infoHashHex, List<PeerSession> optimize) {
-		final long now = System.currentTimeMillis();
-		if(now - this.lastPexTime > MIN_PEX_TIME) {
-			this.lastPexTime = now;
-		} else {
-			return;
-		}
 		final byte[] bytes = UtPeerExchangeMessageHandler.buildMessage(optimize);
 		if(bytes == null) {
 			return;
