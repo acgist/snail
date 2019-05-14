@@ -12,6 +12,7 @@ import com.acgist.snail.net.peer.PeerClient;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.manager.PeerManager;
@@ -25,7 +26,6 @@ import com.acgist.snail.system.manager.PeerManager;
  * 	<li>定时替换下载最慢的PeerClient。</li>
  * </ul>
  * </p>
- * TODO：PeerClient优化PeerConnect优化合并
  * 
  * @author acgist
  * @since 1.0.0
@@ -55,13 +55,6 @@ public class PeerClientGroup {
 	
 	public static final PeerClientGroup newInstance(TorrentSession torrentSession) {
 		return new PeerClientGroup(torrentSession);
-	}
-
-	/**
-	 * 当前下载中的PeerClient数量
-	 */
-	public int peerClientSize() {
-		return this.peerClients.size();
 	}
 
 	/**
@@ -123,10 +116,12 @@ public class PeerClientGroup {
 		final PeerSession peerSession = peerManager.pick(torrentSession.infoHashHex());
 		if(peerSession != null) {
 			final PeerClient client = PeerClient.newInstance(peerSession, torrentSession);
-			// TODO：验证是否含有对应未下载的Piece
 			final boolean ok = client.download();
 			if(ok) {
+				peerSession.status(PeerConfig.STATUS_DOWNLOAD); // 设置下载中
 				peerClients.add(client);
+			} else {
+				// 失败是否需要放回
 			}
 			return true;
 		} else {
@@ -191,8 +186,11 @@ public class PeerClientGroup {
 	 */
 	private void inferiorPeerClient(PeerClient peerClient) {
 		if(peerClient != null) {
-			LOGGER.debug("剔除劣质PeerClient：{}:{}", peerClient.peerSession().host(), peerClient.peerSession().port());
+			final PeerSession peerSession = peerClient.peerSession();
+			LOGGER.debug("剔除劣质PeerClient：{}-{}", peerSession.host(), peerSession.port());
 			peerClient.release();
+			peerSession.unstatus(PeerConfig.STATUS_DOWNLOAD);
+			peerSession.peerMessageHandler(null);
 			peerManager.inferior(torrentSession.infoHashHex(), peerClient.peerSession());
 		}
 	}

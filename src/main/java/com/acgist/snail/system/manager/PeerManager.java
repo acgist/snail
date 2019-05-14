@@ -112,11 +112,14 @@ public class PeerManager {
 	}
 	
 	/**
-	 * 发送have消息
+	 * <p>发送have消息</p>
+	 * <p>只发送给当前上传和下载的Peer。</p>
 	 */
 	public void have(String infoHashHex, int index) {
-		var list = list(infoHashHex);
-		list.forEach(session -> {
+		final var list = list(infoHashHex);
+		list.stream()
+		.filter(session -> session.uploading() || session.downloading())
+		.forEach(session -> {
 			var handler = session.peerMessageHandler();
 			if(handler != null && handler.available()) {
 				handler.have(index);
@@ -125,7 +128,8 @@ public class PeerManager {
 	}
 	
 	/**
-	 * 发送PEX消息
+	 * <p>发送PEX消息</p>
+	 * <p>只发送给当前上传和下载的Peer。</p>
 	 */
 	public void exchange(String infoHashHex, List<PeerSession> optimize) {
 		final byte[] bytes = UtPeerExchangeMessageHandler.buildMessage(optimize);
@@ -135,7 +139,9 @@ public class PeerManager {
 		optimize.clear(); // 清空
 		final var list = list(infoHashHex);
 		LOGGER.debug("发送PEX消息，Peer数量：{}，通知Peer数量：{}", optimize.size(), list.size());
-		list.forEach(session -> {
+		list.stream()
+		.filter(session -> session.uploading() || session.downloading())
+		.forEach(session -> {
 			var handler = session.peerMessageHandler();
 			if(handler != null && handler.available()) {
 				handler.exchange(bytes);

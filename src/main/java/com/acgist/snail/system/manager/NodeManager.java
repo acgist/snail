@@ -121,7 +121,7 @@ public class NodeManager {
 				nodeSession = NodeSession.newInstance(nodeId, host, port);
 				if(nodeSession.getId().length == NODE_ID_LENGTH) {
 					if(LOGGER.isDebugEnabled()) {
-						LOGGER.debug("添加Node：{}:{}", nodeSession.getHost(), nodeSession.getPort());
+						LOGGER.debug("添加Node：{}-{}", nodeSession.getHost(), nodeSession.getPort());
 					}
 					this.nodes.add(nodeSession);
 				}

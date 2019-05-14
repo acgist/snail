@@ -8,6 +8,7 @@ import java.util.BitSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.downloader.torrent.bootstrap.PeerConnectGroup;
 import com.acgist.snail.downloader.torrent.bootstrap.TorrentStreamGroup;
 import com.acgist.snail.net.TcpMessageHandler;
 import com.acgist.snail.net.peer.bootstrap.PeerService;
@@ -129,9 +130,15 @@ public class PeerMessageHandler extends TcpMessageHandler {
 			LOGGER.debug("初始化失败，获取远程Peer信息失败");
 			return false;
 		}
+		final PeerConnectGroup peerConnectGroup = torrentSession.peerConnectGroup();
 		final PeerSession peerSession = PeerManager.getInstance().newPeerSession(infoHashHex, taskSession.statistics(), address.getHostString(), null, PeerConfig.SOURCE_CONNECT);
-		init(peerSession, torrentSession, reserved);
-		return true;
+		final boolean ok = peerConnectGroup.newPeerConnect(peerSession, this);
+		if(ok) {
+			init(peerSession, torrentSession, reserved);
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	/**
@@ -320,18 +327,20 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		buffer.get(peerIds);
 		final String peerId = new String(peerIds);
 		if(server) { // 服务端
-			boolean init = init(infoHashHex, peerId, reserved);
-			if(!init) {
+			final boolean init = init(infoHashHex, peerId, reserved);
+			if(init) {
+				handshake((PeerClient) null); // 握手
+			} else {
+				this.close();
 				return;
 			}
-			handshake((PeerClient) null); // 握手
 		} else { // 客户端
 			peerSession.id(peerId);
 		}
 		extension(); // 发送扩展
 		dht(); // 发送DHT端口
 		bitfield(); // 交换位图
-		if(server) { // TODO：服务端：判断连接数量，阻塞|不阻塞
+		if(server) {
 			unchoke();
 		}
 	}
@@ -363,7 +372,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	private void choke(ByteBuffer buffer) {
 		LOGGER.debug("被阻塞");
 		peerSession.peerChoke();
-		// TODO：不释放资源暂时，让系统自动优化剔除
+		// 不释放资源暂时，让系统自动优化剔除
 //		if(peerClient != null) {
 //			peerClient.release();
 //		}
