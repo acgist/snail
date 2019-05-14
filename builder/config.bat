@@ -1,7 +1,7 @@
 @echo off
 
 set project=snail
-set version=1.0.1
+set version=1.0.2
 set builder=.\builder\
 set lib=lib
 set logs=logs
