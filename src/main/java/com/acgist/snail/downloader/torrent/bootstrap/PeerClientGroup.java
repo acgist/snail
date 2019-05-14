@@ -1,11 +1,9 @@
 package com.acgist.snail.downloader.torrent.bootstrap;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +17,7 @@ import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.manager.PeerManager;
 
 /**
- * <p>PeerClient组</p>
+ * <p>PeerClient组：下载</p>
  * <p>
  * 对正在进行下载的PeerClient管理：<br>
  * <ul>
@@ -27,6 +25,7 @@ import com.acgist.snail.system.manager.PeerManager;
  * 	<li>定时替换下载最慢的PeerClient。</li>
  * </ul>
  * </p>
+ * TODO：PeerClient优化PeerConnect优化合并
  * 
  * @author acgist
  * @since 1.0.0
@@ -34,13 +33,6 @@ import com.acgist.snail.system.manager.PeerManager;
 public class PeerClientGroup {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerClientGroup.class);
-	
-	private static final Duration INTERVAL = Duration.ofSeconds(SystemConfig.getPeerOptimizeInterval());
-	
-	/**
-	 * 最后优化时间
-	 */
-	private long lastOptimizeTime = System.currentTimeMillis();
 	
 	private final PeerManager peerManager;
 	private final TaskSession taskSession;
@@ -59,9 +51,6 @@ public class PeerClientGroup {
 		this.torrentSession = torrentSession;
 		this.peerClients = new LinkedBlockingQueue<>();
 		this.peerManager = PeerManager.getInstance();
-		this.torrentSession.timerFixedDelay(INTERVAL.toSeconds(), INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
-			this.optimize(); // 定时优化
-		});
 	}
 	
 	public static final PeerClientGroup newInstance(TorrentSession torrentSession) {
@@ -80,20 +69,16 @@ public class PeerClientGroup {
 	 * <p>
 	 * 挑选权重最低的PeerClient，剔除下载队列，将剔除的Peer插入到Peer队列头部，然后重新生成一个PeerClient。
 	 * </p>
+	 * 
+	 * @return 当前可以使用的PeerSession
 	 */
-	private void optimize() {
+	public List<PeerSession> optimize() {
 		synchronized (peerClients) {
-			final long now = System.currentTimeMillis();
-			if(now - this.lastOptimizeTime >= INTERVAL.toMillis()) {
-				this.lastOptimizeTime = now;
-			} else {
-				return;
-			}
 			LOGGER.debug("优化PeerClient");
 			inferiorPeerClient();
 			buildPeerClients();
 		}
-		peerManager.exchange(torrentSession.infoHashHex(), optimize);
+		return this.optimize;
 	}
 
 	/**

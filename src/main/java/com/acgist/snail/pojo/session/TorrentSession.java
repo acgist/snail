@@ -1,5 +1,6 @@
 package com.acgist.snail.pojo.session;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.torrent.bootstrap.DhtLauncher;
 import com.acgist.snail.downloader.torrent.bootstrap.PeerClientGroup;
+import com.acgist.snail.downloader.torrent.bootstrap.PeerConnectGroup;
 import com.acgist.snail.downloader.torrent.bootstrap.TorrentStreamGroup;
 import com.acgist.snail.downloader.torrent.bootstrap.TrackerLauncherGroup;
 import com.acgist.snail.protocol.torrent.TorrentBuilder;
@@ -19,6 +21,7 @@ import com.acgist.snail.protocol.torrent.bean.Torrent;
 import com.acgist.snail.protocol.torrent.bean.TorrentFile;
 import com.acgist.snail.protocol.torrent.bean.TorrentInfo;
 import com.acgist.snail.system.config.PeerConfig;
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.manager.PeerManager;
@@ -36,9 +39,14 @@ public class TorrentSession {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentSession.class);
 	
 	/**
+	 * Peer优化定时
+	 */
+	private static final Duration PEER_OPTIMIZE_INTERVAL = Duration.ofSeconds(SystemConfig.getPeerOptimizeInterval());
+	
+	/**
 	 * DHT任务执行周期
 	 */
-	private static final int INTERVAL = 60;
+	private static final int DHT_INTERVAL = 60;
 	
 	/**
 	 * 种子
@@ -60,6 +68,10 @@ public class TorrentSession {
 	 * Peer组
 	 */
 	private PeerClientGroup peerClientGroup;
+	/**
+	 * Peer连接组
+	 */
+	private PeerConnectGroup peerConnectGroup;
 	/**
 	 * 文件组
 	 */
@@ -117,10 +129,12 @@ public class TorrentSession {
 		}
 		this.loadExecutor();
 		this.loadPeer();
+		this.loadPeerConnect();
 		if(findPeer) {
 			this.loadTrackerLauncher();
 			this.loadDhtLauncher();
 		}
+		this.loadPeerOptimizer();
 		return false;
 	}
 	
@@ -155,6 +169,13 @@ public class TorrentSession {
 	}
 	
 	/**
+	 * 加载Peer连接
+	 */
+	private void loadPeerConnect() {
+		this.peerConnectGroup = PeerConnectGroup.newInstance(this);
+	}
+	
+	/**
 	 * 加载Tracker
 	 */
 	private void loadTrackerLauncher() throws DownloadException {
@@ -167,9 +188,20 @@ public class TorrentSession {
 	 */
 	private void loadDhtLauncher() {
 		this.dhtLauncher = DhtLauncher.newInstance(this);
-		this.timer(INTERVAL, INTERVAL, TimeUnit.SECONDS, this.dhtLauncher);
+		this.timer(DHT_INTERVAL, DHT_INTERVAL, TimeUnit.SECONDS, this.dhtLauncher);
 	}
 
+	/**
+	 * 加载Peer定时优化任务
+	 */
+	private void loadPeerOptimizer() {
+		this.timerFixedDelay(PEER_OPTIMIZE_INTERVAL.toSeconds(), PEER_OPTIMIZE_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
+			final var optimize = this.peerClientGroup.optimize(); // 优化下载Peer
+			this.peerConnectGroup.optimize(); // 优化连接Peer
+			PeerManager.getInstance().exchange(this.infoHashHex(), optimize); // PEX消息
+		});
+	}
+	
 	/**
 	 * 下载名称
 	 */

@@ -9,7 +9,7 @@
 	<artifactId>snail</artifactId>
 	
 	<name>snail</name>
-	<version>1.0.1</version>
+	<version>1.0.2</version>
 	<description>基于JAVA/JAVAFX的下载工具，支持下载协议：BT、FTP、HTTP、ED2K。</description>
 
 	<properties>
@@ -41,7 +41,7 @@
 	</properties>
 
 	<dependencies>
-		<!-- JAVAFX -->
+		<!-- GUI：JAVAFX -->
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-fxml</artifactId>
@@ -60,7 +60,7 @@
 			<artifactId>h2</artifactId>
 			<version>${h2.version}</version>
 		</dependency>
-		<!-- 日志：logback、slf4j -->
+		<!-- 日志：slf4j、logback -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -93,6 +93,7 @@
 			<version>${jackson.version}</version>
 		</dependency>
 		
+		<!-- 测试：JUnit -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
