@@ -50,7 +50,7 @@ public class TrackerLauncherGroup {
 		}
 		TrackerManager.getInstance().clients(torrent.getAnnounce(), torrent.getAnnounceList()).stream()
 		.map(client -> {
-			LOGGER.debug("添加TrackerClient，ID：{}，announceUrl：{}", client.id(), client.announceUrl());
+			LOGGER.debug("加载TrackerClient，ID：{}，announceUrl：{}", client.id(), client.announceUrl());
 			return TrackerManager.getInstance().newTrackerLauncher(client, torrentSession);
 		}).forEach(launcher -> {
 			try {

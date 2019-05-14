@@ -45,7 +45,7 @@ public class HttpDownloader extends Downloader {
 	
 	@Override
 	public void open() {
-		bytes = new byte[1024 * 1024];
+		bytes = new byte[128 * 1024];
 		buildInput();
 		buildOutput();
 	}

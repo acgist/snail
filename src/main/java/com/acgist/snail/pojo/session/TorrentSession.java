@@ -218,15 +218,38 @@ public class TorrentSession {
 		executor.submit(runnable);
 	}
 	
+	/**
+	 * 定时任务（不重复）
+	 */
 	public void timer(long delay, TimeUnit unit, Runnable runnable) {
 		if(delay >= 0) {
 			executorTimer.schedule(runnable, delay, unit);
 		}
 	}
 	
+	/**
+	 * 定时任务（重复），固定时间（周期不受执行时间影响）
+	 * @param delay 延迟时间
+	 * @param period 周期时间
+	 * @param unit 时间单位
+	 * @param runnable 任务
+	 */
 	public void timer(long delay, long period, TimeUnit unit, Runnable runnable) {
 		if(delay >= 0) {
 			executorTimer.scheduleAtFixedRate(runnable, delay, period, unit);
+		}
+	}
+	
+	/**
+	 * 定时任务（重复），固定周期（周期受到执行时间影响）
+	 * @param delay 延迟时间
+	 * @param period 周期时间
+	 * @param unit 时间单位
+	 * @param runnable 任务
+	 */
+	public void timerFixedDelay(long delay, long period, TimeUnit unit, Runnable runnable) {
+		if(delay >= 0) {
+			executorTimer.scheduleWithFixedDelay(runnable, delay, period, unit);
 		}
 	}
 	

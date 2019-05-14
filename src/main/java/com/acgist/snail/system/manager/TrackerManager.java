@@ -134,7 +134,7 @@ public class TrackerManager {
 			try {
 				return register(announce);
 			} catch (DownloadException e) {
-				LOGGER.error("Tracker注册异常：{}", announce, e);
+				LOGGER.error("TrackerClient注册异常：{}", announce, e);
 			}
 			return null;
 		})
@@ -159,7 +159,7 @@ public class TrackerManager {
 				return optional.get();
 			}
 			final TrackerClient client = buildClientProxy(announceUrl);
-			LOGGER.debug("注册Tracker Client，ID：{}，announceUrl：{}", client.id(), client.announceUrl());
+			LOGGER.debug("注册TrackerClient，ID：{}，announceUrl：{}", client.id(), client.announceUrl());
 			trackerClients.put(client.id(), client);
 			return client;
 		}
@@ -169,7 +169,7 @@ public class TrackerManager {
 	 * 设置udp的connectionId
 	 */
 	public void connectionId(int trackerId, long connectionId) {
-		var client = trackerClients.get(trackerId);
+		final var client = trackerClients.get(trackerId);
 		if(client != null && client.type() == Type.udp) {
 			final UdpTrackerClient udpTrackerClient = (UdpTrackerClient) client;
 			udpTrackerClient.connectionId(connectionId);
@@ -177,7 +177,7 @@ public class TrackerManager {
 	}
 
 	/**
-	 * 创建Client
+	 * 创建Client代理，如果第一次创建失败将链接使用URL解码后再次创建。
 	 */
 	private TrackerClient buildClientProxy(final String announceUrl) throws DownloadException {
 		TrackerClient client = buildClient(announceUrl);
@@ -190,6 +190,9 @@ public class TrackerManager {
 		return client;
 	}
 	
+	/**
+	 * 创建Client
+	 */
 	private TrackerClient buildClient(final String announceUrl) throws DownloadException {
 		if(HttpProtocol.verify(announceUrl)) {
 			try {
