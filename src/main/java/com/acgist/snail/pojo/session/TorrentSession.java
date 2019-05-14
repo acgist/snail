@@ -106,21 +106,22 @@ public class TorrentSession {
 	 */
 	public TorrentSession loadTask(TaskSession taskSession) throws DownloadException {
 		this.taskSession = taskSession;
-		this.loadTorrentStream();
+		this.loadTorrentStreamGroup();
+		this.loadPeerClientGroup();
+		this.loadPeerConnectGroup();
 		return this;
 	}
 	
-	/**
-	 * 开始下载
-	 */
 	public boolean download() throws DownloadException {
-		return download(true);
+		return this.download(true);
 	}
 	
 	/**
 	 * 开始下载：加载线程池、Peer、Tracker、DHT
 	 * 如果文件已经下载完成或者任务已经完成不会再加载线程池、Peer、Tracker、DHT
+	 * 
 	 * @param findPeer 是否查找Peer：true-使用Tracker、DHT查找Peer，false-不查找
+	 * 
 	 * @return true-下载完成；false-未完成
 	 */
 	public boolean download(boolean findPeer) throws DownloadException {
@@ -128,20 +129,19 @@ public class TorrentSession {
 			return true;
 		}
 		this.loadExecutor();
-		this.loadPeer();
-		this.loadPeerConnect();
 		if(findPeer) {
 			this.loadTrackerLauncher();
 			this.loadDhtLauncher();
 		}
 		this.loadPeerOptimizer();
+		this.peerClientGroup.optimize(); // 开始下载
 		return false;
 	}
 
 	/**
 	 * 加载文件流
 	 */
-	private void loadTorrentStream() throws DownloadException {
+	private void loadTorrentStreamGroup() throws DownloadException {
 		if(this.taskSession == null) {
 			throw new DownloadException("BT任务不存在");
 		}
@@ -164,14 +164,14 @@ public class TorrentSession {
 	/**
 	 * 加载Peer
 	 */
-	private void loadPeer() {
+	private void loadPeerClientGroup() {
 		this.peerClientGroup = PeerClientGroup.newInstance(this);
 	}
 	
 	/**
 	 * 加载Peer连接
 	 */
-	private void loadPeerConnect() {
+	private void loadPeerConnectGroup() {
 		this.peerConnectGroup = PeerConnectGroup.newInstance(this);
 	}
 	
@@ -321,13 +321,13 @@ public class TorrentSession {
 	}
 	
 	/**
-	 * 释放资源
+	 * 释放资源，完成时不释放文件资源，提供给分享。
 	 */
 	public void release() {
 		LOGGER.debug("Torrent释放资源");
 		trackerLauncherGroup.release();
 		peerClientGroup.release();
-		torrentStreamGroup.release();
+//		torrentStreamGroup.release(); // 不释放：提供下载
 		SystemThreadContext.shutdownNow(executor);
 		SystemThreadContext.shutdownNow(executorTimer);
 	}
