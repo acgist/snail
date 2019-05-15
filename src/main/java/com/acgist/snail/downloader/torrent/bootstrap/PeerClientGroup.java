@@ -130,9 +130,8 @@ public class PeerClientGroup {
 			final boolean ok = client.download();
 			if(ok) {
 				peerSession.status(PeerConfig.STATUS_DOWNLOAD); // 设置下载中
-				System.out.println(peerSession.downloading());
 				peerClients.add(client);
-			} else { // 失败后需要放回队列
+			} else { // 失败后需要放回队列：要不要放回队列
 				peerManager.inferior(torrentSession.infoHashHex(), peerSession);
 			}
 			return true;
@@ -146,6 +145,7 @@ public class PeerClientGroup {
 	 * <p>
 	 * 挑选权重最低的PeerClient作为劣质Peer，如果其中含有不可用的PeerClient，直接剔除该PeerClient，
 	 * 但是依旧需要循环完所有的PeerClient，清除权重进行新一轮的权重计算。
+	 * 如果存在不可用的PeerClient时，则不剔除分数最低的PeerClient。
 	 * </p>
 	 * <p>
 	 * 不可用的Peer：状态不可用或者下载量=0。
@@ -158,6 +158,7 @@ public class PeerClientGroup {
 			return;
 		}
 		int index = 0;
+		boolean unusable = false; // 不可用
 		int mark = 0, minMark = 0;
 		PeerClient tmp = null; // 临时
 		PeerClient inferior = null; // 劣质PeerClient
@@ -170,6 +171,7 @@ public class PeerClientGroup {
 				break;
 			}
 			if(!tmp.available()) { // 如果当前挑选的是不可用的PeerClient不执行后面操作
+				unusable = true;
 				inferiorPeerClient(tmp);
 				continue;
 			}
@@ -177,6 +179,7 @@ public class PeerClientGroup {
 			if(mark > 0) { // 添加可用
 				this.optimize.add(tmp.peerSession());
 			} else { // 如果速度=0，直接剔除
+				unusable = true;
 				inferiorPeerClient(tmp);
 				continue;
 			}
@@ -191,7 +194,11 @@ public class PeerClientGroup {
 				this.peerClients.offer(tmp);
 			}
 		}
-		inferiorPeerClient(inferior);
+		if(unusable) {
+			this.peerClients.offer(inferior);
+		} else {
+			inferiorPeerClient(inferior);
+		}
 	}
 	
 	/**
