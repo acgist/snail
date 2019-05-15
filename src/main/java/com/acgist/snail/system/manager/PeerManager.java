@@ -26,13 +26,13 @@ public class PeerManager {
 	private static final PeerManager INSTANCE = new PeerManager();
 	
 	/**
-	 * Peer Map：使用中，下载的Peer从中间剔除<br>
+	 * 使用的Peer，下载时Peer从中间剔除，选为劣质Peer时放回到列表中。<br>
 	 * key=infoHashHex<br>
-	 * value=Peers：双端队列，新加入插入队尾，剔除的Peer插入对头
+	 * value=Peers：双端队列，新加入插入队尾，剔除的Peer插入对头。
 	 */
 	private final Map<String, Deque<PeerSession>> peers;
 	/**
-	 * 只用来记录Peer：记录所有的Peer
+	 * 记录所有的Peer
 	 */
 	private final Map<String, List<PeerSession>> storagePeers;
 	
@@ -50,14 +50,15 @@ public class PeerManager {
 	 */
 	public Map<String, List<PeerSession>> peers() {
 		synchronized (this.storagePeers) {
-			return storagePeers.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> {
-				return new ArrayList<>(entry.getValue());
-			}));
+			return storagePeers.entrySet().stream()
+				.collect(Collectors.toMap(Map.Entry::getKey, entry -> {
+					return new ArrayList<>(entry.getValue());
+				}));
 		}
 	}
 	
 	/**
-	 * 获取对应的一个临时的PeerSession列表
+	 * 获取对应任务的一个临时的PeerSession列表
 	 */
 	public List<PeerSession> list(String infoHashHex) {
 		final var list = this.storagePeers.get(infoHashHex);
@@ -70,7 +71,7 @@ public class PeerManager {
 	}
 	
 	/**
-	 * 新增Peer，插入尾部
+	 * 新增Peer，插入尾部。
 	 * @param infoHashHex 下载文件infoHashHex
 	 * @param parent torrent下载统计
 	 * @param host 地址
@@ -97,7 +98,7 @@ public class PeerManager {
 	}
 	
 	/**
-	 * 放入一个优化的Peer，插入头部
+	 * 放入一个劣质的Peer，插入头部。
 	 */
 	public void inferior(String infoHashHex, PeerSession peerSession) {
 		var deque = deque(infoHashHex);
@@ -158,7 +159,6 @@ public class PeerManager {
 		if(bytes == null) {
 			return;
 		}
-		optimize.clear(); // 清空
 		final var list = list(infoHashHex);
 		if(list == null) {
 			return;

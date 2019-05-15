@@ -37,7 +37,7 @@ public class PeerServerTest {
 		entity.setFile("e://tmp/server/");
 		entity.setType(Type.torrent);
 		entity.setDescription(JsonUtils.toJson(list));
-		torrentSession.loadTask(TaskSession.newInstance(entity)).download(false);
+		torrentSession.loadTask(TaskSession.newInstance(entity));
 		PeerServer server = PeerServer.getInstance();
 		server.listen();
 		ThreadUtils.sleep(Long.MAX_VALUE);

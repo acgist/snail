@@ -64,6 +64,9 @@ public class UdpSender {
 	 * 发送消息
 	 */
 	public void send(ByteBuffer buffer, SocketAddress address) throws NetException {
+		if(this.channel == null) {
+			throw new NetException("UDP通道没有初始化");
+		}
 		if(!this.channel.isOpen()) {
 			LOGGER.debug("发送消息时Socket已经关闭");
 			return;
