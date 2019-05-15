@@ -31,16 +31,19 @@ public class TorrentStreamGroup {
 	 * 已下载Piece位图
 	 */
 	private final BitSet pieces;
+	private final Torrent torrent;
 	private final List<TorrentStream> streams;
 	private final TorrentSession torrentSession;
 
 	private TorrentStreamGroup(BitSet pieces, List<TorrentStream> streams, TorrentSession torrentSession) {
 		this.pieces = pieces;
 		this.streams = streams;
+		this.torrent = torrentSession.torrent();
 		this.torrentSession = torrentSession;
 	}
 	
-	public static final TorrentStreamGroup newInstance(String folder, Torrent torrent, List<TorrentFile> files, TorrentSession torrentSession) {
+	public static final TorrentStreamGroup newInstance(String folder, List<TorrentFile> files, TorrentSession torrentSession) {
+		final Torrent torrent = torrentSession.torrent();
 		final TorrentInfo torrentInfo = torrent.getInfo();
 		final BitSet pieces = new BitSet(torrentInfo.pieceSize());
 		final List<TorrentStream> streams = new ArrayList<>(files.size());
@@ -133,15 +136,15 @@ public class TorrentStreamGroup {
 	}
 	
 	/**
-	 * 资源释放
+	 * 获取Piece的Hash校验
 	 */
-	public void release() {
-		LOGGER.debug("释放TorrentStreamGroup");
-		for (TorrentStream torrentStream : streams) {
-			torrentStream.release();
-		}
+	public byte[] pieceHash(int index) {
+		final byte[] pieces = torrent.getInfo().getPieces();
+		final byte[] value = new byte[TorrentInfo.PIECE_HASH_LENGTH];
+		System.arraycopy(pieces, index * TorrentInfo.PIECE_HASH_LENGTH, value, 0, TorrentInfo.PIECE_HASH_LENGTH);
+		return value;
 	}
-
+	
 	/**
 	 * 是否已下载Piece
 	 * 
@@ -192,5 +195,15 @@ public class TorrentStreamGroup {
 		}
 		return buffer.array();
 	}
-	
+
+	/**
+	 * 资源释放
+	 */
+	public void release() {
+		LOGGER.debug("释放TorrentStreamGroup");
+		for (TorrentStream torrentStream : streams) {
+			torrentStream.release();
+		}
+	}
+
 }

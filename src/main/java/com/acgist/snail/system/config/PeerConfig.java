@@ -14,6 +14,16 @@ public class PeerConfig {
 	private static final String UNKNOWN = "unknown"; // 未知终端
 
 	/**
+	 * PeerId长度
+	 */
+	public static final int PEER_ID_LENGTH = 20;
+	
+	/**
+	 * reserved长度
+	 */
+	public static final int RESERVED_LENGTH = 8;
+	
+	/**
 	 * 保留位：http://www.bittorrent.org/beps/bep_0004.html
 	 */
 	public static final byte[] HANDSHAKE_RESERVED = {0, 0, 0, 0, 0, 0, 0, 0};
@@ -116,11 +126,11 @@ public class PeerConfig {
 	 * 获取终端类型
 	 * @param peerId 客户端ID
 	 */
-	public static final String name(String peerId) {
-		if(peerId == null || peerId.length() < 3) {
+	public static final String name(byte[] peerId) {
+		if(peerId == null || peerId.length < 3) {
 			return UNKNOWN;
 		}
-		final String key = peerId.substring(0, 3);
+		final String key = new String(peerId, 0, 3);
 		return PEER_NAMES.getOrDefault(key, UNKNOWN);
 	}
 	

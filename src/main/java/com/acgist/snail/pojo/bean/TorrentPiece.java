@@ -1,7 +1,6 @@
 package com.acgist.snail.pojo.bean;
 
 import com.acgist.snail.utils.ArrayUtils;
-import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -20,30 +19,32 @@ public class TorrentPiece {
 
 	private final long pieceLength; // Piece块大小
 	private final int index; // Piece索引
-	private final int begin; // Piece开始偏移：选择下载时设置
-	private final int end; // Piece结束偏移：选择下载时设置
+	private final int begin; // Piece开始偏移
+	private final int end; // Piece结束偏移
 	private final int length; // 数据的长度：等于end-begin
 	private final byte[] data; // 数据：长度等于length
 	
-	private final byte[] verify; // 校验数据
+	private final byte[] hash; // 校验数据
+	private final boolean verify; // 是否校验
 
 	private int size; // 已下载大小
 	private int position; // 请求内偏移
 	
-	private TorrentPiece(byte[] verify, long pieceLength, int index, int begin, int end) {
-		this.verify = verify;
+	private TorrentPiece(byte[] hash, long pieceLength, int index, int begin, int end, boolean verify) {
 		this.pieceLength = pieceLength;
 		this.index = index;
 		this.begin = begin;
 		this.end = end;
+		this.hash = hash;
+		this.verify = verify;
 		this.length = end - begin;
 		this.data = new byte[length];
 		this.size = 0;
 		this.position = 0;
 	}
 
-	public static final TorrentPiece newInstance(byte[] verify, long pieceLength, int index, int begin, int end) {
-		return newInstance(verify, pieceLength, index, begin, end);
+	public static final TorrentPiece newInstance(byte[] hash, long pieceLength, int index, int begin, int end, boolean verify) {
+		return new TorrentPiece(hash, pieceLength, index, begin, end, verify);
 	}
 	
 	/**
@@ -98,21 +99,18 @@ public class TorrentPiece {
 		return data;
 	}
 	
-	public boolean complete() {
-		return this.size >= this.length;
-	}
-	
+	/**
+	 * 是否还有更多的数据请求
+	 */
 	public boolean more() {
 		return this.position < this.length;
 	}
-
-	public int limit() {
-		return this.length - this.position;
-	}
 	
-	public int limitSlice() {
-		final int limit = limit();
-		return NumberUtils.divideUp(limit, SLICE_SIZE);
+	/**
+	 * 是否下载完成
+	 */
+	public boolean complete() {
+		return this.size >= this.length;
 	}
 	
 	/**
@@ -157,11 +155,11 @@ public class TorrentPiece {
 	 * 校验数据
 	 */
 	public boolean verify() {
-		if(this.verify == null) {
-			return true;
+		if(verify) {
+			final var hash = StringUtils.sha1(this.data);
+			return ArrayUtils.equals(hash, this.hash);
 		}
-		final var sum = StringUtils.sha1(this.data);
-		return ArrayUtils.equals(sum, this.verify);
+		return true;
 	}
 
 }

@@ -35,10 +35,11 @@ public class PeerSession implements IStatistics {
 	private Integer port; // 端口
 	private Integer dhtPort; // DHT端口
 	
-	private String id; // Peer id
+	private byte[] id; // Peer id
 	private String clientName; // Peer客户端名称
 	
 	private final BitSet pieces; // 文件下载位图
+	private final BitSet badPieces; // 下载错误位图：下次获取时清除
 	
 	private Boolean amChocking; // 客户端将Peer阻塞：阻塞（不允许下载）-1（true）、非阻塞-0
 	private Boolean amInterested; // 客户端对Peer感兴趣：感兴趣（Peer有客户端没有的piece）-1（true）、不感兴趣-0
@@ -58,6 +59,7 @@ public class PeerSession implements IStatistics {
 		this.peerChocking = true;
 		this.peerInterested = false;
 		this.pieces = new BitSet();
+		this.badPieces = new BitSet();
 		this.extension = new HashMap<>();
 	}
 	
@@ -141,7 +143,7 @@ public class PeerSession implements IStatistics {
 		return this.amInterested && !this.peerChocking;
 	}
 	
-	public void id(String id) {
+	public void id(byte[] id) {
 		this.id = id;
 		this.clientName = PeerConfig.name(this.id);
 	}
@@ -166,15 +168,36 @@ public class PeerSession implements IStatistics {
 		return this.pieces;
 	}
 	
+	/**
+	 * 设置Piece
+	 */
 	public void pieces(BitSet pieces) {
 		this.pieces.or(pieces);;
 	}
-	
+
 	/**
-	 * 设置已有块
+	 * 收到have消息时设置Piece
 	 */
 	public void piece(int index) {
 		this.pieces.set(index, true);
+	}
+	
+	public BitSet badPieces() {
+		return this.badPieces;
+	}
+	
+	/**
+	 * 设置无效Piece（校验失败的Piece）
+	 */
+	public void badPieces(int index) {
+		this.badPieces.set(index);
+	}
+	
+	public BitSet availablePieces() {
+		final BitSet bitSet = new BitSet();
+		bitSet.or(this.pieces);
+		bitSet.andNot(this.badPieces);
+		return bitSet;
 	}
 	
 	public boolean isAmChocking() {
