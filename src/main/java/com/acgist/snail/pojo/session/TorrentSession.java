@@ -154,7 +154,6 @@ public class TorrentSession {
 		}
 		this.torrentStreamGroup = TorrentStreamGroup.newInstance(
 			this.taskSession.downloadFolder().getPath(),
-			this.torrent,
 			selectFiles(),
 			this);
 	}

@@ -38,7 +38,7 @@ public class FileVerifyUtils {
 		} else {
 			MessageDigest digest = null;
 			int length;
-			byte bytes[] = new byte[10240];
+			byte bytes[] = new byte[10 * 1024];
 			try (InputStream input = new BufferedInputStream(new FileInputStream(file))) {
 				digest = MessageDigest.getInstance(algo);
 				while ((length = input.read(bytes)) != -1) {

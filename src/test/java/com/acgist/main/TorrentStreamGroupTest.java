@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import com.acgist.snail.downloader.torrent.bootstrap.TorrentStreamGroup;
 import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.protocol.torrent.bean.TorrentInfo;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.manager.TorrentManager;
 import com.acgist.snail.utils.ArrayUtils;
@@ -25,7 +26,7 @@ public class TorrentStreamGroupTest {
 		files.forEach(file -> {
 			file.select(true);
 		});
-		TorrentStreamGroup group = TorrentStreamGroup.newInstance("e://tmp//test", session.torrent(), files, session);
+		TorrentStreamGroup group = TorrentStreamGroup.newInstance("e://tmp//test", files, session);
 //		TorrentPiece piece = new TorrentPiece();
 //		piece.setIndex(0);
 //		piece.setPos(0);
@@ -53,7 +54,7 @@ public class TorrentStreamGroupTest {
 		files.forEach(file -> {
 			file.select(true);
 		});
-		TorrentStreamGroup group = TorrentStreamGroup.newInstance("e://tmp/client/", session.torrent(), files, session);
+		TorrentStreamGroup group = TorrentStreamGroup.newInstance("e://tmp/client/", files, session);
 //		TorrentStreamGroup group = TorrentStreamGroup.newInstance("E:\\tmp\\[Skytree][海贼王][One_Piece][884][GB_JP][X264_AAC][720P][CRRIP][天空树双语字幕组].mp4", session.torrent(), files, session);
 		var downloadPieces = group.pieces();
 		int index = downloadPieces.nextSetBit(0);
@@ -77,8 +78,8 @@ public class TorrentStreamGroupTest {
 	}
 
 	private byte[] select(byte[] pieces, int index) {
-		byte[] value = new byte[20];
-		System.arraycopy(pieces, index * 20, value, 0, 20);
+		byte[] value = new byte[TorrentInfo.PIECE_HASH_LENGTH];
+		System.arraycopy(pieces, index * TorrentInfo.PIECE_HASH_LENGTH, value, 0, TorrentInfo.PIECE_HASH_LENGTH);
 		return value;
 	}
 	

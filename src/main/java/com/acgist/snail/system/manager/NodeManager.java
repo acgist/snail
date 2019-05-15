@@ -32,10 +32,13 @@ public class NodeManager {
 	 * Node最大数量，超过这个数量会均匀剔除多余Node
 	 */
 	public static final int NODE_MAX_SIZE = 1024;
+	
 	public static final int NODE_ID_LENGTH = 20;
 	public static final int TOKEN_LENGTH = 8;
+	
 	public static final int GET_PEER_LENGTH = 100;
 	public static final int NODE_FIND_SIZE = 8;
+	
 	public static final int NODE_FIND_SLICE = 3; // 分片大小
 	public static final int NODE_FIND_SLICE_SIZE = NODE_FIND_SIZE * NODE_FIND_SLICE;
 	
@@ -70,12 +73,12 @@ public class NodeManager {
 	}
 	
 	private byte[] buildNodeId() {
-		final byte[] bytes = new byte[20];
+		final byte[] nodeIds = new byte[NODE_ID_LENGTH];
 		final Random random = new Random();
-		for (int i = 0; i < 20; i++) {
-			bytes[i] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_SIZE);
+		for (int index = 0; index < NODE_ID_LENGTH; index++) {
+			nodeIds[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_SIZE);
 		}
-		return bytes;
+		return nodeIds;
 	}
 	
 	private byte[] buildToken() {

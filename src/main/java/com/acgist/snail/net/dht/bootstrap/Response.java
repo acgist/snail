@@ -220,11 +220,11 @@ public class Response {
 	 */
 	protected static final NodeSession readNode(ByteBuffer buffer) {
 		if(buffer.hasRemaining()) {
-			final byte[] id = new byte[20];
-			buffer.get(id);
+			final byte[] nodeId = new byte[NodeManager.NODE_ID_LENGTH];
+			buffer.get(nodeId);
 			final String host = NetUtils.decodeIntToIp(buffer.getInt());
 			final int port = NetUtils.decodePort(buffer.getShort());
-			final NodeSession nodeSession = NodeManager.getInstance().newNodeSession(id, host, port);
+			final NodeSession nodeSession = NodeManager.getInstance().newNodeSession(nodeId, host, port);
 			return nodeSession;
 		}
 		return null;

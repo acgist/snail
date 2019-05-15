@@ -5,6 +5,7 @@ import java.util.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.SystemConfig;
 
 /**
@@ -46,7 +47,7 @@ public class PeerService {
 	 * 生成PeerId
 	 */
 	private byte[] buildPeerId() {
-		final byte[] peerId = new byte[20];
+		final byte[] peerId = new byte[PeerConfig.PEER_ID_LENGTH];
 		final StringBuilder builder = new StringBuilder(8);
 		builder.append("-").append(PEER_ID_PREFIX);
 		final String version = SystemConfig.getVersion().replace(".", "");
@@ -60,7 +61,7 @@ public class PeerService {
 		final String peerIdPrefix = builder.toString();
 		System.arraycopy(peerIdPrefix.getBytes(), 0, peerId, 0, peerIdPrefix.length());
 		final Random random = new Random();
-		for (int index = peerIdPrefix.length(); index < 20; index++) {
+		for (int index = peerIdPrefix.length(); index < PeerConfig.PEER_ID_LENGTH; index++) {
 			peerId[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_SIZE);
 		}
 		LOGGER.info("PeerId：{}", new String(peerId));

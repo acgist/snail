@@ -61,7 +61,7 @@ public class TorrentStream {
 	private int fileBeginPieceIndex; // 文件Piece开始索引
 	private int fileEndPieceIndex; // 文件Piece结束索引
 	private BitSet pieces; // 当前文件位图
-	private BitSet badPieces; // 上次下载失败位图：下次请求后清除
+	private BitSet pausePieces; // 暂停位图：上次下载失败，下一次请求时不选取这个Piece，然后清除。主要用来处理两个文件都包含某一个Piece时，上一个文件不存在Piece，而下一个文件存在的情况。
 	private BitSet downloadPieces; // 下载中位图
 	
 	private TorrentStream(long pieceLength, TorrentStreamGroup torrentStreamGroup) {
@@ -146,7 +146,7 @@ public class TorrentStream {
 	 * <p>选择未下载的Piece序号</p>
 	 * <p>选择Peer有同时没有下载并且不处于失败和下载中的Piece，选择后清除失败的Piece数据。</p>
 	 * 
-	 * @param peerPieces Peer含有的位图
+	 * @param peerPieces Peer位图
 	 */
 	public TorrentPiece pick(final BitSet peerPieces) {
 		if(peerPieces.cardinality() == 0) {
@@ -156,9 +156,9 @@ public class TorrentStream {
 			final BitSet pickPieces = new BitSet();
 			pickPieces.or(peerPieces);
 			pickPieces.andNot(this.pieces);
-			pickPieces.andNot(this.badPieces);
+			pickPieces.andNot(this.pausePieces);
 			pickPieces.andNot(this.downloadPieces);
-			this.badPieces.clear(); // 清除坏的Piece
+			this.pausePieces.clear();
 			if(pickPieces.cardinality() == 0) {
 				return null;
 			}
@@ -168,14 +168,17 @@ public class TorrentStream {
 			}
 			this.downloadPieces.set(index);
 			int begin = 0;
+			boolean verify = true;
 			if(index == this.fileBeginPieceIndex) { // 第一块获取开始偏移
+				verify = false;
 				begin = firstPiecePos();
 			}
 			int end = (int) this.pieceLength;
 			if(index == this.fileEndPieceIndex) { // 最后一块获取结束偏移
+				verify = false;
 				end = lastPieceSize();
 			}
-			return TorrentPiece.newInstance(null, this.pieceLength, index, begin, end);
+			return TorrentPiece.newInstance(torrentStreamGroup.pieceHash(index), this.pieceLength, index, begin, end, verify);
 		}
 	}
 
@@ -289,7 +292,7 @@ public class TorrentStream {
 			return;
 		}
 		synchronized (this) {
-			this.badPieces.set(piece.getIndex());
+			this.pausePieces.set(piece.getIndex());
 			this.downloadPieces.clear(piece.getIndex());
 		}
 	}
@@ -374,9 +377,9 @@ public class TorrentStream {
 		if(endPieceSize > 0) {
 			this.filePieceSize++;
 		}
-		pieces = new BitSet();
-		badPieces = new BitSet();
-		downloadPieces = new BitSet();
+		this.pieces = new BitSet();
+		this.pausePieces = new BitSet();
+		this.downloadPieces = new BitSet();
 	}
 	
 	/**

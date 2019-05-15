@@ -181,7 +181,7 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	 * 下载失败
 	 */
 	private void undone() {
-		LOGGER.debug("下载失败：{}", this.downloadPiece.getIndex());
+		LOGGER.debug("Piece下载失败：{}", this.downloadPiece.getIndex());
 		torrentStreamGroup.undone(this.downloadPiece);
 	}
 
@@ -260,11 +260,19 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 		if(!available()) { // 不可用
 			return;
 		}
-		if(this.downloadPiece != null && this.downloadPiece.complete()) {
-			peerSession.download(downloadPiece.getLength()); // 统计
-			torrentStreamGroup.piece(downloadPiece); // 保存数据
+		if(this.downloadPiece == null) { // 没有Piece
+		} else if(this.downloadPiece.complete()) { // 完成
+			if(this.downloadPiece.verify()) {
+				peerSession.download(downloadPiece.getLength()); // 统计
+				torrentStreamGroup.piece(downloadPiece); // 保存数据
+			} else {
+				peerSession.badPieces(this.downloadPiece.getIndex());
+				LOGGER.warn("下载的Piece校验失败：{}", this.downloadPiece.getIndex());
+			}
+		} else { // 上次选择的Piece没有完成
+			LOGGER.debug("上次选择的Piece未下载完成：{}", this.downloadPiece.getIndex());
 		}
-		this.downloadPiece = torrentStreamGroup.pick(peerSession.pieces());
+		this.downloadPiece = torrentStreamGroup.pick(peerSession.availablePieces());
 		if(LOGGER.isDebugEnabled()) {
 			if(downloadPiece != null) {
 				LOGGER.debug("选取Piece：{}-{}-{}", downloadPiece.getIndex(), downloadPiece.getBegin(), downloadPiece.getEnd());

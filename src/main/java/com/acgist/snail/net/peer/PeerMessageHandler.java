@@ -17,6 +17,7 @@ import com.acgist.snail.net.peer.ltep.ExtensionMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.PeerMessageConfig;
 import com.acgist.snail.system.config.PeerMessageConfig.Action;
@@ -109,7 +110,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	/**
 	 * 初始化：客户端连接，加入到Peer列表。
 	 */
-	private boolean init(String infoHashHex, String peerId, byte[] reserved) {
+	private boolean init(String infoHashHex, byte[] peerId, byte[] reserved) {
 		final TorrentSession torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
 		if(torrentSession == null) {
 			LOGGER.debug("初始化失败，不存在的种子信息");
@@ -132,6 +133,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		}
 		final PeerConnectGroup peerConnectGroup = torrentSession.peerConnectGroup();
 		final PeerSession peerSession = PeerManager.getInstance().newPeerSession(infoHashHex, taskSession.statistics(), address.getHostString(), null, PeerConfig.SOURCE_CONNECT);
+		peerSession.id(peerId);
 		final boolean ok = peerConnectGroup.newPeerConnect(peerSession, this);
 		if(ok) {
 			init(peerSession, torrentSession, reserved);
@@ -325,14 +327,13 @@ public class PeerMessageHandler extends TcpMessageHandler {
 			this.close();
 			return;
 		}
-		final byte[] reserved = new byte[8];
+		final byte[] reserved = new byte[PeerConfig.RESERVED_LENGTH];
 		buffer.get(reserved);
-		final byte[] infoHashs = new byte[20];
-		buffer.get(infoHashs);
-		final String infoHashHex = StringUtils.hex(infoHashs);
-		final byte[] peerIds = new byte[20];
-		buffer.get(peerIds);
-		final String peerId = new String(peerIds);
+		final byte[] infoHash = new byte[InfoHash.INFO_HASH_LENGTH];
+		buffer.get(infoHash);
+		final String infoHashHex = StringUtils.hex(infoHash);
+		final byte[] peerId = new byte[PeerConfig.PEER_ID_LENGTH];
+		buffer.get(peerId);
 		if(server) { // 服务端
 			final boolean init = init(infoHashHex, peerId, reserved);
 			if(init) {

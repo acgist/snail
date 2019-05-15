@@ -13,7 +13,10 @@ import com.acgist.snail.utils.StringUtils;
  */
 public class TorrentInfo {
 
-	private static final int PIECE_SIZE = 20; // 每个Piece的hash字节数
+	/**
+	 * 每个Piece的HASH字节数
+	 */
+	public static final int PIECE_HASH_LENGTH = 20;
 	
 	private String name; // 名称
 	private String nameUtf8; // 名称：utf8
@@ -97,7 +100,7 @@ public class TorrentInfo {
 	 * 获取Piece数量
 	 */
 	public Integer pieceSize() {
-		return this.pieces.length / PIECE_SIZE;
+		return this.pieces.length / PIECE_HASH_LENGTH;
 	}
 	
 	public String getName() {
