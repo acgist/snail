@@ -162,9 +162,8 @@ public class TorrentSession {
 	 * 加载线程池
 	 */
 	private void loadExecutor() {
-		this.executor = SystemThreadContext.newExecutor(10, 10, 100, 60L, SystemThreadContext.SNAIL_THREAD_PEER);
-		final String executorTimerName = SystemThreadContext.SNAIL_THREAD_TRACKER + "-" + this.infoHashHex();
-		this.executorTimer = SystemThreadContext.newScheduledExecutor(4, executorTimerName);
+		this.executor = SystemThreadContext.newExecutor(10, 10, 100, 60L, SystemThreadContext.SNAIL_THREAD_BT);
+		this.executorTimer = SystemThreadContext.newScheduledExecutor(4, SystemThreadContext.SNAIL_THREAD_BT_TIMER);
 	}
 	
 	/**

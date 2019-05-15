@@ -19,10 +19,10 @@ public class SystemThreadContext {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SystemThreadContext.class);
 	
 	public static final String SNAIL_THREAD = "Snail-Thread";
-	public static final String SNAIL_THREAD_PEER = SNAIL_THREAD + "-Peer";
+	public static final String SNAIL_THREAD_BT = SNAIL_THREAD + "-BT";
 	public static final String SNAIL_THREAD_HTTP = SNAIL_THREAD + "-HTTP";
 	public static final String SNAIL_THREAD_TIMER = SNAIL_THREAD + "-Timer";
-	public static final String SNAIL_THREAD_TRACKER = SNAIL_THREAD + "-Tracker";
+	public static final String SNAIL_THREAD_BT_TIMER = SNAIL_THREAD + "-BT-Timer";
 	public static final String SNAIL_THREAD_PLATFORM = SNAIL_THREAD + "-Platform";
 	public static final String SNAIL_THREAD_DOWNLOADER = SNAIL_THREAD + "-Downloader";
 	public static final String SNAIL_THREAD_TCP_CLIENT = SNAIL_THREAD + "-TCP-Client";
