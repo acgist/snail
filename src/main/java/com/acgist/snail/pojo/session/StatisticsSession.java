@@ -18,7 +18,10 @@ import com.acgist.snail.utils.ThreadUtils;
 public class StatisticsSession {
 
 	private static final long ONE_SECOND = 1000L; // 一秒钟
-	private static final long CACHE_SECOND = TaskDisplay.INTERVAL.toMillis();
+	/**
+	 * 下载速度、上传速度缓存时间：默认是刷新频率的两倍
+	 */
+	private static final long CACHE_SECOND = 2 * TaskDisplay.INTERVAL.toMillis();
 	
 	private final boolean limit; // 限速开关
 	private final StatisticsSession parent; // 父类统计

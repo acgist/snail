@@ -53,7 +53,9 @@ public final class DownloaderManager {
 	 */
 	public void submit(String url) throws DownloadException {
 		final var session = this.manager.build(url);
-		this.start(session);
+		if(session != null) {
+			this.start(session);
+		}
 	}
 	
 	/**
