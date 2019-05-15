@@ -4,14 +4,17 @@ import org.junit.Test;
 
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
+import com.acgist.snail.protocol.torrent.bean.TorrentFile;
+import com.acgist.snail.protocol.torrent.bean.TorrentInfo;
 import com.acgist.snail.system.manager.TorrentManager;
 import com.acgist.snail.utils.DateUtils;
+import com.acgist.snail.utils.StringUtils;
 
 public class TorrentTest {
 
 	@Test
 	public void test() throws Exception {
-		String path = "e:/snail/12.torrent";
+		String path = "e:/snail/12345.torrent";
 //		String path = "e:/snail/5b293c290c78c503bcd59bc0fbf78fd213ce21a4.torrent";
 //		String path = "e:/snail/9d3854d8c6280049e5d85e490ff07de7c2bd96a2.torrent";
 //		String path = "e:/snail/868f1199b18d05bf103aa8a8321f6428854d712e.torrent";
@@ -36,26 +39,26 @@ public class TorrentTest {
 //				System.out.println(tmp);
 //			}
 //		}
-		System.out.println(torrent.getNodes());
-//		TorrentInfo torrentInfo = torrent.getInfo();
+//		System.out.println(torrent.getNodes());
+		TorrentInfo torrentInfo = torrent.getInfo();
 //		System.out.println(torrentInfo.getName());
 //		System.out.println(torrentInfo.getLength());
 //		System.out.println(torrentInfo.getPieceLength());
 //		System.out.println(torrentInfo.getPieces());
 //		System.out.println(torrentInfo.ed2kHex());
 //		System.out.println(torrentInfo.filehashHex());
-//		if (torrentInfo.getFiles().size() > 0) {
-//			for (TorrentFile file : torrentInfo.getFiles()) {
-//				System.out.println("----------------file----------------");
-//				System.out.println("文件长度：" + file.getLength());
-//				System.out.println("ed2k：" + StringUtils.hex(file.getEd2k()));
-//				System.out.println("filehash：" + StringUtils.hex(file.getFilehash()));
-//				if (file.getPath().size() > 0) {
-//					System.out.println("文件路径：" + String.join("/", file.getPath()));
-//					System.out.println("文件路径：" + String.join("/", file.getPathUtf8()));
-//				}
-//			}
-//		}
+		if (torrentInfo.getFiles().size() > 0) {
+			for (TorrentFile file : torrentInfo.getFiles()) {
+				System.out.println("----------------file----------------");
+				System.out.println("文件长度：" + file.getLength());
+				System.out.println("ed2k：" + StringUtils.hex(file.getEd2k()));
+				System.out.println("filehash：" + StringUtils.hex(file.getFilehash()));
+				if (file.getPath().size() > 0) {
+					System.out.println("文件路径：" + String.join("/", file.getPath()));
+					System.out.println("文件路径：" + String.join("/", file.getPathUtf8()));
+				}
+			}
+		}
 //		System.out.println(JsonUtils.toJson(torrent));
 	}
 	

@@ -1,6 +1,8 @@
 package com.acgist.snail.pojo.bean;
 
+import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.NumberUtils;
+import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>Piece信息</p>
@@ -22,11 +24,14 @@ public class TorrentPiece {
 	private final int end; // Piece结束偏移：选择下载时设置
 	private final int length; // 数据的长度：等于end-begin
 	private final byte[] data; // 数据：长度等于length
+	
+	private final byte[] verify; // 校验数据
 
 	private int size; // 已下载大小
 	private int position; // 请求内偏移
 	
-	public TorrentPiece(long pieceLength, int index, int begin, int end) {
+	private TorrentPiece(byte[] verify, long pieceLength, int index, int begin, int end) {
+		this.verify = verify;
 		this.pieceLength = pieceLength;
 		this.index = index;
 		this.begin = begin;
@@ -37,6 +42,10 @@ public class TorrentPiece {
 		this.position = 0;
 	}
 
+	public static final TorrentPiece newInstance(byte[] verify, long pieceLength, int index, int begin, int end) {
+		return newInstance(verify, pieceLength, index, begin, end);
+	}
+	
 	/**
 	 * 开始偏移
 	 */
@@ -142,6 +151,17 @@ public class TorrentPiece {
 			this.size += bytes.length;
 			return complete();
 		}
+	}
+	
+	/**
+	 * 校验数据
+	 */
+	public boolean verify() {
+		if(this.verify == null) {
+			return true;
+		}
+		final var sum = StringUtils.sha1(this.data);
+		return ArrayUtils.equals(sum, this.verify);
 	}
 
 }

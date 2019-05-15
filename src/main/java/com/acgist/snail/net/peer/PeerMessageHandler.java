@@ -312,11 +312,18 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	private void handshake(ByteBuffer buffer) {
 		LOGGER.debug("被握手");
 		final byte length = buffer.get();
+		if(length <= 0) {
+			LOGGER.warn("握手消息格式错误，长度：{}", length);
+			this.close();
+			return;
+		}
 		final byte[] names = new byte[length];
 		buffer.get(names);
 		final String name = new String(names);
 		if(!HANDSHAKE_NAME.equals(name)) {
 			LOGGER.warn("下载协议错误：{}", name);
+			this.close();
+			return;
 		}
 		final byte[] reserved = new byte[8];
 		buffer.get(reserved);
