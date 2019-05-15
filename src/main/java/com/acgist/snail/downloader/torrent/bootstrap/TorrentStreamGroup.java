@@ -188,10 +188,11 @@ public class TorrentStreamGroup {
 		}
 		if(buffer.position() < length) { // 如果数据读取不满足要求
 			LOGGER.warn("读取Piece数据不满足要求，读取长度：{}，要求长度：{}", buffer.position(), length);
-			final var value = new byte[buffer.position()];
-			buffer.flip();
-			buffer.get(value);
-			return value;
+			return null;
+//			final var value = new byte[buffer.position()];
+//			buffer.flip();
+//			buffer.get(value);
+//			return value;
 		}
 		return buffer.array();
 	}

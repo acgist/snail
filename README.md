@@ -9,7 +9,7 @@
 		<img alt="Build" src="https://img.shields.io/badge/Build-passing-success.svg?style=flat-square" />
 	</a>
 	<a>
-		<img alt="Version" src="https://img.shields.io/badge/Version-1.0.1-blue.svg?style=flat-square" />
+		<img alt="Version" src="https://img.shields.io/badge/Version-1.0.2-blue.svg?style=flat-square" />
 	</a>
 	<a target="_blank" href="https://www.acgist.com">
 		<img alt="Author" src="https://img.shields.io/badge/Author-acgist-red.svg?style=flat-square" />

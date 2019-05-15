@@ -227,7 +227,7 @@ public class TorrentStream {
 			return null;
 		}
 		long seek = 0L;
-		final long beginPos = pieceLength * index + pos;
+		final long beginPos = this.pieceLength * index + pos;
 		final long endPos = beginPos + size;
 		if(beginPos >= this.fileEndPos) {
 			return null;
@@ -333,11 +333,8 @@ public class TorrentStream {
 			return;
 		}
 		list.stream().forEach(piece -> {
-			if(
-				piece.getIndex() < this.fileBeginPieceIndex ||
-				piece.getIndex() > this.fileEndPieceIndex
-			) {
-				LOGGER.warn("写入文件索引错误");
+			if(piece.getIndex() < this.fileBeginPieceIndex || piece.getIndex() > this.fileEndPieceIndex) {
+				LOGGER.warn("写入文件索引错误：{}", piece.getIndex());
 				return;
 			}
 			int offset = 0;
