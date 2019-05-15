@@ -113,12 +113,12 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	private boolean init(String infoHashHex, byte[] peerId, byte[] reserved) {
 		final TorrentSession torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
 		if(torrentSession == null) {
-			LOGGER.debug("初始化失败，不存在的种子信息");
+			LOGGER.warn("Peer连接初始化失败，不存在的种子信息");
 			return false;
 		}
 		final TaskSession taskSession = torrentSession.taskSession();
 		if(taskSession == null) {
-			LOGGER.debug("初始化失败，不存在的任务信息");
+			LOGGER.warn("Peer连接初始化失败，不存在的任务信息");
 			return false;
 		}
 		InetSocketAddress address = null;
@@ -128,12 +128,16 @@ public class PeerMessageHandler extends TcpMessageHandler {
 			LOGGER.error("Peer远程客户端信息获取异常", e);
 		}
 		if(address == null) {
-			LOGGER.debug("初始化失败，获取远程Peer信息失败");
+			LOGGER.warn("Peer连接初始化失败，获取远程Peer信息失败");
 			return false;
 		}
 		final PeerConnectGroup peerConnectGroup = torrentSession.peerConnectGroup();
 		final PeerSession peerSession = PeerManager.getInstance().newPeerSession(infoHashHex, taskSession.statistics(), address.getHostString(), null, PeerConfig.SOURCE_CONNECT);
 		peerSession.id(peerId);
+		if(peerConnectGroup == null) {
+			LOGGER.warn("Peer连接初始化失败，没有Peer连接管理组");
+			return false;
+		}
 		final boolean ok = peerConnectGroup.newPeerConnect(peerSession, this);
 		if(ok) {
 			init(peerSession, torrentSession, reserved);

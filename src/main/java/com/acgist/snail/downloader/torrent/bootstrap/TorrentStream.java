@@ -123,6 +123,7 @@ public class TorrentStream {
 		List<TorrentPiece> list = null; // 写入文件的Piece
 		synchronized (this) {
 			if(filePieces.offer(piece)) {
+				LOGGER.debug("保存Piece：{}", piece.getIndex());
 				this.done(piece.getIndex());
 				this.torrentStreamGroup.piece(piece.getIndex());
 				final long bufferSize = this.fileBuffer.addAndGet(piece.getLength());
@@ -337,6 +338,7 @@ public class TorrentStream {
 				LOGGER.warn("写入文件索引错误：{}", piece.getIndex());
 				return;
 			}
+			LOGGER.debug("写入硬盘Piece：{}", piece.getIndex());
 			int offset = 0;
 			long seek = 0L;
 			int length = piece.getLength();
