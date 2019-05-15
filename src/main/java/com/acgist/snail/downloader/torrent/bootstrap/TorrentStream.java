@@ -24,9 +24,8 @@ import com.acgist.snail.utils.FileUtils;
  * （除了文件开头和结尾可能不是一个完整的Piece）
  * </p>
  * <p>
- * 块是否下载：判断每个块前面10字节数据。
+ * 块是否下载：判断每个块前面10字节数据。数据校验在下载时校验。
  * </p>
- * TODO：文件校验，Piece校验
  * 
  * @author acgist
  * @since 1.0.0
@@ -176,7 +175,7 @@ public class TorrentStream {
 			if(index == this.fileEndPieceIndex) { // 最后一块获取结束偏移
 				end = lastPieceSize();
 			}
-			return new TorrentPiece(this.pieceLength, index, begin, end);
+			return TorrentPiece.newInstance(null, this.pieceLength, index, begin, end);
 		}
 	}
 
