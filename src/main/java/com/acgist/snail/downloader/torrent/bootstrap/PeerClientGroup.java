@@ -197,7 +197,9 @@ public class PeerClientGroup {
 			}
 		}
 		if(unusable) {
-			this.peerClients.offer(inferior);
+			if(inferior != null) {
+				this.peerClients.offer(inferior);
+			}
 		} else {
 			inferiorPeerClient(inferior);
 		}
