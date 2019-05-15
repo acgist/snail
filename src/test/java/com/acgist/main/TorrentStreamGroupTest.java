@@ -45,8 +45,8 @@ public class TorrentStreamGroupTest {
 	 */
 	@Test
 	public void verify() throws DownloadException {
-		String path = "e:/snail/12345.torrent";
-//		String path = "E:\\tmp\\[Skytree][海贼王][One_Piece][884][GB_JP][X264_AAC][720P][CRRIP][天空树双语字幕组].mp4\\[Skytree][ONE PIECE 海贼王][884][X264][720P][GB_JP][MP4][CRRIP][中日双语字幕].torrent";
+//		String path = "e:/snail/12345.torrent";
+		String path = "E:\\tmp\\[Skytree][海贼王][One_Piece][884][GB_JP][X264_AAC][720P][CRRIP][天空树双语字幕组].mp4\\[Skytree][ONE PIECE 海贼王][884][X264][720P][GB_JP][MP4][CRRIP][中日双语字幕].torrent";
 		TorrentSession session = TorrentManager.getInstance().newTorrentSession(path);
 		var files = session.torrent().getInfo().files();
 		byte[] pieces = session.torrent().getInfo().getPieces();
@@ -54,8 +54,8 @@ public class TorrentStreamGroupTest {
 		files.forEach(file -> {
 			file.select(true);
 		});
-		TorrentStreamGroup group = TorrentStreamGroup.newInstance("e://tmp/client/", files, session);
-//		TorrentStreamGroup group = TorrentStreamGroup.newInstance("E:\\tmp\\[Skytree][海贼王][One_Piece][884][GB_JP][X264_AAC][720P][CRRIP][天空树双语字幕组].mp4", session.torrent(), files, session);
+//		TorrentStreamGroup group = TorrentStreamGroup.newInstance("e://tmp/client/", files, session);
+		TorrentStreamGroup group = TorrentStreamGroup.newInstance("E:\\tmp\\[Skytree][海贼王][One_Piece][884][GB_JP][X264_AAC][720P][CRRIP][天空树双语字幕组].mp4", files, session);
 		var downloadPieces = group.pieces();
 		int index = downloadPieces.nextSetBit(0);
 		int length = session.torrent().getInfo().getPieceLength().intValue();
