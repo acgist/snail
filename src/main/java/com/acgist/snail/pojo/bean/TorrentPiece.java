@@ -62,7 +62,7 @@ public class TorrentPiece {
 	}
 	
 	/**
-	 * 判断文件是否包含当前Piece
+	 * 判断文件是否包含当前Piece。包含开始，不包含结束，所以判断时都需要使用等于。
 	 * 
 	 * @param fileBeginPos 文件开始偏移
 	 * @param fileEndPos 文件结束偏移
@@ -73,7 +73,7 @@ public class TorrentPiece {
 		if(endPos <= fileBeginPos) {
 			return false;
 		}
-		if(beginPos > fileEndPos) {
+		if(beginPos >= fileEndPos) {
 			return false;
 		}
 		return true;
