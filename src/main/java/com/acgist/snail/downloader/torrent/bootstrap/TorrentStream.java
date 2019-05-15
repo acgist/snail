@@ -319,9 +319,9 @@ public class TorrentStream {
 	 * <p>将缓存队列所有的Piece块刷出。</p>
 	 */
 	private List<TorrentPiece> flush() {
-		int size = filePieces.size();
+		int size = this.filePieces.size();
 		final List<TorrentPiece> list = new ArrayList<>(size);
-		filePieces.drainTo(list, size);
+		this.filePieces.drainTo(list, size);
 		return list;
 	}
 	
