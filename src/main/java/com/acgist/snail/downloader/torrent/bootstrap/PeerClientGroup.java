@@ -78,10 +78,12 @@ public class PeerClientGroup {
 	}
 	
 	/**
-	 * 获取优秀的PeerSession
+	 * 获取优秀的PeerSession，同时清空旧数据。
 	 */
 	public List<PeerSession> optimizePeerSession() {
-		return this.optimize;
+		final var list = new ArrayList<>(this.optimize);
+		this.optimize.clear();
+		return list;
 	}
 
 	/**
@@ -131,7 +133,7 @@ public class PeerClientGroup {
 			if(ok) {
 				peerSession.status(PeerConfig.STATUS_DOWNLOAD); // 设置下载中
 				peerClients.add(client);
-			} else { // 失败后需要放回队列：要不要放回队列
+			} else { // 失败后需要放回队列。
 				peerManager.inferior(torrentSession.infoHashHex(), peerSession);
 			}
 			return true;
