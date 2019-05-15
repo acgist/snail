@@ -58,7 +58,6 @@ public abstract class TcpMessageHandler extends TcpSender implements CompletionH
 
 	@Override
 	public void completed(Integer result, ByteBuffer attachment) {
-//		synchronized (this) {
 		if (result == null) {
 			this.close();
 		} else if(result == -1) { // 服务端关闭
@@ -77,7 +76,6 @@ public abstract class TcpMessageHandler extends TcpSender implements CompletionH
 		} else {
 			loopRead();
 		}
-//		}
 	}
 	
 	@Override
