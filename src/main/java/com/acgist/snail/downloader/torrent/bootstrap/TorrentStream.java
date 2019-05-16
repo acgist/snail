@@ -92,9 +92,9 @@ public class TorrentStream {
 		this.filePieces = new LinkedBlockingQueue<>();
 		FileUtils.buildFolder(this.file, true); // 创建文件父目录，否者会抛出FileNotFoundException
 		this.fileStream = new RandomAccessFile(this.file, "rw");
-		initFilePiece();
-		initFilePieces();
-		initDownloadSize();
+		buildFilePiece();
+		buildFilePieces();
+		buildDownloadSize();
 		selectPieces.set(this.fileBeginPieceIndex, this.fileEndPieceIndex + 1, true);
 		if(LOGGER.isDebugEnabled()) {
 			LOGGER.debug(
@@ -133,19 +133,19 @@ public class TorrentStream {
 				LOGGER.debug("保存Piece：{}", piece.getIndex());
 				this.done(piece.getIndex());
 				final long bufferSize = this.fileBuffer.addAndGet(piece.getLength());
-				final long downloadSize = this.fileDownloadSize.addAndGet(piece.getLength());
+				this.buildDownloadSize();
 				if(
 					bufferSize >= DownloadConfig.getPeerMemoryBufferByte() || // 大于缓存
-					downloadSize >= this.fileSize // 下载完成
+					this.complete() // 下载完成
 				) {
 					this.fileBuffer.set(0L); // 清空
-					list = flush();
+					list = flushPieces();
 				}
 			} else {
 				// TODO：重新返回Piece位图
 				LOGGER.error("保存Piece失败");
 			}
-			write(list);
+			this.write(list);
 		}
 		return ok;
 	}
@@ -318,17 +318,23 @@ public class TorrentStream {
 	public boolean complete() {
 		return pieces.cardinality() >= this.filePieceSize;
 	}
+	
+	/**
+	 * 刷新所有缓存，保存到硬盘
+	 */
+	public void flush() {
+		synchronized (this) {
+			final List<TorrentPiece> list = flushPieces();
+			this.write(list);
+		}
+	}
 
 	/**
 	 * <p>释放资源</p>
 	 * <p>将已下载的块写入文件，然后关闭文件流。</p>
 	 */
 	public void release() {
-		List<TorrentPiece> list = null;
-		synchronized (this) {
-			list = flush();
-			write(list);
-		}
+		this.flush();
 		try {
 			fileStream.close();
 		} catch (IOException e) {
@@ -340,7 +346,7 @@ public class TorrentStream {
 	 * <p>刷新缓存</p>
 	 * <p>将缓存队列所有的Piece块刷出。</p>
 	 */
-	private List<TorrentPiece> flush() {
+	private List<TorrentPiece> flushPieces() {
 		final List<TorrentPiece> list = new ArrayList<>();
 		this.filePieces.drainTo(list);
 		return list;
@@ -388,7 +394,7 @@ public class TorrentStream {
 	/**
 	 * 初始化：开始块序号，结束块序号等
 	 */
-	private void initFilePiece() {
+	private void buildFilePiece() {
 		this.fileBeginPieceIndex = (int) (this.fileBeginPos / this.pieceLength);
 		this.fileEndPieceIndex = (int) (this.fileEndPos / this.pieceLength);
 		this.filePieceSize = this.fileEndPieceIndex - this.fileBeginPieceIndex;
@@ -404,7 +410,7 @@ public class TorrentStream {
 	/**
 	 * 初始化：已下载块，校验HASH（第一块和最后一块不校验）。
 	 */
-	private void initFilePieces() {
+	private void buildFilePieces() {
 		int pos = 0;
 		int length = 0;
 		byte[] hash = null;
@@ -447,7 +453,7 @@ public class TorrentStream {
 	/**
 	 * 初始化：已下载文件大小
 	 */
-	private void initDownloadSize() {
+	private void buildDownloadSize() {
 		long size = 0L;
 		int downloadPieceSize = this.pieces.cardinality();
 		if(havePiece(this.fileBeginPieceIndex)) {

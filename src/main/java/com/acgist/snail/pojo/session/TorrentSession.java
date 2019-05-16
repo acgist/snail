@@ -326,9 +326,10 @@ public class TorrentSession {
 	/**
 	 * 检测是否完成下载，释放资源
 	 */
-	public void complete() {
+	public void completeCheck() {
 		if(torrentStreamGroup.complete()) {
 			LOGGER.debug("任务下载完成：{}", name());
+			torrentStreamGroup.flush();
 			taskSession.downloader().unlockDownload();
 		}
 	}
