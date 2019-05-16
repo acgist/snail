@@ -56,7 +56,7 @@ public class GetPeersRequest extends Request {
 			final var list = PeerManager.getInstance().list(infoHashHex);
 			if(CollectionUtils.isNotEmpty(list)) {
 				final var values = list.stream()
-					.filter(peer -> peer.usable())
+					.filter(peer -> peer.available())
 					.limit(NodeManager.GET_PEER_LENGTH)
 					.map(peer -> {
 						buffer.putInt(NetUtils.encodeIpToInt(peer.host()));

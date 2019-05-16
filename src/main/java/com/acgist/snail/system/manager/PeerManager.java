@@ -121,7 +121,7 @@ public class PeerManager {
 					break;
 				}
 				peerSession = deque.pollLast();
-				if(peerSession.usable()) { // 可用
+				if(peerSession.available()) { // 可用
 					return peerSession;
 				} else {
 					deque.offerFirst(peerSession);
