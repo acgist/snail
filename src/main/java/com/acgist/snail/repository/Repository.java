@@ -2,6 +2,7 @@ package com.acgist.snail.repository;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -18,7 +19,6 @@ import com.acgist.snail.system.exception.RepositoryException;
 import com.acgist.snail.system.manager.DatabaseManager;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.EntityUtils;
-import com.acgist.snail.utils.JsonUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -74,7 +74,7 @@ public abstract class Repository<T extends BaseEntity> {
 			.append(sqlValue);
 		if(LOGGER.isDebugEnabled()) {
 			LOGGER.debug("SQL语句：{}", sql);
-			LOGGER.debug("SQL参数：{}", JsonUtils.toJson(parameters));
+			LOGGER.debug("SQL参数：{}", Arrays.asList(parameters));
 		}
 		jdbcConnection.update(sql.toString(), parameters);
 	}
@@ -112,7 +112,7 @@ public abstract class Repository<T extends BaseEntity> {
 			.append(" WHERE ID = ?");
 		if(LOGGER.isDebugEnabled()) {
 			LOGGER.debug("SQL语句：{}", sql);
-			LOGGER.debug("SQL参数：{}", JsonUtils.toJson(parameters));
+			LOGGER.debug("SQL参数：{}", Arrays.asList(parameters));
 		}
 		jdbcConnection.update(sql.toString(), parameters);
 	}

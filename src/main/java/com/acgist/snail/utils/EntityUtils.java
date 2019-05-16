@@ -12,6 +12,8 @@ import com.acgist.snail.pojo.wrapper.ResultSetWrapper;
 
 /**
  * 实体工具
+ * 
+ * TODO：beanUtils合并
  */
 public class EntityUtils {
 

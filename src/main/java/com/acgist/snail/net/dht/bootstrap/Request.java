@@ -12,7 +12,6 @@ import com.acgist.snail.system.bcode.BCodeEncoder;
 import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.system.config.DhtConfig.QType;
 import com.acgist.snail.utils.ArrayUtils;
-import com.acgist.snail.utils.JsonUtils;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.ObjectUtils;
 
@@ -222,7 +221,7 @@ public class Request {
 	
 	@Override
 	public String toString() {
-		return JsonUtils.toJson(this);
+		return ObjectUtils.toString(this);
 	}
 	
 }

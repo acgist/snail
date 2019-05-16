@@ -40,7 +40,7 @@ public class ApplicationClient extends TcpClient<ApplicationMessageHandler> {
 	 */
 	private void send(ApplicationMessage message) {
 		try {
-			send(message.toJson());
+			send(message.toString());
 		} catch (NetException e) {
 			LOGGER.error("Application消息发送异常", e);
 		}

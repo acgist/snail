@@ -1,6 +1,7 @@
 package com.acgist.snail.pojo.message;
 
-import com.acgist.snail.utils.JsonUtils;
+import com.acgist.snail.pojo.wrapper.BCodeEncoderWrapper;
+import com.acgist.snail.system.bcode.BCodeDecoder;
 
 /**
  * Application消息
@@ -63,15 +64,22 @@ public class ApplicationMessage {
 	/**
 	 * 转换为JSON字符串
 	 */
-	public String toJson() {
-		return JsonUtils.toJson(this);
+	public String toString() {
+		final BCodeEncoderWrapper wrapper = BCodeEncoderWrapper.newMapInstance();
+		wrapper.put("type", this.type.name());
+		wrapper.put("body", this.body);
+		return wrapper.toString();
 	}
 	
 	/**
 	 * JSON字符串变成ApplicationMessage对象
 	 */
 	public static final ApplicationMessage valueOf(String content) {
-		return JsonUtils.toJava(content, ApplicationMessage.class);
+		final BCodeDecoder decoder = BCodeDecoder.newInstance(content.getBytes());
+		decoder.nextMap();
+		final String type = decoder.getString("type");
+		final String body = decoder.getString("body");
+		return new ApplicationMessage(Type.valueOf(type), body);
 	}
 	
 	/**
@@ -85,9 +93,7 @@ public class ApplicationMessage {
 	 * 消息
 	 */
 	public static final ApplicationMessage message(Type type, String body) {
-		ApplicationMessage message = new ApplicationMessage(type);
-		message.setBody(body);
-		return message;
+		return new ApplicationMessage(type, body);
 	}
 	
 	/**

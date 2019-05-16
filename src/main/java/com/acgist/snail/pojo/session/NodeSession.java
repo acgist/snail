@@ -1,7 +1,6 @@
 package com.acgist.snail.pojo.session;
 
 import com.acgist.snail.utils.ArrayUtils;
-import com.acgist.snail.utils.JsonUtils;
 import com.acgist.snail.utils.ObjectUtils;
 
 /**
@@ -91,7 +90,7 @@ public class NodeSession implements Comparable<NodeSession> {
 	
 	@Override
 	public String toString() {
-		return JsonUtils.toJson(this);
+		return ObjectUtils.toString(this);
 	}
 
 	@Override
