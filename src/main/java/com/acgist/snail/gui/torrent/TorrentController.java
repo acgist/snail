@@ -81,7 +81,7 @@ public class TorrentController implements Initializable {
 		.filter(file -> !file.path().startsWith(HIDE_FILE_PREFIX))
 		.sorted((a, b) -> a.path().compareTo(b.path()))
 		.forEach(file -> selecter.build(file.path(), file.getLength()));
-		selecter.select(taskSession.downloadTorrentFiles());
+		selecter.select(taskSession);
 	}
 	
 	/**
