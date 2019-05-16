@@ -20,8 +20,8 @@ import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.PeerMessageConfig;
-import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.config.PeerMessageConfig.Action;
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.system.manager.PeerManager;
 import com.acgist.snail.system.manager.TorrentManager;
@@ -117,11 +117,11 @@ public class PeerMessageHandler extends TcpMessageHandler {
 			LOGGER.warn("Peer连接初始化失败，不存在的种子信息");
 			return false;
 		}
-		final TaskSession taskSession = torrentSession.taskSession();
-		if(taskSession == null) {
-			LOGGER.warn("Peer连接初始化失败，不存在的任务信息");
+		if(!torrentSession.uploadable()) {
+			LOGGER.warn("Peer连接初始化失败，Torrent任务不可上传");
 			return false;
 		}
+		final TaskSession taskSession = torrentSession.taskSession();
 		InetSocketAddress address = null;
 		try {
 			address = (InetSocketAddress) socket.getRemoteAddress();
@@ -132,13 +132,9 @@ public class PeerMessageHandler extends TcpMessageHandler {
 			LOGGER.warn("Peer连接初始化失败，获取远程Peer信息失败");
 			return false;
 		}
-		final PeerConnectGroup peerConnectGroup = torrentSession.peerConnectGroup();
-		if(peerConnectGroup == null) {
-			LOGGER.warn("Peer连接初始化失败，没有Peer连接管理组");
-			return false;
-		}
 		final PeerSession peerSession = PeerManager.getInstance().newPeerSession(infoHashHex, taskSession.statistics(), address.getHostString(), null, PeerConfig.SOURCE_CONNECT);
 		peerSession.id(peerId);
+		final PeerConnectGroup peerConnectGroup = torrentSession.peerConnectGroup();
 		final boolean ok = peerConnectGroup.newPeerConnect(peerSession, this);
 		if(ok) {
 			init(peerSession, torrentSession, reserved);

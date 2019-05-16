@@ -56,6 +56,15 @@ public class TorrentSession {
 	private static final Duration PEER_OPTIMIZE_INTERVAL = Duration.ofSeconds(SystemConfig.getPeerOptimizeInterval());
 
 	/**
+	 * 可上传
+	 */
+	private boolean uploadable = false;
+	/**
+	 * 可下载
+	 */
+	private boolean downloadable = false;
+	
+	/**
 	 * 种子
 	 */
 	private final Torrent torrent;
@@ -133,6 +142,7 @@ public class TorrentSession {
 		this.loadTorrentStreamGroup();
 		this.loadPeerConnectGroup();
 		this.loadPeerConnectTimer();
+		this.uploadable = true;
 		return this;
 	}
 	
@@ -163,6 +173,7 @@ public class TorrentSession {
 		this.loadPeerClientGroup();
 		this.loadPeerClientTimer();
 		this.loadPexTimer();
+		this.downloadable = true;
 		return false;
 	}
 
@@ -337,6 +348,7 @@ public class TorrentSession {
 			this.trackerLauncherGroup.release();
 		}
 		SystemThreadContext.shutdownNow(this.executor);
+		this.downloadable = false;
 	}
 	
 	/**
@@ -348,6 +360,7 @@ public class TorrentSession {
 		this.peerConnectGroup.release();
 		this.torrentStreamGroup.release();
 		SystemThreadContext.shutdownNow(this.executorTimer);
+		this.uploadable = false;
 	}
 
 	/**
@@ -405,6 +418,20 @@ public class TorrentSession {
 		}
 		return name;
 	}
+
+	/**
+	 * 是否可以下载
+	 */
+	public boolean uploadable() {
+		return this.uploadable;
+	}
+	
+	/**
+	 * 是否可以下载
+	 */
+	public boolean downloadable() {
+		return this.downloadable;
+	}
 	
 	public Torrent torrent() {
 		return this.torrent;
@@ -422,6 +449,9 @@ public class TorrentSession {
 		return this.taskSession;
 	}
 	
+	/**
+	 * 可能为null
+	 */
 	public DhtLauncher dhtLauncher() {
 		return this.dhtLauncher;
 	}
@@ -438,6 +468,9 @@ public class TorrentSession {
 		return this.torrentStreamGroup;
 	}
 	
+	/**
+	 * 可能为null
+	 */
 	public TrackerLauncherGroup trackerLauncherGroup() {
 		return this.trackerLauncherGroup;
 	}
