@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
+import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.FileUtils;
 
@@ -119,13 +120,26 @@ public class FileSelecter {
 	}
 
 	/**
-	 * 设置已选中信息
+	 * <p>设置已选中信息，如果没有设置将自动选择。</p>
+	 * <p>自动选择：选择平均值大的文件。</p>
 	 */
-	public void select(List<String> list) {
+	public void select(TaskSession taskSession) {
+		final var list = taskSession.downloadTorrentFiles();
 		if(CollectionUtils.isNotEmpty(list)) {
-			checkBoxMap.entrySet().stream()
+			this.checkBoxMap.entrySet().stream()
 			.filter(entry -> list.contains(entry.getKey()))
 			.forEach(entry -> entry.getValue().setSelected(true));
+		} else {
+			// 平均值
+			final var avg = this.sizeMap.values().stream()
+				.collect(Collectors.averagingInt(Long::intValue));
+			this.checkBoxMap.entrySet().stream()
+			.filter(entry -> {
+				if(sizeMap.get(entry.getValue()) == null) { // 根是null
+					return false;
+				}
+				return sizeMap.get(entry.getValue()) >= avg;
+			}).forEach(entry -> entry.getValue().setSelected(true));
 		}
 		buttonSize();
 	}
