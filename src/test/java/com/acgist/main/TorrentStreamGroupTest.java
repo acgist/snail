@@ -9,6 +9,7 @@ import com.acgist.snail.downloader.torrent.bootstrap.TorrentStreamGroup;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.TorrentInfo;
 import com.acgist.snail.system.exception.DownloadException;
+import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.system.manager.TorrentManager;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -47,7 +48,7 @@ public class TorrentStreamGroupTest {
 	 * 文件校验
 	 */
 	@Test
-	public void verify() throws DownloadException {
+	public void verify() throws DownloadException, NetException {
 //		String path = "e:/snail/12345.torrent";
 		String path = "E:\\gitee\\snail\\download\\[Sakurato.sub][One Punch Man 2nd Season][06][GB][720P]\\[桜都字幕组][一拳超人 第2季_One Punch Man 2nd Season][06][GB][720P].torrent";
 		TorrentSession session = TorrentManager.getInstance().newTorrentSession(path);

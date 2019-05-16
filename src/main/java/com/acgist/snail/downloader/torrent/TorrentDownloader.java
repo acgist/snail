@@ -69,7 +69,9 @@ public class TorrentDownloader extends Downloader {
 	 */
 	@Override
 	public void delete() {
-		torrentSession.releaseUpload();
+		if(torrentSession != null) {
+			torrentSession.releaseUpload();
+		}
 		super.delete();
 	}
 	

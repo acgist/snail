@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.TcpMessageHandler;
+import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.ThreadUtils;
@@ -43,7 +44,7 @@ public class FtpMessageHandler extends TcpMessageHandler {
 	}
 
 	@Override
-	public void onMessage(ByteBuffer attachment) {
+	public void onMessage(ByteBuffer attachment) throws NetException {
 		String command = IoUtils.readContent(attachment);
 		if(command.contains(SPLIT)) {
 			int index = command.indexOf(SPLIT);

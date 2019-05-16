@@ -13,6 +13,11 @@ public class SystemConfig extends PropertiesConfig {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseConfig.class);
 	
+	/**
+	 * 最大的网络包大小
+	 */
+	public static final int MAX_NET_BUFFER_SIZE = 10 * 1024 * 1024;
+	
 	private static final String SYSTEM_CONFIG = "/config/system.properties";
 	
 	/**

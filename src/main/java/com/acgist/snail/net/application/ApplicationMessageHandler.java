@@ -33,7 +33,7 @@ public class ApplicationMessageHandler extends TcpMessageHandler {
 	}
 	
 	@Override
-	public void onMessage(ByteBuffer attachment) {
+	public void onMessage(ByteBuffer attachment) throws NetException {
 		String content = IoUtils.readContent(attachment);
 		if(content.contains(SPLIT)) {
 			int index = content.indexOf(SPLIT);

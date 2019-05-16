@@ -20,6 +20,7 @@ import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.PeerMessageConfig;
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.config.PeerMessageConfig.Action;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.system.manager.PeerManager;
@@ -176,11 +177,11 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	}
 	
 	@Override
-	public void onMessage(ByteBuffer attachment) {
+	public void onMessage(ByteBuffer attachment) throws NetException {
 		int length = 0;
 		attachment.flip();
 		while(true) {
-			if(buffer == null) {
+			if(this.buffer == null) {
 				if(handshake) {
 					for (int index = 0; index < attachment.limit(); index++) {
 						lengthStick.put(attachment.get());
@@ -202,33 +203,36 @@ public class PeerMessageHandler extends TcpMessageHandler {
 					keepAlive();
 					break;
 				}
-				buffer = ByteBuffer.allocate(length);
+				if(length >= SystemConfig.MAX_NET_BUFFER_SIZE) {
+					throw new NetException("超过最大的网络包大小：" + length);
+				}
+				this.buffer = ByteBuffer.allocate(length);
 			} else {
-				length = buffer.capacity() - buffer.position();
+				length = this.buffer.capacity() - this.buffer.position();
 			}
 			final int remaining = attachment.remaining();
 			if(remaining > length) { // 包含一个完整消息
 				byte[] bytes = new byte[length];
 				attachment.get(bytes);
-				buffer.put(bytes);
-				oneMessage(buffer);
-				buffer = null;
+				this.buffer.put(bytes);
+				oneMessage(this.buffer);
+				this.buffer = null;
 			} else if(remaining == length) { // 刚好一个完整消息
 				byte[] bytes = new byte[length];
 				attachment.get(bytes);
-				buffer.put(bytes);
-				oneMessage(buffer);
-				buffer = null;
+				this.buffer.put(bytes);
+				oneMessage(this.buffer);
+				this.buffer = null;
 				break;
 			} else if(remaining < length) { // 不是完整消息
 				byte[] bytes = new byte[remaining];
 				attachment.get(bytes);
-				buffer.put(bytes);
+				this.buffer.put(bytes);
 				break;
 			}
 		}
 	}
-	
+
 	/**
 	 * 处理单条消息
 	 */
@@ -553,8 +557,12 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		final int length = buffer.getInt();
 		LOGGER.debug("收到请求：{}-{}-{}", index, begin, length);
 		if(torrentStreamGroup.have(index)) {
-			byte[] bytes = torrentStreamGroup.read(index, begin, length);
-			piece(index, begin, bytes); // bytes == null也要发送数据
+			try {
+				final byte[] bytes = torrentStreamGroup.read(index, begin, length);
+				piece(index, begin, bytes);
+			} catch (NetException e) {
+				LOGGER.error("处理请求异常", e);
+			}
 		}
 	}
 
