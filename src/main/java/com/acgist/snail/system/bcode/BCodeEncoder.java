@@ -1,12 +1,12 @@
 package com.acgist.snail.system.bcode;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.core.util.ByteArrayBuilder;
 
 /**
  * 种子磁力链接HASH生成器：<br>
@@ -17,10 +17,11 @@ public class BCodeEncoder {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BCodeEncoder.class);
 	
-	private ByteArrayBuilder builder;
+	private ByteArrayOutputStream outputStream;
+//	private ByteArrayBuilder builder;
 	
 	private BCodeEncoder() {
-		builder = new ByteArrayBuilder();
+		outputStream = new ByteArrayOutputStream();
 	}
 	
 	public static final BCodeEncoder newInstance() {
@@ -38,16 +39,16 @@ public class BCodeEncoder {
 	 * 获取map
 	 */
 	public BCodeEncoder build(Map<?, ?> map) {
-		builder.write(BCodeDecoder.TYPE_D);
+		outputStream.write(BCodeDecoder.TYPE_D);
 		map.forEach((key, value) -> {
 			String keyValue = (String) key;
-			builder.write(String.valueOf(keyValue.getBytes().length).getBytes());
-			builder.write(BCodeDecoder.SEPARATOR);
-			builder.write(keyValue.getBytes());
+			this.write(String.valueOf(keyValue.getBytes().length).getBytes());
+			outputStream.write(BCodeDecoder.SEPARATOR);
+			this.write(keyValue.getBytes());
 			if(value instanceof Number) {
-				builder.write(BCodeDecoder.TYPE_I);
-				builder.write(value.toString().getBytes());
-				builder.write(BCodeDecoder.TYPE_E);
+				outputStream.write(BCodeDecoder.TYPE_I);
+				this.write(value.toString().getBytes());
+				outputStream.write(BCodeDecoder.TYPE_E);
 			} else if(value instanceof Map) {
 				build((Map<?, ?>) value);
 			} else if(value instanceof List) {
@@ -62,13 +63,13 @@ public class BCodeEncoder {
 					LOGGER.warn("BCode不支持的类型，key：{}，value：{}", key, value);
 				}
 				if(bytes != null) {
-					builder.write(String.valueOf(bytes.length).getBytes());
-					builder.write(BCodeDecoder.SEPARATOR);
-					builder.write(bytes);
+					this.write(String.valueOf(bytes.length).getBytes());
+					outputStream.write(BCodeDecoder.SEPARATOR);
+					this.write(bytes);
 				}
 			}
 		});
-		builder.write(BCodeDecoder.TYPE_E);
+		outputStream.write(BCodeDecoder.TYPE_E);
 		return this;
 	}
 
@@ -76,12 +77,12 @@ public class BCodeEncoder {
 	 * 获取list
 	 */
 	public BCodeEncoder build(List<?> list) {
-		builder.write(BCodeDecoder.TYPE_L);
+		outputStream.write(BCodeDecoder.TYPE_L);
 		list.forEach(value -> {
 			if(value instanceof Number) {
-				builder.write(BCodeDecoder.TYPE_I);
-				builder.write(value.toString().getBytes());
-				builder.write(BCodeDecoder.TYPE_E);
+				outputStream.write(BCodeDecoder.TYPE_I);
+				this.write(value.toString().getBytes());
+				outputStream.write(BCodeDecoder.TYPE_E);
 			} else if(value instanceof Map) {
 				build((Map<?, ?>) value);
 			} else if(value instanceof List) {
@@ -96,18 +97,30 @@ public class BCodeEncoder {
 					LOGGER.warn("BCode不支持的类型，value：{}", value);
 				}
 				if(bytes != null) {
-					builder.write(String.valueOf(bytes.length).getBytes());
-					builder.write(BCodeDecoder.SEPARATOR);
-					builder.write(bytes);
+					this.write(String.valueOf(bytes.length).getBytes());
+					outputStream.write(BCodeDecoder.SEPARATOR);
+					this.write(bytes);
 				}
 			}
 		});
-		builder.write(BCodeDecoder.TYPE_E);
+		outputStream.write(BCodeDecoder.TYPE_E);
 		return this;
 	}
 	
+	private void write(byte[] bytes) {
+		try {
+			outputStream.write(bytes);
+		} catch (IOException e) {
+			LOGGER.error("B编码输出异常", e);
+		}
+	}
+	
 	public byte[] bytes() {
-		return builder.toByteArray();
+		return outputStream.toByteArray();
+	}
+	
+	public String toString() {
+		return new String(bytes());
 	}
 
 }
