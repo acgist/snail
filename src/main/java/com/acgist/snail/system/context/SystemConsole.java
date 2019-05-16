@@ -92,6 +92,7 @@ public class SystemConsole {
 		final var connect = new AtomicInteger(0);
 		final var upload = new AtomicInteger(0);
 		final var download = new AtomicInteger(0);
+		final var available = new AtomicInteger(0);
 		peers.entrySet().stream()
 		.filter(entry -> entry.getValue() != null)
 		.forEach(entry -> {
@@ -115,10 +116,14 @@ public class SystemConsole {
 				if(peer.downloading()) {
 					download.incrementAndGet();
 				}
+				if(peer.available()) {
+					available.incrementAndGet();
+				}
 			});
 			builder
 				.append("Peer InfoHashHex：").append(entry.getKey()).append("，")
 				.append("Peer数量：").append(list.size()).append("，")
+				.append("Peer数量（可用）：").append(available.getAndSet(0)).append("，")
 				.append("来源：")
 				.append("DHT-").append(dht.getAndSet(0)).append("、")
 				.append("PEX-").append(pex.getAndSet(0)).append("、")

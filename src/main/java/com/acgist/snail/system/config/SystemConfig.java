@@ -14,7 +14,8 @@ public class SystemConfig extends PropertiesConfig {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseConfig.class);
 	
 	/**
-	 * 最大的网络包大小
+	 * <p>最大的网络包大小。</p>
+	 * <p>所有的需要创建ByteBuffer的长度由外部Peer设置时需要验证长度，防止恶意攻击导致内存泄露。</p>
 	 */
 	public static final int MAX_NET_BUFFER_SIZE = 10 * 1024 * 1024;
 	

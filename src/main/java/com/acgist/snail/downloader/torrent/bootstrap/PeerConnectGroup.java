@@ -113,6 +113,10 @@ public class PeerConnectGroup {
 			if(tmp == null) {
 				break;
 			}
+			if(!tmp.getPeerMessageHandler().available()) { // 不可用直接剔除
+				inferiorPeerClient(tmp);
+				continue;
+			}
 			if(tmp.getPeerSession().downloading()) { // TODO：是否清除
 				this.peerConnectSessions.offer(tmp);
 				continue;

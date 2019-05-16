@@ -246,7 +246,7 @@ public class PeerSession implements IStatistics {
 	 * 	失败次数小于最大失败次数
 	 * 	有可用端口（如果是主动连接上来的客户端可能没有获取到端口号）
 	 */
-	public boolean usable() {
+	public boolean available() {
 		return
 			this.failTimes < MAX_FAIL_TIMES &&
 			this.port != null;
