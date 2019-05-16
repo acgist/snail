@@ -34,7 +34,6 @@ public class PeerClientGroup {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerClientGroup.class);
 	
-	private final PeerManager peerManager;
 	private final TaskSession taskSession;
 	private final TorrentSession torrentSession;
 	/**
@@ -50,7 +49,6 @@ public class PeerClientGroup {
 		this.taskSession = torrentSession.taskSession();
 		this.torrentSession = torrentSession;
 		this.peerClients = new LinkedBlockingQueue<>();
-		this.peerManager = PeerManager.getInstance();
 	}
 	
 	public static final PeerClientGroup newInstance(TorrentSession torrentSession) {
@@ -120,21 +118,21 @@ public class PeerClientGroup {
 	 * @return true-继续生成；false-不继续生成
 	 */
 	private boolean buildPeerClient() {
-		if(!taskSession.download()) {
+		if(!this.taskSession.download()) {
 			return false;
 		}
 		if(this.peerClients.size() >= SystemConfig.getPeerSize()) {
 			return false;
 		}
-		final PeerSession peerSession = peerManager.pick(torrentSession.infoHashHex());
+		final PeerSession peerSession = PeerManager.getInstance().pick(this.torrentSession.infoHashHex());
 		if(peerSession != null) {
-			final PeerClient client = PeerClient.newInstance(peerSession, torrentSession);
+			final PeerClient client = PeerClient.newInstance(peerSession, this.torrentSession);
 			final boolean ok = client.download();
 			if(ok) {
 				peerSession.status(PeerConfig.STATUS_DOWNLOAD); // 设置下载中
-				peerClients.add(client);
+				this.peerClients.add(client);
 			} else { // 失败后需要放回队列。
-				peerManager.inferior(torrentSession.infoHashHex(), peerSession);
+				PeerManager.getInstance().inferior(this.torrentSession.infoHashHex(), peerSession);
 			}
 			return true;
 		} else {
@@ -215,7 +213,7 @@ public class PeerClientGroup {
 			SystemThreadContext.submit(() -> {
 				peerClient.release();
 			});
-			peerManager.inferior(torrentSession.infoHashHex(), peerClient.peerSession());
+			PeerManager.getInstance().inferior(this.torrentSession.infoHashHex(), peerSession);
 		}
 	}
 
