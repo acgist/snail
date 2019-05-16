@@ -51,8 +51,5 @@ open module com.acgist.snail {
 	requires transitive com.h2database;
 	requires transitive ch.qos.logback.core;
 	requires transitive ch.qos.logback.classic;
-	requires transitive com.fasterxml.jackson.core;
-	requires transitive com.fasterxml.jackson.databind;
-	requires transitive com.fasterxml.jackson.annotation;
 
 }

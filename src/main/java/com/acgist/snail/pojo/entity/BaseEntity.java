@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.acgist.snail.utils.ObjectUtils;
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
  * Entity - 数据库实体基类
@@ -56,7 +55,6 @@ public class BaseEntity implements Serializable {
 	 * 获取创建日期
 	 * @return 创建日期
 	 */
-	@JsonFormat(pattern = TIMESTAMP_FORMAT)
 	public Date getCreateDate() {
 		return createDate;
 	}
@@ -73,7 +71,6 @@ public class BaseEntity implements Serializable {
 	 * 获取修改日期
 	 * @return 修改日期
 	 */
-	@JsonFormat(pattern = TIMESTAMP_FORMAT)
 	public Date getModifyDate() {
 		return modifyDate;
 	}
