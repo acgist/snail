@@ -7,7 +7,6 @@ import org.junit.Test;
 
 import com.acgist.snail.downloader.torrent.bootstrap.TorrentStreamGroup;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.protocol.torrent.bean.TorrentInfo;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.system.manager.TorrentManager;
@@ -50,11 +49,9 @@ public class TorrentStreamGroupTest {
 	@Test
 	public void verify() throws DownloadException, NetException {
 //		String path = "e:/snail/12345.torrent";
-		String path = "E:\\gitee\\snail\\download\\[Sakurato.sub][One Punch Man 2nd Season][06][GB][720P]\\[桜都字幕组][一拳超人 第2季_One Punch Man 2nd Season][06][GB][720P].torrent";
+		String path = "E:\\gitee\\snail\\download\\[Sakurato.sub][One Punch Man 2nd Season][06][GB][720P]\\一拳超人.torrent";
 		TorrentSession session = TorrentManager.getInstance().newTorrentSession(path);
 		var files = session.torrent().getInfo().files();
-		byte[] pieces = session.torrent().getInfo().getPieces();
-		System.out.println(pieces.length);
 		files.forEach(file -> {
 			if(file.path().contains("mp4")) {
 				file.select(true);
@@ -66,7 +63,8 @@ public class TorrentStreamGroupTest {
 		int index = downloadPieces.nextSetBit(0);
 		int length = session.torrent().getInfo().getPieceLength().intValue();
 		System.out.println(downloadPieces.cardinality());
-		System.out.println("总长度：" + (pieces.length / 20));
+		System.out.println("总长度：" + session.torrent().getInfo().pieceSize());
+		long begin = System.currentTimeMillis();
 		while(downloadPieces.nextSetBit(index) >= 0) {
 			var piece = group.read(index, 0, length);
 			if(piece == null) {
@@ -74,19 +72,14 @@ public class TorrentStreamGroupTest {
 				index++;
 				continue;
 			}
-			if(!ArrayUtils.equals(StringUtils.sha1(piece), select(pieces, index))) {
+			if(!ArrayUtils.equals(StringUtils.sha1(piece), group.pieceHash(index))) {
 //			if(!StringUtils.sha1Hex(piece).equals(StringUtils.hex(select(pieces, index)))) {
-				System.out.println("序号：" + index + "->" + StringUtils.sha1Hex(piece) + "=" + StringUtils.hex(select(pieces, index)));
+				System.out.println("序号：" + index + "->" + StringUtils.sha1Hex(piece) + "=" + StringUtils.hex(group.pieceHash(index)));
 			}
 			index++;
 		}
+		System.out.println("校验时间：" + (System.currentTimeMillis() - begin));
 		System.out.println(downloadPieces);
-	}
-
-	private byte[] select(byte[] pieces, int index) {
-		byte[] value = new byte[TorrentInfo.PIECE_HASH_LENGTH];
-		System.arraycopy(pieces, index * TorrentInfo.PIECE_HASH_LENGTH, value, 0, TorrentInfo.PIECE_HASH_LENGTH);
-		return value;
 	}
 
 	@Test
