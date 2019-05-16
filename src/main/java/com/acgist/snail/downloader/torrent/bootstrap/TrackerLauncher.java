@@ -82,7 +82,7 @@ public class TrackerLauncher implements Runnable {
 		this.undone = message.getUndone();
 		this.torrentSession.peer(message.getPeers());
 		LOGGER.debug("已完成Peer数量：{}，未完成的Peer数量：{}，下次请求时间：{}", this.done, this.undone, this.interval);
-		if(this.interval != null) { // 添加重复执行
+		if(this.interval != null && this.interval >= 0) { // 添加重复执行
 			torrentSession.timer(this.interval, TimeUnit.SECONDS, this);
 		}
 	}
@@ -95,9 +95,10 @@ public class TrackerLauncher implements Runnable {
 		this.available = false;
 		if(run) {
 			SystemThreadContext.submit(() -> {
-				this.client.stop(this.id, this.torrentSession);
 				if(this.taskSession.complete()) { // 任务完成
 					this.client.complete(this.id, this.torrentSession);
+				} else { // 任务暂停
+					this.client.stop(this.id, this.torrentSession);
 				}
 			});
 		}

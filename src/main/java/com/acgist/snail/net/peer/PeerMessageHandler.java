@@ -132,12 +132,12 @@ public class PeerMessageHandler extends TcpMessageHandler {
 			return false;
 		}
 		final PeerConnectGroup peerConnectGroup = torrentSession.peerConnectGroup();
-		final PeerSession peerSession = PeerManager.getInstance().newPeerSession(infoHashHex, taskSession.statistics(), address.getHostString(), null, PeerConfig.SOURCE_CONNECT);
-		peerSession.id(peerId);
 		if(peerConnectGroup == null) {
 			LOGGER.warn("Peer连接初始化失败，没有Peer连接管理组");
 			return false;
 		}
+		final PeerSession peerSession = PeerManager.getInstance().newPeerSession(infoHashHex, taskSession.statistics(), address.getHostString(), null, PeerConfig.SOURCE_CONNECT);
+		peerSession.id(peerId);
 		final boolean ok = peerConnectGroup.newPeerConnect(peerSession, this);
 		if(ok) {
 			init(peerSession, torrentSession, reserved);

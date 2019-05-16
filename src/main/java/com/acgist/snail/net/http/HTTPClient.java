@@ -33,7 +33,7 @@ public class HTTPClient {
 //	private static final Logger LOGGER = LoggerFactory.getLogger(HTTPClient.class);
 	
 	public static final int TIMEOUT = 5;
-
+	
 	public static final int HTTP_OK = 200; // OK
 	public static final int HTTP_PARTIAL_CONTENT = 206; // 端点续传
 	public static final int HTTP_RANGE_NOT_SATISFIABLE= 416; // 无法满足请求范围

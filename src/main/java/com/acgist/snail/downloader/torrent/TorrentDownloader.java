@@ -69,7 +69,7 @@ public class TorrentDownloader extends Downloader {
 	 */
 	@Override
 	public void delete() {
-		torrentSession.torrentStreamGroup().release();
+		torrentSession.releaseUpload();
 		super.delete();
 	}
 	

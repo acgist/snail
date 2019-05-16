@@ -67,7 +67,7 @@ public class PeerClientGroup {
 	 */
 	public void optimize() {
 		LOGGER.debug("优化PeerClient");
-		synchronized (peerClients) {
+		synchronized (this.peerClients) {
 			try {
 				inferiorPeerClient();
 				buildPeerClients();
@@ -215,8 +215,6 @@ public class PeerClientGroup {
 			SystemThreadContext.submit(() -> {
 				peerClient.release();
 			});
-			peerSession.unstatus(PeerConfig.STATUS_DOWNLOAD);
-			peerSession.peerMessageHandler(null);
 			peerManager.inferior(torrentSession.infoHashHex(), peerClient.peerSession());
 		}
 	}
