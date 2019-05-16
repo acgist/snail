@@ -50,13 +50,6 @@ public class TrackerManager {
 	}
 
 	/**
-	 * 所有的TrackerClient
-	 */
-	public List<TrackerClient> clients() {
-		return new ArrayList<>(trackerClients.values());
-	}
-	
-	/**
 	 * 新建TrackerLauncher
 	 */
 	public TrackerLauncher newTrackerLauncher(TrackerClient client, TorrentSession torrentSession) {
@@ -81,6 +74,20 @@ public class TrackerManager {
 		}
 	}
 	
+	/**
+	 * 删除TrackerLauncher
+	 */
+	public void release(Integer id) {
+		trackerLaunchers.remove(id);
+	}
+	
+	/**
+	 * 所有的TrackerClient
+	 */
+	public List<TrackerClient> clients() {
+		return new ArrayList<>(trackerClients.values());
+	}
+
 	/**
 	 * 获取可用的tracker client，传入announce的返回有用的，然后补充不足的的数量
 	 */
@@ -115,6 +122,17 @@ public class TrackerManager {
 			.collect(Collectors.toList());
 	}
 	
+	/**
+	 * 设置udp的connectionId
+	 */
+	public void connectionId(int trackerId, long connectionId) {
+		final var client = trackerClients.get(trackerId);
+		if(client != null && client.type() == Type.udp) {
+			final UdpTrackerClient udpTrackerClient = (UdpTrackerClient) client;
+			udpTrackerClient.connectionId(connectionId);
+		}
+	}
+
 	/**
 	 * 注册tracker client列表
 	 */
@@ -166,17 +184,6 @@ public class TrackerManager {
 	}
 
 	/**
-	 * 设置udp的connectionId
-	 */
-	public void connectionId(int trackerId, long connectionId) {
-		final var client = trackerClients.get(trackerId);
-		if(client != null && client.type() == Type.udp) {
-			final UdpTrackerClient udpTrackerClient = (UdpTrackerClient) client;
-			udpTrackerClient.connectionId(connectionId);
-		}
-	}
-
-	/**
 	 * 创建Client代理，如果第一次创建失败将链接使用URL解码后再次创建。
 	 */
 	private TrackerClient buildClientProxy(final String announceUrl) throws DownloadException {
@@ -209,5 +216,5 @@ public class TrackerManager {
 		}
 		return null;
 	}
-	
+
 }

@@ -10,6 +10,7 @@ import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.context.SystemThreadContext;
+import com.acgist.snail.system.manager.TrackerManager;
 import com.acgist.snail.utils.UniqueCodeUtils;
 
 /**
@@ -100,6 +101,7 @@ public class TrackerLauncher implements Runnable {
 				} else { // 任务暂停
 					this.client.stop(this.id, this.torrentSession);
 				}
+				TrackerManager.getInstance().release(this.id);
 			});
 		}
 	}

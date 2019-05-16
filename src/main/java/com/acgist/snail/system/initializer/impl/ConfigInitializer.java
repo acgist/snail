@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.system.config.DatabaseConfig;
+import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.config.TrackerConfig;
@@ -29,7 +30,7 @@ public class ConfigInitializer extends Initializer {
 		SystemConfig.getInstance();
 		DatabaseConfig.getInstance();
 		DownloadConfig.getInstance();
-//		DhtConfig.getInstance();
+		DhtConfig.getInstance();
 		TrackerConfig.getInstance();
 	}
 

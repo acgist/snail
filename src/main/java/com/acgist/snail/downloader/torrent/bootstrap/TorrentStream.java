@@ -406,24 +406,32 @@ public class TorrentStream {
 	 */
 	private void initFilePieces() {
 		int pos = 0;
+		int length = 0;
 		byte[] hash = null;
 		byte[] bytes = null;
-		final int length = (int) this.pieceLength;
+		boolean verify = true; // 第一块和最后一块不要校验HASH
 		for (int index = this.fileBeginPieceIndex; index <= this.fileEndPieceIndex; index++) {
 			if(index == this.fileBeginPieceIndex) { // 第一块需要偏移
+				verify = false;
 				pos = firstPiecePos();
-			} else {
+				length = this.firstPieceSize();
+			} else if(index == this.fileEndPieceIndex) {
+				verify = false;
 				pos = 0;
+				length = this.lastPieceSize();
+			} else {
+				verify = true;
+				pos = 0;
+				length = (int) this.pieceLength;
 			}
 			bytes = read(index, length, pos, true);
-			// 第一块和最后一块不要校验HASH
-			if(index == this.fileBeginPieceIndex || index == this.fileEndPieceIndex) {
-				if(haveData(bytes)) {
+			if(verify) {
+				hash = StringUtils.sha1(bytes);
+				if(ArrayUtils.equals(hash, this.torrentStreamGroup.pieceHash(index))) {
 					this.done(index);
 				}
 			} else {
-				hash = StringUtils.sha1(bytes);
-				if(ArrayUtils.equals(hash, this.torrentStreamGroup.pieceHash(index))) {
+				if(haveData(bytes)) {
 					this.done(index);
 				}
 			}
