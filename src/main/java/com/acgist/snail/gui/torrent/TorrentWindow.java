@@ -64,6 +64,7 @@ public class TorrentWindow extends Window<TorrentController> {
 	public void show(TaskSession taskSession) {
 		this.controller.tree(taskSession);
 		this.showAndWait();
+		this.controller.release();
 	}
 	
 }

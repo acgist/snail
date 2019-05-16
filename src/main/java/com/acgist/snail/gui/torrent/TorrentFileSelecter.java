@@ -26,7 +26,7 @@ import javafx.scene.text.Text;
  * @author acgist
  * @since 1.0.0
  */
-public class FileSelecter {
+public class TorrentFileSelecter {
 
 	/**
 	 * 下载按钮
@@ -56,7 +56,7 @@ public class FileSelecter {
 	 * @param download 下载按钮
 	 * @param tree 属性菜单
 	 */
-	private FileSelecter(String name, Button download, TreeView<HBox> tree) {
+	private TorrentFileSelecter(String name, Button download, TreeView<HBox> tree) {
 		this.sizeMap = new HashMap<>();
 		this.checkBoxMap = new HashMap<>();
 		this.treeItemMap = new HashMap<>();
@@ -67,8 +67,8 @@ public class FileSelecter {
 		this.download = download;
 	}
 	
-	public static final FileSelecter newInstance(String name, Button download, TreeView<HBox> tree) {
-		return new FileSelecter(name, download, tree);
+	public static final TorrentFileSelecter newInstance(String name, Button download, TreeView<HBox> tree) {
+		return new TorrentFileSelecter(name, download, tree);
 	}
 
 	/**
@@ -130,7 +130,6 @@ public class FileSelecter {
 			.filter(entry -> list.contains(entry.getKey()))
 			.forEach(entry -> entry.getValue().setSelected(true));
 		} else {
-			// 平均值
 			final var avg = this.sizeMap.values().stream()
 				.collect(Collectors.averagingInt(Long::intValue));
 			this.checkBoxMap.entrySet().stream()
