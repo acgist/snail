@@ -28,7 +28,6 @@
 		<javafx.version>12</javafx.version>
 		<slf4j.version>1.8.0-alpha2</slf4j.version>
 		<logback.version>1.3.0-alpha4</logback.version>
-		<jackson.version>2.9.8</jackson.version>
 		<!-- MAVEN插件 -->
 		<maven.jar.version>3.1.1</maven.jar.version>
 		<maven.source.version>3.0.1</maven.source.version>
@@ -75,22 +74,6 @@
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 			<version>${logback.version}</version>
-		</dependency>
-		<!-- JSON：jackson -->
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-core</artifactId>
-			<version>${jackson.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>${jackson.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-annotations</artifactId>
-			<version>${jackson.version}</version>
 		</dependency>
 		
 		<!-- 测试：JUnit -->

@@ -14,13 +14,13 @@ import com.acgist.snail.gui.main.TaskDisplay;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
+import com.acgist.snail.pojo.wrapper.TorrentFileSelectWrapper;
 import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.system.context.SystemStatistics;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.manager.DownloaderManager;
 import com.acgist.snail.utils.DateUtils;
 import com.acgist.snail.utils.FileUtils;
-import com.acgist.snail.utils.JsonUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -89,7 +89,8 @@ public class TaskSession {
 		if(StringUtils.isEmpty(description)) {
 			return List.of();
 		} else {
-			return JsonUtils.toList(description, String.class);
+			final TorrentFileSelectWrapper wrapper = TorrentFileSelectWrapper.newDecoder(description);
+			return wrapper.list();
 		}
 	}
 

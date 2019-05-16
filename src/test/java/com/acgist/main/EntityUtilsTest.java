@@ -2,6 +2,7 @@ package com.acgist.main;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -9,7 +10,6 @@ import org.junit.Test;
 
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.utils.EntityUtils;
-import com.acgist.snail.utils.JsonUtils;
 
 public class EntityUtilsTest {
 
@@ -30,7 +30,7 @@ public class EntityUtilsTest {
 		
 		System.out.println(sqlProperty);
 		System.out.println(sqlValue);
-		System.out.println(JsonUtils.toJson(parameters));
+		System.out.println(Arrays.asList(parameters));
 	}
 	
 	@Test

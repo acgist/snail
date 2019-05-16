@@ -1,5 +1,8 @@
 package com.acgist.snail.utils;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * Object工具：toString、equals、hashCode等方法
  */
@@ -71,7 +74,23 @@ public class ObjectUtils {
 		if(object == null) {
 			return null;
 		}
-		return JsonUtils.toJson(object);
+		if(object instanceof List) {
+			return object.toString();
+		} else if(object instanceof Map) {
+			return object.toString();
+		} else {
+			final StringBuilder builder = new StringBuilder("[");
+			final var properties = EntityUtils.entityProperty(object.getClass());
+			for (String property : properties) {
+				builder.append(property).append("=").append(EntityUtils.entityPropertyValue(object, property)).append(",");
+			}
+			final int length = builder.length();
+			if(length > 1) {
+				builder.setLength(length - 1);
+				builder.append("]");
+			}
+			return builder.toString();
+		}
 	}
 	
 }

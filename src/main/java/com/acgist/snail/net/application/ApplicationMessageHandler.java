@@ -90,7 +90,7 @@ public class ApplicationMessageHandler extends TcpMessageHandler {
 	 */
 	private void send(ApplicationMessage message) {
 		try {
-			send(message.toJson());
+			send(message.toString());
 		} catch (NetException e) {
 			LOGGER.error("发送Application消息异常", e);
 		}
