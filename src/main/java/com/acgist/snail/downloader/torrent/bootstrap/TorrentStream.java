@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.bean.TorrentPiece;
 import com.acgist.snail.system.config.DownloadConfig;
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.FileUtils;
 
@@ -80,8 +81,9 @@ public class TorrentStream {
 	 * @param file 文件路径
 	 * @param size 文件大小
 	 * @param pos 文件开始偏移
+	 * @param selectPieces 被选中的Piece
 	 */
-	public void buildFile(final String file, final long size, final long pos) throws IOException {
+	public void buildFile(final String file, final long size, final long pos, final BitSet selectPieces) throws IOException {
 		if(filePieces != null && filePieces.size() > 0) {
 			throw new IOException("Torrent文件未被释放");
 		}
@@ -89,14 +91,15 @@ public class TorrentStream {
 		this.fileSize = size;
 		this.fileBeginPos = pos;
 		this.fileEndPos = pos + size;
-		fileBuffer = new AtomicLong(0);
-		fileDownloadSize = new AtomicLong(0);
-		filePieces = new LinkedBlockingQueue<>();
+		this.fileBuffer = new AtomicLong(0);
+		this.fileDownloadSize = new AtomicLong(0);
+		this.filePieces = new LinkedBlockingQueue<>();
 		FileUtils.buildFolder(this.file, true); // 创建文件父目录，否者会抛出FileNotFoundException
-		fileStream = new RandomAccessFile(this.file, "rw");
+		this.fileStream = new RandomAccessFile(this.file, "rw");
 		initFilePiece();
 		initFilePieces();
 		initDownloadSize();
+		selectPieces.set(this.fileBeginPieceIndex, this.fileEndPieceIndex + 1, true);
 		if(LOGGER.isDebugEnabled()) {
 			LOGGER.debug(
 				"TorrentStream信息，块大小：{}，文件路径：{}，文件大小：{}，文件开始偏移：{}，文件Piece数量：{}，文件Piece开始索引：{}，文件Piece结束索引：{}",
@@ -122,22 +125,25 @@ public class TorrentStream {
 		}
 		List<TorrentPiece> list = null; // 写入文件的Piece
 		synchronized (this) {
-			if(filePieces.offer(piece)) {
+			if(havePiece(piece.getIndex())) {
+				LOGGER.debug("已经下载完成Piece，忽略：{}", piece.getIndex());
+				return;
+			}
+			if(this.filePieces.offer(piece)) {
 				LOGGER.debug("保存Piece：{}", piece.getIndex());
 				this.done(piece.getIndex());
-				this.torrentStreamGroup.piece(piece.getIndex());
 				final long bufferSize = this.fileBuffer.addAndGet(piece.getLength());
 				final long downloadSize = this.fileDownloadSize.addAndGet(piece.getLength());
 				if(
 					bufferSize >= DownloadConfig.getPeerMemoryBufferByte() || // 大于缓存
-					downloadSize == this.fileSize // 下载完成
+					downloadSize >= this.fileSize // 下载完成
 				) {
 					this.fileBuffer.set(0L); // 清空
 					list = flush();
 				}
 			} else {
 				// TODO：重新返回Piece位图
-				LOGGER.error("Piece保存失败");
+				LOGGER.error("保存Piece失败");
 			}
 		}
 		write(list);
@@ -145,12 +151,15 @@ public class TorrentStream {
 	
 	/**
 	 * <p>选择未下载的Piece序号</p>
-	 * <p>选择Peer有同时没有下载并且不处于失败和下载中的Piece，选择后清除失败的Piece数据。</p>
+	 * <p>
+	 * 选择Peer有同时没有下载并且不处于失败和下载中的Piece，选择后清除失败的Piece数据。
+	 * 如果挑选不到符合条件的Piece且任务处于接近完成状态时（最后还剩下{@linkplain SystemConfig#getPieceRepeatSize() 多少个}Piece时），那么选择下载中的Piece进行下载。
+	 * </p>
 	 * 
 	 * @param peerPieces Peer位图
 	 */
 	public TorrentPiece pick(final BitSet peerPieces) {
-		if(peerPieces.cardinality() == 0) {
+		if(peerPieces.cardinality() <= 0) {
 			return null;
 		}
 		synchronized (this) {
@@ -160,8 +169,18 @@ public class TorrentStream {
 			pickPieces.andNot(this.pausePieces);
 			pickPieces.andNot(this.downloadPieces);
 			this.pausePieces.clear();
-			if(pickPieces.cardinality() == 0) {
-				return null;
+			if(pickPieces.cardinality() <= 0) {
+				if(this.torrentStreamGroup.remainingPieceSize() <= SystemConfig.getPieceRepeatSize()) {
+					LOGGER.debug("选择Piece时已经处于任务即将完成状态找不到更多块，开始选择下载中的块");
+					pickPieces.or(peerPieces);
+					pickPieces.andNot(this.pieces);
+					if(pickPieces.cardinality() <= 0) {
+						LOGGER.debug("选择Piece时Piece全部下载完成");
+						return null;
+					}
+				} else {
+					return null;
+				}
 			}
 			final int index = pickPieces.nextSetBit(this.fileBeginPieceIndex);
 			if(index == -1 || index > this.fileEndPieceIndex) {
@@ -233,10 +252,10 @@ public class TorrentStream {
 		if(beginPos >= this.fileEndPos) {
 			return null;
 		}
-		if(endPos < this.fileBeginPos) {
+		if(endPos <= this.fileBeginPos) {
 			return null;
 		}
-		if(beginPos < this.fileBeginPos) {
+		if(beginPos <= this.fileBeginPos) {
 			size = (int) (size - (this.fileBeginPos - beginPos));
 		} else {
 			seek = beginPos - this.fileBeginPos;
@@ -265,21 +284,13 @@ public class TorrentStream {
 	}
 	
 	/**
-	 * 是否下载完成
-	 * 
-	 * @return true-完成；false-未完成
-	 */
-	public boolean complete() {
-		return pieces.cardinality() >= this.filePieceSize;
-	}
-	
-	/**
 	 * Piece下载完成
 	 */
 	private void done(int index) {
 		synchronized (this) {
-			pieces.set(index, true); // 下载成功
-			downloadPieces.clear(index); // 去掉下载状态
+			this.pieces.set(index, true); // 下载成功
+			this.downloadPieces.clear(index); // 去掉下载状态
+			this.torrentStreamGroup.piece(index); // 设置下载完成
 		}
 	}
 
@@ -298,6 +309,15 @@ public class TorrentStream {
 		}
 	}
 	
+	/**
+	 * 是否下载完成
+	 * 
+	 * @return true-完成；false-未完成
+	 */
+	public boolean complete() {
+		return pieces.cardinality() >= this.filePieceSize;
+	}
+
 	/**
 	 * <p>释放资源</p>
 	 * <p>将已下载的块写入文件，然后关闭文件流。</p>
@@ -334,7 +354,7 @@ public class TorrentStream {
 			return;
 		}
 		list.stream().forEach(piece -> {
-			if(piece.getIndex() < this.fileBeginPieceIndex || piece.getIndex() > this.fileEndPieceIndex) {
+			if(!haveIndex(piece.getIndex())) {
 				LOGGER.warn("写入文件索引错误：{}", piece.getIndex());
 				return;
 			}
@@ -344,7 +364,7 @@ public class TorrentStream {
 			int length = piece.getLength();
 			final long beginPos = piece.beginPos();
 			final long endPos = piece.endPos();
-			if(beginPos < this.fileBeginPos) {
+			if(beginPos <= this.fileBeginPos) {
 				offset = (int) (this.fileBeginPos - beginPos);
 				length = length - offset;
 			} else {
@@ -395,8 +415,7 @@ public class TorrentStream {
 			}
 			bytes = read(index, VERIFY_SIZE, pos, true); // 第一块需要偏移
 			if(haveData(bytes)) {
-				done(index);
-				torrentStreamGroup.piece(index);
+				this.done(index);
 //			} else { // TODO：再次校验
 //				bytes = read(index, VERIFY_SIZE_CHECK, pos, true); // 第一块需要偏移
 //				if(haveData(bytes)) {
@@ -431,21 +450,6 @@ public class TorrentStream {
 	}
 	
 	/**
-	 * 是否有数据
-	 */
-	private boolean haveData(byte[] bytes) {
-		if(bytes == null) {
-			return false;
-		}
-		for (byte value : bytes) {
-			if(value != 0) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	/**
 	 * 第一块的偏移
 	 */
 	private int firstPiecePos() {
@@ -464,6 +468,21 @@ public class TorrentStream {
 	 */
 	private int lastPieceSize() {
 		return (int) (this.fileEndPos - (this.pieceLength * this.fileEndPieceIndex));
+	}
+
+	/**
+	 * 是否有数据
+	 */
+	private boolean haveData(byte[] bytes) {
+		if(bytes == null) {
+			return false;
+		}
+		for (byte value : bytes) {
+			if(value != 0) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
