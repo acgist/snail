@@ -61,7 +61,7 @@ public class TorrentDownloader extends Downloader {
 	
 	@Override
 	public void release() {
-		torrentSession.release();
+		torrentSession.releaseDownload();
 	}
 
 	/**
@@ -85,7 +85,7 @@ public class TorrentDownloader extends Downloader {
 		try {
 			final String infoHashHex = MagnetProtocol.buildHash(entity.getUrl());
 			this.torrentSession = TorrentManager.getInstance().newTorrentSession(infoHashHex, path);
-			this.torrentSession.loadTask(this.taskSession);
+			this.torrentSession.upload(this.taskSession);
 		} catch (DownloadException e) {
 			fail("任务加载失败");
 			LOGGER.error("任务加载异常", e);

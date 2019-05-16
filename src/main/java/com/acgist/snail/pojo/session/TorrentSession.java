@@ -72,15 +72,15 @@ public class TorrentSession {
 	 */
 	private DhtLauncher dhtLauncher;
 	/**
-	 * Peer组
+	 * PeerClient组
 	 */
 	private PeerClientGroup peerClientGroup;
 	/**
-	 * Peer连接组
+	 * PeerConnect组
 	 */
 	private PeerConnectGroup peerConnectGroup;
 	/**
-	 * 文件组
+	 * 文件流组
 	 */
 	private TorrentStreamGroup torrentStreamGroup;
 	/**
@@ -88,11 +88,11 @@ public class TorrentSession {
 	 */
 	private TrackerLauncherGroup trackerLauncherGroup;
 	/**
-	 * 线程池：PeerClient和新建PeerClient时使用
+	 * 线程池
 	 */
 	private ExecutorService executor;
 	/**
-	 * 定时线程池：TrackerClient定时刷新
+	 * 定时线程池
 	 */
 	private ScheduledExecutorService executorTimer;
 	/**
@@ -125,9 +125,9 @@ public class TorrentSession {
 	}
 	
 	/**
-	 * 加载Task，同时加载文件流
+	 * 开始上传
 	 */
-	public TorrentSession loadTask(TaskSession taskSession) throws DownloadException {
+	public TorrentSession upload(TaskSession taskSession) throws DownloadException {
 		this.taskSession = taskSession;
 		this.loadExecutorTimer();
 		this.loadTorrentStreamGroup();
@@ -325,7 +325,7 @@ public class TorrentSession {
 	/**
 	 * 释放资源（释放下载使用的资源），完成时不释放文件资源。
 	 */
-	public void release() {
+	public void releaseDownload() {
 		LOGGER.debug("Torrent释放资源（下载）");
 		this.pexTimer.cancel(false);
 		this.peerClientTimer.cancel(false);
@@ -344,8 +344,8 @@ public class TorrentSession {
 	 */
 	public void releaseUpload() {
 		LOGGER.debug("Torrent释放资源（上传）");
-		this.peerConnectGroup.release();
 		this.peerConnectTimer.cancel(false);
+		this.peerConnectGroup.release();
 		this.torrentStreamGroup.release();
 		SystemThreadContext.shutdownNow(this.executorTimer);
 	}

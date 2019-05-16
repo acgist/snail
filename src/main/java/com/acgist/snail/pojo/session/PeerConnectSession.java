@@ -52,6 +52,9 @@ public class PeerConnectSession {
 		return nowSize - oldSize;
 	}
 
+	/**
+	 * 释放资源：阻塞、关闭Socket，设置非上传状态。
+	 */
 	public void release() {
 		LOGGER.debug("PeerConnect关闭：{}-{}", this.peerSession.host(), this.peerSession.port());
 		this.peerMessageHandler.choke();
