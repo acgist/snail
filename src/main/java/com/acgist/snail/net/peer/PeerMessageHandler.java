@@ -514,7 +514,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		LOGGER.debug("收到位图：{}", pieces);
 		final BitSet notHave = new BitSet();
 		notHave.or(pieces);
-		notHave.andNot(torrentStreamGroup.pieces());
+		notHave.andNot(torrentStreamGroup.selectPieces());
 		LOGGER.debug("感兴趣位图：{}", notHave);
 		if(notHave.cardinality() == 0) {
 			notInterested();

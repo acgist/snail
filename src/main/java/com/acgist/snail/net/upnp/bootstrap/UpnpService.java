@@ -216,6 +216,7 @@ public class UpnpService {
 	
 	/**
 	 * 端口映射
+	 * TODO：已经被映射时，端口++
 	 */
 	private void setPortMapping() throws NetException {
 		if(!init) {

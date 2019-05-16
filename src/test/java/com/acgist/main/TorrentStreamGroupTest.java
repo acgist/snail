@@ -80,6 +80,7 @@ public class TorrentStreamGroupTest {
 		}
 		System.out.println("校验时间：" + (System.currentTimeMillis() - begin));
 		System.out.println(downloadPieces);
+		System.out.println(group.selectPieces());
 	}
 
 	@Test

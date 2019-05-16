@@ -178,7 +178,14 @@ public class TorrentStreamGroup {
 	 * 已下载位图
 	 */
 	public BitSet pieces() {
-		return pieces;
+		return this.pieces;
+	}
+	
+	/**
+	 * 需要下载位图
+	 */
+	public BitSet selectPieces() {
+		return this.selectPieces;
 	}
 	
 	/**
