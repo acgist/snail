@@ -34,6 +34,7 @@ public abstract class TcpServer {
 		AsynchronousChannelGroup group = null;
 		try {
 			group = AsynchronousChannelGroup.withThreadPool(SystemThreadContext.newCacheExecutor(SystemThreadContext.SNAIL_THREAD_TCP_SERVER));
+//			group = AsynchronousChannelGroup.withThreadPool(SystemThreadContext.newExecutor(10, 100, 100, 60L, SystemThreadContext.SNAIL_THREAD_TCP_SERVER));
 		} catch (IOException e) {
 			LOGGER.error("启动TCP Server Group异常");
 		}

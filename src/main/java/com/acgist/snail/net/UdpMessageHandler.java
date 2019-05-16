@@ -22,6 +22,8 @@ public abstract class UdpMessageHandler extends UdpSender {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpMessageHandler.class);
 
+	private static final int BUFFER_SIZE = 10 * 1024;
+	
 	/**
 	 * 消息处理
 	 */
@@ -52,7 +54,7 @@ public abstract class UdpMessageHandler extends UdpSender {
 						final SelectionKey selectedKey = keysIterator.next();
 						keysIterator.remove();
 						if (selectedKey.isValid() && selectedKey.isReadable()) {
-							final ByteBuffer buffer = ByteBuffer.allocate(1024);
+							final ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
 							final InetSocketAddress address = (InetSocketAddress) channel.receive(buffer);
 							try {
 								onMessage(buffer, address);

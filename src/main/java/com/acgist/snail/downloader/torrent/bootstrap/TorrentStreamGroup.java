@@ -13,6 +13,8 @@ import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
 import com.acgist.snail.protocol.torrent.bean.TorrentFile;
 import com.acgist.snail.protocol.torrent.bean.TorrentInfo;
+import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.FileUtils;
 
@@ -123,7 +125,10 @@ public class TorrentStreamGroup {
 	 * @param begin 块偏移
 	 * @param length 数据长度
 	 */
-	public byte[] read(final int index, final int begin, final int length) {
+	public byte[] read(final int index, final int begin, final int length) throws NetException {
+		if(length >= SystemConfig.MAX_NET_BUFFER_SIZE) {
+			throw new NetException("超过最大的网络包大小：" + length);
+		}
 		final ByteBuffer buffer = ByteBuffer.allocate(length);
 		for (TorrentStream torrentStream : streams) {
 			final byte[] bytes = torrentStream.read(index, length, begin);
