@@ -149,8 +149,8 @@ public class TorrentStream {
 				// TODO：重新返回Piece位图
 				LOGGER.error("保存Piece失败");
 			}
+			write(list);
 		}
-		write(list);
 		return ok;
 	}
 	
@@ -331,8 +331,8 @@ public class TorrentStream {
 		List<TorrentPiece> list = null;
 		synchronized (this) {
 			list = flush();
+			write(list);
 		}
-		write(list);
 		try {
 			fileStream.close();
 		} catch (IOException e) {
@@ -351,7 +351,7 @@ public class TorrentStream {
 	}
 	
 	/**
-	 * 写入硬盘
+	 * 写入硬盘，注意线程安全。
 	 */
 	private void write(List<TorrentPiece> list) {
 		if(CollectionUtils.isEmpty(list)) {
