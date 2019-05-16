@@ -61,6 +61,7 @@ public class SystemConfig extends PropertiesConfig {
 	private Integer dhtInterval; // DHT执行周期（秒）
 	private Integer peerOptimizeInterval; // 单个任务Peer优化周期（秒）
 	private Integer peerDownloadSize; // 同时下载的Peer数量
+	private Integer pieceRepeatSize; // 任务即将完成时可以重复选择下载的剩下Piece数量
 
 	/**
 	 * 初始化
@@ -82,6 +83,7 @@ public class SystemConfig extends PropertiesConfig {
 		INSTANCE.dhtInterval = getInteger("acgist.dht.interval");
 		INSTANCE.peerOptimizeInterval = getInteger("acgist.peer.optimize.interval");
 		INSTANCE.peerDownloadSize = getInteger("acgist.peer.download.size");
+		INSTANCE.pieceRepeatSize = getInteger("acgist.piece.repeat.size");
 	}
 
 	/**
@@ -104,6 +106,7 @@ public class SystemConfig extends PropertiesConfig {
 		LOGGER.info("DHT执行周期（秒）：{}", this.dhtInterval);
 		LOGGER.info("单个任务Peer优化周期（秒）：{}", this.peerOptimizeInterval);
 		LOGGER.info("同时下载的Peer数量：{}", this.peerDownloadSize);
+		LOGGER.info("任务即将完成时可以重复选择下载的剩下Piece数量：{}", this.pieceRepeatSize);
 	}
 	
 	/**
@@ -223,6 +226,13 @@ public class SystemConfig extends PropertiesConfig {
 	 */
 	public static final Integer getPeerDownloadSize() {
 		return INSTANCE.peerDownloadSize;
+	}
+	
+	/**
+	 * 任务即将完成时可以重复选择下载的剩下Piece数量
+	 */
+	public static final Integer getPieceRepeatSize() {
+		return INSTANCE.pieceRepeatSize;
 	}
 	
 	/**

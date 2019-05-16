@@ -31,12 +31,17 @@ public class TorrentStreamGroup {
 	 * 已下载Piece位图
 	 */
 	private final BitSet pieces;
+	/**
+	 * 被选中的Piece位图
+	 */
+	private final BitSet selectPieces;
 	private final Torrent torrent;
 	private final List<TorrentStream> streams;
 	private final TorrentSession torrentSession;
 
-	private TorrentStreamGroup(BitSet pieces, List<TorrentStream> streams, TorrentSession torrentSession) {
+	private TorrentStreamGroup(BitSet pieces, BitSet selectPieces, List<TorrentStream> streams, TorrentSession torrentSession) {
 		this.pieces = pieces;
+		this.selectPieces = selectPieces;
 		this.streams = streams;
 		this.torrent = torrentSession.torrent();
 		this.torrentSession = torrentSession;
@@ -46,15 +51,16 @@ public class TorrentStreamGroup {
 		final Torrent torrent = torrentSession.torrent();
 		final TorrentInfo torrentInfo = torrent.getInfo();
 		final BitSet pieces = new BitSet(torrentInfo.pieceSize());
+		final BitSet selectPieces = new BitSet(torrentInfo.pieceSize());
 		final List<TorrentStream> streams = new ArrayList<>(files.size());
-		final TorrentStreamGroup group = new TorrentStreamGroup(pieces, streams, torrentSession);
+		final TorrentStreamGroup group = new TorrentStreamGroup(pieces, selectPieces, streams, torrentSession);
 		if(CollectionUtils.isNotEmpty(files)) {
 			long pos = 0;
 			for (TorrentFile file : files) {
 				try {
 					if(file.selected()) {
 						final TorrentStream stream = TorrentStream.newInstance(torrentInfo.getPieceLength(), group);
-						stream.buildFile(FileUtils.file(folder, file.path()), file.getLength(), pos);
+						stream.buildFile(FileUtils.file(folder, file.path()), file.getLength(), pos, selectPieces);
 						streams.add(stream);
 					}
 				} catch (Exception e) {
@@ -87,34 +93,6 @@ public class TorrentStreamGroup {
 	}
 
 	/**
-	 * <p>检测是否下载完成</p>
-	 * <p>所有的TorrentStream完成才能判断为完成。</p>
-	 */
-	public boolean complete() {
-		for (TorrentStream torrentStream : streams) {
-			if(!torrentStream.complete()) {
-				return false;
-			}
-		}
-		return true;
-	}
-	
-	/**
-	 * <p>设置已下载的Piece，同时发出have消息。</p>
-	 */
-	public void piece(int index) {
-		pieces.set(index, true);
-		torrentSession.have(index);
-	}
-	
-	/**
-	 * 已下载位图
-	 */
-	public BitSet pieces() {
-		return pieces;
-	}
-	
-	/**
 	 * 下载文件大小
 	 */
 	public long size() {
@@ -126,26 +104,6 @@ public class TorrentStreamGroup {
 	}
 
 	/**
-	 * <p>保存Piece</p>
-	 * <p>调用每个{@link TorrentStream#piece}进行保存。</p>
-	 */
-	public void piece(TorrentPiece piece) {
-		for (TorrentStream torrentStream : streams) {
-			torrentStream.piece(piece);
-		}
-	}
-	
-	/**
-	 * 获取Piece的Hash校验
-	 */
-	public byte[] pieceHash(int index) {
-		final byte[] pieces = torrent.getInfo().getPieces();
-		final byte[] value = new byte[TorrentInfo.PIECE_HASH_LENGTH];
-		System.arraycopy(pieces, index * TorrentInfo.PIECE_HASH_LENGTH, value, 0, TorrentInfo.PIECE_HASH_LENGTH);
-		return value;
-	}
-	
-	/**
 	 * 是否已下载Piece
 	 * 
 	 * @param index Piece序号
@@ -155,16 +113,6 @@ public class TorrentStreamGroup {
 			return false;
 		}
 		return pieces.get(index);
-	}
-	
-	/**
-	 * <p>Piece下载失败</p>
-	 * <p>调用每个{@link TorrentStream#undone}进行设置。</p>
-	 */
-	public void undone(TorrentPiece piece) {
-		for (TorrentStream torrentStream : streams) {
-			torrentStream.undone(piece);
-		}
 	}
 
 	/**
@@ -195,6 +143,73 @@ public class TorrentStreamGroup {
 //			return value;
 		}
 		return buffer.array();
+	}
+
+	/**
+	 * <p>保存Piece</p>
+	 * <p>调用每个{@link TorrentStream#piece}进行保存。</p>
+	 */
+	public void piece(TorrentPiece piece) {
+		for (TorrentStream torrentStream : streams) {
+			torrentStream.piece(piece);
+		}
+	}
+
+	/**
+	 * <p>设置已下载的Piece，同时发出have消息。</p>
+	 */
+	public void piece(int index) {
+		pieces.set(index, true);
+		torrentSession.have(index);
+	}
+	
+	/**
+	 * 已下载位图
+	 */
+	public BitSet pieces() {
+		return pieces;
+	}
+	
+	/**
+	 * 获取Piece的Hash校验
+	 */
+	public byte[] pieceHash(int index) {
+		final byte[] pieces = torrent.getInfo().getPieces();
+		final byte[] value = new byte[TorrentInfo.PIECE_HASH_LENGTH];
+		System.arraycopy(pieces, index * TorrentInfo.PIECE_HASH_LENGTH, value, 0, TorrentInfo.PIECE_HASH_LENGTH);
+		return value;
+	}
+
+	/**
+	 * <p>Piece下载失败</p>
+	 * <p>调用每个{@link TorrentStream#undone}进行设置。</p>
+	 */
+	public void undone(TorrentPiece piece) {
+		for (TorrentStream torrentStream : streams) {
+			torrentStream.undone(piece);
+		}
+	}
+
+	/**
+	 * 剩余没有下载Piece的数量
+	 * 
+	 * @since 1.0.2
+	 */
+	public int remainingPieceSize() {
+		return this.selectPieces.cardinality() - this.pieces.cardinality();
+	}
+	
+	/**
+	 * <p>检测是否下载完成</p>
+	 * <p>所有的TorrentStream完成才能判断为完成。</p>
+	 */
+	public boolean complete() {
+		for (TorrentStream torrentStream : streams) {
+			if(!torrentStream.complete()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
