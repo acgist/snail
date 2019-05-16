@@ -47,7 +47,7 @@ public class TorrentController implements Initializable {
 	private VBox downloadBox;
 	
 	private TaskSession taskSession;
-	private FileSelecter selecter;
+	private TorrentFileSelecter selecter;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -75,13 +75,20 @@ public class TorrentController implements Initializable {
 			return;
 		}
 		TorrentInfo torrentInfo = torrent.getInfo();
-		selecter = FileSelecter.newInstance(torrentInfo.getName(), download, tree);
+		selecter = TorrentFileSelecter.newInstance(torrentInfo.getName(), download, tree);
 		torrentInfo.files()
 		.stream()
 		.filter(file -> !file.path().startsWith(HIDE_FILE_PREFIX))
 		.sorted((a, b) -> a.path().compareTo(b.path()))
 		.forEach(file -> selecter.build(file.path(), file.getLength()));
 		selecter.select(taskSession);
+	}
+	
+	/**
+	 * 释放资源：文件选择器
+	 */
+	public void release() {
+		this.selecter = null;
 	}
 	
 	/**
