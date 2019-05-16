@@ -15,8 +15,10 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.pojo.bean.TorrentPiece;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.FileUtils;
+import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>Torrent下载文件流</p>
@@ -35,12 +37,6 @@ public class TorrentStream {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentStream.class);
 
-	/**
-	 * 校验文件的字节数
-	 */
-	private static final int VERIFY_SIZE = 10;
-//	private static final int VERIFY_SIZE_CHECK = 20; // 再次矫正
-	
 	// 固定值
 	private final long pieceLength; // 每个块的大小
 	private final TorrentStreamGroup torrentStreamGroup; // 下载文件组
@@ -406,26 +402,30 @@ public class TorrentStream {
 	}
 	
 	/**
-	 * 初始化：已下载块
+	 * 初始化：已下载块，校验HASH（第一块和最后一块不校验）。
 	 */
 	private void initFilePieces() {
 		int pos = 0;
+		byte[] hash = null;
 		byte[] bytes = null;
+		final int length = (int) this.pieceLength;
 		for (int index = this.fileBeginPieceIndex; index <= this.fileEndPieceIndex; index++) {
-			if(index == this.fileBeginPieceIndex) {
+			if(index == this.fileBeginPieceIndex) { // 第一块需要偏移
 				pos = firstPiecePos();
 			} else {
 				pos = 0;
 			}
-			bytes = read(index, VERIFY_SIZE, pos, true); // 第一块需要偏移
-			if(haveData(bytes)) {
-				this.done(index);
-//			} else { // TODO：再次校验
-//				bytes = read(index, VERIFY_SIZE_CHECK, pos, true); // 第一块需要偏移
-//				if(haveData(bytes)) {
-//					download(index);
-//					torrentStreamGroup.piece(index);
-//				}
+			bytes = read(index, length, pos, true);
+			// 第一块和最后一块不要校验HASH
+			if(index == this.fileBeginPieceIndex || index == this.fileEndPieceIndex) {
+				if(haveData(bytes)) {
+					this.done(index);
+				}
+			} else {
+				hash = StringUtils.sha1(bytes);
+				if(ArrayUtils.equals(hash, this.torrentStreamGroup.pieceHash(index))) {
+					this.done(index);
+				}
 			}
 		}
 		if(LOGGER.isDebugEnabled()) {
