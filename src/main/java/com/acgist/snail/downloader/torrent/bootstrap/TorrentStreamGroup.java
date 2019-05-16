@@ -71,9 +71,10 @@ public class TorrentStreamGroup {
 				pos += file.getLength();
 			}
 			if(LOGGER.isDebugEnabled()) {
-				LOGGER.debug("当前任务已下载Piece数量：{}，剩余下载Piece数量：{}",
+				LOGGER.debug("当前任务总Piece数量：{}，已下载Piece数量：{}，剩余下载Piece数量：{}",
+					torrentInfo.pieceSize(),
 					group.pieces.cardinality(),
-					torrentInfo.pieceSize() - group.pieces.cardinality()
+					group.selectPieces.cardinality() - group.pieces.cardinality()
 				);
 			}
 		}
@@ -85,7 +86,7 @@ public class TorrentStreamGroup {
 	 */
 	public TorrentPiece pick(final BitSet peerPieces) {
 		TorrentPiece pickPiece = null;
-		for (TorrentStream torrentStream : streams) {
+		for (TorrentStream torrentStream : this.streams) {
 			pickPiece = torrentStream.pick(peerPieces);
 			if(pickPiece != null) {
 				break;
@@ -94,6 +95,15 @@ public class TorrentStreamGroup {
 		return pickPiece;
 	}
 
+	/**
+	 * 刷新所有缓存
+	 */
+	public void flush() {
+		for (TorrentStream torrentStream : this.streams) {
+			torrentStream.flush();
+		}
+	}
+	
 	/**
 	 * 下载文件大小
 	 */

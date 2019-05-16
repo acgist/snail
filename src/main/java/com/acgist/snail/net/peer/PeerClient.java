@@ -216,7 +216,7 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 			LOGGER.debug("没有匹配Peer块下载");
 			this.completeLock.set(true); // 没有匹配到下载块时设置为完成
 			this.release();
-			this.torrentSession.complete();
+			this.torrentSession.completeCheck();
 			return false;
 		}
 		final int index = this.downloadPiece.getIndex();

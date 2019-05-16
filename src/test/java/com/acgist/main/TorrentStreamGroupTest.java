@@ -49,16 +49,14 @@ public class TorrentStreamGroupTest {
 	@Test
 	public void verify() throws DownloadException, NetException {
 //		String path = "e:/snail/12345.torrent";
-		String path = "E:\\gitee\\snail\\download\\[Sakurato.sub][One Punch Man 2nd Season][06][GB][720P]\\一拳超人.torrent";
+		String path = "E:\\gitee\\snail\\download\\[Hi-Res][2019.05.06] TVアニメ「Fairy gone」挿入歌「Forest Gleam」／(K)NoW_NAME [FLAC 96kHz／24bit]\\[Hi-Res][2019.05.06] TVアニメ「Fairy gone」第5話挿入歌「Forest Gleam」／(K)NoW_NAME [FLAC 96kHz_24bit].torrent";
 		TorrentSession session = TorrentManager.getInstance().newTorrentSession(path);
 		var files = session.torrent().getInfo().files();
 		files.forEach(file -> {
-			if(file.path().contains("mp4")) {
-				file.select(true);
-			}
+			file.select(true);
 		});
 //		TorrentStreamGroup group = TorrentStreamGroup.newInstance("e://tmp/client/", files, session);
-		TorrentStreamGroup group = TorrentStreamGroup.newInstance("E:\\gitee\\snail\\download\\[Sakurato.sub][One Punch Man 2nd Season][06][GB][720P]", files, session);
+		TorrentStreamGroup group = TorrentStreamGroup.newInstance("E:\\gitee\\snail\\download\\[Hi-Res][2019.05.06] TVアニメ「Fairy gone」挿入歌「Forest Gleam」／(K)NoW_NAME [FLAC 96kHz／24bit]", files, session);
 		var downloadPieces = group.pieces();
 		int index = downloadPieces.nextSetBit(0);
 		int length = session.torrent().getInfo().getPieceLength().intValue();
