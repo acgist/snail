@@ -67,10 +67,10 @@ public class TrackerLauncherGroup {
 	 */
 	public void release() {
 		LOGGER.debug("释放TrackerLauncherGroup");
-		trackerLaunchers.forEach(launcher -> {
+		this.trackerLaunchers.forEach(launcher -> {
 			launcher.release();
 		});
-		trackerLaunchers.clear();
+		this.trackerLaunchers.clear();
 	}
 	
 }

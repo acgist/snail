@@ -84,7 +84,7 @@ public class TorrentStream {
 	 * @param selectPieces 被选中的Piece
 	 */
 	public void buildFile(final String file, final long size, final long pos, final BitSet selectPieces) throws IOException {
-		if(filePieces != null && filePieces.size() > 0) {
+		if(this.fileStream != null) {
 			throw new IOException("Torrent文件未被释放");
 		}
 		this.file = file;
@@ -118,18 +118,22 @@ public class TorrentStream {
 	 * <P>添加Piece</p>
 	 * <P>每次添加的必须是一个完成的Piece，如果不在该文件范围内则不操作。</p>
 	 * <P>如果缓存达到缓存大小或者文件下载完成则写入文件。</p>
+	 * 
+	 * @return 是否保存成功
 	 */
-	public void piece(TorrentPiece piece) {
+	public boolean piece(TorrentPiece piece) {
 		if(!piece.contain(this.fileBeginPos, this.fileEndPos)) { // 不符合当前文件位置
-			return;
+			return false;
 		}
+		boolean ok = false;
 		List<TorrentPiece> list = null; // 写入文件的Piece
 		synchronized (this) {
 			if(havePiece(piece.getIndex())) {
 				LOGGER.debug("已经下载完成Piece，忽略：{}", piece.getIndex());
-				return;
+				return false;
 			}
 			if(this.filePieces.offer(piece)) {
+				ok = true;
 				LOGGER.debug("保存Piece：{}", piece.getIndex());
 				this.done(piece.getIndex());
 				final long bufferSize = this.fileBuffer.addAndGet(piece.getLength());
@@ -147,6 +151,7 @@ public class TorrentStream {
 			}
 		}
 		write(list);
+		return ok;
 	}
 	
 	/**
@@ -340,9 +345,8 @@ public class TorrentStream {
 	 * <p>将缓存队列所有的Piece块刷出。</p>
 	 */
 	private List<TorrentPiece> flush() {
-		int size = this.filePieces.size();
-		final List<TorrentPiece> list = new ArrayList<>(size);
-		this.filePieces.drainTo(list, size);
+		final List<TorrentPiece> list = new ArrayList<>();
+		this.filePieces.drainTo(list);
 		return list;
 	}
 	

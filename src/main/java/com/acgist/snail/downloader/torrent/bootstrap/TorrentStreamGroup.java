@@ -148,11 +148,17 @@ public class TorrentStreamGroup {
 	/**
 	 * <p>保存Piece</p>
 	 * <p>调用每个{@link TorrentStream#piece}进行保存。</p>
+	 * 
+	 * @return 是否保存成功
 	 */
-	public void piece(TorrentPiece piece) {
+	public boolean piece(TorrentPiece piece) {
+		boolean ok = false;
 		for (TorrentStream torrentStream : streams) {
-			torrentStream.piece(piece);
+			if(torrentStream.piece(piece)) {
+				ok = true;
+			}
 		}
+		return ok;
 	}
 
 	/**

@@ -1,5 +1,8 @@
 package com.acgist.main;
 
+import java.io.IOException;
+import java.io.RandomAccessFile;
+
 import org.junit.Test;
 
 import com.acgist.snail.downloader.torrent.bootstrap.TorrentStreamGroup;
@@ -46,16 +49,18 @@ public class TorrentStreamGroupTest {
 	@Test
 	public void verify() throws DownloadException {
 //		String path = "e:/snail/12345.torrent";
-		String path = "E:\\tmp\\[Skytree][海贼王][One_Piece][884][GB_JP][X264_AAC][720P][CRRIP][天空树双语字幕组].mp4\\[Skytree][ONE PIECE 海贼王][884][X264][720P][GB_JP][MP4][CRRIP][中日双语字幕].torrent";
+		String path = "E:\\gitee\\snail\\download\\[Sakurato.sub][One Punch Man 2nd Season][06][GB][720P]\\[桜都字幕组][一拳超人 第2季_One Punch Man 2nd Season][06][GB][720P].torrent";
 		TorrentSession session = TorrentManager.getInstance().newTorrentSession(path);
 		var files = session.torrent().getInfo().files();
 		byte[] pieces = session.torrent().getInfo().getPieces();
 		System.out.println(pieces.length);
 		files.forEach(file -> {
-			file.select(true);
+			if(file.path().contains("mp4")) {
+				file.select(true);
+			}
 		});
 //		TorrentStreamGroup group = TorrentStreamGroup.newInstance("e://tmp/client/", files, session);
-		TorrentStreamGroup group = TorrentStreamGroup.newInstance("E:\\tmp\\[Skytree][海贼王][One_Piece][884][GB_JP][X264_AAC][720P][CRRIP][天空树双语字幕组].mp4", files, session);
+		TorrentStreamGroup group = TorrentStreamGroup.newInstance("E:\\gitee\\snail\\download\\[Sakurato.sub][One Punch Man 2nd Season][06][GB][720P]", files, session);
 		var downloadPieces = group.pieces();
 		int index = downloadPieces.nextSetBit(0);
 		int length = session.torrent().getInfo().getPieceLength().intValue();
@@ -81,6 +86,25 @@ public class TorrentStreamGroupTest {
 		byte[] value = new byte[TorrentInfo.PIECE_HASH_LENGTH];
 		System.arraycopy(pieces, index * TorrentInfo.PIECE_HASH_LENGTH, value, 0, TorrentInfo.PIECE_HASH_LENGTH);
 		return value;
+	}
+
+	@Test
+	public void compare() throws IOException {
+		int index = 22;
+		int pieceSize = 524288;
+		String fileA = "E:\\gitee\\snail\\download\\[Sakurato.sub][One Punch Man 2nd Season][06][GB][720P]\\[Sakurato.sub][One Punch Man 2nd Season][06][GB][720P].mp4";
+		String fileB = "E:\\gitee\\snail\\download\\[Sakurato.sub][One Punch Man 2nd Season][06][GB][720P]\\[Sakurato.sub][One Punch Man 2nd Season][06][GB][720P]s.mp4";
+		RandomAccessFile streamA = new RandomAccessFile(fileA, "rw");
+		RandomAccessFile streamB = new RandomAccessFile(fileB, "rw");
+		byte[] byteA = new byte[pieceSize];
+		byte[] byteB = new byte[pieceSize];
+		streamA.seek(index * pieceSize);
+		streamA.read(byteA);
+		streamB.seek(index * pieceSize);
+		streamB.read(byteB);
+		System.out.println(ArrayUtils.equals(byteA, byteB));
+		streamA.close();
+		streamB.close();
 	}
 	
 }

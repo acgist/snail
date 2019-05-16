@@ -12,6 +12,7 @@ import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.system.context.SystemThreadContext;
 
 /**
  * <p>Peer连接组：上传</p>
@@ -72,6 +73,21 @@ public class PeerConnectGroup {
 			}
 		}
 	}
+	
+	/**
+	 * 释放资源
+	 */
+	public void release() {
+		LOGGER.debug("释放PeerConnectGroup");
+		synchronized (this.peerConnectSessions) {
+			this.peerConnectSessions.forEach(connect -> {
+				SystemThreadContext.submit(() -> {
+					connect.release();
+				});
+			});
+			this.peerConnectSessions.clear();
+		}
+	}
 
 	/**
 	 * <p>剔除无效连接</p>
@@ -113,11 +129,8 @@ public class PeerConnectGroup {
 	private void inferiorPeerClient(PeerConnectSession peerConnectSession) {
 		if(peerConnectSession != null) {
 			final PeerSession peerSession = peerConnectSession.getPeerSession();
-			final PeerMessageHandler handler = peerConnectSession.getPeerMessageHandler();
 			LOGGER.debug("剔除无效PeerConnect：{}-{}", peerSession.host(), peerSession.port());
-			handler.choke();
-			handler.close();
-			peerSession.unstatus(PeerConfig.STATUS_UPLOAD);
+			peerConnectSession.release();
 		}
 	}
 	

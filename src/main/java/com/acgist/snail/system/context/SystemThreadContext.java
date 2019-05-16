@@ -4,12 +4,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.acgist.snail.system.exception.ArgumentException;
 
 /**
  * 系统线程
@@ -55,9 +58,11 @@ public class SystemThreadContext {
 	/**
 	 * 定时任务（不重复）
 	 */
-	public static final void timer(long delay, TimeUnit unit, Runnable runnable) {
+	public static final ScheduledFuture<?> timer(long delay, TimeUnit unit, Runnable runnable) {
 		if(delay >= 0) {
-			EXECUTOR_TIMER.schedule(runnable, delay, unit);
+			return EXECUTOR_TIMER.schedule(runnable, delay, unit);
+		} else {
+			throw new ArgumentException("定时任务时间错误：" + delay);
 		}
 	}
 	
@@ -68,9 +73,11 @@ public class SystemThreadContext {
 	 * @param unit 时间单位
 	 * @param runnable 任务
 	 */
-	public static final void timer(long delay, long period, TimeUnit unit, Runnable runnable) {
+	public static final ScheduledFuture<?> timer(long delay, long period, TimeUnit unit, Runnable runnable) {
 		if(delay >= 0) {
-			EXECUTOR_TIMER.scheduleAtFixedRate(runnable, delay, period, unit);
+			return EXECUTOR_TIMER.scheduleAtFixedRate(runnable, delay, period, unit);
+		} else {
+			throw new ArgumentException("定时任务时间错误：" + delay);
 		}
 	}
 	
@@ -81,9 +88,11 @@ public class SystemThreadContext {
 	 * @param unit 时间单位
 	 * @param runnable 任务
 	 */
-	public static final void timerFixedDelay(long delay, long period, TimeUnit unit, Runnable runnable) {
+	public static final ScheduledFuture<?> timerFixedDelay(long delay, long period, TimeUnit unit, Runnable runnable) {
 		if(delay >= 0) {
-			EXECUTOR_TIMER.scheduleWithFixedDelay(runnable, delay, period, unit);
+			return EXECUTOR_TIMER.scheduleWithFixedDelay(runnable, delay, period, unit);
+		} else {
+			throw new ArgumentException("定时任务时间错误：" + delay);
 		}
 	}
 	

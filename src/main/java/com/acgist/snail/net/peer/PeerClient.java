@@ -12,6 +12,7 @@ import com.acgist.snail.net.TcpClient;
 import com.acgist.snail.pojo.bean.TorrentPiece;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
@@ -151,13 +152,15 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	 */
 	public void release() {
 		if(available()) {
-			LOGGER.debug("Peer关闭：{}-{}", peerSession.host(), peerSession.port());
+			LOGGER.debug("PeerClient关闭：{}-{}", this.peerSession.host(), this.peerSession.port());
 			this.available = false;
-			if(!completeLock.get()) { // 没有完成：等待下载完成
+			if(!this.completeLock.get()) { // 没有完成：等待下载完成
 				synchronized (closeLock) {
 					ThreadUtils.wait(closeLock, Duration.ofSeconds(CLOSE_AWAIT_TIME));
 				}
 			}
+			this.peerSession.unstatus(PeerConfig.STATUS_DOWNLOAD);
+			this.peerSession.peerMessageHandler(null);
 			super.close();
 		}
 	}
@@ -263,8 +266,10 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 		if(this.downloadPiece == null) { // 没有Piece
 		} else if(this.downloadPiece.complete()) { // 完成
 			if(this.downloadPiece.verify()) {
-				peerSession.download(downloadPiece.getLength()); // 统计
-				torrentStreamGroup.piece(downloadPiece); // 保存数据
+				final boolean ok = torrentStreamGroup.piece(downloadPiece); // 保存数据
+				if(ok) {
+					peerSession.download(downloadPiece.getLength()); // 统计
+				}
 			} else {
 				peerSession.badPieces(this.downloadPiece.getIndex());
 				LOGGER.warn("下载的Piece校验失败：{}", this.downloadPiece.getIndex());
