@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -30,7 +31,7 @@
 		<javafx.version>11.0.2</javafx.version>
 		<slf4j.version>1.8.0-alpha2</slf4j.version>
 		<logback.version>1.3.0-alpha4</logback.version>
-		<!-- MAVEN插件 -->
+		<!-- Maven插件 -->
 		<maven.jar.version>3.1.1</maven.jar.version>
 		<maven.source.version>3.0.1</maven.source.version>
 		<maven.javadoc.version>3.1.0</maven.javadoc.version>
@@ -242,7 +243,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- JavaDoc 跳过：mvn -Dmaven.javadoc.skip=true -->
+			<!-- JavaDoc：跳过：mvn -Dmaven.javadoc.skip=true -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>

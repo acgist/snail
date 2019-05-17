@@ -80,9 +80,9 @@ public class ObjectUtils {
 			return object.toString();
 		} else {
 			final StringBuilder builder = new StringBuilder("[");
-			final var properties = EntityUtils.entityProperty(object.getClass());
+			final var properties = BeanUtils.properties(object.getClass());
 			for (String property : properties) {
-				builder.append(property).append("=").append(EntityUtils.entityPropertyValue(object, property)).append(",");
+				builder.append(property).append("=").append(BeanUtils.propertyValue(object, property)).append(",");
 			}
 			final int length = builder.length();
 			if(length > 1) {
