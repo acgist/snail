@@ -410,12 +410,15 @@ public class TorrentStream {
 	/**
 	 * 初始化：已下载块，校验HASH（第一块和最后一块不校验）。
 	 */
-	private void buildFilePieces() {
+	private void buildFilePieces() throws IOException {
 		int pos = 0;
 		int length = 0;
 		byte[] hash = null;
 		byte[] bytes = null;
 		boolean verify = true; // 第一块和最后一块不要校验HASH
+		if(this.fileStream.length() == 0) {
+			return;
+		}
 		for (int index = this.fileBeginPieceIndex; index <= this.fileEndPieceIndex; index++) {
 			if(index == this.fileBeginPieceIndex) { // 第一块需要偏移
 				verify = false;

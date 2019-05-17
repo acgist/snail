@@ -69,7 +69,7 @@ public class TorrentManager {
 		}
 		final Torrent torrent = Torrent.valueOf(map);
 		final Map<?, ?> info = (Map<?, ?>) map.get("info"); // 只需要数据不符
-		final InfoHash infoHash = InfoHash.newInstance(BCodeEncoder.mapToBytes(info));
+		final InfoHash infoHash = InfoHash.newInstance(BCodeEncoder.encodeMap(info));
 		return newTorrentSession(torrent, infoHash);
 	}
 	

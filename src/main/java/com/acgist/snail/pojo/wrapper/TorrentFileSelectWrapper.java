@@ -4,12 +4,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.acgist.snail.system.bcode.BCodeDecoder;
+import com.acgist.snail.system.bcode.BCodeEncoder;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 
 public class TorrentFileSelectWrapper {
 
-	private BCodeEncoderWrapper encoder;
+	private BCodeEncoder encoder;
 	private BCodeDecoder decoder;
 
 	private TorrentFileSelectWrapper() {
@@ -18,10 +19,8 @@ public class TorrentFileSelectWrapper {
 	public static final TorrentFileSelectWrapper newEncoder(List<String> list) {
 		final TorrentFileSelectWrapper wrapper = new TorrentFileSelectWrapper();
 		if(CollectionUtils.isNotEmpty(list)) {
-			wrapper.encoder = BCodeEncoderWrapper.newListInstance();
-			list.forEach(value -> {
-				wrapper.encoder.put(value);
-			});
+			wrapper.encoder = BCodeEncoder.newInstance().newList();
+			wrapper.encoder.put(list);
 		}
 		return wrapper;
 	}
@@ -29,7 +28,7 @@ public class TorrentFileSelectWrapper {
 	public static final TorrentFileSelectWrapper newDecoder(String value) {
 		final TorrentFileSelectWrapper wrapper = new TorrentFileSelectWrapper();
 		if(StringUtils.isNotEmpty(value)) {
-			wrapper.decoder = BCodeDecoder.newInstance(value.getBytes());
+			wrapper.decoder = BCodeDecoder.newInstance(value);
 		}
 		return wrapper;
 	}
@@ -38,22 +37,23 @@ public class TorrentFileSelectWrapper {
 		if(this.encoder == null) {
 			return null;
 		}
-		return encoder.toString();
+		return encoder.flush().toString();
 	}
 	
 	public List<String> list() {
 		if(this.decoder == null) {
-			return null;
+			return List.of();
 		}
 		final List<Object> list = this.decoder.nextList();
-		var x = list.stream()
+		if(list == null) {
+			return List.of();
+		}
+		return list.stream()
 		.filter(object -> object != null)
 		.map(object -> {
-			byte[] value = (byte[]) object;
-			return new String(value);
+			return BCodeDecoder.getString(object);
 		})
 		.collect(Collectors.toList());
-		return x;
 	}
 	
 }

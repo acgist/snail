@@ -62,12 +62,12 @@ public class UtMetadataMessageHandler {
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
 		final BCodeDecoder decoder = BCodeDecoder.newInstance(bytes);
-		final Map<String, Object> data = decoder.nextMap();
-		if(data == null) {
+		final Map<String, Object> map = decoder.nextMap();
+		if(map == null) {
 			LOGGER.warn("UtMetadata消息格式错误：{}", decoder.obbString());
 			return;
 		}
-		final Byte typeValue = BCodeDecoder.getByte(data, ARG_MSG_TYPE);
+		final Byte typeValue = decoder.getByte(ARG_MSG_TYPE);
 		final UtMetadataType type = PeerMessageConfig.UtMetadataType.valueOf(typeValue);
 		if(type == null) {
 			LOGGER.warn("不支持的UtMetadata消息类型：{}", typeValue);
@@ -76,13 +76,13 @@ public class UtMetadataMessageHandler {
 		LOGGER.debug("UtMetadata消息类型：{}", type);
 		switch (type) {
 		case request:
-			request(data);
+			request(decoder);
 			break;
 		case data:
-			data(data, decoder);
+			data(decoder);
 			break;
 		case reject:
-			reject(data);
+			reject(decoder);
 			break;
 		}
 	}
@@ -103,9 +103,9 @@ public class UtMetadataMessageHandler {
 	/**
 	 * 处理请求：request
 	 */
-	private void request(Map<String, Object> data) {
+	private void request(BCodeDecoder decoder) {
 		LOGGER.warn("收到UtMetadata消息-request");
-		final int piece = BCodeDecoder.getInteger(data, ARG_PIECE);
+		final int piece = decoder.getInteger(ARG_PIECE);
 		data(piece);
 	}
 
@@ -144,10 +144,10 @@ public class UtMetadataMessageHandler {
 	 * @param data 请求数据
 	 * @param decoder B编码数据
 	 */
-	private void data(Map<String, Object> data, BCodeDecoder decoder) {
+	private void data(BCodeDecoder decoder) {
 		LOGGER.warn("收到UtMetadata消息-data");
 		boolean complete = false; // 下载完成
-		final int piece = BCodeDecoder.getInteger(data, ARG_PIECE);
+		final int piece = decoder.getInteger(ARG_PIECE);
 		final byte[] bytes = infoHash.info();
 		final int begin = piece * INFO_SLICE_SIZE;
 		final int end = begin + INFO_SLICE_SIZE;
@@ -178,7 +178,7 @@ public class UtMetadataMessageHandler {
 	/**
 	 * 处理请求：reject
 	 */
-	private void reject(Map<String, Object> data) {
+	private void reject(BCodeDecoder decoder) {
 		LOGGER.warn("收到UtMetadata消息-reject");
 	}
 	
@@ -217,17 +217,12 @@ public class UtMetadataMessageHandler {
 			LOGGER.warn("不支持UtMetadata扩展协议");
 			return;
 		}
-		int length = 0;
-		final byte[] pushBytes = BCodeEncoder.mapToBytes(data);
-		length += pushBytes.length;
+		final BCodeEncoder encoder = BCodeEncoder.newInstance().newMap();
+		encoder.put(data).flush();
 		if(x != null) {
-			length += x.length;
+			encoder.build(x);
 		}
-		final byte[] bytes = new byte[length];
-		System.arraycopy(pushBytes, 0, bytes, 0, pushBytes.length);
-		if(x != null) {
-			System.arraycopy(x, 0, bytes, pushBytes.length, x.length);
-		}
+		final byte[] bytes = encoder.bytes();
 		extensionMessageHandler.pushMessage(type, bytes);
 	}
 	

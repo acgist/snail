@@ -24,6 +24,11 @@ public class InfoHash {
 		this.infoHash = infoHash;
 	}
 
+	/**
+	 * 生成InfoHash
+	 * 
+	 * @param data 种子文件Info内容
+	 */
 	public static final InfoHash newInstance(byte[] data) {
 		final InfoHash infoHash = new InfoHash(StringUtils.sha1(data));
 		infoHash.info = data;
@@ -31,6 +36,11 @@ public class InfoHash {
 		return infoHash;
 	}
 	
+	/**
+	 * 生成InfoHash
+	 * 
+	 * @param hash 种子文件Info内容Hash
+	 */
 	public static final InfoHash newInstance(String hash) throws DownloadException {
 		hash = Objects.requireNonNull(hash, "不支持的hash");
 		if(hash.length() == 40) {
@@ -76,12 +86,12 @@ public class InfoHash {
 	 * 种子ID（网络传输使用）
 	 */
 	public String infoHashURL() {
-		final String magnetHash = infoHashHex();
+		final String infoHashHex = infoHashHex();
 		int index = 0;
-		final int length = magnetHash.length();
+		final int length = infoHashHex.length();
 		final StringBuilder builder = new StringBuilder();
 		do {
-			builder.append("%").append(magnetHash.substring(index, index + 2));
+			builder.append("%").append(infoHashHex.substring(index, index + 2));
 			index += 2;
 		} while (index < length);
 		return builder.toString();
