@@ -8,9 +8,11 @@
 	<groupId>com.acgist</groupId>
 	<artifactId>snail</artifactId>
 	
+	<url>https://gitee.com/acgist/snail</url>
 	<name>snail</name>
 	<version>1.0.2</version>
 	<description>基于Java/JavaFX的下载工具，支持下载协议：BT、FTP、HTTP、ED2K。</description>
+	<inceptionYear>2019</inceptionYear>
 
 	<properties>
 		<!-- 配置 -->
@@ -49,7 +51,19 @@
 		</dependency>
 		<dependency>
 			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-base</artifactId>
+			<version>${javafx.version}</version>
+			<classifier>${os.name}</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-controls</artifactId>
+			<version>${javafx.version}</version>
+			<classifier>${os.name}</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-graphics</artifactId>
 			<version>${javafx.version}</version>
 			<classifier>${os.name}</classifier>
 		</dependency>
@@ -212,9 +226,9 @@
 			<!-- 源代码包：mvn source:jar-no-fork -->
 			<!-- 问题：release环境不能正确包含环境配置 -->
 			<plugin>
-			    <groupId>org.apache.maven.plugins</groupId>
-			    <artifactId>maven-source-plugin</artifactId>
-			    <version>${maven.source.version}</version>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>${maven.source.version}</version>
 				<executions>
 					<execution>
 						<id>jar-no-fork</id>
@@ -253,5 +267,30 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<organization>
+		<url>https://www.acgist.com</url>
+		<name>acgist</name>
+	</organization>
+
+	<developers>
+		<developer>
+			<id>acgist.snail.developer</id>
+			<url>https://www.acgist.com</url>
+			<name>acgister</name>
+			<email>admin@acgist.com</email>
+			<roles>
+				<role>master</role>
+				<role>developer</role>
+			</roles>
+		</developer>
+	</developers>
+
+	<licenses>
+		<license>
+			<url>https://opensource.org/licenses/BSD-3-Clause</url>
+			<name>The 3-Clause BSD License</name>
+		</license>
+	</licenses>
 
 </project>
