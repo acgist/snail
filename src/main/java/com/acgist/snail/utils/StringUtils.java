@@ -18,7 +18,10 @@ public class StringUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(StringUtils.class);
 	
-	private static final String NUMERIC_REGEX = "[0-9]+";
+	/**
+	 * 正负整数
+	 */
+	private static final String NUMERIC_REGEX = "\\-?[0-9]+";
 	
 	/**
 	 * 否空字符串
@@ -35,7 +38,7 @@ public class StringUtils {
 	}
 	
 	/**
-	 * 数字字符串
+	 * 数字字符串：正负整数。
 	 */
 	public static final boolean isNumeric(String value) {
 		return StringUtils.regex(value, NUMERIC_REGEX, true);

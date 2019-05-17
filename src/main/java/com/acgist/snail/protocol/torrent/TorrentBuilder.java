@@ -10,7 +10,7 @@ import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.bcode.BCodeDecoder;
 import com.acgist.snail.system.bcode.BCodeEncoder;
 import com.acgist.snail.system.config.SystemConfig;
-import com.acgist.snail.system.config.TrackerConfig;
+import com.acgist.snail.system.manager.TrackerManager;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.DateUtils;
 import com.acgist.snail.utils.FileUtils;
@@ -52,7 +52,7 @@ public class TorrentBuilder {
 		data.put("creation date", DateUtils.unixTimestamp());
 		announce(data);
 		infoHash(data);
-//		data.put("nodes", value); // TODO：DHT
+//		data.put("nodes", value); // TODO：DHT节点
 		return data;
 	}
 
@@ -60,7 +60,9 @@ public class TorrentBuilder {
 	 * 设置announce
 	 */
 	private void announce(Map<String, Object> data) {
-		final List<String> list = TrackerConfig.list();
+		final List<String> list = TrackerManager.getInstance().clients(SystemConfig.getTrackerSize()).stream()
+			.map(client -> client.announceUrl())
+			.collect(Collectors.toList());
 		if(CollectionUtils.isEmpty(list)) {
 			return;
 		}

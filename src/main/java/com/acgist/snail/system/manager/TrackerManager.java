@@ -20,6 +20,7 @@ import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.http.HttpProtocol;
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.system.config.TrackerConfig;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.CollectionUtils;
@@ -35,7 +36,7 @@ public class TrackerManager {
 	
 	private static final TrackerManager INSTANCE = new TrackerManager();
 
-	private static final int MAX_CLIENT_SIZE = SystemConfig.getTrackerSize();
+	private static final int MAX_TRACKER_SIZE = SystemConfig.getTrackerSize();
 	
 	private final Map<Integer, TrackerClient> trackerClients;
 	private final Map<Integer, TrackerLauncher> trackerLaunchers;
@@ -94,8 +95,8 @@ public class TrackerManager {
 	public List<TrackerClient> clients(String announceUrl, List<String> announceUrls) throws DownloadException {
 		final List<TrackerClient> clients = register(announceUrl, announceUrls);
 		final int size = clients.size();
-		if(size < MAX_CLIENT_SIZE) {
-			final var subjoin = clients(MAX_CLIENT_SIZE - size, clients);
+		if(size < MAX_TRACKER_SIZE) {
+			final var subjoin = clients(MAX_TRACKER_SIZE - size, clients);
 			if(!subjoin.isEmpty()) {
 				clients.addAll(subjoin);
 			}
@@ -103,12 +104,16 @@ public class TrackerManager {
 		return clients;
 	}
 	
+	/**
+	 * 获取可用的Tracker
+	 */
 	public List<TrackerClient> clients(int size) {
 		return clients(size, null);
 	}
 	
 	/**
-	 * 获取可用的tracker client，获取权重排在前面的tracker client
+	 * 获取可用的Tracker Client，获取权重排在前面的Tracker Client。
+	 * 
 	 * @param size 返回可用client数量
 	 * @param clients 已有的Client
 	 */
@@ -134,7 +139,14 @@ public class TrackerManager {
 	}
 
 	/**
-	 * 注册tracker client列表
+	 * 注册{@link TrackerConfig}配置的默认Tracker。
+	 */
+	public List<TrackerClient> register() throws DownloadException {
+		return register(TrackerConfig.getInstance().announces());
+	}
+	
+	/**
+	 * 注册Tracker Client。
 	 */
 	private List<TrackerClient> register(String announceUrl, List<String> announceUrls) throws DownloadException {
 		final List<String> announces = new ArrayList<>();
@@ -144,7 +156,14 @@ public class TrackerManager {
 		if(CollectionUtils.isNotEmpty(announceUrls)) {
 			announces.addAll(announceUrls);
 		}
-		if(announces.size() == 0) {
+		return register(announces);
+	}
+
+	/**
+	 * 注册Tracker Client。
+	 */
+	private List<TrackerClient> register(List<String> announces) throws DownloadException {
+		if(CollectionUtils.isEmpty(announces)) {
 			throw new DownloadException("announceUrl不合法");
 		}
 		return announces.stream()
@@ -160,9 +179,9 @@ public class TrackerManager {
 		.filter(client -> client.available())
 		.collect(Collectors.toList());
 	}
-
+	
 	/**
-	 * 注册Tracker Client，如果已经注册直接返回
+	 * 注册Tracker Client，如果已经注册直接返回。
 	 */
 	private TrackerClient register(String announceUrl) throws DownloadException {
 		if(StringUtils.isEmpty(announceUrl)) {

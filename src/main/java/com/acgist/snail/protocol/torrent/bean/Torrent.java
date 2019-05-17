@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.acgist.snail.system.bcode.BCodeDecoder;
+import com.acgist.snail.utils.NetUtils;
+import com.acgist.snail.utils.StringUtils;
 
 /**
  * 种子信息
@@ -67,12 +69,12 @@ public class Torrent {
 		torrent.setCreatedBy(BCodeDecoder.getString(map, "created by"));
 		torrent.setAnnounce(BCodeDecoder.getString(map, "announce"));
 		torrent.setCreationDate(BCodeDecoder.getLong(map, "creation date"));
-		final List<?> announceList = (List<?>) map.get("announce-list");
+		final List<Object> announceList = BCodeDecoder.getList(map, "announce-list");
 		if(announceList != null) {
 			torrent.setAnnounceList(
 				announceList.stream()
 				.flatMap(value -> {
-					List<?> values = (List<?>) value;
+					final List<?> values = (List<?>) value;
 					return values.stream();
 				})
 				.map(value -> BCodeDecoder.getString(value))
@@ -81,16 +83,20 @@ public class Torrent {
 		} else {
 			torrent.setAnnounceList(new ArrayList<>(0));
 		}
-		final List<?> nodes = (List<?>) map.get("nodes");
+		final List<Object> nodes = BCodeDecoder.getList(map, "nodes");
 		if(nodes != null) {
 			torrent.setNodes(
 				nodes.stream()
 				.map(value -> {
-					List<?> values = (List<?>) value;
+					final List<?> values = (List<?>) value;
 					if(values.size() == 2) {
-						String host = BCodeDecoder.getString(values.get(0));
-						Long port = (Long) values.get(1);
-						return Map.entry(host, port);
+						final String host = BCodeDecoder.getString(values.get(0));
+						final Long port = (Long) values.get(1);
+						if(StringUtils.isNumeric(host)) { // TODO：紧凑型IP和端口
+							return Map.entry(NetUtils.decodeIntToIp(Integer.valueOf(host)), Long.valueOf(NetUtils.decodePort(port.shortValue())));
+						} else {
+							return Map.entry(host, port);
+						}
 					} else {
 						return null;
 					}
@@ -101,7 +107,7 @@ public class Torrent {
 		} else {
 			torrent.setNodes(new LinkedHashMap<>());
 		}
-		Map<?, ?> info = (Map<?, ?>) map.get("info");
+		final Map<String, Object> info = BCodeDecoder.getMap(map, "info");
 		if(info != null) {
 			TorrentInfo torrentInfo = TorrentInfo.valueOf(info);
 			torrent.setInfo(torrentInfo);

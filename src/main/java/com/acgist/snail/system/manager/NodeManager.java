@@ -16,8 +16,10 @@ import com.acgist.snail.net.dht.DhtClient;
 import com.acgist.snail.net.dht.bootstrap.Request;
 import com.acgist.snail.net.dht.bootstrap.Response;
 import com.acgist.snail.pojo.session.NodeSession;
+import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.ArrayUtils;
+import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -102,7 +104,21 @@ public class NodeManager {
 	}
 
 	/**
-	 * 添加DHT节点，使用Ping然后添加到列表
+	 * 注册默认节点
+	 */
+	public void register() {
+		final var nodes = DhtConfig.getInstance().nodes();
+		if(CollectionUtils.isNotEmpty(nodes)) {
+			nodes.forEach((host, port) -> {
+				LOGGER.debug("注册默认节点：{}-{}", host, port);
+				NodeManager.getInstance().newNodeSession(host, port);
+			});
+		}
+	}
+	
+	/**
+	 * <p>添加验证DHT节点</p>
+	 * <p>先验证节点，验证通过加入列表，设置为有效节点。</p>
 	 */
 	public void newNodeSession(String host, Integer port) {
 		final NodeSession nodeSession = verify(host, port);
@@ -112,7 +128,8 @@ public class NodeManager {
 	}
 	
 	/**
-	 * 新建Node，新建完成后需要调用{@link #sortNodes()}进行排序
+	 * 新建Node，新建完成后需要调用{@link #sortNodes()}进行排序。
+	 * 加入时不验证，使用时进行验证。
 	 */
 	public NodeSession newNodeSession(byte[] nodeId, String host, Integer port) {
 		synchronized (this.nodes) {

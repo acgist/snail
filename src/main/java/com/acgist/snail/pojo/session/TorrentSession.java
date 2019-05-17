@@ -249,6 +249,12 @@ public class TorrentSession {
 	 */
 	private void loadDhtTimer() {
 		this.dhtLauncher = DhtLauncher.newInstance(this);
+		final var nodes = torrent.getNodes();
+		if(CollectionUtils.isNotEmpty(nodes)) { // 添加DHT节点
+			nodes.forEach((host, port) -> {
+				dhtLauncher.put(host, port.intValue());
+			});
+		}
 		this.dhtTimer = this.timerFixedDelay(DHT_INTERVAL.getSeconds(), DHT_INTERVAL.getSeconds(), TimeUnit.SECONDS, this.dhtLauncher);
 	}
 

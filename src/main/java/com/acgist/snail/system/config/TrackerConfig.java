@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -11,8 +14,7 @@ import com.acgist.snail.utils.StringUtils;
  */
 public class TrackerConfig extends PropertiesConfig {
 	
-//	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerConfig.class);
-	
+	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerConfig.class);
 
 	/**
 	 * announce事件
@@ -75,20 +77,25 @@ public class TrackerConfig extends PropertiesConfig {
 		return INSTANCE;
 	}
 	
-	private List<String> list = new ArrayList<>();
+	private List<String> announces = new ArrayList<>();
 	
 	private void init() {
 		final Properties properties = this.properties.properties();
 		properties.entrySet().forEach(entry -> {
-			final String value = (String) entry.getValue();
-			if(StringUtils.isNotEmpty(value)) {
-				list.add(value);
+			final String announce = (String) entry.getValue();
+			if(StringUtils.isNotEmpty(announce)) {
+				announces.add(announce);
+			} else {
+				LOGGER.warn("注册默认Tracker失败：{}", announce);
 			}
 		});
 	}
 
-	public static final List<String> list() {
-		return INSTANCE.list;
+	/**
+	 * 获取配置的Tracker
+	 */
+	public List<String> announces() {
+		return this.announces;
 	}
 	
 }

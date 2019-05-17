@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.ObjectUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -37,7 +36,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	/**
 	 * 最大失败次数
 	 */
-	private static final int MAX_FAIL_TIMES = SystemConfig.getTrackerMaxFailTimes();
+	private static final int MAX_FAIL_TIMES = 2;
 	
 	protected int weight; // 权重
 	protected final Integer id; // ID
