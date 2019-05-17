@@ -57,7 +57,7 @@ public class TrayMenu extends Menu {
 	}
 
 	static {
-		synchronized (TaskMenu.class) {
+		synchronized (TrayMenu.class) {
 			if (INSTANCE == null) {
 				LOGGER.info("初始化托盘菜单");
 				INSTANCE = new TrayMenu();
