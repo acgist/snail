@@ -12,6 +12,7 @@
 	xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
 	
 	<VBox fx:id="treeBox"></VBox>
+	
 	<VBox fx:id="downloadBox" styleClass="downloadBox">
 		<Button fx:id="download">下载</Button>
 	</VBox>

@@ -10,7 +10,7 @@
 	
 	<name>snail</name>
 	<version>1.0.2</version>
-	<description>基于JAVA/JAVAFX的下载工具，支持下载协议：BT、FTP、HTTP、ED2K。</description>
+	<description>基于Java/JavaFX的下载工具，支持下载协议：BT、FTP、HTTP、ED2K。</description>
 
 	<properties>
 		<!-- 配置 -->
@@ -40,7 +40,7 @@
 	</properties>
 
 	<dependencies>
-		<!-- GUI：JAVAFX -->
+		<!-- GUI：JavaFX -->
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-fxml</artifactId>
@@ -228,7 +228,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- JAVADOC 跳过：mvn -Dmaven.javadoc.skip=true -->
+			<!-- JavaDoc 跳过：mvn -Dmaven.javadoc.skip=true -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>

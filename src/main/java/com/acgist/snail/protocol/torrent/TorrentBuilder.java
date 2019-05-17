@@ -48,11 +48,11 @@ public class TorrentBuilder {
 		data.put("comment", "ACGIST Snail通过磁力链接下载创建");
 		data.put("comment.utf-8", "ACGIST Snail通过磁力链接下载创建");
 		data.put("encoding", SystemConfig.DEFAULT_CHARSET);
-		data.put("created by", SystemConfig.getNameAndVersion());
+		data.put("created by", SystemConfig.getNameEnAndVersion());
 		data.put("creation date", DateUtils.unixTimestamp());
-		announce(data);
-		infoHash(data);
-//		data.put("nodes", value); // TODO：DHT节点
+		this.announce(data);
+		this.infoHash(data);
+//		this.node(data);
 		return data;
 	}
 
@@ -82,6 +82,16 @@ public class TorrentBuilder {
 		data.put("info", decoder.nextMap());
 	}
 
+//	/**
+//	 * 设置DHT节点
+//	 */
+//	private void node(Map<String, Object> data) {
+//		final var nodes = NodeManager.getInstance().findNode(infoHash.infoHash());
+//		if(CollectionUtils.isNotEmpty(nodes)) {
+//			data.put("nodes", nodes);
+//		}
+//	}
+	
 	/**
 	 * 获取文件名称
 	 */
