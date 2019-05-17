@@ -147,12 +147,18 @@ public class NetUtils {
 			(L_IP_BEGIN < value && value < L_IP_END);
 	}
 	
+	/**
+	 * 创建本地socket地址
+	 * 
+	 * @param port 端口
+	 */
 	public static final SocketAddress buildSocketAddress(final int port) {
 		return buildSocketAddress(null, port);
 	}
 	
 	/**
 	 * 创建socket地址
+	 * 
 	 * @param host 地址
 	 * @param port 端口
 	 */

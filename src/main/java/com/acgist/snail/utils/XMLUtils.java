@@ -41,8 +41,8 @@ public class XMLUtils {
 	 * 创建XML
 	 */
 	public static final XMLUtils create() {
-		XMLUtils utils = new XMLUtils();
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		final XMLUtils utils = new XMLUtils();
+		final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		try {
 			utils.document = factory.newDocumentBuilder().newDocument();
 		} catch (ParserConfigurationException e) {
@@ -55,8 +55,8 @@ public class XMLUtils {
 	 * 解析XML
 	 */
 	public static final XMLUtils load(String xml) {
-		XMLUtils utils = new XMLUtils();
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		final XMLUtils utils = new XMLUtils();
+		final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder;
 		try {
 			builder = factory.newDocumentBuilder();
@@ -116,7 +116,7 @@ public class XMLUtils {
 	 * 读取节点值：多个节点获取第一个
 	 */
 	public String elementValue(String name) {
-		NodeList list = this.document.getElementsByTagName(name);
+		final NodeList list = this.document.getElementsByTagName(name);
 		if(list.getLength() == 0) {
 			return null;
 		}
@@ -127,12 +127,12 @@ public class XMLUtils {
 	 * 读取节点值
 	 */
 	public List<String> elementValues(String name) {
-		NodeList list = this.document.getElementsByTagName(name);
-		int length = list.getLength();
+		final NodeList list = this.document.getElementsByTagName(name);
+		final int length = list.getLength();
 		if(length == 0) {
 			return null;
 		}
-		List<String> values = new ArrayList<>(length);
+		final List<String> values = new ArrayList<>(length);
 		for (int index = 0; index < length; index++) {
 			values.add(list.item(index).getTextContent());
 		}
@@ -146,6 +146,9 @@ public class XMLUtils {
 		return xml(false);
 	}
 	
+	/**
+	 * XML输出
+	 */
 	public String xml(boolean format) {
 		try {
 			final Writer out = new StringWriter();

@@ -11,7 +11,6 @@ public class DateUtils {
 	private static final int UNIX_JAVA_TIMESTAMP_SCALE = 1000;
 	private static final String DEFAULT_PATTERN = "yyyy-MM-dd HH:mm:ss";
 	
-	
 	private static final long ONE_MINUTE = 60L;
 	private static final long ONE_HOUR = ONE_MINUTE * 60;
 	private static final long ONE_DAY = ONE_HOUR * 24;
