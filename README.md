@@ -78,15 +78,15 @@ mvn clean package -Prelease -DskipTests
 
 ```bash
 # Windows
-javaw -server -Xms128m -Xmx128m -jar snail-{version}.jar
+javaw -server -Xms256m -Xmx256m -jar snail-{version}.jar
 
 # Linux
-# Linux和Windows不一样，使用Maven打包依赖就可以运行，需要下载配置JavaFX环境才可以。
+# Linux和Windows不一样，使用Maven打包依赖就可以运行，需要单独下载配置JavaFX环境。
 # JavaFX运行环境下载：https://gluonhq.com/products/javafx/
-# /etc/profile
-export JAVAFX=/home/javafx-sdk-11.0.2/lib
-# 启动
-java --module-path $JAVAFX --add-modules javafx.fxml,javafx.controls snail-{version}.jar
+# 配置/etc/profile设置JavaFX目录
+export JavaFX=/home/javafx-sdk-11.0.2/lib
+# 启动命令
+java --module-path $JavaFX --add-modules javafx.fxml,javafx.controls -jar snail-{version}.jar
 ```
 
 #### 启动器启动
