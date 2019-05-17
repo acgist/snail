@@ -186,7 +186,7 @@ public class Request {
 		request.put(DhtConfig.KEY_Y, this.y);
 		request.put(DhtConfig.KEY_Q, this.q.name());
 		request.put(DhtConfig.KEY_A, this.a);
-		return BCodeEncoder.mapToBytes(request);
+		return BCodeEncoder.encodeMap(request);
 	}
 	
 	/**

@@ -85,5 +85,5 @@ Windows直接点击SnailLauncher.exe即可运行。
 
 > 执行程序和jar、lib、java必须处于同一个目录
 
-## 界面
+## 下载界面
 ![下载界面](http://files.git.oschina.net/group1/M00/07/B8/PaAvDFzd9lCAUSXEAAB8UcH2axw194.png "下载界面")

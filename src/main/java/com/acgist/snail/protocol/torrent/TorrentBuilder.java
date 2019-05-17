@@ -52,7 +52,7 @@ public class TorrentBuilder {
 		data.put("creation date", DateUtils.unixTimestamp());
 		announce(data);
 		infoHash(data);
-//		data.put("nodes", value); // DHT
+//		data.put("nodes", value); // TODO：DHT
 		return data;
 	}
 
@@ -97,7 +97,7 @@ public class TorrentBuilder {
 		if(file.exists()) { // 文件已存在
 			return;
 		}
-		final byte[] bytes = BCodeEncoder.mapToBytes(data);
+		final byte[] bytes = BCodeEncoder.encodeMap(data);
 		FileUtils.write(filePath, bytes);
 	}
 

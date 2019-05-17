@@ -16,6 +16,7 @@ public class RandomAccessFileTest {
 		stream.seek(1000);
 		byte[] bytes = new byte[1024];
 		stream.read(bytes);
+		System.out.println(stream.length());
 		ThreadUtils.sleep(Long.MAX_VALUE);
 		stream.close();
 	}

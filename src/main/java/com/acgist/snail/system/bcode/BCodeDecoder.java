@@ -10,6 +10,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.system.exception.ArgumentException;
+
 /**
  * B编码解码器<br>
  * i：数字（Long）<br>
@@ -37,54 +39,53 @@ public class BCodeDecoder {
 	
 	private List<Object> list;
 	private Map<String, Object> map;
-	
-	private final ByteArrayInputStream input;
-	
-	public static final BCodeDecoder newInstance(byte[] bytes) {
-		return new BCodeDecoder(bytes);
-	}
+	private final ByteArrayInputStream inputStream;
 	
 	private BCodeDecoder(byte[] bytes) {
-		this.input = new ByteArrayInputStream(bytes);
+		this.inputStream = new ByteArrayInputStream(bytes);
+	}
+	
+	public static final BCodeDecoder newInstance(String content) {
+		if(content == null) {
+			throw new ArgumentException("B编码解码内容错误");
+		}
+		return new BCodeDecoder(content.getBytes());
+	}
+	
+	public static final BCodeDecoder newInstance(byte[] bytes) {
+		if(bytes == null) {
+			throw new ArgumentException("B编码解码内容错误");
+		}
+		return new BCodeDecoder(bytes);
 	}
 	
 	/**
 	 * 是否含有更多数据
 	 */
 	public boolean more() {
-		return input.available() > 0;
+		return this.inputStream != null && inputStream.available() > 0;
 	}
 	
 	/**
 	 * 下一个数据类型
 	 */
-	private Type nextType() {
-		if(input == null || input.available() <= 0) {
+	public Type nextType() {
+		if(!more()) {
+			LOGGER.warn("B编码解码没有跟多数据");
 			return Type.none;
 		}
-		char type = (char) input.read();
+		char type = (char) inputStream.read();
 		switch (type) {
 		case TYPE_D:
-			this.map = d(input);
+			this.map = d(inputStream);
 			return Type.map;
 		case TYPE_L:
-			this.list = l(input);
+			this.list = l(inputStream);
 			return Type.list;
 		default:
 			LOGGER.warn("不支持B编码类型：{}", type);
 			return Type.none;
 		}
-	}
-	
-	/**
-	 * 获取下一个Map，如果不是Map返回null
-	 */
-	public Map<String, Object> nextMap() {
-		var type = nextType();
-		if(type == Type.map) {
-			return this.map;
-		}
-		return null;
 	}
 	
 	/**
@@ -99,13 +100,38 @@ public class BCodeDecoder {
 	}
 	
 	/**
+	 * 获取下一个Map，如果不是Map返回null
+	 */
+	public Map<String, Object> nextMap() {
+		var type = nextType();
+		if(type == Type.map) {
+			return this.map;
+		}
+		return null;
+	}
+	
+	/**
+	 * 读取剩余所有数据
+	 */
+	public byte[] oddBytes() {
+		return inputStream.readAllBytes();
+	}
+
+	/**
+	 * 错误格式信息输出
+	 */
+	public String obbString() {
+		return new String(oddBytes());
+	}
+
+	/**
 	 * 数值
 	 */
-	public static final Long i(ByteArrayInputStream input) {
+	private static final Long i(ByteArrayInputStream inputStream) {
 		int index;
 		char indexChar;
-		StringBuilder valueBuilder = new StringBuilder();
-		while((index = input.read()) != -1) {
+		final StringBuilder valueBuilder = new StringBuilder();
+		while((index = inputStream.read()) != -1) {
 			indexChar = (char) index;
 			if(indexChar == TYPE_E) {
 				return Long.valueOf(valueBuilder.toString());
@@ -119,18 +145,18 @@ public class BCodeDecoder {
 	/**
 	 * map
 	 */
-	public static final Map<String, Object> d(ByteArrayInputStream input) {
+	private static final Map<String, Object> d(ByteArrayInputStream inputStream) {
 		int index;
 		char indexChar;
 		String key = null;
 		final Map<String, Object> map = new LinkedHashMap<>();
 		final StringBuilder lengthBuilder = new StringBuilder();
-		while ((index = input.read()) != -1) {
+		while ((index = inputStream.read()) != -1) {
 			indexChar = (char) index;
 			switch (indexChar) {
 				case TYPE_I:
 					if(key != null) {
-						map.put(key, i(input));
+						map.put(key, i(inputStream));
 					} else {
 						LOGGER.warn("key=null跳过");
 					}
@@ -140,7 +166,7 @@ public class BCodeDecoder {
 					return map;
 				case TYPE_L:
 					if(key != null) {
-						map.put(key, l(input));
+						map.put(key, l(inputStream));
 					} else {
 						LOGGER.warn("key=null跳过");
 					}
@@ -148,7 +174,7 @@ public class BCodeDecoder {
 					break;
 				case TYPE_D:
 					if(key != null) {
-						map.put(key, d(input));
+						map.put(key, d(inputStream));
 					} else {
 						LOGGER.warn("key=null跳过");
 					}
@@ -172,7 +198,7 @@ public class BCodeDecoder {
 						lengthBuilder.setLength(0);
 						final byte[] bytes = new byte[length];
 						try {
-							input.read(bytes);
+							inputStream.read(bytes);
 						} catch (IOException e) {
 							LOGGER.error("B编码读取异常", e);
 						}
@@ -195,24 +221,24 @@ public class BCodeDecoder {
 	/**
 	 * list
 	 */
-	public static final List<Object> l(ByteArrayInputStream input) {
+	private static final List<Object> l(ByteArrayInputStream inputStream) {
 		int index;
 		char indexChar;
 		final List<Object> list = new ArrayList<Object>();
 		final StringBuilder lengthBuilder = new StringBuilder();
-		while ((index = input.read()) != -1) {
+		while ((index = inputStream.read()) != -1) {
 			indexChar = (char) index;
 			switch (indexChar) {
 				case TYPE_I:
-					list.add(i(input));
+					list.add(i(inputStream));
 					break;
 				case TYPE_E:
 					return list;
 				case TYPE_L:
-					list.add(l(input));
+					list.add(l(inputStream));
 					break;
 				case TYPE_D:
-					list.add(d(input));
+					list.add(d(inputStream));
 					break;
 				case '0':
 				case '1':
@@ -232,9 +258,9 @@ public class BCodeDecoder {
 						lengthBuilder.setLength(0);
 						final byte[] bytes = new byte[length];
 						try {
-							input.read(bytes);
+							inputStream.read(bytes);
 						} catch (IOException e) {
-							LOGGER.error("B编码读取异常", e);
+							LOGGER.error("B编码解码异常", e);
 						}
 						list.add(bytes);
 						break;
@@ -243,26 +269,7 @@ public class BCodeDecoder {
 		}
 		return list;
 	}
-	
-	public byte[] oddBytes() {
-		return input.readAllBytes();
-	}
-	
-	/**
-	 * 错误格式信息输出
-	 */
-	public String obbString() {
-		return new String(oddBytes());
-	}
-	
-	public static final String getString(Object object) {
-		if(object == null) {
-			return null;
-		}
-		byte[] bytes = (byte[]) object;
-		return new String(bytes);
-	}
-	
+
 	public Byte getByte(String key) {
 		return getByte(this.map, key);
 	}
@@ -292,9 +299,20 @@ public class BCodeDecoder {
 	}
 	
 	public static final Long getLong(Map<?, ?> map, String key) {
+		if(map == null) {
+			return null;
+		}
 		return (Long) map.get(key);
 	}
 	
+	public static final String getString(Object object) {
+		if(object == null) {
+			return null;
+		}
+		byte[] bytes = (byte[]) object;
+		return new String(bytes);
+	}
+
 	public String getString(String key) {
 		return getString(this.map, key);
 	}
@@ -312,6 +330,9 @@ public class BCodeDecoder {
 	}
 	
 	public static final byte[] getBytes(Map<?, ?> map, String key) {
+		if(map == null) {
+			return null;
+		}
 		return (byte[]) map.get(key);
 	}
 	
@@ -322,6 +343,9 @@ public class BCodeDecoder {
 	// TODO：泛型优化
 	@SuppressWarnings("unchecked")
 	public static final List<Object> getList(Map<?, ?> map, String key) {
+		if(map == null) {
+			return null;
+		}
 		return (List<Object>) map.get(key);
 	}
 	
@@ -332,7 +356,18 @@ public class BCodeDecoder {
 	// TODO：泛型优化
 	@SuppressWarnings("unchecked")
 	public static final Map<String, Object> getMap(Map<?, ?> map, String key) {
+		if(map == null) {
+			return null;
+		}
 		return (Map<String, Object>) map.get(key);
+	}
+	
+	public void close() {
+		try {
+			this.inputStream.close();
+		} catch (IOException e) {
+			LOGGER.error("B编码字符流关闭异常", e);
+		}
 	}
 	
 }

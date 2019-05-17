@@ -211,7 +211,7 @@ public class Response {
 		if(this.e != null) {
 			response.put(DhtConfig.KEY_E, this.e);
 		}
-		return BCodeEncoder.mapToBytes(response);
+		return BCodeEncoder.encodeMap(response);
 	}
 	
 	/**

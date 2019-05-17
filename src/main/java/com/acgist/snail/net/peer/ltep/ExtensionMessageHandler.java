@@ -119,7 +119,7 @@ public class ExtensionMessageHandler {
 				data.put(EX_METADATA_SIZE, size); // 种子info数据长度
 			}
 		}
-		this.pushMessage(ExtensionType.handshake.value(), BCodeEncoder.mapToBytes(data));
+		this.pushMessage(ExtensionType.handshake.value(), BCodeEncoder.encodeMap(data));
 	}
 
 	/**
@@ -134,15 +134,15 @@ public class ExtensionMessageHandler {
 			LOGGER.warn("扩展握手消息格式错误：{}", decoder.obbString());
 			return;
 		}
-		final Object port = data.get(EX_P);
+		final Long port = decoder.getLong(EX_P);
 		if(port != null && peerSession.port() == null) { // 获取端口
-			peerSession.port(((Long) port).intValue());
+			peerSession.port(port.intValue());
 		}
-		final Object size = data.get(EX_METADATA_SIZE);
+		final Long size = decoder.getLong(EX_METADATA_SIZE);
 		if(size != null && this.infoHash.size() == 0) { // 获取种子info大小
-			this.infoHash.size((int) size);
+			this.infoHash.size(size.intValue());
 		}
-		final Map<?, ?> mData = (Map<?, ?>) data.get(EX_M);
+		final Map<String, Object> mData = decoder.getMap(EX_M);
 		if(CollectionUtils.isNotEmpty(mData)) {
 			mData.entrySet().forEach(entry -> {
 				final String type = (String) entry.getKey();

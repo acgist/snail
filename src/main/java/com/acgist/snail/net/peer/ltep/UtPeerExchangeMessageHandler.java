@@ -86,13 +86,13 @@ public class UtPeerExchangeMessageHandler {
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
 		final BCodeDecoder decoder = BCodeDecoder.newInstance(bytes);
-		final Map<String, Object> data = decoder.nextMap();
-		if(data == null) {
+		final Map<String, Object> map = decoder.nextMap();
+		if(map == null) {
 			LOGGER.warn("UtPeerExchange消息格式错误：{}", decoder.obbString());
 			return;
 		}
-		final byte[] added = (byte[]) data.get(ADDED);
-		final byte[] addedf = (byte[]) data.get(ADDEDF);
+		final byte[] added = decoder.getBytes(ADDED);
+		final byte[] addedf = decoder.getBytes(ADDEDF);
 		final var peers = PeerUtils.read(added);
 		if(CollectionUtils.isNotEmpty(peers)) {
 			final AtomicInteger index = new AtomicInteger(0);
@@ -127,7 +127,7 @@ public class UtPeerExchangeMessageHandler {
 			addedBuffer.putShort(NetUtils.encodePort(session.port()));
 		});
 		data.put(ADDED, addedBuffer.array());
-		return BCodeEncoder.mapToBytes(data);
+		return BCodeEncoder.encodeMap(data);
 	}
 	
 }
