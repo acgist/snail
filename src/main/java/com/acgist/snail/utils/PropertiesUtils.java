@@ -23,6 +23,7 @@ public class PropertiesUtils {
 	
 	/**
 	 * 获取实例
+	 * 
 	 * @param file 配置文件
 	 */
 	public static final PropertiesUtils getInstance(String file) {

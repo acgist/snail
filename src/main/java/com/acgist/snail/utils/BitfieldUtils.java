@@ -26,7 +26,7 @@ public class BitfieldUtils {
 	}
 	
 	/**
-	 * 高低位互换
+	 * 高低位互换：01000001->10000010
 	 */
 	private static final byte reverse(byte value) {
 		int opt = value;
@@ -35,4 +35,5 @@ public class BitfieldUtils {
 		opt = (opt & 0B10101010) >> 1 | (opt & 0B01010101) << 1;
 		return (byte) opt;
 	}
+
 }
