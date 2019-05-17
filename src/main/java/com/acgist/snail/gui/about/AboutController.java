@@ -10,6 +10,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Text;
 
 /**
  * 关于窗口控制器
@@ -20,10 +21,17 @@ import javafx.scene.layout.GridPane;
 public class AboutController implements Initializable {
 	
 	@FXML
+	private Text name;
+	@FXML
 	private GridPane root;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		final StringBuilder name = new StringBuilder();
+		name.append("名称：").append(SystemConfig.getName())
+			.append("（").append(SystemConfig.getNameEn()).append("）")
+			.append(SystemConfig.getVersion());
+		this.name.setText(name.toString());
 	}
 	
 	/**

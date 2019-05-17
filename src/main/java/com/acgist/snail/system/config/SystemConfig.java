@@ -234,7 +234,7 @@ public class SystemConfig extends PropertiesConfig {
 	/**
 	 * 获取名称和版本信息："名称 版本"
 	 */
-	public static final String getNameAndVersion() {
+	public static final String getNameEnAndVersion() {
 		return INSTANCE.nameEn + " " + INSTANCE.version;
 	}
 

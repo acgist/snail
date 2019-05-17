@@ -100,7 +100,7 @@ public class ExtensionMessageHandler {
 			}
 		}
 		data.put(EX_M, supportType); // 扩展协议以及编号
-		data.put(EX_V, SystemConfig.getNameAndVersion()); // 客户端信息（名称、版本）
+		data.put(EX_V, SystemConfig.getNameEnAndVersion()); // 客户端信息（名称、版本）
 		data.put(EX_P, SystemConfig.getPeerPort()); // 本机监听TCP端口
 		// 客户端自动获取
 //		final String ipAddress = UpnpService.getInstance().externalIpAddress();
