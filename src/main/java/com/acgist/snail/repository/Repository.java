@@ -17,8 +17,8 @@ import com.acgist.snail.pojo.entity.BaseEntity;
 import com.acgist.snail.pojo.wrapper.ResultSetWrapper;
 import com.acgist.snail.system.exception.RepositoryException;
 import com.acgist.snail.system.manager.DatabaseManager;
+import com.acgist.snail.utils.BeanUtils;
 import com.acgist.snail.utils.CollectionUtils;
-import com.acgist.snail.utils.EntityUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -30,7 +30,7 @@ public abstract class Repository<T extends BaseEntity> {
 	
 	private static final String COLUMN_REGEX = "[a-zA-Z]+";
 	
-	private DatabaseManager jdbcConnection = DatabaseManager.getInstance();
+	private DatabaseManager databaseManager = DatabaseManager.getInstance();
 	
 	/**
 	 * 数据库列：只允许字符串
@@ -55,7 +55,7 @@ public abstract class Repository<T extends BaseEntity> {
 		t.setId(UUID.randomUUID().toString());
 		t.setCreateDate(new Date());
 		t.setModifyDate(new Date());
-		final String[] properties = EntityUtils.entityProperty(t.getClass());
+		final String[] properties = BeanUtils.properties(t.getClass());
 		final String sqlProperty = Stream.of(properties)
 			.map(property -> "`" + property + "`")
 			.collect(Collectors.joining(",", "(", ")"));
@@ -63,12 +63,12 @@ public abstract class Repository<T extends BaseEntity> {
 			.map(property -> "?")
 			.collect(Collectors.joining(",", "(", ")"));
 		final Object[] parameters = Stream.of(properties)
-			.map(property -> EntityUtils.entityPropertyValue(t, property))
+			.map(property -> BeanUtils.propertyValue(t, property))
 			.toArray();
 		final StringBuilder sql = new StringBuilder();
 		sql
 			.append("INSERT INTO ")
-			.append(table)
+			.append(this.table)
 			.append(sqlProperty)
 			.append(" VALUES ")
 			.append(sqlValue);
@@ -76,7 +76,7 @@ public abstract class Repository<T extends BaseEntity> {
 			LOGGER.debug("SQL语句：{}", sql);
 			LOGGER.debug("SQL参数：{}", Arrays.asList(parameters));
 		}
-		jdbcConnection.update(sql.toString(), parameters);
+		this.databaseManager.update(sql.toString(), parameters);
 	}
 
 	public void update(T t) {
@@ -84,7 +84,7 @@ public abstract class Repository<T extends BaseEntity> {
 			throw new RepositoryException("修改参数错误：" + t);
 		}
 		t.setModifyDate(new Date());
-		final String[] properties = EntityUtils.entityProperty(t.getClass());
+		final String[] properties = BeanUtils.properties(t.getClass());
 		final String sqlProperty = Stream.of(properties)
 			.filter(property -> {
 				return
@@ -100,13 +100,13 @@ public abstract class Repository<T extends BaseEntity> {
 							!BaseEntity.PROPERTY_ID.equals(property) &&
 							!BaseEntity.PROPERTY_CREATE_DATE.equals(property);
 					})
-					.map(property -> EntityUtils.entityPropertyValue(t, property)),
+					.map(property -> BeanUtils.propertyValue(t, property)),
 				Stream.of(t.getId())
 			).toArray();
 		final StringBuilder sql = new StringBuilder();
 		sql
 			.append("UPDATE ")
-			.append(table)
+			.append(this.table)
 			.append(" SET ")
 			.append(sqlProperty)
 			.append(" WHERE ID = ?");
@@ -114,36 +114,36 @@ public abstract class Repository<T extends BaseEntity> {
 			LOGGER.debug("SQL语句：{}", sql);
 			LOGGER.debug("SQL参数：{}", Arrays.asList(parameters));
 		}
-		jdbcConnection.update(sql.toString(), parameters);
+		this.databaseManager.update(sql.toString(), parameters);
 	}
 	
 	public void delete(String id) {
 		if(id == null) {
 			throw new RepositoryException("删除参数错误：" + id);
 		}
-		StringBuilder sql = new StringBuilder();
+		final StringBuilder sql = new StringBuilder();
 		sql
 			.append("DELETE FROM ")
-			.append(table)
+			.append(this.table)
 			.append(" WHERE ID = ?");
-		jdbcConnection.update(sql.toString(), id);
+		this.databaseManager.update(sql.toString(), id);
 	}
 
 	public T findOne(String id) {
 		if(id == null) {
 			throw new RepositoryException("查询参数错误：" + id);
 		}
-		StringBuilder sql = new StringBuilder();
+		final StringBuilder sql = new StringBuilder();
 		sql
 			.append("SELECT * FROM ")
-			.append(table)
+			.append(this.table)
 			.append(" WHERE ID = ? limit 1");
-		List<ResultSetWrapper> list = jdbcConnection.select(sql.toString(), id);
+		final List<ResultSetWrapper> list = this.databaseManager.select(sql.toString(), id);
 		if(list == null || list.isEmpty()) {
 			return null;
 		}
 		T t = newInstance();
-		EntityUtils.entity(t, list.get(0));
+		BeanUtils.entity(t, list.get(0));
 		return t;
 	}
 	
@@ -151,19 +151,19 @@ public abstract class Repository<T extends BaseEntity> {
 		if(property == null) {
 			throw new RepositoryException("查询参数错误：" + property);
 		}
-		StringBuilder sql = new StringBuilder();
+		final StringBuilder sql = new StringBuilder();
 		sql
 			.append("SELECT * FROM ")
-			.append(table)
+			.append(this.table)
 			.append(" WHERE ")
 			.append(COLUMN.apply(property))
 			.append(" = ? limit 1");
-		List<ResultSetWrapper> list = jdbcConnection.select(sql.toString(), value);
+		final List<ResultSetWrapper> list = this.databaseManager.select(sql.toString(), value);
 		if(list == null || list.isEmpty()) {
 			return null;
 		}
 		T t = newInstance();
-		EntityUtils.entity(t, list.get(0));
+		BeanUtils.entity(t, list.get(0));
 		return t;
 	}
 	
@@ -171,7 +171,7 @@ public abstract class Repository<T extends BaseEntity> {
 		if(sql == null) {
 			throw new RepositoryException("查询参数错误：" + sql);
 		}
-		List<ResultSetWrapper> list = jdbcConnection.select(sql, parameters);
+		final List<ResultSetWrapper> list = this.databaseManager.select(sql, parameters);
 		if(list == null || list.isEmpty()) {
 			return null;
 		}
@@ -179,18 +179,18 @@ public abstract class Repository<T extends BaseEntity> {
 			.stream()
 			.map(wrapper -> {
 				T t = newInstance();
-				EntityUtils.entity(t, wrapper);
+				BeanUtils.entity(t, wrapper);
 				return t;
 			})
 			.collect(Collectors.toList());
 	}
 	
 	public List<T> findAll() {
-		StringBuilder sql = new StringBuilder();
+		final StringBuilder sql = new StringBuilder();
 		sql
 			.append("SELECT * FROM ")
-			.append(table);
-		List<ResultSetWrapper> list = jdbcConnection.select(sql.toString());
+			.append(this.table);
+		final List<ResultSetWrapper> list = this.databaseManager.select(sql.toString());
 		if(list == null || list.isEmpty()) {
 			return null;
 		}
@@ -198,7 +198,7 @@ public abstract class Repository<T extends BaseEntity> {
 			.stream()
 			.map(wrapper -> {
 				T t = newInstance();
-				EntityUtils.entity(t, wrapper);
+				BeanUtils.entity(t, wrapper);
 				return t;
 			})
 			.collect(Collectors.toList());
@@ -208,13 +208,7 @@ public abstract class Repository<T extends BaseEntity> {
 	 * 新实体
 	 */
 	private T newInstance() {
-		final Class<T> clazz = entityClazz();
-		try {
-			return clazz.getDeclaredConstructor().newInstance();
-		} catch (Exception e) {
-			LOGGER.error("反射异常：{}", clazz, e);
-		}
-		return null;
+		return BeanUtils.newInstance(entityClazz());
 	}
 	
 	/**
@@ -223,16 +217,16 @@ public abstract class Repository<T extends BaseEntity> {
 	 */
 	@SuppressWarnings("unchecked")
 	private Class<T> entityClazz() {
-		Class<T> entitiClazz = null;
-		Type superClazz = this.getClass().getGenericSuperclass();
+		Class<T> entityClazz = null;
+		final Type superClazz = this.getClass().getGenericSuperclass();
 		if (superClazz instanceof ParameterizedType) {
-			Type[] types = ((ParameterizedType) superClazz).getActualTypeArguments();
+			final Type[] types = ((ParameterizedType) superClazz).getActualTypeArguments();
 			if (CollectionUtils.isNotEmpty(types)) {
-				entitiClazz = (Class<T>) types[0];
+				entityClazz = (Class<T>) types[0];
 			}
 		}
-		return entitiClazz;
+		return entityClazz;
 	}
-	
+
 }
 	

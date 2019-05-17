@@ -9,15 +9,22 @@ import java.util.stream.Stream;
 import org.junit.Test;
 
 import com.acgist.snail.pojo.entity.TaskEntity;
-import com.acgist.snail.utils.EntityUtils;
+import com.acgist.snail.utils.BeanUtils;
 
-public class EntityUtilsTest {
+public class BeanUtilsTest {
 
+	@Test
+	public void read() {
+		TaskEntity entity = new TaskEntity();
+		entity.setId("1234");
+		System.out.println(BeanUtils.propertyValue(entity, "id"));
+	}
+	
 	@Test
 	public void property() {
 		TaskEntity entity = new TaskEntity();
 		entity.setName("测试");
-		final String[] properties = EntityUtils.entityProperty(entity.getClass());
+		final String[] properties = BeanUtils.properties(entity.getClass());
 		final String sqlProperty = Stream.of(properties)
 			.map(property -> "`" + property + "`")
 			.collect(Collectors.joining(",", "(", ")"));
@@ -25,7 +32,7 @@ public class EntityUtilsTest {
 			.map(property -> "?")
 			.collect(Collectors.joining(",", "(", ")"));
 		final Object[] parameters = Stream.of(properties)
-			.map(property -> EntityUtils.entityPropertyValue(entity, property))
+			.map(property -> BeanUtils.propertyValue(entity, property))
 			.toArray();
 		
 		System.out.println(sqlProperty);

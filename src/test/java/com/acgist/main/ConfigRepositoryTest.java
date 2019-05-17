@@ -15,6 +15,15 @@ public class ConfigRepositoryTest {
 	}
 	
 	@Test
+	public void save() {
+		ConfigRepository repository = new ConfigRepository();
+		ConfigEntity entity = new ConfigEntity();
+		entity.setId("47576f4a-fc42-480d-92de-183eb3f0de2d");
+		entity.setName("xxxx");
+		repository.save(entity);
+	}
+	
+	@Test
 	public void update() {
 		ConfigRepository repository = new ConfigRepository();
 		ConfigEntity entity = new ConfigEntity();
