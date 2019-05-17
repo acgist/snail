@@ -16,9 +16,11 @@ import com.acgist.snail.net.upnp.UpnpClient;
 import com.acgist.snail.net.upnp.bootstrap.UpnpService;
 import com.acgist.snail.system.initializer.impl.ConfigInitializer;
 import com.acgist.snail.system.initializer.impl.DbInitializer;
+import com.acgist.snail.system.initializer.impl.DhtInitializer;
 import com.acgist.snail.system.initializer.impl.DownloaderInitializer;
 import com.acgist.snail.system.initializer.impl.PeerInitializer;
 import com.acgist.snail.system.initializer.impl.ProtocolInitializer;
+import com.acgist.snail.system.initializer.impl.TrackerInitializer;
 import com.acgist.snail.system.initializer.impl.UpnpInitializer;
 import com.acgist.snail.system.manager.DownloaderManager;
 import com.acgist.snail.utils.FileUtils;
@@ -50,6 +52,8 @@ public class SystemContext {
 		PeerInitializer.newInstance().initAsyn();
 		DownloaderInitializer.newInstance().initAsyn();
 		UpnpInitializer.newInstance().initAsyn();
+		TrackerInitializer.newInstance().initAsyn();
+		DhtInitializer.newInstance().initAsyn();
 	}
 	
 	/**

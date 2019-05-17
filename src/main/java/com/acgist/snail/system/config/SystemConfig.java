@@ -61,7 +61,6 @@ public class SystemConfig extends PropertiesConfig {
 	private Integer peerPort; // Peer端口
 	private Integer dhtPort; // DHT端口
 	private Integer trackerSize; // 单个任务Tracker数量
-	private Integer trackerMaxFailTimes; // Tracker失败次数
 	private Integer peerSize; // 单个任务Peer数量
 	private Integer pexInterval; // PEX执行周期（秒）
 	private Integer dhtInterval; // DHT执行周期（秒）
@@ -83,7 +82,6 @@ public class SystemConfig extends PropertiesConfig {
 		INSTANCE.peerPort = getInteger("acgist.peer.port");
 		INSTANCE.dhtPort = getInteger("acgist.dht.port");
 		INSTANCE.trackerSize = getInteger("acgist.tracker.size");
-		INSTANCE.trackerMaxFailTimes = getInteger("acgist.tracker.max.fail.times");
 		INSTANCE.peerSize = getInteger("acgist.peer.size");
 		INSTANCE.pexInterval = getInteger("acgist.pex.interval");
 		INSTANCE.dhtInterval = getInteger("acgist.dht.interval");
@@ -106,7 +104,6 @@ public class SystemConfig extends PropertiesConfig {
 		LOGGER.info("Peer端口：{}", this.peerPort);
 		LOGGER.info("DHT端口：{}", this.dhtPort);
 		LOGGER.info("单个任务Tracker数量：{}", this.trackerSize);
-		LOGGER.info("Tracker失败次数：{}", this.trackerMaxFailTimes);
 		LOGGER.info("单个任务Peer数量：{}", this.peerSize);
 		LOGGER.info("PEX执行周期（秒）：{}", this.pexInterval);
 		LOGGER.info("DHT执行周期（秒）：{}", this.dhtInterval);
@@ -192,13 +189,6 @@ public class SystemConfig extends PropertiesConfig {
 		return INSTANCE.trackerSize;
 	}
 	
-	/**
-	 * Tracker失败次数
-	 */
-	public static final Integer getTrackerMaxFailTimes() {
-		return INSTANCE.trackerMaxFailTimes;
-	}
-
 	/**
 	 * 单个任务Peer数量
 	 */

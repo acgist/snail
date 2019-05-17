@@ -38,6 +38,8 @@ public class DhtClientTest {
 	
 	private static final String host = "127.0.0.1";
 	private static final int port = 49160; // FDM测试端口
+//	private static final String host = "router.bittorrent.com";
+//	private static final int port = 6881;
 	
 	@Test
 	public void ping() {

@@ -133,13 +133,6 @@ public class Response {
 	}
 	
 	/**
-	 * 获取List响应参数
-	 */
-	public List<?> getList(String key) {
-		return (List<?>) this.get(key);
-	}
-
-	/**
 	 * 获取字符串响应参数
 	 */
 	public String getString(String key) {
@@ -149,7 +142,14 @@ public class Response {
 		}
 		return new String(bytes);
 	}
-	
+
+	/**
+	 * 获取List响应参数
+	 */
+	public List<?> getList(String key) {
+		return (List<?>) this.get(key);
+	}
+
 	/**
 	 * 获取响应ID
 	 */

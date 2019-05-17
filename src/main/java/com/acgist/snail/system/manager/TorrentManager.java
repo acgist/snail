@@ -58,6 +58,7 @@ public class TorrentManager {
 
 	/**
 	 * 新建session
+	 * 
 	 * @param path torrent文件
 	 */
 	public TorrentSession newTorrentSession(String path) throws DownloadException {
@@ -68,7 +69,7 @@ public class TorrentManager {
 			throw new DownloadException("种子文件格式错误");
 		}
 		final Torrent torrent = Torrent.valueOf(map);
-		final Map<?, ?> info = (Map<?, ?>) map.get("info"); // 只需要数据不符
+		final Map<String, Object> info = BCodeDecoder.getMap(map, "info"); // 只需要数据不符
 		final InfoHash infoHash = InfoHash.newInstance(BCodeEncoder.encodeMap(info));
 		return newTorrentSession(torrent, infoHash);
 	}

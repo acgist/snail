@@ -33,7 +33,7 @@ public class TorrentFile {
 		file.setLength(BCodeDecoder.getLong(map, "length"));
 		file.setEd2k(BCodeDecoder.getBytes(map, "ed2k"));
 		file.setFilehash(BCodeDecoder.getBytes(map, "filehash"));
-		List<?> path = (List<?>) map.get("path");
+		final List<Object> path = BCodeDecoder.getList(map, "path");
 		if(path != null) {
 			file.setPath(
 				path.stream()
@@ -43,13 +43,13 @@ public class TorrentFile {
 		} else {
 			file.setPath(new ArrayList<>());
 		}
-		List<?> pathUtf8 = (List<?>) map.get("path.utf-8");
+		final List<Object> pathUtf8 = BCodeDecoder.getList(map, "path.utf-8");
 		if(pathUtf8 != null) {
 			file.setPathUtf8(
 				pathUtf8.stream()
 				.map(value -> BCodeDecoder.getString(value))
 				.collect(Collectors.toList())
-				);
+			);
 		} else {
 			file.setPathUtf8(new ArrayList<>());
 		}

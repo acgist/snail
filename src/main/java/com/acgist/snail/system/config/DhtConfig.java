@@ -1,8 +1,11 @@
 package com.acgist.snail.system.config;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.utils.StringUtils;
 
@@ -11,7 +14,7 @@ import com.acgist.snail.utils.StringUtils;
  */
 public class DhtConfig extends PropertiesConfig {
 	
-//	private static final Logger LOGGER = LoggerFactory.getLogger(DhtConfig.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DhtConfig.class);
 	
 	private static final DhtConfig INSTANCE = new DhtConfig();
 	
@@ -63,20 +66,26 @@ public class DhtConfig extends PropertiesConfig {
 		return INSTANCE;
 	}
 	
-	private List<String> list = new ArrayList<>();
+	private Map<String, Integer> nodes = new LinkedHashMap<>();
 	
 	private void init() {
 		final Properties properties = this.properties.properties();
 		properties.entrySet().forEach(entry -> {
-			final String value = (String) entry.getValue();
-			if(StringUtils.isNotEmpty(value)) {
-				list.add(value);
+			final String host = (String) entry.getKey();
+			final String port = (String) entry.getValue();
+			if(StringUtils.isNotEmpty(host) && StringUtils.isNumeric(port)) {
+				nodes.put(host, Integer.valueOf(port));
+			} else {
+				LOGGER.warn("注册默认DHT节点失败：{}-{}", host, port);
 			}
 		});
 	}
 
-	public static final List<String> list() {
-		return INSTANCE.list;
+	/**
+	 * 获取配置的DHT节点
+	 */
+	public Map<String, Integer> nodes() {
+		return this.nodes;
 	}
 
 }

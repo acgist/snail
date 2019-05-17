@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.dht.DhtServer;
 import com.acgist.snail.system.initializer.Initializer;
+import com.acgist.snail.system.manager.NodeManager;
 
 /**
  * 初始化：启动DHT
@@ -22,8 +23,10 @@ public class DhtInitializer extends Initializer {
 	
 	@Override
 	protected void init() {
-		LOGGER.info("DHT初始化");
+		LOGGER.info("初始DHT通道");
 		DhtServer.getInstance();
+		LOGGER.info("初始DHT默认节点");
+		NodeManager.getInstance().register();
 	}
 
 }

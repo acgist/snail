@@ -50,7 +50,7 @@ public class TorrentInfo {
 		info.setPublisherUtf8(BCodeDecoder.getString(map, "publisher.utf-8"));
 		info.setPublisherUrl(BCodeDecoder.getString(map, "publisher-url"));
 		info.setPublisherUrlUtf8(BCodeDecoder.getString(map, "publisher-url.utf-8"));
-		List<?> files = (List<?>) map.get("files");
+		final List<Object> files = BCodeDecoder.getList(map, "files");
 		if(files != null) {
 			info.setFiles(
 				files.stream()
