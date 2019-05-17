@@ -73,7 +73,7 @@ public class NodeSession implements Comparable<NodeSession> {
 
 	@Override
 	public int hashCode() {
-		return this.id.hashCode();
+		return ObjectUtils.hashCode(this.id);
 	}
 	
 	@Override
@@ -81,8 +81,8 @@ public class NodeSession implements Comparable<NodeSession> {
 		if(ObjectUtils.equals(this, object)) {
 			return true;
 		}
-		if(ObjectUtils.equalsClazz(this, object)) {
-			NodeSession session = (NodeSession) object;
+		if(object instanceof NodeSession) {
+			final NodeSession session = (NodeSession) object;
 			return ArrayUtils.equals(this.id, session.id);
 		}
 		return false;

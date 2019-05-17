@@ -64,6 +64,7 @@ public class ApplicationMessage {
 	/**
 	 * 转换为JSON字符串
 	 */
+	@Override
 	public String toString() {
 		final BCodeEncoder encoder = BCodeEncoder.newInstance().newMap();
 		encoder.put("type", this.type.name());

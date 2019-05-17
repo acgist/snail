@@ -204,7 +204,7 @@ public class Request {
 	
 	@Override
 	public int hashCode() {
-		return this.t.hashCode();
+		return ObjectUtils.hashCode(this.t);
 	}
 	
 	@Override
@@ -212,8 +212,8 @@ public class Request {
 		if(ObjectUtils.equals(this, object)) {
 			return true;
 		}
-		if(ObjectUtils.equalsClazz(this, object)) {
-			Request request = (Request) object;
+		if(object instanceof Request) {
+			final Request request = (Request) object;
 			return ArrayUtils.equals(this.t, request.t);
 		}
 		return false;

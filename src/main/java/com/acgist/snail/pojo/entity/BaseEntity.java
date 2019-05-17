@@ -99,8 +99,8 @@ public class BaseEntity implements Serializable {
 		if(ObjectUtils.equals(this, object)) {
 			return true;
 		}
-		if(ObjectUtils.equalsClazz(this, object)) {
-			BaseEntity entity = (BaseEntity) object;
+		if(object instanceof BaseEntity) {
+			final BaseEntity entity = (BaseEntity) object;
 			return ObjectUtils.equalsBuilder(this.id)
 				.equals(ObjectUtils.equalsBuilder(entity.id));
 		}

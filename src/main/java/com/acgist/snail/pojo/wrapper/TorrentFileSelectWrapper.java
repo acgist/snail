@@ -33,7 +33,7 @@ public class TorrentFileSelectWrapper {
 		return wrapper;
 	}
 	
-	public String toString() {
+	public String description() {
 		if(this.encoder == null) {
 			return null;
 		}

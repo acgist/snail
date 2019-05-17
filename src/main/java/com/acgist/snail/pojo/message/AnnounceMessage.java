@@ -62,5 +62,5 @@ public class AnnounceMessage {
 	public String toString() {
 		return ObjectUtils.toString(this);
 	}
-
+	
 }

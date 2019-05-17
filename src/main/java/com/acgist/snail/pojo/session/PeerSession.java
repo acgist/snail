@@ -372,12 +372,12 @@ public class PeerSession implements IStatistics {
 		if(ObjectUtils.equals(this, object)) {
 			return true;
 		}
-		if(ObjectUtils.equalsClazz(this, object)) {
-			PeerSession peerSession = (PeerSession) object;
+		if(object instanceof PeerSession) {
+			final PeerSession peerSession = (PeerSession) object;
 			return ObjectUtils.equalsBuilder(this.host)
 				.equals(ObjectUtils.equalsBuilder(peerSession.host));
 		}
 		return false;
 	}
-
+	
 }

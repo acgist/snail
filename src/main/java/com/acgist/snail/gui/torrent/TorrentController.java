@@ -117,7 +117,7 @@ public class TorrentController implements Initializable {
 		}
 		entity.setSize(selecter.size());
 		final TorrentFileSelectWrapper wrapper = TorrentFileSelectWrapper.newEncoder(list);
-		entity.setDescription(wrapper.toString());
+		entity.setDescription(wrapper.description());
 		if(entity.getId() != null) { // 已经添加数据库
 			TaskRepository repository = new TaskRepository();
 			repository.update(entity);
