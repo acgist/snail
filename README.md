@@ -23,8 +23,8 @@
 	<a target="_blank" href="https://www.bittorrent.org/beps/bep_0000.html">
 		<img alt="BitTorrent" src="https://img.shields.io/badge/BitTorrent-BEP-orange.svg?style=flat-square" />
 	</a>
-	<a target="_blank" href="https://gitee.com/acgist/snail/releases/v1.0.1">
-		<img alt="Release" src="https://img.shields.io/badge/Release-1.0.1-blueviolet.svg?style=flat-square" />
+	<a target="_blank" href="https://gitee.com/acgist/snail/releases/v1.0.2">
+		<img alt="Release" src="https://img.shields.io/badge/Release-1.0.2-blueviolet.svg?style=flat-square" />
 	</a>
 </p>
 
