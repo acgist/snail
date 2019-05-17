@@ -67,16 +67,26 @@
 ./builder/build.bat
 
 # Linux构建
--
+mvn clean package -Prelease -DskipTests
 ```
 
-> lib：依赖  
+> lib：依赖
+
 > java：Java运行环境
 
 #### Java启动
 
-```
+```bash
+# Windows
 javaw -server -Xms128m -Xmx128m -jar snail-{version}.jar
+
+# Linux
+# Linux和Windows不一样，使用Maven打包依赖就可以运行，需要下载配置JavaFX环境才可以。
+# JavaFX运行环境下载：https://gluonhq.com/products/javafx/
+# /etc/profile
+export JAVAFX=/home/javafx-sdk-11.0.2/lib
+# 启动
+java --module-path $JAVAFX --add-modules javafx.fxml,javafx.controls snail-{version}.jar
 ```
 
 #### 启动器启动
