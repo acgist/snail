@@ -9,14 +9,14 @@ import java.util.Map;
 public class ObjectUtils {
 
 	/**
-	 * 重新hashCode方法
+	 * 重写hashCode方法。
 	 */
-	public static final int hashCode(Object ... objects) {
-		if(objects == null) {
+	public static final int hashCode(Object ... values) {
+		if(values == null) {
 			return 0;
 		}
 		final StringBuilder builder = new StringBuilder();
-		for (Object object : objects) {
+		for (Object object : values) {
 			if(object != null) {
 				builder.append(object);
 			}
@@ -25,7 +25,8 @@ public class ObjectUtils {
 	}
 	
 	/**
-	 * equals方法：判断是否相等
+	 * 判断是否相等，判断引用。
+	 * 
 	 * @param source 源：this
 	 * @param target 比较对象
 	 */
@@ -40,11 +41,13 @@ public class ObjectUtils {
 	}
 	
 	/**
-	 * equals方法：判断是否可以相互访问
-	 * @param source 源：this
-	 * @param target 比较对象
+	 * 判断对象是否可以相互访问，使用instanceof替代。
+	 * 
+	 * @param source 源：this，父类
+	 * @param target 比较对象，子类
 	 */
-	public static final boolean equalsClazz(Object source, Object target) {
+	@Deprecated
+	public static final boolean assignableClazz(Object source, Object target) {
 		if(source.getClass().isAssignableFrom(target.getClass())) {
 			return true;
 		}
@@ -68,7 +71,7 @@ public class ObjectUtils {
 	}
 	
 	/**
-	 * toString：返回JSON
+	 * toString，必须属性提供对应的get方法。
 	 */
 	public static final String toString(Object object) {
 		if(object == null) {

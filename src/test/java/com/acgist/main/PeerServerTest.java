@@ -37,7 +37,7 @@ public class PeerServerTest {
 		entity.setFile("e://tmp/server/");
 		entity.setType(Type.torrent);
 		final TorrentFileSelectWrapper wrapper = TorrentFileSelectWrapper.newEncoder(list);
-		entity.setDescription(wrapper.toString());
+		entity.setDescription(wrapper.description());
 		torrentSession.upload(TaskSession.newInstance(entity));
 		PeerServer server = PeerServer.getInstance();
 		server.listen();
@@ -63,7 +63,7 @@ public class PeerServerTest {
 		entity.setFile("e://tmp/client/");
 		entity.setType(Type.torrent);
 		final TorrentFileSelectWrapper wrapper = TorrentFileSelectWrapper.newEncoder(list);
-		entity.setDescription(wrapper.toString());
+		entity.setDescription(wrapper.description());
 		torrentSession.upload(TaskSession.newInstance(entity)).download(false);
 		String host = "127.0.0.1";
 		Integer port = 17888;

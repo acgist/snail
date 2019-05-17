@@ -158,8 +158,8 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 		if(ObjectUtils.equals(this, object)) {
 			return true;
 		}
-		if(ObjectUtils.equalsClazz(this, object)) {
-			TrackerClient client = (TrackerClient) object;
+		if(object instanceof TrackerClient) {
+			final TrackerClient client = (TrackerClient) object;
 			return ObjectUtils.equalsBuilder(this.announceUrl)
 				.equals(ObjectUtils.equalsBuilder(client.announceUrl));
 		}

@@ -44,7 +44,7 @@ public class PeerClientTest {
 		entity.setFile("e://tmp/test/");
 		entity.setType(Type.torrent);
 		final TorrentFileSelectWrapper wrapper = TorrentFileSelectWrapper.newEncoder(list);
-		entity.setDescription(wrapper.toString());
+		entity.setDescription(wrapper.description());
 		torrentSession.upload(TaskSession.newInstance(entity)).download(false);
 		String host = "112.104.140.94";
 		Integer port = 51413;

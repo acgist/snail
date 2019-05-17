@@ -225,6 +225,7 @@ public class BCodeEncoder {
 	/**
 	 * 获取字符串，将关闭字符流。
 	 */
+	@Override
 	public String toString() {
 		return new String(bytes());
 	}

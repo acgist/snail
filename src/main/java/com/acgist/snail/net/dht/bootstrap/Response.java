@@ -231,7 +231,7 @@ public class Response {
 	
 	@Override
 	public int hashCode() {
-		return this.t.hashCode();
+		return ObjectUtils.hashCode(this.t);
 	}
 	
 	@Override
@@ -239,8 +239,8 @@ public class Response {
 		if(ObjectUtils.equals(this, object)) {
 			return true;
 		}
-		if(ObjectUtils.equalsClazz(this, object)) {
-			Response response = (Response) object;
+		if(object instanceof Response) {
+			final Response response = (Response) object;
 			return ArrayUtils.equals(this.t, response.t);
 		}
 		return false;
