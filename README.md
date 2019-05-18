@@ -18,7 +18,7 @@
 		<img alt="Java" src="https://img.shields.io/badge/Java-11-yellow.svg?style=flat-square" />
 	</a>
 	<a target="_blank" href="https://openjfx.io/">
-		<img alt="JavaFX" src="https://img.shields.io/badge/JavaFX-12-green.svg?style=flat-square" />
+		<img alt="JavaFX" src="https://img.shields.io/badge/JavaFX-11-green.svg?style=flat-square" />
 	</a>
 	<a target="_blank" href="https://www.bittorrent.org/beps/bep_0000.html">
 		<img alt="BitTorrent" src="https://img.shields.io/badge/BitTorrent-BEP-orange.svg?style=flat-square" />
