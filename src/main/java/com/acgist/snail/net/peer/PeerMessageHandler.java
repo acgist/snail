@@ -63,10 +63,6 @@ public class PeerMessageHandler extends TcpMessageHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerMessageHandler.class);
 	
-	private static final int HANDSHAKE_LENGTH = 68;
-	private static final String HANDSHAKE_NAME = "BitTorrent protocol"; // 协议名称
-	private static final byte[] HANDSHAKE_NAME_BYTES = HANDSHAKE_NAME.getBytes();
-
 	private volatile boolean handshake = false; // 是否握手
 
 	/**
@@ -90,6 +86,9 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	public PeerMessageHandler() {
 	}
 
+	/**
+	 * 默认下载
+	 */
 	public PeerMessageHandler(PeerSession peerSession, TorrentSession torrentSession) {
 		this.action = Action.download;
 		init(peerSession, torrentSession, PeerConfig.HANDSHAKE_RESERVED);
@@ -193,7 +192,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 						break;
 					}
 				} else { // 握手
-					length = HANDSHAKE_LENGTH;
+					length = PeerConfig.HANDSHAKE_LENGTH;
 				}
 				if(length <= 0) { // 心跳
 					keepAlive();
@@ -296,9 +295,9 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	public void handshake(PeerClient peerClient) {
 		LOGGER.debug("握手");
 		this.peerClient = peerClient;
-		final ByteBuffer buffer = ByteBuffer.allocate(HANDSHAKE_LENGTH);
-		buffer.put((byte) HANDSHAKE_NAME_BYTES.length);
-		buffer.put(HANDSHAKE_NAME_BYTES);
+		final ByteBuffer buffer = ByteBuffer.allocate(PeerConfig.HANDSHAKE_LENGTH);
+		buffer.put((byte) PeerConfig.HANDSHAKE_NAME_BYTES.length);
+		buffer.put(PeerConfig.HANDSHAKE_NAME_BYTES);
 		buffer.put(PeerConfig.HANDSHAKE_RESERVED);
 		buffer.put(torrentSession.infoHash().infoHash());
 		buffer.put(PeerService.getInstance().peerId());
@@ -326,7 +325,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		final byte[] names = new byte[length];
 		buffer.get(names);
 		final String name = new String(names);
-		if(!HANDSHAKE_NAME.equals(name)) {
+		if(!PeerConfig.HANDSHAKE_NAME.equals(name)) {
 			LOGGER.warn("下载协议错误：{}", name);
 			this.close();
 			return;
@@ -665,7 +664,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	}
 	
 	/**
-	 * 发送扩展信息：ut_pex
+	 * 发送扩展信息：Pex
 	 */
 	public void exchange(byte[] bytes) {
 		extensionMessageHandler.exchange(bytes);

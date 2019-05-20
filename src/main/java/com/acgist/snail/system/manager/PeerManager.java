@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.peer.ltep.UtPeerExchangeMessageHandler;
+import com.acgist.snail.net.peer.ltep.PeerExchangeMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.StatisticsSession;
 
@@ -155,7 +155,7 @@ public class PeerManager {
 	 * <p>只发送给当前上传和下载的Peer。</p>
 	 */
 	public void exchange(String infoHashHex, List<PeerSession> optimize) {
-		final byte[] bytes = UtPeerExchangeMessageHandler.buildMessage(optimize);
+		final byte[] bytes = PeerExchangeMessageHandler.buildMessage(optimize);
 		if(bytes == null) {
 			return;
 		}

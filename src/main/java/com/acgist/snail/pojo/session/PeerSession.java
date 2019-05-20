@@ -26,10 +26,9 @@ public class PeerSession implements IStatistics {
 	private int failTimes = 0; // 失败次数：如果失败次数过多不在连接
 	
 	private byte[] reserved; // 保留位
-	
 	private byte status = 0; // 状态
 	private byte source = 0; // 来源属性
-	private byte peerExchange = 0; // ut_pex属性
+	private byte exchange = 0; // PEX属性
 	
 	private String host; // 地址
 	private Integer port; // 端口
@@ -344,8 +343,8 @@ public class PeerSession implements IStatistics {
 	/**
 	 * 配置Pex属性
 	 */
-	public void peerExchange(byte peerExchange) {
-		this.peerExchange = (byte) (this.peerExchange | peerExchange);
+	public void exchange(byte exchange) {
+		this.exchange = (byte) (this.exchange | exchange);
 	}
 	
 	/**

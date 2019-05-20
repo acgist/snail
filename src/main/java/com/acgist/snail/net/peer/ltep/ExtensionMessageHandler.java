@@ -38,7 +38,7 @@ public class ExtensionMessageHandler {
 	public static final String EX_REQQ = "reqq"; // 含义：未知：TODO：了解清楚
 	public static final String EX_YOURIP = "yourip"; // 地址
 	
-	public static final String EX_E = "e"; // ut_pex：加密
+	public static final String EX_E = "e"; // Pex：加密
 	
 	public static final String EX_METADATA_SIZE = "metadata_size"; // ut_metadata：种子info数据大小
 
@@ -46,8 +46,8 @@ public class ExtensionMessageHandler {
 	private final PeerSession peerSession;
 	private final TorrentSession torrentSession;
 	private final PeerMessageHandler peerMessageHandler;
-	private final UtMetadataMessageHandler utMetadataMessageHandler;
-	private final UtPeerExchangeMessageHandler utPeerExchangeMessageHandler;
+	private final MetadataMessageHandler metadataMessageHandler;
+	private final PeerExchangeMessageHandler peerExchangeMessageHandler;
 	
 	public static final ExtensionMessageHandler newInstance(PeerSession peerSession, TorrentSession torrentSession, PeerMessageHandler peerMessageHandler) {
 		return new ExtensionMessageHandler(peerSession, torrentSession, peerMessageHandler);
@@ -58,8 +58,8 @@ public class ExtensionMessageHandler {
 		this.peerSession = peerSession;
 		this.torrentSession = torrentSession;
 		this.peerMessageHandler = peerMessageHandler;
-		this.utMetadataMessageHandler = UtMetadataMessageHandler.newInstance(this.torrentSession, this.peerSession, this);
-		this.utPeerExchangeMessageHandler = UtPeerExchangeMessageHandler.newInstance(this.peerSession, this.torrentSession, this);
+		this.metadataMessageHandler = MetadataMessageHandler.newInstance(this.torrentSession, this.peerSession, this);
+		this.peerExchangeMessageHandler = PeerExchangeMessageHandler.newInstance(this.peerSession, this.torrentSession, this);
 	}
 	
 	/**
@@ -78,10 +78,10 @@ public class ExtensionMessageHandler {
 			handshake(buffer);
 			break;
 		case ut_pex:
-			utPex(buffer);
+			pex(buffer);
 			break;
 		case ut_metadata:
-			utMetadata(buffer);
+			metadata(buffer);
 			break;
 		case ut_holepunch:
 			break;
@@ -111,7 +111,7 @@ public class ExtensionMessageHandler {
 //		}
 		data.put(EX_REQQ, 255);
 		if(PeerMessageConfig.ExtensionType.ut_pex.notice()) {
-			data.put(EX_E, 0); // ut_pex：加密
+			data.put(EX_E, 0); // Pex：加密
 		}
 		if(PeerMessageConfig.ExtensionType.ut_metadata.notice()) {
 			final int size = this.infoHash.size();
@@ -161,7 +161,7 @@ public class ExtensionMessageHandler {
 		}
 		if (peerMessageHandler.action() == Action.torrent) { // 下载种子
 			if(peerSession.support(ExtensionType.ut_metadata)) {
-				utMetadataMessageHandler.request();
+				metadataMessageHandler.request();
 			}
 		}
 	}
@@ -170,21 +170,21 @@ public class ExtensionMessageHandler {
 	 * Pex请求
 	 */
 	public void exchange(byte[] bytes) {
-		utPeerExchangeMessageHandler.exchange(bytes);
+		peerExchangeMessageHandler.exchange(bytes);
 	}
 	
 	/**
-	 * ut_pex消息
+	 * Pex消息
 	 */
-	private void utPex(ByteBuffer buffer) {
-		utPeerExchangeMessageHandler.onMessage(buffer);
+	private void pex(ByteBuffer buffer) {
+		peerExchangeMessageHandler.onMessage(buffer);
 	}
 	
 	/**
 	 * ut_metadata消息
 	 */
-	private void utMetadata(ByteBuffer buffer) {
-		utMetadataMessageHandler.onMessage(buffer);
+	private void metadata(ByteBuffer buffer) {
+		metadataMessageHandler.onMessage(buffer);
 	}
 
 	/**

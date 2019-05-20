@@ -32,6 +32,10 @@ public class PeerConfig {
 	public static final byte EXTENSION_PROTOCOL = 1 << 4; // 0x10
 //	public static final byte PEER_EXCHANGE = 1 << 1; // 0x02
 	
+	public static final int HANDSHAKE_LENGTH = 68;
+	public static final String HANDSHAKE_NAME = "BitTorrent protocol"; // 协议名称
+	public static final byte[] HANDSHAKE_NAME_BYTES = HANDSHAKE_NAME.getBytes();
+	
 	static {
 		HANDSHAKE_RESERVED[5] |= EXTENSION_PROTOCOL; // Extension Protocol
 		HANDSHAKE_RESERVED[7] |= DHT_PROTOCOL; // DHT Protocol

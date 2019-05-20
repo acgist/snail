@@ -41,7 +41,7 @@ public class PeerClientGroup {
 	 */
 	private final BlockingQueue<PeerClient> peerClients;
 	/**
-	 * 优选的Peer，每次优化时挑选出来可以进行下载的Peer，在优化后发送ut_pex消息发送给连接的Peer，发送完成后清空。
+	 * 优选的Peer，每次优化时挑选出来可以进行下载的Peer，在优化后发送Pex消息发送给连接的Peer，发送完成后清空。
 	 */
 	private final List<PeerSession> optimize = new ArrayList<>();
 	

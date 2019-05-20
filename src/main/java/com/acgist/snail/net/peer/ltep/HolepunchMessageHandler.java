@@ -7,6 +7,6 @@ package com.acgist.snail.net.peer.ltep;
  * @author acgist
  * @since 1.0.0
  */
-public class UtHolepunchMessageHandler {
+public class HolepunchMessageHandler {
 
 }
