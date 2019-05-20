@@ -1,7 +1,7 @@
 package com.acgist.snail.net.utp;
 
 /**
- * UTP
+ * UTP服务端
  * 
  * @author acgist
  * @since 1.0.0

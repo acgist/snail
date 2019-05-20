@@ -11,7 +11,7 @@ import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.NetUtils;
 
 /**
- * DHTServer
+ * DHT服务端
  * 
  * @author acgist
  * @since 1.0.0
@@ -41,5 +41,5 @@ public class DhtServer {
 		LOGGER.info("DHT Server关闭");
 		IoUtils.close(channel);
 	}
-	
+
 }

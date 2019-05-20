@@ -1,29 +1,38 @@
 @echo off
 
+rem 加载配置文件
 call config.bat
 
 echo 开始构建项目【%project%】
-echo 请确保MAVEN版本、config.bat、snail.ini中三个配置版本号一致
+echo 请确保pom.xml、snail.ini、config.bat、system.properties配置文件中版本号一致
 
+rem 清除文件
 call clean.bat
 
 cd ..\
 
-rem 打包项目
 echo -----------------------------------------------
 echo 打包项目
 echo -----------------------------------------------
 call mvn clean package -q -Prelease -DskipTests
-call xcopy /S /Q .\target\%lib%\* %builder%%lib%\*
-call copy .\target\%jar% %builder%
-call copy %launcher% %builder%%exe%
-call copy %launcherIni% %builder%%ini%
 
-rem 生成JAVA运行环境
-rem 查询依赖命令：jdeps --list-deps *.jar
 echo -----------------------------------------------
-echo 生成JAVA运行环境
+echo 拷贝文件
 echo -----------------------------------------------
-call jlink --add-modules %modules% --output %builder%%runtime%
+call xcopy /S /Q .\target\%lib%\* %target%%lib%\*
+call copy .\target\%jar% %target%
+call copy %launcherExe% %target%%exe%
+call copy %launcherIni% %target%%ini%
+call copy %builder%%config% %target%%config%
+call copy %builder%%startup% %target%%startup%
+
+echo -----------------------------------------------
+echo 运行环境
+echo -----------------------------------------------
+call jlink --add-modules %modules% --output %target%%runtime%
 
 cd %builder%
+
+echo -----------------------------------------------
+echo 构建成功
+echo -----------------------------------------------

@@ -11,7 +11,7 @@
 	
 	<url>https://gitee.com/acgist/snail</url>
 	<name>snail</name>
-	<version>1.0.2</version>
+	<version>1.1.0</version>
 	<description>基于Java/JavaFX的下载工具，支持下载协议：BT、FTP、HTTP、ED2K。</description>
 	<inceptionYear>2019</inceptionYear>
 

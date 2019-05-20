@@ -1,7 +1,5 @@
-#ºöÂÔÎÄ¼ş
+#å¿½ç•¥æ–‡ä»¶
 *.iml
-
-#ºöÂÔÅäÖÃ
 .idea
 .project
 .settings
@@ -11,8 +9,9 @@
 .apt_generated
 .apt_generated_tests
 
-#ºöÂÔÄ¿Â¼
+#å¿½ç•¥ç›®å½•
 /logs/
 /target/
 /database/
 /download/
+/builder/snail/

@@ -40,10 +40,10 @@ public class PeerSession implements IStatistics {
 	private final BitSet pieces; // 文件下载位图
 	private final BitSet badPieces; // 下载错误位图：下次获取时清除
 	
-	private Boolean amChocking; // 客户端将Peer阻塞：阻塞（不允许下载）-1（true）、非阻塞-0
-	private Boolean amInterested; // 客户端对Peer感兴趣：感兴趣（Peer有客户端没有的piece）-1（true）、不感兴趣-0
-	private Boolean peerChocking; // Peer将客户阻塞：阻塞（Peer不允许客户端下载）-1（true）、非阻塞-0
-	private Boolean peerInterested; // Peer对客户端感兴趣：感兴趣-1、不感兴趣-0
+	private boolean amChocking; // 客户端将Peer阻塞：阻塞（不允许下载）-1（true）、非阻塞-0
+	private boolean amInterested; // 客户端对Peer感兴趣：感兴趣（Peer有客户端没有的piece）-1（true）、不感兴趣-0
+	private boolean peerChocking; // Peer将客户阻塞：阻塞（Peer不允许客户端下载）-1（true）、非阻塞-0
+	private boolean peerInterested; // Peer对客户端感兴趣：感兴趣-1、不感兴趣-0
 	
 	private PeerMessageHandler peerMessageHandler;
 	
@@ -96,6 +96,21 @@ public class PeerSession implements IStatistics {
 	
 	public void peerNotInterested() {
 		this.peerInterested = false;
+	}
+	public boolean isAmChocking() {
+		return this.amChocking;
+	}
+	
+	public boolean isAmInterested() {
+		return this.amInterested;
+	}
+	
+	public boolean isPeerChocking() {
+		return this.peerChocking;
+	}
+	
+	public boolean isPeerInterested() {
+		return this.peerInterested;
 	}
 	
 	/**
@@ -199,22 +214,6 @@ public class PeerSession implements IStatistics {
 		return bitSet;
 	}
 	
-	public boolean isAmChocking() {
-		return this.amChocking;
-	}
-	
-	public boolean isAmInterested() {
-		return this.amInterested;
-	}
-	
-	public boolean isPeerChocking() {
-		return this.peerChocking;
-	}
-	
-	public boolean isPeerInterested() {
-		return this.peerInterested;
-	}
-	
 	/**
 	 * 添加扩展类型
 	 */
@@ -263,6 +262,20 @@ public class PeerSession implements IStatistics {
 		this.reserved = reserved;
 	}
 	
+	/**
+	 * 是否支持扩展协议
+	 */
+	public boolean supportExtensionProtocol() {
+		return this.reserved != null && (this.reserved[5] & PeerConfig.EXTENSION_PROTOCOL) != 0;
+	}
+
+	/**
+	 * 是否执行DHT扩展协议
+	 */
+	public boolean supportDhtProtocol() {
+		return this.reserved != null && (this.reserved[7] & PeerConfig.DHT_PROTOCOL) != 0;
+	}
+
 	/**
 	 * 设置来源
 	 */
@@ -348,17 +361,10 @@ public class PeerSession implements IStatistics {
 	}
 	
 	/**
-	 * 是否支持扩展协议
+	 * 是否支持UTP
 	 */
-	public boolean supportExtensionProtocol() {
-		return this.reserved != null && (this.reserved[5] & PeerConfig.EXTENSION_PROTOCOL) != 0;
-	}
-
-	/**
-	 * 是否执行DHT扩展协议
-	 */
-	public boolean supportDhtProtocol() {
-		return this.reserved != null && (this.reserved[7] & PeerConfig.DHT_PROTOCOL) != 0;
+	public boolean utp() {
+		return (this.exchange & PeerConfig.PEX_UTP) != 0;
 	}
 	
 	@Override
