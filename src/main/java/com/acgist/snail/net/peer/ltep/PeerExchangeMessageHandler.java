@@ -26,6 +26,7 @@ import com.acgist.snail.utils.PeerUtils;
  * <p>Peer Exchange (PEX)</p>
  * <p>Peer交换。在优化PeerClient后获取有效的Peer发送此消息。</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0011.html</p>
+ * TODO：IPv6支持
  * 
  * @author acgist
  * @since 1.0.0
@@ -33,12 +34,6 @@ import com.acgist.snail.utils.PeerUtils;
 public class PeerExchangeMessageHandler {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerExchangeMessageHandler.class);
-	
-//	private static final byte ENCRYPTION = 1 << 0; // 0x1：加密
-//	private static final byte SEED_UPLOAD_ONLY = 1 << 1; // 0x2：种子、上传
-//	private static final byte UTP = 1 << 2; // 0x4
-//	private static final byte UT_HOLEPUNCH = 1 << 3; // 0x8
-//	private static final byte OUTGO = 1 << 4; // 0x10
 	
 	public static final String ADDED = "added";
 	public static final String ADDEDF = "added.f";

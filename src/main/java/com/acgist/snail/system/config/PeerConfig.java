@@ -56,6 +56,15 @@ public class PeerConfig {
 	public static final byte STATUS_UPLOAD = 1 << 1; // 上传
 	public static final byte STATUS_DOWNLOAD = 1 << 0; // 下载
 	
+	/**
+	 * PEX状态
+	 */
+	public static final byte PEX_ENCRYPTION = 1 << 0; // 0x1：加密
+	public static final byte PEX_SEED_UPLOAD_ONLY = 1 << 1; // 0x2：做种、上传
+	public static final byte PEX_UTP = 1 << 2; // 0x4：支持UTP协议
+	public static final byte PEX_HOLEPUNCH = 1 << 3; // 0x8：支持holepunch协议
+	public static final byte PEX_OUTGO = 1 << 4; // 0x10
+	
 	private static final Map<String, String> PEER_NAMES = new HashMap<>();
 
 	static {
