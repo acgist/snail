@@ -26,17 +26,17 @@ import com.acgist.snail.utils.NumberUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class UtMetadataMessageHandler {
+public class MetadataMessageHandler {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(UtMetadataMessageHandler.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MetadataMessageHandler.class);
 	
 	/**
 	 * 数据交换每块大小：16KB
 	 */
 	public static final int INFO_SLICE_SIZE = 16 * 1024;
 	
-	private static final String ARG_MSG_TYPE = "msg_type";
 	private static final String ARG_PIECE = "piece";
+	private static final String ARG_MSG_TYPE = "msg_type";
 	private static final String ARG_TOTAL_SIZE = "total_size";
 	
 	private final InfoHash infoHash;
@@ -44,11 +44,11 @@ public class UtMetadataMessageHandler {
 	private final TorrentSession torrentSession;
 	private final ExtensionMessageHandler extensionMessageHandler;
 	
-	public static final UtMetadataMessageHandler newInstance(TorrentSession torrentSession, PeerSession peerSession, ExtensionMessageHandler extensionMessageHandler) {
-		return new UtMetadataMessageHandler(torrentSession, peerSession, extensionMessageHandler);
+	public static final MetadataMessageHandler newInstance(TorrentSession torrentSession, PeerSession peerSession, ExtensionMessageHandler extensionMessageHandler) {
+		return new MetadataMessageHandler(torrentSession, peerSession, extensionMessageHandler);
 	}
 	
-	private UtMetadataMessageHandler(TorrentSession torrentSession, PeerSession peerSession, ExtensionMessageHandler extensionMessageHandler) {
+	private MetadataMessageHandler(TorrentSession torrentSession, PeerSession peerSession, ExtensionMessageHandler extensionMessageHandler) {
 		this.infoHash = torrentSession.infoHash();
 		this.peerSession = peerSession;
 		this.torrentSession = torrentSession;

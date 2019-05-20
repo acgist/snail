@@ -30,9 +30,9 @@ import com.acgist.snail.utils.PeerUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class UtPeerExchangeMessageHandler {
+public class PeerExchangeMessageHandler {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(UtPeerExchangeMessageHandler.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PeerExchangeMessageHandler.class);
 	
 //	private static final byte ENCRYPTION = 1 << 0; // 0x1：加密
 //	private static final byte SEED_UPLOAD_ONLY = 1 << 1; // 0x2：种子、上传
@@ -52,11 +52,11 @@ public class UtPeerExchangeMessageHandler {
 	private final TaskSession taskSession;
 	private final ExtensionMessageHandler extensionMessageHandler;
 	
-	public static final UtPeerExchangeMessageHandler newInstance(PeerSession peerSession, TorrentSession torrentSession, ExtensionMessageHandler extensionMessageHandler) {
-		return new UtPeerExchangeMessageHandler(peerSession, torrentSession, extensionMessageHandler);
+	public static final PeerExchangeMessageHandler newInstance(PeerSession peerSession, TorrentSession torrentSession, ExtensionMessageHandler extensionMessageHandler) {
+		return new PeerExchangeMessageHandler(peerSession, torrentSession, extensionMessageHandler);
 	}
 	
-	private UtPeerExchangeMessageHandler(PeerSession peerSession, TorrentSession torrentSession, ExtensionMessageHandler extensionMessageHandler) {
+	private PeerExchangeMessageHandler(PeerSession peerSession, TorrentSession torrentSession, ExtensionMessageHandler extensionMessageHandler) {
 		this.infoHash = torrentSession.infoHash();
 		this.peerSession = peerSession;
 		this.taskSession = torrentSession.taskSession();
@@ -99,7 +99,7 @@ public class UtPeerExchangeMessageHandler {
 			peers.forEach((host, port) -> {
 				final PeerSession peerSession = PeerManager.getInstance().newPeerSession(infoHash.infoHashHex(), taskSession.statistics(), host, port, PeerConfig.SOURCE_PEX);
 				if(addedf != null) {
-					peerSession.peerExchange(addedf[index.getAndIncrement()]);
+					peerSession.exchange(addedf[index.getAndIncrement()]);
 				}
 			});
 		}
@@ -129,5 +129,5 @@ public class UtPeerExchangeMessageHandler {
 		data.put(ADDED, addedBuffer.array());
 		return BCodeEncoder.encodeMap(data);
 	}
-	
+
 }

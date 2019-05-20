@@ -73,8 +73,8 @@ public class PeerServerTest {
 		client.torrent();
 //		client.download();
 //		ThreadUtils.sleep(4000); // 等待信息交换
-//		var pexMessage = UtPeerExchangeMessageHandler.buildMessage(List.of(peerSession));
-//		client.handler().utPex(pexMessage);
+//		var pexMessage = PeerExchangeMessageHandler.buildMessage(List.of(peerSession));
+//		client.handler().pex(pexMessage);
 		ThreadUtils.sleep(Long.MAX_VALUE);
 	}
 
