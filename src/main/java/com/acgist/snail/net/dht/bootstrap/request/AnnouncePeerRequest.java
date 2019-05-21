@@ -32,6 +32,7 @@ public class AnnouncePeerRequest extends Request {
 	
 	/**
 	 * 创建请求
+	 * TODO：验证端口是否需要转为short
 	 * 
 	 * @param token token
 	 * @param infoHash infoHash
@@ -48,6 +49,7 @@ public class AnnouncePeerRequest extends Request {
 	/**
 	 * <p>处理Peer声明</p>
 	 * <p>将客户端保存到Peer列表。</p>
+	 * TODO：验证端口：short or int？
 	 */
 	public static final AnnouncePeerResponse execute(Request request) {
 		final byte[] token = request.getBytes(DhtConfig.KEY_TOKEN);

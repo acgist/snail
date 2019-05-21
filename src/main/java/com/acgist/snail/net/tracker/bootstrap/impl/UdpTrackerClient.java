@@ -149,7 +149,7 @@ public class UdpTrackerClient extends TrackerClient {
 		buffer.putLong(download); // 已下载大小
 		buffer.putLong(remain); // 剩余下载大小
 		buffer.putLong(upload); // 已上传大小
-		buffer.putInt(event.event()); // 事件
+		buffer.putInt(event.event()); // 事件：started-2、completed-1、stopped-3
 		buffer.putInt(0); // 本机IP：0（服务器自动获取）
 		buffer.putInt(UniqueCodeUtils.buildInteger()); // 系统分配唯一键
 		buffer.putInt(50); // 想要获取的Peer数量

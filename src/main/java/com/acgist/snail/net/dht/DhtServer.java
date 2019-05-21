@@ -20,7 +20,7 @@ public class DhtServer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DhtServer.class);
 	
-	private DatagramChannel channel;
+	private final DatagramChannel channel;
 	
 	private DhtServer() {
 		this.channel = NetUtils.buildUdpChannel(SystemConfig.getServicePort());
