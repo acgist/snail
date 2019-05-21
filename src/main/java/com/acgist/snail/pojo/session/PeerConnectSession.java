@@ -56,7 +56,7 @@ public class PeerConnectSession {
 	 * 释放资源：阻塞、关闭Socket，设置非上传状态。
 	 */
 	public void release() {
-		LOGGER.debug("PeerConnect关闭：{}-{}", this.peerSession.host(), this.peerSession.port());
+		LOGGER.debug("PeerConnect关闭：{}-{}", this.peerSession.host(), this.peerSession.peerPort());
 		this.peerMessageHandler.choke();
 		this.peerMessageHandler.close();
 		this.peerSession.unstatus(PeerConfig.STATUS_UPLOAD);

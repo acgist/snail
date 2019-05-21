@@ -36,7 +36,7 @@ public class PeerService {
 
 	private PeerService() {
 		this.peerId = buildPeerId();
-		this.peerPort = SystemConfig.getPeerPort().shortValue();
+		this.peerPort = SystemConfig.getServicePortShort();
 	}
 	
 	public static final PeerService getInstance() {

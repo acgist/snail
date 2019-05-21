@@ -31,7 +31,7 @@ public class PeerSession implements IStatistics {
 	private byte exchange = 0; // PEX属性
 	
 	private String host; // 地址
-	private Integer port; // 端口
+	private Integer peerPort; // Peer端口
 	private Integer dhtPort; // DHT端口
 	
 	private byte[] id; // Peer id
@@ -49,10 +49,10 @@ public class PeerSession implements IStatistics {
 	
 	private final Map<PeerMessageConfig.ExtensionType, Byte> extension; // 支持的扩展协议
 
-	private PeerSession(StatisticsSession parent, String host, Integer port) {
+	private PeerSession(StatisticsSession parent, String host, Integer peerPort) {
 		this.statistics = new StatisticsSession(parent);
 		this.host = host;
-		this.port = port;
+		this.peerPort = peerPort;
 		this.amChocking = true;
 		this.amInterested = false;
 		this.peerChocking = true;
@@ -62,8 +62,8 @@ public class PeerSession implements IStatistics {
 		this.extension = new HashMap<>();
 	}
 	
-	public static final PeerSession newInstance(StatisticsSession parent, String host, Integer port) {
-		return new PeerSession(parent, host, port);
+	public static final PeerSession newInstance(StatisticsSession parent, String host, Integer peerPort) {
+		return new PeerSession(parent, host, peerPort);
 	}
 	
 	public void amChoke() {
@@ -166,12 +166,12 @@ public class PeerSession implements IStatistics {
 		return this.host;
 	}
 	
-	public Integer port() {
-		return this.port;
+	public Integer peerPort() {
+		return this.peerPort;
 	}
 	
-	public void port(Integer port) {
-		this.port = port;
+	public void peerPort(Integer peerPort) {
+		this.peerPort = peerPort;
 	}
 	
 	public String clientName() {
@@ -247,7 +247,7 @@ public class PeerSession implements IStatistics {
 	public boolean available() {
 		return
 			this.failTimes < MAX_FAIL_TIMES &&
-			this.port != null;
+			this.peerPort != null;
 	}
 	
 	public Integer dhtPort() {

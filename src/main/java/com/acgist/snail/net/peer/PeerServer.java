@@ -25,7 +25,7 @@ public class PeerServer extends TcpServer {
 	
 	@Override
 	public boolean listen() {
-		return this.listen(SystemConfig.getPeerPort());
+		return this.listen(SystemConfig.getServicePort());
 	}
 
 	@Override

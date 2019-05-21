@@ -209,7 +209,7 @@ public class PeerClientGroup {
 	private void inferiorPeerClient(PeerClient peerClient) {
 		if(peerClient != null) {
 			final PeerSession peerSession = peerClient.peerSession();
-			LOGGER.debug("剔除劣质PeerClient：{}-{}", peerSession.host(), peerSession.port());
+			LOGGER.debug("剔除劣质PeerClient：{}-{}", peerSession.host(), peerSession.peerPort());
 			SystemThreadContext.submit(() -> {
 				peerClient.release();
 			});

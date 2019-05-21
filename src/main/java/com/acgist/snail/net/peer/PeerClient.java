@@ -75,7 +75,7 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 
 	@Override
 	public boolean connect() {
-		return connect(this.peerSession.host(), this.peerSession.port());
+		return connect(this.peerSession.host(), this.peerSession.peerPort());
 	}
 
 	/**
@@ -99,7 +99,7 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	 * 开始下载：连接、握手
 	 */
 	public boolean download() {
-		LOGGER.debug("Peer连接：{}-{}", this.peerSession.host(), this.peerSession.port());
+		LOGGER.debug("Peer连接：{}-{}", this.peerSession.host(), this.peerSession.peerPort());
 		final boolean ok = connect();
 		if(ok) {
 			this.handler.handshake(this);
@@ -152,7 +152,7 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	 */
 	public void release() {
 		if(available()) {
-			LOGGER.debug("PeerClient关闭：{}-{}", this.peerSession.host(), this.peerSession.port());
+			LOGGER.debug("PeerClient关闭：{}-{}", this.peerSession.host(), this.peerSession.peerPort());
 			this.available = false;
 			if(!this.completeLock.get()) { // 没有完成：等待下载完成
 				synchronized (this.closeLock) {

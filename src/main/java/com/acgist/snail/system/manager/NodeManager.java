@@ -25,6 +25,9 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * Node信息
  * TODO：连接失败时剔除、定时剔除多余数据
+ * 
+ * Kademlia：https://baike.baidu.com/item/Kademlia
+ * BT=DHT、eMule=KAD
  */
 public class NodeManager {
 	

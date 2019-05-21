@@ -10,6 +10,7 @@ import com.acgist.snail.pojo.session.TaskSession;
 
 /**
  * <p>ED2K下载器</p>
+ * <p>eMule基于eDonkey协议二次开发。</p>
  * 
  * @author acgist
  * @since 1.0.0

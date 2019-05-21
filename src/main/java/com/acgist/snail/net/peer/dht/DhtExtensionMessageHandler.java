@@ -39,8 +39,8 @@ public class DhtExtensionMessageHandler {
 	}
 
 	public void port() {
-		final short port = NetUtils.encodePort(SystemConfig.getDhtPort());
-		this.peerMessageHandler.pushMessage(PeerMessageConfig.Type.dht, ByteBuffer.allocate(2).putShort(port).array());
+		final byte[] bytes = ByteBuffer.allocate(2).putShort(SystemConfig.getServicePortShort()).array();
+		this.peerMessageHandler.pushMessage(PeerMessageConfig.Type.dht, bytes);
 	}
 	
 	private void port(ByteBuffer buffer) {

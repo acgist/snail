@@ -58,8 +58,7 @@ public class SystemConfig extends PropertiesConfig {
 	private String source; // 源码
 	private String support; // 支持
 	private Integer serverPort; // 服务端口
-	private Integer peerPort; // Peer端口
-	private Integer dhtPort; // DHT端口
+	private Integer servicePort; // 服务端口（Peer、DHT、UTP）
 	private Integer trackerSize; // 单个任务Tracker数量
 	private Integer peerSize; // 单个任务Peer数量
 	private Integer pexInterval; // PEX执行周期（秒）
@@ -79,8 +78,7 @@ public class SystemConfig extends PropertiesConfig {
 		INSTANCE.source = getString("acgist.system.source");
 		INSTANCE.support = getString("acgist.system.support");
 		INSTANCE.serverPort = getInteger("acgist.server.port");
-		INSTANCE.peerPort = getInteger("acgist.peer.port");
-		INSTANCE.dhtPort = getInteger("acgist.dht.port");
+		INSTANCE.servicePort = getInteger("acgist.service.port");
 		INSTANCE.trackerSize = getInteger("acgist.tracker.size");
 		INSTANCE.peerSize = getInteger("acgist.peer.size");
 		INSTANCE.pexInterval = getInteger("acgist.pex.interval");
@@ -100,9 +98,8 @@ public class SystemConfig extends PropertiesConfig {
 		LOGGER.info("作者：{}", this.author);
 		LOGGER.info("源码：{}", this.source);
 		LOGGER.info("支持：{}", this.support);
-		LOGGER.info("服务端口：{}", this.serverPort);
-		LOGGER.info("Peer端口：{}", this.peerPort);
-		LOGGER.info("DHT端口：{}", this.dhtPort);
+		LOGGER.info("系统端口：{}", this.serverPort);
+		LOGGER.info("服务端口（Peer、DHT、UTP）：{}", this.servicePort);
 		LOGGER.info("单个任务Tracker数量：{}", this.trackerSize);
 		LOGGER.info("单个任务Peer数量：{}", this.peerSize);
 		LOGGER.info("PEX执行周期（秒）：{}", this.pexInterval);
@@ -162,24 +159,17 @@ public class SystemConfig extends PropertiesConfig {
 	}
 
 	/**
-	 * Peer端口
+	 * 服务端口（Peer、DHT、UTP）
 	 */
-	public static final Integer getPeerPort() {
-		return INSTANCE.peerPort;
+	public static final Integer getServicePort() {
+		return INSTANCE.servicePort;
 	}
 	
 	/**
-	 * Peer端口：short
+	 * 服务端口（Peer、DHT、UTP）：short
 	 */
-	public static final Short getPeerPortShort() {
-		return NetUtils.encodePort(getPeerPort());
-	}
-
-	/**
-	 * DHT端口
-	 */
-	public static final Integer getDhtPort() {
-		return INSTANCE.dhtPort;
+	public static final Short getServicePortShort() {
+		return NetUtils.encodePort(getServicePort());
 	}
 
 	/**

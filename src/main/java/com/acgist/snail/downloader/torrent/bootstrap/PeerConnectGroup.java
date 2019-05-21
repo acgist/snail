@@ -49,7 +49,7 @@ public class PeerConnectGroup {
 		synchronized (this.peerConnectSessions) {
 			if(!peerSession.downloading()) {
 				if(this.peerConnectSessions.size() >= SystemConfig.getPeerSize()) {
-					LOGGER.debug("Peer连接数超过最大连接数量，拒绝连接：{}-{}", peerSession.host(), peerSession.port());
+					LOGGER.debug("Peer连接数超过最大连接数量，拒绝连接：{}-{}", peerSession.host(), peerSession.peerPort());
 					return false;
 				}
 			}
@@ -133,7 +133,7 @@ public class PeerConnectGroup {
 	private void inferiorPeerClient(PeerConnectSession peerConnectSession) {
 		if(peerConnectSession != null) {
 			final PeerSession peerSession = peerConnectSession.getPeerSession();
-			LOGGER.debug("剔除无效PeerConnect：{}-{}", peerSession.host(), peerSession.port());
+			LOGGER.debug("剔除无效PeerConnect：{}-{}", peerSession.host(), peerSession.peerPort());
 			peerConnectSession.release();
 		}
 	}

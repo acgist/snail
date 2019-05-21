@@ -101,7 +101,7 @@ public class UpnpRequest {
 		xml.element(mapping, "NewInternalPort", String.valueOf(port));
 		xml.element(mapping, "NewInternalClient", address);
 		xml.element(mapping, "NewEnabled", "1");
-		xml.element(mapping, "NewPortMappingDescription", "SNAIL UPNP");
+		xml.element(mapping, "NewPortMappingDescription", "Snail");
 		xml.element(mapping, "NewLeaseDuration", "0");
 		return xml();
 	}
