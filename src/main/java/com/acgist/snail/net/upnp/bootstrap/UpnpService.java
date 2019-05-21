@@ -275,7 +275,7 @@ public class UpnpService {
 			boolean dhtOk = this.addPortMapping(SystemConfig.getServicePort(), portExt, Protocol.UDP);
 			boolean peerOk = this.addPortMapping(SystemConfig.getServicePort(), portExt, Protocol.TCP);
 			LOGGER.info("端口映射：DHT（{}-{}-{}）、Peer（{}-{}-{}）", SystemConfig.getServicePort(), portExt, dhtOk, SystemConfig.getServicePort(), portExt, peerOk);
-		} else if(tValue == USE_USEABLE) {
+		} else if(uValue == USE_USEABLE) {
 			SystemConfig.setServicePortExt(portExt);
 			LOGGER.info("端口映射：DHT（{}-{}-{}）、Peer（{}-{}-{}）", SystemConfig.getServicePort(), portExt, true, SystemConfig.getServicePort(), portExt, true);
 		} else {
