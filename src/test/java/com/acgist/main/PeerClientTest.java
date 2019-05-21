@@ -22,12 +22,13 @@ public class PeerClientTest {
 	
 	@Test
 	public void download() throws DownloadException {
-		String path = "e:/snail/1.torrent";
+//		String path = "e:/snail/1.torrent";
 //		String path = "e:/snail/12.torrent";
 //		String path = "e:/snail/123.torrent";
 //		String path = "e:/snail/1234.torrent";
 //		String path = "e:/snail/12345.torrent";
 //		String path = "e:/snail/123456.torrent";
+		String path = "e:/snail/16b1233b33143700fe47910898fcaaf0f05d2d09.torrent";
 		TorrentSession torrentSession = TorrentManager.getInstance().newTorrentSession(path);
 		var files = torrentSession.torrent().getInfo().files();
 		List<String> list = new ArrayList<>();
@@ -46,11 +47,9 @@ public class PeerClientTest {
 		final TorrentFileSelectWrapper wrapper = TorrentFileSelectWrapper.newEncoder(list);
 		entity.setDescription(wrapper.description());
 		torrentSession.upload(TaskSession.newInstance(entity)).download(false);
-		String host = "112.104.140.94";
-		Integer port = 51413;
-//		String host = "127.0.0.1";
+		String host = "127.0.0.1";
 //		Integer port = 17888;
-//		Integer port = 49160; // FDM测试端口
+		Integer port = 49160; // FDM测试端口
 //		Integer port = 15000; // 本地迅雷测试端口
 		System.out.println("已下载：" + torrentSession.torrentStreamGroup().pieces());
 		StatisticsSession statisticsSession = new StatisticsSession();
