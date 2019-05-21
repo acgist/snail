@@ -22,19 +22,25 @@ public class UpnpServiceTest {
 	@Test
 	public void getSpecificPortMappingEntry() throws NetException {
 		UpnpService.getInstance().load(serviceUrl);
-		System.out.println(UpnpService.getInstance().getSpecificPortMappingEntry(17888, Protocol.TCP));
+		System.out.println(UpnpService.getInstance().getSpecificPortMappingEntry(18888, Protocol.TCP));
 	}
 
 	@Test
 	public void addPortMapping() throws NetException {
 		UpnpService.getInstance().load(serviceUrl);
-		System.out.println(UpnpService.getInstance().addPortMapping(17888, 18888, Protocol.TCP));
+		System.out.println(UpnpService.getInstance().addPortMapping(18888, 18888, Protocol.TCP));
 	}
 
 	@Test
 	public void deletePortMapping() throws NetException {
 		UpnpService.getInstance().load(serviceUrl);
-		System.out.println(UpnpService.getInstance().deletePortMapping(17888, Protocol.TCP));
+		System.out.println(UpnpService.getInstance().deletePortMapping(18888, Protocol.TCP));
+	}
+	
+	@Test
+	public void setting() throws NetException {
+		UpnpService.getInstance().load(serviceUrl);
+		UpnpService.getInstance().setting();
 	}
 
 }
