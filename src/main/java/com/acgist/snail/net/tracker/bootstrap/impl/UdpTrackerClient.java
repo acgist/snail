@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.net.peer.bootstrap.PeerService;
 import com.acgist.snail.net.tracker.bootstrap.TrackerClient;
 import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.config.TrackerConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.NetUtils;
@@ -152,7 +153,7 @@ public class UdpTrackerClient extends TrackerClient {
 		buffer.putInt(0); // 本机IP：0（服务器自动获取）
 		buffer.putInt(UniqueCodeUtils.buildInteger()); // 系统分配唯一键
 		buffer.putInt(50); // 想要获取的Peer数量
-		buffer.putShort(PeerService.getInstance().peerPort()); // 本机Peer端口
+		buffer.putShort(SystemConfig.getServicePortExtShort()); // 外网Peer端口
 		return buffer;
 	}
 

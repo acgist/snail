@@ -23,8 +23,8 @@ public class DhtServer {
 	private DatagramChannel channel;
 	
 	private DhtServer() {
-		channel = NetUtils.buildUdpChannel(SystemConfig.getServicePort());
-		UdpClient.bindServerHandler(new DhtMessageHandler(), channel);
+		this.channel = NetUtils.buildUdpChannel(SystemConfig.getServicePort());
+		UdpClient.bindServerHandler(new DhtMessageHandler(), this.channel);
 	}
 	
 	private static final DhtServer INSTANCE = new DhtServer();

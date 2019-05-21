@@ -29,14 +29,9 @@ public class PeerService {
 	 * 20位系统ID
 	 */
 	private final byte[] peerId;
-	/**
-	 * 服务器端口
-	 */
-	private final short peerPort;
 
 	private PeerService() {
 		this.peerId = buildPeerId();
-		this.peerPort = SystemConfig.getServicePortShort();
 	}
 	
 	public static final PeerService getInstance() {
@@ -72,8 +67,4 @@ public class PeerService {
 		return this.peerId;
 	}
 
-	public short peerPort() {
-		return this.peerPort;
-	}
-	
 }

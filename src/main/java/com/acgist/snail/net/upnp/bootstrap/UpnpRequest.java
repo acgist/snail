@@ -31,10 +31,10 @@ public class UpnpRequest {
 	 * 新建报文BODY
 	 */
 	private void build() {
-		xml = XMLUtils.create();
-		Element envelope = xml.elementNS(xml.document(), "s:Envelope", NAMESPACE_URI);
+		this.xml = XMLUtils.create();
+		Element envelope = this.xml.elementNS(xml.document(), "s:Envelope", NAMESPACE_URI);
 		envelope.setAttributeNS(NAMESPACE_URI, "encodingStyle", ENCODING_STYLE);
-		body = xml.element(envelope, "s:Body");
+		this.body = this.xml.element(envelope, "s:Body");
 	}
 
 //	请求报文：
@@ -48,7 +48,7 @@ public class UpnpRequest {
 	 * 获取外网IP请求
 	 */
 	public String buildGetExternalIPAddress() {
-		xml.elementNS(body, "u:GetExternalIPAddress", serviceType);
+		this.xml.elementNS(this.body, "u:GetExternalIPAddress", this.serviceType);
 		return xml();
 	}
 	
@@ -67,10 +67,10 @@ public class UpnpRequest {
 	 * 获取端口映射情况
 	 */
 	public String buildGetSpecificPortMappingEntry(int port, Protocol protocol) {
-		Element mapping = xml.elementNS(body, "u:GetSpecificPortMappingEntry", serviceType);
-		xml.element(mapping, "NewRemoteHost", "");
-		xml.element(mapping, "NewExternalPort", String.valueOf(port));
-		xml.element(mapping, "NewProtocol", protocol.name());
+		Element mapping = this.xml.elementNS(this.body, "u:GetSpecificPortMappingEntry", this.serviceType);
+		this.xml.element(mapping, "NewRemoteHost", "");
+		this.xml.element(mapping, "NewExternalPort", String.valueOf(port));
+		this.xml.element(mapping, "NewProtocol", protocol.name());
 		return xml();
 	}
 	
@@ -92,17 +92,21 @@ public class UpnpRequest {
 //	</s:Envelope>
 	/**
 	 * 添加端口映射
+	 * 
+	 * @param port 内网端口
+	 * @param address 内网地址
+	 * @param portExt 外网端口
 	 */
-	public String buildAddPortMapping(int port, String address, Protocol protocol) {
-		Element mapping = xml.elementNS(body, "u:AddPortMapping", serviceType);
-		xml.element(mapping, "NewRemoteHost", "");
-		xml.element(mapping, "NewExternalPort", String.valueOf(port));
-		xml.element(mapping, "NewProtocol", protocol.name());
-		xml.element(mapping, "NewInternalPort", String.valueOf(port));
-		xml.element(mapping, "NewInternalClient", address);
-		xml.element(mapping, "NewEnabled", "1");
-		xml.element(mapping, "NewPortMappingDescription", "Snail");
-		xml.element(mapping, "NewLeaseDuration", "0");
+	public String buildAddPortMapping(int port, String address, int portExt, Protocol protocol) {
+		Element mapping = this.xml.elementNS(this.body, "u:AddPortMapping", this.serviceType);
+		this.xml.element(mapping, "NewRemoteHost", "");
+		this.xml.element(mapping, "NewExternalPort", String.valueOf(portExt));
+		this.xml.element(mapping, "NewProtocol", protocol.name());
+		this.xml.element(mapping, "NewInternalPort", String.valueOf(port));
+		this.xml.element(mapping, "NewInternalClient", address);
+		this.xml.element(mapping, "NewEnabled", "1");
+		this.xml.element(mapping, "NewPortMappingDescription", "Snail");
+		this.xml.element(mapping, "NewLeaseDuration", "0");
 		return xml();
 	}
 	
@@ -110,10 +114,10 @@ public class UpnpRequest {
 	 * 删除端口映射
 	 */
 	public String buildDeletePortMapping(int port, Protocol protocol) {
-		Element mapping = xml.elementNS(body, "u:DeletePortMapping", serviceType);
-		xml.element(mapping, "NewRemoteHost", "");
-		xml.element(mapping, "NewExternalPort", String.valueOf(port));
-		xml.element(mapping, "NewProtocol", protocol.name());
+		Element mapping = this.xml.elementNS(body, "u:DeletePortMapping", this.serviceType);
+		this.xml.element(mapping, "NewRemoteHost", "");
+		this.xml.element(mapping, "NewExternalPort", String.valueOf(port));
+		this.xml.element(mapping, "NewProtocol", protocol.name());
 		return xml();
 	}
 
@@ -121,7 +125,7 @@ public class UpnpRequest {
 	 * XML文本输出
 	 */
 	private String xml() {
-		return xml.xml(true);
+		return this.xml.xml(true);
 	}
 
 }
