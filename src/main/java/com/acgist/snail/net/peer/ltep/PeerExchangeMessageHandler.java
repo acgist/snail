@@ -122,6 +122,7 @@ public class PeerExchangeMessageHandler {
 			addedBuffer.putShort(NetUtils.encodePort(session.peerPort()));
 		});
 		data.put(ADDED, addedBuffer.array());
+//		data.put(ADDEDF, value) // flags
 		return BCodeEncoder.encodeMap(data);
 	}
 

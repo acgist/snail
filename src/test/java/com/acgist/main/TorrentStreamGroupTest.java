@@ -49,14 +49,14 @@ public class TorrentStreamGroupTest {
 	@Test
 	public void verify() throws DownloadException, NetException {
 //		String path = "e:/snail/12345.torrent";
-		String path = "E:\\gitee\\snail\\download\\[Hi-Res][2019.05.06] TVアニメ「Fairy gone」挿入歌「Forest Gleam」／(K)NoW_NAME [FLAC 96kHz／24bit]\\[Hi-Res][2019.05.06] TVアニメ「Fairy gone」第5話挿入歌「Forest Gleam」／(K)NoW_NAME [FLAC 96kHz_24bit].torrent";
+		String path = "E:\\gitee\\snail\\download\\[Nekomoe kissaten][Fairy Gone][07][720p][CHS].mp4\\【喵萌奶茶屋】★4月新番★[Fairy Gone][07][720p][简体][招募翻译校对].torrent";
 		TorrentSession session = TorrentManager.getInstance().newTorrentSession(path);
 		var files = session.torrent().getInfo().files();
 		files.forEach(file -> {
 			file.select(true);
 		});
 //		TorrentStreamGroup group = TorrentStreamGroup.newInstance("e://tmp/client/", files, session);
-		TorrentStreamGroup group = TorrentStreamGroup.newInstance("E:\\gitee\\snail\\download\\[Hi-Res][2019.05.06] TVアニメ「Fairy gone」挿入歌「Forest Gleam」／(K)NoW_NAME [FLAC 96kHz／24bit]", files, session);
+		TorrentStreamGroup group = TorrentStreamGroup.newInstance("E:\\gitee\\snail\\download\\[Nekomoe kissaten][Fairy Gone][07][720p][CHS].mp4", files, session);
 		var downloadPieces = group.pieces();
 		int index = downloadPieces.nextSetBit(0);
 		int length = session.torrent().getInfo().getPieceLength().intValue();
