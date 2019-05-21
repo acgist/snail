@@ -101,7 +101,7 @@ public class ExtensionMessageHandler {
 		}
 		data.put(EX_M, supportType); // 扩展协议以及编号
 		data.put(EX_V, SystemConfig.getNameEnAndVersion()); // 客户端信息（名称、版本）
-		data.put(EX_P, SystemConfig.getPeerPort()); // 本机监听TCP端口
+		data.put(EX_P, SystemConfig.getServicePort()); // 本机监听TCP端口
 		// 客户端自动获取
 //		final String ipAddress = UpnpService.getInstance().externalIpAddress();
 //		if(StringUtils.isNotEmpty(ipAddress)) {
@@ -135,8 +135,8 @@ public class ExtensionMessageHandler {
 			return;
 		}
 		final Long port = decoder.getLong(EX_P);
-		if(port != null && peerSession.port() == null) { // 获取端口
-			peerSession.port(port.intValue());
+		if(port != null && peerSession.peerPort() == null) { // 获取端口
+			peerSession.peerPort(port.intValue());
 		}
 		final Long size = decoder.getLong(EX_METADATA_SIZE);
 		if(size != null && this.infoHash.size() == 0) { // 获取种子info大小

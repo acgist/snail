@@ -60,7 +60,7 @@ public class GetPeersRequest extends Request {
 					.limit(NodeManager.GET_PEER_LENGTH)
 					.map(peer -> {
 						buffer.putInt(NetUtils.encodeIpToInt(peer.host()));
-						buffer.putShort(NetUtils.encodePort(peer.port()));
+						buffer.putShort(NetUtils.encodePort(peer.peerPort()));
 						buffer.flip();
 						return buffer.array();
 					})

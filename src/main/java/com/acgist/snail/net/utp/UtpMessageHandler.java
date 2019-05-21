@@ -5,7 +5,7 @@ package com.acgist.snail.net.utp;
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0029.html</p>
  * 
  * @author acgist
- * @since 1.0.0
+ * @since 1.1.0
  */
 public class UtpMessageHandler {
 

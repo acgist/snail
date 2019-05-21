@@ -28,6 +28,7 @@ import com.acgist.snail.utils.ThreadUtils;
 /**
  * <p>DHT消息</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0005.html</p>
+ * TODO：处理请求后加入Node。
  * 
  * @author acgist
  * @since 1.0.0
@@ -96,6 +97,7 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	 */
 	private void onRequest(final Request request, final InetSocketAddress address) {
 		Response response = null;
+		LOGGER.debug("收到请求类型：{}", request.getQ());
 		switch (request.getQ()) {
 		case ping:
 			response = ping(request);
@@ -125,6 +127,7 @@ public class DhtMessageHandler extends UdpMessageHandler {
 			LOGGER.warn("未找到响应对应的请求");
 			return;
 		}
+		LOGGER.debug("收到响应类型：{}", request.getQ());
 		switch (request.getQ()) {
 		case ping:
 			ping(request, response);

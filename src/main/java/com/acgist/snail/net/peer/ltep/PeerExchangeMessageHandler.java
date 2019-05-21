@@ -119,7 +119,7 @@ public class PeerExchangeMessageHandler {
 		final ByteBuffer addedBuffer = ByteBuffer.allocate(length);
 		optimize.forEach(session -> {
 			addedBuffer.putInt(NetUtils.encodeIpToInt(session.host()));
-			addedBuffer.putShort(NetUtils.encodePort(session.port()));
+			addedBuffer.putShort(NetUtils.encodePort(session.peerPort()));
 		});
 		data.put(ADDED, addedBuffer.array());
 		return BCodeEncoder.encodeMap(data);

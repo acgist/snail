@@ -121,10 +121,12 @@ public class UpnpService {
 	 * <p>获取端口映射情况：GetSpecificPortMappingEntry</p>
 	 * <p>请求头：SOAPAction:"urn:schemas-upnp-org:service:WANIPConnection:1#GetSpecificPortMappingEntry"</p>
 	 * <p>如果没有映射：返回500错误代码</p>
+	 * 
+	 * @return -2=未被初始化；-1=不可用（已被注册）；0-可用（未被注册）；1-可用（自己注册）
 	 */
-	public boolean getSpecificPortMappingEntry(int port, Protocol protocol) throws NetException {
+	public int getSpecificPortMappingEntry(int port, Protocol protocol) throws NetException {
 		if(!init) {
-			return false;
+			return -2;
 		}
 		UpnpRequest upnpRequest = UpnpRequest.newRequest(serviceType);
 		String xml = upnpRequest.buildGetSpecificPortMappingEntry(port, protocol);
@@ -134,7 +136,17 @@ public class UpnpService {
 			.POST(BodyPublishers.ofString(xml))
 			.build();
 		var response = HTTPClient.request(client, request, BodyHandlers.ofString());
-		return response.statusCode() == 500; // 没被使用
+		String body = response.body();
+		if(response.statusCode() == 500) {
+			return 0;
+		}
+		String registerIpAddress = UpnpResponse.parseGetSpecificPortMappingEntry(body);
+		final String ipAddress = NetUtils.inetHostAddress();
+		if(ipAddress.equals(registerIpAddress)) {
+			return 1;
+		} else {
+			return -1;
+		}
 	}
 	
 	/**
@@ -188,8 +200,8 @@ public class UpnpService {
 	 */
 	public void release() {
 		try {
-			boolean dhtOk = this.deletePortMapping(SystemConfig.getDhtPort(), Protocol.UDP);
-			boolean peerOk = this.deletePortMapping(SystemConfig.getPeerPort(), Protocol.TCP);
+			boolean dhtOk = this.deletePortMapping(SystemConfig.getServicePort(), Protocol.UDP);
+			boolean peerOk = this.deletePortMapping(SystemConfig.getServicePort(), Protocol.TCP);
 			LOGGER.info("端口释放：DHT：{}、Peer：{}", dhtOk, peerOk);
 		} catch (NetException e) {
 			LOGGER.error("释放UPNP端口异常", e);
@@ -223,9 +235,9 @@ public class UpnpService {
 			return;
 		}
 		final String ipAddress = NetUtils.inetHostAddress();
-		boolean dhtOk = this.addPortMapping(SystemConfig.getDhtPort(), ipAddress, Protocol.UDP);
-		boolean peerOk = this.addPortMapping(SystemConfig.getPeerPort(), ipAddress, Protocol.TCP);
-		LOGGER.info("端口映射：DHT（{}-{}）、Peer（{}-{}）", SystemConfig.getDhtPort(), dhtOk, SystemConfig.getPeerPort(), peerOk);
+		boolean dhtOk = this.addPortMapping(SystemConfig.getServicePort(), ipAddress, Protocol.UDP);
+		boolean peerOk = this.addPortMapping(SystemConfig.getServicePort(), ipAddress, Protocol.TCP);
+		LOGGER.info("端口映射：DHT（{}-{}）、Peer（{}-{}）", SystemConfig.getServicePort(), dhtOk, SystemConfig.getServicePort(), peerOk);
 	}
 	
 	/**
