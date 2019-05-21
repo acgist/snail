@@ -11,9 +11,6 @@ import com.acgist.snail.system.exception.ArgumentException;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 
-import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
-
 /**
  * 下载配置（用户配置）：默认从配置文件加载，如果数据有配置则使用数据库配置替换
  */
@@ -23,12 +20,12 @@ public class DownloadConfig extends PropertiesConfig {
 	
 	private static final String DOWNLOAD_CONFIG = "/config/download.properties";
 	
-	public static final String DOWNLOAD_PATH = "acgist.download.path";
-	public static final String DOWNLOAD_SIZE = "acgist.download.size";
-	public static final String DOWNLOAD_BUFFER = "acgist.download.buffer";
-	public static final String DOWNLOAD_MEMORY_BUFFER = "acgist.download.memory.buffer";
-	public static final String DOWNLOAD_NOTICE = "acgist.download.notice";
-	public static final String DOWNLOAD_LAST_PATH = "acgist.download.last.path";
+	private static final String DOWNLOAD_PATH = "acgist.download.path";
+	private static final String DOWNLOAD_SIZE = "acgist.download.size";
+	private static final String DOWNLOAD_NOTICE = "acgist.download.notice";
+	private static final String DOWNLOAD_BUFFER = "acgist.download.buffer";
+	private static final String DOWNLOAD_LAST_PATH = "acgist.download.last.path";
+	private static final String DOWNLOAD_MEMORY_BUFFER = "acgist.download.memory.buffer";
 	
 	private static final DownloadConfig INSTANCE = new DownloadConfig();
 	
@@ -49,10 +46,10 @@ public class DownloadConfig extends PropertiesConfig {
 	
 	private String path; // 下载目录
 	private Integer size; // 下载任务数量
-	private Integer buffer; // 下载速度（单个）（KB）
-	private Integer memoryBuffer; // 磁盘缓存（单个）（MB）
 	private Boolean notice; // 消息提示
+	private Integer buffer; // 下载速度（单个）（KB）
 	private String lastPath; // 最后一次选择目录
+	private Integer memoryBuffer; // 磁盘缓存（单个）（MB）
 	
 	/**
 	 * 配置文件加载
@@ -76,14 +73,14 @@ public class DownloadConfig extends PropertiesConfig {
 		path = configString(entity, path);
 		entity = configRepository.findName(DOWNLOAD_SIZE);
 		size = configInteger(entity, size);
-		entity = configRepository.findName(DOWNLOAD_BUFFER);
-		buffer = configInteger(entity, buffer);
-		entity = configRepository.findName(DOWNLOAD_MEMORY_BUFFER);
-		memoryBuffer = configInteger(entity, memoryBuffer);
 		entity = configRepository.findName(DOWNLOAD_NOTICE);
 		notice = configBoolean(entity, notice);
+		entity = configRepository.findName(DOWNLOAD_BUFFER);
+		buffer = configInteger(entity, buffer);
 		entity = configRepository.findName(DOWNLOAD_LAST_PATH);
 		lastPath = configString(entity, lastPath);
+		entity = configRepository.findName(DOWNLOAD_MEMORY_BUFFER);
+		memoryBuffer = configInteger(entity, memoryBuffer);
 	}
 	
 	/**
@@ -92,10 +89,10 @@ public class DownloadConfig extends PropertiesConfig {
 	private void logger() {
 		LOGGER.info("下载目录：{}", INSTANCE.path);
 		LOGGER.info("下载任务数量：{}", INSTANCE.size);
-		LOGGER.info("下载速度（单个）（KB）：{}", INSTANCE.buffer);
-		LOGGER.info("磁盘缓存（单个）（MB）：{}", INSTANCE.memoryBuffer);
 		LOGGER.info("消息提示：{}", INSTANCE.notice);
+		LOGGER.info("下载速度（单个）（KB）：{}", INSTANCE.buffer);
 		LOGGER.info("最后一次选择目录：{}", INSTANCE.lastPath);
+		LOGGER.info("磁盘缓存（单个）（MB）：{}", INSTANCE.memoryBuffer);
 	}
 	
 	/**
@@ -148,6 +145,22 @@ public class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
+	 * 设置消息提示
+	 */
+	public static final void setNotice(Boolean notice) {
+		ConfigRepository configRepository = new ConfigRepository();
+		INSTANCE.notice = notice;
+		configRepository.updateConfig(DOWNLOAD_NOTICE, String.valueOf(notice));
+	}
+
+	/**
+	 * 消息提示
+	 */
+	public static final Boolean getNotice() {
+		return INSTANCE.notice;
+	}
+	
+	/**
 	 * 设置下载速度（单个）（KB）
 	 */
 	public static final void setBuffer(Integer buffer) {
@@ -168,6 +181,22 @@ public class DownloadConfig extends PropertiesConfig {
 	 */
 	public static final Integer getBufferByte() {
 		return INSTANCE.buffer * 1024;
+	}
+	
+	/**
+	 * 设置最后一次选择目录
+	 */
+	public static final void setLastPath(String lastPath) {
+		ConfigRepository configRepository = new ConfigRepository();
+		INSTANCE.lastPath = lastPath;
+		configRepository.updateConfig(DOWNLOAD_LAST_PATH, lastPath);
+	}
+	
+	/**
+	 * 最后一次选择目录
+	 */
+	public static final String getLastPath() {
+		return INSTANCE.lastPath;
 	}
 	
 	/**
@@ -197,39 +226,7 @@ public class DownloadConfig extends PropertiesConfig {
 	 * 磁盘缓存（单个-Peer）（B）
 	 */
 	public static final Integer getPeerMemoryBufferByte() {
-		return INSTANCE.memoryBuffer * 1024 * 1024 / SystemConfig.getPeerDownloadSize();
-	}
-
-	/**
-	 * 设置消息提示
-	 */
-	public static final void setNotice(Boolean notice) {
-		ConfigRepository configRepository = new ConfigRepository();
-		INSTANCE.notice = notice;
-		configRepository.updateConfig(DOWNLOAD_NOTICE, String.valueOf(notice));
-	}
-
-	/**
-	 * 消息提示
-	 */
-	public static final Boolean getNotice() {
-		return INSTANCE.notice;
-	}
-		
-	/**
-	 * 设置最后一次选择目录
-	 */
-	public static final void setLastPath(String lastPath) {
-		ConfigRepository configRepository = new ConfigRepository();
-		INSTANCE.lastPath = lastPath;
-		configRepository.updateConfig(DOWNLOAD_LAST_PATH, lastPath);
-	}
-	
-	/**
-	 * 最后一次选择目录
-	 */
-	public static final String getLastPath() {
-		return INSTANCE.lastPath;
+		return INSTANCE.memoryBuffer * 1024 * 1024 / SystemConfig.getPeerSize();
 	}
 
 	/**
@@ -243,26 +240,6 @@ public class DownloadConfig extends PropertiesConfig {
 			file = new File(INSTANCE.lastPath);
 		}
 		return file;
-	}
-	
-	/**
-	 * 最后一次选择目录
-	 */
-	public static final void lastPath(FileChooser chooser) {
-		File file = lastPath();
-		if(file != null && file.exists()) {
-			chooser.setInitialDirectory(file);
-		}
-	}
-	
-	/**
-	 * 最后一次选择目录
-	 */
-	public static final void lastPath(DirectoryChooser chooser) {
-		File file = lastPath();
-		if(file != null && file.exists()) {
-			chooser.setInitialDirectory(file);
-		}
 	}
 	
 }

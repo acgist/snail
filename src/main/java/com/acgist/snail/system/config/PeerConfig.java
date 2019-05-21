@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Peer终端名称
+ * Peer终端名称：
  * Azureus-style：-名称（2）+版本（4）-随机数
  * Shadow's-style：名称（1）+版本（4）----随机数
  * http://www.bittorrent.org/beps/bep_0020.html
@@ -32,15 +32,19 @@ public class PeerConfig {
 	public static final byte EXTENSION_PROTOCOL = 1 << 4; // 0x10
 //	public static final byte PEER_EXCHANGE = 1 << 1; // 0x02
 	
-	public static final int HANDSHAKE_LENGTH = 68;
-	public static final String HANDSHAKE_NAME = "BitTorrent protocol"; // 协议名称
-	public static final byte[] HANDSHAKE_NAME_BYTES = HANDSHAKE_NAME.getBytes();
-	
 	static {
 		HANDSHAKE_RESERVED[5] |= EXTENSION_PROTOCOL; // Extension Protocol
 		HANDSHAKE_RESERVED[7] |= DHT_PROTOCOL; // DHT Protocol
 //		HANDSHAKE_RESERVED[7] |= PEER_EXCHANGE; // Peer Exchange
 	}
+	
+	/**
+	 * Peer握手消息长度
+	 */
+	public static final int HANDSHAKE_LENGTH = 68;
+	
+	public static final String HANDSHAKE_NAME = "BitTorrent protocol"; // 协议名称
+	public static final byte[] HANDSHAKE_NAME_BYTES = HANDSHAKE_NAME.getBytes();
 	
 	/**
 	 * Peer来源
@@ -51,7 +55,7 @@ public class PeerConfig {
 	public static final byte SOURCE_CONNECT = 1 << 3; // 客户端连接
 	
 	/**
-	 * 状态
+	 * Peer状态
 	 */
 	public static final byte STATUS_UPLOAD = 1 << 1; // 上传
 	public static final byte STATUS_DOWNLOAD = 1 << 0; // 下载
@@ -65,6 +69,9 @@ public class PeerConfig {
 	public static final byte PEX_HOLEPUNCH = 1 << 3; // 0x8：支持holepunch协议
 	public static final byte PEX_OUTGO = 1 << 4; // 0x10
 	
+	/**
+	 * Peer客户端名称
+	 */
 	private static final Map<String, String> PEER_NAMES = new HashMap<>();
 
 	static {
@@ -137,6 +144,7 @@ public class PeerConfig {
 	
 	/**
 	 * 获取终端类型
+	 * 
 	 * @param peerId 客户端ID
 	 */
 	public static final String name(byte[] peerId) {

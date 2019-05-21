@@ -92,6 +92,7 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends UdpSender {
 	public void join(String group) {
 		try {
 			this.channel.setOption(StandardSocketOptions.IP_MULTICAST_TTL, 2);
+			this.channel.setOption(StandardSocketOptions.IP_MULTICAST_LOOP, true);
 			this.channel.join(InetAddress.getByName(group), NetUtils.defaultNetworkInterface());
 		} catch (IOException e) {
 			LOGGER.info("UDP多播异常：{}", group, e);

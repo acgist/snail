@@ -53,7 +53,7 @@ public class DatabaseConfig extends PropertiesConfig {
 		LOGGER.info("数据库驱动：{}", INSTANCE.driver);
 		LOGGER.info("数据库用户：{}", INSTANCE.user);
 		LOGGER.info("数据库密码：{}", INSTANCE.password);
-		LOGGER.info("数据库建表语句：{}", INSTANCE.tableSQL);
+		LOGGER.info("数据库初始化语句：{}", INSTANCE.tableSQL);
 	}
 	
 	/**

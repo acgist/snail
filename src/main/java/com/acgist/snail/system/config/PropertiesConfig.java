@@ -13,6 +13,7 @@ public abstract class PropertiesConfig {
 
 	/**
 	 * 初始化配置文件
+	 * 
 	 * @param file 配置文件
 	 */
 	public PropertiesConfig(String file) {
@@ -21,6 +22,7 @@ public abstract class PropertiesConfig {
 	
 	/**
 	 * 初始化配置文件
+	 * 
 	 * @param file 优先配置文件
 	 * @param backFile 候选配置文件，如果优先配置文件加载失败使用
 	 */
@@ -29,6 +31,10 @@ public abstract class PropertiesConfig {
 		if(!this.properties.haveProperties()) {
 			this.properties = PropertiesUtils.getInstance(backFile);
 		}
+	}
+	
+	protected String getString(String key) {
+		return properties.getString(key);
 	}
 
 	protected Boolean getBoolean(String key) {
@@ -39,8 +45,14 @@ public abstract class PropertiesConfig {
 		return properties.getInteger(key);
 	}
 	
-	protected String getString(String key) {
-		return properties.getString(key);
+	/**
+	 * 获取String配置
+	 */
+	protected String configString(ConfigEntity entity, String defaultValue) {
+		if(entity != null) {
+			return entity.getValue();
+		}
+		return defaultValue;
 	}
 	
 	/**
@@ -48,7 +60,7 @@ public abstract class PropertiesConfig {
 	 */
 	protected Boolean configBoolean(ConfigEntity entity, Boolean defaultValue) {
 		if(entity != null) {
-			String value = entity.getValue();
+			final String value = entity.getValue();
 			if(StringUtils.isNotEmpty(value)) {
 				return Boolean.valueOf(value);
 			}
@@ -61,20 +73,10 @@ public abstract class PropertiesConfig {
 	 */
 	protected Integer configInteger(ConfigEntity entity, Integer defaultValue) {
 		if(entity != null) {
-			String value = entity.getValue();
+			final String value = entity.getValue();
 			if(StringUtils.isNumeric(value)) {
 				return Integer.valueOf(value);
 			}
-		}
-		return defaultValue;
-	}
-	
-	/**
-	 * 获取String配置
-	 */
-	protected String configString(ConfigEntity entity, String defaultValue) {
-		if(entity != null) {
-			return entity.getValue();
 		}
 		return defaultValue;
 	}

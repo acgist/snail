@@ -31,7 +31,7 @@ public class UpnpService {
 	/**
 	 * 没有初始化
 	 */
-	public static final int USE_INIT = -2;
+	public static final int USE_NOT_INIT = -2;
 	/**
 	 * 不可用（已被注册）
 	 */
@@ -39,7 +39,7 @@ public class UpnpService {
 	/**
 	 * 可用（需要注册）
 	 */
-	public static final int USE_MAPPING = 0;
+	public static final int USE_MAPABLE = 0;
 	/**
 	 * 可用（已被注册）
 	 */
@@ -140,11 +140,11 @@ public class UpnpService {
 	 * <p>请求头：SOAPAction:"urn:schemas-upnp-org:service:WANIPConnection:1#GetSpecificPortMappingEntry"</p>
 	 * <p>如果没有映射：返回500错误代码</p>
 	 * 
-	 * @return {@link #USE_INIT}、{@link #USE_DISABLE}、{@link #USE_MAPPING}、{@link #USE_USEABLE}
+	 * @return {@link #USE_NOT_INIT}、{@link #USE_DISABLE}、{@link #USE_MAPABLE}、{@link #USE_USEABLE}
 	 */
 	public int getSpecificPortMappingEntry(int port, Protocol protocol) throws NetException {
 		if(!this.init) {
-			return USE_INIT;
+			return USE_NOT_INIT;
 		}
 		UpnpRequest upnpRequest = UpnpRequest.newRequest(this.serviceType);
 		String xml = upnpRequest.buildGetSpecificPortMappingEntry(port, protocol);
@@ -156,7 +156,7 @@ public class UpnpService {
 		var response = HTTPClient.request(client, request, BodyHandlers.ofString());
 		String body = response.body();
 		if(response.statusCode() == 500) {
-			return USE_MAPPING;
+			return USE_MAPABLE;
 		}
 		String registerIpAddress = UpnpResponse.parseGetSpecificPortMappingEntry(body);
 		final String ipAddress = NetUtils.inetHostAddress();
@@ -255,11 +255,14 @@ public class UpnpService {
 	 * 端口映射，如果端口被占用，端口+1继续映射。
 	 */
 	private void setPortMapping() throws NetException {
-		int uValue, tValue;
+		int uValue = USE_DISABLE, tValue;
 		int portExt = SystemConfig.getServicePort();
 		while(true) {
+			if(portExt >= NetUtils.MAX_PORT) {
+				break;
+			}
 			uValue = this.getSpecificPortMappingEntry(portExt, Protocol.UDP);
-			if(uValue == USE_INIT || uValue == USE_DISABLE) {
+			if(uValue == USE_NOT_INIT || uValue == USE_DISABLE) {
 				portExt++;
 				continue;
 			}
@@ -270,14 +273,14 @@ public class UpnpService {
 				portExt++;
 			}
 		}
-		if(uValue == USE_MAPPING) {
+		if(uValue == USE_MAPABLE) {
 			SystemConfig.setServicePortExt(portExt);
 			boolean dhtOk = this.addPortMapping(SystemConfig.getServicePort(), portExt, Protocol.UDP);
 			boolean peerOk = this.addPortMapping(SystemConfig.getServicePort(), portExt, Protocol.TCP);
-			LOGGER.info("端口映射：DHT（{}-{}-{}）、Peer（{}-{}-{}）", SystemConfig.getServicePort(), portExt, dhtOk, SystemConfig.getServicePort(), portExt, peerOk);
+			LOGGER.info("端口映射（注册）：DHT（{}-{}-{}）、Peer（{}-{}-{}）", SystemConfig.getServicePort(), portExt, dhtOk, SystemConfig.getServicePort(), portExt, peerOk);
 		} else if(uValue == USE_USEABLE) {
 			SystemConfig.setServicePortExt(portExt);
-			LOGGER.info("端口映射：DHT（{}-{}-{}）、Peer（{}-{}-{}）", SystemConfig.getServicePort(), portExt, true, SystemConfig.getServicePort(), portExt, true);
+			LOGGER.info("端口映射（可用）：DHT（{}-{}-{}）、Peer（{}-{}-{}）", SystemConfig.getServicePort(), portExt, true, SystemConfig.getServicePort(), portExt, true);
 		} else {
 			LOGGER.error("端口映射失败");
 		}

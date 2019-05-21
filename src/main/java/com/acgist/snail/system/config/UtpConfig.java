@@ -18,7 +18,7 @@ public class UtpConfig {
 	public static final byte ST_SYN = 4;
 	
 	/**
-	 * 
+	 * 版本
 	 */
 	public static final byte UTP_VERSION = 1;
 	
