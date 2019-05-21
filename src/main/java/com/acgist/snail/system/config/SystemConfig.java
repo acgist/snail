@@ -59,6 +59,7 @@ public class SystemConfig extends PropertiesConfig {
 	private String support; // 支持
 	private Integer serverPort; // 服务端口
 	private Integer servicePort; // 服务端口（Peer、DHT、UTP）
+	private Integer servicePortExt; // 服务端口（外网：Peer、DHT、UTP）
 	private Integer trackerSize; // 单个任务Tracker数量
 	private Integer peerSize; // 单个任务Peer数量
 	private Integer pexInterval; // PEX执行周期（秒）
@@ -166,10 +167,28 @@ public class SystemConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 服务端口（Peer、DHT、UTP）：short
+	 * 设置服务端口（外网：Peer、DHT、UTP）
 	 */
-	public static final Short getServicePortShort() {
-		return NetUtils.encodePort(getServicePort());
+	public static final void setServicePortExt(Integer servicePortExt) {
+		LOGGER.info("服务端口（外网：Peer、DHT、UTP）：{}", servicePortExt);
+		INSTANCE.servicePortExt = servicePortExt;
+	}
+	
+	/**
+	 * 服务端口（外网：Peer、DHT、UTP），如果不存在返回本机端口。
+	 */
+	public static final Integer getServicePortExt() {
+		if(INSTANCE.servicePortExt == null) {
+			return getServicePort();
+		}
+		return INSTANCE.servicePortExt;
+	}
+	
+	/**
+	 * 服务端口（外网：Peer、DHT、UTP）：short
+	 */
+	public static final Short getServicePortExtShort() {
+		return NetUtils.encodePort(getServicePortExt());
 	}
 
 	/**

@@ -13,6 +13,7 @@ import com.acgist.snail.pojo.bean.HttpTracker;
 import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.bcode.BCodeDecoder;
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.config.TrackerConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.system.manager.TrackerManager;
@@ -107,8 +108,8 @@ public class HttpTrackerClient extends TrackerClient {
 		final StringBuilder builder = new StringBuilder(this.announceUrl);
 		builder.append("?")
 		.append("info_hash").append("=").append(torrentSession.infoHash().infoHashURL()).append("&") // 种子HASH
-		.append("peer_id").append("=").append(PeerService.getInstance().peerId()).append("&") // 客户端ID
-		.append("port").append("=").append(PeerService.getInstance().peerPort()).append("&") // 客户端监听端口
+		.append("peer_id").append("=").append(PeerService.getInstance().peerId()).append("&") // PeerID
+		.append("port").append("=").append(SystemConfig.getServicePortExtShort()).append("&") // 外网Peer端口
 		.append("uploaded").append("=").append(upload).append("&") // 已上传大小
 		.append("downloaded").append("=").append(download).append("&") // 已下载大小
 		.append("left").append("=").append(remain).append("&") // 剩余下载大小

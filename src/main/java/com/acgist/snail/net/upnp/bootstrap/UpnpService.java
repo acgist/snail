@@ -17,7 +17,8 @@ import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.XMLUtils;
 
 /**
- * UPNP Service
+ * <p>UPNP Service</p>
+ * <p>端口映射，将内网的端口映射到外网中。如果外网端口已经被映射，需要设置新的映射端口。</p>
  * TODO：多路由环境获取IP
  * 
  * @author acgist
@@ -26,6 +27,23 @@ import com.acgist.snail.utils.XMLUtils;
 public class UpnpService {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UpnpService.class);
+	
+	/**
+	 * 没有初始化
+	 */
+	public static final int USE_INIT = -2;
+	/**
+	 * 不可用（已被注册）
+	 */
+	public static final int USE_DISABLE = -1;
+	/**
+	 * 可用（需要注册）
+	 */
+	public static final int USE_MAPPING = 0;
+	/**
+	 * 可用（已被注册）
+	 */
+	public static final int USE_USEABLE = 1;
 	
 	/**
 	 * 控制类型
@@ -86,7 +104,7 @@ public class UpnpService {
 				break;
 			}
 		}
-		init = true;
+		this.init = true;
 		return this;
 	}
 
@@ -102,14 +120,14 @@ public class UpnpService {
 	 * <p>请求头：SOAPAction:"urn:schemas-upnp-org:service:WANIPConnection:1#GetExternalIPAddress"</p>
 	 */
 	public String getExternalIPAddress() throws NetException {
-		if(!init) {
+		if(!this.init) {
 			return null;
 		}
-		UpnpRequest upnpRequest = UpnpRequest.newRequest(serviceType);
+		UpnpRequest upnpRequest = UpnpRequest.newRequest(this.serviceType);
 		String xml = upnpRequest.buildGetExternalIPAddress();
 		var client = HTTPClient.newClient();
-		var request = HTTPClient.newRequest(controlURL)
-			.header("SOAPAction", "\"" + serviceType + "#GetExternalIPAddress\"")
+		var request = HTTPClient.newRequest(this.controlURL)
+			.header("SOAPAction", "\"" + this.serviceType + "#GetExternalIPAddress\"")
 			.POST(BodyPublishers.ofString(xml))
 			.build();
 		var response = HTTPClient.request(client, request, BodyHandlers.ofString());
@@ -122,30 +140,30 @@ public class UpnpService {
 	 * <p>请求头：SOAPAction:"urn:schemas-upnp-org:service:WANIPConnection:1#GetSpecificPortMappingEntry"</p>
 	 * <p>如果没有映射：返回500错误代码</p>
 	 * 
-	 * @return -2=未被初始化；-1=不可用（已被注册）；0-可用（未被注册）；1-可用（自己注册）
+	 * @return {@link #USE_INIT}、{@link #USE_DISABLE}、{@link #USE_MAPPING}、{@link #USE_USEABLE}
 	 */
 	public int getSpecificPortMappingEntry(int port, Protocol protocol) throws NetException {
-		if(!init) {
-			return -2;
+		if(!this.init) {
+			return USE_INIT;
 		}
-		UpnpRequest upnpRequest = UpnpRequest.newRequest(serviceType);
+		UpnpRequest upnpRequest = UpnpRequest.newRequest(this.serviceType);
 		String xml = upnpRequest.buildGetSpecificPortMappingEntry(port, protocol);
 		var client = HTTPClient.newClient();
-		var request = HTTPClient.newRequest(controlURL)
-			.header("SOAPAction", "\"" + serviceType + "#GetSpecificPortMappingEntry\"")
+		var request = HTTPClient.newRequest(this.controlURL)
+			.header("SOAPAction", "\"" + this.serviceType + "#GetSpecificPortMappingEntry\"")
 			.POST(BodyPublishers.ofString(xml))
 			.build();
 		var response = HTTPClient.request(client, request, BodyHandlers.ofString());
 		String body = response.body();
 		if(response.statusCode() == 500) {
-			return 0;
+			return USE_MAPPING;
 		}
 		String registerIpAddress = UpnpResponse.parseGetSpecificPortMappingEntry(body);
 		final String ipAddress = NetUtils.inetHostAddress();
 		if(ipAddress.equals(registerIpAddress)) {
-			return 1;
+			return USE_USEABLE;
 		} else {
-			return -1;
+			return USE_DISABLE;
 		}
 	}
 	
@@ -153,15 +171,16 @@ public class UpnpService {
 	 * <p>添加端口映射：AddPortMapping</p>
 	 * <p>请求头：SOAPAction:"urn:schemas-upnp-org:service:WANIPConnection:1#AddPortMapping"</p>
 	 */
-	public boolean addPortMapping(int port, String address, Protocol protocol) throws NetException {
-		if(!init) {
+	public boolean addPortMapping(int port, int portExt, Protocol protocol) throws NetException {
+		if(!this.init) {
 			return false;
 		}
-		UpnpRequest upnpRequest = UpnpRequest.newRequest(serviceType);
-		String xml = upnpRequest.buildAddPortMapping(port, address, protocol);
+		final String address = NetUtils.inetHostAddress();
+		UpnpRequest upnpRequest = UpnpRequest.newRequest(this.serviceType);
+		String xml = upnpRequest.buildAddPortMapping(port, address, portExt, protocol);
 		var client = HTTPClient.newClient();
-		var request = HTTPClient.newRequest(controlURL)
-			.header("SOAPAction", "\"" + serviceType + "#AddPortMapping\"")
+		var request = HTTPClient.newRequest(this.controlURL)
+			.header("SOAPAction", "\"" + this.serviceType + "#AddPortMapping\"")
 			.POST(BodyPublishers.ofString(xml))
 			.build();
 		var response = HTTPClient.request(client, request, BodyHandlers.ofString());
@@ -173,14 +192,14 @@ public class UpnpService {
 	 * <p>请求头：SOAPAction:"urn:schemas-upnp-org:service:WANIPConnection:1#DeletePortMapping"</p>
 	 */
 	public boolean deletePortMapping(int port, Protocol protocol) throws NetException {
-		if(!init) {
+		if(!this.init) {
 			return false;
 		}
-		UpnpRequest upnpRequest = UpnpRequest.newRequest(serviceType);
+		UpnpRequest upnpRequest = UpnpRequest.newRequest(this.serviceType);
 		String xml = upnpRequest.buildDeletePortMapping(port, protocol);
 		var client = HTTPClient.newClient();
-		var request = HTTPClient.newRequest(controlURL)
-			.header("SOAPAction", "\"" + serviceType + "#DeletePortMapping\"")
+		var request = HTTPClient.newRequest(this.controlURL)
+			.header("SOAPAction", "\"" + this.serviceType + "#DeletePortMapping\"")
 			.POST(BodyPublishers.ofString(xml))
 			.build();
 		var response = HTTPClient.request(client, request, BodyHandlers.ofString());
@@ -191,6 +210,9 @@ public class UpnpService {
 	 * 设置：本机IP，端口绑定等操作
 	 */
 	public void setting() throws NetException {
+		if(!this.init) {
+			return;
+		}
 		setPortMapping();
 		setExternalIpAddress();
 	}
@@ -199,9 +221,12 @@ public class UpnpService {
 	 * 端口释放
 	 */
 	public void release() {
+		if(!this.init) {
+			return;
+		}
 		try {
-			boolean dhtOk = this.deletePortMapping(SystemConfig.getServicePort(), Protocol.UDP);
-			boolean peerOk = this.deletePortMapping(SystemConfig.getServicePort(), Protocol.TCP);
+			boolean dhtOk = this.deletePortMapping(SystemConfig.getServicePortExt(), Protocol.UDP);
+			boolean peerOk = this.deletePortMapping(SystemConfig.getServicePortExt(), Protocol.TCP);
 			LOGGER.info("端口释放：DHT：{}、Peer：{}", dhtOk, peerOk);
 		} catch (NetException e) {
 			LOGGER.error("释放UPNP端口异常", e);
@@ -227,17 +252,35 @@ public class UpnpService {
 	}
 	
 	/**
-	 * 端口映射
-	 * TODO：已经被映射时，端口++
+	 * 端口映射，如果端口被占用，端口+1继续映射。
 	 */
 	private void setPortMapping() throws NetException {
-		if(!init) {
-			return;
+		int uValue, tValue;
+		int portExt = SystemConfig.getServicePort();
+		while(true) {
+			uValue = this.getSpecificPortMappingEntry(portExt, Protocol.UDP);
+			if(uValue == USE_INIT || uValue == USE_DISABLE) {
+				portExt++;
+				continue;
+			}
+			tValue = this.getSpecificPortMappingEntry(portExt, Protocol.TCP);
+			if(uValue == tValue) {
+				break;
+			} else {
+				portExt++;
+			}
 		}
-		final String ipAddress = NetUtils.inetHostAddress();
-		boolean dhtOk = this.addPortMapping(SystemConfig.getServicePort(), ipAddress, Protocol.UDP);
-		boolean peerOk = this.addPortMapping(SystemConfig.getServicePort(), ipAddress, Protocol.TCP);
-		LOGGER.info("端口映射：DHT（{}-{}）、Peer（{}-{}）", SystemConfig.getServicePort(), dhtOk, SystemConfig.getServicePort(), peerOk);
+		if(uValue == USE_MAPPING) {
+			SystemConfig.setServicePortExt(portExt);
+			boolean dhtOk = this.addPortMapping(SystemConfig.getServicePort(), portExt, Protocol.UDP);
+			boolean peerOk = this.addPortMapping(SystemConfig.getServicePort(), portExt, Protocol.TCP);
+			LOGGER.info("端口映射：DHT（{}-{}-{}）、Peer（{}-{}-{}）", SystemConfig.getServicePort(), portExt, dhtOk, SystemConfig.getServicePort(), portExt, peerOk);
+		} else if(tValue == USE_USEABLE) {
+			SystemConfig.setServicePortExt(portExt);
+			LOGGER.info("端口映射：DHT（{}-{}-{}）、Peer（{}-{}-{}）", SystemConfig.getServicePort(), portExt, true, SystemConfig.getServicePort(), portExt, true);
+		} else {
+			LOGGER.error("端口映射失败");
+		}
 	}
 	
 	/**

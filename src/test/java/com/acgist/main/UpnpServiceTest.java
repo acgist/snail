@@ -5,7 +5,6 @@ import org.junit.Test;
 import com.acgist.snail.net.upnp.bootstrap.UpnpService;
 import com.acgist.snail.net.upnp.bootstrap.UpnpService.Protocol;
 import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.utils.NetUtils;
 
 /**
  * serviceUrl通过UPNPClient获取
@@ -29,7 +28,7 @@ public class UpnpServiceTest {
 	@Test
 	public void addPortMapping() throws NetException {
 		UpnpService.getInstance().load(serviceUrl);
-		System.out.println(UpnpService.getInstance().addPortMapping(17888, NetUtils.inetHostAddress(), Protocol.TCP));
+		System.out.println(UpnpService.getInstance().addPortMapping(17888, 18888, Protocol.TCP));
 	}
 
 	@Test
