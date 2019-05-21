@@ -161,6 +161,7 @@ public class SystemConfig extends PropertiesConfig {
 
 	/**
 	 * 服务端口（Peer、DHT、UTP）
+	 * 本机注册使用
 	 */
 	public static final Integer getServicePort() {
 		return INSTANCE.servicePort;
@@ -175,7 +176,9 @@ public class SystemConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 服务端口（外网：Peer、DHT、UTP），如果不存在返回本机端口。
+	 * 服务端口（外网：Peer、DHT、UTP）
+	 * 外网使用，外网的Peer连接此端口。
+	 * 如果不存在返回{@linkplain #getServicePort() 本机端口}。
 	 */
 	public static final Integer getServicePortExt() {
 		if(INSTANCE.servicePortExt == null) {

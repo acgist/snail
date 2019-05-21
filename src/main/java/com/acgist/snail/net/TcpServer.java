@@ -69,11 +69,11 @@ public abstract class TcpServer {
 	 * 开启监听
 	 */
 	protected <T extends TcpMessageHandler> boolean listen(String host, int port, Class<T> clazz) {
-		LOGGER.info("启动服务端：{}", name);
+		LOGGER.info("启动服务端：{}", this.name);
 		boolean ok = true;
 		try {
-			server = AsynchronousServerSocketChannel.open(GROUP).bind(NetUtils.buildSocketAddress(host, port));
-			server.accept(server, TcpAcceptHandler.newInstance(clazz));
+			this.server = AsynchronousServerSocketChannel.open(GROUP).bind(NetUtils.buildSocketAddress(host, port));
+			this.server.accept(this.server, TcpAcceptHandler.newInstance(clazz));
 		} catch (Exception e) {
 			ok = false;
 			LOGGER.error("TCP Server启动异常：{}", this.name, e);
@@ -90,8 +90,8 @@ public abstract class TcpServer {
 	 * 关闭资源
 	 */
 	public void close() {
-		LOGGER.info("TCP Server关闭：{}", name);
-		IoUtils.close(server);
+		LOGGER.info("TCP Server关闭：{}", this.name);
+		IoUtils.close(this.server);
 	}
 	
 	/**
