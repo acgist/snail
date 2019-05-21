@@ -25,13 +25,13 @@ public class UpnpMessageHandler extends UdpMessageHandler {
 	@Override
 	public void onMessage(ByteBuffer buffer, InetSocketAddress address) {
 		final String content = new String(buffer.array());
-		this.configUpnp(content);
+		this.config(content);
 	}
 	
 	/**
 	 * 配置UPNP
 	 */
-	private void configUpnp(String content) {
+	private void config(String content) {
 		final String[] headers = content.split("\n");
 		for (String header : headers) {
 			if(header.toLowerCase().startsWith(HEADER_LOCATION)) {

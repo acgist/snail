@@ -7,7 +7,6 @@ import com.acgist.snail.utils.NetUtils;
 
 /**
  * 系统配置
- * TODO：UPNP映射端口时，如果已经映射需要修改端口
  */
 public class SystemConfig extends PropertiesConfig {
 
@@ -54,19 +53,22 @@ public class SystemConfig extends PropertiesConfig {
 	private String name; // 名称
 	private String nameEn; // 英文名称
 	private String version; // 版本
+	
 	private String author; // 作者
 	private String source; // 源码
 	private String support; // 支持
+	
 	private Integer serverPort; // 服务端口
 	private Integer servicePort; // 服务端口（Peer、DHT、UTP）
 	private Integer servicePortExt; // 服务端口（外网：Peer、DHT、UTP）
-	private Integer trackerSize; // 单个任务Tracker数量
+	
 	private Integer peerSize; // 单个任务Peer数量
-	private Integer pexInterval; // PEX执行周期（秒）
-	private Integer dhtInterval; // DHT执行周期（秒）
-	private Integer peerOptimizeInterval; // 单个任务Peer优化周期（秒）
-	private Integer peerDownloadSize; // 同时下载的Peer数量
+	private Integer trackerSize; // 单个任务Tracker数量
 	private Integer pieceRepeatSize; // 任务即将完成时可以重复选择下载的剩下Piece数量
+	
+	private Integer dhtInterval; // DHT执行周期（秒）
+	private Integer pexInterval; // PEX执行周期（秒）
+	private Integer peerOptimizeInterval; // 单个任务Peer优化周期（秒）
 
 	/**
 	 * 初始化
@@ -80,13 +82,12 @@ public class SystemConfig extends PropertiesConfig {
 		INSTANCE.support = getString("acgist.system.support");
 		INSTANCE.serverPort = getInteger("acgist.server.port");
 		INSTANCE.servicePort = getInteger("acgist.service.port");
-		INSTANCE.trackerSize = getInteger("acgist.tracker.size");
 		INSTANCE.peerSize = getInteger("acgist.peer.size");
-		INSTANCE.pexInterval = getInteger("acgist.pex.interval");
-		INSTANCE.dhtInterval = getInteger("acgist.dht.interval");
-		INSTANCE.peerOptimizeInterval = getInteger("acgist.peer.optimize.interval");
-		INSTANCE.peerDownloadSize = getInteger("acgist.peer.download.size");
+		INSTANCE.trackerSize = getInteger("acgist.tracker.size");
 		INSTANCE.pieceRepeatSize = getInteger("acgist.piece.repeat.size");
+		INSTANCE.dhtInterval = getInteger("acgist.dht.interval");
+		INSTANCE.pexInterval = getInteger("acgist.pex.interval");
+		INSTANCE.peerOptimizeInterval = getInteger("acgist.peer.optimize.interval");
 	}
 
 	/**
@@ -101,13 +102,12 @@ public class SystemConfig extends PropertiesConfig {
 		LOGGER.info("支持：{}", this.support);
 		LOGGER.info("系统端口：{}", this.serverPort);
 		LOGGER.info("服务端口（Peer、DHT、UTP）：{}", this.servicePort);
-		LOGGER.info("单个任务Tracker数量：{}", this.trackerSize);
 		LOGGER.info("单个任务Peer数量：{}", this.peerSize);
-		LOGGER.info("PEX执行周期（秒）：{}", this.pexInterval);
-		LOGGER.info("DHT执行周期（秒）：{}", this.dhtInterval);
-		LOGGER.info("单个任务Peer优化周期（秒）：{}", this.peerOptimizeInterval);
-		LOGGER.info("同时下载的Peer数量：{}", this.peerDownloadSize);
+		LOGGER.info("单个任务Tracker数量：{}", this.trackerSize);
 		LOGGER.info("任务即将完成时可以重复选择下载的剩下Piece数量：{}", this.pieceRepeatSize);
+		LOGGER.info("DHT执行周期（秒）：{}", this.dhtInterval);
+		LOGGER.info("PEX执行周期（秒）：{}", this.pexInterval);
+		LOGGER.info("单个任务Peer优化周期（秒）：{}", this.peerOptimizeInterval);
 	}
 	
 	/**
@@ -192,13 +192,6 @@ public class SystemConfig extends PropertiesConfig {
 	}
 
 	/**
-	 * 单个任务tracker数量
-	 */
-	public static final Integer getTrackerSize() {
-		return INSTANCE.trackerSize;
-	}
-	
-	/**
 	 * 单个任务Peer数量
 	 */
 	public static final Integer getPeerSize() {
@@ -206,10 +199,31 @@ public class SystemConfig extends PropertiesConfig {
 	}
 	
 	/**
+	 * 单个任务tracker数量
+	 */
+	public static final Integer getTrackerSize() {
+		return INSTANCE.trackerSize;
+	}
+
+	/**
+	 * 任务即将完成时可以重复选择下载的剩下Piece数量
+	 */
+	public static final Integer getPieceRepeatSize() {
+		return INSTANCE.pieceRepeatSize;
+	}
+
+	/**
 	 * PEX执行周期（秒）
 	 */
 	public static final Integer getPexInterval() {
 		return INSTANCE.pexInterval;
+	}
+	
+	/**
+	 * 单个任务Peer优化周期
+	 */
+	public static final Integer getPeerOptimizeInterval() {
+		return INSTANCE.peerOptimizeInterval;
 	}
 	
 	/**
@@ -219,27 +233,6 @@ public class SystemConfig extends PropertiesConfig {
 		return INSTANCE.dhtInterval;
 	}
 
-	/**
-	 * 单个任务Peer优化周期
-	 */
-	public static final Integer getPeerOptimizeInterval() {
-		return INSTANCE.peerOptimizeInterval;
-	}
-
-	/**
-	 * 同时下载的Peer数量
-	 */
-	public static final Integer getPeerDownloadSize() {
-		return INSTANCE.peerDownloadSize;
-	}
-	
-	/**
-	 * 任务即将完成时可以重复选择下载的剩下Piece数量
-	 */
-	public static final Integer getPieceRepeatSize() {
-		return INSTANCE.pieceRepeatSize;
-	}
-	
 	/**
 	 * 获取名称和版本信息："名称 版本"
 	 */

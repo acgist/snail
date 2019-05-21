@@ -21,6 +21,8 @@ public class NetUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(NetUtils.class);
 	
+	public static final int MAX_PORT = 2 << 15;
+	
 	public static final String LOCAL_IP = "127.0.0.1";
 	public static final String LOCAL_HOST = "localhost";
 	

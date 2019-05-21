@@ -23,7 +23,13 @@ public class FileTypeConfig {
 		install("安装包", "install.png"),
 		unknown("未知", "unknown.png");
 		
+		/**
+		 * 文件类型名称
+		 */
 		private String value;
+		/**
+		 * 文件类型图表
+		 */
 		private String icon;
 
 		private FileType(String value, String icon) {

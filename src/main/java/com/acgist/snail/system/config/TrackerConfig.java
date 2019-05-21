@@ -70,6 +70,7 @@ public class TrackerConfig extends PropertiesConfig {
 	}
 	
 	static {
+		LOGGER.info("初始化Tracker配置");
 		INSTANCE.init();
 	}
 	

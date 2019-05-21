@@ -31,7 +31,7 @@ public class Choosers {
 	public static final File chooseFile(Window window, String title, String description, String ... filters) {
 		final FileChooser chooser = new FileChooser();
 		chooser.setTitle(title);
-		DownloadConfig.lastPath(chooser);
+		lastPath(chooser);
 		chooser.getExtensionFilters().add(new ExtensionFilter(description, filters));
 		final File file = chooser.showOpenDialog(window);
 		if (file != null) {
@@ -51,12 +51,32 @@ public class Choosers {
 	public static final File chooseDirectory(Window window, String title) {
 		final DirectoryChooser chooser = new DirectoryChooser();
 		chooser.setTitle(title);
-		DownloadConfig.lastPath(chooser);
+		lastPath(chooser);
 		final File file = chooser.showDialog(window);
 		if (file != null) {
 			DownloadConfig.setLastPath(file.getPath());
 		}
 		return file;
+	}
+	
+	/**
+	 * 最后一次选择目录
+	 */
+	private static final void lastPath(FileChooser chooser) {
+		final File file = DownloadConfig.lastPath();
+		if(file != null && file.exists()) {
+			chooser.setInitialDirectory(file);
+		}
+	}
+	
+	/**
+	 * 最后一次选择目录
+	 */
+	private static final void lastPath(DirectoryChooser chooser) {
+		final File file = DownloadConfig.lastPath();
+		if(file != null && file.exists()) {
+			chooser.setInitialDirectory(file);
+		}
 	}
 	
 }
