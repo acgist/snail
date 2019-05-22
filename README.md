@@ -89,5 +89,11 @@ Windows直接点击SnailLauncher.exe即可运行。
 
 > 执行程序和jar、lib、java必须处于同一个目录
 
+## 依赖
+
+数据库：[h2](http://www.h2database.com)
+
+日志框架：[slf4j](https://www.slf4j.org/)、[logback](https://logback.qos.ch/)
+
 ## 下载界面
 ![下载界面](http://files.git.oschina.net/group1/M00/07/B8/PaAvDFzd9lCAUSXEAAB8UcH2axw194.png "下载界面")
