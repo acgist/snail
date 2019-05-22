@@ -70,6 +70,20 @@ public class ObjectUtils {
 		return builder.toString();
 	}
 	
+	public static final String toString(Object object, Object ... values) {
+		final StringBuilder builder = new StringBuilder();
+			builder.append(object.getClass());
+			builder.append("=[");
+			if(values.length > 0) {
+			for (Object value : values) {
+				builder.append(value).append(",");
+			}
+			builder.setLength(builder.length() - 1);
+			}
+			builder.append("]");
+		return builder.toString();
+	}
+	
 	/**
 	 * toString，必须属性提供对应的get方法。
 	 */

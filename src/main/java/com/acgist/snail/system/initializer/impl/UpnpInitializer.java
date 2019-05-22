@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.upnp.UpnpClient;
+import com.acgist.snail.net.upnp.UpnpServer;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.initializer.Initializer;
 
@@ -25,9 +26,11 @@ public class UpnpInitializer extends Initializer {
 	
 	@Override
 	protected void init() {
+		LOGGER.info("初始化UPNP Server");
+		UpnpServer.getInstance();
 		LOGGER.info("初始化UPNP配置");
 		SystemThreadContext.timer(0, 30, TimeUnit.MINUTES, () -> {
-			UpnpClient.getInstance().config();
+			UpnpClient.newInstance().config();
 		});
 	}
 

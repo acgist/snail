@@ -90,7 +90,7 @@ public class NodeSession implements Comparable<NodeSession> {
 	
 	@Override
 	public String toString() {
-		return ObjectUtils.toString(this);
+		return ObjectUtils.toString(this, this.id, this.host, this.port);
 	}
 
 	@Override

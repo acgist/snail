@@ -2,14 +2,15 @@ package com.acgist.snail.net;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.StandardSocketOptions;
+import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
-import java.util.concurrent.ExecutorService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.system.context.SystemThreadContext;
+import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -39,25 +40,27 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends UdpSender {
 	 */
 	private final String name;
 	
+	/**
+	 * 请求地址
+	 */
+	protected final InetSocketAddress address;
+	
+	/**
+	 * 消息代理
+	 */
 	protected final T handler;
 	
-	private static final ExecutorService EXECUTOR;
-	
-	static {
-		EXECUTOR = SystemThreadContext.newCacheExecutor(SystemThreadContext.SNAIL_THREAD_UDP_CLIENT);
-	}
-	
-	public UdpClient(String name, T handler) {
+	public UdpClient(String name, T handler, InetSocketAddress address) {
 		this.name = name;
 		this.handler = handler;
+		this.address = address;
+		this.open();
 	}
 
 	/**
 	 * 打开客户端，随机端口
 	 */
-	public boolean open() {
-		return this.open(-1);
-	}
+	public abstract boolean open();
 	
 	/**
 	 * 打开客户端
@@ -99,9 +102,22 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends UdpSender {
 		}
 	}
 	
+	protected void send(final String message) throws NetException {
+		this.send(message, this.address);
+	}
+	
+	protected void send(byte[] bytes) throws NetException {
+		this.send(bytes, this.address);
+	}
+	
+	public void send(ByteBuffer buffer) throws NetException {
+		this.send(buffer, this.address);
+	}
+	
 	/**
-	 * 关闭channel，所有的UDP通道都是单例，系统关闭时调用
+	 * 关闭channel，所有的UDP通道都是单例，系统关闭时调用。调用UdpServer.close()。
 	 */
+	@Deprecated
 	public void close() {
 		LOGGER.debug("UDP Client关闭：{}", this.name);
 		IoUtils.close(this.channel);
@@ -114,26 +130,4 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends UdpSender {
 		return StringUtils.regex(url, UDP_REGEX, true);
 	}
 
-	/**
-	 * 绑定消息处理
-	 */
-	public static final <T extends UdpMessageHandler> void bindServerHandler(final T handler, final DatagramChannel channel) {
-		EXECUTOR.submit(() -> {
-			try {
-				handler.handle(channel);
-				handler.loopMessage();
-			} catch (IOException e) {
-				LOGGER.error("UDP消息代理异常", e);
-			}
-		});
-	}
-	
-	/**
-	 * 关闭Client线程池
-	 */
-	public static final void shutdown() {
-		LOGGER.info("关闭UDP Client线程池");
-		SystemThreadContext.shutdown(EXECUTOR);
-	}
-	
 }

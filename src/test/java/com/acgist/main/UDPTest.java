@@ -16,13 +16,21 @@ public class UDPTest {
 	@Test
 	public void client() {
 		final int port = 18888;
+		InetSocketAddress address = new InetSocketAddress("127.0.0.1", port);
 		DatagramChannel channel = NetUtils.buildUdpChannel(port);
 		UdpTestMessageHandler handler = new UdpTestMessageHandler();
-		UdpClient.bindServerHandler(handler, channel);
-		UdpClient<UdpTestMessageHandler> client = new UdpClient<UdpTestMessageHandler>("TestClient", handler) {
+		UdpClient<UdpTestMessageHandler> client = new UdpClient<UdpTestMessageHandler>("TestClient", handler, address) {
+			@Override
+			public boolean open() {
+				return this.open(channel);
+			}
 		};
 		client.open(channel);
-		UdpClient<UdpTestMessageHandler> clients = new UdpClient<UdpTestMessageHandler>("TestClient", handler) {
+		UdpClient<UdpTestMessageHandler> clients = new UdpClient<UdpTestMessageHandler>("TestClient", handler, address) {
+			@Override
+			public boolean open() {
+				return this.open(channel);
+			}
 		};
 		clients.open(channel);
 		while (true) {

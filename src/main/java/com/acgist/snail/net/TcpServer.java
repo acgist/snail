@@ -26,7 +26,7 @@ public abstract class TcpServer {
 	/**
 	 * 服务端名称
 	 */
-	private String name;
+	private final String name;
 	
 	private AsynchronousServerSocketChannel server;
 	
