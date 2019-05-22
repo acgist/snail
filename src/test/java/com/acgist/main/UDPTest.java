@@ -35,12 +35,14 @@ public class UDPTest {
 		clients.open(server.channel());
 		while (true) {
 			try {
-				final String message = System.currentTimeMillis() + "";
+				final String message = "-";
+//				最大长度
+//				final String sendMessage = message.repeat((2 << 15) - 29);
 				final String sendMessage = message.repeat(1);
 				System.out.println("发送消息：" + sendMessage);
-				System.out.println("消息长度：" + sendMessage.length());
-				client.send(ByteBuffer.wrap((sendMessage + "A").getBytes()), new InetSocketAddress("127.0.0.1", port));
-				clients.send(ByteBuffer.wrap((sendMessage + "B").getBytes()), new InetSocketAddress("127.0.0.1", port));
+				System.out.println("消息长度：" + sendMessage.getBytes().length);
+				client.send(ByteBuffer.wrap((sendMessage).getBytes()), new InetSocketAddress("127.0.0.1", port));
+				clients.send(ByteBuffer.wrap((sendMessage).getBytes()), new InetSocketAddress("127.0.0.1", port));
 			} catch (NetException e) {
 				e.printStackTrace();
 			}
