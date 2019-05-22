@@ -32,6 +32,8 @@ public class ExtensionMessageHandler {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ExtensionMessageHandler.class);
 	
+	private volatile boolean handshake = false; // 是否握手
+	
 	public static final String EX_M = "m"; // 扩展协议信息
 	public static final String EX_V = "v"; // 版本
 	public static final String EX_P = "p"; // 端口
@@ -92,6 +94,7 @@ public class ExtensionMessageHandler {
 	 * 扩展握手消息
 	 */
 	public void handshake() {
+		this.handshake = true;
 		final Map<String, Object> data = new LinkedHashMap<>();
 		final Map<String, Object> supportType = new LinkedHashMap<>();
 		for (var type : PeerMessageConfig.ExtensionType.values()) {
@@ -156,7 +159,7 @@ public class ExtensionMessageHandler {
 				}
 			});
 		}
-		if(peerMessageHandler.isServer()) {
+		if(!this.handshake) {
 			handshake();
 		}
 		if (peerMessageHandler.action() == Action.torrent) { // 下载种子

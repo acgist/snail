@@ -80,7 +80,7 @@ public class UdpServer<T extends UdpMessageHandler> {
 							final ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
 							final InetSocketAddress address = (InetSocketAddress) channel.receive(buffer);
 							try {
-								BeanUtils.newInstance(clazz).server().onMessage(buffer, address);
+								BeanUtils.newInstance(clazz).onMessage(buffer, address);
 							} catch (Exception e) {
 								LOGGER.error("UDP消息处理异常", e);
 							}
