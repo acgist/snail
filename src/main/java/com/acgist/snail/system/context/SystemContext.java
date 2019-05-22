@@ -10,7 +10,7 @@ import com.acgist.snail.net.UdpServer;
 import com.acgist.snail.net.application.ApplicationClient;
 import com.acgist.snail.net.application.ApplicationServer;
 import com.acgist.snail.net.dht.DhtServer;
-import com.acgist.snail.net.peer.PeerServer;
+import com.acgist.snail.net.peer.tcp.PeerServer;
 import com.acgist.snail.net.tracker.TrackerServer;
 import com.acgist.snail.net.upnp.UpnpServer;
 import com.acgist.snail.net.upnp.bootstrap.UpnpService;

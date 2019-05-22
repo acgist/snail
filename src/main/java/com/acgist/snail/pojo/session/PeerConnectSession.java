@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.peer.PeerMessageHandler;
+import com.acgist.snail.net.peer.tcp.PeerMessageHandler;
 import com.acgist.snail.system.config.PeerConfig;
 
 /**

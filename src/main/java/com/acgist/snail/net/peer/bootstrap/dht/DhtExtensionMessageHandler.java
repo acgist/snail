@@ -1,9 +1,9 @@
-package com.acgist.snail.net.peer.dht;
+package com.acgist.snail.net.peer.bootstrap.dht;
 
 import java.nio.ByteBuffer;
 
 import com.acgist.snail.downloader.torrent.bootstrap.DhtLauncher;
-import com.acgist.snail.net.peer.PeerMessageHandler;
+import com.acgist.snail.net.peer.tcp.PeerMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.system.config.PeerMessageConfig;
 import com.acgist.snail.system.config.SystemConfig;

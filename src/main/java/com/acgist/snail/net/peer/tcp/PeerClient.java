@@ -1,4 +1,4 @@
-package com.acgist.snail.net.peer;
+package com.acgist.snail.net.peer.tcp;
 
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicBoolean;

@@ -1,4 +1,4 @@
-package com.acgist.snail.net.peer;
+package com.acgist.snail.net.peer.tcp;
 
 import com.acgist.snail.net.TcpServer;
 import com.acgist.snail.system.config.SystemConfig;
