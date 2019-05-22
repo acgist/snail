@@ -26,6 +26,8 @@ import com.acgist.snail.utils.StringUtils;
  * </ul>
  * </p>
  * 
+ * TODO：超时
+ * 
  * @author acgist
  * @since 1.0.0
  */
