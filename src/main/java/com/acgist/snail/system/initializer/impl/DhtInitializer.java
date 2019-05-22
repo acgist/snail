@@ -23,7 +23,7 @@ public class DhtInitializer extends Initializer {
 	
 	@Override
 	protected void init() {
-		LOGGER.info("初始DHT通道");
+		LOGGER.info("初始DHT Server");
 		DhtServer.getInstance();
 		LOGGER.info("初始DHT默认节点");
 		NodeManager.getInstance().register();

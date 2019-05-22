@@ -1,5 +1,6 @@
 package com.acgist.snail.net.upnp;
 
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
 import org.slf4j.Logger;
@@ -7,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.UdpClient;
 import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.utils.NetUtils;
 
 /**
  * <p>UPNP客户端</p>
@@ -24,29 +24,27 @@ public class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	private static final int UPNP_PORT = 1900;
 	private static final String UPNP_HOST = "239.255.255.250";
 	
-	private static final UpnpClient INSTANCE = new UpnpClient();
-	
-	static {
-		UdpClient.bindServerHandler(new UpnpMessageHandler(), INSTANCE.channel);
-	}
-	
-	private UpnpClient() {
-		super("UPNP Client", new UpnpMessageHandler());
-		open();
+	private UpnpClient(InetSocketAddress address) {
+		super("UPNP Client", new UpnpMessageHandler(), address);
 		join(UPNP_HOST);
 	}
 	
-	public static final UpnpClient getInstance() {
-		return INSTANCE;
+	public static final UpnpClient newInstance() {
+		return new UpnpClient(new InetSocketAddress(UPNP_HOST, UPNP_PORT));
 	}
 
+	@Override
+	public boolean open() {
+		return this.open(UpnpServer.getInstance().channel());
+	}
+	
 	/**
 	 * 配置UPNP
 	 */
 	public void config() {
 		LOGGER.info("配置UPNP");
 		try {
-			send(mSearch(), NetUtils.buildSocketAddress(UPNP_HOST, UPNP_PORT));
+			send(mSearch());
 		} catch (NetException e) {
 			LOGGER.error("发送UPNP消息异常", e);
 		}

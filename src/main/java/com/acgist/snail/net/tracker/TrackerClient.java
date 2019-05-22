@@ -1,5 +1,7 @@
 package com.acgist.snail.net.tracker;
 
+import java.net.InetSocketAddress;
+
 import com.acgist.snail.net.UdpClient;
 
 /**
@@ -11,19 +13,17 @@ import com.acgist.snail.net.UdpClient;
  */
 public class TrackerClient extends UdpClient<TrackerMessageHandler> {
 
-	private static final TrackerClient INSTANCE = new TrackerClient();
+	private TrackerClient(InetSocketAddress address) {
+		super("Tracker Client", new TrackerMessageHandler(), address);
+	}
+	
+	public static final TrackerClient newInstance(InetSocketAddress address) {
+		return new TrackerClient(address);
+	}
 
-	static {
-		UdpClient.bindServerHandler(new TrackerMessageHandler(), INSTANCE.channel);
+	@Override
+	public boolean open() {
+		return this.open(TrackerServer.getInstance().channel());
 	}
-	
-	private TrackerClient() {
-		super("Tracker Client", new TrackerMessageHandler());
-		this.open();
-	}
-	
-	public static final TrackerClient getInstance() {
-		return INSTANCE;
-	}
-	
+
 }

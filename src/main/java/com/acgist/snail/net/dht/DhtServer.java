@@ -1,14 +1,7 @@
 package com.acgist.snail.net.dht;
 
-import java.nio.channels.DatagramChannel;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.acgist.snail.net.UdpClient;
+import com.acgist.snail.net.UdpServer;
 import com.acgist.snail.system.config.SystemConfig;
-import com.acgist.snail.utils.IoUtils;
-import com.acgist.snail.utils.NetUtils;
 
 /**
  * DHT服务端
@@ -16,15 +9,13 @@ import com.acgist.snail.utils.NetUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class DhtServer {
+public class DhtServer extends UdpServer<DhtMessageHandler> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(DhtServer.class);
-	
-	private final DatagramChannel channel;
+//	private static final Logger LOGGER = LoggerFactory.getLogger(DhtServer.class);
 	
 	private DhtServer() {
-		this.channel = NetUtils.buildUdpChannel(SystemConfig.getServicePort());
-		UdpClient.bindServerHandler(new DhtMessageHandler(), this.channel);
+		super(SystemConfig.getServicePort(), "DHT Server", DhtMessageHandler.class);
+		this.handler();
 	}
 	
 	private static final DhtServer INSTANCE = new DhtServer();
@@ -33,13 +24,4 @@ public class DhtServer {
 		return INSTANCE;
 	}
 	
-	public DatagramChannel channel() {
-		return channel;
-	}
-	
-	public void shutdown() {
-		LOGGER.info("DHT Server关闭");
-		IoUtils.close(channel);
-	}
-
 }

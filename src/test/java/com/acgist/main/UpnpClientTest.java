@@ -13,7 +13,7 @@ public class UpnpClientTest {
 
 	@Test
 	public void test() {
-		UpnpClient client = UpnpClient.getInstance();
+		UpnpClient client = UpnpClient.newInstance();
 		client.config();
 		ThreadUtils.sleep(Long.MAX_VALUE);
 	}
