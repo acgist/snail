@@ -30,34 +30,6 @@
 
 ----
 
-## 进度
-
-|功能|进度|
-|:-|:-|
-|BT|○|
-|FTP|√|
-|HTTP|√|
-|ED2K|×|
-
-#### BT进度
-
-|协议|进度|
-|:-|:-|
-|DHT Protocol|√|
-|Fast Extension|×|
-|Extension Protocol|√|
-|Peer Exchange（PEX）|√|
-|Holepunch extension|×|
-|Local Service Discovery|×|
-|Peer wire protocol（TCP）|√|
-|Tracker Protocol（UDP/HTTP）|√|
-|uTorrent transport protocol（uTP）|○|
-|Extension for Peers to Send Metadata Files|√|
-
-#### ED2K进度
-
-*√=完成、○-进行中、×-未开始*
-
 ## 使用
 
 #### 构建
@@ -95,5 +67,33 @@ Windows直接点击SnailLauncher.exe即可运行。
 
 日志框架：[slf4j](https://www.slf4j.org/)、[logback](https://logback.qos.ch/)
 
-## 下载界面
+## 进度
+
+|功能|进度|
+|:-|:-|
+|BT|○|
+|FTP|√|
+|HTTP|√|
+|ED2K|×|
+
+#### BT进度
+
+|协议|进度|
+|:-|:-|
+|DHT Protocol|√|
+|Fast Extension|×|
+|Extension Protocol|√|
+|Peer Exchange（PEX）|√|
+|Holepunch extension|×|
+|Local Service Discovery|×|
+|Peer wire protocol（TCP）|√|
+|Tracker Protocol（UDP/HTTP）|√|
+|uTorrent transport protocol（uTP）|○|
+|Extension for Peers to Send Metadata Files|√|
+
+#### ED2K进度
+
+*√=完成、○-进行中、×-未开始*
+
+## 界面
 ![下载界面](http://files.git.oschina.net/group1/M00/07/B8/PaAvDFzd9lCAUSXEAAB8UcH2axw194.png "下载界面")
