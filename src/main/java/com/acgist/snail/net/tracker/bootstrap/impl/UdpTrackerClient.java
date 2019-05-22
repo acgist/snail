@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.peer.bootstrap.PeerService;
-import com.acgist.snail.net.tracker.bootstrap.TrackerClient;
+import com.acgist.snail.net.tracker.TrackerClient;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.config.TrackerConfig;
@@ -24,14 +24,14 @@ import com.acgist.snail.utils.UniqueCodeUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class UdpTrackerClient extends TrackerClient {
+public class UdpTrackerClient extends com.acgist.snail.net.tracker.bootstrap.TrackerClient {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpTrackerClient.class);
 	
 	private final String host;
 	private final int port;
 	
-	private final com.acgist.snail.net.tracker.TrackerClient trackerClient;
+	private final TrackerClient trackerClient;
 	
 	/**
 	 * 连接ID：获取Peer时使用。
@@ -43,7 +43,7 @@ public class UdpTrackerClient extends TrackerClient {
 		URI uri = URI.create(announceUrl);
 		this.host = uri.getHost();
 		this.port = uri.getPort();
-		this.trackerClient = com.acgist.snail.net.tracker.TrackerClient.newInstance(new InetSocketAddress(this.host, this.port));
+		this.trackerClient = TrackerClient.newInstance(new InetSocketAddress(this.host, this.port));
 		buildConnectionId();
 	}
 
@@ -58,7 +58,7 @@ public class UdpTrackerClient extends TrackerClient {
 				if(connectionId == null) {
 					buildConnectionId();
 				}
-				ThreadUtils.wait(this, Duration.ofSeconds(TrackerClient.TIMEOUT));
+				ThreadUtils.wait(this, Duration.ofSeconds(com.acgist.snail.net.tracker.bootstrap.TrackerClient.TIMEOUT));
 				if(connectionId == null) {
 					throw new NetException("获取Tracker connectionId失败");
 				}
