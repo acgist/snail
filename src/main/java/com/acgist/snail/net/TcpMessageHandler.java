@@ -19,8 +19,6 @@ public abstract class TcpMessageHandler extends TcpSender implements CompletionH
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TcpMessageHandler.class);
 	
-	protected boolean server = false; // 是否是服务端
-
 	private static final int BUFFER_SIZE = 10 * 1024;
 	
 	public TcpMessageHandler() {
@@ -36,21 +34,6 @@ public abstract class TcpMessageHandler extends TcpSender implements CompletionH
 	 * @return 是否继续循环读取：true-是；false-不继续
 	 */
 	public abstract void onMessage(ByteBuffer attachment) throws NetException;
-	
-	/**
-	 * 设置为服务端
-	 */
-	public TcpMessageHandler server() {
-		this.server = true;
-		return this;
-	}
-	
-	/**
-	 * 判断是否是服务端
-	 */
-	public boolean isServer() {
-		return this.server;
-	}
 	
 	/**
 	 * 消息代理
