@@ -1,4 +1,4 @@
-package com.acgist.snail.net.peer;
+package com.acgist.snail.net.peer.tcp;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -12,8 +12,8 @@ import com.acgist.snail.downloader.torrent.bootstrap.PeerConnectGroup;
 import com.acgist.snail.downloader.torrent.bootstrap.TorrentStreamGroup;
 import com.acgist.snail.net.TcpMessageHandler;
 import com.acgist.snail.net.peer.bootstrap.PeerService;
-import com.acgist.snail.net.peer.dht.DhtExtensionMessageHandler;
-import com.acgist.snail.net.peer.ltep.ExtensionMessageHandler;
+import com.acgist.snail.net.peer.bootstrap.dht.DhtExtensionMessageHandler;
+import com.acgist.snail.net.peer.bootstrap.ltep.ExtensionMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;

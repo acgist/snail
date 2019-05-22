@@ -1,4 +1,4 @@
-package com.acgist.snail.net.peer.fast;
+package com.acgist.snail.net.peer.bootstrap.fast;
 
 /**
  * <p>Fast Extension</p>
