@@ -35,6 +35,9 @@
 #### 构建
 
 ```bash
+# 构建时请修改Maven配置（pom.xml）中os.name=使用系统的名称。
+# 如果构建系统和使用系统不一致时，可以删除构建后lib目录下JavaFX不需要的依赖。
+
 # Windows
 ./builder/build.bat
 
