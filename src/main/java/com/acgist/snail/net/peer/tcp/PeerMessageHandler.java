@@ -62,7 +62,8 @@ public class PeerMessageHandler extends TcpMessageHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerMessageHandler.class);
 	
-	private volatile boolean handshake = false; // 是否被握手
+	private volatile boolean handshake = false; // 是否握手
+	private volatile boolean handshaked = false; // 是否被握手
 
 	/**
 	 * 如果消息长度不够一个Integer长度时使用
@@ -131,7 +132,6 @@ public class PeerMessageHandler extends TcpMessageHandler {
 			return false;
 		}
 		final PeerSession peerSession = PeerManager.getInstance().newPeerSession(infoHashHex, taskSession.statistics(), address.getHostString(), null, PeerConfig.SOURCE_CONNECT);
-		peerSession.id(peerId);
 		final PeerConnectGroup peerConnectGroup = torrentSession.peerConnectGroup();
 		final boolean ok = peerConnectGroup.newPeerConnect(peerSession, this);
 		if(ok) {
@@ -176,7 +176,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		attachment.flip();
 		while(true) {
 			if(this.buffer == null) {
-				if(this.handshake) {
+				if(this.handshaked) {
 					for (int index = 0; index < attachment.limit(); index++) {
 						this.lengthStick.put(attachment.get());
 						if(this.lengthStick.position() == INTEGER_BYTE_LENGTH) {
@@ -232,8 +232,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 */
 	private void oneMessage(final ByteBuffer buffer) {
 		buffer.flip();
-		if(!handshake) {
-			this.handshake = true;
+		if(!handshaked) {
 			handshake(buffer);
 		} else {
 			final byte typeValue = buffer.get();
@@ -292,6 +291,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 * </p>
 	 */
 	public void handshake(PeerClient peerClient) {
+		this.handshake = true;
 		LOGGER.debug("握手");
 		this.peerClient = peerClient;
 		final ByteBuffer buffer = ByteBuffer.allocate(PeerConfig.HANDSHAKE_LENGTH);
@@ -314,6 +314,8 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	 * <p>然后发送扩展消息、DHT消息、交换位图。</p>
 	 */
 	private void handshake(ByteBuffer buffer) {
+		this.handshaked = true;
+		final boolean server = !this.handshake; // 是否是服务方
 		LOGGER.debug("被握手");
 		final byte length = buffer.get();
 		if(length <= 0) {
@@ -336,7 +338,6 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		final String infoHashHex = StringUtils.hex(infoHash);
 		final byte[] peerId = new byte[PeerConfig.PEER_ID_LENGTH];
 		buffer.get(peerId);
-		final boolean server = this.peerSession == null;
 		if(server) {
 			final boolean ok = init(infoHashHex, peerId, reserved);
 			if(ok) {
@@ -345,9 +346,8 @@ public class PeerMessageHandler extends TcpMessageHandler {
 				this.close();
 				return;
 			}
-		} else {
-			this.peerSession.id(peerId);
 		}
+		this.peerSession.id(peerId);
 		extension(); // 发送扩展
 		dht(); // 发送DHT端口
 		bitfield(); // 交换位图
