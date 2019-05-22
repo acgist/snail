@@ -126,6 +126,7 @@
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
 				<includes>
 					<include>**</include>
 				</includes>
@@ -133,7 +134,15 @@
 				<excludes>
 					<exclude>profiles/**</exclude>
 				</excludes>
-				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory></directory>
+				<targetPath>META-INF/</targetPath>
+				<filtering>false</filtering>
+				<includes>
+					<include>LICENSE</include>
+					<include>README.md</include>
+				</includes>
 			</resource>
 		</resources>
 		<!-- 插件 -->
