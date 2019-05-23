@@ -2,6 +2,7 @@ package com.acgist.snail.net;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.nio.channels.DatagramChannel;
 
 /**
  * 消息接收器。
@@ -11,8 +12,8 @@ public abstract class UdpAcceptHandler {
 	/**
 	 * 消息处理
 	 */
-	public void handler(ByteBuffer buffer, InetSocketAddress address) {
-		messageHandler(buffer, address).onMessage(buffer, address);
+	public void handler(DatagramChannel channel, ByteBuffer buffer, InetSocketAddress address) {
+		messageHandler(buffer, address).handle(channel).onMessage(buffer, address);
 	}
 	
 	/**

@@ -22,8 +22,9 @@ public abstract class UdpMessageHandler extends UdpSender {
 	/**
 	 * 代理Channel
 	 */
-	public void handle(DatagramChannel channel) {
+	public UdpMessageHandler handle(DatagramChannel channel) {
 		this.channel = channel;
+		return this;
 	}
 
 }
