@@ -221,7 +221,7 @@ public class Request {
 	
 	@Override
 	public String toString() {
-		return ObjectUtils.toString(this);
+		return ObjectUtils.toString(this, this.t, this.y, this.q, this.a);
 	}
 	
 }

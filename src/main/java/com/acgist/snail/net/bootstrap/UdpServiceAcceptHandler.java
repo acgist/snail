@@ -35,10 +35,11 @@ public class UdpServiceAcceptHandler extends UdpAcceptHandler {
 	public UdpMessageHandler messageHandler(ByteBuffer buffer, InetSocketAddress address) {
 		buffer.flip();
 		final byte header = buffer.get();
+		buffer.position(buffer.limit()).limit(buffer.capacity());
 		if(DHT_HEADER == header) {
 			return dhtMessageHandler;
 		} else {
-			return null;
+			return null; // TODO：utp
 		}
 	}
 	

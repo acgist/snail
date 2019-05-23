@@ -20,7 +20,6 @@ public class UdpTestAcceptHandler extends UdpAcceptHandler {
 	private UdpTestMessageHandler udpTestMessageHandler = new UdpTestMessageHandler();
 	
 	@Override
-	@SuppressWarnings("exports")
 	public UdpMessageHandler messageHandler(ByteBuffer buffer, InetSocketAddress address) {
 		return udpTestMessageHandler;
 	}
