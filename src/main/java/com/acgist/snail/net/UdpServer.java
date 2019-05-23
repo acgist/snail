@@ -14,14 +14,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.system.context.SystemThreadContext;
-import com.acgist.snail.utils.BeanUtils;
 import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.NetUtils;
 
 /**
  * 全部使用单例
  */
-public class UdpServer<T extends UdpMessageHandler> {
+public class UdpServer<T extends UdpAcceptHandler> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpServer.class);
 	
@@ -37,13 +36,13 @@ public class UdpServer<T extends UdpMessageHandler> {
 	 * 服务端名称
 	 */
 	private String name;
-	private final Class<T> clazz;
+	private final T handler;
 	protected final DatagramChannel channel;
 	
-	public UdpServer(int port, String name, Class<T> clazz) {
+	public UdpServer(int port, String name, T handler) {
 		this.channel = NetUtils.buildUdpChannel(port);
 		this.name = name;
-		this.clazz = clazz;
+		this.handler = handler;
 	}
 	
 	/**
@@ -80,7 +79,7 @@ public class UdpServer<T extends UdpMessageHandler> {
 							final ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
 							final InetSocketAddress address = (InetSocketAddress) channel.receive(buffer);
 							try {
-								BeanUtils.newInstance(clazz).onMessage(buffer, address);
+								handler.handler(buffer, address);
 							} catch (Exception e) {
 								LOGGER.error("UDP消息处理异常", e);
 							}
@@ -99,7 +98,7 @@ public class UdpServer<T extends UdpMessageHandler> {
 	}
 	
 	public void close() {
-		LOGGER.info("DHT Server关闭：{}", this.name);
+		LOGGER.info("UDP Server关闭：{}", this.name);
 		IoUtils.close(channel);
 	}
 	

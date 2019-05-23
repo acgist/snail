@@ -1,4 +1,4 @@
-package com.acgist.snail.net.peer.tcp;
+package com.acgist.snail.net.peer;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

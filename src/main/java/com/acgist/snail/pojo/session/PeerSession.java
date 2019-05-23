@@ -4,7 +4,7 @@ import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.acgist.snail.net.peer.tcp.PeerMessageHandler;
+import com.acgist.snail.net.peer.PeerMessageHandler;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.PeerMessageConfig;
 import com.acgist.snail.system.interfaces.IStatistics;

@@ -10,12 +10,12 @@ import com.acgist.snail.utils.ThreadUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class ApplicationServer extends TcpServer {
+public class ApplicationServer extends TcpServer<ApplicationMessageHandler> {
 
 	private static final ApplicationServer INSTANCE = new ApplicationServer();
 	
 	private ApplicationServer() {
-		super("Application Server");
+		super("Application Server", ApplicationMessageHandler.class);
 	}
 	
 	public static final ApplicationServer getInstance() {
@@ -24,10 +24,6 @@ public class ApplicationServer extends TcpServer {
 	
 	public boolean listen() {
 		return listen(SystemConfig.getServerPort());
-	}
-	
-	public boolean listen(String host, int port) {
-		return listen(host, port, ApplicationMessageHandler.class);
 	}
 	
 	public static final void main(String[] args) {

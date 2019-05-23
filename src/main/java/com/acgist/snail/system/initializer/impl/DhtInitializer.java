@@ -3,7 +3,6 @@ package com.acgist.snail.system.initializer.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.dht.DhtServer;
 import com.acgist.snail.system.initializer.Initializer;
 import com.acgist.snail.system.manager.NodeManager;
 
@@ -23,8 +22,6 @@ public class DhtInitializer extends Initializer {
 	
 	@Override
 	protected void init() {
-		LOGGER.info("初始DHT Server");
-		DhtServer.getInstance();
 		LOGGER.info("初始DHT默认节点");
 		NodeManager.getInstance().register();
 	}
