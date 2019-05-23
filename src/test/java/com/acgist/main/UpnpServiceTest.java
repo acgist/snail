@@ -3,7 +3,7 @@ package com.acgist.main;
 import org.junit.Test;
 
 import com.acgist.snail.net.upnp.bootstrap.UpnpService;
-import com.acgist.snail.net.upnp.bootstrap.UpnpService.Protocol;
+import com.acgist.snail.system.config.Protocol;
 import com.acgist.snail.system.exception.NetException;
 
 /**
@@ -22,19 +22,19 @@ public class UpnpServiceTest {
 	@Test
 	public void getSpecificPortMappingEntry() throws NetException {
 		UpnpService.getInstance().load(serviceUrl);
-		System.out.println(UpnpService.getInstance().getSpecificPortMappingEntry(18888, Protocol.TCP));
+		System.out.println(UpnpService.getInstance().getSpecificPortMappingEntry(18888, Protocol.tcp));
 	}
 
 	@Test
 	public void addPortMapping() throws NetException {
 		UpnpService.getInstance().load(serviceUrl);
-		System.out.println(UpnpService.getInstance().addPortMapping(18888, 18888, Protocol.TCP));
+		System.out.println(UpnpService.getInstance().addPortMapping(18888, 18888, Protocol.tcp));
 	}
 
 	@Test
 	public void deletePortMapping() throws NetException {
 		UpnpService.getInstance().load(serviceUrl);
-		System.out.println(UpnpService.getInstance().deletePortMapping(18888, Protocol.TCP));
+		System.out.println(UpnpService.getInstance().deletePortMapping(18888, Protocol.tcp));
 	}
 	
 	@Test

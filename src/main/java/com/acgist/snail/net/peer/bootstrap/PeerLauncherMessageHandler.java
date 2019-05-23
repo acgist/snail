@@ -657,7 +657,7 @@ public class PeerLauncherMessageHandler {
 	
 	public boolean available() {
 		// TODO
-		return false;
+		return true;
 	}
 	
 	private void send(ByteBuffer buffer) {

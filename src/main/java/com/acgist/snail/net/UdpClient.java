@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.NetUtils;
-import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>UDP客户端</p>
@@ -31,8 +30,6 @@ import com.acgist.snail.utils.StringUtils;
  */
 public abstract class UdpClient<T extends UdpMessageHandler> extends UdpSender {
 	
-	public static final String UDP_REGEX = "udp://.*";
-	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpClient.class);
 
 	/**
@@ -44,7 +41,7 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends UdpSender {
 	 */
 	protected final T handler;
 	/**
-	 * 请求地址
+	 * 发送地址
 	 */
 	protected final InetSocketAddress address;
 	
@@ -100,14 +97,23 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends UdpSender {
 		}
 	}
 	
+	/**
+	 * 发送消息
+	 */
 	protected void send(final String message) throws NetException {
 		this.send(message, this.address);
 	}
-	
+
+	/**
+	 * 发送消息
+	 */
 	protected void send(byte[] bytes) throws NetException {
 		this.send(bytes, this.address);
 	}
 	
+	/**
+	 * 发送消息
+	 */
 	public void send(ByteBuffer buffer) throws NetException {
 		this.send(buffer, this.address);
 	}
@@ -119,13 +125,6 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends UdpSender {
 	public void close() {
 		LOGGER.debug("UDP Client关闭：{}", this.name);
 		IoUtils.close(this.channel);
-	}
-
-	/**
-	 * 验证UCP协议
-	 */
-	public static final boolean verify(String url) {
-		return StringUtils.regex(url, UDP_REGEX, true);
 	}
 
 }

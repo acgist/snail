@@ -25,7 +25,9 @@ public class UdpSender {
 	 * 消息分隔符
 	 */
 	private final String split;
-	
+	/**
+	 * 通道
+	 */
 	protected DatagramChannel channel;
 	
 	public UdpSender() {
@@ -67,10 +69,6 @@ public class UdpSender {
 		if(this.channel == null) {
 			throw new NetException("UDP通道没有初始化");
 		}
-		if(!this.channel.isOpen()) {
-			LOGGER.debug("发送消息时Socket已经关闭");
-			return;
-		}
 		if(buffer.position() != 0) { //  重置标记
 			buffer.flip();
 		}
@@ -88,5 +86,5 @@ public class UdpSender {
 			throw new NetException(e);
 		}
 	}
-		
+
 }

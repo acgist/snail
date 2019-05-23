@@ -19,6 +19,9 @@ public class TcpAcceptHandler<T extends TcpMessageHandler> implements Completion
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TcpAcceptHandler.class);
 	
+	/**
+	 * 消息代理
+	 */
 	private final Class<T> clazz;
 	
 	private TcpAcceptHandler(Class<T> clazz) {
@@ -31,9 +34,9 @@ public class TcpAcceptHandler<T extends TcpMessageHandler> implements Completion
 	
 	@Override
 	public void completed(AsynchronousSocketChannel result, AsynchronousServerSocketChannel attachment) {
-		LOGGER.info("客户端连接成功");
+		LOGGER.debug("客户端连接成功");
 		accept(attachment);
-		read(result);
+		handle(result);
 	}
 	
 	@Override
@@ -42,9 +45,9 @@ public class TcpAcceptHandler<T extends TcpMessageHandler> implements Completion
 	}
 
 	/**
-	 * 读取消息代理
+	 * 消息代理
 	 */
-	private void read(AsynchronousSocketChannel result) {
+	private void handle(AsynchronousSocketChannel result) {
 		BeanUtils.newInstance(clazz).handle(result);
 	}
 	

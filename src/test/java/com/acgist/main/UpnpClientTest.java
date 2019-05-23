@@ -5,7 +5,7 @@ import org.junit.Test;
 import com.acgist.snail.net.upnp.UpnpClient;
 import com.acgist.snail.net.upnp.bootstrap.UpnpRequest;
 import com.acgist.snail.net.upnp.bootstrap.UpnpResponse;
-import com.acgist.snail.net.upnp.bootstrap.UpnpService.Protocol;
+import com.acgist.snail.system.config.Protocol;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
@@ -23,7 +23,7 @@ public class UpnpClientTest {
 		UpnpRequest request = UpnpRequest.newRequest("urn:schemas-upnp-org:service:WANIPConnection:1");
 //		String xml = request.buildGetExternalIPAddress();
 //		String xml = request.buildGetSpecificPortMappingEntry(8080, Protocol.TCP);
-		String xml = request.buildAddPortMapping(8080, NetUtils.inetHostAddress(), 8080, Protocol.TCP);
+		String xml = request.buildAddPortMapping(8080, NetUtils.inetHostAddress(), 8080, Protocol.tcp);
 		System.out.println(xml);
 	}
 	

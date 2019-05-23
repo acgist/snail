@@ -20,6 +20,7 @@ public class MagnetProtocol extends Protocol {
 	public static final String MAGNET_PREFIX = "magnet:?xt=urn:btih:"; // 磁力链接前缀
 	
 	public static final String MAGNET_REGEX = "magnet:\\?xt=urn:btih:.+"; // 磁力链接正则表达式
+	
 	public static final String MAGNET_HASH_32_REGEX = "[a-zA-Z0-9]{32}"; // 32位磁力链接HASH正则表达式
 	public static final String MAGNET_HASH_40_REGEX = "[a-zA-Z0-9]{40}"; // 40位磁力链接HASH正则表达式
 	

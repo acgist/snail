@@ -31,8 +31,10 @@ public abstract class TcpSender {
 	/**
 	 * 是否关闭
 	 */
-	protected boolean close = false;
-	
+	private boolean close = false;
+	/**
+	 * Socket
+	 */
 	protected AsynchronousSocketChannel socket;
 	
 	public TcpSender() {
@@ -89,7 +91,7 @@ public abstract class TcpSender {
 		synchronized (this.socket) { // 保证顺序
 			final Future<Integer> future = this.socket.write(buffer);
 			try {
-				final int size = future.get(5, TimeUnit.SECONDS); // 阻塞线程防止，防止多线程写入时抛出异常：IllegalMonitorStateException
+				final int size = future.get(4, TimeUnit.SECONDS); // 阻塞线程防止，防止多线程写入时抛出异常：IllegalMonitorStateException
 				if(size <= 0) {
 					LOGGER.warn("发送数据为空");
 				}
@@ -103,7 +105,7 @@ public abstract class TcpSender {
 	 * 可用的：没有被关闭
 	 */
 	public boolean available() {
-		return !close && socket.isOpen();
+		return !close;
 	}
 	
 	/**
