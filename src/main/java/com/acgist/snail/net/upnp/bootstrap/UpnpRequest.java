@@ -2,7 +2,7 @@ package com.acgist.snail.net.upnp.bootstrap;
 
 import org.w3c.dom.Element;
 
-import com.acgist.snail.net.upnp.bootstrap.UpnpService.Protocol;
+import com.acgist.snail.system.config.Protocol;
 import com.acgist.snail.utils.XMLUtils;
 
 /**
@@ -70,7 +70,7 @@ public class UpnpRequest {
 		Element mapping = this.xml.elementNS(this.body, "u:GetSpecificPortMappingEntry", this.serviceType);
 		this.xml.element(mapping, "NewRemoteHost", "");
 		this.xml.element(mapping, "NewExternalPort", String.valueOf(port));
-		this.xml.element(mapping, "NewProtocol", protocol.name());
+		this.xml.element(mapping, "NewProtocol", protocol.name().toUpperCase());
 		return xml();
 	}
 	
@@ -101,7 +101,7 @@ public class UpnpRequest {
 		Element mapping = this.xml.elementNS(this.body, "u:AddPortMapping", this.serviceType);
 		this.xml.element(mapping, "NewRemoteHost", "");
 		this.xml.element(mapping, "NewExternalPort", String.valueOf(portExt));
-		this.xml.element(mapping, "NewProtocol", protocol.name());
+		this.xml.element(mapping, "NewProtocol", protocol.name().toUpperCase());
 		this.xml.element(mapping, "NewInternalPort", String.valueOf(port));
 		this.xml.element(mapping, "NewInternalClient", address);
 		this.xml.element(mapping, "NewEnabled", "1");
@@ -117,7 +117,7 @@ public class UpnpRequest {
 		Element mapping = this.xml.elementNS(body, "u:DeletePortMapping", this.serviceType);
 		this.xml.element(mapping, "NewRemoteHost", "");
 		this.xml.element(mapping, "NewExternalPort", String.valueOf(port));
-		this.xml.element(mapping, "NewProtocol", protocol.name());
+		this.xml.element(mapping, "NewProtocol", protocol.name().toUpperCase());
 		return xml();
 	}
 

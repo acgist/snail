@@ -12,7 +12,7 @@ public abstract class UdpAcceptHandler {
 	/**
 	 * 消息处理
 	 */
-	public void handler(DatagramChannel channel, ByteBuffer buffer, InetSocketAddress address) {
+	public void handle(DatagramChannel channel, ByteBuffer buffer, InetSocketAddress address) {
 		messageHandler(buffer, address).handle(channel).onMessage(buffer, address);
 	}
 	

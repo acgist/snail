@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.http.HTTPClient;
+import com.acgist.snail.system.config.Protocol;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.CollectionUtils;
@@ -49,14 +50,6 @@ public class UpnpService {
 	 * 控制类型
 	 */
 	private static final String SERVICE_TYPE = "urn:schemas-upnp-org:service:WANIPConnection:1";
-	
-	/**
-	 * 协议
-	 */
-	public enum Protocol {
-		TCP,
-		UDP;
-	}
 	
 	private String location; // 描述文件地址
 	private String controlURL; // 控制URL
@@ -225,8 +218,8 @@ public class UpnpService {
 			return;
 		}
 		try {
-			boolean dhtOk = this.deletePortMapping(SystemConfig.getServicePortExt(), Protocol.UDP);
-			boolean peerOk = this.deletePortMapping(SystemConfig.getServicePortExt(), Protocol.TCP);
+			boolean dhtOk = this.deletePortMapping(SystemConfig.getServicePortExt(), Protocol.udp);
+			boolean peerOk = this.deletePortMapping(SystemConfig.getServicePortExt(), Protocol.tcp);
 			LOGGER.info("端口释放：DHT：{}、Peer：{}", dhtOk, peerOk);
 		} catch (NetException e) {
 			LOGGER.error("释放UPNP端口异常", e);
@@ -261,12 +254,12 @@ public class UpnpService {
 			if(portExt >= NetUtils.MAX_PORT) {
 				break;
 			}
-			uValue = this.getSpecificPortMappingEntry(portExt, Protocol.UDP);
+			uValue = this.getSpecificPortMappingEntry(portExt, Protocol.udp);
 			if(uValue == USE_NOT_INIT || uValue == USE_DISABLE) {
 				portExt++;
 				continue;
 			}
-			tValue = this.getSpecificPortMappingEntry(portExt, Protocol.TCP);
+			tValue = this.getSpecificPortMappingEntry(portExt, Protocol.tcp);
 			if(uValue == tValue) {
 				break;
 			} else {
@@ -275,8 +268,8 @@ public class UpnpService {
 		}
 		if(uValue == USE_MAPABLE) {
 			SystemConfig.setServicePortExt(portExt);
-			boolean dhtOk = this.addPortMapping(SystemConfig.getServicePort(), portExt, Protocol.UDP);
-			boolean peerOk = this.addPortMapping(SystemConfig.getServicePort(), portExt, Protocol.TCP);
+			boolean dhtOk = this.addPortMapping(SystemConfig.getServicePort(), portExt, Protocol.udp);
+			boolean peerOk = this.addPortMapping(SystemConfig.getServicePort(), portExt, Protocol.tcp);
 			LOGGER.info("端口映射（注册）：DHT（{}-{}-{}）、Peer（{}-{}-{}）", SystemConfig.getServicePort(), portExt, dhtOk, SystemConfig.getServicePort(), portExt, peerOk);
 		} else if(uValue == USE_USEABLE) {
 			SystemConfig.setServicePortExt(portExt);

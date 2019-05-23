@@ -36,7 +36,13 @@ public class UdpServer<T extends UdpAcceptHandler> {
 	 * 服务端名称
 	 */
 	private String name;
+	/**
+	 * 消息接收器
+	 */
 	private final T handler;
+	/**
+	 * 通道
+	 */
 	protected final DatagramChannel channel;
 	
 	public UdpServer(int port, String name, T handler) {
@@ -64,6 +70,7 @@ public class UdpServer<T extends UdpAcceptHandler> {
 	private void loopMessage() throws IOException {
 		final Selector selector = Selector.open();
 		if(this.channel == null) {
+			LOGGER.warn("UDP Server通道没有初始化：{}", this.name);
 			return;
 		}
 		this.channel.register(selector, SelectionKey.OP_READ);
@@ -77,9 +84,9 @@ public class UdpServer<T extends UdpAcceptHandler> {
 						keysIterator.remove();
 						if (selectedKey.isValid() && selectedKey.isReadable()) {
 							final ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
-							final InetSocketAddress address = (InetSocketAddress) channel.receive(buffer);
+							final InetSocketAddress address = (InetSocketAddress) this.channel.receive(buffer);
 							try {
-								handler.handler(this.channel, buffer, address);
+								this.handler.handle(this.channel, buffer, address);
 							} catch (Exception e) {
 								LOGGER.error("UDP消息处理异常", e);
 							}
@@ -93,13 +100,19 @@ public class UdpServer<T extends UdpAcceptHandler> {
 		}
 	}
 	
+	/**
+	 * 获取UDP通道
+	 */
 	public DatagramChannel channel() {
 		return this.channel;
 	}
 	
+	/**
+	 * 关闭UDP通道
+	 */
 	public void close() {
 		LOGGER.info("UDP Server关闭：{}", this.name);
-		IoUtils.close(channel);
+		IoUtils.close(this.channel);
 	}
 	
 	/**

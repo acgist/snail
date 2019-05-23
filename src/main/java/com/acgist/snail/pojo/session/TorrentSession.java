@@ -12,8 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.torrent.bootstrap.DhtLauncher;
-import com.acgist.snail.downloader.torrent.bootstrap.PeerLauncherGroup;
 import com.acgist.snail.downloader.torrent.bootstrap.PeerConnectGroup;
+import com.acgist.snail.downloader.torrent.bootstrap.PeerLauncherGroup;
 import com.acgist.snail.downloader.torrent.bootstrap.TorrentStreamGroup;
 import com.acgist.snail.downloader.torrent.bootstrap.TrackerLauncherGroup;
 import com.acgist.snail.protocol.torrent.TorrentBuilder;

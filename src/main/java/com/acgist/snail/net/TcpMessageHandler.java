@@ -40,7 +40,7 @@ public abstract class TcpMessageHandler extends TcpSender implements CompletionH
 	 */
 	public void handle(AsynchronousSocketChannel socket) {
 		this.socket = socket;
-		loopRead();
+		loopMessage();
 	}
 
 	@Override
@@ -58,10 +58,10 @@ public abstract class TcpMessageHandler extends TcpSender implements CompletionH
 				LOGGER.error("TCP消息处理异常", e);
 			}
 		}
-		if(close) {
-			LOGGER.debug("TCP消息代理跳出循环：{}", result);
+		if(available()) {
+			loopMessage();
 		} else {
-			loopRead();
+			LOGGER.debug("TCP消息代理跳出循环：{}", result);
 		}
 	}
 	
@@ -73,10 +73,10 @@ public abstract class TcpMessageHandler extends TcpSender implements CompletionH
 	/**
 	 * 循环读
 	 */
-	private void loopRead() {
-		final ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
+	private void loopMessage() {
 		if(available()) {
-			socket.read(buffer, buffer, this);
+			final ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
+			this.socket.read(buffer, buffer, this);
 		}
 	}
 	

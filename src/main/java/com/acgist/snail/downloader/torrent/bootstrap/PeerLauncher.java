@@ -14,7 +14,7 @@ import com.acgist.snail.pojo.bean.TorrentPiece;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.PeerConfig;
-import com.acgist.snail.system.config.SystemConfig.Protocol;
+import com.acgist.snail.system.config.Protocol;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**

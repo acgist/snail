@@ -27,7 +27,13 @@ public abstract class TcpServer<T extends TcpMessageHandler> {
 	 * 服务端名称
 	 */
 	private final String name;
+	/**
+	 * 消息代理
+	 */
 	private final Class<T> clazz;
+	/**
+	 * Socket服务
+	 */
 	private AsynchronousServerSocketChannel server;
 	
 	static {

@@ -33,6 +33,9 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends TcpSender {
 	 * 客户端名称
 	 */
 	private String name;
+	/**
+	 * 超时
+	 */
 	private int timeout;
 	/**
 	 * 消息代理
@@ -70,13 +73,13 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends TcpSender {
 	protected boolean connect(final String host, final int port) {
 		boolean ok = true;
 		try {
-			socket = AsynchronousSocketChannel.open(GROUP);
-			socket.setOption(StandardSocketOptions.TCP_NODELAY, true);
-			socket.setOption(StandardSocketOptions.SO_REUSEADDR, true);
-			socket.setOption(StandardSocketOptions.SO_KEEPALIVE, true);
-			Future<Void> future = socket.connect(NetUtils.buildSocketAddress(host, port));
+			this.socket = AsynchronousSocketChannel.open(GROUP);
+			this.socket.setOption(StandardSocketOptions.TCP_NODELAY, true);
+			this.socket.setOption(StandardSocketOptions.SO_REUSEADDR, true);
+			this.socket.setOption(StandardSocketOptions.SO_KEEPALIVE, true);
+			Future<Void> future = this.socket.connect(NetUtils.buildSocketAddress(host, port));
 			future.get(this.timeout, TimeUnit.SECONDS);
-			handler.handle(socket);
+			this.handler.handle(this.socket);
 		} catch (Exception e) {
 			ok = false;
 			LOGGER.error("客户端连接异常：{}-{}", host, port, e);
@@ -90,19 +93,13 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends TcpSender {
 	}
 	
 	/**
-	 * 消息处理器
-	 */
-	public T handler() {
-		return this.handler;
-	}
-	
-	/**
-	 * 关闭资源：重写使用消息处理器关闭
+	 * 关闭资源：重写使用消息处理器关闭。
+	 * 使用消息代理关闭。
 	 */
 	@Override
 	public void close() {
 		LOGGER.debug("TCP Client关闭：{}", this.name);
-		handler.close();
+		this.handler.close();
 	}
 
 	/**
