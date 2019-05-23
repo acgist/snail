@@ -53,7 +53,7 @@ public abstract class TcpSender {
 	 * <p>发送消息</p>
 	 * <p>使用分隔符对消息进行分隔</p>
 	 */
-	protected void send(final String message) throws NetException {
+	public void send(final String message) throws NetException {
 		String splitMessage = message;
 		if(this.split != null) {
 			splitMessage += this.split;
@@ -69,14 +69,14 @@ public abstract class TcpSender {
 	/**
 	 * 发送消息
 	 */
-	protected void send(byte[] bytes) throws NetException {
+	public void send(byte[] bytes) throws NetException {
 		send(ByteBuffer.wrap(bytes));
 	}
 	
 	/**
 	 * 发送消息
 	 */
-	protected void send(ByteBuffer buffer) throws NetException {
+	public void send(ByteBuffer buffer) throws NetException {
 		if(!available()) {
 			LOGGER.debug("发送消息时Socket已经不可用");
 			return;

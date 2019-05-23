@@ -1,12 +1,18 @@
 package com.acgist.snail.net.peer;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.TcpMessageHandler;
 import com.acgist.snail.net.peer.bootstrap.PeerLauncherMessageHandler;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.system.interfaces.IPeerMessageHandler;
 
 /**
  * <p>Peer消息处理（TCP）</p>
@@ -14,9 +20,9 @@ import com.acgist.snail.system.exception.NetException;
  * @author acgist
  * @since 1.0.0
  */
-public class PeerMessageHandler extends TcpMessageHandler {
+public class PeerMessageHandler extends TcpMessageHandler implements IPeerMessageHandler {
 
-//	private static final Logger LOGGER = LoggerFactory.getLogger(PeerMessageHandler.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PeerMessageHandler.class);
 	
 	/**
 	 * 如果消息长度不够一个Integer长度时使用
@@ -26,13 +32,22 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	
 	private ByteBuffer buffer;
 	
-	private PeerLauncherMessageHandler peerLauncherMessageHandler;
-	
+	private final PeerLauncherMessageHandler peerLauncherMessageHandler;
+
+	/**
+	 * 服务端
+	 */
 	public PeerMessageHandler() {
+		this.peerLauncherMessageHandler = PeerLauncherMessageHandler.newInstance();
+		this.peerLauncherMessageHandler.peerMessageHandler(this);
 	}
 
+	/**
+	 * 客户端
+	 */
 	public PeerMessageHandler(PeerLauncherMessageHandler peerLauncherMessageHandler) {
 		this.peerLauncherMessageHandler = peerLauncherMessageHandler;
+		this.peerLauncherMessageHandler.peerMessageHandler(this);
 	}
 	
 	@Override
@@ -90,6 +105,16 @@ public class PeerMessageHandler extends TcpMessageHandler {
 				break;
 			}
 		}
+	}
+
+	@Override
+	public InetSocketAddress remoteSocketAddress() {
+		try {
+			return (InetSocketAddress) this.socket.getRemoteAddress();
+		} catch (IOException e) {
+			LOGGER.error("Peer远程客户端信息获取异常", e);
+		}
+		return null;
 	}
 
 }

@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.NetUtils;
 
 /**
@@ -119,12 +118,12 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends UdpSender {
 	}
 	
 	/**
-	 * 关闭channel，所有的UDP通道都是单例，系统关闭时调用。调用UdpServer.close()。
+	 * 关闭资源，标记关闭，不能关闭通道。UDP通道只打开一个，程序结束时才能关闭。
 	 */
-	@Deprecated
 	public void close() {
 		LOGGER.debug("UDP Client关闭：{}", this.name);
-		IoUtils.close(this.channel);
+		super.close();
+		this.handler.close();
 	}
 
 }

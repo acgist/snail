@@ -99,6 +99,7 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends TcpSender {
 	@Override
 	public void close() {
 		LOGGER.debug("TCP Client关闭：{}", this.name);
+		super.close();
 		this.handler.close();
 	}
 
