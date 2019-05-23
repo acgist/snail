@@ -31,9 +31,6 @@ public class PeerLauncher {
 	private static final int PIECE_AWAIT_TIME = 60; // PIECE完成等待时间
 	private static final int CLOSE_AWAIT_TIME = 60; // 关闭等待时间
 	
-//	private static final int SLICE_AWAIT_TIME = 4; // SLICE每批等待时间
-//	private static final int PIECE_AWAIT_TIME = 4; // PIECE完成等待时间
-
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerClient.class);
 	
 	private boolean launcher = false; // 是否启动
@@ -47,9 +44,6 @@ public class PeerLauncher {
 	private AtomicBoolean completeLock = new AtomicBoolean(false); // Piece完成锁
 	
 	private Protocol protocol;
-	
-	private UtpClient utpClient;
-	private PeerClient peerClient;
 	
 	/**
 	 * 评分：每次收到Piece更新该值，评分时清零。
@@ -123,18 +117,18 @@ public class PeerLauncher {
 	 * 连接，优先使用TUP、然后使用TCP。
 	 */
 	private boolean connect() {
-		this.utpClient = UtpClient.newInstance(this.peerSession, this.peerLauncherMessageHandler);
-		boolean ok = this.utpClient.connect();
+		final UtpClient utpClient = UtpClient.newInstance(this.peerSession, this.peerLauncherMessageHandler);
+		boolean ok = utpClient.connect();
 		if(ok) {
+			this.protocol = Protocol.udp;
 			return ok;
 		}
-		this.utpClient = null;
-		this.peerClient = PeerClient.newInstance(this.peerSession, this.peerLauncherMessageHandler);
-		ok = this.peerClient.connect();
+		final PeerClient peerClient = PeerClient.newInstance(this.peerSession, this.peerLauncherMessageHandler);
+		ok = peerClient.connect();
 		if(ok) {
+			this.protocol = Protocol.tcp;
 			return ok;
 		}
-		this.peerClient = null;
 		return ok;
 	}
 	

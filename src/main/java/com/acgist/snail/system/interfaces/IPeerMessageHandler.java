@@ -7,6 +7,8 @@ import com.acgist.snail.system.exception.NetException;
 
 /**
  * Peer消息代理
+ * TODO：加密
+ * TODO：实现流水线
  */
 public interface IPeerMessageHandler {
 	

@@ -35,10 +35,14 @@ public class UtpMessageHandler extends UdpMessageHandler implements IPeerMessage
 		this.peerLauncherMessageHandler.peerMessageHandler(this);
 	}
 
+	public void socketAddress(InetSocketAddress socketAddress) {
+		this.socketAddress = socketAddress;
+	}
+	
 	@Override
-	public void onMessage(ByteBuffer buffer, InetSocketAddress address) {
+	public void onMessage(ByteBuffer buffer, InetSocketAddress socketAddress) {
 		if(this.socketAddress == null) {
-			this.socketAddress = address;
+			this.socketAddress = socketAddress;
 		}
 		// TODO:
 		this.peerLauncherMessageHandler.oneMessage(buffer);
@@ -52,6 +56,13 @@ public class UtpMessageHandler extends UdpMessageHandler implements IPeerMessage
 	@Override
 	public InetSocketAddress remoteSocketAddress() {
 		return this.socketAddress;
+	}
+
+	/**
+	 * 连接
+	 */
+	public boolean connect() {
+		return false;
 	}
 	
 }

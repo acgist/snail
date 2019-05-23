@@ -27,7 +27,7 @@ import com.acgist.snail.utils.BitfieldUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>Peer消息处理（UTP/TCP）</p>
+ * <p>Peer消息处理</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0003.html</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0004.html</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0009.html</p>
@@ -51,8 +51,6 @@ import com.acgist.snail.utils.StringUtils;
  * P = 用户正使用uTP连接
  * L = 用户是本地的（通过网络广播或是保留的本地IP范围发现）
  * </pre>
- * TODO：加密
- * TODO：实现流水线
  * 
  * @author acgist
  * @since 1.1.0
@@ -126,12 +124,12 @@ public class PeerLauncherMessageHandler {
 			return false;
 		}
 		final TaskSession taskSession = torrentSession.taskSession();
-		InetSocketAddress address = remoteSocketAddress();
-		if(address == null) {
+		InetSocketAddress socketAddress = remoteSocketAddress();
+		if(socketAddress == null) {
 			LOGGER.warn("Peer连接初始化失败，获取远程Peer信息失败");
 			return false;
 		}
-		final PeerSession peerSession = PeerManager.getInstance().newPeerSession(infoHashHex, taskSession.statistics(), address.getHostString(), null, PeerConfig.SOURCE_CONNECT);
+		final PeerSession peerSession = PeerManager.getInstance().newPeerSession(infoHashHex, taskSession.statistics(), socketAddress.getHostString(), null, PeerConfig.SOURCE_CONNECT);
 		final PeerConnectGroup peerConnectGroup = torrentSession.peerConnectGroup();
 		final boolean ok = peerConnectGroup.newPeerConnect(peerSession, this);
 		if(ok) {
