@@ -8,7 +8,7 @@ import com.acgist.snail.utils.StringUtils;
 public class UdpProtocol {
 
 	public static final String UDP_REGEX = "udp://.*";
-
+	
 	/**
 	 * 验证UDP协议
 	 */

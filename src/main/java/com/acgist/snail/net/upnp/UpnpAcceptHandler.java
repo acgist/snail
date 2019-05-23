@@ -20,7 +20,7 @@ public class UpnpAcceptHandler extends UdpAcceptHandler {
 	private UpnpMessageHandler upnpMessageHandler = new UpnpMessageHandler();
 	
 	@Override
-	public UdpMessageHandler messageHandler(ByteBuffer buffer, InetSocketAddress address) {
+	public UdpMessageHandler messageHandler(ByteBuffer buffer, InetSocketAddress socketAddress) {
 		return upnpMessageHandler;
 	}
 
