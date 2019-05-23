@@ -3,7 +3,7 @@ package com.acgist.snail.net.peer.bootstrap.dht;
 import java.nio.ByteBuffer;
 
 import com.acgist.snail.downloader.torrent.bootstrap.DhtLauncher;
-import com.acgist.snail.net.peer.PeerMessageHandler;
+import com.acgist.snail.net.peer.bootstrap.PeerLauncherMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.system.config.PeerMessageConfig;
 import com.acgist.snail.system.config.SystemConfig;
@@ -22,16 +22,16 @@ public class DhtExtensionMessageHandler {
 	
 	private final DhtLauncher dhtLauncher;
 	private final PeerSession peerSession;
-	private final PeerMessageHandler peerMessageHandler;
+	private final PeerLauncherMessageHandler peerLauncherMessageHandler;
 
-	public static final DhtExtensionMessageHandler newInstance(PeerSession peerSession, DhtLauncher dhtLauncher, PeerMessageHandler peerMessageHandler) {
-		return new DhtExtensionMessageHandler(peerSession, dhtLauncher, peerMessageHandler);
+	public static final DhtExtensionMessageHandler newInstance(PeerSession peerSession, DhtLauncher dhtLauncher, PeerLauncherMessageHandler peerLauncherMessageHandler) {
+		return new DhtExtensionMessageHandler(peerSession, dhtLauncher, peerLauncherMessageHandler);
 	}
 	
-	private DhtExtensionMessageHandler(PeerSession peerSession, DhtLauncher dhtLauncher, PeerMessageHandler peerMessageHandler) {
+	private DhtExtensionMessageHandler(PeerSession peerSession, DhtLauncher dhtLauncher, PeerLauncherMessageHandler peerLauncherMessageHandler) {
 		this.peerSession = peerSession;
 		this.dhtLauncher = dhtLauncher;
-		this.peerMessageHandler = peerMessageHandler;
+		this.peerLauncherMessageHandler = peerLauncherMessageHandler;
 	}
 	
 	public void onMessage(ByteBuffer buffer) {
@@ -40,7 +40,7 @@ public class DhtExtensionMessageHandler {
 
 	public void port() {
 		final byte[] bytes = ByteBuffer.allocate(2).putShort(SystemConfig.getServicePortExtShort()).array();
-		this.peerMessageHandler.pushMessage(PeerMessageConfig.Type.dht, bytes);
+		this.peerLauncherMessageHandler.pushMessage(PeerMessageConfig.Type.dht, bytes);
 	}
 	
 	private void port(ByteBuffer buffer) {

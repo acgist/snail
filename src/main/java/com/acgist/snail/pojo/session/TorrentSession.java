@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.torrent.bootstrap.DhtLauncher;
-import com.acgist.snail.downloader.torrent.bootstrap.PeerClientGroup;
+import com.acgist.snail.downloader.torrent.bootstrap.PeerLauncherGroup;
 import com.acgist.snail.downloader.torrent.bootstrap.PeerConnectGroup;
 import com.acgist.snail.downloader.torrent.bootstrap.TorrentStreamGroup;
 import com.acgist.snail.downloader.torrent.bootstrap.TrackerLauncherGroup;
@@ -83,7 +83,7 @@ public class TorrentSession {
 	/**
 	 * PeerClient组
 	 */
-	private PeerClientGroup peerClientGroup;
+	private PeerLauncherGroup peerClientGroup;
 	/**
 	 * PeerConnect组
 	 */
@@ -208,7 +208,7 @@ public class TorrentSession {
 	 * 加载PeerClient
 	 */
 	private void loadPeerClientGroup() {
-		this.peerClientGroup = PeerClientGroup.newInstance(this);
+		this.peerClientGroup = PeerLauncherGroup.newInstance(this);
 	}
 	
 	/**
@@ -463,7 +463,7 @@ public class TorrentSession {
 		return this.dhtLauncher;
 	}
 	
-	public PeerClientGroup peerClientGroup() {
+	public PeerLauncherGroup peerClientGroup() {
 		return this.peerClientGroup;
 	}
 	

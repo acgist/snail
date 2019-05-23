@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.system.config.SystemConfig.Protocol;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.ObjectUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -28,11 +29,6 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerClient.class);
 	
-	public enum Type {
-		udp,
-		http;
-	}
-	
 	/**
 	 * 最大失败次数
 	 */
@@ -40,7 +36,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	
 	protected int weight; // 权重
 	protected final Integer id; // ID
-	protected final Type type; // 类型
+	protected final Protocol type; // 类型
 	protected final String scrapeUrl; // 刮檫URL
 	protected final String announceUrl; // 声明URL
 
@@ -57,7 +53,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	 */
 	private String failMessage;
 	
-	public TrackerClient(String scrapeUrl, String announceUrl, Type type) throws NetException {
+	public TrackerClient(String scrapeUrl, String announceUrl, Protocol type) throws NetException {
 		if(StringUtils.isEmpty(announceUrl)) {
 			throw new NetException("不支持的Tracker announceUrl：" + announceUrl);
 		}
@@ -121,7 +117,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 		return this.id;
 	}
 	
-	public Type type() {
+	public Protocol type() {
 		return this.type;
 	}
 	

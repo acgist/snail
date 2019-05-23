@@ -7,7 +7,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.peer.PeerMessageHandler;
+import com.acgist.snail.net.peer.bootstrap.PeerLauncherMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
@@ -47,19 +47,19 @@ public class ExtensionMessageHandler {
 	private final InfoHash infoHash;
 	private final PeerSession peerSession;
 	private final TorrentSession torrentSession;
-	private final PeerMessageHandler peerMessageHandler;
 	private final MetadataMessageHandler metadataMessageHandler;
 	private final PeerExchangeMessageHandler peerExchangeMessageHandler;
+	private final PeerLauncherMessageHandler peerLauncherMessageHandler;
 	
-	public static final ExtensionMessageHandler newInstance(PeerSession peerSession, TorrentSession torrentSession, PeerMessageHandler peerMessageHandler) {
-		return new ExtensionMessageHandler(peerSession, torrentSession, peerMessageHandler);
+	public static final ExtensionMessageHandler newInstance(PeerSession peerSession, TorrentSession torrentSession, PeerLauncherMessageHandler peerLauncherMessageHandler) {
+		return new ExtensionMessageHandler(peerSession, torrentSession, peerLauncherMessageHandler);
 	}
 	
-	private ExtensionMessageHandler(PeerSession peerSession, TorrentSession torrentSession, PeerMessageHandler peerMessageHandler) {
+	private ExtensionMessageHandler(PeerSession peerSession, TorrentSession torrentSession, PeerLauncherMessageHandler peerLauncherMessageHandler) {
 		this.infoHash = torrentSession.infoHash();
 		this.peerSession = peerSession;
 		this.torrentSession = torrentSession;
-		this.peerMessageHandler = peerMessageHandler;
+		this.peerLauncherMessageHandler = peerLauncherMessageHandler;
 		this.metadataMessageHandler = MetadataMessageHandler.newInstance(this.torrentSession, this.peerSession, this);
 		this.peerExchangeMessageHandler = PeerExchangeMessageHandler.newInstance(this.peerSession, this.torrentSession, this);
 	}
@@ -162,7 +162,7 @@ public class ExtensionMessageHandler {
 		if(!this.handshake) {
 			handshake();
 		}
-		if (peerMessageHandler.action() == Action.torrent) { // 下载种子
+		if (peerLauncherMessageHandler.action() == Action.torrent) { // 下载种子
 			if(peerSession.support(ExtensionType.ut_metadata)) {
 				metadataMessageHandler.request();
 			}
@@ -209,7 +209,7 @@ public class ExtensionMessageHandler {
 	 * @param type 扩展消息类型：需要和Peer的标记一致
 	 */
 	public void pushMessage(byte type, byte[] bytes) {
-		peerMessageHandler.pushMessage(PeerMessageConfig.Type.extension, buildMessage(type, bytes));
+		peerLauncherMessageHandler.pushMessage(PeerMessageConfig.Type.extension, buildMessage(type, bytes));
 	}
 
 }

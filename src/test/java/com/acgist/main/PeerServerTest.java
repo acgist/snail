@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.acgist.snail.net.peer.PeerClient;
+import com.acgist.snail.downloader.torrent.bootstrap.PeerLauncher;
 import com.acgist.snail.net.peer.PeerServer;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
@@ -66,15 +66,15 @@ public class PeerServerTest {
 		entity.setDescription(wrapper.description());
 		torrentSession.upload(TaskSession.newInstance(entity)).download(false);
 		String host = "127.0.0.1";
-		Integer port = 17888;
+		Integer port = 18888;
 		StatisticsSession statisticsSession = new StatisticsSession();
 		PeerSession peerSession = PeerSession.newInstance(statisticsSession, host, port);
-		PeerClient client = PeerClient.newInstance(peerSession, torrentSession);
-		client.torrent();
-//		client.download();
+		PeerLauncher launcher = PeerLauncher.newInstance(peerSession, torrentSession);
+//		launcher.torrent();
+		launcher.download();
 //		ThreadUtils.sleep(4000); // 等待信息交换
 //		var pexMessage = PeerExchangeMessageHandler.buildMessage(List.of(peerSession));
-//		client.handler().pex(pexMessage);
+//		launcher.handler().pex(pexMessage);
 		ThreadUtils.sleep(Long.MAX_VALUE);
 	}
 

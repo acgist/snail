@@ -143,7 +143,7 @@ public class PeerManager {
 		list.stream()
 		.filter(session -> session.uploading() || session.downloading())
 		.forEach(session -> {
-			var handler = session.peerMessageHandler();
+			var handler = session.peerLauncherMessageHandler();
 			if(handler != null && handler.available()) {
 				handler.have(index);
 			}
@@ -167,7 +167,7 @@ public class PeerManager {
 		list.stream()
 		.filter(session -> session.uploading() || session.downloading())
 		.forEach(session -> {
-			var handler = session.peerMessageHandler();
+			var handler = session.peerLauncherMessageHandler();
 			if(handler != null && handler.available()) {
 				handler.exchange(bytes);
 			}

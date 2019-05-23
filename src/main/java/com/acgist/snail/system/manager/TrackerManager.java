@@ -13,13 +13,13 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.downloader.torrent.bootstrap.TrackerLauncher;
 import com.acgist.snail.net.UdpClient;
 import com.acgist.snail.net.tracker.bootstrap.TrackerClient;
-import com.acgist.snail.net.tracker.bootstrap.TrackerClient.Type;
 import com.acgist.snail.net.tracker.bootstrap.impl.HttpTrackerClient;
 import com.acgist.snail.net.tracker.bootstrap.impl.UdpTrackerClient;
 import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.http.HttpProtocol;
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.system.config.SystemConfig.Protocol;
 import com.acgist.snail.system.config.TrackerConfig;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
@@ -132,7 +132,7 @@ public class TrackerManager {
 	 */
 	public void connectionId(int trackerId, long connectionId) {
 		final var client = trackerClients.get(trackerId);
-		if(client != null && client.type() == Type.udp) {
+		if(client != null && client.type() == Protocol.udp) {
 			final UdpTrackerClient udpTrackerClient = (UdpTrackerClient) client;
 			udpTrackerClient.connectionId(connectionId);
 		}
