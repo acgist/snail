@@ -26,6 +26,10 @@ public class UdpSender {
 	 */
 	private final String split;
 	/**
+	 * 是否关闭
+	 */
+	private boolean close = false;
+	/**
 	 * 通道
 	 */
 	protected DatagramChannel channel;
@@ -85,6 +89,21 @@ public class UdpSender {
 		} catch (Exception e) {
 			throw new NetException(e);
 		}
+	}
+	
+	/**
+	 * 可用的：没有被关闭
+	 */
+	public boolean available() {
+		return !close;
+	}
+	
+	/**
+	 * 关闭通道
+	 */
+	public void close() {
+		this.close = true;
+//		IoUtils.close(this.channel);
 	}
 
 }

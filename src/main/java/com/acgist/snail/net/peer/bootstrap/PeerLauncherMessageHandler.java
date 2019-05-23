@@ -10,10 +10,8 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.downloader.torrent.bootstrap.PeerConnectGroup;
 import com.acgist.snail.downloader.torrent.bootstrap.PeerLauncher;
 import com.acgist.snail.downloader.torrent.bootstrap.TorrentStreamGroup;
-import com.acgist.snail.net.peer.PeerMessageHandler;
 import com.acgist.snail.net.peer.bootstrap.dht.DhtExtensionMessageHandler;
 import com.acgist.snail.net.peer.bootstrap.ltep.ExtensionMessageHandler;
-import com.acgist.snail.net.utp.UtpMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
@@ -22,6 +20,7 @@ import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.PeerMessageConfig;
 import com.acgist.snail.system.config.PeerMessageConfig.Action;
 import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.system.interfaces.IPeerMessageHandler;
 import com.acgist.snail.system.manager.PeerManager;
 import com.acgist.snail.system.manager.TorrentManager;
 import com.acgist.snail.utils.BitfieldUtils;
@@ -60,14 +59,22 @@ import com.acgist.snail.utils.StringUtils;
  */
 public class PeerLauncherMessageHandler {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(PeerMessageHandler.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PeerLauncherMessageHandler.class);
 	
 	private volatile boolean handshake = false; // 是否握手
 	private volatile boolean handshaked = false; // 是否被握手
 
+	/**
+	 * 客户端请求时存在，服务端接收时不存在。
+	 */
 	private PeerLauncher peerLauncher;
 	
 	private PeerMessageConfig.Action action; // 客户端动作，默认：下载
+	
+	/**
+	 * 消息代理
+	 */
+	private IPeerMessageHandler peerMessageHandler;
 	
 	private PeerSession peerSession;
 	private TorrentSession torrentSession;
@@ -76,18 +83,16 @@ public class PeerLauncherMessageHandler {
 	private ExtensionMessageHandler extensionMessageHandler;
 	private DhtExtensionMessageHandler dhtExtensionMessageHandler;
 	
-	private UtpMessageHandler utpMessageHandler;
-	private PeerMessageHandler peerMessageHandler;
-	
-	public PeerLauncherMessageHandler() {
+	private PeerLauncherMessageHandler() {
 	}
 
-	/**
-	 * 默认下载
-	 */
 	private PeerLauncherMessageHandler(PeerSession peerSession, TorrentSession torrentSession) {
 		this.action = Action.download;
 		init(peerSession, torrentSession, PeerConfig.HANDSHAKE_RESERVED);
+	}
+	
+	public static final PeerLauncherMessageHandler newInstance() {
+		return new PeerLauncherMessageHandler();
 	}
 	
 	public static final PeerLauncherMessageHandler newInstance(PeerSession peerSession, TorrentSession torrentSession) {
@@ -137,6 +142,11 @@ public class PeerLauncherMessageHandler {
 		}
 	}
 	
+	public PeerLauncherMessageHandler peerMessageHandler(IPeerMessageHandler peerMessageHandler) {
+		this.peerMessageHandler = peerMessageHandler;
+		return this;
+	}
+	
 	/**
 	 * 是否被握手
 	 */
@@ -177,7 +187,7 @@ public class PeerLauncherMessageHandler {
 	 */
 	public void oneMessage(final ByteBuffer buffer) {
 		buffer.flip();
-		if(!handshaked) {
+		if(!this.handshaked) {
 			handshake(buffer);
 		} else {
 			final byte typeValue = buffer.get();
@@ -245,11 +255,7 @@ public class PeerLauncherMessageHandler {
 		buffer.put(PeerConfig.HANDSHAKE_RESERVED);
 		buffer.put(torrentSession.infoHash().infoHash());
 		buffer.put(PeerService.getInstance().peerId());
-		try {
-			this.send(buffer);
-		} catch (Exception e) {
-			LOGGER.error("Peer握手发送异常", e);
-		}
+		this.send(buffer);
 	}
 	
 	/**
@@ -489,16 +495,16 @@ public class PeerLauncherMessageHandler {
 	 * <p>处理request消息</p>
 	 */
 	private void request(ByteBuffer buffer) {
-		if(peerSession.isAmChocking()) { // 被阻塞不操作
+		if(this.peerSession.isAmChocking()) { // 被阻塞不操作
 			return;
 		}
 		final int index = buffer.getInt();
 		final int begin = buffer.getInt();
 		final int length = buffer.getInt();
 		LOGGER.debug("收到请求：{}-{}-{}", index, begin, length);
-		if(torrentStreamGroup.have(index)) {
+		if(this.torrentStreamGroup.have(index)) {
 			try {
-				final byte[] bytes = torrentStreamGroup.read(index, begin, length);
+				final byte[] bytes = this.torrentStreamGroup.read(index, begin, length);
 				piece(index, begin, bytes);
 			} catch (NetException e) {
 				LOGGER.error("处理请求异常", e);
@@ -619,11 +625,7 @@ public class PeerLauncherMessageHandler {
 	 * 发送消息
 	 */
 	public void pushMessage(PeerMessageConfig.Type type, byte[] payload) {
-		try {
-			this.send(buildMessage(type, payload));
-		} catch (Exception e) {
-			LOGGER.error("Peer消息发送异常", e);
-		}
+		this.send(buildMessage(type, payload));
 	}
 	
 	/**
@@ -655,28 +657,24 @@ public class PeerLauncherMessageHandler {
 		return buffer;
 	}
 	
+	public void close() {
+		this.peerMessageHandler.close();
+	}
+	
 	public boolean available() {
-		// TODO
-		return true;
+		return this.peerMessageHandler.available();
 	}
 	
 	private void send(ByteBuffer buffer) {
-		// TODO
-	}
-	
-	public void close() {
-		// TODO:
+		try {
+			this.peerMessageHandler.send(buffer);
+		} catch (Exception e) {
+			LOGGER.error("Peer消息发送异常", e);
+		}
 	}
 
 	private InetSocketAddress remoteSocketAddress() {
-		InetSocketAddress address = null;
-//		try {
-//			address = (InetSocketAddress) socket.getRemoteAddress();
-//		} catch (IOException e) {
-//			LOGGER.error("Peer远程客户端信息获取异常", e);
-//		}
-		// TODO
-		return address;
+		return this.peerMessageHandler.remoteSocketAddress();
 	}
 	
 }
