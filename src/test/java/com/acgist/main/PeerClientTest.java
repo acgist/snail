@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.junit.Test;
 
-import com.acgist.snail.net.peer.PeerClient;
+import com.acgist.snail.downloader.torrent.bootstrap.PeerLauncher;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.session.PeerSession;
@@ -54,8 +54,8 @@ public class PeerClientTest {
 		System.out.println("已下载：" + torrentSession.torrentStreamGroup().pieces());
 		StatisticsSession statisticsSession = new StatisticsSession();
 		PeerSession peerSession = PeerSession.newInstance(statisticsSession, host, port);
-		PeerClient client = PeerClient.newInstance(peerSession, torrentSession);
-		client.download();
+		PeerLauncher launcher = PeerLauncher.newInstance(peerSession, torrentSession);
+		launcher.download();
 		new Thread(() -> {
 			while(true) {
 				System.out.println("下载速度：" + statisticsSession.downloadSecond());
@@ -82,8 +82,8 @@ public class PeerClientTest {
 		Integer port = 49160; // FDM测试端口
 //		Integer port = 15000; // 本地迅雷测试端口
 		PeerSession peerSession = PeerSession.newInstance(new StatisticsSession(), host, port);
-		PeerClient client = PeerClient.newInstance(peerSession, torrentSession);
-		client.torrent();
+		PeerLauncher launcher = PeerLauncher.newInstance(peerSession, torrentSession);
+		launcher.torrent();
 		ThreadUtils.sleep(Long.MAX_VALUE);
 	}
 

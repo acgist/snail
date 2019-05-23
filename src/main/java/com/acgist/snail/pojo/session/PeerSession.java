@@ -1,10 +1,11 @@
 package com.acgist.snail.pojo.session;
 
+import java.net.InetSocketAddress;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.acgist.snail.net.peer.PeerMessageHandler;
+import com.acgist.snail.net.peer.bootstrap.PeerLauncherMessageHandler;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.PeerMessageConfig;
 import com.acgist.snail.system.interfaces.IStatistics;
@@ -45,7 +46,7 @@ public class PeerSession implements IStatistics {
 	private boolean peerChocking; // Peer将客户阻塞：阻塞（Peer不允许客户端下载）-1（true）、非阻塞-0
 	private boolean peerInterested; // Peer对客户端感兴趣：感兴趣-1、不感兴趣-0
 	
-	private PeerMessageHandler peerMessageHandler;
+	private PeerLauncherMessageHandler peerLauncherMessageHandler;
 	
 	private final Map<PeerMessageConfig.ExtensionType, Byte> extension; // 支持的扩展协议
 
@@ -135,12 +136,12 @@ public class PeerSession implements IStatistics {
 		return this.statistics;
 	}
 	
-	public PeerMessageHandler peerMessageHandler() {
-		return this.peerMessageHandler;
+	public PeerLauncherMessageHandler peerLauncherMessageHandler() {
+		return this.peerLauncherMessageHandler;
 	}
 	
-	public void peerMessageHandler(PeerMessageHandler peerMessageHandler) {
-		this.peerMessageHandler = peerMessageHandler;
+	public void peerLauncherMessageHandler(PeerLauncherMessageHandler peerLauncherMessageHandler) {
+		this.peerLauncherMessageHandler = peerLauncherMessageHandler;
 	}
 	
 	/**
@@ -365,6 +366,14 @@ public class PeerSession implements IStatistics {
 	 */
 	public boolean utp() {
 		return (this.exchange & PeerConfig.PEX_UTP) != 0;
+	}
+	
+	public InetSocketAddress peerSocketAddress() {
+		return new InetSocketAddress(this.host, this.peerPort);
+	}
+	
+	public InetSocketAddress dhtSocketAddress() {
+		return new InetSocketAddress(this.host, this.dhtPort);
 	}
 	
 	@Override

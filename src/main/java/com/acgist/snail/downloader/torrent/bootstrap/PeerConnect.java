@@ -1,11 +1,12 @@
-package com.acgist.snail.pojo.session;
+package com.acgist.snail.downloader.torrent.bootstrap;
 
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.peer.PeerMessageHandler;
+import com.acgist.snail.net.peer.bootstrap.PeerLauncherMessageHandler;
+import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.system.config.PeerConfig;
 
 /**
@@ -14,9 +15,9 @@ import com.acgist.snail.system.config.PeerConfig;
  * @author acgist
  * @since 1.0.2
  */
-public class PeerConnectSession {
+public class PeerConnect {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(PeerConnectSession.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PeerConnect.class);
 	
 	/**
 	 * 评分：每次记分时记录为上次的下载大小，统计时使用当前下载大小减去上次记录值。
@@ -24,23 +25,23 @@ public class PeerConnectSession {
 	private AtomicLong mark = new AtomicLong(0);
 	
 	private final PeerSession peerSession;
-	private final PeerMessageHandler peerMessageHandler;
+	private final PeerLauncherMessageHandler peerLauncherMessageHandler;
 	
-	private PeerConnectSession(PeerSession peerSession, PeerMessageHandler peerMessageHandler) {
+	private PeerConnect(PeerSession peerSession, PeerLauncherMessageHandler peerLauncherMessageHandler) {
 		this.peerSession = peerSession;
-		this.peerMessageHandler = peerMessageHandler;
+		this.peerLauncherMessageHandler = peerLauncherMessageHandler;
 	}
 	
-	public static final PeerConnectSession newInstance(PeerSession peerSession, PeerMessageHandler peerMessageHandler) {
-		return new PeerConnectSession(peerSession, peerMessageHandler);
+	public static final PeerConnect newInstance(PeerSession peerSession, PeerLauncherMessageHandler peerLauncherMessageHandler) {
+		return new PeerConnect(peerSession, peerLauncherMessageHandler);
 	}
 
 	public PeerSession getPeerSession() {
 		return peerSession;
 	}
 
-	public PeerMessageHandler getPeerMessageHandler() {
-		return peerMessageHandler;
+	public PeerLauncherMessageHandler getPeerLauncherMessageHandler() {
+		return peerLauncherMessageHandler;
 	}
 	
 	/**
@@ -57,8 +58,8 @@ public class PeerConnectSession {
 	 */
 	public void release() {
 		LOGGER.debug("PeerConnect关闭：{}-{}", this.peerSession.host(), this.peerSession.peerPort());
-		this.peerMessageHandler.choke();
-		this.peerMessageHandler.close();
+		this.peerLauncherMessageHandler.choke();
+		this.peerLauncherMessageHandler.close();
 		this.peerSession.unstatus(PeerConfig.STATUS_UPLOAD);
 	}
 	

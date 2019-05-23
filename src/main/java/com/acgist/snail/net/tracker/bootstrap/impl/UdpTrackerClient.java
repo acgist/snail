@@ -12,6 +12,7 @@ import com.acgist.snail.net.peer.bootstrap.PeerService;
 import com.acgist.snail.net.tracker.TrackerClient;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.system.config.SystemConfig.Protocol;
 import com.acgist.snail.system.config.TrackerConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.ThreadUtils;
@@ -39,7 +40,7 @@ public class UdpTrackerClient extends com.acgist.snail.net.tracker.bootstrap.Tra
 	private Long connectionId;
 
 	private UdpTrackerClient(String scrapeUrl, String announceUrl) throws NetException {
-		super(scrapeUrl, announceUrl, Type.udp);
+		super(scrapeUrl, announceUrl, Protocol.udp);
 		URI uri = URI.create(announceUrl);
 		this.host = uri.getHost();
 		this.port = uri.getPort();
