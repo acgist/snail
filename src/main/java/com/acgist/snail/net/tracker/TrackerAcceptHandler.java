@@ -26,7 +26,7 @@ public class TrackerAcceptHandler extends UdpAcceptHandler {
 	private TrackerMessageHandler trackerMessageHandler = new TrackerMessageHandler();
 	
 	@Override
-	public UdpMessageHandler messageHandler(ByteBuffer buffer, InetSocketAddress address) {
+	public UdpMessageHandler messageHandler(ByteBuffer buffer, InetSocketAddress socketAddress) {
 		return trackerMessageHandler;
 	}
 

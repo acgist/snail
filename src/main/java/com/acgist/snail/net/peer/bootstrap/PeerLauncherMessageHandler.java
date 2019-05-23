@@ -33,7 +33,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0009.html</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0010.html</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0011.html</p>
- * <p>协议链接：http://www.bittorrent.org/beps/bep_0029.html</p>
  * <pre>
  * D = 目前正在下载（有需要的文件部份且没有禁止连接）
  * d = 客户端请求下载，但用户拒绝传输（有需要的文件部份但连接被禁止）
