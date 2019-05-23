@@ -1,4 +1,4 @@
-package com.acgist.snail.net.bootstrap;
+package com.acgist.snail.net.service;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -13,19 +13,19 @@ import com.acgist.snail.net.dht.DhtMessageHandler;
  * @author acgist
  * @since 1.1.0
  */
-public class UdpServiceAcceptHandler extends UdpAcceptHandler {
+public class ServiceAcceptHandler extends UdpAcceptHandler {
 	
 	/**
 	 * DHT开头字符串
 	 */
 	private static final byte DHT_HEADER = 'd';
 	
-	private static final UdpServiceAcceptHandler INSTANCE = new UdpServiceAcceptHandler();
+	private static final ServiceAcceptHandler INSTANCE = new ServiceAcceptHandler();
 	
-	private UdpServiceAcceptHandler() {
+	private ServiceAcceptHandler() {
 	}
 	
-	public static final UdpServiceAcceptHandler getInstance() {
+	public static final ServiceAcceptHandler getInstance() {
 		return INSTANCE;
 	}
 	

@@ -108,6 +108,22 @@ public class HTTPClient {
 	}
 	
 	/**
+	 * 表单数据
+	 */
+	public static final BodyPublisher newFormBodyPublisher(Map<String, String> data) {
+		if(data == null || data.isEmpty()) {
+			return BodyPublishers.noBody();
+		}
+		final String body = data.entrySet()
+			.stream()
+			.map(entry -> {
+				return entry.getKey() + "=" + UrlUtils.encode(entry.getValue());
+			})
+			.collect(Collectors.joining("&"));
+		return BodyPublishers.ofString(body);
+	}
+
+	/**
 	 * GET请求
 	 */
 	public static final <T> HttpResponse<T> get(String requestUrl, HttpResponse.BodyHandler<T> handler) throws NetException {
@@ -128,10 +144,21 @@ public class HTTPClient {
 	/**
 	 * POST请求
 	 */
-	public static final <T> HttpResponse<T> post(String requestUrl, Map<String, String> data, HttpResponse.BodyHandler<T> handler) throws NetException {
+	public static final <T> HttpResponse<T> post(String requestUrl, String data, HttpResponse.BodyHandler<T> handler) throws NetException {
 		final var client = HTTPClient.newClient();
 		final var request = HTTPClient.newRequest(requestUrl)
-			.POST(formBodyPublisher(data))
+			.POST(BodyPublishers.ofString(data))
+			.build();
+		return HTTPClient.request(client, request, handler);
+	}
+	
+	/**
+	 * POST表单请求
+	 */
+	public static final <T> HttpResponse<T> postForm(String requestUrl, Map<String, String> data, HttpResponse.BodyHandler<T> handler) throws NetException {
+		final var client = HTTPClient.newClient();
+		final var request = HTTPClient.newFormRequest(requestUrl)
+			.POST(HTTPClient.newFormBodyPublisher(data))
 			.build();
 		return HTTPClient.request(client, request, handler);
 	}
@@ -192,22 +219,6 @@ public class HTTPClient {
 	 */
 	public static final <T> boolean rangeNotSatisfiable(HttpResponse<T> response) {
 		return response != null && response.statusCode() == HTTP_RANGE_NOT_SATISFIABLE;
-	}
-	
-	/**
-	 * 表单数据
-	 */
-	public static final BodyPublisher formBodyPublisher(Map<String, String> data) {
-		if(data == null || data.isEmpty()) {
-			return BodyPublishers.noBody();
-		}
-		final String body = data.entrySet()
-			.stream()
-			.map(entry -> {
-				return entry.getKey() + "=" + UrlUtils.encode(entry.getValue());
-			})
-			.collect(Collectors.joining("&"));
-		return BodyPublishers.ofString(body);
 	}
 	
 }

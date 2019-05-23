@@ -61,7 +61,7 @@ public class DhtClientTest {
 	@Test
 	public void getPeers() throws DownloadException {
 		DhtClient client = DhtClient.newInstance(host, port);
-		final String hash = "c15417e6aeab33732a59085d826edd29978f9afa";
+		final String hash = "16b1233b33143700fe47910898fcaaf0f05d2d09";
 		final InfoHash infoHash = InfoHash.newInstance(hash);
 		client.getPeers(infoHash);
 		while(true) {

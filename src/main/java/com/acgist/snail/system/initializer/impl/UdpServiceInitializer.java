@@ -3,7 +3,7 @@ package com.acgist.snail.system.initializer.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.bootstrap.UdpServiceServer;
+import com.acgist.snail.net.service.ServiceServer;
 import com.acgist.snail.system.initializer.Initializer;
 
 /**
@@ -23,7 +23,7 @@ public class UdpServiceInitializer extends Initializer {
 	@Override
 	protected void init() {
 		LOGGER.info("初始化DHT、UDP服务");
-		UdpServiceServer.getInstance();
+		ServiceServer.getInstance();
 	}
 
 }
