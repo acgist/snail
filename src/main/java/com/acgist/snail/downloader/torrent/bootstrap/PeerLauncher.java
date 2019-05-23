@@ -115,6 +115,7 @@ public class PeerLauncher {
 	
 	/**
 	 * 连接，优先使用TUP、然后使用TCP。
+	 * TODO：支持UTP
 	 */
 	private boolean connect() {
 		final UtpClient utpClient = UtpClient.newInstance(this.peerSession, this.peerLauncherMessageHandler);
