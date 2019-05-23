@@ -35,8 +35,7 @@ public class UtpClient extends UdpClient<UtpMessageHandler> {
 	 * 握手
 	 */
 	public boolean connect() {
-		// TODO：握手
-		return false;
+		return this.handler.connect();
 	}
 
 	public PeerSession peerSession() {
