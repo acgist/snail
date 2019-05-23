@@ -26,8 +26,6 @@ import com.acgist.snail.utils.StringUtils;
  * </ul>
  * </p>
  * 
- * TODO：超时
- * 
  * @author acgist
  * @since 1.0.0
  */
@@ -41,16 +39,14 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends UdpSender {
 	 * 客户端名称
 	 */
 	private final String name;
-	
-	/**
-	 * 请求地址
-	 */
-	protected final InetSocketAddress address;
-	
 	/**
 	 * 消息代理
 	 */
 	protected final T handler;
+	/**
+	 * 请求地址
+	 */
+	protected final InetSocketAddress address;
 	
 	public UdpClient(String name, T handler, InetSocketAddress address) {
 		this.name = name;

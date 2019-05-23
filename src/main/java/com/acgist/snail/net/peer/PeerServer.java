@@ -1,4 +1,4 @@
-package com.acgist.snail.net.peer.tcp;
+package com.acgist.snail.net.peer;
 
 import com.acgist.snail.net.TcpServer;
 import com.acgist.snail.system.config.SystemConfig;
@@ -9,12 +9,12 @@ import com.acgist.snail.system.config.SystemConfig;
  * @author acgist
  * @since 1.0.0
  */
-public class PeerServer extends TcpServer {
+public class PeerServer extends TcpServer<PeerMessageHandler> {
 
 //	private static final Logger LOGGER = LoggerFactory.getLogger(PeerServer.class);
 	
 	private PeerServer() {
-		super("Peer Server");
+		super("Peer Server", PeerMessageHandler.class);
 	}
 
 	private static final PeerServer INSTANCE = new PeerServer();
@@ -26,11 +26,6 @@ public class PeerServer extends TcpServer {
 	@Override
 	public boolean listen() {
 		return this.listen(SystemConfig.getServicePort());
-	}
-
-	@Override
-	public boolean listen(String host, int port) {
-		return this.listen(host, port, PeerMessageHandler.class);
 	}
 
 }

@@ -19,7 +19,7 @@ public class TcpAcceptHandler<T extends TcpMessageHandler> implements Completion
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TcpAcceptHandler.class);
 	
-	private Class<T> clazz;
+	private final Class<T> clazz;
 	
 	private TcpAcceptHandler(Class<T> clazz) {
 		this.clazz = clazz;

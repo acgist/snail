@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.acgist.snail.net.peer.tcp.PeerClient;
-import com.acgist.snail.net.peer.tcp.PeerServer;
+import com.acgist.snail.net.peer.PeerClient;
+import com.acgist.snail.net.peer.PeerServer;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.session.PeerSession;

@@ -17,7 +17,7 @@ import com.acgist.snail.utils.NetUtils;
  * @author acgist
  * @since 1.0.0
  */
-public abstract class TcpServer {
+public abstract class TcpServer<T extends TcpMessageHandler> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TcpServer.class);
 	
@@ -27,7 +27,7 @@ public abstract class TcpServer {
 	 * 服务端名称
 	 */
 	private final String name;
-	
+	private final Class<T> clazz;
 	private AsynchronousServerSocketChannel server;
 	
 	static {
@@ -44,8 +44,9 @@ public abstract class TcpServer {
 	/**
 	 * 线程大小根据客户类型优化
 	 */
-	protected TcpServer(String name) {
+	protected TcpServer(String name, Class<T> clazz) {
 		this.name = name;
+		this.clazz = clazz;
 	}
 
 	/**
@@ -63,17 +64,12 @@ public abstract class TcpServer {
 	/**
 	 * 开启监听
 	 */
-	public abstract boolean listen(String host, int port);
-	
-	/**
-	 * 开启监听
-	 */
-	protected <T extends TcpMessageHandler> boolean listen(String host, int port, Class<T> clazz) {
+	protected boolean listen(String host, int port) {
 		LOGGER.info("启动服务端：{}", this.name);
 		boolean ok = true;
 		try {
 			this.server = AsynchronousServerSocketChannel.open(GROUP).bind(NetUtils.buildSocketAddress(host, port));
-			this.server.accept(this.server, TcpAcceptHandler.newInstance(clazz));
+			this.server.accept(this.server, TcpAcceptHandler.newInstance(this.clazz));
 		} catch (Exception e) {
 			ok = false;
 			LOGGER.error("TCP Server启动异常：{}", this.name, e);

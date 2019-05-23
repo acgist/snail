@@ -9,8 +9,8 @@ import com.acgist.snail.net.TcpServer;
 import com.acgist.snail.net.UdpServer;
 import com.acgist.snail.net.application.ApplicationClient;
 import com.acgist.snail.net.application.ApplicationServer;
-import com.acgist.snail.net.dht.DhtServer;
-import com.acgist.snail.net.peer.tcp.PeerServer;
+import com.acgist.snail.net.bootstrap.UdpServiceServer;
+import com.acgist.snail.net.peer.PeerServer;
 import com.acgist.snail.net.tracker.TrackerServer;
 import com.acgist.snail.net.upnp.UpnpServer;
 import com.acgist.snail.net.upnp.bootstrap.UpnpService;
@@ -21,6 +21,7 @@ import com.acgist.snail.system.initializer.impl.DownloaderInitializer;
 import com.acgist.snail.system.initializer.impl.PeerInitializer;
 import com.acgist.snail.system.initializer.impl.ProtocolInitializer;
 import com.acgist.snail.system.initializer.impl.TrackerInitializer;
+import com.acgist.snail.system.initializer.impl.UdpServiceInitializer;
 import com.acgist.snail.system.initializer.impl.UpnpInitializer;
 import com.acgist.snail.system.manager.DownloaderManager;
 import com.acgist.snail.utils.FileUtils;
@@ -49,11 +50,12 @@ public class SystemContext {
 		DbInitializer.newInstance().initSync();
 		ConfigInitializer.newInstance().initAsyn();
 		ProtocolInitializer.newInstance().initAsyn();
-		PeerInitializer.newInstance().initAsyn();
-		DownloaderInitializer.newInstance().initAsyn();
-		UpnpInitializer.newInstance().initAsyn();
-		TrackerInitializer.newInstance().initAsyn();
 		DhtInitializer.newInstance().initAsyn();
+		TrackerInitializer.newInstance().initAsyn();
+		UpnpInitializer.newInstance().initAsyn();
+		PeerInitializer.newInstance().initAsyn();
+		UdpServiceInitializer.newInstance().initAsyn();
+		DownloaderInitializer.newInstance().initAsyn();
 	}
 	
 	/**
@@ -97,15 +99,15 @@ public class SystemContext {
 			SystemThreadContext.submit(() -> {
 				LOGGER.info("系统关闭...");
 				DownloaderManager.getInstance().shutdown();
-				ApplicationServer.getInstance().close();
 				UpnpService.getInstance().release();
-				DhtServer.getInstance().close();
+				ApplicationServer.getInstance().close();
 				UpnpServer.getInstance().close();
+				PeerServer.getInstance().close();
 				TrackerServer.getInstance().close();
+				UdpServiceServer.getInstance().close();
 				TcpClient.shutdown();
 				TcpServer.shutdown();
 				UdpServer.shutdown();
-				PeerServer.shutdown();
 				SystemThreadContext.shutdown();
 				Platform.exit();
 				TrayMenu.exit();
