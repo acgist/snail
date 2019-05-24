@@ -63,8 +63,8 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	};
 	
 	@Override
-	public void onMessage(ByteBuffer buffer, InetSocketAddress address) {
-		LOGGER.debug("DHT消息，地址：{}", address);
+	public void onMessage(ByteBuffer buffer, InetSocketAddress socketAddress) {
+		LOGGER.debug("DHT消息，地址：{}", socketAddress);
 		buffer.flip();
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
@@ -78,11 +78,11 @@ public class DhtMessageHandler extends UdpMessageHandler {
 		LOGGER.debug("DHT消息类型：{}", y);
 		if(DhtConfig.KEY_Q.equals(y)) {
 			final Request request = Request.valueOf(decoder);
-			request.setAddress(address);
-			onRequest(request, address);
+			request.setAddress(socketAddress);
+			onRequest(request, socketAddress);
 		} else if(DhtConfig.KEY_R.equals(y)) {
 			final Response response = Response.valueOf(decoder);
-			response.setAddress(address);
+			response.setAddress(socketAddress);
 			onResponse(response);
 		} else {
 			LOGGER.warn("不支持的DHT类型：{}", y);

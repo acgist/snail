@@ -20,7 +20,7 @@ import com.acgist.snail.utils.NetUtils;
  * @author acgist
  * @since 1.0.0
  */
-public abstract class TcpClient<T extends TcpMessageHandler> extends TcpSender {
+public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessageHandlerAdapter<T> implements IMessageHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TcpClient.class);
 	
@@ -37,10 +37,6 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends TcpSender {
 	 * 超时
 	 */
 	private int timeout;
-	/**
-	 * 消息代理
-	 */
-	protected T handler;
 
 	static {
 		AsynchronousChannelGroup group = null;
@@ -53,7 +49,6 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends TcpSender {
 	}
 	
 	public TcpClient(String name, int timeout, T handler) {
-		super(handler.split());
 		this.name = name;
 		this.timeout = timeout;
 		this.handler = handler;
@@ -73,13 +68,13 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends TcpSender {
 	protected boolean connect(final String host, final int port) {
 		boolean ok = true;
 		try {
-			this.socket = AsynchronousSocketChannel.open(GROUP);
-			this.socket.setOption(StandardSocketOptions.TCP_NODELAY, true);
-			this.socket.setOption(StandardSocketOptions.SO_REUSEADDR, true);
-			this.socket.setOption(StandardSocketOptions.SO_KEEPALIVE, true);
-			Future<Void> future = this.socket.connect(NetUtils.buildSocketAddress(host, port));
+			AsynchronousSocketChannel socket = AsynchronousSocketChannel.open(GROUP);
+			socket.setOption(StandardSocketOptions.TCP_NODELAY, true);
+			socket.setOption(StandardSocketOptions.SO_REUSEADDR, true);
+			socket.setOption(StandardSocketOptions.SO_KEEPALIVE, true);
+			Future<Void> future = socket.connect(NetUtils.buildSocketAddress(host, port));
 			future.get(this.timeout, TimeUnit.SECONDS);
-			this.handler.handle(this.socket);
+			this.handler.handle(socket);
 		} catch (Exception e) {
 			ok = false;
 			LOGGER.error("客户端连接异常：{}-{}", host, port, e);
@@ -100,7 +95,6 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends TcpSender {
 	public void close() {
 		LOGGER.debug("TCP Client关闭：{}", this.name);
 		super.close();
-		this.handler.close();
 	}
 
 	/**
@@ -110,5 +104,5 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends TcpSender {
 		LOGGER.info("关闭TCP Client线程池");
 		IoUtils.close(GROUP);
 	}
-	
+
 }

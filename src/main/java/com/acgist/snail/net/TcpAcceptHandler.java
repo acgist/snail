@@ -48,7 +48,7 @@ public class TcpAcceptHandler<T extends TcpMessageHandler> implements Completion
 	 * 消息代理
 	 */
 	private void handle(AsynchronousSocketChannel result) {
-		BeanUtils.newInstance(clazz).handle(result);
+		BeanUtils.newInstance(this.clazz).handle(result);
 	}
 	
 	/**

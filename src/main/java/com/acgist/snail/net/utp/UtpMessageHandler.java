@@ -11,7 +11,6 @@ import com.acgist.snail.net.peer.bootstrap.PeerLauncherMessageHandler;
 import com.acgist.snail.net.utp.bootstrap.UtpService;
 import com.acgist.snail.system.config.UtpConfig;
 import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.system.interfaces.IPeerMessageHandler;
 
 /**
  * <p>uTorrent transport protocol</p>
@@ -20,7 +19,7 @@ import com.acgist.snail.system.interfaces.IPeerMessageHandler;
  * @author acgist
  * @since 1.1.0
  */
-public class UtpMessageHandler extends UdpMessageHandler implements IPeerMessageHandler {
+public class UtpMessageHandler extends UdpMessageHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UtpMessageHandler.class);
 	
@@ -48,7 +47,7 @@ public class UtpMessageHandler extends UdpMessageHandler implements IPeerMessage
 	 */
 	public UtpMessageHandler() {
 		this.peerLauncherMessageHandler = PeerLauncherMessageHandler.newInstance();
-		this.peerLauncherMessageHandler.peerMessageHandler(this);
+		this.peerLauncherMessageHandler.messageHandler(this);
 	}
 
 	/**
@@ -56,7 +55,7 @@ public class UtpMessageHandler extends UdpMessageHandler implements IPeerMessage
 	 */
 	public UtpMessageHandler(PeerLauncherMessageHandler peerLauncherMessageHandler) {
 		this.peerLauncherMessageHandler = peerLauncherMessageHandler;
-		this.peerLauncherMessageHandler.peerMessageHandler(this);
+		this.peerLauncherMessageHandler.messageHandler(this);
 		this.recvId = this.utpService.connectionId();
 		this.sendId = (short) (this.recvId + 1);
 		this.seqnr = 0;

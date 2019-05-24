@@ -22,14 +22,14 @@ public class UDPTest {
 		UdpClient<UdpTestMessageHandler> client = new UdpClient<UdpTestMessageHandler>("TestClient", handler, address) {
 			@Override
 			public boolean open() {
-				return this.open(channel);
+				return this.open(server.channel());
 			}
 		};
 		client.open(server.channel());
 		UdpClient<UdpTestMessageHandler> clients = new UdpClient<UdpTestMessageHandler>("TestClient", handler, address) {
 			@Override
 			public boolean open() {
-				return this.open(channel);
+				return this.open(server.channel());
 			}
 		};
 		clients.open(server.channel());
@@ -41,8 +41,8 @@ public class UDPTest {
 				final String sendMessage = message.repeat(1);
 				System.out.println("发送消息：" + sendMessage);
 				System.out.println("消息长度：" + sendMessage.getBytes().length);
-				client.send(ByteBuffer.wrap((sendMessage).getBytes()), new InetSocketAddress("127.0.0.1", port));
-				clients.send(ByteBuffer.wrap((sendMessage).getBytes()), new InetSocketAddress("127.0.0.1", port));
+				client.send(ByteBuffer.wrap((sendMessage).getBytes()));
+				clients.send(ByteBuffer.wrap((sendMessage).getBytes()));
 			} catch (NetException e) {
 				e.printStackTrace();
 			}
