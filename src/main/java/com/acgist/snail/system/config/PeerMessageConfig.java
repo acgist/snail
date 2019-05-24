@@ -11,19 +11,17 @@ public class PeerMessageConfig {
 	 */
 	public enum Type {
 		
-		choke((byte) 0),
-		unchoke((byte) 1),
-		interested((byte) 2),
+		choke((byte)         0),
+		unchoke((byte)       1),
+		interested((byte)    2),
 		notInterested((byte) 3),
-		have((byte) 4),
-		bitfield((byte) 5),
-		request((byte) 6),
-		piece((byte) 7),
-		cancel((byte) 8),
-		
-		dht((byte) 9),
-		
-		extension((byte) 20);
+		have((byte)          4),
+		bitfield((byte)      5),
+		request((byte)       6),
+		piece((byte)         7),
+		cancel((byte)        8),
+		dht((byte)           9),
+		extension((byte)     20);
 		
 		Type(byte value) {
 			this.value = value;
@@ -52,9 +50,9 @@ public class PeerMessageConfig {
 	 */
 	public enum ExtensionType {
 		
-		handshake((byte) 0, true, false), // 默认
-		ut_pex((byte) 1, true, true),
-		ut_metadata((byte) 2, true, true),
+		handshake((byte)    0, true,  false), // 默认
+		ut_pex((byte)       1, true,  true),
+		ut_metadata((byte)  2, true,  true),
 		ut_holepunch((byte) 3, false, false);
 		
 		ExtensionType(byte value, boolean support, boolean notice) {
@@ -107,8 +105,8 @@ public class PeerMessageConfig {
 	public enum UtMetadataType {
 		
 		request((byte) 0),
-		data((byte) 1),
-		reject((byte) 2);
+		data((byte)    1),
+		reject((byte)  2);
 		
 		UtMetadataType(byte value) {
 			this.value = value;

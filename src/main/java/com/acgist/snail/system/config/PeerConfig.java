@@ -28,9 +28,9 @@ public class PeerConfig {
 	 */
 	public static final byte[] HANDSHAKE_RESERVED = {0, 0, 0, 0, 0, 0, 0, 0};
 	
-	public static final byte DHT_PROTOCOL = 1 << 0; // 0x01
+	public static final byte DHT_PROTOCOL =       1 << 0; // 0x01
 	public static final byte EXTENSION_PROTOCOL = 1 << 4; // 0x10
-//	public static final byte PEER_EXCHANGE = 1 << 1; // 0x02
+//	public static final byte PEER_EXCHANGE =      1 << 1; // 0x02
 	
 	static {
 		HANDSHAKE_RESERVED[5] |= EXTENSION_PROTOCOL; // Extension Protocol
@@ -50,24 +50,24 @@ public class PeerConfig {
 	 * Peer来源
 	 */
 	public static final byte SOURCE_TRACKER = 1 << 0; // Tracker
-	public static final byte SOURCE_PEX = 1 << 1; // PEX
-	public static final byte SOURCE_DHT = 1 << 2; // DHT
+	public static final byte SOURCE_PEX =     1 << 1; // PEX
+	public static final byte SOURCE_DHT =     1 << 2; // DHT
 	public static final byte SOURCE_CONNECT = 1 << 3; // 客户端连接
 	
 	/**
 	 * Peer状态
 	 */
-	public static final byte STATUS_UPLOAD = 1 << 1; // 上传
+	public static final byte STATUS_UPLOAD =   1 << 1; // 上传
 	public static final byte STATUS_DOWNLOAD = 1 << 0; // 下载
 	
 	/**
 	 * PEX状态
 	 */
-	public static final byte PEX_ENCRYPTION = 1 << 0; // 0x1：加密
+	public static final byte PEX_ENCRYPTION =       1 << 0; // 0x1：加密
 	public static final byte PEX_SEED_UPLOAD_ONLY = 1 << 1; // 0x2：做种、上传
-	public static final byte PEX_UTP = 1 << 2; // 0x4：支持UTP协议
-	public static final byte PEX_HOLEPUNCH = 1 << 3; // 0x8：支持holepunch协议
-	public static final byte PEX_OUTGO = 1 << 4; // 0x10
+	public static final byte PEX_UTP =              1 << 2; // 0x4：支持UTP协议
+	public static final byte PEX_HOLEPUNCH =        1 << 3; // 0x8：支持holepunch协议
+	public static final byte PEX_OUTGO =            1 << 4; // 0x10
 	
 	/**
 	 * Peer客户端名称
