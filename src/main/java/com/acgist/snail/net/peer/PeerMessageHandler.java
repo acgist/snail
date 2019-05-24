@@ -24,6 +24,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	private static final int INTEGER_BYTE_LENGTH = 4;
 	private final ByteBuffer lengthStick = ByteBuffer.allocate(INTEGER_BYTE_LENGTH);
 	
+	// TODO：优化不new
 	private ByteBuffer buffer;
 	
 	private final PeerLauncherMessageHandler peerLauncherMessageHandler;

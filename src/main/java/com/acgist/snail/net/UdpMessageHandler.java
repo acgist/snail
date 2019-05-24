@@ -49,7 +49,7 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 	/**
 	 * 消息处理
 	 */
-	public abstract void onMessage(ByteBuffer buffer, InetSocketAddress socketAddress);
+	public abstract void onMessage(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException;
 	
 	/**
 	 * 消息分隔符

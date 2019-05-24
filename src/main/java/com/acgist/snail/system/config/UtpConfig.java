@@ -25,11 +25,11 @@ public class UtpConfig {
 	/**
 	 * 类型+版本
 	 */
-	public static final byte DATA  = 0x01;
-	public static final byte FIN   = 0x11;
-	public static final byte STATE = 0x21;
-	public static final byte RESET = 0x31;
-	public static final byte SYN   = 0x41;
+	public static final byte TYPE_DATA  = 0x01;
+	public static final byte TYPE_FIN   = 0x11;
+	public static final byte TYPE_STATE = 0x21;
+	public static final byte TYPE_RESET = 0x31;
+	public static final byte TYPE_SYN   = 0x41;
 	
 	/**
 	 * 扩展
@@ -45,5 +45,16 @@ public class UtpConfig {
 	 * 默认窗口大小
 	 */
 	public static final int WND_SIZE = 1024 * 1024;
+
+	/**
+	 * 类型
+	 */
+	public static final String type(byte type) {
+		return type == TYPE_DATA ? "DATA" :
+			type == TYPE_FIN ? "FIN" :
+			type == TYPE_STATE ? "STATE" :
+			type == TYPE_RESET ? "RESET" :
+			type == TYPE_SYN ? "SYN" : "UNKNOW";
+	}
 	
 }

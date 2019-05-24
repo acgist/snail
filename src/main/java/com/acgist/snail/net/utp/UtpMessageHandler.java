@@ -2,6 +2,7 @@ package com.acgist.snail.net.utp;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.time.Duration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,8 +10,12 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.net.peer.bootstrap.PeerLauncherMessageHandler;
 import com.acgist.snail.net.utp.bootstrap.UtpService;
+import com.acgist.snail.net.utp.bootstrap.UtpWindowHandler;
+import com.acgist.snail.system.config.PeerConfig;
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.config.UtpConfig;
 import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * <p>uTorrent transport protocol</p>
@@ -23,53 +28,78 @@ public class UtpMessageHandler extends UdpMessageHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UtpMessageHandler.class);
 	
+	private static final int TIMEOUT = 4000;
+	
 	/**
 	 * 接收连接ID
 	 */
-	private short recvId;
+	private final short recvId;
 	/**
 	 * 发送连接ID
 	 */
-	private short sendId;
+	private final short sendId;
 	/**
 	 * 请求序号
 	 */
-	private short seqnr;
+	private int seqnr;
+	
+	public static void main(String[] args) {
+		System.out.println(Integer.MAX_VALUE);
+		System.out.println((short) (Integer.MAX_VALUE % (2<<16)));
+		System.out.println(2<<16);
+	}
+	/**
+	 * 是否连接
+	 */
+	private boolean connect;
+	/**
+	 * 连接锁
+	 */
+	private Object connectLock = new Object();
+	
+	private ByteBuffer buffer;
 	
 	private final UtpService utpService = UtpService.getInstance();
 	
 	private final PeerLauncherMessageHandler peerLauncherMessageHandler;
 	
+	private final UtpWindowHandler utpWindowHandler = new UtpWindowHandler();
+	
+	/**
+	 * 如果消息长度不够一个Integer长度时使用
+	 */
+	private static final int INTEGER_BYTE_LENGTH = 4;
+	private final ByteBuffer lengthStick = ByteBuffer.allocate(INTEGER_BYTE_LENGTH);
+	
 	/**
 	 * 服务端
-	 * TODO:map
 	 */
-	public UtpMessageHandler() {
+	public UtpMessageHandler(final short connectionId, InetSocketAddress socketAddress) {
 		this.peerLauncherMessageHandler = PeerLauncherMessageHandler.newInstance();
 		this.peerLauncherMessageHandler.messageHandler(this);
+		this.sendId = connectionId;
+		this.recvId = (short) (this.sendId + 1);
+		this.utpService.putUtpMessageHandler(this.recvId, socketAddress, this);
 	}
 
 	/**
 	 * 客户端
 	 */
-	public UtpMessageHandler(PeerLauncherMessageHandler peerLauncherMessageHandler) {
+	public UtpMessageHandler(PeerLauncherMessageHandler peerLauncherMessageHandler, InetSocketAddress socketAddress) {
 		this.peerLauncherMessageHandler = peerLauncherMessageHandler;
 		this.peerLauncherMessageHandler.messageHandler(this);
 		this.recvId = this.utpService.connectionId();
-		this.sendId = (short) (this.recvId + 1);
+		this.sendId = (short) (this.recvId + 1); 
 		this.seqnr = 0;
-	}
-	
-	public void connectionId(short connectionId) {
-		this.sendId = connectionId;
-		this.recvId = (short) (this.sendId + 1);
+		this.utpService.putUtpMessageHandler(this.recvId, socketAddress, this);
 	}
 	
 	@Override
-	public void onMessage(ByteBuffer buffer, InetSocketAddress socketAddress) {
+	public void onMessage(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException {
 		if(this.socketAddress == null) {
 			this.socketAddress = socketAddress;
 		}
+		buffer.flip();
 		final byte type = buffer.get();
 		final byte extension = buffer.get();
 		final short connectionId = buffer.getShort();
@@ -79,36 +109,232 @@ public class UtpMessageHandler extends UdpMessageHandler {
 		final short acknr = buffer.getShort();
 		if(LOGGER.isDebugEnabled()) {
 			LOGGER.debug("UTP消息，类型：{}，扩展：{}，连接ID：{}，时间戳：{}，时间戳对比：{}，请求号：{}，应答号：{}",
-				type, extension, connectionId, timestamp, timestampDifference, seqnr, acknr);
+				UtpConfig.type(type), extension, connectionId, timestamp, timestampDifference, seqnr, acknr);
 		}
-		
-		this.peerLauncherMessageHandler.oneMessage(buffer);
+		switch (type) {
+		case UtpConfig.TYPE_DATA:
+			data(timestamp, seqnr, buffer);
+			break;
+		case UtpConfig.TYPE_FIN:
+			fin(timestamp, seqnr);
+			break;
+		case UtpConfig.TYPE_STATE:
+			state(timestamp, seqnr, acknr);
+			break;
+		case UtpConfig.TYPE_RESET:
+			reset(timestamp, seqnr);
+			break;
+		case UtpConfig.TYPE_SYN:
+			syn(timestamp, seqnr);
+			break;
+		default:
+			LOGGER.error("不支持的UTP类型：{}", type);
+			return;
+		}
 	}
 
+	/**
+	 * TODO：发送消息拆包
+	 */
 	@Override
 	public void send(ByteBuffer buffer) throws NetException {
-		send(buffer, this.socketAddress);
+		super.send(buffer);
 	}
 
 	/**
 	 * 连接
 	 */
 	public boolean connect() {
-		final ByteBuffer buffer = buffer(UtpConfig.SYN, 20);
+		this.connect = false;
+		this.syn();
+		synchronized (this.connectLock) {
+			ThreadUtils.wait(this.connectLock, Duration.ofSeconds(TIMEOUT));
+		}
+		return this.connect;
+	}
+
+	/**
+	 * 连接成功
+	 */
+	private void connect(boolean connect) {
+		this.connect = connect;
+		synchronized (this.connectLock) {
+			this.connectLock.notifyAll();
+		}
+	}
+
+	/**
+	 * 接收数据消息
+	 */
+	private void data(int timestamp, short seqnr, ByteBuffer buffer) throws NetException {
+		final ByteBuffer messageBuffer = this.utpWindowHandler.put(seqnr, buffer);
+		if(messageBuffer == null) {
+			this.state(timestamp, seqnr);
+			return;
+		}
+		int length = 0;
+		messageBuffer.flip();
+		while(true) {
+			if(this.buffer == null) {
+				if(this.peerLauncherMessageHandler.handshaked()) {
+					for (int index = 0; index < messageBuffer.limit(); index++) {
+						this.lengthStick.put(messageBuffer.get());
+						if(this.lengthStick.position() == INTEGER_BYTE_LENGTH) {
+							break;
+						}
+					}
+					if(this.lengthStick.position() == INTEGER_BYTE_LENGTH) {
+						this.lengthStick.flip();
+						length = this.lengthStick.getInt();
+						this.lengthStick.compact();
+					} else {
+						break;
+					}
+				} else { // 握手
+					length = PeerConfig.HANDSHAKE_LENGTH;
+				}
+				if(length <= 0) { // 心跳
+					this.peerLauncherMessageHandler.keepAlive();
+					break;
+				}
+				if(length >= SystemConfig.MAX_NET_BUFFER_SIZE) {
+					throw new NetException("超过最大的网络包大小：" + length);
+				}
+				this.buffer = ByteBuffer.allocate(length);
+			} else {
+				length = this.buffer.capacity() - this.buffer.position();
+			}
+			final int remaining = messageBuffer.remaining();
+			if(remaining > length) { // 包含一个完整消息
+				byte[] bytes = new byte[length];
+				messageBuffer.get(bytes);
+				this.buffer.put(bytes);
+				this.peerLauncherMessageHandler.oneMessage(this.buffer);
+				this.buffer = null;
+			} else if(remaining == length) { // 刚好一个完整消息
+				byte[] bytes = new byte[length];
+				messageBuffer.get(bytes);
+				this.buffer.put(bytes);
+				this.peerLauncherMessageHandler.oneMessage(this.buffer);
+				this.buffer = null;
+				break;
+			} else if(remaining < length) { // 不是完整消息
+				byte[] bytes = new byte[remaining];
+				messageBuffer.get(bytes);
+				this.buffer.put(bytes);
+				break;
+			}
+		}
+		this.state(timestamp, seqnr);
+	}
+	
+	/**
+	 * 发送数据消息
+	 */
+	private void data(int timestamp, short seqnr, byte[] bytes) {
+		final int now = timestamp();
+		final ByteBuffer buffer = header(UtpConfig.TYPE_DATA, 20);
+		buffer.putShort(this.sendId);
+		buffer.putInt(now);
+		buffer.putInt(now - timestamp);
+		buffer.putInt(this.utpWindowHandler.remaining());
+		buffer.putShort(this.seqnr());
+		buffer.putShort(seqnr); // acknr=请求seqnr
+		buffer.put(bytes);
+		this.pushMessage(buffer);
+	}
+	
+	/**
+	 * 接收结束消息
+	 */
+	private void fin(int timestamp, short seqnr) {
+		this.connect = false;
+		super.close();
+		this.state(timestamp, seqnr);
+	}
+	
+	/**
+	 * 发送结束消息
+	 */
+	private void fin() {
+		final ByteBuffer buffer = header(UtpConfig.TYPE_FIN, 20);
 		buffer.putShort(this.recvId);
 		buffer.putInt(timestamp());
 		buffer.putInt(0);
 		buffer.putInt(0);
-		buffer.putShort(this.seqnr);
+		buffer.putShort(this.seqnr());
 		buffer.putShort((short) 0);
-		return false;
+		this.pushMessage(buffer);
 	}
 
 	/**
-	 * 应答消息
+	 * 接收应答消息
 	 */
-	private void state() {
-		ByteBuffer buffer = buffer(UtpConfig.STATE, 20);
+	private void state(int timestamp, short seqnr, short acqnr) {
+		if(!this.connect) { // 没有连接
+			this.connect(this.available());
+		} else { // 其他处理
+			// TODO：处理
+		}
+	}
+	
+	/**
+	 * 发送应答消息
+	 */
+	private void state(int timestamp, short seqnr) {
+		final int now = timestamp();
+		final ByteBuffer buffer = header(UtpConfig.TYPE_STATE, 20);
+		buffer.putShort(this.sendId);
+		buffer.putInt(now);
+		buffer.putInt(now - timestamp);
+		buffer.putInt(this.utpWindowHandler.remaining());
+		buffer.putShort((short) (seqnr + 1));
+		buffer.putShort(seqnr); // acknr=请求seqnr
+		this.pushMessage(buffer);
+	}
+	
+	/**
+	 * 接收reset消息
+	 */
+	private void reset(int timestamp, short seqnr) {
+		this.connect = false;
+		super.close();
+		this.state(timestamp, seqnr);
+	}
+	
+	/**
+	 * 发送reset消息
+	 */
+	private void reset() {
+		final ByteBuffer buffer = header(UtpConfig.TYPE_RESET, 20);
+		buffer.putShort(this.recvId);
+		buffer.putInt(timestamp());
+		buffer.putInt(0);
+		buffer.putInt(0);
+		buffer.putShort(this.seqnr());
+		buffer.putShort((short) 0);
+		this.pushMessage(buffer);
+	}
+	
+	/**
+	 *接收握手消息
+	 */
+	private void syn(int timestamp, short seqnr) {
+		this.state(timestamp, seqnr);
+	}
+	
+	/**
+	 * 发送握手消息
+	 */
+	private void syn() {
+		final ByteBuffer buffer = header(UtpConfig.TYPE_SYN, 20);
+		buffer.putShort(this.recvId);
+		buffer.putInt(timestamp());
+		buffer.putInt(0);
+		buffer.putInt(0);
+		buffer.putShort(this.seqnr());
+		buffer.putShort((short) 0);
+		this.pushMessage(buffer);
 	}
 
 	/**
@@ -118,17 +344,44 @@ public class UtpMessageHandler extends UdpMessageHandler {
 		return (int) System.nanoTime();
 	}
 	
-	private ByteBuffer buffer(byte type, int size) {
-		ByteBuffer buffer = ByteBuffer.allocate(size);
+	/**
+	 * 请求号
+	 */
+	private short seqnr() {
+		synchronized (this) {
+			return (short) this.seqnr++;
+		}
+	}
+	
+	/**
+	 * 设置消息头
+	 */
+	private ByteBuffer header(byte type, int size) {
+		final ByteBuffer buffer = ByteBuffer.allocate(size);
 		buffer.put(type);
 		buffer.put(UtpConfig.EXTENSION);
 		return buffer;
 	}
 	
-	private ByteBuffer packet(ByteBuffer buffer) {
-		ByteBuffer packet = ByteBuffer.allocate(1024);
-		packet.putInt(0);
-		return null;
+	/**
+	 * 发送消息
+	 */
+	private void pushMessage(ByteBuffer buffer) {
+		try {
+			this.send(buffer);
+		} catch (NetException e) {
+			this.reset();
+			LOGGER.error("UTP发送消息异常", e);
+		}
+	}
+	
+	/**
+	 * 发送fin消息，标记关闭。
+	 */
+	@Override
+	public void close() {
+		this.fin();
+		super.close();
 	}
 	
 }
