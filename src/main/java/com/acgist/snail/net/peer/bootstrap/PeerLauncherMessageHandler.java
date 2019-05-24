@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.downloader.torrent.bootstrap.PeerConnectGroup;
 import com.acgist.snail.downloader.torrent.bootstrap.PeerLauncher;
 import com.acgist.snail.downloader.torrent.bootstrap.TorrentStreamGroup;
+import com.acgist.snail.net.IMessageHandler;
 import com.acgist.snail.net.peer.bootstrap.dht.DhtExtensionMessageHandler;
 import com.acgist.snail.net.peer.bootstrap.ltep.ExtensionMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
@@ -20,7 +21,6 @@ import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.PeerMessageConfig;
 import com.acgist.snail.system.config.PeerMessageConfig.Action;
 import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.system.interfaces.IPeerMessageHandler;
 import com.acgist.snail.system.manager.PeerManager;
 import com.acgist.snail.system.manager.TorrentManager;
 import com.acgist.snail.utils.BitfieldUtils;
@@ -51,6 +51,9 @@ import com.acgist.snail.utils.StringUtils;
  * L = 用户是本地的（通过网络广播或是保留的本地IP范围发现）
  * </pre>
  * 
+ * TODO：加密
+ * TODO：实现流水线
+ * 
  * @author acgist
  * @since 1.1.0
  */
@@ -71,7 +74,7 @@ public class PeerLauncherMessageHandler {
 	/**
 	 * 消息代理
 	 */
-	private IPeerMessageHandler peerMessageHandler;
+	private IMessageHandler messageHandler;
 	
 	private PeerSession peerSession;
 	private TorrentSession torrentSession;
@@ -139,8 +142,8 @@ public class PeerLauncherMessageHandler {
 		}
 	}
 	
-	public PeerLauncherMessageHandler peerMessageHandler(IPeerMessageHandler peerMessageHandler) {
-		this.peerMessageHandler = peerMessageHandler;
+	public PeerLauncherMessageHandler messageHandler(IMessageHandler messageHandler) {
+		this.messageHandler = messageHandler;
 		return this;
 	}
 	
@@ -655,23 +658,23 @@ public class PeerLauncherMessageHandler {
 	}
 	
 	public void close() {
-		this.peerMessageHandler.close();
+		this.messageHandler.close();
 	}
 	
 	public boolean available() {
-		return this.peerMessageHandler.available();
+		return this.messageHandler.available();
 	}
 	
 	private void send(ByteBuffer buffer) {
 		try {
-			this.peerMessageHandler.send(buffer);
+			this.messageHandler.send(buffer);
 		} catch (Exception e) {
 			LOGGER.error("Peer消息发送异常", e);
 		}
 	}
 
 	private InetSocketAddress remoteSocketAddress() {
-		return this.peerMessageHandler.remoteSocketAddress();
+		return this.messageHandler.remoteSocketAddress();
 	}
 	
 }

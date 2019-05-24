@@ -1,13 +1,18 @@
 package com.acgist.snail.net;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.utils.IoUtils;
 
 /**
  * TCP消息
@@ -15,17 +20,31 @@ import com.acgist.snail.system.exception.NetException;
  * @author acgist
  * @since 1.0.0
  */
-public abstract class TcpMessageHandler extends TcpSender implements CompletionHandler<Integer, ByteBuffer> {
+public abstract class TcpMessageHandler implements CompletionHandler<Integer, ByteBuffer>, IMessageHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TcpMessageHandler.class);
 	
 	private static final int BUFFER_SIZE = 10 * 1024;
 	
+	/**
+	 * 消息分隔符
+	 */
+	private final String split;
+	/**
+	 * 是否关闭
+	 */
+	private boolean close = false;
+	/**
+	 * Socket
+	 */
+	private AsynchronousSocketChannel socket;
+	
 	public TcpMessageHandler() {
+		this(null);
 	}
 
 	public TcpMessageHandler(String split) {
-		super(split);
+		this.split = split;
 	}
 	
 	/**
@@ -34,6 +53,13 @@ public abstract class TcpMessageHandler extends TcpSender implements CompletionH
 	 * @return 是否继续循环读取：true-是；false-不继续
 	 */
 	public abstract void onMessage(ByteBuffer attachment) throws NetException;
+
+	/**
+	 * 消息分隔符
+	 */
+	public String split() {
+		return this.split;
+	}
 	
 	/**
 	 * 消息代理
@@ -42,7 +68,84 @@ public abstract class TcpMessageHandler extends TcpSender implements CompletionH
 		this.socket = socket;
 		loopMessage();
 	}
+	
+	/**
+	 * <p>发送消息</p>
+	 * <p>使用分隔符对消息进行分隔</p>
+	 */
+	@Override
+	public void send(final String message) throws NetException {
+		String splitMessage = message;
+		if(this.split != null) {
+			splitMessage += this.split;
+		}
+		send(splitMessage.getBytes());
+	}
+	
+	/**
+	 * 发送消息
+	 */
+	@Override
+	public void send(byte[] bytes) throws NetException {
+		send(ByteBuffer.wrap(bytes));
+	}
+	
+	/**
+	 * 发送消息
+	 */
+	@Override
+	public void send(ByteBuffer buffer) throws NetException {
+		if(!available()) {
+			LOGGER.debug("发送消息时Socket已经不可用");
+			return;
+		}
+		if(buffer.position() != 0) { //  重置标记
+			buffer.flip();
+		}
+		if(buffer.limit() == 0) {
+			LOGGER.warn("发送消息为空");
+			return;
+		}
+		synchronized (this.socket) { // 保证顺序
+			final Future<Integer> future = this.socket.write(buffer);
+			try {
+				final int size = future.get(4, TimeUnit.SECONDS); // 阻塞线程防止，防止多线程写入时抛出异常：IllegalMonitorStateException
+				if(size <= 0) {
+					LOGGER.warn("发送数据为空");
+				}
+			} catch (Exception e) {
+				throw new NetException(e);
+			}
+		}
+	}
 
+	@Override
+	public InetSocketAddress remoteSocketAddress() {
+		try {
+			return (InetSocketAddress) this.socket.getRemoteAddress();
+		} catch (IOException e) {
+			LOGGER.error("Peer远程客户端信息获取异常", e);
+		}
+		return null;
+	}
+	
+	/**
+	 * 可用的：没有被关闭
+	 */
+	@Override
+	public boolean available() {
+		return !close;
+	}
+	
+	/**
+	 * 关闭SOCKET
+	 */
+	@Override
+	public void close() {
+		this.close = true;
+		IoUtils.close(this.socket);
+	}
+	
 	@Override
 	public void completed(Integer result, ByteBuffer attachment) {
 		if (result == null) {
@@ -79,5 +182,5 @@ public abstract class TcpMessageHandler extends TcpSender implements CompletionH
 			this.socket.read(buffer, buffer, this);
 		}
 	}
-	
+
 }

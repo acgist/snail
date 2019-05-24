@@ -28,7 +28,7 @@ public class DhtClientTest {
 				final Map<String, String> data = new HashMap<String, String>();
 				data.put("v", "1.0.0");
 				System.out.println("发送消息：" + data);
-				client.send(ByteBuffer.wrap(BCodeEncoder.encodeMap(data)), address);
+				client.send(ByteBuffer.wrap(BCodeEncoder.encodeMap(data)));
 			} catch (NetException e) {
 				e.printStackTrace();
 			}

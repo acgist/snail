@@ -42,7 +42,7 @@ public class DhtClient extends UdpClient<DhtMessageHandler> {
 	}
 	
 	public NodeSession ping() {
-		return this.handler.ping(this.address);
+		return this.handler.ping(this.socketAddress);
 	}
 	
 	/**
@@ -60,7 +60,7 @@ public class DhtClient extends UdpClient<DhtMessageHandler> {
 	 * @param target NodeId或者infoHash
 	 */
 	public void findNode(byte[] target) {
-		this.handler.findNode(this.address, target);
+		this.handler.findNode(this.socketAddress, target);
 	}
 	
 	/**
@@ -74,7 +74,7 @@ public class DhtClient extends UdpClient<DhtMessageHandler> {
 	 * 查询Peer
 	 */
 	public void getPeers(byte[] infoHash) {
-		this.handler.getPeers(this.address, infoHash);
+		this.handler.getPeers(this.socketAddress, infoHash);
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class DhtClient extends UdpClient<DhtMessageHandler> {
 	 * 声明Peer
 	 */
 	public void announcePeer(byte[] token, byte[] infoHash) {
-		this.handler.announcePeer(this.address, token, infoHash);
+		this.handler.announcePeer(this.socketAddress, token, infoHash);
 	}
 
 }

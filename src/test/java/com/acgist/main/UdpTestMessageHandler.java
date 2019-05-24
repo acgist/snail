@@ -12,8 +12,8 @@ public class UdpTestMessageHandler extends UdpMessageHandler {
 	}
 	
 	@Override
-	public void onMessage(ByteBuffer buffer, InetSocketAddress address) {
-		System.out.println(address + "-" + address.getClass());
+	public void onMessage(ByteBuffer buffer, InetSocketAddress socketAddress) {
+		System.out.println(socketAddress + "-" + socketAddress.getClass());
 		final String content = IoUtils.readContent(buffer);
 		System.out.println("收到消息：" + content);
 		System.out.println("消息长度：" + content.length());

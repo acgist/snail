@@ -4,13 +4,11 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.StandardSocketOptions;
-import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.NetUtils;
 
 /**
@@ -27,7 +25,7 @@ import com.acgist.snail.utils.NetUtils;
  * @author acgist
  * @since 1.0.0
  */
-public abstract class UdpClient<T extends UdpMessageHandler> extends UdpSender {
+public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessageHandlerAdapter<T> implements IMessageHandler {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpClient.class);
 
@@ -36,18 +34,21 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends UdpSender {
 	 */
 	private final String name;
 	/**
-	 * 消息代理
-	 */
-	protected final T handler;
-	/**
 	 * 发送地址
 	 */
-	protected final InetSocketAddress address;
+	protected final InetSocketAddress socketAddress;
 	
-	public UdpClient(String name, T handler, InetSocketAddress address) {
+	/**
+	 * 新建客户端
+	 * 
+	 * @param name 客户端名称
+	 * @param handler 消息处理器，每一个客户的必须唯一
+	 * @param socketAddress 远程客户端地址
+	 */
+	public UdpClient(String name, T handler, InetSocketAddress socketAddress) {
 		this.name = name;
 		this.handler = handler;
-		this.address = address;
+		this.socketAddress = socketAddress;
 		this.open();
 	}
 
@@ -78,8 +79,7 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends UdpSender {
 		if(channel == null) {
 			return false;
 		}
-		this.channel = channel;
-		this.handler.handle(this.channel);
+		this.handler.handle(channel, this.socketAddress);
 		return true;
 	}
 	
@@ -88,42 +88,20 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends UdpSender {
 	 */
 	public void join(String group) {
 		try {
-			this.channel.setOption(StandardSocketOptions.IP_MULTICAST_TTL, 2);
-			this.channel.setOption(StandardSocketOptions.IP_MULTICAST_LOOP, true);
-			this.channel.join(InetAddress.getByName(group), NetUtils.defaultNetworkInterface());
+			this.handler.channel.setOption(StandardSocketOptions.IP_MULTICAST_TTL, 2);
+			this.handler.channel.setOption(StandardSocketOptions.IP_MULTICAST_LOOP, true);
+			this.handler.channel.join(InetAddress.getByName(group), NetUtils.defaultNetworkInterface());
 		} catch (IOException e) {
 			LOGGER.info("UDP多播异常：{}", group, e);
 		}
 	}
-	
-	/**
-	 * 发送消息
-	 */
-	protected void send(final String message) throws NetException {
-		this.send(message, this.address);
-	}
 
-	/**
-	 * 发送消息
-	 */
-	protected void send(byte[] bytes) throws NetException {
-		this.send(bytes, this.address);
-	}
-	
-	/**
-	 * 发送消息
-	 */
-	public void send(ByteBuffer buffer) throws NetException {
-		this.send(buffer, this.address);
-	}
-	
 	/**
 	 * 关闭资源，标记关闭，不能关闭通道。UDP通道只打开一个，程序结束时才能关闭。
 	 */
 	public void close() {
 		LOGGER.debug("UDP Client关闭：{}", this.name);
 		super.close();
-		this.handler.close();
 	}
 
 }
