@@ -10,7 +10,7 @@ import com.acgist.snail.gui.menu.TrayMenu;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.repository.impl.TaskRepository;
-import com.acgist.snail.system.interfaces.IStatistics;
+import com.acgist.snail.system.statistics.IStatistics;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.ThreadUtils;
 

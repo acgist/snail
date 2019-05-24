@@ -59,10 +59,6 @@ public class UtpMessageHandler extends UdpMessageHandler {
 		this.sendId = (short) (this.recvId + 1);
 		this.seqnr = 0;
 	}
-
-	public void socketAddress(InetSocketAddress socketAddress) {
-		this.socketAddress = socketAddress;
-	}
 	
 	public void connectionId(short connectionId) {
 		this.sendId = connectionId;
@@ -92,11 +88,6 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	@Override
 	public void send(ByteBuffer buffer) throws NetException {
 		send(buffer, this.socketAddress);
-	}
-
-	@Override
-	public InetSocketAddress remoteSocketAddress() {
-		return this.socketAddress;
 	}
 
 	/**

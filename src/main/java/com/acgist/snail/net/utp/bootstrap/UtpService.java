@@ -39,7 +39,6 @@ public class UtpService {
 				return utpMessageHandler;
 			}
 			utpMessageHandler = new UtpMessageHandler();
-			utpMessageHandler.socketAddress(socketAddress);
 			utpMessageHandler.connectionId(connectionId);
 			this.utpMessageHandlers.put(key, utpMessageHandler);
 			return utpMessageHandler;

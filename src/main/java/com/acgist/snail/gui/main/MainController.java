@@ -18,10 +18,10 @@ import com.acgist.snail.gui.setting.SettingWindow;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.session.TaskSession;
-import com.acgist.snail.system.context.SystemStatistics;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.manager.DownloaderManager;
 import com.acgist.snail.system.manager.TorrentManager;
+import com.acgist.snail.system.statistics.SystemStatistics;
 import com.acgist.snail.utils.FileUtils;
 
 import javafx.application.Platform;
