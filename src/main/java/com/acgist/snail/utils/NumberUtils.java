@@ -1,5 +1,11 @@
 package com.acgist.snail.utils;
 
+/**
+ * 数字工具
+ * 
+ * @author acgist
+ * @since 1.0.0
+ */
 public class NumberUtils {
 
 	/**
@@ -13,4 +19,16 @@ public class NumberUtils {
 		return value;
 	}
 
+	/**
+	 * 统计数字位上1的个数
+	 */
+	public static final byte bitCount(int number) {
+		byte count = 0;
+		while (number != 0) {
+			number = number & (number - 1);
+			count++;
+		}
+		return count;
+	}
+	
 }

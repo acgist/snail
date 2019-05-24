@@ -155,7 +155,7 @@ public class TorrentPiece {
 	 * 校验数据
 	 */
 	public boolean verify() {
-		if(verify) {
+		if(this.verify) {
 			final var hash = StringUtils.sha1(this.data);
 			return ArrayUtils.equals(hash, this.hash);
 		}
