@@ -10,7 +10,7 @@ import com.acgist.snail.net.UdpServer;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.ThreadUtils;
 
-public class UDPTest {
+public class UdpTest {
 
 	@Test
 	public void client() {

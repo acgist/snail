@@ -43,11 +43,6 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	 */
 	private int seqnr;
 	
-	public static void main(String[] args) {
-		System.out.println(Integer.MAX_VALUE);
-		System.out.println((short) (Integer.MAX_VALUE % (2<<16)));
-		System.out.println(2<<16);
-	}
 	/**
 	 * 是否连接
 	 */
@@ -133,12 +128,26 @@ public class UtpMessageHandler extends UdpMessageHandler {
 		}
 	}
 
-	/**
-	 * TODO：发送消息拆包
-	 */
 	@Override
 	public void send(ByteBuffer buffer) throws NetException {
-		super.send(buffer);
+		if(buffer.position() != 0) { //  重置标记
+			buffer.flip();
+		}
+		if(buffer.limit() == 0) {
+			LOGGER.warn("发送消息为空");
+			return;
+		}
+		byte[] bytes;
+		int remaining;
+		while((remaining = buffer.remaining()) > 0) {
+			if(remaining > UtpConfig.MAX_PACKET_SIZE) {
+				bytes = new byte[UtpConfig.MAX_PACKET_SIZE];
+			} else {
+				bytes = new byte[remaining];
+			}
+			buffer.get(bytes);
+			this.data(this.utpWindowHandler.timestamp(), this.utpWindowHandler.seqnr(), bytes);
+		}
 	}
 
 	/**
@@ -167,7 +176,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	 * 接收数据消息
 	 */
 	private void data(int timestamp, short seqnr, ByteBuffer buffer) throws NetException {
-		final ByteBuffer messageBuffer = this.utpWindowHandler.put(seqnr, buffer);
+		final ByteBuffer messageBuffer = this.utpWindowHandler.put(timestamp, seqnr, buffer);
 		if(messageBuffer == null) {
 			this.state(timestamp, seqnr);
 			return;
@@ -233,7 +242,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	 */
 	private void data(int timestamp, short seqnr, byte[] bytes) {
 		final int now = timestamp();
-		final ByteBuffer buffer = header(UtpConfig.TYPE_DATA, 20);
+		final ByteBuffer buffer = header(UtpConfig.TYPE_DATA, bytes.length + 20);
 		buffer.putShort(this.sendId);
 		buffer.putInt(now);
 		buffer.putInt(now - timestamp);
@@ -368,7 +377,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	 */
 	private void pushMessage(ByteBuffer buffer) {
 		try {
-			this.send(buffer);
+			super.send(buffer);
 		} catch (NetException e) {
 			this.reset();
 			LOGGER.error("UTP发送消息异常", e);

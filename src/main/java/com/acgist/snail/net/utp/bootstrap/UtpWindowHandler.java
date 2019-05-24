@@ -24,9 +24,13 @@ public class UtpWindowHandler {
 	 */
 	private int cacheSize;
 	/**
-	 * 下一个seqnr
+	 * 最后一个接收的seqnr
 	 */
-	private short nextSeqnr;
+	private short lastSeqnr;
+	/**
+	 * 最后一个接收的timestamp
+	 */
+	private int lastTimestamp;
 	
 	private Map<Short, ByteBuffer> map = new ConcurrentHashMap<>(MAX_SIZE);
 	
@@ -40,16 +44,20 @@ public class UtpWindowHandler {
 	/**
 	 * 设置buffer，如果是下一个滑块直接返回，否者缓存，等待下一个返回null。
 	 */
-	public synchronized ByteBuffer put(final short seqnr, final ByteBuffer buffer) throws NetException {
+	public synchronized ByteBuffer put(final int timestamp, final short seqnr, final ByteBuffer buffer) throws NetException {
 		storage(seqnr, buffer);
 		byte[] tmpBytes;
 		ByteBuffer tmpBuffer;
+		short nextSeqnr; // 下一个seqnr
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		while(true) {
-			tmpBuffer = take(this.nextSeqnr);
+			nextSeqnr = (short) (this.lastSeqnr + 1);
+			tmpBuffer = take(nextSeqnr);
 			if(tmpBuffer == null) {
 				break;
 			} else {
+				this.lastSeqnr = nextSeqnr;
+				this.lastTimestamp = timestamp; // TODO：优化时间
 				tmpBytes = new byte[tmpBuffer.remaining()];
 				tmpBuffer.get(tmpBytes);
 				try {
@@ -72,6 +80,14 @@ public class UtpWindowHandler {
 	
 	private void storage(final short seqnr, final ByteBuffer buffer) {
 		this.map.put(seqnr, buffer);
+	}
+
+	public int timestamp() {
+		return this.lastTimestamp;
+	}
+
+	public short seqnr() {
+		return this.lastSeqnr;
 	}
 	
 }
