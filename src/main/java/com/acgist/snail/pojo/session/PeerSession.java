@@ -8,7 +8,7 @@ import java.util.Map;
 import com.acgist.snail.net.peer.bootstrap.PeerLauncherMessageHandler;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.PeerMessageConfig;
-import com.acgist.snail.system.interfaces.IStatistics;
+import com.acgist.snail.system.statistics.IStatistics;
 import com.acgist.snail.utils.ObjectUtils;
 
 /**
