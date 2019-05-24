@@ -17,7 +17,7 @@ public class UtpClient extends UdpClient<UtpMessageHandler> {
 	private final PeerLauncherMessageHandler peerLauncherMessageHandler;
 	
 	private UtpClient(PeerSession peerSession, PeerLauncherMessageHandler peerLauncherMessageHandler) {
-		super("UTP Client", new UtpMessageHandler(peerLauncherMessageHandler), peerSession.peerSocketAddress());
+		super("UTP Client", new UtpMessageHandler(peerLauncherMessageHandler, peerSession.peerSocketAddress()), peerSession.peerSocketAddress());
 		this.peerSession = peerSession;
 		this.peerLauncherMessageHandler = peerLauncherMessageHandler;
 	}

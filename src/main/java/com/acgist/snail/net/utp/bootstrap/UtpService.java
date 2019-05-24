@@ -25,7 +25,7 @@ public class UtpService {
 		return INSTANCE;
 	}
 	
-	private short connectionId = Short.MIN_VALUE;
+	private int connectionId = 0;
 	
 	public UdpMessageHandler utpMessageHandler(final short connectionId, final InetSocketAddress socketAddress) {
 		final String key = utpMessageHandlerKey(connectionId, socketAddress);
@@ -33,18 +33,17 @@ public class UtpService {
 		if(utpMessageHandler != null) {
 			return utpMessageHandler;
 		}
-		synchronized (this.utpMessageHandlers) {
-			utpMessageHandler = this.utpMessageHandlers.get(key);
-			if(utpMessageHandler != null) {
-				return utpMessageHandler;
-			}
-			utpMessageHandler = new UtpMessageHandler();
-			utpMessageHandler.connectionId(connectionId);
-			this.utpMessageHandlers.put(key, utpMessageHandler);
-			return utpMessageHandler;
-		}
+		return new UtpMessageHandler(connectionId, socketAddress);
 	}
 	
+	public void putUtpMessageHandler(short connectionId, InetSocketAddress socketAddress, UtpMessageHandler utpMessageHandler) {
+		final String key = utpMessageHandlerKey(connectionId, socketAddress);
+		this.utpMessageHandlers.put(key, utpMessageHandler);
+	}
+	
+	/**
+	 * 外网连入时key=地址+connectionId，本机key=connectionId
+	 */
 	private String utpMessageHandlerKey(Short connectionId, InetSocketAddress socketAddress) {
 		return socketAddress.getHostString() + socketAddress.getPort() + connectionId;
 	}
@@ -54,11 +53,8 @@ public class UtpService {
 	 */
 	public short connectionId() {
 		synchronized (this) {
-			if(++connectionId >= Short.MAX_VALUE) { // 不能大于最大值
-				connectionId = Short.MIN_VALUE;
-			}
+			return (short) connectionId++;
 		}
-		return connectionId;
 	}
 	
 }
