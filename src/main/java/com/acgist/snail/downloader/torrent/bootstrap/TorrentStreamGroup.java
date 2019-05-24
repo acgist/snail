@@ -54,6 +54,7 @@ public class TorrentStreamGroup {
 		final TorrentInfo torrentInfo = torrent.getInfo();
 		final BitSet pieces = new BitSet(torrentInfo.pieceSize());
 		final BitSet selectPieces = new BitSet(torrentInfo.pieceSize());
+		final boolean complete = torrentSession.taskSession().complete();
 		final List<TorrentStream> streams = new ArrayList<>(files.size());
 		final TorrentStreamGroup group = new TorrentStreamGroup(pieces, selectPieces, streams, torrentSession);
 		if(CollectionUtils.isNotEmpty(files)) {
@@ -62,7 +63,7 @@ public class TorrentStreamGroup {
 				try {
 					if(file.selected()) {
 						final TorrentStream stream = TorrentStream.newInstance(torrentInfo.getPieceLength(), group);
-						stream.buildFile(FileUtils.file(folder, file.path()), file.getLength(), pos, selectPieces);
+						stream.buildFile(FileUtils.file(folder, file.path()), file.getLength(), pos, selectPieces, complete);
 						streams.add(stream);
 					}
 				} catch (Exception e) {
