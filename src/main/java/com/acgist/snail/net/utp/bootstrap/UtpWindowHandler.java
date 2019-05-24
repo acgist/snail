@@ -10,14 +10,14 @@ import com.acgist.snail.system.config.UtpConfig;
 import com.acgist.snail.system.exception.NetException;
 
 /**
- * 滑块窗口
+ * UTP滑块窗口
  * 
  * @author acgist
  * @since 1.1.0
  */
 public class UtpWindowHandler {
 	
-	private static final int MAX_SIZE = 20;
+	private static final int MAX_SIZE = 200;
 
 	/**
 	 * 缓存的大小
@@ -78,7 +78,10 @@ public class UtpWindowHandler {
 		return this.map.remove(seqnr);
 	}
 	
-	private void storage(final short seqnr, final ByteBuffer buffer) {
+	private void storage(final short seqnr, final ByteBuffer buffer) throws NetException {
+		if(this.map.size() > MAX_SIZE) {
+			throw new NetException("UTP消息长度超过缓存最大长度");
+		}
 		this.map.put(seqnr, buffer);
 	}
 

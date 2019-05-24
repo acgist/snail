@@ -176,7 +176,16 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	 * 接收数据消息
 	 */
 	private void data(int timestamp, short seqnr, ByteBuffer buffer) throws NetException {
-		final ByteBuffer messageBuffer = this.utpWindowHandler.put(timestamp, seqnr, buffer);
+		ByteBuffer messageBuffer = null;
+		try {
+			messageBuffer = this.utpWindowHandler.put(timestamp, seqnr, buffer);
+		} catch (NetException e) {
+			this.resetAndClose();
+			throw e;
+		} catch (Exception e) {
+			this.resetAndClose();
+			throw new NetException(e);
+		}
 		if(messageBuffer == null) {
 			this.state(timestamp, seqnr);
 			return;
@@ -379,7 +388,6 @@ public class UtpMessageHandler extends UdpMessageHandler {
 		try {
 			super.send(buffer);
 		} catch (NetException e) {
-			this.reset();
 			LOGGER.error("UTP发送消息异常", e);
 		}
 	}
@@ -390,6 +398,11 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	@Override
 	public void close() {
 		this.fin();
+		super.close();
+	}
+	
+	private void resetAndClose() {
+		this.reset();
 		super.close();
 	}
 	
