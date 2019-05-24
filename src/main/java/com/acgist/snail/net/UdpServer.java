@@ -84,9 +84,9 @@ public class UdpServer<T extends UdpAcceptHandler> {
 						keysIterator.remove();
 						if (selectedKey.isValid() && selectedKey.isReadable()) {
 							final ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
-							final InetSocketAddress address = (InetSocketAddress) this.channel.receive(buffer);
+							final InetSocketAddress socketAddress = (InetSocketAddress) this.channel.receive(buffer);
 							try {
-								this.handler.handle(this.channel, buffer, address);
+								this.handler.handle(this.channel, buffer, socketAddress);
 							} catch (Exception e) {
 								LOGGER.error("UDP消息处理异常", e);
 							}

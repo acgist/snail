@@ -56,7 +56,7 @@ public class Response {
 	/**
 	 * 响应地址
 	 */
-	private InetSocketAddress address;
+	private InetSocketAddress socketAddress;
 
 	protected Response(byte[] t) {
 		this(t, DhtConfig.KEY_R, new LinkedHashMap<>(), null);
@@ -93,12 +93,12 @@ public class Response {
 		return e;
 	}
 	
-	public InetSocketAddress getAddress() {
-		return address;
+	public InetSocketAddress getSocketAddress() {
+		return socketAddress;
 	}
 
-	public void setAddress(InetSocketAddress address) {
-		this.address = address;
+	public void setSocketAddress(InetSocketAddress socketAddress) {
+		this.socketAddress = socketAddress;
 	}
 
 	/**

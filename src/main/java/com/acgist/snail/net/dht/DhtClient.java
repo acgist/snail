@@ -21,16 +21,16 @@ public class DhtClient extends UdpClient<DhtMessageHandler> {
 
 //	private static final Logger LOGGER = LoggerFactory.getLogger(DhtClient.class);
 	
-	private DhtClient(InetSocketAddress address) {
-		super("DHT Client", new DhtMessageHandler(), address);
+	private DhtClient(InetSocketAddress socketAddress) {
+		super("DHT Client", new DhtMessageHandler(), socketAddress);
 	}
 	
 	public static final DhtClient newInstance(final String host, final int port) {
 		return newInstance(new InetSocketAddress(host, port));
 	}
 	
-	public static final DhtClient newInstance(InetSocketAddress address) {
-		return new DhtClient(address);
+	public static final DhtClient newInstance(InetSocketAddress socketAddress) {
+		return new DhtClient(socketAddress);
 	}
 
 	/**
