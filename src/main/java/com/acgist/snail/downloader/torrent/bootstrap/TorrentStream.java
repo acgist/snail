@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.pojo.bean.TorrentPiece;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.FileUtils;
@@ -37,26 +38,23 @@ public class TorrentStream {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentStream.class);
 
-	// 固定值
 	private final long pieceLength; // 每个块的大小
 	private final TorrentStreamGroup torrentStreamGroup; // 下载文件组
 	
-	// 初始值：变化值
 	private AtomicLong fileBuffer; // 缓冲大小：插入queue时修改
 	private AtomicLong fileDownloadSize; // 已下载大小：写入文件时修改
 	private BlockingQueue<TorrentPiece> filePieces; // Piece队列
 	
-	// 初始值：不变值
 	private String file; // 文件路径
 	private long fileSize; // 文件大小
 	private long fileBeginPos; // 文件开始偏移：包含该值
 	private long fileEndPos; // 文件结束偏移：不包含该值
 	private RandomAccessFile fileStream; // 文件流
 	
-	// 初始值：计算
 	private int filePieceSize; // 文件Piece数量
 	private int fileBeginPieceIndex; // 文件Piece开始索引
 	private int fileEndPieceIndex; // 文件Piece结束索引
+	
 	private BitSet pieces; // 当前文件位图
 	private BitSet pausePieces; // 暂停位图：上次下载失败，下一次请求时不选取这个Piece，然后清除。主要用来处理两个文件都包含某一个Piece时，上一个文件不存在Piece，而下一个文件存在的情况。
 	private BitSet downloadPieces; // 下载中位图
@@ -78,8 +76,9 @@ public class TorrentStream {
 	 * @param size 文件大小
 	 * @param pos 文件开始偏移
 	 * @param selectPieces 被选中的Piece
+	 * @param complete 完成
 	 */
-	public void buildFile(final String file, final long size, final long pos, final BitSet selectPieces) throws IOException {
+	public void buildFile(final String file, final long size, final long pos, final BitSet selectPieces, final boolean complete) throws IOException {
 		if(this.fileStream != null) {
 			throw new IOException("Torrent文件未被释放");
 		}
@@ -93,8 +92,7 @@ public class TorrentStream {
 		FileUtils.buildFolder(this.file, true); // 创建文件父目录，否者会抛出FileNotFoundException
 		this.fileStream = new RandomAccessFile(this.file, "rw");
 		buildFilePiece();
-		buildFilePieces();
-		buildDownloadSize();
+		buildFileAsyn(complete);
 		selectPieces.set(this.fileBeginPieceIndex, this.fileEndPieceIndex + 1, true);
 		if(LOGGER.isDebugEnabled()) {
 			LOGGER.debug(
@@ -133,7 +131,7 @@ public class TorrentStream {
 				LOGGER.debug("保存Piece：{}", piece.getIndex());
 				this.done(piece.getIndex());
 				final long bufferSize = this.fileBuffer.addAndGet(piece.getLength());
-				this.buildDownloadSize();
+				this.buildFileDownloadSize();
 				if(
 					bufferSize >= DownloadConfig.getPeerMemoryBufferByte() || // 大于缓存
 					this.complete() // 下载完成
@@ -408,9 +406,28 @@ public class TorrentStream {
 	}
 	
 	/**
+	 * 异步加载，如果已经完成的任务使用同步加载，其他使用异步加载。
+	 */
+	private void buildFileAsyn(boolean complete) throws IOException {
+		if(complete) {
+			buildFilePieces(complete);
+			buildFileDownloadSize();
+		} else {
+			SystemThreadContext.submit(() -> {
+				try {
+					buildFilePieces(complete);
+					buildFileDownloadSize();
+				} catch (IOException e) {
+					LOGGER.error("TorrentStream异步加载异常", e);
+				}
+			});
+		}
+	}
+	
+	/**
 	 * 初始化：已下载块，校验HASH（第一块和最后一块不校验）。
 	 */
-	private void buildFilePieces() throws IOException {
+	private void buildFilePieces(boolean complete) throws IOException {
 		int pos = 0;
 		int length = 0;
 		byte[] hash = null;
@@ -420,6 +437,10 @@ public class TorrentStream {
 			return;
 		}
 		for (int index = this.fileBeginPieceIndex; index <= this.fileEndPieceIndex; index++) {
+			if(complete) {
+				this.done(index);
+				continue;
+			}
 			if(index == this.fileBeginPieceIndex) { // 第一块需要偏移
 				verify = false;
 				pos = firstPiecePos();
@@ -456,7 +477,7 @@ public class TorrentStream {
 	/**
 	 * 初始化：已下载文件大小
 	 */
-	private void buildDownloadSize() {
+	private void buildFileDownloadSize() {
 		long size = 0L;
 		int downloadPieceSize = this.pieces.cardinality();
 		if(havePiece(this.fileBeginPieceIndex)) {
