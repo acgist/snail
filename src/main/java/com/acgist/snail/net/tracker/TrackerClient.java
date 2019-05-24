@@ -13,12 +13,12 @@ import com.acgist.snail.net.UdpClient;
  */
 public class TrackerClient extends UdpClient<TrackerMessageHandler> {
 
-	private TrackerClient(InetSocketAddress address) {
-		super("Tracker Client", new TrackerMessageHandler(), address);
+	private TrackerClient(InetSocketAddress socketAddress) {
+		super("Tracker Client", new TrackerMessageHandler(), socketAddress);
 	}
 	
-	public static final TrackerClient newInstance(InetSocketAddress address) {
-		return new TrackerClient(address);
+	public static final TrackerClient newInstance(InetSocketAddress socketAddress) {
+		return new TrackerClient(socketAddress);
 	}
 
 	@Override

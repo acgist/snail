@@ -78,11 +78,11 @@ public class DhtMessageHandler extends UdpMessageHandler {
 		LOGGER.debug("DHT消息类型：{}", y);
 		if(DhtConfig.KEY_Q.equals(y)) {
 			final Request request = Request.valueOf(decoder);
-			request.setAddress(socketAddress);
+			request.setSocketAddress(socketAddress);
 			onRequest(request, socketAddress);
 		} else if(DhtConfig.KEY_R.equals(y)) {
 			final Response response = Response.valueOf(decoder);
-			response.setAddress(socketAddress);
+			response.setSocketAddress(socketAddress);
 			onResponse(response);
 		} else {
 			LOGGER.warn("不支持的DHT类型：{}", y);
@@ -93,9 +93,9 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	 * 处理请求
 	 * 
 	 * @param request 请求
-	 * @param address 客户端地址
+	 * @param socketAddress 客户端地址
 	 */
-	private void onRequest(final Request request, final InetSocketAddress address) {
+	private void onRequest(final Request request, final InetSocketAddress socketAddress) {
 		Response response = null;
 		LOGGER.debug("收到请求类型：{}", request.getQ());
 		switch (request.getQ()) {
@@ -112,7 +112,7 @@ public class DhtMessageHandler extends UdpMessageHandler {
 			response = announcePeer(request);
 			break;
 		}
-		pushMessage(response, address);
+		pushMessage(response, socketAddress);
 	}
 	
 	/**
@@ -148,13 +148,13 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	 * <p>发送请求：Ping</p>
 	 * <p>检测节点是否可达，该方法同步阻塞。响应后添加列表</p>
 	 */
-	public NodeSession ping(InetSocketAddress address) {
+	public NodeSession ping(InetSocketAddress socketAddress) {
 		final PingRequest request = PingRequest.newRequest();
-		pushMessage(request, address);
+		pushMessage(request, socketAddress);
 		waitResponse(request);
 		final Response response = RESPONSE.apply(request);
 		if(SUCCESS.apply(response)) {
-			final NodeSession nodeSession = NodeManager.getInstance().newNodeSession(response.getNodeId(), address.getHostString(), address.getPort());
+			final NodeSession nodeSession = NodeManager.getInstance().newNodeSession(response.getNodeId(), socketAddress.getHostString(), socketAddress.getPort());
 			NodeManager.getInstance().sortNodes();
 			return nodeSession;
 		}
@@ -178,9 +178,9 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	/**
 	 * 发送请求：findNode
 	 */
-	public void findNode(InetSocketAddress address, byte[] target) {
+	public void findNode(InetSocketAddress socketAddress, byte[] target) {
 		final FindNodeRequest request = FindNodeRequest.newRequest(target);
-		pushMessage(request, address);
+		pushMessage(request, socketAddress);
 	}
 	
 	/**
@@ -202,9 +202,9 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	/**
 	 * 发送请求：getPeers
 	 */
-	public void getPeers(InetSocketAddress address, byte[] infoHash) {
+	public void getPeers(InetSocketAddress socketAddress, byte[] infoHash) {
 		final GetPeersRequest request = GetPeersRequest.newRequest(infoHash);
-		pushMessage(request, address);
+		pushMessage(request, socketAddress);
 	}
 
 	/**
@@ -235,9 +235,9 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	/**
 	 * 发送请求：announcePeer
 	 */
-	public void announcePeer(InetSocketAddress address, byte[] token, byte[] infoHash) {
+	public void announcePeer(InetSocketAddress socketAddress, byte[] token, byte[] infoHash) {
 		final AnnouncePeerRequest request = AnnouncePeerRequest.newRequest(token, infoHash);
-		pushMessage(request, address);
+		pushMessage(request, socketAddress);
 	}
 	
 	/**
@@ -278,27 +278,27 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	/**
 	 * 发送请求
 	 */
-	private void pushMessage(Request request, InetSocketAddress address) {
-		request.setAddress(address);
+	private void pushMessage(Request request, InetSocketAddress socketAddress) {
+		request.setSocketAddress(socketAddress);
 		RequestManager.getInstance().put(request);
 		final ByteBuffer buffer = ByteBuffer.wrap(request.toBytes());
-		pushMessage(buffer, address);
+		pushMessage(buffer, socketAddress);
 	}
 	
 	/**
 	 * 发送响应
 	 */
-	private void pushMessage(Response response, InetSocketAddress address) {
+	private void pushMessage(Response response, InetSocketAddress socketAddress) {
 		final ByteBuffer buffer = ByteBuffer.wrap(response.toBytes());
-		pushMessage(buffer, address);
+		pushMessage(buffer, socketAddress);
 	}
 	
 	/**
 	 * 发送数据
 	 */
-	private void pushMessage(ByteBuffer buffer, InetSocketAddress address) {
+	private void pushMessage(ByteBuffer buffer, InetSocketAddress socketAddress) {
 		try {
-			this.send(buffer, address);
+			this.send(buffer, socketAddress);
 		} catch (NetException e) {
 			LOGGER.error("发送UDP消息异常", e);
 		}

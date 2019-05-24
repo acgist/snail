@@ -21,8 +21,8 @@ public class DhtClientTest {
 
 	@Test
 	public void client() {
-		InetSocketAddress address = new InetSocketAddress("127.0.0.1", SystemConfig.getServicePort());
-		DhtClient client = DhtClient.newInstance(address);
+		InetSocketAddress socketAddress = new InetSocketAddress("127.0.0.1", SystemConfig.getServicePort());
+		DhtClient client = DhtClient.newInstance(socketAddress);
 		while (true) {
 			try {
 				final Map<String, String> data = new HashMap<String, String>();

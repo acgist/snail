@@ -42,7 +42,7 @@ public class Request {
 	private final Map<String, Object> a;
 	
 	private Response response;
-	private InetSocketAddress address;
+	private InetSocketAddress socketAddress;
 	
 	protected Request(byte[] t, DhtConfig.QType q) {
 		this(t, DhtConfig.KEY_Q, q, new LinkedHashMap<>());
@@ -88,12 +88,12 @@ public class Request {
 		this.response = response;
 	}
 
-	public InetSocketAddress getAddress() {
-		return address;
+	public InetSocketAddress getSocketAddress() {
+		return socketAddress;
 	}
 
-	public void setAddress(InetSocketAddress address) {
-		this.address = address;
+	public void setSocketAddress(InetSocketAddress socketAddress) {
+		this.socketAddress = socketAddress;
 	}
 
 	/**

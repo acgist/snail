@@ -11,7 +11,8 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.system.exception.NetException;
 
 /**
- * UDP消息，需要保证每一个消息处理器对应的远程地址一一对应。
+ * UDP消息
+ * 非线程安全，使用需要保证每一个消息处理器对应的{@linkplain #socketAddress 远程地址}唯一。
  * 
  * @author acgist
  * @since 1.0.0
@@ -35,7 +36,7 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 	/**
 	 * 远程SocketAddress
 	 */
-	private InetSocketAddress socketAddress;
+	protected InetSocketAddress socketAddress;
 	
 	public UdpMessageHandler() {
 		this(null);

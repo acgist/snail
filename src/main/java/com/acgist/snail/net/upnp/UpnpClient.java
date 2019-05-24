@@ -24,8 +24,8 @@ public class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	private static final int UPNP_PORT = 1900;
 	private static final String UPNP_HOST = "239.255.255.250";
 	
-	private UpnpClient(InetSocketAddress address) {
-		super("UPNP Client", new UpnpMessageHandler(), address);
+	private UpnpClient(InetSocketAddress socketAddress) {
+		super("UPNP Client", new UpnpMessageHandler(), socketAddress);
 		join(UPNP_HOST);
 	}
 	

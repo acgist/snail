@@ -62,11 +62,11 @@ public class AnnouncePeerRequest extends Request {
 		if(torrentSession != null) {
 			final Integer port = request.getInteger(DhtConfig.KEY_PORT);
 			final Integer impliedPort = request.getInteger(DhtConfig.KEY_IMPLIED_PORT);
-			final InetSocketAddress address = request.getAddress();
-			final String peerHost = address.getHostString();
+			final InetSocketAddress socketAddress = request.getSocketAddress();
+			final String peerHost = socketAddress.getHostString();
 			Integer peerPort = port;
 			if(DhtConfig.IMPLIED_PORT_AUTO.equals(impliedPort)) {
-				peerPort = address.getPort();
+				peerPort = socketAddress.getPort();
 			}
 			PeerManager.getInstance().newPeerSession(
 				infoHashHex,

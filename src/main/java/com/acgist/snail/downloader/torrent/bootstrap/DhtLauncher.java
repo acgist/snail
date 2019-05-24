@@ -82,8 +82,8 @@ public class DhtLauncher implements Runnable {
 		if(CollectionUtils.isEmpty(list)) {
 			return;
 		}
-		for (InetSocketAddress address : list) {
-			final DhtClient client = DhtClient.newInstance(address);
+		for (InetSocketAddress socketAddress : list) {
+			final DhtClient client = DhtClient.newInstance(socketAddress);
 			client.getPeers(infoHash.infoHash());
 		}
 	}

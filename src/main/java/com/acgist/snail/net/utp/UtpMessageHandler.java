@@ -38,7 +38,6 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	
 	private final UtpService utpService = UtpService.getInstance();
 	
-	private InetSocketAddress socketAddress;
 	private final PeerLauncherMessageHandler peerLauncherMessageHandler;
 	
 	/**

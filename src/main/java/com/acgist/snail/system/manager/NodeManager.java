@@ -275,11 +275,11 @@ public class NodeManager {
 	 * 设置token，如果对应nodeId不存在，这加入网络
 	 */
 	public void token(byte[] nodeId, Request request, byte[] token) {
-		final InetSocketAddress address = request.getAddress();
+		final InetSocketAddress socketAddress = request.getSocketAddress();
 		synchronized (this.nodes) {
 			NodeSession old = select(nodeId);
 			if(old == null) {
-				old = newNodeSession(nodeId, address.getHostString(), address.getPort());
+				old = newNodeSession(nodeId, socketAddress.getHostString(), socketAddress.getPort());
 				this.sortNodes();
 			}
 			old.setToken(token);

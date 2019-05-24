@@ -15,18 +15,18 @@ public class UDPTest {
 	@Test
 	public void client() {
 		final int port = 18888;
-		InetSocketAddress address = new InetSocketAddress("127.0.0.1", port);
+		InetSocketAddress socketAddress = new InetSocketAddress("127.0.0.1", port);
 		UdpTestMessageHandler handler = new UdpTestMessageHandler();
 		UdpServer<UdpTestAcceptHandler> server = new UdpServer<>(port, "TestServer", UdpTestAcceptHandler.getInstance());
 		server.handler();
-		UdpClient<UdpTestMessageHandler> client = new UdpClient<UdpTestMessageHandler>("TestClient", handler, address) {
+		UdpClient<UdpTestMessageHandler> client = new UdpClient<UdpTestMessageHandler>("TestClient", handler, socketAddress) {
 			@Override
 			public boolean open() {
 				return this.open(server.channel());
 			}
 		};
 		client.open(server.channel());
-		UdpClient<UdpTestMessageHandler> clients = new UdpClient<UdpTestMessageHandler>("TestClient", handler, address) {
+		UdpClient<UdpTestMessageHandler> clients = new UdpClient<UdpTestMessageHandler>("TestClient", handler, socketAddress) {
 			@Override
 			public boolean open() {
 				return this.open(server.channel());
