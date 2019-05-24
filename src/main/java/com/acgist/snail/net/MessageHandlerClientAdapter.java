@@ -20,12 +20,18 @@ public abstract class MessageHandlerClientAdapter<T extends IMessageHandler> imp
 	
 	@Override
 	public void close() {
-		this.handler.close();
+		if(this.handler != null) {
+			this.handler.close();
+		}
 	}
 
 	@Override
 	public boolean available() {
-		return this.handler.available();
+		if(this.handler == null) {
+			return false;
+		} else {
+			return this.handler.available();
+		}
 	}
 
 	@Override
