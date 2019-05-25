@@ -32,8 +32,13 @@ public class UtpWindowHandler {
 	 */
 	private int lastTimestamp;
 	
-	private Map<Short, ByteBuffer> map = new ConcurrentHashMap<>(MAX_SIZE);
+	private final Map<Short, ByteBuffer> map;
 	
+	public UtpWindowHandler(short lastSeqnr) {
+		this.lastSeqnr = lastSeqnr;
+		this.map = new ConcurrentHashMap<>(MAX_SIZE);
+	}
+
 	/**
 	 * 获取剩余缓存大小
 	 */
