@@ -54,11 +54,11 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	
 	private ByteBuffer buffer;
 	
+	private UtpWindowHandler utpWindowHandler;
+	
 	private final UtpService utpService = UtpService.getInstance();
 	
 	private final PeerLauncherMessageHandler peerLauncherMessageHandler;
-	
-	private final UtpWindowHandler utpWindowHandler = new UtpWindowHandler();
 	
 	/**
 	 * 如果消息长度不够一个Integer长度时使用
@@ -165,7 +165,10 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	/**
 	 * 连接成功
 	 */
-	private void connect(boolean connect) {
+	private void connect(boolean connect, short seqnr) {
+		if(connect) {
+			this.utpWindowHandler = new UtpWindowHandler(seqnr);
+		}
 		this.connect = connect;
 		synchronized (this.connectLock) {
 			this.connectLock.notifyAll();
@@ -290,7 +293,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	 */
 	private void state(int timestamp, short seqnr, short acqnr) {
 		if(!this.connect) { // 没有连接
-			this.connect(this.available());
+			this.connect(this.available(), seqnr);
 		} else { // 其他处理
 			// TODO：处理
 		}
