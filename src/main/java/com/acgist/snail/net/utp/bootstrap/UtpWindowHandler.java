@@ -24,26 +24,32 @@ public class UtpWindowHandler {
 	 */
 	private int mapCacheSize;
 	/**
-	 * 最后一个接收的seqnr
+	 * 最后一个接收/发送的seqnr
 	 */
 	private short lastSeqnr;
 	/**
-	 * 最后一个接收的timestamp
+	 * 最后一个接收/发送的timestamp
 	 */
 	private int lastTimestamp;
 	/**
 	 * 数据
 	 */
-	private final Map<Short, WindowData> map;
+	private final Map<Short, UtpWindowData> map;
 	
-	private UtpWindowHandler(int timestamp, short lastSeqnr) {
-		this.lastSeqnr = lastSeqnr;
-		this.lastTimestamp = timestamp;
+	private UtpWindowHandler() {
+		this.mapCacheSize = 0;
+		this.lastSeqnr = 0;
+		this.lastTimestamp = 0;
 		this.map = new ConcurrentHashMap<>(MAX_SIZE);
 	}
 	
-	public static final UtpWindowHandler newInstance(int timestamp, short lastSeqnr) {
-		return new UtpWindowHandler(timestamp, lastSeqnr);
+	public static final UtpWindowHandler newInstance() {
+		return new UtpWindowHandler();
+	}
+	
+	public void connect(int timestamp, short lastSeqnr) {
+		this.lastSeqnr = lastSeqnr;
+		this.lastTimestamp = timestamp;
 	}
 
 	/**
@@ -52,14 +58,24 @@ public class UtpWindowHandler {
 	public int remaining() {
 		return UtpConfig.WND_SIZE - this.mapCacheSize;
 	}
-
+	
+	/**
+	 * 发送数据，递增seqnr。
+	 * TODO：是否记录
+	 */
+	public synchronized UtpWindowData send(byte[] data) {
+		this.lastSeqnr++;
+		this.lastTimestamp = timestamp();
+		return UtpWindowData.newInstance(this.lastSeqnr, this.lastTimestamp, data);
+	}
+	
 	/**
 	 * 接收buffer，如果是下一个滑块直接返回，否者缓存，等待下一个返回null。
 	 */
-	public synchronized ByteBuffer receive(int timestamp, short seqnr, ByteBuffer buffer) throws NetException {
+	public synchronized UtpWindowData receive(int timestamp, short seqnr, ByteBuffer buffer) throws NetException {
 		storage(timestamp, seqnr, buffer);
 		short nextSeqnr; // 下一个seqnr
-		WindowData nextWindowData;
+		UtpWindowData nextWindowData;
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		while(true) {
 			nextSeqnr = (short) (this.lastSeqnr + 1);
@@ -80,14 +96,14 @@ public class UtpWindowHandler {
 		if(bytes.length == 0) {
 			return null;
 		}
-		return ByteBuffer.wrap(bytes);
+		return UtpWindowData.newInstance(this.lastSeqnr, this.lastTimestamp, bytes);
 	}
 	
 	/**
 	 * 取出
 	 */
-	private WindowData take(final short seqnr) {
-		final WindowData windowData = this.map.remove(seqnr);
+	private UtpWindowData take(final short seqnr) {
+		final UtpWindowData windowData = this.map.remove(seqnr);
 		if(windowData == null) {
 			return windowData;
 		}
@@ -104,59 +120,24 @@ public class UtpWindowHandler {
 		}
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.put(bytes);
-		final WindowData windowData = WindowData.newInstance(seqnr, timestamp, bytes);
+		final UtpWindowData windowData = UtpWindowData.newInstance(seqnr, timestamp, bytes);
 		this.map.put(seqnr, windowData);
 		this.mapCacheSize = this.mapCacheSize + windowData.getLength();
 	}
+	
+	/**
+	 * 时间戳
+	 */
+	public static final int timestamp() {
+		return (int) System.nanoTime();
+	}
 
-	public int timestamp() {
+	public int lastTimestamp() {
 		return this.lastTimestamp;
 	}
 
-	public short seqnr() {
+	public short lastSeqnr() {
 		return this.lastSeqnr;
 	}
 	
-}
-
-/**
- * UTP窗口数据
- * 
- * @author acgist
- * @since 1.1.0
- */
-class WindowData {
-
-	private final short seqnr;
-	private final int timestamp;
-	private final byte[] data;
-	private final int length;
-
-	private WindowData(short seqnr, int timestamp, byte[] data) {
-		this.seqnr = seqnr;
-		this.timestamp = timestamp;
-		this.data = data;
-		this.length = data.length;
-	}
-	
-	public static final WindowData newInstance(short seqnr, int timestamp, byte[] data) {
-		return new WindowData(seqnr, timestamp, data);
-	}
-
-	public short getSeqnr() {
-		return seqnr;
-	}
-
-	public int getTimestamp() {
-		return timestamp;
-	}
-
-	public byte[] getData() {
-		return data;
-	}
-
-	public int getLength() {
-		return length;
-	}
-
 }

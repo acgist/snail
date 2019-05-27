@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.net.peer.bootstrap.PeerLauncherMessageHandler;
 import com.acgist.snail.net.utp.bootstrap.UtpService;
+import com.acgist.snail.net.utp.bootstrap.UtpWindowData;
 import com.acgist.snail.net.utp.bootstrap.UtpWindowHandler;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.SystemConfig;
@@ -40,11 +41,6 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	 */
 	private final short sendId;
 	/**
-	 * 请求序号
-	 */
-	private int seqnr;
-	
-	/**
 	 * 是否连接
 	 */
 	private boolean connect;
@@ -55,9 +51,13 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	
 	private ByteBuffer buffer;
 	/**
+	 * 发送窗口
+	 */
+	private final UtpWindowHandler sendWindowHandler;
+	/**
 	 * 接收窗口
 	 */
-	private UtpWindowHandler receiveWindowHandler;
+	private final UtpWindowHandler receiveWindowHandler;
 	
 	private final UtpService utpService = UtpService.getInstance();
 	
@@ -75,6 +75,8 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	public UtpMessageHandler(final short connectionId, InetSocketAddress socketAddress) {
 		this.peerLauncherMessageHandler = PeerLauncherMessageHandler.newInstance();
 		this.peerLauncherMessageHandler.messageHandler(this);
+		this.sendWindowHandler = UtpWindowHandler.newInstance();
+		this.receiveWindowHandler = UtpWindowHandler.newInstance();
 		this.sendId = connectionId;
 		this.recvId = (short) (this.sendId + 1);
 		this.utpService.putUtpMessageHandler(this.recvId, socketAddress, this);
@@ -86,9 +88,10 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	public UtpMessageHandler(PeerLauncherMessageHandler peerLauncherMessageHandler, InetSocketAddress socketAddress) {
 		this.peerLauncherMessageHandler = peerLauncherMessageHandler;
 		this.peerLauncherMessageHandler.messageHandler(this);
+		this.sendWindowHandler = UtpWindowHandler.newInstance();
+		this.receiveWindowHandler = UtpWindowHandler.newInstance();
 		this.recvId = this.utpService.connectionId();
 		this.sendId = (short) (this.recvId + 1); 
-		this.seqnr = 0;
 		this.utpService.putUtpMessageHandler(this.recvId, socketAddress, this);
 	}
 	
@@ -149,7 +152,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 				bytes = new byte[remaining];
 			}
 			buffer.get(bytes);
-			this.data(this.receiveWindowHandler.timestamp(), this.receiveWindowHandler.seqnr(), bytes);
+			this.data(this.receiveWindowHandler.lastTimestamp(), this.receiveWindowHandler.lastSeqnr(), bytes);
 		}
 	}
 
@@ -170,7 +173,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	 */
 	private void connect(boolean connect, int timestamp, short seqnr) {
 		if(connect) {
-			this.receiveWindowHandler = UtpWindowHandler.newInstance(timestamp, seqnr);
+			this.receiveWindowHandler.connect(timestamp, seqnr);
 		}
 		this.connect = connect;
 		synchronized (this.connectLock) {
@@ -182,9 +185,9 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	 * 接收数据消息
 	 */
 	private void data(int timestamp, short seqnr, ByteBuffer buffer) throws NetException {
-		ByteBuffer messageBuffer = null;
+		UtpWindowData windowData = null;
 		try {
-			messageBuffer = this.receiveWindowHandler.receive(timestamp, seqnr, buffer);
+			windowData = this.receiveWindowHandler.receive(timestamp, seqnr, buffer);
 		} catch (NetException e) {
 			this.resetAndClose();
 			throw e;
@@ -192,17 +195,18 @@ public class UtpMessageHandler extends UdpMessageHandler {
 			this.resetAndClose();
 			throw new NetException(e);
 		}
-		if(messageBuffer == null) { // 没有收到不返回
-			this.state(timestamp, seqnr);
+		if(windowData == null) {
+//			this.state(timestamp, seqnr); // 没有收到不返回
 			return;
 		}
 		int length = 0;
-		messageBuffer.flip();
+		final ByteBuffer windowBuffer = windowData.buffer();
+		windowBuffer.flip();
 		while(true) {
 			if(this.buffer == null) {
 				if(this.peerLauncherMessageHandler.handshaked()) {
-					for (int index = 0; index < messageBuffer.limit(); index++) {
-						this.lengthStick.put(messageBuffer.get());
+					for (int index = 0; index < windowBuffer.limit(); index++) {
+						this.lengthStick.put(windowBuffer.get());
 						if(this.lengthStick.position() == INTEGER_BYTE_LENGTH) {
 							break;
 						}
@@ -228,41 +232,41 @@ public class UtpMessageHandler extends UdpMessageHandler {
 			} else {
 				length = this.buffer.capacity() - this.buffer.position();
 			}
-			final int remaining = messageBuffer.remaining();
+			final int remaining = windowBuffer.remaining();
 			if(remaining > length) { // 包含一个完整消息
 				byte[] bytes = new byte[length];
-				messageBuffer.get(bytes);
+				windowBuffer.get(bytes);
 				this.buffer.put(bytes);
 				this.peerLauncherMessageHandler.oneMessage(this.buffer);
 				this.buffer = null;
 			} else if(remaining == length) { // 刚好一个完整消息
 				byte[] bytes = new byte[length];
-				messageBuffer.get(bytes);
+				windowBuffer.get(bytes);
 				this.buffer.put(bytes);
 				this.peerLauncherMessageHandler.oneMessage(this.buffer);
 				this.buffer = null;
 				break;
 			} else if(remaining < length) { // 不是完整消息
 				byte[] bytes = new byte[remaining];
-				messageBuffer.get(bytes);
+				windowBuffer.get(bytes);
 				this.buffer.put(bytes);
 				break;
 			}
 		}
-		this.state(timestamp, seqnr);
+		this.state(windowData.getTimestamp(), windowData.getSeqnr());
 	}
 	
 	/**
 	 * 发送数据消息
 	 */
 	private void data(int timestamp, short seqnr, byte[] bytes) {
-		final int now = timestamp();
+		final UtpWindowData windowData = this.sendWindowHandler.send(bytes);
 		final ByteBuffer buffer = header(UtpConfig.TYPE_DATA, bytes.length + 20);
 		buffer.putShort(this.sendId);
-		buffer.putInt(now);
-		buffer.putInt(now - timestamp);
+		buffer.putInt(windowData.getTimestamp());
+		buffer.putInt(windowData.getTimestamp() - timestamp);
 		buffer.putInt(this.receiveWindowHandler.remaining());
-		buffer.putShort(this.seqnr());
+		buffer.putShort(windowData.getSeqnr());
 		buffer.putShort(seqnr); // acknr=请求seqnr
 		buffer.put(bytes);
 		this.pushMessage(buffer);
@@ -281,12 +285,13 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	 * 发送结束消息
 	 */
 	private void fin() {
+		final UtpWindowData windowData = this.sendWindowHandler.send(null);
 		final ByteBuffer buffer = header(UtpConfig.TYPE_FIN, 20);
 		buffer.putShort(this.recvId);
-		buffer.putInt(timestamp());
+		buffer.putInt(windowData.getTimestamp());
 		buffer.putInt(0);
 		buffer.putInt(0);
-		buffer.putShort(this.seqnr());
+		buffer.putShort(windowData.getSeqnr());
 		buffer.putShort((short) 0);
 		this.pushMessage(buffer);
 	}
@@ -294,7 +299,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	/**
 	 * 接收应答消息
 	 */
-	private void state(int timestamp, short seqnr, short acqnr) {
+	private void state(int timestamp, short seqnr, short acknr) {
 		if(!this.connect) { // 没有连接
 			this.connect(this.available(), timestamp, seqnr);
 		} else { // 其他处理
@@ -303,10 +308,10 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	}
 	
 	/**
-	 * 发送应答消息
+	 * 发送应答消息，发送此消息不增加seqnr。
 	 */
 	private void state(int timestamp, short seqnr) {
-		final int now = timestamp();
+		final int now = UtpWindowHandler.timestamp();
 		final ByteBuffer buffer = header(UtpConfig.TYPE_STATE, 20);
 		buffer.putShort(this.sendId);
 		buffer.putInt(now);
@@ -330,12 +335,13 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	 * 发送reset消息
 	 */
 	private void reset() {
+		final UtpWindowData windowData = this.sendWindowHandler.send(null);
 		final ByteBuffer buffer = header(UtpConfig.TYPE_RESET, 20);
 		buffer.putShort(this.recvId);
-		buffer.putInt(timestamp());
+		buffer.putInt(windowData.getTimestamp());
 		buffer.putInt(0);
 		buffer.putInt(0);
-		buffer.putShort(this.seqnr());
+		buffer.putShort(windowData.getSeqnr());
 		buffer.putShort((short) 0);
 		this.pushMessage(buffer);
 	}
@@ -351,32 +357,17 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	 * 发送握手消息
 	 */
 	private void syn() {
+		final UtpWindowData windowData = this.sendWindowHandler.send(null);
 		final ByteBuffer buffer = header(UtpConfig.TYPE_SYN, 20);
 		buffer.putShort(this.recvId);
-		buffer.putInt(timestamp());
+		buffer.putInt(windowData.getTimestamp());
 		buffer.putInt(0);
 		buffer.putInt(0);
-		buffer.putShort(this.seqnr());
+		buffer.putShort(windowData.getSeqnr());
 		buffer.putShort((short) 0);
 		this.pushMessage(buffer);
 	}
 
-	/**
-	 * 时间戳
-	 */
-	private int timestamp() {
-		return (int) System.nanoTime();
-	}
-	
-	/**
-	 * 请求号
-	 */
-	private short seqnr() {
-		synchronized (this) {
-			return (short) this.seqnr++;
-		}
-	}
-	
 	/**
 	 * 设置消息头
 	 */

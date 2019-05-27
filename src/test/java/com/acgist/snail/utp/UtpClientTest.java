@@ -18,8 +18,8 @@ public class UtpClientTest {
 		TorrentSession torrentSession = TorrentManager.getInstance().newTorrentSession(path);
 		String host = "127.0.0.1";
 //		Integer port = 17888;
-//		Integer port = 49160; // FDM测试端口
-		Integer port = 15000; // 本地迅雷测试端口
+		Integer port = 49160; // FDM测试端口
+//		Integer port = 15000; // 本地迅雷测试端口
 		PeerSession peerSession = PeerSession.newInstance(new StatisticsSession(), host, port);
 		PeerLauncherMessageHandler peerLauncherMessageHandler = PeerLauncherMessageHandler.newInstance(peerSession, torrentSession);
 		UtpClient utpClient = UtpClient.newInstance(peerSession, peerLauncherMessageHandler);
