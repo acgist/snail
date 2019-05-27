@@ -21,7 +21,9 @@ public abstract class UdpAcceptHandler {
 		final UdpMessageHandler handler = messageHandler(buffer, socketAddress);
 		synchronized (handler) {
 			try {
-				handler.handle(channel, socketAddress).onMessage(buffer, socketAddress);
+				if(handler.available()) {
+					handler.handle(channel, socketAddress).onMessage(buffer, socketAddress);
+				}
 			} catch (Exception e) {
 				LOGGER.error("TCP消息处理异常", e);
 			}

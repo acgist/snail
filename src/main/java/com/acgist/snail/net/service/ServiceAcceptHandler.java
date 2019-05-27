@@ -44,7 +44,7 @@ public class ServiceAcceptHandler extends UdpAcceptHandler {
 		} else {
 			final short connectId = buffer.getShort(2); // 连接ID
 			buffer.position(buffer.limit()).limit(buffer.capacity());
-			return utpService.utpMessageHandler(connectId, socketAddress);
+			return utpService.get(connectId, socketAddress);
 		}
 	}
 

@@ -27,8 +27,8 @@ public class UtpService {
 	
 	private int connectionId = 0;
 	
-	public UdpMessageHandler utpMessageHandler(final short connectionId, final InetSocketAddress socketAddress) {
-		final String key = utpMessageHandlerKey(connectionId, socketAddress);
+	public UdpMessageHandler get(short connectionId, InetSocketAddress socketAddress) {
+		final String key = buildKey(connectionId, socketAddress);
 		UtpMessageHandler utpMessageHandler = this.utpMessageHandlers.get(key);
 		if(utpMessageHandler != null) {
 			return utpMessageHandler;
@@ -36,18 +36,14 @@ public class UtpService {
 		return new UtpMessageHandler(connectionId, socketAddress);
 	}
 	
-	public void putUtpMessageHandler(short connectionId, InetSocketAddress socketAddress, UtpMessageHandler utpMessageHandler) {
-		final String key = utpMessageHandlerKey(connectionId, socketAddress);
-		this.utpMessageHandlers.put(key, utpMessageHandler);
+	public void put(UtpMessageHandler utpMessageHandler) {
+		this.utpMessageHandlers.put(utpMessageHandler.key(), utpMessageHandler);
 	}
 	
-	/**
-	 * 外网连入时key=地址+connectionId，本机key=connectionId
-	 */
-	private String utpMessageHandlerKey(Short connectionId, InetSocketAddress socketAddress) {
-		return socketAddress.getHostString() + socketAddress.getPort() + connectionId;
+	public void remove(UtpMessageHandler utpMessageHandler) {
+		this.utpMessageHandlers.remove(utpMessageHandler.key());
 	}
-
+	
 	/**
 	 * 获取连接ID
 	 */
@@ -55,6 +51,13 @@ public class UtpService {
 		synchronized (this) {
 			return (short) connectionId++;
 		}
+	}
+	
+	/**
+	 * 外网连入时key=地址+connectionId，本机key=connectionId
+	 */
+	public String buildKey(Short connectionId, InetSocketAddress socketAddress) {
+		return socketAddress.getHostString() + socketAddress.getPort() + connectionId;
 	}
 	
 }

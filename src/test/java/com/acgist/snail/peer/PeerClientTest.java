@@ -22,13 +22,14 @@ public class PeerClientTest {
 	
 	@Test
 	public void download() throws DownloadException {
+		String path = "e:/snail/0.torrent";
 //		String path = "e:/snail/1.torrent";
 //		String path = "e:/snail/12.torrent";
 //		String path = "e:/snail/123.torrent";
 //		String path = "e:/snail/1234.torrent";
 //		String path = "e:/snail/12345.torrent";
 //		String path = "e:/snail/123456.torrent";
-		String path = "e:/snail/16b1233b33143700fe47910898fcaaf0f05d2d09.torrent";
+//		String path = "e:/snail/16b1233b33143700fe47910898fcaaf0f05d2d09.torrent";
 		TorrentSession torrentSession = TorrentManager.getInstance().newTorrentSession(path);
 		var files = torrentSession.torrent().getInfo().files();
 		List<String> list = new ArrayList<>();

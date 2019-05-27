@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import com.acgist.snail.downloader.torrent.bootstrap.PeerLauncher;
 import com.acgist.snail.net.peer.PeerServer;
+import com.acgist.snail.net.service.ServiceServer;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.session.PeerSession;
@@ -41,6 +42,7 @@ public class PeerServerTest {
 		torrentSession.upload(TaskSession.newInstance(entity));
 		PeerServer server = PeerServer.getInstance();
 		server.listen();
+		ServiceServer.getInstance();
 		ThreadUtils.sleep(Long.MAX_VALUE);
 	}
 
@@ -54,8 +56,8 @@ public class PeerServerTest {
 		List<String> list = new ArrayList<>();
 		files.forEach(file -> {
 			if(!file.path().contains("_____padding_file")) {
-				list.add(file.path());
 				if(file.path().contains("Vol.1")) {
+					list.add(file.path());
 				}
 			}
 		});

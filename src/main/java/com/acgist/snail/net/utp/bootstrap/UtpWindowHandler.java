@@ -3,6 +3,8 @@ package com.acgist.snail.net.utp.bootstrap;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -17,7 +19,14 @@ import com.acgist.snail.system.exception.NetException;
  */
 public class UtpWindowHandler {
 	
+	/**
+	 * 最大缓存数量
+	 */
 	private static final int MAX_SIZE = 200;
+	/**
+	 * 重试序号差量
+	 */
+	private static final int RETRY_SIZE = 3;
 
 	/**
 	 * map缓存大小
@@ -63,10 +72,31 @@ public class UtpWindowHandler {
 	 * 发送数据，递增seqnr。
 	 * TODO：是否记录
 	 */
-	public synchronized UtpWindowData send(byte[] data) {
+	public synchronized List<UtpWindowData> send(byte[] data) {
 		this.lastSeqnr++;
 		this.lastTimestamp = timestamp();
-		return UtpWindowData.newInstance(this.lastSeqnr, this.lastTimestamp, data);
+		final UtpWindowData windowData = storage(this.lastTimestamp, this.lastSeqnr, data);
+		final List<UtpWindowData> list = new ArrayList<>();
+		this.map.keySet().forEach(key -> {
+			if((this.lastSeqnr - key) > RETRY_SIZE) {
+				list.add(this.map.get(key));
+			}
+		});
+		list.add(windowData);
+		System.out.println("send-------------------" + this.map.size());
+		return list;
+	}
+	
+	/**
+	 * 响应，小于这个序号的都移除。
+	 */
+	public synchronized void ack(short acknr) {
+		this.map.keySet().forEach(key -> {
+			if(key <= acknr) {
+				this.map.remove(key);
+			}
+		});
+		System.out.println("ack-------------------" + this.map.size());
 	}
 	
 	/**
@@ -114,15 +144,20 @@ public class UtpWindowHandler {
 	/**
 	 * 存入
 	 */
-	private void storage(final int timestamp, final short seqnr, final ByteBuffer buffer) throws NetException {
-		if(this.map.size() > MAX_SIZE) {
-			throw new NetException("UTP消息长度超过缓存最大长度");
-		}
+	private UtpWindowData storage(final int timestamp, final short seqnr, final ByteBuffer buffer) throws NetException {
 		final byte[] bytes = new byte[buffer.remaining()];
-		buffer.put(bytes);
+		buffer.get(bytes);
+		return storage(timestamp, seqnr, bytes);
+	}
+	
+	/**
+	 * 存入
+	 */
+	private UtpWindowData storage(final int timestamp, final short seqnr, byte[] bytes) {
 		final UtpWindowData windowData = UtpWindowData.newInstance(seqnr, timestamp, bytes);
 		this.map.put(seqnr, windowData);
 		this.mapCacheSize = this.mapCacheSize + windowData.getLength();
+		return windowData;
 	}
 	
 	/**
