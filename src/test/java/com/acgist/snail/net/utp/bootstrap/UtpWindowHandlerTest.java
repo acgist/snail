@@ -10,10 +10,10 @@ public class UtpWindowHandlerTest {
 
 	@Test
 	public void test() throws NetException {
-		UtpWindowHandler handler = new UtpWindowHandler((short) 0);
+		UtpWindowHandler handler = UtpWindowHandler.newInstance(0, (short) 0);
 		long begin = System.currentTimeMillis();
 		for (int i = 1; i < 100000; i++) {
-			ByteBuffer buffer = handler.put(0, (short) i, ByteBuffer.allocate(10));
+			ByteBuffer buffer = handler.receive(0, (short) i, ByteBuffer.allocate(10));
 			if(buffer == null) {
 				System.out.println(i);
 			}
