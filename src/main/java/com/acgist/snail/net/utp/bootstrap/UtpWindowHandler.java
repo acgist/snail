@@ -20,9 +20,9 @@ public class UtpWindowHandler {
 	private static final int MAX_SIZE = 200;
 
 	/**
-	 * 缓存的大小
+	 * map缓存大小
 	 */
-	private int cacheSize;
+	private int mapCacheSize;
 	/**
 	 * 最后一个接收的seqnr
 	 */
@@ -31,42 +31,46 @@ public class UtpWindowHandler {
 	 * 最后一个接收的timestamp
 	 */
 	private int lastTimestamp;
+	/**
+	 * 数据
+	 */
+	private final Map<Short, WindowData> map;
 	
-	private final Map<Short, ByteBuffer> map;
-	
-	public UtpWindowHandler(short lastSeqnr) {
+	private UtpWindowHandler(int timestamp, short lastSeqnr) {
 		this.lastSeqnr = lastSeqnr;
+		this.lastTimestamp = timestamp;
 		this.map = new ConcurrentHashMap<>(MAX_SIZE);
+	}
+	
+	public static final UtpWindowHandler newInstance(int timestamp, short lastSeqnr) {
+		return new UtpWindowHandler(timestamp, lastSeqnr);
 	}
 
 	/**
 	 * 获取剩余缓存大小
 	 */
 	public int remaining() {
-		return UtpConfig.WND_SIZE - this.cacheSize;
+		return UtpConfig.WND_SIZE - this.mapCacheSize;
 	}
 
 	/**
-	 * 设置buffer，如果是下一个滑块直接返回，否者缓存，等待下一个返回null。
+	 * 接收buffer，如果是下一个滑块直接返回，否者缓存，等待下一个返回null。
 	 */
-	public synchronized ByteBuffer put(final int timestamp, final short seqnr, final ByteBuffer buffer) throws NetException {
-		storage(seqnr, buffer);
-		byte[] tmpBytes;
-		ByteBuffer tmpBuffer;
+	public synchronized ByteBuffer receive(int timestamp, short seqnr, ByteBuffer buffer) throws NetException {
+		storage(timestamp, seqnr, buffer);
 		short nextSeqnr; // 下一个seqnr
+		WindowData nextWindowData;
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		while(true) {
 			nextSeqnr = (short) (this.lastSeqnr + 1);
-			tmpBuffer = take(nextSeqnr);
-			if(tmpBuffer == null) {
+			nextWindowData = take(nextSeqnr);
+			if(nextWindowData == null) {
 				break;
 			} else {
-				this.lastSeqnr = nextSeqnr;
-				this.lastTimestamp = timestamp; // TODO：优化时间
-				tmpBytes = new byte[tmpBuffer.remaining()];
-				tmpBuffer.get(tmpBytes);
+				this.lastSeqnr = nextWindowData.getSeqnr();
+				this.lastTimestamp = nextWindowData.getTimestamp();
 				try {
-					output.write(tmpBytes);
+					output.write(nextWindowData.getData());
 				} catch (IOException e) {
 					throw new NetException("UTP消息处理异常", e);
 				}
@@ -79,15 +83,30 @@ public class UtpWindowHandler {
 		return ByteBuffer.wrap(bytes);
 	}
 	
-	private ByteBuffer take(final short seqnr) {
-		return this.map.remove(seqnr);
+	/**
+	 * 取出
+	 */
+	private WindowData take(final short seqnr) {
+		final WindowData windowData = this.map.remove(seqnr);
+		if(windowData == null) {
+			return windowData;
+		}
+		this.mapCacheSize = this.mapCacheSize - windowData.getLength();
+		return windowData;
 	}
-	
-	private void storage(final short seqnr, final ByteBuffer buffer) throws NetException {
+
+	/**
+	 * 存入
+	 */
+	private void storage(final int timestamp, final short seqnr, final ByteBuffer buffer) throws NetException {
 		if(this.map.size() > MAX_SIZE) {
 			throw new NetException("UTP消息长度超过缓存最大长度");
 		}
-		this.map.put(seqnr, buffer);
+		final byte[] bytes = new byte[buffer.remaining()];
+		buffer.put(bytes);
+		final WindowData windowData = WindowData.newInstance(seqnr, timestamp, bytes);
+		this.map.put(seqnr, windowData);
+		this.mapCacheSize = this.mapCacheSize + windowData.getLength();
 	}
 
 	public int timestamp() {
@@ -98,4 +117,46 @@ public class UtpWindowHandler {
 		return this.lastSeqnr;
 	}
 	
+}
+
+/**
+ * UTP窗口数据
+ * 
+ * @author acgist
+ * @since 1.1.0
+ */
+class WindowData {
+
+	private final short seqnr;
+	private final int timestamp;
+	private final byte[] data;
+	private final int length;
+
+	private WindowData(short seqnr, int timestamp, byte[] data) {
+		this.seqnr = seqnr;
+		this.timestamp = timestamp;
+		this.data = data;
+		this.length = data.length;
+	}
+	
+	public static final WindowData newInstance(short seqnr, int timestamp, byte[] data) {
+		return new WindowData(seqnr, timestamp, data);
+	}
+
+	public short getSeqnr() {
+		return seqnr;
+	}
+
+	public int getTimestamp() {
+		return timestamp;
+	}
+
+	public byte[] getData() {
+		return data;
+	}
+
+	public int getLength() {
+		return length;
+	}
+
 }
