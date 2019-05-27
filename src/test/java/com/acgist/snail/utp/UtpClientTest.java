@@ -13,8 +13,8 @@ import com.acgist.snail.system.manager.TorrentManager;
 public class UtpClientTest {
 
 	@Test
-	public void server() throws DownloadException {
-		String path = "e:/snail/123.torrent";
+	public void client() throws DownloadException {
+		String path = "e:/snail/0.torrent";
 		TorrentSession torrentSession = TorrentManager.getInstance().newTorrentSession(path);
 		String host = "127.0.0.1";
 //		Integer port = 17888;
