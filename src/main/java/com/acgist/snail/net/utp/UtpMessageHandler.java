@@ -331,6 +331,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 		if(!this.connect) { // 没有连接
 			this.connect = this.available();
 			if(this.connect) {
+				// TODO：++放后面删除-1
 				this.receiveWindowHandler.connect(timestamp, (short) (seqnr - 1)); // 收到响应时seqnr+1，当前-1。
 			}
 			synchronized (this.connectLock) {
