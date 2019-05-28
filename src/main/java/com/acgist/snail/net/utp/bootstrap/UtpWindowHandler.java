@@ -83,7 +83,7 @@ public class UtpWindowHandler {
 	 * 发送数据，递增seqnr。
 	 */
 	public synchronized List<UtpWindowData> send(byte[] data) {
-		this.lastSeqnr++;
+		this.lastSeqnr++; // TODO:+1
 		this.lastTimestamp = timestamp();
 		final UtpWindowData windowData = storage(this.lastTimestamp, this.lastSeqnr, data);
 		final List<UtpWindowData> list = timeoutRetry();

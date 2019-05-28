@@ -37,7 +37,6 @@ public class DhtConfig extends PropertiesConfig {
 	public static final String KEY_INFO_HASH = "info_hash"; // infoHash
 	/**
 	 * 0|1：存在且非0=忽略端口参数，使用UDP包的源端口为对等端端口，支持uTP。
-	 * TODO：实现uTP后设置：1
 	 */
 	public static final String KEY_IMPLIED_PORT = "implied_port";
 	
