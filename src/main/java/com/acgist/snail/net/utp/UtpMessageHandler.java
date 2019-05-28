@@ -129,19 +129,19 @@ public class UtpMessageHandler extends UdpMessageHandler {
 		final short acknr = buffer.getShort();
 		switch (type) {
 		case UtpConfig.TYPE_DATA:
-			data(timestamp, seqnr, buffer);
+			data(timestamp, seqnr, acknr, buffer);
 			break;
 		case UtpConfig.TYPE_FIN:
-			fin(timestamp, seqnr);
+			fin(timestamp, seqnr, acknr);
 			break;
 		case UtpConfig.TYPE_STATE:
 			state(timestamp, seqnr, acknr, wndSize);
 			break;
 		case UtpConfig.TYPE_RESET:
-			reset(timestamp, seqnr);
+			reset(timestamp, seqnr, acknr);
 			break;
 		case UtpConfig.TYPE_SYN:
-			syn(timestamp, seqnr);
+			syn(timestamp, seqnr, acknr);
 			break;
 		default:
 			LOGGER.error(
@@ -214,7 +214,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	/**
 	 * 接收数据消息
 	 */
-	private void data(int timestamp, short seqnr, ByteBuffer buffer) throws NetException {
+	private void data(int timestamp, short seqnr, short acknr, ByteBuffer buffer) throws NetException {
 		UtpWindowData windowData = null;
 		try {
 			windowData = this.receiveWindowHandler.receive(timestamp, seqnr, buffer);
@@ -304,7 +304,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	/**
 	 * 接收结束消息
 	 */
-	private void fin(int timestamp, short seqnr) {
+	private void fin(int timestamp, short seqnr, short acknr) {
 		this.connect = false;
 		super.close();
 		this.state(timestamp, seqnr);
@@ -331,7 +331,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 		if(!this.connect) { // 没有连接
 			this.connect = this.available();
 			if(this.connect) {
-				this.receiveWindowHandler.connect(timestamp, seqnr);
+				this.receiveWindowHandler.connect(timestamp, (short) (seqnr - 1)); // 收到响应时seqnr+1，当前-1。
 			}
 			synchronized (this.connectLock) {
 				this.connectLock.notifyAll();
@@ -358,7 +358,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	/**
 	 * 接收reset消息
 	 */
-	private void reset(int timestamp, short seqnr) {
+	private void reset(int timestamp, short seqnr, short acknr) {
 		this.connect = false;
 		super.close();
 		this.state(timestamp, seqnr);
@@ -381,7 +381,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	/**
 	 *接收握手消息
 	 */
-	private void syn(int timestamp, short seqnr) {
+	private void syn(int timestamp, short seqnr, short acknr) {
 		if(!this.connect) {
 			this.connect = true;
 			this.receiveWindowHandler.connect(timestamp, seqnr);

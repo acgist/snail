@@ -49,7 +49,7 @@ public class PeerClientTest {
 		entity.setDescription(wrapper.description());
 		torrentSession.upload(TaskSession.newInstance(entity)).download(false);
 		String host = "127.0.0.1";
-//		Integer port = 17888;
+//		Integer port = 18888;
 		Integer port = 49160; // FDM测试端口
 //		Integer port = 15000; // 本地迅雷测试端口
 		System.out.println("已下载：" + torrentSession.torrentStreamGroup().pieces());

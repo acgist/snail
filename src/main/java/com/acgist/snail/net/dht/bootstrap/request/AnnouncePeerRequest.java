@@ -43,7 +43,7 @@ public class AnnouncePeerRequest extends Request {
 		request.put(DhtConfig.KEY_PORT, SystemConfig.getServicePortExt());
 		request.put(DhtConfig.KEY_TOKEN, token);
 		request.put(DhtConfig.KEY_INFO_HASH, infoHash);
-		request.put(DhtConfig.KEY_IMPLIED_PORT, DhtConfig.IMPLIED_PORT_CONFIG); // TODO：实现uTP，修改：1
+		request.put(DhtConfig.KEY_IMPLIED_PORT, DhtConfig.IMPLIED_PORT_AUTO);
 		return request;
 	}
 	
