@@ -19,19 +19,21 @@ import com.acgist.snail.system.exception.NetException;
  */
 public class UtpWindowHandler {
 	
+//	private static final Logger LOGGER = LoggerFactory.getLogger(UtpWindowHandler.class);
+	
 	/**
-	 * 最大缓存数量
+	 * 重试时间（微秒）
 	 */
-	private static final int MAX_SIZE = 200;
+	private static final int RETRY_TIME = 2 * 1000 * 1000;
+	
 	/**
-	 * 重试序号差量
+	 * 客户端窗口大小
 	 */
-	private static final int RETRY_SIZE = 3;
-
+	private int wndSize;
 	/**
 	 * map缓存大小
 	 */
-	private int mapCacheSize;
+	private int cacheSize;
 	/**
 	 * 最后一个接收/发送的seqnr
 	 */
@@ -46,10 +48,11 @@ public class UtpWindowHandler {
 	private final Map<Short, UtpWindowData> map;
 	
 	private UtpWindowHandler() {
-		this.mapCacheSize = 0;
+		this.wndSize = 0;
+		this.cacheSize = 0;
 		this.lastSeqnr = 0;
 		this.lastTimestamp = 0;
-		this.map = new ConcurrentHashMap<>(MAX_SIZE);
+		this.map = new ConcurrentHashMap<>();
 	}
 	
 	public static final UtpWindowHandler newInstance() {
@@ -62,41 +65,60 @@ public class UtpWindowHandler {
 	}
 
 	/**
-	 * 获取剩余缓存大小
+	 * 获取剩余窗口缓存大小
 	 */
-	public int remaining() {
-		return UtpConfig.WND_SIZE - this.mapCacheSize;
+	public int wndSize() {
+		return UtpConfig.WND_SIZE - this.cacheSize;
+	}
+	
+	/**
+	 * 流量控制和阻塞控制。
+	 * 客户端缓存耗尽、发送数据超过最大窗口时限制发送速度。
+	 */
+	public boolean sendLimit() {
+		return this.wndSize < 0 || this.cacheSize > UtpConfig.WND_SIZE;
 	}
 	
 	/**
 	 * 发送数据，递增seqnr。
-	 * TODO：是否记录
 	 */
 	public synchronized List<UtpWindowData> send(byte[] data) {
 		this.lastSeqnr++;
 		this.lastTimestamp = timestamp();
 		final UtpWindowData windowData = storage(this.lastTimestamp, this.lastSeqnr, data);
-		final List<UtpWindowData> list = new ArrayList<>();
-		this.map.keySet().forEach(key -> {
-			if((this.lastSeqnr - key) > RETRY_SIZE) {
-				list.add(this.map.get(key));
-			}
-		});
+		final List<UtpWindowData> list = timeoutRetry();
 		list.add(windowData);
-		System.out.println("send-------------------" + this.map.size());
 		return list;
 	}
-	
+
+	/**
+	 * 获取发送超时的数据包，重新更新时间发送。
+	 */
+	public synchronized List<UtpWindowData> timeoutRetry() {
+		final List<UtpWindowData> list = new ArrayList<>();
+		this.map.keySet().forEach(key -> {
+			var tmp = this.map.get(key);
+			if((this.lastTimestamp - tmp.getTimestamp()) > RETRY_TIME) {
+				tmp.updateTimestamp();
+				list.add(tmp);
+			}
+		});
+		return list;
+	}
+
 	/**
 	 * 响应，小于这个序号的都移除。
 	 */
-	public synchronized void ack(short acknr) {
+	public synchronized void ack(short acknr, int wndSize) {
+		this.wndSize = wndSize;
 		this.map.keySet().forEach(key -> {
 			if(key <= acknr) {
-				this.map.remove(key);
+				take(acknr);
 			}
 		});
-		System.out.println("ack-------------------" + this.map.size());
+		synchronized (this) {
+			this.notifyAll();
+		}
 	}
 	
 	/**
@@ -137,7 +159,7 @@ public class UtpWindowHandler {
 		if(windowData == null) {
 			return windowData;
 		}
-		this.mapCacheSize = this.mapCacheSize - windowData.getLength();
+		this.cacheSize = this.cacheSize - windowData.getLength();
 		return windowData;
 	}
 
@@ -151,22 +173,22 @@ public class UtpWindowHandler {
 	}
 	
 	/**
-	 * 存入
+	 * 存入，没有消息体的数据不记录。
 	 */
 	private UtpWindowData storage(final int timestamp, final short seqnr, byte[] bytes) {
 		final UtpWindowData windowData = UtpWindowData.newInstance(seqnr, timestamp, bytes);
 		this.map.put(seqnr, windowData);
-		this.mapCacheSize = this.mapCacheSize + windowData.getLength();
+		this.cacheSize = this.cacheSize + windowData.getLength();
 		return windowData;
 	}
 	
 	/**
-	 * 时间戳
+	 * 时间戳（微秒）
 	 */
 	public static final int timestamp() {
-		return (int) System.nanoTime();
+		return (int) (System.nanoTime() / 1000);
 	}
-
+	
 	public int lastTimestamp() {
 		return this.lastTimestamp;
 	}
