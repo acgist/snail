@@ -81,13 +81,13 @@ public class TorrentSession {
 	 */
 	private DhtLauncher dhtLauncher;
 	/**
-	 * PeerClient组
-	 */
-	private PeerLauncherGroup peerClientGroup;
-	/**
 	 * PeerConnect组
 	 */
 	private PeerConnectGroup peerConnectGroup;
+	/**
+	 * PeerLauncher组
+	 */
+	private PeerLauncherGroup peerLauncherGroup;
 	/**
 	 * 文件流组
 	 */
@@ -113,9 +113,9 @@ public class TorrentSession {
 	 */
 	private ScheduledFuture<?> pexTimer;
 	/**
-	 * PeerClient定时器
+	 * PeerLauncher定时器
 	 */
-	private ScheduledFuture<?> peerClientTimer;
+	private ScheduledFuture<?> peerLauncherTimer;
 	/**
 	 * PeerConnect定时器
 	 */
@@ -170,8 +170,8 @@ public class TorrentSession {
 			this.loadTrackerLauncher();
 			this.loadDhtTimer();
 		}
-		this.loadPeerClientGroup();
-		this.loadPeerClientTimer(); // TODO：修改PeerClient名称PeerLauncher
+		this.loadPeerLauncherGroup();
+		this.loadPeerLauncherTimer();
 		this.loadPexTimer();
 		this.downloadable = true;
 		return false;
@@ -205,18 +205,18 @@ public class TorrentSession {
 	}
 	
 	/**
-	 * 加载PeerClient
+	 * 加载PeerLauncher
 	 */
-	private void loadPeerClientGroup() {
-		this.peerClientGroup = PeerLauncherGroup.newInstance(this);
+	private void loadPeerLauncherGroup() {
+		this.peerLauncherGroup = PeerLauncherGroup.newInstance(this);
 	}
 	
 	/**
-	 * 加载PeerClient定时优化任务
+	 * 加载PeerLauncher定时优化任务
 	 */
-	private void loadPeerClientTimer() {
-		this.peerClientTimer = this.timerFixedDelay(0L, PEER_OPTIMIZE_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
-			this.peerClientGroup.optimize(); // 优化下载Peer下载
+	private void loadPeerLauncherTimer() {
+		this.peerLauncherTimer = this.timerFixedDelay(0L, PEER_OPTIMIZE_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
+			this.peerLauncherGroup.optimize(); // 优化下载Peer下载
 		});
 	}
 
@@ -263,7 +263,7 @@ public class TorrentSession {
 	 */
 	private void loadPexTimer() {
 		this.pexTimer = this.timerFixedDelay(PEX_INTERVAL.toSeconds(), PEX_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
-			PeerManager.getInstance().exchange(this.infoHashHex(), this.peerClientGroup.optimizePeerSession()); // PEX消息
+			PeerManager.getInstance().exchange(this.infoHashHex(), this.peerLauncherGroup.optimizePeerSession()); // PEX消息
 		});
 	}
 	
@@ -346,8 +346,8 @@ public class TorrentSession {
 	public void releaseDownload() {
 		LOGGER.debug("Torrent释放资源（下载）");
 		this.pexTimer.cancel(false);
-		this.peerClientTimer.cancel(false);
-		this.peerClientGroup.release();
+		this.peerLauncherTimer.cancel(false);
+		this.peerLauncherGroup.release();
 		if(dhtTimer != null) {
 			this.dhtTimer.cancel(false);
 		}
@@ -463,8 +463,8 @@ public class TorrentSession {
 		return this.dhtLauncher;
 	}
 	
-	public PeerLauncherGroup peerClientGroup() {
-		return this.peerClientGroup;
+	public PeerLauncherGroup peerLauncherGroup() {
+		return this.peerLauncherGroup;
 	}
 	
 	public PeerConnectGroup peerConnectGroup() {

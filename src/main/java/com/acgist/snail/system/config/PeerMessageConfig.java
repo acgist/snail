@@ -131,7 +131,7 @@ public class PeerMessageConfig {
 	}
 	
 	/**
-	 * PeerClient动作
+	 * PeerLauncher动作
 	 */
 	public enum Action {
 		download, // 下载文件

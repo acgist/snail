@@ -37,11 +37,11 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	/**
 	 * 限速等待（秒）
 	 */
-	private static final int LIMIT_WAIT = 2;
+	private static final int LIMIT_WAIT = 4;
 	/**
 	 * 连接超时时间（毫秒）
 	 */
-	private static final int CONNECT_TIMEOUT = 2;
+	private static final int CONNECT_TIMEOUT = 4;
 	
 	/**
 	 * 接收连接ID
