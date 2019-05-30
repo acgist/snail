@@ -195,9 +195,11 @@ public class Request {
 	protected static final byte[] writeNode(List<NodeSession> nodes) {
 		final ByteBuffer buffer = ByteBuffer.allocate(26 * nodes.size());
 		for (NodeSession node : nodes) {
-			buffer.put(node.getId());
-			buffer.putInt(NetUtils.encodeIpToInt(node.getHost()));
-			buffer.putShort(NetUtils.encodePort(node.getPort()));
+			if(NetUtils.verifyIp(node.getHost())) {
+				buffer.put(node.getId());
+				buffer.putInt(NetUtils.encodeIpToInt(node.getHost()));
+				buffer.putShort(NetUtils.encodePort(node.getPort()));
+			}
 		}
 		return buffer.array();
 	}

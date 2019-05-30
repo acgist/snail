@@ -106,7 +106,11 @@ public class PeerLauncherGroup {
 		LOGGER.debug("优化PeerLauncher-创建下载PeerLauncher");
 		boolean ok = true;
 		while(ok) {
-			ok = buildPeerLauncher();
+			try {
+				ok = buildPeerLauncher();
+			} catch (Exception e) {
+				LOGGER.error("创建PeerLauncher异常", e);
+			}
 		}
 	}
 	
