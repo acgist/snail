@@ -7,6 +7,7 @@ import org.junit.Test;
 import com.acgist.snail.net.utp.bootstrap.UtpWindowData;
 import com.acgist.snail.net.utp.bootstrap.UtpWindowHandler;
 import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.utils.ThreadUtils;
 
 public class UtpWindowHandlerTest {
 
@@ -23,4 +24,14 @@ public class UtpWindowHandlerTest {
 		System.out.println(System.currentTimeMillis() - begin);
 	}
 
+	@Test
+	public void timeout() {
+		UtpWindowHandler handler = UtpWindowHandler.newInstance();
+		handler.send("1234".getBytes());
+		for (int i = 0; i < 100; i++) {
+			System.out.println(handler.timeoutWindowData());
+			ThreadUtils.sleep(1000);
+		}
+	}
+	
 }

@@ -25,6 +25,7 @@ import com.acgist.snail.utils.ThreadUtils;
  */
 public class PeerLauncher {
 
+	// TODO：10个时，单机UTP下载会出现卡顿。
 	private static final int SLICE_MAX_SIZE = 10; // 单次请求10个SLICE
 	
 	private static final int SLICE_AWAIT_TIME = 30; // SLICE每批等待时间

@@ -171,7 +171,7 @@ public class TorrentSession {
 			this.loadDhtTimer();
 		}
 		this.loadPeerClientGroup();
-		this.loadPeerClientTimer();
+		this.loadPeerClientTimer(); // TODO：修改PeerClient名称PeerLauncher
 		this.loadPexTimer();
 		this.downloadable = true;
 		return false;
