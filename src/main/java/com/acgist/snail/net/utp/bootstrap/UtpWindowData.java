@@ -2,6 +2,8 @@ package com.acgist.snail.net.utp.bootstrap;
 
 import java.nio.ByteBuffer;
 
+import com.acgist.snail.utils.DateUtils;
+
 /**
  * UTP窗口数据
  * 
@@ -11,13 +13,12 @@ import java.nio.ByteBuffer;
 public class UtpWindowData {
 
 	private final short seqnr; // seqnr
-	private int timestamp; // 时间戳（毫秒），重新发送时修改时间戳。
+	private int timestamp; // 时间戳（微秒），发送时重新修改。
 	private final byte[] data; // 数据
 	private final int length; // 数据长度
 	
 	private UtpWindowData(short seqnr, int timestamp, byte[] data) {
 		this.seqnr = seqnr;
-		this.timestamp = timestamp;
 		this.data = data;
 		if(data == null) {
 			this.length = 0;
@@ -50,8 +51,12 @@ public class UtpWindowData {
 		return ByteBuffer.wrap(this.data);
 	}
 
-	public void updateTimestamp() {
-		this.timestamp = UtpWindowHandler.timestamp();
+	/**
+	 * 发送时修改时间
+	 */
+	public int updateTimestamp() {
+		this.timestamp = DateUtils.timestampUs();
+		return this.timestamp;
 	}
 
 }

@@ -74,6 +74,12 @@ public class PeerServerTest {
 		PeerLauncher launcher = PeerLauncher.newInstance(peerSession, torrentSession);
 //		launcher.torrent();
 		launcher.download();
+		new Thread(() -> {
+			while(true) {
+				System.out.println("下载速度：" + statisticsSession.downloadSecond());
+				ThreadUtils.sleep(1000);
+			}
+		}).start();
 //		ThreadUtils.sleep(4000); // 等待信息交换
 //		var pexMessage = PeerExchangeMessageHandler.buildMessage(List.of(peerSession));
 //		launcher.handler().pex(pexMessage);

@@ -17,6 +17,8 @@ import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.config.UtpConfig;
 import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.utils.CollectionUtils;
+import com.acgist.snail.utils.DateUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
@@ -39,7 +41,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	/**
 	 * 连接超时时间（毫秒）
 	 */
-	private static final int CONNECT_TIMEOUT = 4000;
+	private static final int CONNECT_TIMEOUT = 2000;
 	
 	/**
 	 * 接收连接ID
@@ -107,7 +109,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	}
 	
 	/**
-	 * 外网连入时key=地址+connectionId，本机key=connectionId
+	 * key = socketAddress + connectionId
 	 */
 	public String key() {
 		return this.utpService.buildKey(this.recvId, this.socketAddress);
@@ -127,6 +129,11 @@ public class UtpMessageHandler extends UdpMessageHandler {
 		final int wndSize = buffer.getInt();
 		final short seqnr = buffer.getShort();
 		final short acknr = buffer.getShort();
+		if(extension != 0) { // 扩展数据
+			final short extLength = buffer.getShort();
+			byte[] extData = new byte[extLength];
+			buffer.get(extData);
+		}
 		switch (type) {
 		case UtpConfig.TYPE_DATA:
 			data(timestamp, seqnr, acknr, buffer);
@@ -162,25 +169,73 @@ public class UtpMessageHandler extends UdpMessageHandler {
 		}
 		byte[] bytes;
 		int remaining;
-		while((remaining = buffer.remaining()) > 0) {
+		while((remaining = buffer.remaining()) > 0) { // UDP拆包
 			if(remaining > UtpConfig.MAX_PACKET_SIZE) {
 				bytes = new byte[UtpConfig.MAX_PACKET_SIZE];
 			} else {
 				bytes = new byte[remaining];
 			}
 			buffer.get(bytes);
-			final List<UtpWindowData> windowDatas = this.sendWindowHandler.send(bytes);
-			this.data(windowDatas);
+			final UtpWindowData windowData = this.sendWindowHandler.send(bytes);
+			this.data(windowData);
+			wndControl();
 		}
-		Thread.yield(); // 让出CPU时间，防止速度太快导致假死。
-		sendLimit();
+		wndSizeControl();
 	}
 
 	/**
-	 * 流量控制和阻塞控制。
+	 * 默认慢开始wnd数量
 	 */
-	public void sendLimit() {
-		while(this.sendWindowHandler.sendLimit()) {
+	private static final int DEFAULT_SLOW_WND = 2;
+	/**
+	 * 默认拥堵算法wnd数量
+	 */
+	private static final int DEFAULT_LIMIT_WND = 64;
+	
+	private static final int DEFAULT_SLEEP_TIME = 10;
+	
+	private volatile int slowWnd = DEFAULT_SLOW_WND;
+	private volatile int limitWnd = DEFAULT_LIMIT_WND;
+	private volatile int nowWnd = 0;
+	
+	/**
+	 * 流量控制和阻塞控制。
+	 * 慢开始：发送数据包（wnd）2的指数增长。
+	 * 拥堵算法：每次+1。
+	 * 出现超时（丢包）时发送数据包/2。
+	 * 如果出现拥堵时发送的数据包小于
+	 */
+	public void wndControl() {
+		this.nowWnd++;
+		final boolean loss = timeoutRetry(); // 出现丢包
+		if(loss) {
+			this.nowWnd = 0;
+			this.slowWnd = this.slowWnd / 2;
+			if(this.slowWnd < DEFAULT_SLOW_WND) {
+				this.slowWnd = DEFAULT_SLOW_WND;
+			}
+			if(this.limitWnd < this.slowWnd) {
+				this.limitWnd = this.slowWnd;
+			}
+			LOGGER.debug("数据包超时（丢包）限制发送数据包大小：{}", this.slowWnd);
+			ThreadUtils.sleep(DEFAULT_SLEEP_TIME);
+		} else if (++this.nowWnd > this.slowWnd) {
+			this.nowWnd = 0;
+			if(this.slowWnd >= this.limitWnd) {
+				this.slowWnd++;
+			} else {
+				this.slowWnd = this.slowWnd * 2;
+			}
+			LOGGER.debug("数据包发送数据包大小：{}", this.slowWnd);
+			ThreadUtils.sleep(DEFAULT_SLEEP_TIME);
+		}
+	}
+	
+	/**
+	 * 客户端缓存耗尽
+	 */
+	private void wndSizeControl() {
+		while(this.sendWindowHandler.wndSizeControl()) {
 			timeoutRetry();
 			synchronized (this.sendWindowHandler) {
 				ThreadUtils.wait(this.sendWindowHandler, Duration.ofSeconds(LIMIT_WAIT));
@@ -189,14 +244,18 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	}
 	
 	/**
-	 * 重新发送超时数据包。
+	 * 获取超时（丢包）数据包并重新发送。
+	 * 
+	 * @return true：有丢包；false：没有丢包。
 	 */
-	private void timeoutRetry() {
-		final List<UtpWindowData> windowDatas = this.sendWindowHandler.timeoutRetry();
-		if(!windowDatas.isEmpty()) {
-			LOGGER.debug("重试未发送数据：{}", windowDatas.size());
+	private boolean timeoutRetry() {
+		final List<UtpWindowData> windowDatas = this.sendWindowHandler.timeoutWindowData();
+		if(CollectionUtils.isNotEmpty(windowDatas)) {
 			data(windowDatas);
+			LOGGER.debug("数据包超时（丢包）重新发送数据包大小：{}", windowDatas.size());
+			return true;
 		}
+		return false;
 	}
 	
 	/**
@@ -227,6 +286,8 @@ public class UtpMessageHandler extends UdpMessageHandler {
 		}
 		if(windowData == null) {
 			return;
+		} else {
+			this.state(windowData.getTimestamp(), windowData.getSeqnr());
 		}
 		int length = 0;
 		final ByteBuffer windowBuffer = windowData.buffer();
@@ -281,24 +342,33 @@ public class UtpMessageHandler extends UdpMessageHandler {
 				break;
 			}
 		}
-		this.state(windowData.getTimestamp(), windowData.getSeqnr());
 	}
 	
 	/**
 	 * 发送数据消息
 	 */
 	private void data(List<UtpWindowData> windowDatas) {
+		if(CollectionUtils.isEmpty(windowDatas)) {
+			return;
+		}
 		windowDatas.forEach(windowData -> {
-			final ByteBuffer buffer = header(UtpConfig.TYPE_DATA, windowData.getLength() + 20);
-			buffer.putShort(this.sendId);
-			buffer.putInt(windowData.getTimestamp());
-			buffer.putInt(windowData.getTimestamp() - this.receiveWindowHandler.lastTimestamp());
-			buffer.putInt(this.receiveWindowHandler.wndSize());
-			buffer.putShort(windowData.getSeqnr());
-			buffer.putShort(this.receiveWindowHandler.lastSeqnr()); // acknr=请求seqnr
-			buffer.put(windowData.getData());
-			this.pushMessage(buffer);
+			data(windowData);
 		});
+	}
+	
+	/**
+	 * 发送数据
+	 */
+	private void data(UtpWindowData windowData) {
+		final ByteBuffer buffer = header(UtpConfig.TYPE_DATA, windowData.getLength() + 20);
+		buffer.putShort(this.sendId);
+		buffer.putInt(windowData.updateTimestamp()); // 更新发送时间
+		buffer.putInt(windowData.getTimestamp() - this.receiveWindowHandler.timestamp());
+		buffer.putInt(this.receiveWindowHandler.remainWndSize());
+		buffer.putShort(windowData.getSeqnr());
+		buffer.putShort(this.receiveWindowHandler.seqnr()); // acknr=请求seqnr
+		buffer.put(windowData.getData());
+		this.pushMessage(buffer);
 	}
 	
 	/**
@@ -316,10 +386,10 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	private void fin() {
 		final ByteBuffer buffer = header(UtpConfig.TYPE_FIN, 20);
 		buffer.putShort(this.recvId);
-		buffer.putInt(UtpWindowHandler.timestamp());
+		buffer.putInt(DateUtils.timestampUs());
 		buffer.putInt(0);
 		buffer.putInt(0);
-		buffer.putShort((short) (this.sendWindowHandler.lastSeqnr() + 1));
+		buffer.putShort((short) (this.sendWindowHandler.seqnr() + 1));
 		buffer.putShort((short) 0);
 		this.pushMessage(buffer);
 	}
@@ -331,27 +401,30 @@ public class UtpMessageHandler extends UdpMessageHandler {
 		if(!this.connect) { // 没有连接
 			this.connect = this.available();
 			if(this.connect) {
-				// TODO：++放后面删除-1
-				this.receiveWindowHandler.connect(timestamp, (short) (seqnr - 1)); // 收到响应时seqnr+1，当前-1。
+				// 握手时seqnr为下一个seqnr，所以这里-1设置为当前seqnr。
+				this.receiveWindowHandler.connect(timestamp, (short) (seqnr - 1));
 			}
 			synchronized (this.connectLock) {
 				this.connectLock.notifyAll();
 			}
 		}
 		this.sendWindowHandler.ack(acknr, wndSize);
+		synchronized (this.sendWindowHandler) {
+			this.sendWindowHandler.notifyAll();
+		}
 	}
 	
 	/**
 	 * 发送应答消息，发送此消息不增加seqnr。
 	 */
 	private void state(int timestamp, short seqnr) {
-		final int now = UtpWindowHandler.timestamp();
+		final int now = DateUtils.timestampUs();
 		final ByteBuffer buffer = header(UtpConfig.TYPE_STATE, 20);
 		buffer.putShort(this.sendId);
 		buffer.putInt(now);
 		buffer.putInt(now - timestamp);
-		buffer.putInt(this.receiveWindowHandler.wndSize());
-		buffer.putShort(this.sendWindowHandler.lastSeqnr());
+		buffer.putInt(this.receiveWindowHandler.remainWndSize());
+		buffer.putShort(this.sendWindowHandler.seqnr());
 		buffer.putShort(seqnr); // acknr=请求seqnr
 		this.pushMessage(buffer);
 	}
@@ -371,10 +444,10 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	private void reset() {
 		final ByteBuffer buffer = header(UtpConfig.TYPE_RESET, 20);
 		buffer.putShort(this.recvId);
-		buffer.putInt(UtpWindowHandler.timestamp());
+		buffer.putInt(DateUtils.timestampUs());
 		buffer.putInt(0);
 		buffer.putInt(0);
-		buffer.putShort((short) (this.sendWindowHandler.lastSeqnr() + 1));
+		buffer.putShort((short) (this.sendWindowHandler.seqnr() + 1));
 		buffer.putShort((short) 0);
 		this.pushMessage(buffer);
 	}
@@ -394,10 +467,10 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	 * 发送握手消息，第一条消息。
 	 */
 	private void syn() {
-		final UtpWindowData windowData = this.sendWindowHandler.send(null).get(0);
+		final UtpWindowData windowData = this.sendWindowHandler.send();
 		final ByteBuffer buffer = header(UtpConfig.TYPE_SYN, 20);
 		buffer.putShort(this.recvId);
-		buffer.putInt(windowData.getTimestamp());
+		buffer.putInt(windowData.updateTimestamp());
 		buffer.putInt(0);
 		buffer.putInt(0);
 		buffer.putShort(windowData.getSeqnr());

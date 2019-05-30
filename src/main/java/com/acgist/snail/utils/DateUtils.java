@@ -114,4 +114,11 @@ public class DateUtils {
 		return new Date(unixToJavaTimestamp(unixTimestamp));
 	}
 	
+	/**
+	 * 时间戳（微秒）
+	 */
+	public static final int timestampUs() {
+		return (int) (System.nanoTime() / 1000);
+	}
+	
 }
