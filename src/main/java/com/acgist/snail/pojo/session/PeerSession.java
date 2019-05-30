@@ -394,4 +394,9 @@ public class PeerSession implements IStatistics {
 		return false;
 	}
 	
+	@Override
+	public String toString() {
+		return ObjectUtils.toString(this, this.host, this.peerPort, this.dhtPort);
+	}
+	
 }

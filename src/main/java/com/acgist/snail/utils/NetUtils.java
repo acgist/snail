@@ -39,6 +39,15 @@ public class NetUtils {
 	private static final long L_IP_BEGIN = encodeIpToLong("127.0.0.0");
 	private static final long L_IP_END = encodeIpToLong("127.255.255.255");
 	
+	private static final String IP_REGEX = "(\\d{0,3}\\.){3}\\d{0,3}";
+	
+	/**
+	 * 验证IP地址
+	 */
+	public static final boolean verifyIp(String host) {
+		return StringUtils.regex(host, IP_REGEX, true);
+	}
+	
 	/**
 	 * 端口编码
 	 */
