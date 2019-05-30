@@ -32,7 +32,7 @@ public class PeerLauncher {
 	private static final int PIECE_AWAIT_TIME = 60; // PIECE完成等待时间
 	private static final int CLOSE_AWAIT_TIME = 60; // 关闭等待时间
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(PeerClient.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PeerLauncher.class);
 	
 	private boolean launcher = false; // 是否启动
 	private volatile boolean available = false; // 状态：连接是否成功
@@ -54,7 +54,7 @@ public class PeerLauncher {
 	private final PeerSession peerSession;
 //	private final TaskSession taskSession;
 	private final TorrentSession torrentSession;
-//	private final PeerClientGroup peerClientGroup;
+//	private final PeerLauncherGroup peerLauncherGroup;
 	private final TorrentStreamGroup torrentStreamGroup;
 	private final PeerLauncherMessageHandler peerLauncherMessageHandler;
 	
@@ -62,7 +62,7 @@ public class PeerLauncher {
 		this.peerSession = peerSession;
 //		this.taskSession = torrentSession.taskSession();
 		this.torrentSession = torrentSession;
-//		this.peerClientGroup = torrentSession.peerClientGroup();
+//		this.peerLauncherGroup = torrentSession.peerLauncherGroup();
 		this.torrentStreamGroup = torrentSession.torrentStreamGroup();
 		this.peerLauncherMessageHandler = PeerLauncherMessageHandler.newInstance(peerSession, torrentSession);
 	}
@@ -176,7 +176,7 @@ public class PeerLauncher {
 	 */
 	public void release() {
 		if(available()) {
-			LOGGER.debug("PeerClient关闭：{}-{}", this.peerSession.host(), this.peerSession.peerPort());
+			LOGGER.debug("PeerLauncher关闭：{}-{}", this.peerSession.host(), this.peerSession.peerPort());
 			this.available = false;
 			if(!this.completeLock.get()) { // 没有完成：等待下载完成
 				synchronized (this.closeLock) {
