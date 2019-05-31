@@ -194,14 +194,14 @@ public class TorrentSession {
 	 * 加载线程池
 	 */
 	private void loadExecutor() {
-		this.executor = SystemThreadContext.newExecutor(10, 10, 100, 60L, SystemThreadContext.SNAIL_THREAD_BT);
+		this.executor = SystemThreadContext.newExecutor(5, 10, 100, 60L, SystemThreadContext.SNAIL_THREAD_BT);
 	}
 
 	/**
 	 * 加载定时线程池
 	 */
 	private void loadExecutorTimer() {
-		this.executorTimer = SystemThreadContext.newScheduledExecutor(4, SystemThreadContext.SNAIL_THREAD_BT_TIMER);
+		this.executorTimer = SystemThreadContext.newScheduledExecutor(2, SystemThreadContext.SNAIL_THREAD_BT_TIMER);
 	}
 	
 	/**
@@ -408,10 +408,10 @@ public class TorrentSession {
 	}
 
 	/**
-	 * 获取已下载大小
+	 * 重新获取下载大小
 	 */
-	public long size() {
-		return torrentStreamGroup.size();
+	public void resize() {
+		this.taskSession.downloadSize(this.torrentStreamGroup.size());
 	}
 
 	/**

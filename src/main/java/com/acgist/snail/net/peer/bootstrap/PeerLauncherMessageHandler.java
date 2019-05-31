@@ -132,6 +132,9 @@ public class PeerLauncherMessageHandler {
 			return false;
 		}
 		final PeerSession peerSession = PeerManager.getInstance().newPeerSession(infoHashHex, taskSession.statistics(), socketAddress.getHostString(), null, PeerConfig.SOURCE_CONNECT);
+		if(peerSession == null) {
+			return false;
+		}
 		final PeerConnectGroup peerConnectGroup = torrentSession.peerConnectGroup();
 		final boolean ok = peerConnectGroup.newPeerConnect(peerSession, this);
 		if(ok) {
@@ -460,7 +463,7 @@ public class PeerLauncherMessageHandler {
 		LOGGER.debug("收到位图：{}", pieces);
 		final BitSet notHave = new BitSet();
 		notHave.or(pieces);
-		notHave.andNot(torrentStreamGroup.selectPieces());
+		notHave.andNot(torrentStreamGroup.pieces());
 		LOGGER.debug("感兴趣位图：{}", notHave);
 		if(notHave.cardinality() == 0) {
 			notInterested();

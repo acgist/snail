@@ -1,9 +1,11 @@
 package com.acgist.snail.downloader.torrent.bootstrap;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +17,7 @@ import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.manager.PeerManager;
+import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * <p>PeerLauncher组：下载</p>
@@ -33,6 +36,14 @@ public class PeerLauncherGroup {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerLauncherGroup.class);
 	
+	/**
+	 * 同时创建PeerLauncher个数
+	 */
+	private static final int PARALLEL_BUILD_SIZE = 4;
+	/**
+	 * 是否继续创建PeerLauncher
+	 */
+	private final AtomicBoolean build;
 	private final TaskSession taskSession;
 	private final TorrentSession torrentSession;
 	/**
@@ -45,6 +56,7 @@ public class PeerLauncherGroup {
 	private final List<PeerSession> optimize = new ArrayList<>();
 	
 	private PeerLauncherGroup(TorrentSession torrentSession) {
+		this.build = new AtomicBoolean(false);
 		this.taskSession = torrentSession.taskSession();
 		this.torrentSession = torrentSession;
 		this.peerLaunchers = new LinkedBlockingQueue<>();
@@ -104,12 +116,20 @@ public class PeerLauncherGroup {
 	 */
 	private void buildPeerLaunchers() {
 		LOGGER.debug("优化PeerLauncher-创建下载PeerLauncher");
-		boolean ok = true;
-		while(ok) {
-			try {
-				ok = buildPeerLauncher();
-			} catch (Exception e) {
-				LOGGER.error("创建PeerLauncher异常", e);
+		int size = 0;
+		this.build.set(true);
+		while(this.build.get()) {
+			this.torrentSession.submit(() -> {
+				try {
+					buildPeerLauncher();
+				} catch (Exception e) {
+					LOGGER.error("创建PeerLauncher异常", e);
+				}
+			});
+			if(++size >= PARALLEL_BUILD_SIZE) {
+				synchronized (this.build) {
+					ThreadUtils.wait(this.build, Duration.ofSeconds(60));
+				}
 			}
 		}
 	}
@@ -122,9 +142,17 @@ public class PeerLauncherGroup {
 	 */
 	private boolean buildPeerLauncher() {
 		if(!this.taskSession.download()) {
+			this.build.set(false);
+			synchronized (this.build) {
+				this.build.notifyAll();
+			}
 			return false;
 		}
 		if(this.peerLaunchers.size() >= SystemConfig.getPeerSize()) {
+			this.build.set(false);
+			synchronized (this.build) {
+				this.build.notifyAll();
+			}
 			return false;
 		}
 		final PeerSession peerSession = PeerManager.getInstance().pick(this.torrentSession.infoHashHex());
@@ -137,8 +165,16 @@ public class PeerLauncherGroup {
 			} else { // 失败后需要放回队列。
 				PeerManager.getInstance().inferior(this.torrentSession.infoHashHex(), peerSession);
 			}
+			this.build.set(true);
+			synchronized (this.build) {
+				this.build.notifyAll();
+			}
 			return true;
 		} else {
+			this.build.set(false);
+			synchronized (this.build) {
+				this.build.notifyAll();
+			}
 			return false;
 		}
 	}

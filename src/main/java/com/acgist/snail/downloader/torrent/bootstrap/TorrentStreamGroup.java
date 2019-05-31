@@ -115,6 +115,13 @@ public class TorrentStreamGroup {
 		}
 		return size;
 	}
+	
+	/**
+	 * 重新获取下载大小
+	 */
+	public void resize() {
+		this.torrentSession.resize();
+	}
 
 	/**
 	 * 是否已下载Piece

@@ -206,6 +206,9 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	 * 如果出现拥堵时发送的数据包小于
 	 */
 	public void wndControl() {
+		if(!(this.connect && available())) { // 如果没有连接成功或者连接不可用时不发送。
+			return;
+		}
 		this.nowWnd++;
 		final boolean loss = timeoutRetry(); // 出现丢包
 		if(loss) {
