@@ -217,7 +217,6 @@ public class UtpMessageHandler extends UdpMessageHandler {
 			if(this.limitWnd < this.slowWnd) {
 				this.limitWnd = this.slowWnd;
 			}
-			LOGGER.debug("数据包超时（丢包）限制发送数据包大小：{}", this.slowWnd);
 			ThreadUtils.sleep(DEFAULT_SLEEP_TIME);
 		} else if (++this.nowWnd > this.slowWnd) {
 			this.nowWnd = 0;
@@ -226,7 +225,6 @@ public class UtpMessageHandler extends UdpMessageHandler {
 			} else {
 				this.slowWnd = this.slowWnd * 2;
 			}
-			LOGGER.debug("数据包发送数据包大小：{}", this.slowWnd);
 			ThreadUtils.sleep(DEFAULT_SLEEP_TIME);
 		}
 	}
