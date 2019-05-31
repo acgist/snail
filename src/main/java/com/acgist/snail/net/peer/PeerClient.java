@@ -17,7 +17,7 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	private final PeerLauncherMessageHandler peerLauncherMessageHandler;
 	
 	private PeerClient(PeerSession peerSession, PeerLauncherMessageHandler peerLauncherMessageHandler) {
-		super("Peer Client", 4, new PeerMessageHandler(peerLauncherMessageHandler));
+		super("Peer Client", 2, new PeerMessageHandler(peerLauncherMessageHandler));
 		this.peerSession = peerSession;
 		this.peerLauncherMessageHandler = peerLauncherMessageHandler;
 	}

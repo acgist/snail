@@ -37,11 +37,11 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	/**
 	 * 限速等待（秒）
 	 */
-	private static final int LIMIT_WAIT = 4;
+	private static final int LIMIT_WAIT = 2;
 	/**
-	 * 连接超时时间（毫秒）
+	 * 连接超时时间（秒）
 	 */
-	private static final int CONNECT_TIMEOUT = 4;
+	private static final int CONNECT_TIMEOUT = 2;
 	
 	/**
 	 * 接收连接ID
@@ -203,7 +203,6 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	 * 慢开始：发送数据包（wnd）2的指数增长。
 	 * 拥堵算法：每次+1。
 	 * 出现超时（丢包）时发送数据包/2。
-	 * 如果出现拥堵时发送的数据包小于
 	 */
 	public void wndControl() {
 		if(!(this.connect && available())) { // 如果没有连接成功或者连接不可用时不发送。
