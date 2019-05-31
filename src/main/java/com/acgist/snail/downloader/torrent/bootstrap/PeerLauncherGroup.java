@@ -39,7 +39,7 @@ public class PeerLauncherGroup {
 	/**
 	 * 同时创建PeerLauncher个数
 	 */
-	private static final int PARALLEL_BUILD_SIZE = 4;
+	private static final int PARALLEL_BUILD_SIZE = 3;
 	/**
 	 * 是否继续创建PeerLauncher
 	 */
@@ -128,7 +128,7 @@ public class PeerLauncherGroup {
 			});
 			if(++size >= PARALLEL_BUILD_SIZE) {
 				synchronized (this.build) {
-					ThreadUtils.wait(this.build, Duration.ofSeconds(60));
+					ThreadUtils.wait(this.build, Duration.ofSeconds(10));
 				}
 			}
 		}
@@ -142,15 +142,15 @@ public class PeerLauncherGroup {
 	 */
 	private boolean buildPeerLauncher() {
 		if(!this.taskSession.download()) {
-			this.build.set(false);
 			synchronized (this.build) {
+				this.build.set(false);
 				this.build.notifyAll();
 			}
 			return false;
 		}
 		if(this.peerLaunchers.size() >= SystemConfig.getPeerSize()) {
-			this.build.set(false);
 			synchronized (this.build) {
+				this.build.set(false);
 				this.build.notifyAll();
 			}
 			return false;
@@ -165,14 +165,14 @@ public class PeerLauncherGroup {
 			} else { // 失败后需要放回队列。
 				PeerManager.getInstance().inferior(this.torrentSession.infoHashHex(), peerSession);
 			}
-			this.build.set(true);
 			synchronized (this.build) {
+				this.build.set(true);
 				this.build.notifyAll();
 			}
 			return true;
 		} else {
-			this.build.set(false);
 			synchronized (this.build) {
+				this.build.set(false);
 				this.build.notifyAll();
 			}
 			return false;
