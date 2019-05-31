@@ -149,13 +149,20 @@ public class NetUtils {
 	/**
 	 * 判断是否是本地IP
 	 */
-	public static final boolean isLocalIp(String ipAddress) {
-		final long value = encodeIpToLong(ipAddress);
+	public static final boolean isLocalIp(String host) {
+		final long value = encodeIpToLong(host);
 		return
 			(A_IP_BEGIN < value && value < A_IP_END) ||
 			(B_IP_BEGIN < value && value < B_IP_END) ||
 			(C_IP_BEGIN < value && value < C_IP_END) ||
 			(L_IP_BEGIN < value && value < L_IP_END);
+	}
+	
+	/**
+	 * 本机IP
+	 */
+	public static final boolean isLocalhost(String host) {
+		return LOCAL_IP.equals(host);
 	}
 	
 	/**

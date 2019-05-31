@@ -489,6 +489,7 @@ public class TorrentStream {
 			downloadPieceSize--;
 		}
 		this.fileDownloadSize.set(size + downloadPieceSize * this.pieceLength);
+		this.torrentStreamGroup.resize();
 	}
 	
 	/**

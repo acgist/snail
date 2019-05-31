@@ -104,7 +104,6 @@ public class TorrentDownloader extends Downloader {
 			LOGGER.error("任务加载异常", e);
 			return;
 		}
-		taskSession.downloadSize(torrentSession.size());
 	}
 
 }

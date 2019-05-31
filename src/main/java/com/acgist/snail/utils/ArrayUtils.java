@@ -25,4 +25,12 @@ public class ArrayUtils {
 		return true;
 	}
 	
+	public static boolean isEmpty(byte[] value) {
+		return value == null || value.length == 0;
+	}
+
+	public static boolean isNotEmpty(byte[] value) {
+		return !isEmpty(value);
+	}
+	
 }

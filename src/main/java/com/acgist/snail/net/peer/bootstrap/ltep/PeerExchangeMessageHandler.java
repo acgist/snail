@@ -18,6 +18,7 @@ import com.acgist.snail.system.bcode.BCodeEncoder;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.PeerMessageConfig.ExtensionType;
 import com.acgist.snail.system.manager.PeerManager;
+import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.PeerUtils;
@@ -93,8 +94,10 @@ public class PeerExchangeMessageHandler {
 			final AtomicInteger index = new AtomicInteger(0);
 			peers.forEach((host, port) -> {
 				final PeerSession peerSession = PeerManager.getInstance().newPeerSession(infoHash.infoHashHex(), taskSession.statistics(), host, port, PeerConfig.SOURCE_PEX);
-				if(addedf != null) {
-					peerSession.exchange(addedf[index.getAndIncrement()]);
+				if(peerSession != null) {
+					if(ArrayUtils.isNotEmpty(addedf)) {
+						peerSession.exchange(addedf[index.getAndIncrement()]);
+					}
 				}
 			});
 		}

@@ -36,7 +36,7 @@ public class UtpService {
 	 * TODO：时间优化
 	 */
 	private void timer() {
-		SystemThreadContext.timer(1, 1, TimeUnit.SECONDS, () -> {
+		SystemThreadContext.timerFixedDelay(1, 1, TimeUnit.SECONDS, () -> {
 			this.utpMessageHandlers.values().forEach(handler -> {
 				handler.wndControl();
 			});

@@ -105,8 +105,9 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 	 * 发送消息
 	 */
 	protected void send(ByteBuffer buffer, SocketAddress socketAddress) throws NetException {
-		if(this.channel == null) {
-			throw new NetException("UDP通道没有初始化");
+		if(!available()) {
+			LOGGER.debug("发送消息时channel已经不可用");
+			return;
 		}
 		if(buffer.position() != 0) { //  重置标记
 			buffer.flip();
@@ -135,7 +136,7 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 	 * 可用的：没有被关闭
 	 */
 	public boolean available() {
-		return !close;
+		return !close && this.channel != null;
 	}
 	
 	/**

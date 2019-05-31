@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.net.peer.bootstrap.ltep.PeerExchangeMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.StatisticsSession;
+import com.acgist.snail.utils.NetUtils;
 
 /**
  * Peer管理器
@@ -76,8 +77,13 @@ public class PeerManager {
 	 * @param parent torrent下载统计
 	 * @param host 地址
 	 * @param port 端口
+	 * 
+	 * @return PeerSession，如果是本机IP返回null。
 	 */
 	public PeerSession newPeerSession(String infoHashHex, StatisticsSession parent, String host, Integer port, byte source) {
+		if(NetUtils.isLocalhost(host)) { // 本机
+			return null;
+		}
 		var deque = deque(infoHashHex);
 		synchronized (deque) {
 			final Optional<PeerSession> optional = deque.stream().filter(peer -> {

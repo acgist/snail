@@ -37,7 +37,7 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	/**
 	 * Socket
 	 */
-	private AsynchronousSocketChannel socket;
+	protected AsynchronousSocketChannel socket;
 	
 	public TcpMessageHandler() {
 		this(null);
@@ -134,7 +134,7 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	 */
 	@Override
 	public boolean available() {
-		return !close;
+		return !close && this.socket != null;
 	}
 	
 	/**
