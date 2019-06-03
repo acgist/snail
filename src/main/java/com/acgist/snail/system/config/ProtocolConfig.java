@@ -14,6 +14,7 @@ public class ProtocolConfig {
 		bt,
 		udp,
 		tcp,
+		ed2k,
 		http,
 		magnet,
 		thunder;
