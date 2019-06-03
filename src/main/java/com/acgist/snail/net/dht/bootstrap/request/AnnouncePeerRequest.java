@@ -40,7 +40,7 @@ public class AnnouncePeerRequest extends Request {
 	 */
 	public static final AnnouncePeerRequest newRequest(byte[] token, byte[] infoHash) {
 		final AnnouncePeerRequest request = new AnnouncePeerRequest();
-		request.put(DhtConfig.KEY_PORT, SystemConfig.getServicePortExt());
+		request.put(DhtConfig.KEY_PORT, SystemConfig.getBtPortExt());
 		request.put(DhtConfig.KEY_TOKEN, token);
 		request.put(DhtConfig.KEY_INFO_HASH, infoHash);
 		request.put(DhtConfig.KEY_IMPLIED_PORT, DhtConfig.IMPLIED_PORT_AUTO);

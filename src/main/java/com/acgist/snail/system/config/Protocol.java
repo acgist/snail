@@ -9,7 +9,6 @@ public enum Protocol {
 	udp,
 	tcp,
 	http,
-	ed2k,
 	magnet,
 	thunder;
 

@@ -63,7 +63,6 @@ public class TaskEntity extends BaseEntity {
 
 		ftp,
 		http,
-		ed2k,
 		magnet,
 		thunder,
 		torrent;
@@ -87,8 +86,8 @@ public class TaskEntity extends BaseEntity {
 	 */
 	private String file;
 	/**
-	 * 下载地址：FTP、HTTP、ED2K、磁力链接<br>
-	 * 迅雷下载链接直接转换为实际地址保存
+	 * 下载地址：FTP、HTTP、磁力链接。<br>
+	 * 迅雷下载链接直接转换为实际地址保存。
 	 */
 	private String url;
 	/**

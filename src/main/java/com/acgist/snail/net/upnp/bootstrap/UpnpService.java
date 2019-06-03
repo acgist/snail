@@ -218,8 +218,8 @@ public class UpnpService {
 			return;
 		}
 		try {
-			boolean dhtOk = this.deletePortMapping(SystemConfig.getServicePortExt(), Protocol.udp);
-			boolean peerOk = this.deletePortMapping(SystemConfig.getServicePortExt(), Protocol.tcp);
+			boolean dhtOk = this.deletePortMapping(SystemConfig.getBtPortExt(), Protocol.udp);
+			boolean peerOk = this.deletePortMapping(SystemConfig.getBtPortExt(), Protocol.tcp);
 			LOGGER.info("端口释放：DHT：{}、Peer：{}", dhtOk, peerOk);
 		} catch (NetException e) {
 			LOGGER.error("释放UPNP端口异常", e);
@@ -249,7 +249,7 @@ public class UpnpService {
 	 */
 	private void setPortMapping() throws NetException {
 		int uValue = USE_DISABLE, tValue;
-		int portExt = SystemConfig.getServicePort();
+		int portExt = SystemConfig.getBtPort();
 		while(true) {
 			if(portExt >= NetUtils.MAX_PORT) {
 				break;
@@ -267,13 +267,13 @@ public class UpnpService {
 			}
 		}
 		if(uValue == USE_MAPABLE) {
-			SystemConfig.setServicePortExt(portExt);
-			boolean dhtOk = this.addPortMapping(SystemConfig.getServicePort(), portExt, Protocol.udp);
-			boolean peerOk = this.addPortMapping(SystemConfig.getServicePort(), portExt, Protocol.tcp);
-			LOGGER.info("端口映射（注册）：DHT（{}-{}-{}）、Peer（{}-{}-{}）", SystemConfig.getServicePort(), portExt, dhtOk, SystemConfig.getServicePort(), portExt, peerOk);
+			SystemConfig.setBtPortExt(portExt);
+			boolean dhtOk = this.addPortMapping(SystemConfig.getBtPort(), portExt, Protocol.udp);
+			boolean peerOk = this.addPortMapping(SystemConfig.getBtPort(), portExt, Protocol.tcp);
+			LOGGER.info("端口映射（注册）：DHT（{}-{}-{}）、Peer（{}-{}-{}）", SystemConfig.getBtPort(), portExt, dhtOk, SystemConfig.getBtPort(), portExt, peerOk);
 		} else if(uValue == USE_USEABLE) {
-			SystemConfig.setServicePortExt(portExt);
-			LOGGER.info("端口映射（可用）：DHT（{}-{}-{}）、Peer（{}-{}-{}）", SystemConfig.getServicePort(), portExt, true, SystemConfig.getServicePort(), portExt, true);
+			SystemConfig.setBtPortExt(portExt);
+			LOGGER.info("端口映射（可用）：DHT（{}-{}-{}）、Peer（{}-{}-{}）", SystemConfig.getBtPort(), portExt, true, SystemConfig.getBtPort(), portExt, true);
 		} else {
 			LOGGER.error("端口映射失败");
 		}

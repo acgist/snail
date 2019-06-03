@@ -21,7 +21,7 @@ public class DhtClientTest {
 
 	@Test
 	public void client() {
-		InetSocketAddress socketAddress = new InetSocketAddress("127.0.0.1", SystemConfig.getServicePort());
+		InetSocketAddress socketAddress = new InetSocketAddress("127.0.0.1", SystemConfig.getBtPort());
 		DhtClient client = DhtClient.newInstance(socketAddress);
 		while (true) {
 			try {

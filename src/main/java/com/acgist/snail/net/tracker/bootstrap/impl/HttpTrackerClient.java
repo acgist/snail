@@ -110,7 +110,7 @@ public class HttpTrackerClient extends TrackerClient {
 		builder.append("?")
 		.append("info_hash").append("=").append(torrentSession.infoHash().infoHashURL()).append("&") // infoHash
 		.append("peer_id").append("=").append(PeerService.getInstance().peerId()).append("&") // PeerID
-		.append("port").append("=").append(SystemConfig.getServicePortExtShort()).append("&") // 外网Peer端口
+		.append("port").append("=").append(SystemConfig.getBtPortExtShort()).append("&") // 外网Peer端口
 		.append("uploaded").append("=").append(upload).append("&") // 已上传大小
 		.append("downloaded").append("=").append(download).append("&") // 已下载大小
 		.append("left").append("=").append(remain).append("&") // 剩余下载大小

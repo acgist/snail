@@ -25,7 +25,7 @@ public class PeerServer extends TcpServer<PeerMessageHandler> {
 	
 	@Override
 	public boolean listen() {
-		return this.listen(SystemConfig.getServicePort());
+		return this.listen(SystemConfig.getBtPort());
 	}
 
 }
