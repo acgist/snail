@@ -59,8 +59,8 @@ public class SystemConfig extends PropertiesConfig {
 	private String support; // 支持
 	
 	private Integer serverPort; // 服务端口
-	private Integer servicePort; // 服务端口（Peer、DHT、UTP）
-	private Integer servicePortExt; // 服务端口（外网：Peer、DHT、UTP）
+	private Integer btPort; // 服务端口（Peer、DHT、UTP）
+	private Integer btPortExt; // 服务端口（外网：Peer、DHT、UTP）
 	
 	private Integer peerSize; // 单个任务Peer数量
 	private Integer trackerSize; // 单个任务Tracker数量
@@ -81,7 +81,7 @@ public class SystemConfig extends PropertiesConfig {
 		INSTANCE.source = getString("acgist.system.source");
 		INSTANCE.support = getString("acgist.system.support");
 		INSTANCE.serverPort = getInteger("acgist.server.port");
-		INSTANCE.servicePort = getInteger("acgist.service.port");
+		INSTANCE.btPort = getInteger("acgist.bt.port");
 		INSTANCE.peerSize = getInteger("acgist.peer.size");
 		INSTANCE.trackerSize = getInteger("acgist.tracker.size");
 		INSTANCE.pieceRepeatSize = getInteger("acgist.piece.repeat.size");
@@ -101,7 +101,7 @@ public class SystemConfig extends PropertiesConfig {
 		LOGGER.info("源码：{}", this.source);
 		LOGGER.info("支持：{}", this.support);
 		LOGGER.info("系统端口：{}", this.serverPort);
-		LOGGER.info("服务端口（Peer、DHT、UTP）：{}", this.servicePort);
+		LOGGER.info("服务端口（Peer、DHT、UTP）：{}", this.btPort);
 		LOGGER.info("单个任务Peer数量：{}", this.peerSize);
 		LOGGER.info("单个任务Tracker数量：{}", this.trackerSize);
 		LOGGER.info("任务即将完成时可以重复选择下载的剩下Piece数量：{}", this.pieceRepeatSize);
@@ -163,37 +163,37 @@ public class SystemConfig extends PropertiesConfig {
 	 * 服务端口（Peer、DHT、UTP）
 	 * 本机注册使用
 	 */
-	public static final Integer getServicePort() {
-		return INSTANCE.servicePort;
+	public static final Integer getBtPort() {
+		return INSTANCE.btPort;
 	}
 	
 	/**
 	 * 设置服务端口（外网：Peer、DHT、UTP）
 	 */
-	public static final void setServicePortExt(Integer servicePortExt) {
-		LOGGER.info("服务端口（外网：Peer、DHT、UTP）：{}", servicePortExt);
-		INSTANCE.servicePortExt = servicePortExt;
+	public static final void setBtPortExt(Integer btPortExt) {
+		LOGGER.info("服务端口（外网：Peer、DHT、UTP）：{}", btPortExt);
+		INSTANCE.btPortExt = btPortExt;
 	}
 	
 	/**
 	 * 服务端口（外网：Peer、DHT、UTP）
 	 * 外网使用，外网的Peer连接此端口。
-	 * 如果不存在返回{@linkplain #getServicePort() 本机端口}。
+	 * 如果不存在返回{@linkplain #getBtPort() 本机端口}。
 	 */
-	public static final Integer getServicePortExt() {
-		if(INSTANCE.servicePortExt == null) {
-			return getServicePort();
+	public static final Integer getBtPortExt() {
+		if(INSTANCE.btPortExt == null) {
+			return getBtPort();
 		}
-		return INSTANCE.servicePortExt;
+		return INSTANCE.btPortExt;
 	}
 	
 	/**
 	 * 服务端口（外网：Peer、DHT、UTP）：short
 	 */
-	public static final Short getServicePortExtShort() {
-		return NetUtils.encodePort(getServicePortExt());
+	public static final Short getBtPortExtShort() {
+		return NetUtils.encodePort(getBtPortExt());
 	}
-
+	
 	/**
 	 * 单个任务Peer数量
 	 */

@@ -39,7 +39,7 @@ public class DhtExtensionMessageHandler {
 	}
 
 	public void port() {
-		final byte[] bytes = ByteBuffer.allocate(2).putShort(SystemConfig.getServicePortExtShort()).array();
+		final byte[] bytes = ByteBuffer.allocate(2).putShort(SystemConfig.getBtPortExtShort()).array();
 		this.peerLauncherMessageHandler.pushMessage(PeerMessageConfig.Type.dht, bytes);
 	}
 	

@@ -25,7 +25,7 @@
 	</Text>
 	
 	<Text fx:id="description" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.columnSpan="3">
-		支持协议：BT、FTP、HTTP、ED2K
+		支持协议：BT、FTP、HTTP
 	</Text>
 	
 	<Text fx:id="copyright" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="3">

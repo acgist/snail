@@ -11,7 +11,7 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>DHT客户端</p>
- * <p>客户端和服务的都是用同一个固定端口{@link SystemConfig#getServicePort()}。</p>
+ * <p>客户端和服务的都是用同一个固定端口{@link SystemConfig#getBtPort()}。</p>
  * <p>基本协议：UDP</p>
  * 
  * @author acgist

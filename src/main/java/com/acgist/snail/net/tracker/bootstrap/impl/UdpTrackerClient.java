@@ -155,7 +155,7 @@ public class UdpTrackerClient extends com.acgist.snail.net.tracker.bootstrap.Tra
 		buffer.putInt(0); // 本机IP：0（服务器自动获取）
 		buffer.putInt(UniqueCodeUtils.buildInteger()); // 系统分配唯一键
 		buffer.putInt(50); // 想要获取的Peer数量
-		buffer.putShort(SystemConfig.getServicePortExtShort()); // 外网Peer端口
+		buffer.putShort(SystemConfig.getBtPortExtShort()); // 外网Peer端口
 		return buffer;
 	}
 
