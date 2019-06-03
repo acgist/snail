@@ -18,8 +18,8 @@ public class DhtConfig extends PropertiesConfig {
 	
 	private static final DhtConfig INSTANCE = new DhtConfig();
 	
-	private static final String DHT_CONFIG = "/config/dht.properties";
-	private static final String DHT_CONFIG_USER = "/config/dht.user.properties";
+	private static final String DHT_CONFIG = "/config/bt.dht.properties";
+	private static final String DHT_CONFIG_USER = "/config/bt.dht.user.properties";
 	
 	public static final String KEY_T = "t"; // 标记ID：请求ID，默认两个字节
 	public static final String KEY_Y = "y"; // 消息类型：请求、响应
