@@ -36,7 +36,7 @@ public class HttpHeaderWrapper {
 	}
 
 	public static final HttpHeaderWrapper newInstance(HttpHeaders httpHeaders) {
-		HttpHeaderWrapper wrapper = new HttpHeaderWrapper();
+		final HttpHeaderWrapper wrapper = new HttpHeaderWrapper();
 		if(httpHeaders != null) {
 			wrapper.headers = httpHeaders.map().entrySet()
 			.stream()

@@ -16,7 +16,7 @@ public abstract class Menu extends ContextMenu {
 	 * <p>初始化基本样式：</p>
 	 * <ul>
 	 * 	<li>边框：1</li>
-	 * 	<li>透明：0.98</li>
+	 * 	<li>透明：0.94</li>
 	 * </ul>
 	 */
 	protected void init() {
