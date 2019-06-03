@@ -2,7 +2,7 @@ package com.acgist.snail.net.utp;
 
 import com.acgist.snail.net.UdpClient;
 import com.acgist.snail.net.peer.bootstrap.PeerLauncherMessageHandler;
-import com.acgist.snail.net.service.ServiceServer;
+import com.acgist.snail.net.torrent.TorrentServer;
 import com.acgist.snail.pojo.session.PeerSession;
 
 /**
@@ -28,7 +28,7 @@ public class UtpClient extends UdpClient<UtpMessageHandler> {
 	
 	@Override
 	public boolean open() {
-		return open(ServiceServer.getInstance().channel());
+		return open(TorrentServer.getInstance().channel());
 	}
 
 	/**

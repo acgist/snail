@@ -1,4 +1,4 @@
-package com.acgist.snail.net.service;
+package com.acgist.snail.net.torrent;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -14,21 +14,21 @@ import com.acgist.snail.net.utp.bootstrap.UtpService;
  * @author acgist
  * @since 1.1.0
  */
-public class ServiceAcceptHandler extends UdpAcceptHandler {
+public class TorrentAcceptHandler extends UdpAcceptHandler {
 	
 	/**
 	 * DHT消息开头字符
 	 */
 	private static final byte DHT_HEADER = 'd';
 	
-	private static final ServiceAcceptHandler INSTANCE = new ServiceAcceptHandler();
+	private static final TorrentAcceptHandler INSTANCE = new TorrentAcceptHandler();
 	
 	private final UtpService utpService = UtpService.getInstance();
 	
-	private ServiceAcceptHandler() {
+	private TorrentAcceptHandler() {
 	}
 	
-	public static final ServiceAcceptHandler getInstance() {
+	public static final TorrentAcceptHandler getInstance() {
 		return INSTANCE;
 	}
 	

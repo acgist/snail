@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import com.acgist.snail.downloader.torrent.bootstrap.PeerLauncher;
 import com.acgist.snail.net.peer.PeerServer;
-import com.acgist.snail.net.service.ServiceServer;
+import com.acgist.snail.net.torrent.TorrentServer;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.session.PeerSession;
@@ -42,7 +42,7 @@ public class PeerServerTest {
 		torrentSession.upload(TaskSession.newInstance(entity));
 		PeerServer server = PeerServer.getInstance();
 		server.listen();
-		ServiceServer.getInstance();
+		TorrentServer.getInstance();
 		ThreadUtils.sleep(Long.MAX_VALUE);
 	}
 

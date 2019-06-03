@@ -10,7 +10,7 @@ import com.acgist.snail.net.UdpServer;
 import com.acgist.snail.net.application.ApplicationClient;
 import com.acgist.snail.net.application.ApplicationServer;
 import com.acgist.snail.net.peer.PeerServer;
-import com.acgist.snail.net.service.ServiceServer;
+import com.acgist.snail.net.torrent.TorrentServer;
 import com.acgist.snail.net.tracker.TrackerServer;
 import com.acgist.snail.net.upnp.UpnpServer;
 import com.acgist.snail.net.upnp.bootstrap.UpnpService;
@@ -103,7 +103,7 @@ public class SystemContext {
 				UpnpServer.getInstance().close();
 				PeerServer.getInstance().close();
 				TrackerServer.getInstance().close();
-				ServiceServer.getInstance().close();
+				TorrentServer.getInstance().close();
 				ApplicationServer.getInstance().close();
 				TcpClient.shutdown();
 				TcpServer.shutdown();
