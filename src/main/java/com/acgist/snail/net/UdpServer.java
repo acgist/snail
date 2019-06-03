@@ -20,7 +20,7 @@ import com.acgist.snail.utils.NetUtils;
 /**
  * 全部使用单例
  */
-public class UdpServer<T extends UdpAcceptHandler> {
+public abstract class UdpServer<T extends UdpAcceptHandler> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpServer.class);
 	

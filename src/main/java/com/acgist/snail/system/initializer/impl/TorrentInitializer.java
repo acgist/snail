@@ -9,15 +9,15 @@ import com.acgist.snail.system.initializer.Initializer;
 /**
  * 初始化：启动DHT和UTP服务
  */
-public class UdpServiceInitializer extends Initializer {
+public class TorrentInitializer extends Initializer {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(UdpServiceInitializer.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentInitializer.class);
 	
-	private UdpServiceInitializer() {
+	private TorrentInitializer() {
 	}
 	
-	public static final UdpServiceInitializer newInstance() {
-		return new UdpServiceInitializer();
+	public static final TorrentInitializer newInstance() {
+		return new TorrentInitializer();
 	}
 	
 	@Override

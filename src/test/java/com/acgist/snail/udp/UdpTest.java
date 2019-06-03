@@ -17,7 +17,7 @@ public class UdpTest {
 		final int port = 18888;
 		InetSocketAddress socketAddress = new InetSocketAddress("127.0.0.1", port);
 		UdpTestMessageHandler handler = new UdpTestMessageHandler();
-		UdpServer<UdpTestAcceptHandler> server = new UdpServer<>(port, "TestServer", UdpTestAcceptHandler.getInstance());
+		UdpServer<UdpTestAcceptHandler> server = new UdpServer<>(port, "TestServer", UdpTestAcceptHandler.getInstance()) {};
 		server.handler();
 		UdpClient<UdpTestMessageHandler> client = new UdpClient<UdpTestMessageHandler>("TestClient", handler, socketAddress) {
 			@Override

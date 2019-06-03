@@ -43,7 +43,7 @@ public class FtpClientFactory {
 	 * 解码URL，设置地址、端口、用户、文件等信息。
 	 */
 	private void decodeUrl() {
-		URI uri= URI.create(this.url);
+		URI uri = URI.create(this.url);
 		String userInfo = uri.getUserInfo();
 		setUserInfo(userInfo);
 		this.filePath = uri.getPath();
