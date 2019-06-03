@@ -13,7 +13,7 @@ import com.acgist.snail.pojo.bean.HttpTracker;
 import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.bcode.BCodeDecoder;
-import com.acgist.snail.system.config.Protocol;
+import com.acgist.snail.system.config.ProtocolConfig.Protocol;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.config.TrackerConfig;
 import com.acgist.snail.system.exception.NetException;

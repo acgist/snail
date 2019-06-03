@@ -3,7 +3,7 @@ package com.acgist.snail.upnp;
 import org.junit.Test;
 
 import com.acgist.snail.net.upnp.bootstrap.UpnpService;
-import com.acgist.snail.system.config.Protocol;
+import com.acgist.snail.system.config.ProtocolConfig.Protocol;
 import com.acgist.snail.system.exception.NetException;
 
 /**

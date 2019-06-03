@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.system.config.Protocol;
+import com.acgist.snail.system.config.ProtocolConfig.Protocol;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.ObjectUtils;
 import com.acgist.snail.utils.StringUtils;

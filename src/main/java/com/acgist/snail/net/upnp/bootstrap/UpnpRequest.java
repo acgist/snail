@@ -2,7 +2,7 @@ package com.acgist.snail.net.upnp.bootstrap;
 
 import org.w3c.dom.Element;
 
-import com.acgist.snail.system.config.Protocol;
+import com.acgist.snail.system.config.ProtocolConfig.Protocol;
 import com.acgist.snail.utils.XMLUtils;
 
 /**

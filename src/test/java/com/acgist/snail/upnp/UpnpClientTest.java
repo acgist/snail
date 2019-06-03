@@ -5,7 +5,7 @@ import org.junit.Test;
 import com.acgist.snail.net.upnp.UpnpClient;
 import com.acgist.snail.net.upnp.bootstrap.UpnpRequest;
 import com.acgist.snail.net.upnp.bootstrap.UpnpResponse;
-import com.acgist.snail.system.config.Protocol;
+import com.acgist.snail.system.config.ProtocolConfig.Protocol;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
