@@ -3,7 +3,7 @@ package com.acgist.snail.net.dht;
 import java.net.InetSocketAddress;
 
 import com.acgist.snail.net.UdpClient;
-import com.acgist.snail.net.service.ServiceServer;
+import com.acgist.snail.net.torrent.TorrentServer;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.config.SystemConfig;
@@ -38,7 +38,7 @@ public class DhtClient extends UdpClient<DhtMessageHandler> {
 	 */
 	@Override
 	public boolean open() {
-		return open(ServiceServer.getInstance().channel());
+		return open(TorrentServer.getInstance().channel());
 	}
 	
 	public NodeSession ping() {
