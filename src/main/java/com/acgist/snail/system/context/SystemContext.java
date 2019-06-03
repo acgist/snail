@@ -15,13 +15,13 @@ import com.acgist.snail.net.tracker.TrackerServer;
 import com.acgist.snail.net.upnp.UpnpServer;
 import com.acgist.snail.net.upnp.bootstrap.UpnpService;
 import com.acgist.snail.system.initializer.impl.ConfigInitializer;
-import com.acgist.snail.system.initializer.impl.DbInitializer;
+import com.acgist.snail.system.initializer.impl.DatabaseInitializer;
 import com.acgist.snail.system.initializer.impl.DhtInitializer;
 import com.acgist.snail.system.initializer.impl.DownloaderInitializer;
 import com.acgist.snail.system.initializer.impl.PeerInitializer;
 import com.acgist.snail.system.initializer.impl.ProtocolInitializer;
 import com.acgist.snail.system.initializer.impl.TrackerInitializer;
-import com.acgist.snail.system.initializer.impl.UdpServiceInitializer;
+import com.acgist.snail.system.initializer.impl.TorrentInitializer;
 import com.acgist.snail.system.initializer.impl.UpnpInitializer;
 import com.acgist.snail.system.manager.DownloaderManager;
 import com.acgist.snail.utils.FileUtils;
@@ -47,14 +47,14 @@ public class SystemContext {
 	 */
 	public static final void init() {
 		LOGGER.info("系统初始化");
-		DbInitializer.newInstance().initSync();
+		DatabaseInitializer.newInstance().initSync();
 		ConfigInitializer.newInstance().initAsyn();
 		ProtocolInitializer.newInstance().initAsyn();
 		DhtInitializer.newInstance().initAsyn();
 		TrackerInitializer.newInstance().initAsyn();
 		UpnpInitializer.newInstance().initAsyn();
 		PeerInitializer.newInstance().initAsyn();
-		UdpServiceInitializer.newInstance().initAsyn();
+		TorrentInitializer.newInstance().initAsyn();
 		DownloaderInitializer.newInstance().initAsyn();
 	}
 	

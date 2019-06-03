@@ -7,6 +7,6 @@ package com.acgist.snail.net.local;
  * @author acgist
  * @since 1.0.0
  */
-public class LocalSearchClient {
+public class LocalClient {
 
 }

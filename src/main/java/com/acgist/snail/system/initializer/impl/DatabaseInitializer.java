@@ -14,17 +14,17 @@ import com.acgist.snail.system.manager.DatabaseManager;
 /**
  * 初始化：数据库建表
  */
-public class DbInitializer extends Initializer {
+public class DatabaseInitializer extends Initializer {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(DbInitializer.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseInitializer.class);
 	
 	private DatabaseManager jdbcConnection = DatabaseManager.getInstance();
 	
-	private DbInitializer() {
+	private DatabaseInitializer() {
 	}
 	
-	public static final DbInitializer newInstance() {
-		return new DbInitializer();
+	public static final DatabaseInitializer newInstance() {
+		return new DatabaseInitializer();
 	}
 	
 	@Override
@@ -57,7 +57,7 @@ public class DbInitializer extends Initializer {
 	private String buildTableSQL() {
 		final StringBuilder sql = new StringBuilder();
 		final String sqlFilePath = DatabaseConfig.getTableSQL();
-		try(InputStreamReader reader = new InputStreamReader(DbInitializer.class.getResourceAsStream(sqlFilePath))) {
+		try(InputStreamReader reader = new InputStreamReader(DatabaseInitializer.class.getResourceAsStream(sqlFilePath))) {
 			int count = 0;
 			char[] chars = new char[1024];
 			while((count = reader.read(chars)) != -1) {
