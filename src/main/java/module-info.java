@@ -1,6 +1,6 @@
 /**
  * <h1>Sanil（蜗牛）下载工具</h1>
- * <p>支持下载协议：BT、FTP、HTTP。</p>
+ * <p>支持下载协议：BT、FTP、HTTP、ED2K。</p>
  * <p>方法注解（author、since）没有时，默认使用类注解。</p>
  */
 open module com.acgist.snail {
