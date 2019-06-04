@@ -3,7 +3,7 @@ package com.acgist.snail.tracker;
 import org.junit.Test;
 
 import com.acgist.snail.downloader.torrent.bootstrap.TrackerLauncherGroup;
-import com.acgist.snail.net.tracker.bootstrap.TrackerClient;
+import com.acgist.snail.net.bt.tracker.bootstrap.TrackerClient;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;

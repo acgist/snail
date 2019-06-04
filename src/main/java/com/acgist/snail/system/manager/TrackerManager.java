@@ -11,9 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.torrent.bootstrap.TrackerLauncher;
-import com.acgist.snail.net.tracker.bootstrap.TrackerClient;
-import com.acgist.snail.net.tracker.bootstrap.impl.HttpTrackerClient;
-import com.acgist.snail.net.tracker.bootstrap.impl.UdpTrackerClient;
+import com.acgist.snail.net.bt.tracker.bootstrap.TrackerClient;
+import com.acgist.snail.net.bt.tracker.bootstrap.impl.HttpTrackerClient;
+import com.acgist.snail.net.bt.tracker.bootstrap.impl.UdpTrackerClient;
 import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.http.HttpProtocol;
