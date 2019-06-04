@@ -27,8 +27,8 @@ public class FtpDownloader extends Downloader {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(FtpDownloader.class);
 
+	private FtpClient client;
 	private byte[] bytes; // 速度byte
-	private FtpClient client; // FtpClient
 	private BufferedInputStream input; // 输入流
 	private BufferedOutputStream output; // 输出流
 	
@@ -42,7 +42,7 @@ public class FtpDownloader extends Downloader {
 
 	@Override
 	public void open() {
-		this.bytes = new byte[128 * 1024];
+		bytes = new byte[128 * 1024];
 		buildInput();
 		buildOutput();
 	}
@@ -52,25 +52,25 @@ public class FtpDownloader extends Downloader {
 		LOGGER.debug("FTP任务开始下载");
 		int length = 0;
 		while(ok()) {
-			length = this.input.read(this.bytes, 0, this.bytes.length);
+			length = input.readNBytes(bytes, 0, bytes.length);
 			if(isComplete(length)) { // 是否完成
 				this.complete = true;
 				break;
 			}
-			this.output.write(this.bytes, 0, length);
+			output.write(bytes, 0, length);
 			this.download(length);
 		}
 	}
 
 	@Override
 	public void release() {
-		if(this.client != null) {
-			this.client.close();
+		if(client != null) {
+			client.close();
 		}
 		try {
-			if(this.output != null) {
-				this.output.flush(); // 刷新
-				this.output.close();
+			if(output != null) {
+				output.flush(); // 刷新
+				output.close();
 			}
 		} catch (IOException e) {
 			LOGGER.error("关闭FTP文件流异常", e);
@@ -81,8 +81,8 @@ public class FtpDownloader extends Downloader {
 	 * 任务是否完成：长度-1或者下载数据等于任务长度
 	 */
 	private boolean isComplete(int length) {
-		final long size = this.taskSession.entity().getSize();
-		final long downloadSize = this.taskSession.downloadSize();
+		final long size = taskSession.entity().getSize();
+		final long downloadSize = taskSession.downloadSize();
 		return length == -1 || size == downloadSize;
 	}
 	
@@ -90,20 +90,20 @@ public class FtpDownloader extends Downloader {
 	 * 创建FTP输入流、设置已下载文件大小
 	 */
 	private void buildInput() {
-		var entity = this.taskSession.entity();
+		var entity = taskSession.entity();
 		long size = FileUtils.fileSize(entity.getFile()); // 已下载大小
-		this.client = FtpClientFactory.build(entity.getUrl());
-		boolean ok = this.client.connect();
+		client = FtpClientFactory.build(entity.getUrl());
+		boolean ok = client.connect();
 		if(ok) {
-			final InputStream inputStream = this.client.download(size);
+			final InputStream inputStream = client.download(size);
 			if(inputStream == null) {
-				fail(this.client.failMessage());
+				fail(client.failMessage());
 			} else {
 				this.input = new BufferedInputStream(inputStream);
-				if(this.client.append()) {
-					this.taskSession.downloadSize(size);
+				if(client.append()) {
+					taskSession.downloadSize(size);
 				} else {
-					this.taskSession.downloadSize(0L);
+					taskSession.downloadSize(0L);
 				}
 			}
 		} else {
@@ -115,13 +115,13 @@ public class FtpDownloader extends Downloader {
 	 * 创建输出流
 	 */
 	private void buildOutput() {
-		var entity = this.taskSession.entity();
+		var entity = taskSession.entity();
 		try {
-			long size = this.taskSession.downloadSize();
+			long size = taskSession.downloadSize();
 			if(size == 0L) {
-				this.output = new BufferedOutputStream(new FileOutputStream(entity.getFile()), DownloadConfig.getMemoryBufferByte());
+				output = new BufferedOutputStream(new FileOutputStream(entity.getFile()), DownloadConfig.getMemoryBufferByte());
 			} else { // 支持续传
-				this.output = new BufferedOutputStream(new FileOutputStream(entity.getFile(), true), DownloadConfig.getMemoryBufferByte());
+				output = new BufferedOutputStream(new FileOutputStream(entity.getFile(), true), DownloadConfig.getMemoryBufferByte());
 			}
 		} catch (FileNotFoundException e) {
 			fail("文件打开失败");

@@ -3,7 +3,7 @@ package com.acgist.snail.system.initializer.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.bt.tracker.TrackerServer;
+import com.acgist.snail.net.tracker.TrackerServer;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.initializer.Initializer;
 import com.acgist.snail.system.manager.TrackerManager;
