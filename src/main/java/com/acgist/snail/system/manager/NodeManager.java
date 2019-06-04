@@ -12,9 +12,9 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.dht.DhtClient;
-import com.acgist.snail.net.dht.bootstrap.Request;
-import com.acgist.snail.net.dht.bootstrap.Response;
+import com.acgist.snail.net.bt.dht.DhtClient;
+import com.acgist.snail.net.bt.dht.bootstrap.Request;
+import com.acgist.snail.net.bt.dht.bootstrap.Response;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.system.config.SystemConfig;
