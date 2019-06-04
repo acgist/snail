@@ -27,13 +27,16 @@ import org.xml.sax.SAXException;
 import com.acgist.snail.system.config.SystemConfig;
 
 /**
- * XML工具
+ * <p>XML工具</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class XMLUtils {
-
-	private static final String DOM_FORMAT_PRETTY_PRINT = "format-pretty-print";
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(XMLUtils.class);
+
+	private static final String DOM_FORMAT_PRETTY_PRINT = "format-pretty-print";
 	
 	private Document document;
 	
@@ -89,14 +92,14 @@ public class XMLUtils {
 	}
 	
 	/**
-	 * 创建标签
+	 * 创建标签（命名空间）
 	 */
 	public Element elementNS(Node node, String name, String namespaceURI) {
 		return elementNS(node, name, null, namespaceURI);
 	}
 	
 	/**
-	 * 创建标签
+	 * 创建标签（命名空间）
 	 */
 	public Element elementNS(Node node, String name, String text, String namespaceURI) {
 		Element element = null;
@@ -113,7 +116,7 @@ public class XMLUtils {
 	}
 
 	/**
-	 * 读取节点值：多个节点获取第一个
+	 * 读取节点值：多个节点获取第一个。
 	 */
 	public String elementValue(String name) {
 		final NodeList list = this.document.getElementsByTagName(name);
@@ -124,7 +127,7 @@ public class XMLUtils {
 	}
 
 	/**
-	 * 读取节点值
+	 * 读取节点值：多个节点全部返回。
 	 */
 	public List<String> elementValues(String name) {
 		final NodeList list = this.document.getElementsByTagName(name);
@@ -140,7 +143,7 @@ public class XMLUtils {
 	}
 	
 	/**
-	 * XML格式输出
+	 * XML输出（不格式化）
 	 */
 	public String xml() {
 		return xml(false);
@@ -151,21 +154,21 @@ public class XMLUtils {
 	 */
 	public String xml(boolean format) {
 		try {
-			final Writer out = new StringWriter();
+			final Writer writer = new StringWriter();
 			final DOMImplementationRegistry registry = DOMImplementationRegistry.newInstance();
 			final DOMImplementationLS ementation = (DOMImplementationLS) registry.getDOMImplementation("LS");
 			final LSOutput output = ementation.createLSOutput();
 			final LSSerializer serializer = ementation.createLSSerializer();
 			output.setEncoding(SystemConfig.DEFAULT_CHARSET);
-			output.setCharacterStream(out);
+			output.setCharacterStream(writer);
 			if(format) {
-				DOMConfiguration configuration = serializer.getDomConfig();
+				final DOMConfiguration configuration = serializer.getDomConfig();
 				if (configuration.canSetParameter(DOM_FORMAT_PRETTY_PRINT, true)) {
 					configuration.setParameter(DOM_FORMAT_PRETTY_PRINT, true);
 				}
 			}
 			serializer.write(this.document, output);
-			return out.toString();
+			return writer.toString();
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | ClassCastException e) {
 			LOGGER.error("XML输出异常", e);
 		}

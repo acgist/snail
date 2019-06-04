@@ -11,7 +11,10 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.pojo.wrapper.ResultSetWrapper;
 
 /**
- * Bean工具
+ * <p>Bean工具</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class BeanUtils {
 
@@ -33,7 +36,7 @@ public class BeanUtils {
 	}
 	
 	/**
-	 * 获取类属性
+	 * <p>获取类属性（非静态）</p>
 	 */
 	public static final String[] properties(Class<?> clazz) {
 		String[] properties = null;
@@ -66,7 +69,8 @@ public class BeanUtils {
 	}
 	
 	/**
-	 * 获取属性值
+	 * <p>获取属性值</p>
+	 * <p>属性必须有getter。</p>
 	 */
 	public static final Object propertyValue(Object entity, String property) {
 		final Class<?> clazz = entity.getClass();
@@ -80,7 +84,8 @@ public class BeanUtils {
 	}
 	
 	/**
-	 * 属性装配
+	 * <p>属性装配</p>
+	 * <p>属性必须有setter。</p>
 	 */
 	public static final void entity(Object entity, ResultSetWrapper wrapper) {
 		final Class<?> clazz = entity.getClass();
@@ -97,7 +102,8 @@ public class BeanUtils {
 	}
 	
 	/**
-	 * 类型转换
+	 * <p>类型转换</p>
+	 * <p>枚举类型转换为字符串类型。</p>
 	 */
 	public static final Object pack(Object object) {
 		if(object == null) {

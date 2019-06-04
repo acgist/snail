@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.UdpClient;
 import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.utils.NetUtils;
 
 /**
  * <p>UPNP客户端</p>
@@ -30,7 +31,7 @@ public class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	}
 	
 	public static final UpnpClient newInstance() {
-		return new UpnpClient(new InetSocketAddress(UPNP_HOST, UPNP_PORT));
+		return new UpnpClient(NetUtils.buildSocketAddress(UPNP_HOST, UPNP_PORT));
 	}
 
 	@Override

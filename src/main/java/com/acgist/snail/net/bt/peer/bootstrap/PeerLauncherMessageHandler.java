@@ -133,6 +133,7 @@ public class PeerLauncherMessageHandler {
 		}
 		final PeerSession peerSession = PeerManager.getInstance().newPeerSession(infoHashHex, taskSession.statistics(), socketAddress.getHostString(), null, PeerConfig.SOURCE_CONNECT);
 		if(peerSession == null) {
+			LOGGER.warn("Peer添加失败：{}", socketAddress.getHostString());
 			return false;
 		}
 		final PeerConnectGroup peerConnectGroup = torrentSession.peerConnectGroup();
@@ -458,7 +459,7 @@ public class PeerLauncherMessageHandler {
 	private void bitfield(ByteBuffer buffer) {
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
-		final BitSet pieces = BitfieldUtils.toPieces(bytes);
+		final BitSet pieces = BitfieldUtils.toBitSet(bytes);
 		peerSession.pieces(pieces);
 		LOGGER.debug("收到位图：{}", pieces);
 		final BitSet notHave = new BitSet();

@@ -57,7 +57,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 		if(StringUtils.isEmpty(announceUrl)) {
 			throw new NetException("不支持的Tracker announceUrl：" + announceUrl);
 		}
-		this.id = UniqueCodeUtils.buildInteger();
+		this.id = UniqueCodeUtils.build();
 		this.type = type;
 		this.weight = 0;
 		this.scrapeUrl = scrapeUrl;
@@ -156,8 +156,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 		}
 		if(object instanceof TrackerClient) {
 			final TrackerClient client = (TrackerClient) object;
-			return ObjectUtils.equalsBuilder(this.announceUrl)
-				.equals(ObjectUtils.equalsBuilder(client.announceUrl));
+			return StringUtils.equals(this.announceUrl, client.announceUrl);
 		}
 		return false;
 	}

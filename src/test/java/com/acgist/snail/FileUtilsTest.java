@@ -31,4 +31,14 @@ public class FileUtilsTest {
 		System.out.println(FileUtils.fileSize("E:\\gitee\\snail\\download\\MY-1.211.0.exe"));
 	}
 	
+	@Test
+	public void verify() {
+		FileUtils.md5("F:\\迅雷下载\\我的大叔\\[我的大叔][E008].mkv").forEach((key, value) -> {
+			System.out.println(value + "=" + key);
+		});
+		FileUtils.sha1("F:\\迅雷下载\\我的大叔\\[我的大叔][E008].mkv").forEach((key, value) -> {
+			System.out.println(value + "=" + key);
+		});
+	}
+	
 }

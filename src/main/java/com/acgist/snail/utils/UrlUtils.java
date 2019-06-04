@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.system.config.SystemConfig;
 
 /**
- * utils - URL
+ * <p>URL工具</p>
  * 
  * @author acgist
  * @since 1.0.0

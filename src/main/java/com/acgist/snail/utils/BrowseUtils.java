@@ -7,14 +7,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 浏览器工具
+ * <p>浏览器工具</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class BrowseUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BrowseUtils.class);
 	
 	/**
-	 * 浏览器打开网页
+	 * 使用默认浏览器打开网页
 	 */
 	public static final void open(final String url) {
 		try {

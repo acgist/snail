@@ -6,7 +6,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * utils - 线程
+ * <p>线程工具</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class ThreadUtils {
 
@@ -24,9 +27,10 @@ public class ThreadUtils {
 	}
 	
 	/**
-	 * 线程等待
-	 * wait会让出CPU执行其他的任务，线程池中同样会让出线程
-	 * @param timeout 注意不能设置Long.MAX_VALUE
+	 * <p>线程等待</p>
+	 * <p>wait会让出CPU执行其他的任务，线程池中同样会让出线程。</p>
+	 * 
+	 * @param timeout 注意不能设置过大，转换为毫秒时超过long最大值。
 	 */
 	public static final void wait(Object obj, Duration timeout) {
 		try {

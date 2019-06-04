@@ -38,14 +38,14 @@ public class ApplicationMessageHandler extends TcpMessageHandler {
 		if(content.contains(SPLIT)) {
 			int index = content.indexOf(SPLIT);
 			while(index >= 0) {
-				contentBuffer.append(content.substring(0, index));
-				oneMessage(contentBuffer.toString());
-				contentBuffer.setLength(0);
+				this.contentBuffer.append(content.substring(0, index));
+				oneMessage(this.contentBuffer.toString());
+				this.contentBuffer.setLength(0);
 				content = content.substring(index + SPLIT.length());
 				index = content.indexOf(SPLIT);
 			}
 		}
-		contentBuffer.append(content);
+		this.contentBuffer.append(content);
 	};
 	
 	/**

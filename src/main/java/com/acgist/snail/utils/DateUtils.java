@@ -4,11 +4,20 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * 日期工具
+ * <p>日期工具</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class DateUtils {
 
+	/**
+	 * UNIX和JAVA时间戳倍数
+	 */
 	private static final int UNIX_JAVA_TIMESTAMP_SCALE = 1000;
+	/**
+	 * 默认时间格式
+	 */
 	private static final String DEFAULT_PATTERN = "yyyy-MM-dd HH:mm:ss";
 	
 	private static final long ONE_MINUTE = 60L;
@@ -16,12 +25,17 @@ public class DateUtils {
 	private static final long ONE_DAY = ONE_HOUR * 24;
 	
 	/**
-	 * 时间格式化：保留两个时间单位
-	 * 格式：XX天XX小时XX分XX秒
+	 * <p>时间格式化：保留两个时间单位。</p>
 	 * 
-	 * @param second 秒
+	 * @param second 时间，单位：秒
+	 * 
+	 * @return <p>
+	 * 	1.XX天XX小时<br>
+	 * 	2.XX小时XX分钟<br>
+	 * 	3.XX分钟XX秒
+	 * </p>
 	 */
-	public static final String secondToString(long value) {
+	public static final String formatSecond(long value) {
 		final StringBuilder builder = new StringBuilder();
 		final long day = value / ONE_DAY;
 		if(day != 0) {
@@ -60,6 +74,7 @@ public class DateUtils {
 	 * 
 	 * @param date 日期
 	 * @param pattern 格式
+	 * 
 	 * @return 格式化字符串
 	 */
 	public static final String dateToString(Date date, String pattern) {
@@ -81,6 +96,7 @@ public class DateUtils {
 	 * Java时间戳转Unix时间戳
 	 * 
 	 * @param javaTimestamp Java时间戳
+	 * 
 	 * @return Unix时间戳
 	 */
 	public static final long javaToUnixTimestamp(long javaTimestamp) {
@@ -98,6 +114,7 @@ public class DateUtils {
 	 * Unix时间戳转Java时间戳
 	 * 
 	 * @param unixTimestamp Unix时间戳
+	 * 
 	 * @return Java时间戳
 	 */
 	public static final long unixToJavaTimestamp(long unixTimestamp) {
@@ -108,6 +125,7 @@ public class DateUtils {
 	 * Unix时间戳转Java日期
 	 * 
 	 * @param unixTimestamp Unix时间戳
+	 * 
 	 * @return Java日期
 	 */
 	public static final Date unixToJavaDate(long unixTimestamp) {

@@ -17,7 +17,6 @@ import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.ClipboardUtils;
 import com.acgist.snail.utils.FileUtils;
-import com.acgist.snail.utils.FileVerifyUtils;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -160,7 +159,7 @@ public class TaskMenu extends Menu {
 			MainWindow.getInstance().controller().selected()
 			.forEach(wrapper -> {
 				if(wrapper.complete()) {
-					hash.putAll(FileVerifyUtils.sha1(wrapper.entity().getFile()));
+					hash.putAll(FileUtils.sha1(wrapper.entity().getFile()));
 				}
 			});
 			if(hash.isEmpty()) {

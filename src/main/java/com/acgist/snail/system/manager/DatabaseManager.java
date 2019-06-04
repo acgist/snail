@@ -14,8 +14,8 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.wrapper.ResultSetWrapper;
 import com.acgist.snail.system.config.DatabaseConfig;
+import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.BeanUtils;
-import com.acgist.snail.utils.CollectionUtils;
 
 /**
  * 数据库管理器
@@ -60,7 +60,7 @@ public class DatabaseManager {
 		try {
 			final Connection connection = connection();
 			statement = connection.prepareStatement(sql);
-			if(CollectionUtils.isNotEmpty(parameters)) {
+			if(ArrayUtils.isNotEmpty(parameters)) {
 				for (int index = 0; index < parameters.length; index++) {
 					statement.setObject(index + 1, BeanUtils.pack(parameters[index]));
 				}
@@ -85,7 +85,7 @@ public class DatabaseManager {
 		try {
 			final Connection connection = connection();
 			statement = connection.prepareStatement(sql);
-			if(CollectionUtils.isNotEmpty(parameters)) {
+			if(ArrayUtils.isNotEmpty(parameters)) {
 				for (int index = 0; index < parameters.length; index++) {
 					statement.setObject(index + 1, BeanUtils.pack(parameters[index]));
 				}

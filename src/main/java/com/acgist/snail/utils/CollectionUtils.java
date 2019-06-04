@@ -4,26 +4,15 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * 数组、集合、Map工具
+ * <p>集合、Map工具</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class CollectionUtils {
 
 	/**
-	 * 空数组
-	 */
-	public static final boolean isEmpty(Object[] objects) {
-		return objects == null || objects.length == 0;
-	}
-	
-	/**
-	 * 非空数组
-	 */
-	public static final boolean isNotEmpty(Object[] objects) {
-		return !isEmpty(objects);
-	}
-	
-	/**
-	 * 空集合
+	 * 空集合：集合==null或者长度==0
 	 */
 	public static final boolean isEmpty(Collection<?> list) {
 		return list == null || list.isEmpty();
@@ -37,7 +26,7 @@ public class CollectionUtils {
 	}
 
 	/**
-	 * 空Map
+	 * 空Map：Map==null或者长度==0
 	 */
 	public static final boolean isEmpty(Map<?, ?> map) {
 		return map == null || map.isEmpty();
@@ -49,5 +38,5 @@ public class CollectionUtils {
 	public static final boolean isNotEmpty(Map<?, ?> map) {
 		return !isEmpty(map);
 	}
-	
+
 }

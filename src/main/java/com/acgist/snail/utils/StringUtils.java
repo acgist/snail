@@ -12,7 +12,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * utils - 字符串
+ * <p>字符串工具</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class StringUtils {
 
@@ -59,7 +62,7 @@ public class StringUtils {
 	}
 	
 	/**
-	 * 转为LONG
+	 * 转为Long
 	 */
 	public static final long toLong(String value) {
 		if(isNumeric(value)) {
@@ -69,15 +72,16 @@ public class StringUtils {
 	}
 
 	/**
-	 * 16进制字符串编码
+	 * 字符数组转为十六进制字符串。
 	 */
 	public static final String hex(byte[] bytes) {
 		if(bytes == null) {
 			return null;
 		}
+		String hex;
 		final StringBuilder builder = new StringBuilder();
 		for (int index = 0; index < bytes.length; index++) {
-			String hex = Integer.toHexString(bytes[index] & 0xFF);
+			hex = Integer.toHexString(bytes[index] & 0xFF);
 			if (hex.length() < 2) {
 				builder.append(0);
 			}
@@ -87,14 +91,14 @@ public class StringUtils {
 	}
 
 	/**
-	 * 16进制字符串解码
+	 * 十六进制字符串转为字符数组。
 	 */
 	public static byte[] unhex(String text) {
 		if(text == null) {
 			return null;
 		}
-		int length = text.length();
 		byte[] result;
+		int length = text.length();
 		if (length % 2 == 1) { // 奇数
 			length++;
 			result = new byte[(length / 2)];
@@ -111,7 +115,7 @@ public class StringUtils {
 	}
 
 	/**
-	 * SHA1
+	 * SHA1散列计算。
 	 */
 	public static final byte[] sha1(byte[] bytes) {
 		try {
@@ -125,14 +129,19 @@ public class StringUtils {
 	}
 	
 	/**
-	 * SHA1
+	 * SHA1散列计算并转为十六进制字符串。
 	 */
 	public static final String sha1Hex(byte[] bytes) {
 		return StringUtils.hex(sha1(bytes));
 	}
 	
 	/**
-	 * 编码
+	 * 字符串转码。
+	 * 
+	 * @param value 原始字符串
+	 * @param charset 原始编码格式
+	 * 
+	 * @return 系统默认编码的字符串
 	 */
 	public static final String charset(String value, String charset) {
 		if(StringUtils.isEmpty(value) || charset == null) {
@@ -147,15 +156,15 @@ public class StringUtils {
 	}
 	
 	/**
-	 * 流转为字符串
+	 * 输入流转为字符串。
 	 */
 	public static final String ofInputStream(InputStream input) {
 		if(input == null) {
 			return null;
 		}
-		StringBuilder builder = new StringBuilder();
 		int index;
 		byte[] bytes = new byte[1024];
+		final StringBuilder builder = new StringBuilder();
 		try {
 			while((index = input.read(bytes)) != -1) {
 				builder.append(new String(bytes, 0, index));
@@ -168,6 +177,7 @@ public class StringUtils {
 
 	/**
 	 * 正则表达式验证
+	 * 
 	 * @param value 字符串
 	 * @param regex 正则表达式
 	 * @param ignoreCase 忽略大小写
@@ -182,8 +192,19 @@ public class StringUtils {
 		} else {
 			pattern = Pattern.compile(regex);
 		}
-		Matcher matcher = pattern.matcher(value);
+		final Matcher matcher = pattern.matcher(value);
 		return matcher.matches();
 	}
 	
+	/**
+	 * 判断字符串是否相等
+	 */
+	public static final boolean equals(String source, String target) {
+		if(source == null) {
+			return target == null;
+		} else {
+			return source.equals(target);
+		}
+	}
+
 }

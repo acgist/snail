@@ -13,6 +13,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,16 +25,24 @@ import com.acgist.snail.system.config.FileTypeConfig.FileType;
 import com.acgist.snail.system.exception.ArgumentException;
 
 /**
- * 文件工具
+ * <p>文件工具</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class FileUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FileUtils.class);
 	
-	private static final int SIZE_SCALE = 1024;
-	private static final String[] SIZE_UNIT = {"B", "KB", "M", "G", "T"};
+	private static final int FILE_SIZE_SCALE = 1024;
+	
+	private static final String[] FILE_SIZE_UNIT = {"B", "KB", "M", "G", "T"};
+	
 	private static final String FILENAME_REPLACE_CHAR = "";
-	private static final String FILENAME_REPLACE_REGEX = "[\\\\/:\\*\\?\\<\\>\\|]"; // 替换的字符：\、/、:、*、?、<、>、|
+	/**
+	 * 文件名禁用的字符：\、/、:、*、?、<、>、|
+	 */
+	private static final String FILENAME_REPLACE_REGEX = "[\\\\/:\\*\\?\\<\\>\\|]";
 	
 	/**
 	 * 删除文件
@@ -65,7 +76,8 @@ public class FileUtils {
 	}
 	
 	/**
-	 * 通过URL获取文件名称
+	 * <p>通过URL获取文件名称</p>
+	 * <p>去掉协议、域名、路径、参数。</p>
 	 */
 	public static final String fileNameFromUrl(final String url) {
 		if(StringUtils.isEmpty(url)) {
@@ -87,41 +99,41 @@ public class FileUtils {
 	}
 	
 	/**
-	 * 文件名称获取后缀
-	 */
-	public static final FileType fileType(String name) {
-		if(StringUtils.isEmpty(name)) {
-			return FileType.unknown;
-		}
-		String ext = name;
-		int index = name.lastIndexOf(".");
-		if(index != -1) {
-			ext = name.substring(index + 1);
-		}
-		return FileTypeConfig.type(ext);
-	}
-	
-	/**
-	 * 获取正确的文件下载名称：去掉不支持的字符串
+	 * 获取正确的文件下载名称：去掉{@linkplain #FILENAME_REPLACE_REGEX 不支持的字符串}。
 	 */
 	public static final String fileName(String name) {
 		if(StringUtils.isNotEmpty(name)) { // 去掉不支持的字符
 			name = name.replaceAll(FILENAME_REPLACE_REGEX, FILENAME_REPLACE_CHAR);
 		}
 		if(StringUtils.isEmpty(name)) { // 默认使用日期
-			name = UniqueCodeUtils.build();
+			name = UniqueCodeUtils.build().toString();
 		}
 		return name.trim();
 	}
+
+	/**
+	 * 根据文件名称获取文件类型。
+	 */
+	public static final FileType fileType(String fileName) {
+		if(StringUtils.isEmpty(fileName)) {
+			return FileType.unknown;
+		}
+		String ext = fileName;
+		int index = fileName.lastIndexOf(".");
+		if(index != -1) {
+			ext = fileName.substring(index + 1);
+		}
+		return FileTypeConfig.type(ext);
+	}
 	
 	/**
-	 * 资源管理器中打开文件
+	 * 资源管理器中打开文件。
 	 */
 	public static final void openInDesktop(File file) {
 		try {
 			Desktop.getDesktop().open(file);
 		} catch (IOException e) {
-			LOGGER.error("打开系统目录异常", e);
+			LOGGER.error("资源管理器打开文件异常", e);
 		}
 	}
 
@@ -171,11 +183,10 @@ public class FileUtils {
 			throw new ArgumentException("不正确的文件路径");
 		}
 		return Paths.get(folder, fileName).toString();
-//		return folder + File.separator + fileName;
 	}
 
 	/**
-	 * 大小计算
+	 * 文件大小格式化
 	 */
 	public static final String formatSize(Long size) {
 		if(size == null || size == 0L) {
@@ -183,22 +194,22 @@ public class FileUtils {
 		}
 		int index = 0;
 		BigDecimal decimal = new BigDecimal(size);
-		while(decimal.longValue() >= SIZE_SCALE) {
-			if(++index == SIZE_UNIT.length) {
-				index = SIZE_UNIT.length - 1;
+		while(decimal.longValue() >= FILE_SIZE_SCALE) {
+			if(++index == FILE_SIZE_UNIT.length) {
+				index = FILE_SIZE_UNIT.length - 1;
 				break;
 			}
-			decimal = decimal.divide(new BigDecimal(SIZE_SCALE));
+			decimal = decimal.divide(new BigDecimal(FILE_SIZE_SCALE));
 		}
-		return decimal.setScale(2, RoundingMode.HALF_UP) + SIZE_UNIT[index];
+		return decimal.setScale(2, RoundingMode.HALF_UP) + FILE_SIZE_UNIT[index];
 	}
 	
 	/**
-	 * 获取文件大小
+	 * 文件大小
 	 */
 	public static final long fileSize(String path) {
 		long size = 0L;
-		File file = new File(path);
+		final File file = new File(path);
 		if(!file.exists()) {
 			return 0L;
 		}
@@ -209,7 +220,7 @@ public class FileUtils {
 				LOGGER.error("文件大小获取异常", e);
 			}
 		} else {
-			File[] files = file.listFiles();
+			final File[] files = file.listFiles();
 			for (File children : files) {
 				size += fileSize(children.getPath());
 			}
@@ -218,7 +229,7 @@ public class FileUtils {
 	}
 	
 	/**
-	 * 创建文件夹，如果路径是文件夹，创建父目录，否者直接创建路径目录
+	 * 创建文件夹，如果路径是文件夹，创建父目录，否者直接创建路径目录。
 	 * @param path 路径
 	 * @param file 是否是文件：true-文件；false-文件夹
 	 */
@@ -235,4 +246,54 @@ public class FileUtils {
 		}
 	}
 	
+	/**
+	 * 散列计算
+	 * 
+	 * @param path 文件地址，如果是目录计算里面每一个文件
+	 * @param algo 算法：MD5/SHA1
+	 */
+	private static final Map<String, String> hash(String path, String algo) {
+		final File file = new File(path);
+		if(!file.exists()) {
+			return null;
+		}
+		final Map<String, String> data = new HashMap<>();
+		if (!file.isFile()) {
+			final File[] files = file.listFiles();
+			for (File children : files) {
+				data.putAll(hash(children.getPath(), algo));
+			}
+			return data;
+		} else {
+			MessageDigest digest = null;
+			int length;
+			byte bytes[] = new byte[16 * 1024];
+			try (InputStream input = new BufferedInputStream(new FileInputStream(file))) {
+				digest = MessageDigest.getInstance(algo);
+				while ((length = input.read(bytes)) != -1) {
+					digest.update(bytes, 0, length);
+				}
+			} catch (Exception e) {
+				LOGGER.error("文件HASH计算异常", e);
+				return data;
+			}
+			data.put(path, StringUtils.hex(digest.digest()));
+			return data;
+		}
+	}
+
+	/**
+	 * MD5散列算法
+	 */
+	public static final Map<String, String> md5(String path) {
+		return hash(path, "MD5");
+	}
+
+	/**
+	 * SHA1散列算法
+	 */
+	public static final Map<String, String> sha1(String path) {
+		return hash(path, "SHA1");
+	}
+
 }

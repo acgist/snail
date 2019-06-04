@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
-import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.StandardProtocolFamily;
 import java.net.UnknownHostException;
@@ -15,15 +14,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * utils - net
+ * <p>网络工具</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class NetUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(NetUtils.class);
 	
+	/**
+	 * 最大端口号
+	 */
 	public static final int MAX_PORT = 2 << 15;
 	
+	/**
+	 * 本机IP
+	 */
 	public static final String LOCAL_IP = "127.0.0.1";
+	/**
+	 * 本机HOST
+	 */
 	public static final String LOCAL_HOST = "localhost";
 	
 	// A类私用地址
@@ -39,6 +50,9 @@ public class NetUtils {
 	private static final long L_IP_BEGIN = encodeIpToLong("127.0.0.0");
 	private static final long L_IP_END = encodeIpToLong("127.255.255.255");
 	
+	/**
+	 * IP正则表达式
+	 */
 	private static final String IP_REGEX = "(\\d{0,3}\\.){3}\\d{0,3}";
 	
 	/**
@@ -49,32 +63,36 @@ public class NetUtils {
 	}
 	
 	/**
-	 * 端口编码
+	 * <p>端口编码</p>
+	 * <p>int端口转换为short。</p>
 	 */
 	public static final short encodePort(int port) {
 		return (short) port;
 	}
 
 	/**
-	 * 端口解码
+	 * <p>端口解码</p>
+	 * <p>short端口转换为int。</p>
 	 */
 	public static final int decodePort(short port) {
 		return Short.toUnsignedInt(port);
 	}
 	
 	/**
-	 * IP编码
+	 * <p>IP编码</p>
+	 * <p>IP地址转换为int。</p>
 	 */
-	public static final int encodeIpToInt(String ipAddress) {
-		return (int) encodeIpToLong(ipAddress);
+	public static final int encodeIpToInt(String ip) {
+		return (int) encodeIpToLong(ip);
 	}
 	
 	/**
-	 * IP编码
+	 * <p>IP编码</p>
+	 * <p>IP地址转换为long。</p>
 	 */
-	public static final long encodeIpToLong(String ipAddress) {
+	public static final long encodeIpToLong(String ip) {
 		long result = 0, tmp;
-		final String[] array = ipAddress.split("\\.");
+		final String[] array = ip.split("\\.");
 		for (int index = 3; index >= 0; index--) {
 			tmp = Long.parseLong(array[3 - index]);
 			result |= tmp << (index * 8);
@@ -83,17 +101,19 @@ public class NetUtils {
 	}
 
 	/**
-	 * IP解码
+	 * <p>IP解码</p>
+	 * <p>int转换为IP地址。</p>
 	 */
-	public static final String decodeIntToIp(int ipNumber) {
-		return decodeLongToIp(Integer.toUnsignedLong(ipNumber));
+	public static final String decodeIntToIp(int value) {
+		return decodeLongToIp(Integer.toUnsignedLong(value));
 	}
 	
 	/**
-	 * IP解码
+	 * <p>IP解码</p>
+	 * <p>long转换为IP地址。</p>
 	 */
-	public static final String decodeLongToIp(long ipNumber) {
-		return ((ipNumber >> 24) & 0xFF) + "." + ((ipNumber >> 16) & 0xFF) + "." + ((ipNumber >> 8) & 0xFF) + "." + (ipNumber & 0xFF);
+	public static final String decodeLongToIp(long value) {
+		return ((value >> 24) & 0xFF) + "." + ((value >> 16) & 0xFF) + "." + ((value >> 8) & 0xFF) + "." + (value & 0xFF);
 	}
 	
 	/**
@@ -147,10 +167,10 @@ public class NetUtils {
 	}
 
 	/**
-	 * 判断是否是本地IP
+	 * 判断是否是本地IP地址。
 	 */
-	public static final boolean isLocalIp(String host) {
-		final long value = encodeIpToLong(host);
+	public static final boolean isLocalIp(String ip) {
+		final long value = encodeIpToLong(ip);
 		return
 			(A_IP_BEGIN < value && value < A_IP_END) ||
 			(B_IP_BEGIN < value && value < B_IP_END) ||
@@ -170,7 +190,7 @@ public class NetUtils {
 	 * 
 	 * @param port 端口
 	 */
-	public static final SocketAddress buildSocketAddress(final int port) {
+	public static final InetSocketAddress buildSocketAddress(final int port) {
 		return buildSocketAddress(null, port);
 	}
 	
@@ -180,7 +200,7 @@ public class NetUtils {
 	 * @param host 地址
 	 * @param port 端口
 	 */
-	public static final SocketAddress buildSocketAddress(final String host, final int port) {
+	public static final InetSocketAddress buildSocketAddress(final String host, final int port) {
 		if(StringUtils.isEmpty(host)) {
 			return new InetSocketAddress(port);
 		} else {
@@ -189,22 +209,25 @@ public class NetUtils {
 	}
 	
 	/**
-	 * 创建UDP通道
+	 * <p>创建UDP通道</p>
+	 * <p>host=本机、port=随机。</p>
 	 */
 	public static final DatagramChannel buildUdpChannel() {
 		return buildUdpChannel(-1);
 	}
 	
 	/**
-	 * 创建UDP通道
+	 * <p>创建UDP通道</p>
+	 * <p>host=本机</p>
 	 */
 	public static final DatagramChannel buildUdpChannel(final int port) {
 		return buildUdpChannel(null, port);
 	}
 	
 	/**
-	 * 创建UDP通道
-	 * @param port -1=不绑定端口
+	 * <p>创建UDP通道</p>
+	 * 
+	 * @param port -1=不绑定端口，随机选择。
 	 */
 	public static final DatagramChannel buildUdpChannel(final String host, final int port) {
 		DatagramChannel channel = null;
