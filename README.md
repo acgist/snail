@@ -1,7 +1,7 @@
 <h1 align="center">Snail（蜗牛）</h1>
 
 <p align="center">
-基于Java/JavaFX的下载工具，支持下载协议：BT、FTP、HTTP、ED2K。
+基于Java/JavaFX的下载工具，支持下载协议：BT、FTP、HTTP。
 </p>
 
 <p align="center">
@@ -77,7 +77,6 @@ Windows直接点击SnailLauncher.exe即可运行。
 |BT|○|
 |FTP|√|
 |HTTP|√|
-|ED2K|×|
 
 #### BT进度
 
@@ -93,8 +92,6 @@ Windows直接点击SnailLauncher.exe即可运行。
 |Tracker Protocol（UDP/HTTP）|√|
 |uTorrent transport protocol（uTP）|○|
 |Extension for Peers to Send Metadata Files|√|
-
-#### ED2K进度
 
 *√=完成、○-进行中、×-未开始*
 

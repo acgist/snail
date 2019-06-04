@@ -2,8 +2,8 @@ package com.acgist.snail.utp;
 
 import org.junit.Test;
 
-import com.acgist.snail.net.bt.peer.bootstrap.PeerLauncherMessageHandler;
-import com.acgist.snail.net.bt.utp.UtpClient;
+import com.acgist.snail.net.peer.bootstrap.PeerLauncherMessageHandler;
+import com.acgist.snail.net.utp.UtpClient;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.StatisticsSession;
 import com.acgist.snail.pojo.session.TorrentSession;

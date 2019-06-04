@@ -62,7 +62,6 @@ public class TaskEntity extends BaseEntity {
 	public enum Type {
 
 		ftp,
-		ed2k,
 		http,
 		magnet,
 		thunder,

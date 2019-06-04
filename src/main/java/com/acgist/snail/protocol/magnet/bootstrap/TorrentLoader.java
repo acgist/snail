@@ -1,6 +1,6 @@
 package com.acgist.snail.protocol.magnet.bootstrap;
 
-import com.acgist.snail.net.bt.dht.DhtClient;
+import com.acgist.snail.net.dht.DhtClient;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.system.manager.NodeManager;
 import com.acgist.snail.utils.StringUtils;
