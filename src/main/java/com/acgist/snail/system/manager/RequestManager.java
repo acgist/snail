@@ -12,8 +12,7 @@ import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.utils.ArrayUtils;
 
 /**
- * <p>DHT请求管理</p>
- * TODO：定时清除
+ * <p>DHT请求管理器</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -88,8 +87,8 @@ public class RequestManager {
 	 */
 	private Request remove(byte[] id) {
 		synchronized (this.requests) {
-			final var iterator = this.requests.iterator();
 			Request request;
+			final var iterator = this.requests.iterator();
 			while(iterator.hasNext()) {
 				request = iterator.next();
 				if(ArrayUtils.equals(id, request.getId())) {

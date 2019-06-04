@@ -16,7 +16,10 @@ import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
- * 下载协议管理器
+ * <p>下载协议管理器</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class ProtocolManager {
 	
@@ -24,12 +27,16 @@ public class ProtocolManager {
 
 	private static final ProtocolManager INSTANCE = new ProtocolManager();
 	
+	/**
+	 * 下载协议
+	 */
 	private final List<Protocol> protocols;
+	
 	private final AtomicBoolean availableLock;
 	
 	private ProtocolManager() {
-		protocols = new ArrayList<>();
-		availableLock = new AtomicBoolean(false);
+		this.protocols = new ArrayList<>();
+		this.availableLock = new AtomicBoolean(false);
 	}
 	
 	public static final ProtocolManager getInstance() {
@@ -41,24 +48,14 @@ public class ProtocolManager {
 	 */
 	public <T extends Protocol> void register(Protocol protocol) {
 		LOGGER.info("注册下载协议：{}", protocol.name());
-		protocols.add(protocol);
+		this.protocols.add(protocol);
 	}
 	
-	/**
-	 * 设置状态
-	 */
-	public void available(boolean available) {
-		synchronized (availableLock) {
-			this.availableLock.set(true);
-			availableLock.notifyAll();
-		}
-	}
-
 	/**
 	 * 新建下载任务
 	 */
 	public TaskSession build(String url) throws DownloadException {
-		synchronized (protocols) {
+		synchronized (this.protocols) {
 			return protocol(url).build();
 		}
 	}
@@ -67,7 +64,7 @@ public class ProtocolManager {
 	 * 获取下载协议
 	 */
 	public Protocol protocol(String url) throws DownloadException {
-		Optional<Protocol> optional = protocols.stream()
+		final Optional<Protocol> optional = this.protocols.stream()
 			.filter(protocol -> protocol.available())
 			.map(protocol -> protocol.init(url))
 			.filter(protocol -> protocol.verify())
@@ -79,12 +76,12 @@ public class ProtocolManager {
 	}
 	
 	/**
-	 * 是否可用，阻塞线程
+	 * 状态是否可用，阻塞线程。
 	 */
 	public boolean available() throws DownloadException {
-		if(!availableLock.get()) {
-			synchronized (availableLock) {
-				ThreadUtils.wait(availableLock, Duration.ofSeconds(Byte.MAX_VALUE));
+		if(!this.availableLock.get()) {
+			synchronized (this.availableLock) {
+				ThreadUtils.wait(this.availableLock, Duration.ofSeconds(Byte.MAX_VALUE));
 			}
 		}
 		if(SystemContext.available()) {
@@ -93,5 +90,15 @@ public class ProtocolManager {
 			throw new DownloadException("系统正在关闭中");
 		}
 	}
-	
+
+	/**
+	 * 设置可用状态，唤醒阻塞线程。
+	 */
+	public void available(boolean available) {
+		synchronized (this.availableLock) {
+			this.availableLock.set(true);
+			this.availableLock.notifyAll();
+		}
+	}
+
 }

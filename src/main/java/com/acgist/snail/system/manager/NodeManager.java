@@ -23,11 +23,16 @@ import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * Node信息
- * TODO：连接失败时剔除、定时剔除多余数据
+ * <p>Node管理器</p>
+ * <p>DHT节点管理器。</p>
  * 
- * Kademlia：https://baike.baidu.com/item/Kademlia
+ * <p>
+ * Kademlia：https://baike.baidu.com/item/Kademlia<br>
  * BT=DHT、eMule=KAD
+ * </p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class NodeManager {
 	
@@ -47,8 +52,17 @@ public class NodeManager {
 	public static final int NODE_FIND_SLICE = 3; // 分片大小
 	public static final int NODE_FIND_SLICE_SIZE = NODE_FIND_SIZE * NODE_FIND_SLICE;
 	
+	/**
+	 * 当前客户端的Token
+	 */
 	private final byte[] token;
+	/**
+	 * 当前客户端的NodeId
+	 */
 	private final byte[] nodeId;
+	/**
+	 * 节点列表
+	 */
 	private final List<NodeSession> nodes;
 	
 	private NodeManager() {
@@ -272,7 +286,7 @@ public class NodeManager {
 	}
 	
 	/**
-	 * 设置token，如果对应nodeId不存在，这加入网络
+	 * 设置token，如果对应nodeId不存在，这加入网络。
 	 */
 	public void token(byte[] nodeId, Request request, byte[] token) {
 		final InetSocketAddress socketAddress = request.getSocketAddress();
@@ -287,7 +301,7 @@ public class NodeManager {
 	}
 	
 	/**
-	 * 标记可用节点：有相应的节点标记为可用节点
+	 * 标记可用节点：有相应的节点标记为可用节点。
 	 */
 	public void available(Response response) {
 		if(response != null) {
@@ -301,7 +315,7 @@ public class NodeManager {
 	}
 	
 	/**
-	 * 选择Node
+	 * 选择Node。
 	 */
 	private NodeSession select(byte[] nodeId) {
 		for (NodeSession nodeSession : this.nodes) {
@@ -310,6 +324,42 @@ public class NodeManager {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * <p>清理过多的Node。</p>
+	 * <p>优先清理{@linkplain NodeSession#STATUS_VERIFY 验证中}的节点，如果清理后节点依旧过多，则按步长清理节点。</p>
+	 * <p>警告：清理{@linkplain NodeSession#STATUS_VERIFY 验证中}的节点会出现，正在使用的节点可能被清理。</p>
+	 */
+	public void clear() {
+		if(this.nodes.size() > NODE_MAX_SIZE) {
+			synchronized (this.nodes) {
+				// 清理状态节点
+				NodeSession node;
+				var iterator = this.nodes.iterator();
+				while(iterator.hasNext()) {
+					node = iterator.next();
+					if(node.getStatus() == NodeSession.STATUS_VERIFY) { // 清理无效
+						iterator.remove();
+					}
+				}
+				// 清理过多节点
+				final int overSize = this.nodes.size() - NODE_MAX_SIZE;
+				if(overSize > 0) {
+					int index = 0;
+					final int step = NODE_MAX_SIZE / overSize;
+					if(step > 0) {
+						while(iterator.hasNext()) {
+							iterator.next();
+							if(index++ % step == 0) {
+								iterator.remove();
+								// TODO：优化
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	/**

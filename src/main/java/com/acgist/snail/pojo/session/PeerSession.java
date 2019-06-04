@@ -22,6 +22,9 @@ import com.acgist.snail.utils.StringUtils;
  */
 public class PeerSession implements IStatistics {
 
+	/**
+	 * TODO：优化失败次数
+	 */
 	private static final int MAX_FAIL_TIMES = 2;
 	
 	private StatisticsSession statistics;
@@ -119,7 +122,7 @@ public class PeerSession implements IStatistics {
 	/**
 	 * 判断是否存在：判断IP，不判断端口
 	 */
-	public boolean exist(String host) {
+	public boolean equals(String host) {
 		return StringUtils.equals(this.host, host);
 	}
 
