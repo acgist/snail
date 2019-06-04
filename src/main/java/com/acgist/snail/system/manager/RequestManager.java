@@ -6,8 +6,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.dht.bootstrap.Request;
-import com.acgist.snail.net.dht.bootstrap.Response;
+import com.acgist.snail.net.bt.dht.bootstrap.Request;
+import com.acgist.snail.net.bt.dht.bootstrap.Response;
 import com.acgist.snail.utils.ArrayUtils;
 
 /**

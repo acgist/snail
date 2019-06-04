@@ -7,9 +7,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.peer.PeerClient;
-import com.acgist.snail.net.peer.bootstrap.PeerLauncherMessageHandler;
-import com.acgist.snail.net.utp.UtpClient;
+import com.acgist.snail.net.bt.peer.PeerClient;
+import com.acgist.snail.net.bt.peer.bootstrap.PeerLauncherMessageHandler;
+import com.acgist.snail.net.bt.utp.UtpClient;
 import com.acgist.snail.pojo.bean.TorrentPiece;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
