@@ -19,6 +19,7 @@ import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.FileUtils;
+import com.acgist.snail.utils.IoUtils;
 
 /**
  * <p>HTTP下载器</p>
@@ -52,7 +53,6 @@ public class HttpDownloader extends Downloader {
 	
 	@Override
 	public void download() throws IOException {
-		LOGGER.debug("HTTP任务开始下载");
 		int length = 0;
 		while(ok()) {
 			length = input.readNBytes(bytes, 0, bytes.length);
@@ -67,21 +67,8 @@ public class HttpDownloader extends Downloader {
 
 	@Override
 	public void release() {
-		try {
-			if(input != null) {
-				input.close();
-			}
-		} catch (IOException e) {
-			LOGGER.error("关闭HTTP输入流异常", e);
-		}
-		try {
-			if(output != null) {
-				output.flush(); // 刷新
-				output.close();
-			}
-		} catch (IOException e) {
-			LOGGER.error("关闭HTTP输出流异常", e);
-		}
+		IoUtils.close(this.input);
+		IoUtils.close(this.output);
 	}
 	
 	/**
