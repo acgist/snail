@@ -15,10 +15,15 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.net.bt.peer.bootstrap.ltep.PeerExchangeMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.StatisticsSession;
+import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.utils.NetUtils;
 
 /**
- * Peer管理器
+ * <p>Peer管理器</p>
+ * <p>Peer加入放入两个队列，一个队列负责下载时使用：{@link #peers}，一个负责存档：{@link #storagePeers}。</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class PeerManager {
 	
@@ -27,19 +32,19 @@ public class PeerManager {
 	private static final PeerManager INSTANCE = new PeerManager();
 	
 	/**
-	 * 使用的Peer，下载时Peer从中间剔除，选为劣质Peer时放回到列表中。<br>
-	 * key=infoHashHex<br>
-	 * value=Peers：双端队列，新加入插入队尾，剔除的Peer插入对头。
+	 * <p>使用的Peer，下载时Peer从中间剔除，选为劣质Peer时放回到列表中。</p>
+	 * <p>key=infoHashHex</p>
+	 * <p>value=Peers：双端队列，新加入插入队尾，剔除的Peer插入对头。</p>
 	 */
 	private final Map<String, Deque<PeerSession>> peers;
 	/**
-	 * 记录所有的Peer
+	 * Peer存档队列。
 	 */
 	private final Map<String, List<PeerSession>> storagePeers;
 	
 	private PeerManager() {
-		peers = new ConcurrentHashMap<>();
-		storagePeers = new ConcurrentHashMap<>();
+		this.peers = new ConcurrentHashMap<>();
+		this.storagePeers = new ConcurrentHashMap<>();
 	}
 	
 	public static final PeerManager getInstance() {
@@ -47,11 +52,11 @@ public class PeerManager {
 	}
 	
 	/**
-	 * 获取所有Peer
+	 * 获取所有Peer信息。
 	 */
 	public Map<String, List<PeerSession>> peers() {
 		synchronized (this.storagePeers) {
-			return storagePeers.entrySet().stream()
+			return this.storagePeers.entrySet().stream()
 				.collect(Collectors.toMap(Map.Entry::getKey, entry -> {
 					return new ArrayList<>(entry.getValue());
 				}));
@@ -59,14 +64,14 @@ public class PeerManager {
 	}
 	
 	/**
-	 * 获取对应任务的一个临时的PeerSession列表
+	 * 获取对应infoHash的临时Peer列表。
 	 */
 	public List<PeerSession> list(String infoHashHex) {
-		final var list = this.storagePeers.get(infoHashHex);
-		if(list == null) {
-			return null;
-		}
-		synchronized (list) {
+		synchronized (this.storagePeers) {
+			final var list = this.storagePeers.get(infoHashHex);
+			if(list == null) {
+				return null;
+			}
 			return new ArrayList<>(list);
 		}
 	}
@@ -88,16 +93,18 @@ public class PeerManager {
 		var deque = deque(infoHashHex);
 		synchronized (deque) {
 			final Optional<PeerSession> optional = deque.stream().filter(peer -> {
-				return peer.exist(host);
+				return peer.equals(host);
 			}).findFirst();
 			PeerSession peerSession;
 			if(optional.isPresent()) {
 				peerSession = optional.get();
 			} else {
-				LOGGER.debug("添加PeerSession，{}-{}，来源：{}", host, port, source);
+				if(LOGGER.isDebugEnabled()) {
+					LOGGER.debug("添加PeerSession，{}-{}，来源：{}", host, port, PeerConfig.source(source));
+				}
 				peerSession = PeerSession.newInstance(parent, host, port);
 				deque.offerLast(peerSession);
-				this.storage(infoHashHex, peerSession);
+				this.storage(infoHashHex, peerSession); // 存档
 			}
 			peerSession.source(source); // 设置来源
 			return peerSession;
@@ -121,7 +128,7 @@ public class PeerManager {
 		var deque = deque(infoHashHex);
 		synchronized (deque) {
 			int index = 0;
-			int size = deque.size();
+			final int size = deque.size();
 			PeerSession peerSession = null;
 			while(true) {
 				if(++index > size) {
@@ -147,6 +154,7 @@ public class PeerManager {
 		if(list == null) {
 			return;
 		}
+		LOGGER.debug("发送Have消息，通知Peer数量：{}", list.size());
 		list.stream()
 		.filter(session -> session.uploading() || session.downloading())
 		.forEach(session -> {

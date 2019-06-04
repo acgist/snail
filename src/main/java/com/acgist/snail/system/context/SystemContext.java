@@ -26,6 +26,7 @@ import com.acgist.snail.system.initializer.impl.TorrentInitializer;
 import com.acgist.snail.system.initializer.impl.TrackerInitializer;
 import com.acgist.snail.system.initializer.impl.UpnpInitializer;
 import com.acgist.snail.system.manager.DownloaderManager;
+import com.acgist.snail.system.manager.NodeManager;
 import com.acgist.snail.system.manager.RequestManager;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.LoggerUtils;
@@ -144,7 +145,8 @@ public class SystemContext {
 	 * <p>系统定时任务</p>
 	 */
 	public static final void timer() {
-		SystemThreadContext.timerFixedDelay(5, 5, TimeUnit.SECONDS, () -> {
+		SystemThreadContext.timerFixedDelay(5, 5, TimeUnit.MINUTES, () -> {
+			NodeManager.getInstance().clear(); // 清除DHT多余节点
 			RequestManager.getInstance().clear(); // 清除DHT超时请求
 		});
 	}

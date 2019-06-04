@@ -30,19 +30,16 @@ public class PeerConfig {
 	
 	public static final byte DHT_PROTOCOL =       1 << 0; // 0x01
 	public static final byte EXTENSION_PROTOCOL = 1 << 4; // 0x10
-//	public static final byte PEER_EXCHANGE =      1 << 1; // 0x02
 	
 	static {
 		HANDSHAKE_RESERVED[5] |= EXTENSION_PROTOCOL; // Extension Protocol
 		HANDSHAKE_RESERVED[7] |= DHT_PROTOCOL; // DHT Protocol
-//		HANDSHAKE_RESERVED[7] |= PEER_EXCHANGE; // Peer Exchange
 	}
 	
 	/**
 	 * Peer握手消息长度
 	 */
 	public static final int HANDSHAKE_LENGTH = 68;
-	
 	public static final String HANDSHAKE_NAME = "BitTorrent protocol"; // 协议名称
 	public static final byte[] HANDSHAKE_NAME_BYTES = HANDSHAKE_NAME.getBytes();
 	
@@ -140,6 +137,24 @@ public class PeerConfig {
 		PEER_NAMES.put("-XT", "XanTorrent");
 		PEER_NAMES.put("-XX", "Xtorrent");
 		PEER_NAMES.put("-ZT", "ZipTorrent");
+	}
+	
+	/**
+	 * 获取来源名称
+	 */
+	public static final String source(byte source) {
+		switch (source) {
+		case SOURCE_DHT:
+			return "DHT";
+		case SOURCE_PEX:
+			return "PEX";
+		case SOURCE_CONNECT:
+			return "CONNECT";
+		case SOURCE_TRACKER:
+			return "TRACKER";
+		default:
+			return "UNKNOW";
+		}
 	}
 	
 	/**

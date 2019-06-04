@@ -45,11 +45,11 @@ public abstract class Protocol {
 	 * 验证是否支持协议
 	 */
 	public boolean verify() {
-		if(regexs == null) {
+		if(this.regexs == null) {
 			return false;
 		}
-		for (String regex : regexs) {
-			boolean match = StringUtils.regex(this.url, regex, true);
+		for (String regex : this.regexs) {
+			final boolean match = StringUtils.regex(this.url, regex, true);
 			if(match) {
 				return true;
 			}
@@ -66,11 +66,11 @@ public abstract class Protocol {
 	 * 构建下载
 	 */
 	public TaskSession build() throws DownloadException {
-		Protocol convert = convert();
+		final Protocol convert = convert();
 		if(convert != null) {
 			return convert.build();
 		}
-		boolean ok = buildTaskEntity();
+		final boolean ok = buildTaskEntity();
 		if(ok) {
 			persistentTaskEntity();
 			return buildTaskSession();
@@ -81,7 +81,7 @@ public abstract class Protocol {
 
 	/**
 	 * 协议转换<br>
-	 * 如果返回值不为空，则使用返回的协议进行下载
+	 * 如果返回值不为空，则使用返回的协议进行下载。
 	 */
 	protected Protocol convert() throws DownloadException {
 		return null;

@@ -39,5 +39,29 @@ public class NodeManagerTest {
 			System.out.println(StringUtils.hex(node.getId()));
 		});
 	}
+
+	@Test
+	public void clear() {
+		int NODE_MAX_SIZE = 1024;
+		var nodes = new ArrayList<>();
+		for (int i = 0; i < 10000; i++) {
+			nodes.add(i);
+		}
+		var iterator= nodes.iterator();
+		final int overSize = nodes.size() - NODE_MAX_SIZE;
+		if(overSize > 0) {
+			int index = 0;
+			final int step = NODE_MAX_SIZE / overSize;
+			System.out.println(step);
+			if(step > 0) {
+				while(iterator.hasNext()) {
+					iterator.next();
+					if(index++ % step == 0) {
+						iterator.remove();
+					}
+				}
+			}
+		}
+	}
 	
 }
