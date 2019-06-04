@@ -49,14 +49,14 @@ public class FtpMessageHandler extends TcpMessageHandler {
 		if(command.contains(SPLIT)) {
 			int index = command.indexOf(SPLIT);
 			while(index >= 0) {
-				commandBuffer.append(command.substring(0, index));
-				oneMessage(commandBuffer.toString());
-				commandBuffer.setLength(0);
+				this.commandBuffer.append(command.substring(0, index));
+				oneMessage(this.commandBuffer.toString());
+				this.commandBuffer.setLength(0);
 				command = command.substring(index + SPLIT.length());
 				index = command.indexOf(SPLIT);
 			}
 		}
-		commandBuffer.append(command);
+		this.commandBuffer.append(command);
 	}
 	
 	/**
@@ -80,8 +80,8 @@ public class FtpMessageHandler extends TcpMessageHandler {
 			this.append = true;
 		} else if(StringUtils.startsWith(message, "220 ")) { // 退出系统
 		} else if(StringUtils.startsWith(message, "226 ")) { // 下载完成
-		} else if(StringUtils.startsWith(message, "227 ")) { // 进入被动模式：获取远程IP和端口
-			release();
+		} else if(StringUtils.startsWith(message, "227 ")) { // 进入被动模式：获取下载Socket的IP和端口
+			release(); // 释放旧的资源
 			int opening = message.indexOf('(');
 			int closing = message.indexOf(')', opening + 1);
 			if (closing > 0) {
@@ -92,14 +92,14 @@ public class FtpMessageHandler extends TcpMessageHandler {
 //				final int port = Integer.parseInt(tokenizer.nextToken()) * 256 + Integer.parseInt(tokenizer.nextToken());
 				final int port = (Integer.parseInt(tokenizer.nextToken()) << 8) + Integer.parseInt(tokenizer.nextToken());
 				try {
-					socket = new Socket(host, port);
+					this.socket = new Socket(host, port);
 				} catch (IOException e) {
 					LOGGER.error("打开FTP远程Socket异常", e);
 				}
 			}
 		} else if(StringUtils.startsWith(message, "150 ")) { // 下载完成
 			try {
-				this.inputStream = socket.getInputStream();
+				this.inputStream = this.socket.getInputStream();
 				this.unlockInputStream();
 			} catch (IOException e) {
 				LOGGER.error("打开FTP远程输入流异常", e);
@@ -128,24 +128,24 @@ public class FtpMessageHandler extends TcpMessageHandler {
 		synchronized (this.inputStreamLock) {
 			ThreadUtils.wait(this.inputStreamLock, Duration.ofSeconds(5));
 		}
-		if(this.inputStream == null && failMessage == null) {
-			failMessage = "下载失败";
+		if(this.inputStream == null && this.failMessage == null) {
+			this.failMessage = "下载失败";
 		}
 		return this.inputStream;
-	}
-	
-	/**
-	 * 释放资源：注意释放FTP下载连接资源（文件流、socket），不关闭命令通道
-	 */
-	public void release() {
-		IoUtils.close(this.inputStream);
-		IoUtils.close(this.socket);
 	}
 
 	@Override
 	public void close() {
 		this.release();
 		super.close();
+	}
+	
+	/**
+	 * 释放资源：注意释放FTP下载连接资源（文件流、socket），不关闭命令通道。
+	 */
+	private void release() {
+		IoUtils.close(this.inputStream);
+		IoUtils.close(this.socket);
 	}
 	
 	/**
@@ -156,5 +156,5 @@ public class FtpMessageHandler extends TcpMessageHandler {
 			this.inputStreamLock.notifyAll();
 		}
 	}
-	
+
 }

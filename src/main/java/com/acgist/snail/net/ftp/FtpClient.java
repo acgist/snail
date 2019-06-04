@@ -46,11 +46,11 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 
 	@Override
 	public boolean connect() {
-		this.ok = connect(host, port);
-		if(ok) {
+		this.ok = connect(this.host, this.port);
+		if(this.ok) {
 			this.login();
 		}
-		return ok;
+		return this.ok;
 	}
 	
 	/**
@@ -66,17 +66,17 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	 * @param downloadSize 已下载大小
 	 */
 	public InputStream download(Long downloadSize) {
-		if(!ok) {
+		if(!this.ok) {
 			return null;
 		}
 		synchronized (this) {
-			this.changeMode();
+			changeMode();
 			command("TYPE I");
 			if(downloadSize != null && downloadSize != 0L) {
 				command("REST " + downloadSize);
 			}
 			command("RETR " + this.filePath);
-			return handler.inputStream();
+			return this.handler.inputStream();
 		}
 	}
 	
@@ -84,14 +84,14 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	 * 获取文件大小
 	 */
 	public Long size() throws NetException {
-		if(!ok) {
-			throw new NetException("下载失败");
+		if(!this.ok) {
+			throw new NetException("服务器连接失败");
 		}
 		synchronized (this) {
 			this.changeMode();
 			command("TYPE A");
 			command("LIST " + this.filePath);
-			final InputStream inputStream = handler.inputStream();
+			final InputStream inputStream = this.handler.inputStream();
 			final String data = StringUtils.ofInputStream(inputStream);
 			if(data == null) {
 				throw new NetException(failMessage());
@@ -99,7 +99,8 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 			final Optional<String> optional = Stream.of(data.split(" "))
 				.map(String::trim)
 				.filter(StringUtils::isNotEmpty)
-				.skip(4).findFirst();
+				.skip(4)
+				.findFirst();
 			if(optional.isPresent()) {
 				return Long.valueOf(optional.get());
 			}
@@ -112,7 +113,7 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	 */
 	@Override
 	public void close() {
-		if(!ok) {
+		if(!this.ok) {
 			return;
 		}
 		command("QUIT"); // 退出命令
@@ -123,14 +124,14 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	 * 是否支持断点续传
 	 */
 	public boolean append() {
-		return handler.append();
+		return this.handler.append();
 	}
 	
 	/**
 	 * 错误信息
 	 */
 	public String failMessage() {
-		return handler.failMessage();
+		return this.handler.failMessage();
 	}
 	
 	/**

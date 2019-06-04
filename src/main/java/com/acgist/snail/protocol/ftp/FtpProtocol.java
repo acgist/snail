@@ -1,7 +1,7 @@
 package com.acgist.snail.protocol.ftp;
 
 import com.acgist.snail.net.ftp.FtpClient;
-import com.acgist.snail.net.ftp.bootstrap.FtpClientFactory;
+import com.acgist.snail.net.ftp.bootstrap.FtpClientBuilder;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
@@ -57,7 +57,7 @@ public class FtpProtocol extends Protocol {
 	}
 
 	private long buildSize() throws DownloadException {
-		FtpClient client = FtpClientFactory.build(this.url);
+		final FtpClient client = FtpClientBuilder.newInstance(this.url).build();
 		long size = 0L;
 		try {
 			client.connect();

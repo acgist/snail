@@ -2,6 +2,7 @@ package com.acgist.snail.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousChannelGroup;
@@ -52,6 +53,20 @@ public class IoUtils {
 			}
 		} catch (IOException e) {
 			LOGGER.error("关闭输入流异常", e);
+		}
+	}
+	
+	/**
+	 * 关闭输出流
+	 */
+	public static final void close(OutputStream output) {
+		try {
+			if(output != null) {
+				output.flush();
+				output.close();
+			}
+		} catch (IOException e) {
+			LOGGER.error("关闭输出流异常", e);
 		}
 	}
 	
@@ -139,5 +154,5 @@ public class IoUtils {
 			}
 		}
 	}
-	
+
 }

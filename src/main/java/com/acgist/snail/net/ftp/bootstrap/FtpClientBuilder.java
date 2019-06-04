@@ -12,40 +12,47 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class FtpClientFactory {
+public class FtpClientBuilder {
 
 	private static final int FTP_DEFAULT_PORT = 21;
 	
-	private String url; // 下载链接
-	private String host;
-	private int port;
-	private String filePath;
-	private String user;
-	private String password;
+	private final String url; // 下载链接
 	
-	private FtpClientFactory() {
+	private String host; // 服务器地址
+	private int port; // 服务器端口
+	private String filePath; // 文件路径
+	private String user; // 用户账号
+	private String password; // 用户密码
+	
+	private FtpClientBuilder(String url) {
+		this.url = url;
+	}
+
+	public static final FtpClientBuilder newInstance(String url) {
+		return new FtpClientBuilder(url);
 	}
 	
-	public static final FtpClient build(String url) {
-		final FtpClientFactory builder = new FtpClientFactory();
-		builder.url = url;
-		builder.decodeUrl();
+	/**
+	 * 创建FtpClient
+	 */
+	public FtpClient build() {
+		this.decodeUrl();
 		return FtpClient.newInstance(
-			builder.host,
-			builder.port,
-			builder.user,
-			builder.password,
-			builder.filePath
+			this.host,
+			this.port,
+			this.user,
+			this.password,
+			this.filePath
 		);
 	}
 	
 	/**
-	 * 解码URL，设置地址、端口、用户、文件等信息。
+	 * 解析URL，获取地址、端口、用户、文件等信息。
 	 */
 	private void decodeUrl() {
-		URI uri = URI.create(this.url);
-		String userInfo = uri.getUserInfo();
-		setUserInfo(userInfo);
+		final URI uri = URI.create(this.url);
+		final String userInfo = uri.getUserInfo();
+		decodeUserInfo(userInfo);
 		this.filePath = uri.getPath();
 		this.host = uri.getHost();
 		int port = uri.getPort();
@@ -56,14 +63,14 @@ public class FtpClientFactory {
 	}
 
 	/**
-	 * 设置用户信息
+	 * 解析用户信息
 	 */
-	private void setUserInfo(String userInfo) {
+	private void decodeUserInfo(String userInfo) {
 		if(StringUtils.isEmpty(userInfo)) {
 			this.user = FtpClient.ANONYMOUS;
 			this.password = FtpClient.ANONYMOUS;
 		} else {
-			String[] userInfos = userInfo.split(":");
+			final String[] userInfos = userInfo.split(":");
 			if(userInfos.length == 1) {
 				this.user = userInfos[0];
 			} else if(userInfos.length == 2) {
@@ -75,5 +82,5 @@ public class FtpClientFactory {
 			}
 		}
 	}
-	
+
 }
