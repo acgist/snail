@@ -28,7 +28,7 @@ public class FtpMessageHandler extends TcpMessageHandler {
 	
 	public static final String SPLIT = "\r\n"; // 处理粘包分隔符
 	
-	private boolean append = false; // 断点续传
+	private boolean range = false; // 断点续传
 	
 	private String failMessage; // 错误信息
 	
@@ -77,7 +77,7 @@ public class FtpMessageHandler extends TcpMessageHandler {
 			this.close();
 			this.unlockInputStream();
 		} else if(StringUtils.startsWith(message, "350 ")) { // 端点续传
-			this.append = true;
+			this.range = true;
 		} else if(StringUtils.startsWith(message, "220 ")) { // 退出系统
 		} else if(StringUtils.startsWith(message, "226 ")) { // 下载完成
 		} else if(StringUtils.startsWith(message, "227 ")) { // 进入被动模式：获取下载Socket的IP和端口
@@ -110,8 +110,8 @@ public class FtpMessageHandler extends TcpMessageHandler {
 	/**
 	 * 是否支持断点续传
 	 */
-	public boolean append() {
-		return this.append;
+	public boolean range() {
+		return this.range;
 	}
 	
 	/**

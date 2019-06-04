@@ -124,7 +124,7 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	 * 是否支持断点续传
 	 */
 	public boolean append() {
-		return this.handler.append();
+		return this.handler.range();
 	}
 	
 	/**
