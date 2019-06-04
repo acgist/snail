@@ -6,7 +6,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.peer.bootstrap.PeerLauncherMessageHandler;
+import com.acgist.snail.net.bt.peer.bootstrap.PeerLauncherMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.PeerConfig;

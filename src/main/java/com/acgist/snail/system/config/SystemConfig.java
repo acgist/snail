@@ -59,8 +59,9 @@ public class SystemConfig extends PropertiesConfig {
 	private String support; // 支持
 	
 	private Integer serverPort; // 服务端口
-	private Integer btPort; // 服务端口（Peer、DHT、UTP）
-	private Integer btPortExt; // 服务端口（外网：Peer、DHT、UTP）
+	private Integer btPort; // BT服务端口（Peer、DHT、UTP）
+	private Integer btPortExt; // BT服务端口（外网：Peer、DHT、UTP）
+	private Integer ed2kPort; // ED2K服务端口
 	
 	private Integer peerSize; // 单个任务Peer数量
 	private Integer trackerSize; // 单个任务Tracker数量
@@ -101,7 +102,8 @@ public class SystemConfig extends PropertiesConfig {
 		LOGGER.info("源码：{}", this.source);
 		LOGGER.info("支持：{}", this.support);
 		LOGGER.info("系统端口：{}", this.serverPort);
-		LOGGER.info("服务端口（Peer、DHT、UTP）：{}", this.btPort);
+		LOGGER.info("BT服务端口（Peer、DHT、UTP）：{}", this.btPort);
+		LOGGER.info("ED2K服务端口：{}", this.ed2kPort);
 		LOGGER.info("单个任务Peer数量：{}", this.peerSize);
 		LOGGER.info("单个任务Tracker数量：{}", this.trackerSize);
 		LOGGER.info("任务即将完成时可以重复选择下载的剩下Piece数量：{}", this.pieceRepeatSize);
@@ -160,7 +162,7 @@ public class SystemConfig extends PropertiesConfig {
 	}
 
 	/**
-	 * 服务端口（Peer、DHT、UTP）
+	 * BT服务端口（Peer、DHT、UTP）
 	 * 本机注册使用
 	 */
 	public static final Integer getBtPort() {
@@ -176,7 +178,7 @@ public class SystemConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 服务端口（外网：Peer、DHT、UTP）
+	 * BT服务端口（外网：Peer、DHT、UTP）
 	 * 外网使用，外网的Peer连接此端口。
 	 * 如果不存在返回{@linkplain #getBtPort() 本机端口}。
 	 */
@@ -188,10 +190,24 @@ public class SystemConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 服务端口（外网：Peer、DHT、UTP）：short
+	 * BT服务端口（外网：Peer、DHT、UTP）：short
 	 */
 	public static final Short getBtPortExtShort() {
 		return NetUtils.encodePort(getBtPortExt());
+	}
+	
+	/**
+	 * ED2K服务端口
+	 */
+	public static final Integer getEd2kPort() {
+		return INSTANCE.ed2kPort;
+	}
+	
+	/**
+	 * ED2K服务端口：short
+	 */
+	public static final Short getEd2kPortShort() {
+		return NetUtils.encodePort(getEd2kPort());
 	}
 	
 	/**
