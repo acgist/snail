@@ -228,7 +228,7 @@ public class TaskSession {
 					return "-";
 				} else {
 					long second = (entity.getSize() - statistics.downloadSize()) / downloadSecond;
-					return DateUtils.secondToString(second);
+					return DateUtils.formatSecond(second);
 				}
 			} else {
 				return "-";

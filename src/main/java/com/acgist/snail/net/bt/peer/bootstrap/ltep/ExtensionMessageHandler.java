@@ -106,8 +106,8 @@ public class ExtensionMessageHandler {
 		data.put(EX_V, SystemConfig.getNameEnAndVersion()); // 客户端信息（名称、版本）
 		data.put(EX_P, SystemConfig.getBtPortExt()); // 外网监听TCP端口
 		// 客户端自动获取
-//		final String ipAddress = UpnpService.getInstance().externalIpAddress();
-//		if(StringUtils.isNotEmpty(ipAddress)) {
+//		final String ip = UpnpService.getInstance().externalIpAddress();
+//		if(StringUtils.isNotEmpty(ip)) {
 //			final ByteBuffer youripBuffer = ByteBuffer.allocate(4);
 //			youripBuffer.putInt(NetUtils.decodeIpToInt(UpnpService.getInstance().externalIpAddress()));
 //			data.put(EX_YOURIP, youripBuffer.array()); // 本机的IP地址

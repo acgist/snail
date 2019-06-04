@@ -1,6 +1,5 @@
 package com.acgist.snail.net.bt.tracker.bootstrap.impl;
 
-import java.net.InetSocketAddress;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.time.Duration;
@@ -15,6 +14,7 @@ import com.acgist.snail.system.config.ProtocolConfig.Protocol;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.config.TrackerConfig;
 import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.ThreadUtils;
 import com.acgist.snail.utils.UniqueCodeUtils;
 
@@ -44,7 +44,7 @@ public class UdpTrackerClient extends com.acgist.snail.net.bt.tracker.bootstrap.
 		URI uri = URI.create(announceUrl);
 		this.host = uri.getHost();
 		this.port = uri.getPort();
-		this.trackerClient = TrackerClient.newInstance(new InetSocketAddress(this.host, this.port));
+		this.trackerClient = TrackerClient.newInstance(NetUtils.buildSocketAddress(this.host, this.port));
 		buildConnectionId();
 	}
 
@@ -153,7 +153,7 @@ public class UdpTrackerClient extends com.acgist.snail.net.bt.tracker.bootstrap.
 		buffer.putLong(upload); // 已上传大小
 		buffer.putInt(event.event()); // 事件：started-2、completed-1、stopped-3
 		buffer.putInt(0); // 本机IP：0（服务器自动获取）
-		buffer.putInt(UniqueCodeUtils.buildInteger()); // 系统分配唯一键
+		buffer.putInt(UniqueCodeUtils.build()); // 系统分配唯一键
 		buffer.putInt(50); // 想要获取的Peer数量
 		buffer.putShort(SystemConfig.getBtPortExtShort()); // 外网Peer端口
 		return buffer;

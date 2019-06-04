@@ -195,7 +195,7 @@ public class Request {
 	protected static final byte[] writeNode(List<NodeSession> nodes) {
 		final ByteBuffer buffer = ByteBuffer.allocate(26 * nodes.size());
 		for (NodeSession node : nodes) {
-			if(NetUtils.verifyIp(node.getHost())) {
+			if(NetUtils.verifyIp(node.getHost())) { // 如果不是IP不分享
 				buffer.put(node.getId());
 				buffer.putInt(NetUtils.encodeIpToInt(node.getHost()));
 				buffer.putShort(NetUtils.encodePort(node.getPort()));

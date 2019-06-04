@@ -73,6 +73,7 @@ public class PeerManager {
 	
 	/**
 	 * 新增Peer，插入尾部。
+	 * 
 	 * @param infoHashHex 下载文件infoHashHex
 	 * @param parent torrent下载统计
 	 * @param host 地址

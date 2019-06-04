@@ -15,6 +15,7 @@ import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.manager.NodeManager;
 import com.acgist.snail.utils.CollectionUtils;
+import com.acgist.snail.utils.NetUtils;
 
 /**
  * <p>DHT任务：定时查询Peer</p>
@@ -69,7 +70,7 @@ public class DhtLauncher implements Runnable {
 		final var nodes = NodeManager.getInstance().findNode(infoHash.infoHash());
 		if(CollectionUtils.isNotEmpty(nodes)) {
 			for (NodeSession node : nodes) {
-				list.add(new InetSocketAddress(node.getHost(), node.getPort()));
+				list.add(NetUtils.buildSocketAddress(node.getHost(), node.getPort()));
 			}
 		}
 		return list;
@@ -96,7 +97,7 @@ public class DhtLauncher implements Runnable {
 	 */
 	public void put(String host, Integer port) {
 		LOGGER.debug("添加DHT客户端：{}-{}", host, port);
-		this.dhtAddress.add(new InetSocketAddress(host, port));
+		this.dhtAddress.add(NetUtils.buildSocketAddress(host, port));
 	}
 	
 }

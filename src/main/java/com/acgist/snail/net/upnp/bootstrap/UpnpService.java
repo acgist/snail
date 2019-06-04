@@ -151,9 +151,9 @@ public class UpnpService {
 		if(response.statusCode() == HTTPClient.HTTP_INTERNAL_SERVER_ERROR) {
 			return USE_MAPABLE;
 		}
-		String registerIpAddress = UpnpResponse.parseGetSpecificPortMappingEntry(body);
-		final String ipAddress = NetUtils.inetHostAddress();
-		if(ipAddress.equals(registerIpAddress)) {
+		final String registerIp = UpnpResponse.parseGetSpecificPortMappingEntry(body);
+		final String localIp = NetUtils.inetHostAddress();
+		if(localIp.equals(registerIp)) {
 			return USE_USEABLE;
 		} else {
 			return USE_DISABLE;

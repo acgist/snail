@@ -5,7 +5,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Peer读取
+ * <p>Peer工具</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class PeerUtils {
 
@@ -29,9 +32,9 @@ public class PeerUtils {
 		}
 		final Map<String, Integer> data = new HashMap<>();
 		while (buffer.position() < size) {
-			final int ipValue = buffer.getInt();
-			final int port = NetUtils.decodePort(Short.valueOf(buffer.getShort()));
-			data.put(NetUtils.decodeIntToIp(ipValue), port);
+			final String ip = NetUtils.decodeIntToIp(buffer.getInt());
+			final int port = NetUtils.decodePort(buffer.getShort());
+			data.put(ip, port);
 		}
 		return data;
 	}

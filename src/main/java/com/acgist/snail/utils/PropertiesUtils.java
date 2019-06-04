@@ -10,7 +10,10 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.system.config.SystemConfig;
 
 /**
- * utils - 配置
+ * <p>Properties工具</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class PropertiesUtils {
 
@@ -27,13 +30,13 @@ public class PropertiesUtils {
 	 * @param file 配置文件
 	 */
 	public static final PropertiesUtils getInstance(String file) {
-		PropertiesUtils instance = new PropertiesUtils();
+		final PropertiesUtils instance = new PropertiesUtils();
 		instance.properties = load(file);
 		return instance;
 	}
 	
 	/**
-	 * 加载数据，如果文件不存在返回null
+	 * 加载数据，如果文件不存在返回null。
 	 */
 	private static final Properties load(String file) {
 		if(PropertiesUtils.class.getResource(file) == null) {
@@ -49,14 +52,35 @@ public class PropertiesUtils {
 		return properties;
 	}
 	
+	/**
+	 * 读取Boolean
+	 * 
+	 * @param name 属性名称
+	 * 
+	 * @return 属性值
+	 */
 	public Boolean getBoolean(String name) {
 		return Boolean.valueOf(getString(name));
 	}
 	
+	/**
+	 * 读取Integer
+	 * 
+	 * @param name 属性名称
+	 * 
+	 * @return 属性值
+	 */
 	public Integer getInteger(String name) {
 		return Integer.valueOf(getString(name));
 	}
 	
+	/**
+	 * 读取String
+	 * 
+	 * @param name 属性名称
+	 * 
+	 * @return 属性值
+	 */
 	public String getString(String name) {
 		return properties.getProperty(name);
 	}

@@ -20,7 +20,10 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.system.config.SystemConfig;
 
 /**
- * utils - IO
+ * <p>IO工具</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class IoUtils {
 
@@ -143,7 +146,7 @@ public class IoUtils {
 	}
 	
 	/**
-	 * 关闭组播通道
+	 * 关闭UDP通道
 	 */
 	public static final void close(DatagramChannel channel) {
 		if(channel != null && channel.isOpen()) {

@@ -17,8 +17,8 @@ import com.acgist.snail.pojo.entity.BaseEntity;
 import com.acgist.snail.pojo.wrapper.ResultSetWrapper;
 import com.acgist.snail.system.exception.RepositoryException;
 import com.acgist.snail.system.manager.DatabaseManager;
+import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.BeanUtils;
-import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -221,7 +221,7 @@ public abstract class Repository<T extends BaseEntity> {
 		final Type superClazz = this.getClass().getGenericSuperclass();
 		if (superClazz instanceof ParameterizedType) {
 			final Type[] types = ((ParameterizedType) superClazz).getActualTypeArguments();
-			if (CollectionUtils.isNotEmpty(types)) {
+			if (ArrayUtils.isNotEmpty(types)) {
 				entityClazz = (Class<T>) types[0];
 			}
 		}

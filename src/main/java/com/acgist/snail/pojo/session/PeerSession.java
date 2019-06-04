@@ -9,7 +9,9 @@ import com.acgist.snail.net.bt.peer.bootstrap.PeerLauncherMessageHandler;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.PeerMessageConfig;
 import com.acgist.snail.system.statistics.IStatistics;
+import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.ObjectUtils;
+import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>Peer Session</p>
@@ -118,8 +120,7 @@ public class PeerSession implements IStatistics {
 	 * 判断是否存在：判断IP，不判断端口
 	 */
 	public boolean exist(String host) {
-		return ObjectUtils.equalsBuilder(this.host)
-			.equals(ObjectUtils.equalsBuilder(host));
+		return StringUtils.equals(this.host, host);
 	}
 
 	@Override
@@ -369,11 +370,11 @@ public class PeerSession implements IStatistics {
 	}
 	
 	public InetSocketAddress peerSocketAddress() {
-		return new InetSocketAddress(this.host, this.peerPort);
+		return NetUtils.buildSocketAddress(this.host, this.peerPort);
 	}
 	
 	public InetSocketAddress dhtSocketAddress() {
-		return new InetSocketAddress(this.host, this.dhtPort);
+		return NetUtils.buildSocketAddress(this.host, this.dhtPort);
 	}
 	
 	@Override
@@ -388,8 +389,7 @@ public class PeerSession implements IStatistics {
 		}
 		if(object instanceof PeerSession) {
 			final PeerSession peerSession = (PeerSession) object;
-			return ObjectUtils.equalsBuilder(this.host)
-				.equals(ObjectUtils.equalsBuilder(peerSession.host));
+			return StringUtils.equals(this.host, peerSession.host);
 		}
 		return false;
 	}

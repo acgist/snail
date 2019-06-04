@@ -38,7 +38,7 @@ public class TrackerLauncher implements Runnable {
 	private boolean available = true; // 可用
 	
 	private TrackerLauncher(TrackerClient client, TorrentSession torrentSession) {
-		this.id = UniqueCodeUtils.buildInteger();
+		this.id = UniqueCodeUtils.build();
 		this.client = client;
 		this.taskSession = torrentSession.taskSession();
 		this.torrentSession = torrentSession;

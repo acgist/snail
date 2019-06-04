@@ -7,6 +7,7 @@ import com.acgist.snail.net.bt.torrent.TorrentServer;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -26,7 +27,7 @@ public class DhtClient extends UdpClient<DhtMessageHandler> {
 	}
 	
 	public static final DhtClient newInstance(final String host, final int port) {
-		return newInstance(new InetSocketAddress(host, port));
+		return newInstance(NetUtils.buildSocketAddress(host, port));
 	}
 	
 	public static final DhtClient newInstance(InetSocketAddress socketAddress) {

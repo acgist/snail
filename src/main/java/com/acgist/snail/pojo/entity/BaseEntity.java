@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.acgist.snail.utils.ObjectUtils;
+import com.acgist.snail.utils.StringUtils;
 
 /**
  * Entity - 数据库实体基类
@@ -101,8 +102,7 @@ public class BaseEntity implements Serializable {
 		}
 		if(object instanceof BaseEntity) {
 			final BaseEntity entity = (BaseEntity) object;
-			return ObjectUtils.equalsBuilder(this.id)
-				.equals(ObjectUtils.equalsBuilder(entity.id));
+			return StringUtils.equals(this.id, entity.id);
 		}
 		return false;
 	}

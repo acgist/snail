@@ -4,7 +4,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Object工具：toString、equals、hashCode等方法
+ * <p>Object工具</p>
+ * <p>提供重写toString、equals、hashCode等方法。</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class ObjectUtils {
 
@@ -55,21 +59,8 @@ public class ObjectUtils {
 	}
 	
 	/**
-	 * equals对象id生成
+	 * 重写toString方法。
 	 */
-	public static final String equalsBuilder(Object ... objects) {
-		if(objects == null) {
-			return null;
-		}
-		final StringBuilder builder = new StringBuilder();
-		for (Object object : objects) {
-			if(object != null) {
-				builder.append(object);
-			}
-		}
-		return builder.toString();
-	}
-	
 	public static final String toString(Object object, Object ... values) {
 		final StringBuilder builder = new StringBuilder();
 			builder.append(object.getClass());
@@ -85,7 +76,8 @@ public class ObjectUtils {
 	}
 	
 	/**
-	 * toString，必须属性提供对应的get方法。
+	 * <p>重写toString方法。</p>
+	 * <p>对象属性提供对应的getter。</p>
 	 */
 	public static final String toString(Object object) {
 		if(object == null) {
@@ -96,7 +88,10 @@ public class ObjectUtils {
 		} else if(object instanceof Map) {
 			return object.toString();
 		} else {
-			final StringBuilder builder = new StringBuilder("[");
+			final StringBuilder builder = new StringBuilder();
+			builder
+			.append(object.getClass().toString())
+			.append("[");
 			final var properties = BeanUtils.properties(object.getClass());
 			for (String property : properties) {
 				builder.append(property).append("=").append(BeanUtils.propertyValue(object, property)).append(",");
@@ -109,5 +104,5 @@ public class ObjectUtils {
 			return builder.toString();
 		}
 	}
-	
+
 }

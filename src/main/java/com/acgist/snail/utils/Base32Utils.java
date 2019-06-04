@@ -1,7 +1,10 @@
 package com.acgist.snail.utils;
 
 /**
- * Base32编码
+ * <p>Base32编码工具</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class Base32Utils {
 
@@ -10,17 +13,17 @@ public class Base32Utils {
 		'2', '3', '4', '5', '6', '7'
 	};
 
-	private static final byte[] BASE_32_DECODE_TABLE;
+	private static final byte[] BASE_32_DECODE;
 
 	static {
-		BASE_32_DECODE_TABLE = new byte[128];
-		for (int index = 0; index < BASE_32_DECODE_TABLE.length; index++) {
-			BASE_32_DECODE_TABLE[index] = (byte) 0xFF;
+		BASE_32_DECODE = new byte[128];
+		for (int index = 0; index < BASE_32_DECODE.length; index++) {
+			BASE_32_DECODE[index] = (byte) 0xFF;
 		}
 		for (int index = 0; index < BASE_32_CODE.length; index++) {
-			BASE_32_DECODE_TABLE[(int) BASE_32_CODE[index]] = (byte) index;
+			BASE_32_DECODE[(int) BASE_32_CODE[index]] = (byte) index;
 			if (index < 24) {
-				BASE_32_DECODE_TABLE[(int) Character.toLowerCase(BASE_32_CODE[index])] = (byte) index;
+				BASE_32_DECODE[(int) Character.toLowerCase(BASE_32_CODE[index])] = (byte) index;
 			}
 		}
 	}
@@ -35,13 +38,13 @@ public class Base32Utils {
 		final char[] chars = new char[((bytes.length * 8) / 5) + ((bytes.length % 5) != 0 ? 1 : 0)];
 		for (int i = 0, j = 0, index = 0; i < chars.length; i++) {
 			if (index > 3) {
-				int val = bytes[j] & (0xFF >> index);
+				int value = bytes[j] & (0xFF >> index);
 				index = (index + 5) % 8;
-				val <<= index;
+				value <<= index;
 				if (j < bytes.length - 1) {
-					val |= (bytes[j + 1] & 0xFF) >> (8 - index);
+					value |= (bytes[j + 1] & 0xFF) >> (8 - index);
 				}
-				chars[i] = BASE_32_CODE[val];
+				chars[i] = BASE_32_CODE[value];
 				j++;
 			} else {
 				chars[i] = BASE_32_CODE[((bytes[j] >> (8 - (index + 5))) & 0x1F)];
@@ -57,26 +60,26 @@ public class Base32Utils {
 	/**
 	 * 解码
 	 */
-	public static final byte[] decode(final String value) {
-		if(value == null) {
+	public static final byte[] decode(final String content) {
+		if(content == null) {
 			return null;
 		}
-		final char[] chars = value.toUpperCase().toCharArray();
+		final char[] chars = content.toUpperCase().toCharArray();
 		final byte[] bytes = new byte[(chars.length * 5) / 8];
 		for (int i = 0, j = 0, index = 0; i < chars.length; i++) {
-			int val = BASE_32_DECODE_TABLE[chars[i]];
+			int value = BASE_32_DECODE[chars[i]];
 			if (index <= 3) {
 				index = (index + 5) % 8;
 				if (index == 0) {
-					bytes[j++] |= val;
+					bytes[j++] |= value;
 				} else {
-					bytes[j] |= val << (8 - index);
+					bytes[j] |= value << (8 - index);
 				}
 			} else {
 				index = (index + 5) % 8;
-				bytes[j++] |= (val >> index);
+				bytes[j++] |= (value >> index);
 				if (j < bytes.length) {
-					bytes[j] |= val << (8 - index);
+					bytes[j] |= value << (8 - index);
 				}
 			}
 		}
