@@ -28,7 +28,11 @@ import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.UrlUtils;
 
 /**
- * Tracker Client管理器，所有的tracker都可以被使用
+ * <p>Tracker管理器</p>
+ * <p>管理TrackerClient和TrackerLauncher。</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class TrackerManager {
 
@@ -38,12 +42,18 @@ public class TrackerManager {
 
 	private static final int MAX_TRACKER_SIZE = SystemConfig.getTrackerSize();
 	
+	/**
+	 * Tracker客户端，key={@link TrackerClient#id()}。
+	 */
 	private final Map<Integer, TrackerClient> trackerClients;
+	/**
+	 * Tracker执行器，key={@link TrackerLauncher#id()}。
+	 */
 	private final Map<Integer, TrackerLauncher> trackerLaunchers;
 	
 	private TrackerManager() {
-		trackerClients = new ConcurrentHashMap<>();
-		trackerLaunchers = new ConcurrentHashMap<>();
+		this.trackerClients = new ConcurrentHashMap<>();
+		this.trackerLaunchers = new ConcurrentHashMap<>();
 	}
 
 	public static final TrackerManager getInstance() {
@@ -55,7 +65,7 @@ public class TrackerManager {
 	 */
 	public TrackerLauncher newTrackerLauncher(TrackerClient client, TorrentSession torrentSession) {
 		final TrackerLauncher launcher = TrackerLauncher.newInstance(client, torrentSession);
-		trackerLaunchers.put(launcher.id(), launcher);
+		this.trackerLaunchers.put(launcher.id(), launcher);
 		return launcher;
 	}
 	
@@ -67,7 +77,7 @@ public class TrackerManager {
 			return;
 		}
 		final Integer id = message.getId();
-		final TrackerLauncher trackerLauncher = trackerLaunchers.get(id);
+		final TrackerLauncher trackerLauncher = this.trackerLaunchers.get(id);
 		if(trackerLauncher != null) {
 			trackerLauncher.announce(message);
 		} else {
@@ -79,18 +89,18 @@ public class TrackerManager {
 	 * 删除TrackerLauncher
 	 */
 	public void release(Integer id) {
-		trackerLaunchers.remove(id);
+		this.trackerLaunchers.remove(id);
 	}
 	
 	/**
 	 * 所有的TrackerClient
 	 */
 	public List<TrackerClient> clients() {
-		return new ArrayList<>(trackerClients.values());
+		return new ArrayList<>(this.trackerClients.values());
 	}
 
 	/**
-	 * 获取可用的tracker client，传入announce的返回有用的，然后补充不足的的数量
+	 * 获取可用的TrackerClient，传入announce的返回有用的，然后补充不足的的数量。
 	 */
 	public List<TrackerClient> clients(String announceUrl, List<String> announceUrls) throws DownloadException {
 		final List<TrackerClient> clients = register(announceUrl, announceUrls);
@@ -118,7 +128,7 @@ public class TrackerManager {
 	 * @param clients 已有的Client
 	 */
 	private List<TrackerClient> clients(int size, List<TrackerClient> clients) {
-		return trackerClients.values().stream()
+		return this.trackerClients.values().stream()
 			.filter(client -> {
 				return client.available() && (clients != null && !clients.contains(client));
 			})
@@ -131,7 +141,7 @@ public class TrackerManager {
 	 * 设置udp的connectionId
 	 */
 	public void connectionId(int trackerId, long connectionId) {
-		final var client = trackerClients.get(trackerId);
+		final var client = this.trackerClients.get(trackerId);
 		if(client != null && client.type() == Protocol.udp) {
 			final UdpTrackerClient udpTrackerClient = (UdpTrackerClient) client;
 			udpTrackerClient.connectionId(connectionId);
@@ -146,7 +156,7 @@ public class TrackerManager {
 	}
 	
 	/**
-	 * 注册Tracker Client。
+	 * 注册TrackerClient。
 	 */
 	private List<TrackerClient> register(String announceUrl, List<String> announceUrls) throws DownloadException {
 		final List<String> announces = new ArrayList<>();
@@ -160,11 +170,11 @@ public class TrackerManager {
 	}
 
 	/**
-	 * 注册Tracker Client。
+	 * 注册TrackerClient。
 	 */
 	private List<TrackerClient> register(List<String> announces) throws DownloadException {
 		if(CollectionUtils.isEmpty(announces)) {
-			throw new DownloadException("announceUrl不合法");
+			throw new DownloadException("AnnounceUrl不合法");
 		}
 		return announces.stream()
 		.map(announce -> {
@@ -181,23 +191,23 @@ public class TrackerManager {
 	}
 	
 	/**
-	 * 注册Tracker Client，如果已经注册直接返回。
+	 * 注册TrackerClient，如果已经注册直接返回。
 	 */
 	private TrackerClient register(String announceUrl) throws DownloadException {
 		if(StringUtils.isEmpty(announceUrl)) {
 			return null;
 		}
-		synchronized (trackerClients) {
-			final Optional<TrackerClient> optional = trackerClients.values().stream()
+		synchronized (this.trackerClients) {
+			final Optional<TrackerClient> optional = this.trackerClients.values().stream()
 				.filter(client -> {
-					return client.exist(announceUrl);
+					return client.equals(announceUrl);
 				}).findFirst();
 			if(optional.isPresent()) {
 				return optional.get();
 			}
 			final TrackerClient client = buildClientProxy(announceUrl);
-			LOGGER.debug("注册TrackerClient，ID：{}，announceUrl：{}", client.id(), client.announceUrl());
-			trackerClients.put(client.id(), client);
+			this.trackerClients.put(client.id(), client);
+			LOGGER.debug("注册TrackerClient，ID：{}，AnnounceUrl：{}", client.id(), client.announceUrl());
 			return client;
 		}
 	}

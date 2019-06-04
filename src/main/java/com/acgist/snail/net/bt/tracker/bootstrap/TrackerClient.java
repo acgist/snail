@@ -30,9 +30,9 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerClient.class);
 	
 	/**
-	 * 最大失败次数
+	 * 最大失败次数，TODO：优化失败次数。
 	 */
-	private static final int MAX_FAIL_TIMES = 2;
+	private static final int MAX_FAIL_TIMES = 3;
 	
 	protected int weight; // 权重
 	protected final Integer id; // ID
@@ -130,9 +130,9 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	}
 	
 	/**
-	 * 判断当前Client的声明URL和声明URL是否一致。
+	 * 判断当前TrackerClient的声明URL和声明URL是否一致。
 	 */
-	public boolean exist(String announceUrl) {
+	public boolean equals(String announceUrl) {
 		return this.announceUrl.equals(announceUrl);
 	}
 	

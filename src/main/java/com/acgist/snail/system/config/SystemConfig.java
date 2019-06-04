@@ -168,7 +168,7 @@ public class SystemConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 设置服务端口（外网：Peer、DHT、UTP）
+	 * 设置服务端口（外网：Peer、DHT、UTP），映射时如果端口已经被占用时重新设置的外网端口号。
 	 */
 	public static final void setBtPortExt(Integer btPortExt) {
 		LOGGER.info("服务端口（外网：Peer、DHT、UTP）：{}", btPortExt);

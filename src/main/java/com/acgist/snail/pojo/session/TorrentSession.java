@@ -121,7 +121,7 @@ public class TorrentSession {
 	 */
 	private ScheduledFuture<?> peerConnectTimer;
 
-	private TorrentSession(Torrent torrent, InfoHash infoHash) throws DownloadException {
+	private TorrentSession(InfoHash infoHash, Torrent torrent) throws DownloadException {
 		if(torrent == null || infoHash == null) {
 			throw new DownloadException("解析种子文件异常");
 		}
@@ -129,8 +129,8 @@ public class TorrentSession {
 		this.infoHash = infoHash;
 	}
 	
-	public static final TorrentSession newInstance(Torrent torrent, InfoHash infoHash) throws DownloadException {
-		return new TorrentSession(torrent, infoHash);
+	public static final TorrentSession newInstance(InfoHash infoHash, Torrent torrent) throws DownloadException {
+		return new TorrentSession(infoHash, torrent);
 	}
 	
 	/**

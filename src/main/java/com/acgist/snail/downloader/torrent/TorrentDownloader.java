@@ -40,7 +40,7 @@ public class TorrentDownloader extends Downloader {
 	
 	private TorrentDownloader(TaskSession taskSession) {
 		super(taskSession);
-		loadTask();
+		loadTorrent();
 	}
 
 	public static final TorrentDownloader newInstance(TaskSession taskSession) {
@@ -89,7 +89,7 @@ public class TorrentDownloader extends Downloader {
 	 * <p>加载任务</p>
 	 * <p>创建时立即加载任务，使任务可以被分享。</p>
 	 */
-	private void loadTask() {
+	private void loadTorrent() {
 		final var entity = this.taskSession.entity();
 		final String path = entity.getTorrent();
 		try {

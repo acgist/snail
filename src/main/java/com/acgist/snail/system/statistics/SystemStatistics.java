@@ -3,17 +3,21 @@ package com.acgist.snail.system.statistics;
 import com.acgist.snail.pojo.session.StatisticsSession;
 
 /**
- * 系统统计：累计下载、累计上传、速度采样
- * 当前系统设置的是限制单个任务的速度，如果想要限制整个软件的速度，可以打开全局统计
+ * <p>系统统计</p>
+ * <p>系统统计：累计下载、累计上传、速度采样。</p>
+ * <p>当前系统设置的是限制单个任务的速度，如果想要限制整个软件的速度，可以设置{@linkplain #systemStatistics 全局统计}限速。</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class SystemStatistics {
+	
+	private static final SystemStatistics INSTANCE = new SystemStatistics();
 	
 	/**
 	 * 系统全局统计
 	 */
 	private StatisticsSession systemStatistics;
-	
-	private static final SystemStatistics INSTANCE = new SystemStatistics();
 	
 	private SystemStatistics() {
 		systemStatistics = new StatisticsSession();
@@ -43,5 +47,5 @@ public class SystemStatistics {
 	public long uploadSecond() {
 		return systemStatistics.uploadSecond();
 	}
-	
+
 }
