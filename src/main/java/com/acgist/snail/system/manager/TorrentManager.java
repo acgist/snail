@@ -17,7 +17,10 @@ import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * TorrentSession工厂
+ * <p>Torrent管理器</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class TorrentManager {
 
@@ -28,10 +31,10 @@ public class TorrentManager {
 	/**
 	 * infoHashHex作为key
 	 */
-	private Map<String, TorrentSession> TORRENT_SESSION_MAP;
+	private Map<String, TorrentSession> torrentSessions;
 	
 	private TorrentManager() {
-		TORRENT_SESSION_MAP = new ConcurrentHashMap<>();
+		this.torrentSessions = new ConcurrentHashMap<>();
 	}
 	
 	public static final TorrentManager getInstance() {
@@ -39,17 +42,18 @@ public class TorrentManager {
 	}
 	
 	/**
-	 * 通过infoHash获取TorrentSession
+	 * 通过infoHashHex获取TorrentSession
 	 */
 	public TorrentSession torrentSession(String infoHashHex) {
-		return TORRENT_SESSION_MAP.get(infoHashHex);
+		return this.torrentSessions.get(infoHashHex);
 	}
 	
 	/**
-	 * 新建session，如果已经存在infoHashHex，直接返回反之使用path加载
+	 * <p>新建TorrentSession。</p>
+	 * <p>如果已经存在infoHashHex，直接返回，反之使用path加载。</p>
 	 */
 	public TorrentSession newTorrentSession(String infoHashHex, String path) throws DownloadException {
-		var session = torrentSession(infoHashHex);
+		final var session = torrentSession(infoHashHex);
 		if(session != null) {
 			return session;
 		}
@@ -57,9 +61,9 @@ public class TorrentManager {
 	}
 
 	/**
-	 * 新建session
+	 * 新建TorrentSession，如果已经存在返回已存在TorrentSession。
 	 * 
-	 * @param path torrent文件
+	 * @param path torrent文件路径
 	 */
 	public TorrentSession newTorrentSession(String path) throws DownloadException {
 		final var bytes = loadTorrent(path);
@@ -71,44 +75,32 @@ public class TorrentManager {
 		final Torrent torrent = Torrent.valueOf(map);
 		final Map<String, Object> info = BCodeDecoder.getMap(map, "info"); // 只需要数据不符
 		final InfoHash infoHash = InfoHash.newInstance(BCodeEncoder.encodeMap(info));
-		return newTorrentSession(torrent, infoHash);
+		return newTorrentSession(infoHash, torrent);
 	}
 	
 	/**
-	 * 新建session，如果已经存在返回已存在session
+	 * 新建TorrentSession，如果已经存在返回已存在TorrentSession。
 	 */
-	private TorrentSession newTorrentSession(Torrent torrent, InfoHash infoHash) throws DownloadException {
+	private TorrentSession newTorrentSession(InfoHash infoHash, Torrent torrent) throws DownloadException {
 		if(infoHash == null) {
 			throw new DownloadException("infoHash不合法");
 		}
-		String key = infoHash.infoHashHex();
-		var session = TORRENT_SESSION_MAP.get(key);
+		final String key = infoHash.infoHashHex();
+		var session = this.torrentSessions.get(key);
 		if(session == null) {
-			session = TorrentSession.newInstance(torrent, infoHash);
-			TORRENT_SESSION_MAP.put(key, session);
+			session = TorrentSession.newInstance(infoHash, torrent);
+			this.torrentSessions.put(key, session);
 		}
 		return session;
 	}
 	
 	/**
-	 * TODO：下载完成去掉下载信息
-	 */
-	public void complate() {
-	}
-	
-	/**
-	 * 验证BT种子
-	 */
-	public static final boolean verify(String url) {
-		return StringUtils.endsWith(url.toLowerCase(), TorrentProtocol.TORRENT_SUFFIX);
-	}
-	
-	/**
-	 * 加载种子文件
-	 * @param path 文件地址
+	 * 加载种子文件。
+	 * 
+	 * @param path torrent文件地址
 	 */
 	private byte[] loadTorrent(String path) throws DownloadException {
-		File file = new File(path);
+		final File file = new File(path);
 		if(!file.exists()) {
 			throw new DownloadException("种子文件不存在");
 		}
@@ -117,6 +109,13 @@ public class TorrentManager {
 		} catch (IOException e) {
 			throw new DownloadException("种子文件读取失败", e);
 		}
+	}
+
+	/**
+	 * 验证BT种子
+	 */
+	public static final boolean verify(String url) {
+		return StringUtils.endsWith(url.toLowerCase(), TorrentProtocol.TORRENT_SUFFIX);
 	}
 
 }

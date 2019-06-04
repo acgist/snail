@@ -1,5 +1,7 @@
 package com.acgist.snail.system.context;
 
+import java.util.concurrent.TimeUnit;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +26,7 @@ import com.acgist.snail.system.initializer.impl.TorrentInitializer;
 import com.acgist.snail.system.initializer.impl.TrackerInitializer;
 import com.acgist.snail.system.initializer.impl.UpnpInitializer;
 import com.acgist.snail.system.manager.DownloaderManager;
+import com.acgist.snail.system.manager.RequestManager;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.LoggerUtils;
 import com.acgist.snail.utils.NetUtils;
@@ -56,6 +59,7 @@ public class SystemContext {
 		PeerInitializer.newInstance().initAsyn();
 		TorrentInitializer.newInstance().initAsyn();
 		DownloaderInitializer.newInstance().initAsyn();
+		SystemContext.timer();
 	}
 	
 	/**
@@ -136,4 +140,13 @@ public class SystemContext {
 		// TODO：加载效果
 	}
 
+	/**
+	 * <p>系统定时任务</p>
+	 */
+	public static final void timer() {
+		SystemThreadContext.timerFixedDelay(5, 5, TimeUnit.SECONDS, () -> {
+			RequestManager.getInstance().clear(); // 清除DHT超时请求
+		});
+	}
+	
 }

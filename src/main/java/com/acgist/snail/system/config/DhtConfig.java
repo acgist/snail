@@ -1,5 +1,6 @@
 package com.acgist.snail.system.config;
 
+import java.time.Duration;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -42,6 +43,11 @@ public class DhtConfig extends PropertiesConfig {
 	
 	public static final Integer IMPLIED_PORT_AUTO = 1; // 自动获取
 	public static final Integer IMPLIED_PORT_CONFIG = 0; // 使用配置
+	
+	/**
+	 * DHT响应超时
+	 */
+	public static final Duration TIMEOUT = Duration.ofSeconds(4);
 	
 	/**
 	 * 请求类型

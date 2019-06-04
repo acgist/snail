@@ -46,8 +46,8 @@ public class SystemConsole {
 		tracker();
 		peer();
 		LOGGER.info("系统状态：{}", builder.toString());
-		builder.setLength(0);
-		builder = new StringBuilder(NEW_LINE);
+		this.builder.setLength(0);
+		this.builder = new StringBuilder(NEW_LINE);
 	}
 	
 	/**
@@ -55,8 +55,8 @@ public class SystemConsole {
 	 */
 	private void system() {
 		var statistics = SystemStatistics.getInstance().getSystemStatistics();
-		builder.append("累计上传：").append(FileUtils.formatSize(statistics.uploadSize())).append(NEW_LINE);
-		builder.append("累计下载：").append(FileUtils.formatSize(statistics.downloadSize())).append(NEW_LINE);
+		this.builder.append("累计上传：").append(FileUtils.formatSize(statistics.uploadSize())).append(NEW_LINE);
+		this.builder.append("累计下载：").append(FileUtils.formatSize(statistics.downloadSize())).append(NEW_LINE);
 	}
 	
 	/**
@@ -65,10 +65,10 @@ public class SystemConsole {
 	private void node() {
 		final List<NodeSession> nodes = NodeManager.getInstance().nodes();
 		final Map<Byte, Long> group = nodes.stream().collect(Collectors.groupingBy(NodeSession::getStatus, Collectors.counting()));
-		builder.append("Node数量：").append(nodes.size()).append(NEW_LINE);
-		builder.append("Node数量（未使用）：").append(group.get(NodeSession.STATUS_UNUSE)).append(NEW_LINE);
-		builder.append("Node数量（使用中）：").append(group.get(NodeSession.STATUS_VERIFY)).append(NEW_LINE);
-		builder.append("Node数量（有效）：").append(group.get(NodeSession.STATUS_AVAILABLE)).append(NEW_LINE);
+		this.builder.append("Node数量：").append(nodes.size()).append(NEW_LINE);
+		this.builder.append("Node数量（未使用）：").append(group.get(NodeSession.STATUS_UNUSE)).append(NEW_LINE);
+		this.builder.append("Node数量（使用中）：").append(group.get(NodeSession.STATUS_VERIFY)).append(NEW_LINE);
+		this.builder.append("Node数量（有效）：").append(group.get(NodeSession.STATUS_AVAILABLE)).append(NEW_LINE);
 	}
 	
 	/**
@@ -77,9 +77,9 @@ public class SystemConsole {
 	private void tracker() {
 		final List<TrackerClient> clients = TrackerManager.getInstance().clients();
 		final Map<Boolean, Long> group = clients.stream().collect(Collectors.groupingBy(TrackerClient::available, Collectors.counting()));
-		builder.append("Tracker数量：").append(clients.size()).append(NEW_LINE);
-		builder.append("Tracker数量（可用）：").append(group.get(Boolean.TRUE)).append(NEW_LINE);
-		builder.append("Tracker数量（不可用）：").append(group.get(Boolean.FALSE)).append(NEW_LINE);
+		this.builder.append("Tracker数量：").append(clients.size()).append(NEW_LINE);
+		this.builder.append("Tracker数量（可用）：").append(group.get(Boolean.TRUE)).append(NEW_LINE);
+		this.builder.append("Tracker数量（不可用）：").append(group.get(Boolean.FALSE)).append(NEW_LINE);
 	}
 	
 	/**
@@ -121,7 +121,7 @@ public class SystemConsole {
 					available.incrementAndGet();
 				}
 			});
-			builder
+			this.builder
 				.append("Peer InfoHashHex：").append(entry.getKey()).append("，")
 				.append("Peer数量：").append(list.size()).append("，")
 				.append("Peer数量（可用）：").append(available.getAndSet(0)).append("，")

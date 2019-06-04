@@ -8,23 +8,27 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.bt.dht.bootstrap.Request;
 import com.acgist.snail.net.bt.dht.bootstrap.Response;
+import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.utils.ArrayUtils;
 
 /**
- * DHT请求管理
+ * <p>DHT请求管理</p>
  * TODO：定时清除
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class RequestManager {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(RequestManager.class);
-
-	private final List<Request> requests;
 	
 	private RequestManager() {
 		this.requests = new ArrayList<>();
 	}
 
 	private static final RequestManager INSTANCE = new RequestManager();
+	
+	private final List<Request> requests;
 	
 	public static final RequestManager getInstance() {
 		return INSTANCE;
@@ -41,7 +45,7 @@ public class RequestManager {
 		if(old != null) {
 			LOGGER.warn("旧请求没有收到响应（剔除）");
 		}
-		requests.add(request);
+		this.requests.add(request);
 	}
 	
 	/**
@@ -60,6 +64,28 @@ public class RequestManager {
 		return request;
 	}
 	
+	/**
+	 * 清理DHT过期请求。
+	 */
+	public void clear() {
+		LOGGER.debug("清空DHT过期请求");
+		synchronized (this.requests) {
+			Request request;
+			final long timeout = DhtConfig.TIMEOUT.toMillis();
+			final long timestamp = System.currentTimeMillis();
+			final var iterator = this.requests.iterator();
+			while(iterator.hasNext()) {
+				request = iterator.next();
+				if(timestamp - request.getTimestamp() > timeout) {
+					iterator.remove();
+				}
+			}
+		}
+	}
+	
+	/**
+	 * 移除请求
+	 */
 	private Request remove(byte[] id) {
 		synchronized (this.requests) {
 			final var iterator = this.requests.iterator();
@@ -74,5 +100,5 @@ public class RequestManager {
 		}
 		return null;
 	}
-	
+
 }

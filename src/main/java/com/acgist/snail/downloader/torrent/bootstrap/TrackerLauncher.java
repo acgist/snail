@@ -14,8 +14,8 @@ import com.acgist.snail.system.manager.TrackerManager;
 import com.acgist.snail.utils.UniqueCodeUtils;
 
 /**
- * <p>TrackerClient发射器</p>
- * <p>定时循环查询Peer信息。</p>
+ * <p>Tracker发射器</p>
+ * <p>使用TrackerClient查询Peer信息。</p>
  * 
  * @author acgist
  * @since 1.0.0

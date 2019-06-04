@@ -2,7 +2,6 @@ package com.acgist.snail.net.bt.dht;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.time.Duration;
 import java.util.function.Function;
 
 import org.slf4j.Logger;
@@ -37,8 +36,6 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(DhtMessageHandler.class);
 
-	private static final Duration TIMEOUT = Duration.ofSeconds(4);
-	
 	/**
 	 * 获取响应
 	 */
@@ -261,7 +258,7 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	private void waitResponse(Request request) {
 		synchronized (request) {
 			if(!request.response()) {
-				ThreadUtils.wait(request, TIMEOUT);
+				ThreadUtils.wait(request, DhtConfig.TIMEOUT);
 			}
 		}
 	}

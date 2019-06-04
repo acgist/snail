@@ -40,8 +40,17 @@ public class Request {
 	 * 请求参数
 	 */
 	private final Map<String, Object> a;
-	
+	/**
+	 * 请求时间戳
+	 */
+	private final long timestamp;
+	/**
+	 * 响应
+	 */
 	private Response response;
+	/**
+	 * 请求地址
+	 */
 	private InetSocketAddress socketAddress;
 	
 	protected Request(byte[] t, DhtConfig.QType q) {
@@ -53,6 +62,7 @@ public class Request {
 		this.y = y;
 		this.q = q;
 		this.a = a;
+		this.timestamp = System.currentTimeMillis();
 	}
 
 	public static final Request valueOf(final BCodeDecoder decoder) {
@@ -80,6 +90,10 @@ public class Request {
 		return a;
 	}
 	
+	public long getTimestamp() {
+		return timestamp;
+	}
+
 	public Response getResponse() {
 		return response;
 	}

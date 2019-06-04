@@ -27,9 +27,11 @@ public class TorrentProtocol extends Protocol {
 	}
 	
 	public static final String TORRENT_SUFFIX = ".torrent"; // 文件后缀
+	
 	public static final String TORRENT_REGEX = ".+\\.torrent"; // 正则表达式
 	
 	private TorrentFileOperation operation = TorrentFileOperation.copy; // 种子文件操作类型
+	
 	private String torrent; // 种子文件路径
 	private TorrentSession torrentSession; // 种子文件信息
 	
