@@ -16,10 +16,14 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.UrlUtils;
 
 /**
@@ -30,20 +34,24 @@ import com.acgist.snail.utils.UrlUtils;
  */
 public class HTTPClient {
 
-//	private static final Logger LOGGER = LoggerFactory.getLogger(HTTPClient.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(HTTPClient.class);
 	
 	public static final int TIMEOUT = 5;
 	
 	public static final int HTTP_OK = 200; // OK
 	public static final int HTTP_PARTIAL_CONTENT = 206; // 端点续传
-	public static final int HTTP_RANGE_NOT_SATISFIABLE= 416; // 无法满足请求范围
+	public static final int HTTP_REQUESTED_RANGE_NOT_SATISFIABLE= 416; // 无法满足请求范围
+	public static final int HTTP_INTERNAL_SERVER_ERROR = 500; // 服务器错误
 	
+	/**
+	 * 浏览器信息
+	 */
 	private static final String USER_AGENT;
 	
 	/**
 	 * HTTP线程池
 	 */
-	private static final ExecutorService EXECUTOR_HTTP = SystemThreadContext.newExecutor(2, 10, 100, 60L, SystemThreadContext.SNAIL_THREAD_HTTP);
+	private static final ExecutorService EXECUTOR = SystemThreadContext.newExecutor(2, 10, 100, 60L, SystemThreadContext.SNAIL_THREAD_HTTP);
 	
 	static {
 		final StringBuilder userAgentBuilder = new StringBuilder(); // 客户端信息
@@ -58,6 +66,7 @@ public class HTTPClient {
 			.append(SystemConfig.getSupport())
 			.append(")");
 		USER_AGENT = userAgentBuilder.toString();
+		LOGGER.debug("User-Agent：{}", USER_AGENT);
 	}
 	
 	/**
@@ -73,9 +82,9 @@ public class HTTPClient {
 	public static final HttpClient newClient(int timeout) {
 		return HttpClient
 			.newBuilder()
-			.executor(EXECUTOR_HTTP)
-//			.followRedirects(Redirect.NORMAL)
-			.followRedirects(Redirect.ALWAYS)
+			.executor(EXECUTOR)
+			.followRedirects(Redirect.NORMAL)
+//			.followRedirects(Redirect.ALWAYS)
 			.connectTimeout(Duration.ofSeconds(timeout))
 			.build();
 	}
@@ -88,13 +97,13 @@ public class HTTPClient {
 	}
 	
 	/**
-	 * 新建请求
+	 * 新建请求，HTTP请求版本{@link Version#HTTP_1_1}。
 	 */
 	public static final Builder newRequest(String url, int timeout) {
 		return HttpRequest
 			.newBuilder()
 			.uri(URI.create(url))
-			.version(Version.HTTP_1_1) // 暂时使用1.1版本协议
+			.version(Version.HTTP_1_1) // 使用1.1版本协议，2.0版本还没有普及。
 			.timeout(Duration.ofSeconds(timeout))
 			.header("User-Agent", USER_AGENT);
 	}
@@ -111,7 +120,7 @@ public class HTTPClient {
 	 * 表单数据
 	 */
 	public static final BodyPublisher newFormBodyPublisher(Map<String, String> data) {
-		if(data == null || data.isEmpty()) {
+		if(CollectionUtils.isEmpty(data)) {
 			return BodyPublishers.noBody();
 		}
 		final String body = data.entrySet()
@@ -215,10 +224,10 @@ public class HTTPClient {
 	}
 
 	/**
-	 * 无法满足请求范围，响应状态码[{@link #HTTP_RANGE_NOT_SATISFIABLE}
+	 * 无法满足请求范围，响应状态码[{@link #HTTP_REQUESTED_RANGE_NOT_SATISFIABLE}。
 	 */
-	public static final <T> boolean rangeNotSatisfiable(HttpResponse<T> response) {
-		return response != null && response.statusCode() == HTTP_RANGE_NOT_SATISFIABLE;
+	public static final <T> boolean requestedRangeNotSatisfiable(HttpResponse<T> response) {
+		return response != null && response.statusCode() == HTTP_REQUESTED_RANGE_NOT_SATISFIABLE;
 	}
 	
 }

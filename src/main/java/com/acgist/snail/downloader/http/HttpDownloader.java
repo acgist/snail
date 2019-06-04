@@ -31,13 +31,14 @@ public class HttpDownloader extends Downloader {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(HttpDownloader.class);
 	
-	private byte[] bytes; // 速度byte
+	private final byte[] bytes; // 速度byte
 	private BufferedInputStream input; // 输入流
 	private BufferedOutputStream output; // 输出流
 	private HttpHeaderWrapper responseHeader; // 响应头
 	
 	private HttpDownloader(TaskSession taskSession) {
 		super(taskSession);
+		this.bytes = new byte[128 * 1024];
 	}
 
 	public static final HttpDownloader newInstance(TaskSession taskSession) {
@@ -46,7 +47,6 @@ public class HttpDownloader extends Downloader {
 	
 	@Override
 	public void open() {
-		bytes = new byte[128 * 1024];
 		buildInput();
 		buildOutput();
 	}
@@ -55,12 +55,12 @@ public class HttpDownloader extends Downloader {
 	public void download() throws IOException {
 		int length = 0;
 		while(ok()) {
-			length = input.readNBytes(bytes, 0, bytes.length);
+			length = this.input.read(bytes, 0, bytes.length);
 			if(isComplete(length)) { // 是否完成
 				this.complete = true;
 				break;
 			}
-			output.write(bytes, 0, length);
+			this.output.write(this.bytes, 0, length);
 			this.download(length);
 		}
 	}
@@ -72,11 +72,11 @@ public class HttpDownloader extends Downloader {
 	}
 	
 	/**
-	 * 任务是否完成：长度-1或者下载数据等于任务长度
+	 * 任务是否完成：长度-1或者下载数据等于任务长度。
 	 */
 	private boolean isComplete(int length) {
-		final long size = taskSession.entity().getSize();
-		final long downloadSize = taskSession.downloadSize();
+		final long size = this.taskSession.entity().getSize();
+		final long downloadSize = this.taskSession.downloadSize();
 		return length == -1 || size == downloadSize;
 	}
 	
@@ -93,7 +93,7 @@ public class HttpDownloader extends Downloader {
 	 * </p>
 	 */
 	private void buildInput() {
-		final var entity = taskSession.entity();
+		final var entity = this.taskSession.entity();
 		final long size = FileUtils.fileSize(entity.getFile()); // 已下载大小
 		final var client = HTTPClient.newClient();
 		final var request = HTTPClient.newRequest(entity.getUrl())
@@ -110,18 +110,18 @@ public class HttpDownloader extends Downloader {
 		}
 		if(HTTPClient.ok(response)) {
 			this.responseHeader = HttpHeaderWrapper.newInstance(response.headers());
-			input = new BufferedInputStream(response.body());
-			if(responseHeader.range()) { // 支持断点续传
-				long begin = responseHeader.beginRange();
+			this.input = new BufferedInputStream(response.body());
+			if(this.responseHeader.range()) { // 支持断点续传
+				final long begin = responseHeader.beginRange();
 				if(size != begin) {
 					LOGGER.warn("已下载大小和开始下载位置不相等，已下载大小：{}，开始下载位置：{}，响应头：{}", size, begin, responseHeader.headers());
 				}
-				taskSession.downloadSize(size);
+				this.taskSession.downloadSize(size);
 			} else {
-				taskSession.downloadSize(0L);
+				this.taskSession.downloadSize(0L);
 			}
-		} else if(HTTPClient.rangeNotSatisfiable(response)) { // 无法满足的请求范围
-			if(taskSession.downloadSize() == entity.getSize()) {
+		} else if(HTTPClient.requestedRangeNotSatisfiable(response)) { // 无法满足的请求范围
+			if(this.taskSession.downloadSize() == entity.getSize()) {
 				this.complete = true;
 			} else {
 				fail("无法满足文件下载范围");
@@ -135,17 +135,17 @@ public class HttpDownloader extends Downloader {
 	 * 创建输出流
 	 */
 	private void buildOutput() {
-		final var entity = taskSession.entity();
+		final var entity = this.taskSession.entity();
 		try {
-			final long size = taskSession.downloadSize();
+			final long size = this.taskSession.downloadSize();
 			if(size == 0L) {
-				output = new BufferedOutputStream(new FileOutputStream(entity.getFile()), DownloadConfig.getMemoryBufferByte());
+				this.output = new BufferedOutputStream(new FileOutputStream(entity.getFile()), DownloadConfig.getMemoryBufferByte());
 			} else { // 支持续传
-				output = new BufferedOutputStream(new FileOutputStream(entity.getFile(), true), DownloadConfig.getMemoryBufferByte());
+				this.output = new BufferedOutputStream(new FileOutputStream(entity.getFile(), true), DownloadConfig.getMemoryBufferByte());
 			}
 		} catch (FileNotFoundException e) {
 			fail("打开下载文件失败");
-			LOGGER.error("打开HTTP文件流异常", e);
+			LOGGER.error("打开下载文件流异常", e);
 		}
 	}
 	

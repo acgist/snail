@@ -11,13 +11,16 @@ import com.acgist.snail.system.config.SystemConfig;
 
 /**
  * utils - URL
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class UrlUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UrlUtils.class);
 	
 	/**
-	 * 编码
+	 * URL编码
 	 */
 	public static final String encode(String url) {
 		try {
@@ -29,7 +32,7 @@ public class UrlUtils {
 	}
 
 	/**
-	 * 解码
+	 * URL解码
 	 */
 	public static final String decode(String url) {
 		try {

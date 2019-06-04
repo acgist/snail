@@ -131,7 +131,7 @@ public class UpnpService {
 	/**
 	 * <p>获取端口映射情况：GetSpecificPortMappingEntry</p>
 	 * <p>请求头：SOAPAction:"urn:schemas-upnp-org:service:WANIPConnection:1#GetSpecificPortMappingEntry"</p>
-	 * <p>如果没有映射：返回500错误代码</p>
+	 * <p>如果没有映射：返回{@link HTTPClient#HTTP_INTERNAL_SERVER_ERROR}错误代码</p>
 	 * 
 	 * @return {@link #USE_NOT_INIT}、{@link #USE_DISABLE}、{@link #USE_MAPABLE}、{@link #USE_USEABLE}
 	 */
@@ -148,7 +148,7 @@ public class UpnpService {
 			.build();
 		var response = HTTPClient.request(client, request, BodyHandlers.ofString());
 		String body = response.body();
-		if(response.statusCode() == 500) {
+		if(response.statusCode() == HTTPClient.HTTP_INTERNAL_SERVER_ERROR) {
 			return USE_MAPABLE;
 		}
 		String registerIpAddress = UpnpResponse.parseGetSpecificPortMappingEntry(body);
@@ -177,7 +177,7 @@ public class UpnpService {
 			.POST(BodyPublishers.ofString(xml))
 			.build();
 		var response = HTTPClient.request(client, request, BodyHandlers.ofString());
-		return response.statusCode() == 200;
+		return response.statusCode() == HTTPClient.HTTP_OK;
 	}
 	
 	/**
@@ -196,7 +196,7 @@ public class UpnpService {
 			.POST(BodyPublishers.ofString(xml))
 			.build();
 		var response = HTTPClient.request(client, request, BodyHandlers.ofString());
-		return response.statusCode() == 200;
+		return response.statusCode() == HTTPClient.HTTP_OK;
 	}
 	
 	/**

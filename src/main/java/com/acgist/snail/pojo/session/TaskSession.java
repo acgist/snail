@@ -111,15 +111,21 @@ public class TaskSession {
 	}
 	
 	public StatisticsSession statistics() {
-		return statistics;
+		return this.statistics;
 	}
 	
+	/**
+	 * 已下载大小
+	 */
 	public long downloadSize() {
-		return statistics.downloadSize();
+		return this.statistics.downloadSize();
 	}
 	
+	/**
+	 * 设置已下载大小
+	 */
 	public void downloadSize(long size) {
-		statistics.downloadSize(size);
+		this.statistics.downloadSize(size);
 	}
 
 	/**

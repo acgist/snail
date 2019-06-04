@@ -9,18 +9,13 @@ import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.UrlUtils;
 
 /**
- * wrapper - HTTP请求头
+ * HTTP请求头包装器
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class HttpHeaderWrapper {
 
-	/**
-	 * 下载大小
-	 */
-	private static final String CONTENT_LENGTH = "Content-Length".toLowerCase();
-	/**
-	 * 下载描述
-	 */
-	private static final String CONTENT_DISPOSITION = "Content-Disposition".toLowerCase();
 	/**
 	 * 端点续传：下载范围
 	 */
@@ -29,6 +24,14 @@ public class HttpHeaderWrapper {
 	 * 端点续传
 	 */
 	private static final String ACCEPT_RANGES = "Accept-Ranges".toLowerCase();
+	/**
+	 * 下载大小
+	 */
+	private static final String CONTENT_LENGTH = "Content-Length".toLowerCase();
+	/**
+	 * 下载描述
+	 */
+	private static final String CONTENT_DISPOSITION = "Content-Disposition".toLowerCase();
 	
 	private Map<String, String> headers;
 	
@@ -50,14 +53,14 @@ public class HttpHeaderWrapper {
 	 * 获取所有header数据
 	 */
 	public Map<String, String> headers() {
-		return headers;
+		return this.headers;
 	}
 	
 	/**
 	 * 是否未包含数据
 	 */
 	public boolean isEmpty() {
-		return headers == null || headers.isEmpty();
+		return CollectionUtils.isEmpty(this.headers);
 	}
 	
 	/**
@@ -68,18 +71,20 @@ public class HttpHeaderWrapper {
 	}
 	
 	/**
-	 * 下载文件名称
+	 * 下载文件名称，如果获取不到下载文件名，返回默认的文件名。
+	 * 
+	 * @param defaultName 默认文件名
 	 */
 	public String fileName(final String defaultName) {
 		if(isEmpty()) {
 			return defaultName;
 		}
-		String fileName = headers.get(CONTENT_DISPOSITION);
+		String fileName = this.headers.get(CONTENT_DISPOSITION);
 		if(StringUtils.isEmpty(fileName)) {
 			return defaultName;
 		}
 		final String fileNameLower = fileName.toLowerCase();
-		if(fileNameLower.contains("filename")) {
+		if(fileNameLower.contains("filename")) { // 包含文件名
 			fileName = UrlUtils.decode(fileName);
 			int index = fileName.indexOf("=");
 			if(index != -1) {
@@ -107,8 +112,8 @@ public class HttpHeaderWrapper {
 		if(isEmpty()) {
 			return size;
 		}
-		if(headers.containsKey(CONTENT_LENGTH)) {
-			String value = headers.get(CONTENT_LENGTH).trim();
+		if(this.headers.containsKey(CONTENT_LENGTH)) {
+			String value = this.headers.get(CONTENT_LENGTH).trim();
 			if(StringUtils.isNumeric(value)) {
 				return Long.valueOf(value);
 			}
@@ -126,9 +131,9 @@ public class HttpHeaderWrapper {
 		if(isEmpty()) {
 			return range;
 		}
-		if(headers.containsKey(ACCEPT_RANGES)) {
+		if(this.headers.containsKey(ACCEPT_RANGES)) {
 			range = "bytes".equals(headers.get(ACCEPT_RANGES));
-		} else if(headers.containsKey(CONTENT_RANGE)) {
+		} else if(this.headers.containsKey(CONTENT_RANGE)) {
 			range = true;
 		}
 		return range;
@@ -139,11 +144,11 @@ public class HttpHeaderWrapper {
 	 */
 	public long beginRange() {
 		long range = 0L;
-		if(headers == null) {
+		if(this.headers == null) {
 			return range;
 		}
-		if(headers.containsKey(CONTENT_RANGE)) {
-			String contentRange = headers.get(CONTENT_RANGE);
+		if(this.headers.containsKey(CONTENT_RANGE)) {
+			String contentRange = this.headers.get(CONTENT_RANGE);
 			int endIndex = contentRange.lastIndexOf("-");
 			String value = contentRange.substring(5, endIndex).trim();
 			if(StringUtils.isNumeric(value)) {
@@ -151,6 +156,15 @@ public class HttpHeaderWrapper {
 			}
 		}
 		return range;
+	}
+	
+	@Override
+	public String toString() {
+		if(this.headers != null) {
+			return this.headers.toString();
+		} else {
+			return null;
+		}
 	}
 	
 }

@@ -17,4 +17,11 @@ public class HTTPClientTest {
 		System.out.println(response.body());
 	}
 	
+	@Test
+	public void fileName() throws NetException {
+		var header = HTTPClient.head("https://g37.gdl.netease.com/onmyoji_setup_9.4.0.zip");
+		System.out.println(header.fileName("test"));
+		System.out.println(header);
+	}
+	
 }

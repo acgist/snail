@@ -40,22 +40,22 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	
 	@Override
 	public String id() {
-		return taskSession.entity().getId();
+		return this.taskSession.entity().getId();
 	}
 	
 	@Override
 	public boolean running() {
-		return running;
-	}
-	
-	@Override
-	public TaskSession task() {
-		return taskSession;
+		return this.running;
 	}
 	
 	@Override
 	public String name() {
-		return taskSession.entity().getName();
+		return this.taskSession.entity().getName();
+	}
+	
+	@Override
+	public TaskSession task() {
+		return this.taskSession;
 	}
 	
 	@Override
@@ -90,7 +90,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 			ThreadUtils.wait(this.deleteLock, Duration.ofSeconds(5));
 		}
 		TaskRepository repository = new TaskRepository();
-		repository.delete(taskSession.entity());
+		repository.delete(this.taskSession.entity());
 	}
 	
 	@Override
@@ -111,21 +111,21 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	
 	@Override
 	public long downloadSize() {
-		return FileUtils.fileSize(taskSession.entity().getFile());
+		return FileUtils.fileSize(this.taskSession.entity().getFile());
 	}
 	
 	@Override
 	public void run() {
-		if(taskSession.download()) { // 任务已经处于下载中直接跳过，防止多次点击暂停开始导致后面线程阻塞导致不能下载其他任务
+		if(this.taskSession.download()) { // 任务已经处于下载中直接跳过，防止多次点击暂停开始导致后面线程阻塞导致不能下载其他任务
 			LOGGER.info("任务已经在下载中，停止执行：{}", name());
 			return;
 		}
-		synchronized (taskSession) {
+		synchronized (this.taskSession) {
 			var entity = this.taskSession.entity();
-			if(taskSession.await()) {
+			if(this.taskSession.await()) {
 				LOGGER.info("开始下载：{}", name());
-				fail = false; // 标记下载失败
-				running = true; // 标记开始下载
+				this.fail = false; // 标记下载失败
+				this.running = true; // 标记开始下载
 				entity.setStatus(Status.download);
 				this.open();
 				try {
@@ -136,7 +136,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 				}
 				this.complete();
 				this.release(); // 最后释放资源
-				running = false;
+				this.running = false;
 				this.unlockDelete();
 				LOGGER.info("下载结束：{}", name());
 			}
@@ -145,12 +145,12 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	
 	@Override
 	public void download(long buffer) {
-		taskSession.statistics().download(buffer);
+		this.taskSession.statistics().download(buffer);
 	}
 
 	@Override
 	public void upload(long buffer) {
-		taskSession.statistics().upload(buffer);
+		this.taskSession.statistics().upload(buffer);
 	}
 	
 	/**
@@ -162,7 +162,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	 * </ul>
 	 */
 	protected boolean ok() {
-		return !fail && !complete && taskSession.download();
+		return !this.fail && !this.complete && this.taskSession.download();
 	}
 
 	/**
