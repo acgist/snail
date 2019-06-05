@@ -12,15 +12,15 @@ import com.acgist.snail.utils.ObjectUtils;
 public class NodeSession implements Comparable<NodeSession> {
 
 	/**
-	 * 未使用
+	 * 未使用：没有使用过。
 	 */
 	public static final byte STATUS_UNUSE = 0;
 	/**
-	 * 验证：使用过一次，但是未标记有效
+	 * 验证：使用过一次，没有收到响应。
 	 */
 	public static final byte STATUS_VERIFY = -1;
 	/**
-	 * 有效：使用过并且可用
+	 * 有效：可以正常使用。
 	 */
 	public static final byte STATUS_AVAILABLE = 1;
 	

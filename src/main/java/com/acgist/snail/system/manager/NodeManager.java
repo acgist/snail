@@ -25,6 +25,7 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * <p>Node管理器</p>
  * <p>DHT节点管理器。</p>
+ * <p>TODO：观察是否需要清理Node。</p>
  * 
  * <p>
  * Kademlia：https://baike.baidu.com/item/Kademlia<br>
@@ -42,14 +43,25 @@ public class NodeManager {
 	 * Node最大数量，超过这个数量会均匀剔除多余Node
 	 */
 	public static final int NODE_MAX_SIZE = 1024;
-	
+	/**
+	 * NodeId长度
+	 */
 	public static final int NODE_ID_LENGTH = 20;
+	/**
+	 * Token长度
+	 */
 	public static final int TOKEN_LENGTH = 8;
-	
-	public static final int GET_PEER_LENGTH = 100;
+	/**
+	 * Node查找时返回的Node列表长度
+	 */
 	public static final int NODE_FIND_SIZE = 8;
-	
-	public static final int NODE_FIND_SLICE = 3; // 分片大小
+	/**
+	 * Node查找时分片大小
+	 */
+	public static final int NODE_FIND_SLICE = 3;
+	/**
+	 * Node查找时分片最小列表长度
+	 */
 	public static final int NODE_FIND_SLICE_SIZE = NODE_FIND_SIZE * NODE_FIND_SLICE;
 	
 	/**
@@ -91,6 +103,9 @@ public class NodeManager {
 		return token;
 	}
 	
+	/**
+	 * 生成NodeId
+	 */
 	private byte[] buildNodeId() {
 		final byte[] nodeIds = new byte[NODE_ID_LENGTH];
 		final Random random = new Random();
@@ -100,6 +115,9 @@ public class NodeManager {
 		return nodeIds;
 	}
 	
+	/**
+	 * 生成Token
+	 */
 	private byte[] buildToken() {
 		final byte[] token = new byte[TOKEN_LENGTH];
 		final byte[] bytes = (SystemConfig.LETTER + SystemConfig.LETTER_UPPER + SystemConfig.DIGIT).getBytes();
@@ -112,7 +130,7 @@ public class NodeManager {
 	}
 	
 	/**
-	 * 所有的Nodes
+	 * 获取所有的Nodes的拷贝
 	 */
 	public List<NodeSession> nodes() {
 		synchronized (this.nodes) {
@@ -134,8 +152,8 @@ public class NodeManager {
 	}
 	
 	/**
-	 * <p>添加验证DHT节点</p>
-	 * <p>先验证节点，验证通过加入列表，设置为有效节点。</p>
+	 * <p>添加DHT节点</p>
+	 * <p>先验证节点（ping），验证通过加入列表，设置为有效节点。</p>
 	 */
 	public void newNodeSession(String host, Integer port) {
 		final NodeSession nodeSession = verify(host, port);
@@ -145,8 +163,9 @@ public class NodeManager {
 	}
 	
 	/**
-	 * 新建Node，新建完成后需要调用{@link #sortNodes()}进行排序。
-	 * 加入时不验证，使用时进行验证。
+	 * <p>添加DHT节点</p>
+	 * <p>添加Node，新建完成后需要调用{@link #sortNodes()}进行排序。</p>
+	 * <p>加入时不验证，使用时进行验证。</p>
 	 */
 	public NodeSession newNodeSession(byte[] nodeId, String host, Integer port) {
 		synchronized (this.nodes) {
@@ -168,7 +187,8 @@ public class NodeManager {
 	}
 
 	/**
-	 * 排序：在调用{@link #newNodeSession(byte[], String, Integer)}后需要进行排序
+	 * <p>排序</p>
+	 * <p>在调用{@link #newNodeSession(byte[], String, Integer)}后需要进行排序。</p>
 	 */
 	public void sortNodes() {
 		synchronized (this.nodes) {
@@ -190,21 +210,18 @@ public class NodeManager {
 	}
 
 	/**
-	 * 查找Node，查找到最近的一段区域，然后异或运算获取最近
-	 * 不选择使用中的Node
-	 * @param target NodeId
-	 * @return Node
+	 * <p>查找Node</p>
 	 */
 	public List<NodeSession> findNode(String target) {
 		return this.findNode(StringUtils.unhex(target));
 	}
 	
 	/**
-	 * 查找Node
-	 * 不选择使用中的Node
+	 * <p>查找Node</p>
+	 * <p>筛选{@linkplain NodeSession#STATUS_UNUSE 未使用}和{@linkplain NodeSession#STATUS_AVAILABLE 可用}的节点。</p>
 	 */
 	public List<NodeSession> findNode(byte[] target) {
-		List<NodeSession> nodes;
+		List<NodeSession> nodes; // 筛选节点的副本
 		synchronized (this.nodes) {
 			nodes = this.nodes.stream()
 				.filter(node -> node.getStatus() != NodeSession.STATUS_VERIFY)
@@ -214,66 +231,77 @@ public class NodeManager {
 	}
 
 	/**
-	 * 查找节点
-	 * @param id id
+	 * <p>查找Node</p>
+	 * <p>查找最近（异或运算）的一段NodeId。</p>
+	 * <p>查找时Node是一个环形结构，分为{@linkplain #NODE_FIND_SLICE 片}。</p>
+	 * 
+	 * @param target 目标NodeId
 	 * @param begin 开始序号
 	 * @param end 结束序号
+	 * 
 	 * @return 节点
 	 */
-	private List<NodeSession> findNode(final List<NodeSession> nodes, final byte[] id, final int begin, final int end) {
-		int size;
-		if(end > begin) {
-			size = end - begin;
-		} else {
-			size = end + nodes.size() - begin;
+	private List<NodeSession> findNode(final List<NodeSession> nodes, final byte[] target, final int begin, final int end) {
+		int selectSize; // 当前选择Node的总数量
+		final int nodeSize = nodes.size(); // 当前节点的总数量
+		if(end > begin) { // 顺序
+			selectSize = end - begin;
+		} else { // 接头
+			selectSize = end + nodeSize - begin;
 		}
-		if(size < NODE_FIND_SLICE_SIZE) { // 获取
-			return selectNode(nodes, id, begin, end);
+		if(selectSize < NODE_FIND_SLICE_SIZE) { // 小于最小列表时开始排序返回最近列表。
+			return selectNode(nodes, target, begin, end);
 		} else { // 分片
-			// 下标
-			final int sliceSize = (end - begin) / NODE_FIND_SLICE;
-			final int sliceA = begin;
-			final int sliceB = sliceA + sliceSize;
-			final int sliceC = sliceB + sliceSize;
+			// 下标，如果下标大于节点数量，表示从头开始选择。
+			final int sliceSize = selectSize / NODE_FIND_SLICE; // 分片中Node的数量
+			int sliceA, sliceB, sliceC;
+			if(end > begin) {
+				sliceA = begin;
+				sliceB = sliceA + sliceSize;
+				sliceC = sliceB + sliceSize;
+			} else {
+				sliceA = begin;
+				sliceB = (sliceA + sliceSize) % nodeSize;
+				sliceC = (sliceB + sliceSize) % nodeSize;
+			}
 			// 节点
 			final var nodeA = nodes.get(sliceA);
 			final var nodeB = nodes.get(sliceB);
 			final var nodeC = nodes.get(sliceC);
-			// 节点相差
-			final int indexA = index(nodeA.getId(), id);
-			final int indexB = index(nodeB.getId(), id);
-			final int indexC = index(nodeC.getId(), id);
-			if(indexA > indexB && indexA > indexC) {
-				return findNode(nodes, id, sliceC, sliceB);
-			} else if(indexB > indexA && indexB > indexC) {
-				return findNode(nodes, id, sliceA, sliceC);
-			} else if(indexC > indexA && indexC > indexB) {
-				return findNode(nodes, id, sliceB, sliceA);
-			} else {
-				return this.selectNode(nodes, id, begin, end);
+			// 节点不同字节序号
+			final int diffIndexA = diffIndex(nodeA.getId(), target);
+			final int diffIndexB = diffIndex(nodeB.getId(), target);
+			final int diffIndexC = diffIndex(nodeC.getId(), target);
+			if(diffIndexA > diffIndexB && diffIndexA > diffIndexC) {
+				return findNode(nodes, target, sliceC, sliceB);
+			} else if(diffIndexB > diffIndexA && diffIndexB > diffIndexC) {
+				return findNode(nodes, target, sliceA, sliceC);
+			} else if(diffIndexC > diffIndexA && diffIndexC > diffIndexB) {
+				return findNode(nodes, target, sliceB, sliceA);
+			} else { // 如果三个一致时直接选择节点。
+				return this.selectNode(nodes, target, begin, end);
 			}
 		}
 	}
 
 	/**
-	 * 选择节点，选中的节点如果没有使用过标记为使用中
+	 * <p>选择节点</p>
+	 * <p>排序查找最近的节点。</p>
+	 * <p>选中的节点如果没有使用过标记为使用中。</p>
 	 */
-	private List<NodeSession> selectNode(final List<NodeSession> nodes, final byte[] id, final int begin, final int end) {
+	private List<NodeSession> selectNode(final List<NodeSession> nodes, final byte[] target, final int begin, final int end) {
 		Stream<NodeSession> select;
 		if(begin < end) {
 			select = nodes.stream().skip(begin).limit(end - begin);
 		} else {
 			select = Stream.concat(nodes.stream().limit(end), nodes.stream().skip(begin));
 		}
-		final Map<String, NodeSession> selectNodes = select
-			.collect(Collectors.toMap(node -> {
-				return xor(node.getId(), id);
-			}, node -> {
-				return node;
-			}));
-		return selectNodes.entrySet().stream()
+		return select
+			.map(node -> {
+				return Map.entry(xor(node.getId(), target), node);
+			})
 			.sorted((a, b) -> {
-				return a.getKey().compareTo(b.getKey());
+				return ArrayUtils.compareUnsigned(a.getKey(), b.getKey());
 			})
 			.map(Map.Entry::getValue)
 			.limit(NODE_FIND_SIZE)
@@ -327,56 +355,21 @@ public class NodeManager {
 	}
 	
 	/**
-	 * <p>清理过多的Node。</p>
-	 * <p>优先清理{@linkplain NodeSession#STATUS_VERIFY 验证中}的节点，如果清理后节点依旧过多，则按步长清理节点。</p>
-	 * <p>警告：清理{@linkplain NodeSession#STATUS_VERIFY 验证中}的节点会出现，正在使用的节点可能被清理。</p>
+	 * 异或运算，返回十六进制字符串。
 	 */
-	public void clear() {
-		if(this.nodes.size() > NODE_MAX_SIZE) {
-			synchronized (this.nodes) {
-				// 清理状态节点
-				NodeSession node;
-				var iterator = this.nodes.iterator();
-				while(iterator.hasNext()) {
-					node = iterator.next();
-					if(node.getStatus() == NodeSession.STATUS_VERIFY) { // 清理无效
-						iterator.remove();
-					}
-				}
-				// 清理过多节点
-				final int overSize = this.nodes.size() - NODE_MAX_SIZE;
-				if(overSize > 0) {
-					int index = 0;
-					final int step = NODE_MAX_SIZE / overSize;
-					if(step > 0) {
-						while(iterator.hasNext()) {
-							iterator.next();
-							if(index++ % step == 0) {
-								iterator.remove();
-								// TODO：优化
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	
-	/**
-	 * 异或运算，返回十六进制字符串
-	 */
-	public static final String xor(byte[] source, byte[] target) {
+	public static final byte[] xor(byte[] source, byte[] target) {
 		final byte[] value = new byte[NODE_ID_LENGTH];
 		for (int index = 0; index < NODE_ID_LENGTH; index++) {
 			value[index] = (byte) (source[index] ^ target[index]);
 		}
-		return StringUtils.hex(value);
+		return value;
 	}
 	
 	/**
-	 * 获取不同的序号
+	 * <p>获取节点出现不同字节的位数。</p>
+	 * <p>不同的位数越小，表示差距越大，反之差距越小。</p>
 	 */
-	public static final int index(byte[] source, byte[] target) {
+	public static final int diffIndex(byte[] source, byte[] target) {
 		for (int index = 0; index < NODE_ID_LENGTH; index++) {
 			if(source[index] != target[index]) {
 				return index;

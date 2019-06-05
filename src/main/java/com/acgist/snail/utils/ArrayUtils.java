@@ -1,5 +1,7 @@
 package com.acgist.snail.utils;
 
+import com.acgist.snail.system.exception.ArgumentException;
+
 /**
  * <p>数组工具</p>
  * 
@@ -30,6 +32,33 @@ public class ArrayUtils {
 			}
 		}
 		return true;
+	}
+	
+	/**
+	 * <p>比较字符数组大小（无符号比较）</p>
+	 * <p>长度不同时：长度长的数组大。</p>
+	 * <p>长度相同时：比较每一个字符，高位字符大的大。</p>
+	 */
+	public static final int compareUnsigned(byte[] sources, byte[] targets) {
+		if(sources == null || targets == null) {
+			throw new ArgumentException("数组比较时参数不正确。");
+		} else if(sources.length != targets.length) {
+			return sources.length > targets.length ? 1 : -1;
+		} else {
+			for (int index = 0; index < sources.length; index++) {
+				if(sources[index] != targets[index]) {
+//					return Byte.toUnsignedInt(sources[index]) > Byte.toUnsignedInt(targets[index]) ? 1 : -1;
+					return ((char) sources[index]) > ((char) targets[index]) ? 1 : -1;
+				}
+			}
+			return 0;
+		}
+	}
+	
+	public static void main(String[] args) {
+		byte i = -2;
+		System.out.println(i);
+		System.out.println((char) i);
 	}
 	
 	/**
