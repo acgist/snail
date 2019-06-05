@@ -16,7 +16,7 @@ import com.acgist.snail.downloader.torrent.bootstrap.PeerConnectGroup;
 import com.acgist.snail.downloader.torrent.bootstrap.PeerLauncherGroup;
 import com.acgist.snail.downloader.torrent.bootstrap.TorrentStreamGroup;
 import com.acgist.snail.downloader.torrent.bootstrap.TrackerLauncherGroup;
-import com.acgist.snail.protocol.torrent.TorrentBuilder;
+import com.acgist.snail.protocol.magnet.bootstrap.TorrentBuilder;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
 import com.acgist.snail.protocol.torrent.bean.TorrentFile;

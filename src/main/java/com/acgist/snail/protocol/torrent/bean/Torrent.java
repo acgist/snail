@@ -13,6 +13,9 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * 种子信息
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class Torrent {
 
@@ -112,7 +115,7 @@ public class Torrent {
 		}
 		final Map<String, Object> info = BCodeDecoder.getMap(map, "info");
 		if(info != null) {
-			TorrentInfo torrentInfo = TorrentInfo.valueOf(info);
+			final TorrentInfo torrentInfo = TorrentInfo.valueOf(info);
 			torrent.setInfo(torrentInfo);
 		}
 		return torrent;

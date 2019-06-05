@@ -16,6 +16,9 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * HTTP协议
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class HttpProtocol extends Protocol {
 
@@ -52,8 +55,8 @@ public class HttpProtocol extends Protocol {
 	@Override
 	protected boolean buildTaskEntity() throws DownloadException {
 		buildHttpHeader();
-		TaskEntity taskEntity = new TaskEntity();
-		String fileName = buildFileName(); // 文件名称
+		final TaskEntity taskEntity = new TaskEntity();
+		final String fileName = buildFileName(); // 文件名称
 		taskEntity.setUrl(this.url);
 		taskEntity.setType(this.type);
 		taskEntity.setStatus(Status.await);
@@ -67,7 +70,7 @@ public class HttpProtocol extends Protocol {
 
 	@Override
 	protected void cleanMessage() {
-		httpHeaderWrapper = null;
+		this.httpHeaderWrapper = null;
 	}
 
 	/**
@@ -89,14 +92,14 @@ public class HttpProtocol extends Protocol {
 				break;
 			}
 		}
-		if(httpHeaderWrapper.isEmpty()) {
+		if(this.httpHeaderWrapper.isEmpty()) {
 			throw new DownloadException("添加下载任务异常");
 		}
 	}
 	
 	@Override
 	protected String buildFileName() {
-		String fileName = httpHeaderWrapper.fileName(null);
+		String fileName = this.httpHeaderWrapper.fileName(null);
 		if(StringUtils.isEmpty(fileName)) {
 			fileName = super.buildFileName();
 		}
@@ -104,7 +107,7 @@ public class HttpProtocol extends Protocol {
 	}
 
 	private long buildSize() {
-		return httpHeaderWrapper.fileSize();
+		return this.httpHeaderWrapper.fileSize();
 	}
 	
 	/**

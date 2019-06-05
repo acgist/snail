@@ -15,6 +15,9 @@ import com.acgist.snail.utils.FileUtils;
 
 /**
  * BT协议
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class TorrentProtocol extends Protocol {
 
@@ -30,10 +33,9 @@ public class TorrentProtocol extends Protocol {
 	
 	public static final String TORRENT_REGEX = ".+\\.torrent"; // 正则表达式
 	
-	private TorrentFileOperation operation = TorrentFileOperation.copy; // 种子文件操作类型
-	
 	private String torrent; // 种子文件路径
 	private TorrentSession torrentSession; // 种子文件信息
+	private TorrentFileOperation operation = TorrentFileOperation.copy; // 种子文件操作类型
 	
 	private static final TorrentProtocol INSTANCE = new TorrentProtocol();
 	
@@ -64,10 +66,9 @@ public class TorrentProtocol extends Protocol {
 
 	@Override
 	protected boolean buildTaskEntity() throws DownloadException {
-		boolean ok = true;
 		torrent();
-		TaskEntity taskEntity = new TaskEntity();
-		String fileName = buildFileName(); // 文件名称
+		final TaskEntity taskEntity = new TaskEntity();
+		final String fileName = buildFileName(); // 文件名称
 		taskEntity.setUrl(this.url);
 		taskEntity.setType(this.type);
 		taskEntity.setStatus(Status.await);
@@ -77,8 +78,7 @@ public class TorrentProtocol extends Protocol {
 		this.taskEntity = taskEntity;
 		buildTorrentFolder();
 		torrentFileOperation();
-		ok = selectTorrentFile();
-		return ok;
+		return selectTorrentFile();
 	}
 
 	@Override
@@ -89,7 +89,7 @@ public class TorrentProtocol extends Protocol {
 	
 	@Override
 	protected String buildFileName() {
-		return torrentSession.name();
+		return this.torrentSession.name();
 	}
 
 	/**
@@ -97,7 +97,7 @@ public class TorrentProtocol extends Protocol {
 	 */
 	private void torrent() throws DownloadException {
 		final String torrentFile = this.url;
-		TorrentSession torrentSession = TorrentManager.getInstance().newTorrentSession(torrentFile);
+		final TorrentSession torrentSession = TorrentManager.getInstance().newTorrentSession(torrentFile);
 		this.url = MagnetProtocol.buildMagnet(torrentSession.infoHash().infoHashHex()); // 生成磁力链接
 		this.torrent = torrentFile;
 		this.torrentSession = torrentSession;
@@ -114,9 +114,9 @@ public class TorrentProtocol extends Protocol {
 	 * 种子文件操作：拷贝、移动
 	 */
 	private void torrentFileOperation() {
-		String fileName = FileUtils.fileNameFromUrl(this.torrent);
-		String newFilePath = FileUtils.file(this.taskEntity.getFile(), fileName);
-		if(operation == TorrentFileOperation.move) {
+		final String fileName = FileUtils.fileNameFromUrl(this.torrent);
+		final String newFilePath = FileUtils.file(this.taskEntity.getFile(), fileName);
+		if(this.operation == TorrentFileOperation.move) {
 			FileUtils.move(this.torrent, newFilePath);
 		} else {
 			FileUtils.copy(this.torrent, newFilePath);
@@ -126,10 +126,11 @@ public class TorrentProtocol extends Protocol {
 
 	/**
 	 * 选择torrent下载文件和设置文件大小
+	 * 
 	 * @return true-已选择下载文件；false-未选择下载文件
 	 */
 	private boolean selectTorrentFile() throws DownloadException {
-		TaskSession taskSession = TaskSession.newInstance(this.taskEntity);
+		final TaskSession taskSession = TaskSession.newInstance(this.taskEntity);
 		TorrentWindow.getInstance().show(taskSession);
 		if(taskSession.downloadTorrentFiles().isEmpty()) { // 没有选择下载文件
 			FileUtils.delete(this.taskEntity.getFile());

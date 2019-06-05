@@ -10,7 +10,9 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * 磁力链接协议
- * TODO：磁力链接转种子
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class MagnetProtocol extends Protocol {
 
@@ -44,6 +46,7 @@ public class MagnetProtocol extends Protocol {
 		return true;
 	}
 	
+//	TODO：磁力链接转种子
 	@Override
 	protected Protocol convert() throws DownloadException {
 //		final File file = null; // TODO：下载

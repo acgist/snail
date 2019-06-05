@@ -12,6 +12,9 @@ import com.acgist.snail.utils.FileUtils;
 
 /**
  * FTP协议
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class FtpProtocol extends Protocol {
 	
@@ -39,8 +42,8 @@ public class FtpProtocol extends Protocol {
 
 	@Override
 	protected boolean buildTaskEntity() throws DownloadException {
-		TaskEntity taskEntity = new TaskEntity();
-		String fileName = buildFileName(); // 文件名称
+		final TaskEntity taskEntity = new TaskEntity();
+		final String fileName = buildFileName(); // 文件名称
 		taskEntity.setUrl(this.url);
 		taskEntity.setType(this.type);
 		taskEntity.setStatus(Status.await);

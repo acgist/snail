@@ -10,6 +10,9 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * 文件列表信息：单文件时files为空
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class TorrentInfo {
 
@@ -38,7 +41,7 @@ public class TorrentInfo {
 		if(map == null) {
 			return null;
 		}
-		TorrentInfo info = new TorrentInfo();
+		final TorrentInfo info = new TorrentInfo();
 		info.setName(BCodeDecoder.getString(map, "name"));
 		info.setNameUtf8(BCodeDecoder.getString(map, "name.utf-8"));
 		info.setLength(BCodeDecoder.getLong(map, "length"));
@@ -71,8 +74,8 @@ public class TorrentInfo {
 	 * 列出下载文件（兼容单个文件）
 	 */
 	public List<TorrentFile> files() {
-		if (files.isEmpty()) {
-			TorrentFile file = new TorrentFile();
+		if (this.files.isEmpty()) {
+			final TorrentFile file = new TorrentFile();
 			file.setEd2k(this.ed2k);
 			file.setFilehash(this.filehash);
 			file.setLength(this.length);
@@ -84,7 +87,7 @@ public class TorrentInfo {
 			}
 			return List.of(file);
 		} else {
-			return files;
+			return this.files;
 		}
 	}
 	
