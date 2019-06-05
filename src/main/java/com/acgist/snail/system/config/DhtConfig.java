@@ -44,6 +44,8 @@ public class DhtConfig extends PropertiesConfig {
 	public static final Integer IMPLIED_PORT_AUTO = 1; // 自动获取
 	public static final Integer IMPLIED_PORT_CONFIG = 0; // 使用配置
 	
+	public static final int GET_PEER_LENGTH = 100; // GetPeer，Peer列表长度。
+	
 	/**
 	 * DHT响应超时
 	 */
