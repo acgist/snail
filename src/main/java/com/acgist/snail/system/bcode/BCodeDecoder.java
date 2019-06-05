@@ -13,13 +13,19 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.system.exception.ArgumentException;
 
 /**
- * B编码解码器<br>
+ * <p>B编码解码器</p>
+ * <p>
  * i：数字（Long）<br>
  * l：列表：list<br>
  * d：字典：map<br>
- * e：结尾<br>
- * 所有值除了Long，其他均为byte[]<br>
- * 读取前必须取出第一个字符
+ * e：结尾
+ * </p>
+ * <p>
+ * 所有值除了Long，其他均为byte[]，需要自己再次解析。
+ * </p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class BCodeDecoder {
 
