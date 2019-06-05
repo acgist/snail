@@ -16,14 +16,17 @@ import com.acgist.snail.system.bcode.BCodeDecoder.Type;
  * <p>B编码</p>
  * <p>put系列方法配合flush使用。</p>
  * <p>支持数据类型：Number、String、byte[]。</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class BCodeEncoder {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BCodeEncoder.class);
 	
-	private BCodeDecoder.Type type;
 	private List<Object> list;
 	private Map<String, Object> map;
+	private BCodeDecoder.Type type;
 	private ByteArrayOutputStream outputStream;
 	
 	private BCodeEncoder() {
