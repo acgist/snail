@@ -267,6 +267,9 @@ public class TorrentSession {
 		});
 	}
 	
+	/**
+	 * 异步执行
+	 */
 	public void submit(Runnable runnable) {
 		executor.submit(runnable);
 	}
@@ -283,7 +286,9 @@ public class TorrentSession {
 	}
 	
 	/**
-	 * 定时任务（重复），固定时间（周期不受执行时间影响）
+	 * <p>定时任务（重复）</p>
+	 * <p>固定时间（周期不受执行时间影响）</p>
+	 * 
 	 * @param delay 延迟时间
 	 * @param period 周期时间
 	 * @param unit 时间单位
@@ -298,7 +303,9 @@ public class TorrentSession {
 	}
 	
 	/**
-	 * 定时任务（重复），固定周期（周期受到执行时间影响）
+	 * <p>定时任务（重复）</p>
+	 * <p>固定周期（周期受到执行时间影响）</p>
+	 * 
 	 * @param delay 延迟时间
 	 * @param period 周期时间
 	 * @param unit 时间单位

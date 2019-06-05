@@ -2,6 +2,7 @@ package com.acgist.snail.system.manager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.net.bt.dht.bootstrap.Request;
 import com.acgist.snail.net.bt.dht.bootstrap.Response;
 import com.acgist.snail.system.config.DhtConfig;
+import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.ArrayUtils;
 
 /**
@@ -26,6 +28,13 @@ public class RequestManager {
 	}
 
 	private static final RequestManager INSTANCE = new RequestManager();
+	
+	static {
+		LOGGER.debug("初始化DHT请求清空定时任务");
+		SystemThreadContext.timerFixedDelay(5, 5, TimeUnit.MINUTES, () -> {
+			RequestManager.getInstance().clear(); // 清除DHT超时请求
+		});
+	}
 	
 	private final List<Request> requests;
 	

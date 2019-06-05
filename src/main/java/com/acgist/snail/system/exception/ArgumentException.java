@@ -1,7 +1,7 @@
 package com.acgist.snail.system.exception;
 
 /**
- * 参数错误
+ * 参数异常
  * 
  * @author acgist
  * @since 1.0.0

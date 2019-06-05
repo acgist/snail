@@ -15,42 +15,55 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.system.exception.ArgumentException;
 
 /**
- * 系统线程
+ * <p>系统线程上下文</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class SystemThreadContext {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SystemThreadContext.class);
 	
+	/** 系统线程 */
 	public static final String SNAIL_THREAD = "Snail-Thread";
+	/** BT线程 */
 	public static final String SNAIL_THREAD_BT = SNAIL_THREAD + "-BT";
+	/** HTTP线程 */
 	public static final String SNAIL_THREAD_HTTP = SNAIL_THREAD + "-HTTP";
+	/** 定时线程 */
 	public static final String SNAIL_THREAD_TIMER = SNAIL_THREAD + "-Timer";
+	/** BT定时线程 */
 	public static final String SNAIL_THREAD_BT_TIMER = SNAIL_THREAD + "-BT-Timer";
+	/** JavaFX平台线程 */
 	public static final String SNAIL_THREAD_PLATFORM = SNAIL_THREAD + "-Platform";
+	/** 下载器线程 */
 	public static final String SNAIL_THREAD_DOWNLOADER = SNAIL_THREAD + "-Downloader";
+	/** TCP客户端线程 */
 	public static final String SNAIL_THREAD_TCP_CLIENT = SNAIL_THREAD + "-TCP-Client";
+	/** TCP服务端线程 */
 	public static final String SNAIL_THREAD_TCP_SERVER = SNAIL_THREAD + "-TCP-Server";
+	/** UDP客户端线程 */
 	public static final String SNAIL_THREAD_UDP_CLIENT = SNAIL_THREAD + "-UDP-Client";
+	/** UDP服务端线程 */
 	public static final String SNAIL_THREAD_UDP_SERVER = SNAIL_THREAD + "-UDP-Server";
 	
 	/**
-	 * 线程池：大小限制，主要用来处理一些不是非常急用的任务
+	 * 系统线程池：加快系统运行、防止卡顿。例如：初始化、关闭资源、文件校验等。
 	 */
 	private static final ExecutorService EXECUTOR;
 	/**
-	 * 定时线程池：定时任务
+	 * 系统定时线程池：定时任务
 	 */
 	private static final ScheduledExecutorService EXECUTOR_TIMER;
 	
 	static {
 		LOGGER.info("启动系统线程池");
-		EXECUTOR = newExecutor(10, 100, 10, 60L, SNAIL_THREAD);
+		EXECUTOR = newExecutor(5, 20, 100, 60L, SNAIL_THREAD);
 		EXECUTOR_TIMER = newScheduledExecutor(4, SNAIL_THREAD_TIMER);
 	}
 	
 	/**
-	 * 异步执行线程：<br>
-	 * 处理一些比较消耗资源，导致卡住窗口的操作，例如：文件校验
+	 * <p>异步执行</p>
 	 */
 	public static final void submit(Runnable runnable) {
 		EXECUTOR.submit(runnable);
@@ -68,7 +81,9 @@ public class SystemThreadContext {
 	}
 	
 	/**
-	 * 定时任务（重复），固定时间（周期不受执行时间影响）
+	 * <p>定时任务（重复）</p>
+	 * <p>固定时间（周期不受执行时间影响）</p>
+	 * 
 	 * @param delay 延迟时间
 	 * @param period 周期时间
 	 * @param unit 时间单位
@@ -83,7 +98,9 @@ public class SystemThreadContext {
 	}
 	
 	/**
-	 * 定时任务（重复），固定周期（周期受到执行时间影响）
+	 * <p>定时任务（重复）</p>
+	 * <p>固定周期（周期受到执行时间影响）</p>
+	 * 
 	 * @param delay 延迟时间
 	 * @param period 周期时间
 	 * @param unit 时间单位
@@ -98,28 +115,39 @@ public class SystemThreadContext {
 	}
 	
 	/**
-	 * 线程池
+	 * 创建线程池
+	 * 
+	 * @param corePoolSize 初始线程数量
+	 * @param maximumPoolSize 最大线程数量
+	 * @param queueSize 等待线程队列长度
+	 * @param keepAliveTime 线程空闲时间（秒）
+	 * @param name 线程名称
 	 */
 	public static final ExecutorService newExecutor(int corePoolSize, int maximumPoolSize, int queueSize, long keepAliveTime, String name) {
 		return new ThreadPoolExecutor(
-			corePoolSize, // 初始线程数量
-			maximumPoolSize, // 最大线程数量
-			keepAliveTime, // 空闲时间
-			TimeUnit.SECONDS, // 空闲时间单位
-			new LinkedBlockingQueue<Runnable>(queueSize), // 等待线程
-			SystemThreadContext.newThreadFactory(name) // 线程工厂
+			corePoolSize,
+			maximumPoolSize,
+			keepAliveTime,
+			TimeUnit.SECONDS,
+			new LinkedBlockingQueue<Runnable>(queueSize),
+			SystemThreadContext.newThreadFactory(name)
 		);
 	}
 	
 	/**
-	 * 无限线程池
+	 * 创建线程池
+	 * 
+	 * @param name 线程池名称
 	 */
 	public static final ExecutorService newCacheExecutor(String name) {
 		return Executors.newCachedThreadPool(SystemThreadContext.newThreadFactory(name));
 	}
 	
 	/**
-	 * 定时线程池
+	 * 创建定时线程池
+	 * 
+	 * @param corePoolSize 初始线程数量
+	 * @param name 线程池名称
 	 */
 	public static final ScheduledExecutorService newScheduledExecutor(int corePoolSize, String name) {
 		return Executors.newScheduledThreadPool(
@@ -129,14 +157,15 @@ public class SystemThreadContext {
 	}
 	
 	/**
-	 * 线程池工厂
+	 * 创建线程池工厂
+	 * 
 	 * @param poolName 线程池名称
 	 */
 	private static final ThreadFactory newThreadFactory(String poolName) {
 		return new ThreadFactory() {
 			@Override
 			public Thread newThread(Runnable runnable) {
-				Thread thread = new Thread(runnable);
+				final Thread thread = new Thread(runnable);
 				thread.setName(poolName);
 				thread.setDaemon(true);
 				return thread;
@@ -170,5 +199,5 @@ public class SystemThreadContext {
 			executor.shutdownNow();
 		}
 	}
-	
+
 }

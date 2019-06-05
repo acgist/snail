@@ -18,7 +18,11 @@ import com.acgist.snail.system.statistics.SystemStatistics;
 import com.acgist.snail.utils.FileUtils;
 
 /**
- * 系统控制台
+ * <p>系统控制台</p>
+ * <p>记录系统状态</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class SystemConsole {
 
