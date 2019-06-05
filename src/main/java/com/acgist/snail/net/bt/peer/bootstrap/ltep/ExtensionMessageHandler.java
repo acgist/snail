@@ -138,8 +138,8 @@ public class ExtensionMessageHandler {
 			return;
 		}
 		final Long port = decoder.getLong(EX_P);
-		if(port != null && peerSession.peerPort() == null) { // 获取端口
-			peerSession.peerPort(port.intValue());
+		if(port != null && this.peerSession.peerPort() == null) { // 获取端口
+			this.peerSession.peerPort(port.intValue());
 		}
 		final Long size = decoder.getLong(EX_METADATA_SIZE);
 		if(size != null && this.infoHash.size() == 0) { // 获取种子info大小
@@ -155,16 +155,16 @@ public class ExtensionMessageHandler {
 					LOGGER.debug("不支持的扩展协议：{}-{}", type, typeValue);
 				} else {
 					LOGGER.debug("添加扩展协议：{}-{}", extensionType, typeValue);
-					peerSession.addExtensionType(extensionType, typeValue.byteValue());
+					this.peerSession.addExtensionType(extensionType, typeValue.byteValue());
 				}
 			});
 		}
 		if(!this.handshake) {
 			handshake();
 		}
-		if (peerLauncherMessageHandler.action() == Action.torrent) { // 下载种子
-			if(peerSession.support(ExtensionType.ut_metadata)) {
-				metadataMessageHandler.request();
+		if (this.peerLauncherMessageHandler.action() == Action.torrent) { // 下载种子
+			if(this.peerSession.support(ExtensionType.ut_metadata)) {
+				this.metadataMessageHandler.request();
 			}
 		}
 	}
@@ -173,21 +173,21 @@ public class ExtensionMessageHandler {
 	 * Pex请求
 	 */
 	public void exchange(byte[] bytes) {
-		peerExchangeMessageHandler.exchange(bytes);
+		this.peerExchangeMessageHandler.exchange(bytes);
 	}
 	
 	/**
 	 * Pex消息
 	 */
 	private void pex(ByteBuffer buffer) {
-		peerExchangeMessageHandler.onMessage(buffer);
+		this.peerExchangeMessageHandler.onMessage(buffer);
 	}
 	
 	/**
 	 * ut_metadata消息
 	 */
 	private void metadata(ByteBuffer buffer) {
-		metadataMessageHandler.onMessage(buffer);
+		this.metadataMessageHandler.onMessage(buffer);
 	}
 
 	/**
@@ -209,7 +209,7 @@ public class ExtensionMessageHandler {
 	 * @param type 扩展消息类型：需要和Peer的标记一致
 	 */
 	public void pushMessage(byte type, byte[] bytes) {
-		peerLauncherMessageHandler.pushMessage(PeerMessageConfig.Type.extension, buildMessage(type, bytes));
+		this.peerLauncherMessageHandler.pushMessage(PeerMessageConfig.Type.extension, buildMessage(type, bytes));
 	}
 
 }

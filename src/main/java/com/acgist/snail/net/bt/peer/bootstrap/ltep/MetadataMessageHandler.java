@@ -92,7 +92,7 @@ public class MetadataMessageHandler {
 	 */
 	public void request() {
 		LOGGER.debug("发送UtMetadata消息-request");
-		final int size = infoHash.size();
+		final int size = this.infoHash.size();
 		final int messageSize = NumberUtils.divideUp(size, INFO_SLICE_SIZE);
 		for (int index = 0; index < messageSize; index++) {
 			final var request = buildMessage(PeerMessageConfig.UtMetadataType.request, index);
@@ -134,7 +134,7 @@ public class MetadataMessageHandler {
 		final byte[] x = new byte[length];
 		System.arraycopy(bytes, begin, x, 0, length);
 		final var data = buildMessage(PeerMessageConfig.UtMetadataType.data, piece);
-		data.put(ARG_TOTAL_SIZE, infoHash.size());
+		data.put(ARG_TOTAL_SIZE, this.infoHash.size());
 		pushMessage(data, x);
 	}
 
@@ -148,7 +148,7 @@ public class MetadataMessageHandler {
 		LOGGER.warn("收到UtMetadata消息-data");
 		boolean complete = false; // 下载完成
 		final int piece = decoder.getInteger(ARG_PIECE);
-		final byte[] bytes = infoHash.info();
+		final byte[] bytes = this.infoHash.info();
 		final int begin = piece * INFO_SLICE_SIZE;
 		final int end = begin + INFO_SLICE_SIZE;
 		if(begin > bytes.length) {
@@ -186,7 +186,7 @@ public class MetadataMessageHandler {
 	 * 客户端的消息类型
 	 */
 	private Byte utMetadataType() {
-		return peerSession.extensionTypeValue(ExtensionType.ut_metadata);
+		return this.peerSession.extensionTypeValue(ExtensionType.ut_metadata);
 	}
 	
 	/**
@@ -223,7 +223,7 @@ public class MetadataMessageHandler {
 			encoder.build(x);
 		}
 		final byte[] bytes = encoder.bytes();
-		extensionMessageHandler.pushMessage(type, bytes);
+		this.extensionMessageHandler.pushMessage(type, bytes);
 	}
 	
 }

@@ -46,11 +46,11 @@ public class DhtExtensionMessageHandler {
 	private void port(ByteBuffer buffer) {
 		final int port = NetUtils.decodePort(buffer.getShort());
 		this.peerSession.dhtPort(port);
-		if(dhtLauncher != null) {
-			dhtLauncher.put(peerSession.host(), port);
+		if(this.dhtLauncher != null) {
+			this.dhtLauncher.put(this.peerSession.host(), port);
 		}
 		SystemThreadContext.submit(() -> {
-			NodeManager.getInstance().newNodeSession(peerSession.host(), port);
+			NodeManager.getInstance().newNodeSession(this.peerSession.host(), port);
 		});
 	}
 

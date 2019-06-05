@@ -249,10 +249,10 @@ public class TorrentSession {
 	 */
 	private void loadDhtTimer() {
 		this.dhtLauncher = DhtLauncher.newInstance(this);
-		final var nodes = torrent.getNodes();
+		final var nodes = this.torrent.getNodes();
 		if(CollectionUtils.isNotEmpty(nodes)) { // 添加DHT节点
 			nodes.forEach((host, port) -> {
-				dhtLauncher.put(host, port.intValue());
+				this.dhtLauncher.put(host, port.intValue());
 			});
 		}
 		this.dhtTimer = this.timerFixedDelay(DHT_INTERVAL.getSeconds(), DHT_INTERVAL.getSeconds(), TimeUnit.SECONDS, this.dhtLauncher);
@@ -279,7 +279,7 @@ public class TorrentSession {
 	 */
 	public ScheduledFuture<?> timer(long delay, TimeUnit unit, Runnable runnable) {
 		if(delay >= 0) {
-			return executorTimer.schedule(runnable, delay, unit);
+			return this.executorTimer.schedule(runnable, delay, unit);
 		} else {
 			throw new ArgumentException("定时任务时间错误：" + delay);
 		}
@@ -296,7 +296,7 @@ public class TorrentSession {
 	 */
 	public ScheduledFuture<?> timer(long delay, long period, TimeUnit unit, Runnable runnable) {
 		if(delay >= 0) {
-			return executorTimer.scheduleAtFixedRate(runnable, delay, period, unit);
+			return this.executorTimer.scheduleAtFixedRate(runnable, delay, period, unit);
 		} else {
 			throw new ArgumentException("定时任务时间错误：" + delay);
 		}
@@ -313,7 +313,7 @@ public class TorrentSession {
 	 */
 	public ScheduledFuture<?> timerFixedDelay(long delay, long period, TimeUnit unit, Runnable runnable) {
 		if(delay >= 0) {
-			return executorTimer.scheduleWithFixedDelay(runnable, delay, period, unit);
+			return this.executorTimer.scheduleWithFixedDelay(runnable, delay, period, unit);
 		} else {
 			throw new ArgumentException("定时任务时间错误：" + delay);
 		}
@@ -323,9 +323,9 @@ public class TorrentSession {
 	 * 获取选择的下载文件
 	 */
 	public List<TorrentFile> selectFiles() {
-		final TorrentInfo info = torrent.getInfo();
+		final TorrentInfo info = this.torrent.getInfo();
 		final List<TorrentFile> files = info.files();
-		final List<String> selectedFiles = taskSession.downloadTorrentFiles();
+		final List<String> selectedFiles = this.taskSession.downloadTorrentFiles();
 		for (TorrentFile file : files) {
 			if(selectedFiles.contains(file.path())) {
 				file.select(true);
@@ -342,8 +342,8 @@ public class TorrentSession {
 	public void completeCheck() {
 		if(torrentStreamGroup.complete()) {
 			LOGGER.debug("任务下载完成：{}", name());
-			torrentStreamGroup.flush();
-			taskSession.downloader().unlockDownload();
+			this.torrentStreamGroup.flush();
+			this.taskSession.downloader().unlockDownload();
 		}
 	}
 	
@@ -386,7 +386,7 @@ public class TorrentSession {
 		}
 		final PeerManager manager = PeerManager.getInstance();
 		peers.forEach((host, port) -> {
-			manager.newPeerSession(this.infoHashHex(), taskSession.statistics(), host, port, PeerConfig.SOURCE_TRACKER);
+			manager.newPeerSession(this.infoHashHex(), this.taskSession.statistics(), host, port, PeerConfig.SOURCE_TRACKER);
 		});
 	}
 
@@ -396,7 +396,7 @@ public class TorrentSession {
 	 * @param index Piece序号
 	 */
 	public void have(int index) {
-		PeerManager.getInstance().have(infoHash.infoHashHex(), index);
+		PeerManager.getInstance().have(this.infoHash.infoHashHex(), index);
 	}
 
 	/**
