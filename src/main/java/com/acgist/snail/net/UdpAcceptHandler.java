@@ -51,4 +51,12 @@ public abstract class UdpAcceptHandler {
 	 */
 	public abstract UdpMessageHandler messageHandler(ByteBuffer buffer, InetSocketAddress socketAddress);
 	
+	/**
+	 * 关闭线程池
+	 */
+	public static final void shutdown() {
+		LOGGER.info("关闭UDP消息处理线程池");
+		SystemThreadContext.shutdown(EXECUTOR);
+	}
+	
 }

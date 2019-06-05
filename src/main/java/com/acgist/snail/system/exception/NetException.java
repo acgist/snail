@@ -1,7 +1,8 @@
 package com.acgist.snail.system.exception;
 
 /**
- * 网络异常，只用于，用于{@linkplain com.acgist.snail.net 网络协议}
+ * <p>网络异常</p>
+ * <p>用于{@linkplain com.acgist.snail.net 网络协议}中出现的异常。</p>
  * 
  * @author acgist
  * @since 1.0.0

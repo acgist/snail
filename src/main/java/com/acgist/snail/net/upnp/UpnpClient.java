@@ -55,7 +55,7 @@ public class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	 * M-SEARCH
 	 */
 	private ByteBuffer mSearch() {
-		StringBuilder builder = new StringBuilder();
+		final StringBuilder builder = new StringBuilder();
 		builder.append("M-SEARCH * HTTP/1.1").append("\r\n");
 		builder.append("HOST: 239.255.255.250:1900").append("\r\n");
 		builder.append("MX: 2").append("\r\n");

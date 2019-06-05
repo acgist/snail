@@ -1,13 +1,13 @@
 package com.acgist.snail.system.context;
 
-import java.util.concurrent.TimeUnit;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.gui.Alerts;
 import com.acgist.snail.gui.menu.TrayMenu;
 import com.acgist.snail.net.TcpClient;
 import com.acgist.snail.net.TcpServer;
+import com.acgist.snail.net.UdpAcceptHandler;
 import com.acgist.snail.net.UdpServer;
 import com.acgist.snail.net.application.ApplicationClient;
 import com.acgist.snail.net.application.ApplicationServer;
@@ -26,7 +26,6 @@ import com.acgist.snail.system.initializer.impl.TorrentInitializer;
 import com.acgist.snail.system.initializer.impl.TrackerInitializer;
 import com.acgist.snail.system.initializer.impl.UpnpInitializer;
 import com.acgist.snail.system.manager.DownloaderManager;
-import com.acgist.snail.system.manager.RequestManager;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.LoggerUtils;
 import com.acgist.snail.utils.NetUtils;
@@ -34,7 +33,10 @@ import com.acgist.snail.utils.NetUtils;
 import javafx.application.Platform;
 
 /**
- * 系统上下文
+ * <p>系统上下文</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class SystemContext {
 
@@ -59,7 +61,6 @@ public class SystemContext {
 		PeerInitializer.newInstance().asyn();
 		TorrentInitializer.newInstance().asyn();
 		DownloaderInitializer.newInstance().asyn();
-		SystemContext.timer();
 	}
 	
 	/**
@@ -93,9 +94,9 @@ public class SystemContext {
 	}
 
 	/**
-	 * 退出平台<br>
-	 * 所有系统线程均是守护线程，所以可以不用手动shutdown。<br>
-	 * 如果需要手动shutdown，那么必须关闭系统资源，否者会导致卡顿。
+	 * <p>退出平台</p>
+	 * <p>创建的所有线程均是守护线程，所以可以不用手动shutdown。</p>
+	 * <p>手动shutdown时必须关闭系统资源，否者会导致卡顿。</p>
 	 */
 	public static final void shutdown() {
 		if(SystemContext.available()) {
@@ -109,6 +110,7 @@ public class SystemContext {
 				TrackerServer.getInstance().close();
 				TorrentServer.getInstance().close();
 				ApplicationServer.getInstance().close();
+				UdpAcceptHandler.shutdown();
 				TcpClient.shutdown();
 				TcpServer.shutdown();
 				UdpServer.shutdown();
@@ -118,16 +120,19 @@ public class SystemContext {
 				LOGGER.info("系统已关闭");
 				LoggerUtils.shutdown();
 			});
+		} else {
+			Alerts.info("关闭提示", "系统正在关闭中...");
 		}
 	}
 
 	/**
-	 * 开启监听：开启失败表示已经启动了一个项目，唤醒之前的窗口
+	 * <p>开启系统监听</p>
+	 * <p>开启监听失败表示已经启动了一个系统实例，发送消息唤醒之前的实例窗口。</p>
 	 */
 	public static final boolean listen() {
 		final boolean ok = ApplicationServer.getInstance().listen();
 		if(!ok) {
-			LOGGER.info("已有系统实例，唤醒主窗口");
+			LOGGER.info("已有系统实例，唤醒实例主窗口。");
 			ApplicationClient.notifyWindow();
 		}
 		return ok;
@@ -140,13 +145,4 @@ public class SystemContext {
 		// TODO：加载效果
 	}
 
-	/**
-	 * <p>系统定时任务</p>
-	 */
-	public static final void timer() {
-		SystemThreadContext.timerFixedDelay(5, 5, TimeUnit.MINUTES, () -> {
-			RequestManager.getInstance().clear(); // 清除DHT超时请求
-		});
-	}
-	
 }

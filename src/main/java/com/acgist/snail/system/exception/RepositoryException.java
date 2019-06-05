@@ -1,7 +1,8 @@
 package com.acgist.snail.system.exception;
 
 /**
- * 数据库异常
+ * <p>数据库异常</p>
+ * <p>用于{@linkplain com.acgist.snail.repository 数据库模块}中出现的异常。</p>
  * 
  * @author acgist
  * @since 1.0.0
