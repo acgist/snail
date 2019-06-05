@@ -1,4 +1,4 @@
-package com.acgist.snail.protocol.torrent;
+package com.acgist.snail.protocol.magnet.bootstrap;
 
 import java.io.File;
 import java.util.LinkedHashMap;
@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.acgist.snail.protocol.torrent.TorrentProtocol;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.bcode.BCodeDecoder;
 import com.acgist.snail.system.bcode.BCodeEncoder;
@@ -17,6 +18,9 @@ import com.acgist.snail.utils.FileUtils;
 
 /**
  * 种子文件创建
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class TorrentBuilder {
 
@@ -32,6 +36,7 @@ public class TorrentBuilder {
 	
 	/**
 	 * 创建文件
+	 * 
 	 * @param path 文件路径
 	 */
 	public void buildFile(String path) {
@@ -78,7 +83,7 @@ public class TorrentBuilder {
 	 * 设置infoHash
 	 */
 	private void infoHash(Map<String, Object> data) {
-		final BCodeDecoder decoder = BCodeDecoder.newInstance(infoHash.info());
+		final BCodeDecoder decoder = BCodeDecoder.newInstance(this.infoHash.info());
 		data.put("info", decoder.nextMap());
 	}
 

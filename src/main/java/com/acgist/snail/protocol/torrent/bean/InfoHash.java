@@ -8,6 +8,9 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * 种子InfoHash
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class InfoHash {
 
@@ -79,7 +82,7 @@ public class InfoHash {
 	 * 磁力链接hash（小写）（40位）
 	 */
 	public String infoHashHex() {
-		return StringUtils.hex(infoHash);
+		return StringUtils.hex(this.infoHash);
 	}
 	
 	/**

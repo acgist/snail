@@ -122,9 +122,11 @@ public class HttpHeaderWrapper {
 	}
 	
 	/**
-	 * 是否支持断点续传
-	 * accept-ranges=bytes
+	 * <p>是否支持断点续传</p>
+	 * <p>
+	 * accept-ranges=bytes<br>
 	 * content-range=bytes 0-100/100
+	 * </p>
 	 */
 	public boolean range() {
 		boolean range = false;

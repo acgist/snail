@@ -23,6 +23,9 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * 数据库
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public abstract class Repository<T extends BaseEntity> {
 
@@ -33,7 +36,7 @@ public abstract class Repository<T extends BaseEntity> {
 	private DatabaseManager databaseManager = DatabaseManager.getInstance();
 	
 	/**
-	 * 数据库列：只允许字符串
+	 * 数据库列：只允许字符串。
 	 */
 	private static final Function<String, String> COLUMN = (value) -> {
 		if(StringUtils.regex(value, COLUMN_REGEX, true)) {
@@ -42,12 +45,18 @@ public abstract class Repository<T extends BaseEntity> {
 		throw new RepositoryException("数据库列格式错误");
 	};
 	
-	protected String table;
+	/**
+	 * 数据库表名
+	 */
+	private String table;
 	
 	protected Repository(String table) {
 		this.table = table;
 	}
 	
+	/**
+	 * 保存
+	 */
 	public void save(T t) {
 		if(t == null) {
 			throw new RepositoryException("保存参数错误：" + t);
@@ -79,6 +88,9 @@ public abstract class Repository<T extends BaseEntity> {
 		this.databaseManager.update(sql.toString(), parameters);
 	}
 
+	/**
+	 * 更新，使用ID更新所有的字段。
+	 */
 	public void update(T t) {
 		if(t == null) {
 			throw new RepositoryException("修改参数错误：" + t);
@@ -117,6 +129,9 @@ public abstract class Repository<T extends BaseEntity> {
 		this.databaseManager.update(sql.toString(), parameters);
 	}
 	
+	/**
+	 * 删除
+	 */
 	public void delete(String id) {
 		if(id == null) {
 			throw new RepositoryException("删除参数错误：" + id);
@@ -129,6 +144,9 @@ public abstract class Repository<T extends BaseEntity> {
 		this.databaseManager.update(sql.toString(), id);
 	}
 
+	/**
+	 * 查找
+	 */
 	public T findOne(String id) {
 		if(id == null) {
 			throw new RepositoryException("查询参数错误：" + id);
@@ -147,6 +165,9 @@ public abstract class Repository<T extends BaseEntity> {
 		return t;
 	}
 	
+	/**
+	 * 查找
+	 */
 	public T findOne(String property, String value) {
 		if(property == null) {
 			throw new RepositoryException("查询参数错误：" + property);
@@ -167,6 +188,9 @@ public abstract class Repository<T extends BaseEntity> {
 		return t;
 	}
 	
+	/**
+	 * 查找
+	 */
 	public List<T> findList(String sql, Object ... parameters) {
 		if(sql == null) {
 			throw new RepositoryException("查询参数错误：" + sql);
@@ -185,6 +209,9 @@ public abstract class Repository<T extends BaseEntity> {
 			.collect(Collectors.toList());
 	}
 	
+	/**
+	 * 查找所有
+	 */
 	public List<T> findAll() {
 		final StringBuilder sql = new StringBuilder();
 		sql
@@ -229,4 +256,3 @@ public abstract class Repository<T extends BaseEntity> {
 	}
 
 }
-	

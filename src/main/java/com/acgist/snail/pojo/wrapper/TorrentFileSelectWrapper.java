@@ -8,6 +8,12 @@ import com.acgist.snail.system.bcode.BCodeEncoder;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 
+/**
+ * 种子文件选择包装器
+ * 
+ * @author acgist
+ * @since 1.0.0
+ */
 public class TorrentFileSelectWrapper {
 
 	private BCodeEncoder encoder;
@@ -16,6 +22,9 @@ public class TorrentFileSelectWrapper {
 	private TorrentFileSelectWrapper() {
 	}
 
+	/**
+	 * 编码器
+	 */
 	public static final TorrentFileSelectWrapper newEncoder(List<String> list) {
 		final TorrentFileSelectWrapper wrapper = new TorrentFileSelectWrapper();
 		if(CollectionUtils.isNotEmpty(list)) {
@@ -25,6 +34,9 @@ public class TorrentFileSelectWrapper {
 		return wrapper;
 	}
 	
+	/**
+	 * 解析器
+	 */
 	public static final TorrentFileSelectWrapper newDecoder(String value) {
 		final TorrentFileSelectWrapper wrapper = new TorrentFileSelectWrapper();
 		if(StringUtils.isNotEmpty(value)) {
@@ -33,13 +45,19 @@ public class TorrentFileSelectWrapper {
 		return wrapper;
 	}
 	
+	/**
+	 * 编码选择文件
+	 */
 	public String description() {
 		if(this.encoder == null) {
 			return null;
 		}
 		return encoder.flush().toString();
 	}
-	
+
+	/**
+	 * 解析选择文件
+	 */
 	public List<String> list() {
 		if(this.decoder == null) {
 			return List.of();

@@ -5,6 +5,9 @@ import com.acgist.snail.repository.Repository;
 
 /**
  * 配置
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class ConfigRepository extends Repository<ConfigEntity> {
 

@@ -13,6 +13,9 @@ import com.acgist.snail.utils.StringUtils;
 
 /***
  * 下载协议
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public abstract class Protocol {
 
@@ -96,7 +99,7 @@ public abstract class Protocol {
 	 * 持久化任务
 	 */
 	protected void persistentTaskEntity() {
-		TaskRepository repository = new TaskRepository();
+		final TaskRepository repository = new TaskRepository();
 		repository.save(this.taskEntity);
 	}
 	
@@ -104,7 +107,7 @@ public abstract class Protocol {
 	 * 新建任务代理
 	 */
 	protected TaskSession buildTaskSession() throws DownloadException {
-		TaskSession taskSession = TaskSession.newInstance(this.taskEntity);
+		final TaskSession taskSession = TaskSession.newInstance(this.taskEntity);
 		this.clean();
 		return taskSession;
 	}
@@ -150,8 +153,8 @@ public abstract class Protocol {
 	 * 设置下载文件地址
 	 */
 	protected String buildFile(String fileName) throws DownloadException {
-		String filePath = DownloadConfig.getPath(fileName);
-		File file = new File(filePath);
+		final String filePath = DownloadConfig.getPath(fileName);
+		final File file = new File(filePath);
 		if(file.exists()) {
 			throw new DownloadException("下载文件已存在：" + file);
 		}

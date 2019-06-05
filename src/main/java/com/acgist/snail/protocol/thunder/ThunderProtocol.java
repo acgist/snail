@@ -8,7 +8,11 @@ import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.manager.ProtocolManager;
 
 /**
- * 迅雷协议
+ * <p>迅雷协议</p>
+ * <p>转换为其他协议。</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class ThunderProtocol extends Protocol {
 
@@ -38,7 +42,7 @@ public class ThunderProtocol extends Protocol {
 	
 	@Override
 	protected Protocol convert() throws DownloadException {
-		String url = this.url.substring(THUNDER_PREFIX.length());
+		final String url = this.url.substring(THUNDER_PREFIX.length());
 		String newUrl = new String(Base64.getDecoder().decode(url));
 		newUrl = newUrl.substring(2, newUrl.length() - 2);
 		return ProtocolManager.getInstance().protocol(newUrl);

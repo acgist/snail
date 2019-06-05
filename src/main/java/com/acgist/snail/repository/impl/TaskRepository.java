@@ -9,6 +9,9 @@ import com.acgist.snail.utils.FileUtils;
 
 /**
  * 任务
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class TaskRepository extends Repository<TaskEntity> {
 	
@@ -28,5 +31,5 @@ public class TaskRepository extends Repository<TaskEntity> {
 		// 删除数据库信息
 		this.delete(entity.getId());
 	}
-	
+
 }

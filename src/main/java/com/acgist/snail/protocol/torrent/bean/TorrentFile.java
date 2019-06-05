@@ -11,6 +11,9 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * 下载文件信息
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class TorrentFile {
 
@@ -29,7 +32,7 @@ public class TorrentFile {
 		if(map == null) {
 			return null;
 		}
-		TorrentFile file = new TorrentFile();
+		final TorrentFile file = new TorrentFile();
 		file.setLength(BCodeDecoder.getLong(map, "length"));
 		file.setEd2k(BCodeDecoder.getBytes(map, "ed2k"));
 		file.setFilehash(BCodeDecoder.getBytes(map, "filehash"));
