@@ -33,7 +33,7 @@ public class PeerConnectGroup {
 	private final BlockingQueue<PeerConnect> peerConnects;
 	
 	private PeerConnectGroup() {
-		peerConnects = new LinkedBlockingQueue<>();
+		this.peerConnects = new LinkedBlockingQueue<>();
 	}
 	
 	public static final PeerConnectGroup newInstance(TorrentSession torrentSession) {

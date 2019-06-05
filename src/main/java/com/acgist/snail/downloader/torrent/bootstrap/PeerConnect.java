@@ -48,8 +48,8 @@ public class PeerConnect {
 	 * 评分
 	 */
 	public long mark() {
-		final long nowSize = peerSession.statistics().uploadSize();
-		final long oldSize = mark.getAndSet(nowSize);
+		final long nowSize = this.peerSession.statistics().uploadSize();
+		final long oldSize = this.mark.getAndSet(nowSize);
 		return nowSize - oldSize;
 	}
 
