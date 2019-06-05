@@ -58,10 +58,10 @@ public class TrackerLauncher implements Runnable {
 
 	@Override
 	public void run() {
-		run = true;
+		this.run = true;
 		if(available()) {
 			LOGGER.debug("TrackerClient查找Peer：{}", client.announceUrl());
-			client.findPeers(this.id, this.torrentSession);
+			this.client.findPeers(this.id, this.torrentSession);
 		}
 	}
 
@@ -84,7 +84,7 @@ public class TrackerLauncher implements Runnable {
 		this.torrentSession.peer(message.getPeers());
 		LOGGER.debug("已完成Peer数量：{}，未完成的Peer数量：{}，下次请求时间：{}", this.done, this.undone, this.interval);
 		if(this.interval != null && this.interval >= 0) { // 添加重复执行
-			torrentSession.timer(this.interval, TimeUnit.SECONDS, this);
+			this.torrentSession.timer(this.interval, TimeUnit.SECONDS, this);
 		}
 	}
 
@@ -110,7 +110,7 @@ public class TrackerLauncher implements Runnable {
 	 * <p>可用状态：TrackerClient可用并且没有释放资源。</p>
 	 */
 	private boolean available() {
-		return client.available() && available;
+		return this.client.available() && this.available;
 	}
 
 }
