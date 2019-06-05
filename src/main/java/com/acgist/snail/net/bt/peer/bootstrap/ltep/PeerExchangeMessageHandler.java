@@ -72,7 +72,7 @@ public class PeerExchangeMessageHandler {
 			LOGGER.warn("不支持UtPeerExchange扩展协议");
 			return;
 		}
-		extensionMessageHandler.pushMessage(type, bytes);
+		this.extensionMessageHandler.pushMessage(type, bytes);
 	}
 	
 	/**
@@ -93,7 +93,8 @@ public class PeerExchangeMessageHandler {
 		if(CollectionUtils.isNotEmpty(peers)) {
 			final AtomicInteger index = new AtomicInteger(0);
 			peers.forEach((host, port) -> {
-				final PeerSession peerSession = PeerManager.getInstance().newPeerSession(infoHash.infoHashHex(), taskSession.statistics(), host, port, PeerConfig.SOURCE_PEX);
+				final PeerSession peerSession = PeerManager.getInstance().newPeerSession(this.infoHash.infoHashHex(),
+					this.taskSession.statistics(), host, port, PeerConfig.SOURCE_PEX);
 				if(peerSession != null) {
 					if(ArrayUtils.isNotEmpty(addedf)) {
 						peerSession.exchange(addedf[index.getAndIncrement()]);
@@ -107,7 +108,7 @@ public class PeerExchangeMessageHandler {
 	 * 客户端的消息类型
 	 */
 	private Byte utPeerExchangeType() {
-		return peerSession.extensionTypeValue(ExtensionType.ut_pex);
+		return this.peerSession.extensionTypeValue(ExtensionType.ut_pex);
 	}
 	
 	/**

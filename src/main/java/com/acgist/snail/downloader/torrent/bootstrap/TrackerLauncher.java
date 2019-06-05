@@ -94,7 +94,7 @@ public class TrackerLauncher implements Runnable {
 	 */
 	public void release() {
 		this.available = false;
-		if(run) {
+		if(this.run) {
 			SystemThreadContext.submit(() -> {
 				if(this.taskSession.complete()) { // 任务完成
 					this.client.complete(this.id, this.torrentSession);

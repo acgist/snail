@@ -155,7 +155,7 @@ public class PeerLauncherMessageHandler {
 	 * 是否被握手
 	 */
 	public boolean handshaked() {
-		return handshaked;
+		return this.handshaked;
 	}
 	
 	/**
@@ -257,7 +257,7 @@ public class PeerLauncherMessageHandler {
 		buffer.put((byte) PeerConfig.HANDSHAKE_NAME_BYTES.length);
 		buffer.put(PeerConfig.HANDSHAKE_NAME_BYTES);
 		buffer.put(PeerConfig.HANDSHAKE_RESERVED);
-		buffer.put(torrentSession.infoHash().infoHash());
+		buffer.put(this.torrentSession.infoHash().infoHash());
 		buffer.put(PeerService.getInstance().peerId());
 		this.send(buffer);
 	}
@@ -328,7 +328,7 @@ public class PeerLauncherMessageHandler {
 	 */
 	public void choke() {
 		LOGGER.debug("阻塞");
-		peerSession.amChoke();
+		this.peerSession.amChoke();
 		pushMessage(PeerMessageConfig.Type.choke, null);
 	}
 
@@ -337,10 +337,10 @@ public class PeerLauncherMessageHandler {
 	 */
 	private void choke(ByteBuffer buffer) {
 		LOGGER.debug("被阻塞");
-		peerSession.peerChoke();
+		this.peerSession.peerChoke();
 		// 不释放资源暂时，让系统自动优化剔除
-//		if(peerLauncher != null) {
-//			peerLauncher.release();
+//		if(this.peerLauncher != null) {
+//			this.peerLauncher.release();
 //		}
 	}
 	
@@ -353,7 +353,7 @@ public class PeerLauncherMessageHandler {
 	 */
 	public void unchoke() {
 		LOGGER.debug("解除阻塞");
-		peerSession.amUnchoke();
+		this.peerSession.amUnchoke();
 		pushMessage(PeerMessageConfig.Type.unchoke, null);
 	}
 	
@@ -363,10 +363,10 @@ public class PeerLauncherMessageHandler {
 	 */
 	private void unchoke(ByteBuffer buffer) {
 		LOGGER.debug("被解除阻塞");
-		peerSession.peerUnchoke();
-		if(action == Action.download) {
-			if(peerLauncher != null) {
-				peerLauncher.launcher(); // 开始下载
+		this.peerSession.peerUnchoke();
+		if(this.action == Action.download) {
+			if(this.peerLauncher != null) {
+				this.peerLauncher.launcher(); // 开始下载
 			}
 		}
 	}
@@ -380,7 +380,7 @@ public class PeerLauncherMessageHandler {
 	 */
 	public void interested() {
 		LOGGER.debug("感兴趣");
-		peerSession.amInterested();
+		this.peerSession.amInterested();
 		pushMessage(PeerMessageConfig.Type.interested, null);
 	}
 
@@ -389,7 +389,7 @@ public class PeerLauncherMessageHandler {
 	 */
 	private void interested(ByteBuffer buffer) {
 		LOGGER.debug("被感兴趣");
-		peerSession.peerInterested();
+		this.peerSession.peerInterested();
 	}
 
 	/**
@@ -401,7 +401,7 @@ public class PeerLauncherMessageHandler {
 	 */
 	public void notInterested() {
 		LOGGER.debug("不感兴趣");
-		peerSession.amNotInterested();
+		this.peerSession.amNotInterested();
 		pushMessage(PeerMessageConfig.Type.notInterested, null);
 	}
 
@@ -410,7 +410,7 @@ public class PeerLauncherMessageHandler {
 	 */
 	private void notInterested(ByteBuffer buffer) {
 		LOGGER.debug("被不感兴趣");
-		peerSession.peerNotInterested();
+		this.peerSession.peerNotInterested();
 	}
 
 	/**
@@ -431,8 +431,8 @@ public class PeerLauncherMessageHandler {
 	private void have(ByteBuffer buffer) {
 		final int index = buffer.getInt();
 		LOGGER.debug("收到have消息：{}", index);
-		peerSession.piece(index);
-		if(torrentStreamGroup.have(index)) { // 已有=不感兴趣
+		this.peerSession.piece(index);
+		if(this.torrentStreamGroup.have(index)) { // 已有=不感兴趣
 			notInterested();
 		} else { // 没有=感兴趣
 			interested();
@@ -447,9 +447,9 @@ public class PeerLauncherMessageHandler {
 	 * </p>
 	 */
 	public void bitfield() {
-		final BitSet pieces = torrentStreamGroup.pieces();
+		final BitSet pieces = this.torrentStreamGroup.pieces();
 		LOGGER.debug("发送位图：{}", pieces);
-		final int pieceSize = torrentSession.torrent().getInfo().pieceSize();
+		final int pieceSize = this.torrentSession.torrent().getInfo().pieceSize();
 		pushMessage(PeerMessageConfig.Type.bitfield, BitfieldUtils.toBytes(pieceSize, pieces));
 	}
 	
@@ -460,11 +460,11 @@ public class PeerLauncherMessageHandler {
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
 		final BitSet pieces = BitfieldUtils.toBitSet(bytes);
-		peerSession.pieces(pieces);
+		this.peerSession.pieces(pieces);
 		LOGGER.debug("收到位图：{}", pieces);
 		final BitSet notHave = new BitSet();
 		notHave.or(pieces);
-		notHave.andNot(torrentStreamGroup.pieces());
+		notHave.andNot(this.torrentStreamGroup.pieces());
 		LOGGER.debug("感兴趣位图：{}", notHave);
 		if(notHave.cardinality() == 0) {
 			notInterested();
@@ -484,7 +484,7 @@ public class PeerLauncherMessageHandler {
 	 * </p>
 	 */
 	public void request(int index, int begin, int length) {
-		if(peerSession.isPeerChocking()) {
+		if(this.peerSession.isPeerChocking()) {
 			return; // 被阻塞不发送请求
 		}
 		LOGGER.debug("发送请求：{}-{}-{}", index, begin, length);
@@ -528,7 +528,7 @@ public class PeerLauncherMessageHandler {
 			return;
 		}
 		LOGGER.debug("发送响应：{}-{}", index, begin);
-		peerSession.upload(bytes.length); // 上传
+		this.peerSession.upload(bytes.length); // 上传
 		ByteBuffer buffer = ByteBuffer.allocate(8 + bytes.length);
 		buffer.putInt(index);
 		buffer.putInt(begin);
@@ -549,8 +549,8 @@ public class PeerLauncherMessageHandler {
 			bytes = new byte[remaining];
 			buffer.get(bytes);
 		}
-		if(peerLauncher != null) {
-			peerLauncher.piece(index, begin, bytes);
+		if(this.peerLauncher != null) {
+			this.peerLauncher.piece(index, begin, bytes);
 		}
 	}
 
@@ -587,7 +587,7 @@ public class PeerLauncherMessageHandler {
 	public void dht() {
 		if(this.peerSession.supportDhtProtocol()) {
 			LOGGER.debug("发送DHT消息");
-			dhtExtensionMessageHandler.port();
+			this.dhtExtensionMessageHandler.port();
 		}
 	}
 	
@@ -596,7 +596,7 @@ public class PeerLauncherMessageHandler {
 	 */
 	private void dht(ByteBuffer buffer) {
 		LOGGER.debug("收到DHT消息");
-		dhtExtensionMessageHandler.onMessage(buffer);
+		this.dhtExtensionMessageHandler.onMessage(buffer);
 	}
 
 	/**
@@ -606,7 +606,7 @@ public class PeerLauncherMessageHandler {
 	public void extension() {
 		if(this.peerSession.supportExtensionProtocol()) {
 			LOGGER.debug("发送扩展消息");
-			extensionMessageHandler.handshake();
+			this.extensionMessageHandler.handshake();
 		}
 	}
 	
@@ -615,14 +615,14 @@ public class PeerLauncherMessageHandler {
 	 */
 	private void extension(ByteBuffer buffer) {
 		LOGGER.debug("收到扩展消息");
-		extensionMessageHandler.onMessage(buffer);
+		this.extensionMessageHandler.onMessage(buffer);
 	}
 	
 	/**
 	 * 发送扩展信息：Pex
 	 */
 	public void exchange(byte[] bytes) {
-		extensionMessageHandler.exchange(bytes);
+		this.extensionMessageHandler.exchange(bytes);
 	}
 	
 	/**

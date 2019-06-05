@@ -79,10 +79,12 @@ public class TorrentDownloader extends Downloader {
 	 */
 	@Override
 	public void delete() {
-		if(torrentSession != null) {
-			torrentSession.releaseUpload();
+		if(this.torrentSession != null) {
+			this.torrentSession.releaseUpload();
 		}
 		super.delete();
+		// TODO：删除Peer、torrent等信息。
+//		TorrentManager.getInstance().remove();
 	}
 	
 	/**
