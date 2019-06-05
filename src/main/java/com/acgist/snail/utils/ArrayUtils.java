@@ -38,6 +38,8 @@ public class ArrayUtils {
 	 * <p>比较字符数组大小（无符号比较）</p>
 	 * <p>长度不同时：长度长的数组大。</p>
 	 * <p>长度相同时：比较每一个字符，高位字符大的大。</p>
+	 * 
+	 * @since 1.1.0
 	 */
 	public static final int compareUnsigned(byte[] sources, byte[] targets) {
 		if(sources == null || targets == null) {
@@ -47,7 +49,6 @@ public class ArrayUtils {
 		} else {
 			for (int index = 0; index < sources.length; index++) {
 				if(sources[index] != targets[index]) {
-//					return Byte.toUnsignedInt(sources[index]) > Byte.toUnsignedInt(targets[index]) ? 1 : -1;
 					return ((char) sources[index]) > ((char) targets[index]) ? 1 : -1;
 				}
 			}

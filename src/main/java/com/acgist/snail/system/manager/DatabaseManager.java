@@ -18,7 +18,10 @@ import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.BeanUtils;
 
 /**
- * 数据库管理器
+ * <p>数据库管理器</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class DatabaseManager {
 
@@ -42,9 +45,9 @@ public class DatabaseManager {
 	 * 查询表是否存在
 	 */
 	public boolean haveTable(String table) {
-		List<ResultSetWrapper> list = select("show tables");
-		for (ResultSetWrapper resultSetWrapper : list) {
-			if(table.equalsIgnoreCase(resultSetWrapper.getString("TABLE_NAME"))) {
+		final List<ResultSetWrapper> tables = select("show tables");
+		for (ResultSetWrapper wrapper : tables) {
+			if(table.equalsIgnoreCase(wrapper.getString("TABLE_NAME"))) {
 				return true;
 			}
 		}
@@ -104,10 +107,10 @@ public class DatabaseManager {
 	 * 结果集封装
 	 */
 	private List<ResultSetWrapper> wrapperResultSet(ResultSet result) throws SQLException {
-		String[] columns = columnNames(result);
-		List<ResultSetWrapper> list = new ArrayList<>();
+		final String[] columns = columnNames(result);
+		final List<ResultSetWrapper> list = new ArrayList<>();
 		while(result.next()) {
-			ResultSetWrapper wrapper = new ResultSetWrapper();
+			final ResultSetWrapper wrapper = new ResultSetWrapper();
 			for (String column : columns) {
 				wrapper.put(column, result.getObject(column));
 			}
@@ -133,8 +136,8 @@ public class DatabaseManager {
 	 * 获取连接
 	 */
 	private Connection connection() throws SQLException {
-		if(connection != null) {
-			return connection;
+		if(this.connection != null) {
+			return this.connection;
 		}
 		synchronized (this) {
 			if(this.connection == null) {
@@ -168,10 +171,10 @@ public class DatabaseManager {
 	
 	private void closeConnection() {
 		try {
-			if(connection != null && !connection.isClosed()) {
-				connection.close();
+			if(this.connection != null && !this.connection.isClosed()) {
+				this.connection.close();
 			}
-			connection = null;
+			this.connection = null;
 		} catch (SQLException e) {
 			LOGGER.error("JDBC连接关闭异常", e);
 		}

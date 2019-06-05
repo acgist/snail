@@ -16,7 +16,10 @@ import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.exception.DownloadException;
 
 /**
- * 下载器管理
+ * <p>下载器管理</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public final class DownloaderManager {
 
@@ -25,9 +28,9 @@ public final class DownloaderManager {
 	private static final DownloaderManager INSTANCE = new DownloaderManager();
 	
 	private DownloaderManager() {
-		manager = ProtocolManager.getInstance();
-		executor = SystemThreadContext.newCacheExecutor(SystemThreadContext.SNAIL_THREAD_DOWNLOADER);
-		downloaderMap = new ConcurrentHashMap<>(DownloadConfig.getSize());
+		this.manager = ProtocolManager.getInstance();
+		this.executor = SystemThreadContext.newCacheExecutor(SystemThreadContext.SNAIL_THREAD_DOWNLOADER);
+		this.downloaderMap = new ConcurrentHashMap<>(DownloadConfig.getSize());
 	}
 	
 	public static final DownloaderManager getInstance() {
@@ -95,7 +98,7 @@ public final class DownloaderManager {
 				if(downloader == null) {
 					throw new DownloadException("添加下载任务失败（下载任务为空）");
 				}
-				downloaderMap.put(downloader.id(), downloader);
+				this.downloaderMap.put(downloader.id(), downloader);
 				return downloader;
 			}
 		} else {
@@ -115,11 +118,11 @@ public final class DownloaderManager {
 	 */
 	public void delete(TaskSession taskSession) {
 		var entity = taskSession.entity();
-		var downloader = downloader(taskSession);
+		var downloader = downloader(taskSession); // 需要定义在线程外面，防止后面remove导致空指针。
 		SystemThreadContext.submit(() -> {
 			downloader.delete();
 		});
-		downloaderMap.remove(entity.getId());
+		this.downloaderMap.remove(entity.getId());
 	}
 
 	/**
@@ -133,14 +136,14 @@ public final class DownloaderManager {
 	 * 获取下载任务
 	 */
 	private IDownloader downloader(TaskSession taskSession) {
-		return downloaderMap.get(taskSession.entity().getId());
+		return this.downloaderMap.get(taskSession.entity().getId());
 	}
 	
 	/**
 	 * 获取下载任务
 	 */
 	public List<TaskSession> tasks() {
-		return downloaderMap.values().stream()
+		return this.downloaderMap.values().stream()
 			.map(IDownloader::task)
 			.collect(Collectors.toList());
 	}
@@ -152,7 +155,7 @@ public final class DownloaderManager {
 	public void refresh() {
 		synchronized (this) {
 			// 当前下载数量
-			var downloaders = downloaderMap.values();
+			var downloaders = this.downloaderMap.values();
 			long count = downloaders.stream().filter(IDownloader::running).count();
 			int downloadSize = DownloadConfig.getSize();
 			if(count == downloadSize) { // 不操作
@@ -164,7 +167,7 @@ public final class DownloaderManager {
 			} else { // 开始准备任务
 				downloaders.stream()
 				.filter(downloader -> downloader.task().await())
-				.forEach(downloader -> executor.submit(downloader));
+				.forEach(downloader -> this.executor.submit(downloader));
 			}
 		}
 	}
@@ -176,9 +179,9 @@ public final class DownloaderManager {
 	 */
 	public void shutdown() {
 		LOGGER.info("关闭下载器管理");
-		downloaderMap.values().stream()
+		this.downloaderMap.values().stream()
 		.filter(downloader -> downloader.task().coming())
 		.forEach(downloader -> downloader.pause());
 	}
-	
+
 }

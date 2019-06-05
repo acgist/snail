@@ -66,7 +66,7 @@ public class ProtocolManager {
 	public Protocol protocol(String url) throws DownloadException {
 		final Optional<Protocol> optional = this.protocols.stream()
 			.filter(protocol -> protocol.available())
-			.map(protocol -> protocol.init(url))
+			.peek(protocol -> protocol.init(url))
 			.filter(protocol -> protocol.verify())
 			.findFirst();
 		if(optional.isEmpty()) {
