@@ -7,7 +7,10 @@ import com.acgist.snail.net.bt.peer.PeerServer;
 import com.acgist.snail.system.initializer.Initializer;
 
 /**
- * Peer初始化
+ * <p>初始化Peer</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class PeerInitializer extends Initializer {
 
@@ -22,9 +25,8 @@ public class PeerInitializer extends Initializer {
 	
 	@Override
 	protected void init() {
-		LOGGER.info("初始化Peer Server");
-		final PeerServer server = PeerServer.getInstance();
-		server.listen();
+		LOGGER.info("初始化Peer");
+		PeerServer.getInstance().listen();
 	}
 
 }

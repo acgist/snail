@@ -15,7 +15,10 @@ import com.acgist.snail.system.manager.DownloaderManager;
 import com.acgist.snail.utils.CollectionUtils;
 
 /**
- * 初始化：下载器
+ * <p>初始化下载器</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class DownloaderInitializer extends Initializer {
 
@@ -31,8 +34,8 @@ public class DownloaderInitializer extends Initializer {
 	@Override
 	protected void init() {
 		LOGGER.info("初始化下载器");
-		TaskRepository repository = new TaskRepository();
-		List<TaskEntity> list = repository.findAll();
+		final TaskRepository repository = new TaskRepository();
+		final List<TaskEntity> list = repository.findAll();
 		if(CollectionUtils.isNotEmpty(list)) {
 			list.stream()
 			.forEach(entity -> {

@@ -1,12 +1,13 @@
--- 建表
+-- 配置
 create table tb_config (
 	`id` VARCHAR(36) NOT NULL,
     `createDate` TIMESTAMP NOT NULL,
     `modifyDate` TIMESTAMP NOT NULL,
-    `name` VARCHAR(512) DEFAULT NULL,
-    `value` VARCHAR(256) DEFAULT NULL,
+    `name` VARCHAR(256) DEFAULT NULL,
+    `value` VARCHAR(1024) DEFAULT NULL,
 	PRIMARY KEY (`id`)
 );
+-- 任务
 create table tb_task (
 	`id` VARCHAR(36) NOT NULL,
     `createDate` TIMESTAMP NOT NULL,
@@ -20,6 +21,6 @@ create table tb_task (
     `status` VARCHAR(32) DEFAULT NULL,
     `size` BIGINT DEFAULT NULL,
     `endDate` TIMESTAMP DEFAULT NULL,
-    `description` VARCHAR(10240) DEFAULT NULL,
+    `description` VARCHAR(5120) DEFAULT NULL,
 	PRIMARY KEY (`id`)
 );

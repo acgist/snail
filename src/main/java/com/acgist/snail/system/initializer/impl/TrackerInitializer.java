@@ -9,7 +9,10 @@ import com.acgist.snail.system.initializer.Initializer;
 import com.acgist.snail.system.manager.TrackerManager;
 
 /**
- * 初始化：注册默认Tracker Client。
+ * <p>初始化Tracker</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class TrackerInitializer extends Initializer {
 
@@ -23,15 +26,10 @@ public class TrackerInitializer extends Initializer {
 	}
 	
 	@Override
-	protected void init() {
-		LOGGER.info("注册默认Tracker Client");
-		try {
-			TrackerManager.getInstance().register();
-		} catch (DownloadException e) {
-			LOGGER.error("注册默认Tracker Client异常", e);
-		}
-		LOGGER.info("初始化Tracker Server");
+	protected void init() throws DownloadException {
+		LOGGER.info("初始化Tracker");
 		TrackerServer.getInstance();
+		TrackerManager.getInstance().register();
 	}
 
 }
