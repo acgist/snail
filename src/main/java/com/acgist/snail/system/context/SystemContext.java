@@ -50,15 +50,15 @@ public class SystemContext {
 	 */
 	public static final void init() {
 		LOGGER.info("系统初始化");
-		DatabaseInitializer.newInstance().initSync();
-		ConfigInitializer.newInstance().initAsyn();
-		ProtocolInitializer.newInstance().initAsyn();
-		DhtInitializer.newInstance().initAsyn();
-		TrackerInitializer.newInstance().initAsyn();
-		UpnpInitializer.newInstance().initAsyn();
-		PeerInitializer.newInstance().initAsyn();
-		TorrentInitializer.newInstance().initAsyn();
-		DownloaderInitializer.newInstance().initAsyn();
+		ConfigInitializer.newInstance().asyn();
+		DatabaseInitializer.newInstance().asyn();
+		ProtocolInitializer.newInstance().asyn();
+		DhtInitializer.newInstance().asyn();
+		TrackerInitializer.newInstance().asyn();
+		UpnpInitializer.newInstance().asyn();
+		PeerInitializer.newInstance().asyn();
+		TorrentInitializer.newInstance().asyn();
+		DownloaderInitializer.newInstance().asyn();
 		SystemContext.timer();
 	}
 	

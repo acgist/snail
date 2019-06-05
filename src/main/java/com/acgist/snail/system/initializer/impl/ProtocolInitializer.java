@@ -11,7 +11,10 @@ import com.acgist.snail.system.initializer.Initializer;
 import com.acgist.snail.system.manager.ProtocolManager;
 
 /**
- * 初始化：下载协议
+ * <p>初始化下载协议</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class ProtocolInitializer extends Initializer {
 

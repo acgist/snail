@@ -11,7 +11,10 @@ import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.initializer.Initializer;
 
 /**
- * UPNP初始化
+ * <p>初始化UPNP</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class UpnpInitializer extends Initializer {
 	
@@ -26,9 +29,8 @@ public class UpnpInitializer extends Initializer {
 	
 	@Override
 	protected void init() {
-		LOGGER.info("初始化UPNP Server");
+		LOGGER.info("初始化UPNP");
 		UpnpServer.getInstance();
-		LOGGER.info("初始化UPNP配置");
 		SystemThreadContext.timer(0, 30, TimeUnit.MINUTES, () -> {
 			UpnpClient.newInstance().config();
 		});

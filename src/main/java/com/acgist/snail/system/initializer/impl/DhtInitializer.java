@@ -7,7 +7,10 @@ import com.acgist.snail.system.initializer.Initializer;
 import com.acgist.snail.system.manager.NodeManager;
 
 /**
- * 初始化：启动DHT
+ * <p>初始化DHT</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class DhtInitializer extends Initializer {
 
@@ -22,7 +25,7 @@ public class DhtInitializer extends Initializer {
 	
 	@Override
 	protected void init() {
-		LOGGER.info("初始DHT默认节点");
+		LOGGER.info("初始DHT");
 		NodeManager.getInstance().register();
 	}
 

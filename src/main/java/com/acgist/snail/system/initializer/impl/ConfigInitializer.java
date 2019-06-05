@@ -11,7 +11,10 @@ import com.acgist.snail.system.config.TrackerConfig;
 import com.acgist.snail.system.initializer.Initializer;
 
 /**
- * 初始化：配置
+ * <p>初始化配置</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class ConfigInitializer extends Initializer {
 
@@ -27,10 +30,10 @@ public class ConfigInitializer extends Initializer {
 	@Override
 	protected void init() {
 		LOGGER.info("初始化配置信息");
+		DhtConfig.getInstance();
 		SystemConfig.getInstance();
 		DatabaseConfig.getInstance();
 		DownloadConfig.getInstance();
-		DhtConfig.getInstance();
 		TrackerConfig.getInstance();
 	}
 
