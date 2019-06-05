@@ -10,7 +10,11 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * Tracker服务列表配置：优先加载{@linkplain TrackerConfig#TRACKER_CONFIG_USER 用户配置}，如果不存在加载默认配置{@linkplain TrackerConfig#TRACKER_CONFIG 默认配置}
+ * <p>Tracker服务列表配置</p>
+ * <p>优先加载{@linkplain TrackerConfig#TRACKER_CONFIG_USER 用户配置}，如果不存在加载默认配置{@linkplain TrackerConfig#TRACKER_CONFIG 默认配置}。</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class TrackerConfig extends PropertiesConfig {
 	
@@ -44,7 +48,7 @@ public class TrackerConfig extends PropertiesConfig {
 	public enum Action {
 		
 		connect(0), // 连接
-		announce(1), // 获取信息
+		announce(1), // 声明信息
 		scrape(2), // 刷新信息
 		error(3); // 错误
 		
@@ -78,6 +82,9 @@ public class TrackerConfig extends PropertiesConfig {
 		return INSTANCE;
 	}
 	
+	/**
+	 * 默认Tracker声明地址
+	 */
 	private List<String> announces = new ArrayList<>();
 	
 	private void init() {

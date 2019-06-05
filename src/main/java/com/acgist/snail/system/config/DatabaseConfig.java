@@ -5,6 +5,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * 数据库配置
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class DatabaseConfig extends PropertiesConfig {
 
@@ -79,7 +82,6 @@ public class DatabaseConfig extends PropertiesConfig {
 
 	/**
 	 * 数据库用户密码
-	 * @return
 	 */
 	public static final String getPassword() {
 		return INSTANCE.password;

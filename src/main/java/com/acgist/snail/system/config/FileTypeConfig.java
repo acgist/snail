@@ -8,9 +8,15 @@ import java.util.Optional;
 
 /**
  * 文件类型配置
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class FileTypeConfig {
 
+	/**
+	 * 文件类型
+	 */
 	public enum FileType {
 		
 		image("图片", "image.png"),
@@ -82,7 +88,7 @@ public class FileTypeConfig {
 	 * 获取文件类型
 	 */
 	public static final FileType type(String ext) {
-		Optional<Entry<FileType, List<String>>> optional = TYPES.entrySet()
+		final Optional<Entry<FileType, List<String>>> optional = TYPES.entrySet()
 			.stream()
 			.filter(entry -> {
 				return entry.getValue()

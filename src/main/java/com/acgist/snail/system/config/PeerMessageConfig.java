@@ -1,13 +1,16 @@
 package com.acgist.snail.system.config;
 
 /**
- * 消息类型
+ * Peer消息类型
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class PeerMessageConfig {
 
 	/**
-	 * Peer消息类型
-	 * http://www.bittorrent.org/beps/bep_0004.html
+	 * <p>Peer消息类型</p>
+	 * <p>参考链接：http://www.bittorrent.org/beps/bep_0004.html</p>
 	 */
 	public enum Type {
 		
