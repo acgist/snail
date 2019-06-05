@@ -6,25 +6,26 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.utils.NetUtils;
 
 /**
- * 系统配置
+ * <p>系统配置</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class SystemConfig extends PropertiesConfig {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseConfig.class);
+	
+	private static final String SYSTEM_CONFIG = "/config/system.properties";
 	
 	/**
 	 * <p>最大的网络包大小。</p>
 	 * <p>所有的需要创建ByteBuffer的长度由外部Peer设置时需要验证长度，防止恶意攻击导致内存泄露。</p>
 	 */
 	public static final int MAX_NET_BUFFER_SIZE = 10 * 1024 * 1024;
-	
-	private static final String SYSTEM_CONFIG = "/config/system.properties";
-	
 	/**
 	 * 系统默认编码（file.encoding）
 	 */
 	public static final String DEFAULT_CHARSET = "utf-8";
-	
 	/**
 	 * 无符号BYTE的大小
 	 */
@@ -160,8 +161,8 @@ public class SystemConfig extends PropertiesConfig {
 	}
 
 	/**
-	 * 服务端口（Peer、DHT、UTP）
-	 * 本机注册使用
+	 * <p>服务端口（Peer、DHT、UTP）</p>
+	 * <p>本机注册使用</p>
 	 */
 	public static final Integer getBtPort() {
 		return INSTANCE.btPort;
@@ -176,9 +177,9 @@ public class SystemConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 服务端口（外网：Peer、DHT、UTP）
-	 * 外网使用，外网的Peer连接此端口。
-	 * 如果不存在返回{@linkplain #getBtPort() 本机端口}。
+	 * <p>服务端口（外网：Peer、DHT、UTP）</p>
+	 * <p>外网使用，外网的Peer连接此端口。</p>
+	 * <p>如果不存在返回{@linkplain #getBtPort() 本机端口}。</p>
 	 */
 	public static final Integer getBtPortExt() {
 		if(INSTANCE.btPortExt == null) {

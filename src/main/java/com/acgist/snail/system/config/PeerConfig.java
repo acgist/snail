@@ -4,10 +4,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Peer终端名称：
- * Azureus-style：-名称（2）+版本（4）-随机数
- * Shadow's-style：名称（1）+版本（4）----随机数
- * http://www.bittorrent.org/beps/bep_0020.html
+ * <p>Peer配置</p>
+ * <p>
+ * 命名方式：<br>
+ * Azureus-style：-名称（2）+版本（4）-随机数<br>
+ * Shadow's-style：名称（1）+版本（4）----随机数<br>
+ * 参考链接：http://www.bittorrent.org/beps/bep_0020.html
+ * </p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class PeerConfig {
 	
@@ -22,7 +28,6 @@ public class PeerConfig {
 	 * reserved长度
 	 */
 	public static final int RESERVED_LENGTH = 8;
-	
 	/**
 	 * 保留位：http://www.bittorrent.org/beps/bep_0004.html
 	 */

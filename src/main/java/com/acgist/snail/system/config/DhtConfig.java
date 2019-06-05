@@ -11,7 +11,11 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * DHT服务器列表配置：优先加载{@linkplain DhtConfig#DHT_CONFIG_USER 用户配置}，如果不存在加载默认配置{@linkplain DhtConfig#DHT_CONFIG 默认配置}
+ * <p>DHT服务器列表配置</p>
+ * <p>优先加载{@linkplain DhtConfig#DHT_CONFIG_USER 用户配置}，如果不存在加载默认配置{@linkplain DhtConfig#DHT_CONFIG 默认配置}。</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class DhtConfig extends PropertiesConfig {
 	
@@ -37,7 +41,7 @@ public class DhtConfig extends PropertiesConfig {
 	public static final String KEY_TARGET = "target"; // 被查找的NodeId
 	public static final String KEY_INFO_HASH = "info_hash"; // infoHash
 	/**
-	 * 0|1：存在且非0=忽略端口参数，使用UDP包的源端口为对等端端口，支持uTP。
+	 * 0|1：存在且等于“1”时忽略端口参数，使用UDP包的源端口为对等端端口，支持uTP。
 	 */
 	public static final String KEY_IMPLIED_PORT = "implied_port";
 	
@@ -74,6 +78,9 @@ public class DhtConfig extends PropertiesConfig {
 		return INSTANCE;
 	}
 	
+	/**
+	 * 默认DHT节点
+	 */
 	private Map<String, Integer> nodes = new LinkedHashMap<>();
 	
 	private void init() {
@@ -82,7 +89,7 @@ public class DhtConfig extends PropertiesConfig {
 			final String host = (String) entry.getKey();
 			final String port = (String) entry.getValue();
 			if(StringUtils.isNotEmpty(host) && StringUtils.isNumeric(port)) {
-				nodes.put(host, Integer.valueOf(port));
+				this.nodes.put(host, Integer.valueOf(port));
 			} else {
 				LOGGER.warn("注册默认DHT节点失败：{}-{}", host, port);
 			}

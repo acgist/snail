@@ -23,7 +23,7 @@ public class UtpConfig {
 	public static final byte UTP_VERSION = 1;
 
 	/**
-	 * 类型+版本
+	 * 类型 + 版本
 	 */
 	public static final byte TYPE_DATA  = 0x01;
 	public static final byte TYPE_FIN   = 0x11;
@@ -37,7 +37,7 @@ public class UtpConfig {
 	public static final byte EXTENSION = 0;
 	
 	/**
-	 * 最大包长度
+	 * UDP最大包长度
 	 */
 	public static final int MAX_PACKET_SIZE = 1472;
 	

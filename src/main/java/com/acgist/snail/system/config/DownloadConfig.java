@@ -12,7 +12,11 @@ import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * 下载配置（用户配置）：默认从配置文件加载，如果数据有配置则使用数据库配置替换
+ * <p>下载配置（用户配置）</p>
+ * <p>默认从配置文件加载，如果数据有配置则使用数据库配置替换。</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public class DownloadConfig extends PropertiesConfig {
 
@@ -67,7 +71,7 @@ public class DownloadConfig extends PropertiesConfig {
 	 * 数据库初始化配置
 	 */
 	private void initFromDB() {
-		ConfigRepository configRepository = new ConfigRepository();
+		final ConfigRepository configRepository = new ConfigRepository();
 		ConfigEntity entity = null;
 		entity = configRepository.findName(DOWNLOAD_PATH);
 		path = configString(entity, path);
@@ -99,7 +103,7 @@ public class DownloadConfig extends PropertiesConfig {
 	 * 设置下载目录
 	 */
 	public static final void setPath(String path) {
-		ConfigRepository configRepository = new ConfigRepository();
+		final ConfigRepository configRepository = new ConfigRepository();
 		INSTANCE.path = path;
 		configRepository.updateConfig(DOWNLOAD_PATH, path);
 	}
@@ -132,7 +136,7 @@ public class DownloadConfig extends PropertiesConfig {
 	 * 设置下载任务数量
 	 */
 	public static final void setSize(Integer size) {
-		ConfigRepository configRepository = new ConfigRepository();
+		final ConfigRepository configRepository = new ConfigRepository();
 		INSTANCE.size = size;
 		configRepository.updateConfig(DOWNLOAD_SIZE, String.valueOf(size));
 	}
@@ -148,7 +152,7 @@ public class DownloadConfig extends PropertiesConfig {
 	 * 设置消息提示
 	 */
 	public static final void setNotice(Boolean notice) {
-		ConfigRepository configRepository = new ConfigRepository();
+		final ConfigRepository configRepository = new ConfigRepository();
 		INSTANCE.notice = notice;
 		configRepository.updateConfig(DOWNLOAD_NOTICE, String.valueOf(notice));
 	}
@@ -164,7 +168,7 @@ public class DownloadConfig extends PropertiesConfig {
 	 * 设置下载速度（单个）（KB）
 	 */
 	public static final void setBuffer(Integer buffer) {
-		ConfigRepository configRepository = new ConfigRepository();
+		final ConfigRepository configRepository = new ConfigRepository();
 		INSTANCE.buffer = buffer;
 		configRepository.updateConfig(DOWNLOAD_BUFFER, String.valueOf(buffer));
 	}
@@ -187,7 +191,7 @@ public class DownloadConfig extends PropertiesConfig {
 	 * 设置最后一次选择目录
 	 */
 	public static final void setLastPath(String lastPath) {
-		ConfigRepository configRepository = new ConfigRepository();
+		final ConfigRepository configRepository = new ConfigRepository();
 		INSTANCE.lastPath = lastPath;
 		configRepository.updateConfig(DOWNLOAD_LAST_PATH, lastPath);
 	}
@@ -203,7 +207,7 @@ public class DownloadConfig extends PropertiesConfig {
 	 * 磁盘缓存（单个）（MB）
 	 */
 	public static final void setMemoryBuffer(Integer memoryBuffer) {
-		ConfigRepository configRepository = new ConfigRepository();
+		final ConfigRepository configRepository = new ConfigRepository();
 		INSTANCE.memoryBuffer = memoryBuffer;
 		configRepository.updateConfig(DOWNLOAD_MEMORY_BUFFER, String.valueOf(memoryBuffer));
 	}
