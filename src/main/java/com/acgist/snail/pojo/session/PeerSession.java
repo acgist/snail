@@ -23,9 +23,9 @@ import com.acgist.snail.utils.StringUtils;
 public class PeerSession implements IStatistics {
 
 	/**
-	 * TODO：优化失败次数
+	 * 连接失败次数
 	 */
-	private static final int MAX_FAIL_TIMES = 2;
+	private static final int MAX_FAIL_TIMES = 3;
 	
 	private StatisticsSession statistics;
 

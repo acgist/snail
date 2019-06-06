@@ -41,7 +41,7 @@ public class HttpTrackerClient extends TrackerClient {
 	}
 
 	public static final HttpTrackerClient newInstance(String announceUrl) throws NetException {
-		final String scrapeUrl = announceUrlToScrapeUrl(announceUrl);
+		final String scrapeUrl = buildScrapeUrl(announceUrl);
 		return new HttpTrackerClient(scrapeUrl, announceUrl);
 	}
 
@@ -117,8 +117,8 @@ public class HttpTrackerClient extends TrackerClient {
 		.append("compact").append("=").append("1").append("&") // 默认：1（紧凑）
 		.append("event").append("=").append(event.name()).append("&") // 事件：started、completed、stopped
 		.append("numwant").append("=").append("50"); // 想要获取的Peer数量
-		if(StringUtils.isNotEmpty(trackerId)) {
-			builder.append("&").append("trackerid").append("=").append(trackerId); // 跟踪器ID
+		if(StringUtils.isNotEmpty(this.trackerId)) {
+			builder.append("&").append("trackerid").append("=").append(this.trackerId); // 跟踪器ID
 		}
 		return builder.toString();
 	}
@@ -135,7 +135,7 @@ public class HttpTrackerClient extends TrackerClient {
 	 *	~http://example.com/x%064announce		-> (scrape not supported)
 	 * </pre>
 	 */
-	private static final String announceUrlToScrapeUrl(String url) {
+	private static final String buildScrapeUrl(String url) {
 		if(url.contains(ANNOUNCE_URL_SUFFIX)) {
 			return url.replace(ANNOUNCE_URL_SUFFIX, SCRAPE_URL_SUFFIX);
 		}

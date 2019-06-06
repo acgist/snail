@@ -1,7 +1,5 @@
 package com.acgist.snail.downloader.torrent.bootstrap;
 
-import java.util.concurrent.TimeUnit;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +18,7 @@ import com.acgist.snail.utils.UniqueCodeUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class TrackerLauncher implements Runnable {
+public class TrackerLauncher {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerLauncher.class);
 	
@@ -56,8 +54,7 @@ public class TrackerLauncher implements Runnable {
 		return this.id;
 	}
 
-	@Override
-	public void run() {
+	public void findPeer() {
 		this.run = true;
 		if(available()) {
 			LOGGER.debug("TrackerClient查找Peer：{}", client.announceUrl());
@@ -83,9 +80,6 @@ public class TrackerLauncher implements Runnable {
 		this.undone = message.getUndone();
 		this.torrentSession.peer(message.getPeers());
 		LOGGER.debug("已完成Peer数量：{}，未完成的Peer数量：{}，下次请求时间：{}", this.done, this.undone, this.interval);
-		if(this.interval != null && this.interval >= 0) { // 添加重复执行
-			this.torrentSession.timer(this.interval, TimeUnit.SECONDS, this);
-		}
 	}
 
 	/**
@@ -112,5 +106,5 @@ public class TrackerLauncher implements Runnable {
 	private boolean available() {
 		return this.client.available() && this.available;
 	}
-
+	
 }

@@ -2,7 +2,6 @@ package com.acgist.snail.downloader.torrent.bootstrap;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,10 +54,18 @@ public class TrackerLauncherGroup {
 		}).forEach(launcher -> {
 			try {
 				this.trackerLaunchers.add(launcher);
-				this.torrentSession.timer(0, TimeUnit.SECONDS, launcher);
 			} catch (Exception e) {
 				LOGGER.error("Tracker执行异常", e);
 			}
+		});
+	}
+
+	/**
+	 * 查询Peer
+	 */
+	public void findPeer() {
+		this.trackerLaunchers.forEach(launcher -> {
+			launcher.findPeer();
 		});
 	}
 

@@ -34,7 +34,7 @@ public class TrackerClientUdpTest {
 		TorrentSession session = TorrentManager.getInstance().newTorrentSession(path);
 //		UdpTrackerClient client = UdpTrackerClient.newInstance("udp://exodus.desync.com:6969/announce");
 //		TrackerManager.getInstance().newTrackerLauncher(client, session);
-		var list = TrackerManager.getInstance().clients("udp://exodus.desync.com:6969/announce", null);
+		var list = TrackerManager.getInstance().clients("udp://tracker.uw0.xyz:6969/announce", null);
 		TrackerClient client = list.get(0);
 		client.announce(1000, session);
 		ThreadUtils.sleep(Long.MAX_VALUE);

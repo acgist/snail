@@ -302,5 +302,21 @@
 			<name>The 3-Clause BSD License</name>
 		</license>
 	</licenses>
+	
+	<!-- 发布命令：mvn deploy -e -->
+	<!--
+	<distributionManagement>
+		<repository>
+			<id>releases</id>
+			<name>Nexus Release Repository</name>
+			<url>http://127.0.0.1:9081/nexus/content/repositories/releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<name>Nexus Snapshot Repository</name>
+			<url>http://127.0.0.1:9081/nexus/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+	-->
 
 </project>
