@@ -30,7 +30,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerClient.class);
 	
 	/**
-	 * 最大失败次数，TODO：优化失败次数。
+	 * 最大失败次数，超过 这个次数将会被标记无效，以后也不再使用。
 	 */
 	private static final int MAX_FAIL_TIMES = 3;
 	
@@ -45,7 +45,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	 */
 	private AtomicBoolean available = new AtomicBoolean(true);
 	/**
-	 * 失败次数，成功后清零，超过一定次数#{@link MAX_FAIL_TIMES}设置为不可用
+	 * 失败次数，成功后清零，超过一定次数#{@link #MAX_FAIL_TIMES}设置为不可用
 	 */
 	private AtomicInteger failTimes = new AtomicInteger(0);
 	/**
@@ -68,7 +68,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	 * 是否可用，如果多次超时标记不可用状态
 	 */
 	public boolean available() {
-		return available.get();
+		return this.available.get();
 	}
 	
 	/**
@@ -80,13 +80,13 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 		}
 		try {
 			announce(sid, torrentSession);
-			failTimes.set(0);
-			weight--;
+			this.failTimes.set(0);
+			this.weight++;
 		} catch (Exception e) {
-			weight++;
-			if(failTimes.incrementAndGet() > MAX_FAIL_TIMES) {
-				available.set(false);
-				failMessage = e.getMessage();
+			this.weight--;
+			if(this.failTimes.incrementAndGet() > MAX_FAIL_TIMES) {
+				this.available.set(false);
+				this.failMessage = e.getMessage();
 				LOGGER.info("失败次数过多，停用Tracker Client，announceUrl：{}", this.announceUrl);
 			}
 			LOGGER.error("查找Peer异常，当前失败次数：{}", failTimes.get(), e);
@@ -99,7 +99,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	public abstract void announce(Integer sid, TorrentSession torrentSession) throws NetException;
 	
 	/**
-	 * 完成
+	 * 完成，下载完成时推送，如果一开始时就已经完成不需要推送。
 	 */
 	public abstract void complete(Integer sid, TorrentSession torrentSession);
 	
@@ -159,6 +159,11 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 			return StringUtils.equals(this.announceUrl, client.announceUrl);
 		}
 		return false;
+	}
+	
+	@Override
+	public String toString() {
+		return ObjectUtils.toString(this, this.id, this.type, this.failTimes, this.announceUrl);
 	}
 	
 }

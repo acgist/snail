@@ -89,8 +89,8 @@ public class InfoHash {
 	 * 种子ID（网络传输使用）
 	 */
 	public String infoHashURL() {
-		final String infoHashHex = infoHashHex();
 		int index = 0;
+		final String infoHashHex = infoHashHex();
 		final int length = infoHashHex.length();
 		final StringBuilder builder = new StringBuilder();
 		do {

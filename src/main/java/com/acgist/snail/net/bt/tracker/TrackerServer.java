@@ -2,6 +2,12 @@ package com.acgist.snail.net.bt.tracker;
 
 import com.acgist.snail.net.UdpServer;
 
+/**
+ * <p>Tracker Server</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
+ */
 public class TrackerServer extends UdpServer<TrackerAcceptHandler> {
 
 //	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerServer.class);

@@ -31,13 +31,11 @@ public class UdpTrackerClient extends com.acgist.snail.net.bt.tracker.bootstrap.
 	
 	private final String host;
 	private final int port;
-	
-	private final TrackerClient trackerClient;
-	
 	/**
 	 * 连接ID：获取Peer时使用。
 	 */
 	private Long connectionId;
+	private final TrackerClient trackerClient;
 
 	private UdpTrackerClient(String scrapeUrl, String announceUrl) throws NetException {
 		super(scrapeUrl, announceUrl, Protocol.udp);
@@ -54,14 +52,14 @@ public class UdpTrackerClient extends com.acgist.snail.net.bt.tracker.bootstrap.
 	
 	@Override
 	public void announce(Integer sid, TorrentSession torrentSession) throws NetException {
-		if(connectionId == null) { // 重试一次
+		if(this.connectionId == null) { // 重试一次
 			synchronized (this) {
-				if(connectionId == null) {
+				if(this.connectionId == null) {
 					buildConnectionId();
 				}
 				ThreadUtils.wait(this, Duration.ofSeconds(com.acgist.snail.net.bt.tracker.bootstrap.TrackerClient.TIMEOUT));
-				if(connectionId == null) {
-					throw new NetException("获取Tracker connectionId失败");
+				if(this.connectionId == null) {
+					throw new NetException("获取UdpTrackerClient connectionId失败");
 				}
 			}
 		}
