@@ -17,7 +17,6 @@ import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
 import com.acgist.snail.system.config.DownloadConfig;
-import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.IoUtils;
 
@@ -103,7 +102,7 @@ public class HttpDownloader extends Downloader {
 		HttpResponse<InputStream> response = null;
 		try {
 			response = HTTPClient.request(client, request, BodyHandlers.ofInputStream());
-		} catch (NetException e) {
+		} catch (Exception e) {
 			fail("HTTP请求失败");
 			LOGGER.error("HTTP请求异常", e);
 			return;

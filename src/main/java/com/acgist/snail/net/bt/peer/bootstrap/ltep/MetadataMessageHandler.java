@@ -104,7 +104,7 @@ public class MetadataMessageHandler {
 	 * 处理请求：request
 	 */
 	private void request(BCodeDecoder decoder) {
-		LOGGER.warn("收到UtMetadata消息-request");
+		LOGGER.debug("收到UtMetadata消息-request");
 		final int piece = decoder.getInteger(ARG_PIECE);
 		data(piece);
 	}
@@ -115,7 +115,7 @@ public class MetadataMessageHandler {
 	 * @param piece 种子块索引
 	 */
 	public void data(int piece) {
-		LOGGER.warn("发送UtMetadata消息-data");
+		LOGGER.debug("发送UtMetadata消息-data");
 		final byte[] bytes = infoHash.info();
 		if(bytes == null) {
 			reject();
@@ -145,7 +145,7 @@ public class MetadataMessageHandler {
 	 * @param decoder B编码数据
 	 */
 	private void data(BCodeDecoder decoder) {
-		LOGGER.warn("收到UtMetadata消息-data");
+		LOGGER.debug("收到UtMetadata消息-data");
 		boolean complete = false; // 下载完成
 		final int piece = decoder.getInteger(ARG_PIECE);
 		final byte[] bytes = this.infoHash.info();
@@ -170,7 +170,7 @@ public class MetadataMessageHandler {
 	 * 发出请求：reject
 	 */
 	public void reject() {
-		LOGGER.warn("发送UtMetadata消息-reject");
+		LOGGER.debug("发送UtMetadata消息-reject");
 		final var reject = buildMessage(PeerMessageConfig.UtMetadataType.reject, 0);
 		pushMessage(reject);
 	}
@@ -179,7 +179,7 @@ public class MetadataMessageHandler {
 	 * 处理请求：reject
 	 */
 	private void reject(BCodeDecoder decoder) {
-		LOGGER.warn("收到UtMetadata消息-reject");
+		LOGGER.debug("收到UtMetadata消息-reject");
 	}
 	
 	/**

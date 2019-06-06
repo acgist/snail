@@ -51,7 +51,7 @@ public class DhtLauncher implements Runnable {
 			final var list = pick();
 			findPeers(list);
 		} catch (Exception e) {
-			LOGGER.error("DHT任务异常", e);
+			LOGGER.error("执行DHT定时任务异常", e);
 		}
 	}
 
@@ -96,7 +96,6 @@ public class DhtLauncher implements Runnable {
 	 * @param port 端口
 	 */
 	public void put(String host, Integer port) {
-		LOGGER.debug("添加DHT客户端：{}-{}", host, port);
 		this.dhtAddress.add(NetUtils.buildSocketAddress(host, port));
 	}
 	
