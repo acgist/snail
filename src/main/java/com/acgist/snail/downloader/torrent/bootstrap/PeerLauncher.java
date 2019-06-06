@@ -134,7 +134,7 @@ public class PeerLauncher {
 			return;
 		}
 		if(index != this.downloadPiece.getIndex()) {
-			LOGGER.warn("下载的Piece索引不符");
+			LOGGER.warn("下载Piece索引不符");
 			return;
 		}
 		this.havePieceMessage = true;
@@ -282,7 +282,7 @@ public class PeerLauncher {
 				LOGGER.warn("下载的Piece校验失败：{}", this.downloadPiece.getIndex());
 			}
 		} else { // 上次选择的Piece没有完成
-			LOGGER.debug("上次选择的Piece未下载完成：{}", this.downloadPiece.getIndex());
+			LOGGER.debug("上次选择Piece未下载完成：{}", this.downloadPiece.getIndex());
 		}
 		this.downloadPiece = this.torrentStreamGroup.pick(this.peerSession.availablePieces());
 		if(LOGGER.isDebugEnabled()) {

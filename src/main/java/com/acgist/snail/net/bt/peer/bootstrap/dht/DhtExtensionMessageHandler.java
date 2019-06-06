@@ -2,6 +2,9 @@ package com.acgist.snail.net.bt.peer.bootstrap.dht;
 
 import java.nio.ByteBuffer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.downloader.torrent.bootstrap.DhtLauncher;
 import com.acgist.snail.net.bt.peer.bootstrap.PeerLauncherMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
@@ -19,6 +22,8 @@ import com.acgist.snail.utils.NetUtils;
  * @since 1.0.0
  */
 public class DhtExtensionMessageHandler {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(DhtExtensionMessageHandler.class);
 	
 	private final DhtLauncher dhtLauncher;
 	private final PeerSession peerSession;
@@ -45,6 +50,9 @@ public class DhtExtensionMessageHandler {
 	
 	private void port(ByteBuffer buffer) {
 		final int port = NetUtils.decodePort(buffer.getShort());
+		if(LOGGER.isDebugEnabled()) {
+			LOGGER.debug("DHT扩展添加DHT节点：{}-{}", this.peerSession.host(), port);
+		}
 		this.peerSession.dhtPort(port);
 		if(this.dhtLauncher != null) {
 			this.dhtLauncher.put(this.peerSession.host(), port);
