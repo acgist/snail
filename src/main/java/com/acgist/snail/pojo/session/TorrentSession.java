@@ -44,12 +44,14 @@ public class TorrentSession {
 	 * PEX优化定时
 	 */
 	private static final Duration PEX_INTERVAL = Duration.ofSeconds(SystemConfig.getPexInterval());
-	
 	/**
 	 * DHT任务执行周期
 	 */
 	private static final Duration DHT_INTERVAL = Duration.ofSeconds(SystemConfig.getDhtInterval());
-	
+	/**
+	 * Tracker任务执行周期
+	 */
+	private static final Duration TRACKER_INTERVAL = Duration.ofSeconds(SystemConfig.getTrackerInterval());
 	/**
 	 * Peer优化定时
 	 */
@@ -113,10 +115,6 @@ public class TorrentSession {
 	 */
 	private ScheduledFuture<?> dhtLauncherTimer;
 	/**
-	 * TrackerLauncher定时器
-	 */
-	private ScheduledFuture<?> trackerLauncherTimer;
-	/**
 	 * PeerConnectGroup定时器
 	 */
 	private ScheduledFuture<?> peerConnectGroupTimer;
@@ -124,6 +122,10 @@ public class TorrentSession {
 	 * PeerLauncherGroup定时器
 	 */
 	private ScheduledFuture<?> peerLauncherGroupTimer;
+	/**
+	 * TrackerLauncherGroup定时器
+	 */
+	private ScheduledFuture<?> trackerLauncherGroupTimer;
 
 	private TorrentSession(InfoHash infoHash, Torrent torrent) throws DownloadException {
 		if(torrent == null || infoHash == null) {
@@ -254,7 +256,7 @@ public class TorrentSession {
 	 * 加载Tracker定时查询任务
 	 */
 	private void loadTrackerLauncherGroupTimer() {
-		this.trackerLauncherTimer = this.timerFixedDelay(0, 60, TimeUnit.SECONDS, () -> {
+		this.trackerLauncherGroupTimer = this.timerFixedDelay(0L, TRACKER_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
 			this.trackerLauncherGroup.findPeer();
 		});
 	}
@@ -380,7 +382,7 @@ public class TorrentSession {
 			this.dhtLauncherTimer.cancel(false);
 		}
 		if(this.trackerLauncherGroup != null) {
-			this.trackerLauncherTimer.cancel(false);
+			this.trackerLauncherGroupTimer.cancel(false);
 			this.trackerLauncherGroup.release();
 		}
 		SystemThreadContext.shutdownNow(this.executor);
@@ -496,22 +498,8 @@ public class TorrentSession {
 		return this.peerConnectGroup;
 	}
 	
-	/**
-	 * 如果没有下载，只是加载时为null。
-	 */
-	public PeerLauncherGroup peerLauncherGroup() {
-		return this.peerLauncherGroup;
-	}
-	
 	public TorrentStreamGroup torrentStreamGroup() {
 		return this.torrentStreamGroup;
-	}
-	
-	/**
-	 * 如果没有下载，只是加载时为null。
-	 */
-	public TrackerLauncherGroup trackerLauncherGroup() {
-		return this.trackerLauncherGroup;
 	}
 	
 }

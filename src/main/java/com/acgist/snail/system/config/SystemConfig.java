@@ -69,6 +69,7 @@ public class SystemConfig extends PropertiesConfig {
 	
 	private Integer dhtInterval; // DHT执行周期（秒）
 	private Integer pexInterval; // PEX执行周期（秒）
+	private Integer trackerInterval; // Tracker执行周期（秒）
 	private Integer peerOptimizeInterval; // 单个任务Peer优化周期（秒）
 
 	/**
@@ -88,6 +89,7 @@ public class SystemConfig extends PropertiesConfig {
 		INSTANCE.pieceRepeatSize = getInteger("acgist.piece.repeat.size");
 		INSTANCE.dhtInterval = getInteger("acgist.dht.interval");
 		INSTANCE.pexInterval = getInteger("acgist.pex.interval");
+		INSTANCE.trackerInterval = getInteger("acgist.tracker.interval");
 		INSTANCE.peerOptimizeInterval = getInteger("acgist.peer.optimize.interval");
 	}
 
@@ -108,6 +110,7 @@ public class SystemConfig extends PropertiesConfig {
 		LOGGER.info("任务即将完成时可以重复选择下载的剩下Piece数量：{}", this.pieceRepeatSize);
 		LOGGER.info("DHT执行周期（秒）：{}", this.dhtInterval);
 		LOGGER.info("PEX执行周期（秒）：{}", this.pexInterval);
+		LOGGER.info("Tracker执行周期（秒）：{}", this.trackerInterval);
 		LOGGER.info("单个任务Peer优化周期（秒）：{}", this.peerOptimizeInterval);
 	}
 	
@@ -217,6 +220,13 @@ public class SystemConfig extends PropertiesConfig {
 	}
 
 	/**
+	 * DHT执行周期（秒）
+	 */
+	public static final Integer getDhtInterval() {
+		return INSTANCE.dhtInterval;
+	}
+	
+	/**
 	 * PEX执行周期（秒）
 	 */
 	public static final Integer getPexInterval() {
@@ -224,17 +234,17 @@ public class SystemConfig extends PropertiesConfig {
 	}
 	
 	/**
+	 * Tracker执行周期（秒）
+	 */
+	public static final Integer getTrackerInterval() {
+		return INSTANCE.trackerInterval;
+	}
+	
+	/**
 	 * 单个任务Peer优化周期
 	 */
 	public static final Integer getPeerOptimizeInterval() {
 		return INSTANCE.peerOptimizeInterval;
-	}
-	
-	/**
-	 * DHT执行周期（秒）
-	 */
-	public static final Integer getDhtInterval() {
-		return INSTANCE.dhtInterval;
 	}
 
 	/**
