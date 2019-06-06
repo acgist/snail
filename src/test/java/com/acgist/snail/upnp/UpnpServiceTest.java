@@ -28,7 +28,7 @@ public class UpnpServiceTest {
 	@Test
 	public void addPortMapping() throws NetException {
 		UpnpService.getInstance().load(serviceUrl);
-		System.out.println(UpnpService.getInstance().addPortMapping(18888, 18888, Protocol.tcp));
+		System.out.println(UpnpService.getInstance().addPortMapping(18888, 18888, Protocol.udp));
 	}
 
 	@Test

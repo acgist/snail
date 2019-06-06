@@ -32,8 +32,9 @@ public abstract class UdpAcceptHandler {
 		EXECUTOR.submit(() -> {
 			try {
 				synchronized (handler) {
+					handler.handle(channel, socketAddress);
 					if(handler.available()) {
-						handler.handle(channel, socketAddress).onMessage(buffer, socketAddress);
+						handler.onMessage(buffer, socketAddress);
 					}
 				}
 			} catch (Exception e) {

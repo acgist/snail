@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>Peer Service</p>
@@ -29,9 +30,11 @@ public class PeerService {
 	 * 20位系统ID
 	 */
 	private final byte[] peerId;
+	private final String peerIdUrl;
 
 	private PeerService() {
 		this.peerId = buildPeerId();
+		this.peerIdUrl = buildPeerIdUrl();
 	}
 	
 	public static final PeerService getInstance() {
@@ -63,8 +66,27 @@ public class PeerService {
 		return peerId;
 	}
 	
+	/**
+	 * 生成peerIdUrl
+	 */
+	private String buildPeerIdUrl() {
+		int index = 0;
+		final String peerIdHex = StringUtils.hex(this.peerId);
+		final int length = peerIdHex.length();
+		final StringBuilder builder = new StringBuilder();
+		do {
+			builder.append("%").append(peerIdHex.substring(index, index + 2));
+			index += 2;
+		} while (index < length);
+		return builder.toString();
+	}
+	
 	public byte[] peerId() {
 		return this.peerId;
 	}
-
+	
+	public String peerIdUrl() {
+		return this.peerIdUrl;
+	}
+	
 }

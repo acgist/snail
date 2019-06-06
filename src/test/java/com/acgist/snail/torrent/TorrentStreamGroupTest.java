@@ -12,6 +12,7 @@ import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.system.manager.TorrentManager;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.StringUtils;
+import com.acgist.snail.utils.ThreadUtils;
 
 public class TorrentStreamGroupTest {
 
@@ -49,14 +50,15 @@ public class TorrentStreamGroupTest {
 	@Test
 	public void verify() throws DownloadException, NetException {
 //		String path = "e:/snail/12345.torrent";
-		String path = "E:\\gitee\\snail\\download\\[Nekomoe kissaten][Fairy Gone][07][720p][CHS].mp4\\【喵萌奶茶屋】★4月新番★[Fairy Gone][07][720p][简体][招募翻译校对].torrent";
+		String path = "E:\\gitee\\snail\\download\\[UHA-WINGS][Sewayaki Kitsune no Senko-san][07][x264 1080p][CHT].mp4\\【悠哈璃羽字幕社】[賢惠幼妻仙狐小姐_Sewayaki Kitsune no Senko-san][07][x264 1080p][CHT].torrent";
 		TorrentSession session = TorrentManager.getInstance().newTorrentSession(path);
 		var files = session.torrent().getInfo().files();
 		files.forEach(file -> {
 			file.select(true);
 		});
 //		TorrentStreamGroup group = TorrentStreamGroup.newInstance("e://tmp/client/", files, session);
-		TorrentStreamGroup group = TorrentStreamGroup.newInstance("E:\\gitee\\snail\\download\\[Nekomoe kissaten][Fairy Gone][07][720p][CHS].mp4", files, session);
+		TorrentStreamGroup group = TorrentStreamGroup.newInstance("E:\\gitee\\snail\\download\\[UHA-WINGS][Sewayaki Kitsune no Senko-san][07][x264 1080p][CHT].mp4", files, session);
+		ThreadUtils.sleep(5000); // 等待异步加载完成
 		var downloadPieces = group.pieces();
 		int index = downloadPieces.nextSetBit(0);
 		int length = session.torrent().getInfo().getPieceLength().intValue();
