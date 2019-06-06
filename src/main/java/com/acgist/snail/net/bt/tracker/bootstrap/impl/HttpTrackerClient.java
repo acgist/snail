@@ -109,7 +109,7 @@ public class HttpTrackerClient extends TrackerClient {
 		final StringBuilder builder = new StringBuilder(this.announceUrl);
 		builder.append("?")
 		.append("info_hash").append("=").append(torrentSession.infoHash().infoHashURL()).append("&") // infoHash
-		.append("peer_id").append("=").append(PeerService.getInstance().peerId()).append("&") // PeerID
+		.append("peer_id").append("=").append(PeerService.getInstance().peerIdUrl()).append("&") // PeerID
 		.append("port").append("=").append(SystemConfig.getBtPortExtShort()).append("&") // 外网Peer端口
 		.append("uploaded").append("=").append(upload).append("&") // 已上传大小
 		.append("downloaded").append("=").append(download).append("&") // 已下载大小

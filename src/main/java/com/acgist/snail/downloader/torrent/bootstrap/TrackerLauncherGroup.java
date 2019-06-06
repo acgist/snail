@@ -66,6 +66,8 @@ public class TrackerLauncherGroup {
 	public void findPeer() {
 		this.trackerLaunchers.forEach(launcher -> {
 			launcher.findPeer();
+//			this.torrentSession.submit(() -> {
+//			});
 		});
 	}
 

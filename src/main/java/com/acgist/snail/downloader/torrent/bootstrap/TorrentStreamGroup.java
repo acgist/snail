@@ -54,9 +54,9 @@ public class TorrentStreamGroup {
 		final TorrentInfo torrentInfo = torrent.getInfo();
 		final BitSet pieces = new BitSet(torrentInfo.pieceSize());
 		final BitSet selectPieces = new BitSet(torrentInfo.pieceSize());
-		final boolean complete = torrentSession.taskSession().complete();
 		final List<TorrentStream> streams = new ArrayList<>(files.size());
 		final TorrentStreamGroup group = new TorrentStreamGroup(pieces, selectPieces, streams, torrentSession);
+		final boolean complete = torrentSession.taskSession() == null ? false : torrentSession.taskSession().complete();
 		if(CollectionUtils.isNotEmpty(files)) {
 			long pos = 0;
 			for (TorrentFile file : files) {
