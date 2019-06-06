@@ -365,6 +365,10 @@ public class PeerSession implements IStatistics {
 		this.exchange = (byte) (this.exchange | exchange);
 	}
 	
+	public byte exchange() {
+		return this.exchange;
+	}
+	
 	/**
 	 * 是否支持UTP
 	 */

@@ -93,6 +93,7 @@ public class SystemConsole {
 		final Map<String, List<PeerSession>> peers = PeerManager.getInstance().peers();
 		final var dht = new AtomicInteger(0);
 		final var pex = new AtomicInteger(0);
+		final var utp = new AtomicInteger(0);
 		final var tracker = new AtomicInteger(0);
 		final var connect = new AtomicInteger(0);
 		final var upload = new AtomicInteger(0);
@@ -108,6 +109,9 @@ public class SystemConsole {
 				}
 				if(peer.pex()) {
 					pex.incrementAndGet();
+				}
+				if(peer.utp()) {
+					utp.incrementAndGet();
 				}
 				if(peer.tracker()) {
 					tracker.incrementAndGet();
@@ -128,6 +132,7 @@ public class SystemConsole {
 			this.builder
 				.append("Peer InfoHashHex：").append(entry.getKey()).append("，")
 				.append("Peer数量：").append(list.size()).append("，")
+				.append("uTP数量：").append(utp.getAndSet(0)).append("，")
 				.append("Peer数量（可用）：").append(available.getAndSet(0)).append("，")
 				.append("来源：")
 				.append("DHT-").append(dht.getAndSet(0)).append("、")

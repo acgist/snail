@@ -18,7 +18,6 @@ import com.acgist.snail.system.bcode.BCodeEncoder;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.PeerMessageConfig.ExtensionType;
 import com.acgist.snail.system.manager.PeerManager;
-import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.PeerUtils;
@@ -96,7 +95,7 @@ public class PeerExchangeMessageHandler {
 				final PeerSession peerSession = PeerManager.getInstance().newPeerSession(this.infoHash.infoHashHex(),
 					this.taskSession.statistics(), host, port, PeerConfig.SOURCE_PEX);
 				if(peerSession != null) {
-					if(ArrayUtils.isNotEmpty(addedf)) {
+					if(addedf != null && addedf.length > index.get()) {
 						peerSession.exchange(addedf[index.getAndIncrement()]);
 					}
 				}
@@ -111,9 +110,6 @@ public class PeerExchangeMessageHandler {
 		return this.peerSession.extensionTypeValue(ExtensionType.ut_pex);
 	}
 	
-	/**
-	 * TODO：flags
-	 */
 	public static final byte[] buildMessage(List<PeerSession> optimize) {
 		if(CollectionUtils.isEmpty(optimize)) {
 			return null;
@@ -121,12 +117,14 @@ public class PeerExchangeMessageHandler {
 		final Map<String, Object> data = new HashMap<>();
 		final int length = 6 * optimize.size();
 		final ByteBuffer addedBuffer = ByteBuffer.allocate(length);
+		final ByteBuffer addedfBuffer = ByteBuffer.allocate(optimize.size());
 		optimize.forEach(session -> {
 			addedBuffer.putInt(NetUtils.encodeIpToInt(session.host()));
 			addedBuffer.putShort(NetUtils.encodePort(session.peerPort()));
+			addedfBuffer.put(session.exchange());
 		});
 		data.put(ADDED, addedBuffer.array());
-//		data.put(ADDEDF, value) // flags
+		data.put(ADDEDF, addedfBuffer.array());
 		return BCodeEncoder.encodeMap(data);
 	}
 

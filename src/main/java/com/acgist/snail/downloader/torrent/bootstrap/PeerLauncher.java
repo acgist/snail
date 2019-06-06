@@ -14,7 +14,6 @@ import com.acgist.snail.pojo.bean.TorrentPiece;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.PeerConfig;
-import com.acgist.snail.system.config.ProtocolConfig.Protocol;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
@@ -42,8 +41,6 @@ public class PeerLauncher {
 	private Object closeLock = new Object(); // 关闭锁
 	private AtomicInteger countLock = new AtomicInteger(0); // Piece分片锁
 	private AtomicBoolean completeLock = new AtomicBoolean(false); // Piece完成锁
-	
-	private Protocol protocol;
 	
 	/**
 	 * 评分：每次收到Piece更新该值，评分时清零。
@@ -74,13 +71,6 @@ public class PeerLauncher {
 		return this.peerSession;
 	}
 
-	/**
-	 * 协议
-	 */
-	public Protocol protocol() {
-		return this.protocol;
-	}
-	
 	/**
 	 * 开始下载：发送请求
 	 */
@@ -118,19 +108,13 @@ public class PeerLauncher {
 	 * TODO：支持UTP
 	 */
 	private boolean connect() {
-		final UtpClient utpClient = UtpClient.newInstance(this.peerSession, this.peerLauncherMessageHandler);
-		boolean ok = utpClient.connect();
-		if(ok) {
-			this.protocol = Protocol.udp;
-			return ok;
+		if(this.peerSession.utp()) {
+			final UtpClient utpClient = UtpClient.newInstance(this.peerSession, this.peerLauncherMessageHandler);
+			return utpClient.connect();
+		} else {
+			final PeerClient peerClient = PeerClient.newInstance(this.peerSession, this.peerLauncherMessageHandler);
+			return peerClient.connect();
 		}
-		final PeerClient peerClient = PeerClient.newInstance(this.peerSession, this.peerLauncherMessageHandler);
-		ok = peerClient.connect();
-		if(ok) {
-			this.protocol = Protocol.tcp;
-			return ok;
-		}
-		return ok;
 	}
 	
 	/**
