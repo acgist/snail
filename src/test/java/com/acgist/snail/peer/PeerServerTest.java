@@ -15,6 +15,7 @@ import com.acgist.snail.pojo.session.StatisticsSession;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.pojo.wrapper.TorrentFileSelectWrapper;
+import com.acgist.snail.system.config.DatabaseConfig;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.manager.TorrentManager;
 import com.acgist.snail.utils.ThreadUtils;
@@ -23,6 +24,7 @@ public class PeerServerTest {
 	
 	@Test
 	public void server() throws DownloadException {
+		DatabaseConfig.getInstance();
 //		String path = "e:/snail/1234.torrent";
 		String path = "e:/snail/12345.torrent";
 //		String path = "e:/snail/123456.torrent";

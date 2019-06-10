@@ -141,6 +141,13 @@ public class UtpWindowHandler {
 	}
 	
 	/**
+	 * 丢弃
+	 */
+	public synchronized void discard(short seqnr) {
+		this.take(seqnr);
+	}
+	
+	/**
 	 * 接收数据
 	 * 如果数据已经被处理返回null。
 	 * 如果seqnr不是下一个数据时，放入缓存。
