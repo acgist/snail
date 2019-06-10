@@ -14,10 +14,12 @@ public class UtpWindowData {
 
 	private final short seqnr; // seqnr
 	private int timestamp; // 时间戳（微秒），发送时重新修改。
+	private byte pushTimes; // 发送次数
 	private final byte[] data; // 数据
 	private final int length; // 数据长度
 	
 	private UtpWindowData(short seqnr, int timestamp, byte[] data) {
+		this.pushTimes = 0;
 		this.seqnr = seqnr;
 		this.data = data;
 		if(data == null) {
@@ -51,10 +53,17 @@ public class UtpWindowData {
 		return ByteBuffer.wrap(this.data);
 	}
 
+	public byte pushTimes() {
+		return this.pushTimes;
+	}
+	
 	/**
-	 * 发送时修改时间
+	 * 发送时更新数据：时间戳、发送次数
+	 * 
+	 * @return 时间戳
 	 */
-	public int updateTimestamp() {
+	public int pushUpdateGetTimestamp() {
+		this.pushTimes++;
 		this.timestamp = DateUtils.timestampUs();
 		return this.timestamp;
 	}

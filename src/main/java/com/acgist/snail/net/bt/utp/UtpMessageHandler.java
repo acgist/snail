@@ -352,7 +352,12 @@ public class UtpMessageHandler extends UdpMessageHandler {
 			return;
 		}
 		windowDatas.forEach(windowData -> {
-			data(windowData);
+			if(windowData.pushTimes() > UtpConfig.MAX_PUSH_TIMES) {
+				LOGGER.warn("消息发送失败次数超限：{}", windowData.getSeqnr());
+				this.sendWindowHandler.discard(windowData.getSeqnr());
+			} else {
+				data(windowData);
+			}
 		});
 	}
 	
@@ -362,7 +367,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	private void data(UtpWindowData windowData) {
 		final ByteBuffer buffer = header(UtpConfig.TYPE_DATA, windowData.getLength() + 20);
 		buffer.putShort(this.sendId);
-		buffer.putInt(windowData.updateTimestamp()); // 更新发送时间
+		buffer.putInt(windowData.pushUpdateGetTimestamp()); // 更新发送时间
 		buffer.putInt(windowData.getTimestamp() - this.receiveWindowHandler.timestamp());
 		buffer.putInt(this.receiveWindowHandler.remainWndSize());
 		buffer.putShort(windowData.getSeqnr());
@@ -470,7 +475,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 		final UtpWindowData windowData = this.sendWindowHandler.send();
 		final ByteBuffer buffer = header(UtpConfig.TYPE_SYN, 20);
 		buffer.putShort(this.recvId);
-		buffer.putInt(windowData.updateTimestamp());
+		buffer.putInt(windowData.pushUpdateGetTimestamp());
 		buffer.putInt(0);
 		buffer.putInt(0);
 		buffer.putShort(windowData.getSeqnr());

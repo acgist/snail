@@ -108,13 +108,14 @@ public class PeerLauncher {
 	 * TODO：支持UTP
 	 */
 	private boolean connect() {
-		if(this.peerSession.utp()) {
-			final UtpClient utpClient = UtpClient.newInstance(this.peerSession, this.peerLauncherMessageHandler);
-			return utpClient.connect();
-		} else {
-			final PeerClient peerClient = PeerClient.newInstance(this.peerSession, this.peerLauncherMessageHandler);
-			return peerClient.connect();
+		final UtpClient utpClient = UtpClient.newInstance(this.peerSession, this.peerLauncherMessageHandler);
+		boolean ok = utpClient.connect();
+		if(ok) {
+			this.peerSession.exchange(PeerConfig.PEX_UTP);
+			return ok;
 		}
+		final PeerClient peerClient = PeerClient.newInstance(this.peerSession, this.peerLauncherMessageHandler);
+		return peerClient.connect();
 	}
 	
 	/**

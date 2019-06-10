@@ -47,6 +47,11 @@ public class UtpConfig {
 	public static final int WND_SIZE = 1024 * 1024;
 
 	/**
+	 * 最大发送次数
+	 */
+	public static final byte MAX_PUSH_TIMES = 3;
+	
+	/**
 	 * 类型
 	 */
 	public static final String type(byte type) {
