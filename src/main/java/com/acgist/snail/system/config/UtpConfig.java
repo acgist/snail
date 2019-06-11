@@ -25,11 +25,11 @@ public class UtpConfig {
 	/**
 	 * 类型 + 版本
 	 */
-	public static final byte TYPE_DATA  = 0x01;
-	public static final byte TYPE_FIN   = 0x11;
-	public static final byte TYPE_STATE = 0x21;
-	public static final byte TYPE_RESET = 0x31;
-	public static final byte TYPE_SYN   = 0x41;
+	public static final byte TYPE_DATA  = (ST_DATA << 4) + UTP_VERSION;
+	public static final byte TYPE_FIN   = (ST_FIN << 4) + UTP_VERSION;
+	public static final byte TYPE_STATE = (ST_STATE << 4) + UTP_VERSION;
+	public static final byte TYPE_RESET = (ST_RESET << 4) + UTP_VERSION;
+	public static final byte TYPE_SYN   = (ST_SYN << 4) + UTP_VERSION;
 	
 	/**
 	 * 扩展
@@ -55,11 +55,12 @@ public class UtpConfig {
 	 * 类型
 	 */
 	public static final String type(byte type) {
-		return type == TYPE_DATA ? "DATA" :
-			type == TYPE_FIN ? "FIN" :
-			type == TYPE_STATE ? "STATE" :
-			type == TYPE_RESET ? "RESET" :
-			type == TYPE_SYN ? "SYN" : "UNKNOW";
+		return
+			type == ST_DATA ? "DATA" :
+			type == ST_FIN ? "FIN" :
+			type == ST_STATE ? "STATE" :
+			type == ST_RESET ? "RESET" :
+			type == ST_SYN ? "SYN" : "UNKNOW";
 	}
 	
 }
