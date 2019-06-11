@@ -121,7 +121,8 @@ public class UtpMessageHandler extends UdpMessageHandler {
 			this.socketAddress = socketAddress;
 		}
 		buffer.flip();
-		final byte type = buffer.get();
+		final byte typeVersion = buffer.get();
+		final byte type = (byte) (typeVersion >> 4);
 		final byte extension = buffer.get();
 		final short connectionId = buffer.getShort();
 		final int timestamp = buffer.getInt();
@@ -135,26 +136,26 @@ public class UtpMessageHandler extends UdpMessageHandler {
 			buffer.get(extData);
 		}
 		switch (type) {
-		case UtpConfig.TYPE_DATA:
+		case UtpConfig.ST_DATA:
 			data(timestamp, seqnr, acknr, buffer);
 			break;
-		case UtpConfig.TYPE_FIN:
+		case UtpConfig.ST_FIN:
 			fin(timestamp, seqnr, acknr);
 			break;
-		case UtpConfig.TYPE_STATE:
+		case UtpConfig.ST_STATE:
 			state(timestamp, seqnr, acknr, wndSize);
 			break;
-		case UtpConfig.TYPE_RESET:
+		case UtpConfig.ST_RESET:
 			reset(timestamp, seqnr, acknr);
 			break;
-		case UtpConfig.TYPE_SYN:
+		case UtpConfig.ST_SYN:
 			syn(timestamp, seqnr, acknr);
 			break;
 		default:
 			LOGGER.error(
-				"UTP消息，类型：{}，扩展：{}，连接ID：{}，时间戳：{}，时间戳对比：{}，窗口大小：{}，请求号：{}，应答号：{}",
+				"UTP不支持的消息类型，类型：{}，扩展：{}，连接ID：{}，时间戳：{}，时间戳对比：{}，窗口大小：{}，请求号：{}，应答号：{}",
 				type, extension, connectionId, timestamp, timestampDifference, wndSize, seqnr, acknr);
-			return;
+			break;
 		}
 	}
 
@@ -274,6 +275,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	 * 接收数据消息
 	 */
 	private void data(int timestamp, short seqnr, short acknr, ByteBuffer buffer) throws NetException {
+		LOGGER.debug("UTP收到数据：{}", seqnr);
 		UtpWindowData windowData = null;
 		try {
 			windowData = this.receiveWindowHandler.receive(timestamp, seqnr, buffer);
@@ -365,6 +367,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	 * 发送数据
 	 */
 	private void data(UtpWindowData windowData) {
+		LOGGER.debug("UTP发送数据：{}", windowData.getSeqnr());
 		final ByteBuffer buffer = header(UtpConfig.TYPE_DATA, windowData.getLength() + 20);
 		buffer.putShort(this.sendId);
 		buffer.putInt(windowData.pushUpdateGetTimestamp()); // 更新发送时间
@@ -403,6 +406,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	 * 接收应答消息
 	 */
 	private void state(int timestamp, short seqnr, short acknr, int wndSize) {
+		LOGGER.debug("UTP收到响应：{}", acknr);
 		if(!this.connect) { // 没有连接
 			this.connect = this.available();
 			if(this.connect) {
@@ -509,12 +513,14 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	 */
 	@Override
 	public void close() {
+		LOGGER.debug("UTP关闭");
 		this.utpService.remove(this);
 		this.fin();
 		super.close();
 	}
 	
 	private void resetAndClose() {
+		LOGGER.debug("UTP重置");
 		this.utpService.remove(this);
 		this.reset();
 		super.close();

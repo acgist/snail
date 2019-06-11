@@ -120,7 +120,7 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 		try {
 			final int size = this.channel.send(buffer, socketAddress);
 			if(size <= 0) {
-				LOGGER.warn("发送数据为空");
+				LOGGER.warn("发送数据为空，发送地址：{}", socketAddress);
 			}
 		} catch (Exception e) {
 			throw new NetException(e);
