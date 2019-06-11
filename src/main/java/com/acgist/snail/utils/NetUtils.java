@@ -179,13 +179,6 @@ public class NetUtils {
 	}
 	
 	/**
-	 * 本机IP
-	 */
-	public static final boolean isLocalhost(String host) {
-		return LOCAL_IP.equals(host);
-	}
-	
-	/**
 	 * 创建本地socket地址
 	 * 
 	 * @param port 端口

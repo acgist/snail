@@ -106,9 +106,7 @@ public class GetPeersResponse extends Response {
 				NetUtils.decodeIntToIp(buffer.getInt()),
 				NetUtils.decodePort(buffer.getShort()),
 				PeerConfig.SOURCE_DHT);
-			if(session != null) {
-				list.add(session);
-			}
+			list.add(session);
 		}
 		return list;
 	}

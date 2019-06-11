@@ -28,6 +28,7 @@ import com.acgist.snail.utils.ThreadUtils;
  * 	<li>定时替换下载最慢的PeerLauncher。</li>
  * </ul>
  * </p>
+ * TODO：重复添加错误
  * 
  * @author acgist
  * @since 1.0.0

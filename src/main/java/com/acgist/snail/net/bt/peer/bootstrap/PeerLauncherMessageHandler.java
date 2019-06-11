@@ -114,6 +114,7 @@ public class PeerLauncherMessageHandler {
 
 	/**
 	 * 初始化：客户端连接，加入到Peer列表。
+	 * TODO：PeerId一致时同一个客户的直接剔除
 	 */
 	private boolean init(String infoHashHex, byte[] peerId, byte[] reserved) {
 		final TorrentSession torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
@@ -132,10 +133,6 @@ public class PeerLauncherMessageHandler {
 			return false;
 		}
 		final PeerSession peerSession = PeerManager.getInstance().newPeerSession(infoHashHex, taskSession.statistics(), socketAddress.getHostString(), null, PeerConfig.SOURCE_CONNECT);
-		if(peerSession == null) {
-			LOGGER.warn("Peer添加失败：{}", socketAddress.getHostString());
-			return false;
-		}
 		final PeerConnectGroup peerConnectGroup = torrentSession.peerConnectGroup();
 		final boolean ok = peerConnectGroup.newPeerConnect(peerSession, this);
 		if(ok) {
