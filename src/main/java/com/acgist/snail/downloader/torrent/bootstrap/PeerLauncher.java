@@ -14,6 +14,7 @@ import com.acgist.snail.pojo.bean.TorrentPiece;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.PeerConfig;
+import com.acgist.snail.utils.ObjectUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
@@ -307,4 +308,9 @@ public class PeerLauncher {
 		this.mark.addAndGet(buffer); // 计算评分
 	}
 
+	@Override
+	public String toString() {
+		return ObjectUtils.toString(this, this.peerSession.host(), this.peerSession.peerPort(), this.peerSession.dhtPort());
+	}
+	
 }

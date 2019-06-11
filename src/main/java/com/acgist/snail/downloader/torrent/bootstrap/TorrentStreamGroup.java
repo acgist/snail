@@ -71,13 +71,6 @@ public class TorrentStreamGroup {
 				}
 				pos += file.getLength();
 			}
-			if(LOGGER.isDebugEnabled()) {
-				LOGGER.debug("当前任务总Piece数量：{}，已下载Piece数量：{}，剩余下载Piece数量：{}",
-					torrentInfo.pieceSize(),
-					group.pieces.cardinality(),
-					group.selectPieces.cardinality() - group.pieces.cardinality()
-				);
-			}
 		}
 		return group;
 	}

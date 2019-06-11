@@ -16,7 +16,6 @@ import com.acgist.snail.net.bt.peer.bootstrap.ltep.PeerExchangeMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.StatisticsSession;
 import com.acgist.snail.system.config.PeerConfig;
-import com.acgist.snail.utils.NetUtils;
 
 /**
  * <p>Peer管理器</p>
@@ -87,9 +86,6 @@ public class PeerManager {
 	 * @return PeerSession，如果是本机IP返回null。
 	 */
 	public PeerSession newPeerSession(String infoHashHex, StatisticsSession parent, String host, Integer port, byte source) {
-		if(NetUtils.isLocalhost(host)) { // 本机
-			return null;
-		}
 		var deque = deque(infoHashHex);
 		synchronized (deque) {
 			final Optional<PeerSession> optional = deque.stream().filter(peer -> {
@@ -117,6 +113,12 @@ public class PeerManager {
 	public void inferior(String infoHashHex, PeerSession peerSession) {
 		var deque = deque(infoHashHex);
 		synchronized (deque) {
+			final Optional<PeerSession> optional = deque.stream().filter(peer -> {
+				return peer.equals(peerSession);
+			}).findFirst();
+			if(optional.isPresent()) {
+				return;
+			}
 			deque.offerFirst(peerSession);
 		}
 	}
