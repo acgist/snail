@@ -124,7 +124,7 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 		try {
 			return (InetSocketAddress) this.socket.getRemoteAddress();
 		} catch (IOException e) {
-			LOGGER.error("Peer远程客户端信息获取异常", e);
+			LOGGER.error("TCP远程客户端信息获取异常", e);
 		}
 		return null;
 	}

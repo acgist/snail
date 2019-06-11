@@ -11,7 +11,7 @@ import com.acgist.snail.system.exception.NetException;
  * @author acgist
  * @since 1.1.0
  */
-public abstract class MessageHandlerClientAdapter<T extends IMessageHandler> implements IMessageHandler {
+public abstract class ClientMessageHandlerAdapter<T extends IMessageHandler> implements IMessageHandler {
 
 	/**
 	 * 消息代理
