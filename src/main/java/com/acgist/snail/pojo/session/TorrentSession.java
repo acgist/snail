@@ -154,14 +154,16 @@ public class TorrentSession {
 	
 	/**
 	 * 开始下载
+	 * 需要先调用{@link #upload(TaskSession)}对任务进行上传。
 	 */
 	public boolean download() throws DownloadException {
 		return this.download(true);
 	}
 	
 	/**
-	 * 开始下载：加载线程池、Peer、Tracker、DHT
-	 * 如果文件已经下载完成或者任务已经完成不会再加载线程池、Peer、Tracker、DHT
+	 * 开始下载：加载线程池、Peer、Tracker、DHT。
+	 * 如果文件已经下载完成或者任务已经完成不会再加载线程池、Peer、Tracker、DHT。
+	 * 需要先调用{@link #upload(TaskSession)}对任务进行上传。
 	 * 
 	 * @param findPeer 是否查找Peer：true-使用Tracker、DHT查找Peer，false-不查找
 	 * 

@@ -32,7 +32,7 @@ public class TrackerLauncher {
 	private Integer interval; // 下次等待时间
 	private Integer done; // 已完成数量
 	private Integer undone; // 未完成数量
-	private boolean run = false; // 是否已经运行
+	private boolean needRelease = false; // 是否需要释放
 	private boolean available = true; // 可用
 	
 	private TrackerLauncher(TrackerClient client, TorrentSession torrentSession) {
@@ -55,7 +55,7 @@ public class TrackerLauncher {
 	}
 
 	public void findPeer() {
-		this.run = true;
+		this.needRelease = true;
 		if(available()) {
 			LOGGER.debug("TrackerClient查找Peer：{}", client.announceUrl());
 			this.client.findPeers(this.id, this.torrentSession);
@@ -65,8 +65,6 @@ public class TrackerLauncher {
 	/**
 	 * <p>解析announce信息</p>
 	 * <p>添加Peer，同时设置下次查询定时任务。</p>
-	 * 
-	 * TODO：定时优化
 	 */
 	public void announce(AnnounceMessage message) {
 		if(message == null) {
@@ -88,7 +86,7 @@ public class TrackerLauncher {
 	 */
 	public void release() {
 		this.available = false;
-		if(this.run) {
+		if(this.needRelease && available()) {
 			SystemThreadContext.submit(() -> {
 				if(this.taskSession.complete()) { // 任务完成
 					this.client.complete(this.id, this.torrentSession);

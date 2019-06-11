@@ -44,9 +44,6 @@ public class TrackerLauncherGroup {
 	 */
 	public void loadTracker() throws DownloadException {
 		var torrent = torrentSession.torrent();
-		if(torrent == null) {
-			throw new DownloadException("无效种子文件");
-		}
 		TrackerManager.getInstance().clients(torrent.getAnnounce(), torrent.getAnnounceList()).stream()
 		.map(client -> {
 			LOGGER.debug("加载TrackerClient，ID：{}，announceUrl：{}", client.id(), client.announceUrl());
@@ -66,8 +63,6 @@ public class TrackerLauncherGroup {
 	public void findPeer() {
 		this.trackerLaunchers.forEach(launcher -> {
 			launcher.findPeer();
-//			this.torrentSession.submit(() -> {
-//			});
 		});
 	}
 
