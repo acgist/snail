@@ -136,7 +136,12 @@ public class PeerLauncherMessageHandler {
 			LOGGER.warn("Peer连接失败，获取远程Peer信息失败");
 			return false;
 		}
-		final PeerSession peerSession = PeerManager.getInstance().newPeerSession(infoHashHex, taskSession.statistics(), socketAddress.getHostString(), null, PeerConfig.SOURCE_CONNECT);
+		final PeerSession peerSession = PeerManager.getInstance().newPeerSession(
+			infoHashHex,
+			taskSession.statistics(),
+			socketAddress.getHostString(),
+			null,
+			PeerConfig.SOURCE_CONNECT);
 		final PeerConnectGroup peerConnectGroup = torrentSession.peerConnectGroup();
 		final boolean ok = peerConnectGroup.newPeerConnect(peerSession, this);
 		if(ok) {
@@ -601,7 +606,6 @@ public class PeerLauncherMessageHandler {
 	 * <p>处理DHT消息</p>
 	 */
 	private void dht(ByteBuffer buffer) {
-		LOGGER.debug("收到DHT消息");
 		this.dhtExtensionMessageHandler.onMessage(buffer);
 	}
 

@@ -412,7 +412,12 @@ public class TorrentSession {
 		}
 		final PeerManager manager = PeerManager.getInstance();
 		peers.forEach((host, port) -> {
-			manager.newPeerSession(this.infoHashHex(), this.taskSession.statistics(), host, port, PeerConfig.SOURCE_TRACKER);
+			manager.newPeerSession(
+				this.infoHashHex(),
+				this.taskSession.statistics(),
+				host,
+				port,
+				PeerConfig.SOURCE_TRACKER);
 		});
 	}
 

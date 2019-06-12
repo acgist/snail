@@ -117,9 +117,9 @@ public class ExtensionMessageHandler {
 			data.put(EX_E, 0); // Pex：加密
 		}
 		if(PeerMessageConfig.ExtensionType.ut_metadata.notice()) {
-			final int size = this.infoHash.size();
-			if(size > 0) {
-				data.put(EX_METADATA_SIZE, size); // 种子info数据长度
+			final int metadataSize = this.infoHash.size();
+			if(metadataSize > 0) {
+				data.put(EX_METADATA_SIZE, metadataSize); // 种子info数据长度
 			}
 		}
 		this.pushMessage(ExtensionType.handshake.value(), BCodeEncoder.encodeMap(data));
@@ -141,9 +141,9 @@ public class ExtensionMessageHandler {
 		if(port != null && this.peerSession.peerPort() == null) { // 获取端口
 			this.peerSession.peerPort(port.intValue());
 		}
-		final Long size = decoder.getLong(EX_METADATA_SIZE);
-		if(size != null && this.infoHash.size() == 0) { // 获取种子info大小
-			this.infoHash.size(size.intValue());
+		final Long metadataSize = decoder.getLong(EX_METADATA_SIZE);
+		if(metadataSize != null && this.infoHash.size() == 0) { // 获取种子info大小
+			this.infoHash.size(metadataSize.intValue());
 		}
 		final Map<String, Object> mData = decoder.getMap(EX_M);
 		if(CollectionUtils.isNotEmpty(mData)) {
@@ -170,21 +170,21 @@ public class ExtensionMessageHandler {
 	}
 	
 	/**
-	 * Pex请求
+	 * pex请求
 	 */
 	public void exchange(byte[] bytes) {
 		this.peerExchangeMessageHandler.exchange(bytes);
 	}
 	
 	/**
-	 * Pex消息
+	 * pex消息
 	 */
 	private void pex(ByteBuffer buffer) {
 		this.peerExchangeMessageHandler.onMessage(buffer);
 	}
 	
 	/**
-	 * ut_metadata消息
+	 * metadata消息
 	 */
 	private void metadata(ByteBuffer buffer) {
 		this.metadataMessageHandler.onMessage(buffer);

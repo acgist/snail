@@ -48,7 +48,12 @@ public class DhtExtensionMessageHandler {
 		this.peerLauncherMessageHandler.pushMessage(PeerMessageConfig.Type.dht, bytes);
 	}
 	
+	/**
+	 * <p>处理DHT消息</p>
+	 * <p>设置DHT端口，加入DHT列表。</p>
+	 */
 	private void port(ByteBuffer buffer) {
+		LOGGER.debug("收到DHT消息");
 		final int port = NetUtils.decodePort(buffer.getShort());
 		if(LOGGER.isDebugEnabled()) {
 			LOGGER.debug("DHT扩展添加DHT节点：{}-{}", this.peerSession.host(), port);
