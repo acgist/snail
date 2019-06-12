@@ -22,11 +22,6 @@ import com.acgist.snail.utils.StringUtils;
  */
 public class PeerSession implements IStatistics {
 
-	/**
-	 * 连接失败次数
-	 */
-	private static final int MAX_FAIL_TIMES = 3;
-	
 	private StatisticsSession statistics;
 
 	private int failTimes = 0; // 失败次数：如果失败次数过多不在连接
@@ -251,7 +246,7 @@ public class PeerSession implements IStatistics {
 	 */
 	public boolean available() {
 		return
-			this.failTimes < MAX_FAIL_TIMES &&
+			this.failTimes < PeerConfig.MAX_FAIL_TIMES &&
 			this.peerPort != null;
 	}
 	
