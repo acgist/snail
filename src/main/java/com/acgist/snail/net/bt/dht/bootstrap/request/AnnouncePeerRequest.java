@@ -64,16 +64,20 @@ public class AnnouncePeerRequest extends Request {
 			final Integer impliedPort = request.getInteger(DhtConfig.KEY_IMPLIED_PORT);
 			final InetSocketAddress socketAddress = request.getSocketAddress();
 			final String peerHost = socketAddress.getHostString();
+			final boolean impliedPortAuto = DhtConfig.IMPLIED_PORT_AUTO.equals(impliedPort);
 			Integer peerPort = port;
-			if(DhtConfig.IMPLIED_PORT_AUTO.equals(impliedPort)) {
+			if(impliedPortAuto) {
 				peerPort = socketAddress.getPort();
 			}
-			PeerManager.getInstance().newPeerSession(
+			final var peerSession = PeerManager.getInstance().newPeerSession(
 				infoHashHex,
 				torrentSession.taskSession().statistics(),
 				peerHost,
 				peerPort,
 				PeerConfig.SOURCE_DHT);
+			if(impliedPortAuto) { // 支持UTP
+				peerSession.exchange(PeerConfig.PEX_UTP);
+			}
 		}
 		return AnnouncePeerResponse.newInstance(request);
 	}
