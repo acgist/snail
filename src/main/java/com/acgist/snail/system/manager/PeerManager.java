@@ -63,19 +63,6 @@ public class PeerManager {
 	}
 	
 	/**
-	 * 获取对应infoHash的临时Peer列表。
-	 */
-	public List<PeerSession> list(String infoHashHex) {
-		synchronized (this.storagePeers) {
-			final var list = this.storagePeers.get(infoHashHex);
-			if(list == null) {
-				return null;
-			}
-			return new ArrayList<>(list);
-		}
-	}
-	
-	/**
 	 * 新增Peer，插入尾部。
 	 * 
 	 * @param infoHashHex 下载文件infoHashHex
@@ -88,19 +75,14 @@ public class PeerManager {
 	public PeerSession newPeerSession(String infoHashHex, StatisticsSession parent, String host, Integer port, byte source) {
 		var deque = deque(infoHashHex);
 		synchronized (deque) {
-			final Optional<PeerSession> optional = deque.stream().filter(peer -> {
-				return peer.equals(host);
-			}).findFirst();
-			PeerSession peerSession;
-			if(optional.isPresent()) {
-				peerSession = optional.get();
-			} else {
+			PeerSession peerSession = findPeerSession(infoHashHex, host);
+			if(peerSession == null) {
 				if(LOGGER.isDebugEnabled()) {
 					LOGGER.debug("添加PeerSession，{}-{}，来源：{}", host, port, PeerConfig.source(source));
 				}
 				peerSession = PeerSession.newInstance(parent, host, port);
 				deque.offerLast(peerSession);
-				this.storage(infoHashHex, peerSession); // 存档
+				list(infoHashHex).add(peerSession); // 存档
 			}
 			peerSession.source(source); // 设置来源
 			return peerSession;
@@ -113,12 +95,6 @@ public class PeerManager {
 	public void inferior(String infoHashHex, PeerSession peerSession) {
 		var deque = deque(infoHashHex);
 		synchronized (deque) {
-			final Optional<PeerSession> optional = deque.stream().filter(peer -> {
-				return peer.equals(peerSession);
-			}).findFirst();
-			if(optional.isPresent()) {
-				return;
-			}
 			deque.offerFirst(peerSession);
 		}
 	}
@@ -206,17 +182,31 @@ public class PeerManager {
 	}
 	
 	/**
-	 * 添加对应的Peer列表
+	 * 获取对应的Peer列表（存储）
 	 */
-	private void storage(String infoHashHex, PeerSession peerSession) {
-		List<PeerSession> list = this.storagePeers.get(infoHashHex);
-		if(list == null) {
-			list = new ArrayList<>();
-			this.storagePeers.put(infoHashHex, list);	
+	public List<PeerSession> list(String infoHashHex) {
+		synchronized (this.storagePeers) {
+			List<PeerSession> list = this.storagePeers.get(infoHashHex);
+			if(list == null) {
+				list = new ArrayList<>();
+				this.storagePeers.put(infoHashHex, list);
+			}
+			return list;
 		}
-		synchronized (list) {
-			list.add(peerSession);
+	}
+	
+	/**
+	 * 是否已经添加过
+	 */
+	private PeerSession findPeerSession(String infoHashHex, String host) {
+		final var list = list(infoHashHex);
+		final Optional<PeerSession> optional = list.stream().filter(peer -> {
+			return peer.equals(host);
+		}).findFirst();
+		if(optional.isPresent()) {
+			return optional.get();
 		}
+		return null;
 	}
 
 }

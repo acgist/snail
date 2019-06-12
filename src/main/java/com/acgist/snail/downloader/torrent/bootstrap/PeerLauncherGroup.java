@@ -162,7 +162,7 @@ public class PeerLauncherGroup {
 			final boolean ok = launcher.download();
 			if(ok) {
 				peerSession.status(PeerConfig.STATUS_DOWNLOAD); // 设置下载中
-				this.peerLaunchers.add(launcher);
+				this.peerLaunchers.offer(launcher);
 			} else { // 失败后需要放回队列。
 				PeerManager.getInstance().inferior(this.torrentSession.infoHashHex(), peerSession);
 			}

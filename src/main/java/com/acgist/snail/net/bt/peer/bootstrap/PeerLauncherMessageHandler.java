@@ -23,6 +23,7 @@ import com.acgist.snail.system.config.PeerMessageConfig.Action;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.system.manager.PeerManager;
 import com.acgist.snail.system.manager.TorrentManager;
+import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.BitfieldUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -114,22 +115,25 @@ public class PeerLauncherMessageHandler {
 
 	/**
 	 * 初始化：客户端连接，加入到Peer列表。
-	 * TODO：PeerId一致时同一个客户的直接剔除
 	 */
 	private boolean init(String infoHashHex, byte[] peerId, byte[] reserved) {
+		if(ArrayUtils.equals(PeerService.getInstance().peerId(), peerId)) {
+			LOGGER.debug("Peer连接失败，PeerId一致");
+			return false;
+		}
 		final TorrentSession torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
 		if(torrentSession == null) {
-			LOGGER.warn("Peer连接初始化失败，不存在的种子信息");
+			LOGGER.warn("Peer连接失败，不存在的种子信息");
 			return false;
 		}
 		if(!torrentSession.uploadable()) {
-			LOGGER.warn("Peer连接初始化失败，Torrent任务不可上传");
+			LOGGER.warn("Peer连接失败，Torrent任务不可上传");
 			return false;
 		}
 		final TaskSession taskSession = torrentSession.taskSession();
 		InetSocketAddress socketAddress = remoteSocketAddress();
 		if(socketAddress == null) {
-			LOGGER.warn("Peer连接初始化失败，获取远程Peer信息失败");
+			LOGGER.warn("Peer连接失败，获取远程Peer信息失败");
 			return false;
 		}
 		final PeerSession peerSession = PeerManager.getInstance().newPeerSession(infoHashHex, taskSession.statistics(), socketAddress.getHostString(), null, PeerConfig.SOURCE_CONNECT);
