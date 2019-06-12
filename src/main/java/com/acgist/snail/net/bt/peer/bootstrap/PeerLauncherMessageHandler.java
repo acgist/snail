@@ -271,11 +271,16 @@ public class PeerLauncherMessageHandler {
 	 */
 	private void handshake(ByteBuffer buffer) {
 		LOGGER.debug("被握手");
+		if(buffer.remaining() != PeerConfig.HANDSHAKE_LENGTH) {
+			LOGGER.warn("握手消息格式错误（消息长度）：{}", buffer.remaining());
+			this.close();
+			return;
+		}
 		this.handshaked = true;
 		final boolean server = !this.handshake; // 是否是服务方
 		final byte length = buffer.get();
 		if(length <= 0) {
-			LOGGER.warn("握手消息格式错误，长度：{}", length);
+			LOGGER.warn("握手消息格式错误（协议长度）：{}", length);
 			this.close();
 			return;
 		}
