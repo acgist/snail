@@ -49,6 +49,15 @@ public class TorrentManager {
 	}
 	
 	/**
+	 * 删除种子信息
+	 */
+	public void remove(String infoHashHex) {
+		synchronized (this.torrentSessions) {
+			this.torrentSessions.remove(infoHashHex);
+		}
+	}
+	
+	/**
 	 * <p>新建TorrentSession。</p>
 	 * <p>如果已经存在infoHashHex，直接返回，反之使用path加载。</p>
 	 */

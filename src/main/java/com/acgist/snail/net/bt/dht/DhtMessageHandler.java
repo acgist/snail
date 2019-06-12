@@ -61,7 +61,6 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	
 	@Override
 	public void onMessage(ByteBuffer buffer, InetSocketAddress socketAddress) {
-		LOGGER.debug("DHT消息，地址：{}", socketAddress);
 		buffer.flip();
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
@@ -72,7 +71,6 @@ public class DhtMessageHandler extends UdpMessageHandler {
 			return;
 		}
 		final String y = decoder.getString(DhtConfig.KEY_Y);
-		LOGGER.debug("DHT消息类型：{}", y);
 		if(DhtConfig.KEY_Q.equals(y)) {
 			final Request request = Request.valueOf(decoder);
 			request.setSocketAddress(socketAddress);
@@ -94,7 +92,7 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	 */
 	private void onRequest(final Request request, final InetSocketAddress socketAddress) {
 		Response response = null;
-		LOGGER.debug("收到请求类型：{}", request.getQ());
+		LOGGER.debug("DHT收到请求：{}", request.getQ());
 		switch (request.getQ()) {
 		case ping:
 			response = ping(request);
@@ -124,7 +122,7 @@ public class DhtMessageHandler extends UdpMessageHandler {
 			LOGGER.warn("未找到响应对应的请求");
 			return;
 		}
-		LOGGER.debug("收到响应类型：{}", request.getQ());
+		LOGGER.debug("DHT收到响应：{}", request.getQ());
 		switch (request.getQ()) {
 		case ping:
 			ping(request, response);

@@ -11,6 +11,7 @@ import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.magnet.MagnetProtocol;
 import com.acgist.snail.system.exception.DownloadException;
+import com.acgist.snail.system.manager.PeerManager;
 import com.acgist.snail.system.manager.TorrentManager;
 import com.acgist.snail.utils.ThreadUtils;
 
@@ -81,10 +82,11 @@ public class TorrentDownloader extends Downloader {
 	public void delete() {
 		if(this.torrentSession != null) {
 			this.torrentSession.releaseUpload();
+			final String infoHashHex = this.torrentSession.infoHashHex();
+			PeerManager.getInstance().remove(infoHashHex);
+			TorrentManager.getInstance().remove(infoHashHex);
 		}
 		super.delete();
-		// TODO：删除Peer、torrent等信息。
-//		TorrentManager.getInstance().remove();
 	}
 	
 	/**

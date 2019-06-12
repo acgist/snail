@@ -106,17 +106,15 @@ public class PeerLauncher {
 	
 	/**
 	 * 连接，优先使用TUP、然后使用TCP。
-	 * TODO：支持UTP
 	 */
 	private boolean connect() {
-		final UtpClient utpClient = UtpClient.newInstance(this.peerSession, this.peerLauncherMessageHandler);
-		boolean ok = utpClient.connect();
-		if(ok) {
-			this.peerSession.exchange(PeerConfig.PEX_UTP);
-			return ok;
+		if(this.peerSession.utp()) {
+			final UtpClient utpClient = UtpClient.newInstance(this.peerSession, this.peerLauncherMessageHandler);
+			return utpClient.connect();
+		} else {
+			final PeerClient peerClient = PeerClient.newInstance(this.peerSession, this.peerLauncherMessageHandler);
+			return peerClient.connect();
 		}
-		final PeerClient peerClient = PeerClient.newInstance(this.peerSession, this.peerLauncherMessageHandler);
-		return peerClient.connect();
 	}
 	
 	/**

@@ -34,7 +34,7 @@ public class UpnpServiceTest {
 	@Test
 	public void deletePortMapping() throws NetException {
 		UpnpService.getInstance().load(serviceUrl);
-		System.out.println(UpnpService.getInstance().deletePortMapping(18888, Protocol.tcp));
+		System.out.println(UpnpService.getInstance().deletePortMapping(18888, Protocol.udp));
 	}
 	
 	@Test

@@ -443,8 +443,8 @@ public class TorrentSession {
 	/**
 	 * 重新获取下载大小
 	 */
-	public void resize() {
-		this.taskSession.downloadSize(this.torrentStreamGroup.size());
+	public void resize(long size) {
+		this.taskSession.downloadSize(size);
 	}
 
 	/**
