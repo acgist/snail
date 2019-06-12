@@ -66,7 +66,7 @@ public class PeerConnectGroup {
 		LOGGER.debug("优化PeerConnect");
 		synchronized (this.peerConnects) {
 			try {
-				inferiorPeerConnect();	
+				inferiorPeerConnect();
 			} catch (Exception e) {
 				LOGGER.error("优化PeerConnect异常", e);
 			}
