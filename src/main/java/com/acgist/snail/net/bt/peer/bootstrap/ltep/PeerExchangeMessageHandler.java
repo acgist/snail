@@ -93,8 +93,12 @@ public class PeerExchangeMessageHandler {
 		if(CollectionUtils.isNotEmpty(peers)) {
 			final AtomicInteger index = new AtomicInteger(0);
 			peers.forEach((host, port) -> {
-				final PeerSession peerSession = PeerManager.getInstance().newPeerSession(this.infoHash.infoHashHex(),
-					this.taskSession.statistics(), host, port, PeerConfig.SOURCE_PEX);
+				final PeerSession peerSession = PeerManager.getInstance().newPeerSession(
+					this.infoHash.infoHashHex(),
+					this.taskSession.statistics(),
+					host,
+					port,
+					PeerConfig.SOURCE_PEX);
 				if(addedf != null && addedf.length > index.get()) {
 					peerSession.exchange(addedf[index.getAndIncrement()]);
 				}

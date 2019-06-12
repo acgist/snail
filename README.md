@@ -90,7 +90,7 @@ Windows直接点击SnailLauncher.exe即可运行。
 |Local Service Discovery|×|
 |Peer wire protocol（TCP）|√|
 |Tracker Protocol（UDP/HTTP）|√|
-|uTorrent transport protocol（uTP）|○|
+|uTorrent transport protocol（uTP）|√|
 |Extension for Peers to Send Metadata Files|√|
 
 *√=完成、○-进行中、×-未开始*
