@@ -35,13 +35,13 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UtpMessageHandler.class);
 	
 	/**
-	 * 限速等待（秒）
-	 */
-	private static final int LIMIT_WAIT = 2;
-	/**
 	 * 连接超时时间（秒）
 	 */
-	private static final int CONNECT_TIMEOUT = 2;
+	private static final int CONNECT_TIMEOUT = 4;
+	/**
+	 * 客户端阻塞控制等待（秒）
+	 */
+	private static final int WND_SIZE_CONTROL_TIMEOUT = 10;
 	
 	/**
 	 * 接收连接ID
@@ -242,7 +242,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 		while(this.sendWindowHandler.wndSizeControl()) {
 			timeoutRetry();
 			synchronized (this.sendWindowHandler) {
-				ThreadUtils.wait(this.sendWindowHandler, Duration.ofSeconds(LIMIT_WAIT));
+				ThreadUtils.wait(this.sendWindowHandler, Duration.ofSeconds(WND_SIZE_CONTROL_TIMEOUT));
 			}
 		}
 	}

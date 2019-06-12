@@ -71,6 +71,7 @@ public class PeerExchangeMessageHandler {
 			LOGGER.warn("不支持UtPeerExchange扩展协议");
 			return;
 		}
+		LOGGER.debug("发送Pex消息");
 		this.extensionMessageHandler.pushMessage(type, bytes);
 	}
 	

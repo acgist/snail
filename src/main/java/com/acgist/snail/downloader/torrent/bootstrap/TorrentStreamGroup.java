@@ -4,6 +4,8 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +16,7 @@ import com.acgist.snail.protocol.torrent.bean.Torrent;
 import com.acgist.snail.protocol.torrent.bean.TorrentFile;
 import com.acgist.snail.protocol.torrent.bean.TorrentInfo;
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.FileUtils;
@@ -55,15 +58,17 @@ public class TorrentStreamGroup {
 		final BitSet pieces = new BitSet(torrentInfo.pieceSize());
 		final BitSet selectPieces = new BitSet(torrentInfo.pieceSize());
 		final List<TorrentStream> streams = new ArrayList<>(files.size());
-		final TorrentStreamGroup group = new TorrentStreamGroup(pieces, selectPieces, streams, torrentSession);
 		final boolean complete = torrentSession.taskSession() == null ? false : torrentSession.taskSession().complete();
+		final TorrentStreamGroup torrentStreamGroup = new TorrentStreamGroup(pieces, selectPieces, streams, torrentSession);
+		final int fileCount = (int) files.stream().filter(file -> file.selected()).count(); // 下载文件数量
+		final CountDownLatch allReady = new CountDownLatch(fileCount); // 全部完成：异步线程也执行完成
 		if(CollectionUtils.isNotEmpty(files)) {
 			long pos = 0;
 			for (TorrentFile file : files) {
 				try {
 					if(file.selected()) {
-						final TorrentStream stream = TorrentStream.newInstance(torrentInfo.getPieceLength(), group);
-						stream.buildFile(FileUtils.file(folder, file.path()), file.getLength(), pos, selectPieces, complete);
+						final TorrentStream stream = TorrentStream.newInstance(torrentInfo.getPieceLength(), torrentStreamGroup);
+						stream.buildFile(FileUtils.file(folder, file.path()), file.getLength(), pos, selectPieces, complete, allReady);
 						streams.add(stream);
 					}
 				} catch (Exception e) {
@@ -72,7 +77,15 @@ public class TorrentStreamGroup {
 				pos += file.getLength();
 			}
 		}
-		return group;
+		SystemThreadContext.submit(() -> {
+			try {
+				allReady.await(10, TimeUnit.SECONDS);
+				torrentSession.resize(torrentStreamGroup.size());
+			} catch (InterruptedException e) {
+				LOGGER.error("统计下载文件大小等待异常", e);
+			}
+		});
+		return torrentStreamGroup;
 	}
 	
 	/**
@@ -109,13 +122,6 @@ public class TorrentStreamGroup {
 		return size;
 	}
 	
-	/**
-	 * 重新获取下载大小
-	 */
-	public void resize() {
-		this.torrentSession.resize();
-	}
-
 	/**
 	 * 是否已下载Piece
 	 * 

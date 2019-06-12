@@ -16,6 +16,7 @@ import com.acgist.snail.net.bt.peer.bootstrap.ltep.PeerExchangeMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.StatisticsSession;
 import com.acgist.snail.system.config.PeerConfig;
+import com.acgist.snail.utils.CollectionUtils;
 
 /**
  * <p>Peer管理器</p>
@@ -59,6 +60,18 @@ public class PeerManager {
 				.collect(Collectors.toMap(Map.Entry::getKey, entry -> {
 					return new ArrayList<>(entry.getValue());
 				}));
+		}
+	}
+	
+	/**
+	 * 删除任务Peer
+	 */
+	public void remove(String infoHashHex) {
+		synchronized (this.peers) {
+			this.peers.remove(infoHashHex);
+		}
+		synchronized (this.storagePeers) {
+			this.storagePeers.remove(infoHashHex);
 		}
 	}
 	
@@ -129,7 +142,7 @@ public class PeerManager {
 	 */
 	public void have(String infoHashHex, int index) {
 		final var list = list(infoHashHex);
-		if(list == null) {
+		if(CollectionUtils.isEmpty(list)) {
 			return;
 		}
 		LOGGER.debug("发送Have消息，通知Peer数量：{}", list.size());
@@ -153,7 +166,7 @@ public class PeerManager {
 			return;
 		}
 		final var list = list(infoHashHex);
-		if(list == null) {
+		if(CollectionUtils.isEmpty(list)) {
 			return;
 		}
 		LOGGER.debug("发送PEX消息，Peer数量：{}，通知Peer数量：{}", optimize.size(), list.size());

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -77,8 +78,9 @@ public class TorrentStream {
 	 * @param pos 文件开始偏移
 	 * @param selectPieces 被选中的Piece
 	 * @param complete 完成
+	 * @param allReady 准备完成
 	 */
-	public void buildFile(final String file, final long size, final long pos, final BitSet selectPieces, final boolean complete) throws IOException {
+	public void buildFile(final String file, final long size, final long pos, final BitSet selectPieces, final boolean complete, final CountDownLatch allReady) throws IOException {
 		if(this.fileStream != null) {
 			throw new IOException("Torrent文件未被释放");
 		}
@@ -92,7 +94,7 @@ public class TorrentStream {
 		FileUtils.buildFolder(this.file, true); // 创建文件父目录，否者会抛出FileNotFoundException
 		this.fileStream = new RandomAccessFile(this.file, "rw");
 		buildFilePiece();
-		buildFileAsyn(complete);
+		buildFileAsyn(complete, allReady);
 		selectPieces.set(this.fileBeginPieceIndex, this.fileEndPieceIndex + 1, true);
 		if(LOGGER.isDebugEnabled()) {
 			LOGGER.debug(
@@ -408,10 +410,11 @@ public class TorrentStream {
 	/**
 	 * 异步加载，如果已经完成的任务使用同步加载，其他使用异步加载。
 	 */
-	private void buildFileAsyn(boolean complete) throws IOException {
+	private void buildFileAsyn(boolean complete, CountDownLatch allReady) throws IOException {
 		if(complete) {
 			buildFilePieces(complete);
 			buildFileDownloadSize();
+			allReady.countDown();
 		} else {
 			SystemThreadContext.submit(() -> {
 				try {
@@ -419,6 +422,8 @@ public class TorrentStream {
 					buildFileDownloadSize();
 				} catch (IOException e) {
 					LOGGER.error("TorrentStream异步加载异常", e);
+				} finally {
+					allReady.countDown();
 				}
 			});
 		}
@@ -489,7 +494,6 @@ public class TorrentStream {
 			downloadPieceSize--;
 		}
 		this.fileDownloadSize.set(size + downloadPieceSize * this.pieceLength);
-		this.torrentStreamGroup.resize();
 		if(LOGGER.isDebugEnabled()) {
 			LOGGER.debug("当前任务已下载Piece数量：{}，剩余下载Piece数量：{}",
 				this.torrentStreamGroup.pieces().cardinality(),
