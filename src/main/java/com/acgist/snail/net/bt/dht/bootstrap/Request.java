@@ -1,6 +1,5 @@
 package com.acgist.snail.net.bt.dht.bootstrap;
 
-import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -22,16 +21,8 @@ import com.acgist.snail.utils.ObjectUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class Request {
+public class Request extends BaseMessage {
 
-	/**
-	 * 请求ID
-	 */
-	private final byte[] t;
-	/**
-	 * 类型：请求、响应
-	 */
-	private final String y;
 	/**
 	 * 请求类型
 	 */
@@ -48,18 +39,13 @@ public class Request {
 	 * 响应
 	 */
 	private Response response;
-	/**
-	 * 请求地址
-	 */
-	private InetSocketAddress socketAddress;
 	
 	protected Request(byte[] t, DhtConfig.QType q) {
 		this(t, DhtConfig.KEY_Q, q, new LinkedHashMap<>());
 	}
 	
 	protected Request(byte[] t, String y, DhtConfig.QType q, Map<String, Object> a) {
-		this.t = t;
-		this.y = y;
+		super(t, y);
 		this.q = q;
 		this.a = a;
 		this.timestamp = System.currentTimeMillis();
@@ -74,14 +60,6 @@ public class Request {
 		return new Request(t, y, type, a);
 	}
 	
-	public byte[] getT() {
-		return t;
-	}
-
-	public String getY() {
-		return y;
-	}
-
 	public QType getQ() {
 		return q;
 	}
@@ -100,14 +78,6 @@ public class Request {
 
 	public void setResponse(Response response) {
 		this.response = response;
-	}
-
-	public InetSocketAddress getSocketAddress() {
-		return socketAddress;
-	}
-
-	public void setSocketAddress(InetSocketAddress socketAddress) {
-		this.socketAddress = socketAddress;
 	}
 
 	/**
@@ -134,61 +104,12 @@ public class Request {
 	 * 
 	 * @return 参数值
 	 */
+	@Override
 	public Object get(String key) {
 		if(this.a == null) {
 			return null;
 		}
 		return this.a.get(key);
-	}
-	
-	/**
-	 * 获取Integer请求参数
-	 */
-	public Integer getInteger(String key) {
-		final Long value = getLong(key);
-		if(value == null) {
-			return null;
-		}
-		return value.intValue();
-	}
-	
-	/**
-	 * 获取Long请求参数
-	 */
-	public Long getLong(String key) {
-		return (Long) this.get(key);
-	}
-	
-	/**
-	 * 获取byte数组请求参数
-	 */
-	public byte[] getBytes(String key) {
-		return (byte[]) this.get(key);
-	}
-	
-	/**
-	 * 获取字符串请求参数
-	 */
-	public String getString(String key) {
-		final byte[] bytes = getBytes(key);
-		if(bytes == null) {
-			return null;
-		}
-		return new String(bytes);
-	}
-	
-	/**
-	 * 获取请求ID
-	 */
-	public byte[] getId() {
-		return getT();
-	}
-
-	/**
-	 * 获取NodeId
-	 */
-	public byte[] getNodeId() {
-		return getBytes(DhtConfig.KEY_ID);
 	}
 	
 	/**

@@ -1,6 +1,5 @@
 package com.acgist.snail.net.bt.dht.bootstrap;
 
-import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -23,16 +22,8 @@ import com.acgist.snail.utils.ObjectUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class Response {
+public class Response extends BaseMessage {
 
-	/**
-	 * 响应ID
-	 */
-	private final byte[] t;
-	/**
-	 * 类型：请求、响应
-	 */
-	private final String y;
 	/**
 	 * 响应参数
 	 */
@@ -53,18 +44,13 @@ public class Response {
 	 * </ul>
 	 */
 	private final List<Object> e;
-	/**
-	 * 响应地址
-	 */
-	private InetSocketAddress socketAddress;
 
 	protected Response(byte[] t) {
 		this(t, DhtConfig.KEY_R, new LinkedHashMap<>(), null);
 	}
 	
 	protected Response(byte[] t, String y, Map<String, Object> r, List<Object> e) {
-		this.t = t;
-		this.y = y;
+		super(t, y);
 		this.r = r;
 		this.e = e;
 	}
@@ -77,28 +63,12 @@ public class Response {
 		return new Response(t, y, r, e);
 	}
 	
-	public byte[] getT() {
-		return t;
-	}
-
-	public String getY() {
-		return y;
-	}
-
 	public Map<String, Object> getR() {
 		return r;
 	}
 
 	public List<Object> getE() {
 		return e;
-	}
-	
-	public InetSocketAddress getSocketAddress() {
-		return socketAddress;
-	}
-
-	public void setSocketAddress(InetSocketAddress socketAddress) {
-		this.socketAddress = socketAddress;
 	}
 
 	/**
@@ -118,6 +88,7 @@ public class Response {
 	 * 
 	 * @return 参数值
 	 */
+	@Override
 	public Object get(String key) {
 		if(this.r == null) {
 			return null;
@@ -125,45 +96,6 @@ public class Response {
 		return this.r.get(key);
 	}
 	
-	/**
-	 * 获取byte数组响应参数
-	 */
-	public byte[] getBytes(String key) {
-		return (byte[]) this.get(key);
-	}
-	
-	/**
-	 * 获取字符串响应参数
-	 */
-	public String getString(String key) {
-		final byte[] bytes = getBytes(key);
-		if(bytes == null) {
-			return null;
-		}
-		return new String(bytes);
-	}
-
-	/**
-	 * 获取List响应参数
-	 */
-	public List<?> getList(String key) {
-		return (List<?>) this.get(key);
-	}
-
-	/**
-	 * 获取响应ID
-	 */
-	public byte[] getId() {
-		return getT();
-	}
-
-	/**
-	 * 获取NodeId
-	 */
-	public byte[] getNodeId() {
-		return getBytes(DhtConfig.KEY_ID);
-	}
-
 	/**
 	 * 是否成功
 	 */
