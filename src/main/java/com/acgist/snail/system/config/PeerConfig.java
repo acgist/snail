@@ -20,6 +20,11 @@ public class PeerConfig {
 	private static final String UNKNOWN = "unknown"; // 未知终端
 
 	/**
+	 * 最大连接失败次数
+	 */
+	public static final int MAX_FAIL_TIMES = 5;
+	
+	/**
 	 * PeerId长度
 	 */
 	public static final int PEER_ID_LENGTH = 20;

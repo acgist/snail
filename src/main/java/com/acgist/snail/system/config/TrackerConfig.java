@@ -21,6 +21,11 @@ public class TrackerConfig extends PropertiesConfig {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerConfig.class);
 
 	/**
+	 * 最大失败次数，超过 这个次数将会被标记无效，以后也不再使用。
+	 */
+	public static final int MAX_FAIL_TIMES = 3;
+	
+	/**
 	 * announce事件
 	 */
 	public enum Event {

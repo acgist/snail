@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.ProtocolConfig.Protocol;
+import com.acgist.snail.system.config.TrackerConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.ObjectUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -28,11 +29,6 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	public static final int TIMEOUT = 4; // 超时时间
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerClient.class);
-	
-	/**
-	 * 最大失败次数，超过 这个次数将会被标记无效，以后也不再使用。
-	 */
-	private static final int MAX_FAIL_TIMES = 3;
 	
 	protected int weight; // 权重
 	protected final Integer id; // ID
@@ -84,7 +80,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 			this.weight++;
 		} catch (Exception e) {
 			this.weight--;
-			if(this.failTimes.incrementAndGet() > MAX_FAIL_TIMES) {
+			if(this.failTimes.incrementAndGet() > TrackerConfig.MAX_FAIL_TIMES) {
 				this.available.set(false);
 				this.failMessage = e.getMessage();
 				LOGGER.info("失败次数过多，停用Tracker Client，announceUrl：{}", this.announceUrl);

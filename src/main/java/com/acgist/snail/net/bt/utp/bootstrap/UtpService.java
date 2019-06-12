@@ -33,13 +33,19 @@ public class UtpService {
 	
 	/**
 	 * 定时任务，处理超时信息。
-	 * TODO：时间优化，删除无效
 	 */
 	private void timer() {
 		SystemThreadContext.timerFixedDelay(5, 5, TimeUnit.SECONDS, () -> {
-			this.utpMessageHandlers.values().forEach(handler -> {
-				handler.wndControl();
-			});
+			final var iterator = this.utpMessageHandlers.entrySet().iterator();
+			UtpMessageHandler handler;
+			while(iterator.hasNext()) {
+				handler = iterator.next().getValue();
+				if(handler.available()) {
+					handler.wndControl();
+				} else {
+					iterator.remove();
+				}
+			}
 		});
 	}
 	
