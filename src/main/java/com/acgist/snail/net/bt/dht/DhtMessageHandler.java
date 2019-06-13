@@ -214,8 +214,8 @@ public class DhtMessageHandler extends UdpMessageHandler {
 		final String infoHashHex = StringUtils.hex(infoHash);
 		final TorrentSession session = TorrentManager.getInstance().torrentSession(infoHashHex);
 		if(session != null) {
-			final byte[] token = request.getBytes(DhtConfig.KEY_TOKEN);
 			SystemThreadContext.submit(() -> {
+				final byte[] token = request.getBytes(DhtConfig.KEY_TOKEN);
 				this.announcePeer(request.getSocketAddress(), token, infoHash);
 			});
 		}
