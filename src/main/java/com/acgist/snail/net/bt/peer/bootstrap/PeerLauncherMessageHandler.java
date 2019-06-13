@@ -131,7 +131,7 @@ public class PeerLauncherMessageHandler {
 			return false;
 		}
 		final TaskSession taskSession = torrentSession.taskSession();
-		InetSocketAddress socketAddress = remoteSocketAddress();
+		final InetSocketAddress socketAddress = remoteSocketAddress();
 		if(socketAddress == null) {
 			LOGGER.warn("Peer连接失败，获取远程Peer信息失败");
 			return false;
