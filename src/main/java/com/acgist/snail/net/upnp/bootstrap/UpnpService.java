@@ -20,7 +20,7 @@ import com.acgist.snail.utils.XMLUtils;
 /**
  * <p>UPNP Service</p>
  * <p>端口映射，将内网的端口映射到外网中。如果外网端口已经被映射，需要设置新的映射端口。</p>
- * TODO：多路由环境获取IP
+ * TODO：多路由环境配置
  * 
  * @author acgist
  * @since 1.0.0
@@ -55,7 +55,8 @@ public class UpnpService {
 	private String controlURL; // 控制URL
 	private String serviceType; // 服务类型
 	
-	private boolean init = false; // 是否初始化
+	private volatile boolean init = false; // 是否初始化
+	
 	private String externalIpAddress; // 本地IP
 
 	private static final UpnpService INSTANCE = new UpnpService();
@@ -268,8 +269,8 @@ public class UpnpService {
 		}
 		if(uValue == USE_MAPABLE) {
 			SystemConfig.setBtPortExt(portExt);
-			boolean dhtOk = this.addPortMapping(SystemConfig.getBtPort(), portExt, Protocol.udp);
-			boolean peerOk = this.addPortMapping(SystemConfig.getBtPort(), portExt, Protocol.tcp);
+			final boolean dhtOk = this.addPortMapping(SystemConfig.getBtPort(), portExt, Protocol.udp);
+			final boolean peerOk = this.addPortMapping(SystemConfig.getBtPort(), portExt, Protocol.tcp);
 			LOGGER.info("端口映射（注册）：DHT（{}-{}-{}）、Peer（{}-{}-{}）", SystemConfig.getBtPort(), portExt, dhtOk, SystemConfig.getBtPort(), portExt, peerOk);
 		} else if(uValue == USE_USEABLE) {
 			SystemConfig.setBtPortExt(portExt);

@@ -2,6 +2,12 @@ package com.acgist.snail.net.upnp;
 
 import com.acgist.snail.net.UdpServer;
 
+/**
+ * Upnp Server
+ * 
+ * @author acgist
+ * @since 1.0.0
+ */
 public class UpnpServer extends UdpServer<UpnpAcceptHandler> {
 
 //	private static final Logger LOGGER = LoggerFactory.getLogger(UpnpServer.class);
@@ -16,4 +22,5 @@ public class UpnpServer extends UdpServer<UpnpAcceptHandler> {
 	public static final UpnpServer getInstance() {
 		return INSTANCE;
 	}
+	
 }

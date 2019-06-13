@@ -33,4 +33,4 @@ rem Æô¶¯ÎÄ¼şÅäÖÃÂ·¾¶
 set launcherIni=.\SnailLauncher\%ini%
 
 rem JAVAÒÀÀµÄ£¿é£¬²éÑ¯ÒÀÀµÃüÁî£ºjdeps --list-deps *.jar
-set modules="java.sql,java.xml,java.base,java.naming,java.desktop,java.logging,java.net.http,java.scripting,java.management,jdk.unsupported"
+set modules="java.sql,java.base,java.naming,java.desktop,java.net.http,java.scripting,java.management,jdk.unsupported"
