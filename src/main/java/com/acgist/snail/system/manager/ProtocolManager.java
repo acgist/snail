@@ -81,7 +81,9 @@ public class ProtocolManager {
 	public boolean available() throws DownloadException {
 		if(!this.availableLock.get()) {
 			synchronized (this.availableLock) {
-				ThreadUtils.wait(this.availableLock, Duration.ofSeconds(Byte.MAX_VALUE));
+				if(!this.availableLock.get()) {
+					ThreadUtils.wait(this.availableLock, Duration.ofSeconds(Byte.MAX_VALUE));
+				}
 			}
 		}
 		if(SystemContext.available()) {

@@ -63,8 +63,8 @@ public class TaskDisplay {
 		try {
 			MainController controller = INSTANCE.controller;
 			if(controller == null) {
-				synchronized (lock) {
-					ThreadUtils.wait(lock, Duration.ofSeconds(Byte.MAX_VALUE));
+				synchronized (this.lock) {
+					ThreadUtils.wait(this.lock, Duration.ofSeconds(Byte.MAX_VALUE));
 				}
 				controller = INSTANCE.controller;
 			}
@@ -81,8 +81,8 @@ public class TaskDisplay {
 		try {
 			MainController controller = INSTANCE.controller;
 			if(controller == null) {
-				synchronized (lock) {
-					ThreadUtils.wait(lock, Duration.ofSeconds(Byte.MAX_VALUE));
+				synchronized (this.lock) {
+					ThreadUtils.wait(this.lock, Duration.ofSeconds(Byte.MAX_VALUE));
 				}
 				controller = INSTANCE.controller;
 			}

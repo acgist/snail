@@ -17,11 +17,15 @@ import com.acgist.snail.net.bt.dht.bootstrap.request.PingRequest;
 import com.acgist.snail.net.bt.dht.bootstrap.response.FindNodeResponse;
 import com.acgist.snail.net.bt.dht.bootstrap.response.GetPeersResponse;
 import com.acgist.snail.pojo.session.NodeSession;
+import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.bcode.BCodeDecoder;
 import com.acgist.snail.system.config.DhtConfig;
+import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.system.manager.NodeManager;
 import com.acgist.snail.system.manager.RequestManager;
+import com.acgist.snail.system.manager.TorrentManager;
+import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
@@ -206,6 +210,15 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	 * 处理请求：getPeers
 	 */
 	private Response getPeers(Request request) {
+		final byte[] infoHash = request.getBytes(DhtConfig.KEY_INFO_HASH);
+		final String infoHashHex = StringUtils.hex(infoHash);
+		final TorrentSession session = TorrentManager.getInstance().torrentSession(infoHashHex);
+		if(session != null) {
+			final byte[] token = request.getBytes(DhtConfig.KEY_TOKEN);
+			SystemThreadContext.submit(() -> {
+				this.announcePeer(request.getSocketAddress(), token, infoHash);
+			});
+		}
 		return GetPeersRequest.execute(request);
 	}
 

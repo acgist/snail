@@ -97,6 +97,37 @@ public class Response extends BaseMessage {
 	}
 	
 	/**
+	 * B编码后的字节数组
+	 */
+	public byte[] toBytes() {
+		final Map<String, Object> response = new LinkedHashMap<>();
+		response.put(DhtConfig.KEY_T, this.t);
+		response.put(DhtConfig.KEY_Y, this.y);
+		if(this.r != null) {
+			response.put(DhtConfig.KEY_R, this.r);
+		}
+		if(this.e != null) {
+			response.put(DhtConfig.KEY_E, this.e);
+		}
+		return BCodeEncoder.encodeMap(response);
+	}
+
+	/**
+	 * 读取Node，同时添加列表
+	 */
+	protected static final NodeSession readNode(ByteBuffer buffer) {
+		if(buffer.hasRemaining()) {
+			final byte[] nodeId = new byte[NodeManager.NODE_ID_LENGTH];
+			buffer.get(nodeId);
+			final String host = NetUtils.decodeIntToIp(buffer.getInt());
+			final int port = NetUtils.decodePort(buffer.getShort());
+			final NodeSession nodeSession = NodeManager.getInstance().newNodeSession(nodeId, host, port);
+			return nodeSession;
+		}
+		return null;
+	}
+
+	/**
 	 * 是否成功
 	 */
 	public boolean success() {
@@ -128,37 +159,6 @@ public class Response extends BaseMessage {
 		list.add(code);
 		list.add(message);
 		return new Response(id, DhtConfig.KEY_R, null, list);
-	}
-	
-	/**
-	 * B编码后的字节数组
-	 */
-	public byte[] toBytes() {
-		final Map<String, Object> response = new LinkedHashMap<>();
-		response.put(DhtConfig.KEY_T, this.t);
-		response.put(DhtConfig.KEY_Y, this.y);
-		if(this.r != null) {
-			response.put(DhtConfig.KEY_R, this.r);
-		}
-		if(this.e != null) {
-			response.put(DhtConfig.KEY_E, this.e);
-		}
-		return BCodeEncoder.encodeMap(response);
-	}
-	
-	/**
-	 * 读取Node，同时添加列表
-	 */
-	protected static final NodeSession readNode(ByteBuffer buffer) {
-		if(buffer.hasRemaining()) {
-			final byte[] nodeId = new byte[NodeManager.NODE_ID_LENGTH];
-			buffer.get(nodeId);
-			final String host = NetUtils.decodeIntToIp(buffer.getInt());
-			final int port = NetUtils.decodePort(buffer.getShort());
-			final NodeSession nodeSession = NodeManager.getInstance().newNodeSession(nodeId, host, port);
-			return nodeSession;
-		}
-		return null;
 	}
 	
 	@Override
