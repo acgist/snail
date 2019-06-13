@@ -61,6 +61,24 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	private Object connectLock = new Object();
 	
 	private ByteBuffer buffer;
+
+	/**
+	 * 默认慢开始wnd数量
+	 */
+	private static final int DEFAULT_SLOW_WND = 2;
+	/**
+	 * 默认拥堵算法wnd数量
+	 */
+	private static final int DEFAULT_LIMIT_WND = 64;
+	/**
+	 * 休眠时间
+	 */
+	private static final int DEFAULT_SLEEP_TIME = 10;
+	
+	private volatile int slowWnd = DEFAULT_SLOW_WND;
+	private volatile int limitWnd = DEFAULT_LIMIT_WND;
+	private volatile int nowWnd = 0;
+	
 	/**
 	 * 发送窗口
 	 */
@@ -186,21 +204,6 @@ public class UtpMessageHandler extends UdpMessageHandler {
 		}
 		wndSizeControl();
 	}
-
-	/**
-	 * 默认慢开始wnd数量
-	 */
-	private static final int DEFAULT_SLOW_WND = 2;
-	/**
-	 * 默认拥堵算法wnd数量
-	 */
-	private static final int DEFAULT_LIMIT_WND = 64;
-	
-	private static final int DEFAULT_SLEEP_TIME = 10;
-	
-	private volatile int slowWnd = DEFAULT_SLOW_WND;
-	private volatile int limitWnd = DEFAULT_LIMIT_WND;
-	private volatile int nowWnd = 0;
 	
 	/**
 	 * 流量控制和阻塞控制。
@@ -328,20 +331,20 @@ public class UtpMessageHandler extends UdpMessageHandler {
 			}
 			final int remaining = windowBuffer.remaining();
 			if(remaining > length) { // 包含一个完整消息
-				byte[] bytes = new byte[length];
+				final byte[] bytes = new byte[length];
 				windowBuffer.get(bytes);
 				this.buffer.put(bytes);
 				this.peerLauncherMessageHandler.oneMessage(this.buffer);
 				this.buffer = null;
 			} else if(remaining == length) { // 刚好一个完整消息
-				byte[] bytes = new byte[length];
+				final byte[] bytes = new byte[length];
 				windowBuffer.get(bytes);
 				this.buffer.put(bytes);
 				this.peerLauncherMessageHandler.oneMessage(this.buffer);
 				this.buffer = null;
 				break;
 			} else if(remaining < length) { // 不是完整消息
-				byte[] bytes = new byte[remaining];
+				final byte[] bytes = new byte[remaining];
 				windowBuffer.get(bytes);
 				this.buffer.put(bytes);
 				break;

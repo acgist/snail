@@ -24,7 +24,6 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	private static final int INTEGER_BYTE_LENGTH = 4;
 	private final ByteBuffer lengthStick = ByteBuffer.allocate(INTEGER_BYTE_LENGTH);
 	
-	// TODO：优化不new
 	private ByteBuffer buffer;
 	
 	private final PeerLauncherMessageHandler peerLauncherMessageHandler;
@@ -81,25 +80,25 @@ public class PeerMessageHandler extends TcpMessageHandler {
 			}
 			final int remaining = attachment.remaining();
 			if(remaining > length) { // 包含一个完整消息
-				byte[] bytes = new byte[length];
+				final byte[] bytes = new byte[length];
 				attachment.get(bytes);
 				this.buffer.put(bytes);
 				this.peerLauncherMessageHandler.oneMessage(this.buffer);
 				this.buffer = null;
 			} else if(remaining == length) { // 刚好一个完整消息
-				byte[] bytes = new byte[length];
+				final byte[] bytes = new byte[length];
 				attachment.get(bytes);
 				this.buffer.put(bytes);
 				this.peerLauncherMessageHandler.oneMessage(this.buffer);
 				this.buffer = null;
 				break;
 			} else if(remaining < length) { // 不是完整消息
-				byte[] bytes = new byte[remaining];
+				final byte[] bytes = new byte[remaining];
 				attachment.get(bytes);
 				this.buffer.put(bytes);
 				break;
 			}
 		}
 	}
-
+	
 }
