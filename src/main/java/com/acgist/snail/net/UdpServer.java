@@ -19,6 +19,9 @@ import com.acgist.snail.utils.NetUtils;
 
 /**
  * 全部使用单例，初始化时立即开始监听。
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public abstract class UdpServer<T extends UdpAcceptHandler> {
 
