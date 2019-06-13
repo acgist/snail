@@ -48,17 +48,17 @@ public class SystemContext {
 	private static boolean shutdown = false;
 	
 	/**
-	 * 系统初始化
+	 * 系统初始化，数据库必须优先同步初始化。
 	 */
 	public static final void init() {
 		LOGGER.info("系统初始化");
+		DatabaseInitializer.newInstance().sync();
 		ConfigInitializer.newInstance().asyn();
-		DatabaseInitializer.newInstance().asyn();
 		ProtocolInitializer.newInstance().asyn();
-		DhtInitializer.newInstance().asyn();
-		TrackerInitializer.newInstance().asyn();
 		UpnpInitializer.newInstance().asyn();
+		DhtInitializer.newInstance().asyn();
 		PeerInitializer.newInstance().asyn();
+		TrackerInitializer.newInstance().asyn();
 		TorrentInitializer.newInstance().asyn();
 		DownloaderInitializer.newInstance().asyn();
 	}
@@ -110,9 +110,9 @@ public class SystemContext {
 				TrackerServer.getInstance().close();
 				TorrentServer.getInstance().close();
 				ApplicationServer.getInstance().close();
-				UdpAcceptHandler.shutdown();
 				TcpClient.shutdown();
 				TcpServer.shutdown();
+				UdpAcceptHandler.shutdown();
 				UdpServer.shutdown();
 				SystemThreadContext.shutdown();
 				Platform.exit();

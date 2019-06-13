@@ -22,19 +22,13 @@ open module com.acgist.snail {
 	 * Java
 	 */
 	requires java.sql;
-	requires java.xml;
 	requires java.base;
 	requires java.desktop;
 	requires java.net.http;
-
+	
 	/*
 	 * jdeps（jdeps --list-deps *.jar）分析出来的依赖：
-	 * java.sql
-	 * java.xml
-	 * java.base
 	 * java.naming
-	 * java.desktop
-	 * java.logging
 	 * java.scripting
 	 * java.management
 	 * jdk.unsupported
