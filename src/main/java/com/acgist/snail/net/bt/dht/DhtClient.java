@@ -77,7 +77,7 @@ public class DhtClient extends UdpClient<DhtMessageHandler> {
 	public void getPeers(byte[] infoHash) {
 		this.handler.getPeers(this.socketAddress, infoHash);
 	}
-
+	
 	/**
 	 * 声明Peer
 	 */
@@ -91,5 +91,5 @@ public class DhtClient extends UdpClient<DhtMessageHandler> {
 	public void announcePeer(byte[] token, byte[] infoHash) {
 		this.handler.announcePeer(this.socketAddress, token, infoHash);
 	}
-
+	
 }

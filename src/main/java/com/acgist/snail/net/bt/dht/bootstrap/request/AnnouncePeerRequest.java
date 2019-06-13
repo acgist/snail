@@ -18,7 +18,6 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * 声明Peer
- * TODO：通知
  * 
  * @author acgist
  * @since 1.0.0
@@ -53,7 +52,7 @@ public class AnnouncePeerRequest extends Request {
 	 */
 	public static final AnnouncePeerResponse execute(Request request) {
 		final byte[] token = request.getBytes(DhtConfig.KEY_TOKEN);
-		if(!ArrayUtils.equals(token, NodeManager.getInstance().nodeId())) {
+		if(!ArrayUtils.equals(token, NodeManager.getInstance().token())) {
 			return AnnouncePeerResponse.newInstance(Response.error(request.getT(), 203, "Token错误"));
 		}
 		final byte[] infoHash = request.getBytes(DhtConfig.KEY_INFO_HASH);
