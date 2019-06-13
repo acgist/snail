@@ -40,7 +40,7 @@ public class DatabaseManager {
 	 * 连接
 	 */
 	private Connection connection;
-	
+
 	/**
 	 * 查询表是否存在
 	 */

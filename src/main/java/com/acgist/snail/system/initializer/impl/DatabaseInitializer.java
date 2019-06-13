@@ -22,7 +22,7 @@ public class DatabaseInitializer extends Initializer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseInitializer.class);
 	
-	private DatabaseManager jdbcConnection = DatabaseManager.getInstance();
+	private DatabaseManager databaseManager = DatabaseManager.getInstance();
 	
 	private DatabaseInitializer() {
 	}
@@ -44,7 +44,7 @@ public class DatabaseInitializer extends Initializer {
 	 * 判断表是否存在
 	 */
 	private boolean exist() {
-		return this.jdbcConnection.haveTable(ConfigEntity.TABLE_NAME);
+		return this.databaseManager.haveTable(ConfigEntity.TABLE_NAME);
 	}
 
 	/**
@@ -53,7 +53,7 @@ public class DatabaseInitializer extends Initializer {
 	private void buildTable() {
 		LOGGER.info("初始化数据库表");
 		final String sql = buildTableSQL();
-		this.jdbcConnection.update(sql);
+		this.databaseManager.update(sql);
 	}
 
 	/**
