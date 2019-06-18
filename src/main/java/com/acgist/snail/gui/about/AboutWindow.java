@@ -33,7 +33,7 @@ public class AboutWindow extends Window<AboutController> {
 	static {
 		synchronized (AboutWindow.class) {
 			if(INSTANCE == null) {
-				LOGGER.info("初始化关于窗口");
+				LOGGER.debug("初始化关于窗口");
 				INSTANCE = new AboutWindow();
 				try {
 					INSTANCE.start(INSTANCE.stage);

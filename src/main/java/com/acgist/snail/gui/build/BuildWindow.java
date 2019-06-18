@@ -33,7 +33,7 @@ public class BuildWindow extends Window<BuildController> {
 	static {
 		synchronized (BuildWindow.class) {
 			if(INSTANCE == null) {
-				LOGGER.info("初始化新建窗口");
+				LOGGER.debug("初始化新建窗口");
 				INSTANCE = new BuildWindow();
 				try {
 					INSTANCE.start(INSTANCE.stage);
@@ -63,7 +63,7 @@ public class BuildWindow extends Window<BuildController> {
 	 * @param url 下载地址
 	 */
 	public void show(String url) {
-		controller.setUrl(url);
+		this.controller.setUrl(url);
 		this.show();
 	}
 	

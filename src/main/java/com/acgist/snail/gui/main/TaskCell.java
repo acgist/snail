@@ -38,7 +38,7 @@ public class TaskCell extends TableCell<TaskSession, String> {
 		final TaskSession taskSession = this.getTableRow().getItem();
 		if(taskSession != null) {
 			final HBox box = new HBox();
-			box.setAlignment(pos);
+			box.setAlignment(this.pos);
 			final Text name = new Text(value);
 			if(this.icon) { // 名称：添加图标和手势
 				name.setCursor(Cursor.HAND);

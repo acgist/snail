@@ -13,6 +13,7 @@ import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.system.context.SystemContext;
 import com.acgist.snail.system.exception.DownloadException;
+import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
@@ -55,24 +56,44 @@ public class ProtocolManager {
 	 * 新建下载任务
 	 */
 	public TaskSession build(String url) throws DownloadException {
-		synchronized (this.protocols) {
-			return protocol(url).build();
+		final Protocol protocol = protocol(url);
+		if(protocol == null) {
+			throw new DownloadException("不支持的下载协议：" + url);
+		}
+		synchronized (protocol) {
+			return protocol.build();
 		}
 	}
 
 	/**
 	 * 获取下载协议
 	 */
-	public Protocol protocol(String url) throws DownloadException {
-		final Optional<Protocol> optional = this.protocols.stream()
-			.filter(protocol -> protocol.available())
-			.peek(protocol -> protocol.init(url))
-			.filter(protocol -> protocol.verify())
-			.findFirst();
-		if(optional.isEmpty()) {
-			throw new DownloadException("不支持的下载协议：" + url);
+	public Protocol protocol(String url) {
+		if(StringUtils.isEmpty(url)) {
+			return null;
 		}
-		return optional.get();
+		synchronized (this.protocols) {
+			final Optional<Protocol> optional = this.protocols.stream()
+				.filter(protocol -> protocol.available())
+				.peek(protocol -> protocol.init(url))
+				.filter(protocol -> protocol.verify())
+				.findFirst();
+			if(optional.isEmpty()) {
+				return null;
+			}
+			return optional.get();
+		}
+	}
+
+	/**
+	 * 是否支持下载
+	 */
+	public boolean support(String url) {
+		final Protocol protocol = protocol(url);
+		if(protocol == null) {
+			return false;
+		}
+		return true;
 	}
 	
 	/**

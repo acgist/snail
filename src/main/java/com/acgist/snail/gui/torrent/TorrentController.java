@@ -52,12 +52,12 @@ public class TorrentController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// 设置属性
-		downloadBox.prefWidthProperty().bind(root.widthProperty());
-		treeBox.prefWidthProperty().bind(root.widthProperty());
-		downloadBox.prefHeightProperty().setValue(40D);;
-		treeBox.prefHeightProperty().bind(root.heightProperty().subtract(40D));
+		this.downloadBox.prefWidthProperty().bind(this.root.widthProperty());
+		this.treeBox.prefWidthProperty().bind(this.root.widthProperty());
+		this.downloadBox.prefHeightProperty().setValue(40D);;
+		this.treeBox.prefHeightProperty().bind(this.root.heightProperty().subtract(40D));
 		// 绑定事件
-		download.setOnAction(downloadEvent);
+		this.download.setOnAction(this.downloadEvent);
 	}
 
 	/**
@@ -75,13 +75,13 @@ public class TorrentController implements Initializable {
 			return;
 		}
 		TorrentInfo torrentInfo = torrent.getInfo();
-		selecter = TorrentFileSelecter.newInstance(torrentInfo.getName(), download, tree);
+		this.selecter = TorrentFileSelecter.newInstance(torrentInfo.getName(), this.download, tree);
 		torrentInfo.files()
 		.stream()
 		.filter(file -> !file.path().startsWith(HIDE_FILE_PREFIX))
 		.sorted((a, b) -> a.path().compareTo(b.path()))
-		.forEach(file -> selecter.build(file.path(), file.getLength()));
-		selecter.select(taskSession);
+		.forEach(file -> this.selecter.build(file.path(), file.getLength()));
+		this.selecter.select(taskSession);
 	}
 	
 	/**
@@ -98,10 +98,10 @@ public class TorrentController implements Initializable {
 		TreeView<HBox> tree = new TreeView<>();
 		tree.setId("tree");
 		tree.getStyleClass().add("tree");
-		tree.prefWidthProperty().bind(root.widthProperty());
-		tree.prefHeightProperty().bind(treeBox.heightProperty());
-		treeBox.getChildren().clear();
-		treeBox.getChildren().add(tree);
+		tree.prefWidthProperty().bind(this.root.widthProperty());
+		tree.prefHeightProperty().bind(this.treeBox.heightProperty());
+		this.treeBox.getChildren().clear();
+		this.treeBox.getChildren().add(tree);
 		return tree;
 	}
 	
@@ -109,19 +109,19 @@ public class TorrentController implements Initializable {
 	 * 下载按钮事件
 	 */
 	private EventHandler<ActionEvent> downloadEvent = (event) -> {
-		TaskEntity entity = taskSession.entity();
-		var list = selecter.description();
+		TaskEntity entity = this.taskSession.entity();
+		var list = this.selecter.description();
 		if(list.isEmpty()) {
 			Alerts.warn("下载提示", "请选择下载文件");
 			return;
 		}
-		entity.setSize(selecter.size());
+		entity.setSize(this.selecter.size());
 		final TorrentFileSelectWrapper wrapper = TorrentFileSelectWrapper.newEncoder(list);
 		entity.setDescription(wrapper.description());
 		if(entity.getId() != null) { // 已经添加数据库
 			TaskRepository repository = new TaskRepository();
 			repository.update(entity);
-			DownloaderManager.getInstance().refresh(taskSession);
+			DownloaderManager.getInstance().refresh(this.taskSession);
 		}
 		TaskDisplay.getInstance().refreshTaskData();
 		TorrentWindow.getInstance().hide();

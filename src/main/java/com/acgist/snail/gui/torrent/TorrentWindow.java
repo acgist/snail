@@ -34,7 +34,7 @@ public class TorrentWindow extends Window<TorrentController> {
 	static {
 		synchronized (TorrentWindow.class) {
 			if(INSTANCE == null) {
-				LOGGER.info("初始化编辑任务窗口");
+				LOGGER.debug("初始化编辑任务窗口");
 				INSTANCE = new TorrentWindow();
 				try {
 					INSTANCE.start(INSTANCE.stage);

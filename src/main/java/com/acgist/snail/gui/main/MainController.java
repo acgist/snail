@@ -20,9 +20,10 @@ import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.manager.DownloaderManager;
-import com.acgist.snail.system.manager.TorrentManager;
+import com.acgist.snail.system.manager.ProtocolManager;
 import com.acgist.snail.system.statistics.SystemStatistics;
 import com.acgist.snail.utils.FileUtils;
+import com.acgist.snail.utils.StringUtils;
 
 import javafx.application.Platform;
 import javafx.beans.binding.DoubleBinding;
@@ -119,21 +120,21 @@ public class MainController implements Initializable {
 		placeholderBox.setAlignment(Pos.CENTER);
 		this.taskTable.setPlaceholder(placeholderBox);
 		// 设置列
-		taskCell(name, Pos.CENTER_LEFT, true, taskTable.widthProperty().divide(5D));
-		taskCell(status, Pos.CENTER, false, taskTable.widthProperty().divide(10D));
-		taskCell(progress, Pos.CENTER_LEFT, false, taskTable.widthProperty().divide(5D).subtract(20));
-		taskCell(createDate, Pos.CENTER, false, taskTable.widthProperty().divide(4D));
-		taskCell(endDate, Pos.CENTER, false, taskTable.widthProperty().divide(4D));
+		taskCell(this.name, Pos.CENTER_LEFT, true, this.taskTable.widthProperty().divide(5D));
+		taskCell(this.status, Pos.CENTER, false, this.taskTable.widthProperty().divide(10D));
+		taskCell(this.progress, Pos.CENTER_LEFT, false, this.taskTable.widthProperty().divide(5D).subtract(20));
+		taskCell(this.createDate, Pos.CENTER, false, this.taskTable.widthProperty().divide(4D));
+		taskCell(this.endDate, Pos.CENTER, false, this.taskTable.widthProperty().divide(4D));
 		// 设置行
-		this.taskTable.setRowFactory(rowFactory);
+		this.taskTable.setRowFactory(this.rowFactory);
 		// 绑定属性
-		taskTable.prefWidthProperty().bind(root.widthProperty());
-		taskTable.prefHeightProperty().bind(root.prefHeightProperty().subtract(80D));
-		footerButton.prefWidthProperty().bind(root.widthProperty().multiply(0.5D));
-		footerStatus.prefWidthProperty().bind(root.widthProperty().multiply(0.5D));
+		this.taskTable.prefWidthProperty().bind(this.root.widthProperty());
+		this.taskTable.prefHeightProperty().bind(this.root.prefHeightProperty().subtract(80D));
+		this.footerButton.prefWidthProperty().bind(this.root.widthProperty().multiply(0.5D));
+		this.footerStatus.prefWidthProperty().bind(this.root.widthProperty().multiply(0.5D));
 		// 文件拖拽
-		taskTable.setOnDragOver(dragOverAction);
-		taskTable.setOnDragDropped(dragDroppedAction);
+		this.taskTable.setOnDragOver(this.dragOverAction);
+		this.taskTable.setOnDragDropped(this.dragDroppedAction);
 		// 设置定时刷新
 		TaskDisplay.getInstance().newTimer(this);
 	}
@@ -222,11 +223,11 @@ public class MainController implements Initializable {
 		.stream()
 		.filter(wrapper -> {
 			var status = wrapper.entity().getStatus();
-			if(filter == Filter.all) {
+			if(this.filter == Filter.all) {
 				return true;
-			} else if(filter == Filter.download) {
+			} else if(this.filter == Filter.download) {
 				return status == Status.await || status == Status.download;
-			} else if(filter == Filter.complete) {
+			} else if(this.filter == Filter.complete) {
 				return status == Status.complete;
 			} else {
 				return true;
@@ -235,19 +236,19 @@ public class MainController implements Initializable {
 		.forEach(wrapper -> {
 			obs.add(wrapper);
 		});
-		taskTable.setItems(obs);
+		this.taskTable.setItems(obs);
 	}
 	
 	/**
 	 * 刷新数据
 	 */
 	public void refreshData() {
-		taskTable.refresh(); // 刷新table
+		this.taskTable.refresh(); // 刷新table
 		Platform.runLater(() -> {
 			long downloadSecond = SystemStatistics.getInstance().downloadSecond();
-			downloadBuffer.setText(FileUtils.formatSize(downloadSecond) + "/S"); // 下载速度
+			this.downloadBuffer.setText(FileUtils.formatSize(downloadSecond) + "/S"); // 下载速度
 			long uploadSecond = SystemStatistics.getInstance().uploadSecond();
-			uploadBuffer.setText(FileUtils.formatSize(uploadSecond) + "/S"); // 上传速度
+			this.uploadBuffer.setText(FileUtils.formatSize(uploadSecond) + "/S"); // 上传速度
 		});
 	}
 	
@@ -339,7 +340,7 @@ public class MainController implements Initializable {
 	private Callback<TableView<TaskSession>, TableRow<TaskSession>> rowFactory = new Callback<TableView<TaskSession>, TableRow<TaskSession>>() {
 		@Override
 		public TableRow<TaskSession> call(TableView<TaskSession> param) {
-			TableRow<TaskSession> row = new TableRow<>();
+			final TableRow<TaskSession> row = new TableRow<>();
 			row.setOnMouseClicked(rowClickAction); // 双击修改任务状态
 			row.setContextMenu(TaskMenu.getInstance());
 			return row;
@@ -350,15 +351,19 @@ public class MainController implements Initializable {
 	 * 拖入文件事件（显示）
 	 */
 	private EventHandler<DragEvent> dragOverAction = (event) -> {
-		if (event.getGestureSource() != taskTable) {
-			Dragboard dragboard = event.getDragboard();
+		if (event.getGestureSource() != this.taskTable) {
+			String url = null;
+			final Dragboard dragboard = event.getDragboard();
 			if(dragboard.hasFiles()) {
-				File file = dragboard.getFiles().get(0);
-				if(TorrentManager.verify(file.getPath())) {
-					event.acceptTransferModes(TransferMode.COPY);
-				} else {
-					event.acceptTransferModes(TransferMode.NONE);
-				}
+				final File file = dragboard.getFiles().get(0);
+				url = file.getPath();
+			} else if(dragboard.hasUrl()) {
+				url = dragboard.getUrl();
+			} else if(dragboard.hasString()) {
+				url = dragboard.getString();
+			}
+			if(ProtocolManager.getInstance().support(url)) {
+				event.acceptTransferModes(TransferMode.COPY);
 			} else {
 				event.acceptTransferModes(TransferMode.NONE);
 			}
@@ -370,10 +375,18 @@ public class MainController implements Initializable {
 	 * 拖入文件事件（加载）
 	 */
 	private EventHandler<DragEvent> dragDroppedAction = (event) -> {
-		Dragboard dragboard = event.getDragboard();
+		String url = null;
+		final Dragboard dragboard = event.getDragboard();
 		if (dragboard.hasFiles()) {
-			File file = dragboard.getFiles().get(0);
-			BuildWindow.getInstance().show(file.getPath());
+			final File file = dragboard.getFiles().get(0);
+			url = file.getPath();
+		} else if(dragboard.hasUrl()) {
+			url = dragboard.getUrl();
+		} else if(dragboard.hasString()) {
+			url = dragboard.getString();
+		}
+		if(StringUtils.isNotEmpty(url)) {
+			BuildWindow.getInstance().show(url);
 		}
 		event.setDropCompleted(true);
 		event.consume();
@@ -382,23 +395,22 @@ public class MainController implements Initializable {
 	/**
 	 * 列双击事件
 	 */
-	@SuppressWarnings("unchecked")
 	private EventHandler<MouseEvent> rowClickAction = (event) -> {
 		if(event.getClickCount() == 2) { // 双击
-			TableRow<TaskSession> row = (TableRow<TaskSession>) event.getSource();
-			var wrapper = row.getItem();
-			if(wrapper == null) {
+			final TableRow<?> row = (TableRow<?>) event.getSource();
+			TaskSession session = (TaskSession) row.getItem();
+			if(session == null) {
 				return;
 			}
-			if(wrapper.complete()) { // 下载完成=打开文件
-				FileUtils.openInDesktop(new File(wrapper.entity().getFile()));
-			} else if(wrapper.coming()) { // 准备中=暂停下载
-				DownloaderManager.getInstance().pause(wrapper);
+			if(session.complete()) { // 下载完成=打开文件
+				FileUtils.openInDesktop(new File(session.entity().getFile()));
+			} else if(session.coming()) { // 准备中=暂停下载
+				DownloaderManager.getInstance().pause(session);
 			} else { // 其他=开始下载
 				try {
-					DownloaderManager.getInstance().start(wrapper);
+					DownloaderManager.getInstance().start(session);
 				} catch (DownloadException e) {
-					LOGGER.error("添加下载任务异常", e);
+					LOGGER.error("开始下载任务异常", e);
 				}
 			}
 		}

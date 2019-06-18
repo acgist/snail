@@ -38,7 +38,7 @@ public class MainWindow extends Window<MainController> {
 	static {
 		synchronized (AboutWindow.class) {
 			if(INSTANCE == null) {
-				LOGGER.info("初始化主窗口");
+				LOGGER.debug("初始化主窗口");
 				INSTANCE = new MainWindow();
 				try {
 					INSTANCE.start(INSTANCE.stage);
@@ -64,7 +64,7 @@ public class MainWindow extends Window<MainController> {
 	
 	@Override
 	public void show() {
-		stage.setIconified(false); // 设置最大化：防止最小化后从托盘显示出来不能正常显示
+		this.stage.setIconified(false); // 设置最大化：防止最小化后从托盘显示出来不能正常显示
 		super.show();
 	}
 
@@ -72,7 +72,7 @@ public class MainWindow extends Window<MainController> {
 	 * F1帮助
 	 */
 	private void help() {
-		stage.addEventHandler(KeyEvent.KEY_RELEASED, (event) -> {
+		this.stage.addEventHandler(KeyEvent.KEY_RELEASED, (event) -> {
 			if(event.getCode() == KeyCode.F1) {
 				BrowseUtils.open(SystemConfig.getSupport());
 			}
@@ -83,7 +83,7 @@ public class MainWindow extends Window<MainController> {
 	 * F12控制台（输出系统状态信息到日志）
 	 */
 	private void console() {
-		stage.addEventHandler(KeyEvent.KEY_RELEASED, (event) -> {
+		this.stage.addEventHandler(KeyEvent.KEY_RELEASED, (event) -> {
 			if(event.getCode() == KeyCode.F12) {
 				SystemConsole.getInstance().console();
 			}

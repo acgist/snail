@@ -33,7 +33,7 @@ public class SettingWindow extends Window<SettingController> {
 	static {
 		synchronized (SettingWindow.class) {
 			if(INSTANCE == null) {
-				LOGGER.info("初始化设置窗口");
+				LOGGER.debug("初始化设置窗口");
 				INSTANCE = new SettingWindow();
 				try {
 					INSTANCE.start(INSTANCE.stage);

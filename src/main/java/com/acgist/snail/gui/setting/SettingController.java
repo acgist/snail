@@ -37,23 +37,21 @@ public class SettingController implements Initializable {
 	@FXML
 	private ScrollPane scrollPane;
 	@FXML
+	private Text pathValue;
+	@FXML
 	private Slider size;
 	@FXML
 	private Slider buffer;
 	@FXML
 	private Slider memoryBuffer;
 	@FXML
-	private Text pathValue;
-	@FXML
 	private CheckBox notice;
-	@FXML
-	private CheckBox p2p;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// 绑定宽高
-		scrollPane.prefWidthProperty().bind(root.widthProperty());
-		scrollPane.prefHeightProperty().bind(root.heightProperty());
+		this.scrollPane.prefWidthProperty().bind(this.root.widthProperty());
+		this.scrollPane.prefHeightProperty().bind(this.root.heightProperty());
 		// 初始化
 		initSetting();
 		initControl();
@@ -65,24 +63,24 @@ public class SettingController implements Initializable {
 		if (file != null) {
 			final String path = file.getPath();
 			DownloadConfig.setPath(path);
-			pathValue.setText(DownloadConfig.getPath());
+			this.pathValue.setText(DownloadConfig.getPath());
 		}
 	}
 
 	@FXML
 	public void handleNoticeAction(ActionEvent event) {
-		DownloadConfig.setNotice(notice.isSelected());
+		DownloadConfig.setNotice(this.notice.isSelected());
 	}
 	
 	/**
 	 * 初始化配置
 	 */
 	private void initSetting() {
-		pathValue.setText(DownloadConfig.getPath());
-		size.setValue(DownloadConfig.getSize());
-		buffer.setValue(DownloadConfig.getBuffer());
-		memoryBuffer.setValue(DownloadConfig.getMemoryBuffer());
-		notice.setSelected(DownloadConfig.getNotice());
+		this.pathValue.setText(DownloadConfig.getPath());
+		this.size.setValue(DownloadConfig.getSize());
+		this.buffer.setValue(DownloadConfig.getBuffer());
+		this.memoryBuffer.setValue(DownloadConfig.getMemoryBuffer());
+		this.notice.setSelected(DownloadConfig.getNotice());
 	}
 	
 	/**
@@ -90,19 +88,19 @@ public class SettingController implements Initializable {
 	 */
 	private void initControl() {
 		// 初始化下载地址选择
-		pathValue.setCursor(Cursor.HAND);
-		pathValue.setOnMouseClicked(openDownloadPath);
+		this.pathValue.setCursor(Cursor.HAND);
+		this.pathValue.setOnMouseClicked(this.openDownloadPath);
 		// 初始化下载大小设置
-		size.valueProperty().addListener(sizeListener);
-		size.setOnMouseReleased(sizeAction);
+		this.size.valueProperty().addListener(this.sizeListener);
+		this.size.setOnMouseReleased(this.sizeAction);
 		// 初始化下载速度设置
-		buffer.valueProperty().addListener(bufferListener);
-		buffer.setOnMouseReleased(bufferAction);
-		buffer.setLabelFormatter(bufferFormatter);
+		this.buffer.valueProperty().addListener(this.bufferListener);
+		this.buffer.setOnMouseReleased(this.bufferAction);
+		this.buffer.setLabelFormatter(this.bufferFormatter);
 		// 初始化下载磁盘缓存设置
-		memoryBuffer.valueProperty().addListener(memoryBufferListener);
-		memoryBuffer.setOnMouseReleased(memoryBufferAction);
-		memoryBuffer.setLabelFormatter(memoryBufferFormatter);
+		this.memoryBuffer.valueProperty().addListener(this.memoryBufferListener);
+		this.memoryBuffer.setOnMouseReleased(this.memoryBufferAction);
+		this.memoryBuffer.setLabelFormatter(this.memoryBufferFormatter);
 	}
 	
 	private EventHandler<MouseEvent> openDownloadPath = (event) -> {
@@ -115,11 +113,11 @@ public class SettingController implements Initializable {
 		if(value == 0) { // 不能设置：0
 			value = 1;
 		}
-		size.setValue(value);
+		this.size.setValue(value);
 	};
 	
 	private EventHandler<MouseEvent> sizeAction = (event) -> {
-		Double value = size.getValue();
+		Double value = this.size.getValue();
 		DownloadConfig.setSize(value.intValue());
 	};
 	
@@ -130,11 +128,11 @@ public class SettingController implements Initializable {
 		} else if(value == 0) { // 不能设置：0
 			value = 1;
 		}
-		buffer.setValue(value);
+		this.buffer.setValue(value);
 	};
 	
 	private EventHandler<MouseEvent> bufferAction = (event) -> {
-		Double value = buffer.getValue();
+		Double value = this.buffer.getValue();
 		DownloadConfig.setBuffer(value.intValue());
 	};
 	
@@ -151,11 +149,11 @@ public class SettingController implements Initializable {
 	
 	private ChangeListener<? super Number> memoryBufferListener = (obs, oldVal, newVal) -> {
 		int value = newVal.intValue() / 8 * 8;
-		memoryBuffer.setValue(value);
+		this.memoryBuffer.setValue(value);
 	};
 	
 	private EventHandler<MouseEvent> memoryBufferAction = (event) -> {
-		Double value = memoryBuffer.getValue();
+		Double value = this.memoryBuffer.getValue();
 		DownloadConfig.setMemoryBuffer(value.intValue());
 	};
 	

@@ -16,32 +16,32 @@ import javafx.stage.Stage;
 public abstract class Window<T extends Initializable> extends Application {
 
 	/**
-	 * 控制器
-	 */
-	protected T controller;
-	/**
 	 * 容器
 	 */
 	protected Stage stage;
+	/**
+	 * 控制器
+	 */
+	protected T controller;
 	
-	public Window() {
-		stage = new Stage();
+	protected Window() {
+		this.stage = new Stage();
 	}
 	
 	/**
 	 * 设置ICON
 	 */
 	protected void icon() {
-		stage.getIcons().add(new Image("/image/logo.png"));
+		this.stage.getIcons().add(new Image("/image/logo.png"));
 	}
 	
 	/**
 	 * ESC隐藏窗口
 	 */
 	protected void esc() {
-		stage.addEventHandler(KeyEvent.KEY_RELEASED, (event) -> {
+		this.stage.addEventHandler(KeyEvent.KEY_RELEASED, (event) -> {
 			if(event.getCode() == KeyCode.ESCAPE) {
-				stage.hide();
+				this.stage.hide();
 			}
 		});
 	}
@@ -50,7 +50,7 @@ public abstract class Window<T extends Initializable> extends Application {
 	 * 禁止改变窗口大小
 	 */
 	protected void disableResize() {
-		stage.setResizable(false);
+		this.stage.setResizable(false);
 	}
 	
 	/**
@@ -65,28 +65,28 @@ public abstract class Window<T extends Initializable> extends Application {
 	 * 显示窗口（异步）
 	 */
 	public void show() {
-		stage.show();
+		this.stage.show();
 	}
 	
 	/**
 	 * 显示窗口（同步）
 	 */
 	public void showAndWait() {
-		stage.showAndWait();
+		this.stage.showAndWait();
 	}
 	
 	/**
 	 * 隐藏窗口
 	 */
 	public void hide() {
-		stage.hide();
+		this.stage.hide();
 	}
 	
 	/**
 	 * 窗口是否显示
 	 */
 	public boolean isShowing() {
-		return stage.isShowing();
+		return this.stage.isShowing();
 	}
 	
 	/**
@@ -100,7 +100,7 @@ public abstract class Window<T extends Initializable> extends Application {
 	 * 控制器
 	 */
 	public T controller() {
-		return controller;
+		return this.controller;
 	}
 	
 }
