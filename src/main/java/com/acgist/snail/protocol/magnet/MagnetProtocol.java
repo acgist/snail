@@ -9,7 +9,7 @@ import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * 磁力链接协议
+ * 磁力链接协议（只支持BT磁力链接）
  * 
  * @author acgist
  * @since 1.0.0
@@ -46,7 +46,6 @@ public class MagnetProtocol extends Protocol {
 		return true;
 	}
 	
-//	TODO：磁力链接转种子
 	@Override
 	protected Protocol convert() throws DownloadException {
 //		final File file = null; // TODO：下载
@@ -74,17 +73,20 @@ public class MagnetProtocol extends Protocol {
 	/**
 	 * 解析磁力链接获取hash
 	 */
-	public static final String buildHash(String url) throws DownloadException {
-		final URI uri = URI.create(url);
-		String[] datas = uri.getSchemeSpecificPart().substring(1).split("&");
+	public static final String buildInfoHash(String url) throws DownloadException {
+		if(StringUtils.isEmpty(url)) {
+			return null;
+		}
 		int index;
 		String key, value;
-		for (String data : datas) {
-			index = data.indexOf("=");
+		final URI uri = URI.create(url);
+		String[] querys = uri.getSchemeSpecificPart().substring(1).split("&");
+		for (String query : querys) {
+			index = query.indexOf("=");
 			if(index >= 0) {
-				key = data.substring(0, index);
+				key = query.substring(0, index);
 				if(HASH_KEY.equals(key)) {
-					value = data.substring(index + 1);
+					value = query.substring(index + 1);
 					String hash = value.substring(HASH_PREFIX.length());
 					if(verifyMagnetHash32(hash)) {
 						InfoHash infoHash = InfoHash.newInstance(hash);

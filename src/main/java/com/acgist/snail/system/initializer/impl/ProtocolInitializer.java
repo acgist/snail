@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.protocol.ftp.FtpProtocol;
 import com.acgist.snail.protocol.http.HttpProtocol;
+import com.acgist.snail.protocol.magnet.MagnetProtocol;
 import com.acgist.snail.protocol.thunder.ThunderProtocol;
 import com.acgist.snail.protocol.torrent.TorrentProtocol;
 import com.acgist.snail.system.initializer.Initializer;
@@ -30,11 +31,13 @@ public class ProtocolInitializer extends Initializer {
 	@Override
 	protected void init() {
 		LOGGER.info("初始化下载协议");
-		ProtocolManager.getInstance().register(FtpProtocol.getInstance());
-		ProtocolManager.getInstance().register(HttpProtocol.getInstance());
-		ProtocolManager.getInstance().register(TorrentProtocol.getInstance());
-		ProtocolManager.getInstance().register(ThunderProtocol.getInstance());
-		ProtocolManager.getInstance().available(true);
+		ProtocolManager.getInstance()
+			.register(FtpProtocol.getInstance())
+			.register(HttpProtocol.getInstance())
+			.register(MagnetProtocol.getInstance())
+			.register(TorrentProtocol.getInstance())
+			.register(ThunderProtocol.getInstance())
+			.available(true);
 	}
 
 }
