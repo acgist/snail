@@ -1,10 +1,7 @@
 package com.acgist.snail.protocol.magnet;
 
-import java.net.URI;
-
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.protocol.Protocol;
-import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.StringUtils;
 
@@ -16,12 +13,9 @@ import com.acgist.snail.utils.StringUtils;
  */
 public class MagnetProtocol extends Protocol {
 
-	private static final String HASH_KEY = "xt";
-	private static final String HASH_PREFIX = "urn:btih:";
-	
 	public static final String MAGNET_PREFIX = "magnet:?xt=urn:btih:"; // 磁力链接前缀
 	
-	public static final String MAGNET_REGEX = "magnet:\\?xt=urn:btih:.+"; // 磁力链接正则表达式
+	public static final String MAGNET_REGEX = "magnet:\\?.+"; // 磁力链接正则表达式
 	
 	public static final String MAGNET_HASH_32_REGEX = "[a-zA-Z0-9]{32}"; // 32位磁力链接HASH正则表达式
 	public static final String MAGNET_HASH_40_REGEX = "[a-zA-Z0-9]{40}"; // 40位磁力链接HASH正则表达式
@@ -68,35 +62,6 @@ public class MagnetProtocol extends Protocol {
 	
 	@Override
 	protected void cleanMessage() {
-	}
-	
-	/**
-	 * 解析磁力链接获取hash
-	 */
-	public static final String buildInfoHash(String url) throws DownloadException {
-		if(StringUtils.isEmpty(url)) {
-			return null;
-		}
-		int index;
-		String key, value;
-		final URI uri = URI.create(url);
-		String[] querys = uri.getSchemeSpecificPart().substring(1).split("&");
-		for (String query : querys) {
-			index = query.indexOf("=");
-			if(index >= 0) {
-				key = query.substring(0, index);
-				if(HASH_KEY.equals(key)) {
-					value = query.substring(index + 1);
-					String hash = value.substring(HASH_PREFIX.length());
-					if(verifyMagnetHash32(hash)) {
-						InfoHash infoHash = InfoHash.newInstance(hash);
-						hash = infoHash.infoHashHex();
-					}
-					return hash;
-				}
-			}
-		}
-		return null;
 	}
 	
 	/**

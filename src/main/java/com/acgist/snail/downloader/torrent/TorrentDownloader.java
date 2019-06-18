@@ -7,9 +7,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.Downloader;
+import com.acgist.snail.pojo.bean.Magnet;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.protocol.magnet.MagnetProtocol;
+import com.acgist.snail.protocol.magnet.bootstrap.MagnetReader;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.manager.PeerManager;
 import com.acgist.snail.system.manager.TorrentManager;
@@ -97,7 +98,8 @@ public class TorrentDownloader extends Downloader {
 		final var entity = this.taskSession.entity();
 		final String path = entity.getTorrent();
 		try {
-			final String infoHashHex = MagnetProtocol.buildInfoHash(entity.getUrl());
+			final Magnet magnet = MagnetReader.newInstance(entity.getUrl()).magnet();
+			final String infoHashHex = magnet.getHash();
 			this.torrentSession = TorrentManager.getInstance().newTorrentSession(infoHashHex, path);
 			this.torrentSession.upload(this.taskSession);
 		} catch (DownloadException e) {
