@@ -47,9 +47,10 @@ public class ProtocolManager {
 	/**
 	 * 注册协议
 	 */
-	public <T extends Protocol> void register(Protocol protocol) {
+	public <T extends Protocol> ProtocolManager register(Protocol protocol) {
 		LOGGER.info("注册下载协议：{}", protocol.name());
 		this.protocols.add(protocol);
+		return this;
 	}
 	
 	/**
@@ -63,6 +64,17 @@ public class ProtocolManager {
 		synchronized (protocol) {
 			return protocol.build();
 		}
+	}
+
+	/**
+	 * 是否支持下载
+	 */
+	public boolean support(String url) {
+		final Protocol protocol = protocol(url);
+		if(protocol == null) {
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -85,17 +97,6 @@ public class ProtocolManager {
 		}
 	}
 
-	/**
-	 * 是否支持下载
-	 */
-	public boolean support(String url) {
-		final Protocol protocol = protocol(url);
-		if(protocol == null) {
-			return false;
-		}
-		return true;
-	}
-	
 	/**
 	 * 状态是否可用，阻塞线程。
 	 */

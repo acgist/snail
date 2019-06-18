@@ -96,7 +96,9 @@ public class BuildController implements Initializable {
 	 * 设置下载地址
 	 */
 	public void setUrl(String url) {
-		this.urlValue.setText(url);
+		if(url != null) {
+			this.urlValue.setText(url.trim());
+		}
 	}
 	
 	/**
