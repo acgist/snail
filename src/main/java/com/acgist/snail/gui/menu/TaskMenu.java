@@ -45,7 +45,7 @@ public class TaskMenu extends Menu {
 	static {
 		synchronized (TaskMenu.class) {
 			if (INSTANCE == null) {
-				LOGGER.info("初始化任务菜单");
+				LOGGER.debug("初始化任务菜单");
 				INSTANCE = new TaskMenu();
 			}
 		}
@@ -82,25 +82,25 @@ public class TaskMenu extends Menu {
 		this.verifyMenu = new MenuItem("文件校验", new ImageView("/image/16/verify.png"));
 		this.openFolderMenu = new MenuItem("打开目录", new ImageView("/image/16/folder.png"));
 		
-		startMenu.setOnAction(startEvent);
-		pauseMenu.setOnAction(pauseEvent);
-		deleteMenu.setOnAction(deleteEvent);
-		copyUrlMenu.setOnAction(copyUrlEvent);
-		torrentMenu.setOnAction(torrentEvent);
-		exportTorrentMenu.setOnAction(exportTorrentEvent);
-		verifyMenu.setOnAction(verifyEvent);
-		openFolderMenu.setOnAction(openFolderEvent);
+		this.startMenu.setOnAction(this.startEvent);
+		this.pauseMenu.setOnAction(this.pauseEvent);
+		this.deleteMenu.setOnAction(this.deleteEvent);
+		this.copyUrlMenu.setOnAction(this.copyUrlEvent);
+		this.torrentMenu.setOnAction(this.torrentEvent);
+		this.exportTorrentMenu.setOnAction(this.exportTorrentEvent);
+		this.verifyMenu.setOnAction(this.verifyEvent);
+		this.openFolderMenu.setOnAction(this.openFolderEvent);
 		
-		addMenu(startMenu);
-		addMenu(pauseMenu);
-		addMenu(deleteMenu);
-		addMenu(copyUrlMenu);
+		addMenu(this.startMenu);
+		addMenu(this.pauseMenu);
+		addMenu(this.deleteMenu);
+		addMenu(this.copyUrlMenu);
 		this.addSeparator();
-		addMenu(torrentMenu);
-		addMenu(exportTorrentMenu);
+		addMenu(this.torrentMenu);
+		addMenu(this.exportTorrentMenu);
 		this.addSeparator();
-		addMenu(verifyMenu);
-		addMenu(openFolderMenu);
+		addMenu(this.verifyMenu);
+		addMenu(this.openFolderMenu);
 	}
 	
 	private EventHandler<ActionEvent> startEvent = (event) -> {

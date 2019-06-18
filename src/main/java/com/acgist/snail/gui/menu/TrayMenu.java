@@ -59,7 +59,7 @@ public class TrayMenu extends Menu {
 	static {
 		synchronized (TrayMenu.class) {
 			if (INSTANCE == null) {
-				LOGGER.info("初始化托盘菜单");
+				LOGGER.debug("初始化托盘菜单");
 				INSTANCE = new TrayMenu();
 				Platform.setImplicitExit(false); // 必须设置此项，否者窗口关闭后将不能通过托盘显示
 			}
@@ -86,22 +86,22 @@ public class TrayMenu extends Menu {
 		this.aboutMenu = new MenuItem("关于", new ImageView("/image/16/about.png"));
 		this.exitMenu = new MenuItem("退出", new ImageView("/image/16/exit.png"));
 		
-		showMenu.setOnAction(showAction);
-		hideMenu.setOnAction(hideAction);
-		exitMenu.setOnAction(exitAction);
-		aboutMenu.setOnAction(aboutAction);
-		sourceMenu.setOnAction(sourceAction);
-		supportMenu.setOnAction(supportAction);
+		this.showMenu.setOnAction(this.showAction);
+		this.hideMenu.setOnAction(this.hideAction);
+		this.exitMenu.setOnAction(this.exitAction);
+		this.aboutMenu.setOnAction(this.aboutAction);
+		this.sourceMenu.setOnAction(this.sourceAction);
+		this.supportMenu.setOnAction(this.supportAction);
 		
-		this.addEventFilter(WindowEvent.WINDOW_HIDDEN, windowHiddenAction);
+		this.addEventFilter(WindowEvent.WINDOW_HIDDEN, this.windowHiddenAction);
 		
-		addMenu(showMenu);
-		addMenu(hideMenu);
-		addMenu(sourceMenu);
-		addMenu(supportMenu);
-		addMenu(aboutMenu);
+		addMenu(this.showMenu);
+		addMenu(this.hideMenu);
+		addMenu(this.sourceMenu);
+		addMenu(this.supportMenu);
+		addMenu(this.aboutMenu);
 		this.addSeparator();
-		addMenu(exitMenu);
+		addMenu(this.exitMenu);
 	}
 	
 	/**
@@ -131,9 +131,9 @@ public class TrayMenu extends Menu {
 		};
 		try {
 			BufferedImage image = ImageIO.read(MainWindow.class.getResourceAsStream("/image/16/logo.png"));
-			trayIcon = new TrayIcon(image, SystemConfig.getName());
-			trayIcon.addMouseListener(mouseListener);
-			SystemTray.getSystemTray().add(trayIcon);
+			this.trayIcon = new TrayIcon(image, SystemConfig.getName());
+			this.trayIcon.addMouseListener(mouseListener);
+			SystemTray.getSystemTray().add(this.trayIcon);
 		} catch (Exception e) {
 			LOGGER.error("添加托盘异常", e);
 		}
@@ -151,7 +151,7 @@ public class TrayMenu extends Menu {
 	 */
 	public void notice(String title, String content, MessageType type) {
 		if(DownloadConfig.getNotice()) {
-			trayIcon.displayMessage(title, content, type);
+			this.trayIcon.displayMessage(title, content, type);
 		}
 	}
 	
@@ -217,8 +217,8 @@ public class TrayMenu extends Menu {
 	 */
 	private EventHandler<WindowEvent> windowHiddenAction = (event) -> {
 		Platform.runLater(() -> {
-			if(trayStage != null) {
-				trayStage.close();
+			if(this.trayStage != null) {
+				this.trayStage.close();
 			}
 		});
 	};

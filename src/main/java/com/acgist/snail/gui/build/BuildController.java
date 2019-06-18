@@ -12,7 +12,7 @@ import com.acgist.snail.gui.Choosers;
 import com.acgist.snail.gui.main.TaskDisplay;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.manager.DownloaderManager;
-import com.acgist.snail.system.manager.TorrentManager;
+import com.acgist.snail.system.manager.ProtocolManager;
 import com.acgist.snail.utils.StringUtils;
 
 import javafx.event.ActionEvent;
@@ -43,8 +43,8 @@ public class BuildController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// 文件拖拽
-		root.setOnDragOver(dragOverAction);
-		root.setOnDragDropped(dragDroppedAction);
+		this.root.setOnDragOver(this.dragOverAction);
+		this.root.setOnDragDropped(this.dragDroppedAction);
 	}
 	
 	/**
@@ -63,13 +63,13 @@ public class BuildController implements Initializable {
 	 */
 	@FXML
 	public void handleBuildAction(ActionEvent event) {
-		String url = urlValue.getText();
+		final String url = urlValue.getText();
 		if(StringUtils.isEmpty(url)) {
 			return;
 		}
 		boolean ok = true;
 		try {
-			// TODO：优化卡死现象：多线程？
+			// TODO：优化卡死现象：多线程
 			DownloaderManager.getInstance().submit(url);
 		} catch (DownloadException e) {
 			LOGGER.error("新建下载任务异常：{}", url, e);
@@ -96,22 +96,26 @@ public class BuildController implements Initializable {
 	 * 设置下载地址
 	 */
 	public void setUrl(String url) {
-		urlValue.setText(url);
+		this.urlValue.setText(url);
 	}
 	
 	/**
 	 * 拖入文件事件（显示）
 	 */
 	private EventHandler<DragEvent> dragOverAction = (event) -> {
-		if (event.getGestureSource() != root) {
-			Dragboard dragboard = event.getDragboard();
+		if (event.getGestureSource() != this.root) {
+			String url = null;
+			final Dragboard dragboard = event.getDragboard();
 			if(dragboard.hasFiles()) {
 				final File file = dragboard.getFiles().get(0);
-				if(TorrentManager.verify(file.getPath())) {
-					event.acceptTransferModes(TransferMode.COPY);
-				} else {
-					event.acceptTransferModes(TransferMode.NONE);
-				}
+				url = file.getPath();
+			} else if(dragboard.hasUrl()) {
+				url = dragboard.getUrl();
+			} else if(dragboard.hasString()) {
+				url = dragboard.getString();
+			}
+			if(ProtocolManager.getInstance().support(url)) {
+				event.acceptTransferModes(TransferMode.COPY);
 			} else {
 				event.acceptTransferModes(TransferMode.NONE);
 			}
@@ -123,10 +127,18 @@ public class BuildController implements Initializable {
 	 * 拖入文件事件（加载）
 	 */
 	private EventHandler<DragEvent> dragDroppedAction = (event) -> {
-		Dragboard dragboard = event.getDragboard();
+		String url = null;
+		final Dragboard dragboard = event.getDragboard();
 		if (dragboard.hasFiles()) {
-			File file = dragboard.getFiles().get(0);
-			setUrl(file.getPath());
+			final File file = dragboard.getFiles().get(0);
+			url = file.getPath();
+		} else if(dragboard.hasUrl()) {
+			url = dragboard.getUrl();
+		} else if(dragboard.hasString()) {
+			url = dragboard.getString();
+		}
+		if(StringUtils.isNotEmpty(url)) {
+			setUrl(url);
 		}
 		event.setDropCompleted(true);
 		event.consume();

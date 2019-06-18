@@ -49,8 +49,8 @@ public class TaskDisplay {
 			if(this.controller == null) {
 				this.controller = controller;
 				SystemThreadContext.timer(0, INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> refreshTaskData());
-				synchronized (lock) {
-					lock.notifyAll();
+				synchronized (this.lock) {
+					this.lock.notifyAll();
 				}
 			}
 		}

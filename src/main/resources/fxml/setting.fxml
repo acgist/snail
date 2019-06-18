@@ -28,7 +28,7 @@
 			<HBox>
 				<TextFlow styleClass="name">
 					<Label>
-						下载任务数量：
+						下载数量：
 					</Label>
 				</TextFlow>
 				<Slider fx:id="size" styleClass="slider" min="0" max="8" value="2" blockIncrement="1" majorTickUnit="1" minorTickCount="1" showTickLabels="true" showTickMarks="true" />
