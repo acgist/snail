@@ -1,14 +1,18 @@
 package com.acgist.snail.downloader.torrent.bootstrap;
 
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.bt.tracker.bootstrap.TrackerClient;
 import com.acgist.snail.pojo.message.AnnounceMessage;
-import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
+import com.acgist.snail.system.manager.PeerManager;
 import com.acgist.snail.system.manager.TrackerManager;
+import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.UniqueCodeUtils;
 
 /**
@@ -24,7 +28,6 @@ public class TrackerLauncher {
 	
 	private final TrackerClient client; // 客户端
 	
-	private final TaskSession taskSession;
 	private final TorrentSession torrentSession;
 //	private final TrackerLauncherGroup trackerLauncherGroup;
 	
@@ -38,7 +41,6 @@ public class TrackerLauncher {
 	private TrackerLauncher(TrackerClient client, TorrentSession torrentSession) {
 		this.id = UniqueCodeUtils.build();
 		this.client = client;
-		this.taskSession = torrentSession.taskSession();
 		this.torrentSession = torrentSession;
 //		this.trackerLauncherGroup = torrentSession.trackerLauncherGroup();
 	}
@@ -76,8 +78,26 @@ public class TrackerLauncher {
 		this.interval = message.getInterval();
 		this.done = message.getDone();
 		this.undone = message.getUndone();
-		this.torrentSession.peer(message.getPeers());
+		this.peer(message.getPeers());
 		LOGGER.debug("已完成Peer数量：{}，未完成的Peer数量：{}，下次请求时间：{}", this.done, this.undone, this.interval);
+	}
+	
+	/**
+	 * 设置Peer
+	 */
+	private void peer(Map<String, Integer> peers) {
+		if(CollectionUtils.isEmpty(peers)) {
+			return;
+		}
+		final PeerManager manager = PeerManager.getInstance();
+		peers.forEach((host, port) -> {
+			manager.newPeerSession(
+				this.torrentSession.infoHashHex(),
+				this.torrentSession.statistics(),
+				host,
+				port,
+				PeerConfig.SOURCE_TRACKER);
+		});
 	}
 
 	/**
@@ -86,9 +106,9 @@ public class TrackerLauncher {
 	 */
 	public void release() {
 		this.available = false;
-		if(this.needRelease && available()) {
+		if(this.needRelease && this.torrentSession.downloadable() && available()) {
 			SystemThreadContext.submit(() -> {
-				if(this.taskSession.complete()) { // 任务完成
+				if(this.torrentSession.complete()) { // 任务完成
 					this.client.complete(this.id, this.torrentSession);
 				} else { // 任务暂停
 					this.client.stop(this.id, this.torrentSession);

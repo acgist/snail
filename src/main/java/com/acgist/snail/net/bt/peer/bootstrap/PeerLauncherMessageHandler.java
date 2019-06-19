@@ -14,12 +14,9 @@ import com.acgist.snail.net.IMessageHandler;
 import com.acgist.snail.net.bt.peer.bootstrap.dht.DhtExtensionMessageHandler;
 import com.acgist.snail.net.bt.peer.bootstrap.ltep.ExtensionMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
-import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.config.PeerConfig;
-import com.acgist.snail.system.config.PeerMessageConfig;
-import com.acgist.snail.system.config.PeerMessageConfig.Action;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.system.manager.PeerManager;
 import com.acgist.snail.system.manager.TorrentManager;
@@ -62,20 +59,13 @@ public class PeerLauncherMessageHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerLauncherMessageHandler.class);
 	
-	private volatile boolean handshake = false; // 是否握手
-	private volatile boolean handshaked = false; // 是否被握手
+	private volatile boolean handshakeSed = false; // 发送握手
+	private volatile boolean handshakeRcv = false; // 接收握手
 
 	/**
 	 * 客户端请求时存在，服务端接收时不存在。
 	 */
 	private PeerLauncher peerLauncher;
-	
-	private PeerMessageConfig.Action action; // 客户端动作，默认：下载
-	
-	/**
-	 * 消息代理
-	 */
-	private IMessageHandler messageHandler;
 	
 	private PeerSession peerSession;
 	private TorrentSession torrentSession;
@@ -84,11 +74,15 @@ public class PeerLauncherMessageHandler {
 	private ExtensionMessageHandler extensionMessageHandler;
 	private DhtExtensionMessageHandler dhtExtensionMessageHandler;
 	
+	/**
+	 * 消息代理
+	 */
+	private IMessageHandler messageHandler;
+	
 	private PeerLauncherMessageHandler() {
 	}
 
 	private PeerLauncherMessageHandler(PeerSession peerSession, TorrentSession torrentSession) {
-		this.action = Action.download;
 		init(peerSession, torrentSession, PeerConfig.HANDSHAKE_RESERVED);
 	}
 	
@@ -130,7 +124,6 @@ public class PeerLauncherMessageHandler {
 			LOGGER.warn("Peer连接失败，Torrent任务不可上传");
 			return false;
 		}
-		final TaskSession taskSession = torrentSession.taskSession();
 		final InetSocketAddress socketAddress = remoteSocketAddress();
 		if(socketAddress == null) {
 			LOGGER.warn("Peer连接失败，获取远程Peer信息失败");
@@ -138,7 +131,7 @@ public class PeerLauncherMessageHandler {
 		}
 		final PeerSession peerSession = PeerManager.getInstance().newPeerSession(
 			infoHashHex,
-			taskSession.statistics(),
+			torrentSession.statistics(),
 			socketAddress.getHostString(),
 			null,
 			PeerConfig.SOURCE_CONNECT);
@@ -160,36 +153,8 @@ public class PeerLauncherMessageHandler {
 	/**
 	 * 是否被握手
 	 */
-	public boolean handshaked() {
-		return this.handshaked;
-	}
-	
-	/**
-	 * 下载文件
-	 */
-	public void download() {
-		action(Action.download);
-	}
-	
-	/**
-	 * 下载种子
-	 */
-	public void torrent() {
-		action(Action.torrent);
-	}
-	
-	/**
-	 * 当前动作
-	 */
-	public Action action() {
-		return this.action;
-	}
-	
-	/**
-	 * 设置动作
-	 */
-	public void action(Action action) {
-		this.action = action;
+	public boolean handshake() {
+		return this.handshakeRcv;
 	}
 	
 	/**
@@ -197,11 +162,11 @@ public class PeerLauncherMessageHandler {
 	 */
 	public void oneMessage(final ByteBuffer buffer) {
 		buffer.flip();
-		if(!this.handshaked) {
+		if(!this.handshakeRcv) {
 			handshake(buffer);
 		} else {
 			final byte typeValue = buffer.get();
-			final PeerMessageConfig.Type type = PeerMessageConfig.Type.valueOf(typeValue);
+			final PeerConfig.Type type = PeerConfig.Type.valueOf(typeValue);
 			if(type == null) {
 				LOGGER.warn("不支持的Peer消息类型：{}", typeValue);
 				return;
@@ -257,7 +222,7 @@ public class PeerLauncherMessageHandler {
 	 */
 	public void handshake(PeerLauncher peerLauncher) {
 		LOGGER.debug("握手");
-		this.handshake = true;
+		this.handshakeSed = true;
 		this.peerLauncher = peerLauncher;
 		final ByteBuffer buffer = ByteBuffer.allocate(PeerConfig.HANDSHAKE_LENGTH);
 		buffer.put((byte) PeerConfig.HANDSHAKE_NAME_BYTES.length);
@@ -281,8 +246,8 @@ public class PeerLauncherMessageHandler {
 			this.close();
 			return;
 		}
-		this.handshaked = true;
-		final boolean server = !this.handshake; // 是否是服务方
+		this.handshakeRcv = true;
+		final boolean server = !this.handshakeSed; // 是否是服务方
 		final byte length = buffer.get();
 		if(length <= 0) {
 			LOGGER.warn("握手消息格式错误（协议长度）：{}", length);
@@ -340,7 +305,7 @@ public class PeerLauncherMessageHandler {
 	public void choke() {
 		LOGGER.debug("阻塞");
 		this.peerSession.amChoke();
-		pushMessage(PeerMessageConfig.Type.choke, null);
+		pushMessage(PeerConfig.Type.choke, null);
 	}
 
 	/**
@@ -365,7 +330,7 @@ public class PeerLauncherMessageHandler {
 	public void unchoke() {
 		LOGGER.debug("解除阻塞");
 		this.peerSession.amUnchoke();
-		pushMessage(PeerMessageConfig.Type.unchoke, null);
+		pushMessage(PeerConfig.Type.unchoke, null);
 	}
 	
 	/**
@@ -375,7 +340,7 @@ public class PeerLauncherMessageHandler {
 	private void unchoke(ByteBuffer buffer) {
 		LOGGER.debug("被解除阻塞");
 		this.peerSession.peerUnchoke();
-		if(this.action == Action.download) {
+		if(this.torrentSession.downloadable()) {
 			if(this.peerLauncher != null) {
 				this.peerLauncher.launcher(); // 开始下载
 			}
@@ -392,7 +357,7 @@ public class PeerLauncherMessageHandler {
 	public void interested() {
 		LOGGER.debug("感兴趣");
 		this.peerSession.amInterested();
-		pushMessage(PeerMessageConfig.Type.interested, null);
+		pushMessage(PeerConfig.Type.interested, null);
 	}
 
 	/**
@@ -413,7 +378,7 @@ public class PeerLauncherMessageHandler {
 	public void notInterested() {
 		LOGGER.debug("不感兴趣");
 		this.peerSession.amNotInterested();
-		pushMessage(PeerMessageConfig.Type.notInterested, null);
+		pushMessage(PeerConfig.Type.notInterested, null);
 	}
 
 	/**
@@ -432,14 +397,20 @@ public class PeerLauncherMessageHandler {
 	 * </p>
 	 */
 	public void have(int index) {
+		if(!this.torrentSession.downloadable()) {
+			return;
+		}
 		LOGGER.debug("发送have消息：{}", index);
-		pushMessage(PeerMessageConfig.Type.have, ByteBuffer.allocate(4).putInt(index).array());
+		pushMessage(PeerConfig.Type.have, ByteBuffer.allocate(4).putInt(index).array());
 	}
 
 	/**
 	 * <p>处理have消息</p>
 	 */
 	private void have(ByteBuffer buffer) {
+		if(!this.torrentSession.downloadable()) {
+			return;
+		}
 		final int index = buffer.getInt();
 		LOGGER.debug("收到have消息：{}", index);
 		this.peerSession.piece(index);
@@ -458,16 +429,22 @@ public class PeerLauncherMessageHandler {
 	 * </p>
 	 */
 	public void bitfield() {
+		if(!this.torrentSession.downloadable()) {
+			return;
+		}
 		final BitSet pieces = this.torrentStreamGroup.pieces();
 		LOGGER.debug("发送位图：{}", pieces);
 		final int pieceSize = this.torrentSession.torrent().getInfo().pieceSize();
-		pushMessage(PeerMessageConfig.Type.bitfield, BitfieldUtils.toBytes(pieceSize, pieces));
+		pushMessage(PeerConfig.Type.bitfield, BitfieldUtils.toBytes(pieceSize, pieces));
 	}
 	
 	/**
 	 * <p>处理位图消息</p>
 	 */
 	private void bitfield(ByteBuffer buffer) {
+		if(!this.torrentSession.downloadable()) {
+			return;
+		}
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
 		final BitSet pieces = BitfieldUtils.toBitSet(bytes);
@@ -495,6 +472,9 @@ public class PeerLauncherMessageHandler {
 	 * </p>
 	 */
 	public void request(int index, int begin, int length) {
+		if(!this.torrentSession.downloadable()) {
+			return;
+		}
 		if(this.peerSession.isPeerChocking()) {
 			return; // 被阻塞不发送请求
 		}
@@ -503,13 +483,16 @@ public class PeerLauncherMessageHandler {
 		buffer.putInt(index);
 		buffer.putInt(begin);
 		buffer.putInt(length);
-		pushMessage(PeerMessageConfig.Type.request, buffer.array());
+		pushMessage(PeerConfig.Type.request, buffer.array());
 	}
 
 	/**
 	 * <p>处理request消息</p>
 	 */
 	private void request(ByteBuffer buffer) {
+		if(!this.torrentSession.downloadable()) {
+			return;
+		}
 		if(this.peerSession.isAmChocking()) { // 被阻塞不操作
 			return;
 		}
@@ -535,6 +518,9 @@ public class PeerLauncherMessageHandler {
 	 * </p>
 	 */
 	public void piece(int index, int begin, byte[] bytes) {
+		if(!this.torrentSession.downloadable()) {
+			return;
+		}
 		if(bytes == null) {
 			return;
 		}
@@ -544,13 +530,16 @@ public class PeerLauncherMessageHandler {
 		buffer.putInt(index);
 		buffer.putInt(begin);
 		buffer.put(bytes);
-		pushMessage(PeerMessageConfig.Type.piece, buffer.array());
+		pushMessage(PeerConfig.Type.piece, buffer.array());
 	}
 
 	/**
 	 * <p>处理piece消息</p>
 	 */
 	private void piece(ByteBuffer buffer) {
+		if(!this.torrentSession.downloadable()) {
+			return;
+		}
 		final int index = buffer.getInt();
 		final int begin = buffer.getInt();
 		LOGGER.debug("收到响应：{}-{}", index, begin);
@@ -577,7 +566,7 @@ public class PeerLauncherMessageHandler {
 		buffer.putInt(index);
 		buffer.putInt(begin);
 		buffer.putInt(length);
-		pushMessage(PeerMessageConfig.Type.cancel, buffer.array());
+		pushMessage(PeerConfig.Type.cancel, buffer.array());
 	}
 	
 	/**
@@ -638,7 +627,7 @@ public class PeerLauncherMessageHandler {
 	/**
 	 * 发送消息
 	 */
-	public void pushMessage(PeerMessageConfig.Type type, byte[] payload) {
+	public void pushMessage(PeerConfig.Type type, byte[] payload) {
 		this.send(buildMessage(type, payload));
 	}
 	
@@ -651,7 +640,7 @@ public class PeerLauncherMessageHandler {
 	 * payload：消息内容
 	 * </p>
 	 */
-	private ByteBuffer buildMessage(PeerMessageConfig.Type type, byte[] payload) {
+	private ByteBuffer buildMessage(PeerConfig.Type type, byte[] payload) {
 		final Byte id = type == null ? null : type.value();
 		int capacity = 0;
 		if(id != null) {

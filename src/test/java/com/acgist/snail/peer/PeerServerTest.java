@@ -74,7 +74,6 @@ public class PeerServerTest {
 		StatisticsSession statisticsSession = new StatisticsSession();
 		PeerSession peerSession = PeerSession.newInstance(statisticsSession, host, port);
 		PeerLauncher launcher = PeerLauncher.newInstance(peerSession, torrentSession);
-//		launcher.torrent();
 		launcher.download();
 		new Thread(() -> {
 			while(true) {

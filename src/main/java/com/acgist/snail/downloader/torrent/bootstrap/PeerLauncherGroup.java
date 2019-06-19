@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.session.PeerSession;
-import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.SystemConfig;
@@ -45,7 +44,6 @@ public class PeerLauncherGroup {
 	 * 是否继续创建PeerLauncher
 	 */
 	private final AtomicBoolean build;
-	private final TaskSession taskSession;
 	private final TorrentSession torrentSession;
 	/**
 	 * PeerLauncher下载队列
@@ -58,7 +56,6 @@ public class PeerLauncherGroup {
 	
 	private PeerLauncherGroup(TorrentSession torrentSession) {
 		this.build = new AtomicBoolean(false);
-		this.taskSession = torrentSession.taskSession();
 		this.torrentSession = torrentSession;
 		this.peerLaunchers = new LinkedBlockingQueue<>();
 	}
@@ -142,7 +139,7 @@ public class PeerLauncherGroup {
 	 * @return true-继续生成；false-不继续生成
 	 */
 	private boolean buildPeerLauncher() {
-		if(!this.taskSession.download()) {
+		if(!this.torrentSession.downloading()) {
 			synchronized (this.build) {
 				this.build.set(false);
 				this.build.notifyAll();

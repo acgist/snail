@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.downloader.torrent.bootstrap.DhtLauncher;
 import com.acgist.snail.net.bt.peer.bootstrap.PeerLauncherMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
-import com.acgist.snail.system.config.PeerMessageConfig;
+import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.manager.NodeManager;
@@ -45,7 +45,7 @@ public class DhtExtensionMessageHandler {
 
 	public void port() {
 		final byte[] bytes = ByteBuffer.allocate(2).putShort(SystemConfig.getBtPortExtShort()).array();
-		this.peerLauncherMessageHandler.pushMessage(PeerMessageConfig.Type.dht, bytes);
+		this.peerLauncherMessageHandler.pushMessage(PeerConfig.Type.dht, bytes);
 	}
 	
 	/**

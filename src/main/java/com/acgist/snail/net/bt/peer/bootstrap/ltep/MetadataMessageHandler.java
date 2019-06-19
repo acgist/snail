@@ -12,9 +12,9 @@ import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.bcode.BCodeDecoder;
 import com.acgist.snail.system.bcode.BCodeEncoder;
-import com.acgist.snail.system.config.PeerMessageConfig;
-import com.acgist.snail.system.config.PeerMessageConfig.ExtensionType;
-import com.acgist.snail.system.config.PeerMessageConfig.UtMetadataType;
+import com.acgist.snail.system.config.PeerConfig;
+import com.acgist.snail.system.config.PeerConfig.ExtensionType;
+import com.acgist.snail.system.config.PeerConfig.UtMetadataType;
 import com.acgist.snail.utils.NumberUtils;
 
 /**
@@ -68,7 +68,7 @@ public class MetadataMessageHandler {
 			return;
 		}
 		final Byte typeValue = decoder.getByte(ARG_MSG_TYPE);
-		final UtMetadataType type = PeerMessageConfig.UtMetadataType.valueOf(typeValue);
+		final UtMetadataType type = PeerConfig.UtMetadataType.valueOf(typeValue);
 		if(type == null) {
 			LOGGER.warn("不支持的UtMetadata消息类型：{}", typeValue);
 			return;
@@ -95,7 +95,7 @@ public class MetadataMessageHandler {
 		final int size = this.infoHash.size();
 		final int messageSize = NumberUtils.divideUp(size, INFO_SLICE_SIZE);
 		for (int index = 0; index < messageSize; index++) {
-			final var request = buildMessage(PeerMessageConfig.UtMetadataType.request, index);
+			final var request = buildMessage(PeerConfig.UtMetadataType.request, index);
 			pushMessage(request);
 		}
 	}
@@ -133,7 +133,7 @@ public class MetadataMessageHandler {
 		}
 		final byte[] x = new byte[length];
 		System.arraycopy(bytes, begin, x, 0, length);
-		final var data = buildMessage(PeerMessageConfig.UtMetadataType.data, piece);
+		final var data = buildMessage(PeerConfig.UtMetadataType.data, piece);
 		data.put(ARG_TOTAL_SIZE, this.infoHash.size());
 		pushMessage(data, x);
 	}
@@ -147,8 +147,13 @@ public class MetadataMessageHandler {
 	private void data(BCodeDecoder decoder) {
 		LOGGER.debug("收到UtMetadata消息-data");
 		boolean complete = false; // 下载完成
+		byte[] bytes = this.infoHash.info();
 		final int piece = decoder.getInteger(ARG_PIECE);
-		final byte[] bytes = this.infoHash.info();
+		if(bytes == null) {
+			final int totalSize = decoder.getInteger(ARG_TOTAL_SIZE);
+			bytes = new byte[totalSize];
+			this.infoHash.info(bytes);
+		}
 		final int begin = piece * INFO_SLICE_SIZE;
 		final int end = begin + INFO_SLICE_SIZE;
 		if(begin > bytes.length) {
@@ -171,7 +176,7 @@ public class MetadataMessageHandler {
 	 */
 	public void reject() {
 		LOGGER.debug("发送UtMetadata消息-reject");
-		final var reject = buildMessage(PeerMessageConfig.UtMetadataType.reject, 0);
+		final var reject = buildMessage(PeerConfig.UtMetadataType.reject, 0);
 		pushMessage(reject);
 	}
 	
@@ -194,7 +199,7 @@ public class MetadataMessageHandler {
 	 * 
 	 * @param type UtMetadata类型
 	 */
-	private Map<String, Object> buildMessage(PeerMessageConfig.UtMetadataType type, int piece) {
+	private Map<String, Object> buildMessage(PeerConfig.UtMetadataType type, int piece) {
 		final Map<String, Object> message = new LinkedHashMap<>();
 		message.put(ARG_MSG_TYPE, type.value());
 		message.put(ARG_PIECE, piece);

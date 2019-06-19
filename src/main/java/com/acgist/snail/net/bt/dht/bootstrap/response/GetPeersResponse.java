@@ -102,7 +102,7 @@ public class GetPeersResponse extends Response {
 			buffer = ByteBuffer.wrap(bytes);
 			session = PeerManager.getInstance().newPeerSession(
 				infoHashHex,
-				torrentSession.taskSession().statistics(),
+				torrentSession.statistics(),
 				NetUtils.decodeIntToIp(buffer.getInt()),
 				NetUtils.decodePort(buffer.getShort()),
 				PeerConfig.SOURCE_DHT);

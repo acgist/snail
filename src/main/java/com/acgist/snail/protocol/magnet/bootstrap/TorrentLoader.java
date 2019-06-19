@@ -1,7 +1,11 @@
 package com.acgist.snail.protocol.magnet.bootstrap;
 
+import java.io.File;
+
 import com.acgist.snail.net.bt.dht.DhtClient;
+import com.acgist.snail.pojo.bean.Magnet;
 import com.acgist.snail.pojo.session.NodeSession;
+import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.manager.NodeManager;
 import com.acgist.snail.utils.StringUtils;
 
@@ -15,22 +19,25 @@ import com.acgist.snail.utils.StringUtils;
 public class TorrentLoader {
 
 	private final byte[] hash;
+	private final Magnet magnet;
 	private final NodeManager nodeManager;
 	
-	private TorrentLoader(String hash) {
-		this.hash = StringUtils.unhex(hash);
+	private TorrentLoader(String url) throws DownloadException {
+		this.magnet = MagnetReader.newInstance(url).magnet();
+		this.hash = StringUtils.unhex(this.magnet.getHash());
 		this.nodeManager = NodeManager.getInstance();
 	}
 	
-	public static final TorrentLoader newInstance(String hash) {
-		return new TorrentLoader(hash);
+	public static final TorrentLoader newInstance(String url) throws DownloadException {
+		return new TorrentLoader(url);
 	}
 	
-	public void load() {
+	public File load() {
 		final var nodes = this.nodeManager.findNode(this.hash);
 		for (NodeSession node : nodes) {
 			load(node);
 		}
+		return null;
 	}
 	
 	private void load(NodeSession node) {

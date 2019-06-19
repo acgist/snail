@@ -70,7 +70,7 @@ public class AnnouncePeerRequest extends Request {
 			}
 			final var peerSession = PeerManager.getInstance().newPeerSession(
 				infoHashHex,
-				torrentSession.taskSession().statistics(),
+				torrentSession.statistics(),
 				peerHost,
 				peerPort,
 				PeerConfig.SOURCE_DHT);
