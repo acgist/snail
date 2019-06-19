@@ -21,7 +21,7 @@ public class ThreadUtils {
 	public static final void sleep(long millis) {
 		try {
 			Thread.sleep(millis);
-		} catch (InterruptedException e) {
+		} catch (Exception e) {
 			LOGGER.error("线程休眠异常");
 		}
 	}
@@ -35,7 +35,7 @@ public class ThreadUtils {
 	public static final void wait(Object obj, Duration timeout) {
 		try {
 			obj.wait(timeout.toMillis());
-		} catch (InterruptedException e) {
+		} catch (Exception e) {
 			LOGGER.error("线程等待异常", e);
 		}
 	}
