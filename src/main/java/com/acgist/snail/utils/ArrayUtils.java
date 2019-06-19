@@ -56,12 +56,6 @@ public class ArrayUtils {
 		}
 	}
 	
-	public static void main(String[] args) {
-		byte i = -2;
-		System.out.println(i);
-		System.out.println((char) i);
-	}
-	
 	/**
 	 * 空数组
 	 */
