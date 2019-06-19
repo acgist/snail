@@ -36,12 +36,12 @@ public class DhtLauncher implements Runnable {
 	 */
 	private Queue<InetSocketAddress> dhtAddress = new LinkedBlockingDeque<>();
 	
-	private DhtLauncher(TorrentSession session) {
-		this.infoHash = session.infoHash();
+	private DhtLauncher(TorrentSession torrentSession) {
+		this.infoHash = torrentSession.infoHash();
 	}
 	
-	public static final DhtLauncher newInstance(TorrentSession session) {
-		return new DhtLauncher(session);
+	public static final DhtLauncher newInstance(TorrentSession torrentSession) {
+		return new DhtLauncher(torrentSession);
 	}
 	
 	@Override

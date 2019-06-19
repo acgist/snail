@@ -146,6 +146,9 @@ public class TorrentSession {
 		this.infoHash = infoHash;
 	}
 	
+	/**
+	 * TODO：删除
+	 */
 	public static final TorrentSession newInstance(InfoHash infoHash) throws DownloadException {
 		return new TorrentSession(infoHash);
 	}
@@ -474,7 +477,7 @@ public class TorrentSession {
 	}
 	
 	/**
-	 * 任务处于下载中：转磁力链接或者任务处于下载中
+	 * 任务处于下载中
 	 */
 	public boolean downloading() {
 		return this.taskSession != null && this.taskSession.download();
