@@ -301,7 +301,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 		final ByteBuffer windowBuffer = windowData.buffer();
 		while(true) {
 			if(this.buffer == null) {
-				if(this.peerLauncherMessageHandler.handshaked()) {
+				if(this.peerLauncherMessageHandler.handshake()) {
 					for (int index = 0; index < windowBuffer.limit(); index++) {
 						this.lengthStick.put(windowBuffer.get());
 						if(this.lengthStick.position() == INTEGER_BYTE_LENGTH) {

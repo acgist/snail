@@ -14,6 +14,8 @@ import com.acgist.snail.pojo.session.StatisticsSession;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.pojo.wrapper.TorrentFileSelectWrapper;
+import com.acgist.snail.protocol.torrent.bean.InfoHash;
+import com.acgist.snail.system.config.PeerConfig.Action;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.manager.TorrentManager;
 import com.acgist.snail.utils.ThreadUtils;
@@ -69,22 +71,24 @@ public class PeerClientTest {
 	@Test
 	public void torrent() throws DownloadException {
 //		String path = "e:/snail/12.torrent";
-		String path = "e:/snail/123.torrent";
+//		String path = "e:/snail/123.torrent";
 //		String path = "e:/snail/1234.torrent";
 //		String path = "e:/snail/12345.torrent";
 //		String path = "e:/snail/123456.torrent";
-		TorrentSession torrentSession = TorrentManager.getInstance().newTorrentSession(path);
-		TaskEntity entity = new TaskEntity();
-		entity.setFile("e://tmp/test/");
-		entity.setType(Type.torrent);
-		torrentSession.upload(TaskSession.newInstance(entity)).download(false);
+//		TorrentSession torrentSession = TorrentManager.getInstance().newTorrentSession(path);
+		TorrentSession torrentSession = TorrentSession.newInstance(InfoHash.newInstance("902ffaa29ee632c8dc966ed9ab573409ba9a518e"));
+//		TaskEntity entity = new TaskEntity();
+//		entity.setFile("e://tmp/test/");
+//		entity.setType(Type.torrent);
+//		torrentSession.upload(TaskSession.newInstance(entity)).download(false);
+		torrentSession.action(Action.torrent);
 		String host = "127.0.0.1";
-//		Integer port = 17888;
+//		Integer port = 18888;
 		Integer port = 49160; // FDM测试端口
 //		Integer port = 15000; // 本地迅雷测试端口
 		PeerSession peerSession = PeerSession.newInstance(new StatisticsSession(), host, port);
 		PeerLauncher launcher = PeerLauncher.newInstance(peerSession, torrentSession);
-		launcher.torrent();
+		launcher.download();
 		ThreadUtils.sleep(Long.MAX_VALUE);
 	}
 

@@ -13,9 +13,9 @@ import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.bcode.BCodeDecoder;
 import com.acgist.snail.system.bcode.BCodeEncoder;
-import com.acgist.snail.system.config.PeerMessageConfig;
-import com.acgist.snail.system.config.PeerMessageConfig.Action;
-import com.acgist.snail.system.config.PeerMessageConfig.ExtensionType;
+import com.acgist.snail.system.config.PeerConfig;
+import com.acgist.snail.system.config.PeerConfig.Action;
+import com.acgist.snail.system.config.PeerConfig.ExtensionType;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.CollectionUtils;
 
@@ -97,7 +97,7 @@ public class ExtensionMessageHandler {
 		this.handshake = true;
 		final Map<String, Object> data = new LinkedHashMap<>();
 		final Map<String, Object> supportType = new LinkedHashMap<>();
-		for (var type : PeerMessageConfig.ExtensionType.values()) {
+		for (var type : PeerConfig.ExtensionType.values()) {
 			if(type.notice()) {
 				supportType.put(type.name(), type.value());
 			}
@@ -113,10 +113,10 @@ public class ExtensionMessageHandler {
 //			data.put(EX_YOURIP, youripBuffer.array()); // 本机的IP地址
 //		}
 		data.put(EX_REQQ, 255);
-		if(PeerMessageConfig.ExtensionType.ut_pex.notice()) {
+		if(PeerConfig.ExtensionType.ut_pex.notice()) {
 			data.put(EX_E, 0); // Pex：加密
 		}
-		if(PeerMessageConfig.ExtensionType.ut_metadata.notice()) {
+		if(PeerConfig.ExtensionType.ut_metadata.notice()) {
 			final int metadataSize = this.infoHash.size();
 			if(metadataSize > 0) {
 				data.put(EX_METADATA_SIZE, metadataSize); // 种子info数据长度
@@ -150,7 +150,7 @@ public class ExtensionMessageHandler {
 			mData.entrySet().forEach(entry -> {
 				final String type = (String) entry.getKey();
 				final Long typeValue = (Long) entry.getValue();
-				final PeerMessageConfig.ExtensionType extensionType = PeerMessageConfig.ExtensionType.valueOfName(type);
+				final PeerConfig.ExtensionType extensionType = PeerConfig.ExtensionType.valueOfName(type);
 				if(extensionType == null) {
 					LOGGER.debug("不支持的扩展协议：{}-{}", type, typeValue);
 				} else {
@@ -162,10 +162,17 @@ public class ExtensionMessageHandler {
 		if(!this.handshake) {
 			handshake();
 		}
-		if (this.peerLauncherMessageHandler.action() == Action.torrent) { // 下载种子
-			if(this.peerSession.support(ExtensionType.ut_metadata)) {
-				this.metadataMessageHandler.request();
-			}
+		if(this.torrentSession.action() == Action.torrent) {
+			downloadTorrent();
+		}
+	}
+
+	/**
+	 * 下载种子
+	 */
+	public void downloadTorrent() {
+		if(this.peerSession.support(ExtensionType.ut_metadata)) {
+			this.metadataMessageHandler.request();
 		}
 	}
 	
@@ -209,7 +216,7 @@ public class ExtensionMessageHandler {
 	 * @param type 扩展消息类型：需要和Peer的标记一致
 	 */
 	public void pushMessage(byte type, byte[] bytes) {
-		this.peerLauncherMessageHandler.pushMessage(PeerMessageConfig.Type.extension, buildMessage(type, bytes));
+		this.peerLauncherMessageHandler.pushMessage(PeerConfig.Type.extension, buildMessage(type, bytes));
 	}
 
 }

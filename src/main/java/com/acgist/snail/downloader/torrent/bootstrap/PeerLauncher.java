@@ -118,14 +118,6 @@ public class PeerLauncher {
 	}
 	
 	/**
-	 * 开始下载：下载种子
-	 */
-	public boolean torrent() {
-		this.peerLauncherMessageHandler.torrent();
-		return download();
-	}
-	
-	/**
 	 * 下载数据
 	 */
 	public void piece(int index, int begin, byte[] bytes) {

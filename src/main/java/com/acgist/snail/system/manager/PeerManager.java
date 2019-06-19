@@ -96,6 +96,8 @@ public class PeerManager {
 				peerSession = PeerSession.newInstance(parent, host, port);
 				deque.offerLast(peerSession);
 				list(infoHashHex).add(peerSession); // 存档
+			} else if(peerSession.statistics() == null) { // 重新设置统计信息
+				peerSession.statistics(parent);
 			}
 			peerSession.source(source); // 设置来源
 			return peerSession;

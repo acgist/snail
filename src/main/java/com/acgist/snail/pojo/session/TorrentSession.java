@@ -2,7 +2,6 @@ package com.acgist.snail.pojo.session;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -21,7 +20,8 @@ import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
 import com.acgist.snail.protocol.torrent.bean.TorrentFile;
 import com.acgist.snail.protocol.torrent.bean.TorrentInfo;
-import com.acgist.snail.system.config.PeerConfig;
+import com.acgist.snail.system.config.DownloadConfig;
+import com.acgist.snail.system.config.PeerConfig.Action;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.exception.ArgumentException;
@@ -65,7 +65,10 @@ public class TorrentSession {
 	 * 可下载
 	 */
 	private boolean downloadable = false;
-	
+	/**
+	 * 动作
+	 */
+	private Action action;
 	/**
 	 * 种子
 	 */
@@ -127,18 +130,30 @@ public class TorrentSession {
 	 */
 	private ScheduledFuture<?> trackerLauncherGroupTimer;
 
+	public TorrentSession(InfoHash infoHash) throws DownloadException {
+		if(infoHash == null) {
+			throw new DownloadException("种子信息异常");
+		}
+		this.torrent = null;
+		this.infoHash = infoHash;
+	}
+	
 	private TorrentSession(InfoHash infoHash, Torrent torrent) throws DownloadException {
 		if(torrent == null || infoHash == null) {
-			throw new DownloadException("解析种子文件异常");
+			throw new DownloadException("种子信息异常");
 		}
 		this.torrent = torrent;
 		this.infoHash = infoHash;
 	}
 	
+	public static final TorrentSession newInstance(InfoHash infoHash) throws DownloadException {
+		return new TorrentSession(infoHash);
+	}
+	
 	public static final TorrentSession newInstance(InfoHash infoHash, Torrent torrent) throws DownloadException {
 		return new TorrentSession(infoHash, torrent);
 	}
-	
+
 	/**
 	 * 开始上传
 	 */
@@ -170,6 +185,9 @@ public class TorrentSession {
 	 * @return true-下载完成；false-未完成
 	 */
 	public boolean download(boolean findPeer) throws DownloadException {
+		if(this.taskSession == null) {
+			throw new DownloadException("下载任务参数错误");
+		}
 		if(this.taskSession.complete() || this.torrentStreamGroup.complete()) {
 			return true;
 		}
@@ -268,11 +286,13 @@ public class TorrentSession {
 	 */
 	private void loadDhtLauncher() {
 		this.dhtLauncher = DhtLauncher.newInstance(this);
-		final var nodes = this.torrent.getNodes();
-		if(CollectionUtils.isNotEmpty(nodes)) { // 添加DHT节点
-			nodes.forEach((host, port) -> {
-				this.dhtLauncher.put(host, port.intValue());
-			});
+		if(this.torrent != null) {
+			final var nodes = this.torrent.getNodes();
+			if(CollectionUtils.isNotEmpty(nodes)) { // 添加DHT节点
+				nodes.forEach((host, port) -> {
+					this.dhtLauncher.put(host, port.intValue());
+				});
+			}
 		}
 	}
 
@@ -347,7 +367,7 @@ public class TorrentSession {
 	/**
 	 * 获取选择的下载文件
 	 */
-	public List<TorrentFile> selectFiles() {
+	private List<TorrentFile> selectFiles() {
 		final TorrentInfo info = this.torrent.getInfo();
 		final List<TorrentFile> files = info.files();
 		final List<String> selectedFiles = this.taskSession.downloadTorrentFiles();
@@ -404,24 +424,6 @@ public class TorrentSession {
 	}
 
 	/**
-	 * 设置Peer
-	 */
-	public void peer(Map<String, Integer> peers) {
-		if(CollectionUtils.isEmpty(peers)) {
-			return;
-		}
-		final PeerManager manager = PeerManager.getInstance();
-		peers.forEach((host, port) -> {
-			manager.newPeerSession(
-				this.infoHashHex(),
-				this.taskSession.statistics(),
-				host,
-				port,
-				PeerConfig.SOURCE_TRACKER);
-		});
-	}
-
-	/**
 	 * <p>发送have消息，通知所有已连接的Peer已下载对应的Piece</p>
 	 * 
 	 * @param index Piece序号
@@ -434,15 +436,8 @@ public class TorrentSession {
 	 * 保存种子文件
 	 */
 	public void saveTorrentFile() {
-		if(this.taskSession == null) {
-			return;
-		}
-		final var entity = this.taskSession.entity();
-		if(entity == null) {
-			return;
-		}
 		final TorrentBuilder builder = TorrentBuilder.newInstance(this.infoHash);
-		builder.buildFile(entity.getFile());
+		builder.buildFile(DownloadConfig.getPath());
 	}
 
 	/**
@@ -459,7 +454,7 @@ public class TorrentSession {
 		TorrentInfo torrentInfo = this.torrent.getInfo();
 		String name = torrentInfo.getNameUtf8();
 		if(StringUtils.isEmpty(name)) {
-			name = StringUtils.charset(torrentInfo.getName(), torrent.getEncoding());
+			name = StringUtils.charset(torrentInfo.getName(), this.torrent.getEncoding());
 		}
 		return name;
 	}
@@ -478,6 +473,28 @@ public class TorrentSession {
 		return this.downloadable;
 	}
 	
+	/**
+	 * 任务处于下载中：转磁力链接或者任务处于下载中
+	 */
+	public boolean downloading() {
+		return this.taskSession != null && this.taskSession.download();
+	}
+	
+	/**
+	 * 任务是否完成
+	 */
+	public boolean complete() {
+		return this.taskSession != null && this.taskSession.complete();
+	}
+	
+	public Action action() {
+		return this.action;
+	}
+	
+	public void action(Action action) {
+		this.action = action;
+	}
+	
 	public Torrent torrent() {
 		return this.torrent;
 	}
@@ -490,13 +507,14 @@ public class TorrentSession {
 		return this.infoHash.infoHashHex();
 	}
 	
+	public StatisticsSession statistics() {
+		return this.taskSession == null ? null : this.taskSession.statistics();
+	}
+	
 	public TaskSession taskSession() {
 		return this.taskSession;
 	}
 	
-	/**
-	 * 如果没有下载，只是加载时为null。
-	 */
 	public DhtLauncher dhtLauncher() {
 		return this.dhtLauncher;
 	}

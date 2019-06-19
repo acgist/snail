@@ -7,7 +7,6 @@ import java.util.Map;
 
 import com.acgist.snail.net.bt.peer.bootstrap.PeerLauncherMessageHandler;
 import com.acgist.snail.system.config.PeerConfig;
-import com.acgist.snail.system.config.PeerMessageConfig;
 import com.acgist.snail.system.statistics.IStatistics;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.ObjectUtils;
@@ -48,7 +47,7 @@ public class PeerSession implements IStatistics {
 	
 	private PeerLauncherMessageHandler peerLauncherMessageHandler;
 	
-	private final Map<PeerMessageConfig.ExtensionType, Byte> extension; // 支持的扩展协议
+	private final Map<PeerConfig.ExtensionType, Byte> extension; // 支持的扩展协议
 
 	private PeerSession(StatisticsSession parent, String host, Integer peerPort) {
 		this.statistics = new StatisticsSession(parent);
@@ -123,16 +122,20 @@ public class PeerSession implements IStatistics {
 
 	@Override
 	public void download(long buffer) {
-		statistics.download(buffer);
+		this.statistics.download(buffer);
 	}
 	
 	@Override
 	public void upload(long buffer) {
-		statistics.upload(buffer);
+		this.statistics.upload(buffer);
 	}
 	
 	public StatisticsSession statistics() {
 		return this.statistics;
+	}
+	
+	public void statistics(StatisticsSession statistics) {
+		this.statistics = statistics;
 	}
 	
 	public PeerLauncherMessageHandler peerLauncherMessageHandler() {
@@ -217,21 +220,21 @@ public class PeerSession implements IStatistics {
 	/**
 	 * 添加扩展类型
 	 */
-	public void addExtensionType(PeerMessageConfig.ExtensionType type, byte typeValue) {
+	public void addExtensionType(PeerConfig.ExtensionType type, byte typeValue) {
 		this.extension.put(type, typeValue);
 	}
 	
 	/**
 	 * 是否支持扩展协议
 	 */
-	public boolean support(PeerMessageConfig.ExtensionType type) {
+	public boolean support(PeerConfig.ExtensionType type) {
 		return this.extension.containsKey(type);
 	}
 
 	/**
 	 * 获取扩展协议编号
 	 */
-	public Byte extensionTypeValue(PeerMessageConfig.ExtensionType type) {
+	public Byte extensionTypeValue(PeerConfig.ExtensionType type) {
 		return this.extension.get(type);
 	}
 	

@@ -10,13 +10,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.session.PeerSession;
-import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.bcode.BCodeDecoder;
 import com.acgist.snail.system.bcode.BCodeEncoder;
 import com.acgist.snail.system.config.PeerConfig;
-import com.acgist.snail.system.config.PeerMessageConfig.ExtensionType;
+import com.acgist.snail.system.config.PeerConfig.ExtensionType;
 import com.acgist.snail.system.manager.PeerManager;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NetUtils;
@@ -42,9 +40,8 @@ public class PeerExchangeMessageHandler {
 //	public static final String DROPPED = "dropped";
 //	public static final String DROPPED6 = "dropped6";
 	
-	private final InfoHash infoHash;
 	private final PeerSession peerSession;
-	private final TaskSession taskSession;
+	private final TorrentSession torrentSession;
 	private final ExtensionMessageHandler extensionMessageHandler;
 	
 	public static final PeerExchangeMessageHandler newInstance(PeerSession peerSession, TorrentSession torrentSession, ExtensionMessageHandler extensionMessageHandler) {
@@ -52,9 +49,8 @@ public class PeerExchangeMessageHandler {
 	}
 	
 	private PeerExchangeMessageHandler(PeerSession peerSession, TorrentSession torrentSession, ExtensionMessageHandler extensionMessageHandler) {
-		this.infoHash = torrentSession.infoHash();
 		this.peerSession = peerSession;
-		this.taskSession = torrentSession.taskSession();
+		this.torrentSession = torrentSession;
 		this.extensionMessageHandler = extensionMessageHandler;
 	}
 	
@@ -94,8 +90,8 @@ public class PeerExchangeMessageHandler {
 			final AtomicInteger index = new AtomicInteger(0);
 			peers.forEach((host, port) -> {
 				final PeerSession peerSession = PeerManager.getInstance().newPeerSession(
-					this.infoHash.infoHashHex(),
-					this.taskSession.statistics(),
+					this.torrentSession.infoHashHex(),
+					this.torrentSession.statistics(),
 					host,
 					port,
 					PeerConfig.SOURCE_PEX);

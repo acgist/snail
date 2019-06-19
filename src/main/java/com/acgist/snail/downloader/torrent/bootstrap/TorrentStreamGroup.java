@@ -55,10 +55,10 @@ public class TorrentStreamGroup {
 	public static final TorrentStreamGroup newInstance(String folder, List<TorrentFile> files, TorrentSession torrentSession) {
 		final Torrent torrent = torrentSession.torrent();
 		final TorrentInfo torrentInfo = torrent.getInfo();
+		final boolean complete = torrentSession.complete();
 		final BitSet pieces = new BitSet(torrentInfo.pieceSize());
 		final BitSet selectPieces = new BitSet(torrentInfo.pieceSize());
 		final List<TorrentStream> streams = new ArrayList<>(files.size());
-		final boolean complete = torrentSession.taskSession() == null ? false : torrentSession.taskSession().complete();
 		final TorrentStreamGroup torrentStreamGroup = new TorrentStreamGroup(pieces, selectPieces, streams, torrentSession);
 		final int fileCount = (int) files.stream().filter(file -> file.selected()).count(); // 下载文件数量
 		final CountDownLatch allReady = new CountDownLatch(fileCount); // 全部完成：异步线程也执行完成
