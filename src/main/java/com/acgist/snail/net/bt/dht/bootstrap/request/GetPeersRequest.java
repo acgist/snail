@@ -50,8 +50,8 @@ public class GetPeersRequest extends Request {
 		final GetPeersResponse response = GetPeersResponse.newInstance(request);
 		final byte[] infoHash = request.getBytes(DhtConfig.KEY_INFO_HASH);
 		final String infoHashHex = StringUtils.hex(infoHash);
-		final TorrentSession session = TorrentManager.getInstance().torrentSession(infoHashHex);
-		if(session != null) {
+		final TorrentSession torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
+		if(torrentSession != null) {
 			final ByteBuffer buffer = ByteBuffer.allocate(6);
 			final var list = PeerManager.getInstance().list(infoHashHex);
 			if(CollectionUtils.isNotEmpty(list)) {

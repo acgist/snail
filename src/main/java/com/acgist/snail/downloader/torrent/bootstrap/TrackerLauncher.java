@@ -106,7 +106,7 @@ public class TrackerLauncher {
 	 */
 	public void release() {
 		this.available = false;
-		if(this.needRelease && this.torrentSession.downloadable() && available()) {
+		if(this.needRelease && available()) {
 			SystemThreadContext.submit(() -> {
 				if(this.torrentSession.complete()) { // 任务完成
 					this.client.complete(this.id, this.torrentSession);
