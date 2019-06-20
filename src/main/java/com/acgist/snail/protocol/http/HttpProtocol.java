@@ -92,7 +92,7 @@ public class HttpProtocol extends Protocol {
 				break;
 			}
 		}
-		if(this.httpHeaderWrapper.isEmpty()) {
+		if(this.httpHeaderWrapper == null || this.httpHeaderWrapper.isEmpty()) {
 			throw new DownloadException("添加下载任务异常");
 		}
 	}
