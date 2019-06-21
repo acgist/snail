@@ -69,6 +69,7 @@ public class MagnetProtocol extends Protocol {
 		taskEntity.setName(fileName);
 		taskEntity.setFile(buildFile(fileName));
 		taskEntity.setFileType(FileType.torrent);
+		taskEntity.setSize(0L); // 后面选择下载文件时再修改
 		this.taskEntity = taskEntity;
 		buildTorrentFolder();
 		return true;

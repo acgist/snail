@@ -16,12 +16,14 @@ import com.acgist.snail.downloader.torrent.bootstrap.PeerConnectGroup;
 import com.acgist.snail.downloader.torrent.bootstrap.PeerLauncherGroup;
 import com.acgist.snail.downloader.torrent.bootstrap.TorrentStreamGroup;
 import com.acgist.snail.downloader.torrent.bootstrap.TrackerLauncherGroup;
+import com.acgist.snail.pojo.bean.Magnet;
+import com.acgist.snail.protocol.magnet.bootstrap.MagnetReader;
 import com.acgist.snail.protocol.magnet.bootstrap.TorrentBuilder;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
 import com.acgist.snail.protocol.torrent.bean.TorrentFile;
 import com.acgist.snail.protocol.torrent.bean.TorrentInfo;
-import com.acgist.snail.system.config.DownloadConfig;
+import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.system.config.PeerConfig.Action;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
@@ -29,6 +31,7 @@ import com.acgist.snail.system.exception.ArgumentException;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.system.manager.PeerManager;
+import com.acgist.snail.system.manager.TorrentManager;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -74,11 +77,11 @@ public class TorrentSession {
 	/**
 	 * 种子
 	 */
-	private final Torrent torrent;
+	private Torrent torrent;
 	/**
 	 * 种子信息
 	 */
-	private final InfoHash infoHash;
+	private InfoHash infoHash;
 	/**
 	 * 任务
 	 */
@@ -145,6 +148,23 @@ public class TorrentSession {
 	}
 	
 	/**
+	 * 磁力链接转换
+	 * 不使用DHT
+	 */
+	public void magnet(TaskSession taskSession) throws DownloadException {
+		this.taskSession = taskSession;
+		this.loadExecutor();
+		this.loadExecutorTimer();
+		this.loadTrackerLauncherGroup();
+		this.loadTrackerLauncherGroupTimer();
+		this.loadDhtLauncher();
+		this.loadDhtLauncherTimer();
+		this.loadPeerLauncherGroup();
+		this.loadPeerLauncherGroupTimer();
+		this.action = Action.torrent;
+	}
+	
+	/**
 	 * 开始上传
 	 */
 	public TorrentSession upload(TaskSession taskSession) throws DownloadException {
@@ -154,7 +174,6 @@ public class TorrentSession {
 		this.loadPeerConnectGroup();
 		this.loadPeerConnectGroupTimer();
 		this.uploadable = true;
-		this.action = Action.torrent;
 		return this;
 	}
 	
@@ -193,6 +212,7 @@ public class TorrentSession {
 		this.loadPeerLauncherGroupTimer();
 		this.loadPexTimer();
 		this.downloadable = true;
+		this.action = Action.download;
 		return false;
 	}
 
@@ -260,7 +280,12 @@ public class TorrentSession {
 	 */
 	private void loadTrackerLauncherGroup() throws DownloadException {
 		this.trackerLauncherGroup = TrackerLauncherGroup.newInstance(this);
-		this.trackerLauncherGroup.loadTracker();
+		if(this.action == Action.download) {
+			this.trackerLauncherGroup.loadTracker();
+		} else {
+			final Magnet magnet = MagnetReader.newInstance(taskSession.entity().getUrl()).magnet();
+			this.trackerLauncherGroup.loadTracker(magnet.getTr());
+		}
 	}
 
 	/**
@@ -277,7 +302,7 @@ public class TorrentSession {
 	 */
 	private void loadDhtLauncher() {
 		this.dhtLauncher = DhtLauncher.newInstance(this);
-		if(this.torrent != null) {
+		if(this.action == Action.download) {
 			final var nodes = this.torrent.getNodes();
 			if(CollectionUtils.isNotEmpty(nodes)) { // 添加DHT节点
 				nodes.forEach((host, port) -> {
@@ -384,6 +409,19 @@ public class TorrentSession {
 	}
 	
 	/**
+	 * 释放资源（磁力链接）
+	 */
+	public void releaseMagnet() {
+		this.peerLauncherGroupTimer.cancel(false);
+		this.peerLauncherGroup.release();
+		this.dhtLauncherTimer.cancel(false);
+		this.trackerLauncherGroupTimer.cancel(false);
+		this.trackerLauncherGroup.release();
+		SystemThreadContext.shutdownNow(this.executorTimer);
+		SystemThreadContext.shutdownNow(this.executor);
+	}
+	
+	/**
 	 * 释放资源（释放下载使用的资源），完成时不释放文件资源。
 	 */
 	public void releaseDownload() {
@@ -441,10 +479,21 @@ public class TorrentSession {
 	 * 保存种子文件
 	 */
 	public void saveTorrentFile() {
-		final TorrentBuilder builder = TorrentBuilder.newInstance(this.infoHash);
-		builder.buildFile(DownloadConfig.getPath());
+		final var entity = this.taskSession.entity();
+		final TorrentBuilder builder = TorrentBuilder.newInstance(this.infoHash, this.trackerLauncherGroup.trackers());
+		final String torrentFile = builder.buildFile(this.taskSession.downloadFolder().getPath());
+		entity.setTorrent(torrentFile);
+		TaskRepository repository = new TaskRepository();
+		repository.update(entity);
+		try {
+			this.torrent = TorrentManager.loadTorrent(torrentFile);
+			this.infoHash = this.torrent.getInfoHash();
+		} catch (DownloadException e) {
+			LOGGER.error("解析种子异常", e);
+		}
+		this.taskSession.downloader().unlockDownload();
 	}
-
+	
 	/**
 	 * 重新获取下载大小
 	 */

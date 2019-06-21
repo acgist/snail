@@ -6,16 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.protocol.torrent.TorrentProtocol;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.bcode.BCodeDecoder;
 import com.acgist.snail.system.bcode.BCodeEncoder;
 import com.acgist.snail.system.config.SystemConfig;
-import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.system.manager.TrackerManager;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.DateUtils;
 import com.acgist.snail.utils.FileUtils;
@@ -28,16 +23,16 @@ import com.acgist.snail.utils.FileUtils;
  */
 public class TorrentBuilder {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentBuilder.class);
-
 	private final InfoHash infoHash;
+	private final List<String> trackers;
 	
-	private TorrentBuilder(InfoHash infoHash) {
+	private TorrentBuilder(InfoHash infoHash, List<String> trackers) {
 		this.infoHash = infoHash;
+		this.trackers = trackers;
 	}
 	
-	public static final TorrentBuilder newInstance(InfoHash infoHash) {
-		return new TorrentBuilder(infoHash);
+	public static final TorrentBuilder newInstance(InfoHash infoHash, List<String> trackers) {
+		return new TorrentBuilder(infoHash, trackers);
 	}
 	
 	/**
@@ -46,10 +41,10 @@ public class TorrentBuilder {
 	 * @param path 文件路径
 	 */
 	public String buildFile(String path) {
-		final String file = FileUtils.file(path, fileName());
+		final String filePath = FileUtils.file(path, fileName());
 		final Map<String, Object> fileData = fileData();
-		this.createFile(file, fileData);
-		return file;
+		this.createFile(filePath, fileData);
+		return filePath;
 	}
 
 	/**
@@ -62,11 +57,7 @@ public class TorrentBuilder {
 		data.put("encoding", SystemConfig.DEFAULT_CHARSET);
 		data.put("created by", SystemConfig.getNameEnAndVersion());
 		data.put("creation date", DateUtils.unixTimestamp());
-		try {
-			this.announce(data);
-		} catch (DownloadException e) {
-			LOGGER.error("获取Tracker异常", e);
-		}
+		this.announce(data);
 		this.infoHash(data);
 //		this.node(data);
 		return data;
@@ -75,18 +66,15 @@ public class TorrentBuilder {
 	/**
 	 * 设置announce
 	 */
-	private void announce(Map<String, Object> data) throws DownloadException {
-		final List<String> list = TrackerManager.getInstance().clients(null, null).stream()
-			.map(client -> client.announceUrl())
-			.collect(Collectors.toList());
-		if(CollectionUtils.isEmpty(list)) {
+	private void announce(Map<String, Object> data) {
+		if(CollectionUtils.isEmpty(this.trackers)) {
 			return;
 		}
-		if(list.size() > 0) {
-			data.put("announce", list.get(0));
+		if(this.trackers.size() > 0) {
+			data.put("announce", this.trackers.get(0));
 		}
-		if(list.size() > 1) { // 每个映射为一个list
-			data.put("announce-list", list.subList(1, list.size()).stream().map(value -> List.of(value)).collect(Collectors.toList()));
+		if(this.trackers.size() > 1) { // 每个映射为一个list
+			data.put("announce-list", this.trackers.subList(1, this.trackers.size()).stream().map(value -> List.of(value)).collect(Collectors.toList()));
 		}
 	}
 	
