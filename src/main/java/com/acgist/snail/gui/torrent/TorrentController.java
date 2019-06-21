@@ -3,9 +3,14 @@ package com.acgist.snail.gui.torrent;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.gui.Alerts;
 import com.acgist.snail.gui.main.TaskDisplay;
 import com.acgist.snail.pojo.entity.TaskEntity;
+import com.acgist.snail.pojo.entity.TaskEntity.Status;
+import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.wrapper.TorrentFileSelectWrapper;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
@@ -35,7 +40,9 @@ import javafx.scene.layout.VBox;
  */
 public class TorrentController implements Initializable {
 	
-	private static final String HIDE_FILE_PREFIX = "_____padding_file"; // 不需要下载的文件前缀
+	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentController.class);
+	
+	private static final String HIDE_FILE_PREFIX = "_____padding_file"; // 填充文件前缀（不需要下载和显示）
 	
 	@FXML
     private FlowPane root;
@@ -119,9 +126,24 @@ public class TorrentController implements Initializable {
 		final TorrentFileSelectWrapper wrapper = TorrentFileSelectWrapper.newEncoder(list);
 		entity.setDescription(wrapper.description());
 		if(entity.getId() != null) { // 已经添加数据库
+			boolean restart = false;
+			if(entity.getType() == Type.magnet) { // 磁力链接转为种子
+				restart = true;
+				entity.setType(Type.torrent);
+				entity.setStatus(Status.await);
+			}
 			TaskRepository repository = new TaskRepository();
 			repository.update(entity);
-			DownloaderManager.getInstance().refresh(this.taskSession);
+			if(restart) {
+				try {
+					DownloaderManager.getInstance().remove(this.taskSession);
+					DownloaderManager.getInstance().start(this.taskSession);
+				} catch (DownloadException e) {
+					LOGGER.error("添加下载任务异常", e);
+				}
+			} else {
+				DownloaderManager.getInstance().refresh(this.taskSession);
+			}
 		}
 		TaskDisplay.getInstance().refreshTaskData();
 		TorrentWindow.getInstance().hide();

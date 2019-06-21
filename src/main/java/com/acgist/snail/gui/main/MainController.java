@@ -15,6 +15,7 @@ import com.acgist.snail.gui.about.AboutWindow;
 import com.acgist.snail.gui.build.BuildWindow;
 import com.acgist.snail.gui.menu.TaskMenu;
 import com.acgist.snail.gui.setting.SettingWindow;
+import com.acgist.snail.gui.torrent.TorrentWindow;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.session.TaskSession;
@@ -398,12 +399,17 @@ public class MainController implements Initializable {
 	private EventHandler<MouseEvent> rowClickAction = (event) -> {
 		if(event.getClickCount() == 2) { // 双击
 			final TableRow<?> row = (TableRow<?>) event.getSource();
-			TaskSession session = (TaskSession) row.getItem();
+			final TaskSession session = (TaskSession) row.getItem();
 			if(session == null) {
 				return;
 			}
 			if(session.complete()) { // 下载完成=打开文件
-				FileUtils.openInDesktop(new File(session.entity().getFile()));
+				final var entity = session.entity();
+				if(entity.getType() == Type.magnet) { // 切换
+					TorrentWindow.getInstance().show(session);
+				} else {
+					FileUtils.openInDesktop(new File(session.entity().getFile()));
+				}
 			} else if(session.coming()) { // 准备中=暂停下载
 				DownloaderManager.getInstance().pause(session);
 			} else { // 其他=开始下载

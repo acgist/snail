@@ -124,6 +124,15 @@ public final class DownloaderManager {
 		});
 		this.downloaderMap.remove(entity.getId());
 	}
+	
+	/**
+	 * 移除下载器
+	 */
+	public void remove(TaskSession taskSession) {
+		var entity = taskSession.entity();
+		taskSession.downloader(null);
+		this.downloaderMap.remove(entity.getId());
+	}
 
 	/**
 	 * 刷新任务
