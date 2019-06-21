@@ -8,6 +8,7 @@ import java.util.List;
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.downloader.ftp.FtpDownloader;
 import com.acgist.snail.downloader.http.HttpDownloader;
+import com.acgist.snail.downloader.magnet.MagnetDownloader;
 import com.acgist.snail.downloader.torrent.TorrentDownloader;
 import com.acgist.snail.gui.main.TaskDisplay;
 import com.acgist.snail.pojo.entity.TaskEntity;
@@ -36,9 +37,10 @@ public class TaskSession {
 		};
 	};
 	
-	private TaskEntity entity; // 任务
 	private IDownloader downloader; // 下载器
-	private StatisticsSession statistics; // 统计
+	
+	private final TaskEntity entity; // 任务
+	private final StatisticsSession statistics; // 统计
 	
 	private TaskSession(TaskEntity entity) throws DownloadException {
 		if(entity == null) {
@@ -54,7 +56,7 @@ public class TaskSession {
 	}
 	
 	public TaskEntity entity() {
-		return entity;
+		return this.entity;
 	}
 	
 	public IDownloader downloader() {
@@ -69,11 +71,11 @@ public class TaskSession {
 	 * 获取下载目录
 	 */
 	public File downloadFolder() {
-		File file = new File(entity.getFile());
-		if(entity.getType() == Type.torrent) {
-			return file;
-		} else {
+		File file = new File(this.entity.getFile());
+		if(file.isFile()) {
 			return file.getParentFile();
+		} else {
+			return file;
 		}
 	}
 	
@@ -81,10 +83,10 @@ public class TaskSession {
 	 * 获取已选择的下载文件
 	 */
 	public List<String> downloadTorrentFiles() {
-		if(entity.getType() != Type.torrent) {
+		if(this.entity.getType() != Type.torrent) {
 			return List.of();
 		}
-		String description = entity.getDescription();
+		String description = this.entity.getDescription();
 		if(StringUtils.isEmpty(description)) {
 			return List.of();
 		} else {
@@ -132,21 +134,21 @@ public class TaskSession {
 	 * 等待状态
 	 */
 	public boolean await() {
-		return entity.getStatus() == Status.await;
+		return this.entity.getStatus() == Status.await;
 	}
 	
 	/**
 	 * 下载状态
 	 */
 	public boolean download() {
-		return entity.getStatus() == Status.download;
+		return this.entity.getStatus() == Status.download;
 	}
 	
 	/**
 	 * 完成状态
 	 */
 	public boolean complete() {
-		return entity.getStatus() == Status.complete;
+		return this.entity.getStatus() == Status.complete;
 	}
 	
 	/**
@@ -169,6 +171,8 @@ public class TaskSession {
 				return FtpDownloader.newInstance(this);
 			case http:
 				return HttpDownloader.newInstance(this);
+			case magnet:
+				return MagnetDownloader.newInstance(this);
 			case torrent:
 				return TorrentDownloader.newInstance(this);
 			default:
@@ -182,7 +186,7 @@ public class TaskSession {
 	 * 任务名称
 	 */
 	public String getNameValue() {
-		return entity.getName();
+		return this.entity.getName();
 	}
 
 	/**
@@ -190,9 +194,9 @@ public class TaskSession {
 	 */
 	public String getStatusValue() {
 		if(download()) {
-			return FileUtils.formatSize(statistics.downloadSecond()) + "/S";
+			return FileUtils.formatSize(this.statistics.downloadSecond()) + "/S";
 		} else {
-			return entity.getStatus().getValue();
+			return this.entity.getStatus().getValue();
 		}
 	}
 	
@@ -201,9 +205,9 @@ public class TaskSession {
 	 */
 	public String getProgressValue() {
 		if(complete()) {
-			return FileUtils.formatSize(entity.getSize());
+			return FileUtils.formatSize(this.entity.getSize());
 		} else {
-			return FileUtils.formatSize(statistics.downloadSize()) + "/" + FileUtils.formatSize(entity.getSize());
+			return FileUtils.formatSize(this.statistics.downloadSize()) + "/" + FileUtils.formatSize(this.entity.getSize());
 		}
 	}
 
@@ -211,30 +215,30 @@ public class TaskSession {
 	 * 创建时间
 	 */
 	public String getCreateDateValue() {
-		if(entity.getCreateDate() == null) {
+		if(this.entity.getCreateDate() == null) {
 			return "-";
 		}
-		return formater.get().format(entity.getCreateDate());
+		return this.formater.get().format(this.entity.getCreateDate());
 	}
 	
 	/**
 	 * 完成时间
 	 */
 	public String getEndDateValue() {
-		if(entity.getEndDate() == null) {
+		if(this.entity.getEndDate() == null) {
 			if(download()) {
-				final long downloadSecond = statistics.downloadSecond();
+				final long downloadSecond = this.statistics.downloadSecond();
 				if(downloadSecond == 0L) {
 					return "-";
 				} else {
-					long second = (entity.getSize() - statistics.downloadSize()) / downloadSecond;
+					long second = (this.entity.getSize() - this.statistics.downloadSize()) / downloadSecond;
 					return DateUtils.formatSecond(second);
 				}
 			} else {
 				return "-";
 			}
 		}
-		return formater.get().format(entity.getEndDate());
+		return this.formater.get().format(this.entity.getEndDate());
 	}
 	
 }

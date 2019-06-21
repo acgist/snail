@@ -64,10 +64,10 @@ public class TorrentController implements Initializable {
 	 * 显示信息
 	 */
 	public void tree(TaskSession taskSession) {
-		var entity = taskSession.entity();
-		this.taskSession = taskSession;
-		TreeView<HBox> tree = buildTree();
 		Torrent torrent = null;
+		this.taskSession = taskSession;
+		var entity = taskSession.entity();
+		TreeView<HBox> tree = buildTree();
 		try {
 			torrent = TorrentManager.getInstance().newTorrentSession(entity.getTorrent()).torrent();
 		} catch (DownloadException e) {

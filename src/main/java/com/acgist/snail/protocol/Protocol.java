@@ -23,8 +23,7 @@ public abstract class Protocol {
 	protected final String[] regexs; // 协议正则表达式
 	
 	protected String url; // 下载地址
-	
-	protected TaskEntity taskEntity;
+	protected TaskEntity taskEntity; // 任务
 	
 	public Protocol(Type type, String ... regexs) {
 		this.type = type;

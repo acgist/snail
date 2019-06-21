@@ -60,6 +60,8 @@ public class Torrent {
 	private TorrentInfo info; // 文件信息
 	private List<String> announceList; // Tracker服务器列表
 	private Map<String, Long> nodes; // DHT协议：暂时不处理
+	
+	private InfoHash infoHash; // infoHash
 
 	protected Torrent() {
 	}
@@ -191,6 +193,14 @@ public class Torrent {
 
 	public void setNodes(Map<String, Long> nodes) {
 		this.nodes = nodes;
+	}
+
+	public InfoHash getInfoHash() {
+		return infoHash;
+	}
+
+	public void setInfoHash(InfoHash infoHash) {
+		this.infoHash = infoHash;
 	}
 	
 }

@@ -14,14 +14,12 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>Peer Session</p>
- * <p>保存Peer信息：ip、端口、下载统计等</p>
+ * <p>保存Peer信息：ip、端口、下载统计等。</p>
  * 
  * @author acgist
  * @since 1.0.0
  */
 public class PeerSession implements IStatistics {
-
-	private StatisticsSession statistics;
 
 	private int failTimes = 0; // 失败次数：如果失败次数过多不在连接
 	
@@ -44,6 +42,8 @@ public class PeerSession implements IStatistics {
 	private boolean amInterested; // 客户端对Peer感兴趣：感兴趣（Peer有客户端没有的piece）-1（true）、不感兴趣-0
 	private boolean peerChocking; // Peer将客户阻塞：阻塞（Peer不允许客户端下载）-1（true）、非阻塞-0
 	private boolean peerInterested; // Peer对客户端感兴趣：感兴趣-1、不感兴趣-0
+	
+	private final StatisticsSession statistics;
 	
 	private PeerLauncherMessageHandler peerLauncherMessageHandler;
 	
@@ -133,11 +133,7 @@ public class PeerSession implements IStatistics {
 	public StatisticsSession statistics() {
 		return this.statistics;
 	}
-	
-	public void statistics(StatisticsSession statistics) {
-		this.statistics = statistics;
-	}
-	
+		
 	public PeerLauncherMessageHandler peerLauncherMessageHandler() {
 		return this.peerLauncherMessageHandler;
 	}

@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.torrent.bootstrap.PeerConnectGroup;
 import com.acgist.snail.downloader.torrent.bootstrap.PeerLauncher;
-import com.acgist.snail.downloader.torrent.bootstrap.TorrentStreamGroup;
 import com.acgist.snail.net.IMessageHandler;
 import com.acgist.snail.net.bt.peer.bootstrap.dht.DhtExtensionMessageHandler;
 import com.acgist.snail.net.bt.peer.bootstrap.ltep.ExtensionMessageHandler;
@@ -69,7 +68,6 @@ public class PeerLauncherMessageHandler {
 	
 	private PeerSession peerSession;
 	private TorrentSession torrentSession;
-	private TorrentStreamGroup torrentStreamGroup;
 	
 	private ExtensionMessageHandler extensionMessageHandler;
 	private DhtExtensionMessageHandler dhtExtensionMessageHandler;
@@ -102,7 +100,6 @@ public class PeerLauncherMessageHandler {
 		peerSession.peerLauncherMessageHandler(this);
 		this.peerSession = peerSession;
 		this.torrentSession = torrentSession;
-		this.torrentStreamGroup = torrentSession.torrentStreamGroup();
 		this.extensionMessageHandler = ExtensionMessageHandler.newInstance(this.peerSession, this.torrentSession, this);
 		this.dhtExtensionMessageHandler = DhtExtensionMessageHandler.newInstance(this.peerSession, torrentSession.dhtLauncher(), this);
 	}
@@ -414,7 +411,7 @@ public class PeerLauncherMessageHandler {
 		final int index = buffer.getInt();
 		LOGGER.debug("收到have消息：{}", index);
 		this.peerSession.piece(index);
-		if(this.torrentStreamGroup.have(index)) { // 已有=不感兴趣
+		if(this.torrentSession.havePiece(index)) { // 已有=不感兴趣
 			notInterested();
 		} else { // 没有=感兴趣
 			interested();
@@ -432,7 +429,7 @@ public class PeerLauncherMessageHandler {
 		if(!this.torrentSession.downloadable()) {
 			return;
 		}
-		final BitSet pieces = this.torrentStreamGroup.pieces();
+		final BitSet pieces = this.torrentSession.pieces();
 		LOGGER.debug("发送位图：{}", pieces);
 		final int pieceSize = this.torrentSession.torrent().getInfo().pieceSize();
 		pushMessage(PeerConfig.Type.bitfield, BitfieldUtils.toBytes(pieceSize, pieces));
@@ -452,7 +449,7 @@ public class PeerLauncherMessageHandler {
 		LOGGER.debug("收到位图：{}", pieces);
 		final BitSet notHave = new BitSet();
 		notHave.or(pieces);
-		notHave.andNot(this.torrentStreamGroup.pieces());
+		notHave.andNot(this.torrentSession.pieces());
 		LOGGER.debug("感兴趣位图：{}", notHave);
 		if(notHave.cardinality() == 0) {
 			notInterested();
@@ -500,9 +497,9 @@ public class PeerLauncherMessageHandler {
 		final int begin = buffer.getInt();
 		final int length = buffer.getInt();
 		LOGGER.debug("收到请求：{}-{}-{}", index, begin, length);
-		if(this.torrentStreamGroup.have(index)) {
+		if(this.torrentSession.havePiece(index)) {
 			try {
-				final byte[] bytes = this.torrentStreamGroup.read(index, begin, length);
+				final byte[] bytes = this.torrentSession.read(index, begin, length);
 				piece(index, begin, bytes);
 			} catch (NetException e) {
 				LOGGER.error("处理请求异常", e);

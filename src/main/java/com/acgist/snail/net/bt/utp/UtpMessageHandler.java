@@ -26,6 +26,7 @@ import com.acgist.snail.utils.ThreadUtils;
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0029.html</p>
  * 流量控制：
  * 阻塞控制：
+ * TODO：TCP UDP读取部分合并
  * 
  * @author acgist
  * @since 1.1.0

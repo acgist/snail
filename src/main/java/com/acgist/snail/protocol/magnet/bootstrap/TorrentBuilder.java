@@ -6,11 +6,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.protocol.torrent.TorrentProtocol;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.bcode.BCodeDecoder;
 import com.acgist.snail.system.bcode.BCodeEncoder;
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.manager.TrackerManager;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.DateUtils;
@@ -23,6 +27,8 @@ import com.acgist.snail.utils.FileUtils;
  * @since 1.0.0
  */
 public class TorrentBuilder {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentBuilder.class);
 
 	private final InfoHash infoHash;
 	
@@ -39,10 +45,11 @@ public class TorrentBuilder {
 	 * 
 	 * @param path 文件路径
 	 */
-	public void buildFile(String path) {
+	public String buildFile(String path) {
 		final String file = FileUtils.file(path, fileName());
 		final Map<String, Object> fileData = fileData();
 		this.createFile(file, fileData);
+		return file;
 	}
 
 	/**
@@ -55,7 +62,11 @@ public class TorrentBuilder {
 		data.put("encoding", SystemConfig.DEFAULT_CHARSET);
 		data.put("created by", SystemConfig.getNameEnAndVersion());
 		data.put("creation date", DateUtils.unixTimestamp());
-		this.announce(data);
+		try {
+			this.announce(data);
+		} catch (DownloadException e) {
+			LOGGER.error("获取Tracker异常", e);
+		}
 		this.infoHash(data);
 //		this.node(data);
 		return data;
@@ -64,8 +75,8 @@ public class TorrentBuilder {
 	/**
 	 * 设置announce
 	 */
-	private void announce(Map<String, Object> data) {
-		final List<String> list = TrackerManager.getInstance().clients(SystemConfig.getTrackerSize()).stream()
+	private void announce(Map<String, Object> data) throws DownloadException {
+		final List<String> list = TrackerManager.getInstance().clients(null, null).stream()
 			.map(client -> client.announceUrl())
 			.collect(Collectors.toList());
 		if(CollectionUtils.isEmpty(list)) {

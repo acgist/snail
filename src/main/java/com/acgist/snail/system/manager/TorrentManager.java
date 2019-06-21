@@ -66,7 +66,11 @@ public class TorrentManager {
 		if(session != null) {
 			return session;
 		}
-		return newTorrentSession(path);
+		if(StringUtils.isEmpty(path)) {
+			return newTorrentSession(InfoHash.newInstance(infoHashHex), null);
+		} else {
+			return newTorrentSession(path);
+		}
 	}
 
 	/**
@@ -75,16 +79,8 @@ public class TorrentManager {
 	 * @param path torrent文件路径
 	 */
 	public TorrentSession newTorrentSession(String path) throws DownloadException {
-		final var bytes = loadTorrent(path);
-		final BCodeDecoder decoder = BCodeDecoder.newInstance(bytes);
-		final Map<String, Object> map = decoder.nextMap();
-		if(map == null) {
-			throw new DownloadException("种子文件格式错误");
-		}
-		final Torrent torrent = Torrent.valueOf(map);
-		final Map<String, Object> info = BCodeDecoder.getMap(map, "info"); // 只需要数据不符
-		final InfoHash infoHash = InfoHash.newInstance(BCodeEncoder.encodeMap(info));
-		return newTorrentSession(infoHash, torrent);
+		final Torrent torrent = loadTorrent(path);
+		return newTorrentSession(torrent.getInfoHash(), torrent);
 	}
 	
 	/**
@@ -92,15 +88,17 @@ public class TorrentManager {
 	 */
 	private TorrentSession newTorrentSession(InfoHash infoHash, Torrent torrent) throws DownloadException {
 		if(infoHash == null) {
-			throw new DownloadException("infoHash不合法");
+			throw new DownloadException("创建TorrentSession失败");
 		}
-		final String key = infoHash.infoHashHex();
-		var session = this.torrentSessions.get(key);
-		if(session == null) {
-			session = TorrentSession.newInstance(infoHash, torrent);
-			this.torrentSessions.put(key, session);
+		synchronized (this.torrentSessions) {
+			final String infoHashHex = infoHash.infoHashHex();
+			var torrentSession = this.torrentSessions.get(infoHashHex);
+			if(torrentSession == null) {
+				torrentSession = TorrentSession.newInstance(infoHash, torrent);
+				this.torrentSessions.put(infoHashHex, torrentSession);
+			}
+			return torrentSession;
 		}
-		return session;
 	}
 	
 	/**
@@ -108,13 +106,24 @@ public class TorrentManager {
 	 * 
 	 * @param path torrent文件地址
 	 */
-	private byte[] loadTorrent(String path) throws DownloadException {
+	public static final Torrent loadTorrent(String path) throws DownloadException {
 		final File file = new File(path);
 		if(!file.exists()) {
 			throw new DownloadException("种子文件不存在");
 		}
 		try {
-			return Files.readAllBytes(Paths.get(file.getPath()));
+			final var bytes = Files.readAllBytes(Paths.get(file.getPath()));
+			final BCodeDecoder decoder = BCodeDecoder.newInstance(bytes);
+			final Map<String, Object> map = decoder.nextMap();
+			if(map == null) {
+				throw new DownloadException("种子文件格式错误");
+			}
+			
+			final Torrent torrent = Torrent.valueOf(map);
+			final Map<String, Object> info = BCodeDecoder.getMap(map, "info"); // 只需要数据不符
+			final InfoHash infoHash = InfoHash.newInstance(BCodeEncoder.encodeMap(info));
+			torrent.setInfoHash(infoHash);
+			return torrent;
 		} catch (IOException e) {
 			throw new DownloadException("种子文件读取失败", e);
 		}

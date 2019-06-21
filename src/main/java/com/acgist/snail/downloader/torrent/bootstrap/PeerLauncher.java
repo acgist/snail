@@ -49,17 +49,13 @@ public class PeerLauncher {
 	private AtomicInteger mark = new AtomicInteger(0);
 	
 	private final PeerSession peerSession;
-//	private final TaskSession taskSession;
 	private final TorrentSession torrentSession;
-//	private final PeerLauncherGroup peerLauncherGroup;
 	private final TorrentStreamGroup torrentStreamGroup;
 	private final PeerLauncherMessageHandler peerLauncherMessageHandler;
 	
 	private PeerLauncher(PeerSession peerSession, TorrentSession torrentSession) {
 		this.peerSession = peerSession;
-//		this.taskSession = torrentSession.taskSession();
 		this.torrentSession = torrentSession;
-//		this.peerLauncherGroup = torrentSession.peerLauncherGroup();
 		this.torrentStreamGroup = torrentSession.torrentStreamGroup();
 		this.peerLauncherMessageHandler = PeerLauncherMessageHandler.newInstance(peerSession, torrentSession);
 	}

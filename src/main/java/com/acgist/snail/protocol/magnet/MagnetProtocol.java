@@ -1,18 +1,23 @@
 package com.acgist.snail.protocol.magnet;
 
-import java.io.File;
-
+import com.acgist.snail.pojo.bean.Magnet;
+import com.acgist.snail.pojo.entity.TaskEntity;
+import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.protocol.Protocol;
-import com.acgist.snail.protocol.magnet.bootstrap.TorrentLoader;
-import com.acgist.snail.protocol.torrent.TorrentProtocol;
-import com.acgist.snail.protocol.torrent.TorrentProtocol.TorrentFileOperation;
+import com.acgist.snail.protocol.magnet.bootstrap.MagnetReader;
+import com.acgist.snail.system.config.FileTypeConfig.FileType;
 import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.system.manager.ProtocolManager;
+import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
  * 磁力链接协议（只支持BT磁力链接）
+ * 磁力链接通过Tracker服务器获取Peer，然后交换种子，如果找不到Peer则转换失败。
+ * 其他实现方式：
+ * 	1.通过DHT查询（要找很久）
+ * 	2.使用第三方的种子库（磁力链接转种子）
+ * 转换失败：删除Peer/Torrent
  * 
  * @author acgist
  * @since 1.0.0
@@ -27,6 +32,8 @@ public class MagnetProtocol extends Protocol {
 	public static final String MAGNET_HASH_40_REGEX = "[a-zA-Z0-9]{40}"; // 40位磁力链接HASH正则表达式
 	
 	private static final MagnetProtocol INSTANCE = new MagnetProtocol();
+	
+	private Magnet magnet;
 	
 	private MagnetProtocol() {
 		super(Type.magnet, MAGNET_REGEX, MAGNET_HASH_32_REGEX, MAGNET_HASH_40_REGEX);
@@ -48,26 +55,45 @@ public class MagnetProtocol extends Protocol {
 	
 	@Override
 	protected Protocol convert() throws DownloadException {
-		final TorrentLoader loader = TorrentLoader.newInstance(this.url);
-		final File file = loader.load();
-		if(file == null) {
-			throw new DownloadException("下载种子失败：" + this.url);
-		}
-		final var protocol = ProtocolManager.getInstance().protocol(file.getPath());
-		if(protocol instanceof TorrentProtocol) { // 设置种子文件操作类型：移动
-			TorrentProtocol torrentProtocol = (TorrentProtocol) protocol;
-			torrentProtocol.operation(TorrentFileOperation.move);
-		}
-		return protocol;
+		return null;
 	}
 	
 	@Override
 	protected boolean buildTaskEntity() throws DownloadException {
-		return false;
+		magnet();
+		final TaskEntity taskEntity = new TaskEntity();
+		final String fileName = buildFileName(); // 文件名称
+		taskEntity.setUrl(this.url);
+		taskEntity.setType(this.type);
+		taskEntity.setStatus(Status.await);
+		taskEntity.setName(fileName);
+		taskEntity.setFile(buildFile(fileName));
+		taskEntity.setFileType(FileType.torrent);
+		this.taskEntity = taskEntity;
+		buildTorrentFolder();
+		return true;
 	}
 	
 	@Override
 	protected void cleanMessage() {
+		this.magnet = null;
+	}
+	
+	private void magnet() throws DownloadException {
+		final MagnetReader reader = MagnetReader.newInstance(this.url);
+		this.magnet = reader.magnet();
+	}
+	
+	@Override
+	protected String buildFileName() {
+		return this.magnet.getHash();
+	}
+	
+	/**
+	 * 创建下载目录
+	 */
+	private void buildTorrentFolder() {
+		FileUtils.buildFolder(this.taskEntity.getFile(), false);
 	}
 	
 	/**
