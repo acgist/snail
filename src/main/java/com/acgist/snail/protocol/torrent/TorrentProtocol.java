@@ -66,6 +66,7 @@ public class TorrentProtocol extends Protocol {
 
 	@Override
 	protected boolean buildTaskEntity() throws DownloadException {
+		// TODO:检查hash是否已经存在
 		torrent();
 		final TaskEntity taskEntity = new TaskEntity();
 		final String fileName = buildFileName(); // 文件名称
