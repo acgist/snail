@@ -97,3 +97,7 @@ Windows直接点击SnailLauncher.exe即可运行。
 
 ## 界面
 ![下载界面](http://files.git.oschina.net/group1/M00/07/B8/PaAvDFzd9lCAUSXEAAB8UcH2axw194.png "下载界面")
+
+## 其他
+
+界面开发：JavaFX Scene Builder（先用这个画出来大概样子，再用代码微调。）
