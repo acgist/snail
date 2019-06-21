@@ -131,6 +131,7 @@ public class TorrentController implements Initializable {
 				restart = true;
 				entity.setType(Type.torrent);
 				entity.setStatus(Status.await);
+				entity.setEndDate(null);
 			}
 			TaskRepository repository = new TaskRepository();
 			repository.update(entity);
