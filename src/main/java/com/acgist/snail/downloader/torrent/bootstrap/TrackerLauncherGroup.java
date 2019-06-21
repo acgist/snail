@@ -2,6 +2,7 @@ package com.acgist.snail.downloader.torrent.bootstrap;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +12,7 @@ import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.manager.TrackerManager;
 import com.acgist.snail.utils.CollectionUtils;
+import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>TrackerLauncher组</p>
@@ -36,17 +38,34 @@ public class TrackerLauncherGroup {
 	}
 
 	/**
+	 * 获取当前使用的Tracker列表
+	 */
+	public List<String> trackers() {
+		synchronized (this.trackerLaunchers) {
+			return this.trackerLaunchers.stream()
+			.map(launcher -> launcher.announceUrl())
+			.collect(Collectors.toList());
+		}
+	}
+	
+	public void loadTracker() throws DownloadException {
+		loadTracker(null);
+	}
+	
+	/**
 	 * <p>加载TrackerClient</p>
 	 * <p>
 	 * 加载TrackerClient，优先使用种子的Tracker，如果不够可以继续从系统Tracker列表添加。
 	 * 获取到Tracker列表加入定时线程池执行。
 	 * </p>
 	 */
-	public void loadTracker() throws DownloadException {
+	public void loadTracker(String tracker) throws DownloadException {
 		List<TrackerClient> clients = null;
 		var torrent = this.torrentSession.torrent();
 		if(torrent != null) {
 			clients = TrackerManager.getInstance().clients(torrent.getAnnounce(), torrent.getAnnounceList());
+		} else if(StringUtils.isNotEmpty(tracker)) {
+			clients = TrackerManager.getInstance().clients(tracker, null);
 		}
 		if(CollectionUtils.isEmpty(clients)) {
 			return;

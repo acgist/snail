@@ -55,6 +55,13 @@ public class TrackerLauncher {
 	public Integer id() {
 		return this.id;
 	}
+	
+	/**
+	 * 获取通知地址
+	 */
+	public String announceUrl() {
+		return this.client.announceUrl();
+	}
 
 	public void findPeer() {
 		this.needRelease = true;

@@ -15,6 +15,9 @@ import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.manager.TorrentManager;
 import com.acgist.snail.utils.ThreadUtils;
 
+/**
+ * 现在下载种子，然后转为BT任务下载。
+ */
 public class MagnetDownloader extends Downloader {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(MagnetDownloader.class);
@@ -34,6 +37,12 @@ public class MagnetDownloader extends Downloader {
 
 	@Override
 	public void open() {
+		try {
+			this.torrentSession.magnet(this.taskSession);
+		} catch (DownloadException e) {
+			fail("任务加载失败");
+			LOGGER.error("任务加载异常", e);
+		}
 	}
 
 	@Override
@@ -41,16 +50,22 @@ public class MagnetDownloader extends Downloader {
 		while(ok()) {
 			synchronized (downloadLock) {
 				ThreadUtils.wait(downloadLock, Duration.ofSeconds(Integer.MAX_VALUE));
-				this.complete = torrentSession.torrentStreamGroup().complete();
+				this.complete = torrentSession.torrent() != null;
 			}
 		}
-		// TODO：保存种子文件路径-转换磁力链接
 	}
 
 	@Override
 	public void release() {
+		this.torrentSession.releaseMagnet();
 	}
 	
+	@Override
+	public void unlockDownload() {
+		synchronized (downloadLock) {
+			downloadLock.notifyAll();
+		}
+	}
 	
 	/**
 	 * <p>加载任务</p>

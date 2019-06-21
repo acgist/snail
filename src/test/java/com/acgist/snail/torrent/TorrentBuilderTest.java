@@ -15,7 +15,7 @@ public class TorrentBuilderTest {
 		String path = "e:/snail/12345.torrent";
 		TorrentSession session = TorrentManager.getInstance().newTorrentSession(path);
 		InfoHash infoHash = session.infoHash();
-		TorrentBuilder builder = TorrentBuilder.newInstance(infoHash);
+		TorrentBuilder builder = TorrentBuilder.newInstance(infoHash, null);
 		builder.buildFile("e:/snail");
 	}
 	
