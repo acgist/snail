@@ -549,10 +549,6 @@ public class TorrentSession {
 		return this.action;
 	}
 	
-	public void action(Action action) {
-		this.action = action;
-	}
-	
 	public Torrent torrent() {
 		return this.torrent;
 	}

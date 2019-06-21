@@ -15,7 +15,6 @@ import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.pojo.wrapper.TorrentFileSelectWrapper;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
-import com.acgist.snail.system.config.PeerConfig.Action;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.manager.TorrentManager;
 import com.acgist.snail.utils.ThreadUtils;
@@ -81,7 +80,7 @@ public class PeerClientTest {
 //		entity.setFile("e://tmp/test/");
 //		entity.setType(Type.torrent);
 //		torrentSession.upload(TaskSession.newInstance(entity)).download(false);
-		torrentSession.action(Action.torrent);
+//		torrentSession.magnet(taskSession);
 		String host = "127.0.0.1";
 //		Integer port = 18888;
 		Integer port = 49160; // FDM测试端口

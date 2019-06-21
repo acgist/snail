@@ -31,6 +31,7 @@ import com.acgist.snail.utils.StringUtils;
  * Kademlia：https://baike.baidu.com/item/Kademlia<br>
  * BT=DHT、eMule=KAD
  * </p>
+ * TODO：优先使用大陆、香港、台湾、然后再使用国外。国外IP插入时尾部
  * 
  * @author acgist
  * @since 1.0.0
