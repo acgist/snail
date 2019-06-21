@@ -76,7 +76,7 @@ public class PeerClientTest {
 //		String path = "e:/snail/12345.torrent";
 //		String path = "e:/snail/123456.torrent";
 //		TorrentSession torrentSession = TorrentManager.getInstance().newTorrentSession(path);
-		TorrentSession torrentSession = TorrentSession.newInstance(InfoHash.newInstance("902ffaa29ee632c8dc966ed9ab573409ba9a518e"));
+		TorrentSession torrentSession = TorrentSession.newInstance(InfoHash.newInstance("902ffaa29ee632c8dc966ed9ab573409ba9a518e"), null);
 //		TaskEntity entity = new TaskEntity();
 //		entity.setFile("e://tmp/test/");
 //		entity.setType(Type.torrent);

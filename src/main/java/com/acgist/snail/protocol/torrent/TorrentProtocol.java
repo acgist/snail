@@ -93,7 +93,7 @@ public class TorrentProtocol extends Protocol {
 	}
 
 	/**
-	 * 解析种子
+	 * 解析种子，将URL切换为磁力链接
 	 */
 	private void torrent() throws DownloadException {
 		final String torrentFile = this.url;

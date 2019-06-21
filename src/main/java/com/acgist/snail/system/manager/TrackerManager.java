@@ -115,13 +115,6 @@ public class TrackerManager {
 	}
 	
 	/**
-	 * 获取可用的Tracker
-	 */
-	public List<TrackerClient> clients(int size) {
-		return clients(size, null);
-	}
-	
-	/**
 	 * 获取可用的Tracker Client，获取权重排在前面的Tracker Client。
 	 * 
 	 * @param size 返回可用client数量

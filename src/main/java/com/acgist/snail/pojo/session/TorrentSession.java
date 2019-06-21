@@ -1,6 +1,7 @@
 package com.acgist.snail.pojo.session;
 
 import java.time.Duration;
+import java.util.BitSet;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
@@ -26,6 +27,7 @@ import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.exception.ArgumentException;
 import com.acgist.snail.system.exception.DownloadException;
+import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.system.manager.PeerManager;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -58,6 +60,10 @@ public class TorrentSession {
 	private static final Duration PEER_OPTIMIZE_INTERVAL = Duration.ofSeconds(SystemConfig.getPeerOptimizeInterval());
 
 	/**
+	 * 动作
+	 */
+	private Action action;
+	/**
 	 * 可上传
 	 */
 	private boolean uploadable = false;
@@ -65,10 +71,6 @@ public class TorrentSession {
 	 * 可下载
 	 */
 	private boolean downloadable = false;
-	/**
-	 * 动作
-	 */
-	private Action action;
 	/**
 	 * 种子
 	 */
@@ -129,34 +131,19 @@ public class TorrentSession {
 	 * TrackerLauncherGroup定时器
 	 */
 	private ScheduledFuture<?> trackerLauncherGroupTimer;
-
-	public TorrentSession(InfoHash infoHash) throws DownloadException {
-		if(infoHash == null) {
-			throw new DownloadException("种子信息异常");
-		}
-		this.torrent = null;
-		this.infoHash = infoHash;
-	}
 	
 	private TorrentSession(InfoHash infoHash, Torrent torrent) throws DownloadException {
-		if(torrent == null || infoHash == null) {
-			throw new DownloadException("种子信息异常");
+		if(infoHash == null) {
+			throw new DownloadException("缺少InfoHash");
 		}
 		this.torrent = torrent;
 		this.infoHash = infoHash;
 	}
 	
-	/**
-	 * TODO：删除
-	 */
-	public static final TorrentSession newInstance(InfoHash infoHash) throws DownloadException {
-		return new TorrentSession(infoHash);
-	}
-	
 	public static final TorrentSession newInstance(InfoHash infoHash, Torrent torrent) throws DownloadException {
 		return new TorrentSession(infoHash, torrent);
 	}
-
+	
 	/**
 	 * 开始上传
 	 */
@@ -167,6 +154,7 @@ public class TorrentSession {
 		this.loadPeerConnectGroup();
 		this.loadPeerConnectGroupTimer();
 		this.uploadable = true;
+		this.action = Action.torrent;
 		return this;
 	}
 	
@@ -434,6 +422,20 @@ public class TorrentSession {
 	public void have(int index) {
 		PeerManager.getInstance().have(this.infoHash.infoHashHex(), index);
 	}
+	
+	/**
+	 * 是否含有Piece
+	 */
+	public boolean havePiece(int index) {
+		return this.torrentStreamGroup.have(index);
+	}
+	
+	/**
+	 * 读取数据
+	 */
+	public byte[] read(int index, int begin, int length) throws NetException {
+		return this.torrentStreamGroup.read(index, begin, length);
+	}
 
 	/**
 	 * 保存种子文件
@@ -490,6 +492,10 @@ public class TorrentSession {
 		return this.taskSession != null && this.taskSession.complete();
 	}
 	
+	public BitSet pieces() {
+		return this.torrentStreamGroup.pieces();
+	}
+	
 	public Action action() {
 		return this.action;
 	}
@@ -529,5 +535,5 @@ public class TorrentSession {
 	public TorrentStreamGroup torrentStreamGroup() {
 		return this.torrentStreamGroup;
 	}
-	
+
 }

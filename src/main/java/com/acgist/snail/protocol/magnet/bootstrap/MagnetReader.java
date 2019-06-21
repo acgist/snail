@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.bean.Magnet;
+import com.acgist.snail.pojo.bean.Magnet.Type;
 import com.acgist.snail.protocol.magnet.MagnetProtocol;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.exception.DownloadException;
@@ -49,12 +50,23 @@ public class MagnetReader {
 	 * 解析磁力链接获取hash
 	 */
 	public Magnet magnet() throws DownloadException {
-		if(!MagnetProtocol.verifyMagnet(this.url)) {
-			return null;
+		if(!MagnetProtocol.verify(this.url)) {
+			throw new DownloadException("不支持的磁力链接：" + this.url);
+		}
+		this.magnet = new Magnet();
+		if(MagnetProtocol.verifyMagnetHash32(this.url)) {
+			this.magnet.setType(Type.btih);
+			final InfoHash infoHash = InfoHash.newInstance(this.url);
+			this.magnet.setHash(infoHash.infoHashHex());
+			return this.magnet;
+		}
+		if(MagnetProtocol.verifyMagnetHash40(this.url)) {
+			this.magnet.setType(Type.btih);
+			this.magnet.setHash(this.url);
+			return this.magnet;
 		}
 		int index;
 		String key, value;
-		this.magnet = new Magnet();
 		final URI uri = URI.create(this.url);
 		String[] querys = uri.getSchemeSpecificPart().substring(1).split("&");
 		for (String query : querys) {

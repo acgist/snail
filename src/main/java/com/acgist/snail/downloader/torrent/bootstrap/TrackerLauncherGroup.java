@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.bt.tracker.bootstrap.TrackerClient;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.manager.TrackerManager;
+import com.acgist.snail.utils.CollectionUtils;
 
 /**
  * <p>TrackerLauncher组</p>
@@ -23,12 +23,10 @@ public class TrackerLauncherGroup {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerLauncherGroup.class);
 	
-//	private final TaskSession taskSession;
 	private final TorrentSession torrentSession;
 	private final List<TrackerLauncher> trackerLaunchers;
 	
 	private TrackerLauncherGroup(TorrentSession torrentSession) {
-//		this.taskSession = torrentSession.taskSession();
 		this.torrentSession = torrentSession;
 		this.trackerLaunchers = new ArrayList<>();
 	}
@@ -45,14 +43,12 @@ public class TrackerLauncherGroup {
 	 * </p>
 	 */
 	public void loadTracker() throws DownloadException {
-		var torrent = this.torrentSession.torrent();
 		List<TrackerClient> clients = null;
+		var torrent = this.torrentSession.torrent();
 		if(torrent != null) {
 			clients = TrackerManager.getInstance().clients(torrent.getAnnounce(), torrent.getAnnounceList());
-		} else {
-			clients = TrackerManager.getInstance().clients(SystemConfig.getTrackerSize());
 		}
-		if(clients == null) {
+		if(CollectionUtils.isEmpty(clients)) {
 			return;
 		}
 		clients.stream()
