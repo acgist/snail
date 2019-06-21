@@ -102,4 +102,4 @@ Windows直接点击SnailLauncher.exe即可运行。
 
 界面开发：JavaFX Scene Builder（先用这个画出来大概样子，再用代码微调。）
 
-磁力链接：磁力链接是通过Tracker和DHT网络获取Peer，然后交换种子文件。
+磁力链接：磁力链接是通过Tracker和DHT网络获取Peer，然后交换种子文件实现下载。
