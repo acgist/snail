@@ -6,8 +6,8 @@ import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.protocol.Protocol;
+import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.system.manager.ProtocolManager;
 
 /**
  * <p>迅雷协议</p>

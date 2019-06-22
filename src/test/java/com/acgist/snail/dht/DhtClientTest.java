@@ -8,13 +8,13 @@ import java.util.Map;
 import org.junit.Test;
 
 import com.acgist.snail.net.bt.dht.DhtClient;
+import com.acgist.snail.net.bt.dht.bootstrap.NodeManager;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.bcode.BCodeEncoder;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.system.manager.NodeManager;
 import com.acgist.snail.utils.ThreadUtils;
 
 public class DhtClientTest {

@@ -16,6 +16,8 @@ import com.acgist.snail.downloader.torrent.bootstrap.PeerConnectGroup;
 import com.acgist.snail.downloader.torrent.bootstrap.PeerLauncherGroup;
 import com.acgist.snail.downloader.torrent.bootstrap.TorrentStreamGroup;
 import com.acgist.snail.downloader.torrent.bootstrap.TrackerLauncherGroup;
+import com.acgist.snail.net.bt.TorrentManager;
+import com.acgist.snail.net.bt.peer.bootstrap.PeerManager;
 import com.acgist.snail.pojo.bean.Magnet;
 import com.acgist.snail.protocol.magnet.bootstrap.MagnetReader;
 import com.acgist.snail.protocol.magnet.bootstrap.TorrentBuilder;
@@ -30,8 +32,6 @@ import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.exception.ArgumentException;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.system.manager.PeerManager;
-import com.acgist.snail.system.manager.TorrentManager;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 

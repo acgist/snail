@@ -101,6 +101,16 @@ public abstract class Protocol {
 	
 	/**
 	 * 创建下载任务
+	 * TODO：使用模版方法：各个设置都独立方法：大小、连接、名称等
+	 * pro：前置处理
+	 * buildUrl
+	 * buildType
+	 * buildStatus
+	 * buildName
+	 * buildFille
+	 * buildFileType
+	 * buildSize
+	 * 
 	 */
 	protected abstract boolean buildTaskEntity() throws DownloadException;
 	

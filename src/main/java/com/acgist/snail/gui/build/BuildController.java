@@ -7,12 +7,12 @@ import java.util.ResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.gui.Alerts;
 import com.acgist.snail.gui.Choosers;
 import com.acgist.snail.gui.main.TaskDisplay;
+import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.system.manager.DownloaderManager;
-import com.acgist.snail.system.manager.ProtocolManager;
 import com.acgist.snail.utils.StringUtils;
 
 import javafx.event.ActionEvent;

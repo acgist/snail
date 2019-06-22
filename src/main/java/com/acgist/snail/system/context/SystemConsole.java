@@ -8,12 +8,12 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.net.bt.dht.bootstrap.NodeManager;
+import com.acgist.snail.net.bt.peer.bootstrap.PeerManager;
 import com.acgist.snail.net.bt.tracker.bootstrap.TrackerClient;
+import com.acgist.snail.net.bt.tracker.bootstrap.TrackerManager;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.pojo.session.PeerSession;
-import com.acgist.snail.system.manager.NodeManager;
-import com.acgist.snail.system.manager.PeerManager;
-import com.acgist.snail.system.manager.TrackerManager;
 import com.acgist.snail.system.statistics.SystemStatistics;
 import com.acgist.snail.utils.FileUtils;
 

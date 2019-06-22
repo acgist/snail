@@ -4,11 +4,11 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.acgist.snail.net.bt.dht.bootstrap.NodeManager;
 import com.acgist.snail.net.bt.dht.bootstrap.Request;
 import com.acgist.snail.net.bt.dht.bootstrap.Response;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.system.config.DhtConfig;
-import com.acgist.snail.system.manager.NodeManager;
 
 /**
  * 返回最近的8个Node

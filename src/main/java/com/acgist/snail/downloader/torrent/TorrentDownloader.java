@@ -7,13 +7,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.Downloader;
+import com.acgist.snail.net.bt.TorrentManager;
+import com.acgist.snail.net.bt.peer.bootstrap.PeerManager;
 import com.acgist.snail.pojo.bean.Magnet;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.magnet.bootstrap.MagnetReader;
 import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.system.manager.PeerManager;
-import com.acgist.snail.system.manager.TorrentManager;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**

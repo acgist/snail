@@ -2,17 +2,17 @@ package com.acgist.snail.net.bt.dht.bootstrap.request;
 
 import java.net.InetSocketAddress;
 
+import com.acgist.snail.net.bt.TorrentManager;
 import com.acgist.snail.net.bt.dht.bootstrap.DhtService;
+import com.acgist.snail.net.bt.dht.bootstrap.NodeManager;
 import com.acgist.snail.net.bt.dht.bootstrap.Request;
 import com.acgist.snail.net.bt.dht.bootstrap.Response;
 import com.acgist.snail.net.bt.dht.bootstrap.response.AnnouncePeerResponse;
+import com.acgist.snail.net.bt.peer.bootstrap.PeerManager;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.SystemConfig;
-import com.acgist.snail.system.manager.NodeManager;
-import com.acgist.snail.system.manager.PeerManager;
-import com.acgist.snail.system.manager.TorrentManager;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.StringUtils;
 

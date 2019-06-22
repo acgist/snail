@@ -3,14 +3,14 @@ package com.acgist.snail.tracker;
 import org.junit.Test;
 
 import com.acgist.snail.downloader.torrent.bootstrap.TrackerLauncherGroup;
+import com.acgist.snail.net.bt.TorrentManager;
 import com.acgist.snail.net.bt.tracker.bootstrap.TrackerClient;
+import com.acgist.snail.net.bt.tracker.bootstrap.TrackerManager;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.system.manager.TorrentManager;
-import com.acgist.snail.system.manager.TrackerManager;
 import com.acgist.snail.utils.ThreadUtils;
 
 public class TrackerClientUdpTest {
