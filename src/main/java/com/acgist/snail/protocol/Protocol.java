@@ -2,6 +2,7 @@ package com.acgist.snail.protocol;
 
 import java.io.File;
 
+import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.session.TaskSession;
@@ -38,10 +39,19 @@ public abstract class Protocol {
 		return this;
 	}
 	
+	public Type type() {
+		return this.type;
+	}
+	
 	/**
 	 * 协议名称
 	 */
 	public abstract String name();
+	
+	/**
+	 * 创建下载器
+	 */
+	public abstract IDownloader buildDownloader(TaskSession taskSession);
 	
 	/**
 	 * 验证是否支持协议

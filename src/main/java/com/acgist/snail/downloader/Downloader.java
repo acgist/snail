@@ -28,11 +28,11 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	protected volatile boolean running = false; // 下载中
 	protected volatile boolean complete = false; // 下载完成
 	
-	private Object deleteLock = new Object();
+	private final Object deleteLock = new Object();
 	
-	protected TaskSession taskSession;
+	protected final TaskSession taskSession;
 
-	public Downloader(TaskSession taskSession) {
+	protected Downloader(TaskSession taskSession) {
 		this.taskSession = taskSession;
 		this.taskSession.downloader(this);
 		this.taskSession.downloadSize(downloadSize()); // 加载已下载大小
