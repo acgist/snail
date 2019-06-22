@@ -48,7 +48,7 @@ mvn clean package -Prelease -DskipTests
 > lib：依赖  
 > java：Java运行环境
 
-#### Java启动
+#### 命令行启动
 
 ```bash
 # Windows
@@ -95,11 +95,17 @@ Windows直接点击SnailLauncher.exe即可运行。
 
 *√=完成、○-进行中、×-未开始*
 
-## 界面
-![下载界面](http://files.git.oschina.net/group1/M00/07/B8/PaAvDFzd9lCAUSXEAAB8UcH2axw194.png "下载界面")
-
 ## 其他
 
-界面开发：JavaFX Scene Builder（先用这个画出来大概样子，再用代码微调。）
+###### 界面开发
+JavaFX Scene Builder（先用这个画出来大概样子，再进行微调。）
 
-磁力链接：磁力链接是通过Tracker和DHT网络获取Peer，然后交换种子文件实现下载。
+###### 磁力链接
+磁力链接是通过Tracker和DHT网络获取Peer，然后交换种子文件实现下载。
+
+###### 做种（BT分享）
+做种是没有限制的，只要你没有删除任务，就会一直做种。  
+现在使用的是UPNP进行端口映射，但是如果是多路由环境下面会出现无法分享的问题（暂时没有找到解决办法）。
+
+###### 界面
+![下载界面](https://files.gitee.com/group1/M00/08/35/PaAvDF0NgZ2AFV8NAADUz08C6GY541.png "下载界面")
