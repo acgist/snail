@@ -35,6 +35,7 @@ import javafx.stage.WindowEvent;
 
 /**
  * 菜单 - 托盘
+ * TODO:linux托盘错误
  * 
  * @author acgist
  * @since 1.0.0
