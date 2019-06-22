@@ -96,7 +96,6 @@ public class PeerLauncherGroup {
 	/**
 	 * <p>资源释放</p>
 	 * <p>释放所有正在下载的PeerLauncher。</p>
-	 * TODO：需要放回到Peer列表
 	 */
 	public void release() {
 		LOGGER.debug("释放PeerLauncherGroup");
@@ -105,6 +104,7 @@ public class PeerLauncherGroup {
 				SystemThreadContext.submit(() -> {
 					launcher.release();
 				});
+				PeerManager.getInstance().preference(this.torrentSession.infoHashHex(), launcher.peerSession());
 			});
 			this.peerLaunchers.clear();
 		}

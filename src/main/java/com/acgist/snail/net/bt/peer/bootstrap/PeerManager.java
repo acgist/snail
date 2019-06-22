@@ -64,7 +64,7 @@ public class PeerManager {
 	}
 	
 	/**
-	 * 删除任务Peer
+	 * 删除任务对应的Peer列表
 	 */
 	public void remove(String infoHashHex) {
 		synchronized (this.peers) {
@@ -94,7 +94,7 @@ public class PeerManager {
 					LOGGER.debug("添加PeerSession，{}-{}，来源：{}", host, port, PeerConfig.source(source));
 				}
 				peerSession = PeerSession.newInstance(parent, host, port);
-				deque.offerLast(peerSession);
+				deque.offerLast(peerSession); // 下载Peer列表
 				list(infoHashHex).add(peerSession); // 存档
 			}
 			peerSession.source(source); // 设置来源
@@ -113,7 +113,17 @@ public class PeerManager {
 	}
 	
 	/**
-	 * 选择一个Peer下载，选择可用状态的Peer。
+	 * 放入一个优质的Peer，插入尾部。
+	 */
+	public void preference(String infoHashHex, PeerSession peerSession) {
+		var deque = deque(infoHashHex);
+		synchronized (deque) {
+			deque.offerLast(peerSession);
+		}
+	}
+	
+	/**
+	 * 从尾部选择一个Peer下载，选择可用状态的Peer。
 	 */
 	public PeerSession pick(String infoHashHex) {
 		var deque = deque(infoHashHex);
