@@ -1,5 +1,7 @@
 package com.acgist.snail.protocol.torrent;
 
+import com.acgist.snail.downloader.IDownloader;
+import com.acgist.snail.downloader.torrent.TorrentDownloader;
 import com.acgist.snail.gui.torrent.TorrentWindow;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
@@ -59,6 +61,11 @@ public class TorrentProtocol extends Protocol {
 		return "BT";
 	}
 
+	@Override
+	public IDownloader buildDownloader(TaskSession taskSession) {
+		return TorrentDownloader.newInstance(taskSession);
+	}
+	
 	@Override
 	public boolean available() {
 		return true;

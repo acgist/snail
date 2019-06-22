@@ -3,10 +3,13 @@ package com.acgist.snail.protocol.http;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.downloader.IDownloader;
+import com.acgist.snail.downloader.http.HttpDownloader;
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
+import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.system.exception.DownloadException;
@@ -46,7 +49,12 @@ public class HttpProtocol extends Protocol {
 	public String name() {
 		return "HTTP";
 	}
-
+	
+	@Override
+	public IDownloader buildDownloader(TaskSession taskSession) {
+		return HttpDownloader.newInstance(taskSession);
+	}
+	
 	@Override
 	public boolean available() {
 		return true;

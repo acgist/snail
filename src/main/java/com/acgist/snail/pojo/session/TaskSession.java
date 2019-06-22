@@ -6,10 +6,6 @@ import java.util.Date;
 import java.util.List;
 
 import com.acgist.snail.downloader.IDownloader;
-import com.acgist.snail.downloader.ftp.FtpDownloader;
-import com.acgist.snail.downloader.http.HttpDownloader;
-import com.acgist.snail.downloader.magnet.MagnetDownloader;
-import com.acgist.snail.downloader.torrent.TorrentDownloader;
 import com.acgist.snail.gui.main.TaskDisplay;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
@@ -18,6 +14,7 @@ import com.acgist.snail.pojo.wrapper.TorrentFileSelectWrapper;
 import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.manager.DownloaderManager;
+import com.acgist.snail.system.manager.ProtocolManager;
 import com.acgist.snail.system.statistics.SystemStatistics;
 import com.acgist.snail.utils.DateUtils;
 import com.acgist.snail.utils.FileUtils;
@@ -161,23 +158,11 @@ public class TaskSession {
 	/**
 	 * 获取下载任务
 	 */
-	public IDownloader newDownloader() throws DownloadException {
+	public IDownloader buildDownloader() throws DownloadException {
 		if(this.downloader != null) {
 			return this.downloader;
 		}
-		var type = this.entity().getType();
-		switch (type) {
-			case ftp:
-				return FtpDownloader.newInstance(this);
-			case http:
-				return HttpDownloader.newInstance(this);
-			case magnet:
-				return MagnetDownloader.newInstance(this);
-			case torrent:
-				return TorrentDownloader.newInstance(this);
-			default:
-				throw new DownloadException("不支持的下载类型：" + type);
-		}
+		return ProtocolManager.getInstance().buildDownloader(this);
 	}
 	
 	// Table数据绑定 //

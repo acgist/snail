@@ -93,7 +93,7 @@ public final class DownloaderManager {
 				}
 				IDownloader downloader = downloader(taskSession);
 				if(downloader == null) {
-					downloader = taskSession.newDownloader();
+					downloader = taskSession.buildDownloader();
 				}
 				if(downloader == null) {
 					throw new DownloadException("添加下载任务失败（下载任务为空）");

@@ -1,9 +1,12 @@
 package com.acgist.snail.protocol.magnet;
 
+import com.acgist.snail.downloader.IDownloader;
+import com.acgist.snail.downloader.magnet.MagnetDownloader;
 import com.acgist.snail.pojo.bean.Magnet;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
+import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.protocol.magnet.bootstrap.MagnetReader;
 import com.acgist.snail.system.config.FileTypeConfig.FileType;
@@ -46,6 +49,11 @@ public class MagnetProtocol extends Protocol {
 	@Override
 	public String name() {
 		return "磁力链接";
+	}
+	
+	@Override
+	public IDownloader buildDownloader(TaskSession taskSession) {
+		return MagnetDownloader.newInstance(taskSession);
 	}
 	
 	@Override

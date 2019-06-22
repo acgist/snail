@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.system.context.SystemContext;
@@ -51,6 +52,27 @@ public class ProtocolManager {
 		LOGGER.info("注册下载协议：{}", protocol.name());
 		this.protocols.add(protocol);
 		return this;
+	}
+	
+	/**
+	 * 获取下载器
+	 */
+	public IDownloader buildDownloader(TaskSession taskSession) throws DownloadException {
+		synchronized (this.protocols) {
+			final var type = taskSession.entity().getType();
+			final Optional<Protocol> optional = this.protocols.stream()
+			.filter(protocol -> protocol.type() == type)
+			.filter(protocol -> protocol.available())
+			.findFirst();
+			if(optional.isEmpty()) {
+				throw new DownloadException("不支持的下载类型：" + type);
+			}
+			final IDownloader downloader = optional.get().buildDownloader(taskSession);
+			if(downloader == null) {
+				throw new DownloadException("不支持的下载类型：" + type);
+			}
+			return downloader;
+		}
 	}
 	
 	/**
