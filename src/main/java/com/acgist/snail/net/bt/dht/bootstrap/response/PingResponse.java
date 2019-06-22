@@ -1,9 +1,9 @@
 package com.acgist.snail.net.bt.dht.bootstrap.response;
 
+import com.acgist.snail.net.bt.dht.bootstrap.NodeManager;
 import com.acgist.snail.net.bt.dht.bootstrap.Request;
 import com.acgist.snail.net.bt.dht.bootstrap.Response;
 import com.acgist.snail.system.config.DhtConfig;
-import com.acgist.snail.system.manager.NodeManager;
 
 /**
  * Ping

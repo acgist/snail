@@ -1,4 +1,4 @@
-package com.acgist.snail.system.manager;
+package com.acgist.snail.repository;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

@@ -6,6 +6,7 @@ import java.util.List;
 import org.junit.Test;
 
 import com.acgist.snail.downloader.torrent.bootstrap.PeerLauncher;
+import com.acgist.snail.net.bt.TorrentManager;
 import com.acgist.snail.net.bt.peer.PeerServer;
 import com.acgist.snail.net.bt.torrent.TorrentServer;
 import com.acgist.snail.pojo.entity.TaskEntity;
@@ -17,7 +18,6 @@ import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.pojo.wrapper.TorrentFileSelectWrapper;
 import com.acgist.snail.system.config.DatabaseConfig;
 import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.system.manager.TorrentManager;
 import com.acgist.snail.utils.ThreadUtils;
 
 public class PeerServerTest {

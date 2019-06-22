@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.gui.Alerts;
 import com.acgist.snail.gui.about.AboutWindow;
 import com.acgist.snail.gui.build.BuildWindow;
@@ -19,9 +20,8 @@ import com.acgist.snail.gui.torrent.TorrentWindow;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.session.TaskSession;
+import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.system.manager.DownloaderManager;
-import com.acgist.snail.system.manager.ProtocolManager;
 import com.acgist.snail.system.statistics.SystemStatistics;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;

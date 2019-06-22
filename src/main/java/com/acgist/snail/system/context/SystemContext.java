@@ -3,6 +3,7 @@ package com.acgist.snail.system.context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.gui.Alerts;
 import com.acgist.snail.gui.menu.TrayMenu;
 import com.acgist.snail.net.TcpClient;
@@ -25,7 +26,6 @@ import com.acgist.snail.system.initializer.impl.ProtocolInitializer;
 import com.acgist.snail.system.initializer.impl.TorrentInitializer;
 import com.acgist.snail.system.initializer.impl.TrackerInitializer;
 import com.acgist.snail.system.initializer.impl.UpnpInitializer;
-import com.acgist.snail.system.manager.DownloaderManager;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.LoggerUtils;
 import com.acgist.snail.utils.NetUtils;

@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.bt.peer.bootstrap.PeerService;
 import com.acgist.snail.net.bt.tracker.bootstrap.TrackerClient;
+import com.acgist.snail.net.bt.tracker.bootstrap.TrackerManager;
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.pojo.bean.HttpTracker;
 import com.acgist.snail.pojo.message.AnnounceMessage;
@@ -17,7 +18,6 @@ import com.acgist.snail.system.config.ProtocolConfig.Protocol;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.config.TrackerConfig;
 import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.system.manager.TrackerManager;
 import com.acgist.snail.utils.StringUtils;
 
 /**

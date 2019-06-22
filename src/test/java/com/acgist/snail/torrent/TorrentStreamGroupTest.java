@@ -6,10 +6,10 @@ import java.io.RandomAccessFile;
 import org.junit.Test;
 
 import com.acgist.snail.downloader.torrent.bootstrap.TorrentStreamGroup;
+import com.acgist.snail.net.bt.TorrentManager;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.system.manager.TorrentManager;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.ThreadUtils;

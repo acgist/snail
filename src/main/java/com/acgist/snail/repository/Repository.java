@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.pojo.entity.BaseEntity;
 import com.acgist.snail.pojo.wrapper.ResultSetWrapper;
 import com.acgist.snail.system.exception.RepositoryException;
-import com.acgist.snail.system.manager.DatabaseManager;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.BeanUtils;
 import com.acgist.snail.utils.StringUtils;

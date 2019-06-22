@@ -5,16 +5,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.gui.main.TaskDisplay;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.wrapper.TorrentFileSelectWrapper;
+import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.system.manager.DownloaderManager;
-import com.acgist.snail.system.manager.ProtocolManager;
 import com.acgist.snail.system.statistics.SystemStatistics;
 import com.acgist.snail.utils.DateUtils;
 import com.acgist.snail.utils.FileUtils;

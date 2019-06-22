@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.UdpMessageHandler;
+import com.acgist.snail.net.bt.TorrentManager;
+import com.acgist.snail.net.bt.dht.bootstrap.NodeManager;
 import com.acgist.snail.net.bt.dht.bootstrap.Request;
 import com.acgist.snail.net.bt.dht.bootstrap.Response;
 import com.acgist.snail.net.bt.dht.bootstrap.request.AnnouncePeerRequest;
@@ -16,15 +18,13 @@ import com.acgist.snail.net.bt.dht.bootstrap.request.GetPeersRequest;
 import com.acgist.snail.net.bt.dht.bootstrap.request.PingRequest;
 import com.acgist.snail.net.bt.dht.bootstrap.response.FindNodeResponse;
 import com.acgist.snail.net.bt.dht.bootstrap.response.GetPeersResponse;
+import com.acgist.snail.net.bt.peer.bootstrap.dht.RequestManager;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.bcode.BCodeDecoder;
 import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.system.manager.NodeManager;
-import com.acgist.snail.system.manager.RequestManager;
-import com.acgist.snail.system.manager.TorrentManager;
 import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.ThreadUtils;
 

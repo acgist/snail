@@ -2,13 +2,13 @@ package com.acgist.snail.utp;
 
 import org.junit.Test;
 
+import com.acgist.snail.net.bt.TorrentManager;
 import com.acgist.snail.net.bt.peer.bootstrap.PeerLauncherMessageHandler;
 import com.acgist.snail.net.bt.utp.UtpClient;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.StatisticsSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.system.manager.TorrentManager;
 
 public class UtpClientTest {
 

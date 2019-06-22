@@ -1,4 +1,4 @@
-package com.acgist.snail.system.manager;
+package com.acgist.snail.protocol;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.pojo.session.TaskSession;
-import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.system.context.SystemContext;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.StringUtils;

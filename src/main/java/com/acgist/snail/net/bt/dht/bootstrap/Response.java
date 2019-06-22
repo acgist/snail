@@ -10,7 +10,6 @@ import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.system.bcode.BCodeDecoder;
 import com.acgist.snail.system.bcode.BCodeEncoder;
 import com.acgist.snail.system.config.DhtConfig;
-import com.acgist.snail.system.manager.NodeManager;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NetUtils;

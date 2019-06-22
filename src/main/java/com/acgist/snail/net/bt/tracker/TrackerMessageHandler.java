@@ -7,9 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.UdpMessageHandler;
+import com.acgist.snail.net.bt.tracker.bootstrap.TrackerManager;
 import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.system.config.TrackerConfig;
-import com.acgist.snail.system.manager.TrackerManager;
 import com.acgist.snail.utils.PeerUtils;
 
 /**

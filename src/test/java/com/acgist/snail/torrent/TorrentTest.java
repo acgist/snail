@@ -2,9 +2,9 @@ package com.acgist.snail.torrent;
 
 import org.junit.Test;
 
+import com.acgist.snail.net.bt.TorrentManager;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
-import com.acgist.snail.system.manager.TorrentManager;
 import com.acgist.snail.utils.DateUtils;
 
 public class TorrentTest {

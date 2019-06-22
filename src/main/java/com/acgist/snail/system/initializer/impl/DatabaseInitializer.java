@@ -7,9 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.entity.ConfigEntity;
+import com.acgist.snail.repository.DatabaseManager;
 import com.acgist.snail.system.config.DatabaseConfig;
 import com.acgist.snail.system.initializer.Initializer;
-import com.acgist.snail.system.manager.DatabaseManager;
 
 /**
  * <p>初始化数据库</p>
