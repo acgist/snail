@@ -35,7 +35,6 @@ import javafx.stage.WindowEvent;
 
 /**
  * 菜单 - 托盘
- * TODO:linux托盘错误
  * 
  * @author acgist
  * @since 1.0.0
@@ -46,15 +45,23 @@ public class TrayMenu extends Menu {
 
 	private static final int MENU_WINDOW_HEIGHT = 150; // 窗口高度
 	
+	/**
+	 * 是否支持托盘
+	 */
+	private final boolean support;
+	
 	private Stage trayStage;
 	private TrayIcon trayIcon;
 	
 	private static TrayMenu INSTANCE;
 	
 	private TrayMenu() {
-		init();
-		buildMenu();
-		enableTray();
+		this.support = SystemTray.isSupported();
+		if(support) {
+			init();
+			buildMenu();
+			enableTray();
+		}
 	}
 
 	static {
@@ -151,7 +158,7 @@ public class TrayMenu extends Menu {
 	 * 提示信息
 	 */
 	public void notice(String title, String content, MessageType type) {
-		if(DownloadConfig.getNotice()) {
+		if(DownloadConfig.getNotice() && this.support) {
 			this.trayIcon.displayMessage(title, content, type);
 		}
 	}
@@ -161,8 +168,10 @@ public class TrayMenu extends Menu {
 	 * 关闭托盘
 	 */
 	public static final void exit() {
-		TrayIcon trayIcon = TrayMenu.getInstance().trayIcon;
-		SystemTray.getSystemTray().remove(trayIcon);
+		if(TrayMenu.getInstance().support) {
+			TrayIcon trayIcon = TrayMenu.getInstance().trayIcon;
+			SystemTray.getSystemTray().remove(trayIcon);
+		}
 	}
 	
 	/**

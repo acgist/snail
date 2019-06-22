@@ -1,4 +1,4 @@
-package com.acgist.snail.net.bt.peer.bootstrap.dht;
+package com.acgist.snail.net.bt.dht.bootstrap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,9 +7,6 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.bt.dht.bootstrap.NodeManager;
-import com.acgist.snail.net.bt.dht.bootstrap.Request;
-import com.acgist.snail.net.bt.dht.bootstrap.Response;
 import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.ArrayUtils;
