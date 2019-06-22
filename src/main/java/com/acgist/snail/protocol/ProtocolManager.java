@@ -54,15 +54,15 @@ public class ProtocolManager {
 	}
 	
 	/**
-	 * 获取下载器
+	 * 创建下载器
 	 */
 	public IDownloader buildDownloader(TaskSession taskSession) throws DownloadException {
 		synchronized (this.protocols) {
 			final var type = taskSession.entity().getType();
 			final Optional<Protocol> optional = this.protocols.stream()
-			.filter(protocol -> protocol.type() == type)
-			.filter(protocol -> protocol.available())
-			.findFirst();
+				.filter(protocol -> protocol.available())
+				.filter(protocol -> protocol.type() == type)
+				.findFirst();
 			if(optional.isEmpty()) {
 				throw new DownloadException("不支持的下载类型：" + type);
 			}
@@ -77,7 +77,7 @@ public class ProtocolManager {
 	/**
 	 * 新建下载任务
 	 */
-	public TaskSession build(String url) throws DownloadException {
+	public TaskSession buildTaskSession(String url) throws DownloadException {
 		final Protocol protocol = protocol(url);
 		if(protocol == null) {
 			throw new DownloadException("不支持的下载协议：" + url);

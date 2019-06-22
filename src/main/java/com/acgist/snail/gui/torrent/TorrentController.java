@@ -137,8 +137,7 @@ public class TorrentController implements Initializable {
 			repository.update(entity);
 			if(restart) {
 				try {
-					DownloaderManager.getInstance().remove(this.taskSession);
-					DownloaderManager.getInstance().start(this.taskSession);
+					DownloaderManager.getInstance().changeDownloaderRestart(this.taskSession);
 				} catch (DownloadException e) {
 					LOGGER.error("添加下载任务异常", e);
 				}

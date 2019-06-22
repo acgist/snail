@@ -54,8 +54,8 @@ public final class DownloaderManager {
 	 * 新建下载任务<br>
 	 * 通过下载链接生成下载任务
 	 */
-	public void submit(String url) throws DownloadException {
-		final var session = this.manager.build(url);
+	public void start(String url) throws DownloadException {
+		final var session = this.manager.buildTaskSession(url);
 		if(session != null) {
 			this.start(session);
 		}
@@ -64,22 +64,8 @@ public final class DownloaderManager {
 	/**
 	 * 开始下载任务
 	 */
-	public void start(IDownloader downloader) throws DownloadException {
-		this.start(downloader.task());
-	}
-	
-	/**
-	 * 开始下载任务
-	 */
 	public void start(TaskSession taskSession) throws DownloadException {
 		this.submit(taskSession).start();
-	}
-	
-	/**
-	 * 添加任务，不修改状态
-	 */
-	public void submit(IDownloader downloader) throws DownloadException {
-		this.submit(downloader.task());
 	}
 	
 	/**
@@ -114,33 +100,37 @@ public final class DownloaderManager {
 	}
 	
 	/**
-	 * 删除任务
-	 */
-	public void delete(TaskSession taskSession) {
-		var entity = taskSession.entity();
-		var downloader = downloader(taskSession); // 需要定义在线程外面，防止后面remove导致空指针。
-		SystemThreadContext.submit(() -> {
-			downloader.delete();
-		});
-		this.downloaderMap.remove(entity.getId());
-	}
-	
-	/**
-	 * 移除下载器
-	 */
-	public void remove(TaskSession taskSession) {
-		var entity = taskSession.entity();
-		taskSession.downloader(null);
-		this.downloaderMap.remove(entity.getId());
-	}
-
-	/**
 	 * 刷新任务
 	 */
 	public void refresh(TaskSession taskSession) {
 		downloader(taskSession).refresh();
 	}
+
+	/**
+	 * <p>删除任务</p>
+	 * <p>界面上面立即删除，实际删除任务在后台进行。</p>
+	 */
+	public void delete(TaskSession taskSession) {
+		var entity = taskSession.entity();
+		var downloader = downloader(taskSession); // 需要定义在线程外面，防止后面remove导致空指针。
+		SystemThreadContext.submit(() -> { // 后台删除任务
+			downloader.delete();
+		});
+		// 界面上立即移除
+		this.downloaderMap.remove(entity.getId());
+	}
 	
+	/**
+	 * <p>切换下载器</p>
+	 * <p>不删除任务，移除任务的下载器，下载时重新创建。</p>
+	 */
+	public void changeDownloaderRestart(TaskSession taskSession) throws DownloadException {
+		var entity = taskSession.entity();
+		taskSession.downloader(null);
+		this.downloaderMap.remove(entity.getId());
+		this.start(taskSession);
+	}
+
 	/**
 	 * 获取下载任务
 	 */
@@ -163,10 +153,9 @@ public final class DownloaderManager {
 	 */
 	public void refresh() {
 		synchronized (this) {
-			// 当前下载数量
-			var downloaders = this.downloaderMap.values();
-			long count = downloaders.stream().filter(IDownloader::running).count();
-			int downloadSize = DownloadConfig.getSize();
+			final var downloaders = this.downloaderMap.values();
+			final long count = downloaders.stream().filter(IDownloader::running).count();
+			final int downloadSize = DownloadConfig.getSize();
 			if(count == downloadSize) { // 不操作
 			} else if(count > downloadSize) { // 暂停部分操作
 				downloaders.stream()
@@ -189,8 +178,8 @@ public final class DownloaderManager {
 	public void shutdown() {
 		LOGGER.info("关闭下载器管理");
 		this.downloaderMap.values().stream()
-		.filter(downloader -> downloader.task().coming())
-		.forEach(downloader -> downloader.pause());
+			.filter(downloader -> downloader.task().running())
+			.forEach(downloader -> downloader.pause());
 	}
 
 }
