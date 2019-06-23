@@ -2,6 +2,7 @@ package com.acgist.snail.protocol.magnet;
 
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.downloader.magnet.MagnetDownloader;
+import com.acgist.snail.net.bt.TorrentManager;
 import com.acgist.snail.pojo.bean.Magnet;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
@@ -68,8 +69,10 @@ public class MagnetProtocol extends Protocol {
 	
 	@Override
 	protected boolean buildTaskEntity() throws DownloadException {
-		// TODO:检查hash是否已经存在
 		magnet();
+		if(TorrentManager.getInstance().exist(this.magnet.getHash())) {
+			throw new DownloadException("BT任务已经存在");
+		}
 		final TaskEntity taskEntity = new TaskEntity();
 		final String fileName = buildFileName(); // 文件名称
 		taskEntity.setUrl(this.url);
