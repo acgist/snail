@@ -5,6 +5,7 @@ import org.junit.Test;
 import com.acgist.snail.net.bt.TorrentManager;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
+import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.DateUtils;
 
 public class TorrentTest {
@@ -57,6 +58,16 @@ public class TorrentTest {
 //			}
 //		}
 //		System.out.println(JsonUtils.toJson(torrent));
+	}
+	
+	@Test
+	public void time() throws DownloadException {
+		long begin = System.currentTimeMillis();
+		for (int i = 0; i < 10000; i++) {
+			TorrentManager.loadTorrent("e://fa493c8add6d907a0575631831033dcf94ba5217.torrent");
+		}
+		long end = System.currentTimeMillis();
+		System.out.println(end - begin);
 	}
 	
 }

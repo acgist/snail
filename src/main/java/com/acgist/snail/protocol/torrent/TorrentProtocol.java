@@ -11,6 +11,7 @@ import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.protocol.magnet.MagnetProtocol;
+import com.acgist.snail.protocol.torrent.bean.Torrent;
 import com.acgist.snail.system.config.FileTypeConfig.FileType;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.FileUtils;
@@ -103,7 +104,8 @@ public class TorrentProtocol extends Protocol {
 	 * 解析种子，将URL切换为磁力链接
 	 */
 	private void torrent() throws DownloadException {
-		if(TorrentManager.getInstance().exist(this.torrentSession.infoHashHex())) {
+		final Torrent torrentTmp = TorrentManager.loadTorrent(this.url);
+		if(TorrentManager.getInstance().exist(torrentTmp.getInfoHash().infoHashHex())) {
 			throw new DownloadException("BT任务已经存在");
 		}
 		final String torrentFile = this.url;
