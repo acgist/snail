@@ -73,8 +73,10 @@ public class TorrentProtocol extends Protocol {
 
 	@Override
 	protected boolean buildTaskEntity() throws DownloadException {
-		// TODO:检查hash是否已经存在
 		torrent();
+		if(TorrentManager.getInstance().exist(this.torrentSession.infoHashHex())) {
+			throw new DownloadException("BT任务已经存在");
+		}
 		final TaskEntity taskEntity = new TaskEntity();
 		final String fileName = buildFileName(); // 文件名称
 		taskEntity.setUrl(this.url);

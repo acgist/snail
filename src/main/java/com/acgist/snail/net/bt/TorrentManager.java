@@ -58,6 +58,13 @@ public class TorrentManager {
 	}
 	
 	/**
+	 * 判断是否存在下载任务
+	 */
+	public boolean exist(String infoHashHex) {
+		return this.torrentSessions.containsKey(infoHashHex);
+	}
+	
+	/**
 	 * <p>新建TorrentSession。</p>
 	 * <p>如果已经存在infoHashHex，直接返回，反之使用path加载。</p>
 	 */

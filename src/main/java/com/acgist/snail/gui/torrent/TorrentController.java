@@ -32,8 +32,6 @@ import javafx.scene.layout.VBox;
 
 /**
  * BT任务窗口控制器
- * TODO：根据文件大小自动选择文件
- * 大于文件平均值
  * 
  * @author acgist
  * @since 1.0.0
