@@ -74,9 +74,6 @@ public class TorrentProtocol extends Protocol {
 	@Override
 	protected boolean buildTaskEntity() throws DownloadException {
 		torrent();
-		if(TorrentManager.getInstance().exist(this.torrentSession.infoHashHex())) {
-			throw new DownloadException("BT任务已经存在");
-		}
 		final TaskEntity taskEntity = new TaskEntity();
 		final String fileName = buildFileName(); // 文件名称
 		taskEntity.setUrl(this.url);
@@ -106,6 +103,9 @@ public class TorrentProtocol extends Protocol {
 	 * 解析种子，将URL切换为磁力链接
 	 */
 	private void torrent() throws DownloadException {
+		if(TorrentManager.getInstance().exist(this.torrentSession.infoHashHex())) {
+			throw new DownloadException("BT任务已经存在");
+		}
 		final String torrentFile = this.url;
 		final TorrentSession torrentSession = TorrentManager.getInstance().newTorrentSession(torrentFile);
 		this.url = MagnetProtocol.buildMagnet(torrentSession.infoHash().infoHashHex()); // 生成磁力链接
