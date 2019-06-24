@@ -48,13 +48,13 @@ public class HttpProtocol extends Protocol {
 	}
 	
 	@Override
-	public IDownloader buildDownloader(TaskSession taskSession) {
-		return HttpDownloader.newInstance(taskSession);
+	public boolean available() {
+		return true;
 	}
 	
 	@Override
-	public boolean available() {
-		return true;
+	public IDownloader buildDownloader(TaskSession taskSession) {
+		return HttpDownloader.newInstance(taskSession);
 	}
 
 	@Override
@@ -62,6 +62,9 @@ public class HttpProtocol extends Protocol {
 		buildHttpHeader();
 	}
 	
+	/**
+	 * 优先使用请求头中的文件名称
+	 */
 	@Override
 	protected String buildFileName() throws DownloadException {
 		String fileName = this.httpHeaderWrapper.fileName(null);

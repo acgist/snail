@@ -59,15 +59,15 @@ public class TorrentProtocol extends Protocol {
 	public String name() {
 		return "BT";
 	}
-
-	@Override
-	public IDownloader buildDownloader(TaskSession taskSession) {
-		return TorrentDownloader.newInstance(taskSession);
-	}
 	
 	@Override
 	public boolean available() {
 		return true;
+	}
+	
+	@Override
+	public IDownloader buildDownloader(TaskSession taskSession) {
+		return TorrentDownloader.newInstance(taskSession);
 	}
 
 	@Override

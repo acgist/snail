@@ -17,7 +17,7 @@ import com.acgist.snail.utils.StringUtils;
  */
 public class TorrentFile {
 
-	private boolean selected = false; // 是否选择
+	private boolean selected = false; // 是否选择下载
 	
 	private Long length; // 大小
 	private byte[] ed2k; // ed2k

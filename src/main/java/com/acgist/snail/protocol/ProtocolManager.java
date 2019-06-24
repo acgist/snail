@@ -32,7 +32,9 @@ public class ProtocolManager {
 	 * 下载协议
 	 */
 	private final List<Protocol> protocols;
-	
+	/**
+	 * 可用锁，协议没有加载完成时阻塞所有获取协议的线程。
+	 */
 	private final AtomicBoolean availableLock;
 	
 	private ProtocolManager() {
@@ -78,24 +80,23 @@ public class ProtocolManager {
 	 * 新建下载任务
 	 */
 	public TaskSession buildTaskSession(String url) throws DownloadException {
-		final Protocol protocol = protocol(url);
-		if(protocol == null) {
-			throw new DownloadException("不支持的下载协议：" + url);
-		}
-		synchronized (protocol) {
-			return protocol.build();
+		synchronized (this.protocols) {
+			final Protocol protocol = protocol(url);
+			if(protocol == null) {
+				throw new DownloadException("不支持的下载链接：" + url);
+			}
+			return protocol.buildTaskSession();
 		}
 	}
 
 	/**
-	 * 是否支持下载
+	 * 判断链接是否支持下载
 	 */
 	public boolean support(String url) {
-		final Protocol protocol = protocol(url);
-		if(protocol == null) {
-			return false;
+		synchronized (this.protocols) {
+			final Protocol protocol = protocol(url);
+			return protocol != null;
 		}
-		return true;
 	}
 
 	/**

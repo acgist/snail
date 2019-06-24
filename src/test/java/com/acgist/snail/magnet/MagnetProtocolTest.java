@@ -10,7 +10,7 @@ public class MagnetProtocolTest {
 
 	@Test
 	public void test() throws DownloadException {
-		MagnetProtocol.getInstance().init("magnet:?xt=urn:btih:fa493c8add6d907a0575631831033dcf94ba5217&tr=http://opentracker.acgnx.se/announce").build();
+		MagnetProtocol.getInstance().init("magnet:?xt=urn:btih:fa493c8add6d907a0575631831033dcf94ba5217&tr=http://opentracker.acgnx.se/announce").buildTaskSession();
 		ThreadUtils.sleep(Long.MAX_VALUE);
 	}
 	
