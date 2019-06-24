@@ -55,7 +55,7 @@ public class TorrentStreamGroup {
 	public static final TorrentStreamGroup newInstance(String folder, List<TorrentFile> files, TorrentSession torrentSession) {
 		final Torrent torrent = torrentSession.torrent();
 		final TorrentInfo torrentInfo = torrent.getInfo();
-		final boolean complete = torrentSession.complete();
+		final boolean complete = torrentSession.completed();
 		final BitSet pieces = new BitSet(torrentInfo.pieceSize());
 		final BitSet selectPieces = new BitSet(torrentInfo.pieceSize());
 		final List<TorrentStream> streams = new ArrayList<>(files.size());

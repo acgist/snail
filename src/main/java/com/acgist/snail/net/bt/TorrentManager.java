@@ -127,7 +127,7 @@ public class TorrentManager {
 			}
 			
 			final Torrent torrent = Torrent.valueOf(map);
-			final Map<String, Object> info = BCodeDecoder.getMap(map, "info"); // 只需要数据不符
+			final Map<String, Object> info = BCodeDecoder.getMap(map, "info");
 			final InfoHash infoHash = InfoHash.newInstance(BCodeEncoder.encodeMap(info));
 			torrent.setInfoHash(infoHash);
 			return torrent;

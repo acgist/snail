@@ -57,23 +57,23 @@ public class TorrentDownloader extends Downloader {
 	@Override
 	public void download() throws IOException {
 		while(ok()) {
-			synchronized (downloadLock) {
-				ThreadUtils.wait(downloadLock, Duration.ofSeconds(Integer.MAX_VALUE));
-				this.complete = torrentSession.torrentStreamGroup().complete();
+			synchronized (this.downloadLock) {
+				ThreadUtils.wait(this.downloadLock, Duration.ofSeconds(Integer.MAX_VALUE));
+				this.complete = this.torrentSession.downloadCompleted();
 			}
 		}
 	}
 
 	@Override
 	public void unlockDownload() {
-		synchronized (downloadLock) {
-			downloadLock.notifyAll();
+		synchronized (this.downloadLock) {
+			this.downloadLock.notifyAll();
 		}
 	}
 	
 	@Override
 	public void release() {
-		torrentSession.releaseDownload();
+		this.torrentSession.releaseDownload();
 	}
 
 	/**

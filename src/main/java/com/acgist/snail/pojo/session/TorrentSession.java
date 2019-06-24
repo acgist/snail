@@ -149,9 +149,10 @@ public class TorrentSession {
 	
 	/**
 	 * 磁力链接转换
-	 * 不使用DHT
+	 * 
+	 * @return true-下载完成；false-未完成
 	 */
-	public void magnet(TaskSession taskSession) throws DownloadException {
+	public boolean magnet(TaskSession taskSession) throws DownloadException {
 		this.taskSession = taskSession;
 		this.loadExecutor();
 		this.loadExecutorTimer();
@@ -162,6 +163,7 @@ public class TorrentSession {
 		this.loadPeerLauncherGroup();
 		this.loadPeerLauncherGroupTimer();
 		this.action = Action.torrent;
+		return this.torrent != null;
 	}
 	
 	/**
@@ -537,8 +539,21 @@ public class TorrentSession {
 	/**
 	 * 任务是否完成
 	 */
-	public boolean complete() {
+	public boolean completed() {
 		return this.taskSession != null && this.taskSession.complete();
+	}
+	
+	/**
+	 * 任务是否下载完成
+	 * 磁力链接：torrent不为空
+	 * 文件下载：文件下载完成
+	 */
+	public boolean downloadCompleted() {
+		if(action == Action.download) {
+			return this.torrentStreamGroup().complete();
+		} else {
+			return this.torrent != null;
+		}
 	}
 	
 	public BitSet pieces() {

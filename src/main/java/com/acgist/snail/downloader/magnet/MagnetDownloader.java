@@ -37,12 +37,7 @@ public class MagnetDownloader extends Downloader {
 
 	@Override
 	public void open() {
-		try {
-			this.torrentSession.magnet(this.taskSession);
-		} catch (DownloadException e) {
-			fail("任务加载失败");
-			LOGGER.error("任务加载异常", e);
-		}
+		loadMagnet();
 	}
 
 	@Override
@@ -50,7 +45,7 @@ public class MagnetDownloader extends Downloader {
 		while(ok()) {
 			synchronized (this.downloadLock) {
 				ThreadUtils.wait(this.downloadLock, Duration.ofSeconds(Integer.MAX_VALUE));
-				this.complete = this.torrentSession.torrent() != null;
+				this.complete = this.torrentSession.downloadCompleted();
 			}
 		}
 	}
@@ -82,6 +77,18 @@ public class MagnetDownloader extends Downloader {
 			fail("任务加载失败");
 			LOGGER.error("任务加载异常", e);
 			return;
+		}
+	}
+	
+	/**
+	 * 开始磁力链接下载
+	 */
+	private void loadMagnet() {
+		try {
+			this.complete = this.torrentSession.magnet(this.taskSession);
+		} catch (DownloadException e) {
+			fail("任务加载失败");
+			LOGGER.error("任务加载异常", e);
 		}
 	}
 
