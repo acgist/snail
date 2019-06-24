@@ -4,6 +4,7 @@ import java.io.File;
 
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.pojo.entity.TaskEntity;
+import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.repository.impl.TaskRepository;
@@ -82,12 +83,18 @@ public abstract class Protocol {
 		if(convert != null) {
 			return convert.build();
 		}
-		final boolean ok = buildTaskEntity();
-		if(ok) {
-			persistentTaskEntity();
+		boolean ok = true;
+		try {
+			buildTaskEntity();
 			return buildTaskSession();
-		} else {
-			return null;
+		} catch (DownloadException e) {
+			ok = false;
+			throw e;
+		} catch (Exception e) {
+			ok = false;
+			throw new DownloadException("下载异常", e);
+		} finally {
+			clean(ok);
 		}
 	}
 
@@ -101,23 +108,114 @@ public abstract class Protocol {
 	
 	/**
 	 * 创建下载任务
-	 * TODO：使用模版方法：各个设置都独立方法：大小、连接、名称等
-	 * pro：前置处理
-	 * buildUrl
-	 * buildType
-	 * buildStatus
-	 * buildName
-	 * buildFille
-	 * buildFileType
-	 * buildSize
-	 * 
 	 */
-	protected abstract boolean buildTaskEntity() throws DownloadException;
+	protected void buildTaskEntity() throws DownloadException {
+		this.taskEntity = new TaskEntity();
+		prep();
+		buildUrl();
+		buildType();
+		buildStatus();
+		final String fileName = buildFileName();
+		buildName(fileName);
+		buildFile(fileName);
+		buildFileType(fileName);
+		buildTorrent();
+		buildSize();
+		done();
+		persistentTaskEntity();
+	}
+	
+	/**
+	 * 预处理
+	 */
+	protected void prep() throws DownloadException {
+	}
+	
+	/**
+	 * 设置URL
+	 */
+	protected void buildUrl() throws DownloadException {
+		this.taskEntity.setUrl(this.url);
+	}
+
+	/**
+	 * 设置下载类型
+	 */
+	protected void buildType() throws DownloadException {
+		this.taskEntity.setType(this.type);
+	}
+
+	/**
+	 * 设置任务状态
+	 */
+	protected void buildStatus() throws DownloadException {
+		this.taskEntity.setStatus(Status.await);
+	}
+
+	/**
+	 * 获取文件名称
+	 */
+	protected String buildFileName() throws DownloadException {
+		String fileName = FileUtils.fileNameFromUrl(this.url);
+		fileName = FileUtils.fileName(fileName);
+		return fileName;
+	}
+
+	/**
+	 * 设置任务名称
+	 */
+	protected void buildName(String fileName) throws DownloadException {
+		String name;
+		int index = fileName.lastIndexOf(".");
+		if(index != -1) {
+			name = fileName.substring(0, index);
+		} else {
+			name = fileName;
+		}
+		this.taskEntity.setName(name);
+	}
+	
+	/**
+	 * 生成并设置文件、文件夹
+	 */
+	protected void buildFile(String fileName) throws DownloadException {
+		final String filePath = DownloadConfig.getPath(fileName);
+		final File file = new File(filePath);
+		if(file.exists()) {
+			throw new DownloadException("下载文件已存在：" + file);
+		}
+		this.taskEntity.setFile(filePath);
+	}
+	
+	/**
+	 * 设置任务文件类型
+	 */
+	protected void buildFileType(String fileName) throws DownloadException {
+		this.taskEntity.setFileType(FileUtils.fileType(fileName));
+	}
+
+	/**
+	 * 设置种子文件
+	 */
+	protected void buildTorrent() throws DownloadException {
+	}
+	
+	/**
+	 * 设置任务大小
+	 */
+	protected void buildSize() throws DownloadException {
+	}
+	
+	/**
+	 * 完成处理
+	 */
+	protected void done() throws DownloadException {
+	}
 	
 	/**
 	 * 持久化任务
 	 */
-	protected void persistentTaskEntity() {
+	protected void persistentTaskEntity() throws DownloadException {
 		final TaskRepository repository = new TaskRepository();
 		repository.save(this.taskEntity);
 	}
@@ -126,58 +224,21 @@ public abstract class Protocol {
 	 * 新建任务代理
 	 */
 	protected TaskSession buildTaskSession() throws DownloadException {
-		final TaskSession taskSession = TaskSession.newInstance(this.taskEntity);
-		this.clean();
-		return taskSession;
+		return TaskSession.newInstance(this.taskEntity);
 	}
 
 	/**
 	 * 清理信息
 	 */
-	protected void clean() {
+	protected void clean(boolean ok) {
 		this.url = null;
 		this.taskEntity = null;
-		cleanMessage();
+		cleanMessage(ok);
 	}
 	
 	/**
 	 * 清理数据
 	 */
-	protected abstract void cleanMessage();
-
-	/**
-	 * 通过URL获取文件名称
-	 */
-	protected String buildFileName() {
-		String fileName = FileUtils.fileNameFromUrl(this.url);
-		fileName = FileUtils.fileName(fileName);
-		return fileName;
-	}
+	protected abstract void cleanMessage(boolean ok);
 	
-	/**
-	 * 获取任务名称
-	 */
-	protected String buildName(String fileName) {
-		String name;
-		int index = fileName.lastIndexOf(".");
-		if(index != -1) {
-			name = fileName.substring(0, index);
-		} else {
-			name = fileName;
-		}
-		return name;
-	}
-	
-	/**
-	 * 设置下载文件地址
-	 */
-	protected String buildFile(String fileName) throws DownloadException {
-		final String filePath = DownloadConfig.getPath(fileName);
-		final File file = new File(filePath);
-		if(file.exists()) {
-			throw new DownloadException("下载文件已存在：" + file);
-		}
-		return filePath;
-	}
-
 }

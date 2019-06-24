@@ -4,8 +4,6 @@ import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.downloader.magnet.MagnetDownloader;
 import com.acgist.snail.net.bt.TorrentManager;
 import com.acgist.snail.pojo.bean.Magnet;
-import com.acgist.snail.pojo.entity.TaskEntity;
-import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.protocol.Protocol;
@@ -68,38 +66,57 @@ public class MagnetProtocol extends Protocol {
 	}
 	
 	@Override
-	protected boolean buildTaskEntity() throws DownloadException {
+	protected void prep() throws DownloadException {
+		exist();
 		magnet();
-		if(TorrentManager.getInstance().exist(this.magnet.getHash())) {
-			throw new DownloadException("BT任务已经存在");
-		}
-		final TaskEntity taskEntity = new TaskEntity();
-		final String fileName = buildFileName(); // 文件名称
-		taskEntity.setUrl(this.url);
-		taskEntity.setType(this.type);
-		taskEntity.setStatus(Status.await);
-		taskEntity.setName(fileName);
-		taskEntity.setFile(buildFile(fileName));
-		taskEntity.setFileType(FileType.torrent);
-		taskEntity.setSize(0L); // 后面选择下载文件时再修改
-		this.taskEntity = taskEntity;
-		buildTorrentFolder();
-		return true;
-	}
-	
-	@Override
-	protected void cleanMessage() {
-		this.magnet = null;
-	}
-	
-	private void magnet() throws DownloadException {
-		final MagnetReader reader = MagnetReader.newInstance(this.url);
-		this.magnet = reader.magnet();
 	}
 	
 	@Override
 	protected String buildFileName() {
 		return this.magnet.getHash();
+	}
+	
+	@Override
+	protected void buildName(String fileName) {
+		this.taskEntity.setName(fileName);
+	}
+	
+	@Override
+	protected void buildFileType(String fileName) {
+		this.taskEntity.setFileType(FileType.torrent);
+	}
+	
+	@Override
+	protected void buildSize() throws DownloadException {
+		this.taskEntity.setSize(0L);
+	}
+	
+	@Override
+	protected void done() {
+		buildTorrentFolder();
+	}
+	
+	@Override
+	protected void cleanMessage(boolean ok) {
+		if(!ok) { // 失败
+			if(this.magnet != null) {
+				TorrentManager.getInstance().remove(this.magnet.getHash());
+			}
+		}
+		this.magnet = null;
+	}
+	
+	private void exist() throws DownloadException {
+		final MagnetReader reader = MagnetReader.newInstance(this.url);
+		final Magnet magnet = reader.magnet();
+		if(TorrentManager.getInstance().exist(magnet.getHash())) {
+			throw new DownloadException("BT任务已经存在");
+		}
+	}
+	
+	private void magnet() throws DownloadException {
+		final MagnetReader reader = MagnetReader.newInstance(this.url);
+		this.magnet = reader.magnet();
 	}
 	
 	/**

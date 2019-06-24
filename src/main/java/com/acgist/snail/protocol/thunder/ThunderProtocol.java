@@ -48,6 +48,14 @@ public class ThunderProtocol extends Protocol {
 	}
 	
 	@Override
+	protected void prep() throws DownloadException {
+	}
+
+	@Override
+	protected void buildSize() throws DownloadException {
+	}
+	
+	@Override
 	protected Protocol convert() throws DownloadException {
 		final String url = this.url.substring(THUNDER_PREFIX.length());
 		String newUrl = new String(Base64.getMimeDecoder().decode(url)); // getMimeDecoder支持结尾=
@@ -56,12 +64,7 @@ public class ThunderProtocol extends Protocol {
 	}
 
 	@Override
-	protected boolean buildTaskEntity() throws DownloadException {
-		return false;
-	}
-
-	@Override
-	protected void cleanMessage() {
+	protected void cleanMessage(boolean ok) {
 	}
 
 }
