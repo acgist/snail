@@ -285,7 +285,7 @@ public class TorrentSession {
 		if(this.action == Action.download) {
 			this.trackerLauncherGroup.loadTracker();
 		} else {
-			final Magnet magnet = MagnetReader.newInstance(taskSession.entity().getUrl()).magnet();
+			final Magnet magnet = MagnetReader.newInstance(this.taskSession.entity().getUrl()).magnet();
 			this.trackerLauncherGroup.loadTracker(magnet.getTr());
 		}
 	}

@@ -6,15 +6,12 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.downloader.http.HttpDownloader;
 import com.acgist.snail.net.http.HTTPClient;
-import com.acgist.snail.pojo.entity.TaskEntity;
-import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -61,23 +58,26 @@ public class HttpProtocol extends Protocol {
 	}
 
 	@Override
-	protected boolean buildTaskEntity() throws DownloadException {
+	protected void prep() throws DownloadException {
 		buildHttpHeader();
-		final TaskEntity taskEntity = new TaskEntity();
-		final String fileName = buildFileName(); // 文件名称
-		taskEntity.setUrl(this.url);
-		taskEntity.setType(this.type);
-		taskEntity.setStatus(Status.await);
-		taskEntity.setName(buildName(fileName));
-		taskEntity.setFile(buildFile(fileName));
-		taskEntity.setFileType(FileUtils.fileType(fileName));
-		taskEntity.setSize(buildSize());
-		this.taskEntity = taskEntity;
-		return true;
+	}
+	
+	@Override
+	protected String buildFileName() throws DownloadException {
+		String fileName = this.httpHeaderWrapper.fileName(null);
+		if(StringUtils.isEmpty(fileName)) {
+			fileName = super.buildFileName();
+		}
+		return fileName;
 	}
 
 	@Override
-	protected void cleanMessage() {
+	protected void buildSize() {
+		this.taskEntity.setSize(this.httpHeaderWrapper.fileSize());
+	}
+	
+	@Override
+	protected void cleanMessage(boolean ok) {
 		this.httpHeaderWrapper = null;
 	}
 
@@ -89,7 +89,7 @@ public class HttpProtocol extends Protocol {
 		while(true) {
 			index++;
 			try {
-				this.httpHeaderWrapper = HTTPClient.head(url);
+				this.httpHeaderWrapper = HTTPClient.head(this.url);
 			} catch (NetException e) {
 				LOGGER.error("HTTP下载请求头获取异常", e);
 			}
@@ -103,19 +103,6 @@ public class HttpProtocol extends Protocol {
 		if(this.httpHeaderWrapper == null || this.httpHeaderWrapper.isEmpty()) {
 			throw new DownloadException("添加下载任务异常");
 		}
-	}
-	
-	@Override
-	protected String buildFileName() {
-		String fileName = this.httpHeaderWrapper.fileName(null);
-		if(StringUtils.isEmpty(fileName)) {
-			fileName = super.buildFileName();
-		}
-		return fileName;
-	}
-
-	private long buildSize() {
-		return this.httpHeaderWrapper.fileSize();
 	}
 	
 	/**

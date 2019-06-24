@@ -4,14 +4,10 @@ import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.downloader.ftp.FtpDownloader;
 import com.acgist.snail.net.ftp.FtpClient;
 import com.acgist.snail.net.ftp.bootstrap.FtpClientBuilder;
-import com.acgist.snail.pojo.entity.TaskEntity;
-import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.utils.FileUtils;
 
 /**
  * FTP协议
@@ -49,36 +45,22 @@ public class FtpProtocol extends Protocol {
 	}
 
 	@Override
-	protected boolean buildTaskEntity() throws DownloadException {
-		final TaskEntity taskEntity = new TaskEntity();
-		final String fileName = buildFileName(); // 文件名称
-		taskEntity.setUrl(this.url);
-		taskEntity.setType(this.type);
-		taskEntity.setStatus(Status.await);
-		taskEntity.setName(buildName(fileName));
-		taskEntity.setFile(buildFile(fileName));
-		taskEntity.setFileType(FileUtils.fileType(fileName));
-		taskEntity.setSize(buildSize());
-		this.taskEntity = taskEntity;
-		return true;
-	}
-
-	@Override
-	protected void cleanMessage() {
-	}
-
-	private long buildSize() throws DownloadException {
-		final FtpClient client = FtpClientBuilder.newInstance(this.url).build();
+	protected void buildSize() throws DownloadException {
 		long size = 0L;
+		final FtpClient client = FtpClientBuilder.newInstance(this.url).build();
 		try {
 			client.connect();
 			size = client.size();
-		} catch (NetException e) {
-			throw new DownloadException(e.getMessage(), e);
+		} catch (Exception e) {
+			throw new DownloadException(e);
 		} finally {
 			client.close();
 		}
-		return size;
+		this.taskEntity.setSize(size);
 	}
-	
+
+	@Override
+	protected void cleanMessage(boolean ok) {
+	}
+
 }
