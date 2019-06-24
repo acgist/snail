@@ -44,6 +44,20 @@ public class PeerConnect {
 	}
 	
 	/**
+	 * 发送have消息
+	 */
+	public void have(int index) {
+		this.peerLauncherMessageHandler.have(index);
+	}
+	
+	/**
+	 * 发送Pex消息
+	 */
+	public void exchange(byte[] bytes) {
+		this.peerLauncherMessageHandler.exchange(bytes);
+	}
+	
+	/**
 	 * 评分
 	 */
 	public long mark() {
@@ -70,6 +84,7 @@ public class PeerConnect {
 		this.peerLauncherMessageHandler.choke();
 		this.peerLauncherMessageHandler.close();
 		this.peerSession.unstatus(PeerConfig.STATUS_UPLOAD);
+		this.peerSession.peerConnect(null);
 	}
 	
 }

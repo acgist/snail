@@ -5,7 +5,8 @@ import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.acgist.snail.net.bt.peer.bootstrap.PeerLauncherMessageHandler;
+import com.acgist.snail.net.bt.bootstrap.PeerConnect;
+import com.acgist.snail.net.bt.bootstrap.PeerLauncher;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.statistics.IStatistics;
 import com.acgist.snail.utils.NetUtils;
@@ -45,7 +46,8 @@ public class PeerSession implements IStatistics {
 	
 	private final StatisticsSession statistics;
 	
-	private PeerLauncherMessageHandler peerLauncherMessageHandler;
+	private PeerConnect peerConnect;
+	private PeerLauncher peerLauncher;
 	
 	private final Map<PeerConfig.ExtensionType, Byte> extension; // 支持的扩展协议
 
@@ -134,14 +136,6 @@ public class PeerSession implements IStatistics {
 		return this.statistics;
 	}
 		
-	public PeerLauncherMessageHandler peerLauncherMessageHandler() {
-		return this.peerLauncherMessageHandler;
-	}
-	
-	public void peerLauncherMessageHandler(PeerLauncherMessageHandler peerLauncherMessageHandler) {
-		this.peerLauncherMessageHandler = peerLauncherMessageHandler;
-	}
-	
 	/**
 	 * 可以上传：Peer对客户端感兴趣并且客户端未阻塞Peer
 	 */
@@ -195,10 +189,6 @@ public class PeerSession implements IStatistics {
 		this.pieces.set(index, true);
 	}
 	
-	public BitSet badPieces() {
-		return this.badPieces;
-	}
-	
 	/**
 	 * 设置无效Piece（校验失败的Piece）
 	 */
@@ -206,6 +196,9 @@ public class PeerSession implements IStatistics {
 		this.badPieces.set(index);
 	}
 	
+	/**
+	 * 可用的Piece
+	 */
 	public BitSet availablePieces() {
 		final BitSet bitSet = new BitSet();
 		bitSet.or(this.pieces);
@@ -368,6 +361,22 @@ public class PeerSession implements IStatistics {
 	 */
 	public boolean utp() {
 		return (this.exchange & PeerConfig.PEX_UTP) != 0;
+	}
+	
+	public void peerConnect(PeerConnect peerConnect) {
+		this.peerConnect = peerConnect;
+	}
+	
+	public void peerLauncher(PeerLauncher peerLauncher) {
+		this.peerLauncher = peerLauncher;
+	}
+	
+	public PeerConnect peerConnect() {
+		return this.peerConnect;
+	}
+	
+	public PeerLauncher peerLauncher() {
+		return this.peerLauncher;
 	}
 	
 	public InetSocketAddress peerSocketAddress() {

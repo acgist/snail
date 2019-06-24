@@ -114,6 +114,20 @@ public class PeerLauncher {
 	}
 	
 	/**
+	 * 发送have消息
+	 */
+	public void have(int index) {
+		this.peerLauncherMessageHandler.have(index);
+	}
+	
+	/**
+	 * 发送Pex消息
+	 */
+	public void exchange(byte[] bytes) {
+		this.peerLauncherMessageHandler.exchange(bytes);
+	}
+	
+	/**
 	 * 下载数据
 	 */
 	public void piece(int index, int begin, byte[] bytes) {
@@ -154,9 +168,9 @@ public class PeerLauncher {
 					ThreadUtils.wait(this.closeLock, Duration.ofSeconds(CLOSE_AWAIT_TIME));
 				}
 			}
-			this.peerSession.unstatus(PeerConfig.STATUS_DOWNLOAD);
-			this.peerSession.peerLauncherMessageHandler(null);
 			this.peerLauncherMessageHandler.close();
+			this.peerSession.unstatus(PeerConfig.STATUS_DOWNLOAD);
+			this.peerSession.peerLauncher(null);
 		}
 	}
 	
@@ -298,5 +312,5 @@ public class PeerLauncher {
 	public String toString() {
 		return ObjectUtils.toString(this, this.peerSession.host(), this.peerSession.peerPort(), this.peerSession.dhtPort());
 	}
-	
+
 }
