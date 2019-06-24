@@ -52,9 +52,9 @@ public class PeerConnectGroup {
 					return false;
 				}
 			}
-			final PeerConnect session = PeerConnect.newInstance(peerSession, peerLauncherMessageHandler);
+			final PeerConnect peerConnect = PeerConnect.newInstance(peerSession, peerLauncherMessageHandler);
 			peerSession.status(PeerConfig.STATUS_UPLOAD);
-			this.peerConnects.add(session);
+			this.peerConnects.add(peerConnect);
 		}
 		return true;
 	}
@@ -109,14 +109,14 @@ public class PeerConnectGroup {
 			if(tmp == null) {
 				break;
 			}
-			if(!tmp.getPeerLauncherMessageHandler().available()) { // 不可用直接剔除
+			if(!tmp.available()) { // 不可用直接剔除
 				inferiorPeerConnect(tmp);
 				continue;
 			}
 			if(size < SystemConfig.getPeerSize()) {
 				continue;
 			}
-			if(tmp.getPeerSession().downloading()) { // TODO：是否清除
+			if(tmp.peerSession().downloading()) { // TODO：是否清除
 				this.peerConnects.offer(tmp);
 				continue;
 			}
@@ -131,7 +131,7 @@ public class PeerConnectGroup {
 	
 	private void inferiorPeerConnect(PeerConnect peerConnect) {
 		if(peerConnect != null) {
-			final PeerSession peerSession = peerConnect.getPeerSession();
+			final PeerSession peerSession = peerConnect.peerSession();
 			LOGGER.debug("剔除无效PeerConnect：{}-{}", peerSession.host(), peerSession.peerPort());
 			peerConnect.release();
 		}
