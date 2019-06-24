@@ -38,7 +38,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	/**
 	 * 连接超时时间（秒）
 	 */
-	private static final int CONNECT_TIMEOUT = 4;
+	private static final int CONNECT_TIMEOUT = 2;
 	/**
 	 * 客户端阻塞控制等待（秒）
 	 */

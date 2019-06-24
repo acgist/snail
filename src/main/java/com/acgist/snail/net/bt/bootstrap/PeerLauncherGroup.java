@@ -191,15 +191,12 @@ public class PeerLauncherGroup {
 	 */
 	private void inferiorPeerLauncher() {
 		LOGGER.debug("优化PeerLauncher-剔除劣质PeerLauncher");
-		final int size = this.peerLaunchers.size();
-		if(size < SystemConfig.getPeerSize()) {
-			return;
-		}
 		int index = 0;
 		boolean unusable = false; // 不可用
 		int mark = 0, minMark = 0;
 		PeerLauncher tmp = null; // 临时
 		PeerLauncher inferior = null; // 劣质PeerLauncher
+		final int size = this.peerLaunchers.size();
 		while(true) {
 			if(index++ >= size) {
 				break;
@@ -211,6 +208,9 @@ public class PeerLauncherGroup {
 			if(!tmp.available()) { // 如果当前挑选的是不可用的PeerLauncher不执行后面操作
 				unusable = true;
 				inferiorPeerLauncher(tmp);
+				continue;
+			}
+			if(size < SystemConfig.getPeerSize()) {
 				continue;
 			}
 			mark = tmp.mark(); // 清空权重

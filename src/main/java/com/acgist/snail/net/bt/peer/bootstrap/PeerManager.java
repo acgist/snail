@@ -21,6 +21,7 @@ import com.acgist.snail.utils.CollectionUtils;
 /**
  * <p>Peer管理器</p>
  * <p>Peer加入放入两个队列，一个队列负责下载时使用：{@link #peers}，一个负责存档：{@link #storagePeers}。</p>
+ * TODO：将IP分段，然后每次下载有连接分析时进行评分，插入IP时按照分段插入。
  * 
  * @author acgist
  * @since 1.0.0
