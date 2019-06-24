@@ -99,9 +99,6 @@ public class PeerConnectGroup {
 	 */
 	private void inferiorPeerConnect() {
 		final int size = this.peerConnects.size();
-		if(size < SystemConfig.getPeerSize()) {
-			return;
-		}
 		int index = 0;
 		PeerConnect tmp = null; // 临时
 		while(true) {
@@ -114,6 +111,9 @@ public class PeerConnectGroup {
 			}
 			if(!tmp.getPeerLauncherMessageHandler().available()) { // 不可用直接剔除
 				inferiorPeerConnect(tmp);
+				continue;
+			}
+			if(size < SystemConfig.getPeerSize()) {
 				continue;
 			}
 			if(tmp.getPeerSession().downloading()) { // TODO：是否清除
