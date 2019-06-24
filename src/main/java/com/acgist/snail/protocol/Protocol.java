@@ -50,11 +50,6 @@ public abstract class Protocol {
 	public abstract String name();
 	
 	/**
-	 * 创建下载器
-	 */
-	public abstract IDownloader buildDownloader(TaskSession taskSession);
-	
-	/**
 	 * 验证是否支持协议
 	 */
 	public boolean verify() {
@@ -76,17 +71,22 @@ public abstract class Protocol {
 	public abstract boolean available();
 	
 	/**
-	 * 构建下载
+	 * 创建下载器
 	 */
-	public TaskSession build() throws DownloadException {
+	public abstract IDownloader buildDownloader(TaskSession taskSession);
+	
+	/**
+	 * 创建下载任务
+	 */
+	public TaskSession buildTaskSession() throws DownloadException {
 		final Protocol convert = convert();
 		if(convert != null) {
-			return convert.build();
+			return convert.buildTaskSession();
 		}
 		boolean ok = true;
 		try {
 			buildTaskEntity();
-			return buildTaskSession();
+			return TaskSession.newInstance(this.taskEntity);
 		} catch (DownloadException e) {
 			ok = false;
 			throw e;
@@ -220,13 +220,6 @@ public abstract class Protocol {
 		repository.save(this.taskEntity);
 	}
 	
-	/**
-	 * 新建任务代理
-	 */
-	protected TaskSession buildTaskSession() throws DownloadException {
-		return TaskSession.newInstance(this.taskEntity);
-	}
-
 	/**
 	 * 清理信息
 	 */

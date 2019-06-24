@@ -1,7 +1,5 @@
 package com.acgist.snail.protocol.torrent.bean;
 
-import java.util.Objects;
-
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.Base32Utils;
 import com.acgist.snail.utils.StringUtils;
@@ -45,7 +43,10 @@ public class InfoHash {
 	 * @param hash 种子文件Info内容Hash
 	 */
 	public static final InfoHash newInstance(String hash) throws DownloadException {
-		hash = Objects.requireNonNull(hash, "不支持的hash");
+		if(hash == null) {
+			throw new DownloadException("不支持的hash");
+		}
+		hash = hash.trim();
 		if(hash.length() == 40) {
 			return new InfoHash(StringUtils.unhex(hash));
 		} else if(hash.length() == 32) {

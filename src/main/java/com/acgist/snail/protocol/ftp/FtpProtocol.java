@@ -33,15 +33,15 @@ public class FtpProtocol extends Protocol {
 	public String name() {
 		return "FTP";
 	}
-
-	@Override
-	public IDownloader buildDownloader(TaskSession taskSession) {
-		return FtpDownloader.newInstance(taskSession);
-	}
 	
 	@Override
 	public boolean available() {
 		return true;
+	}
+	
+	@Override
+	public IDownloader buildDownloader(TaskSession taskSession) {
+		return FtpDownloader.newInstance(taskSession);
 	}
 
 	@Override

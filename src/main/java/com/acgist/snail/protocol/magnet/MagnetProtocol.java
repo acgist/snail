@@ -51,18 +51,13 @@ public class MagnetProtocol extends Protocol {
 	}
 	
 	@Override
-	public IDownloader buildDownloader(TaskSession taskSession) {
-		return MagnetDownloader.newInstance(taskSession);
-	}
-	
-	@Override
 	public boolean available() {
 		return true;
 	}
 	
 	@Override
-	protected Protocol convert() throws DownloadException {
-		return null;
+	public IDownloader buildDownloader(TaskSession taskSession) {
+		return MagnetDownloader.newInstance(taskSession);
 	}
 	
 	@Override

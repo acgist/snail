@@ -36,11 +36,6 @@ public class ThunderProtocol extends Protocol {
 	public String name() {
 		return "迅雷";
 	}
-
-	@Override
-	public IDownloader buildDownloader(TaskSession taskSession) {
-		return null;
-	}
 	
 	@Override
 	public boolean available() {
@@ -48,11 +43,8 @@ public class ThunderProtocol extends Protocol {
 	}
 	
 	@Override
-	protected void prep() throws DownloadException {
-	}
-
-	@Override
-	protected void buildSize() throws DownloadException {
+	public IDownloader buildDownloader(TaskSession taskSession) {
+		return null;
 	}
 	
 	@Override
@@ -62,7 +54,7 @@ public class ThunderProtocol extends Protocol {
 		newUrl = newUrl.substring(2, newUrl.length() - 2);
 		return ProtocolManager.getInstance().protocol(newUrl);
 	}
-
+	
 	@Override
 	protected void cleanMessage(boolean ok) {
 	}
