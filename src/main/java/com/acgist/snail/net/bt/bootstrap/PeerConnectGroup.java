@@ -1,4 +1,4 @@
-package com.acgist.snail.downloader.torrent.bootstrap;
+package com.acgist.snail.net.bt.bootstrap;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;

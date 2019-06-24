@@ -1,4 +1,4 @@
-package com.acgist.snail.downloader.torrent.bootstrap;
+package com.acgist.snail.net.bt.bootstrap;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;

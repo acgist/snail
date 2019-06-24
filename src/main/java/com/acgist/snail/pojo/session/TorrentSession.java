@@ -11,12 +11,12 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.downloader.torrent.bootstrap.DhtLauncher;
-import com.acgist.snail.downloader.torrent.bootstrap.PeerConnectGroup;
-import com.acgist.snail.downloader.torrent.bootstrap.PeerLauncherGroup;
-import com.acgist.snail.downloader.torrent.bootstrap.TorrentStreamGroup;
-import com.acgist.snail.downloader.torrent.bootstrap.TrackerLauncherGroup;
 import com.acgist.snail.net.bt.TorrentManager;
+import com.acgist.snail.net.bt.bootstrap.DhtLauncher;
+import com.acgist.snail.net.bt.bootstrap.PeerConnectGroup;
+import com.acgist.snail.net.bt.bootstrap.PeerLauncherGroup;
+import com.acgist.snail.net.bt.bootstrap.TorrentStreamGroup;
+import com.acgist.snail.net.bt.bootstrap.TrackerLauncherGroup;
 import com.acgist.snail.net.bt.peer.bootstrap.PeerManager;
 import com.acgist.snail.pojo.bean.Magnet;
 import com.acgist.snail.protocol.magnet.bootstrap.MagnetReader;
@@ -63,7 +63,7 @@ public class TorrentSession {
 	private static final Duration PEER_OPTIMIZE_INTERVAL = Duration.ofSeconds(SystemConfig.getPeerOptimizeInterval());
 
 	/**
-	 * 动作
+	 * 动作：磁力链接转换、文件下载
 	 */
 	private Action action;
 	/**

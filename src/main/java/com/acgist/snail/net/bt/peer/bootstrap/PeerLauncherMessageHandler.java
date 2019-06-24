@@ -7,10 +7,10 @@ import java.util.BitSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.downloader.torrent.bootstrap.PeerConnectGroup;
-import com.acgist.snail.downloader.torrent.bootstrap.PeerLauncher;
 import com.acgist.snail.net.IMessageHandler;
 import com.acgist.snail.net.bt.TorrentManager;
+import com.acgist.snail.net.bt.bootstrap.PeerConnectGroup;
+import com.acgist.snail.net.bt.bootstrap.PeerLauncher;
 import com.acgist.snail.net.bt.peer.bootstrap.dht.DhtExtensionMessageHandler;
 import com.acgist.snail.net.bt.peer.bootstrap.ltep.ExtensionMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
