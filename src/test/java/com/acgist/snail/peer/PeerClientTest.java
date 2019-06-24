@@ -76,14 +76,15 @@ public class PeerClientTest {
 //		String path = "e:/snail/123456.torrent";
 //		TorrentSession torrentSession = TorrentManager.getInstance().newTorrentSession(path);
 		TorrentSession torrentSession = TorrentSession.newInstance(InfoHash.newInstance("902ffaa29ee632c8dc966ed9ab573409ba9a518e"), null);
-//		TaskEntity entity = new TaskEntity();
-//		entity.setFile("e://tmp/test/");
-//		entity.setType(Type.torrent);
+		TaskEntity entity = new TaskEntity();
+		entity.setFile("e://tmp/test/");
+		entity.setType(Type.torrent);
+		entity.setUrl("902ffaa29ee632c8dc966ed9ab573409ba9a518e");
 //		torrentSession.upload(TaskSession.newInstance(entity)).download(false);
-//		torrentSession.magnet(taskSession);
+		torrentSession.magnet(TaskSession.newInstance(entity));
 		String host = "127.0.0.1";
-//		Integer port = 18888;
-		Integer port = 49160; // FDM测试端口
+		Integer port = 18888;
+//		Integer port = 49160; // FDM测试端口
 //		Integer port = 15000; // 本地迅雷测试端口
 		PeerSession peerSession = PeerSession.newInstance(new StatisticsSession(), host, port);
 		PeerLauncher launcher = PeerLauncher.newInstance(peerSession, torrentSession);

@@ -47,6 +47,7 @@ public class ExtensionMessageHandler {
 	private final InfoHash infoHash;
 	private final PeerSession peerSession;
 	private final TorrentSession torrentSession;
+	
 	private final MetadataMessageHandler metadataMessageHandler;
 	private final PeerExchangeMessageHandler peerExchangeMessageHandler;
 	private final PeerLauncherMessageHandler peerLauncherMessageHandler;
