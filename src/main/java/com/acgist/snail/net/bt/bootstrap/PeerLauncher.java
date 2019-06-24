@@ -164,7 +164,7 @@ public class PeerLauncher {
 	 * 是否可用，Peer优化时如果有不可用的直接剔除
 	 */
 	public boolean available() {
-		return this.available;
+		return this.available && this.peerLauncherMessageHandler.available();
 	}
 	
 	/**

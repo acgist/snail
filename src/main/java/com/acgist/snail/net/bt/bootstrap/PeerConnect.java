@@ -24,10 +24,13 @@ public class PeerConnect {
 	 */
 	private AtomicLong mark = new AtomicLong(0);
 	
+	private volatile boolean available = false; // 状态：连接是否成功
+	
 	private final PeerSession peerSession;
 	private final PeerLauncherMessageHandler peerLauncherMessageHandler;
 	
 	private PeerConnect(PeerSession peerSession, PeerLauncherMessageHandler peerLauncherMessageHandler) {
+		this.available = true;
 		this.peerSession = peerSession;
 		this.peerLauncherMessageHandler = peerLauncherMessageHandler;
 	}
@@ -36,12 +39,8 @@ public class PeerConnect {
 		return new PeerConnect(peerSession, peerLauncherMessageHandler);
 	}
 
-	public PeerSession getPeerSession() {
+	public PeerSession peerSession() {
 		return peerSession;
-	}
-
-	public PeerLauncherMessageHandler getPeerLauncherMessageHandler() {
-		return peerLauncherMessageHandler;
 	}
 	
 	/**
@@ -54,12 +53,20 @@ public class PeerConnect {
 	}
 
 	/**
+	 * 是否可用
+	 */
+	public boolean available() {
+		return this.available && this.peerLauncherMessageHandler.available();
+	}
+	
+	/**
 	 * 释放资源：阻塞、关闭Socket，设置非上传状态。
 	 */
 	public void release() {
 		if(LOGGER.isDebugEnabled()) {
 			LOGGER.debug("PeerConnect关闭：{}-{}", this.peerSession.host(), this.peerSession.peerPort());
 		}
+		this.available = false;
 		this.peerLauncherMessageHandler.choke();
 		this.peerLauncherMessageHandler.close();
 		this.peerSession.unstatus(PeerConfig.STATUS_UPLOAD);
