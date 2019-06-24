@@ -44,19 +44,19 @@ public class PeerConnectGroup {
 	 * <p>是否创建成功</p>
 	 * <p>如果Peer当前提供下载，可以直接给予上传，否者将验证是否超过了连接的最大数量。</p>
 	 */
-	public boolean newPeerConnect(PeerSession peerSession, PeerLauncherMessageHandler peerLauncherMessageHandler) {
+	public PeerConnect newPeerConnect(PeerSession peerSession, PeerLauncherMessageHandler peerLauncherMessageHandler) {
 		synchronized (this.peerConnects) {
 			if(!peerSession.downloading()) {
 				if(this.peerConnects.size() >= SystemConfig.getPeerSize()) {
 					LOGGER.debug("Peer连接数超过最大连接数量，拒绝连接：{}-{}", peerSession.host(), peerSession.peerPort());
-					return false;
+					return null;
 				}
 			}
 			final PeerConnect peerConnect = PeerConnect.newInstance(peerSession, peerLauncherMessageHandler);
 			peerSession.status(PeerConfig.STATUS_UPLOAD);
 			this.peerConnects.add(peerConnect);
+			return peerConnect;
 		}
-		return true;
 	}
 	
 	/**

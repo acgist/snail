@@ -160,9 +160,14 @@ public class PeerManager {
 		list.stream()
 		.filter(session -> session.uploading() || session.downloading())
 		.forEach(session -> {
-			var handler = session.peerLauncherMessageHandler();
-			if(handler != null && handler.available()) {
-				handler.have(index);
+			var peerConnect = session.peerConnect();
+			if(peerConnect != null && peerConnect.available()) {
+				peerConnect.have(index);
+			} else {
+				var peerLauncher = session.peerLauncher();
+				if(peerLauncher != null && peerLauncher.available()) {
+					peerLauncher.have(index);
+				}
 			}
 		});
 	}
@@ -184,9 +189,14 @@ public class PeerManager {
 		list.stream()
 		.filter(session -> session.uploading() || session.downloading())
 		.forEach(session -> {
-			var handler = session.peerLauncherMessageHandler();
-			if(handler != null && handler.available()) {
-				handler.exchange(bytes);
+			var peerConnect = session.peerConnect();
+			if(peerConnect != null && peerConnect.available()) {
+				peerConnect.exchange(bytes);
+			} else {
+				var peerLauncher = session.peerLauncher();
+				if(peerLauncher != null && peerLauncher.available()) {
+					peerLauncher.exchange(bytes);
+				}
 			}
 		});
 	}

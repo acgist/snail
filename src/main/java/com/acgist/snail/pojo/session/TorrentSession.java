@@ -400,7 +400,7 @@ public class TorrentSession {
 	}
 
 	/**
-	 * 检测是否完成下载，释放资源
+	 * 检测是否完成下载
 	 */
 	public void completeCheck() {
 		if(this.torrentStreamGroup.complete()) {

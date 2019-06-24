@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.IMessageHandler;
 import com.acgist.snail.net.bt.TorrentManager;
+import com.acgist.snail.net.bt.bootstrap.PeerConnect;
 import com.acgist.snail.net.bt.bootstrap.PeerConnectGroup;
 import com.acgist.snail.net.bt.bootstrap.PeerLauncher;
 import com.acgist.snail.net.bt.peer.bootstrap.dht.DhtExtensionMessageHandler;
@@ -61,7 +62,11 @@ public class PeerLauncherMessageHandler {
 	private volatile boolean handshakeRcv = false; // 接收握手
 
 	/**
-	 * 客户端请求时存在，服务端接收时不存在。
+	 * 连入客户端
+	 */
+	private PeerConnect peerConnect;
+	/**
+	 * 请求客户端
 	 */
 	private PeerLauncher peerLauncher;
 	
@@ -96,7 +101,6 @@ public class PeerLauncherMessageHandler {
 	 */
 	private void init(PeerSession peerSession, TorrentSession torrentSession, byte[] reserved) {
 		peerSession.reserved(reserved);
-		peerSession.peerLauncherMessageHandler(this);
 		this.peerSession = peerSession;
 		this.torrentSession = torrentSession;
 		this.extensionMessageHandler = ExtensionMessageHandler.newInstance(this.peerSession, this.torrentSession, this);
@@ -132,8 +136,10 @@ public class PeerLauncherMessageHandler {
 			null,
 			PeerConfig.SOURCE_CONNECT);
 		final PeerConnectGroup peerConnectGroup = torrentSession.peerConnectGroup();
-		final boolean ok = peerConnectGroup.newPeerConnect(peerSession, this);
-		if(ok) {
+		final PeerConnect peerConnect = peerConnectGroup.newPeerConnect(peerSession, this);
+		if(peerConnect != null) {
+			this.peerConnect = peerConnect;
+			peerSession.peerConnect(this.peerConnect);
 			init(peerSession, torrentSession, reserved);
 			return true;
 		} else {
@@ -220,6 +226,9 @@ public class PeerLauncherMessageHandler {
 		LOGGER.debug("握手");
 		this.handshakeSed = true;
 		this.peerLauncher = peerLauncher;
+		if(this.peerSession != null && this.peerLauncher != null) {
+			this.peerSession.peerLauncher(this.peerLauncher);
+		}
 		final ByteBuffer buffer = ByteBuffer.allocate(PeerConfig.HANDSHAKE_LENGTH);
 		buffer.put((byte) PeerConfig.HANDSHAKE_NAME_BYTES.length);
 		buffer.put(PeerConfig.HANDSHAKE_NAME_BYTES);

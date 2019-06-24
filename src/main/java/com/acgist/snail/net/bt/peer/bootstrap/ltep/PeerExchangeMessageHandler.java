@@ -42,6 +42,7 @@ public class PeerExchangeMessageHandler {
 	
 	private final PeerSession peerSession;
 	private final TorrentSession torrentSession;
+	
 	private final ExtensionMessageHandler extensionMessageHandler;
 	
 	public static final PeerExchangeMessageHandler newInstance(PeerSession peerSession, TorrentSession torrentSession, ExtensionMessageHandler extensionMessageHandler) {
