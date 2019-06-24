@@ -30,6 +30,9 @@ public class PeerService {
 	 * 20位系统ID
 	 */
 	private final byte[] peerId;
+	/**
+	 * PeerId HTTP传输编码
+	 */
 	private final String peerIdUrl;
 
 	private PeerService() {

@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.downloader.torrent.bootstrap.DhtLauncher;
+import com.acgist.snail.net.bt.bootstrap.DhtLauncher;
 import com.acgist.snail.net.bt.dht.bootstrap.NodeManager;
 import com.acgist.snail.net.bt.peer.bootstrap.PeerLauncherMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;

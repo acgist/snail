@@ -140,6 +140,9 @@ public class UtpMessageHandler extends UdpMessageHandler {
 			this.socketAddress = socketAddress;
 		}
 		buffer.flip();
+		if(buffer.remaining() < 20) {
+			throw new NetException("UTP信息格式错误");
+		}
 		final byte typeVersion = buffer.get();
 		final byte type = (byte) (typeVersion >> 4);
 		final byte extension = buffer.get();

@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.downloader.torrent.bootstrap.TrackerLauncher;
+import com.acgist.snail.net.bt.bootstrap.TrackerLauncher;
 import com.acgist.snail.net.bt.tracker.bootstrap.impl.HttpTrackerClient;
 import com.acgist.snail.net.bt.tracker.bootstrap.impl.UdpTrackerClient;
 import com.acgist.snail.pojo.message.AnnounceMessage;
