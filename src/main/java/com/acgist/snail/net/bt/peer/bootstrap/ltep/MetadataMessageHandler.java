@@ -15,7 +15,9 @@ import com.acgist.snail.system.bcode.BCodeEncoder;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.PeerConfig.ExtensionType;
 import com.acgist.snail.system.config.PeerConfig.UtMetadataType;
+import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.NumberUtils;
+import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>Extension for Peers to Send Metadata Files</p>
@@ -42,6 +44,7 @@ public class MetadataMessageHandler {
 	private final InfoHash infoHash;
 	private final PeerSession peerSession;
 	private final TorrentSession torrentSession;
+	
 	private final ExtensionMessageHandler extensionMessageHandler;
 	
 	public static final MetadataMessageHandler newInstance(TorrentSession torrentSession, PeerSession peerSession, ExtensionMessageHandler extensionMessageHandler) {
@@ -146,10 +149,9 @@ public class MetadataMessageHandler {
 	 */
 	private void data(BCodeDecoder decoder) {
 		LOGGER.debug("收到UtMetadata消息-data");
-		boolean complete = false; // 下载完成
 		byte[] bytes = this.infoHash.info();
 		final int piece = decoder.getInteger(ARG_PIECE);
-		if(bytes == null) {
+		if(bytes == null) { // 设置种子info
 			final int totalSize = decoder.getInteger(ARG_TOTAL_SIZE);
 			bytes = new byte[totalSize];
 			this.infoHash.info(bytes);
@@ -161,12 +163,13 @@ public class MetadataMessageHandler {
 		}
 		int length = INFO_SLICE_SIZE;
 		if(end >= bytes.length) {
-			complete = true;
 			length = bytes.length - begin;
 		}
 		final byte[] x = decoder.oddBytes();
 		System.arraycopy(x, 0, bytes, begin, length);
-		if(complete) {
+		final byte[] sourceHash = this.infoHash.infoHash();
+		final byte[] targetHash = StringUtils.sha1(bytes);
+		if(ArrayUtils.equals(sourceHash, targetHash)) {
 			this.torrentSession.saveTorrentFile();
 		}
 	}
