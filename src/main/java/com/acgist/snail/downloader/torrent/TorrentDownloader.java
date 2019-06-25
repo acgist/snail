@@ -18,16 +18,6 @@ import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * <p>BT下载器</p>
- * <p>
- * 	下载流程：
- * 		加载种子
- * 		加载Tracker
- * 		获取Peer
- * 		连接Peer
- * 		Peer扩展（DHT）
- * 		交换位图
- * 		开始下载
- * </p>
  * 
  * @author acgist
  * @since 1.0.0

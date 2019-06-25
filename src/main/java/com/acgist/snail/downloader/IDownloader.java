@@ -21,12 +21,12 @@ public interface IDownloader extends Runnable {
 	/**
 	 * 任务是否运行中（下载中）
 	 */
-	boolean running();
+	boolean downloading();
 	
 	/**
 	 * 任务信息
 	 */
-	TaskSession task();
+	TaskSession taskSession();
 	
 	/**
 	 * 任务名称
