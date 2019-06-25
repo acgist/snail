@@ -169,17 +169,18 @@ public class TrackerManager {
 			throw new DownloadException("AnnounceUrl不合法");
 		}
 		return announces.stream()
-		.map(announce -> {
-			try {
-				return register(announce);
-			} catch (DownloadException e) {
-				LOGGER.error("TrackerClient注册异常：{}", announce, e);
-			}
-			return null;
-		})
-		.filter(client -> client != null)
-		.filter(client -> client.available())
-		.collect(Collectors.toList());
+			.map(announce -> announce.trim())
+			.map(announce -> {
+				try {
+					return register(announce);
+				} catch (DownloadException e) {
+					LOGGER.error("TrackerClient注册异常：{}", announce, e);
+				}
+				return null;
+			})
+			.filter(client -> client != null)
+			.filter(client -> client.available())
+			.collect(Collectors.toList());
 	}
 	
 	/**
@@ -217,10 +218,11 @@ public class TrackerManager {
 		}
 		return client;
 	}
-	
+
 	/**
 	 * 创建Client
 	 */
+	// TODO:wss
 	private TrackerClient buildClient(final String announceUrl) throws DownloadException {
 		if(HttpProtocol.verify(announceUrl)) {
 			try {
@@ -237,5 +239,5 @@ public class TrackerManager {
 		}
 		return null;
 	}
-
+	
 }
