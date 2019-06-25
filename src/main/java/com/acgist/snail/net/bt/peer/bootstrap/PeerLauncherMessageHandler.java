@@ -402,7 +402,7 @@ public class PeerLauncherMessageHandler {
 	 * </p>
 	 */
 	public void have(int index) {
-		if(!this.torrentSession.downloadable()) {
+		if(!this.torrentSession.uploadable()) {
 			return;
 		}
 		LOGGER.debug("发送have消息：{}", index);
@@ -413,7 +413,7 @@ public class PeerLauncherMessageHandler {
 	 * <p>处理have消息</p>
 	 */
 	private void have(ByteBuffer buffer) {
-		if(!this.torrentSession.downloadable()) {
+		if(!this.torrentSession.uploadable()) {
 			return;
 		}
 		final int index = buffer.getInt();
@@ -434,7 +434,7 @@ public class PeerLauncherMessageHandler {
 	 * </p>
 	 */
 	public void bitfield() {
-		if(!this.torrentSession.downloadable()) {
+		if(!this.torrentSession.uploadable()) {
 			return;
 		}
 		final BitSet pieces = this.torrentSession.pieces();
@@ -447,7 +447,7 @@ public class PeerLauncherMessageHandler {
 	 * <p>处理位图消息</p>
 	 */
 	private void bitfield(ByteBuffer buffer) {
-		if(!this.torrentSession.downloadable()) {
+		if(!this.torrentSession.uploadable()) {
 			return;
 		}
 		final byte[] bytes = new byte[buffer.remaining()];
@@ -495,7 +495,7 @@ public class PeerLauncherMessageHandler {
 	 * <p>处理request消息</p>
 	 */
 	private void request(ByteBuffer buffer) {
-		if(!this.torrentSession.downloadable()) {
+		if(!this.torrentSession.uploadable()) {
 			return;
 		}
 		if(this.peerSession.isAmChocking()) { // 被阻塞不操作
@@ -523,7 +523,7 @@ public class PeerLauncherMessageHandler {
 	 * </p>
 	 */
 	public void piece(int index, int begin, byte[] bytes) {
-		if(!this.torrentSession.downloadable()) {
+		if(!this.torrentSession.uploadable()) {
 			return;
 		}
 		if(bytes == null) {

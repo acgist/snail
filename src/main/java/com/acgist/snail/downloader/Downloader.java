@@ -25,7 +25,6 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Downloader.class);
 	
 	protected volatile boolean fail = false; // 失败状态
-	protected volatile boolean running = false; // 下载中
 	protected volatile boolean complete = false; // 下载完成
 	
 	private final Object deleteLock = new Object();
@@ -44,8 +43,8 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	}
 	
 	@Override
-	public boolean running() {
-		return this.running;
+	public boolean downloading() {
+		return this.taskSession.download();
 	}
 	
 	@Override
@@ -54,7 +53,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	}
 	
 	@Override
-	public TaskSession task() {
+	public TaskSession taskSession() {
 		return this.taskSession;
 	}
 	
@@ -125,7 +124,6 @@ public abstract class Downloader implements IDownloader, IStatistics {
 			if(this.taskSession.await()) {
 				LOGGER.info("开始下载：{}", name());
 				this.fail = false; // 标记下载失败
-				this.running = true; // 标记开始下载
 				entity.setStatus(Status.download);
 				this.open();
 				try {
@@ -136,8 +134,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 				}
 				this.complete();
 				this.release(); // 最后释放资源
-				this.running = false;
-				this.unlockDelete();
+				this.unlockDelete(); // 解除删除锁
 				LOGGER.info("下载结束：{}", name());
 			}
 		}

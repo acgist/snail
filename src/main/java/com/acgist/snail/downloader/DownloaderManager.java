@@ -143,7 +143,7 @@ public final class DownloaderManager {
 	 */
 	public List<TaskSession> tasks() {
 		return this.downloaderMap.values().stream()
-			.map(IDownloader::task)
+			.map(IDownloader::taskSession)
 			.collect(Collectors.toList());
 	}
 	
@@ -154,17 +154,18 @@ public final class DownloaderManager {
 	public void refresh() {
 		synchronized (this) {
 			final var downloaders = this.downloaderMap.values();
-			final long count = downloaders.stream().filter(IDownloader::running).count();
+			final long count = downloaders.stream().filter(IDownloader::downloading).count();
 			final int downloadSize = DownloadConfig.getSize();
 			if(count == downloadSize) { // 不操作
 			} else if(count > downloadSize) { // 暂停部分操作
 				downloaders.stream()
-				.filter(IDownloader::running)
+				.filter(IDownloader::downloading)
 				.skip(downloadSize)
 				.forEach(IDownloader::pause);
 			} else { // 开始准备任务
 				downloaders.stream()
-				.filter(downloader -> downloader.task().await())
+				.filter(downloader -> downloader.taskSession().await())
+				.limit(downloadSize - count)
 				.forEach(downloader -> this.executor.submit(downloader));
 			}
 		}
@@ -178,7 +179,7 @@ public final class DownloaderManager {
 	public void shutdown() {
 		LOGGER.info("关闭下载器管理");
 		this.downloaderMap.values().stream()
-			.filter(downloader -> downloader.task().running())
+			.filter(downloader -> downloader.taskSession().running())
 			.forEach(downloader -> downloader.pause());
 	}
 
