@@ -50,9 +50,10 @@ public class ApplicationClient extends TcpClient<ApplicationMessageHandler> {
 	 * 用户输入传输
 	 */
 	private void readin() {
-		Scanner scanner = new Scanner(System.in);
 		String message = null;
-		while ((message = scanner.next()) != null) {
+		Scanner scanner = new Scanner(System.in);
+//		while ((message = scanner.next()) != null) { // 使用next()读取时会按照空白行（空格、Tab、Enter）拆分，使用nextLine()不会被拆分。
+		while ((message = scanner.nextLine()) != null) {
 			if(message.equals("close")) {
 				send(ApplicationMessage.message(Type.close, message));
 				close();
