@@ -37,7 +37,7 @@
 			<HBox>
 				<TextFlow styleClass="name">
 					<Label>
-						下载速度（单个）：
+						下载速度：
 					</Label>
 				</TextFlow>
 				<Slider fx:id="buffer" styleClass="slider" min="0" max="10240" value="2048" blockIncrement="1024" majorTickUnit="1024" minorTickCount="1" showTickLabels="true" showTickMarks="true" />
@@ -46,7 +46,7 @@
 			<HBox>
 				<TextFlow styleClass="name">
 					<Label>
-						磁盘缓存（单个）：
+						磁盘缓存：
 					</Label>
 				</TextFlow>
 				<Slider fx:id="memoryBuffer" styleClass="slider" min="16" max="128" value="16" blockIncrement="16" majorTickUnit="16" minorTickCount="1" showTickLabels="true" showTickMarks="true" />

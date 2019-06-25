@@ -14,8 +14,7 @@ public class FtpClientTest {
 	@Test
 	public void download() throws FileNotFoundException, IOException, NetException {
 //		var client = FtpClientBuilder.newInstance("ftp://localhost/elk/elasticsearch-6.4.1.zip").build();
-//		var client = FtpClientBuilder.newInstance("ftp://localhost/VS2012中文旗舰版/vs_ultimate.exe").build();
-		var client = FtpClientBuilder.newInstance("ftp://localhost/FTPserver.exe").build();
+		var client = FtpClientBuilder.newInstance("ftp://localhost/VS2012中文旗舰版/vs_ultimate.exe").build();
 		var ok = client.connect();
 		if(!ok) {
 			System.out.println("FTP服务器连接失败");

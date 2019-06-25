@@ -1,6 +1,7 @@
 package com.acgist.snail.net;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
@@ -55,13 +56,6 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	public abstract void onMessage(ByteBuffer attachment) throws NetException;
 
 	/**
-	 * 消息分隔符
-	 */
-	public String split() {
-		return this.split;
-	}
-	
-	/**
 	 * 消息代理
 	 */
 	public void handle(AsynchronousSocketChannel socket) {
@@ -69,30 +63,38 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 		loopMessage();
 	}
 	
-	/**
-	 * <p>发送消息</p>
-	 * <p>使用分隔符对消息进行分隔</p>
-	 */
+	@Override
+	public boolean available() {
+		return !close && this.socket != null;
+	}
+	
 	@Override
 	public void send(final String message) throws NetException {
+		send(message, null);
+	}
+	
+	@Override
+	public void send(String message, String charset) throws NetException {
 		String splitMessage = message;
 		if(this.split != null) {
 			splitMessage += this.split;
 		}
-		send(splitMessage.getBytes());
+		if(charset == null) {
+			send(splitMessage.getBytes());
+		} else {
+			try {
+				send(splitMessage.getBytes(charset));
+			} catch (UnsupportedEncodingException e) {
+				LOGGER.error("TCP消息编码异常，消息：{}，编码：{}", splitMessage, charset, e);
+			}
+		}
 	}
 	
-	/**
-	 * 发送消息
-	 */
 	@Override
 	public void send(byte[] bytes) throws NetException {
 		send(ByteBuffer.wrap(bytes));
 	}
 	
-	/**
-	 * 发送消息
-	 */
 	@Override
 	public void send(ByteBuffer buffer) throws NetException {
 		if(!available()) {
@@ -129,17 +131,6 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 		return null;
 	}
 	
-	/**
-	 * 可用的：没有被关闭
-	 */
-	@Override
-	public boolean available() {
-		return !close && this.socket != null;
-	}
-	
-	/**
-	 * 关闭SOCKET
-	 */
 	@Override
 	public void close() {
 		this.close = true;

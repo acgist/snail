@@ -52,7 +52,7 @@ public class FtpDownloader extends Downloader {
 	public void download() throws IOException {
 		int length = 0;
 		while(ok()) {
-			length = this.input.read(bytes, 0, bytes.length);
+			length = this.input.read(this.bytes, 0, this.bytes.length);
 			if(isComplete(length)) { // 是否完成
 				this.complete = true;
 				break;
@@ -93,7 +93,7 @@ public class FtpDownloader extends Downloader {
 				fail(this.client.failMessage());
 			} else {
 				this.input = new BufferedInputStream(inputStream);
-				if(this.client.append()) {
+				if(this.client.range()) {
 					this.taskSession.downloadSize(size);
 				} else {
 					this.taskSession.downloadSize(0L);

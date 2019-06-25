@@ -6,11 +6,13 @@ import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.util.StringTokenizer;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.TcpMessageHandler;
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -35,9 +37,18 @@ public class FtpMessageHandler extends TcpMessageHandler {
 	private Socket socket; // Socket
 	private InputStream inputStream; // 输入流
 	
-	private Object inputStreamLock = new Object(); // 获取流的等待锁
+	private String charset = SystemConfig.CHARSET_GBK; // 编码：默认GBK
 	
-	private StringBuffer commandBuffer = new StringBuffer();
+	private final AtomicBoolean commandLock = new AtomicBoolean(false); // 命令等待锁
+	
+	/**
+	 * 支持UTF8命令
+	 */
+	private static final String COMMAND_UTF8 = "UTF8";
+	/**
+	 * 命令结束正则表达式
+	 */
+	private static final String COMMAND_END_REGEX = "\\d{3} .*";
 	
 	public FtpMessageHandler() {
 		super(SPLIT);
@@ -45,45 +56,59 @@ public class FtpMessageHandler extends TcpMessageHandler {
 
 	@Override
 	public void onMessage(ByteBuffer attachment) throws NetException {
-		String command = IoUtils.readContent(attachment);
-		if(command.contains(SPLIT)) {
-			int index = command.indexOf(SPLIT);
+		String tmp;
+		StringBuffer command = new StringBuffer();
+		String content = IoUtils.readContent(attachment, charset);
+		if(content.contains(SPLIT)) {
+			int index = content.indexOf(SPLIT);
 			while(index >= 0) {
-				this.commandBuffer.append(command.substring(0, index));
-				oneMessage(this.commandBuffer.toString());
-				this.commandBuffer.setLength(0);
-				command = command.substring(index + SPLIT.length());
-				index = command.indexOf(SPLIT);
+				tmp = content.substring(0, index);
+				if(tmp.matches(COMMAND_END_REGEX)) {
+					command.append(tmp);
+					oneMessage(command.toString());
+					command.setLength(0);
+				} else {
+					command.append(tmp).append(SPLIT);
+				}
+				content = content.substring(index + SPLIT.length());
+				index = content.indexOf(SPLIT);
 			}
 		}
-		this.commandBuffer.append(command);
 	}
 	
 	/**
 	 * 处理单条消息
 	 */
-	private void oneMessage(String message) {
+	private void oneMessage(String message) throws NetException {
 		LOGGER.debug("收到FTP响应：{}", message);
 		if(StringUtils.startsWith(message, "530 ")) { // 登陆失败
 			this.failMessage = "服务器需要登陆授权";
 			this.close();
-			this.unlockInputStream();
+			this.unlockCommand();
 		} else if(StringUtils.startsWith(message, "550 ")) { // 文件不存在
 			this.failMessage = "文件不存在";
 			this.close();
-			this.unlockInputStream();
+			this.unlockCommand();
 		} else if(StringUtils.startsWith(message, "421 ")) { // Socket打开失败
 			this.failMessage = "打开连接失败";
 			this.close();
-			this.unlockInputStream();
+			this.unlockCommand();
 		} else if(StringUtils.startsWith(message, "350 ")) { // 端点续传
 			this.range = true;
 		} else if(StringUtils.startsWith(message, "220 ")) { // 退出系统
 		} else if(StringUtils.startsWith(message, "226 ")) { // 下载完成
+		} else if(StringUtils.startsWith(message, "502 ")) { // 不支持命令：FEAT
+			this.unlockCommand();
+		} else if(StringUtils.startsWith(message, "211-")) { // 服务器状态：扩展命令编码查询
+			if(message.toUpperCase().contains(COMMAND_UTF8)) {
+				this.charset = SystemConfig.CHARSET_UTF8;
+				LOGGER.debug("FTP设置编码：{}", this.charset);
+			}
+			this.unlockCommand();
 		} else if(StringUtils.startsWith(message, "227 ")) { // 进入被动模式：获取下载Socket的IP和端口
 			release(); // 释放旧的资源
-			int opening = message.indexOf('(');
-			int closing = message.indexOf(')', opening + 1);
+			final int opening = message.indexOf('(');
+			final int closing = message.indexOf(')', opening + 1);
 			if (closing > 0) {
 				// 创建远程Socket
 				final String data = message.substring(opening + 1, closing);
@@ -98,9 +123,12 @@ public class FtpMessageHandler extends TcpMessageHandler {
 				}
 			}
 		} else if(StringUtils.startsWith(message, "150 ")) { // 下载完成
+			if(this.socket == null) {
+				throw new NetException("请切换到被动模式");
+			}
 			try {
 				this.inputStream = this.socket.getInputStream();
-				this.unlockInputStream();
+				this.unlockCommand();
 			} catch (IOException e) {
 				LOGGER.error("打开FTP远程输入流异常", e);
 			}
@@ -115,6 +143,14 @@ public class FtpMessageHandler extends TcpMessageHandler {
 	}
 	
 	/**
+	 * 字符编码
+	 */
+	public String charset() {
+		this.lockCommand();
+		return this.charset;
+	}
+	
+	/**
 	 * 获取错误信息
 	 */
 	public String failMessage() {
@@ -125,9 +161,7 @@ public class FtpMessageHandler extends TcpMessageHandler {
 	 * 获取输入流，阻塞线程
 	 */
 	public InputStream inputStream() {
-		synchronized (this.inputStreamLock) {
-			ThreadUtils.wait(this.inputStreamLock, Duration.ofSeconds(5));
-		}
+		this.lockCommand();
 		if(this.inputStream == null && this.failMessage == null) {
 			this.failMessage = "下载失败";
 		}
@@ -149,11 +183,24 @@ public class FtpMessageHandler extends TcpMessageHandler {
 	}
 	
 	/**
-	 * 唤醒文件流等待
+	 * 锁定命令
 	 */
-	private void unlockInputStream() {
-		synchronized (this.inputStreamLock) {
-			this.inputStreamLock.notifyAll();
+	private void lockCommand() {
+		synchronized (this.commandLock) {
+			this.commandLock.set(true);
+			ThreadUtils.wait(this.commandLock, Duration.ofSeconds(5));
+		}
+	}
+	
+	/**
+	 * 解锁命令
+	 */
+	private void unlockCommand() {
+		synchronized (this.commandLock) {
+			if(this.commandLock.get()) {
+				this.commandLock.set(false);
+				this.commandLock.notifyAll();
+			}
 		}
 	}
 

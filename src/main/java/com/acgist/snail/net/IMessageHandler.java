@@ -14,33 +14,51 @@ import com.acgist.snail.system.exception.NetException;
 public interface IMessageHandler {
 
 	/**
-	 * 关闭
-	 */
-	void close();
-	
-	/**
 	 * 是否可用
 	 */
 	boolean available();
 	
 	/**
 	 * 消息发送
+	 * 
+	 * @param message 消息内容
 	 */
 	void send(String message) throws NetException;
 	
 	/**
 	 * 消息发送
+	 * 
+	 * @param message 消息内容
+	 * @param charset 编码格式
+	 * 
+	 * @since 1.1.0
+	 */
+	void send(String message, String charset) throws NetException;
+	
+	/**
+	 * 消息发送
+	 * 
+	 * @param bytes 消息内容
 	 */
 	void send(byte[] bytes) throws NetException;
 	
 	/**
 	 * 消息发送
+	 * 
+	 * @param buffer 消息内容
 	 */
 	void send(ByteBuffer buffer) throws NetException;
 
 	/**
 	 * 获取远程客户端
+	 * 
+	 * @return 远程客户端/服务端地址
 	 */
 	InetSocketAddress remoteSocketAddress();
+	
+	/**
+	 * 关闭
+	 */
+	void close();
 	
 }

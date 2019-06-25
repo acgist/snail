@@ -26,26 +26,23 @@ public class ApplicationMessageHandler extends TcpMessageHandler {
 	
 	public static final String SPLIT = "\r\n"; // 处理粘包分隔符
 	
-	private StringBuffer contentBuffer = new StringBuffer();
-	
 	public ApplicationMessageHandler() {
 		super(SPLIT);
 	}
 	
 	@Override
 	public void onMessage(ByteBuffer attachment) throws NetException {
+		String command;
 		String content = IoUtils.readContent(attachment);
 		if(content.contains(SPLIT)) {
 			int index = content.indexOf(SPLIT);
 			while(index >= 0) {
-				this.contentBuffer.append(content.substring(0, index));
-				oneMessage(this.contentBuffer.toString());
-				this.contentBuffer.setLength(0);
+				command = content.substring(0, index);
+				oneMessage(command);
 				content = content.substring(index + SPLIT.length());
 				index = content.indexOf(SPLIT);
 			}
 		}
-		this.contentBuffer.append(content);
 	};
 	
 	/**
