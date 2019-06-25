@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 
 import org.junit.Test;
 
-import com.acgist.snail.net.bt.torrent.TorrentServer;
+import com.acgist.snail.net.torrent.server.TorrentServer;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.ThreadUtils;
 

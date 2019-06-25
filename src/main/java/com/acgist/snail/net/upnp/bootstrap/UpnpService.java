@@ -219,8 +219,8 @@ public class UpnpService {
 			return;
 		}
 		try {
-			boolean dhtOk = this.deletePortMapping(SystemConfig.getBtPortExt(), Protocol.udp);
-			boolean peerOk = this.deletePortMapping(SystemConfig.getBtPortExt(), Protocol.tcp);
+			boolean dhtOk = this.deletePortMapping(SystemConfig.getTorrentPortExt(), Protocol.udp);
+			boolean peerOk = this.deletePortMapping(SystemConfig.getTorrentPortExt(), Protocol.tcp);
 			LOGGER.info("端口释放：DHT：{}、Peer：{}", dhtOk, peerOk);
 		} catch (NetException e) {
 			LOGGER.error("释放UPNP端口异常", e);
@@ -250,7 +250,7 @@ public class UpnpService {
 	 */
 	private void setPortMapping() throws NetException {
 		int uValue = USE_DISABLE, tValue;
-		int portExt = SystemConfig.getBtPort();
+		int portExt = SystemConfig.getTorrentPort();
 		while(true) {
 			if(portExt >= NetUtils.MAX_PORT) {
 				break;
@@ -268,13 +268,13 @@ public class UpnpService {
 			}
 		}
 		if(uValue == USE_MAPABLE) {
-			SystemConfig.setBtPortExt(portExt);
-			final boolean dhtOk = this.addPortMapping(SystemConfig.getBtPort(), portExt, Protocol.udp);
-			final boolean peerOk = this.addPortMapping(SystemConfig.getBtPort(), portExt, Protocol.tcp);
-			LOGGER.info("端口映射（注册）：DHT（{}-{}-{}）、Peer（{}-{}-{}）", SystemConfig.getBtPort(), portExt, dhtOk, SystemConfig.getBtPort(), portExt, peerOk);
+			SystemConfig.setTorrentPortExt(portExt);
+			final boolean dhtOk = this.addPortMapping(SystemConfig.getTorrentPort(), portExt, Protocol.udp);
+			final boolean peerOk = this.addPortMapping(SystemConfig.getTorrentPort(), portExt, Protocol.tcp);
+			LOGGER.info("端口映射（注册）：DHT（{}-{}-{}）、Peer（{}-{}-{}）", SystemConfig.getTorrentPort(), portExt, dhtOk, SystemConfig.getTorrentPort(), portExt, peerOk);
 		} else if(uValue == USE_USEABLE) {
-			SystemConfig.setBtPortExt(portExt);
-			LOGGER.info("端口映射（可用）：DHT（{}-{}-{}）、Peer（{}-{}-{}）", SystemConfig.getBtPort(), portExt, true, SystemConfig.getBtPort(), portExt, true);
+			SystemConfig.setTorrentPortExt(portExt);
+			LOGGER.info("端口映射（可用）：DHT（{}-{}-{}）、Peer（{}-{}-{}）", SystemConfig.getTorrentPort(), portExt, true, SystemConfig.getTorrentPort(), portExt, true);
 		} else {
 			LOGGER.error("端口映射失败");
 		}

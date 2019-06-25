@@ -5,8 +5,8 @@ import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.acgist.snail.net.bt.bootstrap.PeerConnect;
-import com.acgist.snail.net.bt.bootstrap.PeerLauncher;
+import com.acgist.snail.net.torrent.bootstrap.PeerConnect;
+import com.acgist.snail.net.torrent.bootstrap.PeerLauncher;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.statistics.IStatistics;
 import com.acgist.snail.utils.NetUtils;

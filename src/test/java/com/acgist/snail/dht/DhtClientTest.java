@@ -7,8 +7,8 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.acgist.snail.net.bt.dht.DhtClient;
-import com.acgist.snail.net.bt.dht.bootstrap.NodeManager;
+import com.acgist.snail.net.torrent.dht.DhtClient;
+import com.acgist.snail.net.torrent.dht.bootstrap.NodeManager;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.bcode.BCodeEncoder;
@@ -21,7 +21,7 @@ public class DhtClientTest {
 
 	@Test
 	public void client() {
-		InetSocketAddress socketAddress = new InetSocketAddress("127.0.0.1", SystemConfig.getBtPort());
+		InetSocketAddress socketAddress = new InetSocketAddress("127.0.0.1", SystemConfig.getTorrentPort());
 		DhtClient client = DhtClient.newInstance(socketAddress);
 		while (true) {
 			try {

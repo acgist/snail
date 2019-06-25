@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.gui.Alerts;
 import com.acgist.snail.gui.main.TaskDisplay;
-import com.acgist.snail.net.bt.TorrentManager;
+import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;

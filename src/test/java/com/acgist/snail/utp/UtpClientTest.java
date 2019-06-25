@@ -2,9 +2,9 @@ package com.acgist.snail.utp;
 
 import org.junit.Test;
 
-import com.acgist.snail.net.bt.TorrentManager;
-import com.acgist.snail.net.bt.peer.bootstrap.PeerSubMessageHandler;
-import com.acgist.snail.net.bt.utp.UtpClient;
+import com.acgist.snail.net.torrent.TorrentManager;
+import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
+import com.acgist.snail.net.torrent.utp.UtpClient;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.StatisticsSession;
 import com.acgist.snail.pojo.session.TorrentSession;

@@ -2,7 +2,7 @@ package com.acgist.snail.protocol.magnet;
 
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.downloader.magnet.MagnetDownloader;
-import com.acgist.snail.net.bt.TorrentManager;
+import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.pojo.bean.Magnet;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.session.TaskSession;

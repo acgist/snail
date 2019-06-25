@@ -23,7 +23,7 @@ public class ApplicationServer extends TcpServer<ApplicationMessageHandler> {
 	}
 	
 	public boolean listen() {
-		return listen(SystemConfig.getServerPort());
+		return listen(SystemConfig.getServicePort());
 	}
 	
 	public static final void main(String[] args) {
