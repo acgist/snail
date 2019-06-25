@@ -83,17 +83,26 @@ Windows直接点击SnailLauncher.exe即可运行。
 |协议|进度|
 |:-|:-|
 |DHT Protocol|√|
-|Fast Extension|×|
 |Extension Protocol|√|
 |Peer Exchange（PEX）|√|
-|Holepunch extension|×|
-|Local Service Discovery|×|
-|Peer wire protocol（TCP）|√|
+|Peer wire Protocol（TCP）|√|
 |Tracker Protocol（UDP/HTTP）|√|
-|uTorrent transport protocol（uTP）|√|
+|uTorrent Transport Protocol（uTP）|√|
 |Extension for Peers to Send Metadata Files|√|
+|Fast Extension|×|
+|Holepunch Extension|×|
+|Local Service Discovery|×|
+|HTTP Seeding|?|
+|WebSeed - HTTP/FTP Seeding|?|
 
-*√=完成、○-进行中、×-未开始*
+#### TODO
+
+|任务|
+|:-|
+|支持IPv6|
+|支持加密|
+
+*√=完成、○-进行中、×-未开始、?-待定*
 
 ## 其他
 
