@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.bt.peer.PeerClient;
-import com.acgist.snail.net.bt.peer.bootstrap.PeerLauncherMessageHandler;
+import com.acgist.snail.net.bt.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.net.bt.utp.UtpClient;
 import com.acgist.snail.pojo.bean.TorrentPiece;
 import com.acgist.snail.pojo.session.PeerSession;
@@ -51,13 +51,13 @@ public class PeerLauncher {
 	private final PeerSession peerSession;
 	private final TorrentSession torrentSession;
 	private final TorrentStreamGroup torrentStreamGroup;
-	private final PeerLauncherMessageHandler peerLauncherMessageHandler;
+	private final PeerSubMessageHandler peerSubMessageHandler;
 	
 	private PeerLauncher(PeerSession peerSession, TorrentSession torrentSession) {
 		this.peerSession = peerSession;
 		this.torrentSession = torrentSession;
 		this.torrentStreamGroup = torrentSession.torrentStreamGroup();
-		this.peerLauncherMessageHandler = PeerLauncherMessageHandler.newInstance(peerSession, torrentSession);
+		this.peerSubMessageHandler = PeerSubMessageHandler.newInstance(peerSession, torrentSession);
 	}
 	
 	public static final PeerLauncher newInstance(PeerSession peerSession, TorrentSession torrentSession) {
@@ -92,7 +92,7 @@ public class PeerLauncher {
 		LOGGER.debug("Peer连接：{}-{}", this.peerSession.host(), this.peerSession.peerPort());
 		final boolean ok = connect();
 		if(ok) {
-			this.peerLauncherMessageHandler.handshake(this);
+			this.peerSubMessageHandler.handshake(this);
 		} else {
 			this.peerSession.fail();
 		}
@@ -105,10 +105,10 @@ public class PeerLauncher {
 	 */
 	private boolean connect() {
 		if(this.peerSession.utp()) {
-			final UtpClient utpClient = UtpClient.newInstance(this.peerSession, this.peerLauncherMessageHandler);
+			final UtpClient utpClient = UtpClient.newInstance(this.peerSession, this.peerSubMessageHandler);
 			return utpClient.connect();
 		} else {
-			final PeerClient peerClient = PeerClient.newInstance(this.peerSession, this.peerLauncherMessageHandler);
+			final PeerClient peerClient = PeerClient.newInstance(this.peerSession, this.peerSubMessageHandler);
 			return peerClient.connect();
 		}
 	}
@@ -117,14 +117,14 @@ public class PeerLauncher {
 	 * 发送have消息
 	 */
 	public void have(int index) {
-		this.peerLauncherMessageHandler.have(index);
+		this.peerSubMessageHandler.have(index);
 	}
 	
 	/**
 	 * 发送Pex消息
 	 */
 	public void exchange(byte[] bytes) {
-		this.peerLauncherMessageHandler.exchange(bytes);
+		this.peerSubMessageHandler.exchange(bytes);
 	}
 	
 	/**
@@ -168,7 +168,7 @@ public class PeerLauncher {
 					ThreadUtils.wait(this.closeLock, Duration.ofSeconds(CLOSE_AWAIT_TIME));
 				}
 			}
-			this.peerLauncherMessageHandler.close();
+			this.peerSubMessageHandler.close();
 			this.peerSession.unstatus(PeerConfig.STATUS_DOWNLOAD);
 			this.peerSession.peerLauncher(null);
 		}
@@ -178,7 +178,7 @@ public class PeerLauncher {
 	 * 是否可用，Peer优化时如果有不可用的直接剔除
 	 */
 	public boolean available() {
-		return this.available && this.peerLauncherMessageHandler.available();
+		return this.available && this.peerSubMessageHandler.available();
 	}
 	
 	/**
@@ -241,7 +241,7 @@ public class PeerLauncher {
 			}
 			int begin = this.downloadPiece.position();
 			int length = this.downloadPiece.length(); // 顺序不能调换
-			this.peerLauncherMessageHandler.request(index, begin, length);
+			this.peerSubMessageHandler.request(index, begin, length);
 			if(!this.downloadPiece.more()) { // 是否还有更多SLICE
 				break;
 			}

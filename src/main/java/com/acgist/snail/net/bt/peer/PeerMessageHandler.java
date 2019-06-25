@@ -3,7 +3,7 @@ package com.acgist.snail.net.bt.peer;
 import java.nio.ByteBuffer;
 
 import com.acgist.snail.net.TcpMessageHandler;
-import com.acgist.snail.net.bt.peer.bootstrap.PeerLauncherMessageHandler;
+import com.acgist.snail.net.bt.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
@@ -26,22 +26,22 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	
 	private ByteBuffer buffer;
 	
-	private final PeerLauncherMessageHandler peerLauncherMessageHandler;
+	private final PeerSubMessageHandler peerSubMessageHandler;
 
 	/**
 	 * 服务端
 	 */
 	public PeerMessageHandler() {
-		this.peerLauncherMessageHandler = PeerLauncherMessageHandler.newInstance();
-		this.peerLauncherMessageHandler.messageHandler(this);
+		this.peerSubMessageHandler = PeerSubMessageHandler.newInstance();
+		this.peerSubMessageHandler.messageHandler(this);
 	}
 
 	/**
 	 * 客户端
 	 */
-	public PeerMessageHandler(PeerLauncherMessageHandler peerLauncherMessageHandler) {
-		this.peerLauncherMessageHandler = peerLauncherMessageHandler;
-		this.peerLauncherMessageHandler.messageHandler(this);
+	public PeerMessageHandler(PeerSubMessageHandler peerSubMessageHandler) {
+		this.peerSubMessageHandler = peerSubMessageHandler;
+		this.peerSubMessageHandler.messageHandler(this);
 	}
 	
 	@Override
@@ -50,7 +50,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		attachment.flip();
 		while(true) {
 			if(this.buffer == null) {
-				if(this.peerLauncherMessageHandler.handshake()) {
+				if(this.peerSubMessageHandler.handshake()) {
 					for (int index = 0; index < attachment.limit(); index++) {
 						this.lengthStick.put(attachment.get());
 						if(this.lengthStick.position() == INTEGER_BYTE_LENGTH) {
@@ -68,7 +68,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 					length = PeerConfig.HANDSHAKE_LENGTH;
 				}
 				if(length <= 0) { // 心跳
-					this.peerLauncherMessageHandler.keepAlive();
+					this.peerSubMessageHandler.keepAlive();
 					break;
 				}
 				if(length >= SystemConfig.MAX_NET_BUFFER_SIZE) {
@@ -83,13 +83,13 @@ public class PeerMessageHandler extends TcpMessageHandler {
 				final byte[] bytes = new byte[length];
 				attachment.get(bytes);
 				this.buffer.put(bytes);
-				this.peerLauncherMessageHandler.oneMessage(this.buffer);
+				this.peerSubMessageHandler.oneMessage(this.buffer);
 				this.buffer = null;
 			} else if(remaining == length) { // 刚好一个完整消息
 				final byte[] bytes = new byte[length];
 				attachment.get(bytes);
 				this.buffer.put(bytes);
-				this.peerLauncherMessageHandler.oneMessage(this.buffer);
+				this.peerSubMessageHandler.oneMessage(this.buffer);
 				this.buffer = null;
 				break;
 			} else if(remaining < length) { // 不是完整消息

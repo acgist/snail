@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.bt.peer.bootstrap.PeerLauncherMessageHandler;
+import com.acgist.snail.net.bt.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.system.config.PeerConfig;
 
@@ -27,16 +27,16 @@ public class PeerConnect {
 	private volatile boolean available = false; // 状态：连接是否成功
 	
 	private final PeerSession peerSession;
-	private final PeerLauncherMessageHandler peerLauncherMessageHandler;
+	private final PeerSubMessageHandler peerSubMessageHandler;
 	
-	private PeerConnect(PeerSession peerSession, PeerLauncherMessageHandler peerLauncherMessageHandler) {
+	private PeerConnect(PeerSession peerSession, PeerSubMessageHandler peerSubMessageHandler) {
 		this.available = true;
 		this.peerSession = peerSession;
-		this.peerLauncherMessageHandler = peerLauncherMessageHandler;
+		this.peerSubMessageHandler = peerSubMessageHandler;
 	}
 	
-	public static final PeerConnect newInstance(PeerSession peerSession, PeerLauncherMessageHandler peerLauncherMessageHandler) {
-		return new PeerConnect(peerSession, peerLauncherMessageHandler);
+	public static final PeerConnect newInstance(PeerSession peerSession, PeerSubMessageHandler peerSubMessageHandler) {
+		return new PeerConnect(peerSession, peerSubMessageHandler);
 	}
 
 	public PeerSession peerSession() {
@@ -47,14 +47,14 @@ public class PeerConnect {
 	 * 发送have消息
 	 */
 	public void have(int index) {
-		this.peerLauncherMessageHandler.have(index);
+		this.peerSubMessageHandler.have(index);
 	}
 	
 	/**
 	 * 发送Pex消息
 	 */
 	public void exchange(byte[] bytes) {
-		this.peerLauncherMessageHandler.exchange(bytes);
+		this.peerSubMessageHandler.exchange(bytes);
 	}
 	
 	/**
@@ -70,7 +70,7 @@ public class PeerConnect {
 	 * 是否可用
 	 */
 	public boolean available() {
-		return this.available && this.peerLauncherMessageHandler.available();
+		return this.available && this.peerSubMessageHandler.available();
 	}
 	
 	/**
@@ -81,8 +81,8 @@ public class PeerConnect {
 			LOGGER.debug("PeerConnect关闭：{}-{}", this.peerSession.host(), this.peerSession.peerPort());
 		}
 		this.available = false;
-		this.peerLauncherMessageHandler.choke();
-		this.peerLauncherMessageHandler.close();
+		this.peerSubMessageHandler.choke();
+		this.peerSubMessageHandler.close();
 		this.peerSession.unstatus(PeerConfig.STATUS_UPLOAD);
 		this.peerSession.peerConnect(null);
 	}

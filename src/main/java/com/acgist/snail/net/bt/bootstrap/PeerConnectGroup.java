@@ -6,7 +6,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.bt.peer.bootstrap.PeerLauncherMessageHandler;
+import com.acgist.snail.net.bt.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.PeerConfig;
@@ -44,7 +44,7 @@ public class PeerConnectGroup {
 	 * <p>是否创建成功</p>
 	 * <p>如果Peer当前提供下载，可以直接给予上传，否者将验证是否超过了连接的最大数量。</p>
 	 */
-	public PeerConnect newPeerConnect(PeerSession peerSession, PeerLauncherMessageHandler peerLauncherMessageHandler) {
+	public PeerConnect newPeerConnect(PeerSession peerSession, PeerSubMessageHandler peerSubMessageHandler) {
 		synchronized (this.peerConnects) {
 			if(!peerSession.downloading()) {
 				if(this.peerConnects.size() >= SystemConfig.getPeerSize()) {
@@ -52,7 +52,7 @@ public class PeerConnectGroup {
 					return null;
 				}
 			}
-			final PeerConnect peerConnect = PeerConnect.newInstance(peerSession, peerLauncherMessageHandler);
+			final PeerConnect peerConnect = PeerConnect.newInstance(peerSession, peerSubMessageHandler);
 			peerSession.status(PeerConfig.STATUS_UPLOAD);
 			this.peerConnects.add(peerConnect);
 			return peerConnect;

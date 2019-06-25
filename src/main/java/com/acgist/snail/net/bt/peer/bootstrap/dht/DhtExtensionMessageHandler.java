@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.bt.bootstrap.DhtLauncher;
 import com.acgist.snail.net.bt.dht.bootstrap.NodeManager;
-import com.acgist.snail.net.bt.peer.bootstrap.PeerLauncherMessageHandler;
+import com.acgist.snail.net.bt.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.SystemConfig;
@@ -27,16 +27,16 @@ public class DhtExtensionMessageHandler {
 	
 	private final DhtLauncher dhtLauncher;
 	private final PeerSession peerSession;
-	private final PeerLauncherMessageHandler peerLauncherMessageHandler;
+	private final PeerSubMessageHandler peerSubMessageHandler;
 
-	public static final DhtExtensionMessageHandler newInstance(PeerSession peerSession, DhtLauncher dhtLauncher, PeerLauncherMessageHandler peerLauncherMessageHandler) {
-		return new DhtExtensionMessageHandler(peerSession, dhtLauncher, peerLauncherMessageHandler);
+	public static final DhtExtensionMessageHandler newInstance(PeerSession peerSession, DhtLauncher dhtLauncher, PeerSubMessageHandler peerSubMessageHandler) {
+		return new DhtExtensionMessageHandler(peerSession, dhtLauncher, peerSubMessageHandler);
 	}
 	
-	private DhtExtensionMessageHandler(PeerSession peerSession, DhtLauncher dhtLauncher, PeerLauncherMessageHandler peerLauncherMessageHandler) {
+	private DhtExtensionMessageHandler(PeerSession peerSession, DhtLauncher dhtLauncher, PeerSubMessageHandler peerSubMessageHandler) {
 		this.peerSession = peerSession;
 		this.dhtLauncher = dhtLauncher;
-		this.peerLauncherMessageHandler = peerLauncherMessageHandler;
+		this.peerSubMessageHandler = peerSubMessageHandler;
 	}
 	
 	public void onMessage(ByteBuffer buffer) {
@@ -45,7 +45,7 @@ public class DhtExtensionMessageHandler {
 
 	public void port() {
 		final byte[] bytes = ByteBuffer.allocate(2).putShort(SystemConfig.getBtPortExtShort()).array();
-		this.peerLauncherMessageHandler.pushMessage(PeerConfig.Type.dht, bytes);
+		this.peerSubMessageHandler.pushMessage(PeerConfig.Type.dht, bytes);
 	}
 	
 	/**
