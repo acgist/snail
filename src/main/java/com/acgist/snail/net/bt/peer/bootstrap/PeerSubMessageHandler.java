@@ -54,9 +54,9 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.1.0
  */
-public class PeerLauncherMessageHandler {
+public class PeerSubMessageHandler {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(PeerLauncherMessageHandler.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PeerSubMessageHandler.class);
 	
 	private volatile boolean handshakeSed = false; // 发送握手
 	private volatile boolean handshakeRcv = false; // 接收握手
@@ -81,19 +81,19 @@ public class PeerLauncherMessageHandler {
 	 */
 	private IMessageHandler messageHandler;
 	
-	private PeerLauncherMessageHandler() {
+	private PeerSubMessageHandler() {
 	}
 
-	private PeerLauncherMessageHandler(PeerSession peerSession, TorrentSession torrentSession) {
+	private PeerSubMessageHandler(PeerSession peerSession, TorrentSession torrentSession) {
 		init(peerSession, torrentSession, PeerConfig.HANDSHAKE_RESERVED);
 	}
 	
-	public static final PeerLauncherMessageHandler newInstance() {
-		return new PeerLauncherMessageHandler();
+	public static final PeerSubMessageHandler newInstance() {
+		return new PeerSubMessageHandler();
 	}
 	
-	public static final PeerLauncherMessageHandler newInstance(PeerSession peerSession, TorrentSession torrentSession) {
-		return new PeerLauncherMessageHandler(peerSession, torrentSession);
+	public static final PeerSubMessageHandler newInstance(PeerSession peerSession, TorrentSession torrentSession) {
+		return new PeerSubMessageHandler(peerSession, torrentSession);
 	}
 
 	/**
@@ -147,7 +147,7 @@ public class PeerLauncherMessageHandler {
 		}
 	}
 	
-	public PeerLauncherMessageHandler messageHandler(IMessageHandler messageHandler) {
+	public PeerSubMessageHandler messageHandler(IMessageHandler messageHandler) {
 		this.messageHandler = messageHandler;
 		return this;
 	}

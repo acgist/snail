@@ -7,7 +7,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.bt.peer.bootstrap.PeerLauncherMessageHandler;
+import com.acgist.snail.net.bt.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
@@ -48,19 +48,19 @@ public class ExtensionMessageHandler {
 	private final PeerSession peerSession;
 	private final TorrentSession torrentSession;
 	
+	private final PeerSubMessageHandler peerSubMessageHandler;
 	private final MetadataMessageHandler metadataMessageHandler;
 	private final PeerExchangeMessageHandler peerExchangeMessageHandler;
-	private final PeerLauncherMessageHandler peerLauncherMessageHandler;
 	
-	public static final ExtensionMessageHandler newInstance(PeerSession peerSession, TorrentSession torrentSession, PeerLauncherMessageHandler peerLauncherMessageHandler) {
-		return new ExtensionMessageHandler(peerSession, torrentSession, peerLauncherMessageHandler);
+	public static final ExtensionMessageHandler newInstance(PeerSession peerSession, TorrentSession torrentSession, PeerSubMessageHandler peerSubMessageHandler) {
+		return new ExtensionMessageHandler(peerSession, torrentSession, peerSubMessageHandler);
 	}
 	
-	private ExtensionMessageHandler(PeerSession peerSession, TorrentSession torrentSession, PeerLauncherMessageHandler peerLauncherMessageHandler) {
+	private ExtensionMessageHandler(PeerSession peerSession, TorrentSession torrentSession, PeerSubMessageHandler peerSubMessageHandler) {
 		this.infoHash = torrentSession.infoHash();
 		this.peerSession = peerSession;
 		this.torrentSession = torrentSession;
-		this.peerLauncherMessageHandler = peerLauncherMessageHandler;
+		this.peerSubMessageHandler = peerSubMessageHandler;
 		this.metadataMessageHandler = MetadataMessageHandler.newInstance(this.torrentSession, this.peerSession, this);
 		this.peerExchangeMessageHandler = PeerExchangeMessageHandler.newInstance(this.peerSession, this.torrentSession, this);
 	}
@@ -217,7 +217,7 @@ public class ExtensionMessageHandler {
 	 * @param type 扩展消息类型：需要和Peer的标记一致
 	 */
 	public void pushMessage(byte type, byte[] bytes) {
-		this.peerLauncherMessageHandler.pushMessage(PeerConfig.Type.extension, buildMessage(type, bytes));
+		this.peerSubMessageHandler.pushMessage(PeerConfig.Type.extension, buildMessage(type, bytes));
 	}
 
 }

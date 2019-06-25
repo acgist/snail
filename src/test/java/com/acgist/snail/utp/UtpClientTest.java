@@ -3,7 +3,7 @@ package com.acgist.snail.utp;
 import org.junit.Test;
 
 import com.acgist.snail.net.bt.TorrentManager;
-import com.acgist.snail.net.bt.peer.bootstrap.PeerLauncherMessageHandler;
+import com.acgist.snail.net.bt.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.net.bt.utp.UtpClient;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.StatisticsSession;
@@ -21,8 +21,8 @@ public class UtpClientTest {
 		Integer port = 49160; // FDM测试端口
 //		Integer port = 15000; // 本地迅雷测试端口
 		PeerSession peerSession = PeerSession.newInstance(new StatisticsSession(), host, port);
-		PeerLauncherMessageHandler peerLauncherMessageHandler = PeerLauncherMessageHandler.newInstance(peerSession, torrentSession);
-		UtpClient utpClient = UtpClient.newInstance(peerSession, peerLauncherMessageHandler);
+		PeerSubMessageHandler peerSubMessageHandler = PeerSubMessageHandler.newInstance(peerSession, torrentSession);
+		UtpClient utpClient = UtpClient.newInstance(peerSession, peerSubMessageHandler);
 		boolean ok = utpClient.connect();
 		System.out.println(ok);
 	}

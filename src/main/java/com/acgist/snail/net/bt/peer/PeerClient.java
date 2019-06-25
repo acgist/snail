@@ -1,7 +1,7 @@
 package com.acgist.snail.net.bt.peer;
 
 import com.acgist.snail.net.TcpClient;
-import com.acgist.snail.net.bt.peer.bootstrap.PeerLauncherMessageHandler;
+import com.acgist.snail.net.bt.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 
 /**
@@ -14,16 +14,16 @@ import com.acgist.snail.pojo.session.PeerSession;
 public class PeerClient extends TcpClient<PeerMessageHandler> {
 
 	private final PeerSession peerSession;
-	private final PeerLauncherMessageHandler peerLauncherMessageHandler;
+	private final PeerSubMessageHandler peerSubMessageHandler;
 	
-	private PeerClient(PeerSession peerSession, PeerLauncherMessageHandler peerLauncherMessageHandler) {
-		super("Peer Client", 2, new PeerMessageHandler(peerLauncherMessageHandler));
+	private PeerClient(PeerSession peerSession, PeerSubMessageHandler peerSubMessageHandler) {
+		super("Peer Client", 2, new PeerMessageHandler(peerSubMessageHandler));
 		this.peerSession = peerSession;
-		this.peerLauncherMessageHandler = peerLauncherMessageHandler;
+		this.peerSubMessageHandler = peerSubMessageHandler;
 	}
 
-	public static final PeerClient newInstance(PeerSession peerSession, PeerLauncherMessageHandler peerLauncherMessageHandler) {
-		return new PeerClient(peerSession, peerLauncherMessageHandler);
+	public static final PeerClient newInstance(PeerSession peerSession, PeerSubMessageHandler peerSubMessageHandler) {
+		return new PeerClient(peerSession, peerSubMessageHandler);
 	}
 	
 	@Override
@@ -35,8 +35,8 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 		return this.peerSession;
 	}
 	
-	public PeerLauncherMessageHandler peerLauncherMessageHandler() {
-		return this.peerLauncherMessageHandler;
+	public PeerSubMessageHandler peerSubMessageHandler() {
+		return this.peerSubMessageHandler;
 	}
 	
 }

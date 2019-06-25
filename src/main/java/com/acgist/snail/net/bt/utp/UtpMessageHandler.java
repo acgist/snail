@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.UdpMessageHandler;
-import com.acgist.snail.net.bt.peer.bootstrap.PeerLauncherMessageHandler;
+import com.acgist.snail.net.bt.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.net.bt.utp.bootstrap.UtpService;
 import com.acgist.snail.net.bt.utp.bootstrap.UtpWindowData;
 import com.acgist.snail.net.bt.utp.bootstrap.UtpWindowHandler;
@@ -91,7 +91,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	
 	private final UtpService utpService = UtpService.getInstance();
 	
-	private final PeerLauncherMessageHandler peerLauncherMessageHandler;
+	private final PeerSubMessageHandler peerSubMessageHandler;
 	
 	/**
 	 * 如果消息长度不够一个Integer长度时使用
@@ -103,8 +103,8 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	 * 服务端
 	 */
 	public UtpMessageHandler(final short connectionId, InetSocketAddress socketAddress) {
-		this.peerLauncherMessageHandler = PeerLauncherMessageHandler.newInstance();
-		this.peerLauncherMessageHandler.messageHandler(this);
+		this.peerSubMessageHandler = PeerSubMessageHandler.newInstance();
+		this.peerSubMessageHandler.messageHandler(this);
 		this.sendWindowHandler = UtpWindowHandler.newInstance();
 		this.receiveWindowHandler = UtpWindowHandler.newInstance();
 		this.socketAddress = socketAddress;
@@ -116,9 +116,9 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	/**
 	 * 客户端
 	 */
-	public UtpMessageHandler(PeerLauncherMessageHandler peerLauncherMessageHandler, InetSocketAddress socketAddress) {
-		this.peerLauncherMessageHandler = peerLauncherMessageHandler;
-		this.peerLauncherMessageHandler.messageHandler(this);
+	public UtpMessageHandler(PeerSubMessageHandler peerSubMessageHandler, InetSocketAddress socketAddress) {
+		this.peerSubMessageHandler = peerSubMessageHandler;
+		this.peerSubMessageHandler.messageHandler(this);
 		this.sendWindowHandler = UtpWindowHandler.newInstance();
 		this.receiveWindowHandler = UtpWindowHandler.newInstance();
 		this.socketAddress = socketAddress;
@@ -305,7 +305,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 		final ByteBuffer windowBuffer = windowData.buffer();
 		while(true) {
 			if(this.buffer == null) {
-				if(this.peerLauncherMessageHandler.handshake()) {
+				if(this.peerSubMessageHandler.handshake()) {
 					for (int index = 0; index < windowBuffer.limit(); index++) {
 						this.lengthStick.put(windowBuffer.get());
 						if(this.lengthStick.position() == INTEGER_BYTE_LENGTH) {
@@ -323,7 +323,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 					length = PeerConfig.HANDSHAKE_LENGTH;
 				}
 				if(length <= 0) { // 心跳
-					this.peerLauncherMessageHandler.keepAlive();
+					this.peerSubMessageHandler.keepAlive();
 					break;
 				}
 				if(length >= SystemConfig.MAX_NET_BUFFER_SIZE) {
@@ -338,13 +338,13 @@ public class UtpMessageHandler extends UdpMessageHandler {
 				final byte[] bytes = new byte[length];
 				windowBuffer.get(bytes);
 				this.buffer.put(bytes);
-				this.peerLauncherMessageHandler.oneMessage(this.buffer);
+				this.peerSubMessageHandler.oneMessage(this.buffer);
 				this.buffer = null;
 			} else if(remaining == length) { // 刚好一个完整消息
 				final byte[] bytes = new byte[length];
 				windowBuffer.get(bytes);
 				this.buffer.put(bytes);
-				this.peerLauncherMessageHandler.oneMessage(this.buffer);
+				this.peerSubMessageHandler.oneMessage(this.buffer);
 				this.buffer = null;
 				break;
 			} else if(remaining < length) { // 不是完整消息

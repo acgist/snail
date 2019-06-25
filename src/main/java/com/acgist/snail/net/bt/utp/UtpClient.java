@@ -1,7 +1,7 @@
 package com.acgist.snail.net.bt.utp;
 
 import com.acgist.snail.net.UdpClient;
-import com.acgist.snail.net.bt.peer.bootstrap.PeerLauncherMessageHandler;
+import com.acgist.snail.net.bt.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.net.bt.torrent.TorrentServer;
 import com.acgist.snail.pojo.session.PeerSession;
 
@@ -14,16 +14,16 @@ import com.acgist.snail.pojo.session.PeerSession;
 public class UtpClient extends UdpClient<UtpMessageHandler> {
 
 	private final PeerSession peerSession;
-	private final PeerLauncherMessageHandler peerLauncherMessageHandler;
+	private final PeerSubMessageHandler peerSubMessageHandler;
 	
-	private UtpClient(PeerSession peerSession, PeerLauncherMessageHandler peerLauncherMessageHandler) {
-		super("UTP Client", new UtpMessageHandler(peerLauncherMessageHandler, peerSession.peerSocketAddress()), peerSession.peerSocketAddress());
+	private UtpClient(PeerSession peerSession, PeerSubMessageHandler peerSubMessageHandler) {
+		super("UTP Client", new UtpMessageHandler(peerSubMessageHandler, peerSession.peerSocketAddress()), peerSession.peerSocketAddress());
 		this.peerSession = peerSession;
-		this.peerLauncherMessageHandler = peerLauncherMessageHandler;
+		this.peerSubMessageHandler = peerSubMessageHandler;
 	}
 	
-	public static final UtpClient newInstance(PeerSession peerSession, PeerLauncherMessageHandler peerLauncherMessageHandler) {
-		return new UtpClient(peerSession, peerLauncherMessageHandler);
+	public static final UtpClient newInstance(PeerSession peerSession, PeerSubMessageHandler peerSubMessageHandler) {
+		return new UtpClient(peerSession, peerSubMessageHandler);
 	}
 	
 	@Override
@@ -42,8 +42,8 @@ public class UtpClient extends UdpClient<UtpMessageHandler> {
 		return this.peerSession;
 	}
 	
-	public PeerLauncherMessageHandler peerLauncherMessageHandler() {
-		return this.peerLauncherMessageHandler;
+	public PeerSubMessageHandler peerSubMessageHandler() {
+		return this.peerSubMessageHandler;
 	}
 	
 }
