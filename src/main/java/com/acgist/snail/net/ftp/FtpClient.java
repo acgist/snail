@@ -14,8 +14,8 @@ import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * FTP客户端
- * TODO：中文路径
+ * <p>FTP客户端</p>
+ * <p>默认编码：GBK。连接登陆成功后会发送FEAT指令，如果支持UTF8指令，会切换UTF-8编码。</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -32,6 +32,7 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	private String user; // FTP用户
 	private String password; // FTP密码
 	private String filePath; // 文件路径
+	
 	private String charset = SystemConfig.CHARSET_GBK; // 编码
 
 	private FtpClient(String host, int port, String user, String password, String filePath) {
