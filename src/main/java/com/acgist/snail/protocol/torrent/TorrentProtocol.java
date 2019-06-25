@@ -3,7 +3,7 @@ package com.acgist.snail.protocol.torrent;
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.downloader.torrent.TorrentDownloader;
 import com.acgist.snail.gui.torrent.TorrentWindow;
-import com.acgist.snail.net.bt.TorrentManager;
+import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;

@@ -6,8 +6,8 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.junit.Test;
 
-import com.acgist.snail.net.bt.TorrentManager;
-import com.acgist.snail.net.bt.bootstrap.PeerLauncher;
+import com.acgist.snail.net.torrent.TorrentManager;
+import com.acgist.snail.net.torrent.bootstrap.PeerLauncher;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.session.PeerSession;

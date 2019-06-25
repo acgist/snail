@@ -4,7 +4,7 @@ import java.util.concurrent.Executors;
 
 import org.junit.Test;
 
-import com.acgist.snail.net.bt.peer.bootstrap.PeerManager;
+import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
 import com.acgist.snail.utils.ThreadUtils;
 
 public class PeerManagerTest {

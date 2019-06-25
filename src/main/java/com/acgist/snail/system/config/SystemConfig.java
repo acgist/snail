@@ -71,9 +71,9 @@ public class SystemConfig extends PropertiesConfig {
 	private String source; // 源码
 	private String support; // 支持
 	
-	private Integer serverPort; // 服务端口
-	private Integer btPort; // 服务端口（Peer、DHT、UTP）
-	private Integer btPortExt; // 服务端口（外网：Peer、DHT、UTP）
+	private Integer servicePort; // 服务端口（本地服务：启动检测）
+	private Integer torrentPort; // 服务端口（本地端口：Peer、DHT、UTP）
+	private Integer torrentPortExt; // 服务端口（外网映射：Peer、DHT、UTP）
 	
 	private Integer peerSize; // 单个任务Peer数量
 	private Integer trackerSize; // 单个任务Tracker数量
@@ -94,8 +94,8 @@ public class SystemConfig extends PropertiesConfig {
 		INSTANCE.author = getString("acgist.system.author");
 		INSTANCE.source = getString("acgist.system.source");
 		INSTANCE.support = getString("acgist.system.support");
-		INSTANCE.serverPort = getInteger("acgist.server.port");
-		INSTANCE.btPort = getInteger("acgist.bt.port");
+		INSTANCE.servicePort = getInteger("acgist.service.port");
+		INSTANCE.torrentPort = getInteger("acgist.torrent.port");
 		INSTANCE.peerSize = getInteger("acgist.peer.size");
 		INSTANCE.trackerSize = getInteger("acgist.tracker.size");
 		INSTANCE.pieceRepeatSize = getInteger("acgist.piece.repeat.size");
@@ -115,8 +115,8 @@ public class SystemConfig extends PropertiesConfig {
 		LOGGER.info("作者：{}", this.author);
 		LOGGER.info("源码：{}", this.source);
 		LOGGER.info("支持：{}", this.support);
-		LOGGER.info("系统端口：{}", this.serverPort);
-		LOGGER.info("服务端口（Peer、DHT、UTP）：{}", this.btPort);
+		LOGGER.info("系统端口：{}", this.servicePort);
+		LOGGER.info("服务端口（Peer、DHT、UTP）：{}", this.torrentPort);
 		LOGGER.info("单个任务Peer数量：{}", this.peerSize);
 		LOGGER.info("单个任务Tracker数量：{}", this.trackerSize);
 		LOGGER.info("任务即将完成时可以重复选择下载的剩下Piece数量：{}", this.pieceRepeatSize);
@@ -171,43 +171,43 @@ public class SystemConfig extends PropertiesConfig {
 	/**
 	 * 服务端口
 	 */
-	public static final Integer getServerPort() {
-		return INSTANCE.serverPort;
+	public static final Integer getServicePort() {
+		return INSTANCE.servicePort;
 	}
 
 	/**
 	 * <p>服务端口（Peer、DHT、UTP）</p>
 	 * <p>本机注册使用</p>
 	 */
-	public static final Integer getBtPort() {
-		return INSTANCE.btPort;
+	public static final Integer getTorrentPort() {
+		return INSTANCE.torrentPort;
 	}
 	
 	/**
 	 * 设置服务端口（外网：Peer、DHT、UTP），映射时如果端口已经被占用时重新设置的外网端口号。
 	 */
-	public static final void setBtPortExt(Integer btPortExt) {
-		LOGGER.info("服务端口（外网：Peer、DHT、UTP）：{}", btPortExt);
-		INSTANCE.btPortExt = btPortExt;
+	public static final void setTorrentPortExt(Integer torrentPortExt) {
+		LOGGER.info("服务端口（外网：Peer、DHT、UTP）：{}", torrentPortExt);
+		INSTANCE.torrentPortExt = torrentPortExt;
 	}
 	
 	/**
 	 * <p>服务端口（外网：Peer、DHT、UTP）</p>
 	 * <p>外网使用，外网的Peer连接此端口。</p>
-	 * <p>如果不存在返回{@linkplain #getBtPort() 本机端口}。</p>
+	 * <p>如果不存在返回{@linkplain #getTorrentPort() 本机端口}。</p>
 	 */
-	public static final Integer getBtPortExt() {
-		if(INSTANCE.btPortExt == null) {
-			return getBtPort();
+	public static final Integer getTorrentPortExt() {
+		if(INSTANCE.torrentPortExt == null) {
+			return getTorrentPort();
 		}
-		return INSTANCE.btPortExt;
+		return INSTANCE.torrentPortExt;
 	}
 	
 	/**
 	 * 服务端口（外网：Peer、DHT、UTP）：short
 	 */
-	public static final Short getBtPortExtShort() {
-		return NetUtils.encodePort(getBtPortExt());
+	public static final Short getTorrentPortExtShort() {
+		return NetUtils.encodePort(getTorrentPortExt());
 	}
 	
 	/**

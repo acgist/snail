@@ -32,7 +32,7 @@ public class ApplicationClient extends TcpClient<ApplicationMessageHandler> {
 	
 	@Override
 	public boolean connect() {
-		return connect(NetUtils.LOCAL_IP, SystemConfig.getServerPort());
+		return connect(NetUtils.LOCAL_IP, SystemConfig.getServicePort());
 	}
 	
 	/**
