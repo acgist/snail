@@ -2,6 +2,7 @@ package com.acgist.snail.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.ByteBuffer;
@@ -33,9 +34,19 @@ public class IoUtils {
 	 * 读取内容
 	 */
 	public static final String readContent(ByteBuffer attachment) {
-		final CharsetDecoder decoder = Charset.forName(SystemConfig.DEFAULT_CHARSET).newDecoder();
-		decoder.onMalformedInput(CodingErrorAction.IGNORE);
+		return readContent(attachment, SystemConfig.DEFAULT_CHARSET);
+	}
+	
+	/**
+	 * 读取内容
+	 */
+	public static final String readContent(ByteBuffer attachment, String charset) {
+		if(charset == null) {
+			charset = SystemConfig.DEFAULT_CHARSET;
+		}
 		String content = null;
+		final CharsetDecoder decoder = Charset.forName(charset).newDecoder();
+		decoder.onMalformedInput(CodingErrorAction.IGNORE);
 		try {
 			attachment.flip();
 			content = decoder.decode(attachment).toString();
@@ -44,6 +55,30 @@ public class IoUtils {
 			LOGGER.error("ByteBuffer解码异常", e);
 		}
 		return content;
+	}
+	
+	/**
+	 * 输入流转为字符串。
+	 */
+	public static final String ofInputStream(InputStream input, String charset) {
+		if(input == null) {
+			return null;
+		}
+		if(charset == null) {
+			charset = SystemConfig.DEFAULT_CHARSET;
+		}
+		int index;
+		final char[] chars = new char[1024];
+		final StringBuilder builder = new StringBuilder();
+		try {
+			final InputStreamReader reader = new InputStreamReader(input, charset);
+			while((index = reader.read(chars)) != -1) {
+				builder.append(new String(chars, 0, index));
+			}
+		} catch (IOException e) {
+			LOGGER.error("读取输入流异常", e);
+		}
+		return builder.toString();
 	}
 	
 	/**

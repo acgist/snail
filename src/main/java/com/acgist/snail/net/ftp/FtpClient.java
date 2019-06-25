@@ -8,7 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.TcpClient;
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -30,6 +32,7 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	private String user; // FTP用户
 	private String password; // FTP密码
 	private String filePath; // 文件路径
+	private String charset = SystemConfig.CHARSET_GBK; // 编码
 
 	private FtpClient(String host, int port, String user, String password, String filePath) {
 		super("FTP Client", 2, new FtpMessageHandler());
@@ -49,6 +52,7 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 		this.ok = connect(this.host, this.port);
 		if(this.ok) {
 			this.login();
+			this.charset();
 		}
 		return this.ok;
 	}
@@ -72,7 +76,7 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 		synchronized (this) {
 			changeMode();
 			command("TYPE I");
-			if(downloadSize != null && downloadSize != 0L) {
+			if(downloadSize != null && downloadSize > 0L) {
 				command("REST " + downloadSize);
 			}
 			command("RETR " + this.filePath);
@@ -92,7 +96,7 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 			command("TYPE A");
 			command("LIST " + this.filePath);
 			final InputStream inputStream = this.handler.inputStream();
-			final String data = StringUtils.ofInputStream(inputStream);
+			final String data = IoUtils.ofInputStream(inputStream, this.charset);
 			if(data == null) {
 				throw new NetException(failMessage());
 			}
@@ -123,7 +127,7 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	/**
 	 * 是否支持断点续传
 	 */
-	public boolean append() {
+	public boolean range() {
 		return this.handler.range();
 	}
 	
@@ -140,7 +144,17 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	private void login() {
 		command("USER " + this.user);
 		command("PASS " + this.password);
-//		command("QUOTE OPTS UTF8 ON"); // 设置编码：无效
+	}
+	
+	/**
+	 * 设置编码
+	 */
+	private void charset() {
+		command("FEAT"); // 列出扩展命令
+		this.charset = this.handler.charset();
+		if(SystemConfig.CHARSET_UTF8.equals(this.charset)) {
+			command("OPTS UTF8 ON"); // 设置UTF8
+		}
 	}
 	
 	/**
@@ -155,7 +169,7 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	 */
 	private void command(String command) {
 		try {
-			send(command);
+			send(command, this.charset);
 		} catch (NetException e) {
 			LOGGER.error("Ftp命令发送异常", e);
 		}

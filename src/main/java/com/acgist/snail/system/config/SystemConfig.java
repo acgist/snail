@@ -23,9 +23,21 @@ public class SystemConfig extends PropertiesConfig {
 	 */
 	public static final int MAX_NET_BUFFER_SIZE = 10 * 1024 * 1024;
 	/**
+	 * 编码：GBK
+	 */
+	public static final String CHARSET_GBK = "GBK";
+	/**
+	 * 编码：UTF-8
+	 */
+	public static final String CHARSET_UTF8 = "UTF-8";
+	/**
+	 * 编码：ISO-8859-1
+	 */
+	public static final String CHARSET_ISO88591 = "ISO-8859-1";
+	/**
 	 * 系统默认编码（file.encoding）
 	 */
-	public static final String DEFAULT_CHARSET = "utf-8";
+	public static final String DEFAULT_CHARSET = CHARSET_UTF8;
 	/**
 	 * 无符号BYTE的大小
 	 */
