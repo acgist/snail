@@ -46,8 +46,8 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessa
 	 * @param socketAddress 远程客户端地址
 	 */
 	public UdpClient(String name, T handler, InetSocketAddress socketAddress) {
+		super(handler);
 		this.name = name;
-		this.handler = handler;
 		this.socketAddress = socketAddress;
 		this.open();
 	}

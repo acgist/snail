@@ -137,7 +137,7 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 	 */
 	protected void send(ByteBuffer buffer, SocketAddress socketAddress) throws NetException {
 		if(!available()) {
-			LOGGER.debug("发送消息时channel已经不可用");
+			LOGGER.debug("发送消息时Channel已经不可用");
 			return;
 		}
 		if(buffer.position() != 0) { //  重置标记

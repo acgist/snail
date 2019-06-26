@@ -57,7 +57,7 @@ public class TorrentProtocol extends Protocol {
 	
 	@Override
 	public String name() {
-		return "BT";
+		return "BitTorrent";
 	}
 	
 	@Override

@@ -17,12 +17,13 @@ public class ProtocolConfig {
 	 */
 	public enum Protocol {
 		
-		bt,
 		udp,
 		tcp,
+		wss,
 		http,
 		magnet,
-		thunder;
+		thunder,
+		bittorrent;
 
 	}
 	

@@ -33,20 +33,21 @@ public class HttpHeaderWrapper {
 	 */
 	private static final String CONTENT_DISPOSITION = "Content-Disposition".toLowerCase();
 	
-	private Map<String, String> headers;
+	private final Map<String, String> headers;
 	
-	private HttpHeaderWrapper() {
+	private HttpHeaderWrapper(Map<String, String> headers) {
+		this.headers = headers;
 	}
 
 	public static final HttpHeaderWrapper newInstance(HttpHeaders httpHeaders) {
-		final HttpHeaderWrapper wrapper = new HttpHeaderWrapper();
+		Map<String, String> headers = null;
 		if(httpHeaders != null) {
-			wrapper.headers = httpHeaders.map().entrySet()
+			headers = httpHeaders.map().entrySet()
 			.stream()
 			.filter(entry -> CollectionUtils.isNotEmpty(entry.getValue()))
 			.collect(Collectors.toMap(entry -> entry.getKey().toLowerCase(), entry -> entry.getValue().get(0)));
 		}
-		return wrapper;
+		return new HttpHeaderWrapper(headers);
 	}
 	
 	/**
@@ -57,14 +58,14 @@ public class HttpHeaderWrapper {
 	}
 	
 	/**
-	 * 是否未包含数据
+	 * header数据是否为空
 	 */
 	public boolean isEmpty() {
 		return CollectionUtils.isEmpty(this.headers);
 	}
 	
 	/**
-	 * 是否包含数据
+	 * header数据是否不为空
 	 */
 	public boolean isNotEmpty() {
 		return !isEmpty();
