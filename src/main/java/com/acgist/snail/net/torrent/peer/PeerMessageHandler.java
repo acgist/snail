@@ -51,7 +51,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 		while(true) {
 			if(this.buffer == null) {
 				if(this.peerSubMessageHandler.handshake()) {
-					for (int index = 0; index < attachment.limit(); index++) {
+					for (int index = 0; index < attachment.limit() && attachment.hasRemaining(); index++) {
 						this.lengthStick.put(attachment.get());
 						if(this.lengthStick.position() == INTEGER_BYTE_LENGTH) {
 							break;

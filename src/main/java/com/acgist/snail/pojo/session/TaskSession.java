@@ -99,6 +99,9 @@ public class TaskSession {
 		if(complete()) {
 			return;
 		}
+		if(this.entity.getStatus() == status) {
+			return;
+		}
 		TaskRepository repository = new TaskRepository();
 		if(status == Status.complete) {
 			this.entity.setEndDate(new Date()); // 设置完成时间
