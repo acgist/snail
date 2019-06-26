@@ -49,9 +49,9 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 	}
 	
 	public TcpClient(String name, int timeout, T handler) {
+		super(handler);
 		this.name = name;
 		this.timeout = timeout;
-		this.handler = handler;
 	}
 	
 	/**

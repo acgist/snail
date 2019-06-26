@@ -16,13 +16,10 @@ public abstract class ClientMessageHandlerAdapter<T extends IMessageHandler> imp
 	/**
 	 * 消息代理
 	 */
-	protected T handler;
+	protected final T handler;
 	
-	@Override
-	public void close() {
-		if(this.handler != null) {
-			this.handler.close();
-		}
+	protected ClientMessageHandlerAdapter(T handler) {
+		this.handler = handler;
 	}
 
 	@Override
@@ -59,4 +56,11 @@ public abstract class ClientMessageHandlerAdapter<T extends IMessageHandler> imp
 		return this.handler.remoteSocketAddress();
 	}
 
+	@Override
+	public void close() {
+		if(this.handler != null) {
+			this.handler.close();
+		}
+	}
+	
 }

@@ -78,33 +78,35 @@ public class HTTPClient {
 	
 	/**
 	 * 新建客户端
+	 * 
+	 * @param url 请求地址
+	 * 
+	 * @return HTTP客户端
 	 */
 	public static final HTTPClient newInstance(String url) {
 		return newInstance(url, TIMEOUT);
 	}
 	
 	/**
-	 * 新建客户端
+	 * <p>新建客户端</p>
 	 * <p>HTTP请求版本{@link Version#HTTP_1_1}</p>
+	 * 
+	 * @param url 请求地址
+	 * @param timeout 超时时间，单位：秒
+	 * 
+	 * @return HTTP客户端
 	 */
 	public static final HTTPClient newInstance(String url, int timeout) {
-		final HttpClient client = HttpClient
-			.newBuilder()
-			.executor(EXECUTOR) // 线程池
-			.followRedirects(Redirect.NORMAL) // 重定向
-//			.followRedirects(Redirect.ALWAYS) // 重定向
-			.connectTimeout(Duration.ofSeconds(timeout)) // 超时
-//			.proxy(ProxySelector.getDefault()) // 代理
-//			.authenticator(Authenticator.getDefault()) // 认证
-//			.cookieHandler(CookieHandler.getDefault()) // Cookie
-			.build();
-		final Builder builder = HttpRequest
-			.newBuilder()
-			.uri(URI.create(url))
-			.version(Version.HTTP_1_1) // 使用1.1版本协议，2.0版本还没有普及。
-			.timeout(Duration.ofSeconds(timeout))
-			.header("User-Agent", USER_AGENT);
+		final HttpClient client = newClient(timeout);
+		final Builder builder = newBuilder(url, timeout);
 		return new HTTPClient(client, builder);
+	}
+	
+	/**
+	 * 获取HttpClient
+	 */
+	public HttpClient client() {
+		return this.client;
 	}
 	
 	/**
@@ -255,4 +257,32 @@ public class HTTPClient {
 		return response != null && response.statusCode() == HTTP_INTERNAL_SERVER_ERROR;
 	}
 
+	/**
+	 * 新建原生HTTP客户端
+	 */
+	public static final HttpClient newClient(int timeout) {
+		return HttpClient
+			.newBuilder()
+			.executor(EXECUTOR) // 线程池
+			.followRedirects(Redirect.NORMAL) // 重定向
+//			.followRedirects(Redirect.ALWAYS) // 重定向
+			.connectTimeout(Duration.ofSeconds(timeout)) // 超时
+//			.proxy(ProxySelector.getDefault()) // 代理
+//			.authenticator(Authenticator.getDefault()) // 认证
+//			.cookieHandler(CookieHandler.getDefault()) // Cookie
+			.build();
+	}
+	
+	/**
+	 * 新建请求Builder
+	 */
+	private static final Builder newBuilder(String url, int timeout) {
+		return HttpRequest
+			.newBuilder()
+			.uri(URI.create(url))
+			.version(Version.HTTP_1_1) // 使用1.1版本协议，2.0版本还没有普及。
+			.timeout(Duration.ofSeconds(timeout))
+			.header("User-Agent", USER_AGENT);
+	}
+	
 }
