@@ -306,7 +306,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 		while(true) {
 			if(this.buffer == null) {
 				if(this.peerSubMessageHandler.handshake()) {
-					for (int index = 0; index < windowBuffer.limit(); index++) {
+					for (int index = 0; index < windowBuffer.limit() && windowBuffer.hasRemaining(); index++) {
 						this.lengthStick.put(windowBuffer.get());
 						if(this.lengthStick.position() == INTEGER_BYTE_LENGTH) {
 							break;
