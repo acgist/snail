@@ -47,6 +47,7 @@ public class Magnet {
 	private String dn;
 	/**
 	 * Tracker
+	 * TODO：多个
 	 */
 	private String tr;
 	/**
@@ -59,6 +60,7 @@ public class Magnet {
 	private String as;
 	/**
 	 * 绝对资源（P2P链接）
+	 * TODO：直接下载
 	 */
 	private String xs;
 	/**

@@ -13,11 +13,13 @@ public class TrackerClientWssTest {
 
 	@Test
 	public void test() throws NetException, DownloadException {
-		String path = "e:/snail/16b1233b33143700fe47910898fcaaf0f05d2d09.torrent";
+		String path = "e:/snail/sintel.torrent";
 		TorrentSession session = TorrentManager.getInstance().newTorrentSession(path);
-		WssTrackerClient client = WssTrackerClient.newInstance("wss://tracker.fastcast.nz/announce");
-		client.announce(1000, session);
-		ThreadUtils.sleep(Long.MAX_VALUE);
+		WssTrackerClient client = WssTrackerClient.newInstance("wss://tracker.openwebtorrent.com/");
+		while (true) {
+			client.announce(1000, session);
+			ThreadUtils.sleep(5000);
+		}
 	}
 	
 }
