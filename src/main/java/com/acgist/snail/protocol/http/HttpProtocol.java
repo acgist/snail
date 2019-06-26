@@ -92,7 +92,7 @@ public class HttpProtocol extends Protocol {
 		while(true) {
 			index++;
 			try {
-				this.httpHeaderWrapper = HTTPClient.head(this.url);
+				this.httpHeaderWrapper = HTTPClient.newInstance(this.url).head();
 			} catch (NetException e) {
 				LOGGER.error("HTTP下载请求头获取异常", e);
 			}

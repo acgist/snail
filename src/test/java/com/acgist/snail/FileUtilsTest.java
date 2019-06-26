@@ -16,7 +16,8 @@ public class FileUtilsTest {
 	
 	@Test
 	public void fileNameHttp() throws NetException {
-		HTTPClient.head("https://www.acgist.com/demo/weixin/view").headers().forEach((key, value) -> {
+		HTTPClient client = HTTPClient.newInstance("https://www.acgist.com/demo/weixin/view");
+		client.head().headers().forEach((key, value) -> {
 			System.out.println(key + "-" + value);
 		});
 	}

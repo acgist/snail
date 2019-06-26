@@ -12,7 +12,6 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
@@ -69,57 +68,135 @@ public class HTTPClient {
 		LOGGER.debug("User-Agent：{}", USER_AGENT);
 	}
 	
-	/**
-	 * 新建客户端
-	 */
-	public static final HttpClient newClient() {
-		return newClient(TIMEOUT);
+	private final HttpClient client;
+	private final Builder builder; // request builder
+	
+	private HTTPClient(HttpClient client, Builder builder) {
+		this.client = client;
+		this.builder = builder;
 	}
 	
 	/**
 	 * 新建客户端
 	 */
-	public static final HttpClient newClient(int timeout) {
-		return HttpClient
+	public static final HTTPClient newInstance(String url) {
+		return newInstance(url, TIMEOUT);
+	}
+	
+	/**
+	 * 新建客户端
+	 * <p>HTTP请求版本{@link Version#HTTP_1_1}</p>
+	 */
+	public static final HTTPClient newInstance(String url, int timeout) {
+		final HttpClient client = HttpClient
 			.newBuilder()
-			.executor(EXECUTOR)
-			.followRedirects(Redirect.NORMAL)
-//			.followRedirects(Redirect.ALWAYS)
-			.connectTimeout(Duration.ofSeconds(timeout))
+			.executor(EXECUTOR) // 线程池
+			.followRedirects(Redirect.NORMAL) // 重定向
+//			.followRedirects(Redirect.ALWAYS) // 重定向
+			.connectTimeout(Duration.ofSeconds(timeout)) // 超时
+//			.proxy(ProxySelector.getDefault()) // 代理
+//			.authenticator(Authenticator.getDefault()) // 认证
+//			.cookieHandler(CookieHandler.getDefault()) // Cookie
 			.build();
-	}
-	
-	/**
-	 * 新建请求
-	 */
-	public static final Builder newRequest(String url) {
-		return newRequest(url, TIMEOUT);
-	}
-	
-	/**
-	 * 新建请求，HTTP请求版本{@link Version#HTTP_1_1}。
-	 */
-	public static final Builder newRequest(String url, int timeout) {
-		return HttpRequest
+		final Builder builder = HttpRequest
 			.newBuilder()
 			.uri(URI.create(url))
 			.version(Version.HTTP_1_1) // 使用1.1版本协议，2.0版本还没有普及。
 			.timeout(Duration.ofSeconds(timeout))
 			.header("User-Agent", USER_AGENT);
+		return new HTTPClient(client, builder);
 	}
 	
 	/**
-	 * 表单请求
+	 * 设置请求头
+	 * 
+	 * @param name 名称
+	 * @param value 值
+	 * 
+	 * @return 客户端
 	 */
-	public static final Builder newFormRequest(String url) {
-		return newRequest(url)
-			.header("Content-type", "application/x-www-form-urlencoded;charset=" + SystemConfig.DEFAULT_CHARSET);
+	public HTTPClient header(String name, String value) {
+		this.builder.header(name, value);
+		return this;
+	}
+
+	/**
+	 * GET请求
+	 */
+	public <T> HttpResponse<T> get(HttpResponse.BodyHandler<T> handler) throws NetException {
+		final var request = this.builder
+			.GET()
+			.build();
+		return request(request, handler);
 	}
 	
+	/**
+	 * POST请求
+	 */
+	public <T> HttpResponse<T> post(String data, HttpResponse.BodyHandler<T> handler) throws NetException {
+		if(data == null) {
+			this.builder.POST(BodyPublishers.noBody());
+		} else {
+			this.builder.POST(BodyPublishers.ofString(data));
+		}
+		final var request = this.builder
+			.build();
+		return request(request, handler);
+	}
+	
+	/**
+	 * POST表单请求
+	 */
+	public <T> HttpResponse<T> postForm(Map<String, String> data, HttpResponse.BodyHandler<T> handler) throws NetException {
+		final var request = this.builder
+			.header("Content-type", "application/x-www-form-urlencoded;charset=" + SystemConfig.DEFAULT_CHARSET)
+			.POST(newFormBodyPublisher(data))
+			.build();
+		return request(request, handler);
+	}
+	
+	/**
+	 * HEAD请求
+	 */
+	public HttpHeaderWrapper head() throws NetException {
+		final var request = this.builder
+			.method("HEAD", BodyPublishers.noBody())
+			.build();
+		final var response = request(request, BodyHandlers.ofString());
+		if(HTTPClient.ok(response)) {
+			return HttpHeaderWrapper.newInstance(response.headers());
+		}
+		return HttpHeaderWrapper.newInstance(null);
+	}
+	
+	/**
+	 * 执行请求
+	 */
+	private <T> HttpResponse<T> request(HttpRequest request, HttpResponse.BodyHandler<T> handler) throws NetException {
+		if(this.client == null || request == null) {
+			return null;
+		}
+		try {
+			return this.client.send(request, handler);
+		} catch (Exception e) {
+			throw new NetException(e);
+		}
+	}
+	
+//	/**
+//	 * 执行异步请求
+//	 */
+//	private <T> CompletableFuture<HttpResponse<T>> requestAsync(HttpRequest request, HttpResponse.BodyHandler<T> handler) {
+//		if(this.client == null || request == null) {
+//			return null;
+//		}
+//		return this.client.sendAsync(request, handler);
+//	}
+
 	/**
 	 * 表单数据
 	 */
-	public static final BodyPublisher newFormBodyPublisher(Map<String, String> data) {
+	private BodyPublisher newFormBodyPublisher(Map<String, String> data) {
 		if(CollectionUtils.isEmpty(data)) {
 			return BodyPublishers.noBody();
 		}
@@ -131,103 +208,51 @@ public class HTTPClient {
 			.collect(Collectors.joining("&"));
 		return BodyPublishers.ofString(body);
 	}
-
-	/**
-	 * GET请求
-	 */
+	
 	public static final <T> HttpResponse<T> get(String requestUrl, HttpResponse.BodyHandler<T> handler) throws NetException {
 		return get(requestUrl, handler, TIMEOUT);
 	}
 	
 	/**
-	 * GET请求
+	 * 执行GET请求
+	 * 
+	 * @param requestUrl 请求地址
+	 * @param handler 响应处理器
+	 * @param timeout 超时时间
+	 * 
+	 * @return 响应
 	 */
 	public static final <T> HttpResponse<T> get(String requestUrl, HttpResponse.BodyHandler<T> handler, int timeout) throws NetException {
-		final var client = HTTPClient.newClient(timeout);
-		final var request = HTTPClient.newRequest(requestUrl, timeout)
-			.GET()
-			.build();
-		return HTTPClient.request(client, request, handler);
+		final HTTPClient client = newInstance(requestUrl, timeout);
+		return client.get(handler);
 	}
 	
 	/**
-	 * POST请求
-	 */
-	public static final <T> HttpResponse<T> post(String requestUrl, String data, HttpResponse.BodyHandler<T> handler) throws NetException {
-		final var client = HTTPClient.newClient();
-		final var request = HTTPClient.newRequest(requestUrl)
-			.POST(BodyPublishers.ofString(data))
-			.build();
-		return HTTPClient.request(client, request, handler);
-	}
-	
-	/**
-	 * POST表单请求
-	 */
-	public static final <T> HttpResponse<T> postForm(String requestUrl, Map<String, String> data, HttpResponse.BodyHandler<T> handler) throws NetException {
-		final var client = HTTPClient.newClient();
-		final var request = HTTPClient.newFormRequest(requestUrl)
-			.POST(HTTPClient.newFormBodyPublisher(data))
-			.build();
-		return HTTPClient.request(client, request, handler);
-	}
-	
-	/**
-	 * HEAD请求
-	 */
-	public static final HttpHeaderWrapper head(String requestUrl) throws NetException {
-		final var client = HTTPClient.newClient();
-		final var request = HTTPClient.newRequest(requestUrl)
-			.method("HEAD", BodyPublishers.noBody())
-			.build();
-		final var response = HTTPClient.request(client, request, BodyHandlers.ofString());
-		if(HTTPClient.ok(response)) {
-			return HttpHeaderWrapper.newInstance(response.headers());
-		}
-		return HttpHeaderWrapper.newInstance(null);
-	}
-	
-	/**
-	 * 执行请求
-	 */
-	public static final <T> HttpResponse<T> request(HttpClient client, HttpRequest request, HttpResponse.BodyHandler<T> handler) throws NetException {
-		if(client == null || request == null) {
-			return null;
-		}
-		try {
-			return client.send(request, handler);
-		} catch (Exception e) {
-			throw new NetException(e);
-		}
-	}
-	
-	/**
-	 * 执行异步请求
-	 */
-	public static final <T> CompletableFuture<HttpResponse<T>> requestAsync(HttpClient client, HttpRequest request, HttpResponse.BodyHandler<T> handler) {
-		if(client == null || request == null) {
-			return null;
-		}
-		return client.sendAsync(request, handler);
-	}
-	
-	/**
-	 * <p>判断请求是否成功</p>
-	 * <p>响应状态码：{@link #HTTP_OK}、{@link #HTTP_PARTIAL_CONTENT}。</p>
+	 * <p>成功：{@link #HTTP_OK}</p>
 	 */
 	public static final <T> boolean ok(HttpResponse<T> response) {
-		return response != null &&
-			(
-				response.statusCode() == HTTP_OK ||
-				response.statusCode() == HTTP_PARTIAL_CONTENT
-			);
+		return response != null && response.statusCode() == HTTP_OK;
+	}
+	
+	/**
+	 * <p>端点续传：{@link #HTTP_PARTIAL_CONTENT}</p>
+	 */
+	public static final <T> boolean partialContent(HttpResponse<T> response) {
+		return response != null && response.statusCode() == HTTP_PARTIAL_CONTENT;
 	}
 
 	/**
-	 * 无法满足请求范围，响应状态码[{@link #HTTP_REQUESTED_RANGE_NOT_SATISFIABLE}。
+	 * 无法满足请求范围：{@link #HTTP_REQUESTED_RANGE_NOT_SATISFIABLE}
 	 */
 	public static final <T> boolean requestedRangeNotSatisfiable(HttpResponse<T> response) {
 		return response != null && response.statusCode() == HTTP_REQUESTED_RANGE_NOT_SATISFIABLE;
 	}
 	
+	/**
+	 * 服务器错误：{@link #HTTP_INTERNAL_SERVER_ERROR}
+	 */
+	public static final <T> boolean internalServerError(HttpResponse<T> response) {
+		return response != null && response.statusCode() == HTTP_INTERNAL_SERVER_ERROR;
+	}
+
 }
