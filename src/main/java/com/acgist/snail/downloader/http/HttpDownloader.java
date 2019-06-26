@@ -94,20 +94,18 @@ public class HttpDownloader extends Downloader {
 	private void buildInput() {
 		final var entity = this.taskSession.entity();
 		final long size = FileUtils.fileSize(entity.getFile()); // 已下载大小
-		final var client = HTTPClient.newClient();
-		final var request = HTTPClient.newRequest(entity.getUrl())
-			.header("Range", "bytes=" + size + "-") // 端点续传
-			.GET()
-			.build();
+		final var client = HTTPClient.newInstance(entity.getUrl());
 		HttpResponse<InputStream> response = null;
 		try {
-			response = HTTPClient.request(client, request, BodyHandlers.ofInputStream());
+			response = client
+				.header("Range", "bytes=" + size + "-") // 端点续传
+				.get(BodyHandlers.ofInputStream());
 		} catch (Exception e) {
 			fail("HTTP请求失败");
 			LOGGER.error("HTTP请求异常", e);
 			return;
 		}
-		if(HTTPClient.ok(response)) {
+		if(HTTPClient.ok(response) || HTTPClient.partialContent(response)) {
 			this.responseHeader = HttpHeaderWrapper.newInstance(response.headers());
 			this.input = new BufferedInputStream(response.body());
 			if(this.responseHeader.range()) { // 支持断点续传

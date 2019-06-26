@@ -2,7 +2,6 @@ package com.acgist.snail.net.upnp.bootstrap;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.util.List;
 
@@ -74,11 +73,7 @@ public class UpnpService {
 	public UpnpService load(String location) throws NetException {
 		LOGGER.info("设置UPNP，地址：{}", location);
 		this.location = location;
-		var client = HTTPClient.newClient();
-		var request = HTTPClient.newRequest(this.location)
-			.GET()
-			.build();
-		var response = HTTPClient.request(client, request, BodyHandlers.ofString());
+		var response = HTTPClient.get(this.location, BodyHandlers.ofString());
 		final String body = response.body();
 		final XMLUtils xml = XMLUtils.load(body);
 		final List<String> serviceTypes = xml.elementValues("serviceType");
@@ -119,12 +114,10 @@ public class UpnpService {
 		}
 		UpnpRequest upnpRequest = UpnpRequest.newRequest(this.serviceType);
 		String xml = upnpRequest.buildGetExternalIPAddress();
-		var client = HTTPClient.newClient();
-		var request = HTTPClient.newRequest(this.controlURL)
+		var client = HTTPClient.newInstance(this.controlURL);
+		var response = client
 			.header("SOAPAction", "\"" + this.serviceType + "#GetExternalIPAddress\"")
-			.POST(BodyPublishers.ofString(xml))
-			.build();
-		var response = HTTPClient.request(client, request, BodyHandlers.ofString());
+			.post(xml, BodyHandlers.ofString());
 		String body = response.body();
 		return UpnpResponse.parseGetExternalIPAddress(body);
 	}
@@ -134,7 +127,10 @@ public class UpnpService {
 	 * <p>请求头：SOAPAction:"urn:schemas-upnp-org:service:WANIPConnection:1#GetSpecificPortMappingEntry"</p>
 	 * <p>如果没有映射：返回{@link HTTPClient#HTTP_INTERNAL_SERVER_ERROR}错误代码</p>
 	 * 
-	 * @return {@link #USE_NOT_INIT}、{@link #USE_DISABLE}、{@link #USE_MAPABLE}、{@link #USE_USEABLE}
+	 * @return {@linkplain #USE_NOT_INIT 没有初始化：-2}、
+	 * 		{@linkplain #USE_DISABLE 不可用（已被注册）：-1}、
+	 * 		{@linkplain #USE_MAPABLE 可用（需要注册）：0}、
+	 * 		{@linkplain #USE_USEABLE 可用（已被注册）：1}
 	 */
 	public int getSpecificPortMappingEntry(int port, Protocol protocol) throws NetException {
 		if(!this.init) {
@@ -142,14 +138,12 @@ public class UpnpService {
 		}
 		UpnpRequest upnpRequest = UpnpRequest.newRequest(this.serviceType);
 		String xml = upnpRequest.buildGetSpecificPortMappingEntry(port, protocol);
-		var client = HTTPClient.newClient();
-		var request = HTTPClient.newRequest(this.controlURL)
+		var client = HTTPClient.newInstance(this.controlURL);
+		var response = client
 			.header("SOAPAction", "\"" + this.serviceType + "#GetSpecificPortMappingEntry\"")
-			.POST(BodyPublishers.ofString(xml))
-			.build();
-		var response = HTTPClient.request(client, request, BodyHandlers.ofString());
+			.post(xml, BodyHandlers.ofString());
 		String body = response.body();
-		if(response.statusCode() == HTTPClient.HTTP_INTERNAL_SERVER_ERROR) {
+		if(HTTPClient.internalServerError(response)) {
 			return USE_MAPABLE;
 		}
 		final String registerIp = UpnpResponse.parseGetSpecificPortMappingEntry(body);
@@ -172,13 +166,11 @@ public class UpnpService {
 		final String address = NetUtils.inetHostAddress();
 		UpnpRequest upnpRequest = UpnpRequest.newRequest(this.serviceType);
 		String xml = upnpRequest.buildAddPortMapping(port, address, portExt, protocol);
-		var client = HTTPClient.newClient();
-		var request = HTTPClient.newRequest(this.controlURL)
+		var client = HTTPClient.newInstance(this.controlURL);
+		var response = client
 			.header("SOAPAction", "\"" + this.serviceType + "#AddPortMapping\"")
-			.POST(BodyPublishers.ofString(xml))
-			.build();
-		var response = HTTPClient.request(client, request, BodyHandlers.ofString());
-		return response.statusCode() == HTTPClient.HTTP_OK;
+			.post(xml, BodyHandlers.ofString());
+		return HTTPClient.ok(response);
 	}
 	
 	/**
@@ -191,13 +183,11 @@ public class UpnpService {
 		}
 		UpnpRequest upnpRequest = UpnpRequest.newRequest(this.serviceType);
 		String xml = upnpRequest.buildDeletePortMapping(port, protocol);
-		var client = HTTPClient.newClient();
-		var request = HTTPClient.newRequest(this.controlURL)
+		var client = HTTPClient.newInstance(this.controlURL);
+		var response = client
 			.header("SOAPAction", "\"" + this.serviceType + "#DeletePortMapping\"")
-			.POST(BodyPublishers.ofString(xml))
-			.build();
-		var response = HTTPClient.request(client, request, BodyHandlers.ofString());
-		return response.statusCode() == HTTPClient.HTTP_OK;
+			.post(xml, BodyHandlers.ofString());
+		return HTTPClient.ok(response);
 	}
 	
 	/**
