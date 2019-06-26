@@ -59,12 +59,17 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	
 	@Override
 	public void start() {
+		if(this.taskSession.running() || this.taskSession.complete()) {
+			return;
+		}
 		this.updateStatus(Status.await);
 	}
 	
 	@Override
 	public void pause() {
-		this.updateStatus(Status.pause);
+		if(this.taskSession.running()) {
+			this.updateStatus(Status.pause);
+		}
 	}
 	
 	@Override
