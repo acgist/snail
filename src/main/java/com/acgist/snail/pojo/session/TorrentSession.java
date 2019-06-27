@@ -181,17 +181,17 @@ public class TorrentSession {
 	}
 	
 	/**
-	 * 开始下载
-	 * 需要先调用{@link #upload(TaskSession)}对任务进行上传。
+	 * <p>开始下载</p>
+	 * <p>需要先调用{@link #upload(TaskSession)}对任务进行上传。</p>
 	 */
 	public boolean download() throws DownloadException {
 		return this.download(true);
 	}
 	
 	/**
-	 * 开始下载：加载线程池、Peer、Tracker、DHT。
-	 * 如果文件已经下载完成或者任务已经完成不会再加载线程池、Peer、Tracker、DHT。
-	 * 需要先调用{@link #upload(TaskSession)}对任务进行上传。
+	 * <p>开始下载：加载线程池、Peer、Tracker、DHT。</p>
+	 * <p>如果文件已经下载完成或者任务已经完成不会再加载线程池、Peer、Tracker、DHT。</p>
+	 * <p>需要先调用{@link #upload(TaskSession)}对任务进行上传。</p>
 	 * 
 	 * @param findPeer 是否查找Peer：true-使用Tracker、DHT查找Peer，false-不查找
 	 * 
@@ -242,7 +242,7 @@ public class TorrentSession {
 		}
 		this.torrentStreamGroup = TorrentStreamGroup.newInstance(
 			this.taskSession.downloadFolder().getPath(),
-			selectFiles(),
+			setSelectFiles(),
 			this);
 	}
 
@@ -384,20 +384,20 @@ public class TorrentSession {
 	}
 	
 	/**
-	 * 获取选择的下载文件
+	 * 设置选择的下载文件并返回
 	 */
-	private List<TorrentFile> selectFiles() {
-		final TorrentInfo info = this.torrent.getInfo();
-		final List<TorrentFile> files = info.files();
+	private List<TorrentFile> setSelectFiles() {
+		final TorrentInfo torrentInfo = this.torrent.getInfo();
+		final List<TorrentFile> torrentFiles = torrentInfo.files();
 		final List<String> selectedFiles = this.taskSession.downloadTorrentFiles();
-		for (TorrentFile file : files) {
-			if(selectedFiles.contains(file.path())) {
-				file.select(true);
+		for (TorrentFile torrentFile : torrentFiles) {
+			if(selectedFiles.contains(torrentFile.path())) {
+				torrentFile.select(true);
 			} else {
-				file.select(false);
+				torrentFile.select(false);
 			}
 		}
-		return files;
+		return torrentFiles;
 	}
 
 	/**

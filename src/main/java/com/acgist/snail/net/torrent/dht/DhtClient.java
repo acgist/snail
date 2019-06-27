@@ -34,9 +34,6 @@ public class DhtClient extends UdpClient<DhtMessageHandler> {
 		return new DhtClient(socketAddress);
 	}
 
-	/**
-	 * 使用和DHT Server一条的通道。
-	 */
 	@Override
 	public boolean open() {
 		return open(TorrentServer.getInstance().channel());

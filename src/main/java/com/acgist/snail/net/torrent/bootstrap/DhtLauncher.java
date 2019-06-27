@@ -3,8 +3,6 @@ package com.acgist.snail.net.torrent.bootstrap;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.LinkedBlockingDeque;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +32,7 @@ public class DhtLauncher implements Runnable {
 	/**
 	 * 客户端连接时支持DHT，加入列表，定时查询Peer时使用。
 	 */
-	private Queue<InetSocketAddress> dhtAddress = new LinkedBlockingDeque<>();
+	private List<InetSocketAddress> nodes = new ArrayList<>();
 	
 	private DhtLauncher(TorrentSession torrentSession) {
 		this.infoHash = torrentSession.infoHash();
@@ -60,14 +58,13 @@ public class DhtLauncher implements Runnable {
 	 */
 	private List<InetSocketAddress> pick() {
 		final List<InetSocketAddress> list = new ArrayList<>();
-		while(true) {
-			final var address = this.dhtAddress.poll();
-			if(address == null) {
-				break;
+		synchronized (this.nodes) {
+			if(CollectionUtils.isNotEmpty(this.nodes)) {
+				list.addAll(this.nodes);
+				this.nodes.clear();
 			}
-			list.add(address);
 		}
-		final var nodes = NodeManager.getInstance().findNode(infoHash.infoHash());
+		final var nodes = NodeManager.getInstance().findNode(this.infoHash.infoHash());
 		if(CollectionUtils.isNotEmpty(nodes)) {
 			for (NodeSession node : nodes) {
 				list.add(NetUtils.buildSocketAddress(node.getHost(), node.getPort()));
@@ -85,7 +82,7 @@ public class DhtLauncher implements Runnable {
 		}
 		for (InetSocketAddress socketAddress : list) {
 			final DhtClient client = DhtClient.newInstance(socketAddress);
-			client.getPeers(infoHash.infoHash());
+			client.getPeers(this.infoHash.infoHash());
 		}
 	}
 	
@@ -96,7 +93,9 @@ public class DhtLauncher implements Runnable {
 	 * @param port 端口
 	 */
 	public void put(String host, Integer port) {
-		this.dhtAddress.add(NetUtils.buildSocketAddress(host, port));
+		synchronized (this.nodes) {
+			this.nodes.add(NetUtils.buildSocketAddress(host, port));
+		}
 	}
 	
 }

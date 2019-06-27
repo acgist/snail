@@ -160,15 +160,20 @@ public class PeerLauncher {
 	 * 资源释放
 	 */
 	public void release() {
-		if(available()) {
-			LOGGER.debug("PeerLauncher关闭：{}-{}", this.peerSession.host(), this.peerSession.peerPort());
-			this.available = false;
-			if(!this.completeLock.get()) { // 没有完成：等待下载完成
-				synchronized (this.closeLock) {
-					ThreadUtils.wait(this.closeLock, Duration.ofSeconds(CLOSE_AWAIT_TIME));
+		try {
+			if(available()) {
+				LOGGER.debug("PeerLauncher关闭：{}-{}", this.peerSession.host(), this.peerSession.peerPort());
+				this.available = false;
+				if(!this.completeLock.get()) { // 没有完成：等待下载完成
+					synchronized (this.closeLock) {
+						ThreadUtils.wait(this.closeLock, Duration.ofSeconds(CLOSE_AWAIT_TIME));
+					}
 				}
+				this.peerSubMessageHandler.close();
 			}
-			this.peerSubMessageHandler.close();
+		} catch (Exception e) {
+			LOGGER.error("PeerLauncher关闭异常", e);
+		} finally {
 			this.peerSession.unstatus(PeerConfig.STATUS_DOWNLOAD);
 			this.peerSession.peerLauncher(null);
 		}
