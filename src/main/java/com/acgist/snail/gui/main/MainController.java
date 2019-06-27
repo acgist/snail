@@ -410,7 +410,7 @@ public class MainController implements Initializable {
 				} else {
 					FileUtils.openInDesktop(new File(session.entity().getFile()));
 				}
-			} else if(session.running()) { // 准备中=暂停下载
+			} else if(session.downloading()) { // 准备中=暂停下载
 				DownloaderManager.getInstance().pause(session);
 			} else { // 其他=开始下载
 				try {

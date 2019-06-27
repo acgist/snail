@@ -36,7 +36,8 @@ import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * Torrent Session
+ * <p>Torrent Session</p>
+ * <p>负责下载任务整体调度，查询Peer、文件管理等。</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -162,7 +163,7 @@ public class TorrentSession {
 		this.loadDhtLauncherTimer();
 		this.loadPeerLauncherGroup();
 		this.loadPeerLauncherGroupTimer();
-		this.action = Action.torrent;
+		this.action = Action.magnet;
 		return this.torrent != null;
 	}
 	
@@ -214,7 +215,7 @@ public class TorrentSession {
 		this.loadPeerLauncherGroupTimer();
 		this.loadPexTimer();
 		this.downloadable = true;
-		this.action = Action.download;
+		this.action = Action.torrent;
 		return false;
 	}
 
@@ -282,7 +283,7 @@ public class TorrentSession {
 	 */
 	private void loadTrackerLauncherGroup() throws DownloadException {
 		this.trackerLauncherGroup = TrackerLauncherGroup.newInstance(this);
-		if(this.action == Action.download) {
+		if(this.action == Action.torrent) {
 			this.trackerLauncherGroup.loadTracker();
 		} else {
 			final Magnet magnet = MagnetReader.newInstance(this.taskSession.entity().getUrl()).magnet();
@@ -304,7 +305,7 @@ public class TorrentSession {
 	 */
 	private void loadDhtLauncher() {
 		this.dhtLauncher = DhtLauncher.newInstance(this);
-		if(this.action == Action.download) {
+		if(this.action == Action.torrent) {
 			final var nodes = this.torrent.getNodes();
 			if(CollectionUtils.isNotEmpty(nodes)) { // 添加DHT节点
 				nodes.forEach((host, port) -> {
@@ -414,10 +415,10 @@ public class TorrentSession {
 	 * 释放资源（磁力链接）
 	 */
 	public void releaseMagnet() {
-		this.peerLauncherGroupTimer.cancel(false);
+		this.peerLauncherGroupTimer.cancel(true);
 		this.peerLauncherGroup.release();
-		this.dhtLauncherTimer.cancel(false);
-		this.trackerLauncherGroupTimer.cancel(false);
+		this.dhtLauncherTimer.cancel(true);
+		this.trackerLauncherGroupTimer.cancel(true);
 		this.trackerLauncherGroup.release();
 		SystemThreadContext.shutdownNow(this.executorTimer);
 		SystemThreadContext.shutdownNow(this.executor);
@@ -428,14 +429,14 @@ public class TorrentSession {
 	 */
 	public void releaseDownload() {
 		LOGGER.debug("Torrent释放资源（下载）");
-		this.pexTimer.cancel(false);
-		this.peerLauncherGroupTimer.cancel(false);
+		this.pexTimer.cancel(true);
+		this.peerLauncherGroupTimer.cancel(true);
 		this.peerLauncherGroup.release();
 		if(this.dhtLauncherTimer != null) {
-			this.dhtLauncherTimer.cancel(false);
+			this.dhtLauncherTimer.cancel(true);
 		}
 		if(this.trackerLauncherGroup != null) {
-			this.trackerLauncherGroupTimer.cancel(false);
+			this.trackerLauncherGroupTimer.cancel(true);
 			this.trackerLauncherGroup.release();
 		}
 		SystemThreadContext.shutdownNow(this.executor);
@@ -447,7 +448,7 @@ public class TorrentSession {
 	 */
 	public void releaseUpload() {
 		LOGGER.debug("Torrent释放资源（上传）");
-		this.peerConnectGroupTimer.cancel(false);
+		this.peerConnectGroupTimer.cancel(true);
 		this.peerConnectGroup.release();
 		this.torrentStreamGroup.release();
 		SystemThreadContext.shutdownNow(this.executorTimer);
@@ -544,12 +545,16 @@ public class TorrentSession {
 	}
 	
 	/**
-	 * 任务是否下载完成
-	 * 磁力链接：torrent不为空
-	 * 文件下载：文件下载完成
+	 * <p>检测任务是否下载完成</p>
+	 * <p>如果任务已经完成，直接返回完成。</p>
+	 * <p>文件下载：文件下载完成</p>
+	 * <p>磁力链接：种子文件不为空</p>
 	 */
-	public boolean downloadCompleted() {
-		if(action == Action.download) {
+	public boolean checkCompleted() {
+		if(completed()) {
+			return true;
+		}
+		if(this.action == Action.torrent) {
 			return this.torrentStreamGroup().complete();
 		} else {
 			return this.torrent != null;
@@ -576,16 +581,16 @@ public class TorrentSession {
 		return this.infoHash.infoHashHex();
 	}
 	
-	public StatisticsSession statistics() {
-		return this.taskSession == null ? null : this.taskSession.statistics();
-	}
-	
 	public TaskSession taskSession() {
 		return this.taskSession;
 	}
 	
 	public DhtLauncher dhtLauncher() {
 		return this.dhtLauncher;
+	}
+	
+	public StatisticsSession statistics() {
+		return this.taskSession == null ? null : this.taskSession.statistics();
 	}
 	
 	public PeerConnectGroup peerConnectGroup() {

@@ -45,7 +45,7 @@ public class MagnetDownloader extends Downloader {
 		while(ok()) {
 			synchronized (this.downloadLock) {
 				ThreadUtils.wait(this.downloadLock, Duration.ofSeconds(Integer.MAX_VALUE));
-				this.complete = this.torrentSession.downloadCompleted();
+				this.complete = this.torrentSession.checkCompleted();
 			}
 		}
 	}

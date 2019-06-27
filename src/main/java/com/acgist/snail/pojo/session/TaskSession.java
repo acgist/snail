@@ -154,7 +154,7 @@ public class TaskSession {
 	/**
 	 * 任务执行状态：等待中或者下载中
 	 */
-	public boolean running() {
+	public boolean downloading() {
 		return await() || download();
 	}
 	

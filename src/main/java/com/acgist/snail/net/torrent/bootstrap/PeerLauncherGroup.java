@@ -156,7 +156,7 @@ public class PeerLauncherGroup {
 		final PeerSession peerSession = PeerManager.getInstance().pick(this.torrentSession.infoHashHex());
 		if(peerSession != null) {
 			final PeerLauncher launcher = PeerLauncher.newInstance(peerSession, this.torrentSession);
-			final boolean ok = launcher.download();
+			final boolean ok = launcher.handshake();
 			if(ok) {
 				peerSession.status(PeerConfig.STATUS_DOWNLOAD); // 设置下载中
 				this.peerLaunchers.offer(launcher);

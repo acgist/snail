@@ -125,7 +125,6 @@ public class TorrentManager {
 			if(map == null) {
 				throw new DownloadException("种子文件格式错误");
 			}
-			
 			final Torrent torrent = Torrent.valueOf(map);
 			final Map<String, Object> info = BCodeDecoder.getMap(map, "info");
 			final InfoHash infoHash = InfoHash.newInstance(BCodeEncoder.encodeMap(info));
