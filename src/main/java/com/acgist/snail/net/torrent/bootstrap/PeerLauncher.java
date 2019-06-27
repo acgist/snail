@@ -71,7 +71,7 @@ public class PeerLauncher {
 	/**
 	 * 开始下载：发送请求
 	 */
-	public void launcher() {
+	public void download() {
 		if(this.launcher) {
 			return;
 		}
@@ -86,9 +86,9 @@ public class PeerLauncher {
 	}
 
 	/**
-	 * 开始下载：连接、握手
+	 * 建立连接、发送握手
 	 */
-	public boolean download() {
+	public boolean handshake() {
 		LOGGER.debug("Peer连接：{}-{}", this.peerSession.host(), this.peerSession.peerPort());
 		final boolean ok = connect();
 		if(ok) {

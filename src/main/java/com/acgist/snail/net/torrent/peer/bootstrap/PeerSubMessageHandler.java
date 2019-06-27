@@ -347,7 +347,7 @@ public class PeerSubMessageHandler {
 		this.peerSession.peerUnchoke();
 		if(this.torrentSession.downloadable()) {
 			if(this.peerLauncher != null) {
-				this.peerLauncher.launcher(); // 开始下载
+				this.peerLauncher.download(); // 开始下载
 			}
 		}
 	}

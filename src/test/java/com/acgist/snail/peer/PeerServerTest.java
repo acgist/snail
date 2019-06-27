@@ -74,7 +74,7 @@ public class PeerServerTest {
 		StatisticsSession statisticsSession = new StatisticsSession();
 		PeerSession peerSession = PeerSession.newInstance(statisticsSession, host, port);
 		PeerLauncher launcher = PeerLauncher.newInstance(peerSession, torrentSession);
-		launcher.download();
+		launcher.handshake();
 		new Thread(() -> {
 			while(true) {
 				System.out.println("下载速度：" + statisticsSession.downloadSecond());

@@ -24,7 +24,7 @@ public class TaskEntity extends BaseEntity {
 	public enum Status {
 		
 		/**
-		 * 任务添加进入下载前的状态
+		 * 任务添加进入下载前在队列中等待的状态
 		 */
 		await("等待中"),
 		/**

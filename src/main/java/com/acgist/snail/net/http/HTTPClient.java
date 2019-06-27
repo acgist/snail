@@ -136,7 +136,7 @@ public class HTTPClient {
 	 * POST请求
 	 */
 	public <T> HttpResponse<T> post(String data, HttpResponse.BodyHandler<T> handler) throws NetException {
-		if(data == null) {
+		if(data == null || data.isEmpty()) {
 			this.builder.POST(BodyPublishers.noBody());
 		} else {
 			this.builder.POST(BodyPublishers.ofString(data));
@@ -150,9 +150,13 @@ public class HTTPClient {
 	 * POST表单请求
 	 */
 	public <T> HttpResponse<T> postForm(Map<String, String> data, HttpResponse.BodyHandler<T> handler) throws NetException {
+		this.builder.header("Content-type", "application/x-www-form-urlencoded;charset=" + SystemConfig.DEFAULT_CHARSET);
+		if(data == null || data.isEmpty()) {
+			this.builder.POST(BodyPublishers.noBody());
+		} else {
+			this.builder.POST(newFormBodyPublisher(data));
+		}
 		final var request = this.builder
-			.header("Content-type", "application/x-www-form-urlencoded;charset=" + SystemConfig.DEFAULT_CHARSET)
-			.POST(newFormBodyPublisher(data))
 			.build();
 		return request(request, handler);
 	}
@@ -264,8 +268,8 @@ public class HTTPClient {
 		return HttpClient
 			.newBuilder()
 			.executor(EXECUTOR) // 线程池
-			.followRedirects(Redirect.NORMAL) // 重定向
-//			.followRedirects(Redirect.ALWAYS) // 重定向
+			.followRedirects(Redirect.NORMAL) // 重定向：正常
+//			.followRedirects(Redirect.ALWAYS) // 重定向：全部
 			.connectTimeout(Duration.ofSeconds(timeout)) // 超时
 //			.proxy(ProxySelector.getDefault()) // 代理
 //			.authenticator(Authenticator.getDefault()) // 认证
@@ -284,5 +288,5 @@ public class HTTPClient {
 			.timeout(Duration.ofSeconds(timeout))
 			.header("User-Agent", USER_AGENT);
 	}
-	
+
 }

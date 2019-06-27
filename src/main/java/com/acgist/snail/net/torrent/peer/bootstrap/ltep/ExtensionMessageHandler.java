@@ -163,7 +163,7 @@ public class ExtensionMessageHandler {
 		if(!this.handshake) {
 			handshake();
 		}
-		if(this.torrentSession.action() == Action.torrent) {
+		if(this.torrentSession.action() == Action.magnet) {
 			downloadTorrent();
 		}
 	}

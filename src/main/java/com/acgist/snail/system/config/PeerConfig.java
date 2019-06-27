@@ -309,8 +309,8 @@ public class PeerConfig {
 	 * 动作
 	 */
 	public enum Action {
-		torrent, // 下载种子
-		download; // 下载文件
+		magnet, // 磁力链接
+		torrent; // 下载文件
 	}
 	
 }

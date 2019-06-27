@@ -57,7 +57,7 @@ public class PeerClientTest {
 		StatisticsSession statisticsSession = new StatisticsSession();
 		PeerSession peerSession = PeerSession.newInstance(statisticsSession, host, port);
 		PeerLauncher launcher = PeerLauncher.newInstance(peerSession, torrentSession);
-		launcher.download();
+		launcher.handshake();
 		new Thread(() -> {
 			while(true) {
 				System.out.println("下载速度：" + statisticsSession.downloadSecond());
@@ -88,7 +88,7 @@ public class PeerClientTest {
 //		Integer port = 15000; // 本地迅雷测试端口
 		PeerSession peerSession = PeerSession.newInstance(new StatisticsSession(), host, port);
 		PeerLauncher launcher = PeerLauncher.newInstance(peerSession, torrentSession);
-		launcher.download();
+		launcher.handshake();
 		ThreadUtils.sleep(Long.MAX_VALUE);
 	}
 
