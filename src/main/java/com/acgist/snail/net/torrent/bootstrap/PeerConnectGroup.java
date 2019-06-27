@@ -41,11 +41,12 @@ public class PeerConnectGroup {
 	}
 	
 	/**
-	 * <p>是否创建成功</p>
+	 * <p>创建接入连接</p>
 	 * <p>如果Peer当前提供下载，可以直接给予上传，否者将验证是否超过了连接的最大数量。</p>
 	 */
 	public PeerConnect newPeerConnect(PeerSession peerSession, PeerSubMessageHandler peerSubMessageHandler) {
 		synchronized (this.peerConnects) {
+			LOGGER.debug("Peer接入：{}-{}", peerSession.host(), peerSession.peerPort());
 			if(!peerSession.downloading()) {
 				if(this.peerConnects.size() >= SystemConfig.getPeerSize()) {
 					LOGGER.debug("Peer连接数超过最大连接数量，拒绝连接：{}-{}", peerSession.host(), peerSession.peerPort());
@@ -63,8 +64,8 @@ public class PeerConnectGroup {
 	 * 优化
 	 */
 	public void optimize() {
-		LOGGER.debug("优化PeerConnect");
 		synchronized (this.peerConnects) {
+			LOGGER.debug("优化PeerConnect");
 			try {
 				inferiorPeerConnect();
 			} catch (Exception e) {
@@ -77,8 +78,8 @@ public class PeerConnectGroup {
 	 * 释放资源
 	 */
 	public void release() {
-		LOGGER.debug("释放PeerConnectGroup");
 		synchronized (this.peerConnects) {
+			LOGGER.debug("释放PeerConnectGroup");
 			this.peerConnects.forEach(connect -> {
 				SystemThreadContext.submit(() -> {
 					connect.release();

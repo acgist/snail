@@ -40,7 +40,7 @@ public class PeerConnect {
 	}
 
 	public PeerSession peerSession() {
-		return peerSession;
+		return this.peerSession;
 	}
 	
 	/**
@@ -77,14 +77,19 @@ public class PeerConnect {
 	 * 释放资源：阻塞、关闭Socket，设置非上传状态。
 	 */
 	public void release() {
-		if(LOGGER.isDebugEnabled()) {
-			LOGGER.debug("PeerConnect关闭：{}-{}", this.peerSession.host(), this.peerSession.peerPort());
+		try {
+			if(available()) {
+				LOGGER.debug("PeerConnect关闭：{}-{}", this.peerSession.host(), this.peerSession.peerPort());
+				this.available = false;
+				this.peerSubMessageHandler.choke();
+				this.peerSubMessageHandler.close();
+			}
+		} catch (Exception e) {
+			LOGGER.error("PeerConnect关闭异常", e);
+		} finally {
+			this.peerSession.unstatus(PeerConfig.STATUS_UPLOAD);
+			this.peerSession.peerConnect(null);
 		}
-		this.available = false;
-		this.peerSubMessageHandler.choke();
-		this.peerSubMessageHandler.close();
-		this.peerSession.unstatus(PeerConfig.STATUS_UPLOAD);
-		this.peerSession.peerConnect(null);
 	}
 	
 }
