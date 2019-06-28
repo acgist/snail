@@ -99,9 +99,6 @@ public class TaskSession {
 		if(complete()) {
 			return;
 		}
-		if(this.entity.getStatus() == status) {
-			return;
-		}
 		TaskRepository repository = new TaskRepository();
 		if(status == Status.complete) {
 			this.entity.setEndDate(new Date()); // 设置完成时间
@@ -142,6 +139,13 @@ public class TaskSession {
 	 */
 	public boolean download() {
 		return this.entity.getStatus() == Status.download;
+	}
+	
+	/**
+	 * 等待状态
+	 */
+	public boolean pause() {
+		return this.entity.getStatus() == Status.pause;
 	}
 	
 	/**
