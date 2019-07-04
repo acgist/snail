@@ -29,7 +29,7 @@ create table tb_range (
 	`id` VARCHAR(36) NOT NULL,
     `createDate` TIMESTAMP NOT NULL,
     `modifyDate` TIMESTAMP NOT NULL,
-    `begin` INT DEFAULT NULL,
+    `index` INT DEFAULT NULL,
     `score` INT DEFAULT NULL,
 	PRIMARY KEY (`id`)
 );
