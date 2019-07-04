@@ -78,7 +78,7 @@ public class PeerConnect {
 	 */
 	public void release() {
 		try {
-			if(available()) {
+			if(this.available) {
 				LOGGER.debug("PeerConnect关闭：{}-{}", this.peerSession.host(), this.peerSession.peerPort());
 				this.available = false;
 				this.peerSubMessageHandler.choke();
