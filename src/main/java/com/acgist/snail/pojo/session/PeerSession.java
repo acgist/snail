@@ -7,8 +7,8 @@ import java.util.Map;
 
 import com.acgist.snail.net.torrent.bootstrap.PeerConnect;
 import com.acgist.snail.net.torrent.bootstrap.PeerLauncher;
+import com.acgist.snail.system.IStatistics;
 import com.acgist.snail.system.config.PeerConfig;
-import com.acgist.snail.system.statistics.IStatistics;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.ObjectUtils;
 import com.acgist.snail.utils.StringUtils;

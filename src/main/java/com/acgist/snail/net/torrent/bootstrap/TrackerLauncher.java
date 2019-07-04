@@ -129,7 +129,7 @@ public class TrackerLauncher {
 	 * <p>可用状态：TrackerClient可用并且没有释放资源。</p>
 	 */
 	private boolean available() {
-		return this.client.available() && this.available;
+		return this.available && this.client.available();
 	}
 	
 }
