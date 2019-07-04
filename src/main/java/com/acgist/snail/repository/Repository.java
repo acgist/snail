@@ -54,6 +54,20 @@ public abstract class Repository<T extends BaseEntity> {
 	}
 	
 	/**
+	 * 合并：存在ID=更新；不存在ID=保存；
+	 */
+	public void merge(T t) {
+		if(t == null) {
+			throw new RepositoryException("合并参数错误：" + t);
+		}
+		if(t.getId() == null) {
+			save(t);
+		} else {
+			update(t);
+		}
+	}
+	
+	/**
 	 * 保存
 	 */
 	public void save(T t) {

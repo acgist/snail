@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 
 import org.junit.Test;
 
+import com.acgist.snail.pojo.entity.RangeEntity;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.utils.BeanUtils;
 
@@ -18,6 +19,14 @@ public class BeanUtilsTest {
 		TaskEntity entity = new TaskEntity();
 		entity.setId("1234");
 		System.out.println(BeanUtils.propertyValue(entity, "id"));
+	}
+	
+	@Test
+	public void properties() {
+		var properties = BeanUtils.properties(RangeEntity.class);
+		for (String property : properties) {
+			System.out.println(property);
+		}
 	}
 	
 	@Test
