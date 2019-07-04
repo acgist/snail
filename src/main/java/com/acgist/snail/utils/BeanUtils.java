@@ -36,7 +36,7 @@ public class BeanUtils {
 	}
 	
 	/**
-	 * <p>获取类属性（非静态）</p>
+	 * <p>获取类属性（非静态、非瞬时）</p>
 	 */
 	public static final String[] properties(Class<?> clazz) {
 		String[] properties = null;
@@ -51,7 +51,8 @@ public class BeanUtils {
 			Stream
 				.of(fields)
 				.filter(field -> {
-					return !Modifier.isStatic(field.getModifiers()); // 非静态属性
+					return !Modifier.isStatic(field.getModifiers()) && // 非静态属性
+						!Modifier.isTransient(field.getModifiers()); // 非瞬时属性
 				})
 				.map(field -> field.getName()),
 			Stream.of(properties)
