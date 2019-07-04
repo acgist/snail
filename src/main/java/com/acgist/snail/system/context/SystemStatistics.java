@@ -1,4 +1,4 @@
-package com.acgist.snail.system.statistics;
+package com.acgist.snail.system.context;
 
 import com.acgist.snail.pojo.session.StatisticsSession;
 
@@ -20,7 +20,7 @@ public class SystemStatistics {
 	private StatisticsSession systemStatistics;
 	
 	private SystemStatistics() {
-		systemStatistics = new StatisticsSession();
+		this.systemStatistics = new StatisticsSession();
 	}
 	
 	public static final SystemStatistics getInstance() {
@@ -31,21 +31,21 @@ public class SystemStatistics {
 	 * 系统统计
 	 */
 	public StatisticsSession getSystemStatistics() {
-		return systemStatistics;
+		return this.systemStatistics;
 	}
 	
 	/**
 	 * 下载速度
 	 */
 	public long downloadSecond() {
-		return systemStatistics.downloadSecond();
+		return this.systemStatistics.downloadSecond();
 	}
 	
 	/**
 	 * 上传速度
 	 */
 	public long uploadSecond() {
-		return systemStatistics.uploadSecond();
+		return this.systemStatistics.uploadSecond();
 	}
 
 }

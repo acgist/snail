@@ -37,16 +37,30 @@ public class NetUtils {
 	 */
 	public static final String LOCAL_HOST = "localhost";
 	
-	// A类私用地址
+	/*
+	 * A类私用地址
+	 * A类范围：0.0.0.0-127.255.255.255
+	 * 默认子网掩码：255.0.0.0
+	 */
 	private static final long A_IP_BEGIN = encodeIpToLong("10.0.0.0");
 	private static final long A_IP_END = encodeIpToLong("10.255.255.255");
-	// B类私用地址
+	/*
+	 * B类私用地址
+	 * B类范围：128.0.0.0-191.255.255.255
+	 * 默认子网掩码：255.255.0.0
+	 */
 	private static final long B_IP_BEGIN = encodeIpToLong("172.16.0.0");
 	private static final long B_IP_END = encodeIpToLong("172.31.255.255");
-	// C类私用地址
+	/*
+	 * C类私用地址
+	 * C类范围：192.0.0.0-223.255.255.255
+	 * 默认子网掩码：255.255.255.0
+	 */
 	private static final long C_IP_BEGIN = encodeIpToLong("192.168.0.0");
 	private static final long C_IP_END = encodeIpToLong("192.168.255.255");
-	// 系统环回地址
+	/*
+	 * 本地回环地址
+	 */
 	private static final long L_IP_BEGIN = encodeIpToLong("127.0.0.0");
 	private static final long L_IP_END = encodeIpToLong("127.255.255.255");
 	

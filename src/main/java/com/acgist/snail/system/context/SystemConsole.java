@@ -14,7 +14,6 @@ import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerClient;
 import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerManager;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.pojo.session.PeerSession;
-import com.acgist.snail.system.statistics.SystemStatistics;
 import com.acgist.snail.utils.FileUtils;
 
 /**

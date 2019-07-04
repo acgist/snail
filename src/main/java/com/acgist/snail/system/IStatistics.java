@@ -1,4 +1,4 @@
-package com.acgist.snail.system.statistics;
+package com.acgist.snail.system;
 
 /**
  * <p>下载统计接口</p>
