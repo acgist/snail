@@ -161,7 +161,7 @@ public class PeerLauncher {
 	 */
 	public void release() {
 		try {
-			if(available()) {
+			if(this.available) {
 				LOGGER.debug("PeerLauncher关闭：{}-{}", this.peerSession.host(), this.peerSession.peerPort());
 				this.available = false;
 				if(!this.completeLock.get()) { // 没有完成：等待下载完成
