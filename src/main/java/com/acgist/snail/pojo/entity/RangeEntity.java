@@ -17,46 +17,56 @@ public class RangeEntity extends BaseEntity {
 	 */
 	public enum Type {
 		
-		connect, // 连接
-		download; // 下载
+		connect(1), // 连接
+		download(3); // 下载
+
+		private int score;
+		
+		Type(int score) {
+			this.score = score;
+		}
+		
+		public int score() {
+			return this.score;
+		}
 		
 	}
 	
 	/**
-	 * 起始地址，结束范围=下一个范围开始（begin + 65536）。
+	 * 范围序号：IP（int）/步长（2 ^ 16）
 	 */
-	private int begin;
+	private Integer index;
 	/**
 	 * 计分：连接、下载。
 	 */
-	private int score;
+	private Integer score;
 	/**
 	 * 是否变化：不记录数据库。
 	 */
-	private transient boolean change;
+	private transient Boolean change;
 
-	public void setBegin(int begin) {
-		this.begin = begin;
+	public Integer getIndex() {
+		return index;
 	}
 
-	public int getScore() {
+	public void setIndex(Integer index) {
+		this.index = index;
+	}
+
+	public Integer getScore() {
 		return score;
 	}
 
-	public void setScore(int score) {
+	public void setScore(Integer score) {
 		this.score = score;
 	}
 
-	public int getBegin() {
-		return begin;
-	}
-
-	public boolean isChange() {
+	public Boolean isChange() {
 		return change;
 	}
 
-	public void setChange(boolean change) {
+	public void setChange(Boolean change) {
 		this.change = change;
 	}
-	
+
 }
