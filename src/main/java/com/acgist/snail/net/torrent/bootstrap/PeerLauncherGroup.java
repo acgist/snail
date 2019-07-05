@@ -209,9 +209,6 @@ public class PeerLauncherGroup {
 				inferiorPeerLauncher(tmp);
 				continue;
 			}
-			if(size < SystemConfig.getPeerSize()) {
-				continue;
-			}
 			mark = tmp.mark(); // 清空权重
 			if(mark > 0) { // 添加可用
 				this.optimize.add(tmp.peerSession());
@@ -231,7 +228,7 @@ public class PeerLauncherGroup {
 				this.peerLaunchers.offer(tmp);
 			}
 		}
-		if(unusable) {
+		if(unusable) { // 已经删除无用的Peer
 			if(inferior != null) {
 				this.peerLaunchers.offer(inferior);
 			}
