@@ -36,7 +36,7 @@ public class PeerEvaluatorTest {
 		var list = repository.findAll();
 		if(list != null) {
 			list.forEach(entity -> {
-				System.out.println(entity);
+				System.out.println(String.format("%05d", entity.getIndex()) + "=" + entity.getScore());
 			});
 		} else {
 			System.out.println("--");
