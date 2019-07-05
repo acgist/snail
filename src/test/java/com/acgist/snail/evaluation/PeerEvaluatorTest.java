@@ -33,9 +33,14 @@ public class PeerEvaluatorTest {
 //		}
 		long b = System.currentTimeMillis();
 		System.out.println(b - a);
-		repository.findAll().forEach(entity -> {
-//			System.out.println(entity);
-		});
+		var list = repository.findAll();
+		if(list != null) {
+			list.forEach(entity -> {
+				System.out.println(entity);
+			});
+		} else {
+			System.out.println("--");
+		}
 		long c = System.currentTimeMillis();
 		System.out.println(c - b);
 	}

@@ -154,7 +154,10 @@ public class UtpMessageHandler extends UdpMessageHandler {
 		final short acknr = buffer.getShort();
 		if(extension != 0) { // 扩展数据
 			final short extLength = buffer.getShort();
-			byte[] extData = new byte[extLength];
+			if(extLength <= 0) {
+				throw new NetException("UTP信息格式错误（扩展消息长度）：" + extLength);
+			}
+			final byte[] extData = new byte[extLength];
 			buffer.get(extData);
 		}
 		LOGGER.debug(
