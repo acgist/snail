@@ -114,10 +114,7 @@ public class PeerConnectGroup {
 				inferiorPeerConnect(tmp);
 				continue;
 			}
-			if(size < SystemConfig.getPeerSize()) {
-				continue;
-			}
-			if(tmp.peerSession().downloading()) { // TODO：是否清除
+			if(tmp.peerSession().downloading()) {
 				this.peerConnects.offer(tmp);
 				continue;
 			}
