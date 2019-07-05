@@ -110,13 +110,13 @@ public class PeerEvaluator {
 	 */
 	public void shutdown() {
 		LOGGER.info("Peer评估器关闭");
-		try {
-			synchronized (this) {
+		synchronized (this) {
+			try {
 				this.store();
 				this.available = false;
+			} catch (Exception e) {
+				LOGGER.error("Peer评估器关闭异常", e);
 			}
-		} catch (Exception e) {
-			LOGGER.error("Peer评估器关闭异常", e);
 		}
 	}
 	
