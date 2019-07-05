@@ -42,10 +42,10 @@ public class SystemThreadContext {
 	public static final String SNAIL_THREAD_TCP_CLIENT = SNAIL_THREAD + "-TCP-Client";
 	/** TCP服务端线程 */
 	public static final String SNAIL_THREAD_TCP_SERVER = SNAIL_THREAD + "-TCP-Server";
-	/** UDP客户端线程 */
-	public static final String SNAIL_THREAD_UDP_CLIENT = SNAIL_THREAD + "-UDP-Client";
 	/** UDP服务端线程 */
 	public static final String SNAIL_THREAD_UDP_SERVER = SNAIL_THREAD + "-UDP-Server";
+	/** UDP处理器线程 */
+	public static final String SNAIL_THREAD_UDP_HANDLER = SNAIL_THREAD + "-UDP-Handler";
 	
 	/**
 	 * 系统线程池：加快系统运行、防止卡顿。例如：初始化、关闭资源、文件校验等。

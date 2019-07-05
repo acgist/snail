@@ -32,7 +32,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 	private static final ExecutorService EXECUTOR;
 	
 	static {
-		EXECUTOR = SystemThreadContext.newCacheExecutor(SystemThreadContext.SNAIL_THREAD_UDP_CLIENT);
+		EXECUTOR = SystemThreadContext.newCacheExecutor(SystemThreadContext.SNAIL_THREAD_UDP_SERVER);
 	}
 	
 	/**
@@ -123,7 +123,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 	 */
 	public static final void shutdown() {
 		LOGGER.info("关闭UDP Server线程池");
-		SystemThreadContext.shutdown(EXECUTOR);
+		SystemThreadContext.shutdownNow(EXECUTOR);
 	}
 
 }

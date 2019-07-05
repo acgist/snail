@@ -106,6 +106,18 @@ public class DatabaseManager {
 	}
 	
 	/**
+	 * 关闭资源
+	 */
+	public void shutdown() {
+		LOGGER.info("数据库释放");
+		try {
+			this.closeConnection();
+		} catch (Exception e) {
+			LOGGER.error("数据库释放异常", e);
+		}
+	}
+	
+	/**
 	 * 结果集封装
 	 */
 	private List<ResultSetWrapper> wrapperResultSet(ResultSet result) throws SQLException {

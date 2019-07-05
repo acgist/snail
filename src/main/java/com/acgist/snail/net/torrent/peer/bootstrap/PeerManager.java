@@ -16,6 +16,7 @@ import com.acgist.snail.net.torrent.peer.bootstrap.ltep.PeerExchangeMessageHandl
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.StatisticsSession;
 import com.acgist.snail.system.config.PeerConfig;
+import com.acgist.snail.system.evaluation.PeerEvaluator;
 import com.acgist.snail.utils.CollectionUtils;
 
 /**
@@ -95,7 +96,11 @@ public class PeerManager {
 					LOGGER.debug("添加PeerSession，{}-{}，来源：{}", host, port, PeerConfig.source(source));
 				}
 				peerSession = PeerSession.newInstance(parent, host, port);
-				deque.offerLast(peerSession); // 下载Peer列表
+				if(PeerEvaluator.getInstance().eval(peerSession)) { // 计算插入位置
+					deque.offerLast(peerSession);
+				} else {
+					deque.offerFirst(peerSession);
+				}
 				list(infoHashHex).add(peerSession); // 存档
 			}
 			peerSession.source(source); // 设置来源

@@ -178,9 +178,13 @@ public final class DownloaderManager {
 	 */
 	public void shutdown() {
 		LOGGER.info("关闭下载器管理");
-		this.downloaderMap.values().stream()
-			.filter(downloader -> downloader.taskSession().downloading())
-			.forEach(downloader -> downloader.pause());
+		try {
+			this.downloaderMap.values().stream()
+				.filter(downloader -> downloader.taskSession().downloading())
+				.forEach(downloader -> downloader.pause());
+		} catch (Exception e) {
+			LOGGER.error("关闭下载器管理异常", e);
+		}
 	}
 
 }

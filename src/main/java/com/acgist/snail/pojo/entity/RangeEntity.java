@@ -43,7 +43,7 @@ public class RangeEntity extends BaseEntity {
 	/**
 	 * 是否变化：不记录数据库。
 	 */
-	private transient Boolean change;
+	private transient Boolean change = false;
 
 	public Integer getIndex() {
 		return index;

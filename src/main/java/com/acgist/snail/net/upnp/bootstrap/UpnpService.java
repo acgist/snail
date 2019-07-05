@@ -212,7 +212,7 @@ public class UpnpService {
 			boolean dhtOk = this.deletePortMapping(SystemConfig.getTorrentPortExt(), Protocol.udp);
 			boolean peerOk = this.deletePortMapping(SystemConfig.getTorrentPortExt(), Protocol.tcp);
 			LOGGER.info("端口释放：DHT：{}、Peer：{}", dhtOk, peerOk);
-		} catch (NetException e) {
+		} catch (Exception e) {
 			LOGGER.error("释放UPNP端口异常", e);
 		}
 	}

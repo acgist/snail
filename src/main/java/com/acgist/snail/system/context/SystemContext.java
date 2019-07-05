@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.gui.Alerts;
+import com.acgist.snail.gui.main.MainWindow;
 import com.acgist.snail.gui.menu.TrayMenu;
 import com.acgist.snail.net.TcpClient;
 import com.acgist.snail.net.TcpServer;
@@ -17,10 +18,13 @@ import com.acgist.snail.net.torrent.server.TorrentServer;
 import com.acgist.snail.net.torrent.tracker.TrackerServer;
 import com.acgist.snail.net.upnp.UpnpServer;
 import com.acgist.snail.net.upnp.bootstrap.UpnpService;
+import com.acgist.snail.repository.DatabaseManager;
+import com.acgist.snail.system.evaluation.PeerEvaluator;
 import com.acgist.snail.system.initializer.impl.ConfigInitializer;
 import com.acgist.snail.system.initializer.impl.DatabaseInitializer;
 import com.acgist.snail.system.initializer.impl.DhtInitializer;
 import com.acgist.snail.system.initializer.impl.DownloaderInitializer;
+import com.acgist.snail.system.initializer.impl.PeerEvaluatorInitializer;
 import com.acgist.snail.system.initializer.impl.PeerInitializer;
 import com.acgist.snail.system.initializer.impl.ProtocolInitializer;
 import com.acgist.snail.system.initializer.impl.TorrentInitializer;
@@ -61,6 +65,7 @@ public class SystemContext {
 		TrackerInitializer.newInstance().asyn();
 		TorrentInitializer.newInstance().asyn();
 		DownloaderInitializer.newInstance().asyn();
+		PeerEvaluatorInitializer.newInstance().asyn();
 	}
 	
 	/**
@@ -103,6 +108,9 @@ public class SystemContext {
 			SystemContext.shutdown = true;
 			SystemThreadContext.submit(() -> {
 				LOGGER.info("系统关闭...");
+				Platform.runLater(() -> {
+					MainWindow.getInstance().hide();
+				});
 				DownloaderManager.getInstance().shutdown();
 				UpnpService.getInstance().release();
 				UpnpServer.getInstance().close();
@@ -115,6 +123,8 @@ public class SystemContext {
 				UdpAcceptHandler.shutdown();
 				UdpServer.shutdown();
 				SystemThreadContext.shutdown();
+				PeerEvaluator.getInstance().shutdown();
+				DatabaseManager.getInstance().shutdown();
 				Platform.exit();
 				TrayMenu.exit();
 				LOGGER.info("系统已关闭");

@@ -20,7 +20,7 @@ public abstract class UdpAcceptHandler {
 	private static final ExecutorService EXECUTOR;
 	
 	static {
-		EXECUTOR = SystemThreadContext.newExecutor(4, 10, 10000, 60L, SystemThreadContext.SNAIL_THREAD_UDP_SERVER);
+		EXECUTOR = SystemThreadContext.newExecutor(4, 10, 10000, 60L, SystemThreadContext.SNAIL_THREAD_UDP_HANDLER);
 	}
 	
 	/**
@@ -57,7 +57,7 @@ public abstract class UdpAcceptHandler {
 	 */
 	public static final void shutdown() {
 		LOGGER.info("关闭UDP消息处理线程池");
-		SystemThreadContext.shutdown(EXECUTOR);
+		SystemThreadContext.shutdownNow(EXECUTOR);
 	}
 	
 }
