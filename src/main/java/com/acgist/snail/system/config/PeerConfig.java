@@ -52,6 +52,7 @@ public class PeerConfig {
 	public static final int HANDSHAKE_LENGTH = 68;
 	public static final String HANDSHAKE_NAME = "BitTorrent protocol"; // 协议名称
 	public static final byte[] HANDSHAKE_NAME_BYTES = HANDSHAKE_NAME.getBytes();
+	public static final int HANDSHAKE_NAME_LENGTH = HANDSHAKE_NAME_BYTES.length;
 	
 	/**
 	 * Peer来源

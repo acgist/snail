@@ -230,7 +230,7 @@ public class PeerSubMessageHandler {
 			this.peerSession.peerLauncher(this.peerLauncher);
 		}
 		final ByteBuffer buffer = ByteBuffer.allocate(PeerConfig.HANDSHAKE_LENGTH);
-		buffer.put((byte) PeerConfig.HANDSHAKE_NAME_BYTES.length);
+		buffer.put((byte) PeerConfig.HANDSHAKE_NAME_LENGTH);
 		buffer.put(PeerConfig.HANDSHAKE_NAME_BYTES);
 		buffer.put(PeerConfig.HANDSHAKE_RESERVED);
 		buffer.put(this.torrentSession.infoHash().infoHash());
@@ -254,7 +254,7 @@ public class PeerSubMessageHandler {
 		this.handshakeRcv = true;
 		final boolean server = !this.handshakeSed; // 是否是服务方
 		final byte length = buffer.get();
-		if(length <= 0) {
+		if(length != PeerConfig.HANDSHAKE_NAME_LENGTH) {
 			LOGGER.warn("握手消息格式错误（协议长度）：{}", length);
 			this.close();
 			return;
