@@ -124,7 +124,7 @@ public class PeerLauncherGroup {
 					LOGGER.error("创建PeerLauncher异常", e);
 				}
 			});
-			if(++size % PARALLEL_BUILD_SIZE == 0) {
+			if(++size > PARALLEL_BUILD_SIZE) {
 				synchronized (this.build) {
 					ThreadUtils.wait(this.build, Duration.ofSeconds(10));
 				}
