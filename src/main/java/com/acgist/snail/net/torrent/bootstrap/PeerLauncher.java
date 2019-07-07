@@ -21,6 +21,7 @@ import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * 优先使用UTP、然后使用TCP。
+ * TODO：时间优化
  * 
  * @author acgist
  * @since 1.1.0
