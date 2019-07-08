@@ -21,18 +21,28 @@ import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * 优先使用UTP、然后使用TCP。
- * TODO：时间优化
  * 
  * @author acgist
  * @since 1.1.0
  */
 public class PeerLauncher {
 
-	private static final int SLICE_MAX_SIZE = 5; // 单次请求5个SLICE
-	
-	private static final int SLICE_AWAIT_TIME = 30; // SLICE每批等待时间
-	private static final int PIECE_AWAIT_TIME = 60; // PIECE完成等待时间
-	private static final int CLOSE_AWAIT_TIME = 60; // 关闭等待时间
+	/**
+	 * 每批请求的SLICE数量
+	 */
+	private static final int SLICE_REQUEST_SIZE = 4;
+	/**
+	 * 每批SLICE请求等待时间
+	 */
+	private static final int SLICE_AWAIT_TIME = 20;
+	/**
+	 * 一个PICEC完成等待时间
+	 */
+	private static final int PIECE_AWAIT_TIME = 40;
+	/**
+	 * 释放时等待时间
+	 */
+	private static final int CLOSE_AWAIT_TIME = 4;
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerLauncher.class);
 	
@@ -218,7 +228,7 @@ public class PeerLauncher {
 	
 	/**
 	 * <p>请求数据</p>
-	 * <p>每次发送{@link #SLICE_MAX_SIZE}个请求，进入等待，当全部数据响应后，又开始发送请求，直到Piece下载完成。</p>
+	 * <p>每次发送{@link #SLICE_REQUEST_SIZE}个请求，进入等待，当全部数据响应后，又开始发送请求，直到Piece下载完成。</p>
 	 * <p>请求发送完成后进入完成等待。</p>
 	 * <p>如果等待时间超过{@link #SLICE_AWAIT_TIME}跳出下载。</p>
 	 * <p>如果最后Piece没有下载完成标记为失败。</p>
@@ -240,7 +250,7 @@ public class PeerLauncher {
 		final int index = this.downloadPiece.getIndex();
 		while(available()) {
 			synchronized (this.countLock) {
-				if (this.countLock.get() >= SLICE_MAX_SIZE) {
+				if (this.countLock.get() >= SLICE_REQUEST_SIZE) {
 					ThreadUtils.wait(this.countLock, Duration.ofSeconds(SLICE_AWAIT_TIME));
 					if (!this.havePieceMessage) { // 没有数据返回
 						break;
@@ -256,14 +266,15 @@ public class PeerLauncher {
 			}
 		}
 		/*
-		 * 此处不论是否有数据返回都需要进行结束等待，防止数据刚刚只有一个slice时直接跳出了slice wait导致响应还没有收到就直接结束了
+		 * 此处不论是否有数据返回都需要进行结束等待，防止数据刚刚只有一个slice时直接跳出了slice wait导致响应还没有收到就直接结束了。
+		 * 设置true，下载完成时唤醒。
 		 */
 		synchronized (this.completeLock) {
 			if(!this.completeLock.getAndSet(true)) {
 				ThreadUtils.wait(this.completeLock, Duration.ofSeconds(PIECE_AWAIT_TIME));
 			}
 		}
-		if(!this.available) { // 已经关闭唤醒关闭
+		if(!this.available) { // 已经关闭唤醒关闭等待
 			synchronized (this.closeLock) {
 				this.closeLock.notifyAll();
 			}
@@ -283,7 +294,7 @@ public class PeerLauncher {
 		}
 		if(this.downloadPiece == null) { // 没有Piece
 		} else if(this.downloadPiece.complete()) { // 完成
-			if(this.downloadPiece.verify()) {
+			if(this.downloadPiece.verify()) { // 验证数据
 				final boolean ok = this.torrentStreamGroup.piece(this.downloadPiece); // 保存数据
 				if(ok) {
 					this.peerSession.download(this.downloadPiece.getLength()); // 统计
@@ -301,12 +312,8 @@ public class PeerLauncher {
 				LOGGER.debug("选取Piece：{}-{}-{}", this.downloadPiece.getIndex(), this.downloadPiece.getBegin(), this.downloadPiece.getEnd());
 			}
 		}
-		synchronized (this.completeLock) {
-			this.completeLock.set(false);
-		}
-		synchronized (this.countLock) {
-			this.countLock.set(0);
-		}
+		this.completeLock.set(false);
+		this.countLock.set(0);
 		this.havePieceMessage = false;
 	}
 	

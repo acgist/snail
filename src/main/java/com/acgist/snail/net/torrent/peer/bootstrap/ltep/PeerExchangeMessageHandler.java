@@ -110,6 +110,9 @@ public class PeerExchangeMessageHandler {
 		return this.peerSession.extensionTypeValue(ExtensionType.ut_pex);
 	}
 	
+	/**
+	 * 生成PEX消息
+	 */
 	public static final byte[] buildMessage(List<PeerSession> optimize) {
 		if(CollectionUtils.isEmpty(optimize)) {
 			return null;
@@ -118,7 +121,10 @@ public class PeerExchangeMessageHandler {
 		final int length = 6 * optimize.size();
 		final ByteBuffer addedBuffer = ByteBuffer.allocate(length);
 		final ByteBuffer addedfBuffer = ByteBuffer.allocate(optimize.size());
-		optimize.forEach(session -> {
+		optimize
+		.stream()
+		.distinct()
+		.forEach(session -> {
 			addedBuffer.putInt(NetUtils.encodeIpToInt(session.host()));
 			addedBuffer.putShort(NetUtils.encodePort(session.peerPort()));
 			addedfBuffer.put(session.exchange());
@@ -127,5 +133,5 @@ public class PeerExchangeMessageHandler {
 		data.put(ADDEDF, addedfBuffer.array());
 		return BCodeEncoder.encodeMap(data);
 	}
-
+	
 }
