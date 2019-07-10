@@ -415,6 +415,7 @@ public class TorrentSession {
 	 * 释放资源（磁力链接）
 	 */
 	public void releaseMagnet() {
+		LOGGER.debug("Torrent释放资源（磁力链接下载）");
 		this.peerLauncherGroupTimer.cancel(true);
 		this.peerLauncherGroup.release();
 		this.dhtLauncherTimer.cancel(true);

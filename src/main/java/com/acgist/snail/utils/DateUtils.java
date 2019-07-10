@@ -1,6 +1,8 @@
 package com.acgist.snail.utils;
 
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -137,6 +139,18 @@ public class DateUtils {
 	 */
 	public static final int timestampUs() {
 		return (int) (System.nanoTime() / 1000);
+	}
+
+	/**
+	 * 时间相减
+	 * 
+	 * @param begin 开始时间
+	 * @param end 结束时间
+	 * 
+	 * @return 相差时间：秒
+	 */
+	public static final long diff(LocalDateTime begin, LocalDateTime end) {
+		return Duration.between(begin, end).toSeconds();
 	}
 	
 }
