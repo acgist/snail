@@ -185,4 +185,35 @@ public class StringUtils {
 		}
 	}
 
+	/**
+	 * 转换Unicode
+	 */
+	public static final String toUnicode(String content) {
+		char value;
+		final StringBuilder unicode = new StringBuilder();
+		for (int index = 0; index < content.length(); index++) {
+			value = content.charAt(index);
+			unicode.append("\\u");
+			if(value <= 0xFF) {
+				unicode.append("00");
+			}
+			unicode.append(Integer.toHexString(value));
+		}
+		return unicode.toString();
+	}
+	
+	/**
+	 * 读取Unicode
+	 */
+	public static final String fromUnicode(String unicode) {
+		int value;
+		final String[] hex = unicode.split("\\\\u");
+		final StringBuffer content = new StringBuffer();
+		for (int index = 1; index < hex.length; index++) {
+			value = Integer.parseInt(hex[index], 16);
+			content.append((char) value);
+		}
+		return content.toString();
+	}
+	
 }
