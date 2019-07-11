@@ -28,9 +28,6 @@ public class RecycleManager {
 	static {
 		LOGGER.info("初始化回收站");
 		BUILDER = new HashMap<>();
-		register("Windows 7", (path) -> {
-			return new WindowRecycle(path);
-		});
 		register("Windows 10", (path) -> {
 			return new WindowRecycle(path);
 		});
