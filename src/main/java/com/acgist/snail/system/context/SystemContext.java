@@ -50,6 +50,10 @@ public class SystemContext {
 	 * 系统状态
 	 */
 	private static boolean shutdown = false;
+	/**
+	 * 系统名称
+	 */
+	private static String osName;
 	
 	/**
 	 * 系统初始化，数据库必须优先同步初始化。
@@ -90,7 +94,7 @@ public class SystemContext {
 		LOGGER.info("本机名称：{}", NetUtils.inetHostName());
 		LOGGER.info("本机地址：{}", NetUtils.inetHostAddress());
 	}
-
+	
 	/**
 	 * 系统是否可用
 	 */
@@ -155,4 +159,14 @@ public class SystemContext {
 		// TODO：加载效果
 	}
 
+	/**
+	 * 系统名称
+	 */
+	public static final String osName() {
+		if(SystemContext.osName == null) {
+			SystemContext.osName = System.getProperty("os.name");
+		}
+		return SystemContext.osName;
+	}
+	
 }

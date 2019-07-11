@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 import com.acgist.snail.pojo.session.TaskSession;
+import com.acgist.snail.protocol.torrent.bean.TorrentFile;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.FileUtils;
 
@@ -80,13 +81,13 @@ public class TorrentFileSelecter {
 	public void build(String path, Long size) {
 		String name = path;
 		TreeItem<HBox> parent = root;
-		if(path.contains("/")) {
-			String[] paths = path.split("/");
+		if(path.contains(TorrentFile.SEPARATOR)) {
+			String[] paths = path.split(TorrentFile.SEPARATOR);
 			String parentPath = "";
 			TreeItem<HBox> treeItem = null;
 			for (int index = 0; index < paths.length - 1; index++) { // 新建路径菜单
 				String value = paths[index];
-				parentPath += value + "/";
+				parentPath += value + TorrentFile.SEPARATOR;
 				treeItem = builcTreeItem(parent, parentPath, value, null);
 				parent = treeItem;
 			}
