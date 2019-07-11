@@ -64,11 +64,15 @@ public class FileUtils {
 	/**
 	 * 删除文件至回收站
 	 */
-	public static final void recycle(final String filePath) {
+	public static final boolean recycle(final String filePath) {
 		if(StringUtils.isEmpty(filePath)) {
-			return;
+			return false;
 		}
-		RecycleManager.newInstance(filePath).delete();
+		final var recycle = RecycleManager.newInstance(filePath);
+		if(recycle == null) {
+			return false;
+		}
+		return recycle.delete();
 	}
 
 	/**

@@ -40,7 +40,11 @@ public class RecycleManager {
 	 * 创建回收站
 	 */
 	public static final Recycle newInstance(String path) {
-		return BUILDER.get(SystemContext.osName()).apply(path);
+		final var builder = BUILDER.get(SystemContext.osName());
+		if(builder == null) {
+			return null;
+		}
+		return builder.apply(path);
 	}
 	
 	/**
