@@ -17,6 +17,8 @@ import com.acgist.snail.utils.StringUtils;
  */
 public class TorrentFile {
 
+	public static final String SEPARATOR = "/";
+	
 	private boolean selected = false; // 是否选择下载
 	
 	private Long length; // 大小
@@ -61,9 +63,9 @@ public class TorrentFile {
 	
 	public String path() {
 		if (CollectionUtils.isNotEmpty(pathUtf8)) {
-			return String.join("/", this.pathUtf8);
+			return String.join(TorrentFile.SEPARATOR, this.pathUtf8);
 		}
-		return String.join("/", this.path);
+		return String.join(TorrentFile.SEPARATOR, this.path);
 	}
 
 	public String ed2kHex() {

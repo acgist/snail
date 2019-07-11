@@ -115,15 +115,22 @@ public class FileUtils {
 	 * 根据文件名称获取文件类型。
 	 */
 	public static final FileType fileType(String fileName) {
-		if(StringUtils.isEmpty(fileName)) {
-			return FileType.unknown;
-		}
-		String ext = fileName;
-		int index = fileName.lastIndexOf(".");
-		if(index != -1) {
-			ext = fileName.substring(index + 1);
-		}
+		final String ext = ext(fileName);
 		return FileTypeConfig.type(ext);
+	}
+	
+	/**
+	 * 获取文件后缀
+	 */
+	public static final String ext(String fileName) {
+		if(StringUtils.isEmpty(fileName)) {
+			return null;
+		}
+		final int index = fileName.lastIndexOf(".");
+		if(index != -1) {
+			return fileName.substring(index + 1);
+		}
+		return null;
 	}
 	
 	/**

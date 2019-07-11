@@ -21,6 +21,11 @@ public class DateUtils {
 	 * 默认时间格式
 	 */
 	private static final String DEFAULT_PATTERN = "yyyy-MM-dd HH:mm:ss";
+	/**
+	 * 开始时间（1601年1月1日）北京时间（东八区）。
+	 * 转换Java时间戳：11644473600000L + System.currentTimeMillis()。
+	 */
+	private static final LocalDateTime WINDOW_BEIJIN_BEGIN_TIME = LocalDateTime.of(1601, 01, 01, 8, 00, 00);
 	
 	private static final long ONE_MINUTE = 60L;
 	private static final long ONE_HOUR = ONE_MINUTE * 60;
@@ -142,15 +147,33 @@ public class DateUtils {
 	}
 
 	/**
+	 * <p>Windows时间戳，开始时间（1601年1月1日）。</p>
+	 * <p>时间单位：微秒 * 10。</p>
+	 * <p>使用Java时间戳 + 相差时间戳计算。</p>
+	 */
+	public static final long windowTimestamp() {
+		return (11644473600000L + System.currentTimeMillis()) * 10_000;
+	}
+	
+	/**
+	 * <p>Windows时间戳，开始时间（1601年1月1日）。</p>
+	 * <p>时间单位：微秒 * 10。</p>
+	 * <p>使用时间差计算。</p>
+	 */
+	public static final long windowTimestampEx() {
+		return DateUtils.diff(WINDOW_BEIJIN_BEGIN_TIME, LocalDateTime.now()).toMillis() * 10_000;
+	}
+	
+	/**
 	 * 时间相减
 	 * 
 	 * @param begin 开始时间
 	 * @param end 结束时间
 	 * 
-	 * @return 相差时间：秒
+	 * @return 相差时间
 	 */
-	public static final long diff(LocalDateTime begin, LocalDateTime end) {
-		return Duration.between(begin, end).toSeconds();
+	public static final Duration diff(LocalDateTime begin, LocalDateTime end) {
+		return Duration.between(begin, end);
 	}
 	
 }

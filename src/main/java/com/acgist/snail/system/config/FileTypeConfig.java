@@ -88,6 +88,9 @@ public class FileTypeConfig {
 	 * 获取文件类型
 	 */
 	public static final FileType type(String ext) {
+		if(ext == null) {
+			return FileType.unknown;
+		}
 		final Optional<Entry<FileType, List<String>>> optional = TYPES.entrySet()
 			.stream()
 			.filter(entry -> {
