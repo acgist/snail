@@ -10,9 +10,9 @@ import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.ProtocolConfig.Protocol;
 import com.acgist.snail.system.config.TrackerConfig;
 import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.ObjectUtils;
 import com.acgist.snail.utils.StringUtils;
-import com.acgist.snail.utils.UniqueCodeUtils;
 
 /**
  * <p>Tracker客户端</p>
@@ -53,7 +53,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 		if(StringUtils.isEmpty(announceUrl)) {
 			throw new NetException("不支持的Tracker announceUrl：" + announceUrl);
 		}
-		this.id = UniqueCodeUtils.build();
+		this.id = NumberUtils.build();
 		this.type = type;
 		this.weight = 0;
 		this.scrapeUrl = scrapeUrl;

@@ -17,7 +17,7 @@ public class RecycleTest {
 
 	@Test
 	public void deleteOld() {
-		File file = Paths.get(URI.create("file:///D:/$Recycle.Bin/S-1-5-21-1082702080-4186364021-1016170526-1001/$IISOO9A.txt")).toFile();
+		File file = Paths.get(URI.create("file:///E:/$RECYCLE.BIN/S-1-5-21-1082702080-4186364021-1016170526-1001/$IDIQDFV.txt")).toFile();
 		file.delete();
 	}
 
@@ -45,7 +45,7 @@ public class RecycleTest {
 //	0200000000000000000000000000000040660eeb9237d5010d00000045003a005c004b6dd58b5c00440044002e007400780074000000
 	@Test
 	public void readInfo() throws IOException {
-		byte[] bytes = Files.readAllBytes(Paths.get(URI.create("file:///E:/$RECYCLE.BIN/S-1-5-21-1082702080-4186364021-1016170526-1001/$ILMU5TT.txt")));
+		byte[] bytes = Files.readAllBytes(Paths.get(URI.create("file:///E:/$RECYCLE.BIN/S-1-5-21-1082702080-4186364021-1016170526-1001/$I8VSPPW.txt")));
 		System.out.println(bytes.length);
 		System.err.println(StringUtils.hex(bytes));
 	}
