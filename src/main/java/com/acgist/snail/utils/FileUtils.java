@@ -121,7 +121,7 @@ public class FileUtils {
 			name = name.replaceAll(FILENAME_REPLACE_REGEX, FILENAME_REPLACE_CHAR);
 		}
 		if(StringUtils.isEmpty(name)) { // 默认使用日期
-			name = UniqueCodeUtils.build().toString();
+			name = NumberUtils.build().toString();
 		}
 		return name.trim();
 	}

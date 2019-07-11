@@ -13,7 +13,7 @@ import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.CollectionUtils;
-import com.acgist.snail.utils.UniqueCodeUtils;
+import com.acgist.snail.utils.NumberUtils;
 
 /**
  * <p>Tracker发射器</p>
@@ -39,7 +39,7 @@ public class TrackerLauncher {
 	private boolean available = true; // 可用
 	
 	private TrackerLauncher(TrackerClient client, TorrentSession torrentSession) {
-		this.id = UniqueCodeUtils.build();
+		this.id = NumberUtils.build();
 		this.client = client;
 		this.torrentSession = torrentSession;
 //		this.trackerLauncherGroup = torrentSession.trackerLauncherGroup();

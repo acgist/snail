@@ -15,8 +15,8 @@ import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.config.TrackerConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.NetUtils;
+import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.ThreadUtils;
-import com.acgist.snail.utils.UniqueCodeUtils;
 
 /**
  * <p>Tracker UDP 客户端</p>
@@ -151,7 +151,7 @@ public class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker.boots
 		buffer.putLong(upload); // 已上传大小
 		buffer.putInt(event.event()); // 事件：started-2、completed-1、stopped-3
 		buffer.putInt(0); // 本机IP：0（服务器自动获取）
-		buffer.putInt(UniqueCodeUtils.build()); // 系统分配唯一键
+		buffer.putInt(NumberUtils.build()); // 系统分配唯一键
 		buffer.putInt(50); // 想要获取的Peer数量
 		buffer.putShort(SystemConfig.getTorrentPortExtShort()); // 外网Peer端口
 		return buffer;

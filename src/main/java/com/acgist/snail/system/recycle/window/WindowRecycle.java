@@ -10,7 +10,7 @@ import com.acgist.snail.system.exception.ArgumentException;
 import com.acgist.snail.system.recycle.Recycle;
 import com.acgist.snail.utils.DateUtils;
 import com.acgist.snail.utils.FileUtils;
-import com.acgist.snail.utils.UniqueCodeUtils;
+import com.acgist.snail.utils.NumberUtils;
 
 /**
  * Window回收站
@@ -37,7 +37,7 @@ public class WindowRecycle extends Recycle {
 	/**
 	 * 回收站路径
 	 */
-	private String recycleFolder;
+	private String recyclePath;
 	/**
 	 * 删除文件路径
 	 */
@@ -57,18 +57,18 @@ public class WindowRecycle extends Recycle {
 	 * 设置回收站路径
 	 */
 	private void buildRecycle() {
-		String disk = this.path.substring(0, 1).toUpperCase();
+		final String disk = this.path.substring(0, 1).toUpperCase();
 		final String recycleFolder = disk + ":" + File.separator + RECYCLE_FOLDER;
 		final File recycleFile = new File(recycleFolder);
 		if(!recycleFile.exists()) {
 			throw new ArgumentException("回收站文件不存在：" + recycleFolder);
 		}
-		// 获取当前用户回收站
+		// 获取当前用户回收站：其他用户回收站没有权限查看所以获取不到文件列表
 		final File[] files = recycleFile.listFiles();
 		for (File file : files) {
 			if(file.listFiles() != null) {
-				this.recycleFolder = file.getAbsolutePath();
-				LOGGER.debug("回收站路径：{}", this.recycleFolder);
+				this.recyclePath = file.getAbsolutePath();
+				LOGGER.debug("回收站路径：{}", this.recyclePath);
 				break;
 			}
 		}
@@ -78,17 +78,16 @@ public class WindowRecycle extends Recycle {
 	 * 设置回收文件名称
 	 */
 	private void buildRecycleName() {
-		final int code = UniqueCodeUtils.build();
 		String ext = null;
-		String name = String.valueOf(code);
+		String name = NumberUtils.build().toString();
 		if(this.file.isFile()) {
 			ext = FileUtils.ext(this.path);
 		}
 		if(ext != null) {
 			name = name + "." + ext;
 		}
-		this.deleteFile = this.recycleFolder + File.separator + FILE_PREFIX + name;
-		this.deleteInfoFile = this.recycleFolder + File.separator + INFO_PREFIX + name;
+		this.deleteFile = this.recyclePath + File.separator + FILE_PREFIX + name;
+		this.deleteInfoFile = this.recyclePath + File.separator + INFO_PREFIX + name;
 		LOGGER.debug("删除文件路径：{}，删除信息文件路径：{}", this.deleteFile, this.deleteInfoFile);
 	}
 	
