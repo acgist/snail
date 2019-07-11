@@ -8,7 +8,7 @@ import java.nio.file.Paths;
 
 import org.junit.Test;
 
-import com.acgist.snail.system.recycle.Recycle;
+import com.acgist.snail.system.recycle.RecycleManager;
 import com.acgist.snail.system.recycle.window.WindowRecycle;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -70,8 +70,9 @@ public class RecycleTest {
 	
 	@Test
 	public void delete() {
-		Recycle.newInstance("E:/DD.txt").delete();
-//		Recycle.newInstance("E:/测试/DD.txt").delete();
+		RecycleManager.newInstance("E:/DD").delete();
+//		RecycleManager.newInstance("E:/DD.txt").delete();
+//		RecycleManager.newInstance("E:/测试/DD.txt").delete();
 	}
 	
 }

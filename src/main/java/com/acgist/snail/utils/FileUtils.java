@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.system.config.FileTypeConfig;
 import com.acgist.snail.system.config.FileTypeConfig.FileType;
 import com.acgist.snail.system.exception.ArgumentException;
+import com.acgist.snail.system.recycle.RecycleManager;
 
 /**
  * <p>文件工具</p>
@@ -58,6 +59,16 @@ public class FileUtils {
 		}
 		LOGGER.info("删除文件：{}", filePath);
 		delete(file);
+	}
+	
+	/**
+	 * 删除文件至回收站
+	 */
+	public static final void recycle(final String filePath) {
+		if(StringUtils.isEmpty(filePath)) {
+			return;
+		}
+		RecycleManager.newInstance(filePath).delete();
 	}
 
 	/**

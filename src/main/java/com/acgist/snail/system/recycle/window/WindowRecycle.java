@@ -157,7 +157,7 @@ public class WindowRecycle extends Recycle {
 	}
 
 	/**
-	 * 斜杠转换
+	 * 删除文件信息需要将斜杠转换成系统斜杠。
 	 */
 	private String buildPath() {
 		String path = this.path;
