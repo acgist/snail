@@ -15,6 +15,7 @@ import com.acgist.snail.utils.NetUtils;
 /**
  * <p>Holepunch extension</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0055.html</p>
+ * <p>如果不希望连接时，忽略连接消息，而不是返回错误响应。</p>
  * 
  * @author acgist
  * @since 1.1.0
