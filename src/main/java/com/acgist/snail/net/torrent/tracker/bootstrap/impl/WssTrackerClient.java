@@ -19,6 +19,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.1.0
  */
+@Deprecated
 public class WssTrackerClient extends TrackerClient {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WssTrackerClient.class);

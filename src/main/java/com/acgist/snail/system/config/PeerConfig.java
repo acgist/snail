@@ -39,11 +39,13 @@ public class PeerConfig {
 	public static final byte[] HANDSHAKE_RESERVED = {0, 0, 0, 0, 0, 0, 0, 0};
 	
 	public static final byte DHT_PROTOCOL =       1 << 0; // 0x01
+//	public static final byte FAST_PROTOCOL =      1 << 2; // 0x04
 	public static final byte EXTENSION_PROTOCOL = 1 << 4; // 0x10
 	
 	static {
-		HANDSHAKE_RESERVED[5] |= EXTENSION_PROTOCOL; // Extension Protocol
 		HANDSHAKE_RESERVED[7] |= DHT_PROTOCOL; // DHT Protocol
+//		HANDSHAKE_RESERVED[7] |= FAST_PROTOCOL; // FAST Protocol
+		HANDSHAKE_RESERVED[5] |= EXTENSION_PROTOCOL; // Extension Protocol
 	}
 	
 	/**
@@ -75,7 +77,7 @@ public class PeerConfig {
 	public static final byte PEX_SEED_UPLOAD_ONLY = 1 << 1; // 0x2：做种、上传
 	public static final byte PEX_UTP =              1 << 2; // 0x4：支持UTP协议
 	public static final byte PEX_HOLEPUNCH =        1 << 3; // 0x8：支持holepunch协议
-	public static final byte PEX_OUTGO =            1 << 4; // 0x10
+	public static final byte PEX_OUTGO =            1 << 4; // 0x10：TODO：了解
 	
 	/**
 	 * Peer客户端名称
@@ -187,23 +189,28 @@ public class PeerConfig {
 	 */
 	public enum Type {
 		
-		choke((byte)         0),
-		unchoke((byte)       1),
-		interested((byte)    2),
-		notInterested((byte) 3),
-		have((byte)          4),
-		bitfield((byte)      5),
-		request((byte)       6),
-		piece((byte)         7),
-		cancel((byte)        8),
-		dht((byte)           9),
-		extension((byte)     20);
+		choke((byte)         0x00),
+		unchoke((byte)       0x01),
+		interested((byte)    0x02),
+		notInterested((byte) 0x03),
+		have((byte)          0x04),
+		bitfield((byte)      0x05),
+		request((byte)       0x06),
+		piece((byte)         0x07),
+		cancel((byte)        0x08),
+		dht((byte)           0x09),
+		extension((byte)     0x14);
+//		suggest((byte)       0x0D), // 推荐块
+//		haveAll((byte)       0x0E), // 所有块
+//		haveNone((byte)      0x0F), // 没有块
+//		rejectRequest((byte) 0x10), // 拒绝请求
+//		allowedFast((byte)   0x11), // 快速允许
 		
 		Type(byte value) {
 			this.value = value;
 		}
 		
-		private byte value;
+		private byte value; // 消息ID
 		
 		public byte value() {
 			return this.value;
@@ -237,7 +244,7 @@ public class PeerConfig {
 			this.notice = notice;
 		}
 
-		private byte value;
+		private byte value; // 扩展消息ID
 		private boolean support; // 是否支持
 		private boolean notice; // 是否通知Peer
 		
@@ -276,32 +283,83 @@ public class PeerConfig {
 	}
 	
 	/**
-	 * UtMetadata消息类型
+	 * Metadata消息类型
 	 */
-	public enum UtMetadataType {
+	public enum MetadataType {
 		
 		request((byte) 0),
 		data((byte)    1),
 		reject((byte)  2);
 		
-		UtMetadataType(byte value) {
+		MetadataType(byte value) {
 			this.value = value;
 		}
 		
-		private byte value;
+		private byte value; // 消息ID
 		
 		public byte value() {
 			return this.value;
 		}
 		
-		public static final UtMetadataType valueOf(byte value) {
-			final UtMetadataType[] types = UtMetadataType.values();
-			for (UtMetadataType type : types) {
+		public static final MetadataType valueOf(byte value) {
+			final MetadataType[] types = MetadataType.values();
+			for (MetadataType type : types) {
 				if(type.value() == value) {
 					return type;
 				}
 			}
 			return null;
+		}
+		
+	}
+
+	/**
+	 * Holepunch扩展消息
+	 */
+	public enum HolepunchType {
+		
+		rendezvous((byte) 0x00),
+		connect((byte)    0x01),
+		error((byte)      0x02);
+		
+		HolepunchType(byte value) {
+			this.value = value;
+		}
+		
+		private byte value; // 消息ID
+		
+		public byte value() {
+			return this.value;
+		}
+		
+	}
+	
+	/**
+	 * <p>Holepunch扩展协议错误编码</p>
+	 * <ul>
+	 *	<li>0x00：没有错误：成功 </li>
+	 *	<li>0x01：NoSuchPeer：目标端点无效</li>
+	 *	<li>0x02：NotConnected：中继未连接</li>
+	 *	<li>0x03：NoSupport：目标不支持</li>
+	 *	<li>0x04：NoSelf：目标属于中继</li>
+	 * </ul>
+	 */
+	public enum HolepunchErrorCode {
+		
+		E_00((byte) 0x00),
+		E_01((byte) 0x01),
+		E_02((byte) 0x02),
+		E_03((byte) 0x03),
+		E_04((byte) 0x04);
+		
+		HolepunchErrorCode(byte code) {
+			this.code = code;
+		}
+		
+		private byte code;
+		
+		public byte code() {
+			return this.code;
 		}
 		
 	}

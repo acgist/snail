@@ -21,10 +21,14 @@ import com.acgist.snail.utils.StringUtils;
  * @since 1.0.0
  */
 public class PeerSession implements IStatistics {
+	
+	private byte[] id; // Peer id
+	private String clientName; // Peer客户端名称
 
 	private int failTimes = 0; // 失败次数：如果失败次数过多不在连接
 	
 	private byte[] reserved; // 保留位
+	
 	private byte status = 0; // 状态
 	private byte source = 0; // 来源属性
 	private byte exchange = 0; // PEX属性
@@ -32,9 +36,6 @@ public class PeerSession implements IStatistics {
 	private String host; // 地址
 	private Integer peerPort; // Peer端口
 	private Integer dhtPort; // DHT端口
-	
-	private byte[] id; // Peer id
-	private String clientName; // Peer客户端名称
 	
 	private final BitSet pieces; // 文件下载位图
 	private final BitSet badPieces; // 下载错误位图：下次获取时清除

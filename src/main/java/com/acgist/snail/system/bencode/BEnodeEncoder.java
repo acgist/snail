@@ -1,4 +1,4 @@
-package com.acgist.snail.system.bcode;
+package com.acgist.snail.system.bencode;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -10,7 +10,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.system.bcode.BCodeDecoder.Type;
+import com.acgist.snail.system.bencode.BEnodeDecoder.Type;
 
 /**
  * <p>B编码</p>
@@ -20,27 +20,27 @@ import com.acgist.snail.system.bcode.BCodeDecoder.Type;
  * @author acgist
  * @since 1.0.0
  */
-public class BCodeEncoder {
+public class BEnodeEncoder {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(BCodeEncoder.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(BEnodeEncoder.class);
 	
 	private List<Object> list;
 	private Map<String, Object> map;
-	private BCodeDecoder.Type type;
+	private BEnodeDecoder.Type type;
 	private ByteArrayOutputStream outputStream;
 	
-	private BCodeEncoder() {
+	private BEnodeEncoder() {
 		this.outputStream = new ByteArrayOutputStream();
 	}
 	
-	public static final BCodeEncoder newInstance() {
-		return new BCodeEncoder();
+	public static final BEnodeEncoder newInstance() {
+		return new BEnodeEncoder();
 	}
 
 	/**
 	 * 新建Map
 	 */
-	public BCodeEncoder newMap() {
+	public BEnodeEncoder newMap() {
 		this.type = Type.map;
 		this.map = new LinkedHashMap<>();
 		return this;
@@ -49,7 +49,7 @@ public class BCodeEncoder {
 	/**
 	 * 新建List
 	 */
-	public BCodeEncoder newList() {
+	public BEnodeEncoder newList() {
 		this.type = Type.list;
 		this.list = new ArrayList<>();
 		return this;
@@ -58,7 +58,7 @@ public class BCodeEncoder {
 	/**
 	 * 向List中添加数据
 	 */
-	public BCodeEncoder put(Object value) {
+	public BEnodeEncoder put(Object value) {
 		if(this.type == Type.list) {
 			this.list.add(value);
 		}
@@ -68,7 +68,7 @@ public class BCodeEncoder {
 	/**
 	 * 向List中添加数据
 	 */
-	public BCodeEncoder put(List<?> list) {
+	public BEnodeEncoder put(List<?> list) {
 		if(this.type == Type.list) {
 			this.list.addAll(list);
 		}
@@ -78,7 +78,7 @@ public class BCodeEncoder {
 	/**
 	 * 向Map中添加数据
 	 */
-	public BCodeEncoder put(String key, Object value) {
+	public BEnodeEncoder put(String key, Object value) {
 		if(this.type == Type.map) {
 			this.map.put(key, value);
 		}
@@ -88,7 +88,7 @@ public class BCodeEncoder {
 	/**
 	 * 向Map中添加数据
 	 */
-	public BCodeEncoder put(Map<String, Object> map) {
+	public BEnodeEncoder put(Map<String, Object> map) {
 		if(this.type == Type.map) {
 			this.map.putAll(map);
 		}
@@ -98,7 +98,7 @@ public class BCodeEncoder {
 	/**
 	 * 将List和Map中的数据刷入字符流，配合put系列方法使用。
 	 */
-	public BCodeEncoder flush() {
+	public BEnodeEncoder flush() {
 		if(this.type == Type.map) {
 			this.build(this.map);
 		} else if(this.type == Type.list) {
@@ -112,21 +112,21 @@ public class BCodeEncoder {
 	/**
 	 * 添加Map
 	 */
-	public BCodeEncoder build(Map<?, ?> map) {
+	public BEnodeEncoder build(Map<?, ?> map) {
 		if(map == null) {
 			return this;
 		}
-		this.outputStream.write(BCodeDecoder.TYPE_D);
+		this.outputStream.write(BEnodeDecoder.TYPE_D);
 		map.forEach((key, value) -> {
 			final String keyValue = (String) key;
 			final byte[] keyValues = keyValue.getBytes();
 			this.write(String.valueOf(keyValues.length).getBytes());
-			this.outputStream.write(BCodeDecoder.SEPARATOR);
+			this.outputStream.write(BEnodeDecoder.SEPARATOR);
 			this.write(keyValues);
 			if(value instanceof Number) {
-				this.outputStream.write(BCodeDecoder.TYPE_I);
+				this.outputStream.write(BEnodeDecoder.TYPE_I);
 				this.write(value.toString().getBytes());
-				this.outputStream.write(BCodeDecoder.TYPE_E);
+				this.outputStream.write(BEnodeDecoder.TYPE_E);
 			} else if(value instanceof Map) {
 				build((Map<?, ?>) value);
 			} else if(value instanceof List) {
@@ -142,28 +142,28 @@ public class BCodeEncoder {
 				}
 				if(bytes != null) {
 					this.write(String.valueOf(bytes.length).getBytes());
-					this.outputStream.write(BCodeDecoder.SEPARATOR);
+					this.outputStream.write(BEnodeDecoder.SEPARATOR);
 					this.write(bytes);
 				}
 			}
 		});
-		this.outputStream.write(BCodeDecoder.TYPE_E);
+		this.outputStream.write(BEnodeDecoder.TYPE_E);
 		return this;
 	}
 
 	/**
 	 * 添加List
 	 */
-	public BCodeEncoder build(List<?> list) {
+	public BEnodeEncoder build(List<?> list) {
 		if(list == null) {
 			return this;
 		}
-		this.outputStream.write(BCodeDecoder.TYPE_L);
+		this.outputStream.write(BEnodeDecoder.TYPE_L);
 		list.forEach(value -> {
 			if(value instanceof Number) {
-				this.outputStream.write(BCodeDecoder.TYPE_I);
+				this.outputStream.write(BEnodeDecoder.TYPE_I);
 				this.write(value.toString().getBytes());
-				this.outputStream.write(BCodeDecoder.TYPE_E);
+				this.outputStream.write(BEnodeDecoder.TYPE_E);
 			} else if(value instanceof Map) {
 				build((Map<?, ?>) value);
 			} else if(value instanceof List) {
@@ -179,19 +179,19 @@ public class BCodeEncoder {
 				}
 				if(bytes != null) {
 					this.write(String.valueOf(bytes.length).getBytes());
-					this.outputStream.write(BCodeDecoder.SEPARATOR);
+					this.outputStream.write(BEnodeDecoder.SEPARATOR);
 					this.write(bytes);
 				}
 			}
 		});
-		this.outputStream.write(BCodeDecoder.TYPE_E);
+		this.outputStream.write(BEnodeDecoder.TYPE_E);
 		return this;
 	}
 	
 	/**
 	 * 添加字符数组
 	 */
-	public BCodeEncoder build(byte[] bytes) {
+	public BEnodeEncoder build(byte[] bytes) {
 		write(bytes);
 		return this;
 	}

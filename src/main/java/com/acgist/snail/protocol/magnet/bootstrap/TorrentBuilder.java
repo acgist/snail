@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 
 import com.acgist.snail.protocol.torrent.TorrentProtocol;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
-import com.acgist.snail.system.bcode.BCodeDecoder;
-import com.acgist.snail.system.bcode.BCodeEncoder;
+import com.acgist.snail.system.bencode.BEnodeDecoder;
+import com.acgist.snail.system.bencode.BEnodeEncoder;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.DateUtils;
@@ -82,7 +82,7 @@ public class TorrentBuilder {
 	 * 设置infoHash
 	 */
 	private void infoHash(Map<String, Object> data) {
-		final BCodeDecoder decoder = BCodeDecoder.newInstance(this.infoHash.info());
+		final BEnodeDecoder decoder = BEnodeDecoder.newInstance(this.infoHash.info());
 		data.put("info", decoder.nextMap());
 	}
 
@@ -113,7 +113,7 @@ public class TorrentBuilder {
 		if(file.exists()) { // 文件已存在
 			return;
 		}
-		final byte[] bytes = BCodeEncoder.encodeMap(data);
+		final byte[] bytes = BEnodeEncoder.encodeMap(data);
 		FileUtils.write(filePath, bytes);
 	}
 

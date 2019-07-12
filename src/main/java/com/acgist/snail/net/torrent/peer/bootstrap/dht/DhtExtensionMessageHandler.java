@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.torrent.bootstrap.DhtLauncher;
 import com.acgist.snail.net.torrent.dht.bootstrap.NodeManager;
+import com.acgist.snail.net.torrent.peer.bootstrap.IExtensionMessageHandler;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.system.config.PeerConfig;
@@ -21,7 +22,7 @@ import com.acgist.snail.utils.NetUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class DhtExtensionMessageHandler {
+public class DhtExtensionMessageHandler implements IExtensionMessageHandler {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(DhtExtensionMessageHandler.class);
 	
@@ -39,6 +40,7 @@ public class DhtExtensionMessageHandler {
 		this.peerSubMessageHandler = peerSubMessageHandler;
 	}
 	
+	@Override
 	public void onMessage(ByteBuffer buffer) {
 		port(buffer);
 	}

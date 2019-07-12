@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.acgist.snail.system.bcode.BCodeDecoder;
+import com.acgist.snail.system.bencode.BEnodeDecoder;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -68,13 +68,13 @@ public class Torrent {
 	
 	public static final Torrent valueOf(Map<String, Object> map) {
 		final Torrent torrent = new Torrent();
-		torrent.setComment(BCodeDecoder.getString(map, "comment"));
-		torrent.setCommentUtf8(BCodeDecoder.getString(map, "comment.utf-8"));
-		torrent.setEncoding(BCodeDecoder.getString(map, "encoding"));
-		torrent.setCreatedBy(BCodeDecoder.getString(map, "created by"));
-		torrent.setAnnounce(BCodeDecoder.getString(map, "announce"));
-		torrent.setCreationDate(BCodeDecoder.getLong(map, "creation date"));
-		final List<Object> announceList = BCodeDecoder.getList(map, "announce-list");
+		torrent.setComment(BEnodeDecoder.getString(map, "comment"));
+		torrent.setCommentUtf8(BEnodeDecoder.getString(map, "comment.utf-8"));
+		torrent.setEncoding(BEnodeDecoder.getString(map, "encoding"));
+		torrent.setCreatedBy(BEnodeDecoder.getString(map, "created by"));
+		torrent.setAnnounce(BEnodeDecoder.getString(map, "announce"));
+		torrent.setCreationDate(BEnodeDecoder.getLong(map, "creation date"));
+		final List<Object> announceList = BEnodeDecoder.getList(map, "announce-list");
 		if(announceList != null) {
 			torrent.setAnnounceList(
 				announceList.stream()
@@ -82,20 +82,20 @@ public class Torrent {
 					final List<?> values = (List<?>) value;
 					return values.stream();
 				})
-				.map(value -> BCodeDecoder.getString(value))
+				.map(value -> BEnodeDecoder.getString(value))
 				.collect(Collectors.toList())
 			);
 		} else {
 			torrent.setAnnounceList(new ArrayList<>(0));
 		}
-		final List<Object> nodes = BCodeDecoder.getList(map, "nodes");
+		final List<Object> nodes = BEnodeDecoder.getList(map, "nodes");
 		if(nodes != null) {
 			torrent.setNodes(
 				nodes.stream()
 				.map(value -> {
 					final List<?> values = (List<?>) value;
 					if(values.size() == 2) {
-						final String host = BCodeDecoder.getString(values.get(0));
+						final String host = BEnodeDecoder.getString(values.get(0));
 						final Long port = (Long) values.get(1);
 						if(StringUtils.isNumeric(host)) { // TODO：紧凑型IP和端口
 							return Map.entry(
@@ -115,7 +115,7 @@ public class Torrent {
 		} else {
 			torrent.setNodes(new LinkedHashMap<>());
 		}
-		final Map<String, Object> info = BCodeDecoder.getMap(map, "info");
+		final Map<String, Object> info = BEnodeDecoder.getMap(map, "info");
 		if(info != null) {
 			final TorrentInfo torrentInfo = TorrentInfo.valueOf(info);
 			torrent.setInfo(torrentInfo);

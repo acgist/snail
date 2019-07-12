@@ -51,6 +51,40 @@ public class DhtConfig extends PropertiesConfig {
 	public static final int GET_PEER_LENGTH = 100; // GetPeer，Peer列表长度。
 	
 	/**
+	 * <p>DHT响应错误：</p>
+	 * <ul>
+	 *	<li>
+	 * 	[0]：错误代码：
+	 * 		<ul>
+	 *			<li>201：一般错误</li>
+	 *			<li>202：服务错误</li>
+	 *			<li>203：协议错误，不规范的包、无效参数、错误token</li>
+	 *			<li>204：未知方法</li>
+	 * 		</ul>
+	 *	</li>
+	 *	<li>[1]：错误描述</li>
+	 * </ul>
+	 */
+	public enum ErrorCode {
+		
+		E_201(201),
+		E_202(202),
+		E_203(203),
+		E_204(204);
+		
+		ErrorCode(int code) {
+			this.code = code;
+		}
+		
+		private int code;
+		
+		public int code() {
+			return this.code;
+		}
+		
+	}
+	
+	/**
 	 * DHT响应超时
 	 */
 	public static final Duration TIMEOUT = Duration.ofSeconds(4);

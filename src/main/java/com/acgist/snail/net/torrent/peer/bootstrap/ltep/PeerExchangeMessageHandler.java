@@ -9,11 +9,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.net.torrent.peer.bootstrap.IExtensionMessageHandler;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.system.bcode.BCodeDecoder;
-import com.acgist.snail.system.bcode.BCodeEncoder;
+import com.acgist.snail.system.bencode.BEnodeDecoder;
+import com.acgist.snail.system.bencode.BEnodeEncoder;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.PeerConfig.ExtensionType;
 import com.acgist.snail.utils.CollectionUtils;
@@ -29,25 +30,21 @@ import com.acgist.snail.utils.PeerUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class PeerExchangeMessageHandler {
+public class PeerExchangeMessageHandler implements IExtensionMessageHandler {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerExchangeMessageHandler.class);
 	
 	public static final String ADDED = "added";
 	public static final String ADDEDF = "added.f";
-//	public static final String ADDED6 = "added6";
-//	public static final String ADDED6F = "added6.f";
-//	public static final String DROPPED = "dropped";
-//	public static final String DROPPED6 = "dropped6";
+	public static final String ADDED6 = "added6";
+	public static final String ADDED6F = "added6.f";
+	public static final String DROPPED = "dropped";
+	public static final String DROPPED6 = "dropped6";
 	
 	private final PeerSession peerSession;
 	private final TorrentSession torrentSession;
 	
 	private final ExtensionMessageHandler extensionMessageHandler;
-	
-	public static final PeerExchangeMessageHandler newInstance(PeerSession peerSession, TorrentSession torrentSession, ExtensionMessageHandler extensionMessageHandler) {
-		return new PeerExchangeMessageHandler(peerSession, torrentSession, extensionMessageHandler);
-	}
 	
 	private PeerExchangeMessageHandler(PeerSession peerSession, TorrentSession torrentSession, ExtensionMessageHandler extensionMessageHandler) {
 		this.peerSession = peerSession;
@@ -55,6 +52,11 @@ public class PeerExchangeMessageHandler {
 		this.extensionMessageHandler = extensionMessageHandler;
 	}
 	
+	public static final PeerExchangeMessageHandler newInstance(PeerSession peerSession, TorrentSession torrentSession, ExtensionMessageHandler extensionMessageHandler) {
+		return new PeerExchangeMessageHandler(peerSession, torrentSession, extensionMessageHandler);
+	}
+	
+	@Override
 	public void onMessage(ByteBuffer buffer) {
 		exchange(buffer);
 	}
@@ -74,11 +76,12 @@ public class PeerExchangeMessageHandler {
 	
 	/**
 	 * 处理请求，将获取的Peer加入到列表。
+	 * TODO：IPv6
 	 */
 	private void exchange(ByteBuffer buffer) {
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
-		final BCodeDecoder decoder = BCodeDecoder.newInstance(bytes);
+		final BEnodeDecoder decoder = BEnodeDecoder.newInstance(bytes);
 		final Map<String, Object> map = decoder.nextMap();
 		if(map == null) {
 			LOGGER.warn("UtPeerExchange消息格式错误：{}", decoder.obbString());
@@ -121,8 +124,7 @@ public class PeerExchangeMessageHandler {
 		final int length = 6 * optimize.size();
 		final ByteBuffer addedBuffer = ByteBuffer.allocate(length);
 		final ByteBuffer addedfBuffer = ByteBuffer.allocate(optimize.size());
-		optimize
-		.stream()
+		optimize.stream()
 		.distinct()
 		.forEach(session -> {
 			addedBuffer.putInt(NetUtils.encodeIpToInt(session.host()));
@@ -131,7 +133,12 @@ public class PeerExchangeMessageHandler {
 		});
 		data.put(ADDED, addedBuffer.array());
 		data.put(ADDEDF, addedfBuffer.array());
-		return BCodeEncoder.encodeMap(data);
+		final byte[] emptyBytes = new byte[0];
+		data.put(ADDED6, emptyBytes);
+		data.put(ADDED6F, emptyBytes);
+		data.put(DROPPED, emptyBytes);
+		data.put(DROPPED6, emptyBytes);
+		return BEnodeEncoder.encodeMap(data);
 	}
-	
+
 }

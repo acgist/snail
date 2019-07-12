@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.acgist.snail.pojo.session.NodeSession;
-import com.acgist.snail.system.bcode.BCodeDecoder;
-import com.acgist.snail.system.bcode.BCodeEncoder;
+import com.acgist.snail.system.bencode.BEnodeDecoder;
+import com.acgist.snail.system.bencode.BEnodeEncoder;
 import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.system.config.DhtConfig.QType;
 import com.acgist.snail.utils.ArrayUtils;
@@ -51,7 +51,7 @@ public class Request extends BaseMessage {
 		this.timestamp = System.currentTimeMillis();
 	}
 
-	public static final Request valueOf(final BCodeDecoder decoder) {
+	public static final Request valueOf(final BEnodeDecoder decoder) {
 		final byte[] t = decoder.getBytes(DhtConfig.KEY_T);
 		final String y = decoder.getString(DhtConfig.KEY_Y);
 		final String q = decoder.getString(DhtConfig.KEY_Q);
@@ -121,7 +121,7 @@ public class Request extends BaseMessage {
 		request.put(DhtConfig.KEY_Y, this.y);
 		request.put(DhtConfig.KEY_Q, this.q.name());
 		request.put(DhtConfig.KEY_A, this.a);
-		return BCodeEncoder.encodeMap(request);
+		return BEnodeEncoder.encodeMap(request);
 	}
 	
 	/**
