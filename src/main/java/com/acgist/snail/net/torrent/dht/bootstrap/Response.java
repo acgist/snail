@@ -7,9 +7,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.acgist.snail.pojo.session.NodeSession;
-import com.acgist.snail.system.bcode.BCodeDecoder;
-import com.acgist.snail.system.bcode.BCodeEncoder;
+import com.acgist.snail.system.bencode.BEnodeDecoder;
+import com.acgist.snail.system.bencode.BEnodeEncoder;
 import com.acgist.snail.system.config.DhtConfig;
+import com.acgist.snail.system.config.DhtConfig.ErrorCode;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NetUtils;
@@ -28,19 +29,7 @@ public class Response extends BaseMessage {
 	 */
 	private final Map<String, Object> r;
 	/**
-	 * <p>错误参数（列表）：</p>
-	 * <ul>
-	 *	<li>
-	 * 	[0]：错误代码：
-	 * 		<ul>
-	 *			<li>201：一般错误</li>
-	 *			<li>202：服务错误</li>
-	 *			<li>203：协议错误，不规范的包、无效参数、错误token</li>
-	 *			<li>204：未知方法</li>
-	 * 		</ul>
-	 *	</li>
-	 *	<li>[1]：错误描述</li>
-	 * </ul>
+	 * <p>错误参数（列表）：{@link ErrorCode}</p>
 	 */
 	private final List<Object> e;
 
@@ -54,7 +43,7 @@ public class Response extends BaseMessage {
 		this.e = e;
 	}
 
-	public static final Response valueOf(final BCodeDecoder decoder) {
+	public static final Response valueOf(final BEnodeDecoder decoder) {
 		final byte[] t = decoder.getBytes(DhtConfig.KEY_T);
 		final String y = decoder.getString(DhtConfig.KEY_Y);
 		final Map<String, Object> r = decoder.getMap(DhtConfig.KEY_R);
@@ -108,7 +97,7 @@ public class Response extends BaseMessage {
 		if(this.e != null) {
 			response.put(DhtConfig.KEY_E, this.e);
 		}
-		return BCodeEncoder.encodeMap(response);
+		return BEnodeEncoder.encodeMap(response);
 	}
 
 	/**

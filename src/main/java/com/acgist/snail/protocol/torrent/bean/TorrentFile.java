@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.acgist.snail.system.bcode.BCodeDecoder;
+import com.acgist.snail.system.bencode.BEnodeDecoder;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -35,24 +35,24 @@ public class TorrentFile {
 			return null;
 		}
 		final TorrentFile file = new TorrentFile();
-		file.setLength(BCodeDecoder.getLong(map, "length"));
-		file.setEd2k(BCodeDecoder.getBytes(map, "ed2k"));
-		file.setFilehash(BCodeDecoder.getBytes(map, "filehash"));
-		final List<Object> path = BCodeDecoder.getList(map, "path");
+		file.setLength(BEnodeDecoder.getLong(map, "length"));
+		file.setEd2k(BEnodeDecoder.getBytes(map, "ed2k"));
+		file.setFilehash(BEnodeDecoder.getBytes(map, "filehash"));
+		final List<Object> path = BEnodeDecoder.getList(map, "path");
 		if(path != null) {
 			file.setPath(
 				path.stream()
-				.map(value -> BCodeDecoder.getString(value))
+				.map(value -> BEnodeDecoder.getString(value))
 				.collect(Collectors.toList())
 			);
 		} else {
 			file.setPath(new ArrayList<>());
 		}
-		final List<Object> pathUtf8 = BCodeDecoder.getList(map, "path.utf-8");
+		final List<Object> pathUtf8 = BEnodeDecoder.getList(map, "path.utf-8");
 		if(pathUtf8 != null) {
 			file.setPathUtf8(
 				pathUtf8.stream()
-				.map(value -> BCodeDecoder.getString(value))
+				.map(value -> BEnodeDecoder.getString(value))
 				.collect(Collectors.toList())
 			);
 		} else {

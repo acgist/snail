@@ -1,4 +1,4 @@
-package com.acgist.snail.system.bcode;
+package com.acgist.snail.system.bencode;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -27,9 +27,9 @@ import com.acgist.snail.system.exception.ArgumentException;
  * @author acgist
  * @since 1.0.0
  */
-public class BCodeDecoder {
+public class BEnodeDecoder {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(BCodeDecoder.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(BEnodeDecoder.class);
 	
 	public static final char TYPE_E = 'e';
 	public static final char TYPE_I = 'i';
@@ -47,22 +47,22 @@ public class BCodeDecoder {
 	private Map<String, Object> map;
 	private final ByteArrayInputStream inputStream;
 	
-	private BCodeDecoder(byte[] bytes) {
+	private BEnodeDecoder(byte[] bytes) {
 		this.inputStream = new ByteArrayInputStream(bytes);
 	}
 	
-	public static final BCodeDecoder newInstance(String content) {
+	public static final BEnodeDecoder newInstance(String content) {
 		if(content == null) {
 			throw new ArgumentException("B编码解码内容错误");
 		}
-		return new BCodeDecoder(content.getBytes());
+		return new BEnodeDecoder(content.getBytes());
 	}
 	
-	public static final BCodeDecoder newInstance(byte[] bytes) {
+	public static final BEnodeDecoder newInstance(byte[] bytes) {
 		if(bytes == null) {
 			throw new ArgumentException("B编码解码内容错误");
 		}
-		return new BCodeDecoder(bytes);
+		return new BEnodeDecoder(bytes);
 	}
 	
 	/**

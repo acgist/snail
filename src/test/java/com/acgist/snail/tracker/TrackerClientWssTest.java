@@ -9,8 +9,9 @@ import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.ThreadUtils;
 
+@SuppressWarnings("deprecation")
 public class TrackerClientWssTest {
-
+	
 	@Test
 	public void test() throws NetException, DownloadException {
 		String path = "e:/snail/sintel.torrent";

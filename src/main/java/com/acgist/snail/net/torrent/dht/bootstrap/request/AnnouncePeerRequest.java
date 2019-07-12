@@ -11,6 +11,7 @@ import com.acgist.snail.net.torrent.dht.bootstrap.response.AnnouncePeerResponse;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.DhtConfig;
+import com.acgist.snail.system.config.DhtConfig.ErrorCode;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.ArrayUtils;
@@ -53,7 +54,7 @@ public class AnnouncePeerRequest extends Request {
 	public static final AnnouncePeerResponse execute(Request request) {
 		final byte[] token = request.getBytes(DhtConfig.KEY_TOKEN);
 		if(!ArrayUtils.equals(token, NodeManager.getInstance().token())) {
-			return AnnouncePeerResponse.newInstance(Response.error(request.getT(), 203, "Token错误"));
+			return AnnouncePeerResponse.newInstance(Response.error(request.getT(), ErrorCode.E_203.code(), "Token错误"));
 		}
 		final byte[] infoHash = request.getBytes(DhtConfig.KEY_INFO_HASH);
 		final String infoHashHex = StringUtils.hex(infoHash);

@@ -7,14 +7,15 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.net.torrent.peer.bootstrap.IExtensionMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
-import com.acgist.snail.system.bcode.BCodeDecoder;
-import com.acgist.snail.system.bcode.BCodeEncoder;
+import com.acgist.snail.system.bencode.BEnodeDecoder;
+import com.acgist.snail.system.bencode.BEnodeEncoder;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.PeerConfig.ExtensionType;
-import com.acgist.snail.system.config.PeerConfig.UtMetadataType;
+import com.acgist.snail.system.config.PeerConfig.MetadataType;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -28,7 +29,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class MetadataMessageHandler {
+public class MetadataMessageHandler implements IExtensionMessageHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MetadataMessageHandler.class);
 	
@@ -47,36 +48,34 @@ public class MetadataMessageHandler {
 	
 	private final ExtensionMessageHandler extensionMessageHandler;
 	
-	public static final MetadataMessageHandler newInstance(TorrentSession torrentSession, PeerSession peerSession, ExtensionMessageHandler extensionMessageHandler) {
-		return new MetadataMessageHandler(torrentSession, peerSession, extensionMessageHandler);
-	}
-	
-	private MetadataMessageHandler(TorrentSession torrentSession, PeerSession peerSession, ExtensionMessageHandler extensionMessageHandler) {
+	private MetadataMessageHandler(PeerSession peerSession, TorrentSession torrentSession, ExtensionMessageHandler extensionMessageHandler) {
 		this.infoHash = torrentSession.infoHash();
 		this.peerSession = peerSession;
 		this.torrentSession = torrentSession;
 		this.extensionMessageHandler = extensionMessageHandler;
 	}
+	
+	public static final MetadataMessageHandler newInstance(PeerSession peerSession, TorrentSession torrentSession, ExtensionMessageHandler extensionMessageHandler) {
+		return new MetadataMessageHandler(peerSession, torrentSession, extensionMessageHandler);
+	}
 
-	/**
-	 * 消息处理
-	 */
+	@Override
 	public void onMessage(ByteBuffer buffer) {
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
-		final BCodeDecoder decoder = BCodeDecoder.newInstance(bytes);
+		final BEnodeDecoder decoder = BEnodeDecoder.newInstance(bytes);
 		final Map<String, Object> map = decoder.nextMap();
 		if(map == null) {
-			LOGGER.warn("UtMetadata消息格式错误：{}", decoder.obbString());
+			LOGGER.warn("metadata消息格式错误：{}", decoder.obbString());
 			return;
 		}
 		final Byte typeValue = decoder.getByte(ARG_MSG_TYPE);
-		final UtMetadataType type = PeerConfig.UtMetadataType.valueOf(typeValue);
+		final MetadataType type = PeerConfig.MetadataType.valueOf(typeValue);
 		if(type == null) {
-			LOGGER.warn("不支持的UtMetadata消息类型：{}", typeValue);
+			LOGGER.warn("不支持的metadata消息类型：{}", typeValue);
 			return;
 		}
-		LOGGER.debug("UtMetadata消息类型：{}", type);
+		LOGGER.debug("metadata消息类型：{}", type);
 		switch (type) {
 		case request:
 			request(decoder);
@@ -94,11 +93,11 @@ public class MetadataMessageHandler {
 	 * 发出请求：request
 	 */
 	public void request() {
-		LOGGER.debug("发送UtMetadata消息-request");
+		LOGGER.debug("发送metadata消息-request");
 		final int size = this.infoHash.size();
 		final int messageSize = NumberUtils.divideUp(size, INFO_SLICE_SIZE);
 		for (int index = 0; index < messageSize; index++) {
-			final var request = buildMessage(PeerConfig.UtMetadataType.request, index);
+			final var request = buildMessage(PeerConfig.MetadataType.request, index);
 			pushMessage(request);
 		}
 	}
@@ -106,8 +105,8 @@ public class MetadataMessageHandler {
 	/**
 	 * 处理请求：request
 	 */
-	private void request(BCodeDecoder decoder) {
-		LOGGER.debug("收到UtMetadata消息-request");
+	private void request(BEnodeDecoder decoder) {
+		LOGGER.debug("收到metadata消息-request");
 		final int piece = decoder.getInteger(ARG_PIECE);
 		data(piece);
 	}
@@ -118,7 +117,7 @@ public class MetadataMessageHandler {
 	 * @param piece 种子块索引
 	 */
 	public void data(int piece) {
-		LOGGER.debug("发送UtMetadata消息-data");
+		LOGGER.debug("发送metadata消息-data");
 		final byte[] bytes = infoHash.info();
 		if(bytes == null) {
 			reject();
@@ -136,7 +135,7 @@ public class MetadataMessageHandler {
 		}
 		final byte[] x = new byte[length];
 		System.arraycopy(bytes, begin, x, 0, length);
-		final var data = buildMessage(PeerConfig.UtMetadataType.data, piece);
+		final var data = buildMessage(PeerConfig.MetadataType.data, piece);
 		data.put(ARG_TOTAL_SIZE, this.infoHash.size());
 		pushMessage(data, x);
 	}
@@ -147,8 +146,8 @@ public class MetadataMessageHandler {
 	 * @param data 请求数据
 	 * @param decoder B编码数据
 	 */
-	private void data(BCodeDecoder decoder) {
-		LOGGER.debug("收到UtMetadata消息-data");
+	private void data(BEnodeDecoder decoder) {
+		LOGGER.debug("收到metadata消息-data");
 		byte[] bytes = this.infoHash.info();
 		final int piece = decoder.getInteger(ARG_PIECE);
 		if(bytes == null) { // 设置种子info
@@ -178,31 +177,31 @@ public class MetadataMessageHandler {
 	 * 发出请求：reject
 	 */
 	public void reject() {
-		LOGGER.debug("发送UtMetadata消息-reject");
-		final var reject = buildMessage(PeerConfig.UtMetadataType.reject, 0);
+		LOGGER.debug("发送metadata消息-reject");
+		final var reject = buildMessage(PeerConfig.MetadataType.reject, 0);
 		pushMessage(reject);
 	}
 	
 	/**
 	 * 处理请求：reject
 	 */
-	private void reject(BCodeDecoder decoder) {
-		LOGGER.debug("收到UtMetadata消息-reject");
+	private void reject(BEnodeDecoder decoder) {
+		LOGGER.debug("收到metadata消息-reject");
 	}
 	
 	/**
 	 * 客户端的消息类型
 	 */
-	private Byte utMetadataType() {
+	private Byte metadataType() {
 		return this.peerSession.extensionTypeValue(ExtensionType.ut_metadata);
 	}
 	
 	/**
 	 * 创建消息
 	 * 
-	 * @param type UtMetadata类型
+	 * @param type metadata类型
 	 */
-	private Map<String, Object> buildMessage(PeerConfig.UtMetadataType type, int piece) {
+	private Map<String, Object> buildMessage(PeerConfig.MetadataType type, int piece) {
 		final Map<String, Object> message = new LinkedHashMap<>();
 		message.put(ARG_MSG_TYPE, type.value());
 		message.put(ARG_PIECE, piece);
@@ -220,12 +219,12 @@ public class MetadataMessageHandler {
 	 * 发送消息
 	 */
 	private void pushMessage(Map<String, Object> data, byte[] x) {
-		final Byte type = utMetadataType(); // 扩展消息类型
+		final Byte type = metadataType(); // 扩展消息类型
 		if (type == null) {
-			LOGGER.warn("不支持UtMetadata扩展协议");
+			LOGGER.warn("不支持metadata扩展协议");
 			return;
 		}
-		final BCodeEncoder encoder = BCodeEncoder.newInstance().newMap();
+		final BEnodeEncoder encoder = BEnodeEncoder.newInstance().newMap();
 		encoder.put(data).flush();
 		if(x != null) {
 			encoder.build(x);
