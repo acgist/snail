@@ -27,22 +27,28 @@ public class PeerEvaluatorTest {
 //		repository.findAll().forEach(entity -> {
 //			repository.delete(entity.getId());
 //		});
-		long a = System.currentTimeMillis();
+		long begin = System.currentTimeMillis();
 //		for (int index = 0; index < 1; index++) {
 //			repository.save(new RangeEntity());
 //		}
-		long b = System.currentTimeMillis();
-		System.out.println(b - a);
+		long end = System.currentTimeMillis();
+		System.out.println(end - begin);
 		var list = repository.findAll();
 		if(list != null) {
-			list.forEach(entity -> {
-				System.out.println(String.format("%05d", entity.getIndex()) + "=" + entity.getScore());
+			list.stream()
+			.sorted((a, b) -> {
+				return a.getScore().compareTo(b.getScore());
+			})
+			.forEach(entity -> {
+				System.out.print(String.format("%05d", entity.getIndex()) + "=" + entity.getScore());
+				System.out.print("-");
+				System.out.println(NetUtils.decodeLongToIp(1L * (2 << 15) * entity.getIndex()));
 			});
 		} else {
 			System.out.println("--");
 		}
-		long c = System.currentTimeMillis();
-		System.out.println(c - b);
+		long last = System.currentTimeMillis();
+		System.out.println(last - end);
 	}
 	
 }
