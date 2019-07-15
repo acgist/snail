@@ -216,7 +216,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
-				<version>${maven.dependency.version}</version>
+				<version>${maven.dependency.version}</version><!--$NO-MVN-MAN-VER$-->
 				<executions>
 					<execution>
 						<id>copy-dependencies</id>
