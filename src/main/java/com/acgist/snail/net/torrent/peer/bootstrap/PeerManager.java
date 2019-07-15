@@ -96,10 +96,10 @@ public class PeerManager {
 					LOGGER.debug("添加PeerSession，{}-{}，来源：{}", host, port, PeerConfig.source(source));
 				}
 				peerSession = PeerSession.newInstance(parent, host, port);
-				if(PeerEvaluator.getInstance().eval(peerSession)) { // 计算插入位置
-					deque.offerLast(peerSession);
+				if(source == PeerConfig.SOURCE_CONNECT || PeerEvaluator.getInstance().eval(peerSession)) { // 计算插入位置
+					deque.offerLast(peerSession); // 插入尾部：优先级高
 				} else {
-					deque.offerFirst(peerSession);
+					deque.offerFirst(peerSession); // 插入头部：优先级低
 				}
 				list(infoHashHex).add(peerSession); // 存档
 			}
