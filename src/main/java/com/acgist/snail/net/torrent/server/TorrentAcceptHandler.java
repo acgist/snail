@@ -42,9 +42,9 @@ public class TorrentAcceptHandler extends UdpAcceptHandler {
 			buffer.position(buffer.limit()).limit(buffer.capacity());
 			return dhtMessageHandler;
 		} else {
-			final short connectId = buffer.getShort(2); // 连接ID
+			final short connectionId = buffer.getShort(2); // 连接ID
 			buffer.position(buffer.limit()).limit(buffer.capacity());
-			return utpService.get(connectId, socketAddress);
+			return utpService.get(connectionId, socketAddress);
 		}
 	}
 

@@ -39,7 +39,9 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler {
 
 	@Override
 	public void onMessage(ByteBuffer buffer) {
-		
+		// TODO：完善
+		ByteBuffer message = buildMessage(HolepunchType.rendezvous, "", 8080, HolepunchErrorCode.E_00);
+		pushMessage(message);
 	}
 	
 	/**
