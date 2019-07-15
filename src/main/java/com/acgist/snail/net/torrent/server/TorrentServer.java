@@ -12,7 +12,7 @@ import com.acgist.snail.system.config.SystemConfig;
 public class TorrentServer extends UdpServer<TorrentAcceptHandler> {
 
 	private TorrentServer() {
-		super(SystemConfig.getTorrentPort(), "Service(UTP/DHT) Server", TorrentAcceptHandler.getInstance());
+		super(SystemConfig.getTorrentPort(), "Torrent(UTP/DHT) Server", TorrentAcceptHandler.getInstance());
 		this.handler();
 	}
 	

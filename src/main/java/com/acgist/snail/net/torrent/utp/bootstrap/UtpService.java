@@ -29,6 +29,9 @@ public class UtpService {
 		return INSTANCE;
 	}
 	
+	/**
+	 * 连接ID，每获取一次+1。
+	 */
 	private int connectionId = 0;
 	
 	/**
@@ -36,17 +39,29 @@ public class UtpService {
 	 */
 	private void timer() {
 		SystemThreadContext.timerFixedDelay(5, 5, TimeUnit.SECONDS, () -> {
-			final var iterator = this.utpMessageHandlers.entrySet().iterator();
-			UtpMessageHandler handler;
-			while(iterator.hasNext()) {
-				handler = iterator.next().getValue();
-				if(handler.available()) {
-					handler.wndControl();
-				} else {
-					iterator.remove();
+			synchronized (this.utpMessageHandlers) {
+				final var iterator = this.utpMessageHandlers.entrySet().iterator();
+				UtpMessageHandler handler;
+				while(iterator.hasNext()) {
+					handler = iterator.next().getValue();
+					if(handler.available()) {
+						handler.wndControl();
+					} else {
+//						handler.close(); // TODO：close
+						iterator.remove();
+					}
 				}
 			}
 		});
+	}
+	
+	/**
+	 * 获取连接ID
+	 */
+	public short connectionId() {
+		synchronized (this) {
+			return (short) connectionId++;
+		}
 	}
 	
 	/**
@@ -68,27 +83,22 @@ public class UtpService {
 	 * 添加消息处理器
 	 */
 	public void put(UtpMessageHandler utpMessageHandler) {
-		this.utpMessageHandlers.put(utpMessageHandler.key(), utpMessageHandler);
+		synchronized (this.utpMessageHandlers) {
+			this.utpMessageHandlers.put(utpMessageHandler.key(), utpMessageHandler);
+		}
 	}
 	
 	/**
 	 * 删除消息处理器
 	 */
 	public void remove(UtpMessageHandler utpMessageHandler) {
-		this.utpMessageHandlers.remove(utpMessageHandler.key());
-	}
-	
-	/**
-	 * 获取连接ID
-	 */
-	public short connectionId() {
-		synchronized (this) {
-			return (short) connectionId++;
+		synchronized (this.utpMessageHandlers) {
+			this.utpMessageHandlers.remove(utpMessageHandler.key());
 		}
 	}
 	
 	/**
-	 * 外网连入时key=地址+connectionId，本机key=connectionId
+	 * 外网连入时key=地址+connectionId
 	 */
 	public String buildKey(Short connectionId, InetSocketAddress socketAddress) {
 		return socketAddress.getHostString() + socketAddress.getPort() + connectionId;

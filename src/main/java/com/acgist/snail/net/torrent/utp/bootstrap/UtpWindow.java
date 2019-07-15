@@ -18,9 +18,9 @@ import com.acgist.snail.utils.DateUtils;
  * @author acgist
  * @since 1.1.0
  */
-public class UtpWindowHandler {
+public class UtpWindow {
 	
-//	private static final Logger LOGGER = LoggerFactory.getLogger(UtpWindowHandler.class);
+//	private static final Logger LOGGER = LoggerFactory.getLogger(UtpWindow.class);
 	
 	/**
 	 * 最大超时时间（微秒）
@@ -51,7 +51,7 @@ public class UtpWindowHandler {
 	 */
 	private final Map<Short, UtpWindowData> wndMap;
 	
-	private UtpWindowHandler() {
+	private UtpWindow() {
 		this.rtt = 0;
 		this.rttVar = 0;
 		this.timeout = MAX_TIMEOUT;
@@ -61,8 +61,8 @@ public class UtpWindowHandler {
 		this.wndMap = new LinkedHashMap<>();
 	}
 	
-	public static final UtpWindowHandler newInstance() {
-		return new UtpWindowHandler();
+	public static final UtpWindow newInstance() {
+		return new UtpWindow();
 	}
 	
 	/**

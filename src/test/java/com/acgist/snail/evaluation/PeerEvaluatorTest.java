@@ -44,6 +44,7 @@ public class PeerEvaluatorTest {
 				System.out.print("-");
 				System.out.println(NetUtils.decodeLongToIp(1L * (2 << 15) * entity.getIndex()));
 			});
+			System.out.println("数量：" + list.size());
 		} else {
 			System.out.println("--");
 		}
