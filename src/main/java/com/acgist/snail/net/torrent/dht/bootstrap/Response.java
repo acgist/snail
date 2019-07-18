@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.acgist.snail.pojo.session.NodeSession;
-import com.acgist.snail.system.bencode.BEnodeDecoder;
-import com.acgist.snail.system.bencode.BEnodeEncoder;
+import com.acgist.snail.system.bencode.BEncodeDecoder;
+import com.acgist.snail.system.bencode.BEncodeEncoder;
 import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.system.config.DhtConfig.ErrorCode;
 import com.acgist.snail.utils.ArrayUtils;
@@ -43,7 +43,7 @@ public class Response extends BaseMessage {
 		this.e = e;
 	}
 
-	public static final Response valueOf(final BEnodeDecoder decoder) {
+	public static final Response valueOf(final BEncodeDecoder decoder) {
 		final byte[] t = decoder.getBytes(DhtConfig.KEY_T);
 		final String y = decoder.getString(DhtConfig.KEY_Y);
 		final Map<String, Object> r = decoder.getMap(DhtConfig.KEY_R);
@@ -97,7 +97,7 @@ public class Response extends BaseMessage {
 		if(this.e != null) {
 			response.put(DhtConfig.KEY_E, this.e);
 		}
-		return BEnodeEncoder.encodeMap(response);
+		return BEncodeEncoder.encodeMap(response);
 	}
 
 	/**

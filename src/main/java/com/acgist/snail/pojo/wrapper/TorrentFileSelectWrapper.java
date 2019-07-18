@@ -3,8 +3,8 @@ package com.acgist.snail.pojo.wrapper;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.acgist.snail.system.bencode.BEnodeDecoder;
-import com.acgist.snail.system.bencode.BEnodeEncoder;
+import com.acgist.snail.system.bencode.BEncodeDecoder;
+import com.acgist.snail.system.bencode.BEncodeEncoder;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -16,8 +16,8 @@ import com.acgist.snail.utils.StringUtils;
  */
 public class TorrentFileSelectWrapper {
 
-	private BEnodeEncoder encoder;
-	private BEnodeDecoder decoder;
+	private BEncodeEncoder encoder;
+	private BEncodeDecoder decoder;
 
 	private TorrentFileSelectWrapper() {
 	}
@@ -28,7 +28,7 @@ public class TorrentFileSelectWrapper {
 	public static final TorrentFileSelectWrapper newEncoder(List<String> list) {
 		final TorrentFileSelectWrapper wrapper = new TorrentFileSelectWrapper();
 		if(CollectionUtils.isNotEmpty(list)) {
-			wrapper.encoder = BEnodeEncoder.newInstance().newList();
+			wrapper.encoder = BEncodeEncoder.newInstance().newList();
 			wrapper.encoder.put(list);
 		}
 		return wrapper;
@@ -40,7 +40,7 @@ public class TorrentFileSelectWrapper {
 	public static final TorrentFileSelectWrapper newDecoder(String value) {
 		final TorrentFileSelectWrapper wrapper = new TorrentFileSelectWrapper();
 		if(StringUtils.isNotEmpty(value)) {
-			wrapper.decoder = BEnodeDecoder.newInstance(value);
+			wrapper.decoder = BEncodeDecoder.newInstance(value);
 		}
 		return wrapper;
 	}
@@ -69,7 +69,7 @@ public class TorrentFileSelectWrapper {
 		return list.stream()
 		.filter(object -> object != null)
 		.map(object -> {
-			return BEnodeDecoder.getString(object);
+			return BEncodeDecoder.getString(object);
 		})
 		.collect(Collectors.toList());
 	}

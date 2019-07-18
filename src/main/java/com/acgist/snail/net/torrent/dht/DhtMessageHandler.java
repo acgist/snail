@@ -21,7 +21,7 @@ import com.acgist.snail.net.torrent.dht.bootstrap.response.FindNodeResponse;
 import com.acgist.snail.net.torrent.dht.bootstrap.response.GetPeersResponse;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.system.bencode.BEnodeDecoder;
+import com.acgist.snail.system.bencode.BEncodeDecoder;
 import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.exception.NetException;
@@ -68,7 +68,7 @@ public class DhtMessageHandler extends UdpMessageHandler {
 		buffer.flip();
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
-		final BEnodeDecoder decoder = BEnodeDecoder.newInstance(bytes);
+		final BEncodeDecoder decoder = BEncodeDecoder.newInstance(bytes);
 		final var map = decoder.nextMap();
 		if(map == null) {
 			LOGGER.warn("DHT消息格式错误：{}", decoder.obbString());

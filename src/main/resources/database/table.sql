@@ -4,7 +4,7 @@ create table tb_config (
     `createDate` TIMESTAMP NOT NULL,
     `modifyDate` TIMESTAMP NOT NULL,
     `name` VARCHAR(256) DEFAULT NULL,
-    `value` VARCHAR(1024) DEFAULT NULL,
+    `value` LONGTEXT DEFAULT NULL,
 	PRIMARY KEY (`id`)
 );
 -- 任务：BT下载文件过多时可以修改description长度
@@ -22,14 +22,5 @@ create table tb_task (
     `size` BIGINT DEFAULT NULL,
     `endDate` TIMESTAMP DEFAULT NULL,
     `description` VARCHAR(5120) DEFAULT NULL,
-	PRIMARY KEY (`id`)
-);
--- 计分
-create table tb_range (
-	`id` VARCHAR(36) NOT NULL,
-    `createDate` TIMESTAMP NOT NULL,
-    `modifyDate` TIMESTAMP NOT NULL,
-    `index` INT DEFAULT NULL,
-    `score` INT DEFAULT NULL,
 	PRIMARY KEY (`id`)
 );

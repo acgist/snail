@@ -1,18 +1,19 @@
 package com.acgist.snail.system.evaluation;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.pojo.entity.RangeEntity;
+import com.acgist.snail.pojo.entity.ConfigEntity;
 import com.acgist.snail.pojo.session.PeerSession;
-import com.acgist.snail.repository.impl.RangeRepository;
+import com.acgist.snail.repository.impl.ConfigRepository;
+import com.acgist.snail.system.bencode.BEncodeDecoder;
+import com.acgist.snail.system.bencode.BEncodeEncoder;
 import com.acgist.snail.utils.NetUtils;
+import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>Peer评估器</p>
@@ -28,6 +29,11 @@ public class PeerEvaluator {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerEvaluator.class);
 
+	/**
+	 * 范围配置
+	 */
+	private static final String ACGIST_SYSTEM_RANGE = "acgist.system.range";
+	
 	private boolean available; // 初始完成，可用状态。
 	
 	/**
@@ -37,16 +43,36 @@ public class PeerEvaluator {
 	/**
 	 * 范围表
 	 */
-	private final Map<Integer, RangeEntity> map;
+	private final Map<Integer, Long> ranges;
 	/**
 	 * 步长
 	 */
 	private static final int RANGE_STEP = 2 << 15;
 	
+	/**
+	 * 计分类型
+	 */
+	public enum Type {
+		
+		connect(1), // 连接
+		download(3); // 下载
+
+		private int score;
+		
+		Type(int score) {
+			this.score = score;
+		}
+		
+		public int score() {
+			return this.score;
+		}
+		
+	}
+	
 	private static final PeerEvaluator INSTANCE = new PeerEvaluator();
 	
 	private PeerEvaluator() {
-		this.map = new ConcurrentHashMap<>();
+		this.ranges = new ConcurrentHashMap<>();
 	}
 	
 	public static final PeerEvaluator getInstance() {
@@ -77,32 +103,30 @@ public class PeerEvaluator {
 		}
 		final long ip = NetUtils.encodeIpToLong(peerSession.host());
 		final int index = (int) (ip / RANGE_STEP);
-		final RangeEntity range = this.map.get(index);
-		if(range == null) {
+		final Long score = this.ranges.get(index);
+		if(score == null) {
 			return false;
 		}
-		return range.getScore() > this.horizontal;
+		return score > this.horizontal;
 	}
 
 	/**
 	 * 计分
 	 * 不同步，运行出现误差
 	 */
-	public void score(PeerSession peerSession, RangeEntity.Type type) {
+	public void score(PeerSession peerSession, Type type) {
 		if(!this.available) { // 没有初始化不计分
 			return;
 		}
 		final long ip = NetUtils.encodeIpToLong(peerSession.host());
 		final int index = (int) (ip / RANGE_STEP);
-		RangeEntity range = this.map.get(index);
-		if(range == null) {
-			range = new RangeEntity();
-			range.setIndex(index);
-			range.setScore(0);
-			this.map.put(index, range);
+		Long score = this.ranges.get(index);
+		if(score == null) {
+			score = (long) type.score();
+		} else {
+			score += type.score();
 		}
-		range.setChange(true);
-		range.setScore(range.getScore() + type.score());
+		this.ranges.put(index, score);
 	}
 	
 	/**
@@ -121,19 +145,24 @@ public class PeerEvaluator {
 	}
 	
 	/**
+	 * IP范围
+	 */
+	public Map<Integer, Long> ranges() {
+		return this.ranges;
+	}
+	
+	/**
 	 * 记录数据库：只记录分值大于0的数据。
 	 */
 	private void store() {
 		if(!this.available) { // 没有初始化不保存
 			return;
 		}
-		synchronized (this.map) {
-			final RangeRepository repository = new RangeRepository();
-			this.map.values().stream()
-			.filter(entity -> entity.isChange()) // 修改才会修改数据库
-			.forEach(entity -> {
-				repository.merge(entity);
-			});
+		synchronized (this.ranges) {
+			final ConfigRepository repository = new ConfigRepository();
+			final byte[] bytes = BEncodeEncoder.encodeMap(this.ranges);
+			final String value = new String(bytes);
+			repository.mergeConfig(ACGIST_SYSTEM_RANGE, value);
 		}
 	}
 
@@ -141,22 +170,21 @@ public class PeerEvaluator {
 	 * 初始数据
 	 */
 	private void buildRange() {
-		final RangeRepository repository = new RangeRepository();
-		final List<RangeEntity> list = repository.findAll();
-		if(list == null) {
-			LOGGER.info("Peer评估器没有数据");
+		final ConfigRepository repository = new ConfigRepository();
+		final ConfigEntity config = repository.findName(ACGIST_SYSTEM_RANGE);
+		if(config == null || StringUtils.isEmpty(config.getValue())) {
 			return;
 		}
-		LOGGER.info("Peer评估器加载数据：{}", list.size());
-		final AtomicLong score = new AtomicLong(0L);
-		final AtomicInteger size = new AtomicInteger(0);
-		list.stream()
-		.forEach(entity -> {
-			score.addAndGet(entity.getScore());
-			size.incrementAndGet();
-			this.map.put(entity.getIndex(), entity);
+		final BEncodeDecoder decoder = BEncodeDecoder.newInstance(config.getValue());
+		final Map<String, Object> ranges = decoder.nextMap();
+		ranges.forEach((key, value) -> {
+			this.ranges.put(Integer.valueOf(key), (Long) value);
 		});
-		this.horizontal = score.get() / size.get();
+		LOGGER.info("Peer评估器加载数据：{}", this.ranges.size());
+		this.horizontal = this.ranges.values().stream()
+			.collect(Collectors.averagingLong(value -> value))
+			.longValue();
+		LOGGER.info("Peer评估器平均值：{}", this.horizontal);
 	}
 
 }

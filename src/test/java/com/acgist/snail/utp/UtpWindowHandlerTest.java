@@ -4,8 +4,8 @@ import java.nio.ByteBuffer;
 
 import org.junit.Test;
 
-import com.acgist.snail.net.torrent.utp.bootstrap.UtpWindowData;
 import com.acgist.snail.net.torrent.utp.bootstrap.UtpWindow;
+import com.acgist.snail.net.torrent.utp.bootstrap.UtpWindowData;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.ThreadUtils;
 

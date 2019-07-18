@@ -1,7 +1,7 @@
 package com.acgist.snail.pojo.message;
 
-import com.acgist.snail.system.bencode.BEnodeDecoder;
-import com.acgist.snail.system.bencode.BEnodeEncoder;
+import com.acgist.snail.system.bencode.BEncodeDecoder;
+import com.acgist.snail.system.bencode.BEncodeEncoder;
 
 /**
  * Application消息
@@ -66,7 +66,7 @@ public class ApplicationMessage {
 	 */
 	@Override
 	public String toString() {
-		final BEnodeEncoder encoder = BEnodeEncoder.newInstance().newMap();
+		final BEncodeEncoder encoder = BEncodeEncoder.newInstance().newMap();
 		encoder.put("type", this.type.name());
 		encoder.put("body", this.body);
 		return encoder.flush().toString();
@@ -76,7 +76,7 @@ public class ApplicationMessage {
 	 * JSON字符串变成ApplicationMessage对象
 	 */
 	public static final ApplicationMessage valueOf(String content) {
-		final BEnodeDecoder decoder = BEnodeDecoder.newInstance(content.getBytes());
+		final BEncodeDecoder decoder = BEncodeDecoder.newInstance(content.getBytes());
 		decoder.nextMap();
 		final String type = decoder.getString("type");
 		final String body = decoder.getString("body");

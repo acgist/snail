@@ -11,7 +11,6 @@ import com.acgist.snail.net.torrent.peer.PeerClient;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.net.torrent.utp.UtpClient;
 import com.acgist.snail.pojo.bean.TorrentPiece;
-import com.acgist.snail.pojo.entity.RangeEntity;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.PeerConfig;
@@ -106,7 +105,7 @@ public class PeerLauncher {
 		final boolean ok = connect();
 		if(ok) {
 			this.peerSubMessageHandler.handshake(this);
-			PeerEvaluator.getInstance().score(this.peerSession, RangeEntity.Type.connect);
+			PeerEvaluator.getInstance().score(this.peerSession, PeerEvaluator.Type.connect);
 		} else {
 			this.peerSession.fail();
 		}
