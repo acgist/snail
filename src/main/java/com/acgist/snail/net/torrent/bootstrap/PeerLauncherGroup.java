@@ -98,8 +98,8 @@ public class PeerLauncherGroup {
 	 */
 	public void release() {
 		LOGGER.debug("释放PeerLauncherGroup");
+		notifyBuild(false); // 释放资源，解除PeerLaunchers锁。
 		synchronized (this.peerLaunchers) {
-			notifyBuild(false);
 			this.peerLaunchers.forEach(launcher -> {
 				SystemThreadContext.submit(() -> {
 					launcher.release();
