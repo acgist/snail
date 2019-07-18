@@ -241,6 +241,7 @@ public class PeerLauncher {
 		pickDownloadPiece();
 		if(this.downloadPiece == null) {
 			LOGGER.debug("没有匹配Peer块下载");
+			this.peerSubMessageHandler.notInterested(); // 发送不感兴趣消息
 			this.completeLock.set(true); // 没有匹配到下载块时设置为完成
 			this.release();
 			this.torrentSession.completeCheck();

@@ -38,6 +38,7 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * <p>Torrent Session</p>
  * <p>负责下载任务整体调度，查询Peer、文件管理等。</p>
+ * <p>任务一定需要先设置上传，然后才能进行下载。</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -517,14 +518,14 @@ public class TorrentSession {
 	}
 
 	/**
-	 * 是否可以下载
+	 * 是否可以上传
 	 */
 	public boolean uploadable() {
 		return this.uploadable;
 	}
 	
 	/**
-	 * 是否可以下载
+	 * 是否可以下载，能够下载一定能够上传。
 	 */
 	public boolean downloadable() {
 		return this.downloadable;

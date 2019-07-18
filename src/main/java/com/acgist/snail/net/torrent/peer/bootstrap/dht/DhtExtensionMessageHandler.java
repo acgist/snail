@@ -6,13 +6,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.torrent.bootstrap.DhtLauncher;
-import com.acgist.snail.net.torrent.dht.bootstrap.NodeManager;
 import com.acgist.snail.net.torrent.peer.bootstrap.IExtensionMessageHandler;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.SystemConfig;
-import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.NetUtils;
 
 /**
@@ -64,9 +62,6 @@ public class DhtExtensionMessageHandler implements IExtensionMessageHandler {
 		if(this.dhtLauncher != null) {
 			this.dhtLauncher.put(this.peerSession.host(), port);
 		}
-		SystemThreadContext.submit(() -> {
-			NodeManager.getInstance().newNodeSession(this.peerSession.host(), port);
-		});
 	}
 
 }
