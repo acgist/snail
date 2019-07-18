@@ -18,6 +18,7 @@ import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.config.PeerConfig;
+import com.acgist.snail.system.config.PeerConfig.Type;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.BitfieldUtils;
@@ -47,6 +48,7 @@ import com.acgist.snail.utils.StringUtils;
  * P = 用户正使用uTP连接
  * L = 用户是本地的（通过网络广播或是保留的本地IP范围发现）
  * </pre>
+ * <p>消息格式：长度 类型 负载</p>
  * 
  * TODO：加密
  * TODO：实现流水线
@@ -73,13 +75,13 @@ public class PeerSubMessageHandler {
 	private PeerSession peerSession;
 	private TorrentSession torrentSession;
 	
-	private ExtensionMessageHandler extensionMessageHandler;
-	private DhtExtensionMessageHandler dhtExtensionMessageHandler;
-	
 	/**
 	 * 消息代理
 	 */
 	private IMessageHandler messageHandler;
+	
+	private ExtensionMessageHandler extensionMessageHandler;
+	private DhtExtensionMessageHandler dhtExtensionMessageHandler;
 	
 	private PeerSubMessageHandler() {
 	}
@@ -147,6 +149,9 @@ public class PeerSubMessageHandler {
 		}
 	}
 	
+	/**
+	 * 设置实际的消息处理器
+	 */
 	public PeerSubMessageHandler messageHandler(IMessageHandler messageHandler) {
 		this.messageHandler = messageHandler;
 		return this;
@@ -164,7 +169,7 @@ public class PeerSubMessageHandler {
 	 */
 	public void oneMessage(final ByteBuffer buffer) {
 		buffer.flip();
-		if(!this.handshakeRcv) {
+		if(!this.handshakeRcv) { // 是否已经握手
 			handshake(buffer);
 		} else {
 			final byte typeValue = buffer.get();
@@ -214,10 +219,11 @@ public class PeerSubMessageHandler {
 
 	/**
 	 * <p>发送握手消息</p>
-	 * <p>消息格式：pstrlen pstr reserved info_hash peer_id<br>
-	 * pstrlen：pstr的长度：19<br>
-	 * pstr：BitTorrent协议的关键字：BitTorrent protocol<br>
-	 * reserved：8字节，用于扩展BT协议，一般都设置：0<br>
+	 * <p>格式：pstrlen pstr reserved info_hash peer_id</p>
+	 * <p>
+	 * pstrlen：协议（pstr）的长度：19<br>
+	 * pstr：BitTorrent协议：{@link PeerConfig#HANDSHAKE_NAME}<br>
+	 * reserved：8字节，用于扩展BT协议：{@link PeerConfig#HANDSHAKE_RESERVED}<br>
 	 * info_hash：info_hash<br>
 	 * peer_id：peer_id
 	 * </p>
@@ -241,8 +247,8 @@ public class PeerSubMessageHandler {
 	/**
 	 * <p>处理握手消息</p>
 	 * <p>服务端：初始化、握手、解除阻塞。</p>
-	 * <p>客户端：设置id。</p>
-	 * <p>然后发送扩展消息、DHT消息、交换位图。</p>
+	 * <p>客户端：设置PeerId。</p>
+	 * <p>通用：发送扩展消息、发送DHT消息、交换位图。</p>
 	 */
 	private void handshake(ByteBuffer buffer) {
 		LOGGER.debug("被握手");
@@ -295,8 +301,10 @@ public class PeerSubMessageHandler {
 	/**
 	 * <p>发送心跳消息</p>
 	 * <p>
-	 * 4字节：消息持久：len=0000<br>
-	 * 只有消息长度，没有消息编号和负载
+	 * 格式：4字节：len=0000
+	 * </p>
+	 * <p>
+	 * 只有消息长度，没有消息编号和负载。
 	 * </p>
 	 */
 	public void keepAlive() {
@@ -305,7 +313,9 @@ public class PeerSubMessageHandler {
 	
 	/**
 	 * <p>发送阻塞消息</p>
-	 * <p>5字节：len=0001 id=0</p>
+	 * <p>
+	 * 格式：5字节：len=0001 id=0
+	 * </p>
 	 */
 	public void choke() {
 		LOGGER.debug("阻塞");
@@ -315,6 +325,9 @@ public class PeerSubMessageHandler {
 
 	/**
 	 * <p>处理阻塞消息</p>
+	 * <p>
+	 * 阻塞后不能再进行下载请求。
+	 * </p>
 	 */
 	private void choke(ByteBuffer buffer) {
 		LOGGER.debug("被阻塞");
@@ -328,8 +341,10 @@ public class PeerSubMessageHandler {
 	/**
 	 * <p>发送解除阻塞消息</p>
 	 * <p>
-	 * 5字节：len=0001 id=1<br>
-	 * 解除阻塞
+	 * 格式：5字节：len=0001 id=1
+	 * </p>
+	 * <p>
+	 * 解除阻塞，客户端可以进行下载。
 	 * </p>
 	 */
 	public void unchoke() {
@@ -340,7 +355,9 @@ public class PeerSubMessageHandler {
 	
 	/**
 	 * <p>处理解除阻塞消息</p>
-	 * <p>被解除阻塞后开始发送下载请求。</p>
+	 * <p>
+	 * 被解除阻塞后开始发送下载请求。
+	 * </p>
 	 */
 	private void unchoke(ByteBuffer buffer) {
 		LOGGER.debug("被解除阻塞");
@@ -355,8 +372,10 @@ public class PeerSubMessageHandler {
 	/**
 	 * <p>发送感兴趣消息</p>
 	 * <p>
-	 * 5字节：len=0001 id=2<br>
-	 * 收到have消息时，客户端对Peer感兴趣
+	 * 格式：5字节：len=0001 id=2
+	 * </p>
+	 * <p>
+	 * 收到have消息时，客户端没有对应的Piece，表示客户端对Peer感兴趣。
 	 * </p>
 	 */
 	public void interested() {
@@ -376,8 +395,10 @@ public class PeerSubMessageHandler {
 	/**
 	 * <p>发送不感兴趣消息</p>
 	 * <p>
-	 * 5字节：len=0001 id=3<br>
-	 * 客户端对Peer不感兴趣
+	 * 格式：5字节：len=0001 id=3
+	 * </p>
+	 * <p>
+	 * 客户端已经拥有Peer所有的Piece时发送不感兴趣。
 	 * </p>
 	 */
 	public void notInterested() {
@@ -397,8 +418,10 @@ public class PeerSubMessageHandler {
 	/**
 	 * <p>发送have消息</p>
 	 * <p>
-	 * 5字节：len=0005 id=4 piece_index<br>
-	 * piece index：piece下标，每当客户端下载完piece，发出have消息告诉所有与客户端连接的Peer
+	 * 格式：5字节：len=0005 id=4 piece_index
+	 * </p>
+	 * <p>
+	 * piece_index：Piece下标，每当客户端下载完Piece，发出have消息告诉所有与客户端连接的Peer。
 	 * </p>
 	 */
 	public void have(int index) {
@@ -411,6 +434,7 @@ public class PeerSubMessageHandler {
 
 	/**
 	 * <p>处理have消息</p>
+	 * <p>如果收到没有的Piece时，需要发送感兴趣消息。</p>
 	 */
 	private void have(ByteBuffer buffer) {
 		if(!this.torrentSession.uploadable()) {
@@ -420,7 +444,7 @@ public class PeerSubMessageHandler {
 		LOGGER.debug("收到have消息：{}", index);
 		this.peerSession.piece(index);
 		if(this.torrentSession.havePiece(index)) { // 已有=不感兴趣
-			notInterested();
+			// 虽然不感兴趣，但是不能发送不感兴趣消息
 		} else { // 没有=感兴趣
 			interested();
 		}
@@ -429,8 +453,10 @@ public class PeerSubMessageHandler {
 	/**
 	 * <p>发送位图消息</p>
 	 * <p>
-	 * 长度不固定：len=0001+X id=5 bitfield<br>
-	 * 交换位图：X=bitfield.length，握手后交换位图，每个piece占一位
+	 * 格式：长度不固定：len=0001+X id=5 bitfield
+	 * </p>
+	 * <p>
+	 * 交换位图：X=bitfield.length，握手后交换位图，每个Piece占一位。
 	 * </p>
 	 */
 	public void bitfield() {
@@ -452,10 +478,10 @@ public class PeerSubMessageHandler {
 		}
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
-		final BitSet pieces = BitfieldUtils.toBitSet(bytes);
+		final BitSet pieces = BitfieldUtils.toBitSet(bytes); // Peer位图
 		this.peerSession.pieces(pieces);
 		LOGGER.debug("收到位图：{}", pieces);
-		final BitSet notHave = new BitSet();
+		final BitSet notHave = new BitSet(); // 客户端没有的位图
 		notHave.or(pieces);
 		notHave.andNot(this.torrentSession.pieces());
 		LOGGER.debug("感兴趣位图：{}", notHave);
@@ -469,11 +495,13 @@ public class PeerSubMessageHandler {
 	/**
 	 * <p>发送request消息</p>
 	 * <p>
-	 * 13字节：len=0013 id=6 index begin length<br>
-	 * index：piece的索引<br>
-	 * begin：piece内的偏移<br>
+	 * 格式：13字节：len=0013 id=6 index begin length
+	 * </p>
+	 * <p>
+	 * index：Piece索引<br>
+	 * begin：Piece内偏移<br>
 	 * length：请求Peer发送的数据的长度<br>
-	 * 当客户端收到Peer的unchoke请求后即可构建request消息，一般交换数据是以slice（长度16KB的块）为单位的<br>
+	 * 客户端收到Peer的unchoke请求后开始发送request消息，一般交换数据是以slice（长度16KB的块）为单位的。<br>
 	 * </p>
 	 */
 	public void request(int index, int begin, int length) {
@@ -518,8 +546,11 @@ public class PeerSubMessageHandler {
 	/**
 	 * <p>发送piece消息</p>
 	 * <p>
-	 * 长度不固定：len=0009+X id=7 index begin block<br>
-	 * piece消息：X=block长度（一般为16KB），收到request消息，如果没有Peer未被阻塞，且存在slice，则返回数据
+	 * 格式：长度不固定：len=0009+X id=7 index begin block
+	 * </p>
+	 * <p>
+	 * X=block长度（一般为16KB）<br>
+	 * 收到request消息，如果Peer未被阻塞，且存在slice，则返回数据。
 	 * </p>
 	 */
 	public void piece(int index, int begin, byte[] bytes) {
@@ -562,8 +593,10 @@ public class PeerSubMessageHandler {
 	/**
 	 * <p>发送cancel消息</p>
 	 * <p>
-	 * 13字节：len=0013 id=8 index begin length<br>
-	 * 与request作用相反，取消下载
+	 * 格式：13字节：len=0013 id=8 index begin length
+	 * <p>
+	 * </p>
+	 * 与request作用相反，取消下载。
 	 * </p>
 	 */
 	public void cancel(int index, int begin, int length) {
@@ -578,15 +611,16 @@ public class PeerSubMessageHandler {
 	 * <p>处理cancel消息</p>
 	 */
 	private void cancel(ByteBuffer buffer) {
-		// TODO：不处理
 	}
 	
 	/**
 	 * <p>发送DHT消息</p>
 	 * <p>
-	 * 3字节：len=0003 id=9 listen-port<br>
-	 * listen-port：两字节<br>
-	 * 支持DHT的客户端使用，指明DHT监听的端口
+	 * 格式：3字节：len=0003 id=9 listen-port
+	 * <p>
+	 * </p>
+	 * listen-port：两字节，DHT端口。<br>
+	 * 支持DHT的客户端使用，指明DHT监听的端口。
 	 * </p>
 	 */
 	public void dht() {
@@ -605,7 +639,13 @@ public class PeerSubMessageHandler {
 
 	/**
 	 * <p>发送扩展消息</p>
-	 * <p>扩展消息：len=unknow id=20 消息</p>
+	 * <p>
+	 * 格式：长度不固定：len=0001+X id=20 ex
+	 * </p>
+	 * <p>
+	 * X：扩展消息长度<br>
+	 * ex：扩展消息
+	 * </p>
 	 */
 	public void extension() {
 		if(this.peerSession.supportExtensionProtocol()) {
@@ -639,9 +679,11 @@ public class PeerSubMessageHandler {
 	/**
 	 * <p>创建消息</p>
 	 * <p>
-	 * 消息格式：length_prefix message_ID payload<br>
-	 * length prefix：4字节：message id和payload的长度和<br>
-	 * message id：1字节：指明消息的编号<br>
+	 * 消息格式：length_prefix message_id payload
+	 * </p>
+	 * <p>
+	 * length_prefix：4字节：message_id和payload的长度和。<br>
+	 * message_id：1字节：{@linkplain Type 消息类型编号}<br>
 	 * payload：消息内容
 	 * </p>
 	 */

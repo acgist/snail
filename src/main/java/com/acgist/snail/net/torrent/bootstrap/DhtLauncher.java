@@ -46,6 +46,7 @@ public class DhtLauncher implements Runnable {
 	public void run() {
 		LOGGER.debug("执行DHT定时任务");
 		try {
+			joinNodes();
 			final var list = pick();
 			findPeers(list);
 		} catch (Exception e) {
@@ -53,6 +54,15 @@ public class DhtLauncher implements Runnable {
 		}
 	}
 
+	/**
+	 * 将交换的节点加入到系统中。
+	 */
+	private void joinNodes() {
+		this.nodes.forEach(address -> {
+			NodeManager.getInstance().newNodeSession(address.getHostString(), address.getPort());
+		});
+	}
+	
 	/**
 	 * 选择DHT客户端地址
 	 */
