@@ -99,6 +99,7 @@ public class PeerLauncherGroup {
 	public void release() {
 		LOGGER.debug("释放PeerLauncherGroup");
 		synchronized (this.peerLaunchers) {
+			notifyBuild(false);
 			this.peerLaunchers.forEach(launcher -> {
 				SystemThreadContext.submit(() -> {
 					launcher.release();

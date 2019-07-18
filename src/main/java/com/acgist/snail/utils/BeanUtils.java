@@ -1,10 +1,12 @@
 package com.acgist.snail.utils;
 
 import java.beans.PropertyDescriptor;
+import java.io.Reader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.stream.Stream;
 
+import org.h2.jdbc.JdbcClob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -127,6 +129,23 @@ public class BeanUtils {
 		}
 		if(clazz.isEnum()) { // 枚举类型
 			return Enum.valueOf((Class<Enum>) clazz, value.toString());
+		}
+		if(value instanceof JdbcClob) { // 长字符串
+			final JdbcClob clob = (JdbcClob) value;
+			try {
+				int index;
+				final char[] chars = new char[1024];
+				StringBuilder builder = new StringBuilder();
+				final Reader reader = clob.getCharacterStream();
+				while((index = reader.read(chars)) != -1) {
+					builder.append(new String(chars, 0, index));
+				}
+				return builder.toString();
+			} catch (Exception e) {
+				LOGGER.error("JdbcClob读取异常", e);
+			} finally {
+				clob.free();
+			}
 		}
 		return value;
 	}

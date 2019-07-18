@@ -37,7 +37,7 @@ public class PeerEvaluator {
 	private boolean available; // 初始完成，可用状态。
 	
 	/**
-	 * 最低分：平均数
+	 * 优质Peer最低分：取平均分。
 	 */
 	private long horizontal = 0L;
 	/**
@@ -85,7 +85,7 @@ public class PeerEvaluator {
 	public void init() {
 		synchronized (this) {
 			LOGGER.debug("初始化Peer评估器");
-			this.buildRange();
+			this.buildRanges();
 			this.available = true;
 		}
 	}
@@ -169,7 +169,7 @@ public class PeerEvaluator {
 	/**
 	 * 初始数据
 	 */
-	private void buildRange() {
+	private void buildRanges() {
 		final ConfigRepository repository = new ConfigRepository();
 		final ConfigEntity config = repository.findName(ACGIST_SYSTEM_RANGE);
 		if(config == null || StringUtils.isEmpty(config.getValue())) {
