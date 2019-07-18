@@ -11,7 +11,7 @@ import com.acgist.snail.net.torrent.dht.DhtClient;
 import com.acgist.snail.net.torrent.dht.bootstrap.NodeManager;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
-import com.acgist.snail.system.bencode.BEnodeEncoder;
+import com.acgist.snail.system.bencode.BEncodeEncoder;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
@@ -28,7 +28,7 @@ public class DhtClientTest {
 				final Map<String, String> data = new HashMap<String, String>();
 				data.put("v", "1.0.0");
 				System.out.println("发送消息：" + data);
-				client.send(ByteBuffer.wrap(BEnodeEncoder.encodeMap(data)));
+				client.send(ByteBuffer.wrap(BEncodeEncoder.encodeMap(data)));
 			} catch (NetException e) {
 				e.printStackTrace();
 			}

@@ -14,7 +14,7 @@ import com.acgist.snail.pojo.bean.HttpTracker;
 import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.ProtocolConfig.Protocol;
-import com.acgist.snail.system.bencode.BEnodeDecoder;
+import com.acgist.snail.system.bencode.BEncodeDecoder;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.config.TrackerConfig;
 import com.acgist.snail.system.exception.NetException;
@@ -53,7 +53,7 @@ public class HttpTrackerClient extends TrackerClient {
 			throw new NetException("获取Peer异常");
 		}
 		final String body = response.body();
-		final BEnodeDecoder decoder = BEnodeDecoder.newInstance(body.getBytes());
+		final BEncodeDecoder decoder = BEncodeDecoder.newInstance(body.getBytes());
 		final Map<String, Object> map = decoder.nextMap();
 		if(map == null) {
 			LOGGER.warn("HttpTracker消息格式错误：{}", decoder.obbString());

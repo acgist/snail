@@ -15,14 +15,37 @@ public class ConfigRepository extends Repository<ConfigEntity> {
 		super(ConfigEntity.TABLE_NAME);
 	}
 
+	/**
+	 * 根据配置名称查询配置
+	 * 
+	 * @param name 配置名称
+	 * 
+	 * @return 配置
+	 */
 	public ConfigEntity findName(String name) {
 		return findOne(ConfigEntity.PROPERTY_NAME, name);
 	}
 	
 	/**
-	 * 更新配置：如果不存在保存，如果存在更新
+	 * 根据配置名称删除配置
+	 * 
+	 * @param name 配置名称
+	 * 
+	 * @return 删除结果：true-成功；false-配置不存在；
 	 */
-	public void updateConfig(String name, String value) {
+	public boolean deleteName(String name) {
+		final ConfigEntity entity = findOne(ConfigEntity.PROPERTY_NAME, name);
+		if(entity != null) {
+			delete(entity.getId());
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * 更新配置：如果不存在保存，如果存在更新。
+	 */
+	public void mergeConfig(String name, String value) {
 		ConfigEntity entity = findOne(ConfigEntity.PROPERTY_NAME, name);
 		if(entity == null) {
 			entity = new ConfigEntity();

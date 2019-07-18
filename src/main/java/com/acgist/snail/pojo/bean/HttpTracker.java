@@ -2,7 +2,7 @@ package com.acgist.snail.pojo.bean;
 
 import java.util.Map;
 
-import com.acgist.snail.system.bencode.BEnodeDecoder;
+import com.acgist.snail.system.bencode.BEncodeDecoder;
 import com.acgist.snail.utils.PeerUtils;
 
 /**
@@ -24,14 +24,14 @@ public class HttpTracker {
 
 	public static final HttpTracker valueOf(Map<?, ?> map) {
 		final HttpTracker tracker = new HttpTracker();
-		tracker.setFailureReason(BEnodeDecoder.getString(map, "failure reason"));
-		tracker.setWarngingMessage(BEnodeDecoder.getString(map, "warnging message"));
-		tracker.setInterval(BEnodeDecoder.getInteger(map, "interval"));
-		tracker.setMinInterval(BEnodeDecoder.getInteger(map, "min interval"));
-		tracker.setTrackerId(BEnodeDecoder.getString(map, "tracker id"));
-		tracker.setComplete(BEnodeDecoder.getInteger(map, "complete"));
-		tracker.setIncomplete(BEnodeDecoder.getInteger(map, "incomplete"));
-		tracker.setPeers(PeerUtils.read(BEnodeDecoder.getBytes(map, "peers")));
+		tracker.setFailureReason(BEncodeDecoder.getString(map, "failure reason"));
+		tracker.setWarngingMessage(BEncodeDecoder.getString(map, "warnging message"));
+		tracker.setInterval(BEncodeDecoder.getInteger(map, "interval"));
+		tracker.setMinInterval(BEncodeDecoder.getInteger(map, "min interval"));
+		tracker.setTrackerId(BEncodeDecoder.getString(map, "tracker id"));
+		tracker.setComplete(BEncodeDecoder.getInteger(map, "complete"));
+		tracker.setIncomplete(BEncodeDecoder.getInteger(map, "incomplete"));
+		tracker.setPeers(PeerUtils.read(BEncodeDecoder.getBytes(map, "peers")));
 		return tracker;
 	}
 	

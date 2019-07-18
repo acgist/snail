@@ -27,9 +27,9 @@ import com.acgist.snail.system.exception.ArgumentException;
  * @author acgist
  * @since 1.0.0
  */
-public class BEnodeDecoder {
+public class BEncodeDecoder {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(BEnodeDecoder.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(BEncodeDecoder.class);
 	
 	public static final char TYPE_E = 'e';
 	public static final char TYPE_I = 'i';
@@ -47,22 +47,22 @@ public class BEnodeDecoder {
 	private Map<String, Object> map;
 	private final ByteArrayInputStream inputStream;
 	
-	private BEnodeDecoder(byte[] bytes) {
+	private BEncodeDecoder(byte[] bytes) {
 		this.inputStream = new ByteArrayInputStream(bytes);
 	}
 	
-	public static final BEnodeDecoder newInstance(String content) {
+	public static final BEncodeDecoder newInstance(String content) {
 		if(content == null) {
 			throw new ArgumentException("B编码解码内容错误");
 		}
-		return new BEnodeDecoder(content.getBytes());
+		return new BEncodeDecoder(content.getBytes());
 	}
 	
-	public static final BEnodeDecoder newInstance(byte[] bytes) {
+	public static final BEncodeDecoder newInstance(byte[] bytes) {
 		if(bytes == null) {
 			throw new ArgumentException("B编码解码内容错误");
 		}
-		return new BEnodeDecoder(bytes);
+		return new BEncodeDecoder(bytes);
 	}
 	
 	/**

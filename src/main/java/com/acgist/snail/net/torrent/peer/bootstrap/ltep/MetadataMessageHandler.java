@@ -11,8 +11,8 @@ import com.acgist.snail.net.torrent.peer.bootstrap.IExtensionMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
-import com.acgist.snail.system.bencode.BEnodeDecoder;
-import com.acgist.snail.system.bencode.BEnodeEncoder;
+import com.acgist.snail.system.bencode.BEncodeDecoder;
+import com.acgist.snail.system.bencode.BEncodeEncoder;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.PeerConfig.ExtensionType;
 import com.acgist.snail.system.config.PeerConfig.MetadataType;
@@ -63,7 +63,7 @@ public class MetadataMessageHandler implements IExtensionMessageHandler {
 	public void onMessage(ByteBuffer buffer) {
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
-		final BEnodeDecoder decoder = BEnodeDecoder.newInstance(bytes);
+		final BEncodeDecoder decoder = BEncodeDecoder.newInstance(bytes);
 		final Map<String, Object> map = decoder.nextMap();
 		if(map == null) {
 			LOGGER.warn("metadata消息格式错误：{}", decoder.obbString());
@@ -105,7 +105,7 @@ public class MetadataMessageHandler implements IExtensionMessageHandler {
 	/**
 	 * 处理请求：request
 	 */
-	private void request(BEnodeDecoder decoder) {
+	private void request(BEncodeDecoder decoder) {
 		LOGGER.debug("收到metadata消息-request");
 		final int piece = decoder.getInteger(ARG_PIECE);
 		data(piece);
@@ -146,7 +146,7 @@ public class MetadataMessageHandler implements IExtensionMessageHandler {
 	 * @param data 请求数据
 	 * @param decoder B编码数据
 	 */
-	private void data(BEnodeDecoder decoder) {
+	private void data(BEncodeDecoder decoder) {
 		LOGGER.debug("收到metadata消息-data");
 		byte[] bytes = this.infoHash.info();
 		final int piece = decoder.getInteger(ARG_PIECE);
@@ -185,7 +185,7 @@ public class MetadataMessageHandler implements IExtensionMessageHandler {
 	/**
 	 * 处理请求：reject
 	 */
-	private void reject(BEnodeDecoder decoder) {
+	private void reject(BEncodeDecoder decoder) {
 		LOGGER.debug("收到metadata消息-reject");
 	}
 	
@@ -224,7 +224,7 @@ public class MetadataMessageHandler implements IExtensionMessageHandler {
 			LOGGER.warn("不支持metadata扩展协议");
 			return;
 		}
-		final BEnodeEncoder encoder = BEnodeEncoder.newInstance().newMap();
+		final BEncodeEncoder encoder = BEncodeEncoder.newInstance().newMap();
 		encoder.put(data).flush();
 		if(x != null) {
 			encoder.build(x);

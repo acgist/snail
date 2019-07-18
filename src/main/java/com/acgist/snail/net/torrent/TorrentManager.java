@@ -11,8 +11,8 @@ import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.TorrentProtocol;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
-import com.acgist.snail.system.bencode.BEnodeDecoder;
-import com.acgist.snail.system.bencode.BEnodeEncoder;
+import com.acgist.snail.system.bencode.BEncodeDecoder;
+import com.acgist.snail.system.bencode.BEncodeEncoder;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.StringUtils;
 
@@ -120,14 +120,14 @@ public class TorrentManager {
 		}
 		try {
 			final var bytes = Files.readAllBytes(Paths.get(file.getPath()));
-			final BEnodeDecoder decoder = BEnodeDecoder.newInstance(bytes);
+			final BEncodeDecoder decoder = BEncodeDecoder.newInstance(bytes);
 			final Map<String, Object> map = decoder.nextMap();
 			if(map == null) {
 				throw new DownloadException("种子文件格式错误");
 			}
 			final Torrent torrent = Torrent.valueOf(map);
-			final Map<String, Object> info = BEnodeDecoder.getMap(map, "info");
-			final InfoHash infoHash = InfoHash.newInstance(BEnodeEncoder.encodeMap(info));
+			final Map<String, Object> info = BEncodeDecoder.getMap(map, "info");
+			final InfoHash infoHash = InfoHash.newInstance(BEncodeEncoder.encodeMap(info));
 			torrent.setInfoHash(infoHash);
 			return torrent;
 		} catch (IOException e) {

@@ -36,7 +36,7 @@ public class BeanUtils {
 	}
 	
 	/**
-	 * <p>获取类属性（非静态、非瞬时）</p>
+	 * <p>获取类属性（非静态-static、非瞬时-transient）</p>
 	 */
 	public static final String[] properties(Class<?> clazz) {
 		String[] properties = null;

@@ -13,8 +13,8 @@ import com.acgist.snail.net.torrent.peer.bootstrap.IExtensionMessageHandler;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.system.bencode.BEnodeDecoder;
-import com.acgist.snail.system.bencode.BEnodeEncoder;
+import com.acgist.snail.system.bencode.BEncodeDecoder;
+import com.acgist.snail.system.bencode.BEncodeEncoder;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.PeerConfig.ExtensionType;
 import com.acgist.snail.utils.CollectionUtils;
@@ -81,7 +81,7 @@ public class PeerExchangeMessageHandler implements IExtensionMessageHandler {
 	private void exchange(ByteBuffer buffer) {
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
-		final BEnodeDecoder decoder = BEnodeDecoder.newInstance(bytes);
+		final BEncodeDecoder decoder = BEncodeDecoder.newInstance(bytes);
 		final Map<String, Object> map = decoder.nextMap();
 		if(map == null) {
 			LOGGER.warn("UtPeerExchange消息格式错误：{}", decoder.obbString());
@@ -138,7 +138,7 @@ public class PeerExchangeMessageHandler implements IExtensionMessageHandler {
 		data.put(ADDED6F, emptyBytes);
 		data.put(DROPPED, emptyBytes);
 		data.put(DROPPED6, emptyBytes);
-		return BEnodeEncoder.encodeMap(data);
+		return BEncodeEncoder.encodeMap(data);
 	}
 
 }

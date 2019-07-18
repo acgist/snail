@@ -10,7 +10,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.system.bencode.BEnodeDecoder.Type;
+import com.acgist.snail.system.bencode.BEncodeDecoder.Type;
 
 /**
  * <p>B编码</p>
@@ -20,27 +20,27 @@ import com.acgist.snail.system.bencode.BEnodeDecoder.Type;
  * @author acgist
  * @since 1.0.0
  */
-public class BEnodeEncoder {
+public class BEncodeEncoder {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(BEnodeEncoder.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(BEncodeEncoder.class);
 	
 	private List<Object> list;
 	private Map<String, Object> map;
-	private BEnodeDecoder.Type type;
+	private BEncodeDecoder.Type type;
 	private ByteArrayOutputStream outputStream;
 	
-	private BEnodeEncoder() {
+	private BEncodeEncoder() {
 		this.outputStream = new ByteArrayOutputStream();
 	}
 	
-	public static final BEnodeEncoder newInstance() {
-		return new BEnodeEncoder();
+	public static final BEncodeEncoder newInstance() {
+		return new BEncodeEncoder();
 	}
 
 	/**
 	 * 新建Map
 	 */
-	public BEnodeEncoder newMap() {
+	public BEncodeEncoder newMap() {
 		this.type = Type.map;
 		this.map = new LinkedHashMap<>();
 		return this;
@@ -49,7 +49,7 @@ public class BEnodeEncoder {
 	/**
 	 * 新建List
 	 */
-	public BEnodeEncoder newList() {
+	public BEncodeEncoder newList() {
 		this.type = Type.list;
 		this.list = new ArrayList<>();
 		return this;
@@ -58,7 +58,7 @@ public class BEnodeEncoder {
 	/**
 	 * 向List中添加数据
 	 */
-	public BEnodeEncoder put(Object value) {
+	public BEncodeEncoder put(Object value) {
 		if(this.type == Type.list) {
 			this.list.add(value);
 		}
@@ -68,7 +68,7 @@ public class BEnodeEncoder {
 	/**
 	 * 向List中添加数据
 	 */
-	public BEnodeEncoder put(List<?> list) {
+	public BEncodeEncoder put(List<?> list) {
 		if(this.type == Type.list) {
 			this.list.addAll(list);
 		}
@@ -78,7 +78,7 @@ public class BEnodeEncoder {
 	/**
 	 * 向Map中添加数据
 	 */
-	public BEnodeEncoder put(String key, Object value) {
+	public BEncodeEncoder put(String key, Object value) {
 		if(this.type == Type.map) {
 			this.map.put(key, value);
 		}
@@ -88,7 +88,7 @@ public class BEnodeEncoder {
 	/**
 	 * 向Map中添加数据
 	 */
-	public BEnodeEncoder put(Map<String, Object> map) {
+	public BEncodeEncoder put(Map<String, Object> map) {
 		if(this.type == Type.map) {
 			this.map.putAll(map);
 		}
@@ -98,7 +98,7 @@ public class BEnodeEncoder {
 	/**
 	 * 将List和Map中的数据刷入字符流，配合put系列方法使用。
 	 */
-	public BEnodeEncoder flush() {
+	public BEncodeEncoder flush() {
 		if(this.type == Type.map) {
 			this.build(this.map);
 		} else if(this.type == Type.list) {
@@ -112,21 +112,21 @@ public class BEnodeEncoder {
 	/**
 	 * 添加Map
 	 */
-	public BEnodeEncoder build(Map<?, ?> map) {
+	public BEncodeEncoder build(Map<?, ?> map) {
 		if(map == null) {
 			return this;
 		}
-		this.outputStream.write(BEnodeDecoder.TYPE_D);
+		this.outputStream.write(BEncodeDecoder.TYPE_D);
 		map.forEach((key, value) -> {
-			final String keyValue = (String) key;
+			final String keyValue = key.toString();
 			final byte[] keyValues = keyValue.getBytes();
 			this.write(String.valueOf(keyValues.length).getBytes());
-			this.outputStream.write(BEnodeDecoder.SEPARATOR);
+			this.outputStream.write(BEncodeDecoder.SEPARATOR);
 			this.write(keyValues);
 			if(value instanceof Number) {
-				this.outputStream.write(BEnodeDecoder.TYPE_I);
+				this.outputStream.write(BEncodeDecoder.TYPE_I);
 				this.write(value.toString().getBytes());
-				this.outputStream.write(BEnodeDecoder.TYPE_E);
+				this.outputStream.write(BEncodeDecoder.TYPE_E);
 			} else if(value instanceof Map) {
 				build((Map<?, ?>) value);
 			} else if(value instanceof List) {
@@ -142,28 +142,28 @@ public class BEnodeEncoder {
 				}
 				if(bytes != null) {
 					this.write(String.valueOf(bytes.length).getBytes());
-					this.outputStream.write(BEnodeDecoder.SEPARATOR);
+					this.outputStream.write(BEncodeDecoder.SEPARATOR);
 					this.write(bytes);
 				}
 			}
 		});
-		this.outputStream.write(BEnodeDecoder.TYPE_E);
+		this.outputStream.write(BEncodeDecoder.TYPE_E);
 		return this;
 	}
 
 	/**
 	 * 添加List
 	 */
-	public BEnodeEncoder build(List<?> list) {
+	public BEncodeEncoder build(List<?> list) {
 		if(list == null) {
 			return this;
 		}
-		this.outputStream.write(BEnodeDecoder.TYPE_L);
+		this.outputStream.write(BEncodeDecoder.TYPE_L);
 		list.forEach(value -> {
 			if(value instanceof Number) {
-				this.outputStream.write(BEnodeDecoder.TYPE_I);
+				this.outputStream.write(BEncodeDecoder.TYPE_I);
 				this.write(value.toString().getBytes());
-				this.outputStream.write(BEnodeDecoder.TYPE_E);
+				this.outputStream.write(BEncodeDecoder.TYPE_E);
 			} else if(value instanceof Map) {
 				build((Map<?, ?>) value);
 			} else if(value instanceof List) {
@@ -179,19 +179,19 @@ public class BEnodeEncoder {
 				}
 				if(bytes != null) {
 					this.write(String.valueOf(bytes.length).getBytes());
-					this.outputStream.write(BEnodeDecoder.SEPARATOR);
+					this.outputStream.write(BEncodeDecoder.SEPARATOR);
 					this.write(bytes);
 				}
 			}
 		});
-		this.outputStream.write(BEnodeDecoder.TYPE_E);
+		this.outputStream.write(BEncodeDecoder.TYPE_E);
 		return this;
 	}
 	
 	/**
 	 * 添加字符数组
 	 */
-	public BEnodeEncoder build(byte[] bytes) {
+	public BEncodeEncoder build(byte[] bytes) {
 		write(bytes);
 		return this;
 	}

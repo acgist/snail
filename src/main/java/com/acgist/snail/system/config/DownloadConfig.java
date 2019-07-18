@@ -105,7 +105,7 @@ public class DownloadConfig extends PropertiesConfig {
 	public static final void setPath(String path) {
 		final ConfigRepository configRepository = new ConfigRepository();
 		INSTANCE.path = path;
-		configRepository.updateConfig(DOWNLOAD_PATH, path);
+		configRepository.mergeConfig(DOWNLOAD_PATH, path);
 	}
 	
 	/**
@@ -138,7 +138,7 @@ public class DownloadConfig extends PropertiesConfig {
 	public static final void setSize(Integer size) {
 		final ConfigRepository configRepository = new ConfigRepository();
 		INSTANCE.size = size;
-		configRepository.updateConfig(DOWNLOAD_SIZE, String.valueOf(size));
+		configRepository.mergeConfig(DOWNLOAD_SIZE, String.valueOf(size));
 	}
 
 	/**
@@ -154,7 +154,7 @@ public class DownloadConfig extends PropertiesConfig {
 	public static final void setNotice(Boolean notice) {
 		final ConfigRepository configRepository = new ConfigRepository();
 		INSTANCE.notice = notice;
-		configRepository.updateConfig(DOWNLOAD_NOTICE, String.valueOf(notice));
+		configRepository.mergeConfig(DOWNLOAD_NOTICE, String.valueOf(notice));
 	}
 
 	/**
@@ -170,7 +170,7 @@ public class DownloadConfig extends PropertiesConfig {
 	public static final void setBuffer(Integer buffer) {
 		final ConfigRepository configRepository = new ConfigRepository();
 		INSTANCE.buffer = buffer;
-		configRepository.updateConfig(DOWNLOAD_BUFFER, String.valueOf(buffer));
+		configRepository.mergeConfig(DOWNLOAD_BUFFER, String.valueOf(buffer));
 	}
 	
 	/**
@@ -193,7 +193,7 @@ public class DownloadConfig extends PropertiesConfig {
 	public static final void setLastPath(String lastPath) {
 		final ConfigRepository configRepository = new ConfigRepository();
 		INSTANCE.lastPath = lastPath;
-		configRepository.updateConfig(DOWNLOAD_LAST_PATH, lastPath);
+		configRepository.mergeConfig(DOWNLOAD_LAST_PATH, lastPath);
 	}
 	
 	/**
@@ -209,7 +209,7 @@ public class DownloadConfig extends PropertiesConfig {
 	public static final void setMemoryBuffer(Integer memoryBuffer) {
 		final ConfigRepository configRepository = new ConfigRepository();
 		INSTANCE.memoryBuffer = memoryBuffer;
-		configRepository.updateConfig(DOWNLOAD_MEMORY_BUFFER, String.valueOf(memoryBuffer));
+		configRepository.mergeConfig(DOWNLOAD_MEMORY_BUFFER, String.valueOf(memoryBuffer));
 	}
 
 	/**

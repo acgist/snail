@@ -1,13 +1,10 @@
 package com.acgist.snail.system.initializer.impl;
 
-import java.util.concurrent.TimeUnit;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.upnp.UpnpClient;
 import com.acgist.snail.net.upnp.UpnpServer;
-import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.initializer.Initializer;
 
 /**
@@ -31,9 +28,7 @@ public class UpnpInitializer extends Initializer {
 	protected void init() {
 		LOGGER.info("初始化UPNP");
 		UpnpServer.getInstance();
-		SystemThreadContext.timer(0, 30, TimeUnit.MINUTES, () -> {
-			UpnpClient.newInstance().config();
-		});
+		UpnpClient.newInstance().config();
 	}
 
 }

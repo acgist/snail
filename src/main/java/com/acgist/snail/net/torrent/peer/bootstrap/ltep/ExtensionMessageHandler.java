@@ -12,8 +12,8 @@ import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
-import com.acgist.snail.system.bencode.BEnodeDecoder;
-import com.acgist.snail.system.bencode.BEnodeEncoder;
+import com.acgist.snail.system.bencode.BEncodeDecoder;
+import com.acgist.snail.system.bencode.BEncodeEncoder;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.PeerConfig.Action;
 import com.acgist.snail.system.config.PeerConfig.ExtensionType;
@@ -127,7 +127,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 				data.put(EX_METADATA_SIZE, metadataSize); // 种子info数据长度
 			}
 		}
-		this.pushMessage(ExtensionType.handshake.value(), BEnodeEncoder.encodeMap(data));
+		this.pushMessage(ExtensionType.handshake.value(), BEncodeEncoder.encodeMap(data));
 	}
 
 	/**
@@ -136,7 +136,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	private void handshake(ByteBuffer buffer) {
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
-		final BEnodeDecoder decoder = BEnodeDecoder.newInstance(bytes);
+		final BEncodeDecoder decoder = BEncodeDecoder.newInstance(bytes);
 		final Map<String, Object> data = decoder.nextMap();
 		if(data == null) {
 			LOGGER.warn("扩展握手消息格式错误：{}", decoder.obbString());

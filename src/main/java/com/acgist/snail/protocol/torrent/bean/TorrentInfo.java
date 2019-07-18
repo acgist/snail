@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.acgist.snail.system.bencode.BEnodeDecoder;
+import com.acgist.snail.system.bencode.BEncodeDecoder;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -42,18 +42,18 @@ public class TorrentInfo {
 			return null;
 		}
 		final TorrentInfo info = new TorrentInfo();
-		info.setName(BEnodeDecoder.getString(map, "name"));
-		info.setNameUtf8(BEnodeDecoder.getString(map, "name.utf-8"));
-		info.setLength(BEnodeDecoder.getLong(map, "length"));
-		info.setEd2k(BEnodeDecoder.getBytes(map, "ed2k"));
-		info.setFilehash(BEnodeDecoder.getBytes(map, "filehash"));
-		info.setPieces(BEnodeDecoder.getBytes(map, "pieces"));
-		info.setPieceLength(BEnodeDecoder.getLong(map, "piece length"));
-		info.setPublisher(BEnodeDecoder.getString(map, "publisher"));
-		info.setPublisherUtf8(BEnodeDecoder.getString(map, "publisher.utf-8"));
-		info.setPublisherUrl(BEnodeDecoder.getString(map, "publisher-url"));
-		info.setPublisherUrlUtf8(BEnodeDecoder.getString(map, "publisher-url.utf-8"));
-		final List<Object> files = BEnodeDecoder.getList(map, "files");
+		info.setName(BEncodeDecoder.getString(map, "name"));
+		info.setNameUtf8(BEncodeDecoder.getString(map, "name.utf-8"));
+		info.setLength(BEncodeDecoder.getLong(map, "length"));
+		info.setEd2k(BEncodeDecoder.getBytes(map, "ed2k"));
+		info.setFilehash(BEncodeDecoder.getBytes(map, "filehash"));
+		info.setPieces(BEncodeDecoder.getBytes(map, "pieces"));
+		info.setPieceLength(BEncodeDecoder.getLong(map, "piece length"));
+		info.setPublisher(BEncodeDecoder.getString(map, "publisher"));
+		info.setPublisherUtf8(BEncodeDecoder.getString(map, "publisher.utf-8"));
+		info.setPublisherUrl(BEncodeDecoder.getString(map, "publisher-url"));
+		info.setPublisherUrlUtf8(BEncodeDecoder.getString(map, "publisher-url.utf-8"));
+		final List<Object> files = BEncodeDecoder.getList(map, "files");
 		if(files != null) {
 			info.setFiles(
 				files.stream()

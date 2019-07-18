@@ -60,7 +60,9 @@ public class SystemContext {
 	 */
 	public static final void init() {
 		LOGGER.info("系统初始化");
+		// 同步
 		DatabaseInitializer.newInstance().sync();
+		// 异步
 		ConfigInitializer.newInstance().asyn();
 		ProtocolInitializer.newInstance().asyn();
 		UpnpInitializer.newInstance().asyn();
