@@ -64,7 +64,7 @@ public class MainWindow extends Window<MainController> {
 	
 	@Override
 	public void show() {
-		this.stage.setIconified(false); // 设置最大化：防止最小化后从托盘显示出来不能正常显示
+		super.maximize();
 		super.show();
 	}
 
