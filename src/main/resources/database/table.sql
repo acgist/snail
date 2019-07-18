@@ -17,7 +17,7 @@ create table tb_task (
     `fileType` VARCHAR(32) DEFAULT NULL,
     `file` VARCHAR(2048) DEFAULT NULL,
     `url` VARCHAR(5120) DEFAULT NULL,
-    `torrent` VARCHAR(1024) DEFAULT NULL,
+    `torrent` VARCHAR(2048) DEFAULT NULL,
     `status` VARCHAR(32) DEFAULT NULL,
     `size` BIGINT DEFAULT NULL,
     `endDate` TIMESTAMP DEFAULT NULL,

@@ -1,5 +1,7 @@
 package com.acgist.snail.gui;
 
+import com.acgist.snail.system.context.SystemContext;
+
 import javafx.application.Application;
 import javafx.fxml.Initializable;
 import javafx.scene.image.Image;
@@ -29,13 +31,6 @@ public abstract class Window<T extends Initializable> extends Application {
 	}
 	
 	/**
-	 * 设置ICON
-	 */
-	protected void icon() {
-		this.stage.getIcons().add(new Image("/image/logo.png"));
-	}
-	
-	/**
 	 * ESC隐藏窗口
 	 */
 	protected void esc() {
@@ -47,10 +42,10 @@ public abstract class Window<T extends Initializable> extends Application {
 	}
 	
 	/**
-	 * 禁止改变窗口大小
+	 * 设置ICON
 	 */
-	protected void disableResize() {
-		this.stage.setResizable(false);
+	protected void icon() {
+		this.stage.getIcons().add(new Image("/image/logo.png"));
 	}
 	
 	/**
@@ -62,17 +57,28 @@ public abstract class Window<T extends Initializable> extends Application {
 	}
 	
 	/**
+	 * 禁止改变窗口大小
+	 */
+	protected void disableResize() {
+		this.stage.setResizable(false);
+	}
+	
+	/**
 	 * 显示窗口（异步）
 	 */
 	public void show() {
-		this.stage.show();
+		if(SystemContext.available()) {
+			this.stage.show();
+		}
 	}
 	
 	/**
 	 * 显示窗口（同步）
 	 */
 	public void showAndWait() {
-		this.stage.showAndWait();
+		if(SystemContext.available()) {
+			this.stage.showAndWait();
+		}
 	}
 	
 	/**
@@ -80,6 +86,13 @@ public abstract class Window<T extends Initializable> extends Application {
 	 */
 	public void hide() {
 		this.stage.hide();
+	}
+	
+	/**
+	 * 设置窗口最大化：防止最小化后从托盘显示出来不能正常显示
+	 */
+	public void maximize() {
+		this.stage.setIconified(false);
 	}
 	
 	/**
