@@ -186,8 +186,13 @@ public class SystemThreadContext {
 	 * 关闭线程池
 	 */
 	public static final void shutdown(ExecutorService executor) {
-		if(executor != null && !executor.isShutdown()) {
+		if(executor == null || executor.isShutdown()) {
+			return;
+		}
+		try {
 			executor.shutdown();
+		} catch (Exception e) {
+			LOGGER.error("关闭线程池异常", e);
 		}
 	}
 	
@@ -195,8 +200,31 @@ public class SystemThreadContext {
 	 * 关闭线程池
 	 */
 	public static final void shutdownNow(ExecutorService executor) {
-		if(executor != null && !executor.isShutdown()) {
+		if(executor == null || executor.isShutdown()) {
+			return;
+		}
+		try {
 			executor.shutdownNow();
+		} catch (Exception e) {
+			LOGGER.error("关闭线程池异常", e);
+		}
+	}
+	
+	/**
+	 * 关闭定时任务
+	 * 
+	 * @param scheduledFuture 定时任务
+	 * 
+	 * @since 1.1.0
+	 */
+	public static final void shutdown(ScheduledFuture<?> scheduledFuture) {
+		if(scheduledFuture == null || scheduledFuture.isCancelled()) {
+			return;
+		}
+		try {
+			scheduledFuture.cancel(true);
+		} catch (Exception e) {
+			LOGGER.error("定时任务取消异常", e);
 		}
 	}
 

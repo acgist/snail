@@ -416,13 +416,8 @@ public class TorrentSession {
 	 */
 	public void releaseMagnet() {
 		LOGGER.debug("Torrent释放资源（磁力链接下载）");
-		this.peerLauncherGroupTimer.cancel(true);
-		this.peerLauncherGroup.release();
-		this.dhtLauncherTimer.cancel(true);
-		this.trackerLauncherGroupTimer.cancel(true);
-		this.trackerLauncherGroup.release();
-		SystemThreadContext.shutdownNow(this.executorTimer);
-		SystemThreadContext.shutdownNow(this.executor);
+		this.releaseDownload();
+		this.releaseUpload();
 	}
 	
 	/**
@@ -430,14 +425,14 @@ public class TorrentSession {
 	 */
 	public void releaseDownload() {
 		LOGGER.debug("Torrent释放资源（下载）");
-		this.pexTimer.cancel(true);
-		this.peerLauncherGroupTimer.cancel(true);
-		this.peerLauncherGroup.release();
-		if(this.dhtLauncherTimer != null) {
-			this.dhtLauncherTimer.cancel(true);
+		SystemThreadContext.shutdown(this.pexTimer);
+		SystemThreadContext.shutdown(this.peerLauncherGroupTimer);
+		if(this.peerLauncherGroup != null) {
+			this.peerLauncherGroup.release();
 		}
+		SystemThreadContext.shutdown(this.dhtLauncherTimer);
+		SystemThreadContext.shutdown(this.trackerLauncherGroupTimer);
 		if(this.trackerLauncherGroup != null) {
-			this.trackerLauncherGroupTimer.cancel(true);
 			this.trackerLauncherGroup.release();
 		}
 		SystemThreadContext.shutdownNow(this.executor);
@@ -449,9 +444,13 @@ public class TorrentSession {
 	 */
 	public void releaseUpload() {
 		LOGGER.debug("Torrent释放资源（上传）");
-		this.peerConnectGroupTimer.cancel(true);
-		this.peerConnectGroup.release();
-		this.torrentStreamGroup.release();
+		SystemThreadContext.shutdown(this.peerConnectGroupTimer);
+		if(this.peerConnectGroup != null) {
+			this.peerConnectGroup.release();
+		}
+		if(this.torrentStreamGroup != null) {
+			this.torrentStreamGroup.release();
+		}
 		SystemThreadContext.shutdownNow(this.executorTimer);
 		this.uploadable = false;
 	}
