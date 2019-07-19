@@ -32,12 +32,11 @@ public class TaskDisplay {
 	private MainController controller;
 	
 	/**
-	 * 初始锁
+	 * 初始化锁
 	 */
-	private final Object lock;
+	private final Object lock = new Object();;
 	
 	private TaskDisplay() {
-		lock = new Object();
 	}
 	
 	public static final TaskDisplay getInstance() {
