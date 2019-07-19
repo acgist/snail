@@ -151,13 +151,6 @@ public class FtpMessageHandler extends TcpMessageHandler {
 	}
 	
 	/**
-	 * 获取错误信息
-	 */
-	public String failMessage() {
-		return this.failMessage;
-	}
-	
-	/**
 	 * 获取输入流，阻塞线程
 	 */
 	public InputStream inputStream() {
@@ -166,6 +159,20 @@ public class FtpMessageHandler extends TcpMessageHandler {
 			this.failMessage = "下载失败";
 		}
 		return this.inputStream;
+	}
+	
+	/**
+	 * 获取错误信息
+	 */
+	public String failMessage() {
+		return this.failMessage;
+	}
+	
+	/**
+	 * 重置锁
+	 */
+	public void resetLock() {
+		this.commandLock.set(false);
 	}
 
 	@Override
@@ -187,8 +194,9 @@ public class FtpMessageHandler extends TcpMessageHandler {
 	 */
 	private void lockCommand() {
 		synchronized (this.commandLock) {
-			this.commandLock.set(true);
-			ThreadUtils.wait(this.commandLock, Duration.ofSeconds(5));
+			if(!this.commandLock.get()) {
+				ThreadUtils.wait(this.commandLock, Duration.ofSeconds(5));
+			}
 		}
 	}
 	
@@ -197,10 +205,8 @@ public class FtpMessageHandler extends TcpMessageHandler {
 	 */
 	private void unlockCommand() {
 		synchronized (this.commandLock) {
-			if(this.commandLock.get()) {
-				this.commandLock.set(false);
-				this.commandLock.notifyAll();
-			}
+			this.commandLock.set(true);
+			this.commandLock.notifyAll();
 		}
 	}
 

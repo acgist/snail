@@ -75,6 +75,7 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 			return null;
 		}
 		synchronized (this) {
+			this.handler.resetLock();
 			changeMode();
 			command("TYPE I");
 			if(downloadSize != null && downloadSize > 0L) {
@@ -93,6 +94,7 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 			throw new NetException("服务器连接失败");
 		}
 		synchronized (this) {
+			this.handler.resetLock();
 			this.changeMode();
 			command("TYPE A");
 			command("LIST " + this.filePath);
@@ -151,6 +153,7 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	 * 设置编码
 	 */
 	private void charset() {
+		this.handler.resetLock();
 		command("FEAT"); // 列出扩展命令
 		this.charset = this.handler.charset();
 		if(SystemConfig.CHARSET_UTF8.equals(this.charset)) {

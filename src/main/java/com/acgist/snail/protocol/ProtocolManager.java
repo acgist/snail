@@ -35,11 +35,10 @@ public class ProtocolManager {
 	/**
 	 * 可用锁，协议没有加载完成时阻塞所有获取协议的线程。
 	 */
-	private final AtomicBoolean availableLock;
+	private final AtomicBoolean availableLock = new AtomicBoolean(false);
 	
 	private ProtocolManager() {
 		this.protocols = new ArrayList<>();
-		this.availableLock = new AtomicBoolean(false);
 	}
 	
 	public static final ProtocolManager getInstance() {
