@@ -30,6 +30,10 @@ public class TaskDisplay {
 	private static final TaskDisplay INSTANCE = new TaskDisplay();
 	
 	private MainController controller;
+	
+	/**
+	 * 初始锁
+	 */
 	private final Object lock;
 	
 	private TaskDisplay() {

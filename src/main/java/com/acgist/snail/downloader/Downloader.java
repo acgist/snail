@@ -2,6 +2,7 @@ package com.acgist.snail.downloader;
 
 import java.awt.TrayIcon.MessageType;
 import java.time.Duration;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,9 +28,12 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	protected volatile boolean fail = false; // 失败状态
 	protected volatile boolean complete = false; // 下载完成
 	
-	private final Object deleteLock = new Object();
-	
 	protected final TaskSession taskSession;
+
+	/**
+	 * 任务删除锁，删除后标记：true。
+	 */
+	private final AtomicBoolean deleteLock = new AtomicBoolean(false);
 
 	protected Downloader(TaskSession taskSession) {
 		this.taskSession = taskSession;
@@ -92,7 +96,9 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	public void delete() {
 		this.pause(); // 暂停
 		synchronized (this.deleteLock) {
-			ThreadUtils.wait(this.deleteLock, Duration.ofSeconds(5));
+			if(!this.deleteLock.get()) {
+				ThreadUtils.wait(this.deleteLock, Duration.ofSeconds(5));
+			}
 		}
 		TaskRepository repository = new TaskRepository();
 		repository.delete(this.taskSession.entity());
@@ -174,6 +180,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	 */
 	private void unlockDelete() {
 		synchronized (this.deleteLock) {
+			this.deleteLock.set(true);
 			this.deleteLock.notifyAll();
 		}
 	}
