@@ -39,22 +39,23 @@ public class PeerLauncherGroup {
 	 * 同时创建PeerLauncher个数
 	 */
 	private static final int PARALLEL_BUILD_SIZE = 3;
-	/**
-	 * 是否继续创建PeerLauncher
-	 */
-	private final AtomicBoolean build;
+	
 	private final TorrentSession torrentSession;
+	
 	/**
 	 * PeerLauncher下载队列
 	 */
 	private final BlockingQueue<PeerLauncher> peerLaunchers;
+	/**
+	 * 是否继续创建PeerLauncher
+	 */
+	private final AtomicBoolean build = new AtomicBoolean(false);
 	/**
 	 * 优选的Peer，每次优化时挑选出来可以进行下载的Peer，在优化后发送Pex消息发送给连接的Peer，发送完成后清空。
 	 */
 	private final List<PeerSession> optimize = new ArrayList<>();
 	
 	private PeerLauncherGroup(TorrentSession torrentSession) {
-		this.build = new AtomicBoolean(false);
 		this.torrentSession = torrentSession;
 		this.peerLaunchers = new LinkedBlockingQueue<>();
 	}
@@ -127,7 +128,9 @@ public class PeerLauncherGroup {
 			});
 			if(++size > PARALLEL_BUILD_SIZE) {
 				synchronized (this.build) {
-					ThreadUtils.wait(this.build, Duration.ofSeconds(10));
+					if(this.build.get()) {
+						ThreadUtils.wait(this.build, Duration.ofSeconds(10));
+					}
 				}
 			}
 		}

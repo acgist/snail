@@ -4,6 +4,7 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +45,10 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	private static final int WND_SIZE_CONTROL_TIMEOUT = 10;
 	
 	/**
+	 * 是否连接
+	 */
+	private boolean connect;
+	/**
 	 * 接收连接ID
 	 */
 	private final short recvId;
@@ -52,13 +57,9 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	 */
 	private final short sendId;
 	/**
-	 * 是否连接
-	 */
-	private boolean connect;
-	/**
 	 * 连接锁
 	 */
-	private Object connectLock = new Object();
+	private final AtomicBoolean connectLock = new AtomicBoolean(false);
 
 	/**
 	 * 默认慢开始wnd数量
@@ -273,7 +274,9 @@ public class UtpMessageHandler extends UdpMessageHandler {
 		this.connect = false;
 		this.syn();
 		synchronized (this.connectLock) {
-			ThreadUtils.wait(this.connectLock, Duration.ofSeconds(CONNECT_TIMEOUT));
+			if(!this.connectLock.get()) {
+				ThreadUtils.wait(this.connectLock, Duration.ofSeconds(CONNECT_TIMEOUT));
+			}
 		}
 		return this.connect;
 	}
@@ -370,6 +373,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 				this.receiveWindow.connect(timestamp, (short) (seqnr - 1));
 			}
 			synchronized (this.connectLock) {
+				this.connectLock.set(true);
 				this.connectLock.notifyAll();
 			}
 		}
