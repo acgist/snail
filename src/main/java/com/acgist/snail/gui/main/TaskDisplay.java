@@ -34,7 +34,7 @@ public class TaskDisplay {
 	/**
 	 * 初始化锁
 	 */
-	private final Object lock = new Object();;
+	private final Object lock = new Object();
 	
 	private TaskDisplay() {
 	}
