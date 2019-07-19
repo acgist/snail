@@ -180,7 +180,7 @@ public class PeerSession implements IStatistics {
 	 * 设置Piece
 	 */
 	public void pieces(BitSet pieces) {
-		this.pieces.or(pieces);;
+		this.pieces.or(pieces);
 	}
 
 	/**

@@ -59,7 +59,7 @@ public class TorrentController implements Initializable {
 		// 设置属性
 		this.downloadBox.prefWidthProperty().bind(this.root.widthProperty());
 		this.treeBox.prefWidthProperty().bind(this.root.widthProperty());
-		this.downloadBox.prefHeightProperty().setValue(40D);;
+		this.downloadBox.prefHeightProperty().setValue(40D);
 		this.treeBox.prefHeightProperty().bind(this.root.heightProperty().subtract(40D));
 		// 绑定事件
 		this.download.setOnAction(this.downloadEvent);
