@@ -154,12 +154,12 @@ public final class DownloaderManager {
 	public void refresh() {
 		synchronized (this) {
 			final var downloaders = this.downloaderMap.values();
-			final long count = downloaders.stream().filter(IDownloader::downloading).count();
+			final long count = downloaders.stream().filter(IDownloader::running).count();
 			final int downloadSize = DownloadConfig.getSize();
 			if(count == downloadSize) { // 不操作
 			} else if(count > downloadSize) { // 暂停部分操作
 				downloaders.stream()
-				.filter(IDownloader::downloading)
+				.filter(IDownloader::running)
 				.skip(downloadSize)
 				.forEach(IDownloader::pause);
 			} else { // 开始准备任务

@@ -28,7 +28,7 @@ import com.acgist.snail.utils.StringUtils;
  */
 public class TaskSession {
 
-	private ThreadLocal<SimpleDateFormat> formater = new ThreadLocal<>() {
+	private static final ThreadLocal<SimpleDateFormat> FORMATER = new ThreadLocal<>() {
 		protected SimpleDateFormat initialValue() {
 			return new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		};
@@ -210,7 +210,7 @@ public class TaskSession {
 		if(this.entity.getCreateDate() == null) {
 			return "-";
 		}
-		return this.formater.get().format(this.entity.getCreateDate());
+		return FORMATER.get().format(this.entity.getCreateDate());
 	}
 	
 	/**
@@ -230,7 +230,7 @@ public class TaskSession {
 				return "-";
 			}
 		}
-		return this.formater.get().format(this.entity.getEndDate());
+		return FORMATER.get().format(this.entity.getEndDate());
 	}
 	
 }
