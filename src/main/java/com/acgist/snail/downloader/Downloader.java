@@ -39,6 +39,9 @@ public abstract class Downloader implements IDownloader, IStatistics {
 		this.taskSession = taskSession;
 		this.taskSession.downloader(this);
 		this.taskSession.downloadSize(downloadSize()); // 加载已下载大小
+		if(!this.taskSession.download()) { // 开始时不处于下载中时直接删除：暂停、完成等
+			this.deleteLock.set(true);
+		}
 	}
 	
 	@Override
@@ -47,7 +50,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	}
 	
 	@Override
-	public boolean downloading() {
+	public boolean running() {
 		return this.taskSession.download();
 	}
 	
@@ -136,6 +139,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 			if(this.taskSession.await()) {
 				LOGGER.info("开始下载：{}", name());
 				this.fail = false; // 标记下载失败
+				this.deleteLock.set(false); // 设置删除锁
 				entity.setStatus(Status.download);
 				this.open();
 				try {

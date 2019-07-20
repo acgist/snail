@@ -21,7 +21,7 @@ public interface IDownloader extends Runnable {
 	/**
 	 * 任务是否运行中（下载中）
 	 */
-	boolean downloading();
+	boolean running();
 	
 	/**
 	 * 任务信息
