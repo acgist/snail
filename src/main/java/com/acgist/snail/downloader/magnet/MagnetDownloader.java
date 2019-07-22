@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.Downloader;
 import com.acgist.snail.net.torrent.TorrentManager;
+import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
 import com.acgist.snail.pojo.bean.Magnet;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
@@ -53,6 +54,17 @@ public class MagnetDownloader extends Downloader {
 	@Override
 	public void release() {
 		this.torrentSession.releaseMagnet();
+	}
+	
+	@Override
+	public void delete() {
+		if(this.torrentSession != null) {
+			this.torrentSession.releaseMagnet();
+			final String infoHashHex = this.torrentSession.infoHashHex();
+			PeerManager.getInstance().remove(infoHashHex);
+			TorrentManager.getInstance().remove(infoHashHex);
+		}
+		super.delete();
 	}
 	
 	@Override

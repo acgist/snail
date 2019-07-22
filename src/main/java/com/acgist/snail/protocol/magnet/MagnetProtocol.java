@@ -62,8 +62,10 @@ public class MagnetProtocol extends Protocol {
 	
 	@Override
 	protected void prep() throws DownloadException {
-		exist();
-		magnet();
+		final MagnetReader reader = MagnetReader.newInstance(this.url);
+		final Magnet magnet = reader.magnet();
+		exist(magnet);
+		magnet(magnet);
 	}
 	
 	@Override
@@ -101,17 +103,20 @@ public class MagnetProtocol extends Protocol {
 		this.magnet = null;
 	}
 	
-	private void exist() throws DownloadException {
-		final MagnetReader reader = MagnetReader.newInstance(this.url);
-		final Magnet magnet = reader.magnet();
+	/**
+	 * 是否已经存在下载任务
+	 */
+	private void exist(Magnet magnet) throws DownloadException {
 		if(TorrentManager.getInstance().exist(magnet.getHash())) {
 			throw new DownloadException("BT任务已经存在");
 		}
 	}
 	
-	private void magnet() throws DownloadException {
-		final MagnetReader reader = MagnetReader.newInstance(this.url);
-		this.magnet = reader.magnet();
+	/**
+	 * 设置磁力链接
+	 */
+	private void magnet(Magnet magnet) throws DownloadException {
+		this.magnet = magnet;
 	}
 	
 	/**

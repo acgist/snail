@@ -77,6 +77,10 @@ public class TorrentSession {
 	 */
 	private boolean downloadable = false;
 	/**
+	 * 磁力链接
+	 */
+	private Magnet magnet;
+	/**
 	 * 种子
 	 */
 	private Torrent torrent;
@@ -155,7 +159,9 @@ public class TorrentSession {
 	 * @return true-下载完成；false-未完成
 	 */
 	public boolean magnet(TaskSession taskSession) throws DownloadException {
+		this.action = Action.magnet;
 		this.taskSession = taskSession;
+		this.loadMagnet();
 		this.loadExecutor();
 		this.loadExecutorTimer();
 		this.loadTrackerLauncherGroup();
@@ -164,7 +170,6 @@ public class TorrentSession {
 		this.loadDhtLauncherTimer();
 		this.loadPeerLauncherGroup();
 		this.loadPeerLauncherGroupTimer();
-		this.action = Action.magnet;
 		return this.torrent != null;
 	}
 	
@@ -199,6 +204,7 @@ public class TorrentSession {
 	 * @return true-下载完成；false-未完成
 	 */
 	public boolean download(boolean findPeer) throws DownloadException {
+		this.action = Action.torrent;
 		if(this.taskSession == null) {
 			throw new DownloadException("下载任务参数错误");
 		}
@@ -216,10 +222,16 @@ public class TorrentSession {
 		this.loadPeerLauncherGroupTimer();
 		this.loadPexTimer();
 		this.downloadable = true;
-		this.action = Action.torrent;
 		return false;
 	}
 
+	/**
+	 * 加载磁力链接
+	 */
+	private void loadMagnet() throws DownloadException {
+		this.magnet = MagnetReader.newInstance(this.taskSession.entity().getUrl()).magnet();
+	}
+	
 	/**
 	 * 加载线程池
 	 */
@@ -284,12 +296,7 @@ public class TorrentSession {
 	 */
 	private void loadTrackerLauncherGroup() throws DownloadException {
 		this.trackerLauncherGroup = TrackerLauncherGroup.newInstance(this);
-		if(this.action == Action.torrent) {
-			this.trackerLauncherGroup.loadTracker();
-		} else {
-			final Magnet magnet = MagnetReader.newInstance(this.taskSession.entity().getUrl()).magnet();
-			this.trackerLauncherGroup.loadTracker(magnet.getTr());
-		}
+		this.trackerLauncherGroup.loadTracker();
 	}
 
 	/**
@@ -568,6 +575,10 @@ public class TorrentSession {
 	
 	public Action action() {
 		return this.action;
+	}
+	
+	public Magnet magnet() {
+		return this.magnet;
 	}
 	
 	public Torrent torrent() {
