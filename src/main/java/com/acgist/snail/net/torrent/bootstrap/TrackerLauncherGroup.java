@@ -10,9 +10,9 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerClient;
 import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerManager;
 import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.system.config.PeerConfig.Action;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.CollectionUtils;
-import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>TrackerLauncher组</p>
@@ -48,10 +48,6 @@ public class TrackerLauncherGroup {
 		}
 	}
 	
-	public void loadTracker() throws DownloadException {
-		loadTracker(null);
-	}
-	
 	/**
 	 * <p>加载TrackerClient</p>
 	 * <p>
@@ -59,13 +55,17 @@ public class TrackerLauncherGroup {
 	 * 获取到Tracker列表加入定时线程池执行。
 	 * </p>
 	 */
-	public void loadTracker(String tracker) throws DownloadException {
+	public void loadTracker() throws DownloadException {
 		List<TrackerClient> clients = null;
-		var torrent = this.torrentSession.torrent();
-		if(torrent != null) {
+		var action = this.torrentSession.action();
+		if(action == Action.torrent) {
+			var torrent = this.torrentSession.torrent();
 			clients = TrackerManager.getInstance().clients(torrent.getAnnounce(), torrent.getAnnounceList());
-		} else if(StringUtils.isNotEmpty(tracker)) {
-			clients = TrackerManager.getInstance().clients(tracker, null);
+		} else if(action == Action.magnet) {
+			var magnet = this.torrentSession.magnet();
+			clients = TrackerManager.getInstance().clients(null, magnet.getTr());
+		} else {
+			LOGGER.warn("加载TrackerClient时出现未知动作：" + action);
 		}
 		if(CollectionUtils.isEmpty(clients)) {
 			return;

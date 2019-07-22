@@ -1,10 +1,14 @@
 package com.acgist.snail.pojo.bean;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.acgist.snail.utils.ObjectUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * 磁力链接
+ * <p>磁力链接</p>
+ * <p>只支持单个文件的Magnet下载，多个文件不支持。</p>
  * 
  * @author acgist
  * @since 1.1.0
@@ -42,25 +46,23 @@ public class Magnet {
 	 */
 	private Type type;
 	/**
-	 * 显示文件名称
+	 * 显示名称
 	 */
 	private String dn;
 	/**
 	 * Tracker
-	 * TODO：多个
 	 */
-	private String tr;
+	private List<String> tr;
 	/**
 	 * 资源URN
 	 */
 	private String xt;
 	/**
-	 * 可接受来源
+	 * 文件连接（普通链接）
 	 */
 	private String as;
 	/**
 	 * 绝对资源（P2P链接）
-	 * TODO：直接下载
 	 */
 	private String xs;
 	/**
@@ -72,11 +74,11 @@ public class Magnet {
 	 */
 	private String mt;
 	/**
-	 * 关键字（搜索）
+	 * 关键字（用于搜索）
 	 */
 	private String kt;
 	/**
-	 * 文件xt里面的hash值
+	 * xt中携带的文件hash
 	 */
 	private String hash;
 
@@ -96,11 +98,11 @@ public class Magnet {
 		this.dn = dn;
 	}
 
-	public String getTr() {
+	public List<String> getTr() {
 		return tr;
 	}
 
-	public void setTr(String tr) {
+	public void setTr(List<String> tr) {
 		this.tr = tr;
 	}
 
@@ -161,7 +163,17 @@ public class Magnet {
 	}
 
 	/**
-	 * 支持下载
+	 * 添加Tracker服务器
+	 */
+	public void addTr(String tr) {
+		if(this.tr == null) {
+			this.tr = new ArrayList<>();
+		}
+		this.tr.add(tr);
+	}
+	
+	/**
+	 * 是否支持下载
 	 */
 	public boolean supportDownload() {
 		return this.type == Type.btih && StringUtils.isNotEmpty(this.hash);

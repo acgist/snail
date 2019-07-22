@@ -136,7 +136,7 @@ public class MagnetReader {
 	}
 	
 	private void tr(String value) {
-		this.magnet.setTr(value);
+		this.magnet.addTr(value);
 	}
 	
 	private void as(String value) {
