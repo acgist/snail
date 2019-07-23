@@ -29,7 +29,7 @@ public class Application {
 		SystemContext.info();
 		final boolean enable = listen();
 		if(enable) {
-			initContext();
+			buildContext();
 			buildWindow();
 		}
 		LOGGER.info("系统启动完成");
@@ -45,7 +45,7 @@ public class Application {
 	/**
 	 * 初始化系统上下文
 	 */
-	private static final void initContext() {
+	private static final void buildContext() {
 		SystemContext.init();
 	}
 	

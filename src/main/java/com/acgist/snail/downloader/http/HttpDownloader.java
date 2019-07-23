@@ -54,7 +54,7 @@ public class HttpDownloader extends Downloader {
 	public void download() throws IOException {
 		int length = 0;
 		while(ok()) {
-			length = this.input.read(bytes, 0, bytes.length);
+			length = this.input.read(bytes, 0, bytes.length); // TODO：阻塞线程，导致暂停不能正常结束。
 			if(isComplete(length)) { // 是否完成
 				this.complete = true;
 				break;
@@ -69,6 +69,15 @@ public class HttpDownloader extends Downloader {
 		IoUtils.close(this.input);
 		IoUtils.close(this.output);
 	}
+	
+//	@Override
+//	public void unlockDownload() {
+//		try {
+//			this.input.close();
+//		} catch (Exception e) {
+//			LOGGER.error("HTTP下载释放下载异常", e);
+//		}
+//	}
 	
 	/**
 	 * 任务是否完成：长度-1或者下载数据等于任务长度。
