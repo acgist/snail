@@ -25,6 +25,16 @@ public class PeerConfig {
 	public static final int MAX_FAIL_TIMES = 5;
 	
 	/**
+	 * Peer构建超时时间（秒）
+	 */
+	public static final int MAX_PEER_BUILD_TIMEOUT = 10;
+	
+	/**
+	 * Peer连接超时时间（秒）
+	 */
+	public static final int MAX_PEER_CONNECT_TIMEOUT = 6;
+	
+	/**
 	 * PeerId长度
 	 */
 	public static final int PEER_ID_LENGTH = 20;

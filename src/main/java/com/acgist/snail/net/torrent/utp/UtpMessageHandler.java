@@ -15,6 +15,7 @@ import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.net.torrent.utp.bootstrap.UtpService;
 import com.acgist.snail.net.torrent.utp.bootstrap.UtpWindow;
 import com.acgist.snail.net.torrent.utp.bootstrap.UtpWindowData;
+import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.UtpConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.CollectionUtils;
@@ -35,10 +36,6 @@ public class UtpMessageHandler extends UdpMessageHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UtpMessageHandler.class);
 	
-	/**
-	 * 连接超时时间（秒）
-	 */
-	private static final int CONNECT_TIMEOUT = 2;
 	/**
 	 * 客户端阻塞控制等待（秒）
 	 */
@@ -275,7 +272,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 		this.syn();
 		synchronized (this.connectLock) {
 			if(!this.connectLock.get()) {
-				ThreadUtils.wait(this.connectLock, Duration.ofSeconds(CONNECT_TIMEOUT));
+				ThreadUtils.wait(this.connectLock, Duration.ofSeconds(PeerConfig.MAX_PEER_CONNECT_TIMEOUT));
 			}
 		}
 		return this.connect;

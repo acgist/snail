@@ -236,7 +236,7 @@ public class TorrentSession {
 	 * 加载线程池
 	 */
 	private void loadExecutor() {
-		this.executor = SystemThreadContext.newExecutor(5, 10, 100, 60L, SystemThreadContext.SNAIL_THREAD_BT);
+		this.executor = SystemThreadContext.newExecutor(4, 10, 100, 60L, SystemThreadContext.SNAIL_THREAD_BT);
 	}
 
 	/**
