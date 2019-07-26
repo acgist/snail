@@ -3,6 +3,7 @@ package com.acgist.snail.net.torrent.peer;
 import com.acgist.snail.net.TcpClient;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
+import com.acgist.snail.system.config.PeerConfig;
 
 /**
  * <p>Peer客户端</p>
@@ -17,7 +18,7 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	private final PeerSubMessageHandler peerSubMessageHandler;
 	
 	private PeerClient(PeerSession peerSession, PeerSubMessageHandler peerSubMessageHandler) {
-		super("Peer Client", 2, new PeerMessageHandler(peerSubMessageHandler));
+		super("Peer Client", PeerConfig.MAX_PEER_CONNECT_TIMEOUT, new PeerMessageHandler(peerSubMessageHandler));
 		this.peerSession = peerSession;
 		this.peerSubMessageHandler = peerSubMessageHandler;
 	}
