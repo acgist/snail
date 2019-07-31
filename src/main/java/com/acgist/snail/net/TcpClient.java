@@ -69,7 +69,7 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 		boolean ok = true;
 		try {
 			AsynchronousSocketChannel socket = AsynchronousSocketChannel.open(GROUP);
-			socket.setOption(StandardSocketOptions.TCP_NODELAY, true);
+			socket.setOption(StandardSocketOptions.TCP_NODELAY, true); // TODO：优化验证
 			socket.setOption(StandardSocketOptions.SO_REUSEADDR, true);
 			socket.setOption(StandardSocketOptions.SO_KEEPALIVE, true);
 			Future<Void> future = socket.connect(NetUtils.buildSocketAddress(host, port));
