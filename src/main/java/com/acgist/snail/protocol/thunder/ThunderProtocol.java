@@ -50,7 +50,7 @@ public class ThunderProtocol extends Protocol {
 	@Override
 	protected Protocol convert() throws DownloadException {
 		final String url = this.url.substring(THUNDER_PREFIX.length());
-		String newUrl = new String(Base64.getMimeDecoder().decode(url)); // getMimeDecoder支持结尾=
+		String newUrl = new String(Base64.getMimeDecoder().decode(url)); // getMimeDecoder防止长度非4的整数倍导致的异常
 		newUrl = newUrl.substring(2, newUrl.length() - 2);
 		return ProtocolManager.getInstance().protocol(newUrl);
 	}
