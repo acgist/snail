@@ -186,6 +186,9 @@ public class TaskMenu extends Menu {
 		});
 	};
 	
+	/**
+	 * BT任务才可以选择下载文件和导出种子
+	 */
 	private EventHandler<WindowEvent> windowShownAction = (event) -> {
 		if(MainWindow.getInstance().controller().haveTorrent()) {
 			INSTANCE.torrentMenu.setDisable(false);

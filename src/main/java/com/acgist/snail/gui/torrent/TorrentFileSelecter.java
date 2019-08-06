@@ -40,15 +40,15 @@ public class TorrentFileSelecter {
 	/**
 	 * 选择Box-文件大小
 	 */
-	private Map<CheckBox, Long> sizeMap;
+	private Map<CheckBox, Long> checkBoxSizeMap;
 	/**
 	 * 文件路径-选择Box
 	 */
-	private Map<String, CheckBox> checkBoxMap;
+	private Map<String, CheckBox> pathCheckBoxMap;
 	/**
 	 * 文件路径-子树
 	 */
-	private Map<String, TreeItem<HBox>> treeItemMap;
+	private Map<String, TreeItem<HBox>> pathTreeItemMap;
 
 	/**
 	 * 选择器
@@ -58,10 +58,10 @@ public class TorrentFileSelecter {
 	 * @param tree 属性菜单
 	 */
 	private TorrentFileSelecter(String name, Button download, TreeView<HBox> tree) {
-		this.sizeMap = new HashMap<>();
-		this.checkBoxMap = new HashMap<>();
-		this.treeItemMap = new HashMap<>();
-		TreeItem<HBox> root = builcTreeItem(null, "", name, null);
+		this.checkBoxSizeMap = new HashMap<>();
+		this.pathCheckBoxMap = new HashMap<>();
+		this.pathTreeItemMap = new HashMap<>();
+		final TreeItem<HBox> root = builcTreeItem(null, "", name, null);
 		root.setExpanded(true);
 		tree.setRoot(root);
 		this.root = root;
@@ -80,11 +80,11 @@ public class TorrentFileSelecter {
 	 */
 	public void build(String path, Long size) {
 		String name = path;
-		TreeItem<HBox> parent = root;
-		if(path.contains(TorrentFile.SEPARATOR)) {
-			String[] paths = path.split(TorrentFile.SEPARATOR);
+		TreeItem<HBox> parent = this.root;
+		if(path.contains(TorrentFile.SEPARATOR)) { // 包含路径
 			String parentPath = "";
 			TreeItem<HBox> treeItem = null;
+			final String[] paths = path.split(TorrentFile.SEPARATOR);
 			for (int index = 0; index < paths.length - 1; index++) { // 新建路径菜单
 				String value = paths[index];
 				parentPath += value + TorrentFile.SEPARATOR;
@@ -97,27 +97,27 @@ public class TorrentFileSelecter {
 	}
 	
 	/**
-	 * 选择文件的大小
+	 * 获取选择文件的大小
 	 */
 	public Long size() {
-		AtomicLong totalSize = new AtomicLong(0L);
-		checkBoxMap.entrySet().stream()
-		.filter(entry -> entry.getValue().isSelected())
-		.map(entry -> sizeMap.get(entry.getValue()))
-		.filter(size -> size != null)
-		.forEach(size -> totalSize.addAndGet(size));
+		final AtomicLong totalSize = new AtomicLong(0L);
+		this.pathCheckBoxMap.entrySet().stream()
+			.filter(entry -> entry.getValue().isSelected())
+			.map(entry -> this.checkBoxSizeMap.get(entry.getValue()))
+			.filter(size -> size != null)
+			.forEach(size -> totalSize.addAndGet(size));
 		return totalSize.longValue();
 	}
 	
 	/**
-	 * 选择文件的列表
+	 * 获取选择文件的列表
 	 */
 	public List<String> description() {
-		return checkBoxMap.entrySet().stream()
-		.filter(entry -> sizeMap.containsKey(entry.getValue()))
-		.filter(entry -> entry.getValue().isSelected())
-		.map(Entry::getKey)
-		.collect(Collectors.toList());
+		return this.pathCheckBoxMap.entrySet().stream()
+			.filter(entry -> entry.getValue().isSelected())
+			.filter(entry -> this.checkBoxSizeMap.containsKey(entry.getValue())) // 文件而不是目录
+			.map(Entry::getKey)
+			.collect(Collectors.toList());
 	}
 
 	/**
@@ -126,19 +126,19 @@ public class TorrentFileSelecter {
 	 */
 	public void select(TaskSession taskSession) {
 		final var list = taskSession.downloadTorrentFiles();
-		if(CollectionUtils.isNotEmpty(list)) {
-			this.checkBoxMap.entrySet().stream()
+		if(CollectionUtils.isNotEmpty(list)) { // 已选择
+			this.pathCheckBoxMap.entrySet().stream()
 			.filter(entry -> list.contains(entry.getKey()))
 			.forEach(entry -> entry.getValue().setSelected(true));
-		} else {
-			final var avg = this.sizeMap.values().stream()
+		} else { // 自动选择
+			final var avgSize = this.checkBoxSizeMap.values().stream()
 				.collect(Collectors.averagingInt(Long::intValue));
-			this.checkBoxMap.entrySet().stream()
+			this.pathCheckBoxMap.entrySet().stream()
 			.filter(entry -> {
-				if(sizeMap.get(entry.getValue()) == null) { // 根是null
+				if(this.checkBoxSizeMap.get(entry.getValue()) == null) { // 只选择文件
 					return false;
 				}
-				return sizeMap.get(entry.getValue()) >= avg;
+				return this.checkBoxSizeMap.get(entry.getValue()) >= avgSize;
 			}).forEach(entry -> entry.getValue().setSelected(true));
 		}
 		buttonSize();
@@ -151,21 +151,21 @@ public class TorrentFileSelecter {
 	 * @param size 大小
 	 */
 	private TreeItem<HBox> builcTreeItem(TreeItem<HBox> parent, String path, String name, Long size) {
-		if(treeItemMap.containsKey(path)) {
-			return treeItemMap.get(path);
+		if(this.pathTreeItemMap.containsKey(path)) {
+			return this.pathTreeItemMap.get(path);
 		}
-		CheckBox checkBox = new CheckBox(name);
+		final CheckBox checkBox = new CheckBox(name);
 		checkBox.setPrefWidth(400);
-		HBox box = new HBox(checkBox);
+		final HBox box = new HBox(checkBox);
 		if(size != null) {
-			Text text = new Text(FileUtils.formatSize(size));
-			sizeMap.put(checkBox, size);
+			final Text text = new Text(FileUtils.formatSize(size));
+			this.checkBoxSizeMap.put(checkBox, size);
 			box.getChildren().add(text);
 		}
-		checkBox.setOnAction(selectAction);
-		TreeItem<HBox> treeItem = new TreeItem<HBox>(box);
-		checkBoxMap.put(path, checkBox);
-		treeItemMap.put(path, treeItem);
+		checkBox.setOnAction(this.selectAction);
+		final TreeItem<HBox> treeItem = new TreeItem<HBox>(box);
+		this.pathCheckBoxMap.put(path, checkBox);
+		this.pathTreeItemMap.put(path, treeItem);
 		if(parent != null) {
 			parent.getChildren().add(treeItem);
 		}
@@ -176,15 +176,15 @@ public class TorrentFileSelecter {
 	 * 文件选择事件
 	 */
 	private EventHandler<ActionEvent> selectAction = (event) -> {
-		CheckBox checkBox = (CheckBox) event.getSource();
-		boolean selected = checkBox.isSelected();
-		String prefix = checkBoxMap.entrySet().stream()
-		.filter(entry -> entry.getValue() == checkBox)
-		.map(entry -> entry.getKey())
-		.findFirst().get();
-		checkBoxMap.entrySet().stream()
-		.filter(entry -> entry.getKey().startsWith(prefix))
-		.forEach(entry -> entry.getValue().setSelected(selected));
+		final CheckBox checkBox = (CheckBox) event.getSource();
+		final boolean selected = checkBox.isSelected();
+		final String prefix = this.pathCheckBoxMap.entrySet().stream()
+			.filter(entry -> entry.getValue() == checkBox)
+			.map(entry -> entry.getKey())
+			.findFirst().get();
+		this.pathCheckBoxMap.entrySet().stream()
+			.filter(entry -> entry.getKey().startsWith(prefix))
+			.forEach(entry -> entry.getValue().setSelected(selected));
 		buttonSize();
 	};
 	
@@ -192,7 +192,7 @@ public class TorrentFileSelecter {
 	 * 设置按钮文本
 	 */
 	private void buttonSize() {
-		download.setText("下载（" + FileUtils.formatSize(size()) + "）");
+		this.download.setText("下载（" + FileUtils.formatSize(size()) + "）");
 	}
 	
 }
