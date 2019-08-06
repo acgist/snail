@@ -24,6 +24,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
+import javafx.stage.WindowEvent;
 
 /**
  * 菜单 - 任务
@@ -52,13 +53,6 @@ public class TaskMenu extends Menu {
 	}
 	
 	public static final TaskMenu getInstance() {
-		if(MainWindow.getInstance().controller().haveTorrent()) {
-			INSTANCE.torrentMenu.setDisable(false);
-			INSTANCE.exportTorrentMenu.setDisable(false);
-		} else {
-			INSTANCE.torrentMenu.setDisable(true);
-			INSTANCE.exportTorrentMenu.setDisable(true);
-		}
 		return INSTANCE;
 	}
 
@@ -101,6 +95,10 @@ public class TaskMenu extends Menu {
 		this.addSeparator();
 		addMenu(this.verifyMenu);
 		addMenu(this.openFolderMenu);
+		
+		this.addEventFilter(WindowEvent.WINDOW_SHOWN, this.windowShownAction); // 事件捕获阶段处理事件
+//		this.addEventHandler(WindowEvent.WINDOW_SHOWN, this.windowShownAction); // 事件冒泡阶段处理事件
+//		this.setEventHandler(WindowEvent.WINDOW_SHOWN, this.windowShownAction); // 事件冒泡阶段处理事件（只能有一个）
 	}
 	
 	private EventHandler<ActionEvent> startEvent = (event) -> {
@@ -186,6 +184,17 @@ public class TaskMenu extends Menu {
 		.forEach(wrapper -> {
 			FileUtils.openInDesktop(wrapper.downloadFolder());
 		});
+	};
+	
+	private EventHandler<WindowEvent> windowShownAction = (event) -> {
+		if(MainWindow.getInstance().controller().haveTorrent()) {
+			INSTANCE.torrentMenu.setDisable(false);
+			INSTANCE.exportTorrentMenu.setDisable(false);
+		} else {
+			INSTANCE.torrentMenu.setDisable(true);
+			INSTANCE.exportTorrentMenu.setDisable(true);
+		}
+//		event.consume(); // 事件已被处理
 	};
 	
 }

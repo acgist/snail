@@ -15,7 +15,7 @@ public class ClientTest {
 	public void test() throws IOException {
 		TorrentServer.getInstance().channel().send(
 			ByteBuffer.wrap("1234".getBytes()),
-			NetUtils.buildSocketAddress("211.149.212.14", 8888));
+			NetUtils.buildSocketAddress("192.168.1.100", 8888));
 		ThreadUtils.sleep(Long.MAX_VALUE);
 	}
 	
