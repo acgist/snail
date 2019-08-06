@@ -135,15 +135,15 @@ public class UtpMessageHandler extends UdpMessageHandler {
 		if(buffer.remaining() < 20) {
 			throw new NetException("UTP信息格式错误");
 		}
-		final byte typeVersion = buffer.get();
+		final byte typeVersion = buffer.get(); // type|version
 		final byte type = (byte) (typeVersion >> 4);
-		final byte extension = buffer.get();
-		final short connectionId = buffer.getShort();
-		final int timestamp = buffer.getInt();
-		final int timestampDifference = buffer.getInt();
-		final int wndSize = buffer.getInt();
-		final short seqnr = buffer.getShort();
-		final short acknr = buffer.getShort();
+		final byte extension = buffer.get(); // 扩展
+		final short connectionId = buffer.getShort(); // 连接ID
+		final int timestamp = buffer.getInt(); // 时间戳
+		final int timestampDifference = buffer.getInt(); // 对比时间戳
+		final int wndSize = buffer.getInt(); // 窗口大小
+		final short seqnr = buffer.getShort(); // 请求序号
+		final short acknr = buffer.getShort(); // 响应序号
 		if(extension != 0) { // 扩展数据
 			final short extLength = buffer.getShort();
 			if(extLength <= 0) {
@@ -384,6 +384,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	 * 发送应答消息，发送此消息不增加seqnr。
 	 */
 	private void state(int timestamp, short seqnr) {
+		LOGGER.debug("UTP发送响应：{}", seqnr);
 		final int now = DateUtils.timestampUs();
 		final ByteBuffer buffer = header(UtpConfig.TYPE_STATE, 20);
 		buffer.putShort(this.sendId);

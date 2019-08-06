@@ -338,6 +338,9 @@ public class MainController implements Initializable {
 		});
 	}
 	
+	/**
+	 * 数据行工厂
+	 */
 	private Callback<TableView<TaskSession>, TableRow<TaskSession>> rowFactory = new Callback<TableView<TaskSession>, TableRow<TaskSession>>() {
 		@Override
 		public TableRow<TaskSession> call(TableView<TaskSession> param) {

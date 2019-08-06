@@ -17,6 +17,7 @@ import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.pojo.wrapper.TorrentFileSelectWrapper;
 import com.acgist.snail.system.config.DatabaseConfig;
+import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.ThreadUtils;
 
@@ -73,6 +74,7 @@ public class PeerServerTest {
 		Integer port = 18888;
 		StatisticsSession statisticsSession = new StatisticsSession();
 		PeerSession peerSession = PeerSession.newInstance(statisticsSession, host, port);
+		peerSession.exchange(PeerConfig.PEX_UTP); // UTP支持
 		PeerLauncher launcher = PeerLauncher.newInstance(peerSession, torrentSession);
 		launcher.handshake();
 		new Thread(() -> {

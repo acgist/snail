@@ -21,8 +21,9 @@ public class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UpnpClient.class);
 
-	// UPNP端口和地址
+	// UPNP端口
 	private static final int UPNP_PORT = 1900;
+	// UPNP地址
 	private static final String UPNP_HOST = "239.255.255.250";
 	
 	private UpnpClient(InetSocketAddress socketAddress) {
