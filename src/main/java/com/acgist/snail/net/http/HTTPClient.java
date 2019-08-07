@@ -260,7 +260,7 @@ public class HTTPClient {
 	public static final <T> boolean internalServerError(HttpResponse<T> response) {
 		return response != null && response.statusCode() == HTTP_INTERNAL_SERVER_ERROR;
 	}
-
+	
 	/**
 	 * 新建原生HTTP客户端
 	 */
@@ -270,12 +270,49 @@ public class HTTPClient {
 			.executor(EXECUTOR) // 线程池
 			.followRedirects(Redirect.NORMAL) // 重定向：正常
 //			.followRedirects(Redirect.ALWAYS) // 重定向：全部
-			.connectTimeout(Duration.ofSeconds(timeout)) // 超时
 //			.proxy(ProxySelector.getDefault()) // 代理
+//			.sslContext(newSSLContext()) // SSL
+//			.sslContext(SSLContext.getDefault()) // SSL
 //			.authenticator(Authenticator.getDefault()) // 认证
 //			.cookieHandler(CookieHandler.getDefault()) // Cookie
+			.connectTimeout(Duration.ofSeconds(timeout)) // 超时
 			.build();
 	}
+	
+//	/**
+//	 * 信任所有证书
+//	 */
+//	private static final TrustManager[] TRUST_ALL_CERTS = new TrustManager[] {
+//		new X509TrustManager() {
+//			public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+//				return null;
+//			}
+//			public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {
+//			}
+//			public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {
+//			}
+//		}
+//	};
+//	
+//	/**
+//	 * 新建SSLContext
+//	 */
+//	private static final SSLContext newSSLContext() {
+//		SSLContext sslContext = null;
+//		try {
+//			sslContext = SSLContext.getInstance("TLS");
+//			sslContext = SSLContext.getInstance("TLSv1.2");
+//			sslContext.init(null, TRUST_ALL_CERTS, new SecureRandom());
+//		} catch (Exception e) {
+//			LOGGER.error("新建SSLContext异常", e);
+//			try {
+//				sslContext = SSLContext.getDefault();
+//			} catch (Exception ex) {
+//				LOGGER.error("新建默认SSLContext异常", ex);
+//			}
+//		}
+//		return sslContext;
+//	}
 	
 	/**
 	 * 新建请求Builder
