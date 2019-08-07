@@ -274,7 +274,14 @@ public class HTTPClient {
 //			.followRedirects(Redirect.ALWAYS) // 重定向：全部
 //			.proxy(ProxySelector.getDefault()) // 代理
 //			.sslContext(newSSLContext()) // SSL上下文
-//			.sslParameters(new SSLParameters(new String[] {"TLS_AES_128_GCM_SHA256", "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256"}, new String[] {"TLSv1.2", "TLSv1.3"})) // SSL加密套件
+//			.sslParameters(new SSLParameters(new String[] {
+//				"TLS_AES_128_GCM_SHA256",
+//				"TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+//				"TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
+//				"TLS_RSA_WITH_AES_128_CBC_SHA256",
+//				"TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256",
+//				"TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256"
+//			}, new String[] {"TLSv1.2", "TLSv1.3"})) // SSL加密套件：ECDH不推荐使用，RSA和ECDSA签名根据证书类型选择
 //			.sslContext(SSLContext.getDefault()) // SSL上下文
 //			.authenticator(Authenticator.getDefault()) // 认证
 //			.cookieHandler(CookieHandler.getDefault()) // Cookie
@@ -299,12 +306,13 @@ public class HTTPClient {
 //	
 //	/**
 //	 * 新建SSLContext
+//	 * https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#SSLContext
 //	 */
 //	private static final SSLContext newSSLContext() {
 //		SSLContext sslContext = null;
 //		try {
 ////			sslContext = SSLContext.getInstance("TLS");
-//			sslContext = SSLContext.getInstance("TLSv1.2"); // SSL、TLSv1、TLSv1.1、TLSv1.2、TLSv1.3
+//			sslContext = SSLContext.getInstance("TLSv1.2"); // SSL、SSLv2、SSLv3、TLS、TLSv1、TLSv1.1、TLSv1.2、TLSv1.3
 //			sslContext.init(null, TRUST_ALL_CERT_MANAGER, new SecureRandom());
 //		} catch (Exception e) {
 //			LOGGER.error("新建SSLContext异常", e);
