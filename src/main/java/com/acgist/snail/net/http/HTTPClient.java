@@ -272,6 +272,7 @@ public class HTTPClient {
 //			.followRedirects(Redirect.ALWAYS) // 重定向：全部
 //			.proxy(ProxySelector.getDefault()) // 代理
 //			.sslContext(newSSLContext()) // SSL
+//			.sslParameters(new SSLParameters()) // SSL
 //			.sslContext(SSLContext.getDefault()) // SSL
 //			.authenticator(Authenticator.getDefault()) // 认证
 //			.cookieHandler(CookieHandler.getDefault()) // Cookie
@@ -282,7 +283,7 @@ public class HTTPClient {
 //	/**
 //	 * 信任所有证书
 //	 */
-//	private static final TrustManager[] TRUST_ALL_CERTS = new TrustManager[] {
+//	private static final TrustManager[] TRUST_ALL_CERT_MANAGER = new TrustManager[] {
 //		new X509TrustManager() {
 //			public java.security.cert.X509Certificate[] getAcceptedIssuers() {
 //				return null;
@@ -295,14 +296,15 @@ public class HTTPClient {
 //	};
 //	
 //	/**
-//	 * 新建SSLContext
+//	 * <p>新建SSLContext</p>
+//	 * <p>指定版本需要设置sslParameters</p>
 //	 */
 //	private static final SSLContext newSSLContext() {
 //		SSLContext sslContext = null;
 //		try {
 //			sslContext = SSLContext.getInstance("TLS");
-//			sslContext = SSLContext.getInstance("TLSv1.2");
-//			sslContext.init(null, TRUST_ALL_CERTS, new SecureRandom());
+////			sslContext = SSLContext.getInstance("TLSv1.2"); // SSL、TLSv1、TLSv1.1、TLSv1.2、TLSv1.3
+//			sslContext.init(null, TRUST_ALL_CERT_MANAGER, new SecureRandom());
 //		} catch (Exception e) {
 //			LOGGER.error("新建SSLContext异常", e);
 //			try {
@@ -313,7 +315,7 @@ public class HTTPClient {
 //		}
 //		return sslContext;
 //	}
-	
+
 	/**
 	 * 新建请求Builder
 	 */
