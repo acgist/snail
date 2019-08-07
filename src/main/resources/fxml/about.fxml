@@ -32,9 +32,11 @@
 		支持协议：BT、FTP、HTTP
 	</Text>
 	
+	<!--
 	<Text fx:id="copyright" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.columnSpan="3">
 		版权：Copyright © 2019 ACGIST. All Rights Reserved.
 	</Text>
+	-->
 	
 	<Button fx:id="author" text="作者" onAction="#handleAuthorAction" GridPane.columnIndex="0" GridPane.rowIndex="6" />
 	<Button fx:id="source" text="官网与源码" onAction="#handleSourceAction" GridPane.columnIndex="1" GridPane.rowIndex="6" />
