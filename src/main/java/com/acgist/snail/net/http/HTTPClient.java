@@ -12,6 +12,7 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
@@ -189,15 +190,15 @@ public class HTTPClient {
 		}
 	}
 	
-//	/**
-//	 * 执行异步请求
-//	 */
-//	private <T> CompletableFuture<HttpResponse<T>> requestAsync(HttpRequest request, HttpResponse.BodyHandler<T> handler) {
-//		if(this.client == null || request == null) {
-//			return null;
-//		}
-//		return this.client.sendAsync(request, handler);
-//	}
+	/**
+	 * 执行异步请求
+	 */
+	public <T> CompletableFuture<HttpResponse<T>> requestAsync(HttpRequest request, HttpResponse.BodyHandler<T> handler) {
+		if(this.client == null || request == null) {
+			return null;
+		}
+		return this.client.sendAsync(request, handler);
+	}
 
 	/**
 	 * 表单数据
@@ -262,7 +263,8 @@ public class HTTPClient {
 	}
 	
 	/**
-	 * 新建原生HTTP客户端
+	 * <p>新建原生HTTP客户端</p>
+	 * <p>设置sslContext需要同时设置sslParameters才有效</p>
 	 */
 	public static final HttpClient newClient(int timeout) {
 		return HttpClient
@@ -271,9 +273,9 @@ public class HTTPClient {
 			.followRedirects(Redirect.NORMAL) // 重定向：正常
 //			.followRedirects(Redirect.ALWAYS) // 重定向：全部
 //			.proxy(ProxySelector.getDefault()) // 代理
-//			.sslContext(newSSLContext()) // SSL
-//			.sslParameters(new SSLParameters()) // SSL
-//			.sslContext(SSLContext.getDefault()) // SSL
+//			.sslContext(newSSLContext()) // SSL上下文
+//			.sslParameters(new SSLParameters(new String[] {"TLS_AES_128_GCM_SHA256", "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256"}, new String[] {"TLSv1.2", "TLSv1.3"})) // SSL加密套件
+//			.sslContext(SSLContext.getDefault()) // SSL上下文
 //			.authenticator(Authenticator.getDefault()) // 认证
 //			.cookieHandler(CookieHandler.getDefault()) // Cookie
 			.connectTimeout(Duration.ofSeconds(timeout)) // 超时
@@ -296,14 +298,13 @@ public class HTTPClient {
 //	};
 //	
 //	/**
-//	 * <p>新建SSLContext</p>
-//	 * <p>指定版本需要设置sslParameters</p>
+//	 * 新建SSLContext
 //	 */
 //	private static final SSLContext newSSLContext() {
 //		SSLContext sslContext = null;
 //		try {
-//			sslContext = SSLContext.getInstance("TLS");
-////			sslContext = SSLContext.getInstance("TLSv1.2"); // SSL、TLSv1、TLSv1.1、TLSv1.2、TLSv1.3
+////			sslContext = SSLContext.getInstance("TLS");
+//			sslContext = SSLContext.getInstance("TLSv1.2"); // SSL、TLSv1、TLSv1.1、TLSv1.2、TLSv1.3
 //			sslContext.init(null, TRUST_ALL_CERT_MANAGER, new SecureRandom());
 //		} catch (Exception e) {
 //			LOGGER.error("新建SSLContext异常", e);
