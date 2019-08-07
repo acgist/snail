@@ -1,7 +1,6 @@
 package com.acgist.snail.net.upnp;
 
 import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,15 +54,16 @@ public class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	/**
 	 * M-SEARCH
 	 */
-	private ByteBuffer mSearch() {
+	private String mSearch() {
+		final String newLine = "\r\n";
 		final StringBuilder builder = new StringBuilder();
-		builder.append("M-SEARCH * HTTP/1.1").append("\r\n");
-		builder.append("HOST: 239.255.255.250:1900").append("\r\n");
-		builder.append("MX: 2").append("\r\n");
-		builder.append("ST: urn:schemas-upnp-org:device:InternetGatewayDevice:1").append("\r\n");
-		builder.append("MAN: \"ssdp:discover\"").append("\r\n");
-		builder.append("\r\n");
-		return ByteBuffer.wrap(builder.toString().getBytes());
+		builder.append("M-SEARCH * HTTP/1.1").append(newLine)
+			.append("HOST: 239.255.255.250:1900").append(newLine)
+			.append("MX: 2").append(newLine)
+			.append("ST: urn:schemas-upnp-org:device:InternetGatewayDevice:1").append(newLine)
+			.append("MAN: \"ssdp:discover\"").append(newLine)
+			.append(newLine);
+		return builder.toString();
 	}
 
 }

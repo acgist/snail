@@ -266,7 +266,7 @@ public class PeerLauncher {
 			}
 		}
 		/*
-		 * 此处不论是否有数据返回都需要进行结束等待，防止数据刚刚只有一个slice时直接跳出了slice wait导致响应还没有收到就直接结束了。
+		 * 此处不论是否有数据返回都需要进行结束等待，防止数据刚刚只有一个slice时直接跳出了slice wait（countLock）导致响应还没有收到就直接结束了。
 		 * 设置true，下载完成时唤醒。
 		 */
 		synchronized (this.completeLock) {
