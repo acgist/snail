@@ -174,7 +174,7 @@ public abstract class Repository<T extends BaseEntity> {
 			return null;
 		}
 		T t = newInstance();
-		BeanUtils.entity(t, list.get(0));
+		BeanUtils.setProperties(t, list.get(0));
 		return t;
 	}
 	
@@ -197,7 +197,7 @@ public abstract class Repository<T extends BaseEntity> {
 			return null;
 		}
 		T t = newInstance();
-		BeanUtils.entity(t, list.get(0));
+		BeanUtils.setProperties(t, list.get(0));
 		return t;
 	}
 	
@@ -216,7 +216,7 @@ public abstract class Repository<T extends BaseEntity> {
 			.stream()
 			.map(wrapper -> {
 				T t = newInstance();
-				BeanUtils.entity(t, wrapper);
+				BeanUtils.setProperties(t, wrapper);
 				return t;
 			})
 			.collect(Collectors.toList());
@@ -238,7 +238,7 @@ public abstract class Repository<T extends BaseEntity> {
 			.stream()
 			.map(wrapper -> {
 				T t = newInstance();
-				BeanUtils.entity(t, wrapper);
+				BeanUtils.setProperties(t, wrapper);
 				return t;
 			})
 			.collect(Collectors.toList());
