@@ -35,15 +35,22 @@ public class FileUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FileUtils.class);
 	
+	/**
+	 * 文件进制
+	 */
 	private static final int FILE_SIZE_SCALE = 1024;
-	
+	/**
+	 * 文件大小单位
+	 */
 	private static final String[] FILE_SIZE_UNIT = {"B", "KB", "M", "G", "T"};
-	
-	private static final String FILENAME_REPLACE_CHAR = "";
 	/**
 	 * 文件名禁用的字符：\、/、:、*、?、<、>、|
 	 */
 	private static final String FILENAME_REPLACE_REGEX = "[\\\\/:\\*\\?\\<\\>\\|]";
+	/**
+	 * 文件禁用字符替换字符
+	 */
+	private static final String FILENAME_REPLACE_CHAR = "";
 	
 	/**
 	 * 删除文件
@@ -60,6 +67,21 @@ public class FileUtils {
 		LOGGER.info("删除文件：{}", filePath);
 		delete(file);
 	}
+
+	/**
+	 * 递归删除文件
+	 */
+	private static final void delete(final File file) {
+		if(file.isDirectory()) {
+			final File[] files = file.listFiles();
+			for (File children : files) {
+				delete(children); // 子文件删除
+			}
+			file.delete(); // 目录删除
+		} else {
+			file.delete(); // 文件删除
+		}
+	}
 	
 	/**
 	 * 删除文件至回收站
@@ -73,21 +95,6 @@ public class FileUtils {
 			return false;
 		}
 		return recycle.delete();
-	}
-
-	/**
-	 * 递归删除文件
-	 */
-	private static final void delete(final File file) {
-		if(file.isDirectory()) {
-			final File[] files = file.listFiles();
-			for (File children : files) {
-				delete(children);
-			}
-			file.delete(); // 目录删除
-		} else {
-			file.delete(); // 文件删除
-		}
 	}
 	
 	/**
@@ -120,7 +127,7 @@ public class FileUtils {
 		if(StringUtils.isNotEmpty(name)) { // 去掉不支持的字符
 			name = name.replaceAll(FILENAME_REPLACE_REGEX, FILENAME_REPLACE_CHAR);
 		}
-		if(StringUtils.isEmpty(name)) { // 默认使用日期
+		if(StringUtils.isEmpty(name)) { // 随机序号
 			name = NumberUtils.build().toString();
 		}
 		return name.trim();
@@ -252,6 +259,7 @@ public class FileUtils {
 	
 	/**
 	 * 创建文件夹，如果路径是文件夹，创建父目录，否者直接创建路径目录。
+	 * 
 	 * @param path 路径
 	 * @param file 是否是文件：true-文件；false-文件夹
 	 */
@@ -287,8 +295,8 @@ public class FileUtils {
 			}
 			return data;
 		} else {
-			MessageDigest digest = null;
 			int length;
+			MessageDigest digest = null;
 			byte bytes[] = new byte[16 * 1024];
 			try (InputStream input = new BufferedInputStream(new FileInputStream(file))) {
 				digest = MessageDigest.getInstance(algo);
