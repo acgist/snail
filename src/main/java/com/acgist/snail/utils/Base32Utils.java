@@ -8,11 +8,17 @@ package com.acgist.snail.utils;
  */
 public class Base32Utils {
 
+	/**
+	 * 编码字符
+	 */
 	private static final char[] BASE_32_CODE = {
 		'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
 		'2', '3', '4', '5', '6', '7'
 	};
 
+	/**
+	 * 解码字符
+	 */
 	private static final byte[] BASE_32_DECODE;
 
 	static {

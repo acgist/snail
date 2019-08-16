@@ -71,17 +71,16 @@ public class ArrayUtils {
 	}
 	
 	/**
-	 * <p>判断数组是否为空</p>
-	 * <p>数组==null或者长度==0时返回true，反之返回false。</p>
+	 * 空字节数组
 	 */
-	public static boolean isEmpty(byte[] value) {
+	public static final boolean isEmpty(byte[] value) {
 		return value == null || value.length == 0;
 	}
 
 	/**
-	 * 判断数组是否不为空
+	 * 非空字节数组
 	 */
-	public static boolean isNotEmpty(byte[] value) {
+	public static final boolean isNotEmpty(byte[] value) {
 		return !isEmpty(value);
 	}
 	

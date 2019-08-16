@@ -32,7 +32,7 @@ public class BeanUtils {
 		try {
 			return clazz.getDeclaredConstructor().newInstance();
 		} catch (Exception e) {
-			LOGGER.error("通过反射获取实例异常", e);
+			LOGGER.error("反射生成实例异常", e);
 		}
 		return null;
 	}
@@ -42,7 +42,7 @@ public class BeanUtils {
 	 */
 	public static final String[] properties(Class<?> clazz) {
 		String[] properties = null;
-		final Class<?> superClazz = clazz.getSuperclass();
+		final Class<?> superClazz = clazz.getSuperclass(); // 父类
 		if(superClazz != null) {
 			properties = properties(superClazz);
 		} else {
@@ -62,42 +62,40 @@ public class BeanUtils {
 	}
 	
 	/**
-	 * 获取属性值
+	 * <p>获取属性值（getter）</p>
 	 */
-	public static final Object[] propertiesValue(Object entity, String[] properties) {
+	public static final Object[] propertiesValue(Object instance, String[] properties) {
 		return Stream
 			.of(properties)
-			.map(property -> propertyValue(entity, property))
+			.map(property -> propertyValue(instance, property))
 			.toArray();
 	}
 	
 	/**
-	 * <p>获取属性值</p>
-	 * <p>属性必须有getter。</p>
+	 * <p>获取属性值（getter）</p>
 	 */
-	public static final Object propertyValue(Object entity, String property) {
-		final Class<?> clazz = entity.getClass();
+	public static final Object propertyValue(Object instance, String property) {
+		final Class<?> clazz = instance.getClass();
 		try {
 			final PropertyDescriptor descriptor = new PropertyDescriptor(property, clazz);
-			return descriptor.getReadMethod().invoke(entity);
+			return descriptor.getReadMethod().invoke(instance);
 		} catch (Exception e) {
-			LOGGER.error("反射属性获取异常", e);
+			LOGGER.error("反射获取属性值异常", e);
 		}
 		return null;
 	}
 	
 	/**
-	 * <p>属性装配</p>
-	 * <p>属性必须有setter。</p>
+	 * <p>属性装配（setter）</p>
 	 */
-	public static final void entity(Object entity, ResultSetWrapper wrapper) {
-		final Class<?> clazz = entity.getClass();
+	public static final void setProperties(Object instance, ResultSetWrapper wrapper) {
+		final Class<?> clazz = instance.getClass();
 		final String[] properties = properties(clazz);
 		for (String property : properties) {
 			try {
 				final PropertyDescriptor descriptor = new PropertyDescriptor(property, clazz);
 				final Object value = unpack(descriptor.getPropertyType(), wrapper.getObject(property));
-				descriptor.getWriteMethod().invoke(entity, value);
+				descriptor.getWriteMethod().invoke(instance, value);
 			} catch (Exception e) {
 				LOGGER.info("反射属性装配异常", e);
 			}
@@ -105,7 +103,7 @@ public class BeanUtils {
 	}
 	
 	/**
-	 * <p>类型转换</p>
+	 * <p>类型转换：</p>
 	 * <p>枚举类型转换为字符串类型。</p>
 	 */
 	public static final Object pack(Object object) {
@@ -122,7 +120,7 @@ public class BeanUtils {
 	/**
 	 * 类型转换：TODO：泛型优化
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static final Object unpack(Class<?> clazz, Object value) {
 		if(value == null) {
 			return null;
@@ -135,7 +133,7 @@ public class BeanUtils {
 			try {
 				int index;
 				final char[] chars = new char[1024];
-				StringBuilder builder = new StringBuilder();
+				final StringBuilder builder = new StringBuilder();
 				final Reader reader = clob.getCharacterStream();
 				while((index = reader.read(chars)) != -1) {
 					builder.append(new String(chars, 0, index));
