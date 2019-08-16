@@ -227,13 +227,6 @@ public class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 磁盘缓存（单个-Peer）（B）
-	 */
-	public static final Integer getPeerMemoryBufferByte() {
-		return INSTANCE.memoryBuffer * 1024 * 1024 / SystemConfig.getPeerSize();
-	}
-
-	/**
 	 * 最后一次选择目录文件，如果没有选择默认使用下载目录
 	 */
 	public static final File lastPath() {

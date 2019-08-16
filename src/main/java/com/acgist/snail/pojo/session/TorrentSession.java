@@ -443,6 +443,7 @@ public class TorrentSession {
 		if(this.trackerLauncherGroup != null) {
 			this.trackerLauncherGroup.release();
 		}
+		this.torrentStreamGroup.flush(); // 缓存刷出
 		SystemThreadContext.shutdownNow(this.executor);
 		this.downloadable = false;
 	}
