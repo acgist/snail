@@ -110,9 +110,10 @@ public class TorrentStreamGroup {
 	}
 
 	/**
-	 * 刷新所有缓存
+	 * 刷出缓存
 	 */
 	public void flush() {
+		LOGGER.debug("刷出缓存");
 		for (TorrentStream torrentStream : this.streams) {
 			torrentStream.flush();
 		}
