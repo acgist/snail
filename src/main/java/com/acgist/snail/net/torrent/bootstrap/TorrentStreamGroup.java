@@ -192,20 +192,6 @@ public class TorrentStreamGroup {
 		return ok;
 	}
 	
-	public static void main(String[] args) {
-		AtomicLong fileBuffer = new AtomicLong();
-		final long oldValue = fileBuffer.get();
-		if(oldValue > 100) {
-			if(fileBuffer.compareAndSet(oldValue, 0)) {
-				System.out.println("----");
-			} else {
-				System.out.println("<<<<");
-			}
-		} else {
-			System.out.println("====");
-		}
-	}
-
 	/**
 	 * <p>设置已下载的Piece，同时发出have消息。</p>
 	 */
