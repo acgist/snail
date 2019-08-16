@@ -6,6 +6,7 @@ import java.util.BitSet;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
 import com.acgist.snail.protocol.torrent.bean.TorrentFile;
 import com.acgist.snail.protocol.torrent.bean.TorrentInfo;
+import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.exception.NetException;
@@ -43,6 +45,10 @@ public class TorrentStreamGroup {
 	private final Torrent torrent;
 	private final List<TorrentStream> streams;
 	private final TorrentSession torrentSession;
+	/**
+	 * 缓冲大小：数据下载时修改
+	 */
+	private final AtomicLong fileBuffer;
 
 	private TorrentStreamGroup(BitSet pieces, BitSet selectPieces, List<TorrentStream> streams, TorrentSession torrentSession) {
 		this.pieces = pieces;
@@ -50,6 +56,7 @@ public class TorrentStreamGroup {
 		this.streams = streams;
 		this.torrent = torrentSession.torrent();
 		this.torrentSession = torrentSession;
+		this.fileBuffer = new AtomicLong(0);
 	}
 	
 	public static final TorrentStreamGroup newInstance(String folder, List<TorrentFile> files, TorrentSession torrentSession) {
@@ -67,7 +74,7 @@ public class TorrentStreamGroup {
 			for (TorrentFile file : files) {
 				try {
 					if(file.selected()) {
-						final TorrentStream stream = TorrentStream.newInstance(torrentInfo.getPieceLength(), torrentStreamGroup);
+						final TorrentStream stream = TorrentStream.newInstance(torrentInfo.getPieceLength(), torrentStreamGroup.fileBuffer, torrentStreamGroup);
 						stream.buildFile(FileUtils.file(folder, file.path()), file.getLength(), pos, selectPieces, complete, allReady);
 						streams.add(stream);
 					}
@@ -176,7 +183,27 @@ public class TorrentStreamGroup {
 				ok = true;
 			}
 		}
+		final long oldValue = this.fileBuffer.get();
+		if(oldValue > DownloadConfig.getMemoryBufferByte()) {
+			if(this.fileBuffer.compareAndSet(oldValue, 0)) {
+				this.flush();
+			}
+		}
 		return ok;
+	}
+	
+	public static void main(String[] args) {
+		AtomicLong fileBuffer = new AtomicLong();
+		final long oldValue = fileBuffer.get();
+		if(oldValue > 100) {
+			if(fileBuffer.compareAndSet(oldValue, 0)) {
+				System.out.println("----");
+			} else {
+				System.out.println("<<<<");
+			}
+		} else {
+			System.out.println("====");
+		}
 	}
 
 	/**
