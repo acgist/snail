@@ -1,6 +1,5 @@
 package com.acgist.snail.utils;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -10,7 +9,6 @@ import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.DatagramChannel;
-import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CodingErrorAction;
@@ -51,7 +49,7 @@ public class IoUtils {
 			attachment.flip();
 			content = decoder.decode(attachment).toString();
 			attachment.compact();
-		} catch (CharacterCodingException e) {
+		} catch (Exception e) {
 			LOGGER.error("ByteBuffer解码异常", e);
 		}
 		return content;
@@ -75,7 +73,7 @@ public class IoUtils {
 			while((index = reader.read(chars)) != -1) {
 				builder.append(new String(chars, 0, index));
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			LOGGER.error("读取输入流异常", e);
 		}
 		return builder.toString();
@@ -89,7 +87,7 @@ public class IoUtils {
 			if(input != null) {
 				input.close();
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			LOGGER.error("关闭输入流异常", e);
 		}
 	}
@@ -103,7 +101,7 @@ public class IoUtils {
 				output.flush();
 				output.close();
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			LOGGER.error("关闭输出流异常", e);
 		}
 	}
@@ -117,19 +115,19 @@ public class IoUtils {
 				if(!socket.isInputShutdown()) {
 					socket.shutdownInput();
 				}
-			} catch (IOException e) {
+			} catch (Exception e) {
 				LOGGER.error("关闭Socket输入流异常", e);
 			}
 			try {
 				if(!socket.isOutputShutdown()) {
 					socket.shutdownOutput();
 				}
-			} catch (IOException e) {
+			} catch (Exception e) {
 				LOGGER.error("关闭Socket输出流异常", e);
 			}
 			try {
 				socket.close(); // 不用判断是否close
-			} catch (IOException e) {
+			} catch (Exception e) {
 				LOGGER.error("关闭Socket异常", e);
 			}
 		}
@@ -147,12 +145,12 @@ public class IoUtils {
 			}
 			try {
 				socket.shutdownOutput();
-			} catch (IOException e) {
+			} catch (Exception e) {
 				LOGGER.error("关闭Socket输出流异常", e);
 			}
 			try {
 				socket.close();
-			} catch (IOException e) {
+			} catch (Exception e) {
 				LOGGER.error("关闭Socket异常", e);
 			}
 		}
@@ -165,7 +163,7 @@ public class IoUtils {
 		if(server != null && server.isOpen()) {
 			try {
 				server.close();
-			} catch (IOException e) {
+			} catch (Exception e) {
 				LOGGER.error("关闭Socket Server异常", e);
 			}
 		}
@@ -187,7 +185,7 @@ public class IoUtils {
 		if(channel != null && channel.isOpen()) {
 			try {
 				channel.close();
-			} catch (IOException e) {
+			} catch (Exception e) {
 				LOGGER.error("关闭UDP Channel异常", e);
 			}
 		}

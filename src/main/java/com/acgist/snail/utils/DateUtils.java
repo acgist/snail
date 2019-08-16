@@ -26,6 +26,10 @@ public class DateUtils {
 	 * 转换Java时间戳：11644473600000L + System.currentTimeMillis()。
 	 */
 	private static final LocalDateTime WINDOW_BEIJIN_BEGIN_TIME = LocalDateTime.of(1601, 01, 01, 8, 00, 00);
+	/**
+	 * Window系统时间和JAVA日期相差毫秒数。
+	 */
+	private static final long WINDOW_JAVA_DIFF_TIMEMILLIS = 11644473600000L;
 	
 	private static final long ONE_MINUTE = 60L;
 	private static final long ONE_HOUR = ONE_MINUTE * 60;
@@ -36,7 +40,8 @@ public class DateUtils {
 	 * 
 	 * @param second 时间，单位：秒
 	 * 
-	 * @return <p>
+	 * @return
+	 * <p>
 	 * 	1.XX天XX小时<br>
 	 * 	2.XX小时XX分钟<br>
 	 * 	3.XX分钟XX秒
@@ -152,7 +157,7 @@ public class DateUtils {
 	 * <p>使用Java时间戳 + 相差时间戳计算。</p>
 	 */
 	public static final long windowTimestamp() {
-		return (11644473600000L + System.currentTimeMillis()) * 10_000;
+		return (WINDOW_JAVA_DIFF_TIMEMILLIS + System.currentTimeMillis()) * 10_000;
 	}
 	
 	/**
