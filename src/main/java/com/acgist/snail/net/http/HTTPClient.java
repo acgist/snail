@@ -311,7 +311,6 @@ public class HTTPClient {
 //	private static final SSLContext newSSLContext() {
 //		SSLContext sslContext = null;
 //		try {
-////			sslContext = SSLContext.getInstance("TLS");
 //			sslContext = SSLContext.getInstance("TLSv1.2"); // SSL、SSLv2、SSLv3、TLS、TLSv1、TLSv1.1、TLSv1.2、TLSv1.3
 //			sslContext.init(null, TRUST_ALL_CERT_MANAGER, new SecureRandom());
 //		} catch (Exception e) {

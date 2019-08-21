@@ -1,9 +1,11 @@
 package com.acgist.snail.gui.torrent;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
@@ -38,17 +40,9 @@ public class TorrentFileSelecter {
 	 */
 	private TreeItem<HBox> root;
 	/**
-	 * 选择Box-文件大小
+	 * 选择器
 	 */
-	private Map<CheckBox, Long> checkBoxSizeMap;
-	/**
-	 * 文件路径-选择Box
-	 */
-	private Map<String, CheckBox> pathCheckBoxMap;
-	/**
-	 * 文件路径-子树
-	 */
-	private Map<String, TreeItem<HBox>> pathTreeItemMap;
+	private Map<String, Selecter> selecter;
 
 	/**
 	 * 选择器
@@ -58,9 +52,7 @@ public class TorrentFileSelecter {
 	 * @param tree 属性菜单
 	 */
 	private TorrentFileSelecter(String name, Button download, TreeView<HBox> tree) {
-		this.checkBoxSizeMap = new HashMap<>();
-		this.pathCheckBoxMap = new HashMap<>();
-		this.pathTreeItemMap = new HashMap<>();
+		this.selecter = new HashMap<>();
 		final TreeItem<HBox> root = builcTreeItem(null, "", name, null);
 		root.setExpanded(true);
 		tree.setRoot(root);
@@ -101,10 +93,9 @@ public class TorrentFileSelecter {
 	 */
 	public Long size() {
 		final AtomicLong totalSize = new AtomicLong(0L);
-		this.pathCheckBoxMap.entrySet().stream()
-			.filter(entry -> entry.getValue().isSelected())
-			.map(entry -> this.checkBoxSizeMap.get(entry.getValue()))
-			.filter(size -> size != null)
+		this.selecter.values().stream()
+			.filter(value -> value.isSelected())
+			.map(value -> value.getSize())
 			.forEach(size -> totalSize.addAndGet(size));
 		return totalSize.longValue();
 	}
@@ -113,9 +104,9 @@ public class TorrentFileSelecter {
 	 * 获取选择文件的列表
 	 */
 	public List<String> description() {
-		return this.pathCheckBoxMap.entrySet().stream()
-			.filter(entry -> entry.getValue().isSelected())
-			.filter(entry -> this.checkBoxSizeMap.containsKey(entry.getValue())) // 文件而不是目录
+		return this.selecter.entrySet().stream()
+			.filter(entry -> entry.getValue().isSelected()) // 选中
+			.filter(entry -> entry.getValue().isFile()) // 文件
 			.map(Entry::getKey)
 			.collect(Collectors.toList());
 	}
@@ -127,20 +118,19 @@ public class TorrentFileSelecter {
 	public void select(TaskSession taskSession) {
 		final var list = taskSession.downloadTorrentFiles();
 		if(CollectionUtils.isNotEmpty(list)) { // 已选择
-			this.pathCheckBoxMap.entrySet().stream()
-			.filter(entry -> list.contains(entry.getKey()))
-			.forEach(entry -> entry.getValue().setSelected(true));
+			this.selecter.entrySet().stream()
+				.filter(entry -> list.contains(entry.getKey()))
+				.forEach(entry -> entry.getValue().setSelected(true));
 		} else { // 自动选择
-			final var avgSize = this.checkBoxSizeMap.values().stream()
-				.collect(Collectors.averagingInt(Long::intValue));
-			this.pathCheckBoxMap.entrySet().stream()
-			.filter(entry -> {
-				if(this.checkBoxSizeMap.get(entry.getValue()) == null) { // 只选择文件
-					return false;
-				}
-				return this.checkBoxSizeMap.get(entry.getValue()) >= avgSize;
-			}).forEach(entry -> entry.getValue().setSelected(true));
+			final var avgSize = this.selecter.values().stream()
+				.collect(Collectors.averagingLong(Selecter::getSize));
+			this.selecter.entrySet().stream()
+				.filter(entry -> {
+					return entry.getValue().isFile() && // 文件
+						entry.getValue().getSize() >= avgSize;
+				}).forEach(entry -> entry.getValue().setSelected(true));
 		}
+		selectFolder();
 		buttonSize();
 	}
 	
@@ -151,21 +141,19 @@ public class TorrentFileSelecter {
 	 * @param size 大小
 	 */
 	private TreeItem<HBox> builcTreeItem(TreeItem<HBox> parent, String path, String name, Long size) {
-		if(this.pathTreeItemMap.containsKey(path)) {
-			return this.pathTreeItemMap.get(path);
+		if(this.selecter.containsKey(path)) {
+			return this.selecter.get(path).getTreeItem();
 		}
 		final CheckBox checkBox = new CheckBox(name);
 		checkBox.setPrefWidth(400);
+		checkBox.setOnAction(this.selectAction);
 		final HBox box = new HBox(checkBox);
-		if(size != null) {
+		if(size != null) { // 设置文件大小
 			final Text text = new Text(FileUtils.formatSize(size));
-			this.checkBoxSizeMap.put(checkBox, size);
 			box.getChildren().add(text);
 		}
-		checkBox.setOnAction(this.selectAction);
 		final TreeItem<HBox> treeItem = new TreeItem<HBox>(box);
-		this.pathCheckBoxMap.put(path, checkBox);
-		this.pathTreeItemMap.put(path, treeItem);
+		this.selecter.put(path, new Selecter(path, size, checkBox, treeItem));
 		if(parent != null) {
 			parent.getChildren().add(treeItem);
 		}
@@ -173,20 +161,26 @@ public class TorrentFileSelecter {
 	}
 	
 	/**
-	 * 文件选择事件
+	 * 选择父目录
 	 */
-	private EventHandler<ActionEvent> selectAction = (event) -> {
-		final CheckBox checkBox = (CheckBox) event.getSource();
-		final boolean selected = checkBox.isSelected();
-		final String prefix = this.pathCheckBoxMap.entrySet().stream()
-			.filter(entry -> entry.getValue() == checkBox)
-			.map(entry -> entry.getKey())
-			.findFirst().get();
-		this.pathCheckBoxMap.entrySet().stream()
-			.filter(entry -> entry.getKey().startsWith(prefix))
-			.forEach(entry -> entry.getValue().setSelected(selected));
-		buttonSize();
-	};
+	private void selectFolder() {
+		final Set<TreeItem<HBox>> parents = new HashSet<>();
+		// 获取父目录
+		this.selecter.values().stream()
+			.filter(value -> value.isFile())
+			.filter(value -> value.isSelected())
+			.forEach(value -> {
+				var parent = value.getTreeItem();
+				while(parent.getParent() != null) {
+					parent = parent.getParent();
+					parents.add(parent);
+				}
+			});
+		// 选择父目录
+		this.selecter.values().stream()
+			.filter(value -> parents.contains(value.getTreeItem()))
+			.forEach(value -> value.setSelected(true));
+	}
 	
 	/**
 	 * 设置按钮文本
@@ -195,4 +189,79 @@ public class TorrentFileSelecter {
 		this.download.setText("下载（" + FileUtils.formatSize(size()) + "）");
 	}
 	
+	/**
+	 * 选择框事件
+	 */
+	private EventHandler<ActionEvent> selectAction = (event) -> {
+		final CheckBox checkBox = (CheckBox) event.getSource();
+		final boolean selected = checkBox.isSelected();
+		final String prefix = this.selecter.entrySet().stream()
+			.filter(entry -> entry.getValue().getCheckBox() == checkBox)
+			.map(entry -> entry.getKey())
+			.findFirst().get();
+		// 子目录
+		this.selecter.entrySet().stream()
+			.filter(entry -> entry.getKey().startsWith(prefix))
+			.forEach(entry -> entry.getValue().setSelected(selected));
+		selectFolder();
+		buttonSize();
+	};
+	
+}
+
+/**
+ * 选择文件
+ */
+class Selecter {
+
+	private final String path; // 路径
+	private final long size; // 文件大小：文件夹=0；
+	private final boolean file; // 是否是文件：true=文件；false=文件夹；
+	private final CheckBox checkBox; // 选择框
+	private final TreeItem<HBox> treeItem; // 树节点
+
+	public Selecter(String path, Long size, CheckBox checkBox, TreeItem<HBox> treeItem) {
+		this.path = path;
+		this.size = size == null ? 0 : size;
+		this.file = size == null ? false : true;
+		this.checkBox = checkBox;
+		this.treeItem = treeItem;
+	}
+
+	/**
+	 * 判断是否选中
+	 */
+	public boolean isSelected() {
+		return this.checkBox.isSelected();
+	}
+
+	/**
+	 * 设置是否选中
+	 * 
+	 * @param selected true-选择；false-未选中；
+	 */
+	public void setSelected(boolean selected) {
+		this.checkBox.setSelected(selected);
+	}
+	
+	public String getPath() {
+		return path;
+	}
+
+	public long getSize() {
+		return size;
+	}
+
+	public boolean isFile() {
+		return file;
+	}
+
+	public CheckBox getCheckBox() {
+		return checkBox;
+	}
+
+	public TreeItem<HBox> getTreeItem() {
+		return treeItem;
+	}
+
 }
