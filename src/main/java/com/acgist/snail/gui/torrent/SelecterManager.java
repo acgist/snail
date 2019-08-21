@@ -29,7 +29,7 @@ import javafx.scene.text.Text;
  * @author acgist
  * @since 1.0.0
  */
-public class TorrentFileSelecter {
+public class SelecterManager {
 
 	/**
 	 * 下载按钮
@@ -51,7 +51,7 @@ public class TorrentFileSelecter {
 	 * @param download 下载按钮
 	 * @param tree 属性菜单
 	 */
-	private TorrentFileSelecter(String name, Button download, TreeView<HBox> tree) {
+	private SelecterManager(String name, Button download, TreeView<HBox> tree) {
 		this.selecter = new HashMap<>();
 		final TreeItem<HBox> root = builcTreeItem(null, "", name, null);
 		root.setExpanded(true);
@@ -60,8 +60,8 @@ public class TorrentFileSelecter {
 		this.download = download;
 	}
 	
-	public static final TorrentFileSelecter newInstance(String name, Button download, TreeView<HBox> tree) {
-		return new TorrentFileSelecter(name, download, tree);
+	public static final SelecterManager newInstance(String name, Button download, TreeView<HBox> tree) {
+		return new SelecterManager(name, download, tree);
 	}
 
 	/**

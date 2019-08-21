@@ -52,7 +52,7 @@ public class TorrentController implements Initializable {
 	private VBox downloadBox;
 	
 	private TaskSession taskSession;
-	private TorrentFileSelecter selecter;
+	private SelecterManager selecterManager;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -72,28 +72,27 @@ public class TorrentController implements Initializable {
 		Torrent torrent = null;
 		this.taskSession = taskSession;
 		var entity = taskSession.entity();
-		TreeView<HBox> tree = buildTree();
+		final TreeView<HBox> tree = buildTree();
 		try {
 			torrent = TorrentManager.getInstance().newTorrentSession(entity.getTorrent()).torrent();
 		} catch (DownloadException e) {
 			Alerts.warn("下载出错", "种子文件解析异常");
 			return;
 		}
-		TorrentInfo torrentInfo = torrent.getInfo();
-		this.selecter = TorrentFileSelecter.newInstance(torrentInfo.getName(), this.download, tree);
-		torrentInfo.files()
-		.stream()
-		.filter(file -> !file.path().startsWith(HIDE_FILE_PREFIX))
-		.sorted((a, b) -> a.path().compareTo(b.path()))
-		.forEach(file -> this.selecter.build(file.path(), file.getLength()));
-		this.selecter.select(taskSession);
+		final TorrentInfo torrentInfo = torrent.getInfo();
+		this.selecterManager = SelecterManager.newInstance(torrentInfo.getName(), this.download, tree);
+		torrentInfo.files().stream()
+			.filter(file -> !file.path().startsWith(HIDE_FILE_PREFIX))
+			.sorted((a, b) -> a.path().compareTo(b.path()))
+			.forEach(file -> this.selecterManager.build(file.path(), file.getLength()));
+		this.selecterManager.select(taskSession);
 	}
 	
 	/**
 	 * 释放资源：文件选择器
 	 */
 	public void release() {
-		this.selecter = null;
+		this.selecterManager = null;
 	}
 	
 	/**
@@ -115,12 +114,12 @@ public class TorrentController implements Initializable {
 	 */
 	private EventHandler<ActionEvent> downloadEvent = (event) -> {
 		TaskEntity entity = this.taskSession.entity();
-		var list = this.selecter.description();
+		var list = this.selecterManager.description();
 		if(list.isEmpty()) {
 			Alerts.warn("下载提示", "请选择下载文件");
 			return;
 		}
-		entity.setSize(this.selecter.size());
+		entity.setSize(this.selecterManager.size());
 		final TorrentFileSelectWrapper wrapper = TorrentFileSelectWrapper.newEncoder(list);
 		entity.setDescription(wrapper.description());
 		if(entity.getId() != null) { // 已经添加数据库
