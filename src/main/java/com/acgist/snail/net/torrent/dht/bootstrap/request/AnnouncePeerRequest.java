@@ -29,7 +29,6 @@ public class AnnouncePeerRequest extends Request {
 	
 	private AnnouncePeerRequest() {
 		super(DhtService.getInstance().requestId(), DhtConfig.QType.announce_peer);
-		this.put(DhtConfig.KEY_ID, NodeManager.getInstance().nodeId());
 	}
 	
 	/**

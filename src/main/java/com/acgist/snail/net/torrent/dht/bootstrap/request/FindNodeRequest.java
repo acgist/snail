@@ -16,7 +16,6 @@ public class FindNodeRequest extends Request {
 
 	private FindNodeRequest() {
 		super(DhtService.getInstance().requestId(), DhtConfig.QType.find_node);
-		this.put(DhtConfig.KEY_ID, NodeManager.getInstance().nodeId());
 	}
 	
 	/**
@@ -29,10 +28,6 @@ public class FindNodeRequest extends Request {
 		request.put(DhtConfig.KEY_TARGET, target);
 		return request;
 	}
-	
-	public String getTarget() {
-		return getString(DhtConfig.KEY_TARGET);
-	}
 
 	/**
 	 * 将Node加入到列表
@@ -43,6 +38,10 @@ public class FindNodeRequest extends Request {
 		final var nodes = NodeManager.getInstance().findNode(target);
 		response.put(DhtConfig.KEY_NODES, writeNode(nodes));
 		return response;
+	}
+	
+	public String getTarget() {
+		return getString(DhtConfig.KEY_TARGET);
 	}
 
 }

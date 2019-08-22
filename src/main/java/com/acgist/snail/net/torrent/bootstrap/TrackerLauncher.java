@@ -63,6 +63,9 @@ public class TrackerLauncher {
 		return this.client.announceUrl();
 	}
 
+	/**
+	 * 查找Peer
+	 */
 	public void findPeer() {
 		this.needRelease = true;
 		if(available()) {

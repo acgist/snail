@@ -31,7 +31,6 @@ public class GetPeersResponse extends Response {
 
 	private GetPeersResponse(byte[] t) {
 		super(t);
-		this.put(DhtConfig.KEY_ID, NodeManager.getInstance().nodeId());
 		this.put(DhtConfig.KEY_TOKEN, NodeManager.getInstance().token());
 	}
 	
@@ -52,7 +51,7 @@ public class GetPeersResponse extends Response {
 	}
 	
 	/**
-	 * 返回Node，同时加入列表。
+	 * 获取响应Node，同时加入到Node列表。
 	 */
 	public List<NodeSession> getNodes() {
 		final byte[] bytes = this.getBytes(DhtConfig.KEY_NODES);
@@ -73,14 +72,14 @@ public class GetPeersResponse extends Response {
 	}
 	
 	/**
-	 * 获取Peer，同时添加到列表。
+	 * 获取响应Peer，同时添加到列表。
 	 */
 	public List<PeerSession> getPeers(Request request) {
 		return this.getValues(request);
 	}
 	
 	/**
-	 * 获取Peer，同时添加到列表。
+	 * 获取响应Peer，同时添加到列表。
 	 */
 	public List<PeerSession> getValues(Request request) {
 		final byte[] infoHash = request.getBytes(DhtConfig.KEY_INFO_HASH);
@@ -94,18 +93,20 @@ public class GetPeersResponse extends Response {
 			return null;
 		}
 		byte[] bytes;
-		ByteBuffer buffer;
 		PeerSession session;
+		final ByteBuffer buffer = ByteBuffer.allocate(6);
 		final List<PeerSession> list = new ArrayList<>();
 		for (Object object : values) {
 			bytes = (byte[]) object;
-			buffer = ByteBuffer.wrap(bytes);
+			buffer.put(bytes);
+			buffer.flip();
 			session = PeerManager.getInstance().newPeerSession(
 				infoHashHex,
 				torrentSession.statistics(),
 				NetUtils.decodeIntToIp(buffer.getInt()),
 				NetUtils.decodePort(buffer.getShort()),
 				PeerConfig.SOURCE_DHT);
+			buffer.flip();
 			list.add(session);
 		}
 		return list;
@@ -122,6 +123,13 @@ public class GetPeersResponse extends Response {
 	 * 是否含有Peer
 	 */
 	public boolean havePeers() {
+		return haveValues();
+	}
+	
+	/**
+	 * 是否含有Values
+	 */
+	public boolean haveValues() {
 		return get(DhtConfig.KEY_VALUES) != null;
 	}
 	

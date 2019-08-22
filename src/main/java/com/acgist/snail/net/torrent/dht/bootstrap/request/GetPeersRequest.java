@@ -25,7 +25,6 @@ public class GetPeersRequest extends Request {
 
 	private GetPeersRequest() {
 		super(DhtService.getInstance().requestId(), DhtConfig.QType.get_peers);
-		this.put(DhtConfig.KEY_ID, NodeManager.getInstance().nodeId());
 	}
 	
 	/**
@@ -38,13 +37,10 @@ public class GetPeersRequest extends Request {
 		request.put(DhtConfig.KEY_INFO_HASH, infoHash);
 		return request;
 	}
-	
-	public String getInfoHash() {
-		return getString(DhtConfig.KEY_INFO_HASH);
-	}
 
 	/**
 	 * 将Peer和Node加入到列表
+	 * TODO：发送正在使用的Peer
 	 */
 	public static final GetPeersResponse execute(Request request) {
 		final GetPeersResponse response = GetPeersResponse.newInstance(request);
@@ -73,4 +69,8 @@ public class GetPeersRequest extends Request {
 		return response;
 	}
 	
+	public String getInfoHash() {
+		return getString(DhtConfig.KEY_INFO_HASH);
+	}
+
 }

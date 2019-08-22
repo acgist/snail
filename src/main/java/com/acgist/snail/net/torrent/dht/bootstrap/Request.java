@@ -11,12 +11,12 @@ import com.acgist.snail.system.bencode.BEncodeEncoder;
 import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.system.config.DhtConfig.QType;
 import com.acgist.snail.utils.ArrayUtils;
+import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.ObjectUtils;
 
 /**
  * DHT请求
- * TODO：request、response抽象超类
  * 
  * @author acgist
  * @since 1.0.0
@@ -40,8 +40,13 @@ public class Request extends BaseMessage {
 	 */
 	private Response response;
 	
+	/**
+	 * <p>子类初始化调用构造方法，设置NodeId。</p>
+	 * <p>发送请求。</p>
+	 */
 	protected Request(byte[] t, DhtConfig.QType q) {
 		this(t, DhtConfig.KEY_Q, q, new LinkedHashMap<>());
+		this.put(DhtConfig.KEY_ID, NodeManager.getInstance().nodeId());
 	}
 	
 	protected Request(byte[] t, String y, DhtConfig.QType q, Map<String, Object> a) {
@@ -51,6 +56,9 @@ public class Request extends BaseMessage {
 		this.timestamp = System.currentTimeMillis();
 	}
 
+	/**
+	 * 处理请求。
+	 */
 	public static final Request valueOf(final BEncodeDecoder decoder) {
 		final byte[] t = decoder.getBytes(DhtConfig.KEY_T);
 		final String y = decoder.getString(DhtConfig.KEY_Y);
@@ -128,6 +136,9 @@ public class Request extends BaseMessage {
 	 * 输出Node
 	 */
 	protected static final byte[] writeNode(List<NodeSession> nodes) {
+		if(CollectionUtils.isEmpty(nodes)) {
+			return null;
+		}
 		final ByteBuffer buffer = ByteBuffer.allocate(26 * nodes.size());
 		for (NodeSession node : nodes) {
 			if(NetUtils.verifyIp(node.getHost())) { // 如果不是IP不分享

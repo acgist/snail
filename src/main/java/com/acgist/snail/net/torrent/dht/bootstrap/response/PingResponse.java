@@ -1,9 +1,7 @@
 package com.acgist.snail.net.torrent.dht.bootstrap.response;
 
-import com.acgist.snail.net.torrent.dht.bootstrap.NodeManager;
 import com.acgist.snail.net.torrent.dht.bootstrap.Request;
 import com.acgist.snail.net.torrent.dht.bootstrap.Response;
-import com.acgist.snail.system.config.DhtConfig;
 
 /**
  * Ping
@@ -15,7 +13,6 @@ public class PingResponse extends Response {
 	
 	private PingResponse(byte[] t) {
 		super(t);
-		this.put(DhtConfig.KEY_ID, NodeManager.getInstance().nodeId());
 	}
 
 	private PingResponse(Response response) {

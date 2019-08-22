@@ -137,7 +137,7 @@ public class NodeManager {
 	}
 
 	/**
-	 * 注册默认节点
+	 * 注册默认节点（配置文件）
 	 */
 	public void register() {
 		final var nodes = DhtConfig.getInstance().nodes();
@@ -174,9 +174,7 @@ public class NodeManager {
 			if(nodeSession == null) {
 				nodeSession = NodeSession.newInstance(nodeId, host, port);
 				if(nodeSession.getId().length == NODE_ID_LENGTH) {
-					if(LOGGER.isDebugEnabled()) {
-						LOGGER.debug("添加Node：{}-{}", nodeSession.getHost(), nodeSession.getPort());
-					}
+					LOGGER.debug("添加Node：{}-{}", nodeSession.getHost(), nodeSession.getPort());
 					this.nodes.add(nodeSession);
 				}
 			}

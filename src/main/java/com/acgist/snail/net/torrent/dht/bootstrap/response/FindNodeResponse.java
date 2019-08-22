@@ -20,7 +20,6 @@ public class FindNodeResponse extends Response {
 
 	private FindNodeResponse(byte[] t) {
 		super(t);
-		this.put(DhtConfig.KEY_ID, NodeManager.getInstance().nodeId());
 	}
 	
 	private FindNodeResponse(Response response) {

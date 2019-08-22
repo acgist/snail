@@ -34,7 +34,7 @@ public class TrackerMessageHandler extends UdpMessageHandler {
 		} else if(action == TrackerConfig.Action.scrape.action()) {
 			// 刮檫
 		} else if(action == TrackerConfig.Action.error.action()) {
-			LOGGER.warn("发生错误");
+			LOGGER.warn("Tracker错误");
 		}
 		buffer.clear();
 	}

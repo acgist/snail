@@ -1,5 +1,8 @@
 package com.acgist.snail.bcode;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Test;
 
 import com.acgist.snail.system.bencode.BEncodeDecoder;
@@ -19,6 +22,13 @@ public class BCodeTest {
 		BEncodeDecoder decoder = BEncodeDecoder.newInstance(content.getBytes());
 		System.out.println(decoder.nextList());
 		System.out.println(decoder.nextMap());
+	}
+	
+	@Test
+	public void nullTest() {
+		Map<String, String> map = new HashMap<>();
+		map.put("test", null);
+		System.out.println(new String(BEncodeEncoder.encodeMap(map)));
 	}
 	
 }
