@@ -50,6 +50,8 @@ public class DhtConfig extends PropertiesConfig {
 	
 	public static final int GET_PEER_LENGTH = 100; // GetPeer，Peer列表长度。
 	
+	public static final int DHT_CLEAR_INTERVAL = 10; // DHT请求清理周期
+	
 	/**
 	 * <p>DHT响应错误：</p>
 	 * <ul>

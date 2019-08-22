@@ -33,8 +33,13 @@ public class Response extends BaseMessage {
 	 */
 	private final List<Object> e;
 
+	/**
+	 * <p>子类初始化调用构造方法，设置NodeId。</p>
+	 * <p>处理请求，发送响应。</p>
+	 */
 	protected Response(byte[] t) {
 		this(t, DhtConfig.KEY_R, new LinkedHashMap<>(), null);
+		this.put(DhtConfig.KEY_ID, NodeManager.getInstance().nodeId());
 	}
 	
 	protected Response(byte[] t, String y, Map<String, Object> r, List<Object> e) {
@@ -43,6 +48,9 @@ public class Response extends BaseMessage {
 		this.e = e;
 	}
 
+	/**
+	 * 处理响应。
+	 */
 	public static final Response valueOf(final BEncodeDecoder decoder) {
 		final byte[] t = decoder.getBytes(DhtConfig.KEY_T);
 		final String y = decoder.getString(DhtConfig.KEY_Y);
@@ -133,7 +141,11 @@ public class Response extends BaseMessage {
 	 * 失败描述
 	 */
 	public String errorMessage() {
-		return new String((byte[]) this.e.get(1));
+		if(this.e.size() > 1) {
+			return new String((byte[]) this.e.get(1));
+		} else {
+			return "未知失败原因";
+		}
 	}
 
 	/**

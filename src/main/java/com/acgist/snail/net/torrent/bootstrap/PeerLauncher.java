@@ -51,14 +51,14 @@ public class PeerLauncher {
 	
 	private TorrentPiece downloadPiece; // 下载的Piece信息
 	
-	private Object closeLock = new Object(); // 关闭锁
-	private AtomicInteger countLock = new AtomicInteger(0); // Piece分片锁
-	private AtomicBoolean completeLock = new AtomicBoolean(false); // Piece完成锁
+	private final Object closeLock = new Object(); // 关闭锁
+	private final AtomicInteger countLock = new AtomicInteger(0); // Piece分片锁
+	private final AtomicBoolean completeLock = new AtomicBoolean(false); // Piece完成锁
 	
 	/**
 	 * 评分：每次收到Piece更新该值，评分时清零。
 	 */
-	private AtomicInteger mark = new AtomicInteger(0);
+	private final AtomicInteger mark = new AtomicInteger(0);
 	
 	private final PeerSession peerSession;
 	private final TorrentSession torrentSession;
@@ -307,10 +307,8 @@ public class PeerLauncher {
 			LOGGER.debug("上次选择Piece未下载完成：{}", this.downloadPiece.getIndex());
 		}
 		this.downloadPiece = this.torrentStreamGroup.pick(this.peerSession.availablePieces());
-		if(LOGGER.isDebugEnabled()) {
-			if(this.downloadPiece != null) {
-				LOGGER.debug("选取Piece：{}-{}-{}", this.downloadPiece.getIndex(), this.downloadPiece.getBegin(), this.downloadPiece.getEnd());
-			}
+		if(this.downloadPiece != null) {
+			LOGGER.debug("选取Piece：{}-{}-{}", this.downloadPiece.getIndex(), this.downloadPiece.getBegin(), this.downloadPiece.getEnd());
 		}
 		this.completeLock.set(false);
 		this.countLock.set(0);

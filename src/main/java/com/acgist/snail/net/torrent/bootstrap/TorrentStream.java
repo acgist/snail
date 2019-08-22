@@ -94,18 +94,16 @@ public class TorrentStream {
 		buildFilePiece();
 		buildFileAsyn(complete, allReady);
 		selectPieces.set(this.fileBeginPieceIndex, this.fileEndPieceIndex + 1, true);
-		if(LOGGER.isDebugEnabled()) {
-			LOGGER.debug(
-				"TorrentStream信息，块大小：{}，文件路径：{}，文件大小：{}，文件开始偏移：{}，文件Piece数量：{}，文件Piece开始索引：{}，文件Piece结束索引：{}",
-				this.pieceLength,
-				this.file,
-				this.fileSize,
-				this.fileBeginPos,
-				this.filePieceSize,
-				this.fileBeginPieceIndex,
-				this.fileEndPieceIndex
-			);
-		}
+		LOGGER.debug(
+			"TorrentStream信息，块大小：{}，文件路径：{}，文件大小：{}，文件开始偏移：{}，文件Piece数量：{}，文件Piece开始索引：{}，文件Piece结束索引：{}",
+			this.pieceLength,
+			this.file,
+			this.fileSize,
+			this.fileBeginPos,
+			this.filePieceSize,
+			this.fileBeginPieceIndex,
+			this.fileEndPieceIndex
+		);
 	}
 	
 	/**
@@ -465,8 +463,8 @@ public class TorrentStream {
 		}
 		if(LOGGER.isDebugEnabled()) {
 			LOGGER.debug("当前文件已下载Piece数量：{}，剩余下载Piece数量：{}",
-				pieces.cardinality(),
-				this.filePieceSize - pieces.cardinality()
+				this.pieces.cardinality(),
+				this.filePieceSize - this.pieces.cardinality()
 			);
 		}
 	}

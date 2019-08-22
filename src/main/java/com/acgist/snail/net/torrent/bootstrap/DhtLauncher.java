@@ -32,7 +32,7 @@ public class DhtLauncher implements Runnable {
 	/**
 	 * 客户端连接时支持DHT，加入列表，定时查询Peer时使用。
 	 */
-	private List<InetSocketAddress> nodes = new ArrayList<>();
+	private final List<InetSocketAddress> nodes = new ArrayList<>();
 	
 	private DhtLauncher(TorrentSession torrentSession) {
 		this.infoHash = torrentSession.infoHash();
