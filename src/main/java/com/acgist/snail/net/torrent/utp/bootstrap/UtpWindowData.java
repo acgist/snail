@@ -41,6 +41,10 @@ public class UtpWindowData {
 		return timestamp;
 	}
 
+	public byte getPushTimes() {
+		return pushTimes;
+	}
+
 	public byte[] getData() {
 		return data;
 	}
@@ -51,10 +55,6 @@ public class UtpWindowData {
 
 	public ByteBuffer buffer() {
 		return ByteBuffer.wrap(this.data);
-	}
-
-	public byte pushTimes() {
-		return this.pushTimes;
 	}
 	
 	/**

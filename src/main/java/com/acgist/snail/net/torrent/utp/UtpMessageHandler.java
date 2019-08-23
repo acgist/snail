@@ -205,6 +205,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	}
 	
 	/**
+	 * TODO：优化
 	 * 流量控制和阻塞控制。
 	 * 慢开始：发送数据包（wnd）2的指数增长。
 	 * 拥堵算法：每次+1。
@@ -238,6 +239,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	}
 	
 	/**
+	 * TODO：优化
 	 * 客户端缓存耗尽
 	 */
 	private void wndSizeControl() {
@@ -250,6 +252,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	}
 	
 	/**
+	 * TODO：优化
 	 * 获取超时（丢包）数据包并重新发送。
 	 * 
 	 * @return true：有丢包；false：没有丢包。
@@ -310,7 +313,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 			return;
 		}
 		windowDatas.forEach(windowData -> {
-			if(windowData.pushTimes() > UtpConfig.MAX_PUSH_TIMES) {
+			if(windowData.getPushTimes() > UtpConfig.MAX_PUSH_TIMES) {
 				LOGGER.warn("消息发送失败次数超限：{}", windowData.getSeqnr());
 				this.sendWindow.discard(windowData.getSeqnr());
 			} else {

@@ -124,7 +124,7 @@ public class TorrentStreamGroup {
 	 */
 	public long size() {
 		long size = 0L;
-		for (TorrentStream torrentStream : streams) {
+		for (TorrentStream torrentStream : this.streams) {
 			size += torrentStream.size();
 		}
 		return size;
@@ -181,12 +181,13 @@ public class TorrentStreamGroup {
 		boolean ok = false;
 		for (TorrentStream torrentStream : streams) {
 			if(torrentStream.piece(piece)) {
-				ok = true;
+				ok = true; // 不能跳出，可能存在一个Piece多个文件的情况。
 			}
 		}
 		final long oldValue = this.fileBuffer.get();
 		if(oldValue > DownloadConfig.getMemoryBufferByte()) {
 			if(this.fileBuffer.compareAndSet(oldValue, 0)) {
+				LOGGER.debug("缓冲区占满刷新缓存");
 				this.flush();
 			}
 		}
