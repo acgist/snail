@@ -76,75 +76,89 @@ public class UtpWindow {
 	/**
 	 * 发送窗口获取剩余窗口缓存大小
 	 */
-	public synchronized int remainWndSize() {
-		return UtpConfig.WND_SIZE - this.wndSize;
+	public int remainWndSize() {
+		synchronized (this) {
+			return UtpConfig.WND_SIZE - this.wndSize;
+		}
 	}
 	
 	/**
 	 * 发送窗口获取客户端窗口是否限制：
 	 * 客户端窗口大小剩余最大时1/4。
 	 */
-	public synchronized boolean wndSizeControl() {
-		return this.wndSize < (this.maxWndSize / 4);
+	public boolean wndSizeControl() {
+		synchronized (this) {
+			return this.wndSize < (this.maxWndSize / 4);
+		}
 	}
 	
 	/**
 	 * 发送数据：没有负载
 	 */
-	public synchronized UtpWindowData send() {
-		return send(null);
+	public UtpWindowData send() {
+		synchronized (this) {
+			return send(null);
+		}
 	}
 	
 	/**
 	 * 发送数据：递增seqnr。
 	 */
-	public synchronized UtpWindowData send(byte[] data) {
-		this.timestamp = DateUtils.timestampUs();
-		final UtpWindowData windowData = storage(this.timestamp, this.seqnr, data);
-		this.seqnr++;
-		return windowData;
+	public UtpWindowData send(byte[] data) {
+		synchronized (this) {
+			this.timestamp = DateUtils.timestampUs();
+			final UtpWindowData windowData = storage(this.timestamp, this.seqnr, data);
+			this.seqnr++;
+			return windowData;
+		}
 	}
 
 	/**
 	 * 发送窗口获取超时的数据包（丢包）。
 	 */
-	public synchronized List<UtpWindowData> timeoutWindowData() {
-		final int timestamp = DateUtils.timestampUs();
-		final int timeout = this.timeout;
-		return this.wndMap.entrySet().stream()
-			.map(entry -> entry.getValue())
-			.filter(windowData -> {
-				return timestamp - windowData.getTimestamp() > timeout;
-			})
-			.collect(Collectors.toList());
+	public List<UtpWindowData> timeoutWindowData() {
+		synchronized (this) {
+			final int timestamp = DateUtils.timestampUs();
+			final int timeout = this.timeout;
+			return this.wndMap.entrySet().stream()
+				.map(entry -> entry.getValue())
+				.filter(windowData -> {
+					return timestamp - windowData.getTimestamp() > timeout;
+				})
+				.collect(Collectors.toList());
+		}
 	}
 	
 	/**
 	 * 响应，移除发送数据并更新超时时间。
 	 */
-	public synchronized void ack(short acknr, int wndSize) {
-		this.wndSize = wndSize;
-		this.maxWndSize = Math.max(this.maxWndSize, wndSize);
-		short diff;
-		Map.Entry<Short, UtpWindowData> entry;
-		final int timestamp = DateUtils.timestampUs();
-		final var iterator = this.wndMap.entrySet().iterator();
-		while(iterator.hasNext()) {
-			entry = iterator.next();
-			diff = (short) (acknr - entry.getKey());
-			if(diff >= 0) {
-				iterator.remove();
-				take(entry.getValue());
-				timeout(timestamp - entry.getValue().getTimestamp());
+	public void ack(short acknr, int wndSize) {
+		synchronized (this) {
+			this.wndSize = wndSize;
+			this.maxWndSize = Math.max(this.maxWndSize, wndSize);
+			short diff;
+			Map.Entry<Short, UtpWindowData> entry;
+			final int timestamp = DateUtils.timestampUs();
+			final var iterator = this.wndMap.entrySet().iterator();
+			while(iterator.hasNext()) {
+				entry = iterator.next();
+				diff = (short) (acknr - entry.getKey()); // 移除序号小于等于当前响应序号的数据
+				if(diff >= 0) {
+					iterator.remove(); // 删除数据
+					take(entry.getValue()); // 计算wndSize
+					timeout(timestamp - entry.getValue().getTimestamp()); // 计算超时
+				}
 			}
 		}
 	}
 	
 	/**
-	 * 丢弃
+	 * 丢弃超时数据。
 	 */
-	public synchronized void discard(short seqnr) {
-		this.take(seqnr);
+	public void discard(short seqnr) {
+		synchronized (this) {
+			this.take(seqnr);
+		}
 	}
 	
 	/**
@@ -153,35 +167,37 @@ public class UtpWindow {
 	 * 如果seqnr不是下一个数据时，放入缓存。
 	 * 如果seqnr是下一个数据时，继续获取直到找不到下一个seqnr为止，然后合并返回。更新当前接收的seqnr。
 	 */
-	public synchronized UtpWindowData receive(int timestamp, short seqnr, ByteBuffer buffer) throws NetException {
-		final short diff = (short) (this.seqnr - seqnr);
-		if(diff >= 0) { // 该seqnr已被处理
-			return null;
-		}
-		storage(timestamp, seqnr, buffer);
-		UtpWindowData nextWindowData;
-		short nextSeqnr = this.seqnr;
-		final ByteArrayOutputStream output = new ByteArrayOutputStream();
-		while(true) {
-			nextSeqnr = (short) (nextSeqnr + 1); // 下一个seqnr
-			nextWindowData = take(nextSeqnr);
-			if(nextWindowData == null) {
-				break;
-			} else {
-				this.seqnr = nextWindowData.getSeqnr();
-				this.timestamp = nextWindowData.getTimestamp();
-				try {
-					output.write(nextWindowData.getData());
-				} catch (IOException e) {
-					throw new NetException("UTP消息处理异常", e);
+	public UtpWindowData receive(int timestamp, short seqnr, ByteBuffer buffer) throws NetException {
+		synchronized (this) {
+			final short diff = (short) (this.seqnr - seqnr);
+			if(diff >= 0) { // 该seqnr已被处理
+				return null;
+			}
+			storage(timestamp, seqnr, buffer);
+			UtpWindowData nextWindowData;
+			short nextSeqnr = this.seqnr;
+			final ByteArrayOutputStream output = new ByteArrayOutputStream();
+			while(true) {
+				nextSeqnr = (short) (nextSeqnr + 1); // 下一个seqnr
+				nextWindowData = take(nextSeqnr);
+				if(nextWindowData == null) {
+					break;
+				} else {
+					this.seqnr = nextWindowData.getSeqnr();
+					this.timestamp = nextWindowData.getTimestamp();
+					try {
+						output.write(nextWindowData.getData());
+					} catch (IOException e) {
+						throw new NetException("UTP消息处理异常", e);
+					}
 				}
 			}
+			final byte[] bytes = output.toByteArray();
+			if(bytes.length == 0) {
+				return null;
+			}
+			return UtpWindowData.newInstance(this.seqnr, this.timestamp, bytes);
 		}
-		final byte[] bytes = output.toByteArray();
-		if(bytes.length == 0) {
-			return null;
-		}
-		return UtpWindowData.newInstance(this.seqnr, this.timestamp, bytes);
 	}
 	
 	/**

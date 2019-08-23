@@ -130,11 +130,10 @@ public class TorrentStream {
 				this.fileBuffer.addAndGet(piece.getLength()); // 更新缓存大小
 				this.buildFileDownloadSize();
 				if(this.complete()) { // 下载完成数据刷出
-					flush();
+					this.flush();
 				}
 			} else {
-				// TODO：重新返回Piece位图
-				LOGGER.error("保存Piece失败");
+				LOGGER.warn("保存Piece失败：{}", piece.getIndex());
 			}
 		}
 		return ok;
@@ -259,8 +258,8 @@ public class TorrentStream {
 		}
 		final byte[] bytes = new byte[size];
 		try {
-			fileStream.seek(seek);
-			fileStream.read(bytes);
+			this.fileStream.seek(seek);
+			this.fileStream.read(bytes);
 		} catch (IOException e) {
 			LOGGER.error("Piece读取异常：{}-{}-{}-{}", index, size, pos, ignorePieces, e);
 		}
@@ -306,7 +305,7 @@ public class TorrentStream {
 	 * @return true-完成；false-未完成
 	 */
 	public boolean complete() {
-		return pieces.cardinality() >= this.filePieceSize;
+		return this.pieces.cardinality() >= this.filePieceSize;
 	}
 	
 	/**
@@ -314,7 +313,7 @@ public class TorrentStream {
 	 */
 	public void flush() {
 		synchronized (this) {
-			final List<TorrentPiece> list = flushPieces();
+			final var list = flushPieces();
 			this.write(list);
 		}
 	}
@@ -326,7 +325,7 @@ public class TorrentStream {
 	public void release() {
 		this.flush();
 		try {
-			fileStream.close();
+			this.fileStream.close();
 		} catch (IOException e) {
 			LOGGER.error("TorrentStream关闭异常", e);
 		}
@@ -343,7 +342,8 @@ public class TorrentStream {
 	}
 	
 	/**
-	 * 写入硬盘，注意线程安全。
+	 * <p>写入硬盘，注意线程安全。</p>
+	 * <p>注：多线程写入时seek（跳过）可能导致写入数据错乱。</p>
 	 */
 	private void write(List<TorrentPiece> list) {
 		if(CollectionUtils.isEmpty(list)) {
@@ -373,8 +373,8 @@ public class TorrentStream {
 				return;
 			}
 			try {
-				fileStream.seek(seek);
-				fileStream.write(piece.getData(), offset, length);
+				this.fileStream.seek(seek);
+				this.fileStream.write(piece.getData(), offset, length);
 			} catch (IOException e) {
 				LOGGER.error("TorrentStream写入异常", e);
 			}
@@ -545,7 +545,7 @@ public class TorrentStream {
 	 */
 	private boolean havePiece(int index) {
 		synchronized (this) {
-			return pieces.get(index);
+			return this.pieces.get(index);
 		}
 	}
 
