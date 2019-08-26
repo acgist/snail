@@ -1,7 +1,5 @@
 package com.acgist.snail.repository;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -16,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.pojo.entity.BaseEntity;
 import com.acgist.snail.pojo.wrapper.ResultSetWrapper;
 import com.acgist.snail.system.exception.RepositoryException;
-import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.BeanUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -30,14 +27,23 @@ public abstract class Repository<T extends BaseEntity> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Repository.class);
 	
+	/**
+	 * 字段正则表达式
+	 */
 	private static final String COLUMN_REGEX = "[a-zA-Z]+";
 	
-	private DatabaseManager databaseManager = DatabaseManager.getInstance();
+	private final DatabaseManager databaseManager = DatabaseManager.getInstance();
+	
+	/**
+	 * <p>查询实体的类型。</p>
+	 * <p>注：不使用反射获取泛型，因为反射获取泛型存在泛型转换有警告。</p>
+	 */
+	private final Class<T> entityClazz;
 	
 	/**
 	 * 数据库列：只允许字符串。
 	 */
-	private static final Function<String, String> COLUMN = (value) -> {
+	private static final Function<String, String> COLUMN_VERIFY = (value) -> {
 		if(StringUtils.regex(value, COLUMN_REGEX, true)) {
 			return value;
 		}
@@ -49,8 +55,9 @@ public abstract class Repository<T extends BaseEntity> {
 	 */
 	private String table;
 	
-	protected Repository(String table) {
+	protected Repository(String table, Class<T> entityClazz) {
 		this.table = table;
+		this.entityClazz = entityClazz;
 	}
 	
 	/**
@@ -190,7 +197,7 @@ public abstract class Repository<T extends BaseEntity> {
 			.append("SELECT * FROM ")
 			.append(this.table)
 			.append(" WHERE ")
-			.append(COLUMN.apply(property))
+			.append(COLUMN_VERIFY.apply(property))
 			.append(" = ? limit 1");
 		final List<ResultSetWrapper> list = this.databaseManager.select(sql.toString(), value);
 		if(list == null || list.isEmpty()) {
@@ -248,24 +255,7 @@ public abstract class Repository<T extends BaseEntity> {
 	 * 新实体
 	 */
 	private T newInstance() {
-		return BeanUtils.newInstance(entityClazz());
+		return BeanUtils.newInstance(this.entityClazz);
 	}
 	
-	/**
-	 * 获取泛型
-	 * TODO：泛型优化
-	 */
-	@SuppressWarnings("unchecked")
-	private Class<T> entityClazz() {
-		Class<T> entityClazz = null;
-		final Type superClazz = this.getClass().getGenericSuperclass();
-		if (superClazz instanceof ParameterizedType) {
-			final Type[] types = ((ParameterizedType) superClazz).getActualTypeArguments();
-			if (ArrayUtils.isNotEmpty(types)) {
-				entityClazz = (Class<T>) types[0];
-			}
-		}
-		return entityClazz;
-	}
-
 }

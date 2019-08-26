@@ -12,7 +12,7 @@ import com.acgist.snail.repository.Repository;
 public class ConfigRepository extends Repository<ConfigEntity> {
 
 	public ConfigRepository() {
-		super(ConfigEntity.TABLE_NAME);
+		super(ConfigEntity.TABLE_NAME, ConfigEntity.class);
 	}
 
 	/**

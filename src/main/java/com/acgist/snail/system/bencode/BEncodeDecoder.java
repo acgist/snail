@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,10 @@ import com.acgist.snail.system.exception.ArgumentException;
  * <p>
  * 所有值除了Long，其他均为byte[]，需要自己再次解析。
  * </p>
+ * <p>
+ * 解析前必须调用{@link #nextType()}、{@link #nextMap()}、{@link #nextList()}任一方法。
+ * </p>
+ * 
  * 
  * @author acgist
  * @since 1.0.0
@@ -31,11 +36,11 @@ public class BEncodeDecoder {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BEncodeDecoder.class);
 	
-	public static final char TYPE_E = 'e';
-	public static final char TYPE_I = 'i';
-	public static final char TYPE_L = 'l';
-	public static final char TYPE_D = 'd';
-	public static final char SEPARATOR = ':';
+	public static final char TYPE_E = 'e'; // 结尾
+	public static final char TYPE_I = 'i'; // 数字
+	public static final char TYPE_L = 'l'; // list
+	public static final char TYPE_D = 'd'; // map
+	public static final char SEPARATOR = ':'; // 分隔符
 	
 	public enum Type {
 		map, // map
@@ -69,7 +74,7 @@ public class BEncodeDecoder {
 	 * 是否含有更多数据
 	 */
 	public boolean more() {
-		return this.inputStream != null && inputStream.available() > 0;
+		return this.inputStream != null && this.inputStream.available() > 0;
 	}
 	
 	/**
@@ -80,13 +85,13 @@ public class BEncodeDecoder {
 			LOGGER.warn("B编码解码没有跟多数据");
 			return Type.none;
 		}
-		char type = (char) inputStream.read();
+		char type = (char) this.inputStream.read();
 		switch (type) {
 		case TYPE_D:
-			this.map = d(inputStream);
+			this.map = d(this.inputStream);
 			return Type.map;
 		case TYPE_L:
-			this.list = l(inputStream);
+			this.list = l(this.inputStream);
 			return Type.list;
 		default:
 			LOGGER.warn("不支持B编码类型：{}", type);
@@ -95,7 +100,7 @@ public class BEncodeDecoder {
 	}
 	
 	/**
-	 * 获取下一个List，如果不是List返回null
+	 * 获取下一个List，如果不是List返回null。
 	 */
 	public List<Object> nextList() {
 		var type = nextType();
@@ -106,7 +111,7 @@ public class BEncodeDecoder {
 	}
 	
 	/**
-	 * 获取下一个Map，如果不是Map返回null
+	 * 获取下一个Map，如果不是Map返回null。
 	 */
 	public Map<String, Object> nextMap() {
 		var type = nextType();
@@ -120,7 +125,7 @@ public class BEncodeDecoder {
 	 * 读取剩余所有数据
 	 */
 	public byte[] oddBytes() {
-		return inputStream.readAllBytes();
+		return this.inputStream.readAllBytes();
 	}
 
 	/**
@@ -346,26 +351,37 @@ public class BEncodeDecoder {
 		return getList(this.map, key);
 	}
 	
-	// TODO：泛型优化
-	@SuppressWarnings("unchecked")
 	public static final List<Object> getList(Map<?, ?> map, String key) {
 		if(map == null) {
 			return null;
 		}
-		return (List<Object>) map.get(key);
+		final var tmp = (List<?>) map.get(key);
+		if(tmp == null) {
+			return null;
+		}
+		return tmp.stream()
+			.map(value -> value)
+			.collect(Collectors.toList());
 	}
 	
 	public Map<String, Object> getMap(String key) {
 		return getMap(this.map, key);
 	}
 	
-	// TODO：泛型优化
-	@SuppressWarnings("unchecked")
 	public static final Map<String, Object> getMap(Map<?, ?> map, String key) {
 		if(map == null) {
 			return null;
 		}
-		return (Map<String, Object>) map.get(key);
+		final var tmp = (Map<?, ?>) map.get(key);
+		if(tmp == null) {
+			return null;
+		}
+		return tmp.entrySet().stream()
+			.filter(entry -> entry.getKey() != null)
+			.map(entry -> {
+				return Map.entry(entry.getKey().toString(), entry.getValue());
+			})
+			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 	
 	public void close() {

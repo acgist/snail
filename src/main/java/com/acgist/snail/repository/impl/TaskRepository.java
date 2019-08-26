@@ -18,7 +18,7 @@ public class TaskRepository extends Repository<TaskEntity> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskRepository.class);
 
 	public TaskRepository() {
-		super(TaskEntity.TABLE_NAME);
+		super(TaskEntity.TABLE_NAME, TaskEntity.class);
 	}
 
 	/**
