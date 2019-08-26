@@ -443,7 +443,9 @@ public class TorrentSession {
 		if(this.trackerLauncherGroup != null) {
 			this.trackerLauncherGroup.release();
 		}
-		this.torrentStreamGroup.flush(); // 缓存刷出：TODO：优化卡死
+		if(this.torrentStreamGroup != null) {
+			this.torrentStreamGroup.flush(); // 缓存刷出：TODO：优化卡死
+		}
 		SystemThreadContext.shutdownNow(this.executor);
 		this.downloadable = false;
 	}
