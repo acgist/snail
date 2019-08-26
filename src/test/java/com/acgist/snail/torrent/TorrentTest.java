@@ -5,13 +5,14 @@ import org.junit.Test;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
+import com.acgist.snail.protocol.torrent.bean.TorrentInfo;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.DateUtils;
 
 public class TorrentTest {
 
 	@Test
-	public void test() throws Exception {
+	public void read() throws Exception {
 //		String path = "e:/snail/12345.torrent";
 //		String path = "e:/snail/5b293c290c78c503bcd59bc0fbf78fd213ce21a4.torrent";
 //		String path = "e:/snail/9d3854d8c6280049e5d85e490ff07de7c2bd96a2.torrent";
@@ -38,13 +39,13 @@ public class TorrentTest {
 			}
 		}
 		System.out.println(torrent.getNodes());
-//		TorrentInfo torrentInfo = torrent.getInfo();
-//		System.out.println(torrentInfo.getName());
-//		System.out.println(torrentInfo.getLength());
-//		System.out.println(torrentInfo.getPieceLength());
-//		System.out.println(torrentInfo.getPieces());
-//		System.out.println(torrentInfo.ed2kHex());
-//		System.out.println(torrentInfo.filehashHex());
+		TorrentInfo torrentInfo = torrent.getInfo();
+		System.out.println(torrentInfo.getName());
+		System.out.println(torrentInfo.getLength());
+		System.out.println(torrentInfo.getPieceLength());
+		System.out.println(torrentInfo.getPieces());
+		System.out.println(torrentInfo.ed2kHex());
+		System.out.println(torrentInfo.filehashHex());
 //		if (torrentInfo.getFiles().size() > 0) {
 //			for (TorrentFile file : torrentInfo.getFiles()) {
 //				System.out.println("----------------file----------------");

@@ -103,7 +103,7 @@ public class BeanUtils {
 	}
 	
 	/**
-	 * <p>类型转换：</p>
+	 * <p>类型打包</p>
 	 * <p>枚举类型转换为字符串类型。</p>
 	 */
 	public static final Object pack(Object object) {
@@ -118,9 +118,11 @@ public class BeanUtils {
 	}
 	
 	/**
-	 * 类型转换：TODO：泛型优化
+	 * <p>类型拆包</p>
+	 * <p>枚举读取、长字符串读取。</p>
+	 * TODO：泛型优化
 	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static final Object unpack(Class<?> clazz, Object value) {
 		if(value == null) {
 			return null;
