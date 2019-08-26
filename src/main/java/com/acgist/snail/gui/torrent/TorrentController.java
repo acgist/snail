@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.gui.Alerts;
+import com.acgist.snail.gui.Controller;
 import com.acgist.snail.gui.main.TaskDisplay;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.pojo.entity.TaskEntity;
@@ -36,7 +37,7 @@ import javafx.scene.layout.VBox;
  * @author acgist
  * @since 1.0.0
  */
-public class TorrentController implements Initializable {
+public class TorrentController extends Controller implements Initializable {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentController.class);
 	

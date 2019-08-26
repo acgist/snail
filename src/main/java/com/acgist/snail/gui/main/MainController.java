@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.gui.Alerts;
+import com.acgist.snail.gui.Controller;
 import com.acgist.snail.gui.about.AboutWindow;
 import com.acgist.snail.gui.build.BuildWindow;
 import com.acgist.snail.gui.menu.TaskMenu;
@@ -64,7 +65,7 @@ import javafx.util.Callback;
  * @author acgist
  * @since 1.0.0
  */
-public class MainController implements Initializable {
+public class MainController extends Controller implements Initializable {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
 	
@@ -356,16 +357,8 @@ public class MainController implements Initializable {
 	 */
 	private EventHandler<DragEvent> dragOverAction = (event) -> {
 		if (event.getGestureSource() != this.taskTable) {
-			String url = null;
 			final Dragboard dragboard = event.getDragboard();
-			if(dragboard.hasFiles()) {
-				final File file = dragboard.getFiles().get(0);
-				url = file.getPath();
-			} else if(dragboard.hasUrl()) {
-				url = dragboard.getUrl();
-			} else if(dragboard.hasString()) {
-				url = dragboard.getString();
-			}
+			final String url = dragboard(dragboard);
 			if(ProtocolManager.getInstance().support(url)) {
 				event.acceptTransferModes(TransferMode.COPY);
 			} else {
@@ -379,16 +372,8 @@ public class MainController implements Initializable {
 	 * 拖入文件事件（加载）
 	 */
 	private EventHandler<DragEvent> dragDroppedAction = (event) -> {
-		String url = null;
 		final Dragboard dragboard = event.getDragboard();
-		if (dragboard.hasFiles()) {
-			final File file = dragboard.getFiles().get(0);
-			url = file.getPath();
-		} else if(dragboard.hasUrl()) {
-			url = dragboard.getUrl();
-		} else if(dragboard.hasString()) {
-			url = dragboard.getString();
-		}
+		final String url = dragboard(dragboard);
 		if(StringUtils.isNotEmpty(url)) {
 			BuildWindow.getInstance().show(url);
 		}

@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import com.acgist.snail.gui.Choosers;
+import com.acgist.snail.gui.Controller;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.utils.FileUtils;
 
@@ -28,7 +29,7 @@ import javafx.util.StringConverter;
  * @author acgist
  * @since 1.0.0
  */
-public class SettingController implements Initializable {
+public class SettingController extends Controller implements Initializable {
 	
 //	private static final Logger LOGGER = LoggerFactory.getLogger(SettingController.class);
 

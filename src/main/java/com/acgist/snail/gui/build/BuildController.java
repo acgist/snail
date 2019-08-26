@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.gui.Alerts;
 import com.acgist.snail.gui.Choosers;
+import com.acgist.snail.gui.Controller;
 import com.acgist.snail.gui.main.TaskDisplay;
 import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.system.exception.DownloadException;
@@ -31,7 +32,7 @@ import javafx.scene.layout.FlowPane;
  * @author acgist
  * @since 1.0.0
  */
-public class BuildController implements Initializable {
+public class BuildController extends Controller implements Initializable {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(BuildController.class);
 	
@@ -63,7 +64,7 @@ public class BuildController implements Initializable {
 	 */
 	@FXML
 	public void handleBuildAction(ActionEvent event) {
-		final String url = urlValue.getText();
+		final String url = this.urlValue.getText();
 		if(StringUtils.isEmpty(url)) {
 			return;
 		}
@@ -106,16 +107,8 @@ public class BuildController implements Initializable {
 	 */
 	private EventHandler<DragEvent> dragOverAction = (event) -> {
 		if (event.getGestureSource() != this.root) {
-			String url = null;
 			final Dragboard dragboard = event.getDragboard();
-			if(dragboard.hasFiles()) {
-				final File file = dragboard.getFiles().get(0);
-				url = file.getPath();
-			} else if(dragboard.hasUrl()) {
-				url = dragboard.getUrl();
-			} else if(dragboard.hasString()) {
-				url = dragboard.getString();
-			}
+			final String url = dragboard(dragboard);
 			if(ProtocolManager.getInstance().support(url)) {
 				event.acceptTransferModes(TransferMode.COPY);
 			} else {
@@ -129,16 +122,8 @@ public class BuildController implements Initializable {
 	 * 拖入文件事件（加载）
 	 */
 	private EventHandler<DragEvent> dragDroppedAction = (event) -> {
-		String url = null;
 		final Dragboard dragboard = event.getDragboard();
-		if (dragboard.hasFiles()) {
-			final File file = dragboard.getFiles().get(0);
-			url = file.getPath();
-		} else if(dragboard.hasUrl()) {
-			url = dragboard.getUrl();
-		} else if(dragboard.hasString()) {
-			url = dragboard.getString();
-		}
+		final String url = dragboard(dragboard);
 		if(StringUtils.isNotEmpty(url)) {
 			setUrl(url);
 		}
