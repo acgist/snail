@@ -21,6 +21,11 @@ import com.acgist.snail.utils.PeerUtils;
 public class TrackerMessageHandler extends UdpMessageHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerMessageHandler.class);
+
+	/**
+	 * Announce消息最小长度
+	 */
+	private static final int ANNOUNCE_MIN_SIZE = 16;
 	
 	@Override
 	public void onMessage(ByteBuffer buffer, InetSocketAddress socketAddress) {
@@ -52,6 +57,10 @@ public class TrackerMessageHandler extends UdpMessageHandler {
 	 * 处理Peer
 	 */
 	private void doAnnounce(ByteBuffer buffer, int size) {
+		if(size < ANNOUNCE_MIN_SIZE) {
+			LOGGER.debug("Announce消息长度错误：{}", size);
+			return;
+		}
 		final AnnounceMessage message = new AnnounceMessage();
 		message.setId(buffer.getInt());
 		message.setInterval(buffer.getInt());
