@@ -23,9 +23,9 @@ public class TrackerMessageHandler extends UdpMessageHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerMessageHandler.class);
 
 	/**
-	 * Announce消息最小长度
+	 * Announce消息最小字节长度
 	 */
-	private static final int ANNOUNCE_MIN_SIZE = 16;
+	private static final int ANNOUNCE_MIN_SIZE = 20;
 	
 	@Override
 	public void onMessage(ByteBuffer buffer, InetSocketAddress socketAddress) {
