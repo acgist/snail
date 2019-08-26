@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.gui.Window;
 
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Modality;
@@ -46,10 +45,8 @@ public class SettingWindow extends Window<SettingController> {
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/fxml/setting.fxml"));
-		FlowPane root = loader.load();
-		this.controller = loader.getController();
-		Scene scene = new Scene(root, 600, 600);
+		final FlowPane root = super.loadFxml("/fxml/setting.fxml");
+		final Scene scene = new Scene(root, 600, 600);
 		stage.initModality(Modality.APPLICATION_MODAL);
 		stage.setScene(scene);
 		stage.setTitle("设置");
