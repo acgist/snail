@@ -22,7 +22,7 @@ public class HttpTracker {
 	private Integer incomplete; // 还没有完成下载的Peer数量
 	private Map<String, Integer> peers; // Peer的IP和端口
 
-	public static final HttpTracker valueOf(Map<?, ?> map) {
+	public static final HttpTracker valueOf(Map<String, Object> map) {
 		final HttpTracker tracker = new HttpTracker();
 		tracker.setFailureReason(BEncodeDecoder.getString(map, "failure reason"));
 		tracker.setWarngingMessage(BEncodeDecoder.getString(map, "warnging message"));

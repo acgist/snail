@@ -72,7 +72,7 @@ public class Request extends BaseMessage {
 		return q;
 	}
 
-	public Map<?, ?> getA() {
+	public Map<String, Object> getA() {
 		return a;
 	}
 	
