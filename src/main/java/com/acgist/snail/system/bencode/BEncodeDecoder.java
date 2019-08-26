@@ -368,6 +368,9 @@ public class BEncodeDecoder {
 		return getMap(this.map, key);
 	}
 	
+	/**
+	 * 注意不能乱序：乱序后计算的hash值将会改变。
+	 */
 	public static final Map<String, Object> getMap(Map<?, ?> map, String key) {
 		if(map == null) {
 			return null;
@@ -381,7 +384,7 @@ public class BEncodeDecoder {
 			.map(entry -> {
 				return Map.entry(entry.getKey().toString(), entry.getValue());
 			})
-			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new));
 	}
 	
 	public void close() {
