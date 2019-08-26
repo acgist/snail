@@ -47,13 +47,7 @@ public class HttpHeaderWrapper {
 			.filter(entry -> CollectionUtils.isNotEmpty(entry.getValue()))
 			.collect(Collectors.toMap(
 				entry -> entry.getKey().toLowerCase(),
-				entry -> {
-					if(CollectionUtils.isEmpty(entry.getValue())) {
-						return null;
-					} else {
-						return entry.getValue().get(0);
-					}
-				}
+				entry -> entry.getValue().get(0)
 			));
 		}
 		return new HttpHeaderWrapper(headers);
