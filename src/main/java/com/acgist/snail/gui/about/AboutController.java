@@ -3,6 +3,7 @@ package com.acgist.snail.gui.about;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import com.acgist.snail.gui.Controller;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.BrowseUtils;
 
@@ -18,7 +19,7 @@ import javafx.scene.text.Text;
  * @author acgist
  * @since 1.0.0
  */
-public class AboutController implements Initializable {
+public class AboutController extends Controller implements Initializable {
 	
 	@FXML
 	private Text name;
