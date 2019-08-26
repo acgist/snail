@@ -83,9 +83,10 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 			if(this.failTimes.incrementAndGet() > TrackerConfig.MAX_FAIL_TIMES) {
 				this.available.set(false);
 				this.failMessage = e.getMessage();
-				LOGGER.info("失败次数过多，停用Tracker Client，announceUrl：{}", this.announceUrl);
+				LOGGER.error("查找Peer异常，当前失败次数（停用）：{}，地址：{}", this.failTimes.get(), this.announceUrl, e);
+			} else {
+				LOGGER.error("查找Peer异常，当前失败次数（重试）：{}，地址：{}", this.failTimes.get(), this.announceUrl, e);
 			}
-			LOGGER.error("查找Peer异常，当前失败次数：{}，地址：{}", failTimes.get(), this.announceUrl, e);
 		}
 	}
 	
