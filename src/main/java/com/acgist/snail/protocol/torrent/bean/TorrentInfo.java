@@ -37,7 +37,7 @@ public class TorrentInfo {
 	protected TorrentInfo() {
 	}
 
-	public static final TorrentInfo valueOf(Map<?, ?> map) {
+	public static final TorrentInfo valueOf(Map<String, Object> map) {
 		if(map == null) {
 			return null;
 		}
