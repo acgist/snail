@@ -1,8 +1,11 @@
 package com.acgist.snail.gui;
 
+import java.io.IOException;
+
 import com.acgist.snail.system.context.SystemContext;
 
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
@@ -61,6 +64,23 @@ public abstract class Window<T extends Initializable> extends Application {
 	 */
 	protected void disableResize() {
 		this.stage.setResizable(false);
+	}
+	
+	/**
+	 * 加载fxml、controller，返回面板。
+	 * 
+	 * @param <X> 面板泛型
+	 * @param fxml fxml路径
+	 * 
+	 * @return 面板
+	 * 
+	 * @throws IOException
+	 */
+	protected <X> X loadFxml(String fxml) throws IOException {
+		final FXMLLoader loader = new FXMLLoader(this.getClass().getResource(fxml));
+		final X x = loader.load();
+		this.controller = loader.getController();
+		return x;
 	}
 	
 	/**

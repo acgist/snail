@@ -181,9 +181,9 @@ public class TaskMenu extends Menu {
 	
 	private EventHandler<ActionEvent> openFolderEvent = (event) -> {
 		MainWindow.getInstance().controller().selected()
-		.forEach(wrapper -> {
-			FileUtils.openInDesktop(wrapper.downloadFolder());
-		});
+			.forEach(wrapper -> {
+				FileUtils.openInDesktop(wrapper.downloadFolder());
+			});
 	};
 	
 	/**

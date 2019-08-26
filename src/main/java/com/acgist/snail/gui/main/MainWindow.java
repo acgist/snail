@@ -9,7 +9,6 @@ import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.context.SystemConsole;
 import com.acgist.snail.utils.BrowseUtils;
 
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -51,10 +50,8 @@ public class MainWindow extends Window<MainController> {
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/fxml/main.fxml"));
-		BorderPane root = loader.load();
-		this.controller = loader.getController();
-		Scene scene = new Scene(root, 1000, 600);
+		final BorderPane root = super.loadFxml("/fxml/main.fxml");
+		final Scene scene = new Scene(root, 1000, 600);
 		stage.setScene(scene);
 		stage.setTitle(SystemConfig.getName());
 		icon();

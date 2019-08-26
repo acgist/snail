@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.gui.Window;
 
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
@@ -46,10 +45,8 @@ public class AboutWindow extends Window<AboutController> {
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/fxml/about.fxml"));
-		GridPane root = loader.load();
-		this.controller = loader.getController();
-		Scene scene = new Scene(root, 600, 300);
+		final GridPane root = super.loadFxml("/fxml/about.fxml");
+		final Scene scene = new Scene(root, 600, 300);
 		stage.initModality(Modality.APPLICATION_MODAL);
 		stage.setScene(scene);
 		stage.setTitle("关于");

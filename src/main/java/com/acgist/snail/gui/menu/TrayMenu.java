@@ -69,7 +69,7 @@ public class TrayMenu extends Menu {
 			if (INSTANCE == null) {
 				LOGGER.debug("初始化托盘菜单");
 				INSTANCE = new TrayMenu();
-				Platform.setImplicitExit(false); // 必须设置此项，否者窗口关闭后将不能通过托盘显示
+				Platform.setImplicitExit(false); // 必须设置此项，否者窗口关闭后将不能通过托盘显示。
 			}
 		}
 	}
