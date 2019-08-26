@@ -45,7 +45,16 @@ public class HttpHeaderWrapper {
 			headers = httpHeaders.map().entrySet()
 			.stream()
 			.filter(entry -> CollectionUtils.isNotEmpty(entry.getValue()))
-			.collect(Collectors.toMap(entry -> entry.getKey().toLowerCase(), entry -> entry.getValue().get(0)));
+			.collect(Collectors.toMap(
+				entry -> entry.getKey().toLowerCase(),
+				entry -> {
+					if(CollectionUtils.isEmpty(entry.getValue())) {
+						return null;
+					} else {
+						return entry.getValue().get(0);
+					}
+				}
+			));
 		}
 		return new HttpHeaderWrapper(headers);
 	}
