@@ -17,7 +17,7 @@ public class UdpTestAcceptHandler extends UdpAcceptHandler {
 		return INSTANCE;
 	}
 	
-	private UdpTestMessageHandler udpTestMessageHandler = new UdpTestMessageHandler();
+	private final UdpTestMessageHandler udpTestMessageHandler = new UdpTestMessageHandler();
 	
 	@Override
 	public UdpMessageHandler messageHandler(ByteBuffer buffer, InetSocketAddress socketAddress) {

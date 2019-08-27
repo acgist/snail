@@ -63,7 +63,7 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 
 	@Override
 	public boolean available() {
-		return !close && this.channel != null;
+		return !this.close && this.channel != null;
 	}
 	
 	@Override

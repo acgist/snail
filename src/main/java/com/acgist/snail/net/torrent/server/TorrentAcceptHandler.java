@@ -32,20 +32,17 @@ public class TorrentAcceptHandler extends UdpAcceptHandler {
 		return INSTANCE;
 	}
 	
-	private DhtMessageHandler dhtMessageHandler = new DhtMessageHandler();
+	private final DhtMessageHandler dhtMessageHandler = new DhtMessageHandler();
 	
 	@Override
 	public UdpMessageHandler messageHandler(ByteBuffer buffer, InetSocketAddress socketAddress) {
-		buffer.flip();
-		final byte header = buffer.get();
+		final byte header = buffer.get(0); // 类型：区分DHT和UTP消息
 		if(DHT_HEADER == header) {
-			buffer.position(buffer.limit()).limit(buffer.capacity());
-			return dhtMessageHandler;
+			return this.dhtMessageHandler;
 		} else {
 			final short connectionId = buffer.getShort(2); // 连接ID
-			buffer.position(buffer.limit()).limit(buffer.capacity());
-			return utpService.get(connectionId, socketAddress);
+			return this.utpService.get(connectionId, socketAddress);
 		}
 	}
-
+	
 }
