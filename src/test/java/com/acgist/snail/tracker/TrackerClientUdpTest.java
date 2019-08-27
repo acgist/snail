@@ -30,11 +30,11 @@ public class TrackerClientUdpTest {
 
 	@Test
 	public void udp() throws NetException, DownloadException {
-		String path = "e:/snail/16b1233b33143700fe47910898fcaaf0f05d2d09.torrent";
+		String path = "e:/snail/kn.torrent";
 		TorrentSession session = TorrentManager.getInstance().newTorrentSession(path);
 //		UdpTrackerClient client = UdpTrackerClient.newInstance("udp://exodus.desync.com:6969/announce");
 //		TrackerManager.getInstance().newTrackerLauncher(client, session);
-		var list = TrackerManager.getInstance().clients("udp://p4p.arenabg.com:1337/announce", null);
+		var list = TrackerManager.getInstance().clients("udp://explodie.org:6969/announce", null);
 		TrackerClient client = list.get(0);
 		client.announce(1000, session);
 		ThreadUtils.sleep(Long.MAX_VALUE);

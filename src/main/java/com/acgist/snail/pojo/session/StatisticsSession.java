@@ -75,7 +75,7 @@ public class StatisticsSession {
 	}
 	
 	/**
-	 * 下载速度，超过一定时间设置0
+	 * 下载速度，超过一定时间设置：0
 	 */
 	public long downloadSecond() {
 		if(System.currentTimeMillis() - this.lastDownloadTime > CACHE_SECOND) {
@@ -85,7 +85,7 @@ public class StatisticsSession {
 	}
 	
 	/**
-	 * 上传速度，超过一定时间设置0
+	 * 上传速度，超过一定时间设置：0
 	 */
 	public long uploadSecond() {
 		if(System.currentTimeMillis() - this.lastUploadTime > CACHE_SECOND) {
@@ -95,7 +95,7 @@ public class StatisticsSession {
 	}
 	
 	/**
-	 * 累计下载大小
+	 * 获取累计下载大小
 	 */
 	public long downloadSize() {
 		return this.downloadSize.get();
@@ -109,7 +109,7 @@ public class StatisticsSession {
 	}
 	
 	/**
-	 * 累计上传大小
+	 * 获取累计上传大小
 	 */
 	public long uploadSize() {
 		return this.uploadSize.get();
