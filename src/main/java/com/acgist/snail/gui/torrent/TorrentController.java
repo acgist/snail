@@ -114,7 +114,7 @@ public class TorrentController extends Controller implements Initializable {
 	 * 下载按钮事件
 	 */
 	private EventHandler<ActionEvent> downloadEvent = (event) -> {
-		TaskEntity entity = this.taskSession.entity();
+		final TaskEntity entity = this.taskSession.entity();
 		var list = this.selecterManager.description();
 		if(list.isEmpty()) {
 			Alerts.warn("下载提示", "请选择下载文件");
@@ -131,7 +131,7 @@ public class TorrentController extends Controller implements Initializable {
 				entity.setStatus(Status.await);
 				entity.setEndDate(null);
 			}
-			TaskRepository repository = new TaskRepository();
+			final TaskRepository repository = new TaskRepository();
 			repository.update(entity);
 			if(restart) {
 				try {

@@ -126,7 +126,7 @@ public final class DownloaderManager {
 	 */
 	public void changeDownloaderRestart(TaskSession taskSession) throws DownloadException {
 		var entity = taskSession.entity();
-		taskSession.downloader(null);
+		taskSession.removeDownloader(); // 删除旧下载器
 		this.downloaderMap.remove(entity.getId());
 		this.start(taskSession);
 	}

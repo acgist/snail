@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.system.config.UtpConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.DateUtils;
@@ -20,7 +23,7 @@ import com.acgist.snail.utils.DateUtils;
  */
 public class UtpWindow {
 	
-//	private static final Logger LOGGER = LoggerFactory.getLogger(UtpWindow.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(UtpWindow.class);
 	
 	/**
 	 * 最大超时时间（微秒）
@@ -246,6 +249,7 @@ public class UtpWindow {
 		this.rttVar += (Math.abs(delta) - this.rttVar) / 4;
 		this.rtt += (packetRtt - this.rtt) / 8;
 		this.timeout = Math.max(this.rtt + this.rttVar * 4, MAX_TIMEOUT);
+		LOGGER.debug("UTP超时时间：{}", this.timeout);
 	}
 
 	public short seqnr() {
