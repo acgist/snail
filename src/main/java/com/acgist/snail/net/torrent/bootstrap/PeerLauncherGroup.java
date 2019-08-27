@@ -36,9 +36,13 @@ public class PeerLauncherGroup {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerLauncherGroup.class);
 	
 	/**
-	 * 同时创建PeerLauncher个数
+	 * 同时创建PeerLauncher数量
 	 */
 	private static final int PARALLEL_BUILD_SIZE = 3;
+	/**
+	 * 单次最大创建数量Peer数量
+	 */
+	private static final int MAX_BUILD_SIZE = 30;
 	
 	private final TorrentSession torrentSession;
 	
@@ -132,6 +136,10 @@ public class PeerLauncherGroup {
 						ThreadUtils.wait(this.build, Duration.ofSeconds(PeerConfig.MAX_PEER_BUILD_TIMEOUT));
 					}
 				}
+			}
+			if(size > MAX_BUILD_SIZE) { // 超过单次最大创建数量时退出
+				LOGGER.debug("超过单次最大创建数量时退出循环");
+				this.notifyBuild(false);
 			}
 		}
 	}
