@@ -70,14 +70,10 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	 * 默认拥堵算法wnd数量
 	 */
 	private static final int DEFAULT_LIMIT_WND = 64;
-	/**
-	 * 休眠时间
-	 */
-	private static final int DEFAULT_SLEEP_TIME = 10;
 	
+	private volatile int nowWnd = 0;
 	private volatile int slowWnd = DEFAULT_SLOW_WND;
 	private volatile int limitWnd = DEFAULT_LIMIT_WND;
-	private volatile int nowWnd = 0;
 	
 	/**
 	 * 发送窗口
@@ -123,9 +119,6 @@ public class UtpMessageHandler extends UdpMessageHandler {
 		this.utpService.put(this);
 	}
 	
-	/**
-	 * key = socketAddress + connectionId
-	 */
 	public String key() {
 		return this.utpService.buildKey(this.recvId, this.socketAddress);
 	}
@@ -156,8 +149,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 			final byte[] extData = new byte[extLength];
 			buffer.get(extData);
 		}
-		LOGGER.debug(
-			"UTP收到消息，类型：{}，扩展：{}，连接ID：{}，时间戳：{}，时间戳对比：{}，窗口大小：{}，请求号：{}，应答号：{}",
+		LOGGER.debug("UTP收到消息，类型：{}，扩展：{}，连接ID：{}，时间戳：{}，时间戳对比：{}，窗口大小：{}，请求号：{}，应答号：{}",
 			type, extension, connectionId, timestamp, timestampDifference, wndSize, seqnr, acknr);
 		switch (type) {
 		case UtpConfig.ST_DATA:
@@ -176,8 +168,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 			syn(timestamp, seqnr, acknr);
 			break;
 		default:
-			LOGGER.warn(
-				"UTP不支持的消息类型，类型：{}，扩展：{}，连接ID：{}，时间戳：{}，时间戳对比：{}，窗口大小：{}，请求号：{}，应答号：{}",
+			LOGGER.warn("UTP不支持的消息类型，类型：{}，扩展：{}，连接ID：{}，时间戳：{}，时间戳对比：{}，窗口大小：{}，请求号：{}，应答号：{}",
 				type, extension, connectionId, timestamp, timestampDifference, wndSize, seqnr, acknr);
 			break;
 		}
@@ -185,6 +176,10 @@ public class UtpMessageHandler extends UdpMessageHandler {
 
 	@Override
 	public void send(ByteBuffer buffer) throws NetException {
+		if(!(this.connect && available())) {
+			LOGGER.debug("发送消息时Channel已经不可用");
+			return;
+		}
 		if(buffer.position() != 0) { //  重置标记
 			buffer.flip();
 		}
@@ -210,17 +205,20 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	
 	/**
 	 * TODO：优化
-	 * 流量控制和阻塞控制。
-	 * 慢开始：发送数据包（wnd）2的指数增长。
-	 * 拥堵算法：每次+1。
-	 * 出现超时（丢包）时发送数据包/2。
+	 * <p>流量控制和阻塞控制：</p>
+	 * <p>
+	 * 慢开始：wnd * 2<br>
+	 * 拥堵算法：wnd + 1<br>
+	 * 出现超时（丢包）：wnd / 2
+	 * </p>
 	 */
-	public void wndControl() {
-		if(!(this.connect && available())) { // 如果没有连接成功或者连接不可用时不发送。
+	private void wndControl() {
+		if(!(this.connect && available())) { // 如果没有连接成功或者连接不可用时不发送
+			LOGGER.debug("发送消息时Channel已经不可用");
 			return;
 		}
 		this.nowWnd++;
-		final boolean loss = timeoutRetry(); // 出现丢包
+		final boolean loss = wndTimeoutRetry(); // 出现丢包
 		if(loss) {
 			this.nowWnd = 0;
 			this.slowWnd = this.slowWnd / 2;
@@ -230,25 +228,26 @@ public class UtpMessageHandler extends UdpMessageHandler {
 			if(this.limitWnd < this.slowWnd) {
 				this.limitWnd = this.slowWnd;
 			}
-			ThreadUtils.sleep(DEFAULT_SLEEP_TIME);
-		} else if (++this.nowWnd > this.slowWnd) {
+			LOGGER.debug("UTP阻塞控制：{}-{}-{}", this.nowWnd, this.slowWnd, this.limitWnd);
+		} else if (this.nowWnd > this.slowWnd) {
 			this.nowWnd = 0;
 			if(this.slowWnd >= this.limitWnd) {
 				this.slowWnd++;
+				LOGGER.debug("UTP拥堵算法：{}-{}-{}", this.nowWnd, this.slowWnd, this.limitWnd);
 			} else {
 				this.slowWnd = this.slowWnd * 2;
+				LOGGER.debug("UTP慢开始：{}-{}-{}", this.nowWnd, this.slowWnd, this.limitWnd);
 			}
-			ThreadUtils.sleep(DEFAULT_SLEEP_TIME);
 		}
 	}
 	
 	/**
-	 * TODO：优化
 	 * 客户端缓存耗尽
 	 */
 	private void wndSizeControl() {
 		while(this.sendWindow.wndSizeControl()) {
-			timeoutRetry();
+			LOGGER.debug("客户端缓存耗尽");
+			wndTimeoutRetry();
 			synchronized (this.sendWindow) {
 				ThreadUtils.wait(this.sendWindow, Duration.ofSeconds(WND_SIZE_CONTROL_TIMEOUT));
 			}
@@ -256,12 +255,11 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	}
 	
 	/**
-	 * TODO：优化
 	 * 获取超时（丢包）数据包并重新发送。
 	 * 
 	 * @return true：有丢包；false：没有丢包。
 	 */
-	private boolean timeoutRetry() {
+	public boolean wndTimeoutRetry() {
 		final List<UtpWindowData> windowDatas = this.sendWindow.timeoutWindowData();
 		if(CollectionUtils.isNotEmpty(windowDatas)) {
 			data(windowDatas);
@@ -284,7 +282,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 		}
 		return this.connect;
 	}
-
+	
 	/**
 	 * 接收数据消息
 	 */
@@ -354,7 +352,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	/**
 	 * 发送结束消息
 	 */
-	private void fin() {
+	public void fin() {
 		final ByteBuffer buffer = header(UtpConfig.TYPE_FIN, 20);
 		buffer.putShort(this.recvId);
 		buffer.putInt(DateUtils.timestampUs());
@@ -457,8 +455,8 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	 */
 	private ByteBuffer header(byte type, int size) {
 		final ByteBuffer buffer = ByteBuffer.allocate(size);
-		buffer.put(type);
-		buffer.put(UtpConfig.EXTENSION);
+		buffer.put(type); // 类型
+		buffer.put(UtpConfig.EXTENSION); // 扩展
 		return buffer;
 	}
 	
@@ -481,6 +479,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 		LOGGER.debug("UTP关闭");
 		this.utpService.remove(this);
 		this.fin();
+		this.connect = false;
 		super.close();
 	}
 	
@@ -491,6 +490,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 		LOGGER.debug("UTP重置");
 		this.utpService.remove(this);
 		this.reset();
+		this.connect = false;
 		super.close();
 	}
 	

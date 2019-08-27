@@ -56,19 +56,32 @@ public class TaskSession {
 		return this.entity;
 	}
 	
+	/**
+	 * 获取下载器
+	 */
 	public IDownloader downloader() {
 		return this.downloader;
 	}
-	
+
+	/**
+	 * 设置下载器
+	 */
 	public void downloader(IDownloader downloader) {
 		this.downloader = downloader;
+	}
+
+	/**
+	 * 删除下载器
+	 */
+	public void removeDownloader() {
+		this.downloader = null;
 	}
 	
 	/**
 	 * 获取下载目录
 	 */
 	public File downloadFolder() {
-		File file = new File(this.entity.getFile());
+		final File file = new File(this.entity.getFile());
 		if(file.isFile()) {
 			return file.getParentFile();
 		} else {
@@ -83,7 +96,7 @@ public class TaskSession {
 		if(this.entity.getType() != Type.torrent) {
 			return List.of();
 		}
-		String description = this.entity.getDescription();
+		final String description = this.entity.getDescription();
 		if(StringUtils.isEmpty(description)) {
 			return List.of();
 		} else {
@@ -99,7 +112,7 @@ public class TaskSession {
 		if(complete()) {
 			return;
 		}
-		TaskRepository repository = new TaskRepository();
+		final TaskRepository repository = new TaskRepository();
 		if(status == Status.complete) {
 			this.entity.setEndDate(new Date()); // 设置完成时间
 		}

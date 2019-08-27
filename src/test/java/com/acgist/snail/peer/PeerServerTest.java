@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.bootstrap.PeerLauncher;
@@ -22,6 +24,8 @@ import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.ThreadUtils;
 
 public class PeerServerTest {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(PeerServerTest.class);
 	
 	@Test
 	public void server() throws DownloadException {
@@ -79,7 +83,7 @@ public class PeerServerTest {
 		launcher.handshake();
 		new Thread(() -> {
 			while(true) {
-				System.out.println("下载速度：" + statisticsSession.downloadSecond());
+				LOGGER.debug("下载速度：{}", statisticsSession.downloadSecond());
 				ThreadUtils.sleep(1000);
 			}
 		}).start();

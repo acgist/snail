@@ -5,6 +5,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.net.torrent.utp.UtpMessageHandler;
 import com.acgist.snail.system.context.SystemThreadContext;
@@ -17,9 +20,16 @@ import com.acgist.snail.system.context.SystemThreadContext;
  */
 public class UtpService {
 	
+	private static final Logger LOGGER = LoggerFactory.getLogger(UtpService.class);
+	
 	private static final UtpService INSTANCE = new UtpService();
 	
-	private Map<String, UtpMessageHandler> utpMessageHandlers = new ConcurrentHashMap<>();
+	private final Map<String, UtpMessageHandler> utpMessageHandlers = new ConcurrentHashMap<>();
+	
+	/**
+	 * UTP超时定时任务
+	 */
+	private static final int UTP_INTERVAL = 5;
 	
 	private UtpService() {
 		timer();
@@ -35,20 +45,24 @@ public class UtpService {
 	private int connectionId = 0;
 	
 	/**
-	 * 定时任务，处理超时信息。
+	 * UTP超时定时任务：定时处理超时信息。
 	 */
 	private void timer() {
-		SystemThreadContext.timerFixedDelay(5, 5, TimeUnit.SECONDS, () -> {
+		SystemThreadContext.timerFixedDelay(UTP_INTERVAL, UTP_INTERVAL, TimeUnit.SECONDS, () -> {
 			synchronized (this.utpMessageHandlers) {
-				final var iterator = this.utpMessageHandlers.entrySet().iterator();
 				UtpMessageHandler handler;
+				final var iterator = this.utpMessageHandlers.entrySet().iterator();
 				while(iterator.hasNext()) {
-					handler = iterator.next().getValue();
-					if(handler.available()) {
-						handler.wndControl();
-					} else {
-//						handler.close(); // TODO：close
-						iterator.remove();
+					try {
+						handler = iterator.next().getValue();
+						if(handler.available()) {
+							handler.wndTimeoutRetry();
+						} else {
+							handler.fin(); // 结束
+							iterator.remove(); // 移除
+						}
+					} catch (Exception e) {
+						LOGGER.error("UTP超时定时任务异常", e);
 					}
 				}
 			}
@@ -98,7 +112,7 @@ public class UtpService {
 	}
 	
 	/**
-	 * 外网连入时key=地址+connectionId
+	 * key = 地址 + 端口 + connectionId
 	 */
 	public String buildKey(Short connectionId, InetSocketAddress socketAddress) {
 		return socketAddress.getHostString() + socketAddress.getPort() + connectionId;
