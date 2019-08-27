@@ -9,7 +9,7 @@ import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.UrlUtils;
 
 /**
- * HTTP请求头包装器
+ * HTTP请求头包装器，key均转为小写。
  * 
  * @author acgist
  * @since 1.0.0
@@ -21,7 +21,7 @@ public class HttpHeaderWrapper {
 	 */
 	private static final String CONTENT_RANGE = "Content-Range".toLowerCase();
 	/**
-	 * 端点续传
+	 * 端点续传：范围请求
 	 */
 	private static final String ACCEPT_RANGES = "Accept-Ranges".toLowerCase();
 	/**
@@ -32,6 +32,14 @@ public class HttpHeaderWrapper {
 	 * 下载描述
 	 */
 	private static final String CONTENT_DISPOSITION = "Content-Disposition".toLowerCase();
+	/**
+	 * 范围请求：支持断点续传
+	 */
+	private static final String BYTES = "bytes";
+	/**
+	 * 文件名
+	 */
+	private static final String FILENAME = "filename";
 	
 	private final Map<String, String> headers;
 	
@@ -42,17 +50,17 @@ public class HttpHeaderWrapper {
 	public static final HttpHeaderWrapper newInstance(HttpHeaders httpHeaders) {
 		Map<String, String> headers = null;
 		if(httpHeaders != null) {
-			headers = httpHeaders.map().entrySet()
-			.stream()
-			.filter(entry -> CollectionUtils.isNotEmpty(entry.getValue()))
-			.collect(Collectors.toMap(
-				entry -> entry.getKey().toLowerCase(),
-				entry -> entry.getValue().get(0)
-			));
+			headers = httpHeaders.map().entrySet().stream()
+				.filter(entry -> CollectionUtils.isNotEmpty(entry.getValue()))
+				.collect(Collectors.toMap(
+					entry -> entry.getKey().toLowerCase(), // 转为小写
+					entry -> entry.getValue().get(0)
+//					entry -> String.join(",", entry.getValue())
+				));
 		}
 		return new HttpHeaderWrapper(headers);
 	}
-	
+
 	/**
 	 * 获取所有header数据
 	 */
@@ -88,7 +96,7 @@ public class HttpHeaderWrapper {
 			return defaultName;
 		}
 		final String fileNameLower = fileName.toLowerCase();
-		if(fileNameLower.contains("filename")) { // 包含文件名
+		if(fileNameLower.contains(FILENAME)) { // 包含文件名
 			fileName = UrlUtils.decode(fileName);
 			int index = fileName.indexOf("=");
 			if(index != -1) {
@@ -138,7 +146,7 @@ public class HttpHeaderWrapper {
 			return range;
 		}
 		if(this.headers.containsKey(ACCEPT_RANGES)) {
-			range = "bytes".equals(headers.get(ACCEPT_RANGES));
+			range = BYTES.equals(this.headers.get(ACCEPT_RANGES));
 		} else if(this.headers.containsKey(CONTENT_RANGE)) {
 			range = true;
 		}

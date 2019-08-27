@@ -29,13 +29,12 @@ public class TrackerMessageHandler extends UdpMessageHandler {
 	
 	@Override
 	public void onMessage(ByteBuffer buffer, InetSocketAddress socketAddress) {
-		final int size = buffer.position();
 		buffer.flip();
 		final int action = buffer.getInt();
 		if (action == TrackerConfig.Action.connect.action()) {
 			doConnect(buffer);
 		} else if(action == TrackerConfig.Action.announce.action()) {
-			doAnnounce(buffer, size);
+			doAnnounce(buffer);
 		} else if(action == TrackerConfig.Action.scrape.action()) {
 			// 刮檫
 		} else if(action == TrackerConfig.Action.error.action()) {
@@ -56,7 +55,8 @@ public class TrackerMessageHandler extends UdpMessageHandler {
 	/**
 	 * 处理Peer
 	 */
-	private void doAnnounce(ByteBuffer buffer, int size) {
+	private void doAnnounce(ByteBuffer buffer) {
+		final int size = buffer.limit(); // 容量
 		if(size < ANNOUNCE_MIN_SIZE) {
 			LOGGER.debug("Announce消息长度错误：{}", size);
 			return;

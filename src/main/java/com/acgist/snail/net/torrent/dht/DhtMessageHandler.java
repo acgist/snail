@@ -43,7 +43,7 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	/**
 	 * 获取响应
 	 */
-	private static final Function<Request, Response> RESPONSE = (request) -> {
+	private static final Function<Request, Response> RESPONSE_GETTER = (request) -> {
 		if(request == null) {
 			return null;
 		}
@@ -59,7 +59,7 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	/**
 	 * 判断响应是否成功
 	 */
-	public static final Function<Response, Boolean> SUCCESS = (response) -> {
+	public static final Function<Response, Boolean> SUCCESS_VERIFY = (response) -> {
 		return response != null && response.success();
 	};
 	
@@ -151,8 +151,8 @@ public class DhtMessageHandler extends UdpMessageHandler {
 		final PingRequest request = PingRequest.newRequest();
 		pushMessage(request, socketAddress);
 		waitResponse(request);
-		final Response response = RESPONSE.apply(request);
-		if(SUCCESS.apply(response)) {
+		final Response response = RESPONSE_GETTER.apply(request);
+		if(SUCCESS_VERIFY.apply(response)) {
 			final NodeSession nodeSession = NodeManager.getInstance().newNodeSession(response.getNodeId(), socketAddress.getHostString(), socketAddress.getPort());
 			NodeManager.getInstance().sortNodes();
 			return nodeSession;
@@ -193,7 +193,7 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	 * 处理响应：findNode
 	 */
 	private void findNode(Request request, Response response) {
-		if(SUCCESS.apply(response)) {
+		if(SUCCESS_VERIFY.apply(response)) {
 			FindNodeResponse.newInstance(response).getNodes();
 		}
 	}
@@ -226,7 +226,7 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	 * 处理响应：getPeers，同时设置Node Token。
 	 */
 	private void getPeers(Request request, Response response) {
-		if(SUCCESS.apply(response)) {
+		if(SUCCESS_VERIFY.apply(response)) {
 			final GetPeersResponse getPeersResponse = GetPeersResponse.newInstance(response);
 			if(getPeersResponse.havePeers()) {
 				getPeersResponse.getPeers(request);
@@ -259,7 +259,7 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	 * 处理响应：announcePeer
 	 */
 	private void announcePeer(Request request, Response response) {
-		if(SUCCESS.apply(response)) {
+		if(SUCCESS_VERIFY.apply(response)) {
 		}
 	}
 
