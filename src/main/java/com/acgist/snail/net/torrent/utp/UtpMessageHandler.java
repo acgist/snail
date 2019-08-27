@@ -27,7 +27,6 @@ import com.acgist.snail.utils.ThreadUtils;
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0029.html</p>
  * 流量控制：
  * 阻塞控制：
- * TODO：TCP UDP读取部分合并
  * 
  * @author acgist
  * @since 1.1.0
@@ -40,6 +39,11 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	 * 客户端阻塞控制等待（秒）
 	 */
 	private static final int WND_SIZE_CONTROL_TIMEOUT = 10;
+	
+	/**
+	 * UTP消息最小字节长度
+	 */
+	private static final int UTP_MIN_SIZE = 20;
 	
 	/**
 	 * 是否连接
@@ -132,11 +136,11 @@ public class UtpMessageHandler extends UdpMessageHandler {
 			this.socketAddress = socketAddress;
 		}
 		buffer.flip();
-		if(buffer.remaining() < 20) {
-			throw new NetException("UTP信息格式错误");
+		if(buffer.remaining() < UTP_MIN_SIZE) {
+			throw new NetException("UTP消息格式错误（长度）：" + buffer.remaining());
 		}
 		final byte typeVersion = buffer.get(); // type|version
-		final byte type = (byte) (typeVersion >> 4);
+		final byte type = (byte) (typeVersion >> 4); // type
 		final byte extension = buffer.get(); // 扩展
 		final short connectionId = buffer.getShort(); // 连接ID
 		final int timestamp = buffer.getInt(); // 时间戳

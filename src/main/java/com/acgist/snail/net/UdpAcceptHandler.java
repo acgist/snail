@@ -25,14 +25,13 @@ public abstract class UdpAcceptHandler {
 	
 	/**
 	 * 消息处理
-	 * TODO：线程优化
 	 */
 	public void handle(DatagramChannel channel, ByteBuffer buffer, InetSocketAddress socketAddress) {
 		final UdpMessageHandler handler = messageHandler(buffer, socketAddress);
 		EXECUTOR.submit(() -> {
 			try {
 				synchronized (handler) {
-					handler.handle(channel, socketAddress);
+					handler.handle(channel, socketAddress); // 设置UDP信息
 					if(handler.available()) {
 						handler.onMessage(buffer, socketAddress);
 					}
