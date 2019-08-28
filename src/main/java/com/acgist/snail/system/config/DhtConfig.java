@@ -12,7 +12,7 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>DHT服务器列表配置</p>
- * <p>优先加载{@linkplain DhtConfig#DHT_CONFIG_USER 用户配置}，如果不存在加载默认配置{@linkplain DhtConfig#DHT_CONFIG 默认配置}。</p>
+ * <p>优先使用用户自定义配置文件（UserDir目录）加载，如果不存在加载默认配置。</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -24,7 +24,6 @@ public class DhtConfig extends PropertiesConfig {
 	private static final DhtConfig INSTANCE = new DhtConfig();
 	
 	private static final String DHT_CONFIG = "/config/bt.dht.properties";
-	private static final String DHT_CONFIG_USER = "/config/bt.dht.user.properties";
 	
 	public static final String KEY_T = "t"; // 标记ID：请求ID，默认两个字节
 	public static final String KEY_Y = "y"; // 消息类型：请求、响应
@@ -102,7 +101,7 @@ public class DhtConfig extends PropertiesConfig {
 	}
 	
 	public DhtConfig() {
-		super(DHT_CONFIG_USER, DHT_CONFIG);
+		super(DHT_CONFIG);
 	}
 	
 	static {

@@ -68,11 +68,11 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 	protected boolean connect(final String host, final int port) {
 		boolean ok = true;
 		try {
-			AsynchronousSocketChannel socket = AsynchronousSocketChannel.open(GROUP);
+			final AsynchronousSocketChannel socket = AsynchronousSocketChannel.open(GROUP);
 			socket.setOption(StandardSocketOptions.TCP_NODELAY, true); // TODO：优化验证
 			socket.setOption(StandardSocketOptions.SO_REUSEADDR, true);
 			socket.setOption(StandardSocketOptions.SO_KEEPALIVE, true);
-			Future<Void> future = socket.connect(NetUtils.buildSocketAddress(host, port));
+			final Future<Void> future = socket.connect(NetUtils.buildSocketAddress(host, port));
 			future.get(this.timeout, TimeUnit.SECONDS);
 			this.handler.handle(socket);
 		} catch (Exception e) {

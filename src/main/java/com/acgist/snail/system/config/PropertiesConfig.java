@@ -17,23 +17,10 @@ public abstract class PropertiesConfig {
 	/**
 	 * 初始化配置文件
 	 * 
-	 * @param file 配置文件
+	 * @param path 配置文件
 	 */
-	public PropertiesConfig(String file) {
-		this.properties = PropertiesUtils.getInstance(file);
-	}
-	
-	/**
-	 * 初始化配置文件
-	 * 
-	 * @param file 优先配置文件
-	 * @param backFile 候选配置文件，如果优先配置文件加载失败使用。
-	 */
-	public PropertiesConfig(String file, String backFile) {
-		this.properties = PropertiesUtils.getInstance(file);
-		if(!this.properties.haveProperties()) {
-			this.properties = PropertiesUtils.getInstance(backFile);
-		}
+	public PropertiesConfig(String path) {
+		this.properties = PropertiesUtils.getInstance(path);
 	}
 	
 	protected String getString(String key) {

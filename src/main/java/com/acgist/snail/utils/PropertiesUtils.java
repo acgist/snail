@@ -1,5 +1,7 @@
 package com.acgist.snail.utils;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Properties;
@@ -19,35 +21,56 @@ public class PropertiesUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesUtils.class);
 	
-	private Properties properties;
+	private final Properties properties;
 
-	private PropertiesUtils() {
+	private PropertiesUtils(Properties properties) {
+		this.properties = properties;
 	}
 	
 	/**
-	 * 获取实例
+	 * 获取实例，优先从UserDir加载，加载失败时加载默认配置。
 	 * 
-	 * @param file 配置文件
+	 * @param path 配置文件
 	 */
-	public static final PropertiesUtils getInstance(String file) {
-		final PropertiesUtils instance = new PropertiesUtils();
-		instance.properties = load(file);
-		return instance;
+	public static final PropertiesUtils getInstance(String path) {
+		Properties properties = loadUserDir(path);
+		if(properties == null) {
+			properties = load(path);
+		}
+		return new PropertiesUtils(properties);
 	}
 	
 	/**
-	 * 加载数据，如果文件不存在返回null。
+	 * 加载数据（UserDir）
 	 */
-	private static final Properties load(String file) {
-		if(PropertiesUtils.class.getResource(file) == null) {
+	private static final Properties loadUserDir(String path) {
+		final File file = FileUtils.userDirFile(path);
+		if(file == null) {
 			return null;
 		}
 		Properties properties = null;
-		try(InputStreamReader input = new InputStreamReader(PropertiesUtils.class.getResourceAsStream(file), SystemConfig.DEFAULT_CHARSET)) {
+		try(InputStreamReader input = new InputStreamReader(new FileInputStream(file), SystemConfig.DEFAULT_CHARSET)) {
 			properties = new Properties();
 			properties.load(input);
 		} catch (IOException e) {
-			LOGGER.error("读取配置文件异常，文件路径：{}", file, e);
+			LOGGER.error("读取配置文件异常，文件路径：{}", path, e);
+		}
+		return properties;
+	}
+	
+	/**
+	 * 加载数据（Resource）
+	 */
+	private static final Properties load(String path) {
+		if(PropertiesUtils.class.getResource(path) == null) {
+			return null;
+		}
+		Properties properties = null;
+		try(InputStreamReader input = new InputStreamReader(PropertiesUtils.class.getResourceAsStream(path), SystemConfig.DEFAULT_CHARSET)) {
+			properties = new Properties();
+			properties.load(input);
+		} catch (IOException e) {
+			LOGGER.error("读取配置文件异常，文件路径：{}", path, e);
 		}
 		return properties;
 	}
