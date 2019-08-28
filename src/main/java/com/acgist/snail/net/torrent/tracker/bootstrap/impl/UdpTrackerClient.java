@@ -4,9 +4,6 @@ import java.net.URI;
 import java.nio.ByteBuffer;
 import java.time.Duration;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerService;
 import com.acgist.snail.net.torrent.tracker.TrackerClient;
 import com.acgist.snail.pojo.session.TorrentSession;
@@ -27,7 +24,7 @@ import com.acgist.snail.utils.ThreadUtils;
  */
 public class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker.bootstrap.TrackerClient {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(UdpTrackerClient.class);
+//	private static final Logger LOGGER = LoggerFactory.getLogger(UdpTrackerClient.class);
 	
 	private final String host;
 	private final int port;
@@ -43,7 +40,6 @@ public class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker.boots
 		this.host = uri.getHost();
 		this.port = uri.getPort();
 		this.trackerClient = TrackerClient.newInstance(NetUtils.buildSocketAddress(this.host, this.port));
-		buildConnectionId();
 	}
 
 	public static final UdpTrackerClient newInstance(String announceUrl) throws NetException {
@@ -52,7 +48,7 @@ public class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker.boots
 	
 	@Override
 	public void announce(Integer sid, TorrentSession torrentSession) throws NetException {
-		if(this.connectionId == null) { // 重试一次
+		if(this.connectionId == null) { // 没有连接创建连接
 			synchronized (this) {
 				if(this.connectionId == null) {
 					buildConnectionId();
@@ -67,24 +63,16 @@ public class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker.boots
 	}
 
 	@Override
-	public void complete(Integer sid, TorrentSession torrentSession) {
+	public void complete(Integer sid, TorrentSession torrentSession) throws NetException {
 		if(this.connectionId != null) {
-			try {
-				send(buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.completed));
-			} catch (NetException e) {
-				LOGGER.error("Tracker发送完成消息异常", e);
-			}
+			send(buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.completed));
 		}
 	}
 	
 	@Override
-	public void stop(Integer sid, TorrentSession torrentSession) {
+	public void stop(Integer sid, TorrentSession torrentSession) throws NetException {
 		if(this.connectionId != null) {
-			try {
-				send(buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.stopped));
-			} catch (NetException e) {
-				LOGGER.error("Tracker发送暂停消息异常", e);
-			}
+			send(buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.stopped));
 		}
 	}
 	
@@ -114,7 +102,7 @@ public class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker.boots
 	 * 发送数据
 	 */
 	private void send(ByteBuffer buffer) throws NetException {
-		trackerClient.send(buffer);
+		this.trackerClient.send(buffer);
 	}
 
 	/**
