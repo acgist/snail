@@ -108,7 +108,7 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 			LOGGER.warn("发送消息为空");
 			return;
 		}
-		synchronized (this.socket) { // 保证顺序
+		synchronized (this.socket) { // 防止多线程同时读写导致WritePendingException
 			final Future<Integer> future = this.socket.write(buffer);
 			try {
 				final int size = future.get(4, TimeUnit.SECONDS); // 阻塞线程防止，防止多线程写入时抛出异常：IllegalMonitorStateException
@@ -170,7 +170,9 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	private void loopMessage() {
 		if(available()) {
 			final ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
-			this.socket.read(buffer, buffer, this);
+			synchronized (this.socket) { // 防止多线程同时读写导致WritePendingException
+				this.socket.read(buffer, buffer, this);
+			}
 		}
 	}
 
