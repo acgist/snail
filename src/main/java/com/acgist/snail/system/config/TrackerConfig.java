@@ -12,6 +12,7 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * <p>Tracker服务列表配置</p>
  * <p>优先使用用户自定义配置文件（UserDir目录）加载，如果不存在加载默认配置。</p>
+ * TODO：保存UserDir
  * 
  * @author acgist
  * @since 1.0.0
