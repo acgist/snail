@@ -62,9 +62,9 @@ public class DownloadConfig extends PropertiesConfig {
 		INSTANCE.path = getString(DOWNLOAD_PATH);
 		INSTANCE.size = getInteger(DOWNLOAD_SIZE);
 		INSTANCE.buffer = getInteger(DOWNLOAD_BUFFER);
-		INSTANCE.memoryBuffer = getInteger(DOWNLOAD_MEMORY_BUFFER);
 		INSTANCE.notice = getBoolean(DOWNLOAD_NOTICE);
 		INSTANCE.lastPath = getString(DOWNLOAD_LAST_PATH);
+		INSTANCE.memoryBuffer = getInteger(DOWNLOAD_MEMORY_BUFFER);
 	}
 	
 	/**
@@ -204,6 +204,19 @@ public class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
+	 * 最后一次选择目录文件，如果没有选择默认使用下载目录
+	 */
+	public static final File getLastPathFile() {
+		File file = null;
+		if(StringUtils.isEmpty(INSTANCE.lastPath)) {
+			file = new File(getPath());
+		} else {
+			file = new File(INSTANCE.lastPath);
+		}
+		return file;
+	}
+	
+	/**
 	 * 磁盘缓存（单个）（MB）
 	 */
 	public static final void setMemoryBuffer(Integer memoryBuffer) {
@@ -224,19 +237,6 @@ public class DownloadConfig extends PropertiesConfig {
 	 */
 	public static final Integer getMemoryBufferByte() {
 		return INSTANCE.memoryBuffer * 1024 * 1024;
-	}
-	
-	/**
-	 * 最后一次选择目录文件，如果没有选择默认使用下载目录
-	 */
-	public static final File lastPath() {
-		File file = null;
-		if(StringUtils.isEmpty(INSTANCE.lastPath)) {
-			file = new File(getPath());
-		} else {
-			file = new File(INSTANCE.lastPath);
-		}
-		return file;
 	}
 	
 }

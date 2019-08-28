@@ -3,10 +3,14 @@ package com.acgist.snail.system.config;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerManager;
+import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -20,6 +24,11 @@ import com.acgist.snail.utils.StringUtils;
 public class TrackerConfig extends PropertiesConfig {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerConfig.class);
+	
+	/**
+	 * 最大的Tracker服务器保存数量
+	 */
+	private static final int MAX_TRACKER_SIZE = 512;
 
 	/**
 	 * 最大失败次数，超过 这个次数将会被标记无效，以后也不再使用。
@@ -88,9 +97,9 @@ public class TrackerConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 默认Tracker声明地址
+	 * 默认Tracker声明地址：index=AnnounceUrl
 	 */
-	private List<String> announces = new ArrayList<>();
+	private final List<String> announces = new ArrayList<>();
 	
 	private void init() {
 		final Properties properties = this.properties.properties();
@@ -109,6 +118,20 @@ public class TrackerConfig extends PropertiesConfig {
 	 */
 	public List<String> announces() {
 		return this.announces;
+	}
+	
+	/**
+	 * 保存Tracker服务器（可用）
+	 */
+	public void persistent() {
+		LOGGER.debug("保存Tracker服务器");
+		final AtomicInteger index = new AtomicInteger(0);
+		final var clients = TrackerManager.getInstance().clients();
+		final var map = clients.stream()
+			.filter(client -> client.available())
+			.limit(MAX_TRACKER_SIZE)
+			.collect(Collectors.toMap(client -> String.format("%04d", index.incrementAndGet()), client -> client.announceUrl()));
+		persistent(map, FileUtils.userDirFile(TRACKER_CONFIG));
 	}
 	
 }

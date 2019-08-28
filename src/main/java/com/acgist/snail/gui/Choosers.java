@@ -63,7 +63,7 @@ public class Choosers {
 	 * 最后一次选择目录
 	 */
 	private static final void lastPath(FileChooser chooser) {
-		final File file = DownloadConfig.lastPath();
+		final File file = DownloadConfig.getLastPathFile();
 		if(file != null && file.exists()) {
 			chooser.setInitialDirectory(file);
 		}
@@ -73,7 +73,7 @@ public class Choosers {
 	 * 最后一次选择目录
 	 */
 	private static final void lastPath(DirectoryChooser chooser) {
-		final File file = DownloadConfig.lastPath();
+		final File file = DownloadConfig.getLastPathFile();
 		if(file != null && file.exists()) {
 			chooser.setInitialDirectory(file);
 		}

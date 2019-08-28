@@ -12,6 +12,7 @@
 #忽略目录
 /logs/
 /target/
+/config/
 /database/
 /download/
 /builder/snail/

@@ -221,8 +221,8 @@ public class TrackerManager {
 
 	/**
 	 * 创建Client
+	 * TODO：wss
 	 */
-	// TODO:wss
 	private TrackerClient buildClient(final String announceUrl) throws DownloadException {
 		if(HttpProtocol.verify(announceUrl)) {
 			try {

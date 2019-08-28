@@ -40,7 +40,7 @@ public class NodeManager {
 	/**
 	 * Node最大数量，超过这个数量会均匀剔除多余Node
 	 */
-	public static final int NODE_MAX_SIZE = 1024;
+	public static final int MAX_NODE_SIZE = 1024;
 	/**
 	 * NodeId长度
 	 */
@@ -142,10 +142,18 @@ public class NodeManager {
 	public void register() {
 		final var nodes = DhtConfig.getInstance().nodes();
 		if(CollectionUtils.isNotEmpty(nodes)) {
-			nodes.forEach((host, port) -> {
-				LOGGER.debug("注册默认节点：{}-{}", host, port);
-				NodeManager.getInstance().newNodeSession(host, port);
+			nodes.forEach((nodeId, address) -> {
+				LOGGER.debug("注册默认节点：{}-{}", nodeId, address);
+				final int index = address.lastIndexOf(":");
+				if(index != -1) {
+					final String host = address.substring(0, index);
+					final String port = address.substring(index + 1);
+					if(StringUtils.isNotEmpty(host) && StringUtils.isNumeric(port)) {
+						newNodeSession(StringUtils.unhex(nodeId), host, Integer.valueOf(port));
+					}
+				}
 			});
+			sortNodes();
 		}
 	}
 	
@@ -174,7 +182,9 @@ public class NodeManager {
 			if(nodeSession == null) {
 				nodeSession = NodeSession.newInstance(nodeId, host, port);
 				if(nodeSession.getId().length == NODE_ID_LENGTH) {
-					LOGGER.debug("添加Node：{}-{}", nodeSession.getHost(), nodeSession.getPort());
+					if(LOGGER.isDebugEnabled()) {
+						LOGGER.debug("添加Node：{}-{}-{}", StringUtils.hex(nodeId), nodeSession.getHost(), nodeSession.getPort());
+					}
 					this.nodes.add(nodeSession);
 				}
 			}
@@ -229,13 +239,13 @@ public class NodeManager {
 	/**
 	 * <p>查找Node</p>
 	 * <p>查找最近（异或运算）的一段NodeId。</p>
-	 * <p>查找时Node是一个环形结构，分为{@linkplain #NODE_FIND_SLICE 片}。</p>
+	 * <p>查找时Node是一个环形结构，按照{@linkplain #NODE_FIND_SLICE 大小}分片。</p>
 	 * 
 	 * @param target 目标NodeId
 	 * @param begin 开始序号
 	 * @param end 结束序号
 	 * 
-	 * @return 节点
+	 * @return 节点，{@linkplain #NODE_FIND_SIZE 数量}
 	 */
 	private List<NodeSession> findNode(final List<NodeSession> nodes, final byte[] target, final int begin, final int end) {
 		int selectSize; // 当前选择Node的总数量

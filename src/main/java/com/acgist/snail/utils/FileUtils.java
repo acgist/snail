@@ -259,13 +259,23 @@ public class FileUtils {
 	}
 	
 	/**
-	 * 创建文件夹，如果路径是文件夹，创建父目录，否者直接创建路径目录。
+	 * 创建文件夹，如果路径是文件，则创建父目录，否者直接创建路径目录。
 	 * 
 	 * @param path 路径
 	 * @param file 是否是文件：true-文件；false-文件夹
 	 */
 	public static final void buildFolder(String path, boolean file) {
-		File opt = new File(path);
+		final File opt = new File(path);
+		buildFolder(opt, file);
+	}
+	
+	/**
+	 * 创建文件夹，如果路径是文件，则创建父目录，否者直接创建路径目录。
+	 * 
+	 * @param opt 文件
+	 * @param file 是否是文件：true-文件；false-文件夹
+	 */
+	public static final void buildFolder(File opt, boolean file) {
 		if(opt.exists()) {
 			return;
 		}
@@ -319,11 +329,7 @@ public class FileUtils {
 	 * @param path 文件相对路径：以/开头
 	 */
 	public static final File userDirFile(String path) {
-		final File file = new File(SystemConfig.userDir(path));
-		if(file.exists()) {
-			return file;
-		}
-		return null;
+		return new File(SystemConfig.userDir(path));
 	}
 
 	/**

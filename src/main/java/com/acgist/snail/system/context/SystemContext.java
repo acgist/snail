@@ -19,6 +19,8 @@ import com.acgist.snail.net.torrent.tracker.TrackerServer;
 import com.acgist.snail.net.upnp.UpnpServer;
 import com.acgist.snail.net.upnp.bootstrap.UpnpService;
 import com.acgist.snail.repository.DatabaseManager;
+import com.acgist.snail.system.config.DhtConfig;
+import com.acgist.snail.system.config.TrackerConfig;
 import com.acgist.snail.system.evaluation.PeerEvaluator;
 import com.acgist.snail.system.initializer.impl.ConfigInitializer;
 import com.acgist.snail.system.initializer.impl.DatabaseInitializer;
@@ -131,6 +133,8 @@ public class SystemContext {
 				SystemThreadContext.shutdown();
 				PeerEvaluator.getInstance().shutdown();
 				DatabaseManager.getInstance().shutdown();
+				DhtConfig.getInstance().persistent();
+				TrackerConfig.getInstance().persistent();
 				Platform.exit();
 				TrayMenu.exit();
 				LOGGER.info("系统已关闭");
