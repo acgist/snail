@@ -45,7 +45,7 @@ public class PropertiesUtils {
 	 */
 	private static final Properties loadUserDir(String path) {
 		final File file = FileUtils.userDirFile(path);
-		if(file == null) {
+		if(file == null || !file.exists()) {
 			return null;
 		}
 		Properties properties = null;

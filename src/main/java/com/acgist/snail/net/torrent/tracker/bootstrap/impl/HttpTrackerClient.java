@@ -70,23 +70,15 @@ public class HttpTrackerClient extends TrackerClient {
 	}
 
 	@Override
-	public void complete(Integer sid, TorrentSession torrentSession) {
+	public void complete(Integer sid, TorrentSession torrentSession) throws NetException {
 		final String requestUrl = buildAnnounceUrl(sid, torrentSession, TrackerConfig.Event.completed);
-		try {
-			HTTPClient.get(requestUrl, BodyHandlers.ofString(), TrackerClient.TIMEOUT);
-		} catch (NetException e) {
-			LOGGER.error("Tracker发送完成消息异常", e);
-		}
+		HTTPClient.get(requestUrl, BodyHandlers.ofString(), TrackerClient.TIMEOUT);
 	}
 	
 	@Override
-	public void stop(Integer sid, TorrentSession torrentSession) {
+	public void stop(Integer sid, TorrentSession torrentSession) throws NetException {
 		final String requestUrl = buildAnnounceUrl(sid, torrentSession, TrackerConfig.Event.stopped);
-		try {
-			HTTPClient.get(requestUrl, BodyHandlers.ofString(), TrackerClient.TIMEOUT);
-		} catch (NetException e) {
-			LOGGER.error("Tracker发送暂停消息异常", e);
-		}
+		HTTPClient.get(requestUrl, BodyHandlers.ofString(), TrackerClient.TIMEOUT);
 	}
 	
 	@Override

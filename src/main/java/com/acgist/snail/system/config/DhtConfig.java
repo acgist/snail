@@ -4,10 +4,14 @@ import java.time.Duration;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.net.torrent.dht.bootstrap.NodeManager;
+import com.acgist.snail.pojo.session.NodeSession;
+import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -115,19 +119,19 @@ public class DhtConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 默认DHT节点
+	 * 默认DHT节点：nodeID=host:port
 	 */
-	private Map<String, Integer> nodes = new LinkedHashMap<>();
+	private final Map<String, String> nodes = new LinkedHashMap<>();
 	
 	private void init() {
 		final Properties properties = this.properties.properties();
 		properties.entrySet().forEach(entry -> {
-			final String host = (String) entry.getKey();
-			final String port = (String) entry.getValue();
-			if(StringUtils.isNotEmpty(host) && StringUtils.isNumeric(port)) {
-				this.nodes.put(host, Integer.valueOf(port));
+			final String nodeId = (String) entry.getKey();
+			final String address = (String) entry.getValue();
+			if(StringUtils.isNotEmpty(nodeId) && StringUtils.isNotEmpty(address)) {
+				this.nodes.put(nodeId, address);
 			} else {
-				LOGGER.warn("注册默认DHT节点失败：{}-{}", host, port);
+				LOGGER.warn("注册默认DHT节点失败：{}-{}", nodeId, address);
 			}
 		});
 	}
@@ -135,8 +139,21 @@ public class DhtConfig extends PropertiesConfig {
 	/**
 	 * 获取配置的DHT节点
 	 */
-	public Map<String, Integer> nodes() {
+	public Map<String, String> nodes() {
 		return this.nodes;
 	}
 
+	/**
+	 * 保存DHT节点（可用）
+	 */
+	public void persistent() {
+		LOGGER.debug("保存DHT节点");
+		final var nodes = NodeManager.getInstance().nodes();
+		final var map = nodes.stream()
+			.filter(node -> node.getStatus() != NodeSession.STATUS_VERIFY)
+			.limit(NodeManager.MAX_NODE_SIZE)
+			.collect(Collectors.toMap(node -> StringUtils.hex(node.getId()), node -> node.getHost() + ":" + node.getPort()));
+		persistent(map, FileUtils.userDirFile(DHT_CONFIG));
+	}
+	
 }

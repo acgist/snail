@@ -12,11 +12,12 @@ import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
+import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NumberUtils;
 
 /**
- * <p>Tracker发射器</p>
+ * <p>Tracker执行器</p>
  * <p>使用TrackerClient查询Peer信息。</p>
  * 
  * @author acgist
@@ -118,10 +119,14 @@ public class TrackerLauncher {
 		this.available = false;
 		if(this.needRelease && available()) {
 			SystemThreadContext.submit(() -> {
-				if(this.torrentSession.completed()) { // 任务完成
-					this.client.complete(this.id, this.torrentSession);
-				} else { // 任务暂停
-					this.client.stop(this.id, this.torrentSession);
+				try {
+					if(this.torrentSession.completed()) { // 任务完成
+						this.client.complete(this.id, this.torrentSession);
+					} else { // 任务暂停
+						this.client.stop(this.id, this.torrentSession);
+					}
+				} catch (NetException e) {
+					LOGGER.error("TrackerLauncher释放异常", e);
 				}
 				TrackerManager.getInstance().release(this.id);
 			});

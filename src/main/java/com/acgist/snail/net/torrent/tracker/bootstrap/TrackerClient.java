@@ -39,11 +39,11 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	/**
 	 * 是否可用
 	 */
-	private AtomicBoolean available = new AtomicBoolean(true);
+	private final AtomicBoolean available = new AtomicBoolean(true);
 	/**
 	 * 失败次数，成功后清零，超过一定次数#{@link #MAX_FAIL_TIMES}设置为不可用
 	 */
-	private AtomicInteger failTimes = new AtomicInteger(0);
+	private final AtomicInteger failTimes = new AtomicInteger(0);
 	/**
 	 * 失败原因
 	 */
@@ -98,12 +98,12 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	/**
 	 * 完成，下载完成时推送，如果一开始时就已经完成不需要推送。
 	 */
-	public abstract void complete(Integer sid, TorrentSession torrentSession);
+	public abstract void complete(Integer sid, TorrentSession torrentSession) throws NetException;
 	
 	/**
 	 * 停止
 	 */
-	public abstract void stop(Integer sid, TorrentSession torrentSession);
+	public abstract void stop(Integer sid, TorrentSession torrentSession) throws NetException;
 	
 	/**
 	 * 刮檫
