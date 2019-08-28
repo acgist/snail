@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.system.config.FileTypeConfig;
 import com.acgist.snail.system.config.FileTypeConfig.FileType;
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.ArgumentException;
 import com.acgist.snail.system.recycle.RecycleManager;
 
@@ -310,6 +311,19 @@ public class FileUtils {
 			data.put(path, StringUtils.hex(digest.digest()));
 			return data;
 		}
+	}
+	
+	/**
+	 * 在用户工作目录中获取文件
+	 * 
+	 * @param path 文件相对路径：以/开头
+	 */
+	public static final File userDirFile(String path) {
+		final File file = new File(SystemConfig.userDir(path));
+		if(file.exists()) {
+			return file;
+		}
+		return null;
 	}
 
 	/**
