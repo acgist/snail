@@ -42,7 +42,7 @@ public class PeerLauncherGroup {
 	/**
 	 * 单次最大创建数量Peer数量
 	 */
-	private static final int MAX_BUILD_SIZE = 30;
+	private static final int MAX_BUILD_SIZE = 60;
 	
 	private final TorrentSession torrentSession;
 	
@@ -137,7 +137,7 @@ public class PeerLauncherGroup {
 					}
 				}
 			}
-			if(size > MAX_BUILD_SIZE) { // 超过单次最大创建数量时退出
+			if(size > MAX_BUILD_SIZE) {
 				LOGGER.debug("超过单次最大创建数量时退出循环");
 				this.notifyBuild(false);
 			}

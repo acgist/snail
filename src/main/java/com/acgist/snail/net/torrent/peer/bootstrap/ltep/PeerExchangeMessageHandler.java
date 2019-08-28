@@ -120,17 +120,17 @@ public class PeerExchangeMessageHandler implements IExtensionMessageHandler {
 		if(CollectionUtils.isEmpty(optimize)) {
 			return null;
 		}
-		final Map<String, Object> data = new HashMap<>();
 		final int length = 6 * optimize.size();
 		final ByteBuffer addedBuffer = ByteBuffer.allocate(length);
 		final ByteBuffer addedfBuffer = ByteBuffer.allocate(optimize.size());
 		optimize.stream()
-		.distinct()
-		.forEach(session -> {
-			addedBuffer.putInt(NetUtils.encodeIpToInt(session.host()));
-			addedBuffer.putShort(NetUtils.encodePort(session.peerPort()));
-			addedfBuffer.put(session.exchange());
-		});
+			.distinct()
+			.forEach(session -> {
+				addedBuffer.putInt(NetUtils.encodeIpToInt(session.host()));
+				addedBuffer.putShort(NetUtils.encodePort(session.peerPort()));
+				addedfBuffer.put(session.exchange());
+			});
+		final Map<String, Object> data = new HashMap<>();
 		data.put(ADDED, addedBuffer.array());
 		data.put(ADDEDF, addedfBuffer.array());
 		final byte[] emptyBytes = new byte[0];

@@ -328,16 +328,18 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	 * 发送数据
 	 */
 	private void data(UtpWindowData windowData) {
-		LOGGER.debug("UTP发送数据：{}", windowData.getSeqnr());
-		final ByteBuffer buffer = header(UtpConfig.TYPE_DATA, windowData.getLength() + 20);
-		buffer.putShort(this.sendId);
-		buffer.putInt(windowData.pushUpdateGetTimestamp()); // 更新发送时间
-		buffer.putInt(windowData.getTimestamp() - this.receiveWindow.timestamp());
-		buffer.putInt(this.receiveWindow.remainWndSize());
-		buffer.putShort(windowData.getSeqnr());
-		buffer.putShort(this.receiveWindow.seqnr()); // acknr=请求seqnr
-		buffer.put(windowData.getData());
-		this.pushMessage(buffer);
+		if(windowData.verify()) {
+			LOGGER.debug("UTP发送数据：{}", windowData.getSeqnr());
+			final ByteBuffer buffer = header(UtpConfig.TYPE_DATA, windowData.getLength() + 20);
+			buffer.putShort(this.sendId);
+			buffer.putInt(windowData.pushUpdateGetTimestamp()); // 更新发送时间
+			buffer.putInt(windowData.getTimestamp() - this.receiveWindow.timestamp());
+			buffer.putInt(this.receiveWindow.remainWndSize());
+			buffer.putShort(windowData.getSeqnr());
+			buffer.putShort(this.receiveWindow.seqnr()); // acknr=请求seqnr
+			buffer.put(windowData.getData());
+			this.pushMessage(buffer);
+		}
 	}
 	
 	/**

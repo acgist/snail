@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -161,20 +162,21 @@ public class PeerManager {
 		if(CollectionUtils.isEmpty(list)) {
 			return;
 		}
-		LOGGER.debug("发送Have消息，通知Peer数量：{}", list.size());
+		final AtomicInteger count = new AtomicInteger(0);
 		list.stream()
-		.filter(session -> session.uploading() || session.downloading())
-		.forEach(session -> {
-			var peerConnect = session.peerConnect();
-			if(peerConnect != null && peerConnect.available()) {
-				peerConnect.have(index);
-			} else {
+			.filter(session -> session.uploading() || session.downloading())
+			.forEach(session -> {
+				var peerConnect = session.peerConnect();
 				var peerLauncher = session.peerLauncher();
-				if(peerLauncher != null && peerLauncher.available()) {
+				if(peerConnect != null && peerConnect.available()) {
+					count.incrementAndGet();
+					peerConnect.have(index);
+				} else if(peerLauncher != null && peerLauncher.available()) {
+					count.incrementAndGet();
 					peerLauncher.have(index);
 				}
-			}
-		});
+			});
+		LOGGER.debug("发送Have消息，通知Peer数量：{}", count.get());
 	}
 	
 	/**
@@ -190,20 +192,21 @@ public class PeerManager {
 		if(CollectionUtils.isEmpty(list)) {
 			return;
 		}
-		LOGGER.debug("发送PEX消息，Peer数量：{}，通知Peer数量：{}", optimize.size(), list.size());
+		final AtomicInteger count = new AtomicInteger(0);
 		list.stream()
-		.filter(session -> session.uploading() || session.downloading())
-		.forEach(session -> {
-			var peerConnect = session.peerConnect();
-			if(peerConnect != null && peerConnect.available()) {
-				peerConnect.exchange(bytes);
-			} else {
+			.filter(session -> session.uploading() || session.downloading())
+			.forEach(session -> {
+				var peerConnect = session.peerConnect();
 				var peerLauncher = session.peerLauncher();
-				if(peerLauncher != null && peerLauncher.available()) {
+				if(peerConnect != null && peerConnect.available()) {
+					count.incrementAndGet();
+					peerConnect.exchange(bytes);
+				} else if(peerLauncher != null && peerLauncher.available()) {
+					count.incrementAndGet();
 					peerLauncher.exchange(bytes);
 				}
-			}
-		});
+			});
+		LOGGER.debug("发送PEX消息，Peer数量：{}，通知Peer数量：{}", optimize.size(), count.get());
 	}
 	
 	/**
