@@ -84,11 +84,12 @@ public class TorrentStreamGroup {
 				pos += file.getLength();
 			}
 		}
+		// TODO：启动时计算错误
 		SystemThreadContext.submit(() -> {
 			try {
 				allReady.await(10, TimeUnit.SECONDS);
 				torrentSession.resize(torrentStreamGroup.size());
-			} catch (InterruptedException e) {
+			} catch (Exception e) {
 				LOGGER.error("统计下载文件大小等待异常", e);
 			}
 		});
