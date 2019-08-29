@@ -17,7 +17,11 @@ import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
- * 现在下载种子，然后转为BT任务下载。
+ * <p>磁力链接下载器</p>
+ * <p>先将磁力链接转为种子，然后转为BT任务下载。</p>
+ * 
+ * @author acgist
+ * @since 1.1.0
  */
 public class MagnetDownloader extends Downloader {
 	
