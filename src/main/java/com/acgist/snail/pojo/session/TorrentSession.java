@@ -444,7 +444,7 @@ public class TorrentSession {
 			this.trackerLauncherGroup.release();
 		}
 		if(this.torrentStreamGroup != null) {
-			this.torrentStreamGroup.flush(); // 缓存刷出：TODO：优化卡死
+			this.torrentStreamGroup.flush();
 		}
 		SystemThreadContext.shutdownNow(this.executor);
 		this.downloadable = false;
@@ -457,7 +457,7 @@ public class TorrentSession {
 		LOGGER.debug("Torrent释放资源（上传）");
 		SystemThreadContext.shutdown(this.peerConnectGroupTimer);
 		if(this.peerConnectGroup != null) {
-			this.peerConnectGroup.release(); // 上传时删除：TODO：优化卡死
+			this.peerConnectGroup.release();
 		}
 		if(this.torrentStreamGroup != null) {
 			this.torrentStreamGroup.release();
