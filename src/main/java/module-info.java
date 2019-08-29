@@ -1,6 +1,6 @@
 /**
  * <h1>Sanil（蜗牛）下载工具</h1>
- * <p>支持下载协议：BT、FTP、HTTP。</p>
+ * <p>Snail（蜗牛）是一款下载软件，支持下载协议：BT（BitTorrent）、FTP、HTTP。</p>
  * <p>方法注解（author、since）没有时，默认使用类注解。</p>
  * 
  * @author acgist

@@ -29,7 +29,7 @@
 	</Text>
 	
 	<Text fx:id="description" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="3">
-		支持协议：BT、FTP、HTTP
+		支持协议：BT（BitTorrent）、FTP、HTTP
 	</Text>
 	
 	<!--

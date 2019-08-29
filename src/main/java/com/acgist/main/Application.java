@@ -12,7 +12,7 @@ import javafx.application.Platform;
 
 /**
  * <h1>Snail系统启动类。</h1>
- * <p>Snail（蜗牛）是一款下载软件，支持下载协议：BT、FTP、HTTP。</p>
+ * <p>Snail（蜗牛）是一款下载软件，支持下载协议：BT（BitTorrent）、FTP、HTTP。</p>
  * 
  * @author acgist
  * @since 1.0.0
