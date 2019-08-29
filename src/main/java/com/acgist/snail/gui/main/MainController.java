@@ -122,11 +122,11 @@ public class MainController extends Controller implements Initializable {
 		placeholderBox.setAlignment(Pos.CENTER);
 		this.taskTable.setPlaceholder(placeholderBox);
 		// 设置列
-		taskCell(this.name, Pos.CENTER_LEFT, true, this.taskTable.widthProperty().divide(5D));
-		taskCell(this.status, Pos.CENTER, false, this.taskTable.widthProperty().divide(10D));
-		taskCell(this.progress, Pos.CENTER_LEFT, false, this.taskTable.widthProperty().divide(5D).subtract(20));
-		taskCell(this.createDate, Pos.CENTER, false, this.taskTable.widthProperty().divide(4D));
-		taskCell(this.endDate, Pos.CENTER, false, this.taskTable.widthProperty().divide(4D));
+		taskCell(this.name, Pos.CENTER_LEFT, true, true, this.taskTable.widthProperty().multiply(3D).divide(10D));
+		taskCell(this.status, Pos.CENTER, false, false, this.taskTable.widthProperty().multiply(1D).divide(10D));
+		taskCell(this.progress, Pos.CENTER_LEFT, false, false, this.taskTable.widthProperty().multiply(2D).divide(10D).subtract(10));
+		taskCell(this.createDate, Pos.CENTER, false, false, this.taskTable.widthProperty().multiply(2D).divide(10D));
+		taskCell(this.endDate, Pos.CENTER, false, false, this.taskTable.widthProperty().multiply(2D).divide(10D));
 		// 设置行
 		this.taskTable.setRowFactory(this.rowFactory);
 		// 绑定属性
@@ -325,16 +325,17 @@ public class MainController extends Controller implements Initializable {
 	 * 
 	 * @param column 列
 	 * @param pos 对齐
-	 * @param icon 显示ICON
+	 * @param icon 显示Icon
+	 * @param tooltip 显示Tooltip
 	 * @param widthBinding 宽度绑定
 	 */
-	private void taskCell(TableColumn<TaskSession, String> column, Pos pos, boolean icon, DoubleBinding widthBinding) {
+	private void taskCell(TableColumn<TaskSession, String> column, Pos pos, boolean icon, boolean tooltip, DoubleBinding widthBinding) {
 		column.prefWidthProperty().bind(widthBinding);
 		column.setResizable(false);
 		column.setCellFactory(new Callback<TableColumn<TaskSession, String>, TableCell<TaskSession, String>>() {
 			@Override
 			public TableCell<TaskSession, String> call(TableColumn<TaskSession, String> param) {
-				return new TaskCell(pos, icon);
+				return new TaskCell(pos, icon, tooltip);
 			}
 		});
 	}

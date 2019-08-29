@@ -1,10 +1,10 @@
 package com.acgist.snail.gui.main;
 
+import com.acgist.snail.gui.Tooltips;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.system.config.FileTypeConfig.FileType;
 
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
 import javafx.scene.control.TableCell;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -23,13 +23,18 @@ public class TaskCell extends TableCell<TaskSession, String> {
 	 */
 	private Pos pos = Pos.CENTER_LEFT;
 	/**
-	 * 是否显示ICON
+	 * 是否显示Icon
 	 */
 	private boolean icon;
+	/**
+	 * 是否显示Tooltip
+	 */
+	private boolean tooltip;
 	
-	public TaskCell(Pos pos, boolean icon) {
+	public TaskCell(Pos pos, boolean icon, boolean tooltip) {
 		this.pos = pos;
 		this.icon = icon;
+		this.tooltip = tooltip;
 	}
 	
 	@Override
@@ -41,12 +46,15 @@ public class TaskCell extends TableCell<TaskSession, String> {
 			box.setAlignment(this.pos);
 			final Text name = new Text(value);
 			if(this.icon) { // 名称：添加图标和手势
-				name.setCursor(Cursor.HAND);
+//				name.setCursor(Cursor.HAND);
 				final FileType fileType = taskSession.entity().getFileType();
 				if(fileType != null) {
 					final ImageView icon = new ImageView("/image/32/" + fileType.getIcon());
 					box.getChildren().add(icon);
 				}
+			}
+			if(this.tooltip) {
+				this.setTooltip(Tooltips.newTooltip(value));
 			}
 			box.getChildren().add(name);
 			this.setGraphic(box);
