@@ -38,7 +38,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	/**
 	 * 客户端阻塞控制等待（秒）
 	 */
-	private static final int WND_SIZE_CONTROL_TIMEOUT = 10;
+	private static final int WND_SIZE_CONTROL_TIMEOUT = 4;
 	
 	/**
 	 * UTP消息最小字节长度
@@ -245,7 +245,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	 * 客户端缓存耗尽
 	 */
 	private void wndSizeControl() {
-		while(this.sendWindow.wndSizeControl()) {
+		if(this.sendWindow.wndSizeControl()) {
 			LOGGER.debug("客户端缓存耗尽");
 			wndTimeoutRetry();
 			synchronized (this.sendWindow) {
