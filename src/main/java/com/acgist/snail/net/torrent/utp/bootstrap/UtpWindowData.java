@@ -34,23 +34,23 @@ public class UtpWindowData {
 	}
 
 	public short getSeqnr() {
-		return seqnr;
+		return this.seqnr;
 	}
 
 	public int getTimestamp() {
-		return timestamp;
+		return this.timestamp;
 	}
 
 	public byte getPushTimes() {
-		return pushTimes;
+		return this.pushTimes;
 	}
 
 	public byte[] getData() {
-		return data;
+		return this.data;
 	}
 
 	public int getLength() {
-		return length;
+		return this.length;
 	}
 
 	public ByteBuffer buffer() {

@@ -318,7 +318,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 		}
 		windowDatas.forEach(windowData -> {
 			if(windowData.getPushTimes() > UtpConfig.MAX_PUSH_TIMES) {
-				LOGGER.warn("消息发送失败次数超限：{}", windowData.getSeqnr());
+				LOGGER.warn("消息发送失败次数超限：{}-{}", windowData.getSeqnr(), windowData.getPushTimes());
 				this.sendWindow.discard(windowData.getSeqnr());
 			} else {
 				data(windowData);

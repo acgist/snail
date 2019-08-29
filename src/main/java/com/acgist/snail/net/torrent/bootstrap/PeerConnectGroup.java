@@ -95,8 +95,6 @@ public class PeerConnectGroup {
 	 * 	<li>长时间没有请求。</li>
 	 * </ul>
 	 * <p>剔除时设置为阻塞。</p>
-	 * 
-	 * TODO：优化计算
 	 */
 	private void inferiorPeerConnect() {
 		final int size = this.peerConnects.size();
@@ -114,11 +112,15 @@ public class PeerConnectGroup {
 				inferiorPeerConnect(tmp);
 				continue;
 			}
-			if(tmp.peerSession().downloading()) {
+			if(tmp.peerSession().downloading()) { // 下载中的Peer提供上传
 				this.peerConnects.offer(tmp);
 				continue;
 			}
 			final long mark = tmp.mark();
+			if(!tmp.marked()) { // 第一次连入还没有被评分
+				this.peerConnects.offer(tmp);
+				continue;
+			}
 			if(mark == 0L) {
 				inferiorPeerConnect(tmp);
 			} else {
