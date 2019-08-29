@@ -85,25 +85,27 @@ public class TorrentStream {
 		if(this.fileStream != null) {
 			throw new IOException("Torrent文件未被释放");
 		}
-		this.file = file;
-		this.fileSize = size;
-		this.fileBeginPos = pos;
-		this.fileEndPos = pos + size;
-		FileUtils.buildFolder(this.file, true); // 创建文件父目录，否者会抛出FileNotFoundException
-		this.fileStream = new RandomAccessFile(this.file, "rw");
-		buildFilePiece();
-		buildFileAsyn(complete, allReady);
-		selectPieces.set(this.fileBeginPieceIndex, this.fileEndPieceIndex + 1, true);
-		LOGGER.debug(
-			"TorrentStream信息，块大小：{}，文件路径：{}，文件大小：{}，文件开始偏移：{}，文件Piece数量：{}，文件Piece开始索引：{}，文件Piece结束索引：{}",
-			this.pieceLength,
-			this.file,
-			this.fileSize,
-			this.fileBeginPos,
-			this.filePieceSize,
-			this.fileBeginPieceIndex,
-			this.fileEndPieceIndex
-		);
+		synchronized (this) {
+			this.file = file;
+			this.fileSize = size;
+			this.fileBeginPos = pos;
+			this.fileEndPos = pos + size;
+			FileUtils.buildFolder(this.file, true); // 创建文件父目录，否者会抛出FileNotFoundException
+			this.fileStream = new RandomAccessFile(this.file, "rw");
+			buildFilePiece();
+			buildFileAsyn(complete, allReady);
+			selectPieces.set(this.fileBeginPieceIndex, this.fileEndPieceIndex + 1, true);
+			LOGGER.debug(
+				"TorrentStream信息，块大小：{}，文件路径：{}，文件大小：{}，文件开始偏移：{}，文件Piece数量：{}，文件Piece开始索引：{}，文件Piece结束索引：{}",
+				this.pieceLength,
+				this.file,
+				this.fileSize,
+				this.fileBeginPos,
+				this.filePieceSize,
+				this.fileBeginPieceIndex,
+				this.fileEndPieceIndex
+			);
+		}
 	}
 	
 	/**
@@ -117,8 +119,8 @@ public class TorrentStream {
 		if(!piece.contain(this.fileBeginPos, this.fileEndPos)) { // 不符合当前文件位置
 			return false;
 		}
-		boolean ok = false;
 		synchronized (this) {
+			boolean ok = false;
 			if(havePiece(piece.getIndex())) {
 				LOGGER.debug("已经下载完成Piece，忽略：{}", piece.getIndex());
 				return false;
@@ -135,8 +137,8 @@ public class TorrentStream {
 			} else {
 				LOGGER.warn("保存Piece失败：{}", piece.getIndex());
 			}
+			return ok;
 		}
-		return ok;
 	}
 	
 	/**
@@ -217,7 +219,9 @@ public class TorrentStream {
 	 * @param pos 数据偏移
 	 */
 	public byte[] read(int index, int size, int pos) {
-		return read(index, size, pos, false);
+		synchronized (this) {
+			return read(index, size, pos, false);
+		}
 	}
 	
 	/**
@@ -260,7 +264,7 @@ public class TorrentStream {
 		try {
 			this.fileStream.seek(seek);
 			this.fileStream.read(bytes);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			LOGGER.error("Piece读取异常：{}-{}-{}-{}", index, size, pos, ignorePieces, e);
 		}
 		return bytes;
@@ -277,11 +281,9 @@ public class TorrentStream {
 	 * Piece下载完成
 	 */
 	private void done(int index) {
-		synchronized (this) {
-			this.pieces.set(index, true); // 下载成功
-			this.downloadPieces.clear(index); // 去掉下载状态
-			this.torrentStreamGroup.piece(index); // 设置下载完成
-		}
+		this.pieces.set(index, true); // 下载成功
+		this.downloadPieces.clear(index); // 去掉下载状态
+		this.torrentStreamGroup.piece(index); // 设置下载完成
 	}
 
 	/**
@@ -375,7 +377,7 @@ public class TorrentStream {
 			try {
 				this.fileStream.seek(seek);
 				this.fileStream.write(piece.getData(), offset, length);
-			} catch (IOException e) {
+			} catch (Exception e) {
 				LOGGER.error("TorrentStream写入异常", e);
 			}
 		});
@@ -544,9 +546,7 @@ public class TorrentStream {
 	 * 是否含有Piece数据
 	 */
 	private boolean havePiece(int index) {
-		synchronized (this) {
-			return this.pieces.get(index);
-		}
+		return this.pieces.get(index);
 	}
 
 }
