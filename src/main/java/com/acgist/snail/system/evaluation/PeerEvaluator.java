@@ -134,12 +134,14 @@ public class PeerEvaluator {
 	 */
 	public void shutdown() {
 		LOGGER.info("Peer评估器关闭");
-		synchronized (this) {
-			try {
-				this.store();
-				this.available = false;
-			} catch (Exception e) {
-				LOGGER.error("Peer评估器关闭异常", e);
+		if(this.available) {
+			this.available = false;
+			synchronized (this) {
+				try {
+					this.store();
+				} catch (Exception e) {
+					LOGGER.error("Peer评估器关闭异常", e);
+				}
 			}
 		}
 	}
@@ -155,9 +157,6 @@ public class PeerEvaluator {
 	 * 记录数据库：只记录分值大于0的数据。
 	 */
 	private void store() {
-		if(!this.available) { // 没有初始化不保存
-			return;
-		}
 		synchronized (this.ranges) {
 			final ConfigRepository repository = new ConfigRepository();
 			final byte[] bytes = BEncodeEncoder.encodeMap(this.ranges);

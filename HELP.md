@@ -2,6 +2,11 @@
 
 如果遇到其他问题请到[Gitee](https://gitee.com/acgist/snail)提交[Issues](https://gitee.com/acgist/snail/issues)。
 
+#### 环境
+Java：11+  
+Maven：3.6.0+  
+系统支持：win、mac、linux
+
 #### BT任务无法下载
 
 * 网络故障
@@ -22,6 +27,7 @@ BT任务上传速度限制和下载速度限制一致，软件启动后不论任
 
 * 是否处于多路由环境。
 * 是否接入了多条网络。
+* 是否开启路由器UPNP功能。
 
 #### 优化下载体验
 

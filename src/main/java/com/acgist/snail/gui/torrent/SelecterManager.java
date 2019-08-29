@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
+import com.acgist.snail.gui.Tooltips;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.protocol.torrent.bean.TorrentFile;
 import com.acgist.snail.utils.CollectionUtils;
@@ -145,7 +146,8 @@ public class SelecterManager {
 			return this.selecter.get(path).getTreeItem();
 		}
 		final CheckBox checkBox = new CheckBox(name);
-		checkBox.setPrefWidth(400);
+		checkBox.setPrefWidth(500);
+		checkBox.setTooltip(Tooltips.newTooltip(name));
 		checkBox.setOnAction(this.selectAction);
 		final HBox box = new HBox(checkBox);
 		if(size != null) { // 设置文件大小
