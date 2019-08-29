@@ -115,8 +115,8 @@ public class TrackerLauncher {
 	 * <p>发送Tracker stop消息，如果下载完成的发送complete信息。</p>
 	 */
 	public void release() {
-		this.available = false;
 		if(this.needRelease && available()) {
+			this.available = false;
 			SystemThreadContext.submit(() -> {
 				try {
 					if(this.torrentSession.completed()) { // 任务完成
