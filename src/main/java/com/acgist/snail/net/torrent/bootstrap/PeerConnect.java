@@ -23,7 +23,11 @@ public class PeerConnect {
 	/**
 	 * 评分：每次记分时记录为上次的下载大小，统计时使用当前下载大小减去上次记录值。
 	 */
-	private AtomicLong mark = new AtomicLong(0);
+	private final AtomicLong mark = new AtomicLong(0);
+	/**
+	 * 已被评分：第一次连入还没有被评分。
+	 */
+	private volatile boolean marked = false;
 	
 	private volatile boolean available = false; // 状态：连接是否成功
 	
@@ -59,7 +63,18 @@ public class PeerConnect {
 	}
 	
 	/**
-	 * 评分
+	 * 已经评分
+	 */
+	public boolean marked() {
+		if(this.marked) {
+			return this.marked;
+		}
+		this.marked = true;
+		return false;
+	}
+	
+	/**
+	 * 评分，每次记录旧上传大小。
 	 */
 	public long mark() {
 		final long nowSize = this.peerSession.statistics().uploadSize();
