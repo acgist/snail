@@ -25,7 +25,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Color;
@@ -59,7 +58,7 @@ public class TrayMenu extends Menu {
 		this.support = SystemTray.isSupported();
 		if(support) {
 			init();
-			buildMenu();
+			initMenu();
 			enableTray();
 		}
 	}
@@ -86,13 +85,13 @@ public class TrayMenu extends Menu {
 	private MenuItem supportMenu;
 
 	@Override
-	protected void buildMenu() {
-		this.showMenu = new MenuItem("显示", new ImageView("/image/16/show.png"));
-		this.hideMenu = new MenuItem("隐藏", new ImageView("/image/16/hide.png"));
-		this.sourceMenu = new MenuItem("官网与源码", new ImageView("/image/16/source.png"));
-		this.supportMenu = new MenuItem("问题与建议", new ImageView("/image/16/support.png"));
-		this.aboutMenu = new MenuItem("关于", new ImageView("/image/16/about.png"));
-		this.exitMenu = new MenuItem("退出", new ImageView("/image/16/exit.png"));
+	protected void initMenu() {
+		this.showMenu = buildMenuItem("显示", "/image/16/show.png");
+		this.hideMenu = buildMenuItem("隐藏", "/image/16/hide.png");
+		this.sourceMenu = buildMenuItem("官网与源码", "/image/16/source.png");
+		this.supportMenu = buildMenuItem("问题与建议", "/image/16/support.png");
+		this.aboutMenu = buildMenuItem("关于", "/image/16/about.png");
+		this.exitMenu = buildMenuItem("退出", "/image/16/exit.png");
 		
 		this.showMenu.setOnAction(this.showAction);
 		this.hideMenu.setOnAction(this.hideAction);

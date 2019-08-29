@@ -3,6 +3,7 @@ package com.acgist.snail.gui;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.image.ImageView;
 
 /**
  * 抽象菜单
@@ -39,8 +40,35 @@ public abstract class Menu extends ContextMenu {
 	}
 	
 	/**
-	 * 创建菜单
+	 * 创建菜单项
+	 * 
+	 * @param value 菜单名称
+	 * 
+	 * @return 菜单项
 	 */
-	protected abstract void buildMenu();
+	protected MenuItem buildMenuItem(String value) {
+		return buildMenuItem(value, null);
+	}
+	
+	/**
+	 * 创建菜单项
+	 * 
+	 * @param value 菜单名称
+	 * @param icon 菜单图标
+	 * 
+	 * @return 菜单项
+	 */
+	protected MenuItem buildMenuItem(String value, String icon) {
+		if(icon == null) {
+			return new MenuItem(value);
+		} else {
+			return new MenuItem(value, new ImageView(icon));
+		}
+	}
+	
+	/**
+	 * 初始化所有菜单
+	 */
+	protected abstract void initMenu();
 	
 }
