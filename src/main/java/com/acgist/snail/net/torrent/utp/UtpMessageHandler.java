@@ -275,9 +275,11 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	public boolean connect() {
 		this.connect = false;
 		this.syn();
-		synchronized (this.connectLock) {
-			if(!this.connectLock.get()) {
-				ThreadUtils.wait(this.connectLock, Duration.ofSeconds(PeerConfig.MAX_PEER_CONNECT_TIMEOUT));
+		if(!this.connectLock.get()) {
+			synchronized (this.connectLock) {
+				if(!this.connectLock.get()) {
+					ThreadUtils.wait(this.connectLock, Duration.ofSeconds(PeerConfig.MAX_PEER_CONNECT_TIMEOUT));
+				}
 			}
 		}
 		return this.connect;

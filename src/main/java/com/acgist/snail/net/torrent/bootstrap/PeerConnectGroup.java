@@ -64,8 +64,8 @@ public class PeerConnectGroup {
 	 * 优化
 	 */
 	public void optimize() {
+		LOGGER.debug("优化PeerConnect");
 		synchronized (this.peerConnects) {
-			LOGGER.debug("优化PeerConnect");
 			try {
 				inferiorPeerConnect();
 			} catch (Exception e) {
@@ -78,8 +78,8 @@ public class PeerConnectGroup {
 	 * 释放资源
 	 */
 	public void release() {
+		LOGGER.debug("释放PeerConnectGroup");
 		synchronized (this.peerConnects) {
-			LOGGER.debug("释放PeerConnectGroup");
 			this.peerConnects.forEach(connect -> {
 				SystemThreadContext.submit(() -> {
 					connect.release();

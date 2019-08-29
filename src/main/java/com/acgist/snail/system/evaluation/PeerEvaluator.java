@@ -57,7 +57,7 @@ public class PeerEvaluator {
 		connect(1), // 连接
 		download(3); // 下载
 
-		private int score;
+		private int score; // 评分
 		
 		Type(int score) {
 			this.score = score;
@@ -112,7 +112,7 @@ public class PeerEvaluator {
 
 	/**
 	 * 计分
-	 * 不同步，运行出现误差
+	 * 不同步，允许运行出现误差
 	 */
 	public void score(PeerSession peerSession, Type type) {
 		if(!this.available) { // 没有初始化不计分

@@ -95,7 +95,9 @@ public class WebSocketMessageHandler implements IMessageHandler {
 	@Override
 	public void close() {
 		this.close = true;
-		this.socket.sendClose(WebSocket.NORMAL_CLOSURE, "Close");
+		synchronized (this.socket) {
+			this.socket.sendClose(WebSocket.NORMAL_CLOSURE, "Close");
+		}
 	}
 
 }

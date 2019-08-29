@@ -43,8 +43,8 @@ public class TrackerLauncherGroup {
 	public List<String> trackers() {
 		synchronized (this.trackerLaunchers) {
 			return this.trackerLaunchers.stream()
-			.map(launcher -> launcher.announceUrl())
-			.collect(Collectors.toList());
+				.map(launcher -> launcher.announceUrl())
+				.collect(Collectors.toList());
 		}
 	}
 	

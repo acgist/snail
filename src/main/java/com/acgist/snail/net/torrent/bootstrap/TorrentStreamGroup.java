@@ -139,7 +139,7 @@ public class TorrentStreamGroup {
 		if(index < 0) {
 			return false;
 		}
-		return pieces.get(index);
+		return this.pieces.get(index);
 	}
 
 	/**
@@ -155,7 +155,7 @@ public class TorrentStreamGroup {
 			throw new NetException("超过最大的网络包大小：" + length);
 		}
 		final ByteBuffer buffer = ByteBuffer.allocate(length);
-		for (TorrentStream torrentStream : streams) {
+		for (TorrentStream torrentStream : this.streams) {
 			final byte[] bytes = torrentStream.read(index, length, begin);
 			if(bytes != null) {
 				buffer.put(bytes);
@@ -179,7 +179,7 @@ public class TorrentStreamGroup {
 	 */
 	public boolean piece(TorrentPiece piece) {
 		boolean ok = false;
-		for (TorrentStream torrentStream : streams) {
+		for (TorrentStream torrentStream : this.streams) {
 			if(torrentStream.piece(piece)) {
 				ok = true; // 不能跳出，可能存在一个Piece多个文件的情况。
 			}
@@ -198,8 +198,8 @@ public class TorrentStreamGroup {
 	 * <p>设置已下载的Piece，同时发出have消息。</p>
 	 */
 	public void piece(int index) {
-		pieces.set(index, true);
-		torrentSession.have(index);
+		this.pieces.set(index, true);
+		this.torrentSession.have(index);
 	}
 	
 	/**
@@ -220,7 +220,7 @@ public class TorrentStreamGroup {
 	 * 获取Piece的Hash校验
 	 */
 	public byte[] pieceHash(int index) {
-		final byte[] pieces = torrent.getInfo().getPieces();
+		final byte[] pieces = this.torrent.getInfo().getPieces();
 		final byte[] value = new byte[TorrentInfo.PIECE_HASH_LENGTH];
 		System.arraycopy(pieces, index * TorrentInfo.PIECE_HASH_LENGTH, value, 0, TorrentInfo.PIECE_HASH_LENGTH);
 		return value;
@@ -231,7 +231,7 @@ public class TorrentStreamGroup {
 	 * <p>调用每个{@link TorrentStream#undone}进行设置。</p>
 	 */
 	public void undone(TorrentPiece piece) {
-		for (TorrentStream torrentStream : streams) {
+		for (TorrentStream torrentStream : this.streams) {
 			torrentStream.undone(piece);
 		}
 	}
@@ -250,7 +250,7 @@ public class TorrentStreamGroup {
 	 * <p>所有的TorrentStream完成才能判断为完成。</p>
 	 */
 	public boolean complete() {
-		for (TorrentStream torrentStream : streams) {
+		for (TorrentStream torrentStream : this.streams) {
 			if(!torrentStream.complete()) {
 				return false;
 			}
@@ -263,7 +263,7 @@ public class TorrentStreamGroup {
 	 */
 	public void release() {
 		LOGGER.debug("释放TorrentStreamGroup");
-		for (TorrentStream torrentStream : streams) {
+		for (TorrentStream torrentStream : this.streams) {
 			torrentStream.release();
 		}
 	}

@@ -99,35 +99,35 @@ public class SystemConsole {
 		final var download = new AtomicInteger(0);
 		final var available = new AtomicInteger(0);
 		peers.entrySet().stream()
-		.filter(entry -> entry.getValue() != null)
-		.forEach(entry -> {
-			final var list = entry.getValue();
-			list.forEach(peer -> {
-				if(peer.dht()) {
-					dht.incrementAndGet();
-				}
-				if(peer.pex()) {
-					pex.incrementAndGet();
-				}
-				if(peer.utp()) {
-					utp.incrementAndGet();
-				}
-				if(peer.tracker()) {
-					tracker.incrementAndGet();
-				}
-				if(peer.connect()) {
-					connect.incrementAndGet();
-				}
-				if(peer.uploading()) {
-					upload.incrementAndGet();
-				}
-				if(peer.downloading()) {
-					download.incrementAndGet();
-				}
-				if(peer.available()) {
-					available.incrementAndGet();
-				}
-			});
+			.filter(entry -> entry.getValue() != null)
+			.forEach(entry -> {
+				final var list = entry.getValue();
+				list.forEach(peer -> {
+					if(peer.dht()) {
+						dht.incrementAndGet();
+					}
+					if(peer.pex()) {
+						pex.incrementAndGet();
+					}
+					if(peer.utp()) {
+						utp.incrementAndGet();
+					}
+					if(peer.tracker()) {
+						tracker.incrementAndGet();
+					}
+					if(peer.connect()) {
+						connect.incrementAndGet();
+					}
+					if(peer.uploading()) {
+						upload.incrementAndGet();
+					}
+					if(peer.downloading()) {
+						download.incrementAndGet();
+					}
+					if(peer.available()) {
+						available.incrementAndGet();
+					}
+				});
 			this.builder
 				.append("Peer InfoHashHex：").append(entry.getKey()).append("，")
 				.append("Peer数量：").append(list.size()).append("，")

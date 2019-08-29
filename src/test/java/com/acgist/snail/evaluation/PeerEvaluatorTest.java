@@ -14,20 +14,6 @@ import com.acgist.snail.utils.NetUtils;
 public class PeerEvaluatorTest {
 
 	@Test
-	public void match() {
-		long begin = System.currentTimeMillis();
-		for (int index = 0; index < 100000; index++) {
-			NetUtils.encodeIpToInt("127.0.0.1");
-			for (int jndex = 0; jndex < 65536; jndex++) {
-				if(index < jndex) {
-				}
-			}
-		}
-		long end = System.currentTimeMillis();
-		System.out.println(end - begin);
-	}
-
-	@Test
 	public void merge() {
 		ConfigRepository repository = new ConfigRepository();
 		Map<Integer, Long> map = new HashMap<>();
@@ -53,7 +39,8 @@ public class PeerEvaluatorTest {
 		if(map != null) {
 			map.entrySet().stream()
 			.sorted((a, b) -> {
-				return a.getKey().compareTo(b.getKey());
+//				return a.getKey().compareTo(b.getKey()); // IP段
+				return a.getValue().compareTo(b.getValue()); // 评分
 			})
 			.forEach(entry -> {
 				System.out.print(String.format("%05d", entry.getKey()) + "=" + entry.getValue());

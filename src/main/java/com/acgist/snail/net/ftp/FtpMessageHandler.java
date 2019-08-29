@@ -193,9 +193,11 @@ public class FtpMessageHandler extends TcpMessageHandler {
 	 * 锁定命令
 	 */
 	private void lockCommand() {
-		synchronized (this.commandLock) {
-			if(!this.commandLock.get()) {
-				ThreadUtils.wait(this.commandLock, Duration.ofSeconds(5));
+		if(!this.commandLock.get()) {
+			synchronized (this.commandLock) {
+				if(!this.commandLock.get()) {
+					ThreadUtils.wait(this.commandLock, Duration.ofSeconds(5));
+				}
 			}
 		}
 	}
