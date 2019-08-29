@@ -11,8 +11,8 @@
 	<a target="_blank" href="https://gitee.com/acgist/snail">
 		<img alt="Version" src="https://img.shields.io/badge/Version-1.1.0-blue.svg?style=flat-square" />
 	</a>
-	<a target="_blank" href="https://gitee.com/acgist/snail/releases/v1.0.2">
-		<img alt="Release" src="https://img.shields.io/badge/Release-1.0.2-blueviolet.svg?style=flat-square" />
+	<a target="_blank" href="https://gitee.com/acgist/snail/releases/v1.1.0">
+		<img alt="Release" src="https://img.shields.io/badge/Release-1.1.0-blueviolet.svg?style=flat-square" />
 	</a>
 	<a target="_blank" href="https://openjdk.java.net/">
 		<img alt="Java" src="https://img.shields.io/badge/Java-11-yellow.svg?style=flat-square" />
