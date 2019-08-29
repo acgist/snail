@@ -33,6 +33,8 @@ public class Tooltips {
 	public static final Tooltip newTooltip(String value, int millis) {
 		final Tooltip tooltip = new Tooltip(value);
 		tooltip.setShowDelay(Duration.millis(millis));
+		tooltip.setStyle("-fx-text-fill:#000;-fx-background-color:#fff;");
+		tooltip.setOpacity(0.94D);
 		return tooltip;
 	}
 	

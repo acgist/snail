@@ -20,7 +20,7 @@ public abstract class Menu extends ContextMenu {
 	 * </ul>
 	 */
 	protected void init() {
-		this.setOpacity(0.94);
+		this.setOpacity(0.94D);
 		this.setStyle("-fx-padding:1;");
 	}
 	
