@@ -23,7 +23,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuItem;
-import javafx.scene.image.ImageView;
 import javafx.stage.WindowEvent;
 
 /**
@@ -40,7 +39,7 @@ public class TaskMenu extends Menu {
 	
 	private TaskMenu() {
 		init();
-		buildMenu();
+		initMenu();
 	}
 
 	static {
@@ -66,15 +65,15 @@ public class TaskMenu extends Menu {
 	private MenuItem openFolderMenu;
 	
 	@Override
-	protected void buildMenu() {
-		this.startMenu = new MenuItem("开始", new ImageView("/image/16/start.png"));
-		this.pauseMenu = new MenuItem("暂停", new ImageView("/image/16/pause.png"));
-		this.deleteMenu = new MenuItem("删除", new ImageView("/image/16/delete.png"));
-		this.copyUrlMenu = new MenuItem("复制地址", new ImageView("/image/16/download.png"));
-		this.torrentMenu = new MenuItem("文件选择", new ImageView("/image/16/edit.png"));
-		this.exportTorrentMenu = new MenuItem("导出种子", new ImageView("/image/16/export.png"));
-		this.verifyMenu = new MenuItem("文件校验", new ImageView("/image/16/verify.png"));
-		this.openFolderMenu = new MenuItem("打开目录", new ImageView("/image/16/folder.png"));
+	protected void initMenu() {
+		this.startMenu = buildMenuItem("开始", "/image/16/start.png");
+		this.pauseMenu = buildMenuItem("暂停", "/image/16/pause.png");
+		this.deleteMenu = buildMenuItem("删除", "/image/16/delete.png");
+		this.copyUrlMenu = buildMenuItem("复制地址", "/image/16/download.png");
+		this.torrentMenu = buildMenuItem("文件选择", "/image/16/edit.png");
+		this.exportTorrentMenu = buildMenuItem("导出种子", "/image/16/export.png");
+		this.verifyMenu = buildMenuItem("文件校验", "/image/16/verify.png");
+		this.openFolderMenu = buildMenuItem("打开目录", "/image/16/folder.png");
 		
 		this.startMenu.setOnAction(this.startEvent);
 		this.pauseMenu.setOnAction(this.pauseEvent);
