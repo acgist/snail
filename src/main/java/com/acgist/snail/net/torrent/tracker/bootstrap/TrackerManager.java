@@ -165,8 +165,8 @@ public class TrackerManager {
 	 * 注册TrackerClient。
 	 */
 	private List<TrackerClient> register(List<String> announces) throws DownloadException {
-		if(CollectionUtils.isEmpty(announces)) {
-			throw new DownloadException("AnnounceUrl不合法");
+		if(announces == null) {
+			announces = new ArrayList<>();
 		}
 		return announces.stream()
 			.map(announce -> announce.trim())

@@ -12,7 +12,6 @@ import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
-import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NumberUtils;
 
@@ -121,11 +120,13 @@ public class TrackerLauncher {
 			SystemThreadContext.submit(() -> {
 				try {
 					if(this.torrentSession.completed()) { // 任务完成
+						LOGGER.debug("Tracker完成通知：{}", this.client.announceUrl());
 						this.client.complete(this.id, this.torrentSession);
 					} else { // 任务暂停
+						LOGGER.debug("Tracker暂停通知：{}", this.client.announceUrl());
 						this.client.stop(this.id, this.torrentSession);
 					}
-				} catch (NetException e) {
+				} catch (Exception e) {
 					LOGGER.error("TrackerLauncher释放异常", e);
 				}
 				TrackerManager.getInstance().release(this.id);
