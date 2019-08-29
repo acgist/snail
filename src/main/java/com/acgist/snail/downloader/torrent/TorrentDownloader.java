@@ -28,7 +28,7 @@ public class TorrentDownloader extends Downloader {
 	
 	private TorrentSession torrentSession;
 	
-	private Object downloadLock = new Object(); // 下载锁
+	private final Object downloadLock = new Object(); // 下载锁
 	
 	private TorrentDownloader(TaskSession taskSession) {
 		super(taskSession);

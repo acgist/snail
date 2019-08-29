@@ -25,7 +25,7 @@ public class PeerSession implements IStatistics {
 	private byte[] id; // Peer id
 	private String clientName; // Peer客户端名称
 
-	private int failTimes = 0; // 失败次数：如果失败次数过多不在连接
+	private int failTimes = 0; // 失败次数：如果失败次数过多不再连接
 	
 	private byte[] reserved; // 保留位
 	
@@ -47,8 +47,8 @@ public class PeerSession implements IStatistics {
 	
 	private final StatisticsSession statistics;
 	
-	private PeerConnect peerConnect;
-	private PeerLauncher peerLauncher;
+	private PeerConnect peerConnect; // 接入Peer（上传）
+	private PeerLauncher peerLauncher; // 连接Peer（下载）
 	
 	private final Map<PeerConfig.ExtensionType, Byte> extension; // 支持的扩展协议
 
@@ -228,6 +228,9 @@ public class PeerSession implements IStatistics {
 		return this.extension.get(type);
 	}
 	
+	/**
+	 * 增加失败次数
+	 */
 	public void fail() {
 		this.failTimes++;
 	}
@@ -235,7 +238,7 @@ public class PeerSession implements IStatistics {
 	/**
 	 * 是否可用：
 	 * 	失败次数小于最大失败次数
-	 * 	有可用端口（如果是主动连接上来的客户端可能没有获取到端口号）
+	 * 	有可用端口（如果是主动连接的客户端可能没有获取到端口号）
 	 */
 	public boolean available() {
 		return

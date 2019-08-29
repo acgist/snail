@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.gui.Window;
-import com.acgist.snail.gui.about.AboutWindow;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.context.SystemConsole;
 import com.acgist.snail.utils.BrowseUtils;
@@ -35,7 +34,7 @@ public class MainWindow extends Window<MainController> {
 	}
 	
 	static {
-		synchronized (AboutWindow.class) {
+		synchronized (MainWindow.class) {
 			if(INSTANCE == null) {
 				LOGGER.debug("初始化主窗口");
 				INSTANCE = new MainWindow();

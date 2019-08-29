@@ -457,7 +457,7 @@ public class TorrentSession {
 		LOGGER.debug("Torrent释放资源（上传）");
 		SystemThreadContext.shutdown(this.peerConnectGroupTimer);
 		if(this.peerConnectGroup != null) {
-			this.peerConnectGroup.release();
+			this.peerConnectGroup.release(); // 上传时删除：TODO：优化卡死
 		}
 		if(this.torrentStreamGroup != null) {
 			this.torrentStreamGroup.release();

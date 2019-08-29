@@ -98,9 +98,11 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	@Override
 	public void delete() {
 		this.pause(); // 暂停
-		synchronized (this.deleteLock) {
-			if(!this.deleteLock.get()) {
-				ThreadUtils.wait(this.deleteLock, Duration.ofSeconds(5));
+		if(!this.deleteLock.get()) {
+			synchronized (this.deleteLock) {
+				if(!this.deleteLock.get()) {
+					ThreadUtils.wait(this.deleteLock, Duration.ofSeconds(5));
+				}
 			}
 		}
 		TaskRepository repository = new TaskRepository();

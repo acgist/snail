@@ -19,7 +19,8 @@ import com.acgist.snail.utils.ObjectUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
- * 优先使用UTP、然后使用TCP。
+ * <p>Peer下载</p>
+ * <p>提供下载功能，根据是否支持UTP选择使用UTP还是TCP。</p>
  * 
  * @author acgist
  * @since 1.1.0
@@ -45,14 +46,14 @@ public class PeerLauncher {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerLauncher.class);
 	
-	private boolean launcher = false; // 是否启动
+	private volatile boolean launcher = false; // 是否启动
 	private volatile boolean available = false; // 状态：连接是否成功
 	private volatile boolean havePieceMessage = false; // 状态：是否返回数据
 	
 	private TorrentPiece downloadPiece; // 下载的Piece信息
 	
-	private final Object closeLock = new Object(); // 关闭锁
 	private final AtomicInteger countLock = new AtomicInteger(0); // Piece分片锁
+	private final AtomicBoolean releaseLock = new AtomicBoolean(false); // 释放锁
 	private final AtomicBoolean completeLock = new AtomicBoolean(false); // Piece完成锁
 	
 	/**
@@ -84,15 +85,14 @@ public class PeerLauncher {
 	 * 开始下载：发送请求
 	 */
 	public void download() {
-		if(this.launcher) {
-			return;
-		}
-		synchronized (this) {
-			if(!this.launcher) {
-				this.launcher = true;
-				this.torrentSession.submit(() -> {
-					requests();
-				});
+		if(!this.launcher) {
+			synchronized (this) {
+				if(!this.launcher) {
+					this.launcher = true;
+					this.torrentSession.submit(() -> {
+						requests();
+					});
+				}
 			}
 		}
 	}
@@ -114,7 +114,7 @@ public class PeerLauncher {
 	}
 	
 	/**
-	 * 连接，优先使用TUP、然后使用TCP。
+	 * 连接
 	 */
 	private boolean connect() {
 		if(this.peerSession.utp()) {
@@ -149,7 +149,7 @@ public class PeerLauncher {
 			return;
 		}
 		if(index != this.downloadPiece.getIndex()) {
-			LOGGER.warn("下载Piece索引不符");
+			LOGGER.warn("下载Piece索引不符：{}-{}", index, this.downloadPiece.getIndex());
 			return;
 		}
 		this.havePieceMessage = true;
@@ -178,8 +178,12 @@ public class PeerLauncher {
 				LOGGER.debug("PeerLauncher关闭：{}-{}", this.peerSession.host(), this.peerSession.peerPort());
 				this.available = false;
 				if(!this.completeLock.get()) { // 没有完成：等待下载完成
-					synchronized (this.closeLock) {
-						ThreadUtils.wait(this.closeLock, Duration.ofSeconds(CLOSE_AWAIT_TIME));
+					if(!this.releaseLock.get()) {
+						synchronized (this.releaseLock) {
+							if(!this.releaseLock.getAndSet(true)) {
+								ThreadUtils.wait(this.releaseLock, Duration.ofSeconds(CLOSE_AWAIT_TIME));
+							}
+						}
 					}
 				}
 				this.peerSubMessageHandler.close();
@@ -274,9 +278,9 @@ public class PeerLauncher {
 				ThreadUtils.wait(this.completeLock, Duration.ofSeconds(PIECE_AWAIT_TIME));
 			}
 		}
-		if(!this.available) { // 已经关闭唤醒关闭等待
-			synchronized (this.closeLock) {
-				this.closeLock.notifyAll();
+		if(this.releaseLock.get()) { // 已经关闭
+			synchronized (this.releaseLock) {
+				this.releaseLock.notifyAll();
 			}
 		}
 		if(this.countLock.get() > 0) { // 没有下载完成

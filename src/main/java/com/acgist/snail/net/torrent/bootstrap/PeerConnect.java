@@ -10,7 +10,8 @@ import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.system.config.PeerConfig;
 
 /**
- * Peer连接
+ * <p>Peer连接</p>
+ * <p>提供分享上传功能</p>
  * 
  * @author acgist
  * @since 1.0.2
