@@ -139,7 +139,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 		final BEncodeDecoder decoder = BEncodeDecoder.newInstance(bytes);
 		final Map<String, Object> data = decoder.nextMap();
 		if(data == null) {
-			LOGGER.warn("扩展握手消息格式错误：{}", decoder.obbString());
+			LOGGER.warn("扩展握手消息格式错误：{}", decoder.oddString());
 			return;
 		}
 		final Long port = decoder.getLong(EX_P);

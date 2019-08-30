@@ -8,9 +8,11 @@ import org.junit.Test;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
+import com.acgist.snail.protocol.torrent.bean.TorrentFile;
 import com.acgist.snail.protocol.torrent.bean.TorrentInfo;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.DateUtils;
+import com.acgist.snail.utils.StringUtils;
 
 public class TorrentTest {
 
@@ -49,19 +51,18 @@ public class TorrentTest {
 		System.out.println(torrentInfo.getPieces());
 		System.out.println(torrentInfo.ed2kHex());
 		System.out.println(torrentInfo.filehashHex());
-//		if (torrentInfo.getFiles().size() > 0) {
-//			for (TorrentFile file : torrentInfo.getFiles()) {
-//				System.out.println("----------------file----------------");
-//				System.out.println("文件长度：" + file.getLength());
-//				System.out.println("ed2k：" + StringUtils.hex(file.getEd2k()));
-//				System.out.println("filehash：" + StringUtils.hex(file.getFilehash()));
-//				if (file.getPath().size() > 0) {
-//					System.out.println("文件路径：" + String.join("/", file.getPath()));
-//					System.out.println("文件路径UTF-8：" + String.join("/", file.getPathUtf8()));
-//				}
-//			}
-//		}
-//		System.out.println(JsonUtils.toJson(torrent));
+		if (torrentInfo.getFiles().size() > 0) {
+			for (TorrentFile file : torrentInfo.getFiles()) {
+				System.out.println("----------------file----------------");
+				System.out.println("文件长度：" + file.getLength());
+				System.out.println("ed2k：" + StringUtils.hex(file.getEd2k()));
+				System.out.println("filehash：" + StringUtils.hex(file.getFilehash()));
+				if (file.getPath().size() > 0) {
+					System.out.println("文件路径：" + String.join("/", file.getPath()));
+					System.out.println("文件路径UTF-8：" + String.join("/", file.getPathUtf8()));
+				}
+			}
+		}
 	}
 	
 	@Test
