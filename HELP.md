@@ -1,6 +1,6 @@
 # 帮助（常见问题）
 
-如果遇到其他问题请到[Gitee](https://gitee.com/acgist/snail)提交[Issues](https://gitee.com/acgist/snail/issues)。
+如果遇到其他问题或者建议请提交[Issues](https://gitee.com/acgist/snail/issues)。
 
 #### 环境
 Java：11+  

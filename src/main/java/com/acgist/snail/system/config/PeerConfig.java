@@ -44,7 +44,8 @@ public class PeerConfig {
 	 */
 	public static final int RESERVED_LENGTH = 8;
 	/**
-	 * 保留位：http://www.bittorrent.org/beps/bep_0004.html
+	 * 保留位
+	 * 参考链接：http://www.bittorrent.org/beps/bep_0004.html
 	 */
 	public static final byte[] HANDSHAKE_RESERVED = {0, 0, 0, 0, 0, 0, 0, 0};
 	

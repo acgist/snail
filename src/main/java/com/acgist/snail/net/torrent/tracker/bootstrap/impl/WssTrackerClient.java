@@ -14,7 +14,6 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>Tracker WSS（WebSocket） 客户端</p>
- * <p>协议链接：http://www.bittorrent.org/beps/bep_0015.html</p>
  * 
  * @author acgist
  * @since 1.1.0
