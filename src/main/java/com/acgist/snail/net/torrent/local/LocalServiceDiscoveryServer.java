@@ -4,7 +4,7 @@ import com.acgist.snail.net.UdpServer;
 import com.acgist.snail.utils.NetUtils;
 
 /**
- * 本地发现Server
+ * 本地发现服务端
  * 
  * @author acgist
  * @since 1.0.0
@@ -20,7 +20,7 @@ public class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDiscovery
 	public static final String LSD_HOST_IPv6 = "[ff15::efc0:988f]";
 	
 	public LocalServiceDiscoveryServer() {
-		// 不监听UPNP端口，否者收到很多其他信息。
+		// 监听组播端口
 		super(NetUtils.buildUdpChannel(LSD_PORT, true), "LSD Server", LocalServiceDiscoveryAcceptHandler.getInstance());
 		this.join(LSD_TTL, LSD_HOST);
 		this.handler();

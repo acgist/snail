@@ -6,7 +6,6 @@ import com.acgist.snail.net.UdpClient;
 
 /**
  * <p>Tracker Client</p>
- * <p>UDP协议、随机端口。</p>
  * 
  * @author acgist
  * @since 1.0.0

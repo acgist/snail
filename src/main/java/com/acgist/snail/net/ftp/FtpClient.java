@@ -15,7 +15,7 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>FTP客户端</p>
- * <p>默认编码：GBK。连接登陆成功后会发送FEAT指令，如果支持UTF8指令，会切换UTF-8编码。</p>
+ * <p>默认编码：GBK，连接登陆成功后会发送FEAT指令，如果支持UTF8指令，会切换UTF-8编码。</p>
  * 
  * @author acgist
  * @since 1.0.0

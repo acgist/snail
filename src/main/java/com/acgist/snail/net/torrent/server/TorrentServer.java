@@ -4,7 +4,7 @@ import com.acgist.snail.net.UdpServer;
 import com.acgist.snail.system.config.SystemConfig;
 
 /**
- * UDP服务：UTP、DHT
+ * Torrent服务端：UTP、DHT
  * 
  * @author acgist
  * @since 1.1.0

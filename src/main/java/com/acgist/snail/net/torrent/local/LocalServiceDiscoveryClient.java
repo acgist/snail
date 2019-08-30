@@ -15,7 +15,6 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>本地发现客户端</p>
- * <p>基本协议：UDP</p>
  * 
  * @author acgist
  * @since 1.1.0

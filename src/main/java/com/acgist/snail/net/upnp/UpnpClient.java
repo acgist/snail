@@ -11,7 +11,6 @@ import com.acgist.snail.utils.NetUtils;
 
 /**
  * <p>UPNP客户端</p>
- * <p>UDP协议、随机端口。</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -36,14 +35,14 @@ public class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	}
 	
 	/**
-	 * 配置UPNP，发送M-SEARCH消息。
+	 * 发送M-SEARCH消息
 	 */
 	public void mSearch() {
-		LOGGER.debug("配置UPNP");
+		LOGGER.debug("发送mSearch消息");
 		try {
 			send(buildMSearch());
 		} catch (NetException e) {
-			LOGGER.error("发送UPNP消息异常", e);
+			LOGGER.error("发送mSearch消息异常", e);
 		}
 	}
 	

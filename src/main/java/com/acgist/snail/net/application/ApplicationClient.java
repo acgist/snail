@@ -13,7 +13,8 @@ import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.NetUtils;
 
 /**
- * 系统客户端（启动检测）：如果已经启动实例，唤醒已启动的窗口
+ * <p>系统客户端</p>
+ * <p>启动检测：如果已经启动实例，唤醒已启动的窗口</p>
  * 
  * @author acgist
  * @since 1.0.0

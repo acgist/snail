@@ -3,7 +3,7 @@ package com.acgist.snail.net.upnp;
 import com.acgist.snail.net.UdpServer;
 
 /**
- * Upnp Server
+ * UPNP服务端
  * 
  * @author acgist
  * @since 1.0.0
