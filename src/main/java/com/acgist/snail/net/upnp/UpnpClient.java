@@ -51,12 +51,12 @@ public class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	private String mSearch() {
 		final String newLine = "\r\n";
 		final StringBuilder builder = new StringBuilder();
-		builder.append("M-SEARCH * HTTP/1.1").append(newLine)
+		builder
+			.append("M-SEARCH * HTTP/1.1").append(newLine)
 			.append("HOST: 239.255.255.250:1900").append(newLine)
 			.append("MX: 3").append(newLine)
 			.append("ST: urn:schemas-upnp-org:device:InternetGatewayDevice:1").append(newLine)
-			.append("MAN: \"ssdp:discover\"").append(newLine)
-			.append(newLine);
+			.append("MAN: \"ssdp:discover\"").append(newLine);
 		return builder.toString();
 	}
 

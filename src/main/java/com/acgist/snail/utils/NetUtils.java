@@ -227,7 +227,7 @@ public class NetUtils {
 	 * <p>创建UDP通道</p>
 	 */
 	public static final DatagramChannel buildUdpChannel(final int port) {
-		return buildUdpChannel(null, port, false);
+		return buildUdpChannel(null, port);
 	}
 	
 	/**
@@ -259,9 +259,9 @@ public class NetUtils {
 			if(reuseaddr) {
 				channel.setOption(StandardSocketOptions.SO_REUSEADDR, true);
 			}
-//			channel.connect(NetUtils.buildSocketAddress(host, port)); // 连接后使用：read、write
 			if(port >= 0) {
 				channel.bind(NetUtils.buildSocketAddress(host, port)); // 监听端口：UDP服务端和客户端使用同一个端口
+//				channel.connect(NetUtils.buildSocketAddress(host, port)); // 连接后使用：read、write
 			}
 		} catch (IOException e) {
 			IoUtils.close(channel);
