@@ -7,10 +7,11 @@ import java.util.Map;
  * <p>Peer配置</p>
  * <p>
  * 命名方式：<br>
- * Azureus-style：-名称（2）+版本（4）-随机数<br>
- * Shadow's-style：名称（1）+版本（4）----随机数<br>
- * 参考链接：http://www.bittorrent.org/beps/bep_0020.html
+ * Azureus-style：-名称（2）+版本（4）-随机数：-SA1000-...<br>
+ * Shadow's-style：名称（1）+版本（4）-----随机数：S1000-----...<br>
  * </p>
+ * <p>Peer ID Conventions</p>
+ * <p>参考链接：http://www.bittorrent.org/beps/bep_0020.html</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -44,8 +45,8 @@ public class PeerConfig {
 	 */
 	public static final int RESERVED_LENGTH = 8;
 	/**
-	 * 保留位
-	 * 参考链接：http://www.bittorrent.org/beps/bep_0004.html
+	 * <p>保留位</p>
+	 * <p>参考链接：http://www.bittorrent.org/beps/bep_0004.html</p>
 	 */
 	public static final byte[] HANDSHAKE_RESERVED = {0, 0, 0, 0, 0, 0, 0, 0};
 	

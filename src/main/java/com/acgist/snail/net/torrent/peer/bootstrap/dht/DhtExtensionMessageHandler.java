@@ -14,8 +14,8 @@ import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.NetUtils;
 
 /**
- * <p>DHT Protocol</p>
- * <p>协议链接：http://www.bittorrent.org/beps/bep_0005.html</p>
+ * <p>DHT Extension</p>
+ * <p>协议链接：http://www.bittorrent.org/beps/bep_0004.html</p>
  * 
  * @author acgist
  * @since 1.0.0

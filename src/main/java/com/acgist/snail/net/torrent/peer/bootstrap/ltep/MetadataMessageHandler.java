@@ -21,8 +21,8 @@ import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
+ * <p>InfoHash交换种子文件信息</p>
  * <p>Extension for Peers to Send Metadata Files</p>
- * <p>infoHash交换种子文件信息。</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0009.html</p>
  * TODO：大量请求时拒绝请求
  * 

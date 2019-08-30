@@ -22,9 +22,8 @@ import com.acgist.snail.utils.CollectionUtils;
 
 /**
  * <p>LTEP（Libtorrent Extension Protocol）扩展协议</p>
- * <p>协议链接：http://www.bittorrent.org/beps/bep_0009.html</p>
+ * <p>Extension Protocol</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0010.html</p>
- * <p>协议链接：http://www.bittorrent.org/beps/bep_0011.html</p>
  * 
  * @author acgist
  * @since 1.0.0

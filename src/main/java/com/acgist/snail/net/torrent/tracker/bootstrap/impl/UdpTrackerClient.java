@@ -16,7 +16,8 @@ import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
- * <p>Tracker UDP 客户端</p>
+ * <p>Tracker UDP客户端</p>
+ * <p>UDP Tracker Protocol for BitTorrent</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0015.html</p>
  * 
  * @author acgist

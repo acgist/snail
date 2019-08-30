@@ -26,11 +26,9 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>Peer消息处理</p>
+ * <p>The BitTorrent Protocol Specification</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0003.html</p>
- * <p>协议链接：http://www.bittorrent.org/beps/bep_0004.html</p>
- * <p>协议链接：http://www.bittorrent.org/beps/bep_0009.html</p>
- * <p>协议链接：http://www.bittorrent.org/beps/bep_0010.html</p>
- * <p>协议链接：http://www.bittorrent.org/beps/bep_0011.html</p>
+ * <p>Private Torrents</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0027.html</p>
  * <p>协议链接：http://wiki.vuze.com/w/Message_Stream_Encryption</p>
  * <pre>
@@ -53,7 +51,7 @@ import com.acgist.snail.utils.StringUtils;
  * <p>消息格式：长度 类型 负载</p>
  * 
  * TODO：加密
- * TODO：实现流水线
+ * TODO：流水线
  * 
  * @author acgist
  * @since 1.1.0
