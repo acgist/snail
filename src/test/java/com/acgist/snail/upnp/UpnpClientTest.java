@@ -12,7 +12,7 @@ import com.acgist.snail.utils.ThreadUtils;
 public class UpnpClientTest {
 
 	@Test
-	public void test() {
+	public void upnp() {
 		UpnpClient client = UpnpClient.newInstance();
 		client.config();
 		ThreadUtils.sleep(Long.MAX_VALUE);

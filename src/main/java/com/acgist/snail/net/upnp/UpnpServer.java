@@ -1,7 +1,6 @@
 package com.acgist.snail.net.upnp;
 
 import com.acgist.snail.net.UdpServer;
-import com.acgist.snail.utils.NetUtils;
 
 /**
  * Upnp Server
@@ -20,7 +19,8 @@ public class UpnpServer extends UdpServer<UpnpAcceptHandler> {
 	public static final String UPNP_HOST = "239.255.255.250";
 	
 	private UpnpServer() {
-		super(NetUtils.buildUdpChannel(UPNP_PORT, true), "UPNP Server", UpnpAcceptHandler.getInstance());
+		// 不监听UPNP端口，否者收到很多其他信息。
+		super(-1, "UPNP Server", UpnpAcceptHandler.getInstance());
 		this.join(UPNP_TTL, UPNP_HOST);
 		this.handler();
 	}
