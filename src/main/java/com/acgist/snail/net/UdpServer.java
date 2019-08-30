@@ -20,7 +20,8 @@ import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.NetUtils;
 
 /**
- * 全部使用单例，初始化时立即开始监听。
+ * <p>UDP服务端</p>
+ * <p>全部使用单例，初始化时立即开始监听，客户端使用和服务的同一个通道。</p>
  * 
  * @author acgist
  * @since 1.0.0

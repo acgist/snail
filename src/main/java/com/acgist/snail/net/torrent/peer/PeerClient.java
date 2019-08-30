@@ -7,7 +7,6 @@ import com.acgist.snail.system.config.PeerConfig;
 
 /**
  * <p>Peer客户端</p>
- * <p>基本协议：TCP</p>
  * 
  * @author acgist
  * @since 1.0.0

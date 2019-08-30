@@ -225,6 +225,7 @@ public class NetUtils {
 	
 	/**
 	 * <p>创建UDP通道</p>
+	 * <p>本机地址、地址不重用。</p>
 	 */
 	public static final DatagramChannel buildUdpChannel(final int port) {
 		return buildUdpChannel(null, port);
@@ -232,6 +233,7 @@ public class NetUtils {
 	
 	/**
 	 * <p>创建UDP通道</p>
+	 * <p>地址不重用</p>
 	 */
 	public static final DatagramChannel buildUdpChannel(final String host, final int port) {
 		return buildUdpChannel(host, port, false);
@@ -239,6 +241,7 @@ public class NetUtils {
 	
 	/**
 	 * <p>创建UDP通道</p>
+	 * <p>本机地址 </p>
 	 */
 	public static final DatagramChannel buildUdpChannel(final int port, final boolean reuseaddr) {
 		return buildUdpChannel(null, port, reuseaddr);
@@ -260,8 +263,8 @@ public class NetUtils {
 				channel.setOption(StandardSocketOptions.SO_REUSEADDR, true);
 			}
 			if(port >= 0) {
-				channel.bind(NetUtils.buildSocketAddress(host, port)); // 监听端口：UDP服务端和客户端使用同一个端口
-//				channel.connect(NetUtils.buildSocketAddress(host, port)); // 连接后使用：read、write
+				channel.bind(NetUtils.buildSocketAddress(host, port)); // 绑定：使用receive、send方法
+//				channel.connect(NetUtils.buildSocketAddress(host, port)); // 连接：使用read、write方法
 			}
 		} catch (IOException e) {
 			IoUtils.close(channel);

@@ -5,7 +5,7 @@ import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
- * 系统监听
+ * 系统服务端
  * 
  * @author acgist
  * @since 1.0.0
