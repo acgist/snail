@@ -1,9 +1,6 @@
 package com.acgist.snail.net;
 
-import java.io.IOException;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.StandardSocketOptions;
 import java.nio.channels.DatagramChannel;
 
 import org.slf4j.Logger;
@@ -83,19 +80,6 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessa
 		return true;
 	}
 	
-	/**
-	 * 多播分组
-	 */
-	public void join(String group) {
-		try {
-			this.handler.channel.setOption(StandardSocketOptions.IP_MULTICAST_TTL, 2);
-			this.handler.channel.setOption(StandardSocketOptions.IP_MULTICAST_LOOP, true);
-			this.handler.channel.join(InetAddress.getByName(group), NetUtils.defaultNetworkInterface());
-		} catch (IOException e) {
-			LOGGER.info("UDP多播异常：{}", group, e);
-		}
-	}
-
 	/**
 	 * 关闭资源，标记关闭，不能关闭通道。UDP通道只打开一个，程序结束时才能关闭。
 	 */

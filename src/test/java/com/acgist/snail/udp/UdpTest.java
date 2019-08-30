@@ -25,14 +25,14 @@ public class UdpTest {
 				return this.open(server.channel());
 			}
 		};
-		client.open(server.channel());
+//		client.open(server.channel());
 		UdpClient<UdpTestMessageHandler> clients = new UdpClient<UdpTestMessageHandler>("TestClient", handler, socketAddress) {
 			@Override
 			public boolean open() {
 				return this.open(server.channel());
 			}
 		};
-		clients.open(server.channel());
+//		clients.open(server.channel());
 		while (true) {
 			try {
 				final String message = "-";
