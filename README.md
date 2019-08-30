@@ -64,7 +64,7 @@ Windows直接点击SnailLauncher.exe即可运行。
 ## License
 
 |软件|License|许可|
-|:-|:-|
+|:-|:-|:-|
 |[h2](http://www.h2database.com)|[License](http://www.h2database.com/html/license.html)|MPL 2.0/EPL 1.0|
 |[slf4j](https://www.slf4j.org)|[License](https://www.slf4j.org/license.html)|MIT|
 |[logback](https://logback.qos.ch)|[License](https://logback.qos.ch/license.html)|EPL v1.0/LGPL 2.1|
