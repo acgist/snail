@@ -415,7 +415,10 @@ public class TorrentSession {
 		if(this.torrentStreamGroup.complete()) {
 			LOGGER.debug("任务下载完成：{}", name());
 			this.torrentStreamGroup.flush();
-			this.taskSession.downloader().unlockDownload();
+			final var downloader = this.taskSession.downloader();
+			if(downloader != null) {
+				downloader.unlockDownload();
+			}
 		}
 	}
 	
@@ -497,7 +500,7 @@ public class TorrentSession {
 		final TorrentBuilder builder = TorrentBuilder.newInstance(this.infoHash, this.trackerLauncherGroup.trackers());
 		final String torrentFile = builder.buildFile(this.taskSession.downloadFolder().getPath());
 		entity.setTorrent(torrentFile);
-		TaskRepository repository = new TaskRepository();
+		final TaskRepository repository = new TaskRepository();
 		repository.update(entity);
 		try {
 			this.torrent = TorrentManager.loadTorrent(torrentFile);
@@ -505,7 +508,10 @@ public class TorrentSession {
 		} catch (DownloadException e) {
 			LOGGER.error("解析种子异常", e);
 		}
-		this.taskSession.downloader().unlockDownload();
+		final var downloader = this.taskSession.downloader();
+		if(downloader != null) {
+			downloader.unlockDownload();
+		}
 	}
 	
 	/**

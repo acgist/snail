@@ -13,7 +13,7 @@ import com.acgist.snail.utils.NetUtils;
  */
 public class SystemConfig extends PropertiesConfig {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseConfig.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SystemConfig.class);
 	
 	private static final String SYSTEM_CONFIG = "/config/system.properties";
 	
