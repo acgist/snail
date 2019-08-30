@@ -6,6 +6,12 @@ import java.nio.ByteBuffer;
 import com.acgist.snail.net.UdpAcceptHandler;
 import com.acgist.snail.net.UdpMessageHandler;
 
+/**
+ * UPNP接收器
+ * 
+ * @author acgist
+ * @since 1.0.0
+ */
 public class UpnpAcceptHandler extends UdpAcceptHandler {
 
 	private static final UpnpAcceptHandler INSTANCE = new UpnpAcceptHandler();

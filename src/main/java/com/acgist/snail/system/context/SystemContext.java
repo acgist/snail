@@ -126,6 +126,7 @@ public class SystemContext {
 				TrackerServer.getInstance().close();
 				TorrentServer.getInstance().close();
 				ApplicationServer.getInstance().close();
+//				LocalServiceDiscoveryServer.getInstance().close();
 				TcpClient.shutdown();
 				TcpServer.shutdown();
 				UdpAcceptHandler.shutdown();

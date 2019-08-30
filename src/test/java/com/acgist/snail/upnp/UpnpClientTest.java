@@ -14,7 +14,7 @@ public class UpnpClientTest {
 	@Test
 	public void upnp() {
 		UpnpClient client = UpnpClient.newInstance();
-		client.config();
+		client.mSearch();
 		ThreadUtils.sleep(Long.MAX_VALUE);
 	}
 
