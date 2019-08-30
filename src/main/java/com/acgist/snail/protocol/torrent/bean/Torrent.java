@@ -12,7 +12,7 @@ import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * 种子信息
+ * <p>种子信息</p>
  * 
  * @author acgist
  * @since 1.0.0

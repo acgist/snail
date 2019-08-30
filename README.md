@@ -71,20 +71,28 @@ Windows直接点击SnailLauncher.exe即可运行。
 
 #### BT进度
 
-|协议|进度|
-|:-|:-|
-|DHT Protocol|√|
-|Extension Protocol|√|
-|Peer Exchange（PEX）|√|
-|Peer wire Protocol（TCP）|√|
-|Tracker Protocol（UDP/HTTP）|√|
-|uTorrent Transport Protocol（uTP）|√|
-|Extension for Peers to Send Metadata Files|√|
-|Fast Extension|×|
-|Holepunch Extension|×|
-|Local Service Discovery|×|
-|HTTP Seeding|?|
-|WebSeed - HTTP/FTP Seeding|?|
+|协议|进度|描述|
+|:-|:-|:-|
+|DHT Protocol|√||
+|Extension Protocol|√||
+|Peer Exchange (PEX)|√||
+|Peer ID Conventions|√||
+|uTorrent Transport Protocol|√|uTP|
+|Multitracker Metadata Extension|√||
+|Tracker Returns Compact Peer Lists|√|HTTP Tracker Protocol|
+|UDP Tracker Protocol for BitTorrent|√||
+|The BitTorrent Protocol Specification|√|TCP|
+|Extension for Peers to Send Metadata Files|√||
+|Fast Extension|×||
+|Private Torrents|×||
+|Holepunch Extension|×||
+|Local Service Discovery|×||
+|UDP Tracker Protocol Extensions|×||
+|DHT scrape|?||
+|HTTP Seeding|?||
+|IPv6 extension for DHT|?||
+|DHT Security Extension|?||
+|Tracker Protocol Extension: Scrape|?||
 
 #### TODO
 
@@ -103,7 +111,7 @@ Windows直接点击SnailLauncher.exe即可运行。
 |[slf4j](https://www.slf4j.org)|[License](https://www.slf4j.org/license.html)|MIT|
 |[logback](https://logback.qos.ch)|[License](https://logback.qos.ch/license.html)|LGPL 2.1/EPL 1.0|
 |[JavaFX](https://wiki.openjdk.java.net/display/OpenJFX/Main)|[License](http://openjdk.java.net/legal/gplv2+ce.html)|GPL 2.0|
-|[snail](https://gitee.com/acgist/snail)|[License](https://gitee.com/acgist/snail/blob/master/LICENSE)|BSD 3-clause|
+|[Snail](https://gitee.com/acgist/snail)|[License](https://gitee.com/acgist/snail/blob/master/LICENSE)|BSD 3-clause|
 
 ## 其他
 
