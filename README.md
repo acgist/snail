@@ -61,11 +61,14 @@ Windows直接点击SnailLauncher.exe即可运行。
 
 > 执行程序和jar、lib、java必须处于同一个目录
 
-## 依赖
+## License
 
-数据库：[h2](http://www.h2database.com)
-
-日志框架：[slf4j](https://www.slf4j.org/)、[logback](https://logback.qos.ch/)
+|软件|License|许可|
+|:-|:-|
+|[h2](http://www.h2database.com)|[License](http://www.h2database.com/html/license.html)|MPL 2.0/EPL 1.0|
+|[slf4j](https://www.slf4j.org)|[License](https://www.slf4j.org/license.html)|MIT|
+|[logback](https://logback.qos.ch)|[License](https://logback.qos.ch/license.html)|EPL v1.0/LGPL 2.1|
+|[snail](https://gitee.com/acgist/snail)|[License](https://gitee.com/acgist/snail/blob/master/LICENSE)|BSD 3-clause|
 
 ## 进度
 
