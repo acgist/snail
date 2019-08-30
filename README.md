@@ -101,7 +101,8 @@ Windows直接点击SnailLauncher.exe即可运行。
 |:-|:-|:-|
 |[h2](http://www.h2database.com)|[License](http://www.h2database.com/html/license.html)|MPL 2.0/EPL 1.0|
 |[slf4j](https://www.slf4j.org)|[License](https://www.slf4j.org/license.html)|MIT|
-|[logback](https://logback.qos.ch)|[License](https://logback.qos.ch/license.html)|EPL v1.0/LGPL 2.1|
+|[logback](https://logback.qos.ch)|[License](https://logback.qos.ch/license.html)|LGPL 2.1/EPL 1.0|
+|[JavaFX](https://wiki.openjdk.java.net/display/OpenJFX/Main)|[License](http://openjdk.java.net/legal/gplv2+ce.html)|GPL 2.0|
 |[snail](https://gitee.com/acgist/snail)|[License](https://gitee.com/acgist/snail/blob/master/LICENSE)|BSD 3-clause|
 
 ## 其他
