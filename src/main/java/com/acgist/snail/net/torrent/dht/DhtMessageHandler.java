@@ -29,6 +29,7 @@ import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
+ * <p>DHT消息</p>
  * <p>DHT Protocol</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0005.html</p>
  * 

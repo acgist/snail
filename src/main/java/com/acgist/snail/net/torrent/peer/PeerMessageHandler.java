@@ -8,7 +8,7 @@ import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.system.exception.NetException;
 
 /**
- * <p>Peer消息处理（TCP）</p>
+ * <p>Peer消息</p>
  * 
  * @author acgist
  * @since 1.0.0

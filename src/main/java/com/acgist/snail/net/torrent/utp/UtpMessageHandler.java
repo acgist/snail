@@ -23,7 +23,7 @@ import com.acgist.snail.utils.DateUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
- * <p>uTP</p>
+ * <p>uTP消息</p>
  * <p>uTorrent transport protocol</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0029.html</p>
  * TODO：流量控制：
