@@ -41,7 +41,6 @@ public class UpnpMessageHandler extends UdpMessageHandler {
 	 * 配置UPNP
 	 */
 	private void config(String content) {
-		System.out.println(content);
 		final Map<String, String> headers = HeaderUtils.read(content);
 		final boolean support = headers.values().stream().anyMatch(value -> value != null && value.startsWith(UPNP_VALUE_MATCH));
 		if(!support) {

@@ -17,6 +17,8 @@ public class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler {
 
 	@Override
 	public void onMessage(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException {
+		final String content = new String(buffer.array());
+		System.out.println(content);
 	}
 
 }

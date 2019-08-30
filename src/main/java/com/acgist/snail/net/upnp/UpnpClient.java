@@ -19,6 +19,8 @@ import com.acgist.snail.utils.NetUtils;
 public class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UpnpClient.class);
+	
+	private static final String NEW_LINE = "\r\n";
 
 	private UpnpClient(InetSocketAddress socketAddress) {
 		super("UPNP Client", new UpnpMessageHandler(), socketAddress);
@@ -34,29 +36,29 @@ public class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	}
 	
 	/**
-	 * 配置UPNP
+	 * 配置UPNP，发送M-SEARCH消息。
 	 */
-	public void config() {
-		LOGGER.info("配置UPNP");
+	public void mSearch() {
+		LOGGER.debug("配置UPNP");
 		try {
-			send(mSearch());
+			send(buildMSearch());
 		} catch (NetException e) {
 			LOGGER.error("发送UPNP消息异常", e);
 		}
 	}
 	
 	/**
-	 * M-SEARCH
+	 * 构建M-SEARCH消息。
 	 */
-	private String mSearch() {
-		final String newLine = "\r\n";
+	private String buildMSearch() {
 		final StringBuilder builder = new StringBuilder();
 		builder
-			.append("M-SEARCH * HTTP/1.1").append(newLine)
-			.append("HOST: 239.255.255.250:1900").append(newLine)
-			.append("MX: 3").append(newLine)
-			.append("ST: urn:schemas-upnp-org:device:InternetGatewayDevice:1").append(newLine)
-			.append("MAN: \"ssdp:discover\"").append(newLine);
+			.append("M-SEARCH * HTTP/1.1").append(NEW_LINE)
+			.append("HOST: 239.255.255.250:1900").append(NEW_LINE)
+			.append("MX: 3").append(NEW_LINE)
+			.append("ST: urn:schemas-upnp-org:device:InternetGatewayDevice:1").append(NEW_LINE)
+			.append("MAN: \"ssdp:discover\"").append(NEW_LINE)
+			.append(NEW_LINE);
 		return builder.toString();
 	}
 

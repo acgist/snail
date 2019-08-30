@@ -28,7 +28,7 @@ public class UpnpInitializer extends Initializer {
 	protected void init() {
 		LOGGER.info("初始化UPNP");
 		UpnpServer.getInstance();
-		UpnpClient.newInstance().config();
+		UpnpClient.newInstance().mSearch();
 	}
 
 }
