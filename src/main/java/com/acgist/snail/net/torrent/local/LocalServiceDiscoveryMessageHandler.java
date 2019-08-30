@@ -7,6 +7,7 @@ import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.system.exception.NetException;
 
 /**
+ * <p>本地发现消息</p>
  * <p>Local Service Discovery</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0014.html</p>
  * 

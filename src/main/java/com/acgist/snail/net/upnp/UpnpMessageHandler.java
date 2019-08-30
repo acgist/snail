@@ -13,7 +13,8 @@ import com.acgist.snail.utils.HeaderUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * UPNP消息
+ * <p>UPNP消息</p>
+ * <p>TODO：不是非常稳定</p>
  * 
  * @author acgist
  * @since 1.0.0

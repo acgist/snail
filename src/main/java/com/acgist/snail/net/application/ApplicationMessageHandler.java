@@ -15,7 +15,7 @@ import com.acgist.snail.utils.StringUtils;
 import javafx.application.Platform;
 
 /**
- * Application消息
+ * 系统消息
  * 
  * @author acgist
  * @since 1.0.0
