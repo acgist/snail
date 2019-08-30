@@ -1,6 +1,7 @@
 package com.acgist.snail.system.bencode;
 
 import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -15,11 +16,21 @@ import com.acgist.snail.system.bencode.BEncodeDecoder.Type;
  * <p>B编码</p>
  * <p>put系列方法配合flush使用。</p>
  * <p>支持数据类型：Number、String、byte[]。</p>
+ * <pre>
+ * encoder
+ * 	.newList().put("1").put("2").flush()
+ * 	.newMap().put("a", "b").put("c", "d").flush()
+ * 	.toString()
+ * 
+ * encoder.build(List.of("a", "b"))
+ * 	.build(Map.of("1", "2"))
+ * 	.toString();
+ * </pre>
  * 
  * @author acgist
  * @since 1.0.0
  */
-public class BEncodeEncoder {
+public class BEncodeEncoder implements Closeable {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BEncodeEncoder.class);
 	
@@ -213,14 +224,22 @@ public class BEncodeEncoder {
 		try {
 			return this.outputStream.toByteArray();
 		} finally {
-			try {
-				this.outputStream.close();
-			} catch (Exception e) {
-				LOGGER.error("关闭字符流异常", e);
-			}
+			this.close();
 		}
 	}
 
+	/**
+	 * 关闭流，ByteArrayInputStream和ByteArrayOutputStream不需要关闭流。
+	 */
+	@Override
+	public void close() {
+		try {
+			this.outputStream.close();
+		} catch (Exception e) {
+			LOGGER.error("B编码字符流关闭异常", e);
+		}
+	}
+	
 	/**
 	 * 获取字符串，将关闭字符流。
 	 */
