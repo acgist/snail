@@ -21,7 +21,8 @@ import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>Tracker HTTP 客户端</p>
+ * <p>Tracker HTTP客户端</p>
+ * <p>Tracker Returns Compact Peer Lists</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0023.html</p>
  * 
  * @author acgist
