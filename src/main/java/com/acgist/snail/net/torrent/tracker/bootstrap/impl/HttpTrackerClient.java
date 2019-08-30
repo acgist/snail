@@ -56,7 +56,7 @@ public class HttpTrackerClient extends TrackerClient {
 		final BEncodeDecoder decoder = BEncodeDecoder.newInstance(body.getBytes());
 		final Map<String, Object> map = decoder.nextMap();
 		if(map == null) {
-			LOGGER.warn("HttpTracker消息格式错误：{}", decoder.obbString());
+			LOGGER.warn("HttpTracker消息格式错误：{}", decoder.oddString());
 			return;
 		}
 		final var tracker = HttpTracker.valueOf(map);

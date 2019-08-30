@@ -84,7 +84,7 @@ public class PeerExchangeMessageHandler implements IExtensionMessageHandler {
 		final BEncodeDecoder decoder = BEncodeDecoder.newInstance(bytes);
 		final Map<String, Object> map = decoder.nextMap();
 		if(map == null) {
-			LOGGER.warn("UtPeerExchange消息格式错误：{}", decoder.obbString());
+			LOGGER.warn("UtPeerExchange消息格式错误：{}", decoder.oddString());
 			return;
 		}
 		final byte[] added = decoder.getBytes(ADDED);

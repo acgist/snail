@@ -71,7 +71,7 @@ public class DhtMessageHandler extends UdpMessageHandler {
 		final BEncodeDecoder decoder = BEncodeDecoder.newInstance(bytes);
 		final var map = decoder.nextMap();
 		if(map == null) {
-			LOGGER.warn("DHT消息格式错误：{}", decoder.obbString());
+			LOGGER.warn("DHT消息格式错误：{}", decoder.oddString());
 			return;
 		}
 		final String y = decoder.getString(DhtConfig.KEY_Y);

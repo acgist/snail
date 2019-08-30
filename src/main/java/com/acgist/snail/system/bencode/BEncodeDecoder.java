@@ -131,7 +131,7 @@ public class BEncodeDecoder {
 	/**
 	 * 错误格式信息输出
 	 */
-	public String obbString() {
+	public String oddString() {
 		return new String(oddBytes());
 	}
 

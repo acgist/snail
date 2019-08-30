@@ -1,7 +1,6 @@
 package com.acgist.snail.system.bencode;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -116,38 +115,14 @@ public class BEncodeEncoder {
 		if(map == null) {
 			return this;
 		}
-		this.outputStream.write(BEncodeDecoder.TYPE_D);
+		this.write(BEncodeDecoder.TYPE_D);
 		map.forEach((key, value) -> {
 			final String keyValue = key.toString();
 			final byte[] keyValues = keyValue.getBytes();
-			this.write(String.valueOf(keyValues.length).getBytes());
-			this.outputStream.write(BEncodeDecoder.SEPARATOR);
-			this.write(keyValues);
-			if(value instanceof Number) {
-				this.outputStream.write(BEncodeDecoder.TYPE_I);
-				this.write(value.toString().getBytes());
-				this.outputStream.write(BEncodeDecoder.TYPE_E);
-			} else if(value instanceof Map) {
-				build((Map<?, ?>) value);
-			} else if(value instanceof List) {
-				build((List<?>) value);
-			} else {
-				byte[] bytes = null;
-				if(value instanceof byte[]) {
-					bytes = (byte[]) value;
-				} else if(value instanceof String) {
-					bytes = ((String) value).getBytes();
-				} else {
-					LOGGER.warn("BCode不支持的类型，key：{}，value：{}", key, value);
-				}
-				if(bytes != null) {
-					this.write(String.valueOf(bytes.length).getBytes());
-					this.outputStream.write(BEncodeDecoder.SEPARATOR);
-					this.write(bytes);
-				}
-			}
+			this.writeBEncodeBytes(keyValues);
+			this.writeBEncodeValue(value);
 		});
-		this.outputStream.write(BEncodeDecoder.TYPE_E);
+		this.write(BEncodeDecoder.TYPE_E);
 		return this;
 	}
 
@@ -158,54 +133,75 @@ public class BEncodeEncoder {
 		if(list == null) {
 			return this;
 		}
-		this.outputStream.write(BEncodeDecoder.TYPE_L);
+		this.write(BEncodeDecoder.TYPE_L);
 		list.forEach(value -> {
-			if(value instanceof Number) {
-				this.outputStream.write(BEncodeDecoder.TYPE_I);
-				this.write(value.toString().getBytes());
-				this.outputStream.write(BEncodeDecoder.TYPE_E);
-			} else if(value instanceof Map) {
-				build((Map<?, ?>) value);
-			} else if(value instanceof List) {
-				build((List<?>) value);
-			} else {
-				byte[] bytes = null;
-				if(value instanceof byte[]) {
-					bytes = (byte[]) value;
-				} else if(value instanceof String) {
-					bytes = ((String) value).getBytes();
-				} else {
-					LOGGER.warn("BCode不支持的类型，value：{}", value);
-				}
-				if(bytes != null) {
-					this.write(String.valueOf(bytes.length).getBytes());
-					this.outputStream.write(BEncodeDecoder.SEPARATOR);
-					this.write(bytes);
-				}
-			}
+			this.writeBEncodeValue(value);
 		});
-		this.outputStream.write(BEncodeDecoder.TYPE_E);
+		this.write(BEncodeDecoder.TYPE_E);
 		return this;
 	}
 	
 	/**
 	 * 添加字符数组
 	 */
-	public BEncodeEncoder build(byte[] bytes) {
+	public BEncodeEncoder append(byte[] bytes) {
 		write(bytes);
 		return this;
+	}
+	
+	/**
+	 * 写入B编码对象
+	 */
+	private void writeBEncodeValue(Object value) {
+		if(value instanceof Number) {
+			this.writeBEncodeNumber((Number) value);
+		} else if(value instanceof byte[]) {
+			this.writeBEncodeBytes((byte[]) value);
+		} else if(value instanceof String) {
+			this.writeBEncodeBytes(((String) value).getBytes());
+		} else if(value instanceof Map) {
+			build((Map<?, ?>) value);
+		} else if(value instanceof List) {
+			build((List<?>) value);
+		} else {
+			LOGGER.warn("B编码不支持的类型，value：{}", value);
+		}
+	}
+	
+	/**
+	 * 写入B编码数值
+	 */
+	private void writeBEncodeNumber(Number number) {
+		this.write(BEncodeDecoder.TYPE_I);
+		this.write(number.toString().getBytes());
+		this.write(BEncodeDecoder.TYPE_E);
+	}
+	
+	/**
+	 * 写入B编码字符数组
+	 */
+	private void writeBEncodeBytes(byte[] bytes) {
+		this.write(String.valueOf(bytes.length).getBytes());
+		this.write(BEncodeDecoder.SEPARATOR);
+		this.write(bytes);
+	}
+	
+	/**
+	 * 写入字符
+	 */
+	private void write(char value) {
+		this.outputStream.write(value);
 	}
 	
 	/**
 	 * 写入字符数组
 	 */
 	private void write(byte[] bytes) {
-		if(bytes == null) {
-			return;
-		}
 		try {
-			this.outputStream.write(bytes);
-		} catch (IOException e) {
+			if(bytes != null) {
+				this.outputStream.write(bytes);
+			}
+		} catch (Exception e) {
 			LOGGER.error("B编码输出异常", e);
 		}
 	}
@@ -219,7 +215,7 @@ public class BEncodeEncoder {
 		} finally {
 			try {
 				this.outputStream.close();
-			} catch (IOException e) {
+			} catch (Exception e) {
 				LOGGER.error("关闭字符流异常", e);
 			}
 		}

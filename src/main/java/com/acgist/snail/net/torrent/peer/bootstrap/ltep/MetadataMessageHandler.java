@@ -66,7 +66,7 @@ public class MetadataMessageHandler implements IExtensionMessageHandler {
 		final BEncodeDecoder decoder = BEncodeDecoder.newInstance(bytes);
 		final Map<String, Object> map = decoder.nextMap();
 		if(map == null) {
-			LOGGER.warn("metadata消息格式错误：{}", decoder.obbString());
+			LOGGER.warn("metadata消息格式错误：{}", decoder.oddString());
 			return;
 		}
 		final Byte typeValue = decoder.getByte(ARG_MSG_TYPE);
@@ -227,7 +227,7 @@ public class MetadataMessageHandler implements IExtensionMessageHandler {
 		final BEncodeEncoder encoder = BEncodeEncoder.newInstance().newMap();
 		encoder.put(data).flush();
 		if(x != null) {
-			encoder.build(x);
+			encoder.append(x);
 		}
 		final byte[] bytes = encoder.bytes();
 		this.extensionMessageHandler.pushMessage(type, bytes);
