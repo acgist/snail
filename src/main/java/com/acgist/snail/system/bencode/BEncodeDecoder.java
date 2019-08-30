@@ -1,6 +1,7 @@
 package com.acgist.snail.system.bencode;
 
 import java.io.ByteArrayInputStream;
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -32,7 +33,7 @@ import com.acgist.snail.system.exception.ArgumentException;
  * @author acgist
  * @since 1.0.0
  */
-public class BEncodeDecoder {
+public class BEncodeDecoder implements Closeable {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BEncodeDecoder.class);
 	
@@ -387,10 +388,14 @@ public class BEncodeDecoder {
 			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new));
 	}
 	
+	/**
+	 * 关闭流，ByteArrayInputStream和ByteArrayOutputStream不需要关闭流。
+	 */
+	@Override
 	public void close() {
 		try {
 			this.inputStream.close();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			LOGGER.error("B编码字符流关闭异常", e);
 		}
 	}
