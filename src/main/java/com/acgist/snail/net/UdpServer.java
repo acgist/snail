@@ -1,7 +1,9 @@
 package com.acgist.snail.net;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.StandardSocketOptions;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.SelectionKey;
@@ -49,9 +51,26 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 	protected final DatagramChannel channel;
 	
 	public UdpServer(int port, String name, T handler) {
-		this.channel = NetUtils.buildUdpChannel(port);
+		this(NetUtils.buildUdpChannel(port), name, handler);
+	}
+	
+	public UdpServer(DatagramChannel channel, String name, T handler) {
+		this.channel = channel;
 		this.name = name;
 		this.handler = handler;
+	}
+	
+	/**
+	 * 多播
+	 */
+	public void join(int ttl, String group) {
+		try {
+			this.channel.setOption(StandardSocketOptions.IP_MULTICAST_TTL, ttl);
+			this.channel.setOption(StandardSocketOptions.IP_MULTICAST_LOOP, true);
+			this.channel.join(InetAddress.getByName(group), NetUtils.defaultNetworkInterface());
+		} catch (Exception e) {
+			LOGGER.info("UDP多播异常：{}", group, e);
+		}
 	}
 	
 	/**
@@ -96,7 +115,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 						}
 					}
 				}
-			} catch (IOException e) {
+			} catch (Exception e) {
 				LOGGER.error("UDP消息读取异常", e);
 				continue;
 			}

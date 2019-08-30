@@ -20,18 +20,12 @@ public class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UpnpClient.class);
 
-	// UPNP端口
-	private static final int UPNP_PORT = 1900;
-	// UPNP地址
-	private static final String UPNP_HOST = "239.255.255.250";
-	
 	private UpnpClient(InetSocketAddress socketAddress) {
 		super("UPNP Client", new UpnpMessageHandler(), socketAddress);
-		join(UPNP_HOST);
 	}
 	
 	public static final UpnpClient newInstance() {
-		return new UpnpClient(NetUtils.buildSocketAddress(UPNP_HOST, UPNP_PORT));
+		return new UpnpClient(NetUtils.buildSocketAddress(UpnpServer.UPNP_HOST, UpnpServer.UPNP_PORT));
 	}
 
 	@Override
@@ -59,7 +53,7 @@ public class UpnpClient extends UdpClient<UpnpMessageHandler> {
 		final StringBuilder builder = new StringBuilder();
 		builder.append("M-SEARCH * HTTP/1.1").append(newLine)
 			.append("HOST: 239.255.255.250:1900").append(newLine)
-			.append("MX: 2").append(newLine)
+			.append("MX: 3").append(newLine)
 			.append("ST: urn:schemas-upnp-org:device:InternetGatewayDevice:1").append(newLine)
 			.append("MAN: \"ssdp:discover\"").append(newLine)
 			.append(newLine);

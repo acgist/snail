@@ -6,6 +6,7 @@ import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.StandardProtocolFamily;
+import java.net.StandardSocketOptions;
 import java.net.UnknownHostException;
 import java.nio.channels.DatagramChannel;
 import java.util.Optional;
@@ -217,7 +218,6 @@ public class NetUtils {
 	
 	/**
 	 * <p>创建UDP通道</p>
-	 * <p>host=本机、port=随机。</p>
 	 */
 	public static final DatagramChannel buildUdpChannel() {
 		return buildUdpChannel(-1);
@@ -225,22 +225,40 @@ public class NetUtils {
 	
 	/**
 	 * <p>创建UDP通道</p>
-	 * <p>host=本机</p>
 	 */
 	public static final DatagramChannel buildUdpChannel(final int port) {
-		return buildUdpChannel(null, port);
+		return buildUdpChannel(null, port, false);
+	}
+	
+	/**
+	 * <p>创建UDP通道</p>
+	 */
+	public static final DatagramChannel buildUdpChannel(final String host, final int port) {
+		return buildUdpChannel(host, port, false);
+	}
+	
+	/**
+	 * <p>创建UDP通道</p>
+	 */
+	public static final DatagramChannel buildUdpChannel(final int port, final boolean reuseaddr) {
+		return buildUdpChannel(null, port, reuseaddr);
 	}
 	
 	/**
 	 * <p>创建UDP通道</p>
 	 * 
-	 * @param port -1=不绑定端口，随机选择。
+	 * @param host 地址，null=绑定本机
+	 * @param port 端口，-1=不绑定端口，随机选择
+	 * @param reuseaddr 地址重用
 	 */
-	public static final DatagramChannel buildUdpChannel(final String host, final int port) {
+	public static final DatagramChannel buildUdpChannel(final String host, final int port, final boolean reuseaddr) {
 		DatagramChannel channel = null;
 		try {
 			channel = DatagramChannel.open(StandardProtocolFamily.INET); // TPv4
 			channel.configureBlocking(false); // 不阻塞
+			if(reuseaddr) {
+				channel.setOption(StandardSocketOptions.SO_REUSEADDR, true);
+			}
 //			channel.connect(NetUtils.buildSocketAddress(host, port)); // 连接后使用：read、write
 			if(port >= 0) {
 				channel.bind(NetUtils.buildSocketAddress(host, port)); // 监听端口：UDP服务端和客户端使用同一个端口
