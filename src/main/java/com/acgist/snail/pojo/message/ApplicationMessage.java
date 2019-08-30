@@ -68,7 +68,9 @@ public class ApplicationMessage {
 	public String toString() {
 		final BEncodeEncoder encoder = BEncodeEncoder.newInstance().newMap();
 		encoder.put("type", this.type.name());
-		encoder.put("body", this.body);
+		if(this.body != null) {
+			encoder.put("body", this.body);
+		}
 		return encoder.flush().toString();
 	}
 	

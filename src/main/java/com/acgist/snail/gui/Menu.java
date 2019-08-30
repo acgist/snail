@@ -26,21 +26,21 @@ public abstract class Menu extends ContextMenu {
 	}
 	
 	/**
-	 * 添加按钮
+	 * 添加菜单
 	 */
 	protected void addMenu(MenuItem menuItem) {
 		this.getItems().add(menuItem);
 	}
 	
 	/**
-	 * 添加分割线
+	 * 添加菜单分割线
 	 */
 	protected void addSeparator() {
 		this.addMenu(new SeparatorMenuItem());
 	}
 	
 	/**
-	 * 创建菜单项
+	 * 创建菜单
 	 * 
 	 * @param value 菜单名称
 	 * 
@@ -51,7 +51,7 @@ public abstract class Menu extends ContextMenu {
 	}
 	
 	/**
-	 * 创建菜单项
+	 * 创建菜单
 	 * 
 	 * @param value 菜单名称
 	 * @param icon 菜单图标
