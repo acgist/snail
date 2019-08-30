@@ -84,14 +84,14 @@ Windows直接点击SnailLauncher.exe即可运行。
 |The BitTorrent Protocol Specification|√|TCP|
 |Extension for Peers to Send Metadata Files|√||
 |Fast Extension|×||
-|Private Torrents|×||
-|Holepunch Extension|×||
-|Local Service Discovery|×||
-|UDP Tracker Protocol Extensions|×||
+|Private Torrents|○||
+|Holepunch Extension|○||
+|Local Service Discovery|○||
 |DHT scrape|?||
 |HTTP Seeding|?||
 |IPv6 extension for DHT|?||
 |DHT Security Extension|?||
+|UDP Tracker Protocol Extensions|?||
 |Tracker Protocol Extension: Scrape|?||
 
 #### TODO
