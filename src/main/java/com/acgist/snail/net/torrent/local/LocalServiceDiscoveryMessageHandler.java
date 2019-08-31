@@ -55,7 +55,7 @@ public class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler {
 				if(torrentSession == null) {
 					LOGGER.debug("本地发现，不存在的种子信息：{}", infohash);
 				} else {
-					LOGGER.debug("本地发现：{}-{}", infohash, port);
+					LOGGER.debug("本地发现：{}-{}-{}", infohash, host, port);
 					final PeerManager peerManager = PeerManager.getInstance();
 					peerManager.newPeerSession(infohash, torrentSession.statistics(), host, Integer.valueOf(port), PeerConfig.SOURCE_LSD);
 				}
