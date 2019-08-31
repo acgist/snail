@@ -102,6 +102,7 @@ public class SystemConsole {
 		peers.entrySet().stream()
 			.filter(entry -> entry.getValue() != null)
 			.forEach(entry -> {
+				this.builder.append("Peer InfoHashHex：").append(entry.getKey()).append(NEW_LINE);
 				final var list = entry.getValue();
 				list.forEach(peer -> {
 					if(peer.dht()) {
@@ -124,27 +125,30 @@ public class SystemConsole {
 					}
 					if(peer.uploading()) {
 						upload.incrementAndGet();
+						this.builder.append(peer.host()).append("：").append("上传大小-").append(FileUtils.formatSize(peer.statistics().uploadSize())).append(NEW_LINE);
 					}
 					if(peer.downloading()) {
 						download.incrementAndGet();
+						this.builder.append(peer.host()).append("：").append("下载大小-").append(FileUtils.formatSize(peer.statistics().downloadSize())).append(NEW_LINE);
 					}
 					if(peer.available()) {
 						available.incrementAndGet();
 					}
 				});
 			this.builder
-				.append("Peer InfoHashHex：").append(entry.getKey()).append("，")
-				.append("Peer数量：").append(list.size()).append("，")
-				.append("uTP数量：").append(utp.getAndSet(0)).append("，")
-				.append("Peer数量（可用）：").append(available.getAndSet(0)).append("，")
+				.append("Peer：")
+				.append("Peer数量-").append(list.size()).append("、")
+				.append("uTP数量-").append(utp.getAndSet(0)).append("、")
+				.append("Peer数量（可用）-").append(available.getAndSet(0)).append(NEW_LINE)
 				.append("来源：")
 				.append("DHT-").append(dht.getAndSet(0)).append("、")
 				.append("PEX-").append(pex.getAndSet(0)).append("、")
 				.append("LSD-").append(lsd.getAndSet(0)).append("、")
 				.append("Tracker-").append(tracker.getAndSet(0)).append("、")
-				.append("Connect-").append(connect.getAndSet(0)).append("，")
-				.append("上传中：").append(upload.getAndSet(0)).append("，")
-				.append("下载中：").append(download.getAndSet(0)).append(NEW_LINE);
+				.append("Connect-").append(connect.getAndSet(0)).append(NEW_LINE)
+				.append("状态：")
+				.append("上传中-").append(upload.getAndSet(0)).append("、")
+				.append("下载中-").append(download.getAndSet(0)).append(NEW_LINE);
 		});
 	}
 
