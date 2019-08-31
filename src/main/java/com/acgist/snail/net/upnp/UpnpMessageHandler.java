@@ -2,14 +2,13 @@ package com.acgist.snail.net.upnp;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.net.upnp.bootstrap.UpnpService;
-import com.acgist.snail.system.header.HeaderUtils;
+import com.acgist.snail.pojo.bean.Headers;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -42,13 +41,14 @@ public class UpnpMessageHandler extends UdpMessageHandler {
 	 * 配置UPNP
 	 */
 	private void config(String content) {
-		final Map<String, String> headers = HeaderUtils.read(content);
-		final boolean support = headers.values().stream().anyMatch(value -> value != null && value.startsWith(UPNP_VALUE_MATCH));
+		final Headers headers = Headers.newInstance(content);
+		final boolean support = headers.allHeaders().values().stream()
+			.anyMatch(value -> value != null && value.startsWith(UPNP_VALUE_MATCH));
 		if(!support) {
 			LOGGER.info("UPNP不支持的响应：{}", content);
 			return;
 		}
-		final String location = headers.get(HEADER_LOCATION);
+		final String location = headers.header(HEADER_LOCATION);
 		try {
 			if(StringUtils.isNotEmpty(location)) {
 				UpnpService.getInstance().load(location).setting();

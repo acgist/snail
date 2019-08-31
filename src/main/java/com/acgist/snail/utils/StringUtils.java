@@ -184,6 +184,17 @@ public class StringUtils {
 			return source.equals(target);
 		}
 	}
+	
+	/**
+	 * 判断字符串是否相等，忽略大小写。
+	 */
+	public static final boolean equalsIgnoreCase(String source, String target) {
+		if(source == null) {
+			return target == null;
+		} else {
+			return source.equalsIgnoreCase(target);
+		}
+	}
 
 	/**
 	 * 转换Unicode

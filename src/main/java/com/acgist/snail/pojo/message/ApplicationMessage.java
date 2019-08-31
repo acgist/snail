@@ -66,7 +66,7 @@ public class ApplicationMessage {
 	}
 	
 	/**
-	 * 转换为JSON字符串
+	 * 转换为B编码字符串
 	 */
 	@Override
 	public String toString() {
@@ -79,7 +79,7 @@ public class ApplicationMessage {
 	}
 	
 	/**
-	 * JSON字符串变成ApplicationMessage对象
+	 * B编码字符串变成ApplicationMessage对象
 	 */
 	public static final ApplicationMessage valueOf(String content) {
 		final BEncodeDecoder decoder = BEncodeDecoder.newInstance(content.getBytes());
