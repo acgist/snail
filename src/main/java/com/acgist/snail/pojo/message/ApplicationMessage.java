@@ -17,8 +17,12 @@ public class ApplicationMessage {
 	public enum Type {
 
 		text, // 文本
-		close, // 关闭
-		notify, // 唤醒：唤醒已有主窗口
+		close, // 关闭Socket连接
+		notify, // 唤醒窗口
+		shutdown, // 关闭程序
+		tasknew, // 新建任务
+		tasklist, // 任务列表
+		taskdelete, // 删除任务
 		response; // 响应
 
 	}
