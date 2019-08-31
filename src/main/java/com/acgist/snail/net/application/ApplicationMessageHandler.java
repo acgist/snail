@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.gui.main.MainWindow;
 import com.acgist.snail.net.TcpMessageHandler;
 import com.acgist.snail.pojo.message.ApplicationMessage;
+import com.acgist.snail.system.context.SystemContext;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -48,38 +49,87 @@ public class ApplicationMessageHandler extends TcpMessageHandler {
 	/**
 	 * 单条消息处理
 	 */
-	private void oneMessage(String json) {
-		json = json.trim();
-		if(StringUtils.isEmpty(json)) {
-			LOGGER.warn("读取消息内容为空");
+	private void oneMessage(String content) {
+		content = content.trim();
+		if(StringUtils.isEmpty(content)) {
+			LOGGER.warn("读取系统消息内容为空");
 			return;
 		}
-		ApplicationMessage message = ApplicationMessage.valueOf(json);
+		final ApplicationMessage message = ApplicationMessage.valueOf(content);
 		if(message == null) {
-			LOGGER.warn("读取消息格式错误：{}", json);
+			LOGGER.warn("读取系统消息格式错误：{}", content);
 			return;
 		}
-		LOGGER.info("读取消息：{}", json);
+		LOGGER.debug("处理系统消息：{}", content);
 		this.execute(message);
 	}
 	
 	/**
-	 * 处理消息
+	 * <p>处理消息</p>
+	 * <p>TODO：任务：新建、列表、删除</p>
 	 */
 	private void execute(ApplicationMessage message) {
-		if(message.getType() == ApplicationMessage.Type.text) { // 文本信息：直接原样返回
-			send(ApplicationMessage.response(message.getBody()));
-		} else if(message.getType() == ApplicationMessage.Type.notify) { // 唤醒主窗口
-			Platform.runLater(() -> {
-				MainWindow.getInstance().show();
-			});
-		} else if(message.getType() == ApplicationMessage.Type.close) { // 关闭
-			this.close();
-		} else if(message.getType() == ApplicationMessage.Type.response) { // 响应内容
-			LOGGER.info("收到响应：{}", message.getBody());
-		} else {
-			LOGGER.warn("未适配的消息类型：{}", message.getType());
+		if(message.getType() == null) {
+			LOGGER.warn("系统消息类型为空：{}", message.getType());
+			return;
 		}
+		switch (message.getType()) {
+			case text:
+				onText(message);
+				break;
+			case close:
+				onClose(message);
+				break;
+			case notify:
+				onNotify(message);
+				break;
+			case shutdown:
+				onShutdown(message);
+				break;
+			case response:
+				onResponse(message);
+				break;
+			default:
+				LOGGER.warn("未适配的消息类型：{}", message.getType());
+				break;
+		}
+	}
+
+	/**
+	 * 文本消息，原因返回
+	 */
+	private void onText(ApplicationMessage message) {
+		send(ApplicationMessage.response(message.getBody()));
+	}
+	
+	/**
+	 * 关闭Socket连接
+	 */
+	private void onClose(ApplicationMessage message) {
+		this.close();
+	}
+	
+	/**
+	 * 唤醒窗口
+	 */
+	private void onNotify(ApplicationMessage message) {
+		Platform.runLater(() -> {
+			MainWindow.getInstance().show();
+		});
+	}
+	
+	/**
+	 * 关闭程序
+	 */
+	private void onShutdown(ApplicationMessage message) {
+		SystemContext.shutdown();
+	}
+	
+	/**
+	 * 响应
+	 */
+	private void onResponse(ApplicationMessage message) {
+		LOGGER.debug("收到响应：{}", message.getBody());
 	}
 
 	/**

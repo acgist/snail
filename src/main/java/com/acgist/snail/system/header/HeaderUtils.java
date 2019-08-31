@@ -1,7 +1,9 @@
-package com.acgist.snail.utils;
+package com.acgist.snail.system.header;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>头处理</p>

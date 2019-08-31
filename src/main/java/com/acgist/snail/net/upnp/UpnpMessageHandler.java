@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.net.upnp.bootstrap.UpnpService;
-import com.acgist.snail.utils.HeaderUtils;
+import com.acgist.snail.system.header.HeaderUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
