@@ -79,7 +79,9 @@ public class PeerManager {
 	}
 	
 	/**
-	 * 新增Peer，插入尾部。
+	 * <p>新增Peer</p>
+	 * <p>优先级高的Peer插入尾部优先使用。</p>
+	 * <p>优先级计算：主动连接、本地发现、Peer评分。</p>
 	 * 
 	 * @param infoHashHex 下载文件infoHashHex
 	 * @param parent torrent下载统计
@@ -97,7 +99,12 @@ public class PeerManager {
 					LOGGER.debug("添加PeerSession，{}-{}，来源：{}", host, port, PeerConfig.source(source));
 				}
 				peerSession = PeerSession.newInstance(parent, host, port);
-				if(source == PeerConfig.SOURCE_CONNECT || PeerEvaluator.getInstance().eval(peerSession)) { // 计算插入位置
+				// 计算插入位置
+				if(
+					source == PeerConfig.SOURCE_LSD || // 本地发现
+					source == PeerConfig.SOURCE_CONNECT || // 主动连接
+					PeerEvaluator.getInstance().eval(peerSession) // Peer评分
+				) {
 					deque.offerLast(peerSession); // 插入尾部：优先级高
 				} else {
 					deque.offerFirst(peerSession); // 插入头部：优先级低

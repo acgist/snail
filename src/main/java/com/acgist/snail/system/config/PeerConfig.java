@@ -78,6 +78,7 @@ public class PeerConfig {
 	public static final byte SOURCE_PEX =     1 << 1; // PEX
 	public static final byte SOURCE_DHT =     1 << 2; // DHT
 	public static final byte SOURCE_CONNECT = 1 << 3; // 客户端连接
+	public static final byte SOURCE_LSD =     1 << 4; // 本地发现
 	
 	/**
 	 * Peer状态

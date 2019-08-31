@@ -36,20 +36,18 @@ public class Headers {
 	 * 读取协议
 	 */
 	private String readProtocol() {
-		if(this.lines.length == 0) {
+		if(this.lines == null || this.lines.length == 0) {
 			this.hasProtocol = false;
 			return null;
 		} else {
 			final String firstLine = this.lines[0];
-			if(firstLine == null) {
+			if(firstLine == null ||
+				firstLine.indexOf(HEADER_SPLIT) != -1) {
 				this.hasProtocol = false;
 				return null;
-			} else if(firstLine.indexOf(HEADER_SPLIT) == -1) {
+			} else {
 				this.hasProtocol = true;
 				return firstLine.trim();
-			} else {
-				this.hasProtocol = false;
-				return null;
 			}
 		}
 	}
@@ -58,15 +56,13 @@ public class Headers {
 	 * 读取头信息
 	 */
 	private Map<String, String> readHeaders() {
-		int begin;
-		if(this.hasProtocol) {
-			begin = 1;
-		} else {
-			begin = 0;
-		}
-		final Map<String, String> headers = new HashMap<>();
 		int index;
 		String key, line, value;
+		final Map<String, String> headers = new HashMap<>();
+		if(this.lines == null) {
+			return headers;
+		}
+		final int begin = this.hasProtocol ? 1 : 0;
 		for (int jndex = begin; jndex < this.lines.length; jndex++) {
 			line = this.lines[jndex];
 			if(line == null) {

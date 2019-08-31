@@ -53,7 +53,7 @@ public class UpnpClient extends UdpClient<UpnpMessageHandler> {
 		final StringBuilder builder = new StringBuilder();
 		builder
 			.append("M-SEARCH * HTTP/1.1").append(NEW_LINE)
-			.append("HOST: 239.255.255.250:1900").append(NEW_LINE)
+			.append("HOST: ").append(UpnpServer.UPNP_HOST).append(":").append(UpnpServer.UPNP_PORT).append(NEW_LINE)
 			.append("MX: 3").append(NEW_LINE)
 			.append("ST: urn:schemas-upnp-org:device:InternetGatewayDevice:1").append(NEW_LINE)
 			.append("MAN: \"ssdp:discover\"").append(NEW_LINE)

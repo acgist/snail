@@ -13,6 +13,7 @@ import com.acgist.snail.net.UdpAcceptHandler;
 import com.acgist.snail.net.UdpServer;
 import com.acgist.snail.net.application.ApplicationClient;
 import com.acgist.snail.net.application.ApplicationServer;
+import com.acgist.snail.net.torrent.local.LocalServiceDiscoveryServer;
 import com.acgist.snail.net.torrent.peer.PeerServer;
 import com.acgist.snail.net.torrent.server.TorrentServer;
 import com.acgist.snail.net.torrent.tracker.TrackerServer;
@@ -26,6 +27,7 @@ import com.acgist.snail.system.initializer.impl.ConfigInitializer;
 import com.acgist.snail.system.initializer.impl.DatabaseInitializer;
 import com.acgist.snail.system.initializer.impl.DhtInitializer;
 import com.acgist.snail.system.initializer.impl.DownloaderInitializer;
+import com.acgist.snail.system.initializer.impl.LocalServiceDiscoveryInitializer;
 import com.acgist.snail.system.initializer.impl.PeerEvaluatorInitializer;
 import com.acgist.snail.system.initializer.impl.PeerInitializer;
 import com.acgist.snail.system.initializer.impl.ProtocolInitializer;
@@ -74,6 +76,7 @@ public class SystemContext {
 		TorrentInitializer.newInstance().asyn();
 		DownloaderInitializer.newInstance().asyn();
 		PeerEvaluatorInitializer.newInstance().asyn();
+		LocalServiceDiscoveryInitializer.newInstance().asyn();
 	}
 	
 	/**
@@ -126,7 +129,7 @@ public class SystemContext {
 				TrackerServer.getInstance().close();
 				TorrentServer.getInstance().close();
 				ApplicationServer.getInstance().close();
-//				LocalServiceDiscoveryServer.getInstance().close();
+				LocalServiceDiscoveryServer.getInstance().close();
 				TcpClient.shutdown();
 				TcpServer.shutdown();
 				UdpAcceptHandler.shutdown();

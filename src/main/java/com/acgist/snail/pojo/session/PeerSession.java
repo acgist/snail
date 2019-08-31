@@ -287,6 +287,13 @@ public class PeerSession implements IStatistics {
 	}
 	
 	/**
+	 * 来源：LSD
+	 */
+	public boolean lsd() {
+		return verifySource(PeerConfig.SOURCE_LSD);
+	}
+	
+	/**
 	 * 来源：Pex
 	 */
 	public boolean pex() {
