@@ -64,7 +64,7 @@ public class StringUtils {
 	 */
 	public static final long toLong(String value) {
 		if(isNumeric(value)) {
-			return Long.valueOf(value);
+			return Long.parseLong(value);
 		}
 		return 0L;
 	}
@@ -91,7 +91,7 @@ public class StringUtils {
 	/**
 	 * 十六进制字符串转为字符数组。
 	 */
-	public static byte[] unhex(String text) {
+	public static final byte[] unhex(String text) {
 		if(text == null) {
 			return null;
 		}

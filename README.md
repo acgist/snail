@@ -77,6 +77,7 @@ Windows直接点击SnailLauncher.exe即可运行。
 |Extension Protocol|√||
 |Peer Exchange (PEX)|√||
 |Peer ID Conventions|√||
+|Local Service Discovery|√||
 |uTorrent Transport Protocol|√|uTP|
 |Multitracker Metadata Extension|√||
 |Tracker Returns Compact Peer Lists|√|HTTP Tracker Protocol|
@@ -86,13 +87,8 @@ Windows直接点击SnailLauncher.exe即可运行。
 |Fast Extension|×||
 |Private Torrents|○||
 |Holepunch Extension|○||
-|Local Service Discovery|○||
-|DHT scrape|?||
-|HTTP Seeding|?||
-|IPv6 extension for DHT|?||
 |DHT Security Extension|?||
 |UDP Tracker Protocol Extensions|?||
-|Tracker Protocol Extension: Scrape|?||
 
 #### TODO
 

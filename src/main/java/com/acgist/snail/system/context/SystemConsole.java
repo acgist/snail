@@ -93,6 +93,7 @@ public class SystemConsole {
 		final var dht = new AtomicInteger(0);
 		final var pex = new AtomicInteger(0);
 		final var utp = new AtomicInteger(0);
+		final var lsd = new AtomicInteger(0);
 		final var tracker = new AtomicInteger(0);
 		final var connect = new AtomicInteger(0);
 		final var upload = new AtomicInteger(0);
@@ -108,6 +109,9 @@ public class SystemConsole {
 					}
 					if(peer.pex()) {
 						pex.incrementAndGet();
+					}
+					if(peer.lsd()) {
+						lsd.incrementAndGet();
 					}
 					if(peer.utp()) {
 						utp.incrementAndGet();
@@ -136,6 +140,7 @@ public class SystemConsole {
 				.append("来源：")
 				.append("DHT-").append(dht.getAndSet(0)).append("、")
 				.append("PEX-").append(pex.getAndSet(0)).append("、")
+				.append("LSD-").append(lsd.getAndSet(0)).append("、")
 				.append("Tracker-").append(tracker.getAndSet(0)).append("、")
 				.append("Connect-").append(connect.getAndSet(0)).append("，")
 				.append("上传中：").append(upload.getAndSet(0)).append("，")

@@ -166,7 +166,7 @@ public class HttpHeaderWrapper {
 			int endIndex = contentRange.lastIndexOf("-");
 			String value = contentRange.substring(5, endIndex).trim();
 			if(StringUtils.isNumeric(value)) {
-				range = Long.valueOf(value);
+				range = Long.parseLong(value);
 			}
 		}
 		return range;

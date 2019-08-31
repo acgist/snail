@@ -15,6 +15,7 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>本地发现客户端</p>
+ * <p>执行周期和PEX定时任务一致，启动时不执行。</p>
  * 
  * @author acgist
  * @since 1.1.0
@@ -58,10 +59,10 @@ public class LocalServiceDiscoveryClient extends UdpClient<LocalServiceDiscovery
 		final String peerId = StringUtils.hex(PeerService.getInstance().peerId());
 		builder
 			.append("BT-SEARCH * HTTP/1.1").append(NEW_LINE)
-			.append("Host: ").append(NetUtils.inetHostAddress()).append(NEW_LINE)
+			.append("Host: ").append(LocalServiceDiscoveryServer.LSD_HOST).append(":").append(LocalServiceDiscoveryServer.LSD_PORT).append(NEW_LINE)
 			.append("Port: ").append(SystemConfig.getTorrentPort()).append(NEW_LINE)
 			.append("Infohash: ").append(infoHash).append(NEW_LINE)
-			.append("cookie: ").append(peerId).append(NEW_LINE)
+			.append("cookie: ").append(peerId).append(NEW_LINE) // 过滤本机使用
 			.append(NEW_LINE);
 		return builder.toString();
 	}

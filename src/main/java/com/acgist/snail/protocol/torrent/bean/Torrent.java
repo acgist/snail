@@ -99,7 +99,7 @@ public class Torrent {
 						final Long port = (Long) values.get(1);
 						if(StringUtils.isNumeric(host)) { // TODO：紧凑型IP和端口
 							return Map.entry(
-								NetUtils.decodeIntToIp(Integer.valueOf(host)),
+								NetUtils.decodeIntToIp(Integer.parseInt(host)),
 								Long.valueOf(NetUtils.decodePort(port.shortValue()))
 							);
 						} else {
