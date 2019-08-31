@@ -42,7 +42,7 @@ open module com.acgist.snail {
 	requires transitive javafx.graphics;
 
 	/*
-	 * 其他：数据库、日志、JSON
+	 * 其他：数据库、日志
 	 */
 	requires transitive org.slf4j;
 	requires transitive com.h2database;
