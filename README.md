@@ -120,7 +120,7 @@ JavaFX Scene Builder
 GITEE：[https://gitee.com/acgist/snail](https://gitee.com/acgist/snail)  
 GITHUB（不活跃）：[https://github.com/acgist/snail](https://github.com/acgist/snail)
 
-[帮助](./HELP.md)
+[帮助](https://gitee.com/acgist/snail/wikis)
 
 ###### 界面
 ![下载界面](https://static.acgist.com/resources/images/snail.png "下载界面")
