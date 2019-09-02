@@ -58,19 +58,19 @@ public class PeerExchangeMessageHandler implements IExtensionMessageHandler {
 	
 	@Override
 	public void onMessage(ByteBuffer buffer) {
-		exchange(buffer);
+		pex(buffer);
 	}
 
 	/**
 	 * 发送请求
 	 */
-	public void exchange(byte[] bytes) {
-		final Byte type = utPeerExchangeType(); // 扩展消息类型
+	public void pex(byte[] bytes) {
+		final Byte type = peerExchangeType(); // 扩展消息类型
 		if (type == null) {
-			LOGGER.warn("不支持UtPeerExchange扩展协议");
+			LOGGER.warn("不支持pex扩展协议");
 			return;
 		}
-		LOGGER.debug("发送Pex消息");
+		LOGGER.debug("发送pex消息");
 		this.extensionMessageHandler.pushMessage(type, bytes);
 	}
 	
@@ -78,13 +78,13 @@ public class PeerExchangeMessageHandler implements IExtensionMessageHandler {
 	 * 处理请求，将获取的Peer加入到列表。
 	 * TODO：IPv6
 	 */
-	private void exchange(ByteBuffer buffer) {
+	private void pex(ByteBuffer buffer) {
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
 		final BEncodeDecoder decoder = BEncodeDecoder.newInstance(bytes);
 		final Map<String, Object> map = decoder.nextMap();
 		if(map == null) {
-			LOGGER.warn("UtPeerExchange消息格式错误：{}", decoder.oddString());
+			LOGGER.warn("pex消息格式错误：{}", decoder.oddString());
 			return;
 		}
 		final byte[] added = decoder.getBytes(ADDED);
@@ -100,7 +100,7 @@ public class PeerExchangeMessageHandler implements IExtensionMessageHandler {
 					port,
 					PeerConfig.SOURCE_PEX);
 				if(addedf != null && addedf.length > index.get()) {
-					peerSession.exchange(addedf[index.getAndIncrement()]);
+					peerSession.flags(addedf[index.getAndIncrement()]);
 				}
 			});
 		}
@@ -109,7 +109,7 @@ public class PeerExchangeMessageHandler implements IExtensionMessageHandler {
 	/**
 	 * 客户端的消息类型
 	 */
-	private Byte utPeerExchangeType() {
+	private Byte peerExchangeType() {
 		return this.peerSession.extensionTypeValue(ExtensionType.ut_pex);
 	}
 	
@@ -128,7 +128,7 @@ public class PeerExchangeMessageHandler implements IExtensionMessageHandler {
 			.forEach(session -> {
 				addedBuffer.putInt(NetUtils.encodeIpToInt(session.host()));
 				addedBuffer.putShort(NetUtils.encodePort(session.peerPort()));
-				addedfBuffer.put(session.exchange());
+				addedfBuffer.put(session.flags());
 			});
 		final Map<String, Object> data = new HashMap<>();
 		data.put(ADDED, addedBuffer.array());

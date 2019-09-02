@@ -134,10 +134,10 @@ public class PeerLauncher {
 	}
 	
 	/**
-	 * 发送Pex消息
+	 * 发送pex消息
 	 */
-	public void exchange(byte[] bytes) {
-		this.peerSubMessageHandler.exchange(bytes);
+	public void pex(byte[] bytes) {
+		this.peerSubMessageHandler.pex(bytes);
 	}
 	
 	/**

@@ -49,6 +49,7 @@ import com.acgist.snail.utils.StringUtils;
  * L = 用户是本地的（通过网络广播或是保留的本地IP范围发现）
  * </pre>
  * <p>消息格式：长度 类型 负载</p>
+ * <p>加密：如果Peer没有强制使用加密，优先不使用加密。</p>
  * 
  * TODO：加密
  * TODO：流水线
@@ -663,10 +664,17 @@ public class PeerSubMessageHandler {
 	}
 	
 	/**
-	 * 发送扩展信息：Pex
+	 * 发送扩展信息：pex
 	 */
-	public void exchange(byte[] bytes) {
-		this.extensionMessageHandler.exchange(bytes);
+	public void pex(byte[] bytes) {
+		this.extensionMessageHandler.pex(bytes);
+	}
+	
+	/**
+	 * 发送扩展信息：holepunch
+	 */
+	public void holepunch(String host, Integer port) {
+		this.extensionMessageHandler.holepunch(host, port);
 	}
 	
 	/**

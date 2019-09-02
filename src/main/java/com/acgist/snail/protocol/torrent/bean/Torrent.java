@@ -19,7 +19,7 @@ import com.acgist.snail.utils.StringUtils;
  */
 public class Torrent {
 
-	public static final List<String> INFO_KEYS;
+	public static final List<String> TORRENT_KEYS;
 	
 	static {
 		String[] keys = {
@@ -48,7 +48,7 @@ public class Torrent {
 			"creation date",
 			"announce-list"
 		};
-		INFO_KEYS = Arrays.asList(keys);
+		TORRENT_KEYS = Arrays.asList(keys);
 	}
 
 	private String comment; // 注释

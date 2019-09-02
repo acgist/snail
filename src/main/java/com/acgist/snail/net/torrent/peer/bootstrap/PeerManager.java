@@ -190,7 +190,7 @@ public class PeerManager {
 	 * <p>发送PEX消息</p>
 	 * <p>只发送给当前上传和下载的Peer。</p>
 	 */
-	public void exchange(String infoHashHex, List<PeerSession> optimize) {
+	public void pex(String infoHashHex, List<PeerSession> optimize) {
 		final byte[] bytes = PeerExchangeMessageHandler.buildMessage(optimize);
 		if(bytes == null) {
 			return;
@@ -207,10 +207,10 @@ public class PeerManager {
 				var peerLauncher = session.peerLauncher();
 				if(peerConnect != null && peerConnect.available()) {
 					count.incrementAndGet();
-					peerConnect.exchange(bytes);
+					peerConnect.pex(bytes);
 				} else if(peerLauncher != null && peerLauncher.available()) {
 					count.incrementAndGet();
-					peerLauncher.exchange(bytes);
+					peerLauncher.pex(bytes);
 				}
 			});
 		LOGGER.debug("发送PEX消息，Peer数量：{}，通知Peer数量：{}", optimize.size(), count.get());

@@ -58,7 +58,7 @@ public class PeerClientTest {
 		System.out.println("已下载：" + torrentSession.torrentStreamGroup().pieces());
 		StatisticsSession statisticsSession = new StatisticsSession();
 		PeerSession peerSession = PeerSession.newInstance(statisticsSession, host, port);
-		peerSession.exchange(PeerConfig.PEX_UTP); // UTP支持
+		peerSession.flags(PeerConfig.PEX_UTP); // UTP支持
 		PeerLauncher launcher = PeerLauncher.newInstance(peerSession, torrentSession);
 		launcher.handshake();
 		new Thread(() -> {

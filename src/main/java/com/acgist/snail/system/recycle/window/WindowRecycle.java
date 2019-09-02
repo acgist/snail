@@ -106,15 +106,19 @@ public class WindowRecycle extends Recycle {
 	}
 	
 	/**
-	 * 创建删除文件信息：小端
+	 * <p>创建删除文件信息</p>
+	 * <p>数据模式：小端</p>
 	 */
 	public byte[] buildInfo() {
 		String path = buildPath();
 		final ByteArrayOutputStream out = new ByteArrayOutputStream();
-		out.write(2); // 固定值
-		for (int index = 0; index < 15; index++) { // 固定值
+		// 固定值
+		out.write(2);
+		// 固定值
+		for (int index = 0; index < 15; index++) {
 			out.write(0);
 		}
+		// 时间戳
 		final long timestamp = DateUtils.windowTimestamp();
 //		final ByteBuffer buffer = ByteBuffer.allocate(8);
 //		buffer.order(ByteOrder.LITTLE_ENDIAN);
@@ -127,7 +131,8 @@ public class WindowRecycle extends Recycle {
 		out.write((byte) (timestamp >> 40 & 0xFF));
 		out.write((byte) (timestamp >> 48 & 0xFF));
 		out.write((byte) (timestamp >> 56 & 0xFF));
-		final char length = (char) (1 + path.length()); // 固定值 + path.length();
+		// 固定值 + path.length();
+		final char length = (char) (1 + path.length());
 		if(length > 0xFF) {
 			out.write(length & 0xFF);
 			out.write(length >> 8 & 0xFF);
@@ -135,9 +140,11 @@ public class WindowRecycle extends Recycle {
 			out.write(length);
 			out.write(0);
 		}
-		for (int index = 0; index < 2; index++) { // 固定值
+		// 固定值
+		for (int index = 0; index < 2; index++) {
 			out.write(0);
 		}
+		// 文件路径
 		char value;
 		for (int index = 0; index < path.length(); index++) {
 			value = path.charAt(index);
@@ -149,7 +156,8 @@ public class WindowRecycle extends Recycle {
 				out.write(0);
 			}
 		}
-		for (int index = 0; index < 2; index++) { // 固定值
+		// 固定值
+		for (int index = 0; index < 2; index++) {
 			out.write(0);
 		}
 		return out.toByteArray();

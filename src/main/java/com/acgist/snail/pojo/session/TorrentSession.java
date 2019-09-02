@@ -144,7 +144,7 @@ public class TorrentSession {
 	
 	private TorrentSession(InfoHash infoHash, Torrent torrent) throws DownloadException {
 		if(infoHash == null) {
-			throw new DownloadException("缺少InfoHash");
+			throw new DownloadException("不存在的InfoHash");
 		}
 		this.torrent = torrent;
 		this.infoHash = infoHash;
@@ -336,7 +336,7 @@ public class TorrentSession {
 	 */
 	private void loadPexTimer() {
 		this.pexTimer = this.timerFixedDelay(PEX_INTERVAL.toSeconds(), PEX_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
-			PeerManager.getInstance().exchange(this.infoHashHex(), this.peerLauncherGroup.optimizePeerSession()); // PEX消息
+			PeerManager.getInstance().pex(this.infoHashHex(), this.peerLauncherGroup.optimizePeerSession()); // PEX消息
 			final LocalServiceDiscoveryClient client = LocalServiceDiscoveryClient.newInstance();
 			client.localSearch(this.torrent.getInfoHash().infoHashHex());
 		});
