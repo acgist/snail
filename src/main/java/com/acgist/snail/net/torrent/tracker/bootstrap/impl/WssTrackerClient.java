@@ -13,7 +13,7 @@ import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>Tracker WSS（WebSocket） 客户端</p>
+ * <p>Tracker WSS（WebSocket）客户端</p>
  * 
  * @author acgist
  * @since 1.1.0
@@ -75,16 +75,16 @@ public class WssTrackerClient extends TrackerClient {
 			upload = statistics.uploadSize();
 		}
 		final StringBuffer buffer = new StringBuffer();
-		buffer.append("{");
-		buffer.append("\"info_hash\"").append(":").append("\"").append(StringUtils.hex(torrentSession.infoHash().infoHash())).append("\"").append(",");
-		buffer.append("\"peer_id\"").append(":").append("\"").append(StringUtils.hex(PeerService.getInstance().peerId())).append("\"").append(",");
-		buffer.append("\"uploaded\"").append(":").append(upload).append(",");
-		buffer.append("\"downloaded\"").append(":").append(download).append(",");
-		buffer.append("\"left\"").append(":").append(remain).append(",");
-		buffer.append("\"event\"").append(":").append("\"").append(event.name()).append("\"").append(",");
-		buffer.append("\"action\"").append(":").append("\"").append(TrackerConfig.Action.announce.name()).append("\"").append(",");
-		buffer.append("\"numwant\"").append(":").append("50");
-		buffer.append("}");
+		buffer.append("{")
+			.append("\"info_hash\"").append(":").append("\"").append(StringUtils.hex(torrentSession.infoHash().infoHash())).append("\"").append(",")
+			.append("\"peer_id\"").append(":").append("\"").append(StringUtils.hex(PeerService.getInstance().peerId())).append("\"").append(",")
+			.append("\"uploaded\"").append(":").append(upload).append(",")
+			.append("\"downloaded\"").append(":").append(download).append(",")
+			.append("\"left\"").append(":").append(remain).append(",")
+			.append("\"event\"").append(":").append("\"").append(event.name()).append("\"").append(",")
+			.append("\"action\"").append(":").append("\"").append(TrackerConfig.Action.announce.name()).append("\"").append(",")
+			.append("\"numwant\"").append(":").append("50")
+			.append("}");
 		return buffer.toString();
 	}
 	

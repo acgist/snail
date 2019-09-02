@@ -48,7 +48,7 @@ public class UpnpService {
 	}
 	
 	/**
-	 * 控制类型
+	 * 控制类型，最后一位类型忽略。
 	 */
 	private static final String SERVICE_WANIPC = "urn:schemas-upnp-org:service:WANIPConnection:";
 	
@@ -219,12 +219,12 @@ public class UpnpService {
 	/**
 	 * 设置控制地址
 	 */
-	private void controlURL() {
+	private void controlURL() throws NetException {
 		URL url = null;
 		try {
 			url = new URL(this.location);
 		} catch (MalformedURLException e) {
-			LOGGER.error("UPNP获取控制URL异常：{}", this.location, e);
+			throw new NetException("端口映射获取控制URL异常：" + this.location, e);
 		}
 		final StringBuilder builder = new StringBuilder();
 		builder.append(url.getProtocol())
