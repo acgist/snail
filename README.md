@@ -71,7 +71,7 @@ Windows直接点击SnailLauncher.exe即可运行。
 
 #### BT进度
 
-|协议|进度|
+|协议（BEP）|进度|
 |:-|:-|
 |[DHT Protocol](http://www.bittorrent.org/beps/bep_0005.html)|√|
 |[Fast Extension](http://www.bittorrent.org/beps/bep_0006.html)|×|
@@ -80,20 +80,15 @@ Windows直接点击SnailLauncher.exe即可运行。
 |[Holepunch Extension](http://www.bittorrent.org/beps/bep_0055.html)|○|
 |[Peer Exchange (PEX)](http://www.bittorrent.org/beps/bep_0011.html)|√|
 |[Peer ID Conventions](http://www.bittorrent.org/beps/bep_0020.html)|√|
-|[UDP Tracker Protocol](http://www.bittorrent.org/beps/bep_0015.html)|√|
 |[Local Service Discovery](http://www.bittorrent.org/beps/bep_0014.html)|√|
 |[uTorrent Transport Protocol](http://www.bittorrent.org/beps/bep_0029.html)|√|
 |[Multitracker Metadata Extension](http://www.bittorrent.org/beps/bep_0012.html)|√|
 |[Tracker Returns Compact Peer Lists](http://www.bittorrent.org/beps/bep_0023.html)|√|
+|[UDP Tracker Protocol for BitTorrent](http://www.bittorrent.org/beps/bep_0015.html)|√|
 |[The BitTorrent Protocol Specification](http://www.bittorrent.org/beps/bep_0003.html)|√|
 |[Extension for Peers to Send Metadata Files](http://www.bittorrent.org/beps/bep_0009.html)|√|
-
-#### TODO
-
-|任务|进度|
-|:-|:-|
-|支持IPv6|x|
-|支持加密|x|
+|加密：数据流加密（PEX/Peer流量）|x|
+|IPv6(DHT/Peer/PEX/Tracker)|x|
 
 *√=完成、○-进行中、×-未开始、?-待定*
 
