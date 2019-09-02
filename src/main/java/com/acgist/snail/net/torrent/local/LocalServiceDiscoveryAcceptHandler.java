@@ -27,7 +27,7 @@ public class LocalServiceDiscoveryAcceptHandler extends UdpAcceptHandler {
 	
 	@Override
 	public UdpMessageHandler messageHandler(ByteBuffer buffer, InetSocketAddress socketAddress) {
-		return localServiceDiscoveryMessageHandler;
+		return this.localServiceDiscoveryMessageHandler;
 	}
 
 }

@@ -15,32 +15,32 @@ public class UpnpServiceTest {
 	
 	@Test
 	public void getExternalIPAddress() throws NetException {
-		UpnpService.getInstance().load(serviceUrl);
+		UpnpService.getInstance().load(this.serviceUrl);
 		System.out.println(UpnpService.getInstance().getExternalIPAddress());
 	}
 
 	@Test
 	public void getSpecificPortMappingEntry() throws NetException {
-		UpnpService.getInstance().load(serviceUrl);
+		UpnpService.getInstance().load(this.serviceUrl);
 		System.out.println(UpnpService.getInstance().getSpecificPortMappingEntry(18888, Protocol.tcp));
 	}
 
 	@Test
 	public void addPortMapping() throws NetException {
-		UpnpService.getInstance().load(serviceUrl);
+		UpnpService.getInstance().load(this.serviceUrl);
 		System.out.println(UpnpService.getInstance().addPortMapping(18888, 18888, Protocol.tcp));
 		System.out.println(UpnpService.getInstance().addPortMapping(18888, 18888, Protocol.udp));
 	}
 
 	@Test
 	public void deletePortMapping() throws NetException {
-		UpnpService.getInstance().load(serviceUrl);
+		UpnpService.getInstance().load(this.serviceUrl);
 		System.out.println(UpnpService.getInstance().deletePortMapping(18888, Protocol.tcp));
 	}
 	
 	@Test
 	public void setting() throws NetException {
-		UpnpService.getInstance().load(serviceUrl);
+		UpnpService.getInstance().load(this.serviceUrl);
 		UpnpService.getInstance().setting();
 	}
 
