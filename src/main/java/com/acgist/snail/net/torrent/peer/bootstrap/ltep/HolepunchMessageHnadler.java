@@ -45,6 +45,16 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler {
 	}
 	
 	/**
+	 * 请求连接
+	 * 
+	 * @param host 地址
+	 * @param port 端口
+	 */
+	public void holepunch(String host, Integer port) {
+		
+	}
+	
+	/**
 	 * 客户端的消息类型
 	 */
 	private Byte holepunchType() {
@@ -52,7 +62,8 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler {
 	}
 	
 	/**
-	 * 消息：TODO：IPv6
+	 * 消息：
+	 * TODO：IPv6
 	 */
 	private ByteBuffer buildMessage(HolepunchType type, String ip, int port, HolepunchErrorCode errorCode) {
 		final ByteBuffer buffer = ByteBuffer.allocate(12);

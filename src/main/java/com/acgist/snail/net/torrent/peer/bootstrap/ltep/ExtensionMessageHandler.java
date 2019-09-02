@@ -42,7 +42,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	public static final String EX_IP_4 = "ipv4"; // IPv4地址
 	public static final String EX_IP_6 = "ipv6"; // IPv6地址
 	
-	public static final String EX_E = "e"; // Pex：加密
+	public static final String EX_E = "e"; // pex：加密
 	
 	public static final String EX_METADATA_SIZE = "metadata_size"; // ut_metadata：种子info数据大小
 
@@ -118,7 +118,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 //		}
 		data.put(EX_REQQ, 255);
 		if(PeerConfig.ExtensionType.ut_pex.notice()) {
-			data.put(EX_E, 0); // Pex：加密
+			data.put(EX_E, 0); // pex：加密
 		}
 		if(PeerConfig.ExtensionType.ut_metadata.notice()) {
 			final int metadataSize = this.infoHash.size();
@@ -167,24 +167,17 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 			handshake();
 		}
 		if(this.torrentSession.action() == Action.magnet) {
-			downloadTorrent();
-		}
-	}
-
-	/**
-	 * 下载种子
-	 */
-	public void downloadTorrent() {
-		if(this.peerSession.support(ExtensionType.ut_metadata)) {
-			this.metadataMessageHandler.request();
+			metadata();
 		}
 	}
 	
 	/**
 	 * pex请求
 	 */
-	public void exchange(byte[] bytes) {
-		this.peerExchangeMessageHandler.exchange(bytes);
+	public void pex(byte[] bytes) {
+		if(this.peerSession.support(ExtensionType.ut_pex)) {
+			this.peerExchangeMessageHandler.pex(bytes);
+		}
 	}
 	
 	/**
@@ -195,10 +188,27 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	}
 	
 	/**
+	 * <p>metadata请求</p>
+	 * <p>下载种子</p>
+	 */
+	public void metadata() {
+		if(this.peerSession.support(ExtensionType.ut_metadata)) {
+			this.metadataMessageHandler.request();
+		}
+	}
+	
+	/**
 	 * metadata消息
 	 */
 	private void metadata(ByteBuffer buffer) {
 		this.metadataMessageHandler.onMessage(buffer);
+	}
+	
+	/**
+	 * holepunch请求
+	 */
+	public void holepunch(String host, Integer port) {
+		this.holepunchExtensionMessageHnadler.holepunch(host, port);
 	}
 	
 	/**

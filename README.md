@@ -87,8 +87,8 @@ Windows直接点击SnailLauncher.exe即可运行。
 |[UDP Tracker Protocol for BitTorrent](http://www.bittorrent.org/beps/bep_0015.html)|√|
 |[The BitTorrent Protocol Specification](http://www.bittorrent.org/beps/bep_0003.html)|√|
 |[Extension for Peers to Send Metadata Files](http://www.bittorrent.org/beps/bep_0009.html)|√|
-|加密：数据流加密（PEX/Peer流量）|x|
-|IPv6(DHT/Peer/PEX/Tracker)|x|
+|加密（PEX/Peer流量）|x|
+|IPv6（(DHT/Peer/PEX/Tracker）|x|
 
 *√=完成、○-进行中、×-未开始、?-待定*
 

@@ -29,9 +29,9 @@ public class PeerSession implements IStatistics {
 	
 	private byte[] reserved; // 保留位
 	
+	private byte flags = 0; // pex flags
 	private byte status = 0; // 状态
 	private byte source = 0; // 来源属性
-	private byte exchange = 0; // PEX属性
 	
 	private String host; // 地址
 	private Integer peerPort; // Peer端口
@@ -294,7 +294,7 @@ public class PeerSession implements IStatistics {
 	}
 	
 	/**
-	 * 来源：Pex
+	 * 来源：pex
 	 */
 	public boolean pex() {
 		return verifySource(PeerConfig.SOURCE_PEX);
@@ -357,21 +357,24 @@ public class PeerSession implements IStatistics {
 	}
 	
 	/**
-	 * 配置Pex属性
+	 * 配置pex flags
 	 */
-	public void exchange(byte exchange) {
-		this.exchange = (byte) (this.exchange | exchange);
+	public void flags(byte flags) {
+		this.flags = (byte) (this.flags | flags);
 	}
 	
-	public byte exchange() {
-		return this.exchange;
+	/**
+	 * 获取pex flags
+	 */
+	public byte flags() {
+		return this.flags;
 	}
 	
 	/**
 	 * 是否支持UTP
 	 */
 	public boolean utp() {
-		return (this.exchange & PeerConfig.PEX_UTP) != 0;
+		return (this.flags & PeerConfig.PEX_UTP) != 0;
 	}
 	
 	public void peerConnect(PeerConnect peerConnect) {

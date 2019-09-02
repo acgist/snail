@@ -75,7 +75,7 @@ public class AnnouncePeerRequest extends Request {
 				peerPort,
 				PeerConfig.SOURCE_DHT);
 			if(impliedPortAuto) { // 支持UTP
-				peerSession.exchange(PeerConfig.PEX_UTP);
+				peerSession.flags(PeerConfig.PEX_UTP);
 			}
 		}
 		return AnnouncePeerResponse.newInstance(request);
