@@ -348,6 +348,16 @@ public class PeerConfig {
 			return this.value;
 		}
 		
+		public static final HolepunchType valueOf(byte value) {
+			final HolepunchType[] types = HolepunchType.values();
+			for (HolepunchType type : types) {
+				if(type.value() == value) {
+					return type;
+				}
+			}
+			return null;
+		}
+		
 	}
 	
 	/**

@@ -74,24 +74,24 @@ public class ApplicationMessageHandler extends TcpMessageHandler {
 			return;
 		}
 		switch (message.getType()) {
-			case text:
-				onText(message);
-				break;
-			case close:
-				onClose(message);
-				break;
-			case notify:
-				onNotify(message);
-				break;
-			case shutdown:
-				onShutdown(message);
-				break;
-			case response:
-				onResponse(message);
-				break;
-			default:
-				LOGGER.warn("未适配的消息类型：{}", message.getType());
-				break;
+		case text:
+			onText(message);
+			break;
+		case close:
+			onClose(message);
+			break;
+		case notify:
+			onNotify(message);
+			break;
+		case shutdown:
+			onShutdown(message);
+			break;
+		case response:
+			onResponse(message);
+			break;
+		default:
+			LOGGER.warn("未适配的消息类型：{}", message.getType());
+			break;
 		}
 	}
 

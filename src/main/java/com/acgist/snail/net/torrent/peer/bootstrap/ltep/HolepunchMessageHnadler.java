@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.torrent.peer.bootstrap.IExtensionMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
+import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.PeerConfig.ExtensionType;
 import com.acgist.snail.system.config.PeerConfig.HolepunchErrorCode;
 import com.acgist.snail.system.config.PeerConfig.HolepunchType;
@@ -24,6 +25,9 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(HolepunchMessageHnadler.class);
 
+	private static final byte IPv4 = 0x00;
+//	private static final byte IPv6 = 0x01;
+	
 	private final PeerSession peerSession;
 	
 	private final ExtensionMessageHandler extensionMessageHandler;
@@ -39,9 +43,35 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler {
 
 	@Override
 	public void onMessage(ByteBuffer buffer) {
-		// TODO：完善
-		ByteBuffer message = buildMessage(HolepunchType.rendezvous, "", 8080, HolepunchErrorCode.E_00);
-		pushMessage(message);
+		final byte typeValue = buffer.get();
+		HolepunchType.valueOf(typeValue);
+		final HolepunchType type = PeerConfig.HolepunchType.valueOf(typeValue);
+		if(type == null) {
+			LOGGER.warn("不支持的holepunch消息类型：{}", typeValue);
+			return;
+		}
+		final byte addrType = buffer.get();
+		int port, code;
+		String host;
+		if(addrType == IPv4) {
+			host = NetUtils.decodeIntToIp(buffer.getInt());
+		} else {
+			// TODO：IPv6
+			host = null;
+		}
+		port = NetUtils.decodePort(buffer.getShort());
+		code = buffer.getInt();
+		switch (type) {
+		case rendezvous:
+			rendezvous();
+			break;
+		case connect:
+			connect();
+			break;
+		case error:
+			LOGGER.warn("holepunch错误信息：{}-{}-{}", host, port, code);
+			break;
+		}
 	}
 	
 	/**
@@ -51,7 +81,30 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler {
 	 * @param port 端口
 	 */
 	public void holepunch(String host, Integer port) {
-		
+		this.rendezvous(host, port);
+	}
+	
+	/**
+	 * 发出请求：rendezvous
+	 * 
+	 * @param host 地址
+	 * @param port 端口
+	 */
+	public void rendezvous(String host, Integer port) {
+		final ByteBuffer message = buildMessage(HolepunchType.rendezvous, host, port, HolepunchErrorCode.E_00);
+		pushMessage(message);
+	}
+	
+	/**
+	 * 处理请求：rendezvous
+	 */
+	public void rendezvous() {
+	}
+	
+	/**
+	 * 处理请求：connect
+	 */
+	public void connect() {
 	}
 	
 	/**
@@ -68,7 +121,7 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler {
 	private ByteBuffer buildMessage(HolepunchType type, String ip, int port, HolepunchErrorCode errorCode) {
 		final ByteBuffer buffer = ByteBuffer.allocate(12);
 		buffer.put(type.value()); // 消息类型
-		buffer.put((byte) 0x00); // 地址类型：0x00=IPv4；0x01=IPv6；
+		buffer.put(IPv4); // 地址类型：0x00=IPv4；0x01=IPv6；
 		buffer.putInt(NetUtils.encodeIpToInt(ip)); // IP地址
 		buffer.putShort(NetUtils.encodePort(port)); // 端口号
 		buffer.putInt(errorCode.code()); // 错误代码
@@ -86,5 +139,5 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler {
 		}
 		this.extensionMessageHandler.pushMessage(type, buffer.array());
 	}
-	
+
 }

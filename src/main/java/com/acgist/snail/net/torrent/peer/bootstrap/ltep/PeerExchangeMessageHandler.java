@@ -75,7 +75,7 @@ public class PeerExchangeMessageHandler implements IExtensionMessageHandler {
 	}
 	
 	/**
-	 * 处理请求，将获取的Peer加入到列表。
+	 * 处理请求：将获取的Peer加入到列表
 	 * TODO：IPv6
 	 */
 	private void pex(ByteBuffer buffer) {
