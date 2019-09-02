@@ -14,10 +14,13 @@ import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NetUtils;
+import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.XMLUtils;
 
 /**
  * <p>UPNP Service</p>
+ * <p>Internet Gateway Device</p>
+ * <p>协议参考：https://tools.ietf.org/html/rfc6970</p>
  * <p>端口映射，将内网的端口映射到外网中。如果外网端口已经被映射，需要设置新的映射端口。</p>
  * TODO：多路由环境配置
  * 
@@ -29,26 +32,25 @@ public class UpnpService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UpnpService.class);
 	
 	/**
-	 * 没有初始化
+	 * 映射状态
 	 */
-	public static final int USE_NOT_INIT = -2;
-	/**
-	 * 不可用（已被注册）
-	 */
-	public static final int USE_DISABLE = -1;
-	/**
-	 * 可用（需要注册）
-	 */
-	public static final int USE_MAPABLE = 0;
-	/**
-	 * 可用（已被注册）
-	 */
-	public static final int USE_USEABLE = 1;
+	public enum Status {
+		
+		/** 没有初始化 */
+		uninit,
+		/** 不可用（已被注册） */
+		disable,
+		/** 可用（需要注册） */
+		mapable,
+		/** 可用（已被注册） */
+		useable;
+		
+	}
 	
 	/**
 	 * 控制类型
 	 */
-	private static final String SERVICE_TYPE = "urn:schemas-upnp-org:service:WANIPConnection:1";
+	private static final String SERVICE_WANIPC = "urn:schemas-upnp-org:service:WANIPConnection:";
 	
 	private String location; // 描述文件地址
 	private String controlURL; // 控制URL
@@ -84,7 +86,7 @@ public class UpnpService {
 		}
 		for (int index = 0; index < serviceTypes.size(); index++) {
 			String serviceType = serviceTypes.get(index);
-			if(SERVICE_TYPE.equals(serviceType)) {
+			if(StringUtils.startsWith(serviceType, SERVICE_WANIPC)) {
 				this.serviceType = serviceType;
 				this.controlURL = controlURLs.get(index);
 				this.controlURL();
@@ -127,14 +129,11 @@ public class UpnpService {
 	 * <p>请求头：SOAPAction:"urn:schemas-upnp-org:service:WANIPConnection:1#GetSpecificPortMappingEntry"</p>
 	 * <p>如果没有映射：返回{@link HTTPClient#HTTP_INTERNAL_SERVER_ERROR}错误代码</p>
 	 * 
-	 * @return {@linkplain #USE_NOT_INIT 没有初始化：-2}、
-	 * 		{@linkplain #USE_DISABLE 不可用（已被注册）：-1}、
-	 * 		{@linkplain #USE_MAPABLE 可用（需要注册）：0}、
-	 * 		{@linkplain #USE_USEABLE 可用（已被注册）：1}
+	 * @return {@linkplain Status 状态}
 	 */
-	public int getSpecificPortMappingEntry(int port, Protocol protocol) throws NetException {
+	public Status getSpecificPortMappingEntry(int port, Protocol protocol) throws NetException {
 		if(!this.init) {
-			return USE_NOT_INIT;
+			return Status.uninit;
 		}
 		UpnpRequest upnpRequest = UpnpRequest.newRequest(this.serviceType);
 		String xml = upnpRequest.buildGetSpecificPortMappingEntry(port, protocol);
@@ -144,14 +143,14 @@ public class UpnpService {
 			.post(xml, BodyHandlers.ofString());
 		String body = response.body();
 		if(HTTPClient.internalServerError(response)) {
-			return USE_MAPABLE;
+			return Status.mapable;
 		}
 		final String registerIp = UpnpResponse.parseGetSpecificPortMappingEntry(body);
 		final String localIp = NetUtils.inetHostAddress();
 		if(localIp.equals(registerIp)) {
-			return USE_USEABLE;
+			return Status.useable;
 		} else {
-			return USE_DISABLE;
+			return Status.disable;
 		}
 	}
 	
@@ -239,30 +238,30 @@ public class UpnpService {
 	 * 端口映射，如果端口被占用，端口+1继续映射。
 	 */
 	private void setPortMapping() throws NetException {
-		int uValue = USE_DISABLE, tValue;
+		Status udpStatus = Status.disable, tcpStatus;
 		int portExt = SystemConfig.getTorrentPort();
 		while(true) {
 			if(portExt >= NetUtils.MAX_PORT) {
 				break;
 			}
-			uValue = this.getSpecificPortMappingEntry(portExt, Protocol.udp);
-			if(uValue == USE_NOT_INIT || uValue == USE_DISABLE) {
+			udpStatus = this.getSpecificPortMappingEntry(portExt, Protocol.udp);
+			if(udpStatus == Status.uninit || udpStatus == Status.disable) {
 				portExt++;
 				continue;
 			}
-			tValue = this.getSpecificPortMappingEntry(portExt, Protocol.tcp);
-			if(uValue == tValue) {
+			tcpStatus = this.getSpecificPortMappingEntry(portExt, Protocol.tcp);
+			if(udpStatus == tcpStatus) {
 				break;
 			} else {
 				portExt++;
 			}
 		}
-		if(uValue == USE_MAPABLE) {
+		if(udpStatus == Status.mapable) {
 			SystemConfig.setTorrentPortExt(portExt);
 			final boolean dhtOk = this.addPortMapping(SystemConfig.getTorrentPort(), portExt, Protocol.udp);
 			final boolean peerOk = this.addPortMapping(SystemConfig.getTorrentPort(), portExt, Protocol.tcp);
 			LOGGER.info("端口映射（注册）：DHT（{}-{}-{}）、Peer（{}-{}-{}）", SystemConfig.getTorrentPort(), portExt, dhtOk, SystemConfig.getTorrentPort(), portExt, peerOk);
-		} else if(uValue == USE_USEABLE) {
+		} else if(udpStatus == Status.useable) {
 			SystemConfig.setTorrentPortExt(portExt);
 			LOGGER.info("端口映射（可用）：DHT（{}-{}-{}）、Peer（{}-{}-{}）", SystemConfig.getTorrentPort(), portExt, true, SystemConfig.getTorrentPort(), portExt, true);
 		} else {
@@ -280,15 +279,7 @@ public class UpnpService {
 			this.externalIpAddress = externalIpAddress;
 		} else if(!this.externalIpAddress.equals(externalIpAddress)) {
 			this.externalIpAddress = externalIpAddress;
-			this.change();
 		}
 	}
 	
-	/**
-	 * IP地址发生变化
-	 */
-	private void change() {
-		LOGGER.info("外网IP地址发生变化");
-	}
-
 }

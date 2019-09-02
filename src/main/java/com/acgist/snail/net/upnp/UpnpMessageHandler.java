@@ -13,6 +13,7 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>UPNP消息</p>
+ * <p>协议参考：http://upnp.org/specs/arch/UPnP-arch-DeviceArchitecture-v1.0.pdf</p>
  * TODO：不是非常稳定
  * TODO：协议判断
  * 
@@ -26,9 +27,9 @@ public class UpnpMessageHandler extends UdpMessageHandler {
 	 */
 	private static final String HEADER_LOCATION = "location";
 	/**
-	 * UPNP控制类型
+	 * Internet Gateway Device
 	 */
-	private static final String UPNP_VALUE_MATCH = "urn:schemas-upnp-org";
+	private static final String UPNP_DEVICE_IGD = "urn:schemas-upnp-org:device:InternetGatewayDevice:";
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UpnpMessageHandler.class);
 	
@@ -44,7 +45,7 @@ public class UpnpMessageHandler extends UdpMessageHandler {
 	private void config(String content) {
 		final Headers headers = Headers.newInstance(content);
 		final boolean support = headers.allHeaders().values().stream()
-			.anyMatch(value -> value != null && value.startsWith(UPNP_VALUE_MATCH));
+			.anyMatch(value -> StringUtils.startsWith(value, UPNP_DEVICE_IGD));
 		if(!support) {
 			LOGGER.info("UPNP不支持的响应：{}", content);
 			return;

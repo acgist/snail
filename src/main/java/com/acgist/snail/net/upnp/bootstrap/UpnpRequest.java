@@ -110,6 +110,17 @@ public class UpnpRequest {
 		return xml();
 	}
 	
+//	请求报文：
+//	<?xml version="1.0" encoding="UTF-8"?>
+//	<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+//	    <s:Body>
+//	        <u:DeletePortMapping xmlns:u="urn:schemas-upnp-org:service:WANIPConnection:1">
+//	            <NewRemoteHost></NewRemoteHost>
+//	            <NewExternalPort>8080</NewExternalPort>
+//	            <NewProtocol>TCP</NewProtocol>
+//	        </u:DeletePortMapping>
+//	    </s:Body>
+//	</s:Envelope>
 	/**
 	 * 删除端口映射
 	 */
@@ -125,7 +136,7 @@ public class UpnpRequest {
 	 * XML文本输出
 	 */
 	private String xml() {
-		return this.xml.xml(true);
+		return this.xml.xml(false);
 	}
 
 }
