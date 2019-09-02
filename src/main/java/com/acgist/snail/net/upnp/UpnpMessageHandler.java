@@ -27,7 +27,7 @@ public class UpnpMessageHandler extends UdpMessageHandler {
 	 */
 	private static final String HEADER_LOCATION = "location";
 	/**
-	 * Internet Gateway Device
+	 * Internet Gateway Device，最后一位类型忽略。
 	 */
 	private static final String UPNP_DEVICE_IGD = "urn:schemas-upnp-org:device:InternetGatewayDevice:";
 	
@@ -56,7 +56,7 @@ public class UpnpMessageHandler extends UdpMessageHandler {
 				UpnpService.getInstance().load(location).setting();
 			}
 		} catch (Exception e) {
-			LOGGER.error("设置UPNP异常", e);
+			LOGGER.error("端口映射异常", e);
 		}
 	}
 	
