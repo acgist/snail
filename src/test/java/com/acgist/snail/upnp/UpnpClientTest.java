@@ -33,7 +33,7 @@ public class UpnpClientTest {
 		+ "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" SOAP-ENV:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">"
 		+ "	<SOAP-ENV:Body>"
 		+ "		<u:GetExternalIPAddressResponse xmlns:u=\"urn:schemas-upnp-org:service:WANIPConnection:1\">"
-		+ "			<NewExternalIPAddress>219.137.140.38</NewExternalIPAddress>"
+		+ "			<NewExternalIPAddress>1.2.3.4</NewExternalIPAddress>"
 		+ "		</u:GetExternalIPAddressResponse>"
 		+ "	</SOAP-ENV:Body>"
 		+ "</SOAP-ENV:Envelope>";
