@@ -1,4 +1,4 @@
-package com.acgist.snail.pojo.bean;
+package com.acgist.snail.pojo.message;
 
 import java.util.Map;
 

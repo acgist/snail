@@ -118,9 +118,9 @@ public class HttpDownloader extends Downloader {
 			this.responseHeader = HttpHeaderWrapper.newInstance(response.headers());
 			this.input = new BufferedInputStream(response.body());
 			if(this.responseHeader.range()) { // 支持断点续传
-				final long begin = responseHeader.beginRange();
+				final long begin = this.responseHeader.beginRange();
 				if(size != begin) {
-					LOGGER.warn("已下载大小和开始下载位置不相等，已下载大小：{}，开始下载位置：{}，响应头：{}", size, begin, responseHeader.headers());
+					LOGGER.warn("已下载大小和开始下载位置不相等，已下载大小：{}，开始下载位置：{}，响应头：{}", size, begin, this.responseHeader.allHeaders());
 				}
 				this.taskSession.downloadSize(size);
 			} else {

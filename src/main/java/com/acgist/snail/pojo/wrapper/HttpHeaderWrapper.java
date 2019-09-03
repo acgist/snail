@@ -9,7 +9,7 @@ import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.UrlUtils;
 
 /**
- * HTTP请求头包装器，key均转为小写。
+ * HTTP请求头包装器
  * 
  * @author acgist
  * @since 1.0.0
@@ -19,19 +19,19 @@ public class HttpHeaderWrapper {
 	/**
 	 * 端点续传：下载范围
 	 */
-	private static final String CONTENT_RANGE = "Content-Range".toLowerCase();
+	private static final String CONTENT_RANGE = "Content-Range";
 	/**
 	 * 端点续传：范围请求
 	 */
-	private static final String ACCEPT_RANGES = "Accept-Ranges".toLowerCase();
+	private static final String ACCEPT_RANGES = "Accept-Ranges";
 	/**
 	 * 下载大小
 	 */
-	private static final String CONTENT_LENGTH = "Content-Length".toLowerCase();
+	private static final String CONTENT_LENGTH = "Content-Length";
 	/**
 	 * 下载描述
 	 */
-	private static final String CONTENT_DISPOSITION = "Content-Disposition".toLowerCase();
+	private static final String CONTENT_DISPOSITION = "Content-Disposition";
 	/**
 	 * 范围请求：支持断点续传
 	 */
@@ -53,7 +53,7 @@ public class HttpHeaderWrapper {
 			headers = httpHeaders.map().entrySet().stream()
 				.filter(entry -> CollectionUtils.isNotEmpty(entry.getValue()))
 				.collect(Collectors.toMap(
-					entry -> entry.getKey().toLowerCase(), // 转为小写
+					entry -> entry.getKey(),
 					entry -> entry.getValue().get(0)
 //					entry -> String.join(",", entry.getValue())
 				));
@@ -64,7 +64,7 @@ public class HttpHeaderWrapper {
 	/**
 	 * 获取所有header数据
 	 */
-	public Map<String, String> headers() {
+	public Map<String, String> allHeaders() {
 		return this.headers;
 	}
 	
@@ -83,21 +83,42 @@ public class HttpHeaderWrapper {
 	}
 	
 	/**
-	 * 下载文件名称，如果获取不到下载文件名，返回默认的文件名。
+	 * 获取头信息
+	 * 
+	 * @param key 头信息名称，忽略大小写。
+	 * 
+	 * @return 头信息值
+	 */
+	public String header(String key) {
+		if(isEmpty()) {
+			return null;
+		}
+		final var value = this.headers.entrySet().stream()
+			.filter(entry -> {
+				return StringUtils.equalsIgnoreCase(key, entry.getKey());
+			})
+			.map(entry -> entry.getValue())
+			.findFirst();
+		if(value.isEmpty()) {
+			return null;
+		}
+		return value.get().trim();
+	}
+	
+	/**
+	 * <p>下载文件名称，如果获取不到下载文件名，返回默认的文件名。</p>
+	 * <p>Content-Disposition:attachment;filename=snail.jar?version=1.0.0</p>
 	 * 
 	 * @param defaultName 默认文件名
 	 */
 	public String fileName(final String defaultName) {
-		if(isEmpty()) {
-			return defaultName;
-		}
-		String fileName = this.headers.get(CONTENT_DISPOSITION);
+		String fileName = header(CONTENT_DISPOSITION);
 		if(StringUtils.isEmpty(fileName)) {
 			return defaultName;
 		}
 		final String fileNameLower = fileName.toLowerCase();
 		if(fileNameLower.contains(FILENAME)) { // 包含文件名
-			fileName = UrlUtils.decode(fileName);
+			fileName = UrlUtils.decode(fileName); // URL解码
 			int index = fileName.indexOf("=");
 			if(index != -1) {
 				fileName = fileName.substring(index + 1);
@@ -119,15 +140,12 @@ public class HttpHeaderWrapper {
 	/**
 	 * 下载文件大小：Content-Length：102400
 	 */
-	public Long fileSize() {
-		Long size = 0L;
-		if(isEmpty()) {
-			return size;
-		}
-		if(this.headers.containsKey(CONTENT_LENGTH)) {
-			String value = this.headers.get(CONTENT_LENGTH).trim();
+	public long fileSize() {
+		long size = 0L;
+		String value = header(CONTENT_LENGTH);
+		if(value != null) {
 			if(StringUtils.isNumeric(value)) {
-				return Long.valueOf(value);
+				size = Long.parseLong(value);
 			}
 		}
 		return size;
@@ -142,27 +160,25 @@ public class HttpHeaderWrapper {
 	 */
 	public boolean range() {
 		boolean range = false;
-		if(isEmpty()) {
-			return range;
+		final String acceptRanges = header(ACCEPT_RANGES);
+		final String contentRange = header(CONTENT_RANGE);
+		if(acceptRanges != null) {
+			range = BYTES.equals(acceptRanges);
 		}
-		if(this.headers.containsKey(ACCEPT_RANGES)) {
-			range = BYTES.equals(this.headers.get(ACCEPT_RANGES));
-		} else if(this.headers.containsKey(CONTENT_RANGE)) {
+		if(contentRange != null) {
 			range = true;
 		}
 		return range;
 	}
 
 	/**
-	 * 获取开始下载位置
+	 * <p>获取开始下载位置</p>
+	 * <p>content-range=bytes 0-100/100</p>
 	 */
 	public long beginRange() {
 		long range = 0L;
-		if(this.headers == null) {
-			return range;
-		}
-		if(this.headers.containsKey(CONTENT_RANGE)) {
-			String contentRange = this.headers.get(CONTENT_RANGE);
+		String contentRange = header(CONTENT_RANGE);
+		if(contentRange != null) {
 			int endIndex = contentRange.lastIndexOf("-");
 			String value = contentRange.substring(5, endIndex).trim();
 			if(StringUtils.isNumeric(value)) {
