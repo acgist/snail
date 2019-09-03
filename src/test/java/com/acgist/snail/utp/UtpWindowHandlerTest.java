@@ -27,7 +27,7 @@ public class UtpWindowHandlerTest {
 	@Test
 	public void timeout() {
 		UtpWindow handler = UtpWindow.newInstance();
-		handler.send("1234".getBytes());
+		handler.build("1234".getBytes());
 		for (int i = 0; i < 100; i++) {
 			System.out.println(handler.timeoutWindowData());
 			ThreadUtils.sleep(1000);

@@ -197,7 +197,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 				bytes = new byte[remaining];
 			}
 			buffer.get(bytes);
-			final UtpWindowData windowData = this.sendWindow.send(bytes);
+			final UtpWindowData windowData = this.sendWindow.build(bytes);
 			this.data(windowData);
 			wndControl();
 		}
@@ -306,8 +306,8 @@ public class UtpMessageHandler extends UdpMessageHandler {
 		if(windowData == null) {
 			return;
 		} else {
-			this.state(windowData.getTimestamp(), windowData.getSeqnr());
 		}
+		this.state(windowData.getTimestamp(), acknr);
 		LOGGER.debug("UTP处理数据：{}", windowData.getSeqnr());
 		final ByteBuffer attachment = windowData.buffer();
 		this.peerUnpackMessageHandler.onMessage(attachment);
@@ -447,7 +447,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	 * 发送握手消息，第一条消息。
 	 */
 	private void syn() {
-		final UtpWindowData windowData = this.sendWindow.send();
+		final UtpWindowData windowData = this.sendWindow.build();
 		final ByteBuffer buffer = header(UtpConfig.TYPE_SYN, 20);
 		buffer.putShort(this.recvId);
 		buffer.putInt(windowData.pushUpdateGetTimestamp());

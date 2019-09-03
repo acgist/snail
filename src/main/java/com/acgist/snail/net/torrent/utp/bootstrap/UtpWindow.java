@@ -98,16 +98,16 @@ public class UtpWindow {
 	/**
 	 * 发送数据：没有负载
 	 */
-	public UtpWindowData send() {
+	public UtpWindowData build() {
 		synchronized (this) {
-			return send(null);
+			return build(null);
 		}
 	}
 	
 	/**
 	 * 发送数据：递增seqnr。
 	 */
-	public UtpWindowData send(byte[] data) {
+	public UtpWindowData build(byte[] data) {
 		synchronized (this) {
 			this.timestamp = DateUtils.timestampUs();
 			final UtpWindowData windowData = storage(this.timestamp, this.seqnr, data);

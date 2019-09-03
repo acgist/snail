@@ -102,4 +102,19 @@ public class TorrentStreamGroupTest {
 		streamB.close();
 	}
 	
+	@Test
+	public void read() throws IOException {
+		RandomAccessFile file = new RandomAccessFile("F:/迅雷下载/我的大叔/[我的大叔][E001].mkv", "rw");
+		long begin = System.currentTimeMillis();
+		byte[] bytes = new byte[1024 * 1024];
+		for (int index = 0; index < 1024; index++) {
+			file.seek(200 * 1024 * 1024 + index);
+			file.read(bytes);
+			StringUtils.sha1(bytes);
+		}
+		long end = System.currentTimeMillis();
+		System.out.println(end - begin);
+		file.close();
+	}
+	
 }

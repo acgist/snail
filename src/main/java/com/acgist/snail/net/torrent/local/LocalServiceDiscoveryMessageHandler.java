@@ -2,6 +2,7 @@ package com.acgist.snail.net.torrent.local;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.ArrayUtils;
+import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -45,23 +47,29 @@ public class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler {
 		final Headers headers = Headers.newInstance(content);
 		final String port = headers.header(HEADER_PORT);
 		final String cookie = headers.header(HEADER_COOKIE);
-		final String infohash = headers.header(HEADER_INFOHASH);
-		if(StringUtils.isNumeric(port) && StringUtils.isNotEmpty(infohash)) {
+		final List<String> infoHashs = headers.headerList(HEADER_INFOHASH);
+		if(StringUtils.isNumeric(port) && CollectionUtils.isNotEmpty(infoHashs)) {
 			final byte[] peerId = StringUtils.unhex(cookie);
 			if(ArrayUtils.equals(peerId, PeerService.getInstance().peerId())) { // 不是本机
 				LOGGER.debug("本地发现本机忽略");
 			} else {
-				final TorrentSession torrentSession = TorrentManager.getInstance().torrentSession(infohash);
-				if(torrentSession == null) {
-					LOGGER.debug("本地发现，不存在的种子信息：{}", infohash);
-				} else {
-					LOGGER.debug("本地发现：{}-{}-{}", infohash, host, port);
-					final PeerManager peerManager = PeerManager.getInstance();
-					peerManager.newPeerSession(infohash, torrentSession.statistics(), host, Integer.valueOf(port), PeerConfig.SOURCE_LSD);
-				}
+				infoHashs.forEach(infoHash -> {
+					doInfoHash(host, port, infoHash);
+				});
 			}
 		} else {
 			LOGGER.debug("不支持的本地发现消息：{}", content);
+		}
+	}
+
+	private void doInfoHash(String host, String port, String infoHash) {
+		final TorrentSession torrentSession = TorrentManager.getInstance().torrentSession(infoHash);
+		if(torrentSession == null) {
+			LOGGER.debug("本地发现，不存在的种子信息：{}", infoHash);
+		} else {
+			LOGGER.debug("本地发现：{}-{}-{}", infoHash, host, port);
+			final PeerManager peerManager = PeerManager.getInstance();
+			peerManager.newPeerSession(infoHash, torrentSession.statistics(), host, Integer.valueOf(port), PeerConfig.SOURCE_LSD);
 		}
 	}
 	

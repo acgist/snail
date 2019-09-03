@@ -113,7 +113,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 //		final String ip = UpnpService.getInstance().externalIpAddress();
 //		if(StringUtils.isNotEmpty(ip)) {
 //			final ByteBuffer youripBuffer = ByteBuffer.allocate(4);
-//			youripBuffer.putInt(NetUtils.decodeIpToInt(UpnpService.getInstance().externalIpAddress()));
+//			youripBuffer.putInt(NetUtils.decodeIpToInt(ip));
 //			data.put(EX_YOURIP, youripBuffer.array()); // 本机的IP地址
 //		}
 		data.put(EX_REQQ, 255);

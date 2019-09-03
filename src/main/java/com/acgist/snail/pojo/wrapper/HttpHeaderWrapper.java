@@ -1,6 +1,7 @@
 package com.acgist.snail.pojo.wrapper;
 
 import java.net.http.HttpHeaders;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -41,21 +42,20 @@ public class HttpHeaderWrapper {
 	 */
 	private static final String FILENAME = "filename";
 	
-	private final Map<String, String> headers;
+	private final Map<String, List<String>> headers;
 	
-	private HttpHeaderWrapper(Map<String, String> headers) {
+	private HttpHeaderWrapper(Map<String, List<String>> headers) {
 		this.headers = headers;
 	}
 
 	public static final HttpHeaderWrapper newInstance(HttpHeaders httpHeaders) {
-		Map<String, String> headers = null;
+		Map<String, List<String>> headers = null;
 		if(httpHeaders != null) {
 			headers = httpHeaders.map().entrySet().stream()
 				.filter(entry -> CollectionUtils.isNotEmpty(entry.getValue()))
 				.collect(Collectors.toMap(
 					entry -> entry.getKey(),
-					entry -> entry.getValue().get(0)
-//					entry -> String.join(",", entry.getValue())
+					entry -> entry.getValue()
 				));
 		}
 		return new HttpHeaderWrapper(headers);
@@ -64,7 +64,7 @@ public class HttpHeaderWrapper {
 	/**
 	 * 获取所有header数据
 	 */
-	public Map<String, String> allHeaders() {
+	public Map<String, List<String>> allHeaders() {
 		return this.headers;
 	}
 	
@@ -83,26 +83,42 @@ public class HttpHeaderWrapper {
 	}
 	
 	/**
-	 * 获取头信息
+	 * 获取第一个头信息
 	 * 
 	 * @param key 头信息名称，忽略大小写。
 	 * 
 	 * @return 头信息值
 	 */
 	public String header(String key) {
+		final var list = headerList(key);
+		if(CollectionUtils.isEmpty(list)) {
+			return null;
+		}
+		final String value = list.get(0);
+		return value == null ? null : value.trim();
+	}
+	
+	/**
+	 * 获取头信息
+	 * 
+	 * @param key 头信息名称，忽略大小写。
+	 * 
+	 * @return 头信息值
+	 */
+	public List<String> headerList(String key) {
 		if(isEmpty()) {
 			return null;
 		}
-		final var value = this.headers.entrySet().stream()
+		final var optional = this.headers.entrySet().stream()
 			.filter(entry -> {
 				return StringUtils.equalsIgnoreCase(key, entry.getKey());
 			})
 			.map(entry -> entry.getValue())
 			.findFirst();
-		if(value.isEmpty()) {
+		if(optional.isEmpty()) {
 			return null;
 		}
-		return value.get().trim();
+		return optional.get();
 	}
 	
 	/**
