@@ -1,4 +1,4 @@
-package com.acgist.snail.pojo.bean;
+package com.acgist.snail.pojo.wrapper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,17 +15,17 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.1.0
  */
-public class Headers {
+public class HeaderWrapper {
 
 	private boolean hasProtocol; // 是否含有协议
 	private final String[] lines; // 行信息
 	private final String protocol; // 协议
-	private final Map<String, List<String>> headers; // 头信息
+	protected final Map<String, List<String>> headers; // 头信息
 	
 	private static final String HEADER_LINE = "\n"; // 头信息换行符
 	private static final String HEADER_SPLIT = ":"; // 头信息分隔符
 
-	private Headers(String content) {
+	protected HeaderWrapper(String content) {
 		if(StringUtils.isEmpty(content)) {
 			this.lines = null;
 		} else {
@@ -33,6 +33,12 @@ public class Headers {
 		}
 		this.protocol = readProtocol();
 		this.headers = readHeaders();
+	}
+	
+	protected HeaderWrapper(Map<String, List<String>> headers) {
+		this.lines = null;
+		this.protocol = null;
+		this.headers = headers;
 	}
 	
 	/**
@@ -100,8 +106,8 @@ public class Headers {
 	
 	}
 
-	public static final Headers newInstance(String content) {
-		return new Headers(content);
+	public static final HeaderWrapper newInstance(String content) {
+		return new HeaderWrapper(content);
 	}
 
 	/**
@@ -128,7 +134,7 @@ public class Headers {
 	 * @return 头信息值
 	 */
 	public List<String> headerList(String key) {
-		if(this.headers == null) {
+		if(isEmpty()) {
 			return null;
 		}
 		final var optional = this.headers.entrySet().stream()
@@ -155,6 +161,29 @@ public class Headers {
 	 */
 	public Map<String, List<String>> allHeaders() {
 		return this.headers;
+	}
+	
+	/**
+	 * header数据是否为空
+	 */
+	public boolean isEmpty() {
+		return CollectionUtils.isEmpty(this.headers);
+	}
+	
+	/**
+	 * header数据是否不为空
+	 */
+	public boolean isNotEmpty() {
+		return !isEmpty();
+	}
+	
+	@Override
+	public String toString() {
+		if(this.headers != null) {
+			return this.headers.toString();
+		} else {
+			return null;
+		}
 	}
 	
 }

@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.net.upnp.bootstrap.UpnpService;
-import com.acgist.snail.pojo.bean.Headers;
+import com.acgist.snail.pojo.wrapper.HeaderWrapper;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -43,7 +43,7 @@ public class UpnpMessageHandler extends UdpMessageHandler {
 	 * 配置UPNP
 	 */
 	private void config(String content) {
-		final Headers headers = Headers.newInstance(content);
+		final HeaderWrapper headers = HeaderWrapper.newInstance(content);
 		final boolean support = headers.allHeaders().values().stream()
 			.anyMatch(list -> list.stream()
 				.anyMatch(value -> StringUtils.startsWith(value, UPNP_DEVICE_IGD))

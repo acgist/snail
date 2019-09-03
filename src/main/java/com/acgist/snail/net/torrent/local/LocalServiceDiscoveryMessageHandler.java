@@ -11,8 +11,8 @@ import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerService;
-import com.acgist.snail.pojo.bean.Headers;
 import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.pojo.wrapper.HeaderWrapper;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.ArrayUtils;
@@ -44,7 +44,7 @@ public class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler {
 	}
 
 	private void doMessage(String content, String host) {
-		final Headers headers = Headers.newInstance(content);
+		final HeaderWrapper headers = HeaderWrapper.newInstance(content);
 		final String port = headers.header(HEADER_PORT);
 		final String cookie = headers.header(HEADER_COOKIE);
 		final List<String> infoHashs = headers.headerList(HEADER_INFOHASH);
