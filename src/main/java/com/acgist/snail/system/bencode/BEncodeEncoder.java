@@ -114,7 +114,7 @@ public class BEncodeEncoder implements Closeable {
 		} else if(this.type == Type.list) {
 			this.build(this.list);
 		} else {
-			LOGGER.warn("B编码刷新时不存在类型");
+			LOGGER.warn("B编码刷新时不支持类型：{}", this.type);
 		}
 		return this;
 	}
@@ -175,6 +175,7 @@ public class BEncodeEncoder implements Closeable {
 		} else if(value instanceof List) {
 			build((List<?>) value);
 		} else {
+			this.writeBEncodeBytes(new byte[] {});
 			LOGGER.warn("B编码不支持的类型，value：{}", value);
 		}
 	}
