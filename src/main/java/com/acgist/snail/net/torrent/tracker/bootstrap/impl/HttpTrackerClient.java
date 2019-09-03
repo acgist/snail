@@ -11,7 +11,7 @@ import com.acgist.snail.net.torrent.peer.bootstrap.PeerService;
 import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerClient;
 import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerManager;
 import com.acgist.snail.pojo.message.AnnounceMessage;
-import com.acgist.snail.pojo.message.HttpTracker;
+import com.acgist.snail.pojo.message.HttpAnnounceMessage;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.bencode.BEncodeDecoder;
 import com.acgist.snail.system.config.ProtocolConfig.Protocol;
@@ -60,13 +60,8 @@ public class HttpTrackerClient extends TrackerClient {
 			LOGGER.warn("HttpTracker消息格式错误：{}", decoder.oddString());
 			return;
 		}
-		final var tracker = HttpTracker.valueOf(map);
-		final AnnounceMessage message = new AnnounceMessage();
-		message.setId(sid);
-		message.setInterval(tracker.getInterval());
-		message.setDone(tracker.getComplete());
-		message.setUndone(tracker.getIncomplete());
-		message.setPeers(tracker.getPeers());
+		final var httpAnnounceMessage = HttpAnnounceMessage.valueOf(map);
+		final AnnounceMessage message = httpAnnounceMessage.toAnnounceMessage(sid);
 		TrackerManager.getInstance().announce(message);
 	}
 

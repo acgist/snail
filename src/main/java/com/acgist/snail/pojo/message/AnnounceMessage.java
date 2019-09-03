@@ -5,7 +5,7 @@ import java.util.Map;
 import com.acgist.snail.utils.ObjectUtils;
 
 /**
- * Tracker Announce返回信息
+ * UDP Tracker Announce消息
  * 
  * @author acgist
  * @since 1.0.0
@@ -13,10 +13,10 @@ import com.acgist.snail.utils.ObjectUtils;
 public class AnnounceMessage {
 
 	private Integer id; // id
-	private Integer interval; // 下次等待时间
-	private Integer done; // 已完成数量
-	private Integer undone; // 未完成数量
-	private Map<String, Integer> peers; // Peers数据
+	private Integer interval; // 下次请求等待时间
+	private Integer done; // 已完成Peer数量
+	private Integer undone; // 未完成Peer数量
+	private Map<String, Integer> peers; // Peers数据（IP和端口）
 
 	public Integer getId() {
 		return id;
