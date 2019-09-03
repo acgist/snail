@@ -118,7 +118,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 //		}
 		data.put(EX_REQQ, 255);
 		if(PeerConfig.ExtensionType.ut_pex.notice()) {
-			data.put(EX_E, 0); // pex：加密
+			data.put(EX_E, 0); // pex：偏爱加密
 		}
 		if(PeerConfig.ExtensionType.ut_metadata.notice()) {
 			final int metadataSize = this.infoHash.size();
