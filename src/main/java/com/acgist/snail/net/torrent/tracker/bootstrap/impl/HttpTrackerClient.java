@@ -50,7 +50,7 @@ public class HttpTrackerClient extends TrackerClient {
 	public void announce(Integer sid, TorrentSession torrentSession) throws NetException {
 		final String requestUrl = buildAnnounceUrl(sid, torrentSession, TrackerConfig.Event.started);
 		final var response = HTTPClient.get(requestUrl, BodyHandlers.ofString(), TrackerClient.TIMEOUT);
-		if(HTTPClient.ok(response)) {
+		if(!HTTPClient.ok(response)) {
 			throw new NetException("获取Peer异常");
 		}
 		final String body = response.body();
