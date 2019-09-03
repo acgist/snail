@@ -44,7 +44,6 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler {
 	@Override
 	public void onMessage(ByteBuffer buffer) {
 		final byte typeValue = buffer.get();
-		HolepunchType.valueOf(typeValue);
 		final HolepunchType type = PeerConfig.HolepunchType.valueOf(typeValue);
 		if(type == null) {
 			LOGGER.warn("不支持的holepunch消息类型：{}", typeValue);

@@ -166,65 +166,63 @@ public class BEncodeDecoder implements Closeable {
 		while ((index = inputStream.read()) != -1) {
 			indexChar = (char) index;
 			switch (indexChar) {
-				case TYPE_I:
-					if(key != null) {
-						map.put(key, i(inputStream));
-					} else {
-						LOGGER.warn("key=null跳过");
-					}
+			case TYPE_E:
+				return map;
+			case TYPE_I:
+				if(key != null) {
+					map.put(key, i(inputStream));
 					key = null;
-					break;
-				case TYPE_E:
-					return map;
-				case TYPE_L:
-					if(key != null) {
-						map.put(key, l(inputStream));
-					} else {
-						LOGGER.warn("key=null跳过");
-					}
+				} else {
+					LOGGER.warn("key=null跳过");
+				}
+				break;
+			case TYPE_L:
+				if(key != null) {
+					map.put(key, l(inputStream));
 					key = null;
-					break;
-				case TYPE_D:
-					if(key != null) {
-						map.put(key, d(inputStream));
-					} else {
-						LOGGER.warn("key=null跳过");
-					}
+				} else {
+					LOGGER.warn("key=null跳过");
+				}
+				break;
+			case TYPE_D:
+				if(key != null) {
+					map.put(key, d(inputStream));
 					key = null;
-					break;
-				case '0':
-				case '1':
-				case '2':
-				case '3':
-				case '4':
-				case '5':
-				case '6':
-				case '7':
-				case '8':
-				case '9':
-					lengthBuilder.append(indexChar);
-					break;
-				case SEPARATOR:
-					if(lengthBuilder.length() > 0) {
-						final int length = Integer.parseInt(lengthBuilder.toString());
-						lengthBuilder.setLength(0);
-						final byte[] bytes = new byte[length];
-						try {
-							inputStream.read(bytes);
-						} catch (IOException e) {
-							LOGGER.error("B编码读取异常", e);
-						}
-						final String value = new String(bytes);
-						if (key == null) {
-							key = value;
-						} else {
-							if(key != null) {
-								map.put(key, bytes);
-							}
-							key = null;
-						}
-						break;
+				} else {
+					LOGGER.warn("key=null跳过");
+				}
+				break;
+			case '0':
+			case '1':
+			case '2':
+			case '3':
+			case '4':
+			case '5':
+			case '6':
+			case '7':
+			case '8':
+			case '9':
+				lengthBuilder.append(indexChar);
+				break;
+			case SEPARATOR:
+				if(lengthBuilder.length() > 0) {
+					final int length = Integer.parseInt(lengthBuilder.toString());
+					lengthBuilder.setLength(0);
+					final byte[] bytes = new byte[length];
+					try {
+						inputStream.read(bytes);
+					} catch (IOException e) {
+						LOGGER.error("B编码读取异常", e);
 					}
+					final String value = new String(bytes);
+					if (key == null) {
+						key = value;
+					} else {
+						map.put(key, bytes);
+						key = null;
+					}
+					break;
+				}
 			}
 		}
 		return map;
@@ -241,42 +239,42 @@ public class BEncodeDecoder implements Closeable {
 		while ((index = inputStream.read()) != -1) {
 			indexChar = (char) index;
 			switch (indexChar) {
-				case TYPE_I:
-					list.add(i(inputStream));
-					break;
-				case TYPE_E:
-					return list;
-				case TYPE_L:
-					list.add(l(inputStream));
-					break;
-				case TYPE_D:
-					list.add(d(inputStream));
-					break;
-				case '0':
-				case '1':
-				case '2':
-				case '3':
-				case '4':
-				case '5':
-				case '6':
-				case '7':
-				case '8':
-				case '9':
-					lengthBuilder.append(indexChar);
-					break;
-				case SEPARATOR:
-					if(lengthBuilder.length() > 0) {
-						final int length = Integer.parseInt(lengthBuilder.toString());
-						lengthBuilder.setLength(0);
-						final byte[] bytes = new byte[length];
-						try {
-							inputStream.read(bytes);
-						} catch (IOException e) {
-							LOGGER.error("B编码解码异常", e);
-						}
-						list.add(bytes);
-						break;
+			case TYPE_E:
+				return list;
+			case TYPE_I:
+				list.add(i(inputStream));
+				break;
+			case TYPE_L:
+				list.add(l(inputStream));
+				break;
+			case TYPE_D:
+				list.add(d(inputStream));
+				break;
+			case '0':
+			case '1':
+			case '2':
+			case '3':
+			case '4':
+			case '5':
+			case '6':
+			case '7':
+			case '8':
+			case '9':
+				lengthBuilder.append(indexChar);
+				break;
+			case SEPARATOR:
+				if(lengthBuilder.length() > 0) {
+					final int length = Integer.parseInt(lengthBuilder.toString());
+					lengthBuilder.setLength(0);
+					final byte[] bytes = new byte[length];
+					try {
+						inputStream.read(bytes);
+					} catch (IOException e) {
+						LOGGER.error("B编码解码异常", e);
 					}
+					list.add(bytes);
+					break;
+				}
 			}
 		}
 		return list;

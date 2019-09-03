@@ -1,6 +1,6 @@
 package com.acgist.snail.bcode;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,9 +32,20 @@ public class BCodeTest {
 	
 	@Test
 	public void nullTest() {
-		Map<String, String> map = new HashMap<>();
-		map.put("test", null);
-		System.out.println(new String(BEncodeEncoder.encodeMap(map)));
+		Map<String, Object> map = new LinkedHashMap<>();
+		map.put("a", 1);
+		map.put("b", null);
+		map.put("c", "c");
+		String content = new String(BEncodeEncoder.encodeMap(map));
+		System.out.println(content);
+		var decoder = BEncodeDecoder.newInstance(content);
+		decoder.nextMap().forEach((key, value) -> {
+			if(value instanceof Number) {
+				System.out.println(key + "-" + value);
+			} else {
+				System.out.println(key + "-" + new String((byte[]) value));
+			}
+		});
 	}
 	
 }
