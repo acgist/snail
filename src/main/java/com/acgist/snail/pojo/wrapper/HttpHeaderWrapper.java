@@ -15,7 +15,7 @@ import com.acgist.snail.utils.UrlUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class HttpHeaderWrapper {
+public class HttpHeaderWrapper extends HeaderWrapper {
 
 	/**
 	 * 端点续传：下载范围
@@ -42,10 +42,8 @@ public class HttpHeaderWrapper {
 	 */
 	private static final String FILENAME = "filename";
 	
-	private final Map<String, List<String>> headers;
-	
 	private HttpHeaderWrapper(Map<String, List<String>> headers) {
-		this.headers = headers;
+		super(headers);
 	}
 
 	public static final HttpHeaderWrapper newInstance(HttpHeaders httpHeaders) {
@@ -59,66 +57,6 @@ public class HttpHeaderWrapper {
 				));
 		}
 		return new HttpHeaderWrapper(headers);
-	}
-
-	/**
-	 * 获取所有header数据
-	 */
-	public Map<String, List<String>> allHeaders() {
-		return this.headers;
-	}
-	
-	/**
-	 * header数据是否为空
-	 */
-	public boolean isEmpty() {
-		return CollectionUtils.isEmpty(this.headers);
-	}
-	
-	/**
-	 * header数据是否不为空
-	 */
-	public boolean isNotEmpty() {
-		return !isEmpty();
-	}
-	
-	/**
-	 * 获取第一个头信息
-	 * 
-	 * @param key 头信息名称，忽略大小写。
-	 * 
-	 * @return 头信息值
-	 */
-	public String header(String key) {
-		final var list = headerList(key);
-		if(CollectionUtils.isEmpty(list)) {
-			return null;
-		}
-		final String value = list.get(0);
-		return value == null ? null : value.trim();
-	}
-	
-	/**
-	 * 获取头信息
-	 * 
-	 * @param key 头信息名称，忽略大小写。
-	 * 
-	 * @return 头信息值
-	 */
-	public List<String> headerList(String key) {
-		if(isEmpty()) {
-			return null;
-		}
-		final var optional = this.headers.entrySet().stream()
-			.filter(entry -> {
-				return StringUtils.equalsIgnoreCase(key, entry.getKey());
-			})
-			.map(entry -> entry.getValue())
-			.findFirst();
-		if(optional.isEmpty()) {
-			return null;
-		}
-		return optional.get();
 	}
 	
 	/**
@@ -202,15 +140,6 @@ public class HttpHeaderWrapper {
 			}
 		}
 		return range;
-	}
-	
-	@Override
-	public String toString() {
-		if(this.headers != null) {
-			return this.headers.toString();
-		} else {
-			return null;
-		}
 	}
 	
 }

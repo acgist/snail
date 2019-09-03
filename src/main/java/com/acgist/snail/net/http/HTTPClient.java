@@ -4,6 +4,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpClient.Redirect;
 import java.net.http.HttpClient.Version;
+import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpRequest.BodyPublishers;
@@ -170,10 +171,11 @@ public class HTTPClient {
 			.method("HEAD", BodyPublishers.noBody())
 			.build();
 		final var response = request(request, BodyHandlers.ofString());
+		HttpHeaders httpHeaders = null;
 		if(HTTPClient.ok(response)) {
-			return HttpHeaderWrapper.newInstance(response.headers());
+			httpHeaders = response.headers();
 		}
-		return HttpHeaderWrapper.newInstance(null);
+		return HttpHeaderWrapper.newInstance(httpHeaders);
 	}
 	
 	/**
