@@ -48,7 +48,7 @@ public class TorrentStream {
 	private long fileSize; // 文件大小
 	private long fileBeginPos; // 文件开始偏移：包含该值
 	private long fileEndPos; // 文件结束偏移：不包含该值
-	private RandomAccessFile fileStream; // 文件流
+	private RandomAccessFile fileStream; // 文件流；TODO：SeekableByteChannel
 	
 	private int filePieceSize; // 文件Piece数量
 	private int fileBeginPieceIndex; // 文件Piece开始索引
@@ -351,36 +351,41 @@ public class TorrentStream {
 		if(CollectionUtils.isEmpty(list)) {
 			return;
 		}
-		list.stream().forEach(piece -> {
-			if(!haveIndex(piece.getIndex())) {
-				LOGGER.warn("写入文件索引错误：{}", piece.getIndex());
-				return;
-			}
-			LOGGER.debug("写入硬盘Piece：{}", piece.getIndex());
-			int offset = 0;
-			long seek = 0L;
-			int length = piece.getLength();
-			final long beginPos = piece.beginPos();
-			final long endPos = piece.endPos();
-			if(beginPos <= this.fileBeginPos) {
-				offset = (int) (this.fileBeginPos - beginPos);
-				length = length - offset;
-			} else {
-				seek = beginPos - this.fileBeginPos;
-			}
-			if(endPos >= this.fileEndPos) {
-				length = (int) (length - (endPos - this.fileEndPos));
-			}
-			if(length <= 0) {
-				return;
-			}
-			try {
-				this.fileStream.seek(seek);
-				this.fileStream.write(piece.getData(), offset, length);
-			} catch (Exception e) {
-				LOGGER.error("TorrentStream写入异常", e);
-			}
-		});
+		list.stream().forEach(piece -> write(piece));
+	}
+	
+	/**
+	 * 写入块
+	 */
+	private void write(TorrentPiece piece) {
+		if(!haveIndex(piece.getIndex())) {
+			LOGGER.warn("写入文件索引错误：{}", piece.getIndex());
+			return;
+		}
+		LOGGER.debug("写入硬盘Piece：{}", piece.getIndex());
+		int offset = 0;
+		long seek = 0L;
+		int length = piece.getLength();
+		final long beginPos = piece.beginPos();
+		final long endPos = piece.endPos();
+		if(beginPos <= this.fileBeginPos) {
+			offset = (int) (this.fileBeginPos - beginPos);
+			length = length - offset;
+		} else {
+			seek = beginPos - this.fileBeginPos;
+		}
+		if(endPos >= this.fileEndPos) {
+			length = (int) (length - (endPos - this.fileEndPos));
+		}
+		if(length <= 0) {
+			return;
+		}
+		try {
+			this.fileStream.seek(seek);
+			this.fileStream.write(piece.getData(), offset, length);
+		} catch (Exception e) {
+			LOGGER.error("TorrentStream写入异常", e);
+		}
 	}
 	
 	/**
