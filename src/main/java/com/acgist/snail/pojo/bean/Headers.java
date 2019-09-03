@@ -1,8 +1,11 @@
 package com.acgist.snail.pojo.bean;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -17,7 +20,7 @@ public class Headers {
 	private boolean hasProtocol; // 是否含有协议
 	private final String[] lines; // 行信息
 	private final String protocol; // 协议
-	private final Map<String, String> headers; // 头信息
+	private final Map<String, List<String>> headers; // 头信息
 	
 	private static final String HEADER_LINE = "\n"; // 头信息换行符
 	private static final String HEADER_SPLIT = ":"; // 头信息分隔符
@@ -55,10 +58,11 @@ public class Headers {
 	/**
 	 * 读取头信息
 	 */
-	private Map<String, String> readHeaders() {
+	private Map<String, List<String>> readHeaders() {
 		int index;
 		String key, line, value;
-		final Map<String, String> headers = new HashMap<>();
+		List<String> list;
+		final Map<String, List<String>> headers = new HashMap<>();
 		if(this.lines == null) {
 			return headers;
 		}
@@ -83,7 +87,14 @@ public class Headers {
 				key = line.substring(0, index).trim();
 				value = "";
 			}
-			headers.put(key, value);
+			list = headers.get(key);
+			if(list == null) {
+				list = new ArrayList<>();
+				headers.put(key, list);
+			}
+			if(value != null) {
+				list.add(value);
+			}
 		}
 		return headers;
 	
@@ -94,26 +105,42 @@ public class Headers {
 	}
 
 	/**
-	 * 获取头信息
+	 * 获取第一个头信息
 	 * 
 	 * @param key 头信息名称，忽略大小写。
 	 * 
 	 * @return 头信息值
 	 */
 	public String header(String key) {
+		final var list = headerList(key);
+		if(CollectionUtils.isEmpty(list)) {
+			return null;
+		}
+		final String value = list.get(0);
+		return value == null ? null : value.trim();
+	}
+	
+	/**
+	 * 获取头信息
+	 * 
+	 * @param key 头信息名称，忽略大小写。
+	 * 
+	 * @return 头信息值
+	 */
+	public List<String> headerList(String key) {
 		if(this.headers == null) {
 			return null;
 		}
-		final var value = this.headers.entrySet().stream()
+		final var optional = this.headers.entrySet().stream()
 			.filter(entry -> {
 				return StringUtils.equalsIgnoreCase(key, entry.getKey());
 			})
 			.map(entry -> entry.getValue())
 			.findFirst();
-		if(value.isEmpty()) {
+		if(optional.isEmpty()) {
 			return null;
 		}
-		return value.get();
+		return optional.get();
 	}
 	
 	/**
@@ -126,7 +153,7 @@ public class Headers {
 	/**
 	 * @return 所有头信息
 	 */
-	public Map<String, String> allHeaders() {
+	public Map<String, List<String>> allHeaders() {
 		return this.headers;
 	}
 	

@@ -45,7 +45,9 @@ public class UpnpMessageHandler extends UdpMessageHandler {
 	private void config(String content) {
 		final Headers headers = Headers.newInstance(content);
 		final boolean support = headers.allHeaders().values().stream()
-			.anyMatch(value -> StringUtils.startsWith(value, UPNP_DEVICE_IGD));
+			.anyMatch(list -> list.stream()
+				.anyMatch(value -> StringUtils.startsWith(value, UPNP_DEVICE_IGD))
+			);
 		if(!support) {
 			LOGGER.info("UPNP不支持的响应：{}", content);
 			return;
