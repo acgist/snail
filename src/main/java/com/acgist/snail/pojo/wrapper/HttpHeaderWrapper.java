@@ -117,7 +117,7 @@ public class HttpHeaderWrapper extends HeaderWrapper {
 		final String acceptRanges = header(ACCEPT_RANGES);
 		final String contentRange = header(CONTENT_RANGE);
 		if(acceptRanges != null) {
-			range = BYTES.equals(acceptRanges);
+			range = BYTES.equalsIgnoreCase(acceptRanges);
 		}
 		if(contentRange != null) {
 			range = true;
