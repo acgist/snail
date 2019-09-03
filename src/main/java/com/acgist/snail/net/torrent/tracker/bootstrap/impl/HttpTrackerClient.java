@@ -61,6 +61,7 @@ public class HttpTrackerClient extends TrackerClient {
 			return;
 		}
 		final var httpAnnounceMessage = HttpAnnounceMessage.valueOf(map);
+		this.trackerId = httpAnnounceMessage.getTrackerId();
 		final AnnounceMessage message = httpAnnounceMessage.toAnnounceMessage(sid);
 		TrackerManager.getInstance().announce(message);
 	}
