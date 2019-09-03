@@ -2,6 +2,8 @@ package com.acgist.snail.system.recycle.window;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -107,7 +109,6 @@ public class WindowRecycle extends Recycle {
 	
 	/**
 	 * <p>创建删除文件信息</p>
-	 * <p>数据模式：小端</p>
 	 */
 	public byte[] buildInfo() {
 		String path = buildPath();
@@ -120,17 +121,12 @@ public class WindowRecycle extends Recycle {
 		}
 		// 时间戳
 		final long timestamp = DateUtils.windowTimestamp();
-//		final ByteBuffer buffer = ByteBuffer.allocate(8);
-//		buffer.order(ByteOrder.LITTLE_ENDIAN);
-//		buffer.putLong(time);
-		out.write((byte) (timestamp & 0xFF));
-		out.write((byte) (timestamp >> 8 & 0xFF));
-		out.write((byte) (timestamp >> 16 & 0xFF));
-		out.write((byte) (timestamp >> 24 & 0xFF));
-		out.write((byte) (timestamp >> 32 & 0xFF));
-		out.write((byte) (timestamp >> 40 & 0xFF));
-		out.write((byte) (timestamp >> 48 & 0xFF));
-		out.write((byte) (timestamp >> 56 & 0xFF));
+		final ByteBuffer buffer = ByteBuffer.allocate(8);
+		buffer.order(ByteOrder.nativeOrder()); // 设置CPU默认大小端模式
+		buffer.putLong(timestamp);
+		for (byte value : buffer.array()) {
+			out.write(value);
+		}
 		// 固定值 + path.length();
 		final char length = (char) (1 + path.length());
 		if(length > 0xFF) {
