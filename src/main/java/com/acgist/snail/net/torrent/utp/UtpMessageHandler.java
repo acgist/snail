@@ -283,6 +283,9 @@ public class UtpMessageHandler extends UdpMessageHandler {
 				}
 			}
 		}
+		if(!this.connect) { // 连接失败移除
+			this.utpService.remove(this);
+		}
 		return this.connect;
 	}
 	
