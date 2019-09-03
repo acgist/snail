@@ -96,17 +96,17 @@ public class Headers {
 	/**
 	 * 获取头信息
 	 * 
-	 * @param name 头信息名称，忽略大小写。
+	 * @param key 头信息名称，忽略大小写。
 	 * 
 	 * @return 头信息值
 	 */
-	public String header(String name) {
+	public String header(String key) {
 		if(this.headers == null) {
 			return null;
 		}
 		final var value = this.headers.entrySet().stream()
 			.filter(entry -> {
-				return StringUtils.equalsIgnoreCase(name, entry.getKey());
+				return StringUtils.equalsIgnoreCase(key, entry.getKey());
 			})
 			.map(entry -> entry.getValue())
 			.findFirst();

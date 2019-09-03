@@ -21,9 +21,11 @@ public class FileUtilsTest {
 	@Test
 	public void fileNameHttp() throws NetException {
 		HTTPClient client = HTTPClient.newInstance("https://www.acgist.com/demo/weixin/view");
-		client.head().headers().forEach((key, value) -> {
-			System.out.println(key + "-" + value);
+		var headers = client.head();
+		headers.allHeaders().forEach((key, value) -> {
+			System.out.println(key + "<---->" + value);
 		});
+		System.out.println(headers.header("SERVER"));
 	}
 	
 	@Test
