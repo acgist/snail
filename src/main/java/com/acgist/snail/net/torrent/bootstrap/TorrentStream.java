@@ -48,7 +48,7 @@ public class TorrentStream {
 	private long fileSize; // 文件大小
 	private long fileBeginPos; // 文件开始偏移：包含该值
 	private long fileEndPos; // 文件结束偏移：不包含该值
-	private RandomAccessFile fileStream; // 文件流；TODO：SeekableByteChannel
+	private RandomAccessFile fileStream; // 文件流
 	
 	private int filePieceSize; // 文件Piece数量
 	private int fileBeginPieceIndex; // 文件Piece开始索引

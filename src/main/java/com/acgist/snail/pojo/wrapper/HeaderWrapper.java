@@ -2,9 +2,11 @@ package com.acgist.snail.pojo.wrapper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.acgist.snail.system.exception.ArgumentException;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -17,45 +19,54 @@ import com.acgist.snail.utils.StringUtils;
  */
 public class HeaderWrapper {
 
-	private boolean hasProtocol; // 是否含有协议
-	private final String[] lines; // 行信息
 	private final String protocol; // 协议
+	private final boolean hasProtocol; // 是否含有协议
 	protected final Map<String, List<String>> headers; // 头信息
 	
 	private static final String HEADER_LINE = "\n"; // 头信息换行符
 	private static final String HEADER_SPLIT = ":"; // 头信息分隔符
+	private static final String HEADER_SPACE = " "; // 头信息空格
+	
+	private static final String HEADER_LINE_BUILDER = "\r\n"; // 头信息换行符
 
 	protected HeaderWrapper(String content) {
+		String[] lines;
 		if(StringUtils.isEmpty(content)) {
-			this.lines = null;
+			lines = null;
 		} else {
-			this.lines = content.split(HEADER_LINE);
+			lines = content.split(HEADER_LINE);
 		}
-		this.protocol = readProtocol();
-		this.headers = readHeaders();
+		this.protocol = buildProtocol(lines);
+		this.hasProtocol = StringUtils.isNotEmpty(this.protocol);
+		this.headers = buildHeaders(lines);
 	}
 	
 	protected HeaderWrapper(Map<String, List<String>> headers) {
-		this.lines = null;
 		this.protocol = null;
+		this.hasProtocol = false;
+		this.headers = headers;
+	}
+	
+	protected HeaderWrapper(String protocol, Map<String, List<String>> headers) {
+		this.protocol = protocol;
+		this.hasProtocol = StringUtils.isNotEmpty(this.protocol);
 		this.headers = headers;
 	}
 	
 	/**
 	 * 读取协议
 	 */
-	private String readProtocol() {
-		if(this.lines == null || this.lines.length == 0) {
-			this.hasProtocol = false;
+	private String buildProtocol(String[] lines) {
+		if(lines == null || lines.length == 0) {
 			return null;
 		} else {
-			final String firstLine = this.lines[0];
-			if(firstLine == null ||
-				firstLine.indexOf(HEADER_SPLIT) != -1) {
-				this.hasProtocol = false;
+			final String firstLine = lines[0];
+			if(
+				firstLine == null ||
+				firstLine.indexOf(HEADER_SPLIT) != -1
+			) {
 				return null;
 			} else {
-				this.hasProtocol = true;
 				return firstLine.trim();
 			}
 		}
@@ -64,17 +75,17 @@ public class HeaderWrapper {
 	/**
 	 * 读取头信息
 	 */
-	private Map<String, List<String>> readHeaders() {
+	private Map<String, List<String>> buildHeaders(String[] lines) {
 		int index;
 		String key, line, value;
 		List<String> list;
 		final Map<String, List<String>> headers = new HashMap<>();
-		if(this.lines == null) {
+		if(lines == null) {
 			return headers;
 		}
 		final int begin = this.hasProtocol ? 1 : 0;
-		for (int jndex = begin; jndex < this.lines.length; jndex++) {
-			line = this.lines[jndex];
+		for (int jndex = begin; jndex < lines.length; jndex++) {
+			line = lines[jndex];
 			if(line == null) {
 				continue;
 			}
@@ -106,8 +117,29 @@ public class HeaderWrapper {
 	
 	}
 
+	/**
+	 * 读取头信息
+	 */
 	public static final HeaderWrapper newInstance(String content) {
 		return new HeaderWrapper(content);
+	}
+
+	/**
+	 * 写出头信息
+	 * 
+	 * @param protocol 协议
+	 */
+	public static final HeaderWrapper newBuilder(String protocol) {
+		return new HeaderWrapper(protocol, new LinkedHashMap<String, List<String>>());
+	}
+	
+	/**
+	 * 写出头信息
+	 * 
+	 * @param protocol 协议
+	 */
+	public static final HeaderWrapper newBuilder(String protocol, Map<String, List<String>> headers) {
+		return new HeaderWrapper(protocol, headers);
 	}
 
 	/**
@@ -162,6 +194,48 @@ public class HeaderWrapper {
 	public Map<String, List<String>> allHeaders() {
 		return this.headers;
 	}
+
+	/**
+	 * 设置头信息
+	 * 
+	 * @param key 名称
+	 * @param value 值
+	 */
+	public HeaderWrapper header(String key, String value) {
+		if(this.headers == null) {
+			throw new ArgumentException("headers没有初始化");
+		}
+		var list = this.headers.get(key);
+		if(list == null) {
+			list = new ArrayList<>();
+			this.headers.put(key, list);
+		}
+		list.add(value);
+		return this;
+	}
+	
+	/**
+	 * 写出头信息
+	 */
+	public String build() {
+		final StringBuilder builder = new StringBuilder();
+		if(this.hasProtocol) {
+			builder.append(this.protocol).append(HEADER_LINE_BUILDER);
+		}
+		if(isNotEmpty()) {
+			this.headers.forEach((key, list) -> {
+				if(CollectionUtils.isEmpty(list)) {
+					builder.append(key).append(HEADER_SPLIT).append(HEADER_SPACE).append(HEADER_LINE_BUILDER);
+				} else {
+					list.forEach(value -> {
+						builder.append(key).append(HEADER_SPLIT).append(HEADER_SPACE).append(value).append(HEADER_LINE_BUILDER);
+					});
+				}
+			});
+		}
+		builder.append(HEADER_LINE_BUILDER);
+		return builder.toString();
+	}
 	
 	/**
 	 * header数据是否为空
@@ -179,11 +253,7 @@ public class HeaderWrapper {
 	
 	@Override
 	public String toString() {
-		if(this.headers != null) {
-			return this.headers.toString();
-		} else {
-			return null;
-		}
+		return this.build();
 	}
 	
 }

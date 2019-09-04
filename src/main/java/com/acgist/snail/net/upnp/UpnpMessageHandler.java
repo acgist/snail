@@ -9,13 +9,13 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.net.upnp.bootstrap.UpnpService;
 import com.acgist.snail.pojo.wrapper.HeaderWrapper;
+import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>UPNP消息</p>
  * <p>协议参考：http://upnp.org/specs/arch/UPnP-arch-DeviceArchitecture-v1.0.pdf</p>
- * TODO：不是非常稳定
- * TODO：协议判断
+ * <p>注：固定IP有时不能正确获取UPNP设置。</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -35,14 +35,14 @@ public class UpnpMessageHandler extends UdpMessageHandler {
 	
 	@Override
 	public void onMessage(ByteBuffer buffer, InetSocketAddress socketAddress) {
-		final String content = new String(buffer.array());
-		this.config(content);
+		final String content = IoUtils.readContent(buffer);
+		this.setting(content);
 	}
 	
 	/**
 	 * 配置UPNP
 	 */
-	private void config(String content) {
+	private void setting(String content) {
 		final HeaderWrapper headers = HeaderWrapper.newInstance(content);
 		final boolean support = headers.allHeaders().values().stream()
 			.anyMatch(list -> list.stream()

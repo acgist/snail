@@ -31,14 +31,14 @@ public class IoUtils {
 	/**
 	 * 读取内容
 	 */
-	public static final String readContent(ByteBuffer attachment) {
-		return readContent(attachment, SystemConfig.DEFAULT_CHARSET);
+	public static final String readContent(ByteBuffer buffer) {
+		return readContent(buffer, SystemConfig.DEFAULT_CHARSET);
 	}
 	
 	/**
 	 * 读取内容
 	 */
-	public static final String readContent(ByteBuffer attachment, String charset) {
+	public static final String readContent(ByteBuffer buffer, String charset) {
 		if(charset == null) {
 			charset = SystemConfig.DEFAULT_CHARSET;
 		}
@@ -46,9 +46,9 @@ public class IoUtils {
 		final CharsetDecoder decoder = Charset.forName(charset).newDecoder();
 		decoder.onMalformedInput(CodingErrorAction.IGNORE);
 		try {
-			attachment.flip();
-			content = decoder.decode(attachment).toString();
-			attachment.compact();
+			buffer.flip();
+			content = decoder.decode(buffer).toString();
+			buffer.compact();
 		} catch (Exception e) {
 			LOGGER.error("ByteBuffer解码异常", e);
 		}
