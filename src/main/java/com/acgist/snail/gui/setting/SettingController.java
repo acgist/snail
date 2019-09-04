@@ -34,7 +34,7 @@ public class SettingController extends Controller implements Initializable {
 //	private static final Logger LOGGER = LoggerFactory.getLogger(SettingController.class);
 
 	@FXML
-    private FlowPane root;
+	private FlowPane root;
 	@FXML
 	private ScrollPane scrollPane;
 	@FXML

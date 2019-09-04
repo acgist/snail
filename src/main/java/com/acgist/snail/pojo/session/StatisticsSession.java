@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.concurrent.atomic.AtomicLong;
 
-import com.acgist.snail.gui.main.TaskDisplay;
 import com.acgist.snail.system.config.DownloadConfig;
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
@@ -21,7 +21,7 @@ public class StatisticsSession {
 	/**
 	 * 下载速度、上传速度缓存时间：默认是刷新频率的两倍（防止速度比较慢时显示0）
 	 */
-	private static final long CACHE_SECOND = 2 * TaskDisplay.INTERVAL.toMillis();
+	private static final long CACHE_SECOND = 2 * SystemConfig.TASK_REFRESH_INTERVAL.toMillis();
 	
 	private final boolean limit; // 限速开关
 	private final StatisticsSession parent; // 父类统计

@@ -1,6 +1,11 @@
 package com.acgist.snail.utils;
 
+import java.math.BigInteger;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.Date;
+
+import com.acgist.snail.system.exception.ArgumentException;
 
 /**
  * <p>数字工具</p>
@@ -55,6 +60,46 @@ public class NumberUtils {
 			count++;
 		}
 		return count;
+	}
+	
+	/**
+	 * 无符号编码
+	 */
+	public static byte[] encodeUnsigned(BigInteger value, int byteCount) {
+		byte[] bytes = value.toByteArray();
+		if (bytes[0] == 0) {
+			bytes = Arrays.copyOfRange(bytes, 1, bytes.length);
+		}
+		if (bytes.length > byteCount) {
+			throw new ArgumentException("数组长度错误");
+		}
+		if (bytes.length < byteCount) {
+			final byte[] copy = bytes;
+			bytes = new byte[byteCount];
+			System.arraycopy(copy, 0, bytes, (bytes.length - copy.length), copy.length);
+		}
+		return bytes;
+	}
+
+	/**
+	 * 无符号解码
+	 */
+	public static BigInteger decodeUnsigned(ByteBuffer buffer, int length) {
+		if (buffer.remaining() < length) {
+			throw new ArgumentException("数组长度错误");
+		}
+		byte b;
+		int index = 0;
+		while ((b = buffer.get()) == 0 && ++index < length) {
+		}
+		if (index == length) {
+			return BigInteger.ZERO;
+		}
+		int newLength = length - index;
+		final byte[] bytes = new byte[newLength];
+		bytes[0] = b;
+		buffer.get(bytes, 1, newLength - 1);
+		return new BigInteger(1, bytes);
 	}
 	
 }

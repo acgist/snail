@@ -2,6 +2,7 @@ package com.acgist.snail.net.torrent;
 
 import java.nio.ByteBuffer;
 
+import com.acgist.snail.net.crypto.MSECryptoHanlder;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.SystemConfig;
@@ -28,11 +29,16 @@ public class PeerUnpackMessageHandler {
 	 */
 	private ByteBuffer buffer;
 	/**
+	 * MSE加密处理器
+	 */
+	private final MSECryptoHanlder mseCryptoHanlder;
+	/**
 	 * Peer消息处理器
 	 */
 	private final PeerSubMessageHandler peerSubMessageHandler;
 	
 	private PeerUnpackMessageHandler(PeerSubMessageHandler peerSubMessageHandler) {
+		this.mseCryptoHanlder = MSECryptoHanlder.newInstance(peerSubMessageHandler);
 		this.peerSubMessageHandler = peerSubMessageHandler;
 	}
 	
@@ -44,6 +50,29 @@ public class PeerUnpackMessageHandler {
 	 * 处理消息
 	 */
 	public void onMessage(ByteBuffer attachment) throws NetException {
+		if(this.mseCryptoHanlder.over()) { // 加密握手已经完成
+			if(this.mseCryptoHanlder.crypt()) { // 解密
+				this.mseCryptoHanlder.decrypt(attachment);
+			} else { // 明文
+			}
+			onPeerMessage(attachment);
+		} else { // 加密握手
+			this.mseCryptoHanlder.handshake(attachment);
+			// 继续处理：处理完成 && 继续处理 && 明文
+			if(
+				this.mseCryptoHanlder.over() &&
+				this.mseCryptoHanlder.next() &&
+				!this.mseCryptoHanlder.crypt()
+			) {
+				onPeerMessage(attachment);
+			}
+		}
+	}
+	
+	/**
+	 * 处理Peer消息
+	 */
+	private void onPeerMessage(ByteBuffer attachment) throws NetException {
 		int length = 0;
 		while(true) {
 			if(this.buffer == null) {
@@ -80,13 +109,13 @@ public class PeerUnpackMessageHandler {
 				final byte[] bytes = new byte[length];
 				attachment.get(bytes);
 				this.buffer.put(bytes);
-				this.peerSubMessageHandler.oneMessage(this.buffer);
+				this.peerSubMessageHandler.onMessage(this.buffer);
 				this.buffer = null;
 			} else if(remaining == length) { // 刚好一个完整消息
 				final byte[] bytes = new byte[length];
 				attachment.get(bytes);
 				this.buffer.put(bytes);
-				this.peerSubMessageHandler.oneMessage(this.buffer);
+				this.peerSubMessageHandler.onMessage(this.buffer);
 				this.buffer = null;
 				break;
 			} else if(remaining < length) { // 不是完整消息

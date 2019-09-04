@@ -44,7 +44,7 @@ public class TorrentController extends Controller implements Initializable {
 	private static final String HIDE_FILE_PREFIX = "_____padding_file"; // 填充文件前缀（不需要下载和显示）
 	
 	@FXML
-    private FlowPane root;
+	private FlowPane root;
 	@FXML
 	private Button download;
 	@FXML

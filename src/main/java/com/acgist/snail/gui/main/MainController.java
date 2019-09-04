@@ -84,7 +84,7 @@ public class MainController extends Controller implements Initializable {
 	private Filter filter = Filter.all;
 	
 	@FXML
-    private BorderPane root;
+	private BorderPane root;
 	@FXML
 	private HBox header;
 	@FXML

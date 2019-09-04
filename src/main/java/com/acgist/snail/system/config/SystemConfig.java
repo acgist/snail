@@ -1,5 +1,7 @@
 package com.acgist.snail.system.config;
 
+import java.time.Duration;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,9 +33,13 @@ public class SystemConfig extends PropertiesConfig {
 	 */
 	public static final String CHARSET_UTF8 = "UTF-8";
 	/**
+	 * 编码：ASCII
+	 */
+	public static final String CHARSET_ASCII = "ASCII";
+	/**
 	 * 编码：ISO-8859-1
 	 */
-	public static final String CHARSET_ISO88591 = "ISO-8859-1";
+	public static final String CHARSET_ISO_8859_1 = "ISO-8859-1";
 	/**
 	 * 系统默认编码（file.encoding）
 	 */
@@ -42,6 +48,10 @@ public class SystemConfig extends PropertiesConfig {
 	 * 无符号BYTE的大小
 	 */
 	public static final int UNSIGNED_BYTE_SIZE = 2 << 7;
+	/**
+	 * 任务列表刷新时间
+	 */
+	public static final Duration TASK_REFRESH_INTERVAL = Duration.ofSeconds(4);
 	
 	public static final String DIGIT = "0123456789";
 	public static final String LETTER = "abcdefghijklmnopqrstuvwxyz";
