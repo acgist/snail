@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.UdpClient;
+import com.acgist.snail.pojo.wrapper.HeaderWrapper;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.NetUtils;
 
@@ -18,9 +19,9 @@ import com.acgist.snail.utils.NetUtils;
 public class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UpnpClient.class);
-	
-	private static final String NEW_LINE = "\r\n";
 
+	private static final String PROTOCOL = "M-SEARCH * HTTP/1.1";
+	
 	private UpnpClient(InetSocketAddress socketAddress) {
 		super("UPNP Client", new UpnpMessageHandler(), socketAddress);
 	}
@@ -50,15 +51,13 @@ public class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	 * 构建M-SEARCH消息。
 	 */
 	private String buildMSearch() {
-		final StringBuilder builder = new StringBuilder();
+		final HeaderWrapper builder = HeaderWrapper.newBuilder(PROTOCOL);
 		builder
-			.append("M-SEARCH * HTTP/1.1").append(NEW_LINE)
-			.append("HOST: ").append(UpnpServer.UPNP_HOST).append(":").append(UpnpServer.UPNP_PORT).append(NEW_LINE)
-			.append("MX: 3").append(NEW_LINE)
-			.append("ST: urn:schemas-upnp-org:device:InternetGatewayDevice:1").append(NEW_LINE)
-			.append("MAN: \"ssdp:discover\"").append(NEW_LINE)
-			.append(NEW_LINE);
-		return builder.toString();
+			.header("HOST", UpnpServer.UPNP_HOST + ":" + UpnpServer.UPNP_PORT)
+			.header("MX", "3")
+			.header("ST", "urn:schemas-upnp-org:device:InternetGatewayDevice:1")
+			.header("MAN", "\"ssdp:discover\"");
+		return builder.build();
 	}
 
 }

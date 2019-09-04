@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.net.UdpClient;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerService;
 import com.acgist.snail.net.upnp.UpnpServer;
+import com.acgist.snail.pojo.wrapper.HeaderWrapper;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.NetUtils;
@@ -24,7 +25,7 @@ public class LocalServiceDiscoveryClient extends UdpClient<LocalServiceDiscovery
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LocalServiceDiscoveryClient.class);
 	
-	private static final String NEW_LINE = "\r\n";
+	private static final String PROTOCOL = "BT-SEARCH * HTTP/1.1";
 	
 	public LocalServiceDiscoveryClient(InetSocketAddress socketAddress) {
 		super("LSD Client", new LocalServiceDiscoveryMessageHandler(), socketAddress);
@@ -55,16 +56,14 @@ public class LocalServiceDiscoveryClient extends UdpClient<LocalServiceDiscovery
 	 * 构建本地发现消息
 	 */
 	private String buildLocalSearch(String infoHash) {
-		final StringBuilder builder = new StringBuilder();
 		final String peerId = StringUtils.hex(PeerService.getInstance().peerId());
+		final HeaderWrapper builder = HeaderWrapper.newBuilder(PROTOCOL);
 		builder
-			.append("BT-SEARCH * HTTP/1.1").append(NEW_LINE)
-			.append("Host: ").append(LocalServiceDiscoveryServer.LSD_HOST).append(":").append(LocalServiceDiscoveryServer.LSD_PORT).append(NEW_LINE)
-			.append("Port: ").append(SystemConfig.getTorrentPort()).append(NEW_LINE)
-			.append("Infohash: ").append(infoHash).append(NEW_LINE)
-			.append("cookie: ").append(peerId).append(NEW_LINE) // 过滤本机使用
-			.append(NEW_LINE);
-		return builder.toString();
+			.header("Host", LocalServiceDiscoveryServer.LSD_HOST + ":" + LocalServiceDiscoveryServer.LSD_PORT)
+			.header("Port", SystemConfig.getTorrentPort().toString())
+			.header("Infohash", infoHash)
+			.header("cookie", peerId);
+		return builder.build();
 	}
 	
 }

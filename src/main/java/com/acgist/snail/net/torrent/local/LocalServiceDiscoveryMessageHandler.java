@@ -17,6 +17,7 @@ import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.CollectionUtils;
+import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -38,7 +39,7 @@ public class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler {
 
 	@Override
 	public void onMessage(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException {
-		final String content = new String(buffer.array());
+		final String content = IoUtils.readContent(buffer);
 		final String host = socketAddress.getHostString();
 		doMessage(content, host);
 	}
