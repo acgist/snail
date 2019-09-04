@@ -16,6 +16,7 @@ public class ApplicationMessage {
 	 */
 	public enum Type {
 
+		// 被动消息
 		text, // 文本
 		close, // 关闭Socket连接
 		notify, // 唤醒窗口
@@ -23,6 +24,12 @@ public class ApplicationMessage {
 		tasknew, // 新建任务
 		tasklist, // 任务列表
 		taskdelete, // 删除任务
+		
+		// 主动消息
+		alert, // 提示框
+		notice, // 提示消息
+		refresh, // 刷新（任务）
+		
 		response; // 响应
 
 	}
