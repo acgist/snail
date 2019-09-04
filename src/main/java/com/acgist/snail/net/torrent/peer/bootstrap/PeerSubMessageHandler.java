@@ -30,7 +30,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0003.html</p>
  * <p>Private Torrents</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0027.html</p>
- * <p>协议链接：http://wiki.vuze.com/w/Message_Stream_Encryption</p>
  * <pre>
  * D = 目前正在下载（有需要的文件部份且没有禁止连接）
  * d = 客户端请求下载，但用户拒绝传输（有需要的文件部份但连接被禁止）
@@ -168,7 +167,7 @@ public class PeerSubMessageHandler {
 	/**
 	 * 处理单条消息
 	 */
-	public void oneMessage(final ByteBuffer buffer) {
+	public void onMessage(final ByteBuffer buffer) {
 		buffer.flip();
 		if(!this.handshakeRcv) { // 是否已经握手
 			handshake(buffer);
@@ -723,7 +722,7 @@ public class PeerSubMessageHandler {
 		return this.messageHandler.available();
 	}
 	
-	private void send(ByteBuffer buffer) {
+	public void send(ByteBuffer buffer) {
 		try {
 			this.messageHandler.send(buffer);
 		} catch (Exception e) {

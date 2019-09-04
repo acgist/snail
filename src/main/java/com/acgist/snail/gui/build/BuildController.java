@@ -37,7 +37,7 @@ public class BuildController extends Controller implements Initializable {
 	private static final Logger LOGGER = LoggerFactory.getLogger(BuildController.class);
 	
 	@FXML
-    private FlowPane root;
+	private FlowPane root;
 	@FXML
 	private TextField urlValue;
 	

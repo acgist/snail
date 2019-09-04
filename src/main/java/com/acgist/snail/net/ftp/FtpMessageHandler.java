@@ -57,15 +57,15 @@ public class FtpMessageHandler extends TcpMessageHandler {
 	@Override
 	public void onMessage(ByteBuffer attachment) throws NetException {
 		String tmp;
-		StringBuffer command = new StringBuffer();
-		String content = IoUtils.readContent(attachment, charset);
+		String content = IoUtils.readContent(attachment, this.charset);
+		final StringBuffer command = new StringBuffer();
 		if(content.contains(SPLIT)) {
 			int index = content.indexOf(SPLIT);
 			while(index >= 0) {
 				tmp = content.substring(0, index);
 				if(tmp.matches(COMMAND_END_REGEX)) {
 					command.append(tmp);
-					oneMessage(command.toString());
+					onCommand(command.toString());
 					command.setLength(0);
 				} else {
 					command.append(tmp).append(SPLIT);
@@ -79,7 +79,7 @@ public class FtpMessageHandler extends TcpMessageHandler {
 	/**
 	 * 处理单条消息
 	 */
-	private void oneMessage(String message) throws NetException {
+	private void onCommand(String message) throws NetException {
 		LOGGER.debug("收到FTP响应：{}", message);
 		if(StringUtils.startsWith(message, "530 ")) { // 登陆失败
 			this.failMessage = "服务器需要登陆授权";

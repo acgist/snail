@@ -39,7 +39,7 @@ public class ApplicationMessageHandler extends TcpMessageHandler {
 			int index = content.indexOf(SPLIT);
 			while(index >= 0) {
 				command = content.substring(0, index);
-				oneMessage(command);
+				onCommand(command);
 				content = content.substring(index + SPLIT.length());
 				index = content.indexOf(SPLIT);
 			}
@@ -49,7 +49,7 @@ public class ApplicationMessageHandler extends TcpMessageHandler {
 	/**
 	 * 单条消息处理
 	 */
-	private void oneMessage(String content) {
+	private void onCommand(String content) {
 		content = content.trim();
 		if(StringUtils.isEmpty(content)) {
 			LOGGER.warn("读取系统消息内容为空");

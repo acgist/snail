@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.ThreadUtils;
 
@@ -22,11 +23,6 @@ public class TaskDisplay {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskDisplay.class);
 	
-	/**
-	 * 任务列表刷新时间
-	 */
-	public static final Duration INTERVAL = Duration.ofSeconds(4);
-
 	private static final TaskDisplay INSTANCE = new TaskDisplay();
 	
 	private MainController controller;
@@ -51,7 +47,7 @@ public class TaskDisplay {
 		synchronized (TaskDisplay.class) {
 			if(this.controller == null) {
 				this.controller = controller;
-				SystemThreadContext.timer(0, INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> refreshTaskData());
+				SystemThreadContext.timer(0, SystemConfig.TASK_REFRESH_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> refreshTaskData());
 				synchronized (this.lock) {
 					this.lock.notifyAll();
 				}

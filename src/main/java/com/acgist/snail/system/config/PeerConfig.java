@@ -178,6 +178,8 @@ public class PeerConfig {
 			return "DHT";
 		case SOURCE_PEX:
 			return "PEX";
+		case SOURCE_LSD:
+			return "LSD";
 		case SOURCE_CONNECT:
 			return "CONNECT";
 		case SOURCE_TRACKER:
