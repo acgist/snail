@@ -9,6 +9,7 @@ import com.acgist.snail.system.context.SystemContext;
 /**
  * <h1>Snail系统启动类。</h1>
  * <p>Snail（蜗牛）是一款下载软件，支持下载协议：BT（BitTorrent）、FTP、HTTP。</p>
+ * <p>启动参数：{@linkplain GuiHandler args[0]}</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -19,6 +20,8 @@ public class Application {
 	
 	/**
 	 * 启动
+	 * 
+	 * @param args 启动参数
 	 */
 	public static final void main(String[] args) {
 		LOGGER.info("系统开始启动");
@@ -47,6 +50,8 @@ public class Application {
 	
 	/**
 	 * 初始化窗口
+	 * 
+	 * @param args 启动参数
 	 */
 	private static final void buildWindow(String ... args) {
 		GuiHandler.getInstance().init(args).build();
