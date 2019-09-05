@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.DownloaderManager;
-import com.acgist.snail.gui.main.TaskDisplay;
+import com.acgist.snail.gui.GuiHandler;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.repository.impl.TaskRepository;
@@ -38,18 +38,18 @@ public class DownloaderInitializer extends Initializer {
 		final List<TaskEntity> list = repository.findAll();
 		if(CollectionUtils.isNotEmpty(list)) {
 			list.stream()
-			.forEach(entity -> {
-				TaskSession taskSession = null;
-				try {
-					taskSession = TaskSession.newInstance(entity);
-					DownloaderManager.getInstance().submit(taskSession);
-				} catch (DownloadException e) {
-					LOGGER.error("添加下载任务异常：{}", entity.getName(), e);
-					repository.delete(entity);
-				}
-			});
+				.forEach(entity -> {
+					TaskSession taskSession = null;
+					try {
+						taskSession = TaskSession.newInstance(entity);
+						DownloaderManager.getInstance().submit(taskSession);
+					} catch (DownloadException e) {
+						LOGGER.error("添加下载任务异常：{}", entity.getName(), e);
+						repository.delete(entity);
+					}
+				});
 			DownloaderManager.getInstance().refresh(); // 刷新下载
-			TaskDisplay.getInstance().refreshTaskTable(); // 刷新状态
+			GuiHandler.getInstance().refreshTaskList(); // 刷新状态
 		}
 	}
 

@@ -195,7 +195,7 @@ public class MainController extends Controller implements Initializable {
 	@FXML
 	public void handleAllAction(ActionEvent event) {
 		this.filter = Filter.all;
-		TaskDisplay.getInstance().refreshTaskTable();
+		TaskDisplay.getInstance().refreshTaskList();
 	}
 
 	/**
@@ -204,7 +204,7 @@ public class MainController extends Controller implements Initializable {
 	@FXML
 	public void handleDownloadAction(ActionEvent event) {
 		this.filter = Filter.download;
-		TaskDisplay.getInstance().refreshTaskTable();
+		TaskDisplay.getInstance().refreshTaskList();
 	}
 	
 	/**
@@ -213,38 +213,37 @@ public class MainController extends Controller implements Initializable {
 	@FXML
 	public void handleCompleteAction(ActionEvent event) {
 		this.filter = Filter.complete;
-		TaskDisplay.getInstance().refreshTaskTable();
+		TaskDisplay.getInstance().refreshTaskList();
 	}
 	
 	/**
-	 * 刷新Table
+	 * 刷新任务列表
 	 */
-	public void refreshTable() {
+	public void refreshTaskList() {
 		final ObservableList<TaskSession> obs = FXCollections.observableArrayList();
-		DownloaderManager.getInstance().tasks()
-		.stream()
-		.filter(wrapper -> {
-			var status = wrapper.entity().getStatus();
-			if(this.filter == Filter.all) {
-				return true;
-			} else if(this.filter == Filter.download) {
-				return status == Status.await || status == Status.download;
-			} else if(this.filter == Filter.complete) {
-				return status == Status.complete;
-			} else {
-				return true;
-			}
-		})
-		.forEach(wrapper -> {
-			obs.add(wrapper);
-		});
+		DownloaderManager.getInstance().tasks().stream()
+			.filter(wrapper -> {
+				var status = wrapper.entity().getStatus();
+				if(this.filter == Filter.all) {
+					return true;
+				} else if(this.filter == Filter.download) {
+					return status == Status.await || status == Status.download;
+				} else if(this.filter == Filter.complete) {
+					return status == Status.complete;
+				} else {
+					return true;
+				}
+			})
+			.forEach(wrapper -> {
+				obs.add(wrapper);
+			});
 		this.taskTable.setItems(obs);
 	}
 	
 	/**
-	 * 刷新数据
+	 * 刷新任务状态
 	 */
-	public void refreshData() {
+	public void refreshTaskStatus() {
 		this.taskTable.refresh(); // 刷新table
 		Platform.runLater(() -> {
 			long downloadSecond = SystemStatistics.getInstance().downloadSecond();
@@ -310,13 +309,13 @@ public class MainController extends Controller implements Initializable {
 		if(!this.haveContent()) {
 			return;
 		}
-		final Optional<ButtonType> result = Alerts.build(AlertType.CONFIRMATION, "删除确认", "删除选中文件？");
+		final Optional<ButtonType> result = Alerts.build("删除确认", "删除选中文件？", AlertType.CONFIRMATION);
 		if(result.get() == ButtonType.OK) {
 			this.selected()
 			.forEach(wrapper -> {
 				DownloaderManager.getInstance().delete(wrapper);
 			});
-			TaskDisplay.getInstance().refreshTaskTable();
+			TaskDisplay.getInstance().refreshTaskList();
 		}
 	}
 

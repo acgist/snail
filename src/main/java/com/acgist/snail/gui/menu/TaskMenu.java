@@ -10,12 +10,12 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.gui.Alerts;
 import com.acgist.snail.gui.Choosers;
+import com.acgist.snail.gui.Clipboards;
 import com.acgist.snail.gui.Menu;
 import com.acgist.snail.gui.main.MainWindow;
 import com.acgist.snail.gui.torrent.TorrentWindow;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.system.context.SystemThreadContext;
-import com.acgist.snail.utils.ClipboardUtils;
 import com.acgist.snail.utils.FileUtils;
 
 import javafx.application.Platform;
@@ -115,7 +115,7 @@ public class TaskMenu extends Menu {
 	private EventHandler<ActionEvent> copyUrlEvent = (event) -> {
 		MainWindow.getInstance().controller().selected()
 		.forEach(wrapper -> {
-			ClipboardUtils.copy(wrapper.entity().getUrl());
+			Clipboards.copy(wrapper.entity().getUrl());
 		});
 	};
 	
@@ -171,7 +171,7 @@ public class TaskMenu extends Menu {
 					});
 					final Optional<ButtonType> optional = Alerts.info("文件SHA-1校验", builder.toString());
 					if(optional.isPresent() && ButtonType.OK == optional.get()) {
-						ClipboardUtils.copy(builder.toString());
+						Clipboards.copy(builder.toString());
 					}
 				});
 			}

@@ -143,7 +143,7 @@ public class TorrentController extends Controller implements Initializable {
 				DownloaderManager.getInstance().refresh(this.taskSession);
 			}
 		}
-		TaskDisplay.getInstance().refreshTaskData();
+		TaskDisplay.getInstance().refreshTaskStatus();
 		TorrentWindow.getInstance().hide();
 	};
 	

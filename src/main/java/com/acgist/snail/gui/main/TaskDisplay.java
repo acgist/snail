@@ -47,7 +47,7 @@ public class TaskDisplay {
 		synchronized (TaskDisplay.class) {
 			if(this.controller == null) {
 				this.controller = controller;
-				SystemThreadContext.timer(0, SystemConfig.TASK_REFRESH_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> refreshTaskData());
+				SystemThreadContext.timer(0, SystemConfig.TASK_REFRESH_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> refreshTaskStatus());
 				synchronized (this.lock) {
 					this.lock.notifyAll();
 				}
@@ -58,7 +58,7 @@ public class TaskDisplay {
 	/**
 	 * 刷新任务数据
 	 */
-	public void refreshTaskTable() {
+	public void refreshTaskList() {
 		try {
 			MainController controller = INSTANCE.controller;
 			if(controller == null) {
@@ -67,7 +67,7 @@ public class TaskDisplay {
 				}
 				controller = INSTANCE.controller;
 			}
-			controller.refreshTable();
+			controller.refreshTaskList();
 		} catch (Exception e) {
 			LOGGER.error("刷新任务数据异常", e);
 		}
@@ -76,7 +76,7 @@ public class TaskDisplay {
 	/**
 	 * 刷新任务状态
 	 */
-	public void refreshTaskData() {
+	public void refreshTaskStatus() {
 		try {
 			MainController controller = INSTANCE.controller;
 			if(controller == null) {
@@ -85,7 +85,7 @@ public class TaskDisplay {
 				}
 				controller = INSTANCE.controller;
 			}
-			controller.refreshData();
+			controller.refreshTaskStatus();
 		} catch (Exception e) {
 			LOGGER.error("刷新任务状态异常", e);
 		}

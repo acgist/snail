@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.gui.Alerts;
+import com.acgist.snail.gui.GuiHandler;
 import com.acgist.snail.net.torrent.dht.bootstrap.NodeManager;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
 import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerClient;
@@ -49,8 +49,8 @@ public class SystemConsole {
 		node();
 		tracker();
 		peer();
-		Alerts.info("统计信息", this.builder.toString());
-		LOGGER.info("系统状态：{}", this.builder.toString());
+		LOGGER.info("统计信息：{}", this.builder.toString());
+		GuiHandler.getInstance().alert("统计信息", this.builder.toString());
 		this.builder.setLength(0);
 		this.builder = new StringBuilder(NEW_LINE);
 	}

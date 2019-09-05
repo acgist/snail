@@ -5,15 +5,13 @@ import java.nio.ByteBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.gui.main.MainWindow;
+import com.acgist.snail.gui.GuiHandler;
 import com.acgist.snail.net.TcpMessageHandler;
 import com.acgist.snail.pojo.message.ApplicationMessage;
 import com.acgist.snail.system.context.SystemContext;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.StringUtils;
-
-import javafx.application.Platform;
 
 /**
  * 系统消息
@@ -113,9 +111,7 @@ public class ApplicationMessageHandler extends TcpMessageHandler {
 	 * 唤醒窗口
 	 */
 	private void onNotify(ApplicationMessage message) {
-		Platform.runLater(() -> {
-			MainWindow.getInstance().show();
-		});
+		GuiHandler.getInstance().show();
 	}
 	
 	/**
