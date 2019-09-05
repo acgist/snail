@@ -49,8 +49,7 @@ public class Application {
 	 * 初始化窗口
 	 */
 	private static final void buildWindow(String ... args) {
-		GuiHandler.getInstance().init(args);
-		GuiHandler.getInstance().build();
+		GuiHandler.getInstance().init(args).build();
 	}
 
 }

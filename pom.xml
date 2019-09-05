@@ -12,7 +12,8 @@
 	<url>https://gitee.com/acgist/snail</url>
 	
 	<name>snail</name>
-	<version>1.1.0</version>
+	<!-- 快照：x.x.x-SNAPSHOT -->
+	<version>1.1.1-SNAPSHOT</version>
 	<description>基于Java、JavaFX开发的下载工具，支持下载协议：BT（BitTorrent）、FTP、HTTP。</description>
 	<inceptionYear>2019</inceptionYear>
 
@@ -34,7 +35,9 @@
 		<!-- JUnit -->
 		<junit.version>4.12</junit.version>
 		<!-- Maven插件 -->
+		<maven.gpg.version>1.6</maven.gpg.version>
 		<maven.jar.version>3.1.1</maven.jar.version>
+		<maven.nexus.version>1.6.8</maven.nexus.version>
 		<maven.source.version>3.0.1</maven.source.version>
 		<maven.javadoc.version>3.1.0</maven.javadoc.version>
 		<maven.compiler.version>3.8.0</maven.compiler.version>
@@ -102,7 +105,7 @@
 		</dependency>
 	</dependencies>
 
-	<!-- 环境：mvn clean package -DskipTests -Pdevelop -->
+	<!-- 环境：mvn clean package -DskipTests -P develop -->
 	<profiles>
 		<profile>
 			<id>develop</id>
@@ -216,7 +219,7 @@
 					</archive>
 				</configuration>
 			</plugin>
-			<!-- 依赖打包 -->
+			<!-- 打包依赖 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
@@ -279,48 +282,93 @@
 					</execution>
 				</executions>
 			</plugin>
+			<!-- gpg -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>${maven.gpg.version}</version>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+						<phase>verify</phase>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- Sonatype -->
+			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<version>${maven.nexus.version}</version>
+				<extensions>true</extensions>
+				<configuration>
+					<serverId>sonatype_releases</serverId>
+					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+					<!-- 发布完成自动close、release -->
+					<autoReleaseAfterClose>true</autoReleaseAfterClose>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
-	<organization>
-		<url>https://www.acgist.com</url>
-		<name>acgist</name>
-	</organization>
-
-	<developers>
-		<developer>
-			<id>acgist.snail.developer</id>
-			<url>https://www.acgist.com</url>
-			<name>acgister</name>
-			<email>admin@acgist.com</email>
-			<roles>
-				<role>master</role>
-				<role>developer</role>
-			</roles>
-		</developer>
-	</developers>
-
+    <!-- 仓库 -->
+	<scm>
+		<tag>HEAD</tag>
+		<url>https://github.com/acgist/snail</url>
+		<connection>scm:git:git://github.com/acgist/snail</connection>
+		<developerConnection>scm:git:git@github.com:acgist/snail</developerConnection>
+	</scm>
+	
+	<!-- 开源许可 -->
 	<licenses>
 		<license>
 			<url>https://opensource.org/licenses/BSD-3-Clause</url>
 			<name>The 3-Clause BSD License</name>
 		</license>
 	</licenses>
+
+	<!-- 组织 -->
+	<organization>
+		<url>https://www.acgist.com</url>
+		<name>acgist</name>
+	</organization>
+
+	<!-- 开发者 -->
+	<developers>
+		<developer>
+			<id>acgister</id>
+			<url>https://gitee.com/acgist</url>
+			<name>Sheng Yu</name>
+			<email>admin@acgist.com</email>
+			<timezone>+8</timezone>
+			<organization>https://www.acgist.com</organization>
+			<roles>
+				<role>master</role>
+				<role>developer</role>
+			</roles>
+		</developer>
+	</developers>
 	
-	<!-- 发布命令：mvn deploy -e -->
-	<!--
+	<!-- issues -->
+	<issueManagement>
+		<url>https://gitee.com/acgist/snail/issues</url>
+		<system>Gitee Issues</system>
+	</issueManagement>
+	
+	<!-- 发布：mvn deploy -e -P release -->
 	<distributionManagement>
 		<repository>
-			<id>releases</id>
+			<id>sonatype_releases</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
 			<name>Nexus Release Repository</name>
-			<url>http://127.0.0.1:8081/nexus/content/repositories/releases</url>
 		</repository>
 		<snapshotRepository>
-			<id>snapshots</id>
+			<id>sonatype_snapshots</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 			<name>Nexus Snapshot Repository</name>
-			<url>http://127.0.0.1:8081/nexus/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
-	-->
 
 </project>

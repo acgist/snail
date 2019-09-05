@@ -3,7 +3,7 @@
 rem 软件名称
 set project=snail
 rem 软件版本
-set version=1.1.0
+set version=1.1.1
 
 rem 编译路径
 set builder=.\builder\

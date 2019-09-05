@@ -9,7 +9,7 @@
 		<img alt="Author" src="https://img.shields.io/badge/Author-acgist-red.svg?style=flat-square" />
 	</a>
 	<a target="_blank" href="https://gitee.com/acgist/snail">
-		<img alt="Version" src="https://img.shields.io/badge/Version-1.1.0-blue.svg?style=flat-square" />
+		<img alt="Version" src="https://img.shields.io/badge/Version-1.1.1-blue.svg?style=flat-square" />
 	</a>
 	<a target="_blank" href="https://gitee.com/acgist/snail/releases/v1.1.0">
 		<img alt="Release" src="https://img.shields.io/badge/Release-1.1.0-blueviolet.svg?style=flat-square" />
