@@ -4,7 +4,7 @@ import com.acgist.snail.system.bencode.BEncodeDecoder;
 import com.acgist.snail.system.bencode.BEncodeEncoder;
 
 /**
- * Application消息
+ * Application消息（系统消息）
  * 
  * @author acgist
  * @since 1.0.0
@@ -26,7 +26,7 @@ public class ApplicationMessage {
 		taskdelete, // 删除任务
 		
 		// 主动消息
-		alert, // 提示框
+		alert, // 提示窗口
 		notice, // 提示消息
 		refresh, // 刷新（任务）
 		

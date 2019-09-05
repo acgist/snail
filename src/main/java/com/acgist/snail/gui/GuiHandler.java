@@ -43,7 +43,14 @@ public class GuiHandler {
 	 */
 	public static final String DAEMO = "daemo";
 	
+	/**
+	 * 阻塞锁时间：365天
+	 */
 	private final int lockDays = 365;
+	
+	/**
+	 * 阻塞锁：防止程序关闭
+	 */
 	private final Object lock = new Object();
 	
 	/**
@@ -149,7 +156,7 @@ public class GuiHandler {
 	/**
 	 * 初始化
 	 */
-	public void init(String ... args) {
+	public GuiHandler init(String ... args) {
 		if(args == null || args.length < 1) {
 			this.gui = true;
 		} else {
@@ -157,6 +164,7 @@ public class GuiHandler {
 			this.gui = !DAEMO.equalsIgnoreCase(arg);
 		}
 		LOGGER.debug("运行模式：{}", this.gui ? "本地GUI" : "后台模式");
+		return this;
 	}
 	
 	/**
@@ -165,8 +173,9 @@ public class GuiHandler {
 	 * @param title 标题
 	 * @param message 内容
 	 */
-	public void alert(String title, String message) {
+	public GuiHandler alert(String title, String message) {
 		this.alert(title, message, SnailAlertType.info);
+		return this;
 	}
 
 	/**
@@ -176,8 +185,9 @@ public class GuiHandler {
 	 * @param message 内容
 	 * @param type 类型
 	 */
-	public void alert(String title, String message, SnailAlertType type) {
+	public GuiHandler alert(String title, String message, SnailAlertType type) {
 		this.event(Type.alert, title, message, type);
+		return this;
 	}
 	
 	/**
@@ -186,8 +196,9 @@ public class GuiHandler {
 	 * @param title 标题
 	 * @param message 内容
 	 */
-	public void notice(String title, String message) {
+	public GuiHandler notice(String title, String message) {
 		this.notice(title, message, SnailNoticeType.info);
+		return this;
 	}
 	
 	/**
@@ -197,50 +208,57 @@ public class GuiHandler {
 	 * @param message 内容
 	 * @param type 类型
 	 */
-	public void notice(String title, String message, SnailNoticeType type) {
+	public GuiHandler notice(String title, String message, SnailNoticeType type) {
 		this.event(Type.notice, title, message, type);
+		return this;
 	}
 	
 	/**
 	 * 刷新任务列表
 	 */
-	public void refreshTaskList() {
+	public GuiHandler refreshTaskList() {
 		event(Type.refreshTaskList);
+		return this;
 	}
 	
 	/**
 	 * 刷新任务状态
 	 */
-	public void refreshTaskStatus() {
+	public GuiHandler refreshTaskStatus() {
 		event(Type.refreshTaskStatus);
+		return this;
 	}
 
 	/**
 	 * 创建窗口
 	 */
-	public void build() {
+	public GuiHandler build() {
 		event(Type.build);
+		return this;
 	}
 
 	/**
 	 * 显示窗口
 	 */
-	public void show() {
+	public GuiHandler show() {
 		this.event(Type.show);
+		return this;
 	}
 	
 	/**
 	 * 隐藏窗口
 	 */
-	public void hide() {
+	public GuiHandler hide() {
 		this.event(Type.hide);
+		return this;
 	}
 	
 	/**
 	 * 退出
 	 */
-	public void exit() {
+	public GuiHandler exit() {
 		this.event(Type.exit);
+		return this;
 	}
 	
 	/**
@@ -249,20 +267,21 @@ public class GuiHandler {
 	 * @param type 事件类型
 	 * @param args 参数
 	 */
-	public void event(GuiEvent.Type type, Object ... args) {
+	public GuiHandler event(GuiEvent.Type type, Object ... args) {
 		if(type == null) {
-			return;
+			return this;
 		}
 		final GuiEvent event = handler(type);
 		if(event == null) {
 			LOGGER.warn("未知事件：{}", type);
-			return;
+			return this;
 		}
 		event.execute(this.gui, args);
+		return this;
 	}
 	
 	/**
-	 * 锁定：防止程序退出
+	 * 阻塞锁
 	 */
 	public void lock() {
 		synchronized (this.lock) {
@@ -271,7 +290,7 @@ public class GuiHandler {
 	}
 	
 	/**
-	 * 唤醒锁：退出程序
+	 * 唤醒阻塞锁：退出程序
 	 */
 	public void unlock() {
 		synchronized (this.lock) {
