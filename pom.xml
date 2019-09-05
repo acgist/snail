@@ -266,16 +266,16 @@
 				<version>${maven.javadoc.version}</version>
 				<executions>
 					<execution>
-						<id>javadoc</id>
-						<phase>package</phase>
+						<id>jar</id>
 						<goals>
-							<goal>javadoc</goal>
+							<goal>jar</goal>
 						</goals>
 						<configuration>
+							<!-- 忽略警告信息：注解、标签等等不规范 -->
 							<doclint>none</doclint>
-							<aggregate>true</aggregate>
 							<charset>${encoding}</charset>
 							<encoding>${encoding}</encoding>
+							<aggregate>true</aggregate>
 							<docencoding>${encoding}</docencoding>
 							<description>${project.description}</description>
 						</configuration>
@@ -316,9 +316,9 @@
     <!-- 仓库 -->
 	<scm>
 		<tag>HEAD</tag>
-		<url>https://github.com/acgist/snail</url>
-		<connection>scm:git:git://github.com/acgist/snail</connection>
-		<developerConnection>scm:git:git@github.com:acgist/snail</developerConnection>
+		<url>https://gitee.com/acgist/snail</url>
+		<connection>scm:git:git://gitee.com/acgist/snail</connection>
+		<developerConnection>scm:git:git@gitee.com:acgist/snail</developerConnection>
 	</scm>
 	
 	<!-- 开源许可 -->
@@ -338,7 +338,7 @@
 	<!-- 开发者 -->
 	<developers>
 		<developer>
-			<id>acgister</id>
+			<id>acgist</id>
 			<url>https://gitee.com/acgist</url>
 			<name>Sheng Yu</name>
 			<email>admin@acgist.com</email>
