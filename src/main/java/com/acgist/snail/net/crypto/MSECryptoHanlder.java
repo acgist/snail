@@ -1,9 +1,7 @@
 package com.acgist.snail.net.crypto;
 
-import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.security.KeyPair;
-import java.util.Optional;
 import java.util.Random;
 
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
@@ -12,15 +10,11 @@ import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.ArrayUtils;
 
-import bt.net.BigIntegers;
-import bt.protocol.DecodingContext;
-import bt.protocol.Handshake;
-import bt.protocol.crypto.EncryptionPolicy;
-
 /**
  * <p>MSE密钥工具</p>
  * <p>加密算法：ARC4</p>
  * <p>密钥交换算法：DH(Diffie-Hellman)</p>
+ * <p>代码参考：https://github.com/atomashpolskiy/bt</p>
  * <p>参考链接：http://wiki.vuze.com/w/Message_Stream_Encryption</p>
  * <p>参考链接：https://wiki.openssl.org/index.php/Diffie_Hellman</p>
  * <p>步骤：</p>
@@ -161,41 +155,6 @@ public class MSECryptoHanlder {
 			}
 		}
 		buffer.position(0);
-		
-		int phase0Min = 20;
-		int phase0Read = reader.readAtLeast(phase0Min).read(in);
-		in.flip();
-		// try to determine the protocol from the first received bytes
-		DecodingContext context = new DecodingContext(peer);
-		int consumed = 0;
-		try {
-			consumed = protocol.decode(context, in);
-		} catch (Exception e) {
-			// ignore
-		}
-		// TODO: can this be done without knowing the protocol specifics? (KeepAlive can
-		// be especially misleading: 0x00 0x00 0x00 0x00)
-		if (consumed > 0 && context.getMessage() instanceof Handshake) {
-			// decoding was successful, can use plaintext (if supported)
-			assertPolicyIsCompatible(EncryptionPolicy.REQUIRE_PLAINTEXT);
-			return Optional.empty();
-		}
-
-		int phase1Min = keyGenerator.getPublicKeySize();
-		int phase1Limit = phase1Min + paddingMaxLength;
-		in.limit(in.capacity());
-		in.position(phase0Read);
-		// verify that there is a sufficient amount of bytes to decode peer's public key
-		int phase1Read;
-		if (phase0Read < phase1Min) {
-			phase1Read = reader.readAtLeast(phase1Min - phase0Read).readNoMoreThan(phase1Limit - phase0Read).read(in);
-		} else {
-			phase1Read = 0;
-		}
-
-		in.flip();
-		BigInteger peerPublicKey = BigIntegers.decodeUnsigned(in, keyGenerator.getPublicKeySize());
-		in.clear(); // discard padding
 	}
 	
 	/**

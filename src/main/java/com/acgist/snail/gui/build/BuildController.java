@@ -80,7 +80,7 @@ public class BuildController extends Controller implements Initializable {
 		if(ok) { // 下载成功
 			setUrl("");
 			BuildWindow.getInstance().hide();
-			TaskDisplay.getInstance().refreshTaskTable();
+			TaskDisplay.getInstance().refreshTaskList();
 		}
 	}
 

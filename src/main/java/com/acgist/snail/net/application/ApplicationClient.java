@@ -59,6 +59,10 @@ public class ApplicationClient extends TcpClient<ApplicationMessageHandler> {
 				send(ApplicationMessage.message(Type.close, message));
 				close();
 				break;
+			} else if(message.equals("shutdown")) {
+				send(ApplicationMessage.message(Type.shutdown, message));
+				close();
+				break;
 			} else {
 				send(ApplicationMessage.text(message));
 			}

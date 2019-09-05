@@ -3,12 +3,8 @@ package com.acgist.main;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.gui.main.MainWindow;
-import com.acgist.snail.gui.menu.TrayMenu;
+import com.acgist.snail.gui.GuiHandler;
 import com.acgist.snail.system.context.SystemContext;
-import com.acgist.snail.system.context.SystemThreadContext;
-
-import javafx.application.Platform;
 
 /**
  * <h1>Snail系统启动类。</h1>
@@ -30,7 +26,7 @@ public class Application {
 		final boolean enable = listen();
 		if(enable) {
 			buildContext();
-			buildWindow();
+			buildWindow(args);
 		}
 		LOGGER.info("系统启动完成");
 	}
@@ -50,18 +46,11 @@ public class Application {
 	}
 	
 	/**
-	 * 初始化JavaFX平台
+	 * 初始化窗口
 	 */
-	private static final void buildWindow() {
-		LOGGER.info("初始化窗口");
-		final Thread thread = new Thread();
-		thread.setName(SystemThreadContext.SNAIL_THREAD_PLATFORM);
-		thread.setDaemon(true);
-		Platform.startup(thread);
-		Platform.runLater(() -> {
-			TrayMenu.getInstance();
-			MainWindow.getInstance().show();
-		});
+	private static final void buildWindow(String ... args) {
+		GuiHandler.getInstance().init(args);
+		GuiHandler.getInstance().build();
 	}
 
 }

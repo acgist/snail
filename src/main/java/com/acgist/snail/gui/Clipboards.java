@@ -1,15 +1,15 @@
-package com.acgist.snail.utils;
+package com.acgist.snail.gui;
 
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 
 /**
- * <p>剪切板工具</p>
+ * <p>剪切板</p>
  * 
  * @author acgist
  * @since 1.0.0
  */
-public class ClipboardUtils {
+public class Clipboards {
 
 	/**
 	 * 剪切板拷贝

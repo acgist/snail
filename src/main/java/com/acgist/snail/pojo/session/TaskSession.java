@@ -7,7 +7,7 @@ import java.util.List;
 
 import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.downloader.IDownloader;
-import com.acgist.snail.gui.main.TaskDisplay;
+import com.acgist.snail.gui.GuiHandler;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.entity.TaskEntity.Type;
@@ -119,7 +119,7 @@ public class TaskSession {
 		this.entity.setStatus(status);
 		repository.update(this.entity);
 		DownloaderManager.getInstance().refresh(); // 刷新下载
-		TaskDisplay.getInstance().refreshTaskData(); // 刷新状态
+		GuiHandler.getInstance().refreshTaskStatus(); // 刷新状态
 	}
 	
 	public StatisticsSession statistics() {

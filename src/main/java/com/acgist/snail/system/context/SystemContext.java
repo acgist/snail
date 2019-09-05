@@ -4,9 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.DownloaderManager;
-import com.acgist.snail.gui.Alerts;
-import com.acgist.snail.gui.main.MainWindow;
-import com.acgist.snail.gui.menu.TrayMenu;
+import com.acgist.snail.gui.GuiHandler;
 import com.acgist.snail.net.TcpClient;
 import com.acgist.snail.net.TcpServer;
 import com.acgist.snail.net.UdpAcceptHandler;
@@ -37,8 +35,6 @@ import com.acgist.snail.system.initializer.impl.UpnpInitializer;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.LoggerUtils;
 import com.acgist.snail.utils.NetUtils;
-
-import javafx.application.Platform;
 
 /**
  * <p>系统上下文</p>
@@ -119,9 +115,7 @@ public class SystemContext {
 			SystemContext.shutdown = true;
 			SystemThreadContext.submit(() -> {
 				LOGGER.info("系统关闭...");
-				Platform.runLater(() -> {
-					MainWindow.getInstance().hide();
-				});
+				GuiHandler.getInstance().hide();
 				DownloaderManager.getInstance().shutdown();
 				UpnpService.getInstance().release();
 				UpnpServer.getInstance().close();
@@ -139,13 +133,12 @@ public class SystemContext {
 				DatabaseManager.getInstance().shutdown();
 				DhtConfig.getInstance().persistent();
 				TrackerConfig.getInstance().persistent();
-				Platform.exit();
-				TrayMenu.exit();
+				GuiHandler.getInstance().exit();
 				LOGGER.info("系统已关闭");
 				LoggerUtils.shutdown();
 			});
 		} else {
-			Alerts.info("关闭提示", "系统正在关闭中...");
+			GuiHandler.getInstance().alert("关闭提示", "系统正在关闭中...");
 		}
 	}
 

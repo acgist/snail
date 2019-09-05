@@ -1,13 +1,13 @@
 package com.acgist.snail.downloader;
 
-import java.awt.TrayIcon.MessageType;
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.gui.menu.TrayMenu;
+import com.acgist.snail.gui.GuiHandler;
+import com.acgist.snail.gui.GuiHandler.SnailNoticeType;
 import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.repository.impl.TaskRepository;
@@ -92,7 +92,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 		} else {
 			noticeMessage.append("未知错误");
 		}
-		TrayMenu.getInstance().notice("下载失败", noticeMessage.toString(), MessageType.WARNING);
+		GuiHandler.getInstance().notice("下载失败", noticeMessage.toString(), SnailNoticeType.warn);
 	}
 	
 	@Override
@@ -121,7 +121,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	public void complete() {
 		if(this.complete) {
 			this.updateStatus(Status.complete);
-			TrayMenu.getInstance().notice("下载完成", name() + "已经下载完成");
+			GuiHandler.getInstance().notice("下载完成", name() + "已经下载完成");
 		}
 	}
 	

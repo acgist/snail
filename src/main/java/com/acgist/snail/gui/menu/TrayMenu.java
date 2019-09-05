@@ -147,10 +147,17 @@ public class TrayMenu extends Menu {
 	}
 	
 	/**
-	 * 提示信息
+	 * 提示信息（提示）
 	 */
-	public void notice(String title, String content) {
+	public void info(String title, String content) {
 		notice(title, content, MessageType.INFO);
+	}
+	
+	/**
+	 * 提示信息（警告）
+	 */
+	public void warn(String title, String content) {
+		notice(title, content, MessageType.WARNING);
 	}
 
 	/**
