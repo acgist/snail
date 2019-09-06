@@ -1,10 +1,8 @@
 package com.acgist.snail.net.crypt;
 
-import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.security.KeyPair;
-import java.security.MessageDigest;
 import java.time.Duration;
 import java.util.Random;
 
@@ -12,12 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
-import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.config.CryptConfig;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.ArrayUtils;
-import com.acgist.snail.utils.DigestUtils;
 import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
@@ -226,28 +222,28 @@ public class MSECryptHanlder {
 	 * ENCRYPT(VC, crypto_provide, len(PadC), PadC, len(IA)), ENCRYPT(IA)
 	 */
 	private void provide() {
-		final InfoHash infoHash = null; // TODO
-		final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-		final MessageDigest digest = DigestUtils.sha1();
-//		HASH('req1', S)
-		digest.update("req1".getBytes(SystemConfig.CHARSET_ASCII));
-		digest.update(NumberUtils.encodeUnsigned(this.dhSecret, CryptConfig.PUBLIC_KEY_SIZE));
-		bytes.write(digest.digest());
-//		HASH('req2', SKEY) xor HASH('req3', S)
-		digest.update("req2".getBytes(SystemConfig.CHARSET_ASCII));
-		digest.update(infoHash.infoHash());
-		byte[] req2 = digest.digest();
-		digest.update("req3".getBytes(SystemConfig.CHARSET_ASCII));
-		digest.update(NumberUtils.encodeUnsigned(this.dhSecret, CryptConfig.PUBLIC_KEY_SIZE));
-		byte[] req3 = digest.digest();
-		bytes.write(ArrayUtils.xor(req2, req3));
-		// TODO：write
-        final byte[] Sbytes = NumberUtils.encodeUnsigned(this.dhSecret, CryptConfig.PUBLIC_KEY_SIZE);
-        final MSECipher cipher = MSECipher.newInitiator(Sbytes, infoHash); // 加密套件
-        // - ENCRYPT(VC, crypto_provide, len(PadC), PadC, len(IA))
-        bytes.reset();
-        bytes.write(CryptConfig.VC);
-        // TODO：
+//		final InfoHash infoHash = null; // TODO
+//		final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+//		final MessageDigest digest = DigestUtils.sha1();
+////		HASH('req1', S)
+//		digest.update("req1".getBytes(SystemConfig.CHARSET_ASCII));
+//		digest.update(NumberUtils.encodeUnsigned(this.dhSecret, CryptConfig.PUBLIC_KEY_SIZE));
+//		bytes.write(digest.digest());
+////		HASH('req2', SKEY) xor HASH('req3', S)
+//		digest.update("req2".getBytes(SystemConfig.CHARSET_ASCII));
+//		digest.update(infoHash.infoHash());
+//		byte[] req2 = digest.digest();
+//		digest.update("req3".getBytes(SystemConfig.CHARSET_ASCII));
+//		digest.update(NumberUtils.encodeUnsigned(this.dhSecret, CryptConfig.PUBLIC_KEY_SIZE));
+//		byte[] req3 = digest.digest();
+//		bytes.write(ArrayUtils.xor(req2, req3));
+//		// TODO：write
+//        final byte[] Sbytes = NumberUtils.encodeUnsigned(this.dhSecret, CryptConfig.PUBLIC_KEY_SIZE);
+//        final MSECipher cipher = MSECipher.newInitiator(Sbytes, infoHash); // 加密套件
+//        // - ENCRYPT(VC, crypto_provide, len(PadC), PadC, len(IA))
+//        bytes.reset();
+//        bytes.write(CryptConfig.VC);
+//        // TODO：
 	}
 	
 	/**
