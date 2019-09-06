@@ -66,22 +66,22 @@ public class NumberUtils {
 	 * 大整数转为无符号大整数二进制字符数组
 	 * 
 	 * @param 原始大整数
-	 * @param byteCount 二进制字符数组长度
+	 * @param length 二进制字符数组长度
 	 */
-	public static byte[] encodeUnsigned(BigInteger value, int byteCount) {
-        if (byteCount < 1) {
+	public static byte[] encodeUnsigned(BigInteger value, int length) {
+        if (length < 1) {
             throw new ArgumentException("数组长度错误");
         }
 		byte[] bytes = value.toByteArray();
 		if (bytes[0] == 0) {
 			bytes = Arrays.copyOfRange(bytes, 1, bytes.length);
 		}
-		if (bytes.length > byteCount) {
+		if (bytes.length > length) {
 			throw new ArgumentException("数组长度错误");
 		}
-		if (bytes.length < byteCount) {
+		if (bytes.length < length) {
 			final byte[] copy = bytes;
-			bytes = new byte[byteCount];
+			bytes = new byte[length];
 			System.arraycopy(copy, 0, bytes, (bytes.length - copy.length), copy.length);
 		}
 		return bytes;

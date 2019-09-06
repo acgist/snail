@@ -1,4 +1,4 @@
-package com.acgist.snail.net.crypto;
+package com.acgist.snail.net.crypt;
 
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
@@ -7,7 +7,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 
-import com.acgist.snail.system.config.CryptoConfig;
+import com.acgist.snail.system.config.CryptConfig;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.ArgumentException;
 import com.acgist.snail.utils.NumberUtils;
@@ -23,26 +23,24 @@ import com.acgist.snail.utils.NumberUtils;
 public class MSEKeyPairBuilder {
 
 	private final SecureRandom random;
-	private final int privateKeySize;
 
-	private MSEKeyPairBuilder(int privateKeySize) {
+	private MSEKeyPairBuilder() {
 		this.random = new SecureRandom();
-		this.privateKeySize = privateKeySize;
 	}
 	
 	public static final MSEKeyPairBuilder newInstance() {
-		return new MSEKeyPairBuilder(CryptoConfig.PRIVATE_KEY_SIZE);
+		return new MSEKeyPairBuilder();
 	}
 
 	public KeyPair buildKeyPair() {
-		final MSEPrivateKey privateKey = new MSEPrivateKey(this.privateKeySize, this.random);
+		final MSEPrivateKey privateKey = new MSEPrivateKey(this.random);
 		final MSEPublicKey publicKey = privateKey.getPublicKey();
 		return new KeyPair(publicKey, privateKey);
 	}
 
 	public BigInteger buildDHSecret(BigInteger publicKey, PrivateKey privateKey) {
 		if(privateKey instanceof MSEPrivateKey) {
-			return ((MSEPrivateKey) privateKey).buildSharedSecret(new MSEPublicKey(publicKey));
+			return ((MSEPrivateKey) privateKey).buildDHSecret(new MSEPublicKey(publicKey));
 		}
 		throw new ArgumentException("不支持的PrivateKey：" + privateKey);
 	}
@@ -82,7 +80,7 @@ public class MSEKeyPairBuilder {
 			if (this.encoded == null) {
 				synchronized (this.lock) {
 					if (this.encoded == null) {
-						this.encoded = NumberUtils.encodeUnsigned(this.value, CryptoConfig.PUBLIC_KEY_SIZE);
+						this.encoded = NumberUtils.encodeUnsigned(this.value, CryptConfig.PUBLIC_KEY_SIZE);
 					}
 				}
 			}
@@ -102,32 +100,42 @@ public class MSEKeyPairBuilder {
 		private final BigInteger value;
 		private volatile MSEPublicKey publicKey;
 
-		private MSEPrivateKey(int privateKeySize, SecureRandom random) {
+		private MSEPrivateKey(SecureRandom random) {
 			this.lock = new Object();
-			this.value = buildPrivateKey(privateKeySize, random);
+			this.value = buildPrivateKey(random);
 		}
 
-		private BigInteger buildPrivateKey(int privateKeySize, SecureRandom random) {
-			final byte[] bytes = new byte[privateKeySize];
-			for (int index = 0; index < privateKeySize; index++) {
+		/**
+		 * Xa Xb
+		 */
+		private BigInteger buildPrivateKey(SecureRandom random) {
+			final byte[] bytes = new byte[CryptConfig.PRIVATE_KEY_SIZE];
+			for (int index = 0; index < CryptConfig.PRIVATE_KEY_SIZE; index++) {
 				bytes[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_SIZE);
 			}
-			return NumberUtils.decodeUnsigned(ByteBuffer.wrap(bytes), privateKeySize);
+			return NumberUtils.decodeUnsigned(ByteBuffer.wrap(bytes), CryptConfig.PRIVATE_KEY_SIZE);
 		}
 
+		/**
+		 * Pubkey of A: Ya = (G^Xa) mod P
+		 * Pubkey of B: Yb = (G^Xb) mod P
+		 */
 		private MSEPublicKey getPublicKey() {
 			if (this.publicKey == null) {
 				synchronized (this.lock) {
 					if (this.publicKey == null) {
-						this.publicKey = new MSEPublicKey(CryptoConfig.G.modPow(this.value, CryptoConfig.P));
+						this.publicKey = new MSEPublicKey(CryptConfig.G.modPow(this.value, CryptConfig.P));
 					}
 				}
 			}
 			return this.publicKey;
 		}
 
-		public BigInteger buildSharedSecret(MSEPublicKey publicKey) {
-			return publicKey.getValue().modPow(this.value, CryptoConfig.P);
+		/**
+		 * DH secret: S = (Ya^Xb) mod P = (Yb^Xa) mod P
+		 */
+		public BigInteger buildDHSecret(MSEPublicKey publicKey) {
+			return publicKey.getValue().modPow(this.value, CryptConfig.P);
 		}
 
 		@Override
@@ -144,7 +152,7 @@ public class MSEKeyPairBuilder {
 		public byte[] getEncoded() {
 			return null;
 		}
-		
+
 	}
 
 }

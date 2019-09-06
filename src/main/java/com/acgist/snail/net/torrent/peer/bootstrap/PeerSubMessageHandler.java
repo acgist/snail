@@ -77,6 +77,7 @@ public class PeerSubMessageHandler {
 	
 	/**
 	 * 消息代理
+	 * TODO：替换加密发送
 	 */
 	private IMessageHandler messageHandler;
 	
@@ -724,7 +725,7 @@ public class PeerSubMessageHandler {
 	
 	public void send(ByteBuffer buffer) {
 		try {
-			this.messageHandler.send(buffer);
+			this.messageHandler.send(buffer); // TODO：加密
 		} catch (Exception e) {
 			LOGGER.error("Peer消息发送异常", e);
 		}

@@ -8,7 +8,7 @@ import java.math.BigInteger;
  * @author acgist
  * @since 1.1.0
  */
-public class CryptoConfig {
+public class CryptConfig {
 	
 	/**
 	 * Prime P(768 bit safe prime)
@@ -27,13 +27,19 @@ public class CryptoConfig {
 	 */
 	public static final int PUBLIC_KEY_SIZE = 96;
 	/**
-	 * 私钥长度
+	 * <p>私钥长度</p>
+	 * <p>随机长度：128~180，超过180只能增加计算时间，并不能提高安全性，推荐长度：160。</p>
 	 */
 	public static final int PRIVATE_KEY_SIZE = 20;
 	/**
 	 * 填充最大长度
 	 */
 	public static final int MSE_MAX_PADDING = 512;
+	
+	/**
+	 * 八字节：0x00
+	 */
+	public static final byte[] VC = new byte[8];
 
 	/**
 	 * 加密策略
@@ -50,14 +56,14 @@ public class CryptoConfig {
 	/**
 	 * 加密模式
 	 */
-	public enum CryptoProvide {
+	public enum CryptProvide {
 		
 		plaintext(0x01), // 明文
 		arc4(	  0x02); // ARC4加密
 		
 		int value;
 		
-		CryptoProvide(int value) {
+		CryptProvide(int value) {
 			this.value = value;
 		}
 

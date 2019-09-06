@@ -68,17 +68,29 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 	
 	@Override
 	public void send(String message) throws NetException {
-		this.send(message, this.remoteSocketAddress());
+		send(message, null);
 	}
 
 	@Override
 	public void send(String message, String charset) throws NetException {
-		this.send(message, charset, this.remoteSocketAddress());
+		String splitMessage = message;
+		if(this.split != null) {
+			splitMessage += this.split;
+		}
+		if(charset == null) {
+			send(splitMessage.getBytes());
+		} else {
+			try {
+				send(splitMessage.getBytes(charset));
+			} catch (UnsupportedEncodingException e) {
+				LOGGER.error("UDP消息编码异常，消息：{}，编码：{}", splitMessage, charset, e);
+			}
+		}
 	}
 	
 	@Override
 	public void send(byte[] bytes) throws NetException {
-		this.send(bytes, this.remoteSocketAddress());
+		send(ByteBuffer.wrap(bytes));
 	}
 
 	@Override
@@ -92,44 +104,11 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 	}
 
 	/**
-	 * 关闭通道，只标记关闭，不关闭通道。
+	 * 关闭通道：只标记关闭，不关闭通道（UDP通道都是单例）。
 	 */
 	@Override
 	public void close() {
 		this.close = true;
-	}
-	
-	/**
-	 * <p>发送消息</p>
-	 */
-	protected void send(final String message, SocketAddress socketAddress) throws NetException {
-		send(message, null, socketAddress);
-	}
-	
-	/**
-	 * <p>发送消息</p>
-	 */
-	protected void send(final String message, String charset, SocketAddress socketAddress) throws NetException {
-		String splitMessage = message;
-		if(this.split != null) {
-			splitMessage += this.split;
-		}
-		if(charset == null) {
-			send(splitMessage.getBytes(), socketAddress);
-		} else {
-			try {
-				send(splitMessage.getBytes(charset), socketAddress);
-			} catch (UnsupportedEncodingException e) {
-				LOGGER.error("UDP消息编码异常，消息：{}，编码：{}", splitMessage, charset, e);
-			}
-		}
-	}
-	
-	/**
-	 * <p>发送消息</p>
-	 */
-	protected void send(byte[] bytes, SocketAddress socketAddress) throws NetException {
-		send(ByteBuffer.wrap(bytes), socketAddress);
 	}
 	
 	/**

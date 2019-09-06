@@ -1,9 +1,8 @@
-package com.acgist.snail.net.crypto;
+package com.acgist.snail.net.crypt;
 
 import java.nio.charset.Charset;
 import java.security.Key;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -11,6 +10,7 @@ import javax.crypto.spec.SecretKeySpec;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.ArgumentException;
+import com.acgist.snail.utils.DigestUtils;
 
 /**
  * <p>MSE加密套件（ARC4）</p>
@@ -36,7 +36,7 @@ public class MSECipher {
 	/**
 	 * 请求客户端
 	 * 
-	 * @param S DH secret
+	 * @param S DH Secret
 	 * @param infoHash infoHash
 	 */
 	public static final MSECipher newInitiator(byte[] S, InfoHash infoHash) {
@@ -46,7 +46,7 @@ public class MSECipher {
 	/**
 	 * 连入客户端
 	 * 
-	 * @param S DH secret
+	 * @param S DH Secret
 	 * @param infoHash infoHash
 	 */
 	public static final MSECipher newReceiver(byte[] S, InfoHash infoHash) {
@@ -88,15 +88,11 @@ public class MSECipher {
 	 * 创建KEY
 	 */
 	private Key buildEncryptionKey(String s, byte[] S, byte[] SKEY) {
-		try {
-			final MessageDigest digest = MessageDigest.getInstance("SHA-1");
-			digest.update(s.getBytes(Charset.forName(SystemConfig.CHARSET_ASCII))); // TODO：编码
-			digest.update(S);
-			digest.update(SKEY);
-			return new SecretKeySpec(digest.digest(), ARC4_ALGO);
-		} catch (NoSuchAlgorithmException e) {
-			throw new ArgumentException("不支持SHA-1算法", e);
-		}
+		final MessageDigest digest = DigestUtils.sha1();
+		digest.update(s.getBytes(Charset.forName(SystemConfig.CHARSET_ASCII))); // TODO：编码
+		digest.update(S);
+		digest.update(SKEY);
+		return new SecretKeySpec(digest.digest(), ARC4_ALGO);
 	}
 
 	/**

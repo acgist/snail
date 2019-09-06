@@ -291,7 +291,7 @@ public class FileUtils {
 	 * 散列计算
 	 * 
 	 * @param path 文件地址，如果是目录计算里面每一个文件
-	 * @param algo 算法：MD5/SHA1
+	 * @param algo 算法：MD5/SHA-1
 	 */
 	private static final Map<String, String> hash(String path, String algo) {
 		final File file = new File(path);
@@ -307,10 +307,9 @@ public class FileUtils {
 			return data;
 		} else {
 			int length;
-			MessageDigest digest = null;
-			byte bytes[] = new byte[16 * 1024];
+			final byte bytes[] = new byte[16 * 1024];
+			final MessageDigest digest = DigestUtils.digest(algo);
 			try (InputStream input = new BufferedInputStream(new FileInputStream(file))) {
-				digest = MessageDigest.getInstance(algo);
 				while ((length = input.read(bytes)) != -1) {
 					digest.update(bytes, 0, length);
 				}
@@ -340,10 +339,10 @@ public class FileUtils {
 	}
 
 	/**
-	 * SHA1散列算法
+	 * SHA-1散列算法
 	 */
 	public static final Map<String, String> sha1(String path) {
-		return hash(path, "SHA1");
+		return hash(path, "SHA-1");
 	}
-
+	
 }
