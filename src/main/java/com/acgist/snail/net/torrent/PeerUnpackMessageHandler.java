@@ -50,23 +50,25 @@ public class PeerUnpackMessageHandler {
 	 * 处理消息
 	 */
 	public void onMessage(ByteBuffer attachment) throws NetException {
-		if(this.mseCryptoHanlder.over()) { // 加密握手已经完成
-			if(this.mseCryptoHanlder.crypt()) { // 解密
-				this.mseCryptoHanlder.decrypt(attachment);
-			} else { // 明文
-			}
-			onPeerMessage(attachment);
-		} else { // 加密握手
-			this.mseCryptoHanlder.handshake(attachment);
-			// 继续处理：处理完成 && 继续处理 && 明文
-			if(
-				this.mseCryptoHanlder.over() &&
-				this.mseCryptoHanlder.next() &&
-				!this.mseCryptoHanlder.crypt()
-			) {
-				onPeerMessage(attachment);
-			}
-		}
+//		if(this.mseCryptoHanlder.over()) { // 加密握手已经完成
+//			if(this.mseCryptoHanlder.crypt()) { // 解密
+//				this.mseCryptoHanlder.decrypt(attachment);
+//			} else { // 明文
+//			}
+//			onPeerMessage(attachment);
+//		} else { // 加密握手
+//			this.mseCryptoHanlder.handshake(attachment);
+//			// 继续处理：处理完成 && 继续处理 && 明文
+//			if(
+//				this.mseCryptoHanlder.over() &&
+//				this.mseCryptoHanlder.next() &&
+//				!this.mseCryptoHanlder.crypt()
+//			) {
+//				onPeerMessage(attachment);
+//			}
+//		}
+		// 完全忽略加密
+		onPeerMessage(attachment);
 	}
 	
 	/**

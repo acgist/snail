@@ -53,7 +53,7 @@ public class LocalServiceDiscoveryClient extends UdpClient<LocalServiceDiscovery
 	}
 	
 	/**
-	 * 构建本地发现消息
+	 * 创建本地发现消息
 	 */
 	private String buildLocalSearch(String infoHash) {
 		final String peerId = StringUtils.hex(PeerService.getInstance().peerId());

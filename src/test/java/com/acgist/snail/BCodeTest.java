@@ -1,4 +1,4 @@
-package com.acgist.snail.bcode;
+package com.acgist.snail;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -12,26 +12,28 @@ import com.acgist.snail.system.bencode.BEncodeEncoder;
 public class BCodeTest {
 
 	@Test
-	public void test() {
+	public void rw() {
 		BEncodeEncoder encoder = BEncodeEncoder.newInstance();
 		encoder.build(List.of("a", "b"));
 		encoder.build(Map.of("1", "2"));
 		encoder.append("xxxx".getBytes());
 		String content = encoder.toString();
-//		String content = encoder.newList().put("1").put("2").flush()
-//			.newMap().put("aa", "b").put("c", "dd").flush().toString();
+//		String content = encoder
+//			.newList().put("1").put("2").flush()
+//			.newMap().put("aa", "bb").put("cc", "dd").flush()
+//			.toString();
 		System.out.println(content);
 		BEncodeDecoder decoder = BEncodeDecoder.newInstance(content.getBytes());
 		decoder.nextList().forEach(value -> System.out.println(new String((byte[]) value)));
 		decoder.nextMap().forEach((key, value) -> {
 			System.out.println(key + "=" + new String((byte[]) value));
 		});
-//		System.out.println(decoder.oddBytes());
 		System.out.println(decoder.oddString());
+		
 	}
 	
 	@Test
-	public void nullTest() {
+	public void nullRW() {
 		Map<String, Object> map = new LinkedHashMap<>();
 		map.put("a", 1);
 		map.put("b", null);

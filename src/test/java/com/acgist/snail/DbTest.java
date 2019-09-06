@@ -1,11 +1,23 @@
 package com.acgist.snail;
 
+import java.util.List;
+
 import org.junit.Test;
 
 import com.acgist.snail.pojo.entity.ConfigEntity;
+import com.acgist.snail.pojo.wrapper.ResultSetWrapper;
+import com.acgist.snail.repository.DatabaseManager;
 import com.acgist.snail.repository.impl.ConfigRepository;
 
-public class ConfigRepositoryTest {
+public class DbTest {
+
+	@Test
+	public void select() {
+		List<ResultSetWrapper> list = DatabaseManager.getInstance().select("select * from tb_config");
+		list.forEach(value -> {
+			System.out.println(value);
+		});
+	}
 	
 	@Test
 	public void findOne() {

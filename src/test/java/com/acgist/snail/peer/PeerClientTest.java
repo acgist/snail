@@ -22,6 +22,9 @@ import com.acgist.snail.utils.ThreadUtils;
 
 public class PeerClientTest {
 	
+	/**
+	 * 下载
+	 */
 	@Test
 	public void download() throws DownloadException {
 //		String path = "e:/snail/0.torrent";
@@ -70,6 +73,9 @@ public class PeerClientTest {
 		ThreadUtils.sleep(Long.MAX_VALUE);
 	}
 
+	/**
+	 * 下载种子
+	 */
 	@Test
 	public void torrent() throws DownloadException {
 //		String path = "e:/snail/12.torrent";

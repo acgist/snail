@@ -36,6 +36,8 @@ public class Application {
 	
 	/**
 	 * 启动系统监听
+	 * 
+	 * @return 启动结果：true-成功；false-失败；
 	 */
 	private static final boolean listen() {
 		return SystemContext.listen();

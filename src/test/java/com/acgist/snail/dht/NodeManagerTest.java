@@ -14,7 +14,7 @@ import com.acgist.snail.utils.StringUtils;
 public class NodeManagerTest {
 
 	@Test
-	public void xor() {
+	public void compare() {
 		byte[] hex1 = NodeManager.xor(StringUtils.unhex("c15419ae6b3bdfd8e983062b0650ad114ce41859"), StringUtils.unhex("c15417e6aeab33732a59085d826edd29978f9afa"));
 		byte[] hex2 = NodeManager.xor(StringUtils.unhex("c1540515408feb76af06c6c588b1b345b5173c42"), StringUtils.unhex("c15417e6aeab33732a59085d826edd29978f9afa"));
 		System.out.println(StringUtils.hex(hex1));
@@ -23,7 +23,7 @@ public class NodeManagerTest {
 	}
 
 	public String buildId() {
-		Random random = new Random();
+		final Random random = new Random();
 		long value;
 		while((value = random.nextInt()) < 0) {
 		}
@@ -61,28 +61,4 @@ public class NodeManagerTest {
 		});
 	}
 
-	@Test
-	public void clear() {
-		int NODE_MAX_SIZE = 1024;
-		var nodes = new ArrayList<>();
-		for (int i = 0; i < 10000; i++) {
-			nodes.add(i);
-		}
-		var iterator= nodes.iterator();
-		final int overSize = nodes.size() - NODE_MAX_SIZE;
-		if(overSize > 0) {
-			int index = 0;
-			final int step = NODE_MAX_SIZE / overSize;
-			System.out.println(step);
-			if(step > 0) {
-				while(iterator.hasNext()) {
-					iterator.next();
-					if(index++ % step == 0) {
-						iterator.remove();
-					}
-				}
-			}
-		}
-	}
-	
 }

@@ -59,6 +59,12 @@ public class SystemConfig extends PropertiesConfig {
 
 	private static final SystemConfig INSTANCE = new SystemConfig();
 	
+	/**
+	 * <p>用户工作目录</p>
+	 * <p>注意顺序：优先初始化，不能使用类变量，本类初始化时会使用。</p>
+	 */
+	private static final String USER_DIR = System.getProperty("user.dir");
+	
 	private SystemConfig() {
 		super(SYSTEM_CONFIG);
 	}
@@ -94,8 +100,6 @@ public class SystemConfig extends PropertiesConfig {
 	private Integer trackerInterval; // Tracker执行周期（秒）
 	private Integer peerOptimizeInterval; // 单个任务Peer优化周期（秒）
 	
-	private static final String userDir = System.getProperty("user.dir"); // 用户工作目录
-
 	/**
 	 * 初始化
 	 */
@@ -136,7 +140,7 @@ public class SystemConfig extends PropertiesConfig {
 		LOGGER.info("PEX执行周期（秒）：{}", this.pexInterval);
 		LOGGER.info("Tracker执行周期（秒）：{}", this.trackerInterval);
 		LOGGER.info("单个任务Peer优化周期（秒）：{}", this.peerOptimizeInterval);
-		LOGGER.info("用户工作目录：{}", SystemConfig.userDir);
+		LOGGER.info("用户工作目录：{}", SystemConfig.USER_DIR);
 	}
 	
 	/**
@@ -276,7 +280,7 @@ public class SystemConfig extends PropertiesConfig {
 	 * 用户工作目录
 	 */
 	public static final String userDir() {
-		return SystemConfig.userDir;
+		return SystemConfig.USER_DIR;
 	}
 	
 	/**
@@ -285,7 +289,7 @@ public class SystemConfig extends PropertiesConfig {
 	 * @param path 文件相对路径：以/开头
 	 */
 	public static final String userDir(String path) {
-		return SystemConfig.userDir + path;
+		return SystemConfig.USER_DIR + path;
 	}
 	
 	/**

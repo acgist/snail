@@ -84,7 +84,7 @@ public class HttpTrackerClient extends TrackerClient {
 	}
 	
 	/**
-	 * 构建请求URL
+	 * 创建请求URL
 	 */
 	private String buildAnnounceUrl(Integer sid, TorrentSession torrentSession, TrackerConfig.Event event) {
 		long download = 0L, remain = 0L, upload = 0L;

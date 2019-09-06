@@ -1,4 +1,4 @@
-package com.acgist.snail.lsd;
+package com.acgist.snail;
 
 import org.junit.Test;
 

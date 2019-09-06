@@ -1,4 +1,4 @@
-package com.acgist.snail;
+package com.acgist.snail.torrent;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -12,10 +12,10 @@ import org.junit.Test;
 import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
-public class RandomAccessFileTest {
+public class TorrentStreamTest {
 
 	@Test
-	public void test() throws IOException {
+	public void read() throws IOException {
 		RandomAccessFile stream = new RandomAccessFile("e://tmp.txt", "rwd");
 		stream.write(2);
 		stream.seek(1000);

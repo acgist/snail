@@ -114,7 +114,7 @@
 		</dependency>
 	</dependencies>
 
-	<!-- 环境：mvn clean package -DskipTests -P develop -->
+	<!-- 环境：mvn -P develop -->
 	<profiles>
 		<profile>
 			<id>develop</id>
@@ -268,7 +268,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- JavaDoc：跳过：mvn -Dmaven.javadoc.skip=true -->
+			<!-- JavaDoc：跳过：mvn -D maven.javadoc.skip=true -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
@@ -370,7 +370,7 @@
 		<system>Gitee Issues</system>
 	</issueManagement>
 	
-	<!-- 发布：mvn deploy -e -P release -->
+	<!-- 发布：mvn deploy -e -->
 	<!-- https://issues.sonatype.org/browse/OSSRH-51336 -->
 	<distributionManagement>
 		<repository>

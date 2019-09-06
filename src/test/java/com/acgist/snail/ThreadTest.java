@@ -13,7 +13,7 @@ import com.acgist.snail.utils.ThreadUtils;
 public class ThreadTest {
 
 	@Test
-	public void test() {
+	public void waitTest() {
 		long sleep = 1000000;
 		ExecutorService exe = Executors.newFixedThreadPool(2);
 		exe.submit(() -> {
@@ -22,7 +22,9 @@ public class ThreadTest {
 		});
 		exe.submit(() -> {
 			System.out.println("2");
-			ThreadUtils.wait(this, Duration.ofSeconds(sleep));
+			synchronized (this) {
+				ThreadUtils.wait(this, Duration.ofSeconds(sleep));
+			}
 		});
 		exe.submit(() -> {
 			System.out.println("3");

@@ -11,7 +11,7 @@ import com.acgist.snail.system.exception.NetException;
 public class TrackerClientHttpTest {
 
 	@Test
-	public void test() throws DownloadException, NetException {
+	public void announce() throws DownloadException, NetException {
 		String path = "e:/snail/16b1233b33143700fe47910898fcaaf0f05d2d09.torrent";
 		TorrentSession session = TorrentManager.getInstance().newTorrentSession(path);
 		HttpTrackerClient client = HttpTrackerClient.newInstance("http://t.nyaatracker.com/announce");

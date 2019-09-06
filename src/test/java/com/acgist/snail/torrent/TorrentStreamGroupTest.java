@@ -17,7 +17,7 @@ import com.acgist.snail.utils.ThreadUtils;
 public class TorrentStreamGroupTest {
 
 	@Test
-	public void test() throws DownloadException {
+	public void read() throws DownloadException {
 		String path = "e:/snail/12.torrent";
 //		String path = "e:/snail/0B156834B59B0FF64EE0C9305D4D6EDE421196E6.torrent";
 //		String path = "e:/snail/82309348090ecbec8bf509b83b30b78a8d1f6454.torrent";

@@ -10,7 +10,7 @@ import com.acgist.snail.utils.ThreadUtils;
 public class PeerManagerTest {
 
 	@Test
-	public void test() {
+	public void add() {
 //		PeerManager.getInstance().newPeerSession("1234", null, "183.6.115.59", 19999, (byte) 1);
 //		PeerManager.getInstance().newPeerSession("1234", null, "183.6.115.59", 19999, (byte) 1);
 //		PeerManager.getInstance().newPeerSession("1234", null, "183.6.115.59", 19999, (byte) 1);

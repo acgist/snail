@@ -1,5 +1,6 @@
 package com.acgist.snail.net.crypto;
 
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.security.KeyPair;
 import java.util.Random;
@@ -9,13 +10,13 @@ import com.acgist.snail.system.config.CryptoConfig;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.ArrayUtils;
+import com.acgist.snail.utils.NumberUtils;
 
 /**
  * <p>MSE密钥工具</p>
  * <p>加密算法：ARC4</p>
  * <p>密钥交换算法：DH(Diffie-Hellman)</p>
- * <p>代码参考：https://github.com/atomashpolskiy/bt</p>
- * <p>参考链接：http://wiki.vuze.com/w/Message_Stream_Encryption</p>
+ * <p>参考链接：https://wiki.vuze.com/w/Message_Stream_Encryption</p>
  * <p>参考链接：https://wiki.openssl.org/index.php/Diffie_Hellman</p>
  * <p>步骤：</p>
  * <pre>
@@ -57,12 +58,17 @@ public class MSECryptoHanlder {
 	 * 是否继续处理
 	 */
 	private boolean next = false;
+	
+	// 握手临时数据
+	private KeyPair keyPair;
 
-	private final MSEKeyPairBuilder builder;
+	private final MSEKeyPairBuilder mseKeyPairBuilder;
 	private final PeerSubMessageHandler peerSubMessageHandler;
 
 	private MSECryptoHanlder(PeerSubMessageHandler peerSubMessageHandler) {
-		this.builder = MSEKeyPairBuilder.newInstance();
+		final MSEKeyPairBuilder mseKeyPairBuilder = MSEKeyPairBuilder.newInstance();
+		this.keyPair = mseKeyPairBuilder.buildKeyPair();
+		this.mseKeyPairBuilder = mseKeyPairBuilder;
 		this.peerSubMessageHandler = peerSubMessageHandler;
 	}
 
@@ -92,18 +98,6 @@ public class MSECryptoHanlder {
 	}
 
 	/**
-	 * 填充
-	 */
-	private byte[] buildPadding(int maxLength) {
-		final Random random = new Random();
-		final byte[] padding = new byte[random.nextInt(maxLength + 1)];
-		for (int index = 0; index < padding.length; index++) {
-			padding[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_SIZE);
-		}
-		return padding;
-	}
-
-	/**
 	 * 发起握手
 	 */
 	public void handshake() {
@@ -128,10 +122,21 @@ public class MSECryptoHanlder {
 			break;
 		}
 	}
+	
+	/**
+	 * 加密
+	 */
+	public void encrypt(ByteBuffer buffer) {
+	}
+
+	/**
+	 * 解密
+	 */
+	public void decrypt(ByteBuffer buffer) {
+	}
 
 	private void sendPublicKey() {
-		final KeyPair keyPair = this.builder.buildKeyPair();
-		final byte[] publicKey = keyPair.getPublic().getEncoded();
+		final byte[] publicKey = this.keyPair.getPublic().getEncoded();
 		final byte[] padding = buildPadding(CryptoConfig.MSE_MAX_PADDING);
 		final ByteBuffer buffer = ByteBuffer.allocate(publicKey.length + padding.length);
 		buffer.put(publicKey);
@@ -155,20 +160,22 @@ public class MSECryptoHanlder {
 			}
 		}
 		buffer.position(0);
+		final int minSize = CryptoConfig.PUBLIC_KEY_SIZE; // 最短读取数据长度
+//		final int maxSize = minSize + CryptoConfig.MSE_MAX_PADDING; // 最大读取数据长度
+		final BigInteger publicKey = NumberUtils.decodeUnsigned(buffer, minSize);
+		final BigInteger S = this.mseKeyPairBuilder.buildDHSecret(publicKey, this.keyPair.getPrivate());
 	}
 	
 	/**
-	 * 加密
+	 * 填充
 	 */
-	public void encrypt(ByteBuffer buffer) {
-		
-	}
-
-	/**
-	 * 解密
-	 */
-	public void decrypt(ByteBuffer buffer) {
-		
+	private byte[] buildPadding(int maxLength) {
+		final Random random = new Random();
+		final byte[] padding = new byte[random.nextInt(maxLength + 1)];
+		for (int index = 0; index < padding.length; index++) {
+			padding[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_SIZE);
+		}
+		return padding;
 	}
 
 }

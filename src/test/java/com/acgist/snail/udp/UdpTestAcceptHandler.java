@@ -21,7 +21,7 @@ public class UdpTestAcceptHandler extends UdpAcceptHandler {
 	
 	@Override
 	public UdpMessageHandler messageHandler(ByteBuffer buffer, InetSocketAddress socketAddress) {
-		return udpTestMessageHandler;
+		return this.udpTestMessageHandler;
 	}
 
 }

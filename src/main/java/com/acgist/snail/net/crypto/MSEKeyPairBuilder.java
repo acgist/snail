@@ -9,6 +9,7 @@ import java.security.SecureRandom;
 
 import com.acgist.snail.system.config.CryptoConfig;
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.system.exception.ArgumentException;
 import com.acgist.snail.utils.NumberUtils;
 
 /**
@@ -39,8 +40,11 @@ public class MSEKeyPairBuilder {
 		return new KeyPair(publicKey, privateKey);
 	}
 
-	public BigInteger buildSharedSecret(BigInteger publicKey, MSEPrivateKey privateKey) {
-		return privateKey.buildSharedSecret(new MSEPublicKey(publicKey));
+	public BigInteger buildDHSecret(BigInteger publicKey, PrivateKey privateKey) {
+		if(privateKey instanceof MSEPrivateKey) {
+			return ((MSEPrivateKey) privateKey).buildSharedSecret(new MSEPublicKey(publicKey));
+		}
+		throw new ArgumentException("不支持的PrivateKey：" + privateKey);
 	}
 
 	/**
