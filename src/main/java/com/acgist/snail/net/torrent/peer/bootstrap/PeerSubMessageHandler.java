@@ -7,7 +7,7 @@ import java.util.BitSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.IMessageHandler;
+import com.acgist.snail.net.IMessageEncryptHandler;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.bootstrap.PeerConnect;
 import com.acgist.snail.net.torrent.bootstrap.PeerConnectGroup;
@@ -77,9 +77,8 @@ public class PeerSubMessageHandler {
 	
 	/**
 	 * 消息代理
-	 * TODO：替换加密发送
 	 */
-	private IMessageHandler messageHandler;
+	private IMessageEncryptHandler messageEncryptHandler;
 	
 	private ExtensionMessageHandler extensionMessageHandler;
 	private DhtExtensionMessageHandler dhtExtensionMessageHandler;
@@ -153,8 +152,8 @@ public class PeerSubMessageHandler {
 	/**
 	 * 设置实际的消息处理器
 	 */
-	public PeerSubMessageHandler messageHandler(IMessageHandler messageHandler) {
-		this.messageHandler = messageHandler;
+	public PeerSubMessageHandler messageEncryptHandler(IMessageEncryptHandler messageEncryptHandler) {
+		this.messageEncryptHandler = messageEncryptHandler;
 		return this;
 	}
 	
@@ -242,7 +241,7 @@ public class PeerSubMessageHandler {
 		buffer.put(PeerConfig.HANDSHAKE_RESERVED);
 		buffer.put(this.torrentSession.infoHash().infoHash());
 		buffer.put(PeerService.getInstance().peerId());
-		this.send(buffer);
+		this.sendEncrypt(buffer);
 	}
 	
 	/**
@@ -681,7 +680,7 @@ public class PeerSubMessageHandler {
 	 * 发送消息
 	 */
 	public void pushMessage(PeerConfig.Type type, byte[] payload) {
-		this.send(buildMessage(type, payload));
+		this.sendEncrypt(buildMessage(type, payload));
 	}
 	
 	/**
@@ -715,24 +714,47 @@ public class PeerSubMessageHandler {
 		return buffer;
 	}
 	
+	/**
+	 * {@link IMessageEncryptHandler#close()}
+	 */
 	public void close() {
-		this.messageHandler.close();
+		this.messageEncryptHandler.close();
 	}
 	
+	/**
+	 * {@link IMessageEncryptHandler#available()}
+	 */
 	public boolean available() {
-		return this.messageHandler.available();
+		return this.messageEncryptHandler.available();
 	}
 	
+	/**
+	 * {@link IMessageEncryptHandler#send(ByteBuffer)}
+	 */
 	public void send(ByteBuffer buffer) {
 		try {
-			this.messageHandler.send(buffer); // TODO：加密
+			this.messageEncryptHandler.send(buffer);
+		} catch (Exception e) {
+			LOGGER.error("Peer消息发送异常", e);
+		}
+	}
+	
+	/**
+	 * {@link IMessageEncryptHandler#sendEncrypt(ByteBuffer)}
+	 */
+	public void sendEncrypt(ByteBuffer buffer) {
+		try {
+			this.messageEncryptHandler.sendEncrypt(buffer);
 		} catch (Exception e) {
 			LOGGER.error("Peer消息发送异常", e);
 		}
 	}
 
+	/**
+	 * {@link IMessageEncryptHandler#remoteSocketAddress()}
+	 */
 	private InetSocketAddress remoteSocketAddress() {
-		return this.messageHandler.remoteSocketAddress();
+		return this.messageEncryptHandler.remoteSocketAddress();
 	}
 	
 }

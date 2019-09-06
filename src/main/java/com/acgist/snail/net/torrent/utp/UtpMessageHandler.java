@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.net.IMessageEncryptHandler;
 import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.net.torrent.PeerUnpackMessageHandler;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
@@ -32,7 +33,7 @@ import com.acgist.snail.utils.ThreadUtils;
  * @author acgist
  * @since 1.1.0
  */
-public class UtpMessageHandler extends UdpMessageHandler {
+public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncryptHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UtpMessageHandler.class);
 	
@@ -96,7 +97,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	public UtpMessageHandler(final short connectionId, InetSocketAddress socketAddress) {
 		this.peerSubMessageHandler = PeerSubMessageHandler.newInstance();
 		this.peerUnpackMessageHandler = PeerUnpackMessageHandler.newInstance(this.peerSubMessageHandler);
-		this.peerSubMessageHandler.messageHandler(this);
+		this.peerSubMessageHandler.messageEncryptHandler(this);
 		this.sendWindow = UtpWindow.newInstance();
 		this.receiveWindow = UtpWindow.newInstance();
 		this.socketAddress = socketAddress;
@@ -111,7 +112,7 @@ public class UtpMessageHandler extends UdpMessageHandler {
 	public UtpMessageHandler(PeerSubMessageHandler peerSubMessageHandler, InetSocketAddress socketAddress) {
 		this.peerSubMessageHandler = peerSubMessageHandler;
 		this.peerUnpackMessageHandler = PeerUnpackMessageHandler.newInstance(this.peerSubMessageHandler);
-		this.peerSubMessageHandler.messageHandler(this);
+		this.peerSubMessageHandler.messageEncryptHandler(this);
 		this.sendWindow = UtpWindow.newInstance();
 		this.receiveWindow = UtpWindow.newInstance();
 		this.socketAddress = socketAddress;
@@ -175,6 +176,12 @@ public class UtpMessageHandler extends UdpMessageHandler {
 		}
 	}
 
+	@Override
+	public void sendEncrypt(ByteBuffer buffer) throws NetException {
+		this.peerUnpackMessageHandler.encrypt(buffer);
+		this.send(buffer);
+	}
+	
 	@Override
 	public void send(ByteBuffer buffer) throws NetException {
 		if(!(this.connect && available())) {

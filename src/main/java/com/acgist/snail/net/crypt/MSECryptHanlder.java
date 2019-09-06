@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.security.KeyPair;
 import java.security.MessageDigest;
+import java.time.Duration;
 import java.util.Random;
 
 import org.slf4j.Logger;
@@ -18,8 +19,7 @@ import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.DigestUtils;
 import com.acgist.snail.utils.NumberUtils;
-
-import bt.protocol.Protocols;
+import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * <p>MSE密钥工具</p>
@@ -69,6 +69,11 @@ public class MSECryptHanlder {
 	
 	private final PeerSubMessageHandler peerSubMessageHandler;
 	
+	/**
+	 * 握手等待锁
+	 */
+	private final Object handshakeLock = new Object();
+	
 	// 握手临时数据，握手完成后销毁
 	private KeyPair keyPair; // 密钥对
 	private ByteBuffer buffer; // 数据缓冲
@@ -85,13 +90,6 @@ public class MSECryptHanlder {
 
 	public static final MSECryptHanlder newInstance(PeerSubMessageHandler peerSubMessageHandler) {
 		return new MSECryptHanlder(peerSubMessageHandler);
-	}
-
-	/**
-	 * 是否加密
-	 */
-	public boolean crypt() {
-		return this.crypt;
 	}
 
 	/**
@@ -132,15 +130,47 @@ public class MSECryptHanlder {
 	}
 	
 	/**
+	 * 设置明文
+	 */
+	public void plaintext() {
+		this.over(true, false, false);
+	}
+	
+	/**
 	 * 加密
 	 */
 	public void encrypt(ByteBuffer buffer) {
+		if(this.crypt) {
+		}
 	}
 
 	/**
 	 * 解密
 	 */
 	public void decrypt(ByteBuffer buffer) {
+		if(this.crypt) {
+		}
+	}
+	
+	/**
+	 * 握手等待锁：5秒
+	 */
+	public void handshakeLock() {
+		synchronized (this.handshakeLock) {
+			ThreadUtils.wait(this.handshakeLock, Duration.ofSeconds(5));
+		}
+		if(!this.over) { // 握手没有完成：明文
+			this.over(true, false, false);
+		}
+	}
+	
+	/**
+	 * 唤醒握手等待
+	 */
+	private void unHandshakeLock() {
+		synchronized (this.handshakeLock) {
+			this.handshakeLock.notifyAll();
+		}
 	}
 
 	/**

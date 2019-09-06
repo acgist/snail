@@ -10,13 +10,13 @@ import com.acgist.snail.system.exception.NetException;
  * @author acgist
  * @since 1.1.1
  */
-public interface IMessageCryptHandler extends IMessageHandler {
+public interface IMessageEncryptHandler extends IMessageHandler {
 
 	/**
 	 * 消息加密发送
 	 * 
 	 * @param buffer 消息内容
 	 */
-	void cryptSend(ByteBuffer buffer) throws NetException;
+	void sendEncrypt(ByteBuffer buffer) throws NetException;
 	
 }

@@ -40,16 +40,31 @@ public class CryptConfig {
 	 * 八字节：0x00
 	 */
 	public static final byte[] VC = new byte[8];
+	
+	/**
+	 * 加密策略
+	 */
+	public static final Strategy STRATEGY = Strategy.plaintext;
 
 	/**
 	 * 加密策略
 	 */
 	public enum Strategy {
 		
-		plaintext, // 文本
-		preferPlaintext, // 兼容：偏爱文本
-		preferEncrypt, // 兼容：偏爱加密
-		encrypt; // 加密
+		plaintext(false), // 文本
+		preferPlaintext(false), // 兼容：偏爱文本
+		preferEncrypt(true), // 兼容：偏爱加密
+		encrypt(true); // 加密
+		
+		boolean crypt; // 加密
+		
+		Strategy(boolean crypt) {
+			this.crypt = crypt;
+		}
+		
+		public boolean crypt() {
+			return this.crypt;
+		}
 		
 	}
 	

@@ -2,6 +2,7 @@ package com.acgist.snail.net.torrent.peer;
 
 import java.nio.ByteBuffer;
 
+import com.acgist.snail.net.IMessageEncryptHandler;
 import com.acgist.snail.net.TcpMessageHandler;
 import com.acgist.snail.net.torrent.PeerUnpackMessageHandler;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
@@ -13,7 +14,7 @@ import com.acgist.snail.system.exception.NetException;
  * @author acgist
  * @since 1.0.0
  */
-public class PeerMessageHandler extends TcpMessageHandler {
+public class PeerMessageHandler extends TcpMessageHandler implements IMessageEncryptHandler {
 
 //	private static final Logger LOGGER = LoggerFactory.getLogger(PeerMessageHandler.class);
 	
@@ -26,7 +27,7 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	public PeerMessageHandler() {
 		this.peerSubMessageHandler = PeerSubMessageHandler.newInstance();
 		this.peerUnpackMessageHandler = PeerUnpackMessageHandler.newInstance(this.peerSubMessageHandler);
-		this.peerSubMessageHandler.messageHandler(this);
+		this.peerSubMessageHandler.messageEncryptHandler(this);
 	}
 
 	/**
@@ -35,13 +36,19 @@ public class PeerMessageHandler extends TcpMessageHandler {
 	public PeerMessageHandler(PeerSubMessageHandler peerSubMessageHandler) {
 		this.peerSubMessageHandler = peerSubMessageHandler;
 		this.peerUnpackMessageHandler = PeerUnpackMessageHandler.newInstance(this.peerSubMessageHandler);
-		this.peerSubMessageHandler.messageHandler(this);
+		this.peerSubMessageHandler.messageEncryptHandler(this);
 	}
 	
 	@Override
 	public void onMessage(ByteBuffer attachment) throws NetException {
 		attachment.flip();
 		this.peerUnpackMessageHandler.onMessage(attachment);
+	}
+	
+	@Override
+	public void sendEncrypt(ByteBuffer buffer) throws NetException {
+		this.peerUnpackMessageHandler.encrypt(buffer);
+		this.send(buffer);
 	}
 	
 }
