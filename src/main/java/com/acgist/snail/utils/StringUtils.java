@@ -2,7 +2,6 @@ package com.acgist.snail.utils;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -113,21 +112,16 @@ public class StringUtils {
 	}
 
 	/**
-	 * SHA1散列计算。
+	 * SHA-1散列计算。
 	 */
 	public static final byte[] sha1(byte[] bytes) {
-		try {
-			final MessageDigest digest = MessageDigest.getInstance("SHA1");
-			digest.update(bytes);
-			return digest.digest();
-		} catch (NoSuchAlgorithmException e) {
-			LOGGER.error("SHA1计算异常", e);
-		}
-		return null;
+		final MessageDigest digest = DigestUtils.sha1();
+		digest.update(bytes);
+		return digest.digest();
 	}
 	
 	/**
-	 * SHA1散列计算并转为十六进制字符串。
+	 * SHA-1散列计算并转为十六进制字符串。
 	 */
 	public static final String sha1Hex(byte[] bytes) {
 		return StringUtils.hex(sha1(bytes));

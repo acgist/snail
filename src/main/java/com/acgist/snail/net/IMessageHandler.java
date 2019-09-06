@@ -43,7 +43,7 @@ public interface IMessageHandler {
 	void send(byte[] bytes) throws NetException;
 	
 	/**
-	 * 消息发送
+	 * 消息发送（所有其他消息均有这个方法发送）
 	 * 
 	 * @param buffer 消息内容
 	 */

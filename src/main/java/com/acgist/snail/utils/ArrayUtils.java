@@ -43,7 +43,7 @@ public class ArrayUtils {
 	 */
 	public static final int compareUnsigned(byte[] sources, byte[] targets) {
 		if(sources == null || targets == null) {
-			throw new ArgumentException("数组比较时参数不正确。");
+			throw new ArgumentException("数组比较时参数错误");
 		} else if(sources.length != targets.length) {
 			return sources.length > targets.length ? 1 : -1;
 		} else {
@@ -55,6 +55,26 @@ public class ArrayUtils {
 			return 0;
 		}
 	}
+	
+	/**
+	 * 异或运算
+	 * @param sources
+	 * @param targets
+	 * @return
+	 */
+    public static final byte[] xor(byte[] sources, byte[] targets) {
+    	if(sources == null || targets == null) {
+    		throw new ArgumentException("异或运算参数错误");
+    	} else if(sources.length != targets.length) {
+            throw new ArgumentException("异或运算长度不一致");
+        } else {
+        	final byte[] result = new byte[sources.length];
+        	for (int index = 0; index < sources.length; index++) {
+        		result[index] = (byte) (sources[index] ^ targets[index]);
+        	}
+        	return result;
+        }
+    }
 	
 	/**
 	 * 空数组

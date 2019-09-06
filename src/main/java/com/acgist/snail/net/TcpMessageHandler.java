@@ -69,7 +69,7 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	}
 	
 	@Override
-	public void send(final String message) throws NetException {
+	public void send(String message) throws NetException {
 		send(message, null);
 	}
 	

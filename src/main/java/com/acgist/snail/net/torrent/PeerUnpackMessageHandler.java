@@ -2,14 +2,14 @@ package com.acgist.snail.net.torrent;
 
 import java.nio.ByteBuffer;
 
-import com.acgist.snail.net.crypto.MSECryptoHanlder;
+import com.acgist.snail.net.crypt.MSECryptHanlder;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
 
 /**
- * <p>Peer消息粘包处理</p>
+ * <p>Peer消息处理：粘包、加密、解密</p>
  * 
  * @author acgist
  * @since 1.1.0
@@ -31,14 +31,14 @@ public class PeerUnpackMessageHandler {
 	/**
 	 * MSE加密处理器
 	 */
-	private final MSECryptoHanlder mseCryptoHanlder;
+	private final MSECryptHanlder mseCryptHanlder;
 	/**
 	 * Peer消息处理器
 	 */
 	private final PeerSubMessageHandler peerSubMessageHandler;
 	
 	private PeerUnpackMessageHandler(PeerSubMessageHandler peerSubMessageHandler) {
-		this.mseCryptoHanlder = MSECryptoHanlder.newInstance(peerSubMessageHandler);
+		this.mseCryptHanlder = MSECryptHanlder.newInstance(peerSubMessageHandler);
 		this.peerSubMessageHandler = peerSubMessageHandler;
 	}
 	
@@ -50,19 +50,19 @@ public class PeerUnpackMessageHandler {
 	 * 处理消息
 	 */
 	public void onMessage(ByteBuffer attachment) throws NetException {
-//		if(this.mseCryptoHanlder.over()) { // 加密握手已经完成
-//			if(this.mseCryptoHanlder.crypt()) { // 解密
-//				this.mseCryptoHanlder.decrypt(attachment);
+//		if(this.mseCryptHanlder.over()) { // 加密握手已经完成
+//			if(this.mseCryptHanlder.crypt()) { // 解密
+//				this.mseCryptHanlder.decrypt(attachment);
 //			} else { // 明文
 //			}
 //			onPeerMessage(attachment);
 //		} else { // 加密握手
-//			this.mseCryptoHanlder.handshake(attachment);
+//			this.mseCryptHanlder.handshake(attachment);
 //			// 继续处理：处理完成 && 继续处理 && 明文
 //			if(
-//				this.mseCryptoHanlder.over() &&
-//				this.mseCryptoHanlder.next() &&
-//				!this.mseCryptoHanlder.crypt()
+//				this.mseCryptHanlder.over() &&
+//				this.mseCryptHanlder.next() &&
+//				!this.mseCryptHanlder.crypt()
 //			) {
 //				onPeerMessage(attachment);
 //			}
