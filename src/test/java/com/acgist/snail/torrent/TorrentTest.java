@@ -1,8 +1,5 @@
 package com.acgist.snail.torrent;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.junit.Test;
 
 import com.acgist.snail.net.torrent.TorrentManager;
@@ -74,20 +71,6 @@ public class TorrentTest {
 		}
 		long end = System.currentTimeMillis();
 		System.out.println(end - begin);
-	}
-	
-	@Test
-	public void cos() {
-		List<?> list = List.of("1", "2", "2", "2", "2", "2", "2");
-		List<Object> objects = null;
-		long begin = System.currentTimeMillis();
-		for (int index = 0; index < 100000; index++) {
-			objects = list.stream()
-				.map(value -> value)
-				.collect(Collectors.toList());
-		}
-		System.out.println(System.currentTimeMillis() - begin);
-		System.out.println(objects);
 	}
 	
 }

@@ -1,4 +1,4 @@
-package com.acgist.snail.http;
+package com.acgist.snail;
 
 import java.net.http.HttpResponse.BodyHandlers;
 
@@ -10,7 +10,7 @@ import com.acgist.snail.system.exception.NetException;
 public class HTTPClientTest {
 
 	@Test
-	public void test() throws NetException {
+	public void request() throws NetException {
 		HTTPClient client = HTTPClient.newInstance("http://www.acgist.com");
 		var response = client.get(BodyHandlers.ofString());
 //		var response = client.post("test", BodyHandlers.ofString());

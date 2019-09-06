@@ -63,9 +63,15 @@ public class NumberUtils {
 	}
 	
 	/**
-	 * 无符号编码
+	 * 大整数转为无符号大整数二进制字符数组
+	 * 
+	 * @param 原始大整数
+	 * @param byteCount 二进制字符数组长度
 	 */
 	public static byte[] encodeUnsigned(BigInteger value, int byteCount) {
+        if (byteCount < 1) {
+            throw new ArgumentException("数组长度错误");
+        }
 		byte[] bytes = value.toByteArray();
 		if (bytes[0] == 0) {
 			bytes = Arrays.copyOfRange(bytes, 1, bytes.length);
@@ -82,10 +88,13 @@ public class NumberUtils {
 	}
 
 	/**
-	 * 无符号解码
+	 * 无符号大整数二进制字符数组转为大整数
+	 * 
+	 * @param buffer 二进制字符数组
+	 * @param length 二进制字符数组长度
 	 */
 	public static BigInteger decodeUnsigned(ByteBuffer buffer, int length) {
-		if (buffer.remaining() < length) {
+		if (length < 1 || buffer.remaining() < length) {
 			throw new ArgumentException("数组长度错误");
 		}
 		byte b;
@@ -95,7 +104,7 @@ public class NumberUtils {
 		if (index == length) {
 			return BigInteger.ZERO;
 		}
-		int newLength = length - index;
+		final int newLength = length - index;
 		final byte[] bytes = new byte[newLength];
 		bytes[0] = b;
 		buffer.get(bytes, 1, newLength - 1);

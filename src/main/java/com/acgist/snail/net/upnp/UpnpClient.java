@@ -48,7 +48,7 @@ public class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	}
 	
 	/**
-	 * 构建M-SEARCH消息。
+	 * 创建M-SEARCH消息。
 	 */
 	private String buildMSearch() {
 		final HeaderWrapper builder = HeaderWrapper.newBuilder(PROTOCOL);

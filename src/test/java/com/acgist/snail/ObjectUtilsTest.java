@@ -10,7 +10,7 @@ import com.acgist.snail.utils.ObjectUtils;
 public class ObjectUtilsTest {
 
 	@Test
-	public void test() {
+	public void toStringTest() {
 		List<String> list = new ArrayList<>();
 		list.add("1");
 		list.add("2");

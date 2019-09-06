@@ -1,4 +1,4 @@
-package com.acgist.snail.recycle;
+package com.acgist.snail;
 
 import java.io.File;
 import java.io.IOException;

@@ -38,7 +38,7 @@
 ./builder/build.bat
 
 # Linux
-mvn clean package -Prelease -DskipTests
+mvn clean package -P release -D skipTests
 ```
 
 > lib：依赖  

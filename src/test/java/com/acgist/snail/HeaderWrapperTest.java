@@ -1,4 +1,6 @@
-package com.acgist.snail.wrapper;
+package com.acgist.snail;
+
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
@@ -10,7 +12,7 @@ public class HeaderWrapperTest {
 	private static final String NEW_LINE = "\r\n";
 	
 	@Test
-	public void test() {
+	public void build() {
 		final StringBuilder builder = new StringBuilder();
 		builder
 			.append("M-SEARCH * HTTP/1.1").append(NEW_LINE)
@@ -27,6 +29,7 @@ public class HeaderWrapperTest {
 			.header("ST", "urn:schemas-upnp-org:device:InternetGatewayDevice:1")
 			.header("MAN", "\"ssdp:discover\"");
 		System.out.println(wrapper.build());
+		assertEquals(builder.toString(), wrapper.build());
 	}
 	
 }

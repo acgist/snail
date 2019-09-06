@@ -14,7 +14,7 @@ cd ..\
 echo -----------------------------------------------
 echo 打包项目
 echo -----------------------------------------------
-call mvn clean package -q -Prelease -DskipTests
+call mvn clean package -q -P release -D skipTests
 
 echo -----------------------------------------------
 echo 拷贝文件

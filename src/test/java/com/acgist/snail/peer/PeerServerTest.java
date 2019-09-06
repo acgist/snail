@@ -27,6 +27,9 @@ public class PeerServerTest {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerServerTest.class);
 	
+	/**
+	 * 服务端提供下载
+	 */
 	@Test
 	public void server() throws DownloadException {
 		DatabaseConfig.getInstance();
@@ -53,6 +56,9 @@ public class PeerServerTest {
 		ThreadUtils.sleep(Long.MAX_VALUE);
 	}
 
+	/**
+	 * 客户端下载
+	 */
 	@Test
 	public void client() throws DownloadException {
 //		String path = "e:/snail/1234.torrent";

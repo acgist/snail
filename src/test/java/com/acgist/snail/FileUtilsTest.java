@@ -48,10 +48,21 @@ public class FileUtilsTest {
 		});
 	}
 	
+	/**
+	 * JAVA默认大端
+	 */
 	@Test
 	public void order() {
+		System.out.println(ByteOrder.nativeOrder());
 		ByteBuffer buffer = ByteBuffer.allocate(2);
 		buffer.order(ByteOrder.LITTLE_ENDIAN);
+		buffer.putChar('你');
+		System.out.println(StringUtils.hex(buffer.array()));
+		buffer = ByteBuffer.allocate(2);
+		buffer.putChar('你');
+		System.out.println(StringUtils.hex(buffer.array()));
+		buffer = ByteBuffer.allocate(2);
+		buffer.order(ByteOrder.BIG_ENDIAN);
 		buffer.putChar('你');
 		System.out.println(StringUtils.hex(buffer.array()));
 	}

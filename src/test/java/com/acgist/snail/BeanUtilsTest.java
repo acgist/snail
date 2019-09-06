@@ -21,7 +21,7 @@ public class BeanUtilsTest {
 	}
 	
 	@Test
-	public void property() {
+	public void buildSQL() {
 		TaskEntity entity = new TaskEntity();
 		entity.setName("测试");
 		final String[] properties = BeanUtils.properties(entity.getClass());
@@ -42,7 +42,7 @@ public class BeanUtilsTest {
 	
 	@Test
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void unProperty() throws IntrospectionException {
+	public void enumProperty() throws IntrospectionException {
 		PropertyDescriptor descriptor = new PropertyDescriptor("status", TaskEntity.class);
 		if(descriptor.getPropertyType().isEnum()) {
 			System.out.println(Enum.valueOf(((Class<Enum>) descriptor.getPropertyType()), "pause"));

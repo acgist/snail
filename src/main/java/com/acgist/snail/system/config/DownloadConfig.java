@@ -117,7 +117,7 @@ public class DownloadConfig extends PropertiesConfig {
 		if(file.exists()) {
 			return path;
 		}
-		path = System.getProperty("user.dir") + path;
+		path = SystemConfig.userDir(path);
 		FileUtils.buildFolder(path, false);
 		return path;
 	}
