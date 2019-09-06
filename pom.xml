@@ -12,8 +12,7 @@
 	<url>https://gitee.com/acgist/snail</url>
 	
 	<name>snail</name>
-	<!-- 快照：x.x.x-SNAPSHOT -->
-	<version>1.1.1-SNAPSHOT</version>
+	<version>1.1.1</version>
 	<description>基于Java、JavaFX开发的下载工具，支持下载协议：BT（BitTorrent）、FTP、HTTP。</description>
 	<inceptionYear>2019</inceptionYear>
 
@@ -51,6 +50,15 @@
 		<!-- GUI：JavaFX -->
 		<dependency>
 			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-fxml</artifactId>
+			<version>${javafx.version}</version>
+		</dependency>
+		<!--
+		编译系统和运行系统不一致时，请修改os.name属性并使用下面JavaFX配置，编译完成后可以删除lib目录中编译系统的JavaFX依赖。
+		-->
+		<!--
+		<dependency>
+			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-base</artifactId>
 			<version>${javafx.version}</version>
 			<classifier>${os.name}</classifier>
@@ -73,6 +81,7 @@
 			<version>${javafx.version}</version>
 			<classifier>${os.name}</classifier>
 		</dependency>
+		-->
 		<!-- 数据库：H2 -->
 		<dependency>
 			<groupId>com.h2database</groupId>
@@ -240,7 +249,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- 源代码包：mvn source:jar-no-fork -->
+			<!-- 打包源码：mvn source:jar-no-fork -->
 			<!-- 问题：release环境不能正确包含环境配置 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -289,7 +298,7 @@
 				<version>${maven.gpg.version}</version>
 				<executions>
 					<execution>
-						<id>sign-artifacts</id>
+						<id>sign</id>
 						<goals>
 							<goal>sign</goal>
 						</goals>
@@ -306,8 +315,12 @@
 				<configuration>
 					<serverId>sonatype_releases</serverId>
 					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-					<!-- 发布完成自动close、release -->
-					<autoReleaseAfterClose>true</autoReleaseAfterClose>
+					<!-- close后自动release -->
+					<autoReleaseAfterClose>false</autoReleaseAfterClose>
+					<!-- release后自动drop -->
+					<!--
+					<autoDropAfterRelease>true</autoDropAfterRelease>
+					-->
 				</configuration>
 			</plugin>
 		</plugins>
@@ -329,12 +342,6 @@
 		</license>
 	</licenses>
 
-	<!-- 组织 -->
-	<organization>
-		<url>https://www.acgist.com</url>
-		<name>acgist</name>
-	</organization>
-
 	<!-- 开发者 -->
 	<developers>
 		<developer>
@@ -350,6 +357,12 @@
 			</roles>
 		</developer>
 	</developers>
+
+	<!-- 组织 -->
+	<organization>
+		<url>https://www.acgist.com</url>
+		<name>acgist</name>
+	</organization>
 	
 	<!-- issues -->
 	<issueManagement>
@@ -358,6 +371,7 @@
 	</issueManagement>
 	
 	<!-- 发布：mvn deploy -e -P release -->
+	<!-- https://issues.sonatype.org/browse/OSSRH-51336 -->
 	<distributionManagement>
 		<repository>
 			<id>sonatype_releases</id>
