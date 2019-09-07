@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.IMessageEncryptHandler;
 import com.acgist.snail.net.UdpMessageHandler;
-import com.acgist.snail.net.torrent.PeerUnpackMessageHandler;
+import com.acgist.snail.net.torrent.PeerCryptMessageHandler;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.net.torrent.utp.bootstrap.UtpService;
 import com.acgist.snail.net.torrent.utp.bootstrap.UtpWindow;
@@ -89,14 +89,14 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 	private final UtpService utpService = UtpService.getInstance();
 	
 	private final PeerSubMessageHandler peerSubMessageHandler;
-	private final PeerUnpackMessageHandler peerUnpackMessageHandler;
+	private final PeerCryptMessageHandler peerCryptMessageHandler;
 	
 	/**
 	 * 服务端
 	 */
 	public UtpMessageHandler(final short connectionId, InetSocketAddress socketAddress) {
 		this.peerSubMessageHandler = PeerSubMessageHandler.newInstance();
-		this.peerUnpackMessageHandler = PeerUnpackMessageHandler.newInstance(this.peerSubMessageHandler);
+		this.peerCryptMessageHandler = PeerCryptMessageHandler.newInstance(this.peerSubMessageHandler);
 		this.peerSubMessageHandler.messageEncryptHandler(this);
 		this.sendWindow = UtpWindow.newInstance();
 		this.receiveWindow = UtpWindow.newInstance();
@@ -111,7 +111,7 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 	 */
 	public UtpMessageHandler(PeerSubMessageHandler peerSubMessageHandler, InetSocketAddress socketAddress) {
 		this.peerSubMessageHandler = peerSubMessageHandler;
-		this.peerUnpackMessageHandler = PeerUnpackMessageHandler.newInstance(this.peerSubMessageHandler);
+		this.peerCryptMessageHandler = PeerCryptMessageHandler.newInstance(this.peerSubMessageHandler);
 		this.peerSubMessageHandler.messageEncryptHandler(this);
 		this.sendWindow = UtpWindow.newInstance();
 		this.receiveWindow = UtpWindow.newInstance();
@@ -178,7 +178,7 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 
 	@Override
 	public void sendEncrypt(ByteBuffer buffer) throws NetException {
-		this.peerUnpackMessageHandler.encrypt(buffer);
+		this.peerCryptMessageHandler.encrypt(buffer);
 		this.send(buffer);
 	}
 	
@@ -317,7 +317,7 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 		this.state(windowData.getTimestamp(), acknr);
 		LOGGER.debug("UTP处理数据：{}", windowData.getSeqnr());
 		final ByteBuffer attachment = windowData.buffer();
-		this.peerUnpackMessageHandler.onMessage(attachment);
+		this.peerCryptMessageHandler.onMessage(attachment);
 	}
 	
 	/**
