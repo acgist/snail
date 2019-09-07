@@ -2,14 +2,13 @@ package com.acgist.snail.net.torrent;
 
 import java.nio.ByteBuffer;
 
-import com.acgist.snail.net.crypt.MSECryptHanlder;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
 
 /**
- * <p>Peer消息处理：粘包、加密、解密</p>
+ * <p>Peer消息处理：粘包</p>
  * 
  * @author acgist
  * @since 1.1.0
@@ -29,16 +28,11 @@ public class PeerUnpackMessageHandler {
 	 */
 	private ByteBuffer buffer;
 	/**
-	 * MSE加密处理器
-	 */
-	private final MSECryptHanlder mseCryptHanlder;
-	/**
 	 * Peer消息处理器
 	 */
 	private final PeerSubMessageHandler peerSubMessageHandler;
 	
 	private PeerUnpackMessageHandler(PeerSubMessageHandler peerSubMessageHandler) {
-		this.mseCryptHanlder = MSECryptHanlder.newInstance(peerSubMessageHandler);
 		this.peerSubMessageHandler = peerSubMessageHandler;
 	}
 	
@@ -47,44 +41,9 @@ public class PeerUnpackMessageHandler {
 	}
 	
 	/**
-	 * 处理消息
-	 */
-	public void onMessage(ByteBuffer attachment) throws NetException {
-//		if(this.mseCryptHanlder.over()) { // 握手完成
-//			this.mseCryptHanlder.decrypt(attachment);
-//			onPeerMessage(attachment);
-//		} else { // 握手
-//			this.mseCryptHanlder.handshake(attachment);
-//			// 继续处理：处理完成 && 继续处理
-//			if(this.mseCryptHanlder.over() && this.mseCryptHanlder.next()) {
-//				onPeerMessage(attachment);
-//			}
-//		}
-		// 完全忽略加密
-		onPeerMessage(attachment);
-	}
-	
-	/**
-	 * 消息加密
-	 */
-	public void encrypt(ByteBuffer buffer) {
-//		if(this.mseCryptHanlder.over()) { // 握手完成
-//			this.mseCryptHanlder.encrypt(buffer);
-//		} else {
-//			if(CryptConfig.STRATEGY.crypt()) { // 加密
-//				this.mseCryptHanlder.handshake(); // 握手
-//				this.mseCryptHanlder.handshakeLock(); // 加锁
-//				this.mseCryptHanlder.encrypt(buffer); // 加密
-//			} else { // 明文
-//				this.mseCryptHanlder.plaintext();
-//			}
-//		}
-	}
-	
-	/**
 	 * 处理Peer消息
 	 */
-	private void onPeerMessage(ByteBuffer attachment) throws NetException {
+	public void onMessage(ByteBuffer attachment) throws NetException {
 		int length = 0;
 		while(true) {
 			if(this.buffer == null) {

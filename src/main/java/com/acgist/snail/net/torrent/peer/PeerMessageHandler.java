@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 
 import com.acgist.snail.net.IMessageEncryptHandler;
 import com.acgist.snail.net.TcpMessageHandler;
-import com.acgist.snail.net.torrent.PeerUnpackMessageHandler;
+import com.acgist.snail.net.torrent.PeerCryptMessageHandler;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.system.exception.NetException;
 
@@ -19,14 +19,14 @@ public class PeerMessageHandler extends TcpMessageHandler implements IMessageEnc
 //	private static final Logger LOGGER = LoggerFactory.getLogger(PeerMessageHandler.class);
 	
 	private final PeerSubMessageHandler peerSubMessageHandler;
-	private final PeerUnpackMessageHandler peerUnpackMessageHandler;
+	private final PeerCryptMessageHandler peerCryptMessageHandler;
 
 	/**
 	 * 服务端
 	 */
 	public PeerMessageHandler() {
 		this.peerSubMessageHandler = PeerSubMessageHandler.newInstance();
-		this.peerUnpackMessageHandler = PeerUnpackMessageHandler.newInstance(this.peerSubMessageHandler);
+		this.peerCryptMessageHandler = PeerCryptMessageHandler.newInstance(this.peerSubMessageHandler);
 		this.peerSubMessageHandler.messageEncryptHandler(this);
 	}
 
@@ -35,19 +35,19 @@ public class PeerMessageHandler extends TcpMessageHandler implements IMessageEnc
 	 */
 	public PeerMessageHandler(PeerSubMessageHandler peerSubMessageHandler) {
 		this.peerSubMessageHandler = peerSubMessageHandler;
-		this.peerUnpackMessageHandler = PeerUnpackMessageHandler.newInstance(this.peerSubMessageHandler);
+		this.peerCryptMessageHandler = PeerCryptMessageHandler.newInstance(this.peerSubMessageHandler);
 		this.peerSubMessageHandler.messageEncryptHandler(this);
 	}
 	
 	@Override
 	public void onMessage(ByteBuffer attachment) throws NetException {
 		attachment.flip();
-		this.peerUnpackMessageHandler.onMessage(attachment);
+		this.peerCryptMessageHandler.onMessage(attachment);
 	}
 	
 	@Override
 	public void sendEncrypt(ByteBuffer buffer) throws NetException {
-		this.peerUnpackMessageHandler.encrypt(buffer);
+		this.peerCryptMessageHandler.encrypt(buffer);
 		this.send(buffer);
 	}
 	
