@@ -219,8 +219,7 @@ public abstract class Repository<T extends BaseEntity> {
 		if(list == null || list.isEmpty()) {
 			return null;
 		}
-		return list
-			.stream()
+		return list.stream()
 			.map(wrapper -> {
 				T t = newInstance();
 				BeanUtils.setProperties(t, wrapper);
@@ -241,8 +240,7 @@ public abstract class Repository<T extends BaseEntity> {
 		if(list == null || list.isEmpty()) {
 			return null;
 		}
-		return list
-			.stream()
+		return list.stream()
 			.map(wrapper -> {
 				T t = newInstance();
 				BeanUtils.setProperties(t, wrapper);

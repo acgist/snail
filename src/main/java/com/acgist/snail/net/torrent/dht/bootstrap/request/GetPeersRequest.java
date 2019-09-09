@@ -51,17 +51,19 @@ public class GetPeersRequest extends Request {
 			final ByteBuffer buffer = ByteBuffer.allocate(6);
 			final var list = PeerManager.getInstance().list(infoHashHex);
 			if(CollectionUtils.isNotEmpty(list)) {
-				final var values = list.stream()
-					.filter(peer -> peer.available())
-					.limit(DhtConfig.GET_PEER_LENGTH)
-					.map(peer -> {
-						buffer.putInt(NetUtils.encodeIpToInt(peer.host()));
-						buffer.putShort(NetUtils.encodePort(peer.peerPort()));
-						buffer.flip();
-						return buffer.array();
-					})
-					.collect(Collectors.toList());
-				response.put(DhtConfig.KEY_VALUES, values);
+				synchronized (list) {
+					final var values = list.stream()
+						.filter(peer -> peer.available())
+						.limit(DhtConfig.GET_PEER_LENGTH)
+						.map(peer -> {
+							buffer.putInt(NetUtils.encodeIpToInt(peer.host()));
+							buffer.putShort(NetUtils.encodePort(peer.peerPort()));
+							buffer.flip();
+							return buffer.array();
+						})
+						.collect(Collectors.toList());
+					response.put(DhtConfig.KEY_VALUES, values);
+				}
 			}
 		}
 		final var nodes = NodeManager.getInstance().findNode(infoHash);

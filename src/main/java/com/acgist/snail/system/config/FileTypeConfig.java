@@ -91,11 +91,9 @@ public class FileTypeConfig {
 		if(ext == null) {
 			return FileType.unknown;
 		}
-		final Optional<Entry<FileType, List<String>>> optional = TYPES.entrySet()
-			.stream()
+		final Optional<Entry<FileType, List<String>>> optional = TYPES.entrySet().stream()
 			.filter(entry -> {
-				return entry.getValue()
-					.stream()
+				return entry.getValue().stream()
 					.anyMatch(value -> value.equals(ext));
 			})
 			.findFirst();

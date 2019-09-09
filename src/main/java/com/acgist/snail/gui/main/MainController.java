@@ -257,8 +257,7 @@ public class MainController extends Controller implements Initializable {
 	 * 获取选中任务
 	 */
 	public List<TaskSession> selected() {
-		return this.taskTable.getSelectionModel().getSelectedItems()
-			.stream()
+		return this.taskTable.getSelectionModel().getSelectedItems().stream()
 			.collect(Collectors.toList());
 	}
 	

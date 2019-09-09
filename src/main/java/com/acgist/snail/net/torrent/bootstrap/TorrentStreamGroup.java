@@ -71,7 +71,9 @@ public class TorrentStreamGroup {
 		final BitSet selectPieces = new BitSet(torrentInfo.pieceSize());
 		final List<TorrentStream> streams = new ArrayList<>(files.size());
 		final TorrentStreamGroup torrentStreamGroup = new TorrentStreamGroup(pieces, selectPieces, streams, torrentSession);
-		final int fileCount = (int) files.stream().filter(file -> file.selected()).count(); // 下载文件数量
+		final int fileCount = (int) files.stream()
+			.filter(file -> file.selected())
+			.count(); // 下载文件数量
 		final CountDownLatch allReady = new CountDownLatch(fileCount); // 全部完成：异步线程也执行完成
 		if(CollectionUtils.isNotEmpty(files)) {
 			long pos = 0;

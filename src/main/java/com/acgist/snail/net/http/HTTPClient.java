@@ -209,8 +209,7 @@ public class HTTPClient {
 		if(CollectionUtils.isEmpty(data)) {
 			return BodyPublishers.noBody();
 		}
-		final String body = data.entrySet()
-			.stream()
+		final String body = data.entrySet().stream()
 			.map(entry -> {
 				return entry.getKey() + "=" + UrlUtils.encode(entry.getValue());
 			})
