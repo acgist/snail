@@ -4,6 +4,10 @@ import java.beans.PropertyDescriptor;
 import java.io.Reader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import org.h2.jdbc.JdbcClob;
@@ -35,6 +39,32 @@ public class BeanUtils {
 			LOGGER.error("反射生成实例异常", e);
 		}
 		return null;
+	}
+	
+	/**
+	 * <p>将对象转为Map，类型转换：</p>
+	 * <p>
+	 * String -&gt; String<br>
+	 * Number -&gt; Number<br>
+	 * Enum  -&gt; String<br>
+	 * Date  -&gt; String：yyyyMMddHHmmss
+	 * </p>
+	 */
+	public static final Map<String, Object> toMap(Object instance) {
+		final Map<String, Object> map = new HashMap<>();
+		final String[] properties = properties(instance.getClass());
+		final SimpleDateFormat formater = new SimpleDateFormat(DateUtils.DEFAULT_PATTERN);
+		for (String property : properties) {
+			final Object object = propertyValue(instance, property);
+			if(object instanceof Enum<?>) {
+				map.put(property, ((Enum<?>) object).name());
+			} else if(object instanceof Date) {
+				map.put(property, formater.format(object));
+			} else {
+				map.put(property, object);
+			}
+		}
+		return map;
 	}
 	
 	/**

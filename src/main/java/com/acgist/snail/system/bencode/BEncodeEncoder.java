@@ -250,17 +250,31 @@ public class BEncodeEncoder implements Closeable {
 	}
 	
 	/**
-	 * Map转为B编码字符
+	 * Map转为B编码字符数组
 	 */
 	public static final byte[] encodeMap(Map<?, ?> map) {
 		return newInstance().build(map).bytes();
 	}
 	
 	/**
-	 * List转为B编码字符
+	 * Map转为B编码字符串
+	 */
+	public static final String encodeMapString(Map<?, ?> map) {
+		return new String(encodeMap(map));
+	}
+	
+	/**
+	 * List转为B编码字符数组
 	 */
 	public static final byte[] encodeList(List<?> list) {
 		return newInstance().build(list).bytes();
 	}
-
+	
+	/**
+	 * List转为B编码字符串
+	 */
+	public static final String encodeListString(List<?> list) {
+		return new String(encodeList(list));
+	}
+	
 }

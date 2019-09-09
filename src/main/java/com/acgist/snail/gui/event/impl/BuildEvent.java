@@ -21,6 +21,8 @@ public class BuildEvent extends GuiEvent {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(BuildEvent.class);
 
+	private static final BuildEvent INSTANCE = new BuildEvent();
+	
 	protected BuildEvent() {
 		super(Type.build, "创建窗口事件");
 	}
@@ -40,11 +42,11 @@ public class BuildEvent extends GuiEvent {
 
 	@Override
 	protected void executeExtend(Object ... args) {
-		GuiHandler.getInstance().lock();
+		GuiHandler.getInstance().lock(); // 外部GUI锁定程序
 	}
 
-	public static final GuiEvent newInstance() {
-		return new BuildEvent();
+	public static final GuiEvent getInstance() {
+		return INSTANCE;
 	}
 	
 }

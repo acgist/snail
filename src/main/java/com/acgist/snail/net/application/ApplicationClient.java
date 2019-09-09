@@ -1,13 +1,10 @@
 package com.acgist.snail.net.application;
 
-import java.util.Scanner;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.TcpClient;
 import com.acgist.snail.pojo.message.ApplicationMessage;
-import com.acgist.snail.pojo.message.ApplicationMessage.Type;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.NetUtils;
@@ -39,35 +36,12 @@ public class ApplicationClient extends TcpClient<ApplicationMessageHandler> {
 	/**
 	 * 发送客户端消息
 	 */
-	private void send(ApplicationMessage message) {
+	public void send(ApplicationMessage message) {
 		try {
 			send(message.toString());
 		} catch (NetException e) {
 			LOGGER.error("Application消息发送异常", e);
 		}
-	}
-	
-	/**
-	 * 用户输入传输
-	 */
-	private void readin() {
-		String message = null;
-		Scanner scanner = new Scanner(System.in);
-//		while ((message = scanner.next()) != null) { // 使用next()读取时会按照空白行（空格、Tab、Enter）拆分，使用nextLine()不会被拆分。
-		while ((message = scanner.nextLine()) != null) {
-			if(message.equals("close")) {
-				send(ApplicationMessage.message(Type.close, message));
-				close();
-				break;
-			} else if(message.equals("shutdown")) {
-				send(ApplicationMessage.message(Type.shutdown, message));
-				close();
-				break;
-			} else {
-				send(ApplicationMessage.text(message));
-			}
-		}
-		scanner.close();
 	}
 	
 	/**
@@ -86,10 +60,4 @@ public class ApplicationClient extends TcpClient<ApplicationMessageHandler> {
 		}
 	}
 	
-	public static final void main(String[] args) {
-		final ApplicationClient client = ApplicationClient.newInstance();
-		client.connect();
-		client.readin();
-	}
-
 }

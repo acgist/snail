@@ -222,8 +222,8 @@ public class MainController extends Controller implements Initializable {
 	public void refreshTaskList() {
 		final ObservableList<TaskSession> obs = FXCollections.observableArrayList();
 		DownloaderManager.getInstance().tasks().stream()
-			.filter(wrapper -> {
-				var status = wrapper.entity().getStatus();
+			.filter(session -> {
+				var status = session.entity().getStatus();
 				if(this.filter == Filter.all) {
 					return true;
 				} else if(this.filter == Filter.download) {
@@ -234,8 +234,8 @@ public class MainController extends Controller implements Initializable {
 					return true;
 				}
 			})
-			.forEach(wrapper -> {
-				obs.add(wrapper);
+			.forEach(session -> {
+				obs.add(session);
 			});
 		this.taskTable.setItems(obs);
 	}
@@ -273,19 +273,17 @@ public class MainController extends Controller implements Initializable {
 	 * 选中任务是否包含BT下载
 	 */
 	public boolean haveTorrent() {
-		return this.selected()
-			.stream()
-			.anyMatch(wrapper -> wrapper.entity().getType() == Type.torrent);
+		return this.selected().stream()
+			.anyMatch(session -> session.entity().getType() == Type.torrent);
 	}
 
 	/**
 	 * 开始选中任务
 	 */
 	public void start() {
-		this.selected()
-		.forEach(wrapper -> {
+		this.selected().forEach(session -> {
 			try {
-				DownloaderManager.getInstance().start(wrapper);
+				DownloaderManager.getInstance().start(session);
 			} catch (DownloadException e) {
 				LOGGER.error("添加下载任务异常", e);
 			}
@@ -296,9 +294,8 @@ public class MainController extends Controller implements Initializable {
 	 * 暂停选中任务
 	 */
 	public void pause() {
-		this.selected()
-		.forEach(wrapper -> {
-			DownloaderManager.getInstance().pause(wrapper);
+		this.selected().forEach(session -> {
+			DownloaderManager.getInstance().pause(session);
 		});
 	}
 	
@@ -311,11 +308,9 @@ public class MainController extends Controller implements Initializable {
 		}
 		final Optional<ButtonType> result = Alerts.build("删除确认", "删除选中文件？", AlertType.CONFIRMATION);
 		if(result.get() == ButtonType.OK) {
-			this.selected()
-			.forEach(wrapper -> {
-				DownloaderManager.getInstance().delete(wrapper);
+			this.selected().forEach(session -> {
+				DownloaderManager.getInstance().delete(session);
 			});
-			TaskDisplay.getInstance().refreshTaskList();
 		}
 	}
 

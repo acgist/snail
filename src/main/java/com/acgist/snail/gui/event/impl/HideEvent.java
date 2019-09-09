@@ -13,6 +13,8 @@ import javafx.application.Platform;
  */
 public class HideEvent extends GuiEvent {
 
+	private static final HideEvent INSTANCE = new HideEvent();
+	
 	protected HideEvent() {
 		super(Type.hide, "隐藏窗口事件");
 	}
@@ -28,8 +30,8 @@ public class HideEvent extends GuiEvent {
 	protected void executeExtend(Object ... args) {
 	}
 
-	public static final GuiEvent newInstance() {
-		return new HideEvent();
+	public static final GuiEvent getInstance() {
+		return INSTANCE;
 	}
 	
 }

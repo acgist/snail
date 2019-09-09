@@ -1,15 +1,27 @@
 package com.acgist.snail.net.application;
 
 import java.nio.ByteBuffer;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.gui.GuiHandler;
+import com.acgist.snail.gui.event.impl.TorrentEvent;
 import com.acgist.snail.net.TcpMessageHandler;
 import com.acgist.snail.pojo.message.ApplicationMessage;
+import com.acgist.snail.pojo.session.TaskSession;
+import com.acgist.snail.system.bencode.BEncodeDecoder;
+import com.acgist.snail.system.bencode.BEncodeEncoder;
 import com.acgist.snail.system.context.SystemContext;
+import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.utils.BeanUtils;
 import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -64,7 +76,6 @@ public class ApplicationMessageHandler extends TcpMessageHandler {
 	
 	/**
 	 * <p>处理消息</p>
-	 * <p>TODO：任务：新建、列表、删除</p>
 	 */
 	private void execute(ApplicationMessage message) {
 		if(message.getType() == null) {
@@ -72,6 +83,9 @@ public class ApplicationMessageHandler extends TcpMessageHandler {
 			return;
 		}
 		switch (message.getType()) {
+		case gui:
+			onGui(message);
+			break;
 		case text:
 			onText(message);
 			break;
@@ -84,12 +98,39 @@ public class ApplicationMessageHandler extends TcpMessageHandler {
 		case shutdown:
 			onShutdown(message);
 			break;
+		case taskNew:
+			onTaskNew(message);
+			break;
+		case taskList:
+			onTaskList(message);
+			break;
+		case taskStart:
+			onTaskStart(message);
+			break;
+		case taskPause:
+			onTaskPause(message);
+			break;
+		case taskDelete:
+			onTaskDelete(message);
+			break;
 		case response:
 			onResponse(message);
 			break;
 		default:
 			LOGGER.warn("未适配的消息类型：{}", message.getType());
 			break;
+		}
+	}
+	
+	/**
+	 * GUI注册
+	 */
+	private void onGui(ApplicationMessage message) {
+		final boolean ok = GuiHandler.getInstance().messageHandler(this);
+		if(ok) {
+			send(ApplicationMessage.response(ApplicationMessage.SUCCESS));
+		} else {
+			send(ApplicationMessage.response(ApplicationMessage.FAIL));
 		}
 	}
 
@@ -101,7 +142,7 @@ public class ApplicationMessageHandler extends TcpMessageHandler {
 	}
 	
 	/**
-	 * 关闭Socket连接
+	 * 关闭连接
 	 */
 	private void onClose(ApplicationMessage message) {
 		this.close();
@@ -119,6 +160,111 @@ public class ApplicationMessageHandler extends TcpMessageHandler {
 	 */
 	private void onShutdown(ApplicationMessage message) {
 		SystemContext.shutdown();
+	}
+	
+	/**
+	 * <p>新建任务</p>
+	 * <p>
+	 * body=B编码Map：<br>
+	 * url=下载链接；<br>
+	 * files=种子文件选择列表（B编码），每条文件包含路径：snail/video/demo.mp4；
+	 * </p>
+	 * 
+	 * @since 1.1.1
+	 */
+	private void onTaskNew(ApplicationMessage message) {
+		final String body = message.getBody();
+		try {
+			final var decoder = BEncodeDecoder.newInstance(body);
+			decoder.nextMap();
+			final String url = decoder.getString("url");
+			final String files = decoder.getString("files");
+			TorrentEvent.getInstance().files(files); // 设置选择文件
+			DownloaderManager.getInstance().newTask(url); // 开始下载任务
+			send(ApplicationMessage.response(ApplicationMessage.SUCCESS));
+		} catch (Exception e) {
+			LOGGER.debug("新建任务异常：{}", body, e);
+			send(ApplicationMessage.response(e.getMessage()));
+		}
+	}
+
+	/**
+	 * 任务列表：B编码
+	 * 
+	 * @since 1.1.1
+	 */
+	private void onTaskList(ApplicationMessage message) {
+		final List<Map<String, Object>> list = DownloaderManager.getInstance().tasks().stream()
+			.map(task -> task.entity())
+			.map(entity -> { // 转为Map
+				return BeanUtils.toMap(entity).entrySet().stream()
+					.filter(entry -> { // 去掉key==null并且value==null的值
+						return entry.getKey() != null && entry.getValue() != null;
+					}).collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+			}).collect(Collectors.toList());
+		final String body = BEncodeEncoder.encodeListString(list);
+		send(ApplicationMessage.response(body));
+	}
+
+	/**
+	 * 开始任务：body=TaskId
+	 * 
+	 * @since 1.1.1
+	 */
+	private void onTaskStart(ApplicationMessage message) {
+		final var optional = selectTaskSession(message);
+		if(optional.isEmpty()) {
+			send(ApplicationMessage.response(ApplicationMessage.FAIL));
+		} else {
+			try {
+				DownloaderManager.getInstance().start(optional.get());
+				send(ApplicationMessage.response(ApplicationMessage.SUCCESS));
+			} catch (DownloadException e) {
+				send(ApplicationMessage.response(e.getMessage()));
+			}
+		}
+	}
+	
+	/**
+	 * 暂停任务：body=TaskId
+	 * 
+	 * @since 1.1.1
+	 */
+	private void onTaskPause(ApplicationMessage message) {
+		final var optional = selectTaskSession(message);
+		if(optional.isEmpty()) {
+			send(ApplicationMessage.response(ApplicationMessage.FAIL));
+		} else {
+			DownloaderManager.getInstance().pause(optional.get());
+			send(ApplicationMessage.response(ApplicationMessage.SUCCESS));
+		}
+	}
+	
+	/**
+	 * 删除任务：body=TaskId
+	 * 
+	 * @since 1.1.1
+	 */
+	private void onTaskDelete(ApplicationMessage message) {
+		final var optional = selectTaskSession(message);
+		if(optional.isEmpty()) {
+			send(ApplicationMessage.response(ApplicationMessage.FAIL));
+		} else {
+			DownloaderManager.getInstance().delete(optional.get());
+			send(ApplicationMessage.response(ApplicationMessage.SUCCESS));
+		}
+	}
+	
+	/**
+	 * 查找TaskSession
+	 * 
+	 * @since 1.1.1
+	 */
+	private Optional<TaskSession> selectTaskSession(ApplicationMessage message) {
+		final String body = message.getBody();
+		return DownloaderManager.getInstance().tasks().stream()
+			.filter(session -> session.entity().getId().equals(body))
+			.findFirst();
 	}
 	
 	/**

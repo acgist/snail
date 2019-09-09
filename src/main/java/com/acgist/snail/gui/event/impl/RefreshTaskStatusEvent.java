@@ -1,7 +1,9 @@
 package com.acgist.snail.gui.event.impl;
 
+import com.acgist.snail.gui.GuiHandler;
 import com.acgist.snail.gui.event.GuiEvent;
 import com.acgist.snail.gui.main.TaskDisplay;
+import com.acgist.snail.pojo.message.ApplicationMessage;
 
 /**
  * GUI刷新任务状态事件
@@ -11,6 +13,8 @@ import com.acgist.snail.gui.main.TaskDisplay;
  */
 public class RefreshTaskStatusEvent extends GuiEvent {
 
+	private static final RefreshTaskStatusEvent INSTANCE = new RefreshTaskStatusEvent();
+	
 	protected RefreshTaskStatusEvent() {
 		super(Type.refreshTaskStatus, "刷新任务状态事件");
 	}
@@ -22,11 +26,12 @@ public class RefreshTaskStatusEvent extends GuiEvent {
 
 	@Override
 	protected void executeExtend(Object ... args) {
-		// TODO：外部
+		final ApplicationMessage message = ApplicationMessage.message(ApplicationMessage.Type.refresh);
+		GuiHandler.getInstance().sendGuiMessage(message);
 	}
 
-	public static final GuiEvent newInstance() {
-		return new RefreshTaskStatusEvent();
+	public static final GuiEvent getInstance() {
+		return INSTANCE;
 	}
 
 }

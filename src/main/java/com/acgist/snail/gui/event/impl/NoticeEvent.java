@@ -1,11 +1,17 @@
 package com.acgist.snail.gui.event.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.gui.GuiHandler;
 import com.acgist.snail.gui.GuiHandler.SnailNoticeType;
 import com.acgist.snail.gui.event.GuiEvent;
 import com.acgist.snail.gui.menu.TrayMenu;
+import com.acgist.snail.pojo.message.ApplicationMessage;
+import com.acgist.snail.system.bencode.BEncodeEncoder;
 
 /**
  * GUI提示消息事件
@@ -17,12 +23,23 @@ public class NoticeEvent extends GuiEvent {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(NoticeEvent.class);
 	
+	private static final NoticeEvent INSTANCE = new NoticeEvent();
+	
 	protected NoticeEvent() {
 		super(Type.notice, "提示消息事件");
 	}
 
 	@Override
 	protected void executeNative(Object ... args) {
+		executeEx(true, args);
+	}
+
+	@Override
+	protected void executeExtend(Object ... args) {
+		executeEx(false, args);
+	}
+
+	private void executeEx(boolean gui, Object ... args) {
 		SnailNoticeType type;
 		String title, message;
 		if(args == null) {
@@ -40,16 +57,30 @@ public class NoticeEvent extends GuiEvent {
 			LOGGER.debug("提示消息错误，长度错误：{}", args.length);
 			return;
 		}
+		if(gui) {
+			executeNativeEx(title, message, type);
+		} else {
+			executeExtendEx(title, message, type);
+		}
+	}
+	
+	private void executeNativeEx(String title, String message, SnailNoticeType type) {
 		TrayMenu.getInstance().notice(title, message, type.getMessageType());
 	}
-
-	@Override
-	protected void executeExtend(Object ... args) {
-		// TODO：外部
+	
+	private void executeExtendEx(String title, String message, SnailNoticeType type) {
+		final ApplicationMessage applicationMessage = new ApplicationMessage(ApplicationMessage.Type.notice);
+		final Map<String, String> map = new HashMap<>();
+		map.put("title", title);
+		map.put("message", message);
+		map.put("type", type.name());
+		final String body = BEncodeEncoder.encodeMapString(map);
+		applicationMessage.setBody(body);
+		GuiHandler.getInstance().sendGuiMessage(applicationMessage);
 	}
-
-	public static final GuiEvent newInstance() {
-		return new NoticeEvent();
+	
+	public static final GuiEvent getInstance() {
+		return INSTANCE;
 	}
 
 }

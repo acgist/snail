@@ -41,8 +41,6 @@ public class TorrentController extends Controller implements Initializable {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentController.class);
 	
-	private static final String HIDE_FILE_PREFIX = "_____padding_file"; // 填充文件前缀（不需要下载和显示）
-	
 	@FXML
 	private FlowPane root;
 	@FXML
@@ -83,7 +81,7 @@ public class TorrentController extends Controller implements Initializable {
 		final TorrentInfo torrentInfo = torrent.getInfo();
 		this.selecterManager = SelecterManager.newInstance(torrentInfo.getName(), this.download, tree);
 		torrentInfo.files().stream()
-			.filter(file -> !file.path().startsWith(HIDE_FILE_PREFIX))
+			.filter(file -> !file.path().startsWith(TorrentInfo.HIDE_FILE_PREFIX))
 			.sorted((a, b) -> a.path().compareTo(b.path()))
 			.forEach(file -> this.selecterManager.build(file.path(), file.getLength()));
 		this.selecterManager.select(taskSession);

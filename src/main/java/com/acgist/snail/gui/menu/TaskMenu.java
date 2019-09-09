@@ -113,9 +113,8 @@ public class TaskMenu extends Menu {
 	};
 	
 	private EventHandler<ActionEvent> copyUrlEvent = (event) -> {
-		MainWindow.getInstance().controller().selected()
-		.forEach(wrapper -> {
-			Clipboards.copy(wrapper.entity().getUrl());
+		MainWindow.getInstance().controller().selected().forEach(session -> {
+			Clipboards.copy(session.entity().getUrl());
 		});
 	};
 	
@@ -123,10 +122,9 @@ public class TaskMenu extends Menu {
 		if(!MainWindow.getInstance().controller().haveTorrent()) {
 			return;
 		}
-		MainWindow.getInstance().controller().selected()
-		.forEach(wrapper -> {
-			if(wrapper.entity().getType() == Type.torrent) {
-				TorrentWindow.getInstance().controller().tree(wrapper);
+		MainWindow.getInstance().controller().selected().forEach(session -> {
+			if(session.entity().getType() == Type.torrent) {
+				TorrentWindow.getInstance().controller().tree(session);
 			}
 		});
 		TorrentWindow.getInstance().show();
@@ -138,10 +136,9 @@ public class TaskMenu extends Menu {
 		}
 		final File file = Choosers.chooseDirectory(MainWindow.getInstance().stage(), "种子文件保存目录");
 		if (file != null) {
-			MainWindow.getInstance().controller().selected()
-			.forEach(wrapper -> {
-				if(wrapper.entity().getType() == Type.torrent) {
-					String torrent = wrapper.entity().getTorrent();
+			MainWindow.getInstance().controller().selected().forEach(session -> {
+				if(session.entity().getType() == Type.torrent) {
+					String torrent = session.entity().getTorrent();
 					String fileName = FileUtils.fileNameFromUrl(torrent);
 					String newFile = FileUtils.file(file.getPath(), fileName);
 					FileUtils.copy(torrent, newFile);
@@ -153,10 +150,9 @@ public class TaskMenu extends Menu {
 	private EventHandler<ActionEvent> verifyEvent = (event) -> {
 		SystemThreadContext.submit(() -> {
 			Map<String, String> hash = new HashMap<>();
-			MainWindow.getInstance().controller().selected()
-			.forEach(wrapper -> {
-				if(wrapper.complete()) {
-					hash.putAll(FileUtils.sha1(wrapper.entity().getFile()));
+			MainWindow.getInstance().controller().selected().forEach(session -> {
+				if(session.complete()) {
+					hash.putAll(FileUtils.sha1(session.entity().getFile()));
 				}
 			});
 			if(hash.isEmpty()) {
@@ -179,10 +175,9 @@ public class TaskMenu extends Menu {
 	};
 	
 	private EventHandler<ActionEvent> openFolderEvent = (event) -> {
-		MainWindow.getInstance().controller().selected()
-			.forEach(wrapper -> {
-				FileUtils.openInDesktop(wrapper.downloadFolder());
-			});
+		MainWindow.getInstance().controller().selected().forEach(session -> {
+			FileUtils.openInDesktop(session.downloadFolder());
+		});
 	};
 	
 	/**

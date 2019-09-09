@@ -18,6 +18,11 @@ import com.acgist.snail.gui.event.impl.NoticeEvent;
 import com.acgist.snail.gui.event.impl.RefreshTaskListEvent;
 import com.acgist.snail.gui.event.impl.RefreshTaskStatusEvent;
 import com.acgist.snail.gui.event.impl.ShowEvent;
+import com.acgist.snail.gui.event.impl.TorrentEvent;
+import com.acgist.snail.net.IMessageHandler;
+import com.acgist.snail.pojo.message.ApplicationMessage;
+import com.acgist.snail.pojo.session.TaskSession;
+import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.ThreadUtils;
 
 import javafx.scene.control.Alert.AlertType;
@@ -52,6 +57,11 @@ public class GuiHandler {
 	 * 阻塞锁：防止程序关闭
 	 */
 	private final Object lock = new Object();
+	
+	/**
+	 * 外部GUI消息代理
+	 */
+	private IMessageHandler messageHandler;
 	
 	/**
 	 * alert提示窗口类型
@@ -121,14 +131,15 @@ public class GuiHandler {
 	private static final Map<GuiEvent.Type, GuiEvent> EVENTS = new HashMap<>(20);
 	
 	static {
-		register(BuildEvent.newInstance());
-		register(ShowEvent.newInstance());
-		register(HideEvent.newInstance());
-		register(ExitEvent.newInstance());
-		register(AlertEvent.newInstance());
-		register(NoticeEvent.newInstance());
-		register(RefreshTaskListEvent.newInstance());
-		register(RefreshTaskStatusEvent.newInstance());
+		register(BuildEvent.getInstance());
+		register(ShowEvent.getInstance());
+		register(HideEvent.getInstance());
+		register(ExitEvent.getInstance());
+		register(AlertEvent.getInstance());
+		register(NoticeEvent.getInstance());
+		register(TorrentEvent.getInstance());
+		register(RefreshTaskListEvent.getInstance());
+		register(RefreshTaskStatusEvent.getInstance());
 	}
 	
 	private GuiHandler() {
@@ -236,6 +247,14 @@ public class GuiHandler {
 		event(Type.build);
 		return this;
 	}
+	
+	/**
+	 * 种子文件选择
+	 */
+	public GuiHandler torrent(TaskSession taskSession) {
+		event(Type.torrent, taskSession);
+		return this;
+	}
 
 	/**
 	 * 显示窗口
@@ -278,6 +297,33 @@ public class GuiHandler {
 		}
 		event.execute(this.gui, args);
 		return this;
+	}
+	
+	/**
+	 * 注册外部GUI消息代理
+	 */
+	public boolean messageHandler(IMessageHandler messageHandler) {
+		if(this.gui) {
+			LOGGER.debug("已经启用本地GUI，忽略注册外部GUI消息代理。");
+			return false;
+		} else {
+			LOGGER.debug("注册外部GUI消息代理");
+			this.messageHandler = messageHandler;
+			return true;
+		}
+	}
+	
+	/**
+	 * 发送外部GUI消息
+	 */
+	public void sendGuiMessage(ApplicationMessage message) {
+		if(this.messageHandler != null && message != null) {
+			try {
+				this.messageHandler.send(message.toString());
+			} catch (NetException e) {
+				LOGGER.error("发送外部GUI消息异常", e);
+			}
+		}
 	}
 	
 	/**

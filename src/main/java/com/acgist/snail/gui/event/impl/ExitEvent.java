@@ -14,6 +14,8 @@ import javafx.application.Platform;
  */
 public class ExitEvent extends GuiEvent {
 
+	private static final ExitEvent INSTANCE = new ExitEvent();
+	
 	protected ExitEvent() {
 		super(Type.exit, "退出窗口事件");
 	}
@@ -29,8 +31,8 @@ public class ExitEvent extends GuiEvent {
 		GuiHandler.getInstance().unlock();
 	}
 
-	public static final GuiEvent newInstance() {
-		return new ExitEvent();
+	public static final GuiEvent getInstance() {
+		return INSTANCE;
 	}
 	
 }
