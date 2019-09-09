@@ -232,6 +232,7 @@ public class PeerManager {
 	
 	/**
 	 * 获取对应的Peer列表（存储）
+	 * TODO：观察是否需要做一个拷贝，防止：ConcurrentModificationException
 	 */
 	public List<PeerSession> list(String infoHashHex) {
 		synchronized (this.storagePeers) {

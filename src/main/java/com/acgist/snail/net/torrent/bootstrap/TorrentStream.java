@@ -413,14 +413,17 @@ public class TorrentStream {
 			buildFileDownloadSize();
 			allReady.countDown();
 		} else {
+			final var lock = this;
 			SystemThreadContext.submit(() -> {
-				try {
-					buildFilePieces(complete);
-					buildFileDownloadSize();
-				} catch (IOException e) {
-					LOGGER.error("TorrentStream异步加载异常", e);
-				} finally {
-					allReady.countDown();
+				synchronized (lock) {
+					try {
+						buildFilePieces(complete);
+						buildFileDownloadSize();
+					} catch (Exception e) {
+						LOGGER.error("TorrentStream异步加载异常", e);
+					} finally {
+						allReady.countDown();
+					}
 				}
 			});
 		}
