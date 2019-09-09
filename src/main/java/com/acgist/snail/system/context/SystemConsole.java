@@ -71,7 +71,7 @@ public class SystemConsole {
 		final List<NodeSession> nodes = NodeManager.getInstance().nodes();
 		final Map<Byte, Long> group = nodes.stream().collect(Collectors.groupingBy(NodeSession::getStatus, Collectors.counting()));
 		this.builder.append("Node数量：").append(nodes.size()).append(NEW_LINE);
-		this.builder.append("Node数量（未使用）：").append(group.get(NodeSession.STATUS_UNUSE)).append(NEW_LINE);
+		this.builder.append("Node数量（未使用）：").append(group.getOrDefault(NodeSession.STATUS_UNUSE, 0L)).append(NEW_LINE);
 		this.builder.append("Node数量（使用中）：").append(group.getOrDefault(NodeSession.STATUS_VERIFY, 0L)).append(NEW_LINE);
 		this.builder.append("Node数量（有效）：").append(group.getOrDefault(NodeSession.STATUS_AVAILABLE, 0L)).append(NEW_LINE);
 	}
@@ -83,7 +83,7 @@ public class SystemConsole {
 		final List<TrackerClient> clients = TrackerManager.getInstance().clients();
 		final Map<Boolean, Long> group = clients.stream().collect(Collectors.groupingBy(TrackerClient::available, Collectors.counting()));
 		this.builder.append("Tracker数量：").append(clients.size()).append(NEW_LINE);
-		this.builder.append("Tracker数量（可用）：").append(group.get(Boolean.TRUE)).append(NEW_LINE);
+		this.builder.append("Tracker数量（可用）：").append(group.getOrDefault(Boolean.TRUE, 0L)).append(NEW_LINE);
 		this.builder.append("Tracker数量（不可用）：").append(group.getOrDefault(Boolean.FALSE, 0L)).append(NEW_LINE);
 	}
 	

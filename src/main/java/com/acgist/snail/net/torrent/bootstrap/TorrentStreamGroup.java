@@ -49,6 +49,10 @@ public class TorrentStreamGroup {
 	 * 缓冲大小：数据下载时修改
 	 */
 	private final AtomicLong fileBuffer;
+	/**
+	 * 是否初始化完成
+	 */
+	private volatile boolean done = false;
 
 	private TorrentStreamGroup(BitSet pieces, BitSet selectPieces, List<TorrentStream> streams, TorrentSession torrentSession) {
 		this.pieces = pieces;
@@ -90,6 +94,8 @@ public class TorrentStreamGroup {
 				torrentSession.resize(torrentStreamGroup.size());
 			} catch (Exception e) {
 				LOGGER.error("统计下载文件大小等待异常", e);
+			} finally {
+				torrentStreamGroup.done = true;
 			}
 		});
 		return torrentStreamGroup;
@@ -199,7 +205,9 @@ public class TorrentStreamGroup {
 	 */
 	public void piece(int index) {
 		this.pieces.set(index, true);
-		this.torrentSession.have(index);
+		if(this.done) { // 初始化完成才开始发送have消息
+			this.torrentSession.have(index);
+		}
 	}
 	
 	/**

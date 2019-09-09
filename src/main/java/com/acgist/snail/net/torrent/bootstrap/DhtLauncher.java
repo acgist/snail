@@ -45,12 +45,26 @@ public class DhtLauncher implements Runnable {
 	@Override
 	public void run() {
 		LOGGER.debug("执行DHT定时任务");
-		try {
-			joinNodes();
-			final var list = pick();
-			findPeers(list);
-		} catch (Exception e) {
-			LOGGER.error("执行DHT定时任务异常", e);
+		synchronized (this.nodes) {
+			try {
+				joinNodes();
+				final var list = pick();
+				findPeers(list);
+			} catch (Exception e) {
+				LOGGER.error("执行DHT定时任务异常", e);
+			}
+		}
+	}
+	
+	/**
+	 * Peer客户端添加DHT客户端
+	 * 
+	 * @param host 地址
+	 * @param port 端口
+	 */
+	public void put(String host, Integer port) {
+		synchronized (this.nodes) {
+			this.nodes.add(NetUtils.buildSocketAddress(host, port));
 		}
 	}
 
@@ -68,11 +82,9 @@ public class DhtLauncher implements Runnable {
 	 */
 	private List<InetSocketAddress> pick() {
 		final List<InetSocketAddress> list = new ArrayList<>();
-		synchronized (this.nodes) {
-			if(CollectionUtils.isNotEmpty(this.nodes)) {
-				list.addAll(this.nodes);
-				this.nodes.clear();
-			}
+		if(CollectionUtils.isNotEmpty(this.nodes)) {
+			list.addAll(this.nodes);
+			this.nodes.clear();
 		}
 		final var nodes = NodeManager.getInstance().findNode(this.infoHash.infoHash());
 		if(CollectionUtils.isNotEmpty(nodes)) {
@@ -93,18 +105,6 @@ public class DhtLauncher implements Runnable {
 		for (InetSocketAddress socketAddress : list) {
 			final DhtClient client = DhtClient.newInstance(socketAddress);
 			client.getPeers(this.infoHash.infoHash());
-		}
-	}
-	
-	/**
-	 * Peer客户端添加DHT客户端
-	 * 
-	 * @param host 地址
-	 * @param port 端口
-	 */
-	public void put(String host, Integer port) {
-		synchronized (this.nodes) {
-			this.nodes.add(NetUtils.buildSocketAddress(host, port));
 		}
 	}
 	

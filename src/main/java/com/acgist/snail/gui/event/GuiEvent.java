@@ -20,8 +20,8 @@ public abstract class GuiEvent {
 		alert, // 窗口信息
 		notice, // 提示信息
 		torrent, // 种子文件选择
-		refreshTaskList, // 刷新任务列表：添加任务
-		refreshTaskStatus; // 刷新任务状态：暂停、
+		refreshTaskList, // 刷新任务列表：添加、删除
+		refreshTaskStatus; // 刷新任务状态：开始、暂停
 		
 	}
 
