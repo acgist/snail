@@ -14,13 +14,13 @@ import java.util.Date;
 public class DateUtils {
 
 	/**
+	 * 默认时间格式
+	 */
+	public static final String DEFAULT_PATTERN = "yyyy-MM-dd HH:mm:ss";
+	/**
 	 * UNIX和JAVA时间戳倍数
 	 */
 	private static final int UNIX_JAVA_TIMESTAMP_SCALE = 1000;
-	/**
-	 * 默认时间格式
-	 */
-	private static final String DEFAULT_PATTERN = "yyyy-MM-dd HH:mm:ss";
 	/**
 	 * 开始时间（1601年1月1日）北京时间（东八区）。
 	 * 转换Java时间戳：11644473600000L + System.currentTimeMillis()。

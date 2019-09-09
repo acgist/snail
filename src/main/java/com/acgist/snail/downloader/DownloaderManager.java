@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.gui.GuiHandler;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.system.config.DownloadConfig;
@@ -51,13 +52,18 @@ public final class DownloaderManager {
 	private final Map<String, IDownloader> downloaderMap;
 	
 	/**
-	 * 新建下载任务<br>
-	 * 通过下载链接生成下载任务
+	 * 新建下载任务
 	 */
-	public void start(String url) throws DownloadException {
-		final var session = this.manager.buildTaskSession(url);
-		if(session != null) {
-			this.start(session);
+	public void newTask(String url) throws DownloadException {
+		try {
+			final var session = this.manager.buildTaskSession(url);
+			if(session != null) {
+				this.start(session);
+			}
+		} catch (DownloadException e) {
+			throw e;
+		} finally {
+			GuiHandler.getInstance().refreshTaskList();
 		}
 	}
 	
@@ -118,6 +124,7 @@ public final class DownloaderManager {
 		});
 		// 界面上立即移除
 		this.downloaderMap.remove(entity.getId());
+		GuiHandler.getInstance().refreshTaskList();
 	}
 	
 	/**
@@ -159,22 +166,22 @@ public final class DownloaderManager {
 			if(count == downloadSize) { // 不操作
 			} else if(count > downloadSize) { // 暂停部分操作
 				downloaders.stream()
-				.filter(IDownloader::running)
-				.skip(downloadSize)
-				.forEach(IDownloader::pause);
+					.filter(IDownloader::running)
+					.skip(downloadSize)
+					.forEach(IDownloader::pause);
 			} else { // 开始准备任务
 				downloaders.stream()
-				.filter(downloader -> downloader.taskSession().await())
-				.limit(downloadSize - count)
-				.forEach(downloader -> this.executor.submit(downloader));
+					.filter(downloader -> downloader.taskSession().await())
+					.limit(downloadSize - count)
+					.forEach(downloader -> this.executor.submit(downloader));
 			}
 		}
 	}
 
 	/**
-	 * 停止下载：<br>
-	 * 暂停任务<br>
-	 * 关闭下载线程池
+	 * <p>
+	 * 停止下载：暂停所有任务、关闭下载线程池
+	 * </p>
 	 */
 	public void shutdown() {
 		LOGGER.info("关闭下载器管理");
@@ -185,6 +192,7 @@ public final class DownloaderManager {
 		} catch (Exception e) {
 			LOGGER.error("关闭下载器管理异常", e);
 		}
+//		SystemThreadContext.shutdown(this.executor); // 不直接关闭，线程关闭需要时间
 	}
 
 }

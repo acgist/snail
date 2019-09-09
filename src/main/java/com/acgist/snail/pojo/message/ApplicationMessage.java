@@ -10,6 +10,15 @@ import com.acgist.snail.system.bencode.BEncodeEncoder;
  * @since 1.0.0
  */
 public class ApplicationMessage {
+	
+	/**
+	 * 失败
+	 */
+	public static final String FAIL = "fail";
+	/**
+	 * 成功
+	 */
+	public static final String SUCCESS = "success";
 
 	/**
 	 * 消息类型
@@ -17,13 +26,16 @@ public class ApplicationMessage {
 	public enum Type {
 
 		// 被动消息
+		gui, // 外部GUI注册
 		text, // 文本
-		close, // 关闭Socket连接
+		close, // 关闭连接
 		notify, // 唤醒窗口
 		shutdown, // 关闭程序
-		tasknew, // 新建任务
-		tasklist, // 任务列表
-		taskdelete, // 删除任务
+		taskNew, // 新建任务
+		taskList, // 任务列表
+		taskStart, // 开始任务
+		taskPause, // 暂停任务
+		taskDelete, // 删除任务
 		
 		// 主动消息
 		alert, // 提示窗口

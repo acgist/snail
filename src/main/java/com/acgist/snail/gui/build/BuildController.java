@@ -11,7 +11,6 @@ import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.gui.Alerts;
 import com.acgist.snail.gui.Choosers;
 import com.acgist.snail.gui.Controller;
-import com.acgist.snail.gui.main.TaskDisplay;
 import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.StringUtils;
@@ -71,7 +70,7 @@ public class BuildController extends Controller implements Initializable {
 		boolean ok = true;
 		try {
 			// TODO：优化卡死现象：多线程
-			DownloaderManager.getInstance().start(url);
+			DownloaderManager.getInstance().newTask(url);
 		} catch (DownloadException e) {
 			LOGGER.error("新建下载任务异常：{}", url, e);
 			ok = false;
@@ -80,7 +79,6 @@ public class BuildController extends Controller implements Initializable {
 		if(ok) { // 下载成功
 			setUrl("");
 			BuildWindow.getInstance().hide();
-			TaskDisplay.getInstance().refreshTaskList();
 		}
 	}
 

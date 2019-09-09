@@ -1,11 +1,17 @@
 package com.acgist.snail.gui.event.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.gui.Alerts;
+import com.acgist.snail.gui.GuiHandler;
 import com.acgist.snail.gui.GuiHandler.SnailAlertType;
 import com.acgist.snail.gui.event.GuiEvent;
+import com.acgist.snail.pojo.message.ApplicationMessage;
+import com.acgist.snail.system.bencode.BEncodeEncoder;
 
 /**
  * GUI提示窗口事件
@@ -17,12 +23,23 @@ public class AlertEvent extends GuiEvent {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AlertEvent.class);
 	
+	private static final AlertEvent INSTANCE = new AlertEvent();
+	
 	protected AlertEvent() {
 		super(Type.alert, "提示窗口事件");
 	}
 
 	@Override
 	protected void executeNative(Object ... args) {
+		executeEx(true, args);
+	}
+
+	@Override
+	protected void executeExtend(Object ... args) {
+		executeEx(false, args);
+	}
+	
+	private void executeEx(boolean gui, Object ... args) {
 		SnailAlertType type;
 		String title, message;
 		if(args == null) {
@@ -40,16 +57,30 @@ public class AlertEvent extends GuiEvent {
 			LOGGER.debug("提示窗口错误，长度错误：{}", args.length);
 			return;
 		}
+		if(gui) {
+			executeNativeEx(type, title, message);
+		} else {
+			executeExtendEx(type, title, message);
+		}
+	}
+
+	private void executeNativeEx(SnailAlertType type, String title, String message) {
 		Alerts.build(title, message, type.getAlertType());
 	}
-
-	@Override
-	protected void executeExtend(Object ... args) {
-		// TODO：外部
+	
+	private void executeExtendEx(SnailAlertType type, String title, String message) {
+		final ApplicationMessage applicationMessage = new ApplicationMessage(ApplicationMessage.Type.alert);
+		final Map<String, String> map = new HashMap<>();
+		map.put("title", title);
+		map.put("message", message);
+		map.put("type", type.name());
+		final String body = BEncodeEncoder.encodeMapString(map);
+		applicationMessage.setBody(body);
+		GuiHandler.getInstance().sendGuiMessage(applicationMessage);
 	}
 
-	public static final GuiEvent newInstance() {
-		return new AlertEvent();
+	public static final GuiEvent getInstance() {
+		return INSTANCE;
 	}
 
 }

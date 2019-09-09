@@ -21,6 +21,11 @@ public class TorrentInfo {
 	 */
 	public static final int PIECE_HASH_LENGTH = 20;
 	
+	/**
+	 * 填充文件前缀（不需要下载和显示）
+	 */
+	public static final String HIDE_FILE_PREFIX = "_____padding_file";
+	
 	private String name; // 名称
 	private String nameUtf8; // 名称：utf8
 	private Long length; // 大小

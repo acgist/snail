@@ -19,8 +19,9 @@ public abstract class GuiEvent {
 		build, // 创建窗口
 		alert, // 窗口信息
 		notice, // 提示信息
-		refreshTaskList, // 刷新任务列表
-		refreshTaskStatus; // 刷新任务状态
+		torrent, // 种子文件选择
+		refreshTaskList, // 刷新任务列表：添加任务
+		refreshTaskStatus; // 刷新任务状态：暂停、
 		
 	}
 
