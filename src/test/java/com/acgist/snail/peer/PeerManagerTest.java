@@ -5,6 +5,7 @@ import java.util.concurrent.Executors;
 import org.junit.Test;
 
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
+import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
 public class PeerManagerTest {
@@ -22,6 +23,33 @@ public class PeerManagerTest {
 				PeerManager.getInstance().newPeerSession("1234", null, "183.6.115.59", 19999, (byte) 1);
 			});
 		}
+		ThreadUtils.sleep(Long.MAX_VALUE);
+	}
+	
+	@Test
+	public void thread() {
+		String infoHashHex = "1234";
+		var exe = Executors.newCachedThreadPool();
+		exe.submit(() -> {
+			for (int i = 0; i < 4000; i++) {
+				try {
+					PeerManager.getInstance().newPeerSession(infoHashHex, null, NetUtils.decodeIntToIp(i), 19999, (byte) 1);
+					ThreadUtils.sleep(1);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		exe.submit(() -> {
+			for (int i = 0; i < 4000; i++) {
+				try {
+					PeerManager.getInstance().have(infoHashHex, 100);
+					ThreadUtils.sleep(1);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
 		ThreadUtils.sleep(Long.MAX_VALUE);
 	}
 	

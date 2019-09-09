@@ -67,11 +67,11 @@ public class TorrentFileSelectWrapper {
 			return List.of();
 		}
 		return list.stream()
-		.filter(object -> object != null)
-		.map(object -> {
-			return BEncodeDecoder.getString(object);
-		})
-		.collect(Collectors.toList());
+			.filter(object -> object != null)
+			.map(object -> {
+				return BEncodeDecoder.getString(object);
+			})
+			.collect(Collectors.toList());
 	}
 	
 }

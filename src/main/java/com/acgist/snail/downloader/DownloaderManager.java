@@ -161,7 +161,9 @@ public final class DownloaderManager {
 	public void refresh() {
 		synchronized (this) {
 			final var downloaders = this.downloaderMap.values();
-			final long count = downloaders.stream().filter(IDownloader::running).count();
+			final long count = downloaders.stream()
+				.filter(IDownloader::running)
+				.count();
 			final int downloadSize = DownloadConfig.getSize();
 			if(count == downloadSize) { // 不操作
 			} else if(count > downloadSize) { // 暂停部分操作

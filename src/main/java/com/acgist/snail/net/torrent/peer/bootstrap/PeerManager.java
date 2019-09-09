@@ -23,7 +23,6 @@ import com.acgist.snail.utils.CollectionUtils;
 /**
  * <p>Peer管理器</p>
  * <p>Peer加入放入两个队列，一个队列负责下载时使用：{@link #peers}，一个负责存档：{@link #storagePeers}。</p>
- * TODO：将IP分段，然后每次下载有连接分析时进行评分，插入IP时按照分段插入。
  * 
  * @author acgist
  * @since 1.0.0
@@ -91,28 +90,31 @@ public class PeerManager {
 	 * @return PeerSession，如果是本机IP返回null。
 	 */
 	public PeerSession newPeerSession(String infoHashHex, StatisticsSession parent, String host, Integer port, byte source) {
+		var list = list(infoHashHex);
 		var deque = deque(infoHashHex);
-		synchronized (deque) {
-			PeerSession peerSession = findPeerSession(infoHashHex, host);
-			if(peerSession == null) {
-				if(LOGGER.isDebugEnabled()) {
-					LOGGER.debug("添加PeerSession，{}-{}，来源：{}", host, port, PeerConfig.source(source));
+		synchronized (list) {
+			synchronized (deque) {
+				PeerSession peerSession = findPeerSession(infoHashHex, host);
+				if(peerSession == null) {
+					if(LOGGER.isDebugEnabled()) {
+						LOGGER.debug("添加PeerSession，{}-{}，来源：{}", host, port, PeerConfig.source(source));
+					}
+					peerSession = PeerSession.newInstance(parent, host, port);
+					// 计算插入位置
+					if(
+						source == PeerConfig.SOURCE_LSD || // 本地发现
+						source == PeerConfig.SOURCE_CONNECT || // 主动连接
+						PeerEvaluator.getInstance().eval(peerSession) // Peer评分
+						) {
+						deque.offerLast(peerSession); // 插入尾部：优先级高
+					} else {
+						deque.offerFirst(peerSession); // 插入头部：优先级低
+					}
+					list.add(peerSession); // 存档
 				}
-				peerSession = PeerSession.newInstance(parent, host, port);
-				// 计算插入位置
-				if(
-					source == PeerConfig.SOURCE_LSD || // 本地发现
-					source == PeerConfig.SOURCE_CONNECT || // 主动连接
-					PeerEvaluator.getInstance().eval(peerSession) // Peer评分
-				) {
-					deque.offerLast(peerSession); // 插入尾部：优先级高
-				} else {
-					deque.offerFirst(peerSession); // 插入头部：优先级低
-				}
-				list(infoHashHex).add(peerSession); // 存档
+				peerSession.source(source); // 设置来源
+				return peerSession;
 			}
-			peerSession.source(source); // 设置来源
-			return peerSession;
 		}
 	}
 	
@@ -169,8 +171,9 @@ public class PeerManager {
 		if(CollectionUtils.isEmpty(list)) {
 			return;
 		}
-		final AtomicInteger count = new AtomicInteger(0);
-		list.stream()
+		synchronized (list) {
+			final AtomicInteger count = new AtomicInteger(0);
+			list.stream()
 			.filter(session -> session.uploading() || session.downloading())
 			.forEach(session -> {
 				var peerConnect = session.peerConnect();
@@ -183,7 +186,8 @@ public class PeerManager {
 					peerLauncher.have(index);
 				}
 			});
-		LOGGER.debug("发送Have消息，通知Peer数量：{}", count.get());
+			LOGGER.debug("发送Have消息，通知Peer数量：{}", count.get());
+		}
 	}
 	
 	/**
@@ -199,8 +203,9 @@ public class PeerManager {
 		if(CollectionUtils.isEmpty(list)) {
 			return;
 		}
-		final AtomicInteger count = new AtomicInteger(0);
-		list.stream()
+		synchronized (list) {
+			final AtomicInteger count = new AtomicInteger(0);
+			list.stream()
 			.filter(session -> session.uploading() || session.downloading())
 			.forEach(session -> {
 				var peerConnect = session.peerConnect();
@@ -213,7 +218,8 @@ public class PeerManager {
 					peerLauncher.pex(bytes);
 				}
 			});
-		LOGGER.debug("发送PEX消息，Peer数量：{}，通知Peer数量：{}", optimize.size(), count.get());
+			LOGGER.debug("发送PEX消息，Peer数量：{}，通知Peer数量：{}", optimize.size(), count.get());
+		}
 	}
 	
 	/**
@@ -232,7 +238,6 @@ public class PeerManager {
 	
 	/**
 	 * 获取对应的Peer列表（存储）
-	 * TODO：观察是否需要做一个拷贝，防止：ConcurrentModificationException
 	 */
 	public List<PeerSession> list(String infoHashHex) {
 		synchronized (this.storagePeers) {
@@ -250,9 +255,10 @@ public class PeerManager {
 	 */
 	private PeerSession findPeerSession(String infoHashHex, String host) {
 		final var list = list(infoHashHex);
-		final Optional<PeerSession> optional = list.stream().filter(peer -> {
-			return peer.equals(host);
-		}).findFirst();
+		final Optional<PeerSession> optional = list.stream()
+			.filter(peer -> {
+				return peer.equals(host);
+			}).findFirst();
 		if(optional.isPresent()) {
 			return optional.get();
 		}
