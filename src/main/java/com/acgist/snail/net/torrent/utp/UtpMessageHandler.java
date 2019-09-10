@@ -145,11 +145,11 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 		final short acknr = buffer.getShort(); // 响应序号
 		if(extension != 0) { // 扩展数据
 			final short extLength = buffer.getShort();
-			if(extLength <= 0) {
+			if(extLength <= 0 || buffer.remaining() < extLength) {
 				throw new NetException("UTP信息格式错误（扩展消息长度）：" + extLength);
 			}
 			final byte[] extData = new byte[extLength];
-			buffer.get(extData); // TODO：
+			buffer.get(extData);
 		}
 		LOGGER.debug("UTP收到消息，类型：{}，扩展：{}，连接ID：{}，时间戳：{}，时间戳对比：{}，窗口大小：{}，请求号：{}，应答号：{}",
 			type, extension, connectionId, timestamp, timestampDifference, wndSize, seqnr, acknr);
