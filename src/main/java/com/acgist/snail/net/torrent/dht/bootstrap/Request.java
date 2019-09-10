@@ -63,7 +63,7 @@ public class Request extends BaseMessage {
 		final byte[] t = decoder.getBytes(DhtConfig.KEY_T);
 		final String y = decoder.getString(DhtConfig.KEY_Y);
 		final String q = decoder.getString(DhtConfig.KEY_Q);
-		final QType type = DhtConfig.QType.valueOf(q);
+		final QType type = DhtConfig.QType.valueOfName(q);
 		final Map<String, Object> a = decoder.getMap(DhtConfig.KEY_A);
 		return new Request(t, y, type, a);
 	}

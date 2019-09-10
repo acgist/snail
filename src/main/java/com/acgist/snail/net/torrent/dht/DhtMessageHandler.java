@@ -23,6 +23,7 @@ import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.bencode.BEncodeDecoder;
 import com.acgist.snail.system.config.DhtConfig;
+import com.acgist.snail.system.config.DhtConfig.ErrorCode;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.StringUtils;
@@ -97,6 +98,11 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	private void onRequest(final Request request, final InetSocketAddress socketAddress) {
 		Response response = null;
 		LOGGER.debug("DHT收到请求：{}", request.getQ());
+		if(request.getQ() == null) {
+			final Response error = Response.error(request.getT(), ErrorCode.E_204.code(), "不支持的请求类型");
+			pushMessage(error, socketAddress);
+			return;
+		}
 		switch (request.getQ()) {
 		case ping:
 			response = ping(request);
@@ -127,6 +133,9 @@ public class DhtMessageHandler extends UdpMessageHandler {
 			return;
 		}
 		LOGGER.debug("DHT收到响应：{}", request.getQ());
+		if(request.getQ() == null) {
+			return;
+		}
 		switch (request.getQ()) {
 		case ping:
 			ping(request, response);

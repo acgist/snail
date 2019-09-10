@@ -99,10 +99,21 @@ public class DhtConfig extends PropertiesConfig {
 	 * 请求类型
 	 */
 	public enum QType {
+		
 		ping,
 		find_node,
 		get_peers,
 		announce_peer;
+		
+		public static final QType valueOfName(String value) {
+			for (QType type : QType.values()) {
+				if(type.name().equals(value)) {
+					return type;
+				}
+			}
+			return null;
+		}
+		
 	}
 	
 	public DhtConfig() {
