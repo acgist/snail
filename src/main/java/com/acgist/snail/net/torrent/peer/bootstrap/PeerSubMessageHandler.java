@@ -50,7 +50,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>消息格式：长度 类型 负载</p>
  * <p>加密：如果Peer没有强制使用加密，优先不使用加密。</p>
  * 
- * TODO：加密
  * TODO：流水线
  * 
  * @author acgist
@@ -64,6 +63,14 @@ public class PeerSubMessageHandler {
 	private volatile boolean handshakeRcv = false; // 接收握手
 
 	/**
+	 * Peer信息
+	 */
+	private PeerSession peerSession;
+	/**
+	 * Torrent信息
+	 */
+	private TorrentSession torrentSession;
+	/**
 	 * 连入客户端
 	 */
 	private PeerConnect peerConnect;
@@ -71,17 +78,13 @@ public class PeerSubMessageHandler {
 	 * 请求客户端
 	 */
 	private PeerLauncher peerLauncher;
-	
-	private PeerSession peerSession;
-	private TorrentSession torrentSession;
-	
 	/**
 	 * 消息代理
 	 */
 	private IMessageEncryptHandler messageEncryptHandler;
 	
-	private ExtensionMessageHandler extensionMessageHandler;
-	private DhtExtensionMessageHandler dhtExtensionMessageHandler;
+	private ExtensionMessageHandler extensionMessageHandler; // 扩展
+	private DhtExtensionMessageHandler dhtExtensionMessageHandler; // DHT扩展
 	
 	private PeerSubMessageHandler() {
 	}
@@ -147,6 +150,10 @@ public class PeerSubMessageHandler {
 		} else {
 			return false;
 		}
+	}
+	
+	public TorrentSession torrentSession() {
+		return this.torrentSession;
 	}
 	
 	/**
@@ -756,5 +763,5 @@ public class PeerSubMessageHandler {
 	private InetSocketAddress remoteSocketAddress() {
 		return this.messageEncryptHandler.remoteSocketAddress();
 	}
-	
+
 }

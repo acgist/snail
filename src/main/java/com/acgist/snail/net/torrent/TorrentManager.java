@@ -4,8 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.TorrentProtocol;
@@ -46,6 +48,17 @@ public class TorrentManager {
 	 */
 	public TorrentSession torrentSession(String infoHashHex) {
 		return this.torrentSessions.get(infoHashHex);
+	}
+	
+	/**
+	 * 所有的InfoHash
+	 */
+	public List<InfoHash> allInfoHash() {
+		synchronized (this.torrentSessions) {
+			return this.torrentSessions.values().stream()
+				.map(session -> session.infoHash())
+				.collect(Collectors.toList());
+		}
 	}
 	
 	/**
