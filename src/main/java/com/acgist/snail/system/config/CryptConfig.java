@@ -37,33 +37,47 @@ public class CryptConfig {
 	public static final int MSE_MAX_PADDING = 512;
 	
 	/**
+	 * VC长度
+	 */
+	public static final int VC_LENGTH = 8;
+	
+	/**
 	 * 八字节：0x00
 	 */
-	public static final byte[] VC = new byte[8];
+	public static final byte[] VC = new byte[VC_LENGTH];
 	
 	/**
 	 * 加密策略
 	 */
-	public static final Strategy STRATEGY = Strategy.plaintext;
+	public static final Strategy STRATEGY = Strategy.preferPlaintext;
+	
+	public static final int PROVIDE_PLAINTEXT = 0x01; // 明文
+	public static final int PROVIDE_ARC4 = 		0x02; // RC4
 
 	/**
 	 * 加密策略
 	 */
 	public enum Strategy {
 		
-		plaintext(false), // 文本
-		preferPlaintext(false), // 兼容：偏爱文本
-		preferEncrypt(true), // 兼容：偏爱加密
-		encrypt(true); // 加密
+		plaintext(false, PROVIDE_PLAINTEXT), // 文本
+		preferPlaintext(false, PROVIDE_PLAINTEXT | PROVIDE_ARC4), // 兼容：偏爱文本
+		preferEncrypt(true, PROVIDE_ARC4 | PROVIDE_PLAINTEXT), // 兼容：偏爱加密
+		encrypt(true, PROVIDE_ARC4); // 加密
 		
 		boolean crypt; // 加密
+		int provide; // crypto_provide
 		
-		Strategy(boolean crypt) {
+		Strategy(boolean crypt, int provide) {
 			this.crypt = crypt;
+			this.provide = provide;
 		}
 		
 		public boolean crypt() {
 			return this.crypt;
+		}
+		
+		public int provide() {
+			return this.provide;
 		}
 		
 	}
