@@ -120,6 +120,7 @@ public class MSECryptHanlder {
 	public void handshake(ByteBuffer buffer) {
 		try {
 			if(checkPeerHandshake(buffer)) { // Peer握手消息
+				LOGGER.debug("跳过加密握手，直接进行Peer握手。");
 				return;
 			}
 			switch (this.step) {
@@ -138,8 +139,8 @@ public class MSECryptHanlder {
 				break;
 			}
 		} catch (Exception e) {
-			LOGGER.error("加密握手异常", e); // TODO：优化
 			this.plaintext();
+			LOGGER.error("加密握手异常", e);
 		}
 	}
 	
@@ -343,7 +344,7 @@ public class MSECryptHanlder {
 		final byte[] req1Native = digest.digest();
 		this.buffer.get(req1);
 		if(!ArrayUtils.equals(req1, req1Native)) {
-			throw new NetException("握手消息异常");
+			throw new NetException("加密握手req1不一致");
 		}
 		ArrayUtils.equals(req1, req1Native);
 //		HASH('req2', SKEY) xor HASH('req3', S)
@@ -362,7 +363,7 @@ public class MSECryptHanlder {
 			}
 		}
 		if(infoHash == null) {
-			throw new NetException("不存在的种子信息");
+			throw new NetException("加密握手不存在的种子信息");
 		}
 		this.cipher = MSECipher.newReceiver(dhSecretBytes, infoHash);
 //		ENCRYPT(VC, crypto_provide, len(PadC), PadC, len(IA))
