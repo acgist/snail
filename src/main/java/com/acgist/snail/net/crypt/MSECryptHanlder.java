@@ -477,7 +477,7 @@ public class MSECryptHanlder {
 	private boolean checkPeerHandshake(ByteBuffer buffer) throws NetException {
 		// 先判断是否是握手消息
 		final byte first = buffer.get();
-		if(first == PeerConfig.HANDSHAKE_NAME_LENGTH) {
+		if(first == PeerConfig.HANDSHAKE_NAME_LENGTH && buffer.remaining() >= PeerConfig.HANDSHAKE_NAME_LENGTH) {
 			final byte[] names = new byte[PeerConfig.HANDSHAKE_NAME_LENGTH];
 			buffer.get(names);
 			if(ArrayUtils.equals(names, PeerConfig.HANDSHAKE_NAME_BYTES)) { // 握手消息直接使用明文
