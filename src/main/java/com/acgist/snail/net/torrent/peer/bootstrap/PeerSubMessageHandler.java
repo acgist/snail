@@ -269,7 +269,7 @@ public class PeerSubMessageHandler {
 		final byte length = buffer.get();
 		if(length != PeerConfig.HANDSHAKE_NAME_LENGTH) {
 			LOGGER.warn("握手消息格式错误（协议长度）：{}", length);
-			this.close();
+//			this.close(); // 不关闭，选择忽略。
 			return;
 		}
 		final byte[] names = new byte[length];

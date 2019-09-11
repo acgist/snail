@@ -23,8 +23,8 @@ public class PeerCryptMessageHandler {
 	private final PeerUnpackMessageHandler peerUnpackMessageHandler;
 	
 	private PeerCryptMessageHandler(PeerSubMessageHandler peerSubMessageHandler) {
-		this.mseCryptHanlder = MSECryptHanlder.newInstance(peerSubMessageHandler);
 		this.peerUnpackMessageHandler = PeerUnpackMessageHandler.newInstance(peerSubMessageHandler);
+		this.mseCryptHanlder = MSECryptHanlder.newInstance(peerSubMessageHandler, this.peerUnpackMessageHandler);
 	}
 	
 	public static final PeerCryptMessageHandler newInstance(PeerSubMessageHandler peerSubMessageHandler) {
@@ -40,10 +40,6 @@ public class PeerCryptMessageHandler {
 			this.peerUnpackMessageHandler.onMessage(attachment);
 		} else { // 握手
 			this.mseCryptHanlder.handshake(attachment);
-			// 继续处理：处理完成 && 继续处理
-			if(this.mseCryptHanlder.over() && this.mseCryptHanlder.next()) {
-				this.peerUnpackMessageHandler.onMessage(attachment);
-			}
 		}
 	}
 	

@@ -11,6 +11,7 @@ import java.util.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.net.torrent.PeerUnpackMessageHandler;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.pojo.session.TorrentSession;
@@ -63,10 +64,6 @@ public class MSECryptHanlder {
 	 */
 	private volatile boolean over = false;
 	/**
-	 * 是否继续处理
-	 */
-	private volatile boolean next = false;
-	/**
 	 * 是否加密：默认明文
 	 */
 	private volatile boolean crypt = false;
@@ -76,6 +73,7 @@ public class MSECryptHanlder {
 	private volatile MSECipher cipher;
 	
 	private final PeerSubMessageHandler peerSubMessageHandler;
+	private final PeerUnpackMessageHandler peerUnpackMessageHandler;
 	
 	/**
 	 * 握手等待锁
@@ -88,16 +86,17 @@ public class MSECryptHanlder {
 	private BigInteger dhSecret; // S：DH Secret
 	private MSEKeyPairBuilder mseKeyPairBuilder; // 密钥对Builder
 
-	private MSECryptHanlder(PeerSubMessageHandler peerSubMessageHandler) {
+	private MSECryptHanlder(PeerSubMessageHandler peerSubMessageHandler, PeerUnpackMessageHandler peerUnpackMessageHandler) {
 		final MSEKeyPairBuilder mseKeyPairBuilder = MSEKeyPairBuilder.newInstance();
-		this.buffer = ByteBuffer.allocate(1024);
+		this.buffer = ByteBuffer.allocate(4096); // 4KB
 		this.keyPair = mseKeyPairBuilder.buildKeyPair();
 		this.mseKeyPairBuilder = mseKeyPairBuilder;
 		this.peerSubMessageHandler = peerSubMessageHandler;
+		this.peerUnpackMessageHandler = peerUnpackMessageHandler;
 	}
 
-	public static final MSECryptHanlder newInstance(PeerSubMessageHandler peerSubMessageHandler) {
-		return new MSECryptHanlder(peerSubMessageHandler);
+	public static final MSECryptHanlder newInstance(PeerSubMessageHandler peerSubMessageHandler, PeerUnpackMessageHandler peerUnpackMessageHandler) {
+		return new MSECryptHanlder(peerSubMessageHandler, peerUnpackMessageHandler);
 	}
 
 	/**
@@ -105,13 +104,6 @@ public class MSECryptHanlder {
 	 */
 	public boolean over() {
 		return this.over;
-	}
-	
-	/**
-	 * 是否继续处理
-	 */
-	public boolean next() {
-		return this.next;
 	}
 
 	/**
@@ -125,8 +117,11 @@ public class MSECryptHanlder {
 	/**
 	 * 握手
 	 */
-	public void handshake(ByteBuffer buffer) throws NetException {
+	public void handshake(ByteBuffer buffer) {
 		try {
+			if(checkPeerHandshake(buffer)) { // Peer握手消息
+				return;
+			}
 			switch (this.step) {
 			case 1:
 			case 2:
@@ -142,10 +137,9 @@ public class MSECryptHanlder {
 				LOGGER.warn("不支持的加密握手步骤：{}", this.step);
 				break;
 			}
-		} catch (NetException e) {
-			throw e;
 		} catch (Exception e) {
-			throw new NetException("加密握手异常", e);
+			LOGGER.error("加密握手异常", e); // TODO：优化
+			this.plaintext();
 		}
 	}
 	
@@ -153,14 +147,18 @@ public class MSECryptHanlder {
 	 * 设置明文
 	 */
 	public void plaintext() {
-		this.over(true, false, false);
+		this.over(true, false);
 	}
 	
 	/**
 	 * 加密
 	 */
 	public void encrypt(ByteBuffer buffer) {
-		if(this.crypt) {
+		encrypt(buffer, this.crypt);
+	}
+
+	private void encrypt(ByteBuffer buffer, boolean crypt) {
+		if(crypt) {
 			synchronized (this.cipher) {
 				try {
 					boolean flip = true;
@@ -170,9 +168,7 @@ public class MSECryptHanlder {
 					}
 					final byte[] value = new byte[buffer.remaining()];
 					buffer.get(value);
-//					LOGGER.debug("加密后：{}", StringUtils.hex(value));
 					final byte[] eValue = this.cipher.getEncryptionCipher().update(value);
-//					LOGGER.debug("加密后：{}", StringUtils.hex(eValue));
 					buffer.clear().put(eValue);
 					if(flip) {
 						buffer.flip();
@@ -183,12 +179,16 @@ public class MSECryptHanlder {
 			}
 		}
 	}
-
+	
 	/**
 	 * 解密
 	 */
 	public void decrypt(ByteBuffer buffer) {
-		if(this.crypt) {
+		decrypt(buffer, this.crypt);
+	}
+	
+	public void decrypt(ByteBuffer buffer, boolean crypt) {
+		if(crypt) {
 			try {
 				boolean flip = true;
 				if(buffer.position() != 0) { //  重置标记
@@ -197,9 +197,7 @@ public class MSECryptHanlder {
 				}
 				final byte[] value = new byte[buffer.remaining()];
 				buffer.get(value);
-//				LOGGER.debug("解密前：{}", StringUtils.hex(value));
 				final byte[] dValue = this.cipher.getDecryptionCipher().update(value);
-//				LOGGER.debug("解密后：{}", StringUtils.hex(dValue));
 				buffer.clear().put(dValue);
 				if(flip) {
 					buffer.flip();
@@ -222,7 +220,7 @@ public class MSECryptHanlder {
 			}
 		}
 		if(!this.over) { // 握手没有完成：明文
-			this.over(true, false, false);
+			this.plaintext();
 		}
 	}
 	
@@ -254,18 +252,6 @@ public class MSECryptHanlder {
 	 */
 	private void receivePublicKey(ByteBuffer buffer) throws NetException, UnsupportedEncodingException {
 		LOGGER.debug("加密握手，接收公钥，步骤：{}", this.step);
-		// 先判断是否是握手消息
-		final byte first = buffer.get();
-		if(first == PeerConfig.HANDSHAKE_NAME_LENGTH) {
-			final byte[] names = new byte[PeerConfig.HANDSHAKE_NAME_LENGTH];
-			buffer.get(names);
-			if(ArrayUtils.equals(names, PeerConfig.HANDSHAKE_NAME_BYTES)) { // 握手消息直接使用明文
-				buffer.position(0); // 重置长度
-				this.over(true, true, false);
-				return;
-			}
-		}
-		buffer.position(0); // 重置长度
 		this.buffer.put(buffer); // 读取信息
 		final int minLength = CryptConfig.PUBLIC_KEY_SIZE; // 最短读取数据长度
 		final int maxLength = minLength + CryptConfig.MSE_MAX_PADDING; // 最大读取数据长度
@@ -322,15 +308,16 @@ public class MSECryptHanlder {
 //		ENCRYPT(VC, crypto_provide, len(PadC), PadC, len(IA))
 		final byte[] padding = buildZeroPadding(CryptConfig.MSE_MAX_PADDING);
 		final int paddingLength = padding.length;
-		buffer = ByteBuffer.allocate(16 + paddingLength); // 8 + 4 + 2 + len(Padding) + 2
+		buffer = ByteBuffer.allocate(16 + paddingLength); // 8 + 4 + 2 + Padding + 2
 		buffer.put(CryptConfig.VC); // VC
 		buffer.putInt(CryptConfig.STRATEGY.provide()); // crypto_provide
 		buffer.putShort((short) paddingLength); // len(PadC)
 		buffer.put(padding); // PadC
 		buffer.putShort((short) 0); // len(IA)
+		this.encrypt(buffer, true);
 		this.peerSubMessageHandler.send(buffer);
 	}
-	
+
 	/**
 	 * 接收加密选择
 	 */
@@ -355,7 +342,9 @@ public class MSECryptHanlder {
 		digest.update(dhSecretBytes);
 		final byte[] req1Native = digest.digest();
 		this.buffer.get(req1);
-		// TODO：req1==req1Native
+		if(!ArrayUtils.equals(req1, req1Native)) {
+			throw new NetException("握手消息异常");
+		}
 		ArrayUtils.equals(req1, req1Native);
 //		HASH('req2', SKEY) xor HASH('req3', S)
 		this.buffer.get(req2x3);
@@ -377,9 +366,13 @@ public class MSECryptHanlder {
 		}
 		this.cipher = MSECipher.newReceiver(dhSecretBytes, infoHash);
 //		ENCRYPT(VC, crypto_provide, len(PadC), PadC, len(IA))
+		ByteBuffer encryptBuffer = ByteBuffer.allocate(this.buffer.remaining());
+		encryptBuffer.put(this.buffer);
+		encryptBuffer.flip();
+		this.decrypt(encryptBuffer, true);
 		final byte[] vc = new byte[CryptConfig.VC_LENGTH];
-		this.buffer.get(vc);
-		final int provide = this.buffer.getInt(); // 协议选择
+		encryptBuffer.get(vc);
+		final int provide = encryptBuffer.getInt(); // 协议选择
 		final Strategy strategy = selectStrategy(provide); // 选择协议
 		sendConfirm(strategy);
 	}
@@ -398,9 +391,10 @@ public class MSECryptHanlder {
 		buffer.putInt(strategy.provide());
 		buffer.putShort((short) paddingLength);
 		buffer.put(padding);
+		this.encrypt(buffer, true);
 		this.peerSubMessageHandler.send(buffer);
-		LOGGER.debug("确认加密协议：{}", strategy);
-		this.over(true, false, strategy.crypt());
+		LOGGER.debug("发送确认加密协议：{}", strategy);
+		this.over(true, strategy.crypt());
 	}
 	
 	/**
@@ -418,12 +412,13 @@ public class MSECryptHanlder {
 			throw new NetException("加密握手长度错误");
 		}
 		this.buffer.flip();
+		this.decrypt(this.buffer, true);
 		final byte[] vc = new byte[CryptConfig.VC_LENGTH];
 		this.buffer.get(vc);
 		final int provide = this.buffer.getInt(); // 协议选择
 		final Strategy strategy = selectStrategy(provide); // 选择协议
-		LOGGER.debug("确认加密协议：{}", strategy);
-		this.over(true, false, strategy.crypt());
+		LOGGER.debug("接收确认加密协议：{}", strategy);
+		this.over(true, strategy.crypt());
 	}
 	
 	/**
@@ -475,16 +470,34 @@ public class MSECryptHanlder {
         return new byte[random.nextInt(maxLength + 1)];
     }
 	
+    /**
+     * Peer握手
+     */
+	private boolean checkPeerHandshake(ByteBuffer buffer) throws NetException {
+		// 先判断是否是握手消息
+		final byte first = buffer.get();
+		if(first == PeerConfig.HANDSHAKE_NAME_LENGTH) {
+			final byte[] names = new byte[PeerConfig.HANDSHAKE_NAME_LENGTH];
+			buffer.get(names);
+			if(ArrayUtils.equals(names, PeerConfig.HANDSHAKE_NAME_BYTES)) { // 握手消息直接使用明文
+				this.over(true, false);
+				buffer.position(0); // 重置长度
+				this.peerUnpackMessageHandler.onMessage(buffer);
+				return true;
+			}
+		}
+		buffer.position(0); // 重置长度
+		return false;
+	}
+    
 	/**
 	 * 完成
 	 * 
 	 * @param over 是否完成
-	 * @param next 是否继续处理
 	 * @param crypt 是否加密
 	 */
-	private void over(boolean over, boolean next, boolean crypt) {
+	private void over(boolean over, boolean crypt) {
 		this.over = over;
-		this.next = next;
 		this.crypt = crypt;
 		this.buffer = null;
 		this.keyPair = null;

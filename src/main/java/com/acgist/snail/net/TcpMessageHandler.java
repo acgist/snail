@@ -25,7 +25,7 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TcpMessageHandler.class);
 	
-	private static final int BUFFER_SIZE = 10 * 1024;
+	public static final int BUFFER_SIZE = 10 * 1024;
 	
 	/**
 	 * 消息分隔符

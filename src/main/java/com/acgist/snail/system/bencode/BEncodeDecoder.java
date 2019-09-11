@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.ArgumentException;
 
 /**
@@ -207,6 +208,9 @@ public class BEncodeDecoder implements Closeable {
 			case SEPARATOR:
 				if(lengthBuilder.length() > 0) {
 					final int length = Integer.parseInt(lengthBuilder.toString());
+					if(length >= SystemConfig.MAX_NET_BUFFER_SIZE) {
+						throw new ArgumentException("超过最大的网络包大小：" + length);
+					}
 					lengthBuilder.setLength(0);
 					final byte[] bytes = new byte[length];
 					try {
@@ -265,6 +269,9 @@ public class BEncodeDecoder implements Closeable {
 			case SEPARATOR:
 				if(lengthBuilder.length() > 0) {
 					final int length = Integer.parseInt(lengthBuilder.toString());
+					if(length >= SystemConfig.MAX_NET_BUFFER_SIZE) {
+						throw new ArgumentException("超过最大的网络包大小：" + length);
+					}
 					lengthBuilder.setLength(0);
 					final byte[] bytes = new byte[length];
 					try {
