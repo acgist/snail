@@ -31,6 +31,11 @@ public class PeerConfig {
 	public static final int MAX_PEER_CONNECT_TIMEOUT = 6;
 	
 	/**
+	 * Peer创建超时时间（秒）
+	 */
+	public static final int MAX_PEER_BUILD_TIMEOUT = MAX_PEER_CONNECT_TIMEOUT + 4;
+	
+	/**
 	 * PeerId长度
 	 */
 	public static final int PEER_ID_LENGTH = 20;
