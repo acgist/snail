@@ -261,7 +261,7 @@ public class PeerSubMessageHandler {
 		LOGGER.debug("被握手");
 		if(buffer.remaining() != PeerConfig.HANDSHAKE_LENGTH) {
 			LOGGER.warn("握手消息格式错误（消息长度）：{}", buffer.remaining());
-			this.close();
+//			this.close(); // 不关闭，选择忽略。
 			return;
 		}
 		this.handshakeRcv = true;

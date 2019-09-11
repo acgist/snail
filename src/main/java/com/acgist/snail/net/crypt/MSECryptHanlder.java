@@ -163,9 +163,20 @@ public class MSECryptHanlder {
 		if(this.crypt) {
 			synchronized (this.cipher) {
 				try {
-					final byte[] value = buffer.array();
-					final byte[] eValue = this.cipher.getEncryptionCipher().doFinal(value);
+					boolean flip = true;
+					if(buffer.position() != 0) { //  重置标记
+						flip = false;
+						buffer.flip();
+					}
+					final byte[] value = new byte[buffer.remaining()];
+					buffer.get(value);
+//					LOGGER.debug("加密后：{}", StringUtils.hex(value));
+					final byte[] eValue = this.cipher.getEncryptionCipher().update(value);
+//					LOGGER.debug("加密后：{}", StringUtils.hex(eValue));
 					buffer.clear().put(eValue);
+					if(flip) {
+						buffer.flip();
+					}
 				} catch (Exception e) {
 					LOGGER.error("加密异常", e);
 				}
@@ -179,9 +190,20 @@ public class MSECryptHanlder {
 	public void decrypt(ByteBuffer buffer) {
 		if(this.crypt) {
 			try {
-				final byte[] value = buffer.array();
-				final byte[] dValue = this.cipher.getDecryptionCipher().doFinal(value);
+				boolean flip = true;
+				if(buffer.position() != 0) { //  重置标记
+					flip = false;
+					buffer.flip();
+				}
+				final byte[] value = new byte[buffer.remaining()];
+				buffer.get(value);
+//				LOGGER.debug("解密前：{}", StringUtils.hex(value));
+				final byte[] dValue = this.cipher.getDecryptionCipher().update(value);
+//				LOGGER.debug("解密后：{}", StringUtils.hex(dValue));
 				buffer.clear().put(dValue);
+				if(flip) {
+					buffer.flip();
+				}
 			} catch (Exception e) {
 				LOGGER.error("解密异常", e);
 			}
@@ -192,8 +214,12 @@ public class MSECryptHanlder {
 	 * 握手等待锁：5秒
 	 */
 	public void handshakeLock() {
-		synchronized (this.handshakeLock) {
-			ThreadUtils.wait(this.handshakeLock, Duration.ofSeconds(5));
+		if(!this.over) {
+			synchronized (this.handshakeLock) {
+				if(!this.over) {
+					ThreadUtils.wait(this.handshakeLock, Duration.ofSeconds(5));
+				}
+			}
 		}
 		if(!this.over) { // 握手没有完成：明文
 			this.over(true, false, false);
@@ -213,6 +239,7 @@ public class MSECryptHanlder {
 	 * 发送公钥
 	 */
 	private void sendPublicKey() {
+		LOGGER.debug("加密握手，发送公钥，步骤：{}", this.step);
 		final byte[] publicKey = this.keyPair.getPublic().getEncoded();
 		final byte[] padding = buildPadding(CryptConfig.MSE_MAX_PADDING);
 		final ByteBuffer buffer = ByteBuffer.allocate(publicKey.length + padding.length);
@@ -226,6 +253,7 @@ public class MSECryptHanlder {
 	 * 接收公钥
 	 */
 	private void receivePublicKey(ByteBuffer buffer) throws NetException, UnsupportedEncodingException {
+		LOGGER.debug("加密握手，接收公钥，步骤：{}", this.step);
 		// 先判断是否是握手消息
 		final byte first = buffer.get();
 		if(first == PeerConfig.HANDSHAKE_NAME_LENGTH) {
@@ -268,6 +296,7 @@ public class MSECryptHanlder {
 	 * ENCRYPT(IA)
 	 */
 	private void sendProvide() throws NetException, UnsupportedEncodingException {
+		LOGGER.debug("加密握手，提供加密选择，步骤：{}", this.step);
 		final TorrentSession torrentSession = this.peerSubMessageHandler.torrentSession();
 		if(torrentSession == null) {
 			throw new NetException("加密握手TorrentSession为空");
@@ -306,6 +335,7 @@ public class MSECryptHanlder {
 	 * 接收加密选择
 	 */
 	private void receiveProvide(ByteBuffer buffer) throws NetException, UnsupportedEncodingException {
+		LOGGER.debug("加密握手，接收加密选择，步骤：{}", this.step);
 		this.buffer.put(buffer);
 		final int minLength = 20 + 20 + 8 + 4 + 2 + 0 + 2;
 		final int maxLength = 20 + 20 + 8 + 4 + 2 + 512 + 2;
@@ -360,6 +390,7 @@ public class MSECryptHanlder {
 	 * ENCRYPT2(Payload Stream)
 	 */
 	private void sendConfirm(Strategy strategy) {
+		LOGGER.debug("加密握手，确认加密，步骤：{}", this.step);
 		final byte[] padding = buildZeroPadding(CryptConfig.MSE_MAX_PADDING);
 		final int paddingLength = padding.length;
 		final ByteBuffer buffer = ByteBuffer.allocate(14 + paddingLength);
@@ -368,6 +399,7 @@ public class MSECryptHanlder {
 		buffer.putShort((short) paddingLength);
 		buffer.put(padding);
 		this.peerSubMessageHandler.send(buffer);
+		LOGGER.debug("确认加密协议：{}", strategy);
 		this.over(true, false, strategy.crypt());
 	}
 	
@@ -375,6 +407,7 @@ public class MSECryptHanlder {
 	 * 确认加密
 	 */
 	private void receiveConfirm(ByteBuffer buffer) throws NetException {
+		LOGGER.debug("加密握手，确认加密，步骤：{}", this.step);
 		this.buffer.put(buffer);
 		final int minLength = 8 + 4 + 2 + 0;
 		final int maxLength = 8 + 4 + 2 + 512;
@@ -384,10 +417,12 @@ public class MSECryptHanlder {
 		if(this.buffer.position() > maxLength) {
 			throw new NetException("加密握手长度错误");
 		}
+		this.buffer.flip();
 		final byte[] vc = new byte[CryptConfig.VC_LENGTH];
 		this.buffer.get(vc);
 		final int provide = this.buffer.getInt(); // 协议选择
 		final Strategy strategy = selectStrategy(provide); // 选择协议
+		LOGGER.debug("确认加密协议：{}", strategy);
 		this.over(true, false, strategy.crypt());
 	}
 	
