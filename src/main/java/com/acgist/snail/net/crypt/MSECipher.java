@@ -52,7 +52,7 @@ public class MSECipher {
 	public static final MSECipher newReceiver(byte[] S, InfoHash infoHash) {
 		return new MSECipher(S, infoHash, false);
 	}
-
+	
 	private MSECipher(byte[] S, InfoHash infoHash, boolean initiator) {
 		Key initiatorKey = buildInitiatorEncryptionKey(S, infoHash.infoHash());
 		Key receiverKey = buildReceiverEncryptionKey(S, infoHash.infoHash());
