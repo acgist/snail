@@ -1,11 +1,10 @@
 package com.acgist.snail.net.torrent.bootstrap;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.Semaphore;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +15,6 @@ import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
-import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * <p>PeerLauncher组：下载</p>
@@ -38,11 +36,23 @@ public class PeerLauncherGroup {
 	/**
 	 * 同时创建PeerLauncher数量
 	 */
-	private static final int PARALLEL_BUILD_SIZE = 3;
+	private static final int BUILD_SIZE = 5;
 	/**
 	 * 单次最大创建数量Peer数量
 	 */
 	private static final int MAX_BUILD_SIZE = 60;
+	/**
+	 * 是否继续创建PeerLauncher
+	 */
+	private volatile boolean build = true;
+	/**
+	 * 同时创建PeerLauncher信号量
+	 */
+	private final Semaphore semaphore = new Semaphore(BUILD_SIZE);
+	/**
+	 * 优选的Peer，每次优化时挑选出来可以进行下载的Peer，在优化后发送pex消息发送给连接的Peer，发送完成后清空。
+	 */
+	private final List<PeerSession> optimize = new ArrayList<>();
 	
 	private final TorrentSession torrentSession;
 	
@@ -50,14 +60,6 @@ public class PeerLauncherGroup {
 	 * PeerLauncher下载队列
 	 */
 	private final BlockingQueue<PeerLauncher> peerLaunchers;
-	/**
-	 * 是否继续创建PeerLauncher
-	 */
-	private final AtomicBoolean build = new AtomicBoolean(false);
-	/**
-	 * 优选的Peer，每次优化时挑选出来可以进行下载的Peer，在优化后发送pex消息发送给连接的Peer，发送完成后清空。
-	 */
-	private final List<PeerSession> optimize = new ArrayList<>();
 	
 	private PeerLauncherGroup(TorrentSession torrentSession) {
 		this.torrentSession = torrentSession;
@@ -121,23 +123,23 @@ public class PeerLauncherGroup {
 	private void buildPeerLaunchers() {
 		LOGGER.debug("优化PeerLauncher-创建下载PeerLauncher");
 		int size = 0;
-		this.build.set(true);
-		while(this.build.get()) {
-			this.torrentSession.submit(() -> {
-				try {
-					buildPeerLauncher();
-				} catch (Exception e) {
-					LOGGER.error("创建PeerLauncher异常", e);
-				}
-			});
-			if(++size > PARALLEL_BUILD_SIZE) {
-				synchronized (this.build) {
-					if(this.build.get()) {
-						ThreadUtils.wait(this.build, Duration.ofSeconds(PeerConfig.MAX_PEER_BUILD_TIMEOUT));
+		this.build = true;
+		while(this.build) {
+			try {
+				this.semaphore.acquire();
+				this.torrentSession.submit(() -> {
+					try {
+						buildPeerLauncher();
+					} catch (Exception e) {
+						LOGGER.error("创建PeerLauncher异常", e);
+					} finally {
+						this.semaphore.release();
 					}
-				}
+				});
+			} catch (Exception e) {
+				LOGGER.error("获取信号量异常", e);
 			}
-			if(size > MAX_BUILD_SIZE) {
+			if(++size > MAX_BUILD_SIZE) {
 				LOGGER.debug("超过单次最大创建数量时退出循环");
 				this.notifyBuild(false);
 			}
@@ -255,10 +257,8 @@ public class PeerLauncherGroup {
 	 * 唤醒创建线程
 	 */
 	private void notifyBuild(boolean build) {
-		synchronized (this.build) {
-			this.build.set(build);
-			this.build.notifyAll();
-		}
+		this.build = build;
+		this.semaphore.release(BUILD_SIZE - this.semaphore.availablePermits());
 	}
 
 }

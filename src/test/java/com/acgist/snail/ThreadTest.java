@@ -1,8 +1,10 @@
 package com.acgist.snail;
 
 import java.time.Duration;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
@@ -11,6 +13,31 @@ import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.ThreadUtils;
 
 public class ThreadTest {
+	
+	@Test
+	public void semaphore() throws InterruptedException {
+		Semaphore semaphore = new Semaphore(2);
+		var pool = Executors.newFixedThreadPool(200);
+		for (int i = 0; i < 10; i++) {
+			semaphore.acquire();
+			pool.submit(() -> {
+				try {
+					System.out.println("++++");
+					ThreadUtils.sleep(new Random().nextInt(2000));
+				} finally {
+					semaphore.release();
+				}
+			});
+		}
+		System.out.println("=================================");
+		pool.submit(() -> {
+			while(true) {
+				ThreadUtils.sleep(100);
+				System.out.println("----");
+			}
+		});
+		ThreadUtils.sleep(Long.MAX_VALUE);
+	}
 
 	@Test
 	public void waitTest() {

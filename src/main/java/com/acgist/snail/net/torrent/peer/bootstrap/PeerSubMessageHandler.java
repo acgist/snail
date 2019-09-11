@@ -264,8 +264,6 @@ public class PeerSubMessageHandler {
 //			this.close(); // 不关闭，选择忽略。
 			return;
 		}
-		this.handshakeRcv = true;
-		final boolean server = !this.handshakeSed; // 是否是服务方
 		final byte length = buffer.get();
 		if(length != PeerConfig.HANDSHAKE_NAME_LENGTH) {
 			LOGGER.warn("握手消息格式错误（协议长度）：{}", length);
@@ -277,9 +275,11 @@ public class PeerSubMessageHandler {
 		final String name = new String(names);
 		if(!PeerConfig.HANDSHAKE_NAME.equals(name)) {
 			LOGGER.warn("下载协议错误：{}", name);
-			this.close();
+//			this.close(); // 不关闭，选择忽略。
 			return;
 		}
+		this.handshakeRcv = true;
+		final boolean server = !this.handshakeSed; // 是否是服务方
 		final byte[] reserved = new byte[PeerConfig.RESERVED_LENGTH];
 		buffer.get(reserved);
 		final byte[] infoHash = new byte[InfoHash.INFO_HASH_LENGTH];
