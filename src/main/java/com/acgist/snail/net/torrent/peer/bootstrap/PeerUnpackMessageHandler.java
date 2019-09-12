@@ -1,8 +1,7 @@
-package com.acgist.snail.net.torrent;
+package com.acgist.snail.net.torrent.peer.bootstrap;
 
 import java.nio.ByteBuffer;
 
-import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
@@ -42,6 +41,8 @@ public class PeerUnpackMessageHandler {
 	
 	/**
 	 * 处理Peer消息
+	 * 
+	 * @param buffer 读取状态buffer
 	 */
 	public void onMessage(ByteBuffer buffer) throws NetException {
 		int length = 0;
