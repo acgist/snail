@@ -1,6 +1,5 @@
 package com.acgist.snail.net.torrent.peer.bootstrap.crypt;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.security.KeyPair;
@@ -72,7 +71,7 @@ public class MSECryptHandshakeHandler {
 	 */
 	private final Object handshakeLock = new Object();
 	/**
-	 * 密钥对
+	 * 加密套件
 	 */
 	private volatile MSECipher cipher;
 	
@@ -122,20 +121,23 @@ public class MSECryptHandshakeHandler {
 				LOGGER.debug("跳过加密握手，直接进行Peer握手。");
 				return;
 			}
-			switch (this.step) {
-			case 1:
-			case 2:
-				receivePublicKey(buffer);
-				break;
-			case 3:
-				receiveProvide(buffer);
-				break;
-			case 4:
-				receiveConfirm(buffer);
-				break;
-			default:
-				LOGGER.warn("不支持的加密握手步骤：{}", this.step);
-				break;
+			synchronized (this.buffer) {
+				this.buffer.put(buffer); // 读取信息
+				switch (this.step) {
+				case 1:
+				case 2:
+					receivePublicKey(buffer);
+					break;
+				case 3:
+					receiveProvide(buffer);
+					break;
+				case 4:
+					receiveConfirm(buffer);
+					break;
+				default:
+					LOGGER.warn("不支持的加密握手步骤：{}", this.step);
+					break;
+				}
 			}
 		} catch (Exception e) {
 			this.plaintext();
@@ -154,58 +156,14 @@ public class MSECryptHandshakeHandler {
 	 * 加密，不改变buffer读取和写入状态。
 	 */
 	public void encrypt(ByteBuffer buffer) {
-		encrypt(buffer, this.crypt);
-	}
-
-	private void encrypt(ByteBuffer buffer, boolean crypt) {
-		if(crypt) {
-			synchronized (this.cipher) {
-				try {
-					boolean flip = true; // 标记状态
-					if(buffer.position() != 0) {
-						flip = false;
-						buffer.flip();
-					}
-					final byte[] value = new byte[buffer.remaining()];
-					buffer.get(value);
-					final byte[] eValue = this.cipher.getEncryptionCipher().update(value);
-					buffer.clear().put(eValue);
-					if(flip) {
-						buffer.flip();
-					}
-				} catch (Exception e) {
-					LOGGER.error("加密异常", e);
-				}
-			}
-		}
+		this.cipher.encrypt(buffer, this.crypt);
 	}
 	
 	/**
 	 * 解密，不改变buffer读取和写入状态。
 	 */
 	public void decrypt(ByteBuffer buffer) {
-		decrypt(buffer, this.crypt);
-	}
-	
-	public void decrypt(ByteBuffer buffer, boolean crypt) {
-		if(crypt) {
-			try {
-				boolean flip = true; // 标记状态
-				if(buffer.position() != 0) {
-					flip = false;
-					buffer.flip();
-				}
-				final byte[] value = new byte[buffer.remaining()];
-				buffer.get(value);
-				final byte[] dValue = this.cipher.getDecryptionCipher().update(value);
-				buffer.clear().put(dValue);
-				if(flip) {
-					buffer.flip();
-				}
-			} catch (Exception e) {
-				LOGGER.error("解密异常", e);
-			}
-		}
+		this.cipher.decrypt(buffer, this.crypt);
 	}
 	
 	/**
@@ -239,32 +197,31 @@ public class MSECryptHandshakeHandler {
 	private void sendPublicKey() {
 		LOGGER.debug("加密握手，发送公钥，步骤：{}", this.step);
 		final byte[] publicKey = this.keyPair.getPublic().getEncoded();
-		final byte[] padding = buildPadding(CryptConfig.MSE_MAX_PADDING);
+		final byte[] padding = buildPadding(CryptConfig.PADDING_MAX_LENGTH);
 		final ByteBuffer buffer = ByteBuffer.allocate(publicKey.length + padding.length);
 		buffer.put(publicKey);
 		buffer.put(padding);
-		buffer.flip();
 		this.peerSubMessageHandler.send(buffer);
 	}
 
+	private static final int PUBLIC_KEY_MIN_LENGTH = CryptConfig.PUBLIC_KEY_LENGTH; // 最短读取数据长度
+	private static final int PUBLIC_KEY_MAX_LENGTH = PUBLIC_KEY_MIN_LENGTH + CryptConfig.PADDING_MAX_LENGTH; // 最大读取数据长度
+	
 	/**
 	 * 接收公钥
 	 */
-	private void receivePublicKey(ByteBuffer buffer) throws NetException, UnsupportedEncodingException {
+	private void receivePublicKey(ByteBuffer buffer) throws NetException {
 		LOGGER.debug("加密握手，接收公钥，步骤：{}", this.step);
-		this.buffer.put(buffer); // 读取信息
-		final int minLength = CryptConfig.PUBLIC_KEY_SIZE; // 最短读取数据长度
-		final int maxLength = minLength + CryptConfig.MSE_MAX_PADDING; // 最大读取数据长度
-		if(this.buffer.position() < minLength) { // 不够公钥长度继续读取
+		if(this.buffer.position() < PUBLIC_KEY_MIN_LENGTH) { // 不够公钥长度继续读取
 			return;
 		}
-		if(this.buffer.position() > maxLength) { // 数据超过最大长度
+		if(this.buffer.position() > PUBLIC_KEY_MAX_LENGTH) { // 数据超过最大长度
 			throw new NetException("加密握手长度错误");
 		}
 		this.buffer.flip();
-		final BigInteger publicKey = NumberUtils.decodeUnsigned(this.buffer, minLength);
+		final BigInteger publicKey = NumberUtils.decodeUnsigned(this.buffer, CryptConfig.PUBLIC_KEY_LENGTH);
+		this.buffer.compact();
 		this.dhSecret = this.mseKeyPairBuilder.buildDHSecret(publicKey, this.keyPair.getPrivate());
-		this.buffer.clear();
 		if(this.step == 1) {
 			sendPublicKey();
 			this.step = 3;
@@ -281,80 +238,79 @@ public class MSECryptHandshakeHandler {
 	 * ENCRYPT(VC, crypto_provide, len(PadC), PadC, len(IA)),
 	 * ENCRYPT(IA)
 	 */
-	private void sendProvide() throws NetException, UnsupportedEncodingException {
+	private void sendProvide() throws NetException {
 		LOGGER.debug("加密握手，提供加密选择，步骤：{}", this.step);
 		final TorrentSession torrentSession = this.peerSubMessageHandler.torrentSession();
 		if(torrentSession == null) {
 			throw new NetException("加密握手TorrentSession为空");
 		}
-		final byte[] dhSecretBytes = NumberUtils.encodeUnsigned(this.dhSecret, CryptConfig.PUBLIC_KEY_SIZE);
+		final byte[] dhSecretBytes = NumberUtils.encodeUnsigned(this.dhSecret, CryptConfig.PUBLIC_KEY_LENGTH);
 		final InfoHash infoHash = torrentSession.infoHash();
 		this.cipher = MSECipher.newInitiator(dhSecretBytes, infoHash); // 加密套件
 		ByteBuffer buffer = ByteBuffer.allocate(40); // 20 + 20
 		final MessageDigest digest = DigestUtils.sha1();
 //		HASH('req1', S)
-		digest.update("req1".getBytes(SystemConfig.CHARSET_ASCII));
+		digest.update("req1".getBytes());
 		digest.update(dhSecretBytes);
 		buffer.put(digest.digest());
 //		HASH('req2', SKEY) xor HASH('req3', S)
-		digest.update("req2".getBytes(SystemConfig.CHARSET_ASCII));
+		digest.update("req2".getBytes());
 		digest.update(infoHash.infoHash());
 		final byte[] req2 = digest.digest();
-		digest.update("req3".getBytes(SystemConfig.CHARSET_ASCII));
+		digest.update("req3".getBytes());
 		digest.update(dhSecretBytes);
 		final byte[] req3 = digest.digest();
 		buffer.put(ArrayUtils.xor(req2, req3));
 		this.peerSubMessageHandler.send(buffer);
 //		ENCRYPT(VC, crypto_provide, len(PadC), PadC, len(IA))
-		final byte[] padding = buildZeroPadding(CryptConfig.MSE_MAX_PADDING);
+		final byte[] padding = buildZeroPadding(CryptConfig.PADDING_MAX_LENGTH);
 		final int paddingLength = padding.length;
-		buffer = ByteBuffer.allocate(16 + paddingLength); // 8 + 4 + 2 + Padding + 2
+		buffer = ByteBuffer.allocate(16 + paddingLength); // 8 + 4 + 2 + Padding + 2 + 0
 		buffer.put(CryptConfig.VC); // VC
 		buffer.putInt(CryptConfig.STRATEGY.provide()); // crypto_provide
 		buffer.putShort((short) paddingLength); // len(PadC)
 		buffer.put(padding); // PadC
 		buffer.putShort((short) 0); // len(IA)
-		this.encrypt(buffer, true);
+		this.cipher.encrypt(buffer, true);
 		this.peerSubMessageHandler.send(buffer);
 	}
 
+	private static final int PROVIDE_MIN_LENGTH = 20 + 20 + 8 + 4 + 2 + 0 + 2 + 0;
+	private static final int PROVIDE_MAX_LENGTH = PROVIDE_MIN_LENGTH + CryptConfig.PADDING_MAX_LENGTH;
+	
 	/**
 	 * 接收加密选择
 	 */
-	private void receiveProvide(ByteBuffer buffer) throws NetException, UnsupportedEncodingException {
+	private void receiveProvide(ByteBuffer buffer) throws NetException {
 		LOGGER.debug("加密握手，接收加密选择，步骤：{}", this.step);
-		this.buffer.put(buffer);
-		final int minLength = 20 + 20 + 8 + 4 + 2 + 2;
-		final int maxLength = minLength + CryptConfig.MSE_MAX_PADDING;
-		if(this.buffer.position() < minLength) {
+		final MessageDigest digest = DigestUtils.sha1();
+		final byte[] dhSecretBytes = NumberUtils.encodeUnsigned(this.dhSecret, CryptConfig.PUBLIC_KEY_LENGTH);
+//		HASH('req1', S)
+		digest.update("req1".getBytes());
+		digest.update(dhSecretBytes);
+		final byte[] req1Native = digest.digest();
+		if(!match(req1Native)) {
 			return;
 		}
-		if(this.buffer.position() > maxLength) {
+		if(this.buffer.position() < PROVIDE_MIN_LENGTH) {
+			return;
+		}
+		if(this.buffer.position() > PROVIDE_MAX_LENGTH) {
 			throw new NetException("加密握手长度错误");
 		}
 		this.buffer.flip();
-		final MessageDigest digest = DigestUtils.sha1();
-		final byte[] dhSecretBytes = NumberUtils.encodeUnsigned(this.dhSecret, CryptConfig.PUBLIC_KEY_SIZE);
 		final byte[] req1 = new byte[20];
-		final byte[] req2x3 = new byte[20];
-//		HASH('req1', S)
-		digest.update("req1".getBytes(SystemConfig.CHARSET_ASCII));
-		digest.update(dhSecretBytes);
-		final byte[] req1Native = digest.digest();
 		this.buffer.get(req1);
-		// TODO：为什么不一样，是否是Peer消息
-		if(!ArrayUtils.equals(req1, req1Native)) {
-			throw new NetException("加密握手req1不一致");
-		}
-		ArrayUtils.equals(req1, req1Native);
+//		ArrayUtils.equals(req1, req1Native); // 不验证
 //		HASH('req2', SKEY) xor HASH('req3', S)
+		final byte[] req2x3 = new byte[20];
 		this.buffer.get(req2x3);
-		digest.update("req3".getBytes(SystemConfig.CHARSET_ASCII));
+		digest.update("req3".getBytes());
 		digest.update(dhSecretBytes);
 		InfoHash infoHash = null;
 		final byte[] req3 = digest.digest();
 		for (InfoHash tmp : TorrentManager.getInstance().allInfoHash()) {
-			digest.update("req2".getBytes(SystemConfig.CHARSET_ASCII));
+			digest.update("req2".getBytes());
 			digest.update(tmp.infoHash());
 			byte[] req2 = digest.digest();
 			if (ArrayUtils.equals(ArrayUtils.xor(req2, req3), req2x3)) {
@@ -367,10 +323,10 @@ public class MSECryptHandshakeHandler {
 		}
 		this.cipher = MSECipher.newReceiver(dhSecretBytes, infoHash);
 //		ENCRYPT(VC, crypto_provide, len(PadC), PadC, len(IA))
-		ByteBuffer encryptBuffer = ByteBuffer.allocate(this.buffer.remaining());
+		final ByteBuffer encryptBuffer = ByteBuffer.allocate(this.buffer.remaining());
 		encryptBuffer.put(this.buffer);
 		encryptBuffer.flip();
-		this.decrypt(encryptBuffer, true);
+		this.cipher.decrypt(encryptBuffer, true);
 		final byte[] vc = new byte[CryptConfig.VC_LENGTH];
 		encryptBuffer.get(vc);
 		final int provide = encryptBuffer.getInt(); // 协议选择
@@ -385,35 +341,39 @@ public class MSECryptHandshakeHandler {
 	 */
 	private void sendConfirm(Strategy strategy) {
 		LOGGER.debug("加密握手，确认加密，步骤：{}", this.step);
-		final byte[] padding = buildZeroPadding(CryptConfig.MSE_MAX_PADDING);
+		final byte[] padding = buildZeroPadding(CryptConfig.PADDING_MAX_LENGTH);
 		final int paddingLength = padding.length;
 		final ByteBuffer buffer = ByteBuffer.allocate(14 + paddingLength);
 		buffer.put(CryptConfig.VC);
 		buffer.putInt(strategy.provide());
 		buffer.putShort((short) paddingLength);
 		buffer.put(padding);
-		this.encrypt(buffer, true);
+		this.cipher.encrypt(buffer, true);
 		this.peerSubMessageHandler.send(buffer);
 		LOGGER.debug("发送确认加密协议：{}", strategy);
 		this.over(true, strategy.crypt());
 	}
+	
+	private static final int CONFIRM_MIN_LENGTH = 8 + 4 + 2 + 0;
+	private static final int CONFIRM_MAX_LENGTH = CONFIRM_MIN_LENGTH + CryptConfig.PADDING_MAX_LENGTH;
 	
 	/**
 	 * 确认加密
 	 */
 	private void receiveConfirm(ByteBuffer buffer) throws NetException {
 		LOGGER.debug("加密握手，确认加密，步骤：{}", this.step);
-		this.buffer.put(buffer);
-		final int minLength = 8 + 4 + 2;
-		final int maxLength = minLength + CryptConfig.MSE_MAX_PADDING;
-		if(this.buffer.position() < minLength) {
+		final byte[] vcBytes = this.cipher.decrypt(CryptConfig.VC);
+		if(!match(vcBytes)) {
 			return;
 		}
-		if(this.buffer.position() > maxLength) {
+		if(this.buffer.position() < CONFIRM_MIN_LENGTH) {
+			return;
+		}
+		if(this.buffer.position() > CONFIRM_MAX_LENGTH) {
 			throw new NetException("加密握手长度错误");
 		}
 		this.buffer.flip();
-		this.decrypt(this.buffer, true);
+		this.cipher.decrypt(this.buffer, true);
 		final byte[] vc = new byte[CryptConfig.VC_LENGTH];
 		this.buffer.get(vc);
 		final int provide = this.buffer.getInt(); // 协议选择
@@ -490,7 +450,33 @@ public class MSECryptHandshakeHandler {
 		buffer.position(0); // 重置长度
 		return false;
 	}
-    
+	
+	/**
+	 * 数据匹配
+	 * 
+	 * @param bytes 匹配数据
+	 */
+	private boolean match(byte[] bytes) {
+		int index = 0;
+		final int length = bytes.length;
+		this.buffer.flip();
+		while(this.buffer.remaining() >= (length - index) && length > index) {
+			if(this.buffer.get() != bytes[index]) {
+				index = 0;
+			} else {
+				index++;
+			}
+		}
+		if(index == length) { // 匹配
+			this.buffer.position(this.buffer.position() - length);
+			this.buffer.compact();
+			return false;
+		} else { // 不匹配
+			this.buffer.compact();
+			return true;
+		}
+	}
+	
 	/**
 	 * 完成
 	 * 

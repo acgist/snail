@@ -25,44 +25,54 @@ public class CryptConfig {
 	/**
 	 * 公钥长度（握手终止最短长度）
 	 */
-	public static final int PUBLIC_KEY_SIZE = 96;
+	public static final int PUBLIC_KEY_LENGTH = 96;
 	/**
 	 * <p>私钥长度</p>
 	 * <p>随机长度：128~180，超过180只能增加计算时间，并不能提高安全性，推荐长度：160。</p>
 	 */
-	public static final int PRIVATE_KEY_SIZE = 20;
+	public static final int PRIVATE_KEY_LENGTH = 20;
 	/**
 	 * 填充最大长度
 	 */
-	public static final int MSE_MAX_PADDING = 512;
-	
+	public static final int PADDING_MAX_LENGTH = 512;
 	/**
 	 * VC长度
 	 */
 	public static final int VC_LENGTH = 8;
-	
 	/**
 	 * 八字节：0x00
 	 */
 	public static final byte[] VC = new byte[VC_LENGTH];
-	
 	/**
 	 * 加密策略
 	 */
 	public static final Strategy STRATEGY = Strategy.preferPlaintext;
 	
-	public static final int PROVIDE_PLAINTEXT = 0x01; // 明文
-	public static final int PROVIDE_ARC4 = 		0x02; // RC4
+	/**
+	 * 加密模式
+	 */
+	public enum CryptProvide {
+		
+		plaintext(0x01), // 明文
+		arc4(	  0x02); // ARC4
+		
+		int value;
+		
+		CryptProvide(int value) {
+			this.value = value;
+		}
 
+	}
+	
 	/**
 	 * 加密策略
 	 */
 	public enum Strategy {
 		
-		plaintext(false, PROVIDE_PLAINTEXT), // 文本
-		preferPlaintext(false, PROVIDE_PLAINTEXT | PROVIDE_ARC4), // 兼容：偏爱文本
-		preferEncrypt(true, PROVIDE_ARC4 | PROVIDE_PLAINTEXT), // 兼容：偏爱加密
-		encrypt(true, PROVIDE_ARC4); // 加密
+		plaintext(false, CryptProvide.plaintext.value), // 文本
+		preferPlaintext(false, CryptProvide.plaintext.value | CryptProvide.arc4.value), // 兼容：偏爱文本
+		preferEncrypt(true, CryptProvide.arc4.value | CryptProvide.plaintext.value), // 兼容：偏爱加密
+		encrypt(true, CryptProvide.arc4.value); // 加密
 		
 		boolean crypt; // 加密
 		int provide; // crypto_provide
@@ -80,22 +90,6 @@ public class CryptConfig {
 			return this.provide;
 		}
 		
-	}
-	
-	/**
-	 * 加密模式
-	 */
-	public enum CryptProvide {
-		
-		plaintext(0x01), // 明文
-		arc4(	  0x02); // ARC4加密
-		
-		int value;
-		
-		CryptProvide(int value) {
-			this.value = value;
-		}
-
 	}
 	
 }

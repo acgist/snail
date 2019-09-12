@@ -32,17 +32,23 @@ public class MSEKeyPairBuilder {
 		return new MSEKeyPairBuilder();
 	}
 
+	/**
+	 * 创建密钥对
+	 */
 	public KeyPair buildKeyPair() {
 		final MSEPrivateKey privateKey = new MSEPrivateKey(this.random);
 		final MSEPublicKey publicKey = privateKey.getPublicKey();
 		return new KeyPair(publicKey, privateKey);
 	}
 
+	/**
+	 * 创建S：DH Secret
+	 */
 	public BigInteger buildDHSecret(BigInteger publicKey, PrivateKey privateKey) {
 		if(privateKey instanceof MSEPrivateKey) {
 			return ((MSEPrivateKey) privateKey).buildDHSecret(new MSEPublicKey(publicKey));
 		}
-		throw new ArgumentException("不支持的PrivateKey：" + privateKey);
+		throw new ArgumentException("不支持的私钥：" + privateKey);
 	}
 
 	/**
@@ -80,7 +86,7 @@ public class MSEKeyPairBuilder {
 			if (this.encoded == null) {
 				synchronized (this.lock) {
 					if (this.encoded == null) {
-						this.encoded = NumberUtils.encodeUnsigned(this.value, CryptConfig.PUBLIC_KEY_SIZE);
+						this.encoded = NumberUtils.encodeUnsigned(this.value, CryptConfig.PUBLIC_KEY_LENGTH);
 					}
 				}
 			}
@@ -97,7 +103,7 @@ public class MSEKeyPairBuilder {
 		private static final long serialVersionUID = 1L;
 		
 		private final Object lock;
-		private final BigInteger value;
+		private final BigInteger value; // privateKey
 		private volatile MSEPublicKey publicKey;
 
 		private MSEPrivateKey(SecureRandom random) {
@@ -109,11 +115,11 @@ public class MSEKeyPairBuilder {
 		 * Xa Xb
 		 */
 		private BigInteger buildPrivateKey(SecureRandom random) {
-			final byte[] bytes = new byte[CryptConfig.PRIVATE_KEY_SIZE];
-			for (int index = 0; index < CryptConfig.PRIVATE_KEY_SIZE; index++) {
+			final byte[] bytes = new byte[CryptConfig.PRIVATE_KEY_LENGTH];
+			for (int index = 0; index < CryptConfig.PRIVATE_KEY_LENGTH; index++) {
 				bytes[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_SIZE);
 			}
-			return NumberUtils.decodeUnsigned(ByteBuffer.wrap(bytes), CryptConfig.PRIVATE_KEY_SIZE);
+			return NumberUtils.decodeUnsigned(ByteBuffer.wrap(bytes), CryptConfig.PRIVATE_KEY_LENGTH);
 		}
 
 		/**
@@ -145,12 +151,12 @@ public class MSEKeyPairBuilder {
 
 		@Override
 		public String getFormat() {
-			return null;
+			return "MSE";
 		}
 
 		@Override
 		public byte[] getEncoded() {
-			return null;
+			return this.value.toByteArray();
 		}
 
 	}
