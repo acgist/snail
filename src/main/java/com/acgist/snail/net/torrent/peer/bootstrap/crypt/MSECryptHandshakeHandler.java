@@ -474,10 +474,10 @@ public class MSECryptHandshakeHandler {
 		if(index == length) { // 匹配
 			this.buffer.position(this.buffer.position() - length);
 			this.buffer.compact();
-			return false;
+			return true;
 		} else { // 不匹配
 			this.buffer.compact();
-			return true;
+			return false;
 		}
 	}
 	
