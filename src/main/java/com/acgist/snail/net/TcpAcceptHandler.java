@@ -33,9 +33,9 @@ public class TcpAcceptHandler<T extends TcpMessageHandler> implements Completion
 	}
 	
 	@Override
-	public void completed(AsynchronousSocketChannel result, AsynchronousServerSocketChannel attachment) {
+	public void completed(AsynchronousSocketChannel result, AsynchronousServerSocketChannel channel) {
 		LOGGER.debug("客户端连接成功");
-		accept(attachment);
+		accept(channel);
 		handle(result);
 	}
 	
@@ -54,8 +54,8 @@ public class TcpAcceptHandler<T extends TcpMessageHandler> implements Completion
 	/**
 	 * 接收请求
 	 */
-	private void accept(AsynchronousServerSocketChannel attachment) {
-		attachment.accept(attachment, this);
+	private void accept(AsynchronousServerSocketChannel channel) {
+		channel.accept(channel, this);
 	}
 
 }

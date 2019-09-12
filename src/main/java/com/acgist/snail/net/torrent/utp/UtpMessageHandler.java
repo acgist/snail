@@ -316,8 +316,7 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 		}
 		this.state(windowData.getTimestamp(), acknr);
 		LOGGER.debug("UTP处理数据：{}", windowData.getSeqnr());
-		final ByteBuffer attachment = windowData.buffer();
-		this.peerCryptMessageHandler.onMessage(attachment);
+		this.peerCryptMessageHandler.onMessage(windowData.buffer());
 	}
 	
 	/**

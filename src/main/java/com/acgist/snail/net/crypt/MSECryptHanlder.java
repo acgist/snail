@@ -68,6 +68,10 @@ public class MSECryptHanlder {
 	 */
 	private volatile boolean crypt = false;
 	/**
+	 * 握手等待锁
+	 */
+	private final Object handshakeLock = new Object();
+	/**
 	 * 密钥
 	 */
 	private volatile MSECipher cipher;
@@ -75,14 +79,9 @@ public class MSECryptHanlder {
 	private final PeerSubMessageHandler peerSubMessageHandler;
 	private final PeerUnpackMessageHandler peerUnpackMessageHandler;
 	
-	/**
-	 * 握手等待锁
-	 */
-	private final Object handshakeLock = new Object();
-	
 	// 握手临时数据，握手完成后销毁
 	private KeyPair keyPair; // 密钥对
-	private ByteBuffer buffer; // 数据缓冲
+	private ByteBuffer buffer; // 数据缓冲，TODO：变长buffer
 	private BigInteger dhSecret; // S：DH Secret
 	private MSEKeyPairBuilder mseKeyPairBuilder; // 密钥对Builder
 
@@ -325,8 +324,8 @@ public class MSECryptHanlder {
 	private void receiveProvide(ByteBuffer buffer) throws NetException, UnsupportedEncodingException {
 		LOGGER.debug("加密握手，接收加密选择，步骤：{}", this.step);
 		this.buffer.put(buffer);
-		final int minLength = 20 + 20 + 8 + 4 + 2 + 0 + 2;
-		final int maxLength = 20 + 20 + 8 + 4 + 2 + 512 + 2;
+		final int minLength = 20 + 20 + 8 + 4 + 2 + 2;
+		final int maxLength = minLength + CryptConfig.MSE_MAX_PADDING;
 		if(this.buffer.position() < minLength) {
 			return;
 		}
@@ -343,6 +342,7 @@ public class MSECryptHanlder {
 		digest.update(dhSecretBytes);
 		final byte[] req1Native = digest.digest();
 		this.buffer.get(req1);
+		// TODO：为什么不一样，是否是Peer消息
 		if(!ArrayUtils.equals(req1, req1Native)) {
 			throw new NetException("加密握手req1不一致");
 		}
@@ -404,8 +404,8 @@ public class MSECryptHanlder {
 	private void receiveConfirm(ByteBuffer buffer) throws NetException {
 		LOGGER.debug("加密握手，确认加密，步骤：{}", this.step);
 		this.buffer.put(buffer);
-		final int minLength = 8 + 4 + 2 + 0;
-		final int maxLength = 8 + 4 + 2 + 512;
+		final int minLength = 8 + 4 + 2;
+		final int maxLength = minLength + CryptConfig.MSE_MAX_PADDING;
 		if(this.buffer.position() < minLength) {
 			return;
 		}

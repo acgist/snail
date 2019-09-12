@@ -55,9 +55,9 @@ public class FtpMessageHandler extends TcpMessageHandler {
 	}
 
 	@Override
-	public void onMessage(ByteBuffer attachment) throws NetException {
+	public void onMessage(ByteBuffer buffer) throws NetException {
 		String tmp;
-		String content = IoUtils.readContent(attachment, this.charset);
+		String content = IoUtils.readContent(buffer, this.charset);
 		final StringBuffer command = new StringBuffer();
 		if(content.contains(SPLIT)) {
 			int index = content.indexOf(SPLIT);
