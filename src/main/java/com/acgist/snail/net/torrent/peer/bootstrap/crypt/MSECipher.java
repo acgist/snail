@@ -70,25 +70,23 @@ public class MSECipher {
 	/**
 	 * 加密
 	 */
-	public void encrypt(ByteBuffer buffer, boolean crypt) {
-		if(crypt) {
-			synchronized (this) {
-				try {
-					boolean flip = true; // 标记状态
-					if(buffer.position() != 0) {
-						flip = false;
-						buffer.flip();
-					}
-					final byte[] value = new byte[buffer.remaining()];
-					buffer.get(value);
-					final byte[] eValue = this.getEncryptCipher().update(value);
-					buffer.clear().put(eValue);
-					if(flip) {
-						buffer.flip();
-					}
-				} catch (Exception e) {
-					LOGGER.error("加密异常", e);
+	public void encrypt(ByteBuffer buffer) {
+		synchronized (this) {
+			try {
+				boolean flip = true; // 标记状态
+				if(buffer.position() != 0) {
+					flip = false;
+					buffer.flip();
 				}
+				final byte[] value = new byte[buffer.remaining()];
+				buffer.get(value);
+				final byte[] eValue = this.getEncryptCipher().update(value);
+				buffer.clear().put(eValue);
+				if(flip) {
+					buffer.flip();
+				}
+			} catch (Exception e) {
+				LOGGER.error("加密异常", e);
 			}
 		}
 	}
@@ -107,25 +105,23 @@ public class MSECipher {
 	/**
 	 * 解密
 	 */
-	public void decrypt(ByteBuffer buffer, boolean crypt) {
-		if(crypt) {
-			synchronized (this) {
-				try {
-					boolean flip = true; // 标记状态
-					if(buffer.position() != 0) {
-						flip = false;
-						buffer.flip();
-					}
-					final byte[] value = new byte[buffer.remaining()];
-					buffer.get(value);
-					final byte[] dValue = this.getDecryptCipher().update(value);
-					buffer.clear().put(dValue);
-					if(flip) {
-						buffer.flip();
-					}
-				} catch (Exception e) {
-					LOGGER.error("解密异常", e);
+	public void decrypt(ByteBuffer buffer) {
+		synchronized (this) {
+			try {
+				boolean flip = true; // 标记状态
+				if(buffer.position() != 0) {
+					flip = false;
+					buffer.flip();
 				}
+				final byte[] value = new byte[buffer.remaining()];
+				buffer.get(value);
+				final byte[] dValue = this.getDecryptCipher().update(value);
+				buffer.clear().put(dValue);
+				if(flip) {
+					buffer.flip();
+				}
+			} catch (Exception e) {
+				LOGGER.error("解密异常", e);
 			}
 		}
 	}
