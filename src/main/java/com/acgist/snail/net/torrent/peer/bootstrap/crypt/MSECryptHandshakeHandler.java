@@ -156,14 +156,18 @@ public class MSECryptHandshakeHandler {
 	 * 加密，不改变buffer读取和写入状态。
 	 */
 	public void encrypt(ByteBuffer buffer) {
-		this.cipher.encrypt(buffer, this.crypt);
+		if(this.crypt) {
+			this.cipher.encrypt(buffer);
+		}
 	}
 	
 	/**
 	 * 解密，不改变buffer读取和写入状态。
 	 */
 	public void decrypt(ByteBuffer buffer) {
-		this.cipher.decrypt(buffer, this.crypt);
+		if(this.crypt) {
+			this.cipher.decrypt(buffer);
+		}
 	}
 	
 	/**
@@ -271,7 +275,7 @@ public class MSECryptHandshakeHandler {
 		buffer.putShort((short) paddingLength); // len(PadC)
 		buffer.put(padding); // PadC
 		buffer.putShort((short) 0); // len(IA)
-		this.cipher.encrypt(buffer, true);
+		this.cipher.encrypt(buffer);
 		this.peerSubMessageHandler.send(buffer);
 	}
 
@@ -326,7 +330,7 @@ public class MSECryptHandshakeHandler {
 		final ByteBuffer encryptBuffer = ByteBuffer.allocate(this.buffer.remaining());
 		encryptBuffer.put(this.buffer);
 		encryptBuffer.flip();
-		this.cipher.decrypt(encryptBuffer, true);
+		this.cipher.decrypt(encryptBuffer);
 		final byte[] vc = new byte[CryptConfig.VC_LENGTH];
 		encryptBuffer.get(vc);
 		final int provide = encryptBuffer.getInt(); // 协议选择
@@ -348,7 +352,7 @@ public class MSECryptHandshakeHandler {
 		buffer.putInt(strategy.provide());
 		buffer.putShort((short) paddingLength);
 		buffer.put(padding);
-		this.cipher.encrypt(buffer, true);
+		this.cipher.encrypt(buffer);
 		this.peerSubMessageHandler.send(buffer);
 		LOGGER.debug("发送确认加密协议：{}", strategy);
 		this.over(true, strategy.crypt());
@@ -373,7 +377,7 @@ public class MSECryptHandshakeHandler {
 			throw new NetException("加密握手长度错误");
 		}
 		this.buffer.flip();
-		this.cipher.decrypt(this.buffer, true);
+		this.cipher.decrypt(this.buffer);
 		final byte[] vc = new byte[CryptConfig.VC_LENGTH];
 		this.buffer.get(vc);
 		final int provide = this.buffer.getInt(); // 协议选择
