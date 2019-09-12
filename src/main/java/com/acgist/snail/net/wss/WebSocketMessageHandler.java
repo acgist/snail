@@ -51,7 +51,7 @@ public class WebSocketMessageHandler implements IMessageHandler {
 			try {
 				send(message.getBytes(charset));
 			} catch (UnsupportedEncodingException e) {
-				LOGGER.error("WebSocket消息编码异常，消息：{}，编码：{}", message, charset, e);
+				throw new NetException(String.format("编码异常，编码：%s，内容：%s。", charset, message), e);
 			}
 		}
 	}
