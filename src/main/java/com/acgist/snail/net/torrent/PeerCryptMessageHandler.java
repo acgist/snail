@@ -34,12 +34,12 @@ public class PeerCryptMessageHandler {
 	/**
 	 * 处理消息
 	 */
-	public void onMessage(ByteBuffer attachment) throws NetException {
+	public void onMessage(ByteBuffer buffer) throws NetException {
 		if(this.mseCryptHanlder.over()) { // 握手完成
-			this.mseCryptHanlder.decrypt(attachment);
-			this.peerUnpackMessageHandler.onMessage(attachment);
+			this.mseCryptHanlder.decrypt(buffer);
+			this.peerUnpackMessageHandler.onMessage(buffer);
 		} else { // 握手
-			this.mseCryptHanlder.handshake(attachment);
+			this.mseCryptHanlder.handshake(buffer);
 		}
 	}
 	

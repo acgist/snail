@@ -43,13 +43,13 @@ public class PeerUnpackMessageHandler {
 	/**
 	 * 处理Peer消息
 	 */
-	public void onMessage(ByteBuffer attachment) throws NetException {
+	public void onMessage(ByteBuffer buffer) throws NetException {
 		int length = 0;
 		while(true) {
 			if(this.buffer == null) {
 				if(this.peerSubMessageHandler.handshake()) {
-					for (int index = 0; index < attachment.limit() && attachment.hasRemaining(); index++) {
-						this.lengthStick.put(attachment.get());
+					for (int index = 0; index < buffer.limit() && buffer.hasRemaining(); index++) {
+						this.lengthStick.put(buffer.get());
 						if(this.lengthStick.position() == INTEGER_BYTE_LENGTH) {
 							break;
 						}
@@ -75,23 +75,23 @@ public class PeerUnpackMessageHandler {
 			} else {
 				length = this.buffer.capacity() - this.buffer.position();
 			}
-			final int remaining = attachment.remaining();
+			final int remaining = buffer.remaining();
 			if(remaining > length) { // 包含一个完整消息
 				final byte[] bytes = new byte[length];
-				attachment.get(bytes);
+				buffer.get(bytes);
 				this.buffer.put(bytes);
 				this.peerSubMessageHandler.onMessage(this.buffer);
 				this.buffer = null;
 			} else if(remaining == length) { // 刚好一个完整消息
 				final byte[] bytes = new byte[length];
-				attachment.get(bytes);
+				buffer.get(bytes);
 				this.buffer.put(bytes);
 				this.peerSubMessageHandler.onMessage(this.buffer);
 				this.buffer = null;
 				break;
 			} else if(remaining < length) { // 不是完整消息
 				final byte[] bytes = new byte[remaining];
-				attachment.get(bytes);
+				buffer.get(bytes);
 				this.buffer.put(bytes);
 				break;
 			}

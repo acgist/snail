@@ -42,9 +42,9 @@ public class ApplicationMessageHandler extends TcpMessageHandler {
 	}
 	
 	@Override
-	public void onMessage(ByteBuffer attachment) throws NetException {
+	public void onMessage(ByteBuffer buffer) throws NetException {
 		String command;
-		String content = IoUtils.readContent(attachment);
+		String content = IoUtils.readContent(buffer);
 		if(content.contains(SPLIT)) {
 			int index = content.indexOf(SPLIT);
 			while(index >= 0) {
