@@ -1,4 +1,4 @@
-package com.acgist.snail.net.crypt;
+package com.acgist.snail.net.torrent.peer.bootstrap.crypt;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
@@ -11,9 +11,9 @@ import java.util.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.torrent.PeerUnpackMessageHandler;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
+import com.acgist.snail.net.torrent.peer.bootstrap.PeerUnpackMessageHandler;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.config.CryptConfig;
@@ -27,7 +27,7 @@ import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
- * <p>MSE密钥工具</p>
+ * <p>MSE握手代理</p>
  * <p>加密算法：ARC4</p>
  * <p>密钥交换算法：DH(Diffie-Hellman)</p>
  * <p>参考链接：https://wiki.vuze.com/w/Message_Stream_Encryption</p>
@@ -51,9 +51,9 @@ import com.acgist.snail.utils.ThreadUtils;
  * @author acgist
  * @since 1.1.0
  */
-public class MSECryptHanlder {
+public class MSECryptHandshakeHandler {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(MSECryptHanlder.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MSECryptHandshakeHandler.class);
 
 	/**
 	 * 当前步骤：默认接收
@@ -72,7 +72,7 @@ public class MSECryptHanlder {
 	 */
 	private final Object handshakeLock = new Object();
 	/**
-	 * 密钥
+	 * 密钥对
 	 */
 	private volatile MSECipher cipher;
 	
@@ -85,7 +85,7 @@ public class MSECryptHanlder {
 	private BigInteger dhSecret; // S：DH Secret
 	private MSEKeyPairBuilder mseKeyPairBuilder; // 密钥对Builder
 
-	private MSECryptHanlder(PeerSubMessageHandler peerSubMessageHandler, PeerUnpackMessageHandler peerUnpackMessageHandler) {
+	private MSECryptHandshakeHandler(PeerSubMessageHandler peerSubMessageHandler, PeerUnpackMessageHandler peerUnpackMessageHandler) {
 		final MSEKeyPairBuilder mseKeyPairBuilder = MSEKeyPairBuilder.newInstance();
 		this.buffer = ByteBuffer.allocate(4096); // 4KB
 		this.keyPair = mseKeyPairBuilder.buildKeyPair();
@@ -94,8 +94,8 @@ public class MSECryptHanlder {
 		this.peerUnpackMessageHandler = peerUnpackMessageHandler;
 	}
 
-	public static final MSECryptHanlder newInstance(PeerSubMessageHandler peerSubMessageHandler, PeerUnpackMessageHandler peerUnpackMessageHandler) {
-		return new MSECryptHanlder(peerSubMessageHandler, peerUnpackMessageHandler);
+	public static final MSECryptHandshakeHandler newInstance(PeerSubMessageHandler peerSubMessageHandler, PeerUnpackMessageHandler peerUnpackMessageHandler) {
+		return new MSECryptHandshakeHandler(peerSubMessageHandler, peerUnpackMessageHandler);
 	}
 
 	/**
@@ -106,7 +106,7 @@ public class MSECryptHanlder {
 	}
 
 	/**
-	 * 发起握手
+	 * 发送握手消息
 	 */
 	public void handshake() {
 		sendPublicKey();
@@ -114,7 +114,7 @@ public class MSECryptHanlder {
 	}
 
 	/**
-	 * 握手
+	 * 处理握手消息
 	 */
 	public void handshake(ByteBuffer buffer) {
 		try {
@@ -151,7 +151,7 @@ public class MSECryptHanlder {
 	}
 	
 	/**
-	 * 加密
+	 * 加密，不改变buffer读取和写入状态。
 	 */
 	public void encrypt(ByteBuffer buffer) {
 		encrypt(buffer, this.crypt);
@@ -161,8 +161,8 @@ public class MSECryptHanlder {
 		if(crypt) {
 			synchronized (this.cipher) {
 				try {
-					boolean flip = true;
-					if(buffer.position() != 0) { //  重置标记
+					boolean flip = true; // 标记状态
+					if(buffer.position() != 0) {
 						flip = false;
 						buffer.flip();
 					}
@@ -181,7 +181,7 @@ public class MSECryptHanlder {
 	}
 	
 	/**
-	 * 解密
+	 * 解密，不改变buffer读取和写入状态。
 	 */
 	public void decrypt(ByteBuffer buffer) {
 		decrypt(buffer, this.crypt);
@@ -190,8 +190,8 @@ public class MSECryptHanlder {
 	public void decrypt(ByteBuffer buffer, boolean crypt) {
 		if(crypt) {
 			try {
-				boolean flip = true;
-				if(buffer.position() != 0) { //  重置标记
+				boolean flip = true; // 标记状态
+				if(buffer.position() != 0) {
 					flip = false;
 					buffer.flip();
 				}

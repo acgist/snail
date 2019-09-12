@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.IMessageEncryptHandler;
 import com.acgist.snail.net.UdpMessageHandler;
-import com.acgist.snail.net.torrent.PeerCryptMessageHandler;
+import com.acgist.snail.net.torrent.peer.bootstrap.PeerCryptMessageHandler;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.net.torrent.utp.bootstrap.UtpService;
 import com.acgist.snail.net.torrent.utp.bootstrap.UtpWindow;

@@ -1,4 +1,4 @@
-package com.acgist.snail.net.crypt;
+package com.acgist.snail.net.torrent.peer.bootstrap.crypt;
 
 import java.nio.charset.Charset;
 import java.security.Key;
