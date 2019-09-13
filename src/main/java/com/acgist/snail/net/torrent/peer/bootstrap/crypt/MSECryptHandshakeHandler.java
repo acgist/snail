@@ -464,15 +464,23 @@ public class MSECryptHandshakeHandler {
 		int index = 0;
 		final int length = bytes.length;
 		this.buffer.flip();
-		while(this.buffer.remaining() >= (length - index) && length > index) {
+		if(this.buffer.remaining() < length) {
+			this.buffer.compact();
+			return false;
+		}
+		while(length > index) {
 			if(this.buffer.get() != bytes[index]) {
-				index = 0;
+				this.buffer.position(this.buffer.position() - index); // 最开始的位置移动一位继续匹配
+				index = 0; // 注意位置
+				if(this.buffer.remaining() < length) {
+					break;
+				}
 			} else {
 				index++;
 			}
 		}
 		if(index == length) { // 匹配
-			this.buffer.position(this.buffer.position() - length);
+			this.buffer.position(this.buffer.position() - length); // 匹配值还原
 			this.buffer.compact();
 			return true;
 		} else { // 不匹配
