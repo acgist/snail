@@ -60,6 +60,16 @@ Windows直接点击SnailLauncher.exe即可运行。
 
 > 执行程序和jar、lib、java必须处于同一个目录
 
+#### Maven
+
+```
+<dependency>
+    <groupId>com.acgist</groupId>
+    <artifactId>snail</artifactId>
+    <version>{version}</version>
+</dependency>
+```
+
 ## 进度
 
 |功能|进度|
