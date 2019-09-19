@@ -25,11 +25,11 @@ public class UtpConfig {
 	/**
 	 * 类型 + 版本
 	 */
-	public static final byte TYPE_DATA  = (ST_DATA << 4) + UTP_VERSION;
-	public static final byte TYPE_FIN   = (ST_FIN << 4) + UTP_VERSION;
+	public static final byte TYPE_DATA  = (ST_DATA 	<< 4) + UTP_VERSION;
+	public static final byte TYPE_FIN   = (ST_FIN 	<< 4) + UTP_VERSION;
 	public static final byte TYPE_STATE = (ST_STATE << 4) + UTP_VERSION;
 	public static final byte TYPE_RESET = (ST_RESET << 4) + UTP_VERSION;
-	public static final byte TYPE_SYN   = (ST_SYN << 4) + UTP_VERSION;
+	public static final byte TYPE_SYN   = (ST_SYN 	<< 4) + UTP_VERSION;
 	
 	/**
 	 * 扩展

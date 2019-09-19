@@ -13,7 +13,7 @@ import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.StatisticsSession;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.pojo.wrapper.TorrentFileSelectWrapper;
+import com.acgist.snail.pojo.wrapper.TorrentSelecterWrapper;
 import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.config.PeerConfig;
@@ -51,7 +51,7 @@ public class PeerClientTest {
 		TaskEntity entity = new TaskEntity();
 		entity.setFile("e://tmp/test/");
 		entity.setType(Type.torrent);
-		final TorrentFileSelectWrapper wrapper = TorrentFileSelectWrapper.newEncoder(list);
+		final TorrentSelecterWrapper wrapper = TorrentSelecterWrapper.newEncoder(list);
 		entity.setDescription(wrapper.description());
 		torrentSession.upload(TaskSession.newInstance(entity)).download(false);
 		String host = "127.0.0.1";

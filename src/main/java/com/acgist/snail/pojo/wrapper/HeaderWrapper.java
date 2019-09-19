@@ -18,16 +18,15 @@ import com.acgist.snail.utils.StringUtils;
  * @since 1.1.0
  */
 public class HeaderWrapper {
-
-	private final String protocol; // 协议
-	private final boolean hasProtocol; // 是否含有协议
-	protected final Map<String, List<String>> headers; // 头信息
 	
 	private static final String HEADER_LINE = "\n"; // 头信息换行符
 	private static final String HEADER_SPLIT = ":"; // 头信息分隔符
 	private static final String HEADER_SPACE = " "; // 头信息空格
-	
 	private static final String HEADER_LINE_BUILDER = "\r\n"; // 头信息换行符
+
+	private final String protocol; // 协议
+	private final boolean hasProtocol; // 是否含有协议
+	protected final Map<String, List<String>> headers; // 头信息
 
 	protected HeaderWrapper(String content) {
 		String[] lines;

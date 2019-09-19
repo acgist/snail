@@ -16,7 +16,7 @@ import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.StatisticsSession;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.pojo.wrapper.TorrentFileSelectWrapper;
+import com.acgist.snail.pojo.wrapper.TorrentSelecterWrapper;
 import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.system.config.DatabaseConfig;
 import com.acgist.snail.system.config.PeerConfig;
@@ -47,7 +47,7 @@ public class PeerServerTest {
 		TaskEntity entity = new TaskEntity();
 		entity.setFile("e://tmp/server/");
 		entity.setType(Type.torrent);
-		final TorrentFileSelectWrapper wrapper = TorrentFileSelectWrapper.newEncoder(list);
+		final TorrentSelecterWrapper wrapper = TorrentSelecterWrapper.newEncoder(list);
 		entity.setDescription(wrapper.description());
 		torrentSession.upload(TaskSession.newInstance(entity));
 		PeerServer server = PeerServer.getInstance();
@@ -77,7 +77,7 @@ public class PeerServerTest {
 		TaskEntity entity = new TaskEntity();
 		entity.setFile("e://tmp/client/");
 		entity.setType(Type.torrent);
-		final TorrentFileSelectWrapper wrapper = TorrentFileSelectWrapper.newEncoder(list);
+		final TorrentSelecterWrapper wrapper = TorrentSelecterWrapper.newEncoder(list);
 		entity.setDescription(wrapper.description());
 		torrentSession.upload(TaskSession.newInstance(entity)).download(false);
 		String host = "127.0.0.1";
