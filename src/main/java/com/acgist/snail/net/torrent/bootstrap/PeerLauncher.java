@@ -15,6 +15,7 @@ import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.evaluation.PeerEvaluator;
+import com.acgist.snail.system.evaluation.PeerEvaluator.Type;
 import com.acgist.snail.utils.ObjectUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
@@ -187,6 +188,7 @@ public class PeerLauncher {
 					}
 				}
 				this.peerSubMessageHandler.close();
+				PeerEvaluator.getInstance().score(this.peerSession, Type.download);
 			}
 		} catch (Exception e) {
 			LOGGER.error("PeerLauncher关闭异常", e);
