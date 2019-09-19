@@ -15,7 +15,7 @@ public class ResultSetWrapper {
 	/**
 	 * 查询结果数据
 	 */
-	private Map<String, Object> data = new HashMap<>();
+	private final Map<String, Object> data = new HashMap<>();
 	
 	/**
 	 * 设置查询结果

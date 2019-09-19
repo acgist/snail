@@ -14,7 +14,7 @@ import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TaskSession.Status;
-import com.acgist.snail.pojo.wrapper.TorrentFileSelectWrapper;
+import com.acgist.snail.pojo.wrapper.TorrentSelecterWrapper;
 import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
 import com.acgist.snail.protocol.torrent.bean.TorrentInfo;
@@ -119,7 +119,7 @@ public class TorrentController extends Controller implements Initializable {
 			return;
 		}
 		entity.setSize(this.selecterManager.size());
-		final TorrentFileSelectWrapper wrapper = TorrentFileSelectWrapper.newEncoder(list);
+		final TorrentSelecterWrapper wrapper = TorrentSelecterWrapper.newEncoder(list);
 		entity.setDescription(wrapper.description());
 		if(entity.getId() != null) { // 已经添加数据库
 			boolean restart = false;

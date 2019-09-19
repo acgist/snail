@@ -12,6 +12,7 @@ open module com.acgist.snail {
 	 * 限定导出
 	 */
 	exports com.acgist.main;
+//	exports com.acgist.snail.gui;
 //	exports com.acgist.snail.net;
 //	exports com.acgist.snail.protocol;
 //	exports com.acgist.snail.downloader;
