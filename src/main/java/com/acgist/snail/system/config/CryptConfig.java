@@ -69,10 +69,10 @@ public class CryptConfig {
 	 */
 	public enum Strategy {
 		
-		plaintext(false, CryptProvide.plaintext.value), // 文本
-		preferPlaintext(false, CryptProvide.plaintext.value | CryptProvide.arc4.value), // 兼容：偏爱文本
-		preferEncrypt(true, CryptProvide.arc4.value | CryptProvide.plaintext.value), // 兼容：偏爱加密
-		encrypt(true, CryptProvide.arc4.value); // 加密
+		plaintext		(false, CryptProvide.plaintext.value), // 文本
+		preferPlaintext	(false, CryptProvide.plaintext.value | CryptProvide.arc4.value), // 兼容：偏爱文本
+		preferEncrypt	(true,  CryptProvide.arc4.value | CryptProvide.plaintext.value), // 兼容：偏爱加密
+		encrypt			(true,  CryptProvide.arc4.value); // 加密
 		
 		boolean crypt; // 加密
 		int provide; // crypto_provide

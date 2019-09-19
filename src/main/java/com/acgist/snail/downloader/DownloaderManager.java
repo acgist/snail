@@ -48,6 +48,7 @@ public final class DownloaderManager {
 	private final ExecutorService executor;
 	/**
 	 * 下载任务MAP
+	 * key=任务ID
 	 */
 	private final Map<String, IDownloader> downloaderMap;
 	
@@ -189,7 +190,7 @@ public final class DownloaderManager {
 		LOGGER.info("关闭下载器管理");
 		try {
 			this.downloaderMap.values().stream()
-				.filter(downloader -> downloader.taskSession().downloading())
+				.filter(downloader -> downloader.taskSession().inThreadPool())
 				.forEach(downloader -> downloader.pause());
 		} catch (Exception e) {
 			LOGGER.error("关闭下载器管理异常", e);

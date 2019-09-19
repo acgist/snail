@@ -9,9 +9,8 @@ import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.gui.GuiHandler;
 import com.acgist.snail.pojo.entity.TaskEntity;
-import com.acgist.snail.pojo.entity.TaskEntity.Status;
-import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.wrapper.TorrentFileSelectWrapper;
+import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.system.context.SystemStatistics;
@@ -28,6 +27,44 @@ import com.acgist.snail.utils.StringUtils;
  */
 public class TaskSession {
 
+	/**
+	 * 下载状态
+	 */
+	public enum Status {
+		
+		/**
+		 * 任务添加进入下载前在队列中等待的状态
+		 */
+		await("等待中"),
+		/**
+		 * 任务下载时的状态，不能直接设置为此状态，有下载管理器自动修改为下载中
+		 */
+		download("下载中"),
+		/**
+		 * 任务暂停
+		 */
+		pause("暂停"),
+		/**
+		 * 任务完成，完成状态不能转换为其他任何状态
+		 */
+		complete("完成"),
+		/**
+		 * 任务失败
+		 */
+		fail("失败");
+		
+		private String value;
+
+		private Status(String value) {
+			this.value = value;
+		}
+
+		public String getValue() {
+			return value;
+		}
+		
+	}
+	
 	private static final ThreadLocal<SimpleDateFormat> FORMATER = new ThreadLocal<>() {
 		protected SimpleDateFormat initialValue() {
 			return new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -148,17 +185,17 @@ public class TaskSession {
 	}
 	
 	/**
-	 * 下载状态
-	 */
-	public boolean download() {
-		return this.entity.getStatus() == Status.download;
-	}
-	
-	/**
 	 * 等待状态
 	 */
 	public boolean pause() {
 		return this.entity.getStatus() == Status.pause;
+	}
+	
+	/**
+	 * 下载状态
+	 */
+	public boolean download() {
+		return this.entity.getStatus() == Status.download;
 	}
 	
 	/**
@@ -169,9 +206,9 @@ public class TaskSession {
 	}
 	
 	/**
-	 * 任务执行状态：等待中或者下载中
+	 * 任务执行状态（在线程池中）：等待中或者下载中
 	 */
-	public boolean downloading() {
+	public boolean inThreadPool() {
 		return await() || download();
 	}
 	

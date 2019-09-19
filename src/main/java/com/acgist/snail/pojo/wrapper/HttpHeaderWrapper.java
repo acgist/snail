@@ -10,7 +10,7 @@ import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.UrlUtils;
 
 /**
- * HTTP请求头包装器
+ * HTTP头信息包装器
  * 
  * @author acgist
  * @since 1.0.0

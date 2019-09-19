@@ -2,6 +2,8 @@ package com.acgist.snail.pojo.entity;
 
 import java.util.Date;
 
+import com.acgist.snail.pojo.session.TaskSession.Status;
+import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.system.config.FileTypeConfig.FileType;
 
 /**
@@ -17,57 +19,6 @@ public class TaskEntity extends BaseEntity {
 	public static final String TABLE_NAME = "tb_task";
 	
 	public static final String PROPERTY_NAME = "name"; // 任务名称
-
-	/**
-	 * 下载状态
-	 */
-	public enum Status {
-		
-		/**
-		 * 任务添加进入下载前在队列中等待的状态
-		 */
-		await("等待中"),
-		/**
-		 * 任务下载时的状态，不能直接设置为此状态，有下载管理器自动修改为下载中
-		 */
-		download("下载中"),
-		/**
-		 * 任务暂停
-		 */
-		pause("暂停"),
-		/**
-		 * 任务完成，完成状态不能转换为其他任何状态
-		 */
-		complete("完成"),
-		/**
-		 * 任务失败
-		 */
-		fail("失败");
-		
-		private String value;
-
-		private Status(String value) {
-			this.value = value;
-		}
-
-		public String getValue() {
-			return value;
-		}
-		
-	}
-	
-	/**
-	 * 下载类型
-	 */
-	public enum Type {
-
-		ftp,
-		http,
-		magnet,
-		thunder,
-		torrent;
-
-	}
 	
 	/**
 	 * 任务名称

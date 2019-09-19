@@ -45,9 +45,11 @@ public class BEncodeDecoder implements Closeable {
 	public static final char SEPARATOR = ':'; // 分隔符
 	
 	public enum Type {
+		
 		map, // map
 		list, // list
 		none; // 未知
+		
 	}
 	
 	private List<Object> list;

@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.gui.GuiHandler;
 import com.acgist.snail.gui.GuiHandler.SnailNoticeType;
-import com.acgist.snail.pojo.entity.TaskEntity.Status;
 import com.acgist.snail.pojo.session.TaskSession;
+import com.acgist.snail.pojo.session.TaskSession.Status;
 import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.system.IStatistics;
 import com.acgist.snail.utils.FileUtils;
@@ -105,7 +105,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 				}
 			}
 		}
-		TaskRepository repository = new TaskRepository();
+		final TaskRepository repository = new TaskRepository();
 		repository.delete(this.taskSession.entity());
 	}
 	
@@ -192,7 +192,8 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	}
 	
 	/**
-	 * 唤醒下载等待线程、更新状态
+	 * 唤醒下载等待线程、更新任务状态
+	 * 
 	 * @param status 状态
 	 */
 	private void updateStatus(Status status) {

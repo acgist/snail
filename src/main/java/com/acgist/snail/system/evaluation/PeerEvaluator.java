@@ -54,7 +54,7 @@ public class PeerEvaluator {
 	 */
 	public enum Type {
 		
-		connect(1), // 连接
+		connect	(1), // 连接
 		download(3); // 下载
 
 		private int score; // 评分
