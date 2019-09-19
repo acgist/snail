@@ -94,7 +94,7 @@ public class PeerConfig {
 	public static final byte PEX_SEED_UPLOAD_ONLY =   1 << 1; // 0x02：做种、上传
 	public static final byte PEX_UTP =             	  1 << 2; // 0x04：支持UTP协议
 	public static final byte PEX_HOLEPUNCH =     	  1 << 3; // 0x08：支持holepunch协议；TODO：支持holepunch
-	public static final byte PEX_OUTGO =          	  1 << 4; // 0x10：TODO：了解
+	public static final byte PEX_OUTGO =          	  1 << 4; // 0x10：未知含义：TODO：了解
 	
 	/**
 	 * Peer客户端名称

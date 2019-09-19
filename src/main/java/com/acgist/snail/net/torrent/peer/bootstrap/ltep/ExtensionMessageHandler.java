@@ -37,7 +37,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	public static final String EX_M = "m"; // 扩展协议信息
 	public static final String EX_V = "v"; // 软件信息（名称和版本）
 	public static final String EX_P = "p"; // 端口
-	public static final String EX_REQQ = "reqq"; // 含义：未知：TODO：了解清楚
+	public static final String EX_REQQ = "reqq"; // 未知含义：TODO：了解
 	public static final String EX_YOURIP = "yourip"; // 地址
 	public static final String EX_IP_4 = "ipv4"; // IPv4地址
 	public static final String EX_IP_6 = "ipv6"; // IPv6地址

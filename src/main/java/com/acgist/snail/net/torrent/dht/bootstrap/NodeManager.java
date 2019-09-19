@@ -23,7 +23,7 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * <p>Node管理器</p>
  * <p>DHT节点管理器。</p>
- * <p>TODO：观察是否需要清理Node。</p>
+ * TODO：观察是否需要清理Node
  * 
  * <p>
  * Kademlia：https://baike.baidu.com/item/Kademlia<br>

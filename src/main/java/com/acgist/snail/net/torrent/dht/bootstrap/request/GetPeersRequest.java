@@ -40,7 +40,6 @@ public class GetPeersRequest extends Request {
 
 	/**
 	 * 将Peer和Node加入到列表
-	 * TODO：发送正在使用的Peer
 	 */
 	public static final GetPeersResponse execute(Request request) {
 		final GetPeersResponse response = GetPeersResponse.newInstance(request);
@@ -54,6 +53,7 @@ public class GetPeersRequest extends Request {
 				synchronized (list) {
 					final var values = list.stream()
 						.filter(peer -> peer.available())
+						.filter(peer -> peer.uploading() || peer.downloading())
 						.limit(DhtConfig.GET_PEER_LENGTH)
 						.map(peer -> {
 							buffer.putInt(NetUtils.encodeIpToInt(peer.host()));

@@ -80,7 +80,7 @@ public class MSECryptHandshakeHandler {
 	
 	// 握手临时数据，握手完成后销毁
 	private KeyPair keyPair; // 密钥对
-	private ByteBuffer buffer; // 数据缓冲，TODO：变长buffer
+	private ByteBuffer buffer; // 数据缓冲
 	private BigInteger dhSecret; // S：DH Secret
 	private MSEKeyPairBuilder mseKeyPairBuilder; // 密钥对Builder
 

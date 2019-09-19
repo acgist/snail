@@ -59,8 +59,6 @@ import javafx.util.Callback;
 /**
  * 主窗口控制器
  * TODO：太多列滚动条优化
- * TODO：内存优化
- * TODO：下键空白
  * 
  * @author acgist
  * @since 1.0.0
