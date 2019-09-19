@@ -212,7 +212,6 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 	}
 	
 	/**
-	 * TODO：优化
 	 * <p>流量控制和阻塞控制：</p>
 	 * <p>
 	 * 慢开始：wnd * 2<br>

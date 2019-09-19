@@ -6,7 +6,6 @@ import com.acgist.snail.pojo.session.TaskSession;
 
 /**
  * <p>下载器接口</p>
- * TODO：下载失败时间
  * 
  * @author acgist
  * @since 1.0.0
@@ -64,8 +63,7 @@ public interface IDownloader extends Runnable {
 	
 	/**
 	 * <p>解锁下载</p>
-	 * <p>解除下载等待</p>
-	 * TODO：暂停、失败等优化
+	 * <p>解除下载等待锁</p>
 	 */
 	void unlockDownload();
 	

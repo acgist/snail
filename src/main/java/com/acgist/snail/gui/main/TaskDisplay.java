@@ -14,7 +14,6 @@ import com.acgist.snail.utils.ThreadUtils;
  * <p>任务刷新器</p>
  * TODO：主页隐藏时不刷新任务列表
  * TODO：隐藏、任务完成后刷新时间变短
- * TODO：刷新
  * 
  * @author acgist
  * @since 1.0.0
