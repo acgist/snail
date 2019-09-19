@@ -20,7 +20,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>根据IP地址评估，插入Peer队列的头部还是尾部。</p>
  * <p>将所有IP（2^32个）分为65536（2^16）个区域，然后可以连接和可以下载的均给予评分，然后计算插入Peer队列位置。</p>
  * <p>系统启动时初始化分数，关闭时保存分数，得分=0的记录不保存数据库。</p>
- * TODO：下载计分
  * 
  * @author acgist
  * @since 1.1.0
@@ -30,9 +29,19 @@ public class PeerEvaluator {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerEvaluator.class);
 
 	/**
+	 * 步长
+	 */
+	private static final int RANGE_STEP = 2 << 15;
+	/**
+	 * 最小计分下载大小：1M
+	 */
+	private static final int MIN_SCOREABLE_DOWNLOAD_SIZE = 1024 * 1024;
+	/**
 	 * 范围配置
 	 */
 	private static final String ACGIST_SYSTEM_RANGE = "acgist.system.range";
+	
+	private static final PeerEvaluator INSTANCE = new PeerEvaluator();
 	
 	private boolean available; // 初始完成，可用状态。
 	
@@ -44,10 +53,6 @@ public class PeerEvaluator {
 	 * 范围表
 	 */
 	private final Map<Integer, Long> ranges;
-	/**
-	 * 步长
-	 */
-	private static final int RANGE_STEP = 2 << 15;
 	
 	/**
 	 * 计分类型
@@ -68,8 +73,6 @@ public class PeerEvaluator {
 		}
 		
 	}
-	
-	private static final PeerEvaluator INSTANCE = new PeerEvaluator();
 	
 	private PeerEvaluator() {
 		this.ranges = new ConcurrentHashMap<>();
@@ -111,12 +114,21 @@ public class PeerEvaluator {
 	}
 
 	/**
-	 * 计分
-	 * 不同步，允许运行出现误差
+	 * <p>计分</p>
+	 * <p>下载计分：下载大小 &ge; {@linkplain #MIN_SCOREABLE_DOWNLOAD_SIZE 最小计分下载大小}，可以重复计分。</p>
+	 * <p>注：不同步，允许运行出现误差</p>
 	 */
 	public void score(PeerSession peerSession, Type type) {
+		if(peerSession == null) {
+			return;
+		}
 		if(!this.available) { // 没有初始化不计分
 			return;
+		}
+		if(type == Type.download) { // 下载计分需要满足最小下载大小
+			if(peerSession.statistics().downloadSize() < MIN_SCOREABLE_DOWNLOAD_SIZE) {
+				return;
+			}
 		}
 		final long ip = NetUtils.encodeIpToLong(peerSession.host());
 		final int index = (int) (ip / RANGE_STEP);

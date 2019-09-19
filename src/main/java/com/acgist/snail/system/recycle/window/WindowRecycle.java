@@ -15,7 +15,8 @@ import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.NumberUtils;
 
 /**
- * Window回收站
+ * <p>Window回收站</p>
+ * <p>注：支持Win10</p>
  * 
  * @author acgist
  * @since 1.1.0
