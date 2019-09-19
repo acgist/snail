@@ -40,10 +40,10 @@ public class TrackerConfig extends PropertiesConfig {
 	 */
 	public enum Event {
 		
-		none(0), // none
-		completed(1), // 完成
-		started(2), // 开始
-		stopped(3); // 停止
+		none		(0), // none
+		completed	(1), // 完成
+		started		(2), // 开始
+		stopped		(3); // 停止
 		
 		private int event;
 
@@ -62,10 +62,10 @@ public class TrackerConfig extends PropertiesConfig {
 	 */
 	public enum Action {
 		
-		connect(0), // 连接
+		connect	(0), // 连接
 		announce(1), // 声明信息
-		scrape(2), // 刷新信息
-		error(3); // 错误
+		scrape	(2), // 刷新信息
+		error	(3); // 错误
 		
 		private int action;
 

@@ -4,7 +4,6 @@ import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.downloader.ftp.FtpDownloader;
 import com.acgist.snail.net.ftp.FtpClient;
 import com.acgist.snail.net.ftp.bootstrap.FtpClientBuilder;
-import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.system.exception.DownloadException;

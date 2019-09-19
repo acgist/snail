@@ -4,7 +4,6 @@ import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.downloader.torrent.TorrentDownloader;
 import com.acgist.snail.gui.GuiHandler;
 import com.acgist.snail.net.torrent.TorrentManager;
-import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.Protocol;
@@ -26,8 +25,10 @@ public class TorrentProtocol extends Protocol {
 	 * 种子文件操作
 	 */
 	public enum TorrentFileOperation {
+		
 		copy, // 拷贝
 		move; // 移动
+		
 	}
 	
 	public static final String TORRENT_REGEX = ".+\\.torrent"; // 正则表达式

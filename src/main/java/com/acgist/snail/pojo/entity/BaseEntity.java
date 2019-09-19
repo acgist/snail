@@ -21,8 +21,6 @@ public class BaseEntity implements Serializable {
 	public static final String PROPERTY_CREATE_DATE = "createDate";
 	public static final String PROPERTY_MODIFY_DATE = "modifyDate";
 	
-	public static final String TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss";
-	
 	/**
 	 * ID
 	 */
@@ -38,6 +36,7 @@ public class BaseEntity implements Serializable {
 	
 	/**
 	 * 获取ID，生成的uuid自动去掉“-”
+	 * 
 	 * @return ID
 	 */
 	public String getId() {
@@ -46,6 +45,7 @@ public class BaseEntity implements Serializable {
 
 	/**
 	 * 设置ID
+	 * 
 	 * @param id ID
 	 */
 	public void setId(String id) {
@@ -54,6 +54,7 @@ public class BaseEntity implements Serializable {
 
 	/**
 	 * 获取创建日期
+	 * 
 	 * @return 创建日期
 	 */
 	public Date getCreateDate() {
@@ -62,6 +63,7 @@ public class BaseEntity implements Serializable {
 
 	/**
 	 * 设置创建日期
+	 * 
 	 * @param createDate 创建日期
 	 */
 	public void setCreateDate(Date createDate) {
@@ -70,6 +72,7 @@ public class BaseEntity implements Serializable {
 
 	/**
 	 * 获取修改日期
+	 * 
 	 * @return 修改日期
 	 */
 	public Date getModifyDate() {
@@ -78,7 +81,8 @@ public class BaseEntity implements Serializable {
 
 	/**
 	 * 设置修改日期
-	 * @param modifyDate 日期
+	 * 
+	 * @param modifyDate 修改日期
 	 */
 	public void setModifyDate(Date modifyDate) {
 		this.modifyDate = modifyDate;

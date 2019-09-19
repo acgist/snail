@@ -14,7 +14,7 @@ import com.acgist.snail.gui.Clipboards;
 import com.acgist.snail.gui.Menu;
 import com.acgist.snail.gui.main.MainWindow;
 import com.acgist.snail.gui.torrent.TorrentWindow;
-import com.acgist.snail.pojo.entity.TaskEntity.Type;
+import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.FileUtils;
 

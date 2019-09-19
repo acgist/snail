@@ -3,7 +3,6 @@ package com.acgist.snail.protocol.thunder;
 import java.util.Base64;
 
 import com.acgist.snail.downloader.IDownloader;
-import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.protocol.ProtocolManager;

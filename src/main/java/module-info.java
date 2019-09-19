@@ -12,6 +12,9 @@ open module com.acgist.snail {
 	 * 限定导出
 	 */
 	exports com.acgist.main;
+//	exports com.acgist.snail.net;
+//	exports com.acgist.snail.protocol;
+//	exports com.acgist.snail.downloader;
 
 	/*
 	 * opens：开放包（反射时需要，使用open module不需要此配置）<br>

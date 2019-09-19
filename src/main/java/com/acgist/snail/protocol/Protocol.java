@@ -4,9 +4,8 @@ import java.io.File;
 
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.pojo.entity.TaskEntity;
-import com.acgist.snail.pojo.entity.TaskEntity.Status;
-import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.session.TaskSession;
+import com.acgist.snail.pojo.session.TaskSession.Status;
 import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.exception.DownloadException;
@@ -21,6 +20,19 @@ import com.acgist.snail.utils.StringUtils;
  */
 public abstract class Protocol {
 
+	/**
+	 * 下载类型
+	 */
+	public enum Type {
+
+		ftp,
+		http,
+		magnet,
+		thunder,
+		torrent;
+
+	}
+	
 	protected final Type type; // 下载任务类型
 	protected final String[] regexs; // 协议正则表达式
 	

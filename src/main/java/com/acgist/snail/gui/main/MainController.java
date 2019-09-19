@@ -18,9 +18,9 @@ import com.acgist.snail.gui.build.BuildWindow;
 import com.acgist.snail.gui.menu.TaskMenu;
 import com.acgist.snail.gui.setting.SettingWindow;
 import com.acgist.snail.gui.torrent.TorrentWindow;
-import com.acgist.snail.pojo.entity.TaskEntity.Status;
-import com.acgist.snail.pojo.entity.TaskEntity.Type;
 import com.acgist.snail.pojo.session.TaskSession;
+import com.acgist.snail.pojo.session.TaskSession.Status;
+import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.system.context.SystemStatistics;
 import com.acgist.snail.system.exception.DownloadException;
@@ -392,7 +392,7 @@ public class MainController extends Controller implements Initializable {
 				} else {
 					FileUtils.openInDesktop(new File(session.entity().getFile()));
 				}
-			} else if(session.downloading()) { // 准备中=暂停下载
+			} else if(session.inThreadPool()) { // 准备中=暂停下载
 				DownloaderManager.getInstance().pause(session);
 			} else { // 其他=开始下载
 				try {
