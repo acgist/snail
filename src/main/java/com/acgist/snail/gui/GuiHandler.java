@@ -42,11 +42,11 @@ public class GuiHandler {
 	/**
 	 * 本地GUI
 	 */
-	public static final String GUI = "gui";
+	public static final String MODE_GUI = "gui";
 	/**
 	 * 后台模式
 	 */
-	public static final String DAEMO = "daemo";
+	public static final String MODE_DAEMO = "daemo";
 	
 	/**
 	 * 阻塞锁时间：365天
@@ -172,7 +172,7 @@ public class GuiHandler {
 			this.gui = true;
 		} else {
 			final String arg = args[0];
-			this.gui = !DAEMO.equalsIgnoreCase(arg);
+			this.gui = !MODE_DAEMO.equalsIgnoreCase(arg);
 		}
 		LOGGER.debug("运行模式：{}", this.gui ? "本地GUI" : "后台模式");
 		return this;
