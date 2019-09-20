@@ -74,6 +74,7 @@ public class TorrentStreamGroup {
 		final int fileCount = (int) files.stream()
 			.filter(file -> file.selected())
 			.count(); // 下载文件数量
+		final var startTime = System.currentTimeMillis(); // 开始时间
 		final CountDownLatch allReady = new CountDownLatch(fileCount); // 全部完成：异步线程也执行完成
 		if(CollectionUtils.isNotEmpty(files)) {
 			long pos = 0;
@@ -93,6 +94,8 @@ public class TorrentStreamGroup {
 		SystemThreadContext.submit(() -> {
 			try {
 				allReady.await(100, TimeUnit.SECONDS);
+				final var finishTime = System.currentTimeMillis();
+				LOGGER.debug("{}-任务准备消耗时间：{}", torrent.name(), (finishTime - startTime));
 				torrentSession.resize(torrentStreamGroup.size());
 			} catch (Exception e) {
 				LOGGER.error("统计下载文件大小等待异常", e);

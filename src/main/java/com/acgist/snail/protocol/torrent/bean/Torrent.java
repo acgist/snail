@@ -123,6 +123,17 @@ public class Torrent {
 		return torrent;
 	}
 	
+	/**
+	 * 任务名称，优先使用nameUtf8，如果不存在使用name。
+	 */
+	public String name() {
+		String name = this.info.getNameUtf8();
+		if(StringUtils.isEmpty(name)) {
+			name = StringUtils.charset(this.info.getName(), this.getEncoding());
+		}
+		return name;
+	}
+	
 	public String getComment() {
 		return comment;
 	}
@@ -202,5 +213,5 @@ public class Torrent {
 	public void setInfoHash(InfoHash infoHash) {
 		this.infoHash = infoHash;
 	}
-	
+
 }

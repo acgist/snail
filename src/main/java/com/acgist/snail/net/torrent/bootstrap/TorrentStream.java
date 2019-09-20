@@ -91,7 +91,7 @@ public class TorrentStream {
 			this.fileBeginPos = pos;
 			this.fileEndPos = pos + size;
 			FileUtils.buildFolder(this.file, true); // 创建文件父目录，否者会抛出FileNotFoundException
-			this.fileStream = new RandomAccessFile(this.file, "rw");
+			this.fileStream = new RandomAccessFile(this.file, "rw"); // TODO：替换FileChannel
 			buildFilePiece();
 			buildFileAsyn(complete, allReady);
 			selectPieces.set(this.fileBeginPieceIndex, this.fileEndPieceIndex + 1, true);
