@@ -48,6 +48,11 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 	private static final int UTP_MIN_SIZE = 20;
 	
 	/**
+	 * 扩展消息最小字节长度
+	 */
+	private static final int UTP_EXT_MIN_SIZE = 2;
+	
+	/**
 	 * 是否连接
 	 */
 	private boolean connect;
@@ -143,7 +148,7 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 		final int wndSize = buffer.getInt(); // 窗口大小
 		final short seqnr = buffer.getShort(); // 请求序号
 		final short acknr = buffer.getShort(); // 响应序号
-		if(extension != 0) { // 扩展数据
+		if(extension != 0 && buffer.remaining() >= UTP_EXT_MIN_SIZE) { // 扩展数据
 			final short extLength = buffer.getShort();
 			if(extLength <= 0 || buffer.remaining() < extLength) {
 				throw new NetException("UTP信息格式错误（扩展消息长度）：" + extLength);
