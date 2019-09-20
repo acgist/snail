@@ -210,6 +210,10 @@ public class PeerLauncherGroup {
 				continue;
 			}
 			mark = tmp.mark(); // 清空权重
+			if(!tmp.marked()) { // 第一次连入还没有被评分
+				this.peerLaunchers.offer(tmp);
+				continue;
+			}
 			if(mark > 0) { // 添加可用
 				this.optimize.add(tmp.peerSession());
 			} else { // 如果速度=0，直接剔除
