@@ -61,6 +61,10 @@ public class PeerLauncher {
 	 * 评分：每次收到Piece更新该值，评分时清零。
 	 */
 	private final AtomicInteger mark = new AtomicInteger(0);
+	/**
+	 * 已被评分：第一次连入还没有被评分。
+	 */
+	private volatile boolean marked = false;
 	
 	private final PeerSession peerSession;
 	private final TorrentSession torrentSession;
@@ -204,14 +208,6 @@ public class PeerLauncher {
 	public boolean available() {
 		return this.available && this.peerSubMessageHandler.available();
 	}
-	
-	/**
-	 * <p>获取评分</p>
-	 * <p>每次获取后清空，调用后清空重新开始计算。</p>
-	 */
-	public int mark() {
-		return this.mark.getAndSet(0);
-	}
 
 	/**
 	 * 下载失败
@@ -319,6 +315,25 @@ public class PeerLauncher {
 		this.completeLock.set(false);
 		this.countLock.set(0);
 		this.havePieceMessage = false;
+	}
+	
+	/**
+	 * 已经评分
+	 */
+	public boolean marked() {
+		if(this.marked) {
+			return this.marked;
+		}
+		this.marked = true;
+		return false;
+	}
+	
+	/**
+	 * <p>获取评分</p>
+	 * <p>每次获取后清空，调用后清空重新开始计算。</p>
+	 */
+	public int mark() {
+		return this.mark.getAndSet(0);
 	}
 	
 	/**
