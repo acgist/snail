@@ -7,7 +7,7 @@ import java.util.BitSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.IMessageEncryptHandler;
+import com.acgist.snail.net.torrent.IMessageEncryptHandler;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.bootstrap.PeerConnect;
 import com.acgist.snail.net.torrent.bootstrap.PeerConnectGroup;
