@@ -15,7 +15,7 @@ import com.acgist.snail.utils.NetUtils;
  * 实现（消息处理）：
  * <ul>
  * 	<li>单例</li>
- * 	<li>UDP通道单例</li>
+ * 	<li>UDP通道使用服务器通道</li>
  * </ul>
  * </p>
  * 

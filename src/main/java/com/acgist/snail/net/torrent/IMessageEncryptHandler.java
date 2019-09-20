@@ -1,7 +1,8 @@
-package com.acgist.snail.net;
+package com.acgist.snail.net.torrent;
 
 import java.nio.ByteBuffer;
 
+import com.acgist.snail.net.IMessageHandler;
 import com.acgist.snail.system.exception.NetException;
 
 /**

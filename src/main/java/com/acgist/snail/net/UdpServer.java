@@ -62,7 +62,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 	}
 	
 	/**
-	 * 多播
+	 * 多播（组播）
 	 */
 	public void join(int ttl, String group) {
 		try {
@@ -81,32 +81,33 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 		EXECUTOR.submit(() -> {
 			try {
 				this.loopMessage();
-			} catch (IOException e) {
+			} catch (Exception e) {
 				LOGGER.error("UDP消息代理异常", e);
 			}
 		});
 	}
 	
 	/**
-	 * 循环读取消息
+	 * 消息读取
 	 */
 	private void loopMessage() throws IOException {
-		final Selector selector = Selector.open();
 		if(this.channel == null) {
 			LOGGER.warn("UDP Server通道没有初始化：{}", this.name);
 			return;
 		}
+		final Selector selector = Selector.open();
 		this.channel.register(selector, SelectionKey.OP_READ);
 		while (this.channel.isOpen()) {
 			try {
 				if(selector.select() > 0) {
-					final Set<SelectionKey> keys = selector.selectedKeys();
-					final Iterator<SelectionKey> keysIterator = keys.iterator();
-					while (keysIterator.hasNext()) {
-						final SelectionKey selectedKey = keysIterator.next();
-						keysIterator.remove();
-						if (selectedKey.isValid() && selectedKey.isReadable()) {
+					final Set<SelectionKey> selectionKeys = selector.selectedKeys();
+					final Iterator<SelectionKey> selectionKeysIterator = selectionKeys.iterator();
+					while (selectionKeysIterator.hasNext()) {
+						final SelectionKey selectionKey = selectionKeysIterator.next();
+						selectionKeysIterator.remove(); // 移除已经取出来的信息
+						if (selectionKey.isValid() && selectionKey.isReadable()) {
 							final ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
+							// final DatagramChannel channel = (DatagramChannel) selectionKey.channel();
 							final InetSocketAddress socketAddress = (InetSocketAddress) this.channel.receive(buffer);
 							try {
 								this.handler.handle(this.channel, buffer, socketAddress);
