@@ -34,7 +34,6 @@ import com.acgist.snail.system.exception.ArgumentException;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.CollectionUtils;
-import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>Torrent Session</p>
@@ -528,12 +527,7 @@ public class TorrentSession {
 	 * 下载名称
 	 */
 	public String name() {
-		TorrentInfo torrentInfo = this.torrent.getInfo();
-		String name = torrentInfo.getNameUtf8();
-		if(StringUtils.isEmpty(name)) {
-			name = StringUtils.charset(torrentInfo.getName(), this.torrent.getEncoding());
-		}
-		return name;
+		return this.torrent.name();
 	}
 
 	/**

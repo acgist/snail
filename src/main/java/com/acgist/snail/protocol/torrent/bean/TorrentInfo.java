@@ -75,6 +75,14 @@ public class TorrentInfo {
 		return info;
 	}
 	
+	public String ed2kHex() {
+		return StringUtils.hex(this.ed2k);
+	}
+	
+	public String filehashHex() {
+		return StringUtils.hex(this.filehash);
+	}
+	
 	/**
 	 * 列出下载文件（兼容单个文件）
 	 */
@@ -94,14 +102,6 @@ public class TorrentInfo {
 		} else {
 			return this.files;
 		}
-	}
-	
-	public String ed2kHex() {
-		return StringUtils.hex(this.ed2k);
-	}
-	
-	public String filehashHex() {
-		return StringUtils.hex(this.filehash);
 	}
 	
 	/**

@@ -9,6 +9,7 @@ import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.DatagramChannel;
+import java.nio.channels.Selector;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CodingErrorAction;
@@ -187,6 +188,19 @@ public class IoUtils {
 				channel.close();
 			} catch (Exception e) {
 				LOGGER.error("关闭UDP Channel异常", e);
+			}
+		}
+	}
+
+	/**
+	 * 关闭Selector
+	 */
+	public static void close(Selector selector) {
+		if(selector != null && selector.isOpen()) {
+			try {
+				selector.close();
+			} catch (Exception e) {
+				LOGGER.error("关闭Selector异常", e);
 			}
 		}
 	}

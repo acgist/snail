@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
@@ -57,6 +59,16 @@ public class TorrentStreamTest {
 		long end = System.currentTimeMillis();
 		System.out.println(end - begin);
 		file.close();
+	}
+	
+	@Test
+	public void writeRead() throws Exception {
+		byte[] bytes = Files.readAllBytes(Path.of("F://壁纸/01.png"));
+		var channel = FileChannel.open(Path.of("F:/TEST.png"), StandardOpenOption.READ, StandardOpenOption.WRITE);
+		channel.write(ByteBuffer.wrap(bytes));
+//		channel.force(true);
+//		channel.force(false);
+		ThreadUtils.sleep(100000);
 	}
 	
 }

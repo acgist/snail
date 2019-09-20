@@ -47,6 +47,10 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 	 */
 	private final T handler;
 	/**
+	 * Selector，每个Server独立一个Selector。
+	 */
+	private Selector selector;
+	/**
 	 * 通道
 	 */
 	protected final DatagramChannel channel;
@@ -95,12 +99,12 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 			LOGGER.warn("UDP Server通道没有初始化：{}", this.name);
 			return;
 		}
-		final Selector selector = Selector.open();
-		this.channel.register(selector, SelectionKey.OP_READ);
+		this.selector = Selector.open();
+		this.channel.register(this.selector, SelectionKey.OP_READ);
 		while (this.channel.isOpen()) {
 			try {
-				if(selector.select() > 0) {
-					final Set<SelectionKey> selectionKeys = selector.selectedKeys();
+				if(this.selector.select() > 0) {
+					final Set<SelectionKey> selectionKeys = this.selector.selectedKeys();
 					final Iterator<SelectionKey> selectionKeysIterator = selectionKeys.iterator();
 					while (selectionKeysIterator.hasNext()) {
 						final SelectionKey selectionKey = selectionKeysIterator.next();
@@ -137,6 +141,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 	public void close() {
 		LOGGER.info("UDP Server关闭：{}", this.name);
 		IoUtils.close(this.channel);
+		IoUtils.close(this.selector);
 	}
 	
 	/**

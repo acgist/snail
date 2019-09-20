@@ -79,7 +79,7 @@ public class TorrentController extends Controller implements Initializable {
 			return;
 		}
 		final TorrentInfo torrentInfo = torrent.getInfo();
-		this.selecterManager = SelecterManager.newInstance(torrentInfo.getName(), this.download, tree);
+		this.selecterManager = SelecterManager.newInstance(torrent.name(), this.download, tree);
 		torrentInfo.files().stream()
 			.filter(file -> !file.path().startsWith(TorrentInfo.HIDE_FILE_PREFIX))
 			.sorted((a, b) -> a.path().compareTo(b.path()))
