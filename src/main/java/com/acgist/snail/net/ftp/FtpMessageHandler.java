@@ -55,7 +55,7 @@ public class FtpMessageHandler extends TcpMessageHandler {
 	}
 
 	@Override
-	public void onMessage(ByteBuffer buffer) throws NetException {
+	public void onReceive(ByteBuffer buffer) throws NetException {
 		String tmp;
 		String content = IoUtils.readContent(buffer, this.charset);
 		final StringBuffer command = new StringBuffer();

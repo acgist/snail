@@ -49,11 +49,9 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	}
 	
 	/**
-	 * 处理消息
-	 * 
-	 * @return 是否继续循环读取：true-是；false-不继续
+	 * 收到消息
 	 */
-	public abstract void onMessage(ByteBuffer buffer) throws NetException;
+	public abstract void onReceive(ByteBuffer buffer) throws NetException;
 
 	/**
 	 * 消息代理
@@ -147,7 +145,7 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 			LOGGER.debug("消息长度为零");
 		} else {
 			try {
-				onMessage(buffer);
+				onReceive(buffer);
 			} catch (Exception e) {
 				LOGGER.error("TCP消息处理异常", e);
 			}

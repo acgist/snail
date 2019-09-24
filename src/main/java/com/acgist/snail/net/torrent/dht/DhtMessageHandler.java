@@ -65,7 +65,7 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	};
 	
 	@Override
-	public void onMessage(ByteBuffer buffer, InetSocketAddress socketAddress) {
+	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) {
 		buffer.flip();
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);

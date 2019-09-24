@@ -34,7 +34,7 @@ public class UpnpMessageHandler extends UdpMessageHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UpnpMessageHandler.class);
 	
 	@Override
-	public void onMessage(ByteBuffer buffer, InetSocketAddress socketAddress) {
+	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) {
 		final String content = IoUtils.readContent(buffer);
 		this.setting(content);
 	}

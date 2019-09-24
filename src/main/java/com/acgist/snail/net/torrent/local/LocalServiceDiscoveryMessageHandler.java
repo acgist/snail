@@ -38,7 +38,7 @@ public class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler {
 	private static final String HEADER_INFOHASH = "Infohash";
 
 	@Override
-	public void onMessage(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException {
+	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException {
 		final String content = IoUtils.readContent(buffer);
 		final String host = socketAddress.getHostString();
 		doMessage(content, host);

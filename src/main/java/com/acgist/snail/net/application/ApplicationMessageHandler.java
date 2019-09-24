@@ -42,7 +42,7 @@ public class ApplicationMessageHandler extends TcpMessageHandler {
 	}
 	
 	@Override
-	public void onMessage(ByteBuffer buffer) throws NetException {
+	public void onReceive(ByteBuffer buffer) throws NetException {
 		String command;
 		String content = IoUtils.readContent(buffer);
 		if(content.contains(SPLIT)) {

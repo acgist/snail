@@ -131,7 +131,7 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 	}
 	
 	@Override
-	public void onMessage(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException {
+	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException {
 		if(this.socketAddress == null) {
 			this.socketAddress = socketAddress;
 		}

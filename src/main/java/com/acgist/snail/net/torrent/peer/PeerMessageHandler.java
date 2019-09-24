@@ -40,7 +40,7 @@ public class PeerMessageHandler extends TcpMessageHandler implements IMessageEnc
 	}
 	
 	@Override
-	public void onMessage(ByteBuffer buffer) throws NetException {
+	public void onReceive(ByteBuffer buffer) throws NetException {
 		buffer.flip();
 		this.peerCryptMessageHandler.onMessage(buffer);
 	}
