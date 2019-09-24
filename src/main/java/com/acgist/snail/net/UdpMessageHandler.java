@@ -48,9 +48,9 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 	}
 	
 	/**
-	 * 消息处理
+	 * 收到消息
 	 */
-	public abstract void onMessage(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException;
+	public abstract void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException;
 	
 	/**
 	 * 代理Channel

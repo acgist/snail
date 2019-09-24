@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 import com.acgist.snail.system.exception.NetException;
 
 /**
- * 消息代理
+ * 消息代理：消息接收、发送
  * 
  * @author acgist
  * @since 1.1.0

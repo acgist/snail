@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.system.context.SystemThreadContext;
 
 /**
- * UDP消息接收器。
+ * UDP消息接收器
  */
 public abstract class UdpAcceptHandler {
 
@@ -33,7 +33,7 @@ public abstract class UdpAcceptHandler {
 				synchronized (handler) {
 					handler.handle(channel, socketAddress); // 设置UDP信息
 					if(handler.available()) {
-						handler.onMessage(buffer, socketAddress);
+						handler.onReceive(buffer, socketAddress);
 					}
 				}
 			} catch (Exception e) {

@@ -28,7 +28,7 @@ public class TrackerMessageHandler extends UdpMessageHandler {
 	private static final int ANNOUNCE_MIN_SIZE = 20;
 	
 	@Override
-	public void onMessage(ByteBuffer buffer, InetSocketAddress socketAddress) {
+	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) {
 		buffer.flip();
 		final int action = buffer.getInt();
 		if (action == TrackerConfig.Action.connect.action()) {
