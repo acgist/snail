@@ -32,7 +32,7 @@ public abstract class TcpServer<T extends TcpMessageHandler> {
 	 */
 	private final Class<T> clazz;
 	/**
-	 * Socket服务
+	 * Socket Server
 	 */
 	private AsynchronousServerSocketChannel server;
 	
@@ -46,9 +46,6 @@ public abstract class TcpServer<T extends TcpMessageHandler> {
 		GROUP = group;
 	}
 	
-	/**
-	 * 线程大小根据客户类型优化
-	 */
 	protected TcpServer(String name, Class<T> clazz) {
 		this.name = name;
 		this.clazz = clazz;
@@ -88,7 +85,7 @@ public abstract class TcpServer<T extends TcpMessageHandler> {
 	}
 	
 	/**
-	 * 关闭资源
+	 * 关闭Socket Server
 	 */
 	public void close() {
 		LOGGER.info("TCP Server关闭：{}", this.name);

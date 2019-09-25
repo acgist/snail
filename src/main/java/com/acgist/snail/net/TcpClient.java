@@ -25,7 +25,7 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 	private static final Logger LOGGER = LoggerFactory.getLogger(TcpClient.class);
 	
 	/**
-	 * 所有客户端公用一个线程池，线程池大小等于客户端类型数量
+	 * 客户端公用一个线程池
 	 */
 	private static final AsynchronousChannelGroup GROUP;
 	
@@ -34,7 +34,7 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 	 */
 	private String name;
 	/**
-	 * 超时
+	 * 超时时间
 	 */
 	private int timeout;
 
@@ -48,7 +48,7 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 		GROUP = group;
 	}
 	
-	public TcpClient(String name, int timeout, T handler) {
+	protected TcpClient(String name, int timeout, T handler) {
 		super(handler);
 		this.name = name;
 		this.timeout = timeout;
@@ -88,8 +88,8 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 	}
 	
 	/**
-	 * 关闭资源：重写使用消息处理器关闭。
-	 * 使用消息代理关闭。
+	 * <p>关闭资源</p>
+	 * <p>使用消息代理关闭资源</p>
 	 */
 	@Override
 	public void close() {

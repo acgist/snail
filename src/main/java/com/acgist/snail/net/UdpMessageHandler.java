@@ -41,19 +41,18 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 	
 	/**
 	 * <p>收到消息</p>
-	 * <p>使用消息编码解码器，如果没有实现编码解码器，请重写该方法。</p>
+	 * <p>使用消息处理器处理消息，如果没有实现消息处理器，请重写该方法。</p>
 	 */
 	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException {
 		this.messageCodec.decode(buffer, socketAddress);
 	}
 	
 	/**
-	 * 代理Channel
+	 * 消息代理
 	 */
-	public UdpMessageHandler handle(DatagramChannel channel, InetSocketAddress socketAddress) {
+	public void handle(DatagramChannel channel, InetSocketAddress socketAddress) {
 		this.channel = channel;
 		this.socketAddress = socketAddress;
-		return this;
 	}
 
 	@Override
@@ -109,7 +108,6 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 			LOGGER.warn("发送消息为空");
 			return;
 		}
-		// 不用保证顺序
 		try {
 			final int size = this.channel.send(buffer, socketAddress);
 			if(size <= 0) {

@@ -9,7 +9,7 @@ import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.IoUtils;
 
 /**
- * <p>字符串消息</p>
+ * <p>字符串处理器</p>
  * 
  * @author acgist
  * @since 1.1.1

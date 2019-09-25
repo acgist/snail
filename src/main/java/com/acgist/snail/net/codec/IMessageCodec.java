@@ -7,6 +7,7 @@ import com.acgist.snail.system.exception.NetException;
 
 /**
  * <p>消息处理器：编码、解码、处理</p>
+ * <p>直接实现{@linkplain IMessageCodec 接口}的子类均是最终处理器，继承{@linkplain MessageCodec 适配器}的子类是中间处理器。</p>
  * 
  * @author acgist
  * @since 1.1.1
@@ -14,7 +15,9 @@ import com.acgist.snail.system.exception.NetException;
 public interface IMessageCodec<T> {
 
 	/**
-	 * 是否完成
+	 * 是否结束
+	 * 
+	 * @return true-完成；false-继续
 	 */
 	default boolean done() {
 		return true;

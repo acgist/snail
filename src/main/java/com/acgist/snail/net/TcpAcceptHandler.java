@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.utils.BeanUtils;
 
 /**
- * 客户端连接
+ * <p>TCP客户端连接</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -40,19 +40,19 @@ public class TcpAcceptHandler<T extends TcpMessageHandler> implements Completion
 	}
 	
 	@Override
-	public void failed(Throwable exc, AsynchronousServerSocketChannel client) {
-		LOGGER.error("客户端连接异常", exc);
+	public void failed(Throwable ex, AsynchronousServerSocketChannel client) {
+		LOGGER.error("客户端连接异常", ex);
 	}
 
 	/**
 	 * 消息代理
 	 */
-	private void handle(AsynchronousSocketChannel result) {
-		BeanUtils.newInstance(this.clazz).handle(result);
+	private void handle(AsynchronousSocketChannel channel) {
+		BeanUtils.newInstance(this.clazz).handle(channel);
 	}
 	
 	/**
-	 * 接收请求
+	 * 接收连接
 	 */
 	private void accept(AsynchronousServerSocketChannel channel) {
 		channel.accept(channel, this);

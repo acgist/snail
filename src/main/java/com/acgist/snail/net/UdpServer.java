@@ -15,6 +15,7 @@ import java.util.concurrent.ExecutorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.NetUtils;
@@ -30,8 +31,6 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpServer.class);
 	
-	private static final int BUFFER_SIZE = 10 * 1024;
-	
 	private static final ExecutorService EXECUTOR;
 	
 	static {
@@ -43,7 +42,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 	 */
 	private String name;
 	/**
-	 * 消息接收器
+	 * 消息代理
 	 */
 	private final T handler;
 	/**
@@ -51,7 +50,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 	 */
 	private Selector selector;
 	/**
-	 * 通道
+	 * UDP通道
 	 */
 	protected final DatagramChannel channel;
 	
@@ -92,7 +91,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 	}
 	
 	/**
-	 * 消息读取
+	 * 消息循环读取
 	 */
 	private void loopMessage() throws IOException {
 		if(this.channel == null) {
@@ -110,7 +109,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 						final SelectionKey selectionKey = selectionKeysIterator.next();
 						selectionKeysIterator.remove(); // 移除已经取出来的信息
 						if (selectionKey.isValid() && selectionKey.isReadable()) {
-							final ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
+							final ByteBuffer buffer = ByteBuffer.allocate(SystemConfig.BUFFER_SIZE);
 							// final DatagramChannel channel = (DatagramChannel) selectionKey.channel();
 							final InetSocketAddress socketAddress = (InetSocketAddress) this.channel.receive(buffer);
 							try {
@@ -145,7 +144,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 	}
 	
 	/**
-	 * 关闭Client线程池
+	 * 关闭Server线程池
 	 */
 	public static final void shutdown() {
 		LOGGER.info("关闭UDP Server线程池");
