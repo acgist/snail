@@ -23,8 +23,6 @@ public class TorrentAcceptHandler extends UdpAcceptHandler {
 	
 	private static final TorrentAcceptHandler INSTANCE = new TorrentAcceptHandler();
 	
-	private final UtpService utpService = UtpService.getInstance();
-	
 	private TorrentAcceptHandler() {
 	}
 	
@@ -32,14 +30,21 @@ public class TorrentAcceptHandler extends UdpAcceptHandler {
 		return INSTANCE;
 	}
 	
+	/**
+	 * UTP Service
+	 */
+	private final UtpService utpService = UtpService.getInstance();
+	/**
+	 * DHT消息代理
+	 */
 	private final DhtMessageHandler dhtMessageHandler = new DhtMessageHandler();
 	
 	@Override
 	public UdpMessageHandler messageHandler(ByteBuffer buffer, InetSocketAddress socketAddress) {
 		final byte header = buffer.get(0); // 类型：区分DHT和UTP消息
-		if(DHT_HEADER == header) {
+		if(DHT_HEADER == header) { // DHT
 			return this.dhtMessageHandler;
-		} else {
+		} else { // UTP
 			final short connectionId = buffer.getShort(2); // 连接ID
 			return this.utpService.get(connectionId, socketAddress);
 		}

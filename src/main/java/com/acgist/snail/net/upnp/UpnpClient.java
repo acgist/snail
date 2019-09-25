@@ -20,6 +20,9 @@ public class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UpnpClient.class);
 
+	/**
+	 * 协议
+	 */
 	private static final String PROTOCOL = "M-SEARCH * HTTP/1.1";
 	
 	private UpnpClient(InetSocketAddress socketAddress) {
@@ -48,7 +51,7 @@ public class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	}
 	
 	/**
-	 * 创建M-SEARCH消息。
+	 * 创建M-SEARCH消息
 	 */
 	private String buildMSearch() {
 		final HeaderWrapper builder = HeaderWrapper.newBuilder(PROTOCOL);

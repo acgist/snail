@@ -32,7 +32,7 @@ public class UtpClient extends UdpClient<UtpMessageHandler> {
 	}
 
 	/**
-	 * 握手
+	 * 连接
 	 */
 	public boolean connect() {
 		return this.handler.connect();

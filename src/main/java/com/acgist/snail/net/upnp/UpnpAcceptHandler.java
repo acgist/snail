@@ -27,7 +27,7 @@ public class UpnpAcceptHandler extends UdpAcceptHandler {
 	
 	@Override
 	public UdpMessageHandler messageHandler(ByteBuffer buffer, InetSocketAddress socketAddress) {
-		return upnpMessageHandler;
+		return this.upnpMessageHandler;
 	}
 
 }

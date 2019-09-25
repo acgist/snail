@@ -49,6 +49,9 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	 * <p>使用消息处理器处理消息，如果没有实现消息处理器，请重写该方法。</p>
 	 */
 	public void onReceive(ByteBuffer buffer) throws NetException {
+		if(this.messageCodec == null) {
+			throw new NetException("请实现消息处理器");
+		}
 		this.messageCodec.decode(buffer);
 	}
 	
@@ -72,6 +75,9 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	
 	@Override
 	public void send(String message, String charset) throws NetException {
+		if(this.messageCodec == null) {
+			throw new NetException("请实现消息处理器");
+		}
 		send(this.charset(this.messageCodec.encode(message), charset));
 	}
 	

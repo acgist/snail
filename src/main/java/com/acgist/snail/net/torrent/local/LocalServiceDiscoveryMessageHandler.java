@@ -41,9 +41,9 @@ public class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler imple
 	}
 	
 	@Override
-	public void onMessage(String content, InetSocketAddress address) {
+	public void onMessage(String message, InetSocketAddress address) {
 		final String host = address.getHostString();
-		final HeaderWrapper headers = HeaderWrapper.newInstance(content);
+		final HeaderWrapper headers = HeaderWrapper.newInstance(message);
 		final String port = headers.header(HEADER_PORT);
 		final String cookie = headers.header(HEADER_COOKIE);
 		final List<String> infoHashs = headers.headerList(HEADER_INFOHASH);
@@ -57,7 +57,7 @@ public class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler imple
 				});
 			}
 		} else {
-			LOGGER.debug("不支持的本地发现消息：{}", content);
+			LOGGER.debug("不支持的本地发现消息：{}", message);
 		}
 	}
 
@@ -71,5 +71,5 @@ public class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler imple
 			peerManager.newPeerSession(infoHash, torrentSession.statistics(), host, Integer.valueOf(port), PeerConfig.SOURCE_LSD);
 		}
 	}
-	
+
 }

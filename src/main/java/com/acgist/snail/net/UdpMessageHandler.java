@@ -12,7 +12,7 @@ import com.acgist.snail.net.codec.IMessageCodec;
 import com.acgist.snail.system.exception.NetException;
 
 /**
- * <p>UDP消息</p>
+ * <p>UDP消息代理</p>
  * <p>非线程安全，使用需要保证每一个消息处理器对应的{@linkplain #socketAddress 远程地址}唯一。</p>
  * 
  * @author acgist
@@ -35,7 +35,7 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 	 */
 	protected InetSocketAddress socketAddress;
 	/**
-	 * 编码解码器
+	 * 消息处理器
 	 */
 	protected IMessageCodec<ByteBuffer> messageCodec;
 	
@@ -44,6 +44,9 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 	 * <p>使用消息处理器处理消息，如果没有实现消息处理器，请重写该方法。</p>
 	 */
 	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException {
+		if(this.messageCodec == null) {
+			throw new NetException("请实现消息处理器");
+		}
 		this.messageCodec.decode(buffer, socketAddress);
 	}
 	
@@ -67,6 +70,9 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 
 	@Override
 	public void send(String message, String charset) throws NetException {
+		if(this.messageCodec == null) {
+			throw new NetException("请实现消息处理器");
+		}
 		send(this.charset(this.messageCodec.encode(message), charset));
 	}
 	

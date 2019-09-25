@@ -34,7 +34,7 @@ public abstract class UdpAcceptHandler {
 		EXECUTOR.submit(() -> {
 			try {
 				synchronized (handler) {
-					handler.handle(channel, socketAddress); // 设置UDP信息
+					handler.handle(channel, socketAddress); // 设置代理
 					if(handler.available()) {
 						handler.onReceive(buffer, socketAddress);
 					}
@@ -49,7 +49,7 @@ public abstract class UdpAcceptHandler {
 	 * 获取消息代理
 	 * 
 	 * @param buffer 消息
-	 * @param address 地址
+	 * @param socketAddress 地址
 	 * 
 	 * @return 消息代理
 	 */

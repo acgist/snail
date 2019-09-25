@@ -31,7 +31,7 @@ public class TorrentManager {
 	private static final TorrentManager INSTANCE = new TorrentManager();
 	
 	/**
-	 * infoHashHex作为key
+	 * InfoHashHex作为key
 	 */
 	private Map<String, TorrentSession> torrentSessions;
 	
@@ -44,7 +44,7 @@ public class TorrentManager {
 	}
 	
 	/**
-	 * 通过infoHashHex获取TorrentSession
+	 * 通过InfoHashHex获取TorrentSession
 	 */
 	public TorrentSession torrentSession(String infoHashHex) {
 		return this.torrentSessions.get(infoHashHex);
@@ -122,7 +122,7 @@ public class TorrentManager {
 	}
 	
 	/**
-	 * 加载种子文件。
+	 * 加载种子文件
 	 * 
 	 * @param path torrent文件地址
 	 */

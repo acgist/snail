@@ -21,7 +21,7 @@ public class UpnpRequest {
 	private String serviceType;
 	
 	public static final UpnpRequest newRequest(String serviceType) {
-		UpnpRequest request = new UpnpRequest();
+		final UpnpRequest request = new UpnpRequest();
 		request.build();
 		request.serviceType = serviceType;
 		return request;
@@ -32,7 +32,7 @@ public class UpnpRequest {
 	 */
 	private void build() {
 		this.xml = XMLUtils.create();
-		Element envelope = this.xml.elementNS(xml.document(), "s:Envelope", NAMESPACE_URI);
+		final Element envelope = this.xml.elementNS(xml.document(), "s:Envelope", NAMESPACE_URI);
 		envelope.setAttributeNS(NAMESPACE_URI, "encodingStyle", ENCODING_STYLE);
 		this.body = this.xml.element(envelope, "s:Body");
 	}
@@ -67,7 +67,7 @@ public class UpnpRequest {
 	 * 获取端口映射情况
 	 */
 	public String buildGetSpecificPortMappingEntry(int port, Protocol protocol) {
-		Element mapping = this.xml.elementNS(this.body, "u:GetSpecificPortMappingEntry", this.serviceType);
+		final Element mapping = this.xml.elementNS(this.body, "u:GetSpecificPortMappingEntry", this.serviceType);
 		this.xml.element(mapping, "NewRemoteHost", "");
 		this.xml.element(mapping, "NewExternalPort", String.valueOf(port));
 		this.xml.element(mapping, "NewProtocol", protocol.name().toUpperCase());
@@ -98,7 +98,7 @@ public class UpnpRequest {
 	 * @param portExt 外网端口
 	 */
 	public String buildAddPortMapping(int port, String address, int portExt, Protocol protocol) {
-		Element mapping = this.xml.elementNS(this.body, "u:AddPortMapping", this.serviceType);
+		final Element mapping = this.xml.elementNS(this.body, "u:AddPortMapping", this.serviceType);
 		this.xml.element(mapping, "NewRemoteHost", "");
 		this.xml.element(mapping, "NewExternalPort", String.valueOf(portExt));
 		this.xml.element(mapping, "NewProtocol", protocol.name().toUpperCase());
@@ -125,7 +125,7 @@ public class UpnpRequest {
 	 * 删除端口映射
 	 */
 	public String buildDeletePortMapping(int port, Protocol protocol) {
-		Element mapping = this.xml.elementNS(body, "u:DeletePortMapping", this.serviceType);
+		final Element mapping = this.xml.elementNS(body, "u:DeletePortMapping", this.serviceType);
 		this.xml.element(mapping, "NewRemoteHost", "");
 		this.xml.element(mapping, "NewExternalPort", String.valueOf(port));
 		this.xml.element(mapping, "NewProtocol", protocol.name().toUpperCase());

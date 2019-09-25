@@ -39,37 +39,17 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 	private static final Logger LOGGER = LoggerFactory.getLogger(UtpMessageHandler.class);
 	
 	/**
-	 * 客户端阻塞控制等待（秒）
-	 */
-	private static final int WND_SIZE_CONTROL_TIMEOUT = 4;
-	
-	/**
 	 * UTP消息最小字节长度
 	 */
 	private static final int UTP_MIN_SIZE = 20;
-	
 	/**
 	 * 扩展消息最小字节长度
 	 */
 	private static final int UTP_EXT_MIN_SIZE = 2;
-	
 	/**
-	 * 是否连接
+	 * 客户端阻塞控制等待（秒）
 	 */
-	private boolean connect;
-	/**
-	 * 接收连接ID
-	 */
-	private final short recvId;
-	/**
-	 * 发送连接ID
-	 */
-	private final short sendId;
-	/**
-	 * 连接锁
-	 */
-	private final AtomicBoolean connectLock = new AtomicBoolean(false);
-
+	private static final int WND_SIZE_CONTROL_TIMEOUT = 4;
 	/**
 	 * 默认慢开始wnd数量
 	 */
@@ -84,6 +64,22 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 	private volatile int limitWnd = DEFAULT_LIMIT_WND;
 	
 	/**
+	 * 是否连接
+	 */
+	private boolean connect;
+	/**
+	 * 接收连接ID
+	 */
+	private final short recvId;
+	/**
+	 * 发送连接ID
+	 */
+	private final short sendId;
+	/**
+	 * UTP Service
+	 */
+	private final UtpService utpService;
+	/**
 	 * 发送窗口
 	 */
 	private final UtpWindow sendWindow;
@@ -91,54 +87,59 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 	 * 接收窗口
 	 */
 	private final UtpWindow receiveWindow;
-	
+	/**
+	 * 连接锁
+	 */
+	private final AtomicBoolean connectLock;
+	/**
+	 * Peer代理
+	 */
 	private final PeerSubMessageHandler peerSubMessageHandler;
-	
-	private final UtpService utpService = UtpService.getInstance();
 	
 	/**
 	 * 服务端
 	 */
 	public UtpMessageHandler(final short connectionId, InetSocketAddress socketAddress) {
-		this.peerSubMessageHandler = PeerSubMessageHandler.newInstance();
-		final var peerUnpackMessageCodec = new PeerUnpackMessageCodec(this.peerSubMessageHandler);
-		final var peerCryptMessageCodec = new PeerCryptMessageCodec(this.peerSubMessageHandler, peerUnpackMessageCodec);
-		this.messageCodec = peerCryptMessageCodec;
-		this.peerSubMessageHandler.messageEncryptHandler(this);
-		this.sendWindow = UtpWindow.newInstance();
-		this.receiveWindow = UtpWindow.newInstance();
-		this.socketAddress = socketAddress;
-		this.sendId = connectionId;
-		this.recvId = (short) (this.sendId + 1);
-		this.utpService.put(this);
+		this(PeerSubMessageHandler.newInstance(), socketAddress, connectionId, true);
 	}
 
 	/**
 	 * 客户端
 	 */
 	public UtpMessageHandler(PeerSubMessageHandler peerSubMessageHandler, InetSocketAddress socketAddress) {
+		this(peerSubMessageHandler, socketAddress, (short) 0, false);
+	}
+	
+	private UtpMessageHandler(PeerSubMessageHandler peerSubMessageHandler, InetSocketAddress socketAddress, short connectionId, boolean recv) {
 		this.peerSubMessageHandler = peerSubMessageHandler;
+		this.peerSubMessageHandler.messageEncryptHandler(this);
 		final var peerUnpackMessageCodec = new PeerUnpackMessageCodec(this.peerSubMessageHandler);
 		final var peerCryptMessageCodec = new PeerCryptMessageCodec(this.peerSubMessageHandler, peerUnpackMessageCodec);
 		this.messageCodec = peerCryptMessageCodec;
-		this.peerSubMessageHandler.messageEncryptHandler(this);
+		this.utpService = UtpService.getInstance();
 		this.sendWindow = UtpWindow.newInstance();
 		this.receiveWindow = UtpWindow.newInstance();
+		this.connectLock = new AtomicBoolean(false);
 		this.socketAddress = socketAddress;
-		this.recvId = this.utpService.connectionId();
-		this.sendId = (short) (this.recvId + 1);
+		if(recv) { // 服务端
+			this.sendId = connectionId;
+			this.recvId = (short) (this.sendId + 1);
+		} else { // 客户端
+			this.recvId = this.utpService.connectionId();
+			this.sendId = (short) (this.recvId + 1);
+		}
 		this.utpService.put(this);
 	}
 	
+	/**
+	 * 获取KEY
+	 */
 	public String key() {
 		return this.utpService.buildKey(this.recvId, this.socketAddress);
 	}
 	
 	@Override
 	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException {
-		if(this.socketAddress == null) {
-			this.socketAddress = socketAddress;
-		}
 		buffer.flip();
 		if(buffer.remaining() < UTP_MIN_SIZE) {
 			throw new NetException("UTP消息格式错误（长度）：" + buffer.remaining());

@@ -13,7 +13,7 @@ import com.acgist.snail.system.config.TrackerConfig;
 import com.acgist.snail.utils.PeerUtils;
 
 /**
- * <p>UDP Tracker消息</p>
+ * <p>UDP Tracker消息代理</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -47,8 +47,8 @@ public class TrackerMessageHandler extends UdpMessageHandler {
 	 * 处理连接
 	 */
 	private void doConnect(ByteBuffer buffer) {
-		int trackerId = buffer.getInt();
-		long connectionId = buffer.getLong();
+		final int trackerId = buffer.getInt();
+		final long connectionId = buffer.getLong();
 		TrackerManager.getInstance().connectionId(trackerId, connectionId);
 	}
 
