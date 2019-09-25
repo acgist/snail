@@ -7,7 +7,7 @@ import com.acgist.snail.net.codec.MessageCodec;
 import com.acgist.snail.system.exception.NetException;
 
 /**
- * <p>多行消息</p>
+ * <p>多行消息处理器</p>
  * 
  * @author acgist
  * @since 1.1.1
@@ -19,9 +19,12 @@ public class MultilineMessageCodec extends MessageCodec<String, String> {
 	 */
 	private final String split;
 	/**
-	 * 多行结束符
+	 * 多行结束符（正则表达式）
 	 */
 	private final String endRegex;
+	/**
+	 * 多行消息
+	 */
 	private final StringBuffer message;
 	
 	public MultilineMessageCodec(String split, String endRegex, IMessageCodec<String> messageCodec) {

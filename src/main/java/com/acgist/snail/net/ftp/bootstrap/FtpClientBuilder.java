@@ -14,15 +14,16 @@ import com.acgist.snail.utils.StringUtils;
  */
 public class FtpClientBuilder {
 
-	private static final int FTP_DEFAULT_PORT = 21;
+	private static final int FTP_DEFAULT_PORT = 21; // 默认端口
+	private static final String ANONYMOUS = "anonymous"; // 匿名用户名
 	
 	private final String url; // 下载链接
 	
 	private String host; // 服务器地址
 	private int port; // 服务器端口
-	private String filePath; // 文件路径
 	private String user; // 用户账号
 	private String password; // 用户密码
+	private String filePath; // 文件路径
 	
 	private FtpClientBuilder(String url) {
 		this.url = url;
@@ -67,8 +68,8 @@ public class FtpClientBuilder {
 	 */
 	private void decodeUserInfo(String userInfo) {
 		if(StringUtils.isEmpty(userInfo)) {
-			this.user = FtpClient.ANONYMOUS;
-			this.password = FtpClient.ANONYMOUS;
+			this.user = FtpClientBuilder.ANONYMOUS;
+			this.password = FtpClientBuilder.ANONYMOUS;
 		} else {
 			final String[] userInfos = userInfo.split(":");
 			if(userInfos.length == 1) {
@@ -77,8 +78,8 @@ public class FtpClientBuilder {
 				this.user = userInfos[0];
 				this.password = userInfos[1];
 			} else {
-				this.user = FtpClient.ANONYMOUS;
-				this.password = FtpClient.ANONYMOUS;
+				this.user = FtpClientBuilder.ANONYMOUS;
+				this.password = FtpClientBuilder.ANONYMOUS;
 			}
 		}
 	}

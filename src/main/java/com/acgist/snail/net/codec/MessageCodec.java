@@ -6,13 +6,16 @@ import java.nio.ByteBuffer;
 import com.acgist.snail.system.exception.NetException;
 
 /**
- * <p>处理器代理实现</p>
+ * <p>消息处理器适配器</p>
  * 
  * @author acgist
  * @since 1.1.1
  */
 public abstract class MessageCodec<T, X> implements IMessageCodec<T> {
 
+	/**
+	 * 下一个消息处理器
+	 */
 	protected final IMessageCodec<X> messageCodec;
 
 	public MessageCodec(IMessageCodec<X> messageCodec) {
@@ -34,10 +37,17 @@ public abstract class MessageCodec<T, X> implements IMessageCodec<T> {
 		this.decode(message, address, true);
 	}
 	
+	/**
+	 * 消息解码
+	 * 
+	 * @param message 消息
+	 * @param address 地址
+	 * @param hasAddress 是否包含地址
+	 */
 	protected abstract void decode(T message, InetSocketAddress address, boolean hasAddress) throws NetException;
 	
 	/**
-	 * 下一步
+	 * 执行下一个处理器
 	 * 
 	 * @param message 消息
 	 * @param address 地址

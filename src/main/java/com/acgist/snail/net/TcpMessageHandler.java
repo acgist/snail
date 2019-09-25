@@ -12,11 +12,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.codec.IMessageCodec;
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.IoUtils;
 
 /**
- * TCP消息
+ * TCP消息代理
  * 
  * @author acgist
  * @since 1.0.0
@@ -28,11 +29,7 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	/**
 	 * 发送超时时间
 	 */
-	private static final int SEND_TIMEOUT = 4;
-	/**
-	 * 缓冲区大小
-	 */
-	public static final int BUFFER_SIZE = 10 * 1024;
+	private static final int TIMEOUT = 4;
 	
 	/**
 	 * 是否关闭
@@ -43,12 +40,13 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	 */
 	protected AsynchronousSocketChannel socket;
 	/**
-	 * 解码编码器
+	 * 消息处理器
 	 */
 	protected IMessageCodec<ByteBuffer> messageCodec;
 	
 	/**
-	 * 收到消息
+	 * <p>收到消息</p>
+	 * <p>使用消息处理器处理消息，如果没有实现消息处理器，请重写该方法。</p>
 	 */
 	public void onReceive(ByteBuffer buffer) throws NetException {
 		this.messageCodec.decode(buffer);
@@ -98,7 +96,7 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 		synchronized (this.socket) { // 防止多线程同时读写导致WritePendingException
 			final Future<Integer> future = this.socket.write(buffer);
 			try {
-				final int size = future.get(SEND_TIMEOUT, TimeUnit.SECONDS); // 阻塞线程防止，防止多线程写入时抛出异常：IllegalMonitorStateException
+				final int size = future.get(TIMEOUT, TimeUnit.SECONDS); // 阻塞线程防止，防止多线程写入时抛出异常：IllegalMonitorStateException
 				if(size <= 0) {
 					LOGGER.warn("发送数据为空");
 				}
@@ -152,11 +150,11 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	}
 	
 	/**
-	 * 循环读
+	 * 消息循环读取
 	 */
 	private void loopMessage() {
 		if(available()) {
-			final ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
+			final ByteBuffer buffer = ByteBuffer.allocate(SystemConfig.BUFFER_SIZE);
 			synchronized (this.socket) { // 防止多线程同时读写导致WritePendingException
 				this.socket.read(buffer, buffer, this);
 			}

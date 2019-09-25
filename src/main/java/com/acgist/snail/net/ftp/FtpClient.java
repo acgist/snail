@@ -24,16 +24,14 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FtpClient.class);
 	
-	public static final String ANONYMOUS = "anonymous"; // 匿名用户名
-	
-	private boolean ok = false; // 连接成功
+	private boolean ok = false; // 连接状态
 	private String host; // 服务器地址
 	private int port; // 服务器端口
-	private String user; // FTP用户
-	private String password; // FTP密码
+	private String user; // 用户账号
+	private String password; // 用户密码
 	private String filePath; // 文件路径
 	
-	private String charset = SystemConfig.CHARSET_GBK; // 编码
+	private String charset = SystemConfig.CHARSET_GBK; // 编码：默认GBK
 
 	private FtpClient(String host, int port, String user, String password, String filePath) {
 		super("FTP Client", 2, new FtpMessageHandler());

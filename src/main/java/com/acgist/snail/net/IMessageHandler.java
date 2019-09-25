@@ -7,7 +7,8 @@ import java.nio.ByteBuffer;
 import com.acgist.snail.system.exception.NetException;
 
 /**
- * 消息代理：消息接收、发送
+ * <p>消息代理</p>
+ * <p>消息发送</p>
  * 
  * @author acgist
  * @since 1.1.0
@@ -39,9 +40,9 @@ public interface IMessageHandler {
 	/**
 	 * 消息发送
 	 * 
-	 * @param bytes 消息内容
+	 * @param message 消息内容
 	 */
-	void send(byte[] bytes) throws NetException;
+	void send(byte[] message) throws NetException;
 	
 	/**
 	 * 消息发送（所有其他消息均有这个方法发送）

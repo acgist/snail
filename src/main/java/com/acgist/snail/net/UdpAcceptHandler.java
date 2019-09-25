@@ -11,7 +11,10 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.system.context.SystemThreadContext;
 
 /**
- * UDP消息接收器
+ * UDP消息连接
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 public abstract class UdpAcceptHandler {
 
@@ -47,6 +50,7 @@ public abstract class UdpAcceptHandler {
 	 * 
 	 * @param buffer 消息
 	 * @param address 地址
+	 * 
 	 * @return 消息代理
 	 */
 	public abstract UdpMessageHandler messageHandler(ByteBuffer buffer, InetSocketAddress socketAddress);

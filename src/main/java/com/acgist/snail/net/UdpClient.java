@@ -31,7 +31,7 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessa
 	 */
 	private final String name;
 	/**
-	 * 发送地址
+	 * 远程地址
 	 */
 	protected final InetSocketAddress socketAddress;
 	
@@ -39,7 +39,7 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessa
 	 * 新建客户端
 	 * 
 	 * @param name 客户端名称
-	 * @param handler 消息处理器，每一个客户的必须唯一
+	 * @param handler 消息处理器，每一个客户端唯一
 	 * @param socketAddress 远程客户端地址
 	 */
 	public UdpClient(String name, T handler, InetSocketAddress socketAddress) {
@@ -81,7 +81,8 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessa
 	}
 	
 	/**
-	 * 关闭资源，标记关闭，不能关闭通道。UDP通道只打开一个，程序结束时才能关闭。
+	 * <p>关闭资源，标记关闭，不能关闭通道。</p>
+	 * <p>UDP通道只打开一个，程序结束时才能关闭。</p>
 	 */
 	public void close() {
 		LOGGER.debug("UDP Client关闭：{}", this.name);

@@ -7,7 +7,7 @@ import com.acgist.snail.net.codec.MessageCodec;
 import com.acgist.snail.system.exception.NetException;
 
 /**
- * <p>行消息</p>
+ * <p>行消息处理器</p>
  * 
  * @author acgist
  * @since 1.1.1
@@ -37,6 +37,7 @@ public class LineMessageCodec extends MessageCodec<String, String> {
 				index = messages.indexOf(this.split);
 			}
 		}
+		// TODO：最后还剩没有处理的message和下一个消息合并处理
 	}
 	
 	@Override
