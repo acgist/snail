@@ -11,6 +11,7 @@ import com.acgist.snail.utils.NetUtils;
  */
 public class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDiscoveryAcceptHandler> {
 	
+	// TTL
 	private static final int LSD_TTL = 1;
 	// 本地发现端口
 	public static final int LSD_PORT = 6771;
@@ -20,7 +21,6 @@ public class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDiscovery
 	public static final String LSD_HOST_IPv6 = "[ff15::efc0:988f]";
 	
 	public LocalServiceDiscoveryServer() {
-		// 监听组播端口
 		super(NetUtils.buildUdpChannel(LSD_PORT, true), "LSD Server", LocalServiceDiscoveryAcceptHandler.getInstance());
 		this.join(LSD_TTL, LSD_HOST);
 		this.handler();
@@ -31,5 +31,5 @@ public class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDiscovery
 	public static final LocalServiceDiscoveryServer getInstance() {
 		return INSTANCE;
 	}
-	
+
 }

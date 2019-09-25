@@ -30,7 +30,7 @@ public class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker.boots
 	private final String host;
 	private final int port;
 	/**
-	 * 连接ID：获取Peer时使用。
+	 * 连接ID：获取Peer时使用
 	 */
 	private Long connectionId;
 	private final TrackerClient trackerClient;

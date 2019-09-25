@@ -10,7 +10,7 @@ import com.acgist.snail.system.config.CryptConfig;
 import com.acgist.snail.system.exception.NetException;
 
 /**
- * <p>Peer消息处理：加密、解密</p>
+ * <p>Peer消息处理器：加密、解密</p>
  * 
  * @author acgist
  * @since 1.1.1

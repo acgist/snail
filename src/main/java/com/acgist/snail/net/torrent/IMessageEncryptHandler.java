@@ -6,7 +6,7 @@ import com.acgist.snail.net.IMessageHandler;
 import com.acgist.snail.system.exception.NetException;
 
 /**
- * 加密消息代理
+ * <p>加密消息代理</p>
  * 
  * @author acgist
  * @since 1.1.1
@@ -16,7 +16,7 @@ public interface IMessageEncryptHandler extends IMessageHandler {
 	/**
 	 * 消息加密发送
 	 * 
-	 * @param buffer 消息内容
+	 * @param buffer 消息
 	 */
 	void sendEncrypt(ByteBuffer buffer) throws NetException;
 	

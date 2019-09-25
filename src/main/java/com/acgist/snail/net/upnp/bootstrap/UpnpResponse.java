@@ -27,7 +27,7 @@ public class UpnpResponse {
 		if(StringUtils.isEmpty(body)) {
 			return null;
 		}
-		XMLUtils xml = XMLUtils.load(body);
+		final XMLUtils xml = XMLUtils.load(body);
 		return xml.elementValue("NewExternalIPAddress");
 	}
 	
@@ -53,7 +53,7 @@ public class UpnpResponse {
 		if(StringUtils.isEmpty(body)) {
 			return null;
 		}
-		XMLUtils xml = XMLUtils.load(body);
+		final XMLUtils xml = XMLUtils.load(body);
 		return xml.elementValue("NewInternalClient");
 	}
 

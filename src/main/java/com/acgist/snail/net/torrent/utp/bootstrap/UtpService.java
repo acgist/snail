@@ -13,7 +13,8 @@ import com.acgist.snail.net.torrent.utp.UtpMessageHandler;
 import com.acgist.snail.system.context.SystemThreadContext;
 
 /**
- * UTP服务
+ * <p>UTP Service</p>
+ * <p>管理UTP消息代理</p>
  * 
  * @author acgist
  * @since 1.1.0

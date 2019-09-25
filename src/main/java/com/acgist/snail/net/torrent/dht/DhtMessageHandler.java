@@ -75,7 +75,7 @@ public class DhtMessageHandler extends UdpMessageHandler {
 			LOGGER.warn("DHT消息格式错误：{}", decoder.oddString());
 			return;
 		}
-		final String y = decoder.getString(DhtConfig.KEY_Y);
+		final String y = decoder.getString(DhtConfig.KEY_Y); // 消息类型
 		if(DhtConfig.KEY_Q.equals(y)) {
 			final Request request = Request.valueOf(decoder);
 			request.setSocketAddress(socketAddress);

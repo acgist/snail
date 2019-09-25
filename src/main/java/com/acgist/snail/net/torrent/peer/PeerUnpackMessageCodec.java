@@ -10,7 +10,7 @@ import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
 
 /**
- * <p>Peer消息处理：拆包</p>
+ * <p>Peer消息处理器：拆包</p>
  * 
  * @author acgist
  * @since 1.1.0
