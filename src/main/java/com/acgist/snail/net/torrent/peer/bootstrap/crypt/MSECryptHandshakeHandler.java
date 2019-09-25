@@ -46,6 +46,7 @@ import com.acgist.snail.utils.ThreadUtils;
  * 5 A->B: ENCRYPT2(Payload Stream)
  * </pre>
  * <p>SKEY：infoHash</p>
+ * TODO：粘包拆包处理
  * 
  * @author acgist
  * @since 1.1.0
@@ -74,6 +75,10 @@ public class MSECryptHandshakeHandler {
 	 * 加密套件
 	 */
 	private volatile MSECipher cipher;
+	/**
+	 * 加密套件临时
+	 */
+	private volatile MSECipher cipherTmp;
 	
 	private final PeerSubMessageHandler peerSubMessageHandler;
 	private final PeerUnpackMessageCodec peerUnpackMessageCodec;
@@ -251,6 +256,7 @@ public class MSECryptHandshakeHandler {
 		final byte[] dhSecretBytes = NumberUtils.encodeUnsigned(this.dhSecret, CryptConfig.PUBLIC_KEY_LENGTH);
 		final InfoHash infoHash = torrentSession.infoHash();
 		this.cipher = MSECipher.newInitiator(dhSecretBytes, infoHash); // 加密套件
+		this.cipherTmp = MSECipher.newInitiator(dhSecretBytes, infoHash); // 加密套件临时
 		ByteBuffer buffer = ByteBuffer.allocate(40); // 20 + 20
 		final MessageDigest digest = DigestUtils.sha1();
 //		HASH('req1', S)
@@ -305,7 +311,6 @@ public class MSECryptHandshakeHandler {
 		this.buffer.flip();
 		final byte[] req1 = new byte[20];
 		this.buffer.get(req1);
-//		ArrayUtils.equals(req1, req1Native); // 不验证
 //		HASH('req2', SKEY) xor HASH('req3', S)
 		final byte[] req2x3 = new byte[20];
 		this.buffer.get(req2x3);
@@ -344,10 +349,10 @@ public class MSECryptHandshakeHandler {
 	 * ENCRYPT2(Payload Stream)
 	 */
 	private void sendConfirm(Strategy strategy) {
-		LOGGER.debug("加密握手，确认加密，步骤：{}", this.step);
+		LOGGER.debug("加密握手，发送确认加密，步骤：{}", this.step);
 		final byte[] padding = buildZeroPadding(CryptConfig.PADDING_MAX_LENGTH);
 		final int paddingLength = padding.length;
-		final ByteBuffer buffer = ByteBuffer.allocate(14 + paddingLength);
+		final ByteBuffer buffer = ByteBuffer.allocate(14 + paddingLength); // 8 + 4 + 2 + Padding
 		buffer.put(CryptConfig.VC);
 		buffer.putInt(strategy.provide());
 		buffer.putShort((short) paddingLength);
@@ -365,9 +370,9 @@ public class MSECryptHandshakeHandler {
 	 * 确认加密
 	 */
 	private void receiveConfirm(ByteBuffer buffer) throws NetException {
-		LOGGER.debug("加密握手，确认加密，步骤：{}", this.step);
-		final byte[] vcBytes = this.cipher.decrypt(CryptConfig.VC);
-		if(!match(vcBytes)) {
+		LOGGER.debug("加密握手，收到确认加密，步骤：{}", this.step);
+		final byte[] vcMatch = this.cipherTmp.decrypt(CryptConfig.VC);
+		if(!match(vcMatch)) {
 			return;
 		}
 		if(this.buffer.position() < CONFIRM_MIN_LENGTH) {
@@ -376,6 +381,7 @@ public class MSECryptHandshakeHandler {
 		if(this.buffer.position() > CONFIRM_MAX_LENGTH) {
 			throw new NetException("加密握手长度错误");
 		}
+//		ENCRYPT(VC, crypto_select, len(padD), padD)
 		this.buffer.flip();
 		this.cipher.decrypt(this.buffer);
 		final byte[] vc = new byte[CryptConfig.VC_LENGTH];
@@ -390,6 +396,7 @@ public class MSECryptHandshakeHandler {
 	 * 选择策略
 	 */
 	private CryptConfig.Strategy selectStrategy(int provide) throws NetException {
+		LOGGER.debug("选择策略：{}", provide);
 		final boolean plaintext = (provide & 0x01) == 0x01;
 		final boolean crypt = 	  (provide & 0x02) == 0x02;
 		Strategy selected = null;
@@ -501,6 +508,7 @@ public class MSECryptHandshakeHandler {
 		this.buffer = null;
 		this.keyPair = null;
 		this.dhSecret = null;
+		this.cipherTmp = null;
 		this.mseKeyPairBuilder = null;
 		this.unHandshakeLock();
 	}
