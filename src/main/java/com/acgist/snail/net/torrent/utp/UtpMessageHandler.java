@@ -11,7 +11,8 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.net.torrent.IMessageEncryptHandler;
-import com.acgist.snail.net.torrent.peer.bootstrap.PeerCryptMessageHandler;
+import com.acgist.snail.net.torrent.peer.PeerCryptMessageCodec;
+import com.acgist.snail.net.torrent.peer.PeerUnpackMessageCodec;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.net.torrent.utp.bootstrap.UtpService;
 import com.acgist.snail.net.torrent.utp.bootstrap.UtpWindow;
@@ -91,17 +92,18 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 	 */
 	private final UtpWindow receiveWindow;
 	
-	private final UtpService utpService = UtpService.getInstance();
-	
 	private final PeerSubMessageHandler peerSubMessageHandler;
-	private final PeerCryptMessageHandler peerCryptMessageHandler;
+	
+	private final UtpService utpService = UtpService.getInstance();
 	
 	/**
 	 * 服务端
 	 */
 	public UtpMessageHandler(final short connectionId, InetSocketAddress socketAddress) {
 		this.peerSubMessageHandler = PeerSubMessageHandler.newInstance();
-		this.peerCryptMessageHandler = PeerCryptMessageHandler.newInstance(this.peerSubMessageHandler);
+		final var peerUnpackMessageCodec = new PeerUnpackMessageCodec(this.peerSubMessageHandler);
+		final var peerCryptMessageCodec = new PeerCryptMessageCodec(this.peerSubMessageHandler, peerUnpackMessageCodec);
+		this.messageCodec = peerCryptMessageCodec;
 		this.peerSubMessageHandler.messageEncryptHandler(this);
 		this.sendWindow = UtpWindow.newInstance();
 		this.receiveWindow = UtpWindow.newInstance();
@@ -116,7 +118,9 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 	 */
 	public UtpMessageHandler(PeerSubMessageHandler peerSubMessageHandler, InetSocketAddress socketAddress) {
 		this.peerSubMessageHandler = peerSubMessageHandler;
-		this.peerCryptMessageHandler = PeerCryptMessageHandler.newInstance(this.peerSubMessageHandler);
+		final var peerUnpackMessageCodec = new PeerUnpackMessageCodec(this.peerSubMessageHandler);
+		final var peerCryptMessageCodec = new PeerCryptMessageCodec(this.peerSubMessageHandler, peerUnpackMessageCodec);
+		this.messageCodec = peerCryptMessageCodec;
 		this.peerSubMessageHandler.messageEncryptHandler(this);
 		this.sendWindow = UtpWindow.newInstance();
 		this.receiveWindow = UtpWindow.newInstance();
@@ -183,7 +187,7 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 
 	@Override
 	public void sendEncrypt(ByteBuffer buffer) throws NetException {
-		this.peerCryptMessageHandler.encrypt(buffer);
+		this.messageCodec.encode(buffer);
 		this.send(buffer);
 	}
 	
@@ -320,7 +324,7 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 		}
 		this.state(windowData.getTimestamp(), acknr);
 		LOGGER.debug("UTP处理数据：{}", windowData.getSeqnr());
-		this.peerCryptMessageHandler.onMessage(windowData.buffer());
+		this.messageCodec.decode(windowData.buffer());
 	}
 	
 	/**

@@ -4,7 +4,6 @@ import java.nio.ByteBuffer;
 
 import com.acgist.snail.net.TcpMessageHandler;
 import com.acgist.snail.net.torrent.IMessageEncryptHandler;
-import com.acgist.snail.net.torrent.peer.bootstrap.PeerCryptMessageHandler;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.system.exception.NetException;
 
@@ -18,15 +17,19 @@ public class PeerMessageHandler extends TcpMessageHandler implements IMessageEnc
 
 //	private static final Logger LOGGER = LoggerFactory.getLogger(PeerMessageHandler.class);
 	
+	/**
+	 * Peer代理
+	 */
 	private final PeerSubMessageHandler peerSubMessageHandler;
-	private final PeerCryptMessageHandler peerCryptMessageHandler;
 
 	/**
 	 * 服务端
 	 */
 	public PeerMessageHandler() {
 		this.peerSubMessageHandler = PeerSubMessageHandler.newInstance();
-		this.peerCryptMessageHandler = PeerCryptMessageHandler.newInstance(this.peerSubMessageHandler);
+		final var peerUnpackMessageCodec = new PeerUnpackMessageCodec(this.peerSubMessageHandler);
+		final var peerCryptMessageCodec = new PeerCryptMessageCodec(this.peerSubMessageHandler, peerUnpackMessageCodec);
+		this.messageCodec = peerCryptMessageCodec;
 		this.peerSubMessageHandler.messageEncryptHandler(this);
 	}
 
@@ -35,20 +38,16 @@ public class PeerMessageHandler extends TcpMessageHandler implements IMessageEnc
 	 */
 	public PeerMessageHandler(PeerSubMessageHandler peerSubMessageHandler) {
 		this.peerSubMessageHandler = peerSubMessageHandler;
-		this.peerCryptMessageHandler = PeerCryptMessageHandler.newInstance(this.peerSubMessageHandler);
+		final var peerUnpackMessageCodec = new PeerUnpackMessageCodec(this.peerSubMessageHandler);
+		final var peerCryptMessageCodec = new PeerCryptMessageCodec(this.peerSubMessageHandler, peerUnpackMessageCodec);
+		this.messageCodec = peerCryptMessageCodec;
 		this.peerSubMessageHandler.messageEncryptHandler(this);
 	}
 	
 	@Override
-	public void onReceive(ByteBuffer buffer) throws NetException {
-		buffer.flip();
-		this.peerCryptMessageHandler.onMessage(buffer);
-	}
-	
-	@Override
 	public void sendEncrypt(ByteBuffer buffer) throws NetException {
-		this.peerCryptMessageHandler.encrypt(buffer);
+		this.messageCodec.encode(buffer);
 		this.send(buffer);
 	}
-	
+
 }

@@ -145,8 +145,10 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	 * 登陆服务器
 	 */
 	private void login() {
+		this.handler.resetLock();
 		command("USER " + this.user);
 		command("PASS " + this.password);
+		this.handler.loginLock();
 	}
 	
 	/**
@@ -155,7 +157,7 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	private void charset() {
 		this.handler.resetLock();
 		command("FEAT"); // 列出扩展命令
-		this.charset = this.handler.charset();
+		this.charset = this.handler.charsetLock();
 		if(SystemConfig.CHARSET_UTF8.equals(this.charset)) {
 			command("OPTS UTF8 ON"); // 设置UTF8
 		}

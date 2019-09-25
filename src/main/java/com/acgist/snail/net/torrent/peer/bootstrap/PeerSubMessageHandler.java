@@ -7,6 +7,7 @@ import java.util.BitSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.net.codec.IMessageCodec;
 import com.acgist.snail.net.torrent.IMessageEncryptHandler;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.bootstrap.PeerConnect;
@@ -25,7 +26,7 @@ import com.acgist.snail.utils.BitfieldUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>Peer消息处理</p>
+ * <p>Peer消息代理（TCP/UDP）</p>
  * <p>The BitTorrent Protocol Specification</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0003.html</p>
  * <p>Private Torrents</p>
@@ -55,7 +56,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.1.0
  */
-public class PeerSubMessageHandler {
+public class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerSubMessageHandler.class);
 	
@@ -171,9 +172,7 @@ public class PeerSubMessageHandler {
 		return this.handshakeRcv;
 	}
 	
-	/**
-	 * 处理单条消息
-	 */
+	@Override
 	public void onMessage(final ByteBuffer buffer) {
 		buffer.flip();
 		if(!this.handshakeRcv) { // 是否已经握手

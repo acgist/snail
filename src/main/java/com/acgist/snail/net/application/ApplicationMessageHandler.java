@@ -1,6 +1,5 @@
 package com.acgist.snail.net.application;
 
-import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -14,6 +13,9 @@ import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.gui.GuiHandler;
 import com.acgist.snail.gui.event.impl.TorrentEvent;
 import com.acgist.snail.net.TcpMessageHandler;
+import com.acgist.snail.net.codec.IMessageCodec;
+import com.acgist.snail.net.codec.impl.LineMessageCodec;
+import com.acgist.snail.net.codec.impl.StringMessageCodec;
 import com.acgist.snail.pojo.message.ApplicationMessage;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.system.bencode.BEncodeDecoder;
@@ -22,7 +24,6 @@ import com.acgist.snail.system.context.SystemContext;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.BeanUtils;
-import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -31,47 +32,32 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class ApplicationMessageHandler extends TcpMessageHandler {
+public class ApplicationMessageHandler extends TcpMessageHandler implements IMessageCodec<String> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationMessageHandler.class);
 	
-	public static final String SPLIT = "\r\n"; // 处理粘包分隔符
+	private static final String SPLIT = "\r\n";
 	
 	public ApplicationMessageHandler() {
-		super(SPLIT);
+		final var lineMessageCodec = new LineMessageCodec(SPLIT, this);
+		final var stringMessageCodec = new StringMessageCodec(lineMessageCodec);
+		this.messageCodec = stringMessageCodec;
 	}
 	
 	@Override
-	public void onReceive(ByteBuffer buffer) throws NetException {
-		String command;
-		String content = IoUtils.readContent(buffer);
-		if(content.contains(SPLIT)) {
-			int index = content.indexOf(SPLIT);
-			while(index >= 0) {
-				command = content.substring(0, index);
-				onCommand(command);
-				content = content.substring(index + SPLIT.length());
-				index = content.indexOf(SPLIT);
-			}
-		}
-	};
-	
-	/**
-	 * 单条消息处理
-	 */
-	private void onCommand(String content) {
-		content = content.trim();
-		if(StringUtils.isEmpty(content)) {
+	public void onMessage(String message) {
+		message = message.trim();
+		if(StringUtils.isEmpty(message)) {
 			LOGGER.warn("读取系统消息内容为空");
 			return;
 		}
-		final ApplicationMessage message = ApplicationMessage.valueOf(content);
-		if(message == null) {
-			LOGGER.warn("读取系统消息格式错误：{}", content);
+		final ApplicationMessage applicationMessage = ApplicationMessage.valueOf(message);
+		if(applicationMessage == null) {
+			LOGGER.warn("读取系统消息格式错误：{}", message);
 			return;
 		}
-		LOGGER.debug("处理系统消息：{}", content);
-		this.execute(message);
+		LOGGER.debug("处理系统消息：{}", message);
+		this.execute(applicationMessage);
 	}
 	
 	/**

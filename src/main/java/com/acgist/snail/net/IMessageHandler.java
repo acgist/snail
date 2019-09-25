@@ -1,5 +1,6 @@
 package com.acgist.snail.net;
 
+import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
@@ -60,5 +61,25 @@ public interface IMessageHandler {
 	 * 关闭
 	 */
 	void close();
+	
+	/**
+	 * 字符编码
+	 * 
+	 * @param message 消息
+	 * @param charset 编码
+	 * 
+	 * @return 编码后的消息
+	 */
+	default byte[] charset(String message, String charset) throws NetException {
+		if(charset == null) {
+			return message.getBytes();
+		} else {
+			try {
+				return message.getBytes(charset);
+			} catch (UnsupportedEncodingException e) {
+				throw new NetException(String.format("编码异常，编码：%s，内容：%s。", charset, message), e);
+			}
+		}
+	}
 	
 }

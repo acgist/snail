@@ -1,7 +1,10 @@
-package com.acgist.snail.net.torrent.peer.bootstrap;
+package com.acgist.snail.net.torrent.peer;
 
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
+import com.acgist.snail.net.codec.MessageCodec;
+import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.net.torrent.peer.bootstrap.crypt.MSECryptHandshakeHandler;
 import com.acgist.snail.system.config.CryptConfig;
 import com.acgist.snail.system.exception.NetException;
@@ -12,42 +15,31 @@ import com.acgist.snail.system.exception.NetException;
  * @author acgist
  * @since 1.1.1
  */
-public class PeerCryptMessageHandler {
+public class PeerCryptMessageCodec extends MessageCodec<ByteBuffer, ByteBuffer> {
 
 	/**
 	 * MSE加密处理器
 	 */
 	private final MSECryptHandshakeHandler mseCryptHandshakeHandler;
 	
-	private final PeerUnpackMessageHandler peerUnpackMessageHandler;
-	
-	private PeerCryptMessageHandler(PeerSubMessageHandler peerSubMessageHandler) {
-		this.peerUnpackMessageHandler = PeerUnpackMessageHandler.newInstance(peerSubMessageHandler);
-		this.mseCryptHandshakeHandler = MSECryptHandshakeHandler.newInstance(peerSubMessageHandler, this.peerUnpackMessageHandler);
+	public PeerCryptMessageCodec(PeerSubMessageHandler peerSubMessageHandler, PeerUnpackMessageCodec peerUnpackMessageCodec) {
+		super(peerUnpackMessageCodec);
+		this.mseCryptHandshakeHandler = MSECryptHandshakeHandler.newInstance(peerSubMessageHandler, peerUnpackMessageCodec);
 	}
 	
-	public static final PeerCryptMessageHandler newInstance(PeerSubMessageHandler peerSubMessageHandler) {
-		return new PeerCryptMessageHandler(peerSubMessageHandler);
-	}
-	
-	/**
-	 * 处理消息
-	 * 
-	 * @param buffer 读取状态buffer
-	 */
-	public void onMessage(ByteBuffer buffer) throws NetException {
+	@Override
+	public void decode(ByteBuffer buffer, InetSocketAddress address, boolean hasAddress) throws NetException {
+		buffer.flip();
 		if(this.mseCryptHandshakeHandler.over()) { // 握手完成
 			this.mseCryptHandshakeHandler.decrypt(buffer);
-			this.peerUnpackMessageHandler.onMessage(buffer);
+			this.doNext(buffer, address, hasAddress);
 		} else { // 握手
 			this.mseCryptHandshakeHandler.handshake(buffer);
 		}
 	}
-	
-	/**
-	 * 消息加密
-	 */
-	public void encrypt(ByteBuffer buffer) {
+
+	@Override
+	public void encode(ByteBuffer buffer) {
 		if(this.mseCryptHandshakeHandler.over()) { // 握手完成
 			this.mseCryptHandshakeHandler.encrypt(buffer); // 加密消息
 		} else {

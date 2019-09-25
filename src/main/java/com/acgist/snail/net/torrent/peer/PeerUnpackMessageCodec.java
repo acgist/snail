@@ -1,61 +1,58 @@
-package com.acgist.snail.net.torrent.peer.bootstrap;
+package com.acgist.snail.net.torrent.peer;
 
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
+import com.acgist.snail.net.codec.MessageCodec;
+import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
 
 /**
- * <p>Peer消息处理：粘包</p>
+ * <p>Peer消息处理：拆包</p>
  * 
  * @author acgist
  * @since 1.1.0
  */
-public class PeerUnpackMessageHandler {
+public class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteBuffer> {
 
 	/**
-	 * 如果消息长度不够一个Integer长度时使用
+	 * int字符长度
 	 */
-	private static final int INTEGER_BYTE_LENGTH = 4;
-	/**
-	 * 消息长度
-	 */
-	private final ByteBuffer lengthStick = ByteBuffer.allocate(INTEGER_BYTE_LENGTH);
+	private static final int INT_BYTE_LENGTH = 4;
 	/**
 	 * 完整消息
 	 */
 	private ByteBuffer buffer;
 	/**
-	 * Peer消息处理器
+	 * 消息长度
+	 */
+	private final ByteBuffer lengthStick;
+	/**
+	 * Peer代理
 	 */
 	private final PeerSubMessageHandler peerSubMessageHandler;
 	
-	private PeerUnpackMessageHandler(PeerSubMessageHandler peerSubMessageHandler) {
+	public PeerUnpackMessageCodec(PeerSubMessageHandler peerSubMessageHandler) {
+		super(peerSubMessageHandler);
+		this.lengthStick = ByteBuffer.allocate(INT_BYTE_LENGTH);
 		this.peerSubMessageHandler = peerSubMessageHandler;
 	}
 	
-	public static final PeerUnpackMessageHandler newInstance(PeerSubMessageHandler peerSubMessageHandler) {
-		return new PeerUnpackMessageHandler(peerSubMessageHandler);
-	}
-	
-	/**
-	 * 处理Peer消息
-	 * 
-	 * @param buffer 读取状态buffer
-	 */
-	public void onMessage(ByteBuffer buffer) throws NetException {
+	@Override
+	public void decode(ByteBuffer buffer, InetSocketAddress address, boolean hasAddress) throws NetException {
 		int length = 0;
 		while(true) {
 			if(this.buffer == null) {
 				if(this.peerSubMessageHandler.handshake()) {
 					for (int index = 0; index < buffer.limit() && buffer.hasRemaining(); index++) {
 						this.lengthStick.put(buffer.get());
-						if(this.lengthStick.position() == INTEGER_BYTE_LENGTH) {
+						if(this.lengthStick.position() == INT_BYTE_LENGTH) {
 							break;
 						}
 					}
-					if(this.lengthStick.position() == INTEGER_BYTE_LENGTH) {
+					if(this.lengthStick.position() == INT_BYTE_LENGTH) {
 						this.lengthStick.flip();
 						length = this.lengthStick.getInt();
 						this.lengthStick.compact();
@@ -81,13 +78,13 @@ public class PeerUnpackMessageHandler {
 				final byte[] bytes = new byte[length];
 				buffer.get(bytes);
 				this.buffer.put(bytes);
-				this.peerSubMessageHandler.onMessage(this.buffer);
+				this.doNext(this.buffer, address, hasAddress);
 				this.buffer = null;
 			} else if(remaining == length) { // 刚好一个完整消息
 				final byte[] bytes = new byte[length];
 				buffer.get(bytes);
 				this.buffer.put(bytes);
-				this.peerSubMessageHandler.onMessage(this.buffer);
+				this.doNext(this.buffer, address, hasAddress);
 				this.buffer = null;
 				break;
 			} else if(remaining < length) { // 不是完整消息
@@ -98,5 +95,5 @@ public class PeerUnpackMessageHandler {
 			}
 		}
 	}
-	
+
 }

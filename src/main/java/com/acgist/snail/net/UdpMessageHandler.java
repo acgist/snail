@@ -1,6 +1,5 @@
 package com.acgist.snail.net;
 
-import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
@@ -9,11 +8,12 @@ import java.nio.channels.DatagramChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.net.codec.IMessageCodec;
 import com.acgist.snail.system.exception.NetException;
 
 /**
- * UDP消息
- * 非线程安全，使用需要保证每一个消息处理器对应的{@linkplain #socketAddress 远程地址}唯一。
+ * <p>UDP消息</p>
+ * <p>非线程安全，使用需要保证每一个消息处理器对应的{@linkplain #socketAddress 远程地址}唯一。</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -22,10 +22,6 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpMessageHandler.class);
 
-	/**
-	 * 消息分隔符
-	 */
-	private final String split;
 	/**
 	 * 是否关闭
 	 */
@@ -38,19 +34,18 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 	 * 远程SocketAddress
 	 */
 	protected InetSocketAddress socketAddress;
-	
-	public UdpMessageHandler() {
-		this(null);
-	}
-
-	public UdpMessageHandler(String split) {
-		this.split = split;
-	}
+	/**
+	 * 编码解码器
+	 */
+	protected IMessageCodec<ByteBuffer> messageCodec;
 	
 	/**
-	 * 收到消息
+	 * <p>收到消息</p>
+	 * <p>使用消息编码解码器，如果没有实现编码解码器，请重写该方法。</p>
 	 */
-	public abstract void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException;
+	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException {
+		this.messageCodec.decode(buffer, socketAddress);
+	}
 	
 	/**
 	 * 代理Channel
@@ -73,24 +68,12 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 
 	@Override
 	public void send(String message, String charset) throws NetException {
-		String splitMessage = message;
-		if(this.split != null) {
-			splitMessage += this.split;
-		}
-		if(charset == null) {
-			send(splitMessage.getBytes());
-		} else {
-			try {
-				send(splitMessage.getBytes(charset));
-			} catch (UnsupportedEncodingException e) {
-				throw new NetException(String.format("编码异常，编码：%s，内容：%s。", charset, message), e);
-			}
-		}
+		send(this.charset(this.messageCodec.encode(message), charset));
 	}
 	
 	@Override
-	public void send(byte[] bytes) throws NetException {
-		send(ByteBuffer.wrap(bytes));
+	public void send(byte[] message) throws NetException {
+		send(ByteBuffer.wrap(message));
 	}
 
 	@Override
