@@ -273,7 +273,7 @@ public class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		buffer.get(names);
 		final String name = new String(names);
 		if(!PeerConfig.HANDSHAKE_NAME.equals(name)) {
-			LOGGER.warn("下载协议错误：{}", name);
+			LOGGER.warn("握手消息格式错误（下载协议错误）：{}", name);
 //			this.close(); // 不关闭，选择忽略。
 			return;
 		}
