@@ -27,10 +27,6 @@ public class WebSocketClient extends ClientMessageHandlerAdapter<WebSocketMessag
 	 * 超时时间
 	 */
 	private static final int TIMEOUT = 2;
-	/**
-	 * 创建超时时间
-	 */
-	private static final int CREATE_TIMEOUT = 5;
 	
 	private WebSocketClient(HttpClient client, WebSocket socket) {
 		super(new WebSocketMessageHandler(client, socket));
@@ -44,7 +40,7 @@ public class WebSocketClient extends ClientMessageHandlerAdapter<WebSocketMessag
 		final HttpClient client = HTTPClient.newClient(timeout);
 		final CompletableFuture<WebSocket> future = newWebSocket(client, url, timeout);
 		try {
-			return new WebSocketClient(client, future.get(CREATE_TIMEOUT, TimeUnit.SECONDS));
+			return new WebSocketClient(client, future.get(timeout, TimeUnit.SECONDS));
 		} catch (InterruptedException | ExecutionException | TimeoutException e) {
 			throw new NetException("创建WebSocket失败", e);
 		}
