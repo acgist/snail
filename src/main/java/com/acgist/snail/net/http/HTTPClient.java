@@ -37,7 +37,7 @@ public class HTTPClient {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(HTTPClient.class);
 	
-	public static final int TIMEOUT = 5;
+	public static final int TIMEOUT = 5; // 超时时间
 	
 	public static final int HTTP_OK = 200; // OK
 	public static final int HTTP_PARTIAL_CONTENT = 206; // 端点续传
@@ -70,8 +70,8 @@ public class HTTPClient {
 		LOGGER.debug("User-Agent：{}", USER_AGENT);
 	}
 	
-	private final HttpClient client;
-	private final Builder builder; // request builder
+	private final HttpClient client; // HTTP Client
+	private final Builder builder; // Request Builder
 	
 	private HTTPClient(HttpClient client, Builder builder) {
 		this.client = client;
@@ -153,12 +153,8 @@ public class HTTPClient {
 	 */
 	public <T> HttpResponse<T> postForm(Map<String, String> data, HttpResponse.BodyHandler<T> handler) throws NetException {
 		this.builder.header("Content-type", "application/x-www-form-urlencoded;charset=" + SystemConfig.DEFAULT_CHARSET);
-		if(data == null || data.isEmpty()) {
-			this.builder.POST(BodyPublishers.noBody());
-		} else {
-			this.builder.POST(newFormBodyPublisher(data));
-		}
 		final var request = this.builder
+			.POST(newFormBodyPublisher(data))
 			.build();
 		return request(request, handler);
 	}
@@ -217,6 +213,9 @@ public class HTTPClient {
 		return BodyPublishers.ofString(body);
 	}
 	
+	/**
+	 * 执行GET请求
+	 */
 	public static final <T> HttpResponse<T> get(String requestUrl, HttpResponse.BodyHandler<T> handler) throws NetException {
 		return get(requestUrl, handler, TIMEOUT);
 	}
@@ -250,14 +249,14 @@ public class HTTPClient {
 	}
 
 	/**
-	 * 无法满足请求范围：{@link #HTTP_REQUESTED_RANGE_NOT_SATISFIABLE}
+	 * <p>无法满足请求范围：{@link #HTTP_REQUESTED_RANGE_NOT_SATISFIABLE}</p>
 	 */
 	public static final <T> boolean requestedRangeNotSatisfiable(HttpResponse<T> response) {
 		return response != null && response.statusCode() == HTTP_REQUESTED_RANGE_NOT_SATISFIABLE;
 	}
 	
 	/**
-	 * 服务器错误：{@link #HTTP_INTERNAL_SERVER_ERROR}
+	 * <p>服务器错误：{@link #HTTP_INTERNAL_SERVER_ERROR}</p>
 	 */
 	public static final <T> boolean internalServerError(HttpResponse<T> response) {
 		return response != null && response.statusCode() == HTTP_INTERNAL_SERVER_ERROR;

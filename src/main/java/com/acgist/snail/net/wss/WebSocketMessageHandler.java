@@ -1,6 +1,5 @@
 package com.acgist.snail.net.wss;
 
-import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.http.HttpClient;
 import java.net.http.WebSocket;
@@ -15,7 +14,7 @@ import com.acgist.snail.net.IMessageHandler;
 import com.acgist.snail.system.exception.NetException;
 
 /**
- * WebSocket消息处理
+ * WebSocket消息代理
  * 
  * @author acgist
  * @since 1.1.0
@@ -23,6 +22,11 @@ import com.acgist.snail.system.exception.NetException;
 public class WebSocketMessageHandler implements IMessageHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WebSocketMessageHandler.class);
+	
+	/**
+	 * 发送超时时间
+	 */
+	private static final int TIMEOUT = 4;
 	
 	private boolean close = false;
 //	private final HttpClient client;
@@ -45,15 +49,7 @@ public class WebSocketMessageHandler implements IMessageHandler {
 
 	@Override
 	public void send(String message, String charset) throws NetException {
-		if(charset == null) {
-			send(message.getBytes());
-		} else {
-			try {
-				send(message.getBytes(charset));
-			} catch (UnsupportedEncodingException e) {
-				throw new NetException(String.format("编码异常，编码：%s，内容：%s。", charset, message), e);
-			}
-		}
+		send(this.charset(message, charset));
 	}
 
 	@Override
@@ -77,7 +73,7 @@ public class WebSocketMessageHandler implements IMessageHandler {
 		synchronized (this.socket) { // 保证顺序
 			final Future<WebSocket> future = this.socket.sendBinary(buffer, true);
 			try {
-				final WebSocket webSocket = future.get(4, TimeUnit.SECONDS);
+				final WebSocket webSocket = future.get(TIMEOUT, TimeUnit.SECONDS);
 				if(webSocket == null) {
 					LOGGER.warn("发送数据为空");
 				}
@@ -97,6 +93,7 @@ public class WebSocketMessageHandler implements IMessageHandler {
 		this.close = true;
 		synchronized (this.socket) {
 			this.socket.sendClose(WebSocket.NORMAL_CLOSURE, "Close");
+			this.socket.abort();
 		}
 	}
 

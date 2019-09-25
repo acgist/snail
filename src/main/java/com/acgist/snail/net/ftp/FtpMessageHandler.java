@@ -31,15 +31,11 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FtpMessageHandler.class);
 	
-	private boolean range = false; // 断点续传
-	
-	private String failMessage; // 错误信息
-	
 	private Socket socket; // Socket
 	private InputStream inputStream; // 输入流
-	
+	private boolean range = false; // 断点续传
+	private String failMessage; // 错误信息
 	private String charset = SystemConfig.CHARSET_GBK; // 编码：默认GBK
-	
 	private final AtomicBoolean commandLock = new AtomicBoolean(false); // 命令等待锁
 	
 	/**
