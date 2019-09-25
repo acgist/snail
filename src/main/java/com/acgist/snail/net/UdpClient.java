@@ -22,7 +22,7 @@ import com.acgist.snail.utils.NetUtils;
  * @author acgist
  * @since 1.0.0
  */
-public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessageHandlerAdapter<T> implements IMessageHandler {
+public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessageHandlerAdapter<T> {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpClient.class);
 

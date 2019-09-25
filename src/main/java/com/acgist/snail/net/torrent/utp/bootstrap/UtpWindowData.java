@@ -54,7 +54,7 @@ public class UtpWindowData {
 	}
 
 	public ByteBuffer buffer() {
-		return ByteBuffer.wrap(this.data);
+		return ByteBuffer.wrap(this.data).compact();
 	}
 	
 	/**

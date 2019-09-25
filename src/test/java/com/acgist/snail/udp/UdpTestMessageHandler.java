@@ -8,9 +8,6 @@ import com.acgist.snail.utils.IoUtils;
 
 public class UdpTestMessageHandler extends UdpMessageHandler {
 
-	public UdpTestMessageHandler() {
-	}
-	
 	@Override
 	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) {
 		System.out.println(socketAddress + "-" + socketAddress.getClass());

@@ -1,7 +1,6 @@
 package com.acgist.snail.net;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
@@ -12,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.net.codec.IMessageCodec;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.IoUtils;
 
@@ -25,12 +25,15 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TcpMessageHandler.class);
 	
+	/**
+	 * 发送超时时间
+	 */
+	private static final int SEND_TIMEOUT = 4;
+	/**
+	 * 缓冲区大小
+	 */
 	public static final int BUFFER_SIZE = 10 * 1024;
 	
-	/**
-	 * 消息分隔符
-	 */
-	private final String split;
 	/**
 	 * 是否关闭
 	 */
@@ -39,26 +42,24 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	 * Socket
 	 */
 	protected AsynchronousSocketChannel socket;
-	
-	public TcpMessageHandler() {
-		this(null);
-	}
-
-	public TcpMessageHandler(String split) {
-		this.split = split;
-	}
+	/**
+	 * 解码编码器
+	 */
+	protected IMessageCodec<ByteBuffer> messageCodec;
 	
 	/**
 	 * 收到消息
 	 */
-	public abstract void onReceive(ByteBuffer buffer) throws NetException;
-
+	public void onReceive(ByteBuffer buffer) throws NetException {
+		this.messageCodec.decode(buffer);
+	}
+	
 	/**
 	 * 消息代理
 	 */
 	public void handle(AsynchronousSocketChannel socket) {
 		this.socket = socket;
-		loopMessage();
+		this.loopMessage();
 	}
 	
 	@Override
@@ -73,24 +74,12 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	
 	@Override
 	public void send(String message, String charset) throws NetException {
-		String splitMessage = message;
-		if(this.split != null) {
-			splitMessage += this.split;
-		}
-		if(charset == null) {
-			send(splitMessage.getBytes());
-		} else {
-			try {
-				send(splitMessage.getBytes(charset));
-			} catch (UnsupportedEncodingException e) {
-				throw new NetException(String.format("编码异常，编码：%s，内容：%s。", charset, message), e);
-			}
-		}
+		send(this.charset(this.messageCodec.encode(message), charset));
 	}
 	
 	@Override
-	public void send(byte[] bytes) throws NetException {
-		send(ByteBuffer.wrap(bytes));
+	public void send(byte[] message) throws NetException {
+		send(ByteBuffer.wrap(message));
 	}
 	
 	@Override
@@ -109,7 +98,7 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 		synchronized (this.socket) { // 防止多线程同时读写导致WritePendingException
 			final Future<Integer> future = this.socket.write(buffer);
 			try {
-				final int size = future.get(4, TimeUnit.SECONDS); // 阻塞线程防止，防止多线程写入时抛出异常：IllegalMonitorStateException
+				final int size = future.get(SEND_TIMEOUT, TimeUnit.SECONDS); // 阻塞线程防止，防止多线程写入时抛出异常：IllegalMonitorStateException
 				if(size <= 0) {
 					LOGGER.warn("发送数据为空");
 				}

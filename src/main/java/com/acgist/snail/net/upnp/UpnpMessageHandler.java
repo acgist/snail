@@ -1,15 +1,15 @@
 package com.acgist.snail.net.upnp;
 
 import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.UdpMessageHandler;
+import com.acgist.snail.net.codec.IMessageCodec;
+import com.acgist.snail.net.codec.impl.StringMessageCodec;
 import com.acgist.snail.net.upnp.bootstrap.UpnpService;
 import com.acgist.snail.pojo.wrapper.HeaderWrapper;
-import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -20,7 +20,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class UpnpMessageHandler extends UdpMessageHandler {
+public class UpnpMessageHandler extends UdpMessageHandler implements IMessageCodec<String> {
 
 	/**
 	 * 地址
@@ -33,23 +33,19 @@ public class UpnpMessageHandler extends UdpMessageHandler {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UpnpMessageHandler.class);
 	
-	@Override
-	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) {
-		final String content = IoUtils.readContent(buffer);
-		this.setting(content);
+	public UpnpMessageHandler() {
+		this.messageCodec = new StringMessageCodec(this);
 	}
 	
-	/**
-	 * 配置UPNP
-	 */
-	private void setting(String content) {
-		final HeaderWrapper headers = HeaderWrapper.newInstance(content);
+	@Override
+	public void onMessage(String message, InetSocketAddress address) {
+		final HeaderWrapper headers = HeaderWrapper.newInstance(message);
 		final boolean support = headers.allHeaders().values().stream()
 			.anyMatch(list -> list.stream()
 				.anyMatch(value -> StringUtils.startsWith(value, UPNP_DEVICE_IGD))
 			);
 		if(!support) {
-			LOGGER.info("UPNP不支持的响应：{}", content);
+			LOGGER.info("UPNP不支持的响应：{}", message);
 			return;
 		}
 		final String location = headers.header(HEADER_LOCATION);

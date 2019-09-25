@@ -1,23 +1,22 @@
 package com.acgist.snail.net.torrent.local;
 
 import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.UdpMessageHandler;
+import com.acgist.snail.net.codec.IMessageCodec;
+import com.acgist.snail.net.codec.impl.StringMessageCodec;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerService;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.pojo.wrapper.HeaderWrapper;
 import com.acgist.snail.system.config.PeerConfig;
-import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.CollectionUtils;
-import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -29,7 +28,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.1.0
  */
-public class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler {
+public class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler implements IMessageCodec<String> {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(LocalServiceDiscoveryMessageHandler.class);
 	
@@ -37,14 +36,13 @@ public class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler {
 	private static final String HEADER_COOKIE = "cookie";
 	private static final String HEADER_INFOHASH = "Infohash";
 
-	@Override
-	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException {
-		final String content = IoUtils.readContent(buffer);
-		final String host = socketAddress.getHostString();
-		doMessage(content, host);
+	public LocalServiceDiscoveryMessageHandler() {
+		this.messageCodec = new StringMessageCodec(this);
 	}
-
-	private void doMessage(String content, String host) {
+	
+	@Override
+	public void onMessage(String content, InetSocketAddress address) {
+		final String host = address.getHostString();
 		final HeaderWrapper headers = HeaderWrapper.newInstance(content);
 		final String port = headers.header(HEADER_PORT);
 		final String cookie = headers.header(HEADER_COOKIE);

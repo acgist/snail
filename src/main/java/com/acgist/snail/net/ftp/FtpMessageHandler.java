@@ -3,7 +3,6 @@ package com.acgist.snail.net.ftp;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
-import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -12,6 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.TcpMessageHandler;
+import com.acgist.snail.net.codec.IMessageCodec;
+import com.acgist.snail.net.codec.impl.LineMessageCodec;
+import com.acgist.snail.net.codec.impl.MultilineMessageCodec;
+import com.acgist.snail.net.codec.impl.StringMessageCodec;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.IoUtils;
@@ -24,11 +27,9 @@ import com.acgist.snail.utils.ThreadUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class FtpMessageHandler extends TcpMessageHandler {
+public class FtpMessageHandler extends TcpMessageHandler implements IMessageCodec<String> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FtpMessageHandler.class);
-	
-	public static final String SPLIT = "\r\n"; // 处理粘包分隔符
 	
 	private boolean range = false; // 断点续传
 	
@@ -42,44 +43,27 @@ public class FtpMessageHandler extends TcpMessageHandler {
 	private final AtomicBoolean commandLock = new AtomicBoolean(false); // 命令等待锁
 	
 	/**
-	 * 支持UTF8命令
+	 * 命令超时时间
 	 */
-	private static final String COMMAND_UTF8 = "UTF8";
+	private static final int TIMEOUT = 10;
+	/**
+	 * 每条消息分隔符
+	 */
+	private static final String SPLIT = "\r\n";
 	/**
 	 * 命令结束正则表达式
 	 */
-	private static final String COMMAND_END_REGEX = "\\d{3} .*";
+	private static final String END_REGEX = "\\d{3} .*";
 	
 	public FtpMessageHandler() {
-		super(SPLIT);
+		final var multilineMessageCodec = new MultilineMessageCodec(SPLIT, END_REGEX, this);
+		final var lineMessageCodec = new LineMessageCodec(SPLIT, multilineMessageCodec);
+		final var stringMessageCodec = new StringMessageCodec(lineMessageCodec);
+		this.messageCodec = stringMessageCodec;
 	}
 
 	@Override
-	public void onReceive(ByteBuffer buffer) throws NetException {
-		String tmp;
-		String content = IoUtils.readContent(buffer, this.charset);
-		final StringBuffer command = new StringBuffer();
-		if(content.contains(SPLIT)) {
-			int index = content.indexOf(SPLIT);
-			while(index >= 0) {
-				tmp = content.substring(0, index);
-				if(tmp.matches(COMMAND_END_REGEX)) {
-					command.append(tmp);
-					onCommand(command.toString());
-					command.setLength(0);
-				} else {
-					command.append(tmp).append(SPLIT);
-				}
-				content = content.substring(index + SPLIT.length());
-				index = content.indexOf(SPLIT);
-			}
-		}
-	}
-	
-	/**
-	 * 处理单条消息
-	 */
-	private void onCommand(String message) throws NetException {
+	public void onMessage(String message) throws NetException {
 		LOGGER.debug("收到FTP响应：{}", message);
 		if(StringUtils.startsWith(message, "530 ")) { // 登陆失败
 			this.failMessage = "服务器需要登陆授权";
@@ -96,11 +80,13 @@ public class FtpMessageHandler extends TcpMessageHandler {
 		} else if(StringUtils.startsWith(message, "350 ")) { // 端点续传
 			this.range = true;
 		} else if(StringUtils.startsWith(message, "220 ")) { // 退出系统
+		} else if(StringUtils.startsWith(message, "230 ")) { // 登陆成功
+			this.unlockCommand();
 		} else if(StringUtils.startsWith(message, "226 ")) { // 下载完成
 		} else if(StringUtils.startsWith(message, "502 ")) { // 不支持命令：FEAT
 			this.unlockCommand();
 		} else if(StringUtils.startsWith(message, "211-")) { // 服务器状态：扩展命令编码查询
-			if(message.toUpperCase().contains(COMMAND_UTF8)) {
+			if(message.toUpperCase().contains(SystemConfig.CHARSET_UTF8)) {
 				this.charset = SystemConfig.CHARSET_UTF8;
 				LOGGER.debug("FTP设置编码：{}", this.charset);
 			}
@@ -143,9 +129,23 @@ public class FtpMessageHandler extends TcpMessageHandler {
 	}
 	
 	/**
+	 * 登录锁
+	 */
+	public void loginLock() {
+		this.lockCommand();
+	}
+	
+	/**
 	 * 字符编码
 	 */
 	public String charset() {
+		return this.charset;
+	}
+	
+	/**
+	 * 字符编码（加锁）
+	 */
+	public String charsetLock() {
 		this.lockCommand();
 		return this.charset;
 	}
@@ -196,7 +196,7 @@ public class FtpMessageHandler extends TcpMessageHandler {
 		if(!this.commandLock.get()) {
 			synchronized (this.commandLock) {
 				if(!this.commandLock.get()) {
-					ThreadUtils.wait(this.commandLock, Duration.ofSeconds(5));
+					ThreadUtils.wait(this.commandLock, Duration.ofSeconds(TIMEOUT));
 				}
 			}
 		}

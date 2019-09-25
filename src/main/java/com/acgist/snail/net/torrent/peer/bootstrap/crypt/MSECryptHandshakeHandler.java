@@ -11,8 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.torrent.TorrentManager;
+import com.acgist.snail.net.torrent.peer.PeerUnpackMessageCodec;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
-import com.acgist.snail.net.torrent.peer.bootstrap.PeerUnpackMessageHandler;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.config.CryptConfig;
@@ -76,7 +76,7 @@ public class MSECryptHandshakeHandler {
 	private volatile MSECipher cipher;
 	
 	private final PeerSubMessageHandler peerSubMessageHandler;
-	private final PeerUnpackMessageHandler peerUnpackMessageHandler;
+	private final PeerUnpackMessageCodec peerUnpackMessageCodec;
 	
 	// 握手临时数据，握手完成后销毁
 	private KeyPair keyPair; // 密钥对
@@ -84,17 +84,17 @@ public class MSECryptHandshakeHandler {
 	private BigInteger dhSecret; // S：DH Secret
 	private MSEKeyPairBuilder mseKeyPairBuilder; // 密钥对Builder
 
-	private MSECryptHandshakeHandler(PeerSubMessageHandler peerSubMessageHandler, PeerUnpackMessageHandler peerUnpackMessageHandler) {
+	private MSECryptHandshakeHandler(PeerSubMessageHandler peerSubMessageHandler, PeerUnpackMessageCodec peerUnpackMessageCodec) {
 		final MSEKeyPairBuilder mseKeyPairBuilder = MSEKeyPairBuilder.newInstance();
 		this.buffer = ByteBuffer.allocate(4096); // 4KB
 		this.keyPair = mseKeyPairBuilder.buildKeyPair();
 		this.mseKeyPairBuilder = mseKeyPairBuilder;
 		this.peerSubMessageHandler = peerSubMessageHandler;
-		this.peerUnpackMessageHandler = peerUnpackMessageHandler;
+		this.peerUnpackMessageCodec = peerUnpackMessageCodec;
 	}
 
-	public static final MSECryptHandshakeHandler newInstance(PeerSubMessageHandler peerSubMessageHandler, PeerUnpackMessageHandler peerUnpackMessageHandler) {
-		return new MSECryptHandshakeHandler(peerSubMessageHandler, peerUnpackMessageHandler);
+	public static final MSECryptHandshakeHandler newInstance(PeerSubMessageHandler peerSubMessageHandler, PeerUnpackMessageCodec peerUnpackMessageCodec) {
+		return new MSECryptHandshakeHandler(peerSubMessageHandler, peerUnpackMessageCodec);
 	}
 
 	/**
@@ -447,7 +447,7 @@ public class MSECryptHandshakeHandler {
 			if(ArrayUtils.equals(names, PeerConfig.HANDSHAKE_NAME_BYTES)) { // 握手消息直接使用明文
 				this.over(true, false);
 				buffer.position(0); // 重置长度
-				this.peerUnpackMessageHandler.onMessage(buffer);
+				this.peerUnpackMessageCodec.decode(buffer);
 				return true;
 			}
 		}
