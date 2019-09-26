@@ -28,7 +28,6 @@ public class MagnetDownloader extends Downloader {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MagnetDownloader.class);
 
 	private TorrentSession torrentSession;
-	
 	/**
 	 * 下载锁
 	 */

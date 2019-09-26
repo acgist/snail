@@ -14,7 +14,7 @@ import com.acgist.snail.pojo.session.TaskSession.Status;
 public interface IDownloader extends Runnable {
 	
 	/**
-	 * 任务ID，数据库ID
+	 * 任务ID
 	 * 
 	 * @return 任务ID
 	 */

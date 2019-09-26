@@ -30,6 +30,9 @@ public class PeerConnectGroup {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerConnectGroup.class);
 	
+	/**
+	 * PeerConnect队列
+	 */
 	private final BlockingQueue<PeerConnect> peerConnects;
 	
 	private PeerConnectGroup() {

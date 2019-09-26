@@ -18,11 +18,11 @@ import com.acgist.snail.utils.UrlUtils;
 public class HttpHeaderWrapper extends HeaderWrapper {
 
 	/**
-	 * 端点续传：下载范围
+	 * 断点续传：下载范围
 	 */
 	private static final String CONTENT_RANGE = "Content-Range";
 	/**
-	 * 端点续传：范围请求
+	 * 断点续传：范围请求
 	 */
 	private static final String ACCEPT_RANGES = "Accept-Ranges";
 	/**

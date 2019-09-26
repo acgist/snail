@@ -26,7 +26,7 @@ public class WebSocketClient extends ClientMessageHandlerAdapter<WebSocketMessag
 	/**
 	 * 超时时间
 	 */
-	private static final int TIMEOUT = 2;
+	private static final int TIMEOUT = 4;
 	
 	private WebSocketClient(HttpClient client, WebSocket socket) {
 		super(new WebSocketMessageHandler(client, socket));

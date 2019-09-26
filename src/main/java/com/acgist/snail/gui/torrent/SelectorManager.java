@@ -221,7 +221,7 @@ public class SelectorManager {
 class Selector {
 
 	/**
-	 * 路径
+	 * 文件路径
 	 */
 	private final String path;
 	/**

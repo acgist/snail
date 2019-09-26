@@ -12,6 +12,12 @@ import javafx.util.Duration;
 public class Tooltips {
 
 	/**
+	 * 不允许实例化
+	 */
+	private Tooltips() {
+	}
+	
+	/**
 	 * 新建提示框，默认显示时间：200（毫秒）
 	 * 
 	 * @param value 提示内容

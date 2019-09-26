@@ -95,7 +95,7 @@ public class HttpDownloader extends Downloader {
 	/**
 	 * <p>创建下载流</p>
 	 * <p>
-	 * 端点续传设置（Range）：<br>
+	 * 断点续传设置（Range）：<br>
 	 * Range：bytes=0-499：第 0-499 字节范围的内容<br>
 	 * Range：bytes=500-999：第 500-999 字节范围的内容<br>
 	 * Range：bytes=-500：最后 500 字节的内容<br>
@@ -122,8 +122,7 @@ public class HttpDownloader extends Downloader {
 		if(HTTPClient.ok(response) || HTTPClient.partialContent(response)) {
 			this.responseHeader = HttpHeaderWrapper.newInstance(response.headers());
 			this.input = new BufferedInputStream(response.body());
-			// 支持断点续传
-			if(this.responseHeader.range()) {
+			if(this.responseHeader.range()) { // 支持断点续传
 				final long begin = this.responseHeader.beginRange();
 				if(size != begin) {
 					LOGGER.warn("已下载大小和开始下载位置不相等，已下载大小：{}，开始下载位置：{}，响应头：{}", size, begin, this.responseHeader.allHeaders());
@@ -152,7 +151,7 @@ public class HttpDownloader extends Downloader {
 			final long size = this.taskSession.downloadSize();
 			if(size == 0L) {
 				this.output = new BufferedOutputStream(new FileOutputStream(entity.getFile()), DownloadConfig.getMemoryBufferByte());
-			} else { // 支持续传
+			} else { // 支持断点续传
 				this.output = new BufferedOutputStream(new FileOutputStream(entity.getFile(), true), DownloadConfig.getMemoryBufferByte());
 			}
 		} catch (FileNotFoundException e) {

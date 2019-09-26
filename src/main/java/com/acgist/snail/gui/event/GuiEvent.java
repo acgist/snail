@@ -34,7 +34,13 @@ public abstract class GuiEvent {
 		
 	}
 
+	/**
+	 * 事件类型
+	 */
 	protected final Type type;
+	/**
+	 * 事件名称
+	 */
 	protected final String name;
 	
 	protected GuiEvent(Type type, String name) {

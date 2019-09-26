@@ -47,7 +47,6 @@ public class GuiHandler {
 	 * 后台模式
 	 */
 	public static final String MODE_DAEMO = "daemo";
-	
 	/**
 	 * 阻塞锁时间：365天
 	 */
@@ -57,14 +56,13 @@ public class GuiHandler {
 	 * 阻塞锁：防止程序关闭
 	 */
 	private final Object lock = new Object();
-	
 	/**
 	 * 外部GUI消息代理
 	 */
 	private IMessageHandler messageHandler;
 	
 	/**
-	 * alert提示窗口类型
+	 * Alert提示窗口类型
 	 */
 	public enum SnailAlertType {
 		
@@ -99,7 +97,7 @@ public class GuiHandler {
 	}
 	
 	/**
-	 * notice提示消息类型
+	 * Notice提示消息类型
 	 */
 	public enum SnailNoticeType {
 		

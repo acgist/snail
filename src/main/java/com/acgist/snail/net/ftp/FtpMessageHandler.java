@@ -91,7 +91,7 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 			this.failMessage = "打开连接失败";
 			this.close();
 			this.unlockCommand();
-		} else if(StringUtils.startsWith(message, "350 ")) { // 端点续传
+		} else if(StringUtils.startsWith(message, "350 ")) { // 断点续传
 			this.range = true;
 		} else if(StringUtils.startsWith(message, "220 ")) { // 退出系统
 		} else if(StringUtils.startsWith(message, "230 ")) { // 登陆成功

@@ -18,7 +18,7 @@ import com.acgist.snail.system.exception.NetException;
 public class PeerCryptMessageCodec extends MessageCodec<ByteBuffer, ByteBuffer> {
 
 	/**
-	 * MSE加密处理器
+	 * MSE加密握手代理
 	 */
 	private final MSECryptHandshakeHandler mseCryptHandshakeHandler;
 	

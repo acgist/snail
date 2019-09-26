@@ -57,7 +57,6 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	 * 声明URL
 	 */
 	protected final String announceUrl;
-
 	/**
 	 * 是否可用
 	 */

@@ -13,9 +13,9 @@ import javafx.scene.input.Dragboard;
 public abstract class Controller {
 
 	/**
-	 * 双击
+	 * 双击次数
 	 */
-	public static final int DOUBLE_CLICK = 2;
+	public static final int DOUBLE_CLICK_COUNT = 2;
 	
 	/**
 	 * 获取拖入面板的数据（Dragboard），获取文本、链接、文件。

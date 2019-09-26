@@ -32,7 +32,7 @@ public class TorrentEvent extends GuiEvent {
 	private static final TorrentEvent INSTANCE = new TorrentEvent();
 	
 	/**
-	 * 种子文件选择
+	 * 被选中的下载文件列表（B编码）
 	 */
 	private String files;
 	

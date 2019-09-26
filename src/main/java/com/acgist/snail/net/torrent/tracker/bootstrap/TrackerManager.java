@@ -39,6 +39,9 @@ public class TrackerManager {
 	
 	private static final TrackerManager INSTANCE = new TrackerManager();
 
+	/**
+	 * 任务Tracker最大数量
+	 */
 	private static final int MAX_TRACKER_SIZE = SystemConfig.getTrackerSize();
 	
 	/**

@@ -46,7 +46,7 @@ public class HTTPClient {
 	 */
 	public static final int HTTP_OK = 200;
 	/**
-	 * 状态码：206：端点续传
+	 * 状态码：206：断点续传
 	 */
 	public static final int HTTP_PARTIAL_CONTENT = 206;
 	/**
@@ -261,7 +261,7 @@ public class HTTPClient {
 	}
 	
 	/**
-	 * <p>端点续传：{@link #HTTP_PARTIAL_CONTENT}</p>
+	 * <p>断点续传：{@link #HTTP_PARTIAL_CONTENT}</p>
 	 */
 	public static final <T> boolean partialContent(HttpResponse<T> response) {
 		return response != null && response.statusCode() == HTTP_PARTIAL_CONTENT;

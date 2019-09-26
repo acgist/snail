@@ -47,9 +47,6 @@ public class TorrentStreamGroup {
 	 * 被选中的Piece位图
 	 */
 	private final BitSet selectPieces;
-	private final Torrent torrent;
-	private final List<TorrentStream> streams;
-	private final TorrentSession torrentSession;
 	/**
 	 * 缓冲大小：数据下载时修改
 	 */
@@ -58,6 +55,10 @@ public class TorrentStreamGroup {
 	 * 是否初始化完成
 	 */
 	private volatile boolean done = false;
+	
+	private final Torrent torrent;
+	private final List<TorrentStream> streams;
+	private final TorrentSession torrentSession;
 
 	private TorrentStreamGroup(BitSet pieces, BitSet selectPieces, List<TorrentStream> streams, TorrentSession torrentSession) {
 		this.pieces = pieces;

@@ -40,7 +40,7 @@ public class PeerManager {
 	 */
 	private final Map<String, Deque<PeerSession>> peers;
 	/**
-	 * Peer存档队列。
+	 * Peer存档队列
 	 */
 	private final Map<String, List<PeerSession>> storagePeers;
 	

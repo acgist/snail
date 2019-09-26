@@ -19,7 +19,7 @@ import javafx.scene.text.Text;
 public class TaskCell extends TableCell<TaskSession, String> {
 
 	/**
-	 * 对齐
+	 * 对齐方式
 	 */
 	private Pos pos = Pos.CENTER_LEFT;
 	/**

@@ -128,7 +128,7 @@ public class FtpDownloader extends Downloader {
 			final long size = this.taskSession.downloadSize();
 			if(size == 0L) {
 				this.output = new BufferedOutputStream(new FileOutputStream(entity.getFile()), DownloadConfig.getMemoryBufferByte());
-			} else { // 支持续传
+			} else { // 支持断点续传
 				this.output = new BufferedOutputStream(new FileOutputStream(entity.getFile(), true), DownloadConfig.getMemoryBufferByte());
 			}
 		} catch (FileNotFoundException e) {
