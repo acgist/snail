@@ -338,14 +338,11 @@ public class MainController extends Controller implements Initializable {
 	/**
 	 * 数据行工厂
 	 */
-	private Callback<TableView<TaskSession>, TableRow<TaskSession>> rowFactory = new Callback<TableView<TaskSession>, TableRow<TaskSession>>() {
-		@Override
-		public TableRow<TaskSession> call(TableView<TaskSession> param) {
-			final TableRow<TaskSession> row = new TableRow<>();
-			row.setOnMouseClicked(rowClickAction); // 双击修改任务状态
-			row.setContextMenu(TaskMenu.getInstance());
-			return row;
-		}
+	private Callback<TableView<TaskSession>, TableRow<TaskSession>> rowFactory = (param) -> {
+		final TableRow<TaskSession> row = new TableRow<>();
+		row.setOnMouseClicked(this.rowClickAction); // 双击修改任务状态
+		row.setContextMenu(TaskMenu.getInstance());
+		return row;
 	};
 	
 	/**
