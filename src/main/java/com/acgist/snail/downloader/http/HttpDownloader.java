@@ -1,9 +1,6 @@
 package com.acgist.snail.downloader.http;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.http.HttpResponse;
@@ -12,11 +9,10 @@ import java.net.http.HttpResponse.BodyHandlers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.downloader.Downloader;
+import com.acgist.snail.downloader.SingleFileDownloader;
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
-import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.IoUtils;
 
@@ -26,30 +22,17 @@ import com.acgist.snail.utils.IoUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class HttpDownloader extends Downloader {
+public class HttpDownloader extends SingleFileDownloader {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(HttpDownloader.class);
 	
-	/**
-	 * 缓存字节数组
-	 */
-	private final byte[] bytes;
-	/**
-	 * 输入流
-	 */
-	private BufferedInputStream input;
-	/**
-	 * 输出流
-	 */
-	private BufferedOutputStream output;
 	/**
 	 * 响应头
 	 */
 	private HttpHeaderWrapper responseHeader;
 	
 	private HttpDownloader(TaskSession taskSession) {
-		super(taskSession);
-		this.bytes = new byte[128 * 1024];
+		super(new byte[128 * 1024], taskSession);
 	}
 
 	public static final HttpDownloader newInstance(TaskSession taskSession) {
@@ -142,22 +125,4 @@ public class HttpDownloader extends Downloader {
 		}
 	}
 
-	/**
-	 * 创建输出流
-	 */
-	private void buildOutput() {
-		final var entity = this.taskSession.entity();
-		try {
-			final long size = this.taskSession.downloadSize();
-			if(size == 0L) {
-				this.output = new BufferedOutputStream(new FileOutputStream(entity.getFile()), DownloadConfig.getMemoryBufferByte());
-			} else { // 支持断点续传
-				this.output = new BufferedOutputStream(new FileOutputStream(entity.getFile(), true), DownloadConfig.getMemoryBufferByte());
-			}
-		} catch (FileNotFoundException e) {
-			fail("打开下载文件失败");
-			LOGGER.error("打开下载文件流异常", e);
-		}
-	}
-	
 }

@@ -1,20 +1,13 @@
 package com.acgist.snail.downloader.ftp;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.acgist.snail.downloader.Downloader;
+import com.acgist.snail.downloader.SingleFileDownloader;
 import com.acgist.snail.net.ftp.FtpClient;
 import com.acgist.snail.net.ftp.bootstrap.FtpClientBuilder;
 import com.acgist.snail.pojo.session.TaskSession;
-import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.IoUtils;
 
@@ -24,30 +17,17 @@ import com.acgist.snail.utils.IoUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class FtpDownloader extends Downloader {
+public class FtpDownloader extends SingleFileDownloader {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(FtpDownloader.class);
+//	private static final Logger LOGGER = LoggerFactory.getLogger(FtpDownloader.class);
 
-	/**
-	 * 缓存字节数组
-	 */
-	private final byte[] bytes;
 	/**
 	 * FtpClient
 	 */
 	private FtpClient client;
-	/**
-	 * 输入流
-	 */
-	private BufferedInputStream input;
-	/**
-	 * 输出流
-	 */
-	private BufferedOutputStream output;
 	
 	private FtpDownloader(TaskSession taskSession) {
-		super(taskSession);
-		this.bytes = new byte[128 * 1024];
+		super(new byte[128 * 1024], taskSession);
 	}
 
 	public static final FtpDownloader newInstance(TaskSession taskSession) {
@@ -116,24 +96,6 @@ public class FtpDownloader extends Downloader {
 			}
 		} else {
 			fail("服务器连接失败");
-		}
-	}
-	
-	/**
-	 * 创建下载输出流。
-	 */
-	private void buildOutput() {
-		final var entity = this.taskSession.entity();
-		try {
-			final long size = this.taskSession.downloadSize();
-			if(size == 0L) {
-				this.output = new BufferedOutputStream(new FileOutputStream(entity.getFile()), DownloadConfig.getMemoryBufferByte());
-			} else { // 支持断点续传
-				this.output = new BufferedOutputStream(new FileOutputStream(entity.getFile(), true), DownloadConfig.getMemoryBufferByte());
-			}
-		} catch (FileNotFoundException e) {
-			fail("下载文件打开失败");
-			LOGGER.error("打开下载文件流异常", e);
 		}
 	}
 	
