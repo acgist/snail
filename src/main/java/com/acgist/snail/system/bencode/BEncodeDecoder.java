@@ -46,9 +46,12 @@ public class BEncodeDecoder implements Closeable {
 	
 	public enum Type {
 		
-		map, // map
-		list, // list
-		none; // 未知
+		/** map */
+		map,
+		/** list */
+		list,
+		/** 未知 */
+		none;
 		
 	}
 	

@@ -13,15 +13,24 @@ public abstract class GuiEvent {
 	 */
 	public enum Type {
 		
-		show, // 显示窗口
-		hide, // 隐藏窗口
-		exit, // 退出窗口
-		build, // 创建窗口
-		alert, // 窗口信息
-		notice, // 提示信息
-		torrent, // 种子文件选择
-		refreshTaskList, // 刷新任务列表：添加、删除
-		refreshTaskStatus; // 刷新任务状态：开始、暂停
+		/** 显示窗口 */
+		show,
+		/** 隐藏窗口 */
+		hide,
+		/** 退出窗口 */
+		exit,
+		/** 创建窗口 */
+		build,
+		/** 窗口信息 */
+		alert,
+		/** 提示信息 */
+		notice,
+		/** 种子文件选择 */
+		torrent,
+		/** 刷新任务列表：添加、删除 */
+		refreshTaskList,
+		/** 刷新任务状态：开始、暂停 */
+		refreshTaskStatus;
 		
 	}
 

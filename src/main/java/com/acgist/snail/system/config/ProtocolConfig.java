@@ -17,13 +17,20 @@ public class ProtocolConfig {
 	 */
 	public enum Protocol {
 		
+		/** udp */
 		udp,
+		/** tcp */
 		tcp,
+		/** wss:websocket */
 		wss,
+		/** http */
 		http,
+		/** 磁力链接 */
 		magnet,
+		/** 迅雷链接 */
 		thunder,
-		bittorrent;
+		/** BT */
+		torrent;
 
 	}
 	

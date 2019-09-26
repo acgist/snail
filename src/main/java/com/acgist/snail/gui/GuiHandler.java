@@ -68,11 +68,16 @@ public class GuiHandler {
 	 */
 	public enum SnailAlertType {
 		
-		none, // 普通
-		info, // 提示
-		warn, // 警告
-		confirm, // 确认
-		error; // 错误
+		/** 普通 */
+		none,
+		/** 提示 */
+		info,
+		/** 警告 */
+		warn,
+		/** 确认 */
+		confirm,
+		/** 错误 */
+		error;
 		
 		public AlertType getAlertType() {
 			switch (this) {
@@ -86,8 +91,9 @@ public class GuiHandler {
 				return AlertType.CONFIRMATION;
 			case error:
 				return AlertType.ERROR;
+			default:
+				return AlertType.INFORMATION;
 			}
-			return AlertType.INFORMATION;
 		}
 		
 	}
@@ -97,10 +103,14 @@ public class GuiHandler {
 	 */
 	public enum SnailNoticeType {
 		
-		none, // 普通
-		info, // 提示
-		warn, // 警告
-		error; // 错误
+		/** 普通 */
+		none, // 
+		/** 提示 */
+		info,
+		/** 警告 */
+		warn,
+		/** 错误 */
+		error;
 		
 		public MessageType getMessageType() {
 			switch (this) {
@@ -112,8 +122,9 @@ public class GuiHandler {
 				return MessageType.WARNING;
 			case error:
 				return MessageType.ERROR;
+			default:
+				return MessageType.INFO;
 			}
-			return MessageType.INFO;
 		}
 		
 	}

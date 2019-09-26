@@ -26,14 +26,21 @@ public class TorrentProtocol extends Protocol {
 	 */
 	public enum TorrentFileOperation {
 		
-		copy, // 拷贝
-		move; // 移动
+		/** 拷贝 */
+		copy,
+		/** 移动 */
+		move;
 		
 	}
 	
-	public static final String TORRENT_REGEX = ".+\\.torrent"; // 正则表达式
-	
-	public static final String TORRENT_SUFFIX = ".torrent"; // 文件后缀
+	/**
+	 * 种子文件正则表达式
+	 */
+	public static final String TORRENT_REGEX = ".+\\.torrent";
+	/**
+	 * 种子文件后缀
+	 */
+	public static final String TORRENT_SUFFIX = ".torrent";
 	
 	private String torrentFile; // 种子文件路径
 	private TorrentSession torrentSession; // 种子文件信息

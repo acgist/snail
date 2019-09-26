@@ -71,9 +71,14 @@ public class MainController extends Controller implements Initializable {
 	 * 过滤
 	 */
 	public enum Filter {
+		
+		/**显示所有任务 */
 		all,
+		/**显示正在下载任务 */
 		download,
+		/**显示下载完成任务 */
 		complete;
+		
 	}
 	
 	/**
