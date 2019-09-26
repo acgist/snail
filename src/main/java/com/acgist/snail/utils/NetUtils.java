@@ -165,20 +165,20 @@ public class NetUtils {
 	 */
 	public static final NetworkInterface defaultNetworkInterface() {
 		final String hostAddress = inetHostAddress();
-		Optional<NetworkInterface> optional = null;
 		try {
-			optional = NetworkInterface.networkInterfaces().filter(interfaces -> {
+			final Optional<NetworkInterface> optional = NetworkInterface.networkInterfaces().filter(interfaces -> {
 				return interfaces.inetAddresses().anyMatch(addresses -> {
 					return addresses.getHostAddress().equals(hostAddress);
 				});
 			}).findFirst();
+			if(optional.isEmpty()) {
+				return null;
+			}
+			return optional.get();
 		} catch (SocketException e) {
 			LOGGER.error("获取网络接口异常", e);
 		}
-		if(optional == null || optional.isEmpty()) {
-			return null;
-		}
-		return optional.get();
+		return null;
 	}
 
 	/**

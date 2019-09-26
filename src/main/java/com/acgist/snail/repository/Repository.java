@@ -15,6 +15,7 @@ import com.acgist.snail.pojo.entity.BaseEntity;
 import com.acgist.snail.pojo.wrapper.ResultSetWrapper;
 import com.acgist.snail.system.exception.RepositoryException;
 import com.acgist.snail.utils.BeanUtils;
+import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -216,8 +217,8 @@ public abstract class Repository<T extends BaseEntity> {
 			throw new RepositoryException("查询参数错误：" + sql);
 		}
 		final List<ResultSetWrapper> list = this.databaseManager.select(sql, parameters);
-		if(list == null || list.isEmpty()) {
-			return null;
+		if(CollectionUtils.isEmpty(list)) {
+			return List.of();
 		}
 		return list.stream()
 			.map(wrapper -> {
@@ -237,8 +238,8 @@ public abstract class Repository<T extends BaseEntity> {
 			.append("SELECT * FROM ")
 			.append(this.table);
 		final List<ResultSetWrapper> list = this.databaseManager.select(sql.toString());
-		if(list == null || list.isEmpty()) {
-			return null;
+		if(CollectionUtils.isEmpty(list)) {
+			return List.of();
 		}
 		return list.stream()
 			.map(wrapper -> {

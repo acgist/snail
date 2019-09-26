@@ -111,7 +111,7 @@ public class BEncodeDecoder implements Closeable {
 		if(type == Type.list) {
 			return this.list;
 		}
-		return null;
+		return List.of();
 	}
 	
 	/**
@@ -361,11 +361,11 @@ public class BEncodeDecoder implements Closeable {
 	
 	public static final List<Object> getList(Map<?, ?> map, String key) {
 		if(map == null) {
-			return null;
+			return List.of();
 		}
 		final var tmp = (List<?>) map.get(key);
 		if(tmp == null) {
-			return null;
+			return List.of();
 		}
 		return tmp.stream()
 			.map(value -> value)

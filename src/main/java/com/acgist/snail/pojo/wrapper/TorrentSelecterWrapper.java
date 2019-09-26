@@ -63,9 +63,6 @@ public class TorrentSelecterWrapper {
 			return List.of();
 		}
 		final List<Object> list = this.decoder.nextList();
-		if(list == null) {
-			return List.of();
-		}
 		return list.stream()
 			.filter(object -> object != null)
 			.map(object -> {
