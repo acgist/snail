@@ -65,9 +65,9 @@ public class UpnpService {
 	 */
 	private String serviceType;
 	/**
-	 * 是否初始化
+	 * 可用状态
 	 */
-	private volatile boolean init = false;
+	private volatile boolean available = false;
 	/**
 	 * 本地IP
 	 */
@@ -108,7 +108,7 @@ public class UpnpService {
 				break;
 			}
 		}
-		this.init = true;
+		this.available = true;
 		return this;
 	}
 
@@ -124,7 +124,7 @@ public class UpnpService {
 	 * <p>请求头：SOAPAction:"urn:schemas-upnp-org:service:WANIPConnection:1#GetExternalIPAddress"</p>
 	 */
 	public String getExternalIPAddress() throws NetException {
-		if(!this.init) {
+		if(!this.available) {
 			return null;
 		}
 		UpnpRequest upnpRequest = UpnpRequest.newRequest(this.serviceType);
@@ -145,7 +145,7 @@ public class UpnpService {
 	 * @return {@linkplain Status 状态}
 	 */
 	public Status getSpecificPortMappingEntry(int port, Protocol protocol) throws NetException {
-		if(!this.init) {
+		if(!this.available) {
 			return Status.uninit;
 		}
 		UpnpRequest upnpRequest = UpnpRequest.newRequest(this.serviceType);
@@ -172,7 +172,7 @@ public class UpnpService {
 	 * <p>请求头：SOAPAction:"urn:schemas-upnp-org:service:WANIPConnection:1#AddPortMapping"</p>
 	 */
 	public boolean addPortMapping(int port, int portExt, Protocol protocol) throws NetException {
-		if(!this.init) {
+		if(!this.available) {
 			return false;
 		}
 		final String address = NetUtils.inetHostAddress();
@@ -190,7 +190,7 @@ public class UpnpService {
 	 * <p>请求头：SOAPAction:"urn:schemas-upnp-org:service:WANIPConnection:1#DeletePortMapping"</p>
 	 */
 	public boolean deletePortMapping(int port, Protocol protocol) throws NetException {
-		if(!this.init) {
+		if(!this.available) {
 			return false;
 		}
 		UpnpRequest upnpRequest = UpnpRequest.newRequest(this.serviceType);
@@ -206,7 +206,7 @@ public class UpnpService {
 	 * 设置：本机IP，端口绑定等操作
 	 */
 	public void setting() throws NetException {
-		if(!this.init) {
+		if(!this.available) {
 			return;
 		}
 		setPortMapping();
@@ -217,7 +217,7 @@ public class UpnpService {
 	 * 端口释放
 	 */
 	public void release() {
-		if(!this.init) {
+		if(!this.available) {
 			return;
 		}
 		try {

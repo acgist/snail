@@ -30,9 +30,6 @@ public class WebSocketMessageHandler implements IMessageHandler {
 	
 	private boolean close = false;
 //	private final HttpClient client;
-	/**
-	 * WebSocket
-	 */
 	private final WebSocket socket;
 	
 	public WebSocketMessageHandler(HttpClient client, WebSocket socket) {
@@ -66,7 +63,6 @@ public class WebSocketMessageHandler implements IMessageHandler {
 			LOGGER.debug("发送消息时Socket已经不可用");
 			return;
 		}
-	//  重置标记
 		if(buffer.position() != 0) {
 			buffer.flip();
 		}

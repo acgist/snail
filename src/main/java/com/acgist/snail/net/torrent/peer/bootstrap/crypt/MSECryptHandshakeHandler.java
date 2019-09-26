@@ -474,14 +474,14 @@ public class MSECryptHandshakeHandler {
 	/**
 	 * 填充：0
 	 */
-    private byte[] buildZeroPadding(int maxLength) {
-        final Random random = NumberUtils.random();
-        return new byte[random.nextInt(maxLength + 1)];
-    }
+	private byte[] buildZeroPadding(int maxLength) {
+		final Random random = NumberUtils.random();
+		return new byte[random.nextInt(maxLength + 1)];
+	}
 	
-    /**
-     * Peer握手
-     */
+	/**
+	 * Peer握手
+	 */
 	private boolean checkPeerHandshake(ByteBuffer buffer) throws NetException {
 		// 先判断是否是握手消息
 		final byte first = buffer.get();

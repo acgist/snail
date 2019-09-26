@@ -79,7 +79,7 @@ public class FileUtils {
 				delete(children); // 删除子文件
 			}
 		}
-		final var ok = file.delete(); // 删除当前文件/目录
+		final var ok = file.delete(); // 删除当前文件或目录
 		if(!ok) {
 			LOGGER.warn("文件删除失败：{}", file.getAbsolutePath());
 		}

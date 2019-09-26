@@ -47,6 +47,7 @@ public class TaskCell extends TableCell<TaskSession, String> {
 			final Text name = new Text(value);
 			// 添加图标
 			if(this.icon) {
+//				name.setCursor(Cursor.HAND); // 设置手势
 				final FileType fileType = taskSession.entity().getFileType();
 				if(fileType != null) {
 					final ImageView icon = new ImageView("/image/32/" + fileType.icon());

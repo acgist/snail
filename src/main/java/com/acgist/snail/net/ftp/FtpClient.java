@@ -141,8 +141,7 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 		if(!this.ok) {
 			return;
 		}
-		// 退出命令
-		command("QUIT");
+		command("QUIT"); // 退出命令
 		super.close();
 	}
 	
@@ -175,12 +174,10 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	 */
 	private void charset() {
 		this.handler.resetLock();
-		// 列出扩展命令
-		command("FEAT");
+		command("FEAT"); // 列出扩展命令
 		this.charset = this.handler.charsetLock();
 		if(SystemConfig.CHARSET_UTF8.equals(this.charset)) {
-			// 设置UTF8
-			command("OPTS UTF8 ON");
+			command("OPTS UTF8 ON"); // 设置UTF8
 		}
 	}
 	

@@ -2,11 +2,9 @@ package com.acgist.snail.gui.torrent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
@@ -110,10 +108,8 @@ public class SelectorManager {
 	 */
 	public List<String> description() {
 		return this.selector.entrySet().stream()
-			// 选中
-			.filter(entry -> entry.getValue().isSelected())
-			// 文件
-			.filter(entry -> entry.getValue().isFile())
+			.filter(entry -> entry.getValue().isSelected()) // 选中
+			.filter(entry -> entry.getValue().isFile()) // 文件
 			.map(Entry::getKey)
 			.collect(Collectors.toList());
 	}
@@ -124,22 +120,18 @@ public class SelectorManager {
 	 */
 	public void select(TaskSession taskSession) {
 		final var list = taskSession.downloadTorrentFiles();
-		// 已选择文件
-		if(CollectionUtils.isNotEmpty(list)) {
+		if(CollectionUtils.isNotEmpty(list)) { // 已选择文件
 			this.selector.entrySet().stream()
 				.filter(entry -> list.contains(entry.getKey()))
 				.forEach(entry -> entry.getValue().setSelected(true));
-		// 未选择文件：自动选择
-		} else {
+		} else { // 未选择文件：自动选择
 			final var avgSize = this.selector.values().stream()
 				.collect(Collectors.averagingLong(Selector::getSize));
 			this.selector.entrySet().stream()
 				.filter(entry -> {
 					return
-						// 文件
-						entry.getValue().isFile() &&
-						// 大于平均值
-						entry.getValue().getSize() >= avgSize;
+						entry.getValue().isFile() && // 文件
+						entry.getValue().getSize() >= avgSize; // 大于平均值
 				}).forEach(entry -> entry.getValue().setSelected(true));
 		}
 		selectFolder();
@@ -161,8 +153,8 @@ public class SelectorManager {
 		checkBox.setTooltip(Tooltips.newTooltip(name));
 		checkBox.setOnAction(this.selectAction);
 		final HBox box = new HBox(checkBox);
+		// 设置文件大小
 		if(size != null) {
-			// 设置文件大小
 			final Text text = new Text(FileUtils.formatSize(size));
 			box.getChildren().add(text);
 		}

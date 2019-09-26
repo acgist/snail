@@ -46,8 +46,8 @@ public class BeanUtils {
 	 * <p>
 	 * String -&gt; String<br>
 	 * Number -&gt; Number<br>
-	 * Enum  -&gt; String<br>
-	 * Date  -&gt; String：yyyyMMddHHmmss
+	 * Enum   -&gt; String<br>
+	 * Date   -&gt; String：yyyyMMddHHmmss
 	 * </p>
 	 */
 	public static final Map<String, Object> toMap(Object instance) {
