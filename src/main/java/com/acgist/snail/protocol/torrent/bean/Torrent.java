@@ -1,7 +1,6 @@
 package com.acgist.snail.protocol.torrent.bean;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,38 +17,6 @@ import com.acgist.snail.utils.StringUtils;
  * @since 1.0.0
  */
 public class Torrent {
-
-	public static final List<String> TORRENT_KEYS;
-	
-	static {
-		String[] keys = {
-			"info",
-			"name",
-			"name.utf-8",
-			"path",
-			"path.utf-8",
-			"ed2k",
-			"files",
-			"nodes",
-			"pieces",
-			"length",
-			"md5sum", // 未遇到到过这个KEY
-			"comment",
-			"comment.utf-8",
-			"filehash",
-			"encoding",
-			"announce",
-			"publisher",
-			"publisher.utf-8",
-			"publisher-url",
-			"publisher-url.utf-8",
-			"created by",
-			"piece length",
-			"creation date",
-			"announce-list"
-		};
-		TORRENT_KEYS = Arrays.asList(keys);
-	}
 
 	private String comment; // 注释
 	private String commentUtf8; // 注释UTF8
