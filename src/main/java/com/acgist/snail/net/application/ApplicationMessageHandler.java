@@ -36,6 +36,9 @@ public class ApplicationMessageHandler extends TcpMessageHandler implements IMes
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationMessageHandler.class);
 	
+	/**
+	 * 消息分隔符
+	 */
 	private static final String SPLIT = "\r\n";
 	
 	public ApplicationMessageHandler() {

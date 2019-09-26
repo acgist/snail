@@ -21,6 +21,9 @@ public abstract class TcpServer<T extends TcpMessageHandler> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TcpServer.class);
 	
+	/**
+	 * 服务端线程池
+	 */
 	private static final AsynchronousChannelGroup GROUP;
 	
 	/**

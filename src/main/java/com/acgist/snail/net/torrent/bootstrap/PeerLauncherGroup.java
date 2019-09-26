@@ -43,6 +43,7 @@ public class PeerLauncherGroup {
 	 * 单次最大创建数量Peer数量
 	 */
 	private static final int MAX_BUILD_SIZE = 60;
+	
 	/**
 	 * 是否继续创建PeerLauncher
 	 */
@@ -51,12 +52,12 @@ public class PeerLauncherGroup {
 	 * 优选的Peer，每次优化时挑选出来可以进行下载的Peer，在优化后发送pex消息发送给连接的Peer，发送完成后清空。
 	 */
 	private final List<PeerSession> optimize = new ArrayList<>();
-	
-	private final TorrentSession torrentSession;
 	/**
-	 * PeerLauncher下载队列
+	 * PeerLauncher队列
 	 */
 	private final BlockingQueue<PeerLauncher> peerLaunchers;
+	
+	private final TorrentSession torrentSession;
 	
 	private PeerLauncherGroup(TorrentSession torrentSession) {
 		this.torrentSession = torrentSession;

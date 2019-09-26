@@ -101,10 +101,6 @@ public class MSECryptHandshakeHandler {
 	 * 加密套件临时
 	 */
 	private volatile MSECipher cipherTmp;
-	
-	private final PeerSubMessageHandler peerSubMessageHandler;
-	private final PeerUnpackMessageCodec peerUnpackMessageCodec;
-	
 	/**
 	 * 密钥对
 	 */
@@ -121,6 +117,9 @@ public class MSECryptHandshakeHandler {
 	 * 密钥对Builder
 	 */
 	private MSEKeyPairBuilder mseKeyPairBuilder;
+	
+	private final PeerSubMessageHandler peerSubMessageHandler;
+	private final PeerUnpackMessageCodec peerUnpackMessageCodec;
 
 	private MSECryptHandshakeHandler(PeerSubMessageHandler peerSubMessageHandler, PeerUnpackMessageCodec peerUnpackMessageCodec) {
 		final MSEKeyPairBuilder mseKeyPairBuilder = MSEKeyPairBuilder.newInstance();

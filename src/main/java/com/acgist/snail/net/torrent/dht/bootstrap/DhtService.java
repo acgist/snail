@@ -10,11 +10,23 @@ public class DhtService {
 
 //	private static final Logger LOGGER = LoggerFactory.getLogger(DhtService.class);
 	
-	private static final int MIN_VALUE = 0;
-	private static final int MAX_VALUE = 2 << 15;
+	/**
+	 * id最小值
+	 */
+	private static final int MIN_ID_VALUE = 0;
+	/**
+	 * id最大值
+	 */
+	private static final int MAX_ID_VALUE = 2 << 15;
+	/**
+	 * 无符号byte最大值
+	 */
 	private static final int UNSIGNED_BYTE_MAX = 2 << 7;
 
-	private int requestId = MIN_VALUE;
+	/**
+	 * 请求ID
+	 */
+	private int requestId = MIN_ID_VALUE;
 	
 	private static final DhtService INSTANCE = new DhtService();
 
@@ -27,13 +39,13 @@ public class DhtService {
 
 	/**
 	 * <p>生成一个两字节的请求ID</p>
-	 * <p>如果大于最大值{@linkplain #MAX_VALUE}则设置为最小值{@linkplain #MIN_VALUE}重新开始生成。</p>
+	 * <p>如果大于最大值{@linkplain #MAX_ID_VALUE}则设置为最小值{@linkplain #MIN_ID_VALUE}重新开始生成。</p>
 	 */
 	public byte[] requestId() {
 		final byte[] bytes = new byte[2];
 		synchronized (this) {
-			if(++requestId >= MAX_VALUE) {
-				requestId = MIN_VALUE;
+			if(++requestId >= MAX_ID_VALUE) {
+				requestId = MIN_ID_VALUE;
 			}
 			bytes[0] = (byte) (requestId / UNSIGNED_BYTE_MAX);
 			bytes[1] = (byte) (requestId % UNSIGNED_BYTE_MAX);

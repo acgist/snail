@@ -25,7 +25,7 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 	private static final Logger LOGGER = LoggerFactory.getLogger(TcpClient.class);
 	
 	/**
-	 * 客户端公用一个线程池
+	 * 客户端线程池
 	 */
 	private static final AsynchronousChannelGroup GROUP;
 	

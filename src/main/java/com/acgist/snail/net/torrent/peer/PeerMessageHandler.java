@@ -26,11 +26,7 @@ public class PeerMessageHandler extends TcpMessageHandler implements IMessageEnc
 	 * 服务端
 	 */
 	public PeerMessageHandler() {
-		this.peerSubMessageHandler = PeerSubMessageHandler.newInstance();
-		final var peerUnpackMessageCodec = new PeerUnpackMessageCodec(this.peerSubMessageHandler);
-		final var peerCryptMessageCodec = new PeerCryptMessageCodec(this.peerSubMessageHandler, peerUnpackMessageCodec);
-		this.messageCodec = peerCryptMessageCodec;
-		this.peerSubMessageHandler.messageEncryptHandler(this);
+		this(PeerSubMessageHandler.newInstance());
 	}
 
 	/**

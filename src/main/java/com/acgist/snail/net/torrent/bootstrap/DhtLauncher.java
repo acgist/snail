@@ -28,7 +28,6 @@ public class DhtLauncher implements Runnable {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DhtLauncher.class);
 	
 	private final InfoHash infoHash;
-	
 	/**
 	 * 客户端连接时支持DHT，加入列表，定时查询Peer时使用。
 	 */

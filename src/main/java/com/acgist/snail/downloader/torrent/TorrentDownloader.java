@@ -27,7 +27,6 @@ public class TorrentDownloader extends Downloader {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentDownloader.class);
 	
 	private TorrentSession torrentSession;
-	
 	/**
 	 * 下载锁
 	 */

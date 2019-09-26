@@ -47,8 +47,8 @@ public final class DownloaderManager {
 	 */
 	private final ExecutorService executor;
 	/**
-	 * 下载任务MAP
-	 * key=任务ID
+	 * <p>下载任务MAP</p>
+	 * <p>key=任务ID</p>
 	 */
 	private final Map<String, IDownloader> downloaderMap;
 	
