@@ -219,6 +219,9 @@ public class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			case extension:
 				extension(buffer);
 				break;
+			default:
+				LOGGER.info("不支持的Peer消息类型：{}", type);
+				break;
 			}
 		}
 	}

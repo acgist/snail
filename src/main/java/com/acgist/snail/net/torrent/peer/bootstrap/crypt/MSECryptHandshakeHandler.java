@@ -401,7 +401,8 @@ public class MSECryptHandshakeHandler {
 		final boolean crypt = 	  (provide & 0x02) == 0x02;
 		Strategy selected = null;
 		if (plaintext || crypt) {
-			switch (CryptConfig.STRATEGY) { // 本地配置
+			// 本地配置
+			switch (CryptConfig.STRATEGY) {
 			case plaintext:
 				selected = plaintext ? Strategy.plaintext : null;
 				break;
@@ -413,6 +414,9 @@ public class MSECryptHandshakeHandler {
 				break;
 			case encrypt:
 				selected = crypt ? Strategy.encrypt : null;
+				break;
+			default:
+				selected = CryptConfig.STRATEGY.crypt() ? Strategy.encrypt : Strategy.plaintext;
 				break;
 			}
 		}

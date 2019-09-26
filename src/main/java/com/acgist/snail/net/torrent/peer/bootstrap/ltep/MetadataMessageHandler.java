@@ -86,6 +86,9 @@ public class MetadataMessageHandler implements IExtensionMessageHandler {
 		case reject:
 			reject(decoder);
 			break;
+		default:
+			LOGGER.info("不支持的metadata消息类型：{}", type);
+			break;
 		}
 	}
 	

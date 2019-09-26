@@ -116,6 +116,9 @@ public class DhtMessageHandler extends UdpMessageHandler {
 		case announce_peer:
 			response = announcePeer(request);
 			break;
+		default:
+			LOGGER.info("不支持的DHT请求类型：{}", request.getQ());
+			break;
 		}
 		pushMessage(response, socketAddress);
 	}
@@ -148,6 +151,9 @@ public class DhtMessageHandler extends UdpMessageHandler {
 			break;
 		case announce_peer:
 			announcePeer(request, response);
+			break;
+		default:
+			LOGGER.info("不支持的DHT请求类型：{}", request.getQ());
 			break;
 		}
 	}
