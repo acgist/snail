@@ -21,7 +21,7 @@ public class PeerConnect {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerConnect.class);
 	
 	/**
-	 * 已被评分：第一次连入还没有被评分。
+	 * 已被评分：第一次连入还没有被评分
 	 */
 	private volatile boolean marked = false;
 	/**

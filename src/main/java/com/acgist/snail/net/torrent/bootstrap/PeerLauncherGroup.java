@@ -216,7 +216,7 @@ public class PeerLauncherGroup {
 			}
 			// 获取评分并清除
 			mark = tmp.mark();
-			// 第一次连入还没有被评分
+			// 第一次连接还没有被评分
 			if(!tmp.marked()) {
 				this.offer(tmp);
 				continue;

@@ -76,7 +76,7 @@ public class PeerLauncher {
 	 */
 	private final AtomicBoolean completeLock = new AtomicBoolean(false);
 	/**
-	 * 已被评分：第一次连入还没有被评分。
+	 * 已被评分：第一次连接还没有被评分
 	 */
 	private volatile boolean marked = false;
 	/**
