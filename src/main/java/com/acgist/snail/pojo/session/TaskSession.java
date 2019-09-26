@@ -9,7 +9,7 @@ import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.gui.GuiHandler;
 import com.acgist.snail.pojo.entity.TaskEntity;
-import com.acgist.snail.pojo.wrapper.TorrentSelecterWrapper;
+import com.acgist.snail.pojo.wrapper.TorrentSelectorWrapper;
 import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.repository.impl.TaskRepository;
@@ -145,7 +145,7 @@ public class TaskSession {
 		if(StringUtils.isEmpty(description)) {
 			return List.of();
 		} else {
-			final TorrentSelecterWrapper wrapper = TorrentSelecterWrapper.newDecoder(description);
+			final TorrentSelectorWrapper wrapper = TorrentSelectorWrapper.newDecoder(description);
 			return wrapper.list();
 		}
 	}

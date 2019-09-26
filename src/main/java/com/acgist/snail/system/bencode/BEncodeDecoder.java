@@ -38,11 +38,26 @@ public class BEncodeDecoder implements Closeable {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BEncodeDecoder.class);
 	
-	public static final char TYPE_E = 'e'; // 结尾
-	public static final char TYPE_I = 'i'; // 数字
-	public static final char TYPE_L = 'l'; // list
-	public static final char TYPE_D = 'd'; // map
-	public static final char SEPARATOR = ':'; // 分隔符
+	/**
+	 * 结尾
+	 */
+	public static final char TYPE_E = 'e';
+	/**
+	 * 数字
+	 */
+	public static final char TYPE_I = 'i';
+	/**
+	 * list
+	 */
+	public static final char TYPE_L = 'l';
+	/**
+	 * map
+	 */
+	public static final char TYPE_D = 'd';
+	/**
+	 * 分隔符
+	 */
+	public static final char SEPARATOR = ':';
 	
 	public enum Type {
 		

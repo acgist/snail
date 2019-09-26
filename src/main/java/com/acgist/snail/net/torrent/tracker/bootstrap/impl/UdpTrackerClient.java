@@ -49,7 +49,8 @@ public class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker.boots
 	
 	@Override
 	public void announce(Integer sid, TorrentSession torrentSession) throws NetException {
-		if(this.connectionId == null) { // 没有连接创建连接
+		// 没有连接创建连接
+		if(this.connectionId == null) {
 			synchronized (this) {
 				if(this.connectionId == null) {
 					buildConnectionId();
@@ -111,7 +112,8 @@ public class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker.boots
 	 */
 	private ByteBuffer buildConnectMessage() {
 		ByteBuffer buffer = ByteBuffer.allocate(16);
-		buffer.putLong(4497486125440L); // 必须等于：0x41727101980
+		// 必须等于：0x41727101980
+		buffer.putLong(4497486125440L);
 		buffer.putInt(TrackerConfig.Action.connect.action());
 		buffer.putInt(this.id);
 		return buffer;
@@ -131,7 +133,7 @@ public class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker.boots
 		}
 		final ByteBuffer buffer = ByteBuffer.allocate(98);
 		buffer.putLong(this.connectionId); // connection_id
-		buffer.putInt(TrackerConfig.Action.announce.action());
+		buffer.putInt(TrackerConfig.Action.announce.action()); // action
 		buffer.putInt(sid); // transaction_id
 		buffer.put(torrentSession.infoHash().infoHash()); // infoHash
 		buffer.put(PeerService.getInstance().peerId()); // PeerId

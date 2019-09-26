@@ -13,14 +13,38 @@ import com.acgist.snail.utils.PeerUtils;
  */
 public class HttpAnnounceMessage {
 
-	private String trackerId; // trackerId，返回后以后每次请求需要上送这个字段
-	private String failureReason; // 失败原因
-	private String warngingMessage; // 警告信息
-	private Integer interval; // 下一次请求等待时间
-	private Integer minInterval; // 下一次请求等待最小时间
-	private Integer complete; // 已完成Peer数量
-	private Integer incomplete; // 未完成Peer数量
-	private Map<String, Integer> peers; // Peer数据（IP和端口）
+	/**
+	 * trackerId，返回后以后每次请求需要上送这个字段
+	 */
+	private String trackerId;
+	/**
+	 * 失败原因
+	 */
+	private String failureReason;
+	/**
+	 * 警告信息
+	 */
+	private String warngingMessage;
+	/**
+	 * 下一次请求等待时间
+	 */
+	private Integer interval;
+	/**
+	 * 下一次请求等待最小时间
+	 */
+	private Integer minInterval;
+	/**
+	 * 已完成Peer数量
+	 */
+	private Integer complete;
+	/**
+	 * 未完成Peer数量
+	 */
+	private Integer incomplete;
+	/**
+	 * Peer数据（IP和端口）
+	 */
+	private Map<String, Integer> peers;
 
 	public static final HttpAnnounceMessage valueOf(Map<String, Object> map) {
 		final HttpAnnounceMessage message = new HttpAnnounceMessage();

@@ -123,7 +123,8 @@ public class WindowRecycle extends Recycle {
 		// 时间戳
 		final long timestamp = DateUtils.windowTimestamp();
 		final ByteBuffer buffer = ByteBuffer.allocate(8);
-		buffer.order(ByteOrder.nativeOrder()); // 设置CPU默认大小端模式
+		// 设置CPU默认大小端模式
+		buffer.order(ByteOrder.nativeOrder());
 		buffer.putLong(timestamp);
 		for (byte value : buffer.array()) {
 			out.write(value);

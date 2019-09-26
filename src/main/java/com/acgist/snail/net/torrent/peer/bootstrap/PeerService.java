@@ -24,9 +24,14 @@ public class PeerService {
 	private static final PeerService INSTANCE = new PeerService();
 	
 	/**
+	 * 版本信息长度
+	 */
+	private static final int VERSION_LENGTH = 4;
+	/**
 	 * PeerId前缀
 	 */
 	private static final String PEER_ID_PREFIX = "AS";
+	
 	/**
 	 * 20位系统ID
 	 */
@@ -53,11 +58,11 @@ public class PeerService {
 		final StringBuilder builder = new StringBuilder(8);
 		builder.append("-").append(PEER_ID_PREFIX);
 		final String version = SystemConfig.getVersion().replace(".", "");
-		if(version.length() > 4) {
-			builder.append(version.substring(0, 4));
+		if(version.length() > VERSION_LENGTH) {
+			builder.append(version.substring(0, VERSION_LENGTH));
 		} else {
 			builder.append(version);
-			builder.append("0".repeat(4 - version.length()));
+			builder.append("0".repeat(VERSION_LENGTH - version.length()));
 		}
 		builder.append("-");
 		final String peerIdPrefix = builder.toString();

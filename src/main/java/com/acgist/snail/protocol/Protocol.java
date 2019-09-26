@@ -38,11 +38,22 @@ public abstract class Protocol {
 
 	}
 	
-	protected final Type type; // 下载任务类型
-	protected final String[] regexs; // 协议正则表达式
-	
-	protected String url; // 下载地址
-	protected TaskEntity taskEntity; // 任务
+	/**
+	 * 下载任务类型
+	 */
+	protected final Type type;
+	/**
+	 * 协议正则表达式
+	 */
+	protected final String[] regexs;
+	/**
+	 * 下载地址
+	 */
+	protected String url;
+	/**
+	 * 任务
+	 */
+	protected TaskEntity taskEntity;
 	
 	public Protocol(Type type, String ... regexs) {
 		this.type = type;

@@ -134,7 +134,8 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler {
 	 * 发送消息
 	 */
 	private void pushMessage(ByteBuffer buffer) {
-		final Byte type = holepunchType(); // 扩展消息类型
+		// 扩展消息类型
+		final Byte type = holepunchType();
 		if (type == null) {
 			LOGGER.warn("不支持holepunch扩展协议");
 			return;

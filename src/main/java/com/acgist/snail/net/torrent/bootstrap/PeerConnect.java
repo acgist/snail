@@ -21,15 +21,17 @@ public class PeerConnect {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerConnect.class);
 	
 	/**
+	 * 已被评分：第一次连入还没有被评分。
+	 */
+	private volatile boolean marked = false;
+	/**
 	 * 评分：每次记分时记录为上次的下载大小，统计时使用当前下载大小减去上次记录值。
 	 */
 	private final AtomicLong mark = new AtomicLong(0);
 	/**
-	 * 已被评分：第一次连入还没有被评分。
+	 * 状态：连接是否成功
 	 */
-	private volatile boolean marked = false;
-	
-	private volatile boolean available = false; // 状态：连接是否成功
+	private volatile boolean available = false;
 	
 	private final PeerSession peerSession;
 	private final PeerSubMessageHandler peerSubMessageHandler;

@@ -69,7 +69,7 @@ public class BuildController extends Controller implements Initializable {
 		}
 		boolean ok = true;
 		try {
-			// TODO：优化卡死现象：多线程
+			// TODO：优化卡死现象
 			DownloaderManager.getInstance().newTask(url);
 		} catch (DownloadException e) {
 			LOGGER.error("新建下载任务异常：{}", url, e);

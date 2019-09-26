@@ -18,17 +18,46 @@ import com.acgist.snail.utils.StringUtils;
  */
 public class Torrent {
 
-	private String comment; // 注释
-	private String commentUtf8; // 注释UTF8
-	private String encoding; // 编码
-	private String createdBy; // 创建者
-	private String announce; // Tracker主服务器
-	private Long creationDate; // 创建时间
-	private TorrentInfo info; // 文件信息
-	private List<String> announceList; // Tracker服务器列表
-	private Map<String, Long> nodes; // DHT协议：暂时不处理
-	
-	private InfoHash infoHash; // infoHash
+	/**
+	 * 注释
+	 */
+	private String comment;
+	/**
+	 * 注释UTF8
+	 */
+	private String commentUtf8;
+	/**
+	 * 编码
+	 */
+	private String encoding;
+	/**
+	 * 创建者
+	 */
+	private String createdBy;
+	/**
+	 * Tracker主服务器
+	 */
+	private String announce;
+	/**
+	 * 创建时间
+	 */
+	private Long creationDate;
+	/**
+	 * 文件信息
+	 */
+	private TorrentInfo info;
+	/**
+	 * Tracker服务器列表
+	 */
+	private List<String> announceList;
+	/**
+	 * DHT节点
+	 */
+	private Map<String, Long> nodes;
+	/**
+	 * infoHash
+	 */
+	private InfoHash infoHash;
 
 	protected Torrent() {
 	}
@@ -60,11 +89,12 @@ public class Torrent {
 			torrent.setNodes(
 				nodes.stream()
 				.map(value -> {
+					// IP、Port
 					final List<?> values = (List<?>) value;
 					if(values.size() == 2) {
 						final String host = BEncodeDecoder.getString(values.get(0));
 						final Long port = (Long) values.get(1);
-						if(StringUtils.isNumeric(host)) { // TODO：紧凑型IP和端口
+						if(StringUtils.isNumeric(host)) {
 							return Map.entry(
 								NetUtils.decodeIntToIp(Integer.parseInt(host)),
 								Long.valueOf(NetUtils.decodePort(port.shortValue()))

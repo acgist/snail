@@ -31,13 +31,6 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FtpMessageHandler.class);
 	
-	private Socket socket; // Socket
-	private InputStream inputStream; // 输入流
-	private boolean range = false; // 断点续传
-	private String failMessage; // 错误信息
-	private String charset = SystemConfig.CHARSET_GBK; // 编码：默认GBK
-	private final AtomicBoolean commandLock = new AtomicBoolean(false); // 命令等待锁
-	
 	/**
 	 * 命令超时时间
 	 */
@@ -50,6 +43,31 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 	 * 命令结束正则表达式
 	 */
 	private static final String END_REGEX = "\\d{3} .*";
+	
+	/**
+	 * Socket
+	 */
+	private Socket socket;
+	/**
+	 * 输入流
+	 */
+	private InputStream inputStream;
+	/**
+	 * 断点续传
+	 */
+	private boolean range = false;
+	/**
+	 * 错误信息
+	 */
+	private String failMessage;
+	/**
+	 * 编码：默认GBK
+	 */
+	private String charset = SystemConfig.CHARSET_GBK;
+	/**
+	 * 命令锁：等待命令执行响应
+	 */
+	private final AtomicBoolean commandLock = new AtomicBoolean(false);
 	
 	public FtpMessageHandler() {
 		final var multilineMessageCodec = new MultilineMessageCodec(SPLIT, END_REGEX, this);
@@ -82,6 +100,7 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 		} else if(StringUtils.startsWith(message, "502 ")) { // 不支持命令：FEAT
 			this.unlockCommand();
 		} else if(StringUtils.startsWith(message, "211-")) { // 服务器状态：扩展命令编码查询
+			// 判断是否支持UTF8
 			if(message.toUpperCase().contains(SystemConfig.CHARSET_UTF8)) {
 				this.charset = SystemConfig.CHARSET_UTF8;
 				LOGGER.debug("FTP设置编码：{}", this.charset);
@@ -92,7 +111,6 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 			final int opening = message.indexOf('(');
 			final int closing = message.indexOf(')', opening + 1);
 			if (closing > 0) {
-				// 创建远程Socket
 				final String data = message.substring(opening + 1, closing);
 				final StringTokenizer tokenizer = new StringTokenizer(data, ",");
 				final String host = tokenizer.nextToken() + "." + tokenizer.nextToken() + "." + tokenizer.nextToken() + "." + tokenizer.nextToken();
@@ -104,7 +122,7 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 					LOGGER.error("打开FTP远程Socket异常", e);
 				}
 			}
-		} else if(StringUtils.startsWith(message, "150 ")) { // 下载完成
+		} else if(StringUtils.startsWith(message, "150 ")) { // 打开数据连接
 			if(this.socket == null) {
 				throw new NetException("请切换到被动模式");
 			}

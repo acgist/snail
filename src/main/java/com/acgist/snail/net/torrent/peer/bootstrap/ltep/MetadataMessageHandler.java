@@ -153,7 +153,8 @@ public class MetadataMessageHandler implements IExtensionMessageHandler {
 		LOGGER.debug("收到metadata消息-data");
 		byte[] bytes = this.infoHash.info();
 		final int piece = decoder.getInteger(ARG_PIECE);
-		if(bytes == null) { // 设置种子info
+		// 设置种子info
+		if(bytes == null) {
 			final int totalSize = decoder.getInteger(ARG_TOTAL_SIZE);
 			bytes = new byte[totalSize];
 			this.infoHash.info(bytes);
@@ -222,7 +223,8 @@ public class MetadataMessageHandler implements IExtensionMessageHandler {
 	 * 发送消息
 	 */
 	private void pushMessage(Map<String, Object> data, byte[] x) {
-		final Byte type = metadataType(); // 扩展消息类型
+		// 扩展消息类型
+		final Byte type = metadataType();
 		if (type == null) {
 			LOGGER.warn("不支持metadata扩展协议");
 			return;

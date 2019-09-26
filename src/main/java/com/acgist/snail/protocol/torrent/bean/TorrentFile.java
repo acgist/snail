@@ -19,13 +19,30 @@ public class TorrentFile {
 
 	public static final String SEPARATOR = "/";
 	
-	private boolean selected = false; // 是否选择下载
-	
-	private Long length; // 大小
-	private byte[] ed2k; // ed2k
-	private byte[] filehash; // 文件hash
-	private List<String> path; // 路径
-	private List<String> pathUtf8; // 路径UTF8
+	/**
+	 * 是否选择下载
+	 */
+	private boolean selected = false;
+	/**
+	 * 大小
+	 */
+	private Long length;
+	/**
+	 * ed2k
+	 */
+	private byte[] ed2k;
+	/**
+	 * 文件hash
+	 */
+	private byte[] filehash;
+	/**
+	 * 路径
+	 */
+	private List<String> path;
+	/**
+	 * 路径UTF8
+	 */
+	private List<String> pathUtf8;
 
 	protected TorrentFile() {
 	}

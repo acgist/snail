@@ -29,31 +29,82 @@ public class DhtConfig extends PropertiesConfig {
 	
 	private static final String DHT_CONFIG = "/config/bt.dht.properties";
 	
-	public static final String KEY_T = "t"; // 标记ID：请求ID，默认两个字节
-	public static final String KEY_Y = "y"; // 消息类型：请求、响应
-	public static final String KEY_Q = "q"; // 请求、请求类型
-	public static final String KEY_A = "a"; // 请求参数
-	public static final String KEY_R = "r"; // 响应、响应参数
-	public static final String KEY_E = "e"; // 错误
-	public static final String KEY_V = "v"; // 客户端版本：不一定存在
-	public static final String KEY_ID = "id"; // NodeId
-	public static final String KEY_PORT = "port"; // 下载端口
-	public static final String KEY_NODES = "nodes"; // 节点信息
-	public static final String KEY_TOKEN = "token"; // announce_peer token
-	public static final String KEY_VALUES = "values"; // Peers
-	public static final String KEY_TARGET = "target"; // 被查找的NodeId
-	public static final String KEY_INFO_HASH = "info_hash"; // infoHash
+	/**
+	 * 标记ID：请求ID，默认两个字节
+	 */
+	public static final String KEY_T = "t";
+	/**
+	 * 消息类型：请求、响应
+	 */
+	public static final String KEY_Y = "y";
+	/**
+	 * 请求、请求类型
+	 */
+	public static final String KEY_Q = "q";
+	/**
+	 * 请求参数
+	 */
+	public static final String KEY_A = "a";
+	/**
+	 * 响应、响应参数
+	 */
+	public static final String KEY_R = "r";
+	/**
+	 * 错误
+	 */
+	public static final String KEY_E = "e";
+	/**
+	 * 客户端版本：不一定存在
+	 */
+	public static final String KEY_V = "v";
+	/**
+	 * NodeId
+	 */
+	public static final String KEY_ID = "id";
+	/**
+	 * 下载端口
+	 */
+	public static final String KEY_PORT = "port";
+	/**
+	 * 节点信息
+	 */
+	public static final String KEY_NODES = "nodes";
+	/**
+	 * announce_peer token
+	 */
+	public static final String KEY_TOKEN = "token";
+	/**
+	 * Peers
+	 */
+	public static final String KEY_VALUES = "values";
+	/**
+	 * 被查找的NodeId
+	 */
+	public static final String KEY_TARGET = "target";
+	/**
+	 * infoHash
+	 */
+	public static final String KEY_INFO_HASH = "info_hash";
 	/**
 	 * 0|1：存在且等于“1”时忽略端口参数，使用UDP包的源端口为对等端端口，并且支持uTP。
 	 */
 	public static final String KEY_IMPLIED_PORT = "implied_port";
-	
-	public static final Integer IMPLIED_PORT_AUTO = 1; // 自动获取
-	public static final Integer IMPLIED_PORT_CONFIG = 0; // 使用配置
-	
-	public static final int GET_PEER_LENGTH = 100; // GetPeer，Peer列表长度。
-	
-	public static final int DHT_CLEAR_INTERVAL = 10; // DHT请求清理周期
+	/**
+	 * 自动获取
+	 */
+	public static final Integer IMPLIED_PORT_AUTO = 1;
+	/**
+	 * 使用配置
+	 */
+	public static final Integer IMPLIED_PORT_CONFIG = 0;
+	/**
+	 * GetPeer，Peer列表长度。
+	 */
+	public static final int GET_PEER_LENGTH = 100;
+	/**
+	 * DHT请求清理周期
+	 */
+	public static final int DHT_CLEAR_INTERVAL = 10;
 	
 	/**
 	 * <p>DHT响应错误：</p>

@@ -48,12 +48,30 @@ public class DownloadConfig extends PropertiesConfig {
 		return INSTANCE;
 	}
 	
-	private String path; // 下载目录
-	private Integer size; // 下载任务数量
-	private Boolean notice; // 消息提示
-	private Integer buffer; // 下载速度（单个）（KB）
-	private String lastPath; // 最后一次选择目录
-	private Integer memoryBuffer; // 磁盘缓存（单个）（MB）
+	/**
+	 * 下载目录
+	 */
+	private String path;
+	/**
+	 * 下载任务数量
+	 */
+	private Integer size;
+	/**
+	 * 消息提示
+	 */
+	private Boolean notice;
+	/**
+	 * 下载速度（单个）（KB）
+	 */
+	private Integer buffer;
+	/**
+	 * 最后一次选择目录
+	 */
+	private String lastPath;
+	/**
+	 * 磁盘缓存（单个）（MB）
+	 */
+	private Integer memoryBuffer;
 	
 	/**
 	 * 配置文件加载

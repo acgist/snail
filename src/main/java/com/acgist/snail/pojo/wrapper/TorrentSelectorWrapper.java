@@ -14,19 +14,19 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class TorrentSelecterWrapper {
+public class TorrentSelectorWrapper {
 
 	private BEncodeEncoder encoder;
 	private BEncodeDecoder decoder;
 
-	private TorrentSelecterWrapper() {
+	private TorrentSelectorWrapper() {
 	}
 
 	/**
 	 * 编码器
 	 */
-	public static final TorrentSelecterWrapper newEncoder(List<String> list) {
-		final TorrentSelecterWrapper wrapper = new TorrentSelecterWrapper();
+	public static final TorrentSelectorWrapper newEncoder(List<String> list) {
+		final TorrentSelectorWrapper wrapper = new TorrentSelectorWrapper();
 		if(CollectionUtils.isNotEmpty(list)) {
 			wrapper.encoder = BEncodeEncoder.newInstance().newList();
 			wrapper.encoder.put(list);
@@ -37,8 +37,8 @@ public class TorrentSelecterWrapper {
 	/**
 	 * 解析器
 	 */
-	public static final TorrentSelecterWrapper newDecoder(String value) {
-		final TorrentSelecterWrapper wrapper = new TorrentSelecterWrapper();
+	public static final TorrentSelectorWrapper newDecoder(String value) {
+		final TorrentSelectorWrapper wrapper = new TorrentSelectorWrapper();
 		if(StringUtils.isNotEmpty(value)) {
 			wrapper.decoder = BEncodeDecoder.newInstance(value);
 		}

@@ -83,7 +83,8 @@ public class BeanUtils {
 			Stream
 				.of(fields)
 				.filter(field -> {
-					return !Modifier.isStatic(field.getModifiers()) && // 非静态属性
+					return 
+						!Modifier.isStatic(field.getModifiers()) && // 非静态属性
 						!Modifier.isTransient(field.getModifiers()); // 非瞬时属性
 				})
 				.map(field -> field.getName()),

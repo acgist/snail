@@ -43,8 +43,10 @@ public class PeerEvaluator {
 	
 	private static final PeerEvaluator INSTANCE = new PeerEvaluator();
 	
-	private boolean available; // 初始完成，可用状态。
-	
+	/**
+	 * 初始完成，可用状态。
+	 */
+	private boolean available;
 	/**
 	 * 优质Peer最低分：取平均分。
 	 */

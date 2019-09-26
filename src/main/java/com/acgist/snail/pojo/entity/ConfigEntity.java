@@ -10,10 +10,18 @@ public class ConfigEntity extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * 配置表名
+	 */
 	public static final String TABLE_NAME = "tb_config";
-	
-	public static final String PROPERTY_NAME = "name"; // 配置名称
-	public static final String PROPERTY_VALUE = "value"; // 配置值
+	/**
+	 * 配置名称
+	 */
+	public static final String PROPERTY_NAME = "name";
+	/**
+	 * 配置值
+	 */
+	public static final String PROPERTY_VALUE = "value";
 
 	/**
 	 * 配置名称

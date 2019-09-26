@@ -30,10 +30,11 @@ public class PeerCryptMessageCodec extends MessageCodec<ByteBuffer, ByteBuffer> 
 	@Override
 	public void decode(ByteBuffer buffer, InetSocketAddress address, boolean hasAddress) throws NetException {
 		buffer.flip();
-		if(this.mseCryptHandshakeHandler.over()) { // 握手完成
+		// 握手完成
+		if(this.mseCryptHandshakeHandler.over()) {
 			this.mseCryptHandshakeHandler.decrypt(buffer);
 			this.doNext(buffer, address, hasAddress);
-		} else { // 握手
+		} else { // 握手消息
 			this.mseCryptHandshakeHandler.handshake(buffer);
 		}
 	}
@@ -42,12 +43,12 @@ public class PeerCryptMessageCodec extends MessageCodec<ByteBuffer, ByteBuffer> 
 	public void encode(ByteBuffer buffer) {
 		if(this.mseCryptHandshakeHandler.over()) { // 握手完成
 			this.mseCryptHandshakeHandler.encrypt(buffer); // 加密消息
-		} else {
-			if(CryptConfig.STRATEGY.crypt()) { // 加密
+		} else { // 握手未完成
+			if(CryptConfig.STRATEGY.crypt()) { // 需要加密
 				this.mseCryptHandshakeHandler.handshake(); // 握手
-				this.mseCryptHandshakeHandler.handshakeLock(); // 加锁
+				this.mseCryptHandshakeHandler.handshakeLock(); // 握手加锁
 				this.mseCryptHandshakeHandler.encrypt(buffer); // 加密消息
-			} else { // 明文
+			} else { // 不需要加密：使用明文完成握手
 				this.mseCryptHandshakeHandler.plaintext();
 			}
 		}

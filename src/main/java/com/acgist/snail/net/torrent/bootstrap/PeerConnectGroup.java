@@ -99,7 +99,7 @@ public class PeerConnectGroup {
 	private void inferiorPeerConnect() {
 		final int size = this.peerConnects.size();
 		int index = 0;
-		PeerConnect tmp = null; // 临时
+		PeerConnect tmp = null;
 		while(true) {
 			if(index++ >= size) {
 				break;
@@ -108,16 +108,20 @@ public class PeerConnectGroup {
 			if(tmp == null) {
 				break;
 			}
-			if(!tmp.available()) { // 不可用直接剔除
+			// 不可用直接剔除
+			if(!tmp.available()) {
 				inferiorPeerConnect(tmp);
 				continue;
 			}
-			if(tmp.peerSession().downloading()) { // 下载中的Peer提供上传
+			// 下载中的Peer提供上传
+			if(tmp.peerSession().downloading()) {
 				this.offer(tmp);
 				continue;
 			}
+			// 获取评分并清除
 			final long mark = tmp.mark();
-			if(!tmp.marked()) { // 第一次连入还没有被评分
+			// 第一次连入还没有被评分
+			if(!tmp.marked()) {
 				this.offer(tmp);
 				continue;
 			}

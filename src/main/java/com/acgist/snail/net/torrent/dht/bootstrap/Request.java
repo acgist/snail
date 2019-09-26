@@ -141,7 +141,8 @@ public class Request extends BaseMessage {
 		}
 		final ByteBuffer buffer = ByteBuffer.allocate(26 * nodes.size());
 		for (NodeSession node : nodes) {
-			if(NetUtils.verifyIp(node.getHost())) { // 如果不是IP不分享
+			// 只分享IP地址
+			if(NetUtils.verifyIp(node.getHost())) {
 				buffer.put(node.getId());
 				buffer.putInt(NetUtils.encodeIpToInt(node.getHost()));
 				buffer.putShort(NetUtils.encodePort(node.getPort()));

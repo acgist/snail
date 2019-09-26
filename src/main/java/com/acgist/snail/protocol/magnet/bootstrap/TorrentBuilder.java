@@ -73,7 +73,8 @@ public class TorrentBuilder {
 		if(this.trackers.size() > 0) {
 			data.put("announce", this.trackers.get(0));
 		}
-		if(this.trackers.size() > 1) { // 每个映射为一个list
+		if(this.trackers.size() > 1) {
+			// 每个tracker映射为一个list
 			data.put("announce-list", this.trackers.subList(1, this.trackers.size()).stream()
 				.map(value -> List.of(value))
 				.collect(Collectors.toList()));

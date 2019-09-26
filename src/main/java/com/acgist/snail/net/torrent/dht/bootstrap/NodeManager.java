@@ -199,7 +199,7 @@ public class NodeManager {
 	 */
 	public void sortNodes() {
 		synchronized (this.nodes) {
-			Collections.sort(this.nodes); // 排序
+			Collections.sort(this.nodes);
 		}
 	}
 	
@@ -256,12 +256,13 @@ public class NodeManager {
 		} else { // 接头
 			selectSize = end + nodeSize - begin;
 		}
-		if(selectSize < NODE_FIND_SLICE_SIZE) { // 小于最小列表时开始排序返回最近列表。
+		if(selectSize < NODE_FIND_SLICE_SIZE) { // 小于最小列表时开始排序返回最近列表
 			return selectNode(nodes, target, begin, end);
 		} else { // 分片
-			// 下标，如果下标大于节点数量，表示从头开始选择。
-			final int sliceSize = selectSize / NODE_FIND_SLICE; // 分片中Node的数量
+			// 分片中Node的数量
+			final int sliceSize = selectSize / NODE_FIND_SLICE;
 			int sliceA, sliceB, sliceC;
+			// 如果下标大于节点数量，表示从头开始选择。
 			if(end > begin) {
 				sliceA = begin;
 				sliceB = sliceA + sliceSize;

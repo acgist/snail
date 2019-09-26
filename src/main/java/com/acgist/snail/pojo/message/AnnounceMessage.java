@@ -12,11 +12,26 @@ import com.acgist.snail.utils.ObjectUtils;
  */
 public class AnnounceMessage {
 
-	private Integer id; // id
-	private Integer interval; // 下次请求等待时间
-	private Integer done; // 已完成Peer数量
-	private Integer undone; // 未完成Peer数量
-	private Map<String, Integer> peers; // Peers数据（IP和端口）
+	/**
+	 * id
+	 */
+	private Integer id;
+	/**
+	 * 下次请求等待时间
+	 */
+	private Integer interval;
+	/**
+	 * 已完成Peer数量
+	 */
+	private Integer done;
+	/**
+	 * 未完成Peer数量
+	 */
+	private Integer undone;
+	/**
+	 * Peers数据（IP和端口）
+	 */
+	private Map<String, Integer> peers;
 
 	public Integer getId() {
 		return id;

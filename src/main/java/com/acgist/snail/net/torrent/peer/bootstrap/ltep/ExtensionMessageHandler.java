@@ -32,20 +32,48 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ExtensionMessageHandler.class);
 	
-	private volatile boolean handshake = false; // 是否握手
-	
-	public static final String EX_M = "m"; // 扩展协议信息
-	public static final String EX_V = "v"; // 软件信息（名称和版本）
-	public static final String EX_P = "p"; // 端口
-	public static final String EX_REQQ = "reqq"; // 未知含义：TODO：了解
-	public static final String EX_YOURIP = "yourip"; // 地址
-	public static final String EX_IP_4 = "ipv4"; // IPv4地址
-	public static final String EX_IP_6 = "ipv6"; // IPv6地址
-	
-	public static final String EX_E = "e"; // pex：加密
-	
-	public static final String EX_METADATA_SIZE = "metadata_size"; // ut_metadata：种子info数据大小
+	/**
+	 * 扩展协议信息
+	 */
+	public static final String EX_M = "m";
+	/**
+	 * 软件信息（名称和版本）
+	 */
+	public static final String EX_V = "v";
+	/**
+	 * 端口
+	 */
+	public static final String EX_P = "p";
+	/**
+	 * 未知含义：TODO：了解
+	 */
+	public static final String EX_REQQ = "reqq";
+	/**
+	 * 地址
+	 */
+	public static final String EX_YOURIP = "yourip";
+	/**
+	 * IPv4地址
+	 */
+	public static final String EX_IPV4 = "ipv4";
+	/**
+	 * IPv6地址
+	 */
+	public static final String EX_IPV6 = "ipv6";
+	/**
+	 * pex：加密
+	 */
+	public static final String EX_E = "e";
+	/**
+	 * ut_metadata：种子info数据大小
+	 */
+	public static final String EX_METADATA_SIZE = "metadata_size";
 
+	/**
+	 * 是否握手
+	 */
+	private volatile boolean handshake = false;
+	
 	private final InfoHash infoHash;
 	private final PeerSession peerSession;
 	private final TorrentSession torrentSession;
@@ -112,16 +140,17 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 		data.put(EX_M, supportType); // 扩展协议以及编号
 		data.put(EX_V, SystemConfig.getNameEnAndVersion()); // 客户端信息（名称、版本）
 		data.put(EX_P, SystemConfig.getTorrentPortExt()); // 外网监听TCP端口
-		// 客户端自动获取
+		// 本机IP地址，客户端自动获取。
 //		final String ip = UpnpService.getInstance().externalIpAddress();
 //		if(StringUtils.isNotEmpty(ip)) {
 //			final ByteBuffer youripBuffer = ByteBuffer.allocate(4);
 //			youripBuffer.putInt(NetUtils.decodeIpToInt(ip));
-//			data.put(EX_YOURIP, youripBuffer.array()); // 本机的IP地址
+//			data.put(EX_YOURIP, youripBuffer.array());
 //		}
 		data.put(EX_REQQ, 255);
 		if(PeerConfig.ExtensionType.ut_pex.notice()) {
-			data.put(EX_E, 0); // pex：偏爱加密
+			// TODO：使用CryptConfig配置
+			data.put(EX_E, 0); // pex：加密
 		}
 		if(PeerConfig.ExtensionType.ut_metadata.notice()) {
 			final int metadataSize = this.infoHash.size();
@@ -145,11 +174,13 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 			return;
 		}
 		final Long port = decoder.getLong(EX_P);
-		if(port != null && this.peerSession.peerPort() == null) { // 获取端口
+		// 获取端口
+		if(port != null && this.peerSession.peerPort() == null) {
 			this.peerSession.peerPort(port.intValue());
 		}
 		final Long metadataSize = decoder.getLong(EX_METADATA_SIZE);
-		if(metadataSize != null && this.infoHash.size() == 0) { // 获取种子info大小
+		// 获取种子info大小
+		if(metadataSize != null && this.infoHash.size() == 0) {
 			this.infoHash.size(metadataSize.intValue());
 		}
 		final Map<String, Object> mData = decoder.getMap(EX_M);

@@ -45,14 +45,15 @@ public class TaskCell extends TableCell<TaskSession, String> {
 			final HBox box = new HBox();
 			box.setAlignment(this.pos);
 			final Text name = new Text(value);
-			if(this.icon) { // 名称：添加图标和手势
-//				name.setCursor(Cursor.HAND);
+			// 添加图标
+			if(this.icon) {
 				final FileType fileType = taskSession.entity().getFileType();
 				if(fileType != null) {
 					final ImageView icon = new ImageView("/image/32/" + fileType.icon());
 					box.getChildren().add(icon);
 				}
 			}
+			// 添加Tip
 			if(this.tooltip) {
 				this.setTooltip(Tooltips.newTooltip(value));
 			}

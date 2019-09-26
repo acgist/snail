@@ -66,14 +66,15 @@ public class WebSocketMessageHandler implements IMessageHandler {
 			LOGGER.debug("发送消息时Socket已经不可用");
 			return;
 		}
-		if(buffer.position() != 0) { //  重置标记
+	//  重置标记
+		if(buffer.position() != 0) {
 			buffer.flip();
 		}
 		if(buffer.limit() == 0) {
 			LOGGER.warn("发送消息为空");
 			return;
 		}
-		synchronized (this.socket) { // 保证顺序
+		synchronized (this.socket) {
 			final Future<WebSocket> future = this.socket.sendBinary(buffer, true);
 			try {
 				final WebSocket webSocket = future.get(TIMEOUT, TimeUnit.SECONDS);

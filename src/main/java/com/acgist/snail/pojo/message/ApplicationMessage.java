@@ -24,25 +24,40 @@ public class ApplicationMessage {
 	 * 消息类型
 	 */
 	public enum Type {
-
+		
 		// 被动消息
-		gui, // 外部GUI注册
-		text, // 文本
-		close, // 关闭连接
-		notify, // 唤醒窗口
-		shutdown, // 关闭程序
-		taskNew, // 新建任务
-		taskList, // 任务列表
-		taskStart, // 开始任务
-		taskPause, // 暂停任务
-		taskDelete, // 删除任务
+		
+		/** GUI注册 */
+		gui,
+		/** 文本 */
+		text,
+		/** 关闭连接 */
+		close,
+		/** 唤醒窗口 */
+		notify,
+		/** 关闭程序 */
+		shutdown,
+		/** 新建任务 */
+		taskNew,
+		/** 任务列表 */
+		taskList,
+		/** 开始任务 */
+		taskStart,
+		/** 暂停任务 */
+		taskPause,
+		/** 删除任务 */
+		taskDelete,
 		
 		// 主动消息
-		alert, // 提示窗口
-		notice, // 提示消息
-		refresh, // 刷新（任务）
 		
-		response; // 响应
+		/** 提示窗口 */
+		alert,
+		/** 提示消息 */
+		notice,
+		/** 刷新（任务） */
+		refresh,
+		/** 响应 */
+		response;
 
 	}
 

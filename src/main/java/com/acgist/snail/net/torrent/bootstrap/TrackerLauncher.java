@@ -26,17 +26,38 @@ public class TrackerLauncher {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerLauncher.class);
 	
-	private final TrackerClient client; // 客户端
+	/**
+	 * 客户端
+	 */
+	private final TrackerClient client;
 	
 	private final TorrentSession torrentSession;
 //	private final TrackerLauncherGroup trackerLauncherGroup;
 	
-	private final Integer id; // id：transaction_id：连接时使用
-	private Integer interval; // 下次等待时间
-	private Integer done; // 已完成数量
-	private Integer undone; // 未完成数量
-	private boolean needRelease = false; // 是否需要释放
-	private boolean available = true; // 可用
+	/**
+	 * id：transaction_id：连接时使用
+	 */
+	private final Integer id;
+	/**
+	 * 下次等待时间
+	 */
+	private Integer interval;
+	/**
+	 * 已完成数量
+	 */
+	private Integer done;
+	/**
+	 * 未完成数量
+	 */
+	private Integer undone;
+	/**
+	 * 是否需要释放
+	 */
+	private boolean needRelease = false;
+	/**
+	 * 可用状态
+	 */
+	private boolean available = true;
 	
 	private TrackerLauncher(TrackerClient client, TorrentSession torrentSession) {
 		this.id = NumberUtils.build();

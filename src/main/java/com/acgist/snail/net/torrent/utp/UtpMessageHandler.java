@@ -230,7 +230,8 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 	 * </p>
 	 */
 	private void wndControl() {
-		if(!(this.connect && available())) { // 如果没有连接成功或者连接不可用时不发送
+		// 如果没有连接成功或者连接不可用时不发送
+		if(!(this.connect && available())) {
 			LOGGER.debug("发送消息时Channel已经不可用");
 			return;
 		}
@@ -299,7 +300,8 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 				}
 			}
 		}
-		if(!this.connect) { // 连接失败移除
+		// 连接失败移除
+		if(!this.connect) {
 			this.utpService.remove(this);
 		}
 		return this.connect;

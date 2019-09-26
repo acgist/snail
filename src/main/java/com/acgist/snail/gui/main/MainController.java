@@ -382,7 +382,7 @@ public class MainController extends Controller implements Initializable {
 	 * 列双击事件
 	 */
 	private EventHandler<MouseEvent> rowClickAction = (event) -> {
-		if(event.getClickCount() == 2) { // 双击
+		if(event.getClickCount() == DOUBLE_CLICK) { // 双击
 			final TableRow<?> row = (TableRow<?>) event.getSource();
 			final TaskSession session = (TaskSession) row.getItem();
 			if(session == null) {
