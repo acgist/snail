@@ -105,7 +105,7 @@ public class HttpTrackerClient extends TrackerClient {
 			.append("left").append("=").append(remain).append("&") // 剩余下载大小
 			.append("compact").append("=").append("1").append("&") // 默认：1（紧凑）
 			.append("event").append("=").append(event.name()).append("&") // 事件：started、completed、stopped
-			.append("numwant").append("=").append(WANT_TRACKER_SIZE); // 想要获取的Peer数量
+			.append("numwant").append("=").append(WANT_PEER_SIZE); // 想要获取的Peer数量
 		if(StringUtils.isNotEmpty(this.trackerId)) {
 			builder.append("&").append("trackerid").append("=").append(this.trackerId); // 跟踪器ID
 		}

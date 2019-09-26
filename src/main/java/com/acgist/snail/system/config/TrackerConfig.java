@@ -67,9 +67,9 @@ public class TrackerConfig extends PropertiesConfig {
 		
 		/** 连接 */
 		connect(	0),
-		/** 声明信息 */
+		/** 声明 */
 		announce(	1),
-		/** 刮檫：刷新信息 */
+		/** 刮檫 */
 		scrape(		2),
 		/** 错误 */
 		error(		3);

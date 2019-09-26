@@ -142,7 +142,7 @@ public class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker.boots
 		buffer.putInt(event.event()); // 事件：started-2、completed-1、stopped-3
 		buffer.putInt(0); // 本机IP：0（服务器自动获取）
 		buffer.putInt(NumberUtils.build()); // 系统分配唯一键
-		buffer.putInt(WANT_TRACKER_SIZE); // 想要获取的Peer数量
+		buffer.putInt(WANT_PEER_SIZE); // 想要获取的Peer数量
 		buffer.putShort(SystemConfig.getTorrentPortExtShort()); // 外网Peer端口
 		return buffer;
 	}

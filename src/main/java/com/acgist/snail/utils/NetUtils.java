@@ -67,7 +67,7 @@ public class NetUtils {
 	/**
 	 * IPv4数据长度
 	 */
-	private static final int IPV4_LENGTH = 3;
+	private static final int IPV4_MAX_INDEX = 3;
 	/**
 	 * IP正则表达式
 	 */
@@ -111,8 +111,8 @@ public class NetUtils {
 	public static final long encodeIpToLong(String ip) {
 		long result = 0, tmp;
 		final String[] array = ip.split("\\.");
-		for (int index = IPV4_LENGTH; index >= 0; index--) {
-			tmp = Long.parseLong(array[IPV4_LENGTH - index]);
+		for (int index = IPV4_MAX_INDEX; index >= 0; index--) {
+			tmp = Long.parseLong(array[IPV4_MAX_INDEX - index]);
 			result |= tmp << (index * 8);
 		}
 		return result;
