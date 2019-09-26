@@ -65,13 +65,13 @@ public class TaskSession {
 		
 	}
 	
-	private static final ThreadLocal<SimpleDateFormat> FORMATER = new ThreadLocal<>() {
-		@Override
-		protected SimpleDateFormat initialValue() {
-			return new SimpleDateFormat("yyyy-MM-dd HH:mm");
-		}
-	};
-	
+	/**
+	 * 时间格式工厂
+	 */
+	private static final ThreadLocal<SimpleDateFormat> FORMATER = ThreadLocal.withInitial(() -> {
+		return new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	});
+
 	/**
 	 * 下载器
 	 */

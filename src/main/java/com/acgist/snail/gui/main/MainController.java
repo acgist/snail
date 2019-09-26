@@ -40,7 +40,6 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -327,11 +326,8 @@ public class MainController extends Controller implements Initializable {
 	private void taskCell(TableColumn<TaskSession, String> column, Pos pos, boolean icon, boolean tooltip, DoubleBinding widthBinding) {
 		column.prefWidthProperty().bind(widthBinding);
 		column.setResizable(false);
-		column.setCellFactory(new Callback<TableColumn<TaskSession, String>, TableCell<TaskSession, String>>() {
-			@Override
-			public TableCell<TaskSession, String> call(TableColumn<TaskSession, String> param) {
-				return new TaskCell(pos, icon, tooltip);
-			}
+		column.setCellFactory((param) -> {
+			return new TaskCell(pos, icon, tooltip);
 		});
 	}
 	
