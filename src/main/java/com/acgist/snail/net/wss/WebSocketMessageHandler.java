@@ -43,21 +43,6 @@ public class WebSocketMessageHandler implements IMessageHandler {
 	}
 
 	@Override
-	public void send(String message) throws NetException {
-		send(message, null);
-	}
-
-	@Override
-	public void send(String message, String charset) throws NetException {
-		send(this.charset(message, charset));
-	}
-
-	@Override
-	public void send(byte[] bytes) throws NetException {
-		send(ByteBuffer.wrap(bytes));
-	}
-
-	@Override
 	public void send(ByteBuffer buffer) throws NetException {
 		if(!available()) {
 			LOGGER.debug("发送消息时Socket已经不可用");

@@ -69,21 +69,11 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	}
 	
 	@Override
-	public void send(String message) throws NetException {
-		send(message, null);
-	}
-	
-	@Override
 	public void send(String message, String charset) throws NetException {
 		if(this.messageCodec == null) {
 			throw new NetException("请实现消息处理器");
 		}
 		send(this.charset(this.messageCodec.encode(message), charset));
-	}
-	
-	@Override
-	public void send(byte[] message) throws NetException {
-		send(ByteBuffer.wrap(message));
 	}
 	
 	@Override

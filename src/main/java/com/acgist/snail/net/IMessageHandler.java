@@ -29,7 +29,9 @@ public interface IMessageHandler {
 	 * 
 	 * @throws NetException 网络异常
 	 */
-	void send(String message) throws NetException;
+	default void send(String message) throws NetException {
+		send(message, null);
+	}
 	
 	/**
 	 * 消息发送
@@ -41,7 +43,9 @@ public interface IMessageHandler {
 	 * 
 	 * @since 1.1.0
 	 */
-	void send(String message, String charset) throws NetException;
+	default void send(String message, String charset) throws NetException {
+		send(this.charset(message, charset));
+	}
 	
 	/**
 	 * 消息发送
@@ -50,7 +54,9 @@ public interface IMessageHandler {
 	 * 
 	 * @throws NetException 网络异常
 	 */
-	void send(byte[] message) throws NetException;
+	default void send(byte[] message) throws NetException {
+		send(ByteBuffer.wrap(message));
+	}
 	
 	/**
 	 * 消息发送（所有其他消息均有这个方法发送）
