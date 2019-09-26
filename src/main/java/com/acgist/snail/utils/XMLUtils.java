@@ -46,6 +46,9 @@ public class XMLUtils {
 	public static final XMLUtils create() {
 		final XMLUtils utils = new XMLUtils();
 		final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+//		不能禁用，禁用后解析异常。
+//		factory.setAttribute(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
+//		factory.setAttribute(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
 		try {
 			utils.document = factory.newDocumentBuilder().newDocument();
 		} catch (ParserConfigurationException e) {

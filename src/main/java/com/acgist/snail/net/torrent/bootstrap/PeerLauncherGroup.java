@@ -165,7 +165,7 @@ public class PeerLauncherGroup {
 			final boolean ok = launcher.handshake();
 			if(ok) {
 				peerSession.status(PeerConfig.STATUS_DOWNLOAD); // 设置下载中
-				this.peerLaunchers.offer(launcher);
+				this.offer(launcher);
 			} else { // 失败后需要放回队列。
 				PeerManager.getInstance().inferior(this.torrentSession.infoHashHex(), peerSession);
 			}
@@ -211,7 +211,7 @@ public class PeerLauncherGroup {
 			}
 			mark = tmp.mark(); // 清空权重
 			if(!tmp.marked()) { // 第一次连入还没有被评分
-				this.peerLaunchers.offer(tmp);
+				this.offer(tmp);
 				continue;
 			}
 			if(mark > 0) { // 添加可用
@@ -225,19 +225,26 @@ public class PeerLauncherGroup {
 				inferior = tmp;
 				minMark = mark;
 			} else if(mark < minMark) {
-				this.peerLaunchers.offer(inferior);
+				this.offer(inferior);
 				inferior = tmp;
 				minMark = mark;
 			} else {
-				this.peerLaunchers.offer(tmp);
+				this.offer(tmp);
 			}
 		}
-		if(unusable) { // 已经删除无用的Peer
+		if(unusable) { // 已经删除无用的Peer，劣质Peer重新加入队列。
 			if(inferior != null) {
-				this.peerLaunchers.offer(inferior);
+				this.offer(inferior);
 			}
 		} else {
 			inferiorPeerLauncher(inferior);
+		}
+	}
+	
+	private void offer(PeerLauncher peerLauncher) {
+		final var ok = this.peerLaunchers.offer(peerLauncher);
+		if(!ok) {
+			LOGGER.warn("PeerLauncher丢失：{}", peerLauncher);
 		}
 	}
 	

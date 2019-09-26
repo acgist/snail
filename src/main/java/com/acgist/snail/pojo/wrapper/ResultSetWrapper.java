@@ -61,11 +61,7 @@ public class ResultSetWrapper {
 
 	@Override
 	public String toString() {
-		if(this.data == null) {
-			return null;
-		} else {
-			return this.data.toString();
-		}
+		return this.data.toString();
 	}
 	
 }

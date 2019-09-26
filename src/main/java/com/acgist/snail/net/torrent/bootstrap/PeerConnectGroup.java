@@ -55,7 +55,7 @@ public class PeerConnectGroup {
 			}
 			final PeerConnect peerConnect = PeerConnect.newInstance(peerSession, peerSubMessageHandler);
 			peerSession.status(PeerConfig.STATUS_UPLOAD);
-			this.peerConnects.add(peerConnect);
+			this.offer(peerConnect);
 			return peerConnect;
 		}
 	}
@@ -113,19 +113,26 @@ public class PeerConnectGroup {
 				continue;
 			}
 			if(tmp.peerSession().downloading()) { // 下载中的Peer提供上传
-				this.peerConnects.offer(tmp);
+				this.offer(tmp);
 				continue;
 			}
 			final long mark = tmp.mark();
 			if(!tmp.marked()) { // 第一次连入还没有被评分
-				this.peerConnects.offer(tmp);
+				this.offer(tmp);
 				continue;
 			}
 			if(mark == 0L) {
 				inferiorPeerConnect(tmp);
 			} else {
-				this.peerConnects.offer(tmp);
+				this.offer(tmp);
 			}
+		}
+	}
+	
+	private void offer(PeerConnect peerConnect) {
+		final var ok = this.peerConnects.offer(peerConnect);
+		if(!ok) {
+			LOGGER.warn("PeerConnect丢失：{}", peerConnect);
 		}
 	}
 	

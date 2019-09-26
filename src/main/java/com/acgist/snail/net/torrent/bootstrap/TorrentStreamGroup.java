@@ -35,6 +35,11 @@ public class TorrentStreamGroup {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentStreamGroup.class);
 
 	/**
+	 * 计算文件大小等待时间
+	 */
+	private static final int SIZE_TIMEOUT = 100;
+	
+	/**
 	 * 已下载Piece位图
 	 */
 	private final BitSet pieces;
@@ -93,10 +98,14 @@ public class TorrentStreamGroup {
 		}
 		SystemThreadContext.submit(() -> {
 			try {
-				allReady.await(100, TimeUnit.SECONDS);
-				final var finishTime = System.currentTimeMillis();
-				LOGGER.debug("{}-任务准备消耗时间：{}", torrent.name(), (finishTime - startTime));
-				torrentSession.resize(torrentStreamGroup.size());
+				final var ok = allReady.await(SIZE_TIMEOUT, TimeUnit.SECONDS);
+				if(ok) {
+					final var finishTime = System.currentTimeMillis();
+					LOGGER.debug("{}-任务准备消耗时间：{}", torrent.name(), (finishTime - startTime));
+					torrentSession.resize(torrentStreamGroup.size());
+				} else {
+					LOGGER.warn("任务准备超时：{}", torrent.name());
+				}
 			} catch (Exception e) {
 				LOGGER.error("统计下载文件大小等待异常", e);
 			} finally {

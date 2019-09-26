@@ -73,14 +73,15 @@ public class FileUtils {
 	 * 递归删除文件
 	 */
 	private static final void delete(final File file) {
-		if(file.isDirectory()) {
+		if(file.isDirectory()) { // 目录
 			final File[] files = file.listFiles();
 			for (File children : files) {
-				delete(children); // 子文件删除
+				delete(children); // 删除子文件
 			}
-			file.delete(); // 目录删除
-		} else {
-			file.delete(); // 文件删除
+		}
+		final var ok = file.delete(); // 删除当前文件/目录
+		if(!ok) {
+			LOGGER.warn("文件删除失败：{}", file.getAbsolutePath());
 		}
 	}
 	
