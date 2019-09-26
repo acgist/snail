@@ -248,7 +248,7 @@ public class BEncodeDecoder implements Closeable {
 				}
 				break;
 			default:
-				LOGGER.info("不支持的B编码类型：{}", indexChar);
+				LOGGER.debug("不支持的B编码类型：{}", indexChar);
 				break;
 			}
 		}
@@ -306,7 +306,7 @@ public class BEncodeDecoder implements Closeable {
 				}
 				break;
 			default:
-				LOGGER.info("不支持的B编码类型：{}", indexChar);
+				LOGGER.debug("不支持的B编码类型：{}", indexChar);
 				break;
 			}
 		}
