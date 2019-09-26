@@ -47,7 +47,7 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 	/**
 	 * Socket
 	 */
-	private Socket socket;
+	private Socket inputSocket;
 	/**
 	 * 输入流
 	 */
@@ -117,17 +117,17 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 //				final int port = Integer.parseInt(tokenizer.nextToken()) * 256 + Integer.parseInt(tokenizer.nextToken());
 				final int port = (Integer.parseInt(tokenizer.nextToken()) << 8) + Integer.parseInt(tokenizer.nextToken());
 				try {
-					this.socket = new Socket(host, port);
+					this.inputSocket = new Socket(host, port);
 				} catch (IOException e) {
 					LOGGER.error("打开FTP远程Socket异常", e);
 				}
 			}
 		} else if(StringUtils.startsWith(message, "150 ")) { // 打开数据连接
-			if(this.socket == null) {
+			if(this.inputSocket == null) {
 				throw new NetException("请切换到被动模式");
 			}
 			try {
-				this.inputStream = this.socket.getInputStream();
+				this.inputStream = this.inputSocket.getInputStream();
 				this.unlockCommand();
 			} catch (IOException e) {
 				LOGGER.error("打开FTP远程输入流异常", e);
@@ -200,7 +200,7 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 	 */
 	private void release() {
 		IoUtils.close(this.inputStream);
-		IoUtils.close(this.socket);
+		IoUtils.close(this.inputSocket);
 	}
 	
 	/**
