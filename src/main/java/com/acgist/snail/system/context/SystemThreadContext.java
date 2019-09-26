@@ -1,10 +1,11 @@
 package com.acgist.snail.system.context;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -135,12 +136,20 @@ public class SystemThreadContext {
 	}
 	
 	/**
-	 * 创建线程池
+	 * <p>创建缓存线程池</p>
+	 * <p>不限制线程池大小，初始线程：0，存活时间：60S。</p>
 	 * 
 	 * @param name 线程池名称
 	 */
 	public static final ExecutorService newCacheExecutor(String name) {
-		return Executors.newCachedThreadPool(SystemThreadContext.newThreadFactory(name));
+		return new ThreadPoolExecutor(
+			0,
+			Integer.MAX_VALUE,
+			60L,
+			TimeUnit.SECONDS,
+			new SynchronousQueue<Runnable>(),
+			SystemThreadContext.newThreadFactory(name)
+		);
 	}
 	
 	/**
@@ -150,7 +159,7 @@ public class SystemThreadContext {
 	 * @param name 线程池名称
 	 */
 	public static final ScheduledExecutorService newScheduledExecutor(int corePoolSize, String name) {
-		return Executors.newScheduledThreadPool(
+		return new ScheduledThreadPoolExecutor(
 			corePoolSize,
 			SystemThreadContext.newThreadFactory(name)
 		);
