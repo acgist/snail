@@ -56,7 +56,7 @@ public class GetPeersResponse extends Response {
 	public List<NodeSession> getNodes() {
 		final byte[] bytes = this.getBytes(DhtConfig.KEY_NODES);
 		if(bytes == null) {
-			return null;
+			return List.of();
 		}
 		final ByteBuffer buffer = ByteBuffer.wrap(bytes);
 		final List<NodeSession> list = new ArrayList<>();
@@ -86,11 +86,11 @@ public class GetPeersResponse extends Response {
 		final String infoHashHex = StringUtils.hex(infoHash);
 		final TorrentSession torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
 		if(torrentSession == null) {
-			return null;
+			return List.of();
 		}
 		final List<?> values = this.getList(DhtConfig.KEY_VALUES);
 		if(values == null) {
-			return null;
+			return List.of();
 		}
 		byte[] bytes;
 		PeerSession session;

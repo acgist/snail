@@ -133,7 +133,7 @@ public class XMLUtils {
 		final NodeList list = this.document.getElementsByTagName(name);
 		final int length = list.getLength();
 		if(length == 0) {
-			return null;
+			return List.of();
 		}
 		final List<String> values = new ArrayList<>(length);
 		for (int index = 0; index < length; index++) {

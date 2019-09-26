@@ -166,7 +166,7 @@ public class HeaderWrapper {
 	 */
 	public List<String> headerList(String key) {
 		if(isEmpty()) {
-			return null;
+			return List.of();
 		}
 		final var optional = this.headers.entrySet().stream()
 			.filter(entry -> {
@@ -175,7 +175,7 @@ public class HeaderWrapper {
 			.map(entry -> entry.getValue())
 			.findFirst();
 		if(optional.isEmpty()) {
-			return null;
+			return List.of();
 		}
 		return optional.get();
 	}

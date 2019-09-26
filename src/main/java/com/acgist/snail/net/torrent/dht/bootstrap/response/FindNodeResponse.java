@@ -40,7 +40,7 @@ public class FindNodeResponse extends Response {
 	public List<NodeSession> getNodes() {
 		final byte[] bytes = this.getBytes(DhtConfig.KEY_NODES);
 		if(bytes == null) {
-			return null;
+			return List.of();
 		}
 		final ByteBuffer buffer = ByteBuffer.wrap(bytes);
 		final List<NodeSession> list = new ArrayList<>();
