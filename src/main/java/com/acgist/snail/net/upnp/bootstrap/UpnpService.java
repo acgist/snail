@@ -69,7 +69,7 @@ public class UpnpService {
 	 */
 	private volatile boolean available = false;
 	/**
-	 * 本地IP
+	 * 外网IP
 	 */
 	private String externalIpAddress;
 
