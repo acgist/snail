@@ -109,6 +109,26 @@ public class Response extends BaseMessage {
 	}
 
 	/**
+	 * 读取Node列表
+	 */
+	protected static final List<NodeSession> readNodes(byte[] bytes) {
+		if(bytes == null) {
+			return List.of();
+		}
+		final ByteBuffer buffer = ByteBuffer.wrap(bytes);
+		final List<NodeSession> list = new ArrayList<>();
+		while(true) {
+			final var session = readNode(buffer);
+			if(session == null) {
+				break;
+			}
+			list.add(session);
+		}
+		NodeManager.getInstance().sortNodes();
+		return list;
+	}
+	
+	/**
 	 * 读取Node，同时添加列表
 	 */
 	protected static final NodeSession readNode(ByteBuffer buffer) {
