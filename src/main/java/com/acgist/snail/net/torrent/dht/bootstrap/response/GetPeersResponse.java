@@ -55,20 +55,7 @@ public class GetPeersResponse extends Response {
 	 */
 	public List<NodeSession> getNodes() {
 		final byte[] bytes = this.getBytes(DhtConfig.KEY_NODES);
-		if(bytes == null) {
-			return List.of();
-		}
-		final ByteBuffer buffer = ByteBuffer.wrap(bytes);
-		final List<NodeSession> list = new ArrayList<>();
-		while(true) {
-			final var session = readNode(buffer);
-			if(session == null) {
-				break;
-			}
-			list.add(session);
-		}
-		NodeManager.getInstance().sortNodes();
-		return list;
+		return readNodes(bytes);
 	}
 	
 	/**
