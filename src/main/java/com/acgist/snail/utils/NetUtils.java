@@ -28,7 +28,6 @@ public class NetUtils {
 	 * 最大端口号
 	 */
 	public static final int MAX_PORT = 2 << 15;
-	
 	/**
 	 * 本机IP
 	 */
@@ -38,33 +37,37 @@ public class NetUtils {
 	 */
 	public static final String LOCAL_HOST = "localhost";
 	
-	/*
+	/**
 	 * A类私用地址
 	 * A类范围：0.0.0.0-127.255.255.255
 	 * 默认子网掩码：255.0.0.0
 	 */
 	private static final long A_IP_BEGIN = encodeIpToLong("10.0.0.0");
 	private static final long A_IP_END = encodeIpToLong("10.255.255.255");
-	/*
+	/**
 	 * B类私用地址
 	 * B类范围：128.0.0.0-191.255.255.255
 	 * 默认子网掩码：255.255.0.0
 	 */
 	private static final long B_IP_BEGIN = encodeIpToLong("172.16.0.0");
 	private static final long B_IP_END = encodeIpToLong("172.31.255.255");
-	/*
+	/**
 	 * C类私用地址
 	 * C类范围：192.0.0.0-223.255.255.255
 	 * 默认子网掩码：255.255.255.0
 	 */
 	private static final long C_IP_BEGIN = encodeIpToLong("192.168.0.0");
 	private static final long C_IP_END = encodeIpToLong("192.168.255.255");
-	/*
+	/**
 	 * 本地回环地址
 	 */
 	private static final long L_IP_BEGIN = encodeIpToLong("127.0.0.0");
 	private static final long L_IP_END = encodeIpToLong("127.255.255.255");
 	
+	/**
+	 * IPv4数据长度
+	 */
+	private static final int IPV4_LENGTH = 3;
 	/**
 	 * IP正则表达式
 	 */
@@ -108,8 +111,8 @@ public class NetUtils {
 	public static final long encodeIpToLong(String ip) {
 		long result = 0, tmp;
 		final String[] array = ip.split("\\.");
-		for (int index = 3; index >= 0; index--) {
-			tmp = Long.parseLong(array[3 - index]);
+		for (int index = IPV4_LENGTH; index >= 0; index--) {
+			tmp = Long.parseLong(array[IPV4_LENGTH - index]);
 			result |= tmp << (index * 8);
 		}
 		return result;

@@ -63,6 +63,8 @@ public abstract class Protocol {
 	
 	/**
 	 * 协议名称
+	 * 
+	 * @return 下载协议名称
 	 */
 	public abstract String name();
 	
@@ -84,11 +86,17 @@ public abstract class Protocol {
 	
 	/**
 	 * 是否可用
+	 * 
+	 * @return 是否可用
 	 */
 	public abstract boolean available();
 	
 	/**
 	 * 创建下载器
+	 * 
+	 * @param taskSession 任务
+	 * 
+	 * @return 下载器
 	 */
 	public abstract IDownloader buildDownloader(TaskSession taskSession);
 	
@@ -248,6 +256,8 @@ public abstract class Protocol {
 	
 	/**
 	 * 清理数据
+	 * 
+	 * @param ok 创建状态：true-成功；false-失败；
 	 */
 	protected abstract void cleanMessage(boolean ok);
 	

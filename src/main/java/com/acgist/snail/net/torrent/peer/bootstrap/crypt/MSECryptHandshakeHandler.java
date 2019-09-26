@@ -56,6 +56,11 @@ public class MSECryptHandshakeHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MSECryptHandshakeHandler.class);
 
 	/**
+	 * 缓冲区大小：4KB
+	 */
+	private static final int BUFFER_SIZE = 4096;
+	
+	/**
 	 * 当前步骤：默认接收
 	 */
 	private volatile int step = 1;
@@ -83,15 +88,26 @@ public class MSECryptHandshakeHandler {
 	private final PeerSubMessageHandler peerSubMessageHandler;
 	private final PeerUnpackMessageCodec peerUnpackMessageCodec;
 	
-	// 握手临时数据，握手完成后销毁
-	private KeyPair keyPair; // 密钥对
-	private ByteBuffer buffer; // 数据缓冲
-	private BigInteger dhSecret; // S：DH Secret
-	private MSEKeyPairBuilder mseKeyPairBuilder; // 密钥对Builder
+	/**
+	 * 密钥对
+	 */
+	private KeyPair keyPair;
+	/**
+	 * 数据缓冲
+	 */
+	private ByteBuffer buffer;
+	/**
+	 * S：DH Secret
+	 */
+	private BigInteger dhSecret;
+	/**
+	 * 密钥对Builder
+	 */
+	private MSEKeyPairBuilder mseKeyPairBuilder;
 
 	private MSECryptHandshakeHandler(PeerSubMessageHandler peerSubMessageHandler, PeerUnpackMessageCodec peerUnpackMessageCodec) {
 		final MSEKeyPairBuilder mseKeyPairBuilder = MSEKeyPairBuilder.newInstance();
-		this.buffer = ByteBuffer.allocate(4096); // 4KB
+		this.buffer = ByteBuffer.allocate(BUFFER_SIZE);
 		this.keyPair = mseKeyPairBuilder.buildKeyPair();
 		this.mseKeyPairBuilder = mseKeyPairBuilder;
 		this.peerSubMessageHandler = peerSubMessageHandler;

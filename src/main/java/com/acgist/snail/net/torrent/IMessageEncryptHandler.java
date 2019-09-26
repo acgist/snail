@@ -17,6 +17,8 @@ public interface IMessageEncryptHandler extends IMessageHandler {
 	 * 消息加密发送
 	 * 
 	 * @param buffer 消息
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	void sendEncrypt(ByteBuffer buffer) throws NetException;
 	

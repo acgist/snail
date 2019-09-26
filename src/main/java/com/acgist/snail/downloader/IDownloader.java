@@ -3,6 +3,7 @@ package com.acgist.snail.downloader;
 import java.io.IOException;
 
 import com.acgist.snail.pojo.session.TaskSession;
+import com.acgist.snail.pojo.session.TaskSession.Status;
 
 /**
  * <p>下载器接口</p>
@@ -14,21 +15,29 @@ public interface IDownloader extends Runnable {
 	
 	/**
 	 * 任务ID，数据库ID
+	 * 
+	 * @return 任务ID
 	 */
 	String id();
 	
 	/**
-	 * 任务是否运行中（下载中）
+	 * 任务状态
+	 * 
+	 * @return 下载状态：true-{@linkplain Status#download 下载中}；false-未下载；
 	 */
 	boolean running();
 	
 	/**
 	 * 任务信息
+	 * 
+	 * @return 任务
 	 */
 	TaskSession taskSession();
 	
 	/**
 	 * 任务名称
+	 * 
+	 * @return 任务名称
 	 */
 	String name();
 
@@ -78,6 +87,8 @@ public interface IDownloader extends Runnable {
 	
 	/**
 	 * 下载任务
+	 * 
+	 * @throws IOException 下载异常
 	 */
 	void download() throws IOException;
 	
@@ -94,6 +105,8 @@ public interface IDownloader extends Runnable {
 	/**
 	 * <p>获取已下载文件大小</p>
 	 * <p>直接通过本地文件获取大小，可能出现误差。</p>
+	 * 
+	 * @return 已下载文件大小
 	 */
 	long downloadSize();
 	

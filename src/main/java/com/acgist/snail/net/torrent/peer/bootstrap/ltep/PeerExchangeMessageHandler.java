@@ -130,7 +130,7 @@ public class PeerExchangeMessageHandler implements IExtensionMessageHandler {
 				addedBuffer.putShort(NetUtils.encodePort(session.peerPort()));
 				addedfBuffer.put(session.flags());
 			});
-		final Map<String, Object> data = new HashMap<>();
+		final Map<String, Object> data = new HashMap<>(6);
 		data.put(ADDED, addedBuffer.array());
 		data.put(ADDEDF, addedfBuffer.array());
 		final byte[] emptyBytes = new byte[0];

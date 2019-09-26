@@ -72,10 +72,18 @@ public class TaskSession {
 		}
 	};
 	
-	private IDownloader downloader; // 下载器
-	
-	private final TaskEntity entity; // 任务
-	private final StatisticsSession statistics; // 统计
+	/**
+	 * 下载器
+	 */
+	private IDownloader downloader;
+	/**
+	 * 任务
+	 */
+	private final TaskEntity entity;
+	/**
+	 * 统计
+	 */
+	private final StatisticsSession statistics;
 	
 	private TaskSession(TaskEntity entity) throws DownloadException {
 		if(entity == null) {
@@ -85,7 +93,6 @@ public class TaskSession {
 		this.statistics = new StatisticsSession(true, SystemStatistics.getInstance().getSystemStatistics());
 	}
 	
-	// 功能 //
 	public static final TaskSession newInstance(TaskEntity entity) throws DownloadException {
 		return new TaskSession(entity);
 	}

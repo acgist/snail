@@ -25,8 +25,8 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(HolepunchMessageHnadler.class);
 
-	private static final byte IPv4 = 0x00;
-//	private static final byte IPv6 = 0x01;
+	private static final byte IPV4 = 0x00;
+//	private static final byte IPV6 = 0x01;
 	
 	private final PeerSession peerSession;
 	
@@ -52,7 +52,7 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler {
 		final byte addrType = buffer.get();
 		int port, code;
 		String host;
-		if(addrType == IPv4) {
+		if(addrType == IPV4) {
 			host = NetUtils.decodeIntToIp(buffer.getInt());
 		} else {
 			// TODO：IPv6
@@ -123,7 +123,7 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler {
 	private ByteBuffer buildMessage(HolepunchType type, String ip, int port, HolepunchErrorCode errorCode) {
 		final ByteBuffer buffer = ByteBuffer.allocate(12);
 		buffer.put(type.value()); // 消息类型
-		buffer.put(IPv4); // 地址类型：0x00=IPv4；0x01=IPv6；
+		buffer.put(IPV4); // 地址类型：0x00=IPv4；0x01=IPv6；
 		buffer.putInt(NetUtils.encodeIpToInt(ip)); // IP地址
 		buffer.putShort(NetUtils.encodePort(port)); // 端口号
 		buffer.putInt(errorCode.code()); // 错误代码

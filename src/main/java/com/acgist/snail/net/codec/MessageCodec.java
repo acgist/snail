@@ -43,6 +43,8 @@ public abstract class MessageCodec<T, X> implements IMessageCodec<T> {
 	 * @param message 消息
 	 * @param address 地址
 	 * @param hasAddress 是否包含地址
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	protected abstract void decode(T message, InetSocketAddress address, boolean hasAddress) throws NetException;
 	
