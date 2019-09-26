@@ -76,7 +76,8 @@ public class PeerConnect {
 	}
 	
 	/**
-	 * 评分，每次记录旧上传大小。
+	 * <p>获取评分</p>
+	 * <p>使用当前下载大小减去旧记录，然后使用当前大小覆盖旧记录。</p>
 	 */
 	public long mark() {
 		final long nowSize = this.peerSession.statistics().uploadSize();
