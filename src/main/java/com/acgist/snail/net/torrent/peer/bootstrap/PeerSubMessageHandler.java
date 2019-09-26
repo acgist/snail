@@ -463,7 +463,7 @@ public class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		LOGGER.debug("收到have消息：{}", index);
 		this.peerSession.piece(index);
 		if(this.torrentSession.havePiece(index)) { // 已有=不感兴趣
-			// 虽然不感兴趣，但是不能发送不感兴趣消息，Peer下载完成没有更多的Piece时发送不感兴趣消息。
+			// 不能直接发送不感兴趣消息，Piece下载完成后没有更多的Piece时发送不感兴趣消息。
 		} else { // 没有=感兴趣
 			interested();
 		}
@@ -500,7 +500,7 @@ public class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		final BitSet pieces = BitfieldUtils.toBitSet(bytes); // Peer位图
 		this.peerSession.pieces(pieces);
 		LOGGER.debug("收到位图：{}", pieces);
-		final BitSet notHave = new BitSet(); // 客户端没有的位图
+		final BitSet notHave = new BitSet(); // 没有下载的位图
 		notHave.or(pieces);
 		notHave.andNot(this.torrentSession.pieces());
 		LOGGER.debug("感兴趣位图：{}", notHave);
