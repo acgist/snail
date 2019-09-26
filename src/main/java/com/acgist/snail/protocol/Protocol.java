@@ -25,10 +25,15 @@ public abstract class Protocol {
 	 */
 	public enum Type {
 
+		/** FTP */
 		ftp,
+		/** HTTP */
 		http,
+		/** 磁力链接 */
 		magnet,
+		/** 迅雷链接 */
 		thunder,
+		/** BT */
 		torrent;
 
 	}

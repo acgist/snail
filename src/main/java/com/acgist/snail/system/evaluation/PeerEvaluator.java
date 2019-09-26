@@ -59,10 +59,15 @@ public class PeerEvaluator {
 	 */
 	public enum Type {
 		
-		connect	(1), // 连接
-		download(3); // 下载
+		/** 连接 */
+		connect	(1),
+		/** 下载 */
+		download(3);
 
-		private int score; // 评分
+		/**
+		 * 评分
+		 */
+		private int score;
 		
 		Type(int score) {
 			this.score = score;

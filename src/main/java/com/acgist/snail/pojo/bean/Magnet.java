@@ -20,13 +20,21 @@ public class Magnet {
 	 */
 	public enum Type {
 		
+		/** md5 */
 		md5("urn:md5:"),
+		/** aich */
 		aich("urn:aich:"),
+		/** btih */
 		btih("urn:btih:"),
+		/** ed2k */
 		ed2k("urn:ed2k:"),
+		/** sha1 */
 		sha1("urn:sha1:"),
+		/** crc32 */
 		crc32("urn:crc32:"),
+		/** tth */
 		tth("urn:tree:tiger:"),
+		/** bitprint */
 		bitprint("urn:bitprint:");
 		
 		private final String xt;

@@ -54,8 +54,10 @@ public class CryptConfig {
 	 */
 	public enum CryptProvide {
 		
-		plaintext(0x01), // 明文
-		arc4(	  0x02); // ARC4
+		/** 明文 */
+		plaintext(0x01),
+		/** ARC4 */
+		arc4(	  0x02);
 		
 		int value;
 		
@@ -70,10 +72,14 @@ public class CryptConfig {
 	 */
 	public enum Strategy {
 		
-		plaintext		(false, CryptProvide.plaintext.value), // 文本
-		preferPlaintext	(false, CryptProvide.plaintext.value | CryptProvide.arc4.value), // 兼容：偏爱文本
-		preferEncrypt	(true,  CryptProvide.arc4.value | CryptProvide.plaintext.value), // 兼容：偏爱加密
-		encrypt			(true,  CryptProvide.arc4.value); // 加密
+		/** 明文 */
+		plaintext		(false, CryptProvide.plaintext.value),
+		/** 兼容：偏爱明文 */
+		preferPlaintext	(false, CryptProvide.plaintext.value | CryptProvide.arc4.value),
+		/** 兼容：偏爱加密 */
+		preferEncrypt	(true,  CryptProvide.arc4.value | CryptProvide.plaintext.value),
+		/** 加密 */
+		encrypt			(true,  CryptProvide.arc4.value);
 		
 		boolean crypt; // 加密
 		int provide; // crypto_provide

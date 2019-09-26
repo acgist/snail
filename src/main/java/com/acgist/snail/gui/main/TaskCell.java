@@ -49,7 +49,7 @@ public class TaskCell extends TableCell<TaskSession, String> {
 //				name.setCursor(Cursor.HAND);
 				final FileType fileType = taskSession.entity().getFileType();
 				if(fileType != null) {
-					final ImageView icon = new ImageView("/image/32/" + fileType.getIcon());
+					final ImageView icon = new ImageView("/image/32/" + fileType.icon());
 					box.getChildren().add(icon);
 				}
 			}

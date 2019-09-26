@@ -208,28 +208,47 @@ public class PeerConfig {
 	 */
 	public enum Type {
 		
+		/** 阻塞 */
 		choke((byte)         0x00),
+		/** 解除阻塞 */
 		unchoke((byte)       0x01),
+		/** 感兴趣 */
 		interested((byte)    0x02),
+		/** 不感兴趣 */
 		notInterested((byte) 0x03),
+		/** have */
 		have((byte)          0x04),
+		/** 位图 */
 		bitfield((byte)      0x05),
+		/** 请求 */
 		request((byte)       0x06),
+		/** 数据 */
 		piece((byte)         0x07),
+		/** 取消 */
 		cancel((byte)        0x08),
+		/** DHT */
 		dht((byte)           0x09),
+		/** 扩展 */
 		extension((byte)     0x14);
-//		suggest((byte)       0x0D), // 推荐块
-//		haveAll((byte)       0x0E), // 所有块
-//		haveNone((byte)      0x0F), // 没有块
-//		rejectRequest((byte) 0x10), // 拒绝请求
-//		allowedFast((byte)   0x11), // 快速允许
+		/** 推荐块 */
+//		suggest((byte)       0x0D),
+		/** 所有块 */
+//		haveAll((byte)       0x0E),
+		/** 没有块 */
+//		haveNone((byte)      0x0F),
+		/** 拒绝请求 */
+//		rejectRequest((byte) 0x10),
+		/** 快速允许 */
+//		allowedFast((byte)   0x11),
 		
 		Type(byte value) {
 			this.value = value;
 		}
 		
-		private byte value; // 消息ID
+		/**
+		 * 消息ID
+		 */
+		private byte value;
 		
 		public byte value() {
 			return this.value;
@@ -252,9 +271,13 @@ public class PeerConfig {
 	 */
 	public enum ExtensionType {
 		
-		handshake((byte)    0, true,  false), // 默认
+		/** 握手 */
+		handshake((byte)    0, true,  false),
+		/** pex */
 		ut_pex((byte)       1, true,  true),
+		/** metadata */
 		ut_metadata((byte)  2, true,  true),
+		/** holepunch */
 		ut_holepunch((byte) 3, false, false);
 		
 		ExtensionType(byte value, boolean support, boolean notice) {
@@ -263,9 +286,18 @@ public class PeerConfig {
 			this.notice = notice;
 		}
 
-		private byte value; // 扩展消息ID
-		private boolean support; // 是否支持
-		private boolean notice; // 是否通知Peer
+		/**
+		 * 扩展消息ID
+		 */
+		private byte value;
+		/**
+		 * 是否支持
+		 */
+		private boolean support;
+		/**
+		 * 是否通知Peer
+		 */
+		private boolean notice;
 		
 		public byte value() {
 			return this.value;
@@ -306,15 +338,21 @@ public class PeerConfig {
 	 */
 	public enum MetadataType {
 		
+		/** 请求 */
 		request((byte) 0),
+		/** 数据 */
 		data((byte)    1),
+		/** 拒绝 */
 		reject((byte)  2);
 		
 		MetadataType(byte value) {
 			this.value = value;
 		}
 		
-		private byte value; // 消息ID
+		/**
+		 * 消息ID
+		 */
+		private byte value;
 		
 		public byte value() {
 			return this.value;
@@ -337,15 +375,21 @@ public class PeerConfig {
 	 */
 	public enum HolepunchType {
 		
+		/** 约定 */
 		rendezvous((byte) 0x00),
+		/** 连接 */
 		connect((byte)    0x01),
+		/** 错误 */
 		error((byte)      0x02);
 		
 		HolepunchType(byte value) {
 			this.value = value;
 		}
 		
-		private byte value; // 消息ID
+		/**
+		 * 消息ID
+		 */
+		private byte value;
 		
 		public byte value() {
 			return this.value;
@@ -375,10 +419,15 @@ public class PeerConfig {
 	 */
 	public enum HolepunchErrorCode {
 		
+		/** 成功 */
 		E_00((byte) 0x00),
+		/** 目标端点无效 */
 		E_01((byte) 0x01),
+		/** 中继未连接 */
 		E_02((byte) 0x02),
+		/** 目标不支持 */
 		E_03((byte) 0x03),
+		/** 目标属于中继 */
 		E_04((byte) 0x04);
 		
 		HolepunchErrorCode(byte code) {
@@ -397,8 +446,12 @@ public class PeerConfig {
 	 * 动作
 	 */
 	public enum Action {
-		magnet, // 磁力链接
-		torrent; // 下载文件
+		
+		/** 磁力链接 */
+		magnet,
+		/** 下载文件 */
+		torrent;
+		
 	}
 	
 }

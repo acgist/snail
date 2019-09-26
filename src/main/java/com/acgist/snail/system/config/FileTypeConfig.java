@@ -19,14 +19,23 @@ public class FileTypeConfig {
 	 */
 	public enum FileType {
 		
+		/** 图片 */
 		image("图片", "image.png"),
+		/** 视频 */
 		video("视频", "video.png"),
+		/** 音频 */
 		audio("音频", "audio.png"),
+		/** 脚本 */
 		script("脚本", "script.png"),
+		/** BT */
 		torrent("BT", "torrent.png"),
+		/** 压缩 */
 		compress("压缩", "compress.png"),
+		/** 文档 */
 		document("文档", "document.png"),
+		/** 安装包 */
 		install("安装包", "install.png"),
+		/** 未知 */
 		unknown("未知", "unknown.png");
 		
 		/**
@@ -43,11 +52,11 @@ public class FileTypeConfig {
 			this.icon = icon;
 		}
 
-		public String getValue() {
+		public String value() {
 			return value;
 		}
 
-		public String getIcon() {
+		public String icon() {
 			return icon;
 		}
 
