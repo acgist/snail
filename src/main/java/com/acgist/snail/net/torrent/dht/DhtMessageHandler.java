@@ -312,8 +312,10 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	 * 发送响应
 	 */
 	private void pushMessage(Response response, InetSocketAddress socketAddress) {
-		final ByteBuffer buffer = ByteBuffer.wrap(response.toBytes());
-		pushMessage(buffer, socketAddress);
+		if(response != null) {
+			final ByteBuffer buffer = ByteBuffer.wrap(response.toBytes());
+			pushMessage(buffer, socketAddress);
+		}
 	}
 	
 	/**
