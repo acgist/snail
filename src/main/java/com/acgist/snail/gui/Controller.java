@@ -2,6 +2,7 @@ package com.acgist.snail.gui;
 
 import com.acgist.snail.utils.CollectionUtils;
 
+import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 
 /**
@@ -22,7 +23,8 @@ public abstract class Controller {
 	 * 
 	 * @return 文本、链接、文件。
 	 */
-	protected String dragboard(Dragboard dragboard) {
+	protected String dragboard(DragEvent event) {
+		final Dragboard dragboard = event.getDragboard();
 		if(dragboard.hasFiles()) {
 			final var files = dragboard.getFiles();
 			if(CollectionUtils.isNotEmpty(files)) {

@@ -46,7 +46,6 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
-import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
@@ -354,8 +353,7 @@ public class MainController extends Controller implements Initializable {
 	 */
 	private EventHandler<DragEvent> dragOverAction = (event) -> {
 		if (event.getGestureSource() != this.taskTable) {
-			final Dragboard dragboard = event.getDragboard();
-			final String url = dragboard(dragboard);
+			final String url = dragboard(event);
 			if(ProtocolManager.getInstance().support(url)) {
 				event.acceptTransferModes(TransferMode.COPY);
 			} else {
@@ -369,8 +367,7 @@ public class MainController extends Controller implements Initializable {
 	 * 拖入文件事件（加载）
 	 */
 	private EventHandler<DragEvent> dragDroppedAction = (event) -> {
-		final Dragboard dragboard = event.getDragboard();
-		final String url = dragboard(dragboard);
+		final String url = dragboard(event);
 		if(StringUtils.isNotEmpty(url)) {
 			BuildWindow.getInstance().show(url);
 		}
