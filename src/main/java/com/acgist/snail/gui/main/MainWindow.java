@@ -8,10 +8,9 @@ import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.context.SystemConsole;
 import com.acgist.snail.utils.BrowseUtils;
 
-import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
@@ -38,21 +37,13 @@ public class MainWindow extends Window<MainController> {
 			if(INSTANCE == null) {
 				LOGGER.debug("初始化主窗口");
 				INSTANCE = new MainWindow();
-				try {
-					INSTANCE.start(INSTANCE.stage);
-				} catch (Exception e) {
-					LOGGER.error("窗口初始化异常", e);
-				}
 			}
 		}
 	}
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		final BorderPane root = super.loadFxml("/fxml/main.fxml");
-		final Scene scene = new Scene(root, 1000, 600);
-		stage.setScene(scene);
-		stage.setTitle(SystemConfig.getName());
+		this.buildWindow(stage, SystemConfig.getName(), 1000, 600, "/fxml/main.fxml", Modality.NONE);
 		icon();
 		help();
 		console();

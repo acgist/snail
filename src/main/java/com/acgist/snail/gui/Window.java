@@ -2,14 +2,20 @@ package com.acgist.snail.gui;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.system.context.SystemContext;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
@@ -20,6 +26,8 @@ import javafx.stage.Stage;
  */
 public abstract class Window<T extends Initializable> extends Application {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(Window.class);
+	
 	/**
 	 * 容器
 	 */
@@ -31,6 +39,11 @@ public abstract class Window<T extends Initializable> extends Application {
 	
 	protected Window() {
 		this.stage = new Stage();
+		try {
+			this.start(this.stage);
+		} catch (Exception e) {
+			LOGGER.error("窗口初始化异常", e);
+		}
 	}
 	
 	/**
@@ -81,6 +94,26 @@ public abstract class Window<T extends Initializable> extends Application {
 		final X x = loader.load();
 		this.controller = loader.getController();
 		return x;
+	}
+	
+	/**
+	 * 创建窗口
+	 * 
+	 * @param stage 容器
+	 * @param title 标题
+	 * @param width 宽度
+	 * @param height 高度
+	 * @param fxml fxml
+	 * @param modality 模态
+	 * 
+	 * @throws IOException FXML加载异常
+	 */
+	protected void buildWindow(Stage stage, String title, int width, int height, String fxml, Modality modality) throws IOException {
+		final Parent root = this.loadFxml(fxml);
+		final Scene scene = new Scene(root, width, height);
+		stage.initModality(modality);
+		stage.setScene(scene);
+		stage.setTitle(title);
 	}
 	
 	/**

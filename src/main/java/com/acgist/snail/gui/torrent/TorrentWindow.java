@@ -6,8 +6,6 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.gui.Window;
 import com.acgist.snail.pojo.session.TaskSession;
 
-import javafx.scene.Scene;
-import javafx.scene.layout.FlowPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -35,22 +33,13 @@ public class TorrentWindow extends Window<TorrentController> {
 			if(INSTANCE == null) {
 				LOGGER.debug("初始化编辑任务窗口");
 				INSTANCE = new TorrentWindow();
-				try {
-					INSTANCE.start(INSTANCE.stage);
-				} catch (Exception e) {
-					LOGGER.error("窗口初始化异常", e);
-				}
 			}
 		}
 	}
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		final FlowPane root = super.loadFxml("/fxml/torrent.fxml");
-		final Scene scene = new Scene(root, 800, 600);
-		stage.initModality(Modality.APPLICATION_MODAL);
-		stage.setScene(scene);
-		stage.setTitle("编辑任务");
+		this.buildWindow(stage, "编辑任务", 800, 600, "/fxml/torrent.fxml", Modality.APPLICATION_MODAL);
 		disableResize();
 		dialogWindow();
 	}
