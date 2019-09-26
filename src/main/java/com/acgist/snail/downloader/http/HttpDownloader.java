@@ -30,10 +30,22 @@ public class HttpDownloader extends Downloader {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(HttpDownloader.class);
 	
-	private final byte[] bytes; // 速度byte
-	private BufferedInputStream input; // 输入流
-	private BufferedOutputStream output; // 输出流
-	private HttpHeaderWrapper responseHeader; // 响应头
+	/**
+	 * 缓存字节数组
+	 */
+	private final byte[] bytes;
+	/**
+	 * 输入流
+	 */
+	private BufferedInputStream input;
+	/**
+	 * 输出流
+	 */
+	private BufferedOutputStream output;
+	/**
+	 * 响应头
+	 */
+	private HttpHeaderWrapper responseHeader;
 	
 	private HttpDownloader(TaskSession taskSession) {
 		super(taskSession);
@@ -54,8 +66,9 @@ public class HttpDownloader extends Downloader {
 	public void download() throws IOException {
 		int length = 0;
 		while(ok()) {
-			length = this.input.read(bytes, 0, bytes.length); // TODO：阻塞线程，导致暂停不能正常结束。
-			if(isComplete(length)) { // 是否完成
+			// TODO：阻塞线程，导致暂停不能正常结束。
+			length = this.input.read(bytes, 0, bytes.length);
+			if(isComplete(length)) {
 				this.complete = true;
 				break;
 			}
@@ -69,15 +82,6 @@ public class HttpDownloader extends Downloader {
 		IoUtils.close(this.input);
 		IoUtils.close(this.output);
 	}
-	
-//	@Override
-//	public void unlockDownload() {
-//		try {
-//			this.input.close();
-//		} catch (Exception e) {
-//			LOGGER.error("HTTP下载释放下载异常", e);
-//		}
-//	}
 	
 	/**
 	 * 任务是否完成：长度-1或者下载数据等于任务长度。
@@ -102,12 +106,13 @@ public class HttpDownloader extends Downloader {
 	 */
 	private void buildInput() {
 		final var entity = this.taskSession.entity();
-		final long size = FileUtils.fileSize(entity.getFile()); // 已下载大小
+		// 已下载大小
+		final long size = FileUtils.fileSize(entity.getFile());
 		final var client = HTTPClient.newInstance(entity.getUrl());
 		HttpResponse<InputStream> response = null;
 		try {
 			response = client
-				.header("Range", "bytes=" + size + "-") // 端点续传
+				.header("Range", "bytes=" + size + "-")
 				.get(BodyHandlers.ofInputStream());
 		} catch (Exception e) {
 			fail("HTTP请求失败");
@@ -117,7 +122,8 @@ public class HttpDownloader extends Downloader {
 		if(HTTPClient.ok(response) || HTTPClient.partialContent(response)) {
 			this.responseHeader = HttpHeaderWrapper.newInstance(response.headers());
 			this.input = new BufferedInputStream(response.body());
-			if(this.responseHeader.range()) { // 支持断点续传
+			// 支持断点续传
+			if(this.responseHeader.range()) {
 				final long begin = this.responseHeader.beginRange();
 				if(size != begin) {
 					LOGGER.warn("已下载大小和开始下载位置不相等，已下载大小：{}，开始下载位置：{}，响应头：{}", size, begin, this.responseHeader.allHeaders());

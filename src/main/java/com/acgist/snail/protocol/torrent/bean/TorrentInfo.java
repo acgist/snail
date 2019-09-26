@@ -26,18 +26,54 @@ public class TorrentInfo {
 	 */
 	public static final String HIDE_FILE_PREFIX = "_____padding_file";
 	
-	private String name; // 名称
-	private String nameUtf8; // 名称：utf8
-	private Long length; // 大小
-	private byte[] ed2k; // ed2k
-	private byte[] filehash; // 文件hash
-	private byte[] pieces; // 特征信息：每个piece的hash值占用20个字节
-	private Long pieceLength; // 每个块大小
-	private String publisher; // 发布者
-	private String publisherUtf8; // 发布者UTF8
-	private String publisherUrl; // 发布者URL
-	private String publisherUrlUtf8; // 发布者URL UTF8
-	private List<TorrentFile> files; // 多文件时存在
+	/**
+	 * 名称
+	 */
+	private String name;
+	/**
+	 * 名称UTF8
+	 */
+	private String nameUtf8;
+	/**
+	 * 大小
+	 */
+	private Long length;
+	/**
+	 * ed2k
+	 */
+	private byte[] ed2k;
+	/**
+	 * 文件hash
+	 */
+	private byte[] filehash;
+	/**
+	 * 特征信息：每个piece的hash值占用20个字节
+	 */
+	private byte[] pieces;
+	/**
+	 * 每个块大小
+	 */
+	private Long pieceLength;
+	/**
+	 * 发布者
+	 */
+	private String publisher;
+	/**
+	 * 发布者UTF8
+	 */
+	private String publisherUtf8;
+	/**
+	 * 发布者URL
+	 */
+	private String publisherUrl;
+	/**
+	 * 发布者URL UTF8
+	 */
+	private String publisherUrlUtf8;
+	/**
+	 * 多文件时存在
+	 */
+	private List<TorrentFile> files;
 
 	protected TorrentInfo() {
 	}

@@ -49,7 +49,8 @@ public class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler imple
 		final List<String> infoHashs = headers.headerList(HEADER_INFOHASH);
 		if(StringUtils.isNumeric(port) && CollectionUtils.isNotEmpty(infoHashs)) {
 			final byte[] peerId = StringUtils.unhex(cookie);
-			if(ArrayUtils.equals(peerId, PeerService.getInstance().peerId())) { // 不是本机
+			// 不是本机
+			if(ArrayUtils.equals(peerId, PeerService.getInstance().peerId())) {
 				LOGGER.debug("本地发现本机忽略");
 			} else {
 				infoHashs.forEach(infoHash -> {

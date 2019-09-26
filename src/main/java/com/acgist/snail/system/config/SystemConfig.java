@@ -83,26 +83,70 @@ public class SystemConfig extends PropertiesConfig {
 		return INSTANCE;
 	}
 	
-	private String name; // 名称
-	private String nameEn; // 英文名称
-	private String version; // 版本
-	
-	private String author; // 作者
-	private String source; // 源码
-	private String support; // 支持
-	
-	private Integer servicePort; // 服务端口（本地服务：启动检测）
-	private Integer torrentPort; // 服务端口（本地端口：Peer、DHT、UTP）
-	private Integer torrentPortExt; // 服务端口（外网映射：Peer、DHT、UTP）
-	
-	private Integer peerSize; // 单个任务Peer数量
-	private Integer trackerSize; // 单个任务Tracker数量
-	private Integer pieceRepeatSize; // 任务即将完成时可以重复选择下载的剩下Piece数量
-	
-	private Integer dhtInterval; // DHT执行周期（秒）
-	private Integer pexInterval; // PEX执行周期（秒）
-	private Integer trackerInterval; // Tracker执行周期（秒）
-	private Integer peerOptimizeInterval; // 单个任务Peer优化周期（秒）
+	/**
+	 * 名称
+	 */
+	private String name;
+	/**
+	 * 英文名称
+	 */
+	private String nameEn;
+	/**
+	 * 版本
+	 */
+	private String version;
+	/**
+	 * 作者
+	 */
+	private String author;
+	/**
+	 * 源码
+	 */
+	private String source;
+	/**
+	 * 支持
+	 */
+	private String support;
+	/**
+	 * 服务端口（本地服务：启动检测）
+	 */
+	private Integer servicePort;
+	/**
+	 * 服务端口（本地端口：Peer、DHT、UTP）
+	 */
+	private Integer torrentPort;
+	/**
+	 * 服务端口（外网映射：Peer、DHT、UTP）
+	 */
+	private Integer torrentPortExt;
+	/**
+	 * 单个任务Peer数量
+	 */
+	private Integer peerSize;
+	/**
+	 * 单个任务Tracker数量
+	 */
+	private Integer trackerSize;
+	/**
+	 * 任务即将完成时可以重复选择下载的剩下Piece数量
+	 */
+	private Integer pieceRepeatSize;
+	/**
+	 * DHT执行周期（秒）
+	 */
+	private Integer dhtInterval;
+	/**
+	 * PEX执行周期（秒）
+	 */
+	private Integer pexInterval;
+	/**
+	 * Tracker执行周期（秒）
+	 */
+	private Integer trackerInterval;
+	/**
+	 * 单个任务Peer优化周期（秒）
+	 */
+	private Integer peerOptimizeInterval;
 	
 	/**
 	 * 初始化

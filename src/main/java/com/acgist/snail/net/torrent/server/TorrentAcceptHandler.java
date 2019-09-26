@@ -41,10 +41,11 @@ public class TorrentAcceptHandler extends UdpAcceptHandler {
 	
 	@Override
 	public UdpMessageHandler messageHandler(ByteBuffer buffer, InetSocketAddress socketAddress) {
-		final byte header = buffer.get(0); // 类型：区分DHT和UTP消息
-		if(DHT_HEADER == header) { // DHT
+		// 类型：区分DHT和UTP消息
+		final byte header = buffer.get(0);
+		if(DHT_HEADER == header) { // DHT消息
 			return this.dhtMessageHandler;
-		} else { // UTP
+		} else { // UTP消息
 			final short connectionId = buffer.getShort(2); // 连接ID
 			return this.utpService.get(connectionId, socketAddress);
 		}

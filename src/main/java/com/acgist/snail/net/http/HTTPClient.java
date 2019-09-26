@@ -37,25 +37,38 @@ public class HTTPClient {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(HTTPClient.class);
 	
-	public static final int TIMEOUT = 5; // 超时时间
-	
-	public static final int HTTP_OK = 200; // OK
-	public static final int HTTP_PARTIAL_CONTENT = 206; // 端点续传
-	public static final int HTTP_REQUESTED_RANGE_NOT_SATISFIABLE= 416; // 无法满足请求范围
-	public static final int HTTP_INTERNAL_SERVER_ERROR = 500; // 服务器错误
-	
 	/**
-	 * 浏览器信息
+	 * 超时时间
+	 */
+	public static final int TIMEOUT = 5;
+	/**
+	 * 状态码：200：OK
+	 */
+	public static final int HTTP_OK = 200;
+	/**
+	 * 状态码：206：端点续传
+	 */
+	public static final int HTTP_PARTIAL_CONTENT = 206;
+	/**
+	 * 状态码：416：无法满足请求范围
+	 */
+	public static final int HTTP_REQUESTED_RANGE_NOT_SATISFIABLE= 416;
+	/**
+	 * 状态码：500：服务器错误
+	 */
+	public static final int HTTP_INTERNAL_SERVER_ERROR = 500;
+	/**
+	 * 客户端（浏览器）信息
 	 */
 	private static final String USER_AGENT;
-	
 	/**
 	 * HTTP线程池
 	 */
 	private static final ExecutorService EXECUTOR = SystemThreadContext.newExecutor(2, 10, 100, 60L, SystemThreadContext.SNAIL_THREAD_HTTP);
 	
 	static {
-		final StringBuilder userAgentBuilder = new StringBuilder(); // 客户端信息
+		// 客户端（浏览器）信息
+		final StringBuilder userAgentBuilder = new StringBuilder();
 		userAgentBuilder
 			.append("Mozilla/5.0")
 			.append(" ")
@@ -70,8 +83,14 @@ public class HTTPClient {
 		LOGGER.debug("User-Agent：{}", USER_AGENT);
 	}
 	
-	private final HttpClient client; // HTTP Client
-	private final Builder builder; // Request Builder
+	/**
+	 * HttpClient
+	 */
+	private final HttpClient client;
+	/**
+	 * Request Builder
+	 */
+	private final Builder builder;
 	
 	private HTTPClient(HttpClient client, Builder builder) {
 		this.client = client;
@@ -273,7 +292,8 @@ public class HTTPClient {
 			.followRedirects(Redirect.NORMAL) // 重定向：正常
 //			.followRedirects(Redirect.ALWAYS) // 重定向：全部
 //			.proxy(ProxySelector.getDefault()) // 代理
-//			.sslContext(newSSLContext()) // SSL上下文
+//			.sslContext(newSSLContext()) // SSL上下文，默认：SSLContext.getDefault()
+			// SSL加密套件：ECDH不推荐使用，RSA和ECDSA签名根据证书类型选择
 //			.sslParameters(new SSLParameters(new String[] {
 //				"TLS_AES_128_GCM_SHA256",
 //				"TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
@@ -281,8 +301,7 @@ public class HTTPClient {
 //				"TLS_RSA_WITH_AES_128_CBC_SHA256",
 //				"TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256",
 //				"TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256"
-//			}, new String[] {"TLSv1.2", "TLSv1.3"})) // SSL加密套件：ECDH不推荐使用，RSA和ECDSA签名根据证书类型选择
-//			.sslContext(SSLContext.getDefault()) // SSL上下文
+//			}, new String[] {"TLSv1.2", "TLSv1.3"}))
 //			.authenticator(Authenticator.getDefault()) // 认证
 //			.cookieHandler(CookieHandler.getDefault()) // Cookie
 			.connectTimeout(Duration.ofSeconds(timeout)) // 超时
@@ -331,7 +350,7 @@ public class HTTPClient {
 		return HttpRequest
 			.newBuilder()
 			.uri(URI.create(url))
-			.version(Version.HTTP_1_1) // 使用1.1版本协议，2.0版本还没有普及。
+			.version(Version.HTTP_1_1) // HTTP协议使用1.1版本，2.0版本还没有普及。
 			.timeout(Duration.ofSeconds(timeout))
 			.header("User-Agent", USER_AGENT);
 	}

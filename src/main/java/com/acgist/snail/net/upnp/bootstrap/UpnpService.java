@@ -52,13 +52,26 @@ public class UpnpService {
 	 */
 	private static final String SERVICE_WANIPC = "urn:schemas-upnp-org:service:WANIPConnection:";
 	
-	private String location; // 描述文件地址
-	private String controlURL; // 控制URL
-	private String serviceType; // 服务类型
-	
-	private volatile boolean init = false; // 是否初始化
-	
-	private String externalIpAddress; // 本地IP
+	/**
+	 * 描述文件地址
+	 */
+	private String location;
+	/**
+	 * 控制URL
+	 */
+	private String controlURL;
+	/**
+	 * 服务类型
+	 */
+	private String serviceType;
+	/**
+	 * 是否初始化
+	 */
+	private volatile boolean init = false;
+	/**
+	 * 本地IP
+	 */
+	private String externalIpAddress;
 
 	private static final UpnpService INSTANCE = new UpnpService();
 	

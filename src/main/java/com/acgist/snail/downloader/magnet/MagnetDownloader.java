@@ -29,7 +29,10 @@ public class MagnetDownloader extends Downloader {
 
 	private TorrentSession torrentSession;
 	
-	private final Object downloadLock = new Object(); // 下载锁
+	/**
+	 * 下载锁
+	 */
+	private final Object downloadLock = new Object();
 	
 	public MagnetDownloader(TaskSession taskSession) {
 		super(taskSession);

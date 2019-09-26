@@ -27,6 +27,8 @@ import com.acgist.snail.utils.ThreadUtils;
  * @since 1.1.0
  */
 public class PeerLauncher {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(PeerLauncher.class);
 
 	/**
 	 * 每批请求的SLICE数量
@@ -45,26 +47,42 @@ public class PeerLauncher {
 	 */
 	private static final int CLOSE_AWAIT_TIME = 4;
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(PeerLauncher.class);
-	
-	private volatile boolean launcher = false; // 是否启动
-	private volatile boolean available = false; // 状态：连接是否成功
-	private volatile boolean havePieceMessage = false; // 状态：是否返回数据
-	
-	private TorrentPiece downloadPiece; // 下载的Piece信息
-	
-	private final AtomicInteger countLock = new AtomicInteger(0); // Piece分片锁
-	private final AtomicBoolean releaseLock = new AtomicBoolean(false); // 释放锁
-	private final AtomicBoolean completeLock = new AtomicBoolean(false); // Piece完成锁
-	
 	/**
-	 * 评分：每次收到Piece更新该值，评分时清零。
+	 * 是否启动
 	 */
-	private final AtomicInteger mark = new AtomicInteger(0);
+	private volatile boolean launcher = false;
+	/**
+	 * 状态：连接是否成功
+	 */
+	private volatile boolean available = false;
+	/**
+	 * 状态：是否返回数据
+	 */
+	private volatile boolean havePieceMessage = false;
+	/**
+	 * 下载的Piece信息
+	 */
+	private TorrentPiece downloadPiece;
+	/**
+	 * Piece分片锁
+	 */
+	private final AtomicInteger countLock = new AtomicInteger(0);
+	/**
+	 * 释放锁
+	 */
+	private final AtomicBoolean releaseLock = new AtomicBoolean(false);
+	/**
+	 * Piece完成锁
+	 */
+	private final AtomicBoolean completeLock = new AtomicBoolean(false);
 	/**
 	 * 已被评分：第一次连入还没有被评分。
 	 */
 	private volatile boolean marked = false;
+	/**
+	 * 评分：每次收到Piece更新该值，评分时清零。
+	 */
+	private final AtomicInteger mark = new AtomicInteger(0);
 	
 	private final PeerSession peerSession;
 	private final TorrentSession torrentSession;
@@ -149,7 +167,8 @@ public class PeerLauncher {
 	 * 下载数据
 	 */
 	public void piece(int index, int begin, byte[] bytes) {
-		if(bytes == null) { // 数据不完整抛弃当前块，重新选择下载块
+		// 数据不完整抛弃当前块，重新选择下载块。
+		if(bytes == null) {
 			undone();
 			return;
 		}
@@ -158,14 +177,16 @@ public class PeerLauncher {
 			return;
 		}
 		this.havePieceMessage = true;
-		mark(bytes.length); // 每次获取到都需要打分
-		synchronized (this.countLock) { // 唤醒request
+		mark(bytes.length); // 获取数据打分
+		// 唤醒request
+		synchronized (this.countLock) {
 			if (this.countLock.addAndGet(-1) <= 0) {
 				this.countLock.notifyAll();
 			}
 		}
-		final boolean complete = this.downloadPiece.put(begin, bytes); // 下载完成
-		if(complete) { // 唤醒下载完成
+		final boolean complete = this.downloadPiece.put(begin, bytes);
+		// 唤醒下载完成
+		if(complete) {
 			synchronized (this.completeLock) {
 				if (this.completeLock.getAndSet(true)) {
 					this.completeLock.notifyAll();
@@ -182,7 +203,8 @@ public class PeerLauncher {
 			if(this.available) {
 				LOGGER.debug("PeerLauncher关闭：{}-{}", this.peerSession.host(), this.peerSession.peerPort());
 				this.available = false;
-				if(!this.completeLock.get()) { // 没有完成：等待下载完成
+				// 没有完成：等待下载完成
+				if(!this.completeLock.get()) {
 					if(!this.releaseLock.get()) {
 						synchronized (this.releaseLock) {
 							if(!this.releaseLock.getAndSet(true)) {
@@ -254,7 +276,8 @@ public class PeerLauncher {
 			synchronized (this.countLock) {
 				if (this.countLock.get() >= SLICE_REQUEST_SIZE) {
 					ThreadUtils.wait(this.countLock, Duration.ofSeconds(SLICE_AWAIT_TIME));
-					if (!this.havePieceMessage) { // 没有数据返回
+					// 没有数据返回
+					if (!this.havePieceMessage) {
 						break;
 					}
 				}
@@ -263,7 +286,8 @@ public class PeerLauncher {
 			int begin = this.downloadPiece.position();
 			int length = this.downloadPiece.length(); // 顺序不能调换
 			this.peerSubMessageHandler.request(index, begin, length);
-			if(!this.downloadPiece.more()) { // 是否还有更多SLICE
+			// 是否还有更多SLICE
+			if(!this.downloadPiece.more()) {
 				break;
 			}
 		}
@@ -276,12 +300,14 @@ public class PeerLauncher {
 				ThreadUtils.wait(this.completeLock, Duration.ofSeconds(PIECE_AWAIT_TIME));
 			}
 		}
-		if(this.releaseLock.get()) { // 已经关闭
+		// 已经关闭
+		if(this.releaseLock.get()) {
 			synchronized (this.releaseLock) {
 				this.releaseLock.notifyAll();
 			}
 		}
-		if(this.countLock.get() > 0) { // 没有下载完成
+		// 没有下载完成
+		if(this.countLock.get() > 0) {
 			undone();
 		}
 		return true;
@@ -291,15 +317,18 @@ public class PeerLauncher {
 	 * 选择下载Piece
 	 */
 	private void pickDownloadPiece() {
-		if(!available()) { // 不可用
+		if(!available()) {
 			return;
 		}
 		if(this.downloadPiece == null) { // 没有Piece
-		} else if(this.downloadPiece.complete()) { // 完成
-			if(this.downloadPiece.verify()) { // 验证数据
-				final boolean ok = this.torrentStreamGroup.piece(this.downloadPiece); // 保存数据
+		} else if(this.downloadPiece.complete()) { // 下载完成
+			// 验证数据
+			if(this.downloadPiece.verify()) {
+				// 保存数据
+				final boolean ok = this.torrentStreamGroup.piece(this.downloadPiece);
 				if(ok) {
-					this.peerSession.download(this.downloadPiece.getLength()); // 统计
+					// 统计下载数据
+					this.peerSession.download(this.downloadPiece.getLength());
 				}
 			} else {
 				this.peerSession.badPieces(this.downloadPiece.getIndex());

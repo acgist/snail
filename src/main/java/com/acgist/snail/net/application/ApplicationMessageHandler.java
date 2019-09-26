@@ -182,11 +182,14 @@ public class ApplicationMessageHandler extends TcpMessageHandler implements IMes
 	private void onTaskList(ApplicationMessage message) {
 		final List<Map<String, Object>> list = DownloaderManager.getInstance().tasks().stream()
 			.map(task -> task.entity())
-			.map(entity -> { // 转为Map
+			// 将对象属性转换为Map
+			.map(entity -> {
 				return BeanUtils.toMap(entity).entrySet().stream()
-					.filter(entry -> { // 去掉key==null并且value==null的值
+					.filter(entry -> {
+						// 去掉key==null并且value==null的值
 						return entry.getKey() != null && entry.getValue() != null;
-					}).collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+					})
+					.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 			}).collect(Collectors.toList());
 		final String body = BEncodeEncoder.encodeListString(list);
 		send(ApplicationMessage.response(body));

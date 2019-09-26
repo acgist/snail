@@ -28,10 +28,22 @@ public class FtpDownloader extends Downloader {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(FtpDownloader.class);
 
-	private final byte[] bytes; // 速度byte
-	private FtpClient client; // FtpClient
-	private BufferedInputStream input; // 输入流
-	private BufferedOutputStream output; // 输出流
+	/**
+	 * 缓存字节数组
+	 */
+	private final byte[] bytes;
+	/**
+	 * FtpClient
+	 */
+	private FtpClient client;
+	/**
+	 * 输入流
+	 */
+	private BufferedInputStream input;
+	/**
+	 * 输出流
+	 */
+	private BufferedOutputStream output;
 	
 	private FtpDownloader(TaskSession taskSession) {
 		super(taskSession);
@@ -52,8 +64,9 @@ public class FtpDownloader extends Downloader {
 	public void download() throws IOException {
 		int length = 0;
 		while(ok()) {
-			length = this.input.read(this.bytes, 0, this.bytes.length); // TODO：阻塞线程，导致暂停不能正常结束。
-			if(isComplete(length)) { // 是否完成
+			// TODO：阻塞线程，导致暂停不能正常结束。
+			length = this.input.read(this.bytes, 0, this.bytes.length);
+			if(isComplete(length)) {
 				this.complete = true;
 				break;
 			}
@@ -70,15 +83,6 @@ public class FtpDownloader extends Downloader {
 		IoUtils.close(this.output);
 	}
 
-//	@Override
-//	public void unlockDownload() {
-//		try {
-//			this.input.close();
-//		} catch (Exception e) {
-//			LOGGER.error("HTTP下载释放下载异常", e);
-//		}
-//	}
-	
 	/**
 	 * 任务是否完成：长度-1或者下载数据等于任务长度。
 	 */
@@ -93,8 +97,10 @@ public class FtpDownloader extends Downloader {
 	 */
 	private void buildInput() {
 		final var entity = this.taskSession.entity();
-		final long size = FileUtils.fileSize(entity.getFile()); // 已下载大小
-		this.client = FtpClientBuilder.newInstance(entity.getUrl()).build(); // 创建FtpClient
+		// 已下载大小
+		final long size = FileUtils.fileSize(entity.getFile());
+		// 创建FtpClient
+		this.client = FtpClientBuilder.newInstance(entity.getUrl()).build();
 		final boolean ok = this.client.connect();
 		if(ok) {
 			final InputStream inputStream = this.client.download(size);

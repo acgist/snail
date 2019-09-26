@@ -76,11 +76,13 @@ public class TorrentStreamGroup {
 		final BitSet selectPieces = new BitSet(torrentInfo.pieceSize());
 		final List<TorrentStream> streams = new ArrayList<>(files.size());
 		final TorrentStreamGroup torrentStreamGroup = new TorrentStreamGroup(pieces, selectPieces, streams, torrentSession);
+		// 下载文件数量
 		final int fileCount = (int) files.stream()
 			.filter(file -> file.selected())
-			.count(); // 下载文件数量
+			.count();
 		final var startTime = System.currentTimeMillis(); // 开始时间
-		final CountDownLatch allReady = new CountDownLatch(fileCount); // 全部完成：异步线程也执行完成
+		// 异步线程执行完成计数器
+		final CountDownLatch allReady = new CountDownLatch(fileCount);
 		if(CollectionUtils.isNotEmpty(files)) {
 			long pos = 0;
 			for (TorrentFile file : files) {
@@ -100,7 +102,7 @@ public class TorrentStreamGroup {
 			try {
 				final var ok = allReady.await(SIZE_TIMEOUT, TimeUnit.SECONDS);
 				if(ok) {
-					final var finishTime = System.currentTimeMillis();
+					final var finishTime = System.currentTimeMillis(); // 结束时间
 					LOGGER.debug("{}-任务准备消耗时间：{}", torrent.name(), (finishTime - startTime));
 					torrentSession.resize(torrentStreamGroup.size());
 				} else {
@@ -184,7 +186,8 @@ public class TorrentStreamGroup {
 				}
 			}
 		}
-		if(buffer.position() < length) { // 如果数据读取不满足要求
+		// 如果数据读取不满足要求
+		if(buffer.position() < length) {
 			LOGGER.warn("读取Piece数据不满足要求，读取长度：{}，要求长度：{}", buffer.position(), length);
 			return null;
 		}
@@ -200,8 +203,9 @@ public class TorrentStreamGroup {
 	public boolean piece(TorrentPiece piece) {
 		boolean ok = false;
 		for (TorrentStream torrentStream : this.streams) {
+			// 不能跳出，可能存在一个Piece多个文件的情况。
 			if(torrentStream.piece(piece)) {
-				ok = true; // 不能跳出，可能存在一个Piece多个文件的情况。
+				ok = true;
 			}
 		}
 		final long oldValue = this.fileBuffer.get();
@@ -219,7 +223,8 @@ public class TorrentStreamGroup {
 	 */
 	public void piece(int index) {
 		this.pieces.set(index, true);
-		if(this.done) { // 初始化完成才开始发送have消息
+		// 初始化完成才开始发送have消息
+		if(this.done) {
 			this.torrentSession.have(index);
 		}
 	}

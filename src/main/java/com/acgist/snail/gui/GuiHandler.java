@@ -104,7 +104,7 @@ public class GuiHandler {
 	public enum SnailNoticeType {
 		
 		/** 普通 */
-		none, // 
+		none,
 		/** 提示 */
 		info,
 		/** 警告 */

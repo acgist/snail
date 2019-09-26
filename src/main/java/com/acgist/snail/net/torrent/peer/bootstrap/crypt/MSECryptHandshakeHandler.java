@@ -60,10 +60,27 @@ public class MSECryptHandshakeHandler {
 	 */
 	private static final int BUFFER_SIZE = 4096;
 	
+	public enum Step {
+		
+		/** 发送公钥 */
+		sendPublicKey,
+		/** 接收公钥 */
+		receivePublicKey,
+		/** 发送加密选择 */
+		sendProvide,
+		/** 接收加密选择 */
+		receiveProvide,
+		/** 发送确认加密 */
+		sendConfirm,
+		/** 接收确认加密 */
+		receiveConfirm;
+		
+	}
+	
 	/**
-	 * 当前步骤：默认接收
+	 * 当前步骤：默认：接收公钥
 	 */
-	private volatile int step = 1;
+	private volatile Step step = Step.receivePublicKey;
 	/**
 	 * 是否处理完成（握手处理）
 	 */
@@ -130,7 +147,7 @@ public class MSECryptHandshakeHandler {
 	 */
 	public void handshake() {
 		sendPublicKey();
-		this.step = 2;
+		this.step = Step.sendPublicKey;
 	}
 
 	/**
@@ -145,14 +162,14 @@ public class MSECryptHandshakeHandler {
 			synchronized (this.buffer) {
 				this.buffer.put(buffer); // 读取信息
 				switch (this.step) {
-				case 1:
-				case 2:
+				case sendPublicKey:
+				case receivePublicKey:
 					receivePublicKey(buffer);
 					break;
-				case 3:
+				case receiveProvide:
 					receiveProvide(buffer);
 					break;
-				case 4:
+				case receiveConfirm:
 					receiveConfirm(buffer);
 					break;
 				default:
@@ -247,12 +264,12 @@ public class MSECryptHandshakeHandler {
 		final BigInteger publicKey = NumberUtils.decodeUnsigned(this.buffer, CryptConfig.PUBLIC_KEY_LENGTH);
 		this.buffer.compact();
 		this.dhSecret = this.mseKeyPairBuilder.buildDHSecret(publicKey, this.keyPair.getPrivate());
-		if(this.step == 1) {
+		if(this.step == Step.receivePublicKey) {
 			sendPublicKey();
-			this.step = 3;
-		} else if(this.step == 2) {
+			this.step = Step.receiveProvide;
+		} else if(this.step == Step.sendPublicKey) {
 			sendProvide();
-			this.step = 4;
+			this.step = Step.receiveConfirm;
 		}
 	}
 	

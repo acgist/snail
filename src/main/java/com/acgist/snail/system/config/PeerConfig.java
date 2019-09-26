@@ -18,28 +18,26 @@ import java.util.Map;
  */
 public class PeerConfig {
 	
-	private static final String UNKNOWN = "unknown"; // 未知终端
-
+	/**
+	 * 未知终端
+	 */
+	private static final String UNKNOWN = "unknown";
 	/**
 	 * 最大连接失败次数
 	 */
 	public static final int MAX_FAIL_TIMES = 5;
-	
 	/**
 	 * Peer连接超时时间（秒）
 	 */
 	public static final int MAX_PEER_CONNECT_TIMEOUT = 6;
-	
 	/**
 	 * Peer创建超时时间（秒）
 	 */
 	public static final int MAX_PEER_BUILD_TIMEOUT = MAX_PEER_CONNECT_TIMEOUT + 4;
-	
 	/**
 	 * PeerId长度
 	 */
 	public static final int PEER_ID_LENGTH = 20;
-	
 	/**
 	 * reserved长度
 	 */
@@ -49,7 +47,6 @@ public class PeerConfig {
 	 * <p>参考链接：http://www.bittorrent.org/beps/bep_0004.html</p>
 	 */
 	public static final byte[] HANDSHAKE_RESERVED = {0, 0, 0, 0, 0, 0, 0, 0};
-	
 	/**
 	 * DHT Protocol
 	 */
@@ -81,29 +78,59 @@ public class PeerConfig {
 	public static final int HANDSHAKE_NAME_LENGTH = HANDSHAKE_NAME_BYTES.length;
 	
 	/**
-	 * Peer来源
+	 * Peer来源：Tracker
 	 */
-	public static final byte SOURCE_TRACKER = 1 << 0; // Tracker
-	public static final byte SOURCE_PEX =     1 << 1; // PEX
-	public static final byte SOURCE_DHT =     1 << 2; // DHT
-	public static final byte SOURCE_CONNECT = 1 << 3; // 客户端连接
-	public static final byte SOURCE_LSD =     1 << 4; // 本地发现
+	public static final byte SOURCE_TRACKER = 1 << 0;
+	/**
+	 * Peer来源：PEX
+	 */
+	public static final byte SOURCE_PEX =     1 << 1;
+	/**
+	 * Peer来源：DHT
+	 */
+	public static final byte SOURCE_DHT =     1 << 2;
+	/**
+	 * Peer来源：客户端连接
+	 */
+	public static final byte SOURCE_CONNECT = 1 << 3;
+	/**
+	 * Peer来源：本地发现
+	 */
+	public static final byte SOURCE_LSD =     1 << 4;
 	
 	/**
-	 * Peer状态
+	 * Peer状态：上传
 	 */
-	public static final byte STATUS_UPLOAD =   1 << 1; // 上传
-	public static final byte STATUS_DOWNLOAD = 1 << 0; // 下载
+	public static final byte STATUS_UPLOAD =   1 << 1;
+	/**
+	 * Peer状态：下载
+	 */
+	public static final byte STATUS_DOWNLOAD = 1 << 0;
 	
 	/**
 	 * <p>PEX状态</p>
 	 * <p>参考链接：http://www.bittorrent.org/beps/bep_0011.html</p>
 	 */
-	public static final byte PEX_PREFER_ENCRYPTION =  1 << 0; // 0x01：偏爱加密
-	public static final byte PEX_SEED_UPLOAD_ONLY =   1 << 1; // 0x02：做种、上传
-	public static final byte PEX_UTP =             	  1 << 2; // 0x04：支持UTP协议
-	public static final byte PEX_HOLEPUNCH =     	  1 << 3; // 0x08：支持holepunch协议；TODO：支持holepunch
-	public static final byte PEX_OUTGO =          	  1 << 4; // 0x10：未知含义：TODO：了解
+	/**
+	 * PEX状态：0x01：偏爱加密
+	 */
+	public static final byte PEX_PREFER_ENCRYPTION =  1 << 0;
+	/**
+	 * PEX状态：0x02：做种、上传
+	 */
+	public static final byte PEX_SEED_UPLOAD_ONLY =   1 << 1;
+	/**
+	 * PEX状态：0x04：支持UTP协议
+	 */
+	public static final byte PEX_UTP =             	  1 << 2;
+	/**
+	 * PEX状态：0x08：支持holepunch协议；TODO：支持holepunch
+	 */
+	public static final byte PEX_HOLEPUNCH =     	  1 << 3;
+	/**
+	 * PEX状态：0x10：未知含义：TODO：了解
+	 */
+	public static final byte PEX_OUTGO =          	  1 << 4;
 	
 	/**
 	 * Peer客户端名称

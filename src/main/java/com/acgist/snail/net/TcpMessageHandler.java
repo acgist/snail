@@ -92,17 +92,20 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 			LOGGER.debug("发送消息时Socket已经不可用");
 			return;
 		}
-		if(buffer.position() != 0) { //  重置标记
+		// 重置标记
+		if(buffer.position() != 0) {
 			buffer.flip();
 		}
 		if(buffer.limit() == 0) {
 			LOGGER.warn("发送消息为空");
 			return;
 		}
-		synchronized (this.socket) { // 防止多线程同时读写导致WritePendingException
+		// 防止多线程同时读写导致WritePendingException
+		synchronized (this.socket) {
 			final Future<Integer> future = this.socket.write(buffer);
 			try {
-				final int size = future.get(TIMEOUT, TimeUnit.SECONDS); // 阻塞线程防止，防止多线程写入时抛出异常：IllegalMonitorStateException
+				// 阻塞线程防止，防止多线程写入时抛出异常：IllegalMonitorStateException
+				final int size = future.get(TIMEOUT, TimeUnit.SECONDS);
 				if(size <= 0) {
 					LOGGER.warn("发送数据为空");
 				}
@@ -134,7 +137,7 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 			this.close();
 		} else if(result == -1) { // 服务端关闭
 			this.close();
-		} else if(result == 0) { // 未遇到过这个情况
+		} else if(result == 0) { // 空轮询
 			LOGGER.debug("消息长度为零");
 		} else {
 			try {
@@ -161,7 +164,8 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	private void loopMessage() {
 		if(available()) {
 			final ByteBuffer buffer = ByteBuffer.allocate(SystemConfig.BUFFER_SIZE);
-			synchronized (this.socket) { // 防止多线程同时读写导致WritePendingException
+			// 防止多线程同时读写导致WritePendingException
+			synchronized (this.socket) {
 				this.socket.read(buffer, buffer, this);
 			}
 		}

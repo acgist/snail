@@ -33,6 +33,11 @@ public class SettingController extends Controller implements Initializable {
 	
 //	private static final Logger LOGGER = LoggerFactory.getLogger(SettingController.class);
 
+	/**
+	 * 大小滑块滑动大小
+	 */
+	private static final int MIN_SLID_SIZE = 512;
+	
 	@FXML
 	private FlowPane root;
 	@FXML
@@ -124,8 +129,9 @@ public class SettingController extends Controller implements Initializable {
 	
 	private ChangeListener<? super Number> bufferListener = (obs, oldVal, newVal) -> {
 		int value = newVal.intValue();
-		if(value > 512) { // 512KB以上时设置为512整数倍
-			value = value / 512 * 512;
+		// 超过512KB时设置为512整数倍
+		if(value > MIN_SLID_SIZE) {
+			value = value / MIN_SLID_SIZE * MIN_SLID_SIZE;
 		} else if(value == 0) { // 不能设置：0
 			value = 1;
 		}

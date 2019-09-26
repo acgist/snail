@@ -17,25 +17,55 @@ import com.acgist.snail.utils.ThreadUtils;
  */
 public class StatisticsSession {
 
-	private static final long ONE_SECOND = 1000L; // 一秒钟
+	/**
+	 * 一秒钟
+	 */
+	private static final long ONE_SECOND = 1000L;
 	/**
 	 * 下载速度、上传速度缓存时间：默认是刷新频率的两倍（防止速度比较慢时显示0）
 	 */
 	private static final long CACHE_SECOND = 2 * SystemConfig.TASK_REFRESH_INTERVAL.toMillis();
 	
-	private final boolean limit; // 限速开关
-	private final StatisticsSession parent; // 父类统计
-	
-	private AtomicLong uploadSize = new AtomicLong(0); // 已上传大小
-	private AtomicLong downloadSize = new AtomicLong(0); // 已下载大小
-	
-	private long lastDownloadTime = System.currentTimeMillis(); // 最后一次统计时间
-	private long downloadSecond = 0L; // 每秒下载速度
-	private AtomicLong downloadBuffer = new AtomicLong(0); // 下载速度采样
-	
-	private long lastUploadTime = System.currentTimeMillis(); // 最后一次统计时间
-	private long uploadSecond = 0L; // 每秒下载速度
-	private AtomicLong uploadBuffer = new AtomicLong(0); // 下载速度采样
+	/**
+	 * 限速开关
+	 */
+	private final boolean limit;
+	/**
+	 * 父类统计
+	 */
+	private final StatisticsSession parent;
+	/**
+	 * 已上传大小
+	 */
+	private AtomicLong uploadSize = new AtomicLong(0);
+	/**
+	 * 已下载大小
+	 */
+	private AtomicLong downloadSize = new AtomicLong(0);
+	/**
+	 * 最后一次统计时间
+	 */
+	private long lastDownloadTime = System.currentTimeMillis();
+	/**
+	 * 每秒下载速度
+	 */
+	private long downloadSecond = 0L;
+	/**
+	 * 下载速度采样
+	 */
+	private AtomicLong downloadBuffer = new AtomicLong(0);
+	/**
+	 * 最后一次统计时间
+	 */
+	private long lastUploadTime = System.currentTimeMillis();
+	/**
+	 * 每秒下载速度
+	 */
+	private long uploadSecond = 0L;
+	/**
+	 * 下载速度采样
+	 */
+	private AtomicLong uploadBuffer = new AtomicLong(0);
 	
 	public StatisticsSession() {
 		this.limit = false;

@@ -38,25 +38,71 @@ public class TorrentStream {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentStream.class);
 
-	private final long pieceLength; // 每个块的大小
-	private final AtomicLong fileBuffer; // 缓冲大小：写入文件时修改，TorrentStreamGroup中引用
-	private final TorrentStreamGroup torrentStreamGroup; // 下载文件组
-	private final AtomicLong fileDownloadSize; // 已下载大小：写入文件时修改
-	private final BlockingQueue<TorrentPiece> filePieces; // Piece队列
-	
-	private String file; // 文件路径
-	private long fileSize; // 文件大小
-	private long fileBeginPos; // 文件开始偏移：包含该值
-	private long fileEndPos; // 文件结束偏移：不包含该值
-	private RandomAccessFile fileStream; // 文件流
-	
-	private int filePieceSize; // 文件Piece数量
-	private int fileBeginPieceIndex; // 文件Piece开始索引
-	private int fileEndPieceIndex; // 文件Piece结束索引
-	
-	private BitSet pieces; // 当前文件位图
-	private BitSet pausePieces; // 暂停位图：上次下载失败，下一次请求时不选取这个Piece，然后清除。主要用来处理两个文件都包含某一个Piece时，上一个文件不存在Piece，而下一个文件存在的情况。
-	private BitSet downloadPieces; // 下载中位图
+	/**
+	 * 每个块的大小
+	 */
+	private final long pieceLength;
+	/**
+	 * 缓冲大小：写入文件时修改，TorrentStreamGroup中引用
+	 */
+	private final AtomicLong fileBuffer;
+	/**
+	 * 下载文件组
+	 */
+	private final TorrentStreamGroup torrentStreamGroup;
+	/**
+	 * 已下载大小：写入文件时修改
+	 */
+	private final AtomicLong fileDownloadSize;
+	/**
+	 * Piece缓存队列
+	 */
+	private final BlockingQueue<TorrentPiece> filePieces;
+	/**
+	 * 文件路径
+	 */
+	private String file;
+	/**
+	 * 文件大小
+	 */
+	private long fileSize;
+	/**
+	 * 文件开始偏移：包含该值
+	 */
+	private long fileBeginPos;
+	/**
+	 * 文件结束偏移：不包含该值
+	 */
+	private long fileEndPos;
+	/**
+	 * 文件流
+	 * TODO：替换FileChannel
+	 */
+	private RandomAccessFile fileStream;
+	/**
+	 * 文件Piece数量
+	 */
+	private int filePieceSize;
+	/**
+	 * 文件Piece开始索引
+	 */
+	private int fileBeginPieceIndex;
+	/**
+	 * 文件Piece结束索引
+	 */
+	private int fileEndPieceIndex;
+	/**
+	 * 当前文件位图
+	 */
+	private BitSet pieces;
+	/**
+	 * 暂停位图：上次下载失败，下一次请求时不选取这个Piece，然后清除。主要用来处理两个文件都包含某一个Piece时，上一个文件不存在Piece，而下一个文件存在的情况。
+	 */
+	private BitSet pausePieces;
+	/**
+	 * 下载中位图
+	 */
+	private BitSet downloadPieces;
 	
 	private TorrentStream(long pieceLength, AtomicLong fileBuffer, TorrentStreamGroup torrentStreamGroup) {
 		this.pieceLength = pieceLength;
@@ -90,8 +136,9 @@ public class TorrentStream {
 			this.fileSize = size;
 			this.fileBeginPos = pos;
 			this.fileEndPos = pos + size;
-			FileUtils.buildFolder(this.file, true); // 创建文件父目录，否者会抛出FileNotFoundException
-			this.fileStream = new RandomAccessFile(this.file, "rw"); // TODO：替换FileChannel
+			// 创建文件父目录，否者会抛出FileNotFoundException。
+			FileUtils.buildFolder(this.file, true);
+			this.fileStream = new RandomAccessFile(this.file, "rw");
 			buildFilePiece();
 			buildFileAsyn(complete, allReady);
 			selectPieces.set(this.fileBeginPieceIndex, this.fileEndPieceIndex + 1, true);
@@ -116,7 +163,8 @@ public class TorrentStream {
 	 * @return 是否保存成功
 	 */
 	public boolean piece(TorrentPiece piece) {
-		if(!piece.contain(this.fileBeginPos, this.fileEndPos)) { // 不符合当前文件位置
+		// 不符合当前文件位置
+		if(!piece.contain(this.fileBeginPos, this.fileEndPos)) {
 			return false;
 		}
 		synchronized (this) {
@@ -129,9 +177,11 @@ public class TorrentStream {
 				ok = true;
 				LOGGER.debug("保存Piece：{}", piece.getIndex());
 				this.done(piece.getIndex());
-				this.fileBuffer.addAndGet(piece.getLength()); // 更新缓存大小
+				// 更新缓存大小
+				this.fileBuffer.addAndGet(piece.getLength());
 				this.buildFileDownloadSize();
-				if(this.complete()) { // 下载完成数据刷出
+				// 下载完成数据刷出
+				if(this.complete()) {
 					this.flush();
 				}
 			} else {
@@ -181,12 +231,14 @@ public class TorrentStream {
 			this.downloadPieces.set(index);
 			int begin = 0;
 			boolean verify = true;
-			if(index == this.fileBeginPieceIndex) { // 第一块获取开始偏移
+			// 第一块获取开始偏移
+			if(index == this.fileBeginPieceIndex) {
 				verify = false;
 				begin = firstPiecePos();
 			}
 			int end = (int) this.pieceLength;
-			if(index == this.fileEndPieceIndex) { // 最后一块获取结束偏移
+			// 最后一块获取结束偏移
+			if(index == this.fileEndPieceIndex) {
 				verify = false;
 				end = lastPieceSize();
 			}
@@ -292,7 +344,8 @@ public class TorrentStream {
 	 * @param piece 下载失败的块
 	 */
 	public void undone(TorrentPiece piece) {
-		if(!piece.contain(this.fileBeginPos, this.fileEndPos)) { // 不符合当前文件位置
+		// 不符合当前文件位置
+		if(!piece.contain(this.fileBeginPos, this.fileEndPos)) {
 			return;
 		}
 		synchronized (this) {
@@ -437,7 +490,8 @@ public class TorrentStream {
 		int length = 0;
 		byte[] hash = null;
 		byte[] bytes = null;
-		boolean verify = true; // 第一块和最后一块不要校验HASH
+		// 第一块和最后一块不要校验HASH
+		boolean verify = true;
 		if(this.fileStream.length() == 0) {
 			return;
 		}
@@ -446,9 +500,9 @@ public class TorrentStream {
 				this.done(index);
 				continue;
 			}
-			if(index == this.fileBeginPieceIndex) { // 第一块需要偏移
+			if(index == this.fileBeginPieceIndex) {
 				verify = false;
-				pos = firstPiecePos();
+				pos = firstPiecePos(); // 第一块需要偏移
 				length = this.firstPieceSize();
 			} else if(index == this.fileEndPieceIndex) {
 				verify = false;
@@ -544,7 +598,8 @@ public class TorrentStream {
 	 * @param index Piece序号
 	 */
 	private boolean haveIndex(int index) {
-		if(index < this.fileBeginPieceIndex || index > this.fileEndPieceIndex) { // 不符合当前文件位置
+		// 不符合当前文件位置
+		if(index < this.fileBeginPieceIndex || index > this.fileEndPieceIndex) {
 			return false;
 		}
 		return true;

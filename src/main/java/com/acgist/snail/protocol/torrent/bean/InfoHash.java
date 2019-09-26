@@ -17,8 +17,14 @@ public class InfoHash {
 	 */
 	public static final int INFO_HASH_LENGTH = 20;
 	
-	private int size; // 种子文件info数据的长度
-	private byte[] info; // 种子文件info数据
+	/**
+	 * 种子文件info数据的长度
+	 */
+	private int size;
+	/**
+	 * 种子文件info数据
+	 */
+	private byte[] info;
 	private final byte[] infoHash;
 	
 	private InfoHash(byte[] infoHash) {

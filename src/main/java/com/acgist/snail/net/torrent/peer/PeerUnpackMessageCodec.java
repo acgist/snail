@@ -59,10 +59,11 @@ public class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteBuffer>
 					} else {
 						break;
 					}
-				} else { // 握手
+				} else { // 握手消息长度
 					length = PeerConfig.HANDSHAKE_LENGTH;
 				}
-				if(length <= 0) { // 心跳
+				// 心跳消息
+				if(length <= 0) {
 					this.peerSubMessageHandler.keepAlive();
 					break;
 				}

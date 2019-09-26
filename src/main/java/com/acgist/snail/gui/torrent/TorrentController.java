@@ -14,7 +14,7 @@ import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TaskSession.Status;
-import com.acgist.snail.pojo.wrapper.TorrentSelecterWrapper;
+import com.acgist.snail.pojo.wrapper.TorrentSelectorWrapper;
 import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
 import com.acgist.snail.protocol.torrent.bean.TorrentInfo;
@@ -51,7 +51,7 @@ public class TorrentController extends Controller implements Initializable {
 	private VBox downloadBox;
 	
 	private TaskSession taskSession;
-	private SelecterManager selecterManager;
+	private SelectorManager selectorManager;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -79,19 +79,19 @@ public class TorrentController extends Controller implements Initializable {
 			return;
 		}
 		final TorrentInfo torrentInfo = torrent.getInfo();
-		this.selecterManager = SelecterManager.newInstance(torrent.name(), this.download, tree);
+		this.selectorManager = SelectorManager.newInstance(torrent.name(), this.download, tree);
 		torrentInfo.files().stream()
 			.filter(file -> !file.path().startsWith(TorrentInfo.HIDE_FILE_PREFIX))
 			.sorted((a, b) -> a.path().compareTo(b.path()))
-			.forEach(file -> this.selecterManager.build(file.path(), file.getLength()));
-		this.selecterManager.select(taskSession);
+			.forEach(file -> this.selectorManager.build(file.path(), file.getLength()));
+		this.selectorManager.select(taskSession);
 	}
 	
 	/**
 	 * 释放资源：文件选择器
 	 */
 	public void release() {
-		this.selecterManager = null;
+		this.selectorManager = null;
 	}
 	
 	/**
@@ -113,13 +113,13 @@ public class TorrentController extends Controller implements Initializable {
 	 */
 	private EventHandler<ActionEvent> downloadEvent = (event) -> {
 		final TaskEntity entity = this.taskSession.entity();
-		var list = this.selecterManager.description();
+		var list = this.selectorManager.description();
 		if(list.isEmpty()) {
 			Alerts.warn("下载提示", "请选择下载文件");
 			return;
 		}
-		entity.setSize(this.selecterManager.size());
-		final TorrentSelecterWrapper wrapper = TorrentSelecterWrapper.newEncoder(list);
+		entity.setSize(this.selectorManager.size());
+		final TorrentSelectorWrapper wrapper = TorrentSelectorWrapper.newEncoder(list);
 		entity.setDescription(wrapper.description());
 		if(entity.getId() != null) { // 已经添加数据库
 			boolean restart = false;

@@ -100,15 +100,16 @@ public class PeerManager {
 						LOGGER.debug("添加PeerSession，{}-{}，来源：{}", host, port, PeerConfig.source(source));
 					}
 					peerSession = PeerSession.newInstance(parent, host, port);
-					// 计算插入位置
 					if(
 						source == PeerConfig.SOURCE_LSD || // 本地发现
 						source == PeerConfig.SOURCE_CONNECT || // 主动连接
 						PeerEvaluator.getInstance().eval(peerSession) // Peer评分
-						) {
-						deque.offerLast(peerSession); // 插入尾部：优先级高
+					) {
+						// 插入尾部：优先级高
+						deque.offerLast(peerSession);
 					} else {
-						deque.offerFirst(peerSession); // 插入头部：优先级低
+						// 插入头部：优先级低
+						deque.offerFirst(peerSession);
 					}
 					list.add(peerSession); // 存档
 				}
@@ -152,7 +153,7 @@ public class PeerManager {
 					break;
 				}
 				peerSession = deque.pollLast();
-				if(peerSession.available()) { // 可用
+				if(peerSession.available()) {
 					return peerSession;
 				} else {
 					deque.offerFirst(peerSession);

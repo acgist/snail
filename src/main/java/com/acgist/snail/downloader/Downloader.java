@@ -25,11 +25,18 @@ public abstract class Downloader implements IDownloader, IStatistics {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Downloader.class);
 	
-	protected volatile boolean fail = false; // 失败状态
-	protected volatile boolean complete = false; // 下载完成
-	
+	/**
+	 * 失败状态
+	 */
+	protected volatile boolean fail = false;
+	/**
+	 * 完成状态
+	 */
+	protected volatile boolean complete = false;
+	/**
+	 * 任务
+	 */
 	protected final TaskSession taskSession;
-
 	/**
 	 * 任务删除锁，删除后标记：true。
 	 */
@@ -38,8 +45,10 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	protected Downloader(TaskSession taskSession) {
 		this.taskSession = taskSession;
 		this.taskSession.downloader(this);
-		this.taskSession.downloadSize(downloadSize()); // 加载已下载大小
-		if(!this.taskSession.download()) { // 开始时不处于下载中时直接删除：暂停、完成等
+		// 加载已下载大小
+		this.taskSession.downloadSize(downloadSize());
+		// 开始时不处于下载中时直接删除：暂停、完成等
+		if(!this.taskSession.download()) {
 			this.deleteLock.set(true);
 		}
 	}
@@ -132,7 +141,8 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	
 	@Override
 	public void run() {
-		if(this.taskSession.download()) { // 任务已经处于下载中直接跳过，防止多次点击暂停开始导致后面线程阻塞导致不能下载其他任务
+		// 任务已经处于下载中直接跳过，防止多次点击暂停开始导致后面线程阻塞导致不能下载其他任务。
+		if(this.taskSession.download()) {
 			LOGGER.info("任务已经在下载中，停止执行：{}", this.name());
 			return;
 		}

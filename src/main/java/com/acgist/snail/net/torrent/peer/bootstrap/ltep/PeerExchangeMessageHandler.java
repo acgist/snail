@@ -65,7 +65,8 @@ public class PeerExchangeMessageHandler implements IExtensionMessageHandler {
 	 * 发送请求
 	 */
 	public void pex(byte[] bytes) {
-		final Byte type = peerExchangeType(); // 扩展消息类型
+		// 扩展消息类型
+		final Byte type = peerExchangeType();
 		if (type == null) {
 			LOGGER.warn("不支持pex扩展协议");
 			return;

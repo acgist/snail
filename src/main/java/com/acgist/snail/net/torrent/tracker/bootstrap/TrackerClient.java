@@ -25,16 +25,34 @@ import com.acgist.snail.utils.StringUtils;
  * @since 1.0.0
  */
 public abstract class TrackerClient implements Comparable<TrackerClient> {
-
-	public static final int TIMEOUT = 4; // 超时时间
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerClient.class);
 	
-	protected int weight; // 权重
-	protected final Integer id; // ID
-	protected final Protocol type; // 类型
-	protected final String scrapeUrl; // 刮檫URL
-	protected final String announceUrl; // 声明URL
+	/**
+	 * 超时时间
+	 */
+	public static final int TIMEOUT = 4;
+	
+	/**
+	 * 权重
+	 */
+	protected int weight;
+	/**
+	 * ID
+	 */
+	protected final Integer id;
+	/**
+	 * 类型
+	 */
+	protected final Protocol type;
+	/**
+	 * 刮檫URL
+	 */
+	protected final String scrapeUrl;
+	/**
+	 * 声明URL
+	 */
+	protected final String announceUrl;
 
 	/**
 	 * 是否可用
@@ -71,7 +89,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	 * 查找Peer，查找到的结果放入Peer列表。
 	 */
 	public void findPeers(Integer sid, TorrentSession torrentSession) {
-		if(!available()) { // 不可用直接返回null
+		if(!available()) {
 			return;
 		}
 		try {

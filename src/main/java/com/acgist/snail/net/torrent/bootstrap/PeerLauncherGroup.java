@@ -102,7 +102,8 @@ public class PeerLauncherGroup {
 	 */
 	public void release() {
 		LOGGER.debug("释放PeerLauncherGroup");
-		notifyBuild(false); // 释放资源，解除PeerLaunchers锁。
+		// 释放资源，解除PeerLaunchers锁，防止暂停任务卡死。
+		notifyBuild(false);
 		synchronized (this.peerLaunchers) {
 			this.peerLaunchers.forEach(launcher -> {
 				SystemThreadContext.submit(() -> {
@@ -164,9 +165,11 @@ public class PeerLauncherGroup {
 			final PeerLauncher launcher = PeerLauncher.newInstance(peerSession, this.torrentSession);
 			final boolean ok = launcher.handshake();
 			if(ok) {
-				peerSession.status(PeerConfig.STATUS_DOWNLOAD); // 设置下载中
+				// 设置下载中
+				peerSession.status(PeerConfig.STATUS_DOWNLOAD);
 				this.offer(launcher);
-			} else { // 失败后需要放回队列。
+			} else {
+				// 失败后需要放回队列。
 				PeerManager.getInstance().inferior(this.torrentSession.infoHashHex(), peerSession);
 			}
 			notifyBuild(true);
@@ -191,9 +194,9 @@ public class PeerLauncherGroup {
 	private void inferiorPeerLauncher() {
 		LOGGER.debug("优化PeerLauncher-剔除劣质PeerLauncher");
 		int index = 0;
-		boolean unusable = false; // 不可用
+		boolean unusable = false; // 是否已经剔除不可用的Peer
 		int mark = 0, minMark = 0;
-		PeerLauncher tmp = null; // 临时
+		PeerLauncher tmp = null;
 		PeerLauncher inferior = null; // 劣质PeerLauncher
 		final int size = this.peerLaunchers.size();
 		while(true) {
@@ -204,20 +207,25 @@ public class PeerLauncherGroup {
 			if(tmp == null) {
 				break;
 			}
-			if(!tmp.available()) { // 如果当前挑选的是不可用的PeerLauncher不执行后面操作
+			// 如果当前挑选的是不可用的PeerLauncher直接剔除，不执行后面操作。
+			if(!tmp.available()) {
 				unusable = true;
 				inferiorPeerLauncher(tmp);
 				continue;
 			}
-			mark = tmp.mark(); // 清空权重
-			if(!tmp.marked()) { // 第一次连入还没有被评分
+			// 获取评分并清除
+			mark = tmp.mark();
+			// 第一次连入还没有被评分
+			if(!tmp.marked()) {
 				this.offer(tmp);
 				continue;
 			}
-			if(mark > 0) { // 添加可用
+			if(mark > 0) {
+				// 添加可用
 				this.optimize.add(tmp.peerSession());
-			} else { // 如果速度=0，直接剔除
+			} else {
 				unusable = true;
+				// 如果速度=0，直接剔除。
 				inferiorPeerLauncher(tmp);
 				continue;
 			}
@@ -232,7 +240,8 @@ public class PeerLauncherGroup {
 				this.offer(tmp);
 			}
 		}
-		if(unusable) { // 已经删除无用的Peer，劣质Peer重新加入队列。
+		// 已经剔除无用的Peer，劣质Peer重新加入队列。
+		if(unusable) {
 			if(inferior != null) {
 				this.offer(inferior);
 			}

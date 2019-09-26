@@ -17,18 +17,46 @@ public class TorrentPiece {
 	 */
 	public static final int SLICE_SIZE = 16 * 1024;
 
-	private final long pieceLength; // Piece块大小
-	private final int index; // Piece索引
-	private final int begin; // Piece开始偏移
-	private final int end; // Piece结束偏移
-	private final int length; // 数据的长度：等于end-begin
-	private final byte[] data; // 数据：长度等于length
-	
-	private final byte[] hash; // 校验数据
-	private final boolean verify; // 是否校验
-
-	private int size; // 已下载大小
-	private int position; // 请求内偏移
+	/**
+	 * Piece块大小
+	 */
+	private final long pieceLength;
+	/**
+	 * Piece索引
+	 */
+	private final int index;
+	/**
+	 * Piece开始偏移
+	 */
+	private final int begin;
+	/**
+	 * Piece结束偏移
+	 */
+	private final int end;
+	/**
+	 * 数据的长度：等于end-begin
+	 */
+	private final int length;
+	/**
+	 * 数据：长度等于length
+	 */
+	private final byte[] data;
+	/**
+	 * 校验数据
+	 */
+	private final byte[] hash;
+	/**
+	 * 是否校验
+	 */
+	private final boolean verify;
+	/**
+	 * 已下载大小
+	 */
+	private int size;
+	/**
+	 * 请求内偏移
+	 */
+	private int position;
 	
 	private TorrentPiece(byte[] hash, long pieceLength, int index, int begin, int end, boolean verify) {
 		this.pieceLength = pieceLength;

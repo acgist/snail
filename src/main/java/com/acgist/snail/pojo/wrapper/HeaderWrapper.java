@@ -19,14 +19,35 @@ import com.acgist.snail.utils.StringUtils;
  */
 public class HeaderWrapper {
 	
-	private static final String HEADER_LINE = "\n"; // 头信息换行符
-	private static final String HEADER_SPLIT = ":"; // 头信息分隔符
-	private static final String HEADER_SPACE = " "; // 头信息空格
-	private static final String HEADER_LINE_BUILDER = "\r\n"; // 头信息换行符
+	/**
+	 * 头信息换行符
+	 */
+	private static final String HEADER_LINE = "\n";
+	/**
+	 * 头信息分隔符
+	 */
+	private static final String HEADER_SPLIT = ":";
+	/**
+	 * 头信息空格
+	 */
+	private static final String HEADER_SPACE = " ";
+	/**
+	 * 头信息换行符
+	 */
+	private static final String HEADER_LINE_BUILDER = "\r\n";
 
-	private final String protocol; // 协议
-	private final boolean hasProtocol; // 是否含有协议
-	protected final Map<String, List<String>> headers; // 头信息
+	/**
+	 * 协议
+	 */
+	private final String protocol;
+	/**
+	 * 是否含有协议
+	 */
+	private final boolean hasProtocol;
+	/**
+	 * 头信息
+	 */
+	protected final Map<String, List<String>> headers;
 
 	protected HeaderWrapper(String content) {
 		String[] lines;

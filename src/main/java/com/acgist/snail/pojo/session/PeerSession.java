@@ -22,35 +22,86 @@ import com.acgist.snail.utils.StringUtils;
  */
 public class PeerSession implements IStatistics {
 	
-	private byte[] id; // Peer id
-	private String clientName; // Peer客户端名称
-
-	private volatile int failTimes = 0; // 失败次数：如果失败次数过多不再连接
-	
-	private volatile byte[] reserved; // 保留位
-	
-	private volatile byte flags = 0; // pex flags
-	private volatile byte status = 0; // 状态
-	private volatile byte source = 0; // 来源属性
-	
-	private String host; // 地址
-	private Integer peerPort; // Peer端口
-	private Integer dhtPort; // DHT端口
-	
-	private final BitSet pieces; // 文件下载位图
-	private final BitSet badPieces; // 下载错误位图：下次获取时清除
-	
-	private volatile boolean amChocking; // 客户端将Peer阻塞：阻塞（不允许下载）-1（true）、非阻塞-0
-	private volatile boolean amInterested; // 客户端对Peer感兴趣：感兴趣（Peer有客户端没有的piece）-1（true）、不感兴趣-0
-	private volatile boolean peerChocking; // Peer将客户阻塞：阻塞（Peer不允许客户端下载）-1（true）、非阻塞-0
-	private volatile boolean peerInterested; // Peer对客户端感兴趣：感兴趣-1、不感兴趣-0
-	
+	/**
+	 * Peer id
+	 */
+	private byte[] id;
+	/**
+	 * Peer客户端名称
+	 */
+	private String clientName;
+	/**
+	 * 失败次数：如果失败次数过多不再连接
+	 */
+	private volatile int failTimes = 0;
+	/**
+	 * 保留位
+	 */
+	private volatile byte[] reserved;
+	/**
+	 * pex flags
+	 */
+	private volatile byte flags = 0;
+	/**
+	 * 状态
+	 */
+	private volatile byte status = 0;
+	/**
+	 * 来源属性
+	 */
+	private volatile byte source = 0;
+	/**
+	 * 地址
+	 */
+	private String host;
+	/**
+	 * Peer端口
+	 */
+	private Integer peerPort;
+	/**
+	 * DHT端口
+	 */
+	private Integer dhtPort;
+	/**
+	 * 文件下载位图
+	 */
+	private final BitSet pieces;
+	/**
+	 * 下载错误位图：下次获取时清除
+	 */
+	private final BitSet badPieces;
+	/**
+	 * 客户端将Peer阻塞：阻塞（不允许下载）-1（true）、非阻塞-0
+	 */
+	private volatile boolean amChocking;
+	/**
+	 * 客户端对Peer感兴趣：感兴趣（Peer有客户端没有的piece）-1（true）、不感兴趣-0
+	 */
+	private volatile boolean amInterested;
+	/**
+	 * Peer将客户阻塞：阻塞（Peer不允许客户端下载）-1（true）、非阻塞-0
+	 */
+	private volatile boolean peerChocking;
+	/**
+	 * Peer对客户端感兴趣：感兴趣-1、不感兴趣-0
+	 */
+	private volatile boolean peerInterested;
+	/**
+	 * 统计信息
+	 */
 	private final StatisticsSession statistics;
-	
-	private volatile PeerConnect peerConnect; // 接入Peer（上传）
-	private volatile PeerLauncher peerLauncher; // 连接Peer（下载）
-	
-	private final Map<PeerConfig.ExtensionType, Byte> extension; // 支持的扩展协议
+	/**
+	 * 接入Peer（上传）
+	 */
+	private volatile PeerConnect peerConnect;
+	/**
+	 * 连接Peer（下载）
+	 */
+	private volatile PeerLauncher peerLauncher;
+	/**
+	 * 支持的扩展协议
+	 */
+	private final Map<PeerConfig.ExtensionType, Byte> extension;
 
 	private PeerSession(StatisticsSession parent, String host, Integer peerPort) {
 		this.statistics = new StatisticsSession(parent);

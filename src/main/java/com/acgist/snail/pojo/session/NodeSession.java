@@ -28,8 +28,14 @@ public class NodeSession implements Comparable<NodeSession> {
 	private final String host;
 	private final int port;
 	
-	private byte status; // 状态
-	private byte[] token; // 广播时使用
+	/**
+	 * 状态
+	 */
+	private byte status;
+	/**
+	 * 广播时使用
+	 */
+	private byte[] token;
 
 	private NodeSession(byte[] id, String host, int port) {
 		this.id = id;

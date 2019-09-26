@@ -16,8 +16,17 @@ public class UpnpRequest {
 	private static final String NAMESPACE_URI = "http://schemas.xmlsoap.org/soap/envelope/";
 	private static final String ENCODING_STYLE = "http://schemas.xmlsoap.org/soap/encoding/";
 	
-	private XMLUtils xml; // XML工具
-	private Element body; // 主要内容
+	/**
+	 * XML工具
+	 */
+	private XMLUtils xml;
+	/**
+	 * 主要内容
+	 */
+	private Element body;
+	/**
+	 * 服务类型
+	 */
 	private String serviceType;
 	
 	public static final UpnpRequest newRequest(String serviceType) {

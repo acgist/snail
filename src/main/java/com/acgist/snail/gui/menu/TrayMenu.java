@@ -42,7 +42,10 @@ public class TrayMenu extends Menu {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrayMenu.class);
 
-	private static final int MENU_WINDOW_HEIGHT = 150; // 窗口高度
+	/**
+	 * 窗口高度
+	 */
+	private static final int MENU_WINDOW_HEIGHT = 150;
 	
 	/**
 	 * 是否支持托盘
@@ -56,7 +59,7 @@ public class TrayMenu extends Menu {
 	
 	private TrayMenu() {
 		this.support = SystemTray.isSupported();
-		if(support) {
+		if(this.support) {
 			init();
 			initMenu();
 			enableTray();
@@ -68,7 +71,8 @@ public class TrayMenu extends Menu {
 			if (INSTANCE == null) {
 				LOGGER.debug("初始化托盘菜单");
 				INSTANCE = new TrayMenu();
-				Platform.setImplicitExit(false); // 必须设置此项，否者窗口关闭后将不能通过托盘显示。
+				// 必须设置此项，否者窗口关闭后将不能通过托盘显示。
+				Platform.setImplicitExit(false);
 			}
 		}
 	}
