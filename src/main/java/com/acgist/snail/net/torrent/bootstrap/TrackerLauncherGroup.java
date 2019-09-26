@@ -65,7 +65,7 @@ public class TrackerLauncherGroup {
 			var magnet = this.torrentSession.magnet();
 			clients = TrackerManager.getInstance().clients(null, magnet.getTr());
 		} else {
-			LOGGER.warn("加载TrackerClient时出现未知动作：" + action);
+			LOGGER.warn("加载TrackerClient时出现未知动作：{}", action);
 		}
 		if(CollectionUtils.isEmpty(clients)) {
 			return;
