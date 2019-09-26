@@ -107,7 +107,6 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 			LOGGER.debug("发送消息时Channel已经不可用");
 			return;
 		}
-		// 重置标记
 		if(buffer.position() != 0) {
 			buffer.flip();
 		}

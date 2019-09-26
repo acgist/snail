@@ -92,7 +92,6 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 			LOGGER.debug("发送消息时Socket已经不可用");
 			return;
 		}
-		// 重置标记
 		if(buffer.position() != 0) {
 			buffer.flip();
 		}

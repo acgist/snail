@@ -77,9 +77,9 @@ public class NumberUtils {
 	 * @param length 二进制字符数组长度
 	 */
 	public static byte[] encodeUnsigned(BigInteger value, int length) {
-        if (length < 1) {
-            throw new ArgumentException("数组长度错误");
-        }
+		if (length < 1) {
+			throw new ArgumentException("数组长度错误");
+		}
 		byte[] bytes = value.toByteArray();
 		if (bytes[0] == 0) {
 			bytes = Arrays.copyOfRange(bytes, 1, bytes.length);

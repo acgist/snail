@@ -46,9 +46,8 @@ public class CryptConfig {
 	public static final byte[] VC = new byte[VC_LENGTH];
 	/**
 	 * 加密策略
-	 * TODO：修改偏爱明文
 	 */
-	public static final Strategy STRATEGY = Strategy.preferEncrypt;
+	public static final Strategy STRATEGY = Strategy.preferPlaintext;
 	
 	/**
 	 * 加密模式
