@@ -70,6 +70,9 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler {
 		case error:
 			LOGGER.warn("holepunch错误信息：{}-{}-{}", host, port, code);
 			break;
+		default:
+			LOGGER.info("不支持的holepunch消息类型：{}", type);
+			break;
 		}
 	}
 	

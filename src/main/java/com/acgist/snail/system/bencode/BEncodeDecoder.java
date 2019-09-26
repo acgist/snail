@@ -230,8 +230,11 @@ public class BEncodeDecoder implements Closeable {
 						map.put(key, bytes);
 						key = null;
 					}
-					break;
 				}
+				break;
+			default:
+				LOGGER.info("不支持的B编码类型：{}", indexChar);
+				break;
 			}
 		}
 		return map;
@@ -285,8 +288,11 @@ public class BEncodeDecoder implements Closeable {
 						LOGGER.error("B编码解码异常", e);
 					}
 					list.add(bytes);
-					break;
 				}
+				break;
+			default:
+				LOGGER.info("不支持的B编码类型：{}", indexChar);
+				break;
 			}
 		}
 		return list;

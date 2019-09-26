@@ -74,7 +74,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 		final byte typeValue = buffer.get();
 		final ExtensionType extensionType = ExtensionType.valueOf(typeValue);
 		if(extensionType == null) {
-			LOGGER.warn("不支持扩展类型：{}", typeValue);
+			LOGGER.warn("不支持的扩展类型：{}", typeValue);
 			return;
 		}
 		LOGGER.debug("扩展消息类型：{}", extensionType);
@@ -90,6 +90,9 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 			break;
 		case ut_holepunch:
 			holepunch(buffer);
+			break;
+		default:
+			LOGGER.info("不支持的扩展类型：{}", extensionType);
 			break;
 		}
 	}
