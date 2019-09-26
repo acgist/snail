@@ -121,7 +121,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	public void complete() {
 		if(this.complete) {
 			this.updateStatus(Status.complete);
-			GuiHandler.getInstance().notice("下载完成", name() + "已经下载完成");
+			GuiHandler.getInstance().notice("下载完成", this.name() + "已经下载完成");
 		}
 	}
 	
@@ -133,13 +133,13 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	@Override
 	public void run() {
 		if(this.taskSession.download()) { // 任务已经处于下载中直接跳过，防止多次点击暂停开始导致后面线程阻塞导致不能下载其他任务
-			LOGGER.info("任务已经在下载中，停止执行：{}", name());
+			LOGGER.info("任务已经在下载中，停止执行：{}", this.name());
 			return;
 		}
 		synchronized (this.taskSession) {
 			var entity = this.taskSession.entity();
 			if(this.taskSession.await()) {
-				LOGGER.info("开始下载：{}", name());
+				LOGGER.info("开始下载：{}", this.name());
 				this.fail = false; // 标记下载失败
 				this.deleteLock.set(false); // 设置删除锁
 				entity.setStatus(Status.download);

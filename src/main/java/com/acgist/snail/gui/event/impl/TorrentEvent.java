@@ -34,7 +34,7 @@ public class TorrentEvent extends GuiEvent {
 	/**
 	 * 种子文件选择
 	 */
-	private volatile String files;
+	private String files;
 	
 	protected TorrentEvent() {
 		super(Type.torrent, "种子文件选择事件");

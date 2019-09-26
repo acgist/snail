@@ -116,6 +116,7 @@ public class TrayMenu extends Menu {
 	 */
 	private void enableTray() {
 		MouseListener mouseListener = new MouseInputAdapter() {
+			@Override
 			public void mouseClicked(java.awt.event.MouseEvent event) {
 				if (event.getButton() == java.awt.event.MouseEvent.BUTTON1) {
 					if (MainWindow.getInstance().isShowing()) {

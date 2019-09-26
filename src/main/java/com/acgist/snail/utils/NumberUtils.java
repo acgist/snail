@@ -2,8 +2,14 @@ package com.acgist.snail.utils;
 
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Random;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.system.exception.ArgumentException;
 
@@ -15,6 +21,8 @@ import com.acgist.snail.system.exception.ArgumentException;
  */
 public class NumberUtils {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(NumberUtils.class);
+	
 	private static final int MIN_INT_INDEX = 1000;
 	private static final int MAX_INT_INDEX = 9999;
 	
@@ -93,7 +101,7 @@ public class NumberUtils {
 	 * @param buffer 二进制字符数组
 	 * @param length 二进制字符数组长度
 	 */
-	public static BigInteger decodeUnsigned(ByteBuffer buffer, int length) {
+	public static final BigInteger decodeUnsigned(ByteBuffer buffer, int length) {
 		if (length < 1 || buffer.remaining() < length) {
 			throw new ArgumentException("数组长度错误");
 		}
@@ -109,6 +117,18 @@ public class NumberUtils {
 		bytes[0] = b;
 		buffer.get(bytes, 1, newLength - 1);
 		return new BigInteger(1, bytes);
+	}
+	
+	/**
+	 * 获取随机数工具
+	 */
+	public static final Random random() {
+		try {
+			return SecureRandom.getInstanceStrong();
+		} catch (NoSuchAlgorithmException e) {
+			LOGGER.error("获取随机数异常", e);
+		}
+		return new Random();
 	}
 	
 }

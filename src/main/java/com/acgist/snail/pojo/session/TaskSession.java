@@ -66,9 +66,10 @@ public class TaskSession {
 	}
 	
 	private static final ThreadLocal<SimpleDateFormat> FORMATER = new ThreadLocal<>() {
+		@Override
 		protected SimpleDateFormat initialValue() {
 			return new SimpleDateFormat("yyyy-MM-dd HH:mm");
-		};
+		}
 	};
 	
 	private IDownloader downloader; // 下载器

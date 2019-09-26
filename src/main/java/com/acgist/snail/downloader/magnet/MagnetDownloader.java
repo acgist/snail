@@ -92,7 +92,6 @@ public class MagnetDownloader extends Downloader {
 		} catch (DownloadException e) {
 			fail("任务加载失败");
 			LOGGER.error("任务加载异常", e);
-			return;
 		}
 	}
 	

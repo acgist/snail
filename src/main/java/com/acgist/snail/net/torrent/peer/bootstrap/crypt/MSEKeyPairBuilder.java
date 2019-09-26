@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.security.SecureRandom;
+import java.util.Random;
 
 import com.acgist.snail.system.config.CryptConfig;
 import com.acgist.snail.system.config.SystemConfig;
@@ -22,10 +22,10 @@ import com.acgist.snail.utils.NumberUtils;
  */
 public class MSEKeyPairBuilder {
 
-	private final SecureRandom random;
+	private final Random random;
 
 	private MSEKeyPairBuilder() {
-		this.random = new SecureRandom();
+		this.random = NumberUtils.random();
 	}
 	
 	public static final MSEKeyPairBuilder newInstance() {
@@ -106,7 +106,7 @@ public class MSEKeyPairBuilder {
 		private final BigInteger value; // privateKey
 		private volatile MSEPublicKey publicKey;
 
-		private MSEPrivateKey(SecureRandom random) {
+		private MSEPrivateKey(Random random) {
 			this.lock = new Object();
 			this.value = buildPrivateKey(random);
 		}
@@ -114,7 +114,7 @@ public class MSEKeyPairBuilder {
 		/**
 		 * Xa Xb
 		 */
-		private BigInteger buildPrivateKey(SecureRandom random) {
+		private BigInteger buildPrivateKey(Random random) {
 			final byte[] bytes = new byte[CryptConfig.PRIVATE_KEY_LENGTH];
 			for (int index = 0; index < CryptConfig.PRIVATE_KEY_LENGTH; index++) {
 				bytes[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_SIZE);

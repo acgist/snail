@@ -15,6 +15,12 @@ import javafx.stage.Stage;
  * @since 1.0.0
  */
 public class Alerts {
+	
+	/**
+	 * 不允许实例化
+	 */
+	private Alerts() {
+	}
 
 	/**
 	 * 提示
