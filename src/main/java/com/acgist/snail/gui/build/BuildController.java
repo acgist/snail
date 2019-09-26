@@ -21,7 +21,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 import javafx.scene.input.DragEvent;
-import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.FlowPane;
 
@@ -105,8 +104,7 @@ public class BuildController extends Controller implements Initializable {
 	 */
 	private EventHandler<DragEvent> dragOverAction = (event) -> {
 		if (event.getGestureSource() != this.root) {
-			final Dragboard dragboard = event.getDragboard();
-			final String url = dragboard(dragboard);
+			final String url = dragboard(event);
 			if(ProtocolManager.getInstance().support(url)) {
 				event.acceptTransferModes(TransferMode.COPY);
 			} else {
@@ -120,8 +118,7 @@ public class BuildController extends Controller implements Initializable {
 	 * 拖入文件事件（加载）
 	 */
 	private EventHandler<DragEvent> dragDroppedAction = (event) -> {
-		final Dragboard dragboard = event.getDragboard();
-		final String url = dragboard(dragboard);
+		final String url = dragboard(event);
 		if(StringUtils.isNotEmpty(url)) {
 			setUrl(url);
 		}
