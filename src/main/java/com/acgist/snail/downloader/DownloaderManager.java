@@ -72,7 +72,10 @@ public final class DownloaderManager {
 	 * 开始下载任务
 	 */
 	public void start(TaskSession taskSession) throws DownloadException {
-		this.submit(taskSession).start();
+		final var downloader = this.submit(taskSession);
+		if(downloader != null) {
+			downloader.start();
+		}
 	}
 	
 	/**
@@ -120,9 +123,7 @@ public final class DownloaderManager {
 	public void delete(TaskSession taskSession) {
 		var entity = taskSession.entity();
 		var downloader = downloader(taskSession); // 需要定义在线程外面，防止后面remove导致空指针。
-		SystemThreadContext.submit(() -> { // 后台删除任务
-			downloader.delete();
-		});
+		SystemThreadContext.submit(() -> downloader.delete()); // 后台删除任务
 		// 界面上立即移除
 		this.downloaderMap.remove(entity.getId());
 		GuiHandler.getInstance().refreshTaskList();

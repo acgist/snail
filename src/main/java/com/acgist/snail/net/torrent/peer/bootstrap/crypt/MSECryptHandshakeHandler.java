@@ -426,7 +426,7 @@ public class MSECryptHandshakeHandler {
 	 * 填充：随机值
 	 */
 	private byte[] buildPadding(int maxLength) {
-		final Random random = new Random();
+		final Random random = NumberUtils.random();
 		final byte[] padding = new byte[random.nextInt(maxLength + 1)];
 		for (int index = 0; index < padding.length; index++) {
 			padding[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_SIZE);
@@ -438,7 +438,7 @@ public class MSECryptHandshakeHandler {
 	 * 填充：0
 	 */
     private byte[] buildZeroPadding(int maxLength) {
-        final Random random = new Random();
+        final Random random = NumberUtils.random();
         return new byte[random.nextInt(maxLength + 1)];
     }
 	

@@ -12,6 +12,12 @@ import javafx.scene.input.ClipboardContent;
 public class Clipboards {
 
 	/**
+	 * 不允许实例化
+	 */
+	private Clipboards() {
+	}
+	
+	/**
 	 * 剪切板拷贝
 	 */
 	public static final void copy(final String value) {

@@ -51,7 +51,7 @@ public class GuiHandler {
 	/**
 	 * 阻塞锁时间：365天
 	 */
-	private final int lockDays = 365;
+	private static final int LOCK_DAYS = 365;
 	
 	/**
 	 * 阻塞锁：防止程序关闭
@@ -331,7 +331,7 @@ public class GuiHandler {
 	 */
 	public void lock() {
 		synchronized (this.lock) {
-			ThreadUtils.wait(this.lock, Duration.ofDays(this.lockDays));
+			ThreadUtils.wait(this.lock, Duration.ofDays(LOCK_DAYS));
 		}
 	}
 	

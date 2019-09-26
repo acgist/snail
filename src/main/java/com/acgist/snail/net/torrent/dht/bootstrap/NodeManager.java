@@ -18,6 +18,7 @@ import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.CollectionUtils;
+import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -106,7 +107,7 @@ public class NodeManager {
 	 */
 	private byte[] buildNodeId() {
 		final byte[] nodeIds = new byte[NODE_ID_LENGTH];
-		final Random random = new Random();
+		final Random random = NumberUtils.random();
 		for (int index = 0; index < NODE_ID_LENGTH; index++) {
 			nodeIds[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_SIZE);
 		}
@@ -120,7 +121,7 @@ public class NodeManager {
 		final byte[] token = new byte[TOKEN_LENGTH];
 		final byte[] bytes = (SystemConfig.LETTER + SystemConfig.LETTER_UPPER + SystemConfig.DIGIT).getBytes();
 		final int length = bytes.length;
-		final Random random = new Random();
+		final Random random = NumberUtils.random();
 		for (int index = 0; index < TOKEN_LENGTH; index++) {
 			token[index] = bytes[random.nextInt(length)];
 		}

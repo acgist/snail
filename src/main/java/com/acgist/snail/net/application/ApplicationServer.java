@@ -21,6 +21,7 @@ public class ApplicationServer extends TcpServer<ApplicationMessageHandler> {
 		return INSTANCE;
 	}
 	
+	@Override
 	public boolean listen() {
 		return listen(SystemConfig.getServicePort());
 	}

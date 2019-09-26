@@ -84,6 +84,7 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessa
 	 * <p>关闭资源，标记关闭，不能关闭通道。</p>
 	 * <p>UDP通道只打开一个，程序结束时才能关闭。</p>
 	 */
+	@Override
 	public void close() {
 		LOGGER.debug("UDP Client关闭：{}", this.name);
 		super.close();

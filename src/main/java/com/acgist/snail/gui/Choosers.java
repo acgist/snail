@@ -19,6 +19,12 @@ import javafx.stage.Window;
 public class Choosers {
 
 	/**
+	 * 不允许实例化
+	 */
+	private Choosers() {
+	}
+	
+	/**
 	 * 选择文件
 	 * 
 	 * @param window 当前窗体：模态

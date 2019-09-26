@@ -303,8 +303,8 @@ public class MainController extends Controller implements Initializable {
 		if(!this.haveContent()) {
 			return;
 		}
-		final Optional<ButtonType> result = Alerts.build("删除确认", "删除选中文件？", AlertType.CONFIRMATION);
-		if(result.get() == ButtonType.OK) {
+		final Optional<ButtonType> optional = Alerts.build("删除确认", "删除选中文件？", AlertType.CONFIRMATION);
+		if(optional.isPresent() && optional.get() == ButtonType.OK) {
 			this.selected().forEach(session -> {
 				DownloaderManager.getInstance().delete(session);
 			});
