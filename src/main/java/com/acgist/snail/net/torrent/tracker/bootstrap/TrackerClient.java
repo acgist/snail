@@ -33,9 +33,9 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	 */
 	public static final int TIMEOUT = 4;
 	/**
-	 * 希望获取的Tracker数量
+	 * 想要获取的Peer数量
 	 */
-	public static final int WANT_TRACKER_SIZE = 50;
+	public static final int WANT_PEER_SIZE = 50;
 	
 	/**
 	 * 权重

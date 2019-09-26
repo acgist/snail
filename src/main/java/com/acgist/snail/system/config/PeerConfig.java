@@ -485,7 +485,7 @@ public class PeerConfig {
 		
 		/** 磁力链接 */
 		magnet,
-		/** 下载文件 */
+		/** BT任务 */
 		torrent;
 		
 	}

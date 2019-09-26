@@ -46,9 +46,9 @@ public abstract class SingleFileDownloader extends Downloader {
 		final var entity = this.taskSession.entity();
 		try {
 			final long size = this.taskSession.downloadSize();
-			if(size == 0L) {
+			if(size == 0L) { // 文件大小=0：不支持断点续传
 				this.output = new BufferedOutputStream(new FileOutputStream(entity.getFile()), DownloadConfig.getMemoryBufferByte());
-			} else {
+			} else { // 支持断点续传
 				this.output = new BufferedOutputStream(new FileOutputStream(entity.getFile(), true), DownloadConfig.getMemoryBufferByte());
 			}
 		} catch (FileNotFoundException e) {

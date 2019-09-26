@@ -83,7 +83,7 @@ public class WssTrackerClient extends TrackerClient {
 			.append("\"left\"").append(":").append(remain).append(",")
 			.append("\"event\"").append(":").append("\"").append(event.name()).append("\"").append(",")
 			.append("\"action\"").append(":").append("\"").append(TrackerConfig.Action.announce.name()).append("\"").append(",")
-			.append("\"numwant\"").append(":").append(WANT_TRACKER_SIZE)
+			.append("\"numwant\"").append(":").append(WANT_PEER_SIZE)
 			.append("}");
 		return buffer.toString();
 	}
