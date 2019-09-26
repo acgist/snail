@@ -30,6 +30,9 @@ public class WebSocketMessageHandler implements IMessageHandler {
 	
 	private boolean close = false;
 //	private final HttpClient client;
+	/**
+	 * WebSocket
+	 */
 	private final WebSocket socket;
 	
 	public WebSocketMessageHandler(HttpClient client, WebSocket socket) {

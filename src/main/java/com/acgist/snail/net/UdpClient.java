@@ -50,7 +50,10 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessa
 	}
 
 	/**
-	 * 打开客户端，随机端口
+	 * <p>打开客户端</p>
+	 * <p>随机端口</p>
+	 * 
+	 * @return 打开状态
 	 */
 	public abstract boolean open();
 	

@@ -41,6 +41,8 @@ public abstract class Initializer {
 	
 	/**
 	 * 初始化
+	 * 
+	 * @throws Exception 初始化异常
 	 */
 	protected abstract void init() throws Exception;
 	

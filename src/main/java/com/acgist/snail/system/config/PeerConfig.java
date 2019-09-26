@@ -50,14 +50,23 @@ public class PeerConfig {
 	 */
 	public static final byte[] HANDSHAKE_RESERVED = {0, 0, 0, 0, 0, 0, 0, 0};
 	
-	public static final byte DHT_PROTOCOL =       1 << 0; // 0x01
-//	public static final byte FAST_PROTOCOL =      1 << 2; // 0x04
-	public static final byte EXTENSION_PROTOCOL = 1 << 4; // 0x10
+	/**
+	 * DHT Protocol
+	 */
+	public static final byte DHT_PROTOCOL =       1 << 0;
+	/**
+	 * FAST Protocol
+	 */
+//	public static final byte FAST_PROTOCOL =      1 << 2;
+	/**
+	 * Extension Protocol
+	 */
+	public static final byte EXTENSION_PROTOCOL = 1 << 4;
 	
 	static {
-		HANDSHAKE_RESERVED[7] |= DHT_PROTOCOL; // DHT Protocol
-//		HANDSHAKE_RESERVED[7] |= FAST_PROTOCOL; // FAST Protocol
-		HANDSHAKE_RESERVED[5] |= EXTENSION_PROTOCOL; // Extension Protocol
+		HANDSHAKE_RESERVED[7] |= DHT_PROTOCOL;
+//		HANDSHAKE_RESERVED[7] |= FAST_PROTOCOL;
+		HANDSHAKE_RESERVED[5] |= EXTENSION_PROTOCOL;
 	}
 	
 	/**

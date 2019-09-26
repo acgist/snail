@@ -58,11 +58,15 @@ public abstract class GuiEvent {
 	
 	/**
 	 * 本地GUI
+	 * 
+	 * @param args 参数数组
 	 */
 	protected abstract void executeNative(Object ... args);
 	
 	/**
 	 * 扩展GUI
+	 * 
+	 * @param args 参数数组
 	 */
 	protected abstract void executeExtend(Object ... args);
 	

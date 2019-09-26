@@ -42,9 +42,18 @@ public class TorrentProtocol extends Protocol {
 	 */
 	public static final String TORRENT_SUFFIX = ".torrent";
 	
-	private String torrentFile; // 种子文件路径
-	private TorrentSession torrentSession; // 种子文件信息
-	private TorrentFileOperation operation = TorrentFileOperation.copy; // 种子文件操作类型
+	/**
+	 * 种子文件路径
+	 */
+	private String torrentFile;
+	/**
+	 * 种子文件信息
+	 */
+	private TorrentSession torrentSession;
+	/**
+	 * 种子文件操作类型
+	 */
+	private TorrentFileOperation operation = TorrentFileOperation.copy;
 	
 	private static final TorrentProtocol INSTANCE = new TorrentProtocol();
 	

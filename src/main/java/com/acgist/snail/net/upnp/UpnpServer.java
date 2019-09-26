@@ -13,11 +13,17 @@ public class UpnpServer extends UdpServer<UpnpAcceptHandler> {
 
 //	private static final Logger LOGGER = LoggerFactory.getLogger(UpnpServer.class);
 	
-	// TTL
+	/**
+	 * TTL
+	 */
 	private static final int UPNP_TTL = 3;
-	// UPNP端口
+	/**
+	 * UPNP端口
+	 */
 	public static final int UPNP_PORT = 1900;
-	// UPNP地址
+	/**
+	 * UPNP地址
+	 */
 	public static final String UPNP_HOST = "239.255.255.250";
 	
 	private UpnpServer() {

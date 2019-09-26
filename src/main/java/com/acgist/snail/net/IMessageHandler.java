@@ -17,6 +17,8 @@ public interface IMessageHandler {
 
 	/**
 	 * 是否可用
+	 * 
+	 * @return 可用状态
 	 */
 	boolean available();
 	
@@ -24,6 +26,8 @@ public interface IMessageHandler {
 	 * 消息发送
 	 * 
 	 * @param message 消息内容
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	void send(String message) throws NetException;
 	
@@ -33,6 +37,8 @@ public interface IMessageHandler {
 	 * @param message 消息内容
 	 * @param charset 编码格式
 	 * 
+	 * @throws NetException 网络异常
+	 * 
 	 * @since 1.1.0
 	 */
 	void send(String message, String charset) throws NetException;
@@ -41,6 +47,8 @@ public interface IMessageHandler {
 	 * 消息发送
 	 * 
 	 * @param message 消息内容
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	void send(byte[] message) throws NetException;
 	
@@ -48,6 +56,8 @@ public interface IMessageHandler {
 	 * 消息发送（所有其他消息均有这个方法发送）
 	 * 
 	 * @param buffer 消息内容
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	void send(ByteBuffer buffer) throws NetException;
 
@@ -70,6 +80,8 @@ public interface IMessageHandler {
 	 * @param charset 编码
 	 * 
 	 * @return 编码后的消息
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	default byte[] charset(String message, String charset) throws NetException {
 		if(charset == null) {

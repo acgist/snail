@@ -92,21 +92,41 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	
 	/**
 	 * 跟踪：开始
+	 * 
+	 * @param sid sid
+	 * @param torrentSession BT任务信息
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	public abstract void announce(Integer sid, TorrentSession torrentSession) throws NetException;
 	
 	/**
 	 * 完成，下载完成时推送，如果一开始时就已经完成不需要推送。
+	 * 
+	 * @param sid sid
+	 * @param torrentSession BT任务信息
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	public abstract void complete(Integer sid, TorrentSession torrentSession) throws NetException;
 	
 	/**
 	 * 停止
+	 * 
+	 * @param sid sid
+	 * @param torrentSession BT任务信息
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	public abstract void stop(Integer sid, TorrentSession torrentSession) throws NetException;
 	
 	/**
 	 * 刮檫
+	 * 
+	 * @param sid sid
+	 * @param torrentSession BT任务信息
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	public abstract void scrape(Integer sid, TorrentSession torrentSession) throws NetException;
 	

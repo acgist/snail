@@ -53,6 +53,8 @@ public abstract class TcpServer<T extends TcpMessageHandler> {
 
 	/**
 	 * 开启监听
+	 * 
+	 * @return 开启状态
 	 */
 	public abstract boolean listen();
 	

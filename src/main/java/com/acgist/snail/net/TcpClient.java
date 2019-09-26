@@ -56,6 +56,8 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 	
 	/**
 	 * 连接服务端
+	 * 
+	 * @return 连接状态
 	 */
 	public abstract boolean connect();
 	
