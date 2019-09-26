@@ -42,8 +42,8 @@ public abstract class ClientMessageHandlerAdapter<T extends IMessageHandler> imp
 	}
 	
 	@Override
-	public void send(byte[] bytes) throws NetException {
-		this.handler.send(bytes);
+	public void send(byte[] message) throws NetException {
+		this.handler.send(message);
 	}
 
 	@Override
