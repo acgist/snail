@@ -15,13 +15,14 @@ public class BCodeTest {
 	@Test
 	public void rw() throws OversizePacketException {
 		BEncodeEncoder encoder = BEncodeEncoder.newInstance();
-		encoder.build(List.of("a", "b"));
-		encoder.build(Map.of("1", "2"));
-		encoder.append("xxxx".getBytes());
+		encoder.write(List.of("a", "b"));
+		encoder.write(Map.of("1", "2"));
+		encoder.write("xxxx".getBytes());
 		String content = encoder.toString();
 //		String content = encoder
 //			.newList().put("1").put("2").flush()
 //			.newMap().put("aa", "bb").put("cc", "dd").flush()
+//			.write("xxxx".getBytes())
 //			.toString();
 		System.out.println(content);
 		BEncodeDecoder decoder = BEncodeDecoder.newInstance(content.getBytes());

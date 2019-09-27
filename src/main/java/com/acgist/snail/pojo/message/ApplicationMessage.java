@@ -109,12 +109,17 @@ public class ApplicationMessage {
 	 */
 	@Override
 	public String toString() {
-		final BEncodeEncoder encoder = BEncodeEncoder.newInstance().newMap();
-		encoder.put("type", this.type.name());
-		if(this.body != null) {
-			encoder.put("body", this.body);
+		try (final var encoder = BEncodeEncoder.newInstance()) {
+			encoder.newMap()
+				.put("type", this.type.name());
+			if(this.body != null) {
+				encoder.put("body", this.body);
+			}
+			return encoder.flush().toString();
+		} catch (Exception e) {
+			LOGGER.error("系统消息B编码异常", e);
 		}
-		return encoder.flush().toString();
+		return null;
 	}
 	
 	/**

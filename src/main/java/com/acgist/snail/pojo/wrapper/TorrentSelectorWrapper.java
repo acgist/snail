@@ -34,8 +34,8 @@ public class TorrentSelectorWrapper {
 	public static final TorrentSelectorWrapper newEncoder(List<String> list) {
 		final TorrentSelectorWrapper wrapper = new TorrentSelectorWrapper();
 		if(CollectionUtils.isNotEmpty(list)) {
-			wrapper.encoder = BEncodeEncoder.newInstance().newList();
-			wrapper.encoder.put(list);
+			wrapper.encoder = BEncodeEncoder.newInstance();
+			wrapper.encoder.newList().put(list);
 		}
 		return wrapper;
 	}
