@@ -2,7 +2,6 @@ package com.acgist.snail.system.bencode;
 
 import java.io.ByteArrayInputStream;
 import java.io.Closeable;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -75,20 +74,23 @@ public class BEncodeDecoder implements Closeable {
 	private final ByteArrayInputStream inputStream;
 	
 	private BEncodeDecoder(byte[] bytes) {
+		if(bytes == null) {
+			throw new ArgumentException("B编码内容错误");
+		}
+		if(bytes.length < 2) {
+			throw new ArgumentException("B编码内容错误");
+		}
 		this.inputStream = new ByteArrayInputStream(bytes);
 	}
 	
 	public static final BEncodeDecoder newInstance(String content) {
 		if(content == null) {
-			throw new ArgumentException("B编码解码内容错误");
+			throw new ArgumentException("B编码内容错误");
 		}
 		return new BEncodeDecoder(content.getBytes());
 	}
 	
 	public static final BEncodeDecoder newInstance(byte[] bytes) {
-		if(bytes == null) {
-			throw new ArgumentException("B编码解码内容错误");
-		}
 		return new BEncodeDecoder(bytes);
 	}
 	
@@ -104,7 +106,7 @@ public class BEncodeDecoder implements Closeable {
 	 */
 	public Type nextType() {
 		if(!more()) {
-			LOGGER.warn("B编码解码没有跟多数据");
+			LOGGER.warn("B编码没有更多数据");
 			return Type.none;
 		}
 		char type = (char) this.inputStream.read();
@@ -116,7 +118,7 @@ public class BEncodeDecoder implements Closeable {
 			this.list = l(this.inputStream);
 			return Type.list;
 		default:
-			LOGGER.warn("不支持B编码类型：{}", type);
+			LOGGER.warn("B编码不支持的类型：{}", type);
 			return Type.none;
 		}
 	}
@@ -194,7 +196,7 @@ public class BEncodeDecoder implements Closeable {
 					map.put(key, i(inputStream));
 					key = null;
 				} else {
-					LOGGER.warn("key=null跳过");
+					LOGGER.warn("B编码key=null跳过");
 				}
 				break;
 			case TYPE_L:
@@ -202,7 +204,7 @@ public class BEncodeDecoder implements Closeable {
 					map.put(key, l(inputStream));
 					key = null;
 				} else {
-					LOGGER.warn("key=null跳过");
+					LOGGER.warn("B编码key=null跳过");
 				}
 				break;
 			case TYPE_D:
@@ -210,7 +212,7 @@ public class BEncodeDecoder implements Closeable {
 					map.put(key, d(inputStream));
 					key = null;
 				} else {
-					LOGGER.warn("key=null跳过");
+					LOGGER.warn("B编码key=null跳过");
 				}
 				break;
 			case '0':
@@ -227,28 +229,19 @@ public class BEncodeDecoder implements Closeable {
 				break;
 			case SEPARATOR:
 				if(lengthBuilder.length() > 0) {
-					final int length = Integer.parseInt(lengthBuilder.toString());
-					if(length >= SystemConfig.MAX_NET_BUFFER_SIZE) {
-						throw new ArgumentException("超过最大的网络包大小：" + length);
-					}
-					lengthBuilder.setLength(0);
-					final byte[] bytes = new byte[length];
-					try {
-						inputStream.read(bytes);
-					} catch (IOException e) {
-						LOGGER.error("B编码读取异常", e);
-					}
-					final String value = new String(bytes);
+					final byte[] bytes = readBytes(lengthBuilder, inputStream);
 					if (key == null) {
-						key = value;
+						key = new String(bytes);
 					} else {
 						map.put(key, bytes);
 						key = null;
 					}
+				} else {
+					LOGGER.warn("B编码长度错误：{}", lengthBuilder);
 				}
 				break;
 			default:
-				LOGGER.debug("不支持的B编码类型：{}", indexChar);
+				LOGGER.debug("B编码不支持的类型：{}", indexChar);
 				break;
 			}
 		}
@@ -291,28 +284,46 @@ public class BEncodeDecoder implements Closeable {
 				break;
 			case SEPARATOR:
 				if(lengthBuilder.length() > 0) {
-					final int length = Integer.parseInt(lengthBuilder.toString());
-					if(length >= SystemConfig.MAX_NET_BUFFER_SIZE) {
-						throw new ArgumentException("超过最大的网络包大小：" + length);
-					}
-					lengthBuilder.setLength(0);
-					final byte[] bytes = new byte[length];
-					try {
-						inputStream.read(bytes);
-					} catch (IOException e) {
-						LOGGER.error("B编码解码异常", e);
-					}
+					final byte[] bytes = readBytes(lengthBuilder, inputStream);
 					list.add(bytes);
+				} else {
+					LOGGER.warn("B编码长度错误：{}", lengthBuilder);
 				}
 				break;
 			default:
-				LOGGER.debug("不支持的B编码类型：{}", indexChar);
+				LOGGER.debug("B编码不支持的类型：{}", indexChar);
 				break;
 			}
 		}
 		return list;
 	}
 
+	/**
+	 * 读取符合长度的字符数组
+	 * 
+	 * @param lengthBuilder 长度字符串，获取长度后清空。
+	 * @param inputStream 字符流
+	 * 
+	 * @return 字符数组
+	 */
+	private static final byte[] readBytes(StringBuilder lengthBuilder, ByteArrayInputStream inputStream) {
+		final int length = Integer.parseInt(lengthBuilder.toString());
+		if(length >= SystemConfig.MAX_NET_BUFFER_SIZE) {
+			throw new ArgumentException("超过最大的网络包大小：" + length);
+		}
+		lengthBuilder.setLength(0);
+		final byte[] bytes = new byte[length];
+		try {
+			final int readLength = inputStream.read(bytes);
+			if(readLength != length) {
+				LOGGER.warn("B编码读取长度和实际长度不符：{}-{}", length, readLength);
+			}
+		} catch (Exception e) {
+			LOGGER.error("B编码读取异常", e);
+		}
+		return bytes;
+	}
+	
 	public Byte getByte(String key) {
 		return getByte(this.map, key);
 	}

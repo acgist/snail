@@ -133,11 +133,12 @@ public class Request extends BaseMessage {
 	}
 	
 	/**
-	 * 输出Node
+	 * <p>节点序列化</p>
+	 * <p>如果找不到节点，返回空字符数组。</p>
 	 */
-	protected static final byte[] writeNode(List<NodeSession> nodes) {
+	protected static final byte[] serializeNodes(List<NodeSession> nodes) {
 		if(CollectionUtils.isEmpty(nodes)) {
-			return null;
+			return new byte[0];
 		}
 		final ByteBuffer buffer = ByteBuffer.allocate(26 * nodes.size());
 		for (NodeSession node : nodes) {

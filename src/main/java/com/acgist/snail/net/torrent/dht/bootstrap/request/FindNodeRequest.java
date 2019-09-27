@@ -36,7 +36,7 @@ public class FindNodeRequest extends Request {
 		final FindNodeResponse response = FindNodeResponse.newInstance(request);
 		final byte[] target = request.getBytes(DhtConfig.KEY_TARGET);
 		final var nodes = NodeManager.getInstance().findNode(target);
-		response.put(DhtConfig.KEY_NODES, writeNode(nodes));
+		response.put(DhtConfig.KEY_NODES, serializeNodes(nodes));
 		return response;
 	}
 	

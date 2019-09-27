@@ -55,7 +55,7 @@ public class GetPeersResponse extends Response {
 	 */
 	public List<NodeSession> getNodes() {
 		final byte[] bytes = this.getBytes(DhtConfig.KEY_NODES);
-		return readNodes(bytes);
+		return deserializeNodes(bytes);
 	}
 	
 	/**

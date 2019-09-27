@@ -109,29 +109,29 @@ public class Response extends BaseMessage {
 	}
 
 	/**
-	 * 读取Node列表
+	 * 节点反序列化
 	 */
-	protected static final List<NodeSession> readNodes(byte[] bytes) {
+	protected static final List<NodeSession> deserializeNodes(byte[] bytes) {
 		if(bytes == null) {
 			return List.of();
 		}
 		final ByteBuffer buffer = ByteBuffer.wrap(bytes);
 		final List<NodeSession> list = new ArrayList<>();
 		while(true) {
-			final var session = readNode(buffer);
+			final var session = deserializeNode(buffer);
 			if(session == null) {
 				break;
 			}
 			list.add(session);
 		}
-		NodeManager.getInstance().sortNodes();
+		NodeManager.getInstance().sortNodes(); // 排序
 		return list;
 	}
 	
 	/**
-	 * 读取Node，同时添加列表
+	 * 节点反序列化，同时添加列表。
 	 */
-	protected static final NodeSession readNode(ByteBuffer buffer) {
+	protected static final NodeSession deserializeNode(ByteBuffer buffer) {
 		if(buffer.hasRemaining()) {
 			final byte[] nodeId = new byte[NodeManager.NODE_ID_LENGTH];
 			buffer.get(nodeId);

@@ -23,6 +23,7 @@ public class DhtServerTest {
 	
 	@Test
 	public void findNode() {
+//		NodeManager.getInstance().newNodeSession("12345678901234567890".getBytes(), "1234", 1234);
 		DhtClient client = DhtClient.newInstance(HOST, PORT);
 		final String target = "5E5324691812CAA0032EA76E813CCFC4D04E7E9E";
 		client.findNode(target);
