@@ -8,11 +8,12 @@ import org.junit.Test;
 
 import com.acgist.snail.system.bencode.BEncodeDecoder;
 import com.acgist.snail.system.bencode.BEncodeEncoder;
+import com.acgist.snail.system.exception.OversizePacketException;
 
 public class BCodeTest {
 
 	@Test
-	public void rw() {
+	public void rw() throws OversizePacketException {
 		BEncodeEncoder encoder = BEncodeEncoder.newInstance();
 		encoder.build(List.of("a", "b"));
 		encoder.build(Map.of("1", "2"));
@@ -37,7 +38,7 @@ public class BCodeTest {
 	}
 	
 	@Test
-	public void nullRW() {
+	public void nullRW() throws OversizePacketException {
 		Map<String, Object> map = new LinkedHashMap<>();
 		map.put("a", 1);
 		map.put("b", null);
@@ -55,7 +56,7 @@ public class BCodeTest {
 	}
 	
 	@Test
-	public void error() {
+	public void error() throws OversizePacketException {
 		var decoder = BEncodeDecoder.newInstance("d8:completei6e10:downloadedi17e10:incompletei0e8:intervali924e12:min intervali462e5:peers36:����m�Wj���LmA�s;I�ʆL��TTz�e");
 		var map = decoder.nextMap();
 		System.out.println(map);

@@ -1,6 +1,5 @@
 package com.acgist.snail.gui.event.impl;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -10,7 +9,7 @@ import com.acgist.snail.gui.event.GuiEvent;
 import com.acgist.snail.gui.torrent.TorrentWindow;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.pojo.session.TaskSession;
-import com.acgist.snail.protocol.torrent.bean.Torrent;
+import com.acgist.snail.protocol.torrent.TorrentProtocol;
 import com.acgist.snail.protocol.torrent.bean.TorrentFile;
 import com.acgist.snail.protocol.torrent.bean.TorrentInfo;
 import com.acgist.snail.system.bencode.BEncodeDecoder;
@@ -19,8 +18,8 @@ import com.acgist.snail.utils.StringUtils;
 import javafx.application.Platform;
 
 /**
- * <p>GUI种子文件选择事件</p>
- * <p>不能抛出异常</p>
+ * <p>种子文件选择事件</p>
+ * <p>不能抛出异常（抛出异常后{@link TorrentProtocol}创建下载时不能正常的删除临时文件）</p>
  * 
  * @author acgist
  * @since 1.1.1
@@ -76,19 +75,19 @@ public class TorrentEvent extends GuiEvent {
 	}
 	
 	private void executeExtendEx(TaskSession taskSession) {
-		try {
-			if(StringUtils.isEmpty(this.files)) {
-				return;
-			}
-			final var entity = taskSession.entity();
-			// 选择文件
-			final List<String> files = BEncodeDecoder.newInstance(this.files).nextList().stream()
-				.map(object -> new String((byte[]) object))
+		if(StringUtils.isEmpty(this.files)) {
+			return;
+		}
+		try (final var decoder = BEncodeDecoder.newInstance(this.files)) {
+			// 选择文件列表
+			final var files = decoder.nextList().stream()
+				.map(object -> BEncodeDecoder.getString(object))
 				.collect(Collectors.toList());
-			final Torrent torrent = TorrentManager.getInstance().newTorrentSession(entity.getTorrent()).torrent();
+			final var entity = taskSession.entity();
+			final var torrent = TorrentManager.getInstance().newTorrentSession(entity.getTorrent()).torrent();
 			// 选择文件大小
 			final long size = torrent.getInfo().files().stream()
-				.filter(file -> !file.path().startsWith(TorrentInfo.HIDE_FILE_PREFIX))
+				.filter(file -> !file.path().startsWith(TorrentInfo.PADDING_FILE_PREFIX))
 				.filter(file -> files.contains(file.path()))
 				.collect(Collectors.summingLong(TorrentFile::getLength));
 			entity.setSize(size);

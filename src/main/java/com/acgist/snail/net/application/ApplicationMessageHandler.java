@@ -27,7 +27,7 @@ import com.acgist.snail.utils.BeanUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * 系统消息
+ * 系统消息代理
  * 
  * @author acgist
  * @since 1.0.0
@@ -51,12 +51,12 @@ public class ApplicationMessageHandler extends TcpMessageHandler implements IMes
 	public void onMessage(String message) {
 		message = message.trim();
 		if(StringUtils.isEmpty(message)) {
-			LOGGER.warn("读取系统消息内容为空");
+			LOGGER.warn("系统消息内容为空");
 			return;
 		}
 		final ApplicationMessage applicationMessage = ApplicationMessage.valueOf(message);
 		if(applicationMessage == null) {
-			LOGGER.warn("读取系统消息格式错误：{}", message);
+			LOGGER.warn("系统消息格式错误：{}", message);
 			return;
 		}
 		LOGGER.debug("处理系统消息：{}", message);
@@ -106,7 +106,7 @@ public class ApplicationMessageHandler extends TcpMessageHandler implements IMes
 			onResponse(message);
 			break;
 		default:
-			LOGGER.warn("未适配的消息类型：{}", message.getType());
+			LOGGER.warn("未适配的系统消息类型：{}", message.getType());
 			break;
 		}
 	}
@@ -163,9 +163,12 @@ public class ApplicationMessageHandler extends TcpMessageHandler implements IMes
 	 */
 	private void onTaskNew(ApplicationMessage message) {
 		final String body = message.getBody();
-		try {
-			final var decoder = BEncodeDecoder.newInstance(body);
+		try (final var decoder = BEncodeDecoder.newInstance(body)) {
 			decoder.nextMap();
+			if(decoder.isEmpty()) { // 空数据返回失败
+				send(ApplicationMessage.response(ApplicationMessage.FAIL));
+				return;
+			}
 			final String url = decoder.getString("url");
 			final String files = decoder.getString("files");
 			TorrentEvent.getInstance().files(files); // 设置选择文件

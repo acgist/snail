@@ -6,10 +6,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.acgist.snail.system.bencode.BEncodeDecoder;
-import com.acgist.snail.utils.StringUtils;
 
 /**
- * 文件列表信息：单文件时files为空
+ * <p>文件列表信息</p>
+ * <p>单文件时files为空</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -17,37 +17,37 @@ import com.acgist.snail.utils.StringUtils;
 public class TorrentInfo {
 
 	/**
-	 * 每个Piece的HASH字节数
+	 * 每个Piece的hash字节数
 	 */
 	public static final int PIECE_HASH_LENGTH = 20;
-	
 	/**
 	 * 填充文件前缀（不需要下载和显示）
 	 */
-	public static final String HIDE_FILE_PREFIX = "_____padding_file";
+	public static final String PADDING_FILE_PREFIX = "_____padding_file";
 	
 	/**
-	 * 名称
+	 * 名称（单文件）
 	 */
 	private String name;
 	/**
-	 * 名称UTF8
+	 * 名称UTF8（单文件）
 	 */
 	private String nameUtf8;
 	/**
-	 * 大小
+	 * 文件大小（单文件）
 	 */
 	private Long length;
 	/**
-	 * ed2k
+	 * ed2k（单文件）
 	 */
 	private byte[] ed2k;
 	/**
-	 * 文件hash
+	 * filehash（单文件）
 	 */
 	private byte[] filehash;
 	/**
-	 * 特征信息：每个piece的hash值占用20个字节
+	 * <p>特征信息</p>
+	 * <p>所有块的hash合并</p>
 	 */
 	private byte[] pieces;
 	/**
@@ -71,7 +71,7 @@ public class TorrentInfo {
 	 */
 	private String publisherUrlUtf8;
 	/**
-	 * 多文件时存在
+	 * 文件列表（多文件）
 	 */
 	private List<TorrentFile> files;
 
@@ -96,27 +96,18 @@ public class TorrentInfo {
 		info.setPublisherUrlUtf8(BEncodeDecoder.getString(map, "publisher-url.utf-8"));
 		final List<Object> files = BEncodeDecoder.getList(map, "files");
 		if(files != null) {
-			info.setFiles(
-				files.stream()
-				.map(value -> {
-					return (Map<?, ?>) value;
-				})
-				.map(value -> {
-					return TorrentFile.valueOf(value);
-				}).collect(Collectors.toList())
-			);
+			info.setFiles(files(files));
 		} else {
 			info.setFiles(new ArrayList<>());
 		}
 		return info;
 	}
 	
-	public String ed2kHex() {
-		return StringUtils.hex(this.ed2k);
-	}
-	
-	public String filehashHex() {
-		return StringUtils.hex(this.filehash);
+	/**
+	 * 获取Piece数量
+	 */
+	public Integer pieceSize() {
+		return this.pieces.length / PIECE_HASH_LENGTH;
 	}
 	
 	/**
@@ -141,10 +132,18 @@ public class TorrentInfo {
 	}
 	
 	/**
-	 * 获取Piece数量
+	 * <p>读取文件列表</p>
+	 * <p>每个元素都是一个map</p>
 	 */
-	public Integer pieceSize() {
-		return this.pieces.length / PIECE_HASH_LENGTH;
+	private static final List<TorrentFile> files(List<Object> files) {
+		return files.stream()
+			.map(value -> {
+				return (Map<?, ?>) value;
+			})
+			.map(value -> {
+				return TorrentFile.valueOf(value);
+			})
+			.collect(Collectors.toList());
 	}
 	
 	public String getName() {

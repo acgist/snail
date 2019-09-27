@@ -16,6 +16,7 @@ import com.acgist.snail.system.bencode.BEncodeEncoder;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.PeerConfig.ExtensionType;
 import com.acgist.snail.system.config.PeerConfig.MetadataType;
+import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -37,9 +38,17 @@ public class MetadataMessageHandler implements IExtensionMessageHandler {
 	 * 数据交换每块大小：16KB
 	 */
 	public static final int INFO_SLICE_SIZE = 16 * 1024;
-	
+	/**
+	 * piece index：piece索引
+	 */
 	private static final String ARG_PIECE = "piece";
+	/**
+	 * {@linkplain MetadataType 消息类型}
+	 */
 	private static final String ARG_MSG_TYPE = "msg_type";
+	/**
+	 * InfoHash数据大小
+	 */
 	private static final String ARG_TOTAL_SIZE = "total_size";
 	
 	private final InfoHash infoHash;
@@ -63,32 +72,35 @@ public class MetadataMessageHandler implements IExtensionMessageHandler {
 	public void onMessage(ByteBuffer buffer) {
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
-		final BEncodeDecoder decoder = BEncodeDecoder.newInstance(bytes);
-		final Map<String, Object> map = decoder.nextMap();
-		if(map == null) {
-			LOGGER.warn("metadata消息格式错误：{}", decoder.oddString());
-			return;
-		}
-		final Byte typeValue = decoder.getByte(ARG_MSG_TYPE);
-		final MetadataType type = PeerConfig.MetadataType.valueOf(typeValue);
-		if(type == null) {
-			LOGGER.warn("不支持的metadata消息类型：{}", typeValue);
-			return;
-		}
-		LOGGER.debug("metadata消息类型：{}", type);
-		switch (type) {
-		case request:
-			request(decoder);
-			break;
-		case data:
-			data(decoder);
-			break;
-		case reject:
-			reject(decoder);
-			break;
-		default:
-			LOGGER.info("不支持的metadata消息类型：{}", type);
-			break;
+		try (final var decoder = BEncodeDecoder.newInstance(bytes)) {
+			decoder.nextMap();
+			if(decoder.isEmpty()) {
+				LOGGER.warn("metadata消息格式错误：{}", decoder.oddString());
+				return;
+			}
+			final Byte typeValue = decoder.getByte(ARG_MSG_TYPE);
+			final MetadataType type = PeerConfig.MetadataType.valueOf(typeValue);
+			if(type == null) {
+				LOGGER.warn("不支持的metadata消息类型：{}", typeValue);
+				return;
+			}
+			LOGGER.debug("metadata消息类型：{}", type);
+			switch (type) {
+			case request:
+				request(decoder);
+				break;
+			case data:
+				data(decoder);
+				break;
+			case reject:
+				reject(decoder);
+				break;
+			default:
+				LOGGER.info("不支持的metadata消息类型：{}", type);
+				break;
+			}
+		} catch (NetException e) {
+			LOGGER.error("metadata消息处理异常", e);
 		}
 	}
 	
@@ -121,7 +133,7 @@ public class MetadataMessageHandler implements IExtensionMessageHandler {
 	 */
 	public void data(int piece) {
 		LOGGER.debug("发送metadata消息-data");
-		final byte[] bytes = infoHash.info();
+		final byte[] bytes = this.infoHash.info(); // infoHash数据
 		if(bytes == null) {
 			reject();
 			return;
@@ -136,7 +148,7 @@ public class MetadataMessageHandler implements IExtensionMessageHandler {
 		if(end >= bytes.length) {
 			length = bytes.length - begin;
 		}
-		final byte[] x = new byte[length];
+		final byte[] x = new byte[length]; // infoHash块数据
 		System.arraycopy(bytes, begin, x, 0, length);
 		final var data = buildMessage(PeerConfig.MetadataType.data, piece);
 		data.put(ARG_TOTAL_SIZE, this.infoHash.size());
@@ -153,7 +165,7 @@ public class MetadataMessageHandler implements IExtensionMessageHandler {
 		LOGGER.debug("收到metadata消息-data");
 		byte[] bytes = this.infoHash.info();
 		final int piece = decoder.getInteger(ARG_PIECE);
-		// 设置种子info
+		// 设置种子infoInfo
 		if(bytes == null) {
 			final int totalSize = decoder.getInteger(ARG_TOTAL_SIZE);
 			bytes = new byte[totalSize];
@@ -168,10 +180,11 @@ public class MetadataMessageHandler implements IExtensionMessageHandler {
 		if(end >= bytes.length) {
 			length = bytes.length - begin;
 		}
-		final byte[] x = decoder.oddBytes();
+		final byte[] x = decoder.oddBytes(); // 获取剩余数据作为块数据
 		System.arraycopy(x, 0, bytes, begin, length);
 		final byte[] sourceHash = this.infoHash.infoHash();
 		final byte[] targetHash = StringUtils.sha1(bytes);
+		// 判断hash值是否相等，如果相等表示已经下载完成。完成后保存种子文件。
 		if(ArrayUtils.equals(sourceHash, targetHash)) {
 			this.torrentSession.saveTorrentFile();
 		}

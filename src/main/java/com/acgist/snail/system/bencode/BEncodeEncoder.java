@@ -230,12 +230,14 @@ public class BEncodeEncoder implements Closeable {
 	}
 
 	/**
-	 * 关闭流，ByteArrayInputStream和ByteArrayOutputStream不需要关闭流。
+	 * 关闭流，ByteArrayInputStream和ByteArrayOutputStream可以不关闭流。
 	 */
 	@Override
 	public void close() {
 		try {
-			this.outputStream.close();
+			if(this.outputStream != null) {
+				this.outputStream.close();
+			}
 		} catch (Exception e) {
 			LOGGER.error("B编码字符流关闭异常", e);
 		}

@@ -16,6 +16,7 @@ import com.acgist.snail.protocol.torrent.bean.Torrent;
 import com.acgist.snail.system.bencode.BEncodeDecoder;
 import com.acgist.snail.system.bencode.BEncodeEncoder;
 import com.acgist.snail.system.exception.DownloadException;
+import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -44,13 +45,6 @@ public class TorrentManager {
 	}
 	
 	/**
-	 * 通过InfoHashHex获取TorrentSession
-	 */
-	public TorrentSession torrentSession(String infoHashHex) {
-		return this.torrentSessions.get(infoHashHex);
-	}
-	
-	/**
 	 * 所有的InfoHash
 	 */
 	public List<InfoHash> allInfoHash() {
@@ -59,6 +53,13 @@ public class TorrentManager {
 				.map(session -> session.infoHash())
 				.collect(Collectors.toList());
 		}
+	}
+	
+	/**
+	 * 通过InfoHashHex获取TorrentSession
+	 */
+	public TorrentSession torrentSession(String infoHashHex) {
+		return this.torrentSessions.get(infoHashHex);
 	}
 	
 	/**
@@ -131,19 +132,19 @@ public class TorrentManager {
 		if(!file.exists()) {
 			throw new DownloadException("种子文件不存在");
 		}
-		try {
-			final var bytes = Files.readAllBytes(Paths.get(file.getPath()));
-			final BEncodeDecoder decoder = BEncodeDecoder.newInstance(bytes);
-			final Map<String, Object> map = decoder.nextMap();
-			if(map == null) {
+		try (final var decoder = BEncodeDecoder.newInstance(Files.readAllBytes(Paths.get(file.getPath())))) {
+			decoder.nextMap();
+			if(decoder.isEmpty()) {
 				throw new DownloadException("种子文件格式错误");
 			}
-			final Torrent torrent = Torrent.valueOf(map);
-			final Map<String, Object> info = BEncodeDecoder.getMap(map, "info");
-			final InfoHash infoHash = InfoHash.newInstance(BEncodeEncoder.encodeMap(info));
+			final var torrent = Torrent.valueOf(decoder);
+			final var info = decoder.getMap("info");
+			final var infoHash = InfoHash.newInstance(BEncodeEncoder.encodeMap(info));
 			torrent.setInfoHash(infoHash);
 			return torrent;
-		} catch (IOException e) {
+		} catch (DownloadException e) {
+			throw e;
+		} catch (NetException | IOException e) {
 			throw new DownloadException("种子文件读取失败", e);
 		}
 	}

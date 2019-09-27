@@ -53,7 +53,7 @@ public class Torrent {
 	/**
 	 * DHT节点
 	 */
-	private Map<String, Long> nodes;
+	private Map<String, Integer> nodes;
 	/**
 	 * infoHash
 	 */
@@ -62,57 +62,27 @@ public class Torrent {
 	protected Torrent() {
 	}
 	
-	public static final Torrent valueOf(Map<String, Object> map) {
+	public static final Torrent valueOf(BEncodeDecoder decoder) {
 		final Torrent torrent = new Torrent();
-		torrent.setComment(BEncodeDecoder.getString(map, "comment"));
-		torrent.setCommentUtf8(BEncodeDecoder.getString(map, "comment.utf-8"));
-		torrent.setEncoding(BEncodeDecoder.getString(map, "encoding"));
-		torrent.setCreatedBy(BEncodeDecoder.getString(map, "created by"));
-		torrent.setAnnounce(BEncodeDecoder.getString(map, "announce"));
-		torrent.setCreationDate(BEncodeDecoder.getLong(map, "creation date"));
-		final List<Object> announceList = BEncodeDecoder.getList(map, "announce-list");
+		torrent.setComment(decoder.getString("comment"));
+		torrent.setCommentUtf8(decoder.getString("comment.utf-8"));
+		torrent.setEncoding(decoder.getString("encoding"));
+		torrent.setCreatedBy(decoder.getString("created by"));
+		torrent.setAnnounce(decoder.getString("announce"));
+		torrent.setCreationDate(decoder.getLong("creation date"));
+		final List<Object> announceList = decoder.getList("announce-list");
 		if(announceList != null) {
-			torrent.setAnnounceList(
-				announceList.stream()
-				.flatMap(value -> {
-					final List<?> values = (List<?>) value;
-					return values.stream();
-				})
-				.map(value -> BEncodeDecoder.getString(value))
-				.collect(Collectors.toList())
-			);
+			torrent.setAnnounceList(announceList(announceList));
 		} else {
 			torrent.setAnnounceList(new ArrayList<>(0));
 		}
-		final List<Object> nodes = BEncodeDecoder.getList(map, "nodes");
+		final List<Object> nodes = decoder.getList("nodes");
 		if(nodes != null) {
-			torrent.setNodes(
-				nodes.stream()
-				.map(value -> {
-					// IP、Port
-					final List<?> values = (List<?>) value;
-					if(values.size() == 2) {
-						final String host = BEncodeDecoder.getString(values.get(0));
-						final Long port = (Long) values.get(1);
-						if(StringUtils.isNumeric(host)) {
-							return Map.entry(
-								NetUtils.decodeIntToIp(Integer.parseInt(host)),
-								Long.valueOf(NetUtils.decodePort(port.shortValue()))
-							);
-						} else {
-							return Map.entry(host, port);
-						}
-					} else {
-						return null;
-					}
-				})
-				.filter(value -> value != null)
-				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new))
-			);
+			torrent.setNodes(nodes(nodes));
 		} else {
 			torrent.setNodes(new LinkedHashMap<>());
 		}
-		final Map<String, Object> info = BEncodeDecoder.getMap(map, "info");
+		final Map<String, Object> info = decoder.getMap("info");
 		if(info != null) {
 			final TorrentInfo torrentInfo = TorrentInfo.valueOf(info);
 			torrent.setInfo(torrentInfo);
@@ -131,6 +101,47 @@ public class Torrent {
 		return name;
 	}
 	
+	/**
+	 * <p>读取tracker服务器列表</p>
+	 * <p>每个元素都是一个list，每个list里面有一个tracker服务器地址。</p>
+	 */
+	private static final List<String> announceList(List<Object> announceList) {
+		return announceList.stream()
+			.flatMap(value -> {
+				final List<?> values = (List<?>) value;
+				return values.stream();
+			})
+			.map(value -> BEncodeDecoder.getString(value))
+			.collect(Collectors.toList());
+	}
+	
+	/**
+	 * <p>读取DHT节点</p>
+	 * <p>每个元素都是一个list，每个list里面包含节点的IP和端口。</p>
+	 */
+	private static final Map<String, Integer> nodes(List<Object> nodes) {
+		return nodes.stream()
+			.map(value -> {
+				final List<?> values = (List<?>) value;
+				if(values.size() == 2) {
+					final String host = BEncodeDecoder.getString(values.get(0));
+					final Long port = (Long) values.get(1);
+					if(StringUtils.isNumeric(host)) { // 紧凑型
+						return Map.entry(
+							NetUtils.decodeIntToIp(Integer.parseInt(host)),
+							NetUtils.decodePort(port.shortValue())
+						);
+					} else { // 字符串
+						return Map.entry(host, port.intValue());
+					}
+				} else {
+					return null;
+				}
+			})
+			.filter(value -> value != null)
+			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new));
+	}
+
 	public String getComment() {
 		return comment;
 	}
@@ -195,11 +206,11 @@ public class Torrent {
 		this.announceList = announceList;
 	}
 
-	public Map<String, Long> getNodes() {
+	public Map<String, Integer> getNodes() {
 		return nodes;
 	}
 
-	public void setNodes(Map<String, Long> nodes) {
+	public void setNodes(Map<String, Integer> nodes) {
 		this.nodes = nodes;
 	}
 

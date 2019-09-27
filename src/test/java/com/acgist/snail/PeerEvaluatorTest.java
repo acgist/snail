@@ -25,7 +25,7 @@ public class PeerEvaluatorTest {
 				return a.getValue().compareTo(b.getValue()); // 评分
 			})
 			.forEach(entry -> {
-				System.out.print(String.format("%05d", entry.getKey()) + "=" + entry.getValue());
+				System.out.print(String.format("%05d", entry.getKey()) + "=" + String.format("%05d", entry.getValue()));
 				System.out.print("-");
 				System.out.println(NetUtils.decodeLongToIp(1L * (2 << 15) * entry.getKey()));
 			});

@@ -46,16 +46,16 @@ public class HttpAnnounceMessage {
 	 */
 	private Map<String, Integer> peers;
 
-	public static final HttpAnnounceMessage valueOf(Map<String, Object> map) {
+	public static final HttpAnnounceMessage valueOf(BEncodeDecoder decoder) {
 		final HttpAnnounceMessage message = new HttpAnnounceMessage();
-		message.setTrackerId(BEncodeDecoder.getString(map, "tracker id"));
-		message.setFailureReason(BEncodeDecoder.getString(map, "failure reason"));
-		message.setWarngingMessage(BEncodeDecoder.getString(map, "warnging message"));
-		message.setInterval(BEncodeDecoder.getInteger(map, "interval"));
-		message.setMinInterval(BEncodeDecoder.getInteger(map, "min interval"));
-		message.setComplete(BEncodeDecoder.getInteger(map, "complete"));
-		message.setIncomplete(BEncodeDecoder.getInteger(map, "incomplete"));
-		message.setPeers(PeerUtils.read(BEncodeDecoder.getBytes(map, "peers")));
+		message.setTrackerId(decoder.getString("tracker id"));
+		message.setFailureReason(decoder.getString("failure reason"));
+		message.setWarngingMessage(decoder.getString("warnging message"));
+		message.setInterval(decoder.getInteger("interval"));
+		message.setMinInterval(decoder.getInteger("min interval"));
+		message.setComplete(decoder.getInteger("complete"));
+		message.setIncomplete(decoder.getInteger("incomplete"));
+		message.setPeers(PeerUtils.read(decoder.getBytes("peers")));
 		return message;
 	}
 	

@@ -6,14 +6,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.acgist.snail.net.torrent.dht.bootstrap.NodeManager;
 import com.acgist.snail.protocol.torrent.TorrentProtocol;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.bencode.BEncodeDecoder;
 import com.acgist.snail.system.bencode.BEncodeEncoder;
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.DateUtils;
 import com.acgist.snail.utils.FileUtils;
+import com.acgist.snail.utils.NetUtils;
 
 /**
  * 种子文件创建
@@ -23,7 +29,15 @@ import com.acgist.snail.utils.FileUtils;
  */
 public class TorrentBuilder {
 	
+	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentBuilder.class);
+	
+	/**
+	 * InfoHash
+	 */
 	private final InfoHash infoHash;
+	/**
+	 * Tracker服务器
+	 */
 	private final List<String> trackers;
 	
 	private TorrentBuilder(InfoHash infoHash, List<String> trackers) {
@@ -48,23 +62,23 @@ public class TorrentBuilder {
 	}
 
 	/**
-	 * 获取种子信息
+	 * 种子信息
 	 */
 	private Map<String, Object> fileData() {
 		final Map<String, Object> data = new LinkedHashMap<>();
-		data.put("comment", "ACGIST Snail通过磁力链接下载创建");
-		data.put("comment.utf-8", "ACGIST Snail通过磁力链接下载创建");
+		data.put("comment", SystemConfig.getSource());
+		data.put("comment.utf-8", SystemConfig.getSource());
 		data.put("encoding", SystemConfig.DEFAULT_CHARSET);
 		data.put("created by", SystemConfig.getNameEnAndVersion());
 		data.put("creation date", DateUtils.unixTimestamp());
 		this.announce(data);
 		this.infoHash(data);
-//		this.node(data);
+		this.node(data);
 		return data;
 	}
 
 	/**
-	 * 设置announce
+	 * 设置announce url
 	 */
 	private void announce(Map<String, Object> data) {
 		if(CollectionUtils.isEmpty(this.trackers)) {
@@ -74,33 +88,44 @@ public class TorrentBuilder {
 			data.put("announce", this.trackers.get(0));
 		}
 		if(this.trackers.size() > 1) {
-			// 每个tracker映射为一个list
-			data.put("announce-list", this.trackers.subList(1, this.trackers.size()).stream()
-				.map(value -> List.of(value))
-				.collect(Collectors.toList()));
+			data.put(
+				"announce-list",
+				this.trackers.subList(1, this.trackers.size()).stream()
+					.map(value -> List.of(value))
+					.collect(Collectors.toList())
+			);
 		}
 	}
 	
 	/**
-	 * 设置infoHash
+	 * 设置InfoHash
 	 */
 	private void infoHash(Map<String, Object> data) {
-		final BEncodeDecoder decoder = BEncodeDecoder.newInstance(this.infoHash.info());
-		data.put("info", decoder.nextMap());
+		try (final var decoder = BEncodeDecoder.newInstance(this.infoHash.info())) {
+			data.put("info", decoder.nextMap());
+		} catch (NetException e) {
+			LOGGER.error("InfoHash设置异常", e);
+		}
 	}
 
-//	/**
-//	 * 设置DHT节点
-//	 */
-//	private void node(Map<String, Object> data) {
-//		final var nodes = NodeManager.getInstance().findNode(infoHash.infoHash());
-//		if(CollectionUtils.isNotEmpty(nodes)) {
-//			data.put("nodes", nodes);
-//		}
-//	}
+	/**
+	 * 设置DHT节点
+	 */
+	private void node(Map<String, Object> data) {
+		final var sessions = NodeManager.getInstance().findNode(this.infoHash.infoHash());
+		if(CollectionUtils.isNotEmpty(sessions)) {
+			final var nodes = sessions.stream()
+				.filter(session -> NetUtils.verifyIp(session.getHost()))
+				.map(session -> List.of(session.getHost(), session.getPort()))
+				.collect(Collectors.toList());
+			if(CollectionUtils.isNotEmpty(nodes)) {
+				data.put("nodes", nodes);
+			}
+		}
+	}
 	
 	/**
-	 * 获取文件名称
+	 * 文件名称
 	 */
 	private String fileName() {
 		return this.infoHash.infoHashHex() + TorrentProtocol.TORRENT_SUFFIX;
@@ -108,12 +133,14 @@ public class TorrentBuilder {
 
 	/**
 	 * 保存种子文件
+	 * 
 	 * @param filePath 文件路径
 	 * @param data 数据
 	 */
 	private void createFile(String filePath, Map<String, Object> data) {
 		final File file = new File(filePath);
-		if(file.exists()) { // 文件已存在
+		// 文件已存在时不创建
+		if(file.exists()) {
 			return;
 		}
 		final byte[] bytes = BEncodeEncoder.encodeMap(data);

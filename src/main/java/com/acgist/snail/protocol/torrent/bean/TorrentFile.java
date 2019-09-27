@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import com.acgist.snail.system.bencode.BEncodeDecoder;
 import com.acgist.snail.utils.CollectionUtils;
-import com.acgist.snail.utils.StringUtils;
 
 /**
  * 下载文件信息
@@ -17,14 +16,17 @@ import com.acgist.snail.utils.StringUtils;
  */
 public class TorrentFile {
 
+	/**
+	 * 文件路径拼接时分隔符
+	 */
 	public static final String SEPARATOR = "/";
 	
 	/**
-	 * 是否选择下载
+	 * 是否选中下载
 	 */
 	private boolean selected = false;
 	/**
-	 * 大小
+	 * 文件大小
 	 */
 	private Long length;
 	/**
@@ -32,7 +34,7 @@ public class TorrentFile {
 	 */
 	private byte[] ed2k;
 	/**
-	 * 文件hash
+	 * filehash
 	 */
 	private byte[] filehash;
 	/**
@@ -57,40 +59,27 @@ public class TorrentFile {
 		file.setFilehash(BEncodeDecoder.getBytes(map, "filehash"));
 		final List<Object> path = BEncodeDecoder.getList(map, "path");
 		if(path != null) {
-			file.setPath(
-				path.stream()
-				.map(value -> BEncodeDecoder.getString(value))
-				.collect(Collectors.toList())
-			);
+			file.setPath(path(path));
 		} else {
 			file.setPath(new ArrayList<>());
 		}
 		final List<Object> pathUtf8 = BEncodeDecoder.getList(map, "path.utf-8");
 		if(pathUtf8 != null) {
-			file.setPathUtf8(
-				pathUtf8.stream()
-				.map(value -> BEncodeDecoder.getString(value))
-				.collect(Collectors.toList())
-			);
+			file.setPathUtf8(path(pathUtf8));
 		} else {
 			file.setPathUtf8(new ArrayList<>());
 		}
 		return file;
 	}
-	
+
+	/**
+	 * 拼接路径
+	 */
 	public String path() {
-		if (CollectionUtils.isNotEmpty(pathUtf8)) {
+		if (CollectionUtils.isNotEmpty(this.pathUtf8)) {
 			return String.join(TorrentFile.SEPARATOR, this.pathUtf8);
 		}
 		return String.join(TorrentFile.SEPARATOR, this.path);
-	}
-
-	public String ed2kHex() {
-		return StringUtils.hex(this.ed2k);
-	}
-	
-	public String filehashHex() {
-		return StringUtils.hex(this.filehash);
 	}
 
 	/**
@@ -105,6 +94,16 @@ public class TorrentFile {
 	 */
 	public void select(boolean selected) {
 		this.selected = selected;
+	}
+	
+	/**
+	 * <p>读取路径</p>
+	 * <p>每个元素都是一个字节数组</p>
+	 */
+	private static final List<String> path(List<Object> path) {
+		return path.stream()
+			.map(value -> BEncodeDecoder.getString(value))
+			.collect(Collectors.toList());
 	}
 	
 	public Long getLength() {

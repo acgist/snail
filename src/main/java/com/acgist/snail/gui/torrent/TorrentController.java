@@ -81,7 +81,7 @@ public class TorrentController extends Controller implements Initializable {
 		final TorrentInfo torrentInfo = torrent.getInfo();
 		this.selectorManager = SelectorManager.newInstance(torrent.name(), this.download, tree);
 		torrentInfo.files().stream()
-			.filter(file -> !file.path().startsWith(TorrentInfo.HIDE_FILE_PREFIX))
+			.filter(file -> !file.path().startsWith(TorrentInfo.PADDING_FILE_PREFIX))
 			.sorted((a, b) -> a.path().compareTo(b.path()))
 			.forEach(file -> this.selectorManager.build(file.path(), file.getLength()));
 		this.selectorManager.select(taskSession);
@@ -120,7 +120,7 @@ public class TorrentController extends Controller implements Initializable {
 		}
 		entity.setSize(this.selectorManager.size());
 		final TorrentSelectorWrapper wrapper = TorrentSelectorWrapper.newEncoder(list);
-		entity.setDescription(wrapper.description());
+		entity.setDescription(wrapper.serialize());
 		if(entity.getId() != null) { // 已经添加数据库
 			boolean restart = false;
 			if(entity.getType() == Type.magnet) { // 磁力链接转为种子

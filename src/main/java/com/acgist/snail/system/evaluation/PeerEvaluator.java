@@ -12,6 +12,7 @@ import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.repository.impl.ConfigRepository;
 import com.acgist.snail.system.bencode.BEncodeDecoder;
 import com.acgist.snail.system.bencode.BEncodeEncoder;
+import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -27,35 +28,9 @@ import com.acgist.snail.utils.StringUtils;
 public class PeerEvaluator {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerEvaluator.class);
-
-	/**
-	 * 步长
-	 */
-	private static final int RANGE_STEP = 2 << 15;
-	/**
-	 * 最小计分下载大小：1M
-	 */
-	private static final int MIN_SCOREABLE_DOWNLOAD_SIZE = 1024 * 1024;
-	/**
-	 * 范围配置
-	 */
-	private static final String ACGIST_SYSTEM_RANGE = "acgist.system.range";
 	
 	private static final PeerEvaluator INSTANCE = new PeerEvaluator();
-	
-	/**
-	 * 初始完成，可用状态。
-	 */
-	private boolean available;
-	/**
-	 * 优质Peer最低分：取平均分。
-	 */
-	private long horizontal = 0L;
-	/**
-	 * 范围表
-	 */
-	private final Map<Integer, Long> ranges;
-	
+
 	/**
 	 * 计分类型
 	 */
@@ -80,6 +55,33 @@ public class PeerEvaluator {
 		}
 		
 	}
+	
+	/**
+	 * IP步长
+	 */
+	private static final int RANGE_STEP = 2 << 15;
+	/**
+	 * <p>最小计分下载大小：1M</p>
+	 * <p>如果计分时下载数据大小没有超过这个值将不计分。</p>
+	 */
+	private static final int MIN_SCOREABLE_DOWNLOAD_SIZE = 1024 * 1024;
+	/**
+	 * 范围配置
+	 */
+	private static final String ACGIST_SYSTEM_RANGE = "acgist.system.range";
+	
+	/**
+	 * 初始完成，可用状态。
+	 */
+	private boolean available;
+	/**
+	 * 优质Peer最低分：取平均分。
+	 */
+	private long horizontal = 0L;
+	/**
+	 * 范围表
+	 */
+	private final Map<Integer, Long> ranges;
 	
 	private PeerEvaluator() {
 		this.ranges = new ConcurrentHashMap<>();
@@ -184,7 +186,7 @@ public class PeerEvaluator {
 	}
 
 	/**
-	 * 初始数据
+	 * 初始化数据
 	 */
 	private void buildRanges() {
 		final ConfigRepository repository = new ConfigRepository();
@@ -192,11 +194,13 @@ public class PeerEvaluator {
 		if(config == null || StringUtils.isEmpty(config.getValue())) {
 			return;
 		}
-		final BEncodeDecoder decoder = BEncodeDecoder.newInstance(config.getValue());
-		final Map<String, Object> ranges = decoder.nextMap();
-		ranges.forEach((key, value) -> {
-			this.ranges.put(Integer.valueOf(key), (Long) value);
-		});
+		try (final var decoder = BEncodeDecoder.newInstance(config.getValue())) {
+			decoder.nextMap().forEach((key, value) -> {
+				this.ranges.put(Integer.valueOf(key), (Long) value);
+			});
+		} catch (NetException e) {
+			LOGGER.error("评估器初始化数据异常", e);
+		}
 		LOGGER.info("Peer评估器加载数据：{}", this.ranges.size());
 		this.horizontal = this.ranges.values().stream()
 			.collect(Collectors.averagingLong(value -> value))
