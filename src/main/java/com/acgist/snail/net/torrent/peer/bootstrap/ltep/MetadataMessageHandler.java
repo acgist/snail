@@ -69,39 +69,35 @@ public class MetadataMessageHandler implements IExtensionMessageHandler {
 	}
 
 	@Override
-	public void onMessage(ByteBuffer buffer) {
+	public void onMessage(ByteBuffer buffer) throws NetException {
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
-		try {
-			final var decoder = BEncodeDecoder.newInstance(bytes);
-			decoder.nextMap();
-			if(decoder.isEmpty()) {
-				LOGGER.warn("metadata消息格式错误：{}", decoder.oddString());
-				return;
-			}
-			final Byte typeValue = decoder.getByte(ARG_MSG_TYPE);
-			final MetadataType type = PeerConfig.MetadataType.valueOf(typeValue);
-			if(type == null) {
-				LOGGER.warn("不支持的metadata消息类型：{}", typeValue);
-				return;
-			}
-			LOGGER.debug("metadata消息类型：{}", type);
-			switch (type) {
-			case request:
-				request(decoder);
-				break;
-			case data:
-				data(decoder);
-				break;
-			case reject:
-				reject(decoder);
-				break;
-			default:
-				LOGGER.info("不支持的metadata消息类型：{}", type);
-				break;
-			}
-		} catch (NetException e) {
-			LOGGER.error("metadata消息处理异常", e);
+		final var decoder = BEncodeDecoder.newInstance(bytes);
+		decoder.nextMap();
+		if(decoder.isEmpty()) {
+			LOGGER.warn("metadata消息格式错误：{}", decoder.oddString());
+			return;
+		}
+		final Byte typeValue = decoder.getByte(ARG_MSG_TYPE);
+		final MetadataType type = PeerConfig.MetadataType.valueOf(typeValue);
+		if(type == null) {
+			LOGGER.warn("不支持的metadata消息类型：{}", typeValue);
+			return;
+		}
+		LOGGER.debug("metadata消息类型：{}", type);
+		switch (type) {
+		case request:
+			request(decoder);
+			break;
+		case data:
+			data(decoder);
+			break;
+		case reject:
+			reject(decoder);
+			break;
+		default:
+			LOGGER.info("不支持的metadata消息类型：{}", type);
+			break;
 		}
 	}
 	

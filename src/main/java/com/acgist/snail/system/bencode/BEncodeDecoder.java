@@ -34,7 +34,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class BEncodeDecoder  {
+public class BEncodeDecoder {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BEncodeDecoder.class);
 	
@@ -89,17 +89,17 @@ public class BEncodeDecoder  {
 	
 	private BEncodeDecoder(byte[] bytes) {
 		if(bytes == null) {
-			throw new ArgumentException("B编码内容错误");
+			throw new ArgumentException("B编码内容错误（bytes=null）");
 		}
 		if(bytes.length < 2) {
-			throw new ArgumentException("B编码内容错误");
+			throw new ArgumentException("B编码内容错误（长度）");
 		}
 		this.inputStream = new ByteArrayInputStream(bytes);
 	}
 	
 	public static final BEncodeDecoder newInstance(String content) {
 		if(content == null) {
-			throw new ArgumentException("B编码内容错误");
+			throw new ArgumentException("B编码内容错误（content=null）");
 		}
 		return new BEncodeDecoder(content.getBytes());
 	}

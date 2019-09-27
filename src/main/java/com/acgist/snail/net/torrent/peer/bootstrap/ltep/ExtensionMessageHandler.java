@@ -237,7 +237,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	/**
 	 * metadata消息
 	 */
-	private void metadata(ByteBuffer buffer) {
+	private void metadata(ByteBuffer buffer) throws NetException {
 		this.metadataMessageHandler.onMessage(buffer);
 	}
 	
