@@ -243,14 +243,13 @@ public class MetadataMessageHandler implements IExtensionMessageHandler {
 			return;
 		}
 		try (final var encoder = BEncodeEncoder.newInstance()) {
-			encoder.newMap().put(data).flush();
+			encoder.buildMap().put(data).flush();
 			if(x != null) {
 				encoder.write(x);
 			}
 			final byte[] bytes = encoder.bytes();
 			this.extensionMessageHandler.pushMessage(type, bytes);
-		} catch (Exception e) {
-			LOGGER.error("metadata消息发送异常", e);
+		} finally {
 		}
 	}
 	

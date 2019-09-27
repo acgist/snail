@@ -63,7 +63,7 @@ public class BEncodeEncoder implements Closeable {
 	/**
 	 * 新建List
 	 */
-	public BEncodeEncoder newList() {
+	public BEncodeEncoder buildList() {
 		this.type = Type.list;
 		this.list = new ArrayList<>();
 		return this;
@@ -72,7 +72,7 @@ public class BEncodeEncoder implements Closeable {
 	/**
 	 * 新建Map
 	 */
-	public BEncodeEncoder newMap() {
+	public BEncodeEncoder buildMap() {
 		this.type = Type.map;
 		this.map = new LinkedHashMap<>();
 		return this;

@@ -271,7 +271,6 @@ public class NetUtils {
 			}
 		} catch (IOException e) {
 			IoUtils.close(channel);
-			channel = null;
 			LOGGER.error("打开UDP通道异常", e);
 		}
 		return channel;

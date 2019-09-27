@@ -110,16 +110,14 @@ public class ApplicationMessage {
 	@Override
 	public String toString() {
 		try (final var encoder = BEncodeEncoder.newInstance()) {
-			encoder.newMap()
+			encoder.buildMap()
 				.put("type", this.type.name());
 			if(this.body != null) {
 				encoder.put("body", this.body);
 			}
 			return encoder.flush().toString();
-		} catch (Exception e) {
-			LOGGER.error("系统消息B编码异常", e);
+		} finally {
 		}
-		return null;
 	}
 	
 	/**
