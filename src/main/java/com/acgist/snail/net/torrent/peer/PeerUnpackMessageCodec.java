@@ -8,6 +8,7 @@ import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.system.exception.OversizePacketException;
 
 /**
  * <p>Peer消息处理器：拆包</p>
@@ -22,7 +23,8 @@ public class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteBuffer>
 	 */
 	private static final int INT_BYTE_LENGTH = 4;
 	/**
-	 * 完整消息
+	 * <p>完整消息缓存</p>
+	 * <p>消息按照长度读入进入消息缓存</p>
 	 */
 	private ByteBuffer buffer;
 	/**
@@ -42,7 +44,7 @@ public class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteBuffer>
 	
 	@Override
 	public void decode(ByteBuffer buffer, InetSocketAddress address, boolean hasAddress) throws NetException {
-		int length = 0;
+		int length = 0; // 消息长度
 		while(true) {
 			if(this.buffer == null) {
 				if(this.peerSubMessageHandler.handshake()) {
@@ -56,7 +58,7 @@ public class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteBuffer>
 						this.lengthStick.flip();
 						length = this.lengthStick.getInt();
 						this.lengthStick.compact();
-					} else {
+					} else { // 消息长度读取不完整跳出
 						break;
 					}
 				} else { // 握手消息长度
@@ -68,7 +70,7 @@ public class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteBuffer>
 					break;
 				}
 				if(length >= SystemConfig.MAX_NET_BUFFER_SIZE) {
-					throw new NetException("超过最大的网络包大小：" + length);
+					throw new OversizePacketException(length);
 				}
 				this.buffer = ByteBuffer.allocate(length);
 			} else {

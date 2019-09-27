@@ -229,7 +229,7 @@ public class BEncodeDecoder implements Closeable {
 				break;
 			case SEPARATOR:
 				if(lengthBuilder.length() > 0) {
-					final byte[] bytes = readBytes(lengthBuilder, inputStream);
+					final byte[] bytes = read(lengthBuilder, inputStream);
 					if (key == null) {
 						key = new String(bytes);
 					} else {
@@ -284,7 +284,7 @@ public class BEncodeDecoder implements Closeable {
 				break;
 			case SEPARATOR:
 				if(lengthBuilder.length() > 0) {
-					final byte[] bytes = readBytes(lengthBuilder, inputStream);
+					final byte[] bytes = read(lengthBuilder, inputStream);
 					list.add(bytes);
 				} else {
 					LOGGER.warn("B编码长度错误：{}", lengthBuilder);
@@ -306,10 +306,11 @@ public class BEncodeDecoder implements Closeable {
 	 * 
 	 * @return 字符数组
 	 */
-	private static final byte[] readBytes(StringBuilder lengthBuilder, ByteArrayInputStream inputStream) {
+	private static final byte[] read(StringBuilder lengthBuilder, ByteArrayInputStream inputStream) {
 		final int length = Integer.parseInt(lengthBuilder.toString());
 		if(length >= SystemConfig.MAX_NET_BUFFER_SIZE) {
-			throw new ArgumentException("超过最大的网络包大小：" + length);
+//			throw new OversizePacketException(length);
+			throw new ArgumentException("超过最大网络包");
 		}
 		lengthBuilder.setLength(0);
 		final byte[] bytes = new byte[length];

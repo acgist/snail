@@ -104,10 +104,16 @@ public class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		init(peerSession, torrentSession, PeerConfig.HANDSHAKE_RESERVED);
 	}
 	
+	/**
+	 * 服务端
+	 */
 	public static final PeerSubMessageHandler newInstance() {
 		return new PeerSubMessageHandler();
 	}
-	
+
+	/**
+	 * 客户端
+	 */
 	public static final PeerSubMessageHandler newInstance(PeerSession peerSession, TorrentSession torrentSession) {
 		return new PeerSubMessageHandler(peerSession, torrentSession);
 	}
