@@ -23,6 +23,8 @@
 	<a target="_blank" href="https://www.bittorrent.org/beps/bep_0000.html">
 		<img alt="BitTorrent" src="https://img.shields.io/badge/BitTorrent-BEP-orange.svg?style=flat-square" />
 	</a>
+	<img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/acgist/snail?color=crimson&style=flat-square">
+	<img alt="GitHub" src="https://img.shields.io/github/license/acgist/snail?style=flat-square">
 </p>
 
 ----
