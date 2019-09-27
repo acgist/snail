@@ -75,7 +75,8 @@ public abstract class TcpServer<T extends TcpMessageHandler> {
 		LOGGER.info("启动服务端：{}", this.name);
 		boolean ok = true;
 		try {
-			this.server = AsynchronousServerSocketChannel.open(GROUP).bind(NetUtils.buildSocketAddress(host, port));
+			this.server = AsynchronousServerSocketChannel.open(GROUP);
+			this.server.bind(NetUtils.buildSocketAddress(host, port));
 			this.server.accept(this.server, TcpAcceptHandler.newInstance(this.clazz));
 		} catch (Exception e) {
 			ok = false;
