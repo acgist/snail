@@ -317,7 +317,7 @@ public class TorrentSession {
 			final var nodes = this.torrent.getNodes();
 			if(CollectionUtils.isNotEmpty(nodes)) { // 添加DHT节点
 				nodes.forEach((host, port) -> {
-					this.dhtLauncher.put(host, port.intValue());
+					this.dhtLauncher.put(host, port);
 				});
 			}
 		}

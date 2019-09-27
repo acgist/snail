@@ -20,10 +20,11 @@ import com.acgist.snail.system.bencode.BEncodeDecoder.Type;
  * encoder
  * 	.newList().put("1").put("2").flush()
  * 	.newMap().put("a", "b").put("c", "d").flush()
- * 	.toString()
+ * 	.toString();
  * 
- * encoder.build(List.of("a", "b"))
- * 	.build(Map.of("1", "2"))
+ * encoder
+ * 	.write(List.of("a", "b"))
+ * 	.write(Map.of("1", "2"))
  * 	.toString();
  * </pre>
  * 
@@ -34,9 +35,21 @@ public class BEncodeEncoder implements Closeable {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BEncodeEncoder.class);
 	
+	/**
+	 * list
+	 */
 	private List<Object> list;
+	/**
+	 * map
+	 */
 	private Map<String, Object> map;
+	/**
+	 * 数据类型
+	 */
 	private BEncodeDecoder.Type type;
+	/**
+	 * 输出数据
+	 */
 	private ByteArrayOutputStream outputStream;
 	
 	private BEncodeEncoder() {
@@ -48,20 +61,20 @@ public class BEncodeEncoder implements Closeable {
 	}
 
 	/**
-	 * 新建Map
-	 */
-	public BEncodeEncoder newMap() {
-		this.type = Type.map;
-		this.map = new LinkedHashMap<>();
-		return this;
-	}
-
-	/**
 	 * 新建List
 	 */
 	public BEncodeEncoder newList() {
 		this.type = Type.list;
 		this.list = new ArrayList<>();
+		return this;
+	}
+	
+	/**
+	 * 新建Map
+	 */
+	public BEncodeEncoder newMap() {
+		this.type = Type.map;
+		this.map = new LinkedHashMap<>();
 		return this;
 	}
 	
@@ -106,23 +119,38 @@ public class BEncodeEncoder implements Closeable {
 	}
 
 	/**
-	 * 将List和Map中的数据刷入字符流，配合put系列方法使用。
+	 * 将List和Map中的数据写入字符流，配合put系列方法使用。
 	 */
 	public BEncodeEncoder flush() {
 		if(this.type == Type.map) {
-			this.build(this.map);
+			this.write(this.map);
 		} else if(this.type == Type.list) {
-			this.build(this.list);
+			this.write(this.list);
 		} else {
 			LOGGER.warn("B编码不支持的类型：{}", this.type);
 		}
 		return this;
 	}
+
+	/**
+	 * 写入List
+	 */
+	public BEncodeEncoder write(List<?> list) {
+		if(list == null) {
+			return this;
+		}
+		this.write(BEncodeDecoder.TYPE_L);
+		list.forEach(value -> {
+			this.writeBEncodeValue(value);
+		});
+		this.write(BEncodeDecoder.TYPE_E);
+		return this;
+	}
 	
 	/**
-	 * 添加Map
+	 * 写入map
 	 */
-	public BEncodeEncoder build(Map<?, ?> map) {
+	public BEncodeEncoder write(Map<?, ?> map) {
 		if(map == null) {
 			return this;
 		}
@@ -136,27 +164,18 @@ public class BEncodeEncoder implements Closeable {
 		this.write(BEncodeDecoder.TYPE_E);
 		return this;
 	}
-
-	/**
-	 * 添加List
-	 */
-	public BEncodeEncoder build(List<?> list) {
-		if(list == null) {
-			return this;
-		}
-		this.write(BEncodeDecoder.TYPE_L);
-		list.forEach(value -> {
-			this.writeBEncodeValue(value);
-		});
-		this.write(BEncodeDecoder.TYPE_E);
-		return this;
-	}
 	
 	/**
-	 * 添加字符数组
+	 * 写入字符数组
 	 */
-	public BEncodeEncoder append(byte[] bytes) {
-		write(bytes);
+	public BEncodeEncoder write(byte[] bytes) {
+		try {
+			if(bytes != null) {
+				this.outputStream.write(bytes);
+			}
+		} catch (Exception e) {
+			LOGGER.error("B编码输出异常", e);
+		}
 		return this;
 	}
 	
@@ -170,10 +189,10 @@ public class BEncodeEncoder implements Closeable {
 			this.writeBEncodeBytes((byte[]) value);
 		} else if(value instanceof String) {
 			this.writeBEncodeBytes(((String) value).getBytes());
-		} else if(value instanceof Map) {
-			build((Map<?, ?>) value);
 		} else if(value instanceof List) {
-			build((List<?>) value);
+			write((List<?>) value);
+		} else if(value instanceof Map) {
+			write((Map<?, ?>) value);
 		} else {
 			this.writeBEncodeBytes(new byte[] {});
 			LOGGER.debug("B编码不支持的类型：{}", value);
@@ -206,27 +225,10 @@ public class BEncodeEncoder implements Closeable {
 	}
 	
 	/**
-	 * 写入字符数组
-	 */
-	private void write(byte[] bytes) {
-		try {
-			if(bytes != null) {
-				this.outputStream.write(bytes);
-			}
-		} catch (Exception e) {
-			LOGGER.error("B编码输出异常", e);
-		}
-	}
-	
-	/**
-	 * 获取字符流，获取后将关闭流。
+	 * 获取字符流
 	 */
 	public byte[] bytes() {
-		try {
-			return this.outputStream.toByteArray();
-		} finally {
-			this.close();
-		}
+		return this.outputStream.toByteArray();
 	}
 
 	/**
@@ -252,24 +254,10 @@ public class BEncodeEncoder implements Closeable {
 	}
 	
 	/**
-	 * Map转为B编码字符数组
-	 */
-	public static final byte[] encodeMap(Map<?, ?> map) {
-		return newInstance().build(map).bytes();
-	}
-	
-	/**
-	 * Map转为B编码字符串
-	 */
-	public static final String encodeMapString(Map<?, ?> map) {
-		return new String(encodeMap(map));
-	}
-	
-	/**
 	 * List转为B编码字符数组
 	 */
 	public static final byte[] encodeList(List<?> list) {
-		return newInstance().build(list).bytes();
+		return newInstance().write(list).bytes();
 	}
 	
 	/**
@@ -277,6 +265,20 @@ public class BEncodeEncoder implements Closeable {
 	 */
 	public static final String encodeListString(List<?> list) {
 		return new String(encodeList(list));
+	}
+	
+	/**
+	 * Map转为B编码字符数组
+	 */
+	public static final byte[] encodeMap(Map<?, ?> map) {
+		return newInstance().write(map).bytes();
+	}
+	
+	/**
+	 * Map转为B编码字符串
+	 */
+	public static final String encodeMapString(Map<?, ?> map) {
+		return new String(encodeMap(map));
 	}
 	
 }

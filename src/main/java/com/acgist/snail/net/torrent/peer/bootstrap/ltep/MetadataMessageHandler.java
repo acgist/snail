@@ -242,13 +242,16 @@ public class MetadataMessageHandler implements IExtensionMessageHandler {
 			LOGGER.warn("不支持metadata扩展协议");
 			return;
 		}
-		final BEncodeEncoder encoder = BEncodeEncoder.newInstance().newMap();
-		encoder.put(data).flush();
-		if(x != null) {
-			encoder.append(x);
+		try (final var encoder = BEncodeEncoder.newInstance()) {
+			encoder.newMap().put(data).flush();
+			if(x != null) {
+				encoder.write(x);
+			}
+			final byte[] bytes = encoder.bytes();
+			this.extensionMessageHandler.pushMessage(type, bytes);
+		} catch (Exception e) {
+			LOGGER.error("metadata消息发送异常", e);
 		}
-		final byte[] bytes = encoder.bytes();
-		this.extensionMessageHandler.pushMessage(type, bytes);
 	}
 	
 }

@@ -116,28 +116,6 @@ public class BEncodeDecoder implements Closeable {
 	}
 	
 	/**
-	 * 下一个数据类型
-	 */
-	public Type nextType() throws OversizePacketException {
-		if(!more()) {
-			LOGGER.warn("B编码没有更多数据");
-			return this.type = Type.none;
-		}
-		char type = (char) this.inputStream.read();
-		switch (type) {
-		case TYPE_D:
-			this.map = d(this.inputStream);
-			return this.type = Type.map;
-		case TYPE_L:
-			this.list = l(this.inputStream);
-			return this.type = Type.list;
-		default:
-			LOGGER.warn("B编码不支持的类型：{}", type);
-			return this.type = Type.none;
-		}
-	}
-	
-	/**
 	 * 是否不包含数据
 	 * 
 	 * @return true-不包含；false-包含；
@@ -159,6 +137,28 @@ public class BEncodeDecoder implements Closeable {
 	 */
 	public boolean isNotEmpty() {
 		return !isEmpty();
+	}
+	
+	/**
+	 * 下一个数据类型
+	 */
+	public Type nextType() throws OversizePacketException {
+		if(!more()) {
+			LOGGER.warn("B编码没有更多数据");
+			return this.type = Type.none;
+		}
+		char type = (char) this.inputStream.read();
+		switch (type) {
+		case TYPE_D:
+			this.map = d(this.inputStream);
+			return this.type = Type.map;
+		case TYPE_L:
+			this.list = l(this.inputStream);
+			return this.type = Type.list;
+		default:
+			LOGGER.warn("B编码不支持的类型：{}", type);
+			return this.type = Type.none;
+		}
 	}
 	
 	/**
@@ -406,14 +406,6 @@ public class BEncodeDecoder implements Closeable {
 		return (Long) map.get(key);
 	}
 	
-	public static final String getString(Object object) {
-		if(object == null) {
-			return null;
-		}
-		final byte[] bytes = (byte[]) object;
-		return new String(bytes);
-	}
-
 	public String getString(String key) {
 		return getString(this.map, key);
 	}
@@ -459,7 +451,7 @@ public class BEncodeDecoder implements Closeable {
 	}
 	
 	/**
-	 * 注意不能乱序：乱序后计算的hash值将会改变。
+	 * <p>使用LinkedHashMap，不能乱序，否者计算的hash值将会改变。</p>
 	 */
 	public static final Map<String, Object> getMap(Map<?, ?> map, String key) {
 		if(map == null) {
@@ -475,6 +467,17 @@ public class BEncodeDecoder implements Closeable {
 				return Map.entry(entry.getKey().toString(), entry.getValue());
 			})
 			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new));
+	}
+	
+	/**
+	 * 字符数组转字符串
+	 */
+	public static final String getString(Object object) {
+		if(object == null) {
+			return null;
+		}
+		final byte[] bytes = (byte[]) object;
+		return new String(bytes);
 	}
 	
 	/**
