@@ -78,7 +78,8 @@ public class TorrentEvent extends GuiEvent {
 		if(StringUtils.isEmpty(this.files)) {
 			return;
 		}
-		try (final var decoder = BEncodeDecoder.newInstance(this.files)) {
+		try {
+			final var decoder = BEncodeDecoder.newInstance(this.files);
 			// 选择文件列表
 			final var files = decoder.nextList().stream()
 				.map(object -> BEncodeDecoder.getString(object))

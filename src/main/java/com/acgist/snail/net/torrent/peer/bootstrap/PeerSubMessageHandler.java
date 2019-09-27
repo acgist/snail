@@ -189,7 +189,7 @@ public class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	}
 	
 	@Override
-	public void onMessage(final ByteBuffer buffer) {
+	public void onMessage(final ByteBuffer buffer) throws NetException {
 		buffer.flip();
 		if(!this.handshakeRcv) { // 没有握手
 			handshake(buffer);
@@ -683,7 +683,7 @@ public class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	/**
 	 * <p>处理扩展信息</p>
 	 */
-	private void extension(ByteBuffer buffer) {
+	private void extension(ByteBuffer buffer) throws NetException {
 		LOGGER.debug("收到扩展消息");
 		this.extensionMessageHandler.onMessage(buffer);
 	}

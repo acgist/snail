@@ -163,7 +163,8 @@ public class ApplicationMessageHandler extends TcpMessageHandler implements IMes
 	 */
 	private void onTaskNew(ApplicationMessage message) {
 		final String body = message.getBody();
-		try (final var decoder = BEncodeDecoder.newInstance(body)) {
+		try {
+			final var decoder = BEncodeDecoder.newInstance(body);
 			decoder.nextMap();
 			if(decoder.isEmpty()) { // 空数据返回失败
 				send(ApplicationMessage.response(ApplicationMessage.FAIL));

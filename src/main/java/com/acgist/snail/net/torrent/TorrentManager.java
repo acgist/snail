@@ -132,7 +132,9 @@ public class TorrentManager {
 		if(!file.exists()) {
 			throw new DownloadException("种子文件不存在");
 		}
-		try (final var decoder = BEncodeDecoder.newInstance(Files.readAllBytes(Paths.get(file.getPath())))) {
+		try {
+			final var bytes = Files.readAllBytes(Paths.get(file.getPath()));
+			final var decoder = BEncodeDecoder.newInstance(bytes);
 			decoder.nextMap();
 			if(decoder.isEmpty()) {
 				throw new DownloadException("种子文件格式错误");

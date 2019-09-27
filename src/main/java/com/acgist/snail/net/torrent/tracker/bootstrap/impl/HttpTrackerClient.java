@@ -63,19 +63,16 @@ public class HttpTrackerClient extends TrackerClient {
 		}
 		// TODO：解决B编码有多余数据问题：测试地址：http://tracker3.itzmx.com:6961/announce
 		final String body = response.body();
-		try (final var decoder = BEncodeDecoder.newInstance(body.getBytes())) {
-			decoder.nextMap();
-			if(decoder.isEmpty()) {
-				LOGGER.warn("HttpTracker消息格式错误：{}", decoder.oddString());
-				return;
-			}
-			final var httpAnnounceMessage = HttpAnnounceMessage.valueOf(decoder);
-			this.trackerId = httpAnnounceMessage.getTrackerId();
-			final AnnounceMessage message = httpAnnounceMessage.toAnnounceMessage(sid);
-			TrackerManager.getInstance().announce(message);
-		} catch (NetException e) {
-			throw e;
+		final var decoder = BEncodeDecoder.newInstance(body.getBytes());
+		decoder.nextMap();
+		if(decoder.isEmpty()) {
+			LOGGER.warn("HttpTracker消息格式错误：{}", decoder.oddString());
+			return;
 		}
+		final var httpAnnounceMessage = HttpAnnounceMessage.valueOf(decoder);
+		this.trackerId = httpAnnounceMessage.getTrackerId();
+		final AnnounceMessage message = httpAnnounceMessage.toAnnounceMessage(sid);
+		TrackerManager.getInstance().announce(message);
 	}
 
 	@Override
