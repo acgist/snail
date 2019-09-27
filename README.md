@@ -4,7 +4,7 @@
 基于Java/JavaFX的下载工具，支持下载协议：BT（BitTorrent）、FTP、HTTP。
 </p>
 
-<center>
+<p align="center">
 	<a target="_blank" href="https://www.acgist.com">
 		<img alt="Author" src="https://img.shields.io/badge/Author-acgist-red.svg?style=flat-square" />
 	</a>
@@ -23,9 +23,9 @@
 	<a target="_blank" href="https://www.bittorrent.org/beps/bep_0000.html">
 		<img alt="BitTorrent" src="https://img.shields.io/badge/BitTorrent-BEP-orange.svg?style=flat-square" />
 	</a>
-	<img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/acgist/snail?color=crimson&style=flat-square" />
+	<img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/acgist/snail?color=crimson&style=flat-square" />
 	<img alt="GitHub" src="https://img.shields.io/github/license/acgist/snail?style=flat-square" />
-</center>
+</p>
 
 ----
 
