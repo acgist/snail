@@ -67,7 +67,7 @@ public class GetPeersRequest extends Request {
 			}
 		}
 		final var nodes = NodeManager.getInstance().findNode(infoHash);
-		response.put(DhtConfig.KEY_NODES, writeNode(nodes));
+		response.put(DhtConfig.KEY_NODES, serializeNodes(nodes));
 		return response;
 	}
 	

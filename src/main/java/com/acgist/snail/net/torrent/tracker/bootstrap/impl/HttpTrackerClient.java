@@ -53,6 +53,7 @@ public class HttpTrackerClient extends TrackerClient {
 		if(!HTTPClient.ok(response)) {
 			throw new NetException("获取Peer异常");
 		}
+		// TODO：解决B编码有多余数据问题：测试地址：http://tracker3.itzmx.com:6961/announce
 		final String body = response.body();
 		final BEncodeDecoder decoder = BEncodeDecoder.newInstance(body.getBytes());
 		final Map<String, Object> map = decoder.nextMap();

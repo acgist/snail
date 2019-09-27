@@ -26,7 +26,11 @@ public class BCodeTest {
 		BEncodeDecoder decoder = BEncodeDecoder.newInstance(content.getBytes());
 		decoder.nextList().forEach(value -> System.out.println(new String((byte[]) value)));
 		decoder.nextMap().forEach((key, value) -> {
-			System.out.println(key + "=" + new String((byte[]) value));
+			if(value instanceof Long) {
+				System.out.println(key + "=" + value);
+			} else {
+				System.out.println(key + "=" + new String((byte[]) value));
+			}
 		});
 		System.out.println(decoder.oddString());
 		
@@ -48,6 +52,13 @@ public class BCodeTest {
 				System.out.println(key + "-" + new String((byte[]) value));
 			}
 		});
+	}
+	
+	@Test
+	public void error() {
+		var decoder = BEncodeDecoder.newInstance("d8:completei6e10:downloadedi17e10:incompletei0e8:intervali924e12:min intervali462e5:peers36:����m�Wj���LmA�s;I�ʆL��TTz�e");
+		var map = decoder.nextMap();
+		System.out.println(map);
 	}
 	
 }

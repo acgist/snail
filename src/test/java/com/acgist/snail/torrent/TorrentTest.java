@@ -15,8 +15,8 @@ public class TorrentTest {
 
 	@Test
 	public void read() throws Exception {
-		String path = "e:/snail/hide.torrent"; // 私有种子：影身种子
-//		String path = "e:/snail/12345.torrent";
+//		String path = "e:/snail/hide.torrent"; // 私有种子：影身种子
+		String path = "e:/snail/12345.torrent";
 //		String path = "e:/snail/5b293c290c78c503bcd59bc0fbf78fd213ce21a4.torrent";
 //		String path = "e:/snail/9d3854d8c6280049e5d85e490ff07de7c2bd96a2.torrent";
 //		String path = "e:/snail/868f1199b18d05bf103aa8a8321f6428854d712e.torrent";
