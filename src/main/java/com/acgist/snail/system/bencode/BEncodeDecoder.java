@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.ArgumentException;
 import com.acgist.snail.system.exception.OversizePacketException;
+import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>B编码解码器</p>
@@ -213,7 +214,11 @@ public class BEncodeDecoder  {
 		while((index = inputStream.read()) != -1) {
 			indexChar = (char) index;
 			if(indexChar == TYPE_E) {
-				return Long.valueOf(valueBuilder.toString());
+				final var number = valueBuilder.toString();
+				if(!StringUtils.isNumeric(number)) {
+					throw new ArgumentException("B编码格式错误（数字）：" + number);
+				}
+				return Long.valueOf(number);
 			} else {
 				valueBuilder.append(indexChar);
 			}
@@ -353,7 +358,11 @@ public class BEncodeDecoder  {
 	 * @throws OversizePacketException 超过最大网络包大小
 	 */
 	private static final byte[] read(StringBuilder lengthBuilder, ByteArrayInputStream inputStream) throws OversizePacketException {
-		final int length = Integer.parseInt(lengthBuilder.toString());
+		final var number = lengthBuilder.toString();
+		if(!StringUtils.isNumeric(number)) {
+			throw new ArgumentException("B编码格式错误（数字）：" + number);
+		}
+		final int length = Integer.parseInt(number);
 		if(length >= SystemConfig.MAX_NET_BUFFER_SIZE) {
 			throw new OversizePacketException(length);
 		}
