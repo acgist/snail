@@ -1,7 +1,6 @@
 package com.acgist.snail.net.torrent.tracker.bootstrap.impl;
 
 import java.net.http.HttpResponse.BodyHandlers;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,9 +31,18 @@ public class HttpTrackerClient extends TrackerClient {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(HttpTrackerClient.class);
 	
+	/**
+	 * 刮檫URL
+	 */
 	private static final String SCRAPE_URL_SUFFIX = "/scrape";
+	/**
+	 * 声明URL
+	 */
 	private static final String ANNOUNCE_URL_SUFFIX = "/announce";
 	
+	/**
+	 * 跟踪器ID，第一次收到响应后获取，以后每次发送声明消息时携带。
+	 */
 	private String trackerId;
 	
 	private HttpTrackerClient(String scrapeUrl, String announceUrl) throws NetException {
@@ -55,16 +63,19 @@ public class HttpTrackerClient extends TrackerClient {
 		}
 		// TODO：解决B编码有多余数据问题：测试地址：http://tracker3.itzmx.com:6961/announce
 		final String body = response.body();
-		final BEncodeDecoder decoder = BEncodeDecoder.newInstance(body.getBytes());
-		final Map<String, Object> map = decoder.nextMap();
-		if(map == null) {
-			LOGGER.warn("HttpTracker消息格式错误：{}", decoder.oddString());
-			return;
+		try (final var decoder = BEncodeDecoder.newInstance(body.getBytes())) {
+			decoder.nextMap();
+			if(decoder.isEmpty()) {
+				LOGGER.warn("HttpTracker消息格式错误：{}", decoder.oddString());
+				return;
+			}
+			final var httpAnnounceMessage = HttpAnnounceMessage.valueOf(decoder);
+			this.trackerId = httpAnnounceMessage.getTrackerId();
+			final AnnounceMessage message = httpAnnounceMessage.toAnnounceMessage(sid);
+			TrackerManager.getInstance().announce(message);
+		} catch (NetException e) {
+			throw e;
 		}
-		final var httpAnnounceMessage = HttpAnnounceMessage.valueOf(map);
-		this.trackerId = httpAnnounceMessage.getTrackerId();
-		final AnnounceMessage message = httpAnnounceMessage.toAnnounceMessage(sid);
-		TrackerManager.getInstance().announce(message);
 	}
 
 	@Override

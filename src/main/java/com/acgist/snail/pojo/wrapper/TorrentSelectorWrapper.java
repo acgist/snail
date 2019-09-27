@@ -3,8 +3,12 @@ package com.acgist.snail.pojo.wrapper;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.system.bencode.BEncodeDecoder;
 import com.acgist.snail.system.bencode.BEncodeEncoder;
+import com.acgist.snail.system.exception.OversizePacketException;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -15,6 +19,8 @@ import com.acgist.snail.utils.StringUtils;
  * @since 1.0.0
  */
 public class TorrentSelectorWrapper {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentSelectorWrapper.class);
 
 	private BEncodeEncoder encoder;
 	private BEncodeDecoder decoder;
@@ -48,7 +54,7 @@ public class TorrentSelectorWrapper {
 	/**
 	 * 编码选择文件
 	 */
-	public String description() {
+	public String serialize() {
 		if(this.encoder == null) {
 			return null;
 		}
@@ -58,17 +64,21 @@ public class TorrentSelectorWrapper {
 	/**
 	 * 解析选择文件
 	 */
-	public List<String> list() {
+	public List<String> deserialize() {
 		if(this.decoder == null) {
 			return List.of();
 		}
-		final List<Object> list = this.decoder.nextList();
-		return list.stream()
-			.filter(object -> object != null)
-			.map(object -> {
-				return BEncodeDecoder.getString(object);
-			})
-			.collect(Collectors.toList());
+		try {
+			return this.decoder.nextList().stream()
+				.filter(object -> object != null)
+				.map(object -> {
+					return BEncodeDecoder.getString(object);
+				})
+				.collect(Collectors.toList());
+		} catch (OversizePacketException e) {
+			LOGGER.error("解析选择文件异常", e);
+		}
+		return List.of();
 	}
-	
+
 }

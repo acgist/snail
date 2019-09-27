@@ -16,13 +16,14 @@ public class TorrentTest {
 	@Test
 	public void read() throws Exception {
 //		String path = "e:/snail/hide.torrent"; // 私有种子：影身种子
-		String path = "e:/snail/12345.torrent";
+//		String path = "e:/snail/12345.torrent";
 //		String path = "e:/snail/5b293c290c78c503bcd59bc0fbf78fd213ce21a4.torrent";
 //		String path = "e:/snail/9d3854d8c6280049e5d85e490ff07de7c2bd96a2.torrent";
 //		String path = "e:/snail/868f1199b18d05bf103aa8a8321f6428854d712e.torrent";
 //		String path = "e:/snail/11e38a5270e15c60534ca48977b7d77a3c4f6340.torrent";
 //		String path = "e:/snail/0B156834B59B0FF64EE0C9305D4D6EDE421196E6.torrent";
 //		String path = "e:/snail/543/c15417e6aeab33732a59085d826edd29978f9afa.torrent";
+		String path = "e:/snail/build/902ffaa29ee632c8dc966ed9ab573409ba9a518e.torrent";
 		TorrentSession session = TorrentManager.getInstance().newTorrentSession(path);
 		Torrent torrent = session.torrent();
 		System.out.println(torrent.getComment());
@@ -47,8 +48,8 @@ public class TorrentTest {
 		System.out.println(torrentInfo.getLength());
 		System.out.println(torrentInfo.getPieceLength());
 		System.out.println(torrentInfo.getPieces());
-		System.out.println(torrentInfo.ed2kHex());
-		System.out.println(torrentInfo.filehashHex());
+		System.out.println(torrentInfo.getEd2k());
+		System.out.println(torrentInfo.getFilehash());
 		if (torrentInfo.getFiles().size() > 0) {
 			for (TorrentFile file : torrentInfo.getFiles()) {
 				System.out.println("----------------file----------------");

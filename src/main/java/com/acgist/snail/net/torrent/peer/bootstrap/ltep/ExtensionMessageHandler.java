@@ -18,6 +18,7 @@ import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.PeerConfig.Action;
 import com.acgist.snail.system.config.PeerConfig.ExtensionType;
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.CollectionUtils;
 
 /**
@@ -45,13 +46,13 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 */
 	public static final String EX_P = "p";
 	/**
+	 * PEX：加密
+	 */
+	public static final String EX_E = "e";
+	/**
 	 * 未知含义：TODO：了解
 	 */
 	public static final String EX_REQQ = "reqq";
-	/**
-	 * 地址
-	 */
-	public static final String EX_YOURIP = "yourip";
 	/**
 	 * IPv4地址
 	 */
@@ -61,16 +62,16 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 */
 	public static final String EX_IPV6 = "ipv6";
 	/**
-	 * pex：加密
+	 * 本地地址（外网），不设置自动获取。
 	 */
-	public static final String EX_E = "e";
+	public static final String EX_YOURIP = "yourip";
 	/**
 	 * ut_metadata：种子info数据大小
 	 */
 	public static final String EX_METADATA_SIZE = "metadata_size";
 
 	/**
-	 * 是否握手
+	 * 是否已经握手
 	 */
 	private volatile boolean handshake = false;
 	
@@ -102,7 +103,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 		final byte typeValue = buffer.get();
 		final ExtensionType extensionType = ExtensionType.valueOf(typeValue);
 		if(extensionType == null) {
-			LOGGER.warn("不支持的扩展类型：{}", typeValue);
+			LOGGER.warn("不支持的扩展消息类型：{}", typeValue);
 			return;
 		}
 		LOGGER.debug("扩展消息类型：{}", extensionType);
@@ -120,7 +121,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 			holepunch(buffer);
 			break;
 		default:
-			LOGGER.info("不支持的扩展类型：{}", extensionType);
+			LOGGER.info("不支持的扩展消息类型：{}", extensionType);
 			break;
 		}
 	}
@@ -155,7 +156,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 		if(PeerConfig.ExtensionType.ut_metadata.notice()) {
 			final int metadataSize = this.infoHash.size();
 			if(metadataSize > 0) {
-				data.put(EX_METADATA_SIZE, metadataSize); // 种子info数据长度
+				data.put(EX_METADATA_SIZE, metadataSize); // 种子infoHash数据长度
 			}
 		}
 		this.pushMessage(ExtensionType.handshake.value(), BEncodeEncoder.encodeMap(data));
@@ -167,35 +168,39 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	private void handshake(ByteBuffer buffer) {
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
-		final BEncodeDecoder decoder = BEncodeDecoder.newInstance(bytes);
-		final Map<String, Object> data = decoder.nextMap();
-		if(data == null) {
-			LOGGER.warn("扩展握手消息格式错误：{}", decoder.oddString());
-			return;
-		}
-		final Long port = decoder.getLong(EX_P);
-		// 获取端口
-		if(port != null && this.peerSession.peerPort() == null) {
-			this.peerSession.peerPort(port.intValue());
-		}
-		final Long metadataSize = decoder.getLong(EX_METADATA_SIZE);
-		// 获取种子info大小
-		if(metadataSize != null && this.infoHash.size() == 0) {
-			this.infoHash.size(metadataSize.intValue());
-		}
-		final Map<String, Object> mData = decoder.getMap(EX_M);
-		if(CollectionUtils.isNotEmpty(mData)) {
-			mData.entrySet().forEach(entry -> {
-				final String type = (String) entry.getKey();
-				final Long typeValue = (Long) entry.getValue();
-				final PeerConfig.ExtensionType extensionType = PeerConfig.ExtensionType.valueOfName(type);
-				if(extensionType == null) {
-					LOGGER.debug("不支持的扩展协议：{}-{}", type, typeValue);
-				} else {
-					LOGGER.debug("添加扩展协议：{}-{}", extensionType, typeValue);
-					this.peerSession.addExtensionType(extensionType, typeValue.byteValue());
-				}
-			});
+		try (final var decoder = BEncodeDecoder.newInstance(bytes)) {
+			decoder.nextMap();
+			if(decoder.isEmpty()) {
+				LOGGER.warn("扩展握手消息格式错误：{}", decoder.oddString());
+				return;
+			}
+			// 获取端口
+			final Long port = decoder.getLong(EX_P);
+			if(port != null && this.peerSession.peerPort() == null) {
+				this.peerSession.peerPort(port.intValue());
+			}
+			// 获取种子infoHash大小
+			final Long metadataSize = decoder.getLong(EX_METADATA_SIZE);
+			if(metadataSize != null && this.infoHash.size() == 0) {
+				this.infoHash.size(metadataSize.intValue());
+			}
+			// 支持的扩展协议：key=扩展消息标识（数字）
+			final Map<String, Object> mData = decoder.getMap(EX_M);
+			if(CollectionUtils.isNotEmpty(mData)) {
+				mData.entrySet().forEach(entry -> {
+					final String type = (String) entry.getKey();
+					final Long typeValue = (Long) entry.getValue();
+					final PeerConfig.ExtensionType extensionType = PeerConfig.ExtensionType.valueOfName(type);
+					if(extensionType == null) {
+						LOGGER.debug("不支持的扩展协议：{}-{}", type, typeValue);
+					} else {
+						LOGGER.debug("添加扩展协议：{}-{}", extensionType, typeValue);
+						this.peerSession.addExtensionType(extensionType, typeValue.byteValue());
+					}
+				});
+			}
+		} catch (NetException e) {
+			LOGGER.error("扩展消息握手异常", e);
 		}
 		if(!this.handshake) {
 			handshake();

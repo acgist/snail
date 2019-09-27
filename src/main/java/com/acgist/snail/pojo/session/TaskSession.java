@@ -146,7 +146,7 @@ public class TaskSession {
 			return List.of();
 		} else {
 			final TorrentSelectorWrapper wrapper = TorrentSelectorWrapper.newDecoder(description);
-			return wrapper.list();
+			return wrapper.deserialize();
 		}
 	}
 

@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.ArgumentException;
+import com.acgist.snail.system.exception.OversizePacketException;
 
 /**
  * <p>B编码解码器</p>
@@ -69,8 +70,21 @@ public class BEncodeDecoder implements Closeable {
 		
 	}
 	
+	/**
+	 * 数据类型
+	 */
+	private Type type;
+	/**
+	 * list
+	 */
 	private List<Object> list;
+	/**
+	 * map
+	 */
 	private Map<String, Object> map;
+	/**
+	 * 原始数据
+	 */
 	private final ByteArrayInputStream inputStream;
 	
 	private BEncodeDecoder(byte[] bytes) {
@@ -104,30 +118,54 @@ public class BEncodeDecoder implements Closeable {
 	/**
 	 * 下一个数据类型
 	 */
-	public Type nextType() {
+	public Type nextType() throws OversizePacketException {
 		if(!more()) {
 			LOGGER.warn("B编码没有更多数据");
-			return Type.none;
+			return this.type = Type.none;
 		}
 		char type = (char) this.inputStream.read();
 		switch (type) {
 		case TYPE_D:
 			this.map = d(this.inputStream);
-			return Type.map;
+			return this.type = Type.map;
 		case TYPE_L:
 			this.list = l(this.inputStream);
-			return Type.list;
+			return this.type = Type.list;
 		default:
 			LOGGER.warn("B编码不支持的类型：{}", type);
-			return Type.none;
+			return this.type = Type.none;
 		}
+	}
+	
+	/**
+	 * 是否不包含数据
+	 * 
+	 * @return true-不包含；false-包含；
+	 */
+	public boolean isEmpty() {
+		if(this.type == Type.list) {
+			return this.list == null;
+		} else if(this.type == Type.map) {
+			return this.map == null;
+		} else {
+			return true;
+		}
+	}
+	
+	/**
+	 * 是否包含数据
+	 * 
+	 * @return true-包含；false-不包含；
+	 */
+	public boolean isNotEmpty() {
+		return !isEmpty();
 	}
 	
 	/**
 	 * 获取下一个List，如果不是List返回null。
 	 */
-	public List<Object> nextList() {
-		var type = nextType();
+	public List<Object> nextList() throws OversizePacketException {
+		final var type = nextType();
 		if(type == Type.list) {
 			return this.list;
 		}
@@ -137,26 +175,33 @@ public class BEncodeDecoder implements Closeable {
 	/**
 	 * 获取下一个Map，如果不是Map返回null。
 	 */
-	public Map<String, Object> nextMap() {
-		var type = nextType();
+	public Map<String, Object> nextMap() throws OversizePacketException {
+		final var type = nextType();
 		if(type == Type.map) {
 			return this.map;
 		}
-		return null;
+		return Map.of();
 	}
 	
 	/**
 	 * 读取剩余所有数据
 	 */
 	public byte[] oddBytes() {
+		if(this.inputStream == null) {
+			return null;
+		}
 		return this.inputStream.readAllBytes();
 	}
 
 	/**
-	 * 错误格式信息输出
+	 * 剩余所有数据输出字符串
 	 */
 	public String oddString() {
-		return new String(oddBytes());
+		final var bytes = oddBytes();
+		if(bytes == null) {
+			return null;
+		}
+		return new String(bytes);
 	}
 
 	/**
@@ -180,7 +225,7 @@ public class BEncodeDecoder implements Closeable {
 	/**
 	 * map
 	 */
-	private static final Map<String, Object> d(ByteArrayInputStream inputStream) {
+	private static final Map<String, Object> d(ByteArrayInputStream inputStream) throws OversizePacketException {
 		int index;
 		char indexChar;
 		String key = null;
@@ -251,7 +296,7 @@ public class BEncodeDecoder implements Closeable {
 	/**
 	 * list
 	 */
-	private static final List<Object> l(ByteArrayInputStream inputStream) {
+	private static final List<Object> l(ByteArrayInputStream inputStream) throws OversizePacketException {
 		int index;
 		char indexChar;
 		final List<Object> list = new ArrayList<Object>();
@@ -305,12 +350,13 @@ public class BEncodeDecoder implements Closeable {
 	 * @param inputStream 字符流
 	 * 
 	 * @return 字符数组
+	 * 
+	 * @throws OversizePacketException 超过最大网络包大小
 	 */
-	private static final byte[] read(StringBuilder lengthBuilder, ByteArrayInputStream inputStream) {
+	private static final byte[] read(StringBuilder lengthBuilder, ByteArrayInputStream inputStream) throws OversizePacketException {
 		final int length = Integer.parseInt(lengthBuilder.toString());
 		if(length >= SystemConfig.MAX_NET_BUFFER_SIZE) {
-//			throw new OversizePacketException(length);
-			throw new ArgumentException("超过最大网络包");
+			throw new OversizePacketException(length);
 		}
 		lengthBuilder.setLength(0);
 		final byte[] bytes = new byte[length];
@@ -364,7 +410,7 @@ public class BEncodeDecoder implements Closeable {
 		if(object == null) {
 			return null;
 		}
-		byte[] bytes = (byte[]) object;
+		final byte[] bytes = (byte[]) object;
 		return new String(bytes);
 	}
 
@@ -432,12 +478,14 @@ public class BEncodeDecoder implements Closeable {
 	}
 	
 	/**
-	 * 关闭流，ByteArrayInputStream和ByteArrayOutputStream不需要关闭流。
+	 * 关闭流，ByteArrayInputStream和ByteArrayOutputStream可以不关闭流。
 	 */
 	@Override
 	public void close() {
 		try {
-			this.inputStream.close();
+			if(this.inputStream != null) {
+				this.inputStream.close();
+			}
 		} catch (Exception e) {
 			LOGGER.error("B编码字符流关闭异常", e);
 		}

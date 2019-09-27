@@ -17,6 +17,7 @@ import com.acgist.snail.system.bencode.BEncodeDecoder;
 import com.acgist.snail.system.bencode.BEncodeEncoder;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.PeerConfig.ExtensionType;
+import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.PeerUtils;
@@ -82,28 +83,31 @@ public class PeerExchangeMessageHandler implements IExtensionMessageHandler {
 	private void pex(ByteBuffer buffer) {
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
-		final BEncodeDecoder decoder = BEncodeDecoder.newInstance(bytes);
-		final Map<String, Object> map = decoder.nextMap();
-		if(map == null) {
-			LOGGER.warn("pex消息格式错误：{}", decoder.oddString());
-			return;
-		}
-		final byte[] added = decoder.getBytes(ADDED);
-		final byte[] addedf = decoder.getBytes(ADDEDF);
-		final var peers = PeerUtils.read(added);
-		if(CollectionUtils.isNotEmpty(peers)) {
-			final AtomicInteger index = new AtomicInteger(0);
-			peers.forEach((host, port) -> {
-				final PeerSession peerSession = PeerManager.getInstance().newPeerSession(
-					this.torrentSession.infoHashHex(),
-					this.torrentSession.statistics(),
-					host,
-					port,
-					PeerConfig.SOURCE_PEX);
-				if(addedf != null && addedf.length > index.get()) {
-					peerSession.flags(addedf[index.getAndIncrement()]);
-				}
-			});
+		try (final var decoder = BEncodeDecoder.newInstance(bytes)) {
+			decoder.nextMap();
+			if(decoder.isEmpty()) {
+				LOGGER.warn("pex消息格式错误：{}", decoder.oddString());
+				return;
+			}
+			final byte[] added = decoder.getBytes(ADDED);
+			final byte[] addedf = decoder.getBytes(ADDEDF);
+			final var peers = PeerUtils.read(added);
+			if(CollectionUtils.isNotEmpty(peers)) {
+				final AtomicInteger index = new AtomicInteger(0);
+				peers.forEach((host, port) -> {
+					final PeerSession peerSession = PeerManager.getInstance().newPeerSession(
+						this.torrentSession.infoHashHex(),
+						this.torrentSession.statistics(),
+						host,
+						port,
+						PeerConfig.SOURCE_PEX);
+					if(addedf != null && addedf.length > index.get()) {
+						peerSession.flags(addedf[index.getAndIncrement()]);
+					}
+				});
+			}
+		} catch (NetException e) {
+			LOGGER.error("pex消息处理异常", e);
 		}
 	}
 	

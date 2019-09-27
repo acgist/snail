@@ -1,7 +1,11 @@
 package com.acgist.snail.pojo.message;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.system.bencode.BEncodeDecoder;
 import com.acgist.snail.system.bencode.BEncodeEncoder;
+import com.acgist.snail.system.exception.NetException;
 
 /**
  * Application消息（系统消息）
@@ -10,6 +14,8 @@ import com.acgist.snail.system.bencode.BEncodeEncoder;
  * @since 1.0.0
  */
 public class ApplicationMessage {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationMessage.class);
 	
 	/**
 	 * 失败
@@ -70,15 +76,14 @@ public class ApplicationMessage {
 	 */
 	private String body;
 
-	
-	public ApplicationMessage() {
+	private ApplicationMessage() {
 	}
 	
-	public ApplicationMessage(Type type) {
+	private ApplicationMessage(Type type) {
 		this.type = type;
 	}
 
-	public ApplicationMessage(Type type, String body) {
+	private ApplicationMessage(Type type, String body) {
 		this.type = type;
 		this.body = body;
 	}
@@ -116,11 +121,18 @@ public class ApplicationMessage {
 	 * B编码字符串变成ApplicationMessage对象
 	 */
 	public static final ApplicationMessage valueOf(String content) {
-		final BEncodeDecoder decoder = BEncodeDecoder.newInstance(content.getBytes());
-		decoder.nextMap();
-		final String type = decoder.getString("type");
-		final String body = decoder.getString("body");
-		return new ApplicationMessage(Type.valueOf(type), body);
+		try (final var decoder = BEncodeDecoder.newInstance(content.getBytes())) {
+			decoder.nextMap();
+			if(decoder.isEmpty()) {
+				return null;
+			}
+			final String type = decoder.getString("type");
+			final String body = decoder.getString("body");
+			return ApplicationMessage.message(Type.valueOf(type), body);
+		} catch (NetException e) {
+			LOGGER.error("系统消息读取异常", e);
+		}
+		return null;
 	}
 	
 	/**
@@ -150,5 +162,5 @@ public class ApplicationMessage {
 	public static final ApplicationMessage response(String body) {
 		return message(Type.response, body);
 	}
-	
+
 }
