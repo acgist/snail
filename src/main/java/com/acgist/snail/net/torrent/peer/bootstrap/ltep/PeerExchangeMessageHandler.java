@@ -18,6 +18,7 @@ import com.acgist.snail.system.bencode.BEncodeEncoder;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.PeerConfig.ExtensionType;
 import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.system.exception.OversizePacketException;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.PeerUtils;
@@ -58,7 +59,7 @@ public class PeerExchangeMessageHandler implements IExtensionMessageHandler {
 	}
 	
 	@Override
-	public void onMessage(ByteBuffer buffer) {
+	public void onMessage(ByteBuffer buffer) throws NetException {
 		pex(buffer);
 	}
 
@@ -80,34 +81,31 @@ public class PeerExchangeMessageHandler implements IExtensionMessageHandler {
 	 * 处理请求：将获取的Peer加入到列表
 	 * TODO：IPv6
 	 */
-	private void pex(ByteBuffer buffer) {
+	private void pex(ByteBuffer buffer) throws OversizePacketException {
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
-		try (final var decoder = BEncodeDecoder.newInstance(bytes)) {
-			decoder.nextMap();
-			if(decoder.isEmpty()) {
-				LOGGER.warn("pex消息格式错误：{}", decoder.oddString());
-				return;
-			}
-			final byte[] added = decoder.getBytes(ADDED);
-			final byte[] addedf = decoder.getBytes(ADDEDF);
-			final var peers = PeerUtils.read(added);
-			if(CollectionUtils.isNotEmpty(peers)) {
-				final AtomicInteger index = new AtomicInteger(0);
-				peers.forEach((host, port) -> {
-					final PeerSession peerSession = PeerManager.getInstance().newPeerSession(
-						this.torrentSession.infoHashHex(),
-						this.torrentSession.statistics(),
-						host,
-						port,
-						PeerConfig.SOURCE_PEX);
-					if(addedf != null && addedf.length > index.get()) {
-						peerSession.flags(addedf[index.getAndIncrement()]);
-					}
-				});
-			}
-		} catch (NetException e) {
-			LOGGER.error("pex消息处理异常", e);
+		final var decoder = BEncodeDecoder.newInstance(bytes);
+		decoder.nextMap();
+		if(decoder.isEmpty()) {
+			LOGGER.warn("pex消息格式错误：{}", decoder.oddString());
+			return;
+		}
+		final byte[] added = decoder.getBytes(ADDED);
+		final byte[] addedf = decoder.getBytes(ADDEDF);
+		final var peers = PeerUtils.read(added);
+		if(CollectionUtils.isNotEmpty(peers)) {
+			final AtomicInteger index = new AtomicInteger(0);
+			peers.forEach((host, port) -> {
+				final PeerSession peerSession = PeerManager.getInstance().newPeerSession(
+					this.torrentSession.infoHashHex(),
+					this.torrentSession.statistics(),
+					host,
+					port,
+					PeerConfig.SOURCE_PEX);
+				if(addedf != null && addedf.length > index.get()) {
+					peerSession.flags(addedf[index.getAndIncrement()]);
+				}
+			});
 		}
 	}
 	

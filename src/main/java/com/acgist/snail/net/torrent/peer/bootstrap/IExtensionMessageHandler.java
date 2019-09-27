@@ -2,6 +2,8 @@ package com.acgist.snail.net.torrent.peer.bootstrap;
 
 import java.nio.ByteBuffer;
 
+import com.acgist.snail.system.exception.NetException;
+
 /**
  * <p>扩展协议</p>
  * 
@@ -15,6 +17,6 @@ public interface IExtensionMessageHandler {
 	 * 
 	 * @param buffer 消息
 	 */
-	void onMessage(ByteBuffer buffer);
+	void onMessage(ByteBuffer buffer) throws NetException;
 	
 }

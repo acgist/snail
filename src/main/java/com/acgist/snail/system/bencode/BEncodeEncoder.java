@@ -1,7 +1,6 @@
 package com.acgist.snail.system.bencode;
 
 import java.io.ByteArrayOutputStream;
-import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -31,7 +30,7 @@ import com.acgist.snail.system.bencode.BEncodeDecoder.Type;
  * @author acgist
  * @since 1.0.0
  */
-public class BEncodeEncoder implements Closeable {
+public class BEncodeEncoder {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BEncodeEncoder.class);
 	
@@ -48,7 +47,7 @@ public class BEncodeEncoder implements Closeable {
 	 */
 	private BEncodeDecoder.Type type;
 	/**
-	 * 输出数据
+	 * 输出数据，不需要关闭。
 	 */
 	private ByteArrayOutputStream outputStream;
 	
@@ -63,7 +62,7 @@ public class BEncodeEncoder implements Closeable {
 	/**
 	 * 新建List
 	 */
-	public BEncodeEncoder buildList() {
+	public BEncodeEncoder newList() {
 		this.type = Type.list;
 		this.list = new ArrayList<>();
 		return this;
@@ -72,7 +71,7 @@ public class BEncodeEncoder implements Closeable {
 	/**
 	 * 新建Map
 	 */
-	public BEncodeEncoder buildMap() {
+	public BEncodeEncoder newMap() {
 		this.type = Type.map;
 		this.map = new LinkedHashMap<>();
 		return this;
@@ -231,20 +230,6 @@ public class BEncodeEncoder implements Closeable {
 		return this.outputStream.toByteArray();
 	}
 
-	/**
-	 * 关闭流，ByteArrayInputStream和ByteArrayOutputStream可以不关闭流。
-	 */
-	@Override
-	public void close() {
-		try {
-			if(this.outputStream != null) {
-				this.outputStream.close();
-			}
-		} catch (Exception e) {
-			LOGGER.error("B编码字符流关闭异常", e);
-		}
-	}
-	
 	/**
 	 * 获取字符串，将关闭字符流。
 	 */

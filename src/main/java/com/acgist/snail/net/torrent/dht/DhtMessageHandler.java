@@ -65,30 +65,27 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	};
 	
 	@Override
-	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) {
+	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException {
 		buffer.flip();
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
-		try (final var decoder = BEncodeDecoder.newInstance(bytes)) {
-			decoder.nextMap();
-			if(decoder.isEmpty()) {
-				LOGGER.warn("DHT消息格式错误：{}", decoder.oddString());
-				return;
-			}
-			final String y = decoder.getString(DhtConfig.KEY_Y); // 消息类型
-			if(DhtConfig.KEY_Q.equals(y)) {
-				final Request request = Request.valueOf(decoder);
-				request.setSocketAddress(socketAddress);
-				onRequest(request, socketAddress);
-			} else if(DhtConfig.KEY_R.equals(y)) {
-				final Response response = Response.valueOf(decoder);
-				response.setSocketAddress(socketAddress);
-				onResponse(response);
-			} else {
-				LOGGER.warn("不支持的DHT类型：{}", y);
-			}
-		} catch (NetException e) {
-			LOGGER.error("DHT消息处理异常", e);
+		final var decoder = BEncodeDecoder.newInstance(bytes);
+		decoder.nextMap();
+		if(decoder.isEmpty()) {
+			LOGGER.warn("DHT消息格式错误：{}", decoder.oddString());
+			return;
+		}
+		final String y = decoder.getString(DhtConfig.KEY_Y); // 消息类型
+		if(DhtConfig.KEY_Q.equals(y)) {
+			final Request request = Request.valueOf(decoder);
+			request.setSocketAddress(socketAddress);
+			onRequest(request, socketAddress);
+		} else if(DhtConfig.KEY_R.equals(y)) {
+			final Response response = Response.valueOf(decoder);
+			response.setSocketAddress(socketAddress);
+			onResponse(response);
+		} else {
+			LOGGER.warn("不支持的DHT类型：{}", y);
 		}
 	}
 	

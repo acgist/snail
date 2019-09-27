@@ -5,9 +5,7 @@ import java.net.http.HttpClient;
 import java.net.http.WebSocket;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import com.acgist.snail.net.ClientMessageHandlerAdapter;
 import com.acgist.snail.net.IMessageHandler;
@@ -41,7 +39,7 @@ public class WebSocketClient extends ClientMessageHandlerAdapter<WebSocketMessag
 		final CompletableFuture<WebSocket> future = newWebSocket(client, url, timeout);
 		try {
 			return new WebSocketClient(client, future.get(timeout, TimeUnit.SECONDS));
-		} catch (InterruptedException | ExecutionException | TimeoutException e) {
+		} catch (Exception e) {
 			throw new NetException("创建WebSocket失败", e);
 		}
 	}

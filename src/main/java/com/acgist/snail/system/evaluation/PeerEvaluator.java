@@ -194,7 +194,8 @@ public class PeerEvaluator {
 		if(config == null || StringUtils.isEmpty(config.getValue())) {
 			return;
 		}
-		try (final var decoder = BEncodeDecoder.newInstance(config.getValue())) {
+		try {
+			final var decoder = BEncodeDecoder.newInstance(config.getValue());
 			decoder.nextMap().forEach((key, value) -> {
 				this.ranges.put(Integer.valueOf(key), (Long) value);
 			});

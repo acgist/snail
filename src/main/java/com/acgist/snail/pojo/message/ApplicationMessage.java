@@ -109,22 +109,20 @@ public class ApplicationMessage {
 	 */
 	@Override
 	public String toString() {
-		try (final var encoder = BEncodeEncoder.newInstance()) {
-			encoder.buildMap()
-				.put("type", this.type.name());
-			if(this.body != null) {
-				encoder.put("body", this.body);
-			}
-			return encoder.flush().toString();
-		} finally {
+		final var encoder = BEncodeEncoder.newInstance();
+		encoder.newMap().put("type", this.type.name());
+		if(this.body != null) {
+			encoder.put("body", this.body);
 		}
+		return encoder.flush().toString();
 	}
 	
 	/**
 	 * B编码字符串变成ApplicationMessage对象
 	 */
 	public static final ApplicationMessage valueOf(String content) {
-		try (final var decoder = BEncodeDecoder.newInstance(content.getBytes())) {
+		try {
+			final var decoder = BEncodeDecoder.newInstance(content.getBytes());
 			decoder.nextMap();
 			if(decoder.isEmpty()) {
 				return null;

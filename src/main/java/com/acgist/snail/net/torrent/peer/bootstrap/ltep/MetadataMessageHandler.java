@@ -72,7 +72,8 @@ public class MetadataMessageHandler implements IExtensionMessageHandler {
 	public void onMessage(ByteBuffer buffer) {
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
-		try (final var decoder = BEncodeDecoder.newInstance(bytes)) {
+		try {
+			final var decoder = BEncodeDecoder.newInstance(bytes);
 			decoder.nextMap();
 			if(decoder.isEmpty()) {
 				LOGGER.warn("metadata消息格式错误：{}", decoder.oddString());
@@ -242,15 +243,13 @@ public class MetadataMessageHandler implements IExtensionMessageHandler {
 			LOGGER.warn("不支持metadata扩展协议");
 			return;
 		}
-		try (final var encoder = BEncodeEncoder.newInstance()) {
-			encoder.buildMap().put(data).flush();
-			if(x != null) {
-				encoder.write(x);
-			}
-			final byte[] bytes = encoder.bytes();
-			this.extensionMessageHandler.pushMessage(type, bytes);
-		} finally {
+		final var encoder = BEncodeEncoder.newInstance();
+		encoder.newMap().put(data).flush();
+		if(x != null) {
+			encoder.write(x);
 		}
+		final byte[] bytes = encoder.bytes();
+		this.extensionMessageHandler.pushMessage(type, bytes);
 	}
 	
 }

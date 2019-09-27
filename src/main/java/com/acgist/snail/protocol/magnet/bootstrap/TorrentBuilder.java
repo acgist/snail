@@ -101,7 +101,8 @@ public class TorrentBuilder {
 	 * 设置InfoHash
 	 */
 	private void infoHash(Map<String, Object> data) {
-		try (final var decoder = BEncodeDecoder.newInstance(this.infoHash.info())) {
+		try {
+			final var decoder = BEncodeDecoder.newInstance(this.infoHash.info());
 			data.put("info", decoder.nextMap());
 		} catch (NetException e) {
 			LOGGER.error("InfoHash设置异常", e);
