@@ -1,4 +1,4 @@
-ï»¿// Snailå¯åŠ¨å™¨ï¼šSnailLauncher
+// SnailÆô¶¯Æ÷£ºSnailLauncher
 //
 
 #include "jni.h"
@@ -6,9 +6,9 @@
 #include "afxwin.h"
 #include "SnailLauncher.h"
 
-// å¯åŠ¨JVM
+// Æô¶¯JVM
 bool startJVM();
-// è¯»å–é…ç½®
+// ¶ÁÈ¡ÅäÖÃ
 char* config(LPCWSTR name);
 TCHAR* configEx(LPCWSTR name);
 
@@ -18,16 +18,16 @@ typedef jint(JNICALL* JNICREATEPROC) (JavaVM**, void**, void*);
 BEGIN_MESSAGE_MAP(SnailLauncher, CWinApp)
 END_MESSAGE_MAP()
 
-// SnailLauncher æ„é€ 
+// SnailLauncher ¹¹Ôì
 SnailLauncher::SnailLauncher() {
-	// åº”ç”¨ç¨‹åº IDï¼šCompanyName.ProductName.SubProduct.VersionInformation
+	// Ó¦ÓÃ³ÌĞò ID£ºCompanyName.ProductName.SubProduct.VersionInformation
 	SetAppID(_T("acgist.Snail.SnailLauncher.1.0.0.0"));
 }
 
-// å”¯ä¸€çš„ä¸€ä¸ª SnailLauncher å¯¹è±¡
+// Î¨Ò»µÄÒ»¸ö SnailLauncher ¶ÔÏó
 SnailLauncher launcher;
 
-// SnailLauncher åˆå§‹åŒ–
+// SnailLauncher ³õÊ¼»¯
 BOOL SnailLauncher::InitInstance() {
 	CWinApp::InitInstance();
 	EnableTaskbarInteraction(FALSE);
@@ -39,13 +39,13 @@ int SnailLauncher::ExitInstance() {
 	return CWinApp::ExitInstance();
 }
 
-// å¯åŠ¨JVM
+// Æô¶¯JVM
 bool startJVM() {
-	// ä¿®æ”¹ç¯å¢ƒå˜é‡ï¼Œè®¾ç½®java.lib.pathæ— æ•ˆ
+	// ĞŞ¸Ä»·¾³±äÁ¿£¬ÉèÖÃjava.lib.pathÎŞĞ§
 	SetEnvironmentVariable(_T("Path"), configEx(_T("java.path")));
-	// JVMåŠ¨æ€åº“
+	// JVM¶¯Ì¬¿â
 	TCHAR* jvmPath = configEx(_T("jvm.file.path"));
-	// JVMå¯åŠ¨å‚æ•°
+	// JVMÆô¶¯²ÎÊı
 	const int jvmOptionCount = 5;
 	JavaVMOption jvmOptions[jvmOptionCount];
 	jvmOptions[0].optionString = config(_T("model"));
@@ -53,73 +53,73 @@ bool startJVM() {
 	jvmOptions[2].optionString = config(_T("xmx"));
 	jvmOptions[3].optionString = config(_T("file.encoding"));
 	jvmOptions[4].optionString = config(_T("jar.file.path"));
-	// jvmOptions[5].optionString = config(_T("java.lib.path")); // æ— æ•ˆç›´æ¥è®¾ç½®ç¯å¢ƒå˜é‡
-	// è®¾ç½®JVMå¯åŠ¨å‚æ•°
+	// jvmOptions[5].optionString = config(_T("java.lib.path")); // ÎŞĞ§Ö±½ÓÉèÖÃ»·¾³±äÁ¿
+	// ÉèÖÃJVMÆô¶¯²ÎÊı
 	JavaVMInitArgs jvmInitArgs;
 	jvmInitArgs.version = JNI_VERSION_10;
 	jvmInitArgs.options = jvmOptions;
 	jvmInitArgs.nOptions = jvmOptionCount;
-	// å¿½ç•¥æ— æ³•è¯†åˆ«JVMçš„æƒ…å†µ
+	// ºöÂÔÎŞ·¨Ê¶±ğJVMµÄÇé¿ö
 	jvmInitArgs.ignoreUnrecognized = JNI_TRUE;
-	// è®¾ç½®å¯åŠ¨ç±»ï¼Œæ³¨æ„åˆ†éš”ç¬¦ï¼ˆ/ï¼‰ï¼Œä¸èƒ½è®¾ç½®ï¼ˆ.ï¼‰
+	// ÉèÖÃÆô¶¯Àà£¬×¢Òâ·Ö¸ô·û£¨/£©£¬²»ÄÜÉèÖÃ£¨.£©
 	const char startClass[] = "com/acgist/main/Application";
-	// å¯åŠ¨æ–¹æ³•ï¼Œè®¾ç½®mainå‡½æ•°
+	// Æô¶¯·½·¨£¬ÉèÖÃmainº¯Êı
 	const char startMethod[] = "main";
-	// å¯åŠ¨å‚æ•°
+	// Æô¶¯²ÎÊı
 	// int paramCount = 2;
 	// const char* params[paramCount] = {"a", "b"};
-	// åŠ è½½JVMåŠ¨æ€é“¾æ¥åº“
+	// ¼ÓÔØJVM¶¯Ì¬Á´½Ó¿â
 	HINSTANCE jvmDLL = LoadLibrary(jvmPath);
 	if(jvmDLL == NULL) {
-		::MessageBox(NULL, _T("JVMåŠ¨æ€é“¾æ¥åº“åŠ è½½å¤±è´¥"), _T("å¯åŠ¨å¤±è´¥"), MB_OK);
+		::MessageBox(NULL, _T("JVM¶¯Ì¬Á´½Ó¿â¼ÓÔØÊ§°Ü"), _T("Æô¶¯Ê§°Ü"), MB_OK);
 		return false;
 	}
-	// åˆå§‹åŒ–JVM
+	// ³õÊ¼»¯JVM
 	JNICREATEPROC jvmProcAddress = (JNICREATEPROC) GetProcAddress(jvmDLL, "JNI_CreateJavaVM");
 	if(jvmDLL == NULL) {
 		FreeLibrary(jvmDLL);
-		::MessageBox(NULL, _T("JVMåˆå§‹åŒ–å¤±è´¥"), _T("å¯åŠ¨å¤±è´¥"), MB_OK);
+		::MessageBox(NULL, _T("JVM³õÊ¼»¯Ê§°Ü"), _T("Æô¶¯Ê§°Ü"), MB_OK);
 		return false;
 	}
-	// åˆ›å»ºJVM
+	// ´´½¨JVM
 	JNIEnv* env;
 	JavaVM* jvm;
 	jint jvmProc = (jvmProcAddress) (&jvm, (void**) &env, &jvmInitArgs);
 	if(jvmProc < 0 || jvm == NULL ||env == NULL) {
 		FreeLibrary(jvmDLL);
-		::MessageBox(NULL, _T("JVMåˆ›å»ºå¤±è´¥"), _T("å¯åŠ¨å¤±è´¥"), MB_OK);
+		::MessageBox(NULL, _T("JVM´´½¨Ê§°Ü"), _T("Æô¶¯Ê§°Ü"), MB_OK);
 		return false;
 	}
-	// åŠ è½½å¯åŠ¨ç±»
+	// ¼ÓÔØÆô¶¯Àà
 	jclass mainClass = env -> FindClass(startClass);
 	if(env -> ExceptionCheck() == JNI_TRUE || mainClass == NULL) {
 		env -> ExceptionDescribe();
 		env -> ExceptionClear();
 		FreeLibrary(jvmDLL);
-		::MessageBox(NULL, _T("JavaMainClassåŠ è½½å¤±è´¥"), _T("å¯åŠ¨å¤±è´¥"), MB_OK);
+		::MessageBox(NULL, _T("JavaMainClass¼ÓÔØÊ§°Ü"), _T("Æô¶¯Ê§°Ü"), MB_OK);
 		return false;
 	}
-	// åŠ è½½å¯åŠ¨æ–¹æ³•
+	// ¼ÓÔØÆô¶¯·½·¨
 	jmethodID methedID = env -> GetStaticMethodID(mainClass, startMethod, "([Ljava/lang/String;)V");
 	if(env -> ExceptionCheck() == JNI_TRUE || methedID == NULL) {
 		env -> ExceptionDescribe();
 		env -> ExceptionClear();
 		FreeLibrary(jvmDLL);
-		::MessageBox(NULL, _T("JavaMainMethodåŠ è½½å¤±è´¥"), _T("å¯åŠ¨å¤±è´¥"), MB_OK);
+		::MessageBox(NULL, _T("JavaMainMethod¼ÓÔØÊ§°Ü"), _T("Æô¶¯Ê§°Ü"), MB_OK);
 		return false;
 	}
-	// å¯åŠ¨JVM
+	// Æô¶¯JVM
 	env -> CallStaticVoidMethod(mainClass, methedID, NULL);
-	// é‡Šæ”¾JVM
+	// ÊÍ·ÅJVM
 	jvm -> DestroyJavaVM();
 	return true;
 }
 
-// è¯»å–é…ç½®
+// ¶ÁÈ¡ÅäÖÃ
 char* config(LPCWSTR name) {
-	// é…ç½®æ–‡ä»¶ã€ä¸´æ—¶å˜é‡
+	// ÅäÖÃÎÄ¼ş¡¢ÁÙÊ±±äÁ¿
 	CString configPath = _T("./snail.ini"), value;
-	// è¯»å–é…ç½®ï¼Œconfig=èŠ‚ï¼Œname=é”®ï¼Œvalue=å€¼
+	// ¶ÁÈ¡ÅäÖÃ£¬config=½Ú£¬name=¼ü£¬value=Öµ
 	GetPrivateProfileString(_T("config"), name, NULL, value.GetBuffer(128), 128, configPath);
 	int length = WideCharToMultiByte(CP_ACP, 0, value, -1, NULL, 0, NULL, NULL);
 	char* buffer = new char[sizeof(char) * length];
