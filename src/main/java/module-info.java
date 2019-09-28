@@ -1,7 +1,26 @@
 /**
  * <h1>Sanil（蜗牛）下载工具</h1>
  * <p>Snail（蜗牛）是一款下载软件，支持下载协议：BT（BitTorrent）、FTP、HTTP。</p>
- * <p>方法注解（author、since）没有时，默认使用类注解。</p>
+ * 
+ * <h2>规范</h2>
+ * <h4>注释、注解</h4>
+ * <p>所有的类、抽象方法必须使用javadoc注解。</p>
+ * <p>所有的类变量、静态变量需要使用javadoc注解。</p>
+ * <p>允许使用同行注释。</p>
+ * 
+ * <p><i>阿里代码规范检测：https://p3c.alibaba.com/plugin/eclipse/update</i></p>
+ * 
+ * <h4>代码顺序</h4>
+ * <p>Logger、单例（INSTANCE）、枚举、常量、静态变量、静态代码块、成员变量</p>
+ * <p>构造方法、单例方法、类方法（抽象方法、public、protected、private）、静态方法</p>
+ * <p>Getter、Setter</p>
+ * <p>内部类</p>
+ * 
+ * <h2>质量检测</h2>
+ * <p>Sonar</p>
+ * <pre>
+ * mvn sonar:sonar "-Dsonar.projectKey=snail" "-Dsonar.host.url=http://localhost:9000" "-Dsonar.login=token"
+ * </pre>
  * 
  * @author acgist
  * @since 1.0.0
@@ -18,7 +37,7 @@ open module com.acgist.snail {
 //	exports com.acgist.snail.downloader;
 
 	/*
-	 * opens：开放包（反射时需要，使用open module不需要此配置）<br>
+	 * opens：开放包（反射时需要，使用open module不需要此配置）
 	 * opens com.acgist.main;
 	 */
 
