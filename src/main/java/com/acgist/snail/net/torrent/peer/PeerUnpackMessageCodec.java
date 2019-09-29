@@ -44,7 +44,7 @@ public class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteBuffer>
 	
 	@Override
 	public void decode(ByteBuffer buffer, InetSocketAddress address, boolean hasAddress) throws NetException {
-		int length = 0; // 消息长度
+		int length = 0; // 消息数据长度
 		while(true) {
 			if(this.buffer == null) {
 				if(this.peerSubMessageHandler.handshake()) {
@@ -64,33 +64,37 @@ public class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteBuffer>
 				} else { // 握手消息长度
 					length = PeerConfig.HANDSHAKE_LENGTH;
 				}
-				// 心跳消息
+				// 心跳消息：如果还有消息内容继续处理，否者跳出。
 				if(length <= 0) {
 					this.peerSubMessageHandler.keepAlive();
-					break;
-				}
-				if(length >= SystemConfig.MAX_NET_BUFFER_SIZE) {
+					if(buffer.hasRemaining()) {
+						continue;
+					} else {
+						break;
+					}
+				} else if(length >= SystemConfig.MAX_NET_BUFFER_SIZE) {
 					throw new OversizePacketException(length);
 				}
 				this.buffer = ByteBuffer.allocate(length);
 			} else {
+				// 上次消息没有读取完成，计算剩余消息数据长度。
 				length = this.buffer.capacity() - this.buffer.position();
 			}
 			final int remaining = buffer.remaining();
-			if(remaining > length) { // 包含一个完整消息
+			if(remaining > length) { // 包含一条完整消息：处理完成后继续读取
 				final byte[] bytes = new byte[length];
 				buffer.get(bytes);
 				this.buffer.put(bytes);
 				this.doNext(this.buffer, address, hasAddress);
 				this.buffer = null;
-			} else if(remaining == length) { // 刚好一个完整消息
+			} else if(remaining == length) { // 刚好一条完整消息：处理完成后跳出循环
 				final byte[] bytes = new byte[length];
 				buffer.get(bytes);
 				this.buffer.put(bytes);
 				this.doNext(this.buffer, address, hasAddress);
 				this.buffer = null;
 				break;
-			} else if(remaining < length) { // 不是完整消息
+			} else if(remaining < length) { // 不是一条完整消息：跳出循环等待后续数据
 				final byte[] bytes = new byte[remaining];
 				buffer.get(bytes);
 				this.buffer.put(bytes);
