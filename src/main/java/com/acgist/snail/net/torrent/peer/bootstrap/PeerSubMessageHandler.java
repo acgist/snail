@@ -126,7 +126,7 @@ public class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		this.peerSession = peerSession;
 		this.torrentSession = torrentSession;
 		this.extensionMessageHandler = ExtensionMessageHandler.newInstance(this.peerSession, this.torrentSession, this);
-		this.dhtExtensionMessageHandler = DhtExtensionMessageHandler.newInstance(this.peerSession, torrentSession.dhtLauncher(), this);
+		this.dhtExtensionMessageHandler = DhtExtensionMessageHandler.newInstance(this.peerSession, this.torrentSession, this);
 	}
 
 	/**
