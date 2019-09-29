@@ -70,8 +70,8 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 	private final AtomicBoolean commandLock = new AtomicBoolean(false);
 	
 	public FtpMessageHandler() {
-		final var multilineMessageCodec = new MultilineMessageCodec(SPLIT, END_REGEX, this);
-		final var lineMessageCodec = new LineMessageCodec(SPLIT, multilineMessageCodec);
+		final var multilineMessageCodec = new MultilineMessageCodec(this, SPLIT, END_REGEX);
+		final var lineMessageCodec = new LineMessageCodec(multilineMessageCodec, SPLIT);
 		final var stringMessageCodec = new StringMessageCodec(lineMessageCodec);
 		this.messageCodec = stringMessageCodec;
 	}

@@ -121,7 +121,7 @@ public class MSECryptHandshakeHandler {
 	private final PeerSubMessageHandler peerSubMessageHandler;
 	private final PeerUnpackMessageCodec peerUnpackMessageCodec;
 
-	private MSECryptHandshakeHandler(PeerSubMessageHandler peerSubMessageHandler, PeerUnpackMessageCodec peerUnpackMessageCodec) {
+	private MSECryptHandshakeHandler(PeerUnpackMessageCodec peerUnpackMessageCodec, PeerSubMessageHandler peerSubMessageHandler) {
 		final MSEKeyPairBuilder mseKeyPairBuilder = MSEKeyPairBuilder.newInstance();
 		this.buffer = ByteBuffer.allocate(BUFFER_SIZE);
 		this.keyPair = mseKeyPairBuilder.buildKeyPair();
@@ -130,8 +130,8 @@ public class MSECryptHandshakeHandler {
 		this.peerUnpackMessageCodec = peerUnpackMessageCodec;
 	}
 
-	public static final MSECryptHandshakeHandler newInstance(PeerSubMessageHandler peerSubMessageHandler, PeerUnpackMessageCodec peerUnpackMessageCodec) {
-		return new MSECryptHandshakeHandler(peerSubMessageHandler, peerUnpackMessageCodec);
+	public static final MSECryptHandshakeHandler newInstance(PeerUnpackMessageCodec peerUnpackMessageCodec, PeerSubMessageHandler peerSubMessageHandler) {
+		return new MSECryptHandshakeHandler(peerUnpackMessageCodec, peerSubMessageHandler);
 	}
 
 	/**

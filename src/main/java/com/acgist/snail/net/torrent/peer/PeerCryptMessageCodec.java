@@ -22,9 +22,9 @@ public class PeerCryptMessageCodec extends MessageCodec<ByteBuffer, ByteBuffer> 
 	 */
 	private final MSECryptHandshakeHandler mseCryptHandshakeHandler;
 	
-	public PeerCryptMessageCodec(PeerSubMessageHandler peerSubMessageHandler, PeerUnpackMessageCodec peerUnpackMessageCodec) {
+	public PeerCryptMessageCodec(PeerUnpackMessageCodec peerUnpackMessageCodec, PeerSubMessageHandler peerSubMessageHandler) {
 		super(peerUnpackMessageCodec);
-		this.mseCryptHandshakeHandler = MSECryptHandshakeHandler.newInstance(peerSubMessageHandler, peerUnpackMessageCodec);
+		this.mseCryptHandshakeHandler = MSECryptHandshakeHandler.newInstance(peerUnpackMessageCodec, peerSubMessageHandler);
 	}
 	
 	@Override

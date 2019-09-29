@@ -42,7 +42,7 @@ public class ApplicationMessageHandler extends TcpMessageHandler implements IMes
 	private static final String SPLIT = "\r\n";
 	
 	public ApplicationMessageHandler() {
-		final var lineMessageCodec = new LineMessageCodec(SPLIT, this);
+		final var lineMessageCodec = new LineMessageCodec(this, SPLIT);
 		final var stringMessageCodec = new StringMessageCodec(lineMessageCodec);
 		this.messageCodec = stringMessageCodec;
 	}

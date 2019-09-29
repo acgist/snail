@@ -19,7 +19,7 @@ public class LineMessageCodec extends MessageCodec<String, String> {
 	 */
 	private final String split;
 	
-	public LineMessageCodec(String split, IMessageCodec<String> messageCodec) {
+	public LineMessageCodec(IMessageCodec<String> messageCodec, String split) {
 		super(messageCodec);
 		this.split = split;
 	}

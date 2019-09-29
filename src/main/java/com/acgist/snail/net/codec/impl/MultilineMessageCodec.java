@@ -27,7 +27,7 @@ public class MultilineMessageCodec extends MessageCodec<String, String> {
 	 */
 	private final StringBuffer message;
 	
-	public MultilineMessageCodec(String split, String endRegex, IMessageCodec<String> messageCodec) {
+	public MultilineMessageCodec(IMessageCodec<String> messageCodec, String split, String endRegex) {
 		super(messageCodec);
 		this.split = split;
 		this.endRegex = endRegex;
