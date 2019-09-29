@@ -196,6 +196,7 @@ public class MSECryptHandshakeHandler {
 			}
 		} catch (NetException e) {
 			this.plaintext();
+			LOGGER.debug("加密握手异常，使用明文。");
 			throw e;
 		}
 	}
@@ -236,7 +237,8 @@ public class MSECryptHandshakeHandler {
 				}
 			}
 		}
-		if(!this.over) { // 握手没有完成：明文
+		if(!this.over) {
+			LOGGER.debug("加密握手失败，使用明文。");
 			this.plaintext();
 		}
 	}
