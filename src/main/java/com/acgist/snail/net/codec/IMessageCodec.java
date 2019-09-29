@@ -15,7 +15,9 @@ import com.acgist.snail.system.exception.NetException;
 public interface IMessageCodec<T> {
 
 	/**
-	 * 是否结束
+	 * <p>解码是否完成</p>
+	 * <p>完成={@link #onMessage(Object)}或者{@link #onMessage(Object, InetSocketAddress)}</p>
+	 * <p>继续={@link #decode(Object)}或者{@link #decode(Object, InetSocketAddress)}</p>
 	 * 
 	 * @return true-完成；false-继续
 	 */
