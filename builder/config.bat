@@ -32,5 +32,5 @@ set launcherExe=.\SnailLauncher\%exe%
 rem Æô¶¯ÎÄ¼şÅäÖÃÂ·¾¶
 set launcherIni=.\SnailLauncher\%ini%
 
-rem JAVAÒÀÀµÄ£¿é£¬²éÑ¯ÒÀÀµÃüÁî£ºjdeps --list-deps *.jar
+rem JAVAÒÀÀµÄ£¿é£ºjdeps --list-deps *.jar
 set modules="java.sql,java.base,java.naming,java.desktop,java.net.http,java.scripting,java.management,jdk.unsupported"

@@ -4,7 +4,10 @@ rem 加载配置文件
 call config.bat
 
 echo 开始构建项目【%project%】
-echo 请确保pom.xml、snail.ini、config.bat、system.properties配置文件中版本号一致
+
+rem 确认版本信息
+set /p input=请确认所有配置文件（pom.xml、snail.ini、config.bat、system.properties）版本信息一致（Y/N）？
+if /i %input%==Y (echo 开始构建项目) else (exit)
 
 rem 清除文件
 call clean.bat
@@ -19,7 +22,7 @@ call mvn clean package -q -P release -D skipTests
 echo -----------------------------------------------
 echo 拷贝文件
 echo -----------------------------------------------
-call xcopy /S /Q .\target\%lib%\* %target%%lib%\*
+call xcopy /S /Q .\target\%lib%\* %target%%lib%\
 call copy .\target\%jar% %target%
 call copy %launcherExe% %target%%exe%
 call copy %launcherIni% %target%%ini%
