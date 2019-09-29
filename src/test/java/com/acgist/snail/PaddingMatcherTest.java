@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 
 import org.junit.Test;
 
-import com.acgist.snail.net.torrent.peer.bootstrap.crypt.PaddingMatcher;
+import com.acgist.snail.net.torrent.peer.bootstrap.crypt.MSEPaddingReader;
 
 public class PaddingMatcherTest {
 
@@ -19,7 +19,7 @@ public class PaddingMatcherTest {
 	
 	@Test
 	public void match() {
-		PaddingMatcher matcher = PaddingMatcher.newInstance(2);
+		MSEPaddingReader matcher = MSEPaddingReader.newInstance(2);
 		ByteBuffer buffer = ByteBuffer.allocate(100);
 		buffer.putShort((short) 2).put("12".getBytes());
 //		buffer.putShort((short) 0);
@@ -27,7 +27,7 @@ public class PaddingMatcherTest {
 		buffer.put("1234".getBytes());
 		buffer.flip();
 		
-		boolean ok = matcher.match(buffer);
+		boolean ok = matcher.read(buffer);
 		System.out.println(ok);
 		System.out.println(matcher);
 		
@@ -35,7 +35,7 @@ public class PaddingMatcherTest {
 		append.put("0".repeat(96).getBytes());
 		append.flip();
 		
-		ok = matcher.match(append);
+		ok = matcher.read(append);
 		System.out.println(ok);
 		System.out.println(matcher);
 		

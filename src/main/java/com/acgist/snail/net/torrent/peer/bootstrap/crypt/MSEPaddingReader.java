@@ -12,10 +12,10 @@ import java.util.List;
  * @author acgist
  * @since 1.1.0
  */
-public class PaddingMatcher {
+public class MSEPaddingReader {
 
 	/**
-	 * 同步次数
+	 * 读取数据数量
 	 */
 	private int count;
 	/**
@@ -23,31 +23,31 @@ public class PaddingMatcher {
 	 */
 	private byte[] bytes;
 	/**
-	 * 数据长度（每次读取减少）
+	 * 剩余数据长度
 	 */
 	private short length = -1;
 	/**
-	 * 数据
+	 * 数据集合
 	 */
 	private final List<byte[]> list;
 	
-	private PaddingMatcher(int count) {
+	private MSEPaddingReader(int count) {
 		this.count = count;
 		this.list = new ArrayList<>(count);
 	}
 	
-	public static final PaddingMatcher newInstance(int count) {
-		return new PaddingMatcher(count);
+	public static final MSEPaddingReader newInstance(int count) {
+		return new MSEPaddingReader(count);
 	}
 	
 	/**
-	 * 数据同步
+	 * 数据读取
 	 * 
 	 * @param buffer 数据
 	 * 
-	 * @return 是否同步完成：true-完成；false-未完成；
+	 * @return 是否读取完成：true-完成；false-未完成；
 	 */
-	public boolean match(ByteBuffer buffer) {
+	public boolean read(ByteBuffer buffer) {
 		if(this.count == 0) {
 			return true;
 		}
@@ -64,14 +64,14 @@ public class PaddingMatcher {
 			this.length = -1;
 			this.list.add(this.bytes);
 			buffer.compact().flip();
-			return match(buffer);
+			return read(buffer);
 		} else if(remain >= this.length) {
 			buffer.get(this.bytes, this.bytes.length - this.length, this.length);
 			this.count--;
 			this.length = -1;
 			this.list.add(this.bytes);
 			buffer.compact().flip();
-			return match(buffer);
+			return read(buffer);
 		} else {
 			buffer.get(this.bytes, this.bytes.length - this.length, remain);
 			this.length -= remain;
@@ -80,6 +80,9 @@ public class PaddingMatcher {
 		}
 	}
 	
+	/**
+	 * 获取所有数据集合
+	 */
 	public List<byte[]> allPadding() {
 		return this.list;
 	}
