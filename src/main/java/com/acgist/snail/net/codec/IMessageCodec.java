@@ -49,7 +49,8 @@ public interface IMessageCodec<T> {
 	 * 
 	 * @throws NetException 网络异常
 	 */
-	default void decode(T message) throws NetException {}
+	default void decode(T message) throws NetException {
+	}
 	
 	/**
 	 * 消息解码
@@ -59,7 +60,8 @@ public interface IMessageCodec<T> {
 	 * 
 	 * @throws NetException 网络异常
 	 */
-	default void decode(T message, InetSocketAddress address) throws NetException {}
+	default void decode(T message, InetSocketAddress address) throws NetException {
+	}
 	
 	/**
 	 * 处理消息
@@ -68,7 +70,8 @@ public interface IMessageCodec<T> {
 	 * 
 	 * @throws NetException 网络异常
 	 */
-	default void onMessage(T message) throws NetException {}
+	default void onMessage(T message) throws NetException {
+	}
 	
 	/**
 	 * 处理消息
@@ -78,6 +81,7 @@ public interface IMessageCodec<T> {
 	 * 
 	 * @throws NetException 网络异常
 	 */
-	default void onMessage(T message, InetSocketAddress address) throws NetException {}
+	default void onMessage(T message, InetSocketAddress address) throws NetException {
+	}
 
 }

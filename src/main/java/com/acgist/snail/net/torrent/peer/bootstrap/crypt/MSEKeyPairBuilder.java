@@ -11,6 +11,7 @@ import com.acgist.snail.system.config.CryptConfig;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.ArgumentException;
 import com.acgist.snail.utils.NumberUtils;
+import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>
@@ -22,6 +23,9 @@ import com.acgist.snail.utils.NumberUtils;
  */
 public class MSEKeyPairBuilder {
 
+	/**
+	 * 公钥生成使用随机数
+	 */
 	private final Random random;
 
 	private MSEKeyPairBuilder() {
@@ -44,7 +48,7 @@ public class MSEKeyPairBuilder {
 	/**
 	 * 创建S：DH Secret
 	 */
-	public BigInteger buildDHSecret(BigInteger publicKey, PrivateKey privateKey) {
+	public static final BigInteger buildDHSecret(BigInteger publicKey, PrivateKey privateKey) {
 		if(privateKey instanceof MSEPrivateKey) {
 			return ((MSEPrivateKey) privateKey).buildDHSecret(new MSEPublicKey(publicKey));
 		}
@@ -91,6 +95,11 @@ public class MSEKeyPairBuilder {
 				}
 			}
 			return this.encoded;
+		}
+		
+		@Override
+		public String toString() {
+			return StringUtils.hex(this.getEncoded());
 		}
 		
 	}
@@ -159,6 +168,11 @@ public class MSEKeyPairBuilder {
 			return this.value.toByteArray();
 		}
 
+		@Override
+		public String toString() {
+			return StringUtils.hex(this.getEncoded());
+		}
+		
 	}
 
 }

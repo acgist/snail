@@ -7,6 +7,32 @@ import org.junit.Test;
 public class ByteBufferTest {
 
 	@Test
+	public void append() {
+		ByteBuffer buffer = ByteBuffer.allocate(100);
+		buffer.put("1234".getBytes());
+		System.out.println(buffer);
+		buffer.flip();
+		System.out.println(buffer);
+		buffer.put("5678".getBytes());
+		System.out.println(buffer);
+		buffer.flip();
+		System.out.println(buffer);
+		buffer.compact();
+		System.out.println(buffer);
+	}
+	
+	@Test
+	public void put() {
+		ByteBuffer buffer = ByteBuffer.wrap("1234".getBytes());
+		ByteBuffer x = ByteBuffer.allocate(4);
+		System.out.println(buffer);
+		System.out.println(x);
+		x.put(buffer);
+		System.out.println(buffer);
+		System.out.println(x);
+	}
+	
+	@Test
 	public void cos() {
 		long begin = System.currentTimeMillis();
 		for (int i = 0; i < 10000; i++) {
