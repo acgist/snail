@@ -23,6 +23,7 @@ import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.DigestUtils;
 import com.acgist.snail.utils.NumberUtils;
+import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
@@ -68,14 +69,14 @@ public class MSECryptHandshakeHandler {
 		sendPublicKey,
 		/** 接收公钥 */
 		receivePublicKey,
-		/** 发送加密选择 */
+		/** 发送加密协议协商 */
 		sendProvide,
-		/** 接收加密选择 */
+		/** 接收加密协议协商 */
 		receiveProvide,
 		receiveProvidePadding,
-		/** 发送确认加密 */
+		/** 发送确认加密协议 */
 		sendConfirm,
-		/** 接收确认加密 */
+		/** 接收确认加密协议 */
 		receiveConfirm,
 		receiveConfirmPadding;
 		
@@ -279,7 +280,7 @@ public class MSECryptHandshakeHandler {
 			return;
 		}
 		if(this.buffer.position() > PUBLIC_KEY_MAX_LENGTH) { // 数据超过最大长度
-			throw new NetException("加密握手长度错误");
+			throw new NetException("加密握手，长度错误。");
 		}
 		this.buffer.flip();
 		final BigInteger publicKey = NumberUtils.decodeUnsigned(this.buffer, CryptConfig.PUBLIC_KEY_LENGTH);
@@ -295,14 +296,14 @@ public class MSECryptHandshakeHandler {
 	}
 	
 	/**
-	 * 提供加密选择：
+	 * 发送加密协议协商：
 	 * HASH('req1', S),
 	 * HASH('req2', SKEY) xor HASH('req3', S),
 	 * ENCRYPT(VC, crypto_provide, len(PadC), PadC, len(IA)),
 	 * ENCRYPT(IA)
 	 */
 	private void sendProvide() throws NetException {
-		LOGGER.debug("加密握手，提供加密选择，步骤：{}", this.step);
+		LOGGER.debug("加密握手，发送加密协议协商，步骤：{}", this.step);
 		final TorrentSession torrentSession = this.peerSubMessageHandler.torrentSession();
 		if(torrentSession == null) {
 			throw new NetException("加密握手TorrentSession为空");
@@ -345,10 +346,10 @@ public class MSECryptHandshakeHandler {
 	private static final int PROVIDE_MAX_LENGTH = PROVIDE_MIN_LENGTH + CryptConfig.PADDING_MAX_LENGTH;
 	
 	/**
-	 * 接收加密选择
+	 * 接收加密协议协商
 	 */
 	private void receiveProvide() throws NetException {
-		LOGGER.debug("加密握手，接收加密选择，步骤：{}", this.step);
+		LOGGER.debug("加密握手，接收加密协议协商，步骤：{}", this.step);
 		final MessageDigest digest = DigestUtils.sha1();
 		final byte[] dhSecretBytes = NumberUtils.encodeUnsigned(this.dhSecret, CryptConfig.PUBLIC_KEY_LENGTH);
 //		HASH('req1', S)
@@ -362,7 +363,7 @@ public class MSECryptHandshakeHandler {
 			return;
 		}
 		if(this.buffer.position() > PROVIDE_MAX_LENGTH) {
-			throw new NetException("加密握手长度错误");
+			throw new NetException("加密握手，长度错误。");
 		}
 		this.buffer.flip();
 		final byte[] req1 = new byte[20];
@@ -384,7 +385,7 @@ public class MSECryptHandshakeHandler {
 			}
 		}
 		if(infoHash == null) {
-			throw new NetException("加密握手不存在的种子信息");
+			throw new NetException("加密握手，不存在的种子信息。");
 		}
 		this.cipher = MSECipher.newReceiver(dhSecretBytes, infoHash);
 //		ENCRYPT(VC, crypto_provide, len(PadC), PadC, len(IA))
@@ -395,6 +396,7 @@ public class MSECryptHandshakeHandler {
 		final byte[] vc = new byte[CryptConfig.VC_LENGTH];
 		this.buffer.get(vc);
 		final int provide = this.buffer.getInt(); // 协议选择
+		LOGGER.debug("接收加密协议协商策略：{}", provide);
 		this.strategy = selectStrategy(provide); // 选择协议
 		this.step = Step.receiveProvidePadding;
 		this.msePaddingReader = MSEPaddingReader.newInstance(2);
@@ -402,23 +404,28 @@ public class MSECryptHandshakeHandler {
 	}
 	
 	/**
-	 * 接收加密选择Padding
+	 * 接收加密协议协商Padding
 	 */
 	private void receiveProvidePadding() {
-		LOGGER.debug("加密握手，接收加密选择Padding，步骤：{}", this.step);
+		LOGGER.debug("加密握手，接收加密协议协商Padding，步骤：{}", this.step);
 		final boolean ok = this.msePaddingReader.read(this.buffer);
 		if(ok) {
+			if(LOGGER.isDebugEnabled()) {
+				this.msePaddingReader.allPadding().forEach(bytes -> {
+					LOGGER.debug("Padding：{}", StringUtils.hex(bytes));
+				});
+			}
 			sendConfirm();
 		}
 	}
 	
 	/**
-	 * 确认加密
+	 * 发送确认加密协议
 	 * ENCRYPT(VC, crypto_select, len(padD), padD),
 	 * ENCRYPT2(Payload Stream)
 	 */
 	private void sendConfirm() {
-		LOGGER.debug("加密握手，发送确认加密，步骤：{}", this.step);
+		LOGGER.debug("加密握手，发送确认加密协议，步骤：{}", this.step);
 		final byte[] padding = buildZeroPadding(CryptConfig.PADDING_MAX_LENGTH);
 		final int paddingLength = padding.length;
 		final ByteBuffer buffer = ByteBuffer.allocate(14 + paddingLength); // 8 + 4 + 2 + Padding
@@ -436,10 +443,10 @@ public class MSECryptHandshakeHandler {
 	private static final int CONFIRM_MAX_LENGTH = CONFIRM_MIN_LENGTH + CryptConfig.PADDING_MAX_LENGTH;
 	
 	/**
-	 * 接收确认加密
+	 * 接收确认加密协议
 	 */
 	private void receiveConfirm() throws NetException {
-		LOGGER.debug("加密握手，接收确认加密，步骤：{}", this.step);
+		LOGGER.debug("加密握手，接收确认加密协议，步骤：{}", this.step);
 		final byte[] vcMatch = this.cipherTmp.decrypt(CryptConfig.VC);
 		if(!match(vcMatch)) {
 			return;
@@ -448,7 +455,7 @@ public class MSECryptHandshakeHandler {
 			return;
 		}
 		if(this.buffer.position() > CONFIRM_MAX_LENGTH) {
-			throw new NetException("加密握手长度错误");
+			throw new NetException("加密握手，长度错误。");
 		}
 //		ENCRYPT(VC, crypto_select, len(padD), padD)
 		this.buffer.flip();
@@ -456,6 +463,7 @@ public class MSECryptHandshakeHandler {
 		final byte[] vc = new byte[CryptConfig.VC_LENGTH];
 		this.buffer.get(vc);
 		final int provide = this.buffer.getInt(); // 协议选择
+		LOGGER.debug("接收确认加密协议策略：{}", provide);
 		this.strategy = selectStrategy(provide); // 选择协议
 		LOGGER.debug("接收确认加密协议：{}", this.strategy);
 		this.step = Step.receiveConfirmPadding;
@@ -464,21 +472,27 @@ public class MSECryptHandshakeHandler {
 	}
 	
 	/**
-	 * 接收确认加密Padding
+	 * 接收确认加密协议Padding
 	 */
 	private void receiveConfirmPadding() {
-		LOGGER.debug("加密握手，接收确认加密Padding，步骤：{}", this.step);
+		LOGGER.debug("加密握手，接收确认加密协议Padding，步骤：{}", this.step);
 		final boolean ok = this.msePaddingReader.read(this.buffer);
 		if(ok) {
+			if(LOGGER.isDebugEnabled()) {
+				this.msePaddingReader.allPadding().forEach(bytes -> {
+					LOGGER.debug("Padding：{}", StringUtils.hex(bytes));
+				});
+			}
 			this.over(true, this.strategy.crypt());
 		}
 	}
 	
 	/**
-	 * 选择策略
+	 * <p>选择策略</p>
+	 * <p>协商：根据接入客户端和本地综合选择出使用加密或者明文</p>
+	 * <p>确认：加密或者明文</p>
 	 */
 	private CryptConfig.Strategy selectStrategy(int provide) throws NetException {
-		LOGGER.debug("选择策略：{}", provide);
 		final boolean plaintext = (provide & 0x01) == 0x01;
 		final boolean crypt = 	  (provide & 0x02) == 0x02;
 		Strategy selected = null;

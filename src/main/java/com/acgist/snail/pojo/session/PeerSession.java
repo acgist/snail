@@ -93,11 +93,11 @@ public class PeerSession implements IStatistics {
 	/**
 	 * 接入Peer（上传）
 	 */
-	private volatile PeerConnect peerConnect;
+	private PeerConnect peerConnect;
 	/**
 	 * 连接Peer（下载）
 	 */
-	private volatile PeerLauncher peerLauncher;
+	private PeerLauncher peerLauncher;
 	/**
 	 * 支持的扩展协议
 	 */
@@ -428,20 +428,20 @@ public class PeerSession implements IStatistics {
 		return (this.flags & PeerConfig.PEX_UTP) != 0;
 	}
 	
-	public void peerConnect(PeerConnect peerConnect) {
-		this.peerConnect = peerConnect;
-	}
-	
-	public void peerLauncher(PeerLauncher peerLauncher) {
-		this.peerLauncher = peerLauncher;
-	}
-	
 	public PeerConnect peerConnect() {
 		return this.peerConnect;
 	}
 	
+	public void peerConnect(PeerConnect peerConnect) {
+		this.peerConnect = peerConnect;
+	}
+	
 	public PeerLauncher peerLauncher() {
 		return this.peerLauncher;
+	}
+	
+	public void peerLauncher(PeerLauncher peerLauncher) {
+		this.peerLauncher = peerLauncher;
 	}
 	
 	public InetSocketAddress peerSocketAddress() {
