@@ -47,7 +47,9 @@ public class IoUtils {
 		final CharsetDecoder decoder = Charset.forName(charset).newDecoder();
 		decoder.onMalformedInput(CodingErrorAction.IGNORE);
 		try {
-			buffer.flip();
+			if(buffer.position() != 0) {
+				buffer.flip();
+			}
 			content = decoder.decode(buffer).toString();
 			buffer.compact();
 		} catch (Exception e) {

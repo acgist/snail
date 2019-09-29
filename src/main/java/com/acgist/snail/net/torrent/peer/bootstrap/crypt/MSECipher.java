@@ -59,10 +59,10 @@ public class MSECipher {
 	}
 	
 	private MSECipher(byte[] S, InfoHash infoHash, boolean initiator) {
-		Key initiatorKey = buildInitiatorKey(S, infoHash.infoHash());
-		Key receiverKey = buildReceiverKey(S, infoHash.infoHash());
-		Key encryptKey = initiator ? initiatorKey : receiverKey;
-		Key decryptKey = initiator ? receiverKey : initiatorKey;
+		final Key initiatorKey = buildInitiatorKey(S, infoHash.infoHash());
+		final Key receiverKey = buildReceiverKey(S, infoHash.infoHash());
+		final Key encryptKey = initiator ? initiatorKey : receiverKey;
+		final Key decryptKey = initiator ? receiverKey : initiatorKey;
 		this.decryptCipher = buildCipher(Cipher.DECRYPT_MODE, ARC4_ALGO_TRANSFORMATION, decryptKey);
 		this.encryptCipher = buildCipher(Cipher.ENCRYPT_MODE, ARC4_ALGO_TRANSFORMATION, encryptKey);
 	}
