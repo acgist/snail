@@ -121,7 +121,10 @@ public class MSECryptHandshakeHandler {
 	 * S：DH Secret
 	 */
 	private BigInteger dhSecret;
-	private PaddingMatcher matcher;
+	/**
+	 * Padding数据读取器
+	 */
+	private MSEPaddingReader msePaddingReader;
 	
 	private final PeerSubMessageHandler peerSubMessageHandler;
 	private final PeerUnpackMessageCodec peerUnpackMessageCodec;
@@ -391,8 +394,8 @@ public class MSECryptHandshakeHandler {
 		this.buffer.get(vc);
 		final int provide = this.buffer.getInt(); // 协议选择
 		this.strategy = selectStrategy(provide); // 选择协议
-		this.matcher = PaddingMatcher.newInstance(2);
 		this.step = Step.receiveProvidePadding;
+		this.msePaddingReader = MSEPaddingReader.newInstance(2);
 		this.receiveProvidePadding();
 	}
 	
@@ -400,7 +403,8 @@ public class MSECryptHandshakeHandler {
 	 * 接收加密选择Padding
 	 */
 	private void receiveProvidePadding() {
-		final boolean ok = this.matcher.match(this.buffer);
+		LOGGER.debug("加密握手，接收加密选择Padding，步骤：{}", this.step);
+		final boolean ok = this.msePaddingReader.read(this.buffer);
 		if(ok) {
 			sendConfirm();
 		}
@@ -452,8 +456,8 @@ public class MSECryptHandshakeHandler {
 		final int provide = this.buffer.getInt(); // 协议选择
 		this.strategy = selectStrategy(provide); // 选择协议
 		LOGGER.debug("接收确认加密协议：{}", this.strategy);
-		this.matcher = PaddingMatcher.newInstance(1);
 		this.step = Step.receiveConfirmPadding;
+		this.msePaddingReader = MSEPaddingReader.newInstance(1);
 		this.receiveConfirmPadding();
 	}
 	
@@ -461,7 +465,8 @@ public class MSECryptHandshakeHandler {
 	 * 接收确认加密Padding
 	 */
 	private void receiveConfirmPadding() {
-		final boolean ok = this.matcher.match(this.buffer);
+		LOGGER.debug("加密握手，接收确认加密Padding，步骤：{}", this.step);
+		final boolean ok = this.msePaddingReader.read(this.buffer);
 		if(ok) {
 			this.over(true, this.strategy.crypt());
 		}
@@ -588,6 +593,7 @@ public class MSECryptHandshakeHandler {
 		this.strategy = null;
 		this.dhSecret = null;
 		this.cipherTmp = null;
+		this.msePaddingReader = null;
 		this.unHandshakeLock();
 	}
 
