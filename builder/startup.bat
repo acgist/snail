@@ -3,7 +3,7 @@
 rem 加载配置文件
 call config.bat
 
-echo 开始启动项目【%project%】
+echo 启动项目【%project%】
 
 rem 设置环境变量
 set path=.\%runtime%\bin
