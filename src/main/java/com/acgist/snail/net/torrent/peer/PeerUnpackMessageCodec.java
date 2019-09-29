@@ -64,7 +64,7 @@ public class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteBuffer>
 				} else { // 握手消息长度
 					length = PeerConfig.HANDSHAKE_LENGTH;
 				}
-				// 心跳消息：如果还有消息内容继续处理，否者跳出。
+				// 心跳消息：如果还有消息内容继续处理，否者跳出循环。
 				if(length <= 0) {
 					this.peerSubMessageHandler.keepAlive();
 					if(buffer.hasRemaining()) {
