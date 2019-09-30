@@ -18,6 +18,10 @@ public class LineMessageCodec extends MessageCodec<String, String> {
 	 * 换行符
 	 */
 	private final String split;
+	/**
+	 * 上次没有处理完成的消息
+	 */
+	private String message = "";
 	
 	public LineMessageCodec(IMessageCodec<String> messageCodec, String split) {
 		super(messageCodec);
@@ -28,6 +32,7 @@ public class LineMessageCodec extends MessageCodec<String, String> {
 	protected void decode(String messages, InetSocketAddress address, boolean hasAddress) throws NetException {
 		String message;
 		final int length = this.split.length();
+		messages = this.message + messages; // 拼接上次没有处理完成的消息
 		if(messages.contains(this.split)) {
 			int index = messages.indexOf(this.split);
 			while(index >= 0) {
@@ -37,7 +42,7 @@ public class LineMessageCodec extends MessageCodec<String, String> {
 				index = messages.indexOf(this.split);
 			}
 		}
-		// TODO：最后还剩没有处理的message和下一个消息合并处理
+		this.message = messages;
 	}
 	
 	@Override
