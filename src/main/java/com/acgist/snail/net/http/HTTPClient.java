@@ -40,7 +40,7 @@ public class HTTPClient {
 	/**
 	 * 超时时间
 	 */
-	public static final int TIMEOUT = 5;
+	public static final int TIMEOUT = SystemConfig.CONNECT_TIMEOUT;
 	/**
 	 * 状态码：200：OK
 	 */

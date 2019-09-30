@@ -23,11 +23,6 @@ public class WebSocketMessageHandler implements IMessageHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WebSocketMessageHandler.class);
 	
-	/**
-	 * 发送超时时间
-	 */
-	private static final int TIMEOUT = 4;
-	
 	private boolean close = false;
 //	private final HttpClient client;
 	private final WebSocket socket;
@@ -55,10 +50,11 @@ public class WebSocketMessageHandler implements IMessageHandler {
 			LOGGER.warn("发送消息为空");
 			return;
 		}
+		// TODO：Semaphore
 		synchronized (this.socket) {
 			final Future<WebSocket> future = this.socket.sendBinary(buffer, true);
 			try {
-				final WebSocket webSocket = future.get(TIMEOUT, TimeUnit.SECONDS);
+				final WebSocket webSocket = future.get(SEND_TIMEOUT, TimeUnit.SECONDS);
 				if(webSocket == null) {
 					LOGGER.warn("发送数据为空");
 				}

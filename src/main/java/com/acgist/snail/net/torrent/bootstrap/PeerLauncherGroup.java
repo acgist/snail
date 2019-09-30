@@ -135,7 +135,7 @@ public class PeerLauncherGroup {
 			if(++size > BUILD_SIZE) {
 				synchronized (this.build) {
 					if(this.build.get()) {
-						ThreadUtils.wait(this.build, Duration.ofSeconds(PeerConfig.MAX_PEER_BUILD_TIMEOUT));
+						ThreadUtils.wait(this.build, Duration.ofSeconds(PeerConfig.BUILD_TIMEOUT));
 					}
 				}
 			}

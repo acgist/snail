@@ -34,7 +34,7 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 	/**
 	 * 命令超时时间
 	 */
-	private static final int TIMEOUT = 10;
+	private static final Duration TIMEOUT = Duration.ofSeconds(SystemConfig.SEND_TIMEOUT);
 	/**
 	 * 每条消息分隔符
 	 */
@@ -210,7 +210,7 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 		if(!this.commandLock.get()) {
 			synchronized (this.commandLock) {
 				if(!this.commandLock.get()) {
-					ThreadUtils.wait(this.commandLock, Duration.ofSeconds(TIMEOUT));
+					ThreadUtils.wait(this.commandLock, TIMEOUT);
 				}
 			}
 		}

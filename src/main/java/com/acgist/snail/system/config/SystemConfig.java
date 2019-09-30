@@ -20,12 +20,24 @@ public class SystemConfig extends PropertiesConfig {
 	private static final String SYSTEM_CONFIG = "/config/system.properties";
 
 	/**
-	 * 消息缓冲大小
+	 * 消息缓冲大小，设置Piece大小一致。
 	 */
-	public static final int BUFFER_SIZE = 10 * 1024;
+	public static final int BUFFER_SIZE = 16 * 1024;
+	/**
+	 * 连接超时时间
+	 */
+	public static final int CONNECT_TIMEOUT = 5;
+	/**
+	 * 发送超时时间
+	 */
+	public static final int SEND_TIMEOUT = 5;
+	/**
+	 * 接收超时时间
+	 */
+	public static final int RECEIVE_TIMEOUT = 5;
 	/**
 	 * <p>最大的网络包大小。</p>
-	 * <p>所有的需要创建ByteBuffer的长度由外部Peer设置时需要验证长度，防止恶意攻击导致内存泄露。</p>
+	 * <p>所有的需要创建ByteBuffer和byte[]的长度如果由外部数据设置时需要验证长度，防止恶意攻击导致内存泄露。</p>
 	 */
 	public static final int MAX_NET_BUFFER_SIZE = 4 * 1024 * 1024;
 	/**

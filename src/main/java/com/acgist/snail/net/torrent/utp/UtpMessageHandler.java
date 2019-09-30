@@ -296,7 +296,7 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 		if(!this.connectLock.get()) {
 			synchronized (this.connectLock) {
 				if(!this.connectLock.get()) {
-					ThreadUtils.wait(this.connectLock, Duration.ofSeconds(PeerConfig.MAX_PEER_CONNECT_TIMEOUT));
+					ThreadUtils.wait(this.connectLock, Duration.ofSeconds(PeerConfig.CONNECT_TIMEOUT));
 				}
 			}
 		}

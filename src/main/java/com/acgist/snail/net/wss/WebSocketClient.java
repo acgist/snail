@@ -21,17 +21,12 @@ import com.acgist.snail.system.exception.NetException;
  */
 public class WebSocketClient extends ClientMessageHandlerAdapter<WebSocketMessageHandler> implements IMessageHandler {
 
-	/**
-	 * 超时时间
-	 */
-	private static final int TIMEOUT = 4;
-	
 	private WebSocketClient(HttpClient client, WebSocket socket) {
 		super(new WebSocketMessageHandler(client, socket));
 	}
 	
 	public static final WebSocketClient newInstance(String url) throws NetException {
-		return newInstance(url, TIMEOUT);
+		return newInstance(url, CONNECT_TIMEOUT);
 	}
 	
 	public static final WebSocketClient newInstance(String url, int timeout) throws NetException {

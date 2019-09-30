@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 import java.util.concurrent.Future;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -27,11 +28,6 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	private static final Logger LOGGER = LoggerFactory.getLogger(TcpMessageHandler.class);
 	
 	/**
-	 * 发送超时时间
-	 */
-	private static final int TIMEOUT = 4;
-	
-	/**
 	 * 是否关闭
 	 */
 	private boolean close = false;
@@ -43,6 +39,10 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	 * 消息处理器
 	 */
 	protected IMessageCodec<ByteBuffer> messageCodec;
+	/**
+	 * 写入锁，每次只允许一个写入。
+	 */
+	private final Semaphore writeableLock = new Semaphore(1);
 	
 	/**
 	 * <p>收到消息</p>
@@ -89,18 +89,18 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 			LOGGER.warn("发送消息为空");
 			return;
 		}
-		// 防止多线程同时读写导致WritePendingException
-		synchronized (this.socket) {
+		// 阻塞线程，等待发送完成，防止多线程同时写导致WritePendingException。
+		try {
+			this.writeableLock.acquire();
 			final Future<Integer> future = this.socket.write(buffer);
-			try {
-				// 阻塞线程防止，防止多线程写入时抛出异常：IllegalMonitorStateException
-				final int size = future.get(TIMEOUT, TimeUnit.SECONDS);
-				if(size <= 0) {
-					LOGGER.warn("发送数据为空");
-				}
-			} catch (Exception e) {
-				throw new NetException(e);
+			final int size = future.get(SEND_TIMEOUT, TimeUnit.SECONDS);
+			if(size <= 0) {
+				LOGGER.warn("发送数据为空");
 			}
+		} catch (Exception e) {
+			throw new NetException(e);
+		} finally {
+			this.writeableLock.release();
 		}
 	}
 
@@ -153,10 +153,7 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	private void loopMessage() {
 		if(available()) {
 			final ByteBuffer buffer = ByteBuffer.allocate(SystemConfig.BUFFER_SIZE);
-			// 防止多线程同时读写导致ReadPendingException
-			synchronized (this.socket) {
-				this.socket.read(buffer, buffer, this);
-			}
+			this.socket.read(buffer, buffer, this);
 		}
 	}
 

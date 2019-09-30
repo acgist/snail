@@ -147,7 +147,7 @@ public class DhtConfig extends PropertiesConfig {
 	/**
 	 * DHT响应超时
 	 */
-	public static final Duration TIMEOUT = Duration.ofSeconds(4);
+	public static final Duration TIMEOUT = Duration.ofSeconds(SystemConfig.RECEIVE_TIMEOUT);
 	
 	/**
 	 * 请求类型
