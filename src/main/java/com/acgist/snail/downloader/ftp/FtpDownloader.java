@@ -22,7 +22,7 @@ public class FtpDownloader extends SingleFileDownloader {
 //	private static final Logger LOGGER = LoggerFactory.getLogger(FtpDownloader.class);
 
 	/**
-	 * FtpClient
+	 * FTP客户端
 	 */
 	private FtpClient client;
 	
@@ -63,23 +63,12 @@ public class FtpDownloader extends SingleFileDownloader {
 		IoUtils.close(this.output);
 	}
 
-	/**
-	 * 任务是否完成：长度-1或者下载数据等于任务长度。
-	 */
-	private boolean isComplete(int length) {
-		final long size = this.taskSession.entity().getSize();
-		final long downloadSize = this.taskSession.downloadSize();
-		return length == -1 || size == downloadSize;
-	}
-	
-	/**
-	 * 创建FTP输入流、设置已下载文件大小。
-	 */
-	private void buildInput() {
+	@Override
+	protected void buildInput() {
 		final var entity = this.taskSession.entity();
-		// 已下载大小
+		// 设置已下载大小
 		final long size = FileUtils.fileSize(entity.getFile());
-		// 创建FtpClient
+		// 创建FTP客户端
 		this.client = FtpClientBuilder.newInstance(entity.getUrl()).build();
 		final boolean ok = this.client.connect();
 		if(ok) {
@@ -95,7 +84,7 @@ public class FtpDownloader extends SingleFileDownloader {
 				}
 			}
 		} else {
-			fail("服务器连接失败");
+			fail("FTP服务器连接失败");
 		}
 	}
 	

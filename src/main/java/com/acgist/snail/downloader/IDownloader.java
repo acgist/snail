@@ -6,7 +6,7 @@ import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TaskSession.Status;
 
 /**
- * <p>下载器接口</p>
+ * <p>下载器</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -21,18 +21,11 @@ public interface IDownloader extends Runnable {
 	String id();
 	
 	/**
-	 * 任务状态
+	 * 任务下载状态
 	 * 
-	 * @return 下载状态：true-{@linkplain Status#download 下载中}；false-未下载；
+	 * @return true-{@linkplain Status#download 下载中}；false-未下载；
 	 */
 	boolean running();
-	
-	/**
-	 * 任务信息
-	 * 
-	 * @return 任务
-	 */
-	TaskSession taskSession();
 	
 	/**
 	 * 任务名称
@@ -40,6 +33,13 @@ public interface IDownloader extends Runnable {
 	 * @return 任务名称
 	 */
 	String name();
+	
+	/**
+	 * 任务信息
+	 * 
+	 * @return 任务信息
+	 */
+	TaskSession taskSession();
 
 	/**
 	 * 开始任务
@@ -71,15 +71,15 @@ public interface IDownloader extends Runnable {
 	void refresh();
 	
 	/**
-	 * <p>解锁下载</p>
 	 * <p>解除下载等待锁</p>
 	 */
 	void unlockDownload();
 	
 	/**
-	 * <p>打开任务（初始下载）</p>
+	 * <p>打开任务</p>
 	 * <ul>
-	 * 	<li>获取下载数据</li>
+	 * 	<li>初始下载</li>
+	 * 	<li>打开下载数据流</li>
 	 * 	<li>打开本地文件流</li>
 	 * </ul>
 	 */
@@ -104,10 +104,10 @@ public interface IDownloader extends Runnable {
 	
 	/**
 	 * <p>获取已下载文件大小</p>
-	 * <p>直接通过本地文件获取大小，可能出现误差。</p>
+	 * <p>直接通过本地文件获取已下载大小，可能出现误差，必要时请重写或者调用{@link TaskSession#downloadSize(long)}设置。</p>
 	 * 
 	 * @return 已下载文件大小
 	 */
 	long downloadSize();
-	
+
 }

@@ -9,7 +9,6 @@ import com.acgist.snail.system.context.SystemContext;
 /**
  * <h1>Snail系统启动类。</h1>
  * <p>Snail（蜗牛）是一款下载软件，支持下载协议：BT（BitTorrent）、FTP、HTTP。</p>
- * <p>启动参数：{@linkplain GuiHandler args[0]}</p>
  * 
  * TODO：添加注释、日志优化
  * 
@@ -21,7 +20,8 @@ public class Application {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 	
 	/**
-	 * 启动
+	 * <p>启动<p>
+	 * <p>启动参数：{@linkplain GuiHandler args[0]}</p>
 	 * 
 	 * @param args 启动参数
 	 */
@@ -37,23 +37,23 @@ public class Application {
 	}
 	
 	/**
-	 * 启动系统监听
+	 * <p>启动系统监听</p>
 	 * 
-	 * @return 启动结果：true-成功；false-失败；
+	 * @return true-成功；false-失败；
 	 */
 	private static final boolean listen() {
 		return SystemContext.listen();
 	}
 	
 	/**
-	 * 初始化系统上下文
+	 * <p>初始化系统上下文</p>
 	 */
 	private static final void buildContext() {
 		SystemContext.init();
 	}
 	
 	/**
-	 * 初始化窗口
+	 * <p>初始化GUI窗口</p>
 	 * 
 	 * @param args 启动参数
 	 */

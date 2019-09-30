@@ -1,20 +1,15 @@
 package com.acgist.snail.downloader.torrent;
 
-import java.io.IOException;
-import java.time.Duration;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.downloader.Downloader;
+import com.acgist.snail.downloader.TorrentSessionDownloader;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
-import com.acgist.snail.pojo.bean.Magnet;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.magnet.bootstrap.MagnetReader;
 import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * <p>BT下载器</p>
@@ -22,19 +17,12 @@ import com.acgist.snail.utils.ThreadUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class TorrentDownloader extends Downloader {
+public class TorrentDownloader extends TorrentSessionDownloader {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentDownloader.class);
 	
-	private TorrentSession torrentSession;
-	/**
-	 * 下载锁
-	 */
-	private final Object downloadLock = new Object();
-	
 	private TorrentDownloader(TaskSession taskSession) {
 		super(taskSession);
-		loadTorrent();
 	}
 
 	public static final TorrentDownloader newInstance(TaskSession taskSession) {
@@ -42,37 +30,13 @@ public class TorrentDownloader extends Downloader {
 	}
 
 	@Override
-	public void open() {
-		loadDownload();
-	}
-
-	@Override
-	public void download() throws IOException {
-		while(ok()) {
-			synchronized (this.downloadLock) {
-				ThreadUtils.wait(this.downloadLock, Duration.ofSeconds(Integer.MAX_VALUE));
-				this.complete = this.torrentSession.checkCompleted();
-			}
-		}
-	}
-
-	@Override
-	public void unlockDownload() {
-		synchronized (this.downloadLock) {
-			this.downloadLock.notifyAll();
-		}
-	}
-	
-	@Override
 	public void release() {
 		this.torrentSession.releaseDownload();
 	}
 
-	/**
-	 * 删除时需要释放文件资源
-	 */
 	@Override
 	public void delete() {
+		// 释放BT资源
 		if(this.torrentSession != null) {
 			this.torrentSession.releaseUpload();
 			final String infoHashHex = this.torrentSession.infoHashHex();
@@ -83,27 +47,28 @@ public class TorrentDownloader extends Downloader {
 	}
 	
 	/**
-	 * <p>加载任务</p>
-	 * <p>创建时立即加载任务，使任务可以被分享。</p>
+	 * {@inheritDoc}
+	 * <p>加载完成立即使任务可以被分享</p>
 	 */
-	private void loadTorrent() {
+	@Override
+	protected TorrentSession loadTorrentSession() {
 		final var entity = this.taskSession.entity();
-		final String path = entity.getTorrent();
+		final var path = entity.getTorrent();
 		try {
-			final Magnet magnet = MagnetReader.newInstance(entity.getUrl()).magnet();
-			final String infoHashHex = magnet.getHash();
-			this.torrentSession = TorrentManager.getInstance().newTorrentSession(infoHashHex, path);
-			this.torrentSession.upload(this.taskSession);
+			final var magnet = MagnetReader.newInstance(entity.getUrl()).magnet();
+			final var infoHashHex = magnet.getHash();
+			final var torrentSession = TorrentManager.getInstance().newTorrentSession(infoHashHex, path);
+			torrentSession.upload(this.taskSession);
+			return torrentSession;
 		} catch (DownloadException e) {
 			fail("任务加载失败");
 			LOGGER.error("任务加载异常", e);
 		}
+		return null;
 	}
 	
-	/**
-	 * 加载下载
-	 */
-	private void loadDownload() {
+	@Override
+	protected void loadDownload() {
 		try {
 			this.complete = this.torrentSession.download();
 		} catch (DownloadException e) {
