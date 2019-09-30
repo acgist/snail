@@ -18,7 +18,7 @@ public class BuildWindow extends Window<BuildController> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BuildWindow.class);
 	
-	private static BuildWindow INSTANCE;
+	private static final BuildWindow INSTANCE;
 	
 	private BuildWindow() {
 	}
@@ -28,12 +28,8 @@ public class BuildWindow extends Window<BuildController> {
 	}
 	
 	static {
-		synchronized (BuildWindow.class) {
-			if(INSTANCE == null) {
-				LOGGER.debug("初始化新建窗口");
-				INSTANCE = new BuildWindow();
-			}
-		}
+		LOGGER.debug("初始化新建窗口");
+		INSTANCE = new BuildWindow();
 	}
 	
 	@Override

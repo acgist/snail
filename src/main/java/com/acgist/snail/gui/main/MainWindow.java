@@ -23,7 +23,7 @@ public class MainWindow extends Window<MainController> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MainWindow.class);
 	
-	private static MainWindow INSTANCE;
+	private static final MainWindow INSTANCE;
 	
 	private MainWindow() {
 	}
@@ -33,12 +33,8 @@ public class MainWindow extends Window<MainController> {
 	}
 	
 	static {
-		synchronized (MainWindow.class) {
-			if(INSTANCE == null) {
-				LOGGER.debug("初始化主窗口");
-				INSTANCE = new MainWindow();
-			}
-		}
+		LOGGER.debug("初始化主窗口");
+		INSTANCE = new MainWindow();
 	}
 	
 	@Override

@@ -7,8 +7,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Files;
@@ -174,7 +172,7 @@ public class FileUtils {
 	 */
 	public static final void write(String filePath, byte[] bytes) {
 		buildFolder(filePath, true);
-		try(OutputStream output = new FileOutputStream(filePath)) {
+		try(final var output = new FileOutputStream(filePath)) {
 			output.write(bytes);
 		} catch (IOException e) {
 			LOGGER.error("文件写入异常", e);
@@ -197,8 +195,8 @@ public class FileUtils {
 	 */
 	public static final void copy(String src, String target) {
 		try(
-			InputStream input = new BufferedInputStream(new FileInputStream(src));
-			OutputStream output = new BufferedOutputStream(new FileOutputStream(target));
+			final var input = new BufferedInputStream(new FileInputStream(src));
+			final var output = new BufferedOutputStream(new FileOutputStream(target));
 		) {
 			input.transferTo(output);
 		} catch (IOException e) {
@@ -311,11 +309,11 @@ public class FileUtils {
 			int length;
 			final byte bytes[] = new byte[16 * 1024];
 			final MessageDigest digest = DigestUtils.digest(algo);
-			try (InputStream input = new BufferedInputStream(new FileInputStream(file))) {
+			try (final var input = new BufferedInputStream(new FileInputStream(file))) {
 				while ((length = input.read(bytes)) != -1) {
 					digest.update(bytes, 0, length);
 				}
-			} catch (Exception e) {
+			} catch (IOException e) {
 				LOGGER.error("文件HASH计算异常", e);
 				return data;
 			}

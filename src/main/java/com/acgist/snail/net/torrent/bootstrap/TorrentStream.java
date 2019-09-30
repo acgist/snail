@@ -381,7 +381,7 @@ public class TorrentStream {
 		this.flush();
 		try {
 			this.fileStream.close();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			LOGGER.error("TorrentStream关闭异常", e);
 		}
 	}

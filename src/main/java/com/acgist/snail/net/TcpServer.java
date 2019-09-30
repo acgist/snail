@@ -1,6 +1,5 @@
 package com.acgist.snail.net;
 
-import java.io.IOException;
 import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousServerSocketChannel;
 
@@ -43,7 +42,7 @@ public abstract class TcpServer<T extends TcpMessageHandler> {
 		AsynchronousChannelGroup group = null;
 		try {
 			group = AsynchronousChannelGroup.withThreadPool(SystemThreadContext.newCacheExecutor(SystemThreadContext.SNAIL_THREAD_TCP_SERVER));
-		} catch (IOException e) {
+		} catch (Exception e) {
 			LOGGER.error("启动TCP Server Group异常");
 		}
 		GROUP = group;

@@ -74,12 +74,10 @@ public class TrackerLauncherGroup {
 		.map(client -> {
 			LOGGER.debug("加载TrackerClient，ID：{}，announceUrl：{}", client.id(), client.announceUrl());
 			return TrackerManager.getInstance().newTrackerLauncher(client, this.torrentSession);
-		}).forEach(launcher -> {
-			try {
-				this.trackerLaunchers.add(launcher);
-			} catch (Exception e) {
-				LOGGER.error("Tracker执行异常", e);
-			}
+		})
+		.filter(launcer -> launcer != null)
+		.forEach(launcher -> {
+			this.trackerLaunchers.add(launcher);
 		});
 	}
 

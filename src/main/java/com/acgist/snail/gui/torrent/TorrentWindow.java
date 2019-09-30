@@ -19,7 +19,7 @@ public class TorrentWindow extends Window<TorrentController> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentWindow.class);
 	
-	private static TorrentWindow INSTANCE;
+	private static final TorrentWindow INSTANCE;
 	
 	private TorrentWindow() {
 	}
@@ -29,12 +29,8 @@ public class TorrentWindow extends Window<TorrentController> {
 	}
 	
 	static {
-		synchronized (TorrentWindow.class) {
-			if(INSTANCE == null) {
-				LOGGER.debug("初始化编辑任务窗口");
-				INSTANCE = new TorrentWindow();
-			}
-		}
+		LOGGER.debug("初始化编辑任务窗口");
+		INSTANCE = new TorrentWindow();
 	}
 	
 	@Override

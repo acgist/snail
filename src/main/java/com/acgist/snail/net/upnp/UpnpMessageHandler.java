@@ -10,6 +10,7 @@ import com.acgist.snail.net.codec.IMessageCodec;
 import com.acgist.snail.net.codec.impl.StringMessageCodec;
 import com.acgist.snail.net.upnp.bootstrap.UpnpService;
 import com.acgist.snail.pojo.wrapper.HeaderWrapper;
+import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -53,7 +54,7 @@ public class UpnpMessageHandler extends UdpMessageHandler implements IMessageCod
 			if(StringUtils.isNotEmpty(location)) {
 				UpnpService.getInstance().load(location).setting();
 			}
-		} catch (Exception e) {
+		} catch (NetException e) {
 			LOGGER.error("端口映射异常", e);
 		}
 	}

@@ -197,6 +197,7 @@ public class PeerLauncher {
 	
 	/**
 	 * 资源释放
+	 * TODO：释放完成后状态没有被修改
 	 */
 	public void release() {
 		try {

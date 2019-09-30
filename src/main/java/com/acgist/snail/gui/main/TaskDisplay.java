@@ -58,36 +58,28 @@ public class TaskDisplay {
 	 * 刷新任务数据
 	 */
 	public void refreshTaskList() {
-		try {
-			MainController controller = INSTANCE.controller;
-			if(controller == null) {
-				synchronized (this.lock) {
-					ThreadUtils.wait(this.lock, Duration.ofSeconds(Byte.MAX_VALUE));
-				}
-				controller = INSTANCE.controller;
+		MainController controller = INSTANCE.controller;
+		while(controller == null) {
+			synchronized (this.lock) {
+				ThreadUtils.wait(this.lock, Duration.ofSeconds(Byte.MAX_VALUE));
 			}
-			controller.refreshTaskList();
-		} catch (Exception e) {
-			LOGGER.error("刷新任务数据异常", e);
+			controller = INSTANCE.controller;
 		}
+		controller.refreshTaskList();
 	}
 	
 	/**
 	 * 刷新任务状态
 	 */
 	public void refreshTaskStatus() {
-		try {
-			MainController controller = INSTANCE.controller;
-			if(controller == null) {
-				synchronized (this.lock) {
-					ThreadUtils.wait(this.lock, Duration.ofSeconds(Byte.MAX_VALUE));
-				}
-				controller = INSTANCE.controller;
+		MainController controller = INSTANCE.controller;
+		while(controller == null) {
+			synchronized (this.lock) {
+				ThreadUtils.wait(this.lock, Duration.ofSeconds(Byte.MAX_VALUE));
 			}
-			controller.refreshTaskStatus();
-		} catch (Exception e) {
-			LOGGER.error("刷新任务状态异常", e);
+			controller = INSTANCE.controller;
 		}
+		controller.refreshTaskStatus();
 	}
 	
 }

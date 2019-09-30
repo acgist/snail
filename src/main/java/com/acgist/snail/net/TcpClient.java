@@ -1,6 +1,5 @@
 package com.acgist.snail.net;
 
-import java.io.IOException;
 import java.net.StandardSocketOptions;
 import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousSocketChannel;
@@ -42,7 +41,7 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 		AsynchronousChannelGroup group = null;
 		try {
 			group = AsynchronousChannelGroup.withThreadPool(SystemThreadContext.newCacheExecutor(SystemThreadContext.SNAIL_THREAD_TCP_CLIENT));
-		} catch (IOException e) {
+		} catch (Exception e) {
 			LOGGER.error("启动TCP Client Group异常", e);
 		}
 		GROUP = group;

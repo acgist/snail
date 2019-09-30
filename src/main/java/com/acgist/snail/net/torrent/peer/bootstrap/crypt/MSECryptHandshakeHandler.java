@@ -153,8 +153,8 @@ public class MSECryptHandshakeHandler {
 	 * 发送握手消息
 	 */
 	public void handshake() {
-		sendPublicKey();
 		this.step = Step.sendPublicKey;
+		sendPublicKey();
 	}
 
 	/**
@@ -199,6 +199,10 @@ public class MSECryptHandshakeHandler {
 			this.plaintext();
 			LOGGER.debug("加密握手异常，使用明文。");
 			throw e;
+		} catch (Exception e) {
+			this.plaintext();
+			LOGGER.debug("加密握手异常，使用明文。");
+			throw new NetException("加密握手异常", e);
 		}
 	}
 	

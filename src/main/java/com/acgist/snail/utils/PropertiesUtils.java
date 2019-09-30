@@ -49,7 +49,7 @@ public class PropertiesUtils {
 			return null;
 		}
 		Properties properties = null;
-		try(InputStreamReader input = new InputStreamReader(new FileInputStream(file), SystemConfig.DEFAULT_CHARSET)) {
+		try(final var input = new InputStreamReader(new FileInputStream(file), SystemConfig.DEFAULT_CHARSET)) {
 			properties = new Properties();
 			properties.load(input);
 		} catch (IOException e) {
@@ -66,7 +66,7 @@ public class PropertiesUtils {
 			return null;
 		}
 		Properties properties = null;
-		try(InputStreamReader input = new InputStreamReader(PropertiesUtils.class.getResourceAsStream(path), SystemConfig.DEFAULT_CHARSET)) {
+		try(final var input = new InputStreamReader(PropertiesUtils.class.getResourceAsStream(path), SystemConfig.DEFAULT_CHARSET)) {
 			properties = new Properties();
 			properties.load(input);
 		} catch (IOException e) {
