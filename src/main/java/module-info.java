@@ -12,7 +12,7 @@
  * 
  * <h4>代码顺序</h4>
  * <p>LOGGER、单例（INSTANCE）、枚举、常量、静态变量、静态代码块、成员变量</p>
- * <p>构造方法、单例方法（getInstance、newInstance）、类方法（抽象方法、public、protected、private）、静态方法</p>
+ * <p>构造方法、单例方法（getInstance、newInstance）、静态方法、类方法（抽象方法、public、protected、private）</p>
  * <p>Getter、Setter</p>
  * <p>内部类</p>
  * 

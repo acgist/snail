@@ -38,6 +38,10 @@ public class TorrentEvent extends GuiEvent {
 	protected TorrentEvent() {
 		super(Type.torrent, "种子文件选择事件");
 	}
+	
+	public static final TorrentEvent getInstance() {
+		return INSTANCE;
+	}
 
 	@Override
 	protected void executeNative(Object ... args) {
@@ -98,12 +102,13 @@ public class TorrentEvent extends GuiEvent {
 		}
 	}
 	
+	/**
+	 * 设置被选中的下载文件列表
+	 * 
+	 * @param files 被选中的下载文件列表（B编码）
+	 */
 	public void files(String files) {
 		this.files = files;
-	}
-	
-	public static final TorrentEvent getInstance() {
-		return INSTANCE;
 	}
 
 }

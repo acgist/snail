@@ -27,7 +27,7 @@
 		<encoder>
 			<charset>${system.charset}</charset>
 			<pattern>${system.pattern}</pattern>
-		</encoder>  
+		</encoder>
 	</appender>
 
 	<!-- 控制台日志 -->
@@ -40,7 +40,7 @@
 		<encoder>
 			<charset>${system.charset}</charset>
 			<pattern>${system.pattern}</pattern>
-		</encoder>  
+		</encoder>
 	</appender>
 
 	<root level="DEBUG">

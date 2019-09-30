@@ -6,7 +6,7 @@ import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.image.ImageView;
 
 /**
- * 抽象菜单
+ * 菜单
  * 
  * @author acgist
  * @since 1.0.0
@@ -14,7 +14,8 @@ import javafx.scene.image.ImageView;
 public abstract class Menu extends ContextMenu {
 
 	/**
-	 * <p>初始化基本样式：</p>
+	 * <p>初始化</p>
+	 * <p>基本样式：</p>
 	 * <ul>
 	 * 	<li>边框：1</li>
 	 * 	<li>透明：0.94</li>

@@ -12,6 +12,7 @@ import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * <p>任务刷新器</p>
+ * 
  * TODO：主页隐藏时不刷新任务列表
  * TODO：隐藏、任务完成后刷新时间变短
  * 
@@ -23,9 +24,11 @@ public class TaskDisplay {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskDisplay.class);
 	
 	private static final TaskDisplay INSTANCE = new TaskDisplay();
-	
+
+	/**
+	 * 主窗口控制器
+	 */
 	private MainController controller;
-	
 	/**
 	 * 初始化锁
 	 */
@@ -81,5 +84,5 @@ public class TaskDisplay {
 		}
 		controller.refreshTaskStatus();
 	}
-	
+
 }

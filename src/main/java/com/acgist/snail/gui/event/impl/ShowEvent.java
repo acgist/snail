@@ -19,6 +19,10 @@ public class ShowEvent extends GuiEvent {
 		super(Type.show, "显示窗口事件");
 	}
 
+	public static final GuiEvent getInstance() {
+		return INSTANCE;
+	}
+	
 	@Override
 	protected void executeNative(Object ... args) {
 		Platform.runLater(() -> {
@@ -28,10 +32,6 @@ public class ShowEvent extends GuiEvent {
 
 	@Override
 	protected void executeExtend(Object ... args) {
-	}
-
-	public static final GuiEvent getInstance() {
-		return INSTANCE;
 	}
 
 }

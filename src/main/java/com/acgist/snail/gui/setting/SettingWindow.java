@@ -20,16 +20,16 @@ public class SettingWindow extends Window<SettingController> {
 	
 	private static final SettingWindow INSTANCE;
 	
+	static {
+		LOGGER.debug("初始化设置窗口");
+		INSTANCE = new SettingWindow();
+	}
+	
 	private SettingWindow() {
 	}
 
 	public static final SettingWindow getInstance() {
 		return INSTANCE;
-	}
-	
-	static {
-		LOGGER.debug("初始化设置窗口");
-		INSTANCE = new SettingWindow();
 	}
 	
 	@Override

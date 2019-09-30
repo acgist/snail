@@ -35,20 +35,16 @@ public class TaskMenu extends Menu {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskMenu.class);
 	
-	private static TaskMenu INSTANCE;
+	private static final TaskMenu INSTANCE;
+	
+	static {
+		LOGGER.debug("初始化任务菜单");
+		INSTANCE = new TaskMenu();
+	}
 	
 	private TaskMenu() {
 		init();
 		initMenu();
-	}
-
-	static {
-		synchronized (TaskMenu.class) {
-			if (INSTANCE == null) {
-				LOGGER.debug("初始化任务菜单");
-				INSTANCE = new TaskMenu();
-			}
-		}
 	}
 	
 	public static final TaskMenu getInstance() {
@@ -119,7 +115,7 @@ public class TaskMenu extends Menu {
 	};
 	
 	private EventHandler<ActionEvent> torrentEvent = (event) -> {
-		if(!MainWindow.getInstance().controller().haveTorrent()) {
+		if(!MainWindow.getInstance().controller().hasSelectedTorrent()) {
 			return;
 		}
 		MainWindow.getInstance().controller().selected().forEach(session -> {
@@ -131,7 +127,7 @@ public class TaskMenu extends Menu {
 	};
 	
 	private EventHandler<ActionEvent> exportTorrentEvent = (event) -> {
-		if(!MainWindow.getInstance().controller().haveTorrent()) {
+		if(!MainWindow.getInstance().controller().hasSelectedTorrent()) {
 			return;
 		}
 		final File file = Choosers.chooseDirectory(MainWindow.getInstance().stage(), "种子文件保存目录");
@@ -184,7 +180,7 @@ public class TaskMenu extends Menu {
 	 * BT任务才可以选择下载文件和导出种子
 	 */
 	private EventHandler<WindowEvent> windowShownAction = (event) -> {
-		if(MainWindow.getInstance().controller().haveTorrent()) {
+		if(MainWindow.getInstance().controller().hasSelectedTorrent()) {
 			INSTANCE.torrentMenu.setDisable(false);
 			INSTANCE.exportTorrentMenu.setDisable(false);
 		} else {

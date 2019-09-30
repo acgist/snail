@@ -28,7 +28,11 @@ public class NoticeEvent extends GuiEvent {
 	protected NoticeEvent() {
 		super(Type.notice, "提示消息事件");
 	}
-
+	
+	public static final GuiEvent getInstance() {
+		return INSTANCE;
+	}
+	
 	@Override
 	protected void executeNative(Object ... args) {
 		executeEx(true, args);
@@ -77,10 +81,6 @@ public class NoticeEvent extends GuiEvent {
 		final String body = BEncodeEncoder.encodeMapString(map);
 		applicationMessage.setBody(body);
 		GuiHandler.getInstance().sendGuiMessage(applicationMessage);
-	}
-	
-	public static final GuiEvent getInstance() {
-		return INSTANCE;
 	}
 
 }

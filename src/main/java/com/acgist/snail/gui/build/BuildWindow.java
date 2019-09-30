@@ -20,16 +20,16 @@ public class BuildWindow extends Window<BuildController> {
 	
 	private static final BuildWindow INSTANCE;
 	
+	static {
+		LOGGER.debug("初始化新建窗口");
+		INSTANCE = new BuildWindow();
+	}
+	
 	private BuildWindow() {
 	}
 
 	public static final BuildWindow getInstance() {
 		return INSTANCE;
-	}
-	
-	static {
-		LOGGER.debug("初始化新建窗口");
-		INSTANCE = new BuildWindow();
 	}
 	
 	@Override
@@ -40,7 +40,7 @@ public class BuildWindow extends Window<BuildController> {
 	}
 	
 	/**
-	 * 显示窗口同时设置下载地址
+	 * 显示窗口并且设置下载地址
 	 * 
 	 * @param url 下载地址
 	 */

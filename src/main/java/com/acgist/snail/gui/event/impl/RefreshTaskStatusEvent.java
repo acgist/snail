@@ -19,6 +19,10 @@ public class RefreshTaskStatusEvent extends GuiEvent {
 		super(Type.refreshTaskStatus, "刷新任务状态事件");
 	}
 
+	public static final GuiEvent getInstance() {
+		return INSTANCE;
+	}
+	
 	@Override
 	protected void executeNative(Object ... args) {
 		TaskDisplay.getInstance().refreshTaskStatus();
@@ -28,10 +32,6 @@ public class RefreshTaskStatusEvent extends GuiEvent {
 	protected void executeExtend(Object ... args) {
 		final ApplicationMessage message = ApplicationMessage.message(ApplicationMessage.Type.refresh);
 		GuiHandler.getInstance().sendGuiMessage(message);
-	}
-
-	public static final GuiEvent getInstance() {
-		return INSTANCE;
 	}
 
 }

@@ -18,6 +18,10 @@ public class HideEvent extends GuiEvent {
 	protected HideEvent() {
 		super(Type.hide, "隐藏窗口事件");
 	}
+	
+	public static final GuiEvent getInstance() {
+		return INSTANCE;
+	}
 
 	@Override
 	protected void executeNative(Object ... args) {
@@ -28,10 +32,6 @@ public class HideEvent extends GuiEvent {
 
 	@Override
 	protected void executeExtend(Object ... args) {
-	}
-
-	public static final GuiEvent getInstance() {
-		return INSTANCE;
 	}
 	
 }

@@ -6,7 +6,7 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 
 /**
- * 抽象控制器
+ * 控制器
  * 
  * @author acgist
  * @since 1.1.0
@@ -19,7 +19,7 @@ public abstract class Controller {
 	public static final int DOUBLE_CLICK_COUNT = 2;
 	
 	/**
-	 * 获取拖入面板的数据（Dragboard），获取文本、链接、文件。
+	 * 获取拖入面板的数据（Dragboard），获取文件、链接、文本。
 	 * 
 	 * @return 文本、链接、文件。
 	 */

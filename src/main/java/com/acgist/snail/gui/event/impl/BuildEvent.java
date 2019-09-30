@@ -27,6 +27,10 @@ public class BuildEvent extends GuiEvent {
 		super(Type.build, "创建窗口事件");
 	}
 
+	public static final GuiEvent getInstance() {
+		return INSTANCE;
+	}
+	
 	@Override
 	protected void executeNative(Object ... args) {
 		LOGGER.info("初始化窗口");
@@ -43,10 +47,6 @@ public class BuildEvent extends GuiEvent {
 	@Override
 	protected void executeExtend(Object ... args) {
 		GuiHandler.getInstance().lock(); // 外部GUI锁定程序
-	}
-
-	public static final GuiEvent getInstance() {
-		return INSTANCE;
 	}
 	
 }

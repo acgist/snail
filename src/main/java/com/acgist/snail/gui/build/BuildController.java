@@ -47,7 +47,7 @@ public class BuildController extends Controller implements Initializable {
 	}
 	
 	/**
-	 * 选择种子按钮
+	 * 选择种子文件按钮
 	 */
 	@FXML
 	public void handleTorrentAction(ActionEvent event) {
@@ -71,11 +71,11 @@ public class BuildController extends Controller implements Initializable {
 			// TODO：优化卡死现象
 			DownloaderManager.getInstance().newTask(url);
 		} catch (DownloadException e) {
-			LOGGER.error("新建下载任务异常：{}", url, e);
 			ok = false;
+			LOGGER.error("新建下载任务异常：{}", url, e);
 			Alerts.warn("下载失败", e.getMessage());
 		}
-		if(ok) { // 下载成功
+		if(ok) { // 新建下载成功
 			setUrl("");
 			BuildWindow.getInstance().hide();
 		}
