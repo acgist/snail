@@ -19,6 +19,10 @@ public class ExitEvent extends GuiEvent {
 	protected ExitEvent() {
 		super(Type.exit, "退出窗口事件");
 	}
+	
+	public static final GuiEvent getInstance() {
+		return INSTANCE;
+	}
 
 	@Override
 	protected void executeNative(Object ... args) {
@@ -29,10 +33,6 @@ public class ExitEvent extends GuiEvent {
 	@Override
 	protected void executeExtend(Object ... args) {
 		GuiHandler.getInstance().unlock();
-	}
-
-	public static final GuiEvent getInstance() {
-		return INSTANCE;
 	}
 	
 }

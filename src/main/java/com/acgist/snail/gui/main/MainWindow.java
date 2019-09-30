@@ -25,16 +25,16 @@ public class MainWindow extends Window<MainController> {
 	
 	private static final MainWindow INSTANCE;
 	
+	static {
+		LOGGER.debug("初始化主窗口");
+		INSTANCE = new MainWindow();
+	}
+	
 	private MainWindow() {
 	}
 
 	public static final MainWindow getInstance() {
 		return INSTANCE;
-	}
-	
-	static {
-		LOGGER.debug("初始化主窗口");
-		INSTANCE = new MainWindow();
 	}
 	
 	@Override
@@ -63,7 +63,7 @@ public class MainWindow extends Window<MainController> {
 	}
 	
 	/**
-	 * F12控制台（输出系统状态信息到日志）
+	 * F12控制台
 	 */
 	private void console() {
 		this.stage.addEventHandler(KeyEvent.KEY_RELEASED, (event) -> {

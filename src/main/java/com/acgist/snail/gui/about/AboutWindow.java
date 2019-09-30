@@ -18,22 +18,18 @@ public class AboutWindow extends Window<AboutController> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AboutWindow.class);
 	
-	private static AboutWindow INSTANCE;
+	private static final AboutWindow INSTANCE;
+	
+	static {
+		LOGGER.debug("初始化关于窗口");
+		INSTANCE = new AboutWindow();
+	}
 	
 	private AboutWindow() {
 	}
 
 	public static final AboutWindow getInstance() {
 		return INSTANCE;
-	}
-	
-	static {
-		synchronized (AboutWindow.class) {
-			if(INSTANCE == null) {
-				LOGGER.debug("初始化关于窗口");
-				INSTANCE = new AboutWindow();
-			}
-		}
 	}
 	
 	@Override

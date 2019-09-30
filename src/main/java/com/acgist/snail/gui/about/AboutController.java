@@ -22,9 +22,9 @@ import javafx.scene.text.Text;
 public class AboutController extends Controller implements Initializable {
 	
 	@FXML
-	private Text name;
-	@FXML
 	private GridPane root;
+	@FXML
+	private Text name;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {

@@ -41,11 +41,20 @@ import javafx.stage.WindowEvent;
 public class TrayMenu extends Menu {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrayMenu.class);
-
+	
+	private static final TrayMenu INSTANCE;
+	
 	/**
 	 * 窗口高度
 	 */
 	private static final int MENU_WINDOW_HEIGHT = 150;
+	
+	static {
+		LOGGER.debug("初始化托盘菜单");
+		INSTANCE = new TrayMenu();
+		// 必须设置此项，否者窗口关闭后将不能通过托盘显示。
+		Platform.setImplicitExit(false);
+	}
 	
 	/**
 	 * 是否支持托盘
@@ -55,25 +64,12 @@ public class TrayMenu extends Menu {
 	private Stage trayStage;
 	private TrayIcon trayIcon;
 	
-	private static TrayMenu INSTANCE;
-	
 	private TrayMenu() {
 		this.support = SystemTray.isSupported();
 		if(this.support) {
 			init();
 			initMenu();
 			enableTray();
-		}
-	}
-
-	static {
-		synchronized (TrayMenu.class) {
-			if (INSTANCE == null) {
-				LOGGER.debug("初始化托盘菜单");
-				INSTANCE = new TrayMenu();
-				// 必须设置此项，否者窗口关闭后将不能通过托盘显示。
-				Platform.setImplicitExit(false);
-			}
 		}
 	}
 	

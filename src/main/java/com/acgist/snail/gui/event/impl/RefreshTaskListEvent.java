@@ -19,6 +19,10 @@ public class RefreshTaskListEvent extends GuiEvent {
 		super(Type.refreshTaskList, "刷新任务列表事件");
 	}
 
+	public static final GuiEvent getInstance() {
+		return INSTANCE;
+	}
+	
 	@Override
 	protected void executeNative(Object ... args) {
 		TaskDisplay.getInstance().refreshTaskList();
@@ -30,8 +34,4 @@ public class RefreshTaskListEvent extends GuiEvent {
 		GuiHandler.getInstance().sendGuiMessage(message);
 	}
 
-	public static final GuiEvent getInstance() {
-		return INSTANCE;
-	}
-	
 }

@@ -50,7 +50,13 @@ public class TorrentController extends Controller implements Initializable {
 	@FXML
 	private VBox downloadBox;
 	
+	/**
+	 * 任务信息
+	 */
 	private TaskSession taskSession;
+	/**
+	 * 任务文件选择器
+	 */
 	private SelectorManager selectorManager;
 	
 	@Override
@@ -129,13 +135,15 @@ public class TorrentController extends Controller implements Initializable {
 				entity.setStatus(Status.await);
 				entity.setEndDate(null);
 			}
+			// 更新任务
 			final TaskRepository repository = new TaskRepository();
 			repository.update(entity);
+			// 切换下载器并且重新下载
 			if(restart) {
 				try {
 					DownloaderManager.getInstance().changeDownloaderRestart(this.taskSession);
 				} catch (DownloadException e) {
-					LOGGER.error("添加下载任务异常", e);
+					LOGGER.error("切换下载器异常", e);
 				}
 			} else {
 				DownloaderManager.getInstance().refresh(this.taskSession);

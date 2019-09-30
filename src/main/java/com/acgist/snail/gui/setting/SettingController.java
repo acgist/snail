@@ -63,6 +63,9 @@ public class SettingController extends Controller implements Initializable {
 		initControl();
 	}
 
+	/**
+	 * 下载目录
+	 */
 	@FXML
 	public void handlePathAction(ActionEvent event) {
 		final File file = Choosers.chooseDirectory(SettingWindow.getInstance().stage(), "文件保存目录");
@@ -73,6 +76,9 @@ public class SettingController extends Controller implements Initializable {
 		}
 	}
 
+	/**
+	 * 消息提示
+	 */
 	@FXML
 	public void handleNoticeAction(ActionEvent event) {
 		DownloadConfig.setNotice(this.notice.isSelected());
@@ -98,14 +104,14 @@ public class SettingController extends Controller implements Initializable {
 		this.pathValue.setOnMouseClicked(this.openDownloadPath);
 		// 初始化下载大小设置
 		this.size.valueProperty().addListener(this.sizeListener);
-		this.size.setOnMouseReleased(this.sizeAction);
+		this.size.setOnMouseReleased(this.sizeReleaseAction);
 		// 初始化下载速度设置
 		this.buffer.valueProperty().addListener(this.bufferListener);
-		this.buffer.setOnMouseReleased(this.bufferAction);
+		this.buffer.setOnMouseReleased(this.bufferReleaseAction);
 		this.buffer.setLabelFormatter(this.bufferFormatter);
 		// 初始化下载磁盘缓存设置
 		this.memoryBuffer.valueProperty().addListener(this.memoryBufferListener);
-		this.memoryBuffer.setOnMouseReleased(this.memoryBufferAction);
+		this.memoryBuffer.setOnMouseReleased(this.memoryBufferReleaseAction);
 		this.memoryBuffer.setLabelFormatter(this.memoryBufferFormatter);
 	}
 	
@@ -122,7 +128,7 @@ public class SettingController extends Controller implements Initializable {
 		this.size.setValue(value);
 	};
 	
-	private EventHandler<MouseEvent> sizeAction = (event) -> {
+	private EventHandler<MouseEvent> sizeReleaseAction = (event) -> {
 		Double value = this.size.getValue();
 		DownloadConfig.setSize(value.intValue());
 	};
@@ -138,7 +144,7 @@ public class SettingController extends Controller implements Initializable {
 		this.buffer.setValue(value);
 	};
 	
-	private EventHandler<MouseEvent> bufferAction = (event) -> {
+	private EventHandler<MouseEvent> bufferReleaseAction = (event) -> {
 		Double value = this.buffer.getValue();
 		DownloadConfig.setBuffer(value.intValue());
 	};
@@ -159,7 +165,7 @@ public class SettingController extends Controller implements Initializable {
 		this.memoryBuffer.setValue(value);
 	};
 	
-	private EventHandler<MouseEvent> memoryBufferAction = (event) -> {
+	private EventHandler<MouseEvent> memoryBufferReleaseAction = (event) -> {
 		Double value = this.memoryBuffer.getValue();
 		DownloadConfig.setMemoryBuffer(value.intValue());
 	};

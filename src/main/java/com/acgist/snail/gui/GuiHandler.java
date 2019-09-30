@@ -39,27 +39,7 @@ public class GuiHandler {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(GuiHandler.class);
 	
-	/**
-	 * 本地GUI
-	 */
-	public static final String MODE_GUI = "gui";
-	/**
-	 * 后台模式
-	 */
-	public static final String MODE_DAEMO = "daemo";
-	/**
-	 * 阻塞锁时间：365天
-	 */
-	private static final int LOCK_DAYS = 365;
-	
-	/**
-	 * 阻塞锁：防止程序关闭
-	 */
-	private final Object lock = new Object();
-	/**
-	 * 外部GUI消息代理
-	 */
-	private IMessageHandler messageHandler;
+	private static final GuiHandler INSTANCE = new GuiHandler();
 	
 	/**
 	 * Alert提示窗口类型
@@ -97,6 +77,11 @@ public class GuiHandler {
 	}
 	
 	/**
+	 * 事件列表
+	 */
+	private static final Map<GuiEvent.Type, GuiEvent> EVENTS = new HashMap<>(GuiEvent.Type.values().length);
+	
+	/**
 	 * Notice提示消息类型
 	 */
 	public enum SnailNoticeType {
@@ -127,18 +112,6 @@ public class GuiHandler {
 		
 	}
 	
-	/**
-	 * 本地GUI：JavaFX
-	 */
-	private boolean gui = true;
-	
-	private static final GuiHandler INSTANCE = new GuiHandler();
-	
-	/**
-	 * 事件列表
-	 */
-	private static final Map<GuiEvent.Type, GuiEvent> EVENTS = new HashMap<>(20);
-	
 	static {
 		register(BuildEvent.getInstance());
 		register(ShowEvent.getInstance());
@@ -150,6 +123,32 @@ public class GuiHandler {
 		register(RefreshTaskListEvent.getInstance());
 		register(RefreshTaskStatusEvent.getInstance());
 	}
+	
+	/**
+	 * 本地GUI
+	 */
+	public static final String MODE_GUI = "gui";
+	/**
+	 * 后台模式
+	 */
+	public static final String MODE_DAEMO = "daemo";
+	/**
+	 * 阻塞锁时间：365天
+	 */
+	private static final int LOCK_DAYS = 365;
+	
+	/**
+	 * 本地GUI：JavaFX
+	 */
+	private boolean gui = true;
+	/**
+	 * 阻塞锁：防止程序关闭
+	 */
+	private final Object lock = new Object();
+	/**
+	 * 外部GUI消息代理
+	 */
+	private IMessageHandler messageHandler;
 	
 	private GuiHandler() {
 	}

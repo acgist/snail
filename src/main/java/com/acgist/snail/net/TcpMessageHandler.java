@@ -39,7 +39,8 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	 */
 	protected IMessageCodec<ByteBuffer> messageCodec;
 	/**
-	 * 写入锁，每次只允许一个写入。
+	 * <p>写入信号量</p>
+	 * <p>每次只允许一个写入，可以使用synchronize替换。</p>
 	 */
 	private final Semaphore writeableLock = new Semaphore(1);
 	

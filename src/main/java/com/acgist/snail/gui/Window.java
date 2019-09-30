@@ -19,7 +19,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
- * 抽象窗口
+ * 窗口
  * 
  * @author acgist
  * @since 1.0.0

@@ -3,7 +3,6 @@ package com.acgist.snail.gui.main;
 import java.io.File;
 import java.net.URL;
 import java.util.List;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -115,13 +114,13 @@ public class MainController extends Controller implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		// 设置多选
 		this.taskTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-		// 设置无数据内容
-		ImageView noticeImage = new ImageView("/image/64/download_02.png");
-		Text noticeText = new Text("点击新建按钮或者拖动种子文件开始下载");
-		noticeText.setFill(Color.rgb(198, 198, 198));
-		VBox placeholderBox = new VBox(noticeImage, noticeText);
-		placeholderBox.setAlignment(Pos.CENTER);
-		this.taskTable.setPlaceholder(placeholderBox);
+		// 设置无数据时显示内容
+		final var placeholderImage = new ImageView("/image/64/download_02.png");
+		final var placeholderText = new Text("点击新建按钮或者拖动种子文件开始下载");
+		placeholderText.setFill(Color.rgb(198, 198, 198));
+		final var placeholder = new VBox(placeholderImage, placeholderText);
+		placeholder.setAlignment(Pos.CENTER);
+		this.taskTable.setPlaceholder(placeholder);
 		// 设置列
 		taskCell(this.name, Pos.CENTER_LEFT, true, true, this.taskTable.widthProperty().multiply(3D).divide(10D));
 		taskCell(this.status, Pos.CENTER, false, false, this.taskTable.widthProperty().multiply(1D).divide(10D));
@@ -246,6 +245,7 @@ public class MainController extends Controller implements Initializable {
 	 */
 	public void refreshTaskStatus() {
 		this.taskTable.refresh(); // 刷新table
+		// 刷新下载、上传速度
 		Platform.runLater(() -> {
 			long downloadSecond = SystemStatistics.getInstance().downloadSecond();
 			this.downloadBuffer.setText(FileUtils.formatSize(downloadSecond) + "/S"); // 下载速度
@@ -263,16 +263,16 @@ public class MainController extends Controller implements Initializable {
 	}
 	
 	/**
-	 * 是否有选中任务
+	 * 是否选中任务
 	 */
-	public boolean haveContent() {
+	public boolean hasSelected() {
 		return !this.selected().isEmpty();
 	}
 	
 	/**
-	 * 选中任务是否包含BT下载
+	 * 是否选中BT任务
 	 */
-	public boolean haveTorrent() {
+	public boolean hasSelectedTorrent() {
 		return this.selected().stream()
 			.anyMatch(session -> session.entity().getType() == Type.torrent);
 	}
@@ -303,10 +303,10 @@ public class MainController extends Controller implements Initializable {
 	 * 删除选中任务
 	 */
 	public void delete() {
-		if(!this.haveContent()) {
+		if(!this.hasSelected()) {
 			return;
 		}
-		final Optional<ButtonType> optional = Alerts.build("删除确认", "删除选中文件？", AlertType.CONFIRMATION);
+		final var optional = Alerts.build("删除确认", "删除选中文件？", AlertType.CONFIRMATION);
 		if(optional.isPresent() && optional.get() == ButtonType.OK) {
 			this.selected().forEach(session -> {
 				DownloaderManager.getInstance().delete(session);
@@ -319,8 +319,8 @@ public class MainController extends Controller implements Initializable {
 	 * 
 	 * @param column 列
 	 * @param pos 对齐
-	 * @param icon 显示Icon
-	 * @param tooltip 显示Tooltip
+	 * @param icon 是否显示Icon
+	 * @param tooltip 是否显示Tooltip
 	 * @param widthBinding 宽度绑定
 	 */
 	private void taskCell(TableColumn<TaskSession, String> column, Pos pos, boolean icon, boolean tooltip, DoubleBinding widthBinding) {
@@ -373,14 +373,14 @@ public class MainController extends Controller implements Initializable {
 	 */
 	private EventHandler<MouseEvent> rowClickAction = (event) -> {
 		if(event.getClickCount() == DOUBLE_CLICK_COUNT) { // 双击
-			final TableRow<?> row = (TableRow<?>) event.getSource();
-			final TaskSession session = (TaskSession) row.getItem();
+			final var row = (TableRow<?>) event.getSource();
+			final var session = (TaskSession) row.getItem();
 			if(session == null) {
 				return;
 			}
-			if(session.complete()) { // 下载完成=打开文件
+			if(session.complete()) { // 下载完成=打开任务
 				final var entity = session.entity();
-				if(entity.getType() == Type.magnet) { // 切换
+				if(entity.getType() == Type.magnet) { // 磁力链接任务完成转换BT任务
 					TorrentWindow.getInstance().show(session);
 				} else {
 					FileUtils.openInDesktop(new File(session.entity().getFile()));
