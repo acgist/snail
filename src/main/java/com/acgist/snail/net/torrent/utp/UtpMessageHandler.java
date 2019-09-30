@@ -315,10 +315,8 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 		try {
 			windowData = this.receiveWindow.receive(timestamp, seqnr, buffer);
 		} catch (NetException e) {
-			this.resetAndClose();
 			throw e;
 		} catch (Exception e) {
-			this.resetAndClose();
 			throw new NetException(e);
 		}
 		if(windowData != null) {
@@ -509,7 +507,7 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 	/**
 	 * 发送reset消息，标记关闭。
 	 */
-	private void resetAndClose() {
+	public void resetAndClose() {
 		LOGGER.debug("UTP重置");
 		this.utpService.remove(this);
 		this.reset();

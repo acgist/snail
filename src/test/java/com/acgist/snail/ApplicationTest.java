@@ -3,6 +3,7 @@ package com.acgist.snail;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
@@ -11,6 +12,7 @@ import com.acgist.snail.net.application.ApplicationServer;
 import com.acgist.snail.pojo.message.ApplicationMessage;
 import com.acgist.snail.pojo.message.ApplicationMessage.Type;
 import com.acgist.snail.system.bencode.BEncodeEncoder;
+import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.ThreadUtils;
 
 public class ApplicationTest {
@@ -60,6 +62,22 @@ public class ApplicationTest {
 			}
 		}
 		scanner.close();
+	}
+	
+	@Test
+	public void thread() throws InterruptedException {
+		final ApplicationClient client = ApplicationClient.newInstance();
+		client.connect();
+		var pool = SystemThreadContext.newCacheExecutor("test");
+		for (int index = 0; index < 10; index++) {
+			pool.submit(() -> {
+				while(true) {
+					client.send(ApplicationMessage.text("test"));
+//					ThreadUtils.sleep(10);
+				}
+			});
+		}
+		pool.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
 	}
 	
 }
