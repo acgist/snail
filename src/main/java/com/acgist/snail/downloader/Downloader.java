@@ -16,7 +16,7 @@ import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
- * <p>下载器抽象类</p>
+ * <p>下载器</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -34,11 +34,11 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	 */
 	protected volatile boolean complete = false;
 	/**
-	 * 任务
+	 * 任务信息
 	 */
 	protected final TaskSession taskSession;
 	/**
-	 * 任务删除锁，删除后标记：true。
+	 * 任务删除锁，任务删除后标记：true。
 	 */
 	private final AtomicBoolean deleteLock = new AtomicBoolean(false);
 
@@ -47,7 +47,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 		this.taskSession.downloader(this);
 		// 加载已下载大小
 		this.taskSession.downloadSize(downloadSize());
-		// 开始时不处于下载中时可以直接删除（标记删除锁）：暂停、完成等
+		// 开始时任务不处于下载中时可以直接删除
 		if(!this.taskSession.download()) {
 			this.deleteLock.set(true);
 		}
@@ -106,7 +106,8 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	
 	@Override
 	public void delete() {
-		this.pause(); // 暂停
+		this.pause(); // 暂停任务
+		// 等待删除锁释放
 		if(!this.deleteLock.get()) {
 			synchronized (this.deleteLock) {
 				if(!this.deleteLock.get()) {
@@ -114,6 +115,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 				}
 			}
 		}
+		// 删除任务
 		final TaskRepository repository = new TaskRepository();
 		repository.delete(this.taskSession.entity());
 	}
@@ -147,12 +149,12 @@ public abstract class Downloader implements IDownloader, IStatistics {
 			return;
 		}
 		synchronized (this.taskSession) {
-			var entity = this.taskSession.entity();
+			final var entity = this.taskSession.entity();
 			if(this.taskSession.await()) {
 				LOGGER.info("开始下载：{}", this.name());
-				this.fail = false; // 标记下载失败
+				this.fail = false; // 标记下载失败状态
 				this.deleteLock.set(false); // 设置删除锁
-				entity.setStatus(Status.download);
+				entity.setStatus(Status.download); // 修改任务状态
 				this.open();
 				try {
 					this.download();
@@ -160,8 +162,8 @@ public abstract class Downloader implements IDownloader, IStatistics {
 					fail(e.getMessage());
 					LOGGER.error("下载异常", e);
 				}
-				this.complete();
-				this.release(); // 最后释放资源
+				this.complete(); // 检测完成状态
+				this.release(); // 释放资源
 				this.unlockDelete(); // 解除删除锁
 				LOGGER.info("下载结束：{}", name());
 			}
@@ -191,8 +193,8 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	}
 
 	/**
-	 * <p>唤醒删除</p>
-	 * <p>如果任务被删除，需要等待下载正常结束。</p>
+	 * <p>唤醒删除锁</p>
+	 * <p>任务删除时需要等待下载线程正常结束</p>
 	 */
 	private void unlockDelete() {
 		synchronized (this.deleteLock) {
@@ -202,7 +204,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	}
 	
 	/**
-	 * 唤醒下载等待线程、更新任务状态
+	 * <p>唤醒下载等待线程、更新任务状态</p>
 	 * 
 	 * @param status 状态
 	 */

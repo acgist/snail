@@ -27,11 +27,6 @@ public class HttpDownloader extends SingleFileDownloader {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(HttpDownloader.class);
 	
-	/**
-	 * 响应头
-	 */
-	private HttpHeaderWrapper responseHeader;
-	
 	private HttpDownloader(TaskSession taskSession) {
 		super(new byte[128 * 1024], taskSession);
 	}
@@ -51,7 +46,7 @@ public class HttpDownloader extends SingleFileDownloader {
 		int length = 0;
 		while(ok()) {
 			// TODO：阻塞线程，导致暂停不能正常结束。
-			length = this.input.read(bytes, 0, bytes.length);
+			length = this.input.read(this.bytes, 0, this.bytes.length);
 			if(isComplete(length)) {
 				this.complete = true;
 				break;
@@ -68,29 +63,21 @@ public class HttpDownloader extends SingleFileDownloader {
 	}
 	
 	/**
-	 * 任务是否完成：长度-1或者下载数据等于任务长度。
+	 * {@inheritDoc}
+	 * <p>断点续传设置（Range）：</p>
+	 * <pre>
+	 * Range：bytes=0-499：第0-499字节范围的内容
+	 * Range：bytes=500-999：第500-999字节范围的内容
+	 * Range：bytes=-500：最后500字节的内容
+	 * Range：bytes=500-：从第500字节开始到文件结束部分的内容
+	 * Range：bytes=0-0,-1：第一个和最后一个字节的内容
+	 * Range：bytes=500-600,601-999：同时指定多个范围的内容
+	 * </pre>
 	 */
-	private boolean isComplete(int length) {
-		final long size = this.taskSession.entity().getSize();
-		final long downloadSize = this.taskSession.downloadSize();
-		return length == -1 || size == downloadSize;
-	}
-	
-	/**
-	 * <p>创建下载流</p>
-	 * <p>
-	 * 断点续传设置（Range）：<br>
-	 * Range：bytes=0-499：第 0-499 字节范围的内容<br>
-	 * Range：bytes=500-999：第 500-999 字节范围的内容<br>
-	 * Range：bytes=-500：最后 500 字节的内容<br>
-	 * Range：bytes=500-：从第 500 字节开始到文件结束部分的内容<br>
-	 * Range：bytes=0-0,-1：第一个和最后一个字节的内容<br>
-	 * Range：bytes=500-600,601-999：同时指定几个范围的内容<br>
-	 * </p>
-	 */
-	private void buildInput() {
+	@Override
+	protected void buildInput() {
 		final var entity = this.taskSession.entity();
-		// 已下载大小
+		// 设置已下载大小
 		final long size = FileUtils.fileSize(entity.getFile());
 		final var client = HTTPClient.newInstance(entity.getUrl());
 		HttpResponse<InputStream> response = null;
@@ -104,12 +91,12 @@ public class HttpDownloader extends SingleFileDownloader {
 			return;
 		}
 		if(HTTPClient.ok(response) || HTTPClient.partialContent(response)) {
-			this.responseHeader = HttpHeaderWrapper.newInstance(response.headers());
+			final var responseHeader = HttpHeaderWrapper.newInstance(response.headers());
 			this.input = new BufferedInputStream(response.body());
-			if(this.responseHeader.range()) { // 支持断点续传
-				final long begin = this.responseHeader.beginRange();
+			if(responseHeader.range()) { // 支持断点续传
+				final long begin = responseHeader.beginRange();
 				if(size != begin) {
-					LOGGER.warn("已下载大小和开始下载位置不相等，已下载大小：{}，开始下载位置：{}，响应头：{}", size, begin, this.responseHeader.allHeaders());
+					LOGGER.warn("已下载大小和开始下载位置不相等，已下载大小：{}，开始下载位置：{}，响应头：{}", size, begin, responseHeader.allHeaders());
 				}
 				this.taskSession.downloadSize(size);
 			} else {

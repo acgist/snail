@@ -12,7 +12,7 @@ import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.system.config.DownloadConfig;
 
 /**
- * <p>单个文件下载器抽象类</p>
+ * <p>单个文件下载器</p>
  * 
  * @author acgist
  * @since 1.1.1
@@ -40,7 +40,16 @@ public abstract class SingleFileDownloader extends Downloader {
 	}
 	
 	/**
-	 * 创建下载输出流
+	 * <p>判断任务是否完成：读取长度等于-1或者下载数据等于任务长度。</p>
+	 */
+	protected boolean isComplete(int length) {
+		final long size = this.taskSession.entity().getSize();
+		final long downloadSize = this.taskSession.downloadSize();
+		return length == -1 || size == downloadSize;
+	}
+	
+	/**
+	 * <p>创建下载输出流</p>
 	 */
 	protected void buildOutput() {
 		final var entity = this.taskSession.entity();
@@ -56,5 +65,11 @@ public abstract class SingleFileDownloader extends Downloader {
 			LOGGER.error("打开下载文件流异常", e);
 		}
 	}
+	
+	/**
+	 * <p>创建下载输入流</p>
+	 * <p>需要验证是否支持断点续传，如果支持需要重新设置任务已下载大小。</p>
+	 */
+	protected abstract void buildInput();
 
 }

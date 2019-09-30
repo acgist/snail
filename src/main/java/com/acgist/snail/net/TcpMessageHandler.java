@@ -92,6 +92,7 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 		try {
 			this.writeableLock.acquire();
 			final Future<Integer> future = this.socket.write(buffer);
+			// 不设置超时时间，防止超时异常导致数据并没有发出去而释放了信号量，从而引起一连串的WritePendingException异常。
 			final int size = future.get();
 			if(size <= 0) {
 				LOGGER.warn("发送数据为空");
