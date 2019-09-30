@@ -6,7 +6,6 @@ import java.net.http.WebSocket;
 import java.nio.ByteBuffer;
 import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +57,7 @@ public class WebSocketMessageHandler implements IMessageHandler {
 		try {
 			this.writeableLock.acquire();
 			final Future<WebSocket> future = this.socket.sendBinary(buffer, true);
-			final WebSocket webSocket = future.get(SEND_TIMEOUT, TimeUnit.SECONDS);
+			final WebSocket webSocket = future.get();
 			if(webSocket == null) {
 				LOGGER.warn("发送数据为空");
 			}

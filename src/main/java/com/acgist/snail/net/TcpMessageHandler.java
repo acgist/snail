@@ -7,7 +7,6 @@ import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,7 +92,7 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 		try {
 			this.writeableLock.acquire();
 			final Future<Integer> future = this.socket.write(buffer);
-			final int size = future.get(SEND_TIMEOUT, TimeUnit.SECONDS);
+			final int size = future.get();
 			if(size <= 0) {
 				LOGGER.warn("发送数据为空");
 			}
