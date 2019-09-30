@@ -110,6 +110,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 						selectionKeysIterator.remove(); // 移除已经取出来的信息
 						if (selectionKey.isValid() && selectionKey.isReadable()) {
 							final ByteBuffer buffer = ByteBuffer.allocate(SystemConfig.BUFFER_SIZE);
+							// 单例客户端通道=服务端通道，TCP需要这样获取不同的通道。
 							// final DatagramChannel channel = (DatagramChannel) selectionKey.channel();
 							final InetSocketAddress socketAddress = (InetSocketAddress) this.channel.receive(buffer);
 							try {

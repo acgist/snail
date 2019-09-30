@@ -153,7 +153,7 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	private void loopMessage() {
 		if(available()) {
 			final ByteBuffer buffer = ByteBuffer.allocate(SystemConfig.BUFFER_SIZE);
-			// 防止多线程同时读写导致WritePendingException
+			// 防止多线程同时读写导致ReadPendingException
 			synchronized (this.socket) {
 				this.socket.read(buffer, buffer, this);
 			}

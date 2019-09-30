@@ -13,6 +13,7 @@ import com.acgist.snail.downloader.SingleFileDownloader;
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
+import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.IoUtils;
 
@@ -97,7 +98,7 @@ public class HttpDownloader extends SingleFileDownloader {
 			response = client
 				.header("Range", "bytes=" + size + "-")
 				.get(BodyHandlers.ofInputStream());
-		} catch (Exception e) {
+		} catch (NetException e) {
 			fail("HTTP请求失败");
 			LOGGER.error("HTTP请求异常", e);
 			return;

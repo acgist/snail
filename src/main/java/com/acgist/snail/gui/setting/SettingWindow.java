@@ -18,7 +18,7 @@ public class SettingWindow extends Window<SettingController> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SettingWindow.class);
 	
-	private static SettingWindow INSTANCE;
+	private static final SettingWindow INSTANCE;
 	
 	private SettingWindow() {
 	}
@@ -28,12 +28,8 @@ public class SettingWindow extends Window<SettingController> {
 	}
 	
 	static {
-		synchronized (SettingWindow.class) {
-			if(INSTANCE == null) {
-				LOGGER.debug("初始化设置窗口");
-				INSTANCE = new SettingWindow();
-			}
-		}
+		LOGGER.debug("初始化设置窗口");
+		INSTANCE = new SettingWindow();
 	}
 	
 	@Override

@@ -72,7 +72,7 @@ public class IoUtils {
 		final char[] chars = new char[1024];
 		final StringBuilder builder = new StringBuilder();
 		try {
-			final InputStreamReader reader = new InputStreamReader(input, charset);
+			final var reader = new InputStreamReader(input, charset);
 			while((index = reader.read(chars)) != -1) {
 				builder.append(new String(chars, 0, index));
 			}

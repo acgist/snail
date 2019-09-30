@@ -321,13 +321,11 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 			this.resetAndClose();
 			throw new NetException(e);
 		}
-		if(windowData == null) {
-			return;
-		} else {
+		if(windowData != null) {
+			this.state(windowData.getTimestamp(), acknr);
+			LOGGER.debug("UTP处理数据：{}", windowData.getSeqnr());
+			this.messageCodec.decode(windowData.buffer());
 		}
-		this.state(windowData.getTimestamp(), acknr);
-		LOGGER.debug("UTP处理数据：{}", windowData.getSeqnr());
-		this.messageCodec.decode(windowData.buffer());
 	}
 	
 	/**
