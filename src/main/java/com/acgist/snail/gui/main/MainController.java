@@ -285,7 +285,7 @@ public class MainController extends Controller implements Initializable {
 			try {
 				DownloaderManager.getInstance().start(session);
 			} catch (DownloadException e) {
-				LOGGER.error("添加下载任务异常", e);
+				LOGGER.error("开始下载任务异常", e);
 			}
 		});
 	}
