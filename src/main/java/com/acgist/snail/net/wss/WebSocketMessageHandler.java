@@ -5,6 +5,7 @@ import java.net.http.HttpClient;
 import java.net.http.WebSocket;
 import java.nio.ByteBuffer;
 import java.util.concurrent.Future;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -26,6 +27,10 @@ public class WebSocketMessageHandler implements IMessageHandler {
 	private boolean close = false;
 //	private final HttpClient client;
 	private final WebSocket socket;
+	/**
+	 * 写入锁，每次只允许一个写入。
+	 */
+	private final Semaphore writeableLock = new Semaphore(1);
 	
 	public WebSocketMessageHandler(HttpClient client, WebSocket socket) {
 //		this.client = client;
@@ -50,17 +55,17 @@ public class WebSocketMessageHandler implements IMessageHandler {
 			LOGGER.warn("发送消息为空");
 			return;
 		}
-		// TODO：Semaphore
-		synchronized (this.socket) {
+		try {
+			this.writeableLock.acquire();
 			final Future<WebSocket> future = this.socket.sendBinary(buffer, true);
-			try {
-				final WebSocket webSocket = future.get(SEND_TIMEOUT, TimeUnit.SECONDS);
-				if(webSocket == null) {
-					LOGGER.warn("发送数据为空");
-				}
-			} catch (Exception e) {
-				throw new NetException(e);
+			final WebSocket webSocket = future.get(SEND_TIMEOUT, TimeUnit.SECONDS);
+			if(webSocket == null) {
+				LOGGER.warn("发送数据为空");
 			}
+		} catch (Exception e) {
+			throw new NetException(e);
+		} finally {
+			this.writeableLock.release();
 		}
 	}
 
