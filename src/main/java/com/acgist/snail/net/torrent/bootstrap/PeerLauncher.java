@@ -138,6 +138,7 @@ public class PeerLauncher {
 	
 	/**
 	 * 连接
+	 * TODO：去掉保留地址
 	 */
 	private boolean connect() {
 		if(this.peerSession.utp()) {
