@@ -54,7 +54,7 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	private String charset = SystemConfig.CHARSET_GBK;
 
 	private FtpClient(String host, int port, String user, String password, String filePath) {
-		super("FTP Client", 2, new FtpMessageHandler());
+		super("FTP Client", CONNECT_TIMEOUT, new FtpMessageHandler());
 		this.host = host;
 		this.port = port;
 		this.user = user;

@@ -38,7 +38,7 @@ public class TorrentStreamGroup {
 	/**
 	 * 计算文件大小等待时间
 	 */
-	private static final int SIZE_TIMEOUT = 100;
+	private static final int SIZE_COUNT_TIMEOUT = 100;
 	
 	/**
 	 * 已下载Piece位图
@@ -84,14 +84,14 @@ public class TorrentStreamGroup {
 			.count();
 		final var startTime = System.currentTimeMillis(); // 开始时间
 		// 异步线程执行完成计数器
-		final CountDownLatch allReady = new CountDownLatch(fileCount);
+		final CountDownLatch sizeCount = new CountDownLatch(fileCount);
 		if(CollectionUtils.isNotEmpty(files)) {
 			long pos = 0;
 			for (TorrentFile file : files) {
 				try {
 					if(file.selected()) {
 						final TorrentStream stream = TorrentStream.newInstance(torrentInfo.getPieceLength(), torrentStreamGroup.fileBuffer, torrentStreamGroup);
-						stream.buildFile(FileUtils.file(folder, file.path()), file.getLength(), pos, selectPieces, complete, allReady);
+						stream.buildFile(FileUtils.file(folder, file.path()), file.getLength(), pos, selectPieces, complete, sizeCount);
 						streams.add(stream);
 					}
 				} catch (Exception e) {
@@ -102,7 +102,7 @@ public class TorrentStreamGroup {
 		}
 		SystemThreadContext.submit(() -> {
 			try {
-				final var ok = allReady.await(SIZE_TIMEOUT, TimeUnit.SECONDS);
+				final var ok = sizeCount.await(SIZE_COUNT_TIMEOUT, TimeUnit.SECONDS);
 				if(ok) {
 					final var finishTime = System.currentTimeMillis(); // 结束时间
 					LOGGER.debug("{}-任务准备消耗时间：{}", torrent.name(), (finishTime - startTime));
