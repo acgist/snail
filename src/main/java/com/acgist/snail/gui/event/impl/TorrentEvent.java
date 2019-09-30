@@ -73,7 +73,7 @@ public class TorrentEvent extends GuiEvent {
 	private void executeNativeEx(TaskSession taskSession) {
 		if(Platform.isFxApplicationThread()) { // JavaFX线程
 			TorrentWindow.getInstance().show(taskSession);
-		} else { // 非JavaFX线程：外部GUI
+		} else { // 非JavaFX线程：扩展GUI
 			executeExtendEx(taskSession);
 		}
 	}
@@ -98,7 +98,7 @@ public class TorrentEvent extends GuiEvent {
 			entity.setSize(size);
 			entity.setDescription(this.files);
 		} catch (Exception e) {
-			LOGGER.error("添加下载任务异常：{}", this.files, e);
+			LOGGER.error("新建下载任务异常：{}", this.files, e);
 		}
 	}
 	

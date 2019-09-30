@@ -10,8 +10,6 @@ import com.acgist.snail.system.context.SystemContext;
  * <h1>Snail系统启动类。</h1>
  * <p>Snail（蜗牛）是一款下载软件，支持下载协议：BT（BitTorrent）、FTP、HTTP。</p>
  * 
- * TODO：添加注释、日志优化
- * 
  * @author acgist
  * @since 1.0.0
  */

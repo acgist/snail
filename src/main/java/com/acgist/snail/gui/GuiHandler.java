@@ -146,7 +146,7 @@ public class GuiHandler {
 	 */
 	private final Object lock = new Object();
 	/**
-	 * 外部GUI消息代理
+	 * 扩展GUI消息代理
 	 */
 	private IMessageHandler messageHandler;
 	
@@ -308,28 +308,28 @@ public class GuiHandler {
 	}
 	
 	/**
-	 * 注册外部GUI消息代理
+	 * 注册扩展GUI消息代理
 	 */
 	public boolean messageHandler(IMessageHandler messageHandler) {
 		if(this.gui) {
-			LOGGER.debug("已经启用本地GUI，忽略注册外部GUI消息代理。");
+			LOGGER.debug("已经启用本地GUI，忽略注册扩展GUI消息代理。");
 			return false;
 		} else {
-			LOGGER.debug("注册外部GUI消息代理");
+			LOGGER.debug("注册扩展GUI消息代理");
 			this.messageHandler = messageHandler;
 			return true;
 		}
 	}
 	
 	/**
-	 * 发送外部GUI消息
+	 * 发送扩展GUI消息
 	 */
 	public void sendGuiMessage(ApplicationMessage message) {
 		if(this.messageHandler != null && message != null) {
 			try {
 				this.messageHandler.send(message.toString());
 			} catch (NetException e) {
-				LOGGER.error("发送外部GUI消息异常", e);
+				LOGGER.error("发送扩展GUI消息异常", e);
 			}
 		}
 	}

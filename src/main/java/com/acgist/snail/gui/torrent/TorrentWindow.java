@@ -10,7 +10,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
- * BT任务窗口
+ * 编辑任务窗口
  * 
  * @author acgist
  * @since 1.0.0

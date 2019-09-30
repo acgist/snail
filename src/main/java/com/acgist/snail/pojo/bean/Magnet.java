@@ -58,7 +58,7 @@ public class Magnet {
 	 */
 	private String dn;
 	/**
-	 * Tracker
+	 * Tracker服务器列表
 	 */
 	private List<String> tr;
 	/**
@@ -90,6 +90,23 @@ public class Magnet {
 	 */
 	private String hash;
 
+	/**
+	 * 添加Tracker服务器
+	 */
+	public void addTr(String tr) {
+		if(this.tr == null) {
+			this.tr = new ArrayList<>();
+		}
+		this.tr.add(tr);
+	}
+	
+	/**
+	 * 是否支持下载
+	 */
+	public boolean supportDownload() {
+		return this.type == Type.btih && StringUtils.isNotEmpty(this.hash);
+	}
+	
 	public Type getType() {
 		return type;
 	}
@@ -170,23 +187,6 @@ public class Magnet {
 		this.hash = hash;
 	}
 
-	/**
-	 * 添加Tracker服务器
-	 */
-	public void addTr(String tr) {
-		if(this.tr == null) {
-			this.tr = new ArrayList<>();
-		}
-		this.tr.add(tr);
-	}
-	
-	/**
-	 * 是否支持下载
-	 */
-	public boolean supportDownload() {
-		return this.type == Type.btih && StringUtils.isNotEmpty(this.hash);
-	}
-	
 	@Override
 	public String toString() {
 		return ObjectUtils.toString(this, this.type, this.hash, this.dn, this.tr);
