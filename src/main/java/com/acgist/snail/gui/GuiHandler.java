@@ -181,7 +181,7 @@ public class GuiHandler {
 			final String arg = args[0];
 			this.gui = !MODE_DAEMO.equalsIgnoreCase(arg);
 		}
-		LOGGER.debug("运行模式：{}", this.gui ? "本地GUI" : "后台模式");
+		LOGGER.info("运行模式：{}", this.gui ? "本地GUI" : "后台模式");
 		return this;
 	}
 	
