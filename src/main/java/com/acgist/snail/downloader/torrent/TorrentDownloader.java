@@ -61,8 +61,8 @@ public class TorrentDownloader extends TorrentSessionDownloader {
 			torrentSession.upload(this.taskSession);
 			return torrentSession;
 		} catch (DownloadException e) {
-			fail("任务加载失败");
-			LOGGER.error("任务加载异常", e);
+			fail("BT任务加载失败：" + e.getMessage());
+			LOGGER.error("BT任务加载异常", e);
 		}
 		return null;
 	}
@@ -72,8 +72,8 @@ public class TorrentDownloader extends TorrentSessionDownloader {
 		try {
 			this.complete = this.torrentSession.download();
 		} catch (DownloadException e) {
-			fail("任务加载失败");
-			LOGGER.error("任务加载异常", e);
+			fail("BT任务加载失败：" + e.getMessage());
+			LOGGER.error("BT任务加载异常", e);
 		}
 	}
 
