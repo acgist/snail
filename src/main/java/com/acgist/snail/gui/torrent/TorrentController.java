@@ -81,6 +81,7 @@ public class TorrentController extends Controller implements Initializable {
 		try {
 			torrent = TorrentManager.getInstance().newTorrentSession(entity.getTorrent()).torrent();
 		} catch (DownloadException e) {
+			LOGGER.error("种子文件解析异常", e);
 			Alerts.warn("下载失败", "种子文件解析失败：" + e.getMessage());
 			return;
 		}
