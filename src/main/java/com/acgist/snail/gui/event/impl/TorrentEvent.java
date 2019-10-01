@@ -56,9 +56,7 @@ public class TorrentEvent extends GuiEvent {
 	private void executeEx(boolean gui, Object ... args) {
 		if(args == null) {
 			LOGGER.warn("种子文件选择，参数错误：{}", args);
-		} else if(args.length != 1) {
-			LOGGER.warn("种子文件选择，参数错误（长度）：{}", args);
-		} else {
+		} else if(args.length == 1) {
 			final Object object = args[0];
 			if(object instanceof TaskSession) {
 				if(gui) {
@@ -69,6 +67,8 @@ public class TorrentEvent extends GuiEvent {
 			} else {
 				LOGGER.warn("种子文件选择，参数错误（类型）：{}", object);
 			}
+		} else {
+			LOGGER.warn("种子文件选择，参数错误（长度）：{}", args);
 		}
 	}
 	
