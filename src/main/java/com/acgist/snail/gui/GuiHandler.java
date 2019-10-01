@@ -77,11 +77,6 @@ public class GuiHandler {
 	}
 	
 	/**
-	 * 事件列表
-	 */
-	private static final Map<GuiEvent.Type, GuiEvent> EVENTS = new HashMap<>(GuiEvent.Type.values().length);
-	
-	/**
 	 * Notice提示消息类型
 	 */
 	public enum SnailNoticeType {
@@ -112,18 +107,10 @@ public class GuiHandler {
 		
 	}
 	
-	static {
-		register(BuildEvent.getInstance());
-		register(ShowEvent.getInstance());
-		register(HideEvent.getInstance());
-		register(ExitEvent.getInstance());
-		register(AlertEvent.getInstance());
-		register(NoticeEvent.getInstance());
-		register(TorrentEvent.getInstance());
-		register(RefreshTaskListEvent.getInstance());
-		register(RefreshTaskStatusEvent.getInstance());
-	}
-	
+	/**
+	 * 事件列表
+	 */
+	private static final Map<GuiEvent.Type, GuiEvent> EVENTS = new HashMap<>(GuiEvent.Type.values().length);
 	/**
 	 * 本地GUI
 	 */
@@ -137,12 +124,24 @@ public class GuiHandler {
 	 */
 	private static final int LOCK_DAYS = 365;
 	
+	static {
+		register(BuildEvent.getInstance());
+		register(ShowEvent.getInstance());
+		register(HideEvent.getInstance());
+		register(ExitEvent.getInstance());
+		register(AlertEvent.getInstance());
+		register(NoticeEvent.getInstance());
+		register(TorrentEvent.getInstance());
+		register(RefreshTaskListEvent.getInstance());
+		register(RefreshTaskStatusEvent.getInstance());
+	}
+	
 	/**
 	 * 本地GUI：JavaFX
 	 */
 	private boolean gui = true;
 	/**
-	 * 阻塞锁：防止程序关闭
+	 * 阻塞锁：使用扩展GUI时，阻止程序关闭。
 	 */
 	private final Object lock = new Object();
 	/**
@@ -183,6 +182,38 @@ public class GuiHandler {
 			this.gui = !MODE_DAEMO.equalsIgnoreCase(arg);
 		}
 		LOGGER.debug("运行模式：{}", this.gui ? "本地GUI" : "后台模式");
+		return this;
+	}
+	
+	/**
+	 * 显示窗口
+	 */
+	public GuiHandler show() {
+		this.event(Type.show);
+		return this;
+	}
+	
+	/**
+	 * 隐藏窗口
+	 */
+	public GuiHandler hide() {
+		this.event(Type.hide);
+		return this;
+	}
+	
+	/**
+	 * 退出窗口
+	 */
+	public GuiHandler exit() {
+		this.event(Type.exit);
+		return this;
+	}
+
+	/**
+	 * 创建窗口
+	 */
+	public GuiHandler build() {
+		event(Type.build);
 		return this;
 	}
 	
@@ -233,6 +264,14 @@ public class GuiHandler {
 	}
 	
 	/**
+	 * 种子文件选择
+	 */
+	public GuiHandler torrent(TaskSession taskSession) {
+		event(Type.torrent, taskSession);
+		return this;
+	}
+	
+	/**
 	 * 刷新任务列表
 	 */
 	public GuiHandler refreshTaskList() {
@@ -248,46 +287,6 @@ public class GuiHandler {
 		return this;
 	}
 
-	/**
-	 * 创建窗口
-	 */
-	public GuiHandler build() {
-		event(Type.build);
-		return this;
-	}
-	
-	/**
-	 * 种子文件选择
-	 */
-	public GuiHandler torrent(TaskSession taskSession) {
-		event(Type.torrent, taskSession);
-		return this;
-	}
-
-	/**
-	 * 显示窗口
-	 */
-	public GuiHandler show() {
-		this.event(Type.show);
-		return this;
-	}
-	
-	/**
-	 * 隐藏窗口
-	 */
-	public GuiHandler hide() {
-		this.event(Type.hide);
-		return this;
-	}
-	
-	/**
-	 * 退出
-	 */
-	public GuiHandler exit() {
-		this.event(Type.exit);
-		return this;
-	}
-	
 	/**
 	 * 执行事件
 	 * 
@@ -344,7 +343,7 @@ public class GuiHandler {
 	}
 	
 	/**
-	 * 唤醒阻塞锁：退出程序
+	 * 唤醒阻塞锁
 	 */
 	public void unlock() {
 		synchronized (this.lock) {

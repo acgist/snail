@@ -19,7 +19,7 @@ import javafx.application.Platform;
 
 /**
  * <p>种子文件选择事件</p>
- * <p>不能抛出异常（抛出异常后{@link TorrentProtocol}创建下载时不能正常的删除临时文件）</p>
+ * <p>不能抛出异常：抛出异常后{@link TorrentProtocol}创建下载时不能正常的删除临时文件</p>
  * 
  * @author acgist
  * @since 1.1.1
@@ -31,7 +31,7 @@ public class TorrentEvent extends GuiEvent {
 	private static final TorrentEvent INSTANCE = new TorrentEvent();
 	
 	/**
-	 * 被选中的下载文件列表（B编码）
+	 * 被选中下载文件列表（B编码）
 	 */
 	private String files;
 	
@@ -54,8 +54,10 @@ public class TorrentEvent extends GuiEvent {
 	}
 	
 	private void executeEx(boolean gui, Object ... args) {
-		if(args == null || args.length < 1) {
-			LOGGER.error("种子文件选择参数错误：{}", args);
+		if(args == null) {
+			LOGGER.warn("种子文件选择，参数错误：{}", args);
+		} else if(args.length != 1) {
+			LOGGER.warn("种子文件选择，参数错误（长度）：{}", args);
 		} else {
 			final Object object = args[0];
 			if(object instanceof TaskSession) {
@@ -65,7 +67,7 @@ public class TorrentEvent extends GuiEvent {
 					executeExtendEx((TaskSession) object);
 				}
 			} else {
-				LOGGER.error("种子文件选择参数错误：{}", object);
+				LOGGER.warn("种子文件选择，参数错误（类型）：{}", object);
 			}
 		}
 	}
@@ -98,14 +100,14 @@ public class TorrentEvent extends GuiEvent {
 			entity.setSize(size);
 			entity.setDescription(this.files);
 		} catch (Exception e) {
-			LOGGER.error("新建下载任务异常：{}", this.files, e);
+			LOGGER.error("设置种子文件选择异常：{}", this.files, e);
 		}
 	}
 	
 	/**
-	 * 设置被选中的下载文件列表
+	 * 设置种子文件选择列表
 	 * 
-	 * @param files 被选中的下载文件列表（B编码）
+	 * @param files 种子文件选择列表（B编码）
 	 */
 	public void files(String files) {
 		this.files = files;

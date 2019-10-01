@@ -33,7 +33,7 @@ import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 
 /**
- * 菜单 - 托盘
+ * 托盘菜单
  * 
  * @author acgist
  * @since 1.0.0
@@ -112,13 +112,13 @@ public class TrayMenu extends Menu {
 	}
 	
 	/**
-	 * 系统托盘
+	 * 添加系统托盘
 	 */
 	private void enableTray() {
-		MouseListener mouseListener = new MouseInputAdapter() {
+		final MouseListener mouseListener = new MouseInputAdapter() {
 			@Override
 			public void mouseClicked(java.awt.event.MouseEvent event) {
-				if (event.getButton() == java.awt.event.MouseEvent.BUTTON1) {
+				if (event.getButton() == java.awt.event.MouseEvent.BUTTON1) { // 左键
 					if (MainWindow.getInstance().isShowing()) {
 						Platform.runLater(() -> {
 							MainWindow.getInstance().hide();
@@ -128,7 +128,7 @@ public class TrayMenu extends Menu {
 							MainWindow.getInstance().show();
 						});
 					}
-				} else if(event.getButton() == java.awt.event.MouseEvent.BUTTON3) {
+				} else if(event.getButton() == java.awt.event.MouseEvent.BUTTON3) { // 右键
 					Platform.runLater(() -> {
 						int x = event.getXOnScreen();
 						int y = event.getYOnScreen() - MENU_WINDOW_HEIGHT;
@@ -138,12 +138,12 @@ public class TrayMenu extends Menu {
 			}
 		};
 		try {
-			BufferedImage image = ImageIO.read(MainWindow.class.getResourceAsStream("/image/16/logo.png"));
+			final BufferedImage image = ImageIO.read(MainWindow.class.getResourceAsStream("/image/16/logo.png"));
 			this.trayIcon = new TrayIcon(image, SystemConfig.getName());
 			this.trayIcon.addMouseListener(mouseListener);
 			SystemTray.getSystemTray().add(this.trayIcon);
 		} catch (Exception e) {
-			LOGGER.error("添加托盘异常", e);
+			LOGGER.error("添加系统托盘异常", e);
 		}
 	}
 	
@@ -176,20 +176,20 @@ public class TrayMenu extends Menu {
 	 */
 	public static final void exit() {
 		if(TrayMenu.getInstance().support) {
-			TrayIcon trayIcon = TrayMenu.getInstance().trayIcon;
+			final TrayIcon trayIcon = TrayMenu.getInstance().trayIcon;
 			SystemTray.getSystemTray().remove(trayIcon);
 		}
 	}
 	
 	/**
-	 * 托盘菜单
+	 * 创建托盘菜单
 	 */
 	private Stage createTrayStage() {
-		FlowPane trayPane = new FlowPane();
+		final FlowPane trayPane = new FlowPane();
 		trayPane.setBackground(Background.EMPTY);
-		Scene trayScene = new Scene(trayPane);
+		final Scene trayScene = new Scene(trayPane);
 		trayScene.setFill(Color.TRANSPARENT);
-		Stage trayStage = new Stage();
+		final Stage trayStage = new Stage();
 		trayStage.initStyle(StageStyle.UTILITY);
 		trayStage.setOpacity(0);
 		trayStage.setMaxWidth(0);
@@ -230,7 +230,7 @@ public class TrayMenu extends Menu {
 	};
 	
 	/**
-	 * 窗口隐藏时移除托盘显示的Stage
+	 * 窗口隐藏时移除托盘菜单的Stage
 	 */
 	private EventHandler<WindowEvent> windowHiddenAction = (event) -> {
 		Platform.runLater(() -> {

@@ -42,7 +42,7 @@ public class TaskDisplay {
 	}
 	
 	/**
-	 * 新建定时器
+	 * 启动下载任务刷新定时器
 	 */
 	public void newTimer(MainController controller) {
 		LOGGER.info("启动下载任务刷新定时器");

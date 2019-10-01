@@ -47,7 +47,7 @@ public class NoticeEvent extends GuiEvent {
 		SnailNoticeType type;
 		String title, message;
 		if(args == null) {
-			LOGGER.debug("提示消息错误，参数为空。");
+			LOGGER.debug("提示消息错误，参数错误：{}", args);
 			return;
 		} else if(args.length == 2) {
 			title = (String) args[0];
@@ -58,7 +58,7 @@ public class NoticeEvent extends GuiEvent {
 			message = (String) args[1];
 			type = (SnailNoticeType) args[2];
 		} else {
-			LOGGER.debug("提示消息错误，参数长度错误：{}", args.length);
+			LOGGER.debug("提示消息错误，参数错误（长度）：{}", args.length);
 			return;
 		}
 		if(gui) {

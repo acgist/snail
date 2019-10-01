@@ -26,7 +26,7 @@ import javafx.scene.control.MenuItem;
 import javafx.stage.WindowEvent;
 
 /**
- * 菜单 - 任务
+ * 任务菜单
  * 
  * @author acgist
  * @since 1.0.0
@@ -130,7 +130,7 @@ public class TaskMenu extends Menu {
 		if(!MainWindow.getInstance().controller().hasSelectedTorrent()) {
 			return;
 		}
-		final File file = Choosers.chooseDirectory(MainWindow.getInstance().stage(), "种子文件保存目录");
+		final File file = Choosers.chooseDirectory(MainWindow.getInstance().stage(), "种子保存目录");
 		if (file != null) {
 			MainWindow.getInstance().controller().selected().forEach(session -> {
 				if(session.entity().getType() == Type.torrent) {
@@ -177,7 +177,7 @@ public class TaskMenu extends Menu {
 	};
 	
 	/**
-	 * BT任务才可以选择下载文件和导出种子
+	 * BT任务才可以选择下载文件和导出种子菜单
 	 */
 	private EventHandler<WindowEvent> windowShownAction = (event) -> {
 		if(MainWindow.getInstance().controller().hasSelectedTorrent()) {

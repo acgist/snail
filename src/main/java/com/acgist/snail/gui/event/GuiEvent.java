@@ -51,7 +51,7 @@ public abstract class GuiEvent {
 	/**
 	 * 执行事件
 	 * 
-	 * @param gui 本地事件：true-本地；false-外部；
+	 * @param gui 本地事件：true-本地；false-扩展；
 	 * @param args 参数
 	 */
 	public void execute(boolean gui, Object ... args) {
@@ -65,14 +65,14 @@ public abstract class GuiEvent {
 	/**
 	 * 本地GUI
 	 * 
-	 * @param args 参数数组
+	 * @param args 参数
 	 */
 	protected abstract void executeNative(Object ... args);
 	
 	/**
 	 * 扩展GUI
 	 * 
-	 * @param args 参数数组
+	 * @param args 参数
 	 */
 	protected abstract void executeExtend(Object ... args);
 	
