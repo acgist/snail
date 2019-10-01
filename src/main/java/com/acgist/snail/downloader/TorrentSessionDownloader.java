@@ -52,7 +52,7 @@ public abstract class TorrentSessionDownloader extends Downloader {
 	}
 	
 	/**
-	 * <p>加载Torrent任务信息</p>
+	 * <p>加载TorrentSession任务信息</p>
 	 */
 	protected abstract TorrentSession loadTorrentSession();
 

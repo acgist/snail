@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +13,7 @@ import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.system.config.DownloadConfig;
 
 /**
- * <p>单个文件下载器</p>
+ * <p>单个文件任务下载器</p>
  * 
  * @author acgist
  * @since 1.1.1
@@ -39,6 +40,27 @@ public abstract class SingleFileDownloader extends Downloader {
 		this.bytes = bytes;
 	}
 	
+	@Override
+	public void open() {
+		buildInput();
+		buildOutput();
+	}
+
+	@Override
+	public void download() throws IOException {
+		int length = 0;
+		while(ok()) {
+			// TODO：阻塞线程，导致暂停不能正常结束。
+			length = this.input.read(this.bytes, 0, this.bytes.length);
+			if(isComplete(length)) {
+				this.complete = true;
+				break;
+			}
+			this.output.write(this.bytes, 0, length);
+			this.download(length);
+		}
+	}
+	
 	/**
 	 * <p>判断任务是否完成：读取长度等于-1或者下载数据等于任务长度。</p>
 	 */
@@ -61,8 +83,8 @@ public abstract class SingleFileDownloader extends Downloader {
 				this.output = new BufferedOutputStream(new FileOutputStream(entity.getFile(), true), DownloadConfig.getMemoryBufferByte());
 			}
 		} catch (FileNotFoundException e) {
-			fail("下载文件打开失败");
-			LOGGER.error("打开下载文件流异常", e);
+			fail("下载文件打开失败：" + e.getMessage());
+			LOGGER.error("下载文件打开异常", e);
 		}
 	}
 	

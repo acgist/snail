@@ -38,7 +38,9 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	 */
 	protected final TaskSession taskSession;
 	/**
-	 * 任务删除锁，任务删除后标记：true。
+	 * <p>任务删除锁</p>
+	 * <p>任务不处于下载中时标记：true</p>
+	 * <p>删除任务时检测是否可以删除，如果不能删除进入删除等待。</p>
 	 */
 	private final AtomicBoolean deleteLock = new AtomicBoolean(false);
 
@@ -47,7 +49,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 		this.taskSession.downloader(this);
 		// 加载已下载大小
 		this.taskSession.downloadSize(downloadSize());
-		// 开始时任务不处于下载中时可以直接删除
+		// 开始时任务不处于下载中时标记：true
 		if(!this.taskSession.download()) {
 			this.deleteLock.set(true);
 		}
@@ -143,15 +145,15 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	
 	@Override
 	public void run() {
-		// 任务已经处于下载中直接跳过，防止多次点击暂停开始导致后面线程阻塞导致不能下载其他任务。
+		// 任务已经处于下载中时直接跳过，防止多次点击暂停开始导致后面线程阻塞，进而不能下载其他任务。
 		if(this.taskSession.download()) {
-			LOGGER.info("任务已经在下载中，停止执行：{}", this.name());
+			LOGGER.debug("任务已经处于下载中，停止执行：{}", this.name());
 			return;
 		}
 		synchronized (this.taskSession) {
 			final var entity = this.taskSession.entity();
 			if(this.taskSession.await()) {
-				LOGGER.info("开始下载：{}", this.name());
+				LOGGER.info("开始下载任务：{}", this.name());
 				this.fail = false; // 标记下载失败状态
 				this.deleteLock.set(false); // 设置删除锁
 				entity.setStatus(Status.download); // 修改任务状态
@@ -160,12 +162,12 @@ public abstract class Downloader implements IDownloader, IStatistics {
 					this.download();
 				} catch (Exception e) {
 					fail(e.getMessage());
-					LOGGER.error("下载异常", e);
+					LOGGER.error("任务下载异常", e);
 				}
 				this.complete(); // 检测完成状态
 				this.release(); // 释放资源
 				this.unlockDelete(); // 解除删除锁
-				LOGGER.info("下载结束：{}", name());
+				LOGGER.info("任务下载结束：{}", name());
 			}
 		}
 	}
@@ -194,7 +196,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 
 	/**
 	 * <p>唤醒删除锁</p>
-	 * <p>任务删除时需要等待下载线程正常结束</p>
+	 * <p>任务删除时需要等待下载线程正常结束，结束后唤醒删除锁等待。</p>
 	 */
 	private void unlockDelete() {
 		synchronized (this.deleteLock) {
@@ -204,7 +206,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	}
 	
 	/**
-	 * <p>唤醒下载等待线程、更新任务状态</p>
+	 * <p>唤醒下载等待线程，更新任务状态。</p>
 	 * 
 	 * @param status 状态
 	 */

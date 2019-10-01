@@ -53,7 +53,7 @@ public interface IDownloader extends Runnable {
 
 	/**
 	 * <p>失败任务</p>
-	 * <p>设置失败标记，提示失败信息。</p>
+	 * <p>设置失败标记，更新任务状态，提示失败信息。</p>
 	 * 
 	 * @param message 失败信息
 	 */

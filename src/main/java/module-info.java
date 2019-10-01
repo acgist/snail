@@ -24,6 +24,12 @@
  * 
  * TODO：添加注释、日志优化
  * 
+ * main/downloader/gui
+ * net->base/application/codec/ftp/http/upnp/wss
+ * net->torrent
+ * pojo/protocol/repository
+ * system/utils
+ * 
  * @author acgist
  * @since 1.0.0
  */

@@ -1,7 +1,6 @@
 package com.acgist.snail.downloader.http;
 
 import java.io.BufferedInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
@@ -36,27 +35,6 @@ public class HttpDownloader extends SingleFileDownloader {
 	}
 	
 	@Override
-	public void open() {
-		buildInput();
-		buildOutput();
-	}
-	
-	@Override
-	public void download() throws IOException {
-		int length = 0;
-		while(ok()) {
-			// TODO：阻塞线程，导致暂停不能正常结束。
-			length = this.input.read(this.bytes, 0, this.bytes.length);
-			if(isComplete(length)) {
-				this.complete = true;
-				break;
-			}
-			this.output.write(this.bytes, 0, length);
-			this.download(length);
-		}
-	}
-
-	@Override
 	public void release() {
 		IoUtils.close(this.input);
 		IoUtils.close(this.output);
@@ -77,16 +55,17 @@ public class HttpDownloader extends SingleFileDownloader {
 	@Override
 	protected void buildInput() {
 		final var entity = this.taskSession.entity();
-		// 设置已下载大小
+		// 获取已下载大小
 		final long size = FileUtils.fileSize(entity.getFile());
+		// 创建HTTP客户端
 		final var client = HTTPClient.newInstance(entity.getUrl());
-		HttpResponse<InputStream> response = null;
+		HttpResponse<InputStream> response = null; // 响应
 		try {
 			response = client
 				.header("Range", "bytes=" + size + "-")
 				.get(BodyHandlers.ofInputStream());
 		} catch (NetException e) {
-			fail("HTTP请求失败");
+			fail("HTTP请求失败：" + e.getMessage());
 			LOGGER.error("HTTP请求异常", e);
 			return;
 		}
@@ -96,7 +75,7 @@ public class HttpDownloader extends SingleFileDownloader {
 			if(responseHeader.range()) { // 支持断点续传
 				final long begin = responseHeader.beginRange();
 				if(size != begin) {
-					LOGGER.warn("已下载大小和开始下载位置不相等，已下载大小：{}，开始下载位置：{}，响应头：{}", size, begin, responseHeader.allHeaders());
+					LOGGER.warn("已下载大小（{}）和开始下载位置（{}）不相等，HTTP响应头：{}", size, begin, responseHeader.allHeaders());
 				}
 				this.taskSession.downloadSize(size);
 			} else {
