@@ -19,9 +19,12 @@ public abstract class Controller {
 	public static final int DOUBLE_CLICK_COUNT = 2;
 	
 	/**
-	 * 获取拖入面板的数据（Dragboard），获取文件、链接、文本。
+	 * <p>获取拖入面板的数据（Dragboard）</p>
+	 * <p>支持数据：文件、链接、文本</p>
 	 * 
-	 * @return 文本、链接、文件。
+	 * @param event 拖拽事件
+	 * 
+	 * @return 文本、链接、文件
 	 */
 	protected String dragboard(DragEvent event) {
 		final Dragboard dragboard = event.getDragboard();

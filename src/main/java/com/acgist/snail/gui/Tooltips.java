@@ -18,7 +18,7 @@ public class Tooltips {
 	}
 	
 	/**
-	 * 新建提示框，默认显示时间：200（毫秒）
+	 * 创建提示框，默认显示时间：200（毫秒）
 	 * 
 	 * @param value 提示内容
 	 * 
@@ -29,7 +29,7 @@ public class Tooltips {
 	}
 	
 	/**
-	 * 新建提示框
+	 * 创建提示框
 	 * 
 	 * @param value 提示内容
 	 * @param millis 显示时间（鼠标移到目标）

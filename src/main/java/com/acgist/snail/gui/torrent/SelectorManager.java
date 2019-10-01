@@ -36,7 +36,7 @@ public class SelectorManager {
 	 */
 	private Button download;
 	/**
-	 * 树状文件选择
+	 * 树形菜单根节点
 	 */
 	private TreeItem<HBox> root;
 	/**
@@ -65,7 +65,7 @@ public class SelectorManager {
 	}
 
 	/**
-	 * 新建树形菜单
+	 * 创建树形菜单
 	 * 
 	 * @param path 文件路径
 	 * @param size 文件大小
@@ -73,21 +73,21 @@ public class SelectorManager {
 	public void build(String path, Long size) {
 		String name = path;
 		TreeItem<HBox> parent = this.root;
-		// 包含路径
+		// 包含路径时创建路径菜单
 		if(path.contains(TorrentFile.SEPARATOR)) {
 			String parentPath = "";
 			TreeItem<HBox> treeItem = null;
 			final String[] paths = path.split(TorrentFile.SEPARATOR);
-			// 新建路径菜单
+			// 创建路径菜单
 			for (int index = 0; index < paths.length - 1; index++) {
-				String value = paths[index];
+				final String value = paths[index];
 				parentPath += value + TorrentFile.SEPARATOR;
 				treeItem = builcTreeItem(parent, parentPath, value, null);
 				parent = treeItem;
 			}
 			name = paths[paths.length - 1];
 		}
-		// 新建文件菜单
+		// 创建文件菜单
 		builcTreeItem(parent, path, name, size);
 	}
 	
@@ -125,6 +125,7 @@ public class SelectorManager {
 				.filter(entry -> list.contains(entry.getKey()))
 				.forEach(entry -> entry.getValue().setSelected(true));
 		} else { // 未选择文件：自动选择
+			// 计算平均值
 			final var avgSize = this.selector.values().stream()
 				.collect(Collectors.averagingLong(Selector::getSize));
 			this.selector.entrySet().stream()
@@ -139,6 +140,8 @@ public class SelectorManager {
 	}
 	
 	/**
+	 * 创建树形菜单
+	 * 
 	 * @param parent 父节点
 	 * @param path 路径
 	 * @param name 名称
@@ -205,7 +208,7 @@ public class SelectorManager {
 			.filter(entry -> entry.getValue().getCheckBox() == checkBox)
 			.map(entry -> entry.getKey())
 			.findFirst().get();
-		// 子目录
+		// 选择子目录
 		this.selector.entrySet().stream()
 			.filter(entry -> entry.getKey().startsWith(prefix))
 			.forEach(entry -> entry.getValue().setSelected(selected));
@@ -237,7 +240,7 @@ class Selector {
 	 */
 	private final CheckBox checkBox;
 	/**
-	 * 树节点
+	 * 树形菜单节点
 	 */
 	private final TreeItem<HBox> treeItem;
 
@@ -251,6 +254,8 @@ class Selector {
 
 	/**
 	 * 判断是否选中
+	 * 
+	 * @return true-选中；false-未选中；
 	 */
 	public boolean isSelected() {
 		return this.checkBox.isSelected();
@@ -259,7 +264,7 @@ class Selector {
 	/**
 	 * 设置是否选中
 	 * 
-	 * @param selected true-选择；false-未选中；
+	 * @param selected true-选中；false-未选中；
 	 */
 	public void setSelected(boolean selected) {
 		this.checkBox.setSelected(selected);

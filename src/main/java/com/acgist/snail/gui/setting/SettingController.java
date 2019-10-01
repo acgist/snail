@@ -68,7 +68,7 @@ public class SettingController extends Controller implements Initializable {
 	 */
 	@FXML
 	public void handlePathAction(ActionEvent event) {
-		final File file = Choosers.chooseDirectory(SettingWindow.getInstance().stage(), "文件保存目录");
+		final File file = Choosers.chooseDirectory(SettingWindow.getInstance().stage(), "下载保存目录");
 		if (file != null) {
 			final String path = file.getPath();
 			DownloadConfig.setPath(path);

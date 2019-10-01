@@ -18,7 +18,9 @@ public class Clipboards {
 	}
 	
 	/**
-	 * 剪切板拷贝
+	 * 将文本内容拷贝到剪切板
+	 * 
+	 * @param value 文本内容
 	 */
 	public static final void copy(final String value) {
 		final ClipboardContent content = new ClipboardContent();

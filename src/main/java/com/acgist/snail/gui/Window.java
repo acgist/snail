@@ -42,8 +42,15 @@ public abstract class Window<T extends Initializable> extends Application {
 		try {
 			this.start(this.stage);
 		} catch (Exception e) {
-			LOGGER.error("窗口初始化异常", e);
+			LOGGER.error("初始化窗口异常", e);
 		}
+	}
+	
+	/**
+	 * 设置ICON
+	 */
+	protected void icon() {
+		this.stage.getIcons().add(new Image("/image/logo.png"));
 	}
 	
 	/**
@@ -58,14 +65,7 @@ public abstract class Window<T extends Initializable> extends Application {
 	}
 	
 	/**
-	 * 设置ICON
-	 */
-	protected void icon() {
-		this.stage.getIcons().add(new Image("/image/logo.png"));
-	}
-	
-	/**
-	 * 设置通用信息：{@link #icon}、{@link #esc}
+	 * 设置会话框通用信息：{@link #icon}、{@link #esc}
 	 */
 	protected void dialogWindow() {
 		icon();
@@ -87,7 +87,7 @@ public abstract class Window<T extends Initializable> extends Application {
 	 * 
 	 * @return 面板
 	 * 
-	 * @throws IOException
+	 * @throws IOException IO异常
 	 */
 	protected <X> X loadFxml(String fxml) throws IOException {
 		final FXMLLoader loader = new FXMLLoader(this.getClass().getResource(fxml));
@@ -103,7 +103,7 @@ public abstract class Window<T extends Initializable> extends Application {
 	 * @param title 标题
 	 * @param width 宽度
 	 * @param height 高度
-	 * @param fxml fxml
+	 * @param fxml fxml路径
 	 * @param modality 模态
 	 * 
 	 * @throws IOException FXML加载异常
@@ -142,7 +142,7 @@ public abstract class Window<T extends Initializable> extends Application {
 	}
 	
 	/**
-	 * 设置窗口最大化：防止最小化后从托盘显示出来不能正常显示
+	 * 设置窗口最大化：防止最小化后，、从托盘显示出来时不能正常显示。
 	 */
 	public void maximize() {
 		this.stage.setIconified(false);

@@ -11,7 +11,7 @@ import javafx.stage.Window;
 
 /**
  * <p>目录、文件选择器</p>
- * <p>选择时默认都会设置为上一次选择的目录，选择后会修改上次选择目录为当前选择目录。</p>
+ * <p>选择时默认设置为上一次选择的目录，选择后会修改上次选择目录为当前选择目录。</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -40,7 +40,7 @@ public class Choosers {
 		lastPath(chooser);
 		chooser.getExtensionFilters().add(new ExtensionFilter(description, filters));
 		final File file = chooser.showOpenDialog(window);
-		if (file != null) {
+		if (file != null) { // 更新最后选择目录
 			DownloadConfig.setLastPath(file.getParent());
 		}
 		return file;
@@ -59,7 +59,7 @@ public class Choosers {
 		chooser.setTitle(title);
 		lastPath(chooser);
 		final File file = chooser.showDialog(window);
-		if (file != null) {
+		if (file != null) { // 更新最后选择目录
 			DownloadConfig.setLastPath(file.getPath());
 		}
 		return file;

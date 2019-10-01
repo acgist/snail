@@ -28,6 +28,7 @@ public class AboutController extends Controller implements Initializable {
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		// 软件名称
 		final StringBuilder name = new StringBuilder();
 		name.append("名称：").append(SystemConfig.getName())
 			.append("（").append(SystemConfig.getNameEn()).append("）")

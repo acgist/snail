@@ -81,7 +81,7 @@ public class TorrentController extends Controller implements Initializable {
 		try {
 			torrent = TorrentManager.getInstance().newTorrentSession(entity.getTorrent()).torrent();
 		} catch (DownloadException e) {
-			Alerts.warn("下载出错", "种子文件解析异常");
+			Alerts.warn("下载失败", "种子文件解析失败：" + e.getMessage());
 			return;
 		}
 		final TorrentInfo torrentInfo = torrent.getInfo();
@@ -101,10 +101,10 @@ public class TorrentController extends Controller implements Initializable {
 	}
 	
 	/**
-	 * 新建树形菜单
+	 * 创建树形菜单
 	 */
 	private TreeView<HBox> buildTree() {
-		TreeView<HBox> tree = new TreeView<>();
+		final TreeView<HBox> tree = new TreeView<>();
 		tree.setId("tree");
 		tree.getStyleClass().add("tree");
 		tree.prefWidthProperty().bind(this.root.widthProperty());
@@ -121,7 +121,7 @@ public class TorrentController extends Controller implements Initializable {
 		final TaskEntity entity = this.taskSession.entity();
 		var list = this.selectorManager.description();
 		if(list.isEmpty()) {
-			Alerts.warn("下载提示", "请选择下载文件");
+			Alerts.warn("下载失败", "请选择下载文件");
 			return;
 		}
 		entity.setSize(this.selectorManager.size());

@@ -26,13 +26,13 @@ public class ExitEvent extends GuiEvent {
 
 	@Override
 	protected void executeNative(Object ... args) {
-		Platform.exit();
-		TrayMenu.exit();
+		Platform.exit(); // 退出平台
+		TrayMenu.exit(); // 退出托盘
 	}
 
 	@Override
 	protected void executeExtend(Object ... args) {
-		GuiHandler.getInstance().unlock();
+		GuiHandler.getInstance().unlock(); // 唤醒扩展GUI等待锁
 	}
 	
 }

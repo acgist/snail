@@ -40,7 +40,7 @@ public class BuildWindow extends Window<BuildController> {
 	}
 	
 	/**
-	 * 显示窗口并且设置下载地址
+	 * 显示新建窗口并设置下载地址
 	 * 
 	 * @param url 下载地址
 	 */

@@ -55,6 +55,7 @@ import javafx.util.Callback;
 
 /**
  * 主窗口控制器
+ * 
  * TODO：太多列滚动条优化
  * 
  * @author acgist
@@ -65,7 +66,7 @@ public class MainController extends Controller implements Initializable {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
 	
 	/**
-	 * 过滤
+	 * 显示列表过滤器
 	 */
 	public enum Filter {
 		
@@ -306,7 +307,7 @@ public class MainController extends Controller implements Initializable {
 		if(!this.hasSelected()) {
 			return;
 		}
-		final var optional = Alerts.build("删除确认", "删除选中文件？", AlertType.CONFIRMATION);
+		final var optional = Alerts.build("删除确认", "删除选中任务？", AlertType.CONFIRMATION);
 		if(optional.isPresent() && optional.get() == ButtonType.OK) {
 			this.selected().forEach(session -> {
 				DownloaderManager.getInstance().delete(session);

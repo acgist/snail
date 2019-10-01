@@ -47,11 +47,11 @@ public class BuildController extends Controller implements Initializable {
 	}
 	
 	/**
-	 * 选择种子文件按钮
+	 * 选择种子按钮
 	 */
 	@FXML
 	public void handleTorrentAction(ActionEvent event) {
-		final File file = Choosers.chooseFile(BuildWindow.getInstance().stage(), "选择种子文件", "种子文件", "*.torrent");
+		final File file = Choosers.chooseFile(BuildWindow.getInstance().stage(), "选择种子", "种子文件", "*.torrent");
 		if (file != null) {
 			setUrl(file.getPath());
 		}
