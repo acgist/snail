@@ -25,6 +25,7 @@ import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.CollectionUtils;
+import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.UrlUtils;
 
 /**
@@ -113,7 +114,7 @@ public class HTTPClient {
 	 * <p>HTTP请求版本{@link Version#HTTP_1_1}</p>
 	 * 
 	 * @param url 请求地址
-	 * @param timeout 超时时间，单位：秒
+	 * @param timeout 超时时间（连接、请求），单位：秒
 	 * 
 	 * @return HTTP客户端
 	 */
@@ -157,7 +158,7 @@ public class HTTPClient {
 	 * POST请求
 	 */
 	public <T> HttpResponse<T> post(String data, HttpResponse.BodyHandler<T> handler) throws NetException {
-		if(data == null || data.isEmpty()) {
+		if(StringUtils.isEmpty(data)) {
 			this.builder.POST(BodyPublishers.noBody());
 		} else {
 			this.builder.POST(BodyPublishers.ofString(data));
@@ -196,7 +197,7 @@ public class HTTPClient {
 	/**
 	 * 执行请求
 	 */
-	private <T> HttpResponse<T> request(HttpRequest request, HttpResponse.BodyHandler<T> handler) throws NetException {
+	public <T> HttpResponse<T> request(HttpRequest request, HttpResponse.BodyHandler<T> handler) throws NetException {
 		if(this.client == null || request == null) {
 			return null;
 		}
@@ -235,21 +236,21 @@ public class HTTPClient {
 	/**
 	 * 执行GET请求
 	 */
-	public static final <T> HttpResponse<T> get(String requestUrl, HttpResponse.BodyHandler<T> handler) throws NetException {
-		return get(requestUrl, handler, TIMEOUT);
+	public static final <T> HttpResponse<T> get(String url, HttpResponse.BodyHandler<T> handler) throws NetException {
+		return get(url, handler, TIMEOUT);
 	}
 	
 	/**
 	 * 执行GET请求
 	 * 
-	 * @param requestUrl 请求地址
+	 * @param url 请求地址
 	 * @param handler 响应处理器
 	 * @param timeout 超时时间
 	 * 
 	 * @return 响应
 	 */
-	public static final <T> HttpResponse<T> get(String requestUrl, HttpResponse.BodyHandler<T> handler, int timeout) throws NetException {
-		final HTTPClient client = newInstance(requestUrl, timeout);
+	public static final <T> HttpResponse<T> get(String url, HttpResponse.BodyHandler<T> handler, int timeout) throws NetException {
+		final HTTPClient client = newInstance(url, timeout);
 		return client.get(handler);
 	}
 	
@@ -257,28 +258,35 @@ public class HTTPClient {
 	 * <p>成功：{@link #HTTP_OK}</p>
 	 */
 	public static final <T> boolean ok(HttpResponse<T> response) {
-		return response != null && response.statusCode() == HTTP_OK;
+		return statusCode(response, HTTP_OK);
 	}
 	
 	/**
 	 * <p>断点续传：{@link #HTTP_PARTIAL_CONTENT}</p>
 	 */
 	public static final <T> boolean partialContent(HttpResponse<T> response) {
-		return response != null && response.statusCode() == HTTP_PARTIAL_CONTENT;
+		return statusCode(response, HTTP_PARTIAL_CONTENT);
 	}
 
 	/**
 	 * <p>无法满足请求范围：{@link #HTTP_REQUESTED_RANGE_NOT_SATISFIABLE}</p>
 	 */
 	public static final <T> boolean requestedRangeNotSatisfiable(HttpResponse<T> response) {
-		return response != null && response.statusCode() == HTTP_REQUESTED_RANGE_NOT_SATISFIABLE;
+		return statusCode(response, HTTP_REQUESTED_RANGE_NOT_SATISFIABLE);
 	}
 	
 	/**
 	 * <p>服务器错误：{@link #HTTP_INTERNAL_SERVER_ERROR}</p>
 	 */
 	public static final <T> boolean internalServerError(HttpResponse<T> response) {
-		return response != null && response.statusCode() == HTTP_INTERNAL_SERVER_ERROR;
+		return statusCode(response, HTTP_INTERNAL_SERVER_ERROR);
+	}
+	
+	/**
+	 * 验证响应状态码
+	 */
+	private static final <T> boolean statusCode(HttpResponse<T> response, int statusCode) {
+		return response != null && response.statusCode() == statusCode;
 	}
 	
 	/**
@@ -293,7 +301,7 @@ public class HTTPClient {
 //			.followRedirects(Redirect.ALWAYS) // 重定向：全部
 //			.proxy(ProxySelector.getDefault()) // 代理
 //			.sslContext(newSSLContext()) // SSL上下文，默认：SSLContext.getDefault()
-			// SSL加密套件：ECDH不推荐使用，RSA和ECDSA签名根据证书类型选择
+			// SSL加密套件：ECDH不推荐使用，RSA和ECDSA签名根据证书类型选择。
 //			.sslParameters(new SSLParameters(new String[] {
 //				"TLS_AES_128_GCM_SHA256",
 //				"TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
@@ -324,8 +332,8 @@ public class HTTPClient {
 //	};
 //	
 //	/**
-//	 * 新建SSLContext
-//	 * https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#SSLContext
+//	 * <p>新建SSLContext</p>
+//	 * <p>参考链接：https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#SSLContext</p>
 //	 */
 //	private static final SSLContext newSSLContext() {
 //		SSLContext sslContext = null;
