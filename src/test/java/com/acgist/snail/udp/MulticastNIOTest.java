@@ -17,7 +17,7 @@ public class MulticastNIOTest {
 	public void server() {
 		UdpServer<UdpTestAcceptHandler> server = new UdpServer<>(UpnpServer.UPNP_PORT, "TestServer", UdpTestAcceptHandler.getInstance()) {};
 		server.join(2, UpnpServer.UPNP_HOST);
-		server.handler();
+		server.handle();
 		ThreadUtils.sleep(Long.MAX_VALUE);
 	}
 

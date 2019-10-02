@@ -14,7 +14,7 @@ public class TrackerServer extends UdpServer<TrackerAcceptHandler> {
 	
 	private TrackerServer() {
 		super(-1, "Tracker Server", TrackerAcceptHandler.getInstance());
-		this.handler();
+		this.handle();
 	}
 	
 	private static final TrackerServer INSTANCE = new TrackerServer();

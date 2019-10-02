@@ -24,11 +24,8 @@ public class WebSocketMessageHandler implements IMessageHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(WebSocketMessageHandler.class);
 	
 	private boolean close = false;
-//	private final HttpClient client;
 	private final WebSocket socket;
-	/**
-	 * 写入锁，每次只允许一个写入。
-	 */
+//	private final HttpClient client;
 	private final Semaphore writeableLock = new Semaphore(1);
 	
 	public WebSocketMessageHandler(HttpClient client, WebSocket socket) {
@@ -44,14 +41,14 @@ public class WebSocketMessageHandler implements IMessageHandler {
 	@Override
 	public void send(ByteBuffer buffer) throws NetException {
 		if(!available()) {
-			LOGGER.debug("发送消息时Socket已经不可用");
+			LOGGER.debug("WebSocket消息发送失败：Socket不可用");
 			return;
 		}
 		if(buffer.position() != 0) {
 			buffer.flip();
 		}
 		if(buffer.limit() == 0) {
-			LOGGER.warn("发送消息为空");
+			LOGGER.warn("WebSocket消息发送失败：{}", buffer);
 			return;
 		}
 		try {
@@ -59,7 +56,7 @@ public class WebSocketMessageHandler implements IMessageHandler {
 			final Future<WebSocket> future = this.socket.sendBinary(buffer, true);
 			final WebSocket webSocket = future.get();
 			if(webSocket == null) {
-				LOGGER.warn("发送数据为空");
+				LOGGER.warn("WebSocket消息发送失败：{}", webSocket);
 			}
 		} catch (Exception e) {
 			throw new NetException(e);
@@ -76,10 +73,8 @@ public class WebSocketMessageHandler implements IMessageHandler {
 	@Override
 	public void close() {
 		this.close = true;
-		synchronized (this.socket) {
-			this.socket.sendClose(WebSocket.NORMAL_CLOSURE, "Close");
-			this.socket.abort();
-		}
+		this.socket.sendClose(WebSocket.NORMAL_CLOSURE, "Close");
+		this.socket.abort();
 	}
 
 }

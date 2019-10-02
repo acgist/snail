@@ -55,7 +55,7 @@ public class WebSocketListener implements WebSocket.Listener {
 	
 	@Override
 	public void onError(WebSocket webSocket, Throwable error) {
-		LOGGER.debug("WebSocket发生异常", error);
+		LOGGER.debug("WebSocket异常", error);
 		WebSocket.Listener.super.onError(webSocket, error);
 	}
 	

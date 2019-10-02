@@ -62,5 +62,5 @@ public abstract class ClientMessageHandlerAdapter<T extends IMessageHandler> imp
 			this.handler.close();
 		}
 	}
-	
+
 }

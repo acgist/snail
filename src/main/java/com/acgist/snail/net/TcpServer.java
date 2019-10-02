@@ -11,7 +11,7 @@ import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.NetUtils;
 
 /**
- * <p>TCP Aio Socket服务端</p>
+ * <p>TCP服务端</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -25,19 +25,6 @@ public abstract class TcpServer<T extends TcpMessageHandler> {
 	 */
 	private static final AsynchronousChannelGroup GROUP;
 	
-	/**
-	 * 服务端名称
-	 */
-	private final String name;
-	/**
-	 * 消息代理
-	 */
-	private final Class<T> clazz;
-	/**
-	 * Socket Server
-	 */
-	private AsynchronousServerSocketChannel server;
-	
 	static {
 		AsynchronousChannelGroup group = null;
 		try {
@@ -47,6 +34,19 @@ public abstract class TcpServer<T extends TcpMessageHandler> {
 		}
 		GROUP = group;
 	}
+	
+	/**
+	 * 服务端名称
+	 */
+	private final String name;
+	/**
+	 * 消息代理类型
+	 */
+	private final Class<T> clazz;
+	/**
+	 * TCP Server
+	 */
+	private AsynchronousServerSocketChannel server;
 	
 	protected TcpServer(String name, Class<T> clazz) {
 		this.name = name;
@@ -62,6 +62,10 @@ public abstract class TcpServer<T extends TcpMessageHandler> {
 	
 	/**
 	 * 开启监听
+	 * 
+	 * @param port 端口
+	 * 
+	 * @return 开启状态
 	 */
 	public boolean listen(int port) {
 		return this.listen(null, port);
@@ -69,9 +73,14 @@ public abstract class TcpServer<T extends TcpMessageHandler> {
 	
 	/**
 	 * 开启监听
+	 * 
+	 * @param host 地址
+	 * @param port 端口
+	 * 
+	 * @return 开启状态
 	 */
 	protected boolean listen(String host, int port) {
-		LOGGER.info("启动服务端：{}", this.name);
+		LOGGER.info("启动TCP服务端：{}", this.name);
 		boolean ok = true;
 		try {
 			this.server = AsynchronousServerSocketChannel.open(GROUP);
@@ -79,7 +88,7 @@ public abstract class TcpServer<T extends TcpMessageHandler> {
 			this.server.accept(this.server, TcpAcceptHandler.newInstance(this.clazz));
 		} catch (Exception e) {
 			ok = false;
-			LOGGER.error("TCP Server启动异常：{}", this.name, e);
+			LOGGER.error("启动TCP服务端异常：{}", this.name, e);
 		}
 		if(ok) {
 //			GROUP.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS); // 阻止线程关闭
@@ -90,15 +99,15 @@ public abstract class TcpServer<T extends TcpMessageHandler> {
 	}
 	
 	/**
-	 * 关闭Socket Server
+	 * 关闭TCP Server
 	 */
 	public void close() {
-		LOGGER.info("TCP Server关闭：{}", this.name);
+		LOGGER.info("关闭TCP Server：{}", this.name);
 		IoUtils.close(this.server);
 	}
 	
 	/**
-	 * 关闭Server线程池
+	 * 关闭TCP Server线程池
 	 */
 	public static final void shutdown() {
 		LOGGER.info("关闭TCP Server线程池");

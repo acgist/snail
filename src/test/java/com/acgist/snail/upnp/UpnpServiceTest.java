@@ -42,7 +42,7 @@ public class UpnpServiceTest {
 	@Test
 	public void setting() throws NetException {
 		UpnpService.getInstance().load(this.serviceUrl);
-		UpnpService.getInstance().setting();
+		UpnpService.getInstance().mapping();
 	}
 
 }
