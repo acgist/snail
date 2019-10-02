@@ -22,7 +22,7 @@ import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
- * FTP消息
+ * FTP消息代理
  * 
  * @author acgist
  * @since 1.0.0
@@ -78,7 +78,7 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 
 	@Override
 	public void onMessage(String message) throws NetException {
-		LOGGER.debug("收到FTP响应：{}", message);
+		LOGGER.debug("FTP响应：{}", message);
 		if(StringUtils.startsWith(message, "530 ")) { // 登陆失败
 			this.failMessage = "服务器需要登陆授权";
 			this.close();
@@ -103,7 +103,7 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 			// 判断是否支持UTF8
 			if(message.toUpperCase().contains(SystemConfig.CHARSET_UTF8)) {
 				this.charset = SystemConfig.CHARSET_UTF8;
-				LOGGER.debug("FTP设置编码：{}", this.charset);
+				LOGGER.debug("设置FTP编码：{}", this.charset);
 			}
 			this.unlockCommand();
 		} else if(StringUtils.startsWith(message, "227 ")) { // 进入被动模式：获取下载Socket的IP和端口
@@ -128,9 +128,10 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 			}
 			try {
 				this.inputStream = this.inputSocket.getInputStream();
-				this.unlockCommand();
 			} catch (IOException e) {
 				LOGGER.error("打开FTP远程输入流异常", e);
+			} finally {
+				this.unlockCommand();
 			}
 		}
 	}
@@ -165,12 +166,15 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 	}
 	
 	/**
-	 * 获取输入流，阻塞线程
+	 * 获取输入流，阻塞线程。
 	 */
-	public InputStream inputStream() {
+	public InputStream inputStream() throws NetException {
 		this.lockCommand();
-		if(this.inputStream == null && this.failMessage == null) {
-			this.failMessage = "下载失败";
+		if(this.inputStream == null) {
+			if(this.failMessage == null) {
+				this.failMessage = "未知错误";
+			}
+			throw new NetException(this.failMessage);
 		}
 		return this.inputStream;
 	}

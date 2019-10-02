@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 import com.acgist.snail.system.exception.NetException;
 
 /**
- * <p>消息处理器：编码、解码、处理</p>
+ * <p>消息处理器：编码、解码、最终处理</p>
  * <p>直接实现{@linkplain IMessageCodec 接口}的子类均是最终处理器，继承{@linkplain MessageCodec 适配器}的子类是中间处理器。</p>
  * 
  * @author acgist
@@ -16,8 +16,8 @@ public interface IMessageCodec<T> {
 
 	/**
 	 * <p>解码是否完成</p>
-	 * <p>完成={@link #onMessage(Object)}或者{@link #onMessage(Object, InetSocketAddress)}</p>
-	 * <p>继续={@link #decode(Object)}或者{@link #decode(Object, InetSocketAddress)}</p>
+	 * <p>完成执行：{@link #onMessage(Object)}或者{@link #onMessage(Object, InetSocketAddress)}</p>
+	 * <p>继续执行：{@link #decode(Object)}或者{@link #decode(Object, InetSocketAddress)}</p>
 	 * 
 	 * @return true-完成；false-继续
 	 */

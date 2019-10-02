@@ -1,23 +1,16 @@
 package com.acgist.snail.utils;
 
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.Selector;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetDecoder;
-import java.nio.charset.CodingErrorAction;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.acgist.snail.system.config.SystemConfig;
 
 /**
  * <p>IO工具</p>
@@ -28,59 +21,6 @@ import com.acgist.snail.system.config.SystemConfig;
 public class IoUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(IoUtils.class);
-	
-	/**
-	 * 读取内容
-	 */
-	public static final String readContent(ByteBuffer buffer) {
-		return readContent(buffer, SystemConfig.DEFAULT_CHARSET);
-	}
-	
-	/**
-	 * 读取内容
-	 */
-	public static final String readContent(ByteBuffer buffer, String charset) {
-		if(charset == null) {
-			charset = SystemConfig.DEFAULT_CHARSET;
-		}
-		String content = null;
-		final CharsetDecoder decoder = Charset.forName(charset).newDecoder();
-		decoder.onMalformedInput(CodingErrorAction.IGNORE);
-		try {
-			if(buffer.position() != 0) {
-				buffer.flip();
-			}
-			content = decoder.decode(buffer).toString();
-			buffer.compact();
-		} catch (Exception e) {
-			LOGGER.error("ByteBuffer解码异常", e);
-		}
-		return content;
-	}
-	
-	/**
-	 * 输入流转为字符串。
-	 */
-	public static final String ofInputStream(InputStream input, String charset) {
-		if(input == null) {
-			return null;
-		}
-		if(charset == null) {
-			charset = SystemConfig.DEFAULT_CHARSET;
-		}
-		int index;
-		final char[] chars = new char[1024];
-		final StringBuilder builder = new StringBuilder();
-		try {
-			final var reader = new InputStreamReader(input, charset);
-			while((index = reader.read(chars)) != -1) {
-				builder.append(new String(chars, 0, index));
-			}
-		} catch (Exception e) {
-			LOGGER.error("读取输入流异常", e);
-		}
-		return builder.toString();
-	}
 	
 	/**
 	 * 关闭输入流

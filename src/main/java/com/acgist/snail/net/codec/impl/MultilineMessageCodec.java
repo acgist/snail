@@ -8,6 +8,7 @@ import com.acgist.snail.system.exception.NetException;
 
 /**
  * <p>多行消息处理器</p>
+ * <p>必须配合行消息处理器一起使用</p>
  * 
  * @author acgist
  * @since 1.1.1

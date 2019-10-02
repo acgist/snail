@@ -10,12 +10,11 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.net.TcpClient;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>FTP客户端</p>
- * <p>默认编码：GBK，连接登陆成功后会发送FEAT指令，如果支持UTF8指令，会切换UTF-8编码。</p>
+ * <p>默认编码：GBK，连接登陆成功后会发送FEAT指令，如果支持UTF8指令，切换UTF-8编码。</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -77,25 +76,26 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	}
 	
 	/**
-	 * 开始下载
+	 * <p>开始下载</p>
+	 * <p>从头开始下载，忽略已经下载的数据。</p>
 	 */
-	public InputStream download() {
+	public InputStream download() throws NetException {
 		return this.download(null);
 	}
 	
 	/**
-	 * 开始下载
+	 * <p>开始下载</p>
 	 * 
-	 * @param downloadSize 已下载大小
+	 * @param downloadSize 已下载大小，断点续传。
 	 */
-	public InputStream download(Long downloadSize) {
+	public InputStream download(Long downloadSize) throws NetException {
 		if(!this.ok) {
-			return null;
+			throw new NetException("FTP服务器连接失败");
 		}
 		synchronized (this) {
 			this.handler.resetLock();
 			changeMode();
-			command("TYPE I");
+			command("TYPE I"); // 设置数据模式
 			if(downloadSize != null && downloadSize > 0L) {
 				command("REST " + downloadSize);
 			}
@@ -105,19 +105,19 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	}
 	
 	/**
-	 * 获取文件大小
+	 * 获取FTP文件大小
 	 */
 	public Long size() throws NetException {
 		if(!this.ok) {
-			throw new NetException("服务器连接失败");
+			throw new NetException("FTP服务器连接失败");
 		}
 		synchronized (this) {
 			this.handler.resetLock();
 			this.changeMode();
-			command("TYPE A");
+			command("TYPE A"); // 切换数据模式
 			command("LIST " + this.filePath);
 			final InputStream inputStream = this.handler.inputStream();
-			final String data = IoUtils.ofInputStream(inputStream, this.charset);
+			final String data = StringUtils.ofInputStream(inputStream, this.charset);
 			if(data == null) {
 				throw new NetException(failMessage());
 			}
@@ -129,7 +129,7 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 			if(optional.isPresent()) {
 				return Long.valueOf(optional.get());
 			}
-			throw new NetException("获取下载大小失败");
+			throw new NetException("获取FTP文件大小失败");
 		}
 	}
 	
@@ -153,7 +153,7 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	}
 	
 	/**
-	 * 错误信息
+	 * 获取错误信息
 	 */
 	public String failMessage() {
 		return this.handler.failMessage();
@@ -189,13 +189,13 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	}
 	
 	/**
-	 * 发送命令
+	 * 发送FTP命令
 	 */
 	private void command(String command) {
 		try {
 			send(command, this.charset);
 		} catch (NetException e) {
-			LOGGER.error("Ftp命令发送异常", e);
+			LOGGER.error("发送FTP命令异常", e);
 		}
 	}
 

@@ -51,15 +51,14 @@ public class ApplicationMessageHandler extends TcpMessageHandler implements IMes
 	public void onMessage(String message) {
 		message = message.trim();
 		if(StringUtils.isEmpty(message)) {
-			LOGGER.warn("系统消息内容为空");
+			LOGGER.warn("系统消息错误：{}", message);
 			return;
 		}
 		final ApplicationMessage applicationMessage = ApplicationMessage.valueOf(message);
 		if(applicationMessage == null) {
-			LOGGER.warn("系统消息格式错误：{}", message);
+			LOGGER.warn("系统消息错误（格式）：{}", message);
 			return;
 		}
-		LOGGER.debug("处理系统消息：{}", message);
 		this.execute(applicationMessage);
 	}
 	
@@ -67,8 +66,9 @@ public class ApplicationMessageHandler extends TcpMessageHandler implements IMes
 	 * <p>处理消息</p>
 	 */
 	private void execute(ApplicationMessage message) {
+		LOGGER.debug("处理系统消息：{}", message);
 		if(message.getType() == null) {
-			LOGGER.warn("系统消息类型为空：{}", message.getType());
+			LOGGER.warn("系统消息类型错误：{}", message.getType());
 			return;
 		}
 		switch (message.getType()) {
@@ -106,7 +106,7 @@ public class ApplicationMessageHandler extends TcpMessageHandler implements IMes
 			onResponse(message);
 			break;
 		default:
-			LOGGER.warn("未适配的系统消息类型：{}", message.getType());
+			LOGGER.warn("系统消息类型错误（未适配）：{}", message.getType());
 			break;
 		}
 	}
@@ -124,7 +124,8 @@ public class ApplicationMessageHandler extends TcpMessageHandler implements IMes
 	}
 
 	/**
-	 * 文本消息，原因返回
+	 * <p>文本消息</p>
+	 * <p>原因返回</p>
 	 */
 	private void onText(ApplicationMessage message) {
 		send(ApplicationMessage.response(message.getBody()));
@@ -152,12 +153,12 @@ public class ApplicationMessageHandler extends TcpMessageHandler implements IMes
 	}
 	
 	/**
-	 * <p>新建任务</p>
-	 * <p>
-	 * body=B编码Map：<br>
-	 * url=下载链接；<br>
-	 * files=种子文件选择列表（B编码），每条文件包含路径：snail/video/demo.mp4；
-	 * </p>
+	 * <p>新建下载任务</p>
+	 * <dl>
+	 * 	<dt>body：Map（B编码）</dt>
+	 * 	<dd>url：下载链接</dd>
+	 * 	<dd>files：种子文件选择列表（B编码），每条文件包含路径：snail/video/demo.mp4。</dd>
+	 * </dl>
 	 * 
 	 * @since 1.1.1
 	 */
@@ -182,7 +183,7 @@ public class ApplicationMessageHandler extends TcpMessageHandler implements IMes
 	}
 
 	/**
-	 * 任务列表：B编码
+	 * 任务列表（B编码）
 	 * 
 	 * @since 1.1.1
 	 */
@@ -203,7 +204,7 @@ public class ApplicationMessageHandler extends TcpMessageHandler implements IMes
 	}
 
 	/**
-	 * 开始任务：body=TaskId
+	 * 开始任务：body=任务ID
 	 * 
 	 * @since 1.1.1
 	 */
@@ -222,7 +223,7 @@ public class ApplicationMessageHandler extends TcpMessageHandler implements IMes
 	}
 	
 	/**
-	 * 暂停任务：body=TaskId
+	 * 暂停任务：body=任务ID
 	 * 
 	 * @since 1.1.1
 	 */
@@ -237,7 +238,7 @@ public class ApplicationMessageHandler extends TcpMessageHandler implements IMes
 	}
 	
 	/**
-	 * 删除任务：body=TaskId
+	 * 删除任务：body=任务ID
 	 * 
 	 * @since 1.1.1
 	 */
@@ -252,32 +253,32 @@ public class ApplicationMessageHandler extends TcpMessageHandler implements IMes
 	}
 	
 	/**
-	 * 查找TaskSession
+	 * 选择TaskSession
 	 * 
 	 * @since 1.1.1
 	 */
 	private Optional<TaskSession> selectTaskSession(ApplicationMessage message) {
-		final String body = message.getBody();
+		final String body = message.getBody(); // 任务ID
 		return DownloaderManager.getInstance().tasks().stream()
 			.filter(session -> session.entity().getId().equals(body))
 			.findFirst();
 	}
 	
 	/**
-	 * 响应
+	 * 系统响应
 	 */
 	private void onResponse(ApplicationMessage message) {
-		LOGGER.debug("收到响应：{}", message.getBody());
+		LOGGER.debug("系统响应：{}", message.getBody());
 	}
 
 	/**
-	 * 发送消息
+	 * 发送系统消息
 	 */
 	private void send(ApplicationMessage message) {
 		try {
 			send(message.toString());
 		} catch (NetException e) {
-			LOGGER.error("发送Application消息异常", e);
+			LOGGER.error("发送系统消息异常", e);
 		}
 	}
 

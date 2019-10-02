@@ -2,10 +2,14 @@ package com.acgist.snail.downloader.ftp;
 
 import java.io.BufferedInputStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.downloader.SingleFileDownloader;
 import com.acgist.snail.net.ftp.FtpClient;
 import com.acgist.snail.net.ftp.bootstrap.FtpClientBuilder;
 import com.acgist.snail.pojo.session.TaskSession;
+import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.IoUtils;
 
@@ -17,7 +21,7 @@ import com.acgist.snail.utils.IoUtils;
  */
 public class FtpDownloader extends SingleFileDownloader {
 	
-//	private static final Logger LOGGER = LoggerFactory.getLogger(FtpDownloader.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(FtpDownloader.class);
 
 	/**
 	 * <p>FTP客户端</p>
@@ -50,16 +54,17 @@ public class FtpDownloader extends SingleFileDownloader {
 		this.client = FtpClientBuilder.newInstance(entity.getUrl()).build();
 		final boolean ok = this.client.connect();
 		if(ok) {
-			final var inputStream = this.client.download(size);
-			if(inputStream == null) {
-				fail(this.client.failMessage());
-			} else {
+			try {
+				final var inputStream = this.client.download(size);
 				this.input = new BufferedInputStream(inputStream);
 				if(this.client.range()) {
 					this.taskSession.downloadSize(size);
 				} else {
 					this.taskSession.downloadSize(0L);
 				}
+			} catch (NetException e) {
+				fail("FTP下载失败：" + e.getMessage());
+				LOGGER.error("FTP下载异常", e);
 			}
 		} else {
 			fail("FTP服务器连接失败");
