@@ -22,7 +22,7 @@ import com.acgist.snail.utils.NetUtils;
 
 /**
  * <p>UDP服务端</p>
- * <p>全部使用单例，初始化时立即开始监听，客户端使用和服务的同一个通道。</p>
+ * <p>全部使用单例，初始化时立即开始监听，客户端和服务端使用同一个通道。</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -46,7 +46,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 	 */
 	private final T handler;
 	/**
-	 * Selector，每个Server独立一个Selector。
+	 * Selector，每个服务端独立一个Selector。
 	 */
 	private Selector selector;
 	/**
@@ -78,9 +78,9 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 	}
 	
 	/**
-	 * 绑定消息处理
+	 * 消息代理
 	 */
-	public void handler() {
+	public void handle() {
 		EXECUTOR.submit(() -> {
 			try {
 				this.loopMessage();
@@ -122,7 +122,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 					}
 				}
 			} catch (Exception e) {
-				LOGGER.error("UDP消息读取异常", e);
+				LOGGER.error("UDP消息轮询异常", e);
 				continue;
 			}
 		}
@@ -136,16 +136,16 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 	}
 	
 	/**
-	 * 关闭UDP通道
+	 * 关闭UDP Server
 	 */
 	public void close() {
-		LOGGER.info("UDP Server关闭：{}", this.name);
+		LOGGER.info("关闭UDP Server：{}", this.name);
 		IoUtils.close(this.channel);
 		IoUtils.close(this.selector);
 	}
 	
 	/**
-	 * 关闭Server线程池
+	 * 关闭UDP Server线程池
 	 */
 	public static final void shutdown() {
 		LOGGER.info("关闭UDP Server线程池");

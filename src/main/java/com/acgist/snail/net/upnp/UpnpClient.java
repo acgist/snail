@@ -21,7 +21,7 @@ public class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UpnpClient.class);
 
 	/**
-	 * 协议
+	 * M-SEARCH协议
 	 */
 	private static final String PROTOCOL = "M-SEARCH * HTTP/1.1";
 	
@@ -42,11 +42,11 @@ public class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	 * 发送M-SEARCH消息
 	 */
 	public void mSearch() {
-		LOGGER.debug("发送mSearch消息");
+		LOGGER.debug("发送M-SEARCH消息");
 		try {
 			send(buildMSearch());
 		} catch (NetException e) {
-			LOGGER.error("发送mSearch消息异常", e);
+			LOGGER.error("发送M-SEARCH消息异常", e);
 		}
 	}
 	

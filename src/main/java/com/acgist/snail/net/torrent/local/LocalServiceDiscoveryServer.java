@@ -31,7 +31,7 @@ public class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDiscovery
 	public LocalServiceDiscoveryServer() {
 		super(NetUtils.buildUdpChannel(LSD_PORT, true), "LSD Server", LocalServiceDiscoveryAcceptHandler.getInstance());
 		this.join(LSD_TTL, LSD_HOST);
-		this.handler();
+		this.handle();
 	}
 	
 	private static final LocalServiceDiscoveryServer INSTANCE = new LocalServiceDiscoveryServer();

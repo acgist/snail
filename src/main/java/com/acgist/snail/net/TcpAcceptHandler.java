@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.utils.BeanUtils;
 
 /**
- * <p>TCP客户端连接</p>
+ * <p>TCP客户端接收代理</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -20,7 +20,7 @@ public class TcpAcceptHandler<T extends TcpMessageHandler> implements Completion
 	private static final Logger LOGGER = LoggerFactory.getLogger(TcpAcceptHandler.class);
 	
 	/**
-	 * 消息代理
+	 * 消息代理类型
 	 */
 	private final Class<T> clazz;
 	

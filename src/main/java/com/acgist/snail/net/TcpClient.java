@@ -14,7 +14,7 @@ import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.NetUtils;
 
 /**
- * TCP Aio Socket客户端
+ * TCP客户端
  * 
  * @author acgist
  * @since 1.0.0
@@ -28,15 +28,6 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 	 */
 	private static final AsynchronousChannelGroup GROUP;
 	
-	/**
-	 * 客户端名称
-	 */
-	private String name;
-	/**
-	 * 超时时间
-	 */
-	private int timeout;
-
 	static {
 		AsynchronousChannelGroup group = null;
 		try {
@@ -46,6 +37,15 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 		}
 		GROUP = group;
 	}
+	
+	/**
+	 * 客户端名称
+	 */
+	private String name;
+	/**
+	 * 超时时间
+	 */
+	private int timeout;
 	
 	protected TcpClient(String name, int timeout, T handler) {
 		super(handler);
@@ -78,7 +78,7 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 			this.handler.handle(socket);
 		} catch (Exception e) {
 			ok = false;
-			LOGGER.error("客户端连接异常：{}-{}", host, port, e);
+			LOGGER.error("TCP客户端连接异常：{}-{}", host, port, e);
 		}
 		if(ok) {
 			// 连接成功
@@ -94,12 +94,12 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 	 */
 	@Override
 	public void close() {
-		LOGGER.debug("TCP Client关闭：{}", this.name);
+		LOGGER.debug("关闭TCP Client：{}", this.name);
 		super.close();
 	}
 
 	/**
-	 * 关闭Client线程池
+	 * 关闭TCP Client线程池
 	 */
 	public static final void shutdown() {
 		LOGGER.info("关闭TCP Client线程池");

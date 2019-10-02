@@ -35,7 +35,7 @@ public class WebSocketClient extends ClientMessageHandlerAdapter<WebSocketMessag
 		try {
 			return new WebSocketClient(client, future.get(timeout, TimeUnit.SECONDS));
 		} catch (Exception e) {
-			throw new NetException("创建WebSocket失败", e);
+			throw new NetException("WebSocket创建失败", e);
 		}
 	}
 	

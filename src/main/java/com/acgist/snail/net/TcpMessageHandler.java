@@ -40,7 +40,7 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	protected IMessageCodec<ByteBuffer> messageCodec;
 	/**
 	 * <p>写入信号量</p>
-	 * <p>每次只允许一个写入，可以使用synchronize替换。</p>
+	 * <p>每次只允许一个线程写入，可以使用synchronize替换。</p>
 	 */
 	private final Semaphore writeableLock = new Semaphore(1);
 	
@@ -79,14 +79,14 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	@Override
 	public void send(ByteBuffer buffer) throws NetException {
 		if(!available()) {
-			LOGGER.debug("发送消息时Socket已经不可用");
+			LOGGER.debug("TCP消息发送失败：Socket不可用");
 			return;
 		}
 		if(buffer.position() != 0) {
 			buffer.flip();
 		}
 		if(buffer.limit() == 0) {
-			LOGGER.warn("发送消息为空");
+			LOGGER.warn("TCP消息发送失败：{}", buffer);
 			return;
 		}
 		// 阻塞线程，等待发送完成，防止多线程同时写导致WritePendingException。
@@ -96,7 +96,7 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 			// 不设置超时时间，防止超时异常导致数据并没有发出去而释放了信号量，从而引起一连串的WritePendingException异常。
 			final int size = future.get();
 			if(size <= 0) {
-				LOGGER.warn("发送数据为空");
+				LOGGER.warn("TCP消息发送失败：{}", size);
 			}
 		} catch (Exception e) {
 			throw new NetException(e);
@@ -110,7 +110,7 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 		try {
 			return (InetSocketAddress) this.socket.getRemoteAddress();
 		} catch (IOException e) {
-			LOGGER.error("TCP远程客户端信息获取异常", e);
+			LOGGER.error("TCP获取远程服务地址异常", e);
 		}
 		return null;
 	}
@@ -128,12 +128,12 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 		} else if(result == -1) { // 服务端关闭
 			this.close();
 		} else if(result == 0) { // 空轮询
-			LOGGER.debug("消息长度为零");
+			LOGGER.debug("TCP消息接收失败（长度）：{}", result);
 		} else {
 			try {
 				onReceive(buffer);
 			} catch (Exception e) {
-				LOGGER.error("TCP消息处理异常", e);
+				LOGGER.error("TCP消息接收异常", e);
 			}
 		}
 		if(available()) {
@@ -145,7 +145,7 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	
 	@Override
 	public void failed(Throwable ex, ByteBuffer buffer) {
-		LOGGER.error("消息处理异常", ex);
+		LOGGER.error("TCP消息处理异常", ex);
 	}
 	
 	/**

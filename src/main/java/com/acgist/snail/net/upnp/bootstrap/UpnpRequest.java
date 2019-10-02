@@ -47,7 +47,7 @@ public class UpnpRequest {
 	}
 
 	/**
-	 * <p>获取外网IP请求</p>
+	 * <p>外网IP地址请求</p>
 	 * <pre>
 	 * <xmp>
 <?xml version="1.0"?>
@@ -65,7 +65,7 @@ public class UpnpRequest {
 	}
 	
 	/**
-	 * <p>获取端口映射情况</p>
+	 * <p>端口映射信息</p>
 	 * <pre>
 	 * <xmp>
 <?xml version="1.0"?>

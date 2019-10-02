@@ -10,14 +10,11 @@ import com.acgist.snail.utils.NetUtils;
 
 /**
  * <p>UDP客户端</p>
- * <p>UDP客户端、服务端通道都是一个。</p>
- * <p>
- * 实现（消息处理）：
+ * <p>UDP客户端、服务端通道都是公用一个：</p>
  * <ul>
  * 	<li>单例</li>
  * 	<li>UDP通道使用服务器通道</li>
  * </ul>
- * </p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -39,8 +36,8 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessa
 	 * 新建客户端
 	 * 
 	 * @param name 客户端名称
-	 * @param handler 消息处理器，每一个客户端唯一
-	 * @param socketAddress 远程客户端地址
+	 * @param handler 消息处理器
+	 * @param socketAddress 远程地址
 	 */
 	public UdpClient(String name, T handler, InetSocketAddress socketAddress) {
 		super(handler);
@@ -59,6 +56,10 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessa
 	
 	/**
 	 * 打开客户端
+	 * 
+	 * @param port 端口
+	 * 
+	 * @return 打开状态
 	 */
 	public boolean open(final int port) {
 		return this.open(null, port);
@@ -66,6 +67,11 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessa
 
 	/**
 	 * 打开客户端
+	 * 
+	 * @param host 地址
+	 * @param port 端口
+	 * 
+	 * @return 打开状态
 	 */
 	public boolean open(final String host, final int port) {
 		final DatagramChannel channel = NetUtils.buildUdpChannel(host, port);
@@ -73,7 +79,13 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessa
 	}
 	
 	/**
-	 * 打开客户端：客户端和服务的使用同一个端口
+	 * <p>打开客户端</p>
+	 * <p>客户端和服务端的使用同一个通道</p>
+	 * 
+	 * @param channel 通道
+	 * 
+	 * @return 打开状态
+	 * 
 	 */
 	public boolean open(DatagramChannel channel) {
 		if(channel == null) {
@@ -89,7 +101,7 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessa
 	 */
 	@Override
 	public void close() {
-		LOGGER.debug("UDP Client关闭：{}", this.name);
+		LOGGER.debug("关闭UDP Client：{}", this.name);
 		super.close();
 	}
 

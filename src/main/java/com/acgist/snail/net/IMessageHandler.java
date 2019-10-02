@@ -20,16 +20,15 @@ public interface IMessageHandler {
 	 * 连接超时时间
 	 */
 	int CONNECT_TIMEOUT = SystemConfig.CONNECT_TIMEOUT;
-
 	/**
 	 * 发送超时时间
 	 */
 	int SEND_TIMEOUT = SystemConfig.SEND_TIMEOUT;
 	
 	/**
-	 * 是否可用
+	 * 可用状态
 	 * 
-	 * @return 可用状态
+	 * @return true：可用；false：不可用；
 	 */
 	boolean available();
 	
@@ -70,7 +69,7 @@ public interface IMessageHandler {
 	}
 	
 	/**
-	 * 消息发送（所有其他消息均有这个方法发送）
+	 * 消息发送（所有其他消息均由这个方法发送）
 	 * 
 	 * @param buffer 消息内容
 	 * 
@@ -79,9 +78,9 @@ public interface IMessageHandler {
 	void send(ByteBuffer buffer) throws NetException;
 
 	/**
-	 * 获取远程客户端
+	 * 获取远程服务地址
 	 * 
-	 * @return 远程客户端/服务端地址
+	 * @return 远程服务地址
 	 */
 	InetSocketAddress remoteSocketAddress();
 	
@@ -96,7 +95,7 @@ public interface IMessageHandler {
 	 * @param message 消息
 	 * @param charset 编码
 	 * 
-	 * @return 编码后的消息
+	 * @return 编码后的数据
 	 * 
 	 * @throws NetException 网络异常
 	 */
@@ -107,7 +106,7 @@ public interface IMessageHandler {
 			try {
 				return message.getBytes(charset);
 			} catch (UnsupportedEncodingException e) {
-				throw new NetException(String.format("编码异常，编码：%s，内容：%s。", charset, message), e);
+				throw new NetException(String.format("字符编码异常，编码：%s，内容：%s。", charset, message), e);
 			}
 		}
 	}

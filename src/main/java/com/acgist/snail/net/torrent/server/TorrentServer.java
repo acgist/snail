@@ -13,7 +13,7 @@ public class TorrentServer extends UdpServer<TorrentAcceptHandler> {
 
 	private TorrentServer() {
 		super(SystemConfig.getTorrentPort(), "Torrent(UTP/DHT) Server", TorrentAcceptHandler.getInstance());
-		this.handler();
+		this.handle();
 	}
 	
 	private static final TorrentServer INSTANCE = new TorrentServer();

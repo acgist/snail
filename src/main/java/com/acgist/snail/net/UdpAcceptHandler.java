@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.system.context.SystemThreadContext;
 
 /**
- * UDP消息连接
+ * UDP消息接收代理
  * 
  * @author acgist
  * @since 1.0.0
@@ -27,7 +27,7 @@ public abstract class UdpAcceptHandler {
 	}
 	
 	/**
-	 * 消息处理
+	 * 消息代理
 	 */
 	public void handle(DatagramChannel channel, ByteBuffer buffer, InetSocketAddress socketAddress) {
 		final UdpMessageHandler handler = messageHandler(buffer, socketAddress);
@@ -40,7 +40,7 @@ public abstract class UdpAcceptHandler {
 					}
 				}
 			} catch (Exception e) {
-				LOGGER.error("UDP消息处理异常", e);
+				LOGGER.error("UDP消息接收异常", e);
 			}
 		});
 	}
@@ -56,10 +56,10 @@ public abstract class UdpAcceptHandler {
 	public abstract UdpMessageHandler messageHandler(ByteBuffer buffer, InetSocketAddress socketAddress);
 	
 	/**
-	 * 关闭线程池
+	 * 关闭UDP消息接收线程池
 	 */
 	public static final void shutdown() {
-		LOGGER.info("关闭UDP消息处理线程池");
+		LOGGER.info("关闭UDP消息接收线程池");
 		SystemThreadContext.shutdownNow(EXECUTOR);
 	}
 	

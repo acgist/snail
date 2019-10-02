@@ -29,7 +29,7 @@ public class NetUtils {
 	 */
 	public static final int MAX_PORT = 2 << 15;
 	/**
-	 * 本机IP
+	 * 本机IP地址
 	 */
 	public static final String LOCAL_IP = "127.0.0.1";
 	/**
@@ -69,7 +69,7 @@ public class NetUtils {
 	 */
 	private static final int IPV4_MAX_INDEX = 3;
 	/**
-	 * IP正则表达式
+	 * IP地址正则表达式
 	 */
 	private static final String IP_REGEX = "(\\d{0,3}\\.){3}\\d{0,3}";
 	
@@ -97,7 +97,7 @@ public class NetUtils {
 	}
 	
 	/**
-	 * <p>IP编码</p>
+	 * <p>IP地址编码</p>
 	 * <p>IP地址转换为int。</p>
 	 */
 	public static final int encodeIpToInt(String ip) {
@@ -105,7 +105,7 @@ public class NetUtils {
 	}
 	
 	/**
-	 * <p>IP编码</p>
+	 * <p>IP地址编码</p>
 	 * <p>IP地址转换为long。</p>
 	 */
 	public static final long encodeIpToLong(String ip) {
@@ -119,7 +119,7 @@ public class NetUtils {
 	}
 
 	/**
-	 * <p>IP解码</p>
+	 * <p>IP地址解码</p>
 	 * <p>int转换为IP地址。</p>
 	 */
 	public static final String decodeIntToIp(int value) {
@@ -127,7 +127,7 @@ public class NetUtils {
 	}
 	
 	/**
-	 * <p>IP解码</p>
+	 * <p>IP地址解码</p>
 	 * <p>long转换为IP地址。</p>
 	 */
 	public static final String decodeLongToIp(long value) {
@@ -185,7 +185,7 @@ public class NetUtils {
 	}
 
 	/**
-	 * 判断是否是本地IP地址。
+	 * 判断是否是本地IP地址
 	 */
 	public static final boolean isLocalIp(String ip) {
 		final long value = encodeIpToLong(ip);

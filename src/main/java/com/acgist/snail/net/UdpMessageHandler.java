@@ -31,7 +31,7 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 	 */
 	protected DatagramChannel channel;
 	/**
-	 * 远程SocketAddress
+	 * 远程地址
 	 */
 	protected InetSocketAddress socketAddress;
 	/**
@@ -82,7 +82,7 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 	}
 
 	/**
-	 * 关闭通道：只标记关闭，不关闭通道（UDP通道都是单例）。
+	 * 关闭资源，标记关闭，不能关闭通道。
 	 */
 	@Override
 	public void close() {
@@ -94,20 +94,20 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 	 */
 	protected void send(ByteBuffer buffer, SocketAddress socketAddress) throws NetException {
 		if(!available()) {
-			LOGGER.debug("发送消息时Channel已经不可用");
+			LOGGER.debug("UDP消息发送失败：通道不可用");
 			return;
 		}
 		if(buffer.position() != 0) {
 			buffer.flip();
 		}
 		if(buffer.limit() == 0) {
-			LOGGER.warn("发送消息为空");
+			LOGGER.warn("UDP消息发送失败：{}", buffer);
 			return;
 		}
 		try {
 			final int size = this.channel.send(buffer, socketAddress);
 			if(size <= 0) {
-				LOGGER.warn("发送数据为空，发送地址：{}", socketAddress);
+				LOGGER.warn("UDP消息发送失败：{}-{}", socketAddress, size);
 			}
 		} catch (Exception e) {
 			throw new NetException(e);
