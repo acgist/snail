@@ -6,8 +6,8 @@ import com.acgist.snail.net.ftp.FtpClient;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>FtpClient工厂</p>
- * <p>根据url创建FTP客户端。</p>
+ * <p>FtpClient Builder</p>
+ * <p>根据url创建FTP客户端</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -15,11 +15,11 @@ import com.acgist.snail.utils.StringUtils;
 public class FtpClientBuilder {
 
 	/**
-	 * 默认端口
+	 * FTP默认端口
 	 */
 	private static final int FTP_DEFAULT_PORT = 21;
 	/**
-	 * 匿名用户账号和用户密码
+	 * FTP匿名用户账号和用户密码
 	 */
 	private static final String ANONYMOUS = "anonymous";
 	
@@ -71,19 +71,19 @@ public class FtpClientBuilder {
 	}
 	
 	/**
-	 * 解析URL，获取地址、端口、用户、文件等信息。
+	 * 解析URL：地址、端口、用户、文件等信息。
 	 */
 	private void decodeUrl() {
 		final URI uri = URI.create(this.url);
 		final String userInfo = uri.getUserInfo();
 		decodeUserInfo(userInfo);
-		this.filePath = uri.getPath();
 		this.host = uri.getHost();
 		int port = uri.getPort();
 		if(port == -1) {
 			port = FTP_DEFAULT_PORT;
 		}
 		this.port = port;
+		this.filePath = uri.getPath();
 	}
 
 	/**

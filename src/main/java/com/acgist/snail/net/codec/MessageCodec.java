@@ -14,7 +14,7 @@ import com.acgist.snail.system.exception.NetException;
 public abstract class MessageCodec<T, X> implements IMessageCodec<T> {
 
 	/**
-	 * 下一个消息处理器
+	 * <p>下一个消息处理器</p>
 	 */
 	protected final IMessageCodec<X> messageCodec;
 
@@ -49,7 +49,7 @@ public abstract class MessageCodec<T, X> implements IMessageCodec<T> {
 	protected abstract void decode(T message, InetSocketAddress address, boolean hasAddress) throws NetException;
 	
 	/**
-	 * 执行下一个处理器
+	 * 执行下一个消息处理器
 	 * 
 	 * @param message 消息
 	 * @param address 地址
@@ -80,5 +80,25 @@ public abstract class MessageCodec<T, X> implements IMessageCodec<T> {
 	public void encode(ByteBuffer message) {
 		this.messageCodec.encode(message);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * <p>消息最终处理请实现{@link IMessageCodec}</p>
+	 */
+	@Override
+	@Deprecated
+	public void onMessage(T message) throws NetException {
+		IMessageCodec.super.onMessage(message);
+	}
 
+	/**
+	 * {@inheritDoc}
+	 * <p>消息最终处理请实现{@link IMessageCodec}</p>
+	 */
+	@Override
+	@Deprecated
+	public void onMessage(T message, InetSocketAddress address) throws NetException {
+		IMessageCodec.super.onMessage(message, address);
+	}
+	
 }

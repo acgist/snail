@@ -4,8 +4,19 @@ import java.nio.ByteBuffer;
 
 import org.junit.Test;
 
+import com.acgist.snail.utils.StringUtils;
+
 public class ByteBufferTest {
 
+	@Test
+	public void readContent() {
+		ByteBuffer buffer = ByteBuffer.wrap("1234".getBytes());
+		buffer.compact();
+//		buffer.flip();
+		System.out.println(buffer);
+		System.out.println(StringUtils.readContent(buffer));
+	}
+	
 	@Test
 	public void append() {
 		ByteBuffer buffer = ByteBuffer.allocate(100);
