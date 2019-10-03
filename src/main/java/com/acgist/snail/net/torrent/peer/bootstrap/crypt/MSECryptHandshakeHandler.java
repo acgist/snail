@@ -202,7 +202,7 @@ public class MSECryptHandshakeHandler {
 		} catch (Exception e) {
 			this.plaintext();
 			LOGGER.debug("加密握手异常，使用明文。");
-			throw new NetException("加密握手异常", e);
+			throw new NetException("加密握手失败", e);
 		}
 	}
 	
@@ -284,7 +284,7 @@ public class MSECryptHandshakeHandler {
 			return;
 		}
 		if(this.buffer.position() > PUBLIC_KEY_MAX_LENGTH) { // 数据超过最大长度
-			throw new NetException("加密握手，长度错误。");
+			throw new NetException("加密握手失败（长度错误）");
 		}
 		this.buffer.flip();
 		final BigInteger publicKey = NumberUtils.decodeUnsigned(this.buffer, CryptConfig.PUBLIC_KEY_LENGTH);
@@ -310,7 +310,7 @@ public class MSECryptHandshakeHandler {
 		LOGGER.debug("加密握手，发送加密协议协商，步骤：{}", this.step);
 		final TorrentSession torrentSession = this.peerSubMessageHandler.torrentSession();
 		if(torrentSession == null) {
-			throw new NetException("加密握手TorrentSession为空");
+			throw new NetException("加密握手失败（种子不存在）");
 		}
 		final byte[] dhSecretBytes = NumberUtils.encodeUnsigned(this.dhSecret, CryptConfig.PUBLIC_KEY_LENGTH);
 		final InfoHash infoHash = torrentSession.infoHash();
@@ -367,7 +367,7 @@ public class MSECryptHandshakeHandler {
 			return;
 		}
 		if(this.buffer.position() > PROVIDE_MAX_LENGTH) {
-			throw new NetException("加密握手，长度错误。");
+			throw new NetException("加密握手失败（长度错误）");
 		}
 		this.buffer.flip();
 		final byte[] req1 = new byte[20];
@@ -389,7 +389,7 @@ public class MSECryptHandshakeHandler {
 			}
 		}
 		if(infoHash == null) {
-			throw new NetException("加密握手，不存在的种子信息。");
+			throw new NetException("加密握手失败（种子不存在）");
 		}
 		this.cipher = MSECipher.newReceiver(dhSecretBytes, infoHash);
 //		ENCRYPT(VC, crypto_provide, len(PadC), PadC, len(IA))
@@ -459,7 +459,7 @@ public class MSECryptHandshakeHandler {
 			return;
 		}
 		if(this.buffer.position() > CONFIRM_MAX_LENGTH) {
-			throw new NetException("加密握手，长度错误。");
+			throw new NetException("加密握手失败（长度错误）");
 		}
 //		ENCRYPT(VC, crypto_select, len(padD), padD)
 		this.buffer.flip();
@@ -521,7 +521,7 @@ public class MSECryptHandshakeHandler {
 			}
 		}
 		if (selected == null) {
-			throw new NetException("不支持加密协议：" + provide);
+			throw new NetException("加密握手失败（加密协议不支持）：" + provide);
 		}
 		return selected;
 	}

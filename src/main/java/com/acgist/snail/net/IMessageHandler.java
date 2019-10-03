@@ -106,7 +106,7 @@ public interface IMessageHandler {
 			try {
 				return message.getBytes(charset);
 			} catch (UnsupportedEncodingException e) {
-				throw new NetException(String.format("字符编码异常，编码：%s，内容：%s。", charset, message), e);
+				throw new NetException(String.format("字符编码失败，编码：%s，内容：%s", charset, message), e);
 			}
 		}
 	}

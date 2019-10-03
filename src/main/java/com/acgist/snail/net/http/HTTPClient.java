@@ -204,7 +204,7 @@ public class HTTPClient {
 		try {
 			return this.client.send(request, handler);
 		} catch (Exception e) {
-			throw new NetException(e);
+			throw new NetException("HTTP执行请求失败", e);
 		}
 	}
 	

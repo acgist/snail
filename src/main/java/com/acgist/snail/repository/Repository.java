@@ -48,7 +48,7 @@ public abstract class Repository<T extends BaseEntity> {
 		if(StringUtils.regex(value, COLUMN_REGEX, true)) {
 			return value;
 		}
-		throw new RepositoryException("数据库列格式错误");
+		throw new RepositoryException("数据库列格式错误：" + value);
 	};
 	
 	/**

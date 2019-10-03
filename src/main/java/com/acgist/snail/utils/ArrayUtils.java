@@ -43,7 +43,7 @@ public class ArrayUtils {
 	 */
 	public static final int compareUnsigned(byte[] sources, byte[] targets) {
 		if(sources == null || targets == null) {
-			throw new ArgumentException("数组比较时参数错误");
+			throw new ArgumentException("数组比较参数错误");
 		} else if(sources.length != targets.length) {
 			return sources.length > targets.length ? 1 : -1;
 		} else {
@@ -66,7 +66,7 @@ public class ArrayUtils {
 		if (sources == null || targets == null) {
 			throw new ArgumentException("异或运算参数错误");
 		} else if (sources.length != targets.length) {
-			throw new ArgumentException("异或运算长度不一致");
+			throw new ArgumentException("异或运算参数错误（长度）");
 		} else {
 			final byte[] result = new byte[sources.length];
 			for (int index = 0; index < sources.length; index++) {

@@ -145,7 +145,7 @@ public class DownloadConfig extends PropertiesConfig {
 	 */
 	public static final String getPath(String fileName) {
 		if(StringUtils.isEmpty(fileName)) {
-			throw new ArgumentException("无效的下载路径：" + fileName);
+			throw new ArgumentException("文件名称格式错误：" + fileName);
 		}
 		return FileUtils.file(getPath(), fileName);
 	}

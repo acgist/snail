@@ -59,7 +59,7 @@ public class HttpTrackerClient extends TrackerClient {
 		final String requestUrl = buildAnnounceUrl(sid, torrentSession, TrackerConfig.Event.started);
 		final var response = HTTPClient.get(requestUrl, BodyHandlers.ofString(), TrackerClient.TIMEOUT);
 		if(!HTTPClient.ok(response)) {
-			throw new NetException("获取Peer异常");
+			throw new NetException("HTTP获取Peer失败");
 		}
 		// TODO：解决B编码有多余数据问题：测试地址：http://tracker3.itzmx.com:6961/announce
 		final String body = response.body();

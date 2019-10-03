@@ -133,7 +133,7 @@ public class TorrentProtocol extends Protocol {
 	private void exist() throws DownloadException {
 		final Torrent torrent = TorrentManager.loadTorrent(this.url);
 		if(TorrentManager.getInstance().exist(torrent.getInfoHash().infoHashHex())) {
-			throw new DownloadException("BT任务已经存在");
+			throw new DownloadException("任务已经存在");
 		}
 	}
 	

@@ -128,7 +128,7 @@ public abstract class Protocol {
 			throw e;
 		} catch (Exception e) {
 			ok = false;
-			throw new DownloadException("下载异常", e);
+			throw new DownloadException("下载失败", e);
 		} finally {
 			clean(ok);
 		}
@@ -218,7 +218,7 @@ public abstract class Protocol {
 		final String filePath = DownloadConfig.getPath(fileName);
 		final File file = new File(filePath);
 		if(file.exists()) {
-			throw new DownloadException("下载文件已存在：" + file);
+			throw new DownloadException("下载文件已经存在：" + file);
 		}
 		this.taskEntity.setFile(filePath);
 	}

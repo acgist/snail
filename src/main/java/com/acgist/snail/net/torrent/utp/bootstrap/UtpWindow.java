@@ -191,7 +191,7 @@ public class UtpWindow {
 					try {
 						output.write(nextWindowData.getData());
 					} catch (IOException e) {
-						throw new NetException("UTP消息处理异常", e);
+						throw new NetException("UTP消息处理失败", e);
 					}
 				}
 			}

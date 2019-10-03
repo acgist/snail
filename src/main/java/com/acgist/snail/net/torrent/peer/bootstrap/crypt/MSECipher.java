@@ -1,10 +1,13 @@
 package com.acgist.snail.net.torrent.peer.bootstrap.crypt;
 
 import java.nio.ByteBuffer;
+import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.slf4j.Logger;
@@ -98,7 +101,7 @@ public class MSECipher {
 		try {
 			return this.getEncryptCipher().doFinal(bytes);
 		} catch (Exception e) {
-			throw new NetException("加密异常", e);
+			throw new NetException("加密失败", e);
 		}
 	}
 	
@@ -133,7 +136,7 @@ public class MSECipher {
 		try {
 			return this.getDecryptCipher().doFinal(bytes);
 		} catch (Exception e) {
-			throw new NetException("解密异常", e);
+			throw new NetException("解密失败", e);
 		}
 	}
 	
@@ -179,8 +182,8 @@ public class MSECipher {
 			cipher.init(mode, key);
 			cipher.update(new byte[1024]); // 丢弃1024字符
 			return cipher;
-		} catch (Exception e) {
-			throw new ArgumentException(e);
+		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException e) {
+			throw new ArgumentException("不支持的加密算法：" + transformation, e);
 		}
 	}
 

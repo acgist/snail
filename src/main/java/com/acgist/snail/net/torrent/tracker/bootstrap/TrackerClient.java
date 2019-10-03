@@ -73,7 +73,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	
 	public TrackerClient(String scrapeUrl, String announceUrl, Protocol type) throws NetException {
 		if(StringUtils.isEmpty(announceUrl)) {
-			throw new NetException("不支持的Tracker announceUrl：" + announceUrl);
+			throw new NetException("不支持的Tracker声明地址：" + announceUrl);
 		}
 		this.id = NumberUtils.build();
 		this.type = type;

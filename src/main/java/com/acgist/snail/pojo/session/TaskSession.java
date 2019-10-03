@@ -87,7 +87,7 @@ public class TaskSession {
 	
 	private TaskSession(TaskEntity entity) throws DownloadException {
 		if(entity == null) {
-			throw new DownloadException("创建下载任务失败（任务不存在）");
+			throw new DownloadException("创建TaskSession失败（任务不存在）");
 		}
 		this.entity = entity;
 		this.statistics = new StatisticsSession(true, SystemStatistics.getInstance().getSystemStatistics());
