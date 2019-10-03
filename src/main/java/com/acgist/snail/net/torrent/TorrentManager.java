@@ -10,7 +10,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.protocol.torrent.TorrentProtocol;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
 import com.acgist.snail.system.bencode.BEncodeDecoder;
@@ -79,8 +78,9 @@ public class TorrentManager {
 	}
 	
 	/**
-	 * <p>新建TorrentSession。</p>
-	 * <p>如果已经存在infoHashHex，直接返回，反之使用path加载。</p>
+	 * <p>新建TorrentSession</p>
+	 * <p>如果已经存在infoHashHex，直接返回。</p>
+	 * <p>如果不存在，path为空时使用infoHashHex加载，反之使用path加载。</p>
 	 */
 	public TorrentSession newTorrentSession(String infoHashHex, String path) throws DownloadException {
 		final var session = torrentSession(infoHashHex);
@@ -95,9 +95,9 @@ public class TorrentManager {
 	}
 
 	/**
-	 * 新建TorrentSession，如果已经存在返回已存在TorrentSession。
+	 * <p>新建TorrentSession</p>
 	 * 
-	 * @param path torrent文件路径
+	 * @param path 种子文件路径
 	 */
 	public TorrentSession newTorrentSession(String path) throws DownloadException {
 		final Torrent torrent = loadTorrent(path);
@@ -105,11 +105,11 @@ public class TorrentManager {
 	}
 	
 	/**
-	 * 新建TorrentSession，如果已经存在返回已存在TorrentSession。
+	 * 新建TorrentSession
 	 */
 	private TorrentSession newTorrentSession(InfoHash infoHash, Torrent torrent) throws DownloadException {
 		if(infoHash == null) {
-			throw new DownloadException("创建TorrentSession失败");
+			throw new DownloadException("创建TorrentSession失败（InfoHash）");
 		}
 		synchronized (this.torrentSessions) {
 			final String infoHashHex = infoHash.infoHashHex();
@@ -123,9 +123,9 @@ public class TorrentManager {
 	}
 	
 	/**
-	 * 加载种子文件
+	 * 种子文件加载
 	 * 
-	 * @param path torrent文件地址
+	 * @param path 种子文件地址
 	 */
 	public static final Torrent loadTorrent(String path) throws DownloadException {
 		final File file = new File(path);
@@ -147,15 +147,8 @@ public class TorrentManager {
 		} catch (DownloadException e) {
 			throw e;
 		} catch (NetException | IOException e) {
-			throw new DownloadException("种子文件读取失败", e);
+			throw new DownloadException("种子文件加载失败", e);
 		}
-	}
-
-	/**
-	 * 验证BT种子
-	 */
-	public static final boolean verify(String url) {
-		return StringUtils.endsWith(url.toLowerCase(), TorrentProtocol.TORRENT_SUFFIX);
 	}
 
 }

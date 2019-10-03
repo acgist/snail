@@ -50,7 +50,7 @@ public class InfoHash {
 	 */
 	public static final InfoHash newInstance(String hash) throws DownloadException {
 		if(hash == null) {
-			throw new DownloadException("不支持的hash");
+			throw new DownloadException("不支持的hash：" + hash);
 		}
 		hash = hash.trim();
 		if(hash.length() == 40) {
