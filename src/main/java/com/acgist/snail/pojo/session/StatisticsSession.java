@@ -83,7 +83,7 @@ public class StatisticsSession {
 	}
 
 	/**
-	 * 下载统计，如果存在父类更新父类数据
+	 * 下载统计，如果存在父类更新父类数据。
 	 */
 	public void download(long buffer) {
 		this.downloadSize.addAndGet(buffer);
@@ -94,7 +94,7 @@ public class StatisticsSession {
 	}
 	
 	/**
-	 * 下载统计，如果存在父类更新父类数据
+	 * 下载统计，如果存在父类更新父类数据。
 	 */
 	public void upload(long buffer) {
 		this.uploadSize.addAndGet(buffer);

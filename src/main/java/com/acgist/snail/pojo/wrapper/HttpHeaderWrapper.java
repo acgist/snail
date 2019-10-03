@@ -106,11 +106,11 @@ public class HttpHeaderWrapper extends HeaderWrapper {
 	}
 	
 	/**
-	 * <p>是否支持断点续传</p>
-	 * <p>
-	 * accept-ranges=bytes<br>
-	 * content-range=bytes 0-100/100
-	 * </p>
+	 * <dl>
+	 * 	<dt>是否支持断点续传</dt>
+	 * 	<dd>accept-ranges=bytes</dd>
+	 * 	<dd>content-range=bytes 0-100/100</dd>
+	 * </dl>
 	 */
 	public boolean range() {
 		boolean range = false;

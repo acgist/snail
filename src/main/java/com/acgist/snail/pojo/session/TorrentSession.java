@@ -143,7 +143,7 @@ public class TorrentSession {
 	
 	private TorrentSession(InfoHash infoHash, Torrent torrent) throws DownloadException {
 		if(infoHash == null) {
-			throw new DownloadException("不存在的InfoHash");
+			throw new DownloadException("创建Torrent任务失败（InfoHash）");
 		}
 		this.torrent = torrent;
 		this.infoHash = infoHash;
@@ -156,7 +156,7 @@ public class TorrentSession {
 	/**
 	 * 磁力链接转换
 	 * 
-	 * @return true-下载完成；false-未完成
+	 * @return true-下载完成；false-未完成；
 	 */
 	public boolean magnet(TaskSession taskSession) throws DownloadException {
 		this.action = Action.magnet;
@@ -199,14 +199,14 @@ public class TorrentSession {
 	 * <p>如果文件已经下载完成或者任务已经完成不会再加载线程池、Peer、Tracker、DHT。</p>
 	 * <p>需要先调用{@link #upload(TaskSession)}对任务进行上传。</p>
 	 * 
-	 * @param findPeer 是否查找Peer：true-使用Tracker、DHT查找Peer，false-不查找
+	 * @param findPeer 是否查找Peer：true-使用Tracker、DHT查找Peer；false-不查找；
 	 * 
-	 * @return true-下载完成；false-未完成
+	 * @return true-下载完成；false-未完成；
 	 */
 	public boolean download(boolean findPeer) throws DownloadException {
 		this.action = Action.torrent;
 		if(this.taskSession == null) {
-			throw new DownloadException("下载任务参数错误");
+			throw new DownloadException("下载任务参数错误（TaskSession）");
 		}
 		if(this.taskSession.complete() || this.torrentStreamGroup.complete()) {
 			return true;
@@ -394,7 +394,7 @@ public class TorrentSession {
 	}
 	
 	/**
-	 * 设置选择的下载文件并返回
+	 * 设置选择的下载文件并返回文件列表。
 	 */
 	private List<TorrentFile> setSelectFiles() {
 		final TorrentInfo torrentInfo = this.torrent.getInfo();
@@ -411,9 +411,28 @@ public class TorrentSession {
 	}
 
 	/**
-	 * 检测是否完成下载
+	 * <dl>
+	 * 	<dt>检测任务是否下载完成</dt>
+	 * 	<dd>如果已经完成直接返回</dd>
+	 * 	<dd>BT任务：文件下载完成</dd>
+	 * 	<dd>磁力链接：种子文件不为空</dd>
+	 * </dl>
 	 */
-	public void completeCheck() {
+	public boolean checkCompleted() {
+		if(completed()) {
+			return true;
+		}
+		if(this.action == Action.torrent) {
+			return this.torrentStreamGroup().complete();
+		} else {
+			return this.torrent != null;
+		}
+	}
+	
+	/**
+	 * 检测是否完成下载，完成后刷出缓存并且解除下载锁。
+	 */
+	public void checkCompletedAndDone() {
 		if(this.torrentStreamGroup.complete()) {
 			LOGGER.debug("任务下载完成：{}", name());
 			this.torrentStreamGroup.flush();
@@ -472,7 +491,7 @@ public class TorrentSession {
 	}
 
 	/**
-	 * <p>发送have消息，通知所有已连接的Peer已下载对应的Piece</p>
+	 * <p>发送have消息</p>
 	 * 
 	 * @param index Piece序号
 	 */
@@ -524,13 +543,6 @@ public class TorrentSession {
 	}
 
 	/**
-	 * 下载名称
-	 */
-	public String name() {
-		return this.torrent.name();
-	}
-
-	/**
 	 * 是否可以上传
 	 */
 	public boolean uploadable() {
@@ -547,7 +559,7 @@ public class TorrentSession {
 	/**
 	 * 任务处于下载中
 	 */
-	public boolean downloading() {
+	public boolean running() {
 		return this.taskSession != null && this.taskSession.download();
 	}
 	
@@ -559,20 +571,10 @@ public class TorrentSession {
 	}
 	
 	/**
-	 * <p>检测任务是否下载完成</p>
-	 * <p>如果任务已经完成，直接返回完成。</p>
-	 * <p>文件下载：文件下载完成</p>
-	 * <p>磁力链接：种子文件不为空</p>
+	 * 下载名称
 	 */
-	public boolean checkCompleted() {
-		if(completed()) {
-			return true;
-		}
-		if(this.action == Action.torrent) {
-			return this.torrentStreamGroup().complete();
-		} else {
-			return this.torrent != null;
-		}
+	public String name() {
+		return this.torrent.name();
 	}
 	
 	public BitSet pieces() {

@@ -34,7 +34,7 @@ public class NodeSession implements Comparable<NodeSession> {
 	 */
 	private Status status;
 	/**
-	 * 广播时使用
+	 * 声明使用
 	 */
 	private byte[] token;
 
@@ -76,6 +76,18 @@ public class NodeSession implements Comparable<NodeSession> {
 	public void setStatus(Status status) {
 		this.status = status;
 	}
+	
+	@Override
+	public int compareTo(NodeSession that) {
+		final byte[] thisId = this.id;
+		final byte[] thatId = that.id;
+		for (int index = 0; index < thisId.length; index++) {
+			if(thisId[index] != thatId[index]) {
+				return thisId[index] - thatId[index];
+			}
+		}
+		return 0;
+	}
 
 	@Override
 	public int hashCode() {
@@ -97,18 +109,6 @@ public class NodeSession implements Comparable<NodeSession> {
 	@Override
 	public String toString() {
 		return ObjectUtils.toString(this, this.id, this.host, this.port);
-	}
-
-	@Override
-	public int compareTo(NodeSession that) {
-		final byte[] thisId = this.id;
-		final byte[] thatId = that.id;
-		for (int index = 0; index < thisId.length; index++) {
-			if(thisId[index] != thatId[index]) {
-				return thisId[index] - thatId[index];
-			}
-		}
-		return 0;
 	}
 	
 }
