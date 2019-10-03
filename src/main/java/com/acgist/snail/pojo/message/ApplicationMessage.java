@@ -87,38 +87,9 @@ public class ApplicationMessage {
 		this.type = type;
 		this.body = body;
 	}
-
-	public Type getType() {
-		return type;
-	}
-
-	public void setType(Type type) {
-		this.type = type;
-	}
-
-	public String getBody() {
-		return body;
-	}
-
-	public void setBody(String body) {
-		this.body = body;
-	}
 	
 	/**
-	 * 转换为B编码字符串
-	 */
-	@Override
-	public String toString() {
-		final var encoder = BEncodeEncoder.newInstance();
-		encoder.newMap().put("type", this.type.name());
-		if(this.body != null) {
-			encoder.put("body", this.body);
-		}
-		return encoder.flush().toString();
-	}
-	
-	/**
-	 * B编码字符串变成ApplicationMessage对象
+	 * 读取系统消息（B编码）
 	 */
 	public static final ApplicationMessage valueOf(String content) {
 		try {
@@ -163,5 +134,34 @@ public class ApplicationMessage {
 	public static final ApplicationMessage response(String body) {
 		return message(Type.response, body);
 	}
+	
+	public Type getType() {
+		return type;
+	}
 
+	public void setType(Type type) {
+		this.type = type;
+	}
+
+	public String getBody() {
+		return body;
+	}
+
+	public void setBody(String body) {
+		this.body = body;
+	}
+	
+	/**
+	 * 转换为B编码字符串
+	 */
+	@Override
+	public String toString() {
+		final var encoder = BEncodeEncoder.newInstance();
+		encoder.newMap().put("type", this.type.name());
+		if(this.body != null) {
+			encoder.put("body", this.body);
+		}
+		return encoder.flush().toString();
+	}
+	
 }

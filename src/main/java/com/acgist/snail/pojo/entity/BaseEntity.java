@@ -35,7 +35,7 @@ public class BaseEntity implements Serializable {
 	protected Date modifyDate;
 	
 	/**
-	 * 获取ID，生成的uuid自动去掉“-”
+	 * 获取ID，生成的uuid自动去掉“-”。
 	 * 
 	 * @return ID
 	 */

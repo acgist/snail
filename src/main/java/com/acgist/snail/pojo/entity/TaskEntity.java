@@ -42,13 +42,13 @@ public class TaskEntity extends BaseEntity {
 	 */
 	private String file;
 	/**
-	 * 下载地址：FTP、HTTP、磁力链接。<br>
-	 * 迅雷下载链接直接转换为实际地址保存。
+	 * <p>下载地址：FTP、HTTP、磁力链接。</p>
+	 * <p>迅雷下载链接直接转换为实际地址保存。</p>
 	 */
 	private String url;
 	/**
-	 * BT任务种子文件路径<br>
-	 * 种子文件下载时默认复制一份保存到下载目录
+	 * <p>BT任务种子文件路径。</p>
+	 * <p>种子文件下载时默认复制一份保存到下载目录。</p>
 	 */
 	private String torrent;
 	/**
@@ -64,8 +64,7 @@ public class TaskEntity extends BaseEntity {
 	 */
 	private Date endDate;
 	/**
-	 * 描述：<br>
-	 * BT下载保存选择的下载文件
+	 * </p>描述：BT任务保存选择的下载文件</p>
 	 */
 	private String description;
 	

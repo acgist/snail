@@ -4,7 +4,7 @@ import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>Piece信息</p>
+ * <p>Piece下载信息</p>
  * <p>保存时必须是一个完成的Piece：end - begin == length == data.length && pos == begin</p>
  * 
  * @author acgist
@@ -34,11 +34,11 @@ public class TorrentPiece {
 	 */
 	private final int end;
 	/**
-	 * 数据的长度：等于end-begin
+	 * 数据的长度：end - begin
 	 */
 	private final int length;
 	/**
-	 * 数据：长度等于length
+	 * 数据
 	 */
 	private final byte[] data;
 	/**
@@ -90,7 +90,8 @@ public class TorrentPiece {
 	}
 	
 	/**
-	 * 判断文件是否包含当前Piece。包含开始，不包含结束，所以判断时都需要使用等于。
+	 * <p>判断文件是否包含当前Piece</p>
+	 * <p>包含开始，不包含结束，所以判断时都需要使用等于。</p>
 	 * 
 	 * @param fileBeginPos 文件开始偏移
 	 * @param fileEndPos 文件结束偏移
@@ -107,30 +108,10 @@ public class TorrentPiece {
 		return true;
 	}
 	
-	public int getIndex() {
-		return index;
-	}
-
-	public int getBegin() {
-		return begin;
-	}
-
-	public int getEnd() {
-		return end;
-	}
-
-	public int getLength() {
-		return length;
-	}
-
-	public byte[] getData() {
-		return data;
-	}
-	
 	/**
 	 * 是否还有更多的数据请求
 	 */
-	public boolean more() {
+	public boolean hasMoreSlice() {
 		return this.position < this.length;
 	}
 	
@@ -155,21 +136,24 @@ public class TorrentPiece {
 		if(this.position == this.length) {
 			return 0;
 		}
-		if(this.position + SLICE_SIZE > this.length) {
-			final int size = this.length - this.position;
+		final int size = this.length - this.position;
+		// 剩余大小不满足一个Slice
+		if(SLICE_SIZE > size) {
 			this.position = this.length;
 			return size;
+		} else {
+			this.position += SLICE_SIZE;
+			return SLICE_SIZE;
 		}
-		this.position += SLICE_SIZE;
-		return SLICE_SIZE;
 	}
 	
 	/**
-	 * 放入数据
+	 * 放入Slice数据
 	 * 
 	 * @param begin 数据开始位移
 	 * @param bytes 数据
-	 * @return true-完成；false-未完成
+	 * 
+	 * @return true-完成；false-未完成；
 	 */
 	public boolean put(final int begin, final byte[] bytes) {
 		synchronized (this) {
@@ -188,6 +172,26 @@ public class TorrentPiece {
 			return ArrayUtils.equals(hash, this.hash);
 		}
 		return true;
+	}
+	
+	public int getIndex() {
+		return index;
+	}
+
+	public int getBegin() {
+		return begin;
+	}
+
+	public int getEnd() {
+		return end;
+	}
+
+	public int getLength() {
+		return length;
+	}
+
+	public byte[] getData() {
+		return data;
 	}
 
 }

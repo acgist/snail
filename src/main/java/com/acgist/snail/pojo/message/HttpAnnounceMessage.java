@@ -59,6 +59,21 @@ public class HttpAnnounceMessage {
 		return message;
 	}
 	
+	/**
+	 * 转换为AnnounceMessage消息
+	 * 
+	 * @param sid Torrent和Tracker服务器对应的id
+	 */
+	public AnnounceMessage toAnnounceMessage(Integer sid) {
+		final AnnounceMessage message = new AnnounceMessage();
+		message.setId(sid);
+		message.setInterval(this.getInterval());
+		message.setDone(this.getComplete());
+		message.setUndone(this.getIncomplete());
+		message.setPeers(this.getPeers());
+		return message;
+	}
+	
 	public String getFailureReason() {
 		return failureReason;
 	}
@@ -123,19 +138,4 @@ public class HttpAnnounceMessage {
 		this.peers = peers;
 	}
 	
-	/**
-	 * 转换为AnnounceMessage消息
-	 * 
-	 * @param sid Torrent和Tracker服务器对应的id
-	 */
-	public AnnounceMessage toAnnounceMessage(Integer sid) {
-		final AnnounceMessage message = new AnnounceMessage();
-		message.setId(sid);
-		message.setInterval(this.getInterval());
-		message.setDone(this.getComplete());
-		message.setUndone(this.getIncomplete());
-		message.setPeers(this.getPeers());
-		return message;
-	}
-
 }

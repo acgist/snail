@@ -22,13 +22,11 @@
  * mvn sonar:sonar "-Dsonar.projectKey=snail" "-Dsonar.host.url=http://localhost:9000" "-Dsonar.login=token"
  * </pre>
  * 
- * TODO：添加注释、日志优化
- * 
- * main/downloader/gui
- * net->base/application/codec/ftp/http/upnp/wss
  * net->torrent
  * pojo/protocol/repository
  * system/utils
+ * 
+ * TorrentStream后面四个
  * 
  * @author acgist
  * @since 1.0.0
