@@ -32,7 +32,7 @@ public class FindNodeResponse extends Response {
 	}
 	
 	/**
-	 * 获取响应Node，同时加入到Node列表。
+	 * 获取节点，同时加入系统节点。
 	 */
 	public List<NodeSession> getNodes() {
 		final byte[] bytes = this.getBytes(DhtConfig.KEY_NODES);

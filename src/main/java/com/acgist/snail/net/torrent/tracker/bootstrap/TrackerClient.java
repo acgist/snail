@@ -51,11 +51,11 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	 */
 	protected final Protocol type;
 	/**
-	 * 刮檫URL
+	 * 刮檫地址
 	 */
 	protected final String scrapeUrl;
 	/**
-	 * 声明URL
+	 * 声明地址
 	 */
 	protected final String announceUrl;
 	/**

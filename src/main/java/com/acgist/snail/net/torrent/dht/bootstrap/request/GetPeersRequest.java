@@ -39,7 +39,7 @@ public class GetPeersRequest extends Request {
 	}
 
 	/**
-	 * 将Peer和Node加入到列表
+	 * <p>处理请求</p>
 	 */
 	public static final GetPeersResponse execute(Request request) {
 		final GetPeersResponse response = GetPeersResponse.newInstance(request);
@@ -71,8 +71,8 @@ public class GetPeersRequest extends Request {
 		return response;
 	}
 	
-	public String getInfoHash() {
-		return getString(DhtConfig.KEY_INFO_HASH);
+	public byte[] getInfoHash() {
+		return getBytes(DhtConfig.KEY_INFO_HASH);
 	}
 
 }

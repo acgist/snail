@@ -69,12 +69,12 @@ public class SystemConsole {
 	 */
 	private void node() {
 		final List<NodeSession> nodes = NodeManager.getInstance().nodes();
-		final Map<Byte, Long> group = nodes.stream()
+		final Map<NodeSession.Status, Long> group = nodes.stream()
 			.collect(Collectors.groupingBy(NodeSession::getStatus, Collectors.counting()));
 		this.builder.append("Node数量：").append(nodes.size()).append(NEW_LINE);
-		this.builder.append("Node数量（未使用）：").append(group.getOrDefault(NodeSession.STATUS_UNUSE, 0L)).append(NEW_LINE);
-		this.builder.append("Node数量（使用中）：").append(group.getOrDefault(NodeSession.STATUS_VERIFY, 0L)).append(NEW_LINE);
-		this.builder.append("Node数量（有效）：").append(group.getOrDefault(NodeSession.STATUS_AVAILABLE, 0L)).append(NEW_LINE);
+		this.builder.append("Node数量（未使用）：").append(group.getOrDefault(NodeSession.Status.unuse, 0L)).append(NEW_LINE);
+		this.builder.append("Node数量（使用中）：").append(group.getOrDefault(NodeSession.Status.verify, 0L)).append(NEW_LINE);
+		this.builder.append("Node数量（有效）：").append(group.getOrDefault(NodeSession.Status.available, 0L)).append(NEW_LINE);
 	}
 	
 	/**

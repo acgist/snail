@@ -61,9 +61,9 @@ public class SystemConfig extends PropertiesConfig {
 	 */
 	public static final String DEFAULT_CHARSET = CHARSET_UTF8;
 	/**
-	 * 无符号BYTE的大小
+	 * 无符号BYTE最大值
 	 */
-	public static final int UNSIGNED_BYTE_SIZE = 2 << 7;
+	public static final int UNSIGNED_BYTE_MAX = 2 << 7;
 	/**
 	 * 任务列表刷新时间
 	 */

@@ -219,7 +219,7 @@ public class DhtConfig extends PropertiesConfig {
 		LOGGER.debug("保存DHT节点");
 		final var nodes = NodeManager.getInstance().nodes();
 		final var map = nodes.stream()
-			.filter(node -> node.getStatus() != NodeSession.STATUS_VERIFY)
+			.filter(node -> node.getStatus() != NodeSession.Status.verify)
 			.limit(NodeManager.MAX_NODE_SIZE)
 			.collect(Collectors.toMap(node -> StringUtils.hex(node.getId()), node -> node.getHost() + ":" + node.getPort()));
 		persistent(map, FileUtils.userDirFile(DHT_CONFIG));

@@ -30,7 +30,7 @@ public class FindNodeRequest extends Request {
 	}
 
 	/**
-	 * 将Node加入到列表
+	 * <p>处理请求</p>
 	 */
 	public static final FindNodeResponse execute(Request request) {
 		final FindNodeResponse response = FindNodeResponse.newInstance(request);
@@ -40,8 +40,8 @@ public class FindNodeRequest extends Request {
 		return response;
 	}
 	
-	public String getTarget() {
-		return getString(DhtConfig.KEY_TARGET);
+	public byte[] getTarget() {
+		return getBytes(DhtConfig.KEY_TARGET);
 	}
 
 }

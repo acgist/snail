@@ -533,7 +533,7 @@ public class MSECryptHandshakeHandler {
 		final Random random = NumberUtils.random();
 		final byte[] padding = new byte[random.nextInt(maxLength + 1)];
 		for (int index = 0; index < padding.length; index++) {
-			padding[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_SIZE);
+			padding[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_MAX);
 		}
 		return padding;
 	}

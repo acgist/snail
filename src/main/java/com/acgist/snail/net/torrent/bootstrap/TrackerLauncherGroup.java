@@ -11,12 +11,13 @@ import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerClient;
 import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerManager;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.PeerConfig.Action;
+import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.CollectionUtils;
 
 /**
  * <p>TrackerLauncher组</p>
- * <p>加载TrackerClient管理，获取Peer。</p>
+ * <p>加载TrackerLauncher管理。</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -38,7 +39,7 @@ public class TrackerLauncherGroup {
 	}
 
 	/**
-	 * 获取当前使用的Tracker列表
+	 * 获取所有当前使用的Tracker服务器地址列表
 	 */
 	public List<String> trackers() {
 		synchronized (this.trackerLaunchers) {
@@ -49,30 +50,27 @@ public class TrackerLauncherGroup {
 	}
 	
 	/**
-	 * <p>加载TrackerClient</p>
-	 * <p>
-	 * 加载TrackerClient，优先使用种子的Tracker，如果不够可以继续从系统Tracker列表添加。
-	 * 获取到Tracker列表加入定时线程池执行。
-	 * </p>
+	 * <p>加载TrackerLauncher</p>
+	 * <p>加载TrackerLauncher，优先使用种子的Tracker，如果不够可以继续从系统Tracker列表添加。</p>
 	 */
 	public void loadTracker() throws DownloadException {
 		List<TrackerClient> clients = null;
-		var action = this.torrentSession.action();
-		if(action == Action.torrent) {
+		final var action = this.torrentSession.action();
+		if(action == Action.torrent) { // BT任务
 			var torrent = this.torrentSession.torrent();
 			clients = TrackerManager.getInstance().clients(torrent.getAnnounce(), torrent.getAnnounceList());
-		} else if(action == Action.magnet) {
+		} else if(action == Action.magnet) { // 磁力链接任务
 			var magnet = this.torrentSession.magnet();
 			clients = TrackerManager.getInstance().clients(null, magnet.getTr());
 		} else {
-			LOGGER.warn("加载TrackerClient时出现未知动作：{}", action);
+			LOGGER.warn("加载TrackerLauncher失败（未知动作）：{}", action);
 		}
 		if(CollectionUtils.isEmpty(clients)) {
 			return;
 		}
 		clients.stream()
 		.map(client -> {
-			LOGGER.debug("加载TrackerClient，ID：{}，announceUrl：{}", client.id(), client.announceUrl());
+			LOGGER.debug("加载TrackerLauncher，ID：{}，announceUrl：{}", client.id(), client.announceUrl());
 			return TrackerManager.getInstance().newTrackerLauncher(client, this.torrentSession);
 		})
 		.filter(launcer -> launcer != null)
@@ -96,7 +94,9 @@ public class TrackerLauncherGroup {
 	public void release() {
 		LOGGER.debug("释放TrackerLauncherGroup");
 		this.trackerLaunchers.forEach(launcher -> {
-			launcher.release();
+			SystemThreadContext.submit(() -> {
+				launcher.release();
+			});
 		});
 		this.trackerLaunchers.clear();
 	}

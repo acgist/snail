@@ -21,20 +21,20 @@ public class RequestManager {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(RequestManager.class);
 	
-	private RequestManager() {
-		this.requests = new ArrayList<>();
-	}
-
 	private static final RequestManager INSTANCE = new RequestManager();
 	
 	static {
-		LOGGER.debug("初始化DHT请求清空定时任务");
+		LOGGER.debug("启动清空DHT超时请求定时任务");
 		SystemThreadContext.timerFixedDelay(DhtConfig.DHT_CLEAR_INTERVAL, DhtConfig.DHT_CLEAR_INTERVAL, TimeUnit.MINUTES, () -> {
-			RequestManager.getInstance().clear(); // 清除DHT超时请求
+			RequestManager.getInstance().clear(); // 清空DHT超时请求
 		});
 	}
 	
 	private final List<Request> requests;
+	
+	private RequestManager() {
+		this.requests = new ArrayList<>();
+	}
 	
 	public static final RequestManager getInstance() {
 		return INSTANCE;
@@ -55,7 +55,8 @@ public class RequestManager {
 	}
 	
 	/**
-	 * 设置响应，删除响应，同时设置Node为可用状态。
+	 * <p>设置响应</p>
+	 * <p>删除请求，同时设置Node为可用状态。</p>
 	 */
 	public Request response(Response response) {
 		if(response == null) {
@@ -71,10 +72,10 @@ public class RequestManager {
 	}
 	
 	/**
-	 * 清理DHT过期请求。
+	 * 清空DHT超时请求
 	 */
 	public void clear() {
-		LOGGER.debug("清空DHT过期请求");
+		LOGGER.debug("清空DHT超时请求");
 		synchronized (this.requests) {
 			Request request;
 			final long timeout = DhtConfig.TIMEOUT.toMillis();
