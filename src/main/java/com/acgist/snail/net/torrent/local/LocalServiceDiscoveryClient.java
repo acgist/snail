@@ -47,7 +47,7 @@ public class LocalServiceDiscoveryClient extends UdpClient<LocalServiceDiscovery
 	 * 发送本地发现消息
 	 */
 	public void localSearch(String infoHash) {
-		LOGGER.debug("本地发现，InfoHash：{}", infoHash);
+		LOGGER.debug("发送本地发现消息，InfoHash：{}", infoHash);
 		try {
 			send(buildLocalSearch(infoHash));
 		} catch (NetException e) {

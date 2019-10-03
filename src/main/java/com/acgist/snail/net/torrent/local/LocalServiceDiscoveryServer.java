@@ -10,6 +10,8 @@ import com.acgist.snail.utils.NetUtils;
  * @since 1.0.0
  */
 public class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDiscoveryAcceptHandler> {
+	
+	private static final LocalServiceDiscoveryServer INSTANCE = new LocalServiceDiscoveryServer();
 
 	/**
 	 * TTL
@@ -33,8 +35,6 @@ public class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDiscovery
 		this.join(LSD_TTL, LSD_HOST);
 		this.handle();
 	}
-	
-	private static final LocalServiceDiscoveryServer INSTANCE = new LocalServiceDiscoveryServer();
 	
 	public static final LocalServiceDiscoveryServer getInstance() {
 		return INSTANCE;
