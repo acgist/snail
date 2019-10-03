@@ -11,7 +11,6 @@ import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerManager;
 import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.PeerConfig;
-import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NumberUtils;
 
@@ -35,7 +34,7 @@ public class TrackerLauncher {
 //	private final TrackerLauncherGroup trackerLauncherGroup;
 	
 	/**
-	 * id：transaction_id：连接时使用
+	 * transaction_id：连接时使用
 	 */
 	private final Integer id;
 	/**
@@ -51,13 +50,13 @@ public class TrackerLauncher {
 	 */
 	private Integer undone;
 	/**
-	 * 是否需要释放
-	 */
-	private boolean needRelease = false;
-	/**
 	 * 可用状态
 	 */
 	private boolean available = true;
+	/**
+	 * 是否需要释放
+	 */
+	private boolean needRelease = false;
 	
 	private TrackerLauncher(TrackerClient client, TorrentSession torrentSession) {
 		this.id = NumberUtils.build();
@@ -71,14 +70,14 @@ public class TrackerLauncher {
 	}
 
 	/**
-	 * 获取当前TrackerLauncher的ID
+	 * 获取ID
 	 */
 	public Integer id() {
 		return this.id;
 	}
 	
 	/**
-	 * 获取通知地址
+	 * 获取声明地址
 	 */
 	public String announceUrl() {
 		return this.client.announceUrl();
@@ -90,14 +89,13 @@ public class TrackerLauncher {
 	public void findPeer() {
 		this.needRelease = true;
 		if(available()) {
-			LOGGER.debug("TrackerClient查找Peer：{}", client.announceUrl());
+			LOGGER.debug("TrackerLauncher查找Peer：{}", this.client.announceUrl());
 			this.client.findPeers(this.id, this.torrentSession);
 		}
 	}
 
 	/**
-	 * <p>解析announce信息</p>
-	 * <p>添加Peer，同时设置下次查询定时任务。</p>
+	 * <p>收到声明响应</p>
 	 */
 	public void announce(AnnounceMessage message) {
 		if(message == null) {
@@ -110,11 +108,11 @@ public class TrackerLauncher {
 		this.done = message.getDone();
 		this.undone = message.getUndone();
 		this.peer(message.getPeers());
-		LOGGER.debug("已完成Peer数量：{}，未完成的Peer数量：{}，下次请求时间：{}", this.done, this.undone, this.interval);
+		LOGGER.debug("{}-收到声明响应，已完成Peer数量：{}，未完成的Peer数量：{}，下次请求时间：{}", this.client.announceUrl(), this.done, this.undone, this.interval);
 	}
 	
 	/**
-	 * 设置Peer
+	 * 添加Peer
 	 */
 	private void peer(Map<String, Integer> peers) {
 		if(CollectionUtils.isEmpty(peers)) {
@@ -133,30 +131,28 @@ public class TrackerLauncher {
 
 	/**
 	 * <p>释放资源</p>
-	 * <p>发送Tracker stop消息，如果下载完成的发送complete信息。</p>
+	 * <p>发送stop消息，如果下载完成发送complete消息。</p>
 	 */
 	public void release() {
 		if(this.needRelease && available()) {
 			this.available = false;
-			SystemThreadContext.submit(() -> {
-				try {
-					if(this.torrentSession.completed()) { // 任务完成
-						LOGGER.debug("Tracker完成通知：{}", this.client.announceUrl());
-						this.client.complete(this.id, this.torrentSession);
-					} else { // 任务暂停
-						LOGGER.debug("Tracker暂停通知：{}", this.client.announceUrl());
-						this.client.stop(this.id, this.torrentSession);
-					}
-				} catch (Exception e) {
-					LOGGER.error("TrackerLauncher释放异常", e);
+			try {
+				if(this.torrentSession.completed()) { // 任务完成
+					LOGGER.debug("Tracker完成通知：{}", this.client.announceUrl());
+					this.client.complete(this.id, this.torrentSession);
+				} else { // 任务暂停
+					LOGGER.debug("Tracker暂停通知：{}", this.client.announceUrl());
+					this.client.stop(this.id, this.torrentSession);
 				}
-				TrackerManager.getInstance().release(this.id);
-			});
+			} catch (Exception e) {
+				LOGGER.error("TrackerLauncher释放异常", e);
+			}
+			TrackerManager.getInstance().release(this.id);
 		}
 	}
 	
 	/**
-	 * <p>可用状态：TrackerClient可用并且没有释放资源。</p>
+	 * <p>可用状态：释放资源并且TrackerClient可用。</p>
 	 */
 	private boolean available() {
 		return this.available && this.client.available();

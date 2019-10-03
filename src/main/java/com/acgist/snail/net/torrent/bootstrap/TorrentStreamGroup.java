@@ -95,7 +95,7 @@ public class TorrentStreamGroup {
 						streams.add(stream);
 					}
 				} catch (Exception e) {
-					LOGGER.error("TorrentStream文件创建异常：{}", file.path(), e);
+					LOGGER.error("TorrentStream创建异常：{}", file.path(), e);
 				}
 				pos += file.getLength();
 			}
@@ -133,18 +133,6 @@ public class TorrentStreamGroup {
 		return pickPiece;
 	}
 	
-	/**
-	 * 是否已下载Piece
-	 * 
-	 * @param index Piece序号
-	 */
-	public boolean have(int index) {
-		if(index < 0) {
-			return false;
-		}
-		return this.pieces.get(index);
-	}
-
 	/**
 	 * <p>读取Piece数据</p>
 	 * <p>如果跨多个文件则合并返回</p>
@@ -199,9 +187,21 @@ public class TorrentStreamGroup {
 	}
 	
 	/**
+	 * 是否已下载Piece
+	 * 
+	 * @param index Piece序号
+	 */
+	public boolean have(int index) {
+		if(index < 0) {
+			return false;
+		}
+		return this.pieces.get(index);
+	}
+	
+	/**
 	 * <p>设置已下载的Piece，同时发出have消息。</p>
 	 */
-	public void piece(int index) {
+	public void done(int index) {
 		this.pieces.set(index, true);
 		// 初始化完成才开始发送have消息
 		if(this.done) {

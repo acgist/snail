@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.torrent.dht.DhtClient;
 import com.acgist.snail.pojo.session.NodeSession;
+import com.acgist.snail.pojo.session.NodeSession.Status;
 import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.ArrayUtils;
@@ -22,14 +23,12 @@ import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>Node管理器</p>
- * <p>DHT节点管理器。</p>
+ * <p>DHT节点管理器</p>
+ * 
  * TODO：观察是否需要清理Node
  * 
- * <p>
- * Kademlia：https://baike.baidu.com/item/Kademlia<br>
- * BT=DHT、eMule=KAD
- * </p>
+ * <p>参考链接（Kademlia）：https://baike.baidu.com/item/Kademlia</p>
+ * <p>BT=DHT、eMule=KAD</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -38,8 +37,10 @@ public class NodeManager {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(NodeManager.class);
 	
+	private static final NodeManager INSTANCE = new NodeManager();
+	
 	/**
-	 * Node最大数量，超过这个数量会均匀剔除多余Node
+	 * Node最大数量，超过这个数量会均匀剔除多余Node。
 	 */
 	public static final int MAX_NODE_SIZE = 1024;
 	/**
@@ -61,7 +62,7 @@ public class NodeManager {
 	/**
 	 * Node查找时分片最小列表长度
 	 */
-	public static final int NODE_FIND_SLICE_SIZE = NODE_FIND_SIZE * NODE_FIND_SLICE;
+	public static final int NODE_FIND_SLICE_MIN_SIZE = NODE_FIND_SIZE * NODE_FIND_SLICE;
 	
 	/**
 	 * 当前客户端的Token
@@ -81,8 +82,6 @@ public class NodeManager {
 		this.nodeId = buildNodeId();
 		this.nodes = new ArrayList<>();
 	}
-	
-	private static final NodeManager INSTANCE = new NodeManager();
 	
 	public static final NodeManager getInstance() {
 		return INSTANCE;
@@ -106,10 +105,11 @@ public class NodeManager {
 	 * 生成NodeId
 	 */
 	private byte[] buildNodeId() {
+		LOGGER.debug("生成NodeId");
 		final byte[] nodeIds = new byte[NODE_ID_LENGTH];
 		final Random random = NumberUtils.random();
 		for (int index = 0; index < NODE_ID_LENGTH; index++) {
-			nodeIds[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_SIZE);
+			nodeIds[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_MAX);
 		}
 		return nodeIds;
 	}
@@ -118,6 +118,7 @@ public class NodeManager {
 	 * 生成Token
 	 */
 	private byte[] buildToken() {
+		LOGGER.debug("生成Token");
 		final byte[] token = new byte[TOKEN_LENGTH];
 		final byte[] bytes = (SystemConfig.LETTER + SystemConfig.LETTER_UPPER + SystemConfig.DIGIT).getBytes();
 		final int length = bytes.length;
@@ -129,7 +130,7 @@ public class NodeManager {
 	}
 	
 	/**
-	 * 获取所有的Nodes的拷贝
+	 * 获取所有的节点的拷贝
 	 */
 	public List<NodeSession> nodes() {
 		synchronized (this.nodes) {
@@ -165,14 +166,14 @@ public class NodeManager {
 	public void newNodeSession(String host, Integer port) {
 		final NodeSession nodeSession = verify(host, port);
 		if(nodeSession != null) {
-			nodeSession.setStatus(NodeSession.STATUS_AVAILABLE); // 标记有效
+			nodeSession.setStatus(NodeSession.Status.available); // 标记有效
 		}
 	}
 	
 	/**
 	 * <p>添加DHT节点</p>
-	 * <p>添加Node，新建完成后需要调用{@link #sortNodes()}进行排序。</p>
 	 * <p>加入时不验证，使用时进行验证。</p>
+	 * <p>添加Node，新建完成后需要调用{@link #sortNodes()}进行排序。</p>
 	 */
 	public NodeSession newNodeSession(byte[] nodeId, String host, Integer port) {
 		synchronized (this.nodes) {
@@ -225,13 +226,13 @@ public class NodeManager {
 	
 	/**
 	 * <p>查找Node</p>
-	 * <p>筛选{@linkplain NodeSession#STATUS_UNUSE 未使用}和{@linkplain NodeSession#STATUS_AVAILABLE 可用}的节点。</p>
+	 * <p>筛选排除{@linkplain Status#verify 验证}节点。</p>
 	 */
 	public List<NodeSession> findNode(byte[] target) {
 		List<NodeSession> nodes; // 筛选节点的副本
 		synchronized (this.nodes) {
 			nodes = this.nodes.stream()
-				.filter(node -> node.getStatus() != NodeSession.STATUS_VERIFY)
+				.filter(node -> node.getStatus() != NodeSession.Status.verify)
 				.collect(Collectors.toList());
 		}
 		return this.findNode(nodes, target, 0, nodes.size());
@@ -242,11 +243,12 @@ public class NodeManager {
 	 * <p>查找最近（异或运算）的一段NodeId。</p>
 	 * <p>查找时Node是一个环形结构，按照{@linkplain #NODE_FIND_SLICE 大小}分片。</p>
 	 * 
+	 * @param nodes 节点列表
 	 * @param target 目标NodeId
 	 * @param begin 开始序号
 	 * @param end 结束序号
 	 * 
-	 * @return 节点，{@linkplain #NODE_FIND_SIZE 数量}
+	 * @return 最近的节点
 	 */
 	private List<NodeSession> findNode(final List<NodeSession> nodes, final byte[] target, final int begin, final int end) {
 		int selectSize; // 当前选择Node的总数量
@@ -256,7 +258,7 @@ public class NodeManager {
 		} else { // 接头
 			selectSize = end + nodeSize - begin;
 		}
-		if(selectSize < NODE_FIND_SLICE_SIZE) { // 小于最小列表时开始排序返回最近列表
+		if(selectSize < NODE_FIND_SLICE_MIN_SIZE) { // 小于最小列表时开始排序返回最近列表
 			return selectNode(nodes, target, begin, end);
 		} else { // 分片
 			// 分片中Node的数量
@@ -286,16 +288,16 @@ public class NodeManager {
 				return findNode(nodes, target, sliceA, sliceC);
 			} else if(diffIndexC > diffIndexA && diffIndexC > diffIndexB) {
 				return findNode(nodes, target, sliceB, sliceA);
-			} else { // 如果三个一致时直接选择节点。
+			} else { // 如果三个值一致时直接选择节点
 				return this.selectNode(nodes, target, begin, end);
 			}
 		}
 	}
 
 	/**
-	 * <p>选择节点</p>
+	 * <p>选择Node</p>
 	 * <p>排序查找最近的节点。</p>
-	 * <p>选中的节点如果没有使用过标记为使用中。</p>
+	 * <p>如果节点处于未使用状态则修改为验证状态。</p>
 	 */
 	private List<NodeSession> selectNode(final List<NodeSession> nodes, final byte[] target, final int begin, final int end) {
 		Stream<NodeSession> select;
@@ -314,15 +316,15 @@ public class NodeManager {
 			.map(Map.Entry::getValue)
 			.limit(NODE_FIND_SIZE)
 			.peek(node -> {
-				if(node.getStatus() == NodeSession.STATUS_UNUSE) {
-					node.setStatus(NodeSession.STATUS_VERIFY);
+				if(node.getStatus() == NodeSession.Status.unuse) {
+					node.setStatus(NodeSession.Status.verify);
 				}
 			})
 			.collect(Collectors.toList());
 	}
 	
 	/**
-	 * 设置token，如果对应nodeId不存在，这加入网络。
+	 * 设置token，如果对应nodeId不存在，这加入系统节点。
 	 */
 	public void token(byte[] nodeId, Request request, byte[] token) {
 		final InetSocketAddress socketAddress = request.getSocketAddress();
@@ -337,21 +339,21 @@ public class NodeManager {
 	}
 	
 	/**
-	 * 标记可用节点：有相应的节点标记为可用节点。
+	 * 标记可用节点
 	 */
 	public void available(Response response) {
 		if(response != null) {
 			synchronized (this.nodes) {
 				final NodeSession node = select(response.getNodeId());
 				if(node != null) {
-					node.setStatus(NodeSession.STATUS_AVAILABLE);
+					node.setStatus(NodeSession.Status.available);
 				}
 			}
 		}
 	}
 	
 	/**
-	 * 选择Node。
+	 * 选择Node
 	 */
 	private NodeSession select(byte[] nodeId) {
 		for (NodeSession nodeSession : this.nodes) {
@@ -363,7 +365,7 @@ public class NodeManager {
 	}
 	
 	/**
-	 * 异或运算，返回十六进制字符串。
+	 * 异或运算
 	 */
 	public static final byte[] xor(byte[] source, byte[] target) {
 		final byte[] value = new byte[NODE_ID_LENGTH];

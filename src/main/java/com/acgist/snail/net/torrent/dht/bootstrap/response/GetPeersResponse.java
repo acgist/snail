@@ -20,8 +20,8 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * <p>返回Peer和Node</p>
  * <p>
- * 返回8个最近的Node。<br>
- * 如果有Peer也需要返回，返回的Peer最大数量100个。
+ * 返回8个最近的Node。
+ * 如果有Peer时，最多返回100个。
  * </p>
  * 
  * @author acgist
@@ -51,7 +51,7 @@ public class GetPeersResponse extends Response {
 	}
 	
 	/**
-	 * 获取响应Node，同时加入到Node列表。
+	 * 获取节点，同时加入系统节点。
 	 */
 	public List<NodeSession> getNodes() {
 		final byte[] bytes = this.getBytes(DhtConfig.KEY_NODES);
@@ -59,14 +59,14 @@ public class GetPeersResponse extends Response {
 	}
 	
 	/**
-	 * 获取响应Peer，同时添加到列表。
+	 * 获取Peer，同时加入系统Peer列表。
 	 */
 	public List<PeerSession> getPeers(Request request) {
 		return this.getValues(request);
 	}
 	
 	/**
-	 * 获取响应Peer，同时添加到列表。
+	 * 获取Peer，同时加入系统Peer列表。
 	 */
 	public List<PeerSession> getValues(Request request) {
 		final byte[] infoHash = request.getBytes(DhtConfig.KEY_INFO_HASH);

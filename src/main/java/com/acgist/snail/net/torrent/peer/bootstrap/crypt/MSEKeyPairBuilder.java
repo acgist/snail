@@ -126,7 +126,7 @@ public class MSEKeyPairBuilder {
 		private BigInteger buildPrivateKey(Random random) {
 			final byte[] bytes = new byte[CryptConfig.PRIVATE_KEY_LENGTH];
 			for (int index = 0; index < CryptConfig.PRIVATE_KEY_LENGTH; index++) {
-				bytes[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_SIZE);
+				bytes[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_MAX);
 			}
 			return NumberUtils.decodeUnsigned(ByteBuffer.wrap(bytes), CryptConfig.PRIVATE_KEY_LENGTH);
 		}

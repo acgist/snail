@@ -109,7 +109,8 @@ public class Response extends BaseMessage {
 	}
 
 	/**
-	 * 节点反序列化
+	 * <p>节点反序列化</p>
+	 * <p>将读取到的节点加入系统节点</p>
 	 */
 	protected static final List<NodeSession> deserializeNodes(byte[] bytes) {
 		if(bytes == null) {
@@ -129,7 +130,7 @@ public class Response extends BaseMessage {
 	}
 	
 	/**
-	 * 节点反序列化，同时添加列表。
+	 * 节点反序列化，同时添加系统节点。
 	 */
 	protected static final NodeSession deserializeNode(ByteBuffer buffer) {
 		if(buffer.hasRemaining()) {
@@ -170,6 +171,7 @@ public class Response extends BaseMessage {
 
 	/**
 	 * 错误响应
+	 * 
 	 * @param id 响应ID
 	 * @param code 错误编码
 	 * @param message 错误描述

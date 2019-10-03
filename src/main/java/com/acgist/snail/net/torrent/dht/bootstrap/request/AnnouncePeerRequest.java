@@ -47,8 +47,7 @@ public class AnnouncePeerRequest extends Request {
 	}
 	
 	/**
-	 * <p>处理Peer声明</p>
-	 * <p>将客户端保存到Peer列表。</p>
+	 * <p>处理请求</p>
 	 */
 	public static final AnnouncePeerResponse execute(Request request) {
 		final byte[] token = request.getBytes(DhtConfig.KEY_TOKEN);
@@ -85,16 +84,16 @@ public class AnnouncePeerRequest extends Request {
 		return getInteger(DhtConfig.KEY_PORT);
 	}
 	
-	public Integer getImpliedPort() {
-		return getInteger(DhtConfig.KEY_IMPLIED_PORT);
-	}
-	
 	public byte[] getToken() {
 		return getBytes(DhtConfig.KEY_TOKEN);
 	}
 	
 	public byte[] getInfoHash() {
 		return getBytes(DhtConfig.KEY_INFO_HASH);
+	}
+	
+	public Integer getImpliedPort() {
+		return getInteger(DhtConfig.KEY_IMPLIED_PORT);
 	}
 
 }

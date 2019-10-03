@@ -12,17 +12,18 @@ import com.acgist.snail.utils.ObjectUtils;
 public class NodeSession implements Comparable<NodeSession> {
 
 	/**
-	 * 未使用：没有使用过。
+	 * 节点状态
 	 */
-	public static final byte STATUS_UNUSE = 0;
-	/**
-	 * 验证：使用过一次，没有收到响应。
-	 */
-	public static final byte STATUS_VERIFY = -1;
-	/**
-	 * 有效：可以正常使用。
-	 */
-	public static final byte STATUS_AVAILABLE = 1;
+	public enum Status {
+		
+		/** 未使用 */
+		unuse,
+		/** 验证：使用一次，没有收到响应。 */
+		verify,
+		/** 有效 */
+		available;
+		
+	}
 	
 	private final byte[] id;
 	private final String host;
@@ -31,7 +32,7 @@ public class NodeSession implements Comparable<NodeSession> {
 	/**
 	 * 状态
 	 */
-	private byte status;
+	private Status status;
 	/**
 	 * 广播时使用
 	 */
@@ -41,7 +42,7 @@ public class NodeSession implements Comparable<NodeSession> {
 		this.id = id;
 		this.host = host;
 		this.port = port;
-		this.status = STATUS_UNUSE;
+		this.status = Status.unuse;
 	}
 	
 	public static final NodeSession newInstance(byte[] id, String host, int port) {
@@ -68,11 +69,11 @@ public class NodeSession implements Comparable<NodeSession> {
 		this.token = token;
 	}
 
-	public byte getStatus() {
+	public Status getStatus() {
 		return status;
 	}
 
-	public void setStatus(byte status) {
+	public void setStatus(Status status) {
 		this.status = status;
 	}
 

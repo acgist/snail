@@ -69,7 +69,7 @@ public class PeerService {
 		System.arraycopy(peerIdPrefix.getBytes(), 0, peerId, 0, peerIdPrefix.length());
 		final Random random = NumberUtils.random();
 		for (int index = peerIdPrefix.length(); index < PeerConfig.PEER_ID_LENGTH; index++) {
-			peerId[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_SIZE);
+			peerId[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_MAX);
 		}
 		LOGGER.info("PeerId：{}", new String(peerId));
 		return peerId;

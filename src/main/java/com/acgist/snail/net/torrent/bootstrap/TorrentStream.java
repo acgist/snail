@@ -342,7 +342,7 @@ public class TorrentStream {
 	private void done(int index) {
 		this.pieces.set(index, true); // 下载成功
 		this.downloadPieces.clear(index); // 去掉下载状态
-		this.torrentStreamGroup.piece(index); // 设置下载完成
+		this.torrentStreamGroup.done(index); // 设置下载完成
 	}
 
 	/**
@@ -371,7 +371,7 @@ public class TorrentStream {
 	}
 	
 	/**
-	 * 刷新所有缓存，保存到硬盘
+	 * 刷出所有缓存，保存到硬盘。
 	 */
 	public void flush() {
 		synchronized (this) {
