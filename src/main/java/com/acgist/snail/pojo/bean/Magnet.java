@@ -8,7 +8,7 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>磁力链接</p>
- * <p>只支持单个文件的Magnet下载，多个文件不支持。</p>
+ * <p>只支持单个文件的Magnet下载，不支持多个文件。</p>
  * 
  * @author acgist
  * @since 1.1.0

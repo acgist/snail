@@ -258,7 +258,7 @@ public class PeerLauncher extends PeerClientHandler {
 			int length = this.downloadPiece.length(); // 顺序不能调换
 			this.peerSubMessageHandler.request(index, begin, length);
 			// 是否还有更多SLICE
-			if(!this.downloadPiece.more()) {
+			if(!this.downloadPiece.hasMoreSlice()) {
 				break;
 			}
 		}
