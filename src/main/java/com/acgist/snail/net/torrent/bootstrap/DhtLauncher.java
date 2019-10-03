@@ -17,8 +17,8 @@ import com.acgist.snail.utils.NetUtils;
 
 /**
  * <p>DHT任务：定时查询Peer</p>
- * <p>BT下载任务客户端连接时如果支持DHT，放入到{@link #dhtAddress}列表。</p>
- * <p>定时使用最近的可用节点和{@link #dhtAddress}查询Peer。</p>
+ * <p>BT任务下载时，如果连接的客户端支持DHT，放入到{@link #nodes}列表。</p>
+ * <p>定时任务执行时使用最近的可用节点和{@link #nodes}查询Peer。</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -29,7 +29,7 @@ public class DhtLauncher implements Runnable {
 	
 	private final InfoHash infoHash;
 	/**
-	 * 客户端连接时支持DHT，加入列表，定时查询Peer时使用。
+	 * 如果连接的客户端支持DHT，加入列表，定时查询Peer时使用。
 	 */
 	private final List<InetSocketAddress> nodes = new ArrayList<>();
 	
@@ -46,7 +46,7 @@ public class DhtLauncher implements Runnable {
 		LOGGER.debug("执行DHT定时任务");
 		synchronized (this.nodes) {
 			try {
-				joinNodes();
+				joinSystemNodes();
 				final var list = pick();
 				findPeers(list);
 			} catch (Exception e) {
@@ -56,7 +56,7 @@ public class DhtLauncher implements Runnable {
 	}
 	
 	/**
-	 * Peer客户端添加DHT客户端
+	 * Peer客户端加入DHT节点
 	 * 
 	 * @param host 地址
 	 * @param port 端口
@@ -68,23 +68,26 @@ public class DhtLauncher implements Runnable {
 	}
 
 	/**
-	 * 将交换的节点加入到系统中。
+	 * 将临时节点加入系统中
 	 */
-	private void joinNodes() {
+	private void joinSystemNodes() {
 		this.nodes.forEach(address -> {
 			NodeManager.getInstance().newNodeSession(address.getHostString(), address.getPort());
 		});
 	}
 	
 	/**
-	 * 选择DHT客户端地址
+	 * <p>挑选DHT节点</p>
+	 * <p>返回临时节点和系统节点</p>
 	 */
 	private List<InetSocketAddress> pick() {
 		final List<InetSocketAddress> list = new ArrayList<>();
+		// 临时节点
 		if(CollectionUtils.isNotEmpty(this.nodes)) {
 			list.addAll(this.nodes);
 			this.nodes.clear();
 		}
+		// 系统节点
 		final var nodes = NodeManager.getInstance().findNode(this.infoHash.infoHash());
 		if(CollectionUtils.isNotEmpty(nodes)) {
 			for (NodeSession node : nodes) {
@@ -95,7 +98,7 @@ public class DhtLauncher implements Runnable {
 	}
 	
 	/**
-	 * 查询Peer
+	 * 使用DHT节点查询Peer
 	 */
 	private void findPeers(List<InetSocketAddress> list) {
 		if(CollectionUtils.isEmpty(list)) {

@@ -196,7 +196,7 @@ public class PeerLauncherGroup {
 		LOGGER.debug("优化PeerLauncher-剔除劣质PeerLauncher");
 		int index = 0;
 		boolean unusable = false; // 是否已经剔除不可用的Peer
-		int mark = 0, minMark = 0;
+		long mark = 0, minMark = 0;
 		PeerLauncher tmp = null;
 		PeerLauncher inferior = null; // 劣质PeerLauncher
 		final int size = this.peerLaunchers.size();
