@@ -33,11 +33,11 @@ public class TaskSession {
 	public enum Status {
 		
 		/**
-		 * 任务添加进入下载前在队列中等待的状态
+		 * 任务添加下载队列中时处于等待的状态
 		 */
 		await("等待中"),
 		/**
-		 * 任务下载时的状态，不能直接设置为此状态，有下载管理器自动修改为下载中
+		 * 任务下载时的状态，不能直接设置为此状态，由下载管理器自动修改为下载中。
 		 */
 		download("下载中"),
 		/**
@@ -45,7 +45,7 @@ public class TaskSession {
 		 */
 		pause("暂停"),
 		/**
-		 * 任务完成，完成状态不能转换为其他任何状态
+		 * 任务完成，完成状态不能转换为其他任何状态。
 		 */
 		complete("完成"),
 		/**
@@ -87,7 +87,7 @@ public class TaskSession {
 	
 	private TaskSession(TaskEntity entity) throws DownloadException {
 		if(entity == null) {
-			throw new DownloadException("创建下载任务失败");
+			throw new DownloadException("创建下载任务失败（任务不存在）");
 		}
 		this.entity = entity;
 		this.statistics = new StatisticsSession(true, SystemStatistics.getInstance().getSystemStatistics());
@@ -135,7 +135,7 @@ public class TaskSession {
 	}
 	
 	/**
-	 * 获取已选择的下载文件
+	 * 获取BT任务已选择的下载文件
 	 */
 	public List<String> downloadTorrentFiles() {
 		if(this.entity.getType() != Type.torrent) {
@@ -151,7 +151,7 @@ public class TaskSession {
 	}
 
 	/**
-	 * 更新状态，刷新下载
+	 * 更新状态，刷新下载。
 	 */
 	public void updateStatus(Status status) {
 		if(complete()) {
@@ -193,7 +193,7 @@ public class TaskSession {
 	}
 	
 	/**
-	 * 等待状态
+	 * 暂停状态
 	 */
 	public boolean pause() {
 		return this.entity.getStatus() == Status.pause;
@@ -221,7 +221,7 @@ public class TaskSession {
 	}
 	
 	/**
-	 * 获取下载任务
+	 * 创建下载器，如果已经存在直接返回，否者创建下载器。
 	 */
 	public IDownloader buildDownloader() throws DownloadException {
 		if(this.downloader != null) {

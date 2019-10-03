@@ -212,7 +212,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 * pex请求
 	 */
 	public void pex(byte[] bytes) {
-		if(this.peerSession.support(ExtensionType.ut_pex)) {
+		if(this.peerSession.supportExtensionType(ExtensionType.ut_pex)) {
 			this.peerExchangeMessageHandler.pex(bytes);
 		}
 	}
@@ -229,7 +229,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 * <p>下载种子</p>
 	 */
 	public void metadata() {
-		if(this.peerSession.support(ExtensionType.ut_metadata)) {
+		if(this.peerSession.supportExtensionType(ExtensionType.ut_metadata)) {
 			this.metadataMessageHandler.request();
 		}
 	}

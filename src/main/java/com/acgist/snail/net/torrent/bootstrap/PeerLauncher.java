@@ -239,7 +239,7 @@ public class PeerLauncher extends PeerClientHandler {
 			this.peerSubMessageHandler.notInterested(); // 发送不感兴趣消息
 			this.completeLock.set(true); // 没有匹配到下载块时设置为完成
 			this.release();
-			this.torrentSession.completeCheck(); // 完成下载检测
+			this.torrentSession.checkCompletedAndDone(); // 完成下载检测
 			return false;
 		}
 		final int index = this.downloadPiece.getIndex();

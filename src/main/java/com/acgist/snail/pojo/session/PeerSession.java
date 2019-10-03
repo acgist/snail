@@ -31,7 +31,7 @@ public class PeerSession implements IStatistics {
 	 */
 	private String clientName;
 	/**
-	 * 失败次数：如果失败次数过多不再连接
+	 * 失败次数
 	 */
 	private volatile int failTimes = 0;
 	/**
@@ -87,10 +87,6 @@ public class PeerSession implements IStatistics {
 	 */
 	private volatile boolean peerInterested;
 	/**
-	 * 统计信息
-	 */
-	private final StatisticsSession statistics;
-	/**
 	 * 接入Peer（上传）
 	 */
 	private PeerConnect peerConnect;
@@ -99,12 +95,15 @@ public class PeerSession implements IStatistics {
 	 */
 	private PeerLauncher peerLauncher;
 	/**
+	 * 统计信息
+	 */
+	private final StatisticsSession statistics;
+	/**
 	 * 支持的扩展协议
 	 */
 	private final Map<PeerConfig.ExtensionType, Byte> extension;
 
 	private PeerSession(StatisticsSession parent, String host, Integer peerPort) {
-		this.statistics = new StatisticsSession(parent);
 		this.host = host;
 		this.peerPort = peerPort;
 		this.amChocking = true;
@@ -114,6 +113,7 @@ public class PeerSession implements IStatistics {
 		this.pieces = new BitSet();
 		this.badPieces = new BitSet();
 		this.extension = new HashMap<>();
+		this.statistics = new StatisticsSession(parent);
 	}
 	
 	public static final PeerSession newInstance(StatisticsSession parent, String host, Integer peerPort) {
@@ -168,7 +168,7 @@ public class PeerSession implements IStatistics {
 	}
 	
 	/**
-	 * 判断是否存在：判断IP，不判断端口
+	 * 判断是否存在：判断IP，不判断端口。
 	 */
 	public boolean equals(String host) {
 		return StringUtils.equals(this.host, host);
@@ -207,6 +207,10 @@ public class PeerSession implements IStatistics {
 		this.clientName = PeerConfig.name(this.id);
 	}
 	
+	public String clientName() {
+		return this.clientName;
+	}
+	
 	public String host() {
 		return this.host;
 	}
@@ -219,23 +223,23 @@ public class PeerSession implements IStatistics {
 		this.peerPort = peerPort;
 	}
 	
-	public String clientName() {
-		return this.clientName;
-	}
-	
 	public BitSet pieces() {
 		return this.pieces;
 	}
 	
 	/**
-	 * 设置Piece
+	 * 设置Piece位图
+	 * 
+	 * @param pieces Piece位图
 	 */
 	public void pieces(BitSet pieces) {
 		this.pieces.or(pieces);
 	}
 
 	/**
-	 * 收到have消息时设置Piece
+	 * 设置Piece位图
+	 * 
+	 * @param index Piece序号
 	 */
 	public void piece(int index) {
 		this.pieces.set(index, true);
@@ -249,7 +253,8 @@ public class PeerSession implements IStatistics {
 	}
 	
 	/**
-	 * 可用的Piece
+	 * <p>获取可用的Piece位图</p>
+	 * <p>Peer有的Piece并且不是无效Piece的位图。</p>
 	 */
 	public BitSet availablePieces() {
 		final BitSet bitSet = new BitSet();
@@ -268,7 +273,7 @@ public class PeerSession implements IStatistics {
 	/**
 	 * 是否支持扩展协议
 	 */
-	public boolean support(PeerConfig.ExtensionType type) {
+	public boolean supportExtensionType(PeerConfig.ExtensionType type) {
 		return this.extension.containsKey(type);
 	}
 
@@ -287,9 +292,11 @@ public class PeerSession implements IStatistics {
 	}
 	
 	/**
-	 * 是否可用：
-	 * 	失败次数小于最大失败次数
-	 * 	有可用端口（如果是主动连接的客户端可能没有获取到端口号）
+	 * <dl>
+	 * 	<dt>是否可用：</dt>
+	 * 	<dd>失败次数小于最大失败次数</dd>
+	 * 	<dd>有可用端口（如果是主动连接的客户端可能没有获取到端口号）</dd>
+	 * </dl>
 	 */
 	public boolean available() {
 		return

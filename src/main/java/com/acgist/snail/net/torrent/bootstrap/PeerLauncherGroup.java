@@ -155,7 +155,7 @@ public class PeerLauncherGroup {
 	 * @return true-继续生成；false-不继续生成；
 	 */
 	private boolean buildPeerLauncher() {
-		if(!this.torrentSession.downloading()) {
+		if(!this.torrentSession.running()) {
 			notifyBuild(false);
 			return false;
 		}
