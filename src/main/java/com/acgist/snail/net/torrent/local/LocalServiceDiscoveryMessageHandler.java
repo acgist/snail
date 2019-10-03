@@ -23,6 +23,7 @@ import com.acgist.snail.utils.StringUtils;
  * <p>本地发现消息</p>
  * <p>Local Service Discovery</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0014.html</p>
+ * 
  * TODO：协议判断
  * 
  * @author acgist
@@ -42,31 +43,31 @@ public class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler imple
 	
 	@Override
 	public void onMessage(String message, InetSocketAddress address) {
-		final String host = address.getHostString();
 		final HeaderWrapper headers = HeaderWrapper.newInstance(message);
+		final String host = address.getHostString();
 		final String port = headers.header(HEADER_PORT);
 		final String cookie = headers.header(HEADER_COOKIE);
 		final List<String> infoHashs = headers.headerList(HEADER_INFOHASH);
 		if(StringUtils.isNumeric(port) && CollectionUtils.isNotEmpty(infoHashs)) {
 			final byte[] peerId = StringUtils.unhex(cookie);
 			if(ArrayUtils.equals(peerId, PeerService.getInstance().peerId())) {
-				LOGGER.debug("本地发现本机忽略");
+				LOGGER.debug("本地发现消息处理失败：忽略本机");
 			} else {
 				infoHashs.forEach(infoHash -> {
 					doInfoHash(host, port, infoHash);
 				});
 			}
 		} else {
-			LOGGER.debug("不支持的本地发现消息：{}", message);
+			LOGGER.debug("本地发现消息处理失败（不支持）：{}", message);
 		}
 	}
 
 	private void doInfoHash(String host, String port, String infoHash) {
 		final TorrentSession torrentSession = TorrentManager.getInstance().torrentSession(infoHash);
 		if(torrentSession == null) {
-			LOGGER.debug("本地发现，不存在的种子信息：{}", infoHash);
+			LOGGER.debug("本地发现消息处理失败：不存在的种子信息：{}", infoHash);
 		} else {
-			LOGGER.debug("本地发现：{}-{}-{}", infoHash, host, port);
+			LOGGER.debug("本地发现消息：{}-{}-{}", infoHash, host, port);
 			final PeerManager peerManager = PeerManager.getInstance();
 			peerManager.newPeerSession(infoHash, torrentSession.statistics(), host, Integer.valueOf(port), PeerConfig.SOURCE_LSD);
 		}
