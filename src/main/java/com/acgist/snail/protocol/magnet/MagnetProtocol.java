@@ -117,7 +117,7 @@ public class MagnetProtocol extends Protocol {
 	 */
 	private void exist(Magnet magnet) throws DownloadException {
 		if(TorrentManager.getInstance().exist(magnet.getHash())) {
-			throw new DownloadException("BT任务已经存在");
+			throw new DownloadException("任务已经存在");
 		}
 	}
 	

@@ -51,7 +51,7 @@ public class MagnetReader {
 	 */
 	public Magnet magnet() throws DownloadException {
 		if(!MagnetProtocol.verify(this.url)) {
-			throw new DownloadException("不支持的磁力链接：" + this.url);
+			throw new DownloadException("磁力链接格式错误：" + this.url);
 		}
 		this.magnet = new Magnet();
 		if(MagnetProtocol.verifyMagnetHash32(this.url)) {

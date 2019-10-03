@@ -57,7 +57,7 @@ public class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker.boots
 				}
 				ThreadUtils.wait(this, Duration.ofSeconds(com.acgist.snail.net.torrent.tracker.bootstrap.TrackerClient.TIMEOUT));
 				if(this.connectionId == null) {
-					throw new NetException("获取UdpTrackerClient connectionId失败");
+					throw new NetException("UDP获取Peer失败（connectionId）");
 				}
 			}
 		}

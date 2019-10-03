@@ -84,7 +84,7 @@ public class HttpProtocol extends Protocol {
 	}
 
 	/**
-	 * 获取下载响应头
+	 * 获取HTTP下载响应头
 	 */
 	private void buildHttpHeader() throws DownloadException {
 		int index = 0;
@@ -93,7 +93,7 @@ public class HttpProtocol extends Protocol {
 			try {
 				this.httpHeaderWrapper = HTTPClient.newInstance(this.url).head();
 			} catch (NetException e) {
-				LOGGER.error("HTTP下载请求头获取异常", e);
+				LOGGER.error("获取HTTP下载响应头异常", e);
 			}
 			if(this.httpHeaderWrapper != null && this.httpHeaderWrapper.isNotEmpty()) {
 				break;
@@ -103,7 +103,7 @@ public class HttpProtocol extends Protocol {
 			}
 		}
 		if(this.httpHeaderWrapper == null || this.httpHeaderWrapper.isEmpty()) {
-			throw new DownloadException("添加下载任务异常");
+			throw new DownloadException("获取HTTP下载响应头失败");
 		}
 	}
 	

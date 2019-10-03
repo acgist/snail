@@ -143,7 +143,7 @@ public class TorrentSession {
 	
 	private TorrentSession(InfoHash infoHash, Torrent torrent) throws DownloadException {
 		if(infoHash == null) {
-			throw new DownloadException("创建Torrent任务失败（InfoHash）");
+			throw new DownloadException("创建TorrentSession失败（InfoHash）");
 		}
 		this.torrent = torrent;
 		this.infoHash = infoHash;
@@ -206,7 +206,7 @@ public class TorrentSession {
 	public boolean download(boolean findPeer) throws DownloadException {
 		this.action = Action.torrent;
 		if(this.taskSession == null) {
-			throw new DownloadException("下载任务参数错误（TaskSession）");
+			throw new DownloadException("下载任务不存在");
 		}
 		if(this.taskSession.complete() || this.torrentStreamGroup.complete()) {
 			return true;
@@ -251,7 +251,7 @@ public class TorrentSession {
 	 */
 	private void loadTorrentStreamGroup() throws DownloadException {
 		if(this.taskSession == null) {
-			throw new DownloadException("BT任务不存在");
+			throw new DownloadException("下载任务不存在");
 		}
 		this.torrentStreamGroup = TorrentStreamGroup.newInstance(
 			this.taskSession.downloadFolder().getPath(),

@@ -97,7 +97,7 @@ public final class DownloaderManager {
 					downloader = taskSession.buildDownloader();
 				}
 				if(downloader == null) {
-					throw new DownloadException("添加下载任务失败（下载任务不存在）");
+					throw new DownloadException("下载器不存在");
 				}
 				this.downloaderMap.put(downloader.id(), downloader);
 				return downloader;

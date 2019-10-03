@@ -119,7 +119,7 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 			final InputStream inputStream = this.handler.inputStream();
 			final String data = StringUtils.ofInputStream(inputStream, this.charset);
 			if(data == null) {
-				throw new NetException(failMessage());
+				throw new NetException(this.failMessage());
 			}
 			final Optional<String> optional = Stream.of(data.split(" "))
 				.map(String::trim)
