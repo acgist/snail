@@ -22,7 +22,7 @@
  * mvn sonar:sonar "-Dsonar.projectKey=snail" "-Dsonar.host.url=http://localhost:9000" "-Dsonar.login=token"
  * </pre>
  * 
- * net->torrent
+ * net->torrent（peer、server、tracker、utp）
  * pojo/protocol/repository
  * system/utils
  * 
