@@ -20,13 +20,11 @@ import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * <p>PeerLauncher组：下载</p>
- * <p>
- * 对正在进行下载的PeerLauncher管理：<br>
- * <ul>
- * 	<li>创建PeerLauncher。</li>
- * 	<li>定时替换下载最慢的PeerLauncher。</li>
- * </ul>
- * </p>
+ * <dl>
+ * 	<dt>对连接请求下载的PeerLauncher管理优化</dt>
+ * 	<dd>创建PeerLauncher。</dd>
+ * 	<dd>定时替换下载最慢的PeerLauncher。</dd>
+ * </dl>
  * 
  * @author acgist
  * @since 1.0.0
@@ -40,7 +38,7 @@ public class PeerLauncherGroup {
 	 */
 	private static final int BUILD_SIZE = 3;
 	/**
-	 * 单次最大创建数量Peer数量
+	 * 单次创建PeerLauncher最大数量（包含失败）
 	 */
 	private static final int MAX_BUILD_SIZE = 60;
 	
@@ -49,7 +47,8 @@ public class PeerLauncherGroup {
 	 */
 	private final AtomicBoolean build = new AtomicBoolean(false);
 	/**
-	 * 优选的Peer，每次优化时挑选出来可以进行下载的Peer，在优化后发送pex消息发送给连接的Peer，发送完成后清空。
+	 * <p>优选的Peer</p>
+	 * <p>每次优化时挑选出来可以进行下载的Peer，在发送pex消息时发送给接入和连接的Peer，发送完成后清空。</p>
 	 */
 	private final List<PeerSession> optimize = new ArrayList<>();
 	/**
@@ -73,14 +72,12 @@ public class PeerLauncherGroup {
 	 * <p>
 	 * 挑选权重最低的PeerLauncher，剔除下载队列，将剔除的Peer插入到Peer队列头部，然后重新生成一个PeerLauncher。
 	 * </p>
-	 * 
-	 * @return 当前可以使用的PeerSession
 	 */
 	public void optimize() {
 		LOGGER.debug("优化PeerLauncher");
 		synchronized (this.peerLaunchers) {
 			try {
-				inferiorPeerLauncher();
+				inferiorPeerLaunchers();
 				buildPeerLaunchers();
 			} catch (Exception e) {
 				LOGGER.error("优化PeerLauncher异常", e);
@@ -89,7 +86,7 @@ public class PeerLauncherGroup {
 	}
 	
 	/**
-	 * 获取优秀的PeerSession，同时清空旧数据。
+	 * 获取优质的PeerSession，同时清空旧数据。
 	 */
 	public List<PeerSession> optimizePeerSession() {
 		final var list = new ArrayList<>(this.optimize);
@@ -99,11 +96,11 @@ public class PeerLauncherGroup {
 
 	/**
 	 * <p>资源释放</p>
-	 * <p>释放所有正在下载的PeerLauncher。</p>
+	 * <p>释放所有连接的PeerLauncher。</p>
 	 */
 	public void release() {
 		LOGGER.debug("释放PeerLauncherGroup");
-		// 释放资源，解除PeerLaunchers锁，防止暂停任务卡死。
+		// 解除PeerLaunchers锁，防止暂停任务卡死。
 		notifyBuild(false);
 		synchronized (this.peerLaunchers) {
 			this.peerLaunchers.forEach(launcher -> {
@@ -117,11 +114,11 @@ public class PeerLauncherGroup {
 	}
 	
 	/**
-	 * 生成PeerLauncher列表，生成到不能继续生成为止。
-	 * TODO：使用信号量Semaphore
+	 * <p>创建PeerLauncher列表</p>
+	 * <p>创建数量达到最大Peer连接或者重试次数超过{@link #MAX_BUILD_SIZE}时退出创建。</p>
 	 */
 	private void buildPeerLaunchers() {
-		LOGGER.debug("优化PeerLauncher-创建下载PeerLauncher");
+		LOGGER.debug("优化PeerLauncher：创建PeerLauncher");
 		int size = 0;
 		this.build.set(true);
 		while(this.build.get()) {
@@ -140,17 +137,22 @@ public class PeerLauncherGroup {
 				}
 			}
 			if(size > MAX_BUILD_SIZE) {
-				LOGGER.debug("超过单次最大创建数量时退出循环");
+				LOGGER.debug("优化PeerLauncher：超过单次最大创建数量退出循环");
 				this.notifyBuild(false);
 			}
 		}
 	}
 	
 	/**
-	 * <p>新建PeerLauncher加入下载队列，从Peer列表尾部拿出一个Peer创建下载。</p>
-	 * <p>如果任务不处于下载状态、已经处于下载的PeerLauncher大于等于配置的最大PeerLauncher数量、不能查找到更多的Peer时返回不能继续生成。</p>
+	 * <p>创建PeerLauncher加入下载队列，从Peer队列尾部拿出一个Peer创建下载，失败后插入Peer队列头部。</p>
+	 * <dl>
+	 * 	<dt>退出创建：</dt>
+	 * 	<dd>任务不处于下载状态</dd>
+	 * 	<dd>已经处于下载的PeerLauncher大于等于配置的最大PeerLauncher数量</dd>
+	 * 	<dd>不能查找到更多的Peer</dd>
+	 * </dl>
 	 * 
-	 * @return true-继续生成；false-不继续生成
+	 * @return true-继续生成；false-不继续生成；
 	 */
 	private boolean buildPeerLauncher() {
 		if(!this.torrentSession.downloading()) {
@@ -166,11 +168,10 @@ public class PeerLauncherGroup {
 			final PeerLauncher launcher = PeerLauncher.newInstance(peerSession, this.torrentSession);
 			final boolean ok = launcher.handshake();
 			if(ok) {
-				// 设置下载中
 				peerSession.status(PeerConfig.STATUS_DOWNLOAD);
 				this.offer(launcher);
 			} else {
-				// 失败后需要放回队列。
+				// 失败后需要放回队列
 				PeerManager.getInstance().inferior(this.torrentSession.infoHashHex(), peerSession);
 			}
 			notifyBuild(true);
@@ -181,19 +182,21 @@ public class PeerLauncherGroup {
 		}
 	}
 	
-	/***
-	 * <p>选择劣质Peer，释放资源，然后将劣质Peer放入Peer队列头部。</p>
+	/**
+	 * <p>剔除劣质Peer</p>
+	 * <p>劣质Peer释放资源，然后将其放入Peer队列头部。</p>
 	 * <p>
-	 * 挑选权重最低的PeerLauncher作为劣质Peer，如果其中含有不可用的PeerLauncher，直接剔除该PeerLauncher，
-	 * 但是依旧需要循环完所有的PeerLauncher，清除权重进行新一轮的权重计算。
-	 * 如果存在不可用的PeerLauncher时，则不剔除分数最低的PeerLauncher。
+	 * 挑选评分最低的PeerLauncher作为劣质Peer。
+	 * 如果其中含有不可用的PeerLauncher，直接剔除该PeerLauncher。
+	 * 如果存在不可用的PeerLauncher时，则不剔除劣质PeerLauncher。
+	 * 必须循环完所有的PeerLauncher，清除评分进行新一轮的评分计算。
 	 * </p>
-	 * <p>
-	 * 不可用的Peer：状态不可用或者下载量=0。
-	 * </p>
+	 * <p>不可用的PeerLauncher：状态不可用、评分=0。</p>
+	 * 
+	 * TODO：评分=0是否直接剔除
 	 */
-	private void inferiorPeerLauncher() {
-		LOGGER.debug("优化PeerLauncher-剔除劣质PeerLauncher");
+	private void inferiorPeerLaunchers() {
+		LOGGER.debug("优化PeerLauncher：剔除劣质PeerLauncher");
 		int index = 0;
 		boolean unusable = false; // 是否已经剔除不可用的Peer
 		long mark = 0, minMark = 0;
@@ -208,25 +211,24 @@ public class PeerLauncherGroup {
 			if(tmp == null) {
 				break;
 			}
-			// 如果当前挑选的是不可用的PeerLauncher直接剔除，不执行后面操作。
+			// 状态不可用的PeerLauncher直接剔除，不执行后面操作。
 			if(!tmp.available()) {
 				unusable = true;
 				inferiorPeerLauncher(tmp);
 				continue;
 			}
-			// 获取评分并清除
+			// 获取评分
 			mark = tmp.mark();
-			// 第一次连接还没有被评分
+			// 第一次评分忽略
 			if(!tmp.marked()) {
 				this.offer(tmp);
 				continue;
 			}
 			if(mark > 0) {
-				// 添加可用
 				this.optimize.add(tmp.peerSession());
 			} else {
+				// 评分=0直接剔除
 				unusable = true;
-				// 如果速度=0，直接剔除。
 				inferiorPeerLauncher(tmp);
 				continue;
 			}
@@ -241,7 +243,7 @@ public class PeerLauncherGroup {
 				this.offer(tmp);
 			}
 		}
-		// 已经剔除无用的Peer，劣质Peer重新加入队列。
+		// 已经剔除无用的PeerLauncher，劣质Peer重新加入队列。
 		if(unusable) {
 			if(inferior != null) {
 				this.offer(inferior);
@@ -251,15 +253,9 @@ public class PeerLauncherGroup {
 		}
 	}
 	
-	private void offer(PeerLauncher peerLauncher) {
-		final var ok = this.peerLaunchers.offer(peerLauncher);
-		if(!ok) {
-			LOGGER.warn("PeerLauncher丢失：{}", peerLauncher);
-		}
-	}
-	
 	/**
-	 * 剔除劣质Peer，释放资源，放入Peer队列头部。
+	 * <p>剔除劣质Peer</p>
+	 * <p>释放Peer资源，将其放入Peer队列头部。</p>
 	 */
 	private void inferiorPeerLauncher(PeerLauncher peerLauncher) {
 		if(peerLauncher != null) {
@@ -269,6 +265,13 @@ public class PeerLauncherGroup {
 				peerLauncher.release();
 			});
 			PeerManager.getInstance().inferior(this.torrentSession.infoHashHex(), peerSession);
+		}
+	}
+	
+	private void offer(PeerLauncher peerLauncher) {
+		final var ok = this.peerLaunchers.offer(peerLauncher);
+		if(!ok) {
+			LOGGER.warn("PeerLauncher丢失：{}", peerLauncher);
 		}
 	}
 	

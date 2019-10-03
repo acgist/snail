@@ -14,14 +14,12 @@ import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
 
 /**
- * <p>Peer连接组：上传</p>
- * <p>
- * 对连接请求下载的PeerConnect管理优化：<br>
- * <ul>
- * 	<li>清除长时间没有请求的Peer。</li>
- * 	<li>不能超过最大分享连接数（如果连接为当前下载的Peer可以忽略连接数）。</li>
- * </ul>
- * </p>
+ * <p>Peer接入组：上传</p>
+ * <dl>
+ * 	<dt>对接入请求下载的PeerConnect管理优化</dt>
+ * 	<dd>清除长时间没有请求的Peer。</dd>
+ * 	<dd>不能超过最大分享连接数（如果接入的Peer为当前连接的Peer可以忽略连接数）。</dd>
+ * </dl>
  * 
  * @author acgist
  * @since 1.0.2
@@ -52,7 +50,7 @@ public class PeerConnectGroup {
 			LOGGER.debug("Peer接入：{}-{}", peerSession.host(), peerSession.peerPort());
 			if(!peerSession.downloading()) {
 				if(this.peerConnects.size() >= SystemConfig.getPeerSize()) {
-					LOGGER.debug("Peer连接数超过最大连接数量，拒绝连接：{}-{}", peerSession.host(), peerSession.peerPort());
+					LOGGER.debug("Peer接入数超过最大接入数量，拒绝连接：{}-{}", peerSession.host(), peerSession.peerPort());
 					return null;
 				}
 			}
@@ -64,13 +62,13 @@ public class PeerConnectGroup {
 	}
 	
 	/**
-	 * 优化
+	 * 优化PeerConnect
 	 */
 	public void optimize() {
 		LOGGER.debug("优化PeerConnect");
 		synchronized (this.peerConnects) {
 			try {
-				inferiorPeerConnect();
+				inferiorPeerConnects();
 			} catch (Exception e) {
 				LOGGER.error("优化PeerConnect异常", e);
 			}
@@ -78,7 +76,8 @@ public class PeerConnectGroup {
 	}
 	
 	/**
-	 * 释放资源
+	 * <p>释放资源</p>
+	 * <p>释放所有接入的PeerConnect。</p>
 	 */
 	public void release() {
 		LOGGER.debug("释放PeerConnectGroup");
@@ -92,14 +91,22 @@ public class PeerConnectGroup {
 		}
 	}
 
+	private void offer(PeerConnect peerConnect) {
+		final var ok = this.peerConnects.offer(peerConnect);
+		if(!ok) {
+			LOGGER.warn("PeerConnect丢失：{}", peerConnect);
+		}
+	}
+	
 	/**
-	 * <p>剔除无效连接</p>
+	 * <p>剔除无效接入</p>
 	 * <ul>
+	 * 	<li>连接不可用。</li>
 	 * 	<li>长时间没有请求。</li>
 	 * </ul>
 	 * <p>剔除时设置为阻塞。</p>
 	 */
-	private void inferiorPeerConnect() {
+	private void inferiorPeerConnects() {
 		final int size = this.peerConnects.size();
 		int index = 0;
 		PeerConnect tmp = null;
@@ -116,14 +123,14 @@ public class PeerConnectGroup {
 				inferiorPeerConnect(tmp);
 				continue;
 			}
-			// 下载中的Peer提供上传
+			// 提供下载的Peer提供上传
 			if(tmp.peerSession().downloading()) {
 				this.offer(tmp);
 				continue;
 			}
-			// 获取评分并清除
+			// 获取评分
 			final long mark = tmp.mark();
-			// 第一次连入还没有被评分
+			// 第一次评分忽略
 			if(!tmp.marked()) {
 				this.offer(tmp);
 				continue;
@@ -133,13 +140,6 @@ public class PeerConnectGroup {
 			} else {
 				this.offer(tmp);
 			}
-		}
-	}
-	
-	private void offer(PeerConnect peerConnect) {
-		final var ok = this.peerConnects.offer(peerConnect);
-		if(!ok) {
-			LOGGER.warn("PeerConnect丢失：{}", peerConnect);
 		}
 	}
 	
