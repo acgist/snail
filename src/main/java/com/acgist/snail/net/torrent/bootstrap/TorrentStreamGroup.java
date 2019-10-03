@@ -105,7 +105,7 @@ public class TorrentStreamGroup {
 				final var ok = sizeCount.await(SIZE_COUNT_TIMEOUT, TimeUnit.SECONDS);
 				if(ok) {
 					final var finishTime = System.currentTimeMillis(); // 结束时间
-					LOGGER.debug("{}-任务准备消耗时间：{}", torrent.name(), (finishTime - startTime));
+					LOGGER.debug("{}-任务准备完成消耗时间：{}", torrent.name(), (finishTime - startTime));
 					torrentSession.resize(torrentStreamGroup.size());
 				} else {
 					LOGGER.warn("任务准备超时：{}", torrent.name());
@@ -131,27 +131,6 @@ public class TorrentStreamGroup {
 			}
 		}
 		return pickPiece;
-	}
-
-	/**
-	 * 刷出缓存
-	 */
-	public void flush() {
-		LOGGER.debug("刷出缓存");
-		for (TorrentStream torrentStream : this.streams) {
-			torrentStream.flush();
-		}
-	}
-	
-	/**
-	 * 下载文件大小
-	 */
-	public long size() {
-		long size = 0L;
-		for (TorrentStream torrentStream : this.streams) {
-			size += torrentStream.size();
-		}
-		return size;
 	}
 	
 	/**
@@ -188,9 +167,8 @@ public class TorrentStreamGroup {
 				}
 			}
 		}
-		// 如果数据读取不满足要求
 		if(buffer.position() < length) {
-			LOGGER.warn("读取Piece数据不满足要求，读取长度：{}，要求长度：{}", buffer.position(), length);
+			LOGGER.warn("读取Piece数据错误，读取长度：{}，要求长度：{}", buffer.position(), length);
 			return null;
 		}
 		return buffer.array();
@@ -213,7 +191,7 @@ public class TorrentStreamGroup {
 		final long oldValue = this.fileBuffer.get();
 		if(oldValue > DownloadConfig.getMemoryBufferByte()) {
 			if(this.fileBuffer.compareAndSet(oldValue, 0)) {
-				LOGGER.debug("缓冲区占满刷新缓存");
+				LOGGER.debug("缓冲区占满，刷出缓存。");
 				this.flush();
 			}
 		}
@@ -256,6 +234,36 @@ public class TorrentStreamGroup {
 	}
 
 	/**
+	 * 剩余没有下载Piece的数量
+	 * 
+	 * @since 1.0.2
+	 */
+	public int remainingPieceSize() {
+		return this.selectPieces.cardinality() - this.pieces.cardinality();
+	}
+
+	/**
+	 * 刷出缓存
+	 */
+	public void flush() {
+		LOGGER.debug("刷出缓存");
+		for (TorrentStream torrentStream : this.streams) {
+			torrentStream.flush();
+		}
+	}
+	
+	/**
+	 * 下载文件大小
+	 */
+	public long size() {
+		long size = 0L;
+		for (TorrentStream torrentStream : this.streams) {
+			size += torrentStream.size();
+		}
+		return size;
+	}
+	
+	/**
 	 * <p>Piece下载失败</p>
 	 * <p>调用每个{@link TorrentStream#undone}进行设置。</p>
 	 */
@@ -264,19 +272,10 @@ public class TorrentStreamGroup {
 			torrentStream.undone(piece);
 		}
 	}
-
-	/**
-	 * 剩余没有下载Piece的数量
-	 * 
-	 * @since 1.0.2
-	 */
-	public int remainingPieceSize() {
-		return this.selectPieces.cardinality() - this.pieces.cardinality();
-	}
 	
 	/**
 	 * <p>检测是否下载完成</p>
-	 * <p>所有的TorrentStream完成才能判断为完成。</p>
+	 * <p>所有的TorrentStream完成才算完成。</p>
 	 */
 	public boolean complete() {
 		for (TorrentStream torrentStream : this.streams) {
