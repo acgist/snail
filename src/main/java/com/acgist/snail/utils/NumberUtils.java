@@ -26,6 +26,9 @@ public class NumberUtils {
 	private static final int MIN_INT_INDEX = 1000;
 	private static final int MAX_INT_INDEX = 9999;
 	
+	/**
+	 * 唯一编号索引
+	 */
 	private static int index = MIN_INT_INDEX;
 	
 	/**
@@ -48,9 +51,9 @@ public class NumberUtils {
 	}
 	
 	/**
-	 * 除法，如果相除有余数，结果+1。
+	 * <p>向上取整</p>
 	 */
-	public static final int divideUp(long dividend, long divisor) {
+	public static final int ceilDiv(long dividend, long divisor) {
 		int value = (int) (dividend / divisor);
 		if(dividend % divisor != 0) {
 			value++;
@@ -59,7 +62,7 @@ public class NumberUtils {
 	}
 
 	/**
-	 * 统计数字位上1的个数。
+	 * 统计数字位上1的个数
 	 */
 	public static final byte bitCount(int number) {
 		byte count = 0;
@@ -126,7 +129,7 @@ public class NumberUtils {
 		try {
 			return SecureRandom.getInstanceStrong();
 		} catch (NoSuchAlgorithmException e) {
-			LOGGER.error("获取随机数异常", e);
+			LOGGER.error("获取随机数工具异常", e);
 		}
 		return new Random();
 	}

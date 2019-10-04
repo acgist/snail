@@ -11,9 +11,10 @@ import com.acgist.snail.system.exception.ArgumentException;
 public class ArrayUtils {
 
 	/**
-	 * 比较：如果数组元素全部一致则相等
+	 * <p>数组比较</p>
+	 * <p>数组元素全部一致则相等</p>
 	 * 
-	 * @param sources 原数据
+	 * @param sources 原始数据
 	 * @param targets 比较数据
 	 */
 	public static final boolean equals(byte[] sources, byte[] targets) {
@@ -23,10 +24,11 @@ public class ArrayUtils {
 		if(sources == null || targets == null) {
 			return false;
 		}
-		if(sources.length != targets.length) {
+		final int length = sources.length;
+		if(length != targets.length) {
 			return false;
 		}
-		for (int index = 0; index < sources.length; index++) {
+		for (int index = 0; index < length; index++) {
 			if(sources[index] != targets[index]) {
 				return false;
 			}
@@ -35,9 +37,14 @@ public class ArrayUtils {
 	}
 	
 	/**
-	 * <p>比较字符数组大小（无符号比较）</p>
+	 * <p>比较数组大小（无符号比较）</p>
 	 * <p>长度不同时：长度长的数组大。</p>
-	 * <p>长度相同时：比较每一个字符，高位字符大的大。</p>
+	 * <p>长度相同时：比较每一个字符，高位字符（索引小）大的大。</p>
+	 * 
+	 * @param sources 原始数据
+	 * @param targets 比较数据
+	 * 
+	 * @return 1：原始数据大；-1：比较数据大；0：相等；
 	 * 
 	 * @since 1.1.0
 	 */
@@ -58,9 +65,11 @@ public class ArrayUtils {
 	
 	/**
 	 * 异或运算
-	 * @param sources
-	 * @param targets
-	 * @return
+	 * 
+	 * @param sources 原始数据
+	 * @param targets 比较数据
+	 * 
+	 * @return 结果
 	 */
 	public static final byte[] xor(byte[] sources, byte[] targets) {
 		if (sources == null || targets == null) {
@@ -68,11 +77,37 @@ public class ArrayUtils {
 		} else if (sources.length != targets.length) {
 			throw new ArgumentException("异或运算参数错误（长度）");
 		} else {
-			final byte[] result = new byte[sources.length];
-			for (int index = 0; index < sources.length; index++) {
+			final int length = sources.length;
+			final byte[] result = new byte[length];
+			for (int index = 0; index < length; index++) {
 				result[index] = (byte) (sources[index] ^ targets[index]);
 			}
 			return result;
+		}
+	}
+	
+	/**
+	 * <p>差异索引</p>
+	 * <p>差异索引越小，表示差距越大，反之差距越小。</p>
+	 * 
+	 * @param sources 原始数据
+	 * @param targets 比较数据
+	 * 
+	 * @return 差异索引
+	 */
+	public static final int diffIndex(byte[] sources, byte[] targets) {
+		if (sources == null || targets == null) {
+			throw new ArgumentException("差异索引参数错误");
+		} else if (sources.length != targets.length) {
+			throw new ArgumentException("差异索引参数错误（长度）");
+		} else {
+			final int length = sources.length;
+			for (int index = 0; index < length; index++) {
+				if(sources[index] != targets[index]) {
+					return index;
+				}
+			}
+			return length;
 		}
 	}
 	

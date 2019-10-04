@@ -27,7 +27,7 @@ public class BeanUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(BeanUtils.class);
 	
 	/**
-	 * 调用默认构造方法（无参）生成实例
+	 * 反射生成实例：调用默认构造方法（无参）
 	 */
 	public static final <T> T newInstance(final Class<T> clazz) {
 		if(clazz == null) {
@@ -42,13 +42,13 @@ public class BeanUtils {
 	}
 	
 	/**
-	 * <p>将对象转为Map，类型转换：</p>
-	 * <p>
-	 * String -&gt; String<br>
-	 * Number -&gt; Number<br>
-	 * Enum   -&gt; String<br>
-	 * Date   -&gt; String：yyyyMMddHHmmss
-	 * </p>
+	 * <dl>
+	 * 	<dt>将对象转为Map，类型转换：</dt>
+	 * 	<dd>String -&gt; String</dd>
+	 * 	<dd>Number -&gt; Number</dd>
+	 * 	<dd>Enum   -&gt; String</dd>
+	 * 	<dd>Date   -&gt; String：yyyyMMddHHmmss</dd>
+	 * </dl>
 	 */
 	public static final Map<String, Object> toMap(Object instance) {
 		final Map<String, Object> map = new HashMap<>();
@@ -68,7 +68,12 @@ public class BeanUtils {
 	}
 	
 	/**
-	 * <p>获取类属性（非静态-static、非瞬时-transient）</p>
+	 * <p>获取属性</p>
+	 * <dl>
+	 * 	<dt>不获取：</dt>
+	 * 	<dd>静态：static</dd>
+	 * 	<dd>瞬时：transient</dd>
+	 * </dl>
 	 */
 	public static final String[] properties(Class<?> clazz) {
 		String[] properties = null;
@@ -93,7 +98,7 @@ public class BeanUtils {
 	}
 	
 	/**
-	 * <p>获取属性值（getter）</p>
+	 * <p>获取属性值</p>
 	 */
 	public static final Object[] propertiesValue(Object instance, String[] properties) {
 		return Stream
@@ -103,7 +108,7 @@ public class BeanUtils {
 	}
 	
 	/**
-	 * <p>获取属性值（getter）</p>
+	 * <p>获取属性值</p>
 	 */
 	public static final Object propertyValue(Object instance, String property) {
 		final Class<?> clazz = instance.getClass();
@@ -117,7 +122,7 @@ public class BeanUtils {
 	}
 	
 	/**
-	 * <p>属性装配（setter）</p>
+	 * <p>属性装配</p>
 	 */
 	public static final void setProperties(Object instance, ResultSetWrapper wrapper) {
 		final Class<?> clazz = instance.getClass();
@@ -151,6 +156,7 @@ public class BeanUtils {
 	/**
 	 * <p>类型拆包</p>
 	 * <p>枚举读取、长字符串读取。</p>
+	 * 
 	 * TODO：泛型优化
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })

@@ -22,7 +22,7 @@ public class StringMessageCodec extends MessageCodec<ByteBuffer, String> {
 
 	@Override
 	protected void decode(ByteBuffer buffer, InetSocketAddress address, boolean hasAddress) throws NetException {
-		final String message = StringUtils.readContent(buffer);
+		final String message = StringUtils.ofByteBuffer(buffer);
 		this.doNext(message, address, hasAddress);
 	}
 

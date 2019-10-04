@@ -28,7 +28,8 @@ public class PropertiesUtils {
 	}
 	
 	/**
-	 * 获取实例，优先从UserDir加载，加载失败时加载默认配置。
+	 * <p>获取实例</p>
+	 * <p>优先从UserDir加载，加载失败时加载默认配置。</p>
 	 * 
 	 * @param path 配置文件
 	 */
@@ -111,7 +112,7 @@ public class PropertiesUtils {
 	/**
 	 * 判断是否有数据
 	 */
-	public boolean haveProperties() {
+	public boolean hasProperties() {
 		return this.properties != null;
 	}
 	

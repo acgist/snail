@@ -35,7 +35,7 @@ public class FileUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FileUtils.class);
 	
 	/**
-	 * 文件进制
+	 * 文件大小进制
 	 */
 	private static final int FILE_SIZE_SCALE = 1024;
 	/**
@@ -43,11 +43,12 @@ public class FileUtils {
 	 */
 	private static final String[] FILE_SIZE_UNIT = {"B", "KB", "M", "G", "T"};
 	/**
-	 * 文件名禁用的字符：\、/、:、*、?、<、>、|
+	 * <p>文件名禁用字符正则表达式</p>
+	 * <p>文件名禁用字符：\、/、:、*、?、<、>、|</p>
 	 */
 	private static final String FILENAME_REPLACE_REGEX = "[\\\\/:\\*\\?\\<\\>\\|]";
 	/**
-	 * 文件禁用字符替换字符
+	 * 文件名禁用字符替换字符
 	 */
 	private static final String FILENAME_REPLACE_CHAR = "";
 	
@@ -79,12 +80,12 @@ public class FileUtils {
 		}
 		final var ok = file.delete(); // 删除当前文件或目录
 		if(!ok) {
-			LOGGER.warn("文件删除失败：{}", file.getAbsolutePath());
+			LOGGER.warn("删除文件失败：{}", file.getAbsolutePath());
 		}
 	}
 	
 	/**
-	 * 删除文件至回收站
+	 * 删除文件（回收站）
 	 */
 	public static final boolean recycle(final String filePath) {
 		if(StringUtils.isEmpty(filePath)) {
@@ -99,7 +100,7 @@ public class FileUtils {
 	
 	/**
 	 * <p>通过URL获取文件名称</p>
-	 * <p>去掉协议、域名、路径、参数。</p>
+	 * <p>去掉：协议、域名、路径、参数。</p>
 	 */
 	public static final String fileNameFromUrl(final String url) {
 		if(StringUtils.isEmpty(url)) {
@@ -122,7 +123,7 @@ public class FileUtils {
 	}
 	
 	/**
-	 * 获取正确的文件下载名称：去掉{@linkplain #FILENAME_REPLACE_REGEX 不支持的字符串}。
+	 * 获取正确的文件名称：去掉{@linkplain #FILENAME_REPLACE_REGEX 文件名禁用字符}
 	 */
 	public static final String fileName(String name) {
 		if(StringUtils.isNotEmpty(name)) { // 去掉不支持的字符
@@ -135,17 +136,17 @@ public class FileUtils {
 	}
 
 	/**
-	 * 根据文件名称获取文件类型。
+	 * 根据文件名称获取文件类型
 	 */
 	public static final FileType fileType(String fileName) {
-		final String ext = ext(fileName);
+		final String ext = fileExt(fileName);
 		return FileTypeConfig.type(ext);
 	}
 	
 	/**
 	 * 获取文件后缀
 	 */
-	public static final String ext(String fileName) {
+	public static final String fileExt(String fileName) {
 		if(StringUtils.isEmpty(fileName)) {
 			return null;
 		}
@@ -157,7 +158,7 @@ public class FileUtils {
 	}
 	
 	/**
-	 * 资源管理器中打开文件。
+	 * 资源管理器打开文件
 	 */
 	public static final void openInDesktop(File file) {
 		try {
@@ -186,7 +187,7 @@ public class FileUtils {
 		final File srcFile = new File(src);
 		final File targetFile = new File(target);
 		if(!srcFile.renameTo(targetFile)) {
-			LOGGER.warn("文件移动失败，源文件：{}，目标文件：{}", src, target);
+			LOGGER.warn("文件移动失败，原始文件：{}，目标文件：{}", src, target);
 		}
 	}
 	
@@ -235,7 +236,7 @@ public class FileUtils {
 	}
 	
 	/**
-	 * 文件大小
+	 * 获取文件大小
 	 */
 	public static final long fileSize(String path) {
 		long size = 0L;
@@ -247,7 +248,7 @@ public class FileUtils {
 			try {
 				size = Files.size(Paths.get(path));
 			} catch (IOException e) {
-				LOGGER.error("文件大小获取异常", e);
+				LOGGER.error("获取文件大小异常", e);
 			}
 		} else {
 			final File[] files = file.listFiles();
@@ -259,10 +260,11 @@ public class FileUtils {
 	}
 	
 	/**
-	 * 创建文件夹，如果路径是文件，则创建父目录，否者直接创建路径目录。
+	 * <p>创建文件夹</p>
+	 * <p>如果路径是文件，则创建父文件目录，否者直接创建文件目录。</p>
 	 * 
 	 * @param path 路径
-	 * @param file 是否是文件：true-文件；false-文件夹
+	 * @param file 是否是文件：true-文件；false-文件夹；
 	 */
 	public static final void buildFolder(String path, boolean file) {
 		final File opt = new File(path);
@@ -270,10 +272,11 @@ public class FileUtils {
 	}
 	
 	/**
-	 * 创建文件夹，如果路径是文件，则创建父目录，否者直接创建路径目录。
+	 * <p>创建文件夹</p>
+	 * <p>如果路径是文件，则创建父文件目录，否者直接创建文件目录。</p>
 	 * 
 	 * @param opt 文件
-	 * @param file 是否是文件：true-文件；false-文件夹
+	 * @param file 是否是文件：true-文件；false-文件夹；
 	 */
 	public static final void buildFolder(File opt, boolean file) {
 		if(opt.exists()) {
@@ -288,10 +291,27 @@ public class FileUtils {
 	}
 	
 	/**
-	 * 散列计算
+	 * MD5散列算法
+	 */
+	public static final Map<String, String> md5(String path) {
+		return hash(path, DigestUtils.MD5);
+	}
+
+	/**
+	 * SHA-1散列算法
+	 */
+	public static final Map<String, String> sha1(String path) {
+		return hash(path, DigestUtils.SHA1);
+	}
+	
+	/**
+	 * <p>散列计算</p>
+	 * <p>如果是单个文件计算文件散列值，如果是文件夹则计算每一个文件的散列值。</p>
 	 * 
-	 * @param path 文件地址，如果是目录计算里面每一个文件
+	 * @param path 文件路径
 	 * @param algo 算法：MD5/SHA-1
+	 * 
+	 * @return 文件散列值（key：文件路径；value：散列值；）
 	 */
 	private static final Map<String, String> hash(String path, String algo) {
 		final File file = new File(path);
@@ -314,7 +334,7 @@ public class FileUtils {
 					digest.update(bytes, 0, length);
 				}
 			} catch (IOException e) {
-				LOGGER.error("文件HASH计算异常", e);
+				LOGGER.error("文件散列计算异常", e);
 				return data;
 			}
 			data.put(path, StringUtils.hex(digest.digest()));
@@ -325,24 +345,10 @@ public class FileUtils {
 	/**
 	 * 在用户工作目录中获取文件
 	 * 
-	 * @param path 文件相对路径：以/开头
+	 * @param path 文件相对路径：以“/”开头
 	 */
 	public static final File userDirFile(String path) {
 		return new File(SystemConfig.userDir(path));
 	}
 
-	/**
-	 * MD5散列算法
-	 */
-	public static final Map<String, String> md5(String path) {
-		return hash(path, "MD5");
-	}
-
-	/**
-	 * SHA-1散列算法
-	 */
-	public static final Map<String, String> sha1(String path) {
-		return hash(path, "SHA-1");
-	}
-	
 }

@@ -84,7 +84,7 @@ public class WindowRecycle extends Recycle {
 		String ext = null;
 		String name = NumberUtils.build().toString();
 		if(this.file.isFile()) {
-			ext = FileUtils.ext(this.path);
+			ext = FileUtils.fileExt(this.path);
 		}
 		if(ext != null) {
 			name = name + "." + ext;

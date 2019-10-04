@@ -279,9 +279,9 @@ public class NodeManager {
 			final var nodeB = nodes.get(sliceB);
 			final var nodeC = nodes.get(sliceC);
 			// 节点不同字节序号
-			final int diffIndexA = diffIndex(nodeA.getId(), target);
-			final int diffIndexB = diffIndex(nodeB.getId(), target);
-			final int diffIndexC = diffIndex(nodeC.getId(), target);
+			final int diffIndexA = ArrayUtils.diffIndex(nodeA.getId(), target);
+			final int diffIndexB = ArrayUtils.diffIndex(nodeB.getId(), target);
+			final int diffIndexC = ArrayUtils.diffIndex(nodeC.getId(), target);
 			if(diffIndexA > diffIndexB && diffIndexA > diffIndexC) {
 				return findNode(nodes, target, sliceC, sliceB);
 			} else if(diffIndexB > diffIndexA && diffIndexB > diffIndexC) {
@@ -308,7 +308,7 @@ public class NodeManager {
 		}
 		return select
 			.map(node -> {
-				return Map.entry(xor(node.getId(), target), node);
+				return Map.entry(ArrayUtils.xor(node.getId(), target), node);
 			})
 			.sorted((a, b) -> {
 				return ArrayUtils.compareUnsigned(a.getKey(), b.getKey());
@@ -364,28 +364,4 @@ public class NodeManager {
 		return null;
 	}
 	
-	/**
-	 * 异或运算
-	 */
-	public static final byte[] xor(byte[] source, byte[] target) {
-		final byte[] value = new byte[NODE_ID_LENGTH];
-		for (int index = 0; index < NODE_ID_LENGTH; index++) {
-			value[index] = (byte) (source[index] ^ target[index]);
-		}
-		return value;
-	}
-	
-	/**
-	 * <p>获取节点出现不同字节的位数。</p>
-	 * <p>不同的位数越小，表示差距越大，反之差距越小。</p>
-	 */
-	public static final int diffIndex(byte[] source, byte[] target) {
-		for (int index = 0; index < NODE_ID_LENGTH; index++) {
-			if(source[index] != target[index]) {
-				return index;
-			}
-		}
-		return NODE_ID_LENGTH;
-	}
-
 }

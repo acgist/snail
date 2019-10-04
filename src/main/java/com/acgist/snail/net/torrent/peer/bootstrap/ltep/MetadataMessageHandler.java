@@ -107,7 +107,7 @@ public class MetadataMessageHandler implements IExtensionMessageHandler {
 	public void request() {
 		LOGGER.debug("发送metadata消息-request");
 		final int size = this.infoHash.size();
-		final int messageSize = NumberUtils.divideUp(size, INFO_SLICE_SIZE);
+		final int messageSize = NumberUtils.ceilDiv(size, INFO_SLICE_SIZE);
 		for (int index = 0; index < messageSize; index++) {
 			final var request = buildMessage(PeerConfig.MetadataType.request, index);
 			pushMessage(request);

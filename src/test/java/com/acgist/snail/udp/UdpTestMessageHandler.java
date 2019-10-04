@@ -11,7 +11,7 @@ public class UdpTestMessageHandler extends UdpMessageHandler {
 	@Override
 	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) {
 		System.out.println(socketAddress + "-" + socketAddress.getClass());
-		final String content = StringUtils.readContent(buffer);
+		final String content = StringUtils.ofByteBuffer(buffer);
 		System.out.println("收到消息：" + content);
 		System.out.println("消息长度：" + content.length());
 	}

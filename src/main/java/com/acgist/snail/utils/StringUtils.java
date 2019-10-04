@@ -27,7 +27,7 @@ public class StringUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(StringUtils.class);
 	
 	/**
-	 * 正负整数
+	 * 正负整数正则表达式
 	 */
 	private static final String NUMERIC_REGEX = "\\-?[0-9]+";
 	
@@ -46,7 +46,7 @@ public class StringUtils {
 	}
 	
 	/**
-	 * 数字字符串：正负整数。
+	 * 数字字符串：正负整数
 	 */
 	public static final boolean isNumeric(String value) {
 		return StringUtils.regex(value, NUMERIC_REGEX, true);
@@ -67,17 +67,7 @@ public class StringUtils {
 	}
 	
 	/**
-	 * 转为Long
-	 */
-	public static final long toLong(String value) {
-		if(isNumeric(value)) {
-			return Long.parseLong(value);
-		}
-		return 0L;
-	}
-
-	/**
-	 * 字符数组转为十六进制字符串。
+	 * 字符数组转为十六进制字符串
 	 */
 	public static final String hex(byte[] bytes) {
 		if(bytes == null) {
@@ -96,7 +86,7 @@ public class StringUtils {
 	}
 
 	/**
-	 * 十六进制字符串转为字符数组。
+	 * 十六进制字符串转为字符数组
 	 */
 	public static final byte[] unhex(String text) {
 		if(text == null) {
@@ -120,7 +110,7 @@ public class StringUtils {
 	}
 
 	/**
-	 * SHA-1散列计算。
+	 * SHA-1散列计算
 	 */
 	public static final byte[] sha1(byte[] bytes) {
 		final MessageDigest digest = DigestUtils.sha1();
@@ -129,7 +119,7 @@ public class StringUtils {
 	}
 	
 	/**
-	 * SHA-1散列计算并转为十六进制字符串。
+	 * SHA-1散列计算并转为十六进制字符串
 	 */
 	public static final String sha1Hex(byte[] bytes) {
 		return StringUtils.hex(sha1(bytes));
@@ -139,7 +129,7 @@ public class StringUtils {
 	 * 字符串解码
 	 * 
 	 * @param value 原始字符串
-	 * @param charset 原始编码格式
+	 * @param charset 原始编码
 	 * 
 	 * @return 系统默认编码的字符串
 	 */
@@ -161,6 +151,8 @@ public class StringUtils {
 	 * @param value 字符串
 	 * @param regex 正则表达式
 	 * @param ignoreCase 忽略大小写
+	 * 
+	 * @return true：匹配；false：不匹配；
 	 */
 	public static final boolean regex(String value, String regex, boolean ignoreCase) {
 		if(value == null) {
@@ -188,7 +180,7 @@ public class StringUtils {
 	}
 	
 	/**
-	 * 判断字符串是否相等，忽略大小写。
+	 * 判断字符串是否相等：忽略大小写
 	 */
 	public static final boolean equalsIgnoreCase(String source, String target) {
 		if(source == null) {
@@ -218,7 +210,7 @@ public class StringUtils {
 	/**
 	 * 读取Unicode
 	 */
-	public static final String fromUnicode(String unicode) {
+	public static final String ofUnicode(String unicode) {
 		int value;
 		final String[] hex = unicode.split("\\\\u");
 		final StringBuffer content = new StringBuffer();
@@ -230,16 +222,16 @@ public class StringUtils {
 	}
 	
 	/**
-	 * 读取内容
+	 * ByteBuffer解码
 	 */
-	public static final String readContent(ByteBuffer buffer) {
-		return readContent(buffer, SystemConfig.DEFAULT_CHARSET);
+	public static final String ofByteBuffer(ByteBuffer buffer) {
+		return ofByteBuffer(buffer, SystemConfig.DEFAULT_CHARSET);
 	}
 	
 	/**
-	 * 读取内容
+	 * ByteBuffer解码
 	 */
-	public static final String readContent(ByteBuffer buffer, String charset) {
+	public static final String ofByteBuffer(ByteBuffer buffer, String charset) {
 		if(charset == null) {
 			charset = SystemConfig.DEFAULT_CHARSET;
 		}
@@ -259,7 +251,7 @@ public class StringUtils {
 	}
 	
 	/**
-	 * 输入流转为字符串。
+	 * 输入流转为字符串
 	 */
 	public static final String ofInputStream(InputStream input, String charset) {
 		if(input == null) {
@@ -277,7 +269,7 @@ public class StringUtils {
 				builder.append(new String(chars, 0, index));
 			}
 		} catch (Exception e) {
-			LOGGER.error("读取输入流异常", e);
+			LOGGER.error("输入流转为字符串异常", e);
 		}
 		return builder.toString();
 	}

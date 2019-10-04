@@ -12,7 +12,7 @@ import java.util.Map;
 public class CollectionUtils {
 
 	/**
-	 * 空集合：集合==null或者长度==0
+	 * 空集合
 	 */
 	public static final boolean isEmpty(Collection<?> list) {
 		return list == null || list.isEmpty();
@@ -26,7 +26,7 @@ public class CollectionUtils {
 	}
 
 	/**
-	 * 空Map：Map==null或者长度==0
+	 * 空Map
 	 */
 	public static final boolean isEmpty(Map<?, ?> map) {
 		return map == null || map.isEmpty();

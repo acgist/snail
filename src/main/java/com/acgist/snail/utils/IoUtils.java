@@ -69,29 +69,6 @@ public class IoUtils {
 				LOGGER.error("关闭Socket输出流异常", e);
 			}
 			try {
-				socket.close(); // 不用判断是否close
-			} catch (Exception e) {
-				LOGGER.error("关闭Socket异常", e);
-			}
-		}
-	}
-	
-	/**
-	 * 关闭异步Socket通道
-	 */
-	public static final void close(AsynchronousSocketChannel socket) {
-		if(socket != null && socket.isOpen()) {
-			try {
-				socket.shutdownInput();
-			} catch (Exception e) {
-				LOGGER.error("关闭Socket输入流异常", e);
-			}
-			try {
-				socket.shutdownOutput();
-			} catch (Exception e) {
-				LOGGER.error("关闭Socket输出流异常", e);
-			}
-			try {
 				socket.close();
 			} catch (Exception e) {
 				LOGGER.error("关闭Socket异常", e);
@@ -100,14 +77,37 @@ public class IoUtils {
 	}
 	
 	/**
-	 * 关闭异步SocketServer通道
+	 * 关闭异步Socket
+	 */
+	public static final void close(AsynchronousSocketChannel socket) {
+		if(socket != null && socket.isOpen()) {
+			try {
+				socket.shutdownInput();
+			} catch (Exception e) {
+				LOGGER.error("关闭异步Socket输入流异常", e);
+			}
+			try {
+				socket.shutdownOutput();
+			} catch (Exception e) {
+				LOGGER.error("关闭异步Socket输出流异常", e);
+			}
+			try {
+				socket.close();
+			} catch (Exception e) {
+				LOGGER.error("关闭异步Socket异常", e);
+			}
+		}
+	}
+	
+	/**
+	 * 关闭异步Socket Server
 	 */
 	public static final void close(AsynchronousServerSocketChannel server) {
 		if(server != null && server.isOpen()) {
 			try {
 				server.close();
 			} catch (Exception e) {
-				LOGGER.error("关闭Socket Server异常", e);
+				LOGGER.error("关闭异步Socket Server异常", e);
 			}
 		}
 	}
@@ -122,7 +122,7 @@ public class IoUtils {
 	}
 	
 	/**
-	 * 关闭UDP通道
+	 * 关闭UDP Channel
 	 */
 	public static final void close(DatagramChannel channel) {
 		if(channel != null && channel.isOpen()) {
@@ -137,7 +137,7 @@ public class IoUtils {
 	/**
 	 * 关闭Selector
 	 */
-	public static void close(Selector selector) {
+	public static final void close(Selector selector) {
 		if(selector != null && selector.isOpen()) {
 			try {
 				selector.close();
