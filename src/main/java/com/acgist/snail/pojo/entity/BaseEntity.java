@@ -44,7 +44,8 @@ public class BaseEntity implements Serializable {
 	}
 
 	/**
-	 * 设置ID
+	 * <p>设置ID</p>
+	 * <p>保存时自动设置，请不要自行设置。</p>
 	 * 
 	 * @param id ID
 	 */

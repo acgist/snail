@@ -32,17 +32,8 @@ public abstract class Repository<T extends BaseEntity> {
 	 * 字段正则表达式
 	 */
 	private static final String COLUMN_REGEX = "[a-zA-Z]+";
-	
-	private final DatabaseManager databaseManager = DatabaseManager.getInstance();
-	
 	/**
-	 * <p>查询实体的类型。</p>
-	 * <p>注：不使用反射获取泛型，因为反射获取泛型存在泛型转换有警告。</p>
-	 */
-	private final Class<T> entityClazz;
-	
-	/**
-	 * 数据库列：只允许字符串。
+	 * 数据库列验证
 	 */
 	private static final Function<String, String> COLUMN_VERIFY = (value) -> {
 		if(StringUtils.regex(value, COLUMN_REGEX, true)) {
@@ -51,10 +42,17 @@ public abstract class Repository<T extends BaseEntity> {
 		throw new RepositoryException("数据库列格式错误：" + value);
 	};
 	
+	private final DatabaseManager databaseManager = DatabaseManager.getInstance();
+	
 	/**
 	 * 数据库表名
 	 */
 	private String table;
+	/**
+	 * <p>查询实体的类型</p>
+	 * <p>注：不使用反射获取泛型，因为反射获取泛型时存在警告。</p>
+	 */
+	private final Class<T> entityClazz;
 	
 	protected Repository(String table, Class<T> entityClazz) {
 		this.table = table;
@@ -62,7 +60,11 @@ public abstract class Repository<T extends BaseEntity> {
 	}
 	
 	/**
-	 * 合并：存在ID=更新；不存在ID=保存；
+	 * <dl>
+	 * 	<dt>合并：</dt>
+	 * 	<dd>存在ID：更新</dd>
+	 * 	<dd>不存在ID：保存</dd>
+	 * </dl>
 	 */
 	public void merge(T t) {
 		if(t == null) {
@@ -81,6 +83,9 @@ public abstract class Repository<T extends BaseEntity> {
 	public void save(T t) {
 		if(t == null) {
 			throw new RepositoryException("保存参数错误：" + t);
+		}
+		if(t.getId() != null) {
+			throw new RepositoryException("保存参数错误（ID）：" + t.getId());
 		}
 		t.setId(UUID.randomUUID().toString());
 		t.setCreateDate(new Date());
@@ -103,18 +108,22 @@ public abstract class Repository<T extends BaseEntity> {
 			.append(" VALUES ")
 			.append(sqlValue);
 		if(LOGGER.isDebugEnabled()) {
-			LOGGER.debug("SQL语句：{}", sql);
-			LOGGER.debug("SQL参数：{}", Arrays.asList(parameters));
+			LOGGER.debug("保存SQL语句：{}", sql);
+			LOGGER.debug("保存SQL参数：{}", Arrays.asList(parameters));
 		}
 		this.databaseManager.update(sql.toString(), parameters);
 	}
 
 	/**
-	 * 更新，使用ID更新所有的字段。
+	 * <p>更新</p>
+	 * <p>更新所有字段</p>
 	 */
 	public void update(T t) {
 		if(t == null) {
 			throw new RepositoryException("修改参数错误：" + t);
+		}
+		if(t.getId() == null) {
+			throw new RepositoryException("修改参数错误（ID）：" + t.getId());
 		}
 		t.setModifyDate(new Date());
 		final String[] properties = BeanUtils.properties(t.getClass());
@@ -144,8 +153,8 @@ public abstract class Repository<T extends BaseEntity> {
 			.append(sqlProperty)
 			.append(" WHERE ID = ?");
 		if(LOGGER.isDebugEnabled()) {
-			LOGGER.debug("SQL语句：{}", sql);
-			LOGGER.debug("SQL参数：{}", Arrays.asList(parameters));
+			LOGGER.debug("更新SQL语句：{}", sql);
+			LOGGER.debug("更新SQL参数：{}", Arrays.asList(parameters));
 		}
 		this.databaseManager.update(sql.toString(), parameters);
 	}
@@ -178,7 +187,7 @@ public abstract class Repository<T extends BaseEntity> {
 			.append(this.table)
 			.append(" WHERE ID = ? limit 1");
 		final List<ResultSetWrapper> list = this.databaseManager.select(sql.toString(), id);
-		if(list == null || list.isEmpty()) {
+		if(CollectionUtils.isEmpty(list)) {
 			return null;
 		}
 		T t = newInstance();
@@ -201,7 +210,7 @@ public abstract class Repository<T extends BaseEntity> {
 			.append(COLUMN_VERIFY.apply(property))
 			.append(" = ? limit 1");
 		final List<ResultSetWrapper> list = this.databaseManager.select(sql.toString(), value);
-		if(list == null || list.isEmpty()) {
+		if(CollectionUtils.isEmpty(list)) {
 			return null;
 		}
 		T t = newInstance();
@@ -230,7 +239,7 @@ public abstract class Repository<T extends BaseEntity> {
 	}
 	
 	/**
-	 * 查找所有
+	 * 查找
 	 */
 	public List<T> findAll() {
 		final StringBuilder sql = new StringBuilder();
@@ -251,7 +260,7 @@ public abstract class Repository<T extends BaseEntity> {
 	}
 	
 	/**
-	 * 新实体
+	 * 新建实体
 	 */
 	private T newInstance() {
 		return BeanUtils.newInstance(this.entityClazz);

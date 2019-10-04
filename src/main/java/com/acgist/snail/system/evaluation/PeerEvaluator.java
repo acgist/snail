@@ -181,7 +181,7 @@ public class PeerEvaluator {
 		synchronized (this.ranges) {
 			final ConfigRepository repository = new ConfigRepository();
 			final String value = BEncodeEncoder.encodeMapString(this.ranges);
-			repository.mergeConfig(ACGIST_SYSTEM_RANGE, value);
+			repository.merge(ACGIST_SYSTEM_RANGE, value);
 		}
 	}
 
