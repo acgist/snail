@@ -44,7 +44,7 @@ public class PeerEvaluatorTest {
 		for (int index = 0; index < 100; index++) {
 			map.put(index, (long) index);
 		}
-		repository.mergeConfig("acgist.system.range", new String(BEncodeEncoder.encodeMap(map)));
+		repository.merge("acgist.system.range", new String(BEncodeEncoder.encodeMap(map)));
 	}
 	
 	@Test

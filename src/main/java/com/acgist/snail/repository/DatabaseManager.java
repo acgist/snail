@@ -45,7 +45,7 @@ public class DatabaseManager {
 	/**
 	 * 查询表是否存在
 	 */
-	public boolean haveTable(String table) {
+	public boolean hasTable(String table) {
 		final List<ResultSetWrapper> tables = select("show tables");
 		for (ResultSetWrapper wrapper : tables) {
 			if(table.equalsIgnoreCase(wrapper.getString("TABLE_NAME"))) {
@@ -166,6 +166,17 @@ public class DatabaseManager {
 		return connection();
 	}
 	
+	private void closeConnection() {
+		try {
+			if(this.connection != null && !this.connection.isClosed()) {
+				this.connection.close();
+			}
+			this.connection = null;
+		} catch (SQLException e) {
+			LOGGER.error("JDBC连接关闭异常", e);
+		}
+	}
+	
 	private void close(ResultSet result, PreparedStatement statement) {
 		if(result != null) {
 			try {
@@ -180,17 +191,6 @@ public class DatabaseManager {
 			} catch (SQLException e) {
 				LOGGER.error("JDBC处理器关闭异常", e);
 			}
-		}
-	}
-	
-	private void closeConnection() {
-		try {
-			if(this.connection != null && !this.connection.isClosed()) {
-				this.connection.close();
-			}
-			this.connection = null;
-		} catch (SQLException e) {
-			LOGGER.error("JDBC连接关闭异常", e);
 		}
 	}
 	

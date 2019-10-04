@@ -43,9 +43,13 @@ public class ConfigRepository extends Repository<ConfigEntity> {
 	}
 	
 	/**
-	 * 更新配置：如果不存在保存，如果存在更新。
+	 * <dl>
+	 * 	<dt>更新配置</dt>
+	 * 	<dd>不存在保存</dd>
+	 * 	<dd>存在更新</dd>
+	 * </dl>
 	 */
-	public void mergeConfig(String name, String value) {
+	public void merge(String name, String value) {
 		ConfigEntity entity = findOne(ConfigEntity.PROPERTY_NAME, name);
 		if(entity == null) {
 			entity = new ConfigEntity();

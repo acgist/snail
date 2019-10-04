@@ -43,7 +43,7 @@ public class DatabaseInitializer extends Initializer {
 	 * 判断表是否存在
 	 */
 	private boolean exist() {
-		return this.databaseManager.haveTable(ConfigEntity.TABLE_NAME);
+		return this.databaseManager.hasTable(ConfigEntity.TABLE_NAME);
 	}
 
 	/**
