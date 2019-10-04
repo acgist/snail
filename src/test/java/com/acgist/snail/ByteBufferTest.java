@@ -14,7 +14,7 @@ public class ByteBufferTest {
 		buffer.compact();
 //		buffer.flip();
 		System.out.println(buffer);
-		System.out.println(StringUtils.readContent(buffer));
+		System.out.println(StringUtils.ofByteBuffer(buffer));
 	}
 	
 	@Test

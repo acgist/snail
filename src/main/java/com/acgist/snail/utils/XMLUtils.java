@@ -52,7 +52,7 @@ public class XMLUtils {
 		try {
 			utils.document = factory.newDocumentBuilder().newDocument();
 		} catch (ParserConfigurationException e) {
-			LOGGER.error("XML创建异常", e);
+			LOGGER.error("创建XML异常", e);
 		}
 		return utils;
 	}
@@ -68,7 +68,7 @@ public class XMLUtils {
 			builder = factory.newDocumentBuilder();
 			utils.document = builder.parse(new ByteArrayInputStream(xml.getBytes()));
 		} catch (ParserConfigurationException | SAXException | IOException e) {
-			LOGGER.info("XML解析异常：{}", xml, e);
+			LOGGER.info("解析XML异常：{}", xml, e);
 		}
 		return utils;
 	}
@@ -119,7 +119,7 @@ public class XMLUtils {
 	}
 
 	/**
-	 * 读取节点值：多个节点获取第一个。
+	 * 读取节点值：多个节点返回第一个
 	 */
 	public String elementValue(String name) {
 		final NodeList list = this.document.getElementsByTagName(name);
@@ -130,7 +130,7 @@ public class XMLUtils {
 	}
 
 	/**
-	 * 读取节点值：多个节点全部返回。
+	 * 读取节点值：多个节点返回全部
 	 */
 	public List<String> elementValues(String name) {
 		final NodeList list = this.document.getElementsByTagName(name);
@@ -146,14 +146,16 @@ public class XMLUtils {
 	}
 	
 	/**
-	 * XML输出（不格式化）
+	 * 输出XML（不格式化）
 	 */
 	public String xml() {
 		return xml(false);
 	}
 	
 	/**
-	 * XML输出
+	 * 输出XML
+	 * 
+	 * @param format 是否格式化
 	 */
 	public String xml(boolean format) {
 		try {
@@ -173,7 +175,7 @@ public class XMLUtils {
 			serializer.write(this.document, output);
 			return writer.toString();
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | ClassCastException e) {
-			LOGGER.error("XML输出异常", e);
+			LOGGER.error("输出XML异常", e);
 		}
 		return null;
 	}

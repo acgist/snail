@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * <p>网络工具</p>
+ * <p>获取地址推荐使用方法：{@link InetAddress#getHostAddress()}、{@link InetSocketAddress#getHostString()}；不推荐使用：{@link InetSocketAddress#getHostName()};</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -36,7 +37,10 @@ public class NetUtils {
 	 * 本机HOST
 	 */
 	public static final String LOCAL_HOST = "localhost";
-	
+	/**
+	 * IP地址正则表达式
+	 */
+	private static final String IP_REGEX = "(\\d{0,3}\\.){3}\\d{0,3}";
 	/**
 	 * A类私用地址
 	 * A类范围：0.0.0.0-127.255.255.255
@@ -63,15 +67,6 @@ public class NetUtils {
 	 */
 	private static final long L_IP_BEGIN = encodeIpToLong("127.0.0.0");
 	private static final long L_IP_END = encodeIpToLong("127.255.255.255");
-	
-	/**
-	 * IPv4数据长度
-	 */
-	private static final int IPV4_MAX_INDEX = 3;
-	/**
-	 * IP地址正则表达式
-	 */
-	private static final String IP_REGEX = "(\\d{0,3}\\.){3}\\d{0,3}";
 	
 	/**
 	 * 验证IP地址
@@ -111,8 +106,8 @@ public class NetUtils {
 	public static final long encodeIpToLong(String ip) {
 		long result = 0, tmp;
 		final String[] array = ip.split("\\.");
-		for (int index = IPV4_MAX_INDEX; index >= 0; index--) {
-			tmp = Long.parseLong(array[IPV4_MAX_INDEX - index]);
+		for (int index = 3; index >= 0; index--) {
+			tmp = Long.parseLong(array[3 - index]);
 			result |= tmp << (index * 8);
 		}
 		return result;
@@ -136,6 +131,7 @@ public class NetUtils {
 	
 	/**
 	 * 获取本机名称
+	 * 
 	 * TODO：初始化一次
 	 */
 	public static final String inetHostName() {
@@ -150,6 +146,7 @@ public class NetUtils {
 
 	/**
 	 * 获取本机地址
+	 * 
 	 * TODO：初始化一次
 	 */
 	public static final String inetHostAddress() {
@@ -164,6 +161,7 @@ public class NetUtils {
 	
 	/**
 	 * 获取网络接口
+	 * 
 	 * TODO：初始化一次
 	 */
 	public static final NetworkInterface defaultNetworkInterface() {
@@ -220,31 +218,28 @@ public class NetUtils {
 	}
 	
 	/**
-	 * <p>创建UDP通道</p>
+	 * <p>创建UDP通道（本机地址、随机端口、地址不重用）</p>
 	 */
 	public static final DatagramChannel buildUdpChannel() {
 		return buildUdpChannel(-1);
 	}
 	
 	/**
-	 * <p>创建UDP通道</p>
-	 * <p>本机地址、地址不重用。</p>
+	 * <p>创建UDP通道（本机地址、地址不重用）</p>
 	 */
 	public static final DatagramChannel buildUdpChannel(final int port) {
 		return buildUdpChannel(null, port);
 	}
 	
 	/**
-	 * <p>创建UDP通道</p>
-	 * <p>地址不重用</p>
+	 * <p>创建UDP通道（地址不重用）</p>
 	 */
 	public static final DatagramChannel buildUdpChannel(final String host, final int port) {
 		return buildUdpChannel(host, port, false);
 	}
 	
 	/**
-	 * <p>创建UDP通道</p>
-	 * <p>本机地址 </p>
+	 * <p>创建UDP通道（本机地址）</p>
 	 */
 	public static final DatagramChannel buildUdpChannel(final int port, final boolean reuseaddr) {
 		return buildUdpChannel(null, port, reuseaddr);
@@ -253,8 +248,8 @@ public class NetUtils {
 	/**
 	 * <p>创建UDP通道</p>
 	 * 
-	 * @param host 地址，null=绑定本机
-	 * @param port 端口，-1=不绑定端口，随机选择
+	 * @param host 地址，null：=绑定本机
+	 * @param port 端口，-1：=不绑定端口（随机选择）
 	 * @param reuseaddr 地址重用
 	 */
 	public static final DatagramChannel buildUdpChannel(final String host, final int port, final boolean reuseaddr) {

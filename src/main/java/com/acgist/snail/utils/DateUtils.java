@@ -22,30 +22,40 @@ public class DateUtils {
 	 */
 	private static final int UNIX_JAVA_TIMESTAMP_SCALE = 1000;
 	/**
-	 * 开始时间（1601年1月1日）北京时间（东八区）。
-	 * 转换Java时间戳：11644473600000L + System.currentTimeMillis()。
+	 * Window系统时间和JAVA系统时间相差毫秒数。
+	 */
+	private static final long WINDOW_JAVA_DIFF_TIMEMILLIS = 11644473600000L;
+	/**
+	 * <p>Window开始时间戳（北京时间）</p>
+	 * <p>开始时间（1601年1月1日）北京时间（东八区）。</p>
+	 * <p>转换Java时间戳：11644473600000L + System.currentTimeMillis()。</p>
 	 */
 	private static final LocalDateTime WINDOW_BEIJIN_BEGIN_TIME = LocalDateTime.of(1601, 01, 01, 8, 00, 00);
 	/**
-	 * Window系统时间和JAVA日期相差毫秒数。
+	 * 一分钟（秒数）
 	 */
-	private static final long WINDOW_JAVA_DIFF_TIMEMILLIS = 11644473600000L;
-	
 	private static final long ONE_MINUTE = 60L;
+	/**
+	 * 一小时（秒数）
+	 */
 	private static final long ONE_HOUR = ONE_MINUTE * 60;
+	/**
+	 * 一天（秒数）
+	 */
 	private static final long ONE_DAY = ONE_HOUR * 24;
 	
 	/**
-	 * <p>时间格式化：保留两个时间单位。</p>
+	 * <p>时间格式化：保留两个时间单位</p>
 	 * 
-	 * @param second 时间，单位：秒
+	 * @param second 时间（单位：秒）
 	 * 
 	 * @return
-	 * <p>
-	 * 	1.XX天XX小时<br>
-	 * 	2.XX小时XX分钟<br>
-	 * 	3.XX分钟XX秒
-	 * </p>
+	 * <dl>
+	 * 	<dt>格式化后字符串：</dt>
+	 * 	<dd>XX天XX小时</dd>
+	 * 	<dd>XX小时XX分钟</dd>
+	 * 	<dd>XX分钟XX秒</dd>
+	 * </dl>
 	 */
 	public static final String formatSecond(long value) {
 		final StringBuilder builder = new StringBuilder();
@@ -75,19 +85,19 @@ public class DateUtils {
 	}
 	
 	/**
-	 * 时间格式化，格式：{@linkplain DateUtils#DEFAULT_PATTERN yyyy-MM-dd HH:mm:ss}
+	 * 时间格式化：{@linkplain DateUtils#DEFAULT_PATTERN 默认格式}
 	 */
 	public static final String dateToString(Date date) {
 		return dateToString(date, DEFAULT_PATTERN);
 	}
 	
 	/**
-	 * 日期格式化
+	 * 时间格式化
 	 * 
-	 * @param date 日期
+	 * @param date 时间
 	 * @param pattern 格式
 	 * 
-	 * @return 格式化字符串
+	 * @return 时间字符串
 	 */
 	public static final String dateToString(Date date, String pattern) {
 		if(date == null) {
@@ -134,11 +144,11 @@ public class DateUtils {
 	}
 	
 	/**
-	 * Unix时间戳转Java日期
+	 * Unix时间戳转Java时间
 	 * 
 	 * @param unixTimestamp Unix时间戳
 	 * 
-	 * @return Java日期
+	 * @return Java时间
 	 */
 	public static final Date unixToJavaDate(long unixTimestamp) {
 		return new Date(unixToJavaTimestamp(unixTimestamp));
@@ -152,7 +162,7 @@ public class DateUtils {
 	}
 
 	/**
-	 * <p>Windows时间戳，开始时间（1601年1月1日）。</p>
+	 * <p>Windows时间戳</p>
 	 * <p>时间单位：微秒 * 10。</p>
 	 * <p>使用Java时间戳 + 相差时间戳计算。</p>
 	 */
@@ -161,7 +171,7 @@ public class DateUtils {
 	}
 	
 	/**
-	 * <p>Windows时间戳，开始时间（1601年1月1日）。</p>
+	 * <p>Windows时间戳</p>
 	 * <p>时间单位：微秒 * 10。</p>
 	 * <p>使用时间差计算。</p>
 	 */

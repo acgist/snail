@@ -11,11 +11,10 @@ public class Base32Utils {
 	/**
 	 * 编码字符
 	 */
-	private static final char[] BASE_32_CODE = {
+	private static final char[] BASE_32_ENCODE = {
 		'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
 		'2', '3', '4', '5', '6', '7'
 	};
-
 	/**
 	 * 解码字符
 	 */
@@ -26,10 +25,10 @@ public class Base32Utils {
 		for (int index = 0; index < BASE_32_DECODE.length; index++) {
 			BASE_32_DECODE[index] = (byte) 0xFF;
 		}
-		for (int index = 0; index < BASE_32_CODE.length; index++) {
-			BASE_32_DECODE[(int) BASE_32_CODE[index]] = (byte) index;
+		for (int index = 0; index < BASE_32_ENCODE.length; index++) {
+			BASE_32_DECODE[(int) BASE_32_ENCODE[index]] = (byte) index;
 			if (index < 24) {
-				BASE_32_DECODE[(int) Character.toLowerCase(BASE_32_CODE[index])] = (byte) index;
+				BASE_32_DECODE[(int) Character.toLowerCase(BASE_32_ENCODE[index])] = (byte) index;
 			}
 		}
 	}
@@ -50,10 +49,10 @@ public class Base32Utils {
 				if (j < bytes.length - 1) {
 					value |= (bytes[j + 1] & 0xFF) >> (8 - index);
 				}
-				chars[i] = BASE_32_CODE[value];
+				chars[i] = BASE_32_ENCODE[value];
 				j++;
 			} else {
-				chars[i] = BASE_32_CODE[((bytes[j] >> (8 - (index + 5))) & 0x1F)];
+				chars[i] = BASE_32_ENCODE[((bytes[j] >> (8 - (index + 5))) & 0x1F)];
 				index = (index + 5) % 8;
 				if (index == 0) {
 					j++;

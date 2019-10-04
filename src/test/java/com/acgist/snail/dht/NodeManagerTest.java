@@ -15,8 +15,8 @@ public class NodeManagerTest {
 
 	@Test
 	public void compare() {
-		byte[] hex1 = NodeManager.xor(StringUtils.unhex("c15419ae6b3bdfd8e983062b0650ad114ce41859"), StringUtils.unhex("c15417e6aeab33732a59085d826edd29978f9afa"));
-		byte[] hex2 = NodeManager.xor(StringUtils.unhex("c1540515408feb76af06c6c588b1b345b5173c42"), StringUtils.unhex("c15417e6aeab33732a59085d826edd29978f9afa"));
+		byte[] hex1 = ArrayUtils.xor(StringUtils.unhex("c15419ae6b3bdfd8e983062b0650ad114ce41859"), StringUtils.unhex("c15417e6aeab33732a59085d826edd29978f9afa"));
+		byte[] hex2 = ArrayUtils.xor(StringUtils.unhex("c1540515408feb76af06c6c588b1b345b5173c42"), StringUtils.unhex("c15417e6aeab33732a59085d826edd29978f9afa"));
 		System.out.println(StringUtils.hex(hex1));
 		System.out.println(StringUtils.hex(hex2));
 		System.out.println(ArrayUtils.compareUnsigned(hex1, hex2));

@@ -16,7 +16,7 @@ public class ThreadUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ThreadUtils.class);
 	
 	/**
-	 * 休眠
+	 * 线程休眠
 	 */
 	public static final void sleep(long millis) {
 		try {
@@ -28,9 +28,9 @@ public class ThreadUtils {
 	
 	/**
 	 * <p>线程等待</p>
-	 * <p>wait会让出CPU执行其他的任务，线程池中同样会让出线程。</p>
+	 * <p>wait会让出CPU执行其他的任务，线程池中同样会让出资源。</p>
 	 * 
-	 * @param timeout 注意不能设置过大，转换为毫秒时超过long最大值。
+	 * @param timeout 等待时间：注意不能设置过大，转换为毫秒时超过long最大值。
 	 */
 	public static final void wait(Object obj, Duration timeout) {
 		try {

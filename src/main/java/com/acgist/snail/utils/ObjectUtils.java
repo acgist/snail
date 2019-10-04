@@ -13,7 +13,7 @@ import java.util.Map;
 public class ObjectUtils {
 
 	/**
-	 * 重写hashCode方法。
+	 * 重写hashCode方法
 	 */
 	public static final int hashCode(Object ... values) {
 		if(values == null) {
@@ -29,9 +29,9 @@ public class ObjectUtils {
 	}
 	
 	/**
-	 * 判断是否相等，判断引用。
+	 * 判断是否相等（判断引用）
 	 * 
-	 * @param source 源：this
+	 * @param source 原始对象：this
 	 * @param target 比较对象
 	 */
 	public static final boolean equals(Object source, Object target) {
@@ -45,10 +45,11 @@ public class ObjectUtils {
 	}
 	
 	/**
-	 * 判断对象是否可以相互访问，使用instanceof替代。
+	 * <p>判断对象是否可以相互访问</p>
+	 * <p>不推荐使用，使用instanceof替代。</p>
 	 * 
-	 * @param source 源：this，父类
-	 * @param target 比较对象，子类
+	 * @param source 原始对象：this（父类）
+	 * @param target 比较对象（子类）
 	 */
 	@Deprecated
 	public static final boolean assignableClazz(Object source, Object target) {
@@ -59,25 +60,25 @@ public class ObjectUtils {
 	}
 	
 	/**
-	 * 重写toString方法。
+	 * 重写toString方法
 	 */
 	public static final String toString(Object object, Object ... values) {
 		final StringBuilder builder = new StringBuilder();
-			builder.append(object.getClass());
-			builder.append("=[");
-			if(values.length > 0) {
+		builder.append(object.getClass());
+		builder.append("=[");
+		if(values.length > 0) {
 			for (Object value : values) {
 				builder.append(value).append(",");
 			}
 			builder.setLength(builder.length() - 1);
-			}
-			builder.append("]");
+		}
+		builder.append("]");
 		return builder.toString();
 	}
 	
 	/**
-	 * <p>重写toString方法。</p>
-	 * <p>对象属性提供对应的getter。</p>
+	 * <p>重写toString方法</p>
+	 * <p>对象属性需要提供getter</p>
 	 */
 	public static final String toString(Object object) {
 		if(object == null) {
@@ -90,8 +91,8 @@ public class ObjectUtils {
 		} else {
 			final StringBuilder builder = new StringBuilder();
 			builder
-			.append(object.getClass().toString())
-			.append("[");
+				.append(object.getClass().toString())
+				.append("[");
 			final var properties = BeanUtils.properties(object.getClass());
 			for (String property : properties) {
 				builder.append(property).append("=").append(BeanUtils.propertyValue(object, property)).append(",");

@@ -6,7 +6,7 @@ import java.security.NoSuchAlgorithmException;
 import com.acgist.snail.system.exception.ArgumentException;
 
 /**
- * 摘要算法
+ * 散列（摘要）算法
  * 
  * @author acgist
  * @since 1.1.1
@@ -14,17 +14,26 @@ import com.acgist.snail.system.exception.ArgumentException;
 public class DigestUtils {
 	
 	/**
+	 * 散列算法：MD5
+	 */
+	public static final String MD5 = "MD5";
+	/**
+	 * 散列算法：SHA-1
+	 */
+	public static final String SHA1 = "SHA-1";
+	
+	/**
 	 * MD5散列算法
 	 */
 	public static final MessageDigest md5() {
-		return digest("MD5");
+		return digest(MD5);
 	}
 
 	/**
 	 * SHA-1散列算法
 	 */
 	public static final MessageDigest sha1() {
-		return digest("SHA-1");
+		return digest(SHA1);
 	}
 	
 	/**
