@@ -13,7 +13,8 @@ import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /***
- * 下载协议
+ * <p>下载协议</p>
+ * <p>非线程安全</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -51,7 +52,7 @@ public abstract class Protocol {
 	 */
 	protected String url;
 	/**
-	 * 任务
+	 * 下载任务
 	 */
 	protected TaskEntity taskEntity;
 	
@@ -68,6 +69,11 @@ public abstract class Protocol {
 		return this;
 	}
 	
+	/**
+	 * 协议类型
+	 * 
+	 * @return 协议类型
+	 */
 	public Type type() {
 		return this.type;
 	}
@@ -75,7 +81,7 @@ public abstract class Protocol {
 	/**
 	 * 协议名称
 	 * 
-	 * @return 下载协议名称
+	 * @return 协议名称
 	 */
 	public abstract String name();
 	
@@ -105,14 +111,15 @@ public abstract class Protocol {
 	/**
 	 * 创建下载器
 	 * 
-	 * @param taskSession 任务
+	 * @param taskSession 下载任务
 	 * 
 	 * @return 下载器
 	 */
 	public abstract IDownloader buildDownloader(TaskSession taskSession);
 	
 	/**
-	 * 创建下载任务
+	 * <p>创建下载任务</p>
+	 * <p>先检查是否需要转换协议，如果需要转换协议调用真实协议进行创建。</p>
 	 */
 	public TaskSession buildTaskSession() throws DownloadException {
 		final Protocol convert = convert();
@@ -135,8 +142,8 @@ public abstract class Protocol {
 	}
 
 	/**
-	 * 协议转换<br>
-	 * 如果返回值不为空，则使用返回的协议进行下载。
+	 * <p>协议转换</p>
+	 * <p>如果返回值不为空，则使用返回的协议进行下载。</p>
 	 */
 	protected Protocol convert() throws DownloadException {
 		return null;
@@ -155,7 +162,6 @@ public abstract class Protocol {
 		buildName(fileName);
 		buildFile(fileName);
 		buildFileType(fileName);
-		buildTorrent();
 		buildSize();
 		done();
 		persistentTaskEntity();
@@ -212,7 +218,7 @@ public abstract class Protocol {
 	}
 	
 	/**
-	 * 生成并设置文件、文件夹
+	 * 设置文件、文件夹
 	 */
 	protected void buildFile(String fileName) throws DownloadException {
 		final String filePath = DownloadConfig.getPath(fileName);
@@ -230,12 +236,6 @@ public abstract class Protocol {
 		this.taskEntity.setFileType(FileUtils.fileType(fileName));
 	}
 
-	/**
-	 * 设置种子文件
-	 */
-	protected void buildTorrent() throws DownloadException {
-	}
-	
 	/**
 	 * 设置任务大小
 	 */
@@ -257,7 +257,7 @@ public abstract class Protocol {
 	}
 	
 	/**
-	 * 清理信息
+	 * 清理数据
 	 */
 	protected void clean(boolean ok) {
 		this.url = null;
@@ -266,7 +266,7 @@ public abstract class Protocol {
 	}
 	
 	/**
-	 * 清理数据
+	 * 清理数据（子类）
 	 * 
 	 * @param ok 创建状态：true-成功；false-失败；
 	 */

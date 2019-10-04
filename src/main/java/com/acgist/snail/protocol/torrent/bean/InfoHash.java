@@ -1,5 +1,6 @@
 package com.acgist.snail.protocol.torrent.bean;
 
+import com.acgist.snail.protocol.magnet.MagnetProtocol;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.Base32Utils;
 import com.acgist.snail.utils.StringUtils;
@@ -18,13 +19,16 @@ public class InfoHash {
 	public static final int INFO_HASH_LENGTH = 20;
 	
 	/**
-	 * 种子文件info数据的长度
+	 * 种子info数据长度
 	 */
 	private int size;
 	/**
-	 * 种子文件info数据
+	 * 种子info数据
 	 */
 	private byte[] info;
+	/**
+	 * 种子info数据hash
+	 */
 	private final byte[] infoHash;
 	
 	private InfoHash(byte[] infoHash) {
@@ -34,7 +38,7 @@ public class InfoHash {
 	/**
 	 * 生成InfoHash
 	 * 
-	 * @param data 种子文件Info内容
+	 * @param data 种子Info
 	 */
 	public static final InfoHash newInstance(byte[] data) {
 		final InfoHash infoHash = new InfoHash(StringUtils.sha1(data));
@@ -46,16 +50,16 @@ public class InfoHash {
 	/**
 	 * 生成InfoHash
 	 * 
-	 * @param hash 种子文件Info内容Hash
+	 * @param hash 种子Info的Hash
 	 */
 	public static final InfoHash newInstance(String hash) throws DownloadException {
 		if(hash == null) {
 			throw new DownloadException("不支持的hash：" + hash);
 		}
 		hash = hash.trim();
-		if(hash.length() == 40) {
+		if(MagnetProtocol.verifyMagnetHash40(hash)) {
 			return new InfoHash(StringUtils.unhex(hash));
-		} else if(hash.length() == 32) {
+		} else if(MagnetProtocol.verifyMagnetHash32(hash)) {
 			return new InfoHash(Base32Utils.decode(hash));
 		} else {
 			throw new DownloadException("不支持的hash：" + hash);
@@ -78,22 +82,19 @@ public class InfoHash {
 		this.info = info;
 	}
 
-	/**
-	 * hash byte（20位）
-	 */
 	public byte[] infoHash() {
 		return infoHash;
 	}
 	
 	/**
-	 * 磁力链接hash（小写）（40位）
+	 * 16进制info的hash（小写）（40位）
 	 */
 	public String infoHashHex() {
 		return StringUtils.hex(this.infoHash);
 	}
 	
 	/**
-	 * 种子ID（网络传输使用）
+	 * 网络info的hash
 	 */
 	public String infoHashURL() {
 		int index = 0;

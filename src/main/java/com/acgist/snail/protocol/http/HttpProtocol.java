@@ -23,15 +23,30 @@ public class HttpProtocol extends Protocol {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(HttpProtocol.class);
 	
-	public static final String HTTP_REGEX = "http://.+";
-	public static final String HTTPS_REGEX = "https://.+";
-	
+	private static final HttpProtocol INSTANCE = new HttpProtocol();
+
+	/**
+	 * HTTP协议前缀
+	 */
 	public static final String HTTP_PREFIX = "http://";
+	/**
+	 * HTTPS协议前缀
+	 */
 	public static final String HTTPS_PREFIX = "https://";
+	/**
+	 * HTTP协议正则表达式
+	 */
+	public static final String HTTP_REGEX = "http://.+";
+	/**
+	 * HTTPS协议正则表达式
+	 */
+	public static final String HTTPS_REGEX = "https://.+";
+	/**
+	 * 获取HTTP下载响应头的最大重试次数
+	 */
+	private static final int HTTP_HEADER_RETRY_MAX_TIMES = 3;
 
 	private HttpHeaderWrapper httpHeaderWrapper;
-	
-	private static final HttpProtocol INSTANCE = new HttpProtocol();
 	
 	private HttpProtocol() {
 		super(Type.http, HTTP_REGEX, HTTPS_REGEX);
@@ -62,7 +77,8 @@ public class HttpProtocol extends Protocol {
 	}
 	
 	/**
-	 * 优先使用请求头中的文件名称
+	 * {@inheritDoc}
+	 * <p>优先使用请求头中的文件名称</p>
 	 */
 	@Override
 	protected String buildFileName() throws DownloadException {
@@ -84,7 +100,7 @@ public class HttpProtocol extends Protocol {
 	}
 
 	/**
-	 * 获取HTTP下载响应头
+	 * <p>获取HTTP下载响应头</p>
 	 */
 	private void buildHttpHeader() throws DownloadException {
 		int index = 0;
@@ -98,7 +114,7 @@ public class HttpProtocol extends Protocol {
 			if(this.httpHeaderWrapper != null && this.httpHeaderWrapper.isNotEmpty()) {
 				break;
 			}
-			if(index >= 3) {
+			if(index >= HTTP_HEADER_RETRY_MAX_TIMES) {
 				break;
 			}
 		}
@@ -108,7 +124,7 @@ public class HttpProtocol extends Protocol {
 	}
 	
 	/**
-	 * 验证HTTP协议
+	 * 验证是否是HTTP协议
 	 */
 	public static final boolean verify(String url) {
 		return

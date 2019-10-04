@@ -33,7 +33,7 @@ public class ProtocolManager {
 	 */
 	private final List<Protocol> protocols;
 	/**
-	 * 可用锁，协议没有加载完成时阻塞所有获取协议的线程。
+	 * 可用锁：协议没有加载完成时阻塞所有获取协议的线程
 	 */
 	private final AtomicBoolean availableLock = new AtomicBoolean(false);
 	
@@ -77,6 +77,8 @@ public class ProtocolManager {
 	
 	/**
 	 * 新建下载任务
+	 * 
+	 * @param url 下载链接
 	 */
 	public TaskSession buildTaskSession(String url) throws DownloadException {
 		synchronized (this.protocols) {
@@ -89,7 +91,9 @@ public class ProtocolManager {
 	}
 
 	/**
-	 * 判断链接是否支持下载
+	 * 判断是否支持下载
+	 * 
+	 * @param url 下载链接
 	 */
 	public boolean support(String url) {
 		synchronized (this.protocols) {
@@ -100,6 +104,8 @@ public class ProtocolManager {
 
 	/**
 	 * 获取下载协议
+	 * 
+	 * @param url 下载链接
 	 */
 	public Protocol protocol(String url) {
 		if(StringUtils.isEmpty(url)) {

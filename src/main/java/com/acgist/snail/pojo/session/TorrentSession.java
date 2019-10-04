@@ -20,7 +20,7 @@ import com.acgist.snail.net.torrent.bootstrap.TrackerLauncherGroup;
 import com.acgist.snail.net.torrent.local.LocalServiceDiscoveryClient;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
 import com.acgist.snail.pojo.bean.Magnet;
-import com.acgist.snail.protocol.magnet.bootstrap.MagnetReader;
+import com.acgist.snail.protocol.magnet.bootstrap.MagnetBuilder;
 import com.acgist.snail.protocol.magnet.bootstrap.TorrentBuilder;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
@@ -229,7 +229,7 @@ public class TorrentSession {
 	 * 加载磁力链接
 	 */
 	private void loadMagnet() throws DownloadException {
-		this.magnet = MagnetReader.newInstance(this.taskSession.entity().getUrl()).magnet();
+		this.magnet = MagnetBuilder.newInstance(this.taskSession.entity().getUrl()).build();
 	}
 	
 	/**
@@ -402,9 +402,9 @@ public class TorrentSession {
 		final List<String> selectedFiles = this.taskSession.downloadTorrentFiles();
 		for (TorrentFile torrentFile : torrentFiles) {
 			if(selectedFiles.contains(torrentFile.path())) {
-				torrentFile.select(true);
+				torrentFile.selected(true);
 			} else {
-				torrentFile.select(false);
+				torrentFile.selected(false);
 			}
 		}
 		return torrentFiles;

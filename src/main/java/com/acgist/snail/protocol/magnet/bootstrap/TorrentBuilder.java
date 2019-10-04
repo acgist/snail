@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.net.torrent.dht.bootstrap.NodeManager;
 import com.acgist.snail.protocol.torrent.TorrentProtocol;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
+import com.acgist.snail.protocol.torrent.bean.Torrent;
 import com.acgist.snail.system.bencode.BEncodeDecoder;
 import com.acgist.snail.system.bencode.BEncodeEncoder;
 import com.acgist.snail.system.config.SystemConfig;
@@ -50,27 +51,27 @@ public class TorrentBuilder {
 	}
 	
 	/**
-	 * 创建文件
+	 * <p>创建种子文件</p>
 	 * 
 	 * @param path 文件路径
 	 */
 	public String buildFile(String path) {
 		final String filePath = FileUtils.file(path, fileName());
-		final Map<String, Object> fileData = fileData();
-		this.createFile(filePath, fileData);
+		final Map<String, Object> fileInfo = buildFileInfo();
+		this.createFile(filePath, fileInfo);
 		return filePath;
 	}
 
 	/**
 	 * 种子信息
 	 */
-	private Map<String, Object> fileData() {
+	private Map<String, Object> buildFileInfo() {
 		final Map<String, Object> data = new LinkedHashMap<>();
-		data.put("comment", SystemConfig.getSource());
-		data.put("comment.utf-8", SystemConfig.getSource());
-		data.put("encoding", SystemConfig.DEFAULT_CHARSET);
-		data.put("created by", SystemConfig.getNameEnAndVersion());
-		data.put("creation date", DateUtils.unixTimestamp());
+		data.put(Torrent.COMMENT, SystemConfig.getSource());
+		data.put(Torrent.COMMENT_UTF8, SystemConfig.getSource());
+		data.put(Torrent.ENCODING, SystemConfig.DEFAULT_CHARSET);
+		data.put(Torrent.CREATED_BY, SystemConfig.getNameEnAndVersion());
+		data.put(Torrent.CREATION_DATE, DateUtils.unixTimestamp());
 		this.announce(data);
 		this.infoHash(data);
 		this.node(data);
@@ -78,18 +79,18 @@ public class TorrentBuilder {
 	}
 
 	/**
-	 * 设置announce url
+	 * 设置Tracker服务器列表
 	 */
 	private void announce(Map<String, Object> data) {
 		if(CollectionUtils.isEmpty(this.trackers)) {
 			return;
 		}
 		if(this.trackers.size() > 0) {
-			data.put("announce", this.trackers.get(0));
+			data.put(Torrent.ANNOUNCE, this.trackers.get(0));
 		}
 		if(this.trackers.size() > 1) {
 			data.put(
-				"announce-list",
+				Torrent.ANNOUNCE_LIST,
 				this.trackers.subList(1, this.trackers.size()).stream()
 					.map(value -> List.of(value))
 					.collect(Collectors.toList())
@@ -103,9 +104,9 @@ public class TorrentBuilder {
 	private void infoHash(Map<String, Object> data) {
 		try {
 			final var decoder = BEncodeDecoder.newInstance(this.infoHash.info());
-			data.put("info", decoder.nextMap());
+			data.put(Torrent.INFO, decoder.nextMap());
 		} catch (NetException e) {
-			LOGGER.error("InfoHash设置异常", e);
+			LOGGER.error("设置InfoHash异常", e);
 		}
 	}
 
@@ -120,7 +121,7 @@ public class TorrentBuilder {
 				.map(session -> List.of(session.getHost(), session.getPort()))
 				.collect(Collectors.toList());
 			if(CollectionUtils.isNotEmpty(nodes)) {
-				data.put("nodes", nodes);
+				data.put(Torrent.NODES, nodes);
 			}
 		}
 	}
@@ -136,15 +137,16 @@ public class TorrentBuilder {
 	 * 保存种子文件
 	 * 
 	 * @param filePath 文件路径
-	 * @param data 数据
+	 * @param fileInfo 数据
 	 */
-	private void createFile(String filePath, Map<String, Object> data) {
+	private void createFile(String filePath, Map<String, Object> fileInfo) {
 		final File file = new File(filePath);
 		// 文件已存在时不创建
 		if(file.exists()) {
 			return;
 		}
-		final byte[] bytes = BEncodeEncoder.encodeMap(data);
+		LOGGER.debug("保存种子文件：{}", filePath);
+		final byte[] bytes = BEncodeEncoder.encodeMap(fileInfo);
 		FileUtils.write(filePath, bytes);
 	}
 

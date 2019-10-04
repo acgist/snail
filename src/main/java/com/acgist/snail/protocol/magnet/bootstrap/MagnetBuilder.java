@@ -14,20 +14,16 @@ import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.UrlUtils;
 
 /**
- * <p>磁力链接解析器</p>
- * <p>现在解析只支持BT下载，其他下载连接均不支持，并且只支持单个文件，不支持参数组。</p>
+ * <p>磁力链接创建</p>
+ * <p>现在解析只支持BT下载，其他下载连接均不支持，并且只支持单个文件，不支持多文件下载。</p>
  * <p>参考链接：https://www.cnblogs.com/linuxws/p/10166685.html</p>
  * 
  * @author acgist
  * @since 1.1.0
  */
-public class MagnetReader {
+public class MagnetBuilder {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(MagnetReader.class);
-	
-	private final String url;
-	
-	private Magnet magnet;
+	private static final Logger LOGGER = LoggerFactory.getLogger(MagnetBuilder.class);
 	
 	public static final String QUERY_XT = "xt";
 	public static final String QUERY_DN = "dn";
@@ -38,18 +34,22 @@ public class MagnetReader {
 	public static final String QUERY_MT = "mt";
 	public static final String QUERY_KT = "kt";
 	
-	private MagnetReader(String url) {
+	private final String url;
+	
+	private Magnet magnet;
+	
+	private MagnetBuilder(String url) {
 		this.url = UrlUtils.decode(url);
 	}
 
-	public static final MagnetReader newInstance(String url) {
-		return new MagnetReader(url);
+	public static final MagnetBuilder newInstance(String url) {
+		return new MagnetBuilder(url);
 	}
 	
 	/**
-	 * 解析磁力链接获取hash
+	 * <p>解析磁力链接磁力链接信息</p>
 	 */
-	public Magnet magnet() throws DownloadException {
+	public Magnet build() throws DownloadException {
 		if(!MagnetProtocol.verify(this.url)) {
 			throw new DownloadException("磁力链接格式错误：" + this.url);
 		}
@@ -68,7 +68,7 @@ public class MagnetReader {
 		int index;
 		String key, value;
 		final URI uri = URI.create(this.url);
-		String[] querys = uri.getSchemeSpecificPart().substring(1).split("&");
+		final String[] querys = uri.getSchemeSpecificPart().substring(1).split("&");
 		for (String query : querys) {
 			index = query.indexOf("=");
 			if(index >= 0 && query.length() > index) {
@@ -100,7 +100,7 @@ public class MagnetReader {
 					kt(value);
 					break;
 				default:
-					LOGGER.debug("不支持的磁力链接参数：{}-{}，磁力链接：{}", key, value, this.url);
+					LOGGER.debug("磁力链接参数错误（不支持）：{}-{}，磁力链接：{}", key, value, this.url);
 					break;
 				}
 			}
@@ -120,9 +120,11 @@ public class MagnetReader {
 		}
 		final String xt = Magnet.Type.btih.xt();
 		if(!value.startsWith(xt)) {
+			LOGGER.debug("磁力链接不支持的XT：{}", value);
 			return;
 		}
 		String hash = value.substring(xt.length());
+		// 32位磁力链接转为40位磁力链接
 		if(MagnetProtocol.verifyMagnetHash32(hash)) {
 			final InfoHash infoHash = InfoHash.newInstance(hash);
 			hash = infoHash.infoHashHex();

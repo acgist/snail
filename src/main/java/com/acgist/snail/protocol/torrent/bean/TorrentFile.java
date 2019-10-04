@@ -9,7 +9,7 @@ import com.acgist.snail.system.bencode.BEncodeDecoder;
 import com.acgist.snail.utils.CollectionUtils;
 
 /**
- * 下载文件信息
+ * 文件信息
  * 
  * @author acgist
  * @since 1.0.0
@@ -73,16 +73,6 @@ public class TorrentFile {
 	}
 
 	/**
-	 * 拼接路径
-	 */
-	public String path() {
-		if (CollectionUtils.isNotEmpty(this.pathUtf8)) {
-			return String.join(TorrentFile.SEPARATOR, this.pathUtf8);
-		}
-		return String.join(TorrentFile.SEPARATOR, this.path);
-	}
-
-	/**
 	 * 是否选中
 	 */
 	public boolean selected() {
@@ -92,8 +82,18 @@ public class TorrentFile {
 	/**
 	 * 设置选中
 	 */
-	public void select(boolean selected) {
+	public void selected(boolean selected) {
 		this.selected = selected;
+	}
+	
+	/**
+	 * 拼接路径
+	 */
+	public String path() {
+		if (CollectionUtils.isNotEmpty(this.pathUtf8)) {
+			return String.join(TorrentFile.SEPARATOR, this.pathUtf8);
+		}
+		return String.join(TorrentFile.SEPARATOR, this.path);
 	}
 	
 	/**

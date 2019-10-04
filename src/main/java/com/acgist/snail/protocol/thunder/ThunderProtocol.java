@@ -10,18 +10,22 @@ import com.acgist.snail.system.exception.DownloadException;
 
 /**
  * <p>迅雷协议</p>
- * <p>转换为其他协议。</p>
  * 
  * @author acgist
  * @since 1.0.0
  */
 public class ThunderProtocol extends Protocol {
-
-	public static final String THUNDER_REGEX = "thunder://.+";
-	
-	public static final String THUNDER_PREFIX = "thunder://";
 	
 	private static final ThunderProtocol INSTANCE = new ThunderProtocol();
+
+	/**
+	 * 迅雷协议链接前缀
+	 */
+	public static final String THUNDER_PREFIX = "thunder://";
+	/**
+	 * 迅雷协议链接正则表达式
+	 */
+	public static final String THUNDER_REGEX = "thunder://.+";
 	
 	private ThunderProtocol() {
 		super(Type.thunder, THUNDER_REGEX);
@@ -49,9 +53,9 @@ public class ThunderProtocol extends Protocol {
 	@Override
 	protected Protocol convert() throws DownloadException {
 		final String url = this.url.substring(THUNDER_PREFIX.length());
-		String newUrl = new String(Base64.getMimeDecoder().decode(url)); // getMimeDecoder防止长度非4的整数倍导致的异常
-		newUrl = newUrl.substring(2, newUrl.length() - 2);
-		return ProtocolManager.getInstance().protocol(newUrl);
+		String realUrl = new String(Base64.getMimeDecoder().decode(url)); // getMimeDecoder防止长度非4的整数倍导致的异常
+		realUrl = realUrl.substring(2, realUrl.length() - 2);
+		return ProtocolManager.getInstance().protocol(realUrl);
 	}
 	
 	@Override
