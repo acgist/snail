@@ -3,27 +3,32 @@ package com.acgist.snail.protocol.magnet;
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.downloader.magnet.MagnetDownloader;
 import com.acgist.snail.net.torrent.TorrentManager;
+import com.acgist.snail.net.torrent.peer.bootstrap.ltep.MetadataMessageHandler;
 import com.acgist.snail.pojo.bean.Magnet;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.protocol.Protocol;
-import com.acgist.snail.protocol.magnet.bootstrap.MagnetReader;
+import com.acgist.snail.protocol.magnet.bootstrap.MagnetBuilder;
 import com.acgist.snail.system.config.FileTypeConfig.FileType;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * 磁力链接协议（只支持BT磁力链接）
- * 磁力链接通过Tracker服务器获取Peer，然后交换种子，如果找不到Peer则转换失败。
- * 其他实现方式：
- * 	1.通过DHT查询（要找很久）
- * 	2.使用第三方的种子库（磁力链接转种子）
- * 转换失败：删除Peer/Torrent
+ * <p>磁力链接协议（只支持BT磁力链接）</p>
+ * <p>原理：磁力链接通过Tracker服务器和DHT网络获取Peer，然后使用{@linkplain MetadataMessageHandler 扩展协议}交换种子。</p>
+ * <dl>
+ * 	<dt>其他实现方式：</dt>
+ * 	<dd>使用第三方的种子库（磁力链接转种子）</dd>
+ * </dl>
+ * 
+ * TODO：磁力链接交换时修改文件大小
  * 
  * @author acgist
  * @since 1.0.0
  */
 public class MagnetProtocol extends Protocol {
+	
+	private static final MagnetProtocol INSTANCE = new MagnetProtocol();
 
 	/**
 	 * 磁力链接前缀
@@ -41,8 +46,6 @@ public class MagnetProtocol extends Protocol {
 	 * 40位磁力链接HASH正则表达式
 	 */
 	public static final String MAGNET_HASH_40_REGEX = "[a-zA-Z0-9]{40}";
-	
-	private static final MagnetProtocol INSTANCE = new MagnetProtocol();
 	
 	private Magnet magnet;
 	
@@ -71,8 +74,7 @@ public class MagnetProtocol extends Protocol {
 	
 	@Override
 	protected void prep() throws DownloadException {
-		final MagnetReader reader = MagnetReader.newInstance(this.url);
-		final Magnet magnet = reader.magnet();
+		final Magnet magnet = MagnetBuilder.newInstance(this.url).build();
 		exist(magnet);
 		magnet(magnet);
 	}
@@ -102,6 +104,10 @@ public class MagnetProtocol extends Protocol {
 		buildTorrentFolder();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * <p>注意：一定先检查磁力链接是否已经存在，如果已经存在不能赋值，失败后清除。</p>
+	 */
 	@Override
 	protected void cleanMessage(boolean ok) {
 		if(!ok) { // 失败
@@ -167,7 +173,7 @@ public class MagnetProtocol extends Protocol {
 	}
 	
 	/**
-	 * 将磁力链接HASH转为磁力链接
+	 * 将HASH转为磁力链接
 	 */
 	public static final String buildMagnet(String hash) {
 		if(verifyMagnet(hash)) {

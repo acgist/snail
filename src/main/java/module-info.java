@@ -22,8 +22,6 @@
  * mvn sonar:sonar "-Dsonar.projectKey=snail" "-Dsonar.host.url=http://localhost:9000" "-Dsonar.login=token"
  * </pre>
  * 
- * TODO：优化所有抛出的异常描述
- * 
  * net->torrent（peer、server、tracker、utp）
  * protocol/repository
  * system/utils

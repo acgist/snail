@@ -28,7 +28,7 @@ public class TorrentStreamGroupTest {
 		TorrentSession session = TorrentManager.getInstance().newTorrentSession(path);
 		var files = session.torrent().getInfo().files();
 		files.forEach(file -> {
-			file.select(true);
+			file.selected(true);
 		});
 		TorrentStreamGroup group = TorrentStreamGroup.newInstance("e://tmp//test", files, session);
 //		TorrentPiece piece = new TorrentPiece();
@@ -54,7 +54,7 @@ public class TorrentStreamGroupTest {
 		TorrentSession session = TorrentManager.getInstance().newTorrentSession(path);
 		var files = session.torrent().getInfo().files();
 		files.forEach(file -> {
-			file.select(true);
+			file.selected(true);
 		});
 //		TorrentStreamGroup group = TorrentStreamGroup.newInstance("e://tmp/client/", files, session);
 		TorrentStreamGroup group = TorrentStreamGroup.newInstance("E:\\gitee\\snail\\download\\[UHA-WINGS][Sewayaki Kitsune no Senko-san][07][x264 1080p][CHT].mp4", files, session);

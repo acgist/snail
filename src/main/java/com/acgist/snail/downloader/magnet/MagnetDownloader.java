@@ -8,7 +8,7 @@ import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.protocol.magnet.bootstrap.MagnetReader;
+import com.acgist.snail.protocol.magnet.bootstrap.MagnetBuilder;
 import com.acgist.snail.system.exception.DownloadException;
 
 /**
@@ -52,7 +52,7 @@ public class MagnetDownloader extends TorrentSessionDownloader {
 		final var entity = this.taskSession.entity();
 		final var path = entity.getTorrent();
 		try {
-			final var magnet = MagnetReader.newInstance(entity.getUrl()).magnet();
+			final var magnet = MagnetBuilder.newInstance(entity.getUrl()).build();
 			final var infoHashHex = magnet.getHash();
 			return TorrentManager.getInstance().newTorrentSession(infoHashHex, path);
 		} catch (DownloadException e) {

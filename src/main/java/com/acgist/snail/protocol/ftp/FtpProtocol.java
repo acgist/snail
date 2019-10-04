@@ -16,9 +16,9 @@ import com.acgist.snail.system.exception.DownloadException;
  */
 public class FtpProtocol extends Protocol {
 	
-	public static final String FTP_REGEX = "ftp://.+";
-	
 	private static final FtpProtocol INSTANCE = new FtpProtocol();
+	
+	public static final String FTP_REGEX = "ftp://.+";
 	
 	private FtpProtocol() {
 		super(Type.ftp, FTP_REGEX);
@@ -45,17 +45,16 @@ public class FtpProtocol extends Protocol {
 
 	@Override
 	protected void buildSize() throws DownloadException {
-		long size = 0L;
 		final FtpClient client = FtpClientBuilder.newInstance(this.url).build();
 		try {
 			client.connect();
-			size = client.size();
+			final long size = client.size();
+			this.taskEntity.setSize(size);
 		} catch (Exception e) {
 			throw new DownloadException(e);
 		} finally {
 			client.close();
 		}
-		this.taskEntity.setSize(size);
 	}
 
 	@Override

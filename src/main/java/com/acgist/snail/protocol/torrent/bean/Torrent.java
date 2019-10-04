@@ -18,6 +18,16 @@ import com.acgist.snail.utils.StringUtils;
  */
 public class Torrent {
 
+	public static final String COMMENT = "comment";
+	public static final String COMMENT_UTF8 = "comment.utf-8";
+	public static final String ENCODING = "encoding";
+	public static final String CREATED_BY = "created by";
+	public static final String CREATION_DATE = "creation date";
+	public static final String ANNOUNCE = "announce";
+	public static final String ANNOUNCE_LIST = "announce-list";
+	public static final String NODES = "nodes";
+	public static final String INFO = "info";
+	
 	/**
 	 * 注释
 	 */
@@ -35,21 +45,21 @@ public class Torrent {
 	 */
 	private String createdBy;
 	/**
-	 * Tracker主服务器
-	 */
-	private String announce;
-	/**
 	 * 创建时间
 	 */
 	private Long creationDate;
 	/**
-	 * 文件信息
+	 * Tracker主服务器
 	 */
-	private TorrentInfo info;
+	private String announce;
 	/**
 	 * Tracker服务器列表
 	 */
 	private List<String> announceList;
+	/**
+	 * 文件信息
+	 */
+	private TorrentInfo info;
 	/**
 	 * DHT节点
 	 */
@@ -64,28 +74,28 @@ public class Torrent {
 	
 	public static final Torrent valueOf(BEncodeDecoder decoder) {
 		final Torrent torrent = new Torrent();
-		torrent.setComment(decoder.getString("comment"));
-		torrent.setCommentUtf8(decoder.getString("comment.utf-8"));
-		torrent.setEncoding(decoder.getString("encoding"));
-		torrent.setCreatedBy(decoder.getString("created by"));
-		torrent.setAnnounce(decoder.getString("announce"));
-		torrent.setCreationDate(decoder.getLong("creation date"));
-		final List<Object> announceList = decoder.getList("announce-list");
+		torrent.setComment(decoder.getString(COMMENT));
+		torrent.setCommentUtf8(decoder.getString(COMMENT_UTF8));
+		torrent.setEncoding(decoder.getString(ENCODING));
+		torrent.setCreatedBy(decoder.getString(CREATED_BY));
+		torrent.setCreationDate(decoder.getLong(CREATION_DATE));
+		torrent.setAnnounce(decoder.getString(ANNOUNCE));
+		final List<Object> announceList = decoder.getList(ANNOUNCE_LIST);
 		if(announceList != null) {
 			torrent.setAnnounceList(announceList(announceList));
 		} else {
 			torrent.setAnnounceList(new ArrayList<>(0));
 		}
-		final List<Object> nodes = decoder.getList("nodes");
+		final Map<String, Object> info = decoder.getMap(INFO);
+		if(info != null) {
+			final TorrentInfo torrentInfo = TorrentInfo.valueOf(info);
+			torrent.setInfo(torrentInfo);
+		}
+		final List<Object> nodes = decoder.getList(NODES);
 		if(nodes != null) {
 			torrent.setNodes(nodes(nodes));
 		} else {
 			torrent.setNodes(new LinkedHashMap<>());
-		}
-		final Map<String, Object> info = decoder.getMap("info");
-		if(info != null) {
-			final TorrentInfo torrentInfo = TorrentInfo.valueOf(info);
-			torrent.setInfo(torrentInfo);
 		}
 		return torrent;
 	}
@@ -174,14 +184,6 @@ public class Torrent {
 		this.createdBy = createdBy;
 	}
 
-	public String getAnnounce() {
-		return announce;
-	}
-
-	public void setAnnounce(String announce) {
-		this.announce = announce;
-	}
-
 	public Long getCreationDate() {
 		return creationDate;
 	}
@@ -189,13 +191,13 @@ public class Torrent {
 	public void setCreationDate(Long creationDate) {
 		this.creationDate = creationDate;
 	}
-
-	public TorrentInfo getInfo() {
-		return info;
+	
+	public String getAnnounce() {
+		return announce;
 	}
-
-	public void setInfo(TorrentInfo info) {
-		this.info = info;
+	
+	public void setAnnounce(String announce) {
+		this.announce = announce;
 	}
 
 	public List<String> getAnnounceList() {
@@ -204,6 +206,14 @@ public class Torrent {
 
 	public void setAnnounceList(List<String> announceList) {
 		this.announceList = announceList;
+	}
+	
+	public TorrentInfo getInfo() {
+		return info;
+	}
+	
+	public void setInfo(TorrentInfo info) {
+		this.info = info;
 	}
 
 	public Map<String, Integer> getNodes() {

@@ -136,7 +136,7 @@ public class StringUtils {
 	}
 	
 	/**
-	 * 字符串转码。
+	 * 字符串解码
 	 * 
 	 * @param value 原始字符串
 	 * @param charset 原始编码格式
@@ -144,13 +144,13 @@ public class StringUtils {
 	 * @return 系统默认编码的字符串
 	 */
 	public static final String charset(String value, String charset) {
-		if(StringUtils.isEmpty(value) || charset == null) {
+		if(StringUtils.isEmpty(value) || StringUtils.isEmpty(charset)) {
 			return value;
 		}
 		try {
 			return new String(value.getBytes(charset));
 		} catch (UnsupportedEncodingException e) {
-			LOGGER.error("字符串解码异常：{}", value, e);
+			LOGGER.error("字符串解码异常：{}-{}", charset, value, e);
 		}
 		return value;
 	}

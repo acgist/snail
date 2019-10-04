@@ -20,6 +20,8 @@ import com.acgist.snail.utils.FileUtils;
  * @since 1.0.0
  */
 public class TorrentProtocol extends Protocol {
+	
+	private static final TorrentProtocol INSTANCE = new TorrentProtocol();
 
 	/**
 	 * 种子文件操作
@@ -34,28 +36,26 @@ public class TorrentProtocol extends Protocol {
 	}
 	
 	/**
-	 * 种子文件正则表达式
-	 */
-	public static final String TORRENT_REGEX = ".+\\.torrent";
-	/**
 	 * 种子文件后缀
 	 */
 	public static final String TORRENT_SUFFIX = ".torrent";
+	/**
+	 * 种子文件正则表达式
+	 */
+	public static final String TORRENT_REGEX = ".+\\.torrent";
 	
 	/**
 	 * 种子文件路径
 	 */
 	private String torrentFile;
 	/**
-	 * 种子文件信息
+	 * 种子信息
 	 */
 	private TorrentSession torrentSession;
 	/**
 	 * 种子文件操作类型
 	 */
 	private TorrentFileOperation operation = TorrentFileOperation.copy;
-	
-	private static final TorrentProtocol INSTANCE = new TorrentProtocol();
 	
 	private TorrentProtocol() {
 		super(Type.torrent, TORRENT_REGEX);
@@ -65,9 +65,6 @@ public class TorrentProtocol extends Protocol {
 		return INSTANCE;
 	}
 
-	/**
-	 * 设置种子文件操作类型
-	 */
 	public void operation(TorrentFileOperation operation) {
 		this.operation = operation;
 	}
@@ -119,6 +116,10 @@ public class TorrentProtocol extends Protocol {
 		selectTorrentFile();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * <p>注意：一定先检查BT任务是否已经存在，如果已经存在不能赋值，失败后清除。</p>
+	 */
 	@Override
 	protected void cleanMessage(boolean ok) {
 		if(!ok) { // 失败
@@ -138,7 +139,11 @@ public class TorrentProtocol extends Protocol {
 	}
 	
 	/**
-	 * 解析种子，将URL切换为磁力链接
+	 * <dl>
+	 * 	<dt>解析种子</dt>
+	 * 	<dd>种子文件地址转换为磁力链接</dd>
+	 * 	<dd>生成种子信息</dd>
+	 * </dl>
 	 */
 	private void torrent() throws DownloadException {
 		final String torrentFile = this.url;
@@ -171,8 +176,6 @@ public class TorrentProtocol extends Protocol {
 
 	/**
 	 * 选择torrent下载文件和设置文件大小
-	 * 
-	 * @return true-已选择下载文件；false-未选择下载文件
 	 */
 	private void selectTorrentFile() throws DownloadException {
 		final TaskSession taskSession = TaskSession.newInstance(this.taskEntity);
