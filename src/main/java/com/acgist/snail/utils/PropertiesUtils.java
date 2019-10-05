@@ -42,7 +42,7 @@ public class PropertiesUtils {
 	}
 	
 	/**
-	 * 加载数据（UserDir）
+	 * 加载配置（UserDir）
 	 */
 	private static final Properties loadUserDir(String path) {
 		final File file = FileUtils.userDirFile(path);
@@ -60,7 +60,7 @@ public class PropertiesUtils {
 	}
 	
 	/**
-	 * 加载数据（Resource）
+	 * 加载配置（Resource）
 	 */
 	private static final Properties load(String path) {
 		if(PropertiesUtils.class.getResource(path) == null) {
@@ -117,7 +117,7 @@ public class PropertiesUtils {
 	}
 	
 	/**
-	 * 获取数据
+	 * 获取配置
 	 */
 	public Properties properties() {
 		return this.properties;

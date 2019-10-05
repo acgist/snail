@@ -2,13 +2,40 @@ package com.acgist.snail.system.config;
 
 import java.math.BigInteger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
- * <p>加密配置</p>
+ * <p>MSE加密配置</p>
  * 
  * @author acgist
  * @since 1.1.0
  */
 public class CryptConfig {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(CryptConfig.class);
+	
+	/**
+	 * 加密算法
+	 */
+	public enum CryptAlgo {
+		
+		/** 明文 */
+		plaintext(0x01),
+		/** ARC4 */
+		arc4(	  0x02);
+		
+		private int value;
+		
+		CryptAlgo(int value) {
+			this.value = value;
+		}
+
+		public int value() {
+			return this.value;
+		}
+		
+	}
 	
 	/**
 	 * Prime P(768 bit safe prime)
@@ -17,14 +44,12 @@ public class CryptConfig {
 		"FFFFFFFFFFFFFFFFC90FDAA22168C234C4C6628B80DC1CD129024E088A67CC74020BBEA63B139B22514A08798E3404DDEF9519B3CD3A431B302B0A6DF25F14374FE1356D6D51C245E485B576625E7EC6F44C42E9A63A36210000000000090563",
 		16
 	);
-
 	/**
 	 * Generator G
 	 */
 	public static final BigInteger G = BigInteger.valueOf(2);
-
 	/**
-	 * 公钥长度（握手终止最短长度）
+	 * 公钥长度
 	 */
 	public static final int PUBLIC_KEY_LENGTH = 96;
 	/**
@@ -33,7 +58,7 @@ public class CryptConfig {
 	 */
 	public static final int PRIVATE_KEY_LENGTH = 20;
 	/**
-	 * 填充最大长度
+	 * 填充最大随机长度
 	 */
 	public static final int PADDING_MAX_LENGTH = 512;
 	/**
@@ -41,7 +66,7 @@ public class CryptConfig {
 	 */
 	public static final int VC_LENGTH = 8;
 	/**
-	 * 八字节：0x00
+	 * VC数据：八字节（0x00）
 	 */
 	public static final byte[] VC = new byte[VC_LENGTH];
 	/**
@@ -50,43 +75,26 @@ public class CryptConfig {
 	public static final Strategy STRATEGY = Strategy.preferPlaintext;
 	
 	/**
-	 * 加密模式
-	 */
-	public enum CryptProvide {
-		
-		/** 明文 */
-		plaintext(0x01),
-		/** ARC4 */
-		arc4(	  0x02);
-		
-		int value;
-		
-		CryptProvide(int value) {
-			this.value = value;
-		}
-
-	}
-	
-	/**
 	 * 加密策略
 	 */
 	public enum Strategy {
 		
 		/** 明文 */
-		plaintext		(false, CryptProvide.plaintext.value),
+		plaintext		(false, CryptAlgo.plaintext.value),
 		/** 兼容：偏爱明文 */
-		preferPlaintext	(false, CryptProvide.plaintext.value | CryptProvide.arc4.value),
+		preferPlaintext	(false, CryptAlgo.plaintext.value | CryptAlgo.arc4.value),
 		/** 兼容：偏爱加密 */
-		preferEncrypt	(true,  CryptProvide.arc4.value | CryptProvide.plaintext.value),
+		preferEncrypt	(true,  CryptAlgo.arc4.value | CryptAlgo.plaintext.value),
 		/** 加密 */
-		encrypt			(true,  CryptProvide.arc4.value);
+		encrypt			(true,  CryptAlgo.arc4.value);
 		
 		/**
-		 * 加密
+		 * 是否加密
 		 */
 		private boolean crypt;
 		/**
-		 * crypto_provide
+		 * <p>加密模式：crypto_provide</p>
+		 * <p>加密算法或运算</p>
 		 */
 		private int provide;
 		
@@ -103,6 +111,10 @@ public class CryptConfig {
 			return this.provide;
 		}
 		
+	}
+
+	static {
+		LOGGER.info("数据加密策略：{}", CryptConfig.STRATEGY);
 	}
 	
 }

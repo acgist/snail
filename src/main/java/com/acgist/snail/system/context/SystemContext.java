@@ -26,7 +26,6 @@ import com.acgist.snail.system.initializer.impl.DatabaseInitializer;
 import com.acgist.snail.system.initializer.impl.DhtInitializer;
 import com.acgist.snail.system.initializer.impl.DownloaderInitializer;
 import com.acgist.snail.system.initializer.impl.LocalServiceDiscoveryInitializer;
-import com.acgist.snail.system.initializer.impl.PeerEvaluatorInitializer;
 import com.acgist.snail.system.initializer.impl.PeerInitializer;
 import com.acgist.snail.system.initializer.impl.ProtocolInitializer;
 import com.acgist.snail.system.initializer.impl.TorrentInitializer;
@@ -56,7 +55,21 @@ public class SystemContext {
 	private static String osName;
 	
 	/**
-	 * 系统初始化，数据库必须优先同步初始化。
+	 * <p>开启系统监听</p>
+	 * <p>开启监听失败表示已经启动了一个系统实例，发送消息唤醒之前的实例窗口。</p>
+	 */
+	public static final boolean listen() {
+		final boolean ok = ApplicationServer.getInstance().listen();
+		if(!ok) {
+			LOGGER.info("已有系统实例，唤醒实例主窗口。");
+			ApplicationClient.notifyWindow();
+		}
+		return ok;
+	}
+	
+	/**
+	 * <p>系统初始化</p>
+	 * <p>数据库必须优先同步初始化</p>
 	 */
 	public static final void init() {
 		LOGGER.info("系统初始化");
@@ -71,7 +84,6 @@ public class SystemContext {
 		TrackerInitializer.newInstance().asyn();
 		TorrentInitializer.newInstance().asyn();
 		DownloaderInitializer.newInstance().asyn();
-		PeerEvaluatorInitializer.newInstance().asyn();
 		LocalServiceDiscoveryInitializer.newInstance().asyn();
 	}
 	
@@ -97,16 +109,9 @@ public class SystemContext {
 		LOGGER.info("本机名称：{}", NetUtils.inetHostName());
 		LOGGER.info("本机地址：{}", NetUtils.inetHostAddress());
 	}
-	
-	/**
-	 * 系统是否可用
-	 */
-	public static final boolean available() {
-		return !SystemContext.shutdown;
-	}
 
 	/**
-	 * <p>退出平台</p>
+	 * <p>系统关闭</p>
 	 * <p>创建的所有线程均是守护线程，所以可以不用手动shutdown。</p>
 	 * <p>手动shutdown时必须关闭系统资源，否者会导致卡顿。</p>
 	 */
@@ -114,7 +119,7 @@ public class SystemContext {
 		if(SystemContext.available()) {
 			SystemContext.shutdown = true;
 			SystemThreadContext.submit(() -> {
-				LOGGER.info("系统关闭...");
+				LOGGER.info("系统关闭中...");
 				GuiHandler.getInstance().hide();
 				DownloaderManager.getInstance().shutdown();
 				UpnpService.getInstance().release();
@@ -143,23 +148,10 @@ public class SystemContext {
 	}
 
 	/**
-	 * <p>开启系统监听</p>
-	 * <p>开启监听失败表示已经启动了一个系统实例，发送消息唤醒之前的实例窗口。</p>
+	 * 系统是否可用
 	 */
-	public static final boolean listen() {
-		final boolean ok = ApplicationServer.getInstance().listen();
-		if(!ok) {
-			LOGGER.info("已有系统实例，唤醒实例主窗口。");
-			ApplicationClient.notifyWindow();
-		}
-		return ok;
-	}
-
-	/**
-	 * 启动加载
-	 */
-	public static final void loading() {
-		// TODO：加载效果
+	public static final boolean available() {
+		return !SystemContext.shutdown;
 	}
 
 	/**

@@ -79,8 +79,8 @@ public class TorrentManager {
 	
 	/**
 	 * <p>新建TorrentSession</p>
-	 * <p>如果已经存在infoHashHex，直接返回。</p>
-	 * <p>如果不存在，path为空时使用infoHashHex加载，反之使用path加载。</p>
+	 * <p>如果已经存在InfoHashHex，直接返回。</p>
+	 * <p>如果不存在，path为空时使用InfoHashHex加载，反之使用path加载。</p>
 	 */
 	public TorrentSession newTorrentSession(String infoHashHex, String path) throws DownloadException {
 		final var session = torrentSession(infoHashHex);

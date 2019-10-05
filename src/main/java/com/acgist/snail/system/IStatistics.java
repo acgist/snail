@@ -1,7 +1,7 @@
 package com.acgist.snail.system;
 
 /**
- * <p>下载统计接口</p>
+ * <p>统计接口</p>
  * 
  * @author acgist
  * @since 1.0.0

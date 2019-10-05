@@ -17,14 +17,15 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>B编码解码器</p>
+ * <dl>
+ * 	<dt>类型：</dt>
+ * 	<dd>i：数字（Long）</dd>
+ * 	<dd>l：列表：list</dd>
+ * 	<dd>d：字典：map</dd>
+ * 	<dd>e：结尾</dd>
+ * </dl>
  * <p>
- * i：数字（Long）<br>
- * l：列表：list<br>
- * d：字典：map<br>
- * e：结尾
- * </p>
- * <p>
- * 所有值除了Long，其他均为byte[]，需要自己再次解析。
+ * 所有值除了Long，其他均为byte[]，需要自己类型转换。
  * </p>
  * <p>
  * 解析前必须调用{@link #nextType()}、{@link #nextMap()}、{@link #nextList()}任一方法。
@@ -37,6 +38,17 @@ import com.acgist.snail.utils.StringUtils;
 public class BEncodeDecoder {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BEncodeDecoder.class);
+	
+	public enum Type {
+		
+		/** map */
+		map,
+		/** list */
+		list,
+		/** 未知 */
+		none;
+		
+	}
 	
 	/**
 	 * 结尾
@@ -58,17 +70,6 @@ public class BEncodeDecoder {
 	 * 分隔符
 	 */
 	public static final char SEPARATOR = ':';
-	
-	public enum Type {
-		
-		/** map */
-		map,
-		/** list */
-		list,
-		/** 未知 */
-		none;
-		
-	}
 	
 	/**
 	 * 数据类型

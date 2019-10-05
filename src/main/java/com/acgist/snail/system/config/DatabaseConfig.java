@@ -13,9 +13,9 @@ public class DatabaseConfig extends PropertiesConfig {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseConfig.class);
 	
-	private static final String DATABASE_CONFIG = "/config/database.properties";
-	
 	private static final DatabaseConfig INSTANCE = new DatabaseConfig();
+	
+	private static final String DATABASE_CONFIG = "/config/database.properties";
 	
 	private DatabaseConfig() {
 		super(DATABASE_CONFIG);
@@ -27,15 +27,15 @@ public class DatabaseConfig extends PropertiesConfig {
 		INSTANCE.logger();
 	}
 	
+	private String url; // 数据库地址
+	private String driver; // 数据库驱动
+	private String user; // 数据库用户
+	private String password; // 数据库密码
+	private String tableSQL; // 数据库建表文件
+	
 	public static final DatabaseConfig getInstance() {
 		return INSTANCE;
 	}
-	
-	private String url;
-	private String driver;
-	private String user;
-	private String password;
-	private String tableSQL;
 
 	/**
 	 * 初始化
@@ -56,7 +56,7 @@ public class DatabaseConfig extends PropertiesConfig {
 		LOGGER.info("数据库驱动：{}", INSTANCE.driver);
 		LOGGER.info("数据库用户：{}", INSTANCE.user);
 		LOGGER.info("数据库密码：{}", INSTANCE.password);
-		LOGGER.info("数据库初始化语句：{}", INSTANCE.tableSQL);
+		LOGGER.info("数据库建表文件：{}", INSTANCE.tableSQL);
 	}
 	
 	/**
@@ -74,21 +74,21 @@ public class DatabaseConfig extends PropertiesConfig {
 	}
 
 	/**
-	 * 数据库用户账号
+	 * 数据库用户
 	 */
 	public static final String getUser() {
 		return INSTANCE.user;
 	}
 
 	/**
-	 * 数据库用户密码
+	 * 数据库密码
 	 */
 	public static final String getPassword() {
 		return INSTANCE.password;
 	}
 	
 	/**
-	 * 数据库建表SQL文件
+	 * 数据库建表文件
 	 */
 	public static final String getTableSQL() {
 		return INSTANCE.tableSQL;

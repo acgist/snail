@@ -10,10 +10,16 @@ import com.acgist.snail.utils.StringUtils;
  */
 public class ProtocolConfig {
 
+	/**
+	 * UDP协议正则表达式
+	 */
 	public static final String UDP_REGEX = "udp://.+";
 	
 	/**
 	 * 协议
+	 * 
+	 * TODO：和Protocol.Type合并
+	 * wss=ws
 	 */
 	public enum Protocol {
 		
@@ -23,6 +29,8 @@ public class ProtocolConfig {
 		tcp,
 		/** wss:websocket */
 		wss,
+		/** ftp */
+		ftp,
 		/** http */
 		http,
 		/** 磁力链接 */
@@ -32,6 +40,19 @@ public class ProtocolConfig {
 		/** BT */
 		torrent;
 
+		/**
+		 * 正则表达式
+		 */
+		public String[] regexs;
+		/**
+		 * 前缀
+		 */
+		public String[] prefix;
+		/**
+		 * 后缀
+		 */
+		public String[] suffix;
+		
 	}
 	
 	/**

@@ -43,7 +43,7 @@ public class FileTypeConfig {
 		 */
 		private String value;
 		/**
-		 * 文件类型图表
+		 * 文件类型图标
 		 */
 		private String icon;
 
@@ -62,6 +62,9 @@ public class FileTypeConfig {
 
 	}
 	
+	/**
+	 * 文件类型和文件后缀：类型=后缀
+	 */
 	private static final Map<FileType, List<String>> TYPES = new HashMap<>();
 	
 	static {
@@ -101,10 +104,7 @@ public class FileTypeConfig {
 			return FileType.unknown;
 		}
 		final Optional<Entry<FileType, List<String>>> optional = TYPES.entrySet().stream()
-			.filter(entry -> {
-				return entry.getValue().stream()
-					.anyMatch(value -> value.equals(ext));
-			})
+			.filter(entry -> entry.getValue().contains(ext))
 			.findFirst();
 		if(optional.isPresent()) {
 			return optional.get().getKey();

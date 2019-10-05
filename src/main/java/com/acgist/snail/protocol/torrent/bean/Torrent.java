@@ -65,7 +65,7 @@ public class Torrent {
 	 */
 	private Map<String, Integer> nodes;
 	/**
-	 * infoHash
+	 * InfoHash
 	 */
 	private InfoHash infoHash;
 

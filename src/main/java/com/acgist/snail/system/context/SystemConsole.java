@@ -19,7 +19,6 @@ import com.acgist.snail.utils.FileUtils;
 
 /**
  * <p>系统控制台</p>
- * <p>记录系统状态</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -32,7 +31,7 @@ public class SystemConsole {
 
 	private static final String NEW_LINE = "\r\n";
 	
-	private StringBuilder builder = new StringBuilder(NEW_LINE);
+	private final StringBuilder builder = new StringBuilder(NEW_LINE);
 	
 	private SystemConsole() {
 	}
@@ -49,10 +48,10 @@ public class SystemConsole {
 		node();
 		tracker();
 		peer();
-		LOGGER.info("统计信息：{}", this.builder.toString());
+		LOGGER.debug("统计信息：{}", this.builder.toString());
 		GuiHandler.getInstance().alert("统计信息", this.builder.toString());
 		this.builder.setLength(0);
-		this.builder = new StringBuilder(NEW_LINE);
+		this.builder.append(NEW_LINE);
 	}
 	
 	/**

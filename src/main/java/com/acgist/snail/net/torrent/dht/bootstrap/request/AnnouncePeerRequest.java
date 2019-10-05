@@ -35,7 +35,7 @@ public class AnnouncePeerRequest extends Request {
 	 * 创建请求
 	 * 
 	 * @param token token
-	 * @param infoHash infoHash
+	 * @param infoHash InfoHash
 	 */
 	public static final AnnouncePeerRequest newRequest(byte[] token, byte[] infoHash) {
 		final AnnouncePeerRequest request = new AnnouncePeerRequest();

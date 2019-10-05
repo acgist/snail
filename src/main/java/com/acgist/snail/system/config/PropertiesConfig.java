@@ -16,7 +16,8 @@ import com.acgist.snail.utils.PropertiesUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * 配置超类
+ * <p>配置</p>
+ * <p>优先加载用户配置（UserDir目录），加载失败时加载默认配置。</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -25,27 +26,30 @@ public abstract class PropertiesConfig {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesConfig.class);
 
+	/**
+	 * TODO：init后是否清除
+	 */
 	protected PropertiesUtils properties;
 
 	/**
 	 * 初始化配置文件
 	 * 
-	 * @param path 配置文件
+	 * @param path 配置文件路径
 	 */
 	public PropertiesConfig(String path) {
 		this.properties = PropertiesUtils.getInstance(path);
 	}
 	
 	protected String getString(String key) {
-		return properties.getString(key);
+		return this.properties.getString(key);
 	}
 
 	protected Boolean getBoolean(String key) {
-		return properties.getBoolean(key);
+		return this.properties.getBoolean(key);
 	}
 	
 	protected Integer getInteger(String key) {
-		return properties.getInteger(key);
+		return this.properties.getInteger(key);
 	}
 	
 	/**
@@ -85,23 +89,23 @@ public abstract class PropertiesConfig {
 	}
 	
 	/**
-	 * 持久化
+	 * 保存配置
 	 * 
-	 * @param map 数据
-	 * @param file 文件（properties）
+	 * @param data 数据
+	 * @param file 文件
 	 */
-	protected void persistent(Map<String, String> map, File file) {
-		if(map == null || file == null) {
+	protected void persistent(Map<String, String> data, File file) {
+		if(data == null || file == null) {
+			LOGGER.warn("保存配置失败：{}-{}", data, file);
 			return;
 		}
-		Properties properties;
 		FileUtils.buildFolder(file, true);
-		try(OutputStreamWriter output = new OutputStreamWriter(new FileOutputStream(file), SystemConfig.DEFAULT_CHARSET)) {
-			properties = new Properties();
-			properties.putAll(map);
+		try(final var output = new OutputStreamWriter(new FileOutputStream(file), SystemConfig.DEFAULT_CHARSET)) {
+			final Properties properties = new Properties();
+			properties.putAll(data);
 			properties.store(output, SystemConfig.getName());
 		} catch (IOException e) {
-			LOGGER.error("写入配置文件异常，文件路径：{}", file.getPath(), e);
+			LOGGER.error("保存配置异常，文件路径：{}", file.getPath(), e);
 		}
 	}
 	

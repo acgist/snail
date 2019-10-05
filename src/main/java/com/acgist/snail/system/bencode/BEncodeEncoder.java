@@ -13,7 +13,6 @@ import com.acgist.snail.system.bencode.BEncodeDecoder.Type;
 
 /**
  * <p>B编码</p>
- * <p>put系列方法配合flush使用。</p>
  * <p>支持数据类型：Number、String、byte[]。</p>
  * <pre>
  * encoder

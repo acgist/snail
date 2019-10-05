@@ -30,7 +30,7 @@ public class GetPeersRequest extends Request {
 	/**
 	 * 创建请求
 	 * 
-	 * @param infoHash infoHash
+	 * @param infoHash InfoHash
 	 */
 	public static final GetPeersRequest newRequest(byte[] infoHash) {
 		final GetPeersRequest request = new GetPeersRequest();

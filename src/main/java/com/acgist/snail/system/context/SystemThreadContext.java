@@ -47,9 +47,9 @@ public class SystemThreadContext {
 	public static final String SNAIL_THREAD_UDP_SERVER = SNAIL_THREAD + "-UDP-Server";
 	/** UDP处理器线程 */
 	public static final String SNAIL_THREAD_UDP_HANDLER = SNAIL_THREAD + "-UDP-Handler";
-	
 	/**
-	 * 系统线程池：加快系统运行、防止卡顿。例如：初始化、关闭资源、文件校验等。
+	 * <p>系统线程池：加快系统运行、防止卡顿。</p>
+	 * <p>例如：初始化、关闭资源、文件校验等。</p>
 	 */
 	private static final ExecutorService EXECUTOR;
 	/**
@@ -183,7 +183,7 @@ public class SystemThreadContext {
 	}
 	
 	/**
-	 * 关闭线程
+	 * 关闭系统线程池
 	 */
 	public static final void shutdown() {
 		LOGGER.info("关闭系统线程池");
@@ -220,9 +220,9 @@ public class SystemThreadContext {
 	}
 	
 	/**
-	 * 关闭定时任务
+	 * 关闭定时线程池
 	 * 
-	 * @param scheduledFuture 定时任务
+	 * @param scheduledFuture 定时线程池
 	 * 
 	 * @since 1.1.0
 	 */

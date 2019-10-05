@@ -130,7 +130,7 @@ public class MetadataMessageHandler implements IExtensionMessageHandler {
 	 */
 	public void data(int piece) {
 		LOGGER.debug("发送metadata消息-data");
-		final byte[] bytes = this.infoHash.info(); // infoHash数据
+		final byte[] bytes = this.infoHash.info(); // InfoHash数据
 		if(bytes == null) {
 			reject();
 			return;
@@ -145,7 +145,7 @@ public class MetadataMessageHandler implements IExtensionMessageHandler {
 		if(end >= bytes.length) {
 			length = bytes.length - begin;
 		}
-		final byte[] x = new byte[length]; // infoHash块数据
+		final byte[] x = new byte[length]; // InfoHash块数据
 		System.arraycopy(bytes, begin, x, 0, length);
 		final var data = buildMessage(PeerConfig.MetadataType.data, piece);
 		data.put(ARG_TOTAL_SIZE, this.infoHash.size());

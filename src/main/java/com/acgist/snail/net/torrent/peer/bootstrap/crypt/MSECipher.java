@@ -45,7 +45,7 @@ public class MSECipher {
 	 * 请求客户端
 	 * 
 	 * @param S DH Secret
-	 * @param infoHash infoHash
+	 * @param infoHash InfoHash
 	 */
 	public static final MSECipher newInitiator(byte[] S, InfoHash infoHash) {
 		return new MSECipher(S, infoHash, true);
@@ -55,7 +55,7 @@ public class MSECipher {
 	 * 连入客户端
 	 * 
 	 * @param S DH Secret
-	 * @param infoHash infoHash
+	 * @param infoHash InfoHash
 	 */
 	public static final MSECipher newReceiver(byte[] S, InfoHash infoHash) {
 		return new MSECipher(S, infoHash, false);

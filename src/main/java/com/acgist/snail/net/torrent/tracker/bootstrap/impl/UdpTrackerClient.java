@@ -134,7 +134,7 @@ public class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker.boots
 		buffer.putLong(this.connectionId); // connection_id
 		buffer.putInt(TrackerConfig.Action.announce.action()); // action
 		buffer.putInt(sid); // transaction_id
-		buffer.put(torrentSession.infoHash().infoHash()); // infoHash
+		buffer.put(torrentSession.infoHash().infoHash()); // InfoHash
 		buffer.put(PeerService.getInstance().peerId()); // PeerId
 		buffer.putLong(download); // 已下载大小
 		buffer.putLong(remain); // 剩余下载大小
