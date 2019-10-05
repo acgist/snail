@@ -12,7 +12,7 @@ import com.acgist.snail.system.initializer.Initializer;
 
 /**
  * <p>初始化数据库</p>
- * <p>如果数据库表没有创建执行创建语句。</p>
+ * <p>如果数据库表没有创建，执行建表语句。</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -32,8 +32,8 @@ public class DatabaseInitializer extends Initializer {
 	
 	@Override
 	protected void init() {
+		LOGGER.info("初始化数据库");
 		if(exist()) { // 已经创建
-			return;
 		} else { // 未创建表
 			buildTable();
 		}
@@ -47,28 +47,28 @@ public class DatabaseInitializer extends Initializer {
 	}
 
 	/**
-	 * 初始化数据库表
+	 * 数据库建表
 	 */
 	private void buildTable() {
-		LOGGER.info("初始化数据库表");
+		LOGGER.info("数据库建表");
 		final String sql = buildTableSQL();
 		this.databaseManager.update(sql);
 	}
 
 	/**
-	 * 读取初始化SQL
+	 * 读取建表SQL
 	 */
 	private String buildTableSQL() {
 		final StringBuilder sql = new StringBuilder();
-		final String tableSql = DatabaseConfig.getTableSQL();
-		try(final var reader = new InputStreamReader(DatabaseInitializer.class.getResourceAsStream(tableSql))) {
+		final String tableSQL = DatabaseConfig.getTableSQL();
+		try(final var reader = new InputStreamReader(DatabaseInitializer.class.getResourceAsStream(tableSQL))) {
 			int count = 0;
-			char[] chars = new char[1024];
+			final char[] chars = new char[1024];
 			while((count = reader.read(chars)) != -1) {
 				sql.append(new String(chars, 0, count));
 			}
 		} catch (Exception e) {
-			LOGGER.error("建表SQL读取异常：{}", tableSql, e);
+			LOGGER.error("读取建表SQL异常：{}", tableSQL, e);
 		}
 		return sql.toString();
 	}

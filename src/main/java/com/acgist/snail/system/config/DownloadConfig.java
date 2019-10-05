@@ -12,8 +12,8 @@ import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>下载配置（用户配置）</p>
- * <p>默认从配置文件加载，如果数据有配置则使用数据库配置替换。</p>
+ * <p>下载配置</p>
+ * <p>默认从配置文件加载，如果数据有配置则使用数据库配置覆盖。</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -21,6 +21,8 @@ import com.acgist.snail.utils.StringUtils;
 public class DownloadConfig extends PropertiesConfig {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DownloadConfig.class);
+	
+	private static final DownloadConfig INSTANCE = new DownloadConfig();
 	
 	private static final String DOWNLOAD_CONFIG = "/config/download.properties";
 	
@@ -31,17 +33,15 @@ public class DownloadConfig extends PropertiesConfig {
 	private static final String DOWNLOAD_LAST_PATH = "acgist.download.last.path";
 	private static final String DOWNLOAD_MEMORY_BUFFER = "acgist.download.memory.buffer";
 	
-	private static final DownloadConfig INSTANCE = new DownloadConfig();
+	static {
+		LOGGER.info("初始化下载配置");
+		INSTANCE.initFromProperties();
+		INSTANCE.initFromDatabase();
+		INSTANCE.logger();
+	}
 	
 	private DownloadConfig() {
 		super(DOWNLOAD_CONFIG);
-	}
-	
-	static {
-		LOGGER.info("初始化用户配置");
-		INSTANCE.initFromProperties();
-		INSTANCE.initFromDB();
-		INSTANCE.logger();
 	}
 	
 	public static final DownloadConfig getInstance() {
@@ -86,9 +86,9 @@ public class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 数据库初始化配置
+	 * 数据库配置加载
 	 */
-	private void initFromDB() {
+	private void initFromDatabase() {
 		final ConfigRepository configRepository = new ConfigRepository();
 		ConfigEntity entity = null;
 		entity = configRepository.findName(DOWNLOAD_PATH);
@@ -127,7 +127,7 @@ public class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 下载目录：如果文件路径存在返回文件路径，如果不存在获取user.dir路径+文件路径
+	 * 下载目录：如果文件路径存在返回文件路径，如果不存在获取user.dir路径+文件路径。
 	 */
 	public static final String getPath() {
 		String path = INSTANCE.path;
@@ -141,7 +141,7 @@ public class DownloadConfig extends PropertiesConfig {
 	}
 
 	/**
-	 * 获取下载目录：下载目录+文件名称
+	 * 下载目录：下载目录+文件名称
 	 */
 	public static final String getPath(String fileName) {
 		if(StringUtils.isEmpty(fileName)) {
@@ -218,24 +218,22 @@ public class DownloadConfig extends PropertiesConfig {
 	 * 最后一次选择目录
 	 */
 	public static final String getLastPath() {
-		return INSTANCE.lastPath;
+		if(StringUtils.isEmpty(INSTANCE.lastPath)) {
+			return getPath();
+		} else {
+			return INSTANCE.lastPath;
+		}
 	}
 	
 	/**
-	 * 最后一次选择目录文件，如果没有选择默认使用下载目录
+	 * 最后一次选择目录文件：如果不存在选择默认使用下载目录
 	 */
 	public static final File getLastPathFile() {
-		File file = null;
-		if(StringUtils.isEmpty(INSTANCE.lastPath)) {
-			file = new File(getPath());
-		} else {
-			file = new File(INSTANCE.lastPath);
-		}
-		return file;
+		return new File(getLastPath());
 	}
 	
 	/**
-	 * 磁盘缓存（单个）（MB）
+	 * 设置磁盘缓存（单个）（MB）
 	 */
 	public static final void setMemoryBuffer(Integer memoryBuffer) {
 		final ConfigRepository configRepository = new ConfigRepository();

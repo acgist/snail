@@ -514,7 +514,7 @@ public class TorrentSession {
 	}
 
 	/**
-	 * 保存种子文件，并重新加载种子和infoHash。
+	 * 保存种子文件，并重新加载种子和InfoHash。
 	 */
 	public void saveTorrentFile() {
 		final var entity = this.taskSession.entity();

@@ -25,7 +25,7 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * <p>DHT节点管理器</p>
  * 
- * TODO：观察是否需要清理Node
+ * TODO：观察是否需要定时清理Node
  * 
  * <p>参考链接（Kademlia）：https://baike.baidu.com/item/Kademlia</p>
  * <p>BT=DHT、eMule=KAD</p>
@@ -40,29 +40,21 @@ public class NodeManager {
 	private static final NodeManager INSTANCE = new NodeManager();
 	
 	/**
-	 * Node最大数量，超过这个数量会均匀剔除多余Node。
-	 */
-	public static final int MAX_NODE_SIZE = 1024;
-	/**
-	 * NodeId长度
-	 */
-	public static final int NODE_ID_LENGTH = 20;
-	/**
 	 * Token长度
 	 */
-	public static final int TOKEN_LENGTH = 8;
+	private static final int TOKEN_LENGTH = 8;
 	/**
 	 * Node查找时返回的Node列表长度
 	 */
-	public static final int NODE_FIND_SIZE = 8;
+	private static final int NODE_FIND_SIZE = 8;
 	/**
 	 * Node查找时分片大小
 	 */
-	public static final int NODE_FIND_SLICE = 3;
+	private static final int NODE_FIND_SLICE = 3;
 	/**
 	 * Node查找时分片最小列表长度
 	 */
-	public static final int NODE_FIND_SLICE_MIN_SIZE = NODE_FIND_SIZE * NODE_FIND_SLICE;
+	private static final int NODE_FIND_SLICE_MIN_SIZE = NODE_FIND_SIZE * NODE_FIND_SLICE;
 	
 	/**
 	 * 当前客户端的Token
@@ -106,9 +98,9 @@ public class NodeManager {
 	 */
 	private byte[] buildNodeId() {
 		LOGGER.debug("生成NodeId");
-		final byte[] nodeIds = new byte[NODE_ID_LENGTH];
+		final byte[] nodeIds = new byte[DhtConfig.NODE_ID_LENGTH];
 		final Random random = NumberUtils.random();
-		for (int index = 0; index < NODE_ID_LENGTH; index++) {
+		for (int index = 0; index < DhtConfig.NODE_ID_LENGTH; index++) {
 			nodeIds[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_MAX);
 		}
 		return nodeIds;
@@ -183,7 +175,7 @@ public class NodeManager {
 			}
 			if(nodeSession == null) {
 				nodeSession = NodeSession.newInstance(nodeId, host, port);
-				if(nodeSession.getId().length == NODE_ID_LENGTH) {
+				if(nodeSession.getId().length == DhtConfig.NODE_ID_LENGTH) {
 					if(LOGGER.isDebugEnabled()) {
 						LOGGER.debug("添加Node：{}-{}-{}", StringUtils.hex(nodeId), nodeSession.getHost(), nodeSession.getPort());
 					}

@@ -18,9 +18,9 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>Peer评估器</p>
- * <p>根据IP地址评估，插入Peer队列的头部还是尾部。</p>
- * <p>将所有IP（2^32个）分为65536（2^16）个区域，然后可以连接和可以下载的均给予评分，然后计算插入Peer队列位置。</p>
- * <p>系统启动时初始化分数，关闭时保存分数，得分=0的记录不保存数据库。</p>
+ * <p>根据IP地址评估，判断插入Peer队列的头部还是尾部。</p>
+ * <p>将所有IP（2^32个）分为65536（2^16）个区域，然后可以连接和可以下载的均给予评分。</p>
+ * <p>系统启动时初始化分数，关闭时保存分数，得分等于0的记录不保存。</p>
  * 
  * @author acgist
  * @since 1.1.0
@@ -71,15 +71,15 @@ public class PeerEvaluator {
 	private static final String ACGIST_SYSTEM_RANGE = "acgist.system.range";
 	
 	/**
-	 * 初始完成，可用状态。
+	 * 可用状态
 	 */
 	private boolean available;
 	/**
-	 * 优质Peer最低分：取平均分。
+	 * 优质Peer最低分：取平均分
 	 */
 	private long horizontal = 0L;
 	/**
-	 * 范围表
+	 * IP区域：IP=评分
 	 */
 	private final Map<Integer, Long> ranges;
 	
@@ -92,7 +92,7 @@ public class PeerEvaluator {
 	}
 	
 	/**
-	 * 初始化：初始数据，加载分数。
+	 * 初始化：加载评分
 	 */
 	public void init() {
 		synchronized (this) {
@@ -103,14 +103,14 @@ public class PeerEvaluator {
 	}
 
 	/**
-	 * 判断Peer插入头部还是尾部。
+	 * 判断Peer插入位置
 	 * 
 	 * @param peerSession Peer
 	 * 
 	 * @return true：尾部（优先使用）；false：头部；
 	 */
 	public boolean eval(PeerSession peerSession) {
-		if(!this.available) { // 没有初始化直接返回插入头部
+		if(!this.available) {
 			return false;
 		}
 		final long ip = NetUtils.encodeIpToLong(peerSession.host());
@@ -125,7 +125,7 @@ public class PeerEvaluator {
 	/**
 	 * <p>计分</p>
 	 * <p>下载计分：下载大小 &ge; {@linkplain #MIN_SCOREABLE_DOWNLOAD_SIZE 最小计分下载大小}，可以重复计分。</p>
-	 * <p>注：不同步，允许运行出现误差</p>
+	 * <p>注：不同步，允许运行出现误差。</p>
 	 */
 	public void score(PeerSession peerSession, Type type) {
 		if(peerSession == null) {
@@ -154,39 +154,37 @@ public class PeerEvaluator {
 	 * 关闭资源
 	 */
 	public void shutdown() {
-		LOGGER.info("Peer评估器关闭");
+		LOGGER.info("关闭Peer评估器");
 		if(this.available) {
 			this.available = false;
 			synchronized (this) {
 				try {
 					this.store();
 				} catch (Exception e) {
-					LOGGER.error("Peer评估器关闭异常", e);
+					LOGGER.error("关闭Peer评估器异常", e);
 				}
 			}
 		}
 	}
 	
 	/**
-	 * IP范围
+	 * IP区域
 	 */
 	public Map<Integer, Long> ranges() {
 		return this.ranges;
 	}
 	
 	/**
-	 * 记录数据库：只记录分值大于0的数据。
+	 * 记录数据库：只记录分值大于0的数据
 	 */
 	private void store() {
-		synchronized (this.ranges) {
-			final ConfigRepository repository = new ConfigRepository();
-			final String value = BEncodeEncoder.encodeMapString(this.ranges);
-			repository.merge(ACGIST_SYSTEM_RANGE, value);
-		}
+		final ConfigRepository repository = new ConfigRepository();
+		final String value = BEncodeEncoder.encodeMapString(this.ranges);
+		repository.merge(ACGIST_SYSTEM_RANGE, value);
 	}
 
 	/**
-	 * 初始化数据
+	 * 加载IP区域
 	 */
 	private void buildRanges() {
 		final ConfigRepository repository = new ConfigRepository();
@@ -200,13 +198,13 @@ public class PeerEvaluator {
 				this.ranges.put(Integer.valueOf(key), (Long) value);
 			});
 		} catch (NetException e) {
-			LOGGER.error("评估器初始化数据异常", e);
+			LOGGER.error("初始化Peer评估器异常", e);
 		}
-		LOGGER.info("Peer评估器加载数据：{}", this.ranges.size());
+		LOGGER.info("初始化Peer评估器（IP区域长度）：{}", this.ranges.size());
 		this.horizontal = this.ranges.values().stream()
 			.collect(Collectors.averagingLong(value -> value))
 			.longValue();
-		LOGGER.info("Peer评估器平均值：{}", this.horizontal);
+		LOGGER.info("初始化Peer评估器（评分平均值）：{}", this.horizontal);
 	}
 
 }

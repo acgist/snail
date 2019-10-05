@@ -124,7 +124,7 @@ public class HttpProtocol extends Protocol {
 	}
 	
 	/**
-	 * 验证是否是HTTP协议
+	 * 验证HTTP协议
 	 */
 	public static final boolean verify(String url) {
 		return

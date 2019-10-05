@@ -14,8 +14,7 @@ import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>Tracker服务列表配置</p>
- * <p>优先使用用户自定义配置文件（UserDir目录）加载，如果不存在加载默认配置。</p>
+ * <p>Tracker服务器配置</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -24,11 +23,14 @@ public class TrackerConfig extends PropertiesConfig {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerConfig.class);
 	
+	private static final TrackerConfig INSTANCE = new TrackerConfig();
+	
+	private static final String TRACKER_CONFIG = "/config/bt.tracker.properties";
+
 	/**
 	 * 最大的Tracker服务器保存数量
 	 */
 	private static final int MAX_TRACKER_SIZE = 512;
-
 	/**
 	 * 最大失败次数，超过 这个次数将会被标记无效，以后也不再使用。
 	 */
@@ -40,13 +42,13 @@ public class TrackerConfig extends PropertiesConfig {
 	public enum Event {
 		
 		/** none */
-		none		(0),
+		none(		0),
 		/** 完成 */
-		completed	(1),
+		completed(	1),
 		/** 开始 */
-		started		(2),
+		started(	2),
 		/** 停止 */
-		stopped		(3);
+		stopped(	3);
 		
 		private int event;
 
@@ -86,17 +88,13 @@ public class TrackerConfig extends PropertiesConfig {
 		
 	}
 	
-	private static final TrackerConfig INSTANCE = new TrackerConfig();
-	
-	private static final String TRACKER_CONFIG = "/config/bt.tracker.properties";
+	static {
+		LOGGER.info("初始化Tracker服务器配置");
+		INSTANCE.init();
+	}
 	
 	public TrackerConfig() {
 		super(TRACKER_CONFIG);
-	}
-	
-	static {
-		LOGGER.info("初始化Tracker配置");
-		INSTANCE.init();
 	}
 	
 	public static final TrackerConfig getInstance() {
@@ -115,23 +113,23 @@ public class TrackerConfig extends PropertiesConfig {
 			if(StringUtils.isNotEmpty(announce)) {
 				announces.add(announce);
 			} else {
-				LOGGER.warn("注册默认Tracker失败：{}", announce);
+				LOGGER.warn("注册默认Tracker服务器失败：{}", announce);
 			}
 		});
 	}
 
 	/**
-	 * 获取配置的Tracker
+	 * 获取所有Tracker服务器
 	 */
 	public List<String> announces() {
 		return this.announces;
 	}
 	
 	/**
-	 * 保存Tracker服务器（可用）
+	 * 保存Tracker服务器配置
 	 */
 	public void persistent() {
-		LOGGER.debug("保存Tracker服务器");
+		LOGGER.debug("保存Tracker服务器配置");
 		final AtomicInteger index = new AtomicInteger(0);
 		final var clients = TrackerManager.getInstance().clients();
 		final var map = clients.stream()

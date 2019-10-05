@@ -45,7 +45,7 @@ public class DhtClient extends UdpClient<DhtMessageHandler> {
 	/**
 	 * 查询节点
 	 * 
-	 * @param target infoHashHex
+	 * @param target InfoHashHex
 	 */
 	public void findNode(String target) {
 		this.findNode(StringUtils.unhex(target));
@@ -54,7 +54,7 @@ public class DhtClient extends UdpClient<DhtMessageHandler> {
 	/**
 	 * 查询节点
 	 * 
-	 * @param target NodeId或者infoHash
+	 * @param target NodeId或者InfoHash
 	 */
 	public void findNode(byte[] target) {
 		this.handler.findNode(this.socketAddress, target);

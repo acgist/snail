@@ -60,13 +60,13 @@ public class WindowRecycle extends Recycle {
 	 * 设置回收站路径
 	 */
 	private void buildRecycle() {
-		final String disk = this.path.substring(0, 1).toUpperCase();
+		final String disk = this.path.substring(0, 1).toUpperCase(); // 盘符
 		final String recycleFolder = disk + ":" + File.separator + RECYCLE_FOLDER;
 		final File recycleFile = new File(recycleFolder);
 		if(!recycleFile.exists()) {
 			throw new ArgumentException("回收站文件不存在：" + recycleFolder);
 		}
-		// 获取当前用户回收站：其他用户回收站没有权限查看所以获取不到文件列表
+		// 获取当前用户回收站：其他用户回收站没有权限查看，所以获取不到文件列表。
 		final File[] files = recycleFile.listFiles();
 		for (File file : files) {
 			if(file.listFiles() != null) {
@@ -112,7 +112,7 @@ public class WindowRecycle extends Recycle {
 	 * <p>创建删除文件信息</p>
 	 */
 	public byte[] buildInfo() {
-		String path = buildPath();
+		final String path = buildPath();
 		final ByteArrayOutputStream out = new ByteArrayOutputStream();
 		// 固定值
 		out.write(2);
@@ -162,7 +162,7 @@ public class WindowRecycle extends Recycle {
 	}
 
 	/**
-	 * 删除文件信息需要将斜杠转换成系统斜杠。
+	 * 删除文件信息需要将斜杠转换成系统斜杠
 	 */
 	private String buildPath() {
 		String path = this.path;

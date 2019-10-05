@@ -21,7 +21,7 @@ public class FindNodeRequest extends Request {
 	/**
 	 * 创建请求
 	 * 
-	 * @param target infoHash或者NodeId
+	 * @param target InfoHash或者NodeId
 	 */
 	public static final FindNodeRequest newRequest(byte[] target) {
 		final FindNodeRequest request = new FindNodeRequest();

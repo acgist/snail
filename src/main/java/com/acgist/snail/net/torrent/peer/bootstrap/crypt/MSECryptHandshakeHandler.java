@@ -46,7 +46,7 @@ import com.acgist.snail.utils.ThreadUtils;
  * 	ENCRYPT2(Payload Stream)
  * 5 A->B: ENCRYPT2(Payload Stream)
  * </pre>
- * <p>SKEY：infoHash</p>
+ * <p>SKEY：InfoHash</p>
  * 
  * @author acgist
  * @since 1.1.0

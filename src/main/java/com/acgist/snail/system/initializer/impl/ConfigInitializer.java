@@ -29,7 +29,7 @@ public class ConfigInitializer extends Initializer {
 	
 	@Override
 	protected void init() {
-		LOGGER.info("初始化配置信息");
+		LOGGER.info("初始化配置");
 		DhtConfig.getInstance();
 		SystemConfig.getInstance();
 		DatabaseConfig.getInstance();

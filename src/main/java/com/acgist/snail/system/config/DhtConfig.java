@@ -15,8 +15,7 @@ import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>DHT服务器列表配置</p>
- * <p>优先使用用户自定义配置文件（UserDir目录）加载，如果不存在加载默认配置。</p>
+ * <p>DHT节点配置</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -30,7 +29,7 @@ public class DhtConfig extends PropertiesConfig {
 	private static final String DHT_CONFIG = "/config/bt.dht.properties";
 	
 	/**
-	 * 标记ID：请求ID，默认两个字节
+	 * 标记ID：请求ID，默认两个字节。
 	 */
 	public static final String KEY_T = "t";
 	/**
@@ -70,7 +69,7 @@ public class DhtConfig extends PropertiesConfig {
 	 */
 	public static final String KEY_NODES = "nodes";
 	/**
-	 * announce_peer token
+	 * token（announce_peer使用）
 	 */
 	public static final String KEY_TOKEN = "token";
 	/**
@@ -78,19 +77,19 @@ public class DhtConfig extends PropertiesConfig {
 	 */
 	public static final String KEY_VALUES = "values";
 	/**
-	 * 被查找的NodeId
+	 * 目标：查找NodeId/InfoHash
 	 */
 	public static final String KEY_TARGET = "target";
 	/**
-	 * infoHash
+	 * InfoHash
 	 */
 	public static final String KEY_INFO_HASH = "info_hash";
 	/**
-	 * 0|1：存在且等于“1”时忽略端口参数，使用UDP包的源端口为对等端端口，并且支持uTP。
+	 * 0|1：{@link #IMPLIED_PORT_AUTO}、{@link #IMPLIED_PORT_CONFIG}
 	 */
 	public static final String KEY_IMPLIED_PORT = "implied_port";
 	/**
-	 * 自动获取
+	 * 自动获取：忽略配置获取UDP端口作为对等端口，并且支持uTP。
 	 */
 	public static final Integer IMPLIED_PORT_AUTO = 1;
 	/**
@@ -102,24 +101,38 @@ public class DhtConfig extends PropertiesConfig {
 	 */
 	public static final int GET_PEER_LENGTH = 100;
 	/**
+	 * NodeId长度
+	 */
+	public static final int NODE_ID_LENGTH = 20;
+	/**
+	 * Node最大数量，超过这个数量会均匀剔除多余Node。
+	 */
+	public static final int MAX_NODE_SIZE = 1024;
+	/**
 	 * DHT请求清理周期
 	 */
-	public static final int DHT_CLEAR_INTERVAL = 10;
+	public static final int DHT_REQUEST_CLEAR_INTERVAL = 10;
+	/**
+	 * DHT响应超时
+	 */
+	public static final Duration TIMEOUT = Duration.ofSeconds(SystemConfig.RECEIVE_TIMEOUT);
+	
+	static {
+		LOGGER.info("初始化DHT节点配置");
+		INSTANCE.init();
+	}
 	
 	/**
 	 * <p>DHT响应错误：</p>
-	 * <ul>
-	 *	<li>
-	 * 	[0]：错误代码：
-	 * 		<ul>
-	 *			<li>201：一般错误</li>
-	 *			<li>202：服务错误</li>
-	 *			<li>203：协议错误，不规范的包、无效参数、错误token</li>
-	 *			<li>204：未知方法</li>
-	 * 		</ul>
-	 *	</li>
-	 *	<li>[1]：错误描述</li>
-	 * </ul>
+	 * <dl>
+	 *	<dt>[0]：错误代码：</dt>
+	 *	<dd>201：一般错误</dd>
+	 *	<dd>202：服务错误</dd>
+	 *	<dd>203：协议错误（不规范的包、无效参数、错误token）</dd>
+	 *	<dd>204：未知方法</dd>
+	 *
+	 *	<dt>[1]：错误描述</dt>
+	 * </dl>
 	 */
 	public enum ErrorCode {
 		
@@ -143,11 +156,6 @@ public class DhtConfig extends PropertiesConfig {
 		}
 		
 	}
-	
-	/**
-	 * DHT响应超时
-	 */
-	public static final Duration TIMEOUT = Duration.ofSeconds(SystemConfig.RECEIVE_TIMEOUT);
 	
 	/**
 	 * 请求类型
@@ -174,23 +182,18 @@ public class DhtConfig extends PropertiesConfig {
 		
 	}
 	
+	/**
+	 * 默认DHT节点：NodeID=host:port
+	 */
+	private final Map<String, String> nodes = new LinkedHashMap<>();
+	
 	public DhtConfig() {
 		super(DHT_CONFIG);
-	}
-	
-	static {
-		LOGGER.info("初始化DHT配置");
-		INSTANCE.init();
 	}
 	
 	public static final DhtConfig getInstance() {
 		return INSTANCE;
 	}
-	
-	/**
-	 * 默认DHT节点：nodeID=host:port
-	 */
-	private final Map<String, String> nodes = new LinkedHashMap<>();
 	
 	private void init() {
 		final Properties properties = this.properties.properties();
@@ -206,21 +209,21 @@ public class DhtConfig extends PropertiesConfig {
 	}
 
 	/**
-	 * 获取配置的DHT节点
+	 * 获取所有DHT节点
 	 */
 	public Map<String, String> nodes() {
 		return this.nodes;
 	}
 
 	/**
-	 * 保存DHT节点（可用）
+	 * 保存DHT节点
 	 */
 	public void persistent() {
-		LOGGER.debug("保存DHT节点");
+		LOGGER.debug("保存DHT节点配置");
 		final var nodes = NodeManager.getInstance().nodes();
 		final var map = nodes.stream()
 			.filter(node -> node.getStatus() != NodeSession.Status.verify)
-			.limit(NodeManager.MAX_NODE_SIZE)
+			.limit(MAX_NODE_SIZE)
 			.collect(Collectors.toMap(node -> StringUtils.hex(node.getId()), node -> node.getHost() + ":" + node.getPort()));
 		persistent(map, FileUtils.userDirFile(DHT_CONFIG));
 	}

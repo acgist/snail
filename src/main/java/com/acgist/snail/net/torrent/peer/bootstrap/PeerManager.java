@@ -35,7 +35,7 @@ public class PeerManager {
 	
 	/**
 	 * <p>使用的Peer，下载时Peer从中间剔除，选为劣质Peer时放回到列表中。</p>
-	 * <p>key=infoHashHex</p>
+	 * <p>key=InfoHashHex</p>
 	 * <p>value=Peers：双端队列，新加入插入队尾，剔除的Peer插入对头。</p>
 	 */
 	private final Map<String, Deque<PeerSession>> peers;
@@ -82,7 +82,7 @@ public class PeerManager {
 	 * <p>优先级高的Peer插入尾部优先使用。</p>
 	 * <p>优先级计算：主动连接、本地发现、Peer评分。</p>
 	 * 
-	 * @param infoHashHex 下载文件infoHashHex
+	 * @param infoHashHex 下载文件InfoHashHex
 	 * @param parent torrent下载统计
 	 * @param host 地址
 	 * @param port 端口

@@ -23,7 +23,6 @@
  * </pre>
  * 
  * net->torrent（peer、server、tracker、utp）
- * system/utils
  * 
  * @author acgist
  * @since 1.0.0

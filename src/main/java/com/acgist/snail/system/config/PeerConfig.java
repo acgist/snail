@@ -5,13 +5,17 @@ import java.util.Map;
 
 /**
  * <p>Peer配置</p>
- * <p>
- * 命名方式：<br>
- * Azureus-style：-名称（2）+版本（4）-随机数：-SA1000-...<br>
- * Shadow's-style：名称（1）+版本（4）-----随机数：S1000-----...<br>
- * </p>
+ * <dl>
+ * 	<dt>命名方式：</dt>
+ * 	<dd>Azureus-style：-名称（2）+版本（4）-随机数：-SA1000-...</dd>
+ * 	<dd>Shadow's-style：名称（1）+版本（4）-----随机数：S1000-----...</dd>
+ * </dl>
  * <p>Peer ID Conventions</p>
  * <p>参考链接：http://www.bittorrent.org/beps/bep_0020.html</p>
+ * <p>保留位</p>
+ * <p>参考链接：http://www.bittorrent.org/beps/bep_0004.html</p>
+ * <p>PEX状态</p>
+ * <p>参考链接：http://www.bittorrent.org/beps/bep_0011.html</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -43,40 +47,37 @@ public class PeerConfig {
 	 */
 	public static final int RESERVED_LENGTH = 8;
 	/**
-	 * <p>保留位</p>
-	 * <p>参考链接：http://www.bittorrent.org/beps/bep_0004.html</p>
+	 * 保留位
 	 */
 	public static final byte[] HANDSHAKE_RESERVED = {0, 0, 0, 0, 0, 0, 0, 0};
 	/**
-	 * DHT Protocol
+	 * 保留位：DHT Protocol
 	 */
 	public static final byte DHT_PROTOCOL =       1 << 0;
 	/**
-	 * FAST Protocol
+	 * 保留位：FAST Protocol
 	 */
-//	public static final byte FAST_PROTOCOL =      1 << 2;
+	public static final byte FAST_PROTOCOL =      1 << 2;
 	/**
-	 * Extension Protocol
+	 * 保留位：Extension Protocol
 	 */
 	public static final byte EXTENSION_PROTOCOL = 1 << 4;
-	
-	static {
-		HANDSHAKE_RESERVED[7] |= DHT_PROTOCOL;
-//		HANDSHAKE_RESERVED[7] |= FAST_PROTOCOL;
-		HANDSHAKE_RESERVED[5] |= EXTENSION_PROTOCOL;
-	}
-	
 	/**
-	 * Peer握手消息长度
+	 * 握手消息长度
 	 */
 	public static final int HANDSHAKE_LENGTH = 68;
 	/**
 	 * 协议名称
 	 */
 	public static final String HANDSHAKE_NAME = "BitTorrent protocol";
+	/**
+	 * 协议字节数组
+	 */
 	public static final byte[] HANDSHAKE_NAME_BYTES = HANDSHAKE_NAME.getBytes();
+	/**
+	 * 协议字节数组长度
+	 */
 	public static final int HANDSHAKE_NAME_LENGTH = HANDSHAKE_NAME_BYTES.length;
-	
 	/**
 	 * Peer来源：Tracker
 	 */
@@ -90,14 +91,13 @@ public class PeerConfig {
 	 */
 	public static final byte SOURCE_DHT =     1 << 2;
 	/**
-	 * Peer来源：客户端连接
+	 * Peer来源：客户端接入
 	 */
 	public static final byte SOURCE_CONNECT = 1 << 3;
 	/**
 	 * Peer来源：本地发现
 	 */
 	public static final byte SOURCE_LSD =     1 << 4;
-	
 	/**
 	 * Peer状态：上传
 	 */
@@ -106,11 +106,6 @@ public class PeerConfig {
 	 * Peer状态：下载
 	 */
 	public static final byte STATUS_DOWNLOAD = 1 << 0;
-	
-	/**
-	 * <p>PEX状态</p>
-	 * <p>参考链接：http://www.bittorrent.org/beps/bep_0011.html</p>
-	 */
 	/**
 	 * PEX状态：0x01：偏爱加密
 	 */
@@ -124,20 +119,26 @@ public class PeerConfig {
 	 */
 	public static final byte PEX_UTP =             	  1 << 2;
 	/**
-	 * PEX状态：0x08：支持holepunch协议；TODO：支持holepunch
+	 * PEX状态：0x08：支持holepunch协议
 	 */
 	public static final byte PEX_HOLEPUNCH =     	  1 << 3;
 	/**
-	 * PEX状态：0x10：未知含义：TODO：了解
+	 * PEX状态：0x10：未知含义
+	 * 
+	 * TODO：了解
 	 */
 	public static final byte PEX_OUTGO =          	  1 << 4;
-	
 	/**
-	 * Peer客户端名称
+	 * 客户端名称
 	 */
 	private static final Map<String, String> PEER_NAMES = new HashMap<>();
 
 	static {
+		//================保留位================//
+		HANDSHAKE_RESERVED[7] |= DHT_PROTOCOL;
+//		HANDSHAKE_RESERVED[7] |= FAST_PROTOCOL;
+		HANDSHAKE_RESERVED[5] |= EXTENSION_PROTOCOL;
+		//================客户端名称================//
 		PEER_NAMES.put("-AG", "Ares");
 		PEER_NAMES.put("-A~", "Ares");
 		PEER_NAMES.put("-AR", "Arctic");
@@ -206,7 +207,7 @@ public class PeerConfig {
 	}
 	
 	/**
-	 * 获取来源名称
+	 * 来源名称
 	 */
 	public static final String source(byte source) {
 		switch (source) {
@@ -226,9 +227,9 @@ public class PeerConfig {
 	}
 	
 	/**
-	 * 获取终端类型
+	 * 客户端名称
 	 * 
-	 * @param peerId 客户端ID
+	 * @param peerId 客户端PeerId
 	 */
 	public static final String name(byte[] peerId) {
 		if(peerId == null || peerId.length < 3) {
@@ -239,7 +240,7 @@ public class PeerConfig {
 	}
 	
 	/**
-	 * <p>Peer消息类型</p>
+	 * <p>Peer协议消息类型</p>
 	 * <p>参考链接：http://www.bittorrent.org/beps/bep_0004.html</p>
 	 */
 	public enum Type {
@@ -265,17 +266,18 @@ public class PeerConfig {
 		/** DHT */
 		dht((byte)           0x09),
 		/** 扩展 */
-		extension((byte)     0x14);
+		extension((byte)     0x14),
+		//================FAST Protocol================//
 		/** 推荐块 */
-//		suggest((byte)       0x0D),
+		suggest((byte)       0x0D),
 		/** 所有块 */
-//		haveAll((byte)       0x0E),
+		haveAll((byte)       0x0E),
 		/** 没有块 */
-//		haveNone((byte)      0x0F),
+		haveNone((byte)      0x0F),
 		/** 拒绝请求 */
-//		rejectRequest((byte) 0x10),
+		rejectRequest((byte) 0x10),
 		/** 快速允许 */
-//		allowedFast((byte)   0x11),
+		allowedFast((byte)   0x11);
 		
 		Type(byte value) {
 			this.value = value;
@@ -303,7 +305,7 @@ public class PeerConfig {
 	}
 	
 	/**
-	 * 扩展消息类型
+	 * 扩展协议消息类型
 	 */
 	public enum ExtensionType {
 		
@@ -323,7 +325,7 @@ public class PeerConfig {
 		}
 
 		/**
-		 * 扩展消息ID
+		 * 消息ID
 		 */
 		private byte value;
 		/**
@@ -366,11 +368,11 @@ public class PeerConfig {
 			}
 			return null;
 		}
-		
+
 	}
 	
 	/**
-	 * Metadata消息类型
+	 * Metadata扩展协议消息类型
 	 */
 	public enum MetadataType {
 		
@@ -407,7 +409,7 @@ public class PeerConfig {
 	}
 
 	/**
-	 * Holepunch扩展消息
+	 * Holepunch扩展协议消息类型
 	 */
 	public enum HolepunchType {
 		
@@ -479,7 +481,7 @@ public class PeerConfig {
 	}
 	
 	/**
-	 * 动作
+	 * Torrent任务动作
 	 */
 	public enum Action {
 		

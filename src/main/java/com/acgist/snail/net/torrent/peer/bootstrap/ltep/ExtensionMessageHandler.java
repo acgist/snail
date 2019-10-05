@@ -157,7 +157,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 		if(PeerConfig.ExtensionType.ut_metadata.notice()) {
 			final int metadataSize = this.infoHash.size();
 			if(metadataSize > 0) {
-				data.put(EX_METADATA_SIZE, metadataSize); // 种子infoHash数据长度
+				data.put(EX_METADATA_SIZE, metadataSize); // 种子InfoHash数据长度
 			}
 		}
 		this.pushMessage(ExtensionType.handshake.value(), BEncodeEncoder.encodeMap(data));
@@ -180,7 +180,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 		if(port != null && this.peerSession.peerPort() == null) {
 			this.peerSession.peerPort(port.intValue());
 		}
-		// 获取种子infoHash大小
+		// 获取种子InfoHash大小
 		final Long metadataSize = decoder.getLong(EX_METADATA_SIZE);
 		if(metadataSize != null && this.infoHash.size() == 0) {
 			this.infoHash.size(metadataSize.intValue());

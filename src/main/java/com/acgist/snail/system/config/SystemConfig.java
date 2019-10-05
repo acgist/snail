@@ -17,10 +17,12 @@ public class SystemConfig extends PropertiesConfig {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SystemConfig.class);
 	
+	private static final SystemConfig INSTANCE = new SystemConfig();
+	
 	private static final String SYSTEM_CONFIG = "/config/system.properties";
 
 	/**
-	 * 消息缓冲大小，设置Piece大小一致。
+	 * 消息缓冲大小：Piece大小一样
 	 */
 	public static final int BUFFER_SIZE = 16 * 1024;
 	/**
@@ -36,8 +38,8 @@ public class SystemConfig extends PropertiesConfig {
 	 */
 	public static final int RECEIVE_TIMEOUT = 5;
 	/**
-	 * <p>最大的网络包大小。</p>
-	 * <p>所有的需要创建ByteBuffer和byte[]的长度如果由外部数据设置时需要验证长度，防止恶意攻击导致内存泄露。</p>
+	 * <p>最大的网络包大小</p>
+	 * <p>所有创建ByteBuffer和byte[]对象的长度由外部数据设置时需要验证长度，防止恶意攻击导致内存泄露。</p>
 	 */
 	public static final int MAX_NET_BUFFER_SIZE = 4 * 1024 * 1024;
 	/**
@@ -65,16 +67,21 @@ public class SystemConfig extends PropertiesConfig {
 	 */
 	public static final int UNSIGNED_BYTE_MAX = 2 << 7;
 	/**
+	 * 数字
+	 */
+	public static final String DIGIT = "0123456789";
+	/**
+	 * 字符（小写）
+	 */
+	public static final String LETTER = "abcdefghijklmnopqrstuvwxyz";
+	/**
+	 * 字符（大写）
+	 */
+	public static final String LETTER_UPPER = LETTER.toUpperCase();
+	/**
 	 * 任务列表刷新时间
 	 */
 	public static final Duration TASK_REFRESH_INTERVAL = Duration.ofSeconds(4);
-	
-	public static final String DIGIT = "0123456789";
-	public static final String LETTER = "abcdefghijklmnopqrstuvwxyz";
-	public static final String LETTER_UPPER = LETTER.toUpperCase();
-
-	private static final SystemConfig INSTANCE = new SystemConfig();
-	
 	/**
 	 * <p>用户工作目录</p>
 	 * <p>注意顺序：优先初始化，不能使用类变量，本类初始化时会使用。</p>
@@ -86,7 +93,7 @@ public class SystemConfig extends PropertiesConfig {
 	}
 
 	static {
-		LOGGER.info("初始化数据库配置");
+		LOGGER.info("初始化系统配置");
 		INSTANCE.init();
 		INSTANCE.logger();
 	}
@@ -156,7 +163,7 @@ public class SystemConfig extends PropertiesConfig {
 	 */
 	private Integer trackerInterval;
 	/**
-	 * 单个任务Peer优化周期（秒）
+	 * Peer优化周期（秒）
 	 */
 	private Integer peerOptimizeInterval;
 	
@@ -199,7 +206,7 @@ public class SystemConfig extends PropertiesConfig {
 		LOGGER.info("DHT执行周期（秒）：{}", this.dhtInterval);
 		LOGGER.info("PEX执行周期（秒）：{}", this.pexInterval);
 		LOGGER.info("Tracker执行周期（秒）：{}", this.trackerInterval);
-		LOGGER.info("单个任务Peer优化周期（秒）：{}", this.peerOptimizeInterval);
+		LOGGER.info("Peer优化周期（秒）：{}", this.peerOptimizeInterval);
 		LOGGER.info("用户工作目录：{}", SystemConfig.USER_DIR);
 	}
 	
@@ -253,15 +260,15 @@ public class SystemConfig extends PropertiesConfig {
 	}
 
 	/**
-	 * <p>服务端口（Peer、DHT、UTP）</p>
-	 * <p>本机注册使用</p>
+	 * <p>服务端口（本机：Peer、DHT、UTP）</p>
 	 */
 	public static final Integer getTorrentPort() {
 		return INSTANCE.torrentPort;
 	}
 	
 	/**
-	 * 设置服务端口（外网：Peer、DHT、UTP），映射时如果端口已经被占用时重新设置的外网端口号。
+	 * <p>设置服务端口（外网：Peer、DHT、UTP）</p>
+	 * <p>UPNP映射时如果端口已经被占用时重新设置的外网端口号</p>
 	 */
 	public static final void setTorrentPortExt(Integer torrentPortExt) {
 		LOGGER.info("服务端口（外网：Peer、DHT、UTP）：{}", torrentPortExt);
@@ -270,7 +277,6 @@ public class SystemConfig extends PropertiesConfig {
 	
 	/**
 	 * <p>服务端口（外网：Peer、DHT、UTP）</p>
-	 * <p>外网使用，外网的Peer连接此端口。</p>
 	 * <p>如果不存在返回{@linkplain #getTorrentPort() 本机端口}。</p>
 	 */
 	public static final Integer getTorrentPortExt() {
@@ -330,7 +336,7 @@ public class SystemConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 单个任务Peer优化周期
+	 * Peer优化周期
 	 */
 	public static final Integer getPeerOptimizeInterval() {
 		return INSTANCE.peerOptimizeInterval;
@@ -344,9 +350,9 @@ public class SystemConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 在用户工作目录中获取文件路径
+	 * 用户工作目录中的文件路径
 	 * 
-	 * @param path 文件相对路径：以/开头
+	 * @param path 文件相对路径：以“/”开头
 	 */
 	public static final String userDir(String path) {
 		return SystemConfig.USER_DIR + path;

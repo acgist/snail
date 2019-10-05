@@ -25,7 +25,7 @@ public abstract class Recycle {
 	/**
 	 * 回收站构造器
 	 * 
-	 * @param path 文件路径，必须是完整路径，不能填写相对路径。
+	 * @param path 文件路径：必须是完整路径，不能填写相对路径。
 	 */
 	protected Recycle(String path) {
 		if(StringUtils.isEmpty(path)) {

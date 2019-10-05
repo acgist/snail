@@ -11,7 +11,7 @@ public class GuiException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
 	public GuiException() {
-		super("GUI错误");
+		super("GUI异常");
 	}
 
 	public GuiException(String message) {

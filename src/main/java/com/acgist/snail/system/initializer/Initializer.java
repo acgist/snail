@@ -22,7 +22,7 @@ public abstract class Initializer {
 		try {
 			this.init();
 		} catch (Exception e) {
-			LOGGER.error("初始化异常", e);
+			LOGGER.error("同步初始化异常", e);
 		}
 	}
 	
@@ -34,7 +34,7 @@ public abstract class Initializer {
 			try {
 				this.init();
 			} catch (Exception e) {
-				LOGGER.error("初始化异常", e);
+				LOGGER.error("异步初始化异常", e);
 			}
 		});
 	}
