@@ -335,7 +335,7 @@ public class TorrentSession {
 	 */
 	private void loadPexTimer() {
 		this.pexTimer = this.timerFixedDelay(PEX_INTERVAL.toSeconds(), PEX_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
-			PeerManager.getInstance().pex(this.infoHashHex(), this.peerLauncherGroup.optimizePeerSession()); // PEX消息
+			PeerManager.getInstance().pex(this.infoHashHex(), this.peerLauncherGroup.optimizePeerSession()); // pex消息
 			final LocalServiceDiscoveryClient client = LocalServiceDiscoveryClient.newInstance();
 			client.localSearch(this.torrent.getInfoHash().infoHashHex());
 		});

@@ -14,9 +14,7 @@ import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>
- * MSE密钥对Builder（DH交换）
- * </p>
+ * <p>MSE密钥对Builder（DH交换）</p>
  * 
  * @author acgist
  * @since 1.1.0

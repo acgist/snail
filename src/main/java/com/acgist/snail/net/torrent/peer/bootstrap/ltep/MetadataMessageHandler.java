@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.torrent.peer.bootstrap.IExtensionMessageHandler;
+import com.acgist.snail.net.torrent.peer.bootstrap.IExtensionTypeGetter;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
@@ -22,20 +23,21 @@ import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>InfoHash交换种子文件信息</p>
+ * <p>InfoHash交换种子文件信息（info）</p>
  * <p>Extension for Peers to Send Metadata Files</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0009.html</p>
+ * 
  * TODO：大量请求时拒绝请求
  * 
  * @author acgist
  * @since 1.0.0
  */
-public class MetadataMessageHandler implements IExtensionMessageHandler {
+public class MetadataMessageHandler implements IExtensionMessageHandler, IExtensionTypeGetter {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MetadataMessageHandler.class);
 	
 	/**
-	 * 数据交换每块大小：16KB
+	 * 数据交换块大小：16KB
 	 */
 	public static final int INFO_SLICE_SIZE = 16 * 1024;
 	/**
@@ -47,7 +49,7 @@ public class MetadataMessageHandler implements IExtensionMessageHandler {
 	 */
 	private static final String ARG_MSG_TYPE = "msg_type";
 	/**
-	 * InfoHash数据大小
+	 * Info数据大小
 	 */
 	private static final String ARG_TOTAL_SIZE = "total_size";
 	
@@ -101,8 +103,13 @@ public class MetadataMessageHandler implements IExtensionMessageHandler {
 		}
 	}
 	
+	@Override
+	public Byte extensionType() {
+		return this.peerSession.extensionTypeValue(ExtensionType.ut_metadata);
+	}
+	
 	/**
-	 * 发出请求：request
+	 * 发送消息：request
 	 */
 	public void request() {
 		LOGGER.debug("发送metadata消息-request");
@@ -115,16 +122,16 @@ public class MetadataMessageHandler implements IExtensionMessageHandler {
 	}
 	
 	/**
-	 * 处理请求：request
+	 * 处理消息：request
 	 */
 	private void request(BEncodeDecoder decoder) {
-		LOGGER.debug("收到metadata消息-request");
+		LOGGER.debug("处理metadata消息-request");
 		final int piece = decoder.getInteger(ARG_PIECE);
 		data(piece);
 	}
 
 	/**
-	 * 发出请求：data
+	 * 发送消息：data
 	 * 
 	 * @param piece 种子块索引
 	 */
@@ -153,13 +160,12 @@ public class MetadataMessageHandler implements IExtensionMessageHandler {
 	}
 
 	/**
-	 * 处理请求：data
+	 * 处理消息：data
 	 * 
-	 * @param data 请求数据
 	 * @param decoder B编码数据
 	 */
 	private void data(BEncodeDecoder decoder) {
-		LOGGER.debug("收到metadata消息-data");
+		LOGGER.debug("处理metadata消息-data");
 		byte[] bytes = this.infoHash.info();
 		final int piece = decoder.getInteger(ARG_PIECE);
 		// 设置种子infoInfo
@@ -188,7 +194,7 @@ public class MetadataMessageHandler implements IExtensionMessageHandler {
 	}
 	
 	/**
-	 * 发出请求：reject
+	 * 发送消息：reject
 	 */
 	public void reject() {
 		LOGGER.debug("发送metadata消息-reject");
@@ -197,23 +203,16 @@ public class MetadataMessageHandler implements IExtensionMessageHandler {
 	}
 	
 	/**
-	 * 处理请求：reject
+	 * 处理消息：reject
 	 */
 	private void reject(BEncodeDecoder decoder) {
-		LOGGER.debug("收到metadata消息-reject");
-	}
-	
-	/**
-	 * 客户端的消息类型
-	 */
-	private Byte metadataType() {
-		return this.peerSession.extensionTypeValue(ExtensionType.ut_metadata);
+		LOGGER.debug("处理metadata消息-reject");
 	}
 	
 	/**
 	 * 创建消息
 	 * 
-	 * @param type metadata类型
+	 * @param type metadata消息类型
 	 */
 	private Map<String, Object> buildMessage(PeerConfig.MetadataType type, int piece) {
 		final Map<String, Object> message = new LinkedHashMap<>();
@@ -233,8 +232,7 @@ public class MetadataMessageHandler implements IExtensionMessageHandler {
 	 * 发送消息
 	 */
 	private void pushMessage(Map<String, Object> data, byte[] x) {
-		// 扩展消息类型
-		final Byte type = metadataType();
+		final Byte type = extensionType();
 		if (type == null) {
 			LOGGER.warn("不支持metadata扩展协议");
 			return;

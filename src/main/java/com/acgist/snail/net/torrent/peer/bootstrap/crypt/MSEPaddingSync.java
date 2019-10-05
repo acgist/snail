@@ -6,48 +6,48 @@ import java.util.List;
 
 /**
  * <p>Padding数据同步</p>
- * <p>(len(padding) + padding)+</p>
- * <p>长度数据类型short</p>
+ * <p>同步数据格式：(len(padding) + padding)+</p>
+ * <p>长度数据类型：short</p>
  * 
  * @author acgist
- * @since 1.1.0
+ * @since 1.1.1
  */
-public class MSEPaddingReader {
+public class MSEPaddingSync {
 
 	/**
-	 * 读取数据数量
+	 * Padding数据数量
 	 */
 	private int count;
 	/**
-	 * 数据
+	 * 当前Padding数据
 	 */
 	private byte[] bytes;
 	/**
-	 * 剩余数据长度
+	 * 剩余Padding数据长度
 	 */
 	private short length = -1;
 	/**
-	 * 数据集合
+	 * Padding数据集合
 	 */
 	private final List<byte[]> list;
 	
-	private MSEPaddingReader(int count) {
+	private MSEPaddingSync(int count) {
 		this.count = count;
 		this.list = new ArrayList<>(count);
 	}
 	
-	public static final MSEPaddingReader newInstance(int count) {
-		return new MSEPaddingReader(count);
+	public static final MSEPaddingSync newInstance(int count) {
+		return new MSEPaddingSync(count);
 	}
 	
 	/**
-	 * 数据读取
+	 * Padding数据同步
 	 * 
-	 * @param buffer 数据
+	 * @param buffer Padding数据
 	 * 
-	 * @return 是否读取完成：true-完成；false-未完成；
+	 * @return 是否同步完成：true-完成；false-未完成；
 	 */
-	public boolean read(ByteBuffer buffer) {
+	public boolean sync(ByteBuffer buffer) {
 		if(this.count == 0) {
 			return true;
 		}
@@ -64,14 +64,14 @@ public class MSEPaddingReader {
 			this.length = -1;
 			this.list.add(this.bytes);
 			buffer.compact().flip();
-			return read(buffer);
+			return sync(buffer);
 		} else if(remain >= this.length) {
 			buffer.get(this.bytes, this.bytes.length - this.length, this.length);
 			this.count--;
 			this.length = -1;
 			this.list.add(this.bytes);
 			buffer.compact().flip();
-			return read(buffer);
+			return sync(buffer);
 		} else {
 			buffer.get(this.bytes, this.bytes.length - this.length, remain);
 			this.length -= remain;
@@ -81,7 +81,7 @@ public class MSEPaddingReader {
 	}
 	
 	/**
-	 * 获取所有数据集合
+	 * 获取所有的Padding数据
 	 */
 	public List<byte[]> allPadding() {
 		return this.list;

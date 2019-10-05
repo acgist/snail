@@ -76,7 +76,7 @@ public class PeerService {
 	}
 	
 	/**
-	 * 生成peerIdUrl
+	 * 生成PeerIdUrl
 	 */
 	private String buildPeerIdUrl() {
 		int index = 0;
@@ -87,6 +87,7 @@ public class PeerService {
 			builder.append("%").append(peerIdHex.substring(index, index + 2));
 			index += 2;
 		} while (index < length);
+		LOGGER.info("PeerIdUrl：{}", builder);
 		return builder.toString();
 	}
 	

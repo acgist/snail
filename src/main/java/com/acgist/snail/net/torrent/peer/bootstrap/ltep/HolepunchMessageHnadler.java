@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.torrent.peer.bootstrap.IExtensionMessageHandler;
+import com.acgist.snail.net.torrent.peer.bootstrap.IExtensionTypeGetter;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.PeerConfig.ExtensionType;
@@ -21,7 +22,7 @@ import com.acgist.snail.utils.NetUtils;
  * @author acgist
  * @since 1.1.0
  */
-public class HolepunchMessageHnadler implements IExtensionMessageHandler {
+public class HolepunchMessageHnadler implements IExtensionMessageHandler, IExtensionTypeGetter {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(HolepunchMessageHnadler.class);
 
@@ -76,8 +77,13 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler {
 		}
 	}
 	
+	@Override
+	public Byte extensionType() {
+		return this.peerSession.extensionTypeValue(ExtensionType.ut_holepunch);
+	}
+	
 	/**
-	 * 请求连接
+	 * 发送连接消息
 	 * 
 	 * @param host 地址
 	 * @param port 端口
@@ -87,7 +93,7 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler {
 	}
 	
 	/**
-	 * 发出请求：rendezvous
+	 * 发送消息：rendezvous
 	 * 
 	 * @param host 地址
 	 * @param port 端口
@@ -98,26 +104,20 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler {
 	}
 	
 	/**
-	 * 处理请求：rendezvous
+	 * 处理消息：rendezvous
 	 */
 	public void rendezvous() {
 	}
 	
 	/**
-	 * 处理请求：connect
+	 * 处理消息：connect
 	 */
 	public void connect() {
 	}
 	
 	/**
-	 * 客户端的消息类型
-	 */
-	private Byte holepunchType() {
-		return this.peerSession.extensionTypeValue(ExtensionType.ut_holepunch);
-	}
-	
-	/**
-	 * 消息：
+	 * 创建消息
+	 * 
 	 * TODO：IPv6
 	 */
 	private ByteBuffer buildMessage(HolepunchType type, String ip, int port, HolepunchErrorCode errorCode) {
@@ -134,8 +134,7 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler {
 	 * 发送消息
 	 */
 	private void pushMessage(ByteBuffer buffer) {
-		// 扩展消息类型
-		final Byte type = holepunchType();
+		final Byte type = extensionType();
 		if (type == null) {
 			LOGGER.warn("不支持holepunch扩展协议");
 			return;

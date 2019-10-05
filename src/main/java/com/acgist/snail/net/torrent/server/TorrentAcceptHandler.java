@@ -9,19 +9,19 @@ import com.acgist.snail.net.torrent.dht.DhtMessageHandler;
 import com.acgist.snail.net.torrent.utp.bootstrap.UtpService;
 
 /**
- * UDP服务消息处理：UTP、DHT
+ * Torrent（UTP、DHT）消息接收器
  * 
  * @author acgist
  * @since 1.1.0
  */
 public class TorrentAcceptHandler extends UdpAcceptHandler {
 	
+	private static final TorrentAcceptHandler INSTANCE = new TorrentAcceptHandler();
+	
 	/**
 	 * DHT消息开头字符
 	 */
 	private static final byte DHT_HEADER = 'd';
-	
-	private static final TorrentAcceptHandler INSTANCE = new TorrentAcceptHandler();
 	
 	private TorrentAcceptHandler() {
 	}
