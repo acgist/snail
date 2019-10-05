@@ -51,7 +51,9 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 */
 	public static final String EX_E = "e";
 	/**
-	 * 未知含义：TODO：了解
+	 * 未知含义
+	 * 
+	 * TODO：了解
 	 */
 	public static final String EX_REQQ = "reqq";
 	/**
@@ -63,7 +65,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 */
 	public static final String EX_IPV6 = "ipv6";
 	/**
-	 * 本地地址（外网），不设置自动获取。
+	 * 本地地址（外网）：不设置自动获取
 	 */
 	public static final String EX_YOURIP = "yourip";
 	/**
@@ -131,6 +133,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 * 扩展握手消息
 	 */
 	public void handshake() {
+		LOGGER.debug("发送扩展握手消息");
 		this.handshake = true;
 		final Map<String, Object> data = new LinkedHashMap<>();
 		final Map<String, Object> supportType = new LinkedHashMap<>();
@@ -164,9 +167,10 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	}
 
 	/**
-	 * 扩展握手消息
+	 * 处理握手消息
 	 */
 	private void handshake(ByteBuffer buffer) throws OversizePacketException {
+		LOGGER.debug("处理扩展握手消息");
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
 		final var decoder = BEncodeDecoder.newInstance(bytes);
@@ -209,7 +213,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	}
 	
 	/**
-	 * pex请求
+	 * 发送pex消息
 	 */
 	public void pex(byte[] bytes) {
 		if(this.peerSession.supportExtensionType(ExtensionType.ut_pex)) {
@@ -218,15 +222,14 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	}
 	
 	/**
-	 * pex消息
+	 * 处理pex消息
 	 */
 	private void pex(ByteBuffer buffer) throws NetException {
 		this.peerExchangeMessageHandler.onMessage(buffer);
 	}
 	
 	/**
-	 * <p>metadata请求</p>
-	 * <p>下载种子</p>
+	 * <p>发送metadata消息</p>
 	 */
 	public void metadata() {
 		if(this.peerSession.supportExtensionType(ExtensionType.ut_metadata)) {
@@ -235,41 +238,41 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	}
 	
 	/**
-	 * metadata消息
+	 * 处理metadata消息
 	 */
 	private void metadata(ByteBuffer buffer) throws NetException {
 		this.metadataMessageHandler.onMessage(buffer);
 	}
 	
 	/**
-	 * holepunch请求
+	 * 发送holepunch消息
 	 */
 	public void holepunch(String host, Integer port) {
 		this.holepunchExtensionMessageHnadler.holepunch(host, port);
 	}
 	
 	/**
-	 * holepunch消息
+	 * 处理holepunch消息
 	 */
 	public void holepunch(ByteBuffer buffer) {
 		this.holepunchExtensionMessageHnadler.onMessage(buffer);
 	}
 
 	/**
-	 * 数据打包
+	 * 创建扩展消息
 	 * 
 	 * @param type 扩展类型
 	 * @param bytes 扩展数据
 	 */
 	private byte[] buildMessage(byte type, byte[] bytes) {
 		final byte[] message = new byte[bytes.length + 1];
-		message[0] = type;
+		message[0] = type; // 扩展消息类型
 		System.arraycopy(bytes, 0, message, 1, bytes.length);
 		return message;
 	}
 	
 	/**
-	 * 发送消息
+	 * 发送扩展消息
 	 * 
 	 * @param type 扩展消息类型：需要和Peer的标记一致
 	 */

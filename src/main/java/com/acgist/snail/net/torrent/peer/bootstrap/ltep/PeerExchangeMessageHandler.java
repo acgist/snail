@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.torrent.peer.bootstrap.IExtensionMessageHandler;
+import com.acgist.snail.net.torrent.peer.bootstrap.IExtensionTypeGetter;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
@@ -25,14 +26,14 @@ import com.acgist.snail.utils.PeerUtils;
 
 /**
  * <p>Peer Exchange (PEX)</p>
- * <p>Peer交换。在优化PeerClient后获取有效的Peer发送此消息。</p>
+ * <p>Peer交换，在优化PeerLauncher后获取有效的Peer发送此消息。</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0011.html</p>
  * TODO：IPv6
  * 
  * @author acgist
  * @since 1.0.0
  */
-public class PeerExchangeMessageHandler implements IExtensionMessageHandler {
+public class PeerExchangeMessageHandler implements IExtensionMessageHandler, IExtensionTypeGetter {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerExchangeMessageHandler.class);
 	
@@ -62,13 +63,17 @@ public class PeerExchangeMessageHandler implements IExtensionMessageHandler {
 	public void onMessage(ByteBuffer buffer) throws NetException {
 		pex(buffer);
 	}
+	
+	@Override
+	public Byte extensionType() {
+		return this.peerSession.extensionTypeValue(ExtensionType.ut_pex);
+	}
 
 	/**
-	 * 发送请求
+	 * 发送消息：pex
 	 */
 	public void pex(byte[] bytes) {
-		// 扩展消息类型
-		final Byte type = peerExchangeType();
+		final Byte type = extensionType();
 		if (type == null) {
 			LOGGER.warn("不支持pex扩展协议");
 			return;
@@ -78,7 +83,9 @@ public class PeerExchangeMessageHandler implements IExtensionMessageHandler {
 	}
 	
 	/**
-	 * 处理请求：将获取的Peer加入到列表
+	 * <p>处理消息：pex</p>
+	 * <p>将获取的Peer加入到Peer列表</p>
+	 * 
 	 * TODO：IPv6
 	 */
 	private void pex(ByteBuffer buffer) throws OversizePacketException {
@@ -110,14 +117,7 @@ public class PeerExchangeMessageHandler implements IExtensionMessageHandler {
 	}
 	
 	/**
-	 * 客户端的消息类型
-	 */
-	private Byte peerExchangeType() {
-		return this.peerSession.extensionTypeValue(ExtensionType.ut_pex);
-	}
-	
-	/**
-	 * 生成PEX消息
+	 * 创建消息
 	 */
 	public static final byte[] buildMessage(List<PeerSession> optimize) {
 		if(CollectionUtils.isEmpty(optimize)) {

@@ -199,7 +199,7 @@ public class TorrentStreamGroup {
 	}
 	
 	/**
-	 * <p>设置已下载的Piece，同时发出have消息。</p>
+	 * <p>设置已下载的Piece，同时发送have消息。</p>
 	 */
 	public void done(int index) {
 		this.pieces.set(index, true);

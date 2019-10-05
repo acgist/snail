@@ -40,7 +40,16 @@ public class MSECipher {
 	 * 解密
 	 */
 	private final Cipher decryptCipher;
-
+	
+	private MSECipher(byte[] S, InfoHash infoHash, boolean initiator) {
+		final Key initiatorKey = buildInitiatorKey(S, infoHash.infoHash());
+		final Key receiverKey = buildReceiverKey(S, infoHash.infoHash());
+		final Key encryptKey = initiator ? initiatorKey : receiverKey;
+		final Key decryptKey = initiator ? receiverKey : initiatorKey;
+		this.decryptCipher = buildCipher(Cipher.DECRYPT_MODE, ARC4_ALGO_TRANSFORMATION, decryptKey);
+		this.encryptCipher = buildCipher(Cipher.ENCRYPT_MODE, ARC4_ALGO_TRANSFORMATION, encryptKey);
+	}
+	
 	/**
 	 * 请求客户端
 	 * 
@@ -50,7 +59,7 @@ public class MSECipher {
 	public static final MSECipher newInitiator(byte[] S, InfoHash infoHash) {
 		return new MSECipher(S, infoHash, true);
 	}
-
+	
 	/**
 	 * 连入客户端
 	 * 
@@ -59,15 +68,6 @@ public class MSECipher {
 	 */
 	public static final MSECipher newReceiver(byte[] S, InfoHash infoHash) {
 		return new MSECipher(S, infoHash, false);
-	}
-	
-	private MSECipher(byte[] S, InfoHash infoHash, boolean initiator) {
-		final Key initiatorKey = buildInitiatorKey(S, infoHash.infoHash());
-		final Key receiverKey = buildReceiverKey(S, infoHash.infoHash());
-		final Key encryptKey = initiator ? initiatorKey : receiverKey;
-		final Key decryptKey = initiator ? receiverKey : initiatorKey;
-		this.decryptCipher = buildCipher(Cipher.DECRYPT_MODE, ARC4_ALGO_TRANSFORMATION, decryptKey);
-		this.encryptCipher = buildCipher(Cipher.ENCRYPT_MODE, ARC4_ALGO_TRANSFORMATION, encryptKey);
 	}
 
 	/**
@@ -101,7 +101,7 @@ public class MSECipher {
 		try {
 			return this.getEncryptCipher().doFinal(bytes);
 		} catch (Exception e) {
-			throw new NetException("加密失败", e);
+			throw new NetException("加密异常", e);
 		}
 	}
 	
@@ -136,7 +136,7 @@ public class MSECipher {
 		try {
 			return this.getDecryptCipher().doFinal(bytes);
 		} catch (Exception e) {
-			throw new NetException("解密失败", e);
+			throw new NetException("解密异常", e);
 		}
 	}
 	
@@ -154,16 +154,22 @@ public class MSECipher {
 		return this.decryptCipher;
 	}
 
+	/**
+	 * 创建请求客户端加密Key
+	 */
 	private Key buildInitiatorKey(byte[] S, byte[] SKEY) {
 		return buildKey("keyA", S, SKEY);
 	}
 
+	/**
+	 * 创建连入客户端加密Key
+	 */
 	private Key buildReceiverKey(byte[] S, byte[] SKEY) {
 		return buildKey("keyB", S, SKEY);
 	}
 
 	/**
-	 * 创建KEY
+	 * 创建Key
 	 */
 	private Key buildKey(String s, byte[] S, byte[] SKEY) {
 		final MessageDigest digest = DigestUtils.sha1();

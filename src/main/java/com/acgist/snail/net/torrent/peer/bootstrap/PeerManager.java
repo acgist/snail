@@ -34,9 +34,9 @@ public class PeerManager {
 	private static final PeerManager INSTANCE = new PeerManager();
 	
 	/**
-	 * <p>使用的Peer，下载时Peer从中间剔除，选为劣质Peer时放回到列表中。</p>
+	 * <p>Peer队列，下载时Peer从中剔除，当Peer从下载列表中剔除时从新放回到列表中。</p>
 	 * <p>key=InfoHashHex</p>
-	 * <p>value=Peers：双端队列，新加入插入队尾，剔除的Peer插入对头。</p>
+	 * <p>value=Peer：双端队列（尾部优先使用）</p>
 	 */
 	private final Map<String, Deque<PeerSession>> peers;
 	/**
@@ -54,7 +54,7 @@ public class PeerManager {
 	}
 	
 	/**
-	 * 获取所有Peer信息。
+	 * 获取所有Peer拷贝
 	 */
 	public Map<String, List<PeerSession>> peers() {
 		synchronized (this.storagePeers) {
@@ -82,8 +82,8 @@ public class PeerManager {
 	 * <p>优先级高的Peer插入尾部优先使用。</p>
 	 * <p>优先级计算：主动连接、本地发现、Peer评分。</p>
 	 * 
-	 * @param infoHashHex 下载文件InfoHashHex
-	 * @param parent torrent下载统计
+	 * @param infoHashHex InfoHashHex
+	 * @param parent 任务下载统计
 	 * @param host 地址
 	 * @param port 端口
 	 * 
@@ -97,7 +97,7 @@ public class PeerManager {
 				PeerSession peerSession = findPeerSession(infoHashHex, host);
 				if(peerSession == null) {
 					if(LOGGER.isDebugEnabled()) {
-						LOGGER.debug("添加PeerSession，{}-{}，来源：{}", host, port, PeerConfig.source(source));
+						LOGGER.debug("添加PeerSession：{}-{}，来源：{}", host, port, PeerConfig.source(source));
 					}
 					peerSession = PeerSession.newInstance(parent, host, port);
 					if(
@@ -120,7 +120,7 @@ public class PeerManager {
 	}
 	
 	/**
-	 * 放入一个劣质的Peer，插入头部。
+	 * 放入一个劣质的Peer：插入头部
 	 */
 	public void inferior(String infoHashHex, PeerSession peerSession) {
 		var deque = deque(infoHashHex);
@@ -130,7 +130,7 @@ public class PeerManager {
 	}
 	
 	/**
-	 * 放入一个优质的Peer，插入尾部。
+	 * 放入一个优质的Peer：插入尾部
 	 */
 	public void preference(String infoHashHex, PeerSession peerSession) {
 		var deque = deque(infoHashHex);
@@ -140,7 +140,7 @@ public class PeerManager {
 	}
 	
 	/**
-	 * 从尾部选择一个Peer下载，选择可用状态的Peer。
+	 * 从尾部选择一个Peer下载：选择可用状态的Peer
 	 */
 	public PeerSession pick(String infoHashHex) {
 		var deque = deque(infoHashHex);
@@ -192,7 +192,7 @@ public class PeerManager {
 	}
 	
 	/**
-	 * <p>发送PEX消息</p>
+	 * <p>发送pex消息</p>
 	 * <p>只发送给当前上传和下载的Peer。</p>
 	 */
 	public void pex(String infoHashHex, List<PeerSession> optimize) {
@@ -219,12 +219,12 @@ public class PeerManager {
 					peerLauncher.pex(bytes);
 				}
 			});
-			LOGGER.debug("发送PEX消息，Peer数量：{}，通知Peer数量：{}", optimize.size(), count.get());
+			LOGGER.debug("发送pex消息，Peer数量：{}，通知Peer数量：{}", optimize.size(), count.get());
 		}
 	}
 	
 	/**
-	 * 获取对应的Peer列表
+	 * 获取Peer列表
 	 */
 	private Deque<PeerSession> deque(String infoHashHex) {
 		synchronized (this.peers) {
@@ -238,7 +238,7 @@ public class PeerManager {
 	}
 	
 	/**
-	 * 获取对应的Peer列表（存储）
+	 * 获取Peer存档队列
 	 */
 	public List<PeerSession> list(String infoHashHex) {
 		synchronized (this.storagePeers) {
@@ -252,7 +252,7 @@ public class PeerManager {
 	}
 	
 	/**
-	 * 是否已经添加过
+	 * 通过host获取Peer
 	 */
 	private PeerSession findPeerSession(String infoHashHex, String host) {
 		final var list = list(infoHashHex);

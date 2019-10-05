@@ -24,6 +24,7 @@ public class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteBuffer>
 	 * int字符长度
 	 */
 	private static final int INT_BYTE_LENGTH = 4;
+	
 	/**
 	 * <p>完整消息缓存</p>
 	 * <p>消息按照长度读入进入消息缓存</p>

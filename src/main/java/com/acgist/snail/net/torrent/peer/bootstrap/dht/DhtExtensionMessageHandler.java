@@ -50,14 +50,13 @@ public class DhtExtensionMessageHandler implements IExtensionMessageHandler {
 	}
 	
 	/**
-	 * <p>处理DHT消息</p>
-	 * <p>设置DHT端口，加入DHT列表。</p>
+	 * <p>设置DHT端口，添加DHT节点。</p>
 	 */
 	private void port(ByteBuffer buffer) {
-		LOGGER.debug("收到DHT消息");
+		LOGGER.debug("处理DHT消息");
 		final int port = NetUtils.decodePort(buffer.getShort());
-		LOGGER.debug("DHT扩展添加DHT节点：{}-{}", this.peerSession.host(), port);
 		this.peerSession.dhtPort(port);
+		LOGGER.debug("DHT扩展添加DHT节点：{}-{}", this.peerSession.host(), port);
 		final var dhtLauncher = this.torrentSession.dhtLauncher();
 		if(dhtLauncher != null) {
 			dhtLauncher.put(this.peerSession.host(), port);

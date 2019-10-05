@@ -223,11 +223,9 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 	
 	/**
 	 * <p>流量控制和阻塞控制：</p>
-	 * <p>
-	 * 慢开始：wnd * 2<br>
-	 * 拥堵算法：wnd + 1<br>
-	 * 出现超时（丢包）：wnd / 2
-	 * </p>
+	 * <p>慢开始：wnd * 2</p>
+	 * <p>拥堵算法：wnd + 1</p>
+	 * <p>出现超时（丢包）：wnd / 2</p>
 	 */
 	private void wndControl() {
 		// 如果没有连接成功或者连接不可用时不发送
