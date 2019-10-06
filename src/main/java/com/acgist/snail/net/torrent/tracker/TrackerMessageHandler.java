@@ -23,7 +23,7 @@ public class TrackerMessageHandler extends UdpMessageHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerMessageHandler.class);
 
 	/**
-	 * Announce消息最小字节长度
+	 * Announce消息最大长度
 	 */
 	private static final int ANNOUNCE_MIN_SIZE = 20;
 	
@@ -38,13 +38,13 @@ public class TrackerMessageHandler extends UdpMessageHandler {
 		} else if(action == TrackerConfig.Action.scrape.action()) {
 			// 刮檫
 		} else if(action == TrackerConfig.Action.error.action()) {
-			LOGGER.warn("Tracker错误");
+			LOGGER.warn("Tracker声明错误");
 		}
-		buffer.clear();
+		buffer.clear(); // 清空消息
 	}
 
 	/**
-	 * 处理连接
+	 * 处理连接消息
 	 */
 	private void doConnect(ByteBuffer buffer) {
 		final int trackerId = buffer.getInt();
@@ -53,11 +53,10 @@ public class TrackerMessageHandler extends UdpMessageHandler {
 	}
 
 	/**
-	 * 处理Peer
+	 * 处理声明消息
 	 */
 	private void doAnnounce(ByteBuffer buffer) {
-		// 消息长度
-		final int size = buffer.limit();
+		final int size = buffer.limit(); // 消息长度
 		if(size < ANNOUNCE_MIN_SIZE) {
 			LOGGER.debug("Announce消息长度错误：{}", size);
 			return;

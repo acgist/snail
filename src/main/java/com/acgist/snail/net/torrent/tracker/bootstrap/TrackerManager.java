@@ -72,6 +72,13 @@ public class TrackerManager {
 	}
 	
 	/**
+	 * 删除TrackerLauncher
+	 */
+	public void release(Integer id) {
+		this.trackerLaunchers.remove(id);
+	}
+	
+	/**
 	 * 处理announce信息
 	 */
 	public void announce(final AnnounceMessage message) {
@@ -88,21 +95,29 @@ public class TrackerManager {
 	}
 	
 	/**
-	 * 删除TrackerLauncher
+	 * 处理连接ID消息
 	 */
-	public void release(Integer id) {
-		this.trackerLaunchers.remove(id);
+	public void connectionId(int trackerId, long connectionId) {
+		final var client = this.trackerClients.get(trackerId);
+		if(client != null && client.type() == Protocol.udp) {
+			final UdpTrackerClient udpTrackerClient = (UdpTrackerClient) client;
+			udpTrackerClient.connectionId(connectionId);
+		}
 	}
 	
 	/**
-	 * 所有的TrackerClient
+	 * 获取所有的TrackerClient的拷贝
 	 */
 	public List<TrackerClient> clients() {
 		return new ArrayList<>(this.trackerClients.values());
 	}
 
 	/**
-	 * 获取可用的TrackerClient，传入announce的返回有用的，然后补充不足的的数量。
+	 * <p>获取可用的TrackerClient</p>
+	 * <p>
+	 * 通过传入的声明地址获取TrackerClient，如果声明地址没有被注册为TrackerClient，则注册。
+	 * 如果获取的数量不满足单个任务最大数量，将会使用系统的TrackerClient补充。
+	 * </p>
 	 */
 	public List<TrackerClient> clients(String announceUrl, List<String> announceUrls) throws DownloadException {
 		final List<TrackerClient> clients = register(announceUrl, announceUrls);
@@ -117,9 +132,9 @@ public class TrackerManager {
 	}
 	
 	/**
-	 * 获取可用的Tracker Client，获取权重排在前面的Tracker Client。
+	 * 补充TrackerClient
 	 * 
-	 * @param size 返回可用client数量
+	 * @param size 需要补充Client数量
 	 * @param clients 已有的Client
 	 */
 	private List<TrackerClient> clients(int size, List<TrackerClient> clients) {
@@ -132,26 +147,16 @@ public class TrackerManager {
 			.collect(Collectors.toList());
 	}
 	
-	/**
-	 * 设置udp的connectionId
-	 */
-	public void connectionId(int trackerId, long connectionId) {
-		final var client = this.trackerClients.get(trackerId);
-		if(client != null && client.type() == Protocol.udp) {
-			final UdpTrackerClient udpTrackerClient = (UdpTrackerClient) client;
-			udpTrackerClient.connectionId(connectionId);
-		}
-	}
 
 	/**
-	 * 注册{@link TrackerConfig}配置的默认Tracker。
+	 * 注册{@link TrackerConfig}配置的默认Tracker
 	 */
 	public List<TrackerClient> register() throws DownloadException {
 		return register(TrackerConfig.getInstance().announces());
 	}
 	
 	/**
-	 * 注册TrackerClient。
+	 * 注册TrackerClient
 	 */
 	private List<TrackerClient> register(String announceUrl, List<String> announceUrls) throws DownloadException {
 		final List<String> announces = new ArrayList<>();
@@ -165,19 +170,19 @@ public class TrackerManager {
 	}
 
 	/**
-	 * 注册TrackerClient。
+	 * 注册TrackerClient
 	 */
-	private List<TrackerClient> register(List<String> announces) throws DownloadException {
-		if(announces == null) {
-			announces = new ArrayList<>();
+	private List<TrackerClient> register(List<String> announceUrls) throws DownloadException {
+		if(announceUrls == null) {
+			announceUrls = new ArrayList<>();
 		}
-		return announces.stream()
-			.map(announce -> announce.trim())
-			.map(announce -> {
+		return announceUrls.stream()
+			.map(announceUrl -> announceUrl.trim())
+			.map(announceUrl -> {
 				try {
-					return register(announce);
+					return register(announceUrl);
 				} catch (DownloadException e) {
-					LOGGER.error("TrackerClient注册异常：{}", announce, e);
+					LOGGER.error("TrackerClient注册异常：{}", announceUrl, e);
 				}
 				return null;
 			})
@@ -209,7 +214,7 @@ public class TrackerManager {
 	}
 
 	/**
-	 * 创建Client代理，如果第一次创建失败将链接使用URL解码后再次创建。
+	 * 创建Tracker Client代理，如果第一次创建失败将链接使用URL解码后再次创建。
 	 */
 	private TrackerClient buildClientProxy(final String announceUrl) throws DownloadException {
 		TrackerClient client = buildClient(announceUrl);
@@ -223,7 +228,7 @@ public class TrackerManager {
 	}
 
 	/**
-	 * 创建Ttracker Client
+	 * 创建Tracker Client
 	 * 
 	 * TODO：ws
 	 */

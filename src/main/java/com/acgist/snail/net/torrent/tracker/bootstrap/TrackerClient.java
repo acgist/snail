@@ -17,9 +17,7 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>Tracker客户端</p>
- * <p>基本协议：TCP（HTTP）、UDP</p>
- * <p>失败次数超过{@link #MAX_FAIL_TIMES}时为无效客户端，不可再使用。</p>
- * <p>每次成功查询都会使这个Tracker的权重增加。</p>
+ * <p>基本协议：TCP（HTTP）、UDP、WS（WebSocket）</p>
  * <p>sid：每一个Torrent和Tracker服务器对应的id。</p>
  * 
  * @author acgist
@@ -39,7 +37,8 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	public static final int WANT_PEER_SIZE = 50;
 	
 	/**
-	 * 权重
+	 * <p>权重</p>
+	 * <p>查询成功会使权重增加，查询失败会使权重减少。</p>
 	 */
 	protected int weight;
 	/**
@@ -48,7 +47,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	 */
 	protected final Integer id;
 	/**
-	 * 类型
+	 * 协议类型
 	 */
 	protected final Protocol type;
 	/**
@@ -64,7 +63,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	 */
 	private final AtomicBoolean available = new AtomicBoolean(true);
 	/**
-	 * 失败次数，成功后清零，超过一定次数#{@link #MAX_FAIL_TIMES}设置为不可用
+	 * 失败次数，成功后清零，超过一定次数#{@link #MAX_FAIL_TIMES}设置为不可用。
 	 */
 	private final AtomicInteger failTimes = new AtomicInteger(0);
 	/**
@@ -84,7 +83,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	}
 
 	/**
-	 * 是否可用：如果多次超时标记不可用状态
+	 * 是否可用
 	 */
 	public boolean available() {
 		return this.available.get();

@@ -25,12 +25,15 @@ public class UtpService {
 	
 	private static final UtpService INSTANCE = new UtpService();
 	
-	private final Map<String, UtpMessageHandler> utpMessageHandlers = new ConcurrentHashMap<>();
-	
 	/**
 	 * UTP超时定时任务
 	 */
 	private static final int UTP_INTERVAL = 5;
+	
+	/**
+	 * UTP消息代理
+	 */
+	private final Map<String, UtpMessageHandler> utpMessageHandlers = new ConcurrentHashMap<>();
 	
 	private UtpService() {
 		timer();
@@ -41,7 +44,7 @@ public class UtpService {
 	}
 	
 	/**
-	 * 连接ID，每获取一次+1。
+	 * 连接ID：每次获取+1
 	 */
 	private int connectionId = 0;
 	
@@ -80,7 +83,8 @@ public class UtpService {
 	}
 	
 	/**
-	 * 获取UTP消息处理器，如果已经存在直接返回。
+	 * <p>获取UTP消息代理</p>
+	 * <p>如果已经存在直接返回，否者创建。</p>
 	 * 
 	 * @param connectionId 连接ID
 	 * @param socketAddress 请求地址
@@ -95,7 +99,7 @@ public class UtpService {
 	}
 	
 	/**
-	 * 添加消息处理器
+	 * 添加消息代理
 	 */
 	public void put(UtpMessageHandler utpMessageHandler) {
 		synchronized (this.utpMessageHandlers) {
@@ -104,7 +108,7 @@ public class UtpService {
 	}
 	
 	/**
-	 * 删除消息处理器
+	 * 删除消息代理
 	 */
 	public void remove(UtpMessageHandler utpMessageHandler) {
 		synchronized (this.utpMessageHandlers) {

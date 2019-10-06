@@ -86,8 +86,7 @@ public class UtpWindow {
 	}
 	
 	/**
-	 * 发送窗口获取客户端窗口是否限制：
-	 * 客户端窗口大小剩余最大时1/4。
+	 * 发送窗口获取客户端窗口是否限制：客户端窗口大小剩余最大时1/4
 	 */
 	public boolean wndSizeControl() {
 		synchronized (this) {
@@ -105,7 +104,7 @@ public class UtpWindow {
 	}
 	
 	/**
-	 * 发送数据：递增seqnr。
+	 * 发送数据：递增seqnr
 	 */
 	public UtpWindowData build(byte[] data) {
 		synchronized (this) {
@@ -117,7 +116,7 @@ public class UtpWindow {
 	}
 
 	/**
-	 * 发送窗口获取超时的数据包（丢包）。
+	 * 发送窗口获取超时的数据包（丢包）
 	 */
 	public List<UtpWindowData> timeoutWindowData() {
 		synchronized (this) {
@@ -133,7 +132,7 @@ public class UtpWindow {
 	}
 	
 	/**
-	 * 响应，移除发送数据并更新超时时间。
+	 * 响应：移除发送数据并更新超时时间
 	 */
 	public void ack(short acknr, int wndSize) {
 		synchronized (this) {
@@ -156,7 +155,7 @@ public class UtpWindow {
 	}
 	
 	/**
-	 * 丢弃超时数据。
+	 * 丢弃超时数据
 	 */
 	public void discard(short seqnr) {
 		synchronized (this) {
@@ -165,10 +164,10 @@ public class UtpWindow {
 	}
 	
 	/**
-	 * 接收数据
-	 * 如果数据已经被处理返回null。
-	 * 如果seqnr不是下一个数据时，放入缓存。
-	 * 如果seqnr是下一个数据时，继续获取直到找不到下一个seqnr为止，然后合并返回。更新当前接收的seqnr。
+	 * <p>接收数据</p>
+	 * <p>如果数据已经被处理返回null。</p>
+	 * <p>如果seqnr不是下一个数据时，放入缓存。</p>
+	 * <p>如果seqnr是下一个数据时，继续获取直到找不到下一个seqnr为止，然后合并返回。更新当前接收的seqnr。</p>
 	 */
 	public UtpWindowData receive(int timestamp, short seqnr, ByteBuffer buffer) throws NetException {
 		synchronized (this) {
@@ -204,7 +203,7 @@ public class UtpWindow {
 	}
 	
 	/**
-	 * 取出窗口数据，更新窗口被占用窗口大小。
+	 * 取出窗口数据：更新窗口被占用窗口大小
 	 */
 	private UtpWindowData take(short seqnr) {
 		final UtpWindowData windowData = this.wndMap.remove(seqnr);
@@ -212,7 +211,7 @@ public class UtpWindow {
 	}
 	
 	/**
-	 * 取出窗口数据，更新窗口被占用窗口大小。
+	 * 取出窗口数据：更新窗口被占用窗口大小
 	 */
 	private UtpWindowData take(UtpWindowData windowData) {
 		if(windowData == null) {
