@@ -14,7 +14,7 @@ public class TrackerClientUdpTest {
 
 	@Test
 	public void announce() throws NetException, DownloadException {
-		String path = "e:/snail/kn.torrent";
+		String path = "e:/snail/12345.torrent";
 		TorrentSession session = TorrentManager.getInstance().newTorrentSession(path);
 //		UdpTrackerClient client = UdpTrackerClient.newInstance("udp://exodus.desync.com:6969/announce");
 //		TrackerManager.getInstance().newTrackerLauncher(client, session);

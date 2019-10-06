@@ -24,11 +24,10 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>DHT节点管理器</p>
+ * <p>协议链接（Kademlia）：https://baike.baidu.com/item/Kademlia</p>
+ * <p>BT=DHT、eMule=KAD</p>
  * 
  * TODO：观察是否需要定时清理Node
- * 
- * <p>参考链接（Kademlia）：https://baike.baidu.com/item/Kademlia</p>
- * <p>BT=DHT、eMule=KAD</p>
  * 
  * @author acgist
  * @since 1.0.0

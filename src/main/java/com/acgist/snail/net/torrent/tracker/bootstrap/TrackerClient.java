@@ -43,7 +43,8 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	 */
 	protected int weight;
 	/**
-	 * ID
+	 * <p>ID</p>
+	 * <p>UDP获取连接ID时使用</p>
 	 */
 	protected final Integer id;
 	/**
@@ -83,14 +84,14 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	}
 
 	/**
-	 * 是否可用，如果多次超时标记不可用状态
+	 * 是否可用：如果多次超时标记不可用状态
 	 */
 	public boolean available() {
 		return this.available.get();
 	}
 	
 	/**
-	 * 查找Peer，查找到的结果放入Peer列表。
+	 * 查找Peer：查找到的结果放入Peer列表
 	 */
 	public void findPeers(Integer sid, TorrentSession torrentSession) {
 		if(!available()) {
@@ -113,7 +114,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	}
 	
 	/**
-	 * 跟踪：开始
+	 * 跟踪（声明）
 	 * 
 	 * @param sid sid
 	 * @param torrentSession BT任务信息
@@ -123,7 +124,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	public abstract void announce(Integer sid, TorrentSession torrentSession) throws NetException;
 	
 	/**
-	 * 完成，下载完成时推送，如果一开始时就已经完成不需要推送。
+	 * 完成：下载完成时推送，如果一开始时就已经完成不需要推送。
 	 * 
 	 * @param sid sid
 	 * @param torrentSession BT任务信息
@@ -151,6 +152,45 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	 * @throws NetException 网络异常
 	 */
 	public abstract void scrape(Integer sid, TorrentSession torrentSession) throws NetException;
+	
+	/**
+	 * 创建声明消息
+	 * 
+	 * @param <T> 消息类型
+	 * @param sid sid
+	 * @param torrentSession BT任务信息
+	 * @param event 事件
+	 * 
+	 * @return 声明消息
+	 */
+	protected <T> T buildAnnounceMessage(Integer sid, TorrentSession torrentSession, TrackerConfig.Event event) {
+		long download = 0L, remain = 0L, upload = 0L;
+		final var taskSession = torrentSession.taskSession();
+		if(taskSession != null) {
+			var statistics = taskSession.statistics();
+			download = statistics.downloadSize();
+			remain = taskSession.entity().getSize() - download;
+			upload = statistics.uploadSize();
+		}
+		return this.buildAnnounceMessageEx(sid, torrentSession, event, download, remain, upload);
+	}
+	
+	/**
+	 * 创建声明消息
+	 * 
+	 * @param <T> 消息类型
+	 * @param sid sid
+	 * @param torrentSession BT任务信息
+	 * @param event 事件
+	 * @param download 已下载大小
+	 * @param remain 剩余大小
+	 * @param upload 已上传大小
+	 * 
+	 * TODO：子类泛型优化
+	 * 
+	 * @return 声明消息
+	 */
+	protected abstract <T> T buildAnnounceMessageEx(Integer sid, TorrentSession torrentSession, TrackerConfig.Event event, long download, long remain, long upload);
 	
 	public Integer id() {
 		return this.id;

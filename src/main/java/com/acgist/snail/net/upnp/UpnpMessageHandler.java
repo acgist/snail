@@ -15,7 +15,7 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>UPNP消息代理</p>
- * <p>参考链接：http://upnp.org/specs/arch/UPnP-arch-DeviceArchitecture-v1.0.pdf</p>
+ * <p>协议链接：http://upnp.org/specs/arch/UPnP-arch-DeviceArchitecture-v1.0.pdf</p>
  * <p>注：固定IP有时不能正确获取UPNP设置，请使用自动获取IP地址。</p>
  * 
  * @author acgist

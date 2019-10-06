@@ -34,7 +34,7 @@ public class TrackerLauncher {
 //	private final TrackerLauncherGroup trackerLauncherGroup;
 	
 	/**
-	 * transaction_id：连接时使用
+	 * transaction_id
 	 */
 	private final Integer id;
 	/**

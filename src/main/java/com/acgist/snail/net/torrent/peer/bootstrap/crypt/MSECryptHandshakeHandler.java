@@ -30,8 +30,8 @@ import com.acgist.snail.utils.ThreadUtils;
  * <p>MSE握手代理</p>
  * <p>加密算法：ARC4</p>
  * <p>密钥交换算法：DH（Diffie-Hellman）</p>
- * <p>参考链接：https://wiki.vuze.com/w/Message_Stream_Encryption</p>
- * <p>参考链接：https://wiki.openssl.org/index.php/Diffie_Hellman</p>
+ * <p>协议链接：https://wiki.vuze.com/w/Message_Stream_Encryption</p>
+ * <p>协议链接：https://wiki.openssl.org/index.php/Diffie_Hellman</p>
  * <p>步骤：</p>
  * <pre>
  * 1 A->B: Diffie Hellman Ya, PadA

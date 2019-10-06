@@ -1,4 +1,4 @@
-package com.acgist.snail.net.wss.bootstrap;
+package com.acgist.snail.net.ws.bootstrap;
 
 import java.net.http.WebSocket;
 import java.nio.ByteBuffer;
