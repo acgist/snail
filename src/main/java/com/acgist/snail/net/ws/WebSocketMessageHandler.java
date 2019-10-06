@@ -1,4 +1,4 @@
-package com.acgist.snail.net.wss;
+package com.acgist.snail.net.ws;
 
 import java.net.InetSocketAddress;
 import java.net.http.HttpClient;

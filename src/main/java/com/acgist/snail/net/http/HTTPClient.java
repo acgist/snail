@@ -333,7 +333,7 @@ public class HTTPClient {
 //	
 //	/**
 //	 * <p>新建SSLContext</p>
-//	 * <p>参考链接：https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#SSLContext</p>
+//	 * <p>协议链接：https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#SSLContext</p>
 //	 */
 //	private static final SSLContext newSSLContext() {
 //		SSLContext sslContext = null;

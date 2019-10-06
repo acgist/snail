@@ -20,7 +20,7 @@ import com.acgist.snail.utils.DigestUtils;
 
 /**
  * <p>MSE加密套件（ARC4）</p>
- * <p>参考链接：https://baike.baidu.com/item/RC4/3454548</p>
+ * <p>协议链接：https://baike.baidu.com/item/RC4/3454548</p>
  * 
  * @author acgist
  * @since 1.1.0

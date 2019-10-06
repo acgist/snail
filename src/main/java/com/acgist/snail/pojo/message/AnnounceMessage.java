@@ -13,7 +13,8 @@ import com.acgist.snail.utils.ObjectUtils;
 public class AnnounceMessage {
 
 	/**
-	 * id
+	 * <p>id：transaction_id</p>
+	 * <p>消息传送ID</p>
 	 */
 	private Integer id;
 	/**

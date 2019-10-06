@@ -11,11 +11,11 @@ import java.util.Map;
  * 	<dd>Shadow's-style：名称（1）+版本（4）-----随机数：S1000-----...</dd>
  * </dl>
  * <p>Peer ID Conventions</p>
- * <p>参考链接：http://www.bittorrent.org/beps/bep_0020.html</p>
+ * <p>协议链接：http://www.bittorrent.org/beps/bep_0020.html</p>
  * <p>保留位</p>
- * <p>参考链接：http://www.bittorrent.org/beps/bep_0004.html</p>
+ * <p>协议链接：http://www.bittorrent.org/beps/bep_0004.html</p>
  * <p>PEX状态</p>
- * <p>参考链接：http://www.bittorrent.org/beps/bep_0011.html</p>
+ * <p>协议链接：http://www.bittorrent.org/beps/bep_0011.html</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -241,7 +241,7 @@ public class PeerConfig {
 	
 	/**
 	 * <p>Peer协议消息类型</p>
-	 * <p>参考链接：http://www.bittorrent.org/beps/bep_0004.html</p>
+	 * <p>协议链接：http://www.bittorrent.org/beps/bep_0004.html</p>
 	 */
 	public enum Type {
 		

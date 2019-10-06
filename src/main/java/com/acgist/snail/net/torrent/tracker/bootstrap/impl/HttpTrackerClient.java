@@ -41,7 +41,7 @@ public class HttpTrackerClient extends TrackerClient {
 	private static final String ANNOUNCE_URL_SUFFIX = "/announce";
 	
 	/**
-	 * 跟踪器ID，第一次收到响应后获取，以后每次发送声明消息时携带。
+	 * 跟踪器ID，收到第一次响应时获取，以后每次发送声明消息时上送。
 	 */
 	private String trackerId;
 	
@@ -56,12 +56,12 @@ public class HttpTrackerClient extends TrackerClient {
 
 	@Override
 	public void announce(Integer sid, TorrentSession torrentSession) throws NetException {
-		final String requestUrl = buildAnnounceUrl(sid, torrentSession, TrackerConfig.Event.started);
-		final var response = HTTPClient.get(requestUrl, BodyHandlers.ofString(), TrackerClient.TIMEOUT);
+		final String announceMessage = buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.started);
+		final var response = HTTPClient.get(announceMessage, BodyHandlers.ofString(), TrackerClient.TIMEOUT);
 		if(!HTTPClient.ok(response)) {
 			throw new NetException("HTTP获取Peer失败");
 		}
-		// TODO：解决B编码有多余数据问题：测试地址：http://tracker3.itzmx.com:6961/announce
+		// TODO：解决B编码有多余数据问题，测试地址：http://tracker3.itzmx.com:6961/announce
 		final String body = response.body();
 		final var decoder = BEncodeDecoder.newInstance(body.getBytes());
 		decoder.nextMap();
@@ -77,14 +77,14 @@ public class HttpTrackerClient extends TrackerClient {
 
 	@Override
 	public void complete(Integer sid, TorrentSession torrentSession) throws NetException {
-		final String requestUrl = buildAnnounceUrl(sid, torrentSession, TrackerConfig.Event.completed);
-		HTTPClient.get(requestUrl, BodyHandlers.ofString(), TrackerClient.TIMEOUT);
+		final String announceMessage = buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.completed);
+		HTTPClient.get(announceMessage, BodyHandlers.ofString(), TrackerClient.TIMEOUT);
 	}
 	
 	@Override
 	public void stop(Integer sid, TorrentSession torrentSession) throws NetException {
-		final String requestUrl = buildAnnounceUrl(sid, torrentSession, TrackerConfig.Event.stopped);
-		HTTPClient.get(requestUrl, BodyHandlers.ofString(), TrackerClient.TIMEOUT);
+		final String announceMessage = buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.stopped);
+		HTTPClient.get(announceMessage, BodyHandlers.ofString(), TrackerClient.TIMEOUT);
 	}
 	
 	@Override
@@ -92,18 +92,9 @@ public class HttpTrackerClient extends TrackerClient {
 		// TODO：刮檫
 	}
 	
-	/**
-	 * 创建请求URL
-	 */
-	private String buildAnnounceUrl(Integer sid, TorrentSession torrentSession, TrackerConfig.Event event) {
-		long download = 0L, remain = 0L, upload = 0L;
-		final var taskSession = torrentSession.taskSession();
-		if(taskSession != null) {
-			var statistics = taskSession.statistics();
-			download = statistics.downloadSize();
-			remain = taskSession.entity().getSize() - download;
-			upload = statistics.uploadSize();
-		}
+	@Override
+	@SuppressWarnings("unchecked")
+	protected String buildAnnounceMessageEx(Integer sid, TorrentSession torrentSession, TrackerConfig.Event event, long download, long remain, long upload) {
 		final StringBuilder builder = new StringBuilder(this.announceUrl);
 		builder.append("?")
 			.append("info_hash").append("=").append(torrentSession.infoHash().infoHashURL()).append("&") // InfoHash
@@ -122,7 +113,8 @@ public class HttpTrackerClient extends TrackerClient {
 	}
 	
 	/**
-	 * <p>announceUrl转换ScrapeUrl：</p>
+	 * <p>创建scrapeUrl</p>
+	 * <p>announceUrl转换scrapeUrl：</p>
 	 * <pre>
 	 *	~http://example.com/announce			-> ~http://example.com/scrape
 	 *	~http://example.com/x/announce			-> ~http://example.com/x/scrape

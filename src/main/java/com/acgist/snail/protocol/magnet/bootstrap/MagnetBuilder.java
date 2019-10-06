@@ -16,7 +16,7 @@ import com.acgist.snail.utils.UrlUtils;
 /**
  * <p>磁力链接创建</p>
  * <p>现在解析只支持BT下载，其他下载连接均不支持，并且只支持单个文件，不支持多文件下载。</p>
- * <p>参考链接：https://www.cnblogs.com/linuxws/p/10166685.html</p>
+ * <p>参考文章：https://www.cnblogs.com/linuxws/p/10166685.html</p>
  * 
  * @author acgist
  * @since 1.1.0

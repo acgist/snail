@@ -19,19 +19,18 @@ public class ProtocolConfig {
 	 * 协议
 	 * 
 	 * TODO：和Protocol.Type合并
-	 * wss=ws
 	 */
 	public enum Protocol {
 		
+		/** ws、wss：websocket */
+		ws,
 		/** udp */
 		udp,
 		/** tcp */
 		tcp,
-		/** wss:websocket */
-		wss,
 		/** ftp */
 		ftp,
-		/** http */
+		/** http、https */
 		http,
 		/** 磁力链接 */
 		magnet,

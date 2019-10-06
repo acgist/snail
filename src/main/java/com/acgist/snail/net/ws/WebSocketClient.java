@@ -1,4 +1,4 @@
-package com.acgist.snail.net.wss;
+package com.acgist.snail.net.ws;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 import com.acgist.snail.net.ClientMessageHandlerAdapter;
 import com.acgist.snail.net.IMessageHandler;
 import com.acgist.snail.net.http.HTTPClient;
-import com.acgist.snail.net.wss.bootstrap.WebSocketListener;
+import com.acgist.snail.net.ws.bootstrap.WebSocketListener;
 import com.acgist.snail.system.exception.NetException;
 
 /**
