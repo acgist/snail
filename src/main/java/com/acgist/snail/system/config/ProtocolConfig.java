@@ -39,18 +39,18 @@ public class ProtocolConfig {
 		/** BT */
 		torrent;
 
-		/**
-		 * 正则表达式
-		 */
-		public String[] regexs;
-		/**
-		 * 前缀
-		 */
-		public String[] prefix;
-		/**
-		 * 后缀
-		 */
-		public String[] suffix;
+//		/**
+//		 * 正则表达式
+//		 */
+//		private String[] regexs;
+//		/**
+//		 * 前缀
+//		 */
+//		private String[] prefix;
+//		/**
+//		 * 后缀
+//		 */
+//		private String[] suffix;
 		
 	}
 	
