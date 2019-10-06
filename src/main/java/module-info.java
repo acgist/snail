@@ -22,8 +22,6 @@
  * mvn sonar:sonar "-Dsonar.projectKey=snail" "-Dsonar.host.url=http://localhost:9000" "-Dsonar.login=token"
  * </pre>
  * 
- * net->torrent（tracker、utp）
- * 
  * @author acgist
  * @since 1.0.0
  */
