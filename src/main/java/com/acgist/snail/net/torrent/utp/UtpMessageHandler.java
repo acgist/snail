@@ -28,8 +28,8 @@ import com.acgist.snail.utils.ThreadUtils;
  * <p>uTP消息</p>
  * <p>uTorrent transport protocol</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0029.html</p>
- * TODO：流量控制：
- * TODO：阻塞控制：
+ * 
+ * TODO：流量控制、阻塞控制
  * 
  * @author acgist
  * @since 1.1.0
@@ -131,9 +131,6 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 		this.utpService.put(this);
 	}
 	
-	/**
-	 * 获取KEY
-	 */
 	public String key() {
 		return this.utpService.buildKey(this.recvId, this.socketAddress);
 	}
@@ -161,7 +158,7 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 			final byte[] extData = new byte[extLength];
 			buffer.get(extData);
 		}
-		LOGGER.debug("UTP收到消息，类型：{}，扩展：{}，连接ID：{}，时间戳：{}，时间戳对比：{}，窗口大小：{}，请求号：{}，应答号：{}",
+		LOGGER.debug("收到UTP消息，类型：{}，扩展：{}，连接ID：{}，时间戳：{}，时间戳对比：{}，窗口大小：{}，请求号：{}，应答号：{}",
 			type, extension, connectionId, timestamp, timestampDifference, wndSize, seqnr, acknr);
 		switch (type) {
 		case UtpConfig.ST_DATA:
@@ -180,7 +177,7 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 			syn(timestamp, seqnr, acknr);
 			break;
 		default:
-			LOGGER.warn("UTP不支持的消息类型，类型：{}，扩展：{}，连接ID：{}，时间戳：{}，时间戳对比：{}，窗口大小：{}，请求号：{}，应答号：{}",
+			LOGGER.warn("不支持的UTP消息类型，类型：{}，扩展：{}，连接ID：{}，时间戳：{}，时间戳对比：{}，窗口大小：{}，请求号：{}，应答号：{}",
 				type, extension, connectionId, timestamp, timestampDifference, wndSize, seqnr, acknr);
 			break;
 		}
@@ -195,14 +192,14 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 	@Override
 	public void send(ByteBuffer buffer) throws NetException {
 		if(!(this.connect && available())) {
-			LOGGER.debug("发送消息时Channel已经不可用");
+			LOGGER.debug("UTP消息发送失败：通道不可用");
 			return;
 		}
 		if(buffer.position() != 0) {
 			buffer.flip();
 		}
 		if(buffer.limit() == 0) {
-			LOGGER.warn("发送消息为空");
+			LOGGER.warn("UTP消息发送失败：{}", buffer);
 			return;
 		}
 		byte[] bytes;
@@ -230,7 +227,7 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 	private void wndControl() {
 		// 如果没有连接成功或者连接不可用时不发送
 		if(!(this.connect && available())) {
-			LOGGER.debug("发送消息时Channel已经不可用");
+			LOGGER.debug("UTP消息发送失败：通道不可用");
 			return;
 		}
 		this.nowWnd++;
@@ -319,7 +316,7 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 		}
 		if(windowData != null) {
 			this.state(windowData.getTimestamp(), acknr);
-			LOGGER.debug("UTP处理数据：{}", windowData.getSeqnr());
+			LOGGER.debug("处理UTP数据：{}", windowData.getSeqnr());
 			this.messageCodec.decode(windowData.buffer());
 		}
 	}
@@ -346,7 +343,7 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 	 */
 	private void data(UtpWindowData windowData) {
 		if(windowData.verify()) {
-			LOGGER.debug("UTP发送数据：{}", windowData.getSeqnr());
+			LOGGER.debug("发送UTP数据：{}", windowData.getSeqnr());
 			final ByteBuffer buffer = header(UtpConfig.TYPE_DATA, windowData.getLength() + 20);
 			buffer.putShort(this.sendId);
 			buffer.putInt(windowData.pushUpdateGetTimestamp()); // 更新发送时间
@@ -386,7 +383,7 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 	 * 接收应答消息
 	 */
 	private void state(int timestamp, short seqnr, short acknr, int wndSize) {
-		LOGGER.debug("UTP收到响应：{}", acknr);
+		LOGGER.debug("收到UTP响应：{}", acknr);
 		if(!this.connect) { // 没有连接
 			this.connect = this.available();
 			if(this.connect) {
@@ -408,7 +405,7 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 	 * 发送应答消息，发送此消息不增加seqnr。
 	 */
 	private void state(int timestamp, short seqnr) {
-		LOGGER.debug("UTP发送响应：{}", seqnr);
+		LOGGER.debug("发送UTP响应：{}", seqnr);
 		final int now = DateUtils.timestampUs();
 		final ByteBuffer buffer = header(UtpConfig.TYPE_STATE, 20);
 		buffer.putShort(this.sendId);
@@ -486,7 +483,7 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 		try {
 			super.send(buffer);
 		} catch (NetException e) {
-			LOGGER.error("UTP发送消息异常", e);
+			LOGGER.error("发送UTP消息异常", e);
 		}
 	}
 	
@@ -495,7 +492,7 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 	 */
 	@Override
 	public void close() {
-		LOGGER.debug("UTP关闭");
+		LOGGER.debug("关闭UTP");
 		this.utpService.remove(this);
 		this.fin();
 		this.connect = false;
@@ -506,7 +503,7 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 	 * 发送reset消息，标记关闭。
 	 */
 	public void resetAndClose() {
-		LOGGER.debug("UTP重置");
+		LOGGER.debug("重置UTP");
 		this.utpService.remove(this);
 		this.reset();
 		this.connect = false;

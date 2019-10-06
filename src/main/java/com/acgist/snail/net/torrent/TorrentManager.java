@@ -31,7 +31,7 @@ public class TorrentManager {
 	private static final TorrentManager INSTANCE = new TorrentManager();
 	
 	/**
-	 * InfoHashHex作为key
+	 * key=InfoHashHex
 	 */
 	private Map<String, TorrentSession> torrentSessions;
 	

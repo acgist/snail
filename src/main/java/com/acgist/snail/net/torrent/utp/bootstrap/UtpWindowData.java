@@ -17,7 +17,7 @@ public class UtpWindowData {
 	 */
 	private final short seqnr;
 	/**
-	 * 时间戳（微秒），发送时重新修改。
+	 * 时间戳（微秒）：发送时重新修改
 	 */
 	private volatile int timestamp;
 	/**
@@ -73,8 +73,8 @@ public class UtpWindowData {
 	}
 	
 	/**
-	 * 验证数据是否正确，正确的数据才能发送。
-	 * 握手失败，导致超时定时任务执行时负载数据为空，导致发送时空指针。
+	 * <p>验证数据是否正确，正确的数据才能发送。</p>
+	 * <p>握手失败，导致超时定时任务执行时负载数据为空，导致发送时空指针。</p>
 	 */
 	public boolean verify() {
 		return this.data != null;
