@@ -194,6 +194,7 @@ public class MSECryptHandshakeHandler {
 					this.cipher.decrypt(buffer);
 					this.buffer.put(buffer);
 					receiveConfirmPadding();
+					break;
 				default:
 					LOGGER.warn("不支持的加密握手步骤：{}", this.step);
 					break;
