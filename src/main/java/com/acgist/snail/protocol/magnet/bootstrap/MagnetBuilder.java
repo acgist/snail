@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.bean.Magnet;
 import com.acgist.snail.pojo.bean.Magnet.Type;
-import com.acgist.snail.protocol.magnet.MagnetProtocol;
+import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.StringUtils;
@@ -50,17 +50,17 @@ public class MagnetBuilder {
 	 * <p>解析磁力链接磁力链接信息</p>
 	 */
 	public Magnet build() throws DownloadException {
-		if(!MagnetProtocol.verify(this.url)) {
+		if(!Protocol.Type.magnet.verify(this.url)) {
 			throw new DownloadException("磁力链接格式错误：" + this.url);
 		}
 		this.magnet = new Magnet();
-		if(MagnetProtocol.verifyMagnetHash32(this.url)) {
+		if(Protocol.Type.verifyMagnetHash32(this.url)) {
 			this.magnet.setType(Type.btih);
 			final InfoHash infoHash = InfoHash.newInstance(this.url);
 			this.magnet.setHash(infoHash.infoHashHex());
 			return this.magnet;
 		}
-		if(MagnetProtocol.verifyMagnetHash40(this.url)) {
+		if(Protocol.Type.verifyMagnetHash40(this.url)) {
 			this.magnet.setType(Type.btih);
 			this.magnet.setHash(this.url);
 			return this.magnet;
@@ -125,7 +125,7 @@ public class MagnetBuilder {
 		}
 		String hash = value.substring(xt.length());
 		// 32位磁力链接转为40位磁力链接
-		if(MagnetProtocol.verifyMagnetHash32(hash)) {
+		if(Protocol.Type.verifyMagnetHash32(hash)) {
 			final InfoHash infoHash = InfoHash.newInstance(hash);
 			hash = infoHash.infoHashHex();
 		}

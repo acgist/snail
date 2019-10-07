@@ -18,10 +18,8 @@ public class FtpProtocol extends Protocol {
 	
 	private static final FtpProtocol INSTANCE = new FtpProtocol();
 	
-	public static final String FTP_REGEX = "ftp://.+";
-	
 	private FtpProtocol() {
-		super(Type.ftp, FTP_REGEX);
+		super(Type.ftp);
 	}
 	
 	public static final FtpProtocol getInstance() {

@@ -1,6 +1,6 @@
 package com.acgist.snail.protocol.torrent.bean;
 
-import com.acgist.snail.protocol.magnet.MagnetProtocol;
+import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.Base32Utils;
 import com.acgist.snail.utils.StringUtils;
@@ -57,9 +57,9 @@ public class InfoHash {
 			throw new DownloadException("不支持的hash：" + hash);
 		}
 		hash = hash.trim();
-		if(MagnetProtocol.verifyMagnetHash40(hash)) {
+		if(Protocol.Type.verifyMagnetHash40(hash)) {
 			return new InfoHash(StringUtils.unhex(hash));
-		} else if(MagnetProtocol.verifyMagnetHash32(hash)) {
+		} else if(Protocol.Type.verifyMagnetHash32(hash)) {
 			return new InfoHash(Base32Utils.decode(hash));
 		} else {
 			throw new DownloadException("不支持的hash：" + hash);

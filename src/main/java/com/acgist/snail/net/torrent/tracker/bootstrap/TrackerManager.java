@@ -15,9 +15,7 @@ import com.acgist.snail.net.torrent.tracker.bootstrap.impl.HttpTrackerClient;
 import com.acgist.snail.net.torrent.tracker.bootstrap.impl.UdpTrackerClient;
 import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.protocol.http.HttpProtocol;
-import com.acgist.snail.system.config.ProtocolConfig;
-import com.acgist.snail.system.config.ProtocolConfig.Protocol;
+import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.config.TrackerConfig;
 import com.acgist.snail.system.exception.DownloadException;
@@ -99,7 +97,7 @@ public class TrackerManager {
 	 */
 	public void connectionId(int trackerId, long connectionId) {
 		final var client = this.trackerClients.get(trackerId);
-		if(client != null && client.type() == Protocol.udp) {
+		if(client != null && client.type() == Protocol.Type.udp) {
 			final UdpTrackerClient udpTrackerClient = (UdpTrackerClient) client;
 			udpTrackerClient.connectionId(connectionId);
 		}
@@ -233,13 +231,13 @@ public class TrackerManager {
 	 * TODO：ws
 	 */
 	private TrackerClient buildClient(final String announceUrl) throws DownloadException {
-		if(HttpProtocol.verify(announceUrl)) {
+		if(Protocol.Type.http.verify(announceUrl)) {
 			try {
 				return HttpTrackerClient.newInstance(announceUrl);
 			} catch (NetException e) {
 				throw new DownloadException(e);
 			}
-		} else if(ProtocolConfig.verifyUdp(announceUrl)) {
+		} else if(Protocol.Type.udp.verify(announceUrl)) {
 			try {
 				return UdpTrackerClient.newInstance(announceUrl);
 			} catch (NetException e) {

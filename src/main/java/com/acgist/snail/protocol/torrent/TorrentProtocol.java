@@ -7,7 +7,6 @@ import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.Protocol;
-import com.acgist.snail.protocol.magnet.MagnetProtocol;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
 import com.acgist.snail.system.config.FileTypeConfig.FileType;
 import com.acgist.snail.system.exception.DownloadException;
@@ -36,15 +35,6 @@ public class TorrentProtocol extends Protocol {
 	}
 	
 	/**
-	 * 种子文件后缀
-	 */
-	public static final String TORRENT_SUFFIX = ".torrent";
-	/**
-	 * 种子文件正则表达式
-	 */
-	public static final String TORRENT_REGEX = ".+\\.torrent";
-	
-	/**
 	 * 种子文件路径
 	 */
 	private String torrentFile;
@@ -58,7 +48,7 @@ public class TorrentProtocol extends Protocol {
 	private TorrentFileOperation operation = TorrentFileOperation.copy;
 	
 	private TorrentProtocol() {
-		super(Type.torrent, TORRENT_REGEX);
+		super(Type.torrent);
 	}
 	
 	public static final TorrentProtocol getInstance() {
@@ -148,7 +138,7 @@ public class TorrentProtocol extends Protocol {
 	private void torrent() throws DownloadException {
 		final String torrentFile = this.url;
 		final TorrentSession torrentSession = TorrentManager.getInstance().newTorrentSession(torrentFile);
-		this.url = MagnetProtocol.buildMagnet(torrentSession.infoHash().infoHashHex()); // 生成磁力链接
+		this.url = Protocol.Type.buildMagnet(torrentSession.infoHash().infoHashHex()); // 生成磁力链接
 		this.torrentFile = torrentFile;
 		this.torrentSession = torrentSession;
 	}

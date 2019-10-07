@@ -155,7 +155,7 @@ public class StringUtils {
 	 * @return true：匹配；false：不匹配；
 	 */
 	public static final boolean regex(String value, String regex, boolean ignoreCase) {
-		if(value == null) {
+		if(value == null || regex == null) {
 			return false;
 		}
 		Pattern pattern;

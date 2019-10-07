@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.torrent.dht.bootstrap.NodeManager;
-import com.acgist.snail.protocol.torrent.TorrentProtocol;
+import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
 import com.acgist.snail.system.bencode.BEncodeDecoder;
@@ -130,7 +130,7 @@ public class TorrentBuilder {
 	 * 文件名称
 	 */
 	private String fileName() {
-		return this.infoHash.infoHashHex() + TorrentProtocol.TORRENT_SUFFIX;
+		return this.infoHash.infoHashHex() + Protocol.Type.torrent.defaultSuffix();
 	}
 
 	/**
