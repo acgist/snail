@@ -11,7 +11,7 @@ import com.acgist.snail.net.UdpAcceptHandler;
 import com.acgist.snail.net.UdpServer;
 import com.acgist.snail.net.application.ApplicationClient;
 import com.acgist.snail.net.application.ApplicationServer;
-import com.acgist.snail.net.torrent.local.LocalServiceDiscoveryServer;
+import com.acgist.snail.net.torrent.lsd.LocalServiceDiscoveryServer;
 import com.acgist.snail.net.torrent.peer.PeerServer;
 import com.acgist.snail.net.torrent.server.TorrentServer;
 import com.acgist.snail.net.torrent.tracker.TrackerServer;

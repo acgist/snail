@@ -1,4 +1,4 @@
-package com.acgist.snail.net.torrent.local;
+package com.acgist.snail.net.torrent.lsd;
 
 import com.acgist.snail.net.UdpServer;
 import com.acgist.snail.utils.NetUtils;
@@ -16,7 +16,7 @@ public class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDiscovery
 	/**
 	 * TTL
 	 */
-	private static final int LSD_TTL = 1;
+	private static final int LSD_TTL = 2;
 	/**
 	 * 本地发现端口
 	 */
