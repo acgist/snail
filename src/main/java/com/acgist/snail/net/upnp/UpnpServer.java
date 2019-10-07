@@ -18,7 +18,7 @@ public class UpnpServer extends UdpServer<UpnpAcceptHandler> {
 	/**
 	 * TTL
 	 */
-	private static final int UPNP_TTL = 3;
+	private static final int UPNP_TTL = 2;
 	/**
 	 * UPNP端口
 	 */

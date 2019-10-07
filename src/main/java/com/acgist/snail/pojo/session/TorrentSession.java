@@ -17,7 +17,7 @@ import com.acgist.snail.net.torrent.bootstrap.PeerConnectGroup;
 import com.acgist.snail.net.torrent.bootstrap.PeerLauncherGroup;
 import com.acgist.snail.net.torrent.bootstrap.TorrentStreamGroup;
 import com.acgist.snail.net.torrent.bootstrap.TrackerLauncherGroup;
-import com.acgist.snail.net.torrent.local.LocalServiceDiscoveryClient;
+import com.acgist.snail.net.torrent.lsd.LocalServiceDiscoveryClient;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
 import com.acgist.snail.pojo.bean.Magnet;
 import com.acgist.snail.protocol.magnet.bootstrap.MagnetBuilder;

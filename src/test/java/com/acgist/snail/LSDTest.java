@@ -2,8 +2,8 @@ package com.acgist.snail;
 
 import org.junit.Test;
 
-import com.acgist.snail.net.torrent.local.LocalServiceDiscoveryClient;
-import com.acgist.snail.net.torrent.local.LocalServiceDiscoveryServer;
+import com.acgist.snail.net.torrent.lsd.LocalServiceDiscoveryClient;
+import com.acgist.snail.net.torrent.lsd.LocalServiceDiscoveryServer;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.ThreadUtils;
 
