@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.system.config.ProtocolConfig.Protocol;
+import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.config.TrackerConfig;
 import com.acgist.snail.system.exception.NetException;
@@ -49,7 +49,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	/**
 	 * 协议类型
 	 */
-	protected final Protocol type;
+	protected final Protocol.Type type;
 	/**
 	 * 刮檫地址
 	 */
@@ -71,7 +71,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	 */
 	private String failMessage;
 	
-	public TrackerClient(String scrapeUrl, String announceUrl, Protocol type) throws NetException {
+	public TrackerClient(String scrapeUrl, String announceUrl, Protocol.Type type) throws NetException {
 		if(StringUtils.isEmpty(announceUrl)) {
 			throw new NetException("不支持的Tracker声明地址：" + announceUrl);
 		}
@@ -195,7 +195,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 		return this.id;
 	}
 	
-	public Protocol type() {
+	public Protocol.Type type() {
 		return this.type;
 	}
 	

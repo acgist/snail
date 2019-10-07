@@ -22,31 +22,219 @@ import com.acgist.snail.utils.StringUtils;
 public abstract class Protocol {
 
 	/**
-	 * 下载类型
+	 * 协议类型
 	 */
 	public enum Type {
 
-		/** FTP */
-		ftp,
-		/** HTTP */
-		http,
+		/** ws、wss：websocket */
+		ws(
+			new String[] {"ws://.+", "wss://.+"},
+			new String[] {"ws://", "wss://"},
+			new String[] {},
+			"ws://",
+			""
+		),
+		/** udp */
+		udp(
+			new String[] {"udp://.+"},
+			new String[] {"udp://"},
+			new String[] {},
+			"udp://",
+			""
+		),
+		/** tcp */
+		tcp(
+			new String[] {"tcp://.+"},
+			new String[] {"tcp://"},
+			new String[] {},
+			"tcp://",
+			""
+		),
+		/** ftp */
+		ftp(
+			new String[] {"ftp://.+"},
+			new String[] {"ftp://"},
+			new String[] {},
+			"ftp://",
+			""
+		),
+		/** http、https */
+		http(
+			new String[] {"http://.+", "https://.+"},
+			new String[] {"http://", "https://"},
+			new String[] {},
+			"http://",
+			""
+		),
 		/** 磁力链接 */
-		magnet,
+		magnet(
+			new String[] {"magnet:\\?.+", "[a-zA-Z0-9]{32}", "[a-zA-Z0-9]{40}"},
+			new String[] {"magnet:?xt=urn:btih:"},
+			new String[] {},
+			"magnet:?xt=urn:btih:",
+			""
+		),
 		/** 迅雷链接 */
-		thunder,
+		thunder(
+			new String[] {"thunder://.+"},
+			new String[] {"thunder://"},
+			new String[] {},
+			"thunder://",
+			""
+		),
 		/** BT */
-		torrent;
+		torrent(
+			new String[] {".+\\.torrent"},
+			new String[] {},
+			new String[] {".torrent"},
+			"",
+			".torrent"
+		);
+		
+		/**
+		 * 正则表达式
+		 */
+		private String[] regexs;
+		/**
+		 * 前缀
+		 */
+		private String[] prefix;
+		/**
+		 * 后缀
+		 */
+		private String[] suffix;
+		/**
+		 * 默认前缀
+		 */
+		private String defaultPrefix;
+		/**
+		 * 默认后缀
+		 */
+		private String defaultSuffix;
+		
+		private Type(String[] regexs, String[] prefix, String[] suffix, String defaultPrefix, String defaultSuffix) {
+			this.regexs = regexs;
+			this.prefix = prefix;
+			this.suffix = suffix;
+			this.defaultPrefix = defaultPrefix;
+			this.defaultSuffix = defaultSuffix;
+		}
 
+		/**
+		 * @return 所有的正则表达式
+		 */
+		public String[] regexs() {
+			return this.regexs;
+		}
+
+		/**
+		 * @return 所有的前缀
+		 */
+		public String[] prefix() {
+			return this.prefix;
+		}
+		
+		/**
+		 * @param url 链接
+		 * @return 符合链接的前缀
+		 */
+		public String prefix(String url) {
+			for (String value : this.prefix) {
+				if(StringUtils.startsWith(url, value)) {
+					return value;
+				}
+			}
+			return null;
+		}
+		
+		/**
+		 * @return 所有的后缀
+		 */
+		public String[] suffix() {
+			return this.suffix;
+		}
+		
+		/**
+		 * @param url 链接
+		 * @return 符合链接的后缀
+		 */
+		public String suffix(String url) {
+			for (String value : this.suffix) {
+				if(StringUtils.endsWith(url, value)) {
+					return value;
+				}
+			}
+			return null;
+		}
+		
+		/**
+		 * @return 默认前缀
+		 */
+		public String defaultPrefix() {
+			return this.defaultPrefix;
+		}
+		
+		/**
+		 * @return 默认后缀
+		 */
+		public String defaultSuffix() {
+			return this.defaultSuffix;
+		}
+		
+		/**
+		 * 验证协议
+		 * 
+		 * @param url 链接
+		 * 
+		 * @return true：属于；false：不属于；
+		 */
+		public boolean verify(String url) {
+			for (String regex : this.regexs) {
+				final boolean match = StringUtils.regex(url, regex, true);
+				if(match) {
+					return true;
+				}
+			}
+			return false;
+		}
+		
+		/**
+		 * 将HASH转为磁力链接（完整链接）
+		 */
+		public static final String buildMagnet(String hash) {
+			if(verifyMagnet(hash)) {
+				return hash;
+			}
+			return Type.magnet.defaultPrefix + hash.toLowerCase();
+		}
+		
+		/**
+		 * 验证磁力链接（完整链接）
+		 */
+		public static final boolean verifyMagnet(String url) {
+			return StringUtils.regex(url, Type.magnet.regexs[0], true);
+		}
+		
+		/**
+		 * 验证32位磁力链接HASH
+		 */
+		public static final boolean verifyMagnetHash32(String url) {
+			return StringUtils.regex(url, Type.magnet.regexs[1], true);
+		}
+		
+		/**
+		 * 验证40位磁力链接HASH
+		 */
+		public static final boolean verifyMagnetHash40(String url) {
+			return StringUtils.regex(url, Type.magnet.regexs[2], true);
+		}
+		
 	}
 	
 	/**
 	 * 下载任务类型
 	 */
 	protected final Type type;
-	/**
-	 * 协议正则表达式
-	 */
-	protected final String[] regexs;
 	/**
 	 * 下载地址
 	 */
@@ -56,9 +244,8 @@ public abstract class Protocol {
 	 */
 	protected TaskEntity taskEntity;
 	
-	public Protocol(Type type, String ... regexs) {
+	public Protocol(Type type) {
 		this.type = type;
-		this.regexs = regexs;
 	}
 
 	/**
@@ -89,16 +276,10 @@ public abstract class Protocol {
 	 * 验证是否支持协议
 	 */
 	public boolean verify() {
-		if(this.regexs == null) {
+		if(this.type == null) {
 			return false;
 		}
-		for (String regex : this.regexs) {
-			final boolean match = StringUtils.regex(this.url, regex, true);
-			if(match) {
-				return true;
-			}
-		}
-		return false;
+		return this.type.verify(this.url);
 	}
 	
 	/**

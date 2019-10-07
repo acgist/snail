@@ -11,7 +11,6 @@ import com.acgist.snail.protocol.magnet.bootstrap.MagnetBuilder;
 import com.acgist.snail.system.config.FileTypeConfig.FileType;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.FileUtils;
-import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>磁力链接协议（只支持BT磁力链接）</p>
@@ -30,27 +29,10 @@ public class MagnetProtocol extends Protocol {
 	
 	private static final MagnetProtocol INSTANCE = new MagnetProtocol();
 
-	/**
-	 * 磁力链接前缀
-	 */
-	public static final String MAGNET_PREFIX = "magnet:?xt=urn:btih:";
-	/**
-	 * 磁力链接正则表达式
-	 */
-	public static final String MAGNET_REGEX = "magnet:\\?.+";
-	/**
-	 * 32位磁力链接HASH正则表达式
-	 */
-	public static final String MAGNET_HASH_32_REGEX = "[a-zA-Z0-9]{32}";
-	/**
-	 * 40位磁力链接HASH正则表达式
-	 */
-	public static final String MAGNET_HASH_40_REGEX = "[a-zA-Z0-9]{40}";
-	
 	private Magnet magnet;
 	
 	private MagnetProtocol() {
-		super(Type.magnet, MAGNET_REGEX, MAGNET_HASH_32_REGEX, MAGNET_HASH_40_REGEX);
+		super(Type.magnet);
 	}
 	
 	public static final MagnetProtocol getInstance() {
@@ -139,47 +121,6 @@ public class MagnetProtocol extends Protocol {
 	 */
 	private void buildTorrentFolder() {
 		FileUtils.buildFolder(this.taskEntity.getFile(), false);
-	}
-	
-	/**
-	 * 验证磁力链接
-	 */
-	public static final boolean verify(String url) {
-		return
-			verifyMagnet(url) ||
-			verifyMagnetHash32(url) ||
-			verifyMagnetHash40(url);
-	}
-
-	/**
-	 * 验证磁力链接
-	 */
-	public static final boolean verifyMagnet(String url) {
-		return StringUtils.regex(url, MAGNET_REGEX, true);
-	}
-	
-	/**
-	 * 验证32位磁力链接HASH
-	 */
-	public static final boolean verifyMagnetHash32(String url) {
-		return StringUtils.regex(url, MAGNET_HASH_32_REGEX, true);
-	}
-	
-	/**
-	 * 验证40位磁力链接HASH
-	 */
-	public static final boolean verifyMagnetHash40(String url) {
-		return StringUtils.regex(url, MAGNET_HASH_40_REGEX, true);
-	}
-	
-	/**
-	 * 将HASH转为磁力链接
-	 */
-	public static final String buildMagnet(String hash) {
-		if(verifyMagnet(hash)) {
-			return hash;
-		}
-		return MAGNET_PREFIX + hash.toLowerCase();
 	}
 	
 }

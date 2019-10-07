@@ -12,8 +12,8 @@ import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerManager;
 import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.message.HttpAnnounceMessage;
 import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.system.bencode.BEncodeDecoder;
-import com.acgist.snail.system.config.ProtocolConfig.Protocol;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.config.TrackerConfig;
 import com.acgist.snail.system.exception.NetException;
@@ -46,7 +46,7 @@ public class HttpTrackerClient extends TrackerClient {
 	private String trackerId;
 	
 	private HttpTrackerClient(String scrapeUrl, String announceUrl) throws NetException {
-		super(scrapeUrl, announceUrl, Protocol.http);
+		super(scrapeUrl, announceUrl, Protocol.Type.http);
 	}
 
 	public static final HttpTrackerClient newInstance(String announceUrl) throws NetException {

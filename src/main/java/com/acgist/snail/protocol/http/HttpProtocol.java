@@ -26,22 +26,6 @@ public class HttpProtocol extends Protocol {
 	private static final HttpProtocol INSTANCE = new HttpProtocol();
 
 	/**
-	 * HTTP协议前缀
-	 */
-	public static final String HTTP_PREFIX = "http://";
-	/**
-	 * HTTPS协议前缀
-	 */
-	public static final String HTTPS_PREFIX = "https://";
-	/**
-	 * HTTP协议正则表达式
-	 */
-	public static final String HTTP_REGEX = "http://.+";
-	/**
-	 * HTTPS协议正则表达式
-	 */
-	public static final String HTTPS_REGEX = "https://.+";
-	/**
 	 * 获取HTTP下载响应头的最大重试次数
 	 */
 	private static final int HTTP_HEADER_RETRY_MAX_TIMES = 3;
@@ -49,7 +33,7 @@ public class HttpProtocol extends Protocol {
 	private HttpHeaderWrapper httpHeaderWrapper;
 	
 	private HttpProtocol() {
-		super(Type.http, HTTP_REGEX, HTTPS_REGEX);
+		super(Type.http);
 	}
 	
 	public static final HttpProtocol getInstance() {
@@ -123,13 +107,4 @@ public class HttpProtocol extends Protocol {
 		}
 	}
 	
-	/**
-	 * 验证HTTP协议
-	 */
-	public static final boolean verify(String url) {
-		return
-			StringUtils.regex(url, HTTP_REGEX, true) ||
-			StringUtils.regex(url, HTTPS_REGEX, true);
-	}
-
 }

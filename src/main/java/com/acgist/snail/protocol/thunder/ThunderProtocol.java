@@ -18,17 +18,8 @@ public class ThunderProtocol extends Protocol {
 	
 	private static final ThunderProtocol INSTANCE = new ThunderProtocol();
 
-	/**
-	 * 迅雷协议链接前缀
-	 */
-	public static final String THUNDER_PREFIX = "thunder://";
-	/**
-	 * 迅雷协议链接正则表达式
-	 */
-	public static final String THUNDER_REGEX = "thunder://.+";
-	
 	private ThunderProtocol() {
-		super(Type.thunder, THUNDER_REGEX);
+		super(Type.thunder);
 	}
 	
 	public static final ThunderProtocol getInstance() {
@@ -52,7 +43,8 @@ public class ThunderProtocol extends Protocol {
 	
 	@Override
 	protected Protocol convert() throws DownloadException {
-		final String url = this.url.substring(THUNDER_PREFIX.length());
+		final String prefix = Protocol.Type.thunder.prefix(this.url);
+		final String url = this.url.substring(prefix.length());
 		String realUrl = new String(Base64.getMimeDecoder().decode(url)); // getMimeDecoder防止长度非4的整数倍导致的异常
 		realUrl = realUrl.substring(2, realUrl.length() - 2);
 		return ProtocolManager.getInstance().protocol(realUrl);

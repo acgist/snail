@@ -3,7 +3,7 @@ package com.acgist.snail.upnp;
 import org.junit.Test;
 
 import com.acgist.snail.net.upnp.bootstrap.UpnpService;
-import com.acgist.snail.system.config.ProtocolConfig.Protocol;
+import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.system.exception.NetException;
 
 /**
@@ -22,21 +22,21 @@ public class UpnpServiceTest {
 	@Test
 	public void getSpecificPortMappingEntry() throws NetException {
 		UpnpService.getInstance().load(this.serviceUrl);
-		System.out.println(UpnpService.getInstance().getSpecificPortMappingEntry(18888, Protocol.tcp));
+		System.out.println(UpnpService.getInstance().getSpecificPortMappingEntry(18888, Protocol.Type.tcp));
 	}
 
 	@Test
 	public void addPortMapping() throws NetException {
 		UpnpService.getInstance().load(this.serviceUrl);
-		System.out.println(UpnpService.getInstance().addPortMapping(18888, 18888, Protocol.tcp));
-		System.out.println(UpnpService.getInstance().addPortMapping(18888, 18888, Protocol.udp));
+		System.out.println(UpnpService.getInstance().addPortMapping(18888, 18888, Protocol.Type.tcp));
+		System.out.println(UpnpService.getInstance().addPortMapping(18888, 18888, Protocol.Type.udp));
 	}
 
 	@Test
 	public void deletePortMapping() throws NetException {
 		UpnpService.getInstance().load(this.serviceUrl);
-		System.out.println(UpnpService.getInstance().deletePortMapping(18888, Protocol.tcp));
-		System.out.println(UpnpService.getInstance().deletePortMapping(18888, Protocol.udp));
+		System.out.println(UpnpService.getInstance().deletePortMapping(18888, Protocol.Type.tcp));
+		System.out.println(UpnpService.getInstance().deletePortMapping(18888, Protocol.Type.udp));
 	}
 	
 	@Test

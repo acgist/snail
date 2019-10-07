@@ -4,7 +4,7 @@ import com.acgist.snail.net.torrent.peer.bootstrap.PeerService;
 import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerClient;
 import com.acgist.snail.net.ws.WebSocketClient;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.system.config.ProtocolConfig.Protocol;
+import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.system.config.TrackerConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.StringUtils;
@@ -24,7 +24,7 @@ public class WsTrackerClient extends TrackerClient {
 	private final WebSocketClient client;
 	
 	private WsTrackerClient(String scrapeUrl, String announceUrl) throws NetException {
-		super(scrapeUrl, announceUrl, Protocol.ws);
+		super(scrapeUrl, announceUrl, Protocol.Type.ws);
 		this.client = WebSocketClient.newInstance(this.announceUrl, TrackerClient.TIMEOUT);
 	}
 

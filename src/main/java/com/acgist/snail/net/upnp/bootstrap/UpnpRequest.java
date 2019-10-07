@@ -2,7 +2,7 @@ package com.acgist.snail.net.upnp.bootstrap;
 
 import org.w3c.dom.Element;
 
-import com.acgist.snail.system.config.ProtocolConfig.Protocol;
+import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.utils.XMLUtils;
 
 /**
@@ -84,7 +84,7 @@ public class UpnpRequest {
 	 * @param port 端口
 	 * @param protocol 协议
 	 */
-	public String buildGetSpecificPortMappingEntry(int port, Protocol protocol) {
+	public String buildGetSpecificPortMappingEntry(int port, Protocol.Type protocol) {
 		final Element mapping = this.xml.elementNS(this.body, "u:GetSpecificPortMappingEntry", this.serviceType);
 		this.xml.element(mapping, "NewRemoteHost", "");
 		this.xml.element(mapping, "NewExternalPort", String.valueOf(port));
@@ -119,7 +119,7 @@ public class UpnpRequest {
 	 * @param portExt 外网端口
 	 * @param protocol 协议
 	 */
-	public String buildAddPortMapping(int port, String address, int portExt, Protocol protocol) {
+	public String buildAddPortMapping(int port, String address, int portExt, Protocol.Type protocol) {
 		final Element mapping = this.xml.elementNS(this.body, "u:AddPortMapping", this.serviceType);
 		this.xml.element(mapping, "NewRemoteHost", "");
 		this.xml.element(mapping, "NewExternalPort", String.valueOf(portExt));
@@ -152,7 +152,7 @@ public class UpnpRequest {
 	 * @param port 端口
 	 * @param protocol 协议
 	 */
-	public String buildDeletePortMapping(int port, Protocol protocol) {
+	public String buildDeletePortMapping(int port, Protocol.Type protocol) {
 		final Element mapping = this.xml.elementNS(body, "u:DeletePortMapping", this.serviceType);
 		this.xml.element(mapping, "NewRemoteHost", "");
 		this.xml.element(mapping, "NewExternalPort", String.valueOf(port));
