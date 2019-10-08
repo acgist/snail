@@ -58,8 +58,8 @@ public class WsTrackerClient extends TrackerClient {
 	@Override
 	@SuppressWarnings("unchecked")
 	protected String buildAnnounceMessageEx(Integer sid, TorrentSession torrentSession, TrackerConfig.Event event, long download, long remain, long upload) {
-		final StringBuffer buffer = new StringBuffer();
-		buffer.append("{")
+		final StringBuilder builder = new StringBuilder();
+		builder.append("{")
 			.append("\"info_hash\"").append(":").append("\"").append(StringUtils.hex(torrentSession.infoHash().infoHash())).append("\"").append(",")
 			.append("\"peer_id\"").append(":").append("\"").append(StringUtils.hex(PeerService.getInstance().peerId())).append("\"").append(",")
 			.append("\"uploaded\"").append(":").append(upload).append(",")
@@ -69,7 +69,7 @@ public class WsTrackerClient extends TrackerClient {
 			.append("\"action\"").append(":").append("\"").append(TrackerConfig.Action.announce.name()).append("\"").append(",")
 			.append("\"numwant\"").append(":").append(WANT_PEER_SIZE)
 			.append("}");
-		return buffer.toString();
+		return builder.toString();
 	}
 	
 }

@@ -246,8 +246,8 @@ class Selector {
 
 	public Selector(String path, Long size, CheckBox checkBox, TreeItem<HBox> treeItem) {
 		this.path = path;
-		this.size = size == null ? 0 : size;
-		this.file = size == null ? false : true;
+		this.size = (size == null || size == 0L) ? 0 : size;
+		this.file = (size == null || size == 0L) ? false : true;
 		this.checkBox = checkBox;
 		this.treeItem = treeItem;
 	}
