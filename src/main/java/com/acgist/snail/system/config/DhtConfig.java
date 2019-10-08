@@ -130,7 +130,6 @@ public class DhtConfig extends PropertiesConfig {
 	 *	<dd>202：服务错误</dd>
 	 *	<dd>203：协议错误（不规范的包、无效参数、错误token）</dd>
 	 *	<dd>204：未知方法</dd>
-	 *
 	 *	<dt>[1]：错误描述</dt>
 	 * </dl>
 	 */

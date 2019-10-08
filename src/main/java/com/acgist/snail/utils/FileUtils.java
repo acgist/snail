@@ -13,13 +13,14 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.system.config.FileTypeConfig;
-import com.acgist.snail.system.config.FileTypeConfig.FileType;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.ArgumentException;
 import com.acgist.snail.system.recycle.RecycleManager;
@@ -33,6 +34,54 @@ import com.acgist.snail.system.recycle.RecycleManager;
 public class FileUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FileUtils.class);
+	
+	/**
+	 * 文件类型
+	 */
+	public enum FileType {
+		
+		/** 图片 */
+		image("图片", "image.png"),
+		/** 视频 */
+		video("视频", "video.png"),
+		/** 音频 */
+		audio("音频", "audio.png"),
+		/** 脚本 */
+		script("脚本", "script.png"),
+		/** BT */
+		torrent("BT", "torrent.png"),
+		/** 压缩 */
+		compress("压缩", "compress.png"),
+		/** 文档 */
+		document("文档", "document.png"),
+		/** 安装包 */
+		install("安装包", "install.png"),
+		/** 未知 */
+		unknown("未知", "unknown.png");
+		
+		/**
+		 * 文件类型名称
+		 */
+		private String value;
+		/**
+		 * 文件类型图标
+		 */
+		private String icon;
+
+		private FileType(String value, String icon) {
+			this.value = value;
+			this.icon = icon;
+		}
+
+		public String value() {
+			return value;
+		}
+
+		public String icon() {
+			return icon;
+		}
+
+	}
 	
 	/**
 	 * 文件大小进制
@@ -51,6 +100,39 @@ public class FileUtils {
 	 * 文件名禁用字符替换字符
 	 */
 	private static final String FILENAME_REPLACE_CHAR = "";
+	/**
+	 * 文件类型和文件后缀（扩展名）：类型=后缀
+	 */
+	private static final Map<FileType, List<String>> FILE_TYPE_EXT = new HashMap<>();
+	
+	static {
+		FILE_TYPE_EXT.put(FileType.image, List.of(
+			"bmp", "cdr", "gif", "ico", "jpeg", "jpg", "png", "psd", "svg"
+		));
+		FILE_TYPE_EXT.put(FileType.video, List.of(
+			"3gp", "avi", "flv", "mkv", "mov", "mp4", "mvb", "rm", "rmvb"
+		));
+		FILE_TYPE_EXT.put(FileType.audio, List.of(
+			"aac", "flac", "mp3", "ogg", "wav", "wma", "wmv"
+		));
+		FILE_TYPE_EXT.put(FileType.script, List.of(
+			"asp", "bat", "c", "cmd", "cpp", "h", "java", "js", "jsp", "php", "py", "sh"
+		));
+		FILE_TYPE_EXT.put(FileType.torrent, List.of(
+			"torrent"
+		));
+		FILE_TYPE_EXT.put(FileType.compress, List.of(
+			"7z", "bz2", "gz", "iso", "jar", "rar", "tar", "z", "zip"
+		));
+		FILE_TYPE_EXT.put(FileType.document, List.of(
+			"css", "doc", "docx", "htm", "html", "pdf", "ppt", "pptx", "txt", "wps", "xls", "xlsx", "xml"
+		));
+		FILE_TYPE_EXT.put(FileType.install, List.of(
+			"apk", "com", "deb", "exe", "rpm"
+		));
+		FILE_TYPE_EXT.put(FileType.unknown, List.of(
+		));
+	}
 	
 	/**
 	 * 删除文件
@@ -140,7 +222,18 @@ public class FileUtils {
 	 */
 	public static final FileType fileType(String fileName) {
 		final String ext = fileExt(fileName);
-		return FileTypeConfig.type(ext);
+		if(ext == null) {
+			return FileType.unknown;
+		}
+		final String extLower = ext.toLowerCase();
+		final Optional<FileType> optional = FILE_TYPE_EXT.entrySet().stream()
+			.filter(entry -> entry.getValue().contains(extLower))
+			.map(Entry::getKey)
+			.findFirst();
+		if(optional.isPresent()) {
+			return optional.get();
+		}
+		return FileType.unknown;
 	}
 	
 	/**

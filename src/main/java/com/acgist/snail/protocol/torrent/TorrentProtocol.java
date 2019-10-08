@@ -8,9 +8,9 @@ import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.protocol.torrent.bean.Torrent;
-import com.acgist.snail.system.config.FileTypeConfig.FileType;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.FileUtils;
+import com.acgist.snail.utils.FileUtils.FileType;
 
 /**
  * BT协议
