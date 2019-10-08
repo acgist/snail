@@ -2,7 +2,7 @@ package com.acgist.snail.gui.main;
 
 import com.acgist.snail.gui.Tooltips;
 import com.acgist.snail.pojo.session.TaskSession;
-import com.acgist.snail.system.config.FileTypeConfig.FileType;
+import com.acgist.snail.utils.FileUtils.FileType;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.TableCell;

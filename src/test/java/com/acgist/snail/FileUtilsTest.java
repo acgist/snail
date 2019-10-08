@@ -31,7 +31,18 @@ public class FileUtilsTest {
 	@Test
 	public void fileType() {
 		System.out.println(FileUtils.fileType("http://casd/fds.mp4"));
+		System.out.println(FileUtils.fileType("http://casd/fds.JPEG"));
 	}
+	
+//	@Test
+//	public void fileTypeSort() {
+//		FileUtils.FILE_TYPE_EXT.forEach((key, value) -> {
+//			System.out.println(key);
+//			var list = new ArrayList<>(value);
+//			Collections.sort(list);
+//			System.out.println("\"" + String.join("\", \"", list) + "\"");
+//		});
+//	}
 	
 	@Test
 	public void size() {

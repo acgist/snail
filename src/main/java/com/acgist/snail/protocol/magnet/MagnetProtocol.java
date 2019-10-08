@@ -8,9 +8,9 @@ import com.acgist.snail.pojo.bean.Magnet;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.protocol.magnet.bootstrap.MagnetBuilder;
-import com.acgist.snail.system.config.FileTypeConfig.FileType;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.FileUtils;
+import com.acgist.snail.utils.FileUtils.FileType;
 
 /**
  * <p>磁力链接协议（只支持BT磁力链接）</p>
