@@ -103,15 +103,15 @@ public class SystemConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 名称
+	 * 软件名称
 	 */
 	private String name;
 	/**
-	 * 英文名称
+	 * 软件名称（英文）
 	 */
 	private String nameEn;
 	/**
-	 * 版本
+	 * 软件版本
 	 */
 	private String version;
 	/**
@@ -119,27 +119,27 @@ public class SystemConfig extends PropertiesConfig {
 	 */
 	private String author;
 	/**
-	 * 源码
+	 * 官网与源码
 	 */
 	private String source;
 	/**
-	 * 支持
+	 * 问题与建议
 	 */
 	private String support;
 	/**
-	 * 服务端口（本地服务：启动检测）
+	 * 系统服务端口（本地服务：启动检测）
 	 */
 	private Integer servicePort;
 	/**
-	 * 服务端口（本地端口：Peer、DHT、UTP）
+	 * BT服务端口（本地端口：Peer、DHT、UTP）
 	 */
 	private Integer torrentPort;
 	/**
-	 * 服务端口（外网映射：Peer、DHT、UTP）
+	 * BT服务端口（外网映射：Peer、DHT、UTP）
 	 */
 	private Integer torrentPortExt;
 	/**
-	 * 单个任务Peer数量
+	 * 单个任务Peer数量（同时下载）
 	 */
 	private Integer peerSize;
 	/**
@@ -147,7 +147,7 @@ public class SystemConfig extends PropertiesConfig {
 	 */
 	private Integer trackerSize;
 	/**
-	 * 任务即将完成时可以重复选择下载的剩下Piece数量
+	 * 任务即将完成时可以重复下载的Piece数量
 	 */
 	private Integer pieceRepeatSize;
 	/**
@@ -163,7 +163,7 @@ public class SystemConfig extends PropertiesConfig {
 	 */
 	private Integer trackerInterval;
 	/**
-	 * Peer优化周期（秒）
+	 * Peer（连接、接入）优化周期（秒）
 	 */
 	private Integer peerOptimizeInterval;
 	
@@ -192,40 +192,40 @@ public class SystemConfig extends PropertiesConfig {
 	 * 日志
 	 */
 	private void logger() {
-		LOGGER.info("名称：{}", this.name);
-		LOGGER.info("英文名称：{}", this.nameEn);
-		LOGGER.info("版本：{}", this.version);
+		LOGGER.info("软件名称：{}", this.name);
+		LOGGER.info("软件名称（英文）：{}", this.nameEn);
+		LOGGER.info("软件版本：{}", this.version);
 		LOGGER.info("作者：{}", this.author);
-		LOGGER.info("源码：{}", this.source);
-		LOGGER.info("支持：{}", this.support);
-		LOGGER.info("系统端口：{}", this.servicePort);
-		LOGGER.info("服务端口（Peer、DHT、UTP）：{}", this.torrentPort);
-		LOGGER.info("单个任务Peer数量：{}", this.peerSize);
+		LOGGER.info("官网与源码：{}", this.source);
+		LOGGER.info("问题与建议：{}", this.support);
+		LOGGER.info("系统服务端口：{}", this.servicePort);
+		LOGGER.info("BT服务端口（Peer、DHT、UTP）：{}", this.torrentPort);
+		LOGGER.info("单个任务Peer数量（同时下载）：{}", this.peerSize);
 		LOGGER.info("单个任务Tracker数量：{}", this.trackerSize);
-		LOGGER.info("任务即将完成时可以重复选择下载的剩下Piece数量：{}", this.pieceRepeatSize);
+		LOGGER.info("任务即将完成时可以重复下载的Piece数量：{}", this.pieceRepeatSize);
 		LOGGER.info("DHT执行周期（秒）：{}", this.dhtInterval);
 		LOGGER.info("PEX执行周期（秒）：{}", this.pexInterval);
 		LOGGER.info("Tracker执行周期（秒）：{}", this.trackerInterval);
-		LOGGER.info("Peer优化周期（秒）：{}", this.peerOptimizeInterval);
+		LOGGER.info("Peer（连接、接入）优化周期（秒）：{}", this.peerOptimizeInterval);
 		LOGGER.info("用户工作目录：{}", SystemConfig.USER_DIR);
 	}
 	
 	/**
-	 * 名称
+	 * 软件名称
 	 */
 	public static final String getName() {
 		return INSTANCE.name;
 	}
 
 	/**
-	 * 英文名称
+	 * 软件名称（英文）
 	 */
 	public static final String getNameEn() {
 		return INSTANCE.nameEn;
 	}
 
 	/**
-	 * 版本
+	 * 软件版本
 	 */
 	public static final String getVersion() {
 		return INSTANCE.version;
@@ -239,35 +239,35 @@ public class SystemConfig extends PropertiesConfig {
 	}
 
 	/**
-	 * 源码
+	 * 官网与源码
 	 */
 	public static final String getSource() {
 		return INSTANCE.source;
 	}
 
 	/**
-	 * 支持
+	 * 问题与建议
 	 */
 	public static final String getSupport() {
 		return INSTANCE.support;
 	}
 
 	/**
-	 * 服务端口
+	 * 系统服务端口
 	 */
 	public static final Integer getServicePort() {
 		return INSTANCE.servicePort;
 	}
 
 	/**
-	 * <p>服务端口（本机：Peer、DHT、UTP）</p>
+	 * <p>BT服务端口（本机：Peer、DHT、UTP）</p>
 	 */
 	public static final Integer getTorrentPort() {
 		return INSTANCE.torrentPort;
 	}
 	
 	/**
-	 * <p>设置服务端口（外网：Peer、DHT、UTP）</p>
+	 * <p>设置BT服务端口（外网：Peer、DHT、UTP）</p>
 	 * <p>UPNP映射时如果端口已经被占用时重新设置的外网端口号</p>
 	 */
 	public static final void setTorrentPortExt(Integer torrentPortExt) {
@@ -276,7 +276,7 @@ public class SystemConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>服务端口（外网：Peer、DHT、UTP）</p>
+	 * <p>BT服务端口（外网：Peer、DHT、UTP）</p>
 	 * <p>如果不存在返回{@linkplain #getTorrentPort() 本机端口}。</p>
 	 */
 	public static final Integer getTorrentPortExt() {
@@ -287,28 +287,28 @@ public class SystemConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 服务端口（外网：Peer、DHT、UTP）：short
+	 * BT服务端口（外网：Peer、DHT、UTP）：short
 	 */
 	public static final Short getTorrentPortExtShort() {
 		return NetUtils.encodePort(getTorrentPortExt());
 	}
 	
 	/**
-	 * 单个任务Peer数量
+	 * 单个任务Peer数量（同时下载）
 	 */
 	public static final Integer getPeerSize() {
 		return INSTANCE.peerSize;
 	}
 	
 	/**
-	 * 单个任务tracker数量
+	 * 单个任务Tracker数量
 	 */
 	public static final Integer getTrackerSize() {
 		return INSTANCE.trackerSize;
 	}
 
 	/**
-	 * 任务即将完成时可以重复选择下载的剩下Piece数量
+	 * 任务即将完成时可以重复下载的Piece数量
 	 */
 	public static final Integer getPieceRepeatSize() {
 		return INSTANCE.pieceRepeatSize;
@@ -336,7 +336,7 @@ public class SystemConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * Peer优化周期
+	 * Peer（连接、接入）优化周期（秒）
 	 */
 	public static final Integer getPeerOptimizeInterval() {
 		return INSTANCE.peerOptimizeInterval;
@@ -359,7 +359,7 @@ public class SystemConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 获取名称和版本信息："名称 版本"
+	 * 获取软件信息：软件名称（英文） 软件版本
 	 */
 	public static final String getNameEnAndVersion() {
 		return INSTANCE.nameEn + " " + INSTANCE.version;
