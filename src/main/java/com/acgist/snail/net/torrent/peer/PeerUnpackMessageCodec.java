@@ -13,7 +13,7 @@ import com.acgist.snail.system.exception.OversizePacketException;
 /**
  * <p>Peer消息处理器：拆包</p>
  * 
- * TODO：握手消息可以匹配优化，而不是默认获取消息前面握手长度的字符。
+ * TODO：握手消息匹配协议名称
  * 
  * @author acgist
  * @since 1.1.0

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.acgist.snail.pojo.entity.ConfigEntity;
 import com.acgist.snail.utils.ObjectUtils;
 
 public class ObjectUtilsTest {
@@ -15,6 +16,12 @@ public class ObjectUtilsTest {
 		list.add("1");
 		list.add("2");
 		System.out.println(ObjectUtils.toString(list));
+		
+		ConfigEntity config = new ConfigEntity();
+		config.setId("1234");
+		config.setName("test");
+		System.out.println(ObjectUtils.toString(config));
+		System.out.println(ObjectUtils.toString(config, config.getId(), config.getName()));
 	}
 	
 }
