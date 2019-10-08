@@ -36,19 +36,22 @@ public class XMLUtils {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(XMLUtils.class);
 
+	/**
+	 * 格式化输出
+	 */
 	private static final String DOM_FORMAT_PRETTY_PRINT = "format-pretty-print";
 	
+	/**
+	 * 根节点
+	 */
 	private Document document;
 	
 	/**
 	 * 创建XML
 	 */
-	public static final XMLUtils create() {
+	public static final XMLUtils build() {
 		final XMLUtils utils = new XMLUtils();
-		final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-//		不能禁用，禁用后解析异常。
-//		factory.setAttribute(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
-//		factory.setAttribute(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
+		final DocumentBuilderFactory factory = buildFactory();
 		try {
 			utils.document = factory.newDocumentBuilder().newDocument();
 		} catch (ParserConfigurationException e) {
@@ -62,15 +65,33 @@ public class XMLUtils {
 	 */
 	public static final XMLUtils load(String xml) {
 		final XMLUtils utils = new XMLUtils();
-		final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder builder;
+		final DocumentBuilderFactory factory = buildFactory();
 		try {
-			builder = factory.newDocumentBuilder();
+			final DocumentBuilder builder = factory.newDocumentBuilder();
 			utils.document = builder.parse(new ByteArrayInputStream(xml.getBytes()));
 		} catch (ParserConfigurationException | SAXException | IOException e) {
 			LOGGER.info("解析XML异常：{}", xml, e);
 		}
 		return utils;
+	}
+	
+	/**
+	 * 创建XML工厂
+	 */
+	private static final DocumentBuilderFactory buildFactory() {
+		final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		try {
+			// 防止实体注入
+			factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+			factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+			factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+			factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+			factory.setXIncludeAware(false);
+			factory.setExpandEntityReferences(false);
+		} catch (ParserConfigurationException e) {
+			LOGGER.error("创建XML工厂异常 ", e);
+		}
+		return factory;
 	}
 
 	/**

@@ -40,7 +40,7 @@ public class UpnpRequest {
 	 * 新建报文
 	 */
 	private void build() {
-		this.xml = XMLUtils.create();
+		this.xml = XMLUtils.build();
 		final Element envelope = this.xml.elementNS(xml.document(), "s:Envelope", NAMESPACE_URI);
 		envelope.setAttributeNS(NAMESPACE_URI, "encodingStyle", ENCODING_STYLE);
 		this.body = this.xml.element(envelope, "s:Body");

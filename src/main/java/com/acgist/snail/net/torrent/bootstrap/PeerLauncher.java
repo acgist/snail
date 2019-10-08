@@ -106,6 +106,7 @@ public class PeerLauncher extends PeerClientHandler {
 	 * {@inheritDoc}
 	 * <p>每次获取评分时都清零，下次重新开始计算。</p>
 	 */
+	@Override
 	public long mark() {
 		return this.mark.getAndSet(0);
 	}
