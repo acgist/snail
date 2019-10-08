@@ -127,4 +127,7 @@ GITHUB（不活跃）：[https://github.com/acgist/snail](https://github.com/acg
 [帮助](https://gitee.com/acgist/snail/wikis)
 
 ###### 界面
-![下载界面](https://static.acgist.com/resources/images/snail.png "下载界面")
+
+![主界面](https://static.acgist.com/demo/snail/snail.png "主界面")  
+[上传](https://static.acgist.com/demo/snail/upload.png)  
+[监控](https://static.acgist.com/demo/snail/console.png)
