@@ -38,7 +38,8 @@ public abstract class MessageCodec<T, X> implements IMessageCodec<T> {
 	}
 	
 	/**
-	 * 消息解码
+	 * <p>消息解码</p>
+	 * <p>实现必须执行{@link #doNext(Object, InetSocketAddress, boolean)}方法</p>
 	 * 
 	 * @param message 消息
 	 * @param address 地址
@@ -83,7 +84,7 @@ public abstract class MessageCodec<T, X> implements IMessageCodec<T> {
 	
 	/**
 	 * {@inheritDoc}
-	 * <p>消息最终处理请实现{@link IMessageCodec}</p>
+	 * <p>消息最终处理请实现{@link IMessageCodec}接口</p>
 	 */
 	@Override
 	@Deprecated
@@ -93,7 +94,7 @@ public abstract class MessageCodec<T, X> implements IMessageCodec<T> {
 
 	/**
 	 * {@inheritDoc}
-	 * <p>消息最终处理请实现{@link IMessageCodec}</p>
+	 * <p>消息最终处理请实现{@link IMessageCodec}接口</p>
 	 */
 	@Override
 	@Deprecated

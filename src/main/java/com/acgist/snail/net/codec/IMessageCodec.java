@@ -8,6 +8,7 @@ import com.acgist.snail.system.exception.NetException;
 /**
  * <p>消息处理器：编码、解码、最终处理</p>
  * <p>直接实现{@linkplain IMessageCodec 接口}的子类均是最终处理器，继承{@linkplain MessageCodec 适配器}的子类是中间处理器。</p>
+ * <p>注：一定要注意编码和解码的逻辑顺序，防止多个处理器结合使用时出现错误。</p>
  * 
  * @author acgist
  * @since 1.1.1
