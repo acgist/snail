@@ -228,7 +228,7 @@ public class TrackerManager {
 	/**
 	 * 创建Tracker Client
 	 * 
-	 * TODO：ws
+	 * TODO：ws客户度
 	 */
 	private TrackerClient buildClient(final String announceUrl) throws DownloadException {
 		if(Protocol.Type.http.verify(announceUrl)) {
