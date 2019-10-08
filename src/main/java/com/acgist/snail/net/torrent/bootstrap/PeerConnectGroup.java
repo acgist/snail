@@ -21,6 +21,8 @@ import com.acgist.snail.system.context.SystemThreadContext;
  * 	<dd>不能超过最大分享连接数（如果接入的Peer为当前连接的Peer可以忽略连接数）。</dd>
  * </dl>
  * 
+ * TODO：长时间无法删除问题
+ * 
  * @author acgist
  * @since 1.0.2
  */

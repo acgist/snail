@@ -63,11 +63,11 @@ public class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	/**
 	 * 发送握手
 	 */
-	private volatile boolean handshakeSed = false;
+	private volatile boolean handshakeSend = false;
 	/**
 	 * 处理握手
 	 */
-	private volatile boolean handshakeRcv = false;
+	private volatile boolean handshakeRecv = false;
 	/**
 	 * Peer信息
 	 */
@@ -185,13 +185,13 @@ public class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * 是否握手完成
 	 */
 	public boolean handshake() {
-		return this.handshakeRcv;
+		return this.handshakeRecv;
 	}
 	
 	@Override
 	public void onMessage(final ByteBuffer buffer) throws NetException {
 		buffer.flip();
-		if(!this.handshakeRcv) { // 没有握手
+		if(!this.handshakeRecv) { // 没有握手
 			handshake(buffer);
 		} else { // 已经握手
 			final byte typeValue = buffer.get();
@@ -255,7 +255,7 @@ public class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 */
 	public void handshake(PeerLauncher peerLauncher) {
 		LOGGER.debug("发送握手消息");
-		this.handshakeSed = true;
+		this.handshakeSend = true;
 		this.peerLauncher = peerLauncher;
 		if(this.peerSession != null && this.peerLauncher != null) {
 			this.peerSession.peerLauncher(this.peerLauncher);
@@ -296,8 +296,8 @@ public class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 //			this.close(); // 不关闭，选择忽略。
 			return;
 		}
-		this.handshakeRcv = true;
-		final boolean server = !this.handshakeSed; // 是否是服务端
+		this.handshakeRecv = true;
+		final boolean server = !this.handshakeSend; // 是否是服务端
 		final byte[] reserved = new byte[PeerConfig.RESERVED_LENGTH];
 		buffer.get(reserved);
 		final byte[] infoHash = new byte[InfoHash.INFO_HASH_LENGTH];

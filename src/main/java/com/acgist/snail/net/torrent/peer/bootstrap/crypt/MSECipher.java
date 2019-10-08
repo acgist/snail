@@ -41,11 +41,18 @@ public class MSECipher {
 	 */
 	private final Cipher decryptCipher;
 	
-	private MSECipher(byte[] S, InfoHash infoHash, boolean initiator) {
-		final Key initiatorKey = buildInitiatorKey(S, infoHash.infoHash());
-		final Key receiverKey = buildReceiverKey(S, infoHash.infoHash());
-		final Key encryptKey = initiator ? initiatorKey : receiverKey;
-		final Key decryptKey = initiator ? receiverKey : initiatorKey;
+	/**
+	 * 加密套件
+	 * 
+	 * @param S DH Secret
+	 * @param infoHash InfoHash
+	 * @param sender 是否是请求客户端
+	 */
+	private MSECipher(byte[] S, InfoHash infoHash, boolean sender) {
+		final Key sendKey = buildSendKey(S, infoHash.infoHash());
+		final Key recvKey = buildRecvKey(S, infoHash.infoHash());
+		final Key encryptKey = sender ? sendKey : recvKey;
+		final Key decryptKey = sender ? recvKey : sendKey;
 		this.decryptCipher = buildCipher(Cipher.DECRYPT_MODE, ARC4_ALGO_TRANSFORMATION, decryptKey);
 		this.encryptCipher = buildCipher(Cipher.ENCRYPT_MODE, ARC4_ALGO_TRANSFORMATION, encryptKey);
 	}
@@ -56,7 +63,7 @@ public class MSECipher {
 	 * @param S DH Secret
 	 * @param infoHash InfoHash
 	 */
-	public static final MSECipher newInitiator(byte[] S, InfoHash infoHash) {
+	public static final MSECipher newSender(byte[] S, InfoHash infoHash) {
 		return new MSECipher(S, infoHash, true);
 	}
 	
@@ -66,7 +73,7 @@ public class MSECipher {
 	 * @param S DH Secret
 	 * @param infoHash InfoHash
 	 */
-	public static final MSECipher newReceiver(byte[] S, InfoHash infoHash) {
+	public static final MSECipher newRecver(byte[] S, InfoHash infoHash) {
 		return new MSECipher(S, infoHash, false);
 	}
 
@@ -157,14 +164,14 @@ public class MSECipher {
 	/**
 	 * 创建请求客户端加密Key
 	 */
-	private Key buildInitiatorKey(byte[] S, byte[] SKEY) {
+	private Key buildSendKey(byte[] S, byte[] SKEY) {
 		return buildKey("keyA", S, SKEY);
 	}
 
 	/**
 	 * 创建连入客户端加密Key
 	 */
-	private Key buildReceiverKey(byte[] S, byte[] SKEY) {
+	private Key buildRecvKey(byte[] S, byte[] SKEY) {
 		return buildKey("keyB", S, SKEY);
 	}
 

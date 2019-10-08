@@ -60,7 +60,7 @@ public class MSECryptHandshakeHandler {
 	 */
 	private static final int BUFFER_SIZE = 4096;
 	/**
-	 * 握手等待超时时间
+	 * 握手等待超时时间，不要超过PeerLauncher等待时间。
 	 */
 	private static final int HANDSHAKE_LOCK_TIMEOUT = 5;
 	
@@ -127,7 +127,7 @@ public class MSECryptHandshakeHandler {
 	 */
 	private BigInteger dhSecret;
 	/**
-	 * Padding数据读取器
+	 * Padding数据同步
 	 */
 	private MSEPaddingSync msePaddingSync;
 	
@@ -325,8 +325,8 @@ public class MSECryptHandshakeHandler {
 		}
 		final byte[] dhSecretBytes = NumberUtils.encodeUnsigned(this.dhSecret, CryptConfig.PUBLIC_KEY_LENGTH);
 		final InfoHash infoHash = torrentSession.infoHash();
-		this.cipher = MSECipher.newInitiator(dhSecretBytes, infoHash);
-		this.cipherTmp = MSECipher.newInitiator(dhSecretBytes, infoHash);
+		this.cipher = MSECipher.newSender(dhSecretBytes, infoHash);
+		this.cipherTmp = MSECipher.newSender(dhSecretBytes, infoHash);
 		ByteBuffer buffer = ByteBuffer.allocate(40); // 20 + 20
 		final MessageDigest digest = DigestUtils.sha1();
 //		HASH('req1', S)
@@ -402,7 +402,7 @@ public class MSECryptHandshakeHandler {
 		if(infoHash == null) {
 			throw new NetException("加密握手失败（种子不存在）");
 		}
-		this.cipher = MSECipher.newReceiver(dhSecretBytes, infoHash);
+		this.cipher = MSECipher.newRecver(dhSecretBytes, infoHash);
 //		ENCRYPT(VC, crypto_provide, len(PadC), PadC, len(IA))
 //		ENCRYPT(IA)
 		this.buffer.compact(); // 删除已经读取过不需要解密的数据，留下被加密的数据。
