@@ -26,13 +26,13 @@ public class MultilineMessageCodec extends MessageCodec<String, String> {
 	/**
 	 * 多行消息
 	 */
-	private final StringBuffer message;
+	private final StringBuilder message;
 	
 	public MultilineMessageCodec(IMessageCodec<String> messageCodec, String split, String endRegex) {
 		super(messageCodec);
 		this.split = split;
 		this.endRegex = endRegex;
-		this.message = new StringBuffer();
+		this.message = new StringBuilder();
 	}
 
 	@Override

@@ -34,10 +34,10 @@ public class BuildEvent extends GuiEvent {
 	@Override
 	protected void executeNative(Object ... args) {
 		LOGGER.info("创建窗口");
-		final Thread thread = new Thread();
-		thread.setName(SystemThreadContext.SNAIL_THREAD_PLATFORM);
-		thread.setDaemon(true);
-		Platform.startup(thread);
+		final Thread javaFXThread = new Thread();
+		javaFXThread.setName(SystemThreadContext.SNAIL_THREAD_PLATFORM);
+		javaFXThread.setDaemon(true);
+		Platform.startup(javaFXThread);
 		Platform.runLater(() -> {
 			TrayMenu.getInstance();
 			MainWindow.getInstance().show();

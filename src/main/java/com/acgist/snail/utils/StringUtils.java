@@ -195,16 +195,16 @@ public class StringUtils {
 	 */
 	public static final String toUnicode(String content) {
 		char value;
-		final StringBuilder unicode = new StringBuilder();
+		final StringBuilder builder = new StringBuilder();
 		for (int index = 0; index < content.length(); index++) {
 			value = content.charAt(index);
-			unicode.append("\\u");
+			builder.append("\\u");
 			if(value <= 0xFF) {
-				unicode.append("00");
+				builder.append("00");
 			}
-			unicode.append(Integer.toHexString(value));
+			builder.append(Integer.toHexString(value));
 		}
-		return unicode.toString();
+		return builder.toString();
 	}
 	
 	/**
@@ -213,12 +213,12 @@ public class StringUtils {
 	public static final String ofUnicode(String unicode) {
 		int value;
 		final String[] hex = unicode.split("\\\\u");
-		final StringBuffer content = new StringBuffer();
+		final StringBuilder builder = new StringBuilder();
 		for (int index = 1; index < hex.length; index++) {
 			value = Integer.parseInt(hex[index], 16);
-			content.append((char) value);
+			builder.append((char) value);
 		}
-		return content.toString();
+		return builder.toString();
 	}
 	
 	/**

@@ -4,6 +4,8 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.acgist.snail.utils.ObjectUtils;
+
 /**
  * <p>Padding数据同步</p>
  * <p>同步数据格式：(len(padding) + padding)+</p>
@@ -89,12 +91,7 @@ public class MSEPaddingSync {
 	
 	@Override
 	public String toString() {
-		final StringBuffer buffer = new StringBuffer();
-		buffer
-			.append("count[").append(this.count).append("],")
-			.append("length[").append(this.length).append("],")
-			.append("size[").append(this.list.size()).append("]");
-		return buffer.toString();
+		return ObjectUtils.toString(this, this.count, this.length, this.list.size());
 	}
 	
 }

@@ -123,7 +123,6 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 				}
 			} catch (Exception e) {
 				LOGGER.error("UDP消息轮询异常", e);
-				continue;
 			}
 		}
 	}
