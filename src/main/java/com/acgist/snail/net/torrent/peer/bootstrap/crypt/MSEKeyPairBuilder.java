@@ -15,6 +15,10 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>MSE密钥对Builder（DH交换）</p>
+ * <p>
+ * 一的补码（one's complement）：反码（正数=原码、负数=反码）
+ * 二的补码（two's complement）：补码（正数=原码、负数=反码+1）
+ * </p>
  * 
  * @author acgist
  * @since 1.1.0
@@ -60,15 +64,18 @@ public class MSEKeyPairBuilder {
 
 		private static final long serialVersionUID = 1L;
 		
-		private final Object lock;
 		private final BigInteger value;
-		private volatile byte[] encoded;
+		private final byte[] encoded;
 
 		private MSEPublicKey(BigInteger value) {
-			this.lock = new Object();
 			this.value = value;
+			this.encoded = buildEncoded();
 		}
 
+		private byte[] buildEncoded() {
+			return NumberUtils.encodeUnsigned(this.value, CryptConfig.PUBLIC_KEY_LENGTH);
+		}
+		
 		public BigInteger getValue() {
 			return this.value;
 		}
@@ -85,13 +92,6 @@ public class MSEKeyPairBuilder {
 
 		@Override
 		public byte[] getEncoded() {
-			if (this.encoded == null) {
-				synchronized (this.lock) {
-					if (this.encoded == null) {
-						this.encoded = NumberUtils.encodeUnsigned(this.value, CryptConfig.PUBLIC_KEY_LENGTH);
-					}
-				}
-			}
 			return this.encoded;
 		}
 		
@@ -109,13 +109,12 @@ public class MSEKeyPairBuilder {
 
 		private static final long serialVersionUID = 1L;
 		
-		private final Object lock;
 		private final BigInteger value; // privateKey
-		private volatile MSEPublicKey publicKey;
+		private final MSEPublicKey publicKey; // publicKey
 
 		private MSEPrivateKey(Random random) {
-			this.lock = new Object();
 			this.value = buildPrivateKey(random);
+			this.publicKey = buildPublicKey();
 		}
 
 		/**
@@ -128,27 +127,26 @@ public class MSEKeyPairBuilder {
 			}
 			return NumberUtils.decodeUnsigned(ByteBuffer.wrap(bytes), CryptConfig.PRIVATE_KEY_LENGTH);
 		}
-
+		
 		/**
+		 * <pre>
 		 * Pubkey of A: Ya = (G^Xa) mod P
 		 * Pubkey of B: Yb = (G^Xb) mod P
+		 * </pre>
 		 */
-		private MSEPublicKey getPublicKey() {
-			if (this.publicKey == null) {
-				synchronized (this.lock) {
-					if (this.publicKey == null) {
-						this.publicKey = new MSEPublicKey(CryptConfig.G.modPow(this.value, CryptConfig.P));
-					}
-				}
-			}
-			return this.publicKey;
+		private MSEPublicKey buildPublicKey() {
+			return new MSEPublicKey(CryptConfig.G.modPow(this.value, CryptConfig.P));
 		}
-
+		
 		/**
 		 * DH secret: S = (Ya^Xb) mod P = (Yb^Xa) mod P
 		 */
 		public BigInteger buildDHSecret(MSEPublicKey publicKey) {
 			return publicKey.getValue().modPow(this.value, CryptConfig.P);
+		}
+		
+		private MSEPublicKey getPublicKey() {
+			return this.publicKey;
 		}
 
 		@Override

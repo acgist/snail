@@ -74,12 +74,12 @@ public class NumberUtils {
 	}
 	
 	/**
-	 * 大整数转为无符号大整数二进制字符数组
+	 * 大整数转为无符号二进制字符数组
 	 * 
-	 * @param 原始大整数
+	 * @param value 原始大整数
 	 * @param length 二进制字符数组长度
 	 */
-	public static byte[] encodeUnsigned(BigInteger value, int length) {
+	public static final byte[] encodeUnsigned(BigInteger value, int length) {
 		if (length < 1) {
 			throw new ArgumentException("数组长度错误");
 		}
@@ -99,7 +99,7 @@ public class NumberUtils {
 	}
 
 	/**
-	 * 无符号大整数二进制字符数组转为大整数
+	 * 无符号二进制字符数组转为大整数
 	 * 
 	 * @param buffer 二进制字符数组
 	 * @param length 二进制字符数组长度
@@ -110,7 +110,7 @@ public class NumberUtils {
 		}
 		byte b;
 		int index = 0;
-		while ((b = buffer.get()) == 0 && ++index < length) {
+		while ((b = buffer.get()) == 0 && ++index < length) { // 去掉前导零
 		}
 		if (index == length) {
 			return BigInteger.ZERO;
