@@ -128,6 +128,6 @@ GITHUB（不活跃）：[https://github.com/acgist/snail](https://github.com/acg
 
 ###### 界面
 
-![主界面](https://static.acgist.com/demo/snail/snail.png "主界面")  
-[上传](https://static.acgist.com/demo/snail/upload.png)  
-[监控](https://static.acgist.com/demo/snail/console.png)
+![主界面](https://static.acgist.com/demo/snail/snail.png "主界面")
+
+更多界面和监控：[https://www.acgist.com/snail](https://www.acgist.com/snail)
