@@ -7,7 +7,7 @@ import com.acgist.snail.utils.ObjectUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * Entity - 数据库实体基类
+ * Entity - 数据库实体
  * 
  * @author acgist
  * @since 1.0.0

@@ -7,7 +7,7 @@ create table tb_config (
     `value` MEDIUMTEXT DEFAULT NULL,
 	PRIMARY KEY (`id`)
 );
--- 任务：BT下载文件过多时可以修改description长度
+-- 任务：BT下载文件过多时可以修改description类型
 create table tb_task (
 	`id` VARCHAR(36) NOT NULL,
     `createDate` TIMESTAMP NOT NULL,
