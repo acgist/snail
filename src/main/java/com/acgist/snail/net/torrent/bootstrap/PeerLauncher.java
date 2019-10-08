@@ -113,6 +113,7 @@ public class PeerLauncher extends PeerClientHandler {
 	
 	/**
 	 * <p>建立连接、发送握手</p>
+	 * 
 	 * TODO：去掉保留地址
 	 */
 	public boolean handshake() {
@@ -130,6 +131,8 @@ public class PeerLauncher extends PeerClientHandler {
 	
 	/**
 	 * 建立连接
+	 * 
+	 * TODO：是否两种连接方式进行切换重试
 	 */
 	private boolean connect() {
 		if(this.peerSession.utp()) {
@@ -175,6 +178,7 @@ public class PeerLauncher extends PeerClientHandler {
 	
 	/**
 	 * <p>释放资源：关闭Peer客户端，设置非下载状态。</p>
+	 * 
 	 * TODO：释放完成后状态没有被修改
 	 */
 	public void release() {
