@@ -215,6 +215,16 @@ public class TorrentStreamGroup {
 	}
 	
 	/**
+	 * <p>Piece下载失败</p>
+	 * <p>调用每个{@link TorrentStream#undone}进行设置。</p>
+	 */
+	public void undone(TorrentPiece piece) {
+		for (TorrentStream torrentStream : this.streams) {
+			torrentStream.undone(piece);
+		}
+	}
+	
+	/**
 	 * 已下载位图
 	 */
 	public BitSet pieces() {
@@ -227,6 +237,15 @@ public class TorrentStreamGroup {
 	public BitSet selectPieces() {
 		return this.selectPieces;
 	}
+
+	/**
+	 * 剩余没有下载Piece的数量
+	 * 
+	 * @since 1.0.2
+	 */
+	public int remainingPieceSize() {
+		return this.selectPieces.cardinality() - this.pieces.cardinality();
+	}
 	
 	/**
 	 * 获取Piece的Hash校验
@@ -236,15 +255,6 @@ public class TorrentStreamGroup {
 		final byte[] value = new byte[TorrentInfo.PIECE_HASH_LENGTH];
 		System.arraycopy(pieces, index * TorrentInfo.PIECE_HASH_LENGTH, value, 0, TorrentInfo.PIECE_HASH_LENGTH);
 		return value;
-	}
-
-	/**
-	 * 剩余没有下载Piece的数量
-	 * 
-	 * @since 1.0.2
-	 */
-	public int remainingPieceSize() {
-		return this.selectPieces.cardinality() - this.pieces.cardinality();
 	}
 
 	/**
@@ -266,16 +276,6 @@ public class TorrentStreamGroup {
 			size += torrentStream.size();
 		}
 		return size;
-	}
-	
-	/**
-	 * <p>Piece下载失败</p>
-	 * <p>调用每个{@link TorrentStream#undone}进行设置。</p>
-	 */
-	public void undone(TorrentPiece piece) {
-		for (TorrentStream torrentStream : this.streams) {
-			torrentStream.undone(piece);
-		}
 	}
 	
 	/**
