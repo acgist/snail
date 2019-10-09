@@ -440,6 +440,9 @@ public class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		if(!this.torrentSession.uploadable()) {
 			return;
 		}
+		if(this.peerSession.havePiece(index)) { // 已经含有不通知
+			return;
+		}
 		LOGGER.debug("发送have消息：{}", index);
 		pushMessage(PeerConfig.Type.have, ByteBuffer.allocate(4).putInt(index).array());
 	}

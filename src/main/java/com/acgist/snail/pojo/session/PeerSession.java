@@ -246,6 +246,16 @@ public class PeerSession implements IStatistics {
 	}
 	
 	/**
+	 * 是否含有Piece
+	 */
+	public boolean havePiece(int index) {
+		if(index < 0) {
+			return false;
+		}
+		return this.pieces.get(index);
+	}
+	
+	/**
 	 * 设置无效Piece（校验失败的Piece）
 	 */
 	public void badPieces(int index) {
@@ -480,5 +490,5 @@ public class PeerSession implements IStatistics {
 	public String toString() {
 		return ObjectUtils.toString(this, this.host, this.peerPort, this.dhtPort);
 	}
-	
+
 }
