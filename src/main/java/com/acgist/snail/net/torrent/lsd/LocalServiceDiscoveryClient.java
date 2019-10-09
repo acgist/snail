@@ -16,7 +16,6 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>本地发现客户端</p>
- * <p>执行周期和PEX定时任务一致，启动时不执行。</p>
  * 
  * @author acgist
  * @since 1.1.0

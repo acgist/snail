@@ -1,6 +1,14 @@
 package com.acgist.snail.net.torrent.lsd;
 
+import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.net.UdpServer;
+import com.acgist.snail.net.torrent.TorrentManager;
+import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.NetUtils;
 
 /**
@@ -10,6 +18,8 @@ import com.acgist.snail.utils.NetUtils;
  * @since 1.0.0
  */
 public class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDiscoveryAcceptHandler> {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(LocalServiceDiscoveryServer.class);
 	
 	private static final LocalServiceDiscoveryServer INSTANCE = new LocalServiceDiscoveryServer();
 
@@ -38,6 +48,21 @@ public class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDiscovery
 	
 	public static final LocalServiceDiscoveryServer getInstance() {
 		return INSTANCE;
+	}
+	
+	/**
+	 * 注册本地发现定时服务
+	 */
+	public void register() {
+		LOGGER.debug("注册本地发现定时服务");
+		final Integer interval = SystemConfig.getLsdInterval();
+		SystemThreadContext.timerFixedDelay(interval, interval, TimeUnit.SECONDS, () -> {
+			LOGGER.debug("执行本地发现定时任务");
+			final LocalServiceDiscoveryClient client = LocalServiceDiscoveryClient.newInstance();
+			TorrentManager.getInstance().allInfoHash().forEach(infoHash -> {
+				client.localSearch(infoHash.infoHashHex());
+			});
+		});
 	}
 
 }
