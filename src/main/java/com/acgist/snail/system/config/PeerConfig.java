@@ -35,10 +35,6 @@ public class PeerConfig {
 	 */
 	public static final int CONNECT_TIMEOUT = SystemConfig.CONNECT_TIMEOUT;
 	/**
-	 * Peer创建超时时间（秒）
-	 */
-	public static final int BUILD_TIMEOUT = CONNECT_TIMEOUT + 4;
-	/**
 	 * PeerId长度
 	 */
 	public static final int PEER_ID_LENGTH = 20;

@@ -1,11 +1,12 @@
 package com.acgist.snail;
 
 import java.time.Duration;
-import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.junit.Test;
 
@@ -19,26 +20,52 @@ public class ThreadTest {
 		Semaphore semaphore = new Semaphore(2);
 		var pool = Executors.newFixedThreadPool(200);
 		for (int i = 0; i < 10; i++) {
-			semaphore.acquire();
 			pool.submit(() -> {
 				try {
+					semaphore.acquire();
 					System.out.println("++++");
-					ThreadUtils.sleep(new Random().nextInt(2000));
+					ThreadUtils.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				} finally {
-					semaphore.release();
+//					semaphore.release();
 				}
 			});
 		}
-		System.out.println("=================================");
 		pool.submit(() -> {
 			while(true) {
-				ThreadUtils.sleep(100);
-				System.out.println("----");
+				ThreadUtils.sleep(1000);
+				semaphore.release();
 			}
 		});
 		ThreadUtils.sleep(Long.MAX_VALUE);
 	}
 
+	@Test
+	public void lock() {
+		// lock必须是同一个线程获取同一个线程释放
+		Lock lock = new ReentrantLock();
+		var pool = Executors.newFixedThreadPool(200);
+		for (int i = 0; i < 10; i++) {
+			pool.submit(() -> {
+				try {
+					lock.lock();
+					System.out.println("++++");
+					ThreadUtils.sleep(1000);
+				} finally {
+//					lock.unlock();
+				}
+			});
+		}
+		pool.submit(() -> {
+			while(true) {
+				ThreadUtils.sleep(1000);
+				lock.unlock();
+			}
+		});
+		ThreadUtils.sleep(Long.MAX_VALUE);
+	}
+	
 	@Test
 	public void waitTest() {
 		long sleep = 1000000;

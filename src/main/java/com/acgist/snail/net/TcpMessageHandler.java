@@ -6,7 +6,6 @@ import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 import java.util.concurrent.Future;
-import java.util.concurrent.Semaphore;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,11 +37,6 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	 * 消息处理器
 	 */
 	protected IMessageCodec<ByteBuffer> messageCodec;
-	/**
-	 * <p>写入信号量</p>
-	 * <p>每次只允许一个线程写入，可以使用synchronize替换。</p>
-	 */
-	private final Semaphore writeableLock = new Semaphore(1);
 	
 	/**
 	 * <p>收到消息</p>
@@ -89,19 +83,20 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 			LOGGER.warn("TCP消息发送失败：{}", buffer);
 			return;
 		}
-		// 阻塞线程，等待发送完成，防止多线程同时写导致WritePendingException。
-		try {
-			this.writeableLock.acquire();
-			final Future<Integer> future = this.socket.write(buffer);
-			// 不设置超时时间，防止超时异常导致数据并没有发送完成而释放了信号量，从而引起一连串的WritePendingException异常。
-			final int size = future.get();
-			if(size <= 0) {
-				LOGGER.warn("TCP消息发送失败：{}", size);
+		synchronized (this.socket) {
+			try {
+				final Future<Integer> future = this.socket.write(buffer);
+				/*
+				 * 阻塞线程，等待发送完成，防止多线程同时写导致WritePendingException。
+				 * 不设置超时时间，防止超时异常导致数据并没有发送完成而释放了锁，从而引起一连串的WritePendingException异常。
+				 */
+				final int size = future.get();
+				if(size <= 0) {
+					LOGGER.warn("TCP消息发送失败：{}", size);
+				}
+			} catch (Exception e) {
+				throw new NetException(e);
 			}
-		} catch (Exception e) {
-			throw new NetException(e);
-		} finally {
-			this.writeableLock.release();
 		}
 	}
 
