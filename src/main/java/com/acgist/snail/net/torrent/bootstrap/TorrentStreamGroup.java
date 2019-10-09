@@ -183,6 +183,9 @@ public class TorrentStreamGroup {
 				this.flush();
 			}
 		}
+		if(ok) {
+			this.done(piece.getIndex());
+		}
 		return ok;
 	}
 	
@@ -200,8 +203,10 @@ public class TorrentStreamGroup {
 	
 	/**
 	 * <p>设置已下载的Piece，同时发送have消息。</p>
+	 * 
+	 * TODO：优化have消息，使用异步线程发送，防止部分Peer通知过慢，导致所有线程卡死。
 	 */
-	public void done(int index) {
+	private void done(int index) {
 		this.pieces.set(index, true);
 		// 初始化完成才开始发送have消息
 		if(this.done) {
