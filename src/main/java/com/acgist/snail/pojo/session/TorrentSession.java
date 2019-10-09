@@ -17,7 +17,6 @@ import com.acgist.snail.net.torrent.bootstrap.PeerConnectGroup;
 import com.acgist.snail.net.torrent.bootstrap.PeerLauncherGroup;
 import com.acgist.snail.net.torrent.bootstrap.TorrentStreamGroup;
 import com.acgist.snail.net.torrent.bootstrap.TrackerLauncherGroup;
-import com.acgist.snail.net.torrent.lsd.LocalServiceDiscoveryClient;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
 import com.acgist.snail.pojo.bean.Magnet;
 import com.acgist.snail.protocol.magnet.bootstrap.MagnetBuilder;
@@ -336,8 +335,6 @@ public class TorrentSession {
 	private void loadPexTimer() {
 		this.pexTimer = this.timerFixedDelay(PEX_INTERVAL.toSeconds(), PEX_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
 			PeerManager.getInstance().pex(this.infoHashHex(), this.peerLauncherGroup.optimizePeerSession()); // pex消息
-			final LocalServiceDiscoveryClient client = LocalServiceDiscoveryClient.newInstance();
-			client.localSearch(this.torrent.getInfoHash().infoHashHex());
 		});
 	}
 	
