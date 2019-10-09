@@ -242,7 +242,7 @@ public class PeerSession implements IStatistics {
 	 * @param index Piece序号
 	 */
 	public void piece(int index) {
-		this.pieces.set(index, true);
+		this.pieces.set(index);
 	}
 	
 	/**
