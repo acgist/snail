@@ -7,7 +7,6 @@ import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.gui.GuiHandler;
 import com.acgist.snail.net.TcpClient;
 import com.acgist.snail.net.TcpServer;
-import com.acgist.snail.net.UdpAcceptHandler;
 import com.acgist.snail.net.UdpServer;
 import com.acgist.snail.net.application.ApplicationClient;
 import com.acgist.snail.net.application.ApplicationServer;
@@ -131,7 +130,6 @@ public class SystemContext {
 				LocalServiceDiscoveryServer.getInstance().close();
 				TcpClient.shutdown();
 				TcpServer.shutdown();
-				UdpAcceptHandler.shutdown();
 				UdpServer.shutdown();
 				SystemThreadContext.shutdown();
 				PeerEvaluator.getInstance().shutdown();

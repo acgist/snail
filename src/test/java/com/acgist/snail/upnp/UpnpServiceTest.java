@@ -23,6 +23,7 @@ public class UpnpServiceTest {
 	public void getSpecificPortMappingEntry() throws NetException {
 		UpnpService.getInstance().load(this.serviceUrl);
 		System.out.println(UpnpService.getInstance().getSpecificPortMappingEntry(18888, Protocol.Type.tcp));
+		System.out.println(UpnpService.getInstance().getSpecificPortMappingEntry(18888, Protocol.Type.udp));
 	}
 
 	@Test
