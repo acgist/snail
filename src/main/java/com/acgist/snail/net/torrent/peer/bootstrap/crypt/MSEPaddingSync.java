@@ -64,14 +64,14 @@ public class MSEPaddingSync {
 			}
 			this.bytes = new byte[this.length];
 		}
-		final int remain = buffer.remaining();
+		final int remaining = buffer.remaining();
 		if(this.length == 0) {
 			this.count--;
 			this.length = -1;
 			this.list.add(this.bytes);
 			buffer.compact().flip();
 			return sync(buffer);
-		} else if(remain >= this.length) {
+		} else if(remaining >= this.length) {
 			buffer.get(this.bytes, this.bytes.length - this.length, this.length);
 			this.count--;
 			this.length = -1;
@@ -79,8 +79,8 @@ public class MSEPaddingSync {
 			buffer.compact().flip();
 			return sync(buffer);
 		} else {
-			buffer.get(this.bytes, this.bytes.length - this.length, remain);
-			this.length -= remain;
+			buffer.get(this.bytes, this.bytes.length - this.length, remaining);
+			this.length -= remaining;
 			buffer.compact();
 			return false;
 		}
