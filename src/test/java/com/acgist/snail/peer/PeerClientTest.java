@@ -58,7 +58,7 @@ public class PeerClientTest {
 //		Integer port = 18888;
 		Integer port = 49160; // FDM测试端口
 //		Integer port = 15000; // 本地迅雷测试端口
-		System.out.println("已下载：" + torrentSession.torrentStreamGroup().pieces());
+		System.out.println("已下载：" + torrentSession.pieces());
 		StatisticsSession statisticsSession = new StatisticsSession();
 		PeerSession peerSession = PeerSession.newInstance(statisticsSession, host, port);
 		peerSession.flags(PeerConfig.PEX_UTP); // UTP支持

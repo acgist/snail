@@ -56,11 +56,7 @@ public class DhtExtensionMessageHandler implements IExtensionMessageHandler {
 		LOGGER.debug("处理DHT消息");
 		final int port = NetUtils.decodePort(buffer.getShort());
 		this.peerSession.dhtPort(port);
-		LOGGER.debug("DHT扩展添加DHT节点：{}-{}", this.peerSession.host(), port);
-		final var dhtLauncher = this.torrentSession.dhtLauncher();
-		if(dhtLauncher != null) {
-			dhtLauncher.put(this.peerSession.host(), port);
-		}
+		this.torrentSession.newDhtNode(this.peerSession.host(), port);
 	}
 
 }

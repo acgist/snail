@@ -168,14 +168,9 @@ public class PeerManager {
 	 * <p>只发送给当前上传和下载的Peer。</p>
 	 */
 	public void have(String infoHashHex, int index) {
-		final var list = list(infoHashHex);
-		if(CollectionUtils.isEmpty(list)) {
-			return;
-		}
-		synchronized (list) {
-			final AtomicInteger count = new AtomicInteger(0);
-			list.stream()
-			.filter(session -> session.uploading() || session.downloading())
+		final var list = listActivePeer(infoHashHex);
+		final AtomicInteger count = new AtomicInteger(0);
+		list.stream()
 			.forEach(session -> {
 				var peerConnect = session.peerConnect();
 				var peerLauncher = session.peerLauncher();
@@ -187,8 +182,7 @@ public class PeerManager {
 					peerLauncher.have(index);
 				}
 			});
-			LOGGER.debug("发送Have消息，通知Peer数量：{}", count.get());
-		}
+		LOGGER.debug("发送Have消息，通知Peer数量：{}", count.get());
 	}
 	
 	/**
@@ -200,14 +194,9 @@ public class PeerManager {
 		if(bytes == null) {
 			return;
 		}
-		final var list = list(infoHashHex);
-		if(CollectionUtils.isEmpty(list)) {
-			return;
-		}
-		synchronized (list) {
-			final AtomicInteger count = new AtomicInteger(0);
-			list.stream()
-			.filter(session -> session.uploading() || session.downloading())
+		final var list = listActivePeer(infoHashHex);
+		final AtomicInteger count = new AtomicInteger(0);
+		list.stream()
 			.forEach(session -> {
 				var peerConnect = session.peerConnect();
 				var peerLauncher = session.peerLauncher();
@@ -219,8 +208,7 @@ public class PeerManager {
 					peerLauncher.pex(bytes);
 				}
 			});
-			LOGGER.debug("发送pex消息，Peer数量：{}，通知Peer数量：{}", optimize.size(), count.get());
-		}
+		LOGGER.debug("发送pex消息，Peer数量：{}，通知Peer数量：{}", optimize.size(), count.get());
 	}
 	
 	/**
@@ -248,6 +236,22 @@ public class PeerManager {
 				this.storagePeers.put(infoHashHex, list);
 			}
 			return list;
+		}
+	}
+	
+	/**
+	 * 获取上传中或者下载中的Peer队列拷贝
+	 */
+	private List<PeerSession> listActivePeer(String infoHashHex) {
+		final var list = list(infoHashHex);
+		if(CollectionUtils.isEmpty(list)) {
+			return List.of();
+		}
+		synchronized (list) {
+			return list.stream()
+				.filter(session -> session.available())
+				.filter(session -> session.uploading() || session.downloading())
+				.collect(Collectors.toList());
 		}
 	}
 	

@@ -557,7 +557,7 @@ public class TorrentStream {
 		if(LOGGER.isDebugEnabled()) {
 			LOGGER.debug("当前任务已下载Piece数量：{}，剩余下载Piece数量：{}",
 				this.torrentStreamGroup.pieces().cardinality(),
-				this.torrentStreamGroup.selectPieces().cardinality() - this.torrentStreamGroup.pieces().cardinality()
+				this.torrentStreamGroup.remainingPieceSize()
 			);
 		}
 	}

@@ -73,12 +73,10 @@ public class PeerLauncher extends PeerClientHandler {
 	private final AtomicBoolean completeLock = new AtomicBoolean(false);
 	
 	private final TorrentSession torrentSession;
-	private final TorrentStreamGroup torrentStreamGroup;
 	
 	private PeerLauncher(PeerSession peerSession, TorrentSession torrentSession) {
 		super(peerSession, PeerSubMessageHandler.newInstance(peerSession, torrentSession));
 		this.torrentSession = torrentSession;
-		this.torrentStreamGroup = torrentSession.torrentStreamGroup();
 	}
 	
 	public static final PeerLauncher newInstance(PeerSession peerSession, TorrentSession torrentSession) {
@@ -212,7 +210,7 @@ public class PeerLauncher extends PeerClientHandler {
 	 */
 	private void undone() {
 		LOGGER.debug("Piece下载失败：{}", this.downloadPiece.getIndex());
-		this.torrentStreamGroup.undone(this.downloadPiece);
+		this.torrentSession.undone(this.downloadPiece);
 	}
 
 	/**
@@ -301,7 +299,7 @@ public class PeerLauncher extends PeerClientHandler {
 			// 验证数据
 			if(this.downloadPiece.verify()) {
 				// 保存数据
-				final boolean ok = this.torrentStreamGroup.piece(this.downloadPiece);
+				final boolean ok = this.torrentSession.piece(this.downloadPiece);
 				if(ok) {
 					// 统计下载数据
 					this.peerSession.download(this.downloadPiece.getLength());
@@ -313,7 +311,7 @@ public class PeerLauncher extends PeerClientHandler {
 		} else { // 上次选择的Piece没有完成
 			LOGGER.debug("上次选择Piece没有完成：{}", this.downloadPiece.getIndex());
 		}
-		this.downloadPiece = this.torrentStreamGroup.pick(this.peerSession.availablePieces());
+		this.downloadPiece = this.torrentSession.pick(this.peerSession.availablePieces());
 		if(this.downloadPiece != null) {
 			LOGGER.debug("选取Piece：{}-{}-{}", this.downloadPiece.getIndex(), this.downloadPiece.getBegin(), this.downloadPiece.getEnd());
 		}

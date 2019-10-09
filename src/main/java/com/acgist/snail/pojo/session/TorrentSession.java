@@ -13,12 +13,15 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.bootstrap.DhtLauncher;
+import com.acgist.snail.net.torrent.bootstrap.PeerConnect;
 import com.acgist.snail.net.torrent.bootstrap.PeerConnectGroup;
 import com.acgist.snail.net.torrent.bootstrap.PeerLauncherGroup;
 import com.acgist.snail.net.torrent.bootstrap.TorrentStreamGroup;
 import com.acgist.snail.net.torrent.bootstrap.TrackerLauncherGroup;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
+import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.pojo.bean.Magnet;
+import com.acgist.snail.pojo.bean.TorrentPiece;
 import com.acgist.snail.protocol.magnet.bootstrap.MagnetBuilder;
 import com.acgist.snail.protocol.magnet.bootstrap.TorrentBuilder;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
@@ -420,7 +423,7 @@ public class TorrentSession {
 			return true;
 		}
 		if(this.action == Action.torrent) {
-			return this.torrentStreamGroup().complete();
+			return this.torrentStreamGroup.complete();
 		} else {
 			return this.torrent != null;
 		}
@@ -495,12 +498,12 @@ public class TorrentSession {
 	public void have(int index) {
 		PeerManager.getInstance().have(this.infoHash.infoHashHex(), index);
 	}
-	
+
 	/**
-	 * 是否含有Piece
+	 * <p>挑选一个Piece下载</p>
 	 */
-	public boolean havePiece(int index) {
-		return this.torrentStreamGroup.havePiece(index);
+	public TorrentPiece pick(final BitSet peerPieces) {
+		return torrentStreamGroup.pick(peerPieces);
 	}
 	
 	/**
@@ -510,6 +513,27 @@ public class TorrentSession {
 		return this.torrentStreamGroup.read(index, begin, length);
 	}
 
+	/**
+	 * <p>保存Piece</p>
+	 */
+	public boolean piece(TorrentPiece piece) {
+		return this.torrentStreamGroup.piece(piece);
+	}
+	
+	/**
+	 * 是否含有Piece
+	 */
+	public boolean havePiece(int index) {
+		return this.torrentStreamGroup.havePiece(index);
+	}
+
+	/**
+	 * <p>Piece下载失败</p>
+	 */
+	public void undone(TorrentPiece piece) {
+		this.torrentStreamGroup.undone(piece);
+	}
+	
 	/**
 	 * 保存种子文件，并重新加载种子和InfoHash。
 	 */
@@ -529,6 +553,23 @@ public class TorrentSession {
 		final var downloader = this.taskSession.downloader();
 		if(downloader != null) {
 			downloader.unlockDownload();
+		}
+	}
+	
+	/**
+	 * 创建接入连接
+	 */
+	public PeerConnect newPeerConnect(PeerSession peerSession, PeerSubMessageHandler peerSubMessageHandler) {
+		return this.peerConnectGroup.newPeerConnect(peerSession, peerSubMessageHandler);
+	}
+	
+	/**
+	 * 添加DHT节点
+	 */
+	public void newDhtNode(String host, int port) {
+		if(this.dhtLauncher != null) {
+			LOGGER.debug("DHT扩展添加DHT节点：{}-{}", host, port);
+			this.dhtLauncher.put(host, port);
 		}
 	}
 	
@@ -567,9 +608,6 @@ public class TorrentSession {
 		return this.taskSession != null && this.taskSession.complete();
 	}
 	
-	/**
-	 * 下载名称
-	 */
 	public String name() {
 		return this.torrent.name();
 	}
@@ -602,20 +640,8 @@ public class TorrentSession {
 		return this.taskSession;
 	}
 	
-	public DhtLauncher dhtLauncher() {
-		return this.dhtLauncher;
-	}
-	
 	public StatisticsSession statistics() {
 		return this.taskSession == null ? null : this.taskSession.statistics();
 	}
 	
-	public PeerConnectGroup peerConnectGroup() {
-		return this.peerConnectGroup;
-	}
-	
-	public TorrentStreamGroup torrentStreamGroup() {
-		return this.torrentStreamGroup;
-	}
-
 }
