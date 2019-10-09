@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Semaphore;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -29,30 +30,69 @@ public class UtpWindow {
 	 * 最大超时时间（微秒）
 	 */
 	private static final int MAX_TIMEOUT = 500 * 1000;
+	/**
+	 * 默认慢开始wnd数量
+	 */
+	private static final int DEFAULT_SLOW_WND = 2;
+	/**
+	 * 默认拥堵算法wnd数量
+	 */
+	private static final int DEFAULT_LIMIT_WND = 64;
 	
+	////================流量控制、阻塞控制================//
+	private volatile int nowWnd = 0;
+	private volatile int slowWnd = DEFAULT_SLOW_WND;
+	private volatile int limitWnd = DEFAULT_LIMIT_WND;
+	
+	////================超时================//
 	private int rtt;
 	private int rttVar;
 	private int timeout;
+	
 	/**
-	 * 客户端窗口大小
+	 * <dl>
+	 * 	<dt>窗口大小</dt>
+	 * 	<dd>接收端：发送端剩余大小</dd>
+	 * 	<dd>发送端：发送端缓存大小</dd>
+	 * </dl>
 	 */
 	private int wndSize;
 	/**
-	 * 最大窗口大小（客户端最大缓存）
+	 * <dl>
+	 * 	<dt>最大窗口大小</dt>
+	 * 	<dd>接收端：发送端最大窗口大小</dd>
+	 * 	<dd>发送端：接收端最大窗口大小</dd>
+	 * </dl>
 	 */
 	private int maxWndSize;
 	/**
-	 * 最后一个接收/发送的seqnr或者下一个seqnr
+	 * <dl>
+	 * 	<dt>seqnr</dt>
+	 * 	<dd>接收端：最后处理的seqnr</dd>
+	 * 	<dd>发送端：最后发送的seqnr</dd>
+	 * </dl>
 	 */
 	private short seqnr;
 	/**
-	 * 最后一个接收/发送的timestamp
+	 * <dl>
+	 * 	<dt>timestamp</dt>
+	 * 	<dd>接收端：最后收到响应的时间</dd>
+	 * 	<dd>发送端：最后发送数据的时间</dd>
+	 * </dl>
 	 */
 	private int timestamp;
 	/**
-	 * 窗口数据
+	 * <dl>
+	 * 	<dt>窗口数据</dt>
+	 * 	<dd>接收端：未处理的数据（不连贯的数据）</dd>
+	 * 	<dd>发送端：未收到响应的数据</dd>
+	 * </dl>
 	 */
 	private final Map<Short, UtpWindowData> wndMap;
+	/**
+	 * 发送窗口控制信号量
+	 */
+	private final Semaphore semaphore;
 	
 	private UtpWindow() {
 		this.rtt = 0;
@@ -62,6 +102,7 @@ public class UtpWindow {
 		this.seqnr = 0;
 		this.timestamp = 0;
 		this.wndMap = new LinkedHashMap<>();
+		this.semaphore = new Semaphore(DEFAULT_SLOW_WND);
 	}
 	
 	public static final UtpWindow newInstance() {
@@ -77,20 +118,11 @@ public class UtpWindow {
 	}
 
 	/**
-	 * 发送窗口获取剩余窗口缓存大小
+	 * 接收窗口获取剩余窗口缓存大小
 	 */
 	public int remainWndSize() {
 		synchronized (this) {
 			return UtpConfig.WND_SIZE - this.wndSize;
-		}
-	}
-	
-	/**
-	 * 发送窗口获取客户端窗口是否限制：客户端窗口大小剩余最大时1/4
-	 */
-	public boolean wndSizeControl() {
-		synchronized (this) {
-			return this.wndSize < (this.maxWndSize / 4);
 		}
 	}
 	
@@ -107,6 +139,7 @@ public class UtpWindow {
 	 * 发送数据：递增seqnr
 	 */
 	public UtpWindowData build(byte[] data) {
+		this.acquire();
 		synchronized (this) {
 			this.timestamp = DateUtils.timestampUs();
 			final UtpWindowData windowData = storage(this.timestamp, this.seqnr, data);
@@ -122,8 +155,7 @@ public class UtpWindow {
 		synchronized (this) {
 			final int timestamp = DateUtils.timestampUs();
 			final int timeout = this.timeout;
-			return this.wndMap.entrySet().stream()
-				.map(entry -> entry.getValue())
+			return this.wndMap.values().stream()
 				.filter(windowData -> {
 					return timestamp - windowData.getTimestamp() > timeout;
 				})
@@ -147,7 +179,7 @@ public class UtpWindow {
 				diff = (short) (acknr - entry.getKey()); // 移除序号小于等于当前响应序号的数据
 				if(diff >= 0) {
 					iterator.remove(); // 删除数据
-					take(entry.getValue()); // 计算wndSize
+					wndSize(entry.getValue()); // 计算wndSize
 					timeout(timestamp - entry.getValue().getTimestamp()); // 计算超时
 				}
 			}
@@ -164,15 +196,20 @@ public class UtpWindow {
 	}
 	
 	/**
-	 * <p>接收数据</p>
-	 * <p>如果数据已经被处理返回null。</p>
-	 * <p>如果seqnr不是下一个数据时，放入缓存。</p>
-	 * <p>如果seqnr是下一个数据时，继续获取直到找不到下一个seqnr为止，然后合并返回。更新当前接收的seqnr。</p>
+	 * <dl>
+	 * 	<dt>接收数据</dt>
+	 * 	<dd>如果seqnr数据已被处理，返回null。</dd>
+	 * 	<dd>如果seqnr != 下一个序号时，放入缓存，返回null。</dd>
+	 * 	<dd>如果seqnr == 下一个序号时，读取数据，更新seqnr，然后继续获取seqnr直到seqnr != 下一个序号为止，最后合并返回。</dd>
+	 * </dl>
 	 */
 	public UtpWindowData receive(int timestamp, short seqnr, ByteBuffer buffer) throws NetException {
 		synchronized (this) {
 			final short diff = (short) (this.seqnr - seqnr);
-			if(diff >= 0) { // 该seqnr已被处理
+			// TODO：删除下面日志
+			LOGGER.debug("seqnr处理：{}-{}-{}", this.seqnr, seqnr, diff);
+			if(diff >= 0) { // seqnr已被处理
+				// TODO：响应
 				return null;
 			}
 			storage(timestamp, seqnr, buffer);
@@ -203,17 +240,17 @@ public class UtpWindow {
 	}
 	
 	/**
-	 * 取出窗口数据：更新窗口被占用窗口大小
+	 * 取出窗口数据：更新窗口被占用大小
 	 */
 	private UtpWindowData take(short seqnr) {
 		final UtpWindowData windowData = this.wndMap.remove(seqnr);
-		return take(windowData);
+		return wndSize(windowData);
 	}
 	
 	/**
-	 * 取出窗口数据：更新窗口被占用窗口大小
+	 * 更新窗口被占用大小
 	 */
-	private UtpWindowData take(UtpWindowData windowData) {
+	private UtpWindowData wndSize(UtpWindowData windowData) {
 		if(windowData == null) {
 			return windowData;
 		}
@@ -231,7 +268,7 @@ public class UtpWindow {
 	}
 	
 	/**
-	 * 传入窗口数据
+	 * 存入窗口数据
 	 */
 	private UtpWindowData storage(final int timestamp, final short seqnr, byte[] bytes) {
 		final UtpWindowData windowData = UtpWindowData.newInstance(seqnr, timestamp, bytes);
@@ -250,7 +287,68 @@ public class UtpWindow {
 		this.timeout = Math.max(this.rtt + this.rttVar * 4, MAX_TIMEOUT);
 		LOGGER.debug("UTP超时时间：{}", this.timeout);
 	}
-
+	
+//	/**
+//	 * <dl>
+//	 * 	<dt>流量控制和阻塞控制</dt>
+//	 * 	<dd>慢开始：wnd * 2</dd>
+//	 * 	<dd>拥堵算法：wnd + 1</dd>
+//	 * 	<dd>出现超时（丢包）：wnd / 2</dd>
+//	 * </dl>
+//	 */
+//	private void sendWindowLimit() {
+//		if(wndSizeLimit()) { // 客户端缓存即将耗尽
+//			// TODO：
+//		}
+//		this.nowWnd++;
+//		final boolean loss = timeoutRetry(); // 出现丢包
+//		if(loss) {
+//			this.nowWnd = 0;
+//			this.slowWnd = this.slowWnd / 2;
+//			if(this.slowWnd < DEFAULT_SLOW_WND) {
+//				this.slowWnd = DEFAULT_SLOW_WND;
+//			}
+//			if(this.limitWnd < this.slowWnd) {
+//				this.limitWnd = this.slowWnd;
+//			}
+//			LOGGER.debug("UTP阻塞控制：{}-{}-{}", this.nowWnd, this.slowWnd, this.limitWnd);
+//		} else if (this.nowWnd > this.slowWnd) {
+//			this.nowWnd = 0;
+//			if(this.slowWnd >= this.limitWnd) {
+//				this.slowWnd++;
+//				LOGGER.debug("UTP拥堵算法：{}-{}-{}", this.nowWnd, this.slowWnd, this.limitWnd);
+//			} else {
+//				this.slowWnd = this.slowWnd * 2;
+//				LOGGER.debug("UTP慢开始：{}-{}-{}", this.nowWnd, this.slowWnd, this.limitWnd);
+//			}
+//		}
+//	}
+	
+	/**
+	 * 发送窗口获取客户端窗口是否限制：客户端窗口大小剩余最大时1/4
+	 */
+	private boolean wndSizeLimit() {
+		return this.wndSize < (this.maxWndSize / 4);
+	}
+	
+	/**
+	 * 获取信号量
+	 */
+	private void acquire() {
+//		try {
+//			this.semaphore.acquire();
+//		} catch (InterruptedException e) {
+//			LOGGER.error("信号量获取异常", e);
+//		}
+	}
+	
+	/**
+	 * 释放信号量
+	 */
+	public void release() {
+		this.semaphore.release();
+	}
+	
 	public short seqnr() {
 		return this.seqnr;
 	}

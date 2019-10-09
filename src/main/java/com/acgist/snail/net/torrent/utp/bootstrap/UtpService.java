@@ -4,6 +4,7 @@ import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,20 +55,20 @@ public class UtpService {
 	private void timer() {
 		SystemThreadContext.timerFixedDelay(UTP_INTERVAL, UTP_INTERVAL, TimeUnit.SECONDS, () -> {
 			synchronized (this.utpMessageHandlers) {
-				UtpMessageHandler handler;
-				final var iterator = this.utpMessageHandlers.entrySet().iterator();
-				while(iterator.hasNext()) {
-					try {
-						handler = iterator.next().getValue();
-						if(handler.available()) {
-							handler.wndTimeoutRetry();
-						} else {
-							handler.fin(); // 结束
-							iterator.remove(); // 移除
-						}
-					} catch (Exception e) {
-						LOGGER.error("UTP超时定时任务异常", e);
-					}
+				try {
+					this.utpMessageHandlers.values().stream()
+						.filter(handler -> {
+							if(handler.available()) {
+								handler.timeoutRetry();
+								return true;
+							} else {
+								return false;
+							}
+						})
+						.collect(Collectors.toList())
+						.forEach(value -> value.close());
+				} catch (Exception e) {
+					LOGGER.error("UTP超时定时任务异常", e);
 				}
 			}
 		});
