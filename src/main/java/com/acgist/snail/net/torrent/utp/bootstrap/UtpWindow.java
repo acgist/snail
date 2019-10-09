@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.system.config.UtpConfig;
-import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.DateUtils;
 
 /**
@@ -28,9 +28,13 @@ public class UtpWindow {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UtpWindow.class);
 	
 	/**
-	 * 最大超时时间（微秒）
+	 * 默认最大超时时间（微秒）
 	 */
 	private static final int MAX_TIMEOUT = 500 * 1000;
+	/**
+	 * 信号量超时时间
+	 */
+	private static final int ACQUIRE_TIMEOUT = 2;
 	/**
 	 * 默认慢开始wnd数量
 	 */
@@ -208,17 +212,17 @@ public class UtpWindow {
 	 * 	<dd>如果seqnr == 下一个序号时，读取数据，更新seqnr，然后继续获取seqnr直到seqnr != 下一个序号为止，最后合并返回。</dd>
 	 * </dl>
 	 */
-	public UtpWindowData receive(int timestamp, short seqnr, ByteBuffer buffer) throws NetException {
+	public UtpWindowData receive(int timestamp, short seqnr, ByteBuffer buffer) throws IOException {
 		synchronized (this) {
 			final short diff = (short) (this.seqnr - seqnr);
 			if(diff >= 0) { // seqnr已被处理
 				// TODO：已被处理再次响应
 				return null;
 			}
-			storage(timestamp, seqnr, buffer);
+			storage(timestamp, seqnr, buffer); // 先保存数据
 			UtpWindowData nextWindowData;
 			short nextSeqnr = this.seqnr;
-			final ByteArrayOutputStream output = new ByteArrayOutputStream();
+			final var output = new ByteArrayOutputStream();
 			while(true) {
 				nextSeqnr = (short) (nextSeqnr + 1); // 下一个seqnr
 				nextWindowData = take(nextSeqnr);
@@ -227,11 +231,7 @@ public class UtpWindow {
 				} else {
 					this.seqnr = nextWindowData.getSeqnr();
 					this.timestamp = nextWindowData.getTimestamp();
-					try {
-						output.write(nextWindowData.getData());
-					} catch (IOException e) {
-						throw new NetException("UTP消息处理失败", e);
-					}
+					output.write(nextWindowData.getData());
 				}
 			}
 			final byte[] bytes = output.toByteArray();
@@ -336,6 +336,10 @@ public class UtpWindow {
 		try {
 			LOGGER.debug("信号量（获取）：{}", this.semaphore.availablePermits());
 			this.semaphore.acquire();
+			final boolean ok = this.semaphore.tryAcquire(ACQUIRE_TIMEOUT, TimeUnit.SECONDS);
+			if(!ok) {
+				LOGGER.debug("信号量获取超时");
+			}
 		} catch (InterruptedException e) {
 			LOGGER.error("信号量获取异常", e);
 		}

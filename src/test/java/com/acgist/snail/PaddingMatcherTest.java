@@ -5,11 +5,12 @@ import java.nio.ByteBuffer;
 import org.junit.Test;
 
 import com.acgist.snail.net.torrent.peer.bootstrap.crypt.MSEPaddingSync;
+import com.acgist.snail.system.exception.NetException;
 
 public class PaddingMatcherTest {
 
 	@Test
-	public void cos() {
+	public void cos() throws NetException {
 		long begin = System.currentTimeMillis();
 		for (int index = 0; index < 100000; index++) {
 			sync();
@@ -18,7 +19,7 @@ public class PaddingMatcherTest {
 	}
 	
 	@Test
-	public void sync() {
+	public void sync() throws NetException {
 		MSEPaddingSync sync = MSEPaddingSync.newInstance(3);
 		ByteBuffer buffer = ByteBuffer.allocate(100);
 		buffer.putShort((short) 2).put("12".getBytes());

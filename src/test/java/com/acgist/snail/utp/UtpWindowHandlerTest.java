@@ -1,17 +1,17 @@
 package com.acgist.snail.utp;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import org.junit.Test;
 
 import com.acgist.snail.net.torrent.utp.bootstrap.UtpWindow;
 import com.acgist.snail.net.torrent.utp.bootstrap.UtpWindowData;
-import com.acgist.snail.system.exception.NetException;
 
 public class UtpWindowHandlerTest {
 
 	@Test
-	public void cos() throws NetException {
+	public void cos() throws IOException {
 		UtpWindow handler = UtpWindow.newInstance();
 		long begin = System.currentTimeMillis();
 		for (int i = 1; i < 100000; i++) {
