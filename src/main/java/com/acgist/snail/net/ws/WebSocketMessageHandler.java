@@ -5,7 +5,6 @@ import java.net.http.HttpClient;
 import java.net.http.WebSocket;
 import java.nio.ByteBuffer;
 import java.util.concurrent.Future;
-import java.util.concurrent.Semaphore;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +25,6 @@ public class WebSocketMessageHandler implements IMessageHandler {
 	private boolean close = false;
 	private final WebSocket socket;
 //	private final HttpClient client;
-	private final Semaphore writeableLock = new Semaphore(1);
 	
 	public WebSocketMessageHandler(HttpClient client, WebSocket socket) {
 //		this.client = client;
@@ -51,17 +49,16 @@ public class WebSocketMessageHandler implements IMessageHandler {
 			LOGGER.warn("WebSocket消息发送失败：{}", buffer);
 			return;
 		}
-		try {
-			this.writeableLock.acquire();
-			final Future<WebSocket> future = this.socket.sendBinary(buffer, true);
-			final WebSocket webSocket = future.get();
-			if(webSocket == null) {
-				LOGGER.warn("WebSocket消息发送失败：{}", webSocket);
+		synchronized (this.socket) {
+			try {
+				final Future<WebSocket> future = this.socket.sendBinary(buffer, true);
+				final WebSocket webSocket = future.get();
+				if(webSocket == null) {
+					LOGGER.warn("WebSocket消息发送失败：{}", webSocket);
+				}
+			} catch (Exception e) {
+				throw new NetException(e);
 			}
-		} catch (Exception e) {
-			throw new NetException(e);
-		} finally {
-			this.writeableLock.release();
 		}
 	}
 
