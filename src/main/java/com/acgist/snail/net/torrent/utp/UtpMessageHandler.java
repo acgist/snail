@@ -159,17 +159,19 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 			final byte[] extData = new byte[extLength];
 			buffer.get(extData);
 		}
-		LOGGER.debug("收到UTP消息，类型：{}，扩展：{}，连接ID：{}，时间戳：{}，时间戳对比：{}，窗口大小：{}，请求序号：{}，应答序号：{}",
-			type, extension, connectionId, timestamp, timestampDifference, wndSize, seqnr, acknr);
+//		LOGGER.debug(
+//			"收到UTP消息，类型：{}，扩展：{}，连接ID：{}，时间戳：{}，时间戳对比：{}，窗口大小：{}，请求序号：{}，应答序号：{}",
+//			type, extension, connectionId, timestamp, timestampDifference, wndSize, seqnr, acknr
+//		);
 		switch (type) {
 		case UtpConfig.ST_DATA:
 			data(timestamp, seqnr, acknr, buffer);
 			break;
-		case UtpConfig.ST_FIN:
-			fin(timestamp, seqnr, acknr);
-			break;
 		case UtpConfig.ST_STATE:
 			state(timestamp, seqnr, acknr, wndSize);
+			break;
+		case UtpConfig.ST_FIN:
+			fin(timestamp, seqnr, acknr);
 			break;
 		case UtpConfig.ST_RESET:
 			reset(timestamp, seqnr, acknr);
@@ -178,8 +180,10 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 			syn(timestamp, seqnr, acknr);
 			break;
 		default:
-			LOGGER.warn("不支持的UTP消息类型，类型：{}，扩展：{}，连接ID：{}，时间戳：{}，时间戳对比：{}，窗口大小：{}，请求序号：{}，应答序号：{}",
-				type, extension, connectionId, timestamp, timestampDifference, wndSize, seqnr, acknr);
+			LOGGER.warn(
+				"不支持的UTP消息类型，类型：{}，扩展：{}，连接ID：{}，时间戳：{}，时间戳对比：{}，窗口大小：{}，请求序号：{}，应答序号：{}",
+				type, extension, connectionId, timestamp, timestampDifference, wndSize, seqnr, acknr
+			);
 			break;
 		}
 	}
@@ -213,23 +217,13 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 			}
 			buffer.get(bytes);
 			final UtpWindowData windowData = this.sendWindow.build(bytes);
-			this.data(windowData);
+			// 判断状态：可用发送，不可用跳出循环，防止信号量获取失败一直阻塞线程。
+			if(this.available()) {
+				this.data(windowData);
+			} else {
+				break;
+			}
 		}
-	}
-	
-	/**
-	 * 获取超时（丢包）数据包并重新发送
-	 * 
-	 * @return true：有丢包；false：没有丢包；
-	 */
-	public boolean timeoutRetry() {
-		final List<UtpWindowData> windowDatas = this.sendWindow.timeoutWindowData();
-		if(CollectionUtils.isNotEmpty(windowDatas)) {
-			data(windowDatas);
-			LOGGER.debug("数据包超时（丢包）重新发送数据包大小：{}", windowDatas.size());
-			return true;
-		}
-		return false;
 	}
 	
 	/**
@@ -253,22 +247,18 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 	}
 	
 	/**
-	 * 接收数据消息
+	 * 获取超时（丢包）数据包并重新发送
+	 * 
+	 * @return true：有丢包；false：没有丢包；
 	 */
-	private void data(int timestamp, short seqnr, short acknr, ByteBuffer buffer) throws NetException {
-		UtpWindowData windowData = null;
-		try {
-			windowData = this.recvWindow.receive(timestamp, seqnr, buffer);
-		} catch (NetException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new NetException(e);
+	public boolean timeoutRetry() {
+		final List<UtpWindowData> windowDatas = this.sendWindow.timeoutWindowData();
+		if(CollectionUtils.isNotEmpty(windowDatas)) {
+			data(windowDatas);
+			LOGGER.debug("数据包超时（丢包）重新发送数据包大小：{}", windowDatas.size());
+			return true;
 		}
-		if(windowData != null) {
-			this.state(windowData.getTimestamp(), acknr);
-			LOGGER.debug("处理UTP数据：{}", windowData.getSeqnr());
-			this.messageCodec.decode(windowData.buffer());
-		}
+		return false;
 	}
 	
 	/**
@@ -289,6 +279,25 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 	}
 	
 	/**
+	 * 接收数据消息
+	 */
+	private void data(int timestamp, short seqnr, short acknr, ByteBuffer buffer) throws NetException {
+		UtpWindowData windowData = null;
+		try {
+			windowData = this.recvWindow.receive(timestamp, seqnr, buffer);
+		} catch (NetException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new NetException(e);
+		}
+		if(windowData != null) {
+			LOGGER.debug("处理UTP数据：{}", windowData.getSeqnr());
+			this.state(windowData.getTimestamp(), windowData.getSeqnr());
+			this.messageCodec.decode(windowData.buffer());
+		}
+	}
+	
+	/**
 	 * 发送数据消息
 	 */
 	private void data(UtpWindowData windowData) {
@@ -305,29 +314,6 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 			this.pushMessage(buffer);
 		}
 	}
-	
-	/**
-	 * 接收结束消息
-	 */
-	private void fin(int timestamp, short seqnr, short acknr) {
-		this.connect = false;
-		super.close();
-		this.state(timestamp, seqnr);
-	}
-	
-	/**
-	 * 发送结束消息
-	 */
-	private void fin() {
-		final ByteBuffer buffer = header(UtpConfig.TYPE_FIN, UTP_HEADER_SIZE);
-		buffer.putShort(this.recvId);
-		buffer.putInt(DateUtils.timestampUs());
-		buffer.putInt(0);
-		buffer.putInt(0);
-		buffer.putShort((short) (this.sendWindow.seqnr() + 1));
-		buffer.putShort((short) 0);
-		this.pushMessage(buffer);
-	}
 
 	/**
 	 * 接收应答消息
@@ -337,7 +323,7 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 		if(!this.connect) { // 没有连接
 			this.connect = this.available();
 			if(this.connect) {
-				// 握手时seqnr为下一个seqnr，所以需要-1设置为当前seqnr。
+				// 注意：seqnr-1
 				this.recvWindow.connect(timestamp, (short) (seqnr - 1));
 			}
 			synchronized (this.connectLock) {
@@ -363,11 +349,36 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 		buffer.putShort(seqnr); // acknr=请求seqnr
 		this.pushMessage(buffer);
 	}
+
+	/**
+	 * 接收结束消息
+	 */
+	private void fin(int timestamp, short seqnr, short acknr) {
+		LOGGER.debug("收到UTP消息（fin）");
+		this.connect = false;
+		super.close();
+		this.state(timestamp, seqnr);
+	}
+	
+	/**
+	 * 发送结束消息
+	 */
+	private void fin() {
+		final ByteBuffer buffer = header(UtpConfig.TYPE_FIN, UTP_HEADER_SIZE);
+		buffer.putShort(this.sendId);
+		buffer.putInt(DateUtils.timestampUs());
+		buffer.putInt(0);
+		buffer.putInt(0);
+		buffer.putShort((short) (this.sendWindow.seqnr() + 1));
+		buffer.putShort((short) 0);
+		this.pushMessage(buffer);
+	}
 	
 	/**
 	 * 接收reset消息
 	 */
 	private void reset(int timestamp, short seqnr, short acknr) {
+		LOGGER.debug("收到UTP消息（reset）");
 		this.connect = false;
 		super.close();
 		this.state(timestamp, seqnr);
@@ -378,7 +389,7 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 	 */
 	private void reset() {
 		final ByteBuffer buffer = header(UtpConfig.TYPE_RESET, UTP_HEADER_SIZE);
-		buffer.putShort(this.recvId);
+		buffer.putShort(this.sendId);
 		buffer.putInt(DateUtils.timestampUs());
 		buffer.putInt(0);
 		buffer.putInt(0);
@@ -435,15 +446,24 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 	}
 	
 	/**
+	 * 释放窗口信号量
+	 */
+	private void release() {
+		this.sendWindow.release();
+		this.recvWindow.release();
+	}
+	
+	/**
 	 * 发送fin消息，标记关闭。
 	 */
 	@Override
 	public void close() {
 		LOGGER.debug("关闭UTP");
-		this.utpService.remove(this);
+		this.release();
 		this.fin();
-		this.connect = false;
 		super.close();
+		this.connect = false;
+		this.utpService.remove(this);
 	}
 	
 	/**
@@ -451,10 +471,11 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 	 */
 	public void resetAndClose() {
 		LOGGER.debug("重置UTP");
-		this.utpService.remove(this);
+		this.release();
 		this.reset();
-		this.connect = false;
 		super.close();
+		this.connect = false;
+		this.utpService.remove(this);
 	}
 	
 }

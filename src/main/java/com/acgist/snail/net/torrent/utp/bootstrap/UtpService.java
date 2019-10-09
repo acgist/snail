@@ -60,9 +60,9 @@ public class UtpService {
 						.filter(handler -> {
 							if(handler.available()) {
 								handler.timeoutRetry();
-								return true;
-							} else {
 								return false;
+							} else {
+								return true;
 							}
 						})
 						.collect(Collectors.toList())

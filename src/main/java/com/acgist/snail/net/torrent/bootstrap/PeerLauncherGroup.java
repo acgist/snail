@@ -33,9 +33,9 @@ public class PeerLauncherGroup {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerLauncherGroup.class);
 	
 	/**
-	 * 同时创建PeerLauncher数量（实际同时创建数量会多一个）
+	 * 同时创建PeerLauncher数量
 	 */
-	private static final int BUILD_SIZE = 2;
+	private static final int BUILD_SIZE = 3;
 	/**
 	 * 单次创建PeerLauncher最大数量（包含失败）
 	 */
@@ -104,7 +104,7 @@ public class PeerLauncherGroup {
 	public void release() {
 		LOGGER.debug("释放PeerLauncherGroup");
 		// 解除PeerLaunchers锁，防止暂停任务卡死。
-		notifyBuild(false);
+		this.release(false);
 		synchronized (this.peerLaunchers) {
 			this.peerLaunchers.forEach(launcher -> {
 				SystemThreadContext.submit(() -> {
@@ -128,6 +128,10 @@ public class PeerLauncherGroup {
 		this.buildSemaphore.drainPermits();
 		this.buildSemaphore.release(BUILD_SIZE);
 		while(this.build.get()) {
+			this.acquire();
+			if(!this.build.get()) { // 再次判断状态
+				break;
+			}
 			this.torrentSession.submit(() -> {
 				boolean ok = true; // 是否继续创建
 				try {
@@ -135,17 +139,12 @@ public class PeerLauncherGroup {
 				} catch (Exception e) {
 					LOGGER.error("创建PeerLauncher异常", e);
 				} finally {
-					notifyBuild(ok);
+					this.release(ok);
 				}
 			});
 			if(++size >= MAX_BUILD_SIZE) {
 				LOGGER.debug("优化PeerLauncher：超过单次最大创建数量退出循环");
 				break;
-			}
-			try {
-				this.buildSemaphore.acquire();
-			} catch (InterruptedException e) {
-				LOGGER.error("信号量获取异常", e);
 			}
 		}
 	}
@@ -279,9 +278,20 @@ public class PeerLauncherGroup {
 	}
 	
 	/**
+	 * 获取信号量
+	 */
+	private void acquire() {
+		try {
+			this.buildSemaphore.acquire();
+		} catch (InterruptedException e) {
+			LOGGER.error("信号量获取异常", e);
+		}
+	}
+	
+	/**
 	 * 释放信号量，设置创建状态。
 	 */
-	private void notifyBuild(boolean build) {
+	private void release(boolean build) {
 		this.build.set(build);
 		this.buildSemaphore.release();
 	}
