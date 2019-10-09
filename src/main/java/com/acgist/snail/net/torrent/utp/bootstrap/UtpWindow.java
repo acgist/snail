@@ -331,6 +331,8 @@ public class UtpWindow {
 	
 	/**
 	 * 获取信号量
+	 * 
+	 * TODO：优化超时
 	 */
 	private void acquire() {
 		try {
