@@ -143,7 +143,7 @@ public class TorrentStream {
 			this.fileStream = new RandomAccessFile(this.file, "rw");
 			buildFilePiece();
 			buildFileAsyn(complete, sizeCount);
-			selectPieces.set(this.fileBeginPieceIndex, this.fileEndPieceIndex + 1, true);
+			selectPieces.set(this.fileBeginPieceIndex, this.fileEndPieceIndex + 1);
 			LOGGER.debug(
 				"TorrentStream信息，块大小：{}，文件路径：{}，文件大小：{}，文件开始偏移：{}，文件Piece数量：{}，文件Piece开始序号：{}，文件Piece结束序号：{}",
 				this.pieceLength,
@@ -340,7 +340,7 @@ public class TorrentStream {
 	 * Piece下载完成
 	 */
 	private void done(int index) {
-		this.pieces.set(index, true); // 下载成功
+		this.pieces.set(index); // 下载成功
 		this.downloadPieces.clear(index); // 去掉下载状态
 	}
 

@@ -194,7 +194,7 @@ public class TorrentStreamGroup {
 	 * 
 	 * @param index Piece序号
 	 */
-	public boolean have(int index) {
+	public boolean havePiece(int index) {
 		if(index < 0) {
 			return false;
 		}
@@ -207,7 +207,7 @@ public class TorrentStreamGroup {
 	 * TODO：优化have消息，使用异步线程发送，防止部分Peer通知过慢，导致所有线程卡死。
 	 */
 	private void done(int index) {
-		this.pieces.set(index, true);
+		this.pieces.set(index);
 		// 初始化完成才开始发送have消息
 		if(this.done) {
 			this.torrentSession.have(index);

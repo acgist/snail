@@ -503,7 +503,7 @@ public class TorrentSession {
 	 * 是否含有Piece
 	 */
 	public boolean havePiece(int index) {
-		return this.torrentStreamGroup.have(index);
+		return this.torrentStreamGroup.havePiece(index);
 	}
 	
 	/**
