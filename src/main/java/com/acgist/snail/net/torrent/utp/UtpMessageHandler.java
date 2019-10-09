@@ -285,8 +285,6 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 		UtpWindowData windowData = null;
 		try {
 			windowData = this.recvWindow.receive(timestamp, seqnr, buffer);
-		} catch (NetException e) {
-			throw e;
 		} catch (Exception e) {
 			throw new NetException(e);
 		}

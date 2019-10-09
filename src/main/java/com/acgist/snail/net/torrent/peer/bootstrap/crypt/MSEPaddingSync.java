@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.acgist.snail.system.exception.ArgumentException;
 import com.acgist.snail.utils.ObjectUtils;
 
 /**
@@ -58,6 +59,9 @@ public class MSEPaddingSync {
 		}
 		if(this.length == -1) {
 			this.length = buffer.getShort();
+			if(this.length < 0) {
+				throw new ArgumentException("同步数据长度错误：" + this.length);
+			}
 			this.bytes = new byte[this.length];
 		}
 		final int remain = buffer.remaining();
