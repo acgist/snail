@@ -738,6 +738,7 @@ public class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	}
 	
 	/**
+	 * <p>释放Peer时使用，调用前最好不要发送其他信息，防止等待不能及时释放。</p>
 	 * {@link IMessageEncryptHandler#close()}
 	 */
 	public void close() {

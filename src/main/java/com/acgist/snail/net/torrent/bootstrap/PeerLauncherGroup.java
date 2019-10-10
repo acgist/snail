@@ -33,9 +33,9 @@ public class PeerLauncherGroup {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerLauncherGroup.class);
 	
 	/**
-	 * 同时创建PeerLauncher数量
+	 * 同时创建PeerLauncher数量，不要超过TorrentSession里面线程池大小。
 	 */
-	private static final int BUILD_SIZE = 3;
+	private static final int BUILD_SIZE = 2;
 	/**
 	 * 单次创建PeerLauncher最大数量（包含失败）
 	 */

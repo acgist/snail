@@ -248,16 +248,16 @@ public class PeerLauncher extends PeerClientHandler {
 		}
 		final int index = this.downloadPiece.getIndex();
 		while(available()) {
-			synchronized (this.countLock) {
-				if (this.countLock.get() >= SLICE_REQUEST_SIZE) {
+			if (this.countLock.get() >= SLICE_REQUEST_SIZE) {
+				synchronized (this.countLock) {
 					ThreadUtils.wait(this.countLock, Duration.ofSeconds(SLICE_AWAIT_TIME));
 					// 如果没有数据返回直接跳出下载
 					if (!this.hasPieceMessage) {
 						break;
 					}
 				}
-				this.countLock.addAndGet(1);
 			}
+			this.countLock.addAndGet(1);
 			int begin = this.downloadPiece.position();
 			int length = this.downloadPiece.length(); // 顺序不能调换
 			this.peerSubMessageHandler.request(index, begin, length);

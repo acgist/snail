@@ -37,7 +37,7 @@ public class UtpService {
 	private final Map<String, UtpMessageHandler> utpMessageHandlers = new ConcurrentHashMap<>();
 	
 	private UtpService() {
-		timer();
+		register();
 	}
 	
 	public static final UtpService getInstance() {
@@ -50,10 +50,12 @@ public class UtpService {
 	private int connectionId = 0;
 	
 	/**
-	 * UTP超时定时任务：定时处理超时信息。
+	 * UTP超时定时任务：定时处理超时信息
 	 */
-	private void timer() {
+	private void register() {
+		LOGGER.debug("启动UTP超时定时任务");
 		SystemThreadContext.timerFixedDelay(UTP_INTERVAL, UTP_INTERVAL, TimeUnit.SECONDS, () -> {
+			LOGGER.debug("执行UTP超时定时任务");
 			synchronized (this.utpMessageHandlers) {
 				try {
 					this.utpMessageHandlers.values().stream()

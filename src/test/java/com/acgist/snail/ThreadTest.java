@@ -76,8 +76,9 @@ public class ThreadTest {
 		});
 		exe.submit(() -> {
 			System.out.println("2");
-			synchronized (this) {
-				ThreadUtils.wait(this, Duration.ofSeconds(sleep));
+			Object lock = new Object();
+			synchronized (lock) {
+				ThreadUtils.wait(lock, Duration.ofSeconds(sleep));
 			}
 		});
 		exe.submit(() -> {
@@ -89,7 +90,7 @@ public class ThreadTest {
 	
 	@Test
 	public void timer() {
-		var executor = SystemThreadContext.newScheduledExecutor(10, "test");
+		var executor = SystemThreadContext.newTimerExecutor(10, "test");
 		var task = executor.scheduleAtFixedRate(() -> {
 			System.out.println("----");
 		}, 0, 2, TimeUnit.SECONDS);

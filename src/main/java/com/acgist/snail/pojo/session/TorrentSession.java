@@ -115,7 +115,8 @@ public class TorrentSession {
 	 */
 	private TrackerLauncherGroup trackerLauncherGroup;
 	/**
-	 * 线程池
+	 * <p>线程池</p>
+	 * <p>使用缓存线程池，防止过多下载时出现卡死现象。</p>
 	 */
 	private ExecutorService executor;
 	/**
@@ -238,14 +239,14 @@ public class TorrentSession {
 	 * 加载线程池
 	 */
 	private void loadExecutor() {
-		this.executor = SystemThreadContext.newExecutor(4, 10, 100, 60L, SystemThreadContext.SNAIL_THREAD_BT);
+		this.executor = SystemThreadContext.newCacheExecutor(SystemThreadContext.SNAIL_THREAD_BT);
 	}
 
 	/**
 	 * 加载定时线程池
 	 */
 	private void loadExecutorTimer() {
-		this.executorTimer = SystemThreadContext.newScheduledExecutor(2, SystemThreadContext.SNAIL_THREAD_BT_TIMER);
+		this.executorTimer = SystemThreadContext.newTimerExecutor(2, SystemThreadContext.SNAIL_THREAD_BT_TIMER);
 	}
 	
 	/**
