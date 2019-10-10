@@ -33,7 +33,8 @@ public class PeerLauncherGroup {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerLauncherGroup.class);
 	
 	/**
-	 * 同时创建PeerLauncher数量，不要超过TorrentSession里面线程池大小。
+	 * <p>同时创建PeerLauncher数量</p>
+	 * <p>注：如果TorrentSession线程池固定大小，不要超过线程池大小。</p>
 	 */
 	private static final int BUILD_SIZE = 2;
 	/**

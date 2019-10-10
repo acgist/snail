@@ -14,7 +14,7 @@ import com.acgist.snail.system.exception.NetException;
 /**
  * <p>UDP消息代理</p>
  * <p>非线程安全，使用需要保证每一个消息处理器对应的{@linkplain #socketAddress 远程地址}唯一。</p>
- * <p>UDP发送没有超时时间设置，{@link #send(ByteBuffer)}和{@link #send(ByteBuffer, int)}是一样，注意复写时不要死循环。</p>
+ * <p>UDP发送没有超时时间设置，注意：重写{@link #send(ByteBuffer)}和{@link #send(ByteBuffer, int)}时不要出现死循环。</p>
  * 
  * @author acgist
  * @since 1.0.0
