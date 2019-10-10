@@ -120,7 +120,18 @@ public class TorrentStreamGroup {
 	}
 	
 	/**
+	 * <p>发送have消息</p>
+	 */
+	public void have(int index) {
+		if(this.done) { // 初始化完成才开始发送have消息
+			this.torrentSession.have(index);
+		}
+	}
+	
+	/**
 	 * <p>挑选一个Piece下载</p>
+	 * 
+	 * @param peerPieces Peer位图
 	 */
 	public TorrentPiece pick(final BitSet peerPieces) {
 		TorrentPiece pickPiece = null;
@@ -163,8 +174,7 @@ public class TorrentStreamGroup {
 	}
 
 	/**
-	 * <p>保存Piece</p>
-	 * <p>调用每个{@link TorrentStream#piece}进行保存。</p>
+	 * <p>保存Piece数据</p>
 	 * 
 	 * @return 是否保存成功
 	 */
@@ -184,7 +194,7 @@ public class TorrentStreamGroup {
 			}
 		}
 		if(ok) {
-			this.done(piece.getIndex());
+			this.have(piece.getIndex());
 		}
 		return ok;
 	}
@@ -202,21 +212,14 @@ public class TorrentStreamGroup {
 	}
 	
 	/**
-	 * <p>设置已下载的Piece，同时发送have消息。</p>
-	 * 
-	 * TODO：优化have消息，使用异步线程发送，防止部分Peer通知过慢，导致所有线程卡死。
+	 * <p>设置已下载的Piece</p>
 	 */
 	public void done(int index) {
 		this.pieces.set(index);
-		// 初始化完成才开始发送have消息
-		if(this.done) {
-			this.torrentSession.have(index);
-		}
 	}
 	
 	/**
 	 * <p>Piece下载失败</p>
-	 * <p>调用每个{@link TorrentStream#undone}进行设置。</p>
 	 */
 	public void undone(TorrentPiece piece) {
 		for (TorrentStream torrentStream : this.streams) {
