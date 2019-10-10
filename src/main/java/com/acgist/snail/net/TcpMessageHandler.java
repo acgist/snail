@@ -88,8 +88,9 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 			try {
 				final Future<Integer> future = this.socket.write(buffer);
 				/*
-				 * 阻塞线程，等待发送完成，防止多线程同时写导致WritePendingException。
-				 * 超时时间，超时异常会导致数据并没有发送完成而释放了锁，从而引起一连串的WritePendingException异常。
+				 * 阻塞线程：等待发送完成，防止多线程同时写导致WritePendingException。
+				 * 超时时间：超时异常会导致数据并没有发送完成而释放了锁，从而引起一连串的WritePendingException异常。
+				 * 建议：除了第一条消息以外的所有消息都不要使用超时时间。
 				 */
 				int size = 0;
 				if(timeout <= TIMEOUT_NONE) {
