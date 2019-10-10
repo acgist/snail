@@ -24,6 +24,10 @@ public interface IMessageHandler {
 	 * 发送超时时间
 	 */
 	int SEND_TIMEOUT = SystemConfig.SEND_TIMEOUT;
+	/**
+	 * 没有超时时间，一直等待。
+	 */
+	int TIMEOUT_NONE = 0;
 	
 	/**
 	 * 可用状态
@@ -69,13 +73,25 @@ public interface IMessageHandler {
 	}
 	
 	/**
-	 * 消息发送（所有其他消息均由这个方法发送）
+	 * 消息发送
 	 * 
 	 * @param buffer 消息内容
 	 * 
 	 * @throws NetException 网络异常
 	 */
-	void send(ByteBuffer buffer) throws NetException;
+	default void send(ByteBuffer buffer) throws NetException {
+		send(buffer, TIMEOUT_NONE);
+	}
+	
+	/**
+	 * 消息发送（所有其他消息均由这个方法发送）
+	 * 
+	 * @param buffer 消息内容
+	 * @param timeout 超时时间
+	 * 
+	 * @throws NetException 网络异常
+	 */
+	void send(ByteBuffer buffer, int timeout) throws NetException;
 
 	/**
 	 * 获取远程服务地址

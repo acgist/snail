@@ -82,6 +82,40 @@ public class PeerLauncher extends PeerClientHandler {
 	public static final PeerLauncher newInstance(PeerSession peerSession, TorrentSession torrentSession) {
 		return new PeerLauncher(peerSession, torrentSession);
 	}
+	
+	/**
+	 * <p>建立连接、发送握手</p>
+	 * 
+	 * TODO：去掉保留地址
+	 */
+	public boolean handshake() {
+		final boolean ok = connect();
+		if(ok) {
+			PeerEvaluator.getInstance().score(this.peerSession, PeerEvaluator.Type.connect);
+			this.peerSubMessageHandler.handshake(this);
+		} else {
+			this.peerSession.fail();
+		}
+		this.available = ok;
+		return ok;
+	}
+	
+	/**
+	 * 建立连接
+	 * 
+	 * TODO：是否两种连接方式进行切换重试
+	 */
+	private boolean connect() {
+		if(this.peerSession.utp()) {
+			LOGGER.debug("Peer连接（uTP）：{}-{}", this.peerSession.host(), this.peerSession.peerPort());
+			final UtpClient utpClient = UtpClient.newInstance(this.peerSession, this.peerSubMessageHandler);
+			return utpClient.connect();
+		} else {
+			LOGGER.debug("Peer连接（TCP）：{}-{}", this.peerSession.host(), this.peerSession.peerPort());
+			final PeerClient peerClient = PeerClient.newInstance(this.peerSession, this.peerSubMessageHandler);
+			return peerClient.connect();
+		}
+	}
 
 	/**
 	 * <p>开始下载</p>
@@ -107,39 +141,6 @@ public class PeerLauncher extends PeerClientHandler {
 	@Override
 	public long mark() {
 		return this.mark.getAndSet(0);
-	}
-	
-	/**
-	 * <p>建立连接、发送握手</p>
-	 * 
-	 * TODO：去掉保留地址
-	 */
-	public boolean handshake() {
-		LOGGER.debug("Peer连接：{}-{}", this.peerSession.host(), this.peerSession.peerPort());
-		final boolean ok = connect();
-		if(ok) {
-			this.peerSubMessageHandler.handshake(this);
-			PeerEvaluator.getInstance().score(this.peerSession, PeerEvaluator.Type.connect);
-		} else {
-			this.peerSession.fail();
-		}
-		this.available = ok;
-		return ok;
-	}
-	
-	/**
-	 * 建立连接
-	 * 
-	 * TODO：是否两种连接方式进行切换重试
-	 */
-	private boolean connect() {
-		if(this.peerSession.utp()) {
-			final UtpClient utpClient = UtpClient.newInstance(this.peerSession, this.peerSubMessageHandler);
-			return utpClient.connect();
-		} else {
-			final PeerClient peerClient = PeerClient.newInstance(this.peerSession, this.peerSubMessageHandler);
-			return peerClient.connect();
-		}
 	}
 	
 	/**

@@ -52,6 +52,11 @@ public abstract class ClientMessageHandlerAdapter<T extends IMessageHandler> imp
 	}
 
 	@Override
+	public void send(ByteBuffer buffer, int timeout) throws NetException {
+		this.handler.send(buffer, timeout);
+	}
+	
+	@Override
 	public InetSocketAddress remoteSocketAddress() {
 		return this.handler.remoteSocketAddress();
 	}

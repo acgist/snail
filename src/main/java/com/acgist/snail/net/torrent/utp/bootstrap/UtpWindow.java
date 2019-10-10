@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -32,10 +31,6 @@ public class UtpWindow {
 	 */
 	private static final int MAX_TIMEOUT = 500 * 1000;
 	/**
-	 * 信号量超时时间
-	 */
-	private static final int ACQUIRE_TIMEOUT = 2;
-	/**
 	 * 默认慢开始wnd数量
 	 */
 	private static final int DEFAULT_SLOW_WND = 80;
@@ -44,16 +39,20 @@ public class UtpWindow {
 //	 */
 //	private static final int DEFAULT_LIMIT_WND = 64;
 	
-	////================流量控制、阻塞控制================//
+	//================流量控制、阻塞控制================//
 //	private volatile int nowWnd = 0;
 //	private volatile int slowWnd = DEFAULT_SLOW_WND;
 //	private volatile int limitWnd = DEFAULT_LIMIT_WND;
 	
-	////================超时================//
+	//================超时================//
 	private volatile int rtt;
 	private volatile int rttVar;
 	private volatile int timeout;
 	
+	/**
+	 * 是否关闭
+	 */
+	private volatile boolean close = false;
 	/**
 	 * <dl>
 	 * 	<dt>窗口大小</dt>
@@ -136,16 +135,14 @@ public class UtpWindow {
 	 * 发送数据：没有负载
 	 */
 	public UtpWindowData build() {
-		synchronized (this) {
-			return build(null);
-		}
+		return build(null);
 	}
 	
 	/**
 	 * 发送数据：递增seqnr
 	 */
 	public UtpWindowData build(byte[] data) {
-		this.acquire();
+		this.acquire(); // 不能加锁
 		synchronized (this) {
 			this.timestamp = DateUtils.timestampUs();
 			final UtpWindowData windowData = storage(this.timestamp, this.seqnr, data);
@@ -330,18 +327,16 @@ public class UtpWindow {
 //	}
 	
 	/**
-	 * 获取信号量
-	 * 
-	 * TODO：优化超时
+	 * <p>获取信号量</p>
+	 * <p>如果已经关闭了，不需要获取信号量。</p>
 	 */
 	private void acquire() {
+		if(this.close) {
+			return;
+		}
 		try {
 			LOGGER.debug("信号量（获取）：{}", this.semaphore.availablePermits());
 			this.semaphore.acquire();
-			final boolean ok = this.semaphore.tryAcquire(ACQUIRE_TIMEOUT, TimeUnit.SECONDS);
-			if(!ok) {
-				LOGGER.debug("信号量获取超时");
-			}
 		} catch (InterruptedException e) {
 			LOGGER.error("信号量获取异常", e);
 		}
@@ -353,6 +348,15 @@ public class UtpWindow {
 	public void release() {
 		LOGGER.debug("信号量（释放）：{}", this.semaphore.availablePermits());
 		this.semaphore.release();
+	}
+	
+	/**
+	 * <p>关闭窗口</p>
+	 * <p>标记关闭，同时释放一个信号量。</p>
+	 */
+	public void close() {
+		this.close = true;
+		this.release();
 	}
 	
 	public short seqnr() {

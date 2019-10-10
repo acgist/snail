@@ -41,9 +41,9 @@ public class PeerMessageHandler extends TcpMessageHandler implements IMessageEnc
 	}
 	
 	@Override
-	public void sendEncrypt(ByteBuffer buffer) throws NetException {
+	public void sendEncrypt(ByteBuffer buffer, int timeout) throws NetException {
 		this.messageCodec.encode(buffer);
-		this.send(buffer);
+		this.send(buffer, timeout);
 	}
 
 }

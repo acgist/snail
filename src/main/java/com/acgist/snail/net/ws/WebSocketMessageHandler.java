@@ -5,6 +5,7 @@ import java.net.http.HttpClient;
 import java.net.http.WebSocket;
 import java.nio.ByteBuffer;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +38,7 @@ public class WebSocketMessageHandler implements IMessageHandler {
 	}
 
 	@Override
-	public void send(ByteBuffer buffer) throws NetException {
+	public void send(ByteBuffer buffer, int timeout) throws NetException {
 		if(!available()) {
 			LOGGER.debug("WebSocket消息发送失败：Socket不可用");
 			return;
@@ -52,7 +53,12 @@ public class WebSocketMessageHandler implements IMessageHandler {
 		synchronized (this.socket) {
 			try {
 				final Future<WebSocket> future = this.socket.sendBinary(buffer, true);
-				final WebSocket webSocket = future.get();
+				WebSocket webSocket = null;
+				if(timeout <= TIMEOUT_NONE) {
+					webSocket = future.get();
+				} else {
+					webSocket = future.get(timeout, TimeUnit.SECONDS);
+				}
 				if(webSocket == null) {
 					LOGGER.warn("WebSocket消息发送失败：{}", webSocket);
 				}

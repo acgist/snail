@@ -14,6 +14,7 @@ import com.acgist.snail.system.exception.NetException;
 /**
  * <p>UDP消息代理</p>
  * <p>非线程安全，使用需要保证每一个消息处理器对应的{@linkplain #socketAddress 远程地址}唯一。</p>
+ * <p>UDP发送没有超时时间设置，{@link #send(ByteBuffer)}和{@link #send(ByteBuffer, int)}是一样，注意复写时不要死循环。</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -70,9 +71,22 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 		}
 		send(this.charset(this.messageCodec.encode(message), charset));
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 * <p>重写请注意使用super方法发送，防止死循环。</p>
+	 */
 	@Override
 	public void send(ByteBuffer buffer) throws NetException {
+		this.send(buffer, this.remoteSocketAddress());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * <p>重写请注意使用super方法发送，防止死循环。</p>
+	 */
+	@Override
+	public void send(ByteBuffer buffer, int timeout) throws NetException {
 		this.send(buffer, this.remoteSocketAddress());
 	}
 	
