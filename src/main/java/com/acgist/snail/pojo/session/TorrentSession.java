@@ -593,18 +593,22 @@ public class TorrentSession {
 	 * 任务处于下载中
 	 */
 	public boolean running() {
-		return this.taskSession != null && this.taskSession.download();
+		return this.taskSession.download();
 	}
 	
 	/**
 	 * 任务是否完成
 	 */
 	public boolean completed() {
-		return this.taskSession != null && this.taskSession.complete();
+		return this.taskSession.complete();
 	}
 	
 	public String name() {
 		return this.torrent.name();
+	}
+	
+	public long size() {
+		return this.taskSession.entity().getSize();
 	}
 	
 	public BitSet pieces() {
@@ -636,7 +640,7 @@ public class TorrentSession {
 	}
 	
 	public StatisticsSession statistics() {
-		return this.taskSession == null ? null : this.taskSession.statistics();
+		return this.taskSession.statistics();
 	}
 	
 }
