@@ -493,6 +493,8 @@ public class TorrentSession {
 	/**
 	 * <p>发送have消息</p>
 	 * 
+	 * TODO：优化have消息，使用异步线程发送，防止部分Peer通知过慢，导致所有线程卡死。
+	 * 
 	 * @param index Piece序号
 	 */
 	public void have(int index) {
@@ -507,21 +509,21 @@ public class TorrentSession {
 	}
 	
 	/**
-	 * 读取数据
+	 * <p>读取Piece数据</p>
 	 */
 	public byte[] read(int index, int begin, int length) throws NetException {
 		return this.torrentStreamGroup.read(index, begin, length);
 	}
 
 	/**
-	 * <p>保存Piece</p>
+	 * <p>保存Piece数据</p>
 	 */
 	public boolean piece(TorrentPiece piece) {
 		return this.torrentStreamGroup.piece(piece);
 	}
 	
 	/**
-	 * 是否含有Piece
+	 * 是否已下载Piece
 	 */
 	public boolean havePiece(int index) {
 		return this.torrentStreamGroup.havePiece(index);
