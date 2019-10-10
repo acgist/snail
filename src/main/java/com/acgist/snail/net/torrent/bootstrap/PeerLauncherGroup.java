@@ -40,7 +40,7 @@ public class PeerLauncherGroup {
 	/**
 	 * 单次创建PeerLauncher最大数量（包含失败）
 	 */
-	private static final int MAX_BUILD_SIZE = 120;
+	private static final int MAX_BUILD_SIZE = 64;
 	
 	/**
 	 * 是否继续创建PeerLauncher
