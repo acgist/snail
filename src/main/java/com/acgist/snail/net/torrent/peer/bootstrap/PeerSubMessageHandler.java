@@ -551,6 +551,12 @@ public class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		if(this.peerSession.isAmChocking()) {
 			return;
 		}
+		// 累计上传大小以及超过任务大小：阻塞（不上传）
+		if(this.peerSession.statistics().uploadSize() > this.torrentSession.size()) {
+			LOGGER.debug("累计上传大小超过任务大小：阻塞");
+			this.choke();
+			return;
+		}
 		final int index = buffer.getInt();
 		final int begin = buffer.getInt();
 		final int length = buffer.getInt();
