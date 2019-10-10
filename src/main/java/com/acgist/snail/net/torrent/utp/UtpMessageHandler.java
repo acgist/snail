@@ -189,14 +189,18 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 	}
 
 	@Override
-	public void sendEncrypt(ByteBuffer buffer) throws NetException {
+	public void sendEncrypt(ByteBuffer buffer, int timeout) throws NetException {
 		this.messageCodec.encode(buffer);
-		this.send(buffer);
+		this.send(buffer, timeout);
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 * <p>重写发送方法：UDP拆包</p>
+	 */
 	@Override
-	public void send(ByteBuffer buffer) throws NetException {
-		if(!(this.connect && available())) {
+	public void send(ByteBuffer buffer, int timeout) throws NetException {
+		if(!available()) {
 			LOGGER.debug("UTP消息发送失败：通道不可用");
 			return;
 		}
@@ -217,12 +221,7 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 			}
 			buffer.get(bytes);
 			final UtpWindowData windowData = this.sendWindow.build(bytes);
-			// 判断状态：可用发送，不可用跳出循环，防止信号量获取失败一直阻塞线程。
-			if(this.available()) {
-				this.data(windowData);
-			} else {
-				break;
-			}
+			this.data(windowData);
 		}
 	}
 	
@@ -444,11 +443,11 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 	}
 	
 	/**
-	 * 释放窗口信号量
+	 * 关闭窗口
 	 */
-	private void release() {
-		this.sendWindow.release();
-		this.recvWindow.release();
+	private void closeWindow() {
+		this.sendWindow.close();
+		this.recvWindow.close();
 	}
 	
 	/**
@@ -457,7 +456,7 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 	@Override
 	public void close() {
 		LOGGER.debug("关闭UTP");
-		this.release();
+		this.closeWindow();
 		this.fin();
 		super.close();
 		this.connect = false;
@@ -469,7 +468,7 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 	 */
 	public void resetAndClose() {
 		LOGGER.debug("重置UTP");
-		this.release();
+		this.closeWindow();
 		this.reset();
 		super.close();
 		this.connect = false;

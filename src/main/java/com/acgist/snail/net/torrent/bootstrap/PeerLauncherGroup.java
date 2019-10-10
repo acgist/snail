@@ -278,7 +278,7 @@ public class PeerLauncherGroup {
 	}
 	
 	/**
-	 * 获取信号量
+	 * <p>获取信号量</p>
 	 */
 	private void acquire() {
 		try {

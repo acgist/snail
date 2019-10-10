@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,7 +72,7 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	}
 	
 	@Override
-	public void send(ByteBuffer buffer) throws NetException {
+	public void send(ByteBuffer buffer, int timeout) throws NetException {
 		if(!available()) {
 			LOGGER.debug("TCP消息发送失败：Socket不可用");
 			return;
@@ -88,9 +89,14 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 				final Future<Integer> future = this.socket.write(buffer);
 				/*
 				 * 阻塞线程，等待发送完成，防止多线程同时写导致WritePendingException。
-				 * 不设置超时时间，防止超时异常导致数据并没有发送完成而释放了锁，从而引起一连串的WritePendingException异常。
+				 * 超时时间，超时异常会导致数据并没有发送完成而释放了锁，从而引起一连串的WritePendingException异常。
 				 */
-				final int size = future.get();
+				int size = 0;
+				if(timeout <= TIMEOUT_NONE) {
+					size = future.get();
+				} else {
+					size = future.get(timeout, TimeUnit.SECONDS);
+				}
 				if(size <= 0) {
 					LOGGER.warn("TCP消息发送失败：{}", size);
 				}

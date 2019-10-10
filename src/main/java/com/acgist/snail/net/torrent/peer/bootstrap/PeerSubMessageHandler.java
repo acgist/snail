@@ -60,6 +60,11 @@ public class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerSubMessageHandler.class);
 	
 	/**
+	 * 握手超时时间
+	 */
+	private static final int HANDSHAKE_TIMEOUT = 5;
+	
+	/**
 	 * 发送握手
 	 */
 	private volatile boolean handshakeSend = false;
@@ -145,7 +150,7 @@ public class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			LOGGER.warn("Peer接入失败：Torrent任务不可上传");
 			return false;
 		}
-		final InetSocketAddress socketAddress = remoteSocketAddress();
+		final InetSocketAddress socketAddress = this.remoteSocketAddress();
 		if(socketAddress == null) {
 			LOGGER.warn("Peer接入失败：远程客户端获取失败");
 			return false;
@@ -242,6 +247,7 @@ public class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 
 	/**
 	 * <p>发送握手消息</p>
+	 * <p>注：握手设置超时时间，防止握手一致等待导致一直占用线程。</p>
 	 * <p>格式：pstrlen pstr reserved info_hash peer_id</p>
 	 * <pre>
 	 * pstrlen：协议（pstr）的长度：19
@@ -264,7 +270,7 @@ public class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		buffer.put(PeerConfig.HANDSHAKE_RESERVED);
 		buffer.put(this.torrentSession.infoHash().infoHash());
 		buffer.put(PeerService.getInstance().peerId());
-		this.sendEncrypt(buffer);
+		this.sendEncrypt(buffer, HANDSHAKE_TIMEOUT);
 	}
 	
 	/**
@@ -757,6 +763,17 @@ public class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	}
 	
 	/**
+	 * {@link IMessageEncryptHandler#send(ByteBuffer, int)}
+	 */
+	public void send(ByteBuffer buffer, int timeout) {
+		try {
+			this.messageEncryptHandler.send(buffer, timeout);
+		} catch (Exception e) {
+			LOGGER.error("Peer消息发送异常", e);
+		}
+	}
+	
+	/**
 	 * {@link IMessageEncryptHandler#sendEncrypt(ByteBuffer)}
 	 */
 	public void sendEncrypt(ByteBuffer buffer) {
@@ -767,6 +784,17 @@ public class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		}
 	}
 
+	/**
+	 * {@link IMessageEncryptHandler#sendEncrypt(ByteBuffer, int)}
+	 */
+	public void sendEncrypt(ByteBuffer buffer, int timeout) {
+		try {
+			this.messageEncryptHandler.sendEncrypt(buffer, timeout);
+		} catch (Exception e) {
+			LOGGER.error("Peer消息发送异常", e);
+		}
+	}
+	
 	/**
 	 * {@link IMessageEncryptHandler#remoteSocketAddress()}
 	 */
