@@ -19,7 +19,7 @@ import com.acgist.snail.system.bencode.BEncodeEncoder;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.PeerConfig.ExtensionType;
 import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.system.exception.OversizePacketException;
+import com.acgist.snail.system.exception.PacketSizeException;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.PeerUtils;
@@ -89,7 +89,7 @@ public class PeerExchangeMessageHandler implements IExtensionMessageHandler, IEx
 	 * 
 	 * TODO：IPv6
 	 */
-	private void pex(ByteBuffer buffer) throws OversizePacketException {
+	private void pex(ByteBuffer buffer) throws PacketSizeException {
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
 		final var decoder = BEncodeDecoder.newInstance(bytes);

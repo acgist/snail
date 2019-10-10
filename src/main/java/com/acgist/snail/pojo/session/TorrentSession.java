@@ -32,9 +32,9 @@ import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.system.config.PeerConfig.Action;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
-import com.acgist.snail.system.exception.ArgumentException;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.system.exception.TimerArgumentException;
 import com.acgist.snail.utils.CollectionUtils;
 
 /**
@@ -312,7 +312,7 @@ public class TorrentSession {
 	}
 	
 	/**
-	 * 加载DHT，将种子文件中的节点加入到DHT网络中。
+	 * 加载DHT：将种子文件中的节点加入到DHT网络中
 	 */
 	private void loadDhtLauncher() {
 		this.dhtLauncher = DhtLauncher.newInstance(this);
@@ -353,49 +353,41 @@ public class TorrentSession {
 	 * 定时任务（不重复）
 	 */
 	public ScheduledFuture<?> timer(long delay, TimeUnit unit, Runnable runnable) {
-		if(delay >= 0) {
-			return this.executorTimer.schedule(runnable, delay, unit);
+		if(delay < 0) {
+			throw new TimerArgumentException(delay);
 		} else {
-			throw new ArgumentException("定时任务时间错误：" + delay);
+			return this.executorTimer.schedule(runnable, delay, unit);
 		}
 	}
 	
 	/**
-	 * <p>定时任务（重复）</p>
-	 * <p>固定时间（周期不受执行时间影响）</p>
-	 * 
-	 * @param delay 延迟时间
-	 * @param period 周期时间
-	 * @param unit 时间单位
-	 * @param runnable 任务
+	 * 定时任务（重复）
 	 */
 	public ScheduledFuture<?> timer(long delay, long period, TimeUnit unit, Runnable runnable) {
-		if(delay >= 0) {
-			return this.executorTimer.scheduleAtFixedRate(runnable, delay, period, unit);
+		if(delay < 0) {
+			throw new TimerArgumentException(delay);
+		} else if(period < 0) {
+			throw new TimerArgumentException(period);
 		} else {
-			throw new ArgumentException("定时任务时间错误：" + delay);
+			return this.executorTimer.scheduleAtFixedRate(runnable, delay, period, unit);
 		}
 	}
 	
 	/**
-	 * <p>定时任务（重复）</p>
-	 * <p>固定周期（周期受到执行时间影响）</p>
-	 * 
-	 * @param delay 延迟时间
-	 * @param period 周期时间
-	 * @param unit 时间单位
-	 * @param runnable 任务
+	 * 定时任务（重复）
 	 */
 	public ScheduledFuture<?> timerFixedDelay(long delay, long period, TimeUnit unit, Runnable runnable) {
-		if(delay >= 0) {
-			return this.executorTimer.scheduleWithFixedDelay(runnable, delay, period, unit);
+		if(delay < 0) {
+			throw new TimerArgumentException(delay);
+		} else if(period < 0) {
+			throw new TimerArgumentException(period);
 		} else {
-			throw new ArgumentException("定时任务时间错误：" + delay);
+			return this.executorTimer.scheduleWithFixedDelay(runnable, delay, period, unit);
 		}
 	}
 	
 	/**
-	 * 设置选择的下载文件并返回文件列表。
+	 * 设置选择的下载文件并返回文件列表
 	 */
 	private List<TorrentFile> setSelectFiles() {
 		final TorrentInfo torrentInfo = this.torrent.getInfo();

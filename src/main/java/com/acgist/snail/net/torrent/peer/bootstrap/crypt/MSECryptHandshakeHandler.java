@@ -20,6 +20,7 @@ import com.acgist.snail.system.config.CryptConfig.Strategy;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.system.exception.PacketSizeException;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.DigestUtils;
 import com.acgist.snail.utils.NumberUtils;
@@ -421,7 +422,7 @@ public class MSECryptHandshakeHandler {
 	/**
 	 * 接收加密协议协商Padding
 	 */
-	private void receiveProvidePadding() {
+	private void receiveProvidePadding() throws PacketSizeException {
 		LOGGER.debug("加密握手，接收加密协议协商Padding，步骤：{}", this.step);
 		final boolean ok = this.msePaddingSync.sync(this.buffer);
 		if(ok) {
@@ -491,7 +492,7 @@ public class MSECryptHandshakeHandler {
 	/**
 	 * 接收确认加密协议Padding
 	 */
-	private void receiveConfirmPadding() {
+	private void receiveConfirmPadding() throws PacketSizeException {
 		LOGGER.debug("加密握手，接收确认加密协议Padding，步骤：{}", this.step);
 		final boolean ok = this.msePaddingSync.sync(this.buffer);
 		if(ok) {

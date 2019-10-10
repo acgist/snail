@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.system.bencode.BEncodeDecoder;
 import com.acgist.snail.system.bencode.BEncodeEncoder;
-import com.acgist.snail.system.exception.OversizePacketException;
+import com.acgist.snail.system.exception.PacketSizeException;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -75,7 +75,7 @@ public class TorrentSelectorWrapper {
 					return BEncodeDecoder.getString(object);
 				})
 				.collect(Collectors.toList());
-		} catch (OversizePacketException e) {
+		} catch (PacketSizeException e) {
 			LOGGER.error("解析选择文件异常", e);
 		}
 		return List.of();

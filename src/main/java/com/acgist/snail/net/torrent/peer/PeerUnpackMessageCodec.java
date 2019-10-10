@@ -8,7 +8,7 @@ import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.system.exception.OversizePacketException;
+import com.acgist.snail.system.exception.PacketSizeException;
 
 /**
  * <p>Peer消息处理器：拆包</p>
@@ -76,7 +76,7 @@ public class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteBuffer>
 						break;
 					}
 				} else if(length >= SystemConfig.MAX_NET_BUFFER_SIZE) {
-					throw new OversizePacketException(length);
+					throw new PacketSizeException(length);
 				}
 				this.buffer = ByteBuffer.allocate(length);
 			} else {

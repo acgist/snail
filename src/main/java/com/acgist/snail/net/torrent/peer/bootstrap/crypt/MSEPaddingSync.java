@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.acgist.snail.system.exception.ArgumentException;
+import com.acgist.snail.system.exception.PacketSizeException;
 import com.acgist.snail.utils.ObjectUtils;
 
 /**
@@ -50,7 +50,7 @@ public class MSEPaddingSync {
 	 * 
 	 * @return 是否同步完成：true-完成；false-未完成；
 	 */
-	public boolean sync(ByteBuffer buffer) {
+	public boolean sync(ByteBuffer buffer) throws PacketSizeException {
 		if(this.count == 0) {
 			return true;
 		}
@@ -60,7 +60,7 @@ public class MSEPaddingSync {
 		if(this.length == -1) {
 			this.length = buffer.getShort();
 			if(this.length < 0) {
-				throw new ArgumentException("同步数据长度错误：" + this.length);
+				throw new PacketSizeException(this.length);
 			}
 			this.bytes = new byte[this.length];
 		}
