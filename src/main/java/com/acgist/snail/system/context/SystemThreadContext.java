@@ -58,7 +58,7 @@ public class SystemThreadContext {
 	static {
 		LOGGER.info("启动系统线程池");
 		EXECUTOR = newExecutor(4, 20, 100, 60L, SNAIL_THREAD);
-		EXECUTOR_TIMER = newScheduledExecutor(2, SNAIL_THREAD_TIMER);
+		EXECUTOR_TIMER = newTimerExecutor(2, SNAIL_THREAD_TIMER);
 	}
 	
 	/**
@@ -67,9 +67,13 @@ public class SystemThreadContext {
 	public static final void submit(Runnable runnable) {
 		EXECUTOR.submit(runnable);
 	}
-	
+
 	/**
-	 * 定时任务（不重复）
+	 * <p>定时任务（不重复）</p>
+	 * 
+	 * @param delay 延迟时间
+	 * @param unit 时间单位
+	 * @param runnable 任务
 	 */
 	public static final ScheduledFuture<?> timer(long delay, TimeUnit unit, Runnable runnable) {
 		if(delay >= 0) {
@@ -114,7 +118,7 @@ public class SystemThreadContext {
 	}
 	
 	/**
-	 * 创建线程池
+	 * <p>创建线程池</p>
 	 * 
 	 * @param corePoolSize 初始线程数量
 	 * @param maximumPoolSize 最大线程数量
@@ -134,8 +138,12 @@ public class SystemThreadContext {
 	}
 	
 	/**
-	 * <p>创建缓存线程池</p>
-	 * <p>不限制线程池大小，初始线程：0，存活时间：60S。</p>
+	 * <dl>
+	 * 	<dt>创建缓存线程池</dt>
+	 * 	<dd>不限制线程池大小</dd>
+	 * 	<dd>初始线程数量：0</dd>
+	 * 	<dd>线程存活时间：60S</dd>
+	 * </dl>
 	 * 
 	 * @param name 线程池名称
 	 */
@@ -151,12 +159,12 @@ public class SystemThreadContext {
 	}
 	
 	/**
-	 * 创建定时线程池
+	 * <p>创建定时线程池</p>
 	 * 
 	 * @param corePoolSize 初始线程数量
 	 * @param name 线程池名称
 	 */
-	public static final ScheduledExecutorService newScheduledExecutor(int corePoolSize, String name) {
+	public static final ScheduledExecutorService newTimerExecutor(int corePoolSize, String name) {
 		return new ScheduledThreadPoolExecutor(
 			corePoolSize,
 			SystemThreadContext.newThreadFactory(name)

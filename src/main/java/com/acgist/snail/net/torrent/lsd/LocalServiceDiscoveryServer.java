@@ -51,10 +51,10 @@ public class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDiscovery
 	}
 	
 	/**
-	 * 注册本地发现定时服务
+	 * 注册本地发现定时任务
 	 */
 	public void register() {
-		LOGGER.debug("注册本地发现定时服务");
+		LOGGER.debug("注册本地发现定时任务");
 		final Integer interval = SystemConfig.getLsdInterval();
 		SystemThreadContext.timerFixedDelay(interval, interval, TimeUnit.SECONDS, () -> {
 			LOGGER.debug("执行本地发现定时任务");
