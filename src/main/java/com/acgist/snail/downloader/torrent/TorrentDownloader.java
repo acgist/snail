@@ -30,6 +30,11 @@ public class TorrentDownloader extends TorrentSessionDownloader {
 	}
 
 	@Override
+	public void refresh() {
+		// TODO：添加下载文件TorrentStreamGroup
+	}
+	
+	@Override
 	public void release() {
 		this.torrentSession.releaseDownload();
 	}
