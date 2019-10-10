@@ -1,7 +1,8 @@
 package com.acgist.snail.system.exception;
 
 /**
- * 参数异常
+ * <p>参数异常</p>
+ * <p>常见异常：不支持的算法、不支持的参数类型、参数数量错误等等</p>
  * 
  * @author acgist
  * @since 1.0.0

@@ -19,7 +19,7 @@ import com.acgist.snail.system.config.PeerConfig.Action;
 import com.acgist.snail.system.config.PeerConfig.ExtensionType;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.system.exception.OversizePacketException;
+import com.acgist.snail.system.exception.PacketSizeException;
 import com.acgist.snail.utils.CollectionUtils;
 
 /**
@@ -169,7 +169,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	/**
 	 * 处理握手消息
 	 */
-	private void handshake(ByteBuffer buffer) throws OversizePacketException {
+	private void handshake(ByteBuffer buffer) throws PacketSizeException {
 		LOGGER.debug("处理扩展握手消息");
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);

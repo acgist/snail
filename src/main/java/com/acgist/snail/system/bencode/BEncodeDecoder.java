@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.ArgumentException;
-import com.acgist.snail.system.exception.OversizePacketException;
+import com.acgist.snail.system.exception.PacketSizeException;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -143,7 +143,7 @@ public class BEncodeDecoder {
 	/**
 	 * 下一个数据类型
 	 */
-	public Type nextType() throws OversizePacketException {
+	public Type nextType() throws PacketSizeException {
 		if(!more()) {
 			LOGGER.warn("B编码没有更多数据");
 			return this.type = Type.none;
@@ -165,7 +165,7 @@ public class BEncodeDecoder {
 	/**
 	 * 获取下一个List，如果不是List返回null。
 	 */
-	public List<Object> nextList() throws OversizePacketException {
+	public List<Object> nextList() throws PacketSizeException {
 		final var type = nextType();
 		if(type == Type.list) {
 			return this.list;
@@ -176,7 +176,7 @@ public class BEncodeDecoder {
 	/**
 	 * 获取下一个Map，如果不是Map返回null。
 	 */
-	public Map<String, Object> nextMap() throws OversizePacketException {
+	public Map<String, Object> nextMap() throws PacketSizeException {
 		final var type = nextType();
 		if(type == Type.map) {
 			return this.map;
@@ -230,7 +230,7 @@ public class BEncodeDecoder {
 	/**
 	 * map
 	 */
-	private static final Map<String, Object> d(ByteArrayInputStream inputStream) throws OversizePacketException {
+	private static final Map<String, Object> d(ByteArrayInputStream inputStream) throws PacketSizeException {
 		int index;
 		char indexChar;
 		String key = null;
@@ -301,7 +301,7 @@ public class BEncodeDecoder {
 	/**
 	 * list
 	 */
-	private static final List<Object> l(ByteArrayInputStream inputStream) throws OversizePacketException {
+	private static final List<Object> l(ByteArrayInputStream inputStream) throws PacketSizeException {
 		int index;
 		char indexChar;
 		final List<Object> list = new ArrayList<Object>();
@@ -356,16 +356,16 @@ public class BEncodeDecoder {
 	 * 
 	 * @return 字符数组
 	 * 
-	 * @throws OversizePacketException 超过最大网络包大小
+	 * @throws PacketSizeException 超过最大网络包大小
 	 */
-	private static final byte[] read(StringBuilder lengthBuilder, ByteArrayInputStream inputStream) throws OversizePacketException {
+	private static final byte[] read(StringBuilder lengthBuilder, ByteArrayInputStream inputStream) throws PacketSizeException {
 		final var number = lengthBuilder.toString();
 		if(!StringUtils.isNumeric(number)) {
 			throw new ArgumentException("B编码格式错误（数字）：" + number);
 		}
 		final int length = Integer.parseInt(number);
 		if(length >= SystemConfig.MAX_NET_BUFFER_SIZE) {
-			throw new OversizePacketException(length);
+			throw new PacketSizeException(length);
 		}
 		lengthBuilder.setLength(0);
 		final byte[] bytes = new byte[length];

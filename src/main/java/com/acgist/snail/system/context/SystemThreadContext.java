@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.system.exception.ArgumentException;
+import com.acgist.snail.system.exception.TimerArgumentException;
 
 /**
  * <p>系统线程上下文</p>
@@ -76,10 +76,10 @@ public class SystemThreadContext {
 	 * @param runnable 任务
 	 */
 	public static final ScheduledFuture<?> timer(long delay, TimeUnit unit, Runnable runnable) {
-		if(delay >= 0) {
-			return EXECUTOR_TIMER.schedule(runnable, delay, unit);
+		if(delay < 0) {
+			throw new TimerArgumentException(delay);
 		} else {
-			throw new ArgumentException("定时任务时间错误：" + delay);
+			return EXECUTOR_TIMER.schedule(runnable, delay, unit);
 		}
 	}
 	
@@ -93,10 +93,12 @@ public class SystemThreadContext {
 	 * @param runnable 任务
 	 */
 	public static final ScheduledFuture<?> timer(long delay, long period, TimeUnit unit, Runnable runnable) {
-		if(delay >= 0) {
-			return EXECUTOR_TIMER.scheduleAtFixedRate(runnable, delay, period, unit);
+		if(delay < 0) {
+			throw new TimerArgumentException(delay);
+		} else if(period < 0) {
+			throw new TimerArgumentException(period);
 		} else {
-			throw new ArgumentException("定时任务时间错误：" + delay);
+			return EXECUTOR_TIMER.scheduleAtFixedRate(runnable, delay, period, unit);
 		}
 	}
 	
@@ -110,10 +112,12 @@ public class SystemThreadContext {
 	 * @param runnable 任务
 	 */
 	public static final ScheduledFuture<?> timerFixedDelay(long delay, long period, TimeUnit unit, Runnable runnable) {
-		if(delay >= 0) {
-			return EXECUTOR_TIMER.scheduleWithFixedDelay(runnable, delay, period, unit);
+		if(delay < 0) {
+			throw new TimerArgumentException(delay);
+		} else if(period < 0) {
+			throw new TimerArgumentException(period);
 		} else {
-			throw new ArgumentException("定时任务时间错误：" + delay);
+			return EXECUTOR_TIMER.scheduleWithFixedDelay(runnable, delay, period, unit);
 		}
 	}
 	

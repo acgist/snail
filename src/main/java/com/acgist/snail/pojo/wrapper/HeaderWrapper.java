@@ -223,7 +223,7 @@ public class HeaderWrapper {
 	 */
 	public HeaderWrapper header(String key, String value) {
 		if(this.headers == null) {
-			throw new ArgumentException("headers未初始化");
+			throw new ArgumentException("请求头（headers）未初始化");
 		}
 		var list = this.headers.get(key);
 		if(list == null) {
