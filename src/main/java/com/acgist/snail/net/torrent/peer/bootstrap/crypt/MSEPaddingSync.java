@@ -59,6 +59,7 @@ public class MSEPaddingSync {
 		}
 		if(this.length == -1) {
 			this.length = buffer.getShort();
+			// 不可能大于：SystemConfig.MAX_NET_BUFFER_SIZE
 			if(this.length < 0) {
 				throw new PacketSizeException(this.length);
 			}
