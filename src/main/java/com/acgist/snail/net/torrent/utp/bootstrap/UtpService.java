@@ -32,6 +32,11 @@ public class UtpService {
 	private static final int UTP_INTERVAL = 5;
 	
 	/**
+	 * 连接ID：每次获取+1
+	 */
+	private int connectionId = 0;
+	
+	/**
 	 * UTP消息代理
 	 */
 	private final Map<String, UtpMessageHandler> utpMessageHandlers = new ConcurrentHashMap<>();
@@ -43,11 +48,6 @@ public class UtpService {
 	public static final UtpService getInstance() {
 		return INSTANCE;
 	}
-	
-	/**
-	 * 连接ID：每次获取+1
-	 */
-	private int connectionId = 0;
 	
 	/**
 	 * UTP超时定时任务：定时处理超时信息
