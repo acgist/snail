@@ -347,7 +347,7 @@ public class BEncodeDecoder {
 		}
 		return list;
 	}
-
+	
 	/**
 	 * 读取符合长度的字符数组
 	 * 

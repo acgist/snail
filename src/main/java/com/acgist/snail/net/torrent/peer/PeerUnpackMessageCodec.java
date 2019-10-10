@@ -75,7 +75,7 @@ public class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteBuffer>
 					} else {
 						break;
 					}
-				} else if(length >= SystemConfig.MAX_NET_BUFFER_SIZE) {
+				} else if(length >= SystemConfig.MAX_NET_BUFFER_SIZE || length < 0) {
 					throw new PacketSizeException(length);
 				}
 				this.buffer = ByteBuffer.allocate(length);

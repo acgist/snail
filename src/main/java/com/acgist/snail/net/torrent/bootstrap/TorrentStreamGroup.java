@@ -153,7 +153,7 @@ public class TorrentStreamGroup {
 	 * @param length 数据长度
 	 */
 	public byte[] read(final int index, final int begin, final int length) throws NetException {
-		if(length >= SystemConfig.MAX_NET_BUFFER_SIZE) {
+		if(length >= SystemConfig.MAX_NET_BUFFER_SIZE || length < 0) {
 			throw new PacketSizeException(length);
 		}
 		final ByteBuffer buffer = ByteBuffer.allocate(length);
