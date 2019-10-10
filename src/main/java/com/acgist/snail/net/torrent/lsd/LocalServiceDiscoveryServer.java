@@ -40,20 +40,7 @@ public class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDiscovery
 	 */
 	public static final String LSD_HOST_IPV6 = "[ff15::efc0:988f]";
 	
-	public LocalServiceDiscoveryServer() {
-		super(NetUtils.buildUdpChannel(LSD_PORT, true), "LSD Server", LocalServiceDiscoveryAcceptHandler.getInstance());
-		this.join(LSD_TTL, LSD_HOST);
-		this.handle();
-	}
-	
-	public static final LocalServiceDiscoveryServer getInstance() {
-		return INSTANCE;
-	}
-	
-	/**
-	 * 注册本地发现定时任务
-	 */
-	public void register() {
+	static {
 		LOGGER.debug("注册本地发现定时任务");
 		final Integer interval = SystemConfig.getLsdInterval();
 		SystemThreadContext.timerFixedDelay(interval, interval, TimeUnit.SECONDS, () -> {
@@ -64,5 +51,15 @@ public class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDiscovery
 			});
 		});
 	}
-
+	
+	public LocalServiceDiscoveryServer() {
+		super(NetUtils.buildUdpChannel(LSD_PORT, true), "LSD Server", LocalServiceDiscoveryAcceptHandler.getInstance());
+		this.join(LSD_TTL, LSD_HOST);
+		this.handle();
+	}
+	
+	public static final LocalServiceDiscoveryServer getInstance() {
+		return INSTANCE;
+	}
+	
 }

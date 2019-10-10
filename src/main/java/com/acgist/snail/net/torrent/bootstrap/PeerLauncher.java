@@ -248,6 +248,7 @@ public class PeerLauncher extends PeerClientHandler {
 		}
 		final int index = this.downloadPiece.getIndex();
 		while(available()) {
+			// TODO：优化
 			if (this.countLock.get() >= SLICE_REQUEST_SIZE) {
 				synchronized (this.countLock) {
 					ThreadUtils.wait(this.countLock, Duration.ofSeconds(SLICE_AWAIT_TIME));
