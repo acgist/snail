@@ -27,9 +27,9 @@ public class PeerConfig {
 	 */
 	private static final String UNKNOWN = "unknown";
 	/**
-	 * 最大连接失败次数
+	 * 最大失败次数，超过这个次数将标记失败。
 	 */
-	public static final int MAX_FAIL_TIMES = 5;
+	public static final int MAX_FAIL_TIMES = 3;
 	/**
 	 * Peer连接超时时间（秒）
 	 */
@@ -39,11 +39,11 @@ public class PeerConfig {
 	 */
 	public static final int PEER_ID_LENGTH = 20;
 	/**
-	 * reserved长度
+	 * 保留位（reserved）长度
 	 */
 	public static final int RESERVED_LENGTH = 8;
 	/**
-	 * 保留位
+	 * 保留位（reserved）
 	 */
 	public static final byte[] HANDSHAKE_RESERVED = {0, 0, 0, 0, 0, 0, 0, 0};
 	/**

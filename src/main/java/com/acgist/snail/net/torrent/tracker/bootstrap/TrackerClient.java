@@ -1,8 +1,5 @@
 package com.acgist.snail.net.torrent.tracker.bootstrap;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,17 +56,17 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	 */
 	protected final String announceUrl;
 	/**
-	 * 是否可用
+	 * 失败次数，成功后清零，超过一定次数#{@link TrackerConfig#MAX_FAIL_TIMES}设置为不可用。
 	 */
-	private final AtomicBoolean available = new AtomicBoolean(true);
-	/**
-	 * 失败次数，成功后清零，超过一定次数#{@link #MAX_FAIL_TIMES}设置为不可用。
-	 */
-	private final AtomicInteger failTimes = new AtomicInteger(0);
+	private int failTimes = 0;
 	/**
 	 * 失败原因
 	 */
 	private String failMessage;
+	/**
+	 * 是否可用
+	 */
+	private boolean available = true;
 	
 	public TrackerClient(String scrapeUrl, String announceUrl, Protocol.Type type) throws NetException {
 		if(StringUtils.isEmpty(announceUrl)) {
@@ -86,7 +83,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	 * 是否可用
 	 */
 	public boolean available() {
-		return this.available.get();
+		return this.available;
 	}
 	
 	/**
@@ -98,16 +95,16 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 		}
 		try {
 			announce(sid, torrentSession);
-			this.failTimes.set(0);
+			this.failTimes = 0;
 			this.weight++;
 		} catch (Exception e) {
 			this.weight--;
-			if(this.failTimes.incrementAndGet() > TrackerConfig.MAX_FAIL_TIMES) {
-				this.available.set(false);
+			if(++this.failTimes >= TrackerConfig.MAX_FAIL_TIMES) {
+				this.available = false;
 				this.failMessage = e.getMessage();
-				LOGGER.error("查找Peer异常，当前失败次数（停用）：{}，地址：{}", this.failTimes.get(), this.announceUrl, e);
+				LOGGER.error("查找Peer异常，当前失败次数（停用）：{}，地址：{}", this.failTimes, this.announceUrl, e);
 			} else {
-				LOGGER.error("查找Peer异常，当前失败次数（重试）：{}，地址：{}", this.failTimes.get(), this.announceUrl, e);
+				LOGGER.error("查找Peer异常，当前失败次数（重试）：{}，地址：{}", this.failTimes, this.announceUrl, e);
 			}
 		}
 	}
