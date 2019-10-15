@@ -32,7 +32,7 @@ public class TrackerConfig extends PropertiesConfig {
 	 */
 	private static final int MAX_TRACKER_SIZE = 512;
 	/**
-	 * 最大失败次数，超过 这个次数将会被标记无效，以后也不再使用。
+	 * 最大失败次数，超过这个次数会被标记无效。
 	 */
 	public static final int MAX_FAIL_TIMES = 3;
 	

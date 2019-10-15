@@ -67,7 +67,7 @@ public class PeerSession implements IStatistics {
 	 */
 	private final BitSet pieces;
 	/**
-	 * 下载错误位图：下次获取时清除
+	 * 下载错误位图：下次获取时排除
 	 */
 	private final BitSet badPieces;
 	/**
