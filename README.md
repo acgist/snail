@@ -9,10 +9,10 @@
 		<img alt="Author" src="https://img.shields.io/badge/Author-acgist-red.svg?style=flat-square" />
 	</a>
 	<a target="_blank" href="https://gitee.com/acgist/snail">
-		<img alt="Version" src="https://img.shields.io/badge/Version-1.1.1-blue.svg?style=flat-square" />
+		<img alt="Version" src="https://img.shields.io/badge/Version-1.2.0-blue.svg?style=flat-square" />
 	</a>
-	<a target="_blank" href="https://gitee.com/acgist/snail/releases/v1.1.0">
-		<img alt="Release" src="https://img.shields.io/badge/Release-1.1.0-blueviolet.svg?style=flat-square" />
+	<a target="_blank" href="https://gitee.com/acgist/snail/releases/v1.1.1">
+		<img alt="Release" src="https://img.shields.io/badge/Release-1.1.1-blueviolet.svg?style=flat-square" />
 	</a>
 	<a target="_blank" href="https://openjdk.java.net/">
 		<img alt="Java" src="https://img.shields.io/badge/Java-11-yellow.svg?style=flat-square" />
@@ -75,7 +75,7 @@ Windows直接点击SnailLauncher.exe即可运行。
 ## 进度
 
 |功能|进度|
-|:-|:-|
+|:--|:--:|
 |BT|○|
 |FTP|√|
 |HTTP|√|
@@ -83,7 +83,7 @@ Windows直接点击SnailLauncher.exe即可运行。
 #### BT进度
 
 |协议（BEP）|进度|
-|:-|:-|
+|:--|:--:|
 |[DHT Protocol](http://www.bittorrent.org/beps/bep_0005.html)|√|
 |[Fast Extension](http://www.bittorrent.org/beps/bep_0006.html)|×|
 |[Private Torrents](http://www.bittorrent.org/beps/bep_0027.html)|○|
@@ -106,7 +106,7 @@ Windows直接点击SnailLauncher.exe即可运行。
 ## License
 
 |软件|License|许可|
-|:-|:-|:-|
+|:--|:--:|:--|
 |[h2](http://www.h2database.com)|[License](http://www.h2database.com/html/license.html)|MPL 2.0/EPL 1.0|
 |[slf4j](https://www.slf4j.org)|[License](https://www.slf4j.org/license.html)|MIT|
 |[logback](https://logback.qos.ch)|[License](https://logback.qos.ch/license.html)|LGPL 2.1/EPL 1.0|
