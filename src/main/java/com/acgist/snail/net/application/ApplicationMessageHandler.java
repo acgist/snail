@@ -176,7 +176,7 @@ public class ApplicationMessageHandler extends TcpMessageHandler implements IMes
 			TorrentEvent.getInstance().files(files); // 设置选择文件
 			DownloaderManager.getInstance().newTask(url); // 开始下载任务
 			send(ApplicationMessage.response(ApplicationMessage.SUCCESS));
-		} catch (Exception e) {
+		} catch (NetException | DownloadException e) {
 			LOGGER.debug("新建任务异常：{}", body, e);
 			send(ApplicationMessage.response(e.getMessage()));
 		}

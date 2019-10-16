@@ -11,6 +11,7 @@ import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerManager;
 import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.PeerConfig;
+import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NumberUtils;
 
@@ -144,7 +145,7 @@ public class TrackerLauncher {
 					LOGGER.debug("Tracker暂停通知：{}", this.client.announceUrl());
 					this.client.stop(this.id, this.torrentSession);
 				}
-			} catch (Exception e) {
+			} catch (NetException e) {
 				LOGGER.error("TrackerLauncher释放异常", e);
 			}
 			TrackerManager.getInstance().release(this.id);

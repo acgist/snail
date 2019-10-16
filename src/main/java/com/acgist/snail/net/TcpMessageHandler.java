@@ -5,8 +5,10 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,7 +103,7 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 				if(size <= 0) {
 					LOGGER.warn("TCP消息发送失败：{}", size);
 				}
-			} catch (Exception e) {
+			} catch (TimeoutException | ExecutionException | InterruptedException e) {
 				throw new NetException(e);
 			}
 		}
@@ -134,7 +136,7 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 		} else {
 			try {
 				onReceive(buffer);
-			} catch (Exception e) {
+			} catch (NetException e) {
 				LOGGER.error("TCP消息接收异常", e);
 			}
 		}

@@ -1,9 +1,11 @@
 package com.acgist.snail.utils;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CodingErrorAction;
@@ -244,7 +246,7 @@ public class StringUtils {
 			}
 			content = decoder.decode(buffer).toString();
 			buffer.compact();
-		} catch (Exception e) {
+		} catch (CharacterCodingException e) {
 			LOGGER.error("ByteBuffer解码异常", e);
 		}
 		return content;
@@ -268,7 +270,7 @@ public class StringUtils {
 			while((index = reader.read(chars)) != -1) {
 				builder.append(new String(chars, 0, index));
 			}
-		} catch (Exception e) {
+		} catch (IOException e) {
 			LOGGER.error("输入流转为字符串异常", e);
 		}
 		return builder.toString();

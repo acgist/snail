@@ -226,7 +226,7 @@ public class UpnpService {
 			final boolean udpOK = this.deletePortMapping(SystemConfig.getTorrentPortExt(), Protocol.Type.udp);
 			final boolean tcpOK = this.deletePortMapping(SystemConfig.getTorrentPortExt(), Protocol.Type.tcp);
 			LOGGER.info("释放UPNP端口：UDP：{}、TCP：{}", udpOK, tcpOK);
-		} catch (Exception e) {
+		} catch (NetException e) {
 			LOGGER.error("释放UPNP端口异常", e);
 		}
 	}

@@ -230,7 +230,12 @@ public class PeerLauncher extends PeerClientHandler {
 	private void requests() {
 		boolean ok = true;
 		while(ok) {
-			ok = request();
+			try {
+				ok = request();
+			} catch (Exception e) {
+				LOGGER.error("Peer请求异常", e);
+				ok = false;
+			}
 		}
 	}
 	

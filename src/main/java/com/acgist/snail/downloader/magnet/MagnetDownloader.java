@@ -56,8 +56,8 @@ public class MagnetDownloader extends TorrentSessionDownloader {
 			final var infoHashHex = magnet.getHash();
 			return TorrentManager.getInstance().newTorrentSession(infoHashHex, path);
 		} catch (DownloadException e) {
-			fail("磁力链接任务加载失败：" + e.getMessage());
 			LOGGER.error("磁力链接任务加载异常", e);
+			fail("磁力链接任务加载失败：" + e.getMessage());
 		}
 		return null;
 	}
@@ -67,8 +67,8 @@ public class MagnetDownloader extends TorrentSessionDownloader {
 		try {
 			this.complete = this.torrentSession.magnet(this.taskSession);
 		} catch (DownloadException e) {
-			fail("磁力链接任务加载失败：" + e.getMessage());
 			LOGGER.error("磁力链接任务加载异常", e);
+			fail("磁力链接任务加载失败：" + e.getMessage());
 		}
 	}
 

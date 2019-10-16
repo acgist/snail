@@ -764,7 +764,7 @@ public class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	public void send(ByteBuffer buffer) {
 		try {
 			this.messageEncryptHandler.send(buffer);
-		} catch (Exception e) {
+		} catch (NetException e) {
 			LOGGER.error("Peer消息发送异常", e);
 		}
 	}
@@ -775,7 +775,7 @@ public class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	public void send(ByteBuffer buffer, int timeout) {
 		try {
 			this.messageEncryptHandler.send(buffer, timeout);
-		} catch (Exception e) {
+		} catch (NetException e) {
 			LOGGER.error("Peer消息发送异常", e);
 		}
 	}
@@ -786,7 +786,7 @@ public class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	public void sendEncrypt(ByteBuffer buffer) {
 		try {
 			this.messageEncryptHandler.sendEncrypt(buffer);
-		} catch (Exception e) {
+		} catch (NetException e) {
 			LOGGER.error("Peer消息发送异常", e);
 		}
 	}
@@ -797,7 +797,7 @@ public class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	public void sendEncrypt(ByteBuffer buffer, int timeout) {
 		try {
 			this.messageEncryptHandler.sendEncrypt(buffer, timeout);
-		} catch (Exception e) {
+		} catch (NetException e) {
 			LOGGER.error("Peer消息发送异常", e);
 		}
 	}

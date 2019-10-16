@@ -1,6 +1,7 @@
 package com.acgist.snail.system.bencode;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -171,7 +172,7 @@ public class BEncodeEncoder {
 			if(bytes != null) {
 				this.outputStream.write(bytes);
 			}
-		} catch (Exception e) {
+		} catch (IOException e) {
 			LOGGER.error("B编码输出异常", e);
 		}
 		return this;

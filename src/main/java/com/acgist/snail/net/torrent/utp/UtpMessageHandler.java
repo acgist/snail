@@ -1,5 +1,6 @@
 package com.acgist.snail.net.torrent.utp;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.time.Duration;
@@ -296,7 +297,7 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 		UtpWindowData windowData = null;
 		try {
 			windowData = this.recvWindow.receive(timestamp, seqnr, buffer);
-		} catch (Exception e) {
+		} catch (IOException e) {
 			throw new NetException(e);
 		}
 		if(windowData != null) {

@@ -63,8 +63,8 @@ public class FtpDownloader extends SingleFileDownloader {
 					this.taskSession.downloadSize(0L);
 				}
 			} catch (NetException e) {
-				fail("FTP下载失败：" + e.getMessage());
 				LOGGER.error("FTP下载异常", e);
+				fail("FTP下载失败：" + e.getMessage());
 			}
 		} else {
 			fail("FTP服务器连接失败");

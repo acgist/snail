@@ -1,5 +1,6 @@
 package com.acgist.snail.net.http;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpClient.Redirect;
@@ -203,7 +204,7 @@ public class HTTPClient {
 		}
 		try {
 			return this.client.send(request, handler);
-		} catch (Exception e) {
+		} catch (IOException | InterruptedException e) {
 			throw new NetException("HTTP执行请求失败", e);
 		}
 	}
@@ -340,11 +341,11 @@ public class HTTPClient {
 //		try {
 //			sslContext = SSLContext.getInstance("TLSv1.2"); // SSL、SSLv2、SSLv3、TLS、TLSv1、TLSv1.1、TLSv1.2、TLSv1.3
 //			sslContext.init(null, TRUST_ALL_CERT_MANAGER, new SecureRandom());
-//		} catch (Exception e) {
+//		} catch (KeyManagementException | NoSuchAlgorithmException e) {
 //			LOGGER.error("新建SSLContext异常", e);
 //			try {
 //				sslContext = SSLContext.getDefault();
-//			} catch (Exception ex) {
+//			} catch (NoSuchAlgorithmException ex) {
 //				LOGGER.error("新建默认SSLContext异常", ex);
 //			}
 //		}

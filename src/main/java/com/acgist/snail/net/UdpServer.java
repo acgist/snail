@@ -1,6 +1,5 @@
 package com.acgist.snail.net;
 
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.StandardSocketOptions;
@@ -137,7 +136,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 					}
 				}
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			LOGGER.error("UDP Server消息接收异常", e);
 		}
 	}
