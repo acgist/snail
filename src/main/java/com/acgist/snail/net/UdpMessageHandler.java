@@ -26,7 +26,7 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 	/**
 	 * 是否关闭
 	 */
-	private boolean close = false;
+	protected boolean close = false;
 	/**
 	 * 通道
 	 */

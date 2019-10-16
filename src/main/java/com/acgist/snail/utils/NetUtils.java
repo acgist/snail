@@ -9,6 +9,7 @@ import java.net.StandardProtocolFamily;
 import java.net.StandardSocketOptions;
 import java.net.UnknownHostException;
 import java.nio.channels.DatagramChannel;
+import java.nio.channels.Selector;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -248,8 +249,8 @@ public class NetUtils {
 	/**
 	 * <p>创建UDP通道</p>
 	 * 
-	 * @param host 地址，null：=绑定本机
-	 * @param port 端口，-1：=不绑定端口（随机选择）
+	 * @param host 地址：null=绑定本机
+	 * @param port 端口：-1=不绑定端口（随机选择）
 	 * @param reuseaddr 地址重用
 	 */
 	public static final DatagramChannel buildUdpChannel(final String host, final int port, final boolean reuseaddr) {
@@ -270,6 +271,20 @@ public class NetUtils {
 			LOGGER.error("打开UDP通道异常", e);
 		}
 		return channel;
+	}
+	
+	/**
+	 * <p>打开Selector</p>
+	 * 
+	 * @return Selector
+	 */
+	public static final Selector buildSelector() {
+		try {
+			return Selector.open();
+		} catch (IOException e) {
+			LOGGER.error("打开Selector异常", e);
+		}
+		return null;
 	}
 
 }

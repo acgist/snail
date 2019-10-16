@@ -3,6 +3,8 @@ package com.acgist.snail.net.torrent.utp.bootstrap;
 import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -30,12 +32,15 @@ public class UtpService {
 	 * UTP超时定时任务
 	 */
 	private static final int UTP_INTERVAL = 5;
+	/**
+	 * UTP请求处理线程池
+	 */
+	private static final ExecutorService EXECUTOR = SystemThreadContext.newCacheExecutor(SystemThreadContext.SNAIL_THREAD_UTP_HANDLER);
 	
 	/**
 	 * 连接ID：每次获取+1
 	 */
 	private int connectionId = 0;
-	
 	/**
 	 * UTP消息代理
 	 */
@@ -126,4 +131,11 @@ public class UtpService {
 		return socketAddress.getHostString() + socketAddress.getPort() + connectionId;
 	}
 
+	/**
+	 * 提交UTP处理器
+	 */
+	public Future<?> submit(Runnable runnable) {
+		return EXECUTOR.submit(runnable);
+	}
+	
 }

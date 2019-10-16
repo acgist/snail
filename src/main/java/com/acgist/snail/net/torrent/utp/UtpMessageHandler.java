@@ -4,6 +4,9 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
@@ -77,6 +80,10 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 	 */
 	private final short sendId;
 	/**
+	 * 消息处理现场
+	 */
+	private Future<?> future;
+	/**
 	 * UTP Service
 	 */
 	private final UtpService utpService;
@@ -96,6 +103,11 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 	 * Peer代理
 	 */
 	private final PeerSubMessageHandler peerSubMessageHandler;
+	/**
+	 * <p>UTP窗口请求数据队列</p>
+	 * <p>UTP请求数据异步执行，防止阻塞导致不能及时处理响应信息。</p>
+	 */
+	private final BlockingQueue<UtpWindowData> requests = new LinkedBlockingQueue<>();
 	
 	/**
 	 * 服务端
@@ -214,8 +226,8 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 		byte[] bytes;
 		int remaining;
 		while((remaining = buffer.remaining()) > 0) { // UDP拆包
-			if(remaining > UtpConfig.MAX_PACKET_SIZE) {
-				bytes = new byte[UtpConfig.MAX_PACKET_SIZE];
+			if(remaining > UtpConfig.UTP_PACKET_MAX_LENGTH) {
+				bytes = new byte[UtpConfig.UTP_PACKET_MAX_LENGTH];
 			} else {
 				bytes = new byte[remaining];
 			}
@@ -240,7 +252,7 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 		}
 		// 连接失败移除
 		if(!this.connect) {
-			this.utpService.remove(this);
+			this.closeAll();
 		}
 		return this.connect;
 	}
@@ -288,9 +300,13 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 			throw new NetException(e);
 		}
 		if(windowData != null) {
+			this.buildFuture();
 			LOGGER.debug("处理UTP数据：{}", windowData.getSeqnr());
 			this.state(windowData.getTimestamp(), windowData.getSeqnr());
-			this.messageCodec.decode(windowData.buffer());
+			// 同步处理
+//			this.messageCodec.decode(windowData.buffer());
+			// 异步处理
+			this.requests.offer(windowData);
 		}
 	}
 	
@@ -353,14 +369,15 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 	private void fin(int timestamp, short seqnr, short acknr) {
 		LOGGER.debug("收到UTP消息（fin）");
 		this.connect = false;
-		super.close();
 		this.state(timestamp, seqnr);
+		this.closeAll();
 	}
 	
 	/**
 	 * 发送结束消息
 	 */
 	private void fin() {
+		LOGGER.debug("发送UTP消息（fin）");
 		final ByteBuffer buffer = header(UtpConfig.TYPE_FIN, UTP_HEADER_SIZE);
 		buffer.putShort(this.sendId);
 		buffer.putInt(DateUtils.timestampUs());
@@ -377,14 +394,15 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 	private void reset(int timestamp, short seqnr, short acknr) {
 		LOGGER.debug("收到UTP消息（reset）");
 		this.connect = false;
-		super.close();
 		this.state(timestamp, seqnr);
+		this.closeAll();
 	}
 	
 	/**
 	 * 发送reset消息
 	 */
 	private void reset() {
+		LOGGER.debug("发送UTP消息（reset）");
 		final ByteBuffer buffer = header(UtpConfig.TYPE_RESET, UTP_HEADER_SIZE);
 		buffer.putShort(this.sendId);
 		buffer.putInt(DateUtils.timestampUs());
@@ -443,11 +461,46 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 	}
 	
 	/**
+	 * <p>创建异步处理线程</p>
+	 */
+	private void buildFuture() {
+		if(this.future != null) {
+			return;
+		}
+		this.future = this.utpService.submit(() -> {
+			while(!this.close) {
+				try {
+					final var windowData = this.requests.take();
+					this.messageCodec.decode(windowData.buffer());
+				} catch (NetException e) {
+					LOGGER.error("UTP请求执行异常", e);
+				} catch (InterruptedException e) {
+					LOGGER.debug("UTP请求执行异常", e);
+					Thread.currentThread().interrupt();
+				}
+			}
+		});
+	}
+	
+	/**
 	 * 关闭窗口
 	 */
 	private void closeWindow() {
 		this.sendWindow.close();
 		this.recvWindow.close();
+	}
+	
+	/**
+	 * 关闭所有信息
+	 */
+	private void closeAll() {
+		super.close();
+		this.connect = false;
+		this.utpService.remove(this);
+		if(this.future != null) {
+			this.future.cancel(true);
+			this.future = null;
+		}
 	}
 	
 	/**
@@ -458,9 +511,7 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 		LOGGER.debug("关闭UTP");
 		this.closeWindow();
 		this.fin();
-		super.close();
-		this.connect = false;
-		this.utpService.remove(this);
+		this.closeAll();
 	}
 	
 	/**
@@ -470,9 +521,7 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 		LOGGER.debug("重置UTP");
 		this.closeWindow();
 		this.reset();
-		super.close();
-		this.connect = false;
-		this.utpService.remove(this);
+		this.closeAll();
 	}
 	
 }
