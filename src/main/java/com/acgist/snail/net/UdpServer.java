@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.StandardSocketOptions;
 import java.nio.ByteBuffer;
+import java.nio.channels.ClosedChannelException;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -46,9 +47,9 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 	 */
 	private final T handler;
 	/**
-	 * Selector，每个服务端独立一个Selector。
+	 * Selector：每个服务端独立
 	 */
-	private Selector selector;
+	private final Selector selector;
 	/**
 	 * UDP通道
 	 */
@@ -62,6 +63,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 		this.channel = channel;
 		this.name = name;
 		this.handler = handler;
+		this.selector = NetUtils.buildSelector();
 	}
 	
 	/**
@@ -81,49 +83,62 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 	 * 消息代理
 	 */
 	public void handle() {
-		EXECUTOR.submit(() -> {
-			try {
-				this.loopMessage();
-			} catch (Exception e) {
-				LOGGER.error("UDP消息代理异常", e);
-			}
-		});
-	}
-	
-	/**
-	 * 消息循环读取
-	 */
-	private void loopMessage() throws IOException {
 		if(this.channel == null) {
 			LOGGER.warn("UDP Server通道没有初始化：{}", this.name);
 			return;
 		}
-		this.selector = Selector.open();
-		this.channel.register(this.selector, SelectionKey.OP_READ);
+		if(!this.channel.isOpen()) {
+			LOGGER.warn("UDP Server通道已经关闭：{}", this.name);
+			return;
+		}
+		EXECUTOR.submit(() -> {
+			this.loopMessage();
+		});
+	}
+	
+	/**
+	 * 消息轮询
+	 */
+	private void loopMessage() {
+		this.register();
 		while (this.channel.isOpen()) {
-			try {
-				if(this.selector.select() > 0) {
-					final Set<SelectionKey> selectionKeys = this.selector.selectedKeys();
-					final Iterator<SelectionKey> selectionKeysIterator = selectionKeys.iterator();
-					while (selectionKeysIterator.hasNext()) {
-						final SelectionKey selectionKey = selectionKeysIterator.next();
-						selectionKeysIterator.remove(); // 移除已经取出来的信息
-						if (selectionKey.isValid() && selectionKey.isReadable()) {
-							final ByteBuffer buffer = ByteBuffer.allocate(SystemConfig.BUFFER_SIZE);
-							// 单例客户端通道=服务端通道，TCP需要这样获取不同的通道。
-							// final DatagramChannel channel = (DatagramChannel) selectionKey.channel();
-							final InetSocketAddress socketAddress = (InetSocketAddress) this.channel.receive(buffer);
-							try {
-								this.handler.handle(this.channel, buffer, socketAddress);
-							} catch (Exception e) {
-								LOGGER.error("UDP消息处理异常", e);
-							}
-						}
+			this.receive();
+		}
+	}
+	
+	/**
+	 * <p>注册Selector消息读取</p>
+	 */
+	private void register() {
+		try {
+			this.channel.register(this.selector, SelectionKey.OP_READ);
+		} catch (ClosedChannelException e) {
+			LOGGER.error("UDP Server注册Selector消息读取异常", e);
+		}
+	}
+	
+	/**
+	 * <p>接收消息</p>
+	 */
+	private void receive() {
+		try {
+			if(this.selector.select() > 0) {
+				final Set<SelectionKey> selectionKeys = this.selector.selectedKeys();
+				final Iterator<SelectionKey> iterator = selectionKeys.iterator();
+				while (iterator.hasNext()) {
+					final SelectionKey selectionKey = iterator.next();
+					iterator.remove(); // 移除已经取出来的信息
+					if (selectionKey.isValid() && selectionKey.isReadable()) {
+						final ByteBuffer buffer = ByteBuffer.allocate(SystemConfig.UDP_BUFFER_SIZE);
+						// 单例客户端通道=服务端通道，TCP需要这样获取不同的通道。
+						// final DatagramChannel channel = (DatagramChannel) selectionKey.channel();
+						final InetSocketAddress socketAddress = (InetSocketAddress) this.channel.receive(buffer);
+						this.handler.handle(this.channel, buffer, socketAddress);
 					}
 				}
-			} catch (Exception e) {
-				LOGGER.error("UDP消息轮询异常", e);
 			}
+		} catch (IOException e) {
+			LOGGER.error("UDP Server消息接收异常", e);
 		}
 	}
 	

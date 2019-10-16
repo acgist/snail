@@ -31,7 +31,8 @@ public class PeerLauncher extends PeerClientHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerLauncher.class);
 
 	/**
-	 * 每批请求的SLICE数量
+	 * <p>每批请求的SLICE数量</p>
+	 * <p>注：过大会导致UTP信号量阻塞</p>
 	 */
 	private static final int SLICE_REQUEST_SIZE = 4;
 	/**

@@ -48,6 +48,7 @@ public class PeerServerTest {
 		entity.setFile("e://tmp/server/");
 		entity.setType(Type.torrent);
 		final TorrentSelectorWrapper wrapper = TorrentSelectorWrapper.newEncoder(list);
+		entity.setSize(100L * 1024 * 1024);
 		entity.setDescription(wrapper.serialize());
 		torrentSession.upload(TaskSession.newInstance(entity));
 		PeerServer server = PeerServer.getInstance();

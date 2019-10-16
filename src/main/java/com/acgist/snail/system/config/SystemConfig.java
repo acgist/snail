@@ -22,9 +22,13 @@ public class SystemConfig extends PropertiesConfig {
 	private static final String SYSTEM_CONFIG = "/config/system.properties";
 
 	/**
-	 * 消息缓冲大小：Piece大小一样
+	 * TCP消息缓冲大小：Piece大小一样
 	 */
-	public static final int BUFFER_SIZE = 16 * 1024;
+	public static final int TCP_BUFFER_SIZE = 16 * 1024;
+	/**
+	 * UDP消息缓存大小
+	 */
+	public static final int UDP_BUFFER_SIZE = 2 * 1024;
 	/**
 	 * 连接超时时间
 	 */

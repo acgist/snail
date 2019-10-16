@@ -59,9 +59,10 @@ public class UtpConfig {
 	 */
 	public static final byte EXTENSION = 0;
 	/**
-	 * UDP最大包长度
+	 * <p>UDP最大包长度：1500 - 20(IP头) - 8(UDP头) = 1472</p>
+	 * <p>UTP最大包长度：1472 - 20(UTP扩展消息头) = 1452</p>
 	 */
-	public static final int MAX_PACKET_SIZE = 1472;
+	public static final int UTP_PACKET_MAX_LENGTH = 1452;
 	/**
 	 * 默认窗口大小
 	 */

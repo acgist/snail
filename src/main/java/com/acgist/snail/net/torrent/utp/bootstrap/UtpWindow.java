@@ -33,7 +33,7 @@ public class UtpWindow {
 	/**
 	 * 默认慢开始wnd数量
 	 */
-	private static final int DEFAULT_SLOW_WND = 80;
+	private static final int DEFAULT_SLOW_WND = 16;
 //	/**
 //	 * 默认拥堵算法wnd数量
 //	 */
