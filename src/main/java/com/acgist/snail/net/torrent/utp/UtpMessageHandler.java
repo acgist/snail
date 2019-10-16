@@ -307,7 +307,9 @@ public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncr
 			// 同步处理
 //			this.messageCodec.decode(windowData.buffer());
 			// 异步处理
-			this.requests.offer(windowData);
+			if(!this.requests.offer(windowData)) {
+				LOGGER.warn("UTP消息插入队列失败");
+			}
 		}
 	}
 	

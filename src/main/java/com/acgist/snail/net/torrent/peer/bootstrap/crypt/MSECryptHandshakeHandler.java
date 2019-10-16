@@ -90,7 +90,7 @@ public class MSECryptHandshakeHandler {
 	/**
 	 * 当前步骤：默认：接收公钥
 	 */
-	private volatile Step step = Step.receivePublicKey;
+	private Step step = Step.receivePublicKey;
 	/**
 	 * 是否处理完成（握手处理）
 	 */
