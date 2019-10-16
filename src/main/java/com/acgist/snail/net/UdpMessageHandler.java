@@ -1,5 +1,6 @@
 package com.acgist.snail.net;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
@@ -123,7 +124,7 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 			if(size <= 0) {
 				LOGGER.warn("UDP消息发送失败：{}-{}", socketAddress, size);
 			}
-		} catch (Exception e) {
+		} catch (IOException e) {
 			throw new NetException(e);
 		}
 	}

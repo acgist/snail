@@ -303,7 +303,6 @@ public class FileUtils {
 	 */
 	public static final String file(String folder, String fileName) {
 		if(folder == null || fileName == null) {
-			LOGGER.error("文件路径和文件名称格式错误，目录：{}，文件：{}", folder, fileName);
 			throw new ArgumentException("文件路径和文件名称格式错误");
 		}
 		return Paths.get(folder, fileName).toString();

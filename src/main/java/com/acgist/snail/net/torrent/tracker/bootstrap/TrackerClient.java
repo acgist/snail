@@ -98,13 +98,12 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 			this.failTimes = 0;
 			this.weight++;
 		} catch (Exception e) {
+			LOGGER.error("查找Peer异常，失败次数：{}，地址：{}", this.failTimes, this.announceUrl, e);
 			this.weight--;
 			if(++this.failTimes >= TrackerConfig.MAX_FAIL_TIMES) {
+				LOGGER.warn("TrackerClient停用，失败次数：{}，地址：{}", this.failTimes, this.announceUrl, e);
 				this.available = false;
 				this.failMessage = e.getMessage();
-				LOGGER.error("查找Peer异常，当前失败次数（停用）：{}，地址：{}", this.failTimes, this.announceUrl, e);
-			} else {
-				LOGGER.error("查找Peer异常，当前失败次数（重试）：{}，地址：{}", this.failTimes, this.announceUrl, e);
 			}
 		}
 	}

@@ -323,7 +323,7 @@ public class TorrentStream {
 		try {
 			this.fileStream.seek(seek);
 			this.fileStream.read(bytes);
-		} catch (Exception e) {
+		} catch (IOException e) {
 			LOGGER.error("Piece读取异常：{}-{}-{}-{}", index, size, pos, ignorePieces, e);
 		}
 		return bytes;
@@ -388,7 +388,7 @@ public class TorrentStream {
 		this.flush();
 		try {
 			this.fileStream.close();
-		} catch (Exception e) {
+		} catch (IOException e) {
 			LOGGER.error("TorrentStream关闭异常", e);
 		}
 	}
@@ -442,7 +442,7 @@ public class TorrentStream {
 		try {
 			this.fileStream.seek(seek);
 			this.fileStream.write(piece.getData(), offset, length);
-		} catch (Exception e) {
+		} catch (IOException e) {
 			LOGGER.error("TorrentStream写入异常", e);
 		}
 	}
@@ -479,7 +479,7 @@ public class TorrentStream {
 					try {
 						buildFilePieces(complete);
 						buildFileDownloadSize();
-					} catch (Exception e) {
+					} catch (IOException e) {
 						LOGGER.error("TorrentStream异步加载异常", e);
 					} finally {
 						sizeCount.countDown();

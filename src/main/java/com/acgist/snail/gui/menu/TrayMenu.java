@@ -1,10 +1,12 @@
 package com.acgist.snail.gui.menu;
 
+import java.awt.AWTException;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.TrayIcon.MessageType;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.event.MouseInputAdapter;
@@ -142,7 +144,7 @@ public class TrayMenu extends Menu {
 			this.trayIcon = new TrayIcon(image, SystemConfig.getName());
 			this.trayIcon.addMouseListener(mouseListener);
 			SystemTray.getSystemTray().add(this.trayIcon);
-		} catch (Exception e) {
+		} catch (IOException | AWTException e) {
 			LOGGER.error("添加系统托盘异常", e);
 		}
 	}

@@ -71,8 +71,8 @@ public class BuildController extends Controller implements Initializable {
 			// TODO：优化卡死现象
 			DownloaderManager.getInstance().newTask(url);
 		} catch (DownloadException e) {
-			ok = false;
 			LOGGER.error("新建下载任务异常：{}", url, e);
+			ok = false;
 			Alerts.warn("下载失败", e.getMessage());
 		}
 		if(ok) { // 新建下载成功

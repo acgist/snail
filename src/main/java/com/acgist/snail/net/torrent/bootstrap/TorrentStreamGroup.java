@@ -110,8 +110,9 @@ public class TorrentStreamGroup {
 				} else {
 					LOGGER.warn("任务准备超时：{}", torrent.name());
 				}
-			} catch (Exception e) {
-				LOGGER.error("统计下载文件大小等待异常", e);
+			} catch (InterruptedException e) {
+				LOGGER.debug("统计下载文件大小等待异常", e);
+				Thread.currentThread().interrupt();
 			} finally {
 				torrentStreamGroup.done = true;
 			}

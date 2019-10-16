@@ -50,9 +50,11 @@ public class ApplicationClient extends TcpClient<ApplicationMessageHandler> {
 	public static final void notifyWindow() {
 		final ApplicationClient client = ApplicationClient.newInstance();
 		try {
-			client.connect();
-			client.send(ApplicationMessage.message(ApplicationMessage.Type.notify));
-			client.send(ApplicationMessage.message(ApplicationMessage.Type.close));
+			final boolean ok = client.connect();
+			if(ok) {
+				client.send(ApplicationMessage.message(ApplicationMessage.Type.notify));
+				client.send(ApplicationMessage.message(ApplicationMessage.Type.close));
+			}
 		} catch (Exception e) {
 			LOGGER.error("通知主窗口异常", e);
 		} finally {

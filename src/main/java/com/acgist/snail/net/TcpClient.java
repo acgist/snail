@@ -77,8 +77,8 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 			future.get(this.timeout, TimeUnit.SECONDS);
 			this.handler.handle(socket);
 		} catch (Exception e) {
-			ok = false;
 			LOGGER.error("TCP客户端连接异常：{}-{}", host, port, e);
+			ok = false;
 		}
 		if(ok) {
 			// 连接成功

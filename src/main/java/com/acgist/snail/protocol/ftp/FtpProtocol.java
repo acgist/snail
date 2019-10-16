@@ -7,6 +7,7 @@ import com.acgist.snail.net.ftp.bootstrap.FtpClientBuilder;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.system.exception.DownloadException;
+import com.acgist.snail.system.exception.NetException;
 
 /**
  * FTP协议
@@ -48,7 +49,7 @@ public class FtpProtocol extends Protocol {
 			client.connect();
 			final long size = client.size();
 			this.taskEntity.setSize(size);
-		} catch (Exception e) {
+		} catch (NetException e) {
 			throw new DownloadException(e);
 		} finally {
 			client.close();

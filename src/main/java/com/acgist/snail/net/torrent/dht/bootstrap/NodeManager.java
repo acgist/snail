@@ -200,12 +200,7 @@ public class NodeManager {
 	 */
 	private NodeSession verify(String host, Integer port) {
 		final DhtClient client = DhtClient.newInstance(host, port);
-		try {
-			return client.ping();
-		} catch (Exception e) {
-			LOGGER.error("DHT Ping异常", e);
-		}
-		return null;
+		return client.ping();
 	}
 
 	/**

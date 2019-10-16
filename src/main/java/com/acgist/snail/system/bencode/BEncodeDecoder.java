@@ -1,6 +1,7 @@
 package com.acgist.snail.system.bencode;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -374,7 +375,7 @@ public class BEncodeDecoder {
 			if(readLength != length) {
 				LOGGER.warn("B编码读取长度和实际长度不符：{}-{}", length, readLength);
 			}
-		} catch (Exception e) {
+		} catch (IOException e) {
 			LOGGER.error("B编码读取异常", e);
 		}
 		return bytes;

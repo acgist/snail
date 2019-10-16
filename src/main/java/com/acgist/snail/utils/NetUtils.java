@@ -266,9 +266,9 @@ public class NetUtils {
 //				channel.connect(NetUtils.buildSocketAddress(host, port)); // 连接：使用read、write方法
 			}
 		} catch (IOException e) {
+			LOGGER.error("打开UDP通道异常", e);
 			IoUtils.close(channel);
 			channel = null;
-			LOGGER.error("打开UDP通道异常", e);
 		}
 		return channel;
 	}

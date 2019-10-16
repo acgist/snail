@@ -83,8 +83,8 @@ public abstract class SingleFileDownloader extends Downloader {
 				this.output = new BufferedOutputStream(new FileOutputStream(entity.getFile(), true), DownloadConfig.getMemoryBufferByte());
 			}
 		} catch (FileNotFoundException e) {
-			fail("下载文件打开失败：" + e.getMessage());
 			LOGGER.error("下载文件打开异常", e);
+			fail("下载文件打开失败：" + e.getMessage());
 		}
 	}
 	

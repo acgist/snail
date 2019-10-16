@@ -4,8 +4,10 @@ import java.net.InetSocketAddress;
 import java.net.http.HttpClient;
 import java.net.http.WebSocket;
 import java.nio.ByteBuffer;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,7 +64,7 @@ public class WebSocketMessageHandler implements IMessageHandler {
 				if(webSocket == null) {
 					LOGGER.warn("WebSocket消息发送失败：{}", webSocket);
 				}
-			} catch (Exception e) {
+			} catch (TimeoutException | ExecutionException | InterruptedException e) {
 				throw new NetException(e);
 			}
 		}

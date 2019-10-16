@@ -87,8 +87,8 @@ public abstract class TcpServer<T extends TcpMessageHandler> {
 			this.server.bind(NetUtils.buildSocketAddress(host, port));
 			this.server.accept(this.server, TcpAcceptHandler.newInstance(this.clazz));
 		} catch (Exception e) {
-			ok = false;
 			LOGGER.error("启动TCP服务端异常：{}", this.name, e);
+			ok = false;
 		}
 		if(ok) {
 //			GROUP.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS); // 阻止线程关闭

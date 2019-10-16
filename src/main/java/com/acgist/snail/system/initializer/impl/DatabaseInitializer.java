@@ -1,5 +1,6 @@
 package com.acgist.snail.system.initializer.impl;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.slf4j.Logger;
@@ -67,7 +68,7 @@ public class DatabaseInitializer extends Initializer {
 			while((count = reader.read(chars)) != -1) {
 				sql.append(new String(chars, 0, count));
 			}
-		} catch (Exception e) {
+		} catch (IOException e) {
 			LOGGER.error("读取建表SQL异常：{}", tableSQL, e);
 		}
 		return sql.toString();

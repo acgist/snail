@@ -65,8 +65,8 @@ public class HttpDownloader extends SingleFileDownloader {
 				.header("Range", "bytes=" + size + "-")
 				.get(BodyHandlers.ofInputStream());
 		} catch (NetException e) {
-			fail("HTTP请求失败：" + e.getMessage());
 			LOGGER.error("HTTP请求异常", e);
+			fail("HTTP请求失败：" + e.getMessage());
 			return;
 		}
 		if(HTTPClient.ok(response) || HTTPClient.partialContent(response)) {

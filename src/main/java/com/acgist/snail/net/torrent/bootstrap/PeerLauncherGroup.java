@@ -285,7 +285,8 @@ public class PeerLauncherGroup {
 		try {
 			this.buildSemaphore.acquire();
 		} catch (InterruptedException e) {
-			LOGGER.error("信号量获取异常", e);
+			LOGGER.debug("信号量获取异常", e);
+			Thread.currentThread().interrupt();
 		}
 	}
 	

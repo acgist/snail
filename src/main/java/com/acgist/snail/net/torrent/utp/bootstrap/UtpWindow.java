@@ -337,8 +337,9 @@ public class UtpWindow {
 		try {
 			LOGGER.debug("信号量（获取）：{}", this.semaphore.availablePermits());
 			this.semaphore.acquire();
-		} catch (Exception e) {
-			LOGGER.error("信号量获取异常", e);
+		} catch (InterruptedException e) {
+			LOGGER.debug("信号量获取异常", e);
+			Thread.currentThread().interrupt();
 		}
 	}
 	
