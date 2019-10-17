@@ -216,7 +216,9 @@ public class TorrentStreamGroup {
 	 * <p>设置已下载的Piece</p>
 	 */
 	public void done(int index) {
-		this.pieces.set(index);
+		synchronized (this.pieces) {
+			this.pieces.set(index);
+		}
 	}
 	
 	/**
