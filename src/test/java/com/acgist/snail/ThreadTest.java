@@ -1,6 +1,7 @@
 package com.acgist.snail;
 
 import java.time.Duration;
+import java.util.BitSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
@@ -97,6 +98,18 @@ public class ThreadTest {
 		ThreadUtils.sleep(4L);
 		task.cancel(true);
 		ThreadUtils.sleep(Long.MAX_VALUE);
+	}
+	
+	@Test
+	public void bitSet() {
+		BitSet bitSet = new BitSet();
+		for (int index = 0; index < 100; index++) {
+			int x = index;
+			SystemThreadContext.submit(() -> {
+				bitSet.set(x);
+			});
+		}
+		System.out.println(bitSet.cardinality());
 	}
 	
 }
