@@ -10,7 +10,7 @@ import com.acgist.snail.net.UdpClient;
  * @author acgist
  * @since 1.0.0
  */
-public class TrackerClient extends UdpClient<TrackerMessageHandler> {
+public final class TrackerClient extends UdpClient<TrackerMessageHandler> {
 
 	private TrackerClient(InetSocketAddress socketAddress) {
 		super("Tracker Client", new TrackerMessageHandler(), socketAddress);

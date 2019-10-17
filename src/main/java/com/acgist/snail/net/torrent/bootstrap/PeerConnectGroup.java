@@ -107,6 +107,8 @@ public class PeerConnectGroup {
 	 * 	<li>长时间没有请求。</li>
 	 * </ul>
 	 * <p>剔除时设置为阻塞。</p>
+	 * 
+	 * TODO：删除多余的链接，不能超过最大连接数。
 	 */
 	private void inferiorPeerConnects() {
 		final int size = this.peerConnects.size();

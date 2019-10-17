@@ -22,12 +22,12 @@ import com.acgist.snail.utils.IoUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class HttpDownloader extends SingleFileDownloader {
+public final class HttpDownloader extends SingleFileDownloader {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(HttpDownloader.class);
 	
 	private HttpDownloader(TaskSession taskSession) {
-		super(new byte[128 * 1024], taskSession);
+		super(taskSession);
 	}
 
 	public static final HttpDownloader newInstance(TaskSession taskSession) {

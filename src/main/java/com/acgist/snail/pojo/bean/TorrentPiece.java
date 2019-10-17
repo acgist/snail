@@ -10,7 +10,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class TorrentPiece {
+public final class TorrentPiece {
 
 	/**
 	 * 默认每次下载长度：16KB

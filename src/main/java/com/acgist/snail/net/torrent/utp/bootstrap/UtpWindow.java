@@ -22,7 +22,7 @@ import com.acgist.snail.utils.DateUtils;
  * @author acgist
  * @since 1.1.0
  */
-public class UtpWindow {
+public final class UtpWindow {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UtpWindow.class);
 	

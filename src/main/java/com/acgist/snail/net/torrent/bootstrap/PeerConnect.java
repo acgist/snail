@@ -15,7 +15,7 @@ import com.acgist.snail.system.config.PeerConfig;
  * @author acgist
  * @since 1.0.2
  */
-public class PeerConnect extends PeerClientHandler {
+public final class PeerConnect extends PeerClientHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerConnect.class);
 	

@@ -25,7 +25,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class TaskSession {
+public final class TaskSession {
 
 	/**
 	 * 下载状态

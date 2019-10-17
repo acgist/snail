@@ -161,7 +161,7 @@ public class SettingController extends Controller implements Initializable {
 	};
 	
 	private ChangeListener<? super Number> memoryBufferListener = (obs, oldVal, newVal) -> {
-		int value = newVal.intValue() / 8 * 8;
+		int value = newVal.intValue();
 		this.memoryBuffer.setValue(value);
 	};
 	

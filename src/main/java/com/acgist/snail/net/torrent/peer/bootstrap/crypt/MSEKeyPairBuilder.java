@@ -105,7 +105,7 @@ public class MSEKeyPairBuilder {
 	/**
 	 * MSE私钥
 	 */
-	private static class MSEPrivateKey implements PrivateKey {
+	private static final class MSEPrivateKey implements PrivateKey {
 
 		private static final long serialVersionUID = 1L;
 		

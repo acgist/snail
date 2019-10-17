@@ -19,7 +19,7 @@ import com.acgist.snail.utils.IoUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class FtpDownloader extends SingleFileDownloader {
+public final class FtpDownloader extends SingleFileDownloader {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(FtpDownloader.class);
 
@@ -29,7 +29,7 @@ public class FtpDownloader extends SingleFileDownloader {
 	private FtpClient client;
 	
 	private FtpDownloader(TaskSession taskSession) {
-		super(new byte[128 * 1024], taskSession);
+		super(taskSession);
 	}
 
 	public static final FtpDownloader newInstance(TaskSession taskSession) {

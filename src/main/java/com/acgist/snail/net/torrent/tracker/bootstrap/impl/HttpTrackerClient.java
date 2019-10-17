@@ -27,7 +27,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class HttpTrackerClient extends TrackerClient {
+public final class HttpTrackerClient extends TrackerClient {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(HttpTrackerClient.class);
 	

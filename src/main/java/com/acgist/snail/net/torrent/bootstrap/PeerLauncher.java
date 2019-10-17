@@ -26,7 +26,7 @@ import com.acgist.snail.utils.ThreadUtils;
  * @author acgist
  * @since 1.1.0
  */
-public class PeerLauncher extends PeerClientHandler {
+public final class PeerLauncher extends PeerClientHandler {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerLauncher.class);
 

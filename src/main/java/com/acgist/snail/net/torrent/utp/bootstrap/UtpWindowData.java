@@ -10,7 +10,7 @@ import com.acgist.snail.utils.DateUtils;
  * @author acgist
  * @since 1.1.0
  */
-public class UtpWindowData {
+public final class UtpWindowData {
 
 	/**
 	 * seqnr

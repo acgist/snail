@@ -16,7 +16,7 @@ import javafx.scene.text.Text;
  * @author acgist
  * @since 1.0.0
  */
-public class TaskCell extends TableCell<TaskSession, String> {
+public final class TaskCell extends TableCell<TaskSession, String> {
 
 	/**
 	 * 对齐方式

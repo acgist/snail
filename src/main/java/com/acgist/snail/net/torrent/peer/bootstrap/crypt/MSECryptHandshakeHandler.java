@@ -52,7 +52,7 @@ import com.acgist.snail.utils.ThreadUtils;
  * @author acgist
  * @since 1.1.0
  */
-public class MSECryptHandshakeHandler {
+public final class MSECryptHandshakeHandler {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(MSECryptHandshakeHandler.class);
 

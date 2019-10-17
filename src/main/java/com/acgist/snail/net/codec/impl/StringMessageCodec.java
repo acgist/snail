@@ -14,7 +14,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.1.1
  */
-public class StringMessageCodec extends MessageCodec<ByteBuffer, String> {
+public final class StringMessageCodec extends MessageCodec<ByteBuffer, String> {
 
 	public StringMessageCodec(IMessageCodec<String> messageCodec) {
 		super(messageCodec);

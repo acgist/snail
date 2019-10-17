@@ -26,7 +26,7 @@ import com.acgist.snail.utils.ThreadUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker.bootstrap.TrackerClient {
+public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker.bootstrap.TrackerClient {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpTrackerClient.class);
 	
