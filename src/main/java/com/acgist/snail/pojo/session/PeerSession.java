@@ -43,7 +43,7 @@ public final class PeerSession implements IStatistics {
 	 */
 	private volatile byte flags = 0;
 	/**
-	 * 状态
+	 * 状态：需要同步
 	 */
 	private volatile byte status = 0;
 	/**
@@ -393,14 +393,18 @@ public final class PeerSession implements IStatistics {
 	 * 设置状态
 	 */
 	public void status(byte status) {
-		this.status = (byte) (this.status | status);
+		synchronized (this) {
+			this.status = (byte) (this.status | status);
+		}
 	}
 	
 	/**
 	 * 取消状态
 	 */
 	public void unstatus(byte status) {
-		this.status = (byte) (this.status ^ status);
+		synchronized (this) {
+			this.status = (byte) (this.status ^ status);
+		}
 	}
 
 	/**
