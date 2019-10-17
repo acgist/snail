@@ -45,7 +45,7 @@ import com.acgist.snail.utils.CollectionUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class TorrentSession {
+public final class TorrentSession {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentSession.class);
 	

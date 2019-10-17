@@ -55,7 +55,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.1.0
  */
-public class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
+public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerSubMessageHandler.class);
 	

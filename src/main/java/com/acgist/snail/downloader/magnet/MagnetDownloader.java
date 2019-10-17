@@ -18,7 +18,7 @@ import com.acgist.snail.system.exception.DownloadException;
  * @author acgist
  * @since 1.1.0
  */
-public class MagnetDownloader extends TorrentSessionDownloader {
+public final class MagnetDownloader extends TorrentSessionDownloader {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(MagnetDownloader.class);
 

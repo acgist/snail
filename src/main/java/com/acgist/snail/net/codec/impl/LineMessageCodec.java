@@ -12,7 +12,7 @@ import com.acgist.snail.system.exception.NetException;
  * @author acgist
  * @since 1.1.1
  */
-public class LineMessageCodec extends MessageCodec<String, String> {
+public final class LineMessageCodec extends MessageCodec<String, String> {
 
 	/**
 	 * 换行符

@@ -17,7 +17,7 @@ import com.acgist.snail.system.exception.DownloadException;
  * @author acgist
  * @since 1.0.0
  */
-public class TorrentDownloader extends TorrentSessionDownloader {
+public final class TorrentDownloader extends TorrentSessionDownloader {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentDownloader.class);
 	

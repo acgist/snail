@@ -9,7 +9,7 @@ import com.acgist.snail.utils.ObjectUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class NodeSession implements Comparable<NodeSession> {
+public final class NodeSession implements Comparable<NodeSession> {
 
 	/**
 	 * 节点状态

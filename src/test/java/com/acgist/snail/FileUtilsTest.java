@@ -11,7 +11,7 @@ import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 
 public class FileUtilsTest {
-
+	
 	@Test
 	public void fileNameUrl() {
 		System.out.println(FileUtils.fileNameFromUrl("http://casd/%e8%ae%a2%e5%8d%95fds.mpe?xx"));

@@ -51,7 +51,7 @@ import com.acgist.snail.utils.ThreadUtils;
  * @author acgist
  * @since 1.1.0
  */
-public class UtpMessageHandler extends UdpMessageHandler implements IMessageEncryptHandler {
+public final class UtpMessageHandler extends UdpMessageHandler implements IMessageEncryptHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UtpMessageHandler.class);
 	

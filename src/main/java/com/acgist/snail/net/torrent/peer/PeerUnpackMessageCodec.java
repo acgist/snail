@@ -18,7 +18,7 @@ import com.acgist.snail.system.exception.PacketSizeException;
  * @author acgist
  * @since 1.1.0
  */
-public class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteBuffer> {
+public final class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteBuffer> {
 
 	/**
 	 * int字符长度

@@ -15,7 +15,7 @@ import com.acgist.snail.utils.ThreadUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class StatisticsSession {
+public final class StatisticsSession {
 
 	/**
 	 * 一秒钟
@@ -35,17 +35,13 @@ public class StatisticsSession {
 	 */
 	private final StatisticsSession parent;
 	/**
-	 * 已上传大小
+	 * 累计上传大小
 	 */
 	private AtomicLong uploadSize = new AtomicLong(0);
 	/**
-	 * 已下载大小
+	 * 累计下载大小
 	 */
 	private AtomicLong downloadSize = new AtomicLong(0);
-	/**
-	 * 最后一次统计时间
-	 */
-	private long lastDownloadTime = System.currentTimeMillis();
 	/**
 	 * 每秒下载速度
 	 */
@@ -57,7 +53,7 @@ public class StatisticsSession {
 	/**
 	 * 最后一次统计时间
 	 */
-	private long lastUploadTime = System.currentTimeMillis();
+	private volatile long lastDownloadTime = System.currentTimeMillis();
 	/**
 	 * 每秒下载速度
 	 */
@@ -66,6 +62,10 @@ public class StatisticsSession {
 	 * 下载速度采样
 	 */
 	private AtomicLong uploadBuffer = new AtomicLong(0);
+	/**
+	 * 最后一次统计时间
+	 */
+	private volatile long lastUploadTime = System.currentTimeMillis();
 	
 	public StatisticsSession() {
 		this.limit = false;
@@ -83,25 +83,27 @@ public class StatisticsSession {
 	}
 
 	/**
-	 * 下载统计，如果存在父类更新父类数据。
+	 * <p>下载统计</p>
+	 * <p>如果存在父类优先更新父类数据，防止限速导致父类更新不及时。</p>
 	 */
 	public void download(long buffer) {
-		this.downloadSize.addAndGet(buffer);
-		limitDownload(buffer);
 		if(this.parent != null) {
 			this.parent.download(buffer);
 		}
+		this.downloadSize.addAndGet(buffer);
+		limitDownload(buffer);
 	}
 	
 	/**
-	 * 下载统计，如果存在父类更新父类数据。
+	 * <p>下载统计</p>
+	 * <p>如果存在父类优先更新父类数据，防止限速导致父类更新不及时。</p>
 	 */
 	public void upload(long buffer) {
-		this.uploadSize.addAndGet(buffer);
-		limitUpload(buffer);
 		if(this.parent != null) {
 			this.parent.upload(buffer);
 		}
+		this.uploadSize.addAndGet(buffer);
+		limitUpload(buffer);
 	}
 	
 	/**
@@ -158,24 +160,32 @@ public class StatisticsSession {
 	private void limitDownload(long buffer) {
 		final int limitSize = DownloadConfig.getBufferByte();
 		final long oldDownloadBuffer = this.downloadBuffer.addAndGet(buffer);
-		long interval = System.currentTimeMillis() - this.lastDownloadTime; // 时间间隔
-		if(oldDownloadBuffer > limitSize || interval >= ONE_SECOND) { // 超过限速获取时间超过一秒钟
-			synchronized (this) {
-				if(oldDownloadBuffer == this.downloadBuffer.get()) {
-					if(this.limit) {
+		long interval = System.currentTimeMillis() - this.lastDownloadTime;
+		if(this.limit) { // 限速
+			if(oldDownloadBuffer > limitSize || interval >= ONE_SECOND) { // 限速控制
+				synchronized (this) { // 其他线程等待
+					if(oldDownloadBuffer == this.downloadBuffer.get()) { // 判定时间
 						final long expectTime = BigDecimal.valueOf(oldDownloadBuffer)
 							.multiply(BigDecimal.valueOf(ONE_SECOND))
 							.divide(BigDecimal.valueOf(limitSize), RoundingMode.HALF_UP)
 							.longValue();
-						if(interval < expectTime) { // 限速
+						if(interval < expectTime) { // 限速时间
 							ThreadUtils.sleep(expectTime - interval);
 							interval = expectTime;
 						}
+						this.downloadSecond = oldDownloadBuffer * 1000 / interval;
+						this.lastDownloadTime = System.currentTimeMillis(); // 获取休眠后的时间
+						this.downloadBuffer.set(0); // 清零：不能在休眠前清零
+//					} else { // 不重新计算：允许误差
+//						this.downloadBuffer.addAndGet(buffer);
 					}
-					this.downloadSecond = oldDownloadBuffer * 1000 / interval;
-					this.lastDownloadTime = System.currentTimeMillis();
-					this.downloadBuffer.set(0); // 清空
 				}
+			}
+		} else{
+			if(interval >= ONE_SECOND) {
+				this.downloadSecond = oldDownloadBuffer * 1000 / interval;
+				this.lastDownloadTime = System.currentTimeMillis();
+				this.downloadBuffer.set(0);
 			}
 		}
 	}
@@ -187,23 +197,31 @@ public class StatisticsSession {
 		final int limitSize = DownloadConfig.getBufferByte();
 		final long oldUploadBuffer = this.uploadBuffer.addAndGet(buffer);
 		long interval = System.currentTimeMillis() - this.lastUploadTime;
-		if(oldUploadBuffer > limitSize || interval >= ONE_SECOND) { // 超过限速
-			synchronized (this) {
-				if(oldUploadBuffer == this.uploadBuffer.get()) {
-					if(this.limit) {
+		if(this.limit) { // 限速
+			if(oldUploadBuffer > limitSize || interval >= ONE_SECOND) { // 限速控制
+				synchronized (this) { // 其他线程等待
+					if(oldUploadBuffer == this.uploadBuffer.get()) { // 判定时间
 						final long expectTime = BigDecimal.valueOf(oldUploadBuffer)
 							.multiply(BigDecimal.valueOf(ONE_SECOND))
 							.divide(BigDecimal.valueOf(limitSize), RoundingMode.HALF_UP)
 							.longValue();
-						if(interval < expectTime) { // 限速
+						if(interval < expectTime) { // 限速时间
 							ThreadUtils.sleep(expectTime - interval);
 							interval = expectTime;
 						}
+						this.uploadSecond = oldUploadBuffer * 1000 / interval;
+						this.lastUploadTime = System.currentTimeMillis(); // 获取休眠后的时间
+						this.uploadBuffer.set(0); // 清零：不能在休眠前清零
+//					} else { // 不重新计算：允许误差
+//						this.uploadBuffer.addAndGet(buffer);
 					}
-					this.uploadSecond = oldUploadBuffer * 1000 / interval;
-					this.lastUploadTime = System.currentTimeMillis();
-					this.uploadBuffer.set(0); // 清空
 				}
+			}
+		} else {
+			if(interval >= ONE_SECOND) {
+				this.uploadSecond = oldUploadBuffer * 1000 / interval;
+				this.lastUploadTime = System.currentTimeMillis();
+				this.uploadBuffer.set(0);
 			}
 		}
 	}

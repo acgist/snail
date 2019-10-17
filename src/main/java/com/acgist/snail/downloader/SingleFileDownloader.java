@@ -1,10 +1,11 @@
 package com.acgist.snail.downloader;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,8 @@ import com.acgist.snail.system.config.DownloadConfig;
 /**
  * <p>单个文件任务下载器</p>
  * 
+ * TODO：下载大文件时，由于统计类里面的线程休眠（限速）会导致内存爆炸。
+ * 
  * @author acgist
  * @since 1.1.1
  */
@@ -23,21 +26,21 @@ public abstract class SingleFileDownloader extends Downloader {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SingleFileDownloader.class);
 	
 	/**
-	 * 缓存字节数组
+	 * 读取字节长度
 	 */
-	protected final byte[] bytes;
+	protected static final int EXCHANGE_BYTES_LENGTH = 16 * 1024;
+	
 	/**
 	 * 输入流
 	 */
-	protected BufferedInputStream input;
+	protected InputStream input;
 	/**
 	 * 输出流
 	 */
-	protected BufferedOutputStream output;
+	protected OutputStream output;
 	
-	protected SingleFileDownloader(byte[] bytes, TaskSession taskSession) {
+	protected SingleFileDownloader(TaskSession taskSession) {
 		super(taskSession);
-		this.bytes = bytes;
 	}
 	
 	@Override
@@ -49,14 +52,15 @@ public abstract class SingleFileDownloader extends Downloader {
 	@Override
 	public void download() throws IOException {
 		int length = 0;
+		final byte[] bytes = new byte[EXCHANGE_BYTES_LENGTH];
 		while(ok()) {
 			// TODO：阻塞线程，导致暂停不能正常结束。
-			length = this.input.read(this.bytes, 0, this.bytes.length);
+			length = this.input.read(bytes, 0, bytes.length);
 			if(isComplete(length)) {
 				this.complete = true;
 				break;
 			}
-			this.output.write(this.bytes, 0, length);
+			this.output.write(bytes, 0, length);
 			this.download(length);
 		}
 	}

@@ -20,7 +20,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class PeerSession implements IStatistics {
+public final class PeerSession implements IStatistics {
 	
 	/**
 	 * Peer id
