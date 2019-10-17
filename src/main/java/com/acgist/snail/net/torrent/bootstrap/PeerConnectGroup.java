@@ -103,15 +103,15 @@ public class PeerConnectGroup {
 	/**
 	 * <p>剔除无效接入</p>
 	 * <ul>
-	 * 	<li>连接不可用。</li>
-	 * 	<li>长时间没有请求。</li>
+	 * 	<li>不可用的连接。</li>
+	 * 	<li>长时间没有请求的连接。</li>
+	 * 	<li>超过最大连接数的连接。</li>
 	 * </ul>
 	 * <p>剔除时设置为阻塞。</p>
-	 * 
-	 * TODO：删除多余的链接，不能超过最大连接数。
 	 */
 	private void inferiorPeerConnects() {
 		final int size = this.peerConnects.size();
+		final int maxSize = SystemConfig.getPeerSize();
 		int index = 0;
 		PeerConnect tmp = null;
 		while(true) {
@@ -140,6 +140,8 @@ public class PeerConnectGroup {
 				continue;
 			}
 			if(mark == 0L) {
+				inferiorPeerConnect(tmp);
+			} else if(index > maxSize) {
 				inferiorPeerConnect(tmp);
 			} else {
 				this.offer(tmp);
