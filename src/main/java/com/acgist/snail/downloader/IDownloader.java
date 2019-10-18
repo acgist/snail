@@ -21,18 +21,18 @@ public interface IDownloader extends Runnable {
 	String id();
 	
 	/**
-	 * 任务下载状态
-	 * 
-	 * @return true-{@linkplain Status#download 下载中}；false-未下载；
-	 */
-	boolean running();
-	
-	/**
 	 * 任务名称
 	 * 
 	 * @return 任务名称
 	 */
 	String name();
+	
+	/**
+	 * 任务下载状态
+	 * 
+	 * @return true-{@linkplain Status#download 下载中}；false-未下载；
+	 */
+	boolean running();
 	
 	/**
 	 * 任务信息
@@ -71,11 +71,6 @@ public interface IDownloader extends Runnable {
 	void refresh();
 	
 	/**
-	 * <p>解除下载等待锁</p>
-	 */
-	void unlockDownload();
-	
-	/**
 	 * <p>打开任务</p>
 	 * <ul>
 	 * 	<li>初始下载</li>
@@ -91,6 +86,11 @@ public interface IDownloader extends Runnable {
 	 * @throws IOException 下载异常
 	 */
 	void download() throws IOException;
+	
+	/**
+	 * <p>解除下载等待锁</p>
+	 */
+	void unlockDownload();
 	
 	/**
 	 * 释放资源

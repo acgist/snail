@@ -27,7 +27,7 @@ public abstract class TorrentSessionDownloader extends Downloader {
 	/**
 	 * <p>Torrent任务信息</p>
 	 */
-	protected final TorrentSession torrentSession;
+	protected TorrentSession torrentSession;
 	/**
 	 * <p>下载锁：下载时阻塞下载器线程，使用后台下载。</p>
 	 */
@@ -35,11 +35,14 @@ public abstract class TorrentSessionDownloader extends Downloader {
 	
 	protected TorrentSessionDownloader(TaskSession taskSession) {
 		super(taskSession);
-		this.torrentSession = this.loadTorrentSession();
 	}
 	
 	@Override
 	public void open() {
+		/*
+		 * 不能在构造函数中初始化，防止种子被删除后还能点击下载。
+		 */
+		this.torrentSession = this.loadTorrentSession();
 		loadDownload();
 	}
 	
