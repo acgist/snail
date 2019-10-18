@@ -4,11 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.TorrentSessionDownloader;
-import com.acgist.snail.net.torrent.TorrentManager;
-import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.protocol.magnet.bootstrap.MagnetBuilder;
 import com.acgist.snail.system.exception.DownloadException;
 
 /**
@@ -28,7 +25,15 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 	public static final TorrentDownloader newInstance(TaskSession taskSession) {
 		return new TorrentDownloader(taskSession);
 	}
-
+	
+	@Override
+	public void delete() {
+		if(this.torrentSession != null) {
+			this.torrentSession.releaseUpload(); // 释放BT资源
+		}
+		super.delete();
+	}
+	
 	@Override
 	public void refresh() {
 		// TODO：添加下载文件TorrentStreamGroup
@@ -36,19 +41,9 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 	
 	@Override
 	public void release() {
-		this.torrentSession.releaseDownload();
-	}
-
-	@Override
-	public void delete() {
-		// 释放BT资源
 		if(this.torrentSession != null) {
-			this.torrentSession.releaseUpload();
-			final String infoHashHex = this.torrentSession.infoHashHex();
-			PeerManager.getInstance().remove(infoHashHex);
-			TorrentManager.getInstance().remove(infoHashHex);
+			this.torrentSession.releaseDownload();
 		}
-		super.delete();
 	}
 	
 	/**
@@ -57,25 +52,24 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 	 */
 	@Override
 	protected TorrentSession loadTorrentSession() {
-		final var entity = this.taskSession.entity();
-		final var path = entity.getTorrent();
-		try {
-			final var magnet = MagnetBuilder.newInstance(entity.getUrl()).build();
-			final var infoHashHex = magnet.getHash();
-			final var torrentSession = TorrentManager.getInstance().newTorrentSession(infoHashHex, path);
-			torrentSession.upload(this.taskSession);
-			return torrentSession;
-		} catch (DownloadException e) {
-			LOGGER.error("BT任务加载异常", e);
-			fail("BT任务加载失败：" + e.getMessage());
+		final var torrentSession = super.loadTorrentSession();
+		if(torrentSession != null) {
+			try {
+				torrentSession.upload(this.taskSession);
+			} catch (DownloadException e) {
+				LOGGER.error("BT任务分享异常", e);
+				fail("BT任务分享失败：" + e.getMessage());
+			}
 		}
-		return null;
+		return torrentSession;
 	}
 	
 	@Override
 	protected void loadDownload() {
 		try {
-			this.complete = this.torrentSession.download();
+			if(this.torrentSession != null) {
+				this.complete = this.torrentSession.download();
+			}
 		} catch (DownloadException e) {
 			LOGGER.error("BT任务加载异常", e);
 			fail("BT任务加载失败：" + e.getMessage());
