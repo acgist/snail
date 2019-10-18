@@ -61,13 +61,13 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	}
 	
 	@Override
-	public boolean running() {
-		return this.taskSession.download();
+	public String name() {
+		return this.taskSession.entity().getName();
 	}
 	
 	@Override
-	public String name() {
-		return this.taskSession.entity().getName();
+	public boolean running() {
+		return this.taskSession.download();
 	}
 	
 	@Override
