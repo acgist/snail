@@ -20,7 +20,7 @@ public class ArgumentException extends RuntimeException {
 	}
 
 	public ArgumentException(Throwable cause) {
-		super(cause);
+		super(cause.getMessage(), cause);
 	}
 
 	public ArgumentException(String message, Throwable cause) {

@@ -27,7 +27,7 @@ public class PacketSizeException extends NetException {
 	}
 
 	public PacketSizeException(Throwable cause) {
-		super(cause);
+		super(cause.getMessage(), cause);
 	}
 	
 	public PacketSizeException(String message, Throwable cause) {

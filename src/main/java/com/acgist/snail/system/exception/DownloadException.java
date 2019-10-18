@@ -20,7 +20,7 @@ public class DownloadException extends Exception {
 	}
 
 	public DownloadException(Throwable cause) {
-		super(cause);
+		super(cause.getMessage(), cause);
 	}
 	
 	public DownloadException(String message, Throwable cause) {

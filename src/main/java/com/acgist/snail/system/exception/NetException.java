@@ -20,7 +20,7 @@ public class NetException extends Exception {
 	}
 
 	public NetException(Throwable cause) {
-		super(cause);
+		super(cause.getMessage(), cause);
 	}
 	
 	public NetException(String message, Throwable cause) {

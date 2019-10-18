@@ -20,7 +20,7 @@ public class RepositoryException extends RuntimeException {
 	}
 
 	public RepositoryException(Throwable cause) {
-		super(cause);
+		super(cause.getMessage(), cause);
 	}
 	
 	public RepositoryException(String message, Throwable cause) {
