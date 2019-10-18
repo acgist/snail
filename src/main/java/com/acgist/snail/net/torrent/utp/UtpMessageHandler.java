@@ -202,17 +202,20 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	}
 
 	@Override
+	public void send(ByteBuffer buffer, int timeout) throws NetException {
+		this.sendPacket(buffer);
+	}
+	
+	@Override
 	public void sendEncrypt(ByteBuffer buffer, int timeout) throws NetException {
 		this.messageCodec.encode(buffer);
-		this.send(buffer, timeout);
+		this.sendPacket(buffer);
 	}
 
 	/**
-	 * {@inheritDoc}
-	 * <p>重写发送方法：UDP拆包</p>
+	 * <p>UDP拆包</p>
 	 */
-	@Override
-	public void send(ByteBuffer buffer, int timeout) throws NetException {
+	private void sendPacket(ByteBuffer buffer) throws NetException {
 		if(!available()) {
 			LOGGER.debug("UTP消息发送失败：通道不可用");
 			return;
@@ -457,7 +460,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	 */
 	private void pushMessage(ByteBuffer buffer) {
 		try {
-			super.send(buffer);
+			this.send(buffer, this.remoteSocketAddress());
 		} catch (NetException e) {
 			LOGGER.error("发送UTP消息异常", e);
 		}

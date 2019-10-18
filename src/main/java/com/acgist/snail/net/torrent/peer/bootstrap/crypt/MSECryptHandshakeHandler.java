@@ -335,9 +335,11 @@ public final class MSECryptHandshakeHandler {
 		digest.update(dhSecretBytes);
 		buffer.put(digest.digest());
 //		HASH('req2', SKEY) xor HASH('req3', S)
+		digest.reset();
 		digest.update("req2".getBytes());
 		digest.update(infoHash.infoHash());
 		final byte[] req2 = digest.digest();
+		digest.reset();
 		digest.update("req3".getBytes());
 		digest.update(dhSecretBytes);
 		final byte[] req3 = digest.digest();
@@ -366,13 +368,13 @@ public final class MSECryptHandshakeHandler {
 	 */
 	private void receiveProvide() throws NetException {
 		LOGGER.debug("加密握手，接收加密协议协商，步骤：{}", this.step);
-		final MessageDigest digest = DigestUtils.sha1();
 		final byte[] dhSecretBytes = NumberUtils.encodeUnsigned(this.dhSecret, CryptConfig.PUBLIC_KEY_LENGTH);
+		final MessageDigest digest = DigestUtils.sha1();
 //		HASH('req1', S)
 		digest.update("req1".getBytes());
 		digest.update(dhSecretBytes);
-		final byte[] req1Native = digest.digest();
-		if(!match(req1Native)) {
+		final byte[] req1 = digest.digest();
+		if(!match(req1)) {
 			return;
 		}
 		if(this.buffer.position() < PROVIDE_MIN_LENGTH) {
@@ -382,20 +384,26 @@ public final class MSECryptHandshakeHandler {
 			throw new NetException("加密握手失败（长度错误）");
 		}
 		this.buffer.flip();
-		final byte[] req1 = new byte[20];
-		this.buffer.get(req1);
+		final byte[] req1Peer = new byte[20];
+		this.buffer.get(req1Peer);
+		// 不在验证req1
+//		if(!ArrayUtils.equals(req1, req1Peer)) {
+//			throw new NetException("加密握手失败（数据匹配错误）");
+//		}
 //		HASH('req2', SKEY) xor HASH('req3', S)
-		final byte[] req2x3 = new byte[20];
-		this.buffer.get(req2x3);
+		final byte[] req2x3Peer = new byte[20];
+		this.buffer.get(req2x3Peer);
+		digest.reset();
 		digest.update("req3".getBytes());
 		digest.update(dhSecretBytes);
 		final byte[] req3 = digest.digest();
 		InfoHash infoHash = null;
 		for (InfoHash tmp : TorrentManager.getInstance().allInfoHash()) {
+			digest.reset();
 			digest.update("req2".getBytes());
 			digest.update(tmp.infoHash());
 			final byte[] req2 = digest.digest();
-			if (ArrayUtils.equals(ArrayUtils.xor(req2, req3), req2x3)) {
+			if (ArrayUtils.equals(ArrayUtils.xor(req2, req3), req2x3Peer)) {
 				infoHash = tmp;
 				break;
 			}
