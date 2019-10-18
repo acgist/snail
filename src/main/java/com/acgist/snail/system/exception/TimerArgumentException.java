@@ -23,7 +23,7 @@ public class TimerArgumentException extends ArgumentException {
 	}
 
 	public TimerArgumentException(Throwable cause) {
-		super(cause);
+		super(cause.getMessage(), cause);
 	}
 
 	public TimerArgumentException(String message, Throwable cause) {
