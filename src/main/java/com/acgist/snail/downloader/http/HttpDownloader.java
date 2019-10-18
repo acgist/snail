@@ -38,6 +38,7 @@ public final class HttpDownloader extends SingleFileDownloader {
 	public void release() {
 		IoUtils.close(this.input);
 		IoUtils.close(this.output);
+		super.release();
 	}
 	
 	/**

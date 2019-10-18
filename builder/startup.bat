@@ -9,6 +9,6 @@ rem 设置环境变量
 set path=.\%runtime%\bin
 
 rem 启动命令
-call start "snail" javaw -server -Xms256m -Xmx256m -jar %jar%
+call start "snail" javaw -server -XX:NewRatio=2 -XX:SurvivorRatio=2 -Xms128m -Xmx256m -jar %jar%
 
 exit

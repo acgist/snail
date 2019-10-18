@@ -49,7 +49,7 @@
 						磁盘缓存：
 					</Label>
 				</TextFlow>
-				<Slider fx:id="memoryBuffer" styleClass="slider" min="4" max="32" value="16" blockIncrement="1" majorTickUnit="2" minorTickCount="1" showTickLabels="true" showTickMarks="true" />
+				<Slider fx:id="memoryBuffer" styleClass="slider" min="4" max="16" value="8" blockIncrement="1" majorTickUnit="2" minorTickCount="1" showTickLabels="true" showTickMarks="true" />
 			</HBox>
 				
 			<HBox>

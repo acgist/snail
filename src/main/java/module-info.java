@@ -54,6 +54,7 @@ open module com.acgist.snail {
 	 * java.naming
 	 * java.scripting
 	 * java.management
+	 * jdk.crypto.ec
 	 * jdk.unsupported
 	 */
 

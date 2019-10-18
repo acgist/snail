@@ -33,6 +33,7 @@ public final class MagnetDownloader extends TorrentSessionDownloader {
 	@Override
 	public void release() {
 		this.torrentSession.releaseMagnet();
+		super.release();
 	}
 	
 	@Override

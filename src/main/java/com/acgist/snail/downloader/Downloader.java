@@ -173,6 +173,11 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	}
 	
 	@Override
+	public void release() {
+		this.gc();
+	}
+	
+	@Override
 	public void download(long buffer) {
 		this.taskSession.statistics().download(buffer);
 	}
@@ -213,6 +218,14 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	private void updateStatus(Status status) {
 		this.unlockDownload();
 		this.taskSession.updateStatus(status);
+	}
+	
+	/**
+	 * 垃圾回收
+	 */
+	private void gc() {
+		LOGGER.debug("垃圾回收（GC）");
+		System.gc();
 	}
 	
 }

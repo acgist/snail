@@ -20,7 +20,8 @@ public class HTTPClientTest {
 	
 	@Test
 	public void fileName() throws NetException {
-		var header = HTTPClient.newInstance("https://g37.gdl.netease.com/onmyoji_setup_9.4.0.zip").head();
+		var header = HTTPClient.newInstance("https://g18.gdl.netease.com/MY-1.246.1.apk").head();
+//		var header = HTTPClient.newInstance("https://g37.gdl.netease.com/onmyoji_setup_9.4.0.zip").head();
 		System.out.println(header.fileName("test"));
 		System.out.println(header);
 	}

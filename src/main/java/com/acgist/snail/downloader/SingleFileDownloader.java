@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.system.config.DownloadConfig;
+import com.acgist.snail.utils.IoUtils;
 
 /**
  * <p>单个文件任务下载器</p>
@@ -54,7 +55,6 @@ public abstract class SingleFileDownloader extends Downloader {
 		int length = 0;
 		final byte[] bytes = new byte[EXCHANGE_BYTES_LENGTH];
 		while(ok()) {
-			// TODO：阻塞线程，导致暂停不能正常结束。
 			length = this.input.read(bytes, 0, bytes.length);
 			if(isComplete(length)) {
 				this.complete = true;
@@ -63,6 +63,11 @@ public abstract class SingleFileDownloader extends Downloader {
 			this.output.write(bytes, 0, length);
 			this.download(length);
 		}
+	}
+	
+	@Override
+	public void unlockDownload() {
+		IoUtils.close(this.input);
 	}
 	
 	/**
