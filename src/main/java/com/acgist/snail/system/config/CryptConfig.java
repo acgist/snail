@@ -110,6 +110,8 @@ public class CryptConfig {
 	public static final byte[] VC = new byte[VC_LENGTH];
 	/**
 	 * 默认加密策略
+	 * 
+	 * TODO：UTP加密错误
 	 */
 	public static final Strategy STRATEGY = Strategy.preferPlaintext;
 

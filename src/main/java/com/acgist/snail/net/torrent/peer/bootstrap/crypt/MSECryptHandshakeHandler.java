@@ -389,8 +389,8 @@ public final class MSECryptHandshakeHandler {
 		this.buffer.get(req2x3);
 		digest.update("req3".getBytes());
 		digest.update(dhSecretBytes);
-		InfoHash infoHash = null;
 		final byte[] req3 = digest.digest();
+		InfoHash infoHash = null;
 		for (InfoHash tmp : TorrentManager.getInstance().allInfoHash()) {
 			digest.update("req2".getBytes());
 			digest.update(tmp.infoHash());
