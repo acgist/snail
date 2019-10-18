@@ -43,6 +43,7 @@ public final class FtpDownloader extends SingleFileDownloader {
 		}
 //		IoUtils.close(this.input); // FtpClient关闭
 		IoUtils.close(this.output);
+		super.release();
 	}
 
 	@Override
