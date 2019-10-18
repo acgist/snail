@@ -64,10 +64,16 @@ public abstract class SingleFileDownloader extends Downloader {
 			this.download(length);
 		}
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 * <p>下载速度为零时，下载被阻塞，直接关闭下载流，避免下载阻塞导致任务不能正常结束。</p>
+	 */
 	@Override
 	public void unlockDownload() {
-		IoUtils.close(this.input);
+		if(this.taskSession.statistics().downloadSecond() == 0) {
+			IoUtils.close(this.input);
+		}
 	}
 	
 	/**

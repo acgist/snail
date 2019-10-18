@@ -4,11 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.TorrentSessionDownloader;
-import com.acgist.snail.net.torrent.TorrentManager;
-import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
 import com.acgist.snail.pojo.session.TaskSession;
-import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.protocol.magnet.bootstrap.MagnetBuilder;
 import com.acgist.snail.system.exception.DownloadException;
 
 /**
@@ -29,44 +25,29 @@ public final class MagnetDownloader extends TorrentSessionDownloader {
 	public static final MagnetDownloader newInstance(TaskSession taskSession) {
 		return new MagnetDownloader(taskSession);
 	}
-
-	@Override
-	public void release() {
-		this.torrentSession.releaseMagnet();
-		super.release();
-	}
 	
 	@Override
 	public void delete() {
-		// 释放磁力链接资源
 		if(this.torrentSession != null) {
-			this.torrentSession.releaseMagnet();
-			final String infoHashHex = this.torrentSession.infoHashHex();
-			PeerManager.getInstance().remove(infoHashHex);
-			TorrentManager.getInstance().remove(infoHashHex);
+			this.torrentSession.releaseMagnet(); // 释放磁力链接资源
 		}
 		super.delete();
 	}
-	
+
 	@Override
-	protected TorrentSession loadTorrentSession() {
-		final var entity = this.taskSession.entity();
-		final var path = entity.getTorrent();
-		try {
-			final var magnet = MagnetBuilder.newInstance(entity.getUrl()).build();
-			final var infoHashHex = magnet.getHash();
-			return TorrentManager.getInstance().newTorrentSession(infoHashHex, path);
-		} catch (DownloadException e) {
-			LOGGER.error("磁力链接任务加载异常", e);
-			fail("磁力链接任务加载失败：" + e.getMessage());
+	public void release() {
+		if(this.torrentSession != null) {
+			this.torrentSession.releaseMagnet();
 		}
-		return null;
+		super.release();
 	}
 	
 	@Override
 	protected void loadDownload() {
 		try {
-			this.complete = this.torrentSession.magnet(this.taskSession);
+			if(this.torrentSession != null) {
+				this.complete = this.torrentSession.magnet(this.taskSession);
+			}
 		} catch (DownloadException e) {
 			LOGGER.error("磁力链接任务加载异常", e);
 			fail("磁力链接任务加载失败：" + e.getMessage());

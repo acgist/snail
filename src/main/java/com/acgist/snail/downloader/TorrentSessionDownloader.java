@@ -3,8 +3,15 @@ package com.acgist.snail.downloader;
 import java.io.IOException;
 import java.time.Duration;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.acgist.snail.net.torrent.TorrentManager;
+import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.protocol.magnet.bootstrap.MagnetBuilder;
+import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
@@ -14,6 +21,8 @@ import com.acgist.snail.utils.ThreadUtils;
  * @since 1.1.1
  */
 public abstract class TorrentSessionDownloader extends Downloader {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentSessionDownloader.class);
 
 	/**
 	 * <p>Torrent任务信息</p>
@@ -32,6 +41,16 @@ public abstract class TorrentSessionDownloader extends Downloader {
 	@Override
 	public void open() {
 		loadDownload();
+	}
+	
+	@Override
+	public void delete() {
+		if(this.torrentSession != null) {
+			final String infoHashHex = this.torrentSession.infoHashHex();
+			PeerManager.getInstance().remove(infoHashHex);
+			TorrentManager.getInstance().remove(infoHashHex);
+		}
+		super.delete();
 	}
 	
 	@Override
@@ -54,7 +73,19 @@ public abstract class TorrentSessionDownloader extends Downloader {
 	/**
 	 * <p>加载TorrentSession任务信息</p>
 	 */
-	protected abstract TorrentSession loadTorrentSession();
+	protected TorrentSession loadTorrentSession() {
+		final var entity = this.taskSession.entity();
+		final var path = entity.getTorrent();
+		try {
+			final var magnet = MagnetBuilder.newInstance(entity.getUrl()).build();
+			final var infoHashHex = magnet.getHash();
+			return TorrentManager.getInstance().newTorrentSession(infoHashHex, path);
+		} catch (DownloadException e) {
+			LOGGER.error("BT任务加载异常", e);
+			fail("BT任务加载失败：" + e.getMessage());
+		}
+		return null;
+	}
 
 	/**
 	 * <p>开始下载</p>
