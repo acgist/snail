@@ -41,7 +41,6 @@ public abstract class TorrentSessionDownloader extends Downloader {
 	public void open() {
 		/*
 		 * 不能在构造函数中初始化，防止种子被删除后还能点击下载。
-		 * 如果需要上传，请自行实现。
 		 */
 		this.torrentSession = this.loadTorrentSession();
 		loadDownload();

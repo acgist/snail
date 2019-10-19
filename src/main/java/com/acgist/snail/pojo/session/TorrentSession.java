@@ -177,7 +177,8 @@ public final class TorrentSession {
 	}
 	
 	/**
-	 * 开始上传
+	 * <p>开始上传</p>
+	 * <p>如果需要分享已下载内容，请调用此方法。</p>
 	 */
 	public TorrentSession upload(TaskSession taskSession) throws DownloadException {
 		this.taskSession = taskSession;

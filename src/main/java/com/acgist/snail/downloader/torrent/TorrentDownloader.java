@@ -10,6 +10,8 @@ import com.acgist.snail.system.exception.DownloadException;
 
 /**
  * <p>BT下载器</p>
+ * <p>任务{@link #open()}时，打开分享功能，直到任务被删除或者软件重启。</p>
+ * <p>重启后如果继续下载，依旧会开启分享功能。</p>
  * 
  * @author acgist
  * @since 1.0.0
