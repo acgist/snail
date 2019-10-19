@@ -50,11 +50,13 @@ mvn clean package -P release -D skipTests
 
 ```bash
 # Windows
-javaw -server -Xms256m -Xmx256m -jar snail-{version}.jar
+javaw -server -Xms128m -Xmx256m -jar snail-{version}.jar
 
 # Linux
-java -server -Xms256m -Xmx256m -jar snail-{version}.jar
+java -server -Xms128m -Xmx256m -jar snail-{version}.jar
 ```
+
+> HTTP下载大文件时，建议优化JVM参数`=-XX:NewRatio=2 -XX:SurvivorRatio=2`。
 
 #### 启动器启动
 
