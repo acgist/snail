@@ -43,9 +43,6 @@
 mvn clean package -P release -D skipTests
 ```
 
-> lib：依赖  
-> java：Java运行环境
-
 #### 命令行启动
 
 ```bash
@@ -132,4 +129,6 @@ GITHUB（不活跃）：[https://github.com/acgist/snail](https://github.com/acg
 
 ![主界面](https://static.acgist.com/demo/snail/snail.png "主界面")
 
-更多界面和监控：[https://www.acgist.com/snail](https://www.acgist.com/snail)
+###### 更多
+
+[https://www.acgist.com/snail](https://www.acgist.com/snail)
