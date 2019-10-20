@@ -134,3 +134,9 @@ GITHUB（不活跃）：[https://github.com/acgist/snail](https://github.com/acg
 ###### 更多
 
 [https://www.acgist.com/snail](https://www.acgist.com/snail)
+
+#### 评论
+
+评论区请不要贴异常信息，请提交[issues](https://gitee.com/acgist/snail/issues)。
+
+谢谢！
