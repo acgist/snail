@@ -36,30 +36,35 @@
 ```bash
 # 编译系统和运行系统不一致时，请修改pom.xml -> os.name属性=目标系统并修改JavaFX依赖，编译完成后可以删除lib目录中编译系统的JavaFX依赖。
 
+# Maven
+mvn clean package -P release -D skipTests
+
+# Linux
+./builder/build.sh
+
 # Windows
 ./builder/build.bat
-
-# Linux
-mvn clean package -P release -D skipTests
 ```
 
-#### 命令行启动
+#### 启动
 
 ```bash
-# Windows
-javaw -server -Xms128m -Xmx256m -jar snail-{version}.jar
-
 # Linux
+# 脚本
+./startup.sh
+# 命令
 java -server -Xms128m -Xmx256m -jar snail-{version}.jar
+
+# Windows
+# 脚本
+./startup.bat
+# 命令
+javaw -server -Xms128m -Xmx256m -jar snail-{version}.jar
+# 启动器
+SnailLauncher.exe
 ```
 
-> HTTP下载大文件时，建议优化JVM参数`-XX:NewRatio=2 -XX:SurvivorRatio=2`。
-
-#### 启动器启动
-
-Windows直接点击SnailLauncher.exe即可运行。
-
-> 执行程序和jar、lib、java必须处于同一个目录
+> FTP、HTTP下载大文件时，建议优化JVM参数：`-XX:NewRatio=2 -XX:SurvivorRatio=2`
 
 #### Maven
 
