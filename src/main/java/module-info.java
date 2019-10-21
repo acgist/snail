@@ -50,10 +50,15 @@ open module com.acgist.snail {
 	requires java.net.http;
 	
 	/*
-	 * jdeps（jdeps --list-deps *.jar）分析出来的依赖：
+	 * 依赖：jdeps --list-deps *.jar
+	 * java.xml
 	 * java.naming
+	 * java.logging
+	 * java.compiler
 	 * java.scripting
+	 * java.instrument
 	 * java.management
+	 * java.transaction.xa
 	 * jdk.crypto.ec
 	 * jdk.unsupported
 	 */
