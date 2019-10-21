@@ -3,7 +3,7 @@
 
 	<property name="system.name" value="Snail" />
 	<property name="system.charset" value="utf-8" />
-	<property name="system.pattern" value="[${system.name}] %d{YYYY-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n" />
+	<property name="system.pattern" value="[${system.name}] %d{YYYY-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %m%n" />
 
 	<contextName>${system.name}</contextName>
 
