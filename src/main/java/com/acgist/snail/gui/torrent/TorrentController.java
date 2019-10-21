@@ -99,6 +99,7 @@ public class TorrentController extends Controller implements Initializable {
 	 */
 	public void release() {
 		this.selectorManager = null;
+		// TODO：tree是否需要释放：jmap
 	}
 	
 	/**

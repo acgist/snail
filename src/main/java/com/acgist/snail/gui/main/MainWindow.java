@@ -4,8 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.gui.Window;
+import com.acgist.snail.gui.statistics.StatisticsWindow;
 import com.acgist.snail.system.config.SystemConfig;
-import com.acgist.snail.system.context.SystemConsole;
 import com.acgist.snail.utils.BrowseUtils;
 
 import javafx.scene.input.KeyCode;
@@ -42,7 +42,7 @@ public class MainWindow extends Window<MainController> {
 		this.buildWindow(stage, SystemConfig.getName(), 1000, 600, "/fxml/main.fxml", Modality.NONE);
 		icon();
 		help();
-		console();
+		statistics();
 	}
 	
 	@Override
@@ -52,7 +52,7 @@ public class MainWindow extends Window<MainController> {
 	}
 
 	/**
-	 * F1帮助
+	 * F1：帮助
 	 */
 	private void help() {
 		this.stage.addEventHandler(KeyEvent.KEY_RELEASED, (event) -> {
@@ -63,12 +63,12 @@ public class MainWindow extends Window<MainController> {
 	}
 	
 	/**
-	 * F12控制台
+	 * F12：统计
 	 */
-	private void console() {
+	private void statistics() {
 		this.stage.addEventHandler(KeyEvent.KEY_RELEASED, (event) -> {
 			if(event.getCode() == KeyCode.F12) {
-				SystemConsole.getInstance().console();
+				StatisticsWindow.getInstance().statistics();
 			}
 		});
 	}

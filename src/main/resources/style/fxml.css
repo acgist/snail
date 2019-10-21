@@ -120,3 +120,7 @@
 .setting .path .pathValue {
 	-fx-padding:6;
 }
+/**statistics.fxml*/
+.statistics .system .download {
+	-fx-padding:0 20 0 0;
+}

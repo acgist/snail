@@ -1,4 +1,4 @@
-package com.acgist.snail.system.context;
+package com.acgist.snail.gui.statistics;
 
 import java.util.List;
 import java.util.Map;
@@ -15,28 +15,29 @@ import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerClient;
 import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerManager;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.pojo.session.PeerSession;
+import com.acgist.snail.system.context.SystemStatistics;
 import com.acgist.snail.utils.FileUtils;
 
 /**
- * <p>系统控制台</p>
+ * <p>系统统计</p>
  * 
  * @author acgist
  * @since 1.0.0
  */
-public class SystemConsole {
+public class StatisticsService {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(SystemConsole.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(StatisticsService.class);
 	
-	private static final SystemConsole INSTANCE = new SystemConsole();
+	private static final StatisticsService INSTANCE = new StatisticsService();
 
 	private static final String NEW_LINE = "\r\n";
 	
 	private final StringBuilder builder = new StringBuilder(NEW_LINE);
 	
-	private SystemConsole() {
+	private StatisticsService() {
 	}
 
-	public static final SystemConsole getInstance() {
+	public static final StatisticsService getInstance() {
 		return INSTANCE;
 	}
 	
