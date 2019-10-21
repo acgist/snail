@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<FlowPane
+	fx:id="root"
+	styleClass="root,statistics" stylesheets="@/style/fxml.css"
+	fx:controller="com.acgist.snail.gui.statistics.StatisticsController"
+	xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
+	
+	<VBox>
+		<HBox fx:id="system" styleClass="system">
+			<TextFlow styleClass="download">
+				<Label>累计下载：</Label>
+				<Text>20M</Text>
+			</TextFlow>
+			<TextFlow styleClass="upload">
+				<Label>累计上传：</Label>
+				<Text>30M</Text>
+			</TextFlow>
+		</HBox>
+		<HBox fx:id="dht" styleClass="dht">
+			<Text>DHT：</Text>
+			<Text>1002</Text>
+			<Text>302</Text>
+			<Text>98423</Text>
+			<Text>98423</Text>
+		</HBox>
+		<HBox fx:id="tracker" styleClass="tracker">
+			<Text>Tracker：</Text>
+			<Text>1002</Text>
+			<Text>302</Text>
+			<Text>98423</Text>
+		</HBox>
+		<HBox>
+			<!-- InfoHash下拉框 -->
+		</HBox>
+	</VBox>
+	
+	
+	
+</FlowPane>
