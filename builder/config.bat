@@ -32,5 +32,5 @@ set launcherExe=.\SnailLauncher\%exe%
 rem 启动文件配置路径
 set launcherIni=.\SnailLauncher\%ini%
 
-rem JAVA依赖模块：jdeps --list-deps *.jar
-set modules="java.sql,java.base,java.desktop,java.net.http,java.naming,java.scripting,java.management,jdk.crypto.ec,jdk.unsupported"
+rem JAVA依赖模块
+set modules="java.xml,java.sql,java.base,java.desktop,java.naming,java.compiler,java.logging,java.scripting,java.instrument,java.management,java.net.http,java.transaction.xa,jdk.crypto.ec,jdk.unsupported"

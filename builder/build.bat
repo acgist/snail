@@ -7,7 +7,13 @@ echo 开始构建项目【%project%】
 
 rem 确认版本信息
 set /p input=请确认所有配置文件（pom.xml、SnailLauncher/snail.ini、builder/config.bat、src/main/resources/config/system.properties）版本信息一致（Y/N）？
-if /i %input%==Y (echo 开始构建项目) else (exit)
+if /i %input%==Y (
+  echo -----------------------------------------------
+  echo 开始构建项目
+  echo -----------------------------------------------
+) else (
+  exit
+)
 
 rem 清除文件
 call clean.bat
@@ -39,3 +45,5 @@ cd %builder%
 echo -----------------------------------------------
 echo 构建成功
 echo -----------------------------------------------
+
+exit
