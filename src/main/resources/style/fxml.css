@@ -110,6 +110,9 @@
 .statistics .info TextFlow {
 	-fx-pref-width:140;
 }
+.statistics .system TextFlow {
+	-fx-pref-width:220;
+}
 .statistics .info TextFlow.title {
 	-fx-pref-width:80;
 }
