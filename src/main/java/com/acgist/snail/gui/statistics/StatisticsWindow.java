@@ -7,6 +7,7 @@ import com.acgist.snail.gui.Window;
 
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  * 统计窗口
@@ -34,17 +35,27 @@ public class StatisticsWindow extends Window<StatisticsController> {
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		this.buildWindow(stage, "统计", 600, 600, "/fxml/statistics.fxml", Modality.APPLICATION_MODAL);
+		this.buildWindow(stage, "统计", 800, 600, "/fxml/statistics.fxml", Modality.APPLICATION_MODAL);
 		disableResize();
 		dialogWindow();
+		this.release();
 	}
 
 	/**
 	 * 统计信息
 	 */
 	public void statistics() {
-//		SystemConsole.getInstance().console();
+		this.controller.statistics();
 		this.show();
+	}
+	
+	/**
+	 * 窗口隐藏时释放资源
+	 */
+	private void release() {
+		this.stage.addEventFilter(WindowEvent.WINDOW_HIDDEN, (event) -> {
+			this.controller.release();
+		});
 	}
 	
 }

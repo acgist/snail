@@ -48,22 +48,20 @@ public class GetPeersRequest extends Request {
 		final TorrentSession torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
 		if(torrentSession != null) {
 			final ByteBuffer buffer = ByteBuffer.allocate(6);
-			final var list = PeerManager.getInstance().list(infoHashHex);
+			final var list = PeerManager.getInstance().listPeers(infoHashHex);
 			if(CollectionUtils.isNotEmpty(list)) {
-				synchronized (list) {
-					final var values = list.stream()
-						.filter(peer -> peer.available())
-						.filter(peer -> peer.uploading() || peer.downloading())
-						.limit(DhtConfig.GET_PEER_LENGTH)
-						.map(peer -> {
-							buffer.putInt(NetUtils.encodeIpToInt(peer.host()));
-							buffer.putShort(NetUtils.encodePort(peer.peerPort()));
-							buffer.flip();
-							return buffer.array();
-						})
-						.collect(Collectors.toList());
-					response.put(DhtConfig.KEY_VALUES, values);
-				}
+				final var values = list.stream()
+					.filter(peer -> peer.available())
+					.filter(peer -> peer.uploading() || peer.downloading())
+					.limit(DhtConfig.GET_PEER_LENGTH)
+					.map(peer -> {
+						buffer.putInt(NetUtils.encodeIpToInt(peer.host()));
+						buffer.putShort(NetUtils.encodePort(peer.peerPort()));
+						buffer.flip();
+						return buffer.array();
+					})
+					.collect(Collectors.toList());
+				response.put(DhtConfig.KEY_VALUES, values);
 			}
 		}
 		final var nodes = NodeManager.getInstance().findNode(infoHash);
