@@ -206,8 +206,8 @@ public class StatisticsController extends Controller implements Initializable {
 				if(!activePeer.contains(peer.host())) {
 					activePeer.add(peer.host());
 				}
-				final XYChart.Data<String, Number> data = new XYChart.Data<>(peer.host(), FileUtils.formatSizeMB(peer.statistics().uploadSize()));
-				Tooltip.install(data.getNode(), Tooltips.newTooltip(peer.host()));
+				final double size = FileUtils.formatSizeMB(peer.statistics().uploadSize());
+				final XYChart.Data<String, Number> data = new XYChart.Data<>(peer.host(), size);
 				uploadPeer.add(data);
 			}
 			if(peer.downloading()) {
@@ -215,8 +215,8 @@ public class StatisticsController extends Controller implements Initializable {
 				if(!activePeer.contains(peer.host())) {
 					activePeer.add(peer.host());
 				}
-				final XYChart.Data<String, Number> data = new XYChart.Data<>(peer.host(), FileUtils.formatSizeMB(peer.statistics().downloadSize()));
-				Tooltip.install(data.getNode(), Tooltips.newTooltip(peer.host()));
+				final double size = FileUtils.formatSizeMB(peer.statistics().downloadSize());
+				final XYChart.Data<String, Number> data = new XYChart.Data<>(peer.host(), size);
 				downloadPeer.add(data);
 			}
 			if(peer.available()) {
@@ -242,19 +242,25 @@ public class StatisticsController extends Controller implements Initializable {
 		xAxis.setCategories(FXCollections.observableArrayList(activePeer));
 		NumberAxis yAxis = new NumberAxis();
 		yAxis.setLabel("流量（MB）");
-		StackedBarChart<String, Number> stackedBarChart = new StackedBarChart<>(xAxis, yAxis);
-		stackedBarChart.setTitle("Peer流量");
-		XYChart.Series<String, Number> uploadSeries = new XYChart.Series<>();
+		final StackedBarChart<String, Number> stackedBarChart = new StackedBarChart<>(xAxis, yAxis);
+		stackedBarChart.setPrefWidth(800);
+		stackedBarChart.setPrefHeight(400);
+		stackedBarChart.setTitle("流量（上传中/下载中）");
+		final XYChart.Series<String, Number> uploadSeries = new XYChart.Series<>();
 		uploadSeries.setName("上传");
 		uploadSeries.getData().addAll(uploadPeer);
-		XYChart.Series<String, Number> downloadSeries = new XYChart.Series<>();
+		final XYChart.Series<String, Number> downloadSeries = new XYChart.Series<>();
 		downloadSeries.setName("下载");
 		downloadSeries.getData().addAll(downloadPeer);
 		stackedBarChart.getData().add(uploadSeries);
 		stackedBarChart.getData().add(downloadSeries);
 //		stackedBarChart.getData().addAll(List.of(uploadSeries, downloadSeries));
-		stackedBarChart.setPrefWidth(800);
-		stackedBarChart.setPrefHeight(400);
+		uploadPeer.forEach(data -> {
+			Tooltip.install(data.getNode(), Tooltips.newTooltip(String.format("IP：%s 上传：%.2fMB", data.getXValue(), data.getYValue())));
+		});
+		downloadPeer.forEach(data -> {
+			Tooltip.install(data.getNode(), Tooltips.newTooltip(String.format("IP：%s 下载：%.2fMB", data.getXValue(), data.getYValue())));
+		});
 		this.chart.getChildren().clear();
 		this.chart.getChildren().add(stackedBarChart);
 	}

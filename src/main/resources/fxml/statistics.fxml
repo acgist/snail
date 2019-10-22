@@ -12,12 +12,12 @@
 	xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
 	
 	<VBox styleClass="info">
-		<HBox>
+		<HBox fx:id="system" styleClass="system">
 			<TextFlow>
 				<Label>累计上传：</Label>
 				<Text fx:id="upload">0</Text>
 			</TextFlow>
-			<TextFlow fx:id="system" styleClass="system">
+			<TextFlow>
 				<Label>累计下载：</Label>
 				<Text fx:id="download">0</Text>
 			</TextFlow>
