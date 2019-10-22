@@ -245,7 +245,7 @@ public class StatisticsController extends Controller implements Initializable {
 		final StackedBarChart<String, Number> stackedBarChart = new StackedBarChart<>(xAxis, yAxis);
 		stackedBarChart.setPrefWidth(800);
 		stackedBarChart.setPrefHeight(400);
-		stackedBarChart.setTitle("流量（上传中/下载中）");
+		stackedBarChart.setTitle("流量（上传/下载）");
 		final XYChart.Series<String, Number> uploadSeries = new XYChart.Series<>();
 		uploadSeries.setName("上传");
 		uploadSeries.getData().addAll(uploadPeer);
