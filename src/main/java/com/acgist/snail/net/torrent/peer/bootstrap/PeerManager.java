@@ -54,14 +54,16 @@ public class PeerManager {
 	}
 	
 	/**
-	 * 获取所有Peer拷贝
+	 * Peer存档队列拷贝
 	 */
-	public Map<String, List<PeerSession>> peers() {
+	public List<PeerSession> listPeers(String infoHashHex) {
 		synchronized (this.storagePeers) {
-			return this.storagePeers.entrySet().stream()
-				.collect(Collectors.toMap(Map.Entry::getKey, entry -> {
-					return new ArrayList<>(entry.getValue());
-				}));
+			final List<PeerSession> list = this.storagePeers.get(infoHashHex);
+			if(list == null) {
+				return List.of();
+			} else {
+				return new ArrayList<>(list);
+			}
 		}
 	}
 	
@@ -228,7 +230,7 @@ public class PeerManager {
 	/**
 	 * 获取Peer存档队列
 	 */
-	public List<PeerSession> list(String infoHashHex) {
+	private List<PeerSession> list(String infoHashHex) {
 		synchronized (this.storagePeers) {
 			List<PeerSession> list = this.storagePeers.get(infoHashHex);
 			if(list == null) {

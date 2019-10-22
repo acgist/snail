@@ -1,21 +1,21 @@
 /**
- * 常用CSS选择器：https://www.jianshu.com/p/0aa0c405f492
+ * 参考链接：https://docs.oracle.com/javafx/2/api/javafx/scene/doc-files/cssref.html
 /*
-/**通用样式*/
+/** 通用样式 */
 .root {
 	-fx-font-size:16;
 	-fx-alignment:center;
 	/**
-	默认边框背景样式
+	 * 默认边框背景样式
 	-fx-background-insets:0;
 	-fx-background-color:#F4F4F4;
 	*/
 	/**
-	选中填充颜色
+	 * 选中填充颜色
 	-fx-accent:transparent;
 	*/
 	/**
-	选中边框颜色
+	 * 选中边框颜色
 	-fx-focus-color:transparent;
 	*/
 }
@@ -30,7 +30,26 @@
 .root .context-menu {
 	-fx-padding:1;
 }
-/**main.fxml*/
+/** about.fxml */
+.about {
+}
+/** build.fxml */
+.build .urlValue {
+	-fx-padding:10 0;
+}
+.build .urlValue TextFlow {
+	-fx-padding:0 10 0 0;
+}
+.build .urlValue TextField {
+	-fx-pref-width:400;
+}
+.build .option {
+	-fx-alignment:center_right;
+}
+.build .option .cancel {
+	-fx-padding:0 10;
+}
+/** main.fxml */
 .main .header {
 	-fx-padding:1 2;
 	-fx-pref-height:40;
@@ -51,7 +70,7 @@
 	-fx-padding:0 2;
 }
 .main .taskTable {
-	/**修改边框样式*/
+	/** 修改边框样式 */
 	-fx-padding:0;
 	-fx-border-width:1px 0 1px 0;
 	-fx-border-color:#c8c8c8;
@@ -64,40 +83,7 @@
 .main .taskTable TableRow:selected Text {
 	-fx-fill:white;
 }
-/**
-糟糕的配置隐藏水平滚动
-.table-view > .virtual-flow > .scroll-bar:horizontal {
-	-fx-opacity:0;
-	-fx-padding:-10;
-}
-*/
-/**about.fxml*/
-.about {
-}
-/**build.fxml*/
-.build .urlValue {
-	-fx-padding:10 0;
-}
-.build .urlValue TextFlow {
-	-fx-padding:0 10 0 0;
-}
-.build .urlValue TextField {
-	-fx-pref-width:400;
-}
-.build .option {
-	-fx-alignment:center_right;
-}
-.build .option .cancel {
-	-fx-padding:0 10;
-}
-/**torrent.fxml*/
-.torrent .tree {
-	-fx-background-color:transparent;
-}
-.torrent .downloadBox {
-	-fx-alignment:center;
-}
-/**setting.fxml*/
+/** setting.fxml */
 .setting .scrollPane {
 	-fx-background-color:transparent;
 }
@@ -120,7 +106,30 @@
 .setting .path .pathValue {
 	-fx-padding:6;
 }
-/**statistics.fxml*/
-.statistics .system .download {
-	-fx-padding:0 20 0 0;
+/** statistics.fxml */
+.statistics .info TextFlow {
+	-fx-pref-width:140;
+}
+.statistics .info TextFlow.title {
+	-fx-pref-width:80;
+}
+.statistics .available {
+	-fx-fill:green;
+}
+.statistics .infoHash TextFlow.title {
+	-fx-padding:6 0;
+}
+.statistics .infoHash ChoiceBox {
+	-fx-pref-width:400;
+}
+.statistics .chart {
+	-fx-pref-width:800;
+	-fx-pref-height:400;
+}
+/** torrent.fxml */
+.torrent .tree {
+	-fx-background-color:transparent;
+}
+.torrent .downloadBox {
+	-fx-alignment:center;
 }

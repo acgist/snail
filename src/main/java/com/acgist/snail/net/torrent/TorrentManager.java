@@ -53,6 +53,15 @@ public class TorrentManager {
 				.collect(Collectors.toList());
 		}
 	}
+
+	/**
+	 * 所有的TorrentSession
+	 */
+	public List<TorrentSession> allTorrentSession() {
+		synchronized (this.torrentSessions) {
+			return this.torrentSessions.values().stream().collect(Collectors.toList());
+		}
+	}
 	
 	/**
 	 * 通过InfoHashHex获取TorrentSession

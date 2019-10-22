@@ -11,35 +11,119 @@
 	fx:controller="com.acgist.snail.gui.statistics.StatisticsController"
 	xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
 	
-	<VBox>
-		<HBox fx:id="system" styleClass="system">
-			<TextFlow styleClass="download">
-				<Label>累计下载：</Label>
-				<Text>20M</Text>
-			</TextFlow>
-			<TextFlow styleClass="upload">
+	<VBox styleClass="info">
+		<HBox>
+			<TextFlow>
 				<Label>累计上传：</Label>
-				<Text>30M</Text>
+				<Text fx:id="upload">0</Text>
+			</TextFlow>
+			<TextFlow fx:id="system" styleClass="system">
+				<Label>累计下载：</Label>
+				<Text fx:id="download">0</Text>
 			</TextFlow>
 		</HBox>
 		<HBox fx:id="dht" styleClass="dht">
-			<Text>DHT：</Text>
-			<Text>1002</Text>
-			<Text>302</Text>
-			<Text>98423</Text>
-			<Text>98423</Text>
+			<TextFlow styleClass="title">
+				<Label>DHT：</Label>
+			</TextFlow>
+			<TextFlow>
+				<Label>总量：</Label>
+				<Text fx:id="dhtTotal">0</Text>
+			</TextFlow>
+			<TextFlow>
+				<Label>可用：</Label>
+				<Text fx:id="dhtAvailable" styleClass="available">0</Text>
+			</TextFlow>
+			<TextFlow>
+				<Label>未知：</Label>
+				<Text fx:id="dhtUnuse">0</Text>
+			</TextFlow>
+			<TextFlow>
+				<Label>验证：</Label>
+				<Text fx:id="dhtVerify">0</Text>
+			</TextFlow>
 		</HBox>
 		<HBox fx:id="tracker" styleClass="tracker">
-			<Text>Tracker：</Text>
-			<Text>1002</Text>
-			<Text>302</Text>
-			<Text>98423</Text>
+			<TextFlow styleClass="title">
+				<Label>Tracker：</Label>
+			</TextFlow>
+			<TextFlow>
+				<Label>总量：</Label>
+				<Text fx:id="trackerTotal">0</Text>
+			</TextFlow>
+			<TextFlow>
+				<Label>可用：</Label>
+				<Text fx:id="trackerAvailable" styleClass="available">0</Text>
+			</TextFlow>
+			<TextFlow>
+				<Label>禁用：</Label>
+				<Text fx:id="trackerDisable">0</Text>
+			</TextFlow>
 		</HBox>
-		<HBox>
-			<!-- InfoHash下拉框 -->
+		<HBox fx:id="infoHash" styleClass="infoHash">
+			<TextFlow styleClass="title">
+				<Label>任务：</Label>
+			</TextFlow>
+			<ChoiceBox fx:id="selectInfoHashs"></ChoiceBox>
+			<Button fx:id="refresh" text="刷新" onAction="#handleRefreshAction" />
+		</HBox>
+		<HBox fx:id="peer" styleClass="peer">
+			<TextFlow styleClass="title">
+				<Label>Peer：</Label>
+			</TextFlow>
+			<TextFlow>
+				<Label>总量：</Label>
+				<Text fx:id="peerTotal">0</Text>
+			</TextFlow>
+			<TextFlow>
+				<Label>可用：</Label>
+				<Text fx:id="peerAvailable" styleClass="available">0</Text>
+			</TextFlow>
+			<TextFlow>
+				<Label>uTP：</Label>
+				<Text fx:id="peerUtp">0</Text>
+			</TextFlow>
+		</HBox>
+		<HBox fx:id="source" styleClass="source">
+			<TextFlow styleClass="title">
+				<Label>来源：</Label>
+			</TextFlow>
+			<TextFlow>
+				<Label>DHT：</Label>
+				<Text fx:id="sourceDht">0</Text>
+			</TextFlow>
+			<TextFlow>
+				<Label>PEX：</Label>
+				<Text fx:id="sourcePex">0</Text>
+			</TextFlow>
+			<TextFlow>
+				<Label>LSD：</Label>
+				<Text fx:id="sourceLsd">0</Text>
+			</TextFlow>
+			<TextFlow>
+				<Label>Tracker：</Label>
+				<Text fx:id="sourceTracker">0</Text>
+			</TextFlow>
+			<TextFlow>
+				<Label>Connect：</Label>
+				<Text fx:id="sourceConnect">0</Text>
+			</TextFlow>
+		</HBox>
+		<HBox fx:id="status" styleClass="status">
+			<TextFlow styleClass="title">
+				<Label>状态：</Label>
+			</TextFlow>
+			<TextFlow>
+				<Label>上传中：</Label>
+				<Text fx:id="statusUpload">0</Text>
+			</TextFlow>
+			<TextFlow>
+				<Label>下载中：</Label>
+				<Text fx:id="statusDownload">0</Text>
+			</TextFlow>
 		</HBox>
 	</VBox>
 	
-	
+	<VBox fx:id="chart" styleClass="chart"></VBox>
 	
 </FlowPane>

@@ -88,6 +88,10 @@ public class FileUtils {
 	 */
 	private static final int FILE_SIZE_SCALE = 1024;
 	/**
+	 * 文件大小：1MB
+	 */
+	private static final long FILE_SIZE_MB = 1024L * 1024;
+	/**
 	 * 文件大小单位
 	 */
 	private static final String[] FILE_SIZE_UNIT = {"B", "KB", "M", "G", "T"};
@@ -325,6 +329,20 @@ public class FileUtils {
 			decimal = decimal.divide(new BigDecimal(FILE_SIZE_SCALE));
 		}
 		return decimal.setScale(2, RoundingMode.HALF_UP) + FILE_SIZE_UNIT[index];
+	}
+	
+	/**
+	 * 文件大小格式化（MB）
+	 * 
+	 * @return 文件大小（MB）
+	 */
+	public static final double formatSizeMB(Long size) {
+		if(size == null || size == 0L) {
+			return 0D;
+		}
+		BigDecimal decimal = new BigDecimal(size);
+		decimal = decimal.divide(BigDecimal.valueOf(FILE_SIZE_MB));
+		return decimal.setScale(2, RoundingMode.HALF_UP).doubleValue();
 	}
 	
 	/**

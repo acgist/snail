@@ -8,6 +8,7 @@ import com.acgist.snail.pojo.session.TaskSession;
 
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  * 编辑任务窗口
@@ -38,6 +39,7 @@ public class TorrentWindow extends Window<TorrentController> {
 		this.buildWindow(stage, "编辑任务", 800, 600, "/fxml/torrent.fxml", Modality.APPLICATION_MODAL);
 		disableResize();
 		dialogWindow();
+		this.release();
 	}
 	
 	/**
@@ -46,7 +48,15 @@ public class TorrentWindow extends Window<TorrentController> {
 	public void show(TaskSession taskSession) {
 		this.controller.tree(taskSession);
 		this.showAndWait();
-		this.controller.release();
+	}
+	
+	/**
+	 * 窗口隐藏时释放资源
+	 */
+	private void release() {
+		this.stage.addEventFilter(WindowEvent.WINDOW_HIDDEN, (event) -> {
+			this.controller.release();
+		});
 	}
 	
 }
