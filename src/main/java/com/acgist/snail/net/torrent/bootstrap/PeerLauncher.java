@@ -132,6 +132,10 @@ public final class PeerLauncher extends PeerClientHandler {
 	 * <p>开始发送下载请求，加入后台线程。</p>
 	 */
 	public void download() {
+		if(!this.torrentSession.downloadable()) {
+			LOGGER.debug("任务不可下载：{}", this.torrentSession.name());
+			return;
+		}
 		if(!this.launcher) {
 			synchronized (this) {
 				if(!this.launcher) {
