@@ -178,7 +178,7 @@ public final class TorrentSession {
 	
 	/**
 	 * <p>开始上传</p>
-	 * <p>如果需要分享已下载内容，请调用此方法。</p>
+	 * <p>分享已下载数据</p>
 	 */
 	public TorrentSession upload(TaskSession taskSession) throws DownloadException {
 		this.taskSession = taskSession;
@@ -189,19 +189,20 @@ public final class TorrentSession {
 		this.uploadable = true;
 		return this;
 	}
-	
+
 	/**
-	 * <p>开始下载</p>
-	 * <p>需要先调用{@link #upload(TaskSession)}对任务进行上传。</p>
+	 * 默认加载加载Peer
+	 * 
+	 * @see {@link #download(boolean)}
 	 */
 	public boolean download() throws DownloadException {
 		return this.download(true);
 	}
 	
 	/**
-	 * <p>开始下载：加载线程池、Peer、Tracker、DHT。</p>
-	 * <p>如果文件已经下载完成或者任务已经完成不会再加载线程池、Peer、Tracker、DHT。</p>
-	 * <p>需要先调用{@link #upload(TaskSession)}对任务进行上传。</p>
+	 * <p>开始下载：加载线程池、Peer、Tracker、DHT</p>
+	 * <p>如果任务已经完成或文件已经下载完成不会再加载线程池、Peer、Tracker、DHT</p>
+	 * <p>需要先调用{@link #upload(TaskSession)}对任务进行分享</p>
 	 * 
 	 * @param findPeer 是否查找Peer：true-使用Tracker、DHT查找Peer；false-不查找；
 	 * 
@@ -259,8 +260,9 @@ public final class TorrentSession {
 		}
 		this.torrentStreamGroup = TorrentStreamGroup.newInstance(
 			this.taskSession.downloadFolder().getPath(),
-			setSelectFiles(),
-			this);
+			setSelectedFiles(),
+			this
+		);
 	}
 
 	/**
@@ -271,10 +273,11 @@ public final class TorrentSession {
 	}
 	
 	/**
-	 * 加载PeerLauncher定时优化任务
+	 * <p>加载PeerLauncher定时优化任务</p>
+	 * <p>第一次任务执行延迟4秒，让加载Peer的任务执行4秒，防止一开始没有Peer数据而导致的长时间等待。</p>
 	 */
 	private void loadPeerLauncherGroupTimer() {
-		this.peerLauncherGroupTimer = this.timerFixedDelay(0L, PEER_OPTIMIZE_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
+		this.peerLauncherGroupTimer = this.timerFixedDelay(4L, PEER_OPTIMIZE_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
 			this.peerLauncherGroup.optimize(); // 优化下载Peer下载
 		});
 	}
@@ -339,7 +342,7 @@ public final class TorrentSession {
 	 */
 	private void loadPexTimer() {
 		this.pexTimer = this.timerFixedDelay(PEX_INTERVAL.toSeconds(), PEX_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
-			PeerManager.getInstance().pex(this.infoHashHex(), this.peerLauncherGroup.optimizePeerSession()); // pex消息
+			PeerManager.getInstance().pex(this.infoHashHex(), this.peerLauncherGroup.optimizePeerSession());
 		});
 	}
 	
@@ -390,7 +393,7 @@ public final class TorrentSession {
 	/**
 	 * 设置选择的下载文件并返回文件列表
 	 */
-	private List<TorrentFile> setSelectFiles() {
+	private List<TorrentFile> setSelectedFiles() {
 		final TorrentInfo torrentInfo = this.torrent.getInfo();
 		final List<TorrentFile> torrentFiles = torrentInfo.files();
 		final List<String> selectedFiles = this.taskSession.downloadTorrentFiles();
@@ -409,7 +412,7 @@ public final class TorrentSession {
 	 * 	<dt>检测任务是否下载完成</dt>
 	 * 	<dd>如果已经完成直接返回</dd>
 	 * 	<dd>BT任务：文件下载完成</dd>
-	 * 	<dd>磁力链接：种子文件不为空</dd>
+	 * 	<dd>磁力链接：种子文件下载完成</dd>
 	 * </dl>
 	 */
 	public boolean checkCompleted() {
@@ -447,7 +450,8 @@ public final class TorrentSession {
 	}
 	
 	/**
-	 * 释放资源（释放下载使用的资源），完成时不释放文件资源。
+	 * <p>释放资源（释放下载使用的资源）</p>
+	 * <p>注：不释放文件资源</p>
 	 */
 	public void releaseDownload() {
 		LOGGER.debug("Torrent释放资源（下载）");
@@ -487,9 +491,9 @@ public final class TorrentSession {
 	/**
 	 * <p>发送have消息</p>
 	 * 
-	 * TODO：优化have消息，使用异步线程发送，防止部分Peer通知过慢，导致所有线程卡死。
-	 * 
 	 * @param index Piece序号
+	 * 
+	 * TODO：优化have消息，使用异步线程发送，防止部分Peer通知过慢，导致所有线程卡死。
 	 */
 	public void have(int index) {
 		PeerManager.getInstance().have(this.infoHash.infoHashHex(), index);
@@ -531,7 +535,7 @@ public final class TorrentSession {
 	}
 	
 	/**
-	 * 保存种子文件，并重新加载种子和InfoHash。
+	 * 保存种子文件，重新加载种子和InfoHash。
 	 */
 	public void saveTorrentFile() {
 		final var entity = this.taskSession.entity();
@@ -584,14 +588,14 @@ public final class TorrentSession {
 	}
 	
 	/**
-	 * 是否可以下载，能够下载一定能够上传。
+	 * 是否可以下载
 	 */
 	public boolean downloadable() {
 		return this.downloadable;
 	}
 	
 	/**
-	 * 任务处于下载中
+	 * 任务是否下载中
 	 */
 	public boolean running() {
 		return this.taskSession.download();
