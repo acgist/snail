@@ -101,6 +101,10 @@ public final class TaskSession {
 		return this.entity;
 	}
 	
+	public String name() {
+		return this.entity.getName();
+	}
+	
 	/**
 	 * 获取下载器
 	 */

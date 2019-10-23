@@ -609,7 +609,7 @@ public final class TorrentSession {
 	}
 	
 	public String name() {
-		return this.torrent.name();
+		return this.taskSession.name();
 	}
 	
 	public long size() {

@@ -114,11 +114,11 @@
 				<Label>状态：</Label>
 			</TextFlow>
 			<TextFlow>
-				<Label>上传中：</Label>
+				<Label>上传：</Label>
 				<Text fx:id="statusUpload">0</Text>
 			</TextFlow>
 			<TextFlow>
-				<Label>下载中：</Label>
+				<Label>下载：</Label>
 				<Text fx:id="statusDownload">0</Text>
 			</TextFlow>
 		</HBox>
