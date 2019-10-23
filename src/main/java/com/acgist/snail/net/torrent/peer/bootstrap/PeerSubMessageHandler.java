@@ -383,14 +383,15 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	/**
 	 * <p>处理解除阻塞消息</p>
 	 * <p>被解除阻塞后开始发送下载请求。</p>
+	 * <p>注：即使不能下载，也需要解除阻塞状态。</p>
 	 */
 	private void unchoke(ByteBuffer buffer) {
+		LOGGER.debug("处理解除阻塞消息");
+		this.peerSession.peerUnchoke();
 		if(!this.torrentSession.downloadable()) {
 			LOGGER.debug("处理解除阻塞消息：任务不可下载");
 			return;
 		}
-		LOGGER.debug("处理解除阻塞消息");
-		this.peerSession.peerUnchoke();
 		if(this.peerLauncher != null) {
 			this.peerLauncher.download(); // 开始下载
 		}
@@ -465,13 +466,13 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * <p>收到have消息时，客户端没有对应的Piece，发送感兴趣消息，表示客户端对Peer感兴趣。</p>
 	 */
 	private void have(ByteBuffer buffer) {
+		final int index = buffer.getInt();
+		this.peerSession.piece(index);
+		LOGGER.debug("处理have消息：{}", index);
 		if(!this.torrentSession.downloadable()) {
 			LOGGER.debug("处理have消息：任务不可下载");
 			return;
 		}
-		final int index = buffer.getInt();
-		LOGGER.debug("处理have消息：{}", index);
-		this.peerSession.piece(index);
 		if(this.torrentSession.havePiece(index)) {
 			// 已经含有该Piece，不能直接发送不感兴趣消息，Piece下载完成后没有更多的Piece时才发送不感兴趣消息。
 //			notInterested();
@@ -507,15 +508,15 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * <p>处理位图消息</p>
 	 */
 	private void bitfield(ByteBuffer buffer) {
-		if(!this.torrentSession.downloadable()) {
-			LOGGER.debug("处理位图消息：任务不可下载");
-			return;
-		}
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
 		final BitSet pieces = BitfieldUtils.toBitSet(bytes); // Peer位图
 		this.peerSession.pieces(pieces);
 		LOGGER.debug("处理位图消息：{}", pieces);
+		if(!this.torrentSession.downloadable()) {
+			LOGGER.debug("处理位图消息：任务不可下载");
+			return;
+		}
 		final BitSet notHave = new BitSet(); // 没有下载的位图
 		notHave.or(pieces);
 		notHave.andNot(this.torrentSession.pieces());
@@ -604,7 +605,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			return;
 		}
 		if(bytes == null) {
-			LOGGER.debug("发送piece消息：数据错误");
+			LOGGER.debug("发送piece消息：数据为空");
 			return;
 		}
 		LOGGER.debug("发送piece消息：{}-{}", index, begin);
