@@ -611,7 +611,15 @@ public final class TorrentSession {
 	}
 	
 	public String name() {
-		return this.taskSession.name();
+		if(this.taskSession == null) {
+			if(this.torrent == null) {
+				return this.infoHash.infoHashHex();
+			} else {
+				return this.torrent.name();
+			}
+		} else {
+			return this.taskSession.name();
+		}
 	}
 	
 	public long size() {
