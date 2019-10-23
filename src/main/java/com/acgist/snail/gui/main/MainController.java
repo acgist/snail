@@ -115,9 +115,9 @@ public class MainController extends Controller implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		// 设置多选
 		this.taskTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-		// 设置无数据时显示内容
+		// 设置无数据时提示内容
 		final var placeholderImage = new ImageView("/image/64/download_02.png");
-		final var placeholderText = new Text("点击新建按钮或者拖动种子文件开始下载");
+		final var placeholderText = new Text("点击新建按钮或者拖动下载链接、种子文件开始下载");
 		placeholderText.setFill(Color.rgb(198, 198, 198));
 		final var placeholder = new VBox(placeholderImage, placeholderText);
 		placeholder.setAlignment(Pos.CENTER);
@@ -138,7 +138,7 @@ public class MainController extends Controller implements Initializable {
 		// 文件拖拽
 		this.taskTable.setOnDragOver(this.dragOverAction);
 		this.taskTable.setOnDragDropped(this.dragDroppedAction);
-		// 设置定时刷新
+		// 定时刷新
 		TaskDisplay.getInstance().newTimer(this);
 	}
 

@@ -14,9 +14,7 @@
 	<VBox>
 		<HBox>
 			<TextFlow styleClass="name">
-				<Label>
-					请输入下载地址、磁力链接或选择种子文件：
-				</Label>
+				<Label>请输入下载链接 、磁力链接或选择种子文件：</Label>
 			</TextFlow>
 		</HBox>
 		
