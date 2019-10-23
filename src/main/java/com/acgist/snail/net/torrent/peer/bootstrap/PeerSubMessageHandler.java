@@ -51,6 +51,7 @@ import com.acgist.snail.utils.StringUtils;
  * <p>加密：如果Peer没有强制使用加密，优先使用明文。</p>
  * 
  * TODO：流水线
+ * TODO：磁力链接接入（没有上传）
  * 
  * @author acgist
  * @since 1.1.0
