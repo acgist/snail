@@ -194,6 +194,7 @@ public class PeerManager {
 	public void pex(String infoHashHex, List<PeerSession> optimize) {
 		final byte[] bytes = PeerExchangeMessageHandler.buildMessage(optimize);
 		if(bytes == null) {
+			LOGGER.debug("PEX消息为空");
 			return;
 		}
 		final var list = listActivePeer(infoHashHex);

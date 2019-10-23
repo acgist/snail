@@ -322,7 +322,7 @@ public final class MSECryptHandshakeHandler {
 		LOGGER.debug("加密握手，发送加密协议协商，步骤：{}", this.step);
 		final TorrentSession torrentSession = this.peerSubMessageHandler.torrentSession();
 		if(torrentSession == null) {
-			throw new NetException("加密握手失败（种子不存在）");
+			throw new NetException("加密握手失败（种子信息不存在）");
 		}
 		final byte[] dhSecretBytes = NumberUtils.encodeUnsigned(this.dhSecret, CryptConfig.PUBLIC_KEY_LENGTH);
 		final InfoHash infoHash = torrentSession.infoHash();
@@ -409,7 +409,7 @@ public final class MSECryptHandshakeHandler {
 			}
 		}
 		if(infoHash == null) {
-			throw new NetException("加密握手失败（种子不存在）");
+			throw new NetException("加密握手失败（种子信息不存在）");
 		}
 		this.cipher = MSECipher.newRecver(dhSecretBytes, infoHash);
 //		ENCRYPT(VC, crypto_provide, len(PadC), PadC, len(IA))

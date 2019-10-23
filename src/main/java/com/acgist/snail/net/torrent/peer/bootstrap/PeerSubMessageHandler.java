@@ -143,7 +143,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		}
 		final TorrentSession torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
 		if(torrentSession == null) {
-			LOGGER.warn("Peer接入失败：不存在的种子信息");
+			LOGGER.warn("Peer接入失败：种子信息不存在");
 			return false;
 		}
 		if(!torrentSession.uploadable()) {
@@ -371,6 +371,10 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * </p>
 	 */
 	public void unchoke() {
+		if(!this.torrentSession.uploadable()) {
+			LOGGER.debug("发送解除阻塞消息：任务不可上传");
+			return;
+		}
 		LOGGER.debug("发送解除阻塞消息");
 		this.peerSession.amUnchoke();
 		pushMessage(PeerConfig.Type.unchoke, null);
@@ -381,6 +385,10 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * <p>被解除阻塞后开始发送下载请求。</p>
 	 */
 	private void unchoke(ByteBuffer buffer) {
+		if(!this.torrentSession.downloadable()) {
+			LOGGER.debug("处理解除阻塞消息：任务不可下载");
+			return;
+		}
 		LOGGER.debug("处理解除阻塞消息");
 		this.peerSession.peerUnchoke();
 		if(this.peerLauncher != null) {
@@ -444,7 +452,8 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			LOGGER.debug("发送have消息：任务不可上传");
 			return;
 		}
-		if(this.peerSession.havePiece(index)) { // Peer已经含有该Piece时不发送通知
+		if(this.peerSession.havePiece(index)) { // Peer已经含有该Piece时不发送have通知
+			LOGGER.debug("发送have消息：Peer已经含有该Piece");
 			return;
 		}
 		LOGGER.debug("发送have消息：{}", index);
@@ -463,10 +472,14 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		final int index = buffer.getInt();
 		LOGGER.debug("处理have消息：{}", index);
 		this.peerSession.piece(index);
-		if(this.torrentSession.havePiece(index)) { // 已有=不感兴趣
-			// 不能直接发送不感兴趣消息，Piece下载完成后没有更多的Piece时发送不感兴趣消息。
-		} else { // 没有=感兴趣
-			interested();
+		if(this.torrentSession.havePiece(index)) {
+			// 已经含有该Piece，不能直接发送不感兴趣消息，Piece下载完成后没有更多的Piece时才发送不感兴趣消息。
+//			notInterested();
+		} else {
+			// 如果没有该Piece，发送感兴趣消息。
+			if(!this.peerSession.isAmInterested()) {
+				interested();
+			}
 		}
 	}
 
@@ -532,10 +545,11 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			return;
 		}
 		if(this.peerSession.isPeerChocking()) {
-			return; // 被阻塞不发送请求
+			LOGGER.debug("发送request消息：阻塞");
+			return;
 		}
 		LOGGER.debug("发送request消息：{}-{}-{}", index, begin, length);
-		ByteBuffer buffer = ByteBuffer.allocate(12);
+		final ByteBuffer buffer = ByteBuffer.allocate(12);
 		buffer.putInt(index);
 		buffer.putInt(begin);
 		buffer.putInt(length);
@@ -550,8 +564,8 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			LOGGER.debug("处理request消息：任务不可上传");
 			return;
 		}
-		// 被阻塞不操作
 		if(this.peerSession.isAmChocking()) {
+			LOGGER.debug("处理request消息：阻塞");
 			return;
 		}
 		// 累计上传大小以及超过任务大小：阻塞（不上传）
@@ -590,11 +604,12 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			return;
 		}
 		if(bytes == null) {
+			LOGGER.debug("发送piece消息：数据错误");
 			return;
 		}
 		LOGGER.debug("发送piece消息：{}-{}", index, begin);
 		this.peerSession.upload(bytes.length); // 上传数据统计
-		ByteBuffer buffer = ByteBuffer.allocate(8 + bytes.length);
+		final ByteBuffer buffer = ByteBuffer.allocate(8 + bytes.length);
 		buffer.putInt(index);
 		buffer.putInt(begin);
 		buffer.put(bytes);
@@ -632,7 +647,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 */
 	public void cancel(int index, int begin, int length) {
 		LOGGER.debug("发送cancel消息：{}", index);
-		ByteBuffer buffer = ByteBuffer.allocate(12);
+		final ByteBuffer buffer = ByteBuffer.allocate(12);
 		buffer.putInt(index);
 		buffer.putInt(begin);
 		buffer.putInt(length);

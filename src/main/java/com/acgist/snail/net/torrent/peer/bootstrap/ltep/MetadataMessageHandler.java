@@ -177,6 +177,7 @@ public class MetadataMessageHandler implements IExtensionMessageHandler, IExtens
 		final int begin = piece * INFO_SLICE_SIZE;
 		final int end = begin + INFO_SLICE_SIZE;
 		if(begin > bytes.length) {
+			LOGGER.warn("处理metadata消息：数据长度错误（{}-{}）", begin, bytes.length);
 			return;
 		}
 		int length = INFO_SLICE_SIZE;
