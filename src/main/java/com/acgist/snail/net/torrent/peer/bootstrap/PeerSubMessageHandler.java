@@ -49,13 +49,6 @@ import com.acgist.snail.utils.StringUtils;
  * </pre>
  * <p>消息格式：长度 类型 负载</p>
  * <p>加密：如果Peer没有强制使用加密，优先使用明文。</p>
- * <dl>
- * 	<dt></dt>
- * 	<dd></dd>
- * 	<dd></dd>
- * </dl>
- * <p>发送消息：可以上传</p>
- * <p>处理消息：可以下载</p>
  * 
  * TODO：流水线
  * 
