@@ -49,9 +49,15 @@ import com.acgist.snail.utils.StringUtils;
  * </pre>
  * <p>消息格式：长度 类型 负载</p>
  * <p>加密：如果Peer没有强制使用加密，优先使用明文。</p>
+ * <dl>
+ * 	<dt></dt>
+ * 	<dd></dd>
+ * 	<dd></dd>
+ * </dl>
+ * <p>发送消息：可以上传</p>
+ * <p>处理消息：可以下载</p>
  * 
  * TODO：流水线
- * TODO：磁力链接接入（没有上传）
  * 
  * @author acgist
  * @since 1.1.0
@@ -148,8 +154,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			return false;
 		}
 		if(!torrentSession.uploadable()) {
-			LOGGER.warn("Peer接入失败：Torrent任务不可上传");
-			return false;
+			LOGGER.debug("Peer接入时任务不可上传，任务动作：{}", torrentSession.action());
 		}
 		final InetSocketAddress socketAddress = this.remoteSocketAddress();
 		if(socketAddress == null) {
@@ -359,7 +364,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	private void choke(ByteBuffer buffer) {
 		LOGGER.debug("处理阻塞消息");
 		this.peerSession.peerChoke();
-		// 不释放资源暂时，让系统自动优化剔除。
+		// 不释放资源，让系统自动优化剔除。
 //		if(this.peerLauncher != null) {
 //			this.peerLauncher.release();
 //		}
@@ -385,10 +390,8 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	private void unchoke(ByteBuffer buffer) {
 		LOGGER.debug("处理解除阻塞消息");
 		this.peerSession.peerUnchoke();
-		if(this.torrentSession.downloadable()) {
-			if(this.peerLauncher != null) {
-				this.peerLauncher.download(); // 开始下载
-			}
+		if(this.peerLauncher != null) {
+			this.peerLauncher.download(); // 开始下载
 		}
 	}
 	
@@ -445,9 +448,10 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 */
 	public void have(int index) {
 		if(!this.torrentSession.uploadable()) {
+			LOGGER.debug("发送have消息：任务不可上传");
 			return;
 		}
-		if(this.peerSession.havePiece(index)) { // 已经含有不通知
+		if(this.peerSession.havePiece(index)) { // Peer已经含有该Piece时不发送通知
 			return;
 		}
 		LOGGER.debug("发送have消息：{}", index);
@@ -459,7 +463,8 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * <p>收到have消息时，客户端没有对应的Piece，发送感兴趣消息，表示客户端对Peer感兴趣。</p>
 	 */
 	private void have(ByteBuffer buffer) {
-		if(!this.torrentSession.uploadable()) {
+		if(!this.torrentSession.downloadable()) {
+			LOGGER.debug("处理have消息：任务不可下载");
 			return;
 		}
 		final int index = buffer.getInt();
@@ -483,6 +488,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 */
 	public void bitfield() {
 		if(!this.torrentSession.uploadable()) {
+			LOGGER.debug("发送位图消息：任务不可上传");
 			return;
 		}
 		final BitSet pieces = this.torrentSession.pieces();
@@ -495,7 +501,8 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * <p>处理位图消息</p>
 	 */
 	private void bitfield(ByteBuffer buffer) {
-		if(!this.torrentSession.uploadable()) {
+		if(!this.torrentSession.downloadable()) {
+			LOGGER.debug("处理位图消息：任务不可下载");
 			return;
 		}
 		final byte[] bytes = new byte[buffer.remaining()];
@@ -528,6 +535,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 */
 	public void request(int index, int begin, int length) {
 		if(!this.torrentSession.downloadable()) {
+			LOGGER.debug("发送request消息：任务不可下载");
 			return;
 		}
 		if(this.peerSession.isPeerChocking()) {
@@ -546,6 +554,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 */
 	private void request(ByteBuffer buffer) {
 		if(!this.torrentSession.uploadable()) {
+			LOGGER.debug("处理request消息：任务不可上传");
 			return;
 		}
 		// 被阻塞不操作
@@ -584,6 +593,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 */
 	public void piece(int index, int begin, byte[] bytes) {
 		if(!this.torrentSession.uploadable()) {
+			LOGGER.debug("发送piece消息：任务不可上传");
 			return;
 		}
 		if(bytes == null) {
@@ -603,6 +613,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 */
 	private void piece(ByteBuffer buffer) {
 		if(!this.torrentSession.downloadable()) {
+			LOGGER.debug("处理piece消息：任务不可下载");
 			return;
 		}
 		final int index = buffer.getInt();

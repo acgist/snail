@@ -171,6 +171,8 @@ public final class TorrentSession {
 		this.loadTrackerLauncherGroupTimer();
 		this.loadDhtLauncher();
 		this.loadDhtLauncherTimer();
+		this.loadPeerConnectGroup();
+		this.loadPeerConnectGroupTimer();
 		this.loadPeerLauncherGroup();
 		this.loadPeerLauncherGroupTimer();
 		return this.torrent != null;
