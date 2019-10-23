@@ -230,7 +230,7 @@ public final class TaskSession {
 		return ProtocolManager.getInstance().buildDownloader(this);
 	}
 	
-	// Table数据绑定 //
+	// JavaFX Table数据绑定 //
 	
 	/**
 	 * 任务名称
@@ -281,7 +281,7 @@ public final class TaskSession {
 				if(downloadSecond == 0L) {
 					return "-";
 				} else {
-					long second = (this.entity.getSize() - this.statistics.downloadSize()) / downloadSecond;
+					final long second = (this.entity.getSize() - this.statistics.downloadSize()) / downloadSecond;
 					return DateUtils.formatSecond(second);
 				}
 			} else {
