@@ -56,7 +56,7 @@ import javafx.util.Callback;
 /**
  * 主窗口控制器
  * 
- * TODO：太多列滚动条优化
+ * TODO：任务太多时滚动条优化
  * 
  * @author acgist
  * @since 1.0.0
@@ -327,7 +327,7 @@ public class MainController extends Controller implements Initializable {
 	private void taskCell(TableColumn<TaskSession, String> column, Pos pos, boolean icon, boolean tooltip, DoubleBinding widthBinding) {
 		column.prefWidthProperty().bind(widthBinding);
 		column.setResizable(false);
-		column.setCellFactory((param) -> {
+		column.setCellFactory((tableColumn) -> {
 			return new TaskCell(pos, icon, tooltip);
 		});
 	}
@@ -335,10 +335,12 @@ public class MainController extends Controller implements Initializable {
 	/**
 	 * 数据行工厂
 	 */
-	private Callback<TableView<TaskSession>, TableRow<TaskSession>> rowFactory = (param) -> {
+	private Callback<TableView<TaskSession>, TableRow<TaskSession>> rowFactory = (tableView) -> {
 		final TableRow<TaskSession> row = new TableRow<>();
 		row.setOnMouseClicked(this.rowClickAction); // 双击修改任务状态
 		row.setContextMenu(TaskMenu.getInstance());
+//		row.selectedProperty().addListener((obs, old, now) -> {
+//		});
 		return row;
 	};
 	

@@ -34,7 +34,7 @@ public class SettingWindow extends Window<SettingController> {
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		this.buildWindow(stage, "设置", 600, 600, "/fxml/setting.fxml", Modality.APPLICATION_MODAL);
+		this.buildWindow(stage, "设置", 600, 400, "/fxml/setting.fxml", Modality.APPLICATION_MODAL);
 		disableResize();
 		dialogWindow();
 	}
