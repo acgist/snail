@@ -25,17 +25,15 @@ public class AboutController extends Controller implements Initializable {
 	private GridPane root;
 	@FXML
 	private Text name;
+	@FXML
+	private Text version;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		// 软件名称
-		final StringBuilder name = new StringBuilder();
-		name.append("名称：").append(SystemConfig.getName())
-			.append("（").append(SystemConfig.getNameEn()).append("）")
-			.append(SystemConfig.getVersion());
-		this.name.setText(name.toString());
+		this.buildName();
+		this.buildVersion();
 	}
-	
+
 	/**
 	 * 作者按钮
 	 */
@@ -58,6 +56,25 @@ public class AboutController extends Controller implements Initializable {
 	@FXML
 	public void handleSupportAction(ActionEvent event) {
 		BrowseUtils.open(SystemConfig.getSupport());
+	}
+
+	/**
+	 * 设置软件名称
+	 */
+	private void buildName() {
+		final StringBuilder name = new StringBuilder();
+		name.append(SystemConfig.getName())
+			.append("（")
+			.append(SystemConfig.getNameEn())
+			.append("）");
+		this.name.setText(name.toString());
+	}
+	
+	/**
+	 * 设置软件版本
+	 */
+	private void buildVersion() {
+		this.version.setText(SystemConfig.getVersion());
 	}
 
 }
