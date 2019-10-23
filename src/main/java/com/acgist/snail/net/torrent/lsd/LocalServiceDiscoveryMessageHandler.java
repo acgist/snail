@@ -65,7 +65,7 @@ public class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler imple
 	private void doInfoHash(String host, String port, String infoHash) {
 		final TorrentSession torrentSession = TorrentManager.getInstance().torrentSession(infoHash);
 		if(torrentSession == null) {
-			LOGGER.debug("本地发现消息处理失败：不存在的种子信息：{}", infoHash);
+			LOGGER.debug("本地发现消息处理失败：种子信息不存在：{}", infoHash);
 		} else {
 			LOGGER.debug("本地发现消息：{}-{}-{}", infoHash, host, port);
 			final PeerManager peerManager = PeerManager.getInstance();
