@@ -129,7 +129,7 @@ public class SettingController extends Controller implements Initializable {
 	};
 	
 	private EventHandler<MouseEvent> sizeReleaseAction = (event) -> {
-		Double value = this.size.getValue();
+		final Double value = this.size.getValue();
 		DownloadConfig.setSize(value.intValue());
 	};
 	
@@ -145,7 +145,7 @@ public class SettingController extends Controller implements Initializable {
 	};
 	
 	private EventHandler<MouseEvent> bufferReleaseAction = (event) -> {
-		Double value = this.buffer.getValue();
+		final Double value = this.buffer.getValue();
 		DownloadConfig.setBuffer(value.intValue());
 	};
 	
@@ -166,7 +166,7 @@ public class SettingController extends Controller implements Initializable {
 	};
 	
 	private EventHandler<MouseEvent> memoryBufferReleaseAction = (event) -> {
-		Double value = this.memoryBuffer.getValue();
+		final Double value = this.memoryBuffer.getValue();
 		DownloadConfig.setMemoryBuffer(value.intValue());
 	};
 	

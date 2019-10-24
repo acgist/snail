@@ -133,47 +133,47 @@ public class SystemConfig extends PropertiesConfig {
 	/**
 	 * 系统服务端口（本地服务：启动检测）
 	 */
-	private Integer servicePort;
+	private int servicePort;
 	/**
 	 * BT服务端口（本地端口：Peer、DHT、UTP）
 	 */
-	private Integer torrentPort;
+	private int torrentPort;
 	/**
 	 * BT服务端口（外网映射：Peer、DHT、UTP）
 	 */
-	private Integer torrentPortExt;
+	private int torrentPortExt = 0;
 	/**
 	 * 单个任务Peer数量（同时下载）
 	 */
-	private Integer peerSize;
+	private int peerSize;
 	/**
 	 * 单个任务Tracker数量
 	 */
-	private Integer trackerSize;
+	private int trackerSize;
 	/**
 	 * 任务即将完成时可以重复下载的Piece数量
 	 */
-	private Integer pieceRepeatSize;
+	private int pieceRepeatSize;
 	/**
 	 * DHT执行周期（秒）
 	 */
-	private Integer dhtInterval;
+	private int dhtInterval;
 	/**
 	 * PEX执行周期（秒）
 	 */
-	private Integer pexInterval;
+	private int pexInterval;
 	/**
 	 * 本地发现执行周期（秒）
 	 */
-	private Integer lsdInterval;
+	private int lsdInterval;
 	/**
 	 * Tracker执行周期（秒）
 	 */
-	private Integer trackerInterval;
+	private int trackerInterval;
 	/**
 	 * Peer（连接、接入）优化周期（秒）
 	 */
-	private Integer peerOptimizeInterval;
+	private int peerOptimizeInterval;
 	
 	/**
 	 * 初始化
@@ -185,16 +185,16 @@ public class SystemConfig extends PropertiesConfig {
 		INSTANCE.author = getString("acgist.system.author");
 		INSTANCE.source = getString("acgist.system.source");
 		INSTANCE.support = getString("acgist.system.support");
-		INSTANCE.servicePort = getInteger("acgist.service.port");
-		INSTANCE.torrentPort = getInteger("acgist.torrent.port");
-		INSTANCE.peerSize = getInteger("acgist.peer.size");
-		INSTANCE.trackerSize = getInteger("acgist.tracker.size");
-		INSTANCE.pieceRepeatSize = getInteger("acgist.piece.repeat.size");
-		INSTANCE.dhtInterval = getInteger("acgist.dht.interval");
-		INSTANCE.pexInterval = getInteger("acgist.pex.interval");
-		INSTANCE.lsdInterval = getInteger("acgist.lsd.interval");
-		INSTANCE.trackerInterval = getInteger("acgist.tracker.interval");
-		INSTANCE.peerOptimizeInterval = getInteger("acgist.peer.optimize.interval");
+		INSTANCE.servicePort = getInteger("acgist.service.port", 16888);
+		INSTANCE.torrentPort = getInteger("acgist.torrent.port", 18888);
+		INSTANCE.peerSize = getInteger("acgist.peer.size", 20);
+		INSTANCE.trackerSize = getInteger("acgist.tracker.size", 50);
+		INSTANCE.pieceRepeatSize = getInteger("acgist.piece.repeat.size", 4);
+		INSTANCE.dhtInterval = getInteger("acgist.dht.interval", 120);
+		INSTANCE.pexInterval = getInteger("acgist.pex.interval", 120);
+		INSTANCE.lsdInterval = getInteger("acgist.lsd.interval", 120);
+		INSTANCE.trackerInterval = getInteger("acgist.tracker.interval", 120);
+		INSTANCE.peerOptimizeInterval = getInteger("acgist.peer.optimize.interval", 60);
 	}
 
 	/**
@@ -265,14 +265,14 @@ public class SystemConfig extends PropertiesConfig {
 	/**
 	 * 系统服务端口
 	 */
-	public static final Integer getServicePort() {
+	public static final int getServicePort() {
 		return INSTANCE.servicePort;
 	}
 
 	/**
 	 * <p>BT服务端口（本机：Peer、DHT、UTP）</p>
 	 */
-	public static final Integer getTorrentPort() {
+	public static final int getTorrentPort() {
 		return INSTANCE.torrentPort;
 	}
 	
@@ -280,7 +280,7 @@ public class SystemConfig extends PropertiesConfig {
 	 * <p>设置BT服务端口（外网：Peer、DHT、UTP）</p>
 	 * <p>UPNP映射时如果端口已经被占用时重新设置的外网端口号</p>
 	 */
-	public static final void setTorrentPortExt(Integer torrentPortExt) {
+	public static final void setTorrentPortExt(int torrentPortExt) {
 		LOGGER.info("服务端口（外网：Peer、DHT、UTP）：{}", torrentPortExt);
 		INSTANCE.torrentPortExt = torrentPortExt;
 	}
@@ -289,8 +289,8 @@ public class SystemConfig extends PropertiesConfig {
 	 * <p>BT服务端口（外网：Peer、DHT、UTP）</p>
 	 * <p>如果不存在返回{@linkplain #getTorrentPort() 本机端口}。</p>
 	 */
-	public static final Integer getTorrentPortExt() {
-		if(INSTANCE.torrentPortExt == null) {
+	public static final int getTorrentPortExt() {
+		if(INSTANCE.torrentPortExt == 0) {
 			return getTorrentPort();
 		}
 		return INSTANCE.torrentPortExt;
@@ -313,49 +313,49 @@ public class SystemConfig extends PropertiesConfig {
 	/**
 	 * 单个任务Tracker数量
 	 */
-	public static final Integer getTrackerSize() {
+	public static final int getTrackerSize() {
 		return INSTANCE.trackerSize;
 	}
 
 	/**
 	 * 任务即将完成时可以重复下载的Piece数量
 	 */
-	public static final Integer getPieceRepeatSize() {
+	public static final int getPieceRepeatSize() {
 		return INSTANCE.pieceRepeatSize;
 	}
 
 	/**
 	 * DHT执行周期（秒）
 	 */
-	public static final Integer getDhtInterval() {
+	public static final int getDhtInterval() {
 		return INSTANCE.dhtInterval;
 	}
 	
 	/**
 	 * PEX执行周期（秒）
 	 */
-	public static final Integer getPexInterval() {
+	public static final int getPexInterval() {
 		return INSTANCE.pexInterval;
 	}
 	
 	/**
 	 * 本地发现执行周期（秒）
 	 */
-	public static final Integer getLsdInterval() {
+	public static final int getLsdInterval() {
 		return INSTANCE.lsdInterval;
 	}
 	
 	/**
 	 * Tracker执行周期（秒）
 	 */
-	public static final Integer getTrackerInterval() {
+	public static final int getTrackerInterval() {
 		return INSTANCE.trackerInterval;
 	}
 	
 	/**
 	 * Peer（连接、接入）优化周期（秒）
 	 */
-	public static final Integer getPeerOptimizeInterval() {
+	public static final int getPeerOptimizeInterval() {
 		return INSTANCE.peerOptimizeInterval;
 	}
 

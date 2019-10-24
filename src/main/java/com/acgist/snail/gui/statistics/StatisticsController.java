@@ -17,7 +17,6 @@ import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerClient;
 import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerManager;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.system.context.SystemStatistics;
-import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.ObjectUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -164,9 +163,6 @@ public class StatisticsController extends Controller implements Initializable {
 		final String infoHashHex = value.getHash();
 		// Peer
 		final var peers = PeerManager.getInstance().listPeers(infoHashHex);
-		if(CollectionUtils.isEmpty(peers)) {
-			return;
-		}
 		final var utp = new AtomicInteger(0);
 		final var available = new AtomicInteger(0);
 		// 来源
@@ -238,14 +234,19 @@ public class StatisticsController extends Controller implements Initializable {
 		this.statusDownload.setText(String.valueOf(download.get()));
 		// 图表
 		CategoryAxis xAxis = new CategoryAxis();
-		xAxis.setLabel("Peer");
+		final var torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
+		xAxis.setLabel(String.format(
+			"累计上传：%s 累计下载：%s",
+			FileUtils.formatSize(torrentSession.statistics().uploadSize()),
+			FileUtils.formatSize(torrentSession.statistics().downloadSize()))
+		);
 		xAxis.setCategories(FXCollections.observableArrayList(activePeer));
 		NumberAxis yAxis = new NumberAxis();
 		yAxis.setLabel("流量（MB）");
 		final StackedBarChart<String, Number> stackedBarChart = new StackedBarChart<>(xAxis, yAxis);
 		stackedBarChart.setPrefWidth(800);
 		stackedBarChart.setPrefHeight(400);
-		stackedBarChart.setTitle("流量（上传/下载）");
+		stackedBarChart.setTitle("Peer流量统计");
 		final XYChart.Series<String, Number> uploadSeries = new XYChart.Series<>();
 		uploadSeries.setName("上传");
 		uploadSeries.getData().addAll(uploadPeer);

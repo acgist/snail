@@ -63,7 +63,7 @@ public class LocalServiceDiscoveryClient extends UdpClient<LocalServiceDiscovery
 		final HeaderWrapper builder = HeaderWrapper.newBuilder(PROTOCOL);
 		builder
 			.header("Host", LocalServiceDiscoveryServer.LSD_HOST + ":" + LocalServiceDiscoveryServer.LSD_PORT)
-			.header("Port", SystemConfig.getTorrentPort().toString())
+			.header("Port", String.valueOf(SystemConfig.getTorrentPort()))
 			.header("Infohash", infoHash)
 			.header("cookie", peerId);
 		return builder.build();

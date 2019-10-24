@@ -77,28 +77,6 @@ public class PropertiesUtils {
 	}
 	
 	/**
-	 * 读取Boolean
-	 * 
-	 * @param name 属性名称
-	 * 
-	 * @return 属性值
-	 */
-	public Boolean getBoolean(String name) {
-		return Boolean.valueOf(getString(name));
-	}
-	
-	/**
-	 * 读取Integer
-	 * 
-	 * @param name 属性名称
-	 * 
-	 * @return 属性值
-	 */
-	public Integer getInteger(String name) {
-		return Integer.valueOf(getString(name));
-	}
-	
-	/**
 	 * 读取String
 	 * 
 	 * @param name 属性名称
@@ -107,6 +85,41 @@ public class PropertiesUtils {
 	 */
 	public String getString(String name) {
 		return properties.getProperty(name);
+	}
+	
+	/**
+	 * <p>读取Boolean</p>
+	 * <p>默认：null</p>
+	 * 
+	 * @param name 属性名称
+	 * 
+	 * @return 属性值
+	 */
+	public Boolean getBoolean(String name) {
+		final String value = getString(name);
+		if(Boolean.TRUE.toString().equalsIgnoreCase(value)) {
+			return true;
+		} else if(Boolean.FALSE.toString().equalsIgnoreCase(value)) {
+			return false;
+		} else {
+			return null;
+		}
+	}
+	
+	/**
+	 * <p>读取Integer</p>
+	 * <p>默认：null</p>
+	 * 
+	 * @param name 属性名称
+	 * 
+	 * @return 属性值
+	 */
+	public Integer getInteger(String name) {
+		final String value = getString(name);
+		if(StringUtils.isNumeric(value)) {
+			return Integer.parseInt(value);
+		}
+		return null;
 	}
 	
 	/**

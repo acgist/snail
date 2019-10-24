@@ -26,6 +26,11 @@ public class DownloadConfig extends PropertiesConfig {
 	
 	private static final String DOWNLOAD_CONFIG = "/config/download.properties";
 	
+	/**
+	 * 上传速度和下载速度比例：上传速度 = 下载速度 / 比例
+	 */
+	private static final int UPLOAD_DOWNLOAD_SCALE = 5;
+	
 	private static final String DOWNLOAD_PATH = "acgist.download.path";
 	private static final String DOWNLOAD_SIZE = "acgist.download.size";
 	private static final String DOWNLOAD_NOTICE = "acgist.download.notice";
@@ -37,6 +42,7 @@ public class DownloadConfig extends PropertiesConfig {
 		LOGGER.info("初始化下载配置");
 		INSTANCE.initFromProperties();
 		INSTANCE.initFromDatabase();
+		buildDownloadUploadBuffer();
 		INSTANCE.logger();
 	}
 	
@@ -55,15 +61,15 @@ public class DownloadConfig extends PropertiesConfig {
 	/**
 	 * 下载任务数量
 	 */
-	private Integer size;
+	private int size;
 	/**
 	 * 消息提示
 	 */
-	private Boolean notice;
+	private boolean notice;
 	/**
 	 * 下载速度（单个）（KB）
 	 */
-	private Integer buffer;
+	private int buffer;
 	/**
 	 * 最后一次选择目录
 	 */
@@ -71,18 +77,26 @@ public class DownloadConfig extends PropertiesConfig {
 	/**
 	 * 磁盘缓存（单个）（MB）
 	 */
-	private Integer memoryBuffer;
+	private int memoryBuffer;
+	/**
+	 * 上传速度（B）
+	 */
+	private int uploadBufferByte;
+	/**
+	 * 下载速度（B）
+	 */
+	private int downloadBufferByte;
 	
 	/**
 	 * 配置文件加载
 	 */
 	private void initFromProperties() {
-		INSTANCE.path = getString(DOWNLOAD_PATH);
-		INSTANCE.size = getInteger(DOWNLOAD_SIZE);
-		INSTANCE.buffer = getInteger(DOWNLOAD_BUFFER);
-		INSTANCE.notice = getBoolean(DOWNLOAD_NOTICE);
-		INSTANCE.lastPath = getString(DOWNLOAD_LAST_PATH);
-		INSTANCE.memoryBuffer = getInteger(DOWNLOAD_MEMORY_BUFFER);
+		this.path = getString(DOWNLOAD_PATH);
+		this.size = getInteger(DOWNLOAD_SIZE, 4);
+		this.buffer = getInteger(DOWNLOAD_BUFFER, 1024);
+		this.notice = getBoolean(DOWNLOAD_NOTICE, true);
+		this.lastPath = getString(DOWNLOAD_LAST_PATH);
+		this.memoryBuffer = getInteger(DOWNLOAD_MEMORY_BUFFER, 8);
 	}
 	
 	/**
@@ -92,29 +106,29 @@ public class DownloadConfig extends PropertiesConfig {
 		final ConfigRepository configRepository = new ConfigRepository();
 		ConfigEntity entity = null;
 		entity = configRepository.findName(DOWNLOAD_PATH);
-		path = configString(entity, path);
+		this.path = getString(entity, this.path);
 		entity = configRepository.findName(DOWNLOAD_SIZE);
-		size = configInteger(entity, size);
+		this.size = getInteger(entity, this.size);
 		entity = configRepository.findName(DOWNLOAD_NOTICE);
-		notice = configBoolean(entity, notice);
+		this.notice = getBoolean(entity, this.notice);
 		entity = configRepository.findName(DOWNLOAD_BUFFER);
-		buffer = configInteger(entity, buffer);
+		this.buffer = getInteger(entity, this.buffer);
 		entity = configRepository.findName(DOWNLOAD_LAST_PATH);
-		lastPath = configString(entity, lastPath);
+		this.lastPath = getString(entity, this.lastPath);
 		entity = configRepository.findName(DOWNLOAD_MEMORY_BUFFER);
-		memoryBuffer = configInteger(entity, memoryBuffer);
+		this.memoryBuffer = getInteger(entity, this.memoryBuffer);
 	}
 	
 	/**
 	 * 日志
 	 */
 	private void logger() {
-		LOGGER.info("下载目录：{}", INSTANCE.path);
-		LOGGER.info("下载任务数量：{}", INSTANCE.size);
-		LOGGER.info("消息提示：{}", INSTANCE.notice);
-		LOGGER.info("下载速度（单个）（KB）：{}", INSTANCE.buffer);
-		LOGGER.info("最后一次选择目录：{}", INSTANCE.lastPath);
-		LOGGER.info("磁盘缓存（单个）（MB）：{}", INSTANCE.memoryBuffer);
+		LOGGER.info("下载目录：{}", this.path);
+		LOGGER.info("下载任务数量：{}", this.size);
+		LOGGER.info("消息提示：{}", this.notice);
+		LOGGER.info("下载速度（单个）（KB）：{}", this.buffer);
+		LOGGER.info("最后一次选择目录：{}", this.lastPath);
+		LOGGER.info("磁盘缓存（单个）（MB）：{}", this.memoryBuffer);
 	}
 	
 	/**
@@ -153,7 +167,7 @@ public class DownloadConfig extends PropertiesConfig {
 	/**
 	 * 设置下载任务数量
 	 */
-	public static final void setSize(Integer size) {
+	public static final void setSize(int size) {
 		final ConfigRepository configRepository = new ConfigRepository();
 		INSTANCE.size = size;
 		configRepository.merge(DOWNLOAD_SIZE, String.valueOf(size));
@@ -162,14 +176,14 @@ public class DownloadConfig extends PropertiesConfig {
 	/**
 	 * 下载任务数量
 	 */
-	public static final Integer getSize() {
+	public static final int getSize() {
 		return INSTANCE.size;
 	}
 	
 	/**
 	 * 设置消息提示
 	 */
-	public static final void setNotice(Boolean notice) {
+	public static final void setNotice(boolean notice) {
 		final ConfigRepository configRepository = new ConfigRepository();
 		INSTANCE.notice = notice;
 		configRepository.merge(DOWNLOAD_NOTICE, String.valueOf(notice));
@@ -178,31 +192,47 @@ public class DownloadConfig extends PropertiesConfig {
 	/**
 	 * 消息提示
 	 */
-	public static final Boolean getNotice() {
+	public static final boolean getNotice() {
 		return INSTANCE.notice;
 	}
 	
 	/**
 	 * 设置下载速度（单个）（KB）
 	 */
-	public static final void setBuffer(Integer buffer) {
+	public static final void setBuffer(int buffer) {
 		final ConfigRepository configRepository = new ConfigRepository();
 		INSTANCE.buffer = buffer;
 		configRepository.merge(DOWNLOAD_BUFFER, String.valueOf(buffer));
+		buildDownloadUploadBuffer();
 	}
 	
 	/**
 	 * 下载速度（单个）（KB）
 	 */
-	public static final Integer getBuffer() {
+	public static final int getBuffer() {
 		return INSTANCE.buffer;
 	}
 
 	/**
+	 * 设置下载速度和上传速度
+	 */
+	private static final void buildDownloadUploadBuffer() {
+		INSTANCE.downloadBufferByte = INSTANCE.buffer * 1024;
+		INSTANCE.uploadBufferByte = INSTANCE.downloadBufferByte / UPLOAD_DOWNLOAD_SCALE;
+	}
+	
+	/**
 	 * 下载速度（单个）（B）
 	 */
-	public static final Integer getBufferByte() {
-		return INSTANCE.buffer * 1024;
+	public static final int getDownloadBufferByte() {
+		return INSTANCE.downloadBufferByte;
+	}
+	
+	/**
+	 * 上传速度（单个）（B）
+	 */
+	public static final int getUploadBufferByte() {
+		return INSTANCE.uploadBufferByte;
 	}
 	
 	/**
@@ -235,7 +265,7 @@ public class DownloadConfig extends PropertiesConfig {
 	/**
 	 * 设置磁盘缓存（单个）（MB）
 	 */
-	public static final void setMemoryBuffer(Integer memoryBuffer) {
+	public static final void setMemoryBuffer(int memoryBuffer) {
 		final ConfigRepository configRepository = new ConfigRepository();
 		INSTANCE.memoryBuffer = memoryBuffer;
 		configRepository.merge(DOWNLOAD_MEMORY_BUFFER, String.valueOf(memoryBuffer));
@@ -244,14 +274,14 @@ public class DownloadConfig extends PropertiesConfig {
 	/**
 	 * 磁盘缓存（单个）（MB）
 	 */
-	public static final Integer getMemoryBuffer() {
+	public static final int getMemoryBuffer() {
 		return INSTANCE.memoryBuffer;
 	}
 
 	/**
 	 * 磁盘缓存（单个）（B）
 	 */
-	public static final Integer getMemoryBufferByte() {
+	public static final int getMemoryBufferByte() {
 		return INSTANCE.memoryBuffer * 1024 * 1024;
 	}
 	
