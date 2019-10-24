@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -34,6 +35,11 @@ public final class UtpWindow {
 	 * 默认慢开始wnd数量
 	 */
 	private static final int DEFAULT_SLOW_WND = 16;
+	/**
+	 * <p>信号量获取超时时间：秒</p>
+	 * <p>防止长时间获取信号量，从而导致UTP队列阻塞。</p>
+	 */
+	private static final int TIMEOUT = 2;
 //	/**
 //	 * 默认拥堵算法wnd数量
 //	 */
@@ -336,7 +342,11 @@ public final class UtpWindow {
 		}
 		try {
 			LOGGER.debug("信号量（获取）：{}", this.semaphore.availablePermits());
-			this.semaphore.acquire();
+//			this.semaphore.acquire();
+			final boolean ok = this.semaphore.tryAcquire(TIMEOUT, TimeUnit.SECONDS);
+			if(!ok) {
+				LOGGER.debug("信号量获取失败");
+			}
 		} catch (InterruptedException e) {
 			LOGGER.debug("信号量获取异常", e);
 			Thread.currentThread().interrupt();
@@ -345,6 +355,8 @@ public final class UtpWindow {
 	
 	/**
 	 * 释放信号量
+	 * 
+	 * TODO：不能超过最大数量
 	 */
 	public void release() {
 		LOGGER.debug("信号量（释放）：{}", this.semaphore.availablePermits());

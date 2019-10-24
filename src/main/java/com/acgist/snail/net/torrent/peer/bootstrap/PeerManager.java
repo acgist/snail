@@ -34,7 +34,7 @@ public class PeerManager {
 	private static final PeerManager INSTANCE = new PeerManager();
 	
 	/**
-	 * <p>Peer队列，下载时Peer从中剔除，当Peer从下载列表中剔除时从新放回到列表中。</p>
+	 * <p>Peer队列，下载时Peer从中剔除，当Peer从下载队列中剔除时从新放回到队列中。</p>
 	 * <p>key=InfoHashHex</p>
 	 * <p>value=Peer：双端队列（尾部优先使用）</p>
 	 */
@@ -67,7 +67,7 @@ public class PeerManager {
 	}
 	
 	/**
-	 * 删除任务对应的Peer列表
+	 * 删除任务对应的Peer队列
 	 */
 	public void remove(String infoHashHex) {
 		synchronized (this.peers) {
@@ -91,31 +91,33 @@ public class PeerManager {
 	 * @return PeerSession，如果是本机IP返回null。
 	 */
 	public PeerSession newPeerSession(String infoHashHex, StatisticsSession parent, String host, Integer port, byte source) {
-		final var list = list(infoHashHex);
-		final var deque = deque(infoHashHex);
-		synchronized (list) {
-			synchronized (deque) {
-				PeerSession peerSession = findPeerSession(list, host);
-				if(peerSession == null) {
-					if(LOGGER.isDebugEnabled()) {
-						LOGGER.debug("添加PeerSession：{}-{}，来源：{}", host, port, PeerConfig.source(source));
+		synchronized (this) {
+			final var list = list(infoHashHex);
+			final var deque = deque(infoHashHex);
+			synchronized (list) {
+				synchronized (deque) {
+					PeerSession peerSession = findPeerSession(list, host);
+					if(peerSession == null) {
+						if(LOGGER.isDebugEnabled()) {
+							LOGGER.debug("添加PeerSession：{}-{}，来源：{}", host, port, PeerConfig.source(source));
+						}
+						peerSession = PeerSession.newInstance(parent, host, port);
+						if(
+							source == PeerConfig.SOURCE_LSD || // 本地发现
+							source == PeerConfig.SOURCE_CONNECT || // 主动连接
+							PeerEvaluator.getInstance().eval(peerSession) // Peer评分
+							) {
+							// 插入尾部：优先级高
+							deque.offerLast(peerSession);
+						} else {
+							// 插入头部：优先级低
+							deque.offerFirst(peerSession);
+						}
+						list.add(peerSession); // 存档
 					}
-					peerSession = PeerSession.newInstance(parent, host, port);
-					if(
-						source == PeerConfig.SOURCE_LSD || // 本地发现
-						source == PeerConfig.SOURCE_CONNECT || // 主动连接
-						PeerEvaluator.getInstance().eval(peerSession) // Peer评分
-					) {
-						// 插入尾部：优先级高
-						deque.offerLast(peerSession);
-					} else {
-						// 插入头部：优先级低
-						deque.offerFirst(peerSession);
-					}
-					list.add(peerSession); // 存档
+					peerSession.source(source); // 设置来源
+					return peerSession;
 				}
-				peerSession.source(source); // 设置来源
-				return peerSession;
 			}
 		}
 	}
@@ -166,7 +168,7 @@ public class PeerManager {
 	
 	/**
 	 * <p>发送have消息</p>
-	 * <p>只发送给当前上传和下载的Peer。</p>
+	 * <p>只发送给当前上传和下载的Peer</p>
 	 */
 	public void have(String infoHashHex, int index) {
 		final var list = listActivePeer(infoHashHex);
@@ -188,7 +190,7 @@ public class PeerManager {
 	
 	/**
 	 * <p>发送pex消息</p>
-	 * <p>只发送给当前上传和下载的Peer。</p>
+	 * <p>只发送给当前上传和下载的Peer</p>
 	 */
 	public void pex(String infoHashHex, List<PeerSession> optimize) {
 		final byte[] bytes = PeerExchangeMessageHandler.buildMessage(optimize);
@@ -210,11 +212,11 @@ public class PeerManager {
 					peerLauncher.pex(bytes);
 				}
 			});
-		LOGGER.debug("发送pex消息，Peer数量：{}，通知Peer数量：{}", optimize.size(), count.get());
+		LOGGER.debug("发送pex消息，优质Peer数量：{}，通知Peer数量：{}", optimize.size(), count.get());
 	}
 	
 	/**
-	 * 获取Peer列表
+	 * 获取Peer队列
 	 */
 	private Deque<PeerSession> deque(String infoHashHex) {
 		synchronized (this.peers) {
