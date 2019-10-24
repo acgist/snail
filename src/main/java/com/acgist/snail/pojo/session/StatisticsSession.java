@@ -158,7 +158,7 @@ public final class StatisticsSession {
 	 * 下载秒速统计限制
 	 */
 	private void limitDownload(long buffer) {
-		final int limitSize = DownloadConfig.getBufferByte();
+		final int limitSize = DownloadConfig.getDownloadBufferByte();
 		final long oldDownloadBuffer = this.downloadBuffer.addAndGet(buffer);
 		long interval = System.currentTimeMillis() - this.lastDownloadTime;
 		if(this.limit) { // 限速
@@ -194,7 +194,7 @@ public final class StatisticsSession {
 	 * 上传秒速统计限制：上传限速=下载限速
 	 */
 	private void limitUpload(long buffer) {
-		final int limitSize = DownloadConfig.getBufferByte();
+		final int limitSize = DownloadConfig.getUploadBufferByte();
 		final long oldUploadBuffer = this.uploadBuffer.addAndGet(buffer);
 		long interval = System.currentTimeMillis() - this.lastUploadTime;
 		if(this.limit) { // 限速

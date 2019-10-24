@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.pojo.entity.ConfigEntity;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.PropertiesUtils;
-import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>配置</p>
@@ -48,42 +47,37 @@ public abstract class PropertiesConfig {
 		return this.properties.getBoolean(key);
 	}
 	
+	protected boolean getBoolean(String key, boolean defaultValue) {
+		final Boolean value = this.properties.getBoolean(key);
+		return value == null ? defaultValue : value;
+	}
+	
 	protected Integer getInteger(String key) {
 		return this.properties.getInteger(key);
 	}
 	
-	/**
-	 * 获取String配置
-	 */
-	protected String configString(ConfigEntity entity, String defaultValue) {
+	protected int getInteger(String key, int defaultValue) {
+		final Integer value = this.properties.getInteger(key);
+		return value == null ? defaultValue : value;
+	}
+	
+	protected String getString(ConfigEntity entity, String defaultValue) {
 		if(entity != null) {
 			return entity.getValue();
 		}
 		return defaultValue;
 	}
 	
-	/**
-	 * 获取Boolean配置
-	 */
-	protected Boolean configBoolean(ConfigEntity entity, Boolean defaultValue) {
+	protected boolean getBoolean(ConfigEntity entity, boolean defaultValue) {
 		if(entity != null) {
-			final String value = entity.getValue();
-			if(StringUtils.isNotEmpty(value)) {
-				return Boolean.valueOf(value);
-			}
+			return Boolean.valueOf(entity.getValue());
 		}
 		return defaultValue;
 	}
 	
-	/**
-	 * 获取Integer配置
-	 */
-	protected Integer configInteger(ConfigEntity entity, Integer defaultValue) {
+	protected int getInteger(ConfigEntity entity, int defaultValue) {
 		if(entity != null) {
-			final String value = entity.getValue();
-			if(StringUtils.isNumeric(value)) {
-				return Integer.valueOf(value);
-			}
+			return Integer.parseInt(entity.getValue());
 		}
 		return defaultValue;
 	}
