@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.acgist.snail.system.bencode.BEncodeDecoder;
+import com.acgist.snail.system.config.SystemConfig;
 
 /**
  * <p>文件列表信息</p>
@@ -16,10 +17,6 @@ import com.acgist.snail.system.bencode.BEncodeDecoder;
  */
 public class TorrentInfo {
 
-	/**
-	 * 每个Piece的hash字节数
-	 */
-	public static final int PIECE_HASH_LENGTH = 20;
 	/**
 	 * 填充文件前缀（不需要下载和显示）
 	 */
@@ -107,7 +104,7 @@ public class TorrentInfo {
 	 * 获取Piece数量
 	 */
 	public Integer pieceSize() {
-		return this.pieces.length / PIECE_HASH_LENGTH;
+		return this.pieces.length / SystemConfig.SHA1_LENGTH;
 	}
 	
 	/**

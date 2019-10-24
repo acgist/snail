@@ -25,7 +25,7 @@ public class TrackerMessageHandler extends UdpMessageHandler {
 	/**
 	 * Announce消息最大长度
 	 */
-	private static final int ANNOUNCE_MIN_SIZE = 20;
+	private static final int ANNOUNCE_MIN_LENGTH = 20;
 	
 	@Override
 	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) {
@@ -56,9 +56,9 @@ public class TrackerMessageHandler extends UdpMessageHandler {
 	 * 处理声明消息
 	 */
 	private void doAnnounce(ByteBuffer buffer) {
-		final int size = buffer.limit(); // 消息长度
-		if(size < ANNOUNCE_MIN_SIZE) {
-			LOGGER.debug("Announce消息长度错误：{}", size);
+		final int length = buffer.limit(); // 消息长度
+		if(length < ANNOUNCE_MIN_LENGTH) {
+			LOGGER.debug("Announce消息长度错误：{}", length);
 			return;
 		}
 		final AnnounceMessage message = new AnnounceMessage();
@@ -66,7 +66,7 @@ public class TrackerMessageHandler extends UdpMessageHandler {
 		message.setInterval(buffer.getInt());
 		message.setUndone(buffer.getInt());
 		message.setDone(buffer.getInt());
-		message.setPeers(PeerUtils.read(buffer, size));
+		message.setPeers(PeerUtils.read(buffer, length));
 		TrackerManager.getInstance().announce(message);
 	}
 

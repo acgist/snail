@@ -17,6 +17,7 @@ import com.acgist.snail.system.bencode.BEncodeEncoder;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.PeerConfig.ExtensionType;
 import com.acgist.snail.system.config.PeerConfig.MetadataType;
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.NumberUtils;
@@ -39,7 +40,7 @@ public class MetadataMessageHandler implements IExtensionMessageHandler, IExtens
 	/**
 	 * 数据交换块大小：16KB
 	 */
-	public static final int INFO_SLICE_SIZE = 16 * 1024;
+	public static final int SLICE_LENGTH = 16 * SystemConfig.ONE_KB;
 	/**
 	 * piece index：piece索引
 	 */
@@ -114,7 +115,7 @@ public class MetadataMessageHandler implements IExtensionMessageHandler, IExtens
 	public void request() {
 		LOGGER.debug("发送metadata消息-request");
 		final int size = this.infoHash.size();
-		final int messageSize = NumberUtils.ceilDiv(size, INFO_SLICE_SIZE);
+		final int messageSize = NumberUtils.ceilDiv(size, SLICE_LENGTH);
 		for (int index = 0; index < messageSize; index++) {
 			final var request = buildMessage(PeerConfig.MetadataType.request, index);
 			pushMessage(request);
@@ -142,13 +143,13 @@ public class MetadataMessageHandler implements IExtensionMessageHandler, IExtens
 			reject();
 			return;
 		}
-		final int begin = piece * INFO_SLICE_SIZE;
-		final int end = begin + INFO_SLICE_SIZE;
+		final int begin = piece * SLICE_LENGTH;
+		final int end = begin + SLICE_LENGTH;
 		if(begin > bytes.length) {
 			reject();
 			return;
 		}
-		int length = INFO_SLICE_SIZE;
+		int length = SLICE_LENGTH;
 		if(end >= bytes.length) {
 			length = bytes.length - begin;
 		}
@@ -174,13 +175,13 @@ public class MetadataMessageHandler implements IExtensionMessageHandler, IExtens
 			bytes = new byte[totalSize];
 			this.infoHash.info(bytes);
 		}
-		final int begin = piece * INFO_SLICE_SIZE;
-		final int end = begin + INFO_SLICE_SIZE;
+		final int begin = piece * SLICE_LENGTH;
+		final int end = begin + SLICE_LENGTH;
 		if(begin > bytes.length) {
 			LOGGER.warn("处理metadata消息：数据长度错误（{}-{}）", begin, bytes.length);
 			return;
 		}
-		int length = INFO_SLICE_SIZE;
+		int length = SLICE_LENGTH;
 		if(end >= bytes.length) {
 			length = bytes.length - begin;
 		}

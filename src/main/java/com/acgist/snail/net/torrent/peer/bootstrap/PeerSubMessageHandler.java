@@ -16,9 +16,9 @@ import com.acgist.snail.net.torrent.peer.bootstrap.dht.DhtExtensionMessageHandle
 import com.acgist.snail.net.torrent.peer.bootstrap.ltep.ExtensionMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.PeerConfig.Type;
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.BitfieldUtils;
@@ -303,7 +303,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		final boolean server = !this.handshakeSend; // 是否是服务端
 		final byte[] reserved = new byte[PeerConfig.RESERVED_LENGTH];
 		buffer.get(reserved);
-		final byte[] infoHash = new byte[InfoHash.INFO_HASH_LENGTH];
+		final byte[] infoHash = new byte[SystemConfig.SHA1_LENGTH];
 		buffer.get(infoHash);
 		final String infoHashHex = StringUtils.hex(infoHash);
 		final byte[] peerId = new byte[PeerConfig.PEER_ID_LENGTH];

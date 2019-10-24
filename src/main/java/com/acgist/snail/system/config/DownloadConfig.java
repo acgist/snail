@@ -217,7 +217,7 @@ public class DownloadConfig extends PropertiesConfig {
 	 * 设置下载速度和上传速度
 	 */
 	private static final void buildDownloadUploadBuffer() {
-		INSTANCE.downloadBufferByte = INSTANCE.buffer * 1024;
+		INSTANCE.downloadBufferByte = INSTANCE.buffer * SystemConfig.DATA_SCALE;
 		INSTANCE.uploadBufferByte = INSTANCE.downloadBufferByte / UPLOAD_DOWNLOAD_SCALE;
 	}
 	
@@ -282,7 +282,7 @@ public class DownloadConfig extends PropertiesConfig {
 	 * 磁盘缓存（单个）（B）
 	 */
 	public static final int getMemoryBufferByte() {
-		return INSTANCE.memoryBuffer * 1024 * 1024;
+		return INSTANCE.memoryBuffer * SystemConfig.ONE_MB;
 	}
 	
 }

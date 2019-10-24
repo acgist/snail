@@ -22,13 +22,29 @@ public class SystemConfig extends PropertiesConfig {
 	private static final String SYSTEM_CONFIG = "/config/system.properties";
 
 	/**
-	 * TCP消息缓冲大小：Piece大小一样
+	 * 数据比例
 	 */
-	public static final int TCP_BUFFER_SIZE = 16 * 1024;
+	public static final int DATA_SCALE = 1024;
+	/**
+	 * 1KB数据大小：1KB = 1024B
+	 */
+	public static final int ONE_KB = DATA_SCALE;
+	/**
+	 * 1MB数据大小：1MB = 1024KB = 1024 * 1024B
+	 */
+	public static final int ONE_MB = 1024 * 1024;
+	/**
+	 * 最小下载速度：16KB
+	 */
+	public static final int MIN_BUFFER_KB = 16;
+	/**
+	 * TCP消息缓冲大小：和Piece交换Slice一样
+	 */
+	public static final int TCP_BUFFER_LENGTH = 16 * ONE_KB;
 	/**
 	 * UDP消息缓存大小
 	 */
-	public static final int UDP_BUFFER_SIZE = 2 * 1024;
+	public static final int UDP_BUFFER_LENGTH = 2 * ONE_KB;
 	/**
 	 * 连接超时时间
 	 */
@@ -45,7 +61,11 @@ public class SystemConfig extends PropertiesConfig {
 	 * <p>最大的网络包大小</p>
 	 * <p>所有创建ByteBuffer和byte[]对象的长度由外部数据设置时需要验证长度，防止恶意攻击导致内存泄露。</p>
 	 */
-	public static final int MAX_NET_BUFFER_SIZE = 4 * 1024 * 1024;
+	public static final int MAX_NET_BUFFER_LENGTH = 4 * ONE_MB;
+	/**
+	 * SHA1的HASH值长度：20
+	 */
+	public static final int SHA1_LENGTH = 20;
 	/**
 	 * 编码：GBK
 	 */

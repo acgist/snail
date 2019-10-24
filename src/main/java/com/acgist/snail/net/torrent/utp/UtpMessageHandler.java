@@ -58,15 +58,15 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	/**
 	 * UTP消息请求头字节长度
 	 */
-	private static final int UTP_HEADER_SIZE = 20;
+	private static final int UTP_HEADER_LENGTH = 20;
 	/**
 	 * UTP消息最小字节长度
 	 */
-	private static final int UTP_MIN_SIZE = 20;
+	private static final int UTP_MIN_LENGTH = 20;
 	/**
 	 * 扩展消息最小字节长度
 	 */
-	private static final int UTP_EXT_MIN_SIZE = 2;
+	private static final int UTP_EXT_MIN_LENGTH = 2;
 	
 	/**
 	 * 是否连接
@@ -152,7 +152,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	@Override
 	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException {
 		buffer.flip();
-		if(buffer.remaining() < UTP_MIN_SIZE) {
+		if(buffer.remaining() < UTP_MIN_LENGTH) {
 			throw new NetException("UTP消息格式错误（长度）：" + buffer.remaining());
 		}
 		final byte typeVersion = buffer.get(); // type|version
@@ -164,7 +164,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 		final int wndSize = buffer.getInt(); // 窗口大小
 		final short seqnr = buffer.getShort(); // 请求序号
 		final short acknr = buffer.getShort(); // 响应序号
-		if(extension != 0 && buffer.remaining() >= UTP_EXT_MIN_SIZE) { // 扩展数据
+		if(extension != 0 && buffer.remaining() >= UTP_EXT_MIN_LENGTH) { // 扩展数据
 			final short extLength = buffer.getShort();
 			if(extLength <= 0 || buffer.remaining() < extLength) {
 				throw new NetException("UTP信息格式错误（扩展消息长度）：" + extLength);
@@ -322,7 +322,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	private void data(UtpWindowData windowData) {
 		if(windowData.hasData()) {
 			LOGGER.debug("发送UTP数据：{}", windowData.getSeqnr());
-			final ByteBuffer buffer = header(UtpConfig.TYPE_DATA, windowData.getLength() + UTP_HEADER_SIZE);
+			final ByteBuffer buffer = header(UtpConfig.TYPE_DATA, windowData.getLength() + UTP_HEADER_LENGTH);
 			buffer.putShort(this.sendId);
 			buffer.putInt(windowData.pushUpdateGetTimestamp()); // 更新发送时间
 			buffer.putInt(windowData.getTimestamp() - this.recvWindow.timestamp());
@@ -359,7 +359,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	private void state(int timestamp, short seqnr) {
 		LOGGER.debug("发送UTP响应：{}", seqnr);
 		final int now = DateUtils.timestampUs();
-		final ByteBuffer buffer = header(UtpConfig.TYPE_STATE, UTP_HEADER_SIZE);
+		final ByteBuffer buffer = header(UtpConfig.TYPE_STATE, UTP_HEADER_LENGTH);
 		buffer.putShort(this.sendId);
 		buffer.putInt(now);
 		buffer.putInt(now - timestamp);
@@ -384,7 +384,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	 */
 	private void fin() {
 		LOGGER.debug("发送UTP消息（fin）");
-		final ByteBuffer buffer = header(UtpConfig.TYPE_FIN, UTP_HEADER_SIZE);
+		final ByteBuffer buffer = header(UtpConfig.TYPE_FIN, UTP_HEADER_LENGTH);
 		buffer.putShort(this.sendId);
 		buffer.putInt(DateUtils.timestampUs());
 		buffer.putInt(0);
@@ -409,7 +409,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	 */
 	private void reset() {
 		LOGGER.debug("发送UTP消息（reset）");
-		final ByteBuffer buffer = header(UtpConfig.TYPE_RESET, UTP_HEADER_SIZE);
+		final ByteBuffer buffer = header(UtpConfig.TYPE_RESET, UTP_HEADER_LENGTH);
 		buffer.putShort(this.sendId);
 		buffer.putInt(DateUtils.timestampUs());
 		buffer.putInt(0);
@@ -435,7 +435,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	 */
 	private void syn() {
 		final UtpWindowData windowData = this.sendWindow.build();
-		final ByteBuffer buffer = header(UtpConfig.TYPE_SYN, UTP_HEADER_SIZE);
+		final ByteBuffer buffer = header(UtpConfig.TYPE_SYN, UTP_HEADER_LENGTH);
 		buffer.putShort(this.recvId);
 		buffer.putInt(windowData.pushUpdateGetTimestamp());
 		buffer.putInt(0);

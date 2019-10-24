@@ -1,5 +1,6 @@
 package com.acgist.snail.pojo.bean;
 
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -15,7 +16,7 @@ public final class TorrentPiece {
 	/**
 	 * 默认每次下载长度：16KB
 	 */
-	public static final int SLICE_SIZE = 16 * 1024;
+	public static final int SLICE_LENGTH = 16 * SystemConfig.ONE_KB;
 
 	/**
 	 * Piece块大小
@@ -138,12 +139,12 @@ public final class TorrentPiece {
 		}
 		final int size = this.length - this.position;
 		// 剩余大小不满足一个Slice
-		if(SLICE_SIZE > size) {
+		if(SLICE_LENGTH > size) {
 			this.position = this.length;
 			return size;
 		} else {
-			this.position += SLICE_SIZE;
-			return SLICE_SIZE;
+			this.position += SLICE_LENGTH;
+			return SLICE_LENGTH;
 		}
 	}
 	

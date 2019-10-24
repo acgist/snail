@@ -154,7 +154,7 @@ public class TorrentStreamGroup {
 	 * @param length 数据长度
 	 */
 	public byte[] read(final int index, final int begin, final int length) throws NetException {
-		if(length >= SystemConfig.MAX_NET_BUFFER_SIZE || length < 0) {
+		if(length >= SystemConfig.MAX_NET_BUFFER_LENGTH || length < 0) {
 			throw new PacketSizeException(length);
 		}
 		final ByteBuffer buffer = ByteBuffer.allocate(length);
@@ -258,8 +258,8 @@ public class TorrentStreamGroup {
 	 */
 	public byte[] pieceHash(int index) {
 		final byte[] pieces = this.torrent.getInfo().getPieces();
-		final byte[] value = new byte[TorrentInfo.PIECE_HASH_LENGTH];
-		System.arraycopy(pieces, index * TorrentInfo.PIECE_HASH_LENGTH, value, 0, TorrentInfo.PIECE_HASH_LENGTH);
+		final byte[] value = new byte[SystemConfig.SHA1_LENGTH];
+		System.arraycopy(pieces, index * SystemConfig.SHA1_LENGTH, value, 0, SystemConfig.SHA1_LENGTH);
 		return value;
 	}
 

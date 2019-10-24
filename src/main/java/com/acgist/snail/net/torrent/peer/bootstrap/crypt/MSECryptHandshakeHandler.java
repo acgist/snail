@@ -59,7 +59,7 @@ public final class MSECryptHandshakeHandler {
 	/**
 	 * 缓冲区大小：4KB
 	 */
-	private static final int BUFFER_SIZE = 4096;
+	private static final int BUFFER_LENGTH = 4 * SystemConfig.ONE_KB;
 	/**
 	 * 握手等待超时时间，不要超过PeerLauncher等待时间。
 	 */
@@ -137,7 +137,7 @@ public final class MSECryptHandshakeHandler {
 
 	private MSECryptHandshakeHandler(PeerUnpackMessageCodec peerUnpackMessageCodec, PeerSubMessageHandler peerSubMessageHandler) {
 		final MSEKeyPairBuilder mseKeyPairBuilder = MSEKeyPairBuilder.newInstance();
-		this.buffer = ByteBuffer.allocate(BUFFER_SIZE);
+		this.buffer = ByteBuffer.allocate(BUFFER_LENGTH);
 		this.keyPair = mseKeyPairBuilder.buildKeyPair();
 		this.peerSubMessageHandler = peerSubMessageHandler;
 		this.peerUnpackMessageCodec = peerUnpackMessageCodec;

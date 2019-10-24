@@ -14,11 +14,6 @@ import com.acgist.snail.utils.StringUtils;
 public class InfoHash {
 
 	/**
-	 * InfoHash长度
-	 */
-	public static final int INFO_HASH_LENGTH = 20;
-	
-	/**
 	 * 种子info数据长度
 	 */
 	private int size;
