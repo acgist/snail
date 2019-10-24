@@ -466,6 +466,10 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * <p>收到have消息时，客户端没有对应的Piece，发送感兴趣消息，表示客户端对Peer感兴趣。</p>
 	 */
 	private void have(ByteBuffer buffer) {
+		if(this.peerSession == null) {
+			LOGGER.debug("处理have消息：PeerSession为空");
+			return;
+		}
 		final int index = buffer.getInt();
 		this.peerSession.piece(index);
 		LOGGER.debug("处理have消息：{}", index);
