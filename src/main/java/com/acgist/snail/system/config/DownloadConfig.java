@@ -29,7 +29,7 @@ public class DownloadConfig extends PropertiesConfig {
 	/**
 	 * 上传速度和下载速度比例：上传速度 = 下载速度 / 比例
 	 */
-	private static final int UPLOAD_DOWNLOAD_SCALE = 5;
+	private static final int UPLOAD_DOWNLOAD_SCALE = 4;
 	
 	private static final String DOWNLOAD_PATH = "acgist.download.path";
 	private static final String DOWNLOAD_SIZE = "acgist.download.size";
