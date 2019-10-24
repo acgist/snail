@@ -74,7 +74,7 @@ public class UtpRequestQueue {
 	}
 
 	/**
-	 * 创建队列处理现场
+	 * 创建队列处理线程
 	 */
 	private void buildQueueExecute(BlockingQueue<UtpRequest> queue) {
 		this.executor.submit(() -> {

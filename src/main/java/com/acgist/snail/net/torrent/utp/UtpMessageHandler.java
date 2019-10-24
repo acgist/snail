@@ -6,7 +6,6 @@ import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
@@ -81,10 +80,6 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	 * 发送连接ID
 	 */
 	private final short sendId;
-	/**
-	 * 消息处理现场
-	 */
-	private Future<?> future;
 	/**
 	 * UTP Service
 	 */
@@ -481,10 +476,6 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 		super.close();
 		this.connect = false;
 		this.utpService.remove(this);
-		if(this.future != null) {
-			this.future.cancel(true);
-			this.future = null;
-		}
 	}
 	
 	/**
