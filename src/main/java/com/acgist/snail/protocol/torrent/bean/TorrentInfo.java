@@ -104,7 +104,7 @@ public class TorrentInfo {
 	 * 获取Piece数量
 	 */
 	public Integer pieceSize() {
-		return this.pieces.length / SystemConfig.SHA1_LENGTH;
+		return this.pieces.length / SystemConfig.SHA1_HASH_LENGTH;
 	}
 	
 	/**

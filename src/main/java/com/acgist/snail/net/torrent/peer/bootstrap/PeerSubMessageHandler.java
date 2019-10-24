@@ -303,7 +303,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		final boolean server = !this.handshakeSend; // 是否是服务端
 		final byte[] reserved = new byte[PeerConfig.RESERVED_LENGTH];
 		buffer.get(reserved);
-		final byte[] infoHash = new byte[SystemConfig.SHA1_LENGTH];
+		final byte[] infoHash = new byte[SystemConfig.SHA1_HASH_LENGTH];
 		buffer.get(infoHash);
 		final String infoHashHex = StringUtils.hex(infoHash);
 		final byte[] peerId = new byte[PeerConfig.PEER_ID_LENGTH];
