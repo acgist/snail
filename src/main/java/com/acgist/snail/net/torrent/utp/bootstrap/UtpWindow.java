@@ -32,9 +32,13 @@ public final class UtpWindow {
 	 */
 	private static final int MAX_TIMEOUT = 500 * 1000;
 	/**
-	 * 默认慢开始wnd数量
+	 * 最小窗口
 	 */
-	private static final int DEFAULT_SLOW_WND = 16;
+	private static final int MIN_WND_SIZE = 16;
+	/**
+	 * 最大窗口
+	 */
+	private static final int MAX_WND_SIZE = 64;
 	/**
 	 * <p>信号量获取超时时间：秒</p>
 	 * <p>防止长时间获取信号量，从而导致UTP队列阻塞。</p>
@@ -46,9 +50,7 @@ public final class UtpWindow {
 //	private static final int DEFAULT_LIMIT_WND = 64;
 	
 	//================流量控制、阻塞控制================//
-//	private volatile int nowWnd = 0;
-//	private volatile int slowWnd = DEFAULT_SLOW_WND;
-//	private volatile int limitWnd = DEFAULT_LIMIT_WND;
+	private volatile int wnd = MIN_WND_SIZE;
 	
 	//================超时================//
 	private volatile int rtt;
@@ -112,7 +114,7 @@ public final class UtpWindow {
 		this.seqnr = 1;
 		this.timestamp = 0;
 		this.wndMap = new LinkedHashMap<>();
-		this.semaphore = new Semaphore(DEFAULT_SLOW_WND);
+		this.semaphore = new Semaphore(MIN_WND_SIZE);
 	}
 	
 	public static final UtpWindow newInstance() {
@@ -195,6 +197,7 @@ public final class UtpWindow {
 					this.release(); // 释放信号量
 					this.take(seqnr); // 删除数据
 				});
+			this.wnd();
 		}
 	}
 	
@@ -280,57 +283,35 @@ public final class UtpWindow {
 	 * 计算超时时间
 	 */
 	private void timeout(int packetRtt) {
-		int delta = this.rtt - packetRtt;
+		final int delta = this.rtt - packetRtt;
 		this.rttVar += (Math.abs(delta) - this.rttVar) / 4;
 		this.rtt += (packetRtt - this.rtt) / 8;
 		this.timeout = Math.max(this.rtt + this.rttVar * 4, MAX_TIMEOUT);
 		LOGGER.debug("UTP超时时间：{}", this.timeout);
 	}
 	
-//	/**
-//	 * <dl>
-//	 * 	<dt>流量控制和阻塞控制</dt>
-//	 * 	<dd>慢开始：wnd * 2</dd>
-//	 * 	<dd>拥堵算法：wnd + 1</dd>
-//	 * 	<dd>出现超时（丢包）：wnd / 2</dd>
-//	 * </dl>
-//	 * 
-//	 * TODO：实时计算窗口大小（信号量）
-//	 */
-//	private void sendWindowLimit() {
-//		if(wndSizeLimit()) { // 客户端缓存即将耗尽
-//			// TODO：
-//		}
-//		this.nowWnd++;
-//		final boolean loss = timeoutRetry(); // 出现丢包
-//		if(loss) {
-//			this.nowWnd = 0;
-//			this.slowWnd = this.slowWnd / 2;
-//			if(this.slowWnd < DEFAULT_SLOW_WND) {
-//				this.slowWnd = DEFAULT_SLOW_WND;
-//			}
-//			if(this.limitWnd < this.slowWnd) {
-//				this.limitWnd = this.slowWnd;
-//			}
-//			LOGGER.debug("UTP阻塞控制：{}-{}-{}", this.nowWnd, this.slowWnd, this.limitWnd);
-//		} else if (this.nowWnd > this.slowWnd) {
-//			this.nowWnd = 0;
-//			if(this.slowWnd >= this.limitWnd) {
-//				this.slowWnd++;
-//				LOGGER.debug("UTP拥堵算法：{}-{}-{}", this.nowWnd, this.slowWnd, this.limitWnd);
-//			} else {
-//				this.slowWnd = this.slowWnd * 2;
-//				LOGGER.debug("UTP慢开始：{}-{}-{}", this.nowWnd, this.slowWnd, this.limitWnd);
-//			}
-//		}
-//	}
-//	
-//	/**
-//	 * 发送窗口获取客户端窗口是否限制：客户端窗口大小剩余最大时1/4
-//	 */
-//	private boolean wndSizeLimit() {
-//		return this.wndSize < (this.maxWndSize / 4);
-//	}
+	/**
+	 * <p>流量控制和阻塞控制</p>
+	 * <p>超时时间等于默认超时时间：窗口 + 1</p>
+	 * <p>超时时间大于默认超时时间：窗口 / 2</p>
+	 */
+	private void wnd() {
+		if(this.timeout <= MAX_TIMEOUT) {
+			if(this.wnd < MAX_WND_SIZE) {
+				this.wnd++;
+				this.release();
+			}
+		} else {
+			LOGGER.debug("出现超时：缩小窗口");
+			final int wnd = this.wnd / 2;
+			if(wnd > MIN_WND_SIZE) {
+				this.wnd = wnd;
+			} else {
+				this.wnd = MIN_WND_SIZE;
+			}
+		}
+		LOGGER.debug("UTP窗口大小：{}", this.wnd);
+	}
 	
 	/**
 	 * <p>获取信号量</p>
@@ -355,12 +336,13 @@ public final class UtpWindow {
 	
 	/**
 	 * 释放信号量
-	 * 
-	 * TODO：不能超过最大数量
 	 */
 	public void release() {
-		LOGGER.debug("信号量（释放）：{}", this.semaphore.availablePermits());
-		this.semaphore.release();
+		final int available = this.semaphore.availablePermits();
+		LOGGER.debug("信号量（释放）：{}", available);
+		if(available < this.wnd) {
+			this.semaphore.release();
+		}
 	}
 	
 	/**
