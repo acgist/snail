@@ -65,7 +65,7 @@ public class SystemConfig extends PropertiesConfig {
 	/**
 	 * SHA1的HASH值长度：20
 	 */
-	public static final int SHA1_LENGTH = 20;
+	public static final int SHA1_HASH_LENGTH = 20;
 	/**
 	 * 编码：GBK
 	 */

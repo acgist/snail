@@ -45,21 +45,33 @@ public class PeerConnectGroup {
 	
 	/**
 	 * <p>创建接入连接</p>
-	 * <p>如果Peer当前提供下载，可以直接给予上传，否者将验证是否超过了连接的最大数量。</p>
 	 */
 	public PeerConnect newPeerConnect(PeerSession peerSession, PeerSubMessageHandler peerSubMessageHandler) {
 		synchronized (this.peerConnects) {
 			LOGGER.debug("Peer接入：{}-{}", peerSession.host(), peerSession.peerPort());
-			if(!peerSession.downloading()) {
-				if(this.peerConnects.size() >= SystemConfig.getPeerSize()) {
-					LOGGER.debug("Peer接入数超过最大接入数量，拒绝连接：{}-{}", peerSession.host(), peerSession.peerPort());
-					return null;
-				}
+			if(!connectable(peerSession)) {
+				LOGGER.debug("Peer接入数超过最大接入数量，拒绝连接：{}-{}", peerSession.host(), peerSession.peerPort());
+				return null;
 			}
 			final PeerConnect peerConnect = PeerConnect.newInstance(peerSession, peerSubMessageHandler);
 			peerSession.status(PeerConfig.STATUS_UPLOAD);
 			this.offer(peerConnect);
 			return peerConnect;
+		}
+	}
+	
+	/**
+	 * <dl>
+	 * 	<dt>是否允许连接</dt>
+	 * 	<dd>Peer当前正在下载</dd>
+	 * 	<dd>当前连接小于最大连接数量</dd>
+	 * </dl>
+	 */
+	private boolean connectable(PeerSession peerSession) {
+		if(peerSession != null && peerSession.downloading()) {
+			return true;
+		} else {
+			return this.peerConnects.size() < SystemConfig.getPeerSize();
 		}
 	}
 	

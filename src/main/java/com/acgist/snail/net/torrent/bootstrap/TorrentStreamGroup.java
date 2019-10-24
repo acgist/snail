@@ -258,8 +258,8 @@ public class TorrentStreamGroup {
 	 */
 	public byte[] pieceHash(int index) {
 		final byte[] pieces = this.torrent.getInfo().getPieces();
-		final byte[] value = new byte[SystemConfig.SHA1_LENGTH];
-		System.arraycopy(pieces, index * SystemConfig.SHA1_LENGTH, value, 0, SystemConfig.SHA1_LENGTH);
+		final byte[] value = new byte[SystemConfig.SHA1_HASH_LENGTH];
+		System.arraycopy(pieces, index * SystemConfig.SHA1_HASH_LENGTH, value, 0, SystemConfig.SHA1_HASH_LENGTH);
 		return value;
 	}
 

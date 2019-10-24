@@ -57,13 +57,12 @@ public class PeerManager {
 	 * Peer存档队列拷贝
 	 */
 	public List<PeerSession> listPeers(String infoHashHex) {
-		synchronized (this.storagePeers) {
-			final List<PeerSession> list = this.storagePeers.get(infoHashHex);
-			if(list == null) {
-				return List.of();
-			} else {
-				return new ArrayList<>(list);
-			}
+		final var list = list(infoHashHex);
+		if(list == null) {
+			return List.of();
+		}
+		synchronized (list) {
+			return new ArrayList<>(list);
 		}
 	}
 	
@@ -92,11 +91,11 @@ public class PeerManager {
 	 * @return PeerSession，如果是本机IP返回null。
 	 */
 	public PeerSession newPeerSession(String infoHashHex, StatisticsSession parent, String host, Integer port, byte source) {
-		var list = list(infoHashHex);
-		var deque = deque(infoHashHex);
+		final var list = list(infoHashHex);
+		final var deque = deque(infoHashHex);
 		synchronized (list) {
 			synchronized (deque) {
-				PeerSession peerSession = findPeerSession(infoHashHex, host);
+				PeerSession peerSession = findPeerSession(list, host);
 				if(peerSession == null) {
 					if(LOGGER.isDebugEnabled()) {
 						LOGGER.debug("添加PeerSession：{}-{}，来源：{}", host, port, PeerConfig.source(source));
@@ -125,7 +124,7 @@ public class PeerManager {
 	 * 放入一个劣质的Peer：插入头部
 	 */
 	public void inferior(String infoHashHex, PeerSession peerSession) {
-		var deque = deque(infoHashHex);
+		final var deque = deque(infoHashHex);
 		synchronized (deque) {
 			deque.offerFirst(peerSession);
 		}
@@ -135,7 +134,7 @@ public class PeerManager {
 	 * 放入一个优质的Peer：插入尾部
 	 */
 	public void preference(String infoHashHex, PeerSession peerSession) {
-		var deque = deque(infoHashHex);
+		final var deque = deque(infoHashHex);
 		synchronized (deque) {
 			deque.offerLast(peerSession);
 		}
@@ -145,7 +144,7 @@ public class PeerManager {
 	 * 从尾部选择一个Peer下载：选择可用状态的Peer
 	 */
 	public PeerSession pick(String infoHashHex) {
-		var deque = deque(infoHashHex);
+		final var deque = deque(infoHashHex);
 		synchronized (deque) {
 			int index = 0;
 			final int size = deque.size();
@@ -243,7 +242,8 @@ public class PeerManager {
 	}
 	
 	/**
-	 * 获取上传中或者下载中的Peer队列拷贝
+	 * <p>获取活动的Peer队列拷贝</p>
+	 * <p>活动Peer：上传中、下载中</p>
 	 */
 	private List<PeerSession> listActivePeer(String infoHashHex) {
 		final var list = list(infoHashHex);
@@ -259,10 +259,12 @@ public class PeerManager {
 	}
 	
 	/**
-	 * 通过host获取Peer
+	 * <p>获取Peer</p>
+	 * 
+	 * @param list Peer队列
+	 * @param host IP地址
 	 */
-	private PeerSession findPeerSession(String infoHashHex, String host) {
-		final var list = list(infoHashHex);
+	private PeerSession findPeerSession(List<PeerSession> list, String host) {
 		final Optional<PeerSession> optional = list.stream()
 			.filter(peer -> {
 				return peer.equals(host);

@@ -7,7 +7,6 @@ import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Future;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
@@ -18,6 +17,8 @@ import com.acgist.snail.net.torrent.IMessageEncryptHandler;
 import com.acgist.snail.net.torrent.peer.PeerCryptMessageCodec;
 import com.acgist.snail.net.torrent.peer.PeerUnpackMessageCodec;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
+import com.acgist.snail.net.torrent.utp.bootstrap.UtpRequest;
+import com.acgist.snail.net.torrent.utp.bootstrap.UtpRequestQueue;
 import com.acgist.snail.net.torrent.utp.bootstrap.UtpService;
 import com.acgist.snail.net.torrent.utp.bootstrap.UtpWindow;
 import com.acgist.snail.net.torrent.utp.bootstrap.UtpWindowData;
@@ -101,14 +102,14 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	 */
 	private final AtomicBoolean connectLock;
 	/**
-	 * Peer代理
-	 */
-	private final PeerSubMessageHandler peerSubMessageHandler;
-	/**
 	 * <p>UTP窗口请求数据队列</p>
 	 * <p>UTP请求数据异步执行，防止阻塞导致不能及时处理响应信息。</p>
 	 */
-	private final BlockingQueue<UtpWindowData> requests = new LinkedBlockingQueue<>();
+	private final BlockingQueue<UtpRequest> requests;
+	/**
+	 * Peer代理
+	 */
+	private final PeerSubMessageHandler peerSubMessageHandler;
 	
 	/**
 	 * 服务端
@@ -134,6 +135,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 		this.sendWindow = UtpWindow.newInstance();
 		this.recvWindow = UtpWindow.newInstance();
 		this.connectLock = new AtomicBoolean(false);
+		this.requests = UtpRequestQueue.getInstance().queue();
 		this.socketAddress = socketAddress;
 		if(recv) { // 服务端
 			this.sendId = connectionId;
@@ -304,14 +306,13 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 			throw new NetException(e);
 		}
 		if(windowData != null) {
-			this.buildFuture();
 			LOGGER.debug("处理UTP数据：{}", windowData.getSeqnr());
 			this.state(windowData.getTimestamp(), windowData.getSeqnr());
 			// 同步处理
 //			this.messageCodec.decode(windowData.buffer());
 			// 异步处理
-			if(!this.requests.offer(windowData)) {
-				LOGGER.warn("UTP消息插入队列失败");
+			if(!this.requests.offer(UtpRequest.newInstance(windowData, this.messageCodec))) {
+				LOGGER.warn("UTP请求插入队列失败");
 			}
 		}
 	}
@@ -342,8 +343,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 		if(!this.connect) { // 没有连接
 			this.connect = this.available();
 			if(this.connect) {
-				// 注意：seqnr-1
-				this.recvWindow.connect(timestamp, (short) (seqnr - 1));
+				this.recvWindow.connect(timestamp, (short) (seqnr - 1)); // 注意：seqnr-1
 			}
 			synchronized (this.connectLock) {
 				this.connectLock.set(true);
@@ -464,28 +464,6 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 		} catch (NetException e) {
 			LOGGER.error("发送UTP消息异常", e);
 		}
-	}
-	
-	/**
-	 * <p>创建异步处理线程</p>
-	 */
-	private void buildFuture() {
-		if(this.future != null) {
-			return;
-		}
-		this.future = this.utpService.submit(() -> {
-			while(!this.close) {
-				try {
-					final var windowData = this.requests.take();
-					this.messageCodec.decode(windowData.buffer());
-				} catch (NetException e) {
-					LOGGER.error("UTP请求执行异常", e);
-				} catch (InterruptedException e) {
-					LOGGER.debug("UTP请求执行异常", e);
-					Thread.currentThread().interrupt();
-				}
-			}
-		});
 	}
 	
 	/**
