@@ -27,14 +27,14 @@ public class PeerUtils {
 	 * 读取IP和端口信息
 	 * 
 	 * @param buffer 数据
-	 * @param size 数据长度
+	 * @param length 数据长度
 	 */
-	public static final Map<String, Integer> read(ByteBuffer buffer, int size) {
+	public static final Map<String, Integer> read(ByteBuffer buffer, int length) {
 		if(buffer == null) {
 			return null;
 		}
 		final Map<String, Integer> data = new HashMap<>();
-		while (buffer.position() < size) {
+		while (buffer.position() < length) {
 			final String ip = NetUtils.decodeIntToIp(buffer.getInt());
 			final int port = NetUtils.decodePort(buffer.getShort());
 			data.put(ip, port);

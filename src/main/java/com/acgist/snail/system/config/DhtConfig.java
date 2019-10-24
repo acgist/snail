@@ -97,15 +97,15 @@ public class DhtConfig extends PropertiesConfig {
 	 */
 	public static final Integer IMPLIED_PORT_CONFIG = 0;
 	/**
-	 * GetPeer，Peer列表长度。
+	 * GetPeer：Peer列表长度
 	 */
-	public static final int GET_PEER_LENGTH = 100;
+	public static final int GET_PEER_SIZE = 32;
 	/**
 	 * NodeId长度
 	 */
 	public static final int NODE_ID_LENGTH = 20;
 	/**
-	 * Node最大数量，超过这个数量会均匀剔除多余Node。
+	 * Node最大数量：超过这个数量会均匀剔除多余Node
 	 */
 	public static final int MAX_NODE_SIZE = 1024;
 	/**

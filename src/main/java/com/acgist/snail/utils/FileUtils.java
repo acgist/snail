@@ -84,17 +84,9 @@ public class FileUtils {
 	}
 	
 	/**
-	 * 文件大小进制
-	 */
-	private static final int FILE_SIZE_SCALE = 1024;
-	/**
-	 * 文件大小：1MB
-	 */
-	private static final long FILE_SIZE_MB = 1024L * 1024;
-	/**
 	 * 文件大小单位
 	 */
-	private static final String[] FILE_SIZE_UNIT = {"B", "KB", "M", "G", "T"};
+	private static final String[] FILE_LENGTH_UNIT = {"B", "KB", "M", "G", "T"};
 	/**
 	 * <p>文件名禁用字符正则表达式</p>
 	 * <p>文件名禁用字符：\、/、:、*、?、<、>、|</p>
@@ -321,14 +313,14 @@ public class FileUtils {
 		}
 		int index = 0;
 		BigDecimal decimal = new BigDecimal(size);
-		while(decimal.longValue() >= FILE_SIZE_SCALE) {
-			if(++index == FILE_SIZE_UNIT.length) {
-				index = FILE_SIZE_UNIT.length - 1;
+		while(decimal.longValue() >= SystemConfig.DATA_SCALE) {
+			if(++index == FILE_LENGTH_UNIT.length) {
+				index = FILE_LENGTH_UNIT.length - 1;
 				break;
 			}
-			decimal = decimal.divide(new BigDecimal(FILE_SIZE_SCALE));
+			decimal = decimal.divide(new BigDecimal(SystemConfig.DATA_SCALE));
 		}
-		return decimal.setScale(2, RoundingMode.HALF_UP) + FILE_SIZE_UNIT[index];
+		return decimal.setScale(2, RoundingMode.HALF_UP) + FILE_LENGTH_UNIT[index];
 	}
 	
 	/**
@@ -341,7 +333,7 @@ public class FileUtils {
 			return 0D;
 		}
 		BigDecimal decimal = new BigDecimal(size);
-		decimal = decimal.divide(BigDecimal.valueOf(FILE_SIZE_MB));
+		decimal = decimal.divide(BigDecimal.valueOf(SystemConfig.ONE_MB));
 		return decimal.setScale(2, RoundingMode.HALF_UP).doubleValue();
 	}
 	

@@ -12,6 +12,7 @@ import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.repository.impl.ConfigRepository;
 import com.acgist.snail.system.bencode.BEncodeDecoder;
 import com.acgist.snail.system.bencode.BEncodeEncoder;
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -64,7 +65,7 @@ public class PeerEvaluator {
 	 * <p>最小计分下载大小：1M</p>
 	 * <p>如果计分时下载数据大小没有超过这个值将不计分。</p>
 	 */
-	private static final int MIN_SCOREABLE_DOWNLOAD_SIZE = 1024 * 1024;
+	private static final int MIN_SCOREABLE_DOWNLOAD_LENGTH = SystemConfig.ONE_MB;
 	/**
 	 * 范围配置
 	 */
@@ -124,7 +125,7 @@ public class PeerEvaluator {
 
 	/**
 	 * <p>计分</p>
-	 * <p>下载计分：下载大小 &ge; {@linkplain #MIN_SCOREABLE_DOWNLOAD_SIZE 最小计分下载大小}，可以重复计分。</p>
+	 * <p>下载计分：下载大小 &ge; {@linkplain #MIN_SCOREABLE_DOWNLOAD_LENGTH 最小计分下载大小}，可以重复计分。</p>
 	 * <p>注：不同步，允许运行出现误差。</p>
 	 */
 	public void score(PeerSession peerSession, Type type) {
@@ -135,7 +136,7 @@ public class PeerEvaluator {
 			return;
 		}
 		if(type == Type.download) { // 下载计分需要满足最小下载大小
-			if(peerSession.statistics().downloadSize() < MIN_SCOREABLE_DOWNLOAD_SIZE) {
+			if(peerSession.statistics().downloadSize() < MIN_SCOREABLE_DOWNLOAD_LENGTH) {
 				return;
 			}
 		}

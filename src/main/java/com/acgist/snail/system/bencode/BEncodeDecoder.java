@@ -365,7 +365,7 @@ public class BEncodeDecoder {
 			throw new ArgumentException("B编码格式错误（数字）：" + number);
 		}
 		final int length = Integer.parseInt(number);
-		if(length >= SystemConfig.MAX_NET_BUFFER_SIZE) {
+		if(length >= SystemConfig.MAX_NET_BUFFER_LENGTH) {
 			throw new PacketSizeException(length);
 		}
 		lengthBuilder.setLength(0);

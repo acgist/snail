@@ -49,11 +49,11 @@ public class NodeManager {
 	/**
 	 * Node查找时分片大小
 	 */
-	private static final int NODE_FIND_SLICE = 3;
+	private static final int NODE_FIND_SLICE_SIZE = 3;
 	/**
 	 * Node查找时分片最小列表长度
 	 */
-	private static final int NODE_FIND_SLICE_MIN_SIZE = NODE_FIND_SIZE * NODE_FIND_SLICE;
+	private static final int NODE_FIND_MIN_SLICE_SIZE = NODE_FIND_SIZE * NODE_FIND_SLICE_SIZE;
 	
 	/**
 	 * 当前客户端的Token
@@ -227,7 +227,7 @@ public class NodeManager {
 	/**
 	 * <p>查找Node</p>
 	 * <p>查找最近（异或运算）的一段NodeId。</p>
-	 * <p>查找时Node是一个环形结构，按照{@linkplain #NODE_FIND_SLICE 大小}分片。</p>
+	 * <p>查找时Node是一个环形结构，按照{@linkplain #NODE_FIND_SLICE_SIZE 大小}分片。</p>
 	 * 
 	 * @param nodes 节点列表
 	 * @param target 目标NodeId
@@ -244,11 +244,11 @@ public class NodeManager {
 		} else { // 接头
 			selectSize = end + nodeSize - begin;
 		}
-		if(selectSize < NODE_FIND_SLICE_MIN_SIZE) { // 小于最小列表时开始排序返回最近列表
+		if(selectSize < NODE_FIND_MIN_SLICE_SIZE) { // 小于最小列表时开始排序返回最近列表
 			return selectNode(nodes, target, begin, end);
 		} else { // 分片
 			// 分片中Node的数量
-			final int sliceSize = selectSize / NODE_FIND_SLICE;
+			final int sliceSize = selectSize / NODE_FIND_SLICE_SIZE;
 			int sliceA, sliceB, sliceC;
 			// 如果下标大于节点数量，表示从头开始选择。
 			if(end > begin) {

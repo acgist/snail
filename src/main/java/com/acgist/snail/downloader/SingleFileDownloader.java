@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.system.config.DownloadConfig;
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.IoUtils;
 
 /**
@@ -27,9 +28,9 @@ public abstract class SingleFileDownloader extends Downloader {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SingleFileDownloader.class);
 	
 	/**
-	 * 读取字节长度
+	 * 单次下载字节长度：16KB
 	 */
-	protected static final int EXCHANGE_BYTES_LENGTH = 16 * 1024;
+	protected static final int EXCHANGE_BYTES_LENGTH = 16 * SystemConfig.ONE_KB;
 	
 	/**
 	 * 输入流

@@ -157,7 +157,7 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	 */
 	private void loopMessage() {
 		if(available()) {
-			final ByteBuffer buffer = ByteBuffer.allocate(SystemConfig.TCP_BUFFER_SIZE);
+			final ByteBuffer buffer = ByteBuffer.allocate(SystemConfig.TCP_BUFFER_LENGTH);
 			this.socket.read(buffer, buffer, this);
 		}
 	}

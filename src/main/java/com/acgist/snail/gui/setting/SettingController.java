@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 import com.acgist.snail.gui.Choosers;
 import com.acgist.snail.gui.Controller;
 import com.acgist.snail.system.config.DownloadConfig;
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.FileUtils;
 
 import javafx.beans.value.ChangeListener;
@@ -34,9 +35,9 @@ public class SettingController extends Controller implements Initializable {
 //	private static final Logger LOGGER = LoggerFactory.getLogger(SettingController.class);
 
 	/**
-	 * 大小滑块滑动大小
+	 * 大小滑块滑动大小：超过这个值时滑动必须是该值的整数倍
 	 */
-	private static final int MIN_SLID_SIZE = 512;
+	private static final int STEP_WIDTH = 512;
 	
 	@FXML
 	private FlowPane root;
@@ -135,11 +136,10 @@ public class SettingController extends Controller implements Initializable {
 	
 	private ChangeListener<? super Number> bufferListener = (obs, oldVal, newVal) -> {
 		int value = newVal.intValue();
-		// 超过512KB时设置为512整数倍
-		if(value > MIN_SLID_SIZE) {
-			value = value / MIN_SLID_SIZE * MIN_SLID_SIZE;
-		} else if(value == 0) { // 不能设置：0
-			value = 1;
+		if(value > STEP_WIDTH) { // 超过512KB时设置为512KB整数倍
+			value = value / STEP_WIDTH * STEP_WIDTH;
+		} else if(value < SystemConfig.MIN_BUFFER_KB) { // 最小下载速度
+			value = SystemConfig.MIN_BUFFER_KB;
 		}
 		this.buffer.setValue(value);
 	};
@@ -152,16 +152,16 @@ public class SettingController extends Controller implements Initializable {
 	private StringConverter<Double> bufferFormatter = new StringConverter<Double>() {
 		@Override
 		public String toString(Double value) {
-			return (value.intValue() / 1024) + "M";
+			return (value.intValue() / SystemConfig.DATA_SCALE) + "M";
 		}
 		@Override
 		public Double fromString(String label) {
-			return Double.valueOf(label.substring(0, label.length() - 1)) * 1024;
+			return Double.valueOf(label.substring(0, label.length() - 1)) * SystemConfig.DATA_SCALE;
 		}
 	};
 	
 	private ChangeListener<? super Number> memoryBufferListener = (obs, oldVal, newVal) -> {
-		int value = newVal.intValue();
+		final int value = newVal.intValue();
 		this.memoryBuffer.setValue(value);
 	};
 	
