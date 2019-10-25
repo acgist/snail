@@ -422,6 +422,13 @@ public final class PeerSession implements IStatistics {
 	}
 	
 	/**
+	 * 连接中：上传中或者下载中
+	 */
+	public boolean connected() {
+		return uploading() || downloading();
+	}
+	
+	/**
 	 * 判断是否包含该状态
 	 */
 	public boolean verifyStatus(byte status) {

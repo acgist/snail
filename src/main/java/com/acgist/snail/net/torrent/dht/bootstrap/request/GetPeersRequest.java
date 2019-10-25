@@ -52,7 +52,7 @@ public class GetPeersRequest extends Request {
 			if(CollectionUtils.isNotEmpty(list)) {
 				final var values = list.stream()
 					.filter(peer -> peer.available())
-					.filter(peer -> peer.uploading() || peer.downloading())
+					.filter(peer -> peer.connected())
 					.limit(DhtConfig.GET_PEER_SIZE)
 					.map(peer -> {
 						buffer.putInt(NetUtils.encodeIpToInt(peer.host()));
