@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.system.context.NatContext;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NetUtils;
@@ -20,10 +21,8 @@ import com.acgist.snail.utils.XMLUtils;
 /**
  * <p>UPNP Service</p>
  * <p>Internet Gateway Device</p>
- * <p>协议链接：https://tools.ietf.org/html/rfc6970</p>
  * <p>端口映射，将内网的端口映射到外网中。如果外网端口已经被映射，需要设置新的映射端口。</p>
- * 
- * TODO：多路由环境配置
+ * <p>注：多路由环境使用STUN进行内网穿透</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -68,13 +67,13 @@ public class UpnpService {
 	 */
 	private String serviceType;
 	/**
-	 * 外网IP
-	 */
-	private String externalIpAddress;
-	/**
 	 * 可用状态
 	 */
 	private volatile boolean available = false;
+	/**
+	 * 映射状态
+	 */
+	private volatile boolean useable = false;
 
 	private UpnpService() {
 	}
@@ -115,10 +114,10 @@ public class UpnpService {
 	}
 
 	/**
-	 * 外网IP地址
+	 * 是否可用
 	 */
-	public String externalIpAddress() {
-		return this.externalIpAddress;
+	public boolean useable() {
+		return this.useable;
 	}
 	
 	/**
@@ -211,23 +210,30 @@ public class UpnpService {
 		if(!this.available) {
 			return;
 		}
-		setPortMapping();
-		setExternalIpAddress();
+		final String externalIpAddress = this.getExternalIPAddress();
+		if(NetUtils.isLocalIp(externalIpAddress)) {
+			LOGGER.warn("UPNP端口映射获取外网IP地址为本地地址");
+		} else {
+			SystemConfig.setExternalIpAddress(externalIpAddress);
+			setPortMapping();
+		}
+		NatContext.getInstance().unlock();
 	}
 	
 	/**
 	 * 端口释放
 	 */
 	public void release() {
-		if(!this.available) {
-			return;
-		}
-		try {
-			final boolean udpOK = this.deletePortMapping(SystemConfig.getTorrentPortExt(), Protocol.Type.udp);
-			final boolean tcpOK = this.deletePortMapping(SystemConfig.getTorrentPortExt(), Protocol.Type.tcp);
-			LOGGER.info("释放UPNP端口：UDP：{}、TCP：{}", udpOK, tcpOK);
-		} catch (NetException e) {
-			LOGGER.error("释放UPNP端口异常", e);
+		if(this.useable && this.available) {
+			this.useable = false;
+			this.available = false;
+			try {
+				final boolean udpOK = this.deletePortMapping(SystemConfig.getTorrentPortExt(), Protocol.Type.udp);
+				final boolean tcpOK = this.deletePortMapping(SystemConfig.getTorrentPortExt(), Protocol.Type.tcp);
+				LOGGER.info("释放UPNP端口：UDP：{}、TCP：{}", udpOK, tcpOK);
+			} catch (NetException e) {
+				LOGGER.error("释放UPNP端口异常", e);
+			}
 		}
 	}
 	
@@ -275,28 +281,18 @@ public class UpnpService {
 			}
 		}
 		if(udpStatus == Status.mapable) {
+			this.useable = true;
 			SystemConfig.setTorrentPortExt(portExt);
 			final boolean udpOk = this.addPortMapping(SystemConfig.getTorrentPort(), portExt, Protocol.Type.udp);
 			final boolean tcpOk = this.addPortMapping(SystemConfig.getTorrentPort(), portExt, Protocol.Type.tcp);
 			LOGGER.info("UPNP端口映射（注册）：UDP（{}-{}-{}）、TCP（{}-{}-{}）", SystemConfig.getTorrentPort(), portExt, udpOk, SystemConfig.getTorrentPort(), portExt, tcpOk);
 		} else if(udpStatus == Status.useable) {
+			this.useable = true;
 			SystemConfig.setTorrentPortExt(portExt);
 			LOGGER.info("UPNP端口映射（可用）：UDP（{}-{}-{}）、TCP（{}-{}-{}）", SystemConfig.getTorrentPort(), portExt, true, SystemConfig.getTorrentPort(), portExt, true);
 		} else {
+			this.useable = false;
 			LOGGER.warn("UPNP端口映射失败");
-		}
-	}
-	
-	/**
-	 * 外网IP地址
-	 */
-	private void setExternalIpAddress() throws NetException {
-		final String externalIpAddress = this.getExternalIPAddress();
-		LOGGER.info("外网IP地址：{}", externalIpAddress);
-		if(this.externalIpAddress == null) {
-			this.externalIpAddress = externalIpAddress;
-		} else if(!this.externalIpAddress.equals(externalIpAddress)) {
-			this.externalIpAddress = externalIpAddress;
 		}
 	}
 	
