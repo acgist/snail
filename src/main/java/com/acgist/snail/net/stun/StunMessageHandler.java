@@ -187,8 +187,6 @@ public class StunMessageHandler extends UdpMessageHandler {
 	 * </pre>
 	 * 
 	 * @param buffer 消息
-	 * 
-	 * TODO：IPv6
 	 */
 	private void mappedAddress(ByteBuffer buffer) {
 		if(buffer.remaining() < 8) {
@@ -197,12 +195,16 @@ public class StunMessageHandler extends UdpMessageHandler {
 		}
 		final byte header = buffer.get();
 		final byte family = buffer.get();
-		final short port = buffer.getShort();
-		final int ip = buffer.getInt();
-		final int portExt = NetUtils.decodePort(port);
-		final String ipExt = NetUtils.decodeIntToIp(ip);
-		LOGGER.debug("STUN消息（MAPPED_ADDRESS）：{}-{}-{}-{}", header, family, portExt, ipExt);
-		StunService.getInstance().mapping(ipExt, portExt);
+		if(family == StunConfig.IPV4) {
+			final short port = buffer.getShort();
+			final int ip = buffer.getInt();
+			final int portExt = NetUtils.decodePort(port);
+			final String ipExt = NetUtils.decodeIntToIp(ip);
+			LOGGER.debug("STUN消息（MAPPED_ADDRESS）：{}-{}-{}-{}", header, family, portExt, ipExt);
+			StunService.getInstance().mapping(ipExt, portExt);
+		} else {
+			// TODO：IPv6
+		}
 	}
 	
 	/**
@@ -219,8 +221,6 @@ public class StunMessageHandler extends UdpMessageHandler {
 	 * </pre>
 	 * 
 	 * @param buffer 消息
-	 * 
-	 * TODO：IPv6
 	 */
 	public void xorMappedAddress(ByteBuffer buffer) {
 		if(buffer.remaining() < 8) {
@@ -229,14 +229,18 @@ public class StunMessageHandler extends UdpMessageHandler {
 		}
 		final byte header = buffer.get();
 		final byte family = buffer.get();
-		final short port = buffer.getShort();
-		final int ip = buffer.getInt();
-		final short portShort = (short) (port ^ (StunConfig.MAGIC_COOKIE >> 16));
-		final int ipInt = ip ^ StunConfig.MAGIC_COOKIE;
-		final int portExt = NetUtils.decodePort(portShort);
-		final String ipExt = NetUtils.decodeIntToIp(ipInt);
-		LOGGER.debug("STUN消息（XOR_MAPPED_ADDRESS）：{}-{}-{}-{}", header, family, portExt, ipExt);
-		StunService.getInstance().mapping(ipExt, portExt);
+		if(family == StunConfig.IPV4) {
+			final short port = buffer.getShort();
+			final int ip = buffer.getInt();
+			final short portShort = (short) (port ^ (StunConfig.MAGIC_COOKIE >> 16));
+			final int ipInt = ip ^ StunConfig.MAGIC_COOKIE;
+			final int portExt = NetUtils.decodePort(portShort);
+			final String ipExt = NetUtils.decodeIntToIp(ipInt);
+			LOGGER.debug("STUN消息（XOR_MAPPED_ADDRESS）：{}-{}-{}-{}", header, family, portExt, ipExt);
+			StunService.getInstance().mapping(ipExt, portExt);
+		} else {
+			// TODO：IPv6
+		}
 	}
 	
 	/**
