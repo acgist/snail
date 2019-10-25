@@ -89,6 +89,8 @@ public class PeerManager {
 	 * @param port 端口
 	 * 
 	 * @return PeerSession，如果是本机IP返回null。
+	 * 
+	 * TODO：接入Peer调整Peer位置顺序
 	 */
 	public PeerSession newPeerSession(String infoHashHex, StatisticsSession parent, String host, Integer port, byte source) {
 		synchronized (this) {
