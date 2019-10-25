@@ -112,7 +112,7 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler, IExten
 	 * <p>处理消息：rendezvous</p>
 	 * <p>如果已经连接到目标方，返回连接消息，其他情况返回响应错误。</p>
 	 */
-	public void rendezvous() {
+	private void rendezvous() {
 	}
 	
 	/**
