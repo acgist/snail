@@ -34,6 +34,8 @@ public class StunTest {
 	public void mappedAddress() {
 //		StunClient client = StunClient.newInstance("stun.l.google.com", 19302);
 //		StunClient client = StunClient.newInstance("stun1.l.google.com", 19302);
+//		StunClient client = StunClient.newInstance("stun2.l.google.com", 19302);
+//		StunClient client = StunClient.newInstance("stun3.l.google.com", 19302);
 //		StunClient client = StunClient.newInstance("stun4.l.google.com", 19302);
 //		StunClient client = StunClient.newInstance("stun.xten.com");
 //		StunClient client = StunClient.newInstance("stunserver.org");
