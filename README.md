@@ -102,8 +102,15 @@ SnailLauncher.exe
 |[UDP Tracker Protocol for BitTorrent](http://www.bittorrent.org/beps/bep_0015.html)|√|
 |[The BitTorrent Protocol Specification](http://www.bittorrent.org/beps/bep_0003.html)|√|
 |[Extension for Peers to Send Metadata Files](http://www.bittorrent.org/beps/bep_0009.html)|√|
+
+#### 其他进度
+
+|协议（BEP）|进度|
+|:--|:--:|
+|IPv6|x|
+|[UPnP](http://upnp.org/specs/arch/UPnP-arch-DeviceArchitecture-v1.0.pdf)|√|
+|[STUN](https://www.rfc-editor.org/rfc/rfc5389.txt)|○|
 |[Message Stream Encryption](https://wiki.vuze.com/w/Message_Stream_Encryption)|√|
-|IPv6（(DHT/Peer/PEX/Tracker）|x|
 
 *√=完成、○-进行中、×-未开始、?-待定*
 
