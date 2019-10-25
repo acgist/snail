@@ -81,13 +81,13 @@ public class UpnpRequest {
 	 * </xmp>
 	 * </pre>
 	 * 
-	 * @param port 端口
+	 * @param portExt 外网端口
 	 * @param protocol 协议
 	 */
-	public String buildGetSpecificPortMappingEntry(int port, Protocol.Type protocol) {
+	public String buildGetSpecificPortMappingEntry(int portExt, Protocol.Type protocol) {
 		final Element mapping = this.xml.elementNS(this.body, "u:GetSpecificPortMappingEntry", this.serviceType);
 		this.xml.element(mapping, "NewRemoteHost", "");
-		this.xml.element(mapping, "NewExternalPort", String.valueOf(port));
+		this.xml.element(mapping, "NewExternalPort", String.valueOf(portExt));
 		this.xml.element(mapping, "NewProtocol", protocol.name().toUpperCase());
 		return xml();
 	}
@@ -149,13 +149,13 @@ public class UpnpRequest {
 	 * </xmp>
 	 * </pre>
 	 * 
-	 * @param port 端口
+	 * @param portExt 外网端口
 	 * @param protocol 协议
 	 */
-	public String buildDeletePortMapping(int port, Protocol.Type protocol) {
+	public String buildDeletePortMapping(int portExt, Protocol.Type protocol) {
 		final Element mapping = this.xml.elementNS(body, "u:DeletePortMapping", this.serviceType);
 		this.xml.element(mapping, "NewRemoteHost", "");
-		this.xml.element(mapping, "NewExternalPort", String.valueOf(port));
+		this.xml.element(mapping, "NewExternalPort", String.valueOf(portExt));
 		this.xml.element(mapping, "NewProtocol", protocol.name().toUpperCase());
 		return xml();
 	}

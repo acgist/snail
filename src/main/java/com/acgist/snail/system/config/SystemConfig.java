@@ -155,11 +155,11 @@ public class SystemConfig extends PropertiesConfig {
 	 */
 	private int servicePort;
 	/**
-	 * BT服务端口（本地端口：Peer、DHT、UTP）
+	 * BT服务端口（本地端口：Peer、DHT、UTP、STUN）
 	 */
 	private int torrentPort;
 	/**
-	 * BT服务端口（外网映射：Peer、DHT、UTP）
+	 * BT服务端口（外网映射：Peer、DHT、UTP、STUN）
 	 */
 	private int torrentPortExt = 0;
 	/**
@@ -228,7 +228,7 @@ public class SystemConfig extends PropertiesConfig {
 		LOGGER.info("官网与源码：{}", this.source);
 		LOGGER.info("问题与建议：{}", this.support);
 		LOGGER.info("系统服务端口：{}", this.servicePort);
-		LOGGER.info("BT服务端口（Peer、DHT、UTP）：{}", this.torrentPort);
+		LOGGER.info("BT服务端口（Peer、DHT、UTP、STUN）：{}", this.torrentPort);
 		LOGGER.info("单个任务Peer数量（同时下载）：{}", this.peerSize);
 		LOGGER.info("单个任务Tracker数量：{}", this.trackerSize);
 		LOGGER.info("任务即将完成时可以重复下载的Piece数量：{}", this.pieceRepeatSize);
@@ -290,23 +290,23 @@ public class SystemConfig extends PropertiesConfig {
 	}
 
 	/**
-	 * <p>BT服务端口（本机：Peer、DHT、UTP）</p>
+	 * <p>BT服务端口（本机：Peer、DHT、UTP、STUN）</p>
 	 */
 	public static final int getTorrentPort() {
 		return INSTANCE.torrentPort;
 	}
 	
 	/**
-	 * <p>设置BT服务端口（外网：Peer、DHT、UTP）</p>
+	 * <p>设置BT服务端口（外网：Peer、DHT、UTP、STUN）</p>
 	 * <p>UPNP映射时如果端口已经被占用时重新设置的外网端口号</p>
 	 */
 	public static final void setTorrentPortExt(int torrentPortExt) {
-		LOGGER.info("服务端口（外网：Peer、DHT、UTP）：{}", torrentPortExt);
+		LOGGER.info("服务端口（外网：Peer、DHT、UTP、STUN）：{}", torrentPortExt);
 		INSTANCE.torrentPortExt = torrentPortExt;
 	}
 	
 	/**
-	 * <p>BT服务端口（外网：Peer、DHT、UTP）</p>
+	 * <p>BT服务端口（外网：Peer、DHT、UTP、STUN）</p>
 	 * <p>如果不存在返回{@linkplain #getTorrentPort() 本机端口}。</p>
 	 */
 	public static final int getTorrentPortExt() {
@@ -317,7 +317,7 @@ public class SystemConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * BT服务端口（外网：Peer、DHT、UTP）：short
+	 * BT服务端口（外网：Peer、DHT、UTP、STUN）：short
 	 */
 	public static final Short getTorrentPortExtShort() {
 		return NetUtils.encodePort(getTorrentPortExt());

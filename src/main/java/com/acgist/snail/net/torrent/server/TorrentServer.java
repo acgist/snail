@@ -4,7 +4,7 @@ import com.acgist.snail.net.UdpServer;
 import com.acgist.snail.system.config.SystemConfig;
 
 /**
- * Torrent服务端：UTP、DHT
+ * Torrent服务端：UTP、DHT、STUN
  * 
  * @author acgist
  * @since 1.1.0
@@ -12,7 +12,7 @@ import com.acgist.snail.system.config.SystemConfig;
 public class TorrentServer extends UdpServer<TorrentAcceptHandler> {
 
 	private TorrentServer() {
-		super(SystemConfig.getTorrentPort(), "Torrent(UTP/DHT) Server", TorrentAcceptHandler.getInstance());
+		super(SystemConfig.getTorrentPort(), "Torrent(UTP/DHT/STUN) Server", TorrentAcceptHandler.getInstance());
 		this.handle();
 	}
 	

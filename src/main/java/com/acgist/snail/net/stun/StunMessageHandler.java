@@ -1,0 +1,319 @@
+package com.acgist.snail.net.stun;
+
+import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.acgist.snail.net.UdpMessageHandler;
+import com.acgist.snail.system.config.StunConfig;
+import com.acgist.snail.system.config.StunConfig.AttributeType;
+import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.system.exception.PacketSizeException;
+import com.acgist.snail.utils.ArrayUtils;
+import com.acgist.snail.utils.NetUtils;
+import com.acgist.snail.utils.NumberUtils;
+
+/**
+ * <p>STUN消息代理</p>
+ * 
+ * <p>协议链接：https://www.rfc-editor.org/rfc/rfc3489.txt</p>
+ * <p>协议链接：https://www.rfc-editor.org/rfc/rfc5389.txt</p>
+ * 
+ * <p>STUN消息头格式</p>
+ * <pre>
+   0                   1                   2                   3
+   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |0 0|     STUN Message Type     |         Message Length        |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |                         Magic Cookie                          |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |                     Transaction ID (96 bits)                  |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ * </pre>
+ * <p>STUN消息类型（Message Type）格式</p>
+ * <pre>
+    0                 1
+    2  3  4 5 6 7 8 9 0 1 2 3 4 5
+
+   +--+--+-+-+-+-+-+-+-+-+-+-+-+-+
+   |M |M |M|M|M|C|M|M|M|C|M|M|M|M|
+   |11|10|9|8|7|1|6|5|4|0|3|2|1|0|
+   +--+--+-+-+-+-+-+-+-+-+-+-+-+-+
+ * </pre>
+ * <p>STUN属性格式</p>
+ * <pre>
+   0                   1                   2                   3
+   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |         Type                  |            Length             |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |                         Value (variable)                ....
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ * </pre>
+ * 
+ * @author acgist
+ * @since 1.2.0
+ */
+public class StunMessageHandler extends UdpMessageHandler {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(StunMessageHandler.class);
+	
+	/**
+	 * 属性对齐：STUN属性32位（4字节）对齐，不足时填充。
+	 */
+	private static final short STUN_ATTRIBUTE_PADDING_LENGTH = 4;
+
+	/**
+	 * <p>只处理响应消息，不处理请求和指示消息。</p>
+	 * 
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException {
+		buffer.flip();
+		final short type = buffer.getShort();
+		final var messageType = StunConfig.MessageType.valueOf(type);
+		if(messageType == null) {
+			LOGGER.warn("不支持的STUN消息类型：{}", type);
+			return;
+		}
+		final short length = buffer.getShort();
+		if(length > SystemConfig.MAX_NET_BUFFER_LENGTH) {
+			throw new PacketSizeException(length);
+		}
+		final int magicCookie = buffer.getInt();
+		if(magicCookie != StunConfig.MAGIC_COOKIE) {
+			LOGGER.warn("STUN消息错误：MAGIC COOKIE（{}）", magicCookie);
+			return;
+		}
+		final byte[] transactionId = new byte[StunConfig.TRANSACTION_ID_LENGTH];
+		buffer.get(transactionId);
+		switch (messageType) {
+		case SUCCESS_RESPONSE:
+		case ERROR_RESPONSE:
+			loopResponseAttribute(buffer);
+			break;
+		default:
+			LOGGER.warn("未适配的STUN消息类型：{}", messageType);
+			break;
+		}
+	}
+	
+	/**
+	 * 循环处理响应属性
+	 */
+	private void loopResponseAttribute(ByteBuffer buffer) throws PacketSizeException {
+		while(buffer.hasRemaining()) {
+			onResponseAttribute(buffer);
+		}
+	}
+	
+	/**
+	 * <p>处理响应属性</p>
+	 */
+	private void onResponseAttribute(ByteBuffer buffer) throws PacketSizeException {
+		if(buffer.remaining() < 4) {
+			final short length = (short) buffer.remaining();
+			final ByteBuffer message = readMessage(buffer, length);
+			LOGGER.error("STUN消息长度错误：{}-{}", length, new String(message.array()));
+			return;
+		}
+		final short type = buffer.getShort();
+		// 4字节对齐
+		final short length = (short) (NumberUtils.ceilDiv(buffer.getShort(), STUN_ATTRIBUTE_PADDING_LENGTH) * STUN_ATTRIBUTE_PADDING_LENGTH);
+		if(length > SystemConfig.MAX_NET_BUFFER_LENGTH) {
+			throw new PacketSizeException(length);
+		}
+		if(buffer.remaining() < length) {
+			LOGGER.error("STUN消息长度错误（剩余）：{}-{}", buffer.remaining(), length);
+			return;
+		}
+		final var attributeType = StunConfig.AttributeType.valueOf(type);
+		if(attributeType == null) {
+			final ByteBuffer message = readMessage(buffer, length);
+			LOGGER.warn("不支持的STUN属性类型：{}-{}", type, new String(message.array()));
+			return;
+		}
+		LOGGER.debug("STUN消息：{}-{}", attributeType, length);
+		final ByteBuffer message = readMessage(buffer, length);
+		switch (attributeType) {
+		case MAPPED_ADDRESS:
+			mappedAddress(message);
+			break;
+		case XOR_MAPPED_ADDRESS:
+			xorMappedAddress(message);
+			break;
+		case ERROR_CODE:
+			errorCode(message);
+			break;
+		default:
+			LOGGER.warn("未适配的STUN属性类型：{}-{}", attributeType, new String(message.array()));
+			break;
+		}
+	}
+	
+	/**
+	 * 读取属性消息
+	 */
+	private ByteBuffer readMessage(ByteBuffer buffer, short length) {
+		final byte[] message = new byte[length];
+		buffer.get(message);
+		return ByteBuffer.wrap(message);
+	}
+	
+	/**
+	 * 发送{@link AttributeType#MAPPED_ADDRESS}消息
+	 */
+	public void mappedAddress() {
+		pushBindingMessage(StunConfig.MessageType.REQUEST, StunConfig.AttributeType.MAPPED_ADDRESS, null);
+	}
+	
+	/**
+	 * 处理{@link AttributeType#MAPPED_ADDRESS}消息
+	 * 
+	 * <pre>
+       0                   1                   2                   3
+       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |0 0 0 0 0 0 0 0|    Family     |           Port                |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |                 Address (32 bits or 128 bits)                 |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	 * </pre>
+	 * 
+	 * @param buffer 消息
+	 * 
+	 * TODO：IPv6
+	 */
+	private void mappedAddress(ByteBuffer buffer) {
+		if(buffer.remaining() < 8) {
+			LOGGER.warn("STUN消息长度错误（MAPPED_ADDRESS）：{}", buffer.remaining());
+			return;
+		}
+		final byte header = buffer.get();
+		final byte family = buffer.get();
+		final short port = buffer.getShort();
+		final int ip = buffer.getInt();
+		final int portExt = NetUtils.decodePort(port);
+		final String ipExt = NetUtils.decodeIntToIp(ip);
+		LOGGER.debug("STUN消息（MAPPED_ADDRESS）：{}-{}-{}-{}", header, family, portExt, ipExt);
+	}
+	
+	/**
+	 * 处理{@link AttributeType#XOR_MAPPED_ADDRESS}消息
+	 * 
+	 * <pre>
+      0                   1                   2                   3
+      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     |x x x x x x x x|    Family     |         X-Port                |
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     |                X-Address (Variable)
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	 * </pre>
+	 * 
+	 * @param buffer 消息
+	 * 
+	 * TODO：IPv6
+	 */
+	public void xorMappedAddress(ByteBuffer buffer) {
+		if(buffer.remaining() < 8) {
+			LOGGER.warn("STUN消息长度错误（XOR_MAPPED_ADDRESS）：{}", buffer.remaining());
+			return;
+		}
+		final byte header = buffer.get();
+		final byte family = buffer.get();
+		final short port = buffer.getShort();
+		final int ip = buffer.getInt();
+		final short portShort = (short) (port ^ (StunConfig.MAGIC_COOKIE >> 16));
+		final int ipInt = ip ^ StunConfig.MAGIC_COOKIE;
+		final int portExt = NetUtils.decodePort(portShort);
+		final String ipExt = NetUtils.decodeIntToIp(ipInt);
+		LOGGER.debug("STUN消息（XOR_MAPPED_ADDRESS）：{}-{}-{}-{}", header, family, portExt, ipExt);
+	}
+	
+	/**
+	 * 处理{@link AttributeType#ERROR_CODE}消息
+	 * 
+	 * <pre>
+       0                   1                   2                   3
+       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |           Reserved, should be 0         |Class|     Number    |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |      Reason Phrase (variable)                                ..
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	 * </pre>
+	 * 
+	 * @param buffer 消息
+	 */
+	public void errorCode(ByteBuffer buffer) {
+		if(buffer.remaining() < 4) {
+			LOGGER.warn("STUN消息长度错误（ERROR_CODE）：{}", buffer.remaining());
+			return;
+		}
+		buffer.getShort(); // 消耗0
+		final byte clazz = buffer.get();
+		final byte number = buffer.get();
+		String message = null;
+		if(buffer.hasRemaining()) {
+			final byte[] bytes = new byte[buffer.remaining()];
+			buffer.get(bytes);
+			message = new String(bytes);
+		}
+		LOGGER.warn("STUN错误消息：{}{}-{}", clazz, number, message);
+	}
+	
+	/**
+	 * 发送绑定消息
+	 */
+	private void pushBindingMessage(StunConfig.MessageType messageType, StunConfig.AttributeType attributeType, byte[] value) {
+		final byte[] message = buildBindingMessage(messageType, buildAttribute(attributeType, value));
+		try {
+			this.send(message);
+		} catch (NetException e) {
+			LOGGER.error("STUN消息发送异常", e);
+		}
+	}
+	
+	/**
+	 * 创建绑定消息
+	 */
+	private byte[] buildBindingMessage(StunConfig.MessageType messageType, byte[] attribute) {
+		return this.buildMessage(StunConfig.MethodType.BINDING, messageType, attribute);
+	}
+	
+	/**
+	 * 创建消息
+	 */
+	private byte[] buildMessage(StunConfig.MethodType methodType, StunConfig.MessageType messageType, byte[] attribute) {
+		final ByteBuffer buffer = ByteBuffer.allocate(StunConfig.STUN_HEADER_LENGTH + attribute.length);
+		buffer.putShort(messageType.type(methodType)); // Message Type
+		buffer.putShort((short) attribute.length); // Message Length
+		buffer.putInt(StunConfig.MAGIC_COOKIE); // Magic Cookie
+		buffer.put(ArrayUtils.random(StunConfig.TRANSACTION_ID_LENGTH)); // Transaction ID
+		buffer.put(attribute);
+		return buffer.array();
+	}
+
+	/**
+	 * 创建属性
+	 */
+	private byte[] buildAttribute(StunConfig.AttributeType attributeType, byte[] value) {
+		final short valueLength = (short) (value == null ? 0 : value.length);
+		// 4字节对齐
+		final int length = NumberUtils.ceilDiv(StunConfig.ATTRIBUTE_HEADER_LENGTH + valueLength, STUN_ATTRIBUTE_PADDING_LENGTH) * STUN_ATTRIBUTE_PADDING_LENGTH;
+		final ByteBuffer buffer = ByteBuffer.allocate(length);
+		buffer.putShort(attributeType.value());
+		buffer.putShort(valueLength);
+		if(valueLength > 0) {
+			buffer.put(value);
+		}
+		return buffer.array();
+	}
+	
+}

@@ -1,24 +1,45 @@
 package com.acgist.snail.net.stun;
 
+import java.net.InetSocketAddress;
+
+import com.acgist.snail.net.UdpClient;
+import com.acgist.snail.net.torrent.server.TorrentServer;
+import com.acgist.snail.system.config.StunConfig;
+import com.acgist.snail.utils.NetUtils;
+
 /**
  * Stun客户端
- * 
- * <p>协议链接：https://www.rfc-editor.org/rfc/rfc3489.txt</p>
- * <p>协议链接：https://www.rfc-editor.org/rfc/rfc5389.txt</p>
  * 
  * <p>注：简单的STUN客户端，并没有实现所有的功能。</p>
  * 
  * @author acgist
  * @since 1.2.0
  */
-public class StunClient {
+public class StunClient extends UdpClient<StunMessageHandler> {
 	
-    public static final int TYPE_REQUEST = 0b00;
+	public StunClient(InetSocketAddress socketAddress) {
+		super("STUN Client", new StunMessageHandler(), socketAddress);
+	}
+	
+	public static final StunClient newInstance(final String host) {
+		return newInstance(NetUtils.buildSocketAddress(host, StunConfig.DEFAULT_PORT));
+	}
+	
+	public static final StunClient newInstance(final String host, final int port) {
+		return newInstance(NetUtils.buildSocketAddress(host, port));
+	}
+	
+	public static final StunClient newInstance(InetSocketAddress socketAddress) {
+		return new StunClient(socketAddress);
+	}
 
-    public static final int TYPE_INDICATION = 0b01;
-
-    public static final int TYPE_RESPONSE_SUCCESS = 0b10;
-
-    public static final int TYPE_RESPONSE_ERROR = 0b11;
-
+	@Override
+	public boolean open() {
+		return open(TorrentServer.getInstance().channel());
+	}
+	
+	public void mappedAddress() {
+		this.handler.mappedAddress();
+	}
+	
 }
