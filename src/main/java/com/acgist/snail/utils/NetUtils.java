@@ -43,31 +43,31 @@ public class NetUtils {
 	 */
 	private static final String IP_REGEX = "(\\d{0,3}\\.){3}\\d{0,3}";
 	/**
-	 * A类私用地址
-	 * A类范围：0.0.0.0-127.255.255.255
-	 * 默认子网掩码：255.0.0.0
+	 * <p>A类私用地址</p>
+	 * <p>A类范围：0.0.0.0-127.255.255.255</p>
+	 * <p>默认子网掩码：255.0.0.0</p>
 	 */
-	private static final long A_IP_BEGIN = encodeIpToLong("10.0.0.0");
-	private static final long A_IP_END = encodeIpToLong("10.255.255.255");
+	private static final long A_NATIVE_IP_BEGIN = encodeIpToLong("10.0.0.0");
+	private static final long A_NATIVE_IP_END = encodeIpToLong("10.255.255.255");
 	/**
-	 * B类私用地址
-	 * B类范围：128.0.0.0-191.255.255.255
-	 * 默认子网掩码：255.255.0.0
+	 * B类私用地址</p>
+	 * B类范围：128.0.0.0-191.255.255.255</p>
+	 * 默认子网掩码：255.255.0.0</p>
 	 */
-	private static final long B_IP_BEGIN = encodeIpToLong("172.16.0.0");
-	private static final long B_IP_END = encodeIpToLong("172.31.255.255");
+	private static final long B_NATIVE_IP_BEGIN = encodeIpToLong("172.16.0.0");
+	private static final long B_NATIVE_IP_END = encodeIpToLong("172.31.255.255");
 	/**
-	 * C类私用地址
-	 * C类范围：192.0.0.0-223.255.255.255
-	 * 默认子网掩码：255.255.255.0
+	 * <p>C类私用地址</p>
+	 * <p>C类范围：192.0.0.0-223.255.255.255</p>
+	 * <p>默认子网掩码：255.255.255.0</p>
 	 */
-	private static final long C_IP_BEGIN = encodeIpToLong("192.168.0.0");
-	private static final long C_IP_END = encodeIpToLong("192.168.255.255");
+	private static final long C_NATIVE_IP_BEGIN = encodeIpToLong("192.168.0.0");
+	private static final long C_NATIVE_IP_END = encodeIpToLong("192.168.255.255");
 	/**
 	 * 本地回环地址
 	 */
-	private static final long L_IP_BEGIN = encodeIpToLong("127.0.0.0");
-	private static final long L_IP_END = encodeIpToLong("127.255.255.255");
+	private static final long L_NATIVE_IP_BEGIN = encodeIpToLong("127.0.0.0");
+	private static final long L_NATIVE_IP_END = encodeIpToLong("127.255.255.255");
 	
 	/**
 	 * 验证IP地址
@@ -189,10 +189,10 @@ public class NetUtils {
 	public static final boolean isLocalIp(String ip) {
 		final long value = encodeIpToLong(ip);
 		return
-			(A_IP_BEGIN < value && value < A_IP_END) ||
-			(B_IP_BEGIN < value && value < B_IP_END) ||
-			(C_IP_BEGIN < value && value < C_IP_END) ||
-			(L_IP_BEGIN < value && value < L_IP_END);
+			(A_NATIVE_IP_BEGIN <= value && value <= A_NATIVE_IP_END) ||
+			(B_NATIVE_IP_BEGIN <= value && value <= B_NATIVE_IP_END) ||
+			(C_NATIVE_IP_BEGIN <= value && value <= C_NATIVE_IP_END) ||
+			(L_NATIVE_IP_BEGIN <= value && value <= L_NATIVE_IP_END);
 	}
 	
 	/**

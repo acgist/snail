@@ -205,6 +205,10 @@ public class SystemConfig extends PropertiesConfig {
 	 * Peer（连接、接入）优化周期（秒）
 	 */
 	private int peerOptimizeInterval;
+	/**
+	 * 外网IP地址
+	 */
+	private volatile String externalIpAddress;
 	
 	/**
 	 * 初始化
@@ -421,4 +425,19 @@ public class SystemConfig extends PropertiesConfig {
 		return INSTANCE.nameEn + " " + INSTANCE.version;
 	}
 
+	/**
+	 * 设置外网IP地址
+	 */
+	public static final void setExternalIpAddress(String externalIpAddress) {
+		LOGGER.info("设置外网IP地址：{}", externalIpAddress);
+		INSTANCE.externalIpAddress = externalIpAddress;
+	}
+	
+	/**
+	 * 获取外网IP地址
+	 */
+	public static final String getExternalIpAddress() {
+		return INSTANCE.externalIpAddress;
+	}
+	
 }

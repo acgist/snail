@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.UdpMessageHandler;
+import com.acgist.snail.net.stun.bootstrap.StunService;
 import com.acgist.snail.system.config.StunConfig;
 import com.acgist.snail.system.config.StunConfig.AttributeType;
 import com.acgist.snail.system.config.SystemConfig;
@@ -201,6 +202,7 @@ public class StunMessageHandler extends UdpMessageHandler {
 		final int portExt = NetUtils.decodePort(port);
 		final String ipExt = NetUtils.decodeIntToIp(ip);
 		LOGGER.debug("STUN消息（MAPPED_ADDRESS）：{}-{}-{}-{}", header, family, portExt, ipExt);
+		StunService.getInstance().mapping(ipExt, portExt);
 	}
 	
 	/**
@@ -234,6 +236,7 @@ public class StunMessageHandler extends UdpMessageHandler {
 		final int portExt = NetUtils.decodePort(portShort);
 		final String ipExt = NetUtils.decodeIntToIp(ipInt);
 		LOGGER.debug("STUN消息（XOR_MAPPED_ADDRESS）：{}-{}-{}-{}", header, family, portExt, ipExt);
+		StunService.getInstance().mapping(ipExt, portExt);
 	}
 	
 	/**

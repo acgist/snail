@@ -37,7 +37,10 @@ public class StunClient extends UdpClient<StunMessageHandler> {
 	public boolean open() {
 		return open(TorrentServer.getInstance().channel());
 	}
-	
+
+	/**
+	 * 获取映射信息
+	 */
 	public void mappedAddress() {
 		this.handler.mappedAddress();
 	}
