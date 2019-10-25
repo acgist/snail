@@ -1,5 +1,8 @@
 package com.acgist.snail.utils;
 
+import java.util.Random;
+
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.ArgumentException;
 
 /**
@@ -137,6 +140,18 @@ public class ArrayUtils {
 	 */
 	public static final boolean isNotEmpty(byte[] value) {
 		return !isEmpty(value);
+	}
+	
+	/**
+	 * 随机字符数组
+	 */
+	public static final byte[] random(int length) {
+		final byte[] bytes = new byte[length];
+		final Random random = NumberUtils.random();
+		for (int index = 0; index < length; index++) {
+			bytes[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_MAX);
+		}
+		return bytes;
 	}
 	
 }

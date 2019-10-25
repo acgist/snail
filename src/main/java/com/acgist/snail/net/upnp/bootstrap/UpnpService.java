@@ -146,12 +146,12 @@ public class UpnpService {
 	 * 
 	 * @return {@linkplain Status 状态}
 	 */
-	public Status getSpecificPortMappingEntry(int port, Protocol.Type protocol) throws NetException {
+	public Status getSpecificPortMappingEntry(int portExt, Protocol.Type protocol) throws NetException {
 		if(!this.available) {
 			return Status.uninit;
 		}
 		UpnpRequest upnpRequest = UpnpRequest.newRequest(this.serviceType);
-		String xml = upnpRequest.buildGetSpecificPortMappingEntry(port, protocol);
+		String xml = upnpRequest.buildGetSpecificPortMappingEntry(portExt, protocol);
 		var client = HTTPClient.newInstance(this.controlURL);
 		var response = client
 			.header("SOAPAction", "\"" + this.serviceType + "#GetSpecificPortMappingEntry\"")
@@ -191,12 +191,12 @@ public class UpnpService {
 	 * <p>删除端口映射：DeletePortMapping</p>
 	 * <p>请求头：SOAPAction:"urn:schemas-upnp-org:service:WANIPConnection:1#DeletePortMapping"</p>
 	 */
-	public boolean deletePortMapping(int port, Protocol.Type protocol) throws NetException {
+	public boolean deletePortMapping(int portExt, Protocol.Type protocol) throws NetException {
 		if(!this.available) {
 			return false;
 		}
 		UpnpRequest upnpRequest = UpnpRequest.newRequest(this.serviceType);
-		String xml = upnpRequest.buildDeletePortMapping(port, protocol);
+		String xml = upnpRequest.buildDeletePortMapping(portExt, protocol);
 		var client = HTTPClient.newInstance(this.controlURL);
 		var response = client
 			.header("SOAPAction", "\"" + this.serviceType + "#DeletePortMapping\"")

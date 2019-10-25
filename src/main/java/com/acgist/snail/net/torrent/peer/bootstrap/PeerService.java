@@ -54,7 +54,7 @@ public class PeerService {
 	 * 生成PeerId
 	 */
 	private byte[] buildPeerId() {
-		final byte[] peerId = new byte[PeerConfig.PEER_ID_LENGTH];
+		final byte[] peerIds = new byte[PeerConfig.PEER_ID_LENGTH];
 		final StringBuilder builder = new StringBuilder(8);
 		builder.append("-").append(PEER_ID_PREFIX);
 		final String version = SystemConfig.getVersion().replace(".", "");
@@ -66,13 +66,13 @@ public class PeerService {
 		}
 		builder.append("-");
 		final String peerIdPrefix = builder.toString();
-		System.arraycopy(peerIdPrefix.getBytes(), 0, peerId, 0, peerIdPrefix.length());
+		System.arraycopy(peerIdPrefix.getBytes(), 0, peerIds, 0, peerIdPrefix.length());
 		final Random random = NumberUtils.random();
 		for (int index = peerIdPrefix.length(); index < PeerConfig.PEER_ID_LENGTH; index++) {
-			peerId[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_MAX);
+			peerIds[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_MAX);
 		}
-		LOGGER.info("PeerId：{}", new String(peerId));
-		return peerId;
+		LOGGER.info("PeerId：{}", new String(peerIds));
+		return peerIds;
 	}
 	
 	/**

@@ -7,7 +7,7 @@ import com.acgist.snail.net.torrent.server.TorrentServer;
 import com.acgist.snail.system.initializer.Initializer;
 
 /**
- * <p>初始化BT（DHT、UTP）服务</p>
+ * <p>初始化BT（DHT、UTP、STUN）服务</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -25,7 +25,7 @@ public class TorrentInitializer extends Initializer {
 	
 	@Override
 	protected void init() {
-		LOGGER.info("初始化BT（DHT、UTP）服务");
+		LOGGER.info("初始化BT（DHT、UTP、STUN）服务");
 		TorrentServer.getInstance();
 	}
 

@@ -111,11 +111,11 @@ public class NodeManager {
 	private byte[] buildToken() {
 		LOGGER.debug("生成Token");
 		final byte[] token = new byte[TOKEN_LENGTH];
-		final byte[] bytes = (SystemConfig.LETTER + SystemConfig.LETTER_UPPER + SystemConfig.DIGIT).getBytes();
-		final int length = bytes.length;
+		final byte[] tokens = (SystemConfig.LETTER + SystemConfig.LETTER_UPPER + SystemConfig.DIGIT).getBytes();
+		final int length = tokens.length;
 		final Random random = NumberUtils.random();
 		for (int index = 0; index < TOKEN_LENGTH; index++) {
-			token[index] = bytes[random.nextInt(length)];
+			token[index] = tokens[random.nextInt(length)];
 		}
 		return token;
 	}

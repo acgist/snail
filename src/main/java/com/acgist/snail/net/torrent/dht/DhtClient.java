@@ -38,6 +38,11 @@ public class DhtClient extends UdpClient<DhtMessageHandler> {
 		return open(TorrentServer.getInstance().channel());
 	}
 	
+	/**
+	 * Ping
+	 * 
+	 * @return 节点
+	 */
 	public NodeSession ping() {
 		return this.handler.ping(this.socketAddress);
 	}
