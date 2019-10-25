@@ -151,6 +151,17 @@ public class SystemConfig extends PropertiesConfig {
 	 */
 	private String support;
 	/**
+	 * <p>STUN服务器</p>
+	 * <dl>
+	 * 	<dt>格式：</dt>
+	 * 	<dd>host</dd>
+	 * 	<dd>host:port</dd>
+	 * 	<dd>stun:host</dd>
+	 * 	<dd>stun:host:port</dd>
+	 * </dl>
+	 */
+	private String stunServer;
+	/**
 	 * 系统服务端口（本地服务：启动检测）
 	 */
 	private int servicePort;
@@ -199,22 +210,23 @@ public class SystemConfig extends PropertiesConfig {
 	 * 初始化
 	 */
 	private void init() {
-		INSTANCE.name = getString("acgist.system.name");
-		INSTANCE.nameEn = getString("acgist.system.name.en");
-		INSTANCE.version = getString("acgist.system.version");
-		INSTANCE.author = getString("acgist.system.author");
-		INSTANCE.source = getString("acgist.system.source");
-		INSTANCE.support = getString("acgist.system.support");
-		INSTANCE.servicePort = getInteger("acgist.service.port", 16888);
-		INSTANCE.torrentPort = getInteger("acgist.torrent.port", 18888);
-		INSTANCE.peerSize = getInteger("acgist.peer.size", 20);
-		INSTANCE.trackerSize = getInteger("acgist.tracker.size", 50);
-		INSTANCE.pieceRepeatSize = getInteger("acgist.piece.repeat.size", 4);
-		INSTANCE.dhtInterval = getInteger("acgist.dht.interval", 120);
-		INSTANCE.pexInterval = getInteger("acgist.pex.interval", 120);
-		INSTANCE.lsdInterval = getInteger("acgist.lsd.interval", 120);
-		INSTANCE.trackerInterval = getInteger("acgist.tracker.interval", 120);
-		INSTANCE.peerOptimizeInterval = getInteger("acgist.peer.optimize.interval", 60);
+		this.name = getString("acgist.system.name");
+		this.nameEn = getString("acgist.system.name.en");
+		this.version = getString("acgist.system.version");
+		this.author = getString("acgist.system.author");
+		this.source = getString("acgist.system.source");
+		this.support = getString("acgist.system.support");
+		this.stunServer = getString("acgist.system.stun.server");
+		this.servicePort = getInteger("acgist.service.port", 16888);
+		this.torrentPort = getInteger("acgist.torrent.port", 18888);
+		this.peerSize = getInteger("acgist.peer.size", 20);
+		this.trackerSize = getInteger("acgist.tracker.size", 50);
+		this.pieceRepeatSize = getInteger("acgist.piece.repeat.size", 4);
+		this.dhtInterval = getInteger("acgist.dht.interval", 120);
+		this.pexInterval = getInteger("acgist.pex.interval", 120);
+		this.lsdInterval = getInteger("acgist.lsd.interval", 120);
+		this.trackerInterval = getInteger("acgist.tracker.interval", 120);
+		this.peerOptimizeInterval = getInteger("acgist.peer.optimize.interval", 60);
 	}
 
 	/**
@@ -282,6 +294,13 @@ public class SystemConfig extends PropertiesConfig {
 		return INSTANCE.support;
 	}
 
+	/**
+	 * STUN服务器
+	 */
+	public static final String getStunServer() {
+		return INSTANCE.stunServer;
+	}
+	
 	/**
 	 * 系统服务端口
 	 */
