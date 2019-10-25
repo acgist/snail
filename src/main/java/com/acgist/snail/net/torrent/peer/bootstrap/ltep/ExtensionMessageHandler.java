@@ -181,7 +181,11 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 		}
 		// 获取端口
 		final Long port = decoder.getLong(EX_P);
-		if(port != null && this.peerSession.peerPort() == null) {
+		if(port != null) {
+			final Integer oldPort = this.peerSession.peerPort();
+			if(oldPort != null && oldPort.intValue() != port.intValue()) {
+				LOGGER.debug("Peer扩展握手获取端口和原始端口不一致：{}-{}", oldPort, port);
+			}
 			this.peerSession.peerPort(port.intValue());
 		}
 		// 获取种子InfoHash大小
