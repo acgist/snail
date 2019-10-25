@@ -86,7 +86,7 @@ SnailLauncher.exe
 
 #### BT进度
 
-|协议（BEP）|进度|
+|BEP|进度|
 |:--|:--:|
 |[DHT Protocol](http://www.bittorrent.org/beps/bep_0005.html)|√|
 |[Fast Extension](http://www.bittorrent.org/beps/bep_0006.html)|×|
@@ -105,7 +105,7 @@ SnailLauncher.exe
 
 #### 其他进度
 
-|协议（BEP）|进度|
+|协议|进度|
 |:--|:--:|
 |IPv6|x|
 |[UPnP](http://upnp.org/specs/arch/UPnP-arch-DeviceArchitecture-v1.0.pdf)|√|
