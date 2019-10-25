@@ -255,7 +255,7 @@ public class PeerManager {
 		synchronized (list) {
 			return list.stream()
 				.filter(session -> session.available())
-				.filter(session -> session.uploading() || session.downloading())
+				.filter(session -> session.connected())
 				.collect(Collectors.toList());
 		}
 	}

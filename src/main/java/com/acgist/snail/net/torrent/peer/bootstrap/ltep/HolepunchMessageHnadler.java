@@ -17,7 +17,12 @@ import com.acgist.snail.utils.NetUtils;
 /**
  * <p>Holepunch extension</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0055.html</p>
- * <p>如果不希望连接时，忽略连接消息，而不是返回错误响应。</p>
+ * <dl>
+ * 	<dt>注意事项</dt>
+ * 	<dd>目标方不希望连接发起方时，直接忽略消息，而不能响应错误给中继。</dd>
+ * 	<dd>如果发起方没有在握手协议中表示对holepunch扩展的支持，中继应该忽略消息。</dd>
+ * 	<dd>如果目标方已经连接发起方，应该忽略连接消息。</dd>
+ * </dl>
  * 
  * @author acgist
  * @since 1.1.0
@@ -104,7 +109,8 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler, IExten
 	}
 	
 	/**
-	 * 处理消息：rendezvous
+	 * <p>处理消息：rendezvous</p>
+	 * <p>如果已经连接到目标方，返回连接消息，其他情况返回响应错误。</p>
 	 */
 	public void rendezvous() {
 	}

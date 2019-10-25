@@ -445,8 +445,8 @@ public class PeerConfig {
 	 * <p>Holepunch扩展协议错误编码</p>
 	 * <ul>
 	 *	<li>0x00：没有错误：成功 </li>
-	 *	<li>0x01：NoSuchPeer：目标端点无效</li>
-	 *	<li>0x02：NotConnected：中继未连接</li>
+	 *	<li>0x01：NoSuchPeer：目标无效</li>
+	 *	<li>0x02：NotConnected：目标未连接</li>
 	 *	<li>0x03：NoSupport：目标不支持</li>
 	 *	<li>0x04：NoSelf：目标属于中继</li>
 	 * </ul>
@@ -455,9 +455,9 @@ public class PeerConfig {
 		
 		/** 成功 */
 		E_00((byte) 0x00),
-		/** 目标端点无效 */
+		/** 目标无效 */
 		E_01((byte) 0x01),
-		/** 中继未连接 */
+		/** 目标未连接 */
 		E_02((byte) 0x02),
 		/** 目标不支持 */
 		E_03((byte) 0x03),
