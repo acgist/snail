@@ -21,9 +21,9 @@ public class CryptConfig {
 	public enum CryptAlgo {
 		
 		/** 明文 */
-		plaintext(0x01),
+		PLAINTEXT(0x01),
 		/** ARC4 */
-		arc4(	  0x02);
+		ARC4(	  0x02);
 		
 		private int value;
 		
@@ -43,13 +43,13 @@ public class CryptConfig {
 	public enum Strategy {
 		
 		/** 明文 */
-		plaintext		(false, CryptAlgo.plaintext.value),
+		plaintext		(false, CryptAlgo.PLAINTEXT.value),
 		/** 兼容：偏爱明文 */
-		preferPlaintext	(false, CryptAlgo.plaintext.value | CryptAlgo.arc4.value),
+		preferPlaintext	(false, CryptAlgo.PLAINTEXT.value | CryptAlgo.ARC4.value),
 		/** 兼容：偏爱加密 */
-		preferEncrypt	(true,  CryptAlgo.arc4.value | CryptAlgo.plaintext.value),
+		preferEncrypt	(true,  CryptAlgo.ARC4.value | CryptAlgo.PLAINTEXT.value),
 		/** 加密 */
-		encrypt			(true,  CryptAlgo.arc4.value);
+		encrypt			(true,  CryptAlgo.ARC4.value);
 		
 		/**
 		 * 是否加密
