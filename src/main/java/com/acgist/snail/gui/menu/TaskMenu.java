@@ -119,7 +119,7 @@ public class TaskMenu extends Menu {
 			return;
 		}
 		MainWindow.getInstance().controller().selected().forEach(session -> {
-			if(session.entity().getType() == Type.torrent) {
+			if(session.entity().getType() == Type.TORRENT) {
 				TorrentWindow.getInstance().controller().tree(session);
 			}
 		});
@@ -133,7 +133,7 @@ public class TaskMenu extends Menu {
 		final File file = Choosers.chooseDirectory(MainWindow.getInstance().stage(), "种子保存目录");
 		if (file != null) {
 			MainWindow.getInstance().controller().selected().forEach(session -> {
-				if(session.entity().getType() == Type.torrent) {
+				if(session.entity().getType() == Type.TORRENT) {
 					String torrent = session.entity().getTorrent();
 					String fileName = FileUtils.fileNameFromUrl(torrent);
 					String newFile = FileUtils.file(file.getPath(), fileName);

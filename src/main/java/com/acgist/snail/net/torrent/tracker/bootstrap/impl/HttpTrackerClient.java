@@ -46,7 +46,7 @@ public final class HttpTrackerClient extends TrackerClient {
 	private String trackerId;
 	
 	private HttpTrackerClient(String scrapeUrl, String announceUrl) throws NetException {
-		super(scrapeUrl, announceUrl, Protocol.Type.http);
+		super(scrapeUrl, announceUrl, Protocol.Type.HTTP);
 	}
 
 	public static final HttpTrackerClient newInstance(String announceUrl) throws NetException {

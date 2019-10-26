@@ -48,7 +48,7 @@ public class TorrentProtocol extends Protocol {
 	private TorrentHandle handle = TorrentHandle.COPY;
 	
 	private TorrentProtocol() {
-		super(Type.torrent);
+		super(Type.TORRENT);
 	}
 	
 	public static final TorrentProtocol getInstance() {

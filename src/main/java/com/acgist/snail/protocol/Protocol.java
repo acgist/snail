@@ -27,7 +27,7 @@ public abstract class Protocol {
 	public enum Type {
 
 		/** ws、wss：websocket */
-		ws(
+		WS(
 			new String[] {"ws://.+", "wss://.+"},
 			new String[] {"ws://", "wss://"},
 			new String[] {},
@@ -35,7 +35,7 @@ public abstract class Protocol {
 			""
 		),
 		/** udp */
-		udp(
+		UDP(
 			new String[] {"udp://.+"},
 			new String[] {"udp://"},
 			new String[] {},
@@ -43,7 +43,7 @@ public abstract class Protocol {
 			""
 		),
 		/** tcp */
-		tcp(
+		TCP(
 			new String[] {"tcp://.+"},
 			new String[] {"tcp://"},
 			new String[] {},
@@ -51,7 +51,7 @@ public abstract class Protocol {
 			""
 		),
 		/** ftp */
-		ftp(
+		FTP(
 			new String[] {"ftp://.+"},
 			new String[] {"ftp://"},
 			new String[] {},
@@ -59,7 +59,7 @@ public abstract class Protocol {
 			""
 		),
 		/** http、https */
-		http(
+		HTTP(
 			new String[] {"http://.+", "https://.+"},
 			new String[] {"http://", "https://"},
 			new String[] {},
@@ -67,7 +67,8 @@ public abstract class Protocol {
 			""
 		),
 		/** 磁力链接 */
-		magnet(
+		MAGNET(
+			// 注意顺序：后面需要验证磁力链接的具体格式
 			new String[] {"magnet:\\?.+", "[a-zA-Z0-9]{32}", "[a-zA-Z0-9]{40}"},
 			new String[] {"magnet:?xt=urn:btih:"},
 			new String[] {},
@@ -75,7 +76,7 @@ public abstract class Protocol {
 			""
 		),
 		/** 迅雷链接 */
-		thunder(
+		THUNDER(
 			new String[] {"thunder://.+"},
 			new String[] {"thunder://"},
 			new String[] {},
@@ -83,7 +84,7 @@ public abstract class Protocol {
 			""
 		),
 		/** BT */
-		torrent(
+		TORRENT(
 			new String[] {".+\\.torrent"},
 			new String[] {},
 			new String[] {".torrent"},
@@ -205,28 +206,28 @@ public abstract class Protocol {
 			if(verifyMagnet(hash)) {
 				return hash;
 			}
-			return Type.magnet.defaultPrefix + hash.toLowerCase();
+			return Type.MAGNET.defaultPrefix + hash.toLowerCase();
 		}
 		
 		/**
 		 * 验证磁力链接（完整链接）
 		 */
 		public static final boolean verifyMagnet(String url) {
-			return StringUtils.regex(url, Type.magnet.regexs[0], true);
+			return StringUtils.regex(url, Type.MAGNET.regexs[0], true);
 		}
 		
 		/**
 		 * 验证32位磁力链接HASH
 		 */
 		public static final boolean verifyMagnetHash32(String url) {
-			return StringUtils.regex(url, Type.magnet.regexs[1], true);
+			return StringUtils.regex(url, Type.MAGNET.regexs[1], true);
 		}
 		
 		/**
 		 * 验证40位磁力链接HASH
 		 */
 		public static final boolean verifyMagnetHash40(String url) {
-			return StringUtils.regex(url, Type.magnet.regexs[2], true);
+			return StringUtils.regex(url, Type.MAGNET.regexs[2], true);
 		}
 		
 	}

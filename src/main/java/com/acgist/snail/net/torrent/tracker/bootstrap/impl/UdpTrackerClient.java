@@ -46,7 +46,7 @@ public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker
 	private final TrackerClient trackerClient;
 
 	private UdpTrackerClient(String scrapeUrl, String announceUrl) throws NetException {
-		super(scrapeUrl, announceUrl, Protocol.Type.udp);
+		super(scrapeUrl, announceUrl, Protocol.Type.UDP);
 		URI uri = URI.create(announceUrl);
 		this.host = uri.getHost();
 		this.port = uri.getPort();

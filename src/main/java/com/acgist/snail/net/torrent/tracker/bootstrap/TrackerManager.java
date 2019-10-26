@@ -97,7 +97,7 @@ public class TrackerManager {
 	 */
 	public void connectionId(int trackerId, long connectionId) {
 		final var client = this.trackerClients.get(trackerId);
-		if(client != null && client.type() == Protocol.Type.udp) {
+		if(client != null && client.type() == Protocol.Type.UDP) {
 			final UdpTrackerClient udpTrackerClient = (UdpTrackerClient) client;
 			udpTrackerClient.connectionId(connectionId);
 		}
@@ -231,13 +231,13 @@ public class TrackerManager {
 	 * TODO：ws客户度
 	 */
 	private TrackerClient buildClient(final String announceUrl) throws DownloadException {
-		if(Protocol.Type.http.verify(announceUrl)) {
+		if(Protocol.Type.HTTP.verify(announceUrl)) {
 			try {
 				return HttpTrackerClient.newInstance(announceUrl);
 			} catch (NetException e) {
 				throw new DownloadException(e);
 			}
-		} else if(Protocol.Type.udp.verify(announceUrl)) {
+		} else if(Protocol.Type.UDP.verify(announceUrl)) {
 			try {
 				return UdpTrackerClient.newInstance(announceUrl);
 			} catch (NetException e) {

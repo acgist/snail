@@ -130,7 +130,7 @@ public class TorrentBuilder {
 	 * 文件名称
 	 */
 	private String fileName() {
-		return this.infoHash.infoHashHex() + Protocol.Type.torrent.defaultSuffix();
+		return this.infoHash.infoHashHex() + Protocol.Type.TORRENT.defaultSuffix();
 	}
 
 	/**

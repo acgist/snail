@@ -228,8 +228,8 @@ public class UpnpService {
 			this.useable = false;
 			this.available = false;
 			try {
-				final boolean udpOK = this.deletePortMapping(SystemConfig.getTorrentPortExt(), Protocol.Type.udp);
-				final boolean tcpOK = this.deletePortMapping(SystemConfig.getTorrentPortExt(), Protocol.Type.tcp);
+				final boolean udpOK = this.deletePortMapping(SystemConfig.getTorrentPortExt(), Protocol.Type.UDP);
+				final boolean tcpOK = this.deletePortMapping(SystemConfig.getTorrentPortExt(), Protocol.Type.TCP);
 				LOGGER.info("释放UPNP端口：UDP：{}、TCP：{}", udpOK, tcpOK);
 			} catch (NetException e) {
 				LOGGER.error("释放UPNP端口异常", e);
@@ -267,13 +267,13 @@ public class UpnpService {
 				break;
 			}
 			// UDP
-			udpStatus = this.getSpecificPortMappingEntry(portExt, Protocol.Type.udp);
+			udpStatus = this.getSpecificPortMappingEntry(portExt, Protocol.Type.UDP);
 			if(udpStatus == Status.UNINIT || udpStatus == Status.DISABLE) {
 				portExt++;
 				continue;
 			}
 			// TCP
-			tcpStatus = this.getSpecificPortMappingEntry(portExt, Protocol.Type.tcp);
+			tcpStatus = this.getSpecificPortMappingEntry(portExt, Protocol.Type.TCP);
 			if(udpStatus == tcpStatus) {
 				break;
 			} else {
@@ -283,8 +283,8 @@ public class UpnpService {
 		if(udpStatus == Status.MAPABLE) {
 			this.useable = true;
 			SystemConfig.setTorrentPortExt(portExt);
-			final boolean udpOk = this.addPortMapping(SystemConfig.getTorrentPort(), portExt, Protocol.Type.udp);
-			final boolean tcpOk = this.addPortMapping(SystemConfig.getTorrentPort(), portExt, Protocol.Type.tcp);
+			final boolean udpOk = this.addPortMapping(SystemConfig.getTorrentPort(), portExt, Protocol.Type.UDP);
+			final boolean tcpOk = this.addPortMapping(SystemConfig.getTorrentPort(), portExt, Protocol.Type.TCP);
 			LOGGER.info("UPNP端口映射（注册）：UDP（{}-{}-{}）、TCP（{}-{}-{}）", SystemConfig.getTorrentPort(), portExt, udpOk, SystemConfig.getTorrentPort(), portExt, tcpOk);
 		} else if(udpStatus == Status.USEABLE) {
 			this.useable = true;

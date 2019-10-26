@@ -24,7 +24,7 @@ public class ThunderProtocol extends Protocol {
 	private static final ThunderProtocol INSTANCE = new ThunderProtocol();
 
 	private ThunderProtocol() {
-		super(Type.thunder);
+		super(Type.THUNDER);
 	}
 	
 	public static final ThunderProtocol getInstance() {
@@ -33,7 +33,7 @@ public class ThunderProtocol extends Protocol {
 	
 	@Override
 	public String name() {
-		return "迅雷";
+		return "迅雷链接";
 	}
 	
 	@Override
@@ -48,7 +48,7 @@ public class ThunderProtocol extends Protocol {
 	
 	@Override
 	protected Protocol convert() throws DownloadException {
-		final String prefix = Protocol.Type.thunder.prefix(this.url);
+		final String prefix = Protocol.Type.THUNDER.prefix(this.url);
 		final String url = this.url.substring(prefix.length());
 		String realUrl = new String(Base64.getMimeDecoder().decode(url)); // getMimeDecoder防止长度非4的整数倍导致的异常
 		realUrl = realUrl.substring(2, realUrl.length() - 2);

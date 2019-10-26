@@ -50,7 +50,7 @@ public class MagnetBuilder {
 	 * <p>解析磁力链接磁力链接信息</p>
 	 */
 	public Magnet build() throws DownloadException {
-		if(!Protocol.Type.magnet.verify(this.url)) {
+		if(!Protocol.Type.MAGNET.verify(this.url)) {
 			throw new DownloadException("磁力链接格式错误：" + this.url);
 		}
 		this.magnet = new Magnet();
