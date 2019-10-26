@@ -72,7 +72,7 @@ SnailLauncher.exe
 <dependency>
     <groupId>com.acgist</groupId>
     <artifactId>snail</artifactId>
-    <version>{version}</version>
+    <version>{release.version}</version>
 </dependency>
 ```
 
