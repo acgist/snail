@@ -150,20 +150,20 @@ public class StunConfig {
     	/**
     	 * 属性ID
     	 */
-    	private final short value;
+    	private final short id;
     	
-    	private AttributeType(short value) {
-    		this.value = value;
+    	private AttributeType(short id) {
+    		this.id = id;
     	}
     	
-    	public short value() {
-    		return this.value;
+    	public short id() {
+    		return this.id;
     	}
 
-		public static final AttributeType valueOf(short type) {
+		public static final AttributeType valueOf(short id) {
 			final var types = AttributeType.values();
 			for (AttributeType attributeType : types) {
-				if(attributeType.value == type) {
+				if(attributeType.id == id) {
 					return attributeType;
 				}
 			}

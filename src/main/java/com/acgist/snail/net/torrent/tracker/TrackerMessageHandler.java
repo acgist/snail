@@ -31,13 +31,13 @@ public class TrackerMessageHandler extends UdpMessageHandler {
 	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) {
 		buffer.flip();
 		final int action = buffer.getInt();
-		if (action == TrackerConfig.Action.CONNECT.action()) {
+		if (action == TrackerConfig.Action.CONNECT.id()) {
 			doConnect(buffer);
-		} else if(action == TrackerConfig.Action.ANNOUNCE.action()) {
+		} else if(action == TrackerConfig.Action.ANNOUNCE.id()) {
 			doAnnounce(buffer);
-		} else if(action == TrackerConfig.Action.SCRAPE.action()) {
+		} else if(action == TrackerConfig.Action.SCRAPE.id()) {
 			// 刮檫
-		} else if(action == TrackerConfig.Action.ERROR.action()) {
+		} else if(action == TrackerConfig.Action.ERROR.id()) {
 			LOGGER.warn("Tracker声明错误");
 		}
 		buffer.clear(); // 清空消息

@@ -278,20 +278,20 @@ public class PeerConfig {
 		/**
 		 * 消息ID
 		 */
-		private final byte value;
+		private final byte id;
 		
-		private Type(byte value) {
-			this.value = value;
+		private Type(byte id) {
+			this.id = id;
 		}
 		
-		public byte value() {
-			return this.value;
+		public byte id() {
+			return this.id;
 		}
 		
-		public static final Type valueOf(byte value) {
+		public static final Type valueOf(byte id) {
 			final var types = Type.values();
 			for (Type type : types) {
-				if(type.value == value) {
+				if(type.id == id) {
 					return type;
 				}
 			}
@@ -306,22 +306,22 @@ public class PeerConfig {
 	public enum ExtensionType {
 		
 		/** 握手 */
-		HANDSHAKE(		"handshake",	(byte) 0x00, true,  false),
+		HANDSHAKE(		(byte) 0x00, "handshake",		true,  false),
 		/** pex */
-		UT_PEX(			"ut_pex",		(byte) 0x01, true,  true),
+		UT_PEX(			(byte) 0x01, "ut_pex",			true,  true),
 		/** metadata */
-		UT_METADATA(	"ut_metadata",	(byte) 0x02, true,  true),
+		UT_METADATA(	(byte) 0x02, "ut_metadata",		true,  true),
 		/** holepunch */
-		UT_HOLEPUNCH(	"ut_holepunch",	(byte) 0x03, false, false);
+		UT_HOLEPUNCH(	(byte) 0x03, "ut_holepunch",	false, false);
 
-		/**
-		 * 协议名称
-		 */
-		private final String key;
 		/**
 		 * 消息ID：自定义
 		 */
-		private final byte value;
+		private final byte id;
+		/**
+		 * 协议名称
+		 */
+		private final String value;
 		/**
 		 * 是否支持
 		 */
@@ -331,18 +331,18 @@ public class PeerConfig {
 		 */
 		private final boolean notice;
 		
-		private ExtensionType(String key, byte value, boolean support, boolean notice) {
-			this.key = key;
+		private ExtensionType(byte id, String value, boolean support, boolean notice) {
+			this.id = id;
 			this.value = value;
 			this.support = support;
 			this.notice = notice;
 		}
 		
-		public String key() {
-			return this.key;
+		public byte id() {
+			return this.id;
 		}
 		
-		public byte value() {
+		public String value() {
 			return this.value;
 		}
 		
@@ -354,20 +354,20 @@ public class PeerConfig {
 			return this.notice;
 		}
 		
-		public static final ExtensionType valueOfKey(String key) {
+		public static final ExtensionType valueOf(byte id) {
 			final var types = ExtensionType.values();
 			for (ExtensionType type : types) {
-				if(type.key.equals(key)) {
+				if(type.id == id) {
 					return type;
 				}
 			}
 			return null;
 		}
 		
-		public static final ExtensionType valueOf(byte value) {
+		public static final ExtensionType valueOfValue(String value) {
 			final var types = ExtensionType.values();
 			for (ExtensionType type : types) {
-				if(type.value == value) {
+				if(type.value.equals(value)) {
 					return type;
 				}
 			}
@@ -376,7 +376,7 @@ public class PeerConfig {
 
 		@Override
 		public String toString() {
-			return this.key;
+			return this.value;
 		}
 		
 	}
@@ -396,20 +396,20 @@ public class PeerConfig {
 		/**
 		 * 消息ID
 		 */
-		private final byte value;
+		private final byte id;
 		
-		private MetadataType(byte value) {
-			this.value = value;
+		private MetadataType(byte id) {
+			this.id = id;
 		}
 		
-		public byte value() {
-			return this.value;
+		public byte id() {
+			return this.id;
 		}
 		
-		public static final MetadataType valueOf(byte value) {
+		public static final MetadataType valueOf(byte id) {
 			final var types = MetadataType.values();
 			for (MetadataType type : types) {
-				if(type.value == value) {
+				if(type.id == id) {
 					return type;
 				}
 			}
@@ -433,20 +433,20 @@ public class PeerConfig {
 		/**
 		 * 消息ID
 		 */
-		private final byte value;
+		private final byte id;
 		
-		private HolepunchType(byte value) {
-			this.value = value;
+		private HolepunchType(byte id) {
+			this.id = id;
 		}
 		
-		public byte value() {
-			return this.value;
+		public byte id() {
+			return this.id;
 		}
 		
-		public static final HolepunchType valueOf(byte value) {
+		public static final HolepunchType valueOf(byte id) {
 			final var types = HolepunchType.values();
 			for (HolepunchType type : types) {
-				if(type.value == value) {
+				if(type.id == id) {
 					return type;
 				}
 			}
