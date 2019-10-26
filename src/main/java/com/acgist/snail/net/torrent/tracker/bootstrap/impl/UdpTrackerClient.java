@@ -129,7 +129,7 @@ public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker
 	private ByteBuffer buildConnectionIdMessage() {
 		ByteBuffer buffer = ByteBuffer.allocate(16);
 		buffer.putLong(PROTOCOL_ID);
-		buffer.putInt(TrackerConfig.Action.CONNECT.action());
+		buffer.putInt(TrackerConfig.Action.CONNECT.id());
 		buffer.putInt(this.id);
 		return buffer;
 	}
@@ -139,14 +139,14 @@ public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker
 	protected ByteBuffer buildAnnounceMessageEx(Integer sid, TorrentSession torrentSession, TrackerConfig.Event event, long download, long remain, long upload) {
 		final ByteBuffer buffer = ByteBuffer.allocate(98);
 		buffer.putLong(this.connectionId); // connection_id
-		buffer.putInt(TrackerConfig.Action.ANNOUNCE.action()); // action
+		buffer.putInt(TrackerConfig.Action.ANNOUNCE.id()); // action
 		buffer.putInt(sid); // transaction_id
 		buffer.put(torrentSession.infoHash().infoHash()); // InfoHash
 		buffer.put(PeerService.getInstance().peerId()); // PeerId
 		buffer.putLong(download); // 已下载大小
 		buffer.putLong(remain); // 剩余下载大小
 		buffer.putLong(upload); // 已上传大小
-		buffer.putInt(event.event()); // 事件：completed-1、started-2、stopped-3
+		buffer.putInt(event.id()); // 事件：completed-1、started-2、stopped-3
 		buffer.putInt(0); // 本机IP：0（服务器自动获取）
 		buffer.putInt(NumberUtils.build()); // 系统分配唯一键
 		buffer.putInt(WANT_PEER_SIZE); // 想要获取的Peer数量

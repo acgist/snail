@@ -123,7 +123,7 @@ public class StunMessageHandler extends UdpMessageHandler {
 			LOGGER.error("STUN消息长度错误：{}-{}", length, new String(message.array()));
 			return;
 		}
-		final short type = buffer.getShort();
+		final short typeId = buffer.getShort();
 		// 4字节对齐
 		final short length = (short) (NumberUtils.ceilDiv(buffer.getShort(), STUN_ATTRIBUTE_PADDING_LENGTH) * STUN_ATTRIBUTE_PADDING_LENGTH);
 		if(length > SystemConfig.MAX_NET_BUFFER_LENGTH) {
@@ -133,10 +133,10 @@ public class StunMessageHandler extends UdpMessageHandler {
 			LOGGER.error("STUN消息长度错误（剩余）：{}-{}", buffer.remaining(), length);
 			return;
 		}
-		final var attributeType = StunConfig.AttributeType.valueOf(type);
+		final var attributeType = StunConfig.AttributeType.valueOf(typeId);
 		if(attributeType == null) {
 			final ByteBuffer message = readMessage(buffer, length);
-			LOGGER.warn("不支持的STUN属性类型：{}-{}", type, new String(message.array()));
+			LOGGER.warn("不支持的STUN属性类型：{}-{}", typeId, new String(message.array()));
 			return;
 		}
 		LOGGER.debug("STUN消息：{}-{}", attributeType, length);
@@ -315,7 +315,7 @@ public class StunMessageHandler extends UdpMessageHandler {
 		// 4字节对齐
 		final int length = NumberUtils.ceilDiv(StunConfig.ATTRIBUTE_HEADER_LENGTH + valueLength, STUN_ATTRIBUTE_PADDING_LENGTH) * STUN_ATTRIBUTE_PADDING_LENGTH;
 		final ByteBuffer buffer = ByteBuffer.allocate(length);
-		buffer.putShort(attributeType.value());
+		buffer.putShort(attributeType.id());
 		buffer.putShort(valueLength);
 		if(valueLength > 0) {
 			buffer.put(value);

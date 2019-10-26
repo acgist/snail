@@ -196,10 +196,10 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		if(!this.handshakeRecv) { // 没有握手
 			handshake(buffer);
 		} else { // 已经握手
-			final byte typeValue = buffer.get();
-			final PeerConfig.Type type = PeerConfig.Type.valueOf(typeValue);
+			final byte typeId = buffer.get();
+			final PeerConfig.Type type = PeerConfig.Type.valueOf(typeId);
 			if(type == null) {
-				LOGGER.warn("不支持的Peer消息类型：{}", typeValue);
+				LOGGER.warn("不支持的Peer消息类型：{}", typeId);
 				return;
 			}
 			LOGGER.debug("Peer消息类型：{}", type);
@@ -748,7 +748,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * </pre>
 	 */
 	private ByteBuffer buildMessage(PeerConfig.Type type, byte[] payload) {
-		final Byte id = type == null ? null : type.value();
+		final Byte id = type == null ? null : type.id();
 		int capacity = 0;
 		if(id != null) {
 			capacity += 1;

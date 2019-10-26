@@ -53,19 +53,19 @@ public class TrackerConfig extends PropertiesConfig {
 		/**
 		 * 事件ID
 		 */
-		private final int event;
+		private final int id;
 		/**
 		 * 事件名称
 		 */
 		private final String value;
 
-		private Event(int event, String value) {
-			this.event = event;
+		private Event(int id, String value) {
+			this.id = id;
 			this.value = value;
 		}
 
-		public int event() {
-			return this.event;
+		public int id() {
+			return this.id;
 		}
 		
 		public String value() {
@@ -91,19 +91,19 @@ public class TrackerConfig extends PropertiesConfig {
 		/**
 		 * 动作ID
 		 */
-		private final int action;
+		private final int id;
 		/**
 		 * 动作名称
 		 */
 		private final String value;
 
-		private Action(int action, String value) {
-			this.action = action;
+		private Action(int id, String value) {
+			this.id = id;
 			this.value = value;
 		}
 		
-		public int action() {
-			return this.action;
+		public int id() {
+			return this.id;
 		}
 		
 		public String value() {

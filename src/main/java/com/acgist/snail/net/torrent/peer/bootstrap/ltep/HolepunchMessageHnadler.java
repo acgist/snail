@@ -49,10 +49,10 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler, IExten
 
 	@Override
 	public void onMessage(ByteBuffer buffer) {
-		final byte typeValue = buffer.get();
-		final HolepunchType type = PeerConfig.HolepunchType.valueOf(typeValue);
-		if(type == null) {
-			LOGGER.warn("不支持的holepunch消息类型：{}", typeValue);
+		final byte typeId = buffer.get();
+		final HolepunchType holepunchType = PeerConfig.HolepunchType.valueOf(typeId);
+		if(holepunchType == null) {
+			LOGGER.warn("不支持的holepunch消息类型：{}", typeId);
 			return;
 		}
 		final byte addrType = buffer.get();
@@ -66,7 +66,7 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler, IExten
 		}
 		port = NetUtils.decodePort(buffer.getShort());
 		code = buffer.getInt();
-		switch (type) {
+		switch (holepunchType) {
 		case RENDEZVOUS:
 			rendezvous();
 			break;
@@ -77,7 +77,7 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler, IExten
 			LOGGER.warn("holepunch错误信息：{}-{}-{}", host, port, code);
 			break;
 		default:
-			LOGGER.info("不支持的holepunch消息类型：{}", type);
+			LOGGER.info("不支持的holepunch消息类型：{}", holepunchType);
 			break;
 		}
 	}
@@ -128,7 +128,7 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler, IExten
 	 */
 	private ByteBuffer buildMessage(HolepunchType type, String ip, int port, HolepunchErrorCode errorCode) {
 		final ByteBuffer buffer = ByteBuffer.allocate(12);
-		buffer.put(type.value()); // 消息类型
+		buffer.put(type.id()); // 消息类型
 		buffer.put(IPV4); // 地址类型：0x00=IPv4；0x01=IPv6；
 		buffer.putInt(NetUtils.encodeIpToInt(ip)); // IP地址
 		buffer.putShort(NetUtils.encodePort(port)); // 端口号

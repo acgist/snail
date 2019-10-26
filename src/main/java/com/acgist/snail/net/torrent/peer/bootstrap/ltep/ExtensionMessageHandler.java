@@ -103,10 +103,10 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	
 	@Override
 	public void onMessage(ByteBuffer buffer) throws NetException {
-		final byte typeValue = buffer.get();
-		final ExtensionType extensionType = ExtensionType.valueOf(typeValue);
+		final byte typeId = buffer.get();
+		final ExtensionType extensionType = ExtensionType.valueOf(typeId);
 		if(extensionType == null) {
-			LOGGER.warn("不支持的扩展消息类型：{}", typeValue);
+			LOGGER.warn("不支持的扩展消息类型：{}", typeId);
 			return;
 		}
 		LOGGER.debug("扩展消息类型：{}", extensionType);
@@ -139,7 +139,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 		final Map<String, Object> supportType = new LinkedHashMap<>();
 		for (var type : PeerConfig.ExtensionType.values()) {
 			if(type.support() && type.notice()) {
-				supportType.put(type.key(), type.value());
+				supportType.put(type.value(), type.id());
 			}
 		}
 		data.put(EX_M, supportType); // 扩展协议以及编号
@@ -163,7 +163,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 				data.put(EX_METADATA_SIZE, metadataSize); // 种子InfoHash数据长度
 			}
 		}
-		this.pushMessage(ExtensionType.HANDSHAKE.value(), BEncodeEncoder.encodeMap(data));
+		this.pushMessage(ExtensionType.HANDSHAKE.id(), BEncodeEncoder.encodeMap(data));
 	}
 
 	/**
@@ -197,14 +197,14 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 		final Map<String, Object> mData = decoder.getMap(EX_M);
 		if(CollectionUtils.isNotEmpty(mData)) {
 			mData.entrySet().forEach(entry -> {
-				final String type = (String) entry.getKey();
-				final Long typeValue = (Long) entry.getValue();
-				final PeerConfig.ExtensionType extensionType = PeerConfig.ExtensionType.valueOfKey(type);
+				final Long typeId = (Long) entry.getValue();
+				final String typeValue = (String) entry.getKey();
+				final PeerConfig.ExtensionType extensionType = PeerConfig.ExtensionType.valueOfValue(typeValue);
 				if(extensionType != null && extensionType.support()) {
-					LOGGER.debug("添加扩展协议：{}-{}", extensionType, typeValue);
-					this.peerSession.addExtensionType(extensionType, typeValue.byteValue());
+					LOGGER.debug("添加扩展协议：{}-{}", extensionType, typeId);
+					this.peerSession.addExtensionType(extensionType, typeId.byteValue());
 				} else {
-					LOGGER.debug("不支持的扩展协议：{}-{}", type, typeValue);
+					LOGGER.debug("不支持的扩展协议：{}-{}", typeValue, typeId);
 				}
 			});
 		}

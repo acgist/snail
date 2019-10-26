@@ -26,16 +26,16 @@ public class CryptConfig {
 		ARC4(	  0x02);
 		
 		/**
-		 * 算法ID
+		 * provide
 		 */
-		private final int value;
+		private final int provide;
 		
-		private CryptAlgo(int value) {
-			this.value = value;
+		private CryptAlgo(int provide) {
+			this.provide = provide;
 		}
 
-		public int value() {
-			return this.value;
+		public int provide() {
+			return this.provide;
 		}
 		
 	}
@@ -46,21 +46,20 @@ public class CryptConfig {
 	public enum Strategy {
 		
 		/** 明文 */
-		PLAINTEXT(			false, CryptAlgo.PLAINTEXT.value),
+		PLAINTEXT(			false, CryptAlgo.PLAINTEXT.provide),
 		/** 兼容：偏爱明文 */
-		PREFER_PLAINTEXT(	false, CryptAlgo.PLAINTEXT.value | CryptAlgo.ARC4.value),
+		PREFER_PLAINTEXT(	false, CryptAlgo.PLAINTEXT.provide | CryptAlgo.ARC4.provide),
 		/** 兼容：偏爱加密 */
-		PREFER_ENCRYPT(		true,  CryptAlgo.ARC4.value | CryptAlgo.PLAINTEXT.value),
+		PREFER_ENCRYPT(		true,  CryptAlgo.ARC4.provide | CryptAlgo.PLAINTEXT.provide),
 		/** 加密 */
-		ENCRYPT(			true,  CryptAlgo.ARC4.value);
+		ENCRYPT(			true,  CryptAlgo.ARC4.provide);
 		
 		/**
 		 * 是否加密
 		 */
 		private final boolean crypt;
 		/**
-		 * <p>加密模式：crypto_provide</p>
-		 * <p>加密算法值或运算</p>
+		 * 加密模式：crypto_provide
 		 */
 		private final int provide;
 		

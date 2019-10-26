@@ -522,8 +522,8 @@ public final class MSECryptHandshakeHandler {
 	 * <p>确认：加密或者明文</p>
 	 */
 	private CryptConfig.Strategy selectStrategy(int provide) throws NetException {
-		final boolean plaintext = (provide & CryptAlgo.PLAINTEXT.value()) == CryptAlgo.PLAINTEXT.value();
-		final boolean crypt = 	  (provide & CryptAlgo.ARC4.value()) == CryptAlgo.ARC4.value();
+		final boolean plaintext = (provide & CryptAlgo.PLAINTEXT.provide()) == CryptAlgo.PLAINTEXT.provide();
+		final boolean crypt = 	  (provide & CryptAlgo.ARC4.provide()) == CryptAlgo.ARC4.provide();
 		Strategy selected = null;
 		if (plaintext || crypt) {
 			switch (CryptConfig.STRATEGY) { // 本地配置

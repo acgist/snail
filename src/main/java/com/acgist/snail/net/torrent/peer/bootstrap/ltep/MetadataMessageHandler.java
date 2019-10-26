@@ -81,14 +81,14 @@ public class MetadataMessageHandler implements IExtensionMessageHandler, IExtens
 			LOGGER.warn("metadata消息格式错误：{}", decoder.oddString());
 			return;
 		}
-		final Byte typeValue = decoder.getByte(ARG_MSG_TYPE);
-		final MetadataType type = PeerConfig.MetadataType.valueOf(typeValue);
-		if(type == null) {
-			LOGGER.warn("不支持的metadata消息类型：{}", typeValue);
+		final Byte typeId = decoder.getByte(ARG_MSG_TYPE);
+		final MetadataType metadataType = PeerConfig.MetadataType.valueOf(typeId);
+		if(metadataType == null) {
+			LOGGER.warn("不支持的metadata消息类型：{}", typeId);
 			return;
 		}
-		LOGGER.debug("metadata消息类型：{}", type);
-		switch (type) {
+		LOGGER.debug("metadata消息类型：{}", metadataType);
+		switch (metadataType) {
 		case REQUEST:
 			request(decoder);
 			break;
@@ -99,7 +99,7 @@ public class MetadataMessageHandler implements IExtensionMessageHandler, IExtens
 			reject(decoder);
 			break;
 		default:
-			LOGGER.info("不支持的metadata消息类型：{}", type);
+			LOGGER.info("不支持的metadata消息类型：{}", metadataType);
 			break;
 		}
 	}
@@ -218,7 +218,7 @@ public class MetadataMessageHandler implements IExtensionMessageHandler, IExtens
 	 */
 	private Map<String, Object> buildMessage(PeerConfig.MetadataType type, int piece) {
 		final Map<String, Object> message = new LinkedHashMap<>();
-		message.put(ARG_MSG_TYPE, type.value());
+		message.put(ARG_MSG_TYPE, type.id());
 		message.put(ARG_PIECE, piece);
 		return message;
 	}
