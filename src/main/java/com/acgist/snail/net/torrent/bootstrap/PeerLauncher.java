@@ -92,7 +92,7 @@ public final class PeerLauncher extends PeerClientHandler {
 	public boolean handshake() {
 		final boolean ok = connect();
 		if(ok) {
-			PeerEvaluator.getInstance().score(this.peerSession, PeerEvaluator.Type.connect);
+			PeerEvaluator.getInstance().score(this.peerSession, PeerEvaluator.Type.CONNECT);
 			this.peerSubMessageHandler.handshake(this);
 		} else {
 			this.peerSession.fail();
@@ -206,7 +206,7 @@ public final class PeerLauncher extends PeerClientHandler {
 					}
 				}
 				this.peerSubMessageHandler.close();
-				PeerEvaluator.getInstance().score(this.peerSession, Type.download);
+				PeerEvaluator.getInstance().score(this.peerSession, Type.DOWNLOAD);
 			}
 		} catch (Exception e) {
 			LOGGER.error("PeerLauncher关闭异常", e);

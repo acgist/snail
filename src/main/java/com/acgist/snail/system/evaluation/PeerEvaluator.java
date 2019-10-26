@@ -33,14 +33,14 @@ public class PeerEvaluator {
 	private static final PeerEvaluator INSTANCE = new PeerEvaluator();
 
 	/**
-	 * 计分类型
+	 * Peer计分类型
 	 */
 	public enum Type {
 		
 		/** 连接 */
-		connect	(1),
+		CONNECT	(1),
 		/** 下载 */
-		download(3);
+		DOWNLOAD(3);
 
 		/**
 		 * 评分
@@ -135,7 +135,7 @@ public class PeerEvaluator {
 		if(!this.available) { // 没有初始化不计分
 			return;
 		}
-		if(type == Type.download) { // 下载计分需要满足最小下载大小
+		if(type == Type.DOWNLOAD) { // 下载计分需要满足最小下载大小
 			if(peerSession.statistics().downloadSize() < MIN_SCOREABLE_DOWNLOAD_LENGTH) {
 				return;
 			}
