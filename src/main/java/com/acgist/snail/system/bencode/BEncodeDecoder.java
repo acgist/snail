@@ -43,11 +43,11 @@ public class BEncodeDecoder {
 	public enum Type {
 		
 		/** map */
-		map,
+		MAP,
 		/** list */
-		list,
+		LIST,
 		/** 未知 */
-		none;
+		NONE;
 		
 	}
 	
@@ -123,9 +123,9 @@ public class BEncodeDecoder {
 	 * @return true-不包含；false-包含；
 	 */
 	public boolean isEmpty() {
-		if(this.type == Type.list) {
+		if(this.type == Type.LIST) {
 			return this.list == null;
-		} else if(this.type == Type.map) {
+		} else if(this.type == Type.MAP) {
 			return this.map == null;
 		} else {
 			return true;
@@ -147,19 +147,19 @@ public class BEncodeDecoder {
 	public Type nextType() throws PacketSizeException {
 		if(!more()) {
 			LOGGER.warn("B编码没有更多数据");
-			return this.type = Type.none;
+			return this.type = Type.NONE;
 		}
 		char type = (char) this.inputStream.read();
 		switch (type) {
 		case TYPE_D:
 			this.map = d(this.inputStream);
-			return this.type = Type.map;
+			return this.type = Type.MAP;
 		case TYPE_L:
 			this.list = l(this.inputStream);
-			return this.type = Type.list;
+			return this.type = Type.LIST;
 		default:
 			LOGGER.warn("B编码不支持的类型：{}", type);
-			return this.type = Type.none;
+			return this.type = Type.NONE;
 		}
 	}
 	
@@ -168,7 +168,7 @@ public class BEncodeDecoder {
 	 */
 	public List<Object> nextList() throws PacketSizeException {
 		final var type = nextType();
-		if(type == Type.list) {
+		if(type == Type.LIST) {
 			return this.list;
 		}
 		return List.of();
@@ -179,7 +179,7 @@ public class BEncodeDecoder {
 	 */
 	public Map<String, Object> nextMap() throws PacketSizeException {
 		final var type = nextType();
-		if(type == Type.map) {
+		if(type == Type.MAP) {
 			return this.map;
 		}
 		return Map.of();
