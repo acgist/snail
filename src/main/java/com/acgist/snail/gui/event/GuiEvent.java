@@ -14,23 +14,23 @@ public abstract class GuiEvent {
 	public enum Type {
 		
 		/** 显示窗口 */
-		show,
+		SHOW,
 		/** 隐藏窗口 */
-		hide,
+		HIDE,
 		/** 退出窗口 */
-		exit,
+		EXIT,
 		/** 创建窗口 */
-		build,
+		BUILD,
 		/** 窗口信息 */
-		alert,
+		ALERT,
 		/** 提示信息 */
-		notice,
+		NOTICE,
 		/** 种子文件选择 */
-		torrent,
+		TORRENT,
 		/** 刷新任务列表：添加、删除 */
-		refreshTaskList,
+		REFRESH_TASK_LIST,
 		/** 刷新任务状态：开始、暂停 */
-		refreshTaskStatus;
+		REFRESH_TASK_STATUS;
 		
 	}
 

@@ -24,7 +24,7 @@ public class BuildEvent extends GuiEvent {
 	private static final BuildEvent INSTANCE = new BuildEvent();
 	
 	protected BuildEvent() {
-		super(Type.build, "创建窗口事件");
+		super(Type.BUILD, "创建窗口事件");
 	}
 
 	public static final GuiEvent getInstance() {

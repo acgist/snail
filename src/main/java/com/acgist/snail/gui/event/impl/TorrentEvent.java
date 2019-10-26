@@ -36,7 +36,7 @@ public class TorrentEvent extends GuiEvent {
 	private String files;
 	
 	protected TorrentEvent() {
-		super(Type.torrent, "种子文件选择事件");
+		super(Type.TORRENT, "种子文件选择事件");
 	}
 	
 	public static final TorrentEvent getInstance() {
