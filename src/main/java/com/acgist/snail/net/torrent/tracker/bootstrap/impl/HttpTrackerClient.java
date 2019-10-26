@@ -56,7 +56,7 @@ public final class HttpTrackerClient extends TrackerClient {
 
 	@Override
 	public void announce(Integer sid, TorrentSession torrentSession) throws NetException {
-		final String announceMessage = buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.started);
+		final String announceMessage = buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STARTED);
 		final var response = HTTPClient.get(announceMessage, BodyHandlers.ofString(), TrackerClient.TIMEOUT);
 		if(!HTTPClient.ok(response)) {
 			throw new NetException("HTTP获取Peer失败");
@@ -77,13 +77,13 @@ public final class HttpTrackerClient extends TrackerClient {
 
 	@Override
 	public void complete(Integer sid, TorrentSession torrentSession) throws NetException {
-		final String announceMessage = buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.completed);
+		final String announceMessage = buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.COMPLETED);
 		HTTPClient.get(announceMessage, BodyHandlers.ofString(), TrackerClient.TIMEOUT);
 	}
 	
 	@Override
 	public void stop(Integer sid, TorrentSession torrentSession) throws NetException {
-		final String announceMessage = buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.stopped);
+		final String announceMessage = buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STOPPED);
 		HTTPClient.get(announceMessage, BodyHandlers.ofString(), TrackerClient.TIMEOUT);
 	}
 	
@@ -104,7 +104,7 @@ public final class HttpTrackerClient extends TrackerClient {
 			.append("downloaded").append("=").append(download).append("&") // 已下载大小
 			.append("left").append("=").append(remain).append("&") // 剩余下载大小
 			.append("compact").append("=").append("1").append("&") // 默认：1（紧凑）
-			.append("event").append("=").append(event.name()).append("&") // 事件：started、completed、stopped
+			.append("event").append("=").append(event.value()).append("&") // 事件：started、completed、stopped
 			.append("numwant").append("=").append(WANT_PEER_SIZE); // 想要获取的Peer数量
 		if(StringUtils.isNotEmpty(this.trackerId)) {
 			builder.append("&").append("trackerid").append("=").append(this.trackerId); // 跟踪器ID

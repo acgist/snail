@@ -65,6 +65,16 @@ public class ApplicationMessage {
 		/** 响应 */
 		RESPONSE;
 
+		public static final Type valueOfName(String name) {
+			final var types = Type.values();
+			for (Type type : types) {
+				if(type.name().equalsIgnoreCase(name)) {
+					return type;
+				}
+			}
+			return null;
+		}
+		
 	}
 
 	/**
@@ -100,7 +110,11 @@ public class ApplicationMessage {
 			}
 			final String type = decoder.getString("type");
 			final String body = decoder.getString("body");
-			return ApplicationMessage.message(Type.valueOf(type), body);
+			final Type messageType = Type.valueOfName(type);
+			if(messageType == null) {
+				return null;
+			}
+			return ApplicationMessage.message(messageType, body);
 		} catch (NetException e) {
 			LOGGER.error("系统消息读取异常", e);
 		}

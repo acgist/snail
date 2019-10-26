@@ -70,20 +70,20 @@ public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker
 				}
 			}
 		}
-		send(buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.started));
+		send(buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STARTED));
 	}
 
 	@Override
 	public void complete(Integer sid, TorrentSession torrentSession) throws NetException {
 		if(this.connectionId != null) {
-			send(buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.completed));
+			send(buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.COMPLETED));
 		}
 	}
 	
 	@Override
 	public void stop(Integer sid, TorrentSession torrentSession) throws NetException {
 		if(this.connectionId != null) {
-			send(buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.stopped));
+			send(buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STOPPED));
 		}
 	}
 	
