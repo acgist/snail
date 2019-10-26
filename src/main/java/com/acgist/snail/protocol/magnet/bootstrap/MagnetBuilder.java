@@ -55,13 +55,13 @@ public class MagnetBuilder {
 		}
 		this.magnet = new Magnet();
 		if(Protocol.Type.verifyMagnetHash32(this.url)) {
-			this.magnet.setType(Type.btih);
+			this.magnet.setType(Type.BTIH);
 			final InfoHash infoHash = InfoHash.newInstance(this.url);
 			this.magnet.setHash(infoHash.infoHashHex());
 			return this.magnet;
 		}
 		if(Protocol.Type.verifyMagnetHash40(this.url)) {
-			this.magnet.setType(Type.btih);
+			this.magnet.setType(Type.BTIH);
 			this.magnet.setHash(this.url);
 			return this.magnet;
 		}
@@ -118,7 +118,7 @@ public class MagnetBuilder {
 		if(StringUtils.isEmpty(value)) {
 			return;
 		}
-		final String xt = Magnet.Type.btih.xt();
+		final String xt = Magnet.Type.BTIH.xt();
 		if(!value.startsWith(xt)) {
 			LOGGER.debug("磁力链接不支持的XT：{}", value);
 			return;
@@ -130,7 +130,7 @@ public class MagnetBuilder {
 			hash = infoHash.infoHashHex();
 		}
 		this.magnet.setHash(hash);
-		this.magnet.setType(Magnet.Type.btih);
+		this.magnet.setType(Magnet.Type.BTIH);
 	}
 	
 	private void dn(String value) {
