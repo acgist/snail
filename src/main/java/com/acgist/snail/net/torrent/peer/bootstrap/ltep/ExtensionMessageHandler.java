@@ -193,7 +193,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 		if(metadataSize != null && this.infoHash.size() == 0) {
 			this.infoHash.size(metadataSize.intValue());
 		}
-		// 支持的扩展协议：key=扩展消息标识（数字）
+		// 支持的扩展协议：key（扩展协议名称）=value（扩展协议标识）
 		final Map<String, Object> mData = decoder.getMap(EX_M);
 		if(CollectionUtils.isNotEmpty(mData)) {
 			mData.entrySet().forEach(entry -> {
