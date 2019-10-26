@@ -25,9 +25,12 @@ public class CryptConfig {
 		/** ARC4 */
 		ARC4(	  0x02);
 		
-		private int value;
+		/**
+		 * 算法ID
+		 */
+		private final int value;
 		
-		CryptAlgo(int value) {
+		private CryptAlgo(int value) {
 			this.value = value;
 		}
 
@@ -54,14 +57,14 @@ public class CryptConfig {
 		/**
 		 * 是否加密
 		 */
-		private boolean crypt;
+		private final boolean crypt;
 		/**
 		 * <p>加密模式：crypto_provide</p>
-		 * <p>加密算法或运算</p>
+		 * <p>加密算法值或运算</p>
 		 */
-		private int provide;
+		private final int provide;
 		
-		Strategy(boolean crypt, int provide) {
+		private Strategy(boolean crypt, int provide) {
 			this.crypt = crypt;
 			this.provide = provide;
 		}

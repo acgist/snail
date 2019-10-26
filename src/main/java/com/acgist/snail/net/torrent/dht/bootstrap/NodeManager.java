@@ -152,12 +152,12 @@ public class NodeManager {
 	
 	/**
 	 * <p>添加DHT节点</p>
-	 * <p>先验证节点（ping），验证通过加入列表，设置为有效节点。</p>
+	 * <p>先验证节点（ping），验证通过加入列表，设置为可用节点。</p>
 	 */
 	public void newNodeSession(String host, Integer port) {
 		final NodeSession nodeSession = verify(host, port);
 		if(nodeSession != null) {
-			nodeSession.setStatus(NodeSession.Status.AVAILABLE); // 标记有效
+			nodeSession.setStatus(NodeSession.Status.AVAILABLE); // 标记可用
 		}
 	}
 	
@@ -212,7 +212,7 @@ public class NodeManager {
 	
 	/**
 	 * <p>查找Node</p>
-	 * <p>筛选排除{@linkplain Status#VERIFY 验证}节点。</p>
+	 * <p>筛选排除{@linkplain Status#VERIFY 验证}节点</p>
 	 */
 	public List<NodeSession> findNode(byte[] target) {
 		List<NodeSession> nodes; // 筛选节点的副本
@@ -283,7 +283,7 @@ public class NodeManager {
 	/**
 	 * <p>选择Node</p>
 	 * <p>排序查找最近的节点。</p>
-	 * <p>如果节点处于未使用状态则修改为验证状态。</p>
+	 * <p>如果节点处于未知状态则修改为验证状态。</p>
 	 */
 	private List<NodeSession> selectNode(final List<NodeSession> nodes, final byte[] target, final int begin, final int end) {
 		Stream<NodeSession> select;

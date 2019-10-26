@@ -21,24 +21,27 @@ public class Magnet {
 	public enum Type {
 		
 		/** md5 */
-		MD5("urn:md5:"),
+		MD5(		"urn:md5:"),
 		/** aich */
-		AICH("urn:aich:"),
+		AICH(		"urn:aich:"),
 		/** btih */
-		BTIH("urn:btih:"),
+		BTIH(		"urn:btih:"),
 		/** ed2k */
-		ED2K("urn:ed2k:"),
+		ED2K(		"urn:ed2k:"),
 		/** sha1 */
-		SHA1("urn:sha1:"),
+		SHA1(		"urn:sha1:"),
 		/** crc32 */
-		CRC32("urn:crc32:"),
+		CRC32(		"urn:crc32:"),
 		/** tth */
-		TTH("urn:tree:tiger:"),
+		TTH(		"urn:tree:tiger:"),
 		/** bitprint */
-		BITPRINT("urn:bitprint:");
+		BITPRINT(	"urn:bitprint:");
 		
+		/**
+		 * xt
+		 */
 		private final String xt;
-
+		
 		private Type(String xt) {
 			this.xt = xt;
 		}

@@ -29,7 +29,13 @@ public class StunConfig {
      */
     public static final int TRANSACTION_ID_LENGTH = 12;
     
+    /**
+     * IPv4
+     */
     public static final int IPV4 = 0x01;
+    /**
+     * IPv6
+     */
     public static final int IPV6 = 0x02;
     
     /**
@@ -42,14 +48,14 @@ public class StunConfig {
     	
     	public static final short VALUE_MASK = 0b0000_0000_0000_0001;
     	
-    	MethodType(short value) {
-    		this.value = value;
-    	}
-    	
     	/**
     	 * 方法ID
     	 */
-    	private short value;
+    	private final short value;
+    	
+    	private MethodType(short value) {
+    		this.value = value;
+    	}
     	
     	public short vluae() {
     		return this.value;
@@ -87,22 +93,19 @@ public class StunConfig {
         /**
          * 消息ID
          */
-    	private byte value;
+    	private final byte value;
     	
-    	MessageType(byte value) {
+    	private MessageType(byte value) {
     		this.value = value;
     	}
     	
     	/**
-    	 * 获取对应方法的MessageType值
+    	 * 对应方法的MessageType值
     	 */
     	public short type(MethodType methodType) {
     		return (short) ((((this.value << 7) & C1_MASK) | ((this.value << 4) & C0_MASK) | methodType.value) & TYPE_MASK);
     	}
     	
-    	/**
-    	 * 消息类型转换
-    	 */
     	public static final MessageType valueOf(short type) {
     		final byte value = (byte) ((((type & C1_MASK) >> 7) | ((type & C0_MASK) >> 4)) & 0xFF);
     		final var types = MessageType.values();
@@ -143,15 +146,15 @@ public class StunConfig {
     	SOFTWARE(			(short) 0x8022),
     	ALTERNATE_SERVER(	(short) 0x8023),
     	FINGERPRINT(		(short) 0x8028);
-
-    	AttributeType(short value) {
-    		this.value = value;
-    	}
     	
     	/**
     	 * 属性ID
     	 */
-    	private short value;
+    	private final short value;
+    	
+    	private AttributeType(short value) {
+    		this.value = value;
+    	}
     	
     	public short value() {
     		return this.value;
@@ -170,7 +173,7 @@ public class StunConfig {
     }
 
     /**
-     * 错误代码：300-699
+     * 错误编码：300-699
      */
     public enum ErrorCode {
     	
@@ -187,14 +190,14 @@ public class StunConfig {
     	/** 服务器错误 */
     	SERVER_ERROR(		500);
     	
-    	ErrorCode(int code) {
-    		this.code = code;
-    	}
-    	
     	/**
     	 * 错误编码
     	 */
-    	private int code;
+    	private final int code;
+    	
+    	private ErrorCode(int code) {
+    		this.code = code;
+    	}
     	
     	public int code() {
     		return this.code;

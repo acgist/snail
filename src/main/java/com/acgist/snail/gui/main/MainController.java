@@ -66,7 +66,7 @@ public class MainController extends Controller implements Initializable {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
 	
 	/**
-	 * 显示列表过滤器
+	 * 任务列表显示类型
 	 */
 	public enum Filter {
 		

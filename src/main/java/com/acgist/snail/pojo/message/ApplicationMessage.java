@@ -27,7 +27,7 @@ public class ApplicationMessage {
 	public static final String SUCCESS = "success";
 
 	/**
-	 * 消息类型
+	 * 系统消息类型
 	 */
 	public enum Type {
 		
@@ -65,6 +65,9 @@ public class ApplicationMessage {
 		/** 响应 */
 		RESPONSE;
 
+		/**
+		 * 消息类型转换：忽略大小写
+		 */
 		public static final Type valueOfName(String name) {
 			final var types = Type.values();
 			for (Type type : types) {

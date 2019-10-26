@@ -132,7 +132,7 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler, IExten
 		buffer.put(IPV4); // 地址类型：0x00=IPv4；0x01=IPv6；
 		buffer.putInt(NetUtils.encodeIpToInt(ip)); // IP地址
 		buffer.putShort(NetUtils.encodePort(port)); // 端口号
-		buffer.putInt(errorCode.code()); // 错误代码
+		buffer.putInt(errorCode.code()); // 错误编码
 		return buffer;
 	}
 	

@@ -20,7 +20,20 @@ import com.acgist.snail.utils.StringUtils;
  * @since 1.0.0
  */
 public abstract class Protocol {
-
+	
+	/**
+	 * 磁力链接：标准
+	 */
+	private static final String MAGNET_BASIC = "magnet:\\?.+";
+	/**
+	 * 磁力链接：32位HASH
+	 */
+	private static final String MAGNET_HASH_32 = "[a-zA-Z0-9]{32}";
+	/**
+	 * 磁力链接：40位HASH
+	 */
+	private static final String MAGNET_HASH_40 = "[a-zA-Z0-9]{40}";
+	
 	/**
 	 * 协议类型
 	 */
@@ -68,8 +81,7 @@ public abstract class Protocol {
 		),
 		/** 磁力链接 */
 		MAGNET(
-			// 注意顺序：后面需要验证磁力链接的具体格式
-			new String[] {"magnet:\\?.+", "[a-zA-Z0-9]{32}", "[a-zA-Z0-9]{40}"},
+			new String[] {MAGNET_BASIC, MAGNET_HASH_32, MAGNET_HASH_40},
 			new String[] {"magnet:?xt=urn:btih:"},
 			new String[] {},
 			"magnet:?xt=urn:btih:",
@@ -83,7 +95,7 @@ public abstract class Protocol {
 			"thunder://",
 			""
 		),
-		/** BT */
+		/** BT：BitTorrent */
 		TORRENT(
 			new String[] {".+\\.torrent"},
 			new String[] {},
@@ -95,23 +107,23 @@ public abstract class Protocol {
 		/**
 		 * 正则表达式
 		 */
-		private String[] regexs;
+		private final String[] regexs;
 		/**
 		 * 前缀
 		 */
-		private String[] prefix;
+		private final String[] prefix;
 		/**
 		 * 后缀
 		 */
-		private String[] suffix;
+		private final String[] suffix;
 		/**
 		 * 默认前缀
 		 */
-		private String defaultPrefix;
+		private final String defaultPrefix;
 		/**
 		 * 默认后缀
 		 */
-		private String defaultSuffix;
+		private final String defaultSuffix;
 		
 		private Type(String[] regexs, String[] prefix, String[] suffix, String defaultPrefix, String defaultSuffix) {
 			this.regexs = regexs;
@@ -122,14 +134,14 @@ public abstract class Protocol {
 		}
 
 		/**
-		 * @return 所有的正则表达式
+		 * @return 正则表达式
 		 */
 		public String[] regexs() {
 			return this.regexs;
 		}
 
 		/**
-		 * @return 所有的前缀
+		 * @return 前缀
 		 */
 		public String[] prefix() {
 			return this.prefix;
@@ -137,7 +149,7 @@ public abstract class Protocol {
 		
 		/**
 		 * @param url 链接
-		 * @return 符合链接的前缀
+		 * @return 当前链接的前缀
 		 */
 		public String prefix(String url) {
 			for (String value : this.prefix) {
@@ -149,7 +161,7 @@ public abstract class Protocol {
 		}
 		
 		/**
-		 * @return 所有的后缀
+		 * @return 后缀
 		 */
 		public String[] suffix() {
 			return this.suffix;
@@ -157,7 +169,7 @@ public abstract class Protocol {
 		
 		/**
 		 * @param url 链接
-		 * @return 符合链接的后缀
+		 * @return 当前链接的后缀
 		 */
 		public String suffix(String url) {
 			for (String value : this.suffix) {
@@ -183,7 +195,7 @@ public abstract class Protocol {
 		}
 		
 		/**
-		 * 验证协议
+		 * 验证链接是否属于该协议
 		 * 
 		 * @param url 链接
 		 * 
@@ -213,21 +225,21 @@ public abstract class Protocol {
 		 * 验证磁力链接（完整链接）
 		 */
 		public static final boolean verifyMagnet(String url) {
-			return StringUtils.regex(url, Type.MAGNET.regexs[0], true);
+			return StringUtils.regex(url, MAGNET_BASIC, true);
 		}
 		
 		/**
 		 * 验证32位磁力链接HASH
 		 */
 		public static final boolean verifyMagnetHash32(String url) {
-			return StringUtils.regex(url, Type.MAGNET.regexs[1], true);
+			return StringUtils.regex(url, MAGNET_HASH_32, true);
 		}
 		
 		/**
 		 * 验证40位磁力链接HASH
 		 */
 		public static final boolean verifyMagnetHash40(String url) {
-			return StringUtils.regex(url, Type.MAGNET.regexs[2], true);
+			return StringUtils.regex(url, MAGNET_HASH_40, true);
 		}
 		
 	}

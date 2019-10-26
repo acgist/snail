@@ -33,28 +33,31 @@ public final class TaskSession {
 	public enum Status {
 		
 		/**
-		 * 任务添加下载队列中时处于等待的状态
+		 * 任务添加到下载队列时处于等待状态
 		 */
-		AWAIT("等待中"),
+		AWAIT(		"等待中"),
 		/**
-		 * 任务下载时的状态，不能直接设置为此状态，由下载管理器自动修改为下载中。
+		 * 任务下载时的状态：不能直接设置此状态，由下载管理器自动修改。
 		 */
-		DOWNLOAD("下载中"),
+		DOWNLOAD(	"下载中"),
 		/**
 		 * 任务暂停
 		 */
-		PAUSE("暂停"),
+		PAUSE(		"暂停"),
 		/**
-		 * 任务完成，完成状态不能转换为其他任何状态。
+		 * 任务完成：完成状态不能转换为其他任何状态
 		 */
-		COMPLETE("完成"),
+		COMPLETE(	"完成"),
 		/**
 		 * 任务失败
 		 */
-		FAIL("失败");
+		FAIL(		"失败");
 		
-		private String value;
-
+		/**
+		 * 状态名称
+		 */
+		private final String value;
+		
 		private Status(String value) {
 			this.value = value;
 		}
