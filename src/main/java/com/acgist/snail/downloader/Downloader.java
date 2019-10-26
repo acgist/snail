@@ -80,7 +80,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 		if(this.taskSession.download()) {
 			return;
 		}
-		this.updateStatus(Status.await);
+		this.updateStatus(Status.AWAIT);
 	}
 	
 	@Override
@@ -88,13 +88,13 @@ public abstract class Downloader implements IDownloader, IStatistics {
 		if(this.taskSession.pause()) {
 			return;
 		}
-		this.updateStatus(Status.pause);
+		this.updateStatus(Status.PAUSE);
 	}
 	
 	@Override
 	public void fail(String message) {
 		this.fail = true;
-		this.updateStatus(Status.fail);
+		this.updateStatus(Status.FAIL);
 		final StringBuilder noticeMessage = new StringBuilder();
 		noticeMessage.append(name())
 			.append("下载失败，失败原因：");
@@ -133,7 +133,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	@Override
 	public void complete() {
 		if(this.complete) {
-			this.updateStatus(Status.complete);
+			this.updateStatus(Status.COMPLETE);
 			GuiHandler.getInstance().notice("下载完成", this.name() + "已经下载完成");
 		}
 	}
@@ -156,7 +156,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 				LOGGER.info("开始下载任务：{}", this.name());
 				this.fail = false; // 标记下载失败状态
 				this.deleteLock.set(false); // 设置删除锁
-				entity.setStatus(Status.download); // 修改任务状态
+				entity.setStatus(Status.DOWNLOAD); // 修改任务状态
 				this.open();
 				try {
 					this.download();

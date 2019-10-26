@@ -372,7 +372,7 @@ public abstract class Protocol {
 	 * 设置任务状态
 	 */
 	protected void buildStatus() throws DownloadException {
-		this.taskEntity.setStatus(Status.await);
+		this.taskEntity.setStatus(Status.AWAIT);
 	}
 
 	/**

@@ -35,23 +35,23 @@ public final class TaskSession {
 		/**
 		 * 任务添加下载队列中时处于等待的状态
 		 */
-		await("等待中"),
+		AWAIT("等待中"),
 		/**
 		 * 任务下载时的状态，不能直接设置为此状态，由下载管理器自动修改为下载中。
 		 */
-		download("下载中"),
+		DOWNLOAD("下载中"),
 		/**
 		 * 任务暂停
 		 */
-		pause("暂停"),
+		PAUSE("暂停"),
 		/**
 		 * 任务完成，完成状态不能转换为其他任何状态。
 		 */
-		complete("完成"),
+		COMPLETE("完成"),
 		/**
 		 * 任务失败
 		 */
-		fail("失败");
+		FAIL("失败");
 		
 		private String value;
 
@@ -162,7 +162,7 @@ public final class TaskSession {
 			return;
 		}
 		final TaskRepository repository = new TaskRepository();
-		if(status == Status.complete) {
+		if(status == Status.COMPLETE) {
 			this.entity.setEndDate(new Date()); // 设置完成时间
 		}
 		this.entity.setStatus(status);
@@ -193,28 +193,28 @@ public final class TaskSession {
 	 * 等待状态
 	 */
 	public boolean await() {
-		return this.entity.getStatus() == Status.await;
+		return this.entity.getStatus() == Status.AWAIT;
 	}
 	
 	/**
 	 * 暂停状态
 	 */
 	public boolean pause() {
-		return this.entity.getStatus() == Status.pause;
+		return this.entity.getStatus() == Status.PAUSE;
 	}
 	
 	/**
 	 * 下载状态
 	 */
 	public boolean download() {
-		return this.entity.getStatus() == Status.download;
+		return this.entity.getStatus() == Status.DOWNLOAD;
 	}
 	
 	/**
 	 * 完成状态
 	 */
 	public boolean complete() {
-		return this.entity.getStatus() == Status.complete;
+		return this.entity.getStatus() == Status.COMPLETE;
 	}
 	
 	/**

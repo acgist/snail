@@ -224,13 +224,13 @@ public class MainController extends Controller implements Initializable {
 		final ObservableList<TaskSession> obs = FXCollections.observableArrayList();
 		DownloaderManager.getInstance().tasks().stream()
 			.filter(session -> {
-				var status = session.entity().getStatus();
+				final var status = session.entity().getStatus();
 				if(this.filter == Filter.ALL) {
 					return true;
 				} else if(this.filter == Filter.DOWNLOAD) {
-					return status == Status.await || status == Status.download;
+					return status == Status.AWAIT || status == Status.DOWNLOAD;
 				} else if(this.filter == Filter.COMPLETE) {
-					return status == Status.complete;
+					return status == Status.COMPLETE;
 				} else {
 					return true;
 				}
