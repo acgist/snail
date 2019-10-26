@@ -63,7 +63,7 @@ public class BEncodeEncoder {
 	 * 新建List
 	 */
 	public BEncodeEncoder newList() {
-		this.type = Type.list;
+		this.type = Type.LIST;
 		this.list = new ArrayList<>();
 		return this;
 	}
@@ -72,7 +72,7 @@ public class BEncodeEncoder {
 	 * 新建Map
 	 */
 	public BEncodeEncoder newMap() {
-		this.type = Type.map;
+		this.type = Type.MAP;
 		this.map = new LinkedHashMap<>();
 		return this;
 	}
@@ -81,7 +81,7 @@ public class BEncodeEncoder {
 	 * 向List中添加数据
 	 */
 	public BEncodeEncoder put(Object value) {
-		if(this.type == Type.list) {
+		if(this.type == Type.LIST) {
 			this.list.add(value);
 		}
 		return this;
@@ -91,7 +91,7 @@ public class BEncodeEncoder {
 	 * 向List中添加数据
 	 */
 	public BEncodeEncoder put(List<?> list) {
-		if(this.type == Type.list) {
+		if(this.type == Type.LIST) {
 			this.list.addAll(list);
 		}
 		return this;
@@ -101,7 +101,7 @@ public class BEncodeEncoder {
 	 * 向Map中添加数据
 	 */
 	public BEncodeEncoder put(String key, Object value) {
-		if(this.type == Type.map) {
+		if(this.type == Type.MAP) {
 			this.map.put(key, value);
 		}
 		return this;
@@ -111,7 +111,7 @@ public class BEncodeEncoder {
 	 * 向Map中添加数据
 	 */
 	public BEncodeEncoder put(Map<String, Object> map) {
-		if(this.type == Type.map) {
+		if(this.type == Type.MAP) {
 			this.map.putAll(map);
 		}
 		return this;
@@ -121,9 +121,9 @@ public class BEncodeEncoder {
 	 * 将List和Map中的数据写入字符流，配合put系列方法使用。
 	 */
 	public BEncodeEncoder flush() {
-		if(this.type == Type.map) {
+		if(this.type == Type.MAP) {
 			this.write(this.map);
-		} else if(this.type == Type.list) {
+		} else if(this.type == Type.LIST) {
 			this.write(this.list);
 		} else {
 			LOGGER.warn("B编码不支持的类型：{}", this.type);
