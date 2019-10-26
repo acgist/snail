@@ -84,7 +84,7 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler, IExten
 	
 	@Override
 	public Byte extensionType() {
-		return this.peerSession.extensionTypeValue(ExtensionType.ut_holepunch);
+		return this.peerSession.extensionTypeValue(ExtensionType.UT_HOLEPUNCH);
 	}
 	
 	/**

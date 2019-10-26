@@ -67,7 +67,7 @@ public class PeerExchangeMessageHandler implements IExtensionMessageHandler, IEx
 	
 	@Override
 	public Byte extensionType() {
-		return this.peerSession.extensionTypeValue(ExtensionType.ut_pex);
+		return this.peerSession.extensionTypeValue(ExtensionType.UT_PEX);
 	}
 
 	/**

@@ -306,20 +306,25 @@ public class PeerConfig {
 	public enum ExtensionType {
 		
 		/** 握手 */
-		handshake((byte)    0, true,  false),
+		HANDSHAKE(		"handshake",	(byte) 0, true,  false),
 		/** pex */
-		ut_pex((byte)       1, true,  true),
+		UT_PEX(			"ut_pex",		(byte) 1, true,  true),
 		/** metadata */
-		ut_metadata((byte)  2, true,  true),
+		UT_METADATA(	"ut_metadata",	(byte) 2, true,  true),
 		/** holepunch */
-		ut_holepunch((byte) 3, false, false);
+		UT_HOLEPUNCH(	"ut_holepunch",	(byte) 3, false, false);
 		
-		ExtensionType(byte value, boolean support, boolean notice) {
+		ExtensionType(String key, byte value, boolean support, boolean notice) {
+			this.key = key;
 			this.value = value;
 			this.support = support;
 			this.notice = notice;
 		}
 
+		/**
+		 * 名称
+		 */
+		private String key;
 		/**
 		 * 消息ID
 		 */
@@ -333,6 +338,10 @@ public class PeerConfig {
 		 */
 		private boolean notice;
 		
+		public String key() {
+			return this.key;
+		}
+		
 		public byte value() {
 			return this.value;
 		}
@@ -345,26 +354,31 @@ public class PeerConfig {
 			return this.notice;
 		}
 		
-		public static final ExtensionType valueOf(byte value) {
-			final ExtensionType[] types = ExtensionType.values();
+		public static final ExtensionType valueOfKey(String key) {
+			final var types = ExtensionType.values();
 			for (ExtensionType type : types) {
-				if(type.value() == value) {
+				if(type.key.equals(key)) {
 					return type;
 				}
 			}
 			return null;
 		}
 		
-		public static final ExtensionType valueOfName(String name) {
-			final ExtensionType[] types = ExtensionType.values();
+		public static final ExtensionType valueOf(byte value) {
+			final var types = ExtensionType.values();
 			for (ExtensionType type : types) {
-				if(type.name().equals(name)) {
+				if(type.value == value) {
 					return type;
 				}
 			}
 			return null;
 		}
 
+		@Override
+		public String toString() {
+			return this.key;
+		}
+		
 	}
 	
 	/**
