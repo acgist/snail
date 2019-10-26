@@ -49,27 +49,27 @@ public class GuiHandler {
 	public enum SnailAlertType {
 		
 		/** 普通 */
-		none,
+		NONE,
 		/** 提示 */
-		info,
+		INFO,
 		/** 警告 */
-		warn,
+		WARN,
 		/** 确认 */
-		confirm,
+		CONFIRM,
 		/** 错误 */
-		error;
+		ERROR;
 		
 		public AlertType getAlertType() {
 			switch (this) {
-			case none:
+			case NONE:
 				return AlertType.NONE;
-			case info:
+			case INFO:
 				return AlertType.INFORMATION;
-			case warn:
+			case WARN:
 				return AlertType.WARNING;
-			case confirm:
+			case CONFIRM:
 				return AlertType.CONFIRMATION;
-			case error:
+			case ERROR:
 				return AlertType.ERROR;
 			default:
 				return AlertType.INFORMATION;
@@ -84,23 +84,23 @@ public class GuiHandler {
 	public enum SnailNoticeType {
 		
 		/** 普通 */
-		none,
+		NONE,
 		/** 提示 */
-		info,
+		INFO,
 		/** 警告 */
-		warn,
+		WARN,
 		/** 错误 */
-		error;
+		ERROR;
 		
 		public MessageType getMessageType() {
 			switch (this) {
-			case none:
+			case NONE:
 				return MessageType.NONE;
-			case info:
+			case INFO:
 				return MessageType.INFO;
-			case warn:
+			case WARN:
 				return MessageType.WARNING;
-			case error:
+			case ERROR:
 				return MessageType.ERROR;
 			default:
 				return MessageType.INFO;
@@ -226,7 +226,7 @@ public class GuiHandler {
 	 * @param message 内容
 	 */
 	public GuiHandler alert(String title, String message) {
-		this.alert(title, message, SnailAlertType.info);
+		this.alert(title, message, SnailAlertType.INFO);
 		return this;
 	}
 
@@ -249,7 +249,7 @@ public class GuiHandler {
 	 * @param message 内容
 	 */
 	public GuiHandler notice(String title, String message) {
-		this.notice(title, message, SnailNoticeType.info);
+		this.notice(title, message, SnailNoticeType.INFO);
 		return this;
 	}
 	

@@ -103,7 +103,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 		} else {
 			noticeMessage.append("未知错误");
 		}
-		GuiHandler.getInstance().notice("下载失败", noticeMessage.toString(), SnailNoticeType.warn);
+		GuiHandler.getInstance().notice("下载失败", noticeMessage.toString(), SnailNoticeType.WARN);
 	}
 	
 	@Override
