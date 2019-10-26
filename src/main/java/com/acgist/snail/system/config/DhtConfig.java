@@ -136,13 +136,13 @@ public class DhtConfig extends PropertiesConfig {
 	public enum ErrorCode {
 		
 		/** 一般错误 */
-		E_201(201),
+		CODE_201(201),
 		/** 服务错误 */
-		E_202(202),
+		CODE_202(202),
 		/** 协议错误 */
-		E_203(203),
+		CODE_203(203),
 		/** 未知方法 */
-		E_204(204);
+		CODE_204(204);
 		
 		ErrorCode(int code) {
 			this.code = code;

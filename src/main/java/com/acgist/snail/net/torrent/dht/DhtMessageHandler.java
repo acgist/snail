@@ -100,7 +100,7 @@ public class DhtMessageHandler extends UdpMessageHandler {
 		LOGGER.debug("DHT处理请求：{}", request.getQ());
 		if(request.getQ() == null) {
 			LOGGER.warn("DHT处理请求失败（类型不支持）：{}", request.getQ());
-			final Response error = Response.error(request.getT(), ErrorCode.E_204.code(), "不支持的请求类型");
+			final Response error = Response.error(request.getT(), ErrorCode.CODE_204.code(), "不支持的请求类型");
 			pushMessage(error, socketAddress);
 			return;
 		}

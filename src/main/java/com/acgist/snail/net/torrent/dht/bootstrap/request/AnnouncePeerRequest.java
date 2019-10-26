@@ -52,7 +52,7 @@ public class AnnouncePeerRequest extends Request {
 	public static final AnnouncePeerResponse execute(Request request) {
 		final byte[] token = request.getBytes(DhtConfig.KEY_TOKEN);
 		if(!ArrayUtils.equals(token, NodeManager.getInstance().token())) {
-			return AnnouncePeerResponse.newInstance(Response.error(request.getT(), ErrorCode.E_203.code(), "Token错误"));
+			return AnnouncePeerResponse.newInstance(Response.error(request.getT(), ErrorCode.CODE_203.code(), "Token错误"));
 		}
 		final byte[] infoHash = request.getBytes(DhtConfig.KEY_INFO_HASH);
 		final String infoHashHex = StringUtils.hex(infoHash);
