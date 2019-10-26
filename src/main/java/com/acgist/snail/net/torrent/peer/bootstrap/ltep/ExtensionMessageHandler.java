@@ -281,7 +281,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 * @param type 扩展消息类型：需要和Peer的标记一致
 	 */
 	public void pushMessage(byte type, byte[] bytes) {
-		this.peerSubMessageHandler.pushMessage(PeerConfig.Type.extension, buildMessage(type, bytes));
+		this.peerSubMessageHandler.pushMessage(PeerConfig.Type.EXTENSION, buildMessage(type, bytes));
 	}
 
 }
