@@ -200,11 +200,11 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 				final String type = (String) entry.getKey();
 				final Long typeValue = (Long) entry.getValue();
 				final PeerConfig.ExtensionType extensionType = PeerConfig.ExtensionType.valueOfKey(type);
-				if(extensionType == null) {
-					LOGGER.debug("不支持的扩展协议：{}-{}", type, typeValue);
-				} else {
+				if(extensionType != null && extensionType.support()) {
 					LOGGER.debug("添加扩展协议：{}-{}", extensionType, typeValue);
 					this.peerSession.addExtensionType(extensionType, typeValue.byteValue());
+				} else {
+					LOGGER.debug("不支持的扩展协议：{}-{}", type, typeValue);
 				}
 			});
 		}
