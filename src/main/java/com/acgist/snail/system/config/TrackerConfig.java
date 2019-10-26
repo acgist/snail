@@ -37,27 +37,39 @@ public class TrackerConfig extends PropertiesConfig {
 	public static final int MAX_FAIL_TIMES = 3;
 	
 	/**
-	 * announce事件
+	 * 声明（announce）事件
 	 */
 	public enum Event {
 		
 		/** none */
-		none(		0),
+		NONE(		0, "none"),
 		/** 完成 */
-		completed(	1),
+		COMPLETED(	1, "completed"),
 		/** 开始 */
-		started(	2),
+		STARTED(	2, "started"),
 		/** 停止 */
-		stopped(	3);
+		STOPPED(	3, "stopped");
 		
+		/**
+		 * 事件ID
+		 */
 		private int event;
+		/**
+		 * 事件值
+		 */
+		private String value;
 
-		private Event(int event) {
+		private Event(int event, String value) {
 			this.event = event;
+			this.value = value;
 		}
 
 		public int event() {
 			return this.event;
+		}
+		
+		public String value() {
+			return this.value;
 		}
 
 	}

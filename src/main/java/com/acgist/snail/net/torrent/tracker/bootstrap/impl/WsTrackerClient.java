@@ -34,19 +34,19 @@ public class WsTrackerClient extends TrackerClient {
 	
 	@Override
 	public void announce(Integer sid, TorrentSession torrentSession) throws NetException {
-		final String announceMessage = buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.started);
+		final String announceMessage = buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STARTED);
 		this.client.send(announceMessage);
 	}
 
 	@Override
 	public void complete(Integer sid, TorrentSession torrentSession) throws NetException {
-		final String announceMessage = buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.completed);
+		final String announceMessage = buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.COMPLETED);
 		this.client.send(announceMessage);
 	}
 
 	@Override
 	public void stop(Integer sid, TorrentSession torrentSession) throws NetException {
-		final String announceMessage = buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.stopped);
+		final String announceMessage = buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STOPPED);
 		this.client.send(announceMessage);
 	}
 
@@ -65,7 +65,7 @@ public class WsTrackerClient extends TrackerClient {
 			.append("\"uploaded\"").append(":").append(upload).append(",")
 			.append("\"downloaded\"").append(":").append(download).append(",")
 			.append("\"left\"").append(":").append(remain).append(",")
-			.append("\"event\"").append(":").append("\"").append(event.name()).append("\"").append(",")
+			.append("\"event\"").append(":").append("\"").append(event.value()).append("\"").append(",")
 			.append("\"action\"").append(":").append("\"").append(TrackerConfig.Action.announce.name()).append("\"").append(",")
 			.append("\"numwant\"").append(":").append(WANT_PEER_SIZE)
 			.append("}");

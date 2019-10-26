@@ -191,6 +191,9 @@ public class StunConfig {
     		this.code = code;
     	}
     	
+    	/**
+    	 * 错误编码
+    	 */
     	private int code;
     	
     	public int code() {
