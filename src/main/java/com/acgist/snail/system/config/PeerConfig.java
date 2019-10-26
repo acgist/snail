@@ -499,9 +499,9 @@ public class PeerConfig {
 	public enum Action {
 		
 		/** 磁力链接 */
-		magnet,
+		MAGNET,
 		/** BT任务 */
-		torrent;
+		TORRENT;
 		
 	}
 	

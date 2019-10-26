@@ -56,10 +56,10 @@ public class TrackerLauncherGroup {
 	public void loadTracker() throws DownloadException {
 		List<TrackerClient> clients = null;
 		final var action = this.torrentSession.action();
-		if(action == Action.torrent) { // BT任务
+		if(action == Action.TORRENT) { // BT任务
 			var torrent = this.torrentSession.torrent();
 			clients = TrackerManager.getInstance().clients(torrent.getAnnounce(), torrent.getAnnounceList());
-		} else if(action == Action.magnet) { // 磁力链接任务
+		} else if(action == Action.MAGNET) { // 磁力链接任务
 			var magnet = this.torrentSession.magnet();
 			clients = TrackerManager.getInstance().clients(null, magnet.getTr());
 		} else {

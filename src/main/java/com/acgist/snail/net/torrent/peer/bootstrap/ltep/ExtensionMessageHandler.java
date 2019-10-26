@@ -211,7 +211,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 		if(!this.handshake) {
 			handshake();
 		}
-		if(this.torrentSession.action() == Action.magnet) {
+		if(this.torrentSession.action() == Action.MAGNET) {
 			metadata();
 		}
 	}
