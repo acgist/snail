@@ -73,7 +73,7 @@ public class MagnetProtocol extends Protocol {
 	
 	@Override
 	protected void buildFileType(String fileName) {
-		this.taskEntity.setFileType(FileType.torrent);
+		this.taskEntity.setFileType(FileType.TORRENT);
 	}
 	
 	@Override

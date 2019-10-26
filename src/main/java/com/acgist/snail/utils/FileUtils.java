@@ -41,32 +41,32 @@ public class FileUtils {
 	public enum FileType {
 		
 		/** 图片 */
-		image("图片", "image.png"),
+		IMAGE(		"图片", "image.png"),
 		/** 视频 */
-		video("视频", "video.png"),
+		VIDEO(		"视频", "video.png"),
 		/** 音频 */
-		audio("音频", "audio.png"),
+		AUDIO(		"音频", "audio.png"),
 		/** 脚本 */
-		script("脚本", "script.png"),
+		SCRIPT(		"脚本", "script.png"),
 		/** BT */
-		torrent("BT", "torrent.png"),
+		TORRENT(	"BT", "torrent.png"),
 		/** 压缩 */
-		compress("压缩", "compress.png"),
+		COMPRESS(	"压缩", "compress.png"),
 		/** 文档 */
-		document("文档", "document.png"),
+		DOCUMENT(	"文档", "document.png"),
 		/** 安装包 */
-		install("安装包", "install.png"),
+		INSTALL(	"安装包", "install.png"),
 		/** 未知 */
-		unknown("未知", "unknown.png");
+		UNKNOWN(	"未知", "unknown.png");
 		
 		/**
 		 * 文件类型名称
 		 */
-		private String value;
+		private final String value;
 		/**
 		 * 文件类型图标
 		 */
-		private String icon;
+		private final String icon;
 
 		private FileType(String value, String icon) {
 			this.value = value;
@@ -102,31 +102,31 @@ public class FileUtils {
 	private static final Map<FileType, List<String>> FILE_TYPE_EXT = new HashMap<>();
 	
 	static {
-		FILE_TYPE_EXT.put(FileType.image, List.of(
+		FILE_TYPE_EXT.put(FileType.IMAGE, List.of(
 			"bmp", "cdr", "gif", "ico", "jpeg", "jpg", "png", "psd", "svg"
 		));
-		FILE_TYPE_EXT.put(FileType.video, List.of(
+		FILE_TYPE_EXT.put(FileType.VIDEO, List.of(
 			"3gp", "avi", "flv", "mkv", "mov", "mp4", "mvb", "rm", "rmvb"
 		));
-		FILE_TYPE_EXT.put(FileType.audio, List.of(
+		FILE_TYPE_EXT.put(FileType.AUDIO, List.of(
 			"aac", "flac", "mp3", "ogg", "wav", "wma", "wmv"
 		));
-		FILE_TYPE_EXT.put(FileType.script, List.of(
+		FILE_TYPE_EXT.put(FileType.SCRIPT, List.of(
 			"asp", "bat", "c", "cmd", "cpp", "h", "java", "js", "jsp", "php", "py", "sh"
 		));
-		FILE_TYPE_EXT.put(FileType.torrent, List.of(
+		FILE_TYPE_EXT.put(FileType.TORRENT, List.of(
 			"torrent"
 		));
-		FILE_TYPE_EXT.put(FileType.compress, List.of(
+		FILE_TYPE_EXT.put(FileType.COMPRESS, List.of(
 			"7z", "bz2", "gz", "iso", "jar", "rar", "tar", "z", "zip"
 		));
-		FILE_TYPE_EXT.put(FileType.document, List.of(
+		FILE_TYPE_EXT.put(FileType.DOCUMENT, List.of(
 			"css", "doc", "docx", "htm", "html", "pdf", "ppt", "pptx", "txt", "wps", "xls", "xlsx", "xml"
 		));
-		FILE_TYPE_EXT.put(FileType.install, List.of(
+		FILE_TYPE_EXT.put(FileType.INSTALL, List.of(
 			"apk", "com", "deb", "exe", "rpm"
 		));
-		FILE_TYPE_EXT.put(FileType.unknown, List.of(
+		FILE_TYPE_EXT.put(FileType.UNKNOWN, List.of(
 		));
 	}
 	
@@ -219,7 +219,7 @@ public class FileUtils {
 	public static final FileType fileType(String fileName) {
 		final String ext = fileExt(fileName);
 		if(ext == null) {
-			return FileType.unknown;
+			return FileType.UNKNOWN;
 		}
 		final String extLower = ext.toLowerCase();
 		final Optional<FileType> optional = FILE_TYPE_EXT.entrySet().stream()
@@ -229,7 +229,7 @@ public class FileUtils {
 		if(optional.isPresent()) {
 			return optional.get();
 		}
-		return FileType.unknown;
+		return FileType.UNKNOWN;
 	}
 	
 	/**
