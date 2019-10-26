@@ -21,21 +21,21 @@ public class Magnet {
 	public enum Type {
 		
 		/** md5 */
-		md5("urn:md5:"),
+		MD5("urn:md5:"),
 		/** aich */
-		aich("urn:aich:"),
+		AICH("urn:aich:"),
 		/** btih */
-		btih("urn:btih:"),
+		BTIH("urn:btih:"),
 		/** ed2k */
-		ed2k("urn:ed2k:"),
+		ED2K("urn:ed2k:"),
 		/** sha1 */
-		sha1("urn:sha1:"),
+		SHA1("urn:sha1:"),
 		/** crc32 */
-		crc32("urn:crc32:"),
+		CRC32("urn:crc32:"),
 		/** tth */
-		tth("urn:tree:tiger:"),
+		TTH("urn:tree:tiger:"),
 		/** bitprint */
-		bitprint("urn:bitprint:");
+		BITPRINT("urn:bitprint:");
 		
 		private final String xt;
 
@@ -104,7 +104,7 @@ public class Magnet {
 	 * 是否支持下载
 	 */
 	public boolean supportDownload() {
-		return this.type == Type.btih && StringUtils.isNotEmpty(this.hash);
+		return this.type == Type.BTIH && StringUtils.isNotEmpty(this.hash);
 	}
 	
 	public Type getType() {
