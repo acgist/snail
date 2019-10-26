@@ -89,13 +89,13 @@ public class MetadataMessageHandler implements IExtensionMessageHandler, IExtens
 		}
 		LOGGER.debug("metadata消息类型：{}", type);
 		switch (type) {
-		case request:
+		case REQUEST:
 			request(decoder);
 			break;
-		case data:
+		case DATA:
 			data(decoder);
 			break;
-		case reject:
+		case REJECT:
 			reject(decoder);
 			break;
 		default:
@@ -117,7 +117,7 @@ public class MetadataMessageHandler implements IExtensionMessageHandler, IExtens
 		final int size = this.infoHash.size();
 		final int messageSize = NumberUtils.ceilDiv(size, SLICE_LENGTH);
 		for (int index = 0; index < messageSize; index++) {
-			final var request = buildMessage(PeerConfig.MetadataType.request, index);
+			final var request = buildMessage(PeerConfig.MetadataType.REQUEST, index);
 			pushMessage(request);
 		}
 	}
@@ -155,7 +155,7 @@ public class MetadataMessageHandler implements IExtensionMessageHandler, IExtens
 		}
 		final byte[] x = new byte[length]; // InfoHash块数据
 		System.arraycopy(bytes, begin, x, 0, length);
-		final var data = buildMessage(PeerConfig.MetadataType.data, piece);
+		final var data = buildMessage(PeerConfig.MetadataType.DATA, piece);
 		data.put(ARG_TOTAL_SIZE, this.infoHash.size());
 		pushMessage(data, x);
 	}
@@ -200,7 +200,7 @@ public class MetadataMessageHandler implements IExtensionMessageHandler, IExtens
 	 */
 	public void reject() {
 		LOGGER.debug("发送metadata消息-reject");
-		final var reject = buildMessage(PeerConfig.MetadataType.reject, 0);
+		final var reject = buildMessage(PeerConfig.MetadataType.REJECT, 0);
 		pushMessage(reject);
 	}
 	

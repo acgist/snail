@@ -387,11 +387,11 @@ public class PeerConfig {
 	public enum MetadataType {
 		
 		/** 请求 */
-		request((byte) 0),
+		REQUEST(	(byte) 0),
 		/** 数据 */
-		data((byte)    1),
+		DATA(		(byte) 1),
 		/** 拒绝 */
-		reject((byte)  2);
+		REJECT(		(byte) 2);
 		
 		MetadataType(byte value) {
 			this.value = value;
@@ -407,9 +407,9 @@ public class PeerConfig {
 		}
 		
 		public static final MetadataType valueOf(byte value) {
-			final MetadataType[] types = MetadataType.values();
+			final var types = MetadataType.values();
 			for (MetadataType type : types) {
-				if(type.value() == value) {
+				if(type.value == value) {
 					return type;
 				}
 			}
