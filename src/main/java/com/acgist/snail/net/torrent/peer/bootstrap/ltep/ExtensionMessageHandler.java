@@ -111,16 +111,16 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 		}
 		LOGGER.debug("扩展消息类型：{}", extensionType);
 		switch (extensionType) {
-		case handshake:
+		case HANDSHAKE:
 			handshake(buffer);
 			break;
-		case ut_pex:
+		case UT_PEX:
 			pex(buffer);
 			break;
-		case ut_metadata:
+		case UT_METADATA:
 			metadata(buffer);
 			break;
-		case ut_holepunch:
+		case UT_HOLEPUNCH:
 			holepunch(buffer);
 			break;
 		default:
@@ -139,7 +139,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 		final Map<String, Object> supportType = new LinkedHashMap<>();
 		for (var type : PeerConfig.ExtensionType.values()) {
 			if(type.notice()) {
-				supportType.put(type.name(), type.value());
+				supportType.put(type.key(), type.value());
 			}
 		}
 		data.put(EX_M, supportType); // 扩展协议以及编号
@@ -153,17 +153,17 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 //			data.put(EX_YOURIP, youripBuffer.array());
 //		}
 		data.put(EX_REQQ, 255);
-		if(PeerConfig.ExtensionType.ut_pex.notice()) {
+		if(PeerConfig.ExtensionType.UT_PEX.notice()) {
 			// TODO：使用CryptConfig配置
 			data.put(EX_E, 0); // pex：加密
 		}
-		if(PeerConfig.ExtensionType.ut_metadata.notice()) {
+		if(PeerConfig.ExtensionType.UT_METADATA.notice()) {
 			final int metadataSize = this.infoHash.size();
 			if(metadataSize > 0) {
 				data.put(EX_METADATA_SIZE, metadataSize); // 种子InfoHash数据长度
 			}
 		}
-		this.pushMessage(ExtensionType.handshake.value(), BEncodeEncoder.encodeMap(data));
+		this.pushMessage(ExtensionType.HANDSHAKE.value(), BEncodeEncoder.encodeMap(data));
 	}
 
 	/**
@@ -199,7 +199,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 			mData.entrySet().forEach(entry -> {
 				final String type = (String) entry.getKey();
 				final Long typeValue = (Long) entry.getValue();
-				final PeerConfig.ExtensionType extensionType = PeerConfig.ExtensionType.valueOfName(type);
+				final PeerConfig.ExtensionType extensionType = PeerConfig.ExtensionType.valueOfKey(type);
 				if(extensionType == null) {
 					LOGGER.debug("不支持的扩展协议：{}-{}", type, typeValue);
 				} else {
@@ -220,7 +220,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 * 发送pex消息
 	 */
 	public void pex(byte[] bytes) {
-		if(this.peerSession.supportExtensionType(ExtensionType.ut_pex)) {
+		if(this.peerSession.supportExtensionType(ExtensionType.UT_PEX)) {
 			this.peerExchangeMessageHandler.pex(bytes);
 		}
 	}
@@ -236,7 +236,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 * <p>发送metadata消息</p>
 	 */
 	public void metadata() {
-		if(this.peerSession.supportExtensionType(ExtensionType.ut_metadata)) {
+		if(this.peerSession.supportExtensionType(ExtensionType.UT_METADATA)) {
 			this.metadataMessageHandler.request();
 		}
 	}

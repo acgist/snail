@@ -106,7 +106,7 @@ public class MetadataMessageHandler implements IExtensionMessageHandler, IExtens
 	
 	@Override
 	public Byte extensionType() {
-		return this.peerSession.extensionTypeValue(ExtensionType.ut_metadata);
+		return this.peerSession.extensionTypeValue(ExtensionType.UT_METADATA);
 	}
 	
 	/**
