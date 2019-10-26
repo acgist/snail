@@ -67,13 +67,13 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler, IExten
 		port = NetUtils.decodePort(buffer.getShort());
 		code = buffer.getInt();
 		switch (type) {
-		case rendezvous:
+		case RENDEZVOUS:
 			rendezvous();
 			break;
-		case connect:
+		case CONNECT:
 			connect();
 			break;
-		case error:
+		case ERROR:
 			LOGGER.warn("holepunch错误信息：{}-{}-{}", host, port, code);
 			break;
 		default:
@@ -104,7 +104,7 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler, IExten
 	 * @param port 端口
 	 */
 	public void rendezvous(String host, Integer port) {
-		final ByteBuffer message = buildMessage(HolepunchType.rendezvous, host, port, HolepunchErrorCode.E_00);
+		final ByteBuffer message = buildMessage(HolepunchType.RENDEZVOUS, host, port, HolepunchErrorCode.E_00);
 		pushMessage(message);
 	}
 	

@@ -424,11 +424,11 @@ public class PeerConfig {
 	public enum HolepunchType {
 		
 		/** 约定 */
-		rendezvous((byte) 0x00),
+		RENDEZVOUS(	(byte) 0x00),
 		/** 连接 */
-		connect((byte)    0x01),
+		CONNECT(	(byte) 0x01),
 		/** 错误 */
-		error((byte)      0x02);
+		ERROR(		(byte) 0x02);
 		
 		HolepunchType(byte value) {
 			this.value = value;
@@ -444,9 +444,9 @@ public class PeerConfig {
 		}
 		
 		public static final HolepunchType valueOf(byte value) {
-			final HolepunchType[] types = HolepunchType.values();
+			final var types = HolepunchType.values();
 			for (HolepunchType type : types) {
-				if(type.value() == value) {
+				if(type.value == value) {
 					return type;
 				}
 			}
