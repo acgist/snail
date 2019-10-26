@@ -71,26 +71,26 @@ public final class MSECryptHandshakeHandler {
 	public enum Step {
 		
 		/** 发送公钥 */
-		sendPublicKey,
+		SEND_PUBLIC_KEY,
 		/** 接收公钥 */
-		receivePublicKey,
+		RECEIVE_PUBLIC_KEY,
 		/** 发送加密协议协商 */
-		sendProvide,
+		SEND_PROVIDE,
 		/** 接收加密协议协商 */
-		receiveProvide,
-		receiveProvidePadding,
+		RECEIVE_PROVIDE,
+		RECEIVE_PROVIDE_PADDING,
 		/** 发送确认加密协议 */
-		sendConfirm,
+		SEND_CONFIRM,
 		/** 接收确认加密协议 */
-		receiveConfirm,
-		receiveConfirmPadding;
+		RECEIVE_CONFIRM,
+		RECEIVE_CONFIRM_PADDING;
 		
 	}
 	
 	/**
 	 * 当前步骤：默认：接收公钥
 	 */
-	private Step step = Step.receivePublicKey;
+	private Step step = Step.RECEIVE_PUBLIC_KEY;
 	/**
 	 * 是否处理完成（握手处理）
 	 */
@@ -158,7 +158,7 @@ public final class MSECryptHandshakeHandler {
 	 * 发送握手消息
 	 */
 	public void handshake() {
-		this.step = Step.sendPublicKey;
+		this.step = Step.SEND_PUBLIC_KEY;
 		sendPublicKey();
 	}
 
@@ -173,25 +173,25 @@ public final class MSECryptHandshakeHandler {
 			}
 			synchronized (this.buffer) {
 				switch (this.step) {
-				case sendPublicKey:
-				case receivePublicKey:
+				case SEND_PUBLIC_KEY:
+				case RECEIVE_PUBLIC_KEY:
 					this.buffer.put(buffer);
 					receivePublicKey();
 					break;
-				case receiveProvide:
+				case RECEIVE_PROVIDE:
 					this.buffer.put(buffer);
 					receiveProvide();
 					break;
-				case receiveProvidePadding:
+				case RECEIVE_PROVIDE_PADDING:
 					this.cipher.decrypt(buffer);
 					this.buffer.put(buffer);
 					receiveProvidePadding();
 					break;
-				case receiveConfirm:
+				case RECEIVE_CONFIRM:
 					this.buffer.put(buffer);
 					receiveConfirm();
 					break;
-				case receiveConfirmPadding:
+				case RECEIVE_CONFIRM_PADDING:
 					this.cipher.decrypt(buffer);
 					this.buffer.put(buffer);
 					receiveConfirmPadding();
@@ -300,12 +300,12 @@ public final class MSECryptHandshakeHandler {
 		final BigInteger publicKey = NumberUtils.decodeUnsigned(this.buffer, CryptConfig.PUBLIC_KEY_LENGTH);
 		this.buffer.compact();
 		this.dhSecret = MSEKeyPairBuilder.buildDHSecret(publicKey, this.keyPair.getPrivate());
-		if(this.step == Step.receivePublicKey) {
+		if(this.step == Step.RECEIVE_PUBLIC_KEY) {
 			sendPublicKey();
-			this.step = Step.receiveProvide;
-		} else if(this.step == Step.sendPublicKey) {
+			this.step = Step.RECEIVE_PROVIDE;
+		} else if(this.step == Step.SEND_PUBLIC_KEY) {
 			sendProvide();
-			this.step = Step.receiveConfirm;
+			this.step = Step.RECEIVE_CONFIRM;
 		}
 	}
 	
@@ -422,7 +422,7 @@ public final class MSECryptHandshakeHandler {
 		final int provide = this.buffer.getInt(); // 协议选择
 		LOGGER.debug("接收加密协议协商选择：{}", provide);
 		this.strategy = selectStrategy(provide); // 选择协议
-		this.step = Step.receiveProvidePadding;
+		this.step = Step.RECEIVE_PROVIDE_PADDING;
 		this.msePaddingSync = MSEPaddingSync.newInstance(2);
 		this.receiveProvidePadding();
 	}
@@ -492,7 +492,7 @@ public final class MSECryptHandshakeHandler {
 		LOGGER.debug("接收确认加密协议选择：{}", provide);
 		this.strategy = selectStrategy(provide); // 选择协议
 		LOGGER.debug("接收确认加密协议：{}", this.strategy);
-		this.step = Step.receiveConfirmPadding;
+		this.step = Step.RECEIVE_CONFIRM_PADDING;
 		this.msePaddingSync = MSEPaddingSync.newInstance(1);
 		this.receiveConfirmPadding();
 	}
