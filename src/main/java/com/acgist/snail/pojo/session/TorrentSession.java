@@ -162,7 +162,7 @@ public final class TorrentSession {
 	 * @return true-下载完成；false-未完成；
 	 */
 	public boolean magnet(TaskSession taskSession) throws DownloadException {
-		this.action = Action.magnet;
+		this.action = Action.MAGNET;
 		this.taskSession = taskSession;
 		this.loadMagnet();
 		this.loadExecutor();
@@ -211,7 +211,7 @@ public final class TorrentSession {
 	 * @return true-下载完成；false-未完成；
 	 */
 	public boolean download(boolean findPeer) throws DownloadException {
-		this.action = Action.torrent;
+		this.action = Action.TORRENT;
 		if(this.taskSession == null) {
 			throw new DownloadException("下载任务不存在");
 		}
@@ -322,7 +322,7 @@ public final class TorrentSession {
 	 */
 	private void loadDhtLauncher() {
 		this.dhtLauncher = DhtLauncher.newInstance(this);
-		if(this.action == Action.torrent) {
+		if(this.action == Action.TORRENT) {
 			final var nodes = this.torrent.getNodes();
 			if(CollectionUtils.isNotEmpty(nodes)) { // 添加DHT节点
 				nodes.forEach((host, port) -> {
@@ -421,7 +421,7 @@ public final class TorrentSession {
 		if(completed()) {
 			return true;
 		}
-		if(this.action == Action.torrent) {
+		if(this.action == Action.TORRENT) {
 			return this.torrentStreamGroup.complete();
 		} else {
 			return this.torrent != null;
