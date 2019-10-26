@@ -242,38 +242,38 @@ public class PeerConfig {
 	public enum Type {
 		
 		/** 阻塞 */
-		choke((byte)         0x00),
+		CHOKE(			(byte) 0x00),
 		/** 解除阻塞 */
-		unchoke((byte)       0x01),
+		UNCHOKE(		(byte) 0x01),
 		/** 感兴趣 */
-		interested((byte)    0x02),
+		INTERESTED(		(byte) 0x02),
 		/** 不感兴趣 */
-		notInterested((byte) 0x03),
+		NOT_INTERESTED(	(byte) 0x03),
 		/** have */
-		have((byte)          0x04),
+		HAVE(			(byte) 0x04),
 		/** 位图 */
-		bitfield((byte)      0x05),
+		BITFIELD(		(byte) 0x05),
 		/** 请求 */
-		request((byte)       0x06),
+		REQUEST(		(byte) 0x06),
 		/** 数据 */
-		piece((byte)         0x07),
+		PIECE(			(byte) 0x07),
 		/** 取消 */
-		cancel((byte)        0x08),
+		CANCEL(			(byte) 0x08),
 		/** DHT */
-		dht((byte)           0x09),
+		DHT(			(byte) 0x09),
 		/** 扩展 */
-		extension((byte)     0x14),
+		EXTENSION(		(byte) 0x14),
 		//================FAST Protocol================//
 		/** 推荐块 */
-		suggest((byte)       0x0D),
+		SUGGEST(		(byte) 0x0D),
 		/** 所有块 */
-		haveAll((byte)       0x0E),
+		HAVE_ALL(		(byte) 0x0E),
 		/** 没有块 */
-		haveNone((byte)      0x0F),
+		HAVE_NONE(		(byte) 0x0F),
 		/** 拒绝请求 */
-		rejectRequest((byte) 0x10),
+		REJECT_REQUEST(	(byte) 0x10),
 		/** 快速允许 */
-		allowedFast((byte)   0x11);
+		ALLOWED_FAST(	(byte) 0x11);
 		
 		Type(byte value) {
 			this.value = value;
@@ -291,7 +291,7 @@ public class PeerConfig {
 		public static final Type valueOf(byte value) {
 			final Type[] types = Type.values();
 			for (Type type : types) {
-				if(type.value() == value) {
+				if(type.value == value) {
 					return type;
 				}
 			}

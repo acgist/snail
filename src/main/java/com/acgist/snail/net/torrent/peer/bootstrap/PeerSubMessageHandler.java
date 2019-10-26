@@ -204,37 +204,37 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			}
 			LOGGER.debug("Peer消息类型：{}", type);
 			switch (type) {
-			case choke:
+			case CHOKE:
 				choke(buffer);
 				break;
-			case unchoke:
+			case UNCHOKE:
 				unchoke(buffer);
 				break;
-			case interested:
+			case INTERESTED:
 				interested(buffer);
 				break;
-			case notInterested:
+			case NOT_INTERESTED:
 				notInterested(buffer);
 				break;
-			case have:
+			case HAVE:
 				have(buffer);
 				break;
-			case bitfield:
+			case BITFIELD:
 				bitfield(buffer);
 				break;
-			case request:
+			case REQUEST:
 				request(buffer);
 				break;
-			case piece:
+			case PIECE:
 				piece(buffer);
 				break;
-			case cancel:
+			case CANCEL:
 				cancel(buffer);
 				break;
-			case dht:
+			case DHT:
 				dht(buffer);
 				break;
-			case extension:
+			case EXTENSION:
 				extension(buffer);
 				break;
 			default:
@@ -347,7 +347,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	public void choke() {
 		LOGGER.debug("发送阻塞消息");
 		this.peerSession.amChoke();
-		pushMessage(PeerConfig.Type.choke, null);
+		pushMessage(PeerConfig.Type.CHOKE, null);
 	}
 
 	/**
@@ -377,7 +377,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		}
 		LOGGER.debug("发送解除阻塞消息");
 		this.peerSession.amUnchoke();
-		pushMessage(PeerConfig.Type.unchoke, null);
+		pushMessage(PeerConfig.Type.UNCHOKE, null);
 	}
 	
 	/**
@@ -407,7 +407,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	public void interested() {
 		LOGGER.debug("发送感兴趣消息");
 		this.peerSession.amInterested();
-		pushMessage(PeerConfig.Type.interested, null);
+		pushMessage(PeerConfig.Type.INTERESTED, null);
 	}
 
 	/**
@@ -428,7 +428,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	public void notInterested() {
 		LOGGER.debug("发送不感兴趣消息");
 		this.peerSession.amNotInterested();
-		pushMessage(PeerConfig.Type.notInterested, null);
+		pushMessage(PeerConfig.Type.NOT_INTERESTED, null);
 	}
 
 	/**
@@ -458,7 +458,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			return;
 		}
 		LOGGER.debug("发送have消息：{}", index);
-		pushMessage(PeerConfig.Type.have, ByteBuffer.allocate(4).putInt(index).array());
+		pushMessage(PeerConfig.Type.HAVE, ByteBuffer.allocate(4).putInt(index).array());
 	}
 
 	/**
@@ -505,7 +505,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		final BitSet pieces = this.torrentSession.pieces();
 		LOGGER.debug("发送位图消息：{}", pieces);
 		final int pieceSize = this.torrentSession.torrent().getInfo().pieceSize();
-		pushMessage(PeerConfig.Type.bitfield, BitfieldUtils.toBytes(pieceSize, pieces));
+		pushMessage(PeerConfig.Type.BITFIELD, BitfieldUtils.toBytes(pieceSize, pieces));
 	}
 	
 	/**
@@ -558,7 +558,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		buffer.putInt(index);
 		buffer.putInt(begin);
 		buffer.putInt(length);
-		pushMessage(PeerConfig.Type.request, buffer.array());
+		pushMessage(PeerConfig.Type.REQUEST, buffer.array());
 	}
 
 	/**
@@ -618,7 +618,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		buffer.putInt(index);
 		buffer.putInt(begin);
 		buffer.put(bytes);
-		pushMessage(PeerConfig.Type.piece, buffer.array());
+		pushMessage(PeerConfig.Type.PIECE, buffer.array());
 	}
 
 	/**
@@ -656,7 +656,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		buffer.putInt(index);
 		buffer.putInt(begin);
 		buffer.putInt(length);
-		pushMessage(PeerConfig.Type.cancel, buffer.array());
+		pushMessage(PeerConfig.Type.CANCEL, buffer.array());
 	}
 	
 	/**

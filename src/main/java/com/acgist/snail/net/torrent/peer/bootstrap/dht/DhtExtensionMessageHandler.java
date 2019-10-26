@@ -46,7 +46,7 @@ public class DhtExtensionMessageHandler implements IExtensionMessageHandler {
 
 	public void port() {
 		final byte[] bytes = ByteBuffer.allocate(2).putShort(SystemConfig.getTorrentPortExtShort()).array();
-		this.peerSubMessageHandler.pushMessage(PeerConfig.Type.dht, bytes);
+		this.peerSubMessageHandler.pushMessage(PeerConfig.Type.DHT, bytes);
 	}
 	
 	/**
