@@ -72,37 +72,37 @@ public class ApplicationMessageHandler extends TcpMessageHandler implements IMes
 			return;
 		}
 		switch (message.getType()) {
-		case gui:
+		case GUI:
 			onGui(message);
 			break;
-		case text:
+		case TEXT:
 			onText(message);
 			break;
-		case close:
+		case CLOSE:
 			onClose(message);
 			break;
-		case notify:
+		case NOTIFY:
 			onNotify(message);
 			break;
-		case shutdown:
+		case SHUTDOWN:
 			onShutdown(message);
 			break;
-		case taskNew:
+		case TASK_NEW:
 			onTaskNew(message);
 			break;
-		case taskList:
+		case TASK_LIST:
 			onTaskList(message);
 			break;
-		case taskStart:
+		case TASK_START:
 			onTaskStart(message);
 			break;
-		case taskPause:
+		case TASK_PAUSE:
 			onTaskPause(message);
 			break;
-		case taskDelete:
+		case TASK_DELETE:
 			onTaskDelete(message);
 			break;
-		case response:
+		case RESPONSE:
 			onResponse(message);
 			break;
 		default:

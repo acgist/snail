@@ -73,11 +73,11 @@ public class AlertEvent extends GuiEvent {
 	}
 	
 	private void executeExtendEx(SnailAlertType type, String title, String message) {
-		final ApplicationMessage applicationMessage = ApplicationMessage.message(ApplicationMessage.Type.alert);
+		final ApplicationMessage applicationMessage = ApplicationMessage.message(ApplicationMessage.Type.ALERT);
 		final Map<String, String> map = new HashMap<>(3);
+		map.put("type", type.name());
 		map.put("title", title);
 		map.put("message", message);
-		map.put("type", type.name());
 		final String body = BEncodeEncoder.encodeMapString(map);
 		applicationMessage.setBody(body);
 		GuiHandler.getInstance().sendGuiMessage(applicationMessage);
