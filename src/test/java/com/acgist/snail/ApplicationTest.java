@@ -31,32 +31,32 @@ public class ApplicationTest {
 		Scanner scanner = new Scanner(System.in);
 //		while ((message = scanner.next()) != null) { // 使用next()读取时会按照空白行（空格、Tab、Enter）拆分，使用nextLine()不会被拆分。
 		while ((message = scanner.nextLine()) != null) {
-			if(message.equals("close")) {
-				client.send(ApplicationMessage.message(Type.close, message));
+			if(message.equalsIgnoreCase(Type.CLOSE.name())) {
+				client.send(ApplicationMessage.message(Type.CLOSE, message));
 				client.close();
 				break;
-			} else if(message.equals("shutdown")) {
-				client.send(ApplicationMessage.message(Type.shutdown, message));
+			} else if(message.equalsIgnoreCase(Type.SHUTDOWN.name())) {
+				client.send(ApplicationMessage.message(Type.SHUTDOWN, message));
 				client.close();
 				break;
-			} else if(message.equals("gui")) {
-				client.send(ApplicationMessage.message(Type.gui, message));
-			} else if(message.equals("notify")) {
-				client.send(ApplicationMessage.message(Type.notify, message));
-			} else if(message.equals("taskNew")) {
+			} else if(message.equalsIgnoreCase(Type.GUI.name())) {
+				client.send(ApplicationMessage.message(Type.GUI, message));
+			} else if(message.equalsIgnoreCase(Type.NOTIFY.name())) {
+				client.send(ApplicationMessage.message(Type.NOTIFY, message));
+			} else if(message.equalsIgnoreCase(Type.TASK_NEW.name())) {
 				Map<String, String> map = new HashMap<>();
 				map.put("url", "http://mirror.bit.edu.cn/apache/tomcat/tomcat-9/v9.0.24/bin/apache-tomcat-9.0.24-windows-x86.zip");
 //				map.put("url", "E:\\snail\\0000.torrent");
 //				map.put("files", "l50:[UHA-WINGS][Vinland Saga][01][x264 1080p][CHT].mp4e");
-				client.send(ApplicationMessage.message(Type.taskNew, BEncodeEncoder.encodeMapString(map)));
-			} else if(message.equals("taskList")) {
-				client.send(ApplicationMessage.message(Type.taskList, message));
-			} else if(message.equals("taskStart")) {
-				client.send(ApplicationMessage.message(Type.taskStart, "37f48162-d306-4fff-b161-f1231a3f7e48"));
-			} else if(message.equals("taskPause")) {
-				client.send(ApplicationMessage.message(Type.taskPause, "37f48162-d306-4fff-b161-f1231a3f7e48"));
-			} else if(message.equals("taskDelete")) {
-				client.send(ApplicationMessage.message(Type.taskDelete, "37f48162-d306-4fff-b161-f1231a3f7e48"));
+				client.send(ApplicationMessage.message(Type.TASK_NEW, BEncodeEncoder.encodeMapString(map)));
+			} else if(message.equalsIgnoreCase(Type.TASK_LIST.name())) {
+				client.send(ApplicationMessage.message(Type.TASK_LIST, message));
+			} else if(message.equalsIgnoreCase(Type.TASK_START.name())) {
+				client.send(ApplicationMessage.message(Type.TASK_START, "37f48162-d306-4fff-b161-f1231a3f7e48"));
+			} else if(message.equalsIgnoreCase(Type.TASK_PAUSE.name())) {
+				client.send(ApplicationMessage.message(Type.TASK_PAUSE, "37f48162-d306-4fff-b161-f1231a3f7e48"));
+			} else if(message.equalsIgnoreCase(Type.TASK_DELETE.name())) {
+				client.send(ApplicationMessage.message(Type.TASK_DELETE, "37f48162-d306-4fff-b161-f1231a3f7e48"));
 			} else {
 				client.send(ApplicationMessage.text(message));
 			}

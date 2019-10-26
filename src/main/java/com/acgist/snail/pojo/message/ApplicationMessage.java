@@ -34,36 +34,36 @@ public class ApplicationMessage {
 		// 被动消息
 		
 		/** GUI注册 */
-		gui,
+		GUI,
 		/** 文本 */
-		text,
+		TEXT,
 		/** 关闭连接 */
-		close,
+		CLOSE,
 		/** 唤醒窗口 */
-		notify,
+		NOTIFY,
 		/** 关闭程序 */
-		shutdown,
+		SHUTDOWN,
 		/** 新建任务 */
-		taskNew,
+		TASK_NEW,
 		/** 任务列表 */
-		taskList,
+		TASK_LIST,
 		/** 开始任务 */
-		taskStart,
+		TASK_START,
 		/** 暂停任务 */
-		taskPause,
+		TASK_PAUSE,
 		/** 删除任务 */
-		taskDelete,
+		TASK_DELETE,
 		
 		// 主动消息
 		
 		/** 提示窗口 */
-		alert,
+		ALERT,
 		/** 提示消息 */
-		notice,
+		NOTICE,
 		/** 刷新（任务） */
-		refresh,
+		REFRESH,
 		/** 响应 */
-		response;
+		RESPONSE;
 
 	}
 
@@ -125,14 +125,14 @@ public class ApplicationMessage {
 	 * 文本
 	 */
 	public static final ApplicationMessage text(String body) {
-		return message(Type.text, body);
+		return message(Type.TEXT, body);
 	}
 	
 	/**
 	 * 响应
 	 */
 	public static final ApplicationMessage response(String body) {
-		return message(Type.response, body);
+		return message(Type.RESPONSE, body);
 	}
 	
 	public Type getType() {

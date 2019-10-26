@@ -52,8 +52,8 @@ public class ApplicationClient extends TcpClient<ApplicationMessageHandler> {
 		try {
 			final boolean ok = client.connect();
 			if(ok) {
-				client.send(ApplicationMessage.message(ApplicationMessage.Type.notify));
-				client.send(ApplicationMessage.message(ApplicationMessage.Type.close));
+				client.send(ApplicationMessage.message(ApplicationMessage.Type.NOTIFY));
+				client.send(ApplicationMessage.message(ApplicationMessage.Type.CLOSE));
 			}
 		} catch (Exception e) {
 			LOGGER.error("通知主窗口异常", e);
