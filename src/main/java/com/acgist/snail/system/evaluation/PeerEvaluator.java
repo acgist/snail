@@ -45,9 +45,9 @@ public class PeerEvaluator {
 		/**
 		 * 评分
 		 */
-		private int score;
+		private final int score;
 		
-		Type(int score) {
+		private Type(int score) {
 			this.score = score;
 		}
 		

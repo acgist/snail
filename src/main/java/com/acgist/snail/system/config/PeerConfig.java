@@ -275,21 +275,21 @@ public class PeerConfig {
 		/** 快速允许 */
 		ALLOWED_FAST(	(byte) 0x11);
 		
-		Type(byte value) {
-			this.value = value;
-		}
-		
 		/**
 		 * 消息ID
 		 */
-		private byte value;
+		private final byte value;
+		
+		private Type(byte value) {
+			this.value = value;
+		}
 		
 		public byte value() {
 			return this.value;
 		}
 		
 		public static final Type valueOf(byte value) {
-			final Type[] types = Type.values();
+			final var types = Type.values();
 			for (Type type : types) {
 				if(type.value == value) {
 					return type;
@@ -301,42 +301,42 @@ public class PeerConfig {
 	}
 	
 	/**
-	 * 扩展协议消息类型
+	 * Peer扩展协议消息类型
 	 */
 	public enum ExtensionType {
 		
 		/** 握手 */
-		HANDSHAKE(		"handshake",	(byte) 0, true,  false),
+		HANDSHAKE(		"handshake",	(byte) 0x00, true,  false),
 		/** pex */
-		UT_PEX(			"ut_pex",		(byte) 1, true,  true),
+		UT_PEX(			"ut_pex",		(byte) 0x01, true,  true),
 		/** metadata */
-		UT_METADATA(	"ut_metadata",	(byte) 2, true,  true),
+		UT_METADATA(	"ut_metadata",	(byte) 0x02, true,  true),
 		/** holepunch */
-		UT_HOLEPUNCH(	"ut_holepunch",	(byte) 3, false, false);
+		UT_HOLEPUNCH(	"ut_holepunch",	(byte) 0x03, false, false);
+
+		/**
+		 * 协议名称
+		 */
+		private final String key;
+		/**
+		 * 消息ID：自定义
+		 */
+		private final byte value;
+		/**
+		 * 是否支持
+		 */
+		private final boolean support;
+		/**
+		 * 是否通知：握手时通知Peer支持该扩展
+		 */
+		private final boolean notice;
 		
-		ExtensionType(String key, byte value, boolean support, boolean notice) {
+		private ExtensionType(String key, byte value, boolean support, boolean notice) {
 			this.key = key;
 			this.value = value;
 			this.support = support;
 			this.notice = notice;
 		}
-
-		/**
-		 * 名称
-		 */
-		private String key;
-		/**
-		 * 消息ID
-		 */
-		private byte value;
-		/**
-		 * 是否支持
-		 */
-		private boolean support;
-		/**
-		 * 是否通知Peer
-		 */
-		private boolean notice;
 		
 		public String key() {
 			return this.key;
@@ -387,20 +387,20 @@ public class PeerConfig {
 	public enum MetadataType {
 		
 		/** 请求 */
-		REQUEST(	(byte) 0),
+		REQUEST((byte) 0x00),
 		/** 数据 */
-		DATA(		(byte) 1),
+		DATA(	(byte) 0x01),
 		/** 拒绝 */
-		REJECT(		(byte) 2);
-		
-		MetadataType(byte value) {
-			this.value = value;
-		}
+		REJECT(	(byte) 0x02);
 		
 		/**
 		 * 消息ID
 		 */
-		private byte value;
+		private final byte value;
+		
+		private MetadataType(byte value) {
+			this.value = value;
+		}
 		
 		public byte value() {
 			return this.value;
@@ -430,14 +430,14 @@ public class PeerConfig {
 		/** 错误 */
 		ERROR(		(byte) 0x02);
 		
-		HolepunchType(byte value) {
-			this.value = value;
-		}
-		
 		/**
 		 * 消息ID
 		 */
-		private byte value;
+		private final byte value;
+		
+		private HolepunchType(byte value) {
+			this.value = value;
+		}
 		
 		public byte value() {
 			return this.value;
@@ -478,14 +478,14 @@ public class PeerConfig {
 		/** 目标属于中继 */
 		CODE_04((byte) 0x04);
 		
-		HolepunchErrorCode(byte code) {
-			this.code = code;
-		}
-		
 		/**
 		 * 错误编码
 		 */
-		private byte code;
+		private final byte code;
+		
+		private HolepunchErrorCode(byte code) {
+			this.code = code;
+		}
 		
 		public byte code() {
 			return this.code;

@@ -9,7 +9,7 @@ package com.acgist.snail.gui.event;
 public abstract class GuiEvent {
 
 	/**
-	 * 事件类型
+	 * GUI事件类型
 	 */
 	public enum Type {
 		

@@ -131,7 +131,7 @@ public class TorrentController extends Controller implements Initializable {
 		entity.setDescription(wrapper.serialize());
 		if(entity.getId() != null) { // 已经添加数据库
 			boolean restart = false;
-			if(entity.getType() == Type.MAGNET) { // 磁力链接转为种子
+			if(entity.getType() == Type.MAGNET) { // 磁力链接转为BT任务
 				restart = true;
 				entity.setType(Type.TORRENT);
 				entity.setStatus(Status.AWAIT);

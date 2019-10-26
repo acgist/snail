@@ -44,7 +44,7 @@ public class GuiHandler {
 	private static final GuiHandler INSTANCE = new GuiHandler();
 	
 	/**
-	 * Alert提示窗口类型
+	 * Alert窗口提示类型
 	 */
 	public enum SnailAlertType {
 		
@@ -79,7 +79,7 @@ public class GuiHandler {
 	}
 	
 	/**
-	 * Notice提示消息类型
+	 * Notice消息提示类型
 	 */
 	public enum SnailNoticeType {
 		

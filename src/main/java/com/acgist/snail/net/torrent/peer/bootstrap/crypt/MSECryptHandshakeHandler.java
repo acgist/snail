@@ -67,7 +67,7 @@ public final class MSECryptHandshakeHandler {
 	private static final int HANDSHAKE_LOCK_TIMEOUT = 5;
 	
 	/**
-	 * 握手步骤
+	 * 加密握手步骤
 	 */
 	public enum Step {
 		
@@ -79,11 +79,13 @@ public final class MSECryptHandshakeHandler {
 		SEND_PROVIDE,
 		/** 接收加密协议协商 */
 		RECEIVE_PROVIDE,
+		/** 接收加密协议协商Padding */
 		RECEIVE_PROVIDE_PADDING,
 		/** 发送确认加密协议 */
 		SEND_CONFIRM,
 		/** 接收确认加密协议 */
 		RECEIVE_CONFIRM,
+		/** 接收确认加密协议Padding */
 		RECEIVE_CONFIRM_PADDING;
 		
 	}
@@ -524,8 +526,7 @@ public final class MSECryptHandshakeHandler {
 		final boolean crypt = 	  (provide & CryptAlgo.ARC4.value()) == CryptAlgo.ARC4.value();
 		Strategy selected = null;
 		if (plaintext || crypt) {
-			// 本地配置
-			switch (CryptConfig.STRATEGY) {
+			switch (CryptConfig.STRATEGY) { // 本地配置
 			case PLAINTEXT:
 				selected = plaintext ? Strategy.PLAINTEXT : null;
 				break;

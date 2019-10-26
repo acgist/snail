@@ -23,13 +23,13 @@ public class TorrentProtocol extends Protocol {
 	private static final TorrentProtocol INSTANCE = new TorrentProtocol();
 
 	/**
-	 * 种子文件操作
+	 * 种子文件操作类型
 	 */
 	public enum TorrentHandle {
 		
-		/** 拷贝 */
+		/** 拷贝：拷贝种子文件到下载目录（源文件不变） */
 		COPY,
-		/** 移动 */
+		/** 移动：移动种子文件到下载目录（源文件删除） */
 		MOVE;
 		
 	}

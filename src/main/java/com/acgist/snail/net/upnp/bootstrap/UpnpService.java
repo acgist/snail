@@ -34,11 +34,11 @@ public class UpnpService {
 	private static final UpnpService INSTANCE = new UpnpService();
 	
 	/**
-	 * 映射状态
+	 * UPNP映射状态
 	 */
 	public enum Status {
 		
-		/** 没有初始化 */
+		/** 未初始化 */
 		UNINIT,
 		/** 不可用（已被注册） */
 		DISABLE,
@@ -128,13 +128,13 @@ public class UpnpService {
 		if(!this.available) {
 			return null;
 		}
-		UpnpRequest upnpRequest = UpnpRequest.newRequest(this.serviceType);
-		String xml = upnpRequest.buildGetExternalIPAddress();
-		var client = HTTPClient.newInstance(this.controlURL);
-		var response = client
+		final var upnpRequest = UpnpRequest.newRequest(this.serviceType);
+		final var xml = upnpRequest.buildGetExternalIPAddress();
+		final var client = HTTPClient.newInstance(this.controlURL);
+		final var response = client
 			.header("SOAPAction", "\"" + this.serviceType + "#GetExternalIPAddress\"")
 			.post(xml, BodyHandlers.ofString());
-		String body = response.body();
+		final var body = response.body();
 		return UpnpResponse.parseGetExternalIPAddress(body);
 	}
 
@@ -149,18 +149,18 @@ public class UpnpService {
 		if(!this.available) {
 			return Status.UNINIT;
 		}
-		UpnpRequest upnpRequest = UpnpRequest.newRequest(this.serviceType);
-		String xml = upnpRequest.buildGetSpecificPortMappingEntry(portExt, protocol);
-		var client = HTTPClient.newInstance(this.controlURL);
-		var response = client
+		final var upnpRequest = UpnpRequest.newRequest(this.serviceType);
+		final var xml = upnpRequest.buildGetSpecificPortMappingEntry(portExt, protocol);
+		final var client = HTTPClient.newInstance(this.controlURL);
+		final var response = client
 			.header("SOAPAction", "\"" + this.serviceType + "#GetSpecificPortMappingEntry\"")
 			.post(xml, BodyHandlers.ofString());
-		String body = response.body();
+		final var body = response.body();
 		if(HTTPClient.internalServerError(response)) {
 			return Status.MAPABLE;
 		}
-		final String registerIp = UpnpResponse.parseGetSpecificPortMappingEntry(body);
-		final String localIp = NetUtils.inetHostAddress();
+		final var registerIp = UpnpResponse.parseGetSpecificPortMappingEntry(body);
+		final var localIp = NetUtils.inetHostAddress();
 		if(localIp.equals(registerIp)) {
 			return Status.USEABLE;
 		} else {
@@ -176,11 +176,11 @@ public class UpnpService {
 		if(!this.available) {
 			return false;
 		}
-		final String address = NetUtils.inetHostAddress();
-		UpnpRequest upnpRequest = UpnpRequest.newRequest(this.serviceType);
-		String xml = upnpRequest.buildAddPortMapping(port, address, portExt, protocol);
-		var client = HTTPClient.newInstance(this.controlURL);
-		var response = client
+		final var address = NetUtils.inetHostAddress();
+		final var upnpRequest = UpnpRequest.newRequest(this.serviceType);
+		final var xml = upnpRequest.buildAddPortMapping(port, address, portExt, protocol);
+		final var client = HTTPClient.newInstance(this.controlURL);
+		final var response = client
 			.header("SOAPAction", "\"" + this.serviceType + "#AddPortMapping\"")
 			.post(xml, BodyHandlers.ofString());
 		return HTTPClient.ok(response);
@@ -194,10 +194,10 @@ public class UpnpService {
 		if(!this.available) {
 			return false;
 		}
-		UpnpRequest upnpRequest = UpnpRequest.newRequest(this.serviceType);
-		String xml = upnpRequest.buildDeletePortMapping(portExt, protocol);
-		var client = HTTPClient.newInstance(this.controlURL);
-		var response = client
+		final var upnpRequest = UpnpRequest.newRequest(this.serviceType);
+		final var xml = upnpRequest.buildDeletePortMapping(portExt, protocol);
+		final var client = HTTPClient.newInstance(this.controlURL);
+		final var response = client
 			.header("SOAPAction", "\"" + this.serviceType + "#DeletePortMapping\"")
 			.post(xml, BodyHandlers.ofString());
 		return HTTPClient.ok(response);

@@ -55,7 +55,7 @@ public class TrackerConfig extends PropertiesConfig {
 		 */
 		private final int event;
 		/**
-		 * 事件值
+		 * 事件名称
 		 */
 		private final String value;
 
@@ -93,7 +93,7 @@ public class TrackerConfig extends PropertiesConfig {
 		 */
 		private final int action;
 		/**
-		 * 动作值
+		 * 动作名称
 		 */
 		private final String value;
 

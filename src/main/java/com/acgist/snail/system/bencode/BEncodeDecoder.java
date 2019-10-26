@@ -40,6 +40,9 @@ public class BEncodeDecoder {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BEncodeDecoder.class);
 	
+	/**
+	 * B编码数据类型
+	 */
 	public enum Type {
 		
 		/** map */

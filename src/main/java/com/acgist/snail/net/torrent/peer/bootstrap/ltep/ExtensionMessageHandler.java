@@ -138,7 +138,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 		final Map<String, Object> data = new LinkedHashMap<>();
 		final Map<String, Object> supportType = new LinkedHashMap<>();
 		for (var type : PeerConfig.ExtensionType.values()) {
-			if(type.notice()) {
+			if(type.support() && type.notice()) {
 				supportType.put(type.key(), type.value());
 			}
 		}

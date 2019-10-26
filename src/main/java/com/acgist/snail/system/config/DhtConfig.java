@@ -125,7 +125,7 @@ public class DhtConfig extends PropertiesConfig {
 	/**
 	 * <p>DHT响应错误：</p>
 	 * <dl>
-	 *	<dt>[0]：错误代码：</dt>
+	 *	<dt>[0]：错误编码：</dt>
 	 *	<dd>201：一般错误</dd>
 	 *	<dd>202：服务错误</dd>
 	 *	<dd>203：协议错误（不规范的包、无效参数、错误token）</dd>
@@ -144,11 +144,14 @@ public class DhtConfig extends PropertiesConfig {
 		/** 未知方法 */
 		CODE_204(204);
 		
-		ErrorCode(int code) {
+		/**
+		 * 错误编码
+		 */
+		private final int code;
+		
+		private ErrorCode(int code) {
 			this.code = code;
 		}
-		
-		private int code;
 		
 		public int code() {
 			return this.code;
@@ -157,7 +160,7 @@ public class DhtConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 请求类型
+	 * DHT请求类型
 	 */
 	public enum QType {
 		
@@ -170,18 +173,22 @@ public class DhtConfig extends PropertiesConfig {
 		/** 声明Peer */
 		ANNOUNCE_PEER(	"announce_peer");
 		
-		QType(String value) {
+		/**
+		 * 类型名称
+		 */
+		private final String value;
+		
+		private QType(String value) {
 			this.value = value;
 		}
-		
-		private String value;
 		
 		public String value() {
 			return this.value;
 		}
 		
 		public static final QType valueOfQ(String value) {
-			for (QType type : QType.values()) {
+			final var types = QType.values();
+			for (QType type : types) {
 				if(type.value.equals(value)) {
 					return type;
 				}

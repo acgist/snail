@@ -118,7 +118,7 @@ public class DhtMessageHandler extends UdpMessageHandler {
 			response = announcePeer(request);
 			break;
 		default:
-			LOGGER.info("DHT处理请求失败（类型不支持）：{}", request.getQ());
+			LOGGER.info("DHT处理请求失败（类型未适配）：{}", request.getQ());
 			break;
 		}
 		pushMessage(response, socketAddress);
@@ -138,6 +138,7 @@ public class DhtMessageHandler extends UdpMessageHandler {
 		}
 		LOGGER.debug("DHT处理响应：{}", request.getQ());
 		if(request.getQ() == null) {
+			LOGGER.warn("DHT处理响应失败（类型不支持）：{}", request.getQ());
 			return;
 		}
 		if(!SUCCESS_VERIFY.apply(response)) {
@@ -157,7 +158,7 @@ public class DhtMessageHandler extends UdpMessageHandler {
 			announcePeer(request, response);
 			break;
 		default:
-			LOGGER.info("DHT处理响应失败（类型不支持）：{}", request.getQ());
+			LOGGER.info("DHT处理响应失败（类型未适配）：{}", request.getQ());
 			break;
 		}
 	}
