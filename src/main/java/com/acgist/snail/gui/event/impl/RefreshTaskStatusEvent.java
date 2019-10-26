@@ -16,7 +16,7 @@ public class RefreshTaskStatusEvent extends GuiEvent {
 	private static final RefreshTaskStatusEvent INSTANCE = new RefreshTaskStatusEvent();
 	
 	protected RefreshTaskStatusEvent() {
-		super(Type.refreshTaskStatus, "刷新任务状态事件");
+		super(Type.REFRESH_TASK_STATUS, "刷新任务状态事件");
 	}
 
 	public static final GuiEvent getInstance() {

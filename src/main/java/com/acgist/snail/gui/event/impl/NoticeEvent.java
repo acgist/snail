@@ -26,7 +26,7 @@ public class NoticeEvent extends GuiEvent {
 	private static final NoticeEvent INSTANCE = new NoticeEvent();
 	
 	protected NoticeEvent() {
-		super(Type.notice, "提示消息事件");
+		super(Type.NOTICE, "提示消息事件");
 	}
 	
 	public static final GuiEvent getInstance() {

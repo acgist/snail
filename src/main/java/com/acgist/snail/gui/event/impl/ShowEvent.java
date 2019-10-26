@@ -16,7 +16,7 @@ public class ShowEvent extends GuiEvent {
 	private static final ShowEvent INSTANCE = new ShowEvent();
 	
 	protected ShowEvent() {
-		super(Type.show, "显示窗口事件");
+		super(Type.SHOW, "显示窗口事件");
 	}
 
 	public static final GuiEvent getInstance() {

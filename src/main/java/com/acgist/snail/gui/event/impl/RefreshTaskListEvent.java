@@ -16,7 +16,7 @@ public class RefreshTaskListEvent extends GuiEvent {
 	private static final RefreshTaskListEvent INSTANCE = new RefreshTaskListEvent();
 	
 	protected RefreshTaskListEvent() {
-		super(Type.refreshTaskList, "刷新任务列表事件");
+		super(Type.REFRESH_TASK_LIST, "刷新任务列表事件");
 	}
 
 	public static final GuiEvent getInstance() {

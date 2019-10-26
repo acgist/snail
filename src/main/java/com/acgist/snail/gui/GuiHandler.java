@@ -191,7 +191,7 @@ public class GuiHandler {
 	 * 显示窗口
 	 */
 	public GuiHandler show() {
-		this.event(Type.show);
+		this.event(Type.SHOW);
 		return this;
 	}
 	
@@ -199,7 +199,7 @@ public class GuiHandler {
 	 * 隐藏窗口
 	 */
 	public GuiHandler hide() {
-		this.event(Type.hide);
+		this.event(Type.HIDE);
 		return this;
 	}
 	
@@ -207,7 +207,7 @@ public class GuiHandler {
 	 * 退出窗口
 	 */
 	public GuiHandler exit() {
-		this.event(Type.exit);
+		this.event(Type.EXIT);
 		return this;
 	}
 
@@ -215,7 +215,7 @@ public class GuiHandler {
 	 * 创建窗口
 	 */
 	public GuiHandler build() {
-		event(Type.build);
+		event(Type.BUILD);
 		return this;
 	}
 	
@@ -238,7 +238,7 @@ public class GuiHandler {
 	 * @param type 类型
 	 */
 	public GuiHandler alert(String title, String message, SnailAlertType type) {
-		this.event(Type.alert, title, message, type);
+		this.event(Type.ALERT, title, message, type);
 		return this;
 	}
 	
@@ -261,7 +261,7 @@ public class GuiHandler {
 	 * @param type 类型
 	 */
 	public GuiHandler notice(String title, String message, SnailNoticeType type) {
-		this.event(Type.notice, title, message, type);
+		this.event(Type.NOTICE, title, message, type);
 		return this;
 	}
 	
@@ -269,7 +269,7 @@ public class GuiHandler {
 	 * 种子文件选择
 	 */
 	public GuiHandler torrent(TaskSession taskSession) {
-		event(Type.torrent, taskSession);
+		event(Type.TORRENT, taskSession);
 		return this;
 	}
 	
@@ -277,7 +277,7 @@ public class GuiHandler {
 	 * 刷新任务列表
 	 */
 	public GuiHandler refreshTaskList() {
-		event(Type.refreshTaskList);
+		event(Type.REFRESH_TASK_LIST);
 		return this;
 	}
 	
@@ -285,7 +285,7 @@ public class GuiHandler {
 	 * 刷新任务状态
 	 */
 	public GuiHandler refreshTaskStatus() {
-		event(Type.refreshTaskStatus);
+		event(Type.REFRESH_TASK_STATUS);
 		return this;
 	}
 

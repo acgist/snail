@@ -26,7 +26,7 @@ public class AlertEvent extends GuiEvent {
 	private static final AlertEvent INSTANCE = new AlertEvent();
 	
 	protected AlertEvent() {
-		super(Type.alert, "提示窗口事件");
+		super(Type.ALERT, "提示窗口事件");
 	}
 
 	public static final GuiEvent getInstance() {

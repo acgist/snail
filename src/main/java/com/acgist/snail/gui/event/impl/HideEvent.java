@@ -16,7 +16,7 @@ public class HideEvent extends GuiEvent {
 	private static final HideEvent INSTANCE = new HideEvent();
 	
 	protected HideEvent() {
-		super(Type.hide, "隐藏窗口事件");
+		super(Type.HIDE, "隐藏窗口事件");
 	}
 	
 	public static final GuiEvent getInstance() {

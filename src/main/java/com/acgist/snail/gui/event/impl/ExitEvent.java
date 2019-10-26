@@ -17,7 +17,7 @@ public class ExitEvent extends GuiEvent {
 	private static final ExitEvent INSTANCE = new ExitEvent();
 	
 	protected ExitEvent() {
-		super(Type.exit, "退出窗口事件");
+		super(Type.EXIT, "退出窗口事件");
 	}
 	
 	public static final GuiEvent getInstance() {
