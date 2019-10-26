@@ -30,7 +30,7 @@ public interface IDownloader extends Runnable {
 	/**
 	 * 任务下载状态
 	 * 
-	 * @return true-{@linkplain Status#download 下载中}；false-未下载；
+	 * @return true-{@linkplain Status#DOWNLOAD 下载中}；false-未下载；
 	 */
 	boolean running();
 	
