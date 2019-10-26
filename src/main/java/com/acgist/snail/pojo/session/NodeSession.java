@@ -17,11 +17,11 @@ public final class NodeSession implements Comparable<NodeSession> {
 	public enum Status {
 		
 		/** 未使用 */
-		unuse,
-		/** 验证：使用一次，没有收到响应。 */
-		verify,
+		UNUSE,
+		/** 验证：没有收到响应 */
+		VERIFY,
 		/** 有效 */
-		available;
+		AVAILABLE;
 		
 	}
 	
@@ -42,7 +42,7 @@ public final class NodeSession implements Comparable<NodeSession> {
 		this.id = id;
 		this.host = host;
 		this.port = port;
-		this.status = Status.unuse;
+		this.status = Status.UNUSE;
 	}
 	
 	public static final NodeSession newInstance(byte[] id, String host, int port) {
