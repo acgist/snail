@@ -25,12 +25,12 @@ public class TorrentProtocol extends Protocol {
 	/**
 	 * 种子文件操作
 	 */
-	public enum TorrentFileOperation {
+	public enum TorrentHandle {
 		
 		/** 拷贝 */
-		copy,
+		COPY,
 		/** 移动 */
-		move;
+		MOVE;
 		
 	}
 	
@@ -45,7 +45,7 @@ public class TorrentProtocol extends Protocol {
 	/**
 	 * 种子文件操作类型
 	 */
-	private TorrentFileOperation operation = TorrentFileOperation.copy;
+	private TorrentHandle handle = TorrentHandle.COPY;
 	
 	private TorrentProtocol() {
 		super(Type.torrent);
@@ -55,8 +55,8 @@ public class TorrentProtocol extends Protocol {
 		return INSTANCE;
 	}
 
-	public void operation(TorrentFileOperation operation) {
-		this.operation = operation;
+	public void operation(TorrentHandle operation) {
+		this.handle = operation;
 	}
 	
 	@Override
@@ -156,7 +156,7 @@ public class TorrentProtocol extends Protocol {
 	private void torrentFileOperation() {
 		final String fileName = FileUtils.fileNameFromUrl(this.torrentFile);
 		final String newFilePath = FileUtils.file(this.taskEntity.getFile(), fileName);
-		if(this.operation == TorrentFileOperation.move) {
+		if(this.handle == TorrentHandle.MOVE) {
 			FileUtils.move(this.torrentFile, newFilePath);
 		} else {
 			FileUtils.copy(this.torrentFile, newFilePath);
