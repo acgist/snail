@@ -66,7 +66,7 @@ public class WsTrackerClient extends TrackerClient {
 			.append("\"downloaded\"").append(":").append(download).append(",")
 			.append("\"left\"").append(":").append(remain).append(",")
 			.append("\"event\"").append(":").append("\"").append(event.value()).append("\"").append(",")
-			.append("\"action\"").append(":").append("\"").append(TrackerConfig.Action.announce.name()).append("\"").append(",")
+			.append("\"action\"").append(":").append("\"").append(TrackerConfig.Action.ANNOUNCE.value()).append("\"").append(",")
 			.append("\"numwant\"").append(":").append(WANT_PEER_SIZE)
 			.append("}");
 		return builder.toString();

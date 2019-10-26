@@ -53,11 +53,11 @@ public class TrackerConfig extends PropertiesConfig {
 		/**
 		 * 事件ID
 		 */
-		private int event;
+		private final int event;
 		/**
 		 * 事件值
 		 */
-		private String value;
+		private final String value;
 
 		private Event(int event, String value) {
 			this.event = event;
@@ -75,27 +75,39 @@ public class TrackerConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 动作
+	 * Tracker动作
 	 */
 	public enum Action {
 		
 		/** 连接 */
-		connect(	0),
+		CONNECT(	0, "connect"),
 		/** 声明 */
-		announce(	1),
+		ANNOUNCE(	1, "announce"),
 		/** 刮檫 */
-		scrape(		2),
+		SCRAPE(		2, "scrape"),
 		/** 错误 */
-		error(		3);
+		ERROR(		3, "error");
 		
-		private int action;
+		/**
+		 * 动作ID
+		 */
+		private final int action;
+		/**
+		 * 动作值
+		 */
+		private final String value;
 
-		private Action(int action) {
+		private Action(int action, String value) {
 			this.action = action;
+			this.value = value;
 		}
 		
 		public int action() {
 			return this.action;
+		}
+		
+		public String value() {
+			return this.value;
 		}
 		
 	}

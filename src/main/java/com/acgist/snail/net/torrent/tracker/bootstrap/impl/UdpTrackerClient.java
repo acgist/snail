@@ -30,6 +30,8 @@ public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpTrackerClient.class);
 	
+	private static final long PROTOCOL_ID = 0x41727101980L;
+	
 	/**
 	 * 地址
 	 */
@@ -43,6 +45,9 @@ public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker
 	 * <p>需要先获取连接ID，然后才能发送声明消息。</p>
 	 */
 	private Long connectionId;
+	/**
+	 * Client
+	 */
 	private final TrackerClient trackerClient;
 
 	private UdpTrackerClient(String scrapeUrl, String announceUrl) throws NetException {
@@ -123,8 +128,8 @@ public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker
 	 */
 	private ByteBuffer buildConnectionIdMessage() {
 		ByteBuffer buffer = ByteBuffer.allocate(16);
-		buffer.putLong(4497486125440L); // 必须等于：0x41727101980
-		buffer.putInt(TrackerConfig.Action.connect.action());
+		buffer.putLong(PROTOCOL_ID);
+		buffer.putInt(TrackerConfig.Action.CONNECT.action());
 		buffer.putInt(this.id);
 		return buffer;
 	}
@@ -134,7 +139,7 @@ public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker
 	protected ByteBuffer buildAnnounceMessageEx(Integer sid, TorrentSession torrentSession, TrackerConfig.Event event, long download, long remain, long upload) {
 		final ByteBuffer buffer = ByteBuffer.allocate(98);
 		buffer.putLong(this.connectionId); // connection_id
-		buffer.putInt(TrackerConfig.Action.announce.action()); // action
+		buffer.putInt(TrackerConfig.Action.ANNOUNCE.action()); // action
 		buffer.putInt(sid); // transaction_id
 		buffer.put(torrentSession.infoHash().infoHash()); // InfoHash
 		buffer.put(PeerService.getInstance().peerId()); // PeerId
