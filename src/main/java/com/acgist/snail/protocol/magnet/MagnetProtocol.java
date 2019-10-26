@@ -32,7 +32,7 @@ public class MagnetProtocol extends Protocol {
 	private Magnet magnet;
 	
 	private MagnetProtocol() {
-		super(Type.magnet);
+		super(Type.MAGNET);
 	}
 	
 	public static final MagnetProtocol getInstance() {

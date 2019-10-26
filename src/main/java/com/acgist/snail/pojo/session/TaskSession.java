@@ -142,7 +142,7 @@ public final class TaskSession {
 	 * 获取BT任务已选择的下载文件
 	 */
 	public List<String> downloadTorrentFiles() {
-		if(this.entity.getType() != Type.torrent) {
+		if(this.entity.getType() != Type.TORRENT) {
 			return List.of();
 		}
 		final String description = this.entity.getDescription();

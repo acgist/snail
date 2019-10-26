@@ -33,7 +33,7 @@ public class HttpProtocol extends Protocol {
 	private HttpHeaderWrapper httpHeaderWrapper;
 	
 	private HttpProtocol() {
-		super(Type.http);
+		super(Type.HTTP);
 	}
 	
 	public static final HttpProtocol getInstance() {

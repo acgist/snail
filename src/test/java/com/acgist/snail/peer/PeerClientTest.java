@@ -50,7 +50,7 @@ public class PeerClientTest {
 		});
 		TaskEntity entity = new TaskEntity();
 		entity.setFile("e://tmp/test/");
-		entity.setType(Type.torrent);
+		entity.setType(Type.TORRENT);
 		final TorrentSelectorWrapper wrapper = TorrentSelectorWrapper.newEncoder(list);
 		entity.setDescription(wrapper.serialize());
 		torrentSession.upload(TaskSession.newInstance(entity)).download(false);
@@ -87,7 +87,7 @@ public class PeerClientTest {
 		TorrentSession torrentSession = TorrentSession.newInstance(InfoHash.newInstance("902ffaa29ee632c8dc966ed9ab573409ba9a518e"), null);
 		TaskEntity entity = new TaskEntity();
 		entity.setFile("e://tmp/test/");
-		entity.setType(Type.torrent);
+		entity.setType(Type.TORRENT);
 		entity.setUrl("902ffaa29ee632c8dc966ed9ab573409ba9a518e");
 //		torrentSession.upload(TaskSession.newInstance(entity)).download(false);
 		torrentSession.magnet(TaskSession.newInstance(entity));

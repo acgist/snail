@@ -22,22 +22,22 @@ public class UpnpServiceTest {
 	@Test
 	public void getSpecificPortMappingEntry() throws NetException {
 		UpnpService.getInstance().load(this.serviceUrl);
-		System.out.println(UpnpService.getInstance().getSpecificPortMappingEntry(18888, Protocol.Type.tcp));
-		System.out.println(UpnpService.getInstance().getSpecificPortMappingEntry(18888, Protocol.Type.udp));
+		System.out.println(UpnpService.getInstance().getSpecificPortMappingEntry(18888, Protocol.Type.TCP));
+		System.out.println(UpnpService.getInstance().getSpecificPortMappingEntry(18888, Protocol.Type.UDP));
 	}
 
 	@Test
 	public void addPortMapping() throws NetException {
 		UpnpService.getInstance().load(this.serviceUrl);
-		System.out.println(UpnpService.getInstance().addPortMapping(18888, 18888, Protocol.Type.tcp));
-		System.out.println(UpnpService.getInstance().addPortMapping(18888, 18888, Protocol.Type.udp));
+		System.out.println(UpnpService.getInstance().addPortMapping(18888, 18888, Protocol.Type.TCP));
+		System.out.println(UpnpService.getInstance().addPortMapping(18888, 18888, Protocol.Type.UDP));
 	}
 
 	@Test
 	public void deletePortMapping() throws NetException {
 		UpnpService.getInstance().load(this.serviceUrl);
-		System.out.println(UpnpService.getInstance().deletePortMapping(18888, Protocol.Type.tcp));
-		System.out.println(UpnpService.getInstance().deletePortMapping(18888, Protocol.Type.udp));
+		System.out.println(UpnpService.getInstance().deletePortMapping(18888, Protocol.Type.TCP));
+		System.out.println(UpnpService.getInstance().deletePortMapping(18888, Protocol.Type.UDP));
 	}
 	
 	@Test

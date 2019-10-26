@@ -275,7 +275,7 @@ public class MainController extends Controller implements Initializable {
 	 */
 	public boolean hasSelectedTorrent() {
 		return this.selected().stream()
-			.anyMatch(session -> session.entity().getType() == Type.torrent);
+			.anyMatch(session -> session.entity().getType() == Type.TORRENT);
 	}
 
 	/**
@@ -383,7 +383,7 @@ public class MainController extends Controller implements Initializable {
 			}
 			if(session.complete()) { // 下载完成=打开任务
 				final var entity = session.entity();
-				if(entity.getType() == Type.magnet) { // 磁力链接任务完成转换BT任务
+				if(entity.getType() == Type.MAGNET) { // 磁力链接任务完成转换BT任务
 					TorrentWindow.getInstance().show(session);
 				} else {
 					FileUtils.openInDesktop(new File(session.entity().getFile()));
