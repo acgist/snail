@@ -28,7 +28,7 @@ public class AnnouncePeerRequest extends Request {
 //	private static final Logger LOGGER = LoggerFactory.getLogger(AnnouncePeerRequest.class);
 	
 	private AnnouncePeerRequest() {
-		super(DhtService.getInstance().requestId(), DhtConfig.QType.announce_peer);
+		super(DhtService.getInstance().requestId(), DhtConfig.QType.ANNOUNCE_PEER);
 	}
 	
 	/**

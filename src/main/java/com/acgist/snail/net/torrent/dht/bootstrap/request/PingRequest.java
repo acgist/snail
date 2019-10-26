@@ -14,7 +14,7 @@ import com.acgist.snail.system.config.DhtConfig;
 public class PingRequest extends Request {
 
 	private PingRequest() {
-		super(DhtService.getInstance().requestId(), DhtConfig.QType.ping);
+		super(DhtService.getInstance().requestId(), DhtConfig.QType.PING);
 	}
 	
 	public static final PingRequest newRequest() {

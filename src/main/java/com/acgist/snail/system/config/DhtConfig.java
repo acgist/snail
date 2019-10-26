@@ -162,17 +162,27 @@ public class DhtConfig extends PropertiesConfig {
 	public enum QType {
 		
 		/** ping */
-		ping,
-		/** findNode */
-		find_node,
-		/** getPeers */
-		get_peers,
-		/** announcePeer */
-		announce_peer;
+		PING(			"ping"),
+		/** 查找节点 */
+		FIND_NODE(		"find_node"),
+		/** 查找Peer */
+		GET_PEERS(		"get_peers"),
+		/** 声明Peer */
+		ANNOUNCE_PEER(	"announce_peer");
 		
-		public static final QType valueOfName(String value) {
+		QType(String value) {
+			this.value = value;
+		}
+		
+		private String value;
+		
+		public String value() {
+			return this.value;
+		}
+		
+		public static final QType valueOfQ(String value) {
 			for (QType type : QType.values()) {
-				if(type.name().equals(value)) {
+				if(type.value.equals(value)) {
 					return type;
 				}
 			}

@@ -24,7 +24,7 @@ import com.acgist.snail.utils.StringUtils;
 public class GetPeersRequest extends Request {
 
 	private GetPeersRequest() {
-		super(DhtService.getInstance().requestId(), DhtConfig.QType.get_peers);
+		super(DhtService.getInstance().requestId(), DhtConfig.QType.GET_PEERS);
 	}
 	
 	/**

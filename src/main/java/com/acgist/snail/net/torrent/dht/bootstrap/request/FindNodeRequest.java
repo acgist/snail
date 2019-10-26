@@ -15,7 +15,7 @@ import com.acgist.snail.system.config.DhtConfig;
 public class FindNodeRequest extends Request {
 
 	private FindNodeRequest() {
-		super(DhtService.getInstance().requestId(), DhtConfig.QType.find_node);
+		super(DhtService.getInstance().requestId(), DhtConfig.QType.FIND_NODE);
 	}
 	
 	/**

@@ -63,7 +63,7 @@ public class Request extends BaseMessage {
 		final byte[] t = decoder.getBytes(DhtConfig.KEY_T);
 		final String y = decoder.getString(DhtConfig.KEY_Y);
 		final String q = decoder.getString(DhtConfig.KEY_Q);
-		final QType type = DhtConfig.QType.valueOfName(q);
+		final QType type = DhtConfig.QType.valueOfQ(q);
 		final Map<String, Object> a = decoder.getMap(DhtConfig.KEY_A);
 		return new Request(t, y, type, a);
 	}
@@ -127,7 +127,7 @@ public class Request extends BaseMessage {
 		final Map<String, Object> request = new LinkedHashMap<>();
 		request.put(DhtConfig.KEY_T, this.t);
 		request.put(DhtConfig.KEY_Y, this.y);
-		request.put(DhtConfig.KEY_Q, this.q.name());
+		request.put(DhtConfig.KEY_Q, this.q.value());
 		request.put(DhtConfig.KEY_A, this.a);
 		return BEncodeEncoder.encodeMap(request);
 	}

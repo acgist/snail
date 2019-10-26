@@ -105,16 +105,16 @@ public class DhtMessageHandler extends UdpMessageHandler {
 			return;
 		}
 		switch (request.getQ()) {
-		case ping:
+		case PING:
 			response = ping(request);
 			break;
-		case find_node:
+		case FIND_NODE:
 			response = findNode(request);
 			break;
-		case get_peers:
+		case GET_PEERS:
 			response = getPeers(request);
 			break;
-		case announce_peer:
+		case ANNOUNCE_PEER:
 			response = announcePeer(request);
 			break;
 		default:
@@ -144,16 +144,16 @@ public class DhtMessageHandler extends UdpMessageHandler {
 			LOGGER.warn("DHT处理响应失败：{}", response);
 		}
 		switch (request.getQ()) {
-		case ping:
+		case PING:
 			ping(request, response);
 			break;
-		case find_node:
+		case FIND_NODE:
 			findNode(request, response);
 			break;
-		case get_peers:
+		case GET_PEERS:
 			getPeers(request, response);
 			break;
-		case announce_peer:
+		case ANNOUNCE_PEER:
 			announcePeer(request, response);
 			break;
 		default:
