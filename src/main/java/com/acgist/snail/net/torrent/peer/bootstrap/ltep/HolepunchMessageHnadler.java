@@ -104,7 +104,7 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler, IExten
 	 * @param port 端口
 	 */
 	public void rendezvous(String host, Integer port) {
-		final ByteBuffer message = buildMessage(HolepunchType.RENDEZVOUS, host, port, HolepunchErrorCode.E_00);
+		final ByteBuffer message = buildMessage(HolepunchType.RENDEZVOUS, host, port, HolepunchErrorCode.CODE_00);
 		pushMessage(message);
 	}
 	

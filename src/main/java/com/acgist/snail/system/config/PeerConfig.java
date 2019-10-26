@@ -468,20 +468,23 @@ public class PeerConfig {
 	public enum HolepunchErrorCode {
 		
 		/** 成功 */
-		E_00((byte) 0x00),
+		CODE_00((byte) 0x00),
 		/** 目标无效 */
-		E_01((byte) 0x01),
+		CODE_01((byte) 0x01),
 		/** 目标未连接 */
-		E_02((byte) 0x02),
+		CODE_02((byte) 0x02),
 		/** 目标不支持 */
-		E_03((byte) 0x03),
+		CODE_03((byte) 0x03),
 		/** 目标属于中继 */
-		E_04((byte) 0x04);
+		CODE_04((byte) 0x04);
 		
 		HolepunchErrorCode(byte code) {
 			this.code = code;
 		}
 		
+		/**
+		 * 错误编码
+		 */
 		private byte code;
 		
 		public byte code() {
