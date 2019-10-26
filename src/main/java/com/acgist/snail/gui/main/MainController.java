@@ -70,19 +70,19 @@ public class MainController extends Controller implements Initializable {
 	 */
 	public enum Filter {
 		
-		/**显示所有任务 */
-		all,
-		/**显示正在下载任务 */
-		download,
-		/**显示下载完成任务 */
-		complete;
+		/** 显示所有任务 */
+		ALL,
+		/** 显示正在下载任务 */
+		DOWNLOAD,
+		/** 显示下载完成任务 */
+		COMPLETE;
 		
 	}
 	
 	/**
 	 * 显示列表过滤器
 	 */
-	private Filter filter = Filter.all;
+	private Filter filter = Filter.ALL;
 	
 	@FXML
 	private BorderPane root;
@@ -195,7 +195,7 @@ public class MainController extends Controller implements Initializable {
 	 */
 	@FXML
 	public void handleAllAction(ActionEvent event) {
-		this.filter = Filter.all;
+		this.filter = Filter.ALL;
 		TaskDisplay.getInstance().refreshTaskList();
 	}
 
@@ -204,7 +204,7 @@ public class MainController extends Controller implements Initializable {
 	 */
 	@FXML
 	public void handleDownloadAction(ActionEvent event) {
-		this.filter = Filter.download;
+		this.filter = Filter.DOWNLOAD;
 		TaskDisplay.getInstance().refreshTaskList();
 	}
 	
@@ -213,7 +213,7 @@ public class MainController extends Controller implements Initializable {
 	 */
 	@FXML
 	public void handleCompleteAction(ActionEvent event) {
-		this.filter = Filter.complete;
+		this.filter = Filter.COMPLETE;
 		TaskDisplay.getInstance().refreshTaskList();
 	}
 	
@@ -225,11 +225,11 @@ public class MainController extends Controller implements Initializable {
 		DownloaderManager.getInstance().tasks().stream()
 			.filter(session -> {
 				var status = session.entity().getStatus();
-				if(this.filter == Filter.all) {
+				if(this.filter == Filter.ALL) {
 					return true;
-				} else if(this.filter == Filter.download) {
+				} else if(this.filter == Filter.DOWNLOAD) {
 					return status == Status.await || status == Status.download;
-				} else if(this.filter == Filter.complete) {
+				} else if(this.filter == Filter.COMPLETE) {
 					return status == Status.complete;
 				} else {
 					return true;
