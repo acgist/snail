@@ -51,14 +51,14 @@ public class StunConfig {
     	/**
     	 * 方法ID
     	 */
-    	private final short value;
+    	private final short id;
     	
-    	private MethodType(short value) {
-    		this.value = value;
+    	private MethodType(short id) {
+    		this.id = id;
     	}
     	
-    	public short vluae() {
-    		return this.value;
+    	public short id() {
+    		return this.id;
     	}
     	
     }
@@ -93,24 +93,33 @@ public class StunConfig {
         /**
          * 消息ID
          */
-    	private final byte value;
+    	private final byte id;
     	
-    	private MessageType(byte value) {
-    		this.value = value;
+    	private MessageType(byte id) {
+    		this.id = id;
     	}
     	
     	/**
-    	 * 对应方法的MessageType值
+    	 * 计算对应方法的MessageType值
     	 */
     	public short type(MethodType methodType) {
-    		return (short) ((((this.value << 7) & C1_MASK) | ((this.value << 4) & C0_MASK) | methodType.value) & TYPE_MASK);
+    		return (short) (
+    		(
+    			((this.id << 7) & C1_MASK) |
+    			((this.id << 4) & C0_MASK) |
+    			methodType.id
+    		) & TYPE_MASK);
     	}
     	
-    	public static final MessageType valueOf(short type) {
-    		final byte value = (byte) ((((type & C1_MASK) >> 7) | ((type & C0_MASK) >> 4)) & 0xFF);
+    	public static final MessageType valueOf(short value) {
+    		final byte id = (byte) (
+    		(
+    			((value & C1_MASK) >> 7) |
+    			((value & C0_MASK) >> 4)
+    		) & 0xFF);
     		final var types = MessageType.values();
     		for (MessageType messageType : types) {
-				if(messageType.value == value) {
+				if(messageType.id == id) {
 					return messageType;
 				}
 			}
