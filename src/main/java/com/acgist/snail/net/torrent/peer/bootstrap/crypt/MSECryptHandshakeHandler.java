@@ -16,6 +16,7 @@ import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.config.CryptConfig;
+import com.acgist.snail.system.config.CryptConfig.CryptAlgo;
 import com.acgist.snail.system.config.CryptConfig.Strategy;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.SystemConfig;
@@ -519,26 +520,26 @@ public final class MSECryptHandshakeHandler {
 	 * <p>确认：加密或者明文</p>
 	 */
 	private CryptConfig.Strategy selectStrategy(int provide) throws NetException {
-		final boolean plaintext = (provide & 0x01) == 0x01;
-		final boolean crypt = 	  (provide & 0x02) == 0x02;
+		final boolean plaintext = (provide & CryptAlgo.PLAINTEXT.value()) == CryptAlgo.PLAINTEXT.value();
+		final boolean crypt = 	  (provide & CryptAlgo.ARC4.value()) == CryptAlgo.ARC4.value();
 		Strategy selected = null;
 		if (plaintext || crypt) {
 			// 本地配置
 			switch (CryptConfig.STRATEGY) {
-			case plaintext:
-				selected = plaintext ? Strategy.plaintext : null;
+			case PLAINTEXT:
+				selected = plaintext ? Strategy.PLAINTEXT : null;
 				break;
-			case preferPlaintext:
-				selected = plaintext ? Strategy.plaintext : Strategy.encrypt;
+			case PREFER_PLAINTEXT:
+				selected = plaintext ? Strategy.PLAINTEXT : Strategy.ENCRYPT;
 				break;
-			case preferEncrypt:
-				selected = crypt ? Strategy.encrypt : Strategy.plaintext;
+			case PREFER_ENCRYPT:
+				selected = crypt ? Strategy.ENCRYPT : Strategy.PLAINTEXT;
 				break;
-			case encrypt:
-				selected = crypt ? Strategy.encrypt : null;
+			case ENCRYPT:
+				selected = crypt ? Strategy.ENCRYPT : null;
 				break;
 			default:
-				selected = CryptConfig.STRATEGY.crypt() ? Strategy.encrypt : Strategy.plaintext;
+				selected = CryptConfig.STRATEGY.crypt() ? Strategy.ENCRYPT : Strategy.PLAINTEXT;
 				break;
 			}
 		}

@@ -43,13 +43,13 @@ public class CryptConfig {
 	public enum Strategy {
 		
 		/** 明文 */
-		plaintext		(false, CryptAlgo.PLAINTEXT.value),
+		PLAINTEXT(			false, CryptAlgo.PLAINTEXT.value),
 		/** 兼容：偏爱明文 */
-		preferPlaintext	(false, CryptAlgo.PLAINTEXT.value | CryptAlgo.ARC4.value),
+		PREFER_PLAINTEXT(	false, CryptAlgo.PLAINTEXT.value | CryptAlgo.ARC4.value),
 		/** 兼容：偏爱加密 */
-		preferEncrypt	(true,  CryptAlgo.ARC4.value | CryptAlgo.PLAINTEXT.value),
+		PREFER_ENCRYPT(		true,  CryptAlgo.ARC4.value | CryptAlgo.PLAINTEXT.value),
 		/** 加密 */
-		encrypt			(true,  CryptAlgo.ARC4.value);
+		ENCRYPT(			true,  CryptAlgo.ARC4.value);
 		
 		/**
 		 * 是否加密
@@ -111,7 +111,7 @@ public class CryptConfig {
 	/**
 	 * 默认加密策略
 	 */
-	public static final Strategy STRATEGY = Strategy.preferPlaintext;
+	public static final Strategy STRATEGY = Strategy.PREFER_PLAINTEXT;
 
 	static {
 		LOGGER.info("默认加密策略：{}", CryptConfig.STRATEGY);
