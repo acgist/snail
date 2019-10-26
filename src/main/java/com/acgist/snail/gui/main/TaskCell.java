@@ -50,7 +50,7 @@ public final class TaskCell extends TableCell<TaskSession, String> {
 //				name.setCursor(Cursor.HAND); // 设置手势
 				FileType fileType = taskSession.entity().getFileType();
 				if(fileType == null) {
-					fileType = FileType.unknown;
+					fileType = FileType.UNKNOWN;
 				}
 				final ImageView fileTypeIcon = new ImageView("/image/32/" + fileType.icon());
 				box.getChildren().add(fileTypeIcon);
