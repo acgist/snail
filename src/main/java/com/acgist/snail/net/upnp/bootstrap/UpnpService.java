@@ -39,13 +39,13 @@ public class UpnpService {
 	public enum Status {
 		
 		/** 没有初始化 */
-		uninit,
+		UNINIT,
 		/** 不可用（已被注册） */
-		disable,
+		DISABLE,
 		/** 可用（需要注册） */
-		mapable,
+		MAPABLE,
 		/** 可用（已被注册） */
-		useable;
+		USEABLE;
 		
 	}
 	
@@ -147,7 +147,7 @@ public class UpnpService {
 	 */
 	public Status getSpecificPortMappingEntry(int portExt, Protocol.Type protocol) throws NetException {
 		if(!this.available) {
-			return Status.uninit;
+			return Status.UNINIT;
 		}
 		UpnpRequest upnpRequest = UpnpRequest.newRequest(this.serviceType);
 		String xml = upnpRequest.buildGetSpecificPortMappingEntry(portExt, protocol);
@@ -157,14 +157,14 @@ public class UpnpService {
 			.post(xml, BodyHandlers.ofString());
 		String body = response.body();
 		if(HTTPClient.internalServerError(response)) {
-			return Status.mapable;
+			return Status.MAPABLE;
 		}
 		final String registerIp = UpnpResponse.parseGetSpecificPortMappingEntry(body);
 		final String localIp = NetUtils.inetHostAddress();
 		if(localIp.equals(registerIp)) {
-			return Status.useable;
+			return Status.USEABLE;
 		} else {
-			return Status.disable;
+			return Status.DISABLE;
 		}
 	}
 	
@@ -260,7 +260,7 @@ public class UpnpService {
 	 * <p>如果端口被占用，则端口+1继续映射。</p>
 	 */
 	private void setPortMapping() throws NetException {
-		Status udpStatus = Status.disable, tcpStatus;
+		Status udpStatus = Status.DISABLE, tcpStatus;
 		int portExt = SystemConfig.getTorrentPort(); // 外网端口
 		while(true) {
 			if(portExt >= NetUtils.MAX_PORT) {
@@ -268,7 +268,7 @@ public class UpnpService {
 			}
 			// UDP
 			udpStatus = this.getSpecificPortMappingEntry(portExt, Protocol.Type.udp);
-			if(udpStatus == Status.uninit || udpStatus == Status.disable) {
+			if(udpStatus == Status.UNINIT || udpStatus == Status.DISABLE) {
 				portExt++;
 				continue;
 			}
@@ -280,13 +280,13 @@ public class UpnpService {
 				portExt++;
 			}
 		}
-		if(udpStatus == Status.mapable) {
+		if(udpStatus == Status.MAPABLE) {
 			this.useable = true;
 			SystemConfig.setTorrentPortExt(portExt);
 			final boolean udpOk = this.addPortMapping(SystemConfig.getTorrentPort(), portExt, Protocol.Type.udp);
 			final boolean tcpOk = this.addPortMapping(SystemConfig.getTorrentPort(), portExt, Protocol.Type.tcp);
 			LOGGER.info("UPNP端口映射（注册）：UDP（{}-{}-{}）、TCP（{}-{}-{}）", SystemConfig.getTorrentPort(), portExt, udpOk, SystemConfig.getTorrentPort(), portExt, tcpOk);
-		} else if(udpStatus == Status.useable) {
+		} else if(udpStatus == Status.USEABLE) {
 			this.useable = true;
 			SystemConfig.setTorrentPortExt(portExt);
 			LOGGER.info("UPNP端口映射（可用）：UDP（{}-{}-{}）、TCP（{}-{}-{}）", SystemConfig.getTorrentPort(), portExt, true, SystemConfig.getTorrentPort(), portExt, true);
