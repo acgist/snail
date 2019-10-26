@@ -52,7 +52,7 @@ public class NoticeEvent extends GuiEvent {
 		} else if(args.length == 2) {
 			title = (String) args[0];
 			message = (String) args[1];
-			type = SnailNoticeType.info;
+			type = SnailNoticeType.INFO;
 		} else if(args.length == 3) {
 			title = (String) args[0];
 			message = (String) args[1];
