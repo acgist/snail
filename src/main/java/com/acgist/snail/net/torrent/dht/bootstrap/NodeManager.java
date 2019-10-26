@@ -157,7 +157,7 @@ public class NodeManager {
 	public void newNodeSession(String host, Integer port) {
 		final NodeSession nodeSession = verify(host, port);
 		if(nodeSession != null) {
-			nodeSession.setStatus(NodeSession.Status.available); // 标记有效
+			nodeSession.setStatus(NodeSession.Status.AVAILABLE); // 标记有效
 		}
 	}
 	
@@ -212,13 +212,13 @@ public class NodeManager {
 	
 	/**
 	 * <p>查找Node</p>
-	 * <p>筛选排除{@linkplain Status#verify 验证}节点。</p>
+	 * <p>筛选排除{@linkplain Status#VERIFY 验证}节点。</p>
 	 */
 	public List<NodeSession> findNode(byte[] target) {
 		List<NodeSession> nodes; // 筛选节点的副本
 		synchronized (this.nodes) {
 			nodes = this.nodes.stream()
-				.filter(node -> node.getStatus() != NodeSession.Status.verify)
+				.filter(node -> node.getStatus() != NodeSession.Status.VERIFY)
 				.collect(Collectors.toList());
 		}
 		return this.findNode(nodes, target, 0, nodes.size());
@@ -302,8 +302,8 @@ public class NodeManager {
 			.map(Map.Entry::getValue)
 			.limit(NODE_FIND_SIZE)
 			.peek(node -> {
-				if(node.getStatus() == NodeSession.Status.unuse) {
-					node.setStatus(NodeSession.Status.verify);
+				if(node.getStatus() == NodeSession.Status.UNUSE) {
+					node.setStatus(NodeSession.Status.VERIFY);
 				}
 			})
 			.collect(Collectors.toList());
@@ -332,7 +332,7 @@ public class NodeManager {
 			synchronized (this.nodes) {
 				final NodeSession node = select(response.getNodeId());
 				if(node != null) {
-					node.setStatus(NodeSession.Status.available);
+					node.setStatus(NodeSession.Status.AVAILABLE);
 				}
 			}
 		}

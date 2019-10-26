@@ -126,9 +126,9 @@ public class StatisticsController extends Controller implements Initializable {
 		final Map<NodeSession.Status, Long> group = nodes.stream()
 			.collect(Collectors.groupingBy(NodeSession::getStatus, Collectors.counting()));
 		this.dhtTotal.setText(String.valueOf(nodes.size()));
-		this.dhtUnuse.setText(String.valueOf(group.getOrDefault(NodeSession.Status.unuse, 0L)));
-		this.dhtVerify.setText(String.valueOf(group.getOrDefault(NodeSession.Status.verify, 0L)));
-		this.dhtAvailable.setText(String.valueOf(group.getOrDefault(NodeSession.Status.available, 0L)));
+		this.dhtUnuse.setText(String.valueOf(group.getOrDefault(NodeSession.Status.UNUSE, 0L)));
+		this.dhtVerify.setText(String.valueOf(group.getOrDefault(NodeSession.Status.VERIFY, 0L)));
+		this.dhtAvailable.setText(String.valueOf(group.getOrDefault(NodeSession.Status.AVAILABLE, 0L)));
 	}
 	
 	private void tracker() {
