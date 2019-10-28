@@ -298,6 +298,7 @@ public class HTTPClient {
 		return HttpClient
 			.newBuilder()
 			.executor(EXECUTOR) // 线程池
+			.version(Version.HTTP_1_1)
 			.followRedirects(Redirect.NORMAL) // 重定向：正常
 //			.followRedirects(Redirect.ALWAYS) // 重定向：全部
 //			.proxy(ProxySelector.getDefault()) // 代理
@@ -359,7 +360,7 @@ public class HTTPClient {
 		return HttpRequest
 			.newBuilder()
 			.uri(URI.create(url))
-			.version(Version.HTTP_1_1) // HTTP协议使用1.1版本，2.0版本还没有普及。
+			.version(Version.HTTP_1_1) // HTTP协议使用1.1版本：2.0版本没有普及
 			.timeout(Duration.ofSeconds(timeout))
 			.header("User-Agent", USER_AGENT);
 	}
