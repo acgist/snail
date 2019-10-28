@@ -98,7 +98,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 		this.peerSubMessageHandler = peerSubMessageHandler;
 		this.metadataMessageHandler = MetadataMessageHandler.newInstance(this.peerSession, this.torrentSession, this);
 		this.peerExchangeMessageHandler = PeerExchangeMessageHandler.newInstance(this.peerSession, this.torrentSession, this);
-		this.holepunchExtensionMessageHnadler = HolepunchMessageHnadler.newInstance(this.peerSession, this);
+		this.holepunchExtensionMessageHnadler = HolepunchMessageHnadler.newInstance(this.peerSession, this.torrentSession, this);
 	}
 	
 	@Override

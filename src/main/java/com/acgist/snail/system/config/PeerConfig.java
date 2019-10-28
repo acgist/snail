@@ -77,23 +77,27 @@ public class PeerConfig {
 	/**
 	 * Peer来源：Tracker
 	 */
-	public static final byte SOURCE_TRACKER = 1 << 0;
+	public static final byte SOURCE_TRACKER =		1 << 0;
 	/**
 	 * Peer来源：PEX
 	 */
-	public static final byte SOURCE_PEX =     1 << 1;
+	public static final byte SOURCE_PEX =			1 << 1;
 	/**
 	 * Peer来源：DHT
 	 */
-	public static final byte SOURCE_DHT =     1 << 2;
+	public static final byte SOURCE_DHT =			1 << 2;
 	/**
 	 * Peer来源：客户端接入
 	 */
-	public static final byte SOURCE_CONNECT = 1 << 3;
+	public static final byte SOURCE_CONNECT =		1 << 3;
 	/**
 	 * Peer来源：本地发现
 	 */
-	public static final byte SOURCE_LSD =     1 << 4;
+	public static final byte SOURCE_LSD =			1 << 4;
+	/**
+	 * Peer来源：holepunch
+	 */
+	public static final byte SOURCE_HOLEPUNCH =		1 << 5;
 	/**
 	 * Peer状态：上传
 	 */
@@ -217,6 +221,8 @@ public class PeerConfig {
 			return "CONNECT";
 		case SOURCE_TRACKER:
 			return "TRACKER";
+		case SOURCE_HOLEPUNCH:
+			return "HOLEPUNCH";
 		default:
 			return "UNKNOW";
 		}
@@ -306,13 +312,13 @@ public class PeerConfig {
 	public enum ExtensionType {
 		
 		/** 握手 */
-		HANDSHAKE(		(byte) 0x00, "handshake",		true,  false),
+		HANDSHAKE(		(byte) 0x00, "handshake",		true,	false),
 		/** pex */
-		UT_PEX(			(byte) 0x01, "ut_pex",			true,  true),
+		UT_PEX(			(byte) 0x01, "ut_pex",			true,	true),
 		/** metadata */
-		UT_METADATA(	(byte) 0x02, "ut_metadata",		true,  true),
+		UT_METADATA(	(byte) 0x02, "ut_metadata",		true,	true),
 		/** holepunch */
-		UT_HOLEPUNCH(	(byte) 0x03, "ut_holepunch",	false, false);
+		UT_HOLEPUNCH(	(byte) 0x03, "ut_holepunch",	true,	true);
 
 		/**
 		 * 消息ID：自定义

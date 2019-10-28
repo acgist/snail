@@ -47,14 +47,14 @@ public class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler imple
 		final String host = address.getHostString();
 		final String port = headers.header(HEADER_PORT);
 		final String cookie = headers.header(HEADER_COOKIE);
-		final List<String> infoHashs = headers.headerList(HEADER_INFOHASH);
-		if(StringUtils.isNumeric(port) && CollectionUtils.isNotEmpty(infoHashs)) {
+		final List<String> infoHashHexs = headers.headerList(HEADER_INFOHASH);
+		if(StringUtils.isNumeric(port) && CollectionUtils.isNotEmpty(infoHashHexs)) {
 			final byte[] peerId = StringUtils.unhex(cookie);
 			if(ArrayUtils.equals(peerId, PeerService.getInstance().peerId())) {
 				LOGGER.debug("本地发现消息处理失败：忽略本机");
 			} else {
-				infoHashs.forEach(infoHash -> {
-					doInfoHash(host, port, infoHash);
+				infoHashHexs.forEach(infoHashHex -> {
+					doInfoHash(host, port, infoHashHex);
 				});
 			}
 		} else {
@@ -62,14 +62,19 @@ public class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler imple
 		}
 	}
 
-	private void doInfoHash(String host, String port, String infoHash) {
-		final TorrentSession torrentSession = TorrentManager.getInstance().torrentSession(infoHash);
+	private void doInfoHash(String host, String port, String infoHashHex) {
+		final TorrentSession torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
 		if(torrentSession == null) {
-			LOGGER.debug("本地发现消息处理失败：种子信息不存在：{}", infoHash);
+			LOGGER.debug("本地发现消息处理失败：种子信息不存在：{}", infoHashHex);
 		} else {
-			LOGGER.debug("本地发现消息：{}-{}-{}", infoHash, host, port);
+			LOGGER.debug("本地发现消息：{}-{}-{}", infoHashHex, host, port);
 			final PeerManager peerManager = PeerManager.getInstance();
-			peerManager.newPeerSession(infoHash, torrentSession.statistics(), host, Integer.valueOf(port), PeerConfig.SOURCE_LSD);
+			peerManager.newPeerSession(
+				infoHashHex,
+				torrentSession.statistics(),
+				host,
+				Integer.valueOf(port),
+				PeerConfig.SOURCE_LSD);
 		}
 	}
 
