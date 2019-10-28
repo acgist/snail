@@ -73,6 +73,7 @@ public abstract class SingleFileDownloader extends Downloader {
 	@Override
 	public void unlockDownload() {
 		if(!this.taskSession.statistics().downloading()) {
+			LOGGER.debug("单文件下载解锁：没有速度关闭下载流");
 			IoUtils.close(this.input);
 		}
 	}
