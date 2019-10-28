@@ -196,7 +196,7 @@ public class PeerManager {
 					peerLauncher.have(index);
 				}
 			});
-		LOGGER.debug("发送Have消息，通知Peer数量：{}", count.get());
+		LOGGER.debug("发送have消息，通知Peer数量：{}", count.get());
 	}
 	
 	/**
@@ -206,7 +206,7 @@ public class PeerManager {
 	public void pex(String infoHashHex, List<PeerSession> optimize) {
 		final byte[] bytes = PeerExchangeMessageHandler.buildMessage(optimize);
 		if(bytes == null) {
-			LOGGER.debug("PEX消息为空");
+			LOGGER.debug("发送pex消息失败：消息为空");
 			return;
 		}
 		final var list = listActivePeer(infoHashHex);

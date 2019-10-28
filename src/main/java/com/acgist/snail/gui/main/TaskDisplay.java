@@ -39,10 +39,10 @@ public class TaskDisplay {
 	}
 	
 	/**
-	 * 启动下载任务刷新定时器
+	 * 启动下载任务列表刷新定时器
 	 */
 	public void newTimer(MainController controller) {
-		LOGGER.info("启动下载任务刷新定时器");
+		LOGGER.info("启动下载任务列表刷新定时器");
 		synchronized (this) {
 			if(this.controller == null) {
 				this.controller = controller;

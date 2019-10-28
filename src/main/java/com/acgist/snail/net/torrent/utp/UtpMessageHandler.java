@@ -267,7 +267,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 		final List<UtpWindowData> windowDatas = this.sendWindow.timeoutWindowData();
 		if(CollectionUtils.isNotEmpty(windowDatas)) {
 			data(windowDatas);
-			LOGGER.debug("数据包超时（丢包）重新发送数据包大小：{}", windowDatas.size());
+			LOGGER.debug("数据包超时（丢包）重新发送数据包长度：{}", windowDatas.size());
 			return true;
 		}
 		return false;

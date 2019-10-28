@@ -190,7 +190,7 @@ public class TorrentStreamGroup {
 		final long oldValue = this.fileBuffer.get();
 		if(oldValue > DownloadConfig.getMemoryBufferByte()) {
 			if(this.fileBuffer.compareAndSet(oldValue, 0)) {
-				LOGGER.debug("缓冲区占满，刷出缓存。");
+				LOGGER.debug("缓冲区占满：刷出缓存");
 				this.flush();
 			}
 		}

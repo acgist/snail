@@ -59,13 +59,13 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler, IExten
 	public void onMessage(ByteBuffer buffer) {
 		final Byte type = extensionType();
 		if(type == null) {
-			LOGGER.debug("Peer不支持holepunch扩展协议");
+			LOGGER.debug("holepunch消息错误：Peer不支持");
 			return;
 		}
 		final byte typeId = buffer.get();
 		final HolepunchType holepunchType = PeerConfig.HolepunchType.valueOf(typeId);
 		if(holepunchType == null) {
-			LOGGER.warn("不支持的holepunch消息类型：{}", typeId);
+			LOGGER.warn("holepunch消息错误（类型不支持）：{}", typeId);
 			return;
 		}
 		final byte addrType = buffer.get();
@@ -80,6 +80,7 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler, IExten
 			port = 0;
 		}
 		errorCode = buffer.getInt();
+		LOGGER.debug("holepunch消息类型：{}", holepunchType);
 		switch (holepunchType) {
 		case RENDEZVOUS:
 			onRendezvous(host, port);
@@ -91,7 +92,7 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler, IExten
 			onError(host, port, errorCode);
 			break;
 		default:
-			LOGGER.info("不支持的holepunch消息类型：{}", holepunchType);
+			LOGGER.info("holepunch消息错误（类型未适配）：{}", holepunchType);
 			break;
 		}
 	}

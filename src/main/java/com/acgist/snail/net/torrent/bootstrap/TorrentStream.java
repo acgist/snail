@@ -171,7 +171,7 @@ public class TorrentStream {
 		synchronized (this) {
 			boolean ok = false;
 			if(havePiece(piece.getIndex())) {
-				LOGGER.debug("Piece已经下载完成忽略：{}", piece.getIndex());
+				LOGGER.debug("Piece已经下载完成（忽略）：{}", piece.getIndex());
 				return false;
 			}
 			if(this.filePieces.offer(piece)) {
@@ -214,7 +214,7 @@ public class TorrentStream {
 			this.pausePieces.clear();
 			if(pickPieces.cardinality() <= 0) {
 				if(this.torrentStreamGroup.remainingPieceSize() <= SystemConfig.getPieceRepeatSize()) {
-					LOGGER.debug("选择Piece时接近完成并且找不到更多Piece，开始重复选择未下载Piece。");
+					LOGGER.debug("选择Piece时，任务接近完成并且找不到更多Piece，开始重复选择未下载的Piece。");
 					pickPieces.or(peerPieces);
 					pickPieces.andNot(this.pieces);
 					if(pickPieces.cardinality() <= 0) {
@@ -418,10 +418,10 @@ public class TorrentStream {
 	 */
 	private void write(TorrentPiece piece) {
 		if(!haveIndex(piece.getIndex())) {
-			LOGGER.warn("写入硬盘Piece错误（序号）：{}", piece.getIndex());
+			LOGGER.warn("Piece写入硬盘错误（不包含）：{}", piece.getIndex());
 			return;
 		}
-		LOGGER.debug("写入硬盘Piece：{}", piece.getIndex());
+		LOGGER.debug("Piece写入硬盘：{}", piece.getIndex());
 		int offset = 0;
 		long seek = 0L;
 		int length = piece.getLength();

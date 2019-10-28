@@ -76,7 +76,7 @@ public final class HttpDownloader extends SingleFileDownloader {
 			if(responseHeader.range()) { // 支持断点续传
 				final long begin = responseHeader.beginRange();
 				if(size != begin) {
-					LOGGER.warn("已下载大小（{}）和开始下载位置（{}）不相等，HTTP响应头：{}", size, begin, responseHeader.allHeaders());
+					LOGGER.warn("HTTP下载错误（已下载大小和开始下载位置不符）：{}-{}，HTTP响应头：{}", size, begin, responseHeader.allHeaders());
 				}
 				this.taskSession.downloadSize(size);
 			} else {

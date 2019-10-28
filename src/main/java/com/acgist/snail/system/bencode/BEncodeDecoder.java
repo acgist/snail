@@ -161,7 +161,7 @@ public class BEncodeDecoder {
 			this.list = l(this.inputStream);
 			return this.type = Type.LIST;
 		default:
-			LOGGER.warn("B编码不支持的类型：{}", type);
+			LOGGER.warn("B编码错误（类型未适配）：{}", type);
 			return this.type = Type.NONE;
 		}
 	}
@@ -291,11 +291,11 @@ public class BEncodeDecoder {
 						key = null;
 					}
 				} else {
-					LOGGER.warn("B编码长度错误：{}", lengthBuilder);
+					LOGGER.warn("B编码错误（长度）：{}", lengthBuilder);
 				}
 				break;
 			default:
-				LOGGER.debug("B编码不支持的类型：{}", indexChar);
+				LOGGER.debug("B编码错误（类型不支持）：{}", indexChar);
 				break;
 			}
 		}
@@ -341,11 +341,11 @@ public class BEncodeDecoder {
 					final byte[] bytes = read(lengthBuilder, inputStream);
 					list.add(bytes);
 				} else {
-					LOGGER.warn("B编码长度错误：{}", lengthBuilder);
+					LOGGER.warn("B编码错误（长度）：{}", lengthBuilder);
 				}
 				break;
 			default:
-				LOGGER.debug("B编码不支持的类型：{}", indexChar);
+				LOGGER.debug("B编码错误（类型不支持）：{}", indexChar);
 				break;
 			}
 		}
@@ -376,7 +376,7 @@ public class BEncodeDecoder {
 		try {
 			final int readLength = inputStream.read(bytes);
 			if(readLength != length) {
-				LOGGER.warn("B编码读取长度和实际长度不符：{}-{}", length, readLength);
+				LOGGER.warn("B编码错误（读取长度和实际长度不符）：{}-{}", length, readLength);
 			}
 		} catch (IOException e) {
 			LOGGER.error("B编码读取异常", e);

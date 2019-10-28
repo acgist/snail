@@ -50,7 +50,7 @@ public class PeerConnectGroup {
 		synchronized (this.peerConnects) {
 			LOGGER.debug("Peer接入：{}-{}", peerSession.host(), peerSession.peerPort());
 			if(!connectable(peerSession)) {
-				LOGGER.debug("Peer接入数超过最大接入数量，拒绝连接：{}-{}", peerSession.host(), peerSession.peerPort());
+				LOGGER.debug("Peer拒绝接入（超过最大接入数量）：{}-{}", peerSession.host(), peerSession.peerPort());
 				return null;
 			}
 			final PeerConnect peerConnect = PeerConnect.newInstance(peerSession, peerSubMessageHandler);

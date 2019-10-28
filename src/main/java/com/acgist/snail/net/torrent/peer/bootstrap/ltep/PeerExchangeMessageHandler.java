@@ -95,7 +95,7 @@ public class PeerExchangeMessageHandler implements IExtensionMessageHandler, IEx
 		final var decoder = BEncodeDecoder.newInstance(bytes);
 		decoder.nextMap();
 		if(decoder.isEmpty()) {
-			LOGGER.warn("pex消息格式错误：{}", decoder.oddString());
+			LOGGER.warn("pex消息错误（格式）：{}", decoder.oddString());
 			return;
 		}
 		final byte[] added = decoder.getBytes(ADDED);

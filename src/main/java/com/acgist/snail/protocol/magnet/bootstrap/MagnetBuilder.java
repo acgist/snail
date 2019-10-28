@@ -100,7 +100,7 @@ public class MagnetBuilder {
 					kt(value);
 					break;
 				default:
-					LOGGER.debug("磁力链接参数错误（不支持）：{}-{}，磁力链接：{}", key, value, this.url);
+					LOGGER.debug("磁力链接错误（参数不支持）：{}-{}，磁力链接：{}", key, value, this.url);
 					break;
 				}
 			}
@@ -112,7 +112,7 @@ public class MagnetBuilder {
 	}
 	
 	/**
-	 * 解析XT，支持BT下载。
+	 * 解析XT：支持BT下载
 	 */
 	private void xt(String value) throws DownloadException {
 		if(StringUtils.isEmpty(value)) {

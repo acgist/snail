@@ -106,7 +106,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 		final byte typeId = buffer.get();
 		final ExtensionType extensionType = ExtensionType.valueOf(typeId);
 		if(extensionType == null) {
-			LOGGER.warn("不支持的扩展消息类型：{}", typeId);
+			LOGGER.warn("扩展消息错误（类型不支持）：{}", typeId);
 			return;
 		}
 		LOGGER.debug("扩展消息类型：{}", extensionType);
@@ -124,16 +124,16 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 			holepunch(buffer);
 			break;
 		default:
-			LOGGER.info("不支持的扩展消息类型：{}", extensionType);
+			LOGGER.info("扩展消息错误（类型未适配）：{}", extensionType);
 			break;
 		}
 	}
 	
 	/**
-	 * 扩展握手消息
+	 * 发送握手消息
 	 */
 	public void handshake() {
-		LOGGER.debug("发送扩展握手消息");
+		LOGGER.debug("发送扩展消息-握手");
 		this.handshake = true;
 		final Map<String, Object> data = new LinkedHashMap<>();
 		final Map<String, Object> supportType = new LinkedHashMap<>();
@@ -170,13 +170,13 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 * 处理握手消息
 	 */
 	private void handshake(ByteBuffer buffer) throws PacketSizeException {
-		LOGGER.debug("处理扩展握手消息");
+		LOGGER.debug("处理扩展消息-握手");
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
 		final var decoder = BEncodeDecoder.newInstance(bytes);
 		decoder.nextMap();
 		if(decoder.isEmpty()) {
-			LOGGER.warn("扩展握手消息格式错误：{}", decoder.oddString());
+			LOGGER.warn("扩展消息-握手处理失败（格式）：{}", decoder.oddString());
 			return;
 		}
 		// 获取端口
@@ -184,7 +184,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 		if(port != null) {
 			final Integer oldPort = this.peerSession.peerPort();
 			if(oldPort != null && oldPort.intValue() != port.intValue()) {
-				LOGGER.debug("Peer扩展握手获取端口和原始端口不一致：{}-{}", oldPort, port);
+				LOGGER.debug("扩展消息-握手（端口不一致）：{}-{}", oldPort, port);
 			}
 			this.peerSession.peerPort(port.intValue());
 		}
@@ -201,10 +201,10 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 				final String typeValue = (String) entry.getKey();
 				final PeerConfig.ExtensionType extensionType = PeerConfig.ExtensionType.valueOfValue(typeValue);
 				if(extensionType != null && extensionType.support()) {
-					LOGGER.debug("添加扩展协议：{}-{}", extensionType, typeId);
+					LOGGER.debug("扩展协议（添加）：{}-{}", extensionType, typeId);
 					this.peerSession.addExtensionType(extensionType, typeId.byteValue());
 				} else {
-					LOGGER.debug("不支持的扩展协议：{}-{}", typeValue, typeId);
+					LOGGER.debug("扩展协议（不支持）：{}-{}", typeValue, typeId);
 				}
 			});
 		}

@@ -126,7 +126,7 @@ public class BEncodeEncoder {
 		} else if(this.type == Type.LIST) {
 			this.write(this.list);
 		} else {
-			LOGGER.warn("B编码不支持的类型：{}", this.type);
+			LOGGER.warn("B编码错误（类型未适配）：{}", this.type);
 		}
 		return this;
 	}
@@ -194,7 +194,7 @@ public class BEncodeEncoder {
 			write((Map<?, ?>) value);
 		} else {
 			this.writeBEncodeBytes(new byte[] {});
-			LOGGER.debug("B编码不支持的类型：{}", value);
+			LOGGER.debug("B编码错误（类型未适配）：{}", value);
 		}
 	}
 	

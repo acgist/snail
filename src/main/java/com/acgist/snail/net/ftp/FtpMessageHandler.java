@@ -78,7 +78,7 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 
 	@Override
 	public void onMessage(String message) throws NetException {
-		LOGGER.debug("FTP响应：{}", message);
+		LOGGER.debug("处理FTP消息：{}", message);
 		if(StringUtils.startsWith(message, "530 ")) { // 登陆失败
 			this.failMessage = "服务器需要登陆授权";
 			this.close();

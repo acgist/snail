@@ -33,7 +33,7 @@ public class BuildEvent extends GuiEvent {
 	
 	@Override
 	protected void executeNative(Object ... args) {
-		LOGGER.info("创建窗口");
+		LOGGER.info("创建GUI窗口");
 		final Thread javaFXThread = new Thread();
 		javaFXThread.setName(SystemThreadContext.SNAIL_THREAD_PLATFORM);
 		javaFXThread.setDaemon(true);

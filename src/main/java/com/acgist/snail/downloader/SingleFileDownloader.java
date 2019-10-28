@@ -68,7 +68,7 @@ public abstract class SingleFileDownloader extends Downloader {
 
 	/**
 	 * {@inheritDoc}
-	 * <p>如果没有数据下载，任务会被下载流读取阻塞，直接关闭下载流，避免任务不能正常结束。</p>
+	 * <p>如果没有数据下载，任务会被读取下载流阻塞，直接关闭下载流，避免任务不能正常结束。</p>
 	 */
 	@Override
 	public void unlockDownload() {

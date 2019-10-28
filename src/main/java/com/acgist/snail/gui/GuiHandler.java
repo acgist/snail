@@ -162,7 +162,7 @@ public class GuiHandler {
 	 * 注册事件
 	 */
 	public static final void register(GuiEvent event) {
-		LOGGER.debug("注册事件：{}-{}", event.type(), event.name());
+		LOGGER.debug("注册GUI事件：{}-{}", event.type(), event.name());
 		EVENTS.put(event.type(), event);
 	}
 
@@ -301,7 +301,7 @@ public class GuiHandler {
 		}
 		final GuiEvent event = handler(type);
 		if(event == null) {
-			LOGGER.warn("未知事件：{}", type);
+			LOGGER.warn("未知GUI事件：{}", type);
 			return this;
 		}
 		event.execute(this.gui, args);

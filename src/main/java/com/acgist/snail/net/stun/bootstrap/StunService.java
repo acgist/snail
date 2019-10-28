@@ -33,7 +33,7 @@ public class StunService {
 	 */
 	public void mapping() {
 		if(UpnpService.getInstance().useable()) {
-			LOGGER.info("UPNP映射成功，不使用STUN映射。");
+			LOGGER.info("UPNP映射成功：不使用STUN映射");
 		} else {
 			final var address = buildServerAddress();
 			if(address == null) {
