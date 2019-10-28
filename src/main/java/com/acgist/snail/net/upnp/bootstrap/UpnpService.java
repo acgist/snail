@@ -86,7 +86,7 @@ public class UpnpService {
 	 * 加载信息
 	 */
 	public UpnpService load(String location) throws NetException {
-		LOGGER.info("UPNP设置，描述文件地址：{}", location);
+		LOGGER.info("UPNP设置描述文件地址：{}", location);
 		this.location = location;
 		final var response = HTTPClient.get(this.location, BodyHandlers.ofString());
 		final var body = response.body();

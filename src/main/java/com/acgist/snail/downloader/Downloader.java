@@ -147,7 +147,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	public void run() {
 		// 任务已经处于下载中时直接跳过，防止多次点击暂停开始导致后面线程阻塞，进而不能下载其他任务。
 		if(this.taskSession.download()) {
-			LOGGER.debug("任务已经处于下载中，停止执行：{}", this.name());
+			LOGGER.debug("任务已经处于下载中：{}", this.name());
 			return;
 		}
 		synchronized (this.taskSession) {

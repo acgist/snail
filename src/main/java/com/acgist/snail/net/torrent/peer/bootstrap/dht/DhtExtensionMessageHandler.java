@@ -50,7 +50,7 @@ public class DhtExtensionMessageHandler implements IExtensionMessageHandler {
 	}
 	
 	/**
-	 * <p>设置DHT端口，添加DHT节点。</p>
+	 * <p>处理DHT消息：设置DHT端口、添加DHT节点</p>
 	 */
 	private void port(ByteBuffer buffer) {
 		LOGGER.debug("处理DHT消息");

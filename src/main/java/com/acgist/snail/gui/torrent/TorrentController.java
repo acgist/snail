@@ -32,7 +32,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 /**
- * BT任务窗口控制器
+ * 编辑任务窗口控制器
  * 
  * @author acgist
  * @since 1.0.0

@@ -68,7 +68,7 @@ public class ApplicationMessageHandler extends TcpMessageHandler implements IMes
 	private void execute(ApplicationMessage message) {
 		LOGGER.debug("处理系统消息：{}", message);
 		if(message.getType() == null) {
-			LOGGER.warn("系统消息类型错误：{}", message.getType());
+			LOGGER.warn("系统消息错误（类型不支持）：{}", message.getType());
 			return;
 		}
 		switch (message.getType()) {
@@ -106,7 +106,7 @@ public class ApplicationMessageHandler extends TcpMessageHandler implements IMes
 			onResponse(message);
 			break;
 		default:
-			LOGGER.warn("系统消息类型错误（未适配）：{}", message.getType());
+			LOGGER.warn("系统消息错误（类型未适配）：{}", message.getType());
 			break;
 		}
 	}
@@ -265,10 +265,10 @@ public class ApplicationMessageHandler extends TcpMessageHandler implements IMes
 	}
 	
 	/**
-	 * 系统响应
+	 * 处理系统响应
 	 */
 	private void onResponse(ApplicationMessage message) {
-		LOGGER.debug("系统响应：{}", message.getBody());
+		LOGGER.debug("处理系统响应：{}", message.getBody());
 	}
 
 	/**

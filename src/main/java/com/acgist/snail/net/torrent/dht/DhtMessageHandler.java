@@ -52,7 +52,7 @@ public class DhtMessageHandler extends UdpMessageHandler {
 		if(response == null) {
 			LOGGER.warn("DHT响应超时");
 		} else if(!response.success()) {
-			LOGGER.warn("DHT响应返回失败：{}-{}", response.errorCode(), response.errorMessage());
+			LOGGER.warn("DHT响应失败：{}-{}", response.errorCode(), response.errorMessage());
 		}
 		return response;
 	};
@@ -143,6 +143,7 @@ public class DhtMessageHandler extends UdpMessageHandler {
 		}
 		if(!SUCCESS_VERIFY.apply(response)) {
 			LOGGER.warn("DHT处理响应失败：{}", response);
+			return;
 		}
 		switch (request.getQ()) {
 		case PING:

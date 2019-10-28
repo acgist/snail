@@ -58,7 +58,7 @@ public class TrackerMessageHandler extends UdpMessageHandler {
 	private void doAnnounce(ByteBuffer buffer) {
 		final int length = buffer.limit(); // 消息长度
 		if(length < ANNOUNCE_MIN_LENGTH) {
-			LOGGER.debug("Announce消息长度错误：{}", length);
+			LOGGER.debug("Announce消息错误（长度）：{}", length);
 			return;
 		}
 		final AnnounceMessage message = new AnnounceMessage();

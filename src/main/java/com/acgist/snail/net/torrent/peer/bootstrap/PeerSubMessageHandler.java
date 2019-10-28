@@ -147,7 +147,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			return false;
 		}
 		if(!torrentSession.uploadable()) {
-			LOGGER.debug("Peer接入时任务不可上传，任务动作：{}", torrentSession.action());
+			LOGGER.debug("Peer接入时任务不可上传：{}", torrentSession.action());
 		}
 		final InetSocketAddress socketAddress = this.remoteSocketAddress();
 		if(socketAddress == null) {
@@ -199,7 +199,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			final byte typeId = buffer.get();
 			final PeerConfig.Type type = PeerConfig.Type.valueOf(typeId);
 			if(type == null) {
-				LOGGER.warn("不支持的Peer消息类型：{}", typeId);
+				LOGGER.warn("Peer消息错误（类型不支持）：{}", typeId);
 				return;
 			}
 			LOGGER.debug("Peer消息类型：{}", type);
@@ -238,7 +238,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 				extension(buffer);
 				break;
 			default:
-				LOGGER.info("不支持的Peer消息类型：{}", type);
+				LOGGER.info("Peer消息错误（类型未适配）：{}", type);
 				break;
 			}
 		}

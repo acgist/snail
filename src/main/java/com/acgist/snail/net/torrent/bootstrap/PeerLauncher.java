@@ -254,7 +254,7 @@ public final class PeerLauncher extends PeerClientHandler {
 		}
 		pickDownloadPiece();
 		if(this.downloadPiece == null) {
-			LOGGER.debug("没有匹配Piece下载，释放Peer。");
+			LOGGER.debug("没有匹配Piece下载：释放Peer");
 			this.peerSubMessageHandler.notInterested(); // 发送不感兴趣消息
 			this.completeLock.set(true); // 没有匹配到下载块时设置为完成
 			this.release();
@@ -325,8 +325,8 @@ public final class PeerLauncher extends PeerClientHandler {
 				this.peerSession.badPieces(this.downloadPiece.getIndex());
 				LOGGER.warn("Piece校验失败：{}", this.downloadPiece.getIndex());
 			}
-		} else { // 上次选择的Piece没有完成
-			LOGGER.debug("上次选择Piece没有完成：{}", this.downloadPiece.getIndex());
+		} else { // Piece没有下载完成
+			LOGGER.debug("Piece没有下载完成：{}", this.downloadPiece.getIndex());
 		}
 		this.downloadPiece = this.torrentSession.pick(this.peerSession.availablePieces());
 		if(this.downloadPiece != null) {

@@ -88,7 +88,7 @@ public class TrackerManager {
 		if(trackerLauncher != null) {
 			trackerLauncher.announce(message);
 		} else {
-			LOGGER.warn("不存在的TrackerLauncher，AnnounceMessage：{}", message);
+			LOGGER.warn("TrackerLauncher不存在，AnnounceMessage：{}", message);
 		}
 	}
 	

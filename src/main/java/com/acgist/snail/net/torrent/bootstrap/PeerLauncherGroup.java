@@ -122,7 +122,7 @@ public class PeerLauncherGroup {
 	 * <p>创建数量达到最大Peer连接或者重试次数超过{@link #MAX_BUILD_SIZE}时退出创建。</p>
 	 */
 	private void buildPeerLaunchers() {
-		LOGGER.debug("优化PeerLauncher：创建PeerLauncher");
+		LOGGER.debug("创建PeerLauncher");
 		int size = 0;
 		this.build.set(true); // 重置创建状态
 		// 重置信号量
@@ -144,7 +144,7 @@ public class PeerLauncherGroup {
 				}
 			});
 			if(++size >= MAX_BUILD_SIZE) {
-				LOGGER.debug("优化PeerLauncher：超过单次最大创建数量退出循环");
+				LOGGER.debug("超过PeerLauncher单次最大创建数量：退出循环");
 				break;
 			}
 		}
@@ -199,7 +199,7 @@ public class PeerLauncherGroup {
 	 * TODO：评分=0是否直接剔除
 	 */
 	private void inferiorPeerLaunchers() {
-		LOGGER.debug("优化PeerLauncher：剔除劣质PeerLauncher");
+		LOGGER.debug("剔除劣质PeerLauncher");
 		int index = 0;
 		boolean unusable = false; // 是否已经剔除不可用的Peer
 		long mark = 0, minMark = 0;

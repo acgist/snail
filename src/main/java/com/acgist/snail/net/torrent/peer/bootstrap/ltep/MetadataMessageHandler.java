@@ -78,13 +78,13 @@ public class MetadataMessageHandler implements IExtensionMessageHandler, IExtens
 		final var decoder = BEncodeDecoder.newInstance(bytes);
 		decoder.nextMap();
 		if(decoder.isEmpty()) {
-			LOGGER.warn("metadata消息格式错误：{}", decoder.oddString());
+			LOGGER.warn("metadata消息错误（格式）：{}", decoder.oddString());
 			return;
 		}
 		final Byte typeId = decoder.getByte(ARG_MSG_TYPE);
 		final MetadataType metadataType = PeerConfig.MetadataType.valueOf(typeId);
 		if(metadataType == null) {
-			LOGGER.warn("不支持的metadata消息类型：{}", typeId);
+			LOGGER.warn("metadata消息错误（类型不支持）：{}", typeId);
 			return;
 		}
 		LOGGER.debug("metadata消息类型：{}", metadataType);
@@ -99,7 +99,7 @@ public class MetadataMessageHandler implements IExtensionMessageHandler, IExtens
 			reject(decoder);
 			break;
 		default:
-			LOGGER.info("不支持的metadata消息类型：{}", metadataType);
+			LOGGER.info("metadata消息错误（类型未适配）：{}", metadataType);
 			break;
 		}
 	}
@@ -178,7 +178,7 @@ public class MetadataMessageHandler implements IExtensionMessageHandler, IExtens
 		final int begin = piece * SLICE_LENGTH;
 		final int end = begin + SLICE_LENGTH;
 		if(begin > bytes.length) {
-			LOGGER.warn("处理metadata消息：数据长度错误（{}-{}）", begin, bytes.length);
+			LOGGER.warn("metadata消息-data处理失败（数据长度错误）：{}-{}", begin, bytes.length);
 			return;
 		}
 		int length = SLICE_LENGTH;
