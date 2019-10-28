@@ -79,6 +79,8 @@ public class StatisticsController extends Controller implements Initializable {
 	@FXML
 	private Text sourceConnect;
 	@FXML
+	private Text sourceHolepunch;
+	@FXML
 	private Text statusUpload;
 	@FXML
 	private Text statusDownload;
@@ -171,6 +173,7 @@ public class StatisticsController extends Controller implements Initializable {
 		final var lsd = new AtomicInteger(0);
 		final var tracker = new AtomicInteger(0);
 		final var connect = new AtomicInteger(0);
+		final var holepunch = new AtomicInteger(0);
 		// 状态
 		final var upload = new AtomicInteger(0);
 		final var download = new AtomicInteger(0);
@@ -196,6 +199,9 @@ public class StatisticsController extends Controller implements Initializable {
 			}
 			if(peer.connect()) {
 				connect.incrementAndGet();
+			}
+			if(peer.holepunch()) {
+				holepunch.incrementAndGet();
 			}
 			if(peer.uploading()) {
 				upload.incrementAndGet();
@@ -229,6 +235,7 @@ public class StatisticsController extends Controller implements Initializable {
 		this.sourceLsd.setText(String.valueOf(lsd.get()));
 		this.sourceTracker.setText(String.valueOf(tracker.get()));
 		this.sourceConnect.setText(String.valueOf(connect.get()));
+		this.sourceHolepunch.setText(String.valueOf(holepunch.get()));
 		// 状态
 		this.statusUpload.setText(String.valueOf(upload.get()));
 		this.statusDownload.setText(String.valueOf(download.get()));

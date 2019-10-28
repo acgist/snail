@@ -84,31 +84,40 @@
 				<Text fx:id="peerUtp">0</Text>
 			</TextFlow>
 		</HBox>
-		<HBox fx:id="source" styleClass="source">
-			<TextFlow styleClass="title">
-				<Label>来源：</Label>
-			</TextFlow>
-			<TextFlow>
-				<Label>DHT：</Label>
-				<Text fx:id="sourceDht">0</Text>
-			</TextFlow>
-			<TextFlow>
-				<Label>PEX：</Label>
-				<Text fx:id="sourcePex">0</Text>
-			</TextFlow>
-			<TextFlow>
-				<Label>LSD：</Label>
-				<Text fx:id="sourceLsd">0</Text>
-			</TextFlow>
-			<TextFlow>
-				<Label>Tracker：</Label>
-				<Text fx:id="sourceTracker">0</Text>
-			</TextFlow>
-			<TextFlow>
-				<Label>Connect：</Label>
-				<Text fx:id="sourceConnect">0</Text>
-			</TextFlow>
-		</HBox>
+		<VBox fx:id="source" styleClass="source">
+			<HBox>
+				<TextFlow styleClass="title">
+					<Label>来源：</Label>
+				</TextFlow>
+				<TextFlow>
+					<Label>DHT：</Label>
+					<Text fx:id="sourceDht">0</Text>
+				</TextFlow>
+				<TextFlow>
+					<Label>PEX：</Label>
+					<Text fx:id="sourcePex">0</Text>
+				</TextFlow>
+				<TextFlow>
+					<Label>LSD：</Label>
+					<Text fx:id="sourceLsd">0</Text>
+				</TextFlow>
+			</HBox>
+			<HBox>
+				<TextFlow styleClass="title"></TextFlow>
+				<TextFlow>
+					<Label>Tracker：</Label>
+					<Text fx:id="sourceTracker">0</Text>
+				</TextFlow>
+				<TextFlow>
+					<Label>Connect：</Label>
+					<Text fx:id="sourceConnect">0</Text>
+				</TextFlow>
+				<TextFlow>
+					<Label>Holepunch：</Label>
+					<Text fx:id="sourceHolepunch">0</Text>
+				</TextFlow>
+			</HBox>
+		</VBox>
 		<HBox fx:id="status" styleClass="status">
 			<TextFlow styleClass="title">
 				<Label>状态：</Label>

@@ -362,7 +362,7 @@ public final class PeerSession implements IStatistics {
 	}
 	
 	/**
-	 * 来源：pex
+	 * 来源：PEX
 	 */
 	public boolean pex() {
 		return verifySource(PeerConfig.SOURCE_PEX);
@@ -380,6 +380,13 @@ public final class PeerSession implements IStatistics {
 	 */
 	public boolean connect() {
 		return verifySource(PeerConfig.SOURCE_CONNECT);
+	}
+	
+	/**
+	 * 来源：HOLEPUNCH
+	 */
+	public boolean holepunch() {
+		return verifySource(PeerConfig.SOURCE_HOLEPUNCH);
 	}
 	
 	/**

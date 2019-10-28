@@ -54,6 +54,16 @@ public class PeerManager {
 	}
 	
 	/**
+	 * 查找PeerSession
+	 */
+	public PeerSession findPeerSession(String infoHashHex, String host) {
+		final var list = list(infoHashHex);
+		synchronized (list) {
+			return findPeerSession(list, host);
+		}
+	}
+	
+	/**
 	 * Peer存档队列拷贝
 	 */
 	public List<PeerSession> listPeers(String infoHashHex) {
@@ -81,14 +91,15 @@ public class PeerManager {
 	/**
 	 * <p>新增Peer</p>
 	 * <p>优先级高的Peer插入尾部优先使用。</p>
-	 * <p>优先级计算：主动连接、本地发现、Peer评分。</p>
+	 * <p>优先级计算：主动连接、本地发现、Peer评分</p>
 	 * 
 	 * @param infoHashHex InfoHashHex
 	 * @param parent 任务下载统计
 	 * @param host 地址
 	 * @param port 端口
+	 * @param source 来源
 	 * 
-	 * @return PeerSession，如果是本机IP返回null。
+	 * @return PeerSession
 	 * 
 	 * TODO：接入Peer调整Peer位置顺序
 	 */
@@ -108,12 +119,10 @@ public class PeerManager {
 							source == PeerConfig.SOURCE_LSD || // 本地发现
 							source == PeerConfig.SOURCE_CONNECT || // 主动连接
 							PeerEvaluator.getInstance().eval(peerSession) // Peer评分
-							) {
-							// 插入尾部：优先级高
-							deque.offerLast(peerSession);
+						) {
+							deque.offerLast(peerSession); // 插入尾部：优先级高
 						} else {
-							// 插入头部：优先级低
-							deque.offerFirst(peerSession);
+							deque.offerFirst(peerSession); // 插入头部：优先级低
 						}
 						list.add(peerSession); // 存档
 					}
@@ -263,7 +272,7 @@ public class PeerManager {
 	}
 	
 	/**
-	 * <p>获取Peer</p>
+	 * <p>查找PeerSession</p>
 	 * 
 	 * @param list Peer队列
 	 * @param host IP地址
