@@ -245,7 +245,7 @@ public class MainController extends Controller implements Initializable {
 	 * 刷新任务状态
 	 */
 	public void refreshTaskStatus() {
-		this.taskTable.refresh(); // 刷新table
+		this.taskTable.refresh(); // 刷新Table
 		// 刷新下载、上传速度
 		Platform.runLater(() -> {
 			final long downloadSpeed = SystemStatistics.getInstance().downloadSpeed();
