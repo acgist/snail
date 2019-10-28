@@ -37,33 +37,33 @@ public final class StatisticsSession {
 	/**
 	 * 累计上传大小
 	 */
-	private AtomicLong uploadSize = new AtomicLong(0);
+	private final AtomicLong uploadSize = new AtomicLong(0);
 	/**
 	 * 累计下载大小
 	 */
-	private AtomicLong downloadSize = new AtomicLong(0);
+	private final AtomicLong downloadSize = new AtomicLong(0);
 	/**
 	 * 每秒下载速度
 	 */
 	private long downloadSecond = 0L;
 	/**
-	 * 下载速度采样
+	 * 每秒下载速度采样
 	 */
-	private AtomicLong downloadBuffer = new AtomicLong(0);
+	private final AtomicLong downloadBuffer = new AtomicLong(0);
 	/**
-	 * 最后一次统计时间
+	 * 最后一次每秒下载速度采样时间
 	 */
 	private volatile long lastDownloadTime = System.currentTimeMillis();
 	/**
-	 * 每秒下载速度
+	 * 每秒上传速度
 	 */
 	private long uploadSecond = 0L;
 	/**
-	 * 下载速度采样
+	 * 每秒上传速度采样
 	 */
-	private AtomicLong uploadBuffer = new AtomicLong(0);
+	private final AtomicLong uploadBuffer = new AtomicLong(0);
 	/**
-	 * 最后一次统计时间
+	 * 最后一次每秒上传速度采样时间
 	 */
 	private volatile long lastUploadTime = System.currentTimeMillis();
 	
