@@ -68,11 +68,11 @@ public abstract class SingleFileDownloader extends Downloader {
 
 	/**
 	 * {@inheritDoc}
-	 * <p>下载速度为零时，下载被阻塞，直接关闭下载流，避免下载阻塞导致任务不能正常结束。</p>
+	 * <p>如果没有数据下载，任务会被下载流读取阻塞，直接关闭下载流，避免任务不能正常结束。</p>
 	 */
 	@Override
 	public void unlockDownload() {
-		if(this.taskSession.statistics().downloadSecond() == 0) {
+		if(!this.taskSession.statistics().downloading()) {
 			IoUtils.close(this.input);
 		}
 	}

@@ -90,7 +90,7 @@ public class PeerServerTest {
 		launcher.handshake();
 		new Thread(() -> {
 			while(true) {
-				LOGGER.debug("下载速度：{}", statisticsSession.downloadSecond());
+				LOGGER.debug("下载速度：{}", statisticsSession.downloadSpeed());
 				ThreadUtils.sleep(1000);
 			}
 		}).start();

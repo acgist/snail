@@ -66,7 +66,7 @@ public class PeerClientTest {
 		launcher.handshake();
 		new Thread(() -> {
 			while(true) {
-				System.out.println("下载速度：" + statisticsSession.downloadSecond());
+				System.out.println("下载速度：" + statisticsSession.downloadSpeed());
 				ThreadUtils.sleep(1000);
 			}
 		}).start();

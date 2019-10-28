@@ -248,10 +248,10 @@ public class MainController extends Controller implements Initializable {
 		this.taskTable.refresh(); // 刷新table
 		// 刷新下载、上传速度
 		Platform.runLater(() -> {
-			long downloadSecond = SystemStatistics.getInstance().downloadSecond();
-			this.downloadBuffer.setText(FileUtils.formatSize(downloadSecond) + "/S"); // 下载速度
-			long uploadSecond = SystemStatistics.getInstance().uploadSecond();
-			this.uploadBuffer.setText(FileUtils.formatSize(uploadSecond) + "/S"); // 上传速度
+			final long downloadSpeed = SystemStatistics.getInstance().downloadSpeed();
+			this.downloadBuffer.setText(FileUtils.formatSize(downloadSpeed) + "/S"); // 下载速度
+			final long uploadSpeed = SystemStatistics.getInstance().uploadSpeed();
+			this.uploadBuffer.setText(FileUtils.formatSize(uploadSpeed) + "/S"); // 上传速度
 		});
 	}
 	

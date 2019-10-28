@@ -37,15 +37,15 @@ public class SystemStatistics {
 	/**
 	 * 下载速度
 	 */
-	public long downloadSecond() {
-		return this.systemStatistics.downloadSecond();
+	public long downloadSpeed() {
+		return this.systemStatistics.downloadSpeed();
 	}
 	
 	/**
 	 * 上传速度
 	 */
-	public long uploadSecond() {
-		return this.systemStatistics.uploadSecond();
+	public long uploadSpeed() {
+		return this.systemStatistics.uploadSpeed();
 	}
 
 }
