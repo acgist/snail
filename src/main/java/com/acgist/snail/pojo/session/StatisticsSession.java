@@ -22,9 +22,9 @@ public final class StatisticsSession {
 	 */
 	private static final long ONE_SECOND = 1000L;
 	/**
-	 * 下载速度、上传速度缓存时间：默认是刷新频率的两倍（防止速度比较慢时显示0）
+	 * 速度（下载、上传）采样时间
 	 */
-	private static final long CACHE_SECOND = 2 * SystemConfig.TASK_REFRESH_INTERVAL.toMillis();
+	private static final long SAMPLE_TIME = SystemConfig.TASK_REFRESH_INTERVAL.toMillis();
 	
 	/**
 	 * 限速开关
@@ -43,45 +43,72 @@ public final class StatisticsSession {
 	 */
 	private final AtomicLong downloadSize = new AtomicLong(0);
 	/**
-	 * 每秒下载速度
+	 * 下载速度
 	 */
-	private long downloadSecond = 0L;
+	private volatile long downloadSpeed = 0L;
 	/**
-	 * 每秒下载速度采样
+	 * 下载速度采样
 	 */
-	private final AtomicLong downloadBuffer = new AtomicLong(0);
+	private final AtomicLong downloadBufferSample = new AtomicLong(0);
 	/**
-	 * 最后一次每秒下载速度采样时间
+	 * 下载速度最后一次采样时间
 	 */
-	private volatile long lastDownloadTime = System.currentTimeMillis();
+	private volatile long downloadBufferSampleTime;
 	/**
-	 * 每秒上传速度
+	 * 下载限速采样
 	 */
-	private long uploadSecond = 0L;
+	private final AtomicLong downloadBufferLimit = new AtomicLong(0);
 	/**
-	 * 每秒上传速度采样
+	 * 下载限速最后一次采样时间
 	 */
-	private final AtomicLong uploadBuffer = new AtomicLong(0);
+	private volatile long downloadBufferLimitTime;
 	/**
-	 * 最后一次每秒上传速度采样时间
+	 * 上传速度
 	 */
-	private volatile long lastUploadTime = System.currentTimeMillis();
+	private volatile long uploadSpeed = 0L;
+	/**
+	 * 上传速度采样
+	 */
+	private final AtomicLong uploadBufferSample = new AtomicLong(0);
+	/**
+	 * 上传速度最后一次采样时间
+	 */
+	private volatile long uploadBufferSampleTime;
+	/**
+	 * 上传限速采样
+	 */
+	private final AtomicLong uploadBufferLimit = new AtomicLong(0);
+	/**
+	 * 上传限速最后一次采样时间
+	 */
+	private volatile long uploadBufferLimitTime;
 	
 	public StatisticsSession() {
-		this.limit = false;
-		this.parent = null;
+		this(false, null);
 	}
 	
 	public StatisticsSession(StatisticsSession parent) {
-		this.limit = false;
-		this.parent = parent;
+		this(false, parent);
 	}
 	
 	public StatisticsSession(boolean limit, StatisticsSession parent) {
 		this.limit = limit;
 		this.parent = parent;
+		final long time = System.currentTimeMillis();
+		this.downloadBufferSampleTime = time;
+		this.downloadBufferLimitTime = time;
+		this.uploadBufferSampleTime = time;
+		this.uploadBufferLimitTime = time;
 	}
 
+	/**
+	 * <p>判断是否在下载数据</p>
+	 * <p>上次限速采样时间是否在速度采样时间内</p>
+	 */
+	public boolean downloading() {
+		return System.currentTimeMillis() - this.downloadBufferLimitTime < SAMPLE_TIME;
+	}
+	
 	/**
 	 * <p>下载统计</p>
 	 * <p>如果存在父类优先更新父类数据，防止限速导致父类更新不及时。</p>
@@ -90,40 +117,52 @@ public final class StatisticsSession {
 		if(this.parent != null) {
 			this.parent.download(buffer);
 		}
+		this.downloadBufferSample.addAndGet(buffer);
 		this.downloadSize.addAndGet(buffer);
-		limitDownload(buffer);
+		downloadBufferLimit(buffer);
 	}
 	
 	/**
-	 * <p>下载统计</p>
+	 * <p>上传统计</p>
 	 * <p>如果存在父类优先更新父类数据，防止限速导致父类更新不及时。</p>
 	 */
 	public void upload(long buffer) {
 		if(this.parent != null) {
 			this.parent.upload(buffer);
 		}
+		this.uploadBufferSample.addAndGet(buffer);
 		this.uploadSize.addAndGet(buffer);
-		limitUpload(buffer);
+		uploadBufferLimit(buffer);
 	}
 	
 	/**
-	 * 下载速度，超过一定时间设置：0
+	 * 下载速度
 	 */
-	public long downloadSecond() {
-		if(System.currentTimeMillis() - this.lastDownloadTime > CACHE_SECOND) {
-			this.downloadSecond = 0L;
+	public long downloadSpeed() {
+		final long time = System.currentTimeMillis();
+		final long interval = time - this.downloadBufferSampleTime;
+		if(interval >= SAMPLE_TIME) {
+			this.downloadBufferSampleTime = time;
+			this.downloadSpeed = this.downloadBufferSample.getAndSet(0) * ONE_SECOND / interval;
+			return this.downloadSpeed;
+		} else {
+			return this.downloadSpeed;
 		}
-		return this.downloadSecond;
 	}
 	
 	/**
-	 * 上传速度，超过一定时间设置：0
+	 * 上传速度
 	 */
-	public long uploadSecond() {
-		if(System.currentTimeMillis() - this.lastUploadTime > CACHE_SECOND) {
-			this.uploadSecond = 0L;
+	public long uploadSpeed() {
+		final long time = System.currentTimeMillis();
+		final long interval = time - this.uploadBufferSampleTime;
+		if(interval >= SAMPLE_TIME) {
+			this.uploadBufferSampleTime = time;
+			this.uploadSpeed = this.uploadBufferSample.getAndSet(0) * ONE_SECOND / interval;
+			return this.uploadSpeed;
+		} else {
+			return this.uploadSpeed;
 		}
-		return this.uploadSecond;
 	}
 	
 	/**
@@ -157,35 +196,33 @@ public final class StatisticsSession {
 	/**
 	 * 下载秒速统计限制
 	 */
-	private void limitDownload(long buffer) {
-		final int limitSize = DownloadConfig.getDownloadBufferByte();
-		final long oldDownloadBuffer = this.downloadBuffer.addAndGet(buffer);
-		long interval = System.currentTimeMillis() - this.lastDownloadTime;
+	private void downloadBufferLimit(long buffer) {
+		final int limitBuffer = DownloadConfig.getDownloadBufferByte();
+		final long downloadBuffer = this.downloadBufferLimit.addAndGet(buffer);
+		final long interval = System.currentTimeMillis() - this.downloadBufferLimitTime;
 		if(this.limit) { // 限速
-			if(oldDownloadBuffer > limitSize || interval >= ONE_SECOND) { // 限速控制
-				synchronized (this) { // 其他线程等待
-					if(oldDownloadBuffer == this.downloadBuffer.get()) { // 判定时间
-						final long expectTime = BigDecimal.valueOf(oldDownloadBuffer)
+			if(downloadBuffer >= limitBuffer || interval >= ONE_SECOND) { // 限速控制
+				synchronized (this) { // 阻塞其他线程
+					if(downloadBuffer == this.downloadBufferLimit.get()) { // 验证
+						// 期望时间：更加精确：可以使用一秒
+						final long expectTime = BigDecimal.valueOf(downloadBuffer)
 							.multiply(BigDecimal.valueOf(ONE_SECOND))
-							.divide(BigDecimal.valueOf(limitSize), RoundingMode.HALF_UP)
+							.divide(BigDecimal.valueOf(limitBuffer), RoundingMode.HALF_UP)
 							.longValue();
 						if(interval < expectTime) { // 限速时间
 							ThreadUtils.sleep(expectTime - interval);
-							interval = expectTime;
 						}
-						this.downloadSecond = oldDownloadBuffer * 1000 / interval;
-						this.lastDownloadTime = System.currentTimeMillis(); // 获取休眠后的时间
-						this.downloadBuffer.set(0); // 清零：不能在休眠前清零
-//					} else { // 不重新计算：允许误差
-//						this.downloadBuffer.addAndGet(buffer);
+						this.downloadBufferLimit.set(0); // 清零：不能在休眠前清零
+						this.downloadBufferLimitTime = System.currentTimeMillis();
+					} else { // 防止误差
+						this.downloadBufferLimit.addAndGet(buffer);
 					}
 				}
 			}
 		} else{
 			if(interval >= ONE_SECOND) {
-				this.downloadSecond = oldDownloadBuffer * 1000 / interval;
-				this.lastDownloadTime = System.currentTimeMillis();
-				this.downloadBuffer.set(0);
+				this.downloadBufferLimit.set(0);
+				this.downloadBufferLimitTime = System.currentTimeMillis();
 			}
 		}
 	}
@@ -193,35 +230,33 @@ public final class StatisticsSession {
 	/**
 	 * 上传秒速统计限制：上传限速=下载限速
 	 */
-	private void limitUpload(long buffer) {
-		final int limitSize = DownloadConfig.getUploadBufferByte();
-		final long oldUploadBuffer = this.uploadBuffer.addAndGet(buffer);
-		long interval = System.currentTimeMillis() - this.lastUploadTime;
+	private void uploadBufferLimit(long buffer) {
+		final int limitBuffer = DownloadConfig.getUploadBufferByte();
+		final long uploadBuffer = this.uploadBufferLimit.addAndGet(buffer);
+		final long interval = System.currentTimeMillis() - this.uploadBufferLimitTime;
 		if(this.limit) { // 限速
-			if(oldUploadBuffer > limitSize || interval >= ONE_SECOND) { // 限速控制
-				synchronized (this) { // 其他线程等待
-					if(oldUploadBuffer == this.uploadBuffer.get()) { // 判定时间
-						final long expectTime = BigDecimal.valueOf(oldUploadBuffer)
+			if(uploadBuffer >= limitBuffer || interval >= ONE_SECOND) { // 限速控制
+				synchronized (this) { // 阻塞其他线程
+					if(uploadBuffer == this.uploadBufferLimit.get()) { // 验证
+						// 期望时间：更加精确：可以使用一秒
+						final long expectTime = BigDecimal.valueOf(uploadBuffer)
 							.multiply(BigDecimal.valueOf(ONE_SECOND))
-							.divide(BigDecimal.valueOf(limitSize), RoundingMode.HALF_UP)
+							.divide(BigDecimal.valueOf(limitBuffer), RoundingMode.HALF_UP)
 							.longValue();
 						if(interval < expectTime) { // 限速时间
 							ThreadUtils.sleep(expectTime - interval);
-							interval = expectTime;
 						}
-						this.uploadSecond = oldUploadBuffer * 1000 / interval;
-						this.lastUploadTime = System.currentTimeMillis(); // 获取休眠后的时间
-						this.uploadBuffer.set(0); // 清零：不能在休眠前清零
-//					} else { // 不重新计算：允许误差
-//						this.uploadBuffer.addAndGet(buffer);
+						this.uploadBufferLimit.set(0); // 清零：不能在休眠前清零
+						this.uploadBufferLimitTime = System.currentTimeMillis();
+					} else { // 防止误差
+						this.uploadBufferLimit.addAndGet(buffer);
 					}
 				}
 			}
 		} else {
 			if(interval >= ONE_SECOND) {
-				this.uploadSecond = oldUploadBuffer * 1000 / interval;
-				this.lastUploadTime = System.currentTimeMillis();
-				this.uploadBuffer.set(0);
+				this.uploadBufferLimitTime = System.currentTimeMillis();
+				this.uploadBufferLimit.set(0);
 			}
 		}
 	}

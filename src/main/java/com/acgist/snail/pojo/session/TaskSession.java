@@ -251,7 +251,7 @@ public final class TaskSession {
 	 */
 	public String getStatusValue() {
 		if(download()) {
-			return FileUtils.formatSize(this.statistics.downloadSecond()) + "/S";
+			return FileUtils.formatSize(this.statistics.downloadSpeed()) + "/S";
 		} else {
 			return this.entity.getStatus().getValue();
 		}
@@ -284,11 +284,12 @@ public final class TaskSession {
 	public String getEndDateValue() {
 		if(this.entity.getEndDate() == null) {
 			if(download()) {
-				final long downloadSecond = this.statistics.downloadSecond();
-				if(downloadSecond == 0L) {
+				final long downloadSpeed = this.statistics.downloadSpeed();
+				if(downloadSpeed == 0L) {
 					return "-";
 				} else {
-					final long second = (this.entity.getSize() - this.statistics.downloadSize()) / downloadSecond;
+					// 剩余下载时间
+					final long second = (this.entity.getSize() - this.statistics.downloadSize()) / downloadSpeed;
 					return DateUtils.formatSecond(second);
 				}
 			} else {
