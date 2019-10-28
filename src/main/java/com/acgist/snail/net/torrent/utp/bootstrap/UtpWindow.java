@@ -44,10 +44,6 @@ public final class UtpWindow {
 	 * <p>防止长时间获取信号量，从而导致UTP队列阻塞。</p>
 	 */
 	private static final int TIMEOUT = 2;
-//	/**
-//	 * 默认拥堵算法wnd数量
-//	 */
-//	private static final int DEFAULT_LIMIT_WND = 64;
 	
 	//================流量控制、阻塞控制================//
 	private volatile int wnd = MIN_WND_SIZE;

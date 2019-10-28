@@ -58,6 +58,9 @@ public class MSEPaddingSync {
 			return false;
 		}
 		if(this.length == -1) {
+			if(buffer.remaining() < 2) {
+				return false;
+			}
 			this.length = buffer.getShort();
 			// 不可能大于：SystemConfig.MAX_NET_BUFFER_LENGTH
 			if(this.length < 0) {
