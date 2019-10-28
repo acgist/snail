@@ -78,7 +78,7 @@ public class NetUtils {
 	
 	/**
 	 * <p>端口编码</p>
-	 * <p>int端口转换为short。</p>
+	 * <p>int端口转换为short</p>
 	 */
 	public static final short encodePort(int port) {
 		return (short) port;
@@ -86,7 +86,7 @@ public class NetUtils {
 
 	/**
 	 * <p>端口解码</p>
-	 * <p>short端口转换为int。</p>
+	 * <p>short端口转换为int</p>
 	 */
 	public static final int decodePort(short port) {
 		return Short.toUnsignedInt(port);
@@ -94,7 +94,7 @@ public class NetUtils {
 	
 	/**
 	 * <p>IP地址编码</p>
-	 * <p>IP地址转换为int。</p>
+	 * <p>IP地址转换为int</p>
 	 */
 	public static final int encodeIpToInt(String ip) {
 		return (int) encodeIpToLong(ip);
@@ -102,7 +102,7 @@ public class NetUtils {
 	
 	/**
 	 * <p>IP地址编码</p>
-	 * <p>IP地址转换为long。</p>
+	 * <p>IP地址转换为long</p>
 	 */
 	public static final long encodeIpToLong(String ip) {
 		long result = 0, tmp;
@@ -116,7 +116,7 @@ public class NetUtils {
 
 	/**
 	 * <p>IP地址解码</p>
-	 * <p>int转换为IP地址。</p>
+	 * <p>int转换为IP地址</p>
 	 */
 	public static final String decodeIntToIp(int value) {
 		return decodeLongToIp(Integer.toUnsignedLong(value));
@@ -124,7 +124,7 @@ public class NetUtils {
 	
 	/**
 	 * <p>IP地址解码</p>
-	 * <p>long转换为IP地址。</p>
+	 * <p>long转换为IP地址</p>
 	 */
 	public static final String decodeLongToIp(long value) {
 		return ((value >> 24) & 0xFF) + "." + ((value >> 16) & 0xFF) + "." + ((value >> 8) & 0xFF) + "." + (value & 0xFF);

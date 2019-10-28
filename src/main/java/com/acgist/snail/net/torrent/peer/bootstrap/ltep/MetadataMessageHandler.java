@@ -73,6 +73,10 @@ public class MetadataMessageHandler implements IExtensionMessageHandler, IExtens
 
 	@Override
 	public void onMessage(ByteBuffer buffer) throws NetException {
+		if (!this.supportExtensionType()) {
+			LOGGER.warn("metadata消息错误：不支持扩展协议");
+			return;
+		}
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
 		final var decoder = BEncodeDecoder.newInstance(bytes);
@@ -102,6 +106,11 @@ public class MetadataMessageHandler implements IExtensionMessageHandler, IExtens
 			LOGGER.info("metadata消息错误（类型未适配）：{}", metadataType);
 			break;
 		}
+	}
+	
+	@Override
+	public boolean supportExtensionType() {
+		return this.peerSession.supportExtensionType(ExtensionType.UT_METADATA);
 	}
 	
 	@Override
@@ -234,18 +243,13 @@ public class MetadataMessageHandler implements IExtensionMessageHandler, IExtens
 	 * 发送消息
 	 */
 	private void pushMessage(Map<String, Object> data, byte[] x) {
-		final Byte type = extensionType();
-		if (type == null) {
-			LOGGER.warn("不支持metadata扩展协议");
-			return;
-		}
 		final var encoder = BEncodeEncoder.newInstance();
 		encoder.newMap().put(data).flush();
 		if(x != null) {
 			encoder.write(x);
 		}
 		final byte[] bytes = encoder.bytes();
-		this.extensionMessageHandler.pushMessage(type, bytes);
+		this.extensionMessageHandler.pushMessage(extensionType(), bytes);
 	}
 	
 }

@@ -62,7 +62,16 @@ public class PeerExchangeMessageHandler implements IExtensionMessageHandler, IEx
 	
 	@Override
 	public void onMessage(ByteBuffer buffer) throws NetException {
+		if (!this.supportExtensionType()) {
+			LOGGER.warn("pex消息错误：不支持扩展协议");
+			return;
+		}
 		pex(buffer);
+	}
+	
+	@Override
+	public boolean supportExtensionType() {
+		return this.peerSession.supportExtensionType(ExtensionType.UT_PEX);
 	}
 	
 	@Override
@@ -74,13 +83,8 @@ public class PeerExchangeMessageHandler implements IExtensionMessageHandler, IEx
 	 * 发送消息：pex
 	 */
 	public void pex(byte[] bytes) {
-		final Byte type = extensionType();
-		if (type == null) {
-			LOGGER.warn("不支持pex扩展协议");
-			return;
-		}
 		LOGGER.debug("发送pex消息");
-		this.extensionMessageHandler.pushMessage(type, bytes);
+		this.extensionMessageHandler.pushMessage(extensionType(), bytes);
 	}
 	
 	/**

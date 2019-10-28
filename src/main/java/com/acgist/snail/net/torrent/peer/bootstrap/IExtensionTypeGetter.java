@@ -9,9 +9,16 @@ package com.acgist.snail.net.torrent.peer.bootstrap;
 public interface IExtensionTypeGetter {
 
 	/**
-	 * 获取扩展协议类型
+	 * 是否支持扩展协议
 	 * 
-	 * @return 扩展协议类型
+	 * @return true-支持；false-不支持；
+	 */
+	boolean supportExtensionType();
+	
+	/**
+	 * 获取扩展协议ID
+	 * 
+	 * @return 扩展协议ID
 	 */
 	Byte extensionType();
 	
