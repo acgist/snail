@@ -194,13 +194,13 @@ public final class StatisticsSession {
 	}
 	
 	/**
-	 * 下载秒速统计限制
+	 * 下载速度限制
 	 */
 	private void downloadBufferLimit(long buffer) {
-		final int limitBuffer = DownloadConfig.getDownloadBufferByte();
-		final long downloadBuffer = this.downloadBufferLimit.addAndGet(buffer);
 		final long interval = System.currentTimeMillis() - this.downloadBufferLimitTime;
 		if(this.limit) { // 限速
+			final int limitBuffer = DownloadConfig.getDownloadBufferByte();
+			final long downloadBuffer = this.downloadBufferLimit.addAndGet(buffer);
 			if(downloadBuffer >= limitBuffer || interval >= ONE_SECOND) { // 限速控制
 				synchronized (this) { // 阻塞其他线程
 					if(downloadBuffer == this.downloadBufferLimit.get()) { // 验证
@@ -219,22 +219,22 @@ public final class StatisticsSession {
 					}
 				}
 			}
-		} else{
+		} else {
 			if(interval >= ONE_SECOND) {
-				this.downloadBufferLimit.set(0);
+//				this.downloadBufferLimit.set(0); // 不限速不清零
 				this.downloadBufferLimitTime = System.currentTimeMillis();
 			}
 		}
 	}
 	
 	/**
-	 * 上传秒速统计限制：上传限速=下载限速
+	 * 上传速度限制
 	 */
 	private void uploadBufferLimit(long buffer) {
-		final int limitBuffer = DownloadConfig.getUploadBufferByte();
-		final long uploadBuffer = this.uploadBufferLimit.addAndGet(buffer);
 		final long interval = System.currentTimeMillis() - this.uploadBufferLimitTime;
 		if(this.limit) { // 限速
+			final int limitBuffer = DownloadConfig.getUploadBufferByte();
+			final long uploadBuffer = this.uploadBufferLimit.addAndGet(buffer);
 			if(uploadBuffer >= limitBuffer || interval >= ONE_SECOND) { // 限速控制
 				synchronized (this) { // 阻塞其他线程
 					if(uploadBuffer == this.uploadBufferLimit.get()) { // 验证
@@ -255,8 +255,8 @@ public final class StatisticsSession {
 			}
 		} else {
 			if(interval >= ONE_SECOND) {
+//				this.uploadBufferLimit.set(0); // 不限速不清零
 				this.uploadBufferLimitTime = System.currentTimeMillis();
-				this.uploadBufferLimit.set(0);
 			}
 		}
 	}
