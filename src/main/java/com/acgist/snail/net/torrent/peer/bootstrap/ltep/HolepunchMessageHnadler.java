@@ -68,7 +68,7 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler, IExten
 			return;
 		}
 		final byte addrType = buffer.get();
-		int port, errorCode;
+		int port;
 		String host;
 		if(addrType == IPV4) {
 			host = NetUtils.decodeIntToIp(buffer.getInt());
@@ -78,7 +78,6 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler, IExten
 			host = null;
 			port = 0;
 		}
-		errorCode = buffer.getInt();
 		LOGGER.debug("holepunch消息类型：{}", holepunchType);
 		switch (holepunchType) {
 		case RENDEZVOUS:
@@ -88,6 +87,7 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler, IExten
 			onConnect(host, port);
 			break;
 		case ERROR:
+			final int errorCode = buffer.getInt();
 			onError(host, port, errorCode);
 			break;
 		default:
@@ -124,7 +124,7 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler, IExten
 	 */
 	public void rendezvous(String host, int port) {
 		LOGGER.debug("发送holepunch消息-rendezvous：{}-{}", host, port);
-		final ByteBuffer message = buildMessage(HolepunchType.RENDEZVOUS, host, port, HolepunchErrorCode.CODE_00);
+		final ByteBuffer message = buildMessage(HolepunchType.RENDEZVOUS, host, port);
 		pushMessage(message);
 	}
 	
@@ -165,7 +165,7 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler, IExten
 	 */
 	private void connect(String host, int port) {
 		LOGGER.debug("发送holepunch消息-connect：{}-{}", host, port);
-		this.pushMessage(buildMessage(HolepunchType.CONNECT, host, port, HolepunchErrorCode.CODE_00));
+		this.pushMessage(buildMessage(HolepunchType.CONNECT, host, port));
 	}
 	
 	/**
@@ -210,6 +210,13 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler, IExten
 	}
 	
 	/**
+	 * 创建消息（非error消息）
+	 */
+	private ByteBuffer buildMessage(HolepunchType type, String host, int port) {
+		return this.buildMessage(type, host, port, null);
+	}
+	
+	/**
 	 * 创建消息
 	 * 
 	 * TODO：IPv6
@@ -220,7 +227,9 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler, IExten
 		buffer.put(IPV4); // 地址类型：0x00=IPv4；0x01=IPv6；
 		buffer.putInt(NetUtils.encodeIpToInt(host)); // IP地址
 		buffer.putShort(NetUtils.encodePort(port)); // 端口号
-		buffer.putInt(errorCode.code()); // 错误编码
+		if(type == HolepunchType.ERROR) { // 非错误消息不发送错误编码
+			buffer.putInt(errorCode.code()); // 错误编码
+		}
 		return buffer;
 	}
 	
