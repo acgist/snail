@@ -14,6 +14,7 @@ import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.bencode.BEncodeDecoder;
 import com.acgist.snail.system.bencode.BEncodeEncoder;
+import com.acgist.snail.system.config.CryptConfig;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.PeerConfig.Action;
 import com.acgist.snail.system.config.PeerConfig.ExtensionType;
@@ -33,6 +34,15 @@ import com.acgist.snail.utils.CollectionUtils;
 public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ExtensionMessageHandler.class);
+	
+	/**
+	 * 明文
+	 */
+	private static final int PLAINTEXT = 0;
+	/**
+	 * 加密
+	 */
+	private static final int ENCRYPT = 0;
 	
 	/**
 	 * 扩展协议信息
@@ -154,8 +164,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 //		}
 		data.put(EX_REQQ, 255);
 		if(PeerConfig.ExtensionType.UT_PEX.notice()) {
-			// TODO：使用CryptConfig配置
-			data.put(EX_E, 0); // pex：加密
+			data.put(EX_E, CryptConfig.STRATEGY.crypt() ? ENCRYPT : PLAINTEXT); // 偏爱加密
 		}
 		if(PeerConfig.ExtensionType.UT_METADATA.notice()) {
 			final int metadataSize = this.infoHash.size();
@@ -187,6 +196,11 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 				LOGGER.debug("扩展消息-握手（端口不一致）：{}-{}", oldPort, port);
 			}
 			this.peerSession.peerPort(port.intValue());
+		}
+		// 偏爱加密
+		final Long encrypt = decoder.getLong(EX_E);
+		if(encrypt != null && encrypt.intValue() == ENCRYPT) {
+			this.peerSession.flags(PeerConfig.PEX_PREFER_ENCRYPTION);
 		}
 		// 获取种子InfoHash大小
 		final Long metadataSize = decoder.getLong(EX_METADATA_SIZE);

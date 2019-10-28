@@ -47,15 +47,28 @@ public class PeerConfig {
 	 */
 	public static final byte[] HANDSHAKE_RESERVED = {0, 0, 0, 0, 0, 0, 0, 0};
 	/**
-	 * 保留位：DHT Protocol
+	 * 保留位：[7]-0x01：DHT Protocol
 	 */
 	public static final byte DHT_PROTOCOL =       1 << 0;
 	/**
-	 * 保留位：FAST Protocol
+	 * <p>保留位：[7]-0x02：Peer Exchange</p>
+	 * <p>PEX</p>
+	 */
+	public static final byte PEER_EXCHANGE =      1 << 1;
+	/**
+	 * 保留位：[7]-0x04：FAST Protocol
 	 */
 	public static final byte FAST_PROTOCOL =      1 << 2;
 	/**
-	 * 保留位：Extension Protocol
+	 * <p>保留位：[7]-0x08：NAT Traversal</p>
+	 * <p>NAT穿透</p>
+	 * 
+	 * TODO：holepunch
+	 */
+	public static final byte NAT_TRAVERSAL =      1 << 3;
+	/**
+	 * <p>保留位：[5]-0x10：Extension Protocol</p>
+	 * <p>扩展协议</p>
 	 */
 	public static final byte EXTENSION_PROTOCOL = 1 << 4;
 	/**
@@ -75,25 +88,25 @@ public class PeerConfig {
 	 */
 	public static final int HANDSHAKE_NAME_LENGTH = HANDSHAKE_NAME_BYTES.length;
 	/**
-	 * Peer来源：Tracker
-	 */
-	public static final byte SOURCE_TRACKER =		1 << 0;
-	/**
 	 * Peer来源：PEX
 	 */
-	public static final byte SOURCE_PEX =			1 << 1;
+	public static final byte SOURCE_PEX =			1 << 0;
 	/**
 	 * Peer来源：DHT
 	 */
-	public static final byte SOURCE_DHT =			1 << 2;
-	/**
-	 * Peer来源：客户端接入
-	 */
-	public static final byte SOURCE_CONNECT =		1 << 3;
+	public static final byte SOURCE_DHT =			1 << 1;
 	/**
 	 * Peer来源：本地发现
 	 */
-	public static final byte SOURCE_LSD =			1 << 4;
+	public static final byte SOURCE_LSD =			1 << 2;
+	/**
+	 * Peer来源：Tracker
+	 */
+	public static final byte SOURCE_TRACKER =		1 << 3;
+	/**
+	 * Peer来源：客户端接入
+	 */
+	public static final byte SOURCE_CONNECT =		1 << 4;
 	/**
 	 * Peer来源：holepunch
 	 */
@@ -108,10 +121,14 @@ public class PeerConfig {
 	public static final byte STATUS_DOWNLOAD = 1 << 0;
 	/**
 	 * PEX状态：0x01：偏爱加密
+	 * 
+	 * TODO：Pex、握手优化
 	 */
 	public static final byte PEX_PREFER_ENCRYPTION =  1 << 0;
 	/**
 	 * PEX状态：0x02：做种、上传
+	 * 
+	 * TODO：做种Peer不需要发送一些消息：have
 	 */
 	public static final byte PEX_SEED_UPLOAD_ONLY =   1 << 1;
 	/**
@@ -120,6 +137,8 @@ public class PeerConfig {
 	public static final byte PEX_UTP =             	  1 << 2;
 	/**
 	 * PEX状态：0x08：支持holepunch协议
+	 * 
+	 * TODO：holepunch
 	 */
 	public static final byte PEX_HOLEPUNCH =     	  1 << 3;
 	/**
@@ -136,6 +155,7 @@ public class PeerConfig {
 	static {
 		//================保留位================//
 		HANDSHAKE_RESERVED[7] |= DHT_PROTOCOL;
+		HANDSHAKE_RESERVED[7] |= PEER_EXCHANGE;
 //		HANDSHAKE_RESERVED[7] |= FAST_PROTOCOL;
 		HANDSHAKE_RESERVED[5] |= EXTENSION_PROTOCOL;
 		//================客户端名称================//
@@ -217,10 +237,10 @@ public class PeerConfig {
 			return "PEX";
 		case SOURCE_LSD:
 			return "LSD";
-		case SOURCE_CONNECT:
-			return "CONNECT";
 		case SOURCE_TRACKER:
 			return "TRACKER";
+		case SOURCE_CONNECT:
+			return "CONNECT";
 		case SOURCE_HOLEPUNCH:
 			return "HOLEPUNCH";
 		default:
@@ -239,6 +259,13 @@ public class PeerConfig {
 		}
 		final String key = new String(peerId, 0, 3);
 		return PEER_NAMES.getOrDefault(key, UNKNOWN);
+	}
+	
+	/**
+	 * 设置NAT穿透
+	 */
+	public static final void nat() {
+		HANDSHAKE_RESERVED[7] |= NAT_TRAVERSAL;
 	}
 	
 	/**
