@@ -214,6 +214,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 				final Long typeId = (Long) entry.getValue();
 				final String typeValue = (String) entry.getKey();
 				final PeerConfig.ExtensionType extensionType = PeerConfig.ExtensionType.valueOfValue(typeValue);
+				this.peerSession.flags(extensionType);
 				if(extensionType != null && extensionType.support()) {
 					LOGGER.debug("扩展协议（添加）：{}-{}", extensionType, typeId);
 					this.peerSession.addExtensionType(extensionType, typeId.byteValue());

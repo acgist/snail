@@ -121,8 +121,6 @@ public class PeerConfig {
 	public static final byte STATUS_DOWNLOAD = 1 << 0;
 	/**
 	 * PEX状态：0x01：偏爱加密
-	 * 
-	 * TODO：Pex、握手优化
 	 */
 	public static final byte PEX_PREFER_ENCRYPTION =  1 << 0;
 	/**
@@ -137,8 +135,6 @@ public class PeerConfig {
 	public static final byte PEX_UTP =             	  1 << 2;
 	/**
 	 * PEX状态：0x08：支持holepunch协议
-	 * 
-	 * TODO：holepunch
 	 */
 	public static final byte PEX_HOLEPUNCH =     	  1 << 3;
 	/**
