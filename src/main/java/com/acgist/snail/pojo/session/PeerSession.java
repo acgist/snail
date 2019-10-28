@@ -450,6 +450,15 @@ public final class PeerSession implements IStatistics {
 	}
 	
 	/**
+	 * 配置pex flags
+	 */
+	public void flags(PeerConfig.ExtensionType type) {
+		if(type == PeerConfig.ExtensionType.UT_HOLEPUNCH) {
+			this.flags(PeerConfig.PEX_HOLEPUNCH);
+		}
+	}
+	
+	/**
 	 * 获取pex flags
 	 */
 	public byte flags() {
@@ -461,6 +470,13 @@ public final class PeerSession implements IStatistics {
 	 */
 	public boolean utp() {
 		return (this.flags & PeerConfig.PEX_UTP) != 0;
+	}
+
+	/**
+	 * 是否偏爱加密
+	 */
+	public boolean encrypt() {
+		return (this.flags & PeerConfig.PEX_PREFER_ENCRYPTION) != 0;
 	}
 	
 	public PeerConnect peerConnect() {
