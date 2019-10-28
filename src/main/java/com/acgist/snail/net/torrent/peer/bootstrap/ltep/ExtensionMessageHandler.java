@@ -146,25 +146,26 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 		LOGGER.debug("发送扩展消息-握手");
 		this.handshake = true;
 		final Map<String, Object> data = new LinkedHashMap<>();
-		final Map<String, Object> supportType = new LinkedHashMap<>();
+		final Map<String, Object> supportTypes = new LinkedHashMap<>();
 		for (var type : PeerConfig.ExtensionType.values()) {
 			if(type.support() && type.notice()) {
-				supportType.put(type.value(), type.id());
+				supportTypes.put(type.value(), type.id());
 			}
 		}
-		data.put(EX_M, supportType); // 扩展协议以及编号
+		data.put(EX_M, supportTypes); // 扩展协议
 		data.put(EX_V, SystemConfig.getNameEnAndVersion()); // 客户端信息（名称、版本）
 		data.put(EX_P, SystemConfig.getTorrentPortExt()); // 外网监听TCP端口
-		// 本机IP地址，客户端自动获取。
-//		final String ip = UpnpService.getInstance().externalIpAddress();
-//		if(StringUtils.isNotEmpty(ip)) {
+		// 本机IP地址：客户端自动获取
+//		final String yourip = SystemConfig.getExternalIpAddress();
+//		if(StringUtils.isNotEmpty(yourip)) {
 //			final ByteBuffer youripBuffer = ByteBuffer.allocate(4);
-//			youripBuffer.putInt(NetUtils.decodeIpToInt(ip));
+//			youripBuffer.putInt(NetUtils.encodeIpToInt(yourip));
 //			data.put(EX_YOURIP, youripBuffer.array());
 //		}
 		data.put(EX_REQQ, 255);
 		if(PeerConfig.ExtensionType.UT_PEX.notice()) {
-			data.put(EX_E, CryptConfig.STRATEGY.crypt() ? ENCRYPT : PLAINTEXT); // 偏爱加密
+			// 偏爱加密
+			data.put(EX_E, CryptConfig.STRATEGY.crypt() ? ENCRYPT : PLAINTEXT);
 		}
 		if(PeerConfig.ExtensionType.UT_METADATA.notice()) {
 			final int metadataSize = this.infoHash.size();
@@ -208,9 +209,9 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 			this.infoHash.size(metadataSize.intValue());
 		}
 		// 支持的扩展协议：key（扩展协议名称）=value（扩展协议标识）
-		final Map<String, Object> mData = decoder.getMap(EX_M);
-		if(CollectionUtils.isNotEmpty(mData)) {
-			mData.entrySet().forEach(entry -> {
+		final Map<String, Object> supportTypes = decoder.getMap(EX_M);
+		if(CollectionUtils.isNotEmpty(supportTypes)) {
+			supportTypes.entrySet().forEach(entry -> {
 				final Long typeId = (Long) entry.getValue();
 				final String typeValue = (String) entry.getKey();
 				final PeerConfig.ExtensionType extensionType = PeerConfig.ExtensionType.valueOfValue(typeValue);
@@ -235,7 +236,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 * 发送pex消息
 	 */
 	public void pex(byte[] bytes) {
-		if(this.peerSession.supportExtensionType(ExtensionType.UT_PEX)) {
+		if(this.peerExchangeMessageHandler.supportExtensionType()) {
 			this.peerExchangeMessageHandler.pex(bytes);
 		}
 	}
@@ -251,7 +252,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 * <p>发送metadata消息</p>
 	 */
 	public void metadata() {
-		if(this.peerSession.supportExtensionType(ExtensionType.UT_METADATA)) {
+		if(this.metadataMessageHandler.supportExtensionType()) {
 			this.metadataMessageHandler.request();
 		}
 	}
@@ -267,7 +268,9 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 * 发送holepunch消息
 	 */
 	public void holepunch(String host, Integer port) {
-		this.holepunchExtensionMessageHnadler.holepunch(host, port);
+		if(this.holepunchExtensionMessageHnadler.supportExtensionType()) {
+			this.holepunchExtensionMessageHnadler.holepunch(host, port);
+		}
 	}
 	
 	/**

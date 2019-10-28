@@ -57,9 +57,8 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler, IExten
 
 	@Override
 	public void onMessage(ByteBuffer buffer) {
-		final Byte type = extensionType();
-		if(type == null) {
-			LOGGER.debug("holepunch消息错误：Peer不支持");
+		if(!this.supportExtensionType()) {
+			LOGGER.debug("holepunch消息错误：不支持扩展协议");
 			return;
 		}
 		final byte typeId = buffer.get();
@@ -95,6 +94,11 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler, IExten
 			LOGGER.info("holepunch消息错误（类型未适配）：{}", holepunchType);
 			break;
 		}
+	}
+	
+	@Override
+	public boolean supportExtensionType() {
+		return this.peerSession.supportExtensionType(ExtensionType.UT_HOLEPUNCH);
 	}
 	
 	@Override
@@ -224,12 +228,7 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler, IExten
 	 * 发送消息
 	 */
 	private void pushMessage(ByteBuffer buffer) {
-		final Byte type = extensionType();
-		if (type == null) {
-			LOGGER.warn("不支持holepunch扩展协议");
-			return;
-		}
-		this.extensionMessageHandler.pushMessage(type, buffer.array());
+		this.extensionMessageHandler.pushMessage(extensionType(), buffer.array());
 	}
 
 }
