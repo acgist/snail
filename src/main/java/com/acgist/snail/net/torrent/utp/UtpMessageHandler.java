@@ -259,7 +259,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	}
 	
 	/**
-	 * 获取超时（丢包）数据包并重新发送
+	 * 超时（丢包）数据包重新发送
 	 * 
 	 * @return true：有丢包；false：没有丢包；
 	 */
@@ -273,9 +273,6 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 		return false;
 	}
 	
-	/**
-	 * 发送数据消息
-	 */
 	private void data(List<UtpWindowData> windowDatas) {
 		if(CollectionUtils.isEmpty(windowDatas)) {
 			return;
@@ -291,7 +288,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	}
 	
 	/**
-	 * 接收数据消息
+	 * 处理数据消息
 	 */
 	private void data(int timestamp, short seqnr, short acknr, ByteBuffer buffer) throws NetException {
 		UtpWindowData windowData = null;
@@ -301,7 +298,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 			throw new NetException(e);
 		}
 		if(windowData != null) {
-			LOGGER.debug("处理UTP数据：{}", windowData.getSeqnr());
+			LOGGER.debug("处理数据消息：{}", windowData.getSeqnr());
 			this.state(windowData.getTimestamp(), windowData.getSeqnr());
 			// 同步处理
 //			this.messageCodec.decode(windowData.buffer());
@@ -317,8 +314,8 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	 */
 	private void data(UtpWindowData windowData) {
 		if(windowData.hasData()) {
-			LOGGER.debug("发送UTP数据：{}", windowData.getSeqnr());
-			final ByteBuffer buffer = header(UtpConfig.TYPE_DATA, windowData.getLength() + UTP_HEADER_LENGTH);
+			LOGGER.debug("发送数据消息：{}", windowData.getSeqnr());
+			final ByteBuffer buffer = buildHeader(UtpConfig.TYPE_DATA, windowData.getLength() + UTP_HEADER_LENGTH);
 			buffer.putShort(this.sendId);
 			buffer.putInt(windowData.pushUpdateGetTimestamp()); // 更新发送时间
 			buffer.putInt(windowData.getTimestamp() - this.recvWindow.timestamp());
@@ -331,10 +328,10 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	}
 
 	/**
-	 * 接收应答消息
+	 * 处理响应消息
 	 */
 	private void state(int timestamp, short seqnr, short acknr, int wndSize) {
-		LOGGER.debug("收到UTP响应：{}", acknr);
+		LOGGER.debug("处理响应消息：{}", acknr);
 		if(!this.connect) { // 没有连接
 			this.connect = this.available();
 			if(this.connect) {
@@ -349,12 +346,12 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	}
 	
 	/**
-	 * 发送应答消息：发送此消息不增加seqnr
+	 * 发送响应消息：发送此消息不增加seqnr
 	 */
 	private void state(int timestamp, short seqnr) {
-		LOGGER.debug("发送UTP响应：{}", seqnr);
+		LOGGER.debug("发送响应消息：{}", seqnr);
 		final int now = DateUtils.timestampUs();
-		final ByteBuffer buffer = header(UtpConfig.TYPE_STATE, UTP_HEADER_LENGTH);
+		final ByteBuffer buffer = buildHeader(UtpConfig.TYPE_STATE, UTP_HEADER_LENGTH);
 		buffer.putShort(this.sendId);
 		buffer.putInt(now);
 		buffer.putInt(now - timestamp);
@@ -365,10 +362,10 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	}
 
 	/**
-	 * 接收结束消息
+	 * 处理结束消息
 	 */
 	private void fin(int timestamp, short seqnr, short acknr) {
-		LOGGER.debug("收到UTP消息（fin）");
+		LOGGER.debug("处理结束消息");
 		this.connect = false;
 		this.state(timestamp, seqnr);
 		this.closeAll();
@@ -378,8 +375,8 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	 * 发送结束消息
 	 */
 	private void fin() {
-		LOGGER.debug("发送UTP消息（fin）");
-		final ByteBuffer buffer = header(UtpConfig.TYPE_FIN, UTP_HEADER_LENGTH);
+		LOGGER.debug("发送结束消息");
+		final ByteBuffer buffer = buildHeader(UtpConfig.TYPE_FIN, UTP_HEADER_LENGTH);
 		buffer.putShort(this.sendId);
 		buffer.putInt(DateUtils.timestampUs());
 		buffer.putInt(0);
@@ -390,21 +387,21 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	}
 	
 	/**
-	 * 接收reset消息
+	 * 处理重置消息
 	 */
 	private void reset(int timestamp, short seqnr, short acknr) {
-		LOGGER.debug("收到UTP消息（reset）");
+		LOGGER.debug("处理重置消息");
 		this.connect = false;
 		this.state(timestamp, seqnr);
 		this.closeAll();
 	}
 	
 	/**
-	 * 发送reset消息
+	 * 发送重置消息
 	 */
 	private void reset() {
-		LOGGER.debug("发送UTP消息（reset）");
-		final ByteBuffer buffer = header(UtpConfig.TYPE_RESET, UTP_HEADER_LENGTH);
+		LOGGER.debug("发送重置消息");
+		final ByteBuffer buffer = buildHeader(UtpConfig.TYPE_RESET, UTP_HEADER_LENGTH);
 		buffer.putShort(this.sendId);
 		buffer.putInt(DateUtils.timestampUs());
 		buffer.putInt(0);
@@ -415,7 +412,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	}
 	
 	/**
-	 *接收握手消息
+	 *处理握手消息
 	 */
 	private void syn(int timestamp, short seqnr, short acknr) {
 		if(!this.connect) {
@@ -430,7 +427,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	 */
 	private void syn() {
 		final UtpWindowData windowData = this.sendWindow.build();
-		final ByteBuffer buffer = header(UtpConfig.TYPE_SYN, UTP_HEADER_LENGTH);
+		final ByteBuffer buffer = buildHeader(UtpConfig.TYPE_SYN, UTP_HEADER_LENGTH);
 		buffer.putShort(this.recvId);
 		buffer.putInt(windowData.pushUpdateGetTimestamp());
 		buffer.putInt(0);
@@ -443,7 +440,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	/**
 	 * 设置消息头
 	 */
-	private ByteBuffer header(byte type, int size) {
+	private ByteBuffer buildHeader(byte type, int size) {
 		final ByteBuffer buffer = ByteBuffer.allocate(size);
 		buffer.put(type); // 消息类型
 		buffer.put(UtpConfig.EXTENSION); // 扩展扩展
@@ -479,7 +476,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	}
 	
 	/**
-	 * 发送fin消息，标记关闭。
+	 * 发送结束消息：标记关闭
 	 */
 	@Override
 	public void close() {
@@ -490,7 +487,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	}
 	
 	/**
-	 * 发送reset消息，标记关闭。
+	 * 发送重置消息：标记关闭
 	 */
 	public void resetAndClose() {
 		LOGGER.debug("重置UTP");
