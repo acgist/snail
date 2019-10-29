@@ -79,6 +79,11 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 */
 	public static final String EX_YOURIP = "yourip";
 	/**
+	 * <p>任务已经完成：只上传不下载</p>
+	 * <p>协议链接：http://bittorrent.org/beps/bep_0021.html</p>
+	 */
+	public static final String EX_UPLOAD_ONLY = "upload_only";
+	/**
 	 * ut_metadata：种子info数据大小
 	 */
 	public static final String EX_METADATA_SIZE = "metadata_size";
@@ -172,6 +177,10 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 			if(metadataSize > 0) {
 				data.put(EX_METADATA_SIZE, metadataSize); // 种子InfoHash数据长度
 			}
+		}
+		// 任务已经完成只上传不下载
+		if(this.torrentSession.completed()) {
+			data.put(EX_UPLOAD_ONLY, 1);
 		}
 		this.pushMessage(ExtensionType.HANDSHAKE.id(), BEncodeEncoder.encodeMap(data));
 	}
