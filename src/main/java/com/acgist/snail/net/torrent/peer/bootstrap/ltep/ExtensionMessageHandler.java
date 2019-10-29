@@ -102,8 +102,9 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	
 	private final PeerSubMessageHandler peerSubMessageHandler;
 	private final MetadataMessageHandler metadataMessageHandler;
+	private final HolepunchMessageHnadler holepunchMessageHnadler;
 	private final PeerExchangeMessageHandler peerExchangeMessageHandler;
-	private final HolepunchMessageHnadler holepunchExtensionMessageHnadler;
+	private final UploadOnlyExtensionMessageHandler uploadOnlyExtensionMessageHandler;
 	
 	public static final ExtensionMessageHandler newInstance(PeerSession peerSession, TorrentSession torrentSession, PeerSubMessageHandler peerSubMessageHandler) {
 		return new ExtensionMessageHandler(peerSession, torrentSession, peerSubMessageHandler);
@@ -115,8 +116,9 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 		this.torrentSession = torrentSession;
 		this.peerSubMessageHandler = peerSubMessageHandler;
 		this.metadataMessageHandler = MetadataMessageHandler.newInstance(this.peerSession, this.torrentSession, this);
+		this.holepunchMessageHnadler = HolepunchMessageHnadler.newInstance(this.peerSession, this.torrentSession, this);
 		this.peerExchangeMessageHandler = PeerExchangeMessageHandler.newInstance(this.peerSession, this.torrentSession, this);
-		this.holepunchExtensionMessageHnadler = HolepunchMessageHnadler.newInstance(this.peerSession, this.torrentSession, this);
+		this.uploadOnlyExtensionMessageHandler = UploadOnlyExtensionMessageHandler.newInstance(peerSession, this);
 	}
 	
 	@Override
@@ -140,6 +142,9 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 			break;
 		case UT_HOLEPUNCH:
 			holepunch(buffer);
+			break;
+		case UPLOAD_ONLY:
+			uploadOnly(buffer);
 			break;
 		default:
 			LOGGER.info("扩展消息错误（类型未适配）：{}", extensionType);
@@ -284,8 +289,8 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 * 发送holepunch消息
 	 */
 	public void holepunch(String host, Integer port) {
-		if(this.holepunchExtensionMessageHnadler.supportExtensionType()) {
-			this.holepunchExtensionMessageHnadler.holepunch(host, port);
+		if(this.holepunchMessageHnadler.supportExtensionType()) {
+			this.holepunchMessageHnadler.holepunch(host, port);
 		}
 	}
 	
@@ -293,18 +298,34 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 * 发送holepunch连接消息
 	 */
 	public void holepunchConnect(String host, Integer port) {
-		if(this.holepunchExtensionMessageHnadler.supportExtensionType()) {
-			this.holepunchExtensionMessageHnadler.connect(host, port);
+		if(this.holepunchMessageHnadler.supportExtensionType()) {
+			this.holepunchMessageHnadler.connect(host, port);
 		}
 	}
 	
 	/**
 	 * 处理holepunch消息
 	 */
-	private void holepunch(ByteBuffer buffer) {
-		this.holepunchExtensionMessageHnadler.onMessage(buffer);
+	private void holepunch(ByteBuffer buffer) throws NetException {
+		this.holepunchMessageHnadler.onMessage(buffer);
 	}
 
+	/**
+	 * 发送uploadOnly消息
+	 */
+	public void uploadOnly() {
+		if(uploadOnlyExtensionMessageHandler.supportExtensionType()) {
+			this.uploadOnlyExtensionMessageHandler.uploadOnly();
+		}
+	}
+	
+	/**
+	 * 处理uploadOnly消息
+	 */
+	private void uploadOnly(ByteBuffer buffer) throws NetException {
+		this.uploadOnlyExtensionMessageHandler.onMessage(buffer);
+	}
+	
 	/**
 	 * 创建扩展消息
 	 * 
