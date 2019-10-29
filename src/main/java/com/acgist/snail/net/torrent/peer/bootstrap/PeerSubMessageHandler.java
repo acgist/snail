@@ -375,6 +375,10 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			LOGGER.debug("发送解除阻塞消息：任务不可上传");
 			return;
 		}
+		if(this.peerSession.uploadOnly()) {
+			LOGGER.debug("发送解除阻塞消息：Peer只上传不下载");
+			return;
+		}
 		LOGGER.debug("发送解除阻塞消息");
 		this.peerSession.amUnchoke();
 		pushMessage(PeerConfig.Type.UNCHOKE, null);
@@ -453,6 +457,10 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			LOGGER.debug("发送have消息：任务不可上传");
 			return;
 		}
+		if(this.peerSession.uploadOnly()) {
+			LOGGER.debug("发送have消息：Peer只上传不下载");
+			return;
+		}
 		if(this.peerSession.havePiece(index)) { // Peer已经含有该Piece时不发送have通知
 			LOGGER.debug("发送have消息：Peer已经含有该Piece");
 			return;
@@ -500,6 +508,10 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	public void bitfield() {
 		if(!this.torrentSession.uploadable()) {
 			LOGGER.debug("发送位图消息：任务不可上传");
+			return;
+		}
+		if(this.peerSession.uploadOnly()) {
+			LOGGER.debug("发送位图消息：Peer只上传不下载");
 			return;
 		}
 		final BitSet pieces = this.torrentSession.pieces();

@@ -465,18 +465,29 @@ public final class PeerSession implements IStatistics {
 		return this.flags;
 	}
 	
+	private boolean verifyFlags(byte flag) {
+		return (this.flags & flag) != 0;
+	}
+	
 	/**
 	 * 是否支持UTP
 	 */
 	public boolean utp() {
-		return (this.flags & PeerConfig.PEX_UTP) != 0;
+		return verifyFlags(PeerConfig.PEX_UTP);
 	}
 
 	/**
 	 * 是否偏爱加密
 	 */
 	public boolean encrypt() {
-		return (this.flags & PeerConfig.PEX_PREFER_ENCRYPTION) != 0;
+		return verifyFlags(PeerConfig.PEX_PREFER_ENCRYPTION);
+	}
+
+	/**
+	 * 是否只上传不下载
+	 */
+	public boolean uploadOnly() {
+		return verifyFlags(PeerConfig.PEX_SEED_UPLOAD_ONLY);
 	}
 	
 	public PeerConnect peerConnect() {

@@ -131,6 +131,75 @@ public class NetUtils {
 	}
 	
 	/**
+	 * <p>IPv6地址解码</p>
+	 */
+	public static final String decodeIPv6(byte[] value) {
+		if(value == null || value.length != 16) {
+			return null;
+		}
+		final StringBuilder builder = new StringBuilder();
+		for (int index = 0; index < value.length; index++) {
+			builder.append(Integer.toHexString(value[index]));
+			if(index % 2 == 0) {
+				builder.append(":");
+			}
+		}
+		return builder.substring(1, builder.length() - 1);
+	}
+	
+	/**
+	 * <p>IPv6地址编码</p>
+	 */
+	public static final byte[] encodeIPv6(String ip) {
+		if(StringUtils.isEmpty(ip)) {
+			return null;
+		}
+		byte[] slice;
+		int valueIndex = 0;
+		final var value = new byte[16];
+		final var slices = ip.split(":");
+		for (int index = 0; index < slices.length; index++) {
+			slice = slices[index].getBytes();
+			switch (slice.length) {
+			case 0:
+				value[valueIndex++] = 0;
+				value[valueIndex++] = 0;
+				value[valueIndex++] = 0;
+				value[valueIndex++] = 0;
+				break;
+			case 1:
+				value[valueIndex++] = 0;
+				value[valueIndex++] = 0;
+				value[valueIndex++] = 0;
+				value[valueIndex++] = slice[0];
+				break;
+			case 2:
+				value[valueIndex++] = 0;
+				value[valueIndex++] = 0;
+				value[valueIndex++] = slice[0];
+				value[valueIndex++] = slice[1];
+				break;
+			case 3:
+				value[valueIndex++] = 0;
+				value[valueIndex++] = slice[0];
+				value[valueIndex++] = slice[1];
+				value[valueIndex++] = slice[2];
+				break;
+			case 4:
+				value[valueIndex++] = slice[0];
+				value[valueIndex++] = slice[1];
+				value[valueIndex++] = slice[2];
+				value[valueIndex++] = slice[3];
+				break;
+			default:
+				LOGGER.warn("IPv6地址编码错误：{}", ip);
+				break;
+			}
+		}
+		return value;
+	}
+	
+	/**
 	 * 获取本机名称
 	 * 
 	 * TODO：初始化一次

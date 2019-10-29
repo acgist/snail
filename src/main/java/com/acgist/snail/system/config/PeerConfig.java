@@ -120,13 +120,13 @@ public class PeerConfig {
 	 */
 	public static final byte STATUS_DOWNLOAD = 1 << 0;
 	/**
-	 * PEX状态：0x01：偏爱加密
+	 * <p>PEX状态：0x01：偏爱加密</p>
+	 * <p>加密握手</p>
 	 */
 	public static final byte PEX_PREFER_ENCRYPTION =  1 << 0;
 	/**
-	 * PEX状态：0x02：做种、上传
-	 * 
-	 * TODO：做种Peer不需要发送一些消息：have
+	 * <p>PEX状态：0x02：做种、上传</p>
+	 * <p>不发送消息：解除阻塞、have、位图</p>
 	 */
 	public static final byte PEX_SEED_UPLOAD_ONLY =   1 << 1;
 	/**
@@ -336,12 +336,16 @@ public class PeerConfig {
 		
 		/** 握手 */
 		HANDSHAKE(		(byte) 0x00, "handshake",		true,	false),
-		/** pex */
+		/** ut_pex */
 		UT_PEX(			(byte) 0x01, "ut_pex",			true,	true),
-		/** metadata */
+		/** ut_metadata */
 		UT_METADATA(	(byte) 0x02, "ut_metadata",		true,	true),
-		/** holepunch */
-		UT_HOLEPUNCH(	(byte) 0x03, "ut_holepunch",	true,	true);
+		/** ut_holepunch */
+		UT_HOLEPUNCH(	(byte) 0x03, "ut_holepunch",	true,	true),
+		/** upload_only */
+		UPLOAD_ONLY(	(byte) 0x04, "upload_only",		false,	false),
+		/** lt_donthave */
+		LT_DONTHAVE(	(byte) 0x05, "lt_donthave",		false,	false);
 
 		/**
 		 * 消息ID：自定义
