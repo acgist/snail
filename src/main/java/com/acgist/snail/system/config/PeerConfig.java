@@ -343,7 +343,7 @@ public class PeerConfig {
 		/** ut_holepunch */
 		UT_HOLEPUNCH(	(byte) 0x03, "ut_holepunch",	true,	true),
 		/** upload_only */
-		UPLOAD_ONLY(	(byte) 0x04, "upload_only",		false,	false),
+		UPLOAD_ONLY(	(byte) 0x04, "upload_only",		true,	true),
 		/** lt_donthave */
 		LT_DONTHAVE(	(byte) 0x05, "lt_donthave",		false,	false);
 

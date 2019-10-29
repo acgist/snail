@@ -99,7 +99,7 @@ public final class PeerSession implements IStatistics {
 	 */
 	private final StatisticsSession statistics;
 	/**
-	 * 支持的扩展协议
+	 * 支持的扩展协议：协议=协议ID
 	 */
 	private final Map<PeerConfig.ExtensionType, Byte> extension;
 
@@ -276,8 +276,8 @@ public final class PeerSession implements IStatistics {
 	/**
 	 * 添加扩展类型
 	 */
-	public void addExtensionType(PeerConfig.ExtensionType type, byte typeValue) {
-		this.extension.put(type, typeValue);
+	public void addExtensionType(PeerConfig.ExtensionType type, byte typeId) {
+		this.extension.put(type, typeId);
 	}
 	
 	/**
@@ -288,9 +288,9 @@ public final class PeerSession implements IStatistics {
 	}
 
 	/**
-	 * 获取扩展协议编号
+	 * 获取扩展协议ID
 	 */
-	public Byte extensionTypeValue(PeerConfig.ExtensionType type) {
+	public Byte extensionTypeId(PeerConfig.ExtensionType type) {
 		return this.extension.get(type);
 	}
 	

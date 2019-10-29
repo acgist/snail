@@ -5,8 +5,6 @@ import java.nio.ByteBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.torrent.peer.bootstrap.IExtensionMessageHandler;
-import com.acgist.snail.net.torrent.peer.bootstrap.IExtensionTypeGetter;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.net.torrent.utp.UtpClient;
@@ -33,22 +31,18 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.1.0
  */
-public class HolepunchMessageHnadler implements IExtensionMessageHandler, IExtensionTypeGetter {
+public class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(HolepunchMessageHnadler.class);
 
 	private static final byte IPV4 = 0x00;
 //	private static final byte IPV6 = 0x01;
 	
-	private final PeerSession peerSession;
 	private final TorrentSession torrentSession;
 	
-	private final ExtensionMessageHandler extensionMessageHandler;
-	
 	private HolepunchMessageHnadler(PeerSession peerSession, TorrentSession torrentSession, ExtensionMessageHandler extensionMessageHandler) {
-		this.peerSession = peerSession;
+		super(ExtensionType.UT_HOLEPUNCH, peerSession, extensionMessageHandler);
 		this.torrentSession = torrentSession;
-		this.extensionMessageHandler = extensionMessageHandler;
 	}
 	
 	public static final HolepunchMessageHnadler newInstance(PeerSession peerSession, TorrentSession torrentSession, ExtensionMessageHandler extensionMessageHandler) {
@@ -56,11 +50,7 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler, IExten
 	}
 
 	@Override
-	public void onMessage(ByteBuffer buffer) {
-		if(!this.supportExtensionType()) {
-			LOGGER.debug("holepunch消息错误：不支持扩展协议");
-			return;
-		}
+	public void doMessage(ByteBuffer buffer) {
 		final byte typeId = buffer.get();
 		final HolepunchType holepunchType = PeerConfig.HolepunchType.valueOf(typeId);
 		if(holepunchType == null) {
@@ -96,16 +86,6 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler, IExten
 		}
 	}
 	
-	@Override
-	public boolean supportExtensionType() {
-		return this.peerSession.supportExtensionType(ExtensionType.UT_HOLEPUNCH);
-	}
-	
-	@Override
-	public Byte extensionType() {
-		return this.peerSession.extensionTypeValue(ExtensionType.UT_HOLEPUNCH);
-	}
-	
 	/**
 	 * 发送连接消息
 	 * 
@@ -125,7 +105,7 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler, IExten
 	public void rendezvous(String host, int port) {
 		LOGGER.debug("发送holepunch消息-rendezvous：{}-{}", host, port);
 		final ByteBuffer message = buildMessage(HolepunchType.RENDEZVOUS, host, port);
-		pushMessage(message);
+		this.pushMessage(message);
 	}
 	
 	/**
@@ -243,11 +223,4 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler, IExten
 		return buffer;
 	}
 	
-	/**
-	 * 发送消息
-	 */
-	private void pushMessage(ByteBuffer buffer) {
-		this.extensionMessageHandler.pushMessage(extensionType(), buffer.array());
-	}
-
 }

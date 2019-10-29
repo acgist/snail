@@ -7,8 +7,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.torrent.peer.bootstrap.IExtensionMessageHandler;
-import com.acgist.snail.net.torrent.peer.bootstrap.IExtensionTypeGetter;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
@@ -33,7 +31,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class MetadataMessageHandler implements IExtensionMessageHandler, IExtensionTypeGetter {
+public class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MetadataMessageHandler.class);
 	
@@ -55,16 +53,12 @@ public class MetadataMessageHandler implements IExtensionMessageHandler, IExtens
 	private static final String ARG_TOTAL_SIZE = "total_size";
 	
 	private final InfoHash infoHash;
-	private final PeerSession peerSession;
 	private final TorrentSession torrentSession;
 	
-	private final ExtensionMessageHandler extensionMessageHandler;
-	
 	private MetadataMessageHandler(PeerSession peerSession, TorrentSession torrentSession, ExtensionMessageHandler extensionMessageHandler) {
+		super(ExtensionType.UT_METADATA, peerSession, extensionMessageHandler);
 		this.infoHash = torrentSession.infoHash();
-		this.peerSession = peerSession;
 		this.torrentSession = torrentSession;
-		this.extensionMessageHandler = extensionMessageHandler;
 	}
 	
 	public static final MetadataMessageHandler newInstance(PeerSession peerSession, TorrentSession torrentSession, ExtensionMessageHandler extensionMessageHandler) {
@@ -72,11 +66,7 @@ public class MetadataMessageHandler implements IExtensionMessageHandler, IExtens
 	}
 
 	@Override
-	public void onMessage(ByteBuffer buffer) throws NetException {
-		if (!this.supportExtensionType()) {
-			LOGGER.warn("metadata消息错误：不支持扩展协议");
-			return;
-		}
+	public void doMessage(ByteBuffer buffer) throws NetException {
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
 		final var decoder = BEncodeDecoder.newInstance(bytes);
@@ -106,16 +96,6 @@ public class MetadataMessageHandler implements IExtensionMessageHandler, IExtens
 			LOGGER.info("metadata消息错误（类型未适配）：{}", metadataType);
 			break;
 		}
-	}
-	
-	@Override
-	public boolean supportExtensionType() {
-		return this.peerSession.supportExtensionType(ExtensionType.UT_METADATA);
-	}
-	
-	@Override
-	public Byte extensionType() {
-		return this.peerSession.extensionTypeValue(ExtensionType.UT_METADATA);
 	}
 	
 	/**
@@ -249,7 +229,7 @@ public class MetadataMessageHandler implements IExtensionMessageHandler, IExtens
 			encoder.write(x);
 		}
 		final byte[] bytes = encoder.bytes();
-		this.extensionMessageHandler.pushMessage(extensionType(), bytes);
+		this.pushMessage(bytes);
 	}
 	
 }

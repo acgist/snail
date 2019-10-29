@@ -9,8 +9,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.torrent.peer.bootstrap.IExtensionMessageHandler;
-import com.acgist.snail.net.torrent.peer.bootstrap.IExtensionTypeGetter;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
@@ -34,7 +32,7 @@ import com.acgist.snail.utils.PeerUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class PeerExchangeMessageHandler implements IExtensionMessageHandler, IExtensionTypeGetter {
+public class PeerExchangeMessageHandler extends ExtensionTypeMessageHandler {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerExchangeMessageHandler.class);
 	
@@ -45,15 +43,11 @@ public class PeerExchangeMessageHandler implements IExtensionMessageHandler, IEx
 	public static final String DROPPED = "dropped";
 	public static final String DROPPED6 = "dropped6";
 	
-	private final PeerSession peerSession;
 	private final TorrentSession torrentSession;
 	
-	private final ExtensionMessageHandler extensionMessageHandler;
-	
 	private PeerExchangeMessageHandler(PeerSession peerSession, TorrentSession torrentSession, ExtensionMessageHandler extensionMessageHandler) {
-		this.peerSession = peerSession;
+		super(ExtensionType.UT_PEX, peerSession, extensionMessageHandler);
 		this.torrentSession = torrentSession;
-		this.extensionMessageHandler = extensionMessageHandler;
 	}
 	
 	public static final PeerExchangeMessageHandler newInstance(PeerSession peerSession, TorrentSession torrentSession, ExtensionMessageHandler extensionMessageHandler) {
@@ -61,30 +55,16 @@ public class PeerExchangeMessageHandler implements IExtensionMessageHandler, IEx
 	}
 	
 	@Override
-	public void onMessage(ByteBuffer buffer) throws NetException {
-		if (!this.supportExtensionType()) {
-			LOGGER.warn("pex消息错误：不支持扩展协议");
-			return;
-		}
+	public void doMessage(ByteBuffer buffer) throws NetException {
 		pex(buffer);
 	}
 	
-	@Override
-	public boolean supportExtensionType() {
-		return this.peerSession.supportExtensionType(ExtensionType.UT_PEX);
-	}
-	
-	@Override
-	public Byte extensionType() {
-		return this.peerSession.extensionTypeValue(ExtensionType.UT_PEX);
-	}
-
 	/**
 	 * 发送消息：pex
 	 */
 	public void pex(byte[] bytes) {
 		LOGGER.debug("发送pex消息");
-		this.extensionMessageHandler.pushMessage(extensionType(), bytes);
+		this.pushMessage(bytes);
 	}
 	
 	/**
