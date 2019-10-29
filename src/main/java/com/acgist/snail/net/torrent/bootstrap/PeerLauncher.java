@@ -211,7 +211,7 @@ public final class PeerLauncher extends PeerClientHandler {
 		} catch (Exception e) {
 			LOGGER.error("PeerLauncher关闭异常", e);
 		} finally {
-			this.peerSession.unstatus(PeerConfig.STATUS_DOWNLOAD);
+			this.peerSession.statusOff(PeerConfig.STATUS_DOWNLOAD);
 			this.peerSession.peerLauncher(null);
 		}
 	}

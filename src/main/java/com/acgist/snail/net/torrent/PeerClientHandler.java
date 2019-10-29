@@ -68,6 +68,13 @@ public abstract class PeerClientHandler {
 	}
 	
 	/**
+	 * 发送uploadOnly消息
+	 */
+	public void uploadOnly() {
+		this.peerSubMessageHandler.uploadOnly();
+	}
+	
+	/**
 	 * 是否已经评分
 	 */
 	public boolean marked() {

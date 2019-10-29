@@ -53,7 +53,7 @@ public final class PeerConnect extends PeerClientHandler {
 		} catch (Exception e) {
 			LOGGER.error("PeerConnect关闭异常", e);
 		} finally {
-			this.peerSession.unstatus(PeerConfig.STATUS_UPLOAD);
+			this.peerSession.statusOff(PeerConfig.STATUS_UPLOAD);
 			this.peerSession.peerConnect(null);
 		}
 	}

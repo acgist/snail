@@ -228,6 +228,28 @@ public class PeerManager {
 	}
 	
 	/**
+	 * <p>发送uploadOnly消息</p>
+	 * <p>只发送给当前上传和下载的Peer</p>
+	 */
+	public void uploadOnly(String infoHashHex) {
+		final var list = listActivePeer(infoHashHex);
+		final AtomicInteger count = new AtomicInteger(0);
+		list.stream()
+			.forEach(session -> {
+				final var peerConnect = session.peerConnect();
+				final var peerLauncher = session.peerLauncher();
+				if(peerConnect != null && peerConnect.available()) {
+					count.incrementAndGet();
+					peerConnect.uploadOnly();
+				} else if(peerLauncher != null && peerLauncher.available()) {
+					count.incrementAndGet();
+					peerLauncher.uploadOnly();
+				}
+			});
+		LOGGER.debug("发送uploadOnly消息，通知Peer数量：{}", count.get());
+	}
+	
+	/**
 	 * 获取Peer队列
 	 */
 	private Deque<PeerSession> deque(String infoHashHex) {
