@@ -181,9 +181,10 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 			data.put(EX_E, CryptConfig.STRATEGY.crypt() ? ENCRYPT : PLAINTEXT);
 		}
 		if(PeerConfig.ExtensionType.UT_METADATA.notice()) {
+			// 种子InfoHash数据长度
 			final int metadataSize = this.infoHash.size();
 			if(metadataSize > 0) {
-				data.put(EX_METADATA_SIZE, metadataSize); // 种子InfoHash数据长度
+				data.put(EX_METADATA_SIZE, metadataSize);
 			}
 		}
 		// 任务已经完成只上传不下载
@@ -209,25 +210,26 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 		// 获取端口
 		final Long port = decoder.getLong(EX_P);
 		if(port != null) {
-			final Integer oldPort = this.peerSession.peerPort();
+			final Integer oldPort = this.peerSession.port();
 			if(oldPort != null && oldPort.intValue() != port.intValue()) {
 				LOGGER.debug("扩展消息-握手（端口不一致）：{}-{}", oldPort, port);
 			}
-			this.peerSession.peerPort(port.intValue());
+			this.peerSession.port(port.intValue());
 		}
 		// 偏爱加密
 		final Long encrypt = decoder.getLong(EX_E);
 		if(encrypt != null && encrypt.intValue() == ENCRYPT) {
 			this.peerSession.flags(PeerConfig.PEX_PREFER_ENCRYPTION);
 		}
-		// 获取种子InfoHash大小
+		// 种子InfoHash数据长度
 		final Long metadataSize = decoder.getLong(EX_METADATA_SIZE);
 		if(metadataSize != null && this.infoHash.size() == 0) {
 			this.infoHash.size(metadataSize.intValue());
 		}
+		// 只上传不下载
 		final Long uploadOnly = decoder.getLong(EX_UPLOAD_ONLY);
 		if(uploadOnly != null && uploadOnly.intValue() == UPLOAD_ONLY) {
-			this.peerSession.flags(PeerConfig.PEX_SEED_UPLOAD_ONLY);
+			this.peerSession.flags(PeerConfig.PEX_UPLOAD_ONLY);
 		}
 		// 支持的扩展协议：key（扩展协议名称）=value（扩展协议标识）
 		final Map<String, Object> supportTypes = decoder.getMap(EX_M);
@@ -236,7 +238,9 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 				final Long typeId = (Long) entry.getValue();
 				final String typeValue = (String) entry.getKey();
 				final PeerConfig.ExtensionType extensionType = PeerConfig.ExtensionType.valueOfValue(typeValue);
-				this.peerSession.flags(extensionType);
+				if(extensionType == PeerConfig.ExtensionType.UT_HOLEPUNCH) {
+					this.peerSession.flags(PeerConfig.PEX_HOLEPUNCH);
+				}
 				if(extensionType != null && extensionType.support()) {
 					LOGGER.debug("扩展协议（添加）：{}-{}", extensionType, typeId);
 					this.peerSession.addExtensionType(extensionType, typeId.byteValue());

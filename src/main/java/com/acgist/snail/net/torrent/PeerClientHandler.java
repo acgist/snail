@@ -101,7 +101,7 @@ public abstract class PeerClientHandler {
 	
 	@Override
 	public String toString() {
-		return ObjectUtils.toString(this, this.peerSession.host(), this.peerSession.peerPort(), this.peerSession.dhtPort());
+		return ObjectUtils.toString(this, this.peerSession.host(), this.peerSession.port(), this.peerSession.dhtPort());
 	}
 	
 }

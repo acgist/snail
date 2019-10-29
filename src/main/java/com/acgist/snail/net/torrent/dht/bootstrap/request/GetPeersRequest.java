@@ -56,7 +56,7 @@ public class GetPeersRequest extends Request {
 					.limit(DhtConfig.GET_PEER_SIZE)
 					.map(peer -> {
 						buffer.putInt(NetUtils.encodeIpToInt(peer.host()));
-						buffer.putShort(NetUtils.encodePort(peer.peerPort()));
+						buffer.putShort(NetUtils.encodePort(peer.port()));
 						buffer.flip();
 						return buffer.array();
 					})

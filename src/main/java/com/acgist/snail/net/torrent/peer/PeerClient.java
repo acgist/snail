@@ -27,7 +27,7 @@ public class PeerClient extends TcpClient<PeerMessageHandler> {
 	
 	@Override
 	public boolean connect() {
-		return connect(this.peerSession.host(), this.peerSession.peerPort());
+		return connect(this.peerSession.host(), this.peerSession.port());
 	}
 
 	public PeerSession peerSession() {

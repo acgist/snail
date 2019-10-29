@@ -48,9 +48,9 @@ public class PeerConnectGroup {
 	 */
 	public PeerConnect newPeerConnect(PeerSession peerSession, PeerSubMessageHandler peerSubMessageHandler) {
 		synchronized (this.peerConnects) {
-			LOGGER.debug("Peer接入：{}-{}", peerSession.host(), peerSession.peerPort());
+			LOGGER.debug("Peer接入：{}-{}", peerSession.host(), peerSession.port());
 			if(!connectable(peerSession)) {
-				LOGGER.debug("Peer拒绝接入（超过最大接入数量）：{}-{}", peerSession.host(), peerSession.peerPort());
+				LOGGER.debug("Peer拒绝接入（超过最大接入数量）：{}-{}", peerSession.host(), peerSession.port());
 				return null;
 			}
 			final PeerConnect peerConnect = PeerConnect.newInstance(peerSession, peerSubMessageHandler);
@@ -164,7 +164,7 @@ public class PeerConnectGroup {
 	private void inferiorPeerConnect(PeerConnect peerConnect) {
 		if(peerConnect != null) {
 			final PeerSession peerSession = peerConnect.peerSession();
-			LOGGER.debug("剔除无效PeerConnect：{}-{}", peerSession.host(), peerSession.peerPort());
+			LOGGER.debug("剔除无效PeerConnect：{}-{}", peerSession.host(), peerSession.port());
 			peerConnect.release();
 		}
 	}

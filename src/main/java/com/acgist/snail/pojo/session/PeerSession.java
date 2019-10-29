@@ -23,7 +23,7 @@ import com.acgist.snail.utils.StringUtils;
 public final class PeerSession implements IStatistics {
 	
 	/**
-	 * Peer id
+	 * PeerID
 	 */
 	private byte[] id;
 	/**
@@ -51,13 +51,13 @@ public final class PeerSession implements IStatistics {
 	 */
 	private volatile byte source = 0;
 	/**
-	 * 地址
+	 * Peer地址
 	 */
 	private String host;
 	/**
 	 * Peer端口
 	 */
-	private Integer peerPort;
+	private Integer port;
 	/**
 	 * DHT端口
 	 */
@@ -71,15 +71,15 @@ public final class PeerSession implements IStatistics {
 	 */
 	private final BitSet badPieces;
 	/**
-	 * 客户端将Peer阻塞：阻塞（不允许下载）-1（true）、非阻塞-0
+	 * 客户端将Peer阻塞：阻塞-1（true）、非阻塞-0
 	 */
 	private volatile boolean amChocking;
 	/**
-	 * 客户端对Peer感兴趣：感兴趣（Peer有客户端没有的piece）-1（true）、不感兴趣-0
+	 * 客户端对Peer感兴趣：感兴趣-1（true）、不感兴趣-0
 	 */
 	private volatile boolean amInterested;
 	/**
-	 * Peer将客户阻塞：阻塞（Peer不允许客户端下载）-1（true）、非阻塞-0
+	 * Peer将客户阻塞：阻塞-1（true）、非阻塞-0
 	 */
 	private volatile boolean peerChocking;
 	/**
@@ -103,9 +103,9 @@ public final class PeerSession implements IStatistics {
 	 */
 	private final Map<PeerConfig.ExtensionType, Byte> extension;
 
-	private PeerSession(StatisticsSession parent, String host, Integer peerPort) {
+	private PeerSession(StatisticsSession parent, String host, Integer port) {
 		this.host = host;
-		this.peerPort = peerPort;
+		this.port = port;
 		this.amChocking = true;
 		this.amInterested = false;
 		this.peerChocking = true;
@@ -116,8 +116,8 @@ public final class PeerSession implements IStatistics {
 		this.statistics = new StatisticsSession(parent);
 	}
 	
-	public static final PeerSession newInstance(StatisticsSession parent, String host, Integer peerPort) {
-		return new PeerSession(parent, host, peerPort);
+	public static final PeerSession newInstance(StatisticsSession parent, String host, Integer port) {
+		return new PeerSession(parent, host, port);
 	}
 	
 	public void amChoke() {
@@ -168,7 +168,7 @@ public final class PeerSession implements IStatistics {
 	}
 	
 	/**
-	 * 判断是否存在：判断IP，不判断端口。
+	 * 判断是否存在：判断IP不判断端口
 	 */
 	public boolean equals(String host) {
 		return StringUtils.equals(this.host, host);
@@ -202,6 +202,9 @@ public final class PeerSession implements IStatistics {
 		return this.amInterested && !this.peerChocking;
 	}
 	
+	/**
+	 * 设置ID和客户端名称
+	 */
 	public void id(byte[] id) {
 		this.id = id;
 		this.clientName = PeerConfig.name(this.id);
@@ -215,12 +218,12 @@ public final class PeerSession implements IStatistics {
 		return this.host;
 	}
 	
-	public Integer peerPort() {
-		return this.peerPort;
+	public Integer port() {
+		return this.port;
 	}
 	
-	public void peerPort(Integer peerPort) {
-		this.peerPort = peerPort;
+	public void port(Integer port) {
+		this.port = port;
 	}
 	
 	public BitSet pieces() {
@@ -228,16 +231,16 @@ public final class PeerSession implements IStatistics {
 	}
 	
 	/**
-	 * 设置Piece位图
+	 * 设置Peer位图
 	 * 
-	 * @param pieces Piece位图
+	 * @param pieces Peer位图
 	 */
 	public void pieces(BitSet pieces) {
 		this.pieces.or(pieces);
 	}
 
 	/**
-	 * 设置Piece位图
+	 * 设置Peer位图
 	 * 
 	 * @param index Piece序号
 	 */
@@ -264,7 +267,7 @@ public final class PeerSession implements IStatistics {
 	
 	/**
 	 * <p>获取可用的Piece位图</p>
-	 * <p>Peer有的Piece并且不是无效Piece的位图。</p>
+	 * <p>Peer已有Piece去除无效Piece位图</p>
 	 */
 	public BitSet availablePieces() {
 		final BitSet bitSet = new BitSet();
@@ -305,13 +308,13 @@ public final class PeerSession implements IStatistics {
 	 * <dl>
 	 * 	<dt>是否可用：</dt>
 	 * 	<dd>失败次数小于最大失败次数</dd>
-	 * 	<dd>有可用端口（如果是主动连接的客户端可能没有获取到端口号）</dd>
+	 * 	<dd>有可用端口（主动连接的客户端可能没有端口号）</dd>
 	 * </dl>
 	 */
 	public boolean available() {
 		return
 			this.failTimes < PeerConfig.MAX_FAIL_TIMES &&
-			this.peerPort != null;
+			this.port != null;
 	}
 	
 	public Integer dhtPort() {
@@ -334,7 +337,7 @@ public final class PeerSession implements IStatistics {
 	}
 
 	/**
-	 * 是否执行DHT扩展协议
+	 * 是否支持DHT扩展协议
 	 */
 	public boolean supportDhtProtocol() {
 		return this.reserved != null && (this.reserved[7] & PeerConfig.DHT_PROTOCOL) != 0;
@@ -344,9 +347,16 @@ public final class PeerSession implements IStatistics {
 	 * 设置来源
 	 */
 	public void source(byte source) {
-		this.source = (byte) (this.source | source);
+		this.source |= source;
 	}
 
+	/**
+	 * 验证来源
+	 */
+	public boolean verifySource(byte source) {
+		return (this.source & source) != 0;
+	}
+	
 	/**
 	 * 来源：DHT
 	 */
@@ -390,18 +400,11 @@ public final class PeerSession implements IStatistics {
 	}
 	
 	/**
-	 * 判断是否包含该来源
-	 */
-	public boolean verifySource(byte source) {
-		return (this.source & source) != 0;
-	}
-	
-	/**
 	 * 设置状态
 	 */
 	public void status(byte status) {
 		synchronized (this) {
-			this.status = (byte) (this.status | status);
+			this.status |= status;
 		}
 	}
 	
@@ -410,7 +413,7 @@ public final class PeerSession implements IStatistics {
 	 */
 	public void statusOff(byte status) {
 		synchronized (this) {
-			this.status = (byte) (this.status ^ status);
+			this.status ^= status;
 		}
 	}
 	
@@ -450,33 +453,24 @@ public final class PeerSession implements IStatistics {
 	}
 	
 	/**
-	 * 配置pex flags
+	 * 设置pex flags
 	 */
 	public void flags(byte flags) {
-		this.flags = (byte) (this.flags | flags);
-	}
-	
-	/**
-	 * 配置pex flags
-	 */
-	public void flags(PeerConfig.ExtensionType type) {
-		if(type == PeerConfig.ExtensionType.UT_HOLEPUNCH) {
-			this.flags(PeerConfig.PEX_HOLEPUNCH);
-		}
+		this.flags |= flags;
 	}
 	
 	/**
 	 * 取消pex flags
 	 */
 	public void flagsOff(byte flags) {
-		this.flags = (byte) (this.flags ^ flags);
+		this.flags ^= flags;
 	}
 	
 	/**
 	 * 验证pex flags
 	 */
-	private boolean verifyFlags(byte flag) {
-		return (this.flags & flag) != 0;
+	private boolean verifyFlags(byte flags) {
+		return (this.flags & flags) != 0;
 	}
 	
 	/**
@@ -497,7 +491,7 @@ public final class PeerSession implements IStatistics {
 	 * 是否只上传不下载
 	 */
 	public boolean uploadOnly() {
-		return verifyFlags(PeerConfig.PEX_SEED_UPLOAD_ONLY);
+		return verifyFlags(PeerConfig.PEX_UPLOAD_ONLY);
 	}
 	
 	public PeerConnect peerConnect() {
@@ -517,7 +511,7 @@ public final class PeerSession implements IStatistics {
 	}
 	
 	public InetSocketAddress peerSocketAddress() {
-		return NetUtils.buildSocketAddress(this.host, this.peerPort);
+		return NetUtils.buildSocketAddress(this.host, this.port);
 	}
 	
 	public InetSocketAddress dhtSocketAddress() {
@@ -543,7 +537,7 @@ public final class PeerSession implements IStatistics {
 	
 	@Override
 	public String toString() {
-		return ObjectUtils.toString(this, this.host, this.peerPort, this.dhtPort);
+		return ObjectUtils.toString(this, this.host, this.port, this.dhtPort);
 	}
 
 }

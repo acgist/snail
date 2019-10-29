@@ -123,26 +123,26 @@ public class PeerConfig {
 	 * <p>PEX状态：0x01：偏爱加密</p>
 	 * <p>加密握手</p>
 	 */
-	public static final byte PEX_PREFER_ENCRYPTION =  1 << 0;
+	public static final byte PEX_PREFER_ENCRYPTION =	1 << 0;
 	/**
 	 * <p>PEX状态：0x02：做种、上传</p>
 	 * <p>不发送消息：解除阻塞、have、位图</p>
 	 */
-	public static final byte PEX_SEED_UPLOAD_ONLY =   1 << 1;
+	public static final byte PEX_UPLOAD_ONLY =			1 << 1;
 	/**
 	 * PEX状态：0x04：支持UTP协议
 	 */
-	public static final byte PEX_UTP =             	  1 << 2;
+	public static final byte PEX_UTP =					1 << 2;
 	/**
 	 * PEX状态：0x08：支持holepunch协议
 	 */
-	public static final byte PEX_HOLEPUNCH =     	  1 << 3;
+	public static final byte PEX_HOLEPUNCH =			1 << 3;
 	/**
 	 * PEX状态：0x10：未知含义
 	 * 
 	 * TODO：了解
 	 */
-	public static final byte PEX_OUTGO =          	  1 << 4;
+	public static final byte PEX_OUTGO =				1 << 4;
 	/**
 	 * 客户端名称
 	 */

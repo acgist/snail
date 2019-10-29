@@ -46,18 +46,18 @@ public class UploadOnlyExtensionMessageHandler extends ExtensionTypeMessageHandl
 	
 	/**
 	 * 处理uploadOnly消息
-	 * @param buffer
 	 */
 	private void uploadOnly(ByteBuffer buffer) {
 		if(!buffer.hasRemaining()) {
+			LOGGER.debug("uploadOnly消息错误（长度）：{}", buffer.remaining());
 			return;
 		}
 		final byte value = buffer.get();
 		LOGGER.debug("uploadOnly消息：{}", value);
 		if(value == UPLOAD_ONLY) {
-			this.peerSession.flags(PeerConfig.PEX_SEED_UPLOAD_ONLY);
+			this.peerSession.flags(PeerConfig.PEX_UPLOAD_ONLY);
 		} else {
-			this.peerSession.flagsOff(PeerConfig.PEX_SEED_UPLOAD_ONLY);
+			this.peerSession.flagsOff(PeerConfig.PEX_UPLOAD_ONLY);
 		}
 	}
 
