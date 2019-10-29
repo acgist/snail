@@ -265,6 +265,9 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			case REJECT_REQUEST:
 				rejectRequest(buffer);
 				break;
+			case ALLOWED_FAST:
+				allowedFast(buffer);
+				break;
 			// 扩展协议
 			case EXTENSION:
 				extension(buffer);
@@ -648,6 +651,23 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		final int begin = buffer.getInt();
 		final int length = buffer.getInt();
 		LOGGER.debug("处理request消息：{}-{}-{}", index, begin, length);
+	}
+	
+	/**
+	 * <p>发送allowedFast消息</p>
+	 * <p>
+	 * 格式：len=0005 id=0x11 index
+	 * </p>
+	 */
+	public void allowedFast(int index) {
+		
+	}
+	
+	/**
+	 * <p>处理allowedFast消息</p>
+	 */
+	private void allowedFast(ByteBuffer buffer) {
+		
 	}
 	
 	/**
