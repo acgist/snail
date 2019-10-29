@@ -7,6 +7,6 @@ package com.acgist.snail.net.torrent.peer.bootstrap.ltep;
  * @author acgist
  * @since 1.2.0
  */
-public class DonthaveExtensionMessageHandler {
+public class DontHaveExtensionMessageHandler {
 
 }

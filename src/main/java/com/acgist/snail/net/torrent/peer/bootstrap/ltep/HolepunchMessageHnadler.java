@@ -111,6 +111,9 @@ public class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	/**
 	 * <p>处理消息：rendezvous</p>
 	 * <p>如果已经连接到目标方，返回连接消息，其他情况返回相应错误。</p>
+	 * 
+	 * @param host 目标地址
+	 * @param port 目标端口
 	 */
 	private void onRendezvous(String host, int port) {
 		LOGGER.debug("处理holepunch消息-rendezvous：{}-{}", host, port);
@@ -120,6 +123,7 @@ public class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 			this.error(host, port, HolepunchErrorCode.CODE_04);
 			return;
 		}
+		// 目标Peer
 		final var peerSession = PeerManager.getInstance().findPeerSession(this.torrentSession.infoHashHex(), host);
 		if(peerSession == null) {
 			// TODO：是否加入Peer列表
@@ -137,15 +141,17 @@ public class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 			this.error(host, port, HolepunchErrorCode.CODE_03);
 			return;
 		}
+		// 发送发送方连接消息
 		this.connect(host, port);
+		// 发送目标方连接消息
 		final var peerConnect = peerSession.peerConnect();
 		if(peerConnect != null) {
-			peerConnect.holepunchConnect(host, port);
+			peerConnect.holepunchConnect(this.peerSession.host(), this.peerSession.peerPort());
 			return;
 		}
 		final var peerLauncher = peerSession.peerLauncher();
 		if(peerLauncher != null) {
-			peerLauncher.holepunchConnect(host, port);
+			peerLauncher.holepunchConnect(this.peerSession.host(), this.peerSession.peerPort());
 			return;
 		}
 	}
