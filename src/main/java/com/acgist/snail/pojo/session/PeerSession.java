@@ -413,7 +413,14 @@ public final class PeerSession implements IStatistics {
 			this.status = (byte) (this.status ^ status);
 		}
 	}
-
+	
+	/**
+	 * 验证状态
+	 */
+	private boolean verifyStatus(byte status) {
+		return (this.status & status) != 0;
+	}
+	
 	/**
 	 * 是否上传中
 	 */
@@ -436,10 +443,10 @@ public final class PeerSession implements IStatistics {
 	}
 	
 	/**
-	 * 判断是否包含该状态
+	 * 获取pex flags
 	 */
-	public boolean verifyStatus(byte status) {
-		return (this.status & status) != 0;
+	public byte flags() {
+		return this.flags;
 	}
 	
 	/**
@@ -459,12 +466,8 @@ public final class PeerSession implements IStatistics {
 	}
 	
 	/**
-	 * 获取pex flags
+	 * 验证pex flags
 	 */
-	public byte flags() {
-		return this.flags;
-	}
-	
 	private boolean verifyFlags(byte flag) {
 		return (this.flags & flag) != 0;
 	}
