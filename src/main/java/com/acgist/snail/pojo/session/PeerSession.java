@@ -486,7 +486,7 @@ public final class PeerSession implements IStatistics {
 	public boolean encrypt() {
 		return verifyFlags(PeerConfig.PEX_PREFER_ENCRYPTION);
 	}
-
+	
 	/**
 	 * 是否只上传不下载
 	 */
