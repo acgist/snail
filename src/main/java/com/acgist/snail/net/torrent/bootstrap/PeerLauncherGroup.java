@@ -263,7 +263,7 @@ public class PeerLauncherGroup {
 	private void inferiorPeerLauncher(PeerLauncher peerLauncher) {
 		if(peerLauncher != null) {
 			final PeerSession peerSession = peerLauncher.peerSession();
-			LOGGER.debug("剔除劣质PeerLauncher：{}-{}", peerSession.host(), peerSession.peerPort());
+			LOGGER.debug("剔除劣质PeerLauncher：{}-{}", peerSession.host(), peerSession.port());
 			SystemThreadContext.submit(() -> {
 				peerLauncher.release();
 			});

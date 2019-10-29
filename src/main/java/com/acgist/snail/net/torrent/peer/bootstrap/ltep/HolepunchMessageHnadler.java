@@ -146,12 +146,12 @@ public class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 		// 发送目标方连接消息
 		final var peerConnect = peerSession.peerConnect();
 		if(peerConnect != null) {
-			peerConnect.holepunchConnect(this.peerSession.host(), this.peerSession.peerPort());
+			peerConnect.holepunchConnect(this.peerSession.host(), this.peerSession.port());
 			return;
 		}
 		final var peerLauncher = peerSession.peerLauncher();
 		if(peerLauncher != null) {
-			peerLauncher.holepunchConnect(this.peerSession.host(), this.peerSession.peerPort());
+			peerLauncher.holepunchConnect(this.peerSession.host(), this.peerSession.port());
 			return;
 		}
 	}
@@ -185,8 +185,11 @@ public class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 		final var peerSubMessageHandler = PeerSubMessageHandler.newInstance(peerSession, this.torrentSession);
 		final var client = UtpClient.newInstance(peerSession, peerSubMessageHandler);
 		if(client.connect()) {
+			LOGGER.debug("处理holepunch消息-connect：连接成功");
 			peerSession.flags(PeerConfig.PEX_UTP);
 			client.close();
+		} else {
+			LOGGER.debug("处理holepunch消息-connect：连接失败");
 		}
 	}
 

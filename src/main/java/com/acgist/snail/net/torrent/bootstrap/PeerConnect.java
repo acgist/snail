@@ -45,7 +45,7 @@ public final class PeerConnect extends PeerClientHandler {
 	public void release() {
 		try {
 			if(this.available) {
-				LOGGER.debug("PeerConnect关闭：{}-{}", this.peerSession.host(), this.peerSession.peerPort());
+				LOGGER.debug("PeerConnect关闭：{}-{}", this.peerSession.host(), this.peerSession.port());
 				this.available = false;
 //				this.peerSubMessageHandler.choke();
 				this.peerSubMessageHandler.close();

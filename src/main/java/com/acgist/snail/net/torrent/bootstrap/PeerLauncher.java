@@ -106,17 +106,17 @@ public final class PeerLauncher extends PeerClientHandler {
 	 */
 	private boolean connect() {
 		if(this.peerSession.utp()) {
-			LOGGER.debug("Peer连接（uTP）：{}-{}", this.peerSession.host(), this.peerSession.peerPort());
+			LOGGER.debug("Peer连接（uTP）：{}-{}", this.peerSession.host(), this.peerSession.port());
 			final UtpClient utpClient = UtpClient.newInstance(this.peerSession, this.peerSubMessageHandler);
 			return utpClient.connect();
 		} else {
-			LOGGER.debug("Peer连接（TCP）：{}-{}", this.peerSession.host(), this.peerSession.peerPort());
+			LOGGER.debug("Peer连接（TCP）：{}-{}", this.peerSession.host(), this.peerSession.port());
 			final PeerClient peerClient = PeerClient.newInstance(this.peerSession, this.peerSubMessageHandler);
 			final boolean peerOk = peerClient.connect();
 			if(peerOk) {
 				return peerOk;
 			} else {
-				LOGGER.debug("Peer连接（uTP）（重试）：{}-{}", this.peerSession.host(), this.peerSession.peerPort());
+				LOGGER.debug("Peer连接（uTP）（重试）：{}-{}", this.peerSession.host(), this.peerSession.port());
 				final UtpClient utpClient = UtpClient.newInstance(this.peerSession, this.peerSubMessageHandler);
 				final boolean utpOk = utpClient.connect();
 				if(utpOk) {
@@ -193,7 +193,7 @@ public final class PeerLauncher extends PeerClientHandler {
 	public void release() {
 		try {
 			if(this.available) {
-				LOGGER.debug("PeerLauncher关闭：{}-{}", this.peerSession.host(), this.peerSession.peerPort());
+				LOGGER.debug("PeerLauncher关闭：{}-{}", this.peerSession.host(), this.peerSession.port());
 				this.available = false;
 				// 没有完成：等待下载完成
 				if(!this.completeLock.get()) {
