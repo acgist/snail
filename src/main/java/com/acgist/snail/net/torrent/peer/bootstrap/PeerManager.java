@@ -187,8 +187,8 @@ public class PeerManager {
 		final AtomicInteger count = new AtomicInteger(0);
 		list.stream()
 			.forEach(session -> {
-				var peerConnect = session.peerConnect();
-				var peerLauncher = session.peerLauncher();
+				final var peerConnect = session.peerConnect();
+				final var peerLauncher = session.peerLauncher();
 				if(peerConnect != null && peerConnect.available()) {
 					count.incrementAndGet();
 					peerConnect.have(index);
@@ -214,8 +214,8 @@ public class PeerManager {
 		final AtomicInteger count = new AtomicInteger(0);
 		list.stream()
 			.forEach(session -> {
-				var peerConnect = session.peerConnect();
-				var peerLauncher = session.peerLauncher();
+				final var peerConnect = session.peerConnect();
+				final var peerLauncher = session.peerLauncher();
 				if(peerConnect != null && peerConnect.available()) {
 					count.incrementAndGet();
 					peerConnect.pex(bytes);

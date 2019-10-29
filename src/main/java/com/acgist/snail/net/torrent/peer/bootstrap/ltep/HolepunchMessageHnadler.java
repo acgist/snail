@@ -74,9 +74,9 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler, IExten
 			host = NetUtils.decodeIntToIp(buffer.getInt());
 			port = NetUtils.decodePort(buffer.getShort());
 		} else {
-			// TODO：IPv6
 			host = null;
 			port = 0;
+			return; // TODO：IPv6
 		}
 		LOGGER.debug("holepunch消息类型：{}", holepunchType);
 		switch (holepunchType) {
@@ -158,12 +158,22 @@ public class HolepunchMessageHnadler implements IExtensionMessageHandler, IExten
 			return;
 		}
 		this.connect(host, port);
+		final var peerConnect = peerSession.peerConnect();
+		if(peerConnect != null) {
+			peerConnect.holepunchConnect(host, port);
+			return;
+		}
+		final var peerLauncher = peerSession.peerLauncher();
+		if(peerLauncher != null) {
+			peerLauncher.holepunchConnect(host, port);
+			return;
+		}
 	}
 	
 	/**
 	 * 发送消息：connect
 	 */
-	private void connect(String host, int port) {
+	public void connect(String host, int port) {
 		LOGGER.debug("发送holepunch消息-connect：{}-{}", host, port);
 		this.pushMessage(buildMessage(HolepunchType.CONNECT, host, port));
 	}

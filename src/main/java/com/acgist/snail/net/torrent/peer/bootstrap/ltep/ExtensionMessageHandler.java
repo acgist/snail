@@ -274,9 +274,18 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	}
 	
 	/**
+	 * 发送holepunch连接消息
+	 */
+	public void holepunchConnect(String host, Integer port) {
+		if(this.holepunchExtensionMessageHnadler.supportExtensionType()) {
+			this.holepunchExtensionMessageHnadler.connect(host, port);
+		}
+	}
+	
+	/**
 	 * 处理holepunch消息
 	 */
-	public void holepunch(ByteBuffer buffer) {
+	private void holepunch(ByteBuffer buffer) {
 		this.holepunchExtensionMessageHnadler.onMessage(buffer);
 	}
 

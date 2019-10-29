@@ -58,6 +58,16 @@ public abstract class PeerClientHandler {
 	}
 	
 	/**
+	 * 发送holepunch连接消息
+	 * 
+	 * @param host 目标地址
+	 * @param port 目标端口
+	 */
+	public void holepunchConnect(String host, int port) {
+		this.peerSubMessageHandler.holepunchConnect(host, port);
+	}
+	
+	/**
 	 * 是否已经评分
 	 */
 	public boolean marked() {
