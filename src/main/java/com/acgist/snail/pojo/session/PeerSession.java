@@ -338,17 +338,24 @@ public final class PeerSession implements IStatistics {
 	}
 	
 	/**
+	 * 是否支持DHT扩展协议
+	 */
+	public boolean supportDhtProtocol() {
+		return this.reserved != null && (this.reserved[7] & PeerConfig.DHT_PROTOCOL) != 0;
+	}
+	
+	/**
 	 * 是否支持扩展协议
 	 */
 	public boolean supportExtensionProtocol() {
 		return this.reserved != null && (this.reserved[5] & PeerConfig.EXTENSION_PROTOCOL) != 0;
 	}
-
+	
 	/**
-	 * 是否支持DHT扩展协议
+	 * 是否支持快速扩展
 	 */
-	public boolean supportDhtProtocol() {
-		return this.reserved != null && (this.reserved[7] & PeerConfig.DHT_PROTOCOL) != 0;
+	public boolean supportFastExtensionProtocol() {
+		return this.reserved != null && (this.reserved[7] & PeerConfig.FAST_PROTOCOL) != 0;
 	}
 
 	/**

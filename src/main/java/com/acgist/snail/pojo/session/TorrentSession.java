@@ -631,8 +631,8 @@ public final class TorrentSession {
 		return this.torrentStreamGroup.pieces();
 	}
 	
-	public BitSet selectPieces() {
-		return this.torrentStreamGroup.selectPieces();
+	public BitSet allPieces() {
+		return this.torrentStreamGroup.allPieces();
 	}
 	
 	public Action action() {

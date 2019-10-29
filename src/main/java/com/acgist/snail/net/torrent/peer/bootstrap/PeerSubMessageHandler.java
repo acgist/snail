@@ -352,7 +352,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		this.peerSession.id(peerId);
 		extension(); // 发送扩展消息
 		dht(); // 发送DHT消息
-		bitfield(); // 交换位图
+		exchangeBitfield(); // 交换位图
 		if(server) {
 			unchoke(); // 解除阻塞
 		}
@@ -402,7 +402,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * 格式：len=0001 id=0x01
 	 * </p>
 	 */
-	public void unchoke() {
+	private void unchoke() {
 		if(!this.torrentSession.uploadable()) {
 			LOGGER.debug("发送解除阻塞消息：任务不可上传");
 			return;
@@ -440,7 +440,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * 格式：len=0001 id=0x02
 	 * </p>
 	 */
-	public void interested() {
+	private void interested() {
 		LOGGER.debug("发送感兴趣消息");
 		this.peerSession.amInterested();
 		pushMessage(PeerConfig.Type.INTERESTED, null);
@@ -530,7 +530,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * 格式：len=0001 id=0x0E
 	 * </p>
 	 */
-	public void haveAll() {
+	private void haveAll() {
 		if(!this.torrentSession.uploadable()) {
 			LOGGER.debug("发送haveAll消息：任务不可上传");
 			return;
@@ -546,8 +546,6 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	/**
 	 * <p>处理haveAll消息</p>
 	 * <p>设置Peer含有所有选择下载的Pieces</p>
-	 * 
-	 * TODO：任务完成不交换位图，发送此消息
 	 */
 	private void haveAll(ByteBuffer buffer) {
 		if(!this.torrentSession.downloadable()) {
@@ -555,8 +553,8 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			return;
 		}
 		LOGGER.debug("处理haveAll消息");
-		final BitSet selectPieces = this.torrentSession.selectPieces();
-		this.peerSession.pieces(selectPieces);
+		final BitSet allPieces = this.torrentSession.allPieces();
+		this.peerSession.pieces(allPieces);
 		// 任务没有完成发送感兴趣消息
 		if(!this.torrentSession.completed()) {
 			// 如果没有该Piece：发送感兴趣消息
@@ -571,10 +569,8 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * <p>
 	 * 格式：len=0001 id=0x0F
 	 * </p>
-	 * 
-	 * TODO：任务开始时，不交换位图，发送此消息
 	 */
-	public void haveNone() {
+	private void haveNone() {
 		LOGGER.debug("发送haveNone消息");
 		pushMessage(PeerConfig.Type.HAVE_NONE, null);
 	}
@@ -632,7 +628,10 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * 
 	 * @see {@link #request(int, int, int)}
 	 */
-	public void rejectRequest(int index, int begin, int length) {
+	private void rejectRequest(int index, int begin, int length) {
+		if(!this.peerSession.supportFastExtensionProtocol()) {
+			return;
+		}
 		LOGGER.debug("发送rejectRequest消息：{}-{}-{}", index, begin, length);
 		final ByteBuffer buffer = ByteBuffer.allocate(12);
 		buffer.putInt(index);
@@ -652,6 +651,32 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	}
 	
 	/**
+	 * <dl>
+	 * 	<dt>交换位图</dt>
+	 * 	<dd>如果任务完成，Peer支持FAST扩展，发送haveAll代替位图。</dd>
+	 * 	<dd>如果任务没有下载任何Piece，Peer支持FAST扩展，发送haveNone代替位图。</dd>
+	 * 	<dd>其他情况发送位图</dd>
+	 * <dl>
+	 */
+	private void exchangeBitfield() {
+		if(this.peerSession.supportFastExtensionProtocol()) {
+			final var pieces = this.torrentSession.pieces(); // 已下载Pieces
+			if(pieces.cardinality() == 0) {
+				this.haveNone();
+				return;
+			}
+			if(this.torrentSession.completed()) {
+				final var allPieces = this.torrentSession.allPieces(); // 所有Pieces
+				if(allPieces.cardinality() == pieces.cardinality()) {
+					this.haveAll();
+					return;
+				}
+			}
+		}
+		this.bitfield();
+	}
+	
+	/**
 	 * <p>发送位图消息</p>
 	 * <p>
 	 * 格式：len=0001+X id=0x05 bitfield
@@ -660,7 +685,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * 交换位图：X=bitfield.length，握手后交换位图，每个Piece占一位。
 	 * </p>
 	 */
-	public void bitfield() {
+	private void bitfield() {
 		if(!this.torrentSession.uploadable()) {
 			LOGGER.debug("发送位图消息：任务不可上传");
 			return;
@@ -736,19 +761,21 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			LOGGER.debug("处理request消息：任务不可上传");
 			return;
 		}
+		final int index = buffer.getInt();
+		final int begin = buffer.getInt();
+		final int length = buffer.getInt();
 		if(this.peerSession.isAmChocking()) {
 			LOGGER.debug("处理request消息：阻塞");
+			rejectRequest(index, begin, length);
 			return;
 		}
 		// 累计上传大小以及超过任务大小：阻塞（不上传）
 		if(this.peerSession.statistics().uploadSize() > this.torrentSession.size()) {
 			LOGGER.debug("累计上传大小超过任务大小：阻塞");
-			this.choke();
+			this.choke(); // 发送阻塞消息
+			rejectRequest(index, begin, length);
 			return;
 		}
-		final int index = buffer.getInt();
-		final int begin = buffer.getInt();
-		final int length = buffer.getInt();
 		LOGGER.debug("处理request消息：{}-{}-{}", index, begin, length);
 		if(this.torrentSession.havePiece(index)) {
 			try {
@@ -843,7 +870,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * listen-port：两字节，DHT端口。
 	 * </p>
 	 */
-	public void dht() {
+	private void dht() {
 		if(this.peerSession.supportDhtProtocol()) {
 			LOGGER.debug("发送DHT消息");
 			this.dhtExtensionMessageHandler.port();
@@ -867,7 +894,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * ex：扩展消息
 	 * </pre>
 	 */
-	public void extension() {
+	private void extension() {
 		if(this.peerSession.supportExtensionProtocol()) {
 			LOGGER.debug("发送扩展消息");
 			this.extensionMessageHandler.handshake();
