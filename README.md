@@ -90,8 +90,8 @@ SnailLauncher.exe
 |:--|:--:|
 |upload_only|○|
 |[DHT Protocol](http://www.bittorrent.org/beps/bep_0005.html)|√|
-|[Fast Extension](http://www.bittorrent.org/beps/bep_0006.html)|×|
-|[Private Torrents](http://www.bittorrent.org/beps/bep_0027.html)|○|
+|[Fast Extension](http://www.bittorrent.org/beps/bep_0006.html)|○|
+|[Private Torrents](http://www.bittorrent.org/beps/bep_0027.html)|×|
 |[Extension Protocol](http://www.bittorrent.org/beps/bep_0010.html)|√|
 |[Holepunch Extension](http://www.bittorrent.org/beps/bep_0055.html)|○|
 |[Peer Exchange (PEX)](http://www.bittorrent.org/beps/bep_0011.html)|√|
