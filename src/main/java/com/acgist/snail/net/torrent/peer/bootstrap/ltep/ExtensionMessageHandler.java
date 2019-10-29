@@ -43,7 +43,10 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 * 加密
 	 */
 	private static final int ENCRYPT = 0;
-	
+	/**
+	 * 只上传不下载
+	 */
+	private static final int UPLOAD_ONLY = 1;
 	/**
 	 * 扩展协议信息
 	 */
@@ -180,7 +183,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 		}
 		// 任务已经完成只上传不下载
 		if(this.torrentSession.completed()) {
-			data.put(EX_UPLOAD_ONLY, 1);
+			data.put(EX_UPLOAD_ONLY, UPLOAD_ONLY);
 		}
 		this.pushMessage(ExtensionType.HANDSHAKE.id(), BEncodeEncoder.encodeMap(data));
 	}
@@ -216,6 +219,10 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 		final Long metadataSize = decoder.getLong(EX_METADATA_SIZE);
 		if(metadataSize != null && this.infoHash.size() == 0) {
 			this.infoHash.size(metadataSize.intValue());
+		}
+		final Long uploadOnly = decoder.getLong(EX_UPLOAD_ONLY);
+		if(uploadOnly != null && uploadOnly.intValue() == UPLOAD_ONLY) {
+			this.peerSession.flags(PeerConfig.PEX_SEED_UPLOAD_ONLY);
 		}
 		// 支持的扩展协议：key（扩展协议名称）=value（扩展协议标识）
 		final Map<String, Object> supportTypes = decoder.getMap(EX_M);
