@@ -439,6 +439,7 @@ public final class TorrentSession {
 			if(downloader != null) {
 				downloader.unlockDownload();
 			}
+			PeerManager.getInstance().uploadOnly(this.infoHashHex());
 		}
 	}
 	
@@ -498,7 +499,7 @@ public final class TorrentSession {
 	 * TODO：优化have消息，使用异步线程发送，防止部分Peer通知过慢，导致所有线程卡死。
 	 */
 	public void have(int index) {
-		PeerManager.getInstance().have(this.infoHash.infoHashHex(), index);
+		PeerManager.getInstance().have(this.infoHashHex(), index);
 	}
 
 	/**

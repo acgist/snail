@@ -408,7 +408,7 @@ public final class PeerSession implements IStatistics {
 	/**
 	 * 取消状态
 	 */
-	public void unstatus(byte status) {
+	public void statusOff(byte status) {
 		synchronized (this) {
 			this.status = (byte) (this.status ^ status);
 		}
@@ -463,6 +463,13 @@ public final class PeerSession implements IStatistics {
 		if(type == PeerConfig.ExtensionType.UT_HOLEPUNCH) {
 			this.flags(PeerConfig.PEX_HOLEPUNCH);
 		}
+	}
+	
+	/**
+	 * 取消pex flags
+	 */
+	public void flagsOff(byte flags) {
+		this.flags = (byte) (this.flags ^ flags);
 	}
 	
 	/**

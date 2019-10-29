@@ -749,6 +749,13 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	}
 	
 	/**
+	 * 发送扩展消息：uploadOnly
+	 */
+	public void uploadOnly() {
+		this.extensionMessageHandler.uploadOnly();
+	}
+	
+	/**
 	 * 发送消息
 	 */
 	public void pushMessage(PeerConfig.Type type, byte[] payload) {
