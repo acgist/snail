@@ -218,7 +218,8 @@ public class SystemThreadContext {
 	}
 	
 	/**
-	 * 关闭线程池
+	 * <p>关闭线程池</p>
+	 * <p>注意：立即关闭可能导致部分任务没有执行</p>
 	 */
 	public static final void shutdownNow(ExecutorService executor) {
 		if(executor == null || executor.isShutdown()) {

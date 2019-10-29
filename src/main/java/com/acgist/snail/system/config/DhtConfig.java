@@ -29,7 +29,7 @@ public class DhtConfig extends PropertiesConfig {
 	private static final String DHT_CONFIG = "/config/bt.dht.properties";
 	
 	/**
-	 * 标记ID：请求ID，默认两个字节。
+	 * 标记ID：请求ID（默认两个字节）
 	 */
 	public static final String KEY_T = "t";
 	/**
@@ -37,7 +37,7 @@ public class DhtConfig extends PropertiesConfig {
 	 */
 	public static final String KEY_Y = "y";
 	/**
-	 * 请求、请求类型
+	 * 请求消息、请求类型
 	 */
 	public static final String KEY_Q = "q";
 	/**
@@ -45,7 +45,7 @@ public class DhtConfig extends PropertiesConfig {
 	 */
 	public static final String KEY_A = "a";
 	/**
-	 * 响应、响应参数
+	 * 响应消息、响应参数
 	 */
 	public static final String KEY_R = "r";
 	/**
@@ -69,7 +69,7 @@ public class DhtConfig extends PropertiesConfig {
 	 */
 	public static final String KEY_NODES = "nodes";
 	/**
-	 * token（announce_peer使用）
+	 * Token：{@link QType#ANNOUNCE_PEER}使用
 	 */
 	public static final String KEY_TOKEN = "token";
 	/**
@@ -77,7 +77,7 @@ public class DhtConfig extends PropertiesConfig {
 	 */
 	public static final String KEY_VALUES = "values";
 	/**
-	 * 目标：查找NodeId/InfoHash
+	 * 目标：NodeId/InfoHash
 	 */
 	public static final String KEY_TARGET = "target";
 	/**
@@ -89,11 +89,11 @@ public class DhtConfig extends PropertiesConfig {
 	 */
 	public static final String KEY_IMPLIED_PORT = "implied_port";
 	/**
-	 * 自动获取：忽略配置获取UDP端口作为对等端口，并且支持uTP。
+	 * 自动配置：忽略配置端口，直接使用UDP端口作为对等端口，并且支持uTP。
 	 */
 	public static final Integer IMPLIED_PORT_AUTO = 1;
 	/**
-	 * 使用配置
+	 * 配置端口
 	 */
 	public static final Integer IMPLIED_PORT_CONFIG = 0;
 	/**
@@ -111,7 +111,7 @@ public class DhtConfig extends PropertiesConfig {
 	/**
 	 * DHT请求清理周期
 	 */
-	public static final int DHT_REQUEST_CLEAR_INTERVAL = 10;
+	public static final int DHT_REQUEST_CLEAN_INTERVAL = 10;
 	/**
 	 * DHT响应超时
 	 */

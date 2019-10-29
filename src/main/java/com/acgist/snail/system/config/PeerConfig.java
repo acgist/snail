@@ -152,7 +152,7 @@ public class PeerConfig {
 		//================保留位================//
 		HANDSHAKE_RESERVED[7] |= DHT_PROTOCOL;
 		HANDSHAKE_RESERVED[7] |= PEER_EXCHANGE;
-//		HANDSHAKE_RESERVED[7] |= FAST_PROTOCOL;
+		HANDSHAKE_RESERVED[7] |= FAST_PROTOCOL;
 		HANDSHAKE_RESERVED[5] |= EXTENSION_PROTOCOL;
 		//================客户端名称================//
 		PEER_NAMES.put("-AG", "Ares");
@@ -293,12 +293,12 @@ public class PeerConfig {
 		/** 扩展 */
 		EXTENSION(		(byte) 0x14),
 		//================FAST Protocol================//
-		/** 推荐块 */
-		SUGGEST(		(byte) 0x0D),
 		/** 所有块 */
 		HAVE_ALL(		(byte) 0x0E),
 		/** 没有块 */
 		HAVE_NONE(		(byte) 0x0F),
+		/** 推荐块 */
+		SUGGEST_PIECE(	(byte) 0x0D),
 		/** 拒绝请求 */
 		REJECT_REQUEST(	(byte) 0x10),
 		/** 快速允许 */
