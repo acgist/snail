@@ -96,20 +96,23 @@ SnailLauncher.exe
 |[Holepunch Extension](http://www.bittorrent.org/beps/bep_0055.html)|○|
 |[Peer Exchange (PEX)](http://www.bittorrent.org/beps/bep_0011.html)|√|
 |[Peer ID Conventions](http://www.bittorrent.org/beps/bep_0020.html)|√|
+|[IPv6 Tracker Extension](http://www.bittorrent.org/beps/bep_0007.html)|×|
 |[Local Service Discovery](http://www.bittorrent.org/beps/bep_0014.html)|√|
 |[The lt_donthave extension](http://www.bittorrent.org/beps/bep_0054.html)|×|
 |[uTorrent Transport Protocol](http://www.bittorrent.org/beps/bep_0029.html)|√|
 |[Multitracker Metadata Extension](http://www.bittorrent.org/beps/bep_0012.html)|√|
+|[BitTorrent DHT Extensions for IPv6](http://www.bittorrent.org/beps/bep_0032.html)|×|
 |[Tracker Returns Compact Peer Lists](http://www.bittorrent.org/beps/bep_0023.html)|√|
 |[UDP Tracker Protocol for BitTorrent](http://www.bittorrent.org/beps/bep_0015.html)|√|
 |[The BitTorrent Protocol Specification](http://www.bittorrent.org/beps/bep_0003.html)|√|
 |[Extension for Peers to Send Metadata Files](http://www.bittorrent.org/beps/bep_0009.html)|√|
+|[WebSeed - HTTP/FTP Seeding (GetRight style)](http://www.bittorrent.org/beps/bep_0019.html)|?|
 
 #### 其他进度
 
 |协议|进度|
 |:--|:--:|
-|IPv6|x|
+|IPv6|○|
 |[UPnP](http://upnp.org/specs/arch/UPnP-arch-DeviceArchitecture-v1.0.pdf)|√|
 |[STUN](https://www.rfc-editor.org/rfc/rfc5389.txt)|○|
 |[Message Stream Encryption](https://wiki.vuze.com/w/Message_Stream_Encryption)|√|
