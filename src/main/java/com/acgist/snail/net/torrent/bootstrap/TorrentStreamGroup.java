@@ -245,6 +245,16 @@ public class TorrentStreamGroup {
 	}
 
 	/**
+	 * 所有位图
+	 */
+	public BitSet allPieces() {
+		final int length = this.torrent.getInfo().pieceSize();
+		final var allPieces = new BitSet(length);
+		allPieces.set(0, length);
+		return allPieces;
+	}
+	
+	/**
 	 * 剩余没有下载Piece的数量
 	 * 
 	 * @since 1.0.2
