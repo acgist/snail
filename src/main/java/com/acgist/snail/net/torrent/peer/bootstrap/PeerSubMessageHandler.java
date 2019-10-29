@@ -659,6 +659,14 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * <dl>
 	 */
 	private void exchangeBitfield() {
+		if(!this.torrentSession.uploadable()) {
+			LOGGER.debug("交换位图：任务不可上传");
+			return;
+		}
+		if(this.peerSession.uploadOnly()) {
+			LOGGER.debug("交换位图：Peer只上传不下载");
+			return;
+		}
 		if(this.peerSession.supportFastExtensionProtocol()) {
 			final var pieces = this.torrentSession.pieces(); // 已下载Pieces
 			if(pieces.cardinality() == 0) {
