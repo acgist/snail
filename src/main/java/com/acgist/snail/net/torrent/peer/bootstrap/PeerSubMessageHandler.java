@@ -184,6 +184,17 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	}
 	
 	/**
+	 * <p>是否需要加密</p>
+	 * <p>验证Peer是否偏爱加密</p>
+	 */
+	public boolean needEncrypt() {
+		if(this.peerSession == null) {
+			return false;
+		}
+		return this.peerSession.encrypt();
+	}
+	
+	/**
 	 * 是否握手完成
 	 */
 	public boolean handshake() {

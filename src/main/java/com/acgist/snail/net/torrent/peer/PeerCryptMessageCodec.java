@@ -30,7 +30,7 @@ public final class PeerCryptMessageCodec extends MessageCodec<ByteBuffer, ByteBu
 	@Override
 	public void decode(ByteBuffer buffer, InetSocketAddress address, boolean hasAddress) throws NetException {
 		buffer.flip();
-		if(this.mseCryptHandshakeHandler.over()) { // 握手完成
+		if(this.mseCryptHandshakeHandler.complete()) { // 握手完成
 			this.mseCryptHandshakeHandler.decrypt(buffer);
 			this.doNext(buffer, address, hasAddress);
 		} else { // 握手消息
@@ -41,11 +41,15 @@ public final class PeerCryptMessageCodec extends MessageCodec<ByteBuffer, ByteBu
 	@Override
 	public void encode(ByteBuffer buffer) {
 		this.messageCodec.encode(buffer);
-		if(this.mseCryptHandshakeHandler.over()) { // 握手完成
+		if(this.mseCryptHandshakeHandler.complete()) { // 握手完成
 			this.mseCryptHandshakeHandler.encrypt(buffer); // 加密消息
 		} else { // 握手未完成
-			// TODO：PeerSession.encrypt()验证
-			if(CryptConfig.STRATEGY.crypt()) { // 需要加密
+			/*
+			 * 优先Peer是否偏爱加密，再判断软件本身配置加密策略。
+			 */
+			final boolean needEncrypt = this.mseCryptHandshakeHandler.needEncrypt();
+			final boolean encrypt = needEncrypt ? true : CryptConfig.STRATEGY.crypt();
+			if(encrypt) { // 需要加密
 				this.mseCryptHandshakeHandler.handshake(); // 握手
 				this.mseCryptHandshakeHandler.handshakeLock(); // 握手加锁
 				this.mseCryptHandshakeHandler.encrypt(buffer); // 加密消息

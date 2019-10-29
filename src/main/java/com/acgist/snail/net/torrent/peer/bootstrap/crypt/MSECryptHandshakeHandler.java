@@ -62,9 +62,9 @@ public final class MSECryptHandshakeHandler {
 	 */
 	private static final int BUFFER_LENGTH = 4 * SystemConfig.ONE_KB;
 	/**
-	 * 握手等待超时时间，不要超过PeerLauncher等待时间。
+	 * 握手等待超时时间：不要超过PeerLauncher等待时间
 	 */
-	private static final int HANDSHAKE_LOCK_TIMEOUT = 5;
+	private static final int HANDSHAKE_LOCK_TIMEOUT = 4;
 	
 	/**
 	 * 加密握手步骤
@@ -97,7 +97,7 @@ public final class MSECryptHandshakeHandler {
 	/**
 	 * 是否处理完成（握手处理）
 	 */
-	private volatile boolean over = false;
+	private volatile boolean complete = false;
 	/**
 	 * 是否加密：默认明文
 	 */
@@ -151,10 +151,17 @@ public final class MSECryptHandshakeHandler {
 	}
 
 	/**
+	 * 是否需要加密
+	 */
+	public boolean needEncrypt() {
+		return this.peerSubMessageHandler.needEncrypt();
+	}
+	
+	/**
 	 * 是否处理完成
 	 */
-	public boolean over() {
-		return this.over;
+	public boolean complete() {
+		return this.complete;
 	}
 
 	/**
@@ -219,7 +226,7 @@ public final class MSECryptHandshakeHandler {
 	 * 设置明文
 	 */
 	public void plaintext() {
-		this.over(true, false);
+		this.complete(true, false);
 	}
 	
 	/**
@@ -244,14 +251,14 @@ public final class MSECryptHandshakeHandler {
 	 * 握手等待锁
 	 */
 	public void handshakeLock() {
-		if(!this.over) {
+		if(!this.complete) {
 			synchronized (this.handshakeLock) {
-				if(!this.over) {
+				if(!this.complete) {
 					ThreadUtils.wait(this.handshakeLock, Duration.ofSeconds(HANDSHAKE_LOCK_TIMEOUT));
 				}
 			}
 		}
-		if(!this.over) {
+		if(!this.complete) {
 			LOGGER.debug("加密握手失败：使用明文");
 			this.plaintext();
 		}
@@ -465,7 +472,7 @@ public final class MSECryptHandshakeHandler {
 		this.cipher.encrypt(buffer);
 		this.peerSubMessageHandler.send(buffer);
 		LOGGER.debug("加密握手（发送确认加密协议）：{}", this.strategy);
-		this.over(true, this.strategy.crypt());
+		this.complete(true, this.strategy.crypt());
 	}
 	
 	private static final int CONFIRM_MIN_LENGTH = 8 + 4 + 2 + 0;
@@ -512,7 +519,7 @@ public final class MSECryptHandshakeHandler {
 					LOGGER.debug("加密握手（接收确认加密协议Padding）：{}", StringUtils.hex(bytes));
 				});
 			}
-			this.over(true, this.strategy.crypt());
+			this.complete(true, this.strategy.crypt());
 		}
 	}
 	
@@ -579,7 +586,7 @@ public final class MSECryptHandshakeHandler {
 			final byte[] names = new byte[PeerConfig.HANDSHAKE_NAME_LENGTH];
 			buffer.get(names);
 			if(ArrayUtils.equals(names, PeerConfig.HANDSHAKE_NAME_BYTES)) { // 握手消息直接使用明文
-				this.over(true, false);
+				this.complete(true, false);
 				buffer.position(0); // 重置长度
 				this.peerUnpackMessageCodec.decode(buffer);
 				return true;
@@ -626,11 +633,11 @@ public final class MSECryptHandshakeHandler {
 	/**
 	 * 设置完成
 	 * 
-	 * @param over 是否完成
+	 * @param complete 是否完成
 	 * @param crypt 是否加密
 	 */
-	private void over(boolean over, boolean crypt) {
-		this.over = over;
+	private void complete(boolean complete, boolean crypt) {
+		this.complete = complete;
 		this.crypt = crypt;
 		this.buffer = null;
 		this.keyPair = null;
