@@ -256,7 +256,7 @@ public class NetUtils {
 	public static final DatagramChannel buildUdpChannel(final String host, final int port, final boolean reuseaddr) {
 		DatagramChannel channel = null;
 		try {
-			channel = DatagramChannel.open(StandardProtocolFamily.INET); // TPv4
+			channel = DatagramChannel.open(StandardProtocolFamily.INET); // IPv4
 			channel.configureBlocking(false); // 不阻塞
 			if(reuseaddr) {
 				channel.setOption(StandardSocketOptions.SO_REUSEADDR, true);

@@ -708,7 +708,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	}
 	
 	/**
-	 * <p>处理扩展信息</p>
+	 * <p>处理扩展消息</p>
 	 */
 	private void extension(ByteBuffer buffer) throws NetException {
 		LOGGER.debug("处理扩展消息");
@@ -716,17 +716,24 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	}
 	
 	/**
-	 * 发送扩展信息：pex
+	 * 发送扩展消息：pex
 	 */
 	public void pex(byte[] bytes) {
 		this.extensionMessageHandler.pex(bytes);
 	}
 	
 	/**
-	 * 发送扩展信息：holepunch
+	 * 发送扩展消息：holepunch
 	 */
 	public void holepunch(String host, Integer port) {
 		this.extensionMessageHandler.holepunch(host, port);
+	}
+	
+	/**
+	 * 发送扩展消息：连接
+	 */
+	public void holepunchConnect(String host, int port) {
+		this.extensionMessageHandler.holepunchConnect(host, port);
 	}
 	
 	/**
@@ -769,7 +776,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	}
 	
 	/**
-	 * <p>释放Peer时使用，调用前最好不要发送其他信息，防止等待不能及时释放。</p>
+	 * <p>释放Peer时使用，调用前最好不要发送其他消息，防止等待不能及时释放。</p>
 	 * {@link IMessageEncryptHandler#close()}
 	 */
 	public void close() {

@@ -49,7 +49,7 @@ public class UtpService {
 	}
 	
 	/**
-	 * UTP超时定时任务：定时处理超时信息
+	 * UTP超时定时任务：定时处理超时消息
 	 */
 	private void register() {
 		LOGGER.debug("启动UTP超时定时任务");
