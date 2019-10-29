@@ -88,6 +88,7 @@ SnailLauncher.exe
 
 |BEP|进度|
 |:--|:--:|
+|upload_only|○|
 |[DHT Protocol](http://www.bittorrent.org/beps/bep_0005.html)|√|
 |[Fast Extension](http://www.bittorrent.org/beps/bep_0006.html)|×|
 |[Private Torrents](http://www.bittorrent.org/beps/bep_0027.html)|○|
@@ -96,6 +97,7 @@ SnailLauncher.exe
 |[Peer Exchange (PEX)](http://www.bittorrent.org/beps/bep_0011.html)|√|
 |[Peer ID Conventions](http://www.bittorrent.org/beps/bep_0020.html)|√|
 |[Local Service Discovery](http://www.bittorrent.org/beps/bep_0014.html)|√|
+|[The lt_donthave extension](http://www.bittorrent.org/beps/bep_0054.html)|×|
 |[uTorrent Transport Protocol](http://www.bittorrent.org/beps/bep_0029.html)|√|
 |[Multitracker Metadata Extension](http://www.bittorrent.org/beps/bep_0012.html)|√|
 |[Tracker Returns Compact Peer Lists](http://www.bittorrent.org/beps/bep_0023.html)|√|
