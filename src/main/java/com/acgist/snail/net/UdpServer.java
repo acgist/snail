@@ -162,7 +162,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 	 */
 	public static final void shutdown() {
 		LOGGER.info("关闭UDP Server线程池");
-		SystemThreadContext.shutdownNow(EXECUTOR);
+		SystemThreadContext.shutdown(EXECUTOR);
 	}
 
 }

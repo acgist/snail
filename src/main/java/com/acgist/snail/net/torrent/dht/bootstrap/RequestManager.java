@@ -25,7 +25,7 @@ public class RequestManager {
 	
 	static {
 		LOGGER.debug("启动DHT超时请求清除定时任务");
-		SystemThreadContext.timerFixedDelay(DhtConfig.DHT_REQUEST_CLEAR_INTERVAL, DhtConfig.DHT_REQUEST_CLEAR_INTERVAL, TimeUnit.MINUTES, () -> {
+		SystemThreadContext.timerFixedDelay(DhtConfig.DHT_REQUEST_CLEAN_INTERVAL, DhtConfig.DHT_REQUEST_CLEAN_INTERVAL, TimeUnit.MINUTES, () -> {
 			LOGGER.debug("执行DHT超时请求清除定时任务");
 			RequestManager.getInstance().clear(); // 清除DHT超时请求
 		});

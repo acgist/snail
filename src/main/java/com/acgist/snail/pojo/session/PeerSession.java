@@ -231,6 +231,14 @@ public final class PeerSession implements IStatistics {
 	}
 	
 	/**
+	 * 清空Piece位图和无效Piece位图
+	 */
+	public void cleanPieces() {
+		this.pieces.clear();
+		this.badPieces.clear();
+	}
+	
+	/**
 	 * 设置Peer位图
 	 * 
 	 * @param pieces Peer位图
