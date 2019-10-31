@@ -4,7 +4,7 @@ import java.util.BitSet;
 
 /**
  * <p>位图工具</p>
- * <p>每个字节的高位（末尾）表示八个Piece中的第一块。</p>
+ * <p>每个字节的高位（末尾）表示八个Piece中的第一块</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -13,7 +13,7 @@ public class BitfieldUtils {
 
 	/**
 	 * <p>位图转为字节数组</p>
-	 * <p>即是位图没有下载但是传递时依旧要填充0。</p>
+	 * <p>即使位图没有下载但是传递时依旧要填充0</p>
 	 * 
 	 * @param pieceSize 块数量
 	 * @param pieces 位图

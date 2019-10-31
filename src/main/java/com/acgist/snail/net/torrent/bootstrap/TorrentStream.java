@@ -202,7 +202,7 @@ public class TorrentStream {
 	 * @param peerPieces Peer位图
 	 */
 	public TorrentPiece pick(final BitSet peerPieces) {
-		if(peerPieces.cardinality() <= 0) {
+		if(peerPieces.isEmpty()) {
 			return null;
 		}
 		synchronized (this) {
@@ -212,12 +212,12 @@ public class TorrentStream {
 			pickPieces.andNot(this.pausePieces);
 			pickPieces.andNot(this.downloadPieces);
 			this.pausePieces.clear();
-			if(pickPieces.cardinality() <= 0) {
+			if(pickPieces.isEmpty()) {
 				if(this.torrentStreamGroup.remainingPieceSize() <= SystemConfig.getPieceRepeatSize()) {
 					LOGGER.debug("选择Piece时，任务接近完成并且找不到更多Piece，开始重复选择未下载的Piece。");
 					pickPieces.or(peerPieces);
 					pickPieces.andNot(this.pieces);
-					if(pickPieces.cardinality() <= 0) {
+					if(pickPieces.isEmpty()) {
 						LOGGER.debug("选择Piece时Piece已经全部下载完成");
 						return null;
 					}
