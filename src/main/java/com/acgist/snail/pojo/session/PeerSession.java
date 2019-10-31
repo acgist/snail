@@ -73,7 +73,7 @@ public final class PeerSession implements IStatistics {
 	/**
 	 * 客户端将Peer阻塞：阻塞-1（true）、非阻塞-0
 	 */
-	private volatile boolean amChocking;
+	private volatile boolean amChoked;
 	/**
 	 * 客户端对Peer感兴趣：感兴趣-1（true）、不感兴趣-0
 	 */
@@ -81,7 +81,7 @@ public final class PeerSession implements IStatistics {
 	/**
 	 * Peer将客户阻塞：阻塞-1（true）、非阻塞-0
 	 */
-	private volatile boolean peerChocking;
+	private volatile boolean peerChoked;
 	/**
 	 * Peer对客户端感兴趣：感兴趣-1、不感兴趣-0
 	 */
@@ -106,9 +106,9 @@ public final class PeerSession implements IStatistics {
 	private PeerSession(StatisticsSession parent, String host, Integer port) {
 		this.host = host;
 		this.port = port;
-		this.amChocking = true;
+		this.amChoked = true;
 		this.amInterested = false;
-		this.peerChocking = true;
+		this.peerChoked = true;
 		this.peerInterested = false;
 		this.pieces = new BitSet();
 		this.badPieces = new BitSet();
@@ -120,12 +120,22 @@ public final class PeerSession implements IStatistics {
 		return new PeerSession(parent, host, port);
 	}
 	
-	public void amChoke() {
-		this.amChocking = true;
+	/**
+	 * 重置状态
+	 */
+	public void reset() {
+		this.amChoked = true;
+		this.amInterested = false;
+//		this.peerChoked = true;
+//		this.peerInterested = false;
 	}
 	
-	public void amUnchoke() {
-		this.amChocking = false;
+	public void amChoked() {
+		this.amChoked = true;
+	}
+	
+	public void amUnchoked() {
+		this.amChoked = false;
 	}
 	
 	public void amInterested() {
@@ -136,12 +146,12 @@ public final class PeerSession implements IStatistics {
 		this.amInterested = false;
 	}
 	
-	public void peerChoke() {
-		this.peerChocking = true;
+	public void peerChoked() {
+		this.peerChoked = true;
 	}
 	
-	public void peerUnchoke() {
-		this.peerChocking = false;
+	public void peerUnchoked() {
+		this.peerChoked = false;
 	}
 	
 	public void peerInterested() {
@@ -151,20 +161,37 @@ public final class PeerSession implements IStatistics {
 	public void peerNotInterested() {
 		this.peerInterested = false;
 	}
-	public boolean isAmChocking() {
-		return this.amChocking;
+	
+	public boolean isAmChoked() {
+		return this.amChoked;
+	}
+	
+	public boolean isAmUnchoked() {
+		return !this.amChoked;
 	}
 	
 	public boolean isAmInterested() {
 		return this.amInterested;
 	}
 	
-	public boolean isPeerChocking() {
-		return this.peerChocking;
+	public boolean isAmNotInterested() {
+		return !this.amInterested;
+	}
+	
+	public boolean isPeerChoked() {
+		return this.peerChoked;
+	}
+	
+	public boolean isPeerUnchoked() {
+		return !this.peerChoked;
 	}
 	
 	public boolean isPeerInterested() {
 		return this.peerInterested;
+	}
+	
+	public boolean isPeerNotInterested() {
+		return !this.peerInterested;
 	}
 	
 	/**
@@ -192,14 +219,14 @@ public final class PeerSession implements IStatistics {
 	 * 可以上传：Peer对客户端感兴趣并且客户端未阻塞Peer
 	 */
 	public boolean uploadable() {
-		return this.peerInterested && !this.amChocking;
+		return this.peerInterested && !this.amChoked;
 	}
 	
 	/**
 	 * 可以下载：客户端对Peer感兴趣并且Peer未阻塞客户端
 	 */
 	public boolean downloadable() {
-		return this.amInterested && !this.peerChocking;
+		return this.amInterested && !this.peerChoked;
 	}
 	
 	/**
