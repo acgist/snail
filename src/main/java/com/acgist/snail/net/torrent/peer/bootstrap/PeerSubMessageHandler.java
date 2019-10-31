@@ -1076,8 +1076,8 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	private void peerLauncherDownload() {
 		if(
 			this.peerSession != null &&
-			this.peerLauncher != null &&
-			this.peerSession.isPeerUnchoked()
+			this.peerSession.isPeerUnchoked() &&
+			this.peerLauncher != null
 		) {
 			this.peerLauncher.download();
 		}
