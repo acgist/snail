@@ -126,8 +126,8 @@ public final class PeerSession implements IStatistics {
 	public void reset() {
 		this.amChoked = true;
 		this.amInterested = false;
-//		this.peerChoked = true;
-//		this.peerInterested = false;
+		this.peerChoked = true;
+		this.peerInterested = false;
 	}
 	
 	public void amChoked() {

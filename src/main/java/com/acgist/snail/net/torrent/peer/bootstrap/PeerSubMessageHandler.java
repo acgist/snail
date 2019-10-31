@@ -359,8 +359,6 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		exchangeBitfield(); // 交换位图
 		if(server) {
 			unchoke(); // 解除阻塞
-		} else {
-			this.peerLauncherDownload();
 		}
 	}
 
@@ -428,12 +426,12 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * <p>注：即使任务不能下载，也需要解除阻塞状态。</p>
 	 */
 	private void unchoke(ByteBuffer buffer) {
-		LOGGER.debug("处理解除阻塞消息");
-		this.peerSession.peerUnchoked();
 		if(!this.torrentSession.downloadable()) {
 			LOGGER.debug("处理解除阻塞消息：任务不可下载");
 			return;
 		}
+		LOGGER.debug("处理解除阻塞消息");
+		this.peerSession.peerUnchoked();
 		this.peerLauncherDownload();
 	}
 	
@@ -734,15 +732,15 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * <p>处理位图消息</p>
 	 */
 	private void bitfield(ByteBuffer buffer) {
+		if(!this.torrentSession.downloadable()) {
+			LOGGER.debug("处理位图消息：任务不可下载");
+			return;
+		}
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
 		final BitSet pieces = BitfieldUtils.toBitSet(bytes); // Peer位图
 		this.peerSession.pieces(pieces);
 		LOGGER.debug("处理位图消息：{}", pieces);
-		if(!this.torrentSession.downloadable()) {
-			LOGGER.debug("处理位图消息：任务不可下载");
-			return;
-		}
 		final BitSet notHave = new BitSet(); // 没有下载的位图
 		notHave.or(pieces);
 		notHave.andNot(this.torrentSession.pieces());

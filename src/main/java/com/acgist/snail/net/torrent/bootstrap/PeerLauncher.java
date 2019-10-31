@@ -253,11 +253,17 @@ public final class PeerLauncher extends PeerClientHandler {
 		if(!available()) {
 			return false;
 		}
+		if(this.peerSession.isPeerChoked()) {
+			LOGGER.debug("Peer阻塞：释放Peer");
+			this.completeLock.set(true);
+			this.release();
+			return false;
+		}
 		pickDownloadPiece();
 		if(this.downloadPiece == null) {
 			LOGGER.debug("没有匹配Piece下载：释放Peer");
 			this.peerSubMessageHandler.notInterested(); // 发送不感兴趣消息
-			this.completeLock.set(true); // 没有匹配到下载块时设置为完成
+			this.completeLock.set(true);
 			this.release();
 			this.torrentSession.checkCompletedAndDone(); // 完成下载检测
 			return false;
