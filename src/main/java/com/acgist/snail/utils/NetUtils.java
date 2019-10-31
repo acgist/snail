@@ -10,10 +10,12 @@ import java.net.StandardSocketOptions;
 import java.net.UnknownHostException;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.Selector;
-import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.acgist.snail.pojo.bean.LambdaOptional;
 
 /**
  * <p>网络工具</p>
@@ -25,6 +27,59 @@ import org.slf4j.LoggerFactory;
 public class NetUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(NetUtils.class);
+	
+	/**
+	 * 本机名称
+	 */
+	private static final String LOCAL_HOST_NAME;
+	/**
+	 * 本机地址（多个物理地址获取其中一个）
+	 */
+	private static final String LOCAL_HOST_ADDRESS;
+	/**
+	 * 本机默认物理网卡（多个物理网卡获取其中一个）
+	 */
+	private static final NetworkInterface DEFAULT_NETWORK_INTERFACE;
+	
+	static {
+		final LambdaOptional<String> localHostName = LambdaOptional.newInstance();
+		final LambdaOptional<String> localHostAddress = LambdaOptional.newInstance();
+		final LambdaOptional<NetworkInterface> defaultNetworkInterface = LambdaOptional.newInstance();
+		try {
+			final AtomicInteger index = new AtomicInteger(Integer.MAX_VALUE);
+			NetworkInterface.networkInterfaces().forEach(networkInterface -> {
+				final int nowIndex = networkInterface.getIndex();
+				networkInterface.getInetAddresses().asIterator().forEachRemaining(inetAddress -> {
+					if(
+						inetAddress.isSiteLocalAddress() && // 本机地址
+						!inetAddress.isAnyLocalAddress() && // 通配地址
+						!inetAddress.isLoopbackAddress() && // 回环地址
+						!inetAddress.isLinkLocalAddress() && // 连接地址：虚拟网卡
+						!inetAddress.isMulticastAddress() && // 广播地址
+						index.get() > nowIndex // 设置索引最小网卡
+					) {
+						index.set(nowIndex);
+//						localHostName.set(inetAddress.getHostName()); // 速度太慢
+						localHostAddress.set(inetAddress.getHostAddress());
+						defaultNetworkInterface.set(networkInterface);
+					}
+				});
+			});
+		} catch (SocketException e) {
+			LOGGER.error("初始化本地网络信息异常", e);
+		}
+		try {
+			localHostName.set(InetAddress.getLocalHost().getHostName());
+		} catch (UnknownHostException e) {
+			LOGGER.error("初始化本地名称异常", e);
+		}
+		LOCAL_HOST_NAME = localHostName.get();
+		LOCAL_HOST_ADDRESS = localHostAddress.get();
+		DEFAULT_NETWORK_INTERFACE = defaultNetworkInterface.get();
+		LOGGER.info("本地名称：{}", LOCAL_HOST_NAME);
+		LOGGER.info("本地地址：{}", LOCAL_HOST_ADDRESS);
+		LOGGER.info("本地默认物理网卡：{}", DEFAULT_NETWORK_INTERFACE);
+	}
 	
 	/**
 	 * 最大端口号
@@ -201,55 +256,23 @@ public class NetUtils {
 	
 	/**
 	 * 获取本机名称
-	 * 
-	 * TODO：初始化一次
 	 */
-	public static final String inetHostName() {
-		try {
-			final InetAddress address = InetAddress.getLocalHost();
-			return address.getHostName();
-		} catch (UnknownHostException e) {
-			LOGGER.error("获取本机名称异常", e);
-		}
-		return null;
+	public static final String localHostName() {
+		return LOCAL_HOST_NAME;
 	}
 
 	/**
 	 * 获取本机地址
-	 * 
-	 * TODO：初始化一次
 	 */
-	public static final String inetHostAddress() {
-		try {
-			final InetAddress address = InetAddress.getLocalHost();
-			return address.getHostAddress();
-		} catch (UnknownHostException e) {
-			LOGGER.error("获取本机地址异常", e);
-		}
-		return null;
+	public static final String localHostAddress() {
+		return LOCAL_HOST_ADDRESS;
 	}
 	
 	/**
-	 * 获取网络接口
-	 * 
-	 * TODO：初始化一次
+	 * 获取本机默认物理网卡
 	 */
 	public static final NetworkInterface defaultNetworkInterface() {
-		final String hostAddress = inetHostAddress();
-		try {
-			final Optional<NetworkInterface> optional = NetworkInterface.networkInterfaces().filter(interfaces -> {
-				return interfaces.inetAddresses().anyMatch(addresses -> {
-					return addresses.getHostAddress().equals(hostAddress);
-				});
-			}).findFirst();
-			if(optional.isEmpty()) {
-				return null;
-			}
-			return optional.get();
-		} catch (SocketException e) {
-			LOGGER.error("获取网络接口异常", e);
-		}
-		return null;
+		return DEFAULT_NETWORK_INTERFACE;
 	}
 
 	/**
