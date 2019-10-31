@@ -165,7 +165,6 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			PeerConfig.SOURCE_CONNECT);
 		final PeerConnect peerConnect = torrentSession.newPeerConnect(peerSession, this);
 		if(peerConnect != null) {
-			peerSession.id(peerId);
 			this.peerConnect = peerConnect;
 			peerSession.peerConnect(this.peerConnect);
 			init(peerSession, torrentSession, reserved);
@@ -354,6 +353,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 				return;
 			}
 		}
+		this.peerSession.id(peerId);
 		extension(); // 发送扩展消息
 		dht(); // 发送DHT消息
 		exchangeBitfield(); // 交换位图
@@ -986,14 +986,14 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 */
 	private ByteBuffer buildMessage(PeerConfig.Type type, byte[] payload) {
 		final Byte id = type == null ? null : type.id();
-		int capacity = 4; // length_prefix：四字节
+		int capacity = 0;
 		if(id != null) {
 			capacity += 1;
 		}
 		if(payload != null) {
 			capacity += payload.length;
 		}
-		final ByteBuffer buffer = ByteBuffer.allocate(capacity);
+		final ByteBuffer buffer = ByteBuffer.allocate(capacity + 4); // length_prefix：四字节
 		buffer.putInt(capacity);
 		if(id != null) {
 			buffer.put(id);

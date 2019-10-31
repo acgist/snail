@@ -228,6 +228,7 @@ public final class PeerLauncher extends PeerClientHandler {
 	 * 一直进行下载直到结束
 	 */
 	private void requests() {
+		LOGGER.debug("开始请求下载");
 		boolean ok = true;
 		while(ok) {
 			try {
