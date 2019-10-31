@@ -160,7 +160,7 @@ public class UpnpService {
 			return Status.MAPABLE;
 		}
 		final var registerIp = UpnpResponse.parseGetSpecificPortMappingEntry(body);
-		final var localIp = NetUtils.inetHostAddress();
+		final var localIp = NetUtils.localHostAddress();
 		if(localIp.equals(registerIp)) {
 			return Status.USEABLE;
 		} else {
@@ -176,7 +176,7 @@ public class UpnpService {
 		if(!this.available) {
 			return false;
 		}
-		final var address = NetUtils.inetHostAddress();
+		final var address = NetUtils.localHostAddress();
 		final var upnpRequest = UpnpRequest.newRequest(this.serviceType);
 		final var xml = upnpRequest.buildAddPortMapping(port, address, portExt, protocol);
 		final var client = HTTPClient.newInstance(this.controlURL);

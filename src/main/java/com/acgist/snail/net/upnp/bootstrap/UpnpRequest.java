@@ -104,7 +104,7 @@ public class UpnpRequest {
 			<NewExternalPort>8080</NewExternalPort><!-- 外网端口 -->
 			<NewProtocol>TCP</NewProtocol>
 			<NewInternalPort>8080</NewInternalPort><!-- 内网端口 -->
-			<NewInternalClient>192.168.1.100</NewInternalClient><!-- 外网地址 -->
+			<NewInternalClient>192.168.1.100</NewInternalClient><!-- 内网地址 -->
 			<NewEnabled>1</NewEnabled>
 			<NewPortMappingDescription>描述</NewPortMappingDescription>
 			<NewLeaseDuration>0</NewLeaseDuration>

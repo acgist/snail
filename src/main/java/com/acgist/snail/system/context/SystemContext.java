@@ -104,8 +104,8 @@ public class SystemContext {
 		LOGGER.info("用户主目录：{}", System.getProperty("user.home"));
 		LOGGER.info("用户工作目录：{}", System.getProperty("user.dir"));
 		LOGGER.info("文件编码：{}", System.getProperty("file.encoding"));
-		LOGGER.info("本机名称：{}", NetUtils.inetHostName());
-		LOGGER.info("本机地址：{}", NetUtils.inetHostAddress());
+		LOGGER.info("本机名称：{}", NetUtils.localHostName());
+		LOGGER.info("本机地址：{}", NetUtils.localHostAddress());
 	}
 
 	/**
