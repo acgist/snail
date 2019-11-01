@@ -171,9 +171,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 		// 本机IP地址：客户端自动获取
 //		final String yourip = SystemConfig.getExternalIpAddress();
 //		if(StringUtils.isNotEmpty(yourip)) {
-//			final ByteBuffer youripBuffer = ByteBuffer.allocate(4);
-//			youripBuffer.putInt(NetUtils.encodeIpToInt(yourip));
-//			data.put(EX_YOURIP, youripBuffer.array());
+//			data.put(EX_YOURIP, NumberUtils.intToBytes(NetUtils.encodeIpToInt(yourip)));
 //		}
 		data.put(EX_REQQ, 255);
 		if(PeerConfig.ExtensionType.UT_PEX.notice()) {

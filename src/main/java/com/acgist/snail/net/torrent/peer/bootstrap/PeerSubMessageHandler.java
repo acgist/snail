@@ -22,6 +22,7 @@ import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.BitfieldUtils;
+import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -359,6 +360,8 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		exchangeBitfield(); // 交换位图
 		if(server) {
 			unchoke(); // 解除阻塞
+		} else {
+			this.allowedFastDownload();
 		}
 	}
 
@@ -432,7 +435,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		}
 		LOGGER.debug("处理解除阻塞消息");
 		this.peerSession.peerUnchoked();
-		this.peerLauncherDownload();
+		this.unchokeDownload();
 	}
 	
 	/**
@@ -509,7 +512,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			return;
 		}
 		LOGGER.debug("发送have消息：{}", index);
-		pushMessage(PeerConfig.Type.HAVE, ByteBuffer.allocate(4).putInt(index).array());
+		pushMessage(PeerConfig.Type.HAVE, NumberUtils.intToBytes(index));
 	}
 
 	/**
@@ -521,11 +524,9 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			return;
 		}
 		final int index = buffer.getInt();
-		this.peerSession.piece(index);
 		LOGGER.debug("处理have消息：{}", index);
-		if(this.torrentSession.havePiece(index)) {
-//			notInterested();
-		} else { // 如果没有该Piece：发送感兴趣消息
+		this.peerSession.piece(index);
+		if(!this.torrentSession.havePiece(index)) {
 			interested();
 		}
 	}
@@ -604,8 +605,12 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			LOGGER.debug("发送suggestPiece消息：Peer只上传不下载");
 			return;
 		}
+		if(this.peerSession.havePiece(index)) {
+			LOGGER.debug("发送suggestPiece消息：Peer已经含有该Piece");
+			return;
+		}
 		LOGGER.debug("发送suggestPiece消息：{}", index);
-		pushMessage(PeerConfig.Type.SUGGEST_PIECE, ByteBuffer.allocate(4).putInt(index).array());
+		pushMessage(PeerConfig.Type.SUGGEST_PIECE, NumberUtils.intToBytes(index));
 	}
 	
 	/**
@@ -617,8 +622,11 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			return;
 		}
 		final int index = buffer.getInt();
-		this.peerSession.suggestPieces(index);
 		LOGGER.debug("处理suggestPiece消息：{}", index);
+		this.peerSession.suggestPieces(index);
+		if(!this.torrentSession.havePiece(index)) {
+			interested();
+		}
 	}
 	
 	/**
@@ -658,14 +666,37 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * </p>
 	 */
 	public void allowedFast(int index) {
-		
+		if(!this.torrentSession.uploadable()) {
+			LOGGER.debug("发送allowedFast消息：任务不可上传");
+			return;
+		}
+		if(this.peerSession.uploadOnly()) {
+			LOGGER.debug("发送allowedFast消息：Peer只上传不下载");
+			return;
+		}
+		if(this.peerSession.havePiece(index)) {
+			LOGGER.debug("发送allowedFast消息：Peer已经含有该Piece");
+			return;
+		}
+		LOGGER.debug("发送allowedFast消息：{}", index);
+		pushMessage(PeerConfig.Type.ALLOWED_FAST, NumberUtils.intToBytes(index));
 	}
 	
 	/**
 	 * <p>处理allowedFast消息</p>
 	 */
 	private void allowedFast(ByteBuffer buffer) {
-		
+		if(!this.torrentSession.downloadable()) {
+			LOGGER.debug("处理allowedFast消息：任务不可下载");
+			return;
+		}
+		final int index = buffer.getInt();
+		LOGGER.debug("处理allowedFast消息：{}", index);
+		this.peerSession.allowedPieces(index);
+		if(!this.torrentSession.havePiece(index)) {
+			interested();
+		}
+		this.allowedFastDownload();
 	}
 	
 	/**
@@ -739,8 +770,8 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
 		final BitSet pieces = BitfieldUtils.toBitSet(bytes); // Peer位图
-		this.peerSession.pieces(pieces);
 		LOGGER.debug("处理位图消息：{}", pieces);
+		this.peerSession.pieces(pieces);
 		final BitSet notHave = new BitSet(); // 没有下载的位图
 		notHave.or(pieces);
 		notHave.andNot(this.torrentSession.pieces());
@@ -1069,13 +1100,27 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	}
 
 	/**
-	 * 开始下载
+	 * 解除阻塞下载
 	 */
-	private void peerLauncherDownload() {
+	private void unchokeDownload() {
 		if(
 			this.peerSession != null &&
 			this.peerSession.isPeerUnchoked() &&
 			this.peerLauncher != null
+		) {
+			this.peerLauncher.download();
+		}
+	}
+
+	/**
+	 * 快速允许下载
+	 */
+	private void allowedFastDownload() {
+		if(
+			this.peerLauncher != null &&
+			this.peerSession != null &&
+			this.peerSession.isPeerChoked() &&
+			this.peerSession.supportAllowedFast()
 		) {
 			this.peerLauncher.download();
 		}

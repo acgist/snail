@@ -254,12 +254,6 @@ public final class PeerLauncher extends PeerClientHandler {
 		if(!available()) {
 			return false;
 		}
-		if(this.peerSession.isPeerChoked()) {
-			LOGGER.debug("Peer阻塞：释放Peer");
-			this.completeLock.set(true);
-			this.release();
-			return false;
-		}
 		pickDownloadPiece();
 		if(this.downloadPiece == null) {
 			LOGGER.debug("没有匹配Piece下载：释放Peer");
@@ -336,12 +330,18 @@ public final class PeerLauncher extends PeerClientHandler {
 		} else { // Piece没有下载完成
 			LOGGER.debug("Piece没有下载完成：{}", this.downloadPiece.getIndex());
 		}
-		this.downloadPiece = this.torrentSession.pick(this.peerSession.availablePieces(), this.peerSession.suggestPieces());
+		if(this.peerSession.isPeerUnchoked()) { // 解除阻塞
+			LOGGER.debug("选择下载块：解除阻塞");
+			this.downloadPiece = this.torrentSession.pick(this.peerSession.availablePieces(), this.peerSession.suggestPieces());
+		} else { // 快速允许
+			LOGGER.debug("选择下载块：快速允许");
+			this.downloadPiece = this.torrentSession.pick(this.peerSession.allowedPieces(), this.peerSession.allowedPieces());
+		}
 		if(this.downloadPiece != null) {
 			LOGGER.debug("选取Piece：{}-{}-{}", this.downloadPiece.getIndex(), this.downloadPiece.getBegin(), this.downloadPiece.getEnd());
 		}
-		this.completeLock.set(false);
 		this.countLock.set(0);
+		this.completeLock.set(false);
 		this.hasPieceMessage = false;
 	}
 

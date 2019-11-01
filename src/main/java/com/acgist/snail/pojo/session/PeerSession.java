@@ -138,8 +138,8 @@ public final class PeerSession implements IStatistics {
 		this.amInterested = false;
 		this.peerChoked = true;
 		this.peerInterested = false;
-		this.suggestPieces.clear();
-		this.allowedPieces.clear();
+//		this.suggestPieces.clear();
+//		this.allowedPieces.clear();
 	}
 	
 	public void amChoked() {
@@ -353,6 +353,13 @@ public final class PeerSession implements IStatistics {
 	 */
 	public BitSet allowedPieces() {
 		return this.allowedPieces;
+	}
+	
+	/**
+	 * 允许快速下载
+	 */
+	public boolean supportAllowedFast() {
+		return !this.allowedPieces.isEmpty(); 
 	}
 	
 	/**

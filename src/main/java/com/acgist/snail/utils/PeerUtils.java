@@ -13,6 +13,15 @@ import java.util.Map;
 public class PeerUtils {
 
 	/**
+	 * allowedFast固定值
+	 */
+	private static final int ALLOWED_FAST_MASK = 0xFFFFFF00;
+	/**
+	 * allowedFast固定值：k（快速允许块长度）
+	 */
+	private static final int ALLOWED_FAST_K = 10;
+	
+	/**
 	 * 读取IP和端口信息
 	 */
 	public static final Map<String, Integer> read(byte[] bytes) {
@@ -40,6 +49,34 @@ public class PeerUtils {
 			data.put(ip, port);
 		}
 		return data;
+	}
+	
+	/**
+	 * 快速允许块索引
+	 * 
+	 * @param pieceSize 块数量
+	 * @param ip Peer的IP地址
+	 * @param infoHash 种子InfoHash
+	 * 
+	 * @return 快速允许块索引
+	 */
+	public static final int[] allowedFast(int pieceSize, String ipAddress, byte[] infoHash) {
+		final int ipValue = NetUtils.encodeIpToInt(ipAddress);
+		ByteBuffer buffer = ByteBuffer.allocate(24); // IP(4) + InfoHash(20)
+		buffer.putInt(ALLOWED_FAST_MASK & ipValue);
+		buffer.put(infoHash);
+		int size = 0;
+		final int[] seqs = new int[ALLOWED_FAST_K];
+		while(size < ALLOWED_FAST_K) {
+			buffer = ByteBuffer.wrap(StringUtils.sha1(buffer.array()));
+			for (int index = 0; index < 5 && size < ALLOWED_FAST_K; index++) {
+				final int seq = (int) (Integer.toUnsignedLong(buffer.getInt()) % pieceSize);
+				if(ArrayUtils.indexOf(seqs, 0, size, seq) == -1) {
+					seqs[size++] = seq;
+				}
+			}
+		}
+		return seqs;
 	}
 	
 }

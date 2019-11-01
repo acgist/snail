@@ -18,6 +18,8 @@ import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.exception.DownloadException;
+import com.acgist.snail.utils.PeerUtils;
+import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
 public class PeerClientTest {
@@ -101,4 +103,12 @@ public class PeerClientTest {
 		ThreadUtils.sleep(Long.MAX_VALUE);
 	}
 
+	@Test
+	public void allowedFast() {
+		int[] values = PeerUtils.allowedFast(1313, "80.4.4.200", StringUtils.unhex("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"));
+		for (int value : values) {
+			System.out.println(value);
+		}
+	}
+	
 }

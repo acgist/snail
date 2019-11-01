@@ -51,6 +51,30 @@ public class NumberUtils {
 	}
 	
 	/**
+	 * 字符数组转int（大端）
+	 */
+	public static final int bytesToInt(byte[] bytes) {
+		int value = 0;
+		value += ((bytes[0] & 0xFF) << 24);
+		value += ((bytes[1] & 0xFF) << 16);
+		value += ((bytes[2] & 0xFF) << 8);
+		value += bytes[3] & 0xFF;
+		return value;
+	}
+	
+	/**
+	 * int转字符数组（大端）
+	 */
+	public static final byte[] intToBytes(int value) {
+		final byte[] bytes = new byte[4];
+		bytes[0] = (byte) ((value >> 24) & 0xFF);
+		bytes[1] = (byte) ((value >> 16) & 0xFF);
+		bytes[2] = (byte) ((value >> 8) & 0xFF);
+		bytes[3] = (byte) (value & 0xFF);
+		return bytes;
+	}
+	
+	/**
 	 * <p>向上取整</p>
 	 */
 	public static final int ceilDiv(long dividend, long divisor) {
