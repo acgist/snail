@@ -154,4 +154,25 @@ public class ArrayUtils {
 		return bytes;
 	}
 	
+	/**
+	 * 查找数组索引
+	 * 
+	 * @param values 数组
+	 * @param begin 开始位置
+	 * @param end 结束位置
+	 * @param value 查找数值
+	 * 
+	 * @return 索引：-1=不存在
+	 */
+	public static final int indexOf(int[] values, int begin, int end, int value) {
+		int x = -1;
+		for (int index = begin; index < end; index++) {
+			if(values[index] == value) {
+				x = index;
+				break;
+			}
+		}
+		return x;
+	}
+	
 }
