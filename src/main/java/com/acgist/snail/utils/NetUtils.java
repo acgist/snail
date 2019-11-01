@@ -51,12 +51,12 @@ public class NetUtils {
 				final int nowIndex = networkInterface.getIndex();
 				networkInterface.getInetAddresses().asIterator().forEachRemaining(inetAddress -> {
 					if(
+						index.get() > nowIndex && // 索引最小网卡
 						inetAddress.isSiteLocalAddress() && // 本机地址
 						!inetAddress.isAnyLocalAddress() && // 通配地址
 						!inetAddress.isLoopbackAddress() && // 回环地址
 						!inetAddress.isLinkLocalAddress() && // 连接地址：虚拟网卡
-						!inetAddress.isMulticastAddress() && // 广播地址
-						index.get() > nowIndex // 设置索引最小网卡
+						!inetAddress.isMulticastAddress() // 广播地址
 					) {
 						index.set(nowIndex);
 //						localHostName.set(inetAddress.getHostName()); // 速度太慢

@@ -134,10 +134,10 @@ public class TorrentStreamGroup {
 	 * 
 	 * @param peerPieces Peer位图
 	 */
-	public TorrentPiece pick(final BitSet peerPieces) {
+	public TorrentPiece pick(final BitSet peerPieces, final BitSet suggestPieces) {
 		TorrentPiece pickPiece = null;
 		for (TorrentStream torrentStream : this.streams) {
-			pickPiece = torrentStream.pick(peerPieces);
+			pickPiece = torrentStream.pick(peerPieces, suggestPieces);
 			if(pickPiece != null) {
 				break;
 			}
@@ -179,11 +179,11 @@ public class TorrentStreamGroup {
 	 * 
 	 * @return 是否保存成功
 	 */
-	public boolean piece(TorrentPiece piece) {
+	public boolean write(TorrentPiece piece) {
 		boolean ok = false;
 		for (TorrentStream torrentStream : this.streams) {
 			// 不能跳出，可能存在一个Piece多个文件的情况。
-			if(torrentStream.piece(piece)) {
+			if(torrentStream.write(piece)) {
 				ok = true;
 			}
 		}

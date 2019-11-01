@@ -593,6 +593,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * <p>
 	 * index：Piece序号
 	 * </p>
+	 * <p>注：Superseeding使用，如果下载块后发送此消息，块数据直接在内存中读取，不需要读取硬盘。</p>
 	 */
 	public void suggestPiece(int index) {
 		if(!this.torrentSession.uploadable()) {
@@ -615,9 +616,8 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			LOGGER.debug("处理suggestPiece消息：任务不可下载");
 			return;
 		}
-		// TODO：优先下载块
 		final int index = buffer.getInt();
-		this.peerSession.piece(index);
+		this.peerSession.suggestPieces(index);
 		LOGGER.debug("处理suggestPiece消息：{}", index);
 	}
 	
