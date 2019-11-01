@@ -22,6 +22,8 @@
  * mvn sonar:sonar "-Dsonar.projectKey=snail" "-Dsonar.host.url=http://localhost:9000" "-Dsonar.login=token"
  * </pre>
  * 
+ * TODO：健康度、稀有块、阻塞算法
+ * 
  * @author acgist
  * @since 1.0.0
  */

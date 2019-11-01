@@ -213,6 +213,7 @@ public final class PeerLauncher extends PeerClientHandler {
 		} finally {
 			this.peerSession.statusOff(PeerConfig.STATUS_DOWNLOAD);
 			this.peerSession.peerLauncher(null);
+			this.peerSession.reset();
 		}
 	}
 	
@@ -323,7 +324,7 @@ public final class PeerLauncher extends PeerClientHandler {
 			// 验证数据
 			if(this.downloadPiece.verify()) {
 				// 保存数据
-				final boolean ok = this.torrentSession.piece(this.downloadPiece);
+				final boolean ok = this.torrentSession.write(this.downloadPiece);
 				if(ok) {
 					// 统计下载数据
 					this.peerSession.download(this.downloadPiece.getLength());
@@ -335,7 +336,7 @@ public final class PeerLauncher extends PeerClientHandler {
 		} else { // Piece没有下载完成
 			LOGGER.debug("Piece没有下载完成：{}", this.downloadPiece.getIndex());
 		}
-		this.downloadPiece = this.torrentSession.pick(this.peerSession.availablePieces());
+		this.downloadPiece = this.torrentSession.pick(this.peerSession.availablePieces(), this.peerSession.suggestPieces());
 		if(this.downloadPiece != null) {
 			LOGGER.debug("选取Piece：{}-{}-{}", this.downloadPiece.getIndex(), this.downloadPiece.getBegin(), this.downloadPiece.getEnd());
 		}

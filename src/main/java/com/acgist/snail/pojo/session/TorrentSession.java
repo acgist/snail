@@ -505,8 +505,8 @@ public final class TorrentSession {
 	/**
 	 * <p>挑选一个Piece下载</p>
 	 */
-	public TorrentPiece pick(final BitSet peerPieces) {
-		return torrentStreamGroup.pick(peerPieces);
+	public TorrentPiece pick(final BitSet peerPieces, final BitSet suggestPieces) {
+		return torrentStreamGroup.pick(peerPieces, suggestPieces);
 	}
 	
 	/**
@@ -519,8 +519,8 @@ public final class TorrentSession {
 	/**
 	 * <p>保存Piece数据</p>
 	 */
-	public boolean piece(TorrentPiece piece) {
-		return this.torrentStreamGroup.piece(piece);
+	public boolean write(TorrentPiece piece) {
+		return this.torrentStreamGroup.write(piece);
 	}
 	
 	/**

@@ -67,9 +67,17 @@ public final class PeerSession implements IStatistics {
 	 */
 	private final BitSet pieces;
 	/**
-	 * 下载错误位图：下次获取时排除
+	 * 下载错误位图：校验失败位图
 	 */
 	private final BitSet badPieces;
+	/**
+	 * 推荐下载位图
+	 */
+	private final BitSet suggestPieces;
+	/**
+	 * 允许快速下载位图
+	 */
+	private final BitSet allowedPieces;
 	/**
 	 * 客户端将Peer阻塞：阻塞-1（true）、非阻塞-0
 	 */
@@ -112,6 +120,8 @@ public final class PeerSession implements IStatistics {
 		this.peerInterested = false;
 		this.pieces = new BitSet();
 		this.badPieces = new BitSet();
+		this.suggestPieces = new BitSet();
+		this.allowedPieces = new BitSet();
 		this.extension = new HashMap<>();
 		this.statistics = new StatisticsSession(parent);
 	}
@@ -128,6 +138,8 @@ public final class PeerSession implements IStatistics {
 		this.amInterested = false;
 		this.peerChoked = true;
 		this.peerInterested = false;
+		this.suggestPieces.clear();
+		this.allowedPieces.clear();
 	}
 	
 	public void amChoked() {
@@ -263,6 +275,8 @@ public final class PeerSession implements IStatistics {
 	public void cleanPieces() {
 		this.pieces.clear();
 		this.badPieces.clear();
+		this.suggestPieces.clear();
+		this.allowedPieces.clear();
 	}
 	
 	/**
@@ -309,6 +323,36 @@ public final class PeerSession implements IStatistics {
 		bitSet.or(this.pieces);
 		bitSet.andNot(this.badPieces);
 		return bitSet;
+	}
+	
+	/**
+	 * 推荐下载块
+	 */
+	public void suggestPieces(int index) {
+		this.pieces.set(index);
+		this.suggestPieces.set(index);
+	}
+
+	/**
+	 * 推荐下载位图
+	 */
+	public BitSet suggestPieces() {
+		return this.suggestPieces;
+	}
+	
+	/**
+	 * 允许快速下载块
+	 */
+	public void allowedPieces(int index) {
+		this.pieces.set(index);
+		this.allowedPieces.set(index);
+	}
+
+	/**
+	 * 允许快速下载位图
+	 */
+	public BitSet allowedPieces() {
+		return this.allowedPieces;
 	}
 	
 	/**

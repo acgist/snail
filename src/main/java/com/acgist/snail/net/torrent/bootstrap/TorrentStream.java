@@ -163,7 +163,7 @@ public class TorrentStream {
 	 * 
 	 * @return 是否保存成功
 	 */
-	public boolean piece(TorrentPiece piece) {
+	public boolean write(TorrentPiece piece) {
 		// 不符合当前文件位置
 		if(!piece.contain(this.fileBeginPos, this.fileEndPos)) {
 			return false;
@@ -200,18 +200,29 @@ public class TorrentStream {
 	 * </p>
 	 * 
 	 * @param peerPieces Peer位图
+	 * @param suggestPieces Peer推荐位图：优先使用
 	 */
-	public TorrentPiece pick(final BitSet peerPieces) {
+	public TorrentPiece pick(final BitSet peerPieces, final BitSet suggestPieces) {
 		if(peerPieces.isEmpty()) {
 			return null;
 		}
 		synchronized (this) {
 			final BitSet pickPieces = new BitSet();
-			pickPieces.or(peerPieces);
-			pickPieces.andNot(this.pieces);
-			pickPieces.andNot(this.pausePieces);
-			pickPieces.andNot(this.downloadPieces);
-			this.pausePieces.clear();
+			if(!suggestPieces.isEmpty()) {
+				// 推荐位图：优先使用
+				pickPieces.or(suggestPieces);
+				pickPieces.andNot(this.pieces);
+				pickPieces.andNot(this.pausePieces);
+				pickPieces.andNot(this.downloadPieces);
+			}
+			if(pickPieces.isEmpty()) {
+				// Peer位图
+				pickPieces.or(peerPieces);
+				pickPieces.andNot(this.pieces);
+				pickPieces.andNot(this.pausePieces);
+				pickPieces.andNot(this.downloadPieces);
+			}
+			this.pausePieces.clear(); // 清空暂停位图
 			if(pickPieces.isEmpty()) {
 				if(this.torrentStreamGroup.remainingPieceSize() <= SystemConfig.getPieceRepeatSize()) {
 					LOGGER.debug("选择Piece时，任务接近完成并且找不到更多Piece，开始重复选择未下载的Piece。");
@@ -371,16 +382,6 @@ public class TorrentStream {
 	}
 	
 	/**
-	 * 刷出所有缓存，保存到硬盘。
-	 */
-	public void flush() {
-		synchronized (this) {
-			final var list = flushPieces();
-			this.write(list);
-		}
-	}
-
-	/**
 	 * <p>释放资源</p>
 	 * <p>将已下载的块写入文件，然后关闭文件流。</p>
 	 */
@@ -392,31 +393,32 @@ public class TorrentStream {
 			LOGGER.error("TorrentStream关闭异常", e);
 		}
 	}
-
-	/**
-	 * <p>刷出缓存</p>
-	 * <p>将缓存队列所有的Piece刷出。</p>
-	 */
-	private List<TorrentPiece> flushPieces() {
-		final List<TorrentPiece> list = new ArrayList<>();
-		this.filePieces.drainTo(list);
-		return list;
-	}
 	
+	/**
+	 * 刷出所有缓存：保存到硬盘
+	 */
+	public void flush() {
+		synchronized (this) {
+			final var list = new ArrayList<TorrentPiece>();
+			this.filePieces.drainTo(list);
+			this.flush(list);
+		}
+	}
+
 	/**
 	 * <p>写入硬盘</p>
 	 */
-	private void write(List<TorrentPiece> list) {
+	private void flush(List<TorrentPiece> list) {
 		if(CollectionUtils.isEmpty(list)) {
 			return;
 		}
-		list.stream().forEach(piece -> write(piece));
+		list.stream().forEach(piece -> flush(piece));
 	}
 	
 	/**
 	 * <p>写入硬盘</p>
 	 */
-	private void write(TorrentPiece piece) {
+	private void flush(TorrentPiece piece) {
 		if(!haveIndex(piece.getIndex())) {
 			LOGGER.warn("Piece写入硬盘错误（不包含）：{}", piece.getIndex());
 			return;
