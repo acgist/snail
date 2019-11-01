@@ -106,6 +106,8 @@ SnailLauncher.exe
 |[UDP Tracker Protocol for BitTorrent](http://www.bittorrent.org/beps/bep_0015.html)|√|
 |[The BitTorrent Protocol Specification](http://www.bittorrent.org/beps/bep_0003.html)|√|
 |[Extension for Peers to Send Metadata Files](http://www.bittorrent.org/beps/bep_0009.html)|√|
+|[Superseeding](http://www.bittorrent.org/beps/bep_0016.html)|?|
+|[Merkle hash torrent extension](http://www.bittorrent.org/beps/bep_0030.html)|?|
 |[WebSeed - HTTP/FTP Seeding (GetRight style)](http://www.bittorrent.org/beps/bep_0019.html)|?|
 
 #### 其他进度
