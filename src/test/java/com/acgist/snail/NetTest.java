@@ -8,6 +8,7 @@ import org.junit.Test;
 import com.acgist.snail.net.application.ApplicationClient;
 import com.acgist.snail.pojo.message.ApplicationMessage;
 import com.acgist.snail.utils.NetUtils;
+import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
 public class NetTest {
@@ -37,6 +38,15 @@ public class NetTest {
 		System.out.println(NetUtils.localHostName());
 		System.out.println(NetUtils.localHostAddress());
 		System.out.println(NetUtils.defaultNetworkInterface());
+	}
+	
+	@Test
+	public void ipv6() {
+		String ipv6 = "fe80::f84b:bc3a:9556:683d";
+		byte[] bytes = NetUtils.encodeIPv6(ipv6);
+		System.out.println(StringUtils.hex(bytes));
+		String value = NetUtils.decodeIPv6(bytes);
+		System.out.println(value);
 	}
 	
 }

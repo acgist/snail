@@ -105,9 +105,9 @@ public class NetUtils {
 	private static final long A_NATIVE_IP_BEGIN = encodeIpToLong("10.0.0.0");
 	private static final long A_NATIVE_IP_END = encodeIpToLong("10.255.255.255");
 	/**
-	 * B类私用地址</p>
-	 * B类范围：128.0.0.0-191.255.255.255</p>
-	 * 默认子网掩码：255.255.0.0</p>
+	 * <p>B类私用地址</p>
+	 * <p>B类范围：128.0.0.0-191.255.255.255</p>
+	 * <p>默认子网掩码：255.255.0.0</p>
 	 */
 	private static final long B_NATIVE_IP_BEGIN = encodeIpToLong("172.16.0.0");
 	private static final long B_NATIVE_IP_END = encodeIpToLong("172.31.255.255");
@@ -186,72 +186,27 @@ public class NetUtils {
 	}
 	
 	/**
-	 * <p>IPv6地址解码</p>
-	 */
-	public static final String decodeIPv6(byte[] value) {
-		if(value == null || value.length != 16) {
-			return null;
-		}
-		final StringBuilder builder = new StringBuilder();
-		for (int index = 0; index < value.length; index++) {
-			builder.append(Integer.toHexString(value[index]));
-			if(index % 2 == 0) {
-				builder.append(":");
-			}
-		}
-		return builder.substring(1, builder.length() - 1);
-	}
-	
-	/**
 	 * <p>IPv6地址编码</p>
 	 */
 	public static final byte[] encodeIPv6(String ip) {
-		if(StringUtils.isEmpty(ip)) {
-			return null;
+		try {
+			return InetAddress.getByName(ip).getAddress();
+		} catch (UnknownHostException e) {
+			LOGGER.error("IPv6地址转换异常：{}", ip, e);
 		}
-		byte[] slice;
-		int valueIndex = 0;
-		final var value = new byte[16];
-		final var slices = ip.split(":");
-		for (int index = 0; index < slices.length; index++) {
-			slice = slices[index].getBytes();
-			switch (slice.length) {
-			case 0:
-				value[valueIndex++] = 0;
-				value[valueIndex++] = 0;
-				value[valueIndex++] = 0;
-				value[valueIndex++] = 0;
-				break;
-			case 1:
-				value[valueIndex++] = 0;
-				value[valueIndex++] = 0;
-				value[valueIndex++] = 0;
-				value[valueIndex++] = slice[0];
-				break;
-			case 2:
-				value[valueIndex++] = 0;
-				value[valueIndex++] = 0;
-				value[valueIndex++] = slice[0];
-				value[valueIndex++] = slice[1];
-				break;
-			case 3:
-				value[valueIndex++] = 0;
-				value[valueIndex++] = slice[0];
-				value[valueIndex++] = slice[1];
-				value[valueIndex++] = slice[2];
-				break;
-			case 4:
-				value[valueIndex++] = slice[0];
-				value[valueIndex++] = slice[1];
-				value[valueIndex++] = slice[2];
-				value[valueIndex++] = slice[3];
-				break;
-			default:
-				LOGGER.warn("IPv6地址编码错误：{}", ip);
-				break;
-			}
+		return null;
+	}
+	
+	/**
+	 * <p>IPv6地址解码</p>
+	 */
+	public static final String decodeIPv6(byte[] value) {
+		try {
+			return InetAddress.getByAddress(value).getHostAddress();
+		} catch (UnknownHostException e) {
+			LOGGER.error("IPv6地址转换异常", e);
 		}
-		return value;
+		return null;
 	}
 	
 	/**
