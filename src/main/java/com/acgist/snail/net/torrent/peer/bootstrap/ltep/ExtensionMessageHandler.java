@@ -211,10 +211,11 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 		final Long port = decoder.getLong(EX_P);
 		if(port != null) {
 			final Integer oldPort = this.peerSession.port();
-			if(oldPort != null && oldPort.intValue() != port.intValue()) {
+			if(oldPort == null) {
+				this.peerSession.port(port.intValue());
+			} else if(oldPort.intValue() != port.intValue()) {
 				LOGGER.debug("扩展消息-握手（端口不一致）：{}-{}", oldPort, port);
 			}
-			this.peerSession.port(port.intValue());
 		}
 		// 偏爱加密
 		final Long encrypt = decoder.getLong(EX_E);
