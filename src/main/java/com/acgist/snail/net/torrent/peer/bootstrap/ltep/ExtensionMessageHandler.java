@@ -22,6 +22,9 @@ import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.system.exception.PacketSizeException;
 import com.acgist.snail.utils.CollectionUtils;
+import com.acgist.snail.utils.NetUtils;
+import com.acgist.snail.utils.NumberUtils;
+import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>LTEP（Libtorrent Extension Protocol）扩展协议</p>
@@ -36,17 +39,21 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ExtensionMessageHandler.class);
 	
 	/**
-	 * 明文
+	 * 偏爱明文
 	 */
 	private static final int PLAINTEXT = 0;
 	/**
-	 * 加密
+	 * 偏爱加密
 	 */
-	private static final int ENCRYPT = 0;
+	private static final int ENCRYPT = 1;
 	/**
 	 * 只上传不下载
 	 */
 	private static final int UPLOAD_ONLY = 1;
+	/**
+	 * 默认支持未完成请求数量
+	 */
+	private static final int DEFAULT_REQQ = 128;
 	/**
 	 * 扩展协议信息
 	 */
@@ -60,13 +67,11 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 */
 	public static final String EX_P = "p";
 	/**
-	 * PEX：加密
+	 * 偏爱加密
 	 */
 	public static final String EX_E = "e";
 	/**
-	 * 未知含义
-	 * 
-	 * TODO：了解
+	 * 支持未完成请求数量
 	 */
 	public static final String EX_REQQ = "reqq";
 	/**
@@ -78,7 +83,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 */
 	public static final String EX_IPV6 = "ipv6";
 	/**
-	 * 本地地址（外网）：不设置自动获取
+	 * 外网IP地址
 	 */
 	public static final String EX_YOURIP = "yourip";
 	/**
@@ -87,7 +92,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 */
 	public static final String EX_UPLOAD_ONLY = "upload_only";
 	/**
-	 * ut_metadata：种子info数据大小
+	 * ut_metadata：种子InfoHash数据大小
 	 */
 	public static final String EX_METADATA_SIZE = "metadata_size";
 
@@ -158,38 +163,35 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	public void handshake() {
 		LOGGER.debug("发送扩展消息-握手");
 		this.handshake = true;
-		final Map<String, Object> data = new LinkedHashMap<>();
-		final Map<String, Object> supportTypes = new LinkedHashMap<>();
+		final Map<String, Object> message = new LinkedHashMap<>(); // 扩展消息
+		final Map<String, Object> supportTypes = new LinkedHashMap<>(); // 支持的扩展消息类型
 		for (var type : PeerConfig.ExtensionType.values()) {
 			if(type.support() && type.notice()) {
 				supportTypes.put(type.value(), type.id());
 			}
 		}
-		data.put(EX_M, supportTypes); // 扩展协议
-		data.put(EX_V, SystemConfig.getNameEnAndVersion()); // 客户端信息（名称、版本）
-		data.put(EX_P, SystemConfig.getTorrentPortExt()); // 外网监听TCP端口
-		// 本机IP地址：客户端自动获取
-//		final String yourip = SystemConfig.getExternalIpAddress();
-//		if(StringUtils.isNotEmpty(yourip)) {
-//			data.put(EX_YOURIP, NumberUtils.intToBytes(NetUtils.encodeIpToInt(yourip)));
-//		}
-		data.put(EX_REQQ, 255);
-		if(PeerConfig.ExtensionType.UT_PEX.notice()) {
-			// 偏爱加密
-			data.put(EX_E, CryptConfig.STRATEGY.crypt() ? ENCRYPT : PLAINTEXT);
+		message.put(EX_M, supportTypes); // 扩展协议
+		message.put(EX_P, SystemConfig.getTorrentPortExt()); // 外网监听TCP端口
+		message.put(EX_V, SystemConfig.getNameEnAndVersion()); // 客户端信息（名称、版本）
+		message.put(EX_E, CryptConfig.STRATEGY.crypt() ? ENCRYPT : PLAINTEXT); // 偏爱加密
+		// 外网IP地址：TODO：IPv6
+		final String yourip = SystemConfig.getExternalIpAddress();
+		if(StringUtils.isNotEmpty(yourip)) {
+			message.put(EX_YOURIP, NumberUtils.intToBytes(NetUtils.encodeIpToInt(yourip)));
 		}
+		message.put(EX_REQQ, DEFAULT_REQQ);
 		if(PeerConfig.ExtensionType.UT_METADATA.notice()) {
 			// 种子InfoHash数据长度
 			final int metadataSize = this.infoHash.size();
 			if(metadataSize > 0) {
-				data.put(EX_METADATA_SIZE, metadataSize);
+				message.put(EX_METADATA_SIZE, metadataSize);
 			}
 		}
 		// 任务已经完成只上传不下载
 		if(this.torrentSession.completed()) {
-			data.put(EX_UPLOAD_ONLY, UPLOAD_ONLY);
+			message.put(EX_UPLOAD_ONLY, UPLOAD_ONLY);
 		}
-		this.pushMessage(ExtensionType.HANDSHAKE.id(), BEncodeEncoder.encodeMap(data));
+		this.pushMessage(ExtensionType.HANDSHAKE.id(), BEncodeEncoder.encodeMap(message));
 	}
 
 	/**
@@ -250,6 +252,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 		if(!this.handshake) {
 			handshake();
 		}
+		// 种子文件下载
 		if(this.torrentSession.action() == Action.MAGNET) {
 			metadata();
 		}
@@ -272,7 +275,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	}
 	
 	/**
-	 * <p>发送metadata消息</p>
+	 * 发送metadata消息
 	 */
 	public void metadata() {
 		if(this.metadataMessageHandler.supportExtensionType()) {
@@ -288,16 +291,16 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	}
 	
 	/**
-	 * 发送holepunch消息
+	 * 发送holepunch消息-rendezvous
 	 */
-	public void holepunch(String host, Integer port) {
+	public void holepunchRendezvous(String host, Integer port) {
 		if(this.holepunchMessageHnadler.supportExtensionType()) {
-			this.holepunchMessageHnadler.holepunch(host, port);
+			this.holepunchMessageHnadler.rendezvous(host, port);
 		}
 	}
 	
 	/**
-	 * 发送holepunch连接消息
+	 * 发送holepunch消息-connect
 	 */
 	public void holepunchConnect(String host, Integer port) {
 		if(this.holepunchMessageHnadler.supportExtensionType()) {
@@ -331,8 +334,8 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	/**
 	 * 创建扩展消息
 	 * 
-	 * @param type 扩展类型
-	 * @param bytes 扩展数据
+	 * @param type 扩展消息类型
+	 * @param bytes 扩展消息数据
 	 */
 	private byte[] buildMessage(byte type, byte[] bytes) {
 		final byte[] message = new byte[bytes.length + 1];
@@ -344,7 +347,8 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	/**
 	 * 发送扩展消息
 	 * 
-	 * @param type 扩展消息类型：需要和Peer的标记一致
+	 * @param type 扩展消息类型
+	 * @param bytes 扩展消息数据
 	 */
 	public void pushMessage(byte type, byte[] bytes) {
 		this.peerSubMessageHandler.pushMessage(PeerConfig.Type.EXTENSION, buildMessage(type, bytes));

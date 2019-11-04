@@ -91,7 +91,7 @@ public class PeerManager {
 	/**
 	 * <p>新增Peer</p>
 	 * <p>优先级高的Peer插入尾部优先使用。</p>
-	 * <p>优先级计算：本地发现、主动连接、Peer评分</p>
+	 * <p>优先级计算：本地发现、主动连接、Peer评分、PEX可以连接</p>
 	 * 
 	 * @param infoHashHex InfoHashHex
 	 * @param parent 任务下载统计

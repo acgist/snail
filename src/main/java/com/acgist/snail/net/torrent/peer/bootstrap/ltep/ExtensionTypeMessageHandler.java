@@ -25,7 +25,7 @@ public abstract class ExtensionTypeMessageHandler implements IExtensionMessageHa
 	 */
 	protected final ExtensionType extensionType;
 	/**
-	 * Peer
+	 * PeerSession
 	 */
 	protected final PeerSession peerSession;
 	/**
@@ -42,14 +42,14 @@ public abstract class ExtensionTypeMessageHandler implements IExtensionMessageHa
 	@Override
 	public void onMessage(ByteBuffer buffer) throws NetException {
 		if(!this.supportExtensionType()) {
-			LOGGER.debug("扩展协议消息错误（不支持扩展协议）：{}", this.extensionType);
+			LOGGER.debug("扩展协议消息错误（类型不支持）：{}", this.extensionType);
 			return;
 		}
 		this.doMessage(buffer);
 	}
 	
 	/**
-	 * 消息处理
+	 * 处理扩展消息
 	 */
 	protected abstract void doMessage(ByteBuffer buffer) throws NetException;
 	

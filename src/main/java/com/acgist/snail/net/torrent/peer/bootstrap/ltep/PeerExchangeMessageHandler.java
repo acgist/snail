@@ -25,7 +25,7 @@ import com.acgist.snail.utils.PeerUtils;
 /**
  * <p>Peer Exchange (PEX)</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0011.html</p>
- * <p>Peer交换，在优化PeerLauncher后获取有效的Peer发送此消息。</p>
+ * <p>Peer交换：在优化PeerLauncher后获取有效的Peer发送此消息</p>
  * 
  * TODO：IPv6
  * 
@@ -36,12 +36,14 @@ public class PeerExchangeMessageHandler extends ExtensionTypeMessageHandler {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerExchangeMessageHandler.class);
 	
-	public static final String ADDED = "added";
-	public static final String ADDEDF = "added.f";
-	public static final String ADDED6 = "added6";
-	public static final String ADDED6F = "added6.f";
-	public static final String DROPPED = "dropped";
-	public static final String DROPPED6 = "dropped6";
+	//================IPv4================//
+	private static final String ADDED = "added";
+	private static final String ADDEDF = "added.f";
+	private static final String DROPPED = "dropped";
+	//================IPv6================//
+	private static final String ADDED6 = "added6";
+	private static final String ADDED6F = "added6.f";
+	private static final String DROPPED6 = "dropped6";
 	
 	private final TorrentSession torrentSession;
 	
@@ -69,17 +71,17 @@ public class PeerExchangeMessageHandler extends ExtensionTypeMessageHandler {
 	
 	/**
 	 * <p>处理消息：pex</p>
-	 * <p>将获取的Peer加入到Peer列表</p>
 	 * 
 	 * TODO：IPv6
 	 */
 	private void pex(ByteBuffer buffer) throws PacketSizeException {
+		LOGGER.debug("处理pex消息");
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
 		final var decoder = BEncodeDecoder.newInstance(bytes);
 		decoder.nextMap();
 		if(decoder.isEmpty()) {
-			LOGGER.warn("pex消息错误（格式）：{}", decoder.oddString());
+			LOGGER.warn("处理pex消息错误（格式）：{}", decoder.oddString());
 			return;
 		}
 		final byte[] added = decoder.getBytes(ADDED);
@@ -102,7 +104,9 @@ public class PeerExchangeMessageHandler extends ExtensionTypeMessageHandler {
 	}
 	
 	/**
-	 * 创建消息
+	 * 创建pex消息
+	 * 
+	 * TODO：IPv6
 	 */
 	public static final byte[] buildMessage(List<PeerSession> optimize) {
 		if(CollectionUtils.isEmpty(optimize)) {
@@ -119,12 +123,12 @@ public class PeerExchangeMessageHandler extends ExtensionTypeMessageHandler {
 				addedfBuffer.put(session.flags());
 			});
 		final Map<String, Object> data = new HashMap<>(6);
+		final byte[] emptyBytes = new byte[0];
 		data.put(ADDED, addedBuffer.array());
 		data.put(ADDEDF, addedfBuffer.array());
-		final byte[] emptyBytes = new byte[0];
+		data.put(DROPPED, emptyBytes);
 		data.put(ADDED6, emptyBytes);
 		data.put(ADDED6F, emptyBytes);
-		data.put(DROPPED, emptyBytes);
 		data.put(DROPPED6, emptyBytes);
 		return BEncodeEncoder.encodeMap(data);
 	}

@@ -12,6 +12,7 @@ import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.NetUtils;
+import com.acgist.snail.utils.NumberUtils;
 
 /**
  * <p>DHT Extension</p>
@@ -45,7 +46,8 @@ public class DhtExtensionMessageHandler implements IExtensionMessageHandler {
 	}
 
 	public void port() {
-		final byte[] bytes = ByteBuffer.allocate(2).putShort(SystemConfig.getTorrentPortExtShort()).array();
+		LOGGER.debug("发送DHT消息");
+		final byte[] bytes = NumberUtils.shortToBytes(SystemConfig.getTorrentPortExtShort());
 		this.peerSubMessageHandler.pushMessage(PeerConfig.Type.DHT, bytes);
 	}
 	
@@ -53,8 +55,8 @@ public class DhtExtensionMessageHandler implements IExtensionMessageHandler {
 	 * <p>处理DHT消息：设置DHT端口、添加DHT节点</p>
 	 */
 	private void port(ByteBuffer buffer) {
-		LOGGER.debug("处理DHT消息");
 		final int port = NetUtils.decodePort(buffer.getShort());
+		LOGGER.debug("处理DHT消息：{}", port);
 		this.peerSession.dhtPort(port);
 		this.torrentSession.newDhtNode(this.peerSession.host(), port);
 	}

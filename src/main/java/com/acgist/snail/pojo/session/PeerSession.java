@@ -572,6 +572,13 @@ public final class PeerSession implements IStatistics {
 	public boolean utp() {
 		return verifyFlags(PeerConfig.PEX_UTP);
 	}
+	
+	/**
+	 * 是否可以连接
+	 */
+	public boolean outgo() {
+		return verifyFlags(PeerConfig.PEX_OUTGO);
+	}
 
 	/**
 	 * 是否偏爱加密

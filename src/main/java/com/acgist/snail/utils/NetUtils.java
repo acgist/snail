@@ -160,11 +160,11 @@ public class NetUtils {
 	 * <p>IP地址转换为long</p>
 	 */
 	public static final long encodeIpToLong(String ip) {
-		long result = 0, tmp;
+		long result = 0, value;
 		final String[] array = ip.split("\\.");
 		for (int index = 3; index >= 0; index--) {
-			tmp = Long.parseLong(array[3 - index]);
-			result |= tmp << (index * 8);
+			value = Long.parseLong(array[3 - index]);
+			result |= value << (index * 8);
 		}
 		return result;
 	}
@@ -182,7 +182,11 @@ public class NetUtils {
 	 * <p>long转换为IP地址</p>
 	 */
 	public static final String decodeLongToIp(long value) {
-		return ((value >> 24) & 0xFF) + "." + ((value >> 16) & 0xFF) + "." + ((value >> 8) & 0xFF) + "." + (value & 0xFF);
+		return
+			((value >> 24) & 0xFF) + "." +
+			((value >> 16) & 0xFF) + "." +
+			((value >> 8) & 0xFF) + "." +
+			(value & 0xFF);
 	}
 	
 	/**

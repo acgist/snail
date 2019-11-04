@@ -138,9 +138,7 @@ public class PeerConfig {
 	 */
 	public static final byte PEX_HOLEPUNCH =			1 << 3;
 	/**
-	 * PEX状态：0x10：未知含义
-	 * 
-	 * TODO：了解
+	 * PEX状态：0x10：可以连接
 	 */
 	public static final byte PEX_OUTGO =				1 << 4;
 	/**

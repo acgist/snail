@@ -342,14 +342,14 @@ public class SystemConfig extends PropertiesConfig {
 	/**
 	 * BT服务端口（外网：Peer、DHT、UTP、STUN）：short
 	 */
-	public static final Short getTorrentPortExtShort() {
+	public static final short getTorrentPortExtShort() {
 		return NetUtils.encodePort(getTorrentPortExt());
 	}
 	
 	/**
 	 * 单个任务Peer数量（同时下载）
 	 */
-	public static final Integer getPeerSize() {
+	public static final int getPeerSize() {
 		return INSTANCE.peerSize;
 	}
 	

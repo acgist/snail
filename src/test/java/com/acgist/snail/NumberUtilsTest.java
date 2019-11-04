@@ -24,4 +24,18 @@ public class NumberUtilsTest {
 		System.out.println(NumberUtils.decodeUnsigned(ByteBuffer.wrap(bytes), bytes.length));
 	}
 	
+	@Test
+	public void bytes() {
+		short value = (short) 18888;
+//		short value = Short.MIN_VALUE;
+//		short value = Short.MAX_VALUE;
+		byte[] bytes;
+		bytes = ByteBuffer.allocate(2).putShort(value).array();
+		System.out.println(StringUtils.hex(bytes));
+		System.out.println(NumberUtils.bytesToShort(bytes));
+		bytes = NumberUtils.shortToBytes(value);
+		System.out.println(StringUtils.hex(bytes));
+		System.out.println(ByteBuffer.wrap(bytes).getShort());
+	}
+	
 }

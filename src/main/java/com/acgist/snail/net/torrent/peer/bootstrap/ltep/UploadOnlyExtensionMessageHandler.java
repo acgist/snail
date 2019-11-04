@@ -19,7 +19,10 @@ public class UploadOnlyExtensionMessageHandler extends ExtensionTypeMessageHandl
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UploadOnlyExtensionMessageHandler.class);
 	
-	private static final byte UPLOAD_ONLY = 0X01;
+	/**
+	 * 只上传不下载
+	 */
+	private static final byte UPLOAD_ONLY = 0x01;
 	
 	private UploadOnlyExtensionMessageHandler(PeerSession peerSession, ExtensionMessageHandler extensionMessageHandler) {
 		super(ExtensionType.UPLOAD_ONLY, peerSession, extensionMessageHandler);
@@ -53,7 +56,7 @@ public class UploadOnlyExtensionMessageHandler extends ExtensionTypeMessageHandl
 			return;
 		}
 		final byte value = buffer.get();
-		LOGGER.debug("uploadOnly消息：{}", value);
+		LOGGER.debug("处理uploadOnly消息：{}", value);
 		if(value == UPLOAD_ONLY) {
 			this.peerSession.flags(PeerConfig.PEX_UPLOAD_ONLY);
 		} else {
