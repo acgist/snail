@@ -930,7 +930,6 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 */
 	private void dht() {
 		if(this.peerSession.supportDhtProtocol()) {
-			LOGGER.debug("发送DHT消息");
 			this.dhtExtensionMessageHandler.port();
 		}
 	}
@@ -954,7 +953,6 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 */
 	private void extension() {
 		if(this.peerSession.supportExtensionProtocol()) {
-			LOGGER.debug("发送扩展消息");
 			this.extensionMessageHandler.handshake();
 		}
 	}
@@ -963,7 +961,6 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * <p>处理扩展消息</p>
 	 */
 	private void extension(ByteBuffer buffer) throws NetException {
-		LOGGER.debug("处理扩展消息");
 		this.extensionMessageHandler.onMessage(buffer);
 	}
 	
@@ -975,24 +972,24 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	}
 	
 	/**
-	 * 发送扩展消息：holepunch
-	 */
-	public void holepunch(String host, Integer port) {
-		this.extensionMessageHandler.holepunch(host, port);
-	}
-	
-	/**
-	 * 发送扩展消息：holepunch连接
-	 */
-	public void holepunchConnect(String host, int port) {
-		this.extensionMessageHandler.holepunchConnect(host, port);
-	}
-	
-	/**
 	 * 发送扩展消息：uploadOnly
 	 */
 	public void uploadOnly() {
 		this.extensionMessageHandler.uploadOnly();
+	}
+	
+	/**
+	 * 发送扩展消息：holepunch-rendezvous
+	 */
+	public void holepunch(String host, Integer port) {
+		this.extensionMessageHandler.holepunchRendezvous(host, port);
+	}
+	
+	/**
+	 * 发送扩展消息：holepunch-connect
+	 */
+	public void holepunchConnect(String host, int port) {
+		this.extensionMessageHandler.holepunchConnect(host, port);
 	}
 	
 	/**

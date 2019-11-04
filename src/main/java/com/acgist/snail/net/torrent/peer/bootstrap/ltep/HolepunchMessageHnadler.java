@@ -87,16 +87,6 @@ public class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	}
 	
 	/**
-	 * 发送连接消息
-	 * 
-	 * @param host 地址
-	 * @param port 端口
-	 */
-	public void holepunch(String host, int port) {
-		this.rendezvous(host, port);
-	}
-	
-	/**
 	 * 发送消息：rendezvous
 	 * 
 	 * @param host 地址
@@ -117,8 +107,8 @@ public class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	 */
 	private void onRendezvous(String host, int port) {
 		LOGGER.debug("处理holepunch消息-rendezvous：{}-{}", host, port);
-		final String local = SystemConfig.getExternalIpAddress();
-		if(StringUtils.equals(host, local)) {
+		final String extIp = SystemConfig.getExternalIpAddress();
+		if(StringUtils.equals(host, extIp)) {
 			LOGGER.debug("holepunch消息-rendezvous处理失败：目标属于中继");
 			this.error(host, port, HolepunchErrorCode.CODE_04);
 			return;

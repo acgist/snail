@@ -75,6 +75,26 @@ public class NumberUtils {
 	}
 	
 	/**
+	 * 字符数组转short（大端）
+	 */
+	public static final int bytesToShort(byte[] bytes) {
+		short value = 0;
+		value += ((bytes[0] & 0xFF) << 8);
+		value += bytes[1] & 0xFF;
+		return value;
+	}
+	
+	/**
+	 * short转字符数组（大端）
+	 */
+	public static final byte[] shortToBytes(short value) {
+		final byte[] bytes = new byte[2];
+		bytes[0] = (byte) ((value >> 8) & 0xFF);
+		bytes[1] = (byte) (value & 0xFF);
+		return bytes;
+	}
+	
+	/**
 	 * <p>向上取整</p>
 	 */
 	public static final int ceilDiv(long dividend, long divisor) {
