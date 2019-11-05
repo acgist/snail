@@ -22,7 +22,7 @@ import com.acgist.snail.utils.ObjectUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class Response extends BaseMessage {
+public class Response extends DhtMessage {
 
 	/**
 	 * 响应参数

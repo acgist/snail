@@ -21,7 +21,7 @@ import com.acgist.snail.utils.ObjectUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class Request extends BaseMessage {
+public class Request extends DhtMessage {
 
 	/**
 	 * 请求类型

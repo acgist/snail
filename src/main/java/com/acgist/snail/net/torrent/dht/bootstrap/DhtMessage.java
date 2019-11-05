@@ -6,12 +6,12 @@ import java.util.List;
 import com.acgist.snail.system.config.DhtConfig;
 
 /**
- * DHT Base
+ * <p>DHT请求、响应超类</p>
  *
  * @author acgist
  * @since 1.1.0
  */
-public abstract class BaseMessage {
+public abstract class DhtMessage {
 
 	/**
 	 * 请求ID
@@ -26,7 +26,7 @@ public abstract class BaseMessage {
 	 */
 	protected InetSocketAddress socketAddress;
 
-	public BaseMessage(byte[] t, String y) {
+	public DhtMessage(byte[] t, String y) {
 		this.t = t;
 		this.y = y;
 	}
@@ -73,13 +73,6 @@ public abstract class BaseMessage {
 	}
 	
 	/**
-	 * 获取Long参数：请求、响应
-	 */
-	public Long getLong(String key) {
-		return (Long) this.get(key);
-	}
-	
-	/**
 	 * 获取字符串参数：请求、响应
 	 */
 	public String getString(String key) {
@@ -91,17 +84,24 @@ public abstract class BaseMessage {
 	}
 	
 	/**
-	 * 获取byte[]参数：请求、响应
-	 */
-	public byte[] getBytes(String key) {
-		return (byte[]) this.get(key);
-	}
-	
-	/**
 	 * 获取List参数：响应、响应
 	 */
 	public List<?> getList(String key) {
 		return (List<?>) this.get(key);
+	}
+	
+	/**
+	 * 获取Long参数：请求、响应
+	 */
+	public Long getLong(String key) {
+		return (Long) this.get(key);
+	}
+	
+	/**
+	 * 获取byte[]参数：请求、响应
+	 */
+	public byte[] getBytes(String key) {
+		return (byte[]) this.get(key);
 	}
 	
 	/**

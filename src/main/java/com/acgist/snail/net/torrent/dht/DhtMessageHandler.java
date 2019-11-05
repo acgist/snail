@@ -11,7 +11,7 @@ import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.dht.bootstrap.NodeManager;
 import com.acgist.snail.net.torrent.dht.bootstrap.Request;
-import com.acgist.snail.net.torrent.dht.bootstrap.RequestManager;
+import com.acgist.snail.net.torrent.dht.bootstrap.DhtManager;
 import com.acgist.snail.net.torrent.dht.bootstrap.Response;
 import com.acgist.snail.net.torrent.dht.bootstrap.request.AnnouncePeerRequest;
 import com.acgist.snail.net.torrent.dht.bootstrap.request.FindNodeRequest;
@@ -131,7 +131,7 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	 * @param response 响应
 	 */
 	private void onResponse(final Response response) {
-		final Request request = RequestManager.getInstance().response(response);
+		final Request request = DhtManager.getInstance().response(response);
 		if(request == null) {
 			LOGGER.warn("DHT处理响应失败：没有对应的请求");
 			return;
@@ -305,7 +305,7 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	 */
 	private void pushMessage(Request request, InetSocketAddress socketAddress) {
 		request.setSocketAddress(socketAddress);
-		RequestManager.getInstance().put(request);
+		DhtManager.getInstance().put(request);
 		final ByteBuffer buffer = ByteBuffer.wrap(request.toBytes());
 		pushMessage(buffer, socketAddress);
 	}
