@@ -64,7 +64,7 @@ public class ObjectUtils {
 	 */
 	public static final String toString(Object object, Object ... values) {
 		final StringBuilder builder = new StringBuilder();
-		builder.append(object.getClass());
+		builder.append(object.getClass().getSimpleName());
 		builder.append("=[");
 		if(values.length > 0) {
 			for (Object value : values) {
@@ -91,7 +91,7 @@ public class ObjectUtils {
 		} else {
 			final StringBuilder builder = new StringBuilder();
 			builder
-				.append(object.getClass().toString())
+				.append(object.getClass().getSimpleName())
 				.append("[");
 			final var properties = BeanUtils.properties(object.getClass());
 			for (String property : properties) {

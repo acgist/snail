@@ -12,37 +12,41 @@ import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.ArrayUtils;
 
 /**
- * <p>DHT请求管理器</p>
+ * <p>DHT管理器</p>
+ * <p>管理内容：DHT请求</p>
  * 
  * @author acgist
  * @since 1.0.0
  */
-public class RequestManager {
+public class DhtManager {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(RequestManager.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DhtManager.class);
 	
-	private static final RequestManager INSTANCE = new RequestManager();
+	private static final DhtManager INSTANCE = new DhtManager();
 	
 	static {
 		LOGGER.debug("启动DHT超时请求清除定时任务");
 		SystemThreadContext.timerFixedDelay(DhtConfig.DHT_REQUEST_CLEAN_INTERVAL, DhtConfig.DHT_REQUEST_CLEAN_INTERVAL, TimeUnit.MINUTES, () -> {
-			LOGGER.debug("执行DHT超时请求清除定时任务");
-			RequestManager.getInstance().clear(); // 清除DHT超时请求
+			DhtManager.getInstance().clear(); // 清除DHT超时请求
 		});
 	}
 	
+	/**
+	 * <p>请求列表</p>
+	 */
 	private final List<Request> requests;
 	
-	private RequestManager() {
+	private DhtManager() {
 		this.requests = new LinkedList<>();
 	}
 	
-	public static final RequestManager getInstance() {
+	public static final DhtManager getInstance() {
 		return INSTANCE;
 	}
 	
 	/**
-	 * 放入请求
+	 * <p>放入请求</p>
+	 * <p>删除旧请求</p>
 	 */
 	public void put(Request request) {
 		if(request == null) {
@@ -51,7 +55,7 @@ public class RequestManager {
 		synchronized (this.requests) {
 			final Request old = remove(request.getId());
 			if(old != null) {
-				LOGGER.warn("旧DHT请求没有收到响应（剔除）");
+				LOGGER.warn("旧DHT请求没有收到响应（删除）");
 			}
 			this.requests.add(request);
 		}
@@ -59,7 +63,7 @@ public class RequestManager {
 	
 	/**
 	 * <p>设置响应</p>
-	 * <p>删除请求，同时设置Node为可用状态。</p>
+	 * <p>删除并返回请求，同时设置Node为可用状态。</p>
 	 */
 	public Request response(Response response) {
 		if(response == null) {
@@ -78,7 +82,7 @@ public class RequestManager {
 	}
 	
 	/**
-	 * 清空DHT超时请求
+	 * <p>清空DHT超时请求</p>
 	 */
 	public void clear() {
 		LOGGER.debug("清空DHT超时请求");
@@ -97,7 +101,7 @@ public class RequestManager {
 	}
 	
 	/**
-	 * 移除请求
+	 * <p>移除请求</p>
 	 */
 	private Request remove(byte[] id) {
 		Request request;
