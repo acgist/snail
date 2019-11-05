@@ -41,15 +41,17 @@ public class Request extends DhtMessage {
 	private Response response;
 	
 	/**
-	 * <p>子类初始化调用构造方法，设置NodeId。</p>
-	 * <p>发送请求。</p>
+	 * <p>设置NodeId</p>
 	 */
-	protected Request(byte[] t, DhtConfig.QType q) {
-		this(t, DhtConfig.KEY_Q, q, new LinkedHashMap<>());
+	protected Request(DhtConfig.QType q) {
+		this(DhtService.getInstance().requestId(), DhtConfig.KEY_Q, q, new LinkedHashMap<>());
 		this.put(DhtConfig.KEY_ID, NodeManager.getInstance().nodeId());
 	}
 	
-	protected Request(byte[] t, String y, DhtConfig.QType q, Map<String, Object> a) {
+	/**
+	 * <p>不设置NodeId</p>
+	 */
+	private Request(byte[] t, String y, DhtConfig.QType q, Map<String, Object> a) {
 		super(t, y);
 		this.q = q;
 		this.a = a;
@@ -57,7 +59,7 @@ public class Request extends DhtMessage {
 	}
 
 	/**
-	 * 处理请求。
+	 * 处理请求
 	 */
 	public static final Request valueOf(final BEncodeDecoder decoder) {
 		final byte[] t = decoder.getBytes(DhtConfig.KEY_T);
@@ -91,33 +93,21 @@ public class Request extends DhtMessage {
 	/**
 	 * 是否已经响应
 	 */
-	public boolean response() {
+	public boolean haveResponse() {
 		return this.response != null;
 	}
-	
-	/**
-	 * 设置请求参数
-	 * 
-	 * @param key 参数名称
-	 * @param value 参数值
-	 */
-	public void put(String key, Object value) {
-		this.a.put(key, value);
-	}
 
-	/**
-	 * 获取请求参数
-	 * 
-	 * @param key 参数名称
-	 * 
-	 * @return 参数值
-	 */
 	@Override
 	public Object get(String key) {
 		if(this.a == null) {
 			return null;
 		}
 		return this.a.get(key);
+	}
+	
+	@Override
+	public void put(String key, Object value) {
+		this.a.put(key, value);
 	}
 	
 	/**
@@ -134,16 +124,14 @@ public class Request extends DhtMessage {
 	
 	/**
 	 * <p>节点序列化</p>
-	 * <p>如果找不到节点，返回空字符数组。</p>
 	 */
 	protected static final byte[] serializeNodes(List<NodeSession> nodes) {
 		if(CollectionUtils.isEmpty(nodes)) {
 			return new byte[0];
 		}
-		final ByteBuffer buffer = ByteBuffer.allocate(26 * nodes.size());
+		final ByteBuffer buffer = ByteBuffer.allocate(26 * nodes.size()); // 20 + 4 + 2
 		for (NodeSession node : nodes) {
-			// 只分享IP地址
-			if(NetUtils.verifyIp(node.getHost())) {
+			if(NetUtils.isIp(node.getHost())) { // 只分享IP地址
 				buffer.put(node.getId());
 				buffer.putInt(NetUtils.encodeIpToInt(node.getHost()));
 				buffer.putShort(NetUtils.encodePort(node.getPort()));

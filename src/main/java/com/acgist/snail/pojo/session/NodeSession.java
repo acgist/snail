@@ -41,10 +41,6 @@ public final class NodeSession implements Comparable<NodeSession> {
 	 * 状态
 	 */
 	private Status status;
-	/**
-	 * 声明使用
-	 */
-	private byte[] token;
 
 	private NodeSession(byte[] id, String host, int port) {
 		this.id = id;
@@ -67,14 +63,6 @@ public final class NodeSession implements Comparable<NodeSession> {
 
 	public int getPort() {
 		return port;
-	}
-
-	public byte[] getToken() {
-		return token;
-	}
-
-	public void setToken(byte[] token) {
-		this.token = token;
 	}
 
 	public Status getStatus() {

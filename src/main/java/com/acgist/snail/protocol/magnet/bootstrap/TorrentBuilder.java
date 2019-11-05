@@ -117,7 +117,7 @@ public class TorrentBuilder {
 		final var sessions = NodeManager.getInstance().findNode(this.infoHash.infoHash());
 		if(CollectionUtils.isNotEmpty(sessions)) {
 			final var nodes = sessions.stream()
-				.filter(session -> NetUtils.verifyIp(session.getHost()))
+				.filter(session -> NetUtils.isIp(session.getHost()))
 				.map(session -> List.of(session.getHost(), session.getPort()))
 				.collect(Collectors.toList());
 			if(CollectionUtils.isNotEmpty(nodes)) {

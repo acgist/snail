@@ -125,13 +125,6 @@ public class NetUtils {
 	private static final long L_NATIVE_IP_END = encodeIpToLong("127.255.255.255");
 	
 	/**
-	 * 验证IP地址
-	 */
-	public static final boolean verifyIp(String host) {
-		return StringUtils.regex(host, IP_REGEX, true);
-	}
-	
-	/**
 	 * <p>端口编码</p>
 	 * <p>int端口转换为short</p>
 	 */
@@ -232,6 +225,13 @@ public class NetUtils {
 	 */
 	public static final NetworkInterface defaultNetworkInterface() {
 		return DEFAULT_NETWORK_INTERFACE;
+	}
+	
+	/**
+	 * 验证IP地址
+	 */
+	public static final boolean isIp(String host) {
+		return StringUtils.regex(host, IP_REGEX, true);
 	}
 
 	/**

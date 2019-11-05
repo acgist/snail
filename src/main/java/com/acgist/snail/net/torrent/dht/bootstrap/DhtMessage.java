@@ -113,4 +113,12 @@ public abstract class DhtMessage {
 	 */
 	public abstract Object get(String key);
 	
+	/**
+	 * 设置参数
+	 * 
+	 * @param key 参数名称
+	 * @param value 参数值
+	 */
+	public abstract void put(String key, Object value);
+	
 }

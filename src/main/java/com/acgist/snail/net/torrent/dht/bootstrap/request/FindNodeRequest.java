@@ -1,13 +1,12 @@
 package com.acgist.snail.net.torrent.dht.bootstrap.request;
 
-import com.acgist.snail.net.torrent.dht.bootstrap.DhtService;
 import com.acgist.snail.net.torrent.dht.bootstrap.NodeManager;
 import com.acgist.snail.net.torrent.dht.bootstrap.Request;
 import com.acgist.snail.net.torrent.dht.bootstrap.response.FindNodeResponse;
 import com.acgist.snail.system.config.DhtConfig;
 
 /**
- * 查找Node
+ * <p>查找Node</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -15,7 +14,7 @@ import com.acgist.snail.system.config.DhtConfig;
 public class FindNodeRequest extends Request {
 
 	private FindNodeRequest() {
-		super(DhtService.getInstance().requestId(), DhtConfig.QType.FIND_NODE);
+		super(DhtConfig.QType.FIND_NODE);
 	}
 	
 	/**

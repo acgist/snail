@@ -9,9 +9,9 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.net.torrent.TorrentManager;
+import com.acgist.snail.net.torrent.dht.bootstrap.DhtManager;
 import com.acgist.snail.net.torrent.dht.bootstrap.NodeManager;
 import com.acgist.snail.net.torrent.dht.bootstrap.Request;
-import com.acgist.snail.net.torrent.dht.bootstrap.DhtManager;
 import com.acgist.snail.net.torrent.dht.bootstrap.Response;
 import com.acgist.snail.net.torrent.dht.bootstrap.request.AnnouncePeerRequest;
 import com.acgist.snail.net.torrent.dht.bootstrap.request.FindNodeRequest;
@@ -24,7 +24,6 @@ import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.bencode.BEncodeDecoder;
 import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.system.config.DhtConfig.ErrorCode;
-import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.ThreadUtils;
@@ -90,7 +89,7 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	}
 	
 	/**
-	 * 处理请求
+	 * <p>处理请求</p>
 	 * 
 	 * @param request 请求
 	 * @param socketAddress 客户端地址
@@ -100,33 +99,32 @@ public class DhtMessageHandler extends UdpMessageHandler {
 		LOGGER.debug("DHT处理请求：{}", request.getQ());
 		if(request.getQ() == null) {
 			LOGGER.warn("DHT处理请求失败（类型不支持）：{}", request.getQ());
-			final Response error = Response.error(request.getT(), ErrorCode.CODE_204.code(), "不支持的请求类型");
-			pushMessage(error, socketAddress);
-			return;
-		}
-		switch (request.getQ()) {
-		case PING:
-			response = ping(request);
-			break;
-		case FIND_NODE:
-			response = findNode(request);
-			break;
-		case GET_PEERS:
-			response = getPeers(request);
-			break;
-		case ANNOUNCE_PEER:
-			response = announcePeer(request);
-			break;
-		default:
-			LOGGER.info("DHT处理请求失败（类型未适配）：{}", request.getQ());
-			break;
+			response = Response.error(request.getT(), ErrorCode.CODE_204.code(), "不支持的请求类型");
+		} else {
+			switch (request.getQ()) {
+			case PING:
+				response = ping(request);
+				break;
+			case FIND_NODE:
+				response = findNode(request);
+				break;
+			case GET_PEERS:
+				response = getPeers(request);
+				break;
+			case ANNOUNCE_PEER:
+				response = announcePeer(request);
+				break;
+			default:
+				LOGGER.info("DHT处理请求失败（类型未适配）：{}", request.getQ());
+				response = Response.error(request.getT(), ErrorCode.CODE_202.code(), "未适配的请求类型");
+				break;
+			}
 		}
 		pushMessage(response, socketAddress);
 	}
 	
 	/**
 	 * <p>处理响应</p>
-	 * <p>处理响应，同时删除请求列表中的请求。</p>
 	 * 
 	 * @param response 响应
 	 */
@@ -142,7 +140,7 @@ public class DhtMessageHandler extends UdpMessageHandler {
 			return;
 		}
 		if(!SUCCESS_VERIFY.apply(response)) {
-			LOGGER.warn("DHT处理响应失败：{}", response);
+			LOGGER.warn("DHT处理响应失败（失败响应）：{}", response);
 			return;
 		}
 		switch (request.getQ()) {
@@ -165,10 +163,11 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	}
 	
 	/**
-	 * <p>发送请求：Ping</p>
+	 * <p>发送请求：ping</p>
 	 * <p>检测节点是否可达，该方法同步阻塞，收到响应后添加系统节点。</p>
 	 */
 	public NodeSession ping(InetSocketAddress socketAddress) {
+		LOGGER.debug("发送DHT请求：ping");
 		final PingRequest request = PingRequest.newRequest();
 		pushMessage(request, socketAddress);
 		waitResponse(request);
@@ -182,14 +181,14 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	}
 
 	/**
-	 * 处理请求：Ping
+	 * 处理请求：ping
 	 */
 	private Response ping(Request request) {
 		return PingRequest.execute(request);
 	}
 
 	/**
-	 * 处理响应：Ping，唤醒Ping等待。
+	 * 处理响应：ping
 	 */
 	private void ping(Request request, Response response) {
 		notifyRequest(request);
@@ -199,6 +198,7 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	 * 发送请求：findNode
 	 */
 	public void findNode(InetSocketAddress socketAddress, byte[] target) {
+		LOGGER.debug("发送DHT请求：findNode");
 		final FindNodeRequest request = FindNodeRequest.newRequest(target);
 		pushMessage(request, socketAddress);
 	}
@@ -221,30 +221,21 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	 * 发送请求：getPeers
 	 */
 	public void getPeers(InetSocketAddress socketAddress, byte[] infoHash) {
+		LOGGER.debug("发送DHT请求：getPeers");
 		final GetPeersRequest request = GetPeersRequest.newRequest(infoHash);
 		pushMessage(request, socketAddress);
 	}
 
 	/**
-	 * <p>处理请求：getPeers</p>
-	 * <p>如果本地也在下载，这发送声明消息。</p>
+	 * 处理请求：getPeers
 	 */
 	private Response getPeers(Request request) {
-		final byte[] infoHash = request.getBytes(DhtConfig.KEY_INFO_HASH);
-		final String infoHashHex = StringUtils.hex(infoHash);
-		final TorrentSession torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
-		if(torrentSession != null) {
-			SystemThreadContext.submit(() -> {
-				final byte[] token = request.getBytes(DhtConfig.KEY_TOKEN);
-				this.announcePeer(request.getSocketAddress(), token, infoHash);
-			});
-		}
 		return GetPeersRequest.execute(request);
 	}
 
 	/**
 	 * <p>处理响应：getPeers</p>
-	 * <p>同时设置Node Token</p>
+	 * <p>处理完成后发送声明消息</p>
 	 */
 	private void getPeers(Request request, Response response) {
 		final GetPeersResponse getPeersResponse = GetPeersResponse.newInstance(response);
@@ -254,15 +245,23 @@ public class DhtMessageHandler extends UdpMessageHandler {
 		if(getPeersResponse.haveNodes()) {
 			getPeersResponse.getNodes();
 		}
+		// 发送声明消息
 		final byte[] token = getPeersResponse.getToken();
-		final byte[] nodeId = getPeersResponse.getNodeId();
-		NodeManager.getInstance().token(nodeId, request, token);
+		if(token != null) {
+			final byte[] infoHash = request.getBytes(DhtConfig.KEY_INFO_HASH);
+			final String infoHashHex = StringUtils.hex(infoHash);
+			final TorrentSession torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
+			if(torrentSession != null) {
+				this.announcePeer(request.getSocketAddress(), token, infoHash);
+			}
+		}
 	}
 	
 	/**
 	 * 发送请求：announcePeer
 	 */
 	public void announcePeer(InetSocketAddress socketAddress, byte[] token, byte[] infoHash) {
+		LOGGER.debug("发送DHT请求：announcePeer");
 		final AnnouncePeerRequest request = AnnouncePeerRequest.newRequest(token, infoHash);
 		pushMessage(request, socketAddress);
 	}
@@ -285,7 +284,7 @@ public class DhtMessageHandler extends UdpMessageHandler {
 	 */
 	private void waitResponse(Request request) {
 		synchronized (request) {
-			if(!request.response()) {
+			if(!request.haveResponse()) {
 				ThreadUtils.wait(request, DhtConfig.TIMEOUT);
 			}
 		}

@@ -3,7 +3,6 @@ package com.acgist.snail.net.torrent.dht.bootstrap.request;
 import java.net.InetSocketAddress;
 
 import com.acgist.snail.net.torrent.TorrentManager;
-import com.acgist.snail.net.torrent.dht.bootstrap.DhtService;
 import com.acgist.snail.net.torrent.dht.bootstrap.NodeManager;
 import com.acgist.snail.net.torrent.dht.bootstrap.Request;
 import com.acgist.snail.net.torrent.dht.bootstrap.Response;
@@ -18,7 +17,7 @@ import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * 声明Peer
+ * <p>声明Peer</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -28,7 +27,7 @@ public class AnnouncePeerRequest extends Request {
 //	private static final Logger LOGGER = LoggerFactory.getLogger(AnnouncePeerRequest.class);
 	
 	private AnnouncePeerRequest() {
-		super(DhtService.getInstance().requestId(), DhtConfig.QType.ANNOUNCE_PEER);
+		super(DhtConfig.QType.ANNOUNCE_PEER);
 	}
 	
 	/**
