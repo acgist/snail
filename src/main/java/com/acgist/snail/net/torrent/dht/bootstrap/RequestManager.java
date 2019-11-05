@@ -1,6 +1,6 @@
 package com.acgist.snail.net.torrent.dht.bootstrap;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -34,7 +34,7 @@ public class RequestManager {
 	private final List<Request> requests;
 	
 	private RequestManager() {
-		this.requests = new ArrayList<>();
+		this.requests = new LinkedList<>();
 	}
 	
 	public static final RequestManager getInstance() {
@@ -48,11 +48,13 @@ public class RequestManager {
 		if(request == null) {
 			return;
 		}
-		final Request old = remove(request.getId());
-		if(old != null) {
-			LOGGER.warn("旧请求没有收到响应（剔除）");
+		synchronized (this.requests) {
+			final Request old = remove(request.getId());
+			if(old != null) {
+				LOGGER.warn("旧DHT请求没有收到响应（剔除）");
+			}
+			this.requests.add(request);
 		}
-		this.requests.add(request);
 	}
 	
 	/**
@@ -64,7 +66,10 @@ public class RequestManager {
 			return null;
 		}
 		NodeManager.getInstance().available(response);
-		final Request request = remove(response.getId());
+		Request request = null;
+		synchronized (this.requests) {
+			request = remove(response.getId());
+		}
 		if(request == null) {
 			return null;
 		}
@@ -95,15 +100,13 @@ public class RequestManager {
 	 * 移除请求
 	 */
 	private Request remove(byte[] id) {
-		synchronized (this.requests) {
-			Request request;
-			final var iterator = this.requests.iterator();
-			while(iterator.hasNext()) {
-				request = iterator.next();
-				if(ArrayUtils.equals(id, request.getId())) {
-					iterator.remove();
-					return request;
-				}
+		Request request;
+		final var iterator = this.requests.iterator();
+		while(iterator.hasNext()) {
+			request = iterator.next();
+			if(ArrayUtils.equals(id, request.getId())) {
+				iterator.remove();
+				return request;
 			}
 		}
 		return null;

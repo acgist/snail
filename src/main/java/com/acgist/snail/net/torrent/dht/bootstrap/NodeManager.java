@@ -152,7 +152,7 @@ public class NodeManager {
 	
 	/**
 	 * <p>添加DHT节点</p>
-	 * <p>先验证节点（ping），验证通过加入列表，设置为可用节点。</p>
+	 * <p>先验证状态，通过验证加入列表，设置为可用节点。</p>
 	 */
 	public void newNodeSession(String host, Integer port) {
 		final NodeSession nodeSession = verify(host, port);
@@ -163,8 +163,8 @@ public class NodeManager {
 	
 	/**
 	 * <p>添加DHT节点</p>
-	 * <p>加入时不验证，使用时进行验证。</p>
-	 * <p>添加Node，新建完成后需要调用{@link #sortNodes()}进行排序。</p>
+	 * <p>加入时不验证状态，使用时验证。</p>
+	 * <p>新建完成后需要调用{@link #sortNodes()}进行排序</p>
 	 */
 	public NodeSession newNodeSession(byte[] nodeId, String host, Integer port) {
 		synchronized (this.nodes) {
@@ -187,7 +187,7 @@ public class NodeManager {
 
 	/**
 	 * <p>排序</p>
-	 * <p>在调用{@link #newNodeSession(byte[], String, Integer)}后需要进行排序。</p>
+	 * <p>在调用{@link #newNodeSession(byte[], String, Integer)}后需要进行排序</p>
 	 */
 	public void sortNodes() {
 		synchronized (this.nodes) {
@@ -226,8 +226,8 @@ public class NodeManager {
 
 	/**
 	 * <p>查找Node</p>
-	 * <p>查找最近（异或运算）的一段NodeId。</p>
-	 * <p>查找时Node是一个环形结构，按照{@linkplain #NODE_FIND_SLICE_SIZE 大小}分片。</p>
+	 * <p>查找最近（异或运算）的一段NodeId</p>
+	 * <p>查找时节点组成一个环形结构，按照{@linkplain #NODE_FIND_SLICE_SIZE 大小}分片。</p>
 	 * 
 	 * @param nodes 节点列表
 	 * @param target 目标NodeId
@@ -250,7 +250,7 @@ public class NodeManager {
 			// 分片中Node的数量
 			final int sliceSize = selectSize / NODE_FIND_SLICE_SIZE;
 			int sliceA, sliceB, sliceC;
-			// 如果下标大于节点数量，表示从头开始选择。
+			// 下标大于节点数量：从头开始选择
 			if(end > begin) {
 				sliceA = begin;
 				sliceB = sliceA + sliceSize;
@@ -282,8 +282,8 @@ public class NodeManager {
 
 	/**
 	 * <p>选择Node</p>
-	 * <p>排序查找最近的节点。</p>
-	 * <p>如果节点处于未知状态则修改为验证状态。</p>
+	 * <p>排序查找最近的节点</p>
+	 * <p>如果节点处于未知状态则修改为验证状态</p>
 	 */
 	private List<NodeSession> selectNode(final List<NodeSession> nodes, final byte[] target, final int begin, final int end) {
 		Stream<NodeSession> select;
@@ -302,6 +302,7 @@ public class NodeManager {
 			.map(Map.Entry::getValue)
 			.limit(NODE_FIND_SIZE)
 			.peek(node -> {
+				// 设置状态
 				if(node.getStatus() == NodeSession.Status.UNUSE) {
 					node.setStatus(NodeSession.Status.VERIFY);
 				}
@@ -310,7 +311,8 @@ public class NodeManager {
 	}
 	
 	/**
-	 * 设置token，如果对应nodeId不存在，这加入系统节点。
+	 * <p>设置token</p>
+	 * <p>如果对应NodeId不存在，则加入节点列表。</p>
 	 */
 	public void token(byte[] nodeId, Request request, byte[] token) {
 		final InetSocketAddress socketAddress = request.getSocketAddress();
