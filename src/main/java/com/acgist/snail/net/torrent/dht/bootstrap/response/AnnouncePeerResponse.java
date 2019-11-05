@@ -4,7 +4,7 @@ import com.acgist.snail.net.torrent.dht.bootstrap.Request;
 import com.acgist.snail.net.torrent.dht.bootstrap.Response;
 
 /**
- * 声明Peer
+ * <p>声明Peer</p>
  * 
  * @author acgist
  * @since 1.0.0

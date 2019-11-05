@@ -8,7 +8,7 @@ import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.system.config.DhtConfig;
 
 /**
- * 返回最近的8个Node
+ * <p>查找Node</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -31,9 +31,6 @@ public class FindNodeResponse extends Response {
 		return new FindNodeResponse(request.getT());
 	}
 	
-	/**
-	 * 获取节点，同时加入系统节点。
-	 */
 	public List<NodeSession> getNodes() {
 		final byte[] bytes = this.getBytes(DhtConfig.KEY_NODES);
 		return deserializeNodes(bytes);

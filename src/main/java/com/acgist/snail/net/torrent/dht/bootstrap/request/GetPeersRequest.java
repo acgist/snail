@@ -4,7 +4,6 @@ import java.nio.ByteBuffer;
 import java.util.stream.Collectors;
 
 import com.acgist.snail.net.torrent.TorrentManager;
-import com.acgist.snail.net.torrent.dht.bootstrap.DhtService;
 import com.acgist.snail.net.torrent.dht.bootstrap.NodeManager;
 import com.acgist.snail.net.torrent.dht.bootstrap.Request;
 import com.acgist.snail.net.torrent.dht.bootstrap.response.GetPeersResponse;
@@ -16,7 +15,7 @@ import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * 查找Peer
+ * <p>查找Peer</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -24,7 +23,7 @@ import com.acgist.snail.utils.StringUtils;
 public class GetPeersRequest extends Request {
 
 	private GetPeersRequest() {
-		super(DhtService.getInstance().requestId(), DhtConfig.QType.GET_PEERS);
+		super(DhtConfig.QType.GET_PEERS);
 	}
 	
 	/**
@@ -52,7 +51,7 @@ public class GetPeersRequest extends Request {
 			if(CollectionUtils.isNotEmpty(list)) {
 				final var values = list.stream()
 					.filter(peer -> peer.available())
-					.filter(peer -> peer.connected())
+					.filter(peer -> peer.connected()) // 只返回连接中的Peer
 					.limit(DhtConfig.GET_PEER_SIZE)
 					.map(peer -> {
 						buffer.putInt(NetUtils.encodeIpToInt(peer.host()));
@@ -62,10 +61,11 @@ public class GetPeersRequest extends Request {
 					})
 					.collect(Collectors.toList());
 				response.put(DhtConfig.KEY_VALUES, values);
+			} else {
+				final var nodes = NodeManager.getInstance().findNode(infoHash);
+				response.put(DhtConfig.KEY_NODES, serializeNodes(nodes));
 			}
 		}
-		final var nodes = NodeManager.getInstance().findNode(infoHash);
-		response.put(DhtConfig.KEY_NODES, serializeNodes(nodes));
 		return response;
 	}
 	

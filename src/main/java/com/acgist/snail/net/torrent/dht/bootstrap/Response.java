@@ -29,19 +29,22 @@ public class Response extends DhtMessage {
 	 */
 	private final Map<String, Object> r;
 	/**
-	 * <p>错误参数（列表）：{@link ErrorCode}</p>
+	 * <p>错误参数</p>
+	 * <p>错误代码：{@link ErrorCode}</p>
 	 */
 	private final List<Object> e;
 
 	/**
-	 * <p>子类初始化调用构造方法，设置NodeId。</p>
-	 * <p>处理请求，发送响应。</p>
+	 * <p>设置NodeId</p>
 	 */
 	protected Response(byte[] t) {
 		this(t, DhtConfig.KEY_R, new LinkedHashMap<>(), null);
 		this.put(DhtConfig.KEY_ID, NodeManager.getInstance().nodeId());
 	}
 	
+	/**
+	 * <p>不设置NodeId</p>
+	 */
 	protected Response(byte[] t, String y, Map<String, Object> r, List<Object> e) {
 		super(t, y);
 		this.r = r;
@@ -49,7 +52,7 @@ public class Response extends DhtMessage {
 	}
 
 	/**
-	 * 处理响应。
+	 * 处理响应
 	 */
 	public static final Response valueOf(final BEncodeDecoder decoder) {
 		final byte[] t = decoder.getBytes(DhtConfig.KEY_T);
@@ -66,30 +69,18 @@ public class Response extends DhtMessage {
 	public List<Object> getE() {
 		return e;
 	}
-
-	/**
-	 * 设置响应参数
-	 * 
-	 * @param key 参数名称
-	 * @param value 参数值
-	 */
-	public void put(String key, Object value) {
-		this.r.put(key, value);
-	}
 	
-	/**
-	 * 获取响应参数
-	 * 
-	 * @param key 参数名称
-	 * 
-	 * @return 参数值
-	 */
 	@Override
 	public Object get(String key) {
 		if(this.r == null) {
 			return null;
 		}
 		return this.r.get(key);
+	}
+	
+	@Override
+	public void put(String key, Object value) {
+		this.r.put(key, value);
 	}
 	
 	/**
@@ -110,7 +101,7 @@ public class Response extends DhtMessage {
 
 	/**
 	 * <p>节点反序列化</p>
-	 * <p>将读取到的节点加入系统节点</p>
+	 * <p>节点加入系统列表</p>
 	 */
 	protected static final List<NodeSession> deserializeNodes(byte[] bytes) {
 		if(bytes == null) {
@@ -130,14 +121,16 @@ public class Response extends DhtMessage {
 	}
 	
 	/**
-	 * 节点反序列化，同时添加系统节点。
+	 * <p>节点反序列化</p>
+	 * <p>节点加入系统列表</p>
 	 */
-	protected static final NodeSession deserializeNode(ByteBuffer buffer) {
+	private static final NodeSession deserializeNode(ByteBuffer buffer) {
 		if(buffer.hasRemaining()) {
 			final byte[] nodeId = new byte[DhtConfig.NODE_ID_LENGTH];
 			buffer.get(nodeId);
 			final String host = NetUtils.decodeIntToIp(buffer.getInt());
 			final int port = NetUtils.decodePort(buffer.getShort());
+			// 这里不排序，所有节点加入列表后再调用排序方法。
 			final NodeSession nodeSession = NodeManager.getInstance().newNodeSession(nodeId, host, port);
 			return nodeSession;
 		}
@@ -155,7 +148,11 @@ public class Response extends DhtMessage {
 	 * 失败编码
 	 */
 	public int errorCode() {
-		return ((Long) this.e.get(0)).intValue();
+		if(this.e.size() > 0) {
+			return ((Long) this.e.get(0)).intValue();
+		} else {
+			return ErrorCode.CODE_201.code();
+		}
 	}
 
 	/**

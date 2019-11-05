@@ -1,6 +1,5 @@
 package com.acgist.snail.net.torrent.dht.bootstrap;
 
-import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -213,6 +212,8 @@ public class NodeManager {
 	/**
 	 * <p>查找Node</p>
 	 * <p>筛选排除{@linkplain Status#VERIFY 验证}节点</p>
+	 * 
+	 * TODO：缓存结果
 	 */
 	public List<NodeSession> findNode(byte[] target) {
 		List<NodeSession> nodes; // 筛选节点的副本
@@ -308,22 +309,6 @@ public class NodeManager {
 				}
 			})
 			.collect(Collectors.toList());
-	}
-	
-	/**
-	 * <p>设置token</p>
-	 * <p>如果对应NodeId不存在，则加入节点列表。</p>
-	 */
-	public void token(byte[] nodeId, Request request, byte[] token) {
-		final InetSocketAddress socketAddress = request.getSocketAddress();
-		synchronized (this.nodes) {
-			NodeSession old = select(nodeId);
-			if(old == null) {
-				old = newNodeSession(nodeId, socketAddress.getHostString(), socketAddress.getPort());
-				this.sortNodes();
-			}
-			old.setToken(token);
-		}
 	}
 	
 	/**
