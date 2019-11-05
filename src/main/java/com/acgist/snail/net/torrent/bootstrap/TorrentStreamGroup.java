@@ -263,8 +263,8 @@ public class TorrentStreamGroup {
 			return;
 		}
 		this.fullPieces.or(pieces);
-		final int pieceSize = this.torrent.getInfo().pieceSize();
-		if(this.fullPieces.cardinality() == pieceSize) {
+		this.fullPieces.andNot(this.selectPieces);
+		if(this.fullPieces.isEmpty()) {
 			this.full = true;
 			this.fullPieces.clear();
 		}
