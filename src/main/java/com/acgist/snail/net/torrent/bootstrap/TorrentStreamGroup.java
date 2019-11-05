@@ -49,6 +49,21 @@ public class TorrentStreamGroup {
 	 */
 	private final BitSet selectPieces;
 	/**
+	 * 是否完整
+	 */
+	private volatile boolean full;
+	/**
+	 * <p>完整Piece位图</p>
+	 * <dl>
+	 * 	<dt>更新</dt>
+	 * 	<dd>位图交换</dd>
+	 * 	<dd>本地初始化</dd>
+	 * 	<dd>haveAll消息</dd>
+	 * </dl>
+	 * <p>注：have消息不更新</p>
+	 */
+	private final BitSet fullPieces;
+	/**
 	 * 缓冲大小：数据下载时修改
 	 */
 	private final AtomicLong fileBuffer;
@@ -64,6 +79,9 @@ public class TorrentStreamGroup {
 	private TorrentStreamGroup(BitSet pieces, BitSet selectPieces, List<TorrentStream> streams, TorrentSession torrentSession) {
 		this.pieces = pieces;
 		this.selectPieces = selectPieces;
+		this.full = false;
+		this.fullPieces = new BitSet();
+		this.fullPieces.or(this.pieces);
 		this.streams = streams;
 		this.torrent = torrentSession.torrent();
 		this.torrentSession = torrentSession;
@@ -238,6 +256,44 @@ public class TorrentStreamGroup {
 	}
 	
 	/**
+	 * 完整Piece设置
+	 */
+	public void fullPieces(BitSet pieces) {
+		if(this.full) {
+			return;
+		}
+		this.fullPieces.or(pieces);
+		final int pieceSize = this.torrent.getInfo().pieceSize();
+		if(this.fullPieces.cardinality() == pieceSize) {
+			this.full = true;
+			this.fullPieces.clear();
+		}
+	}
+	
+	/**
+	 * 完整Piece设置
+	 */
+	public void fullPieces() {
+		if(this.full) {
+			return;
+		}
+		this.full = true;
+		this.fullPieces.clear();
+	}
+	
+	/**
+	 * 健康度：0~100
+	 */
+	public int health() {
+		final int health = 100;
+		if(this.full) {
+			return health;
+		}
+		LOGGER.debug("健康度：{}-{}", this.fullPieces.cardinality(), this.torrent.getInfo().pieceSize());
+		return this.fullPieces.cardinality() * health / this.torrent.getInfo().pieceSize();
+	}
+	
+	/**
 	 * 需要下载位图
 	 */
 	public BitSet selectPieces() {
@@ -248,9 +304,9 @@ public class TorrentStreamGroup {
 	 * 所有位图
 	 */
 	public BitSet allPieces() {
-		final int length = this.torrent.getInfo().pieceSize();
-		final var allPieces = new BitSet(length);
-		allPieces.set(0, length);
+		final int pieceSize = this.torrent.getInfo().pieceSize();
+		final var allPieces = new BitSet(pieceSize);
+		allPieces.set(0, pieceSize);
 		return allPieces;
 	}
 	

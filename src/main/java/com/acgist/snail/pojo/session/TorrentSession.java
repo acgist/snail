@@ -623,6 +623,18 @@ public final class TorrentSession {
 		}
 	}
 	
+	public void fullPieces(BitSet pieces) {
+		this.torrentStreamGroup.fullPieces(pieces);
+	}
+	
+	public void fullPieces() {
+		this.torrentStreamGroup.fullPieces();
+	}
+	
+	public int health() {
+		return this.torrentStreamGroup.health();
+	}
+	
 	public long size() {
 		return this.taskSession.entity().getSize();
 	}

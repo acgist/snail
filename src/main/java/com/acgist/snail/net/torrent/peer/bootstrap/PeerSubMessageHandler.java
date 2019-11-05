@@ -561,6 +561,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		LOGGER.debug("处理haveAll消息");
 		final BitSet allPieces = this.torrentSession.allPieces();
 		this.peerSession.pieces(allPieces);
+		this.torrentSession.fullPieces();
 		if(!this.torrentSession.completed()) { // 任务没有完成发送感兴趣消息
 			interested();
 		}
@@ -772,6 +773,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		final BitSet pieces = BitfieldUtils.toBitSet(bytes); // Peer位图
 		LOGGER.debug("处理位图消息：{}", pieces);
 		this.peerSession.pieces(pieces);
+		this.torrentSession.fullPieces(pieces);
 		final BitSet notHave = new BitSet(); // 没有下载的位图
 		notHave.or(pieces);
 		notHave.andNot(this.torrentSession.pieces());
