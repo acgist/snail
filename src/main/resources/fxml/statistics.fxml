@@ -130,6 +130,10 @@
 				<Label>下载：</Label>
 				<Text fx:id="statusDownload">0</Text>
 			</TextFlow>
+			<TextFlow>
+				<Label>健康度：</Label>
+				<Text fx:id="health">0</Text>
+			</TextFlow>
 		</HBox>
 	</VBox>
 	

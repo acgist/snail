@@ -85,6 +85,8 @@ public class StatisticsController extends Controller implements Initializable {
 	@FXML
 	private Text statusDownload;
 	@FXML
+	private Text health;
+	@FXML
 	private ChoiceBox<SelectInfoHash> selectInfoHashs;
 	@FXML
 	private VBox chart;
@@ -225,6 +227,7 @@ public class StatisticsController extends Controller implements Initializable {
 				available.incrementAndGet();
 			}
 		});
+		final var torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
 		// Peer
 		this.peerTotal.setText(String.valueOf(peers.size()));
 		this.peerUtp.setText(String.valueOf(utp.get()));
@@ -239,9 +242,9 @@ public class StatisticsController extends Controller implements Initializable {
 		// 状态
 		this.statusUpload.setText(String.valueOf(upload.get()));
 		this.statusDownload.setText(String.valueOf(download.get()));
+		this.health.setText(torrentSession.health() + "%");
 		// 图表
 		CategoryAxis xAxis = new CategoryAxis();
-		final var torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
 		xAxis.setLabel(String.format(
 			"累计上传：%s 累计下载：%s",
 			FileUtils.formatSize(torrentSession.statistics().uploadSize()),
