@@ -229,7 +229,7 @@ public final class PeerLauncher extends PeerClientHandler {
 	 * 一直进行下载直到结束
 	 */
 	private void requests() {
-		LOGGER.debug("开始请求下载");
+		LOGGER.debug("开始请求下载：{}", this.peerSession);
 		boolean ok = true;
 		while(ok) {
 			try {
@@ -239,6 +239,7 @@ public final class PeerLauncher extends PeerClientHandler {
 				ok = false;
 			}
 		}
+		LOGGER.debug("结束请求下载：{}", this.peerSession);
 	}
 	
 	/**

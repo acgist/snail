@@ -86,12 +86,12 @@ public final class NodeSession implements Comparable<NodeSession> {
 	}
 	
 	@Override
-	public int compareTo(NodeSession that) {
-		final byte[] thisId = this.id;
-		final byte[] thatId = that.id;
-		for (int index = 0; index < thisId.length; index++) {
-			if(thisId[index] != thatId[index]) {
-				return thisId[index] - thatId[index];
+	public int compareTo(NodeSession target) {
+		final byte[] sourceId = this.id;
+		final byte[] targetId = target.id;
+		for (int index = 0; index < sourceId.length; index++) {
+			if(sourceId[index] != targetId[index]) {
+				return sourceId[index] - targetId[index];
 			}
 		}
 		return 0;
@@ -116,7 +116,7 @@ public final class NodeSession implements Comparable<NodeSession> {
 	
 	@Override
 	public String toString() {
-		return ObjectUtils.toString(this, this.id, this.host, this.port);
+		return ObjectUtils.toString(this, this.host, this.port);
 	}
 	
 }
