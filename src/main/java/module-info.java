@@ -8,13 +8,9 @@
  * <p>所有的类变量、静态变量需要使用javadoc注解。</p>
  * <p>允许使用同行注释。</p>
  * 
- * <p><i>阿里代码规范检测：https://p3c.alibaba.com/plugin/eclipse/update</i></p>
- * 
- * <h4>代码顺序</h4>
- * <p>LOGGER、单例（INSTANCE）、枚举、常量、静态变量、静态代码块、成员变量</p>
- * <p>构造方法、单例方法（getInstance、newInstance）、静态方法、类方法（抽象方法、public、protected、private）</p>
- * <p>Getter、Setter、重写Object方法（hashCode、equals、toString）</p>
- * <p>内部类</p>
+ * <h2>规范检测</h2>
+ * <p>P3C：https://github.com/alibaba/p3c</p>
+ * <p>Eclipse：https://p3c.alibaba.com/plugin/eclipse/update</p>
  * 
  * <h2>质量检测</h2>
  * <p>Sonar</p>
