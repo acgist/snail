@@ -65,7 +65,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	/**
 	 * 握手超时时间
 	 */
-	private static final int HANDSHAKE_TIMEOUT = SystemConfig.CONNECT_TIMEOUT;
+	public static final int HANDSHAKE_TIMEOUT = SystemConfig.CONNECT_TIMEOUT;
 	
 	/**
 	 * 发送握手

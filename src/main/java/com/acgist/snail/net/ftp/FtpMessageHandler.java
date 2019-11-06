@@ -83,30 +83,24 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 		if(StringUtils.startsWith(message, "530 ")) { // 登陆失败
 			this.failMessage = "服务器需要登陆授权";
 			this.close();
-			this.unlockCommand();
 		} else if(StringUtils.startsWith(message, "550 ")) { // 文件不存在
 			this.failMessage = "文件不存在";
 			this.close();
-			this.unlockCommand();
 		} else if(StringUtils.startsWith(message, "421 ")) { // Socket打开失败
 			this.failMessage = "打开连接失败";
 			this.close();
-			this.unlockCommand();
 		} else if(StringUtils.startsWith(message, "350 ")) { // 断点续传
 			this.range = true;
 		} else if(StringUtils.startsWith(message, "220 ")) { // 退出系统
 		} else if(StringUtils.startsWith(message, "230 ")) { // 登陆成功
-			this.unlockCommand();
 		} else if(StringUtils.startsWith(message, "226 ")) { // 下载完成
 		} else if(StringUtils.startsWith(message, "502 ")) { // 不支持命令：FEAT
-			this.unlockCommand();
 		} else if(StringUtils.startsWith(message, "211-")) { // 服务器状态：扩展命令编码查询
 			// 判断是否支持UTF8
 			if(message.toUpperCase().contains(SystemConfig.CHARSET_UTF8)) {
 				this.charset = SystemConfig.CHARSET_UTF8;
 				LOGGER.debug("设置FTP编码：{}", this.charset);
 			}
-			this.unlockCommand();
 		} else if(StringUtils.startsWith(message, "227 ")) { // 进入被动模式：获取下载Socket的IP和端口
 			release(); // 释放旧的资源
 			final int opening = message.indexOf('(');
@@ -133,10 +127,9 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 				this.inputStream = this.inputSocket.getInputStream();
 			} catch (IOException e) {
 				LOGGER.error("打开FTP远程输入流异常", e);
-			} finally {
-				this.unlockCommand();
 			}
 		}
+		this.unlockCommand();
 	}
 	
 	/**
@@ -147,13 +140,6 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 	}
 	
 	/**
-	 * 登录锁
-	 */
-	public void loginLock() {
-		this.lockCommand();
-	}
-	
-	/**
 	 * 字符编码
 	 */
 	public String charset() {
@@ -161,18 +147,9 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 	}
 	
 	/**
-	 * 字符编码（加锁）
-	 */
-	public String charsetLock() {
-		this.lockCommand();
-		return this.charset;
-	}
-	
-	/**
 	 * 获取输入流，阻塞线程。
 	 */
 	public InputStream inputStream() throws NetException {
-		this.lockCommand();
 		if(this.inputStream == null) {
 			if(this.failMessage == null) {
 				this.failMessage = "未知错误";
@@ -189,13 +166,6 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 		return this.failMessage;
 	}
 	
-	/**
-	 * 重置锁
-	 */
-	public void resetLock() {
-		this.commandLock.set(false);
-	}
-
 	@Override
 	public void close() {
 		this.release();
@@ -213,7 +183,8 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 	/**
 	 * 锁定命令
 	 */
-	private void lockCommand() {
+	public void lockCommand() {
+		this.commandLock.set(false);
 		if(!this.commandLock.get()) {
 			synchronized (this.commandLock) {
 				if(!this.commandLock.get()) {
