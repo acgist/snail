@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.gui.GuiHandler;
-import com.acgist.snail.pojo.session.TaskSession;
+import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
@@ -75,7 +75,7 @@ public final class DownloaderManager {
 	/**
 	 * <p>开始下载任务</p>
 	 */
-	public void start(TaskSession taskSession) throws DownloadException {
+	public void start(ITaskSession taskSession) throws DownloadException {
 		final var downloader = this.submit(taskSession);
 		if(downloader != null) {
 			downloader.start();
@@ -86,7 +86,7 @@ public final class DownloaderManager {
 	 * <p>添加下载任务</p>
 	 * <p>不修改任务状态，只添加到下载器线程池。</p>
 	 */
-	public IDownloader submit(TaskSession taskSession) throws DownloadException {
+	public IDownloader submit(ITaskSession taskSession) throws DownloadException {
 		if(ProtocolManager.getInstance().available()) {
 			synchronized (this) {
 				if(taskSession == null) {
@@ -110,14 +110,14 @@ public final class DownloaderManager {
 	/**
 	 * <p>暂停任务</p>
 	 */
-	public void pause(TaskSession taskSession) {
+	public void pause(ITaskSession taskSession) {
 		downloader(taskSession).pause();
 	}
 	
 	/**
 	 * <p>刷新任务</p>
 	 */
-	public void refresh(TaskSession taskSession) {
+	public void refresh(ITaskSession taskSession) {
 		downloader(taskSession).refresh();
 	}
 
@@ -125,14 +125,13 @@ public final class DownloaderManager {
 	 * <p>删除任务</p>
 	 * <p>界面上面立即删除，实际删除任务在后台进行。</p>
 	 */
-	public void delete(TaskSession taskSession) {
-		final var entity = taskSession.entity();
+	public void delete(ITaskSession taskSession) {
 		// 需要定义在线程外面，防止后面下载器从队列中移除后导致的空指针。
 		final var downloader = downloader(taskSession);
 		// 后台删除任务
 		SystemThreadContext.submit(() -> downloader.delete());
 		// 队列立即移除
-		this.downloaderMap.remove(entity.getId());
+		this.downloaderMap.remove(taskSession.getId());
 		GuiHandler.getInstance().refreshTaskList();
 	}
 	
@@ -140,24 +139,23 @@ public final class DownloaderManager {
 	 * <p>切换下载器</p>
 	 * <p>不删除任务，移除任务的下载器，重新下载并创建下载器。</p>
 	 */
-	public void changeDownloaderRestart(TaskSession taskSession) throws DownloadException {
-		final var entity = taskSession.entity();
+	public void changeDownloaderRestart(ITaskSession taskSession) throws DownloadException {
 		taskSession.removeDownloader(); // 删除旧下载器
-		this.downloaderMap.remove(entity.getId());
+		this.downloaderMap.remove(taskSession.getId());
 		this.start(taskSession);
 	}
 
 	/**
 	 * <p>获取下载器</p>
 	 */
-	private IDownloader downloader(TaskSession taskSession) {
-		return this.downloaderMap.get(taskSession.entity().getId());
+	private IDownloader downloader(ITaskSession taskSession) {
+		return this.downloaderMap.get(taskSession.getId());
 	}
 	
 	/**
 	 * <p>获取下载任务列表</p>
 	 */
-	public List<TaskSession> tasks() {
+	public List<ITaskSession> tasks() {
 		return this.downloaderMap.values().stream()
 			.map(IDownloader::taskSession)
 			.collect(Collectors.toList());

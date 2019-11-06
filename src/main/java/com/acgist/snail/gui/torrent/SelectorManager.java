@@ -9,8 +9,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 import com.acgist.snail.gui.Tooltips;
+import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.bean.TorrentFile;
-import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.FileUtils;
 
@@ -118,8 +118,8 @@ public class SelectorManager {
 	 * <p>设置已选中信息，如果没有设置将自动选择。</p>
 	 * <p>自动选择：选择大于平均值的文件。</p>
 	 */
-	public void select(TaskSession taskSession) {
-		final var list = taskSession.downloadTorrentFiles();
+	public void select(ITaskSession taskSession) {
+		final var list = taskSession.selectTorrentFiles();
 		if(CollectionUtils.isNotEmpty(list)) { // 已选择文件
 			this.selector.entrySet().stream()
 				.filter(entry -> list.contains(entry.getKey()))

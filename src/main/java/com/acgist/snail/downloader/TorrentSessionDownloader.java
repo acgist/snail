@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
-import com.acgist.snail.pojo.session.TaskSession;
+import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.magnet.bootstrap.MagnetBuilder;
 import com.acgist.snail.system.exception.DownloadException;
@@ -33,7 +33,7 @@ public abstract class TorrentSessionDownloader extends Downloader {
 	 */
 	protected final Object downloadLock = new Object();
 	
-	protected TorrentSessionDownloader(TaskSession taskSession) {
+	protected TorrentSessionDownloader(ITaskSession taskSession) {
 		super(taskSession);
 	}
 	
@@ -77,12 +77,11 @@ public abstract class TorrentSessionDownloader extends Downloader {
 	 * <p>加载TorrentSession任务信息</p>
 	 */
 	protected TorrentSession loadTorrentSession() {
-		final var entity = this.taskSession.entity();
-		final var path = entity.getTorrent();
+		final var torrentPath = this.taskSession.getTorrent();
 		try {
-			final var magnet = MagnetBuilder.newInstance(entity.getUrl()).build();
+			final var magnet = MagnetBuilder.newInstance(this.taskSession.getUrl()).build();
 			final var infoHashHex = magnet.getHash();
-			return TorrentManager.getInstance().newTorrentSession(infoHashHex, path);
+			return TorrentManager.getInstance().newTorrentSession(infoHashHex, torrentPath);
 		} catch (DownloadException e) {
 			LOGGER.error("BT任务加载异常", e);
 			fail("BT任务加载失败：" + e.getMessage());

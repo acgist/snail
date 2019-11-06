@@ -4,13 +4,14 @@ import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.downloader.torrent.TorrentDownloader;
 import com.acgist.snail.gui.GuiHandler;
 import com.acgist.snail.net.torrent.TorrentManager;
+import com.acgist.snail.pojo.ITaskSession;
+import com.acgist.snail.pojo.ITaskSession.FileType;
 import com.acgist.snail.pojo.bean.Torrent;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.FileUtils;
-import com.acgist.snail.utils.FileUtils.FileType;
 
 /**
  * BT协议
@@ -70,7 +71,7 @@ public class TorrentProtocol extends Protocol {
 	}
 	
 	@Override
-	public IDownloader buildDownloader(TaskSession taskSession) {
+	public IDownloader buildDownloader(ITaskSession taskSession) {
 		return TorrentDownloader.newInstance(taskSession);
 	}
 
@@ -103,7 +104,7 @@ public class TorrentProtocol extends Protocol {
 	protected void done() throws DownloadException {
 		buildTorrentFolder();
 		torrentFileOperation();
-		selectTorrentFile();
+		selectTorrentFiles();
 	}
 	
 	/**
@@ -167,10 +168,10 @@ public class TorrentProtocol extends Protocol {
 	/**
 	 * 选择torrent下载文件和设置文件大小
 	 */
-	private void selectTorrentFile() throws DownloadException {
-		final TaskSession taskSession = TaskSession.newInstance(this.taskEntity);
+	private void selectTorrentFiles() throws DownloadException {
+		final ITaskSession taskSession = TaskSession.newInstance(this.taskEntity);
 		GuiHandler.getInstance().torrent(taskSession); // 不能抛出异常
-		if(taskSession.downloadTorrentFiles().isEmpty()) { // 没有选择下载文件
+		if(taskSession.selectTorrentFiles().isEmpty()) { // 没有选择下载文件
 			FileUtils.delete(this.taskEntity.getFile());
 			throw new DownloadException("请选择下载文件");
 		}

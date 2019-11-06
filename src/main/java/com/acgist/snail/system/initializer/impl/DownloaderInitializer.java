@@ -39,9 +39,8 @@ public class DownloaderInitializer extends Initializer {
 		if(CollectionUtils.isNotEmpty(list)) {
 			list.stream()
 				.forEach(entity -> {
-					TaskSession taskSession = null;
 					try {
-						taskSession = TaskSession.newInstance(entity);
+						final var taskSession = TaskSession.newInstance(entity);
 						DownloaderManager.getInstance().submit(taskSession);
 					} catch (DownloadException e) {
 						LOGGER.error("添加下载任务异常：{}", entity.getName(), e);

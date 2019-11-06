@@ -4,7 +4,7 @@ import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.downloader.ftp.FtpDownloader;
 import com.acgist.snail.net.ftp.FtpClient;
 import com.acgist.snail.net.ftp.bootstrap.FtpClientBuilder;
-import com.acgist.snail.pojo.session.TaskSession;
+import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
@@ -38,7 +38,7 @@ public class FtpProtocol extends Protocol {
 	}
 	
 	@Override
-	public IDownloader buildDownloader(TaskSession taskSession) {
+	public IDownloader buildDownloader(ITaskSession taskSession) {
 		return FtpDownloader.newInstance(taskSession);
 	}
 

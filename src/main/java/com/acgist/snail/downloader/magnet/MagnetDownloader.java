@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.TorrentSessionDownloader;
-import com.acgist.snail.pojo.session.TaskSession;
+import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.system.exception.DownloadException;
 
 /**
@@ -18,11 +18,11 @@ public final class MagnetDownloader extends TorrentSessionDownloader {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(MagnetDownloader.class);
 
-	public MagnetDownloader(TaskSession taskSession) {
+	public MagnetDownloader(ITaskSession taskSession) {
 		super(taskSession);
 	}
 	
-	public static final MagnetDownloader newInstance(TaskSession taskSession) {
+	public static final MagnetDownloader newInstance(ITaskSession taskSession) {
 		return new MagnetDownloader(taskSession);
 	}
 	

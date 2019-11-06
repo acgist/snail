@@ -33,37 +33,46 @@ open module com.acgist.snail {
 	 * 限定导出
 	 */
 	exports com.acgist.main;
-//	exports com.acgist.snail.gui;
-//	exports com.acgist.snail.net;
-//	exports com.acgist.snail.protocol;
-//	exports com.acgist.snail.downloader;
+	exports com.acgist.snail.gui;
+	exports com.acgist.snail.gui.event;
+	exports com.acgist.snail.net;
+	exports com.acgist.snail.pojo;
+	exports com.acgist.snail.pojo.message;
+	exports com.acgist.snail.protocol;
+	exports com.acgist.snail.downloader;
+	exports com.acgist.snail.system.bencode;
 
 	/*
-	 * opens：开放包（反射时需要，使用open module不需要此配置）
+	 * opens：开放包
 	 * opens com.acgist.main;
+	 * 反射时需要：使用open module不需要此配置
 	 */
 
 	/*
 	 * Java
 	 */
-	requires java.sql;
 	requires java.base;
-	requires java.desktop;
-	requires java.net.http;
 	
 	/*
-	 * 依赖：jdeps --list-deps *.jar
-	 * java.xml
-	 * java.naming
-	 * java.logging
-	 * java.compiler
-	 * java.scripting
-	 * java.instrument
-	 * java.management
-	 * java.transaction.xa
-	 * jdk.crypto.ec
-	 * jdk.unsupported
+	 * Java
 	 */
+	requires transitive java.sql;
+	requires transitive java.xml;
+	requires transitive java.naming;
+	requires transitive java.logging;
+	requires transitive java.desktop;
+	requires transitive java.net.http;
+	requires transitive java.compiler;
+	requires transitive java.scripting;
+	requires transitive java.instrument;
+	requires transitive java.management;
+	requires transitive java.transaction.xa;
+	
+	/*
+	 * JDK
+	 */
+	requires transitive jdk.crypto.ec;
+	requires transitive jdk.unsupported;
 
 	/*
 	 * JavaFX

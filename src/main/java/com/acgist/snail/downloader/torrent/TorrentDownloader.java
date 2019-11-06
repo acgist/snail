@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.TorrentSessionDownloader;
-import com.acgist.snail.pojo.session.TaskSession;
+import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.exception.DownloadException;
 
@@ -20,11 +20,11 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentDownloader.class);
 	
-	private TorrentDownloader(TaskSession taskSession) {
+	private TorrentDownloader(ITaskSession taskSession) {
 		super(taskSession);
 	}
 
-	public static final TorrentDownloader newInstance(TaskSession taskSession) {
+	public static final TorrentDownloader newInstance(ITaskSession taskSession) {
 		return new TorrentDownloader(taskSession);
 	}
 	

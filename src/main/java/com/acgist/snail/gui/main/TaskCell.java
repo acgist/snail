@@ -1,8 +1,8 @@
 package com.acgist.snail.gui.main;
 
 import com.acgist.snail.gui.Tooltips;
-import com.acgist.snail.pojo.session.TaskSession;
-import com.acgist.snail.utils.FileUtils.FileType;
+import com.acgist.snail.pojo.ITaskSession;
+import com.acgist.snail.pojo.ITaskSession.FileType;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.TableCell;
@@ -16,7 +16,7 @@ import javafx.scene.text.Text;
  * @author acgist
  * @since 1.0.0
  */
-public final class TaskCell extends TableCell<TaskSession, String> {
+public final class TaskCell extends TableCell<ITaskSession, String> {
 
 	/**
 	 * 对齐方式
@@ -40,7 +40,7 @@ public final class TaskCell extends TableCell<TaskSession, String> {
 	@Override
 	public void updateItem(String value, boolean empty) {
 		super.updateItem(value, empty);
-		final TaskSession taskSession = this.getTableRow().getItem();
+		final ITaskSession taskSession = this.getTableRow().getItem();
 		if(taskSession != null) {
 			final HBox box = new HBox();
 			box.setAlignment(this.pos);
@@ -48,7 +48,7 @@ public final class TaskCell extends TableCell<TaskSession, String> {
 			// 添加图标：文件类型
 			if(this.icon) {
 //				name.setCursor(Cursor.HAND); // 设置手势
-				FileType fileType = taskSession.entity().getFileType();
+				FileType fileType = taskSession.getFileType();
 				if(fileType == null) {
 					fileType = FileType.UNKNOWN;
 				}

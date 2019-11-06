@@ -8,9 +8,8 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.gui.GuiHandler;
 import com.acgist.snail.gui.GuiHandler.SnailNoticeType;
-import com.acgist.snail.pojo.session.TaskSession;
-import com.acgist.snail.pojo.session.TaskSession.Status;
-import com.acgist.snail.repository.impl.TaskRepository;
+import com.acgist.snail.pojo.ITaskSession;
+import com.acgist.snail.pojo.ITaskSession.Status;
 import com.acgist.snail.system.IStatistics;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.ThreadUtils;
@@ -36,7 +35,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	/**
 	 * 任务信息
 	 */
-	protected final TaskSession taskSession;
+	protected final ITaskSession taskSession;
 	/**
 	 * <p>任务删除锁</p>
 	 * <p>任务不处于下载中时标记：true</p>
@@ -44,9 +43,8 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	 */
 	private final AtomicBoolean deleteLock = new AtomicBoolean(false);
 
-	protected Downloader(TaskSession taskSession) {
+	protected Downloader(ITaskSession taskSession) {
 		this.taskSession = taskSession;
-		this.taskSession.downloader(this);
 		// 加载已下载大小
 		this.taskSession.downloadSize(downloadSize());
 		// 开始时任务不处于下载中时标记：true
@@ -57,12 +55,12 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	
 	@Override
 	public String id() {
-		return this.taskSession.entity().getId();
+		return this.taskSession.getId();
 	}
 	
 	@Override
 	public String name() {
-		return this.taskSession.entity().getName();
+		return this.taskSession.getName();
 	}
 	
 	@Override
@@ -71,7 +69,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	}
 	
 	@Override
-	public TaskSession taskSession() {
+	public ITaskSession taskSession() {
 		return this.taskSession;
 	}
 	
@@ -118,8 +116,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 			}
 		}
 		// 删除任务
-		final TaskRepository repository = new TaskRepository();
-		repository.delete(this.taskSession.entity());
+		this.taskSession.delete();
 	}
 	
 	@Override
@@ -140,7 +137,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	
 	@Override
 	public long downloadSize() {
-		return FileUtils.fileSize(this.taskSession.entity().getFile());
+		return FileUtils.fileSize(this.taskSession.getFile());
 	}
 	
 	@Override
@@ -151,12 +148,11 @@ public abstract class Downloader implements IDownloader, IStatistics {
 			return;
 		}
 		synchronized (this.taskSession) {
-			final var entity = this.taskSession.entity();
 			if(this.taskSession.await()) {
 				LOGGER.info("开始下载任务：{}", this.name());
 				this.fail = false; // 标记下载失败状态
 				this.deleteLock.set(false); // 设置删除锁
-				entity.setStatus(Status.DOWNLOAD); // 修改任务状态
+				this.taskSession.setStatus(Status.DOWNLOAD); // 修改任务状态
 				this.open();
 				try {
 					this.download();

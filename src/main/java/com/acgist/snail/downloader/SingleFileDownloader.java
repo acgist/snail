@@ -10,7 +10,7 @@ import java.io.OutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.pojo.session.TaskSession;
+import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.IoUtils;
@@ -41,7 +41,7 @@ public abstract class SingleFileDownloader extends Downloader {
 	 */
 	protected OutputStream output;
 	
-	protected SingleFileDownloader(TaskSession taskSession) {
+	protected SingleFileDownloader(ITaskSession taskSession) {
 		super(taskSession);
 	}
 	
@@ -82,7 +82,7 @@ public abstract class SingleFileDownloader extends Downloader {
 	 * <p>判断任务是否完成：读取长度等于-1或者下载数据等于任务长度。</p>
 	 */
 	protected boolean isComplete(int length) {
-		final long size = this.taskSession.entity().getSize();
+		final long size = this.taskSession.getSize();
 		final long downloadSize = this.taskSession.downloadSize();
 		return length == -1 || size == downloadSize;
 	}
@@ -91,13 +91,12 @@ public abstract class SingleFileDownloader extends Downloader {
 	 * <p>创建下载输出流</p>
 	 */
 	protected void buildOutput() {
-		final var entity = this.taskSession.entity();
 		try {
 			final long size = this.taskSession.downloadSize();
 			if(size == 0L) { // 文件大小=0：不支持断点续传
-				this.output = new BufferedOutputStream(new FileOutputStream(entity.getFile()), DownloadConfig.getMemoryBufferByte());
+				this.output = new BufferedOutputStream(new FileOutputStream(this.taskSession.getFile()), DownloadConfig.getMemoryBufferByte());
 			} else { // 支持断点续传
-				this.output = new BufferedOutputStream(new FileOutputStream(entity.getFile(), true), DownloadConfig.getMemoryBufferByte());
+				this.output = new BufferedOutputStream(new FileOutputStream(this.taskSession.getFile(), true), DownloadConfig.getMemoryBufferByte());
 			}
 		} catch (FileNotFoundException e) {
 			LOGGER.error("下载文件打开异常", e);

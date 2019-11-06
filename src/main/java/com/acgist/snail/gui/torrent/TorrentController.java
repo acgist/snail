@@ -11,14 +11,12 @@ import com.acgist.snail.gui.Alerts;
 import com.acgist.snail.gui.Controller;
 import com.acgist.snail.gui.main.TaskDisplay;
 import com.acgist.snail.net.torrent.TorrentManager;
+import com.acgist.snail.pojo.ITaskSession;
+import com.acgist.snail.pojo.ITaskSession.Status;
 import com.acgist.snail.pojo.bean.Torrent;
 import com.acgist.snail.pojo.bean.TorrentInfo;
-import com.acgist.snail.pojo.entity.TaskEntity;
-import com.acgist.snail.pojo.session.TaskSession;
-import com.acgist.snail.pojo.session.TaskSession.Status;
 import com.acgist.snail.pojo.wrapper.TorrentSelectorWrapper;
 import com.acgist.snail.protocol.Protocol.Type;
-import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.system.exception.DownloadException;
 
 import javafx.event.ActionEvent;
@@ -53,7 +51,7 @@ public class TorrentController extends Controller implements Initializable {
 	/**
 	 * 任务信息
 	 */
-	private TaskSession taskSession;
+	private ITaskSession taskSession;
 	/**
 	 * 任务文件选择器
 	 */
@@ -73,13 +71,12 @@ public class TorrentController extends Controller implements Initializable {
 	/**
 	 * 显示信息
 	 */
-	public void tree(TaskSession taskSession) {
+	public void tree(ITaskSession taskSession) {
 		Torrent torrent = null;
 		this.taskSession = taskSession;
-		var entity = taskSession.entity();
 		final TreeView<HBox> tree = buildTree();
 		try {
-			torrent = TorrentManager.getInstance().newTorrentSession(entity.getTorrent()).torrent();
+			torrent = TorrentManager.getInstance().newTorrentSession(taskSession.getTorrent()).torrent();
 		} catch (DownloadException e) {
 			LOGGER.error("种子文件解析异常", e);
 			Alerts.warn("下载失败", "种子文件解析失败：" + e.getMessage());
@@ -120,26 +117,24 @@ public class TorrentController extends Controller implements Initializable {
 	 * 下载按钮事件
 	 */
 	private EventHandler<ActionEvent> downloadEvent = (event) -> {
-		final TaskEntity entity = this.taskSession.entity();
 		var list = this.selectorManager.description();
 		if(list.isEmpty()) {
 			Alerts.warn("下载失败", "请选择下载文件");
 			return;
 		}
-		entity.setSize(this.selectorManager.size());
+		this.taskSession.setSize(this.selectorManager.size());
 		final TorrentSelectorWrapper wrapper = TorrentSelectorWrapper.newEncoder(list);
-		entity.setDescription(wrapper.serialize());
-		if(entity.getId() != null) { // 已经添加数据库
+		this.taskSession.setDescription(wrapper.serialize());
+		if(this.taskSession.getId() != null) { // 已经添加数据库
 			boolean restart = false;
-			if(entity.getType() == Type.MAGNET) { // 磁力链接转为BT任务
+			if(this.taskSession.getType() == Type.MAGNET) { // 磁力链接转为BT任务
 				restart = true;
-				entity.setType(Type.TORRENT);
-				entity.setStatus(Status.AWAIT);
-				entity.setEndDate(null);
+				this.taskSession.setType(Type.TORRENT);
+				this.taskSession.setStatus(Status.AWAIT);
+				this.taskSession.setEndDate(null);
 			}
 			// 更新任务
-			final TaskRepository repository = new TaskRepository();
-			repository.update(entity);
+			this.taskSession.update();
 			// 切换下载器并且重新下载
 			if(restart) {
 				try {

@@ -110,7 +110,7 @@ public class TaskMenu extends Menu {
 	
 	private EventHandler<ActionEvent> copyUrlEvent = (event) -> {
 		MainWindow.getInstance().controller().selected().forEach(session -> {
-			Clipboards.copy(session.entity().getUrl());
+			Clipboards.copy(session.getUrl());
 		});
 	};
 	
@@ -119,7 +119,7 @@ public class TaskMenu extends Menu {
 			return;
 		}
 		MainWindow.getInstance().controller().selected().forEach(session -> {
-			if(session.entity().getType() == Type.TORRENT) {
+			if(session.getType() == Type.TORRENT) {
 				TorrentWindow.getInstance().controller().tree(session);
 			}
 		});
@@ -133,10 +133,10 @@ public class TaskMenu extends Menu {
 		final File file = Choosers.chooseDirectory(MainWindow.getInstance().stage(), "种子保存目录");
 		if (file != null) {
 			MainWindow.getInstance().controller().selected().forEach(session -> {
-				if(session.entity().getType() == Type.TORRENT) {
-					String torrent = session.entity().getTorrent();
-					String fileName = FileUtils.fileNameFromUrl(torrent);
-					String newFile = FileUtils.file(file.getPath(), fileName);
+				if(session.getType() == Type.TORRENT) {
+					final String torrent = session.getTorrent();
+					final String fileName = FileUtils.fileNameFromUrl(torrent);
+					final String newFile = FileUtils.file(file.getPath(), fileName);
 					FileUtils.copy(torrent, newFile);
 				}
 			});
@@ -148,7 +148,7 @@ public class TaskMenu extends Menu {
 			Map<String, String> hash = new HashMap<>();
 			MainWindow.getInstance().controller().selected().forEach(session -> {
 				if(session.complete()) {
-					hash.putAll(FileUtils.sha1(session.entity().getFile()));
+					hash.putAll(FileUtils.sha1(session.getFile()));
 				}
 			});
 			if(hash.isEmpty()) {

@@ -2,9 +2,10 @@ package com.acgist.snail.pojo.entity;
 
 import java.util.Date;
 
-import com.acgist.snail.pojo.session.TaskSession.Status;
+import com.acgist.snail.pojo.ITaskSession.FileType;
+import com.acgist.snail.pojo.ITaskSession.Status;
+import com.acgist.snail.pojo.ITaskSessionEntity;
 import com.acgist.snail.protocol.Protocol.Type;
-import com.acgist.snail.utils.FileUtils.FileType;
 
 /**
  * Entity - 任务
@@ -12,7 +13,7 @@ import com.acgist.snail.utils.FileUtils.FileType;
  * @author acgist
  * @since 1.0.0
  */
-public class TaskEntity extends BaseEntity {
+public class TaskEntity extends BaseEntity implements ITaskSessionEntity {
 
 	private static final long serialVersionUID = 1L;
 
@@ -30,15 +31,15 @@ public class TaskEntity extends BaseEntity {
 	 */
 	private String name;
 	/**
-	 * 下载协议类型
+	 * 协议类型
 	 */
 	private Type type;
 	/**
-	 * 下载文件类型
+	 * 文件类型
 	 */
 	private FileType fileType;
 	/**
-	 * <p>下载文件或目录路径</p>
+	 * 文件路径或目录路径
 	 */
 	private String file;
 	/**
@@ -56,7 +57,7 @@ public class TaskEntity extends BaseEntity {
 	 */
 	private Status status;
 	/**
-	 * 下载文件大小（B）
+	 * 文件大小（B）
 	 */
 	private Long size;
 	/**
@@ -72,82 +73,102 @@ public class TaskEntity extends BaseEntity {
 	public TaskEntity() {
 	}
 	
+	@Override
 	public String getName() {
 		return name;
 	}
-
+	
+	@Override
 	public void setName(String name) {
 		this.name = name;
 	}
-
+	
+	@Override
 	public Type getType() {
 		return type;
 	}
-
+	
+	@Override
 	public void setType(Type type) {
 		this.type = type;
 	}
-
+	
+	@Override
 	public FileType getFileType() {
 		return fileType;
 	}
-
+	
+	@Override
 	public void setFileType(FileType fileType) {
 		this.fileType = fileType;
 	}
-
+	
+	@Override
 	public String getFile() {
 		return file;
 	}
-
+	
+	@Override
 	public void setFile(String file) {
 		this.file = file;
 	}
-
+	
+	@Override
 	public String getUrl() {
 		return url;
 	}
-
+	
+	@Override
 	public void setUrl(String url) {
 		this.url = url;
 	}
-
+	
+	@Override
 	public String getTorrent() {
 		return torrent;
 	}
-
+	
+	@Override
 	public void setTorrent(String torrent) {
 		this.torrent = torrent;
 	}
-
+	
+	@Override
 	public Status getStatus() {
 		return status;
 	}
-
+	
+	@Override
 	public void setStatus(Status status) {
 		this.status = status;
 	}
-
+	
+	@Override
 	public Long getSize() {
 		return size;
 	}
-
+	
+	@Override
 	public void setSize(Long size) {
 		this.size = size;
 	}
-
+	
+	@Override
 	public Date getEndDate() {
 		return endDate;
 	}
-
+	
+	@Override
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
-
+	
+	@Override
 	public String getDescription() {
 		return description;
 	}
-
+	
+	@Override
 	public void setDescription(String description) {
 		this.description = description;
 	}

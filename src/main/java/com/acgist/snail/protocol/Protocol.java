@@ -3,9 +3,10 @@ package com.acgist.snail.protocol;
 import java.io.File;
 
 import com.acgist.snail.downloader.IDownloader;
+import com.acgist.snail.pojo.ITaskSession;
+import com.acgist.snail.pojo.ITaskSession.Status;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.session.TaskSession;
-import com.acgist.snail.pojo.session.TaskSession.Status;
 import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.exception.DownloadException;
@@ -309,13 +310,13 @@ public abstract class Protocol {
 	 * 
 	 * @return 下载器
 	 */
-	public abstract IDownloader buildDownloader(TaskSession taskSession);
+	public abstract IDownloader buildDownloader(ITaskSession taskSession);
 	
 	/**
 	 * <p>创建下载任务</p>
 	 * <p>先检查是否需要转换协议，如果需要转换协议调用真实协议进行创建。</p>
 	 */
-	public TaskSession buildTaskSession() throws DownloadException {
+	public ITaskSession buildTaskSession() throws DownloadException {
 		final Protocol convert = convert();
 		if(convert != null) {
 			return convert.buildTaskSession();

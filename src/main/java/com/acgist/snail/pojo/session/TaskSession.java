@@ -4,11 +4,15 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.gui.GuiHandler;
 import com.acgist.snail.pojo.IStatisticsSession;
+import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.wrapper.TorrentSelectorWrapper;
 import com.acgist.snail.protocol.Protocol.Type;
@@ -16,6 +20,7 @@ import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.system.context.SystemStatistics;
 import com.acgist.snail.system.exception.DownloadException;
+import com.acgist.snail.utils.BeanUtils;
 import com.acgist.snail.utils.DateUtils;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -26,49 +31,8 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public final class TaskSession {
+public final class TaskSession implements ITaskSession {
 
-	/**
-	 * 下载状态
-	 */
-	public enum Status {
-		
-		/**
-		 * 任务添加到下载队列时处于等待状态
-		 */
-		AWAIT(		"等待中"),
-		/**
-		 * 任务下载时的状态：不能直接设置此状态，由下载管理器自动修改。
-		 */
-		DOWNLOAD(	"下载中"),
-		/**
-		 * 任务暂停
-		 */
-		PAUSE(		"暂停"),
-		/**
-		 * 任务完成：完成状态不能转换为其他任何状态
-		 */
-		COMPLETE(	"完成"),
-		/**
-		 * 任务失败
-		 */
-		FAIL(		"失败");
-		
-		/**
-		 * 状态名称
-		 */
-		private final String value;
-		
-		private Status(String value) {
-			this.value = value;
-		}
-
-		public String getValue() {
-			return value;
-		}
-		
-	}
-	
 	/**
 	 * 时间格式工厂
 	 */
@@ -97,42 +61,31 @@ public final class TaskSession {
 		this.statistics = new StatisticsSession(true, SystemStatistics.getInstance().statistics());
 	}
 	
-	public static final TaskSession newInstance(TaskEntity entity) throws DownloadException {
+	public static final ITaskSession newInstance(TaskEntity entity) throws DownloadException {
 		return new TaskSession(entity);
 	}
 	
-	public TaskEntity entity() {
-		return this.entity;
-	}
-	
-	public String name() {
-		return this.entity.getName();
-	}
-	
-	/**
-	 * 获取下载器
-	 */
+	@Override
 	public IDownloader downloader() {
 		return this.downloader;
 	}
 
-	/**
-	 * 设置下载器
-	 */
-	public void downloader(IDownloader downloader) {
-		this.downloader = downloader;
-	}
-
-	/**
-	 * 删除下载器
-	 */
+	@Override
 	public void removeDownloader() {
 		this.downloader = null;
 	}
 	
-	/**
-	 * 获取下载目录
-	 */
+	@Override
+	public IDownloader buildDownloader() throws DownloadException {
+		if(this.downloader != null) {
+			return this.downloader;
+		}
+		final var downloader = ProtocolManager.getInstance().buildDownloader(this);
+		this.downloader = downloader;
+		return this.downloader;
+	}
+	
+	@Override
 	public File downloadFolder() {
 		final File file = new File(this.entity.getFile());
 		if(file.isFile()) {
@@ -142,10 +95,8 @@ public final class TaskSession {
 		}
 	}
 	
-	/**
-	 * 获取BT任务已选择的下载文件
-	 */
-	public List<String> downloadTorrentFiles() {
+	@Override
+	public List<String> selectTorrentFiles() {
 		if(this.entity.getType() != Type.TORRENT) {
 			return List.of();
 		}
@@ -157,99 +108,64 @@ public final class TaskSession {
 			return wrapper.deserialize();
 		}
 	}
-
-	/**
-	 * 更新状态，刷新下载。
-	 */
-	public void updateStatus(Status status) {
-		if(complete()) {
-			return;
-		}
-		final TaskRepository repository = new TaskRepository();
-		if(status == Status.COMPLETE) {
-			this.entity.setEndDate(new Date()); // 设置完成时间
-		}
-		this.entity.setStatus(status);
-		repository.update(this.entity);
-		DownloaderManager.getInstance().refresh(); // 刷新下载
-		GuiHandler.getInstance().refreshTaskStatus(); // 刷新状态
-	}
 	
+	@Override
 	public IStatisticsSession statistics() {
 		return this.statistics;
 	}
 	
-	/**
-	 * 已下载大小
-	 */
+	@Override
 	public long downloadSize() {
 		return this.statistics.downloadSize();
 	}
 	
-	/**
-	 * 设置已下载大小
-	 */
+	@Override
 	public void downloadSize(long size) {
 		this.statistics.downloadSize(size);
 	}
 
-	/**
-	 * 等待状态
-	 */
+	@Override
 	public boolean await() {
 		return this.entity.getStatus() == Status.AWAIT;
 	}
 	
-	/**
-	 * 暂停状态
-	 */
+	@Override
 	public boolean pause() {
 		return this.entity.getStatus() == Status.PAUSE;
 	}
 	
-	/**
-	 * 下载状态
-	 */
+	@Override
 	public boolean download() {
 		return this.entity.getStatus() == Status.DOWNLOAD;
 	}
 	
-	/**
-	 * 完成状态
-	 */
+	@Override
 	public boolean complete() {
 		return this.entity.getStatus() == Status.COMPLETE;
 	}
 	
-	/**
-	 * 任务执行状态（在线程池中）：等待中或者下载中
-	 */
+	@Override
 	public boolean inThreadPool() {
 		return await() || download();
 	}
 	
-	/**
-	 * 创建下载器，如果已经存在直接返回，否者创建下载器。
-	 */
-	public IDownloader buildDownloader() throws DownloadException {
-		if(this.downloader != null) {
-			return this.downloader;
-		}
-		return ProtocolManager.getInstance().buildDownloader(this);
+	@Override
+	public Map<String, Object> taskMessage() {
+		return BeanUtils.toMap(this.entity).entrySet().stream()
+			.filter(entry -> {
+				return entry.getKey() != null && entry.getValue() != null;
+			})
+			.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 	}
 	
-	// JavaFX Table数据绑定 //
+	//================Table================//
 	
-	/**
-	 * 任务名称
-	 */
+	@Override
 	public String getNameValue() {
 		return this.entity.getName();
 	}
 
-	/**
-	 * 任务状态
-	 */
+	@Override
 	public String getStatusValue() {
 		if(download()) {
 			return FileUtils.formatSize(this.statistics.downloadSpeed()) + "/S";
@@ -258,9 +174,7 @@ public final class TaskSession {
 		}
 	}
 	
-	/**
-	 * 任务进度
-	 */
+	@Override
 	public String getProgressValue() {
 		if(complete()) {
 			return FileUtils.formatSize(this.entity.getSize());
@@ -269,9 +183,7 @@ public final class TaskSession {
 		}
 	}
 
-	/**
-	 * 创建时间
-	 */
+	@Override
 	public String getCreateDateValue() {
 		if(this.entity.getCreateDate() == null) {
 			return "-";
@@ -279,9 +191,7 @@ public final class TaskSession {
 		return FORMATER.get().format(this.entity.getCreateDate());
 	}
 	
-	/**
-	 * 完成时间
-	 */
+	@Override
 	public String getEndDateValue() {
 		if(this.entity.getEndDate() == null) {
 			if(download()) {
@@ -298,6 +208,148 @@ public final class TaskSession {
 			}
 		}
 		return FORMATER.get().format(this.entity.getEndDate());
+	}
+	
+	//================数据库================//
+	
+	@Override
+	public void update() {
+		final TaskRepository repository = new TaskRepository();
+		repository.update(this.entity);
+	}
+	
+	@Override
+	public void delete() {
+		final TaskRepository repository = new TaskRepository();
+		repository.delete(this.entity);
+	}
+	
+
+	@Override
+	public void updateStatus(Status status) {
+		if(complete()) {
+			return;
+		}
+		if(status == Status.COMPLETE) {
+			this.entity.setEndDate(new Date()); // 设置完成时间
+		}
+		this.entity.setStatus(status);
+		final TaskRepository repository = new TaskRepository();
+		repository.update(this.entity);
+		DownloaderManager.getInstance().refresh(); // 刷新下载
+		GuiHandler.getInstance().refreshTaskStatus(); // 刷新状态
+	}
+	
+	//================Entity================//
+	
+	@Override
+	public String getId() {
+		return this.entity.getId();
+	}
+	
+	@Override
+	public void setId(String id) {
+		this.entity.setId(id);
+	}
+	
+	@Override
+	public String getName() {
+		return this.entity.getName();
+	}
+	
+	@Override
+	public void setName(String name) {
+		this.entity.setName(name);
+	}
+	
+	@Override
+	public Type getType() {
+		return this.entity.getType();
+	}
+	
+	@Override
+	public void setType(Type type) {
+		this.entity.setType(type);
+	}
+	
+	@Override
+	public FileType getFileType() {
+		return this.entity.getFileType();
+	}
+	
+	@Override
+	public void setFileType(FileType fileType) {
+		this.entity.setFileType(fileType);
+	}
+	
+	@Override
+	public String getFile() {
+		return this.entity.getFile();
+	}
+	
+	@Override
+	public void setFile(String file) {
+		this.entity.setFile(file);
+	}
+	
+	@Override
+	public String getUrl() {
+		return this.entity.getUrl();
+	}
+	
+	@Override
+	public void setUrl(String url) {
+		this.entity.setUrl(url);
+	}
+	
+	@Override
+	public String getTorrent() {
+		return this.entity.getTorrent();
+	}
+	
+	@Override
+	public void setTorrent(String torrent) {
+		this.entity.setTorrent(torrent);
+	}
+	
+	@Override
+	public Status getStatus() {
+		return this.entity.getStatus();
+	}
+	
+	@Override
+	public void setStatus(Status status) {
+		this.entity.setStatus(status);
+	}
+	
+	@Override
+	public Long getSize() {
+		return this.entity.getSize();
+	}
+	
+	@Override
+	public void setSize(Long size) {
+		this.entity.setSize(size);
+	}
+	
+	@Override
+	public Date getEndDate() {
+		return this.entity.getEndDate();
+	}
+	
+	@Override
+	public void setEndDate(Date endDate) {
+		this.entity.setEndDate(endDate);
+	}
+	
+	@Override
+	public String getDescription() {
+		return this.entity.getDescription();
+	}
+	
+	@Override
+	public void setDescription(String description) {
+		this.entity.setDescription(description);
 	}
 	
 }

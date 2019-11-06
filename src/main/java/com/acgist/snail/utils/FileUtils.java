@@ -21,6 +21,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.pojo.ITaskSession.FileType;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.ArgumentException;
 import com.acgist.snail.system.recycle.RecycleManager;
@@ -34,54 +35,6 @@ import com.acgist.snail.system.recycle.RecycleManager;
 public class FileUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FileUtils.class);
-	
-	/**
-	 * 文件类型
-	 */
-	public enum FileType {
-		
-		/** 图片 */
-		IMAGE(		"图片", "image.png"),
-		/** 视频 */
-		VIDEO(		"视频", "video.png"),
-		/** 音频 */
-		AUDIO(		"音频", "audio.png"),
-		/** 脚本 */
-		SCRIPT(		"脚本", "script.png"),
-		/** BT */
-		TORRENT(	"BT", "torrent.png"),
-		/** 压缩 */
-		COMPRESS(	"压缩", "compress.png"),
-		/** 文档 */
-		DOCUMENT(	"文档", "document.png"),
-		/** 安装包 */
-		INSTALL(	"安装包", "install.png"),
-		/** 未知 */
-		UNKNOWN(	"未知", "unknown.png");
-		
-		/**
-		 * 文件类型名称
-		 */
-		private final String value;
-		/**
-		 * 文件类型图标
-		 */
-		private final String icon;
-
-		private FileType(String value, String icon) {
-			this.value = value;
-			this.icon = icon;
-		}
-
-		public String value() {
-			return value;
-		}
-
-		public String icon() {
-			return icon;
-		}
-
-	}
 	
 	/**
 	 * 文件大小单位

@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.IDownloader;
-import com.acgist.snail.pojo.session.TaskSession;
+import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.system.context.SystemContext;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.StringUtils;
@@ -57,9 +57,9 @@ public class ProtocolManager {
 	/**
 	 * 创建下载器
 	 */
-	public IDownloader buildDownloader(TaskSession taskSession) throws DownloadException {
+	public IDownloader buildDownloader(ITaskSession taskSession) throws DownloadException {
 		synchronized (this.protocols) {
-			final var type = taskSession.entity().getType();
+			final var type = taskSession.getType();
 			final Optional<Protocol> optional = this.protocols.stream()
 				.filter(protocol -> protocol.available())
 				.filter(protocol -> protocol.type() == type)
@@ -80,7 +80,7 @@ public class ProtocolManager {
 	 * 
 	 * @param url 下载链接
 	 */
-	public TaskSession buildTaskSession(String url) throws DownloadException {
+	public ITaskSession buildTaskSession(String url) throws DownloadException {
 		synchronized (this.protocols) {
 			final Protocol protocol = protocol(url);
 			if(protocol == null) {

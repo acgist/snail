@@ -21,6 +21,7 @@ import com.acgist.snail.net.torrent.bootstrap.TrackerLauncherGroup;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.pojo.IStatisticsSession;
+import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.bean.InfoHash;
 import com.acgist.snail.pojo.bean.Magnet;
 import com.acgist.snail.pojo.bean.Torrent;
@@ -29,7 +30,6 @@ import com.acgist.snail.pojo.bean.TorrentInfo;
 import com.acgist.snail.pojo.bean.TorrentPiece;
 import com.acgist.snail.protocol.magnet.bootstrap.MagnetBuilder;
 import com.acgist.snail.protocol.magnet.bootstrap.TorrentBuilder;
-import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.system.config.PeerConfig.Action;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
@@ -94,7 +94,7 @@ public final class TorrentSession {
 	/**
 	 * 任务
 	 */
-	private TaskSession taskSession;
+	private ITaskSession taskSession;
 	/**
 	 * DHT任务
 	 */
@@ -162,7 +162,7 @@ public final class TorrentSession {
 	 * 
 	 * @return true-下载完成；false-未完成；
 	 */
-	public boolean magnet(TaskSession taskSession) throws DownloadException {
+	public boolean magnet(ITaskSession taskSession) throws DownloadException {
 		this.action = Action.MAGNET;
 		this.taskSession = taskSession;
 		this.loadMagnet();
@@ -183,7 +183,7 @@ public final class TorrentSession {
 	 * <p>开始上传</p>
 	 * <p>分享已下载数据</p>
 	 */
-	public TorrentSession upload(TaskSession taskSession) throws DownloadException {
+	public TorrentSession upload(ITaskSession taskSession) throws DownloadException {
 		this.taskSession = taskSession;
 		this.loadExecutorTimer();
 		this.loadTorrentStreamGroup();
@@ -237,7 +237,7 @@ public final class TorrentSession {
 	 * 加载磁力链接
 	 */
 	private void loadMagnet() throws DownloadException {
-		this.magnet = MagnetBuilder.newInstance(this.taskSession.entity().getUrl()).build();
+		this.magnet = MagnetBuilder.newInstance(this.taskSession.getUrl()).build();
 	}
 	
 	/**
@@ -399,7 +399,7 @@ public final class TorrentSession {
 	private List<TorrentFile> setSelectedFiles() {
 		final TorrentInfo torrentInfo = this.torrent.getInfo();
 		final List<TorrentFile> torrentFiles = torrentInfo.files();
-		final List<String> selectedFiles = this.taskSession.downloadTorrentFiles();
+		final List<String> selectedFiles = this.taskSession.selectTorrentFiles();
 		for (TorrentFile torrentFile : torrentFiles) {
 			if(selectedFiles.contains(torrentFile.path())) {
 				torrentFile.selected(true);
@@ -542,12 +542,10 @@ public final class TorrentSession {
 	 * 保存种子文件，重新加载种子和InfoHash。
 	 */
 	public void saveTorrentFile() {
-		final var entity = this.taskSession.entity();
 		final TorrentBuilder builder = TorrentBuilder.newInstance(this.infoHash, this.trackerLauncherGroup.trackers());
 		final String torrentFile = builder.buildFile(this.taskSession.downloadFolder().getPath());
-		entity.setTorrent(torrentFile);
-		final TaskRepository repository = new TaskRepository();
-		repository.update(entity);
+		this.taskSession.setTorrent(torrentFile);
+		this.taskSession.update();
 		try {
 			this.torrent = TorrentManager.loadTorrent(torrentFile);
 			this.infoHash = this.torrent.getInfoHash();
@@ -620,7 +618,7 @@ public final class TorrentSession {
 				return this.torrent.name();
 			}
 		} else {
-			return this.taskSession.name();
+			return this.taskSession.getName();
 		}
 	}
 	
@@ -637,7 +635,7 @@ public final class TorrentSession {
 	}
 	
 	public long size() {
-		return this.taskSession.entity().getSize();
+		return this.taskSession.getSize();
 	}
 	
 	public BitSet pieces() {
@@ -668,7 +666,7 @@ public final class TorrentSession {
 		return this.infoHash.infoHashHex();
 	}
 	
-	public TaskSession taskSession() {
+	public ITaskSession taskSession() {
 		return this.taskSession;
 	}
 	

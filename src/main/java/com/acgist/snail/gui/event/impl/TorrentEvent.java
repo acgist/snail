@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.gui.event.GuiEvent;
 import com.acgist.snail.gui.torrent.TorrentWindow;
 import com.acgist.snail.net.torrent.TorrentManager;
+import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.bean.TorrentFile;
 import com.acgist.snail.pojo.bean.TorrentInfo;
-import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.protocol.torrent.TorrentProtocol;
 import com.acgist.snail.system.bencode.BEncodeDecoder;
 import com.acgist.snail.utils.StringUtils;
@@ -58,11 +58,11 @@ public class TorrentEvent extends GuiEvent {
 			LOGGER.warn("种子文件选择，参数错误：{}", args);
 		} else if(args.length == 1) {
 			final Object object = args[0];
-			if(object instanceof TaskSession) {
+			if(object instanceof ITaskSession) {
 				if(gui) {
-					executeNativeEx((TaskSession) object);
+					executeNativeEx((ITaskSession) object);
 				} else {
-					executeExtendEx((TaskSession) object);
+					executeExtendEx((ITaskSession) object);
 				}
 			} else {
 				LOGGER.warn("种子文件选择，参数错误（类型）：{}", object);
@@ -72,7 +72,7 @@ public class TorrentEvent extends GuiEvent {
 		}
 	}
 	
-	private void executeNativeEx(TaskSession taskSession) {
+	private void executeNativeEx(ITaskSession taskSession) {
 		if(Platform.isFxApplicationThread()) { // JavaFX线程
 			TorrentWindow.getInstance().show(taskSession);
 		} else { // 非JavaFX线程：扩展GUI
@@ -80,7 +80,7 @@ public class TorrentEvent extends GuiEvent {
 		}
 	}
 	
-	private void executeExtendEx(TaskSession taskSession) {
+	private void executeExtendEx(ITaskSession taskSession) {
 		if(StringUtils.isEmpty(this.files)) {
 			return;
 		}
@@ -90,15 +90,14 @@ public class TorrentEvent extends GuiEvent {
 			final var files = decoder.nextList().stream()
 				.map(object -> BEncodeDecoder.getString(object))
 				.collect(Collectors.toList());
-			final var entity = taskSession.entity();
-			final var torrent = TorrentManager.getInstance().newTorrentSession(entity.getTorrent()).torrent();
+			final var torrent = TorrentManager.getInstance().newTorrentSession(taskSession.getTorrent()).torrent();
 			// 选择文件大小
 			final long size = torrent.getInfo().files().stream()
 				.filter(file -> !file.path().startsWith(TorrentInfo.PADDING_FILE_PREFIX))
 				.filter(file -> files.contains(file.path()))
 				.collect(Collectors.summingLong(TorrentFile::getLength));
-			entity.setSize(size);
-			entity.setDescription(this.files);
+			taskSession.setSize(size);
+			taskSession.setDescription(this.files);
 		} catch (Exception e) {
 			LOGGER.error("设置种子文件选择异常：{}", this.files, e);
 		}
