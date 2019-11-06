@@ -155,7 +155,7 @@ public final class DownloaderManager {
 	/**
 	 * <p>获取下载任务列表</p>
 	 */
-	public List<ITaskSession> tasks() {
+	public List<ITaskSession> allTask() {
 		return this.downloaderMap.values().stream()
 			.map(IDownloader::taskSession)
 			.collect(Collectors.toList());

@@ -91,7 +91,7 @@ public class InfoHash {
 	/**
 	 * 网络info的hash
 	 */
-	public String infoHashURL() {
+	public String infoHashUrl() {
 		int index = 0;
 		final String infoHashHex = infoHashHex();
 		final int length = infoHashHex.length();

@@ -61,7 +61,7 @@ public class UpnpService {
 	/**
 	 * 控制地址
 	 */
-	private String controlURL;
+	private String controlUrl;
 	/**
 	 * 服务类型
 	 */
@@ -93,7 +93,7 @@ public class UpnpService {
 		final var xml = XMLUtils.load(body);
 		// 服务类型和服务地址
 		final List<String> serviceTypes = xml.elementValues("serviceType");
-		final List<String> controlURLs = xml.elementValues("controlURL");
+		final List<String> controlUrls = xml.elementValues("controlURL");
 		if(CollectionUtils.isEmpty(serviceTypes)) {
 			LOGGER.warn("UPNP设置失败（服务类型）：{}", serviceTypes);
 			return this;
@@ -102,10 +102,10 @@ public class UpnpService {
 			final String serviceType = serviceTypes.get(index);
 			if(StringUtils.startsWith(serviceType, SERVICE_WANIPC)) {
 				this.serviceType = serviceType;
-				this.controlURL = controlURLs.get(index);
-				this.controlURL();
+				this.controlUrl = controlUrls.get(index);
+				this.controlUrl();
 				LOGGER.info("UPNP服务类型：{}", this.serviceType);
-				LOGGER.info("UPNP控制地址：{}", this.controlURL);
+				LOGGER.info("UPNP控制地址：{}", this.controlUrl);
 				break;
 			}
 		}
@@ -130,7 +130,7 @@ public class UpnpService {
 		}
 		final var upnpRequest = UpnpRequest.newRequest(this.serviceType);
 		final var xml = upnpRequest.buildGetExternalIPAddress();
-		final var client = HTTPClient.newInstance(this.controlURL);
+		final var client = HTTPClient.newInstance(this.controlUrl);
 		final var response = client
 			.header("SOAPAction", "\"" + this.serviceType + "#GetExternalIPAddress\"")
 			.post(xml, BodyHandlers.ofString());
@@ -151,7 +151,7 @@ public class UpnpService {
 		}
 		final var upnpRequest = UpnpRequest.newRequest(this.serviceType);
 		final var xml = upnpRequest.buildGetSpecificPortMappingEntry(portExt, protocol);
-		final var client = HTTPClient.newInstance(this.controlURL);
+		final var client = HTTPClient.newInstance(this.controlUrl);
 		final var response = client
 			.header("SOAPAction", "\"" + this.serviceType + "#GetSpecificPortMappingEntry\"")
 			.post(xml, BodyHandlers.ofString());
@@ -179,7 +179,7 @@ public class UpnpService {
 		final var address = NetUtils.localHostAddress();
 		final var upnpRequest = UpnpRequest.newRequest(this.serviceType);
 		final var xml = upnpRequest.buildAddPortMapping(port, address, portExt, protocol);
-		final var client = HTTPClient.newInstance(this.controlURL);
+		final var client = HTTPClient.newInstance(this.controlUrl);
 		final var response = client
 			.header("SOAPAction", "\"" + this.serviceType + "#AddPortMapping\"")
 			.post(xml, BodyHandlers.ofString());
@@ -196,7 +196,7 @@ public class UpnpService {
 		}
 		final var upnpRequest = UpnpRequest.newRequest(this.serviceType);
 		final var xml = upnpRequest.buildDeletePortMapping(portExt, protocol);
-		final var client = HTTPClient.newInstance(this.controlURL);
+		final var client = HTTPClient.newInstance(this.controlUrl);
 		final var response = client
 			.header("SOAPAction", "\"" + this.serviceType + "#DeletePortMapping\"")
 			.post(xml, BodyHandlers.ofString());
@@ -228,9 +228,9 @@ public class UpnpService {
 			this.useable = false;
 			this.available = false;
 			try {
-				final boolean udpOK = this.deletePortMapping(SystemConfig.getTorrentPortExt(), Protocol.Type.UDP);
-				final boolean tcpOK = this.deletePortMapping(SystemConfig.getTorrentPortExt(), Protocol.Type.TCP);
-				LOGGER.info("释放UPNP端口：UDP：{}、TCP：{}", udpOK, tcpOK);
+				final boolean udpOk = this.deletePortMapping(SystemConfig.getTorrentPortExt(), Protocol.Type.UDP);
+				final boolean tcpOk = this.deletePortMapping(SystemConfig.getTorrentPortExt(), Protocol.Type.TCP);
+				LOGGER.info("释放UPNP端口：UDP：{}、TCP：{}", udpOk, tcpOk);
 			} catch (NetException e) {
 				LOGGER.error("释放UPNP端口异常", e);
 			}
@@ -240,7 +240,7 @@ public class UpnpService {
 	/**
 	 * 设置控制地址
 	 */
-	private void controlURL() throws NetException {
+	private void controlUrl() throws NetException {
 		URL url = null;
 		try {
 			url = new URL(this.location);
@@ -251,8 +251,8 @@ public class UpnpService {
 		builder.append(url.getProtocol())
 			.append("://")
 			.append(url.getAuthority())
-			.append(this.controlURL);
-		this.controlURL = builder.toString();
+			.append(this.controlUrl);
+		this.controlUrl = builder.toString();
 	}
 	
 	/**

@@ -50,6 +50,10 @@ public abstract class ExtensionTypeMessageHandler implements IExtensionMessageHa
 	
 	/**
 	 * 处理扩展消息
+	 * 
+	 * @param buffer 消息
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	protected abstract void doMessage(ByteBuffer buffer) throws NetException;
 	
