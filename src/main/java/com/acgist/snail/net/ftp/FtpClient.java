@@ -99,7 +99,7 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	 */
 	public InputStream download(Long downloadSize) throws NetException {
 		if(!this.connect) {
-			throw new NetException(this.failMessage());
+			throw new NetException(this.failMessage("FTP服务器连接失败"));
 		}
 		synchronized (this) {
 			changeMode();
@@ -117,7 +117,7 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	 */
 	public Long size() throws NetException {
 		if(!this.connect) {
-			throw new NetException(this.failMessage());
+			throw new NetException(this.failMessage("FTP服务器连接失败"));
 		}
 		synchronized (this) {
 			this.changeMode();
@@ -126,7 +126,7 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 			final InputStream inputStream = this.handler.inputStream();
 			final String data = StringUtils.ofInputStream(inputStream, this.charset);
 			if(data == null) {
-				throw new NetException(this.failMessage());
+				throw new NetException(this.failMessage("未知错误"));
 			}
 			final Optional<String> optional = Stream.of(data.split(" "))
 				.map(String::trim)
@@ -162,8 +162,8 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	/**
 	 * 获取错误信息
 	 */
-	public String failMessage() {
-		return this.handler.failMessage();
+	public String failMessage(String defaultMessage) {
+		return this.handler.failMessage(defaultMessage);
 	}
 	
 	/**

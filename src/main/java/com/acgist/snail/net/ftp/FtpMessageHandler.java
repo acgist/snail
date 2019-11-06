@@ -37,11 +37,11 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 	 */
 	private static final Duration TIMEOUT = Duration.ofSeconds(SystemConfig.RECEIVE_TIMEOUT);
 	/**
-	 * 每条消息分隔符
+	 * 消息分隔符
 	 */
 	private static final String SPLIT = "\r\n";
 	/**
-	 * 命令结束正则表达式
+	 * 消息结束正则表达式
 	 */
 	private static final String END_REGEX = "\\d{3} .*";
 	
@@ -86,12 +86,12 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 		LOGGER.debug("处理FTP消息：{}", message);
 		if(StringUtils.startsWith(message, "530 ")) { // 登陆失败
 			this.login = false;
-			this.failMessage = "服务器需要登陆授权";
+			this.failMessage = "登陆失败";
 			this.close();
 		} else if(StringUtils.startsWith(message, "550 ")) { // 文件不存在
 			this.failMessage = "文件不存在";
 			this.close();
-		} else if(StringUtils.startsWith(message, "421 ")) { // Socket打开失败
+		} else if(StringUtils.startsWith(message, "421 ")) { // 打开连接失败：Socket
 			this.failMessage = "打开连接失败";
 			this.close();
 		} else if(StringUtils.startsWith(message, "350 ")) { // 断点续传
@@ -106,7 +106,7 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 				this.charset = SystemConfig.CHARSET_UTF8;
 				LOGGER.debug("设置FTP编码：{}", this.charset);
 			}
-		} else if(StringUtils.startsWith(message, "227 ")) { // 进入被动模式：获取下载Socket的IP和端口
+		} else if(StringUtils.startsWith(message, "227 ")) { // 进入被动模式：获取文件下载Socket的IP和端口
 			release(); // 释放旧的资源
 			final int opening = message.indexOf('(');
 			final int closing = message.indexOf(')', opening + 1);
@@ -124,7 +124,7 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 					LOGGER.error("打开FTP远程Socket异常", e);
 				}
 			}
-		} else if(StringUtils.startsWith(message, "150 ")) { // 打开数据连接
+		} else if(StringUtils.startsWith(message, "150 ")) { // 打开下载文件连接
 			if(this.inputSocket == null) {
 				throw new NetException("请切换到被动模式");
 			}
@@ -161,9 +161,9 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 	/**
 	 * 错误信息
 	 */
-	public String failMessage() {
+	public String failMessage(String defaultMessage) {
 		if(this.failMessage == null) {
-			this.failMessage = "未知错误";
+			return defaultMessage;
 		}
 		return this.failMessage;
 	}
@@ -173,7 +173,7 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 	 */
 	public InputStream inputStream() throws NetException {
 		if(this.inputStream == null) {
-			throw new NetException(this.failMessage());
+			throw new NetException(this.failMessage("未知错误"));
 		}
 		return this.inputStream;
 	}
