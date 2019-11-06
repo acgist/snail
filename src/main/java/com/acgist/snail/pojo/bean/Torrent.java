@@ -1,4 +1,4 @@
-package com.acgist.snail.protocol.torrent.bean;
+package com.acgist.snail.pojo.bean;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

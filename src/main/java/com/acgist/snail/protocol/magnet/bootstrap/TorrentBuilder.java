@@ -10,9 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.torrent.dht.bootstrap.NodeManager;
+import com.acgist.snail.pojo.bean.InfoHash;
+import com.acgist.snail.pojo.bean.Torrent;
 import com.acgist.snail.protocol.Protocol;
-import com.acgist.snail.protocol.torrent.bean.InfoHash;
-import com.acgist.snail.protocol.torrent.bean.Torrent;
 import com.acgist.snail.system.bencode.BEncodeDecoder;
 import com.acgist.snail.system.bencode.BEncodeEncoder;
 import com.acgist.snail.system.config.SystemConfig;

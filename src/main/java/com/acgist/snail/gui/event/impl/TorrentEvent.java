@@ -8,10 +8,10 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.gui.event.GuiEvent;
 import com.acgist.snail.gui.torrent.TorrentWindow;
 import com.acgist.snail.net.torrent.TorrentManager;
+import com.acgist.snail.pojo.bean.TorrentFile;
+import com.acgist.snail.pojo.bean.TorrentInfo;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.protocol.torrent.TorrentProtocol;
-import com.acgist.snail.protocol.torrent.bean.TorrentFile;
-import com.acgist.snail.protocol.torrent.bean.TorrentInfo;
 import com.acgist.snail.system.bencode.BEncodeDecoder;
 import com.acgist.snail.utils.StringUtils;
 

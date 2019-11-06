@@ -1,4 +1,4 @@
-package com.acgist.snail.protocol.torrent.bean;
+package com.acgist.snail.pojo.bean;
 
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.system.exception.DownloadException;

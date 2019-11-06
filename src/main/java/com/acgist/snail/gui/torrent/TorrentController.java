@@ -11,13 +11,13 @@ import com.acgist.snail.gui.Alerts;
 import com.acgist.snail.gui.Controller;
 import com.acgist.snail.gui.main.TaskDisplay;
 import com.acgist.snail.net.torrent.TorrentManager;
+import com.acgist.snail.pojo.bean.Torrent;
+import com.acgist.snail.pojo.bean.TorrentInfo;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TaskSession.Status;
 import com.acgist.snail.pojo.wrapper.TorrentSelectorWrapper;
 import com.acgist.snail.protocol.Protocol.Type;
-import com.acgist.snail.protocol.torrent.bean.Torrent;
-import com.acgist.snail.protocol.torrent.bean.TorrentInfo;
 import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.system.exception.DownloadException;
 
