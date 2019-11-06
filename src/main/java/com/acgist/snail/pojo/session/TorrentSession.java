@@ -20,6 +20,7 @@ import com.acgist.snail.net.torrent.bootstrap.TorrentStreamGroup;
 import com.acgist.snail.net.torrent.bootstrap.TrackerLauncherGroup;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
+import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.bean.InfoHash;
 import com.acgist.snail.pojo.bean.Magnet;
 import com.acgist.snail.pojo.bean.Torrent;
@@ -671,7 +672,7 @@ public final class TorrentSession {
 		return this.taskSession;
 	}
 	
-	public StatisticsSession statistics() {
+	public IStatisticsSession statistics() {
 		return this.taskSession.statistics();
 	}
 	

@@ -14,8 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.torrent.peer.bootstrap.ltep.PeerExchangeMessageHandler;
+import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.session.PeerSession;
-import com.acgist.snail.pojo.session.StatisticsSession;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.evaluation.PeerEvaluator;
 import com.acgist.snail.utils.CollectionUtils;
@@ -103,7 +103,7 @@ public class PeerManager {
 	 * 
 	 * TODO：接入Peer调整Peer位置顺序
 	 */
-	public PeerSession newPeerSession(String infoHashHex, StatisticsSession parent, String host, Integer port, byte source) {
+	public PeerSession newPeerSession(String infoHashHex, IStatisticsSession parent, String host, Integer port, byte source) {
 		synchronized (this) {
 			final var list = list(infoHashHex);
 			final var deque = deque(infoHashHex);

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.acgist.snail.net.torrent.bootstrap.PeerConnect;
 import com.acgist.snail.net.torrent.bootstrap.PeerLauncher;
+import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.system.IStatistics;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.utils.NetUtils;
@@ -105,13 +106,13 @@ public final class PeerSession implements IStatistics {
 	/**
 	 * 统计信息
 	 */
-	private final StatisticsSession statistics;
+	private final IStatisticsSession statistics;
 	/**
 	 * 支持的扩展协议：协议=协议ID
 	 */
 	private final Map<PeerConfig.ExtensionType, Byte> extension;
 
-	private PeerSession(StatisticsSession parent, String host, Integer port) {
+	private PeerSession(IStatisticsSession parent, String host, Integer port) {
 		this.host = host;
 		this.port = port;
 		this.amChoked = true;
@@ -126,7 +127,7 @@ public final class PeerSession implements IStatistics {
 		this.statistics = new StatisticsSession(parent);
 	}
 	
-	public static final PeerSession newInstance(StatisticsSession parent, String host, Integer port) {
+	public static final PeerSession newInstance(IStatisticsSession parent, String host, Integer port) {
 		return new PeerSession(parent, host, port);
 	}
 	
@@ -223,10 +224,10 @@ public final class PeerSession implements IStatistics {
 		this.statistics.upload(buffer);
 	}
 	
-	public StatisticsSession statistics() {
+	public IStatisticsSession statistics() {
 		return this.statistics;
 	}
-		
+	
 	/**
 	 * 可以上传：Peer对客户端感兴趣并且客户端未阻塞Peer
 	 */

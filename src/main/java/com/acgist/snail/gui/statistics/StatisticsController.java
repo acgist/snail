@@ -120,7 +120,7 @@ public class StatisticsController extends Controller implements Initializable {
 	}
 
 	private void system() {
-		final var statistics = SystemStatistics.getInstance().getSystemStatistics();
+		final var statistics = SystemStatistics.getInstance().statistics();
 		this.upload.setText(FileUtils.formatSize(statistics.uploadSize()));
 		this.download.setText(FileUtils.formatSize(statistics.downloadSize()));
 	}

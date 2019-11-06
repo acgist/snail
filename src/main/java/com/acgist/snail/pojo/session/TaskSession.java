@@ -8,6 +8,7 @@ import java.util.List;
 import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.gui.GuiHandler;
+import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.wrapper.TorrentSelectorWrapper;
 import com.acgist.snail.protocol.Protocol.Type;
@@ -86,14 +87,14 @@ public final class TaskSession {
 	/**
 	 * 统计
 	 */
-	private final StatisticsSession statistics;
+	private final IStatisticsSession statistics;
 	
 	private TaskSession(TaskEntity entity) throws DownloadException {
 		if(entity == null) {
 			throw new DownloadException("创建TaskSession失败（任务不存在）");
 		}
 		this.entity = entity;
-		this.statistics = new StatisticsSession(true, SystemStatistics.getInstance().getSystemStatistics());
+		this.statistics = new StatisticsSession(true, SystemStatistics.getInstance().statistics());
 	}
 	
 	public static final TaskSession newInstance(TaskEntity entity) throws DownloadException {
@@ -174,7 +175,7 @@ public final class TaskSession {
 		GuiHandler.getInstance().refreshTaskStatus(); // 刷新状态
 	}
 	
-	public StatisticsSession statistics() {
+	public IStatisticsSession statistics() {
 		return this.statistics;
 	}
 	
