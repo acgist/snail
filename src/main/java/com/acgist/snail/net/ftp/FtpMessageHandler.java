@@ -18,6 +18,7 @@ import com.acgist.snail.net.codec.impl.StringMessageCodec;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.IoUtils;
+import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
@@ -34,7 +35,7 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 	/**
 	 * 命令超时时间
 	 */
-	private static final Duration TIMEOUT = Duration.ofSeconds(SystemConfig.SEND_TIMEOUT);
+	private static final Duration TIMEOUT = Duration.ofSeconds(SystemConfig.RECEIVE_TIMEOUT);
 	/**
 	 * 每条消息分隔符
 	 */
@@ -117,7 +118,9 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 //				final int port = Integer.parseInt(tokenizer.nextToken()) * 256 + Integer.parseInt(tokenizer.nextToken());
 				final int port = (Integer.parseInt(tokenizer.nextToken()) << 8) + Integer.parseInt(tokenizer.nextToken());
 				try {
-					this.inputSocket = new Socket(host, port);
+					this.inputSocket = new Socket();
+					this.inputSocket.setSoTimeout(SystemConfig.DOWNLOAD_TIMEOUT_MILLIS);
+					this.inputSocket.connect(NetUtils.buildSocketAddress(host, port), SystemConfig.CONNECT_TIMEOUT_MILLIS);
 				} catch (IOException e) {
 					LOGGER.error("打开FTP远程Socket异常", e);
 				}

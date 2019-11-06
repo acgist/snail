@@ -13,6 +13,7 @@ import com.acgist.snail.net.ClientMessageHandlerAdapter;
 import com.acgist.snail.net.IMessageHandler;
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.net.ws.bootstrap.WebSocketListener;
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
 
 /**
@@ -28,14 +29,14 @@ public class WebSocketClient extends ClientMessageHandlerAdapter<WebSocketMessag
 	}
 	
 	public static final WebSocketClient newInstance(String url) throws NetException {
-		return newInstance(url, CONNECT_TIMEOUT);
+		return newInstance(url, SystemConfig.CONNECT_TIMEOUT, SystemConfig.RECEIVE_TIMEOUT);
 	}
 	
-	public static final WebSocketClient newInstance(String url, int timeout) throws NetException {
-		final HttpClient client = HTTPClient.newClient(timeout);
-		final CompletableFuture<WebSocket> future = newWebSocket(client, url, timeout);
+	public static final WebSocketClient newInstance(String url, int connectTimeout, int receiveTimeout) throws NetException {
+		final HttpClient client = HTTPClient.newClient(connectTimeout);
+		final CompletableFuture<WebSocket> future = newWebSocket(client, url, connectTimeout);
 			try {
-				return new WebSocketClient(client, future.get(timeout, TimeUnit.SECONDS));
+				return new WebSocketClient(client, future.get(receiveTimeout, TimeUnit.SECONDS));
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
 				throw new NetException("WebSocket创建失败", e);

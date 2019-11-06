@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.Protocol;
-import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.config.TrackerConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.NumberUtils;
@@ -24,10 +23,6 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerClient.class);
 	
-	/**
-	 * 超时时间
-	 */
-	public static final int TIMEOUT = SystemConfig.CONNECT_TIMEOUT;
 	/**
 	 * 想要获取的Peer数量
 	 */

@@ -21,7 +21,7 @@ import com.acgist.snail.net.torrent.utp.bootstrap.UtpRequestQueue;
 import com.acgist.snail.net.torrent.utp.bootstrap.UtpService;
 import com.acgist.snail.net.torrent.utp.bootstrap.UtpWindow;
 import com.acgist.snail.net.torrent.utp.bootstrap.UtpWindowData;
-import com.acgist.snail.system.config.PeerConfig;
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.config.UtpConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.CollectionUtils;
@@ -247,7 +247,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 		if(!this.connectLock.get()) {
 			synchronized (this.connectLock) {
 				if(!this.connectLock.get()) {
-					ThreadUtils.wait(this.connectLock, Duration.ofSeconds(PeerConfig.CONNECT_TIMEOUT));
+					ThreadUtils.wait(this.connectLock, Duration.ofSeconds(SystemConfig.CONNECT_TIMEOUT));
 				}
 			}
 		}

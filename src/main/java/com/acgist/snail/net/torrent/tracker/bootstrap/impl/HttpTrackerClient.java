@@ -57,7 +57,7 @@ public final class HttpTrackerClient extends TrackerClient {
 	@Override
 	public void announce(Integer sid, TorrentSession torrentSession) throws NetException {
 		final String announceMessage = buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STARTED);
-		final var response = HTTPClient.get(announceMessage, BodyHandlers.ofString(), TrackerClient.TIMEOUT);
+		final var response = HTTPClient.get(announceMessage, BodyHandlers.ofString());
 		if(!HTTPClient.ok(response)) {
 			throw new NetException("HTTP获取Peer失败");
 		}
@@ -78,13 +78,13 @@ public final class HttpTrackerClient extends TrackerClient {
 	@Override
 	public void complete(Integer sid, TorrentSession torrentSession) throws NetException {
 		final String announceMessage = buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.COMPLETED);
-		HTTPClient.get(announceMessage, BodyHandlers.ofString(), TrackerClient.TIMEOUT);
+		HTTPClient.get(announceMessage, BodyHandlers.ofString());
 	}
 	
 	@Override
 	public void stop(Integer sid, TorrentSession torrentSession) throws NetException {
 		final String announceMessage = buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STOPPED);
-		HTTPClient.get(announceMessage, BodyHandlers.ofString(), TrackerClient.TIMEOUT);
+		HTTPClient.get(announceMessage, BodyHandlers.ofString());
 	}
 	
 	@Override

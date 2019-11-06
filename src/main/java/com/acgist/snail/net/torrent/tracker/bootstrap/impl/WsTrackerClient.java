@@ -25,7 +25,7 @@ public class WsTrackerClient extends TrackerClient {
 	
 	private WsTrackerClient(String scrapeUrl, String announceUrl) throws NetException {
 		super(scrapeUrl, announceUrl, Protocol.Type.WS);
-		this.client = WebSocketClient.newInstance(this.announceUrl, TrackerClient.TIMEOUT);
+		this.client = WebSocketClient.newInstance(this.announceUrl);
 	}
 
 	public static final WsTrackerClient newInstance(String announceUrl) throws NetException {

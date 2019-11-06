@@ -12,6 +12,7 @@ import com.acgist.snail.downloader.SingleFileDownloader;
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.IoUtils;
@@ -58,7 +59,7 @@ public final class HttpDownloader extends SingleFileDownloader {
 		// 获取已下载大小
 		final long size = FileUtils.fileSize(this.taskSession.getFile());
 		// 创建HTTP客户端
-		final var client = HTTPClient.newInstance(this.taskSession.getUrl());
+		final var client = HTTPClient.newInstance(this.taskSession.getUrl(), SystemConfig.CONNECT_TIMEOUT, SystemConfig.DOWNLOAD_TIMEOUT);
 		HttpResponse<InputStream> response = null; // 响应
 		try {
 			response = client

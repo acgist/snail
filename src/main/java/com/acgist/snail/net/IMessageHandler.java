@@ -4,7 +4,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
-import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
 
 /**
@@ -17,15 +16,7 @@ import com.acgist.snail.system.exception.NetException;
 public interface IMessageHandler {
 	
 	/**
-	 * 连接超时时间
-	 */
-	int CONNECT_TIMEOUT = SystemConfig.CONNECT_TIMEOUT;
-	/**
-	 * 发送超时时间
-	 */
-	int SEND_TIMEOUT = SystemConfig.SEND_TIMEOUT;
-	/**
-	 * 没有超时时间，一直等待。
+	 * 没有超时时间：一直等待
 	 */
 	int TIMEOUT_NONE = 0;
 	
