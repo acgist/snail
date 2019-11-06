@@ -7,7 +7,7 @@ import com.acgist.snail.utils.ObjectUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * Entity - 数据库实体
+ * Entity - 基类
  * 
  * @author acgist
  * @since 1.0.0
@@ -16,9 +16,17 @@ public class BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * ID
+	 */
 	public static final String PROPERTY_ID = "id";
-	public static final String PROPERTY_CLASS = "class";
+	/**
+	 * 创建时间
+	 */
 	public static final String PROPERTY_CREATE_DATE = "createDate";
+	/**
+	 * 修改时间
+	 */
 	public static final String PROPERTY_MODIFY_DATE = "modifyDate";
 	
 	/**
@@ -35,8 +43,6 @@ public class BaseEntity implements Serializable {
 	protected Date modifyDate;
 	
 	/**
-	 * 获取ID，生成的uuid自动去掉“-”。
-	 * 
 	 * @return ID
 	 */
 	public String getId() {
@@ -44,8 +50,7 @@ public class BaseEntity implements Serializable {
 	}
 
 	/**
-	 * <p>设置ID</p>
-	 * <p>保存时自动设置，请不要自行设置。</p>
+	 * <p>保存时自动设置：请不要自行设置</p>
 	 * 
 	 * @param id ID
 	 */
@@ -54,8 +59,6 @@ public class BaseEntity implements Serializable {
 	}
 
 	/**
-	 * 获取创建日期
-	 * 
 	 * @return 创建日期
 	 */
 	public Date getCreateDate() {
@@ -63,8 +66,6 @@ public class BaseEntity implements Serializable {
 	}
 
 	/**
-	 * 设置创建日期
-	 * 
 	 * @param createDate 创建日期
 	 */
 	public void setCreateDate(Date createDate) {
@@ -72,8 +73,6 @@ public class BaseEntity implements Serializable {
 	}
 
 	/**
-	 * 获取修改日期
-	 * 
 	 * @return 修改日期
 	 */
 	public Date getModifyDate() {
@@ -81,8 +80,6 @@ public class BaseEntity implements Serializable {
 	}
 
 	/**
-	 * 设置修改日期
-	 * 
 	 * @param modifyDate 修改日期
 	 */
 	public void setModifyDate(Date modifyDate) {

@@ -2,7 +2,6 @@ package com.acgist.snail.net.application;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -16,14 +15,13 @@ import com.acgist.snail.net.TcpMessageHandler;
 import com.acgist.snail.net.codec.IMessageCodec;
 import com.acgist.snail.net.codec.impl.LineMessageCodec;
 import com.acgist.snail.net.codec.impl.StringMessageCodec;
+import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.message.ApplicationMessage;
-import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.system.bencode.BEncodeDecoder;
 import com.acgist.snail.system.bencode.BEncodeEncoder;
 import com.acgist.snail.system.context.SystemContext;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.utils.BeanUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -189,16 +187,8 @@ public class ApplicationMessageHandler extends TcpMessageHandler implements IMes
 	 */
 	private void onTaskList(ApplicationMessage message) {
 		final List<Map<String, Object>> list = DownloaderManager.getInstance().tasks().stream()
-			.map(task -> task.entity())
-			// 将对象属性转换为Map
-			.map(entity -> {
-				return BeanUtils.toMap(entity).entrySet().stream()
-					.filter(entry -> {
-						// 去掉key==null并且value==null的值
-						return entry.getKey() != null && entry.getValue() != null;
-					})
-					.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
-			}).collect(Collectors.toList());
+			.map(session -> session.taskMessage())
+			.collect(Collectors.toList());
 		final String body = BEncodeEncoder.encodeListString(list);
 		send(ApplicationMessage.response(body));
 	}
@@ -257,10 +247,10 @@ public class ApplicationMessageHandler extends TcpMessageHandler implements IMes
 	 * 
 	 * @since 1.1.1
 	 */
-	private Optional<TaskSession> selectTaskSession(ApplicationMessage message) {
+	private Optional<ITaskSession> selectTaskSession(ApplicationMessage message) {
 		final String body = message.getBody(); // 任务ID
 		return DownloaderManager.getInstance().tasks().stream()
-			.filter(session -> session.entity().getId().equals(body))
+			.filter(session -> session.getId().equals(body))
 			.findFirst();
 	}
 	

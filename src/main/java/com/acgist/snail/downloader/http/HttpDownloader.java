@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.SingleFileDownloader;
 import com.acgist.snail.net.http.HTTPClient;
-import com.acgist.snail.pojo.session.TaskSession;
+import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.FileUtils;
@@ -26,11 +26,11 @@ public final class HttpDownloader extends SingleFileDownloader {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(HttpDownloader.class);
 	
-	private HttpDownloader(TaskSession taskSession) {
+	private HttpDownloader(ITaskSession taskSession) {
 		super(taskSession);
 	}
 
-	public static final HttpDownloader newInstance(TaskSession taskSession) {
+	public static final HttpDownloader newInstance(ITaskSession taskSession) {
 		return new HttpDownloader(taskSession);
 	}
 	
@@ -55,11 +55,10 @@ public final class HttpDownloader extends SingleFileDownloader {
 	 */
 	@Override
 	protected void buildInput() {
-		final var entity = this.taskSession.entity();
 		// 获取已下载大小
-		final long size = FileUtils.fileSize(entity.getFile());
+		final long size = FileUtils.fileSize(this.taskSession.getFile());
 		// 创建HTTP客户端
-		final var client = HTTPClient.newInstance(entity.getUrl());
+		final var client = HTTPClient.newInstance(this.taskSession.getUrl());
 		HttpResponse<InputStream> response = null; // 响应
 		try {
 			response = client
@@ -83,7 +82,7 @@ public final class HttpDownloader extends SingleFileDownloader {
 				this.taskSession.downloadSize(0L);
 			}
 		} else if(HTTPClient.requestedRangeNotSatisfiable(response)) { // 无法满足的请求范围
-			if(this.taskSession.downloadSize() == entity.getSize()) {
+			if(this.taskSession.downloadSize() == this.taskSession.getSize()) {
 				this.complete = true;
 			} else {
 				fail("无法满足文件下载范围");

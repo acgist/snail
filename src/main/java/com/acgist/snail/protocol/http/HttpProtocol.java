@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.downloader.http.HttpDownloader;
 import com.acgist.snail.net.http.HTTPClient;
-import com.acgist.snail.pojo.session.TaskSession;
+import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.system.exception.DownloadException;
@@ -51,7 +51,7 @@ public class HttpProtocol extends Protocol {
 	}
 	
 	@Override
-	public IDownloader buildDownloader(TaskSession taskSession) {
+	public IDownloader buildDownloader(ITaskSession taskSession) {
 		return HttpDownloader.newInstance(taskSession);
 	}
 

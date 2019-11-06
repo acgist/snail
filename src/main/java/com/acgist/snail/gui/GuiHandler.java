@@ -20,8 +20,8 @@ import com.acgist.snail.gui.event.impl.RefreshTaskStatusEvent;
 import com.acgist.snail.gui.event.impl.ShowEvent;
 import com.acgist.snail.gui.event.impl.TorrentEvent;
 import com.acgist.snail.net.IMessageHandler;
+import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.message.ApplicationMessage;
-import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.ThreadUtils;
 
@@ -268,7 +268,7 @@ public class GuiHandler {
 	/**
 	 * 种子文件选择
 	 */
-	public GuiHandler torrent(TaskSession taskSession) {
+	public GuiHandler torrent(ITaskSession taskSession) {
 		event(Type.TORRENT, taskSession);
 		return this;
 	}

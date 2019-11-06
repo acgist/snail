@@ -2,8 +2,8 @@ package com.acgist.snail.downloader;
 
 import java.io.IOException;
 
-import com.acgist.snail.pojo.session.TaskSession;
-import com.acgist.snail.pojo.session.TaskSession.Status;
+import com.acgist.snail.pojo.ITaskSession;
+import com.acgist.snail.pojo.ITaskSession.Status;
 
 /**
  * <p>下载器</p>
@@ -39,7 +39,7 @@ public interface IDownloader extends Runnable {
 	 * 
 	 * @return 任务信息
 	 */
-	TaskSession taskSession();
+	ITaskSession taskSession();
 
 	/**
 	 * 开始任务
@@ -104,7 +104,7 @@ public interface IDownloader extends Runnable {
 	
 	/**
 	 * <p>获取已下载文件大小</p>
-	 * <p>直接通过本地文件获取已下载大小，可能出现误差，必要时请重写或者调用{@link TaskSession#downloadSize(long)}设置。</p>
+	 * <p>直接通过本地文件获取已下载大小，可能出现误差，必要时请重写或者调用{@link ITaskSession#downloadSize(long)}设置。</p>
 	 * 
 	 * @return 已下载文件大小
 	 */

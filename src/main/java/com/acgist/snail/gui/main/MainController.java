@@ -17,8 +17,8 @@ import com.acgist.snail.gui.build.BuildWindow;
 import com.acgist.snail.gui.menu.TaskMenu;
 import com.acgist.snail.gui.setting.SettingWindow;
 import com.acgist.snail.gui.torrent.TorrentWindow;
-import com.acgist.snail.pojo.session.TaskSession;
-import com.acgist.snail.pojo.session.TaskSession.Status;
+import com.acgist.snail.pojo.ITaskSession;
+import com.acgist.snail.pojo.ITaskSession.Status;
 import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.system.context.SystemStatistics;
@@ -99,17 +99,17 @@ public class MainController extends Controller implements Initializable {
 	@FXML
 	private Label uploadBuffer;
 	@FXML
-	private TableView<TaskSession> taskTable;
+	private TableView<ITaskSession> taskTable;
 	@FXML
-	private TableColumn<TaskSession, String> name;
+	private TableColumn<ITaskSession, String> name;
 	@FXML
-	private TableColumn<TaskSession, String> status;
+	private TableColumn<ITaskSession, String> status;
 	@FXML
-	private TableColumn<TaskSession, String> progress;
+	private TableColumn<ITaskSession, String> progress;
 	@FXML
-	private TableColumn<TaskSession, String> createDate;
+	private TableColumn<ITaskSession, String> createDate;
 	@FXML
-	private TableColumn<TaskSession, String> endDate;
+	private TableColumn<ITaskSession, String> endDate;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -221,10 +221,10 @@ public class MainController extends Controller implements Initializable {
 	 * 刷新任务列表
 	 */
 	public void refreshTaskList() {
-		final ObservableList<TaskSession> obs = FXCollections.observableArrayList();
+		final ObservableList<ITaskSession> obs = FXCollections.observableArrayList();
 		DownloaderManager.getInstance().tasks().stream()
 			.filter(session -> {
-				final var status = session.entity().getStatus();
+				final var status = session.getStatus();
 				if(this.filter == Filter.ALL) {
 					return true;
 				} else if(this.filter == Filter.DOWNLOAD) {
@@ -258,7 +258,7 @@ public class MainController extends Controller implements Initializable {
 	/**
 	 * 获取选中任务
 	 */
-	public List<TaskSession> selected() {
+	public List<ITaskSession> selected() {
 		return this.taskTable.getSelectionModel().getSelectedItems().stream()
 			.collect(Collectors.toList());
 	}
@@ -275,7 +275,7 @@ public class MainController extends Controller implements Initializable {
 	 */
 	public boolean hasSelectedTorrent() {
 		return this.selected().stream()
-			.anyMatch(session -> session.entity().getType() == Type.TORRENT);
+			.anyMatch(session -> session.getType() == Type.TORRENT);
 	}
 
 	/**
@@ -324,7 +324,7 @@ public class MainController extends Controller implements Initializable {
 	 * @param tooltip 是否显示Tooltip
 	 * @param widthBinding 宽度绑定
 	 */
-	private void taskCell(TableColumn<TaskSession, String> column, Pos pos, boolean icon, boolean tooltip, DoubleBinding widthBinding) {
+	private void taskCell(TableColumn<ITaskSession, String> column, Pos pos, boolean icon, boolean tooltip, DoubleBinding widthBinding) {
 		column.prefWidthProperty().bind(widthBinding);
 		column.setResizable(false);
 		column.setCellFactory((tableColumn) -> {
@@ -335,8 +335,8 @@ public class MainController extends Controller implements Initializable {
 	/**
 	 * 数据行工厂
 	 */
-	private Callback<TableView<TaskSession>, TableRow<TaskSession>> rowFactory = (tableView) -> {
-		final TableRow<TaskSession> row = new TableRow<>();
+	private Callback<TableView<ITaskSession>, TableRow<ITaskSession>> rowFactory = (tableView) -> {
+		final TableRow<ITaskSession> row = new TableRow<>();
 		row.setOnMouseClicked(this.rowClickAction); // 双击修改任务状态
 		row.setContextMenu(TaskMenu.getInstance());
 //		row.selectedProperty().addListener((obs, old, now) -> {
@@ -377,16 +377,15 @@ public class MainController extends Controller implements Initializable {
 	private EventHandler<MouseEvent> rowClickAction = (event) -> {
 		if(event.getClickCount() == DOUBLE_CLICK_COUNT) { // 双击
 			final var row = (TableRow<?>) event.getSource();
-			final var session = (TaskSession) row.getItem();
+			final var session = (ITaskSession) row.getItem();
 			if(session == null) {
 				return;
 			}
 			if(session.complete()) { // 下载完成=打开任务
-				final var entity = session.entity();
-				if(entity.getType() == Type.MAGNET) { // 磁力链接任务完成转换BT任务
+				if(session.getType() == Type.MAGNET) { // 磁力链接任务完成转换BT任务
 					TorrentWindow.getInstance().show(session);
 				} else {
-					FileUtils.openInDesktop(new File(session.entity().getFile()));
+					FileUtils.openInDesktop(new File(session.getFile()));
 				}
 			} else if(session.inThreadPool()) { // 准备中=暂停下载
 				DownloaderManager.getInstance().pause(session);

@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.downloader.SingleFileDownloader;
 import com.acgist.snail.net.ftp.FtpClient;
 import com.acgist.snail.net.ftp.bootstrap.FtpClientBuilder;
-import com.acgist.snail.pojo.session.TaskSession;
+import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.IoUtils;
@@ -28,11 +28,11 @@ public final class FtpDownloader extends SingleFileDownloader {
 	 */
 	private FtpClient client;
 	
-	private FtpDownloader(TaskSession taskSession) {
+	private FtpDownloader(ITaskSession taskSession) {
 		super(taskSession);
 	}
 
-	public static final FtpDownloader newInstance(TaskSession taskSession) {
+	public static final FtpDownloader newInstance(ITaskSession taskSession) {
 		return new FtpDownloader(taskSession);
 	}
 
@@ -48,11 +48,10 @@ public final class FtpDownloader extends SingleFileDownloader {
 
 	@Override
 	protected void buildInput() {
-		final var entity = this.taskSession.entity();
 		// 获取已下载大小
-		final long size = FileUtils.fileSize(entity.getFile());
+		final long size = FileUtils.fileSize(this.taskSession.getFile());
 		// 创建FTP客户端
-		this.client = FtpClientBuilder.newInstance(entity.getUrl()).build();
+		this.client = FtpClientBuilder.newInstance(this.taskSession.getUrl()).build();
 		final boolean ok = this.client.connect();
 		if(ok) {
 			try {

@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.gui.Window;
-import com.acgist.snail.pojo.session.TaskSession;
+import com.acgist.snail.pojo.ITaskSession;
 
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -45,7 +45,7 @@ public class TorrentWindow extends Window<TorrentController> {
 	/**
 	 * 显示下载任务信息
 	 */
-	public void show(TaskSession taskSession) {
+	public void show(ITaskSession taskSession) {
 		this.controller.tree(taskSession);
 		this.showAndWait();
 	}

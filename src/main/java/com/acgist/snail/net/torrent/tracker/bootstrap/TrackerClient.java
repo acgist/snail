@@ -162,10 +162,10 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 		long download = 0L, remain = 0L, upload = 0L;
 		final var taskSession = torrentSession.taskSession();
 		if(taskSession != null) {
-			var statistics = taskSession.statistics();
-			download = statistics.downloadSize();
-			remain = taskSession.entity().getSize() - download;
-			upload = statistics.uploadSize();
+			final var statistics = taskSession.statistics();
+			download = statistics.downloadSize(); // 已下载
+			remain = taskSession.getSize() - download; // 剩余下载
+			upload = statistics.uploadSize(); // 已上传
 		}
 		return this.buildAnnounceMessageEx(sid, torrentSession, event, download, remain, upload);
 	}
