@@ -1,4 +1,4 @@
-package com.acgist.snail.protocol.torrent.bean;
+package com.acgist.snail.pojo.bean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,7 +103,7 @@ public class TorrentInfo {
 	/**
 	 * Piece总数量
 	 */
-	public Integer pieceSize() {
+	public int pieceSize() {
 		return this.pieces.length / SystemConfig.SHA1_HASH_LENGTH;
 	}
 	

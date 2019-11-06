@@ -11,11 +11,11 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.pojo.bean.Torrent;
+import com.acgist.snail.pojo.bean.TorrentFile;
+import com.acgist.snail.pojo.bean.TorrentInfo;
 import com.acgist.snail.pojo.bean.TorrentPiece;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.protocol.torrent.bean.Torrent;
-import com.acgist.snail.protocol.torrent.bean.TorrentFile;
-import com.acgist.snail.protocol.torrent.bean.TorrentInfo;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
@@ -51,9 +51,10 @@ public class TorrentStreamGroup {
 	/**
 	 * 是否完整
 	 */
-	private volatile boolean full;
+	private boolean full;
 	/**
 	 * <p>完整Piece位图</p>
+	 * <p>计算文件健康度</p>
 	 * <dl>
 	 * 	<dt>更新</dt>
 	 * 	<dd>位图交换</dd>

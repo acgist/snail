@@ -6,9 +6,9 @@ import org.junit.Test;
 
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.dht.bootstrap.NodeManager;
+import com.acgist.snail.pojo.bean.InfoHash;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.magnet.bootstrap.TorrentBuilder;
-import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.exception.DownloadException;
 
 public class TorrentBuilderTest {

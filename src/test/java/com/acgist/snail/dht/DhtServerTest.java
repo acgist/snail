@@ -3,8 +3,8 @@ package com.acgist.snail.dht;
 import org.junit.Test;
 
 import com.acgist.snail.net.torrent.dht.DhtClient;
+import com.acgist.snail.pojo.bean.InfoHash;
 import com.acgist.snail.pojo.session.NodeSession;
-import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.ThreadUtils;
 

@@ -4,8 +4,8 @@ import java.net.InetSocketAddress;
 
 import com.acgist.snail.net.UdpClient;
 import com.acgist.snail.net.torrent.server.TorrentServer;
+import com.acgist.snail.pojo.bean.InfoHash;
 import com.acgist.snail.pojo.session.NodeSession;
-import com.acgist.snail.protocol.torrent.bean.InfoHash;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;

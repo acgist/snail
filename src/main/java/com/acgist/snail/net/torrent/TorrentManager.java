@@ -9,9 +9,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import com.acgist.snail.pojo.bean.InfoHash;
+import com.acgist.snail.pojo.bean.Torrent;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.protocol.torrent.bean.InfoHash;
-import com.acgist.snail.protocol.torrent.bean.Torrent;
 import com.acgist.snail.system.bencode.BEncodeDecoder;
 import com.acgist.snail.system.bencode.BEncodeEncoder;
 import com.acgist.snail.system.exception.DownloadException;
