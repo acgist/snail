@@ -99,7 +99,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	/**
 	 * 是否已经握手
 	 */
-	private volatile boolean handshake = false;
+	private volatile boolean handshakeSend = false;
 	
 	private final InfoHash infoHash;
 	private final PeerSession peerSession;
@@ -162,7 +162,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 */
 	public void handshake() {
 		LOGGER.debug("发送扩展消息-握手");
-		this.handshake = true;
+		this.handshakeSend = true;
 		final Map<String, Object> message = new LinkedHashMap<>(); // 扩展消息
 		final Map<String, Object> supportTypes = new LinkedHashMap<>(); // 支持的扩展消息类型
 		for (var type : PeerConfig.ExtensionType.values()) {
@@ -250,7 +250,7 @@ public class ExtensionMessageHandler implements IExtensionMessageHandler {
 				}
 			});
 		}
-		if(!this.handshake) {
+		if(!this.handshakeSend) {
 			handshake();
 		}
 		// 种子文件下载

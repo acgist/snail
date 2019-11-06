@@ -76,6 +76,10 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 */
 	private volatile boolean handshakeRecv = false;
 	/**
+	 * 是否是客户端
+	 */
+	private final boolean server;
+	/**
 	 * Peer信息
 	 */
 	private PeerSession peerSession;
@@ -104,10 +108,18 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 */
 	private DhtExtensionMessageHandler dhtExtensionMessageHandler;
 	
+	/**
+	 * 服务端
+	 */
 	private PeerSubMessageHandler() {
+		this.server = true;
 	}
 
+	/**
+	 * 客户端
+	 */
 	private PeerSubMessageHandler(PeerSession peerSession, TorrentSession torrentSession) {
+		this.server = false;
 		init(peerSession, torrentSession, PeerConfig.HANDSHAKE_RESERVED);
 	}
 	
@@ -138,7 +150,11 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	}
 
 	/**
-	 * 初始化：客户端连接，加入到Peer列表。
+	 * <dl>
+	 * 	<dt>初始化</dt>
+	 * 	<dd>加入Peer列表</dd>
+	 * 	<dd>创建客户端连接</dd>
+	 * </dl>
 	 */
 	private boolean init(String infoHashHex, byte[] peerId, byte[] reserved) {
 		if(ArrayUtils.equals(PeerService.getInstance().peerId(), peerId)) {
@@ -208,9 +224,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	@Override
 	public void onMessage(final ByteBuffer buffer) throws NetException {
 		buffer.flip();
-		if(!this.handshakeRecv) { // 没有握手
-			handshake(buffer);
-		} else { // 已经握手
+		if(this.handshakeRecv) { // 已经握手
 			final byte typeId = buffer.get();
 			final PeerConfig.Type type = PeerConfig.Type.valueOf(typeId);
 			if(type == null) {
@@ -250,11 +264,11 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			case CANCEL:
 				cancel(buffer);
 				break;
-			// DHT扩展
+				// DHT扩展
 			case DHT:
 				dht(buffer);
 				break;
-			// FAST扩展
+				// FAST扩展
 			case HAVE_ALL:
 				haveAll(buffer);
 				break;
@@ -270,7 +284,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			case ALLOWED_FAST:
 				allowedFast(buffer);
 				break;
-			// 扩展协议
+				// 扩展协议
 			case EXTENSION:
 				extension(buffer);
 				break;
@@ -278,6 +292,8 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 				LOGGER.info("Peer消息错误（类型未适配）：{}", type);
 				break;
 			}
+		} else { // 没有握手
+			handshake(buffer);
 		}
 	}
 
@@ -337,7 +353,6 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			return;
 		}
 		this.handshakeRecv = true;
-		final boolean server = !this.handshakeSend; // 是否是服务端
 		final byte[] reserved = new byte[PeerConfig.RESERVED_LENGTH];
 		buffer.get(reserved);
 		final byte[] infoHash = new byte[SystemConfig.SHA1_HASH_LENGTH];
@@ -345,10 +360,12 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		final String infoHashHex = StringUtils.hex(infoHash);
 		final byte[] peerId = new byte[PeerConfig.PEER_ID_LENGTH];
 		buffer.get(peerId);
-		if(server) {
+		if(this.server) {
 			final boolean ok = init(infoHashHex, peerId, reserved);
 			if(ok) {
-				handshake((PeerLauncher) null);
+				if(!this.handshakeSend) {
+					handshake((PeerLauncher) null);
+				}
 			} else {
 				this.close();
 				return;
@@ -358,7 +375,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		extension(); // 发送扩展消息
 		dht(); // 发送DHT消息
 		exchangeBitfield(); // 交换位图
-		if(server) {
+		if(this.server) {
 			unchoke(); // 解除阻塞
 		} else {
 			this.allowedFastDownload();
