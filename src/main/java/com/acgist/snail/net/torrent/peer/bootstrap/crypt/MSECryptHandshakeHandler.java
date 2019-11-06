@@ -62,9 +62,9 @@ public final class MSECryptHandshakeHandler {
 	 */
 	private static final int BUFFER_LENGTH = 4 * SystemConfig.ONE_KB;
 	/**
-	 * 握手等待超时时间：不要超过PeerLauncher等待时间
+	 * 握手等待超时时间：{@linkplain PeerSubMessageHandler#HANDSHAKE_TIMEOUT Peer握手超时时间}
 	 */
-	private static final int HANDSHAKE_LOCK_TIMEOUT = 4;
+	private static final int HANDSHAKE_TIMEOUT = 4;
 	
 	/**
 	 * 加密握手步骤
@@ -254,7 +254,7 @@ public final class MSECryptHandshakeHandler {
 		if(!this.complete) {
 			synchronized (this.handshakeLock) {
 				if(!this.complete) {
-					ThreadUtils.wait(this.handshakeLock, Duration.ofSeconds(HANDSHAKE_LOCK_TIMEOUT));
+					ThreadUtils.wait(this.handshakeLock, Duration.ofSeconds(HANDSHAKE_TIMEOUT));
 				}
 			}
 		}
