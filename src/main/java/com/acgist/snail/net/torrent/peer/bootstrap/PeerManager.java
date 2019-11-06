@@ -68,9 +68,6 @@ public class PeerManager {
 	 */
 	public List<PeerSession> listPeers(String infoHashHex) {
 		final var list = list(infoHashHex);
-		if(list == null) {
-			return List.of();
-		}
 		synchronized (list) {
 			return new ArrayList<>(list);
 		}

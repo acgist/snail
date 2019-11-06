@@ -208,7 +208,7 @@ public class SystemConfig extends PropertiesConfig {
 	/**
 	 * 外网IP地址
 	 */
-	private volatile String externalIpAddress;
+	private String externalIpAddress;
 	
 	/**
 	 * 初始化

@@ -103,7 +103,10 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 				if(size <= 0) {
 					LOGGER.warn("TCP消息发送失败：{}", size);
 				}
-			} catch (TimeoutException | ExecutionException | InterruptedException e) {
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw new NetException(e);
+			} catch (TimeoutException | ExecutionException e) {
 				throw new NetException(e);
 			}
 		}

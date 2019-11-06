@@ -204,7 +204,10 @@ public class HTTPClient {
 		}
 		try {
 			return this.client.send(request, handler);
-		} catch (IOException | InterruptedException e) {
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw new NetException("HTTP执行请求失败", e);
+		} catch (IOException e) {
 			throw new NetException("HTTP执行请求失败", e);
 		}
 	}

@@ -36,7 +36,10 @@ public class WebSocketClient extends ClientMessageHandlerAdapter<WebSocketMessag
 		final CompletableFuture<WebSocket> future = newWebSocket(client, url, timeout);
 			try {
 				return new WebSocketClient(client, future.get(timeout, TimeUnit.SECONDS));
-			} catch (TimeoutException | ExecutionException | InterruptedException e) {
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw new NetException("WebSocket创建失败", e);
+			} catch (TimeoutException | ExecutionException e) {
 				throw new NetException("WebSocket创建失败", e);
 			}
 	}
