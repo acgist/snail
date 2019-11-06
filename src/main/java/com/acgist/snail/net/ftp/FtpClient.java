@@ -26,7 +26,7 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	/**
 	 * 连接状态
 	 */
-	private boolean ok = false;
+	private boolean connect = false;
 	/**
 	 * 服务器地址
 	 */
@@ -67,18 +67,24 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 
 	@Override
 	public boolean connect() {
-		this.ok = connect(this.host, this.port);
+		this.connect = connect(this.host, this.port);
 		this.handler.lockCommand(); // 锁定：等待FTP欢迎消息
-		if(this.ok) {
+		if(this.connect) {
 			this.login();
-			this.charset();
+			if(this.handler.login()) {
+				this.charset();
+			} else {
+				this.connect = false;
+			}
 		}
-		return this.ok;
+		return this.connect;
 	}
 	
 	/**
 	 * <p>开始下载</p>
 	 * <p>从头开始下载，忽略已经下载的数据。</p>
+	 * 
+	 * @return 文件流
 	 */
 	public InputStream download() throws NetException {
 		return this.download(null);
@@ -87,11 +93,13 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	/**
 	 * <p>开始下载</p>
 	 * 
-	 * @param downloadSize 已下载大小，断点续传。
+	 * @param downloadSize 已下载大小：断点续传
+	 * 
+	 * @return 文件流
 	 */
 	public InputStream download(Long downloadSize) throws NetException {
-		if(!this.ok) {
-			throw new NetException("FTP服务器连接失败");
+		if(!this.connect) {
+			throw new NetException(this.failMessage());
 		}
 		synchronized (this) {
 			changeMode();
@@ -105,11 +113,11 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	}
 	
 	/**
-	 * 获取FTP文件大小
+	 * @return 文件大小
 	 */
 	public Long size() throws NetException {
-		if(!this.ok) {
-			throw new NetException("FTP服务器连接失败");
+		if(!this.connect) {
+			throw new NetException(this.failMessage());
 		}
 		synchronized (this) {
 			this.changeMode();
@@ -137,10 +145,10 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	 */
 	@Override
 	public void close() {
-		if(!this.ok) {
+		if(!this.connect) {
 			return;
 		}
-		command("QUIT"); // 退出命令
+		command("QUIT", false); // 退出命令
 		super.close();
 	}
 	
@@ -184,14 +192,23 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 		command("PASV");
 	}
 	
+	private void command(String command) {
+		this.command(command, true);
+	}
+	
 	/**
 	 * 发送FTP命令
+	 * 
+	 * @param command 命令
+	 * @param lock 是否加锁
 	 */
-	private void command(String command) {
+	private void command(String command, boolean lock) {
 		try {
-			LOGGER.debug("FTP命令：{}", command);
+			LOGGER.debug("发送FTP命令：{}", command);
 			send(command, this.charset);
-			this.handler.lockCommand();
+			if(lock) {
+				this.handler.lockCommand();
+			}
 		} catch (NetException e) {
 			LOGGER.error("发送FTP命令异常", e);
 		}
