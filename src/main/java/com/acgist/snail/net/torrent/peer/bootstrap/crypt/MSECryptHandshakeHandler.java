@@ -62,9 +62,9 @@ public final class MSECryptHandshakeHandler {
 	 */
 	private static final int BUFFER_LENGTH = 4 * SystemConfig.ONE_KB;
 	/**
-	 * 握手等待超时时间：{@linkplain PeerSubMessageHandler#HANDSHAKE_TIMEOUT Peer握手超时时间}
+	 * 加密握手超时时间：不能超过{@linkplain PeerSubMessageHandler#HANDSHAKE_TIMEOUT Peer握手超时时间}
 	 */
-	private static final int HANDSHAKE_TIMEOUT = 4;
+	private static final int HANDSHAKE_TIMEOUT = PeerSubMessageHandler.HANDSHAKE_TIMEOUT;
 	
 	/**
 	 * 加密握手步骤

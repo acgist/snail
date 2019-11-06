@@ -68,6 +68,7 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	@Override
 	public boolean connect() {
 		this.ok = connect(this.host, this.port);
+		this.handler.lockCommand(); // 锁定：等待FTP欢迎消息
 		if(this.ok) {
 			this.login();
 			this.charset();
@@ -93,7 +94,6 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 			throw new NetException("FTP服务器连接失败");
 		}
 		synchronized (this) {
-			this.handler.resetLock();
 			changeMode();
 			command("TYPE I"); // 设置数据模式
 			if(downloadSize != null && downloadSize > 0L) {
@@ -112,7 +112,6 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 			throw new NetException("FTP服务器连接失败");
 		}
 		synchronized (this) {
-			this.handler.resetLock();
 			this.changeMode();
 			command("TYPE A"); // 切换数据模式
 			command("LIST " + this.filePath);
@@ -163,19 +162,16 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	 * 登陆服务器
 	 */
 	private void login() {
-		this.handler.resetLock();
 		command("USER " + this.user);
 		command("PASS " + this.password);
-		this.handler.loginLock();
 	}
 	
 	/**
 	 * 设置编码
 	 */
 	private void charset() {
-		this.handler.resetLock();
 		command("FEAT"); // 列出扩展命令
-		this.charset = this.handler.charsetLock();
+		this.charset = this.handler.charset();
 		if(SystemConfig.CHARSET_UTF8.equals(this.charset)) {
 			command("OPTS UTF8 ON"); // 设置UTF8
 		}
@@ -193,7 +189,9 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	 */
 	private void command(String command) {
 		try {
+			LOGGER.debug("FTP命令：{}", command);
 			send(command, this.charset);
+			this.handler.lockCommand();
 		} catch (NetException e) {
 			LOGGER.error("发送FTP命令异常", e);
 		}

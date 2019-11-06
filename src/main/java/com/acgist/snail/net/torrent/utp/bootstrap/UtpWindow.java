@@ -40,7 +40,7 @@ public final class UtpWindow {
 	 */
 	private static final int MAX_WND_SIZE = 64;
 	/**
-	 * <p>信号量获取超时时间：秒</p>
+	 * <p>获取信号量超时时间：秒</p>
 	 * <p>防止长时间获取信号量，从而导致UTP队列阻塞。</p>
 	 */
 	private static final int TIMEOUT = 2;
