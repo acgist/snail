@@ -31,10 +31,6 @@ public class PeerConfig {
 	 */
 	public static final int MAX_FAIL_TIMES = 3;
 	/**
-	 * Peer连接超时时间（秒）
-	 */
-	public static final int CONNECT_TIMEOUT = SystemConfig.CONNECT_TIMEOUT;
-	/**
 	 * PeerId长度
 	 */
 	public static final int PEER_ID_LENGTH = 20;

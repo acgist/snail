@@ -40,10 +40,6 @@ public class HTTPClient {
 	private static final Logger LOGGER = LoggerFactory.getLogger(HTTPClient.class);
 	
 	/**
-	 * 超时时间
-	 */
-	public static final int TIMEOUT = SystemConfig.CONNECT_TIMEOUT;
-	/**
 	 * 状态码：200：OK
 	 */
 	public static final int HTTP_OK = 200;
@@ -101,13 +97,9 @@ public class HTTPClient {
 	
 	/**
 	 * 新建客户端
-	 * 
-	 * @param url 请求地址
-	 * 
-	 * @return HTTP客户端
 	 */
 	public static final HTTPClient newInstance(String url) {
-		return newInstance(url, TIMEOUT);
+		return newInstance(url, SystemConfig.CONNECT_TIMEOUT, SystemConfig.RECEIVE_TIMEOUT);
 	}
 	
 	/**
@@ -115,13 +107,14 @@ public class HTTPClient {
 	 * <p>HTTP请求版本{@link Version#HTTP_1_1}</p>
 	 * 
 	 * @param url 请求地址
-	 * @param timeout 超时时间（连接、请求），单位：秒
+	 * @param connectTimeout 超时时间（连接），单位：秒
+	 * @param receiveTimeout 超时时间（响应），单位：秒
 	 * 
 	 * @return HTTP客户端
 	 */
-	public static final HTTPClient newInstance(String url, int timeout) {
-		final HttpClient client = newClient(timeout);
-		final Builder builder = newBuilder(url, timeout);
+	public static final HTTPClient newInstance(String url, int connectTimeout, int receiveTimeout) {
+		final HttpClient client = newClient(connectTimeout);
+		final Builder builder = newBuilder(url, receiveTimeout);
 		return new HTTPClient(client, builder);
 	}
 	
@@ -241,7 +234,7 @@ public class HTTPClient {
 	 * 执行GET请求
 	 */
 	public static final <T> HttpResponse<T> get(String url, HttpResponse.BodyHandler<T> handler) throws NetException {
-		return get(url, handler, TIMEOUT);
+		return get(url, handler, SystemConfig.CONNECT_TIMEOUT, SystemConfig.RECEIVE_TIMEOUT);
 	}
 	
 	/**
@@ -249,12 +242,13 @@ public class HTTPClient {
 	 * 
 	 * @param url 请求地址
 	 * @param handler 响应处理器
-	 * @param timeout 超时时间
+	 * @param connectTimeout 超时时间（连接）
+	 * @param receiveTimeout 超时时间（响应）
 	 * 
 	 * @return 响应
 	 */
-	public static final <T> HttpResponse<T> get(String url, HttpResponse.BodyHandler<T> handler, int timeout) throws NetException {
-		final HTTPClient client = newInstance(url, timeout);
+	public static final <T> HttpResponse<T> get(String url, HttpResponse.BodyHandler<T> handler, int connectTimeout, int receiveTimeout) throws NetException {
+		final HTTPClient client = newInstance(url, connectTimeout, receiveTimeout);
 		return client.get(handler);
 	}
 	

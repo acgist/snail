@@ -46,17 +46,29 @@ public class SystemConfig extends PropertiesConfig {
 	 */
 	public static final int UDP_BUFFER_LENGTH = 2 * ONE_KB;
 	/**
-	 * 连接超时时间
+	 * 连接超时时间（秒）
 	 */
 	public static final int CONNECT_TIMEOUT = 5;
 	/**
-	 * 发送超时时间
+	 * 连接超时时间（毫秒）
 	 */
-	public static final int SEND_TIMEOUT = 5;
+	public static final int CONNECT_TIMEOUT_MILLIS = CONNECT_TIMEOUT * 1000;
 	/**
-	 * 接收超时时间
+	 * 接收超时时间（秒）
 	 */
 	public static final int RECEIVE_TIMEOUT = 5;
+	/**
+	 * 接收超时时间（毫秒）
+	 */
+	public static final int RECEIVE_TIMEOUT_MILLIS = RECEIVE_TIMEOUT * 1000;
+	/**
+	 * 下载超时时间（秒）
+	 */
+	public static final int DOWNLOAD_TIMEOUT = 60;
+	/**
+	 * 下载超时时间（毫秒）
+	 */
+	public static final int DOWNLOAD_TIMEOUT_MILLIS = DOWNLOAD_TIMEOUT * 1000;
 	/**
 	 * <p>最大的网络包大小</p>
 	 * <p>所有创建ByteBuffer和byte[]对象的长度由外部数据设置时需要验证长度，防止恶意攻击导致内存泄露。</p>
