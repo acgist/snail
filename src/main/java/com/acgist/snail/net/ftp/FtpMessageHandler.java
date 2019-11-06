@@ -54,17 +54,21 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 	 */
 	private InputStream inputStream;
 	/**
+	 * 登陆状态
+	 */
+	private boolean login = true;
+	/**
 	 * 断点续传
 	 */
 	private boolean range = false;
 	/**
-	 * 错误信息
-	 */
-	private String failMessage;
-	/**
 	 * 编码：默认GBK
 	 */
 	private String charset = SystemConfig.CHARSET_GBK;
+	/**
+	 * 错误信息
+	 */
+	private String failMessage;
 	/**
 	 * 命令锁：等待命令执行响应
 	 */
@@ -81,6 +85,7 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 	public void onMessage(String message) throws NetException {
 		LOGGER.debug("处理FTP消息：{}", message);
 		if(StringUtils.startsWith(message, "530 ")) { // 登陆失败
+			this.login = false;
 			this.failMessage = "服务器需要登陆授权";
 			this.close();
 		} else if(StringUtils.startsWith(message, "550 ")) { // 文件不存在
@@ -133,6 +138,13 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 	}
 	
 	/**
+	 * 是否登陆成功
+	 */
+	public boolean login() {
+		return this.login;
+	}
+	
+	/**
 	 * 是否支持断点续传
 	 */
 	public boolean range() {
@@ -147,23 +159,23 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 	}
 	
 	/**
+	 * 错误信息
+	 */
+	public String failMessage() {
+		if(this.failMessage == null) {
+			this.failMessage = "未知错误";
+		}
+		return this.failMessage;
+	}
+	
+	/**
 	 * 获取输入流，阻塞线程。
 	 */
 	public InputStream inputStream() throws NetException {
 		if(this.inputStream == null) {
-			if(this.failMessage == null) {
-				this.failMessage = "未知错误";
-			}
-			throw new NetException(this.failMessage);
+			throw new NetException(this.failMessage());
 		}
 		return this.inputStream;
-	}
-	
-	/**
-	 * 获取错误信息
-	 */
-	public String failMessage() {
-		return this.failMessage;
 	}
 	
 	@Override
