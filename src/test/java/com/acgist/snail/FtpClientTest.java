@@ -23,7 +23,7 @@ public class FtpClientTest {
 		System.out.println(client.size());
 		var input = client.download();
 		if(input == null) {
-			System.out.println(client.failMessage());
+			System.out.println(client.failMessage("未知错误"));
 		} else {
 			var output = new FileOutputStream("e://ftp");
 			input.transferTo(output);
