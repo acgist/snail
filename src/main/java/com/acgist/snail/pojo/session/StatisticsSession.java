@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.ThreadUtils;
@@ -15,7 +16,7 @@ import com.acgist.snail.utils.ThreadUtils;
  * @author acgist
  * @since 1.0.0
  */
-public final class StatisticsSession {
+public final class StatisticsSession implements IStatisticsSession {
 
 	/**
 	 * 一秒钟
@@ -33,7 +34,7 @@ public final class StatisticsSession {
 	/**
 	 * 父类统计
 	 */
-	private final StatisticsSession parent;
+	private final IStatisticsSession parent;
 	/**
 	 * 累计上传大小
 	 */
@@ -87,11 +88,11 @@ public final class StatisticsSession {
 		this(false, null);
 	}
 	
-	public StatisticsSession(StatisticsSession parent) {
+	public StatisticsSession(IStatisticsSession parent) {
 		this(false, parent);
 	}
 	
-	public StatisticsSession(boolean limit, StatisticsSession parent) {
+	public StatisticsSession(boolean limit, IStatisticsSession parent) {
 		this.limit = limit;
 		this.parent = parent;
 		final long time = System.currentTimeMillis();
@@ -101,18 +102,12 @@ public final class StatisticsSession {
 		this.uploadBufferLimitTime = time;
 	}
 
-	/**
-	 * <p>判断是否在下载数据</p>
-	 * <p>上次限速采样时间是否在速度采样时间内</p>
-	 */
+	@Override
 	public boolean downloading() {
 		return System.currentTimeMillis() - this.downloadBufferLimitTime < SAMPLE_TIME;
 	}
 	
-	/**
-	 * <p>下载统计</p>
-	 * <p>如果存在父类优先更新父类数据，防止限速导致父类更新不及时。</p>
-	 */
+	@Override
 	public void download(long buffer) {
 		if(this.parent != null) {
 			this.parent.download(buffer);
@@ -122,10 +117,7 @@ public final class StatisticsSession {
 		downloadBufferLimit(buffer);
 	}
 	
-	/**
-	 * <p>上传统计</p>
-	 * <p>如果存在父类优先更新父类数据，防止限速导致父类更新不及时。</p>
-	 */
+	@Override
 	public void upload(long buffer) {
 		if(this.parent != null) {
 			this.parent.upload(buffer);
@@ -135,9 +127,7 @@ public final class StatisticsSession {
 		uploadBufferLimit(buffer);
 	}
 	
-	/**
-	 * 下载速度
-	 */
+	@Override
 	public long downloadSpeed() {
 		final long time = System.currentTimeMillis();
 		final long interval = time - this.downloadBufferSampleTime;
@@ -150,9 +140,7 @@ public final class StatisticsSession {
 		}
 	}
 	
-	/**
-	 * 上传速度
-	 */
+	@Override
 	public long uploadSpeed() {
 		final long time = System.currentTimeMillis();
 		final long interval = time - this.uploadBufferSampleTime;
@@ -165,30 +153,22 @@ public final class StatisticsSession {
 		}
 	}
 	
-	/**
-	 * 获取累计下载大小
-	 */
+	@Override
 	public long downloadSize() {
 		return this.downloadSize.get();
 	}
 	
-	/**
-	 * 设置累计下载大小
-	 */
+	@Override
 	public void downloadSize(long size) {
 		this.downloadSize.set(size);
 	}
 	
-	/**
-	 * 获取累计上传大小
-	 */
+	@Override
 	public long uploadSize() {
 		return this.uploadSize.get();
 	}
 
-	/**
-	 * 设置累计上传大小
-	 */
+	@Override
 	public void uploadSize(long size) {
 		this.uploadSize.set(size);
 	}
