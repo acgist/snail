@@ -9,6 +9,7 @@ import com.acgist.snail.net.stun.bootstrap.StunService;
 import com.acgist.snail.net.upnp.UpnpClient;
 import com.acgist.snail.net.upnp.UpnpServer;
 import com.acgist.snail.net.upnp.bootstrap.UpnpService;
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
@@ -25,9 +26,9 @@ public class NatContext {
 	private static final NatContext INSTANCE = new NatContext();
 	
 	/**
-	 * UPNP等待锁超时时间
+	 * UPNP配置超时时间
 	 */
-	private static final int UPNP_TIMEOUT = 4;
+	private static final int UPNP_CONFIG_TIMEOUT = SystemConfig.CONNECT_TIMEOUT;
 	
 	/**
 	 * UPNP等待锁
@@ -45,7 +46,7 @@ public class NatContext {
 		LOGGER.info("初始化NAT服务");
 		UpnpClient.newInstance().mSearch();
 		synchronized (this.upnpLock) {
-			ThreadUtils.wait(this.upnpLock, Duration.ofSeconds(UPNP_TIMEOUT));
+			ThreadUtils.wait(this.upnpLock, Duration.ofSeconds(UPNP_CONFIG_TIMEOUT));
 		}
 		StunService.getInstance().mapping();
 	}

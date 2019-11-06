@@ -38,7 +38,7 @@ public class TorrentStreamGroup {
 	/**
 	 * 计算文件大小等待时间
 	 */
-	private static final int SIZE_COUNT_TIMEOUT = 100;
+	private static final int DOWNLOAD_SIZE_TIMEOUT = 120;
 	
 	/**
 	 * 已下载Piece位图
@@ -121,7 +121,7 @@ public class TorrentStreamGroup {
 		}
 		SystemThreadContext.submit(() -> {
 			try {
-				final var ok = sizeCount.await(SIZE_COUNT_TIMEOUT, TimeUnit.SECONDS);
+				final var ok = sizeCount.await(DOWNLOAD_SIZE_TIMEOUT, TimeUnit.SECONDS);
 				if(ok) {
 					final var finishTime = System.currentTimeMillis(); // 结束时间
 					LOGGER.debug("{}-任务准备完成消耗时间：{}", torrent.name(), (finishTime - startTime));
