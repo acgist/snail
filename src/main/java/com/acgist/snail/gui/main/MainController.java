@@ -222,7 +222,7 @@ public class MainController extends Controller implements Initializable {
 	 */
 	public void refreshTaskList() {
 		final ObservableList<ITaskSession> obs = FXCollections.observableArrayList();
-		DownloaderManager.getInstance().tasks().stream()
+		DownloaderManager.getInstance().allTask().stream()
 			.filter(session -> {
 				final var status = session.getStatus();
 				if(this.filter == Filter.ALL) {

@@ -118,19 +118,19 @@ public class XMLUtils {
 	/**
 	 * 创建标签（命名空间）
 	 */
-	public Element elementNS(Node node, String name, String namespaceURI) {
-		return elementNS(node, name, null, namespaceURI);
+	public Element elementNS(Node node, String name, String namespaceUri) {
+		return elementNS(node, name, null, namespaceUri);
 	}
 	
 	/**
 	 * 创建标签（命名空间）
 	 */
-	public Element elementNS(Node node, String name, String text, String namespaceURI) {
+	public Element elementNS(Node node, String name, String text, String namespaceUri) {
 		Element element = null;
-		if(StringUtils.isEmpty(namespaceURI)) {
+		if(StringUtils.isEmpty(namespaceUri)) {
 			element = this.document.createElement(name);
 		} else {
-			element = this.document.createElementNS(namespaceURI, name);
+			element = this.document.createElementNS(namespaceUri, name);
 		}
 		if(StringUtils.isNotEmpty(text)) {
 			element.setTextContent(text);

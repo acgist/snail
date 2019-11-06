@@ -14,22 +14,22 @@ public interface ITaskSessionTable {
 	String getNameValue();
 
 	/**
-	 * return 任务状态
+	 * @return 任务状态
 	 */
 	String getStatusValue();
 	
 	/**
-	 * return 任务进度
+	 * @return 任务进度
 	 */
 	String getProgressValue();
 
 	/**
-	 * return 创建时间
+	 * @return 创建时间
 	 */
 	String getCreateDateValue();
 	
 	/**
-	 * return 完成时间
+	 * @return 完成时间
 	 */
 	String getEndDateValue();
 	

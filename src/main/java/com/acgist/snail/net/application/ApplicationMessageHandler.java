@@ -186,7 +186,7 @@ public class ApplicationMessageHandler extends TcpMessageHandler implements IMes
 	 * @since 1.1.1
 	 */
 	private void onTaskList(ApplicationMessage message) {
-		final List<Map<String, Object>> list = DownloaderManager.getInstance().tasks().stream()
+		final List<Map<String, Object>> list = DownloaderManager.getInstance().allTask().stream()
 			.map(session -> session.taskMessage())
 			.collect(Collectors.toList());
 		final String body = BEncodeEncoder.encodeListString(list);
@@ -249,7 +249,7 @@ public class ApplicationMessageHandler extends TcpMessageHandler implements IMes
 	 */
 	private Optional<ITaskSession> selectTaskSession(ApplicationMessage message) {
 		final String body = message.getBody(); // 任务ID
-		return DownloaderManager.getInstance().tasks().stream()
+		return DownloaderManager.getInstance().allTask().stream()
 			.filter(session -> session.getId().equals(body))
 			.findFirst();
 	}

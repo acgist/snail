@@ -119,6 +119,8 @@ public interface ITaskSession extends ITaskSessionTable, ITaskSessionEntity, ITa
 	 * <p>如果已经存在直接返回，否者创建下载器。</p>
 	 * 
 	 * @return 下载器
+	 * 
+	 * @throws DownloadException 下载异常
 	 */
 	IDownloader buildDownloader() throws DownloadException;
 	
