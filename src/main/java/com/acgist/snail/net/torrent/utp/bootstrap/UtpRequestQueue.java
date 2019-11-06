@@ -54,7 +54,8 @@ public class UtpRequestQueue {
 	}
 	
 	/**
-	 * 获取请求处理队列
+	 * <p>获取请求处理队列</p>
+	 * <p>不需要加锁，允许误差。</p>
 	 */
 	public BlockingQueue<UtpRequest> queue() {
 		final int index = this.index % QUEUE_SIZE;

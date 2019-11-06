@@ -64,7 +64,10 @@ public class WebSocketMessageHandler implements IMessageHandler {
 				if(webSocket == null) {
 					LOGGER.warn("WebSocket消息发送失败：{}", webSocket);
 				}
-			} catch (TimeoutException | ExecutionException | InterruptedException e) {
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw new NetException(e);
+			} catch (TimeoutException | ExecutionException e) {
 				throw new NetException(e);
 			}
 		}
