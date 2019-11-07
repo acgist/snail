@@ -56,7 +56,7 @@ public final class HttpDownloader extends SingleFileDownloader {
 	 */
 	@Override
 	protected void buildInput() {
-		// 获取已下载大小
+		// 已下载大小
 		final long size = FileUtils.fileSize(this.taskSession.getFile());
 		// 创建HTTP客户端
 		final var client = HTTPClient.newInstance(this.taskSession.getUrl(), SystemConfig.CONNECT_TIMEOUT, SystemConfig.DOWNLOAD_TIMEOUT);

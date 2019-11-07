@@ -48,7 +48,7 @@ public final class FtpDownloader extends SingleFileDownloader {
 
 	@Override
 	protected void buildInput() {
-		// 获取已下载大小
+		// 已下载大小
 		final long size = FileUtils.fileSize(this.taskSession.getFile());
 		// 创建FTP客户端
 		this.client = FtpClientBuilder.newInstance(this.taskSession.getUrl()).build();
