@@ -1,10 +1,13 @@
 package com.acgist.snail.net;
 
+import java.io.IOException;
 import java.net.StandardSocketOptions;
 import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousSocketChannel;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,10 +80,20 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 			final Future<Void> future = socket.connect(NetUtils.buildSocketAddress(host, port));
 			future.get(this.timeout, TimeUnit.SECONDS);
 			this.handler.handle(socket);
-		} catch (Exception e) {
+		} catch (InterruptedException e) {
 			LOGGER.error("TCP客户端连接异常：{}-{}", host, port, e);
-			IoUtils.close(socket);
+			Thread.currentThread().interrupt();
 			ok = false;
+		} catch (IOException | ExecutionException | TimeoutException e) {
+			LOGGER.error("TCP客户端连接异常：{}-{}", host, port, e);
+			ok = false;
+		} finally {
+			if(ok) {
+				// 连接成功
+			} else {
+				IoUtils.close(socket);
+				this.handler.close();
+			}
 		}
 		return ok;
 	}
