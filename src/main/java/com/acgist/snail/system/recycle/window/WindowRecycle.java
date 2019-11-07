@@ -21,7 +21,7 @@ import com.acgist.snail.utils.NumberUtils;
  * @author acgist
  * @since 1.1.0
  */
-public class WindowRecycle extends Recycle {
+public final class WindowRecycle extends Recycle {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(WindowRecycle.class);
 

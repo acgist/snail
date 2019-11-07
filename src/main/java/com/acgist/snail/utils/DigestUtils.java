@@ -11,7 +11,7 @@ import com.acgist.snail.system.exception.ArgumentException;
  * @author acgist
  * @since 1.1.1
  */
-public class DigestUtils {
+public final class DigestUtils {
 	
 	/**
 	 * 散列算法：MD5

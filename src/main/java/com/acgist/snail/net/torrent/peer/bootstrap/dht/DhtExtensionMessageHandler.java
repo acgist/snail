@@ -21,7 +21,7 @@ import com.acgist.snail.utils.NumberUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class DhtExtensionMessageHandler implements IExtensionMessageHandler {
+public final class DhtExtensionMessageHandler implements IExtensionMessageHandler {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(DhtExtensionMessageHandler.class);
 	

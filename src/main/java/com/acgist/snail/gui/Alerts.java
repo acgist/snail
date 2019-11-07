@@ -14,7 +14,7 @@ import javafx.stage.Stage;
  * @author acgist
  * @since 1.0.0
  */
-public class Alerts {
+public final class Alerts {
 	
 	/**
 	 * 不允许实例化

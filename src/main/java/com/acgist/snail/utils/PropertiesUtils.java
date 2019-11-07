@@ -17,7 +17,7 @@ import com.acgist.snail.system.config.SystemConfig;
  * @author acgist
  * @since 1.0.0
  */
-public class PropertiesUtils {
+public final class PropertiesUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesUtils.class);
 	

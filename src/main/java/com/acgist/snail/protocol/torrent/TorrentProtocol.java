@@ -19,7 +19,7 @@ import com.acgist.snail.utils.FileUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class TorrentProtocol extends Protocol {
+public final class TorrentProtocol extends Protocol {
 	
 	private static final TorrentProtocol INSTANCE = new TorrentProtocol();
 

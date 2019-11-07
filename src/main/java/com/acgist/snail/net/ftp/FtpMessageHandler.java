@@ -28,7 +28,7 @@ import com.acgist.snail.utils.ThreadUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class FtpMessageHandler extends TcpMessageHandler implements IMessageCodec<String> {
+public final class FtpMessageHandler extends TcpMessageHandler implements IMessageCodec<String> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FtpMessageHandler.class);
 	

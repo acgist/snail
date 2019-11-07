@@ -14,7 +14,7 @@ import javafx.stage.Stage;
  * @author acgist
  * @since 1.0.0
  */
-public class SettingWindow extends Window<SettingController> {
+public final class SettingWindow extends Window<SettingController> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SettingWindow.class);
 	

@@ -29,7 +29,7 @@ import javafx.scene.text.Text;
  * @author acgist
  * @since 1.0.0
  */
-public class SelectorManager {
+public final class SelectorManager {
 
 	/**
 	 * 下载按钮

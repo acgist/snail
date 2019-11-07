@@ -16,7 +16,7 @@ import javafx.stage.WindowEvent;
  * @author acgist
  * @since 1.0.0
  */
-public class TorrentWindow extends Window<TorrentController> {
+public final class TorrentWindow extends Window<TorrentController> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentWindow.class);
 	

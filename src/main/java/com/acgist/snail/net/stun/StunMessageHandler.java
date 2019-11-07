@@ -59,7 +59,7 @@ import com.acgist.snail.utils.NumberUtils;
  * @author acgist
  * @since 1.2.0
  */
-public class StunMessageHandler extends UdpMessageHandler {
+public final class StunMessageHandler extends UdpMessageHandler {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(StunMessageHandler.class);
 	

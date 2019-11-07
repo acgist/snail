@@ -16,7 +16,7 @@ import com.acgist.snail.system.recycle.window.WindowRecycle;
  * @author acgist
  * @since 1.1.0
  */
-public class RecycleManager {
+public final class RecycleManager {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RecycleManager.class);
 	

@@ -15,7 +15,7 @@ import com.acgist.snail.system.config.SystemConfig;
  * @author acgist
  * @since 1.0.0
  */
-public class TorrentInfo {
+public final class TorrentInfo {
 
 	/**
 	 * 填充文件前缀（不需要下载和显示）

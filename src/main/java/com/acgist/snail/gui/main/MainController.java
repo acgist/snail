@@ -61,7 +61,7 @@ import javafx.util.Callback;
  * @author acgist
  * @since 1.0.0
  */
-public class MainController extends Controller implements Initializable {
+public final class MainController extends Controller implements Initializable {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
 	

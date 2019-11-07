@@ -35,7 +35,7 @@ import com.acgist.snail.utils.UrlUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class HTTPClient {
+public final class HTTPClient {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(HTTPClient.class);
 	

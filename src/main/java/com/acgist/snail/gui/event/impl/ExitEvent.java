@@ -12,7 +12,7 @@ import javafx.application.Platform;
  * @author acgist
  * @since 1.1.0
  */
-public class ExitEvent extends GuiEvent {
+public final class ExitEvent extends GuiEvent {
 
 	private static final ExitEvent INSTANCE = new ExitEvent();
 	

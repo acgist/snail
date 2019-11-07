@@ -15,7 +15,7 @@ import com.acgist.snail.system.exception.NetException;
  * @author acgist
  * @since 1.0.0
  */
-public class PeerMessageHandler extends TcpMessageHandler implements IMessageEncryptHandler {
+public final class PeerMessageHandler extends TcpMessageHandler implements IMessageEncryptHandler {
 
 //	private static final Logger LOGGER = LoggerFactory.getLogger(PeerMessageHandler.class);
 	

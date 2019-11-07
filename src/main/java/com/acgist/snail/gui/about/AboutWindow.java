@@ -14,7 +14,7 @@ import javafx.stage.Stage;
  * @author acgist
  * @since 1.0.0
  */
-public class AboutWindow extends Window<AboutController> {
+public final class AboutWindow extends Window<AboutController> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AboutWindow.class);
 	

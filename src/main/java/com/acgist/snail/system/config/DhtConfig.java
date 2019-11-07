@@ -20,7 +20,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class DhtConfig extends PropertiesConfig {
+public final class DhtConfig extends PropertiesConfig {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(DhtConfig.class);
 	

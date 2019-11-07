@@ -25,7 +25,7 @@ import com.acgist.snail.utils.DigestUtils;
  * @author acgist
  * @since 1.1.0
  */
-public class MSECipher {
+public final class MSECipher {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(MSECipher.class);
 

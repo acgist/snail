@@ -11,7 +11,7 @@ import com.acgist.snail.system.exception.ArgumentException;
  * @author acgist
  * @since 1.0.0
  */
-public class ArrayUtils {
+public final class ArrayUtils {
 
 	/**
 	 * <p>数组比较</p>

@@ -23,7 +23,7 @@ import com.acgist.snail.pojo.LambdaOptional;
  * @author acgist
  * @since 1.0.0
  */
-public class NetUtils {
+public final class NetUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(NetUtils.class);
 	

@@ -9,7 +9,7 @@ import com.acgist.snail.net.UdpServer;
  * @author acgist
  * @since 1.0.0
  */
-public class UpnpServer extends UdpServer<UpnpAcceptHandler> {
+public final class UpnpServer extends UdpServer<UpnpAcceptHandler> {
 
 //	private static final Logger LOGGER = LoggerFactory.getLogger(UpnpServer.class);
 	

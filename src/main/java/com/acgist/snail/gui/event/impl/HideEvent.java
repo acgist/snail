@@ -11,7 +11,7 @@ import javafx.application.Platform;
  * @author acgist
  * @since 1.1.0
  */
-public class HideEvent extends GuiEvent {
+public final class HideEvent extends GuiEvent {
 
 	private static final HideEvent INSTANCE = new HideEvent();
 	

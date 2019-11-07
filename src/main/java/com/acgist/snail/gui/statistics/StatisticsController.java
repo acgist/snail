@@ -45,7 +45,7 @@ import javafx.scene.text.Text;
  * @author acgist
  * @since 1.2.0
  */
-public class StatisticsController extends Controller implements Initializable {
+public final class StatisticsController extends Controller implements Initializable {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(StatisticsController.class);
 	

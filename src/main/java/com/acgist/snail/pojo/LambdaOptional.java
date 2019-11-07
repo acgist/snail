@@ -6,7 +6,7 @@ package com.acgist.snail.pojo;
  * @author acgist
  * @since 1.2.0
  */
-public class LambdaOptional<T> {
+public final class LambdaOptional<T> {
 
 	/**
 	 * 数据

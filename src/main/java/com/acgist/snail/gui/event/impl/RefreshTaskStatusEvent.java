@@ -11,7 +11,7 @@ import com.acgist.snail.pojo.message.ApplicationMessage;
  * @author acgist
  * @since 1.1.0
  */
-public class RefreshTaskStatusEvent extends GuiEvent {
+public final class RefreshTaskStatusEvent extends GuiEvent {
 
 	private static final RefreshTaskStatusEvent INSTANCE = new RefreshTaskStatusEvent();
 	

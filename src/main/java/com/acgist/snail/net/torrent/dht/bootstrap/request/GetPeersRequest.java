@@ -20,7 +20,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class GetPeersRequest extends Request {
+public final class GetPeersRequest extends Request {
 
 	private GetPeersRequest() {
 		super(DhtConfig.QType.GET_PEERS);

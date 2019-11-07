@@ -9,7 +9,7 @@ import javafx.util.Duration;
  * @author acgist
  * @since 1.1.0
  */
-public class Tooltips {
+public final class Tooltips {
 
 	/**
 	 * 不允许实例化

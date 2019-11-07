@@ -30,7 +30,7 @@ import javafx.util.StringConverter;
  * @author acgist
  * @since 1.0.0
  */
-public class SettingController extends Controller implements Initializable {
+public final class SettingController extends Controller implements Initializable {
 	
 //	private static final Logger LOGGER = LoggerFactory.getLogger(SettingController.class);
 

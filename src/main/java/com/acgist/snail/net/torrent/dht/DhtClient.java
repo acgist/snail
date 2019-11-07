@@ -17,7 +17,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class DhtClient extends UdpClient<DhtMessageHandler> {
+public final class DhtClient extends UdpClient<DhtMessageHandler> {
 
 //	private static final Logger LOGGER = LoggerFactory.getLogger(DhtClient.class);
 	

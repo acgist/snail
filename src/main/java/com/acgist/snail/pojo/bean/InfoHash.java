@@ -11,7 +11,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class InfoHash {
+public final class InfoHash {
 
 	/**
 	 * 种子info数据长度

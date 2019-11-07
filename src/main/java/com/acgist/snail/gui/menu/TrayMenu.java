@@ -40,7 +40,7 @@ import javafx.stage.WindowEvent;
  * @author acgist
  * @since 1.0.0
  */
-public class TrayMenu extends Menu {
+public final class TrayMenu extends Menu {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrayMenu.class);
 	

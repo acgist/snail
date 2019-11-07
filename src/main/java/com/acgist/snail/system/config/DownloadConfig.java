@@ -18,7 +18,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class DownloadConfig extends PropertiesConfig {
+public final class DownloadConfig extends PropertiesConfig {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DownloadConfig.class);
 	

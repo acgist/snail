@@ -18,7 +18,7 @@ import com.acgist.snail.system.exception.NetException;
  * @author acgist
  * @since 1.2.0
  */
-public class UtpRequestQueue {
+public final class UtpRequestQueue {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UtpRequestQueue.class);
 

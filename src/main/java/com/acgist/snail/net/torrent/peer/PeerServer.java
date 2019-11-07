@@ -9,7 +9,7 @@ import com.acgist.snail.system.config.SystemConfig;
  * @author acgist
  * @since 1.0.0
  */
-public class PeerServer extends TcpServer<PeerMessageHandler> {
+public final class PeerServer extends TcpServer<PeerMessageHandler> {
 	
 //	private static final Logger LOGGER = LoggerFactory.getLogger(PeerServer.class);
 	

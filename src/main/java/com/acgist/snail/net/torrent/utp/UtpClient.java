@@ -11,7 +11,7 @@ import com.acgist.snail.pojo.session.PeerSession;
  * @author acgist
  * @since 1.1.0
  */
-public class UtpClient extends UdpClient<UtpMessageHandler> {
+public final class UtpClient extends UdpClient<UtpMessageHandler> {
 
 	private final PeerSession peerSession;
 	private final PeerSubMessageHandler peerSubMessageHandler;

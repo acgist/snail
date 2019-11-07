@@ -23,7 +23,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.1.0
  */
-public class MSEKeyPairBuilder {
+public final class MSEKeyPairBuilder {
 
 	/**
 	 * 公钥生成使用随机数

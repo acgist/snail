@@ -12,7 +12,7 @@ import com.acgist.snail.system.initializer.Initializer;
  * @author acgist
  * @since 1.0.0
  */
-public class NatInitializer extends Initializer {
+public final class NatInitializer extends Initializer {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(NatInitializer.class);
 	

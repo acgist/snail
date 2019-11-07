@@ -24,7 +24,7 @@ import javafx.application.Platform;
  * @author acgist
  * @since 1.1.1
  */
-public class TorrentEvent extends GuiEvent {
+public final class TorrentEvent extends GuiEvent {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentEvent.class);
 	

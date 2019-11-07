@@ -15,7 +15,7 @@ import javafx.stage.WindowEvent;
  * @author acgist
  * @since 1.0.0
  */
-public class StatisticsWindow extends Window<StatisticsController> {
+public final class StatisticsWindow extends Window<StatisticsController> {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(StatisticsWindow.class);
 	

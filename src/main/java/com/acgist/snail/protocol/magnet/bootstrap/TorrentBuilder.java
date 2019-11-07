@@ -28,7 +28,7 @@ import com.acgist.snail.utils.NetUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class TorrentBuilder {
+public final class TorrentBuilder {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentBuilder.class);
 	

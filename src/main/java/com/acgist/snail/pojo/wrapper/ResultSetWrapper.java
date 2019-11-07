@@ -10,7 +10,7 @@ import java.util.Map;
  * @author acgist
  * @since 1.0.0
  */
-public class ResultSetWrapper {
+public final class ResultSetWrapper {
 
 	/**
 	 * 查询结果数据

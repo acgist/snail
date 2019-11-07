@@ -12,7 +12,7 @@ import com.acgist.snail.system.initializer.Initializer;
  * @author acgist
  * @since 1.1.0
  */
-public class LocalServiceDiscoveryInitializer extends Initializer {
+public final class LocalServiceDiscoveryInitializer extends Initializer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LocalServiceDiscoveryInitializer.class);
 	

@@ -9,7 +9,7 @@ import com.acgist.snail.system.config.SystemConfig;
  * @author acgist
  * @since 1.0.0
  */
-public class ApplicationServer extends TcpServer<ApplicationMessageHandler> {
+public final class ApplicationServer extends TcpServer<ApplicationMessageHandler> {
 
 	private static final ApplicationServer INSTANCE = new ApplicationServer();
 	

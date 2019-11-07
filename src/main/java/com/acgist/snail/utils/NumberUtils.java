@@ -19,7 +19,7 @@ import com.acgist.snail.system.exception.ArgumentException;
  * @author acgist
  * @since 1.0.0
  */
-public class NumberUtils {
+public final class NumberUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(NumberUtils.class);
 	

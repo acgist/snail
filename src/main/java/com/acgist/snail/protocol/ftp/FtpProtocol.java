@@ -15,7 +15,7 @@ import com.acgist.snail.system.exception.NetException;
  * @author acgist
  * @since 1.0.0
  */
-public class FtpProtocol extends Protocol {
+public final class FtpProtocol extends Protocol {
 	
 	private static final FtpProtocol INSTANCE = new FtpProtocol();
 	

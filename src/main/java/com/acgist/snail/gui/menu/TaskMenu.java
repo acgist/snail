@@ -31,7 +31,7 @@ import javafx.stage.WindowEvent;
  * @author acgist
  * @since 1.0.0
  */
-public class TaskMenu extends Menu {
+public final class TaskMenu extends Menu {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskMenu.class);
 	

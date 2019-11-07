@@ -16,7 +16,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class Torrent {
+public final class Torrent {
 
 	/**
 	 * 注释

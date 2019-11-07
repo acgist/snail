@@ -24,7 +24,7 @@ import com.acgist.snail.utils.BeanUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class DatabaseManager {
+public final class DatabaseManager {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseManager.class);
 	

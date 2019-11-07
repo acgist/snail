@@ -11,7 +11,7 @@ import java.util.Date;
  * @author acgist
  * @since 1.0.0
  */
-public class DateUtils {
+public final class DateUtils {
 
 	/**
 	 * 默认时间格式

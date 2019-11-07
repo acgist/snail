@@ -20,7 +20,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.1.0
  */
-public class LocalServiceDiscoveryClient extends UdpClient<LocalServiceDiscoveryMessageHandler> {
+public final class LocalServiceDiscoveryClient extends UdpClient<LocalServiceDiscoveryMessageHandler> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LocalServiceDiscoveryClient.class);
 	

@@ -9,7 +9,7 @@ import com.acgist.snail.repository.Repository;
  * @author acgist
  * @since 1.0.0
  */
-public class ConfigRepository extends Repository<ConfigEntity> {
+public final class ConfigRepository extends Repository<ConfigEntity> {
 
 	public ConfigRepository() {
 		super(ConfigEntity.TABLE_NAME, ConfigEntity.class);

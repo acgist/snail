@@ -21,7 +21,7 @@ import com.acgist.snail.system.exception.TimerArgumentException;
  * @author acgist
  * @since 1.0.0
  */
-public class SystemThreadContext {
+public final class SystemThreadContext {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SystemThreadContext.class);
 	

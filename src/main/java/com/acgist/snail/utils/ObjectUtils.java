@@ -10,7 +10,7 @@ import java.util.Map;
  * @author acgist
  * @since 1.0.0
  */
-public class ObjectUtils {
+public final class ObjectUtils {
 
 	/**
 	 * 重写hashCode方法

@@ -11,7 +11,7 @@ import com.acgist.snail.system.config.SystemConfig;
  * @author acgist
  * @since 1.0.0
  */
-public class PeerClient extends TcpClient<PeerMessageHandler> {
+public final class PeerClient extends TcpClient<PeerMessageHandler> {
 
 	private final PeerSession peerSession;
 	private final PeerSubMessageHandler peerSubMessageHandler;

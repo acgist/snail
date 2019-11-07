@@ -13,7 +13,7 @@ import com.acgist.snail.system.context.SystemContext;
  * @author acgist
  * @since 1.0.0
  */
-public class Application {
+public final class Application {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 	

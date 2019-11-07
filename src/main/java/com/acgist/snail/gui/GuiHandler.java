@@ -35,7 +35,7 @@ import javafx.scene.control.Alert.AlertType;
  * @author acgist
  * @since 1.1.0
  */
-public class GuiHandler {
+public final class GuiHandler {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(GuiHandler.class);
 	

@@ -9,7 +9,7 @@ import com.acgist.snail.net.torrent.dht.bootstrap.Response;
  * @author acgist
  * @since 1.0.0
  */
-public class AnnouncePeerResponse extends Response {
+public final class AnnouncePeerResponse extends Response {
 
 	private AnnouncePeerResponse(byte[] t) {
 		super(t);

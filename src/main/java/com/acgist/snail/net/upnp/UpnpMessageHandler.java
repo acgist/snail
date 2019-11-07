@@ -22,7 +22,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class UpnpMessageHandler extends UdpMessageHandler implements IMessageCodec<String> {
+public final class UpnpMessageHandler extends UdpMessageHandler implements IMessageCodec<String> {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UpnpMessageHandler.class);
 

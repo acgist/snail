@@ -6,7 +6,7 @@ package com.acgist.snail.utils;
  * @author acgist
  * @since 1.0.0
  */
-public class Base32Utils {
+public final class Base32Utils {
 
 	/**
 	 * 编码字符

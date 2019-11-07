@@ -9,7 +9,7 @@ import javafx.scene.input.ClipboardContent;
  * @author acgist
  * @since 1.0.0
  */
-public class Clipboards {
+public final class Clipboards {
 
 	/**
 	 * 不允许实例化

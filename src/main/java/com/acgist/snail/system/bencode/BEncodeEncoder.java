@@ -30,7 +30,7 @@ import com.acgist.snail.system.bencode.BEncodeDecoder.Type;
  * @author acgist
  * @since 1.0.0
  */
-public class BEncodeEncoder {
+public final class BEncodeEncoder {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BEncodeEncoder.class);
 	

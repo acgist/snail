@@ -19,7 +19,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class TrackerConfig extends PropertiesConfig {
+public final class TrackerConfig extends PropertiesConfig {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerConfig.class);
 	

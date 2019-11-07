@@ -14,7 +14,7 @@ import com.acgist.snail.utils.CollectionUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class TorrentFile {
+public final class TorrentFile {
 
 	/**
 	 * 文件路径拼接时分隔符

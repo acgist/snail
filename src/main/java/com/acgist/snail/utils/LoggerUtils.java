@@ -11,7 +11,7 @@ import ch.qos.logback.classic.LoggerContext;
  * @author acgist
  * @since 1.0.0
  */
-public class LoggerUtils {
+public final class LoggerUtils {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(LoggerUtils.class);
 	

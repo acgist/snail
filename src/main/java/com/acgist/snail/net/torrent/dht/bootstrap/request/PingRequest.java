@@ -10,7 +10,7 @@ import com.acgist.snail.system.config.DhtConfig;
  * @author acgist
  * @since 1.0.0
  */
-public class PingRequest extends Request {
+public final class PingRequest extends Request {
 
 	private PingRequest() {
 		super(DhtConfig.QType.PING);

@@ -22,7 +22,7 @@ import com.acgist.snail.pojo.wrapper.ResultSetWrapper;
  * @author acgist
  * @since 1.0.0
  */
-public class BeanUtils {
+public final class BeanUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BeanUtils.class);
 	

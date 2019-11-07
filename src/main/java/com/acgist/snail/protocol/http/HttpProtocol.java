@@ -19,7 +19,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class HttpProtocol extends Protocol {
+public final class HttpProtocol extends Protocol {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(HttpProtocol.class);
 	

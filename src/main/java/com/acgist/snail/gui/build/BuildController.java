@@ -30,7 +30,7 @@ import javafx.scene.layout.FlowPane;
  * @author acgist
  * @since 1.0.0
  */
-public class BuildController extends Controller implements Initializable {
+public final class BuildController extends Controller implements Initializable {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(BuildController.class);
 	

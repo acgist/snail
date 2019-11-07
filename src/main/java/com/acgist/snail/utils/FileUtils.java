@@ -32,7 +32,7 @@ import com.acgist.snail.system.recycle.RecycleManager;
  * @author acgist
  * @since 1.0.0
  */
-public class FileUtils {
+public final class FileUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FileUtils.class);
 	

@@ -12,7 +12,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class FtpClientBuilder {
+public final class FtpClientBuilder {
 
 	/**
 	 * FTP默认端口

@@ -19,7 +19,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.2.0
  */
-public class StunService {
+public final class StunService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(StunService.class);
 	

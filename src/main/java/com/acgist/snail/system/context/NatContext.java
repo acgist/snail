@@ -19,7 +19,7 @@ import com.acgist.snail.utils.ThreadUtils;
  * @author acgist
  * @since 1.2.0
  */
-public class NatContext {
+public final class NatContext {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(NatContext.class);
 	
