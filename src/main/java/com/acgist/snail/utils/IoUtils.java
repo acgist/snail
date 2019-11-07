@@ -55,20 +55,6 @@ public class IoUtils {
 	public static final void close(Socket socket) {
 		if(socket != null && !socket.isClosed()) {
 			try {
-				if(!socket.isInputShutdown()) {
-					socket.shutdownInput();
-				}
-			} catch (Exception e) {
-				LOGGER.error("关闭Socket输入流异常", e);
-			}
-			try {
-				if(!socket.isOutputShutdown()) {
-					socket.shutdownOutput();
-				}
-			} catch (Exception e) {
-				LOGGER.error("关闭Socket输出流异常", e);
-			}
-			try {
 				socket.close();
 			} catch (Exception e) {
 				LOGGER.error("关闭Socket异常", e);
@@ -81,16 +67,6 @@ public class IoUtils {
 	 */
 	public static final void close(AsynchronousSocketChannel socket) {
 		if(socket != null && socket.isOpen()) {
-			try {
-				socket.shutdownInput();
-			} catch (Exception e) {
-				LOGGER.error("关闭异步Socket输入流异常", e);
-			}
-			try {
-				socket.shutdownOutput();
-			} catch (Exception e) {
-				LOGGER.error("关闭异步Socket输出流异常", e);
-			}
 			try {
 				socket.close();
 			} catch (Exception e) {
