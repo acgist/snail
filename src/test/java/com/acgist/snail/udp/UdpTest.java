@@ -13,6 +13,10 @@ import com.acgist.snail.utils.ThreadUtils;
 public class UdpTest {
 
 	@Test
+	public void ipversion() {
+	}
+	
+	@Test
 	public void client() {
 		final int port = 18888;
 		InetSocketAddress socketAddress = new InetSocketAddress("127.0.0.1", port);
