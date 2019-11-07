@@ -18,15 +18,42 @@ import com.acgist.snail.utils.StringUtils;
  */
 public class Torrent {
 
-	public static final String COMMENT = "comment";
-	public static final String COMMENT_UTF8 = "comment.utf-8";
-	public static final String ENCODING = "encoding";
-	public static final String CREATED_BY = "created by";
-	public static final String CREATION_DATE = "creation date";
-	public static final String ANNOUNCE = "announce";
-	public static final String ANNOUNCE_LIST = "announce-list";
-	public static final String NODES = "nodes";
-	public static final String INFO = "info";
+	/**
+	 * 注释
+	 */
+	public static final String ATTR_COMMENT = "comment";
+	/**
+	 * 注释UTF8
+	 */
+	public static final String ATTR_COMMENT_UTF8 = "comment.utf-8";
+	/**
+	 * 编码
+	 */
+	public static final String ATTR_ENCODING = "encoding";
+	/**
+	 * 创建者
+	 */
+	public static final String ATTR_CREATED_BY = "created by";
+	/**
+	 * 创建时间
+	 */
+	public static final String ATTR_CREATION_DATE = "creation date";
+	/**
+	 * Tracker服务器
+	 */
+	public static final String ATTR_ANNOUNCE = "announce";
+	/**
+	 * Tracker服务器列表
+	 */
+	public static final String ATTR_ANNOUNCE_LIST = "announce-list";
+	/**
+	 * 文件信息
+	 */
+	public static final String ATTR_INFO = "info";
+	/**
+	 * DHT节点
+	 */
+	public static final String ATTR_NODES = "nodes";
 	
 	/**
 	 * 注释
@@ -49,7 +76,7 @@ public class Torrent {
 	 */
 	private Long creationDate;
 	/**
-	 * Tracker主服务器
+	 * Tracker服务器
 	 */
 	private String announce;
 	/**
@@ -74,24 +101,24 @@ public class Torrent {
 	
 	public static final Torrent valueOf(BEncodeDecoder decoder) {
 		final Torrent torrent = new Torrent();
-		torrent.setComment(decoder.getString(COMMENT));
-		torrent.setCommentUtf8(decoder.getString(COMMENT_UTF8));
-		torrent.setEncoding(decoder.getString(ENCODING));
-		torrent.setCreatedBy(decoder.getString(CREATED_BY));
-		torrent.setCreationDate(decoder.getLong(CREATION_DATE));
-		torrent.setAnnounce(decoder.getString(ANNOUNCE));
-		final List<Object> announceList = decoder.getList(ANNOUNCE_LIST);
+		torrent.setComment(decoder.getString(ATTR_COMMENT));
+		torrent.setCommentUtf8(decoder.getString(ATTR_COMMENT_UTF8));
+		torrent.setEncoding(decoder.getString(ATTR_ENCODING));
+		torrent.setCreatedBy(decoder.getString(ATTR_CREATED_BY));
+		torrent.setCreationDate(decoder.getLong(ATTR_CREATION_DATE));
+		torrent.setAnnounce(decoder.getString(ATTR_ANNOUNCE));
+		final List<Object> announceList = decoder.getList(ATTR_ANNOUNCE_LIST);
 		if(announceList != null) {
 			torrent.setAnnounceList(announceList(announceList));
 		} else {
 			torrent.setAnnounceList(new ArrayList<>(0));
 		}
-		final Map<String, Object> info = decoder.getMap(INFO);
+		final Map<String, Object> info = decoder.getMap(ATTR_INFO);
 		if(info != null) {
 			final TorrentInfo torrentInfo = TorrentInfo.valueOf(info);
 			torrent.setInfo(torrentInfo);
 		}
-		final List<Object> nodes = decoder.getList(NODES);
+		final List<Object> nodes = decoder.getList(ATTR_NODES);
 		if(nodes != null) {
 			torrent.setNodes(nodes(nodes));
 		} else {

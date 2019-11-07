@@ -349,14 +349,14 @@ public class FileUtils {
 	 * MD5散列算法
 	 */
 	public static final Map<String, String> md5(String path) {
-		return hash(path, DigestUtils.MD5);
+		return hash(path, DigestUtils.ALGO_MD5);
 	}
 
 	/**
 	 * SHA-1散列算法
 	 */
 	public static final Map<String, String> sha1(String path) {
-		return hash(path, DigestUtils.SHA1);
+		return hash(path, DigestUtils.ALGO_SHA1);
 	}
 	
 	/**
