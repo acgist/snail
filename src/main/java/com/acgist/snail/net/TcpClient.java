@@ -68,8 +68,9 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 	 */
 	protected boolean connect(final String host, final int port) {
 		boolean ok = true;
+		AsynchronousSocketChannel socket = null;
 		try {
-			final AsynchronousSocketChannel socket = AsynchronousSocketChannel.open(GROUP);
+			socket = AsynchronousSocketChannel.open(GROUP);
 			socket.setOption(StandardSocketOptions.TCP_NODELAY, true);
 			socket.setOption(StandardSocketOptions.SO_REUSEADDR, true);
 			socket.setOption(StandardSocketOptions.SO_KEEPALIVE, true);
@@ -78,12 +79,8 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 			this.handler.handle(socket);
 		} catch (Exception e) {
 			LOGGER.error("TCP客户端连接异常：{}-{}", host, port, e);
+			IoUtils.close(socket);
 			ok = false;
-		}
-		if(ok) {
-			// 连接成功
-		} else {
-			this.close();
 		}
 		return ok;
 	}
