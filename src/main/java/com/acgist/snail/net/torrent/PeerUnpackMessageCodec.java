@@ -1,4 +1,4 @@
-package com.acgist.snail.net.torrent.peer;
+package com.acgist.snail.net.torrent;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;

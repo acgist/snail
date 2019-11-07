@@ -3,7 +3,7 @@ package com.acgist.snail.net.stun;
 import java.net.InetSocketAddress;
 
 import com.acgist.snail.net.UdpClient;
-import com.acgist.snail.net.torrent.server.TorrentServer;
+import com.acgist.snail.net.torrent.TorrentServer;
 import com.acgist.snail.system.config.StunConfig;
 import com.acgist.snail.utils.NetUtils;
 

@@ -15,7 +15,7 @@ import com.acgist.snail.utils.BeanUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class TcpAcceptHandler<T extends TcpMessageHandler> implements CompletionHandler<AsynchronousSocketChannel, AsynchronousServerSocketChannel> {
+public final class TcpAcceptHandler<T extends TcpMessageHandler> implements CompletionHandler<AsynchronousSocketChannel, AsynchronousServerSocketChannel> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TcpAcceptHandler.class);
 	

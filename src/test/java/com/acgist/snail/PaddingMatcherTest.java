@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 
 import org.junit.Test;
 
-import com.acgist.snail.net.torrent.peer.bootstrap.crypt.MSEPaddingSync;
+import com.acgist.snail.net.torrent.crypt.MSEPaddingSync;
 import com.acgist.snail.system.exception.NetException;
 
 public class PaddingMatcherTest {

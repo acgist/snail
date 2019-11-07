@@ -1,4 +1,4 @@
-package com.acgist.snail.net.torrent.peer.bootstrap.crypt;
+package com.acgist.snail.net.torrent.crypt;
 
 import java.nio.ByteBuffer;
 import java.security.InvalidKeyException;
