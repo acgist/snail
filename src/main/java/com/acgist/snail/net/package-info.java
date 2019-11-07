@@ -1,4 +1,7 @@
 /**
- * <p>Snail网络协议模块，实现下载需要的网络协议。</p>
+ * <p>Snail网络协议模块</p>
+ * 
+ * @author acgist
+ * @since 1.0.0
  */
 package com.acgist.snail.net;
