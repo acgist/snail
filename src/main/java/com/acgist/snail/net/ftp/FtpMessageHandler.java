@@ -46,7 +46,7 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 	private static final String END_REGEX = "\\d{3} .*";
 	
 	/**
-	 * Socket
+	 * 输入流Socket
 	 */
 	private Socket inputSocket;
 	/**
@@ -56,13 +56,13 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 	/**
 	 * 登陆状态
 	 */
-	private boolean login = true;
+	private boolean login = false;
 	/**
 	 * 断点续传
 	 */
 	private boolean range = false;
 	/**
-	 * 编码：默认GBK
+	 * 默认编码：GBK
 	 */
 	private String charset = SystemConfig.CHARSET_GBK;
 	/**
@@ -72,7 +72,7 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 	/**
 	 * 命令锁：等待命令执行响应
 	 */
-	private final AtomicBoolean commandLock = new AtomicBoolean(false);
+	private final AtomicBoolean lock = new AtomicBoolean(false);
 	
 	public FtpMessageHandler() {
 		final var multilineMessageCodec = new MultilineMessageCodec(this, SPLIT, END_REGEX);
@@ -98,6 +98,7 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 			this.range = true;
 		} else if(StringUtils.startsWith(message, "220 ")) { // 退出系统
 		} else if(StringUtils.startsWith(message, "230 ")) { // 登陆成功
+			this.login = true;
 		} else if(StringUtils.startsWith(message, "226 ")) { // 下载完成
 		} else if(StringUtils.startsWith(message, "502 ")) { // 不支持命令：FEAT
 		} else if(StringUtils.startsWith(message, "211-")) { // 服务器状态：扩展命令编码查询
@@ -134,32 +135,32 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 				LOGGER.error("打开FTP远程输入流异常", e);
 			}
 		}
-		this.unlockCommand();
+		this.unlock();
 	}
 	
 	/**
-	 * 是否登陆成功
+	 * @return 是否登陆成功
 	 */
 	public boolean login() {
 		return this.login;
 	}
 	
 	/**
-	 * 是否支持断点续传
+	 * @return 是否支持断点续传
 	 */
 	public boolean range() {
 		return this.range;
 	}
 	
 	/**
-	 * 字符编码
+	 * @return 字符编码
 	 */
 	public String charset() {
 		return this.charset;
 	}
 	
 	/**
-	 * 错误信息
+	 * @return 错误信息
 	 */
 	public String failMessage(String defaultMessage) {
 		if(this.failMessage == null) {
@@ -169,7 +170,7 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 	}
 	
 	/**
-	 * 获取输入流，阻塞线程。
+	 * @return 文件流
 	 */
 	public InputStream inputStream() throws NetException {
 		if(this.inputStream == null) {
@@ -185,22 +186,29 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 	}
 	
 	/**
-	 * 释放资源：注意释放FTP下载连接资源（文件流、socket），不关闭命令通道。
+	 * <p>释放资源</p>
+	 * <p>释放FTP下载连接资源（文件流、Socket），不关闭命令通道。</p>
 	 */
 	private void release() {
 		IoUtils.close(this.inputStream);
 		IoUtils.close(this.inputSocket);
 	}
+
+	/**
+	 * 重置锁
+	 */
+	public void resetLock() {
+		this.lock.set(false);
+	}
 	
 	/**
 	 * 锁定命令
 	 */
-	public void lockCommand() {
-		this.commandLock.set(false);
-		if(!this.commandLock.get()) {
-			synchronized (this.commandLock) {
-				if(!this.commandLock.get()) {
-					ThreadUtils.wait(this.commandLock, TIMEOUT);
+	public void lock() {
+		if(!this.lock.get()) {
+			synchronized (this.lock) {
+				if(!this.lock.get()) {
+					ThreadUtils.wait(this.lock, TIMEOUT);
 				}
 			}
 		}
@@ -209,10 +217,10 @@ public class FtpMessageHandler extends TcpMessageHandler implements IMessageCode
 	/**
 	 * 解锁命令
 	 */
-	private void unlockCommand() {
-		synchronized (this.commandLock) {
-			this.commandLock.set(true);
-			this.commandLock.notifyAll();
+	private void unlock() {
+		synchronized (this.lock) {
+			this.lock.set(true);
+			this.lock.notifyAll();
 		}
 	}
 
