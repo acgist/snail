@@ -10,7 +10,7 @@ import java.util.Map;
  * @author acgist
  * @since 1.0.0
  */
-public class PeerUtils {
+public final class PeerUtils {
 
 	/**
 	 * allowedFast固定值

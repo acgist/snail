@@ -8,7 +8,7 @@ import com.acgist.snail.system.config.SystemConfig;
  * @author acgist
  * @since 1.0.0
  */
-public class DhtService {
+public final class DhtService {
 
 //	private static final Logger LOGGER = LoggerFactory.getLogger(DhtService.class);
 	

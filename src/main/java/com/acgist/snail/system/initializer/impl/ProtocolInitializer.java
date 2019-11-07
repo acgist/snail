@@ -17,7 +17,7 @@ import com.acgist.snail.system.initializer.Initializer;
  * @author acgist
  * @since 1.0.0
  */
-public class ProtocolInitializer extends Initializer {
+public final class ProtocolInitializer extends Initializer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ProtocolInitializer.class);
 	

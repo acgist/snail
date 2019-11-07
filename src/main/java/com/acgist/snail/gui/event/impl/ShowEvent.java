@@ -11,7 +11,7 @@ import javafx.application.Platform;
  * @author acgist
  * @since 1.1.0
  */
-public class ShowEvent extends GuiEvent {
+public final class ShowEvent extends GuiEvent {
 
 	private static final ShowEvent INSTANCE = new ShowEvent();
 	

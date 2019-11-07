@@ -6,7 +6,7 @@ package com.acgist.snail.pojo.entity;
  * @author acgist
  * @since 1.0.0
  */
-public class ConfigEntity extends BaseEntity {
+public final class ConfigEntity extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 

@@ -16,7 +16,7 @@ import com.acgist.snail.utils.NetUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class ApplicationClient extends TcpClient<ApplicationMessageHandler> {
+public final class ApplicationClient extends TcpClient<ApplicationMessageHandler> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationClient.class);
 	

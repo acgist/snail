@@ -11,7 +11,7 @@ import com.acgist.snail.utils.PeerUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class HttpAnnounceMessage {
+public final class HttpAnnounceMessage {
 
 	/**
 	 * trackerId，返回后以后每次请求需要上送这个字段

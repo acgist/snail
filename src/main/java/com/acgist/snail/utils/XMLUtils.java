@@ -32,7 +32,7 @@ import com.acgist.snail.system.config.SystemConfig;
  * @author acgist
  * @since 1.0.0
  */
-public class XMLUtils {
+public final class XMLUtils {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(XMLUtils.class);
 

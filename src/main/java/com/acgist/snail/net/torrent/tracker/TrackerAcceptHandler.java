@@ -12,7 +12,7 @@ import com.acgist.snail.net.UdpMessageHandler;
  * @author acgist
  * @since 1.0.0
  */
-public class TrackerAcceptHandler extends UdpAcceptHandler {
+public final class TrackerAcceptHandler extends UdpAcceptHandler {
 	
 	private static final TrackerAcceptHandler INSTANCE = new TrackerAcceptHandler();
 	

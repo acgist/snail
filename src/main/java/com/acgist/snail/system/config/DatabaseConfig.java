@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
  * @author acgist
  * @since 1.0.0
  */
-public class DatabaseConfig extends PropertiesConfig {
+public final class DatabaseConfig extends PropertiesConfig {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseConfig.class);
 	

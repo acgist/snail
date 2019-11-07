@@ -13,7 +13,7 @@ import com.acgist.snail.utils.NetUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class SystemConfig extends PropertiesConfig {
+public final class SystemConfig extends PropertiesConfig {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SystemConfig.class);
 	

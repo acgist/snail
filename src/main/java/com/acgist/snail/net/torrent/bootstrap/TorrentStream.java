@@ -31,7 +31,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class TorrentStream {
+public final class TorrentStream {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentStream.class);
 

@@ -20,7 +20,7 @@ import java.util.Map;
  * @author acgist
  * @since 1.0.0
  */
-public class PeerConfig {
+public final class PeerConfig {
 	
 	/**
 	 * 未知终端

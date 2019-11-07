@@ -34,7 +34,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class ExtensionMessageHandler implements IExtensionMessageHandler {
+public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ExtensionMessageHandler.class);
 	

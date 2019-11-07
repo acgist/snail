@@ -9,7 +9,7 @@ import com.acgist.snail.utils.XMLUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class UpnpResponse {
+public final class UpnpResponse {
 
 	/**
 	 * <p>外网IP地址响应</p>

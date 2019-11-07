@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
  * @author acgist
  * @since 1.0.0
  */
-public class ThreadUtils {
+public final class ThreadUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ThreadUtils.class);
 	

@@ -15,7 +15,7 @@ import com.acgist.snail.system.config.SystemConfig;
  * @author acgist
  * @since 1.0.0
  */
-public class UrlUtils {
+public final class UrlUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UrlUtils.class);
 	

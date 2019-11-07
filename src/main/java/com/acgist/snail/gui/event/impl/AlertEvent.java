@@ -19,7 +19,7 @@ import com.acgist.snail.system.bencode.BEncodeEncoder;
  * @author acgist
  * @since 1.1.0
  */
-public class AlertEvent extends GuiEvent {
+public final class AlertEvent extends GuiEvent {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AlertEvent.class);
 	

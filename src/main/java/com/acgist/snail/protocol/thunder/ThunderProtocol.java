@@ -17,7 +17,7 @@ import com.acgist.snail.system.exception.DownloadException;
  * @author acgist
  * @since 1.0.0
  */
-public class ThunderProtocol extends Protocol {
+public final class ThunderProtocol extends Protocol {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ThunderProtocol.class);
 	

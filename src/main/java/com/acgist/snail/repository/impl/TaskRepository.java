@@ -13,7 +13,7 @@ import com.acgist.snail.utils.FileUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class TaskRepository extends Repository<TaskEntity> {
+public final class TaskRepository extends Repository<TaskEntity> {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskRepository.class);
 

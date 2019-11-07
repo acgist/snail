@@ -36,7 +36,7 @@ import com.acgist.snail.utils.ThreadUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class DhtMessageHandler extends UdpMessageHandler {
+public final class DhtMessageHandler extends UdpMessageHandler {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(DhtMessageHandler.class);
 

@@ -9,7 +9,7 @@ import com.acgist.snail.net.torrent.dht.bootstrap.Response;
  * @author acgist
  * @since 1.0.0
  */
-public class PingResponse extends Response {
+public final class PingResponse extends Response {
 	
 	private PingResponse(byte[] t) {
 		super(t);

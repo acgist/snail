@@ -25,7 +25,7 @@ import com.acgist.snail.utils.FileUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class MagnetProtocol extends Protocol {
+public final class MagnetProtocol extends Protocol {
 	
 	private static final MagnetProtocol INSTANCE = new MagnetProtocol();
 

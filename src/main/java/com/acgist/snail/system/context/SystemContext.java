@@ -39,7 +39,7 @@ import com.acgist.snail.utils.NetUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class SystemContext {
+public final class SystemContext {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SystemContext.class);
 

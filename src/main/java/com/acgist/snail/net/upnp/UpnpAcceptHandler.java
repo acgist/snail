@@ -12,7 +12,7 @@ import com.acgist.snail.net.UdpMessageHandler;
  * @author acgist
  * @since 1.0.0
  */
-public class UpnpAcceptHandler extends UdpAcceptHandler {
+public final class UpnpAcceptHandler extends UdpAcceptHandler {
 
 	private static final UpnpAcceptHandler INSTANCE = new UpnpAcceptHandler();
 	

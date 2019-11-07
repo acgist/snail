@@ -16,7 +16,7 @@ import com.acgist.snail.utils.ThreadUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class TaskDisplay {
+public final class TaskDisplay {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskDisplay.class);
 	

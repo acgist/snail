@@ -6,7 +6,7 @@ package com.acgist.snail.system.config;
  * @author acgist
  * @since 1.2.0
  */
-public class StunConfig {
+public final class StunConfig {
 
 	/**
 	 * 头信息长度

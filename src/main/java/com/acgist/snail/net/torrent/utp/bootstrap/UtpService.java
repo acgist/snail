@@ -20,7 +20,7 @@ import com.acgist.snail.system.context.SystemThreadContext;
  * @author acgist
  * @since 1.1.0
  */
-public class UtpService {
+public final class UtpService {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UtpService.class);
 	

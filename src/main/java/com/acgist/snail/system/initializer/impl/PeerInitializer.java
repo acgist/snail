@@ -13,7 +13,7 @@ import com.acgist.snail.system.initializer.Initializer;
  * @author acgist
  * @since 1.0.0
  */
-public class PeerInitializer extends Initializer {
+public final class PeerInitializer extends Initializer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerInitializer.class);
 	

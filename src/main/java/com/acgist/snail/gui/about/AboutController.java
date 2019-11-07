@@ -19,7 +19,7 @@ import javafx.scene.text.Text;
  * @author acgist
  * @since 1.0.0
  */
-public class AboutController extends Controller implements Initializable {
+public final class AboutController extends Controller implements Initializable {
 	
 	@FXML
 	private GridPane root;

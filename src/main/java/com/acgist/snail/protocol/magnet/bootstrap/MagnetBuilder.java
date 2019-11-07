@@ -21,7 +21,7 @@ import com.acgist.snail.utils.UrlUtils;
  * @author acgist
  * @since 1.1.0
  */
-public class MagnetBuilder {
+public final class MagnetBuilder {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(MagnetBuilder.class);
 	

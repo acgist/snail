@@ -12,7 +12,7 @@ import com.acgist.snail.net.UdpMessageHandler;
  * @author acgist
  * @since 1.1.0
  */
-public class LocalServiceDiscoveryAcceptHandler extends UdpAcceptHandler {
+public final class LocalServiceDiscoveryAcceptHandler extends UdpAcceptHandler {
 
 	private static final LocalServiceDiscoveryAcceptHandler INSTANCE = new LocalServiceDiscoveryAcceptHandler();
 	

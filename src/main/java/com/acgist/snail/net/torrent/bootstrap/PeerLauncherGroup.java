@@ -28,7 +28,7 @@ import com.acgist.snail.system.context.SystemThreadContext;
  * @author acgist
  * @since 1.0.0
  */
-public class PeerLauncherGroup {
+public final class PeerLauncherGroup {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerLauncherGroup.class);
 	

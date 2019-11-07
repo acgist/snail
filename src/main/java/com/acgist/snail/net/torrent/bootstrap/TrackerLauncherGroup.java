@@ -22,7 +22,7 @@ import com.acgist.snail.utils.CollectionUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class TrackerLauncherGroup {
+public final class TrackerLauncherGroup {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerLauncherGroup.class);
 	

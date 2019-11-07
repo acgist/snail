@@ -27,7 +27,7 @@ import com.acgist.snail.utils.XMLUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class UpnpService {
+public final class UpnpService {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UpnpService.class);
 	

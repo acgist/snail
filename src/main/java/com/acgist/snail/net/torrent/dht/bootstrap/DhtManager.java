@@ -18,7 +18,7 @@ import com.acgist.snail.utils.ArrayUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class DhtManager {
+public final class DhtManager {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(DhtManager.class);
 	

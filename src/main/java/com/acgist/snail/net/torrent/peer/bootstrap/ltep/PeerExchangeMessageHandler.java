@@ -32,7 +32,7 @@ import com.acgist.snail.utils.PeerUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class PeerExchangeMessageHandler extends ExtensionTypeMessageHandler {
+public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandler {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerExchangeMessageHandler.class);
 	

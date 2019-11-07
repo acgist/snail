@@ -18,7 +18,7 @@ import com.acgist.snail.utils.PeerUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class TrackerMessageHandler extends UdpMessageHandler {
+public final class TrackerMessageHandler extends UdpMessageHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerMessageHandler.class);
 

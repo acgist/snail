@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
  * @author acgist
  * @since 1.0.0
  */
-public class BrowseUtils {
+public final class BrowseUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BrowseUtils.class);
 	

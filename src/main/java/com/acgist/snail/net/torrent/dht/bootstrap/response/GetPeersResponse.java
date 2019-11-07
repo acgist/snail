@@ -25,7 +25,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class GetPeersResponse extends Response {
+public final class GetPeersResponse extends Response {
 
 	private GetPeersResponse(byte[] t) {
 		super(t);

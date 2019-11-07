@@ -20,7 +20,7 @@ import com.acgist.snail.utils.CollectionUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class DownloaderInitializer extends Initializer {
+public final class DownloaderInitializer extends Initializer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DownloaderInitializer.class);
 	

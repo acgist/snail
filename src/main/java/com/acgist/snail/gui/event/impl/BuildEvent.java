@@ -17,7 +17,7 @@ import javafx.application.Platform;
  * @author acgist
  * @since 1.1.0
  */
-public class BuildEvent extends GuiEvent {
+public final class BuildEvent extends GuiEvent {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(BuildEvent.class);
 

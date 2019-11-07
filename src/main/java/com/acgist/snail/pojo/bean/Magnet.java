@@ -13,7 +13,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.1.0
  */
-public class Magnet {
+public final class Magnet {
 
 	/**
 	 * 磁力链接类型

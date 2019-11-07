@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
  * @author acgist
  * @since 1.1.0
  */
-public class CryptConfig {
+public final class CryptConfig {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(CryptConfig.class);
 	

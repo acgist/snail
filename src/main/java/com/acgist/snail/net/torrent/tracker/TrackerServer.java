@@ -8,7 +8,7 @@ import com.acgist.snail.net.UdpServer;
  * @author acgist
  * @since 1.0.0
  */
-public class TrackerServer extends UdpServer<TrackerAcceptHandler> {
+public final class TrackerServer extends UdpServer<TrackerAcceptHandler> {
 
 //	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerServer.class);
 	

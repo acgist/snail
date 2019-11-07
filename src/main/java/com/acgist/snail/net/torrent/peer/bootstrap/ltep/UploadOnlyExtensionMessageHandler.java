@@ -15,7 +15,7 @@ import com.acgist.snail.system.config.PeerConfig.ExtensionType;
  * @author acgist
  * @since 1.2.0
  */
-public class UploadOnlyExtensionMessageHandler extends ExtensionTypeMessageHandler {
+public final class UploadOnlyExtensionMessageHandler extends ExtensionTypeMessageHandler {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UploadOnlyExtensionMessageHandler.class);
 	

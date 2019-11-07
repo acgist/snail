@@ -11,7 +11,7 @@ import com.acgist.snail.utils.XMLUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class UpnpRequest {
+public final class UpnpRequest {
 
 	private static final String NAMESPACE_URI = "http://schemas.xmlsoap.org/soap/envelope/";
 	private static final String ENCODING_STYLE = "http://schemas.xmlsoap.org/soap/encoding/";

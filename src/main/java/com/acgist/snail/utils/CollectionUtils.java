@@ -9,7 +9,7 @@ import java.util.Map;
  * @author acgist
  * @since 1.0.0
  */
-public class CollectionUtils {
+public final class CollectionUtils {
 
 	/**
 	 * 空集合

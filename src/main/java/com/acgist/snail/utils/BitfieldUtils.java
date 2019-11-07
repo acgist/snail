@@ -9,7 +9,7 @@ import java.util.BitSet;
  * @author acgist
  * @since 1.0.0
  */
-public class BitfieldUtils {
+public final class BitfieldUtils {
 
 	/**
 	 * <p>位图转为字节数组</p>

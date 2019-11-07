@@ -26,7 +26,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.1.0
  */
-public class PeerEvaluator {
+public final class PeerEvaluator {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerEvaluator.class);
 	

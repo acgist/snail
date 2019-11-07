@@ -15,7 +15,7 @@ import com.acgist.snail.utils.ObjectUtils;
  * @author acgist
  * @since 1.1.1
  */
-public class MSEPaddingSync {
+public final class MSEPaddingSync {
 
 	/**
 	 * Padding数据数量

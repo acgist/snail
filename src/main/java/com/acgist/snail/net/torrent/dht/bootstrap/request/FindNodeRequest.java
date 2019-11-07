@@ -11,7 +11,7 @@ import com.acgist.snail.system.config.DhtConfig;
  * @author acgist
  * @since 1.0.0
  */
-public class FindNodeRequest extends Request {
+public final class FindNodeRequest extends Request {
 
 	private FindNodeRequest() {
 		super(DhtConfig.QType.FIND_NODE);

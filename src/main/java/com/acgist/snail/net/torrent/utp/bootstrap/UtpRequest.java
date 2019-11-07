@@ -11,7 +11,7 @@ import com.acgist.snail.system.exception.NetException;
  * @author acgist
  * @since 1.2.0
  */
-public class UtpRequest {
+public final class UtpRequest {
 
 	private final UtpWindowData windowData;
 	private final IMessageCodec<ByteBuffer> messageCodec;

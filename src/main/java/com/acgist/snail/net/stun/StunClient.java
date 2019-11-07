@@ -15,7 +15,7 @@ import com.acgist.snail.utils.NetUtils;
  * @author acgist
  * @since 1.2.0
  */
-public class StunClient extends UdpClient<StunMessageHandler> {
+public final class StunClient extends UdpClient<StunMessageHandler> {
 	
 	public StunClient(InetSocketAddress socketAddress) {
 		super("STUN Client", new StunMessageHandler(), socketAddress);

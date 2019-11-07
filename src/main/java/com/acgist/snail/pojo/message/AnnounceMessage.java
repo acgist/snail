@@ -10,7 +10,7 @@ import com.acgist.snail.utils.ObjectUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class AnnounceMessage {
+public final class AnnounceMessage {
 
 	/**
 	 * <p>id：transaction_id</p>

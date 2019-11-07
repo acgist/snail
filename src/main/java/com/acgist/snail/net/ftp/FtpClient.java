@@ -20,7 +20,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class FtpClient extends TcpClient<FtpMessageHandler> {
+public final class FtpClient extends TcpClient<FtpMessageHandler> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FtpClient.class);
 	

@@ -17,7 +17,7 @@ import com.acgist.snail.system.config.StunConfig;
  * @author acgist
  * @since 1.1.0
  */
-public class TorrentAcceptHandler extends UdpAcceptHandler {
+public final class TorrentAcceptHandler extends UdpAcceptHandler {
 	
 	private static final TorrentAcceptHandler INSTANCE = new TorrentAcceptHandler();
 	

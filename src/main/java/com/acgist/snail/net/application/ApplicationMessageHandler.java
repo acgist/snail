@@ -30,7 +30,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class ApplicationMessageHandler extends TcpMessageHandler implements IMessageCodec<String> {
+public final class ApplicationMessageHandler extends TcpMessageHandler implements IMessageCodec<String> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationMessageHandler.class);
 	

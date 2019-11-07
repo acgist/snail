@@ -16,7 +16,7 @@ import javafx.stage.Window;
  * @author acgist
  * @since 1.0.0
  */
-public class Choosers {
+public final class Choosers {
 
 	/**
 	 * 不允许实例化

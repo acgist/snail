@@ -6,7 +6,7 @@ package com.acgist.snail.system.config;
  * @author acgist
  * @since 1.1.0
  */
-public class UtpConfig {
+public final class UtpConfig {
 
 	//================帧类型================//
 	/**

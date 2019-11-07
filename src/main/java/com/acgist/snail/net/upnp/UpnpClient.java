@@ -16,7 +16,7 @@ import com.acgist.snail.utils.NetUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class UpnpClient extends UdpClient<UpnpMessageHandler> {
+public final class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UpnpClient.class);
 
