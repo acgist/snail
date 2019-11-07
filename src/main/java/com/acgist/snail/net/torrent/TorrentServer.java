@@ -1,4 +1,4 @@
-package com.acgist.snail.net.torrent.server;
+package com.acgist.snail.net.torrent;
 
 import com.acgist.snail.net.UdpServer;
 import com.acgist.snail.system.config.SystemConfig;

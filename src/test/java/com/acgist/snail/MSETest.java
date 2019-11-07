@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 
 import org.junit.Test;
 
-import com.acgist.snail.net.torrent.peer.bootstrap.crypt.MSEKeyPairBuilder;
+import com.acgist.snail.net.torrent.crypt.MSEKeyPairBuilder;
 import com.acgist.snail.system.config.CryptConfig;
 import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.StringUtils;

@@ -1,4 +1,4 @@
-package com.acgist.snail.net.torrent.peer.bootstrap.crypt;
+package com.acgist.snail.net.torrent.crypt;
 
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
@@ -10,8 +10,8 @@ import java.util.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.net.torrent.PeerUnpackMessageCodec;
 import com.acgist.snail.net.torrent.TorrentManager;
-import com.acgist.snail.net.torrent.peer.PeerUnpackMessageCodec;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.pojo.bean.InfoHash;
 import com.acgist.snail.pojo.session.TorrentSession;

@@ -1,11 +1,11 @@
-package com.acgist.snail.net.torrent.peer;
+package com.acgist.snail.net.torrent;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
 import com.acgist.snail.net.codec.MessageCodec;
+import com.acgist.snail.net.torrent.crypt.MSECryptHandshakeHandler;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
-import com.acgist.snail.net.torrent.peer.bootstrap.crypt.MSECryptHandshakeHandler;
 import com.acgist.snail.system.config.CryptConfig;
 import com.acgist.snail.system.exception.NetException;
 

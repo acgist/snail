@@ -8,9 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.torrent.TorrentManager;
+import com.acgist.snail.net.torrent.TorrentServer;
 import com.acgist.snail.net.torrent.bootstrap.PeerLauncher;
 import com.acgist.snail.net.torrent.peer.PeerServer;
-import com.acgist.snail.net.torrent.server.TorrentServer;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.StatisticsSession;
