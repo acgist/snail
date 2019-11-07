@@ -18,8 +18,17 @@ public class Application {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 	
 	/**
-	 * <p>启动<p>
-	 * <p>启动参数：{@linkplain GuiHandler args[0]}</p>
+	 * <p>启动系统<p>
+	 * <table border="1">
+	 * 	<tr>
+	 * 		<th>启动参数</th>
+	 * 		<th align="left">功能</th>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>args[0]</td>
+	 * 		<td><strong>gui</strong>：本地GUI；daemo：后台模式；</td>
+	 * 	</tr>
+	 * </table>
 	 * 
 	 * @param args 启动参数
 	 */

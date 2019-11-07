@@ -29,8 +29,6 @@ import javafx.scene.control.Alert.AlertType;
 
 /**
  * <p>GUI接口</p>
- * <p>启动参数：args[0]=gui：本地GUI</p>
- * <p>启动参数：args[0]=daemo：后台模式</p>
  * 
  * TODO：Loading
  * 
