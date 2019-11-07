@@ -67,11 +67,11 @@ public class TorrentBuilder {
 	 */
 	private Map<String, Object> buildFileInfo() {
 		final Map<String, Object> data = new LinkedHashMap<>();
-		data.put(Torrent.COMMENT, SystemConfig.getSource());
-		data.put(Torrent.COMMENT_UTF8, SystemConfig.getSource());
-		data.put(Torrent.ENCODING, SystemConfig.DEFAULT_CHARSET);
-		data.put(Torrent.CREATED_BY, SystemConfig.getNameEnAndVersion());
-		data.put(Torrent.CREATION_DATE, DateUtils.unixTimestamp());
+		data.put(Torrent.ATTR_COMMENT, SystemConfig.getSource());
+		data.put(Torrent.ATTR_COMMENT_UTF8, SystemConfig.getSource());
+		data.put(Torrent.ATTR_ENCODING, SystemConfig.DEFAULT_CHARSET);
+		data.put(Torrent.ATTR_CREATED_BY, SystemConfig.getNameEnAndVersion());
+		data.put(Torrent.ATTR_CREATION_DATE, DateUtils.unixTimestamp());
 		this.announce(data);
 		this.infoHash(data);
 		this.node(data);
@@ -86,11 +86,11 @@ public class TorrentBuilder {
 			return;
 		}
 		if(this.trackers.size() > 0) {
-			data.put(Torrent.ANNOUNCE, this.trackers.get(0));
+			data.put(Torrent.ATTR_ANNOUNCE, this.trackers.get(0));
 		}
 		if(this.trackers.size() > 1) {
 			data.put(
-				Torrent.ANNOUNCE_LIST,
+				Torrent.ATTR_ANNOUNCE_LIST,
 				this.trackers.subList(1, this.trackers.size()).stream()
 					.map(value -> List.of(value))
 					.collect(Collectors.toList())
@@ -104,7 +104,7 @@ public class TorrentBuilder {
 	private void infoHash(Map<String, Object> data) {
 		try {
 			final var decoder = BEncodeDecoder.newInstance(this.infoHash.info());
-			data.put(Torrent.INFO, decoder.nextMap());
+			data.put(Torrent.ATTR_INFO, decoder.nextMap());
 		} catch (NetException e) {
 			LOGGER.error("设置InfoHash异常", e);
 		}
@@ -121,7 +121,7 @@ public class TorrentBuilder {
 				.map(session -> List.of(session.getHost(), session.getPort()))
 				.collect(Collectors.toList());
 			if(CollectionUtils.isNotEmpty(nodes)) {
-				data.put(Torrent.NODES, nodes);
+				data.put(Torrent.ATTR_NODES, nodes);
 			}
 		}
 	}

@@ -43,7 +43,7 @@ public final class UtpWindow {
 	 * <p>获取信号量超时时间：秒</p>
 	 * <p>防止长时间获取信号量，从而导致UTP队列阻塞。</p>
 	 */
-	private static final int TIMEOUT = 2;
+	private static final int SEMAPHORE_TIMEOUT = 2;
 	
 	//================流量控制、阻塞控制================//
 	private volatile int wnd = MIN_WND_SIZE;
@@ -320,7 +320,7 @@ public final class UtpWindow {
 		try {
 			LOGGER.debug("信号量（获取）：{}", this.semaphore.availablePermits());
 //			this.semaphore.acquire();
-			final boolean ok = this.semaphore.tryAcquire(TIMEOUT, TimeUnit.SECONDS);
+			final boolean ok = this.semaphore.tryAcquire(SEMAPHORE_TIMEOUT, TimeUnit.SECONDS);
 			if(!ok) {
 				LOGGER.debug("信号量获取失败");
 			}
