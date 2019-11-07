@@ -14,7 +14,8 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>FTP客户端</p>
- * <p>默认编码：GBK，连接登陆成功后会发送FEAT指令，如果支持UTF8指令，切换UTF-8编码。</p>
+ * <p>默认编码：GBK</p>
+ * <p>连接登陆成功后会发送FEAT指令，如果支持UTF8指令，切换UTF-8编码。</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -68,7 +69,7 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	@Override
 	public boolean connect() {
 		this.connect = connect(this.host, this.port);
-		this.handler.lockCommand(); // 锁定：等待FTP欢迎消息
+		this.handler.lock(); // 锁定：等待FTP欢迎消息
 		if(this.connect) {
 			this.login();
 			if(this.handler.login()) {
@@ -82,7 +83,7 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	
 	/**
 	 * <p>开始下载</p>
-	 * <p>从头开始下载，忽略已经下载的数据。</p>
+	 * <p>默认从头开始下载</p>
 	 * 
 	 * @return 文件流
 	 */
@@ -93,7 +94,7 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	/**
 	 * <p>开始下载</p>
 	 * 
-	 * @param downloadSize 已下载大小：断点续传
+	 * @param downloadSize 断点续传位置
 	 * 
 	 * @return 文件流
 	 */
@@ -103,12 +104,16 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 		}
 		synchronized (this) {
 			changeMode();
-			command("TYPE I"); // 设置数据模式
+			command("TYPE I"); // 设置数据模式：二进制
 			if(downloadSize != null && downloadSize > 0L) {
 				command("REST " + downloadSize);
 			}
 			command("RETR " + this.filePath);
-			return this.handler.inputStream();
+			final var input = this.handler.inputStream();
+			if(input == null) {
+				throw new NetException(this.failMessage("获取FTP文件流失败"));
+			}
+			return input;
 		}
 	}
 	
@@ -121,7 +126,7 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 		}
 		synchronized (this) {
 			this.changeMode();
-			command("TYPE A"); // 切换数据模式
+			command("TYPE A"); // 切换数据模式：ASCII
 			command("LIST " + this.filePath);
 			final InputStream inputStream = this.handler.inputStream();
 			final String data = StringUtils.ofInputStream(inputStream, this.charset);
@@ -153,14 +158,14 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	}
 	
 	/**
-	 * 是否支持断点续传
+	 * @return 是否支持断点续传
 	 */
 	public boolean range() {
 		return this.handler.range();
 	}
 	
 	/**
-	 * 获取错误信息
+	 * @return 错误信息
 	 */
 	public String failMessage(String defaultMessage) {
 		return this.handler.failMessage(defaultMessage);
@@ -192,12 +197,18 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 		command("PASV");
 	}
 	
+	/**
+	 * <p>发送FTP命令</p>
+	 * <p>默认加锁</p>
+	 * 
+	 * @param command 命令
+	 */
 	private void command(String command) {
 		this.command(command, true);
 	}
 	
 	/**
-	 * 发送FTP命令
+	 * <p>发送FTP命令</p>
 	 * 
 	 * @param command 命令
 	 * @param lock 是否加锁
@@ -205,12 +216,15 @@ public class FtpClient extends TcpClient<FtpMessageHandler> {
 	private void command(String command, boolean lock) {
 		try {
 			LOGGER.debug("发送FTP命令：{}", command);
-			send(command, this.charset);
 			if(lock) {
-				this.handler.lockCommand();
+				this.handler.resetLock();
+				send(command, this.charset);
+				this.handler.lock();
+			} else {
+				send(command, this.charset);
 			}
 		} catch (NetException e) {
-			LOGGER.error("发送FTP命令异常", e);
+			LOGGER.error("发送FTP命令异常：{}", command, e);
 		}
 	}
 
