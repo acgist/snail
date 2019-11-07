@@ -1,5 +1,6 @@
 package com.acgist.snail.net;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.StandardSocketOptions;
@@ -62,7 +63,21 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 		this.channel = channel;
 		this.name = name;
 		this.handler = handler;
-		this.selector = NetUtils.buildSelector();
+		this.selector = this.buildSelector();
+	}
+	
+	/**
+	 * <p>打开Selector</p>
+	 * 
+	 * @return Selector
+	 */
+	private Selector buildSelector() {
+		try {
+			return Selector.open();
+		} catch (IOException e) {
+			LOGGER.error("打开Selector异常", e);
+		}
+		return null;
 	}
 	
 	/**
