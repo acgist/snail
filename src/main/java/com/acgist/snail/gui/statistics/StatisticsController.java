@@ -8,6 +8,9 @@ import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.gui.Controller;
 import com.acgist.snail.gui.Tooltips;
 import com.acgist.snail.net.torrent.TorrentManager;
@@ -43,6 +46,8 @@ import javafx.scene.text.Text;
  * @since 1.2.0
  */
 public class StatisticsController extends Controller implements Initializable {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(StatisticsController.class);
 	
 	@FXML
 	private Text upload;
@@ -109,7 +114,6 @@ public class StatisticsController extends Controller implements Initializable {
 		this.dht();
 		this.tracker();
 		this.infoHash();
-		this.peer();
 	}
 	
 	/**
@@ -159,11 +163,15 @@ public class StatisticsController extends Controller implements Initializable {
 		}
 	}
 	
+	/**
+	 * 不需要显示调用，选择下载任务时自动刷新。
+	 */
 	private void peer() {
 		final SelectInfoHash value = (SelectInfoHash) this.selectInfoHashs.getValue();
 		if(value == null) {
 			return;
 		}
+		LOGGER.debug("统计信息：{}", value.getName());
 		final String infoHashHex = value.getHash();
 		// Peer
 		final var peers = PeerManager.getInstance().listPeers(infoHashHex);
@@ -245,10 +253,12 @@ public class StatisticsController extends Controller implements Initializable {
 		this.health.setText(torrentSession.health() + "%");
 		// 图表
 		CategoryAxis xAxis = new CategoryAxis();
-		xAxis.setLabel(String.format(
-			"累计上传：%s 累计下载：%s",
-			FileUtils.formatSize(torrentSession.statistics().uploadSize()),
-			FileUtils.formatSize(torrentSession.statistics().downloadSize()))
+		xAxis.setLabel(
+			String.format(
+				"累计上传：%s 累计下载：%s",
+				FileUtils.formatSize(torrentSession.statistics().uploadSize()),
+				FileUtils.formatSize(torrentSession.statistics().downloadSize())
+			)
 		);
 		xAxis.setCategories(FXCollections.observableArrayList(activePeer));
 		NumberAxis yAxis = new NumberAxis();
@@ -283,10 +293,13 @@ public class StatisticsController extends Controller implements Initializable {
 		this.peer();
 	};
 	
+	/**
+	 * 下载任务
+	 */
 	public static final class SelectInfoHash {
 
-		private final String hash;
-		private final String name;
+		private final String hash; // 任务HASH
+		private final String name; // 任务名称
 
 		public SelectInfoHash(String hash, String name) {
 			this.hash = hash;
@@ -320,7 +333,7 @@ public class StatisticsController extends Controller implements Initializable {
 		
 		/**
 		 * <p>重写toString设置下拉框显示名称</p>
-		 * <p>也可以使用`this.infoHashs.converterProperty().set`来设置下拉框显示名称</p>
+		 * <p>也可以使用<code>this.infoHashs.converterProperty().set</code>来设置下拉框显示名称</p>
 		 */
 		@Override
 		public String toString() {
