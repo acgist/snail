@@ -21,6 +21,7 @@ public class TrackerClientUdpTest {
 		var list = TrackerManager.getInstance().clients("udp://explodie.org:6969/announce", null);
 		TrackerClient client = list.get(0);
 		client.announce(1000, session);
+		client.scrape(1000, session);
 		ThreadUtils.sleep(Long.MAX_VALUE);
 	}
 	

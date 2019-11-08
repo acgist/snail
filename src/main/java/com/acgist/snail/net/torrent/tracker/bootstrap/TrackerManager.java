@@ -14,6 +14,7 @@ import com.acgist.snail.net.torrent.bootstrap.TrackerLauncher;
 import com.acgist.snail.net.torrent.tracker.bootstrap.impl.HttpTrackerClient;
 import com.acgist.snail.net.torrent.tracker.bootstrap.impl.UdpTrackerClient;
 import com.acgist.snail.pojo.message.AnnounceMessage;
+import com.acgist.snail.pojo.message.ScrapeMessage;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.system.config.SystemConfig;
@@ -89,6 +90,22 @@ public final class TrackerManager {
 			trackerLauncher.announce(message);
 		} else {
 			LOGGER.warn("TrackerLauncher不存在，AnnounceMessage：{}", message);
+		}
+	}
+	
+	/**
+	 * 处理scrape消息
+	 */
+	public void scrape(ScrapeMessage message) {
+		if(message == null) {
+			return;
+		}
+		final Integer id = message.getId();
+		final TrackerLauncher trackerLauncher = this.trackerLaunchers.get(id);
+		if(trackerLauncher != null) {
+			LOGGER.debug("Tracker刮檫消息：{}，做种：{}，完成：{}，下载：{}", id, message.getSeeder(), message.getCompleted(), message.getLeecher());	
+		} else {
+			LOGGER.warn("TrackerLauncher不存在，ScrapeMessage：{}", message);
 		}
 	}
 	

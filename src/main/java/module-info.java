@@ -36,7 +36,6 @@ open module com.acgist.snail {
 	exports com.acgist.snail.pojo.message;
 	exports com.acgist.snail.protocol;
 	exports com.acgist.snail.downloader;
-	exports com.acgist.snail.system.bencode;
 
 	/*
 	 * opens：开放包

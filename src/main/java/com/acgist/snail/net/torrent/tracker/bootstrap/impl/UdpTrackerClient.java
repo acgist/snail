@@ -94,7 +94,9 @@ public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker
 	
 	@Override
 	public void scrape(Integer sid, TorrentSession torrentSession) throws NetException {
-		// TODO：刮檫
+		if(this.connectionId != null) {
+			send(buildScrapeMessage(sid, torrentSession));
+		}
 	}
 
 	/**
@@ -154,4 +156,16 @@ public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker
 		return buffer;
 	}
 
+	/**
+	 * 创建刮檫消息
+	 */
+	private ByteBuffer buildScrapeMessage(Integer sid, TorrentSession torrentSession) {
+		final ByteBuffer buffer = ByteBuffer.allocate(36);
+		buffer.putLong(this.connectionId);
+		buffer.putInt(TrackerConfig.Action.SCRAPE.id());
+		buffer.putInt(sid);
+		buffer.put(torrentSession.infoHash().infoHash());
+		return buffer;
+	}
+	
 }

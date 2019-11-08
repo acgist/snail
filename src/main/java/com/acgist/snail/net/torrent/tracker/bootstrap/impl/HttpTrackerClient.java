@@ -1,6 +1,7 @@
 package com.acgist.snail.net.torrent.tracker.bootstrap.impl;
 
 import java.net.http.HttpResponse.BodyHandlers;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,19 +11,25 @@ import com.acgist.snail.net.torrent.peer.bootstrap.PeerService;
 import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerClient;
 import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerManager;
 import com.acgist.snail.pojo.message.AnnounceMessage;
-import com.acgist.snail.pojo.message.HttpAnnounceMessage;
+import com.acgist.snail.pojo.message.ScrapeMessage;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.system.bencode.BEncodeDecoder;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.config.TrackerConfig;
 import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.utils.PeerUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>Tracker HTTP客户端</p>
+ * <p>协议链接：https://wiki.theory.org/index.php/BitTorrentSpecification</p>
+ * <p>The BitTorrent Protocol Specification</p>
+ * <p>协议链接：http://www.bittorrent.org/beps/bep_0003.html</p>
  * <p>Tracker Returns Compact Peer Lists</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0023.html</p>
+ * <p>Tracker Protocol Extension: Scrape</p>
+ * <p>协议链接：http://www.bittorrent.org/beps/bep_0048.html</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -57,24 +64,22 @@ public final class HttpTrackerClient extends TrackerClient {
 	@Override
 	public void announce(Integer sid, TorrentSession torrentSession) throws NetException {
 		final String announceMessage = buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STARTED);
-		final var response = HTTPClient.get(announceMessage, BodyHandlers.ofString());
+		final var response = HTTPClient.get(announceMessage, BodyHandlers.ofByteArray()); // 注意：不能使用BodyHandlers.ofString()
 		if(!HTTPClient.ok(response)) {
-			throw new NetException("HTTP获取Peer失败");
+			throw new NetException("Tracker声明失败");
 		}
-		// TODO：解决B编码有多余数据问题，测试地址：http://tracker3.itzmx.com:6961/announce
-		final String body = response.body();
-		final var decoder = BEncodeDecoder.newInstance(body.getBytes());
+		final var body = response.body();
+		final var decoder = BEncodeDecoder.newInstance(body);
 		decoder.nextMap();
 		if(decoder.isEmpty()) {
-			LOGGER.warn("HttpTracker消息错误（格式）：{}", decoder.oddString());
+			LOGGER.warn("Tracker声明消息错误（格式）：{}", decoder.oddString());
 			return;
 		}
-		final var httpAnnounceMessage = HttpAnnounceMessage.valueOf(decoder);
-		this.trackerId = httpAnnounceMessage.getTrackerId();
-		final AnnounceMessage message = httpAnnounceMessage.toAnnounceMessage(sid);
+		final var message = convertAnnounceMessage(sid, decoder);
+		this.trackerId = message.getTrackerId();
 		TrackerManager.getInstance().announce(message);
 	}
-
+	
 	@Override
 	public void complete(Integer sid, TorrentSession torrentSession) throws NetException {
 		final String announceMessage = buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.COMPLETED);
@@ -89,7 +94,23 @@ public final class HttpTrackerClient extends TrackerClient {
 	
 	@Override
 	public void scrape(Integer sid, TorrentSession torrentSession) throws NetException {
-		// TODO：刮檫
+		final String scrapeMessage = buildScrapeMessage(sid, torrentSession);
+		if(scrapeMessage == null) {
+			LOGGER.debug("Tracker刮檫消息（不支持）：{}", this.announceUrl);
+			return;
+		}
+		final var response = HTTPClient.get(scrapeMessage, BodyHandlers.ofByteArray());
+		if(!HTTPClient.ok(response)) {
+			throw new NetException("Tracker刮檫失败");
+		}
+		final var body = response.body();
+		final var decoder = BEncodeDecoder.newInstance(body);
+		decoder.nextMap();
+		if(decoder.isEmpty()) {
+			LOGGER.warn("Tracker刮檫消息错误（格式）：{}", decoder.oddString());
+			return;
+		}
+		convertScrapeMessage(sid, decoder);
 	}
 	
 	@Override
@@ -113,6 +134,74 @@ public final class HttpTrackerClient extends TrackerClient {
 	}
 	
 	/**
+	 * 创建刮檫消息
+	 */
+	private String buildScrapeMessage(Integer sid, TorrentSession torrentSession) {
+		if(StringUtils.isEmpty(this.scrapeUrl)) {
+			return null;
+		}
+		final StringBuilder builder = new StringBuilder(this.scrapeUrl);
+		builder.append("?")
+			.append("info_hash").append("=").append(torrentSession.infoHash().infoHashUrl());
+		return builder.toString();
+	}
+
+	/**
+	 * 声明消息转换
+	 */
+	private static final AnnounceMessage convertAnnounceMessage(Integer sid, BEncodeDecoder decoder) {
+		final String trackerId = decoder.getString("tracker id");
+		final Integer complete = decoder.getInteger("complete");
+		final Integer incomplete = decoder.getInteger("incomplete");
+		final Integer interval = decoder.getInteger("interval");
+		final Integer minInterval = decoder.getInteger("min interval");
+		final String failureReason = decoder.getString("failure reason");
+		final String warngingMessage = decoder.getString("warnging message");
+		final var peers = PeerUtils.read(decoder.getBytes("peers"));
+		final AnnounceMessage message = new AnnounceMessage();
+		message.setId(sid);
+		if(StringUtils.isNotEmpty(failureReason)) {
+			LOGGER.warn("HTTP Tracker声明失败：{}", failureReason);
+			return message;
+		}
+		if(StringUtils.isNotEmpty(warngingMessage)) {
+			LOGGER.warn("HTTP Tracker声明警告：{}", failureReason);
+		}
+		message.setTrackerId(trackerId);
+		if(interval != null && minInterval != null) {
+			message.setInterval(Math.min(interval, minInterval));
+		} else {
+			message.setInterval(interval);
+		}
+		message.setLeecher(incomplete);
+		message.setSeeder(complete);
+		message.setPeers(peers);
+		return message;
+	}
+	
+	/**
+	 * 刮檫消息转换
+	 */
+	private static final void convertScrapeMessage(Integer sid, BEncodeDecoder decoder) {
+		final var files = decoder.getMap("files");
+		if(files == null) {
+			LOGGER.debug("刮檫消息错误：{}", new String(decoder.oddBytes()));
+			return;
+		}
+		files.forEach((key, value) -> {
+			if(value != null) {
+				final Map<?, ?> map = (Map<?, ?>) value;
+				final ScrapeMessage message = new ScrapeMessage();
+				message.setId(sid);
+				message.setSeeder(BEncodeDecoder.getInteger(map, "downloaded"));
+				message.setCompleted(BEncodeDecoder.getInteger(map, "complete"));
+				message.setLeecher(BEncodeDecoder.getInteger(map, "incomplete"));
+				TrackerManager.getInstance().scrape(message);
+			}
+		});
+	}
+	
+	/**
 	 * <p>创建scrapeUrl</p>
 	 * <p>announceUrl转换scrapeUrl：</p>
 	 * <pre>
@@ -131,5 +220,5 @@ public final class HttpTrackerClient extends TrackerClient {
 		}
 		return null;
 	}
-
+	
 }

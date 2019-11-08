@@ -110,6 +110,16 @@ public final class TrackerConfig extends PropertiesConfig {
 			return this.value;
 		}
 		
+		public static final Action valueOf(int id) {
+			final var values = Action.values();
+			for (Action action : values) {
+				if(id == action.id) {
+					return action;
+				}
+			}
+			return null;
+		}
+		
 	}
 	
 	static {
