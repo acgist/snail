@@ -265,8 +265,8 @@ public final class TorrentStreamGroup {
 		}
 		this.fullPieces.or(pieces);
 		final BitSet condition = new BitSet();
-		condition.or(this.fullPieces);
-		condition.andNot(this.selectPieces);
+		condition.or(this.selectPieces);
+		condition.andNot(this.fullPieces);
 		if(condition.isEmpty()) {
 			this.full = true;
 			this.fullPieces.clear();
@@ -292,8 +292,8 @@ public final class TorrentStreamGroup {
 		if(this.full) {
 			return health;
 		}
-		LOGGER.debug("健康度：{}-{}", this.fullPieces.cardinality(), this.torrent.getInfo().pieceSize());
-		return this.fullPieces.cardinality() * health / this.torrent.getInfo().pieceSize();
+		LOGGER.debug("健康度：{}-{}", this.fullPieces.cardinality(), this.selectPieces.cardinality());
+		return this.fullPieces.cardinality() * health / this.selectPieces.cardinality();
 	}
 	
 	/**
