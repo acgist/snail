@@ -33,11 +33,15 @@ public interface IStatisticsSession {
 	void upload(long buffer);
 	
 	/**
+	 * 非线程安全
+	 * 
 	 * @return 下载速度
 	 */
 	long downloadSpeed();
 	
 	/**
+	 * 非线程安全
+	 * 
 	 * @return 上传速度
 	 */
 	long uploadSpeed();

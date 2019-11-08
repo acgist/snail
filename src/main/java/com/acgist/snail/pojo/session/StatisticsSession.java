@@ -54,7 +54,7 @@ public final class StatisticsSession implements IStatisticsSession {
 	/**
 	 * 下载速度最后一次采样时间
 	 */
-	private volatile long downloadBufferSampleTime;
+	private long downloadBufferSampleTime;
 	/**
 	 * 下载限速采样
 	 */
@@ -74,7 +74,7 @@ public final class StatisticsSession implements IStatisticsSession {
 	/**
 	 * 上传速度最后一次采样时间
 	 */
-	private volatile long uploadBufferSampleTime;
+	private long uploadBufferSampleTime;
 	/**
 	 * 上传限速采样
 	 */
@@ -132,11 +132,9 @@ public final class StatisticsSession implements IStatisticsSession {
 		final long time = System.currentTimeMillis();
 		final long interval = time - this.downloadBufferSampleTime;
 		if(interval >= SAMPLE_TIME) {
-			if(this.downloadBufferSampleTime < time) {
-				this.downloadBufferSampleTime = time;
-				this.downloadSpeed = this.downloadBufferSample.getAndSet(0) * ONE_SECOND / interval;
-				return this.downloadSpeed;
-			}
+			this.downloadBufferSampleTime = time;
+			this.downloadSpeed = this.downloadBufferSample.getAndSet(0) * ONE_SECOND / interval;
+			return this.downloadSpeed;
 		}
 		return this.downloadSpeed;
 	}
@@ -146,11 +144,9 @@ public final class StatisticsSession implements IStatisticsSession {
 		final long time = System.currentTimeMillis();
 		final long interval = time - this.uploadBufferSampleTime;
 		if(interval >= SAMPLE_TIME) {
-			if(this.uploadBufferSampleTime < time) {
-				this.uploadBufferSampleTime = time;
-				this.uploadSpeed = this.uploadBufferSample.getAndSet(0) * ONE_SECOND / interval;
-				return this.uploadSpeed;
-			}
+			this.uploadBufferSampleTime = time;
+			this.uploadSpeed = this.uploadBufferSample.getAndSet(0) * ONE_SECOND / interval;
+			return this.uploadSpeed;
 		}
 		return this.uploadSpeed;
 	}
@@ -184,7 +180,7 @@ public final class StatisticsSession implements IStatisticsSession {
 			final int limitBuffer = DownloadConfig.getDownloadBufferByte();
 			final long downloadBuffer = this.downloadBufferLimit.addAndGet(buffer);
 			if(downloadBuffer >= limitBuffer || interval >= ONE_SECOND) { // 限速控制
-				synchronized (this) { // 阻塞其他线程
+				synchronized (this.downloadBufferLimit) { // 阻塞其他线程
 					if(downloadBuffer == this.downloadBufferLimit.get()) { // 验证
 						// 期望时间：更加精确：可以使用一秒
 						final long expectTime = BigDecimal.valueOf(downloadBuffer)
@@ -218,7 +214,7 @@ public final class StatisticsSession implements IStatisticsSession {
 			final int limitBuffer = DownloadConfig.getUploadBufferByte();
 			final long uploadBuffer = this.uploadBufferLimit.addAndGet(buffer);
 			if(uploadBuffer >= limitBuffer || interval >= ONE_SECOND) { // 限速控制
-				synchronized (this) { // 阻塞其他线程
+				synchronized (this.uploadBufferLimit) { // 阻塞其他线程
 					if(uploadBuffer == this.uploadBufferLimit.get()) { // 验证
 						// 期望时间：更加精确：可以使用一秒
 						final long expectTime = BigDecimal.valueOf(uploadBuffer)
