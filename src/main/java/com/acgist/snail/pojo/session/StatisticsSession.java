@@ -23,13 +23,9 @@ public final class StatisticsSession implements IStatisticsSession {
 	 */
 	private static final long ONE_SECOND = 1000L;
 	/**
-	 * 速度（下载、上传）采样时间：刷新时间两倍
+	 * 速度（下载、上传）采样时间
 	 */
-	private static final long SAMPLE_TIME = SystemConfig.TASK_REFRESH_INTERVAL.toMillis() * 2;
-	/**
-	 * 采样最短时间
-	 */
-	private static final long SAMPLE_MIN_TIME = 1000;
+	private static final long SAMPLE_TIME = SystemConfig.TASK_REFRESH_INTERVAL.toMillis();
 	
 	/**
 	 * 限速开关
@@ -130,22 +126,19 @@ public final class StatisticsSession implements IStatisticsSession {
 		this.uploadSize.addAndGet(buffer);
 		uploadBufferLimit(buffer);
 	}
-	
+
 	@Override
 	public long downloadSpeed() {
 		final long time = System.currentTimeMillis();
 		final long interval = time - this.downloadBufferSampleTime;
 		if(interval >= SAMPLE_TIME) {
-			this.downloadBufferSampleTime = time;
-			this.downloadSpeed = this.downloadBufferSample.getAndSet(0) * ONE_SECOND / interval;
-			return this.downloadSpeed;
-		} else if(interval >= SAMPLE_MIN_TIME && this.downloadSpeed == 0) {
-			this.downloadBufferSampleTime = time;
-			this.downloadSpeed = this.downloadBufferSample.getAndSet(0) * ONE_SECOND / interval;
-			return this.downloadSpeed;
-		} else {
-			return this.downloadSpeed;
+			if(this.downloadBufferSampleTime < time) {
+				this.downloadBufferSampleTime = time;
+				this.downloadSpeed = this.downloadBufferSample.getAndSet(0) * ONE_SECOND / interval;
+				return this.downloadSpeed;
+			}
 		}
+		return this.downloadSpeed;
 	}
 	
 	@Override
@@ -153,16 +146,13 @@ public final class StatisticsSession implements IStatisticsSession {
 		final long time = System.currentTimeMillis();
 		final long interval = time - this.uploadBufferSampleTime;
 		if(interval >= SAMPLE_TIME) {
-			this.uploadBufferSampleTime = time;
-			this.uploadSpeed = this.uploadBufferSample.getAndSet(0) * ONE_SECOND / interval;
-			return this.uploadSpeed;
-		} else if(interval >= SAMPLE_MIN_TIME && this.uploadSpeed == 0) {
-			this.uploadBufferSampleTime = time;
-			this.uploadSpeed = this.uploadBufferSample.getAndSet(0) * ONE_SECOND / interval;
-			return this.uploadSpeed;
-		} else {
-			return this.uploadSpeed;
+			if(this.uploadBufferSampleTime < time) {
+				this.uploadBufferSampleTime = time;
+				this.uploadSpeed = this.uploadBufferSample.getAndSet(0) * ONE_SECOND / interval;
+				return this.uploadSpeed;
+			}
 		}
+		return this.uploadSpeed;
 	}
 	
 	@Override

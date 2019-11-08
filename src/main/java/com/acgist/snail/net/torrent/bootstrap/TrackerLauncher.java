@@ -132,7 +132,7 @@ public final class TrackerLauncher {
 
 	/**
 	 * <p>释放资源</p>
-	 * <p>发送stop消息，如果下载完成发送complete消息。</p>
+	 * <p>暂停发送stop消息，下载完成发送complete消息。</p>
 	 */
 	public void release() {
 		if(this.needRelease && available()) {
