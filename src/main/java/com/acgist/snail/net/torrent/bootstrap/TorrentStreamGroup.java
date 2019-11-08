@@ -264,8 +264,10 @@ public final class TorrentStreamGroup {
 			return;
 		}
 		this.fullPieces.or(pieces);
-		this.fullPieces.andNot(this.selectPieces);
-		if(this.fullPieces.isEmpty()) {
+		final BitSet condition = new BitSet();
+		condition.or(this.fullPieces);
+		condition.andNot(this.selectPieces);
+		if(condition.isEmpty()) {
 			this.full = true;
 			this.fullPieces.clear();
 		}
