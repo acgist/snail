@@ -265,10 +265,7 @@ public final class TorrentSession {
 	/**
 	 * 加载文件流
 	 */
-	private void loadTorrentStreamGroup() throws DownloadException {
-		if(this.taskSession == null) {
-			throw new DownloadException("下载任务不存在");
-		}
+	private void loadTorrentStreamGroup() {
 		this.torrentStreamGroup = TorrentStreamGroup.newInstance(
 			this.taskSession.downloadFolder().getPath(),
 			setSelectedFiles(),
@@ -618,6 +615,9 @@ public final class TorrentSession {
 		return this.taskSession.complete();
 	}
 	
+	/**
+	 * 需要验证{@link #taskSession}是否为空，任务只加载并没有开始下载时会导致空指针。
+	 */
 	public String name() {
 		if(this.taskSession == null) {
 			if(this.torrent == null) {
@@ -631,15 +631,11 @@ public final class TorrentSession {
 	}
 	
 	public void fullPieces(BitSet pieces) {
-		if(this.torrentStreamGroup != null) {
-			this.torrentStreamGroup.fullPieces(pieces);
-		}
+		this.torrentStreamGroup.fullPieces(pieces);
 	}
 	
 	public void fullPieces() {
-		if(this.torrentStreamGroup != null) {
-			this.torrentStreamGroup.fullPieces();
-		}
+		this.torrentStreamGroup.fullPieces();
 	}
 	
 	public int health() {
@@ -692,6 +688,9 @@ public final class TorrentSession {
 		return this.torrent.getInfo().isPrivateTorrent();
 	}
 	
+	/**
+	 * 需要判断{@link #taskSession}是否为空，任务加载时Peer接入会导致空指针。
+	 */
 	public IStatisticsSession statistics() {
 		return this.taskSession.statistics();
 	}

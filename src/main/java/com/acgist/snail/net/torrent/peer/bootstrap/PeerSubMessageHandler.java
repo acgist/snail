@@ -167,7 +167,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			return false;
 		}
 		if(torrentSession.taskSession() == null) {
-			LOGGER.debug("Peer接入失败：任务准备中");
+			LOGGER.debug("Peer接入失败：任务没有准备完成");
 			return false;
 		}
 		// 不验证上传状态：磁力链接

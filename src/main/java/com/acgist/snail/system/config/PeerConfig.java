@@ -339,7 +339,7 @@ public final class PeerConfig {
 		/** upload_only */
 		UPLOAD_ONLY(	(byte) 0x04, "upload_only",		true,	true),
 		/** lt_donthave */
-		LT_DONTHAVE(	(byte) 0x05, "lt_donthave",		false,	false);
+		LT_DONTHAVE(	(byte) 0x05, "lt_donthave",		true,	true);
 
 		/**
 		 * 消息ID：自定义

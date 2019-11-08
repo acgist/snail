@@ -122,13 +122,13 @@ SnailLauncher.exe
 |[Storing arbitrary data in the DHT](http://www.bittorrent.org/beps/bep_0044.html)|?|
 |[Multiple-address operation for the BitTorrent DHT](http://www.bittorrent.org/beps/bep_0045.html)|?|
 |[Updating Torrents Via DHT Mutable Items](http://www.bittorrent.org/beps/bep_0046.html)|?|
-|[Padding files and extended file attributes](http://www.bittorrent.org/beps/bep_0047.html)|○|
+|[Padding files and extended file attributes](http://www.bittorrent.org/beps/bep_0047.html)|?|
 |[Tracker Protocol Extension: Scrape](http://www.bittorrent.org/beps/bep_0048.html)|○|
 |[Publish/Subscribe Protocol](http://www.bittorrent.org/beps/bep_0050.html)|?|
 |[DHT Infohash Indexing](http://www.bittorrent.org/beps/bep_0051.html)|?|
 |[The BitTorrent Protocol Specification v2](http://www.bittorrent.org/beps/bep_0052.html)|?|
 |[Magnet URI extension - Select specific file indices for download](http://www.bittorrent.org/beps/bep_0053.html)|?|
-|[The lt_donthave extension](http://www.bittorrent.org/beps/bep_0054.html)|○|
+|[The lt_donthave extension](http://www.bittorrent.org/beps/bep_0054.html)|√|
 |其他协议||
 |IPv6|○|
 |[STUN](https://www.rfc-editor.org/rfc/rfc5389.txt)|√|

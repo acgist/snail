@@ -299,6 +299,15 @@ public final class PeerSession implements IStatistics {
 	}
 	
 	/**
+	 * 取消Peer位图
+	 * 
+	 * @param index Piece序号
+	 */
+	public void pieceOff(int index) {
+		this.pieces.clear(index);
+	}
+	
+	/**
 	 * 是否含有Piece
 	 */
 	public boolean havePiece(int index) {

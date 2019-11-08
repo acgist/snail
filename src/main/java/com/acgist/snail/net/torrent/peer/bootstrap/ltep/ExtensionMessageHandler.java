@@ -109,6 +109,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	private final MetadataMessageHandler metadataMessageHandler;
 	private final HolepunchMessageHnadler holepunchMessageHnadler;
 	private final PeerExchangeMessageHandler peerExchangeMessageHandler;
+	private final DontHaveExtensionMessageHandler dontHaveExtensionMessageHandler;
 	private final UploadOnlyExtensionMessageHandler uploadOnlyExtensionMessageHandler;
 	
 	public static final ExtensionMessageHandler newInstance(PeerSession peerSession, TorrentSession torrentSession, PeerSubMessageHandler peerSubMessageHandler) {
@@ -123,6 +124,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 		this.metadataMessageHandler = MetadataMessageHandler.newInstance(this.peerSession, this.torrentSession, this);
 		this.holepunchMessageHnadler = HolepunchMessageHnadler.newInstance(this.peerSession, this.torrentSession, this);
 		this.peerExchangeMessageHandler = PeerExchangeMessageHandler.newInstance(this.peerSession, this.torrentSession, this);
+		this.dontHaveExtensionMessageHandler = DontHaveExtensionMessageHandler.newInstance(this.peerSession, this);
 		this.uploadOnlyExtensionMessageHandler = UploadOnlyExtensionMessageHandler.newInstance(peerSession, this);
 	}
 	
@@ -150,6 +152,9 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 			break;
 		case UPLOAD_ONLY:
 			uploadOnly(buffer);
+			break;
+		case LT_DONTHAVE:
+			dontHave(buffer);
 			break;
 		default:
 			LOGGER.info("扩展消息错误（类型未适配）：{}", extensionType);
@@ -320,7 +325,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 * 发送uploadOnly消息
 	 */
 	public void uploadOnly() {
-		if(uploadOnlyExtensionMessageHandler.supportExtensionType()) {
+		if(this.uploadOnlyExtensionMessageHandler.supportExtensionType()) {
 			this.uploadOnlyExtensionMessageHandler.uploadOnly();
 		}
 	}
@@ -330,6 +335,22 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 */
 	private void uploadOnly(ByteBuffer buffer) throws NetException {
 		this.uploadOnlyExtensionMessageHandler.onMessage(buffer);
+	}
+	
+	/**
+	 * 发送dontHave消息
+	 */
+	public void dontHave(int index) {
+		if(this.dontHaveExtensionMessageHandler.supportExtensionType()) {
+			this.dontHaveExtensionMessageHandler.dontHave(index);
+		}
+	}
+	
+	/**
+	 * 处理dontHave消息
+	 */
+	private void dontHave(ByteBuffer buffer) throws NetException {
+		this.dontHaveExtensionMessageHandler.onMessage(buffer);
 	}
 	
 	/**
