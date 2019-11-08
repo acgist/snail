@@ -76,7 +76,7 @@ SnailLauncher.exe
 </dependency>
 ```
 
-## 进度
+## 开发进度
 
 |功能|进度|
 |:--|:--:|
@@ -84,15 +84,15 @@ SnailLauncher.exe
 |FTP|√|
 |HTTP|√|
 
-#### BT进度
+#### 协议进度
 
 |BEP|进度|
 |:--|:--:|
-|Final and Active Process BEPs||
+|最终协议||
 |[The BitTorrent Protocol Specification](http://www.bittorrent.org/beps/bep_0003.html)|√|
 |[Known Number Allocations](http://www.bittorrent.org/beps/bep_0004.html)|√|
 |[Peer ID Conventions](http://www.bittorrent.org/beps/bep_0020.html)|√|
-|Accepted BEPs||
+|公开协议||
 |[DHT Protocol](http://www.bittorrent.org/beps/bep_0005.html)|√|
 |[Fast Extension](http://www.bittorrent.org/beps/bep_0006.html)|√|
 |[Extension for Peers to Send Metadata Files](http://www.bittorrent.org/beps/bep_0009.html)|√|
@@ -106,7 +106,7 @@ SnailLauncher.exe
 |[Private Torrents](http://www.bittorrent.org/beps/bep_0027.html)|○|
 |[uTorrent Transport Protocol](http://www.bittorrent.org/beps/bep_0029.html)|√|
 |[Holepunch Extension](http://www.bittorrent.org/beps/bep_0055.html)|√|
-|Draft BEPs||
+|协议草案||
 |[IPv6 Tracker Extension](http://www.bittorrent.org/beps/bep_0007.html)|×|
 |[Superseeding](http://www.bittorrent.org/beps/bep_0016.html)|?|
 |[HTTP Seeding (Hoffman-style)](http://www.bittorrent.org/beps/bep_0017.html)|?|
@@ -128,8 +128,8 @@ SnailLauncher.exe
 |[DHT Infohash Indexing](http://www.bittorrent.org/beps/bep_0051.html)|?|
 |[The BitTorrent Protocol Specification v2](http://www.bittorrent.org/beps/bep_0052.html)|?|
 |[Magnet URI extension - Select specific file indices for download](http://www.bittorrent.org/beps/bep_0053.html)|?|
-|[The lt_donthave extension](http://www.bittorrent.org/beps/bep_0054.html)|?|
-|Other Protocol||
+|[The lt_donthave extension](http://www.bittorrent.org/beps/bep_0054.html)|×|
+|其他协议||
 |IPv6|○|
 |[STUN](https://www.rfc-editor.org/rfc/rfc5389.txt)|√|
 |[UPnP](http://upnp.org/specs/arch/UPnP-arch-DeviceArchitecture-v1.0.pdf)|√|
