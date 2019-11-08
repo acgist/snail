@@ -109,16 +109,24 @@ public final class TrackerManager {
 	public List<TrackerClient> clients() {
 		return new ArrayList<>(this.trackerClients.values());
 	}
+	
+	public List<TrackerClient> clients(String announceUrl, List<String> announceUrls) throws DownloadException {
+		return this.clients(announceUrl, announceUrls, false);
+	}
 
 	/**
 	 * <p>获取可用的TrackerClient</p>
 	 * <p>
 	 * 通过传入的声明地址获取TrackerClient，如果声明地址没有被注册为TrackerClient，则注册。
-	 * 如果获取的数量不满足单个任务最大数量，将会使用系统的TrackerClient补充。
+	 * 如果获取的数量不满足单个任务最大数量，并且不是私有种子时，将会使用系统的TrackerClient补充。
 	 * </p>
 	 */
-	public List<TrackerClient> clients(String announceUrl, List<String> announceUrls) throws DownloadException {
+	public List<TrackerClient> clients(String announceUrl, List<String> announceUrls, boolean privateTorrent) throws DownloadException {
 		final List<TrackerClient> clients = register(announceUrl, announceUrls);
+		if(privateTorrent) {
+			LOGGER.debug("私有种子：不补充Tracker");
+			return clients;
+		}
 		final int size = clients.size();
 		if(size < MAX_TRACKER_SIZE) {
 			final var subjoin = clients(MAX_TRACKER_SIZE - size, clients);

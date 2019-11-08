@@ -166,6 +166,11 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			LOGGER.warn("Peer接入失败：种子信息不存在");
 			return false;
 		}
+		if(torrentSession.taskSession() == null) {
+			LOGGER.debug("Peer接入失败：任务准备中");
+			return false;
+		}
+		// 不验证上传状态：磁力链接
 		if(!torrentSession.uploadable()) {
 			LOGGER.debug("Peer接入时任务不可上传：{}", torrentSession.action());
 		}

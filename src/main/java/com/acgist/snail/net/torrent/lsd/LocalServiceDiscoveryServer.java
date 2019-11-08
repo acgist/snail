@@ -46,8 +46,12 @@ public final class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDis
 		SystemThreadContext.timerFixedDelay(interval, interval, TimeUnit.SECONDS, () -> {
 			LOGGER.debug("执行本地发现定时任务");
 			final LocalServiceDiscoveryClient client = LocalServiceDiscoveryClient.newInstance();
-			TorrentManager.getInstance().allInfoHash().forEach(infoHash -> {
-				client.localSearch(infoHash.infoHashHex());
+			TorrentManager.getInstance().allTorrentSession().forEach(session -> {
+				if(session.isPrivateTorrent()) {
+					LOGGER.debug("私有种子：不执行本地发现任务");
+				} else {
+					client.localSearch(session.infoHashHex());
+				}
 			});
 		});
 	}

@@ -223,12 +223,20 @@ public final class TorrentSession {
 		if(findPeer) {
 			this.loadTrackerLauncherGroup();
 			this.loadTrackerLauncherGroupTimer();
-			this.loadDhtLauncher();
-			this.loadDhtLauncherTimer();
+			if(this.isPrivateTorrent()) {
+				LOGGER.debug("私有种子：不加载DHT任务");
+			} else {
+				this.loadDhtLauncher();
+				this.loadDhtLauncherTimer();
+			}
 		}
 		this.loadPeerLauncherGroup();
 		this.loadPeerLauncherGroupTimer();
-		this.loadPexTimer();
+		if(this.isPrivateTorrent()) {
+			LOGGER.debug("私有种子：不加载PEX任务");
+		} else {
+			this.loadPexTimer();
+		}
 		this.downloadable = true;
 		return false;
 	}
@@ -675,6 +683,13 @@ public final class TorrentSession {
 	
 	public ITaskSession taskSession() {
 		return this.taskSession;
+	}
+	
+	public boolean isPrivateTorrent() {
+		if(this.torrent == null) {
+			return false;
+		}
+		return this.torrent.getInfo().isPrivateTorrent();
 	}
 	
 	public IStatisticsSession statistics() {
