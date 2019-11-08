@@ -103,7 +103,7 @@ SnailLauncher.exe
 |[UDP Tracker Protocol for BitTorrent](http://www.bittorrent.org/beps/bep_0015.html)|√|
 |[HTTP/FTP Seeding (GetRight-style)](http://www.bittorrent.org/beps/bep_0019.html)|?|
 |[Tracker Returns Compact Peer Lists](http://www.bittorrent.org/beps/bep_0023.html)|√|
-|[Private Torrents](http://www.bittorrent.org/beps/bep_0027.html)|○|
+|[Private Torrents](http://www.bittorrent.org/beps/bep_0027.html)|√|
 |[uTorrent Transport Protocol](http://www.bittorrent.org/beps/bep_0029.html)|√|
 |[Holepunch Extension](http://www.bittorrent.org/beps/bep_0055.html)|√|
 |协议草案||

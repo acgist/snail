@@ -58,7 +58,7 @@ public final class TrackerLauncherGroup {
 		final var action = this.torrentSession.action();
 		if(action == Action.TORRENT) { // BT任务
 			var torrent = this.torrentSession.torrent();
-			clients = TrackerManager.getInstance().clients(torrent.getAnnounce(), torrent.getAnnounceList());
+			clients = TrackerManager.getInstance().clients(torrent.getAnnounce(), torrent.getAnnounceList(), this.torrentSession.isPrivateTorrent());
 		} else if(action == Action.MAGNET) { // 磁力链接任务
 			var magnet = this.torrentSession.magnet();
 			clients = TrackerManager.getInstance().clients(null, magnet.getTr());

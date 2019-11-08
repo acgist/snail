@@ -21,6 +21,10 @@ public final class TorrentInfo {
 	 * 填充文件前缀（不需要下载和显示）
 	 */
 	public static final String PADDING_FILE_PREFIX = "_____padding_file";
+	/**
+	 * 私有种子
+	 */
+	public static final byte PRIVATE_TORRENT = 1;
 	
 	/**
 	 * 名称（单文件）
@@ -68,6 +72,10 @@ public final class TorrentInfo {
 	 */
 	private String publisherUrlUtf8;
 	/**
+	 * 私有种子
+	 */
+	private Long privateTorrent;
+	/**
 	 * 文件列表（多文件）
 	 */
 	private List<TorrentFile> files;
@@ -91,6 +99,7 @@ public final class TorrentInfo {
 		info.setPublisherUtf8(BEncodeDecoder.getString(map, "publisher.utf-8"));
 		info.setPublisherUrl(BEncodeDecoder.getString(map, "publisher-url"));
 		info.setPublisherUrlUtf8(BEncodeDecoder.getString(map, "publisher-url.utf-8"));
+		info.setPrivateTorrent(BEncodeDecoder.getLong(map, "private"));
 		final List<Object> files = BEncodeDecoder.getList(map, "files");
 		if(files != null) {
 			info.setFiles(files(files));
@@ -105,6 +114,13 @@ public final class TorrentInfo {
 	 */
 	public int pieceSize() {
 		return this.pieces.length / SystemConfig.SHA1_HASH_LENGTH;
+	}
+	
+	/**
+	 * 是否是私有种子
+	 */
+	public boolean isPrivateTorrent() {
+		return this.privateTorrent == null ? false : this.privateTorrent.byteValue() == PRIVATE_TORRENT;
 	}
 	
 	/**
@@ -221,6 +237,14 @@ public final class TorrentInfo {
 
 	public void setPublisherUrlUtf8(String publisherUrlUtf8) {
 		this.publisherUrlUtf8 = publisherUrlUtf8;
+	}
+
+	public Long getPrivateTorrent() {
+		return privateTorrent;
+	}
+
+	public void setPrivateTorrent(Long privateTorrent) {
+		this.privateTorrent = privateTorrent;
 	}
 
 	public Long getPieceLength() {

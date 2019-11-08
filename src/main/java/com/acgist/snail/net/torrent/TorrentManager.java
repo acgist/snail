@@ -59,7 +59,8 @@ public final class TorrentManager {
 	 */
 	public List<TorrentSession> allTorrentSession() {
 		synchronized (this.torrentSessions) {
-			return this.torrentSessions.values().stream().collect(Collectors.toList());
+			return this.torrentSessions.values().stream()
+				.collect(Collectors.toList());
 		}
 	}
 	
@@ -149,6 +150,7 @@ public final class TorrentManager {
 				throw new DownloadException("种子文件格式错误");
 			}
 			final var torrent = Torrent.valueOf(decoder);
+			// 直接转储原始信息
 			final var info = decoder.getMap("info");
 			final var infoHash = InfoHash.newInstance(BEncodeEncoder.encodeMap(info));
 			torrent.setInfoHash(infoHash);
