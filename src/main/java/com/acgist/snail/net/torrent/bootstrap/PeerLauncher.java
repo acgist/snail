@@ -33,8 +33,10 @@ public final class PeerLauncher extends PeerClientHandler {
 	/**
 	 * <p>每批请求的SLICE数量</p>
 	 * <p>注：过大会导致UTP信号量阻塞</p>
+	 * 
+	 * TODO：根据速度优化
 	 */
-	private static final int SLICE_REQUEST_SIZE = 4;
+	private static final int SLICE_REQUEST_SIZE = 2;
 	/**
 	 * 每批SLICE请求等待时间
 	 */

@@ -1,31 +1,21 @@
 package com.acgist.snail.pojo.message;
 
-import java.util.Map;
-
 import com.acgist.snail.utils.ObjectUtils;
 
 /**
- * <p>Tracker声明响应消息</p>
- * <p>http://www.bittorrent.org/beps/bep_0015.html</p>
+ * <p>Tracker刮檫响应消息</p>
+ * <p>http://www.bittorrent.org/beps/bep_0048.html</p>
  * <p>https://wiki.theory.org/index.php/BitTorrentSpecification</p>
  * 
  * @author acgist
- * @since 1.0.0
+ * @since 1.2.0
  */
-public final class AnnounceMessage {
+public final class ScrapeMessage {
 
 	/**
 	 * <p>id：transaction_id：TrackerId</p>
 	 */
 	private Integer id;
-	/**
-	 * TrackerId：HTTP Tracker
-	 */
-	private String trackerId;
-	/**
-	 * 下次请求等待时间
-	 */
-	private Integer interval;
 	/**
 	 * 做种Peer数量
 	 */
@@ -35,9 +25,9 @@ public final class AnnounceMessage {
 	 */
 	private Integer leecher;
 	/**
-	 * Peers数据（IP和端口）
+	 * 完成Peer数量
 	 */
-	private Map<String, Integer> peers;
+	private Integer completed;
 
 	public Integer getId() {
 		return id;
@@ -45,22 +35,6 @@ public final class AnnounceMessage {
 
 	public void setId(Integer id) {
 		this.id = id;
-	}
-
-	public String getTrackerId() {
-		return trackerId;
-	}
-
-	public void setTrackerId(String trackerId) {
-		this.trackerId = trackerId;
-	}
-
-	public Integer getInterval() {
-		return interval;
-	}
-
-	public void setInterval(Integer interval) {
-		this.interval = interval;
 	}
 
 	public Integer getSeeder() {
@@ -79,14 +53,14 @@ public final class AnnounceMessage {
 		this.leecher = leecher;
 	}
 
-	public Map<String, Integer> getPeers() {
-		return peers;
+	public Integer getCompleted() {
+		return completed;
 	}
 
-	public void setPeers(Map<String, Integer> peers) {
-		this.peers = peers;
+	public void setCompleted(Integer completed) {
+		this.completed = completed;
 	}
-	
+
 	@Override
 	public String toString() {
 		return ObjectUtils.toString(this);

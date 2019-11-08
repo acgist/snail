@@ -45,11 +45,11 @@ public final class TrackerLauncher {
 	/**
 	 * 已完成数量
 	 */
-	private Integer done;
+	private Integer seeder;
 	/**
 	 * 未完成数量
 	 */
-	private Integer undone;
+	private Integer leecher;
 	/**
 	 * 可用状态
 	 */
@@ -106,10 +106,10 @@ public final class TrackerLauncher {
 			return;
 		}
 		this.interval = message.getInterval();
-		this.done = message.getDone();
-		this.undone = message.getUndone();
+		this.seeder = message.getSeeder();
+		this.leecher = message.getLeecher();
 		this.peer(message.getPeers());
-		LOGGER.debug("{}-收到声明响应，已完成Peer数量：{}，未完成的Peer数量：{}，下次请求时间：{}", this.client.announceUrl(), this.done, this.undone, this.interval);
+		LOGGER.debug("{}-收到声明响应，做种Peer数量：{}，下载Peer数量：{}，下次请求时间：{}", this.client.announceUrl(), this.seeder, this.leecher, this.interval);
 	}
 	
 	/**
