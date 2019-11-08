@@ -88,35 +88,52 @@ SnailLauncher.exe
 
 |BEP|进度|
 |:--|:--:|
-|upload_only|○|
-|[DHT Protocol](http://www.bittorrent.org/beps/bep_0005.html)|√|
-|[Fast Extension](http://www.bittorrent.org/beps/bep_0006.html)|○|
-|[Private Torrents](http://www.bittorrent.org/beps/bep_0027.html)|×|
-|[Extension Protocol](http://www.bittorrent.org/beps/bep_0010.html)|√|
-|[Holepunch Extension](http://www.bittorrent.org/beps/bep_0055.html)|○|
-|[Peer Exchange (PEX)](http://www.bittorrent.org/beps/bep_0011.html)|√|
-|[Peer ID Conventions](http://www.bittorrent.org/beps/bep_0020.html)|√|
-|[IPv6 Tracker Extension](http://www.bittorrent.org/beps/bep_0007.html)|×|
-|[Local Service Discovery](http://www.bittorrent.org/beps/bep_0014.html)|√|
-|[The lt_donthave extension](http://www.bittorrent.org/beps/bep_0054.html)|×|
-|[uTorrent Transport Protocol](http://www.bittorrent.org/beps/bep_0029.html)|√|
-|[Multitracker Metadata Extension](http://www.bittorrent.org/beps/bep_0012.html)|√|
-|[BitTorrent DHT Extensions for IPv6](http://www.bittorrent.org/beps/bep_0032.html)|×|
-|[Tracker Returns Compact Peer Lists](http://www.bittorrent.org/beps/bep_0023.html)|√|
-|[UDP Tracker Protocol for BitTorrent](http://www.bittorrent.org/beps/bep_0015.html)|√|
+|Final and Active Process BEPs||
 |[The BitTorrent Protocol Specification](http://www.bittorrent.org/beps/bep_0003.html)|√|
+|[Known Number Allocations](http://www.bittorrent.org/beps/bep_0004.html)|√|
+|[Peer ID Conventions](http://www.bittorrent.org/beps/bep_0020.html)|√|
+|Accepted BEPs||
+|[DHT Protocol](http://www.bittorrent.org/beps/bep_0005.html)|√|
+|[Fast Extension](http://www.bittorrent.org/beps/bep_0006.html)|√|
 |[Extension for Peers to Send Metadata Files](http://www.bittorrent.org/beps/bep_0009.html)|√|
+|[Extension Protocol](http://www.bittorrent.org/beps/bep_0010.html)|√|
+|[Peer Exchange (PEX)](http://www.bittorrent.org/beps/bep_0011.html)|√|
+|[Multitracker Metadata Extension](http://www.bittorrent.org/beps/bep_0012.html)|√|
+|[Local Service Discovery](http://www.bittorrent.org/beps/bep_0014.html)|√|
+|[UDP Tracker Protocol for BitTorrent](http://www.bittorrent.org/beps/bep_0015.html)|√|
+|[HTTP/FTP Seeding (GetRight-style)](http://www.bittorrent.org/beps/bep_0019.html)|?|
+|[Tracker Returns Compact Peer Lists](http://www.bittorrent.org/beps/bep_0023.html)|√|
+|[Private Torrents](http://www.bittorrent.org/beps/bep_0027.html)|○|
+|[uTorrent Transport Protocol](http://www.bittorrent.org/beps/bep_0029.html)|√|
+|[Holepunch Extension](http://www.bittorrent.org/beps/bep_0055.html)|√|
+|Draft BEPs||
+|[IPv6 Tracker Extension](http://www.bittorrent.org/beps/bep_0007.html)|×|
 |[Superseeding](http://www.bittorrent.org/beps/bep_0016.html)|?|
-|[Merkle hash torrent extension](http://www.bittorrent.org/beps/bep_0030.html)|?|
-|[WebSeed - HTTP/FTP Seeding (GetRight style)](http://www.bittorrent.org/beps/bep_0019.html)|?|
-
-#### 其他进度
-
-|协议|进度|
-|:--|:--:|
+|[HTTP Seeding (Hoffman-style)](http://www.bittorrent.org/beps/bep_0017.html)|?|
+|[Extension for partial seeds](http://www.bittorrent.org/beps/bep_0021.html)|○|
+|[Merkle tree torrent extension](http://www.bittorrent.org/beps/bep_0030.html)|?|
+|[Failure Retry Extension](http://www.bittorrent.org/beps/bep_0031.html)|?|
+|[IPv6 extension for DHT](http://www.bittorrent.org/beps/bep_0032.html)|×|
+|[DHT scrape](http://www.bittorrent.org/beps/bep_0033.html)|?|
+|[Torrent Signing](http://www.bittorrent.org/beps/bep_0035.html)|?|
+|[UDP Tracker Protocol Extensions](http://www.bittorrent.org/beps/bep_0041.html)|?|
+|[DHT Security Extension](http://www.bittorrent.org/beps/bep_0042.html)|?|
+|[Read-only DHT Nodes](http://www.bittorrent.org/beps/bep_0043.html)|?|
+|Storing arbitrary data in the DHT](http://www.bittorrent.org/beps/bep_0044.html)|?|
+|Multiple-address operation for the BitTorrent DHT](http://www.bittorrent.org/beps/bep_0045.html)|?|
+|Updating Torrents Via DHT Mutable Items](http://www.bittorrent.org/beps/bep_0046.html)|?|
+|Padding files and extended file attributes](http://www.bittorrent.org/beps/bep_0047.html)|×|
+|[Tracker Protocol Extension: Scrape](http://www.bittorrent.org/beps/bep_0048.html)|×|
+|[Publish/Subscribe Protocol](http://www.bittorrent.org/beps/bep_0050.html)|?|
+|[DHT Infohash Indexing](http://www.bittorrent.org/beps/bep_0051.html)|?|
+|[The BitTorrent Protocol Specification v2](http://www.bittorrent.org/beps/bep_0052.html)|?|
+|[Magnet URI extension - Select specific file indices for download](http://www.bittorrent.org/beps/bep_0053.html)|?|
+|[The lt_donthave extension](http://www.bittorrent.org/beps/bep_0054.html)|?|
+|Other Protocol||
 |IPv6|○|
+|[STUN](https://www.rfc-editor.org/rfc/rfc5389.txt)|√|
 |[UPnP](http://upnp.org/specs/arch/UPnP-arch-DeviceArchitecture-v1.0.pdf)|√|
-|[STUN](https://www.rfc-editor.org/rfc/rfc5389.txt)|○|
+|upload_only|√|
 |[Message Stream Encryption](https://wiki.vuze.com/w/Message_Stream_Encryption)|√|
 
 *√=完成、○-进行中、×-未开始、?-待定*
