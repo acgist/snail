@@ -119,10 +119,10 @@ SnailLauncher.exe
 |[UDP Tracker Protocol Extensions](http://www.bittorrent.org/beps/bep_0041.html)|?|
 |[DHT Security Extension](http://www.bittorrent.org/beps/bep_0042.html)|?|
 |[Read-only DHT Nodes](http://www.bittorrent.org/beps/bep_0043.html)|?|
-|Storing arbitrary data in the DHT](http://www.bittorrent.org/beps/bep_0044.html)|?|
-|Multiple-address operation for the BitTorrent DHT](http://www.bittorrent.org/beps/bep_0045.html)|?|
-|Updating Torrents Via DHT Mutable Items](http://www.bittorrent.org/beps/bep_0046.html)|?|
-|Padding files and extended file attributes](http://www.bittorrent.org/beps/bep_0047.html)|×|
+|[Storing arbitrary data in the DHT](http://www.bittorrent.org/beps/bep_0044.html)|?|
+|[Multiple-address operation for the BitTorrent DHT](http://www.bittorrent.org/beps/bep_0045.html)|?|
+|[Updating Torrents Via DHT Mutable Items](http://www.bittorrent.org/beps/bep_0046.html)|?|
+|[Padding files and extended file attributes](http://www.bittorrent.org/beps/bep_0047.html)|×|
 |[Tracker Protocol Extension: Scrape](http://www.bittorrent.org/beps/bep_0048.html)|×|
 |[Publish/Subscribe Protocol](http://www.bittorrent.org/beps/bep_0050.html)|?|
 |[DHT Infohash Indexing](http://www.bittorrent.org/beps/bep_0051.html)|?|
