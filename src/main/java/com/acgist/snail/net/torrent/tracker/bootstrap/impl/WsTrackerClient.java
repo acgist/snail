@@ -5,7 +5,6 @@ import java.util.Map;
 
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerService;
 import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerClient;
-import com.acgist.snail.net.ws.WebSocketClient;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.system.JSON;
@@ -24,11 +23,11 @@ public final class WsTrackerClient extends TrackerClient {
 
 //	private static final Logger LOGGER = LoggerFactory.getLogger(WsTrackerClient.class);
 	
-	private final WebSocketClient client;
+	private final com.acgist.snail.net.ws.tracker.WsTrackerClient client;
 	
 	private WsTrackerClient(String scrapeUrl, String announceUrl) throws NetException {
 		super(scrapeUrl, announceUrl, Protocol.Type.WS);
-		this.client = WebSocketClient.newInstance(this.announceUrl);
+		this.client = com.acgist.snail.net.ws.tracker.WsTrackerClient.newInstance(this.announceUrl);
 	}
 
 	public static final WsTrackerClient newInstance(String announceUrl) throws NetException {

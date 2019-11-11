@@ -4,6 +4,7 @@ import java.net.InetSocketAddress;
 import java.net.http.HttpClient;
 import java.net.http.WebSocket;
 import java.nio.ByteBuffer;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -21,19 +22,22 @@ import com.acgist.snail.system.exception.NetException;
  * @author acgist
  * @since 1.1.0
  */
-public class WebSocketMessageHandler implements IMessageHandler {
+public abstract class WebSocketMessageHandler implements IMessageHandler, WebSocket.Listener {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WebSocketMessageHandler.class);
 	
 	private boolean close = false;
-	private final WebSocket socket;
-//	private final HttpClient client;
+	protected WebSocket socket;
+	protected HttpClient client;
 	
-	public WebSocketMessageHandler(HttpClient client, WebSocket socket) {
-//		this.client = client;
+	/**
+	 * 代理Socket、Client
+	 */
+	public void handle(WebSocket socket, HttpClient client) {
 		this.socket = socket;
+		this.client = client;
 	}
-
+	
 	@Override
 	public boolean available() {
 		return !this.close && this.socket != null;
@@ -83,6 +87,48 @@ public class WebSocketMessageHandler implements IMessageHandler {
 		this.close = true;
 		this.socket.sendClose(WebSocket.NORMAL_CLOSURE, "Close");
 		this.socket.abort();
+	}
+	
+	@Override
+	public void onOpen(WebSocket webSocket) {
+		LOGGER.debug("WebSocket连接成功：{}", webSocket);
+		WebSocket.Listener.super.onOpen(webSocket);
+	}
+	
+	@Override
+	public CompletionStage<?> onText(WebSocket webSocket, CharSequence message, boolean last) {
+		LOGGER.debug("WebSocket接收数据（Text）：{}", message);
+		return WebSocket.Listener.super.onText(webSocket, message, last);
+	}
+	
+	@Override
+	public CompletionStage<?> onBinary(WebSocket webSocket, ByteBuffer message, boolean last) {
+		LOGGER.debug("WebSocket接收数据（Binary）：{}", message);
+		return WebSocket.Listener.super.onBinary(webSocket, message, last);
+	}
+	
+	@Override
+	public CompletionStage<?> onPing(WebSocket webSocket, ByteBuffer message) {
+		LOGGER.debug("WebSocket Ping");
+		return WebSocket.Listener.super.onPing(webSocket, message);
+	}
+	
+	@Override
+	public CompletionStage<?> onPong(WebSocket webSocket, ByteBuffer message) {
+		LOGGER.debug("WebSocket Pong");
+		return WebSocket.Listener.super.onPong(webSocket, message);
+	}
+	
+	@Override
+	public CompletionStage<?> onClose(WebSocket webSocket, int statusCode, String reason) {
+		LOGGER.debug("WebSocket关闭：{}-{}", statusCode, reason);
+		return WebSocket.Listener.super.onClose(webSocket, statusCode, reason);
+	}
+	
+	@Override
+	public void onError(WebSocket webSocket, Throwable error) {
+		LOGGER.error("WebSocket异常", error);
+		WebSocket.Listener.super.onError(webSocket, error);
 	}
 
 }
