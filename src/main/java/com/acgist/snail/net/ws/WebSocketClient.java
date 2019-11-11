@@ -12,8 +12,6 @@ import java.util.concurrent.TimeoutException;
 import com.acgist.snail.net.ClientMessageHandlerAdapter;
 import com.acgist.snail.net.IMessageHandler;
 import com.acgist.snail.net.http.HTTPClient;
-import com.acgist.snail.net.ws.bootstrap.WebSocketListener;
-import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
 
 /**
@@ -22,34 +20,28 @@ import com.acgist.snail.system.exception.NetException;
  * @author acgist
  * @since 1.1.0
  */
-public class WebSocketClient extends ClientMessageHandlerAdapter<WebSocketMessageHandler> implements IMessageHandler {
+public abstract class WebSocketClient<T extends WebSocketMessageHandler> extends ClientMessageHandlerAdapter<T> implements IMessageHandler {
 
-	private WebSocketClient(HttpClient client, WebSocket socket) {
-		super(new WebSocketMessageHandler(client, socket));
+	protected WebSocketClient(String url, int connectTimeout, int receiveTimeout, T t) throws NetException {
+		super(t);
+		this.buildWebSocket(url, connectTimeout, receiveTimeout);
 	}
 	
-	public static final WebSocketClient newInstance(String url) throws NetException {
-		return newInstance(url, SystemConfig.CONNECT_TIMEOUT, SystemConfig.RECEIVE_TIMEOUT);
-	}
-	
-	public static final WebSocketClient newInstance(String url, int connectTimeout, int receiveTimeout) throws NetException {
+	private void buildWebSocket(String url, int connectTimeout, int receiveTimeout) throws NetException {
 		final HttpClient client = HTTPClient.newClient(connectTimeout);
-		final CompletableFuture<WebSocket> future = newWebSocket(client, url, connectTimeout);
-			try {
-				return new WebSocketClient(client, future.get(receiveTimeout, TimeUnit.SECONDS));
-			} catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw new NetException("WebSocket创建失败", e);
-			} catch (TimeoutException | ExecutionException e) {
-				throw new NetException("WebSocket创建失败", e);
-			}
-	}
-	
-	private static final CompletableFuture<WebSocket> newWebSocket(HttpClient client, String url, int timeout) {
-		return client
+		final CompletableFuture<WebSocket> future = client
 			.newWebSocketBuilder()
-			.connectTimeout(Duration.ofSeconds(timeout))
-			.buildAsync(URI.create(url), new WebSocketListener());
+			.connectTimeout(Duration.ofSeconds(connectTimeout))
+			.buildAsync(URI.create(url), this.handler);
+		try {
+			final WebSocket socket = future.get(receiveTimeout, TimeUnit.SECONDS);
+			this.handler.handle(socket, client);
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw new NetException("WebSocket创建失败", e);
+		} catch (TimeoutException | ExecutionException e) {
+			throw new NetException("WebSocket创建失败", e);
+		}
 	}
 
 }
