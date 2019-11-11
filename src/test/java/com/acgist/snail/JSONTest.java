@@ -24,7 +24,7 @@ public class JSONTest {
 	@Test
 	public void serialize() {
 		Map<Object, Object> map = Map.of(
-			"name", "你,:{}好",
+			"name", "\b你,:{}好",
 			"age", 30,
 			"marry", true,
 			"json", "{\"name\":\"你,:{}好\",\"age\":30,\"marry\":true,\"wife\":null,\"like\":[\"动漫\",\"洞箫\"]}",
