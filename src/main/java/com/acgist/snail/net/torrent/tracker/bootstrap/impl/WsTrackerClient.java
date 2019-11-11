@@ -1,13 +1,16 @@
 package com.acgist.snail.net.torrent.tracker.bootstrap.impl;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerService;
 import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerClient;
 import com.acgist.snail.net.ws.WebSocketClient;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.Protocol;
+import com.acgist.snail.system.JSON;
 import com.acgist.snail.system.config.TrackerConfig;
 import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>Tracker WS（WebSocket）客户端</p>
@@ -58,18 +61,16 @@ public final class WsTrackerClient extends TrackerClient {
 	@Override
 	@SuppressWarnings("unchecked")
 	protected String buildAnnounceMessageEx(Integer sid, TorrentSession torrentSession, TrackerConfig.Event event, long download, long remain, long upload) {
-		final StringBuilder builder = new StringBuilder();
-		builder.append("{")
-			.append("\"info_hash\"").append(":").append("\"").append(StringUtils.hex(torrentSession.infoHash().infoHash())).append("\"").append(",")
-			.append("\"peer_id\"").append(":").append("\"").append(StringUtils.hex(PeerService.getInstance().peerId())).append("\"").append(",")
-			.append("\"uploaded\"").append(":").append(upload).append(",")
-			.append("\"downloaded\"").append(":").append(download).append(",")
-			.append("\"left\"").append(":").append(remain).append(",")
-			.append("\"event\"").append(":").append("\"").append(event.value()).append("\"").append(",")
-			.append("\"action\"").append(":").append("\"").append(TrackerConfig.Action.ANNOUNCE.value()).append("\"").append(",")
-			.append("\"numwant\"").append(":").append(WANT_PEER_SIZE)
-			.append("}");
-		return builder.toString();
+		final Map<Object, Object> message = new LinkedHashMap<>(8);
+		message.put("info_hash", new String(torrentSession.infoHash().infoHash()));
+		message.put("peer_id", new String(PeerService.getInstance().peerId()));
+		message.put("uploaded", upload);
+		message.put("downloaded", download);
+		message.put("left", remain);
+		message.put("event", event.value());
+		message.put("action", TrackerConfig.Action.ANNOUNCE.value());
+		message.put("numwant", WANT_PEER_SIZE);
+		return JSON.ofMap(message).toJSON();
 	}
 	
 }
