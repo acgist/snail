@@ -44,6 +44,17 @@ console.log(array.join(", "));
 		'\"', '\\'
 	};
 	/**
+	 * 特殊字符对应编码
+	 */
+	private static final String[] CHARS_ENCODE = new String[] {
+		"\\u0000", "\\u0001", "\\u0002", "\\u0003", "\\u0004", "\\u0005",
+		"\\u0006", "\\u0007", "\\b", "\\t", "\\n", "\\u000b", "\\f", "\\r",
+		"\\u000e", "\\u000f", "\\u0010", "\\u0011", "\\u0012", "\\u0013",
+		"\\u0014", "\\u0015", "\\u0016", "\\u0017", "\\u0018", "\\u0019",
+		"\\u001a", "\\u001b", "\\u001c", "\\u001d", "\\u001e", "\\u001f",
+		"\\\"", "\\\\"
+	};
+	/**
 	 * Map前缀
 	 */
 	private static final char JSON_MAP_PREFIX = '{';
@@ -209,13 +220,15 @@ console.log(array.join(", "));
 	 * 转义字符
 	 */
 	private String serializeValue(String content) {
+		int index = -1;
 		final char[] chars = content.toCharArray();
 		final StringBuilder builder = new StringBuilder();
 		for (char value : chars) {
-			if(ArrayUtils.indexOf(CHARS, value) == -1) {
+			index = ArrayUtils.indexOf(CHARS, value);
+			if(index == -1) {
 				builder.append(value);
 			} else {
-				builder.append("\\").append(value);
+				builder.append(CHARS_ENCODE[index]);
 			}
 		}
 		return builder.toString();

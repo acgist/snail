@@ -14,6 +14,11 @@ import com.acgist.snail.system.exception.ArgumentException;
 public final class ArrayUtils {
 
 	/**
+	 * 不存在索引
+	 */
+	public static final int NO_INDEX = -1;
+	
+	/**
 	 * <p>数组比较</p>
 	 * <p>数组元素全部一致则相等</p>
 	 * 
@@ -165,7 +170,7 @@ public final class ArrayUtils {
 	 * @return 索引：-1=不存在
 	 */
 	public static final int indexOf(int[] values, int begin, int end, int value) {
-		int x = -1;
+		int x = ArrayUtils.NO_INDEX;
 		for (int index = begin; index < end; index++) {
 			if(values[index] == value) {
 				x = index;
@@ -179,7 +184,7 @@ public final class ArrayUtils {
 	 * 查找字符索引
 	 * 
 	 * @param chars 数组
-	 * @param value 字符
+	 * @param value 查找字符
 	 * 
 	 * @return 索引：-1=不存在
 	 */
@@ -189,7 +194,7 @@ public final class ArrayUtils {
 				return index;
 			}
 		}
-		return -1;
+		return ArrayUtils.NO_INDEX;
 	}
 	
 }
