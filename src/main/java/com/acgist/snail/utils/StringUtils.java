@@ -34,6 +34,11 @@ public final class StringUtils {
 	private static final String NUMERIC_REGEX = "\\-?[0-9]+";
 	
 	/**
+	 * 小数正则表达式
+	 */
+	private static final String DECIMAL_REGEX = "\\-?[0-9]+(\\.[0-9]+)?";
+	
+	/**
 	 * 否空字符串
 	 */
 	public static final boolean isEmpty(String value) {
@@ -54,6 +59,13 @@ public final class StringUtils {
 		return StringUtils.regex(value, NUMERIC_REGEX, true);
 	}
 
+	/**
+	 * 小数字符串：包含小数
+	 */
+	public static final boolean isDecimal(String value) {
+		return StringUtils.regex(value, DECIMAL_REGEX, true);
+	}
+	
 	/**
 	 * 字符串开始
 	 */
@@ -86,7 +98,7 @@ public final class StringUtils {
 		}
 		return builder.toString().toLowerCase();
 	}
-
+	
 	/**
 	 * 十六进制字符串转为字符数组
 	 */
@@ -213,12 +225,10 @@ public final class StringUtils {
 	 * 读取Unicode
 	 */
 	public static final String ofUnicode(String unicode) {
-		int value;
 		final String[] hex = unicode.split("\\\\u");
 		final StringBuilder builder = new StringBuilder();
 		for (int index = 1; index < hex.length; index++) {
-			value = Integer.parseInt(hex[index], 16);
-			builder.append((char) value);
+			builder.append((char) Integer.parseInt(hex[index], 16));
 		}
 		return builder.toString();
 	}

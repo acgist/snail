@@ -74,6 +74,8 @@ public final class Magnet {
 	private String as;
 	/**
 	 * 绝对资源（P2P链接）
+	 * 
+	 * TODO：种子下载
 	 */
 	private String xs;
 	/**

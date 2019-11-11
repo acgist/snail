@@ -175,4 +175,21 @@ public final class ArrayUtils {
 		return x;
 	}
 	
+	/**
+	 * 查找字符索引
+	 * 
+	 * @param chars 数组
+	 * @param value 字符
+	 * 
+	 * @return 索引：-1=不存在
+	 */
+	public static final int indexOf(char[] chars, char value) {
+		for (int index = 0; index < chars.length; index++) {
+			if(value == chars[index]) {
+				return index;
+			}
+		}
+		return -1;
+	}
+	
 }
