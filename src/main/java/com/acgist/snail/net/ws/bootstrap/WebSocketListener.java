@@ -19,20 +19,20 @@ public class WebSocketListener implements WebSocket.Listener {
 	
 	@Override
 	public void onOpen(WebSocket webSocket) {
-		LOGGER.debug("WebSocket打开成功：{}", webSocket);
+		LOGGER.debug("WebSocket连接成功：{}", webSocket);
 		WebSocket.Listener.super.onOpen(webSocket);
 	}
 	
 	@Override
-	public CompletionStage<?> onText(WebSocket webSocket, CharSequence data, boolean last) {
-		LOGGER.debug("WebSocket接收数据：{}", data);
-		return WebSocket.Listener.super.onText(webSocket, data, last);
+	public CompletionStage<?> onText(WebSocket webSocket, CharSequence message, boolean last) {
+		LOGGER.debug("WebSocket接收数据（Text）：{}", message);
+		return WebSocket.Listener.super.onText(webSocket, message, last);
 	}
 	
 	@Override
-	public CompletionStage<?> onBinary(WebSocket webSocket, ByteBuffer data, boolean last) {
-		LOGGER.debug("WebSocket接收数据：{}", data);
-		return WebSocket.Listener.super.onBinary(webSocket, data, last);
+	public CompletionStage<?> onBinary(WebSocket webSocket, ByteBuffer message, boolean last) {
+		LOGGER.debug("WebSocket接收数据（Binary）：{}", message);
+		return WebSocket.Listener.super.onBinary(webSocket, message, last);
 	}
 	
 	@Override
@@ -49,13 +49,13 @@ public class WebSocketListener implements WebSocket.Listener {
 	
 	@Override
 	public CompletionStage<?> onClose(WebSocket webSocket, int statusCode, String reason) {
-		LOGGER.debug("WebSocket关闭：{}，{}", statusCode, reason);
+		LOGGER.debug("WebSocket关闭：{}-{}", statusCode, reason);
 		return WebSocket.Listener.super.onClose(webSocket, statusCode, reason);
 	}
 	
 	@Override
 	public void onError(WebSocket webSocket, Throwable error) {
-		LOGGER.debug("WebSocket异常", error);
+		LOGGER.error("WebSocket异常", error);
 		WebSocket.Listener.super.onError(webSocket, error);
 	}
 	
