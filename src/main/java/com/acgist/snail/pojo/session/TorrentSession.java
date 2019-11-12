@@ -74,11 +74,11 @@ public final class TorrentSession {
 	/**
 	 * 可上传
 	 */
-	private boolean uploadable = false;
+	private volatile boolean uploadable = false;
 	/**
 	 * 可下载
 	 */
-	private boolean downloadable = false;
+	private volatile boolean downloadable = false;
 	/**
 	 * 磁力链接
 	 */
