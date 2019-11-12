@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.pojo.LambdaOptional;
+import com.acgist.snail.system.LambdaOptional;
 
 /**
  * <p>网络工具</p>
