@@ -188,6 +188,22 @@ public final class PeerLauncher extends PeerClientHandler {
 	}
 	
 	/**
+	 * <dl>
+	 * 	<dt>释放所有资源</dt>
+	 * 	<dd>发送不感兴趣消息</dd>
+	 * 	<dd>设置完成状态</dd>
+	 * 	<dd>释放Peer</dd>
+	 * 	<dd>完成检测</dd>
+	 * </dl>
+	 */
+	private void releaseAll() {
+		this.peerSubMessageHandler.notInterested(); // 发送不感兴趣消息
+		this.completeLock.set(true);
+		this.release();
+		this.torrentSession.checkCompletedAndDone(); // 完成下载检测
+	}
+	
+	/**
 	 * <p>释放资源：关闭Peer客户端，设置非下载状态。</p>
 	 * 
 	 * TODO：释放完成后状态没有被修改
@@ -260,15 +276,16 @@ public final class PeerLauncher extends PeerClientHandler {
 		pickDownloadPiece();
 		if(this.downloadPiece == null) {
 			LOGGER.debug("没有匹配Piece下载：释放Peer");
-			this.peerSubMessageHandler.notInterested(); // 发送不感兴趣消息
-			this.completeLock.set(true);
-			this.release();
-			this.torrentSession.checkCompletedAndDone(); // 完成下载检测
+			this.releaseAll();
+			return false;
+		}
+		if(!this.torrentSession.downloadable()) {
+			LOGGER.debug("任务不可下载：释放Peer");
+			this.releaseAll();
 			return false;
 		}
 		final int index = this.downloadPiece.getIndex();
 		while(available()) {
-			// TODO：优化
 			if (this.countLock.get() >= SLICE_REQUEST_SIZE) {
 				synchronized (this.countLock) {
 					ThreadUtils.wait(this.countLock, Duration.ofSeconds(SLICE_AWAIT_TIME));
