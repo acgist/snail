@@ -15,7 +15,7 @@ import com.acgist.snail.utils.UrlUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class HttpHeaderWrapper extends HeaderWrapper {
+public final class HttpHeaderWrapper extends HeaderWrapper {
 
 	/**
 	 * 断点续传：下载范围

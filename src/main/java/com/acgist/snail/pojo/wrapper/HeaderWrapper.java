@@ -12,7 +12,7 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>头信息</p>
- * <p>如果第一行不包含{@link #HEADER_SPLIT}则读取为协议信息。</p>
+ * <p>如果第一行不包含{@link #HEADER_DEFAULT_KV}则读取为协议信息</p>
  * 
  * @author acgist
  * @since 1.1.0
@@ -20,22 +20,30 @@ import com.acgist.snail.utils.StringUtils;
 public class HeaderWrapper {
 	
 	/**
-	 * 头信息换行符
+	 * 头信息分隔符
 	 */
-	private static final String HEADER_LINE = "\n";
+	private static final String DEFAULT_HEADER_KV = ":";
+	/**
+	 * 头信息填充符
+	 */
+	private static final String DEFAULT_HEADER_PADDING = " ";
+	/**
+	 * 头信息换行符：读取
+	 */
+	private static final String HEADER_LINE_READER = "\n";
+	/**
+	 * 头信息换行符：写出
+	 */
+	private static final String HEADER_LINE_WRITER = "\r\n";
+
 	/**
 	 * 头信息分隔符
 	 */
-	private static final String HEADER_SPLIT = ":";
+	private final String headerKv;
 	/**
-	 * 头信息空格
+	 * 头信息填充符
 	 */
-	private static final String HEADER_SPACE = " ";
-	/**
-	 * 头信息换行符
-	 */
-	private static final String HEADER_LINE_BUILDER = "\r\n";
-
+	private final String headerPadding;
 	/**
 	 * 协议
 	 */
@@ -50,27 +58,69 @@ public class HeaderWrapper {
 	protected final Map<String, List<String>> headers;
 
 	protected HeaderWrapper(String content) {
+		this(DEFAULT_HEADER_KV, content);
+	}
+	
+	protected HeaderWrapper(String headerKv, String content) {
 		String[] lines;
 		if(StringUtils.isEmpty(content)) {
 			lines = null;
 		} else {
-			lines = content.split(HEADER_LINE);
+			lines = content.split(HEADER_LINE_READER);
 		}
+		this.headerKv = headerKv;
+		this.headerPadding = DEFAULT_HEADER_PADDING;
 		this.protocol = buildProtocol(lines);
 		this.hasProtocol = StringUtils.isNotEmpty(this.protocol);
 		this.headers = buildHeaders(lines);
 	}
 	
 	protected HeaderWrapper(Map<String, List<String>> headers) {
+		this(DEFAULT_HEADER_KV, DEFAULT_HEADER_PADDING, headers);
+	}
+	
+	protected HeaderWrapper(String headerKv, String headerPadding, Map<String, List<String>> headers) {
+		this.headerKv = headerKv;
+		this.headerPadding = headerPadding;
 		this.protocol = null;
 		this.hasProtocol = false;
 		this.headers = headers;
 	}
 	
 	protected HeaderWrapper(String protocol, Map<String, List<String>> headers) {
+		this(DEFAULT_HEADER_KV, DEFAULT_HEADER_PADDING, protocol, headers);
+	}
+	
+	protected HeaderWrapper(String headerKv, String headerPadding, String protocol, Map<String, List<String>> headers) {
+		this.headerKv = headerKv;
+		this.headerPadding = headerPadding;
 		this.protocol = protocol;
 		this.hasProtocol = StringUtils.isNotEmpty(this.protocol);
 		this.headers = headers;
+	}
+	
+	public static HeaderWrapper newInstance(String content) {
+		return new HeaderWrapper(content);
+	}
+
+	public static HeaderWrapper newInstance(String headerKv, String content) {
+		return new HeaderWrapper(headerKv, content);
+	}
+
+	public static HeaderWrapper newBuilder(String protocol) {
+		return new HeaderWrapper(protocol, new LinkedHashMap<String, List<String>>());
+	}
+	
+	public static HeaderWrapper newBuilder(String protocol, Map<String, List<String>> headers) {
+		return new HeaderWrapper(protocol, headers);
+	}
+	
+	public static HeaderWrapper newBuilder(String headerKv, String headerPadding, String protocol) {
+		return new HeaderWrapper(headerKv, headerPadding, protocol, new LinkedHashMap<String, List<String>>());
+	}
+	
+	public static HeaderWrapper newBuilder(String headerKv, String headerPadding, String protocol, Map<String, List<String>> headers) {
+		return new HeaderWrapper(headerKv, headerPadding, protocol, headers);
 	}
 	
 	/**
@@ -83,7 +133,7 @@ public class HeaderWrapper {
 			final String firstLine = lines[0];
 			if(
 				firstLine == null ||
-				firstLine.indexOf(HEADER_SPLIT) != -1
+				firstLine.indexOf(this.headerKv) != -1
 			) {
 				return null;
 			} else {
@@ -113,7 +163,7 @@ public class HeaderWrapper {
 			if(line.isEmpty()) {
 				continue;
 			}
-			index = line.indexOf(HEADER_SPLIT);
+			index = line.indexOf(this.headerKv);
 			if(index == -1) {
 				key = line.trim();
 				value = null;
@@ -136,36 +186,11 @@ public class HeaderWrapper {
 		return headers;
 	
 	}
-
-	/**
-	 * 读取头信息
-	 */
-	public static final HeaderWrapper newInstance(String content) {
-		return new HeaderWrapper(content);
-	}
-
-	/**
-	 * 写出头信息
-	 * 
-	 * @param protocol 协议
-	 */
-	public static final HeaderWrapper newBuilder(String protocol) {
-		return new HeaderWrapper(protocol, new LinkedHashMap<String, List<String>>());
-	}
 	
 	/**
-	 * 写出头信息
+	 * 读取头信息（多个头信息时读取第一个）
 	 * 
-	 * @param protocol 协议
-	 */
-	public static final HeaderWrapper newBuilder(String protocol, Map<String, List<String>> headers) {
-		return new HeaderWrapper(protocol, headers);
-	}
-
-	/**
-	 * 获取第一个头信息
-	 * 
-	 * @param key 头信息名称，忽略大小写。
+	 * @param key 头信息名称（忽略大小写）
 	 * 
 	 * @return 头信息值
 	 */
@@ -179,9 +204,9 @@ public class HeaderWrapper {
 	}
 	
 	/**
-	 * 获取头信息
+	 * 读取头信息
 	 * 
-	 * @param key 头信息名称，忽略大小写。
+	 * @param key 头信息名称（忽略大小写）
 	 * 
 	 * @return 头信息值
 	 */
@@ -240,20 +265,20 @@ public class HeaderWrapper {
 	public String build() {
 		final StringBuilder builder = new StringBuilder();
 		if(this.hasProtocol) {
-			builder.append(this.protocol).append(HEADER_LINE_BUILDER);
+			builder.append(this.protocol).append(HEADER_LINE_WRITER);
 		}
 		if(isNotEmpty()) {
 			this.headers.forEach((key, list) -> {
 				if(CollectionUtils.isEmpty(list)) {
-					builder.append(key).append(HEADER_SPLIT).append(HEADER_SPACE).append(HEADER_LINE_BUILDER);
+					builder.append(key).append(this.headerKv).append(this.headerPadding).append(HEADER_LINE_WRITER);
 				} else {
 					list.forEach(value -> {
-						builder.append(key).append(HEADER_SPLIT).append(HEADER_SPACE).append(value).append(HEADER_LINE_BUILDER);
+						builder.append(key).append(this.headerKv).append(this.headerPadding).append(value).append(HEADER_LINE_WRITER);
 					});
 				}
 			});
 		}
-		builder.append(HEADER_LINE_BUILDER);
+		builder.append(HEADER_LINE_WRITER);
 		return builder.toString();
 	}
 	

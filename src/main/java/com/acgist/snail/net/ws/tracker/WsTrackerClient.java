@@ -5,7 +5,7 @@ import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
 
 /**
- * WebSocketTracekr客户端
+ * WebSocket Tracekr客户端
  * 
  * @author acgist
  * @since 1.2.0
