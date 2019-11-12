@@ -27,6 +27,15 @@ public abstract class WebSocketClient<T extends WebSocketMessageHandler> extends
 		this.buildWebSocket(url, connectTimeout, receiveTimeout);
 	}
 	
+	/**
+	 * 创建WebSocket
+	 * 
+	 * @param url 地址
+	 * @param connectTimeout 超时时间（连接）
+	 * @param receiveTimeout 超时时间（接收）
+	 * 
+	 * @throws NetException 网络异常
+	 */
 	private void buildWebSocket(String url, int connectTimeout, int receiveTimeout) throws NetException {
 		final HttpClient client = HTTPClient.newClient(connectTimeout);
 		final CompletableFuture<WebSocket> future = client
