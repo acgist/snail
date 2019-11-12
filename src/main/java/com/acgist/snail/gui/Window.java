@@ -142,7 +142,7 @@ public abstract class Window<T extends Initializable> extends Application {
 	}
 	
 	/**
-	 * 设置窗口最大化：防止最小化后，、从托盘显示出来时不能正常显示。
+	 * 设置窗口最大化：防止最小化后，从托盘显示出来时不能正常显示。
 	 */
 	public void maximize() {
 		this.stage.setIconified(false);

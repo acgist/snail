@@ -133,9 +133,8 @@ public final class StatisticsSession implements IStatisticsSession {
 		if(interval >= SAMPLE_TIME) {
 			this.downloadSpeed = this.downloadBufferSample.getAndSet(0) * ONE_SECOND / interval;
 			this.downloadBufferSampleTime = time;
-			return this.downloadSpeed;
 		} else if(this.downloadSpeed == 0L && interval >= ONE_SECOND) {
-			return this.downloadBufferSample.get() * ONE_SECOND / interval;
+			this.downloadSpeed = this.downloadBufferSample.get() * ONE_SECOND / interval;
 		}
 		return this.downloadSpeed;
 	}
@@ -147,9 +146,8 @@ public final class StatisticsSession implements IStatisticsSession {
 		if(interval >= SAMPLE_TIME) {
 			this.uploadSpeed = this.uploadBufferSample.getAndSet(0) * ONE_SECOND / interval;
 			this.uploadBufferSampleTime = time;
-			return this.uploadSpeed;
 		} else if(this.uploadSpeed == 0L && interval >= ONE_SECOND) {
-			return this.uploadBufferSample.get() * ONE_SECOND / interval;
+			this.uploadSpeed = this.uploadBufferSample.get() * ONE_SECOND / interval;
 		}
 		return this.uploadSpeed;
 	}
