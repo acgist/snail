@@ -99,8 +99,10 @@ console.log(array.join(", "));
 	 * 类型
 	 */
 	public enum Type {
-		
+
+		/** map */
 		map,
+		/** list */
 		list;
 		
 	}
