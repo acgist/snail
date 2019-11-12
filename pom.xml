@@ -371,6 +371,7 @@
 	</issueManagement>
 	
 	<!-- 发布：mvn deploy -e -->
+	<!-- https://oss.sonatype.org/ -->
 	<!-- https://issues.sonatype.org/browse/OSSRH-51336 -->
 	<distributionManagement>
 		<repository>
