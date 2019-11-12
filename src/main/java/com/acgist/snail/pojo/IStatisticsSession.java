@@ -10,7 +10,7 @@ public interface IStatisticsSession {
 
 	/**
 	 * <p>判断是否在下载数据</p>
-	 * <p>上次限速采样时间是否在速度采样时间范围内</p>
+	 * <p>最后一次下载限速采样时间是否在一秒内</p>
 	 * 
 	 * @return 是否下载数据
 	 */

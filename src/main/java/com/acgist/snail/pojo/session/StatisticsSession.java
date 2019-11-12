@@ -6,7 +6,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.system.config.DownloadConfig;
-import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
@@ -25,7 +24,7 @@ public final class StatisticsSession implements IStatisticsSession {
 	/**
 	 * 速度（下载、上传）采样时间
 	 */
-	private static final long SAMPLE_TIME = SystemConfig.TASK_REFRESH_INTERVAL.toMillis();
+	private static final long SAMPLE_TIME = 10 * ONE_SECOND;
 	
 	/**
 	 * 限速开关
@@ -104,7 +103,7 @@ public final class StatisticsSession implements IStatisticsSession {
 
 	@Override
 	public boolean downloading() {
-		return System.currentTimeMillis() - this.downloadBufferLimitTime < SAMPLE_TIME;
+		return System.currentTimeMillis() - this.downloadBufferLimitTime < ONE_SECOND;
 	}
 	
 	@Override
@@ -132,9 +131,11 @@ public final class StatisticsSession implements IStatisticsSession {
 		final long time = System.currentTimeMillis();
 		final long interval = time - this.downloadBufferSampleTime;
 		if(interval >= SAMPLE_TIME) {
-			this.downloadBufferSampleTime = time;
 			this.downloadSpeed = this.downloadBufferSample.getAndSet(0) * ONE_SECOND / interval;
+			this.downloadBufferSampleTime = time;
 			return this.downloadSpeed;
+		} else if(this.downloadSpeed == 0L && interval >= ONE_SECOND) {
+			return this.downloadBufferSample.get() * ONE_SECOND / interval;
 		}
 		return this.downloadSpeed;
 	}
@@ -144,9 +145,11 @@ public final class StatisticsSession implements IStatisticsSession {
 		final long time = System.currentTimeMillis();
 		final long interval = time - this.uploadBufferSampleTime;
 		if(interval >= SAMPLE_TIME) {
-			this.uploadBufferSampleTime = time;
 			this.uploadSpeed = this.uploadBufferSample.getAndSet(0) * ONE_SECOND / interval;
+			this.uploadBufferSampleTime = time;
 			return this.uploadSpeed;
+		} else if(this.uploadSpeed == 0L && interval >= ONE_SECOND) {
+			return this.uploadBufferSample.get() * ONE_SECOND / interval;
 		}
 		return this.uploadSpeed;
 	}
