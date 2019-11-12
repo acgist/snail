@@ -96,7 +96,7 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	 */
 	public long fileSize() {
 		long size = 0L;
-		String value = header(CONTENT_LENGTH);
+		final String value = header(CONTENT_LENGTH);
 		if(value != null) {
 			if(StringUtils.isNumeric(value)) {
 				size = Long.parseLong(value);
@@ -131,10 +131,10 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	 */
 	public long beginRange() {
 		long range = 0L;
-		String contentRange = header(CONTENT_RANGE);
+		final String contentRange = header(CONTENT_RANGE);
 		if(contentRange != null) {
-			int endIndex = contentRange.lastIndexOf("-");
-			String value = contentRange.substring(5, endIndex).trim();
+			final int endIndex = contentRange.lastIndexOf("-");
+			final String value = contentRange.substring(5, endIndex).trim();
 			if(StringUtils.isNumeric(value)) {
 				range = Long.parseLong(value);
 			}

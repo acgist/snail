@@ -1,4 +1,4 @@
-package com.acgist.snail.pojo;
+package com.acgist.snail.system;
 
 /**
  * <p>Lambda表达式用来传值</p>
