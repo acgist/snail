@@ -171,8 +171,8 @@ GITHUB（不活跃）：[https://github.com/acgist/snail](https://github.com/acg
 
 [https://www.acgist.com/snail](https://www.acgist.com/snail)
 
-## 评论
+## 问题建议评论
 
-首先感谢各位的支持，但是评论区请不要贴异常信息，请提交[issues](https://gitee.com/acgist/snail/issues)。
+首先感谢各位的支持，但是评论区请不要贴异常信息，如果有问题和建议请提交[Issues](https://gitee.com/acgist/snail/issues)。
 
 谢谢！
