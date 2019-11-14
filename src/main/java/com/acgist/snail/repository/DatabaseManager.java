@@ -45,7 +45,7 @@ public final class DatabaseManager {
 	/**
 	 * 查询表是否存在
 	 */
-	public boolean hasTable(String table) {
+	public boolean haveTable(String table) {
 		final List<ResultSetWrapper> tables = select("show tables");
 		for (ResultSetWrapper wrapper : tables) {
 			if(table.equalsIgnoreCase(wrapper.getString("TABLE_NAME"))) {
