@@ -1,4 +1,4 @@
-package com.acgist.snail.system.context;
+package com.acgist.snail.system;
 
 import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.session.StatisticsSession;

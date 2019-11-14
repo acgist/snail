@@ -18,7 +18,7 @@ import com.acgist.snail.pojo.wrapper.TorrentSelectorWrapper;
 import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.repository.impl.TaskRepository;
-import com.acgist.snail.system.context.SystemStatistics;
+import com.acgist.snail.system.SystemStatistics;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.BeanUtils;
 import com.acgist.snail.utils.DateUtils;

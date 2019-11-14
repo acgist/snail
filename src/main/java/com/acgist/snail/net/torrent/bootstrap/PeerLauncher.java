@@ -9,14 +9,14 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.torrent.PeerClientHandler;
 import com.acgist.snail.net.torrent.peer.PeerClient;
+import com.acgist.snail.net.torrent.peer.bootstrap.PeerEvaluator;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
+import com.acgist.snail.net.torrent.peer.bootstrap.PeerEvaluator.Type;
 import com.acgist.snail.net.torrent.utp.UtpClient;
 import com.acgist.snail.pojo.bean.TorrentPiece;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.PeerConfig;
-import com.acgist.snail.system.evaluation.PeerEvaluator;
-import com.acgist.snail.system.evaluation.PeerEvaluator.Type;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**

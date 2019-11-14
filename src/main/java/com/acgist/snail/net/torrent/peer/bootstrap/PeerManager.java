@@ -17,7 +17,6 @@ import com.acgist.snail.net.torrent.peer.bootstrap.ltep.PeerExchangeMessageHandl
 import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.system.config.PeerConfig;
-import com.acgist.snail.system.evaluation.PeerEvaluator;
 import com.acgist.snail.utils.CollectionUtils;
 
 /**

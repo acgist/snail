@@ -5,10 +5,10 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import com.acgist.snail.net.torrent.peer.bootstrap.PeerEvaluator;
 import com.acgist.snail.repository.DatabaseManager;
 import com.acgist.snail.repository.impl.ConfigRepository;
 import com.acgist.snail.system.bencode.BEncodeEncoder;
-import com.acgist.snail.system.evaluation.PeerEvaluator;
 import com.acgist.snail.utils.NetUtils;
 
 public class PeerEvaluatorTest {
