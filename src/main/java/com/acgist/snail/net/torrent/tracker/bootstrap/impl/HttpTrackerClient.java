@@ -63,7 +63,7 @@ public final class HttpTrackerClient extends TrackerClient {
 
 	@Override
 	public void announce(Integer sid, TorrentSession torrentSession) throws NetException {
-		final String announceMessage = buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STARTED);
+		final String announceMessage = (String) buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STARTED);
 		final var response = HTTPClient.get(announceMessage, BodyHandlers.ofByteArray()); // 注意：不能使用BodyHandlers.ofString()
 		if(!HTTPClient.ok(response)) {
 			throw new NetException("Tracker声明失败");
@@ -82,13 +82,13 @@ public final class HttpTrackerClient extends TrackerClient {
 	
 	@Override
 	public void complete(Integer sid, TorrentSession torrentSession) throws NetException {
-		final String announceMessage = buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.COMPLETED);
+		final String announceMessage = (String) buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.COMPLETED);
 		HTTPClient.get(announceMessage, BodyHandlers.ofString());
 	}
 	
 	@Override
 	public void stop(Integer sid, TorrentSession torrentSession) throws NetException {
-		final String announceMessage = buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STOPPED);
+		final String announceMessage = (String) buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STOPPED);
 		HTTPClient.get(announceMessage, BodyHandlers.ofString());
 	}
 	
@@ -114,7 +114,6 @@ public final class HttpTrackerClient extends TrackerClient {
 	}
 	
 	@Override
-	@SuppressWarnings("unchecked")
 	protected String buildAnnounceMessageEx(Integer sid, TorrentSession torrentSession, TrackerConfig.Event event, long download, long remain, long upload) {
 		final StringBuilder builder = new StringBuilder(this.announceUrl);
 		builder.append("?")
