@@ -114,7 +114,7 @@ public final class HttpTrackerClient extends TrackerClient {
 	}
 	
 	@Override
-	protected String buildAnnounceMessageEx(Integer sid, TorrentSession torrentSession, TrackerConfig.Event event, long download, long remain, long upload) {
+	protected String buildAnnounceMessageEx(Integer sid, TorrentSession torrentSession, TrackerConfig.Event event, long download, long left, long upload) {
 		final StringBuilder builder = new StringBuilder(this.announceUrl);
 		builder.append("?")
 			.append("info_hash").append("=").append(torrentSession.infoHash().infoHashUrl()).append("&") // InfoHash
@@ -122,7 +122,7 @@ public final class HttpTrackerClient extends TrackerClient {
 			.append("port").append("=").append(SystemConfig.getTorrentPortExtShort()).append("&") // 外网Peer端口
 			.append("uploaded").append("=").append(upload).append("&") // 已上传大小
 			.append("downloaded").append("=").append(download).append("&") // 已下载大小
-			.append("left").append("=").append(remain).append("&") // 剩余下载大小
+			.append("left").append("=").append(left).append("&") // 剩余下载大小
 			.append("compact").append("=").append("1").append("&") // 默认：1（紧凑）
 			.append("event").append("=").append(event.value()).append("&") // 事件：completed、started、stopped
 			.append("numwant").append("=").append(WANT_PEER_SIZE); // 想要获取的Peer数量

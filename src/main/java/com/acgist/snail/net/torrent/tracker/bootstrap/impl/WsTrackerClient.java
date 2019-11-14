@@ -58,13 +58,13 @@ public final class WsTrackerClient extends TrackerClient {
 	}
 	
 	@Override
-	protected String buildAnnounceMessageEx(Integer sid, TorrentSession torrentSession, TrackerConfig.Event event, long download, long remain, long upload) {
+	protected String buildAnnounceMessageEx(Integer sid, TorrentSession torrentSession, TrackerConfig.Event event, long download, long left, long upload) {
 		final Map<Object, Object> message = new LinkedHashMap<>(8);
 		message.put("info_hash", new String(torrentSession.infoHash().infoHash()));
 		message.put("peer_id", new String(PeerService.getInstance().peerId()));
 		message.put("uploaded", upload);
 		message.put("downloaded", download);
-		message.put("left", remain);
+		message.put("left", left);
 		message.put("event", event.value());
 		message.put("action", TrackerConfig.Action.ANNOUNCE.value());
 		message.put("numwant", WANT_PEER_SIZE);

@@ -153,15 +153,15 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	 * @return 声明消息
 	 */
 	protected Object buildAnnounceMessage(Integer sid, TorrentSession torrentSession, TrackerConfig.Event event) {
-		long download = 0L, remain = 0L, upload = 0L;
+		long download = 0L, left = 0L, upload = 0L;
 		final var taskSession = torrentSession.taskSession();
 		if(taskSession != null) {
 			final var statistics = taskSession.statistics();
 			download = statistics.downloadSize(); // 已下载
-			remain = taskSession.getSize() - download; // 剩余下载
+			left = taskSession.getSize() - download; // 剩余下载
 			upload = statistics.uploadSize(); // 已上传
 		}
-		return this.buildAnnounceMessageEx(sid, torrentSession, event, download, remain, upload);
+		return this.buildAnnounceMessageEx(sid, torrentSession, event, download, left, upload);
 	}
 	
 	/**
@@ -171,12 +171,12 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	 * @param torrentSession BT任务信息
 	 * @param event 事件
 	 * @param download 已下载大小
-	 * @param remain 剩余大小
+	 * @param left 剩余大小
 	 * @param upload 已上传大小
 	 * 
 	 * @return 声明消息
 	 */
-	protected abstract Object buildAnnounceMessageEx(Integer sid, TorrentSession torrentSession, TrackerConfig.Event event, long download, long remain, long upload);
+	protected abstract Object buildAnnounceMessageEx(Integer sid, TorrentSession torrentSession, TrackerConfig.Event event, long download, long left, long upload);
 	
 	public Integer id() {
 		return this.id;
