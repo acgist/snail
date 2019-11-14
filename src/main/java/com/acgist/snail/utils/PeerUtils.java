@@ -71,7 +71,7 @@ public final class PeerUtils {
 			buffer = ByteBuffer.wrap(StringUtils.sha1(buffer.array()));
 			for (int index = 0; index < 5 && size < ALLOWED_FAST_K; index++) {
 				final int seq = (int) (Integer.toUnsignedLong(buffer.getInt()) % pieceSize);
-				if(ArrayUtils.indexOf(seqs, 0, size, seq) == -1) {
+				if(ArrayUtils.indexOf(seqs, 0, size, seq) == ArrayUtils.NO_INDEX) {
 					seqs[size++] = seq;
 				}
 			}

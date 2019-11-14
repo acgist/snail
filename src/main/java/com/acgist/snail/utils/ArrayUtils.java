@@ -46,8 +46,8 @@ public final class ArrayUtils {
 	
 	/**
 	 * <p>比较数组大小（无符号比较）</p>
-	 * <p>长度不同时：长度长的数组大。</p>
-	 * <p>长度相同时：比较每一个字符，高位字符（索引小）大的大。</p>
+	 * <p>长度不同时：长度长的数组大</p>
+	 * <p>长度相同时：高位字符（索引小）大的大</p>
 	 * 
 	 * @param sources 原始数据
 	 * @param targets 比较数据
@@ -167,17 +167,15 @@ public final class ArrayUtils {
 	 * @param end 结束位置
 	 * @param value 查找数值
 	 * 
-	 * @return 索引：-1=不存在
+	 * @return 索引：{@linkplain ArrayUtils#NO_INDEX -1}=不存在
 	 */
 	public static final int indexOf(int[] values, int begin, int end, int value) {
-		int x = ArrayUtils.NO_INDEX;
 		for (int index = begin; index < end; index++) {
 			if(values[index] == value) {
-				x = index;
-				break;
+				return index;
 			}
 		}
-		return x;
+		return ArrayUtils.NO_INDEX;
 	}
 	
 	/**
@@ -186,7 +184,7 @@ public final class ArrayUtils {
 	 * @param chars 数组
 	 * @param value 查找字符
 	 * 
-	 * @return 索引：-1=不存在
+	 * @return 索引：{@linkplain ArrayUtils#NO_INDEX -1}=不存在
 	 */
 	public static final int indexOf(char[] chars, char value) {
 		for (int index = 0; index < chars.length; index++) {
