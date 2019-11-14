@@ -1,6 +1,6 @@
 ## PR关联Issue
 
-> PR关联的Issue地址
+> PR关联Issue
 
 ## 修改描述
 
