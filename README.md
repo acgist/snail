@@ -34,7 +34,7 @@
 #### 编译
 
 ```bash
-# 编译系统和运行系统不一致时，请修改pom.xml -> os.name属性=目标系统并修改JavaFX依赖，编译完成后可以删除lib目录中编译系统的JavaFX依赖。
+# 编译系统和运行系统不一致时，添加参数：-D javafx.platform=win|mac|linux
 
 # Maven
 mvn clean package -P release -D skipTests

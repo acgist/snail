@@ -47,58 +47,37 @@
 	</properties>
 
 	<dependencies>
-		<!-- GUI：JavaFX -->
+		<!--
+		GUI：JavaFX
+		隐式引入依赖：javafx-base、javafx-controls、javafx-graphics
+		-->
+		<!--
+		编译系统和运行系统不一致时，解决办法（下面两种任选一种）：
+		1.添加编译参数：-D javafx.platform=win|mac|linux
+		2.显式引入依赖：javafx-base、javafx-controls、javafx-graphics，所有JavaFX依赖添加属性：<classifier>${os.name}</classifier>
+		-->
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-fxml</artifactId>
 			<version>${javafx.version}</version>
 		</dependency>
-		<!--
-		编译系统和运行系统不一致时，请修改os.name属性并使用下面JavaFX配置，编译完成后可以删除lib目录中编译系统的JavaFX依赖。
-		-->
-		<!--
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-base</artifactId>
-			<version>${javafx.version}</version>
-			<classifier>${os.name}</classifier>
-		</dependency>
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-fxml</artifactId>
-			<version>${javafx.version}</version>
-			<classifier>${os.name}</classifier>
-		</dependency>
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-controls</artifactId>
-			<version>${javafx.version}</version>
-			<classifier>${os.name}</classifier>
-		</dependency>
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-graphics</artifactId>
-			<version>${javafx.version}</version>
-			<classifier>${os.name}</classifier>
-		</dependency>
-		-->
 		<!-- 数据库：H2 -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<version>${h2.version}</version>
 		</dependency>
-		<!-- 日志：slf4j、logback -->
+		<!--
+		日志：slf4j、logback
+		隐式引入依赖：slf4j-api、logback-core
+		-->
+		<!--
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>${slf4j.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-core</artifactId>
-			<version>${logback.version}</version>
-		</dependency>
+		-->
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
@@ -326,7 +305,7 @@
 		</plugins>
 	</build>
 
-    <!-- 仓库 -->
+	<!-- 仓库 -->
 	<scm>
 		<tag>HEAD</tag>
 		<url>https://gitee.com/acgist/snail</url>
