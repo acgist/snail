@@ -47,10 +47,10 @@ public abstract class Repository<T extends BaseEntity> {
 	/**
 	 * 数据库表名
 	 */
-	private String table;
+	private final String table;
 	/**
 	 * <p>查询实体的类型</p>
-	 * <p>注：不使用反射获取泛型，因为反射获取泛型时存在警告。</p>
+	 * <p>注：反射获取泛型时存在警告，不使用反射获取泛型。</p>
 	 */
 	private final Class<T> entityClazz;
 	
