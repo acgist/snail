@@ -64,6 +64,7 @@ public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker
 	
 	@Override
 	public void announce(Integer sid, TorrentSession torrentSession) throws NetException {
+		// 获取链接ID
 		if(this.connectionId == null) {
 			synchronized (this) {
 				if(this.connectionId == null) {
@@ -75,20 +76,25 @@ public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker
 				}
 			}
 		}
-		send(buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STARTED));
+		if(this.connectionId != null) {
+			final ByteBuffer announceMessage = (ByteBuffer) buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STARTED);
+			send(announceMessage);
+		}
 	}
 
 	@Override
 	public void complete(Integer sid, TorrentSession torrentSession) throws NetException {
 		if(this.connectionId != null) {
-			send(buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.COMPLETED));
+			final ByteBuffer announceMessage = (ByteBuffer) buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.COMPLETED);
+			send(announceMessage);
 		}
 	}
 	
 	@Override
 	public void stop(Integer sid, TorrentSession torrentSession) throws NetException {
 		if(this.connectionId != null) {
-			send(buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STOPPED));
+			final ByteBuffer announceMessage = (ByteBuffer) buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STOPPED);
+			send(announceMessage);
 		}
 	}
 	
@@ -137,7 +143,6 @@ public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker
 	}
 	
 	@Override
-	@SuppressWarnings("unchecked")
 	protected ByteBuffer buildAnnounceMessageEx(Integer sid, TorrentSession torrentSession, TrackerConfig.Event event, long download, long remain, long upload) {
 		final ByteBuffer buffer = ByteBuffer.allocate(98);
 		buffer.putLong(this.connectionId); // connection_id

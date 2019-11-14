@@ -36,19 +36,19 @@ public final class WsTrackerClient extends TrackerClient {
 	
 	@Override
 	public void announce(Integer sid, TorrentSession torrentSession) throws NetException {
-		final String announceMessage = buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STARTED);
+		final String announceMessage = (String) buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STARTED);
 		this.client.send(announceMessage);
 	}
 
 	@Override
 	public void complete(Integer sid, TorrentSession torrentSession) throws NetException {
-		final String announceMessage = buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.COMPLETED);
+		final String announceMessage = (String) buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.COMPLETED);
 		this.client.send(announceMessage);
 	}
 
 	@Override
 	public void stop(Integer sid, TorrentSession torrentSession) throws NetException {
-		final String announceMessage = buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STOPPED);
+		final String announceMessage = (String) buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STOPPED);
 		this.client.send(announceMessage);
 	}
 
@@ -58,7 +58,6 @@ public final class WsTrackerClient extends TrackerClient {
 	}
 	
 	@Override
-	@SuppressWarnings("unchecked")
 	protected String buildAnnounceMessageEx(Integer sid, TorrentSession torrentSession, TrackerConfig.Event event, long download, long remain, long upload) {
 		final Map<Object, Object> message = new LinkedHashMap<>(8);
 		message.put("info_hash", new String(torrentSession.infoHash().infoHash()));
