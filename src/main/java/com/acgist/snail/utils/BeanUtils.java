@@ -156,16 +156,27 @@ public final class BeanUtils {
 	/**
 	 * <p>类型拆包</p>
 	 * <p>枚举读取、长字符串读取</p>
-	 * 
-	 * TODO：泛型优化
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static final Object unpack(Class<?> clazz, Object value) {
-		if(value == null) {
+		if(clazz == null || value == null) {
 			return null;
 		}
 		if(clazz.isEnum()) { // 枚举类型
-			return Enum.valueOf((Class<Enum>) clazz, value.toString());
+			final var enums = clazz.getEnumConstants();
+			// 下面方法存在泛型警告
+//			return Enum.valueOf((Class<Enum>) clazz, value.toString());
+			for (Object object : enums) {
+				// 转换枚举使用name()方法
+//				final Enum<?> enumValue = (Enum<?>) object;
+//				if(enumValue.name().equals(value.toString())) {
+//					return object;
+//				}
+				// 直接使用toString()方法
+				if(object.toString().equals(value.toString())) {
+					return object;
+				}
+			}
+			return null;
 		}
 		if(value instanceof JdbcClob) { // 长字符串
 			final JdbcClob clob = (JdbcClob) value;
