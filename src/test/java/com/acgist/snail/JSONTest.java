@@ -36,7 +36,7 @@ public class JSONTest {
 		JSON json = JSON.ofMap(map);
 		System.out.println(json.toJSON());
 		System.out.println(json.getJSON("json"));
-		System.out.println(json.getJSON("json").getString("like"));
+		System.out.println(json.getJSON("json").get("like"));
 		System.out.println(json.getJSON("json").getJSON("like"));
 	}
 

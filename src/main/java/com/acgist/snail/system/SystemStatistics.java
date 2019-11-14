@@ -5,7 +5,7 @@ import com.acgist.snail.pojo.session.StatisticsSession;
 
 /**
  * <p>系统统计</p>
- * <p>系统统计：累计下载、累计上传、速度采样。</p>
+ * <p>系统统计：累计下载、累计上传、速度采样</p>
  * <p>当前系统设置的是限制单个任务的速度，如果想要限制整个软件的速度，可以设置{@linkplain #statistics 全局限速}。</p>
  * 
  * @author acgist

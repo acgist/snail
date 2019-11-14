@@ -214,7 +214,7 @@ console.log(array.join(", "));
 		} else if(object instanceof List) {
 			serializeList((List<?>) object, builder);
 		} else {
-			builder.append(object.toString());
+			builder.append(JSON_STRING).append(serializeValue(object.toString())).append(JSON_STRING);
 		}
 	}
 	
@@ -364,13 +364,13 @@ console.log(array.join(", "));
 			length > 1 &&
 			value.charAt(0) == JSON_MAP_PREFIX && value.charAt(length - 1) == JSON_MAP_SUFFIX
 		) { // MAP：懒加载
-//			return JSON.ofString(object);
+//			return JSON.ofString(value);
 			return value;
 		} else if(
 			length > 1 &&
 			value.charAt(0) == JSON_LIST_PREFIX && value.charAt(length - 1) == JSON_LIST_SUFFIX
 		) { // LIST：懒加载
-//			return JSON.ofString(object);
+//			return JSON.ofString(value);
 			return value;
 		} else {
 			throw new ArgumentException("JSON格式错误：" + value);
@@ -378,11 +378,15 @@ console.log(array.join(", "));
 	}
 	
 	public JSON getJSON(Object key) {
-		final String value = getString(key);
+		final Object value = get(key);
 		if(value == null) {
 			return null;
+		} else if(value instanceof JSON) {
+			return (JSON) value;
+		} else if(value instanceof String) {
+			return JSON.ofString((String) value);
 		} else {
-			return JSON.ofString(value);
+			throw new ArgumentException("JSON转换错误：" + value);
 		}
 	}
 	

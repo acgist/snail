@@ -50,7 +50,7 @@ public final class LambdaOptional<T> {
 	}
 	
 	/**
-	 * 有数据
+	 * 含有数据
 	 */
 	public boolean isPresent() {
 		return !isEmpty();
