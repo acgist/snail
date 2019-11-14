@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.torrent.peer.PeerServer;
-import com.acgist.snail.system.evaluation.PeerEvaluator;
+import com.acgist.snail.net.torrent.peer.bootstrap.PeerEvaluator;
 import com.acgist.snail.system.initializer.Initializer;
 
 /**
