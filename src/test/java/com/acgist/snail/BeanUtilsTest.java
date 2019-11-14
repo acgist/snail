@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 
 import org.junit.Test;
 
+import com.acgist.snail.pojo.ITaskSession.FileType;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.utils.BeanUtils;
 
@@ -41,12 +42,24 @@ public class BeanUtilsTest {
 	}
 	
 	@Test
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void enumProperty() throws IntrospectionException {
 		PropertyDescriptor descriptor = new PropertyDescriptor("status", TaskEntity.class);
 		if(descriptor.getPropertyType().isEnum()) {
-			System.out.println(Enum.valueOf(((Class<Enum>) descriptor.getPropertyType()), "pause"));
+			final var enums = descriptor.getPropertyType().getEnumConstants();
+			for (Object object : enums) {
+				if(object.toString().equals("PAUSE")) {
+					System.out.println(object);
+					System.out.println(object.getClass());
+				}
+			}
+//			System.out.println(Enum.valueOf(((Class<Enum>) descriptor.getPropertyType()), "PAUSE"));
 		}
+	}
+	
+	@Test
+	public void unpack() {
+		final var value = BeanUtils.unpack(FileType.class, "VIDEO");
+		System.out.println(value);
 	}
 	
 }
