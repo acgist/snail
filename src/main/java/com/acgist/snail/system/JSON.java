@@ -227,7 +227,7 @@ console.log(array.join(", "));
 		final StringBuilder builder = new StringBuilder();
 		for (char value : chars) {
 			index = ArrayUtils.indexOf(CHARS, value);
-			if(index == -1) {
+			if(index == ArrayUtils.NO_INDEX) {
 				builder.append(value);
 			} else {
 				builder.append(CHARS_ENCODE[index]);
