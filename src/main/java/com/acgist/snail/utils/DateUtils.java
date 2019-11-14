@@ -22,13 +22,13 @@ public final class DateUtils {
 	 */
 	private static final int UNIX_JAVA_TIMESTAMP_SCALE = 1000;
 	/**
-	 * Window系统时间和JAVA系统时间相差毫秒数。
+	 * Window系统时间和JAVA系统时间相差毫秒数
 	 */
 	private static final long WINDOW_JAVA_DIFF_TIMEMILLIS = 11644473600000L;
 	/**
 	 * <p>Window开始时间戳（北京时间）</p>
-	 * <p>开始时间（1601年1月1日）北京时间（东八区）。</p>
-	 * <p>转换Java时间戳：11644473600000L + System.currentTimeMillis()。</p>
+	 * <p>开始时间（1601年1月1日）北京时间（东八区）</p>
+	 * <p>转换Java时间戳：11644473600000L + System.currentTimeMillis()</p>
 	 */
 	private static final LocalDateTime WINDOW_BEIJIN_BEGIN_TIME = LocalDateTime.of(1601, 01, 01, 8, 00, 00);
 	/**
@@ -163,8 +163,8 @@ public final class DateUtils {
 
 	/**
 	 * <p>Windows时间戳</p>
-	 * <p>时间单位：微秒 * 10。</p>
-	 * <p>使用Java时间戳 + 相差时间戳计算。</p>
+	 * <p>时间单位：微秒 * 10</p>
+	 * <p>使用Java时间戳 + 相差时间戳计算</p>
 	 */
 	public static final long windowTimestamp() {
 		return (WINDOW_JAVA_DIFF_TIMEMILLIS + System.currentTimeMillis()) * 10_000;
@@ -172,8 +172,8 @@ public final class DateUtils {
 	
 	/**
 	 * <p>Windows时间戳</p>
-	 * <p>时间单位：微秒 * 10。</p>
-	 * <p>使用时间差计算。</p>
+	 * <p>时间单位：微秒 * 10</p>
+	 * <p>使用时间差计算</p>
 	 */
 	public static final long windowTimestampEx() {
 		return DateUtils.diff(WINDOW_BEIJIN_BEGIN_TIME, LocalDateTime.now()).toMillis() * 10_000;

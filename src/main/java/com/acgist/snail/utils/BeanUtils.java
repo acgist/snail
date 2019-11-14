@@ -140,7 +140,7 @@ public final class BeanUtils {
 	
 	/**
 	 * <p>类型打包</p>
-	 * <p>枚举类型转换为字符串类型。</p>
+	 * <p>枚举类型转换为字符串类型</p>
 	 */
 	public static final Object pack(Object object) {
 		if(object == null) {
@@ -155,7 +155,7 @@ public final class BeanUtils {
 	
 	/**
 	 * <p>类型拆包</p>
-	 * <p>枚举读取、长字符串读取。</p>
+	 * <p>枚举读取、长字符串读取</p>
 	 * 
 	 * TODO：泛型优化
 	 */

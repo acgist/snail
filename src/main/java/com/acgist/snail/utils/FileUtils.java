@@ -131,7 +131,7 @@ public final class FileUtils {
 	
 	/**
 	 * <p>通过URL获取文件名称</p>
-	 * <p>去掉：协议、域名、路径、参数。</p>
+	 * <p>去掉：协议、域名、路径、参数</p>
 	 */
 	public static final String fileNameFromUrl(final String url) {
 		if(StringUtils.isEmpty(url)) {
