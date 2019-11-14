@@ -5,7 +5,7 @@ import java.util.Map;
 
 /**
  * <p>Object工具</p>
- * <p>提供重写toString、equals、hashCode等方法。</p>
+ * <p>提供重写toString、equals、hashCode等方法</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -46,7 +46,7 @@ public final class ObjectUtils {
 	
 	/**
 	 * <p>判断对象是否可以相互访问</p>
-	 * <p>不推荐使用，使用instanceof替代。</p>
+	 * <p>不推荐使用：使用instanceof替代</p>
 	 * 
 	 * @param source 原始对象：this（父类）
 	 * @param target 比较对象（子类）

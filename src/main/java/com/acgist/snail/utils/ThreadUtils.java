@@ -30,7 +30,7 @@ public final class ThreadUtils {
 	/**
 	 * <p>线程等待</p>
 	 * 
-	 * @param timeout 等待时间（注意：不宜过大，需要转换为毫秒。）
+	 * @param timeout 等待时间（注意：转为毫秒不宜过大）
 	 */
 	public static final void wait(Object obj, Duration timeout) {
 		try {
