@@ -18,7 +18,7 @@ public final class Application {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 	
 	/**
-	 * <p>启动系统<p>
+	 * <p>启动系统</p>
 	 * <table border="1">
 	 * 	<tr>
 	 * 		<th>启动参数</th>
