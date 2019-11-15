@@ -175,4 +175,8 @@ GITHUB（不活跃）：[https://github.com/acgist/snail](https://github.com/acg
 
 首先感谢各位的支持，但是评论区请不要贴异常信息，如果有问题和建议请提交[Issues](https://gitee.com/acgist/snail/issues)。
 
+[贡献规范](./CONTRIBUTING.md)
+
+[代码规范](./CODE_OF_CONDUCT.md)
+
 谢谢！
