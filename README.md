@@ -165,18 +165,18 @@ GITHUB（不活跃）：[https://github.com/acgist/snail](https://github.com/acg
 
 ###### 界面
 
-![主界面](https://static.acgist.com/demo/snail/snail.png "主界面")
+![界面](https://static.acgist.com/demo/snail/snail.png "界面")
 
 ###### 更多
 
 [https://www.acgist.com/snail](https://www.acgist.com/snail)
 
-## 问题建议评论
+## 贡献
 
-首先感谢各位的支持，但是评论区请不要贴异常信息，如果有问题和建议请提交[Issues](https://gitee.com/acgist/snail/issues)。
+欢迎大家提出问题和建议，但是请不要提交到评论区（会被删除），如果有问题和建议请提交[Issues](https://gitee.com/acgist/snail/issues)。
 
-[贡献规范](./CONTRIBUTING.md)
+提交Issues/PR前请阅读[贡献规范](./CONTRIBUTING.md)，提交PR前请阅读[代码规范](./CODE_OF_CONDUCT.md)。
 
-[代码规范](./CODE_OF_CONDUCT.md)
+感谢支持！
 
 谢谢！
