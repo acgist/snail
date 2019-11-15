@@ -2,22 +2,6 @@
  * <h1>Sanil（蜗牛）下载工具</h1>
  * <p>Snail（蜗牛）是一款下载软件，支持下载协议：BT（BitTorrent）、FTP、HTTP。</p>
  * 
- * <h2>规范</h2>
- * <h4>注释、注解</h4>
- * <p>所有的类、抽象方法必须使用javadoc注解。</p>
- * <p>所有的类变量、静态变量需要使用javadoc注解。</p>
- * <p>允许使用同行注释。</p>
- * 
- * <h2>规范检测</h2>
- * <p>P3C：https://github.com/alibaba/p3c</p>
- * <p>Eclipse：https://p3c.alibaba.com/plugin/eclipse/update</p>
- * 
- * <h2>质量检测</h2>
- * <p>Sonar</p>
- * <pre>
- * mvn sonar:sonar "-Dsonar.projectKey=snail" "-Dsonar.host.url=http://localhost:9000" "-Dsonar.login=token"
- * </pre>
- * 
  * TODO：稀有块、阻塞算法（Peer）
  * 
  * @author acgist
