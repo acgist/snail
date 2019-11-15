@@ -152,24 +152,24 @@ SnailLauncher.exe
 
 ## 其他
 
-###### GUI开发工具
+#### GUI开发
 
 JavaFX Scene Builder
 
-###### GIT
+#### GIT仓库
 
 GITEE：[https://gitee.com/acgist/snail](https://gitee.com/acgist/snail)  
 GITHUB（不活跃）：[https://github.com/acgist/snail](https://github.com/acgist/snail)
 
-###### 帮助
+#### 帮助
 
 [https://gitee.com/acgist/snail/wikis](https://gitee.com/acgist/snail/wikis)
 
-###### 界面
+#### 界面
 
 ![界面](https://static.acgist.com/demo/snail/snail.png "界面")
 
-###### 更多
+#### 更多
 
 [https://www.acgist.com/snail](https://www.acgist.com/snail)
 
