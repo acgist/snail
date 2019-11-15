@@ -3,6 +3,9 @@ package com.acgist.snail.net.torrent;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.net.codec.MessageCodec;
 import com.acgist.snail.net.torrent.crypt.MSECryptHandshakeHandler;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
@@ -17,6 +20,12 @@ import com.acgist.snail.system.exception.NetException;
  */
 public final class PeerCryptMessageCodec extends MessageCodec<ByteBuffer, ByteBuffer> {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(PeerCryptMessageCodec.class);
+	
+	/**
+	 * Peer消息代理
+	 */
+	private final PeerSubMessageHandler peerSubMessageHandler;
 	/**
 	 * MSE加密握手代理
 	 */
@@ -24,17 +33,22 @@ public final class PeerCryptMessageCodec extends MessageCodec<ByteBuffer, ByteBu
 	
 	public PeerCryptMessageCodec(PeerUnpackMessageCodec peerUnpackMessageCodec, PeerSubMessageHandler peerSubMessageHandler) {
 		super(peerUnpackMessageCodec);
+		this.peerSubMessageHandler = peerSubMessageHandler;
 		this.mseCryptHandshakeHandler = MSECryptHandshakeHandler.newInstance(peerUnpackMessageCodec, peerSubMessageHandler);
 	}
 	
 	@Override
 	public void decode(ByteBuffer buffer, InetSocketAddress address, boolean hasAddress) throws NetException {
-		buffer.flip();
-		if(this.mseCryptHandshakeHandler.complete()) { // 握手完成
-			this.mseCryptHandshakeHandler.decrypt(buffer);
-			this.doNext(buffer, address, hasAddress);
-		} else { // 握手消息
-			this.mseCryptHandshakeHandler.handshake(buffer);
+		if(this.peerSubMessageHandler.available()) { // 可用
+			buffer.flip();
+			if(this.mseCryptHandshakeHandler.complete()) { // 握手完成
+				this.mseCryptHandshakeHandler.decrypt(buffer);
+				this.doNext(buffer, address, hasAddress);
+			} else { // 握手消息
+				this.mseCryptHandshakeHandler.handshake(buffer);
+			}
+		} else { // 不可用
+			LOGGER.debug("Peer消息代理不可用：忽略消息解密");
 		}
 	}
 
