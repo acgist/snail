@@ -87,27 +87,27 @@ list.stream()
 
 #### 类命名
 
-* 接口必须以 I 开头
-* 测试必须 Test 结尾
-* 抽象类不使用 Abstract 或 Base 开头，例：TrackerClient -> [UdpTrackerClient | HttpTrackerClient]
+* 接口必须以`I`开头
+* 测试必须`Test`结尾
+* 抽象类不使用`Abstract`或`Base`开头，例：TrackerClient -> [UdpTrackerClient | HttpTrackerClient]
 * 继承时子类命名必须以父类后缀结尾，例：Client、Server、MessageHandler、Downloader、Protocol、Repository等等
 
 #### 变量命名
 
 * 基本类型根据用途命名
-* 其他类型使用 Eclipse 自动提示（类名首字母小写）
+* 其他类型使用`Eclipse`自动提示（类名首字母小写）
 
 ## 代码
 
 * 不能使用过时的方法
 * 能使用单例的类必须使用单例
 * 不使用魔法值，使用常量代替。
-* 变量、类尽量使用 final 修饰
-* switch语句必须包含default
-* 方法重写时必须添加注解 @Override
-* 声明 long 类型时，数值后面添加 L 标记。
+* 变量、类尽量使用`final`修饰
+* `switch`语句必须包含`default`
+* 方法重写时必须添加注解`@Override`
+* 声明`long`类型时，数值后面添加`L`标记。
 * 异常如果没有抛出必须使用使用日志框架记录
-* 必须处理所有警告，不允许通过注解 @SuppressWarnings 忽略。
+* 必须处理所有警告，不允许通过注解`@SuppressWarnings`忽略。
 
 ```
 // 数组
