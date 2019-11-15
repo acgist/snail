@@ -5,6 +5,7 @@ import java.net.InetSocketAddress;
 import com.acgist.snail.net.codec.IMessageCodec;
 import com.acgist.snail.net.codec.MessageCodec;
 import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>多行消息处理器</p>
@@ -37,7 +38,7 @@ public final class MultilineMessageCodec extends MessageCodec<String, String> {
 
 	@Override
 	protected void decode(String message, InetSocketAddress address, boolean hasAddress) throws NetException {
-		if(message.matches(this.endRegex)) {
+		if(StringUtils.regex(message, this.endRegex, false)) {
 			this.message.append(message);
 			this.doNext(this.message.toString(), address, hasAddress);
 			this.message.setLength(0);
