@@ -31,6 +31,8 @@
 
 ## 使用
 
+最新分支代码可能存在没有开发完成的任务，导致不能正常使用，推荐下载[稳定版](https://gitee.com/acgist/snail/releases)。
+
 #### 编译
 
 ```bash
