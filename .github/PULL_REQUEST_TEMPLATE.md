@@ -1,11 +1,11 @@
-## PR关联Issue
-
-> PR关联Issue
-
 ## PR类型
 
 - [ ] 修复BUG
 - [ ] 添加功能
+
+## PR关联Issue（选填）
+
+> PR关联Issue
 
 ## PR描述
 
