@@ -19,7 +19,7 @@ public class DhtClientTest {
 	
 	@Test
 	public void ping() {
-		NodeManager.getInstance().newNodeSession(HOST, PORT);
+//		NodeManager.getInstance().newNodeSession(HOST, PORT);
 		DhtClient client = DhtClient.newInstance(HOST, PORT);
 		NodeSession node = client.ping();
 		System.out.println(node);

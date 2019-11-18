@@ -14,6 +14,7 @@ import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.ObjectUtils;
+import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * DHT请求
@@ -138,6 +139,26 @@ public class Request extends DhtMessage {
 			}
 		}
 		return buffer.array();
+	}
+	
+	/**
+	 * 等待响应
+	 */
+	public void waitResponse() {
+		synchronized (this) {
+			if(!this.haveResponse()) {
+				ThreadUtils.wait(this, DhtConfig.TIMEOUT);
+			}
+		}
+	}
+	
+	/**
+	 * 唤醒等待
+	 */
+	public void notifyResponse() {
+		synchronized (this) {
+			this.notifyAll();
+		}
 	}
 	
 	@Override

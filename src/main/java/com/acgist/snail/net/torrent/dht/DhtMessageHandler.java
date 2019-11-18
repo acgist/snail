@@ -26,7 +26,6 @@ import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.system.config.DhtConfig.ErrorCode;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.StringUtils;
-import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * <p>DHT消息代理</p>
@@ -170,7 +169,7 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 		LOGGER.debug("发送DHT请求：ping");
 		final PingRequest request = PingRequest.newRequest();
 		pushMessage(request, socketAddress);
-		waitResponse(request);
+		request.waitResponse();
 		final Response response = RESPONSE_GETTER.apply(request);
 		if(SUCCESS_VERIFY.apply(response)) {
 			final NodeSession nodeSession = NodeManager.getInstance().newNodeSession(response.getNodeId(), socketAddress.getHostString(), socketAddress.getPort());
@@ -191,7 +190,7 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 	 * 处理响应：ping
 	 */
 	private void ping(Request request, Response response) {
-		notifyRequest(request);
+		request.notifyResponse();
 	}
 	
 	/**
@@ -279,26 +278,6 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 	private void announcePeer(Request request, Response response) {
 	}
 
-	/**
-	 * 响应等待
-	 */
-	private void waitResponse(Request request) {
-		synchronized (request) {
-			if(!request.haveResponse()) {
-				ThreadUtils.wait(request, DhtConfig.TIMEOUT);
-			}
-		}
-	}
-	
-	/**
-	 * 唤醒响应等待
-	 */
-	private void notifyRequest(Request request) {
-		synchronized (request) {
-			request.notifyAll();
-		}
-	}
-	
 	/**
 	 * 发送请求
 	 */
