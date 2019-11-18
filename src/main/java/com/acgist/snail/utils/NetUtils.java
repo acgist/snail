@@ -304,6 +304,7 @@ public final class NetUtils {
 	 * @param reuseaddr 地址重用
 	 */
 	public static final DatagramChannel buildUdpChannel(final String host, final int port, final boolean reuseaddr) {
+		boolean ok = true;
 		DatagramChannel channel = null;
 		try {
 //			channel = DatagramChannel.open();
@@ -318,8 +319,14 @@ public final class NetUtils {
 			}
 		} catch (IOException e) {
 			LOGGER.error("打开UDP通道异常", e);
-			IoUtils.close(channel);
-			channel = null;
+			ok = false;
+		} finally {
+			if(ok) {
+				// 成功
+			} else {
+				IoUtils.close(channel);
+				channel = null;
+			}
 		}
 		return channel;
 	}

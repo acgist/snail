@@ -114,9 +114,9 @@ public final class PeerLauncher extends PeerClientHandler {
 		} else {
 			LOGGER.debug("Peer连接（TCP）：{}-{}", this.peerSession.host(), this.peerSession.port());
 			final PeerClient peerClient = PeerClient.newInstance(this.peerSession, this.peerSubMessageHandler);
-			final boolean peerOk = peerClient.connect();
-			if(peerOk) {
-				return peerOk;
+			final boolean tcpOk = peerClient.connect();
+			if(tcpOk) {
+				return tcpOk;
 			} else {
 				LOGGER.debug("Peer连接（uTP）（重试）：{}-{}", this.peerSession.host(), this.peerSession.port());
 				final UtpClient utpClient = UtpClient.newInstance(this.peerSession, this.peerSubMessageHandler);
