@@ -6,7 +6,7 @@ import java.nio.channels.DatagramChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.utils.NetUtils;
+import com.acgist.snail.system.exception.NetException;
 
 /**
  * <p>UDP客户端</p>
@@ -19,7 +19,7 @@ import com.acgist.snail.utils.NetUtils;
  * @author acgist
  * @since 1.0.0
  */
-public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessageHandlerAdapter<T> {
+public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessageHandlerAdapter<T> implements UdpChannel {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpClient.class);
 
@@ -62,22 +62,15 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessa
 	 * @return 打开状态
 	 */
 	public boolean open(final int port) {
-		return this.open(null, port);
-	}
-
-	/**
-	 * 打开客户端
-	 * 
-	 * @param host 地址
-	 * @param port 端口
-	 * 
-	 * @return 打开状态
-	 */
-	public boolean open(final String host, final int port) {
-		final DatagramChannel channel = NetUtils.buildUdpChannel(host, port);
+		DatagramChannel channel = null;
+		try {
+			channel = this.buildUdpChannel(port);
+		} catch (NetException e) {
+			LOGGER.error("打开UDP客户端异常", e);
+		}
 		return open(channel);
 	}
-	
+
 	/**
 	 * <p>打开客户端</p>
 	 * <p>客户端和服务端的使用同一个通道</p>

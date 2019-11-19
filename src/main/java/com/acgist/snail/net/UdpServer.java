@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
+import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.NetUtils;
 
@@ -28,7 +29,7 @@ import com.acgist.snail.utils.NetUtils;
  * @author acgist
  * @since 1.0.0
  */
-public abstract class UdpServer<T extends UdpAcceptHandler> {
+public abstract class UdpServer<T extends UdpAcceptHandler> implements UdpChannel {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpServer.class);
 	
@@ -54,21 +55,50 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 	 * UDP通道
 	 */
 	protected final DatagramChannel channel;
-	
-	public UdpServer(int port, String name, T handler) {
-		this(NetUtils.buildUdpChannel(port), name, handler);
-	}
-	
-	public UdpServer(DatagramChannel channel, String name, T handler) {
-		this.channel = channel;
-		this.name = name;
-		this.handler = handler;
-		this.selector = this.buildSelector();
+
+	/**
+	 * 默认随机端口、本地地址、不重用地址
+	 */
+	protected UdpServer(String name, T handler) {
+		this(PORT_AUTO, ADDR_LOCAL, ADDR_USENEW, name, handler);
 	}
 	
 	/**
-	 * <p>打开Selector</p>
-	 * 
+	 * 默认本地地址、不重用地址
+	 */
+	protected UdpServer(int port, String name, T handler) {
+		this(port, ADDR_LOCAL, ADDR_USENEW, name, handler);
+	}
+	
+	/**
+	 * 默认不重用地址
+	 */
+	protected UdpServer(int port, String host, String name, T handler) {
+		this(port, host, ADDR_USENEW, name, handler);
+	}
+	
+	/**
+	 * 默认本地地址
+	 */
+	protected UdpServer(int port, boolean reuse, String name, T handler) {
+		this(port, ADDR_LOCAL, reuse, name, handler);
+	}
+	
+	/**
+	 * @param port 端口
+	 * @param host 地址
+	 * @param reuse 是否重用地址
+	 * @param name 服务端名称
+	 * @param handler 服务端代理
+	 */
+	protected UdpServer(int port, String host, boolean reuse, String name, T handler) {
+		this.name = name;
+		this.handler = handler;
+		this.selector = this.buildSelector();
+		this.channel = this.buildChannel(port, host, reuse);
+	}
+	
+	/**
 	 * @return Selector
 	 */
 	private Selector buildSelector() {
@@ -81,9 +111,25 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 	}
 	
 	/**
+	 * @return UDP通道
+	 */
+	private DatagramChannel buildChannel(int port, String host, boolean reuse) {
+		try {
+			return this.buildUdpChannel(port, host, reuse);
+		} catch (NetException e) {
+			LOGGER.error("打开UDP通道异常：{}", name, e);
+		}
+		return null;
+	}
+	
+	/**
 	 * 多播（组播）
 	 */
 	public void join(int ttl, String group) {
+		if(this.channel == null) {
+			LOGGER.warn("UDP Server通道没有初始化（join）：{}", this.name);
+			return;
+		}
 		try {
 			this.channel.setOption(StandardSocketOptions.IP_MULTICAST_TTL, ttl);
 			this.channel.setOption(StandardSocketOptions.IP_MULTICAST_LOOP, true);
@@ -98,7 +144,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 	 */
 	public void handle() {
 		if(this.channel == null) {
-			LOGGER.warn("UDP Server通道没有初始化：{}", this.name);
+			LOGGER.warn("UDP Server通道没有初始化（handle）：{}", this.name);
 			return;
 		}
 		if(!this.channel.isOpen()) {

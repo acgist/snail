@@ -9,7 +9,6 @@ import com.acgist.snail.net.UdpServer;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
-import com.acgist.snail.utils.NetUtils;
 
 /**
  * 本地发现服务端
@@ -57,7 +56,7 @@ public final class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDis
 	}
 	
 	public LocalServiceDiscoveryServer() {
-		super(NetUtils.buildUdpChannel(LSD_PORT, true), "LSD Server", LocalServiceDiscoveryAcceptHandler.getInstance());
+		super(LSD_PORT, true, "LSD Server", LocalServiceDiscoveryAcceptHandler.getInstance());
 		this.join(LSD_TTL, LSD_HOST);
 		this.handle();
 	}

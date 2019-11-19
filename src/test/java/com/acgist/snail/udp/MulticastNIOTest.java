@@ -8,7 +8,6 @@ import com.acgist.snail.net.UdpClient;
 import com.acgist.snail.net.UdpServer;
 import com.acgist.snail.net.upnp.UpnpServer;
 import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
 public class MulticastNIOTest {
@@ -28,7 +27,7 @@ public class MulticastNIOTest {
 		UdpClient<UdpTestMessageHandler> client = new UdpClient<UdpTestMessageHandler>("TestClient", handler, socketAddress) {
 			@Override
 			public boolean open() {
-				return this.open(NetUtils.buildUdpChannel(-1));
+				return this.open(PORT_AUTO);
 			}
 		};
 //		client.join(2, UpnpServer.UPNP_HOST);
