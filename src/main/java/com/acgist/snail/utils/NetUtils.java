@@ -1,14 +1,10 @@
 package com.acgist.snail.utils;
 
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.net.StandardProtocolFamily;
-import java.net.StandardSocketOptions;
 import java.net.UnknownHostException;
-import java.nio.channels.DatagramChannel;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
@@ -266,69 +262,6 @@ public final class NetUtils {
 		} else {
 			return new InetSocketAddress(host, port);
 		}
-	}
-	
-	/**
-	 * <p>创建UDP通道（本机地址、随机端口、地址不重用）</p>
-	 */
-	public static final DatagramChannel buildUdpChannel() {
-		return buildUdpChannel(null, -1, false);
-	}
-	
-	/**
-	 * <p>创建UDP通道（本机地址、地址不重用）</p>
-	 */
-	public static final DatagramChannel buildUdpChannel(final int port) {
-		return buildUdpChannel(null, port, false);
-	}
-	
-	/**
-	 * <p>创建UDP通道（地址不重用）</p>
-	 */
-	public static final DatagramChannel buildUdpChannel(final String host, final int port) {
-		return buildUdpChannel(host, port, false);
-	}
-	
-	/**
-	 * <p>创建UDP通道（本机地址）</p>
-	 */
-	public static final DatagramChannel buildUdpChannel(final int port, final boolean reuseaddr) {
-		return buildUdpChannel(null, port, reuseaddr);
-	}
-	
-	/**
-	 * <p>创建UDP通道</p>
-	 * 
-	 * @param host 地址：null=绑定本机
-	 * @param port 端口：-1=不绑定端口（随机选择）
-	 * @param reuseaddr 地址重用
-	 */
-	public static final DatagramChannel buildUdpChannel(final String host, final int port, final boolean reuseaddr) {
-		boolean ok = true;
-		DatagramChannel channel = null;
-		try {
-//			channel = DatagramChannel.open();
-			channel = DatagramChannel.open(StandardProtocolFamily.INET); // IPv4
-			channel.configureBlocking(false); // 不阻塞
-			if(reuseaddr) {
-				channel.setOption(StandardSocketOptions.SO_REUSEADDR, true);
-			}
-			if(port >= 0) {
-				channel.bind(NetUtils.buildSocketAddress(host, port)); // 绑定：使用receive、send方法
-//				channel.connect(NetUtils.buildSocketAddress(host, port)); // 连接：使用read、write方法
-			}
-		} catch (IOException e) {
-			LOGGER.error("打开UDP通道异常", e);
-			ok = false;
-		} finally {
-			if(ok) {
-				// 成功
-			} else {
-				IoUtils.close(channel);
-				channel = null;
-			}
-		}
-		return channel;
 	}
 	
 }

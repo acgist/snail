@@ -4,7 +4,7 @@ import com.acgist.snail.net.UdpServer;
 
 /**
  * <p>UPNP服务端</p>
- * <p>不监听UPNP端口，防止收到很多其他应用信息。</p>
+ * <p>不监听UPNP端口，防止收到很多其他应用消息。</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -29,7 +29,7 @@ public final class UpnpServer extends UdpServer<UpnpAcceptHandler> {
 	public static final String UPNP_HOST = "239.255.255.250";
 	
 	private UpnpServer() {
-		super(-1, "UPNP Server", UpnpAcceptHandler.getInstance());
+		super("UPNP Server", UpnpAcceptHandler.getInstance());
 		this.join(UPNP_TTL, UPNP_HOST);
 		this.handle();
 	}

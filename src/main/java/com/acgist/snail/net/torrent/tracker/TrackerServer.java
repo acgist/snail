@@ -13,7 +13,7 @@ public final class TrackerServer extends UdpServer<TrackerAcceptHandler> {
 //	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerServer.class);
 	
 	private TrackerServer() {
-		super(-1, "Tracker Server", TrackerAcceptHandler.getInstance());
+		super("Tracker Server", TrackerAcceptHandler.getInstance());
 		this.handle();
 	}
 	
