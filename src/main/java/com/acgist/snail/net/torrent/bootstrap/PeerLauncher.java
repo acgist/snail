@@ -205,8 +205,6 @@ public final class PeerLauncher extends PeerClientHandler {
 	
 	/**
 	 * <p>释放资源：关闭Peer客户端，设置非下载状态。</p>
-	 * 
-	 * TODO：释放完成后状态没有被修改
 	 */
 	public void release() {
 		try {
