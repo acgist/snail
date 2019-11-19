@@ -278,10 +278,10 @@ public final class UtpWindow {
 	/**
 	 * 计算超时时间
 	 */
-	private void timeout(int packetRtt) {
+	private void timeout(final int packetRtt) {
 		final int delta = this.rtt - packetRtt;
-		this.rttVar += (Math.abs(delta) - this.rttVar) / 4;
 		this.rtt += (packetRtt - this.rtt) / 8;
+		this.rttVar += (Math.abs(delta) - this.rttVar) / 4;
 		this.timeout = Math.max(this.rtt + this.rttVar * 4, MAX_TIMEOUT);
 		LOGGER.debug("UTP超时时间：{}", this.timeout);
 	}
