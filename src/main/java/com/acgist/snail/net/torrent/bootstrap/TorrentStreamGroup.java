@@ -126,6 +126,7 @@ public final class TorrentStreamGroup {
 					final var finishTime = System.currentTimeMillis(); // 结束时间
 					LOGGER.debug("{}-任务准备完成消耗时间：{}", torrent.name(), (finishTime - startTime));
 					torrentSession.resize(torrentStreamGroup.size());
+					torrentStreamGroup.fullPieces(torrentStreamGroup.pieces());
 				} else {
 					LOGGER.warn("任务准备超时：{}", torrent.name());
 				}
