@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,9 +31,9 @@ public final class UtpRequestQueue {
 	private static final int QUEUE_SIZE = 4;
 	
 	/**
-	 * 获取队列序号，每次获取请求队列后递增。
+	 * 队列序号：每次获取请求队列后递增
 	 */
-	private volatile int index = 0;
+	private final AtomicInteger index = new AtomicInteger(0);
 	/**
 	 * UTP请求队列处理线程池
 	 */
@@ -58,8 +59,7 @@ public final class UtpRequestQueue {
 	 * <p>不需要加锁，允许误差。</p>
 	 */
 	public BlockingQueue<UtpRequest> queue() {
-		final int index = this.index % QUEUE_SIZE;
-		this.index++;
+		final int index = this.index.getAndIncrement() % QUEUE_SIZE;
 		return this.queues.get(index);
 	}
 	

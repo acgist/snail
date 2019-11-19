@@ -3,6 +3,7 @@ package com.acgist.snail.net.ftp.bootstrap;
 import java.net.URI;
 
 import com.acgist.snail.net.ftp.FtpClient;
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -17,11 +18,7 @@ public final class FtpClientBuilder {
 	/**
 	 * FTP默认端口
 	 */
-	private static final int FTP_DEFAULT_PORT = 21;
-	/**
-	 * FTP匿名用户账号和用户密码
-	 */
-	private static final String ANONYMOUS = "anonymous";
+	private static final int DEFAULT_PORT = 21;
 	
 	/**
 	 * 下载链接
@@ -80,7 +77,7 @@ public final class FtpClientBuilder {
 		this.host = uri.getHost();
 		int port = uri.getPort();
 		if(port == -1) {
-			port = FTP_DEFAULT_PORT;
+			port = DEFAULT_PORT;
 		}
 		this.port = port;
 		this.filePath = uri.getPath();
@@ -91,8 +88,8 @@ public final class FtpClientBuilder {
 	 */
 	private void decodeUserInfo(String userInfo) {
 		if(StringUtils.isEmpty(userInfo)) {
-			this.user = FtpClientBuilder.ANONYMOUS;
-			this.password = FtpClientBuilder.ANONYMOUS;
+			this.user = SystemConfig.getFtpUser();
+			this.password = SystemConfig.getFtpPassword();
 		} else {
 			final String[] userInfos = userInfo.split(":");
 			if(userInfos.length == 1) {
@@ -101,8 +98,8 @@ public final class FtpClientBuilder {
 				this.user = userInfos[0];
 				this.password = userInfos[1];
 			} else {
-				this.user = FtpClientBuilder.ANONYMOUS;
-				this.password = FtpClientBuilder.ANONYMOUS;
+				this.user = SystemConfig.getFtpUser();
+				this.password = SystemConfig.getFtpPassword();
 			}
 		}
 	}
