@@ -40,10 +40,11 @@ public final class Base32Utils {
 		if(bytes == null) {
 			return null;
 		}
+		int value;
 		final char[] chars = new char[((bytes.length * 8) / 5) + ((bytes.length % 5) != 0 ? 1 : 0)];
 		for (int i = 0, j = 0, index = 0; i < chars.length; i++) {
 			if (index > 3) {
-				int value = bytes[j] & (0xFF >> index);
+				value = (bytes[j] & 0xFF) & (0xFF >> index);
 				index = (index + 5) % 8;
 				value <<= index;
 				if (j < bytes.length - 1) {
@@ -69,10 +70,11 @@ public final class Base32Utils {
 		if(content == null) {
 			return null;
 		}
+		int value;
 		final char[] chars = content.toUpperCase().toCharArray();
 		final byte[] bytes = new byte[(chars.length * 5) / 8];
 		for (int i = 0, j = 0, index = 0; i < chars.length; i++) {
-			int value = BASE_32_DECODE[chars[i]];
+			value = BASE_32_DECODE[chars[i]];
 			if (index <= 3) {
 				index = (index + 5) % 8;
 				if (index == 0) {
