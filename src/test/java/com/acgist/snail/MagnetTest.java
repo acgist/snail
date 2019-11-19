@@ -6,6 +6,8 @@ import com.acgist.snail.pojo.bean.Magnet;
 import com.acgist.snail.protocol.magnet.MagnetProtocol;
 import com.acgist.snail.protocol.magnet.bootstrap.MagnetBuilder;
 import com.acgist.snail.system.exception.DownloadException;
+import com.acgist.snail.utils.Base32Utils;
+import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
 public class MagnetTest {
@@ -24,6 +26,17 @@ public class MagnetTest {
 	public void build() throws DownloadException {
 		MagnetProtocol.getInstance().init("magnet:?xt=urn:btih:fa493c8add6d907a0575631831033dcf94ba5217&tr=http://opentracker.acgnx.se/announce").buildTaskSession();
 		ThreadUtils.sleep(Long.MAX_VALUE);
+	}
+	
+	@Test
+	public void base32() {
+		var content = Base32Utils.encode(StringUtils.unhex("fa493c8add6d907a0575631831033dcf94ba5217"));
+//		var content = Base32Utils.encode("你好啊".getBytes());
+		System.out.println(content);
+		System.out.println(content.length());
+//		System.out.println(new String(Base32Utils.decode(content)));
+		System.out.println(StringUtils.hex(Base32Utils.decode(content)));
+		System.out.println(StringUtils.hex(Base32Utils.decode("6HYDB4YE7ZNA5CGN5QP76PNH6O7VK7YX")));
 	}
 	
 }
