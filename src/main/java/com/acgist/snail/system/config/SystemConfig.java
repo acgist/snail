@@ -151,6 +151,14 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	private String version;
 	/**
+	 * FTP匿名用户
+	 */
+	private String ftpUser;
+	/**
+	 * FTP匿名密码
+	 */
+	private String ftpPassword;
+	/**
 	 * 作者
 	 */
 	private String author;
@@ -229,6 +237,8 @@ public final class SystemConfig extends PropertiesConfig {
 		this.name = getString("acgist.system.name");
 		this.nameEn = getString("acgist.system.name.en");
 		this.version = getString("acgist.system.version");
+		this.ftpUser = getString("acgist.system.ftp.user");
+		this.ftpPassword = getString("acgist.system.ftp.password");
 		this.author = getString("acgist.system.author");
 		this.source = getString("acgist.system.source");
 		this.support = getString("acgist.system.support");
@@ -252,6 +262,8 @@ public final class SystemConfig extends PropertiesConfig {
 		LOGGER.info("软件名称：{}", this.name);
 		LOGGER.info("软件名称（英文）：{}", this.nameEn);
 		LOGGER.info("软件版本：{}", this.version);
+		LOGGER.info("FTP匿名用户：{}", this.ftpUser);
+		LOGGER.info("FTP匿名密码：{}", this.ftpPassword);
 		LOGGER.info("作者：{}", this.author);
 		LOGGER.info("官网与源码：{}", this.source);
 		LOGGER.info("问题与建议：{}", this.support);
@@ -289,6 +301,20 @@ public final class SystemConfig extends PropertiesConfig {
 		return INSTANCE.version;
 	}
 
+	/**
+	 * FTP匿名用户
+	 */
+	public static final String getFtpUser() {
+		return INSTANCE.ftpUser;
+	}
+
+	/**
+	 * FTP匿名密码
+	 */
+	public static final String getFtpPassword() {
+		return INSTANCE.ftpPassword;
+	}
+	
 	/**
 	 * 作者
 	 */

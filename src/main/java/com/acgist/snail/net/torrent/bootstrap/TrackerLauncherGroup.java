@@ -13,7 +13,6 @@ import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.PeerConfig.Action;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.utils.CollectionUtils;
 
 /**
  * <p>TrackerLauncher组</p>
@@ -64,8 +63,6 @@ public final class TrackerLauncherGroup {
 			clients = TrackerManager.getInstance().clients(null, magnet.getTr());
 		} else {
 			LOGGER.warn("加载TrackerLauncher失败（未知动作）：{}", action);
-		}
-		if(CollectionUtils.isEmpty(clients)) {
 			return;
 		}
 		clients.stream()
