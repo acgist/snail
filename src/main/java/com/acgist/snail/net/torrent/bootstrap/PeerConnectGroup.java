@@ -115,11 +115,11 @@ public final class PeerConnectGroup {
 	/**
 	 * <p>剔除无效接入</p>
 	 * <ul>
-	 * 	<li>不可用的连接。</li>
-	 * 	<li>长时间没有请求的连接。</li>
-	 * 	<li>超过最大连接数的连接。</li>
+	 * 	<li>不可用的连接</li>
+	 * 	<li>长时间没有请求的连接</li>
+	 * 	<li>超过最大连接数的连接</li>
 	 * </ul>
-	 * <p>剔除时设置为阻塞。</p>
+	 * <p>剔除时设置为阻塞</p>
 	 */
 	private void inferiorPeerConnects() {
 		final int size = this.peerConnects.size();

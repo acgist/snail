@@ -21,8 +21,8 @@ import com.acgist.snail.system.context.SystemThreadContext;
  * <p>PeerLauncher组：下载</p>
  * <dl>
  * 	<dt>对连接请求下载的PeerLauncher管理优化</dt>
- * 	<dd>创建PeerLauncher。</dd>
- * 	<dd>定时替换下载最慢的PeerLauncher。</dd>
+ * 	<dd>创建PeerLauncher</dd>
+ * 	<dd>定时替换下载最慢的PeerLauncher</dd>
  * </dl>
  * 
  * @author acgist
@@ -100,7 +100,7 @@ public final class PeerLauncherGroup {
 
 	/**
 	 * <p>资源释放</p>
-	 * <p>释放所有连接的PeerLauncher。</p>
+	 * <p>释放所有连接的PeerLauncher</p>
 	 */
 	public void release() {
 		LOGGER.debug("释放PeerLauncherGroup");
@@ -119,7 +119,7 @@ public final class PeerLauncherGroup {
 	
 	/**
 	 * <p>创建PeerLauncher列表</p>
-	 * <p>创建数量达到最大Peer连接或者重试次数超过{@link #MAX_BUILD_SIZE}时退出创建。</p>
+	 * <p>创建数量达到最大Peer连接或者重试次数超过{@link #MAX_BUILD_SIZE}时退出创建</p>
 	 */
 	private void buildPeerLaunchers() {
 		LOGGER.debug("创建PeerLauncher");
@@ -189,19 +189,16 @@ public final class PeerLauncherGroup {
 	 * <p>剔除劣质Peer</p>
 	 * <p>劣质Peer释放资源，然后将其放入Peer队列头部。</p>
 	 * <p>
-	 * 挑选评分最低的PeerLauncher作为劣质Peer。
-	 * 如果其中含有不可用的PeerLauncher，直接剔除该PeerLauncher。
-	 * 如果存在不可用的PeerLauncher时，则不剔除劣质PeerLauncher。
+	 * 挑选评分最低的PeerLauncher作为劣质Peer。<br>
+	 * 如果其中含有不可用的PeerLauncher，直接剔除该PeerLauncher。<br>
+	 * 如果存在不可用的PeerLauncher时，则不剔除劣质PeerLauncher。<br>
 	 * 必须循环完所有的PeerLauncher，清除评分进行新一轮的评分计算。
 	 * </p>
-	 * <p>不可用的PeerLauncher：状态不可用、评分=0。</p>
-	 * 
-	 * TODO：评分=0是否直接剔除
+	 * <p>不可用的PeerLauncher：状态不可用、评分=0</p>
 	 */
 	private void inferiorPeerLaunchers() {
 		LOGGER.debug("剔除劣质PeerLauncher");
 		int index = 0;
-		boolean unusable = false; // 是否已经剔除不可用的Peer
 		long mark = 0, minMark = 0;
 		PeerLauncher tmp = null;
 		PeerLauncher inferior = null; // 劣质PeerLauncher
@@ -216,7 +213,6 @@ public final class PeerLauncherGroup {
 			}
 			// 状态不可用的PeerLauncher直接剔除，不执行后面操作。
 			if(!tmp.available()) {
-				unusable = true;
 				inferiorPeerLauncher(tmp);
 				continue;
 			}
@@ -231,7 +227,6 @@ public final class PeerLauncherGroup {
 				this.optimize.add(tmp.peerSession());
 			} else {
 				// 评分=0直接剔除
-				unusable = true;
 				inferiorPeerLauncher(tmp);
 				continue;
 			}
@@ -246,13 +241,13 @@ public final class PeerLauncherGroup {
 				this.offer(tmp);
 			}
 		}
-		// 已经剔除无用的PeerLauncher，劣质Peer重新加入队列。
-		if(unusable) {
-			if(inferior != null) {
+		if(inferior != null) {
+			// 如果当前Peer数量小于系统配置最大数量不剔除
+			if(this.peerLaunchers.size() < SystemConfig.getPeerSize()) {
 				this.offer(inferior);
+			} else {
+				inferiorPeerLauncher(inferior);
 			}
-		} else {
-			inferiorPeerLauncher(inferior);
 		}
 	}
 	
