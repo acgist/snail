@@ -187,14 +187,10 @@ public final class PeerLauncherGroup {
 	
 	/**
 	 * <p>剔除劣质Peer</p>
-	 * <p>劣质Peer释放资源，然后将其放入Peer队列头部。</p>
-	 * <p>
-	 * 挑选评分最低的PeerLauncher作为劣质Peer。<br>
-	 * 如果其中含有不可用的PeerLauncher，直接剔除该PeerLauncher。<br>
-	 * 如果存在不可用的PeerLauncher时，则不剔除劣质PeerLauncher。<br>
-	 * 必须循环完所有的PeerLauncher，清除评分进行新一轮的评分计算。
-	 * </p>
-	 * <p>不可用的PeerLauncher：状态不可用、评分=0</p>
+	 * <p>劣质Peer：评分最低的Peer</p>
+	 * <p>直接剔除：不可用的Peer（评分=0、状态不可用）</p>
+	 * <p>释放劣质Peer，然后将其放入Peer队列头部。如果最后Peer列表小于系统最大数量不剔除劣质Peer。</p>
+	 * <p>必须循环完所有的PeerLauncher，清除评分进行新一轮的评分计算。</p>
 	 */
 	private void inferiorPeerLaunchers() {
 		LOGGER.debug("剔除劣质PeerLauncher");
@@ -211,7 +207,7 @@ public final class PeerLauncherGroup {
 			if(tmp == null) {
 				break;
 			}
-			// 状态不可用的PeerLauncher直接剔除，不执行后面操作。
+			// 状态不可用直接剔除
 			if(!tmp.available()) {
 				inferiorPeerLauncher(tmp);
 				continue;
@@ -223,12 +219,11 @@ public final class PeerLauncherGroup {
 				this.offer(tmp);
 				continue;
 			}
-			if(mark > 0) {
-				this.optimize.add(tmp.peerSession());
-			} else {
-				// 评分=0直接剔除
+			if(mark <= 0) {
 				inferiorPeerLauncher(tmp);
 				continue;
+			} else {
+				this.optimize.add(tmp.peerSession());
 			}
 			if(inferior == null) {
 				inferior = tmp;
@@ -242,7 +237,7 @@ public final class PeerLauncherGroup {
 			}
 		}
 		if(inferior != null) {
-			// 如果当前Peer数量小于系统配置最大数量不剔除
+			// 如果当前Peer连接数量小于系统配置最大数量不剔除
 			if(this.peerLaunchers.size() < SystemConfig.getPeerSize()) {
 				this.offer(inferior);
 			} else {

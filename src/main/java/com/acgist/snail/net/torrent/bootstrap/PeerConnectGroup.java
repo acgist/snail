@@ -17,11 +17,9 @@ import com.acgist.snail.system.context.SystemThreadContext;
  * <p>Peer接入组：上传</p>
  * <dl>
  * 	<dt>对接入请求下载的PeerConnect管理优化</dt>
- * 	<dd>清除长时间没有请求的Peer。</dd>
- * 	<dd>不能超过最大分享连接数（如果接入的Peer为当前连接的Peer可以忽略连接数）。</dd>
+ * 	<dd>清除长时间没有请求的Peer</dd>
+ * 	<dd>不能超过最大分享连接数（如果接入的Peer为当前连接的Peer可以忽略连接数）</dd>
  * </dl>
- * 
- * TODO：长时间无法删除问题
  * 
  * @author acgist
  * @since 1.0.2
@@ -122,11 +120,12 @@ public final class PeerConnectGroup {
 	 * <p>剔除时设置为阻塞</p>
 	 */
 	private void inferiorPeerConnects() {
-		final int size = this.peerConnects.size();
-		final int maxSize = SystemConfig.getPeerSize();
-		int index = 0; // 序号
+		LOGGER.debug("剔除无效PeerConnect");
+		int index = 0;
 		int offerSize = 0; // 有效数量
 		PeerConnect tmp = null;
+		final int size = this.peerConnects.size();
+		final int maxSize = SystemConfig.getPeerSize();
 		while(true) {
 			if(index++ >= size) {
 				break;
@@ -135,7 +134,7 @@ public final class PeerConnectGroup {
 			if(tmp == null) {
 				break;
 			}
-			// 不可用直接剔除
+			// 状态不可用直接剔除
 			if(!tmp.available()) {
 				inferiorPeerConnect(tmp);
 				continue;
@@ -154,7 +153,7 @@ public final class PeerConnectGroup {
 				this.offer(tmp);
 				continue;
 			}
-			if(mark == 0L) {
+			if(mark <= 0L) {
 				inferiorPeerConnect(tmp);
 			} else if(offerSize > maxSize) {
 				inferiorPeerConnect(tmp);

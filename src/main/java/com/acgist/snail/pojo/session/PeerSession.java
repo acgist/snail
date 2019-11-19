@@ -513,7 +513,7 @@ public final class PeerSession implements IStatistics {
 	 * 取消状态
 	 */
 	public void statusOff(byte status) {
-		this.status ^= status;
+		this.status &= ~status;
 	}
 	
 	/**
@@ -562,9 +562,9 @@ public final class PeerSession implements IStatistics {
 	 * 取消pex flags
 	 */
 	public void flagsOff(byte flags) {
-		this.flags ^= flags;
+		this.flags &= ~flags;
 	}
-	
+
 	/**
 	 * 验证pex flags
 	 */
