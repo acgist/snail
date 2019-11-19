@@ -37,23 +37,23 @@ public final class UtpConfig {
 	/**
 	 * 消息类型：数据
 	 */
-	public static final byte TYPE_DATA  = (ST_DATA 	<< 4) + UTP_VERSION;
+	public static final byte TYPE_DATA  = (ST_DATA	<< 4) | (UTP_VERSION & 0xFF);
 	/**
 	 * 消息类型：结束
 	 */
-	public static final byte TYPE_FIN   = (ST_FIN 	<< 4) + UTP_VERSION;
+	public static final byte TYPE_FIN   = (ST_FIN	<< 4) | (UTP_VERSION & 0xFF);
 	/**
 	 * 消息类型：响应
 	 */
-	public static final byte TYPE_STATE = (ST_STATE << 4) + UTP_VERSION;
+	public static final byte TYPE_STATE = (ST_STATE	<< 4) | (UTP_VERSION & 0xFF);
 	/**
 	 * 消息类型：重置
 	 */
-	public static final byte TYPE_RESET = (ST_RESET << 4) + UTP_VERSION;
+	public static final byte TYPE_RESET = (ST_RESET	<< 4) | (UTP_VERSION & 0xFF);
 	/**
 	 * 消息类型：握手
 	 */
-	public static final byte TYPE_SYN   = (ST_SYN 	<< 4) + UTP_VERSION;
+	public static final byte TYPE_SYN   = (ST_SYN	<< 4) | (UTP_VERSION & 0xFF);
 	/**
 	 * 扩展
 	 */

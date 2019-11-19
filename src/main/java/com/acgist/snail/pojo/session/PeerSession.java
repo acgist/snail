@@ -32,13 +32,9 @@ public final class PeerSession implements IStatistics {
 	 */
 	private String clientName;
 	/**
-	 * 失败次数
-	 */
-	private volatile int failTimes = 0;
-	/**
 	 * 保留位
 	 */
-	private volatile byte[] reserved;
+	private byte[] reserved;
 	/**
 	 * pex flags
 	 */
@@ -51,6 +47,10 @@ public final class PeerSession implements IStatistics {
 	 * 来源属性
 	 */
 	private volatile byte source = 0;
+	/**
+	 * 失败次数
+	 */
+	private volatile int failTimes = 0;
 	/**
 	 * Peer地址
 	 */
@@ -506,18 +506,14 @@ public final class PeerSession implements IStatistics {
 	 * 设置状态
 	 */
 	public void status(byte status) {
-		synchronized (this) {
-			this.status |= status;
-		}
+		this.status |= status;
 	}
 	
 	/**
 	 * 取消状态
 	 */
 	public void statusOff(byte status) {
-		synchronized (this) {
-			this.status ^= status;
-		}
+		this.status ^= status;
 	}
 	
 	/**
