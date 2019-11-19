@@ -124,7 +124,8 @@ public final class PeerConnectGroup {
 	private void inferiorPeerConnects() {
 		final int size = this.peerConnects.size();
 		final int maxSize = SystemConfig.getPeerSize();
-		int index = 0;
+		int index = 0; // 序号
+		int offerSize = 0; // 有效数量
 		PeerConnect tmp = null;
 		while(true) {
 			if(index++ >= size) {
@@ -141,6 +142,7 @@ public final class PeerConnectGroup {
 			}
 			// 提供下载的Peer提供上传
 			if(tmp.peerSession().downloading()) {
+				offerSize++;
 				this.offer(tmp);
 				continue;
 			}
@@ -148,14 +150,16 @@ public final class PeerConnectGroup {
 			final long mark = tmp.mark();
 			// 第一次评分忽略
 			if(!tmp.marked()) {
+				offerSize++;
 				this.offer(tmp);
 				continue;
 			}
 			if(mark == 0L) {
 				inferiorPeerConnect(tmp);
-			} else if(index > maxSize) {
+			} else if(offerSize > maxSize) {
 				inferiorPeerConnect(tmp);
 			} else {
+				offerSize++;
 				this.offer(tmp);
 			}
 		}
