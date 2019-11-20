@@ -163,7 +163,7 @@ GITHUB（不活跃）：[https://github.com/acgist/snail](https://github.com/acg
 
 #### 维基
 
-[Wiki](./wikis)
+[Wiki](https://gitee.com/acgist/snail/wikis)
 
 #### 界面
 
