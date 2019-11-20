@@ -1138,10 +1138,10 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 */
 	private void allowedFastDownload() {
 		if(
-			this.peerLauncher != null &&
 			this.peerSession != null &&
 			this.peerSession.isPeerChoked() &&
-			this.peerSession.supportAllowedFast()
+			this.peerSession.supportAllowedFast() &&
+			this.peerLauncher != null
 		) {
 			this.peerLauncher.download();
 		}
