@@ -23,6 +23,7 @@
 	<a target="_blank" href="https://www.bittorrent.org/beps/bep_0000.html">
 		<img alt="BitTorrent" src="https://img.shields.io/badge/BitTorrent-BEP-orange.svg?style=flat-square" />
 	</a>
+	<br />
 	<img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/acgist/snail?color=crimson&style=flat-square" />
 	<img alt="GitHub" src="https://img.shields.io/github/license/acgist/snail?style=flat-square" />
 </p>
@@ -70,7 +71,7 @@ SnailLauncher.exe
 
 #### Maven
 
-```
+```xml
 <dependency>
     <groupId>com.acgist</groupId>
     <artifactId>snail</artifactId>
