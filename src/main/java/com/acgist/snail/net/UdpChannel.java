@@ -73,6 +73,8 @@ public interface UdpChannel {
 	 * @param host 地址：{@linkplain #ADDR_LOCAL 本机地址}
 	 * @param reuse 是否重用地址：{@linkplain #ADDR_REUSE 重用}、{@linkplain #ADDR_USENEW 不重用}
 	 * 
+	 * @return UDP通道
+	 * 
 	 * @throws NetException 网络异常
 	 */
 	public default DatagramChannel buildUdpChannel(int port, String host, boolean reuse) throws NetException {

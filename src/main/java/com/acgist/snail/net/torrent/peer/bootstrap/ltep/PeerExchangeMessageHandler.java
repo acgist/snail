@@ -37,10 +37,13 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerExchangeMessageHandler.class);
 	
 	//================IPv4================//
+	
 	private static final String ADDED = "added";
 	private static final String ADDEDF = "added.f";
 	private static final String DROPPED = "dropped";
+	
 	//================IPv6================//
+	
 	private static final String ADDED6 = "added6";
 	private static final String ADDED6F = "added6.f";
 	private static final String DROPPED6 = "dropped6";
