@@ -567,6 +567,9 @@ public final class TorrentSession {
 	 * 创建接入连接
 	 */
 	public PeerConnect newPeerConnect(PeerSession peerSession, PeerSubMessageHandler peerSubMessageHandler) {
+		if(this.peerConnectGroup == null) {
+			return null;
+		}
 		return this.peerConnectGroup.newPeerConnect(peerSession, peerSubMessageHandler);
 	}
 	
