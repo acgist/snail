@@ -72,6 +72,10 @@ public final class TorrentSession {
 	 */
 	private Action action;
 	/**
+	 * 准备完成
+	 */
+	private volatile boolean ready = false;
+	/**
 	 * 可上传
 	 */
 	private volatile boolean uploadable = false;
@@ -176,6 +180,7 @@ public final class TorrentSession {
 		this.loadPeerConnectGroupTimer();
 		this.loadPeerLauncherGroup();
 		this.loadPeerLauncherGroupTimer();
+		this.ready = true;
 		return this.torrent != null;
 	}
 	
@@ -190,6 +195,7 @@ public final class TorrentSession {
 		this.loadPeerConnectGroup();
 		this.loadPeerConnectGroupTimer();
 		this.uploadable = true;
+		this.ready = true;
 		return this;
 	}
 
@@ -494,6 +500,7 @@ public final class TorrentSession {
 			this.torrentStreamGroup.release();
 		}
 		SystemThreadContext.shutdownNow(this.executorTimer);
+		this.ready = false;
 		this.uploadable = false;
 	}
 
@@ -567,9 +574,6 @@ public final class TorrentSession {
 	 * 创建接入连接
 	 */
 	public PeerConnect newPeerConnect(PeerSession peerSession, PeerSubMessageHandler peerSubMessageHandler) {
-		if(this.peerConnectGroup == null) {
-			return null;
-		}
 		return this.peerConnectGroup.newPeerConnect(peerSession, peerSubMessageHandler);
 	}
 	
@@ -658,6 +662,10 @@ public final class TorrentSession {
 	
 	public BitSet allPieces() {
 		return this.torrentStreamGroup.allPieces();
+	}
+	
+	public boolean ready() {
+		return this.ready;
 	}
 	
 	public Action action() {
