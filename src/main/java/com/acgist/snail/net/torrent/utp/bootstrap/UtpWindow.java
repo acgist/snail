@@ -46,9 +46,11 @@ public final class UtpWindow {
 	private static final int SEMAPHORE_TIMEOUT = 2;
 	
 	//================流量控制、阻塞控制================//
+	
 	private volatile int wnd = MIN_WND_SIZE;
 	
 	//================超时================//
+	
 	private volatile int rtt;
 	private volatile int rttVar;
 	private volatile int timeout;
