@@ -390,6 +390,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	 * 处理重置消息
 	 */
 	private void reset(int timestamp, short seqnr, short acknr) {
+		LOGGER.debug("处理重置消息");
 		this.connect = false;
 		this.state(timestamp, seqnr);
 		this.closeAll();
