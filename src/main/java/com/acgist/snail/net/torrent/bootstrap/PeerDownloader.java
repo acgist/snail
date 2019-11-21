@@ -168,8 +168,7 @@ public class PeerDownloader extends PeerConnect {
 	@Override
 	public void piece(int index, int begin, byte[] bytes) {
 		// 数据不完整抛弃当前块：重新选择下载块
-		if(bytes == null) {
-			undone();
+		if(bytes == null || this.downloadPiece == null) {
 			return;
 		}
 		if(index != this.downloadPiece.getIndex()) {
@@ -244,7 +243,6 @@ public class PeerDownloader extends PeerConnect {
 	 * </dl>
 	 */
 	private void release() {
-		this.peerSubMessageHandler.notInterested(); // 发送不感兴趣消息
 		this.completeLock.set(true);
 		this.releaseDownload();
 		this.torrentSession.checkCompletedAndDone(); // 完成下载检测
@@ -291,11 +289,13 @@ public class PeerDownloader extends PeerConnect {
 		pickDownloadPiece();
 		if(this.downloadPiece == null) {
 			LOGGER.debug("没有匹配Piece下载：释放Peer");
+			this.peerSubMessageHandler.notInterested(); // 发送不感兴趣消息
 			this.release();
 			return false;
 		}
 		if(!this.torrentSession.downloadable()) {
 			LOGGER.debug("任务不可下载：释放Peer");
+			this.undone(); // 没有下载完成
 			this.release();
 			return false;
 		}
@@ -336,7 +336,7 @@ public class PeerDownloader extends PeerConnect {
 		}
 		// 没有下载完成
 		if(this.countLock.get() > 0) {
-			undone();
+			this.undone();
 		}
 		return true;
 	}

@@ -7,8 +7,8 @@ import com.acgist.snail.utils.ObjectUtils;
 
 /**
  * <p>Peer连接</p>
- * <p>连接：下载（不提供上传）</p>
- * <p>接入：上传、下载（如果接触阻塞可以下载）</p>
+ * <p>连接：下载、上传（如果解除阻塞可以上传）</p>
+ * <p>接入：上传、下载（如果解除阻塞可以下载）</p>
  * 
  * @author acgist
  * @since 1.1.1
@@ -17,7 +17,7 @@ public abstract class PeerConnect {
 
 	/**
 	 * <p>是否已被评分</p>
-	 * <p>第一次获取评分不计分：防止剔除</p>
+	 * <p>忽略首次获取评分：防止剔除</p>
 	 */
 	protected volatile boolean marked = false;
 	/**

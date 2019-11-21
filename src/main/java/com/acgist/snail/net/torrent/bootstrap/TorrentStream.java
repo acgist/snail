@@ -90,8 +90,8 @@ public final class TorrentStream {
 	/**
 	 * <p>暂停位图</p>
 	 * <p>
-	 * 上次下载失败，下次请求时不选取这个Piece，然后清除，以后还可以选取。
-	 * 主要用来处理两个文件都包含某一个Piece时，上一个文件不存在Piece，而下一个文件存在的情况。
+	 * 上次下载失败的Piece，下次请求时不选取，选取一次成功后清除，以后还可以选取。
+	 * 主要用来处理两个文件处于同一个Piece，并且两个文件没有同时被选择下载。
 	 * </p>
 	 */
 	private BitSet pausePieces;
@@ -233,7 +233,13 @@ public final class TorrentStream {
 						return null;
 					}
 				} else {
-					return null;
+					// 排除暂停位图
+					pickPieces.or(peerPieces);
+					pickPieces.andNot(this.pieces);
+					pickPieces.andNot(this.downloadPieces);
+					if(pickPieces.isEmpty()) {
+						return null;
+					}
 				}
 			}
 			final int index = pickPieces.nextSetBit(this.fileBeginPieceIndex);
