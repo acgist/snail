@@ -248,6 +248,7 @@ public abstract class PeerConnect {
 	
 	/**
 	 * <p>请求下载</p>
+	 * <p>跳出请求循环：设置完成状态、释放Peer下载、完成检测</p>
 	 */
 	private void requests() {
 		LOGGER.debug("开始请求下载：{}", this.peerSession);
@@ -260,7 +261,12 @@ public abstract class PeerConnect {
 				ok = false;
 			}
 		}
-		this.releaseAuto(); // 自动释放
+		this.completeLock.set(true);
+		this.releaseDownload();
+		this.torrentSession.checkCompletedAndDone();
+		if(this.downloadPiece != null && !this.downloadPiece.complete()) {
+			this.undone();
+		}
 		LOGGER.debug("结束请求下载：{}", this.peerSession);
 	}
 	
@@ -324,10 +330,6 @@ public abstract class PeerConnect {
 				}
 			}
 		}
-		// 没有下载完成
-		if(!this.downloadPiece.complete()) {
-			this.undone();
-		}
 		return true;
 	}
 	
@@ -335,9 +337,7 @@ public abstract class PeerConnect {
 	 * 选择下载Piece
 	 */
 	private void pick() {
-		if(!available()) {
-			return;
-		}
+		// 校验Piece
 		if(this.downloadPiece == null) { // 没有Piece
 		} else if(this.downloadPiece.complete()) { // 下载完成
 			// 验证数据
@@ -347,6 +347,9 @@ public abstract class PeerConnect {
 				if(ok) {
 					// 统计下载数据
 					this.peerSession.download(this.downloadPiece.getLength());
+				} else {
+					LOGGER.debug("Piece保存失败：{}", this.downloadPiece.getIndex());
+					this.undone();
 				}
 			} else {
 				LOGGER.warn("Piece校验失败：{}", this.downloadPiece.getIndex());
@@ -355,7 +358,9 @@ public abstract class PeerConnect {
 			}
 		} else { // Piece没有下载完成
 			LOGGER.debug("Piece没有下载完成：{}", this.downloadPiece.getIndex());
+			this.undone();
 		}
+		// 挑选Piece
 		if(this.peerSession.isPeerUnchoked()) { // 解除阻塞
 			LOGGER.debug("选择下载块：解除阻塞");
 			this.downloadPiece = this.torrentSession.pick(this.peerSession.availablePieces(), this.peerSession.suggestPieces());
@@ -366,6 +371,7 @@ public abstract class PeerConnect {
 		if(this.downloadPiece != null) {
 			LOGGER.debug("选取Piece：{}-{}-{}", this.downloadPiece.getIndex(), this.downloadPiece.getBegin(), this.downloadPiece.getEnd());
 		}
+		// 设置状态
 		this.countLock.set(0);
 		this.completeLock.set(false);
 		this.havePieceMessage = false;
@@ -377,21 +383,6 @@ public abstract class PeerConnect {
 	private void undone() {
 		LOGGER.debug("Piece下载失败：{}", this.downloadPiece.getIndex());
 		this.torrentSession.undone(this.downloadPiece);
-	}
-	
-	/**
-	 * <dl>
-	 * 	<dt>自动释放资源</dt>
-	 * 	<dd>设置完成状态</dd>
-	 * 	<dd>释放Peer下载</dd>
-	 * 	<dd>完成检测</dd>
-	 * </dl>
-	 */
-	private void releaseAuto() {
-		LOGGER.debug("PeerConnect自动释放：{}", this.peerSession);
-		this.completeLock.set(true);
-		this.releaseDownload();
-		this.torrentSession.checkCompletedAndDone(); // 完成下载检测
 	}
 	
 	/**
