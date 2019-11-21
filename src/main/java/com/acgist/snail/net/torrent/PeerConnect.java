@@ -388,6 +388,7 @@ public abstract class PeerConnect {
 	 * </dl>
 	 */
 	private void releaseAuto() {
+		LOGGER.debug("PeerConnect自动释放：{}", this.peerSession);
 		this.completeLock.set(true);
 		this.releaseDownload();
 		this.torrentSession.checkCompletedAndDone(); // 完成下载检测
