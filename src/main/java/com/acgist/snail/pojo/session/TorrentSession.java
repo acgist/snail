@@ -301,7 +301,9 @@ public final class TorrentSession {
 	 * 加载PeerUploader下载
 	 */
 	private void loadPeerUploaderDownload() {
-		this.peerUploaderGroup.download();
+		this.submit(() -> {
+			this.peerUploaderGroup.download();
+		});
 	}
 	
 	/**
