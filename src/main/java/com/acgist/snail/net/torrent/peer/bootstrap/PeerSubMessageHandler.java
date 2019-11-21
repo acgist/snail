@@ -10,8 +10,8 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.net.codec.IMessageCodec;
 import com.acgist.snail.net.torrent.IMessageEncryptHandler;
 import com.acgist.snail.net.torrent.TorrentManager;
-import com.acgist.snail.net.torrent.bootstrap.PeerConnect;
-import com.acgist.snail.net.torrent.bootstrap.PeerLauncher;
+import com.acgist.snail.net.torrent.bootstrap.PeerDownloader;
+import com.acgist.snail.net.torrent.bootstrap.PeerUploader;
 import com.acgist.snail.net.torrent.peer.bootstrap.dht.DhtExtensionMessageHandler;
 import com.acgist.snail.net.torrent.peer.bootstrap.ltep.ExtensionMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
@@ -88,13 +88,13 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 */
 	private TorrentSession torrentSession;
 	/**
-	 * 连入客户端
+	 * Peer上传客户端
 	 */
-	private PeerConnect peerConnect;
+	private PeerUploader peerUploader;
 	/**
-	 * 请求客户端
+	 * Peer下载客户端
 	 */
-	private PeerLauncher peerLauncher;
+	private PeerDownloader peerDownloader;
 	/**
 	 * 消息代理
 	 */
@@ -170,10 +170,6 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			LOGGER.debug("Peer接入失败：任务没有准备完成");
 			return false;
 		}
-		// 不验证上传状态：磁力链接
-		if(!torrentSession.uploadable()) {
-			LOGGER.debug("Peer接入时任务不可上传：{}", torrentSession.action());
-		}
 		final InetSocketAddress socketAddress = this.remoteSocketAddress();
 		if(socketAddress == null) {
 			LOGGER.warn("Peer接入失败：远程客户端获取失败");
@@ -185,10 +181,10 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			socketAddress.getHostString(),
 			null,
 			PeerConfig.SOURCE_CONNECT);
-		final PeerConnect peerConnect = torrentSession.newPeerConnect(peerSession, this);
-		if(peerConnect != null) {
-			this.peerConnect = peerConnect;
-			peerSession.peerConnect(this.peerConnect);
+		final PeerUploader peerUploader = torrentSession.newPeerUploader(peerSession, this);
+		if(peerUploader != null) {
+			this.peerUploader = peerUploader;
+			peerSession.peerUploader(this.peerUploader);
 			init(peerSession, torrentSession, reserved);
 			return true;
 		} else {
@@ -314,12 +310,12 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * peer_id：peer_id
 	 * </pre>
 	 */
-	public void handshake(PeerLauncher peerLauncher) {
+	public void handshake(PeerDownloader peerDownloader) {
 		LOGGER.debug("发送握手消息");
 		this.handshakeSend = true;
-		this.peerLauncher = peerLauncher;
-		if(this.peerSession != null && this.peerLauncher != null) {
-			this.peerSession.peerLauncher(this.peerLauncher);
+		this.peerDownloader = peerDownloader;
+		if(this.peerSession != null && this.peerDownloader != null) {
+			this.peerSession.peerDownloader(this.peerDownloader);
 		}
 		final ByteBuffer buffer = ByteBuffer.allocate(PeerConfig.HANDSHAKE_LENGTH);
 		buffer.put((byte) PeerConfig.HANDSHAKE_NAME_LENGTH);
@@ -369,7 +365,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			final boolean ok = init(infoHashHex, peerId, reserved);
 			if(ok) {
 				if(!this.handshakeSend) {
-					handshake((PeerLauncher) null);
+					handshake((PeerDownloader) null);
 				}
 			} else {
 				this.close();
@@ -377,11 +373,11 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			}
 		}
 		this.peerSession.id(peerId);
-		extension(); // 发送扩展消息
+		extension(); // 发送扩展消息：优先交换扩展
 		dht(); // 发送DHT消息
 		exchangeBitfield(); // 交换位图
 		if(this.server) {
-			unchoke(); // 解除阻塞
+			unchoke(); // 解除阻塞：PeerUploader=解除；PeerDownloader=不解除；
 		} else {
 			this.allowedFastDownload();
 		}
@@ -419,8 +415,10 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		LOGGER.debug("处理阻塞消息");
 		this.peerSession.peerChoked();
 		// 不释放资源：让系统自动优化剔除
-//		if(this.peerLauncher != null) {
-//			this.peerLauncher.release();
+//		if(this.peerDownloader != null) {
+//			this.peerDownloader.release();
+//		} else if(this.peerUploader != null) {
+//			this.peerUploader.release();
 //		}
 	}
 	
@@ -440,6 +438,10 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			LOGGER.debug("发送解除阻塞消息：Peer只上传不下载");
 			return;
 		}
+		if(this.peerSession.isAmUnchoked()) {
+			LOGGER.debug("发送解除阻塞消息：已经解除");
+			return;
+		}
 		LOGGER.debug("发送解除阻塞消息");
 		this.peerSession.amUnchoked();
 		pushMessage(PeerConfig.Type.UNCHOKE, null);
@@ -457,6 +459,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		}
 		LOGGER.debug("处理解除阻塞消息");
 		this.peerSession.peerUnchoked();
+		this.unchoke();
 		this.unchokeDownload();
 	}
 	
@@ -914,8 +917,10 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			bytes = new byte[remaining];
 			buffer.get(bytes);
 		}
-		if(this.peerLauncher != null) {
-			this.peerLauncher.piece(index, begin, bytes);
+		if(this.peerDownloader != null) {
+			this.peerDownloader.piece(index, begin, bytes);
+		} else if(this.peerUploader != null) {
+			this.peerUploader.piece(index, begin, bytes);
 		}
 	}
 
@@ -1126,10 +1131,13 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	private void unchokeDownload() {
 		if(
 			this.peerSession != null &&
-			this.peerSession.isPeerUnchoked() &&
-			this.peerLauncher != null
+			this.peerSession.isPeerUnchoked()
 		) {
-			this.peerLauncher.download();
+			if(this.peerDownloader != null) {
+				this.peerDownloader.download();
+			} else if(this.peerUploader != null) {
+				this.peerUploader.download();
+			}
 		}
 	}
 
@@ -1140,10 +1148,13 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		if(
 			this.peerSession != null &&
 			this.peerSession.isPeerChoked() &&
-			this.peerSession.supportAllowedFast() &&
-			this.peerLauncher != null
+			this.peerSession.supportAllowedFast()
 		) {
-			this.peerLauncher.download();
+			if(this.peerDownloader != null) {
+				this.peerDownloader.download();
+			} else if(this.peerUploader != null) {
+				this.peerUploader.download();
+			}
 		}
 	}
 	

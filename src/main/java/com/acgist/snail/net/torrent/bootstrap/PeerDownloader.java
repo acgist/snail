@@ -3,15 +3,16 @@ package com.acgist.snail.net.torrent.bootstrap;
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.torrent.PeerClientHandler;
+import com.acgist.snail.net.torrent.PeerConnect;
 import com.acgist.snail.net.torrent.peer.PeerClient;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerEvaluator;
-import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerEvaluator.Type;
+import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.net.torrent.utp.UtpClient;
 import com.acgist.snail.pojo.bean.TorrentPiece;
 import com.acgist.snail.pojo.session.PeerSession;
@@ -20,15 +21,15 @@ import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
- * <p>Peer连接</p>
- * <p>提供下载功能，根据是否支持UTP选择使用UTP还是TCP。</p>
+ * <p>Peer下载</p>
+ * <p>提供下载功能：根据是否支持UTP选择使用UTP还是TCP</p>
  * 
  * @author acgist
  * @since 1.1.0
  */
-public final class PeerLauncher extends PeerClientHandler {
+public class PeerDownloader extends PeerConnect {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(PeerLauncher.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PeerDownloader.class);
 
 	/**
 	 * <p>每批请求的SLICE数量</p>
@@ -38,11 +39,11 @@ public final class PeerLauncher extends PeerClientHandler {
 	 */
 	private static final int SLICE_REQUEST_SIZE = 2;
 	/**
-	 * 每批SLICE请求等待时间
+	 * SLICE请求等待时间
 	 */
 	private static final int SLICE_AWAIT_TIME = 20;
 	/**
-	 * 每个PICEC完成等待时间
+	 * PICEC完成等待时间
 	 */
 	private static final int PIECE_AWAIT_TIME = 40;
 	/**
@@ -51,17 +52,25 @@ public final class PeerLauncher extends PeerClientHandler {
 	private static final int CLOSE_AWAIT_TIME = 4;
 	
 	/**
-	 * 是否启动
+	 * 是否上传
 	 */
-	private volatile boolean launcher = false;
+	private final boolean uploading;
+	/**
+	 * 是否下载
+	 */
+	private volatile boolean downloading = false;
 	/**
 	 * 是否返回数据
 	 */
-	private volatile boolean hasPieceMessage = false;
+	private volatile boolean havePieceMessage = false;
 	/**
-	 * 下载的Piece信息
+	 * 当前下载Piece信息
 	 */
 	private TorrentPiece downloadPiece;
+	/**
+	 * Peer下载评分
+	 */
+	private final AtomicLong downloadMark = new AtomicLong(0);
 	/**
 	 * Piece分片锁
 	 */
@@ -75,18 +84,22 @@ public final class PeerLauncher extends PeerClientHandler {
 	 */
 	private final AtomicBoolean completeLock = new AtomicBoolean(false);
 	
-	private final TorrentSession torrentSession;
-	
-	private PeerLauncher(PeerSession peerSession, TorrentSession torrentSession) {
-		super(peerSession, PeerSubMessageHandler.newInstance(peerSession, torrentSession));
-		this.torrentSession = torrentSession;
+	private PeerDownloader(PeerSession peerSession, TorrentSession torrentSession) {
+		super(peerSession, torrentSession, PeerSubMessageHandler.newInstance(peerSession, torrentSession));
+		this.uploading = false;
 	}
 	
-	public static final PeerLauncher newInstance(PeerSession peerSession, TorrentSession torrentSession) {
-		return new PeerLauncher(peerSession, torrentSession);
+	protected PeerDownloader(PeerSession peerSession, TorrentSession torrentSession, PeerSubMessageHandler peerSubMessageHandler) {
+		super(peerSession, torrentSession, peerSubMessageHandler);
+		this.uploading = true;
+	}
+	
+	public static final PeerDownloader newInstance(PeerSession peerSession, TorrentSession torrentSession) {
+		return new PeerDownloader(peerSession, torrentSession);
 	}
 	
 	/**
+	 * <p>握手</p>
 	 * <p>建立连接、发送握手</p>
 	 * 
 	 * TODO：去掉保留地址
@@ -104,7 +117,7 @@ public final class PeerLauncher extends PeerClientHandler {
 	}
 	
 	/**
-	 * 建立连接
+	 * <p>建立连接</p>
 	 */
 	private boolean connect() {
 		if(this.peerSession.utp()) {
@@ -130,14 +143,20 @@ public final class PeerLauncher extends PeerClientHandler {
 	}
 
 	/**
-	 * <p>开始下载</p>
-	 * <p>开始发送下载请求，加入后台线程。</p>
+	 * <p>Peer下载评分</p>
+	 * <p>获取评分后清零，下次重新开始计算。</p>
 	 */
+	@Override
+	public long downloadMark() {
+		return this.downloadMark.getAndSet(0);
+	}
+	
+	@Override
 	public void download() {
-		if(!this.launcher) {
+		if(!this.downloading) {
 			synchronized (this) {
-				if(!this.launcher) {
-					this.launcher = true;
+				if(!this.downloading) {
+					this.downloading = true;
 					this.torrentSession.submit(() -> {
 						requests();
 					});
@@ -146,20 +165,9 @@ public final class PeerLauncher extends PeerClientHandler {
 		}
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * <p>每次获取评分时都清零，下次重新开始计算。</p>
-	 */
 	@Override
-	public long mark() {
-		return this.mark.getAndSet(0);
-	}
-	
-	/**
-	 * 下载Piece数据
-	 */
 	public void piece(int index, int begin, byte[] bytes) {
-		// 数据不完整抛弃当前块，重新选择下载块。
+		// 数据不完整抛弃当前块：重新选择下载块
 		if(bytes == null) {
 			undone();
 			return;
@@ -168,9 +176,9 @@ public final class PeerLauncher extends PeerClientHandler {
 			LOGGER.warn("下载Piece索引和当前Piece索引不符：{}-{}", index, this.downloadPiece.getIndex());
 			return;
 		}
-		this.hasPieceMessage = true;
+		this.havePieceMessage = true;
 		mark(bytes.length); // 评分
-		// 请求数据下载完成，唤醒下载等待。
+		// 请求数据下载完成：唤醒下载等待
 		synchronized (this.countLock) {
 			if (this.countLock.addAndGet(-1) <= 0) {
 				this.countLock.notifyAll();
@@ -188,29 +196,18 @@ public final class PeerLauncher extends PeerClientHandler {
 	}
 	
 	/**
-	 * <dl>
-	 * 	<dt>释放所有资源</dt>
-	 * 	<dd>发送不感兴趣消息</dd>
-	 * 	<dd>设置完成状态</dd>
-	 * 	<dd>释放Peer</dd>
-	 * 	<dd>完成检测</dd>
-	 * </dl>
+	 * {@inheritDoc}
+	 * <p>关闭Peer客户端、设置非下载状态</p>
 	 */
-	private void releaseAll() {
-		this.peerSubMessageHandler.notInterested(); // 发送不感兴趣消息
-		this.completeLock.set(true);
-		this.release();
-		this.torrentSession.checkCompletedAndDone(); // 完成下载检测
-	}
-	
-	/**
-	 * <p>释放资源：关闭Peer客户端，设置非下载状态。</p>
-	 */
-	public void release() {
+	@Override
+	public void releaseDownload() {
 		try {
-			if(this.available) {
-				LOGGER.debug("PeerLauncher关闭：{}-{}", this.peerSession.host(), this.peerSession.port());
-				this.available = false;
+			if(this.available && this.downloading) {
+				LOGGER.debug("PeerDownloader关闭：{}-{}", this.peerSession.host(), this.peerSession.port());
+				this.downloading = false;
+				if(!this.uploading) { // 上传：不能修改状态
+					this.available = false;
+				}
 				// 没有完成：等待下载完成
 				if(!this.completeLock.get()) {
 					if(!this.releaseLock.get()) {
@@ -221,20 +218,40 @@ public final class PeerLauncher extends PeerClientHandler {
 						}
 					}
 				}
-				this.peerSubMessageHandler.close();
+				if(!this.uploading) { // 上传：不能关闭
+					this.peerSubMessageHandler.close();
+				}
 				PeerEvaluator.getInstance().score(this.peerSession, Type.DOWNLOAD);
 			}
 		} catch (Exception e) {
-			LOGGER.error("PeerLauncher关闭异常", e);
+			LOGGER.error("PeerDownloader关闭异常", e);
 		} finally {
 			this.peerSession.statusOff(PeerConfig.STATUS_DOWNLOAD);
-			this.peerSession.peerLauncher(null);
-			this.peerSession.reset();
+			this.peerSession.peerDownloader(null);
+			if(!this.uploading) { // 上传：不能重置
+				this.peerSession.reset();
+			}
 		}
 	}
 	
 	/**
-	 * 下载失败
+	 * <dl>
+	 * 	<dt>释放所有资源</dt>
+	 * 	<dd>发送不感兴趣消息</dd>
+	 * 	<dd>设置完成状态</dd>
+	 * 	<dd>释放Peer下载</dd>
+	 * 	<dd>完成检测</dd>
+	 * </dl>
+	 */
+	private void release() {
+		this.peerSubMessageHandler.notInterested(); // 发送不感兴趣消息
+		this.completeLock.set(true);
+		this.releaseDownload();
+		this.torrentSession.checkCompletedAndDone(); // 完成下载检测
+	}
+	
+	/**
+	 * <p>下载失败</p>
 	 */
 	private void undone() {
 		LOGGER.debug("Piece下载失败：{}", this.downloadPiece.getIndex());
@@ -242,7 +259,7 @@ public final class PeerLauncher extends PeerClientHandler {
 	}
 
 	/**
-	 * 一直进行下载直到结束
+	 * <p>循环请求下载</p>
 	 */
 	private void requests() {
 		LOGGER.debug("开始请求下载：{}", this.peerSession);
@@ -274,12 +291,12 @@ public final class PeerLauncher extends PeerClientHandler {
 		pickDownloadPiece();
 		if(this.downloadPiece == null) {
 			LOGGER.debug("没有匹配Piece下载：释放Peer");
-			this.releaseAll();
+			this.release();
 			return false;
 		}
 		if(!this.torrentSession.downloadable()) {
 			LOGGER.debug("任务不可下载：释放Peer");
-			this.releaseAll();
+			this.release();
 			return false;
 		}
 		final int index = this.downloadPiece.getIndex();
@@ -288,7 +305,7 @@ public final class PeerLauncher extends PeerClientHandler {
 				synchronized (this.countLock) {
 					ThreadUtils.wait(this.countLock, Duration.ofSeconds(SLICE_AWAIT_TIME));
 					// 如果没有数据返回直接跳出下载
-					if (!this.hasPieceMessage) {
+					if (!this.havePieceMessage) {
 						break;
 					}
 				}
@@ -360,14 +377,14 @@ public final class PeerLauncher extends PeerClientHandler {
 		}
 		this.countLock.set(0);
 		this.completeLock.set(false);
-		this.hasPieceMessage = false;
+		this.havePieceMessage = false;
 	}
 
 	/**
-	 * 计算评分，每次下载都将下载的数据大小加入评分。
+	 * 计算评分：每次下载都将下载的数据大小加入评分
 	 */
 	private void mark(int buffer) {
-		this.mark.addAndGet(buffer); // 计算评分
+		this.downloadMark.addAndGet(buffer); // 计算评分
 	}
-	
+
 }

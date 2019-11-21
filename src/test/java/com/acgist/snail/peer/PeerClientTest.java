@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.junit.Test;
 
 import com.acgist.snail.net.torrent.TorrentManager;
-import com.acgist.snail.net.torrent.bootstrap.PeerLauncher;
+import com.acgist.snail.net.torrent.bootstrap.PeerDownloader;
 import com.acgist.snail.pojo.bean.InfoHash;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.session.PeerSession;
@@ -64,7 +64,7 @@ public class PeerClientTest {
 		StatisticsSession statisticsSession = new StatisticsSession();
 		PeerSession peerSession = PeerSession.newInstance(statisticsSession, host, port);
 		peerSession.flags(PeerConfig.PEX_UTP); // UTP支持
-		PeerLauncher launcher = PeerLauncher.newInstance(peerSession, torrentSession);
+		PeerDownloader launcher = PeerDownloader.newInstance(peerSession, torrentSession);
 		launcher.handshake();
 		new Thread(() -> {
 			while(true) {
@@ -98,7 +98,7 @@ public class PeerClientTest {
 //		Integer port = 49160; // FDM测试端口
 //		Integer port = 15000; // 本地迅雷测试端口
 		PeerSession peerSession = PeerSession.newInstance(new StatisticsSession(), host, port);
-		PeerLauncher launcher = PeerLauncher.newInstance(peerSession, torrentSession);
+		PeerDownloader launcher = PeerDownloader.newInstance(peerSession, torrentSession);
 		launcher.handshake();
 		ThreadUtils.sleep(Long.MAX_VALUE);
 	}
