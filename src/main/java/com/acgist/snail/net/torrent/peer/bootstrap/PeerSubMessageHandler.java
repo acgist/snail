@@ -373,11 +373,11 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			}
 		}
 		this.peerSession.id(peerId);
-		extension(); // 发送扩展消息：优先交换扩展
-		dht(); // 发送DHT消息
-		exchangeBitfield(); // 交换位图
+		this.extension(); // 发送扩展消息：优先交换扩展
+		this.dht(); // 发送DHT消息
+		this.exchangeBitfield(); // 交换位图
 		if(this.server) {
-			unchoke(); // 解除阻塞：PeerUploader=解除；PeerDownloader=不解除；
+			this.unchoke(); // 解除阻塞：PeerUploader=解除；PeerDownloader=不解除；
 		} else {
 			this.allowedFastDownload();
 		}

@@ -260,6 +260,7 @@ public final class StatisticsController extends Controller implements Initializa
 				FileUtils.formatSize(torrentSession.statistics().downloadSize())
 			)
 		);
+		// TODO：上传下载
 		xAxis.setCategories(FXCollections.observableArrayList(activePeer));
 		NumberAxis yAxis = new NumberAxis();
 		yAxis.setLabel("流量（MB）");

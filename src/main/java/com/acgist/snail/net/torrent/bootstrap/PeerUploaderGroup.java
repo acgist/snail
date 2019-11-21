@@ -45,6 +45,15 @@ public final class PeerUploaderGroup {
 	}
 	
 	/**
+	 * 开始下载
+	 */
+	public void download() {
+		synchronized (this.peerUploaders) {
+			this.peerUploaders.forEach(uploader -> uploader.download());
+		}
+	}
+	
+	/**
 	 * <p>创建接入连接</p>
 	 */
 	public PeerUploader newPeerUploader(PeerSession peerSession, PeerSubMessageHandler peerSubMessageHandler) {
@@ -113,7 +122,6 @@ public final class PeerUploaderGroup {
 	 * 	<li>长时间没有请求的连接</li>
 	 * 	<li>超过最大连接数的连接</li>
 	 * </ul>
-	 * <p>剔除时设置为阻塞</p>
 	 */
 	private void inferiorPeerUploaders() {
 		LOGGER.debug("剔除无效PeerUploader");
@@ -139,13 +147,13 @@ public final class PeerUploaderGroup {
 			// 获取评分
 			uploadMark = tmp.uploadMark();
 			downloadMark = tmp.downloadMark();
-			// 第一次评分忽略
+			// 首次评分忽略
 			if(!tmp.marked()) {
 				offerSize++;
 				this.offer(tmp);
 				continue;
 			}
-			// 如果下载数据提供上传
+			// 下载数据提供上传
 			if(downloadMark > 0L) {
 				offerSize++;
 				this.offer(tmp);
@@ -185,7 +193,9 @@ public final class PeerUploaderGroup {
 		if(peerUploader != null) {
 			final PeerSession peerSession = peerUploader.peerSession();
 			LOGGER.debug("剔除无效PeerUploader：{}-{}", peerSession.host(), peerSession.port());
-			peerUploader.releaseUpload();
+			SystemThreadContext.submit(() -> {
+				peerUploader.releaseUpload();
+			});
 		}
 	}
 	

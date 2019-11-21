@@ -238,6 +238,7 @@ public final class TorrentSession {
 		}
 		this.loadPeerDownloaderGroup();
 		this.loadPeerDownloaderGroupTimer();
+		this.loadPeerUploaderDownload();
 		if(this.isPrivateTorrent()) {
 			LOGGER.debug("私有种子：不加载PEX任务");
 		} else {
@@ -296,6 +297,13 @@ public final class TorrentSession {
 		});
 	}
 
+	/**
+	 * 加载PeerUploader下载
+	 */
+	private void loadPeerUploaderDownload() {
+		this.peerUploaderGroup.download();
+	}
+	
 	/**
 	 * 加载PeerUploader
 	 */

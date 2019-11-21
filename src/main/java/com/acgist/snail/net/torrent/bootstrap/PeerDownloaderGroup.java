@@ -152,7 +152,7 @@ public final class PeerDownloaderGroup {
 	 * <p>创建PeerDownloader</p>
 	 * <p>从Peer队列尾部拿出一个Peer创建下载，失败后插入Peer队列头部。</p>
 	 * <dl>
-	 * 	<dt>退出创建：</dt>
+	 * 	<dt>跳出创建循环</dt>
 	 * 	<dd>任务不处于下载状态</dd>
 	 * 	<dd>已经处于下载的PeerDownloader大于等于配置的最大PeerDownloader数量</dd>
 	 * 	<dd>不能查找到更多的Peer</dd>
@@ -213,7 +213,7 @@ public final class PeerDownloaderGroup {
 			}
 			// 获取评分
 			downloadMark = tmp.downloadMark();
-			// 第一次评分忽略
+			// 首次评分忽略
 			if(!tmp.marked()) {
 				this.offer(tmp);
 				continue;

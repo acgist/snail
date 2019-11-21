@@ -12,7 +12,8 @@ import com.acgist.snail.system.config.PeerConfig;
 
 /**
  * <p>Peer接入</p>
- * <p>提供上传功能：上传数据，如果被解除阻塞也开始请求下载。</p>
+ * <p>提供上传功能：上传数据</p>
+ * <p>如果被解除阻塞也开始请求下载</p>
  * 
  * @author acgist
  * @since 1.0.2
@@ -37,7 +38,7 @@ public final class PeerUploader extends PeerDownloader {
 
 	/**
 	 * <p>Peer上传评分</p>
-	 * <p>使用当前下载大小减去旧下载大小，然后记录当前下载大小。</p>
+	 * <p>评分=当前下载大小-上次下载大小</p>
 	 */
 	@Override
 	public long uploadMark() {
@@ -45,10 +46,20 @@ public final class PeerUploader extends PeerDownloader {
 		final long oldSize = this.uploadMark.getAndSet(nowSize);
 		return nowSize - oldSize;
 	}
+	
+	@Override
+	public void download() {
+		if(
+			this.peerSession.isPeerUnchoked() || // 解除阻塞
+			this.peerSession.supportAllowedFast() // 允许快速下载
+		) {
+			super.download();
+		}
+	}
 
 	/**
 	 * {@inheritDoc}
-	 * <p>关闭Peer客户端、设置非上传状态</p>
+	 * <p>释放下载、关闭Peer客户端、设置非上传状态</p>
 	 */
 	@Override
 	public void releaseUpload() {
