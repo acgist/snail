@@ -378,8 +378,6 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		this.exchangeBitfield(); // 交换位图
 		if(this.server) {
 			this.unchoke(); // 解除阻塞：PeerUploader=解除；PeerDownloader=不解除；
-		} else {
-			this.allowedFastDownload();
 		}
 	}
 
