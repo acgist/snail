@@ -108,7 +108,7 @@ public final class PeerDownloaderGroup {
 		synchronized (this.peerDownloaders) {
 			this.peerDownloaders.forEach(launcher -> {
 				SystemThreadContext.submit(() -> {
-					launcher.releaseDownload();
+					launcher.release();
 				});
 				PeerManager.getInstance().preference(this.torrentSession.infoHashHex(), launcher.peerSession());
 			});
@@ -264,7 +264,7 @@ public final class PeerDownloaderGroup {
 			final PeerSession peerSession = peerDownloader.peerSession();
 			LOGGER.debug("剔除劣质PeerDownloader：{}-{}", peerSession.host(), peerSession.port());
 			SystemThreadContext.submit(() -> {
-				peerDownloader.releaseDownload();
+				peerDownloader.release();
 			});
 			PeerManager.getInstance().inferior(this.torrentSession.infoHashHex(), peerSession);
 		}
