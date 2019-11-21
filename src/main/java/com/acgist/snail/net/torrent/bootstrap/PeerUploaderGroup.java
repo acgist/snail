@@ -108,7 +108,7 @@ public final class PeerUploaderGroup {
 		synchronized (this.peerUploaders) {
 			this.peerUploaders.forEach(connect -> {
 				SystemThreadContext.submit(() -> {
-					connect.releaseUpload();
+					connect.release();
 				});
 			});
 			this.peerUploaders.clear();
@@ -194,7 +194,7 @@ public final class PeerUploaderGroup {
 			final PeerSession peerSession = peerUploader.peerSession();
 			LOGGER.debug("剔除无效PeerUploader：{}-{}", peerSession.host(), peerSession.port());
 			SystemThreadContext.submit(() -> {
-				peerUploader.releaseUpload();
+				peerUploader.release();
 			});
 		}
 	}

@@ -451,7 +451,7 @@ public final class TorrentSession {
 	}
 	
 	/**
-	 * 检测是否完成下载，完成后刷出缓存并且解除下载锁。
+	 * 检测是否完成下载：完成后刷出缓存并且解除下载锁
 	 */
 	public void checkCompletedAndDone() {
 		if(this.torrentStreamGroup.complete()) {

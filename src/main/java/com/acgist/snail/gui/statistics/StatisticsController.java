@@ -258,7 +258,7 @@ public final class StatisticsController extends Controller implements Initializa
 		this.statusDownload.setText(String.valueOf(download.get()));
 		this.health.setText(torrentSession.health() + "%");
 		// 图表
-		CategoryAxis xAxis = new CategoryAxis();
+		final CategoryAxis xAxis = new CategoryAxis();
 		xAxis.setLabel(
 			String.format(
 				"累计上传：%s 累计下载：%s",
@@ -267,7 +267,7 @@ public final class StatisticsController extends Controller implements Initializa
 			)
 		);
 		xAxis.setCategories(FXCollections.observableArrayList(activePeer));
-		NumberAxis yAxis = new NumberAxis();
+		final NumberAxis yAxis = new NumberAxis();
 		yAxis.setLabel("流量（MB）");
 		final StackedBarChart<String, Number> stackedBarChart = new StackedBarChart<>(xAxis, yAxis);
 		stackedBarChart.setPrefWidth(800);
