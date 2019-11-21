@@ -18,79 +18,78 @@ import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
 
 /**
- * <p>PeerLauncher组：下载</p>
+ * <p>PeerDownloader组</p>
  * <dl>
- * 	<dt>对连接请求下载的PeerLauncher管理优化</dt>
- * 	<dd>创建PeerLauncher</dd>
- * 	<dd>定时替换下载最慢的PeerLauncher</dd>
+ * 	<dt>管理PeerDownloader</dt>
+ * 	<dd>创建PeerDownloader</dd>
+ * 	<dd>剔除劣质PeerDownloader</dd>
  * </dl>
  * 
  * @author acgist
  * @since 1.0.0
  */
-public final class PeerLauncherGroup {
+public final class PeerDownloaderGroup {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(PeerLauncherGroup.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PeerDownloaderGroup.class);
 	
 	/**
-	 * <p>同时创建PeerLauncher数量</p>
+	 * <p>同时创建PeerDownloader数量</p>
 	 * <p>注：如果TorrentSession线程池固定大小，不要超过线程池大小。</p>
 	 */
 	private static final int BUILD_SIZE = 2;
 	/**
-	 * 单次创建PeerLauncher最大数量（包含失败）
+	 * 单次创建PeerDownloader最大数量（包含失败）
 	 */
 	private static final int MAX_BUILD_SIZE = 64;
 	
 	/**
-	 * 是否继续创建PeerLauncher
+	 * 是否继续创建PeerDownloader
 	 */
 	private final AtomicBoolean build = new AtomicBoolean(false);
 	/**
-	 * 同时创建PeerLauncher信号量
+	 * 创建PeerDownloader信号量
 	 */
 	private final Semaphore buildSemaphore = new Semaphore(BUILD_SIZE);
 	/**
-	 * <p>优选的Peer</p>
-	 * <p>每次优化时挑选出来可以进行下载的Peer，在发送pex消息时发送给接入和连接的Peer，发送完成后清空。</p>
+	 * <p>优质Peer</p>
+	 * <p>每次优化时挑选的优质Peer（可以下载），在发送pex消息时发送给连接的Peer，发送完成后清空。</p>
 	 */
 	private final List<PeerSession> optimize = new ArrayList<>();
 	/**
-	 * PeerLauncher队列
+	 * <p>PeerDownloader队列</p>
 	 */
-	private final BlockingQueue<PeerLauncher> peerLaunchers;
+	private final BlockingQueue<PeerDownloader> peerDownloaders = new LinkedBlockingQueue<>();
 	
 	private final TorrentSession torrentSession;
 	
-	private PeerLauncherGroup(TorrentSession torrentSession) {
+	private PeerDownloaderGroup(TorrentSession torrentSession) {
 		this.torrentSession = torrentSession;
-		this.peerLaunchers = new LinkedBlockingQueue<>();
 	}
 	
-	public static final PeerLauncherGroup newInstance(TorrentSession torrentSession) {
-		return new PeerLauncherGroup(torrentSession);
+	public static final PeerDownloaderGroup newInstance(TorrentSession torrentSession) {
+		return new PeerDownloaderGroup(torrentSession);
 	}
 
 	/**
-	 * <p>优化PeerLauncher</p>
-	 * <p>
-	 * 挑选权重最低的PeerLauncher，剔除下载队列，将剔除的Peer插入到Peer队列头部，然后重新生成一个PeerLauncher。
-	 * </p>
+	 * <p>优化PeerDownloader</p>
 	 */
 	public void optimize() {
-		LOGGER.debug("优化PeerLauncher");
-		synchronized (this.peerLaunchers) {
+		LOGGER.debug("优化PeerDownloader");
+		synchronized (this.peerDownloaders) {
 			try {
-				inferiorPeerLaunchers();
-				buildPeerLaunchers();
+				inferiorPeerDownloaders();
+				buildPeerDownloaders();
 			} catch (Exception e) {
-				LOGGER.error("优化PeerLauncher异常", e);
+				LOGGER.error("优化PeerDownloader异常", e);
 			}
 		}
 	}
 	
 	/**
-	 * 获取优质的PeerSession，同时清空旧数据。
+	 * <p>获取优质Peer</p>
+	 * <p>返回后清除优质Peer列表</p>
+	 * 
+	 * @return 优质Peer
 	 */
 	public List<PeerSession> optimizePeerSession() {
 		final var list = new ArrayList<>(this.optimize);
@@ -100,33 +99,32 @@ public final class PeerLauncherGroup {
 
 	/**
 	 * <p>资源释放</p>
-	 * <p>释放所有连接的PeerLauncher</p>
+	 * <p>释放所有PeerDownloader</p>
 	 */
 	public void release() {
-		LOGGER.debug("释放PeerLauncherGroup");
-		// 解除PeerLaunchers锁，防止暂停任务卡死。
+		LOGGER.debug("释放PeerDownloaderGroup");
+		// 解除PeerDownloader锁：防止暂停任务卡死
 		this.release(false);
-		synchronized (this.peerLaunchers) {
-			this.peerLaunchers.forEach(launcher -> {
+		synchronized (this.peerDownloaders) {
+			this.peerDownloaders.forEach(launcher -> {
 				SystemThreadContext.submit(() -> {
-					launcher.release();
+					launcher.releaseDownload();
 				});
 				PeerManager.getInstance().preference(this.torrentSession.infoHashHex(), launcher.peerSession());
 			});
-			this.peerLaunchers.clear();
+			this.peerDownloaders.clear();
 		}
 	}
 	
 	/**
-	 * <p>创建PeerLauncher列表</p>
-	 * <p>创建数量达到最大Peer连接或者重试次数超过{@link #MAX_BUILD_SIZE}时退出创建</p>
+	 * <p>创建PeerDownloader列表</p>
+	 * <p>创建数量达到最大Peer连接数量或者重试次数超过{@link #MAX_BUILD_SIZE}时退出创建</p>
 	 */
-	private void buildPeerLaunchers() {
-		LOGGER.debug("创建PeerLauncher");
+	private void buildPeerDownloaders() {
+		LOGGER.debug("创建PeerDownloader");
 		int size = 0;
 		this.build.set(true); // 重置创建状态
-		// 重置信号量
-		this.buildSemaphore.drainPermits();
+		this.buildSemaphore.drainPermits(); // 重置信号量
 		this.buildSemaphore.release(BUILD_SIZE);
 		while(this.build.get()) {
 			this.acquire();
@@ -136,45 +134,46 @@ public final class PeerLauncherGroup {
 			this.torrentSession.submit(() -> {
 				boolean ok = true; // 是否继续创建
 				try {
-					ok = buildPeerLauncher();
+					ok = buildPeerDownloader();
 				} catch (Exception e) {
-					LOGGER.error("创建PeerLauncher异常", e);
+					LOGGER.error("创建PeerDownloader异常", e);
 				} finally {
 					this.release(ok);
 				}
 			});
 			if(++size >= MAX_BUILD_SIZE) {
-				LOGGER.debug("超过PeerLauncher单次最大创建数量：退出循环");
+				LOGGER.debug("超过PeerDownloader单次最大创建数量：退出循环");
 				break;
 			}
 		}
 	}
 	
 	/**
-	 * <p>创建PeerLauncher加入下载队列，从Peer队列尾部拿出一个Peer创建下载，失败后插入Peer队列头部。</p>
+	 * <p>创建PeerDownloader</p>
+	 * <p>从Peer队列尾部拿出一个Peer创建下载，失败后插入Peer队列头部。</p>
 	 * <dl>
 	 * 	<dt>退出创建：</dt>
 	 * 	<dd>任务不处于下载状态</dd>
-	 * 	<dd>已经处于下载的PeerLauncher大于等于配置的最大PeerLauncher数量</dd>
+	 * 	<dd>已经处于下载的PeerDownloader大于等于配置的最大PeerDownloader数量</dd>
 	 * 	<dd>不能查找到更多的Peer</dd>
 	 * </dl>
 	 * 
 	 * @return true-继续；false-停止；
 	 */
-	private boolean buildPeerLauncher() {
+	private boolean buildPeerDownloader() {
 		if(!this.torrentSession.running()) {
 			return false;
 		}
-		if(this.peerLaunchers.size() >= SystemConfig.getPeerSize()) {
+		if(this.peerDownloaders.size() >= SystemConfig.getPeerSize()) {
 			return false;
 		}
 		final PeerSession peerSession = PeerManager.getInstance().pick(this.torrentSession.infoHashHex());
 		if(peerSession != null) {
-			final PeerLauncher launcher = PeerLauncher.newInstance(peerSession, this.torrentSession);
-			final boolean ok = launcher.handshake();
+			final PeerDownloader peerDownloader = PeerDownloader.newInstance(peerSession, this.torrentSession);
+			final boolean ok = peerDownloader.handshake();
 			if(ok) {
 				peerSession.status(PeerConfig.STATUS_DOWNLOAD);
-				this.offer(launcher);
+				this.offer(peerDownloader);
 			} else {
 				// 失败后需要放回队列
 				PeerManager.getInstance().inferior(this.torrentSession.infoHashHex(), peerSession);
@@ -190,59 +189,69 @@ public final class PeerLauncherGroup {
 	 * <p>劣质Peer：评分最低的Peer</p>
 	 * <p>直接剔除：不可用的Peer（评分=0、状态不可用）</p>
 	 * <p>释放劣质Peer，然后将其放入Peer队列头部。如果最后Peer列表小于系统最大数量不剔除劣质Peer。</p>
-	 * <p>必须循环完所有的PeerLauncher，清除评分进行新一轮的评分计算。</p>
+	 * <p>必须循环完所有的PeerDownloader，清除评分进行新一轮的评分计算。</p>
 	 */
-	private void inferiorPeerLaunchers() {
-		LOGGER.debug("剔除劣质PeerLauncher");
+	private void inferiorPeerDownloaders() {
+		LOGGER.debug("剔除劣质PeerDownloader");
 		int index = 0;
-		long mark = 0, minMark = 0;
-		PeerLauncher tmp = null;
-		PeerLauncher inferior = null; // 劣质PeerLauncher
-		final int size = this.peerLaunchers.size();
+		PeerDownloader tmp = null;
+		PeerDownloader inferior = null; // 劣质PeerDownloader
+		long downloadMark = 0, minMark = 0;
+		final int size = this.peerDownloaders.size();
 		while(true) {
 			if(index++ >= size) {
 				break;
 			}
-			tmp = this.peerLaunchers.poll();
+			tmp = this.peerDownloaders.poll();
 			if(tmp == null) {
 				break;
 			}
 			// 状态不可用直接剔除
 			if(!tmp.available()) {
-				inferiorPeerLauncher(tmp);
+				inferiorPeerDownloader(tmp);
 				continue;
 			}
 			// 获取评分
-			mark = tmp.mark();
+			downloadMark = tmp.downloadMark();
 			// 第一次评分忽略
 			if(!tmp.marked()) {
 				this.offer(tmp);
 				continue;
 			}
-			if(mark <= 0) {
-				inferiorPeerLauncher(tmp);
+			if(downloadMark <= 0) {
+				inferiorPeerDownloader(tmp);
 				continue;
 			} else {
 				this.optimize.add(tmp.peerSession());
 			}
 			if(inferior == null) {
 				inferior = tmp;
-				minMark = mark;
-			} else if(mark < minMark) {
+				minMark = downloadMark;
+			} else if(downloadMark < minMark) {
 				this.offer(inferior);
 				inferior = tmp;
-				minMark = mark;
+				minMark = downloadMark;
 			} else {
 				this.offer(tmp);
 			}
 		}
 		if(inferior != null) {
 			// 如果当前Peer连接数量小于系统配置最大数量不剔除
-			if(this.peerLaunchers.size() < SystemConfig.getPeerSize()) {
+			if(this.peerDownloaders.size() < SystemConfig.getPeerSize()) {
 				this.offer(inferior);
 			} else {
-				inferiorPeerLauncher(inferior);
+				inferiorPeerDownloader(inferior);
 			}
+		}
+	}
+	
+	/**
+	 * PeerDownloader加入队列
+	 */
+	private void offer(PeerDownloader peerDownloader) {
+		final var ok = this.peerDownloaders.offer(peerDownloader);
+		if(!ok) {
+			LOGGER.warn("PeerDownloader丢失：{}", peerDownloader);
 		}
 	}
 	
@@ -250,21 +259,14 @@ public final class PeerLauncherGroup {
 	 * <p>剔除劣质Peer</p>
 	 * <p>释放Peer资源，将其放入Peer队列头部。</p>
 	 */
-	private void inferiorPeerLauncher(PeerLauncher peerLauncher) {
-		if(peerLauncher != null) {
-			final PeerSession peerSession = peerLauncher.peerSession();
-			LOGGER.debug("剔除劣质PeerLauncher：{}-{}", peerSession.host(), peerSession.port());
+	private void inferiorPeerDownloader(PeerDownloader peerDownloader) {
+		if(peerDownloader != null) {
+			final PeerSession peerSession = peerDownloader.peerSession();
+			LOGGER.debug("剔除劣质PeerDownloader：{}-{}", peerSession.host(), peerSession.port());
 			SystemThreadContext.submit(() -> {
-				peerLauncher.release();
+				peerDownloader.releaseDownload();
 			});
 			PeerManager.getInstance().inferior(this.torrentSession.infoHashHex(), peerSession);
-		}
-	}
-	
-	private void offer(PeerLauncher peerLauncher) {
-		final var ok = this.peerLaunchers.offer(peerLauncher);
-		if(!ok) {
-			LOGGER.warn("PeerLauncher丢失：{}", peerLauncher);
 		}
 	}
 	
@@ -281,7 +283,7 @@ public final class PeerLauncherGroup {
 	}
 	
 	/**
-	 * 释放信号量，设置创建状态。
+	 * 释放信号量：设置创建状态
 	 */
 	private void release(boolean build) {
 		this.build.set(build);

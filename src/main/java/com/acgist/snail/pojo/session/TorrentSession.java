@@ -13,9 +13,9 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.bootstrap.DhtLauncher;
-import com.acgist.snail.net.torrent.bootstrap.PeerConnect;
-import com.acgist.snail.net.torrent.bootstrap.PeerConnectGroup;
-import com.acgist.snail.net.torrent.bootstrap.PeerLauncherGroup;
+import com.acgist.snail.net.torrent.bootstrap.PeerDownloaderGroup;
+import com.acgist.snail.net.torrent.bootstrap.PeerUploader;
+import com.acgist.snail.net.torrent.bootstrap.PeerUploaderGroup;
 import com.acgist.snail.net.torrent.bootstrap.TorrentStreamGroup;
 import com.acgist.snail.net.torrent.bootstrap.TrackerLauncherGroup;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
@@ -72,15 +72,15 @@ public final class TorrentSession {
 	 */
 	private Action action;
 	/**
-	 * 准备完成
+	 * 准备状态
 	 */
 	private volatile boolean ready = false;
 	/**
-	 * 可上传
+	 * 上传状态
 	 */
 	private volatile boolean uploadable = false;
 	/**
-	 * 可下载
+	 * 下载状态
 	 */
 	private volatile boolean downloadable = false;
 	/**
@@ -104,13 +104,13 @@ public final class TorrentSession {
 	 */
 	private DhtLauncher dhtLauncher;
 	/**
-	 * PeerConnect组
+	 * PeerUploader组
 	 */
-	private PeerConnectGroup peerConnectGroup;
+	private PeerUploaderGroup peerUploaderGroup;
 	/**
-	 * PeerLauncher组
+	 * PeerDownloader组
 	 */
-	private PeerLauncherGroup peerLauncherGroup;
+	private PeerDownloaderGroup peerDownloaderGroup;
 	/**
 	 * 文件流组
 	 */
@@ -137,13 +137,13 @@ public final class TorrentSession {
 	 */
 	private ScheduledFuture<?> dhtLauncherTimer;
 	/**
-	 * PeerConnectGroup定时器
+	 * PeerUploaderGroup定时器
 	 */
-	private ScheduledFuture<?> peerConnectGroupTimer;
+	private ScheduledFuture<?> peerUploaderGroupTimer;
 	/**
-	 * PeerLauncherGroup定时器
+	 * PeerDownloaderGroup定时器
 	 */
-	private ScheduledFuture<?> peerLauncherGroupTimer;
+	private ScheduledFuture<?> peerDownloaderGroupTimer;
 	/**
 	 * TrackerLauncherGroup定时器
 	 */
@@ -176,10 +176,10 @@ public final class TorrentSession {
 		this.loadTrackerLauncherGroupTimer();
 		this.loadDhtLauncher();
 		this.loadDhtLauncherTimer();
-		this.loadPeerConnectGroup();
-		this.loadPeerConnectGroupTimer();
-		this.loadPeerLauncherGroup();
-		this.loadPeerLauncherGroupTimer();
+		this.loadPeerUploaderGroup();
+		this.loadPeerUploaderGroupTimer();
+		this.loadPeerDownloaderGroup();
+		this.loadPeerDownloaderGroupTimer();
 		this.ready = true;
 		return this.torrent != null;
 	}
@@ -192,8 +192,8 @@ public final class TorrentSession {
 		this.taskSession = taskSession;
 		this.loadExecutorTimer();
 		this.loadTorrentStreamGroup();
-		this.loadPeerConnectGroup();
-		this.loadPeerConnectGroupTimer();
+		this.loadPeerUploaderGroup();
+		this.loadPeerUploaderGroupTimer();
 		this.uploadable = true;
 		this.ready = true;
 		return this;
@@ -236,8 +236,8 @@ public final class TorrentSession {
 				this.loadDhtLauncherTimer();
 			}
 		}
-		this.loadPeerLauncherGroup();
-		this.loadPeerLauncherGroupTimer();
+		this.loadPeerDownloaderGroup();
+		this.loadPeerDownloaderGroupTimer();
 		if(this.isPrivateTorrent()) {
 			LOGGER.debug("私有种子：不加载PEX任务");
 		} else {
@@ -280,35 +280,35 @@ public final class TorrentSession {
 	}
 
 	/**
-	 * 加载PeerLauncher
+	 * 加载PeerDownloader
 	 */
-	private void loadPeerLauncherGroup() {
-		this.peerLauncherGroup = PeerLauncherGroup.newInstance(this);
+	private void loadPeerDownloaderGroup() {
+		this.peerDownloaderGroup = PeerDownloaderGroup.newInstance(this);
 	}
 	
 	/**
-	 * <p>加载PeerLauncher定时优化任务</p>
+	 * <p>加载PeerDownloader定时优化任务</p>
 	 * <p>第一次任务执行延迟4秒，让加载Peer的任务执行4秒，防止一开始没有Peer数据而导致的长时间等待。</p>
 	 */
-	private void loadPeerLauncherGroupTimer() {
-		this.peerLauncherGroupTimer = this.timerFixedDelay(4L, PEER_OPTIMIZE_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
-			this.peerLauncherGroup.optimize(); // 优化下载Peer下载
+	private void loadPeerDownloaderGroupTimer() {
+		this.peerDownloaderGroupTimer = this.timerFixedDelay(4L, PEER_OPTIMIZE_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
+			this.peerDownloaderGroup.optimize(); // 优化下载Peer下载
 		});
 	}
 
 	/**
-	 * 加载PeerConnect
+	 * 加载PeerUploader
 	 */
-	private void loadPeerConnectGroup() {
-		this.peerConnectGroup = PeerConnectGroup.newInstance(this);
+	private void loadPeerUploaderGroup() {
+		this.peerUploaderGroup = PeerUploaderGroup.newInstance(this);
 	}
 	
 	/**
-	 * 加载PeerConnect定时优化任务
+	 * 加载PeerUploader定时优化任务
 	 */
-	private void loadPeerConnectGroupTimer() {
-		this.peerConnectGroupTimer = this.timerFixedDelay(PEER_OPTIMIZE_INTERVAL.toSeconds(), PEER_OPTIMIZE_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
-			this.peerConnectGroup.optimize(); // 优化连接Peer连接
+	private void loadPeerUploaderGroupTimer() {
+		this.peerUploaderGroupTimer = this.timerFixedDelay(PEER_OPTIMIZE_INTERVAL.toSeconds(), PEER_OPTIMIZE_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
+			this.peerUploaderGroup.optimize(); // 优化连接Peer连接
 		});
 	}
 
@@ -356,7 +356,7 @@ public final class TorrentSession {
 	 */
 	private void loadPexTimer() {
 		this.pexTimer = this.timerFixedDelay(PEX_INTERVAL.toSeconds(), PEX_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
-			PeerManager.getInstance().pex(this.infoHashHex(), this.peerLauncherGroup.optimizePeerSession());
+			PeerManager.getInstance().pex(this.infoHashHex(), this.peerDownloaderGroup.optimizePeerSession());
 		});
 	}
 	
@@ -471,9 +471,9 @@ public final class TorrentSession {
 	public void releaseDownload() {
 		LOGGER.debug("Torrent释放资源（下载）");
 		SystemThreadContext.shutdown(this.pexTimer);
-		SystemThreadContext.shutdown(this.peerLauncherGroupTimer);
-		if(this.peerLauncherGroup != null) {
-			this.peerLauncherGroup.release();
+		SystemThreadContext.shutdown(this.peerDownloaderGroupTimer);
+		if(this.peerDownloaderGroup != null) {
+			this.peerDownloaderGroup.release();
 		}
 		SystemThreadContext.shutdown(this.dhtLauncherTimer);
 		SystemThreadContext.shutdown(this.trackerLauncherGroupTimer);
@@ -492,9 +492,9 @@ public final class TorrentSession {
 	 */
 	public void releaseUpload() {
 		LOGGER.debug("Torrent释放资源（上传）");
-		SystemThreadContext.shutdown(this.peerConnectGroupTimer);
-		if(this.peerConnectGroup != null) {
-			this.peerConnectGroup.release();
+		SystemThreadContext.shutdown(this.peerUploaderGroupTimer);
+		if(this.peerUploaderGroup != null) {
+			this.peerUploaderGroup.release();
 		}
 		if(this.torrentStreamGroup != null) {
 			this.torrentStreamGroup.release();
@@ -573,8 +573,8 @@ public final class TorrentSession {
 	/**
 	 * 创建接入连接
 	 */
-	public PeerConnect newPeerConnect(PeerSession peerSession, PeerSubMessageHandler peerSubMessageHandler) {
-		return this.peerConnectGroup.newPeerConnect(peerSession, peerSubMessageHandler);
+	public PeerUploader newPeerUploader(PeerSession peerSession, PeerSubMessageHandler peerSubMessageHandler) {
+		return this.peerUploaderGroup.newPeerUploader(peerSession, peerSubMessageHandler);
 	}
 	
 	/**

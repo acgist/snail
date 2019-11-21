@@ -1,46 +1,46 @@
 package com.acgist.snail.net.torrent;
 
-import java.util.concurrent.atomic.AtomicLong;
-
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
+import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.utils.ObjectUtils;
 
 /**
- * Peer客户端：接入、连接
+ * <p>Peer连接</p>
+ * <p>连接：下载（不提供上传）</p>
+ * <p>接入：上传、下载（如果接触阻塞可以下载）</p>
  * 
  * @author acgist
  * @since 1.1.1
  */
-public abstract class PeerClientHandler {
+public abstract class PeerConnect {
 
 	/**
 	 * <p>是否已被评分</p>
-	 * <p>第一次获取评分时忽略评分，防止被剔除。</p>
+	 * <p>第一次获取评分不计分：防止剔除</p>
 	 */
 	protected volatile boolean marked = false;
-	/**
-	 * Peer评分
-	 */
-	protected final AtomicLong mark = new AtomicLong(0);
 	/**
 	 * 连接状态
 	 */
 	protected volatile boolean available = false;
 	
 	protected final PeerSession peerSession;
+	protected final TorrentSession torrentSession;
 	protected final PeerSubMessageHandler peerSubMessageHandler;
 	
-	public PeerClientHandler(PeerSession peerSession, PeerSubMessageHandler peerSubMessageHandler) {
+	public PeerConnect(PeerSession peerSession, TorrentSession torrentSession, PeerSubMessageHandler peerSubMessageHandler) {
 		this.peerSession = peerSession;
+		this.torrentSession = torrentSession;
 		this.peerSubMessageHandler = peerSubMessageHandler;
 	}
 
-	/**
-	 *   获取PeerSession
-	 */
 	public PeerSession peerSession() {
 		return this.peerSession;
+	}
+	
+	public TorrentSession torrentSession() {
+		return this.torrentSession;
 	}
 	
 	/**
@@ -75,7 +75,7 @@ public abstract class PeerClientHandler {
 	}
 	
 	/**
-	 * 是否已经评分
+	 * 是否评分
 	 */
 	public boolean marked() {
 		if(this.marked) {
@@ -93,11 +93,44 @@ public abstract class PeerClientHandler {
 	}
 	
 	/**
-	 * 获取评分
-	 * 
-	 * @return 评分
+	 * @return 上传评分
 	 */
-	public abstract long mark();
+	public long uploadMark() {
+		return 0L;
+	}
+	
+	/**
+	 * @return 下载评分
+	 */
+	public long downloadMark() {
+		return 0L;
+	}
+	
+	/**
+	 * 开始下载
+	 */
+	public abstract void download();
+	
+	/**
+	 * 保存Piece数据
+	 * 
+	 * @param index Piece索引
+	 * @param begin Piece偏移
+	 * @param bytes Piece数据
+	 */
+	public abstract void piece(int index, int begin, byte[] bytes);
+
+	/**
+	 * 释放资源：上传
+	 */
+	public void releaseUpload() {
+	}
+	
+	/**
+	 * 释放资源：下载
+	 */
+	public void releaseDownload() {
+	}
 	
 	@Override
 	public String toString() {

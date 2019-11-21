@@ -134,14 +134,14 @@ public class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 		// 发送发送方连接消息
 		this.connect(host, port);
 		// 发送目标方连接消息
-		final var peerConnect = peerSession.peerConnect();
-		if(peerConnect != null) {
-			peerConnect.holepunchConnect(this.peerSession.host(), this.peerSession.port());
+		final var peerUploader = peerSession.peerUploader();
+		if(peerUploader != null) {
+			peerUploader.holepunchConnect(this.peerSession.host(), this.peerSession.port());
 			return;
 		}
-		final var peerLauncher = peerSession.peerLauncher();
-		if(peerLauncher != null) {
-			peerLauncher.holepunchConnect(this.peerSession.host(), this.peerSession.port());
+		final var peerDownloader = peerSession.peerDownloader();
+		if(peerDownloader != null) {
+			peerDownloader.holepunchConnect(this.peerSession.host(), this.peerSession.port());
 			return;
 		}
 	}

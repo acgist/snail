@@ -2,6 +2,7 @@ package com.acgist.snail.net.torrent.utp;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.util.List;
@@ -184,7 +185,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 			fin(timestamp, seqnr, acknr);
 			break;
 		case UtpConfig.ST_RESET:
-			reset(timestamp, seqnr, acknr);
+			reset(timestamp, seqnr, acknr, socketAddress);
 			break;
 		case UtpConfig.ST_SYN:
 			syn(timestamp, seqnr, acknr);
@@ -389,8 +390,8 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	/**
 	 * 处理重置消息
 	 */
-	private void reset(int timestamp, short seqnr, short acknr) {
-		LOGGER.debug("处理重置消息");
+	private void reset(int timestamp, short seqnr, short acknr, SocketAddress address) {
+		LOGGER.debug("处理重置消息：{}-{}", this.socketAddress, address);
 		this.connect = false;
 		this.state(timestamp, seqnr);
 		this.closeAll();

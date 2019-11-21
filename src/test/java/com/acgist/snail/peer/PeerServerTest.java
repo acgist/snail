@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.TorrentServer;
-import com.acgist.snail.net.torrent.bootstrap.PeerLauncher;
+import com.acgist.snail.net.torrent.bootstrap.PeerDownloader;
 import com.acgist.snail.net.torrent.peer.PeerServer;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.session.PeerSession;
@@ -86,7 +86,7 @@ public class PeerServerTest {
 		StatisticsSession statisticsSession = new StatisticsSession();
 		PeerSession peerSession = PeerSession.newInstance(statisticsSession, host, port);
 		peerSession.flags(PeerConfig.PEX_UTP); // UTP支持
-		PeerLauncher launcher = PeerLauncher.newInstance(peerSession, torrentSession);
+		PeerDownloader launcher = PeerDownloader.newInstance(peerSession, torrentSession);
 		launcher.handshake();
 		new Thread(() -> {
 			while(true) {

@@ -5,8 +5,8 @@ import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.acgist.snail.net.torrent.bootstrap.PeerConnect;
-import com.acgist.snail.net.torrent.bootstrap.PeerLauncher;
+import com.acgist.snail.net.torrent.bootstrap.PeerDownloader;
+import com.acgist.snail.net.torrent.bootstrap.PeerUploader;
 import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.system.IStatistics;
 import com.acgist.snail.system.config.PeerConfig;
@@ -96,13 +96,13 @@ public final class PeerSession implements IStatistics {
 	 */
 	private volatile boolean peerInterested;
 	/**
-	 * 接入Peer（上传）
+	 * Peer上传
 	 */
-	private PeerConnect peerConnect;
+	private PeerUploader peerUploader;
 	/**
-	 * 连接Peer（下载）
+	 * Peer下载
 	 */
-	private PeerLauncher peerLauncher;
+	private PeerDownloader peerDownloader;
 	/**
 	 * 统计信息
 	 */
@@ -600,20 +600,20 @@ public final class PeerSession implements IStatistics {
 		return verifyFlags(PeerConfig.PEX_UPLOAD_ONLY);
 	}
 	
-	public PeerConnect peerConnect() {
-		return this.peerConnect;
+	public PeerUploader peerUploader() {
+		return this.peerUploader;
 	}
 	
-	public void peerConnect(PeerConnect peerConnect) {
-		this.peerConnect = peerConnect;
+	public void peerUploader(PeerUploader peerUploader) {
+		this.peerUploader = peerUploader;
 	}
 	
-	public PeerLauncher peerLauncher() {
-		return this.peerLauncher;
+	public PeerDownloader peerDownloader() {
+		return this.peerDownloader;
 	}
 	
-	public void peerLauncher(PeerLauncher peerLauncher) {
-		this.peerLauncher = peerLauncher;
+	public void peerDownloader(PeerDownloader peerDownloader) {
+		this.peerDownloader = peerDownloader;
 	}
 	
 	public InetSocketAddress peerSocketAddress() {

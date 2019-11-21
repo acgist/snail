@@ -183,14 +183,14 @@ public final class PeerManager {
 		final AtomicInteger count = new AtomicInteger(0);
 		list.stream()
 			.forEach(session -> {
-				final var peerConnect = session.peerConnect();
-				final var peerLauncher = session.peerLauncher();
-				if(peerConnect != null && peerConnect.available()) {
+				final var peerUploader = session.peerUploader();
+				final var peerDownloader = session.peerDownloader();
+				if(peerUploader != null && peerUploader.available()) {
 					count.incrementAndGet();
-					peerConnect.have(index);
-				} else if(peerLauncher != null && peerLauncher.available()) {
+					peerUploader.have(index);
+				} else if(peerDownloader != null && peerDownloader.available()) {
 					count.incrementAndGet();
-					peerLauncher.have(index);
+					peerDownloader.have(index);
 				}
 			});
 		LOGGER.debug("发送have消息，通知Peer数量：{}", count.get());
@@ -210,14 +210,14 @@ public final class PeerManager {
 		final AtomicInteger count = new AtomicInteger(0);
 		list.stream()
 			.forEach(session -> {
-				final var peerConnect = session.peerConnect();
-				final var peerLauncher = session.peerLauncher();
-				if(peerConnect != null && peerConnect.available()) {
+				final var peerUploader = session.peerUploader();
+				final var peerDownloader = session.peerDownloader();
+				if(peerUploader != null && peerUploader.available()) {
 					count.incrementAndGet();
-					peerConnect.pex(bytes);
-				} else if(peerLauncher != null && peerLauncher.available()) {
+					peerUploader.pex(bytes);
+				} else if(peerDownloader != null && peerDownloader.available()) {
 					count.incrementAndGet();
-					peerLauncher.pex(bytes);
+					peerDownloader.pex(bytes);
 				}
 			});
 		LOGGER.debug("发送pex消息，优质Peer数量：{}，通知Peer数量：{}", optimize.size(), count.get());
@@ -232,14 +232,14 @@ public final class PeerManager {
 		final AtomicInteger count = new AtomicInteger(0);
 		list.stream()
 			.forEach(session -> {
-				final var peerConnect = session.peerConnect();
-				final var peerLauncher = session.peerLauncher();
-				if(peerConnect != null && peerConnect.available()) {
+				final var peerUploader = session.peerUploader();
+				final var peerDownloader = session.peerDownloader();
+				if(peerUploader != null && peerUploader.available()) {
 					count.incrementAndGet();
-					peerConnect.uploadOnly();
-				} else if(peerLauncher != null && peerLauncher.available()) {
+					peerUploader.uploadOnly();
+				} else if(peerDownloader != null && peerDownloader.available()) {
 					count.incrementAndGet();
-					peerLauncher.uploadOnly();
+					peerDownloader.uploadOnly();
 				}
 			});
 		LOGGER.debug("发送uploadOnly消息，通知Peer数量：{}", count.get());
