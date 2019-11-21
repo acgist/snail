@@ -218,18 +218,24 @@ public final class StatisticsController extends Controller implements Initializa
 				if(!activePeer.contains(peer.host())) {
 					activePeer.add(peer.host());
 				}
-				final double size = FileUtils.formatSizeMB(peer.statistics().uploadSize());
-				final XYChart.Data<String, Number> data = new XYChart.Data<>(peer.host(), size);
-				uploadPeer.add(data);
+				final double uploadSize = FileUtils.formatSizeMB(peer.statistics().uploadSize());
+				final double downloadSize = FileUtils.formatSizeMB(peer.statistics().downloadSize());
+				final XYChart.Data<String, Number> uploadData = new XYChart.Data<>(peer.host(), uploadSize);
+				final XYChart.Data<String, Number> downloadData = new XYChart.Data<>(peer.host(), downloadSize);
+				uploadPeer.add(uploadData);
+				downloadPeer.add(downloadData);
 			}
 			if(peer.downloading()) {
 				download.incrementAndGet();
 				if(!activePeer.contains(peer.host())) {
 					activePeer.add(peer.host());
 				}
-				final double size = FileUtils.formatSizeMB(peer.statistics().downloadSize());
-				final XYChart.Data<String, Number> data = new XYChart.Data<>(peer.host(), size);
-				downloadPeer.add(data);
+				final double uploadSize = FileUtils.formatSizeMB(peer.statistics().uploadSize());
+				final double downloadSize = FileUtils.formatSizeMB(peer.statistics().downloadSize());
+				final XYChart.Data<String, Number> uploadData = new XYChart.Data<>(peer.host(), uploadSize);
+				final XYChart.Data<String, Number> downloadData = new XYChart.Data<>(peer.host(), downloadSize);
+				uploadPeer.add(uploadData);
+				downloadPeer.add(downloadData);
 			}
 			if(peer.available()) {
 				available.incrementAndGet();
@@ -260,7 +266,6 @@ public final class StatisticsController extends Controller implements Initializa
 				FileUtils.formatSize(torrentSession.statistics().downloadSize())
 			)
 		);
-		// TODO：上传下载
 		xAxis.setCategories(FXCollections.observableArrayList(activePeer));
 		NumberAxis yAxis = new NumberAxis();
 		yAxis.setLabel("流量（MB）");
