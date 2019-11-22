@@ -125,6 +125,9 @@ this.method(arg1, arg2, arg3);
 
 // 可变参数
 public String method(String ... args);
+
+// 是否存在方法命名使用haveXXXX
+public String haveData();
 ```
 
 ## 检查工具
