@@ -7,19 +7,19 @@ package com.acgist.snail.system;
  * @since 1.0.0
  */
 public interface IStatistics {
-
-	/**
-	 * 统计下载量
-	 * 
-	 * @param buffer 当前统计下载量
-	 */
-	void download(long buffer);
 	
 	/**
-	 * 统计上传量
+	 * 统计上传数据
 	 * 
-	 * @param buffer 当前统计上传量
+	 * @param buffer 上传数据大小
 	 */
-	void upload(long buffer);
+	void upload(int buffer);
+
+	/**
+	 * 统计下载数据
+	 * 
+	 * @param buffer 下载数据大小
+	 */
+	void download(int buffer);
 
 }

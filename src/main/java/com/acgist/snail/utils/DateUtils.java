@@ -32,6 +32,10 @@ public final class DateUtils {
 	 */
 	private static final LocalDateTime WINDOW_BEIJIN_BEGIN_TIME = LocalDateTime.of(1601, 01, 01, 8, 00, 00);
 	/**
+	 * 一秒钟（毫秒）
+	 */
+	public static final long ONE_SECOND = 1000L;
+	/**
 	 * 一分钟（秒数）
 	 */
 	private static final long ONE_MINUTE = 60L;

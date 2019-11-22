@@ -25,6 +25,11 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Downloader.class);
 	
 	/**
+	 * 删除锁等待时间
+	 */
+	private static final int DELETE_WAIT_TIME = 5;
+	
+	/**
 	 * 失败状态
 	 */
 	protected volatile boolean fail = false;
@@ -39,15 +44,15 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	/**
 	 * <p>任务删除锁</p>
 	 * <p>任务不处于下载中时标记：true</p>
-	 * <p>删除任务时检测是否可以删除，如果不能删除进入删除等待。</p>
+	 * <p>删除任务时检查是否可以删除：true-删除；false-等待；</p>
 	 */
 	private final AtomicBoolean deleteLock = new AtomicBoolean(false);
 
 	protected Downloader(ITaskSession taskSession) {
 		this.taskSession = taskSession;
-		// 加载已下载大小
+		// 已下载大小
 		this.taskSession.downloadSize(downloadSize());
-		// 开始时任务不处于下载中时标记：true
+		// 任务不处于下载中时标记：true
 		if(!this.taskSession.download()) {
 			this.deleteLock.set(true);
 		}
@@ -64,7 +69,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	}
 	
 	@Override
-	public boolean running() {
+	public boolean downloading() {
 		return this.taskSession.download();
 	}
 	
@@ -75,6 +80,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	
 	@Override
 	public void start() {
+		// 任务已经开始下载不修改状态
 		if(this.taskSession.download()) {
 			return;
 		}
@@ -83,6 +89,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	
 	@Override
 	public void pause() {
+		// 任务已经暂停不修改状态
 		if(this.taskSession.pause()) {
 			return;
 		}
@@ -95,7 +102,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 		this.updateStatus(Status.FAIL);
 		final StringBuilder noticeMessage = new StringBuilder();
 		noticeMessage.append(name())
-			.append("下载失败，失败原因：");
+			.append("下载失败：");
 		if(message != null) {
 			noticeMessage.append(message);
 		} else {
@@ -111,7 +118,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 		if(!this.deleteLock.get()) {
 			synchronized (this.deleteLock) {
 				if(!this.deleteLock.get()) {
-					ThreadUtils.wait(this.deleteLock, Duration.ofSeconds(5));
+					ThreadUtils.wait(this.deleteLock, Duration.ofSeconds(DELETE_WAIT_TIME));
 				}
 			}
 		}
@@ -174,13 +181,13 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	}
 	
 	@Override
-	public void download(long buffer) {
-		this.taskSession.statistics().download(buffer);
-	}
-
-	@Override
-	public void upload(long buffer) {
+	public void upload(int buffer) {
 		this.taskSession.statistics().upload(buffer);
+	}
+	
+	@Override
+	public void download(int buffer) {
+		this.taskSession.statistics().download(buffer);
 	}
 	
 	/**

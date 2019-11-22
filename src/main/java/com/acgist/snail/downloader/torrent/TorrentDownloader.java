@@ -10,8 +10,7 @@ import com.acgist.snail.system.exception.DownloadException;
 
 /**
  * <p>BT下载器</p>
- * <p>任务{@link #open()}时，打开上传功能，直到任务被删除或者软件重启。</p>
- * <p>重启后如果继续下载，依旧会开启上传功能。</p>
+ * <p>{@linkplain #loadTorrentSession() 任务加载}时，打开上传功能，直到任务删除或者软件关闭。</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -31,26 +30,27 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 	@Override
 	public void delete() {
 		if(this.torrentSession != null) {
-			this.torrentSession.releaseUpload(); // 释放BT资源
+			this.torrentSession.releaseUpload(); // 释放上传资源
 		}
 		super.delete();
 	}
 	
 	@Override
 	public void refresh() {
-		// TODO：添加下载文件TorrentStreamGroup
+		// TODO：修改下载文件时修改TorrentStreamGroup
 	}
 	
 	@Override
 	public void release() {
 		if(this.torrentSession != null) {
-			this.torrentSession.releaseDownload();
+			this.torrentSession.releaseDownload(); // 释放下载资源
 		}
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * <p>加载完成立即使任务可以被分享</p>
+	 * 
+	 * <p>加载完成立即上传任务</p>
 	 */
 	@Override
 	protected TorrentSession loadTorrentSession() {

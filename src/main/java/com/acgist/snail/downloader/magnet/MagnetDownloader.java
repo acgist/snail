@@ -9,7 +9,7 @@ import com.acgist.snail.system.exception.DownloadException;
 
 /**
  * <p>磁力链接下载器</p>
- * <p>先将磁力链接转为种子，然后转为BT任务下载。</p>
+ * <p>原理：先将磁力链接转为种子，然后转为BT任务下载。</p>
  * 
  * @author acgist
  * @since 1.1.0
@@ -37,7 +37,7 @@ public final class MagnetDownloader extends TorrentSessionDownloader {
 	@Override
 	public void release() {
 		if(this.torrentSession != null) {
-			this.torrentSession.releaseMagnet();
+			this.torrentSession.releaseMagnet(); // 释放磁力链接资源
 		}
 		super.release();
 	}
