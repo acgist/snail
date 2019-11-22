@@ -225,11 +225,11 @@ public final class TorrentStream {
 			this.pausePieces.clear(); // 清空暂停位图
 			if(pickPieces.isEmpty()) {
 				if(this.torrentStreamGroup.remainingPieceSize() <= SystemConfig.getPieceRepeatSize()) {
-					LOGGER.debug("选择Piece时，任务接近完成并且找不到更多Piece，开始重复选择未下载的Piece。");
+					LOGGER.debug("选择Piece：任务接近完成并且找不到更多Piece（开始重复选择未下载的Piece）");
 					pickPieces.or(peerPieces);
 					pickPieces.andNot(this.pieces);
 					if(pickPieces.isEmpty()) {
-						LOGGER.debug("选择Piece时Piece已经全部下载完成");
+						LOGGER.debug("选择Piece：Piece已经全部下载完成");
 						return null;
 					}
 				} else {

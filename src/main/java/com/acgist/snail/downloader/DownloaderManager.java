@@ -38,7 +38,7 @@ public final class DownloaderManager {
 	private final ExecutorService executor;
 	/**
 	 * <p>下载器MAP</p>
-	 * <p>key=任务ID，value=下载器。</p>
+	 * <p>key=任务ID；value=下载器</p>
 	 */
 	private final Map<String, IDownloader> downloaderMap;
 	
@@ -192,7 +192,7 @@ public final class DownloaderManager {
 
 	/**
 	 * <p>停止下载</p>
-	 * <p>暂停所有任务，关闭下载线程池。</p>
+	 * <p>暂停所有任务、关闭下载线程池</p>
 	 */
 	public void shutdown() {
 		LOGGER.info("关闭下载器管理器");
@@ -203,7 +203,7 @@ public final class DownloaderManager {
 		} catch (Exception e) {
 			LOGGER.error("关闭下载器管理器异常", e);
 		}
-//		SystemThreadContext.shutdown(this.executor); // 不直接关闭，线程关闭需要时间。
+//		SystemThreadContext.shutdown(this.executor); // 不直接关闭：线程关闭需要时间
 	}
 
 }

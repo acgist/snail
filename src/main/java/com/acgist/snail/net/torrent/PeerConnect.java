@@ -316,7 +316,6 @@ public abstract class PeerConnect {
 		}
 		/*
 		 * <p>此处不论是否有数据返回都需要进行结束等待，防止数据小于{@link #SLICE_REQUEST_SIZE}个slice时直接跳出了slice wait（countLock）导致响应还没有收到就直接结束了。</p>
-		 * <p>设置完成锁为true，释放时不用等待。</p>
 		 */
 		synchronized (this.completeLock) {
 			if(!this.completeLock.getAndSet(true)) {
