@@ -316,7 +316,7 @@ public final class MainController extends Controller implements Initializable {
 	}
 
 	/**
-	 * 设置数据列
+	 * 设置列
 	 * 
 	 * @param column 列
 	 * @param pos 对齐
@@ -326,19 +326,19 @@ public final class MainController extends Controller implements Initializable {
 	 */
 	private void taskCell(TableColumn<ITaskSession, String> column, Pos pos, boolean icon, boolean tooltip, DoubleBinding widthBinding) {
 		column.prefWidthProperty().bind(widthBinding);
-		column.setResizable(false);
+		column.setResizable(false); // 禁止修改大小
 		column.setCellFactory((tableColumn) -> {
 			return new TaskCell(pos, icon, tooltip);
 		});
 	}
 	
 	/**
-	 * 数据行工厂
+	 * 数据行
 	 */
 	private Callback<TableView<ITaskSession>, TableRow<ITaskSession>> rowFactory = (tableView) -> {
 		final TableRow<ITaskSession> row = new TableRow<>();
-		row.setOnMouseClicked(this.rowClickAction); // 双击修改任务状态
-		row.setContextMenu(TaskMenu.getInstance());
+		row.setOnMouseClicked(this.rowClickAction); // 左键双击
+		row.setContextMenu(TaskMenu.getInstance()); // 右键菜单
 //		row.selectedProperty().addListener((obs, old, now) -> {
 //		});
 		return row;
@@ -372,7 +372,7 @@ public final class MainController extends Controller implements Initializable {
 	};
 	
 	/**
-	 * 列双击事件
+	 * 双击事件
 	 */
 	private EventHandler<MouseEvent> rowClickAction = (event) -> {
 		if(event.getClickCount() == DOUBLE_CLICK_COUNT) { // 双击
@@ -387,7 +387,7 @@ public final class MainController extends Controller implements Initializable {
 				} else {
 					FileUtils.openInDesktop(new File(session.getFile()));
 				}
-			} else if(session.inThreadPool()) { // 准备中=暂停下载
+			} else if(session.inThreadPool()) { // 处于下载线程=暂停下载
 				DownloaderManager.getInstance().pause(session);
 			} else { // 其他=开始下载
 				try {
