@@ -20,6 +20,7 @@ public interface IStatisticsSession extends IStatistics {
 	
 	/**
 	 * {@inheritDoc}
+	 * 
 	 * <p>如果存在父类优先更新父类数据，防止限速导致父类更新不及时。</p>
 	 */
 	@Override
@@ -27,6 +28,7 @@ public interface IStatisticsSession extends IStatistics {
 	
 	/**
 	 * {@inheritDoc}
+	 * 
 	 * <p>如果存在父类优先更新父类数据，防止限速导致父类更新不及时。</p>
 	 */
 	@Override

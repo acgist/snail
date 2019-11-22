@@ -30,7 +30,7 @@ public final class SpeedSession {
 	/**
 	 * 最后一次采样时间
 	 */
-	private long bufferSampleTime;
+	private long bufferSampleTime = System.currentTimeMillis();
 	/**
 	 * 速度采样
 	 */

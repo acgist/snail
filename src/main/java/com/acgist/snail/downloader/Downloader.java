@@ -44,7 +44,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	/**
 	 * <p>任务删除锁</p>
 	 * <p>任务不处于下载中时标记：true</p>
-	 * <p>删除任务时检查是否可以删除：true-删除；false-等待；</p>
+	 * <p>删除任务时检查是否可以删除：true-立即删除；false-等待下载结束；</p>
 	 */
 	private final AtomicBoolean deleteLock = new AtomicBoolean(false);
 
@@ -101,7 +101,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 		this.fail = true;
 		this.updateStatus(Status.FAIL);
 		final StringBuilder noticeMessage = new StringBuilder();
-		noticeMessage.append(name())
+		noticeMessage.append(this.name())
 			.append("下载失败：");
 		if(message != null) {
 			noticeMessage.append(message);
@@ -122,8 +122,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 				}
 			}
 		}
-		// 删除任务
-		this.taskSession.delete();
+		this.taskSession.delete(); // 删除任务
 	}
 	
 	@Override
@@ -134,6 +133,11 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	public void unlockDownload() {
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * <p>检查任务完成状态，如果已经完成则标记任务为完成状态。</p>
+	 */
 	@Override
 	public void complete() {
 		if(this.complete) {
@@ -169,8 +173,10 @@ public abstract class Downloader implements IDownloader, IStatistics {
 				}
 				this.complete(); // 检测完成状态
 				this.release(); // 释放资源
-				this.unlockDelete(); // 解除删除锁
+				this.unlockDelete(); // 唤醒删除锁
 				LOGGER.info("任务下载结束：{}", name());
+			} else {
+				LOGGER.warn("任务状态错误：{}", this.name());
 			}
 		}
 	}
@@ -191,20 +197,22 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	}
 	
 	/**
-	 * <p>判断是否可以下载：</p>
-	 * <ul>
-	 * 	<li>未被标记失败</li>
-	 * 	<li>未被标记完成</li>
-	 * 	<li>任务状态处于下载中</li>
-	 * </ul>
+	 * <dl>
+	 * 	<dt>判断是否可以下载</dt>
+	 * 	<dd>未被标记失败</dd>
+	 * 	<dd>未被标记完成</dd>
+	 * 	<dd>任务处于下载中</dd>
+	 * </dl>
 	 */
 	protected boolean ok() {
-		return !this.fail && !this.complete && this.taskSession.download();
+		return
+			!this.fail &&
+			!this.complete &&
+			this.taskSession.download();
 	}
 
 	/**
 	 * <p>唤醒删除锁</p>
-	 * <p>任务删除时需要等待下载线程正常结束，结束后唤醒删除锁等待。</p>
 	 */
 	private void unlockDelete() {
 		synchronized (this.deleteLock) {
@@ -214,7 +222,8 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	}
 	
 	/**
-	 * <p>唤醒下载等待线程、更新任务状态</p>
+	 * <p>修改任务状态</p>
+	 * <p>唤醒下载等待锁、更新任务状态</p>
 	 * 
 	 * @param status 状态
 	 */
