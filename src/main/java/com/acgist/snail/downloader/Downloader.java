@@ -207,7 +207,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	}
 	
 	/**
-	 * <p>唤醒下载等待线程，更新任务状态。</p>
+	 * <p>唤醒下载等待线程、更新任务状态</p>
 	 * 
 	 * @param status 状态
 	 */
