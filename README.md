@@ -32,7 +32,9 @@
 
 ## 使用
 
-最新分支代码可能存在没有开发完成的任务，导致不能正常使用，推荐下载[稳定版](https://gitee.com/acgist/snail/releases)
+[Windows稳定版下载](https://gitee.com/acgist/snail/attach_files)
+
+> 推荐下载[发行版](https://gitee.com/acgist/snail/releases)编译使用（最新分支可能存在未开发完成的任务）
 
 #### 编译
 
