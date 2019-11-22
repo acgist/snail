@@ -32,11 +32,11 @@
 
 ## 使用
 
-[Windows稳定版下载](https://gitee.com/acgist/snail/attach_files)
-
-> 推荐下载[发行版](https://gitee.com/acgist/snail/releases)编译使用（最新分支可能存在未开发完成的任务）
+[Windows稳定版下载](https://gitee.com/acgist/snail/attach_files)：解压可以直接运行使用
 
 #### 编译
+
+> 推荐下载[发行版](https://gitee.com/acgist/snail/releases)编译（最新分支可能存在未开发完成的任务）
 
 ```bash
 # 编译系统和运行系统不一致时，添加参数：-D javafx.platform=win|mac|linux
