@@ -172,13 +172,13 @@ public final class DownloaderManager {
 			final var downloaders = this.downloaderMap.values();
 			// 当前运行的下载器数量
 			final long count = downloaders.stream()
-				.filter(IDownloader::running)
+				.filter(IDownloader::downloading)
 				.count();
 			final int downloadSize = DownloadConfig.getSize();
 			if(count == downloadSize) { // 等于时不操作
 			} else if(count > downloadSize) { // 大于时暂停部分下载任务
 				downloaders.stream()
-					.filter(IDownloader::running)
+					.filter(IDownloader::downloading)
 					.skip(downloadSize)
 					.forEach(IDownloader::pause);
 			} else { // 小于时开始部分下载任务

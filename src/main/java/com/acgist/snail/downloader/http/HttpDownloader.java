@@ -44,21 +44,21 @@ public final class HttpDownloader extends SingleFileDownloader {
 	
 	/**
 	 * {@inheritDoc}
-	 * <p>断点续传设置（Range）：</p>
-	 * <pre>
-	 * Range：bytes=0-499：第0-499字节范围的内容
-	 * Range：bytes=500-999：第500-999字节范围的内容
-	 * Range：bytes=-500：最后500字节的内容
-	 * Range：bytes=500-：从第500字节开始到文件结束部分的内容
-	 * Range：bytes=0-0,-1：第一个和最后一个字节的内容
-	 * Range：bytes=500-600,601-999：同时指定多个范围的内容
-	 * </pre>
+	 * <dl>
+	 * 	<dt>断点续传设置（Range）</dt>
+	 * 	<dd>Range：bytes=0-499：0-499字节范围</dd>
+	 * 	<dd>Range：bytes=500-999：500-999字节范围</dd>
+	 * 	<dd>Range：bytes=-500：最后500字节</dd>
+	 * 	<dd>Range：bytes=500-：500字节开始到结束</dd>
+	 * 	<dd>Range：bytes=0-0,-1：第一个字节和最后一个字节</dd>
+	 * 	<dd>Range：bytes=500-600,601-999：同时指定多个范围</dd>
+	 * </dl>
 	 */
 	@Override
 	protected void buildInput() {
 		// 已下载大小
 		final long size = FileUtils.fileSize(this.taskSession.getFile());
-		// 创建HTTP客户端
+		// 创建HTTPClient
 		final var client = HTTPClient.newInstance(this.taskSession.getUrl(), SystemConfig.CONNECT_TIMEOUT, SystemConfig.DOWNLOAD_TIMEOUT);
 		HttpResponse<InputStream> response = null; // 响应
 		try {
@@ -71,12 +71,19 @@ public final class HttpDownloader extends SingleFileDownloader {
 			return;
 		}
 		if(HTTPClient.ok(response) || HTTPClient.partialContent(response)) {
-			final var responseHeader = HttpHeaderWrapper.newInstance(response.headers());
+			final var headers = HttpHeaderWrapper.newInstance(response.headers());
 			this.input = new BufferedInputStream(response.body());
-			if(responseHeader.range()) { // 支持断点续传
-				final long begin = responseHeader.beginRange();
+			if(headers.range()) { // 支持断点续传
+				final long begin = headers.beginRange();
 				if(size != begin) {
-					LOGGER.warn("HTTP下载错误（已下载大小和开始下载位置不符）：{}-{}，HTTP响应头：{}", size, begin, responseHeader.allHeaders());
+					// TODO：多行文本
+					LOGGER.warn(
+						"HTTP下载错误（已下载大小和开始下载位置不符）：{}-{}" +
+						"\r\n" +
+						"HTTP响应头：{}",
+						size, begin,
+						headers.allHeaders()
+					);
 				}
 				this.taskSession.downloadSize(size);
 			} else {
@@ -86,7 +93,7 @@ public final class HttpDownloader extends SingleFileDownloader {
 			if(this.taskSession.downloadSize() == this.taskSession.getSize()) {
 				this.complete = true;
 			} else {
-				fail("无法满足文件下载范围");
+				fail("无法满足文件下载范围：" + size);
 			}
 		} else {
 			fail("HTTP请求失败（" + response.statusCode() + "）");

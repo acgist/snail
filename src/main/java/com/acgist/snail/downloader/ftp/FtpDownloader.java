@@ -41,7 +41,7 @@ public final class FtpDownloader extends SingleFileDownloader {
 		if(this.client != null) {
 			this.client.close();
 		}
-//		IoUtils.close(this.input); // FtpClient关闭
+//		IoUtils.close(this.input); // FtpClient已经关闭
 		IoUtils.close(this.output);
 		super.release();
 	}
@@ -50,9 +50,9 @@ public final class FtpDownloader extends SingleFileDownloader {
 	protected void buildInput() {
 		// 已下载大小
 		final long size = FileUtils.fileSize(this.taskSession.getFile());
-		// 创建FTP客户端
+		// 创建FtpClient
 		this.client = FtpClientBuilder.newInstance(this.taskSession.getUrl()).build();
-		final boolean ok = this.client.connect();
+		final boolean ok = this.client.connect(); // 建立连接
 		if(ok) {
 			try {
 				final var inputStream = this.client.download(size);

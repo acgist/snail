@@ -40,19 +40,19 @@ public abstract class PeerConnect {
 	 * <p>最大等待请求最大数量</p>
 	 * <p>超过这个数量直接跳出下载</p>
 	 */
-	private static final int MAX_AWAIT_SLICE_REQUEST_SIZE = 4;
+	private static final int MAX_WAIT_SLICE_REQUEST_SIZE = 4;
 	/**
 	 * SLICE请求等待时间
 	 */
-	private static final int SLICE_AWAIT_TIME = 10;
+	private static final int SLICE_WAIT_TIME = 10;
 	/**
 	 * PICEC完成等待时间
 	 */
-	private static final int PIECE_AWAIT_TIME = 30;
+	private static final int PIECE_WAIT_TIME = 30;
 	/**
 	 * 释放时等待时间
 	 */
-	private static final int CLOSE_AWAIT_TIME = 4;
+	private static final int RELEASE_WAIT_TIME = 4;
 	
 	/**
 	 * <p>是否已被评分</p>
@@ -274,7 +274,7 @@ public abstract class PeerConnect {
 	 * <p>请求数据</p>
 	 * <p>每次发送{@link #SLICE_REQUEST_SIZE}个请求，然后进入等待，当全部数据响应后，又开始发送请求，直到Piece下载完成。</p>
 	 * <p>请求发送完成后进入完成等待</p>
-	 * <p>每次请求如果等待时间超过{@link #SLICE_AWAIT_TIME}跳出下载</p>
+	 * <p>每次请求如果等待时间超过{@link #SLICE_WAIT_TIME}跳出下载</p>
 	 * <p>如果最后Piece没有下载完成标记为失败</p>
 	 * 
 	 * @return 是否可以继续下载
@@ -294,13 +294,13 @@ public abstract class PeerConnect {
 			return false;
 		}
 		final int index = this.downloadPiece.getIndex();
-		final var sliceAwaitTime = Duration.ofSeconds(SLICE_AWAIT_TIME);
+		final var sliceAwaitTime = Duration.ofSeconds(SLICE_WAIT_TIME);
 		while(available()) {
 			if (this.countLock.get() >= SLICE_REQUEST_SIZE) {
 				synchronized (this.countLock) {
 					ThreadUtils.wait(this.countLock, sliceAwaitTime);
 					// 等待slice数量超过最大等待数量跳出循环
-					if (this.countLock.get() >= MAX_AWAIT_SLICE_REQUEST_SIZE) {
+					if (this.countLock.get() >= MAX_WAIT_SLICE_REQUEST_SIZE) {
 						LOGGER.debug("请求slice数量超过最大等待数量：{}-{}", this.downloadPiece.getIndex(), this.countLock.get());
 						break;
 					}
@@ -320,7 +320,7 @@ public abstract class PeerConnect {
 		 */
 		synchronized (this.completeLock) {
 			if(!this.completeLock.getAndSet(true)) {
-				ThreadUtils.wait(this.completeLock, Duration.ofSeconds(PIECE_AWAIT_TIME));
+				ThreadUtils.wait(this.completeLock, Duration.ofSeconds(PIECE_WAIT_TIME));
 			}
 		}
 		// 如果已经释放：唤醒释放锁
@@ -398,7 +398,7 @@ public abstract class PeerConnect {
 					if(!this.releaseLock.get()) {
 						synchronized (this.releaseLock) {
 							if(!this.releaseLock.getAndSet(true)) {
-								ThreadUtils.wait(this.releaseLock, Duration.ofSeconds(CLOSE_AWAIT_TIME));
+								ThreadUtils.wait(this.releaseLock, Duration.ofSeconds(RELEASE_WAIT_TIME));
 							}
 						}
 					}

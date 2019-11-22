@@ -621,7 +621,7 @@ public final class TorrentSession {
 	/**
 	 * 任务是否下载中
 	 */
-	public boolean running() {
+	public boolean downloading() {
 		return this.taskSession.download();
 	}
 	

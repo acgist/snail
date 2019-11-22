@@ -48,6 +48,7 @@ public abstract class TorrentSessionDownloader extends Downloader {
 	
 	@Override
 	public void delete() {
+		// 删除种子资源：Peer、种子信息
 		if(this.torrentSession != null) {
 			final String infoHashHex = this.torrentSession.infoHashHex();
 			PeerManager.getInstance().remove(infoHashHex);

@@ -7,8 +7,7 @@ import com.acgist.snail.gui.GuiHandler;
 import com.acgist.snail.system.context.SystemContext;
 
 /**
- * <h1>Snail系统启动类</h1>
- * <p>Snail（蜗牛）是一款下载软件，支持下载协议：BT（BitTorrent）、FTP、HTTP。</p>
+ * <p>Snail启动类</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -18,11 +17,12 @@ public final class Application {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 	
 	/**
-	 * <p>启动系统</p>
-	 * <table border="1">
+	 * <p>启动方法</p>
+	 * 
+	 * <table border="1" summary="启动参数">
 	 * 	<tr>
-	 * 		<th>启动参数</th>
-	 * 		<th align="left">功能</th>
+	 * 		<th>参数</th>
+	 * 		<th align="left">描述</th>
 	 * 	</tr>
 	 * 	<tr>
 	 * 		<td>args[0]</td>
@@ -35,37 +35,14 @@ public final class Application {
 	public static final void main(String[] args) {
 		LOGGER.info("系统开始启动");
 		SystemContext.info();
-		final boolean enable = listen();
+		final boolean enable = SystemContext.listen(); // 启动系统监听
 		if(enable) {
-			buildContext();
-			buildWindow(args);
+			SystemContext.init(); // 初始化系统上下文
+			GuiHandler.getInstance().init(args).build(); // 初始化GUI
+		} else {
+			LOGGER.debug("启动监听失败");
 		}
 		LOGGER.info("系统启动完成");
-	}
-	
-	/**
-	 * <p>启动系统监听</p>
-	 * 
-	 * @return true-成功；false-失败；
-	 */
-	private static final boolean listen() {
-		return SystemContext.listen();
-	}
-	
-	/**
-	 * <p>初始化系统上下文</p>
-	 */
-	private static final void buildContext() {
-		SystemContext.init();
-	}
-	
-	/**
-	 * <p>初始化GUI窗口</p>
-	 * 
-	 * @param args 启动参数
-	 */
-	private static final void buildWindow(String ... args) {
-		GuiHandler.getInstance().init(args).build();
 	}
 
 }

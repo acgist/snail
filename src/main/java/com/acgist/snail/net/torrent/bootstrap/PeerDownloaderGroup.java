@@ -161,7 +161,7 @@ public final class PeerDownloaderGroup {
 	 * @return true-继续；false-停止；
 	 */
 	private boolean buildPeerDownloader() {
-		if(!this.torrentSession.running()) {
+		if(!this.torrentSession.downloading()) {
 			return false;
 		}
 		if(this.peerDownloaders.size() >= SystemConfig.getPeerSize()) {

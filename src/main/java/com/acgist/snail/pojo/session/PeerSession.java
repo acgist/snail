@@ -213,15 +213,15 @@ public final class PeerSession implements IStatistics {
 	public boolean equals(String host) {
 		return StringUtils.equals(this.host, host);
 	}
-
-	@Override
-	public void download(long buffer) {
-		this.statistics.download(buffer);
-	}
 	
 	@Override
-	public void upload(long buffer) {
+	public void upload(int buffer) {
 		this.statistics.upload(buffer);
+	}
+
+	@Override
+	public void download(int buffer) {
+		this.statistics.download(buffer);
 	}
 	
 	public IStatisticsSession statistics() {

@@ -1,6 +1,6 @@
 /**
- * <h1>Sanil（蜗牛）下载工具</h1>
- * <p>Snail（蜗牛）是一款下载软件，支持下载协议：BT（BitTorrent）、FTP、HTTP。</p>
+ * <h1>Sanil（蜗牛）</h1>
+ * <p>基于Java、JavaFX开发的下载工具，支持下载协议：BT（BitTorrent）、FTP、HTTP。</p>
  * 
  * TODO：稀有块、阻塞算法（Peer）
  * 
@@ -22,13 +22,13 @@ open module com.acgist.snail {
 	exports com.acgist.snail.downloader;
 
 	/*
-	 * opens：开放包
+	 * 反射使用
 	 * opens com.acgist.main;
-	 * 反射时需要：使用open module不需要此配置
+	 * open module：整个模块
 	 */
 
 	/*
-	 * Java
+	 * Java：不能使用transitive
 	 */
 	requires java.base;
 	

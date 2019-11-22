@@ -1,12 +1,14 @@
 package com.acgist.snail.pojo;
 
+import com.acgist.snail.system.IStatistics;
+
 /**
  * <p>统计接口</p>
  * 
  * @author acgist
  * @since 1.2.0
  */
-public interface IStatisticsSession {
+public interface IStatisticsSession extends IStatistics {
 
 	/**
 	 * <p>判断是否在下载数据</p>
@@ -17,44 +19,28 @@ public interface IStatisticsSession {
 	boolean downloading();
 	
 	/**
-	 * <p>下载统计</p>
+	 * {@inheritDoc}
 	 * <p>如果存在父类优先更新父类数据，防止限速导致父类更新不及时。</p>
-	 * 
-	 * @param buffer 下载数据大小
 	 */
-	void download(long buffer);
+	@Override
+	void upload(int buffer);
 	
 	/**
-	 * <p>上传统计</p>
+	 * {@inheritDoc}
 	 * <p>如果存在父类优先更新父类数据，防止限速导致父类更新不及时。</p>
-	 * 
-	 * @param buffer 上传数据大小
 	 */
-	void upload(long buffer);
+	@Override
+	void download(int buffer);
 	
 	/**
-	 * 非线程安全
-	 * 
-	 * @return 下载速度
-	 */
-	long downloadSpeed();
-	
-	/**
-	 * 非线程安全
-	 * 
 	 * @return 上传速度
 	 */
 	long uploadSpeed();
 	
 	/**
-	 * @return 累计下载大小
+	 * @return 下载速度
 	 */
-	long downloadSize();
-	
-	/**
-	 * @param size 累计下载大小
-	 */
-	void downloadSize(long size);
+	long downloadSpeed();
 	
 	/**
 	 * @return 累计上传大小
@@ -65,5 +51,15 @@ public interface IStatisticsSession {
 	 * @param size 累计上传大小
 	 */
 	void uploadSize(long size);
+	
+	/**
+	 * @return 累计下载大小
+	 */
+	long downloadSize();
+	
+	/**
+	 * @param size 累计下载大小
+	 */
+	void downloadSize(long size);
 	
 }
