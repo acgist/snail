@@ -46,7 +46,7 @@ public final class BuildEvent extends GuiEvent {
 
 	@Override
 	protected void executeExtend(Object ... args) {
-		GuiHandler.getInstance().lock(); // 扩展GUI锁定程序
+		GuiHandler.getInstance().lock(); // 扩展GUI阻塞锁
 	}
 	
 }

@@ -75,8 +75,8 @@ public final class BuildController extends Controller implements Initializable {
 			ok = false;
 			Alerts.warn("下载失败", e.getMessage());
 		}
-		if(ok) { // 新建下载成功
-			setUrl("");
+		if(ok) {
+			setUrl(""); // 清除下载链接
 			BuildWindow.getInstance().hide();
 		}
 	}

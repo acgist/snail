@@ -31,7 +31,7 @@ public final class TorrentEvent extends GuiEvent {
 	private static final TorrentEvent INSTANCE = new TorrentEvent();
 	
 	/**
-	 * 被选中下载文件列表（B编码）
+	 * 种子文件选择列表（B编码）
 	 */
 	private String files;
 	
@@ -55,7 +55,7 @@ public final class TorrentEvent extends GuiEvent {
 	
 	private void executeEx(boolean gui, Object ... args) {
 		if(args == null) {
-			LOGGER.warn("种子文件选择，参数错误：{}", args);
+			LOGGER.warn("种子文件选择（参数错误）：{}", args);
 		} else if(args.length == 1) {
 			final Object object = args[0];
 			if(object instanceof ITaskSession) {
@@ -65,10 +65,10 @@ public final class TorrentEvent extends GuiEvent {
 					executeExtendEx((ITaskSession) object);
 				}
 			} else {
-				LOGGER.warn("种子文件选择，参数错误（类型）：{}", object);
+				LOGGER.warn("种子文件选择（参数类型错误）：{}", object);
 			}
 		} else {
-			LOGGER.warn("种子文件选择，参数错误（长度）：{}", args);
+			LOGGER.warn("种子文件选择（参数长度错误）：{}", args);
 		}
 	}
 	
