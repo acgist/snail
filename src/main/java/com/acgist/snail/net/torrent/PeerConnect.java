@@ -284,12 +284,12 @@ public abstract class PeerConnect {
 			return false;
 		}
 		if(!this.torrentSession.downloadable()) {
-			LOGGER.debug("任务不可下载：释放Peer");
+			LOGGER.debug("释放Peer：任务不可下载");
 			return false;
 		}
 		this.pick(); // 挑选Piece
 		if(this.downloadPiece == null) {
-			LOGGER.debug("没有匹配Piece下载：释放Peer");
+			LOGGER.debug("释放Peer：没有匹配Piece下载");
 			this.peerSubMessageHandler.notInterested(); // 发送不感兴趣消息
 			return false;
 		}
@@ -301,7 +301,7 @@ public abstract class PeerConnect {
 					ThreadUtils.wait(this.countLock, sliceAwaitTime);
 					// 等待slice数量超过最大等待数量跳出循环
 					if (this.countLock.get() >= MAX_AWAIT_SLICE_REQUEST_SIZE) {
-						LOGGER.debug("请求slice数量超过最大等待数量：{}", this.countLock.get());
+						LOGGER.debug("请求slice数量超过最大等待数量：{}-{}", this.downloadPiece.getIndex(), this.countLock.get());
 						break;
 					}
 				}
