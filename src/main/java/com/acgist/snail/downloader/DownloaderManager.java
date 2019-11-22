@@ -53,7 +53,7 @@ public final class DownloaderManager {
 	}
 	
 	/**
-	 * <p>通过下载链接新建下载任务</p>
+	 * <p>新建下载任务</p>
 	 * 
 	 * @param url 下载链接
 	 * 
@@ -74,6 +74,10 @@ public final class DownloaderManager {
 	
 	/**
 	 * <p>开始下载任务</p>
+	 * 
+	 * @param taskSession 下载任务
+	 * 
+	 * @throws DownloadException 下载异常
 	 */
 	public void start(ITaskSession taskSession) throws DownloadException {
 		final var downloader = this.submit(taskSession);
@@ -84,7 +88,11 @@ public final class DownloaderManager {
 	
 	/**
 	 * <p>添加下载任务</p>
-	 * <p>不修改任务状态，只添加到下载器线程池。</p>
+	 * <p>只将任务添加到下载器线程池，不修改任务状态。</p>
+	 * 
+	 * @param taskSession 下载任务
+	 * 
+	 * @throws DownloadException 下载异常
 	 */
 	public IDownloader submit(ITaskSession taskSession) throws DownloadException {
 		if(ProtocolManager.getInstance().available()) {
@@ -109,6 +117,8 @@ public final class DownloaderManager {
 	
 	/**
 	 * <p>暂停任务</p>
+	 * 
+	 * @param taskSession 下载任务
 	 */
 	public void pause(ITaskSession taskSession) {
 		downloader(taskSession).pause();
@@ -116,6 +126,8 @@ public final class DownloaderManager {
 	
 	/**
 	 * <p>刷新任务</p>
+	 * 
+	 * @param taskSession 下载任务
 	 */
 	public void refresh(ITaskSession taskSession) {
 		downloader(taskSession).refresh();
@@ -124,36 +136,43 @@ public final class DownloaderManager {
 	/**
 	 * <p>删除任务</p>
 	 * <p>界面上面立即删除，实际删除任务在后台进行。</p>
+	 * 
+	 * @param taskSession 下载任务
 	 */
 	public void delete(ITaskSession taskSession) {
-		// 需要定义在线程外面，防止后面下载器从队列中移除后导致的空指针。
+		// 需要定义在线程外面：防止后面下载器从队列中移除后导致的空指针
 		final var downloader = downloader(taskSession);
 		// 后台删除任务
 		SystemThreadContext.submit(() -> downloader.delete());
 		// 队列立即移除
 		this.downloaderMap.remove(taskSession.getId());
+		// 刷新任务列表
 		GuiHandler.getInstance().refreshTaskList();
 	}
 	
 	/**
 	 * <p>切换下载器</p>
-	 * <p>不删除任务，移除任务的下载器，重新下载并创建下载器。</p>
+	 * <p>不删除任务，移除旧的下载器，重新下载时创建新的下载器。</p>
+	 * 
+	 * @param taskSession 下载任务
 	 */
 	public void changeDownloaderRestart(ITaskSession taskSession) throws DownloadException {
 		taskSession.removeDownloader(); // 删除旧下载器
-		this.downloaderMap.remove(taskSession.getId());
+		this.downloaderMap.remove(taskSession.getId()); // 移除下载MAP
 		this.start(taskSession);
 	}
 
 	/**
-	 * <p>获取下载器</p>
+	 * @param taskSession 下载任务
+	 * 
+	 * @return 下载器
 	 */
 	private IDownloader downloader(ITaskSession taskSession) {
 		return this.downloaderMap.get(taskSession.getId());
 	}
 	
 	/**
-	 * <p>获取下载任务列表</p>
+	 * @return 所有下载任务列表
 	 */
 	public List<ITaskSession> allTask() {
 		return this.downloaderMap.values().stream()
@@ -162,10 +181,12 @@ public final class DownloaderManager {
 	}
 	
 	/**
-	 * <p>刷新下载</p>
-	 * <p>如果没满下载任务数量，增加下载任务线程。</p>
-	 * <p>如果超过下载任务数量，减小下载任务线程。</p>
-	 * <p>下载完成，暂停等操作时刷新下载任务。</p>
+	 * <dl>
+	 * 	<dt>刷新下载</dt>
+	 * 	<dd>如果没满下载任务数量：增加下载任务线程</dd>
+	 * 	<dd>如果超过下载任务数量：减小下载任务线程</dd>
+	 * </dl>
+	 * <p>任务完成、暂停等操作时刷新下载任务</p>
 	 */
 	public void refresh() {
 		synchronized (this) {
@@ -175,13 +196,13 @@ public final class DownloaderManager {
 				.filter(IDownloader::downloading)
 				.count();
 			final int downloadSize = DownloadConfig.getSize();
-			if(count == downloadSize) { // 等于时不操作
-			} else if(count > downloadSize) { // 大于时暂停部分下载任务
+			if(count == downloadSize) { // 等于：不操作
+			} else if(count > downloadSize) { // 大于：暂停部分下载任务
 				downloaders.stream()
 					.filter(IDownloader::downloading)
 					.skip(downloadSize)
 					.forEach(IDownloader::pause);
-			} else { // 小于时开始部分下载任务
+			} else { // 小于：开始部分下载任务
 				downloaders.stream()
 					.filter(downloader -> downloader.taskSession().await())
 					.limit(downloadSize - count)
@@ -191,7 +212,7 @@ public final class DownloaderManager {
 	}
 
 	/**
-	 * <p>停止下载</p>
+	 * <p>关闭下载器管理器</p>
 	 * <p>暂停所有任务、关闭下载线程池</p>
 	 */
 	public void shutdown() {

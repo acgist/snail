@@ -18,8 +18,6 @@ import com.acgist.snail.utils.IoUtils;
 /**
  * <p>单个文件任务下载器</p>
  * 
- * TODO：下载大文件时，由于统计类里面的线程休眠（限速）会导致内存爆炸。
- * 
  * @author acgist
  * @since 1.1.1
  */
@@ -68,6 +66,7 @@ public abstract class SingleFileDownloader extends Downloader {
 
 	/**
 	 * {@inheritDoc}
+	 * 
 	 * <p>如果没有数据下载，任务会被读取下载流阻塞，直接关闭下载流，避免任务不能正常结束。</p>
 	 */
 	@Override
@@ -79,7 +78,7 @@ public abstract class SingleFileDownloader extends Downloader {
 	}
 	
 	/**
-	 * <p>判断任务是否完成：读取长度等于-1或者下载数据等于任务长度。</p>
+	 * <p>判断任务是否完成：读取长度等于-1或者下载数据等于任务长度</p>
 	 */
 	protected boolean isComplete(int length) {
 		final long size = this.taskSession.getSize();

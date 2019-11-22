@@ -29,7 +29,7 @@ public abstract class TorrentSessionDownloader extends Downloader {
 	 */
 	protected TorrentSession torrentSession;
 	/**
-	 * <p>下载锁：下载时阻塞下载器线程，使用后台下载。</p>
+	 * <p>下载锁：下载时阻塞下载器线程</p>
 	 */
 	protected final Object downloadLock = new Object();
 	
@@ -39,16 +39,14 @@ public abstract class TorrentSessionDownloader extends Downloader {
 	
 	@Override
 	public void open() {
-		/*
-		 * 不能在构造函数中初始化，防止种子被删除后还能点击下载。
-		 */
+		// 不能在构造函数中初始化：防止种子被删除后还能点击下载
 		this.torrentSession = this.loadTorrentSession();
 		loadDownload();
 	}
 	
 	@Override
 	public void delete() {
-		// 删除种子资源：Peer、种子信息
+		// 删除任务信息：Peer信息、种子信息
 		if(this.torrentSession != null) {
 			final String infoHashHex = this.torrentSession.infoHashHex();
 			PeerManager.getInstance().remove(infoHashHex);
@@ -84,8 +82,8 @@ public abstract class TorrentSessionDownloader extends Downloader {
 			final var infoHashHex = magnet.getHash();
 			return TorrentManager.getInstance().newTorrentSession(infoHashHex, torrentPath);
 		} catch (DownloadException e) {
-			LOGGER.error("BT任务加载异常", e);
-			fail("BT任务加载失败：" + e.getMessage());
+			LOGGER.error("TorrentSession任务加载异常", e);
+			fail("TorrentSession任务加载失败：" + e.getMessage());
 		}
 		return null;
 	}
