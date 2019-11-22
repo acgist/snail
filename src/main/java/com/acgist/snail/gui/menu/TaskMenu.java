@@ -93,27 +93,42 @@ public final class TaskMenu extends Menu {
 		
 		this.addEventFilter(WindowEvent.WINDOW_SHOWN, this.windowShownAction); // 事件捕获阶段处理事件
 //		this.addEventHandler(WindowEvent.WINDOW_SHOWN, this.windowShownAction); // 事件冒泡阶段处理事件
-//		this.setEventHandler(WindowEvent.WINDOW_SHOWN, this.windowShownAction); // 事件冒泡阶段处理事件（只能有一个）
+//		this.setEventHandler(WindowEvent.WINDOW_SHOWN, this.windowShownAction); // 事件冒泡阶段处理事件（只能存在一个）
 	}
 	
+	/**
+	 * 开始
+	 */
 	private EventHandler<ActionEvent> startEvent = (event) -> {
 		MainWindow.getInstance().controller().start();
 	};
 	
+	/**
+	 * 暂停
+	 */
 	private EventHandler<ActionEvent> pauseEvent = (event) -> {
 		MainWindow.getInstance().controller().pause();
 	};
 	
+	/**
+	 * 删除
+	 */
 	private EventHandler<ActionEvent> deleteEvent = (event) -> {
 		MainWindow.getInstance().controller().delete();
 	};
 	
+	/**
+	 * 复制地址
+	 */
 	private EventHandler<ActionEvent> copyUrlEvent = (event) -> {
 		MainWindow.getInstance().controller().selected().forEach(session -> {
 			Clipboards.copy(session.getUrl());
 		});
 	};
 	
+	/**
+	 * 文件选择
+	 */
 	private EventHandler<ActionEvent> torrentEvent = (event) -> {
 		if(!MainWindow.getInstance().controller().haveSelectedTorrent()) {
 			return;
@@ -126,6 +141,9 @@ public final class TaskMenu extends Menu {
 		TorrentWindow.getInstance().show();
 	};
 	
+	/**
+	 * 导出种子
+	 */
 	private EventHandler<ActionEvent> exportTorrentEvent = (event) -> {
 		if(!MainWindow.getInstance().controller().haveSelectedTorrent()) {
 			return;
@@ -143,9 +161,12 @@ public final class TaskMenu extends Menu {
 		}
 	};
 	
+	/**
+	 * 文件校验
+	 */
 	private EventHandler<ActionEvent> verifyEvent = (event) -> {
 		SystemThreadContext.submit(() -> {
-			Map<String, String> hash = new HashMap<>();
+			final Map<String, String> hash = new HashMap<>();
 			MainWindow.getInstance().controller().selected().forEach(session -> {
 				if(session.complete()) {
 					hash.putAll(FileUtils.sha1(session.getFile()));
@@ -170,6 +191,9 @@ public final class TaskMenu extends Menu {
 		});
 	};
 	
+	/**
+	 * 打开目录
+	 */
 	private EventHandler<ActionEvent> openFolderEvent = (event) -> {
 		MainWindow.getInstance().controller().selected().forEach(session -> {
 			FileUtils.openInDesktop(session.downloadFolder());
@@ -177,7 +201,7 @@ public final class TaskMenu extends Menu {
 	};
 	
 	/**
-	 * BT任务才可以选择下载文件和导出种子菜单
+	 * BT任务显示：文件选择、导出种子
 	 */
 	private EventHandler<WindowEvent> windowShownAction = (event) -> {
 		if(MainWindow.getInstance().controller().haveSelectedTorrent()) {

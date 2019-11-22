@@ -54,7 +54,7 @@ public final class TrayMenu extends Menu {
 	static {
 		LOGGER.debug("初始化托盘菜单");
 		INSTANCE = new TrayMenu();
-		// 必须设置此项，否者窗口关闭后将不能通过托盘显示。
+		// 必须设置此项：否者窗口关闭后将不能通过托盘显示
 		Platform.setImplicitExit(false);
 	}
 	

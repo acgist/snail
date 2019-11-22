@@ -2,7 +2,7 @@
  * <h1>Sanil（蜗牛）</h1>
  * <p>基于Java、JavaFX开发的下载工具，支持下载协议：BT（BitTorrent）、FTP、HTTP。</p>
  * 
- * TODO：稀有块、阻塞算法（Peer）
+ * TODO：稀有块、阻塞算法（Peer）、图表选中切换颜色
  * 
  * @author acgist
  * @since 1.0.0

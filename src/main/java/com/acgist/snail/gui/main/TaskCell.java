@@ -21,15 +21,15 @@ public final class TaskCell extends TableCell<ITaskSession, String> {
 	/**
 	 * 对齐方式
 	 */
-	private Pos pos = Pos.CENTER_LEFT;
+	private final Pos pos;
 	/**
 	 * 是否显示Icon
 	 */
-	private boolean icon;
+	private final boolean icon;
 	/**
 	 * 是否显示Tooltip
 	 */
-	private boolean tooltip;
+	private final boolean tooltip;
 	
 	public TaskCell(Pos pos, boolean icon, boolean tooltip) {
 		this.pos = pos;
