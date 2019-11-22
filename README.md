@@ -36,8 +36,6 @@
 
 #### 编译
 
-> 推荐下载[发行版](https://gitee.com/acgist/snail/releases)编译（最新分支可能存在未开发完成的任务）
-
 ```bash
 # 编译系统和运行系统不一致时，添加参数：-D javafx.platform=win|mac|linux
 
@@ -50,6 +48,8 @@ mvn clean package -P release -D skipTests
 # Windows
 ./builder/build.bat
 ```
+
+> 推荐下载[发行版](https://gitee.com/acgist/snail/releases)编译（最新分支可能存在未开发完成的任务）
 
 #### 启动
 
