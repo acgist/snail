@@ -6,7 +6,7 @@ source ./config.sh
 echo "开始构建项目【${project}】"
 
 # 确认版本信息
-read -r -p "请确认所有配置文件（pom.xml、SnailLauncher/snail.ini、builder/config.bat、src/main/resources/config/system.properties）版本信息一致（Y/N）？" input
+read -r -p "请确认所有配置文件（pom.xml、SnailLauncher/snail.ini、builder/config.sh、src/main/resources/config/system.properties）版本信息一致（Y/N）？" input
 case $input in
   [yY])
     echo "-----------------------------------------------"

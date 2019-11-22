@@ -3,7 +3,7 @@
 # 软件名称
 project=snail
 # 软件版本
-version=1.2.0
+version=1.2.1
 
 # 编译路径
 builder=./builder/
