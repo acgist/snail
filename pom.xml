@@ -265,7 +265,7 @@
 							<goal>jar</goal>
 						</goals>
 						<configuration>
-							<!-- 忽略警告信息：注解、标签等等不规范 -->
+							<!-- 忽略警告信息：注解、标签等等 -->
 							<doclint>none</doclint>
 							<charset>${encoding}</charset>
 							<encoding>${encoding}</encoding>
