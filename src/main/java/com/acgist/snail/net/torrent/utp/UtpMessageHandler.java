@@ -2,6 +2,7 @@ package com.acgist.snail.net.torrent.utp;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.util.List;
@@ -184,7 +185,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 			fin(timestamp, seqnr, acknr);
 			break;
 		case UtpConfig.ST_RESET:
-			reset(timestamp, seqnr, acknr);
+			reset(timestamp, seqnr, acknr, socketAddress);
 			break;
 		case UtpConfig.ST_SYN:
 			syn(timestamp, seqnr, acknr);
@@ -313,7 +314,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	 * 发送数据消息
 	 */
 	private void data(UtpWindowData windowData) {
-		if(windowData.hasData()) {
+		if(windowData.haveData()) {
 			LOGGER.debug("发送数据消息：{}", windowData.getSeqnr());
 			final ByteBuffer buffer = buildHeader(UtpConfig.TYPE_DATA, windowData.getLength() + UTP_HEADER_LENGTH);
 			buffer.putShort(this.sendId);
@@ -389,8 +390,10 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	/**
 	 * 处理重置消息
 	 */
-	private void reset(int timestamp, short seqnr, short acknr) {
-		LOGGER.debug("处理重置消息");
+	private void reset(int timestamp, short seqnr, short acknr, SocketAddress address) {
+		// TODO：删除
+		LOGGER.debug("处理重置消息：{}-{}", this.socketAddress, address);
+//		LOGGER.debug("处理重置消息");
 		this.connect = false;
 		this.state(timestamp, seqnr);
 		this.closeAll();

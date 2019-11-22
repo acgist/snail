@@ -76,7 +76,7 @@ public final class UtpWindowData {
 	 * <p>验证数据是否正确，正确的数据才能发送。</p>
 	 * <p>握手失败，导致超时定时任务执行时负载数据为空，导致发送时空指针。</p>
 	 */
-	public boolean hasData() {
+	public boolean haveData() {
 		return this.data != null;
 	}
 	

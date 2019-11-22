@@ -43,21 +43,21 @@ public abstract class MessageCodec<T, X> implements IMessageCodec<T> {
 	 * 
 	 * @param message 消息
 	 * @param address 地址
-	 * @param hasAddress 是否包含地址
+	 * @param haveAddress 是否包含地址
 	 * 
 	 * @throws NetException 网络异常
 	 */
-	protected abstract void decode(T message, InetSocketAddress address, boolean hasAddress) throws NetException;
+	protected abstract void decode(T message, InetSocketAddress address, boolean haveAddress) throws NetException;
 	
 	/**
 	 * 执行下一个消息处理器
 	 * 
 	 * @param message 消息
 	 * @param address 地址
-	 * @param hasAddress 是否含有地址
+	 * @param haveAddress 是否含有地址
 	 */
-	protected void doNext(X message, InetSocketAddress address, boolean hasAddress) throws NetException {
-		if(hasAddress) {
+	protected void doNext(X message, InetSocketAddress address, boolean haveAddress) throws NetException {
+		if(haveAddress) {
 			if(this.messageCodec.done()) {
 				this.messageCodec.onMessage(message, address);
 			} else {

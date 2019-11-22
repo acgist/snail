@@ -123,17 +123,17 @@ public final class PropertiesUtils {
 	}
 	
 	/**
-	 * 判断是否有数据
-	 */
-	public boolean hasProperties() {
-		return this.properties != null;
-	}
-	
-	/**
 	 * 获取配置
 	 */
 	public Properties properties() {
 		return this.properties;
+	}
+	
+	/**
+	 * 是否存在配置
+	 */
+	public boolean haveProperties() {
+		return this.properties != null;
 	}
 	
 }

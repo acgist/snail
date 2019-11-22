@@ -38,12 +38,12 @@ public final class PeerCryptMessageCodec extends MessageCodec<ByteBuffer, ByteBu
 	}
 	
 	@Override
-	public void decode(ByteBuffer buffer, InetSocketAddress address, boolean hasAddress) throws NetException {
+	public void decode(ByteBuffer buffer, InetSocketAddress address, boolean haveAddress) throws NetException {
 		if(this.peerSubMessageHandler.available()) { // 可用
 			buffer.flip();
 			if(this.mseCryptHandshakeHandler.complete()) { // 握手完成
 				this.mseCryptHandshakeHandler.decrypt(buffer);
-				this.doNext(buffer, address, hasAddress);
+				this.doNext(buffer, address, haveAddress);
 			} else { // 握手消息
 				this.mseCryptHandshakeHandler.handshake(buffer);
 			}

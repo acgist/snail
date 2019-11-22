@@ -242,6 +242,9 @@ public final class TorrentStream {
 					}
 				}
 			}
+			// TODO：删除下面日志
+			LOGGER.debug("已下载：{}", this.pieces);
+			LOGGER.debug("下载中：{}", this.downloadPieces);
 			final int index = pickPieces.nextSetBit(this.fileBeginPieceIndex);
 			if(index == -1 || index > this.fileEndPieceIndex) {
 				return null;
