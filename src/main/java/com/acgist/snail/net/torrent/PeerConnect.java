@@ -30,20 +30,25 @@ public abstract class PeerConnect {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerConnect.class);
 
 	/**
-	 * <p>每批请求的SLICE数量</p>
+	 * <p>Piece每次请求SLICE数量</p>
 	 * <p>注：过大会导致UTP信号量阻塞</p>
 	 * 
 	 * TODO：根据速度优化
 	 */
 	private static final int SLICE_REQUEST_SIZE = 2;
 	/**
+	 * <p>最大等待请求最大数量</p>
+	 * <p>超过这个数量直接跳出下载</p>
+	 */
+	private static final int MAX_AWAIT_SLICE_REQUEST_SIZE = 4;
+	/**
 	 * SLICE请求等待时间
 	 */
-	private static final int SLICE_AWAIT_TIME = 20;
+	private static final int SLICE_AWAIT_TIME = 10;
 	/**
 	 * PICEC完成等待时间
 	 */
-	private static final int PIECE_AWAIT_TIME = 40;
+	private static final int PIECE_AWAIT_TIME = 30;
 	/**
 	 * 释放时等待时间
 	 */
@@ -62,10 +67,6 @@ public abstract class PeerConnect {
 	 * 是否下载
 	 */
 	private volatile boolean downloading = false;
-	/**
-	 * 是否返回数据
-	 */
-	private volatile boolean havePieceMessage = false;
 	/**
 	 * 当前下载Piece信息
 	 */
@@ -216,7 +217,6 @@ public abstract class PeerConnect {
 			LOGGER.warn("下载Piece索引和当前Piece索引不符：{}-{}", index, this.downloadPiece.getIndex());
 			return;
 		}
-		this.havePieceMessage = true;
 		downloadMark(bytes.length); // 下载评分
 		// 请求数据下载完成：唤醒下载等待
 		synchronized (this.countLock) {
@@ -294,22 +294,23 @@ public abstract class PeerConnect {
 			return false;
 		}
 		final int index = this.downloadPiece.getIndex();
+		final var sliceAwaitTime = Duration.ofSeconds(SLICE_AWAIT_TIME);
 		while(available()) {
 			if (this.countLock.get() >= SLICE_REQUEST_SIZE) {
 				synchronized (this.countLock) {
-					ThreadUtils.wait(this.countLock, Duration.ofSeconds(SLICE_AWAIT_TIME));
-					// 如果没有数据返回直接跳出下载
-					if (!this.havePieceMessage) {
+					ThreadUtils.wait(this.countLock, sliceAwaitTime);
+					// 等待slice数量超过最大等待数量跳出循环
+					if (this.countLock.get() >= MAX_AWAIT_SLICE_REQUEST_SIZE) {
 						break;
 					}
 				}
 			}
 			this.countLock.addAndGet(1);
-			int begin = this.downloadPiece.position();
-			int length = this.downloadPiece.length(); // 顺序不能调换
+			final int begin = this.downloadPiece.position();
+			final int length = this.downloadPiece.length(); // 顺序不能调换
 			this.peerSubMessageHandler.request(index, begin, length);
 			// 是否还有更多SLICE
-			if(!this.downloadPiece.hasMoreSlice()) {
+			if(!this.downloadPiece.haveMoreSlice()) {
 				break;
 			}
 		}
@@ -374,7 +375,6 @@ public abstract class PeerConnect {
 		// 设置状态
 		this.countLock.set(0);
 		this.completeLock.set(false);
-		this.havePieceMessage = false;
 	}
 	
 	/**
