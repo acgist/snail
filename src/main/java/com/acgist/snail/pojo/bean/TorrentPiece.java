@@ -112,7 +112,7 @@ public final class TorrentPiece {
 	/**
 	 * 是否还有更多的数据请求
 	 */
-	public boolean hasMoreSlice() {
+	public boolean haveMoreSlice() {
 		return this.position < this.length;
 	}
 	
@@ -124,14 +124,16 @@ public final class TorrentPiece {
 	}
 	
 	/**
-	 * 获取当前整个Piece的偏移
+	 * <p>获取当前整个Piece的偏移</p>
 	 */
 	public int position() {
 		return this.begin + this.position;
 	}
 	
 	/**
-	 * 获取本次获取数据大小，返回0时表示已经发送所有请求。
+	 * <p>获取本次获取数据大小</>
+	 * <p>返回0时表示已经发送所有请求</p>
+	 * <p>会修改{@link #position}</p>
 	 */
 	public int length() {
 		if(this.position == this.length) {

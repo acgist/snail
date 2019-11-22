@@ -115,7 +115,7 @@ public final class TaskMenu extends Menu {
 	};
 	
 	private EventHandler<ActionEvent> torrentEvent = (event) -> {
-		if(!MainWindow.getInstance().controller().hasSelectedTorrent()) {
+		if(!MainWindow.getInstance().controller().haveSelectedTorrent()) {
 			return;
 		}
 		MainWindow.getInstance().controller().selected().forEach(session -> {
@@ -127,7 +127,7 @@ public final class TaskMenu extends Menu {
 	};
 	
 	private EventHandler<ActionEvent> exportTorrentEvent = (event) -> {
-		if(!MainWindow.getInstance().controller().hasSelectedTorrent()) {
+		if(!MainWindow.getInstance().controller().haveSelectedTorrent()) {
 			return;
 		}
 		final File file = Choosers.chooseDirectory(MainWindow.getInstance().stage(), "种子保存目录");
@@ -180,7 +180,7 @@ public final class TaskMenu extends Menu {
 	 * BT任务才可以选择下载文件和导出种子菜单
 	 */
 	private EventHandler<WindowEvent> windowShownAction = (event) -> {
-		if(MainWindow.getInstance().controller().hasSelectedTorrent()) {
+		if(MainWindow.getInstance().controller().haveSelectedTorrent()) {
 			INSTANCE.torrentMenu.setDisable(false);
 			INSTANCE.exportTorrentMenu.setDisable(false);
 		} else {

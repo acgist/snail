@@ -266,14 +266,14 @@ public final class MainController extends Controller implements Initializable {
 	/**
 	 * 是否选中任务
 	 */
-	public boolean hasSelected() {
+	public boolean haveSelected() {
 		return !this.selected().isEmpty();
 	}
 	
 	/**
 	 * 是否选中BT任务
 	 */
-	public boolean hasSelectedTorrent() {
+	public boolean haveSelectedTorrent() {
 		return this.selected().stream()
 			.anyMatch(session -> session.getType() == Type.TORRENT);
 	}
@@ -304,7 +304,7 @@ public final class MainController extends Controller implements Initializable {
 	 * 删除选中任务
 	 */
 	public void delete() {
-		if(!this.hasSelected()) {
+		if(!this.haveSelected()) {
 			return;
 		}
 		final var optional = Alerts.build("删除确认", "删除选中任务？", AlertType.CONFIRMATION);

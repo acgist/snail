@@ -37,10 +37,10 @@ public final class MultilineMessageCodec extends MessageCodec<String, String> {
 	}
 
 	@Override
-	protected void decode(String message, InetSocketAddress address, boolean hasAddress) throws NetException {
+	protected void decode(String message, InetSocketAddress address, boolean haveAddress) throws NetException {
 		if(StringUtils.regex(message, this.endRegex, false)) {
 			this.message.append(message);
-			this.doNext(this.message.toString(), address, hasAddress);
+			this.doNext(this.message.toString(), address, haveAddress);
 			this.message.setLength(0);
 		} else {
 			this.message.append(message).append(this.split);

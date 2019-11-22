@@ -51,7 +51,7 @@ public class HeaderWrapper {
 	/**
 	 * 是否含有协议
 	 */
-	private final boolean hasProtocol;
+	private final boolean haveProtocol;
 	/**
 	 * 头信息
 	 */
@@ -71,7 +71,7 @@ public class HeaderWrapper {
 		this.headerKv = headerKv;
 		this.headerPadding = DEFAULT_HEADER_PADDING;
 		this.protocol = buildProtocol(lines);
-		this.hasProtocol = StringUtils.isNotEmpty(this.protocol);
+		this.haveProtocol = StringUtils.isNotEmpty(this.protocol);
 		this.headers = buildHeaders(lines);
 	}
 	
@@ -83,7 +83,7 @@ public class HeaderWrapper {
 		this.headerKv = headerKv;
 		this.headerPadding = headerPadding;
 		this.protocol = null;
-		this.hasProtocol = false;
+		this.haveProtocol = false;
 		this.headers = headers;
 	}
 	
@@ -95,7 +95,7 @@ public class HeaderWrapper {
 		this.headerKv = headerKv;
 		this.headerPadding = headerPadding;
 		this.protocol = protocol;
-		this.hasProtocol = StringUtils.isNotEmpty(this.protocol);
+		this.haveProtocol = StringUtils.isNotEmpty(this.protocol);
 		this.headers = headers;
 	}
 	
@@ -153,7 +153,7 @@ public class HeaderWrapper {
 		if(lines == null) {
 			return headers;
 		}
-		final int begin = this.hasProtocol ? 1 : 0;
+		final int begin = this.haveProtocol ? 1 : 0;
 		for (int jndex = begin; jndex < lines.length; jndex++) {
 			line = lines[jndex];
 			if(line == null) {
@@ -264,7 +264,7 @@ public class HeaderWrapper {
 	 */
 	public String build() {
 		final StringBuilder builder = new StringBuilder();
-		if(this.hasProtocol) {
+		if(this.haveProtocol) {
 			builder.append(this.protocol).append(HEADER_LINE_WRITER);
 		}
 		if(isNotEmpty()) {
