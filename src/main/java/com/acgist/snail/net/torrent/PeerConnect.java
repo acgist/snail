@@ -301,6 +301,7 @@ public abstract class PeerConnect {
 					ThreadUtils.wait(this.countLock, sliceAwaitTime);
 					// 等待slice数量超过最大等待数量跳出循环
 					if (this.countLock.get() >= MAX_AWAIT_SLICE_REQUEST_SIZE) {
+						LOGGER.debug("请求slice数量超过最大等待数量：{}", this.countLock.get());
 						break;
 					}
 				}
