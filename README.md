@@ -180,8 +180,8 @@ GITHUB：[https://github.com/acgist/snail](https://github.com/acgist/snail)
 
 欢迎大家提出问题和建议，但是请不要提交到评论区（会被删除），如果有问题和建议请提交[Issues](https://gitee.com/acgist/snail/issues)
 
-提交Issues/PR前请阅读[贡献规范](./CONTRIBUTING.md)，提交PR前请阅读[代码规范](./CODE_OF_CONDUCT.md)
+提交Issues/PR前请阅读[贡献规范](./CONTRIBUTING.md)
 
-感谢支持！
+提交PR前请阅读[代码规范](./CODE_OF_CONDUCT.md)
 
 谢谢！
