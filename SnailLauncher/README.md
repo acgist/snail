@@ -28,3 +28,5 @@ cmake -G "Visual Studio 11 2012 Win64" ..
 # 编译项目
 cmake --build . --config Release
 ```
+
+> 编译前请修改`src/CMakeLists.txt`配置中JVM头文件路径
