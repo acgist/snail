@@ -8,7 +8,7 @@
 	mvn clean package deploy -P release -D skipTests
 	-D javafx.platform=win|mac|linux
 	-->
-	<!-- 版本配置：pom.xml、snail.ini、README.md、config.sh、config.bat、system.properties -->
+	<!-- 版本配置：pom.xml、snail.ini、README.md、config.bat、system.properties -->
 	
 	<modelVersion>4.0.0</modelVersion>
 	
