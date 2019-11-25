@@ -6,7 +6,7 @@ project(SnailLauncher)
 add_definitions(-DUNICODE -D_UNICODE)
 # …Ë÷√π≤œÌDLL
 #add_definitions(-D_AFXDLL)
-set(CMAKE_MFC_FLAG 2)
+#set(CMAKE_MFC_FLAG 2)
 # …Ë÷√æ≤Ã¨DLL
 set(CMAKE_MFC_FLAG 1)
 set(CMAKE_CXX_FLAGS_RELEASE "/MT")
