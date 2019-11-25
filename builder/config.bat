@@ -10,9 +10,9 @@ set builder=.\builder\
 rem 打包目录
 set target=%builder%%project%\
 
-rem 依赖包文件夹
+rem 依赖路径
 set lib=lib
-rem 运行环境文件夹
+rem 运行环境路径
 set runtime=java
 
 rem JAR文件
@@ -23,15 +23,17 @@ set config=config.bat
 rem BAT启动文件
 set startup=startup.bat
 
-rem 启动文件
+rem 启动器文件
 set exe=SnailLauncher.exe
-rem 启动文件配置
+rem 启动器配置
 set ini=snail.ini
-rem 启动文件路径
+rem 启动器源码
 set launcher=.\SnailLauncher\
-rem 启动文件路径
-set launcherExe=%launcher%build\src\Release\%exe%
-rem 启动文件配置路径
+rem 启动器编译路径
+set launcherBuild=.\SnailLauncher\build\
+rem 启动器文件路径
+set launcherExe=%launcherBuild%src\Release\%exe%
+rem 启动器配置路径
 set launcherIni=%launcher%src\%ini%
 
 rem JAVA依赖模块
