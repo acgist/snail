@@ -6,7 +6,7 @@ call config.bat
 echo 开始构建项目【%project%】
 
 rem 确认版本信息
-set /p input=请确认所有配置文件（pom.xml、SnailLauncher/snail.ini、builder/config.bat、src/main/resources/config/system.properties）版本信息一致（Y/N）？
+set /p input=请确认所有配置文件（pom.xml、SnailLauncher/src/snail.ini、builder/config.bat、src/main/resources/config/system.properties）版本信息一致（Y/N）？
 if /i %input%==Y (
   echo -----------------------------------------------
   echo 开始构建项目
@@ -26,6 +26,22 @@ echo -----------------------------------------------
 call mvn clean package -P release -D skipTests
 
 echo -----------------------------------------------
+echo 运行环境
+echo -----------------------------------------------
+call jlink --add-modules %modules% --output %target%%runtime%
+
+echo -----------------------------------------------
+echo 执行文件
+echo -----------------------------------------------
+cd %launcher%
+call mkdir build
+call cd build
+call cmake -G "Visual Studio 11 2012 Win64" ..
+call cmake --build . --config Release
+
+cd ..\..\
+
+echo -----------------------------------------------
 echo 拷贝文件
 echo -----------------------------------------------
 call xcopy /S /Q .\target\%lib%\* %target%%lib%\
@@ -34,11 +50,6 @@ call copy %launcherExe% %target%%exe%
 call copy %launcherIni% %target%%ini%
 call copy %builder%%config% %target%%config%
 call copy %builder%%startup% %target%%startup%
-
-echo -----------------------------------------------
-echo 运行环境
-echo -----------------------------------------------
-call jlink --add-modules %modules% --output %target%%runtime%
 
 cd %builder%
 

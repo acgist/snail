@@ -2,16 +2,27 @@
 
 SnailLauncher是Windows（x64）系统下蜗牛（Snail）启动器
 
+执行文件下载：[SnailLauncher.exe](https://gitee.com/acgist/snail/attach_files)
+
 ## 说明
 
 基于MFC开发
 
-## 配置
+## 编译
 
-#### Java头文件
+需要安装以下软件：
 
-配置属性 -> C/C++ -> 常规 -> 附加包含目录
+- [CMake](https://cmake.org/)
+- [Visual Studio](https://visualstudio.microsoft.com/zh-hans/vs/)
 
-#### 静态链接库
+> 建议执行`builder/build.bat`命令进行编译
 
-配置属性 -> 常规 -> MFC的使用 -> 在静态库中使用MFC
+```bash
+# 构建目录
+mkdir build
+cd build
+# 构建项目
+cmake -G "Visual Studio 11 2012 Win64" ..
+# 编译项目
+cmake --build . --config Release
+```
