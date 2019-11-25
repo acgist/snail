@@ -36,5 +36,5 @@ set launcherExe=%launcherBuild%src\Release\%exe%
 rem Æô¶¯Æ÷ÅäÖÃÂ·¾¶
 set launcherIni=%launcher%src\%ini%
 
-rem JAVAÒÀÀµÄ£¿é
+rem JavaÒÀÀµÄ£¿é
 set modules="java.xml,java.sql,java.base,java.desktop,java.naming,java.compiler,java.logging,java.scripting,java.instrument,java.management,java.net.http,java.transaction.xa,jdk.crypto.ec,jdk.unsupported"
