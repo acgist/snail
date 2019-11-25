@@ -12,8 +12,8 @@ SnailLauncher是Windows（x64）系统下蜗牛（Snail）启动器
 
 需要安装以下软件：
 
-- [CMake](https://cmake.org/)
-- [Visual Studio](https://visualstudio.microsoft.com/zh-hans/vs/)
+* [CMake](https://cmake.org/)
+* [Visual Studio](https://visualstudio.microsoft.com/zh-hans/vs/)
 
 > 建议执行`builder/build.bat`命令进行编译
 
