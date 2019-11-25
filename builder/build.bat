@@ -5,11 +5,11 @@ call config.bat
 
 echo 开始构建项目【%project%】
 
-rem 确认版本信息
-set /p input=请确认所有配置文件（pom.xml、SnailLauncher/src/snail.ini、builder/config.bat、src/main/resources/config/system.properties）版本信息一致（Y/N）？
+rem 确认版本信息：pom.xml、SnailLauncher/src/snail.ini、builder/config.bat、src/main/resources/config/system.properties
+set /p input=请确认配置文件版本信息是否一致（Y/N）？
 if /i %input%==Y (
   echo -----------------------------------------------
-  echo 开始构建项目
+  echo 构建项目
   echo -----------------------------------------------
 ) else (
   exit
@@ -21,7 +21,7 @@ call clean.bat
 cd ..\
 
 echo -----------------------------------------------
-echo 打包项目
+echo 编译项目
 echo -----------------------------------------------
 call mvn clean package -P release -D skipTests
 
@@ -31,7 +31,7 @@ echo -----------------------------------------------
 call jlink --add-modules %modules% --output %target%%runtime%
 
 echo -----------------------------------------------
-echo 执行文件
+echo 编译启动器
 echo -----------------------------------------------
 cd %launcher%
 call mkdir build
