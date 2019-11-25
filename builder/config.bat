@@ -28,9 +28,11 @@ set exe=SnailLauncher.exe
 rem 启动文件配置
 set ini=snail.ini
 rem 启动文件路径
-set launcherExe=.\SnailLauncher\%exe%
+set launcher=.\SnailLauncher\
+rem 启动文件路径
+set launcherExe=%launcher%build\src\Release\%exe%
 rem 启动文件配置路径
-set launcherIni=.\SnailLauncher\%ini%
+set launcherIni=%launcher%src\%ini%
 
 rem JAVA依赖模块
 set modules="java.xml,java.sql,java.base,java.desktop,java.naming,java.compiler,java.logging,java.scripting,java.instrument,java.management,java.net.http,java.transaction.xa,jdk.crypto.ec,jdk.unsupported"
