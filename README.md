@@ -32,21 +32,13 @@
 
 ## 使用
 
-[Windows稳定版下载](https://gitee.com/acgist/snail/attach_files)：解压可以直接运行使用
+[Windows稳定版下载](https://gitee.com/acgist/snail/attach_files)（解压可以直接运行使用）
 
 #### 编译
 
 ```bash
-# 编译系统和运行系统不一致时，添加参数：-D javafx.platform=win|mac|linux
-
-# Maven
+# 编译系统和运行系统不一致时添加参数：-D javafx.platform=win|mac|linux
 mvn clean package -P release -D skipTests
-
-# Linux
-./builder/build.sh
-
-# Windows
-./builder/build.bat
 ```
 
 > 推荐下载[发行版](https://gitee.com/acgist/snail/releases)编译（最新分支可能存在未开发完成的任务）
@@ -55,18 +47,10 @@ mvn clean package -P release -D skipTests
 
 ```bash
 # Linux
-# 脚本
-./startup.sh
-# 命令
 java -server -Xms128m -Xmx256m -jar snail-{version}.jar
 
 # Windows
-# 脚本
-./startup.bat
-# 命令
 javaw -server -Xms128m -Xmx256m -jar snail-{version}.jar
-# 启动器
-SnailLauncher.exe
 ```
 
 > FTP、HTTP下载大文件时，建议优化JVM参数：`-XX:NewRatio=2 -XX:SurvivorRatio=2`
