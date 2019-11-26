@@ -12,7 +12,7 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>DHT客户端</p>
- * <p>客户端和服务端使用同一个固定端口{@link SystemConfig#getTorrentPort()}。</p>
+ * <p>客户端和服务端使用同一个固定端口{@link SystemConfig#getTorrentPort()}</p>
  * 
  * @author acgist
  * @since 1.0.0

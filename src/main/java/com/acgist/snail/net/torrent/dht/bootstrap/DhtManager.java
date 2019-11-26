@@ -63,7 +63,7 @@ public final class DhtManager {
 	
 	/**
 	 * <p>设置响应</p>
-	 * <p>删除并返回请求，同时设置Node为可用状态。</p>
+	 * <p>删除并返回请求、设置Node为可用状态</p>
 	 */
 	public Request response(Response response) {
 		if(response == null) {

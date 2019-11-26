@@ -37,7 +37,7 @@ public final class DhtService {
 
 	/**
 	 * <p>生成一个两字节的请求ID</p>
-	 * <p>如果大于{@linkplain #MAX_ID_VALUE 最大值}则设置为{@linkplain #MIN_ID_VALUE 最小值}重新开始生成。</p>
+	 * <p>如果大于{@linkplain #MAX_ID_VALUE 最大值}则设置为{@linkplain #MIN_ID_VALUE 最小值}重新开始生成</p>
 	 */
 	public byte[] requestId() {
 		final byte[] bytes = new byte[2];
