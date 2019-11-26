@@ -91,7 +91,7 @@ public final class MSECryptHandshakeHandler {
 	}
 	
 	/**
-	 * 当前步骤：默认：接收公钥
+	 * 当前步骤（默认：接收公钥）
 	 */
 	private Step step = Step.RECEIVE_PUBLIC_KEY;
 	/**
@@ -578,7 +578,8 @@ public final class MSECryptHandshakeHandler {
 	}
 	
 	/**
-	 * 判断是否是Peer握手消息，如果是Peer握手消息直接使用明文。
+	 * <p>判断是否是Peer握手消息</p>
+	 * <p>如果是Peer握手消息直接使用明文</p>
 	 */
 	private boolean checkPeerHandshake(ByteBuffer buffer) throws NetException {
 		final byte first = buffer.get();

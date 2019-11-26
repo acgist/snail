@@ -34,7 +34,7 @@ public final class PeerDownloaderGroup {
 	
 	/**
 	 * <p>同时创建PeerDownloader数量</p>
-	 * <p>注：如果TorrentSession线程池固定大小，不要超过线程池大小。</p>
+	 * <p>注：不要超过TorrentSession线程池大小（如果是固定线程池）</p>
 	 */
 	private static final int BUILD_SIZE = 2;
 	/**
@@ -52,7 +52,8 @@ public final class PeerDownloaderGroup {
 	private final Semaphore buildSemaphore = new Semaphore(BUILD_SIZE);
 	/**
 	 * <p>优质Peer</p>
-	 * <p>每次优化时挑选的优质Peer（可以下载），在发送pex消息时发送给连接的Peer，发送完成后清空。</p>
+	 * <p>每次优化时挑选的优质Peer，在发送pex消息时发送给连接的Peer。</p>
+	 * <p>优质Peer：可以下载</p>
 	 */
 	private final List<PeerSession> optimize = new ArrayList<>();
 	/**
@@ -72,6 +73,7 @@ public final class PeerDownloaderGroup {
 
 	/**
 	 * <p>优化PeerDownloader</p>
+	 * <p>剔除劣质PeerDownloader、创建PeerDownloader</p>
 	 */
 	public void optimize() {
 		LOGGER.debug("优化PeerDownloader");
@@ -93,7 +95,7 @@ public final class PeerDownloaderGroup {
 	 */
 	public List<PeerSession> optimizePeerSession() {
 		final var list = new ArrayList<>(this.optimize);
-		this.optimize.clear();
+		this.optimize.clear(); // 清除列表
 		return list;
 	}
 
@@ -103,7 +105,7 @@ public final class PeerDownloaderGroup {
 	 */
 	public void release() {
 		LOGGER.debug("释放PeerDownloaderGroup");
-		// 解除PeerDownloader锁：防止暂停任务卡死
+		// 解除PeerDownloader锁：防止暂停任务同时执行优化任务导致卡死
 		this.release(false);
 		synchronized (this.peerDownloaders) {
 			this.peerDownloaders.forEach(launcher -> {
@@ -118,7 +120,7 @@ public final class PeerDownloaderGroup {
 	
 	/**
 	 * <p>创建PeerDownloader列表</p>
-	 * <p>创建数量达到最大Peer连接数量或者重试次数超过{@link #MAX_BUILD_SIZE}时退出创建</p>
+	 * <p>创建数量达到最大Peer连接数量或者创建次数超过{@link #MAX_BUILD_SIZE}时退出创建</p>
 	 */
 	private void buildPeerDownloaders() {
 		LOGGER.debug("创建PeerDownloader");
@@ -127,7 +129,7 @@ public final class PeerDownloaderGroup {
 		this.buildSemaphore.drainPermits(); // 重置信号量
 		this.buildSemaphore.release(BUILD_SIZE);
 		while(this.build.get()) {
-			this.acquire();
+			this.acquire(); // 获取信号量
 			if(!this.build.get()) { // 再次判断状态
 				break;
 			}
@@ -138,7 +140,7 @@ public final class PeerDownloaderGroup {
 				} catch (Exception e) {
 					LOGGER.error("创建PeerDownloader异常", e);
 				} finally {
-					this.release(ok);
+					this.release(ok); // 释放信号量
 				}
 			});
 			if(++size >= MAX_BUILD_SIZE) {
@@ -154,7 +156,7 @@ public final class PeerDownloaderGroup {
 	 * <dl>
 	 * 	<dt>跳出创建循环</dt>
 	 * 	<dd>任务不处于下载状态</dd>
-	 * 	<dd>已经处于下载的PeerDownloader大于等于配置的最大PeerDownloader数量</dd>
+	 * 	<dd>处于下载中的Peer数量大于等于配置的最大数量</dd>
 	 * 	<dd>不能查找到更多的Peer</dd>
 	 * </dl>
 	 * 
@@ -188,8 +190,8 @@ public final class PeerDownloaderGroup {
 	 * <p>剔除劣质Peer</p>
 	 * <p>劣质Peer：评分最低的Peer</p>
 	 * <p>直接剔除：不可用的Peer（评分=0、状态不可用）</p>
-	 * <p>释放劣质Peer，然后将其放入Peer队列头部。如果最后Peer列表小于系统最大数量不剔除劣质Peer。</p>
-	 * <p>必须循环完所有的PeerDownloader，清除评分进行新一轮的评分计算。</p>
+	 * <p>劣质Peer：释放劣质Peer，然后放入Peer队列头部（如果最后Peer列表小于系统最大数量不剔除劣质Peer）</p>
+	 * <p>必须循环完所有的PeerDownloader，从而清除评分进行新一轮的评分，防止评分被累计计算。</p>
 	 */
 	private void inferiorPeerDownloaders() {
 		LOGGER.debug("剔除劣质PeerDownloader");
@@ -257,7 +259,7 @@ public final class PeerDownloaderGroup {
 	
 	/**
 	 * <p>剔除劣质Peer</p>
-	 * <p>释放Peer资源，将其放入Peer队列头部。</p>
+	 * <p>释放Peer资源、放入Peer队列头部</p>
 	 */
 	private void inferiorPeerDownloader(PeerDownloader peerDownloader) {
 		if(peerDownloader != null) {

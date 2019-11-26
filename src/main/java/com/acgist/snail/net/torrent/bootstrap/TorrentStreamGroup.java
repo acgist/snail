@@ -26,7 +26,7 @@ import com.acgist.snail.utils.FileUtils;
 
 /**
  * <p>TorrentStream组</p>
- * <p>Torrent任务对下载文件进行管理。</p>
+ * <p>Torrent任务对下载文件进行管理</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -72,8 +72,14 @@ public final class TorrentStreamGroup {
 	 * 是否初始化完成
 	 */
 	private volatile boolean done = false;
-	
+	/**
+	 * 种子信息
+	 */
 	private final Torrent torrent;
+	/**
+	 * <p>文件流集合</p>
+	 * <p>注意顺序（跨越文件数据读取）</p>
+	 */
 	private final List<TorrentStream> streams;
 	private final TorrentSession torrentSession;
 
@@ -128,7 +134,7 @@ public final class TorrentStreamGroup {
 					torrentSession.resize(torrentStreamGroup.size());
 					torrentStreamGroup.fullPieces(torrentStreamGroup.pieces());
 				} else {
-					LOGGER.warn("任务准备超时：{}", torrent.name());
+					LOGGER.warn("{}-任务准备超时", torrent.name());
 				}
 			} catch (InterruptedException e) {
 				LOGGER.debug("统计下载文件大小等待异常", e);
@@ -151,8 +157,6 @@ public final class TorrentStreamGroup {
 	
 	/**
 	 * <p>挑选一个Piece下载</p>
-	 * 
-	 * @param peerPieces Peer位图
 	 */
 	public TorrentPiece pick(final BitSet peerPieces, final BitSet suggestPieces) {
 		TorrentPiece pickPiece = null;
@@ -167,7 +171,7 @@ public final class TorrentStreamGroup {
 	
 	/**
 	 * <p>读取Piece数据</p>
-	 * <p>如果跨多个文件则合并返回</p>
+	 * <p>如果跨越多个文件则合并返回</p>
 	 * 
 	 * @param index 块序号
 	 * @param begin 块偏移
@@ -202,7 +206,7 @@ public final class TorrentStreamGroup {
 	public boolean write(TorrentPiece piece) {
 		boolean ok = false;
 		for (TorrentStream torrentStream : this.streams) {
-			// 不能跳出，可能存在一个Piece多个文件的情况。
+			// 不能跳出：可能存在一个Piece多个文件的情况
 			if(torrentStream.write(piece)) {
 				ok = true;
 			}
@@ -251,14 +255,14 @@ public final class TorrentStreamGroup {
 	}
 	
 	/**
-	 * 已下载位图
+	 * <p>已下载位图</p>
 	 */
 	public BitSet pieces() {
 		return this.pieces;
 	}
 	
 	/**
-	 * 完整Piece设置
+	 * <p>完整Piece设置</p>
 	 */
 	public void fullPieces(BitSet pieces) {
 		if(this.full) {
@@ -275,7 +279,7 @@ public final class TorrentStreamGroup {
 	}
 	
 	/**
-	 * 完整Piece设置
+	 * <p>完整Piece设置</p>
 	 */
 	public void fullPieces() {
 		if(this.full) {
@@ -286,7 +290,8 @@ public final class TorrentStreamGroup {
 	}
 	
 	/**
-	 * 健康度：0~100
+	 * <p>健康度：0~100</p>
+	 * <p>健康度：当前连接Peer有的Piece数量 ÷ 选择下载的Piece数量</p>
 	 */
 	public int health() {
 		final int health = 100;
@@ -315,7 +320,7 @@ public final class TorrentStreamGroup {
 	}
 	
 	/**
-	 * 剩余没有下载Piece的数量
+	 * 剩余没有下载的Piece数量
 	 * 
 	 * @since 1.0.2
 	 */
@@ -324,7 +329,7 @@ public final class TorrentStreamGroup {
 	}
 	
 	/**
-	 * 获取Piece的Hash校验
+	 * @return Piece的校验Hash
 	 */
 	public byte[] pieceHash(int index) {
 		final byte[] pieces = this.torrent.getInfo().getPieces();
@@ -356,7 +361,7 @@ public final class TorrentStreamGroup {
 	
 	/**
 	 * <p>检测是否下载完成</p>
-	 * <p>所有的TorrentStream完成才算完成。</p>
+	 * <p>所有的TorrentStream完成才算完成</p>
 	 */
 	public boolean complete() {
 		for (TorrentStream torrentStream : this.streams) {

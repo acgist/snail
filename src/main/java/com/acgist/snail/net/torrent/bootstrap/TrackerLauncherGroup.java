@@ -16,7 +16,7 @@ import com.acgist.snail.system.exception.DownloadException;
 
 /**
  * <p>TrackerLauncher组</p>
- * <p>加载TrackerLauncher管理。</p>
+ * <p>TrackerLauncher加载和管理</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -38,7 +38,7 @@ public final class TrackerLauncherGroup {
 	}
 
 	/**
-	 * 获取所有当前使用的Tracker服务器地址列表
+	 * @return 所有当前使用的Tracker服务器地址列表
 	 */
 	public List<String> trackers() {
 		synchronized (this.trackerLaunchers) {
@@ -50,7 +50,7 @@ public final class TrackerLauncherGroup {
 	
 	/**
 	 * <p>加载TrackerLauncher</p>
-	 * <p>加载TrackerLauncher，优先使用种子的Tracker，如果不够可以继续从系统Tracker列表添加。</p>
+	 * <p>优先使用种子的Tracker，如果不够可以继续从系统Tracker列表添加（私有种子不添加）</p>
 	 */
 	public void loadTracker() throws DownloadException {
 		List<TrackerClient> clients = null;

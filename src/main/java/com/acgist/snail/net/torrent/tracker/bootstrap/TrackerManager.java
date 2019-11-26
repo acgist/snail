@@ -44,11 +44,11 @@ public final class TrackerManager {
 	private static final int MAX_TRACKER_SIZE = SystemConfig.getTrackerSize();
 	
 	/**
-	 * Tracker客户端，key={@link TrackerClient#id()}。
+	 * Tracker客户端：key={@link TrackerClient#id()}
 	 */
 	private final Map<Integer, TrackerClient> trackerClients;
 	/**
-	 * Tracker执行器，key={@link TrackerLauncher#id()}。
+	 * Tracker执行器：key={@link TrackerLauncher#id()}
 	 */
 	private final Map<Integer, TrackerLauncher> trackerLaunchers;
 	

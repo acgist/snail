@@ -17,8 +17,7 @@ import com.acgist.snail.utils.NetUtils;
 
 /**
  * <p>DHT任务：定时查询Peer</p>
- * <p>BT任务下载时，如果连接的客户端支持DHT，放入到{@link #nodes}列表。</p>
- * <p>定时任务执行时使用最近的可用节点和{@link #nodes}查询Peer。</p>
+ * <p>使用系统最近的可用节点和{@link #nodes}查询Peer</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -27,9 +26,13 @@ public final class DhtLauncher implements Runnable {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DhtLauncher.class);
 	
+	/**
+	 * 种子信息
+	 */
 	private final InfoHash infoHash;
 	/**
-	 * 如果连接的客户端支持DHT，加入列表，定时查询Peer时使用。
+	 * <p>客户端节点</p>
+	 * <p>如果连接的Peer支持DHT：将Peer放入到队列</p>
 	 */
 	private final List<InetSocketAddress> nodes = new ArrayList<>();
 	
@@ -78,14 +81,15 @@ public final class DhtLauncher implements Runnable {
 	
 	/**
 	 * <p>挑选DHT节点</p>
-	 * <p>返回临时节点和系统节点</p>
+	 * 
+	 * @return 临时节点和系统节点
 	 */
 	private List<InetSocketAddress> pick() {
 		final List<InetSocketAddress> list = new ArrayList<>();
 		// 临时节点
 		if(CollectionUtils.isNotEmpty(this.nodes)) {
 			list.addAll(this.nodes);
-			this.nodes.clear();
+			this.nodes.clear(); // 清空临时节点
 		}
 		// 系统节点
 		final var nodes = NodeManager.getInstance().findNode(this.infoHash.infoHash());

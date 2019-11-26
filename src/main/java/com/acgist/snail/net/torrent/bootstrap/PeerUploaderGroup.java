@@ -18,7 +18,7 @@ import com.acgist.snail.system.context.SystemThreadContext;
  * <dl>
  * 	<dt>管理PeerUploader</dt>
  * 	<dd>清除劣质Peer</dd>
- * 	<dd>不能超过最大分享连接数量（如果Peer提供下载忽略）</dd>
+ * 	<dd>管理连接数量</dd>
  * </dl>
  * 
  * @author acgist
@@ -45,7 +45,7 @@ public final class PeerUploaderGroup {
 	}
 	
 	/**
-	 * 开始下载
+	 * <p>开始下载</p>
 	 */
 	public void download() {
 		synchronized (this.peerUploaders) {

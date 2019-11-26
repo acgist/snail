@@ -29,7 +29,13 @@ public final class MSECipher {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(MSECipher.class);
 
+	/**
+	 * 加密算法名称
+	 */
 	private static final String ARC4_ALGO = "ARCFOUR";
+	/**
+	 * 加密算法
+	 */
 	private static final String ARC4_ALGO_TRANSFORMATION = ARC4_ALGO + "/ECB/NoPadding";
 
 	/**
@@ -68,7 +74,7 @@ public final class MSECipher {
 	}
 	
 	/**
-	 * 连入客户端
+	 * 接入客户端
 	 * 
 	 * @param S DH Secret
 	 * @param infoHash InfoHash
@@ -169,7 +175,7 @@ public final class MSECipher {
 	}
 
 	/**
-	 * 创建连入客户端加密Key
+	 * 创建接入客户端加密Key
 	 */
 	private Key buildRecvKey(byte[] S, byte[] SKEY) {
 		return buildKey("keyB", S, SKEY);
