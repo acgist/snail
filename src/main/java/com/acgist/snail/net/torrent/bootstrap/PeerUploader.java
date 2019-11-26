@@ -11,8 +11,7 @@ import com.acgist.snail.system.config.PeerConfig;
 
 /**
  * <p>Peer接入</p>
- * <p>提供上传功能：上传数据</p>
- * <p>如果被解除阻塞也开始请求下载</p>
+ * <p>被动接入Peer</p>
  * 
  * @author acgist
  * @since 1.0.2
@@ -30,6 +29,11 @@ public final class PeerUploader extends PeerConnect {
 		return new PeerUploader(peerSession, torrentSession, peerSubMessageHandler);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * <p>下载条件：解除阻塞或者快速允许</p>
+	 */
 	@Override
 	public void download() {
 		if(
@@ -42,6 +46,7 @@ public final class PeerUploader extends PeerConnect {
 
 	/**
 	 * {@inheritDoc}
+	 * 
 	 * <p>设置非上传状态</p>
 	 */
 	@Override

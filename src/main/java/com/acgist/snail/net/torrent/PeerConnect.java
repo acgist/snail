@@ -186,7 +186,7 @@ public abstract class PeerConnect {
 	}
 	
 	/**
-	 * 开始下载
+	 * <p>开始下载</p>
 	 */
 	public void download() {
 		if(!this.downloading) {

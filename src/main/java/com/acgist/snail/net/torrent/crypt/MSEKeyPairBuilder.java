@@ -16,7 +16,7 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * <p>MSE密钥对Builder（DH交换）</p>
  * <p>
- * 一的补码（one's complement）：反码（正数=原码、负数=反码）
+ * 一的补码（one's complement）：反码（正数=原码、负数=反码）<br>
  * 二的补码（two's complement）：补码（正数=原码、负数=反码+1）
  * </p>
  * 

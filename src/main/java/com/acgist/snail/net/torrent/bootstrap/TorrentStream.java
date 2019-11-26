@@ -24,9 +24,9 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * <p>Torrent下载文件流</p>
  * <p>
- * 下载：每次下载必须是一个完整的Piece。（除了文件开头和结尾可能不是一个完整的Piece）
+ * 下载：每次下载必须是一个完整的Piece（除了文件开头和结尾可能不是一个完整的Piece）
  * </p>
- * <p>注：多线程读取写入时seek操作可能导致写入数据错乱。</p>
+ * <p>注：多线程读取写入时seek操作可能导致写入数据错乱</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -40,7 +40,7 @@ public final class TorrentStream {
 	 */
 	private final long pieceLength;
 	/**
-	 * 缓冲大小：写入文件时修改，TorrentStreamGroup中引用。
+	 * 缓冲大小：写入文件时修改（TorrentStreamGroup中引用）
 	 */
 	private final AtomicLong fileBuffer;
 	/**
@@ -86,19 +86,17 @@ public final class TorrentStream {
 	/**
 	 * 当前文件位图
 	 */
-	private BitSet pieces;
+	private final BitSet pieces;
 	/**
 	 * <p>暂停位图</p>
-	 * <p>
-	 * 上次下载失败的Piece，下次请求时不选取，选取一次成功后清除，以后还可以选取。
-	 * 主要用来处理两个文件处于同一个Piece，并且两个文件没有同时被选择下载。
-	 * </p>
+	 * <p>上次下载失败的Piece，下次请求时不选择，选择成功后清除，以后还可以选择该Piece。</p>
+	 * <p>主要用来处理两个文件处于同一个Piece，并且两个文件没有同时被选择下载。</p>
 	 */
-	private BitSet pausePieces;
+	private final BitSet pausePieces;
 	/**
 	 * 下载中位图
 	 */
-	private BitSet downloadPieces;
+	private final BitSet downloadPieces;
 	/**
 	 * <p>文件流</p>
 	 * 
@@ -112,6 +110,9 @@ public final class TorrentStream {
 		this.torrentStreamGroup = torrentStreamGroup;
 		this.fileDownloadSize = new AtomicLong(0);
 		this.filePieces = new LinkedBlockingQueue<>();
+		this.pieces = new BitSet();
+		this.pausePieces = new BitSet();
+		this.downloadPieces = new BitSet();
 	}
 	
 	public static final TorrentStream newInstance(long pieceLength, AtomicLong fileBuffer, TorrentStreamGroup torrentStreamGroup) {
@@ -120,7 +121,7 @@ public final class TorrentStream {
 	
 	/**
 	 * <p>设置文件信息</p>
-	 * <p>初始化已下载Piece，已下载文件大小，创建本地文件流等</p>
+	 * <p>初始化：已下载Piece、已下载文件大小、本地文件流等</p>
 	 * 
 	 * @param file 文件路径
 	 * @param size 文件大小
@@ -138,7 +139,7 @@ public final class TorrentStream {
 			this.fileSize = size;
 			this.fileBeginPos = pos;
 			this.fileEndPos = pos + size;
-			// 创建文件父目录，否者会抛出FileNotFoundException。
+			// 创建文件父目录：否者会抛出FileNotFoundException
 			FileUtils.buildFolder(this.file, true);
 			this.fileStream = new RandomAccessFile(this.file, "rw");
 			buildFilePiece();
@@ -158,8 +159,9 @@ public final class TorrentStream {
 	}
 	
 	/**
-	 * <P>保存Piece</p>
-	 * <P>每次保存的必须是一个完成的Piece，如果不在该文件范围内则不保存。</p>
+	 * <p>保存Piece</p>
+	 * <p>每次保存的必须是一个完成的Piece</p>
+	 * <p>如果不在该文件范围内则不保存</p>
 	 * 
 	 * @return 是否保存成功
 	 */
@@ -194,9 +196,10 @@ public final class TorrentStream {
 	
 	/**
 	 * <p>选择未下载的Piece</p>
+	 * <p>选择Piece没有下载完成、不处于暂停Piece和下载中的Piece</p>
+	 * <p>选择后清除暂停的Piece</p>
 	 * <p>
-	 * 选择Piece没有下载完成、不处于暂停Piece和下载中的Piece，选择后清除暂停的Piece。
-	 * 如果挑选不到符合条件的Piece并且任务处于接近完成状态时（最后还剩下{@link SystemConfig#getPieceRepeatSize()}个Piece时），那么可以选择下载中的Piece进行下载。
+	 * 如果挑选不到符合条件的Piece并且任务处于接近完成状态时（{@linkplain SystemConfig#getPieceRepeatSize() 接近完成剩余Piece数量}），那么可以选择下载中的Piece进行下载。
 	 * </p>
 	 * 
 	 * @param peerPieces Peer位图
@@ -246,7 +249,7 @@ public final class TorrentStream {
 			if(index == -1 || index > this.fileEndPieceIndex) {
 				return null;
 			}
-			LOGGER.debug("下载中：{}-{}", index, this.downloadPieces);
+			LOGGER.debug("下载中Piece：{}-{}", index, this.downloadPieces);
 			this.downloadPieces.set(index);
 			int begin = 0;
 			boolean verify = true;
@@ -302,13 +305,13 @@ public final class TorrentStream {
 	
 	/**
 	 * <p>读取块数据</p>
-	 * <p>如果选择的Piece不在文件范围内返回null。</p>
+	 * <p>如果选择的Piece不在文件范围内返回：null</p>
 	 * <p>如果读取数据只有部分符合文件的范围，会自动修正范围，读取符合部分数据返回。</p>
 	 * 
 	 * @param index 块序号
 	 * @param size 数据大小
 	 * @param pos 数据偏移
-	 * @param ignorePieces 忽略已下载位图，读取文件验证。
+	 * @param ignorePieces 忽略已下载位图（读取文件验证）
 	 */
 	private byte[] read(int index, int size, int pos, boolean ignorePieces) {
 		if(!haveIndex(index)) {
@@ -366,7 +369,7 @@ public final class TorrentStream {
 	/**
 	 * Piece下载失败
 	 * 
-	 * @param piece 下载失败的块
+	 * @param piece 下载失败Piece
 	 */
 	public void undone(TorrentPiece piece) {
 		// 不符合当前文件位置
@@ -390,7 +393,7 @@ public final class TorrentStream {
 	
 	/**
 	 * <p>释放资源</p>
-	 * <p>将已下载的块写入文件，然后关闭文件流。</p>
+	 * <p>写入已下载块、关闭文件流</p>
 	 */
 	public void release() {
 		this.flush();
@@ -457,7 +460,7 @@ public final class TorrentStream {
 	}
 	
 	/**
-	 * 初始化：开始块序号，结束块序号等
+	 * 初始化：第一块序号、最后一块序号等
 	 */
 	private void buildFilePiece() {
 		this.fileBeginPieceIndex = (int) (this.fileBeginPos / this.pieceLength);
@@ -467,21 +470,18 @@ public final class TorrentStream {
 		if(endPieceSize > 0) {
 			this.filePieceSize++;
 		}
-		this.pieces = new BitSet();
-		this.pausePieces = new BitSet();
-		this.downloadPieces = new BitSet();
 	}
 	
 	/**
 	 * <p>异步加载</p>
-	 * <p>如果已经完成的任务使用同步加载，其他使用异步加载。</p>
+	 * <p>加载完成计数器减一</p>
 	 */
 	private void buildFileAsyn(boolean complete, CountDownLatch sizeCount) throws IOException {
-		if(complete) {
+		if(complete) { // 同步
 			buildFilePieces(complete);
 			buildFileDownloadSize();
 			sizeCount.countDown();
-		} else {
+		} else { // 异步
 			final var lock = this;
 			SystemThreadContext.submit(() -> {
 				synchronized (lock) {
@@ -499,14 +499,14 @@ public final class TorrentStream {
 	}
 	
 	/**
-	 * 初始化：已下载块，校验HASH（第一块和最后一块不校验）。
+	 * 初始化：已下载块、校验HASH（第一块和最后一块不校验）
 	 */
 	private void buildFilePieces(boolean complete) throws IOException {
 		int pos = 0;
 		int length = 0;
 		byte[] hash = null;
 		byte[] bytes = null;
-		// 第一块和最后一块不要校验HASH
+		// 第一块和最后一块不校验HASH
 		boolean verify = true;
 		if(this.fileStream.length() == 0) {
 			return;
@@ -587,7 +587,7 @@ public final class TorrentStream {
 	}
 	
 	/**
-	 * 结束块的大小=偏移
+	 * 最后一块的大小=偏移
 	 */
 	private int lastPieceSize() {
 		return (int) (this.fileEndPos - (this.pieceLength * this.fileEndPieceIndex));

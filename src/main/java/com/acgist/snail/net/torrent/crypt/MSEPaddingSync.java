@@ -91,7 +91,7 @@ public final class MSEPaddingSync {
 	}
 	
 	/**
-	 * 获取所有的Padding数据
+	 * @return 所有的Padding数据
 	 */
 	public List<byte[]> allPadding() {
 		return this.list;

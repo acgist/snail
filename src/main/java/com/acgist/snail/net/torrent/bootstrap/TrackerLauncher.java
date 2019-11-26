@@ -17,7 +17,7 @@ import com.acgist.snail.utils.NumberUtils;
 
 /**
  * <p>Tracker执行器</p>
- * <p>使用TrackerClient查询Peer信息。</p>
+ * <p>使用TrackerClient查询Peer信息</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -71,14 +71,14 @@ public final class TrackerLauncher {
 	}
 
 	/**
-	 * 获取ID
+	 * @return ID
 	 */
 	public Integer id() {
 		return this.id;
 	}
 	
 	/**
-	 * 获取声明地址
+	 * @return 声明地址
 	 */
 	public String announceUrl() {
 		return this.client.announceUrl();
@@ -109,7 +109,13 @@ public final class TrackerLauncher {
 		this.seeder = message.getSeeder();
 		this.leecher = message.getLeecher();
 		this.peer(message.getPeers());
-		LOGGER.debug("{}-收到声明响应，做种Peer数量：{}，下载Peer数量：{}，下次请求时间：{}", this.client.announceUrl(), this.seeder, this.leecher, this.interval);
+		LOGGER.debug(
+			"{}-收到声明响应：做种Peer数量：{}，下载Peer数量：{}，下次请求时间：{}",
+			this.client.announceUrl(),
+			this.seeder,
+			this.leecher,
+			this.interval
+		);
 	}
 	
 	/**
@@ -132,7 +138,7 @@ public final class TrackerLauncher {
 
 	/**
 	 * <p>释放资源</p>
-	 * <p>暂停发送stop消息，下载完成发送complete消息。</p>
+	 * <p>暂停发送stop消息、完成发送complete消息</p>
 	 */
 	public void release() {
 		if(this.needRelease && available()) {
@@ -153,7 +159,7 @@ public final class TrackerLauncher {
 	}
 	
 	/**
-	 * <p>可用状态：释放资源并且TrackerClient可用。</p>
+	 * <p>可用状态：TrackerLauncher可用、TrackerClient可用</p>
 	 */
 	private boolean available() {
 		return this.available && this.client.available();

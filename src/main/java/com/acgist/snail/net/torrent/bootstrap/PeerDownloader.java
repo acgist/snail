@@ -14,7 +14,7 @@ import com.acgist.snail.system.config.PeerConfig;
 
 /**
  * <p>Peer下载</p>
- * <p>提供下载功能：根据是否支持UTP选择使用UTP还是TCP</p>
+ * <p>主动连接Peer</p>
  * 
  * @author acgist
  * @since 1.1.0
@@ -40,17 +40,22 @@ public final class PeerDownloader extends PeerConnect {
 	public boolean handshake() {
 		final boolean ok = connect();
 		if(ok) {
+			// 连接评分
 			PeerEvaluator.getInstance().score(this.peerSession, PeerEvaluator.Type.CONNECT);
-			this.peerSubMessageHandler.handshake(this);
+			this.peerSubMessageHandler.handshake(this); // 发送握手消息
 		} else {
-			this.peerSession.fail();
+			this.peerSession.fail(); // 记录失败次数
 		}
 		this.available = ok;
 		return ok;
 	}
 	
 	/**
-	 * <p>建立连接</p>
+	 * <dl>
+	 * 	<dt>建立连接</dt>
+	 * 	<dd>支持UTP：使用UTP</dd>
+	 * 	<dd>不支持UTP：优先使用TCP，如果TCP连接失败，切换UTP重试。</dd>
+	 * </dl>
 	 */
 	private boolean connect() {
 		if(this.peerSession.utp()) {
@@ -77,6 +82,7 @@ public final class PeerDownloader extends PeerConnect {
 
 	/**
 	 * {@inheritDoc}
+	 * 
 	 * <p>设置非下载状态</p>
 	 */
 	@Override

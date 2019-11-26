@@ -28,7 +28,7 @@ public abstract class UdpAcceptHandler {
 				handler.onReceive(buffer, socketAddress);
 			}
 		} catch (Exception e) {
-			LOGGER.error("UDP消息接收异常", e);
+			LOGGER.error("UDP消息接收异常：{}", socketAddress, e);
 		}
 	}
 	
