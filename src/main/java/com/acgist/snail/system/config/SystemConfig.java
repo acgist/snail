@@ -22,7 +22,7 @@ public final class SystemConfig extends PropertiesConfig {
 	private static final String SYSTEM_CONFIG = "/config/system.properties";
 
 	/**
-	 * 数据比例
+	 * 数据大小比例
 	 */
 	public static final int DATA_SCALE = 1024;
 	/**

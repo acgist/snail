@@ -69,7 +69,7 @@ public final class TorrentController extends Controller implements Initializable
 	}
 
 	/**
-	 * 显示信息
+	 * 显示树形菜单
 	 */
 	public void tree(ITaskSession taskSession) {
 		Torrent torrent = null;
@@ -85,8 +85,8 @@ public final class TorrentController extends Controller implements Initializable
 		final TorrentInfo torrentInfo = torrent.getInfo();
 		this.selectorManager = SelectorManager.newInstance(torrent.name(), this.download, tree);
 		torrentInfo.files().stream()
-			.filter(file -> !file.path().startsWith(TorrentInfo.PADDING_FILE_PREFIX))
-			.sorted((a, b) -> a.path().compareTo(b.path()))
+			.filter(file -> !file.path().startsWith(TorrentInfo.PADDING_FILE_PREFIX)) // 去掉填充文件
+			.sorted((a, b) -> a.path().compareTo(b.path())) // 文件排序
 			.forEach(file -> this.selectorManager.build(file.path(), file.getLength()));
 		this.selectorManager.select(taskSession);
 	}
@@ -117,7 +117,7 @@ public final class TorrentController extends Controller implements Initializable
 	 * 下载按钮事件
 	 */
 	private EventHandler<ActionEvent> downloadEvent = (event) -> {
-		var list = this.selectorManager.description();
+		final var list = this.selectorManager.description();
 		if(list.isEmpty()) {
 			Alerts.warn("下载失败", "请选择下载文件");
 			return;
@@ -125,10 +125,11 @@ public final class TorrentController extends Controller implements Initializable
 		this.taskSession.setSize(this.selectorManager.size());
 		final TorrentSelectorWrapper wrapper = TorrentSelectorWrapper.newEncoder(list);
 		this.taskSession.setDescription(wrapper.serialize());
-		if(this.taskSession.getId() != null) { // 已经添加数据库
-			boolean restart = false;
-			if(this.taskSession.getType() == Type.MAGNET) { // 磁力链接转为BT任务
-				restart = true;
+		if(this.taskSession.getId() != null) { // 已经保存数据库
+			boolean magnetToTorrent = false;
+			// 磁力链接转为BT任务
+			if(this.taskSession.getType() == Type.MAGNET) {
+				magnetToTorrent = true;
 				this.taskSession.setType(Type.TORRENT);
 				this.taskSession.setStatus(Status.AWAIT);
 				this.taskSession.setEndDate(null);
@@ -136,13 +137,13 @@ public final class TorrentController extends Controller implements Initializable
 			// 更新任务
 			this.taskSession.update();
 			// 切换下载器并且重新下载
-			if(restart) {
+			if(magnetToTorrent) {
 				try {
 					DownloaderManager.getInstance().changeDownloaderRestart(this.taskSession);
 				} catch (DownloadException e) {
 					LOGGER.error("切换下载器异常", e);
 				}
-			} else {
+			} else { // 刷新任务
 				DownloaderManager.getInstance().refresh(this.taskSession);
 			}
 		}

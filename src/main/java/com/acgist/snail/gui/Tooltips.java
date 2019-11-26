@@ -4,7 +4,7 @@ import javafx.scene.control.Tooltip;
 import javafx.util.Duration;
 
 /**
- * <p>提示框</p>
+ * <p>提示框工具</p>
  * 
  * @author acgist
  * @since 1.1.0
@@ -18,7 +18,8 @@ public final class Tooltips {
 	}
 	
 	/**
-	 * 创建提示框，默认显示时间：200（毫秒）
+	 * <p>创建提示框</p>
+	 * <p>默认显示时间：200（毫秒）</p>
 	 * 
 	 * @param value 提示内容
 	 * 
@@ -32,7 +33,7 @@ public final class Tooltips {
 	 * 创建提示框
 	 * 
 	 * @param value 提示内容
-	 * @param millis 显示时间（鼠标移到目标）
+	 * @param millis 显示时间：毫秒
 	 * 
 	 * @return 提示框
 	 */

@@ -4,7 +4,7 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 
 /**
- * <p>剪切板</p>
+ * <p>剪切板工具</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -18,7 +18,7 @@ public final class Clipboards {
 	}
 	
 	/**
-	 * 将文本内容拷贝到剪切板
+	 * 拷贝文本内容到剪切板
 	 * 
 	 * @param value 文本内容
 	 */

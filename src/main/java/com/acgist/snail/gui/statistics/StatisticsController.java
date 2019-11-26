@@ -109,6 +109,9 @@ public final class StatisticsController extends Controller implements Initializa
 		this.statistics();
 	}
 	
+	/**
+	 * 统计信息
+	 */
 	public void statistics() {
 		this.system();
 		this.dht();
@@ -123,12 +126,18 @@ public final class StatisticsController extends Controller implements Initializa
 		this.chart.getChildren().clear();
 	}
 
+	/**
+	 * 统计系统信息：累计上传大小、累计下载大小
+	 */
 	private void system() {
 		final var statistics = SystemStatistics.getInstance().statistics();
 		this.upload.setText(FileUtils.formatSize(statistics.uploadSize()));
 		this.download.setText(FileUtils.formatSize(statistics.downloadSize()));
 	}
 	
+	/**
+	 * 统计DHT信息：节点数量、各种状态节点数量
+	 */
 	private void dht() {
 		final List<NodeSession> nodes = NodeManager.getInstance().nodes();
 		final Map<NodeSession.Status, Long> group = nodes.stream()
@@ -139,6 +148,9 @@ public final class StatisticsController extends Controller implements Initializa
 		this.dhtAvailable.setText(String.valueOf(group.getOrDefault(NodeSession.Status.AVAILABLE, 0L)));
 	}
 	
+	/**
+	 * 统计Tracker信息：Tracker数量、各种状态Tracker数量
+	 */
 	private void tracker() {
 		final List<TrackerClient> clients = TrackerManager.getInstance().clients();
 		final Map<Boolean, Long> group = clients.stream()
@@ -148,6 +160,9 @@ public final class StatisticsController extends Controller implements Initializa
 		this.trackerDisable.setText(String.valueOf(group.getOrDefault(Boolean.FALSE, 0L)));
 	}
 	
+	/**
+	 * 统计BT任务信息
+	 */
 	private void infoHash() {
 		final var defaultValue = this.selectInfoHashs.getValue();
 		final ObservableList<SelectInfoHash> obs = FXCollections.observableArrayList();
@@ -164,7 +179,7 @@ public final class StatisticsController extends Controller implements Initializa
 	}
 	
 	/**
-	 * 不需要显示调用，选择下载任务时自动刷新。
+	 * 不需要显示调用：选择下载任务时自动刷新
 	 */
 	private void peer() {
 		final SelectInfoHash value = (SelectInfoHash) this.selectInfoHashs.getValue();
@@ -178,13 +193,13 @@ public final class StatisticsController extends Controller implements Initializa
 		final var utp = new AtomicInteger(0);
 		final var available = new AtomicInteger(0);
 		// 来源
-		final var dht = new AtomicInteger(0);
 		final var pex = new AtomicInteger(0);
+		final var dht = new AtomicInteger(0);
 		final var lsd = new AtomicInteger(0);
 		final var tracker = new AtomicInteger(0);
 		final var connect = new AtomicInteger(0);
 		final var holepunch = new AtomicInteger(0);
-		// 状态
+		// 上传大小、下载大小
 		final var upload = new AtomicInteger(0);
 		final var download = new AtomicInteger(0);
 		// 图表
@@ -195,14 +210,17 @@ public final class StatisticsController extends Controller implements Initializa
 			if(peer.dht()) {
 				dht.incrementAndGet();
 			}
+			if(peer.available()) {
+				available.incrementAndGet();
+			}
 			if(peer.pex()) {
 				pex.incrementAndGet();
 			}
-			if(peer.lsd()) {
-				lsd.incrementAndGet();
-			}
 			if(peer.utp()) {
 				utp.incrementAndGet();
+			}
+			if(peer.lsd()) {
+				lsd.incrementAndGet();
 			}
 			if(peer.tracker()) {
 				tracker.incrementAndGet();
@@ -237,9 +255,6 @@ public final class StatisticsController extends Controller implements Initializa
 				uploadPeer.add(uploadData);
 				downloadPeer.add(downloadData);
 			}
-			if(peer.available()) {
-				available.incrementAndGet();
-			}
 		});
 		final var torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
 		// Peer
@@ -253,7 +268,7 @@ public final class StatisticsController extends Controller implements Initializa
 		this.sourceTracker.setText(String.valueOf(tracker.get()));
 		this.sourceConnect.setText(String.valueOf(connect.get()));
 		this.sourceHolepunch.setText(String.valueOf(holepunch.get()));
-		// 状态
+		// 上传大小、下载大小
 		this.statusUpload.setText(String.valueOf(upload.get()));
 		this.statusDownload.setText(String.valueOf(download.get()));
 		this.health.setText(torrentSession.health() + "%");
@@ -293,7 +308,7 @@ public final class StatisticsController extends Controller implements Initializa
 	}
 	
 	/**
-	 * 选择InfoHash事件
+	 * 选择BT任务事件
 	 */
 	private EventHandler<ActionEvent> selectEvent = (event) -> {
 		this.peer();
@@ -339,7 +354,7 @@ public final class StatisticsController extends Controller implements Initializa
 		
 		/**
 		 * <p>重写toString设置下拉框显示名称</p>
-		 * <p>也可以使用<code>this.infoHashs.converterProperty().set</code>来设置下拉框显示名称</p>
+		 * <p>或者使用<code>this.selectInfoHashs.converterProperty().set</code>来设置</p>
 		 */
 		@Override
 		public String toString() {

@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 import com.acgist.snail.gui.Tooltips;
@@ -34,26 +33,26 @@ public final class SelectorManager {
 	/**
 	 * 下载按钮
 	 */
-	private Button download;
+	private final Button download;
 	/**
 	 * 树形菜单根节点
 	 */
-	private TreeItem<HBox> root;
+	private final TreeItem<HBox> root;
 	/**
-	 * 选择器
+	 * <p>选择器MAP</p>
+	 * <p>key=文件路径；value=选择文件；</p>
 	 */
-	private Map<String, Selector> selector;
+	private final Map<String, Selector> selector = new HashMap<>();;
 
 	/**
 	 * 选择器
 	 * 
 	 * @param name 任务名称
 	 * @param download 下载按钮
-	 * @param tree 属性菜单
+	 * @param tree 树形菜单
 	 */
 	private SelectorManager(String name, Button download, TreeView<HBox> tree) {
-		this.selector = new HashMap<>();
-		final TreeItem<HBox> root = builcTreeItem(null, "", name, null);
+		final TreeItem<HBox> root = buildTreeItem(null, "", name, null);
 		root.setExpanded(true);
 		tree.setRoot(root);
 		this.root = root;
@@ -82,29 +81,57 @@ public final class SelectorManager {
 			for (int index = 0; index < paths.length - 1; index++) {
 				final String value = paths[index];
 				parentPath += value + TorrentFile.SEPARATOR;
-				treeItem = builcTreeItem(parent, parentPath, value, null);
+				treeItem = buildTreeItem(parent, parentPath, value, null);
 				parent = treeItem;
 			}
 			name = paths[paths.length - 1];
 		}
 		// 创建文件菜单
-		builcTreeItem(parent, path, name, size);
+		buildTreeItem(parent, path, name, size);
 	}
 	
 	/**
-	 * 获取选择文件的大小
+	 * 创建树形菜单
+	 * 
+	 * @param parent 父节点
+	 * @param path 路径
+	 * @param name 名称
+	 * @param size 大小
+	 */
+	private TreeItem<HBox> buildTreeItem(TreeItem<HBox> parent, String path, String name, Long size) {
+		if(this.selector.containsKey(path)) { // 如果已经创建跳过：路径菜单
+			return this.selector.get(path).getTreeItem();
+		}
+		final CheckBox checkBox = new CheckBox(name);
+		checkBox.setPrefWidth(500);
+		checkBox.setTooltip(Tooltips.newTooltip(name));
+		checkBox.setOnAction(this.selectAction);
+		final HBox box = new HBox(checkBox);
+		// 设置文件大小
+		if(size != null) {
+			final Text text = new Text(FileUtils.formatSize(size));
+			box.getChildren().add(text);
+		}
+		final TreeItem<HBox> treeItem = new TreeItem<HBox>(box);
+		this.selector.put(path, new Selector(path, size, checkBox, treeItem));
+		if(parent != null) { // 根节点没有父节点
+			parent.getChildren().add(treeItem);
+		}
+		return treeItem;
+	}
+	
+	/**
+	 * @return 选择文件大小
 	 */
 	public Long size() {
-		final AtomicLong totalSize = new AtomicLong(0L);
-		this.selector.values().stream()
-			.filter(value -> value.isSelected())
-			.map(value -> value.getSize())
-			.forEach(size -> totalSize.addAndGet(size));
-		return totalSize.longValue();
+		return this.selector.values().stream()
+			.filter(value -> value.isSelected()) // 选中
+			.filter(value -> value.isFile()) // 文件
+			.collect(Collectors.summingLong(value -> value.getSize()));
 	}
 	
 	/**
-	 * 获取选择文件的列表
+	 * @return 选择文件列表
 	 */
 	public List<String> description() {
 		return this.selector.entrySet().stream()
@@ -115,8 +142,9 @@ public final class SelectorManager {
 	}
 
 	/**
-	 * <p>设置已选中信息，如果没有设置将自动选择。</p>
-	 * <p>自动选择：选择大于平均值的文件。</p>
+	 * <p>设置选择文件</p>
+	 * <p>如果没有选中文件使用自动选择</p>
+	 * <p>自动选择：选择大于平均值的文件</p>
 	 */
 	public void select(ITaskSession taskSession) {
 		final var list = taskSession.selectTorrentFiles();
@@ -133,48 +161,20 @@ public final class SelectorManager {
 					return
 						entry.getValue().isFile() && // 文件
 						entry.getValue().getSize() >= avgSize; // 大于平均值
-				}).forEach(entry -> entry.getValue().setSelected(true));
+				})
+				.forEach(entry -> entry.getValue().setSelected(true));
 		}
-		selectFolder();
+		selectParentFolder();
 		buttonSize();
 	}
 	
 	/**
-	 * 创建树形菜单
-	 * 
-	 * @param parent 父节点
-	 * @param path 路径
-	 * @param name 名称
-	 * @param size 大小
+	 * <p>选择父目录</p>
+	 * <p>选中文件时同时选中所有父目录</p>
 	 */
-	private TreeItem<HBox> builcTreeItem(TreeItem<HBox> parent, String path, String name, Long size) {
-		if(this.selector.containsKey(path)) {
-			return this.selector.get(path).getTreeItem();
-		}
-		final CheckBox checkBox = new CheckBox(name);
-		checkBox.setPrefWidth(500);
-		checkBox.setTooltip(Tooltips.newTooltip(name));
-		checkBox.setOnAction(this.selectAction);
-		final HBox box = new HBox(checkBox);
-		// 设置文件大小
-		if(size != null) {
-			final Text text = new Text(FileUtils.formatSize(size));
-			box.getChildren().add(text);
-		}
-		final TreeItem<HBox> treeItem = new TreeItem<HBox>(box);
-		this.selector.put(path, new Selector(path, size, checkBox, treeItem));
-		if(parent != null) {
-			parent.getChildren().add(treeItem);
-		}
-		return treeItem;
-	}
-	
-	/**
-	 * 选择父目录
-	 */
-	private void selectFolder() {
+	private void selectParentFolder() {
 		final List<TreeItem<HBox>> parents = new ArrayList<>();
-		// 获取父目录
+		// 所有父目录
 		this.selector.values().stream()
 			.filter(value -> value.isFile())
 			.filter(value -> value.isSelected())
@@ -199,11 +199,13 @@ public final class SelectorManager {
 	}
 	
 	/**
-	 * 选择框事件
+	 * <p>选择框事件</p>
+	 * <p>选择子目录、选择父目录、计算选中文件大小</p>
 	 */
 	private EventHandler<ActionEvent> selectAction = (event) -> {
 		final CheckBox checkBox = (CheckBox) event.getSource();
 		final boolean selected = checkBox.isSelected();
+		// 前缀
 		final String prefix = this.selector.entrySet().stream()
 			.filter(entry -> entry.getValue().getCheckBox() == checkBox)
 			.map(entry -> entry.getKey())
@@ -212,7 +214,7 @@ public final class SelectorManager {
 		this.selector.entrySet().stream()
 			.filter(entry -> entry.getKey().startsWith(prefix))
 			.forEach(entry -> entry.getValue().setSelected(selected));
-		selectFolder();
+		selectParentFolder();
 		buttonSize();
 	};
 	
@@ -253,7 +255,7 @@ class Selector {
 	}
 
 	/**
-	 * 判断是否选中
+	 * 是否选中
 	 * 
 	 * @return true-选中；false-未选中；
 	 */
@@ -262,7 +264,7 @@ class Selector {
 	}
 
 	/**
-	 * 设置是否选中
+	 * 设置选中
 	 * 
 	 * @param selected true-选中；false-未选中；
 	 */

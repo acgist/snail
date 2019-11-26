@@ -39,7 +39,7 @@ public final class TorrentWindow extends Window<TorrentController> {
 		this.buildWindow(stage, "编辑任务", 800, 600, "/fxml/torrent.fxml", Modality.APPLICATION_MODAL);
 		disableResize();
 		dialogWindow();
-		this.release();
+		windowHidden();
 	}
 	
 	/**
@@ -51,9 +51,9 @@ public final class TorrentWindow extends Window<TorrentController> {
 	}
 	
 	/**
-	 * 窗口隐藏时释放资源
+	 * 窗口隐藏：释放资源
 	 */
-	private void release() {
+	private void windowHidden() {
 		this.stage.addEventFilter(WindowEvent.WINDOW_HIDDEN, (event) -> {
 			this.controller.release();
 		});

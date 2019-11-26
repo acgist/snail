@@ -65,7 +65,7 @@ public abstract class Window<T extends Initializable> extends Application {
 	}
 	
 	/**
-	 * 设置会话框通用信息：{@link #icon}、{@link #esc}
+	 * 会话框通用设置：{@link #icon}、{@link #esc}
 	 */
 	protected void dialogWindow() {
 		icon();
@@ -80,7 +80,7 @@ public abstract class Window<T extends Initializable> extends Application {
 	}
 	
 	/**
-	 * 加载fxml、controller，返回面板。
+	 * 加载fxml、controller
 	 * 
 	 * @param <X> 面板泛型
 	 * @param fxml fxml路径
@@ -106,7 +106,7 @@ public abstract class Window<T extends Initializable> extends Application {
 	 * @param fxml fxml路径
 	 * @param modality 模态
 	 * 
-	 * @throws IOException FXML加载异常
+	 * @throws IOException IO异常
 	 */
 	protected void buildWindow(Stage stage, String title, int width, int height, String fxml, Modality modality) throws IOException {
 		final Parent root = this.loadFxml(fxml);
@@ -142,7 +142,8 @@ public abstract class Window<T extends Initializable> extends Application {
 	}
 	
 	/**
-	 * 设置窗口最大化：防止最小化后，从托盘显示出来时不能正常显示。
+	 * <p>设置窗口最大化</p>
+	 * <p>如果不设置此配置，窗口最小化隐藏到托盘后，从托盘显示出来时不能正常显示窗口。</p>
 	 */
 	public void maximize() {
 		this.stage.setIconified(false);

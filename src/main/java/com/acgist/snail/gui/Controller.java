@@ -16,17 +16,17 @@ public abstract class Controller {
 	/**
 	 * 双击次数
 	 */
-	public static final int DOUBLE_CLICK_COUNT = 2;
+	protected static final int DOUBLE_CLICK_COUNT = 2;
 	
 	/**
-	 * <p>获取拖入面板的数据（Dragboard）</p>
-	 * <p>支持数据：文件、链接、文本</p>
+	 * <p>获取拖入面板（Dragboard）的数据</p>
+	 * <p>支持数据：文本、链接、文件（路径）</p>
 	 * 
 	 * @param event 拖拽事件
 	 * 
-	 * @return 文本、链接、文件
+	 * @return 文本、链接、文件（路径）
 	 */
-	protected String dragboard(DragEvent event) {
+	protected final String dragboard(DragEvent event) {
 		final Dragboard dragboard = event.getDragboard();
 		if(dragboard.hasFiles()) {
 			final var files = dragboard.getFiles();
