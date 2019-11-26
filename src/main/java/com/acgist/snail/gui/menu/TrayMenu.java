@@ -62,8 +62,13 @@ public final class TrayMenu extends Menu {
 	 * 是否支持托盘
 	 */
 	private final boolean support;
-	
+	/**
+	 * 托盘容器
+	 */
 	private Stage trayStage;
+	/**
+	 * 托盘
+	 */
 	private TrayIcon trayIcon;
 	
 	private TrayMenu() {
@@ -102,8 +107,6 @@ public final class TrayMenu extends Menu {
 		this.sourceMenu.setOnAction(this.sourceAction);
 		this.supportMenu.setOnAction(this.supportAction);
 		
-		this.addEventFilter(WindowEvent.WINDOW_HIDDEN, this.windowHiddenAction);
-		
 		addMenu(this.showMenu);
 		addMenu(this.hideMenu);
 		addMenu(this.sourceMenu);
@@ -111,6 +114,8 @@ public final class TrayMenu extends Menu {
 		addMenu(this.aboutMenu);
 		this.addSeparator();
 		addMenu(this.exitMenu);
+		
+		this.addEventFilter(WindowEvent.WINDOW_HIDDEN, this.windowHiddenAction);
 	}
 	
 	/**
@@ -120,7 +125,8 @@ public final class TrayMenu extends Menu {
 		final MouseListener mouseListener = new MouseInputAdapter() {
 			@Override
 			public void mouseClicked(java.awt.event.MouseEvent event) {
-				if (event.getButton() == java.awt.event.MouseEvent.BUTTON1) { // 左键
+				// 左键：显示隐藏
+				if (event.getButton() == java.awt.event.MouseEvent.BUTTON1) {
 					if (MainWindow.getInstance().isShowing()) {
 						Platform.runLater(() -> {
 							MainWindow.getInstance().hide();
@@ -130,10 +136,11 @@ public final class TrayMenu extends Menu {
 							MainWindow.getInstance().show();
 						});
 					}
-				} else if(event.getButton() == java.awt.event.MouseEvent.BUTTON3) { // 右键
+				} else if(event.getButton() == java.awt.event.MouseEvent.BUTTON3) {
+					// 右键：托盘菜单
 					Platform.runLater(() -> {
-						int x = event.getXOnScreen();
-						int y = event.getYOnScreen() - MENU_WINDOW_HEIGHT;
+						final int x = event.getXOnScreen();
+						final int y = event.getYOnScreen() - MENU_WINDOW_HEIGHT;
 						TrayMenu.INSTANCE.show(createTrayStage(), x, y);
 					});
 				}
@@ -172,7 +179,6 @@ public final class TrayMenu extends Menu {
 		}
 	}
 	
-	
 	/**
 	 * 关闭托盘
 	 */
@@ -184,7 +190,7 @@ public final class TrayMenu extends Menu {
 	}
 	
 	/**
-	 * 创建托盘菜单
+	 * 创建托盘菜单容器
 	 */
 	private Stage createTrayStage() {
 		final FlowPane trayPane = new FlowPane();
@@ -203,41 +209,60 @@ public final class TrayMenu extends Menu {
 		return trayStage;
 	}
 	
+	/**
+	 * 显示
+	 */
 	private EventHandler<ActionEvent> showAction = (event) -> {
 		Platform.runLater(() -> {
 			MainWindow.getInstance().show();
 		});
 	};
 	
+	/**
+	 * 隐藏
+	 */
 	private EventHandler<ActionEvent> hideAction = (event) -> {
 		Platform.runLater(() -> {
 			MainWindow.getInstance().hide();
 		});
 	};
 	
+	/**
+	 * 退出
+	 */
 	private EventHandler<ActionEvent> exitAction = (event) -> {
 		SystemContext.shutdown();
 	};
 	
+	/**
+	 * 关于
+	 */
 	private EventHandler<ActionEvent> aboutAction = (event) -> {
 		AboutWindow.getInstance().show();
 	};
 	
+	/**
+	 * 官网与源码
+	 */
 	private EventHandler<ActionEvent> sourceAction = (event) -> {
 		BrowseUtils.open(SystemConfig.getSource());
 	};
 	
+	/**
+	 * 问题与建议
+	 */
 	private EventHandler<ActionEvent> supportAction = (event) -> {
 		BrowseUtils.open(SystemConfig.getSupport());
 	};
 	
 	/**
-	 * 窗口隐藏时移除托盘菜单的Stage
+	 * 窗口隐藏时移除托盘菜单的容器
 	 */
 	private EventHandler<WindowEvent> windowHiddenAction = (event) -> {
 		Platform.runLater(() -> {
 			if(this.trayStage != null) {
 				this.trayStage.close();
+				this.trayStage = null;
 			}
 		});
 	};

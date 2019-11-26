@@ -80,7 +80,7 @@ public final class NoticeEvent extends GuiEvent {
 		map.put("message", message);
 		final String body = BEncodeEncoder.encodeMapString(map);
 		applicationMessage.setBody(body);
-		GuiHandler.getInstance().sendGuiMessage(applicationMessage);
+		GuiHandler.getInstance().sendExtendGuiMessage(applicationMessage);
 	}
 
 }

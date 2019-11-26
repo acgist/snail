@@ -113,7 +113,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	 * GUI注册
 	 */
 	private void onGui(ApplicationMessage message) {
-		final boolean ok = GuiHandler.getInstance().messageHandler(this);
+		final boolean ok = GuiHandler.getInstance().extendGuiMessageHandler(this);
 		if(ok) {
 			send(ApplicationMessage.response(ApplicationMessage.SUCCESS));
 		} else {

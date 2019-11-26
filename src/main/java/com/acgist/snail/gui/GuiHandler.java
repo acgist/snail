@@ -42,7 +42,7 @@ public final class GuiHandler {
 	private static final GuiHandler INSTANCE = new GuiHandler();
 	
 	/**
-	 * Alert窗口提示类型
+	 * 提示窗口类型
 	 */
 	public enum SnailAlertType {
 		
@@ -57,7 +57,10 @@ public final class GuiHandler {
 		/** 错误 */
 		ERROR;
 		
-		public AlertType getAlertType() {
+		/**
+		 * @return JavaFX提示类型
+		 */
+		public final AlertType getAlertType() {
 			switch (this) {
 			case NONE:
 				return AlertType.NONE;
@@ -77,7 +80,7 @@ public final class GuiHandler {
 	}
 	
 	/**
-	 * Notice消息提示类型
+	 * 提示消息类型
 	 */
 	public enum SnailNoticeType {
 		
@@ -90,7 +93,10 @@ public final class GuiHandler {
 		/** 错误 */
 		ERROR;
 		
-		public MessageType getMessageType() {
+		/**
+		 * @return JavaFX消息类型
+		 */
+		public final MessageType getMessageType() {
 			switch (this) {
 			case NONE:
 				return MessageType.NONE;
@@ -108,7 +114,8 @@ public final class GuiHandler {
 	}
 	
 	/**
-	 * 事件列表
+	 * <p>事件列表</p>
+	 * <p>key=事件类型；value=事件；</p>
 	 */
 	private static final Map<GuiEvent.Type, GuiEvent> EVENTS = new HashMap<>(GuiEvent.Type.values().length);
 	/**
@@ -141,13 +148,13 @@ public final class GuiHandler {
 	 */
 	private boolean gui = true;
 	/**
-	 * 阻塞锁：使用扩展GUI时，阻止程序关闭。
+	 * 阻塞锁：使用扩展GUI时阻止程序关闭
 	 */
 	private final Object lock = new Object();
 	/**
 	 * 扩展GUI消息代理
 	 */
-	private IMessageHandler messageHandler;
+	private IMessageHandler extendGuiMessageHandler;
 	
 	private GuiHandler() {
 	}
@@ -165,14 +172,16 @@ public final class GuiHandler {
 	}
 
 	/**
-	 * 获取事件
+	 * @param type 事件类型
+	 * 
+	 * @return 事件
 	 */
 	private static final GuiEvent handler(GuiEvent.Type type) {
 		return EVENTS.get(type);
 	}
 	
 	/**
-	 * 初始化
+	 * 初始化GUI
 	 */
 	public GuiHandler init(String ... args) {
 		if(args == null || args.length < 1) {
@@ -290,7 +299,7 @@ public final class GuiHandler {
 	/**
 	 * 执行事件
 	 * 
-	 * @param type 事件类型
+	 * @param type 类型
 	 * @param args 参数
 	 */
 	public GuiHandler event(GuiEvent.Type type, Object ... args) {
@@ -309,13 +318,13 @@ public final class GuiHandler {
 	/**
 	 * 注册扩展GUI消息代理
 	 */
-	public boolean messageHandler(IMessageHandler messageHandler) {
+	public boolean extendGuiMessageHandler(IMessageHandler extendGuiMessageHandler) {
 		if(this.gui) {
-			LOGGER.debug("已经启用本地GUI，忽略注册扩展GUI消息代理。");
+			LOGGER.debug("已经启用本地GUI：忽略注册扩展GUI消息代理");
 			return false;
 		} else {
 			LOGGER.debug("注册扩展GUI消息代理");
-			this.messageHandler = messageHandler;
+			this.extendGuiMessageHandler = extendGuiMessageHandler;
 			return true;
 		}
 	}
@@ -323,10 +332,10 @@ public final class GuiHandler {
 	/**
 	 * 发送扩展GUI消息
 	 */
-	public void sendGuiMessage(ApplicationMessage message) {
-		if(this.messageHandler != null && message != null) {
+	public void sendExtendGuiMessage(ApplicationMessage message) {
+		if(this.extendGuiMessageHandler != null && message != null) {
 			try {
-				this.messageHandler.send(message.toString());
+				this.extendGuiMessageHandler.send(message.toString());
 			} catch (NetException e) {
 				LOGGER.error("发送扩展GUI消息异常", e);
 			}
@@ -334,7 +343,7 @@ public final class GuiHandler {
 	}
 	
 	/**
-	 * 阻塞锁
+	 * 阻塞锁：防止系统自动关闭
 	 */
 	public void lock() {
 		synchronized (this.lock) {

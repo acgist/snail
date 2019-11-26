@@ -15,11 +15,11 @@ public abstract class Menu extends ContextMenu {
 
 	/**
 	 * <p>初始化</p>
-	 * <p>基本样式：</p>
-	 * <ul>
-	 * 	<li>边框：1</li>
-	 * 	<li>透明：0.94</li>
-	 * </ul>
+	 * <dl>
+	 * 	<dt>基本样式</dt>
+	 * 	<dd>透明：0.94</dd>
+	 * 	<dd>边框：1</dd>
+	 * </dl>
 	 */
 	protected void init() {
 		this.setOpacity(0.94D);
@@ -34,7 +34,7 @@ public abstract class Menu extends ContextMenu {
 	}
 	
 	/**
-	 * 添加菜单分割线
+	 * 添加菜单分隔
 	 */
 	protected void addSeparator() {
 		this.addMenu(new SeparatorMenuItem());
@@ -43,9 +43,9 @@ public abstract class Menu extends ContextMenu {
 	/**
 	 * 创建菜单
 	 * 
-	 * @param value 菜单名称
+	 * @param value 名称
 	 * 
-	 * @return 菜单项
+	 * @return 菜单
 	 */
 	protected MenuItem buildMenuItem(String value) {
 		return buildMenuItem(value, null);
@@ -54,10 +54,10 @@ public abstract class Menu extends ContextMenu {
 	/**
 	 * 创建菜单
 	 * 
-	 * @param value 菜单名称
-	 * @param icon 菜单图标
+	 * @param value 名称
+	 * @param icon 图标
 	 * 
-	 * @return 菜单项
+	 * @return 菜单
 	 */
 	protected MenuItem buildMenuItem(String value, String icon) {
 		if(icon == null) {

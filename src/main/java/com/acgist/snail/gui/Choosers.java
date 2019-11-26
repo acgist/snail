@@ -10,8 +10,8 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Window;
 
 /**
- * <p>目录、文件选择器</p>
- * <p>选择时默认设置为上一次选择的目录，选择后会修改上次选择目录为当前选择目录。</p>
+ * <p>文件、目录选择工具</p>
+ * <p>打开时默认设置为上次选择目录，选择后会修改上次选择目录为当前选择目录。</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -30,43 +30,43 @@ public final class Choosers {
 	 * @param window 当前窗体：模态
 	 * @param title 标题
 	 * @param description 过滤器描述
-	 * @param filters 过滤器：文件类型名称、后缀：*.torrent
+	 * @param filters 过滤器类型（文件类型后缀）：*.torrent
 	 * 
-	 * @return 文件
+	 * @return 选择文件
 	 */
 	public static final File chooseFile(Window window, String title, String description, String ... filters) {
 		final FileChooser chooser = new FileChooser();
 		chooser.setTitle(title);
-		lastPath(chooser);
+		lastPath(chooser); // 设置上次选择目录
 		chooser.getExtensionFilters().add(new ExtensionFilter(description, filters));
 		final File file = chooser.showOpenDialog(window);
-		if (file != null) { // 更新最后选择目录
+		if (file != null) { // 更新上次选择目录
 			DownloadConfig.setLastPath(file.getParent());
 		}
 		return file;
 	}
 	
 	/**
-	 * 选择文件目录
+	 * 选择目录
 	 * 
 	 * @param window 当前窗体：模态
 	 * @param title 标题
 	 * 
-	 * @return 文件目录
+	 * @return 选择目录
 	 */
 	public static final File chooseDirectory(Window window, String title) {
 		final DirectoryChooser chooser = new DirectoryChooser();
 		chooser.setTitle(title);
-		lastPath(chooser);
+		lastPath(chooser); // 设置上次选择目录
 		final File file = chooser.showDialog(window);
-		if (file != null) { // 更新最后选择目录
+		if (file != null) { // 更新上次选择目录
 			DownloadConfig.setLastPath(file.getPath());
 		}
 		return file;
 	}
 	
 	/**
-	 * 最后一次选择目录
+	 * 设置上次选择目录
 	 */
 	private static final void lastPath(FileChooser chooser) {
 		final File file = DownloadConfig.getLastPathFile();
@@ -76,7 +76,7 @@ public final class Choosers {
 	}
 	
 	/**
-	 * 最后一次选择目录
+	 * 设置上次选择目录
 	 */
 	private static final void lastPath(DirectoryChooser chooser) {
 		final File file = DownloadConfig.getLastPathFile();
@@ -84,5 +84,5 @@ public final class Choosers {
 			chooser.setInitialDirectory(file);
 		}
 	}
-	
+
 }

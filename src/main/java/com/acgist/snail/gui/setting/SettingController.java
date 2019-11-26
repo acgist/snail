@@ -69,7 +69,7 @@ public final class SettingController extends Controller implements Initializable
 	 */
 	@FXML
 	public void handlePathAction(ActionEvent event) {
-		final File file = Choosers.chooseDirectory(SettingWindow.getInstance().stage(), "下载保存目录");
+		final File file = Choosers.chooseDirectory(SettingWindow.getInstance().stage(), "下载目录");
 		if (file != null) {
 			final String path = file.getPath();
 			DownloadConfig.setPath(path);
@@ -100,27 +100,33 @@ public final class SettingController extends Controller implements Initializable
 	 * 初始化控件
 	 */
 	private void initControl() {
-		// 初始化下载地址选择
+		// 初始化下载目录
 		this.pathValue.setCursor(Cursor.HAND);
 		this.pathValue.setOnMouseClicked(this.openDownloadPath);
-		// 初始化下载大小设置
+		// 初始化任务数量
 		this.size.valueProperty().addListener(this.sizeListener);
 		this.size.setOnMouseReleased(this.sizeReleaseAction);
-		// 初始化下载速度设置
+		// 初始化下载速度
 		this.buffer.valueProperty().addListener(this.bufferListener);
 		this.buffer.setOnMouseReleased(this.bufferReleaseAction);
 		this.buffer.setLabelFormatter(this.bufferFormatter);
-		// 初始化下载磁盘缓存设置
+		// 初始化磁盘缓存
 		this.memoryBuffer.valueProperty().addListener(this.memoryBufferListener);
 		this.memoryBuffer.setOnMouseReleased(this.memoryBufferReleaseAction);
 		this.memoryBuffer.setLabelFormatter(this.memoryBufferFormatter);
 	}
 	
+	/**
+	 * 打开下载目录
+	 */
 	private EventHandler<MouseEvent> openDownloadPath = (event) -> {
 		File open = new File(DownloadConfig.getPath());
 		FileUtils.openInDesktop(open);
 	};
 
+	/**
+	 * 下载任务数量监听
+	 */
 	private ChangeListener<? super Number> sizeListener = (obs, oldVal, newVal) -> {
 		int value = newVal.intValue(); // 设置整数个任务
 		if(value == 0) { // 不能设置：0
@@ -129,26 +135,38 @@ public final class SettingController extends Controller implements Initializable
 		this.size.setValue(value);
 	};
 	
+	/**
+	 * 下载任务数量保存
+	 */
 	private EventHandler<MouseEvent> sizeReleaseAction = (event) -> {
 		final Double value = this.size.getValue();
 		DownloadConfig.setSize(value.intValue());
 	};
 	
+	/**
+	 * 下载速度监听
+	 */
 	private ChangeListener<? super Number> bufferListener = (obs, oldVal, newVal) -> {
 		int value = newVal.intValue();
-		if(value > STEP_WIDTH) { // 超过512KB时设置为512KB整数倍
-			value = value / STEP_WIDTH * STEP_WIDTH;
-		} else if(value < SystemConfig.MIN_BUFFER_KB) { // 最小下载速度
+		if(value < SystemConfig.MIN_BUFFER_KB) { // 最小下载速度
 			value = SystemConfig.MIN_BUFFER_KB;
+		} else if(value > STEP_WIDTH) { // 超过512KB时设置为512KB整数倍
+			value = value / STEP_WIDTH * STEP_WIDTH;
 		}
 		this.buffer.setValue(value);
 	};
 	
+	/**
+	 * 下载速度保存
+	 */
 	private EventHandler<MouseEvent> bufferReleaseAction = (event) -> {
 		final Double value = this.buffer.getValue();
 		DownloadConfig.setBuffer(value.intValue());
 	};
 	
+	/**
+	 * 下载速度格式
+	 */
 	private StringConverter<Double> bufferFormatter = new StringConverter<Double>() {
 		@Override
 		public String toString(Double value) {
@@ -160,16 +178,25 @@ public final class SettingController extends Controller implements Initializable
 		}
 	};
 	
+	/**
+	 * 磁盘缓存监听
+	 */
 	private ChangeListener<? super Number> memoryBufferListener = (obs, oldVal, newVal) -> {
 		final int value = newVal.intValue();
 		this.memoryBuffer.setValue(value);
 	};
 	
+	/**
+	 * 磁盘缓存保存
+	 */
 	private EventHandler<MouseEvent> memoryBufferReleaseAction = (event) -> {
 		final Double value = this.memoryBuffer.getValue();
 		DownloadConfig.setMemoryBuffer(value.intValue());
 	};
 	
+	/**
+	 * 磁盘缓存格式
+	 */
 	private StringConverter<Double> memoryBufferFormatter = new StringConverter<Double>() {
 		@Override
 		public String toString(Double value) {

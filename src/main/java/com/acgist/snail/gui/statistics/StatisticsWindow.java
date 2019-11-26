@@ -38,7 +38,7 @@ public final class StatisticsWindow extends Window<StatisticsController> {
 		this.buildWindow(stage, "统计", 800, 600, "/fxml/statistics.fxml", Modality.APPLICATION_MODAL);
 		disableResize();
 		dialogWindow();
-		this.release();
+		windowHidden();
 	}
 
 	/**
@@ -50,9 +50,9 @@ public final class StatisticsWindow extends Window<StatisticsController> {
 	}
 	
 	/**
-	 * 窗口隐藏时释放资源
+	 * 窗口隐藏：释放资源
 	 */
-	private void release() {
+	private void windowHidden() {
 		this.stage.addEventFilter(WindowEvent.WINDOW_HIDDEN, (event) -> {
 			this.controller.release();
 		});

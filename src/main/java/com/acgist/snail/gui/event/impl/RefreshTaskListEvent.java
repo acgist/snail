@@ -31,7 +31,7 @@ public final class RefreshTaskListEvent extends GuiEvent {
 	@Override
 	protected void executeExtend(Object ... args) {
 		final ApplicationMessage message = ApplicationMessage.message(ApplicationMessage.Type.REFRESH);
-		GuiHandler.getInstance().sendGuiMessage(message);
+		GuiHandler.getInstance().sendExtendGuiMessage(message);
 	}
 
 }
