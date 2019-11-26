@@ -8,6 +8,9 @@ import com.acgist.snail.system.exception.NetException;
 /**
  * <p>消息处理器适配器</p>
  * 
+ * @param <T> 输入类型
+ * @param <X> 输出类型
+ * 
  * @author acgist
  * @since 1.1.1
  */
@@ -39,7 +42,7 @@ public abstract class MessageCodec<T, X> implements IMessageCodec<T> {
 	
 	/**
 	 * <p>消息解码</p>
-	 * <p>实现必须执行{@link #doNext(Object, InetSocketAddress, boolean)}方法</p>
+	 * <p>必须调用{@link #doNext(Object, InetSocketAddress, boolean)}</p>
 	 * 
 	 * @param message 消息
 	 * @param address 地址
@@ -55,6 +58,8 @@ public abstract class MessageCodec<T, X> implements IMessageCodec<T> {
 	 * @param message 消息
 	 * @param address 地址
 	 * @param haveAddress 是否含有地址
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	protected void doNext(X message, InetSocketAddress address, boolean haveAddress) throws NetException {
 		if(haveAddress) {
@@ -84,7 +89,8 @@ public abstract class MessageCodec<T, X> implements IMessageCodec<T> {
 	
 	/**
 	 * {@inheritDoc}
-	 * <p>消息最终处理请实现{@link IMessageCodec}接口</p>
+	 * 
+	 * <p>消息最终处理器请实现{@linkplain IMessageCodec 消息处理器接口}</p>
 	 */
 	@Override
 	@Deprecated
@@ -94,7 +100,8 @@ public abstract class MessageCodec<T, X> implements IMessageCodec<T> {
 
 	/**
 	 * {@inheritDoc}
-	 * <p>消息最终处理请实现{@link IMessageCodec}接口</p>
+	 * 
+	 * <p>消息最终处理器请实现{@linkplain IMessageCodec 消息处理器接口}</p>
 	 */
 	@Override
 	@Deprecated

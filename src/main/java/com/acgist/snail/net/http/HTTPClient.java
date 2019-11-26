@@ -30,7 +30,8 @@ import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.UrlUtils;
 
 /**
- * HTTP客户端
+ * <p>HTTP客户端</p>
+ * <p>使用JDK内置HTTP客户端</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -40,23 +41,44 @@ public final class HTTPClient {
 	private static final Logger LOGGER = LoggerFactory.getLogger(HTTPClient.class);
 	
 	/**
-	 * 状态码：200：OK
+	 * <p>HTTP状态码</p>
+	 * <p>协议链接：https://www.ietf.org/rfc/rfc2616</p>
 	 */
-	public static final int HTTP_OK = 200;
+	public enum StatusCode {
+		
+		/** 成功 */
+		OK(									200),
+		/** 断点续传 */
+		PARTIAL_CONTENT(					206),
+		/** 无法满足请求范围 */
+		REQUESTED_RANGE_NOT_SATISFIABLE(	416),
+		/** 服务器错误 */
+		INTERNAL_SERVER_ERROR(				500);
+		
+		/**
+		 * 状态码
+		 */
+		private final int code;
+		
+		private StatusCode(int code) {
+			this.code = code;
+		}
+		
+		/**
+		 * 判断状态码是否相等
+		 * 
+		 * @param code 状态码
+		 * 
+		 * @return true-相等；false-不相等；
+		 */
+		public final boolean equal(int code) {
+			return this.code == code;
+		}
+		
+	}
+	
 	/**
-	 * 状态码：206：断点续传
-	 */
-	public static final int HTTP_PARTIAL_CONTENT = 206;
-	/**
-	 * 状态码：416：无法满足请求范围
-	 */
-	public static final int HTTP_REQUESTED_RANGE_NOT_SATISFIABLE= 416;
-	/**
-	 * 状态码：500：服务器错误
-	 */
-	public static final int HTTP_INTERNAL_SERVER_ERROR = 500;
-	/**
-	 * 客户端（浏览器）信息
+	 * HTTP客户端信息（User-Agent）
 	 */
 	private static final String USER_AGENT;
 	/**
@@ -65,12 +87,11 @@ public final class HTTPClient {
 	private static final ExecutorService EXECUTOR = SystemThreadContext.newExecutor(2, 10, 100, 60L, SystemThreadContext.SNAIL_THREAD_HTTP);
 	
 	static {
-		// 客户端（浏览器）信息
 		final StringBuilder userAgentBuilder = new StringBuilder();
 		userAgentBuilder
 			.append("Mozilla/5.0")
 			.append(" ")
-			.append("(compatible; ")
+			.append("(")
 			.append(SystemConfig.getNameEn())
 			.append("/")
 			.append(SystemConfig.getVersion())
@@ -78,7 +99,7 @@ public final class HTTPClient {
 			.append(SystemConfig.getSupport())
 			.append(")");
 		USER_AGENT = userAgentBuilder.toString();
-		LOGGER.debug("User-Agent：{}", USER_AGENT);
+		LOGGER.debug("HTTP客户端信息（User-Agent）：{}", USER_AGENT);
 	}
 	
 	/**
@@ -86,7 +107,7 @@ public final class HTTPClient {
 	 */
 	private final HttpClient client;
 	/**
-	 * Request Builder
+	 * 请求Builder
 	 */
 	private final Builder builder;
 	
@@ -97,6 +118,8 @@ public final class HTTPClient {
 	
 	/**
 	 * 新建客户端
+	 * 
+	 * @see {@link #newInstance(String, int, int)}
 	 */
 	public static final HTTPClient newInstance(String url) {
 		return newInstance(url, SystemConfig.CONNECT_TIMEOUT, SystemConfig.RECEIVE_TIMEOUT);
@@ -119,7 +142,7 @@ public final class HTTPClient {
 	}
 	
 	/**
-	 * 获取HttpClient
+	 * @return 原生HttpClient
 	 */
 	public HttpClient client() {
 		return this.client;
@@ -139,7 +162,13 @@ public final class HTTPClient {
 	}
 
 	/**
-	 * GET请求
+	 * 执行GET请求
+	 * 
+	 * @param handler 响应体处理器
+	 * 
+	 * @return 响应
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	public <T> HttpResponse<T> get(HttpResponse.BodyHandler<T> handler) throws NetException {
 		final var request = this.builder
@@ -149,7 +178,14 @@ public final class HTTPClient {
 	}
 	
 	/**
-	 * POST请求
+	 * 执行POST请求
+	 * 
+	 * @param data 请求数据
+	 * @param handler 响应体处理器
+	 * 
+	 * @return 响应
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	public <T> HttpResponse<T> post(String data, HttpResponse.BodyHandler<T> handler) throws NetException {
 		if(StringUtils.isEmpty(data)) {
@@ -163,7 +199,14 @@ public final class HTTPClient {
 	}
 	
 	/**
-	 * POST表单请求
+	 * 执行POST表单请求
+	 * 
+	 * @param data 请求表单数据
+	 * @param handler 响应体处理器
+	 * 
+	 * @return 响应
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	public <T> HttpResponse<T> postForm(Map<String, String> data, HttpResponse.BodyHandler<T> handler) throws NetException {
 		this.builder.header("Content-type", "application/x-www-form-urlencoded;charset=" + SystemConfig.DEFAULT_CHARSET);
@@ -174,7 +217,11 @@ public final class HTTPClient {
 	}
 	
 	/**
-	 * HEAD请求
+	 * 执行HEAD请求
+	 * 
+	 * @return 响应头
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	public HttpHeaderWrapper head() throws NetException {
 		final var request = this.builder
@@ -190,6 +237,13 @@ public final class HTTPClient {
 	
 	/**
 	 * 执行请求
+	 * 
+	 * @param request 请求
+	 * @param handler 响应体处理器
+	 * 
+	 * @return 响应
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	public <T> HttpResponse<T> request(HttpRequest request, HttpResponse.BodyHandler<T> handler) throws NetException {
 		if(this.client == null || request == null) {
@@ -207,6 +261,11 @@ public final class HTTPClient {
 	
 	/**
 	 * 执行异步请求
+	 * 
+	 * @param request 请求
+	 * @param handler 响应体处理器
+	 * 
+	 * @return 响应线程
 	 */
 	public <T> CompletableFuture<HttpResponse<T>> requestAsync(HttpRequest request, HttpResponse.BodyHandler<T> handler) {
 		if(this.client == null || request == null) {
@@ -232,6 +291,8 @@ public final class HTTPClient {
 	
 	/**
 	 * 执行GET请求
+	 * 
+	 * @see {@link #get(String, java.net.http.HttpResponse.BodyHandler, int, int)}
 	 */
 	public static final <T> HttpResponse<T> get(String url, HttpResponse.BodyHandler<T> handler) throws NetException {
 		return get(url, handler, SystemConfig.CONNECT_TIMEOUT, SystemConfig.RECEIVE_TIMEOUT);
@@ -241,11 +302,13 @@ public final class HTTPClient {
 	 * 执行GET请求
 	 * 
 	 * @param url 请求地址
-	 * @param handler 响应处理器
+	 * @param handler 响应体处理器
 	 * @param connectTimeout 超时时间（连接）
 	 * @param receiveTimeout 超时时间（响应）
 	 * 
 	 * @return 响应
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	public static final <T> HttpResponse<T> get(String url, HttpResponse.BodyHandler<T> handler, int connectTimeout, int receiveTimeout) throws NetException {
 		final HTTPClient client = newInstance(url, connectTimeout, receiveTimeout);
@@ -253,43 +316,47 @@ public final class HTTPClient {
 	}
 	
 	/**
-	 * <p>成功：{@link #HTTP_OK}</p>
+	 * 成功：{@link StatusCode#OK}
 	 */
 	public static final <T> boolean ok(HttpResponse<T> response) {
-		return statusCode(response, HTTP_OK);
+		return statusCode(response, StatusCode.OK);
 	}
 	
 	/**
-	 * <p>断点续传：{@link #HTTP_PARTIAL_CONTENT}</p>
+	 * 断点续传：{@link StatusCode#PARTIAL_CONTENT}
 	 */
 	public static final <T> boolean partialContent(HttpResponse<T> response) {
-		return statusCode(response, HTTP_PARTIAL_CONTENT);
+		return statusCode(response, StatusCode.PARTIAL_CONTENT);
 	}
 
 	/**
-	 * <p>无法满足请求范围：{@link #HTTP_REQUESTED_RANGE_NOT_SATISFIABLE}</p>
+	 * 无法满足请求范围：{@link StatusCode#REQUESTED_RANGE_NOT_SATISFIABLE}
 	 */
 	public static final <T> boolean requestedRangeNotSatisfiable(HttpResponse<T> response) {
-		return statusCode(response, HTTP_REQUESTED_RANGE_NOT_SATISFIABLE);
+		return statusCode(response, StatusCode.REQUESTED_RANGE_NOT_SATISFIABLE);
 	}
 	
 	/**
-	 * <p>服务器错误：{@link #HTTP_INTERNAL_SERVER_ERROR}</p>
+	 * 服务器错误：{@link StatusCode#REQUESTED_RANGE_NOT_SATISFIABLE}
 	 */
 	public static final <T> boolean internalServerError(HttpResponse<T> response) {
-		return statusCode(response, HTTP_INTERNAL_SERVER_ERROR);
+		return statusCode(response, StatusCode.INTERNAL_SERVER_ERROR);
 	}
 	
 	/**
 	 * 验证响应状态码
 	 */
-	private static final <T> boolean statusCode(HttpResponse<T> response, int statusCode) {
-		return response != null && response.statusCode() == statusCode;
+	private static final <T> boolean statusCode(HttpResponse<T> response, StatusCode statusCode) {
+		return response != null && statusCode.equal(response.statusCode());
 	}
 	
 	/**
 	 * <p>新建原生HTTP客户端</p>
 	 * <p>设置sslContext需要同时设置sslParameters才有效</p>
+	 * 
+	 * @param timeout 超时时间（连接）
+	 * 
+	 * @return 原生HTTP客户端
 	 */
 	public static final HttpClient newClient(int timeout) {
 		return HttpClient
@@ -299,8 +366,8 @@ public final class HTTPClient {
 			.followRedirects(Redirect.NORMAL) // 重定向：正常
 //			.followRedirects(Redirect.ALWAYS) // 重定向：全部
 //			.proxy(ProxySelector.getDefault()) // 代理
-//			.sslContext(newSSLContext()) // SSL上下文，默认：SSLContext.getDefault()
-			// SSL加密套件：ECDH不推荐使用，RSA和ECDSA签名根据证书类型选择。
+//			.sslContext(newSSLContext()) // SSL上下文：SSLContext.getDefault()
+			// SSL加密套件：RSA和ECDSA签名根据证书类型选择（ECDH不推荐使用）
 //			.sslParameters(new SSLParameters(new String[] {
 //				"TLS_AES_128_GCM_SHA256",
 //				"TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
@@ -351,7 +418,12 @@ public final class HTTPClient {
 //	}
 
 	/**
-	 * 新建请求Builder
+	 * <p>新建请求Builder</p>
+	 * 
+	 * @param url 请求地址
+	 * @param timeout 超时时间（响应）
+	 * 
+	 * @return 请求Builder
 	 */
 	private static final Builder newBuilder(String url, int timeout) {
 		return HttpRequest

@@ -92,7 +92,7 @@ public interface IMessageHandler {
 	InetSocketAddress remoteSocketAddress();
 	
 	/**
-	 * 关闭
+	 * 关闭资源
 	 */
 	void close();
 	

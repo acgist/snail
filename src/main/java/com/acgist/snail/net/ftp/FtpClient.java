@@ -15,7 +15,7 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * <p>FTP客户端</p>
  * <p>默认编码：GBK</p>
- * <p>连接登陆成功后会发送FEAT指令，如果支持UTF8指令，切换UTF-8编码。</p>
+ * <p>登陆成功后会发送FEAT指令，如果服务器支持UTF8指令，使用UTF-8编码。</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -31,25 +31,26 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	/**
 	 * 服务器地址
 	 */
-	private String host;
+	private final String host;
 	/**
 	 * 服务器端口
 	 */
-	private int port;
+	private final int port;
 	/**
 	 * 用户账号
 	 */
-	private String user;
+	private final String user;
 	/**
 	 * 用户密码
 	 */
-	private String password;
+	private final String password;
 	/**
 	 * 文件路径
 	 */
-	private String filePath;
+	private final String filePath;
 	/**
-	 * 编码：默认GBK
+	 * <p>编码</p>
+	 * <p>默认编码：GBK</p>
 	 */
 	private String charset = SystemConfig.CHARSET_GBK;
 
@@ -71,7 +72,7 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 		this.connect = connect(this.host, this.port);
 		this.handler.lock(); // 锁定：等待FTP欢迎消息
 		if(this.connect) {
-			this.login();
+			this.login(); // 登陆
 			if(this.handler.login()) {
 				this.charset();
 			} else {
@@ -83,7 +84,7 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	
 	/**
 	 * <p>开始下载</p>
-	 * <p>默认从头开始下载</p>
+	 * <p>默认重新下载（不用断点续传）</p>
 	 * 
 	 * @return 文件流
 	 */
@@ -106,12 +107,12 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 			changeMode();
 			command("TYPE I"); // 设置数据模式：二进制
 			if(downloadSize != null && downloadSize > 0L) {
-				command("REST " + downloadSize);
+				command("REST " + downloadSize); // 断点续传位置
 			}
-			command("RETR " + this.filePath);
-			final var input = this.handler.inputStream();
+			command("RETR " + this.filePath); // 下载文件
+			final var input = this.handler.inputStream(); // 文件流
 			if(input == null) {
-				throw new NetException(this.failMessage("获取FTP文件流失败"));
+				throw new NetException(this.failMessage("打开FTP文件流失败"));
 			}
 			return input;
 		}
@@ -127,12 +128,22 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 		synchronized (this) {
 			this.changeMode();
 			command("TYPE A"); // 切换数据模式：ASCII
-			command("LIST " + this.filePath);
+			command("LIST " + this.filePath); // 列出文件信息
 			final InputStream inputStream = this.handler.inputStream();
 			final String data = StringUtils.ofInputStream(inputStream, this.charset);
 			if(data == null) {
 				throw new NetException(this.failMessage("未知错误"));
 			}
+			/*
+			 * -rwx------ 1 user group 989344 Jul 01 2020 SnailLauncher.exe
+			 * 第一部分：-rwx------：第一个字符：d表示目录、-表示文件，后面字符：r表示可读、w表示可写、x表示可执行
+			 * 第二部分：1：未知
+			 * 第三部分：user：所属用户
+			 * 第四部分：group：所属分组
+			 * 第五部分：989344：文件大小
+			 * 第六部分：Jul 01 2020：创建时间
+			 * 第七部分：SnailLauncher.exe：文件名称
+			 */
 			final Optional<String> optional = Stream.of(data.split(" "))
 				.map(String::trim)
 				.filter(StringUtils::isNotEmpty)
@@ -141,12 +152,14 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 			if(optional.isPresent()) {
 				return Long.valueOf(optional.get());
 			}
-			throw new NetException("获取FTP文件大小失败");
+			throw new NetException("读取FTP文件大小失败");
 		}
 	}
 	
 	/**
-	 * 关闭资源
+	 * {@inheritDoc}
+	 * 
+	 * <p>发送退出命令</p>
 	 */
 	@Override
 	public void close() {
@@ -161,6 +174,9 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	 * @return 是否支持断点续传
 	 */
 	public boolean range() {
+		if(!this.connect) {
+			return false;
+		}
 		return this.handler.range();
 	}
 	

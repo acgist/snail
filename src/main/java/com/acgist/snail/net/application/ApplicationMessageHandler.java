@@ -64,11 +64,11 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	 * <p>处理消息</p>
 	 */
 	private void execute(ApplicationMessage message) {
-		LOGGER.debug("处理系统消息：{}", message);
 		if(message.getType() == null) {
 			LOGGER.warn("系统消息错误（类型不支持）：{}", message.getType());
 			return;
 		}
+		LOGGER.debug("处理系统消息：{}", message);
 		switch (message.getType()) {
 		case GUI:
 			onGui(message);
@@ -110,7 +110,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	}
 	
 	/**
-	 * GUI注册
+	 * 注册扩展GUI
 	 */
 	private void onGui(ApplicationMessage message) {
 		final boolean ok = GuiHandler.getInstance().extendGuiMessageHandler(this);
@@ -155,7 +155,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	 * <dl>
 	 * 	<dt>body：Map（B编码）</dt>
 	 * 	<dd>url：下载链接</dd>
-	 * 	<dd>files：种子文件选择列表（B编码），每条文件包含路径：snail/video/demo.mp4。</dd>
+	 * 	<dd>files：种子文件选择列表（文件包含路径：snail/video/demo.mp4）</dd>
 	 * </dl>
 	 * 
 	 * @since 1.1.1
@@ -175,7 +175,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 			DownloaderManager.getInstance().newTask(url); // 开始下载任务
 			send(ApplicationMessage.response(ApplicationMessage.SUCCESS));
 		} catch (NetException | DownloadException e) {
-			LOGGER.debug("新建任务异常：{}", body, e);
+			LOGGER.debug("新建下载任务异常：{}", body, e);
 			send(ApplicationMessage.response(e.getMessage()));
 		}
 	}
@@ -194,7 +194,8 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	}
 
 	/**
-	 * 开始任务：body=任务ID
+	 * <p>开始任务</p>
+	 * <p>body：任务ID</p>
 	 * 
 	 * @since 1.1.1
 	 */
@@ -213,7 +214,8 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	}
 	
 	/**
-	 * 暂停任务：body=任务ID
+	 * <p>暂停任务</p>
+	 * <p>body：任务ID</p>
 	 * 
 	 * @since 1.1.1
 	 */
@@ -228,7 +230,8 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	}
 	
 	/**
-	 * 删除任务：body=任务ID
+	 * <p>删除任务</p>
+	 * <p>body：任务ID</p>
 	 * 
 	 * @since 1.1.1
 	 */

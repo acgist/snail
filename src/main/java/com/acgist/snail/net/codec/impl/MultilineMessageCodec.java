@@ -9,7 +9,7 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>多行消息处理器</p>
- * <p>必须配合行消息处理器一起使用</p>
+ * <p>必须配合{@linkplain LineMessageCodec 行消息处理器}一起使用</p>
  * 
  * @author acgist
  * @since 1.1.1

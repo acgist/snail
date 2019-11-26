@@ -11,7 +11,6 @@ import com.acgist.snail.utils.NetUtils;
 
 /**
  * <p>系统客户端</p>
- * <p>启动检测：如果已经启动实例，唤醒已启动的窗口。</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -56,7 +55,7 @@ public final class ApplicationClient extends TcpClient<ApplicationMessageHandler
 				client.send(ApplicationMessage.message(ApplicationMessage.Type.CLOSE));
 			}
 		} catch (Exception e) {
-			LOGGER.error("通知主窗口异常", e);
+			LOGGER.error("唤起主窗口异常", e);
 		} finally {
 			client.close();
 		}

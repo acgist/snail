@@ -8,9 +8,9 @@ import com.acgist.snail.system.config.StunConfig;
 import com.acgist.snail.utils.NetUtils;
 
 /**
- * Stun客户端
+ * <p>Stun客户端</p>
  * 
- * <p>注：简单的STUN客户端，并没有实现所有的功能。</p>
+ * <p>注：简单的STUN客户端（没有实现所有功能）</p>
  * 
  * @author acgist
  * @since 1.2.0
@@ -39,7 +39,7 @@ public final class StunClient extends UdpClient<StunMessageHandler> {
 	}
 
 	/**
-	 * 获取映射信息
+	 * 发送映射消息
 	 */
 	public void mappedAddress() {
 		this.handler.mappedAddress();

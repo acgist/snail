@@ -8,7 +8,7 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>FtpClient Builder</p>
- * <p>根据url创建FTP客户端</p>
+ * <p>使用FTP链接创建FTP客户端</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -68,7 +68,7 @@ public final class FtpClientBuilder {
 	}
 	
 	/**
-	 * 解析URL：地址、端口、用户、文件等信息。
+	 * 解析URL：地址、端口、用户、文件等信息
 	 */
 	private void decodeUrl() {
 		final URI uri = URI.create(this.url);
@@ -84,7 +84,7 @@ public final class FtpClientBuilder {
 	}
 
 	/**
-	 * 解析用户信息
+	 * 解析用户授权信息
 	 */
 	private void decodeUserInfo(String userInfo) {
 		if(StringUtils.isEmpty(userInfo)) {
@@ -94,6 +94,7 @@ public final class FtpClientBuilder {
 			final String[] userInfos = userInfo.split(":");
 			if(userInfos.length == 1) {
 				this.user = userInfos[0];
+				this.password = SystemConfig.getFtpPassword();
 			} else if(userInfos.length == 2) {
 				this.user = userInfos[0];
 				this.password = userInfos[1];

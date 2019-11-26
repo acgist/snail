@@ -25,35 +25,36 @@ import com.acgist.snail.utils.NumberUtils;
  * 
  * <p>STUN消息头格式</p>
  * <pre>
-   0                   1                   2                   3
-   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-  |0 0|     STUN Message Type     |         Message Length        |
-  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-  |                         Magic Cookie                          |
-  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-  |                     Transaction ID (96 bits)                  |
-  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *  0                   1                   2                   3
+ *  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+ * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ * |0 0|     STUN Message Type     |         Message Length        |
+ * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ * |                         Magic Cookie                          |
+ * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ * |                     Transaction ID (96 bits)                  |
+ * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  * </pre>
+ * 
  * <p>STUN消息类型（Message Type）格式</p>
  * <pre>
-    0                 1
-    2  3  4 5 6 7 8 9 0 1 2 3 4 5
-
-   +--+--+-+-+-+-+-+-+-+-+-+-+-+-+
-   |M |M |M|M|M|C|M|M|M|C|M|M|M|M|
-   |11|10|9|8|7|1|6|5|4|0|3|2|1|0|
-   +--+--+-+-+-+-+-+-+-+-+-+-+-+-+
+ *   0                 1
+ *   2  3  4 5 6 7 8 9 0 1 2 3 4 5
+ *  +--+--+-+-+-+-+-+-+-+-+-+-+-+-+
+ *  |M |M |M|M|M|C|M|M|M|C|M|M|M|M|
+ *  |11|10|9|8|7|1|6|5|4|0|3|2|1|0|
+ *  +--+--+-+-+-+-+-+-+-+-+-+-+-+-+
  * </pre>
+ * 
  * <p>STUN属性格式</p>
  * <pre>
-   0                   1                   2                   3
-   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-  |         Type                  |            Length             |
-  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-  |                         Value (variable)                ....
-  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *  0                   1                   2                   3
+ *  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+ * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ * |         Type                  |            Length             |
+ * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ * |                         Value (variable)                ....
+ * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  * </pre>
  * 
  * @author acgist
@@ -64,14 +65,15 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(StunMessageHandler.class);
 	
 	/**
-	 * 属性对齐：STUN属性32位（4字节）对齐，不足时填充。
+	 * <p>属性对齐：32位（4字节）对齐</p>
+	 * <p>不足填充：0</p>
 	 */
 	private static final short STUN_ATTRIBUTE_PADDING_LENGTH = 4;
 
 	/**
-	 * <p>只处理响应消息，不处理请求和指示消息。</p>
-	 * 
 	 * {@inheritDoc}
+	 * 
+	 * <p>只处理响应消息（不处理请求和指示消息）</p>
 	 */
 	@Override
 	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException {
@@ -105,7 +107,8 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	}
 	
 	/**
-	 * 循环处理响应属性
+	 * <p>循环处理响应属性</p>
+	 * <p>注：属性可能同时返回多条</p>
 	 */
 	private void loopResponseAttribute(ByteBuffer buffer) throws PacketSizeException {
 		while(buffer.hasRemaining()) {
@@ -119,12 +122,12 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	private void onResponseAttribute(ByteBuffer buffer) throws PacketSizeException {
 		if(buffer.remaining() < 4) {
 			final short length = (short) buffer.remaining();
-			final ByteBuffer message = readMessage(buffer, length);
+			final ByteBuffer message = readResponseAttribute(buffer, length);
 			LOGGER.error("STUN消息-属性错误（长度）：{}-{}", length, new String(message.array()));
 			return;
 		}
 		final short typeId = buffer.getShort();
-		// 4字节对齐
+		// 4字节对齐长度
 		final short length = (short) (NumberUtils.ceilDiv(buffer.getShort(), STUN_ATTRIBUTE_PADDING_LENGTH) * STUN_ATTRIBUTE_PADDING_LENGTH);
 		if(length > SystemConfig.MAX_NET_BUFFER_LENGTH) {
 			throw new PacketSizeException(length);
@@ -135,12 +138,12 @@ public final class StunMessageHandler extends UdpMessageHandler {
 		}
 		final var attributeType = StunConfig.AttributeType.valueOf(typeId);
 		if(attributeType == null) {
-			final ByteBuffer message = readMessage(buffer, length);
+			final ByteBuffer message = readResponseAttribute(buffer, length);
 			LOGGER.warn("STUN消息-属性错误（类型不支持）：{}-{}", typeId, new String(message.array()));
 			return;
 		}
 		LOGGER.debug("STUN消息-属性：{}-{}", attributeType, length);
-		final ByteBuffer message = readMessage(buffer, length);
+		final ByteBuffer message = readResponseAttribute(buffer, length);
 		switch (attributeType) {
 		case MAPPED_ADDRESS:
 			mappedAddress(message);
@@ -158,9 +161,9 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	}
 	
 	/**
-	 * 读取属性消息
+	 * 读取属性
 	 */
-	private ByteBuffer readMessage(ByteBuffer buffer, short length) {
+	private ByteBuffer readResponseAttribute(ByteBuffer buffer, short length) {
 		final byte[] message = new byte[length];
 		buffer.get(message);
 		return ByteBuffer.wrap(message);
@@ -177,13 +180,13 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	 * 处理{@link AttributeType#MAPPED_ADDRESS}消息
 	 * 
 	 * <pre>
-       0                   1                   2                   3
-       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-      |0 0 0 0 0 0 0 0|    Family     |           Port                |
-      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-      |                 Address (32 bits or 128 bits)                 |
-      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     *  0                   1                   2                   3
+     *  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+     * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     * |0 0 0 0 0 0 0 0|    Family     |           Port                |
+     * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     * |                 Address (32 bits or 128 bits)                 |
+     * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 	 * </pre>
 	 * 
 	 * @param buffer 消息
@@ -211,13 +214,13 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	 * 处理{@link AttributeType#XOR_MAPPED_ADDRESS}消息
 	 * 
 	 * <pre>
-      0                   1                   2                   3
-      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-     |x x x x x x x x|    Family     |         X-Port                |
-     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-     |                X-Address (Variable)
-     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     *  0                   1                   2                   3
+     *  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+     * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     * |x x x x x x x x|    Family     |         X-Port                |
+     * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     * |                X-Address (Variable)
+     * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 	 * </pre>
 	 * 
 	 * @param buffer 消息
@@ -247,13 +250,13 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	 * 处理{@link AttributeType#ERROR_CODE}消息
 	 * 
 	 * <pre>
-       0                   1                   2                   3
-       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-      |           Reserved, should be 0         |Class|     Number    |
-      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-      |      Reason Phrase (variable)                                ..
-      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     *  0                   1                   2                   3
+     *  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+     * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     * |           Reserved, should be 0         |Class|     Number    |
+     * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     * |      Reason Phrase (variable)                                ..
+     * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 	 * </pre>
 	 * 
 	 * @param buffer 消息
