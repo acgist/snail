@@ -30,7 +30,9 @@ public final class StunService {
 	}
 
 	/**
-	 * 映射
+	 * <p>端口映射</p>
+	 * <p>如果UPNP端口映射失败：使用STUN映射</p>
+	 * <p>如果UPNP端口映射成功：不使用STUN映射</p>
 	 */
 	public void mapping() {
 		if(UpnpService.getInstance().useable()) {
@@ -40,29 +42,30 @@ public final class StunService {
 			if(address == null) {
 				return;
 			}
-			LOGGER.debug("STUN获取映射信息：{}", address);
+			LOGGER.debug("STUN服务器地址：{}", address);
 			final var client = StunClient.newInstance(address);
 			client.mappedAddress();
 		}
 	}
 	
 	/**
-	 * 设置映射信息
+	 * 设置端口映射信息
 	 * 
 	 * @param externalIpAddress 外网IP地址
-	 * @param port 端口号
+	 * @param port 外网端口
 	 */
 	public void mapping(String externalIpAddress, int port) {
-		LOGGER.debug("设置NAT穿透");
+		LOGGER.debug("设置STUN端口映射：{}-{}", externalIpAddress, port);
 		SystemConfig.setExternalIpAddress(externalIpAddress);
 		SystemConfig.setTorrentPortExt(port);
-		PeerConfig.nat();
+		PeerConfig.nat(); // 设置使用NAT穿透
 	}
 
 	/**
 	 * 设置STUN服务器地址
 	 */
 	private InetSocketAddress buildServerAddress() {
+		// 格式：stun:stun1.l.google.com:19302
 		final String server = SystemConfig.getStunServer();
 		if(StringUtils.isEmpty(server)) {
 			LOGGER.warn("STUN服务器错误：{}", server);

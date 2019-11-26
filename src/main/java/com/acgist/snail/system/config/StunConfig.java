@@ -135,7 +135,7 @@ public final class StunConfig {
     public enum AttributeType {
     	
     	// 强制理解：0x0000-0x7FFF
-    	/**  */
+    	/** 端口映射：明文 */
     	MAPPED_ADDRESS(		(short) 0x0001),
     	RESPONSE_ADDRESS(	(short) 0x0002),
     	CHANGE_ADDRESS(		(short) 0x0003),
@@ -150,6 +150,7 @@ public final class StunConfig {
     	REFLECTED_FROM(		(short) 0x000B),
     	REALM(				(short) 0x0014),
     	NONCE(				(short) 0x0015),
+    	/** 端口映射：使用异或处理数据 */
     	XOR_MAPPED_ADDRESS(	(short) 0x0020),
     	// 选择理解：0x8000-0xFFFF
     	SOFTWARE(			(short) 0x8022),

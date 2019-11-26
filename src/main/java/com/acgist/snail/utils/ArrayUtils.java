@@ -20,7 +20,7 @@ public final class ArrayUtils {
 	
 	/**
 	 * <p>数组比较</p>
-	 * <p>数组元素全部一致则相等</p>
+	 * <p>相等：数组元素全部一致</p>
 	 * 
 	 * @param sources 原始数据
 	 * @param targets 比较数据
@@ -47,7 +47,7 @@ public final class ArrayUtils {
 	/**
 	 * <p>比较数组大小（无符号比较）</p>
 	 * <p>长度不同时：长度长的数组大</p>
-	 * <p>长度相同时：高位字符（索引小）大的大</p>
+	 * <p>长度相同时：高位字符（索引小）大的数组大</p>
 	 * 
 	 * @param sources 原始数据
 	 * @param targets 比较数据
@@ -62,7 +62,8 @@ public final class ArrayUtils {
 		} else if(sources.length != targets.length) {
 			return sources.length > targets.length ? 1 : -1;
 		} else {
-			for (int index = 0; index < sources.length; index++) {
+			final int length = sources.length;
+			for (int index = 0; index < length; index++) {
 				if(sources[index] != targets[index]) {
 					return ((char) sources[index]) > ((char) targets[index]) ? 1 : -1;
 				}
@@ -96,7 +97,8 @@ public final class ArrayUtils {
 	
 	/**
 	 * <p>差异索引</p>
-	 * <p>差异索引越小，表示差距越大，反之差距越小。</p>
+	 * <p>差异索引越小：差距越大</p>
+	 * <p>差异索引越大：差距越小</p>
 	 * 
 	 * @param sources 原始数据
 	 * @param targets 比较数据
@@ -157,6 +159,15 @@ public final class ArrayUtils {
 			bytes[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_MAX);
 		}
 		return bytes;
+	}
+	
+	/**
+	 * 查找数组索引
+	 * 
+	 * @see {@link #indexOf(int[], int, int, int)}
+	 */
+	public static final int indexOf(int[] values, int value) {
+		return indexOf(values, 0, values.length, value);
 	}
 	
 	/**

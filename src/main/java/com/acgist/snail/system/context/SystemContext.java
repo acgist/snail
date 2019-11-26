@@ -55,6 +55,7 @@ public final class SystemContext {
 	/**
 	 * <p>开启系统监听</p>
 	 * <p>开启监听失败表示已经启动了一个系统实例，发送消息唤醒之前的实例窗口。</p>
+	 * <p>启动检测：如果已经启动实例，唤醒已启动的窗口。</p>
 	 */
 	public static final boolean listen() {
 		final boolean ok = ApplicationServer.getInstance().listen();

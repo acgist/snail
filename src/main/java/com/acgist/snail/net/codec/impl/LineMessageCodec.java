@@ -19,7 +19,8 @@ public final class LineMessageCodec extends MessageCodec<String, String> {
 	 */
 	private final String split;
 	/**
-	 * 上次没有处理完成的消息，下次收到消息拼接在一起处理。
+	 * <p>上次没有处理完成的消息</p>
+	 * <p>下次收到消息拼接在一起处理</p>
 	 */
 	private String message = "";
 	

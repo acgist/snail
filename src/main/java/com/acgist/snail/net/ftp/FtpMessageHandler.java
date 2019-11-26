@@ -41,7 +41,8 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 	 */
 	private static final String SPLIT = "\r\n";
 	/**
-	 * 消息结束正则表达式
+	 * <p>消息结束正则表达式</p>
+	 * <p>扩展命令（FEAT）返回多行信息</p>
 	 */
 	private static final String END_REGEX = "\\d{3} .*";
 	
@@ -62,7 +63,8 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 	 */
 	private boolean range = false;
 	/**
-	 * 默认编码：GBK
+	 * <p>编码</p>
+	 * <p>默认编码：GBK</p>
 	 */
 	private String charset = SystemConfig.CHARSET_GBK;
 	/**
@@ -91,7 +93,7 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 		} else if(StringUtils.startsWith(message, "550 ")) { // 文件不存在
 			this.failMessage = "文件不存在";
 			this.close();
-		} else if(StringUtils.startsWith(message, "421 ")) { // 打开连接失败：Socket
+		} else if(StringUtils.startsWith(message, "421 ")) { // 打开连接失败
 			this.failMessage = "打开连接失败";
 			this.close();
 		} else if(StringUtils.startsWith(message, "350 ")) { // 断点续传
@@ -100,15 +102,17 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 		} else if(StringUtils.startsWith(message, "230 ")) { // 登陆成功
 			this.login = true;
 		} else if(StringUtils.startsWith(message, "226 ")) { // 下载完成
-		} else if(StringUtils.startsWith(message, "502 ")) { // 不支持命令：FEAT
-		} else if(StringUtils.startsWith(message, "211-")) { // 服务器状态：扩展命令编码查询
-			// 判断是否支持UTF8
+		} else if(StringUtils.startsWith(message, "502 ")) { // 不支持命令
+			LOGGER.debug("FTP错误消息（不支持命令）：{}", message);
+		} else if(StringUtils.startsWith(message, "211-")) { // 服务器状态：扩展命令
+			// 判断是否支持UTF8指令
 			if(message.toUpperCase().contains(SystemConfig.CHARSET_UTF8)) {
 				this.charset = SystemConfig.CHARSET_UTF8;
 				LOGGER.debug("设置FTP编码：{}", this.charset);
 			}
-		} else if(StringUtils.startsWith(message, "227 ")) { // 进入被动模式：获取文件下载Socket的IP和端口
+		} else if(StringUtils.startsWith(message, "227 ")) { // 进入被动模式：打开文件下载Socket
 			release(); // 释放旧的资源
+			// 被动模式格式：227 Entering Passive Mode (127,0,0,1,36,158).
 			final int opening = message.indexOf('(');
 			final int closing = message.indexOf(')', opening + 1);
 			if (closing > 0) {
@@ -122,7 +126,7 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 					this.inputSocket.setSoTimeout(SystemConfig.DOWNLOAD_TIMEOUT_MILLIS);
 					this.inputSocket.connect(NetUtils.buildSocketAddress(host, port), SystemConfig.CONNECT_TIMEOUT_MILLIS);
 				} catch (IOException e) {
-					LOGGER.error("打开FTP远程Socket异常", e);
+					LOGGER.error("打开文件下载Socket异常：{}-{}", host, port, e);
 				}
 			}
 		} else if(StringUtils.startsWith(message, "150 ")) { // 打开下载文件连接
@@ -132,10 +136,10 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 			try {
 				this.inputStream = this.inputSocket.getInputStream();
 			} catch (IOException e) {
-				LOGGER.error("打开FTP远程输入流异常", e);
+				LOGGER.error("打开文件输入流异常", e);
 			}
 		}
-		this.unlock();
+		this.unlock(); // 解锁
 	}
 	
 	/**
@@ -160,6 +164,8 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 	}
 	
 	/**
+	 * @param defaultMessage 默认错误信息
+	 * 
 	 * @return 错误信息
 	 */
 	public String failMessage(String defaultMessage) {
@@ -171,6 +177,8 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 	
 	/**
 	 * @return 文件流
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	public InputStream inputStream() throws NetException {
 		if(this.inputStream == null) {
@@ -179,6 +187,11 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 		return this.inputStream;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * <p>释放文件下载资源和关闭命令通道</p>
+	 */
 	@Override
 	public void close() {
 		this.release();
@@ -186,8 +199,8 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 	}
 	
 	/**
-	 * <p>释放资源</p>
-	 * <p>释放FTP下载连接资源（文件流、Socket），不关闭命令通道。</p>
+	 * <p>释放文件下载资源（文件流、Socket）</p>
+	 * <p>注：不关闭命令通道</p>
 	 */
 	private void release() {
 		IoUtils.close(this.inputStream);
@@ -195,14 +208,14 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 	}
 
 	/**
-	 * 重置锁
+	 * 重置命令锁
 	 */
 	public void resetLock() {
 		this.lock.set(false);
 	}
 	
 	/**
-	 * 锁定命令
+	 * 命令锁加锁
 	 */
 	public void lock() {
 		if(!this.lock.get()) {
@@ -215,7 +228,7 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 	}
 	
 	/**
-	 * 解锁命令
+	 * 命令锁解锁
 	 */
 	private void unlock() {
 		synchronized (this.lock) {
