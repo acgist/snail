@@ -63,7 +63,7 @@ public final class AnnouncePeerRequest extends Request {
 			final String peerHost = socketAddress.getHostString();
 			final boolean impliedPortAuto = DhtConfig.IMPLIED_PORT_AUTO.equals(impliedPort);
 			Integer peerPort = port;
-			if(impliedPortAuto) {
+			if(impliedPortAuto) { // 自动配置端口
 				peerPort = socketAddress.getPort();
 			}
 			final var peerSession = PeerManager.getInstance().newPeerSession(

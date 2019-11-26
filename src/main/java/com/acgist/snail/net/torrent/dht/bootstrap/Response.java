@@ -145,7 +145,7 @@ public class Response extends DhtMessage {
 	}
 
 	/**
-	 * 失败编码
+	 * 错误代码
 	 */
 	public int errorCode() {
 		if(this.e.size() > 0) {
@@ -156,13 +156,13 @@ public class Response extends DhtMessage {
 	}
 
 	/**
-	 * 失败描述
+	 * 错误描述
 	 */
 	public String errorMessage() {
 		if(this.e.size() > 1) {
 			return new String((byte[]) this.e.get(1));
 		} else {
-			return "未知失败原因";
+			return "未知错误";
 		}
 	}
 

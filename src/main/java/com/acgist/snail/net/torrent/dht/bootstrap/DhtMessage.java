@@ -48,21 +48,23 @@ public abstract class DhtMessage {
 	}
 	
 	/**
-	 * 获取请求ID
+	 * @return 请求ID
 	 */
 	public byte[] getId() {
 		return getT();
 	}
 	
 	/**
-	 * 获取NodeId
+	 * @return NodeId
 	 */
 	public byte[] getNodeId() {
 		return getBytes(DhtConfig.KEY_ID);
 	}
 	
 	/**
-	 * 获取Integer参数：请求、响应
+	 * @param key 参数名称
+	 * 
+	 * @return Integer参数：请求、响应
 	 */
 	public Integer getInteger(String key) {
 		final Long value = getLong(key);
@@ -73,7 +75,9 @@ public abstract class DhtMessage {
 	}
 	
 	/**
-	 * 获取字符串参数：请求、响应
+	 * @param key 参数名称
+	 * 
+	 * @return 字符串参数：请求、响应
 	 */
 	public String getString(String key) {
 		final byte[] bytes = getBytes(key);
@@ -84,21 +88,27 @@ public abstract class DhtMessage {
 	}
 	
 	/**
-	 * 获取List参数：响应、响应
+	 * @param key 参数名称
+	 * 
+	 * @return List参数：响应、响应
 	 */
 	public List<?> getList(String key) {
 		return (List<?>) this.get(key);
 	}
 	
 	/**
-	 * 获取Long参数：请求、响应
+	 * @param key 参数名称
+	 * 
+	 * @return Long参数：请求、响应
 	 */
 	public Long getLong(String key) {
 		return (Long) this.get(key);
 	}
 	
 	/**
-	 * 获取byte[]参数：请求、响应
+	 * @param key 参数名称
+	 * 
+	 * @return byte[]参数：请求、响应
 	 */
 	public byte[] getBytes(String key) {
 		return (byte[]) this.get(key);
@@ -109,7 +119,7 @@ public abstract class DhtMessage {
 	 * 
 	 * @param key 参数名称
 	 * 
-	 * @return 参数值
+	 * @return 参数
 	 */
 	public abstract Object get(String key);
 	

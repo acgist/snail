@@ -19,8 +19,8 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>查找Peer</p>
- * <p>返回最近的Peer，如果没有最近的Peer，返回最近的Node。</p>
- * </p>
+ * <p>返回最近的Peer</p>
+ * <p>如果没有最近的Peer：返回最近的Node</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -52,11 +52,17 @@ public final class GetPeersResponse extends Response {
 		final byte[] bytes = this.getBytes(DhtConfig.KEY_NODES);
 		return deserializeNodes(bytes);
 	}
-	
+
+	/**
+	 * @see {@link #getValues(Request)}
+	 */
 	public List<PeerSession> getPeers(Request request) {
 		return this.getValues(request);
 	}
 	
+	/**
+	 * 获取Peer列表并且加入系统Peer列表
+	 */
 	public List<PeerSession> getValues(Request request) {
 		final byte[] infoHash = request.getBytes(DhtConfig.KEY_INFO_HASH);
 		final String infoHashHex = StringUtils.hex(infoHash);
@@ -92,10 +98,16 @@ public final class GetPeersResponse extends Response {
 		return get(DhtConfig.KEY_NODES) != null;
 	}
 	
+	/**
+	 * @see {@link #haveValues()}
+	 */
 	public boolean havePeers() {
 		return haveValues();
 	}
 	
+	/**
+	 * @return 是否含有Peer
+	 */
 	public boolean haveValues() {
 		return get(DhtConfig.KEY_VALUES) != null;
 	}

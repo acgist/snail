@@ -120,7 +120,7 @@ public final class NodeManager {
 	}
 	
 	/**
-	 * 获取所有的节点的拷贝
+	 * @return 所有节点的拷贝
 	 */
 	public List<NodeSession> nodes() {
 		synchronized (this.nodes) {
@@ -151,7 +151,7 @@ public final class NodeManager {
 	
 	/**
 	 * <p>添加DHT节点</p>
-	 * <p>先验证状态，通过验证加入列表，设置为可用节点。</p>
+	 * <p>先验证状态，通过验证后加入列表，设置为可用节点。</p>
 	 */
 	public void newNodeSession(String host, Integer port) {
 		final NodeSession nodeSession = verify(host, port);
@@ -162,8 +162,8 @@ public final class NodeManager {
 	
 	/**
 	 * <p>添加DHT节点</p>
-	 * <p>加入时不验证状态，使用时验证。</p>
-	 * <p>新建完成后需要调用{@link #sortNodes()}进行排序</p>
+	 * <p>加入时不验证状态，使用时才验证。</p>
+	 * <p>添加完成后需要调用{@link #sortNodes()}进行排序</p>
 	 */
 	public NodeSession newNodeSession(byte[] nodeId, String host, Integer port) {
 		synchronized (this.nodes) {
@@ -186,7 +186,7 @@ public final class NodeManager {
 
 	/**
 	 * <p>排序</p>
-	 * <p>在调用{@link #newNodeSession(byte[], String, Integer)}后需要进行排序</p>
+	 * <p>{@linkplain #newNodeSession(byte[], String, Integer) 添加DHT节点}后需要进行排序</p>
 	 */
 	public void sortNodes() {
 		synchronized (this.nodes) {
@@ -228,14 +228,14 @@ public final class NodeManager {
 	/**
 	 * <p>查找Node</p>
 	 * <p>查找最近（异或运算）的一段NodeId</p>
-	 * <p>查找时节点组成一个环形结构，按照{@linkplain #NODE_FIND_SLICE_SIZE 大小}分片。</p>
+	 * <p>查找时节点组成一个环形结构，然后{@linkplain #NODE_FIND_SLICE_SIZE 分片}。</p>
 	 * 
 	 * @param nodes 节点列表
-	 * @param target 目标NodeId
+	 * @param target 目标
 	 * @param begin 开始序号
 	 * @param end 结束序号
 	 * 
-	 * @return 最近的节点
+	 * @return 最近的节点列表
 	 */
 	private List<NodeSession> findNode(final List<NodeSession> nodes, final byte[] target, final int begin, final int end) {
 		int selectSize; // 当前选择Node的总数量
