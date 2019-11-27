@@ -18,7 +18,10 @@ public class LSDTest {
 	@Test
 	public void client() throws NetException {
 		var client = LocalServiceDiscoveryClient.newInstance();
-		client.localSearch("28b5e72737f183cb36182fcc8991d5cbf7ce627c");
+		client.localSearch(
+			"28b5e72737f183cb36182fcc8991d5cbf7ce627c",
+			"28b5e72737f183cb36182fcc8991d5cbf7ce6271"
+		);
 	}
 	
 }

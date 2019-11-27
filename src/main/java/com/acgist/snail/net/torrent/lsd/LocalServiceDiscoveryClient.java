@@ -11,6 +11,7 @@ import com.acgist.snail.net.upnp.UpnpServer;
 import com.acgist.snail.pojo.wrapper.HeaderWrapper;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -43,12 +44,17 @@ public final class LocalServiceDiscoveryClient extends UdpClient<LocalServiceDis
 	}
 	
 	/**
-	 * 发送本地发现消息
+	 * <p>发送本地发现消息</p>
 	 */
-	public void localSearch(String infoHash) {
-		LOGGER.debug("发送本地发现消息，InfoHash：{}", infoHash);
+	public void localSearch(String ... infoHashs) {
+		if(ArrayUtils.isEmpty(infoHashs)) {
+			return;
+		}
+		if(LOGGER.isDebugEnabled()) {
+			LOGGER.debug("发送本地发现消息，InfoHash：{}", String.join(",", infoHashs));
+		}
 		try {
-			send(buildLocalSearch(infoHash));
+			send(buildLocalSearch(infoHashs));
 		} catch (NetException e) {
 			LOGGER.error("发送本地发现消息异常", e);
 		}
@@ -56,16 +62,17 @@ public final class LocalServiceDiscoveryClient extends UdpClient<LocalServiceDis
 	
 	/**
 	 * <p>创建本地发现消息</p>
-	 * <p>注：可以将多条InfoHash合并一条消息</p>
 	 */
-	private String buildLocalSearch(String infoHash) {
+	private String buildLocalSearch(String ... infoHashs) {
 		final String peerId = StringUtils.hex(PeerService.getInstance().peerId());
 		final HeaderWrapper builder = HeaderWrapper.newBuilder(PROTOCOL);
 		builder
 			.header("Host", LocalServiceDiscoveryServer.LSD_HOST + ":" + LocalServiceDiscoveryServer.LSD_PORT)
 			.header("Port", String.valueOf(SystemConfig.getTorrentPort()))
-			.header("Infohash", infoHash)
-			.header("cookie", peerId);
+			.header("cookie", peerId); // 区别软件本身消息
+		for (String infoHash : infoHashs) {
+			builder.header("Infohash", infoHash);
+		}
 		return builder.build();
 	}
 	
