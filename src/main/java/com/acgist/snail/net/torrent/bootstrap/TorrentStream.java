@@ -76,11 +76,11 @@ public final class TorrentStream {
 	 */
 	private int filePieceSize;
 	/**
-	 * 文件Piece开始序号
+	 * 文件Piece开始索引
 	 */
 	private int fileBeginPieceIndex;
 	/**
-	 * 文件Piece结束序号
+	 * 文件Piece结束索引
 	 */
 	private int fileEndPieceIndex;
 	/**
@@ -146,7 +146,7 @@ public final class TorrentStream {
 			buildFileAsyn(complete, sizeCount);
 			selectPieces.set(this.fileBeginPieceIndex, this.fileEndPieceIndex + 1);
 			LOGGER.debug(
-				"TorrentStream信息，块大小：{}，文件路径：{}，文件大小：{}，文件开始偏移：{}，文件Piece数量：{}，文件Piece开始序号：{}，文件Piece结束序号：{}",
+				"TorrentStream信息，块大小：{}，文件路径：{}，文件大小：{}，文件开始偏移：{}，文件Piece数量：{}，文件Piece开始索引：{}，文件Piece结束索引：{}",
 				this.pieceLength,
 				this.file,
 				this.fileSize,

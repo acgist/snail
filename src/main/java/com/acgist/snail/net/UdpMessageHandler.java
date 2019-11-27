@@ -89,7 +89,8 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 	}
 
 	/**
-	 * 关闭资源，标记关闭，不能关闭通道。
+	 * <p>关闭资源</p>
+	 * <p>标记关闭：不能关闭通道（UDP通道单例复用）</p>
 	 */
 	@Override
 	public void close() {

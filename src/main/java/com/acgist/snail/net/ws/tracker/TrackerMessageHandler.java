@@ -3,11 +3,11 @@ package com.acgist.snail.net.ws.tracker;
 import com.acgist.snail.net.ws.WebSocketMessageHandler;
 
 /**
- * WebSocket Tracekr消息代理
+ * <p>WebSocket Tracekr消息代理</p>
  * 
  * @author acgist
  * @since 1.2.0
  */
-public class WsTrackerMessageHandler extends WebSocketMessageHandler {
+public class TrackerMessageHandler extends WebSocketMessageHandler {
 
 }

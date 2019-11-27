@@ -4,7 +4,8 @@ import com.acgist.snail.net.TcpServer;
 import com.acgist.snail.system.config.SystemConfig;
 
 /**
- * Peer服务端
+ * <p>Peer服务端</p>
+ * <p>监听端口：{@link SystemConfig#getTorrentPort()}</p>
  * 
  * @author acgist
  * @since 1.0.0

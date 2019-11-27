@@ -48,7 +48,8 @@ public final class HttpTrackerClient extends TrackerClient {
 	private static final String ANNOUNCE_URL_SUFFIX = "/announce";
 	
 	/**
-	 * 跟踪器ID，收到第一次响应时获取，以后每次发送声明消息时上送。
+	 * <p>跟踪器ID</p>
+	 * <p>第一次收到响应时获取，以后每次发送声明消息时上送。</p>
 	 */
 	private String trackerId;
 	
@@ -66,17 +67,17 @@ public final class HttpTrackerClient extends TrackerClient {
 		final String announceMessage = (String) buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STARTED);
 		final var response = HTTPClient.get(announceMessage, BodyHandlers.ofByteArray()); // 注意：不能使用BodyHandlers.ofString()
 		if(!HTTPClient.ok(response)) {
-			throw new NetException("Tracker声明失败");
+			throw new NetException("HTTP Tracker声明失败");
 		}
 		final var body = response.body();
 		final var decoder = BEncodeDecoder.newInstance(body);
 		decoder.nextMap();
 		if(decoder.isEmpty()) {
-			LOGGER.warn("Tracker声明消息错误（格式）：{}", decoder.oddString());
+			LOGGER.warn("HTTP Tracker声明消息错误（格式）：{}", decoder.oddString());
 			return;
 		}
 		final var message = convertAnnounceMessage(sid, decoder);
-		this.trackerId = message.getTrackerId();
+		this.trackerId = message.getTrackerId(); // 跟踪器ID
 		TrackerManager.getInstance().announce(message);
 	}
 	
@@ -96,18 +97,18 @@ public final class HttpTrackerClient extends TrackerClient {
 	public void scrape(Integer sid, TorrentSession torrentSession) throws NetException {
 		final String scrapeMessage = buildScrapeMessage(sid, torrentSession);
 		if(scrapeMessage == null) {
-			LOGGER.debug("Tracker刮檫消息（不支持）：{}", this.announceUrl);
+			LOGGER.debug("HTTP Tracker刮檫消息错误（不支持）：{}", this.announceUrl);
 			return;
 		}
 		final var response = HTTPClient.get(scrapeMessage, BodyHandlers.ofByteArray());
 		if(!HTTPClient.ok(response)) {
-			throw new NetException("Tracker刮檫失败");
+			throw new NetException("HTTP Tracker刮檫失败");
 		}
 		final var body = response.body();
 		final var decoder = BEncodeDecoder.newInstance(body);
 		decoder.nextMap();
 		if(decoder.isEmpty()) {
-			LOGGER.warn("Tracker刮檫消息错误（格式）：{}", decoder.oddString());
+			LOGGER.warn("HTTP Tracker刮檫消息错误（格式）：{}", decoder.oddString());
 			return;
 		}
 		convertScrapeMessage(sid, decoder);
@@ -118,7 +119,7 @@ public final class HttpTrackerClient extends TrackerClient {
 		final StringBuilder builder = new StringBuilder(this.announceUrl);
 		builder.append("?")
 			.append("info_hash").append("=").append(torrentSession.infoHash().infoHashUrl()).append("&") // InfoHash
-			.append("peer_id").append("=").append(PeerService.getInstance().peerIdUrl()).append("&") // PeerID
+			.append("peer_id").append("=").append(PeerService.getInstance().peerIdUrl()).append("&") // PeerId
 			.append("port").append("=").append(SystemConfig.getTorrentPortExtShort()).append("&") // 外网Peer端口
 			.append("uploaded").append("=").append(upload).append("&") // 已上传大小
 			.append("downloaded").append("=").append(download).append("&") // 已下载大小
@@ -133,7 +134,7 @@ public final class HttpTrackerClient extends TrackerClient {
 	}
 	
 	/**
-	 * 创建刮檫消息
+	 * <p>创建刮檫消息</p>
 	 */
 	private String buildScrapeMessage(Integer sid, TorrentSession torrentSession) {
 		if(StringUtils.isEmpty(this.scrapeUrl)) {
@@ -146,7 +147,7 @@ public final class HttpTrackerClient extends TrackerClient {
 	}
 
 	/**
-	 * 声明消息转换
+	 * <p>声明消息转换</p>
 	 */
 	private static final AnnounceMessage convertAnnounceMessage(Integer sid, BEncodeDecoder decoder) {
 		final String trackerId = decoder.getString("tracker id");
@@ -179,12 +180,12 @@ public final class HttpTrackerClient extends TrackerClient {
 	}
 	
 	/**
-	 * 刮檫消息转换
+	 * <p>刮檫消息转换</p>
 	 */
 	private static final void convertScrapeMessage(Integer sid, BEncodeDecoder decoder) {
 		final var files = decoder.getMap("files");
 		if(files == null) {
-			LOGGER.debug("刮檫消息错误：{}", new String(decoder.oddBytes()));
+			LOGGER.debug("HTTP Tracker刮檫消息错误：{}", new String(decoder.oddBytes()));
 			return;
 		}
 		files.forEach((key, value) -> {

@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 import com.acgist.snail.utils.DateUtils;
 
 /**
- * UTP窗口数据
+ * <p>UTP窗口数据</p>
  * 
  * @author acgist
  * @since 1.1.0
@@ -73,15 +73,15 @@ public final class UtpWindowData {
 	}
 	
 	/**
-	 * <p>验证数据是否正确，正确的数据才能发送。</p>
-	 * <p>握手失败，导致超时定时任务执行时负载数据为空，导致发送时空指针。</p>
+	 * <p>验证是否含有数据</p>
+	 * <p>握手失败：超时定时任务执行时，握手消息负载数据为空，导致发送时空指针。</p>
 	 */
 	public boolean haveData() {
 		return this.data != null;
 	}
 	
 	/**
-	 * 发送时更新数据：时间戳、发送次数
+	 * <p>发送时更新数据：时间戳、发送次数</p>
 	 * 
 	 * @return 时间戳
 	 */

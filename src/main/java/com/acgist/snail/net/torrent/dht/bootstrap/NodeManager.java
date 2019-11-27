@@ -129,7 +129,7 @@ public final class NodeManager {
 	}
 
 	/**
-	 * 注册默认节点（配置文件）
+	 * 注册{@linkplain DhtConfig#nodes() 默认节点}
 	 */
 	public void register() {
 		final var nodes = DhtConfig.getInstance().nodes();
@@ -232,8 +232,8 @@ public final class NodeManager {
 	 * 
 	 * @param nodes 节点列表
 	 * @param target 目标
-	 * @param begin 开始序号
-	 * @param end 结束序号
+	 * @param begin 开始索引
+	 * @param end 结束索引
 	 * 
 	 * @return 最近的节点列表
 	 */
@@ -265,7 +265,7 @@ public final class NodeManager {
 			final var nodeA = nodes.get(sliceA);
 			final var nodeB = nodes.get(sliceB);
 			final var nodeC = nodes.get(sliceC);
-			// 节点不同字节序号
+			// 节点不同字节索引
 			final int diffIndexA = ArrayUtils.diffIndex(nodeA.getId(), target);
 			final int diffIndexB = ArrayUtils.diffIndex(nodeB.getId(), target);
 			final int diffIndexC = ArrayUtils.diffIndex(nodeC.getId(), target);

@@ -6,14 +6,20 @@ import com.acgist.snail.net.codec.IMessageCodec;
 import com.acgist.snail.system.exception.NetException;
 
 /**
- * UTP请求
+ * <p>UTP请求</p>
  * 
  * @author acgist
  * @since 1.2.0
  */
 public final class UtpRequest {
 
+	/**
+	 * 窗口数据
+	 */
 	private final UtpWindowData windowData;
+	/**
+	 * 消息处理
+	 */
 	private final IMessageCodec<ByteBuffer> messageCodec;
 	
 	private UtpRequest(UtpWindowData windowData, IMessageCodec<ByteBuffer> messageCodec) {
@@ -26,7 +32,9 @@ public final class UtpRequest {
 	}
 	
 	/**
-	 * 执行请求
+	 * <p>执行请求</p>
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	public void execute() throws NetException {
 		this.messageCodec.decode(this.windowData.buffer());

@@ -18,7 +18,7 @@ import com.acgist.snail.system.config.UtpConfig;
 import com.acgist.snail.utils.DateUtils;
 
 /**
- * UTP滑块窗口
+ * <p>UTP滑块窗口</p>
  * 
  * @author acgist
  * @since 1.1.0
@@ -121,7 +121,10 @@ public final class UtpWindow {
 	
 	/**
 	 * <p>设置连接信息</p>
-	 * <p>接收端的seqnr可以设置为随机值，默认设置和发送端一样。</p>
+	 * <p>接收端的seqnr可以设置为随机值：默认设置和发送端一样</p>
+	 * 
+	 * @param timestamp 时间戳
+	 * @param seqnr 请求编号
 	 */
 	public void connect(int timestamp, short seqnr) {
 		this.seqnr = seqnr;
@@ -129,7 +132,7 @@ public final class UtpWindow {
 	}
 
 	/**
-	 * 接收窗口获取剩余窗口缓存大小
+	 * <p>接收窗口：获取剩余窗口缓存大小</p>
 	 */
 	public int remainWndSize() {
 		synchronized (this) {
@@ -138,14 +141,16 @@ public final class UtpWindow {
 	}
 	
 	/**
-	 * 发送数据：没有负载
+	 * <p>发送数据：没有负载</p>
 	 */
 	public UtpWindowData build() {
 		return build(null);
 	}
 	
 	/**
-	 * 发送数据：递增seqnr
+	 * <p>发送数据：递增seqnr</p>
+	 * 
+	 * @param data 数据
 	 */
 	public UtpWindowData build(byte[] data) {
 		this.acquire(); // 不能加锁
@@ -158,7 +163,7 @@ public final class UtpWindow {
 	}
 
 	/**
-	 * 发送窗口获取超时的数据包（丢包）
+	 * <p>发送窗口：获取超时的数据包（丢包）</p>
 	 */
 	public List<UtpWindowData> timeoutWindowData() {
 		synchronized (this) {
@@ -173,7 +178,10 @@ public final class UtpWindow {
 	}
 	
 	/**
-	 * 响应：移除发送数据并更新超时时间
+	 * <p>响应：移除发送数据并更新超时时间</p>
+	 * 
+	 * @param acknr 响应编号：最后处理编号（移除小于等于响应编号的请求）
+	 * @param wndSize 剩余窗口大小
 	 */
 	public void ack(final short acknr, int wndSize) {
 		synchronized (this) {
@@ -182,7 +190,7 @@ public final class UtpWindow {
 			final int timestamp = DateUtils.timestampUs();
 			this.wndMap.entrySet().stream()
 				.filter(entry -> {
-					// 移除序号小于等于当前响应序号的数据
+					// 移除编号小于等于当前响应编号的数据
 					final short diff = (short) (acknr - entry.getKey());
 					return diff >= 0;
 				})
@@ -200,7 +208,9 @@ public final class UtpWindow {
 	}
 	
 	/**
-	 * 丢弃超时数据
+	 * <p>丢弃超时数据</p>
+	 * 
+	 * @param seqnr 响应编号
 	 */
 	public void discard(short seqnr) {
 		synchronized (this) {
@@ -211,10 +221,14 @@ public final class UtpWindow {
 	/**
 	 * <dl>
 	 * 	<dt>接收数据</dt>
-	 * 	<dd>如果seqnr数据已被处理，返回null。</dd>
-	 * 	<dd>如果seqnr != 下一个序号时，放入缓存，返回null。</dd>
-	 * 	<dd>如果seqnr == 下一个序号时，读取数据，更新seqnr，然后继续获取seqnr直到seqnr != 下一个序号为止，最后合并返回。</dd>
+	 * 	<dd>如果seqnr数据已被处理：返回null</dd>
+	 * 	<dd>如果seqnr != 下一个编号：放入缓存，返回null。</dd>
+	 * 	<dd>如果seqnr == 下一个编号：读取数据，更新seqnr，然后继续获取seqnr直到seqnr != 下一个编号为止，最后合并返回。</dd>
 	 * </dl>
+	 * 
+	 * @param timestamp 时间戳
+	 * @param seqnr 请求编号
+	 * @param buffer 请求数据
 	 */
 	public UtpWindowData receive(int timestamp, short seqnr, ByteBuffer buffer) throws IOException {
 		synchronized (this) {
@@ -247,7 +261,9 @@ public final class UtpWindow {
 	}
 	
 	/**
-	 * 取出窗口数据：更新窗口被占用大小
+	 * <p>取出窗口数据：更新窗口被占用大小</p>
+	 * 
+	 * @param seqnr 请求编号
 	 */
 	private UtpWindowData take(short seqnr) {
 		final UtpWindowData windowData = this.wndMap.remove(seqnr);
@@ -259,7 +275,11 @@ public final class UtpWindow {
 	}
 	
 	/**
-	 * 存入窗口数据
+	 * <p>存入窗口数据</p>
+	 * 
+	 * @param timestamp 时间戳
+	 * @param seqnr 请求编号
+	 * @param buffer 请求数据
 	 */
 	private UtpWindowData storage(final int timestamp, final short seqnr, final ByteBuffer buffer) {
 		final byte[] bytes = new byte[buffer.remaining()];
@@ -268,7 +288,11 @@ public final class UtpWindow {
 	}
 	
 	/**
-	 * 存入窗口数据
+	 * <p>存入窗口数据</p>
+	 * 
+	 * @param timestamp 时间戳
+	 * @param seqnr 请求编号
+	 * @param bytes 请求数据
 	 */
 	private UtpWindowData storage(final int timestamp, final short seqnr, byte[] bytes) {
 		final UtpWindowData windowData = UtpWindowData.newInstance(seqnr, timestamp, bytes);
@@ -278,7 +302,9 @@ public final class UtpWindow {
 	}
 	
 	/**
-	 * 计算超时时间
+	 * <p>计算超时时间</p>
+	 * 
+	 * @param packetRtt 时间差
 	 */
 	private void timeout(final int packetRtt) {
 		final int delta = this.rtt - packetRtt;
@@ -313,14 +339,14 @@ public final class UtpWindow {
 	
 	/**
 	 * <p>获取信号量</p>
-	 * <p>如果已经关闭了，不需要获取信号量。</p>
+	 * <p>如果窗口已经关闭：不需要获取信号量</p>
 	 */
 	private void acquire() {
 		if(this.close) {
 			return;
 		}
 		try {
-			LOGGER.debug("信号量（获取）：{}", this.semaphore.availablePermits());
+			LOGGER.debug("信号量获取：{}", this.semaphore.availablePermits());
 //			this.semaphore.acquire();
 			final boolean ok = this.semaphore.tryAcquire(SEMAPHORE_TIMEOUT, TimeUnit.SECONDS);
 			if(!ok) {
@@ -333,11 +359,11 @@ public final class UtpWindow {
 	}
 	
 	/**
-	 * 释放信号量
+	 * <p>释放信号量</p>
 	 */
 	public void release() {
 		final int available = this.semaphore.availablePermits();
-		LOGGER.debug("信号量（释放）：{}", available);
+		LOGGER.debug("信号量释放：{}", available);
 		if(available < this.wnd) {
 			this.semaphore.release();
 		}
@@ -345,7 +371,7 @@ public final class UtpWindow {
 	
 	/**
 	 * <p>关闭窗口</p>
-	 * <p>标记关闭，同时释放一个信号量。</p>
+	 * <p>标记关闭、释放一个信号量</p>
 	 */
 	public void close() {
 		this.close = true;

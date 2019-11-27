@@ -160,7 +160,7 @@ public final class FileUtils {
 		if(StringUtils.isNotEmpty(name)) { // 去掉不支持的字符
 			name = name.replaceAll(FILENAME_REPLACE_REGEX, FILENAME_REPLACE_CHAR);
 		}
-		if(StringUtils.isEmpty(name)) { // 随机序号
+		if(StringUtils.isEmpty(name)) { // 随机名称
 			name = NumberUtils.build().toString();
 		}
 		return name.trim();
@@ -229,7 +229,7 @@ public final class FileUtils {
 		final File srcFile = new File(src);
 		final File targetFile = new File(target);
 		if(!srcFile.renameTo(targetFile)) {
-			LOGGER.warn("文件移动失败，原始文件：{}，目标文件：{}", src, target);
+			LOGGER.warn("文件移动失败：原始文件：{}，目标文件：{}", src, target);
 		}
 	}
 	

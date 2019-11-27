@@ -12,7 +12,8 @@ import com.acgist.snail.system.config.StunConfig;
 
 /**
  * <p>Torrent（UTP、DHT、STUN）消息接收器</p>
- * <p>DHT和STUN消息都使用头一个字符验证，STUN需要进一步验证MagicCookie，其余消息均属于UTP。</p>
+ * <p>DHT和STUN消息都使用头一个字符验证：STUN需要进一步验证MagicCookie</p>
+ * <p>如果不是DHT和STUN消息则属于UTP消息</p>
  * 
  * @author acgist
  * @since 1.1.0
@@ -62,6 +63,7 @@ public final class TorrentAcceptHandler extends UdpAcceptHandler {
 			return this.dhtMessageHandler;
 		} else if(STUN_HEADER_SEND == header || STUN_HEADER_RECV == header) { // STUN
 			final int magicCookie = buffer.getInt(4);
+			// 验证：MAGIC_COOKIE
 			if(magicCookie == StunConfig.MAGIC_COOKIE) {
 				return this.stunMessageHandler;
 			}

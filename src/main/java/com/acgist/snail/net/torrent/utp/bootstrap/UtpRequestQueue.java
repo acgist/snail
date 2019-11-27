@@ -14,7 +14,7 @@ import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.exception.NetException;
 
 /**
- * UTP请求队列
+ * <p>UTP请求队列</p>
  * 
  * @author acgist
  * @since 1.2.0
@@ -26,16 +26,18 @@ public final class UtpRequestQueue {
 	private static final UtpRequestQueue INSTANCE = new UtpRequestQueue();
 	
 	/**
-	 * 队列数量
+	 * <p>请求队列数量</p>
+	 * <p>使用相同数量的线程处理请求</p>
 	 */
 	private static final int QUEUE_SIZE = 4;
 	
 	/**
-	 * 队列序号：每次获取请求队列后递增
+	 * <p>队列索引</p>
+	 * <p>每次获取请求队列后递增，保证UTP请求被均匀分配。</p>
 	 */
 	private final AtomicInteger index = new AtomicInteger(0);
 	/**
-	 * UTP请求队列处理线程池
+	 * <p>请求队列处理线程池</p>
 	 */
 	private final ExecutorService executor;
 	/**
@@ -55,8 +57,7 @@ public final class UtpRequestQueue {
 	}
 	
 	/**
-	 * <p>获取请求处理队列</p>
-	 * <p>不需要加锁，允许误差。</p>
+	 * @return 请求处理队列
 	 */
 	public BlockingQueue<UtpRequest> queue() {
 		final int index = this.index.getAndIncrement() % QUEUE_SIZE;
@@ -64,7 +65,7 @@ public final class UtpRequestQueue {
 	}
 	
 	/**
-	 * 创建队列
+	 * <p>创建请求队列和处理线程</p>
 	 */
 	private void buildQueues() {
 		for (int index = 0; index < QUEUE_SIZE; index++) {
@@ -75,7 +76,7 @@ public final class UtpRequestQueue {
 	}
 
 	/**
-	 * 创建队列处理线程
+	 * <p>创建请求队列处理线程</p>
 	 */
 	private void buildQueueExecute(BlockingQueue<UtpRequest> queue) {
 		this.executor.submit(() -> {
