@@ -27,7 +27,7 @@ import com.acgist.snail.utils.UrlUtils;
 
 /**
  * <p>Tracker管理器</p>
- * <p>管理TrackerClient和TrackerLauncher。</p>
+ * <p>管理TrackerClient和TrackerLauncher</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -62,7 +62,7 @@ public final class TrackerManager {
 	}
 
 	/**
-	 * 新建TrackerLauncher
+	 * <p>新建TrackerLauncher</p>
 	 */
 	public TrackerLauncher newTrackerLauncher(TrackerClient client, TorrentSession torrentSession) {
 		final TrackerLauncher launcher = TrackerLauncher.newInstance(client, torrentSession);
@@ -71,16 +71,16 @@ public final class TrackerManager {
 	}
 	
 	/**
-	 * 删除TrackerLauncher
+	 * <p>删除TrackerLauncher</p>
 	 */
 	public void release(Integer id) {
 		this.trackerLaunchers.remove(id);
 	}
 	
 	/**
-	 * 处理announce信息
+	 * <p>处理announce信息</p>
 	 */
-	public void announce(final AnnounceMessage message) {
+	public void announce(AnnounceMessage message) {
 		if(message == null) {
 			return;
 		}
@@ -89,12 +89,12 @@ public final class TrackerManager {
 		if(trackerLauncher != null) {
 			trackerLauncher.announce(message);
 		} else {
-			LOGGER.warn("TrackerLauncher不存在，AnnounceMessage：{}", message);
+			LOGGER.debug("TrackerLauncher不存在（AnnounceMessage）：{}", message);
 		}
 	}
 	
 	/**
-	 * 处理scrape消息
+	 * <p>处理scrape消息</p>
 	 */
 	public void scrape(ScrapeMessage message) {
 		if(message == null) {
@@ -105,12 +105,12 @@ public final class TrackerManager {
 		if(trackerLauncher != null) {
 			LOGGER.debug("Tracker刮檫消息：{}，做种：{}，完成：{}，下载：{}", id, message.getSeeder(), message.getCompleted(), message.getLeecher());	
 		} else {
-			LOGGER.warn("TrackerLauncher不存在，ScrapeMessage：{}", message);
+			LOGGER.debug("TrackerLauncher不存在（ScrapeMessage）：{}", message);
 		}
 	}
 	
 	/**
-	 * 处理连接ID消息
+	 * <p>处理连接ID消息</p>
 	 */
 	public void connectionId(int trackerId, long connectionId) {
 		final var client = this.trackerClients.get(trackerId);
@@ -121,22 +121,31 @@ public final class TrackerManager {
 	}
 	
 	/**
-	 * 获取所有的TrackerClient的拷贝
+	 * @return TrackerClient列表拷贝
 	 */
 	public List<TrackerClient> clients() {
 		return new ArrayList<>(this.trackerClients.values());
 	}
 	
+	/**
+	 * <p>默认不是私有种子</p>
+	 * 
+	 * @see #clients(String, List, boolean)
+	 */
 	public List<TrackerClient> clients(String announceUrl, List<String> announceUrls) throws DownloadException {
 		return this.clients(announceUrl, announceUrls, false);
 	}
 
 	/**
-	 * <p>获取可用的TrackerClient</p>
-	 * <p>
-	 * 通过传入的声明地址获取TrackerClient，如果声明地址没有被注册为TrackerClient，则注册。
-	 * 如果获取的数量不满足单个任务最大数量，并且不是私有种子时，将会使用系统的TrackerClient补充。
-	 * </p>
+	 * <p>获取可用的TrackerClient列表</p>
+	 * <p>通过传入的声明地址获取TrackerClient，如果声明地址没有被注册为TrackerClient则自动注册。</p>
+	 * <p>如果获取的数量不满足单个任务最大数量，并且不是私有种子时，将会使用系统的TrackerClient补充。</p>
+	 * 
+	 * @param announceUrl 声明地址
+	 * @param announceUrls 声明地址集合
+	 * @param privateTorrent 是否是私有种子
+	 * 
+	 * @return 可用的TrackerClient列表
 	 */
 	public List<TrackerClient> clients(String announceUrl, List<String> announceUrls, boolean privateTorrent) throws DownloadException {
 		final List<TrackerClient> clients = register(announceUrl, announceUrls);
@@ -155,31 +164,34 @@ public final class TrackerManager {
 	}
 	
 	/**
-	 * 补充TrackerClient
+	 * <p>补充TrackerClient</p>
+	 * <p>补充权重最大的客户端</p>
 	 * 
-	 * @param size 需要补充Client数量
-	 * @param clients 已有的Client
+	 * @param size 补充数量
+	 * @param clients 已有客户端
 	 */
 	private List<TrackerClient> clients(int size, List<TrackerClient> clients) {
 		return this.trackerClients.values().stream()
 			.filter(client -> {
 				return client.available() && (clients != null && !clients.contains(client));
 			})
-			.sorted()
+			.sorted() // 排序
 			.limit(size)
 			.collect(Collectors.toList());
 	}
 	
-
 	/**
-	 * 注册{@link TrackerConfig}配置的默认Tracker
+	 * <p>注册{@linkplain TrackerConfig#announces() 默认Tracker}</p>
 	 */
 	public List<TrackerClient> register() throws DownloadException {
 		return register(TrackerConfig.getInstance().announces());
 	}
 	
 	/**
-	 * 注册TrackerClient
+	 * <p>注册TrackerClient</p>
+	 * 
+	 * @param announceUrl 声明地址
+	 * @param announceUrls 声明地址集合
 	 */
 	private List<TrackerClient> register(String announceUrl, List<String> announceUrls) throws DownloadException {
 		final List<String> announces = new ArrayList<>();
@@ -193,65 +205,71 @@ public final class TrackerManager {
 	}
 
 	/**
-	 * 注册TrackerClient
+	 * <p>注册TrackerClient</p>
+	 * 
+	 * @param announceUrls 声明地址集合
 	 */
 	private List<TrackerClient> register(List<String> announceUrls) throws DownloadException {
 		if(announceUrls == null) {
 			announceUrls = new ArrayList<>();
 		}
-		return announceUrls.stream()
-			.map(announceUrl -> announceUrl.trim())
-			.map(announceUrl -> {
-				try {
-					return register(announceUrl);
-				} catch (DownloadException e) {
-					LOGGER.error("TrackerClient注册异常：{}", announceUrl, e);
-				}
-				return null;
-			})
-			.filter(client -> client != null)
-			.filter(client -> client.available())
-			.collect(Collectors.toList());
+		synchronized (this.trackerClients) {
+			return announceUrls.stream()
+				.map(announceUrl -> announceUrl.trim())
+				.map(announceUrl -> {
+					try {
+						return register(announceUrl);
+					} catch (DownloadException e) {
+						LOGGER.error("TrackerClient注册异常：{}", announceUrl, e);
+					}
+					return null;
+				})
+				.filter(client -> client != null)
+				.filter(client -> client.available())
+				.collect(Collectors.toList());
+		}
 	}
 	
 	/**
-	 * 注册TrackerClient，如果已经注册直接返回。
+	 * <p>注册TrackerClient</p>
+	 * <p>如果已经注册直接返回</p>
+	 * 
+	 * @param announceUrl 声明地址
 	 */
 	private TrackerClient register(String announceUrl) throws DownloadException {
 		if(StringUtils.isEmpty(announceUrl)) {
 			return null;
 		}
-		synchronized (this.trackerClients) {
-			final Optional<TrackerClient> optional = this.trackerClients.values().stream()
-				.filter(client -> {
-					return client.equals(announceUrl);
-				}).findFirst();
-			if(optional.isPresent()) {
-				return optional.get();
-			}
-			final TrackerClient client = buildClientProxy(announceUrl);
-			this.trackerClients.put(client.id(), client);
-			LOGGER.debug("注册TrackerClient，ID：{}，AnnounceUrl：{}", client.id(), client.announceUrl());
-			return client;
+		final Optional<TrackerClient> optional = this.trackerClients.values().stream()
+			.filter(client -> {
+				return client.equals(announceUrl);
+			}).findFirst();
+		if(optional.isPresent()) {
+			return optional.get();
 		}
+		final TrackerClient client = buildClientProxy(announceUrl);
+		this.trackerClients.put(client.id(), client);
+		LOGGER.debug("注册TrackerClient：ID：{}，AnnounceUrl：{}", client.id(), client.announceUrl());
+		return client;
 	}
 
 	/**
-	 * 创建Tracker Client代理，如果第一次创建失败将链接使用URL解码后再次创建。
+	 * <p>创建TrackerClient代理</p>
+	 * <p>如果第一次创建失败将链接使用URL解码后再次创建</p>
 	 */
 	private TrackerClient buildClientProxy(final String announceUrl) throws DownloadException {
 		TrackerClient client = buildClient(announceUrl);
 		if(client == null) {
-			client = buildClient(UrlUtils.decode(announceUrl));
+			client = buildClient(UrlUtils.decode(announceUrl)); // URL解码
 		}
 		if(client == null) {
-			throw new DownloadException("不支持的Tracker协议：" + announceUrl);
+			throw new DownloadException("创建TrackerClient失败（Tracker协议不支持）：" + announceUrl);
 		}
 		return client;
 	}
 
 	/**
-	 * 创建Tracker Client
+	 * <p>创建TrackerClient</p>
 	 * 
 	 * TODO：ws客户度
 	 */

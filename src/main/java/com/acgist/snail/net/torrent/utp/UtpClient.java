@@ -32,7 +32,7 @@ public final class UtpClient extends UdpClient<UtpMessageHandler> {
 	}
 
 	/**
-	 * 连接
+	 * <p>连接</p>
 	 */
 	public boolean connect() {
 		return this.handler.connect();

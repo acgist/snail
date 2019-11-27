@@ -34,10 +34,10 @@ public final class TrackerMessageHandler extends UdpMessageHandler {
 		final int id = buffer.getInt();
 		final var action = Action.valueOf(id);
 		if(action == null) {
-			LOGGER.warn("Tracker消息错误（类型不支持）：{}", id);
+			LOGGER.warn("处理Tracker消息错误（类型不支持）：{}", id);
 			return;
 		}
-		LOGGER.debug("Tracker消息类型：{}", action);
+		LOGGER.debug("处理Tracker消息类型：{}", action);
 		switch (action) {
 		case CONNECT:
 			doConnect(buffer);
@@ -52,21 +52,27 @@ public final class TrackerMessageHandler extends UdpMessageHandler {
 			doError(buffer);
 			break;
 		default:
-			LOGGER.debug("Tracker消息错误（类型未适配）：{}", action);
+			LOGGER.debug("处理Tracker消息错误（类型未适配）：{}", action);
 			break;
 		}
 	}
 
+	/**
+	 * <p>连接消息</p>
+	 */
 	private void doConnect(ByteBuffer buffer) {
 		final int trackerId = buffer.getInt();
 		final long connectionId = buffer.getLong();
 		TrackerManager.getInstance().connectionId(trackerId, connectionId);
 	}
 
+	/**
+	 * <p>声明消息</p>
+	 */
 	private void doAnnounce(ByteBuffer buffer) {
 		final int length = buffer.limit(); // 消息长度
 		if(length < ANNOUNCE_MIN_LENGTH) {
-			LOGGER.debug("Tracker消息-announce错误（长度）：{}", length);
+			LOGGER.debug("处理Tracker消息-声明错误（长度）：{}", length);
 			return;
 		}
 		final AnnounceMessage message = new AnnounceMessage();
@@ -78,6 +84,9 @@ public final class TrackerMessageHandler extends UdpMessageHandler {
 		TrackerManager.getInstance().announce(message);
 	}
 	
+	/**
+	 * <p>刮檫消息</p>
+	 */
 	private void doScrape(ByteBuffer buffer) {
 		final ScrapeMessage message = new ScrapeMessage();
 		message.setId(buffer.getInt());
@@ -87,11 +96,14 @@ public final class TrackerMessageHandler extends UdpMessageHandler {
 		TrackerManager.getInstance().scrape(message);
 	}
 
+	/**
+	 * <p>错误消息</p>
+	 */
 	private void doError(ByteBuffer buffer) {
 		final var trackerId = buffer.getInt();
 		final var bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
-		LOGGER.warn("Tracker错误：{}-{}", trackerId, new String(bytes));
+		LOGGER.warn("处理Tracker消息-错误消息：{}-{}", trackerId, new String(bytes));
 	}
 
 }

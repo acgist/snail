@@ -21,13 +21,13 @@ import com.acgist.snail.system.exception.PacketSizeException;
 public final class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteBuffer> {
 
 	/**
-	 * int字符长度
+	 * int类型数据字符长度
 	 */
 	private static final int INT_BYTE_LENGTH = 4;
 	
 	/**
-	 * <p>完整消息缓存</p>
-	 * <p>消息按照长度读入进入消息缓存</p>
+	 * <p>消息缓存</p>
+	 * <p>处理消息没有接收完整的情况</p>
 	 */
 	private ByteBuffer buffer;
 	/**
@@ -35,7 +35,7 @@ public final class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteB
 	 */
 	private final ByteBuffer lengthStick;
 	/**
-	 * Peer代理
+	 * Peer消息代理
 	 */
 	private final PeerSubMessageHandler peerSubMessageHandler;
 	
@@ -67,12 +67,12 @@ public final class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteB
 				} else { // 握手消息长度
 					length = PeerConfig.HANDSHAKE_LENGTH;
 				}
-				// 心跳消息：如果还有消息内容继续处理，否者跳出循环。
+				// 心跳消息
 				if(length <= 0) {
 					this.peerSubMessageHandler.keepAlive();
-					if(buffer.hasRemaining()) {
+					if(buffer.hasRemaining()) { // 还有消息：继续处理
 						continue;
-					} else {
+					} else { // 没有消息：跳出循环
 						break;
 					}
 				} else if(length >= SystemConfig.MAX_NET_BUFFER_LENGTH || length < 0) {
@@ -80,7 +80,7 @@ public final class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteB
 				}
 				this.buffer = ByteBuffer.allocate(length);
 			} else {
-				// 上次消息没有读取完成，计算剩余消息数据长度。
+				// 上次消息没有读取完成：计算剩余消息数据长度
 				length = this.buffer.capacity() - this.buffer.position();
 			}
 			final int remaining = buffer.remaining();

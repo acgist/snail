@@ -192,7 +192,7 @@ public final class TorrentStreamGroup {
 			}
 		}
 		if(buffer.position() < length) {
-			LOGGER.warn("读取Piece数据错误，读取长度：{}，要求长度：{}", buffer.position(), length);
+			LOGGER.warn("读取Piece数据错误：读取长度：{}，要求长度：{}", buffer.position(), length);
 			return null;
 		}
 		return buffer.array();
@@ -269,6 +269,7 @@ public final class TorrentStreamGroup {
 			return;
 		}
 		this.fullPieces.or(pieces);
+		this.fullPieces.and(this.selectPieces); // 必须是选中的块：防止部分下载时健康度超过100
 		final BitSet condition = new BitSet();
 		condition.or(this.selectPieces);
 		condition.andNot(this.fullPieces);

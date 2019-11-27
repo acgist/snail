@@ -23,11 +23,11 @@ public final class WsTrackerClient extends TrackerClient {
 
 //	private static final Logger LOGGER = LoggerFactory.getLogger(WsTrackerClient.class);
 	
-	private final com.acgist.snail.net.ws.tracker.WsTrackerClient client;
+	private final com.acgist.snail.net.ws.tracker.TrackerClient trackerClient;
 	
 	private WsTrackerClient(String scrapeUrl, String announceUrl) throws NetException {
 		super(scrapeUrl, announceUrl, Protocol.Type.WS);
-		this.client = com.acgist.snail.net.ws.tracker.WsTrackerClient.newInstance(this.announceUrl);
+		this.trackerClient = com.acgist.snail.net.ws.tracker.TrackerClient.newInstance(this.announceUrl);
 	}
 
 	public static final WsTrackerClient newInstance(String announceUrl) throws NetException {
@@ -37,19 +37,19 @@ public final class WsTrackerClient extends TrackerClient {
 	@Override
 	public void announce(Integer sid, TorrentSession torrentSession) throws NetException {
 		final String announceMessage = (String) buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STARTED);
-		this.client.send(announceMessage);
+		this.trackerClient.send(announceMessage);
 	}
 
 	@Override
 	public void complete(Integer sid, TorrentSession torrentSession) throws NetException {
 		final String announceMessage = (String) buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.COMPLETED);
-		this.client.send(announceMessage);
+		this.trackerClient.send(announceMessage);
 	}
 
 	@Override
 	public void stop(Integer sid, TorrentSession torrentSession) throws NetException {
 		final String announceMessage = (String) buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STOPPED);
-		this.client.send(announceMessage);
+		this.trackerClient.send(announceMessage);
 	}
 
 	@Override

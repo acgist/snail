@@ -35,7 +35,8 @@ public final class TrackerLauncher {
 //	private final TrackerLauncherGroup trackerLauncherGroup;
 	
 	/**
-	 * transaction_id
+	 * <p>transaction_id</p>
+	 * <p>ID与Tracker服务器和BT任务一一对应</p>
 	 */
 	private final Integer id;
 	/**

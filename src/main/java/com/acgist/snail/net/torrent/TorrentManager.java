@@ -31,7 +31,8 @@ public final class TorrentManager {
 	private static final TorrentManager INSTANCE = new TorrentManager();
 	
 	/**
-	 * key=InfoHashHex
+	 * <p>BT任务MAP</p>
+	 * <p>key=InfoHashHex、value=BT任务</p>
 	 */
 	private Map<String, TorrentSession> torrentSessions;
 	
@@ -44,7 +45,7 @@ public final class TorrentManager {
 	}
 	
 	/**
-	 * 所有的InfoHash
+	 * @return 所有的InfoHash拷贝
 	 */
 	public List<InfoHash> allInfoHash() {
 		synchronized (this.torrentSessions) {
@@ -55,7 +56,7 @@ public final class TorrentManager {
 	}
 
 	/**
-	 * 所有的TorrentSession
+	 * @return 所有的TorrentSession拷贝
 	 */
 	public List<TorrentSession> allTorrentSession() {
 		synchronized (this.torrentSessions) {
@@ -65,14 +66,14 @@ public final class TorrentManager {
 	}
 	
 	/**
-	 * 通过InfoHashHex获取TorrentSession
+	 * <p>获取TorrentSession</p>
 	 */
 	public TorrentSession torrentSession(String infoHashHex) {
 		return this.torrentSessions.get(infoHashHex);
 	}
 	
 	/**
-	 * 删除种子信息
+	 * <p>删除TorrentSession</p>
 	 */
 	public void remove(String infoHashHex) {
 		synchronized (this.torrentSessions) {
@@ -81,7 +82,7 @@ public final class TorrentManager {
 	}
 	
 	/**
-	 * 判断是否存在下载任务
+	 * <p>判断是否存在下载任务</p>
 	 */
 	public boolean exist(String infoHashHex) {
 		return this.torrentSessions.containsKey(infoHashHex);
@@ -89,8 +90,8 @@ public final class TorrentManager {
 	
 	/**
 	 * <p>新建TorrentSession</p>
-	 * <p>如果已经存在InfoHashHex，直接返回。</p>
-	 * <p>如果不存在，path为空时使用InfoHashHex加载，反之使用path加载。</p>
+	 * <p>如果已存在InfoHashHex：直接返回</p>
+	 * <p>如果不存在InfoHashHex：path为空时使用InfoHashHex加载、path不为空使用path加载</p>
 	 */
 	public TorrentSession newTorrentSession(String infoHashHex, String path) throws DownloadException {
 		final var session = torrentSession(infoHashHex);
@@ -115,11 +116,11 @@ public final class TorrentManager {
 	}
 	
 	/**
-	 * 新建TorrentSession
+	 * <p>新建TorrentSession</p>
 	 */
 	private TorrentSession newTorrentSession(InfoHash infoHash, Torrent torrent) throws DownloadException {
 		if(infoHash == null) {
-			throw new DownloadException("创建TorrentSession失败（InfoHash）");
+			throw new DownloadException("创建TorrentSession失败（InfoHash为空）");
 		}
 		synchronized (this.torrentSessions) {
 			final String infoHashHex = infoHash.infoHashHex();
@@ -133,7 +134,7 @@ public final class TorrentManager {
 	}
 	
 	/**
-	 * 种子文件加载
+	 * <p>种子文件加载</p>
 	 * 
 	 * @param path 种子文件地址
 	 */

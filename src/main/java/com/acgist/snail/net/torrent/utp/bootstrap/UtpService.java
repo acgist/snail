@@ -27,7 +27,7 @@ public final class UtpService {
 	private static final UtpService INSTANCE = new UtpService();
 	
 	/**
-	 * UTP超时定时任务
+	 * <p>UTP超时定时任务</p>
 	 */
 	private static final int UTP_INTERVAL = 10;
 	
@@ -36,7 +36,7 @@ public final class UtpService {
 	 */
 	private int connectionId = 0;
 	/**
-	 * UTP消息代理
+	 * <p>UTP消息代理</p>
 	 */
 	private final Map<String, UtpMessageHandler> utpMessageHandlers = new ConcurrentHashMap<>();
 	
@@ -68,10 +68,12 @@ public final class UtpService {
 	
 	/**
 	 * <p>获取UTP消息代理</p>
-	 * <p>如果已经存在直接返回，否者创建。</p>
+	 * <p>如果已经存在直接返回，否者创建并返回新的消息代理。</p>
 	 * 
 	 * @param connectionId 连接ID
 	 * @param socketAddress 请求地址
+	 * 
+	 * @return UTP消息代理
 	 */
 	public UdpMessageHandler get(short connectionId, InetSocketAddress socketAddress) {
 		final String key = buildKey(connectionId, socketAddress);
@@ -83,7 +85,7 @@ public final class UtpService {
 	}
 	
 	/**
-	 * 添加消息代理
+	 * <p>添加消息代理</p>
 	 */
 	public void put(UtpMessageHandler utpMessageHandler) {
 		synchronized (this.utpMessageHandlers) {
@@ -92,7 +94,7 @@ public final class UtpService {
 	}
 	
 	/**
-	 * 删除消息代理
+	 * <p>删除消息代理</p>
 	 */
 	public void remove(UtpMessageHandler utpMessageHandler) {
 		synchronized (this.utpMessageHandlers) {
@@ -101,7 +103,7 @@ public final class UtpService {
 	}
 	
 	/**
-	 * key = 地址 + 端口 + connectionId
+	 * <p>key = 地址 + 端口 + connectionId</p>
 	 */
 	public String buildKey(Short connectionId, InetSocketAddress socketAddress) {
 		return socketAddress.getHostString() + socketAddress.getPort() + connectionId;
@@ -109,6 +111,8 @@ public final class UtpService {
 	
 	/**
 	 * <p>处理超时UTP消息</p>
+	 * <p>如果消息代理可用：重新发送超时消息</p>
+	 * <p>如果消息代理不可用：关闭消息代理</p>
 	 */
 	private void timeout() {
 		LOGGER.debug("处理超时UTP消息");

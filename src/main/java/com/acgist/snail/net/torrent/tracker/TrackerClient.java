@@ -5,7 +5,7 @@ import java.net.InetSocketAddress;
 import com.acgist.snail.net.UdpClient;
 
 /**
- * <p>Tracker Client</p>
+ * <p>Tracker Client（UDP）</p>
  * 
  * @author acgist
  * @since 1.0.0

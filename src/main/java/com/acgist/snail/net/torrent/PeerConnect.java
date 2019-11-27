@@ -111,21 +111,21 @@ public abstract class PeerConnect {
 	}
 	
 	/**
-	 * 发送have消息
+	 * <p>发送have消息</p>
 	 */
 	public final void have(int index) {
 		this.peerSubMessageHandler.have(index);
 	}
 	
 	/**
-	 * 发送pex消息
+	 * <p>发送pex消息</p>
 	 */
 	public final void pex(byte[] bytes) {
 		this.peerSubMessageHandler.pex(bytes);
 	}
 	
 	/**
-	 * 发送holepunch连接消息
+	 * <p>发送holepunch连接消息</p>
 	 * 
 	 * @param host 目标地址
 	 * @param port 目标端口
@@ -135,21 +135,21 @@ public abstract class PeerConnect {
 	}
 	
 	/**
-	 * 发送uploadOnly消息
+	 * <p>发送uploadOnly消息</p>
 	 */
 	public final void uploadOnly() {
 		this.peerSubMessageHandler.uploadOnly();
 	}
 	
 	/**
-	 * 是否可用
+	 * <p>是否可用</p>
 	 */
 	public final boolean available() {
 		return this.available && this.peerSubMessageHandler.available();
 	}
 	
 	/**
-	 * 是否评分
+	 * <p>是否评分</p>
 	 */
 	public final boolean marked() {
 		if(this.marked) {
@@ -161,7 +161,8 @@ public abstract class PeerConnect {
 	
 	/**
 	 * <p>Peer上传评分</p>
-	 * <p>评分=当前下载大小-上次下载大小</p>
+	 * <p>评分 = 当前下载大小 - 上次下载大小</p>
+	 * <p>计算评分后记录当前下载大小</p>
 	 */
 	public final long uploadMark() {
 		final long nowSize = this.peerSession.statistics().uploadSize();
@@ -171,7 +172,7 @@ public abstract class PeerConnect {
 	
 	/**
 	 * <p>Peer下载评分</p>
-	 * <p>评分=下载数据大小</p>
+	 * <p>评分 = 下载数据大小</p>
 	 * <p>评分后清除数据：不累计分数</p>
 	 */
 	public final long downloadMark() {
@@ -179,7 +180,7 @@ public abstract class PeerConnect {
 	}
 
 	/**
-	 * 计算评分：下载数据大小
+	 * <p>计算评分：下载数据大小</p>
 	 */
 	private void downloadMark(int buffer) {
 		this.downloadMark.addAndGet(buffer);
@@ -202,7 +203,7 @@ public abstract class PeerConnect {
 	}
 	
 	/**
-	 * 保存Piece数据
+	 * <p>保存Piece数据</p>
 	 * 
 	 * @param index Piece索引
 	 * @param begin Piece偏移
@@ -248,7 +249,7 @@ public abstract class PeerConnect {
 	
 	/**
 	 * <p>请求下载</p>
-	 * <p>跳出请求循环：设置完成状态、释放Peer下载、完成检测</p>
+	 * <p>跳出请求循环：设置完成状态、释放下载资源、完成检测、验证Piece状态</p>
 	 */
 	private void requests() {
 		LOGGER.debug("开始请求下载：{}", this.peerSession);
@@ -264,6 +265,7 @@ public abstract class PeerConnect {
 		this.completeLock.set(true);
 		this.releaseDownload();
 		this.torrentSession.checkCompletedAndDone();
+		// 验证最后选择的Piece是否下载完成
 		if(this.downloadPiece != null && !this.downloadPiece.complete()) {
 			this.undone();
 		}
@@ -272,10 +274,9 @@ public abstract class PeerConnect {
 	
 	/**
 	 * <p>请求数据</p>
-	 * <p>每次发送{@link #SLICE_REQUEST_SIZE}个请求，然后进入等待，当全部数据响应后，又开始发送请求，直到Piece下载完成。</p>
-	 * <p>请求发送完成后进入完成等待</p>
-	 * <p>每次请求如果等待时间超过{@link #SLICE_WAIT_TIME}跳出下载</p>
-	 * <p>如果最后Piece没有下载完成标记为失败</p>
+	 * <p>每次发送{@linkplain #SLICE_REQUEST_SIZE 固定数量}请求，然后进入等待，当全部数据响应后，又开始发送请求，直到Piece下载完成。</p>
+	 * <p>请求发送完成后必须进入完成等待</p>
+	 * <p>请求等待队列数量超过{@linkplain #MAX_WAIT_SLICE_REQUEST_SIZE 最大等待数量}时跳出循环</p>
 	 * 
 	 * @return 是否可以继续下载
 	 */
@@ -301,7 +302,7 @@ public abstract class PeerConnect {
 					ThreadUtils.wait(this.countLock, sliceAwaitTime);
 					// 等待slice数量超过最大等待数量跳出循环
 					if (this.countLock.get() >= MAX_WAIT_SLICE_REQUEST_SIZE) {
-						LOGGER.debug("请求slice数量超过最大等待数量：{}-{}", this.downloadPiece.getIndex(), this.countLock.get());
+						LOGGER.debug("请求数量超过最大等待数量：{}-{}", this.downloadPiece.getIndex(), this.countLock.get());
 						break;
 					}
 				}
@@ -335,10 +336,10 @@ public abstract class PeerConnect {
 	}
 	
 	/**
-	 * 选择下载Piece
+	 * <p>选择下载Piece</p>
+	 * <p>如果上个Piece没有完成：标记失败</p>
 	 */
 	private void pick() {
-		// 校验Piece
 		if(this.downloadPiece == null) { // 没有Piece
 		} else if(this.downloadPiece.complete()) { // 下载完成
 			// 验证数据
@@ -386,12 +387,12 @@ public abstract class PeerConnect {
 	}
 	
 	/**
-	 * <p>释放下载资源</p>
+	 * <p>PeerConnect释放下载</p>
 	 */
 	protected final void releaseDownload() {
 		try {
 			if(this.downloading) {
-				LOGGER.debug("PeerConnect关闭：{}-{}", this.peerSession.host(), this.peerSession.port());
+				LOGGER.debug("PeerConnect释放下载：{}-{}", this.peerSession.host(), this.peerSession.port());
 				this.downloading = false;
 				// 没有完成：等待下载完成
 				if(!this.completeLock.get()) {
@@ -407,7 +408,7 @@ public abstract class PeerConnect {
 				PeerEvaluator.getInstance().score(this.peerSession, Type.DOWNLOAD);
 			}
 		} catch (Exception e) {
-			LOGGER.error("PeerConnect关闭异常", e);
+			LOGGER.error("PeerConnect释放下载异常", e);
 		}
 	}
 	

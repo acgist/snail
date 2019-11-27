@@ -14,7 +14,7 @@ import com.acgist.snail.system.exception.NetException;
 public interface IMessageEncryptHandler extends IMessageHandler {
 
 	/**
-	 * 消息加密发送
+	 * <p>消息加密发送</p>
 	 * 
 	 * @param buffer 消息内容
 	 * 
@@ -25,7 +25,7 @@ public interface IMessageEncryptHandler extends IMessageHandler {
 	}
 	
 	/**
-	 * 消息加密发送
+	 * <p>消息加密发送</p>
 	 * 
 	 * @param buffer 消息内容
 	 * @param timeout 超时时间
