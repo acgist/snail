@@ -39,7 +39,7 @@ public final class DontHaveExtensionMessageHandler extends ExtensionTypeMessageH
 	/**
 	 * <p>发送dontHave消息</p>
 	 * 
-	 * @param index 块索引
+	 * @param index Piece索引
 	 */
 	public void dontHave(int index) {
 		LOGGER.debug("发送dontHave消息：{}", index);
