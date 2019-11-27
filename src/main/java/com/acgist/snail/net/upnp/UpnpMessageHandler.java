@@ -10,6 +10,7 @@ import com.acgist.snail.net.codec.IMessageCodec;
 import com.acgist.snail.net.codec.impl.StringMessageCodec;
 import com.acgist.snail.net.upnp.bootstrap.UpnpService;
 import com.acgist.snail.pojo.wrapper.HeaderWrapper;
+import com.acgist.snail.system.context.NatContext;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.StringUtils;
 
@@ -17,7 +18,7 @@ import com.acgist.snail.utils.StringUtils;
  * <p>UPNP消息代理</p>
  * <p>协议链接：https://www.rfc-editor.org/rfc/rfc6970.txt</p>
  * <p>协议链接：http://upnp.org/specs/arch/UPnP-arch-DeviceArchitecture-v1.0.pdf</p>
- * <p>注：固定IP有时不能正确获取UPNP设置，请使用自动获取IP地址。</p>
+ * <p>注：固定IP有时不能正确获取UPNP设置（请设置自动获取IP地址）</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -27,7 +28,7 @@ public final class UpnpMessageHandler extends UdpMessageHandler implements IMess
 	private static final Logger LOGGER = LoggerFactory.getLogger(UpnpMessageHandler.class);
 
 	/**
-	 * 地址头名称
+	 * 描述文件地址响应头名称
 	 */
 	private static final String HEADER_LOCATION = "location";
 	/**
@@ -59,6 +60,8 @@ public final class UpnpMessageHandler extends UdpMessageHandler implements IMess
 			}
 		} catch (NetException e) {
 			LOGGER.error("UPNP端口映射异常", e);
+		} finally {
+			NatContext.getInstance().unlock(); // 解锁NAT
 		}
 	}
 	

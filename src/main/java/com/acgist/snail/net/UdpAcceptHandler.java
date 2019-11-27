@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * UDP消息接收代理
+ * <p>UDP消息接收代理</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -18,7 +18,8 @@ public abstract class UdpAcceptHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpAcceptHandler.class);
 
 	/**
-	 * 消息代理
+	 * <p>消息代理</p>
+	 * <p>使用消息代理处理消息</p>
 	 */
 	public void handle(DatagramChannel channel, ByteBuffer buffer, InetSocketAddress socketAddress) {
 		final UdpMessageHandler handler = messageHandler(buffer, socketAddress);
@@ -33,7 +34,7 @@ public abstract class UdpAcceptHandler {
 	}
 	
 	/**
-	 * 获取消息代理
+	 * <p>获取消息代理</p>
 	 * 
 	 * @param buffer 消息
 	 * @param socketAddress 地址

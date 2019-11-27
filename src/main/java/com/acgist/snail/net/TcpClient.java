@@ -17,7 +17,7 @@ import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.NetUtils;
 
 /**
- * TCP客户端
+ * <p>TCP客户端</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -57,14 +57,14 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 	}
 	
 	/**
-	 * 连接服务端
+	 * <p>连接服务端</p>
 	 * 
 	 * @return 连接状态
 	 */
 	public abstract boolean connect();
 	
 	/**
-	 * 连接服务端
+	 * <p>连接服务端</p>
 	 * 
 	 * @param host 服务端地址
 	 * @param port 服务端端口
@@ -109,7 +109,7 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 	}
 
 	/**
-	 * 关闭TCP Client线程池
+	 * <p>关闭TCP Client线程池</p>
 	 */
 	public static final void shutdown() {
 		LOGGER.info("关闭TCP Client线程池");

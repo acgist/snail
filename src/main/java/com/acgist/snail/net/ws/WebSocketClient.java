@@ -15,20 +15,20 @@ import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.system.exception.NetException;
 
 /**
- * WebSocket客户端
+ * <p>WebSocket客户端</p>
  * 
  * @author acgist
  * @since 1.1.0
  */
 public abstract class WebSocketClient<T extends WebSocketMessageHandler> extends ClientMessageHandlerAdapter<T> implements IMessageHandler {
 
-	protected WebSocketClient(String url, int connectTimeout, int receiveTimeout, T t) throws NetException {
-		super(t);
+	protected WebSocketClient(String url, int connectTimeout, int receiveTimeout, T handler) throws NetException {
+		super(handler);
 		this.buildWebSocket(url, connectTimeout, receiveTimeout);
 	}
 	
 	/**
-	 * 创建WebSocket
+	 * <p>创建WebSocket</p>
 	 * 
 	 * @param url 地址
 	 * @param connectTimeout 超时时间（连接）

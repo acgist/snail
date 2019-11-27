@@ -19,7 +19,7 @@ import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.IoUtils;
 
 /**
- * TCP消息代理
+ * <p>TCP消息代理</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -43,7 +43,8 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	
 	/**
 	 * <p>收到消息</p>
-	 * <p>使用消息处理器处理消息，如果没有实现消息处理器，请重写该方法。</p>
+	 * <p>使用消息处理器处理消息</p>
+	 * <p>如果没有实现消息处理器，请重写该方法。</p>
 	 */
 	public void onReceive(ByteBuffer buffer) throws NetException {
 		if(this.messageCodec == null) {
@@ -53,7 +54,8 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	}
 	
 	/**
-	 * 消息代理
+	 * <p>消息代理</p>
+	 * <p>开始消息轮询</p>
 	 */
 	public void handle(AsynchronousSocketChannel socket) {
 		this.socket = socket;
@@ -156,7 +158,7 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	}
 	
 	/**
-	 * 消息循环读取
+	 * <p>消息轮询</p>
 	 */
 	private void loopMessage() {
 		if(available()) {

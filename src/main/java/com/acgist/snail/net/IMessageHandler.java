@@ -21,14 +21,14 @@ public interface IMessageHandler {
 	int TIMEOUT_NONE = 0;
 	
 	/**
-	 * 可用状态
+	 * <p>可用状态</p>
 	 * 
 	 * @return true：可用；false：不可用；
 	 */
 	boolean available();
 	
 	/**
-	 * 消息发送
+	 * <p>消息发送</p>
 	 * 
 	 * @param message 消息内容
 	 * 
@@ -39,7 +39,7 @@ public interface IMessageHandler {
 	}
 	
 	/**
-	 * 消息发送
+	 * <p>消息发送</p>
 	 * 
 	 * @param message 消息内容
 	 * @param charset 编码格式
@@ -53,7 +53,7 @@ public interface IMessageHandler {
 	}
 	
 	/**
-	 * 消息发送
+	 * <p>消息发送</p>
 	 * 
 	 * @param message 消息内容
 	 * 
@@ -64,7 +64,7 @@ public interface IMessageHandler {
 	}
 	
 	/**
-	 * 消息发送
+	 * <p>消息发送</p>
 	 * 
 	 * @param buffer 消息内容
 	 * 
@@ -75,7 +75,8 @@ public interface IMessageHandler {
 	}
 	
 	/**
-	 * 消息发送（所有其他消息均由这个方法发送）
+	 * <p>消息发送</p>
+	 * <p>所有其他消息发送均使用此方法发送</p>
 	 * 
 	 * @param buffer 消息内容
 	 * @param timeout 超时时间
@@ -85,19 +86,19 @@ public interface IMessageHandler {
 	void send(ByteBuffer buffer, int timeout) throws NetException;
 
 	/**
-	 * 获取远程服务地址
+	 * <p>获取远程服务地址</p>
 	 * 
 	 * @return 远程服务地址
 	 */
 	InetSocketAddress remoteSocketAddress();
 	
 	/**
-	 * 关闭资源
+	 * <p>关闭资源</p>
 	 */
 	void close();
 	
 	/**
-	 * 字符编码
+	 * <p>字符编码</p>
 	 * 
 	 * @param message 消息
 	 * @param charset 编码

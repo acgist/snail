@@ -454,8 +454,8 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	/**
 	 * <p>设置消息头</p>
 	 * 
-	 * @param 消息类型
-	 * @param 消息长度
+	 * @param type 消息类型
+	 * @param size 消息长度
 	 */
 	private ByteBuffer buildHeader(byte type, int size) {
 		final ByteBuffer buffer = ByteBuffer.allocate(size);
