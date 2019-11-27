@@ -29,7 +29,7 @@ public final class UtpService {
 	/**
 	 * UTP超时定时任务
 	 */
-	private static final int UTP_INTERVAL = 5;
+	private static final int UTP_INTERVAL = 10;
 	
 	/**
 	 * 连接ID：每次获取+1
@@ -41,7 +41,6 @@ public final class UtpService {
 	private final Map<String, UtpMessageHandler> utpMessageHandlers = new ConcurrentHashMap<>();
 	
 	private UtpService() {
-		register();
 	}
 	
 	public static final UtpService getInstance() {
@@ -49,34 +48,17 @@ public final class UtpService {
 	}
 	
 	/**
-	 * UTP超时定时任务：定时处理超时消息
+	 * <p>注册UTP服务</p>
 	 */
-	private void register() {
-		LOGGER.debug("启动UTP超时定时任务");
+	public void register() {
+		LOGGER.debug("注册UTP服务：定时任务");
 		SystemThreadContext.timerFixedDelay(UTP_INTERVAL, UTP_INTERVAL, TimeUnit.SECONDS, () -> {
-			LOGGER.debug("执行UTP超时定时任务");
-			synchronized (this.utpMessageHandlers) {
-				try {
-					this.utpMessageHandlers.values().stream()
-						.filter(handler -> {
-							if(handler.available()) {
-								handler.timeoutRetry();
-								return false;
-							} else {
-								return true;
-							}
-						})
-						.collect(Collectors.toList())
-						.forEach(value -> value.close());
-				} catch (Exception e) {
-					LOGGER.error("UTP超时定时任务异常", e);
-				}
-			}
+			this.timeout();
 		});
 	}
 	
 	/**
-	 * 获取连接ID
+	 * @return 连接ID
 	 */
 	public short connectionId() {
 		synchronized (this) {
@@ -123,6 +105,30 @@ public final class UtpService {
 	 */
 	public String buildKey(Short connectionId, InetSocketAddress socketAddress) {
 		return socketAddress.getHostString() + socketAddress.getPort() + connectionId;
+	}
+	
+	/**
+	 * <p>处理超时UTP消息</p>
+	 */
+	private void timeout() {
+		LOGGER.debug("处理超时UTP消息");
+		synchronized (this.utpMessageHandlers) {
+			try {
+				this.utpMessageHandlers.values().stream()
+					.filter(handler -> {
+						if(handler.available()) { // 消息代理可用：重试
+							handler.timeoutRetry();
+							return false;
+						} else { // 消息代理不可用：关闭
+							return true;
+						}
+					})
+					.collect(Collectors.toList())
+					.forEach(value -> value.close());
+			} catch (Exception e) {
+				LOGGER.error("处理超时UTP消息异常", e);
+			}
+		}
 	}
 
 }

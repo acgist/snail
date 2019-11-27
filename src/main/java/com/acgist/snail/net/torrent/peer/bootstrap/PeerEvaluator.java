@@ -19,7 +19,7 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>Peer评估器</p>
- * <p>根据IP地址评估，判断插入Peer队列的头部还是尾部。</p>
+ * <p>根据IP地址评估，下载时判断Peer是否优先使用。</p>
  * <p>将所有IP（2^32个）分为65536（2^16）个区域，然后可以连接和可以下载的均给予评分。</p>
  * <p>系统启动时初始化分数，关闭时保存分数，得分等于0的记录不保存。</p>
  * 
@@ -38,20 +38,20 @@ public final class PeerEvaluator {
 	public enum Type {
 		
 		/** 连接 */
-		CONNECT	(1),
+		CONNECT	((byte) 0x01),
 		/** 下载 */
-		DOWNLOAD(3);
+		DOWNLOAD((byte) 0x03);
 
 		/**
 		 * 评分
 		 */
-		private final int score;
+		private final byte score;
 		
-		private Type(int score) {
+		private Type(byte score) {
 			this.score = score;
 		}
 		
-		public int score() {
+		public byte score() {
 			return this.score;
 		}
 		
@@ -63,11 +63,11 @@ public final class PeerEvaluator {
 	private static final int RANGE_STEP = 2 << 15;
 	/**
 	 * <p>最小计分下载大小：1M</p>
-	 * <p>如果计分时下载数据大小没有超过这个值将不计分。</p>
+	 * <p>如果计分时下载数据大小没有超过这个值将不计分</p>
 	 */
 	private static final int MIN_SCOREABLE_DOWNLOAD_LENGTH = SystemConfig.ONE_MB;
 	/**
-	 * 范围配置
+	 * 范围配置：数据库配置名称
 	 */
 	private static final String ACGIST_SYSTEM_RANGE = "acgist.system.range";
 	
@@ -93,7 +93,7 @@ public final class PeerEvaluator {
 	}
 	
 	/**
-	 * 初始化：加载评分
+	 * <p>初始化</p>
 	 */
 	public void init() {
 		synchronized (this) {
@@ -104,11 +104,11 @@ public final class PeerEvaluator {
 	}
 
 	/**
-	 * 判断Peer插入位置
+	 * <p>判断是否是优质Peer</p>
 	 * 
 	 * @param peerSession Peer
 	 * 
-	 * @return true：尾部（优先使用）；false：头部；
+	 * @return true：优质（尾部）；false：劣质（头部）；
 	 */
 	public boolean eval(PeerSession peerSession) {
 		if(!this.available) {
@@ -125,14 +125,14 @@ public final class PeerEvaluator {
 
 	/**
 	 * <p>计分</p>
-	 * <p>下载计分：下载大小 &ge; {@linkplain #MIN_SCOREABLE_DOWNLOAD_LENGTH 最小计分下载大小}，可以重复计分。</p>
-	 * <p>注：不同步，允许运行出现误差。</p>
+	 * <p>下载计分：下载大小大于等于{@linkplain #MIN_SCOREABLE_DOWNLOAD_LENGTH 最小计分下载大小}（可以重复计分）</p>
+	 * <p>注：不同步（允许出现误差）</p>
 	 */
 	public void score(PeerSession peerSession, Type type) {
 		if(peerSession == null) {
 			return;
 		}
-		if(!this.available) { // 没有初始化不计分
+		if(!this.available) { // 不可用不计分
 			return;
 		}
 		if(type == Type.DOWNLOAD) { // 下载计分需要满足最小下载大小
@@ -152,7 +152,7 @@ public final class PeerEvaluator {
 	}
 	
 	/**
-	 * 关闭资源
+	 * <p>关闭Peer评估器</p>
 	 */
 	public void shutdown() {
 		LOGGER.info("关闭Peer评估器");
@@ -169,14 +169,14 @@ public final class PeerEvaluator {
 	}
 	
 	/**
-	 * IP区域
+	 * <p>IP区域</p>
 	 */
 	public Map<Integer, Long> ranges() {
 		return this.ranges;
 	}
 	
 	/**
-	 * 记录数据库：只记录分值大于0的数据
+	 * <p>记录数据库：只记录分值大于0的数据</p>
 	 */
 	private void store() {
 		final ConfigRepository repository = new ConfigRepository();
@@ -185,7 +185,7 @@ public final class PeerEvaluator {
 	}
 
 	/**
-	 * 加载IP区域
+	 * <p>初始化Peer评估器</p>
 	 */
 	private void buildRanges() {
 		final ConfigRepository repository = new ConfigRepository();

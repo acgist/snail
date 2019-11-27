@@ -68,11 +68,11 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	public static final int HANDSHAKE_TIMEOUT = SystemConfig.CONNECT_TIMEOUT;
 	
 	/**
-	 * 发送握手
+	 * 是否已经发送握手
 	 */
 	private volatile boolean handshakeSend = false;
 	/**
-	 * 处理握手
+	 * 是否已经处理握手
 	 */
 	private volatile boolean handshakeRecv = false;
 	/**

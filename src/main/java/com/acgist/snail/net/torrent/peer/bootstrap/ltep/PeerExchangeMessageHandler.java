@@ -28,6 +28,8 @@ import com.acgist.snail.utils.PeerUtils;
  * 
  * TODO：IPv6
  * 
+ * TODO：holepunch连接
+ * 
  * @author acgist
  * @since 1.0.0
  */
@@ -36,15 +38,31 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerExchangeMessageHandler.class);
 	
 	//================IPv4================//
-	
+	/**
+	 * 地址
+	 */
 	private static final String ADDED = "added";
+	/**
+	 * 属性
+	 */
 	private static final String ADDEDF = "added.f";
+	/**
+	 * 删除地址
+	 */
 	private static final String DROPPED = "dropped";
 	
 	//================IPv6================//
-	
+	/**
+	 * 地址
+	 */
 	private static final String ADDED6 = "added6";
+	/**
+	 * 属性
+	 */
 	private static final String ADDED6F = "added6.f";
+	/**
+	 * 删除地址
+	 */
 	private static final String DROPPED6 = "dropped6";
 	
 	private final TorrentSession torrentSession;
@@ -64,7 +82,7 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 	}
 	
 	/**
-	 * 发送消息：pex
+	 * <p>发送消息：pex</p>
 	 */
 	public void pex(byte[] bytes) {
 		LOGGER.debug("发送pex消息");
@@ -106,7 +124,7 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 	}
 	
 	/**
-	 * 创建pex消息
+	 * <p>创建pex消息</p>
 	 * 
 	 * TODO：IPv6
 	 */

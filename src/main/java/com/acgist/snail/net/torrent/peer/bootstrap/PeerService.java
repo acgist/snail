@@ -12,7 +12,7 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>Peer Service</p>
- * <p>管理Peer的ID和端口。</p>
+ * <p>管理客户端的PeerId和端口</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -28,7 +28,7 @@ public final class PeerService {
 	 */
 	private static final int VERSION_LENGTH = 4;
 	/**
-	 * PeerId前缀
+	 * PeerId前缀：AS=ACGIST Snail
 	 */
 	private static final String PEER_ID_PREFIX = "AS";
 	
@@ -37,7 +37,7 @@ public final class PeerService {
 	 */
 	private final byte[] peerId;
 	/**
-	 * PeerId HTTP传输编码
+	 * PeerId：HTTP传输编码
 	 */
 	private final String peerIdUrl;
 
@@ -51,11 +51,12 @@ public final class PeerService {
 	}
 	
 	/**
-	 * 生成PeerId
+	 * <p>生成PeerId</p>
 	 */
 	private byte[] buildPeerId() {
 		final byte[] peerIds = new byte[PeerConfig.PEER_ID_LENGTH];
 		final StringBuilder builder = new StringBuilder(8);
+		// 前缀：-ASXXXX-
 		builder.append("-").append(PEER_ID_PREFIX);
 		final String version = SystemConfig.getVersion().replace(".", "");
 		if(version.length() > VERSION_LENGTH) {
@@ -65,6 +66,7 @@ public final class PeerService {
 			builder.append("0".repeat(VERSION_LENGTH - version.length()));
 		}
 		builder.append("-");
+		// 后缀：随机
 		final String peerIdPrefix = builder.toString();
 		System.arraycopy(peerIdPrefix.getBytes(), 0, peerIds, 0, peerIdPrefix.length());
 		final Random random = NumberUtils.random();
@@ -76,7 +78,7 @@ public final class PeerService {
 	}
 	
 	/**
-	 * 生成PeerIdUrl
+	 * <p>生成PeerIdUrl</p>
 	 */
 	private String buildPeerIdUrl() {
 		int index = 0;
@@ -91,10 +93,16 @@ public final class PeerService {
 		return builder.toString();
 	}
 	
+	/**
+	 * @return PeerId
+	 */
 	public byte[] peerId() {
 		return this.peerId;
 	}
 	
+	/**
+	 * @return PeerIdUrl：HTTP传输编码
+	 */
 	public String peerIdUrl() {
 		return this.peerIdUrl;
 	}

@@ -24,13 +24,6 @@ public final class DhtManager {
 	
 	private static final DhtManager INSTANCE = new DhtManager();
 	
-	static {
-		LOGGER.debug("启动DHT超时请求清除定时任务");
-		SystemThreadContext.timerFixedDelay(DhtConfig.DHT_REQUEST_CLEAN_INTERVAL, DhtConfig.DHT_REQUEST_CLEAN_INTERVAL, TimeUnit.MINUTES, () -> {
-			DhtManager.getInstance().clear(); // 清除DHT超时请求
-		});
-	}
-	
 	/**
 	 * <p>请求列表</p>
 	 */
@@ -42,6 +35,16 @@ public final class DhtManager {
 	
 	public static final DhtManager getInstance() {
 		return INSTANCE;
+	}
+	
+	/**
+	 * <p>注册DHT服务</p>
+	 */
+	public void register() {
+		LOGGER.debug("注册DHT服务：定时任务");
+		SystemThreadContext.timerFixedDelay(DhtConfig.DHT_REQUEST_CLEAN_INTERVAL, DhtConfig.DHT_REQUEST_CLEAN_INTERVAL, TimeUnit.MINUTES, () -> {
+			this.timeout(); // 处理超时请求
+		});
 	}
 	
 	/**
@@ -82,10 +85,11 @@ public final class DhtManager {
 	}
 	
 	/**
-	 * <p>清空DHT超时请求</p>
+	 * <p>处理DHT超时请求</p>
+	 * <p>处理方式：清除</p>
 	 */
-	public void clear() {
-		LOGGER.debug("清空DHT超时请求");
+	private void timeout() {
+		LOGGER.debug("处理DHT超时请求");
 		synchronized (this.requests) {
 			Request request;
 			final long timeout = DhtConfig.TIMEOUT.toMillis();

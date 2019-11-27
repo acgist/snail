@@ -11,7 +11,7 @@ import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
 
 /**
- * 本地发现服务端
+ * <p>本地发现服务端</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -39,22 +39,6 @@ public final class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDis
 	 */
 	public static final String LSD_HOST_IPV6 = "[ff15::efc0:988f]";
 	
-	static {
-		LOGGER.debug("注册本地发现定时任务");
-		final Integer interval = SystemConfig.getLsdInterval();
-		SystemThreadContext.timerFixedDelay(interval, interval, TimeUnit.SECONDS, () -> {
-			LOGGER.debug("执行本地发现定时任务");
-			final LocalServiceDiscoveryClient client = LocalServiceDiscoveryClient.newInstance();
-			TorrentManager.getInstance().allTorrentSession().forEach(session -> {
-				if(session.isPrivateTorrent()) {
-					LOGGER.debug("私有种子：不执行本地发现任务");
-				} else {
-					client.localSearch(session.infoHashHex());
-				}
-			});
-		});
-	}
-	
 	public LocalServiceDiscoveryServer() {
 		super(LSD_PORT, true, "LSD Server", LocalServiceDiscoveryAcceptHandler.getInstance());
 		this.join(LSD_TTL, LSD_HOST);
@@ -63,6 +47,33 @@ public final class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDis
 	
 	public static final LocalServiceDiscoveryServer getInstance() {
 		return INSTANCE;
+	}
+
+	/**
+	 * <p>注册本地发现服务</p>
+	 */
+	public void register() {
+		LOGGER.debug("注册本地发现服务：定时任务");
+		final Integer interval = SystemConfig.getLsdInterval();
+		SystemThreadContext.timerFixedDelay(interval, interval, TimeUnit.SECONDS, () -> {
+			this.broadcast();
+		});
+	}
+	
+	/**
+	 * <p>发送本地发现消息</p>
+	 */
+	private void broadcast() {
+		LOGGER.debug("发送本地发现消息");
+		final LocalServiceDiscoveryClient client = LocalServiceDiscoveryClient.newInstance();
+		TorrentManager.getInstance().allTorrentSession().forEach(session -> {
+			if(session.isPrivateTorrent()) {
+				LOGGER.debug("私有种子（禁止发送本地发现消息）：{}", session.infoHashHex());
+			} else {
+				LOGGER.debug("发送本地发现消息：{}", session.infoHashHex());
+				client.localSearch(session.infoHashHex());
+			}
+		});
 	}
 	
 }
