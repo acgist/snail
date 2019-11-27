@@ -32,4 +32,14 @@ public class HeaderWrapperTest {
 		assertEquals(builder.toString(), wrapper.build());
 	}
 	
+	@Test
+	public void buildMulti() {
+		HeaderWrapper wrapper = HeaderWrapper.newBuilder("M-SEARCH * HTTP/1.1");
+		wrapper
+			.header("HOST", "1234")
+			.header("MX", "3")
+			.header("MX", "4");
+		System.out.println(wrapper.build());
+	}
+	
 }
