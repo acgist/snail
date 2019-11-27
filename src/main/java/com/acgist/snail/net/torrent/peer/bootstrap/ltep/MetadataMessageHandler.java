@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.bean.InfoHash;
+import com.acgist.snail.pojo.bean.Torrent;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.bencode.BEncodeDecoder;
@@ -24,7 +25,7 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * <p>Extension for Peers to Send Metadata Files</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0009.html</p>
- * <p>InfoHash交换种子文件信息（info）</p>
+ * <p>InfoHash交换种子{@linkplain Torrent#getInfo() 文件信息}</p>
  * 
  * TODO：大量请求时拒绝请求
  * 
@@ -48,7 +49,7 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 	 */
 	private static final String ARG_MSG_TYPE = "msg_type";
 	/**
-	 * Info数据大小
+	 * InfoHash种子文件数据大小
 	 */
 	private static final String ARG_TOTAL_SIZE = "total_size";
 	
@@ -72,16 +73,16 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 		final var decoder = BEncodeDecoder.newInstance(bytes);
 		decoder.nextMap();
 		if(decoder.isEmpty()) {
-			LOGGER.warn("metadata消息错误（格式）：{}", decoder.oddString());
+			LOGGER.warn("处理metadata消息错误（格式）：{}", decoder.oddString());
 			return;
 		}
 		final Byte typeId = decoder.getByte(ARG_MSG_TYPE);
 		final MetadataType metadataType = PeerConfig.MetadataType.valueOf(typeId);
 		if(metadataType == null) {
-			LOGGER.warn("metadata消息错误（类型不支持）：{}", typeId);
+			LOGGER.warn("处理metadata消息错误（类型不支持）：{}", typeId);
 			return;
 		}
-		LOGGER.debug("metadata消息类型：{}", metadataType);
+		LOGGER.debug("处理metadata消息类型：{}", metadataType);
 		switch (metadataType) {
 		case REQUEST:
 			request(decoder);
@@ -93,13 +94,13 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 			reject(decoder);
 			break;
 		default:
-			LOGGER.info("metadata消息错误（类型未适配）：{}", metadataType);
+			LOGGER.info("处理metadata消息错误（类型未适配）：{}", metadataType);
 			break;
 		}
 	}
 	
 	/**
-	 * 发送消息：request
+	 * <p>发送消息：request</p>
 	 */
 	public void request() {
 		LOGGER.debug("发送metadata消息-request");
@@ -112,7 +113,7 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 	}
 	
 	/**
-	 * 处理消息：request
+	 * <p>处理消息：request</p>
 	 */
 	private void request(BEncodeDecoder decoder) {
 		LOGGER.debug("处理metadata消息-request");
@@ -121,7 +122,7 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 	}
 
 	/**
-	 * 发送消息：data
+	 * <p>发送消息：data</p>
 	 * 
 	 * @param piece 种子块索引
 	 */
@@ -150,7 +151,7 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 	}
 
 	/**
-	 * 处理消息：data
+	 * <p>处理消息：data</p>
 	 * 
 	 * @param decoder B编码数据
 	 */
@@ -158,7 +159,7 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 		LOGGER.debug("处理metadata消息-data");
 		byte[] bytes = this.infoHash.info();
 		final int piece = decoder.getInteger(ARG_PIECE);
-		// 设置种子infoInfo
+		// 设置种子Info
 		if(bytes == null) {
 			final int totalSize = decoder.getInteger(ARG_TOTAL_SIZE);
 			bytes = new byte[totalSize];
@@ -167,7 +168,7 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 		final int begin = piece * SLICE_LENGTH;
 		final int end = begin + SLICE_LENGTH;
 		if(begin > bytes.length) {
-			LOGGER.warn("metadata消息-data处理失败（数据长度错误）：{}-{}", begin, bytes.length);
+			LOGGER.warn("处理metadata消息-data失败（数据长度错误）：{}-{}", begin, bytes.length);
 			return;
 		}
 		int length = SLICE_LENGTH;

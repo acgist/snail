@@ -23,9 +23,9 @@ import com.acgist.snail.utils.StringUtils;
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0055.html</p>
  * <dl>
  * 	<dt>注意事项</dt>
+ * 	<dd>目标方如果已经连接发起方，应该忽略连接消息。</dd>
  * 	<dd>目标方如果不希望连接发起方时，直接忽略连接消息，不能响应错误给中继。</dd>
  * 	<dd>发起方如果没有在扩展协议握手时表示支持holepunch扩展协议，中继应该忽略所有消息。</dd>
- * 	<dd>目标方如果已经连接发起方，应该忽略连接消息。</dd>
  * </dl>
  * 
  * @author acgist
@@ -35,7 +35,13 @@ public class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(HolepunchMessageHnadler.class);
 
+	/**
+	 * IPv4
+	 */
 	private static final byte IPV4 = 0x00;
+//	/**
+//	 * IPv6
+//	 */
 //	private static final byte IPV6 = 0x01;
 	
 	private final TorrentSession torrentSession;
@@ -54,10 +60,10 @@ public class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 		final byte typeId = buffer.get();
 		final HolepunchType holepunchType = PeerConfig.HolepunchType.valueOf(typeId);
 		if(holepunchType == null) {
-			LOGGER.warn("holepunch消息错误（类型不支持）：{}", typeId);
+			LOGGER.warn("处理holepunch消息错误（类型不支持）：{}", typeId);
 			return;
 		}
-		final byte addrType = buffer.get();
+		final byte addrType = buffer.get(); // 地址类型
 		int port;
 		String host;
 		if(addrType == IPV4) {
@@ -68,7 +74,7 @@ public class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 			port = 0;
 			return; // TODO：IPv6
 		}
-		LOGGER.debug("holepunch消息类型：{}", holepunchType);
+		LOGGER.debug("处理holepunch消息类型：{}", holepunchType);
 		switch (holepunchType) {
 		case RENDEZVOUS:
 			onRendezvous(host, port);
@@ -81,13 +87,13 @@ public class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 			onError(host, port, errorCode);
 			break;
 		default:
-			LOGGER.info("holepunch消息错误（类型未适配）：{}", holepunchType);
+			LOGGER.info("处理holepunch消息错误（类型未适配）：{}", holepunchType);
 			break;
 		}
 	}
 	
 	/**
-	 * 发送消息：rendezvous
+	 * <p>发送消息：rendezvous</p>
 	 * 
 	 * @param host 地址
 	 * @param port 端口
@@ -100,7 +106,7 @@ public class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	
 	/**
 	 * <p>处理消息：rendezvous</p>
-	 * <p>如果已经连接到目标方，返回连接消息，其他情况返回相应错误。</p>
+	 * <p>如果已经连接到目标方，同时发送连接消息给发起方和目标方，其他情况返回相应错误。</p>
 	 * 
 	 * @param host 目标地址
 	 * @param port 目标端口
@@ -109,25 +115,27 @@ public class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 		LOGGER.debug("处理holepunch消息-rendezvous：{}-{}", host, port);
 		final String extIp = SystemConfig.getExternalIpAddress();
 		if(StringUtils.equals(host, extIp)) {
-			LOGGER.debug("holepunch消息-rendezvous处理失败：目标属于中继");
+			LOGGER.debug("处理holepunch消息-rendezvous失败：目标属于中继");
 			this.error(host, port, HolepunchErrorCode.CODE_04);
 			return;
 		}
 		// 目标Peer
 		final var peerSession = PeerManager.getInstance().findPeerSession(this.torrentSession.infoHashHex(), host);
+		// 目标不存在
 		if(peerSession == null) {
-			// TODO：是否加入Peer列表
-			LOGGER.debug("holepunch消息-rendezvous处理失败：目标不存在");
+			LOGGER.debug("处理holepunch消息-rendezvous失败：目标不存在");
 			this.error(host, port, HolepunchErrorCode.CODE_01);
 			return;
 		}
+		// 目标未连接
 		if(!peerSession.connected()) {
-			LOGGER.debug("holepunch消息-rendezvous处理失败：目标未连接");
+			LOGGER.debug("处理holepunch消息-rendezvous失败：目标未连接");
 			this.error(host, port, HolepunchErrorCode.CODE_02);
 			return;
 		}
+		// 目标不支持协议
 		if(!peerSession.supportExtensionType(ExtensionType.UT_HOLEPUNCH)) {
-			LOGGER.debug("holepunch消息-rendezvous处理失败：目标不支持协议");
+			LOGGER.debug("处理holepunch消息-rendezvous失败：目标不支持协议");
 			this.error(host, port, HolepunchErrorCode.CODE_03);
 			return;
 		}
@@ -147,7 +155,7 @@ public class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	}
 	
 	/**
-	 * 发送消息：connect
+	 * <p>发送消息：connect</p>
 	 */
 	public void connect(String host, int port) {
 		LOGGER.debug("发送holepunch消息-connect：{}-{}", host, port);
@@ -155,7 +163,7 @@ public class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	}
 	
 	/**
-	 * 处理消息：connect
+	 * <p>处理消息：connect</p>
 	 */
 	public void onConnect(String host, int port) {
 		LOGGER.debug("处理holepunch消息-connect：{}-{}", host, port);
@@ -184,7 +192,7 @@ public class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	}
 
 	/**
-	 * 发送消息：error
+	 * <p>发送消息：error</p>
 	 */
 	private void error(String host, int port, HolepunchErrorCode errorCode) {
 		LOGGER.debug("发送holepunch消息-error：{}-{}-{}", host, port, errorCode);
@@ -192,21 +200,28 @@ public class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	}
 	
 	/**
-	 * 处理消息：error
+	 * <p>处理消息：error</p>
 	 */
 	private void onError(String host, int port, int errorCode) {
 		LOGGER.warn("处理holepunch消息-error：{}-{}-{}", host, port, errorCode);
 	}
 	
 	/**
-	 * 创建消息（非error消息）
+	 * <p>创建消息</p>
+	 * 
+	 * @see #buildMessage(HolepunchType, String, int, HolepunchErrorCode)
 	 */
 	private ByteBuffer buildMessage(HolepunchType type, String host, int port) {
 		return this.buildMessage(type, host, port, null);
 	}
 	
 	/**
-	 * 创建消息
+	 * <p>创建消息</p>
+	 * 
+	 * @param type 消息类型
+	 * @param host 地址
+	 * @param port 端口
+	 * @param errorCode 错误编码：非错误消息=null
 	 * 
 	 * TODO：IPv6
 	 */

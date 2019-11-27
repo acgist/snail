@@ -13,7 +13,7 @@ import com.acgist.snail.system.exception.NetException;
 public interface IExtensionMessageHandler {
 
 	/**
-	 * 处理扩展消息
+	 * <p>处理扩展消息</p>
 	 * 
 	 * @param buffer 消息
 	 * 

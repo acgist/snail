@@ -32,9 +32,18 @@ import com.acgist.snail.utils.StringUtils;
 public final class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler implements IMessageCodec<String> {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(LocalServiceDiscoveryMessageHandler.class);
-	
+
+	/**
+	 * 端口
+	 */
 	private static final String HEADER_PORT = "Port";
+	/**
+	 * Cookie：区别软件本身消息
+	 */
 	private static final String HEADER_COOKIE = "cookie";
+	/**
+	 * InfoHash
+	 */
 	private static final String HEADER_INFOHASH = "Infohash";
 
 	public LocalServiceDiscoveryMessageHandler() {
@@ -62,6 +71,13 @@ public final class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler
 		}
 	}
 
+	/**
+	 * <p>处理本地发现消息</p>
+	 * 
+	 * @param host 地址
+	 * @param port 端口
+	 * @param infoHashHex InfoHashHex
+	 */
 	private void doInfoHash(String host, String port, String infoHashHex) {
 		final TorrentSession torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
 		if(torrentSession == null) {

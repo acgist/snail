@@ -21,7 +21,7 @@ import com.acgist.snail.utils.CollectionUtils;
 
 /**
  * <p>Peer管理器</p>
- * <p>Peer加入放入两个队列，一个队列负责下载时使用：{@link #peers}，一个负责存档：{@link #storagePeers}。</p>
+ * <p>Peer放入两个队列：{@linkplain #peers 下载队列}、{@linkplain #storagePeers 存档队列}</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -33,13 +33,14 @@ public final class PeerManager {
 	private static final PeerManager INSTANCE = new PeerManager();
 	
 	/**
-	 * <p>Peer队列，下载时Peer从中剔除，当Peer从下载队列中剔除时从新放回到队列中。</p>
+	 * <p>下载队列</p>
+	 * <p>下载时Peer从队列中剔除，当Peer使用结束后重新放回下载队列。</p>
 	 * <p>key=InfoHashHex</p>
-	 * <p>value=Peer：双端队列（尾部优先使用）</p>
+	 * <p>value=Peer双端队列（尾部优先使用）</p>
 	 */
 	private final Map<String, Deque<PeerSession>> peers;
 	/**
-	 * Peer存档队列
+	 * <p>Peer存档队列</p>
 	 */
 	private final Map<String, List<PeerSession>> storagePeers;
 	
@@ -53,7 +54,7 @@ public final class PeerManager {
 	}
 	
 	/**
-	 * 查找PeerSession
+	 * <p>查找PeerSession</p>
 	 */
 	public PeerSession findPeerSession(String infoHashHex, String host) {
 		final var list = list(infoHashHex);
@@ -63,7 +64,7 @@ public final class PeerManager {
 	}
 	
 	/**
-	 * Peer存档队列拷贝
+	 * <p>存档队列拷贝</p>
 	 */
 	public List<PeerSession> listPeers(String infoHashHex) {
 		final var list = list(infoHashHex);
@@ -73,20 +74,22 @@ public final class PeerManager {
 	}
 	
 	/**
-	 * 删除任务对应的Peer队列
+	 * <p>删除任务对应的所有队列</p>
 	 */
 	public void remove(String infoHashHex) {
+		// 删除下载队列
 		synchronized (this.peers) {
 			this.peers.remove(infoHashHex);
 		}
+		// 删除存档队列
 		synchronized (this.storagePeers) {
 			this.storagePeers.remove(infoHashHex);
 		}
 	}
 	
 	/**
-	 * <p>新增Peer</p>
-	 * <p>优先级高的Peer插入尾部优先使用。</p>
+	 * <p>添加Peer</p>
+	 * <p>优先级高的Peer插入尾部优先使用</p>
 	 * <p>优先级计算：本地发现、主动连接、Peer评分、PEX可以连接</p>
 	 * 
 	 * @param infoHashHex InfoHashHex
@@ -96,8 +99,6 @@ public final class PeerManager {
 	 * @param source 来源
 	 * 
 	 * @return PeerSession
-	 * 
-	 * TODO：接入Peer调整Peer位置顺序
 	 */
 	public PeerSession newPeerSession(String infoHashHex, IStatisticsSession parent, String host, Integer port, byte source) {
 		synchronized (this) {
@@ -131,7 +132,7 @@ public final class PeerManager {
 	}
 	
 	/**
-	 * 放入一个劣质的Peer：插入头部
+	 * <p>下载队列添加劣质Peer：插入头部</p>
 	 */
 	public void inferior(String infoHashHex, PeerSession peerSession) {
 		final var deque = deque(infoHashHex);
@@ -141,7 +142,7 @@ public final class PeerManager {
 	}
 	
 	/**
-	 * 放入一个优质的Peer：插入尾部
+	 * <p>下载队列添加优质Peer：插入尾部</p>
 	 */
 	public void preference(String infoHashHex, PeerSession peerSession) {
 		final var deque = deque(infoHashHex);
@@ -151,7 +152,7 @@ public final class PeerManager {
 	}
 	
 	/**
-	 * 从尾部选择一个Peer下载：选择可用状态的Peer
+	 * <p>从下载队列尾部选择一个可用的Peer</p>
 	 */
 	public PeerSession pick(String infoHashHex) {
 		final var deque = deque(infoHashHex);
@@ -164,6 +165,7 @@ public final class PeerManager {
 					break;
 				}
 				peerSession = deque.pollLast();
+				// 可用状态
 				if(peerSession.available()) {
 					return peerSession;
 				} else {
@@ -176,10 +178,10 @@ public final class PeerManager {
 	
 	/**
 	 * <p>发送have消息</p>
-	 * <p>只发送给当前上传和下载的Peer</p>
+	 * <p>只发送给当前连接的Peer</p>
 	 */
 	public void have(String infoHashHex, int index) {
-		final var list = listActivePeer(infoHashHex);
+		final var list = listConnectPeer(infoHashHex);
 		final AtomicInteger count = new AtomicInteger(0);
 		list.stream()
 			.forEach(session -> {
@@ -193,12 +195,12 @@ public final class PeerManager {
 					peerDownloader.have(index);
 				}
 			});
-		LOGGER.debug("发送have消息，通知Peer数量：{}", count.get());
+		LOGGER.debug("发送have消息：通知Peer数量：{}", count.get());
 	}
 	
 	/**
 	 * <p>发送pex消息</p>
-	 * <p>只发送给当前上传和下载的Peer</p>
+	 * <p>只发送给当前连接的Peer</p>
 	 */
 	public void pex(String infoHashHex, List<PeerSession> optimize) {
 		final byte[] bytes = PeerExchangeMessageHandler.buildMessage(optimize);
@@ -206,7 +208,7 @@ public final class PeerManager {
 			LOGGER.debug("发送pex消息失败：消息为空");
 			return;
 		}
-		final var list = listActivePeer(infoHashHex);
+		final var list = listConnectPeer(infoHashHex);
 		final AtomicInteger count = new AtomicInteger(0);
 		list.stream()
 			.forEach(session -> {
@@ -220,15 +222,15 @@ public final class PeerManager {
 					peerDownloader.pex(bytes);
 				}
 			});
-		LOGGER.debug("发送pex消息，优质Peer数量：{}，通知Peer数量：{}", optimize.size(), count.get());
+		LOGGER.debug("发送pex消息：优质Peer数量：{}，通知Peer数量：{}", optimize.size(), count.get());
 	}
 	
 	/**
 	 * <p>发送uploadOnly消息</p>
-	 * <p>只发送给当前上传和下载的Peer</p>
+	 * <p>只发送给当前连接的Peer</p>
 	 */
 	public void uploadOnly(String infoHashHex) {
-		final var list = listActivePeer(infoHashHex);
+		final var list = listConnectPeer(infoHashHex);
 		final AtomicInteger count = new AtomicInteger(0);
 		list.stream()
 			.forEach(session -> {
@@ -242,11 +244,11 @@ public final class PeerManager {
 					peerDownloader.uploadOnly();
 				}
 			});
-		LOGGER.debug("发送uploadOnly消息，通知Peer数量：{}", count.get());
+		LOGGER.debug("发送uploadOnly消息：通知Peer数量：{}", count.get());
 	}
 	
 	/**
-	 * 获取Peer队列
+	 * @return 任务下载队列
 	 */
 	private Deque<PeerSession> deque(String infoHashHex) {
 		synchronized (this.peers) {
@@ -260,7 +262,7 @@ public final class PeerManager {
 	}
 	
 	/**
-	 * 获取Peer存档队列
+	 * @return 任务存档队列
 	 */
 	private List<PeerSession> list(String infoHashHex) {
 		synchronized (this.storagePeers) {
@@ -274,10 +276,10 @@ public final class PeerManager {
 	}
 	
 	/**
-	 * <p>获取活动的Peer队列拷贝</p>
-	 * <p>活动Peer：上传中、下载中</p>
+	 * <p>获取存档队列中当前连接的Peer队列拷贝</p>
+	 * <p>连接中的Peer：上传中、下载中</p>
 	 */
-	private List<PeerSession> listActivePeer(String infoHashHex) {
+	private List<PeerSession> listConnectPeer(String infoHashHex) {
 		final var list = list(infoHashHex);
 		if(CollectionUtils.isEmpty(list)) {
 			return List.of();

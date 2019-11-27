@@ -13,7 +13,6 @@ import com.acgist.snail.system.initializer.Initializer;
 
 /**
  * <p>初始化数据库</p>
- * <p>如果数据库表没有创建，执行建表语句。</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -31,24 +30,29 @@ public final class DatabaseInitializer extends Initializer {
 		return new DatabaseInitializer();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * <p>如果数据库表没有创建，执行建表语句。</p>
+	 */
 	@Override
 	protected void init() {
 		LOGGER.info("初始化数据库");
 		if(exist()) { // 已经创建
-		} else { // 未创建表
+		} else { // 没有创建：执行创建语句
 			buildTable();
 		}
 	}
 	
 	/**
-	 * 判断表是否存在
+	 * <p>查询表是否存在</p>
 	 */
 	private boolean exist() {
 		return this.databaseManager.haveTable(ConfigEntity.TABLE_NAME);
 	}
 
 	/**
-	 * 数据库建表
+	 * <p>执行建表语句</p>
 	 */
 	private void buildTable() {
 		LOGGER.info("数据库建表");
@@ -57,7 +61,7 @@ public final class DatabaseInitializer extends Initializer {
 	}
 
 	/**
-	 * 读取建表SQL
+	 * <p>读取建表SQL</p>
 	 */
 	private String buildTableSQL() {
 		final StringBuilder sql = new StringBuilder();

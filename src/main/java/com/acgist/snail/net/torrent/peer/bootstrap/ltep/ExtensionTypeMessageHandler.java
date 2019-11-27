@@ -42,14 +42,14 @@ public abstract class ExtensionTypeMessageHandler implements IExtensionMessageHa
 	@Override
 	public void onMessage(ByteBuffer buffer) throws NetException {
 		if(!this.supportExtensionType()) {
-			LOGGER.debug("扩展协议消息错误（类型不支持）：{}", this.extensionType);
+			LOGGER.debug("处理扩展协议消息错误（类型不支持）：{}", this.extensionType);
 			return;
 		}
 		this.doMessage(buffer);
 	}
 	
 	/**
-	 * 处理扩展消息
+	 * <p>处理扩展消息</p>
 	 * 
 	 * @param buffer 消息
 	 * 
@@ -58,7 +58,7 @@ public abstract class ExtensionTypeMessageHandler implements IExtensionMessageHa
 	protected abstract void doMessage(ByteBuffer buffer) throws NetException;
 	
 	/**
-	 * 是否支持扩展协议
+	 * <p>是否支持扩展协议</p>
 	 * 
 	 * @return true-支持；false-不支持；
 	 */
@@ -67,8 +67,6 @@ public abstract class ExtensionTypeMessageHandler implements IExtensionMessageHa
 	}
 	
 	/**
-	 * 获取扩展协议ID
-	 * 
 	 * @return 扩展协议ID
 	 */
 	protected Byte extensionTypeId() {
@@ -76,14 +74,14 @@ public abstract class ExtensionTypeMessageHandler implements IExtensionMessageHa
 	}
 
 	/**
-	 * 发送扩展消息
+	 * <p>发送扩展消息</p>
 	 */
 	protected void pushMessage(ByteBuffer buffer) {
 		this.pushMessage(buffer.array());
 	}
 	
 	/**
-	 * 发送扩展消息
+	 * <p>发送扩展消息</p>
 	 */
 	protected void pushMessage(byte[] bytes) {
 		this.extensionMessageHandler.pushMessage(extensionTypeId(), bytes);

@@ -38,7 +38,7 @@ public final class UploadOnlyExtensionMessageHandler extends ExtensionTypeMessag
 	}
 
 	/**
-	 * 发送uploadOnly消息
+	 * <p>发送uploadOnly消息</p>
 	 */
 	public void uploadOnly() {
 		LOGGER.debug("发送uploadOnly消息");
@@ -48,11 +48,11 @@ public final class UploadOnlyExtensionMessageHandler extends ExtensionTypeMessag
 	}
 	
 	/**
-	 * 处理uploadOnly消息
+	 * <p>处理uploadOnly消息</p>
 	 */
 	private void uploadOnly(ByteBuffer buffer) {
 		if(!buffer.hasRemaining()) {
-			LOGGER.debug("uploadOnly消息错误（长度）：{}", buffer.remaining());
+			LOGGER.debug("处理uploadOnly消息错误（长度）：{}", buffer.remaining());
 			return;
 		}
 		final byte value = buffer.get();

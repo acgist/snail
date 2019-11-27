@@ -45,6 +45,9 @@ public final class DhtExtensionMessageHandler implements IExtensionMessageHandle
 		port(buffer);
 	}
 
+	/**
+	 * <p>发送DHT消息</p>
+	 */
 	public void port() {
 		LOGGER.debug("发送DHT消息");
 		final byte[] bytes = NumberUtils.shortToBytes(SystemConfig.getTorrentPortExtShort());

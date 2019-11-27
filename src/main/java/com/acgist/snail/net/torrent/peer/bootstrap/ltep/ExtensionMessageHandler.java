@@ -57,49 +57,53 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	/**
 	 * 扩展协议信息
 	 */
-	public static final String EX_M = "m";
+	private static final String EX_M = "m";
 	/**
 	 * 软件信息（名称和版本）
 	 */
-	public static final String EX_V = "v";
+	private static final String EX_V = "v";
 	/**
 	 * 端口
 	 */
-	public static final String EX_P = "p";
+	private static final String EX_P = "p";
 	/**
 	 * 偏爱加密
 	 */
-	public static final String EX_E = "e";
+	private static final String EX_E = "e";
 	/**
 	 * 支持未完成请求数量
 	 */
-	public static final String EX_REQQ = "reqq";
-	/**
-	 * IPv4地址
-	 */
-	public static final String EX_IPV4 = "ipv4";
-	/**
-	 * IPv6地址
-	 */
-	public static final String EX_IPV6 = "ipv6";
+	private static final String EX_REQQ = "reqq";
+//	/**
+//	 * IPv4地址
+//	 */
+//	private static final String EX_IPV4 = "ipv4";
+//	/**
+//	 * IPv6地址
+//	 */
+//	private static final String EX_IPV6 = "ipv6";
 	/**
 	 * 外网IP地址
 	 */
-	public static final String EX_YOURIP = "yourip";
+	private static final String EX_YOURIP = "yourip";
 	/**
 	 * <p>任务已经完成：只上传不下载</p>
 	 * <p>协议链接：http://bittorrent.org/beps/bep_0021.html</p>
 	 */
-	public static final String EX_UPLOAD_ONLY = "upload_only";
+	private static final String EX_UPLOAD_ONLY = "upload_only";
 	/**
 	 * ut_metadata：种子InfoHash数据大小
 	 */
-	public static final String EX_METADATA_SIZE = "metadata_size";
+	private static final String EX_METADATA_SIZE = "metadata_size";
 
 	/**
-	 * 是否已经握手
+	 * 是否已经发送握手
 	 */
 	private volatile boolean handshakeSend = false;
+	/**
+	 * 是否已经接收握手
+	 */
+	private volatile boolean handshakeRecv = false;
 	
 	private final InfoHash infoHash;
 	private final PeerSession peerSession;
@@ -111,10 +115,6 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	private final PeerExchangeMessageHandler peerExchangeMessageHandler;
 	private final DontHaveExtensionMessageHandler dontHaveExtensionMessageHandler;
 	private final UploadOnlyExtensionMessageHandler uploadOnlyExtensionMessageHandler;
-	
-	public static final ExtensionMessageHandler newInstance(PeerSession peerSession, TorrentSession torrentSession, PeerSubMessageHandler peerSubMessageHandler) {
-		return new ExtensionMessageHandler(peerSession, torrentSession, peerSubMessageHandler);
-	}
 	
 	private ExtensionMessageHandler(PeerSession peerSession, TorrentSession torrentSession, PeerSubMessageHandler peerSubMessageHandler) {
 		this.infoHash = torrentSession.infoHash();
@@ -128,15 +128,19 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 		this.uploadOnlyExtensionMessageHandler = UploadOnlyExtensionMessageHandler.newInstance(peerSession, this);
 	}
 	
+	public static final ExtensionMessageHandler newInstance(PeerSession peerSession, TorrentSession torrentSession, PeerSubMessageHandler peerSubMessageHandler) {
+		return new ExtensionMessageHandler(peerSession, torrentSession, peerSubMessageHandler);
+	}
+	
 	@Override
 	public void onMessage(ByteBuffer buffer) throws NetException {
 		final byte typeId = buffer.get();
 		final ExtensionType extensionType = ExtensionType.valueOf(typeId);
 		if(extensionType == null) {
-			LOGGER.warn("扩展消息错误（类型不支持）：{}", typeId);
+			LOGGER.warn("处理扩展消息错误（类型不支持）：{}", typeId);
 			return;
 		}
-		LOGGER.debug("扩展消息类型：{}", extensionType);
+		LOGGER.debug("处理扩展消息类型：{}", extensionType);
 		switch (extensionType) {
 		case HANDSHAKE:
 			handshake(buffer);
@@ -157,26 +161,29 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 			dontHave(buffer);
 			break;
 		default:
-			LOGGER.info("扩展消息错误（类型未适配）：{}", extensionType);
+			LOGGER.info("处理扩展消息错误（类型未适配）：{}", extensionType);
 			break;
 		}
 	}
 	
 	/**
-	 * 发送握手消息
+	 * <p>发送握手消息</p>
 	 */
 	public void handshake() {
 		LOGGER.debug("发送扩展消息-握手");
 		this.handshakeSend = true;
 		final Map<String, Object> message = new LinkedHashMap<>(); // 扩展消息
-		final Map<String, Object> supportTypes = new LinkedHashMap<>(); // 支持的扩展消息类型
+		final Map<String, Object> supportTypes = new LinkedHashMap<>(); // 支持的扩展协议
 		for (var type : PeerConfig.ExtensionType.values()) {
 			if(type.support() && type.notice()) {
 				supportTypes.put(type.value(), type.id());
 			}
 		}
-		message.put(EX_M, supportTypes); // 扩展协议
-		message.put(EX_P, SystemConfig.getTorrentPortExt()); // 外网监听TCP端口
+		message.put(EX_M, supportTypes); // 支持的扩展协议
+		// 如果已经接收握手消息：不发送TCP端口
+		if(!this.handshakeRecv) {
+			message.put(EX_P, SystemConfig.getTorrentPortExt()); // 外网监听TCP端口
+		}
 		message.put(EX_V, SystemConfig.getNameEnAndVersion()); // 客户端信息（名称、版本）
 		message.put(EX_E, CryptConfig.STRATEGY.crypt() ? ENCRYPT : PLAINTEXT); // 偏爱加密
 		// 外网IP地址：TODO：IPv6
@@ -192,7 +199,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 				message.put(EX_METADATA_SIZE, metadataSize);
 			}
 		}
-		// 任务已经完成只上传不下载
+		// 任务已经完成：只上传不下载
 		if(this.torrentSession.completed()) {
 			message.put(EX_UPLOAD_ONLY, UPLOAD_ONLY);
 		}
@@ -200,16 +207,17 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	}
 
 	/**
-	 * 处理握手消息
+	 * <p>处理握手消息</p>
 	 */
 	private void handshake(ByteBuffer buffer) throws PacketSizeException {
 		LOGGER.debug("处理扩展消息-握手");
+		this.handshakeRecv = true;
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
 		final var decoder = BEncodeDecoder.newInstance(bytes);
 		decoder.nextMap();
 		if(decoder.isEmpty()) {
-			LOGGER.warn("扩展消息-握手处理失败（格式）：{}", decoder.oddString());
+			LOGGER.warn("处理扩展消息-握手失败（格式）：{}", decoder.oddString());
 			return;
 		}
 		// 获取端口
@@ -219,7 +227,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 			if(oldPort == null) {
 				this.peerSession.port(port.intValue());
 			} else if(oldPort.intValue() != port.intValue()) {
-				LOGGER.debug("扩展消息-握手（端口不一致）：{}-{}", oldPort, port);
+				LOGGER.debug("处理扩展消息-握手（端口不一致）：{}-{}", oldPort, port);
 			}
 		}
 		// 偏爱加密
@@ -229,7 +237,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 		}
 		// 种子InfoHash数据长度
 		final Long metadataSize = decoder.getLong(EX_METADATA_SIZE);
-		if(metadataSize != null && this.infoHash.size() == 0) {
+		if(metadataSize != null && this.infoHash.size() <= 0) {
 			this.infoHash.size(metadataSize.intValue());
 		}
 		// 只上传不下载
@@ -237,7 +245,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 		if(uploadOnly != null && uploadOnly.intValue() == UPLOAD_ONLY) {
 			this.peerSession.flags(PeerConfig.PEX_UPLOAD_ONLY);
 		}
-		// 支持的扩展协议：key（扩展协议名称）=value（扩展协议标识）
+		// 支持的扩展协议：key=扩展协议名称；value=扩展协议标识；
 		final Map<String, Object> supportTypes = decoder.getMap(EX_M);
 		if(CollectionUtils.isNotEmpty(supportTypes)) {
 			supportTypes.entrySet().forEach(entry -> {
@@ -248,13 +256,14 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 					this.peerSession.flags(PeerConfig.PEX_HOLEPUNCH);
 				}
 				if(extensionType != null && extensionType.support()) {
-					LOGGER.debug("扩展协议（添加）：{}-{}", extensionType, typeId);
+					LOGGER.debug("处理扩展协议-握手（添加）：{}-{}", extensionType, typeId);
 					this.peerSession.addExtensionType(extensionType, typeId.byteValue());
 				} else {
-					LOGGER.debug("扩展协议（不支持）：{}-{}", typeValue, typeId);
+					LOGGER.debug("处理扩展协议-握手（不支持）：{}-{}", typeValue, typeId);
 				}
 			});
 		}
+		// 发送握手
 		if(!this.handshakeSend) {
 			handshake();
 		}
@@ -265,7 +274,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	}
 	
 	/**
-	 * 发送pex消息
+	 * <p>发送pex消息</p>
 	 */
 	public void pex(byte[] bytes) {
 		if(this.peerExchangeMessageHandler.supportExtensionType()) {
@@ -274,14 +283,14 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	}
 	
 	/**
-	 * 处理pex消息
+	 * <p>处理pex消息</p>
 	 */
 	private void pex(ByteBuffer buffer) throws NetException {
 		this.peerExchangeMessageHandler.onMessage(buffer);
 	}
 	
 	/**
-	 * 发送metadata消息
+	 * <p>发送metadata消息</p>
 	 */
 	public void metadata() {
 		if(this.metadataMessageHandler.supportExtensionType()) {
@@ -290,14 +299,14 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	}
 	
 	/**
-	 * 处理metadata消息
+	 * <p>处理metadata消息</p>
 	 */
 	private void metadata(ByteBuffer buffer) throws NetException {
 		this.metadataMessageHandler.onMessage(buffer);
 	}
 	
 	/**
-	 * 发送holepunch消息-rendezvous
+	 * <p>发送holepunch消息-rendezvous</p>
 	 */
 	public void holepunchRendezvous(String host, Integer port) {
 		if(this.holepunchMessageHnadler.supportExtensionType()) {
@@ -306,7 +315,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	}
 	
 	/**
-	 * 发送holepunch消息-connect
+	 * <p>发送holepunch消息-connect</p>
 	 */
 	public void holepunchConnect(String host, Integer port) {
 		if(this.holepunchMessageHnadler.supportExtensionType()) {
@@ -315,14 +324,14 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	}
 	
 	/**
-	 * 处理holepunch消息
+	 * <p>处理holepunch消息</p>
 	 */
 	private void holepunch(ByteBuffer buffer) throws NetException {
 		this.holepunchMessageHnadler.onMessage(buffer);
 	}
 
 	/**
-	 * 发送uploadOnly消息
+	 * <p>发送uploadOnly消息</p>
 	 */
 	public void uploadOnly() {
 		if(this.uploadOnlyExtensionMessageHandler.supportExtensionType()) {
@@ -331,14 +340,14 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	}
 	
 	/**
-	 * 处理uploadOnly消息
+	 * <p>处理uploadOnly消息</p>
 	 */
 	private void uploadOnly(ByteBuffer buffer) throws NetException {
 		this.uploadOnlyExtensionMessageHandler.onMessage(buffer);
 	}
 	
 	/**
-	 * 发送dontHave消息
+	 * <p>发送dontHave消息</p>
 	 */
 	public void dontHave(int index) {
 		if(this.dontHaveExtensionMessageHandler.supportExtensionType()) {
@@ -347,14 +356,14 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	}
 	
 	/**
-	 * 处理dontHave消息
+	 * <p>处理dontHave消息</p>
 	 */
 	private void dontHave(ByteBuffer buffer) throws NetException {
 		this.dontHaveExtensionMessageHandler.onMessage(buffer);
 	}
 	
 	/**
-	 * 创建扩展消息
+	 * <p>创建扩展消息</p>
 	 * 
 	 * @param type 扩展消息类型
 	 * @param bytes 扩展消息数据
@@ -367,7 +376,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	}
 	
 	/**
-	 * 发送扩展消息
+	 * <p>发送扩展消息</p>
 	 * 
 	 * @param type 扩展消息类型
 	 * @param bytes 扩展消息数据
