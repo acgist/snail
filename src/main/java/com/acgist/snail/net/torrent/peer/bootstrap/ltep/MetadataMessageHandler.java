@@ -124,7 +124,7 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 	/**
 	 * <p>发送消息：data</p>
 	 * 
-	 * @param piece 种子块索引
+	 * @param piece 种子slice索引
 	 */
 	public void data(int piece) {
 		LOGGER.debug("发送metadata消息-data：{}", piece);

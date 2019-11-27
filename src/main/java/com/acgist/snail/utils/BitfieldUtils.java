@@ -4,7 +4,7 @@ import java.util.BitSet;
 
 /**
  * <p>位图工具</p>
- * <p>每个字节的高位（末尾）表示八个Piece中的第一块</p>
+ * <p>每个Piece占一位，每个字节的高位（末尾）表示八个Piece中的第一块，没有下载的Piece填充0。</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -13,10 +13,10 @@ public final class BitfieldUtils {
 
 	/**
 	 * <p>位图转为字节数组</p>
-	 * <p>即使位图没有下载但是传递时依旧要填充0</p>
+	 * <p>注：即使Piece没有下载但是传递时依旧要填充0</p>
 	 * 
 	 * @param pieceSize 块数量
-	 * @param pieces 位图
+	 * @param pieces 已下载位图
 	 * 
 	 * @return 位图数组
 	 */
@@ -32,11 +32,11 @@ public final class BitfieldUtils {
 	}
 	
 	/**
-	 * 字节数组转为位图
+	 * <p>字节数组转为位图</p>
 	 * 
 	 * @param bitfield 字节数组
 	 * 
-	 * @return 位图
+	 * @return 位图数组
 	 */
 	public static final BitSet toBitSet(final byte[] bitfield) {
 		for (int index = 0; index < bitfield.length; index++) {
@@ -46,7 +46,7 @@ public final class BitfieldUtils {
 	}
 	
 	/**
-	 * 高低位互换：01000001->10000010
+	 * <p>高低位互换：01000001->10000010</p>
 	 */
 	private static final byte reverse(final byte value) {
 		int opt = value;

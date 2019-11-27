@@ -273,7 +273,7 @@ public final class TorrentStream {
 	 * <p>数据大小：{@link #pieceLength}</p>
 	 * <p>默认偏移：0</p>
 	 * 
-	 * @param index 块序号
+	 * @param index Piece索引
 	 */
 	public byte[] read(int index) {
 		return read(index, (int) this.pieceLength);
@@ -283,7 +283,7 @@ public final class TorrentStream {
 	 * <p>读取块数据</p>
 	 * <p>默认偏移：0</p>
 	 * 
-	 * @param index 块序号
+	 * @param index Piece索引
 	 * @param size 数据大小
 	 */
 	public byte[] read(int index, int size) {
@@ -293,7 +293,7 @@ public final class TorrentStream {
 	/**
 	 * <p>读取块数据</p>
 	 * 
-	 * @param index 块序号
+	 * @param index Piece索引
 	 * @param size 数据大小
 	 * @param pos 数据偏移
 	 */
@@ -308,7 +308,7 @@ public final class TorrentStream {
 	 * <p>如果选择的Piece不在文件范围内返回：null</p>
 	 * <p>如果读取数据只有部分符合文件的范围，会自动修正范围，读取符合部分数据返回。</p>
 	 * 
-	 * @param index 块序号
+	 * @param index Piece索引
 	 * @param size 数据大小
 	 * @param pos 数据偏移
 	 * @param ignorePieces 忽略已下载位图（读取文件验证）
@@ -460,7 +460,7 @@ public final class TorrentStream {
 	}
 	
 	/**
-	 * 初始化：第一块序号、最后一块序号等
+	 * 初始化：第一块索引、最后一块索引等
 	 */
 	private void buildFilePiece() {
 		this.fileBeginPieceIndex = (int) (this.fileBeginPos / this.pieceLength);
@@ -611,7 +611,7 @@ public final class TorrentStream {
 	/**
 	 * 文件是否包含Piece
 	 * 
-	 * @param index Piece序号
+	 * @param index Piece索引
 	 */
 	private boolean haveIndex(int index) {
 		// 不符合当前文件位置

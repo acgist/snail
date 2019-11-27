@@ -173,7 +173,7 @@ public final class TorrentStreamGroup {
 	 * <p>读取Piece数据</p>
 	 * <p>如果跨越多个文件则合并返回</p>
 	 * 
-	 * @param index 块序号
+	 * @param index Piece索引
 	 * @param begin 块偏移
 	 * @param length 数据长度
 	 */
@@ -227,7 +227,7 @@ public final class TorrentStreamGroup {
 	/**
 	 * 是否已下载Piece
 	 * 
-	 * @param index Piece序号
+	 * @param index Piece索引
 	 */
 	public boolean havePiece(int index) {
 		if(index < 0) {

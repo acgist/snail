@@ -52,13 +52,13 @@ public final class PeerUtils {
 	}
 	
 	/**
-	 * 快速允许块索引
+	 * 快速允许Piece索引
 	 * 
 	 * @param pieceSize 块数量
 	 * @param ip Peer的IP地址
 	 * @param infoHash 种子InfoHash
 	 * 
-	 * @return 快速允许块索引
+	 * @return 快速允许Piece索引
 	 */
 	public static final int[] allowedFast(int pieceSize, String ipAddress, byte[] infoHash) {
 		final int ipValue = NetUtils.encodeIpToInt(ipAddress);

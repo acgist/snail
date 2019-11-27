@@ -517,7 +517,7 @@ public final class TorrentSession {
 	/**
 	 * <p>发送have消息</p>
 	 * 
-	 * @param index Piece序号
+	 * @param index Piece索引
 	 * 
 	 * TODO：优化have消息，使用异步线程发送，防止部分Peer通知过慢，导致所有线程卡死。
 	 */

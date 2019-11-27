@@ -197,11 +197,10 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	}
 	
 	/**
-	 * 设置实际的消息代理：TCP、UDP（UTP）
+	 * <p>是否握手完成</p>
 	 */
-	public PeerSubMessageHandler messageEncryptHandler(IMessageEncryptHandler messageEncryptHandler) {
-		this.messageEncryptHandler = messageEncryptHandler;
-		return this;
+	public boolean handshake() {
+		return this.handshakeRecv;
 	}
 	
 	/**
@@ -216,10 +215,11 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	}
 	
 	/**
-	 * 是否握手完成
+	 * <p>设置实际的消息代理：TCP、UDP（UTP）</p>
 	 */
-	public boolean handshake() {
-		return this.handshakeRecv;
+	public PeerSubMessageHandler messageEncryptHandler(IMessageEncryptHandler messageEncryptHandler) {
+		this.messageEncryptHandler = messageEncryptHandler;
+		return this;
 	}
 	
 	@Override
@@ -229,14 +229,14 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			final byte typeId = buffer.get();
 			final PeerConfig.Type type = PeerConfig.Type.valueOf(typeId);
 			if(type == null) {
-				LOGGER.warn("Peer消息错误（类型不支持）：{}", typeId);
+				LOGGER.warn("处理Peer消息错误（类型不支持）：{}", typeId);
 				return;
 			}
 			if(this.peerSession == null) {
-				LOGGER.debug("Peer消息错误（PeerSession为空）：{}", type);
+				LOGGER.debug("处理Peer消息错误（PeerSession为空）：{}", type);
 				return;
 			}
-			LOGGER.debug("Peer消息类型：{}", type);
+			LOGGER.debug("处理Peer消息类型：{}", type);
 			switch (type) {
 			case CHOKE:
 				choke(buffer);
@@ -290,7 +290,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 				extension(buffer);
 				break;
 			default:
-				LOGGER.info("Peer消息错误（类型未适配）：{}", type);
+				LOGGER.info("处理Peer消息错误（类型未适配）：{}", type);
 				break;
 			}
 		} else { // 没有握手
@@ -300,8 +300,10 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 
 	/**
 	 * <p>发送握手消息</p>
-	 * <p>注：握手设置超时时间，防止握手一致等待导致一直占用线程。</p>
-	 * <p>格式：pstrlen pstr reserved info_hash peer_id</p>
+	 * <p>注：握手设置超时时间，发送方法默认没有设置超时时间，防止握手一直等待导致一直占用线程。</p>
+	 * <p>
+	 * 格式：pstrlen pstr reserved info_hash peer_id
+	 * </p>
 	 * <pre>
 	 * pstrlen：协议（pstr）的长度：19
 	 * pstr：BitTorrent协议：{@link PeerConfig#HANDSHAKE_NAME}
@@ -335,22 +337,22 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	private void handshake(ByteBuffer buffer) {
 		LOGGER.debug("处理握手消息");
 		if(buffer.remaining() != PeerConfig.HANDSHAKE_LENGTH) {
-			LOGGER.warn("握手消息格式错误（消息长度）：{}", buffer.remaining());
-//			this.close(); // 不关闭，选择忽略。
+			LOGGER.warn("处理握手消息格式错误（消息长度）：{}", buffer.remaining());
+//			this.close(); // 不关闭：选择忽略
 			return;
 		}
 		final byte length = buffer.get();
 		if(length != PeerConfig.HANDSHAKE_NAME_LENGTH) {
-			LOGGER.warn("握手消息格式错误（协议长度）：{}", length);
-//			this.close(); // 不关闭，选择忽略。
+			LOGGER.warn("处理握手消息格式错误（协议长度）：{}", length);
+//			this.close(); // 不关闭：选择忽略
 			return;
 		}
 		final byte[] names = new byte[length];
 		buffer.get(names);
 		final String name = new String(names);
 		if(!PeerConfig.HANDSHAKE_NAME.equals(name)) {
-			LOGGER.warn("握手消息格式错误（下载协议错误）：{}", name);
-//			this.close(); // 不关闭，选择忽略。
+			LOGGER.warn("处理握手消息格式错误（下载协议错误）：{}", name);
+//			this.close(); // 不关闭：选择忽略
 			return;
 		}
 		this.handshakeRecv = true;
@@ -377,7 +379,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		this.dht(); // 发送DHT消息
 		this.exchangeBitfield(); // 交换位图
 		if(this.server) {
-			this.unchoke(); // 解除阻塞：PeerUploader=解除；PeerDownloader=不解除；
+			this.unchoke(); // 解除阻塞
 		}
 	}
 
@@ -386,7 +388,6 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * <p>
 	 * 格式：len=0000
 	 * </p>
-	 * <p>只有消息长度，没有消息编号和负载。</p>
 	 */
 	public void keepAlive() {
 		LOGGER.debug("发送心跳消息");
@@ -448,7 +449,6 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	/**
 	 * <p>处理解除阻塞消息</p>
 	 * <p>解除阻塞后开始发送下载请求</p>
-	 * <p>注：即使任务不能下载，也需要解除阻塞状态。</p>
 	 */
 	private void unchoke(ByteBuffer buffer) {
 		if(!this.torrentSession.downloadable()) {
@@ -466,7 +466,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * <p>
 	 * 格式：len=0001 id=0x02
 	 * </p>
-	 * <p>收到have消息时，客户端没有对应的Piece，发送感兴趣消息，表示客户端对Peer感兴趣。</p>
+	 * <p>收到have消息时，如果客户端没有对应的Piece，发送感兴趣消息表示客户端对Peer感兴趣。</p>
 	 */
 	private void interested() {
 		if(this.peerSession.isAmInterested()) {
@@ -492,7 +492,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * 格式：len=0001 id=0x03
 	 * </p>
 	 * <p>客户端已经拥有Peer所有的Piece时发送不感兴趣</p>
-	 * <p>交换位图和Piece下载完成后，如果Peer没有更多的Piece时才发送不感兴趣消息。</p>
+	 * <p>在交换位图和Piece下载完成后，如果Peer没有更多的Piece时才发送不感兴趣消息，其他情况不发送此消息。</p>
 	 */
 	public void notInterested() {
 		if(this.peerSession.isAmNotInterested()) {
@@ -518,8 +518,9 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * 格式：len=0005 id=0x04 index
 	 * </p>
 	 * <p>
-	 * index：Piece索引，每当客户端下载完Piece，发送have消息告诉所有与客户端连接的Peer。
+	 * index：Piece索引
 	 * </p>
+	 * <p>当客户端下载完成一个Piece时，发送have消息告诉与客户端连接的Peer已经拥有该Piece。</p>
 	 */
 	public void have(int index) {
 		if(!this.torrentSession.uploadable()) {
@@ -603,11 +604,10 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 
 	/**
 	 * <p>处理haveNone消息</p>
-	 * <p>清空Peer所有Pieces</p>
 	 */
 	private void haveNone(ByteBuffer buffer) {
 		LOGGER.debug("处理haveAll消息");
-		this.peerSession.cleanPieces();
+		this.peerSession.cleanPieces(); // 清空Peer所有Piece
 	}
 	
 	/**
@@ -616,7 +616,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * 格式：len=0005 id=0x0D index
 	 * </p>
 	 * <p>
-	 * index：Piece序号
+	 * index：Piece索引
 	 * </p>
 	 * <p>注：Superseeding使用，如果下载块后发送此消息，块数据直接在内存中读取，不需要读取硬盘。</p>
 	 */
@@ -688,6 +688,9 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * <p>
 	 * 格式：len=0005 id=0x11 index
 	 * </p>
+	 * <p>
+	 * index：Piece索引
+	 * </p>
 	 */
 	public void allowedFast(int index) {
 		if(!this.torrentSession.uploadable()) {
@@ -726,7 +729,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	/**
 	 * <dl>
 	 * 	<dt>交换位图</dt>
-	 * 	<dd>如果任务完成，Peer支持FAST扩展，发送haveAll代替位图。</dd>
+	 * 	<dd>如果任务已经下载所有Piece，Peer支持FAST扩展，发送haveAll代替位图。</dd>
 	 * 	<dd>如果任务没有下载任何Piece，Peer支持FAST扩展，发送haveNone代替位图。</dd>
 	 * 	<dd>其他情况发送位图</dd>
 	 * <dl>
@@ -740,12 +743,13 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			LOGGER.debug("交换位图：Peer只上传不下载");
 			return;
 		}
-		if(this.peerSession.supportFastExtensionProtocol()) { // FAST扩展
+		if(this.peerSession.supportFastExtensionProtocol()) { // 支持FAST扩展
 			final var pieces = this.torrentSession.pieces(); // 已下载Pieces
 			if(pieces.isEmpty()) {
 				this.haveNone();
 				return;
 			}
+			// 任务已经完成
 			if(this.torrentSession.completed()) {
 				final var allPieces = this.torrentSession.allPieces(); // 所有Pieces
 				allPieces.andNot(pieces);
@@ -763,10 +767,10 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * <p>
 	 * 格式：len=0001+X id=0x05 bitfield
 	 * </p>
-	 * <p>
-	 * X=bitfield.length
-	 * </p>
-	 * <p>每个Piece占一位，字节高位表示Piece中的第一块，没有下载的Piece填充0。</p>
+	 * <pre>
+	 * X：bitfield.length
+	 * bitfield：位图
+	 * </pre>
 	 */
 	private void bitfield() {
 		if(!this.torrentSession.uploadable()) {
@@ -800,7 +804,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		final BitSet notHave = new BitSet(); // 没有下载的位图
 		notHave.or(pieces);
 		notHave.andNot(this.torrentSession.pieces());
-		LOGGER.debug("感兴趣位图：{}", notHave);
+		LOGGER.debug("处理位图消息（感兴趣位图）：{}", notHave);
 		if(notHave.isEmpty()) {
 			notInterested();
 		} else {
@@ -810,7 +814,6 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	
 	/**
 	 * <p>发送request消息</p>
-	 * <p>客户端收到Peer的unchoke请求后，开始发送request消息，一般交换数据是以slice（长度16KB的块）为单位的。</p>
 	 * <p>
 	 * 格式：len=0013 id=0x06 index begin length
 	 * </p>
@@ -819,6 +822,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * begin：Piece内偏移
 	 * length：请求数据长度
 	 * </pre>
+	 * <p>客户端收到Peer的unchoke消息后，开始发送request消息下载数据，一般交换数据是以slice（默认16KB）为单位。</p>
 	 */
 	public void request(int index, int begin, int length) {
 		if(!this.torrentSession.downloadable()) {
@@ -876,9 +880,11 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * <p>
 	 * 格式：len=0009+X id=0x07 index begin block
 	 * </p>
-	 * <p>
-	 * X=block长度（一般为16KB）
-	 * </p>
+	 * <pre>
+	 * index：Piece索引
+	 * begin：Piece内偏移
+	 * X：block长度（默认16KB）
+	 * </pre>
 	 */
 	private void piece(int index, int begin, byte[] bytes) {
 		if(!this.torrentSession.uploadable()) {
@@ -924,10 +930,10 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 
 	/**
 	 * <p>发送cancel消息</p>
-	 * </p>与request作用相反，取消下载。</p>
 	 * <p>
 	 * 格式：len=0013 id=0x08 index begin length
 	 * <p>
+	 * </p>与request作用相反：取消下载</p>
 	 */
 	public void cancel(int index, int begin, int length) {
 		LOGGER.debug("发送cancel消息：{}", index);
@@ -974,7 +980,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * 格式：len=0001+X id=0x14 ex
 	 * </p>
 	 * <pre>
-	 * X：扩展消息长度
+	 * X：ex长度
 	 * ex：扩展消息
 	 * </pre>
 	 */
@@ -992,35 +998,35 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	}
 	
 	/**
-	 * 发送扩展消息：pex
+	 * <p>发送扩展消息：pex</p>
 	 */
 	public void pex(byte[] bytes) {
 		this.extensionMessageHandler.pex(bytes);
 	}
 	
 	/**
-	 * 发送扩展消息：uploadOnly
+	 * <p>发送扩展消息：uploadOnly</p>
 	 */
 	public void uploadOnly() {
 		this.extensionMessageHandler.uploadOnly();
 	}
 	
 	/**
-	 * 发送扩展消息：holepunch-rendezvous
+	 * <p>发送扩展消息：holepunch-rendezvous</p>
 	 */
 	public void holepunch(String host, Integer port) {
 		this.extensionMessageHandler.holepunchRendezvous(host, port);
 	}
 	
 	/**
-	 * 发送扩展消息：holepunch-connect
+	 * <p>发送扩展消息：holepunch-connect</p>
 	 */
 	public void holepunchConnect(String host, int port) {
 		this.extensionMessageHandler.holepunchConnect(host, port);
 	}
 	
 	/**
-	 * 发送消息
+	 * <p>发送消息</p>
 	 */
 	public void pushMessage(PeerConfig.Type type, byte[] payload) {
 		this.sendEncrypt(buildMessage(type, payload));
@@ -1058,22 +1064,27 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	}
 	
 	/**
-	 * <p>释放Peer时使用，调用前最好不要发送其他消息，防止等待不能及时释放。</p>
-	 * {@link IMessageEncryptHandler#close()}
+	 * <p>释放Peer</p>
+	 * 
+	 * @see {@link IMessageEncryptHandler#close()}
 	 */
 	public void close() {
 		this.messageEncryptHandler.close();
 	}
 	
 	/**
-	 * {@link IMessageEncryptHandler#available()}
+	 * <p>是否可用</p>
+	 * 
+	 * @see {@link IMessageEncryptHandler#available()}
 	 */
 	public boolean available() {
 		return this.messageEncryptHandler.available();
 	}
 	
 	/**
-	 * {@link IMessageEncryptHandler#send(ByteBuffer)}
+	 * <p>发送消息</p>
+	 * 
+	 * @see {@link IMessageEncryptHandler#send(ByteBuffer)}
 	 */
 	public void send(ByteBuffer buffer) {
 		try {
@@ -1084,7 +1095,9 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	}
 	
 	/**
-	 * {@link IMessageEncryptHandler#send(ByteBuffer, int)}
+	 * <p>发送消息</p>
+	 * 
+	 * @see {@link IMessageEncryptHandler#send(ByteBuffer, int)}
 	 */
 	public void send(ByteBuffer buffer, int timeout) {
 		try {
@@ -1095,7 +1108,9 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	}
 	
 	/**
-	 * {@link IMessageEncryptHandler#sendEncrypt(ByteBuffer)}
+	 * <p>发送加密消息</p>
+	 * 
+	 * @see {@link IMessageEncryptHandler#sendEncrypt(ByteBuffer)}
 	 */
 	public void sendEncrypt(ByteBuffer buffer) {
 		try {
@@ -1106,7 +1121,9 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	}
 
 	/**
-	 * {@link IMessageEncryptHandler#sendEncrypt(ByteBuffer, int)}
+	 * <p>发送加密消息</p>
+	 * 
+	 * @see {@link IMessageEncryptHandler#sendEncrypt(ByteBuffer, int)}
 	 */
 	public void sendEncrypt(ByteBuffer buffer, int timeout) {
 		try {
@@ -1117,14 +1134,16 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	}
 	
 	/**
-	 * {@link IMessageEncryptHandler#remoteSocketAddress()}
+	 * <p>获取远程服务地址</p>
+	 * 
+	 * @see {@link IMessageEncryptHandler#remoteSocketAddress()}
 	 */
 	private InetSocketAddress remoteSocketAddress() {
 		return this.messageEncryptHandler.remoteSocketAddress();
 	}
 
 	/**
-	 * 解除阻塞下载
+	 * <p>解除阻塞下载</p>
 	 */
 	private void unchokeDownload() {
 		if(
@@ -1140,7 +1159,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	}
 
 	/**
-	 * 快速允许下载
+	 * <p>快速允许下载</p>
 	 */
 	private void allowedFastDownload() {
 		if(

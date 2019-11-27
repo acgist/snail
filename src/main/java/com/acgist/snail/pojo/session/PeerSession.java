@@ -292,7 +292,7 @@ public final class PeerSession implements IStatistics {
 	/**
 	 * 设置Peer位图
 	 * 
-	 * @param index Piece序号
+	 * @param index Piece索引
 	 */
 	public void piece(int index) {
 		this.pieces.set(index);
@@ -301,7 +301,7 @@ public final class PeerSession implements IStatistics {
 	/**
 	 * 取消Peer位图
 	 * 
-	 * @param index Piece序号
+	 * @param index Piece索引
 	 */
 	public void pieceOff(int index) {
 		this.pieces.clear(index);
@@ -352,6 +352,8 @@ public final class PeerSession implements IStatistics {
 	
 	/**
 	 * 允许快速下载块
+	 * 
+	 * @param index Piece索引
 	 */
 	public void allowedPieces(int index) {
 		this.pieces.set(index);
