@@ -24,7 +24,7 @@ import com.acgist.snail.utils.NetUtils;
 
 /**
  * <p>UDP服务端</p>
- * <p>全部使用单例，初始化时立即开始监听，客户端和服务端使用同一个通道。</p>
+ * <p>全部使用单例：初始化时立即开始监听（客户端和服务端使用同一个通道）</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -57,28 +57,28 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements UdpChanne
 	protected final DatagramChannel channel;
 
 	/**
-	 * 默认随机端口、本地地址、不重用地址
+	 * <p>默认随机端口、本地地址、不重用地址</p>
 	 */
 	protected UdpServer(String name, T handler) {
 		this(PORT_AUTO, ADDR_LOCAL, ADDR_USENEW, name, handler);
 	}
 	
 	/**
-	 * 默认本地地址、不重用地址
+	 * <p>默认本地地址、不重用地址</p>
 	 */
 	protected UdpServer(int port, String name, T handler) {
 		this(port, ADDR_LOCAL, ADDR_USENEW, name, handler);
 	}
 	
 	/**
-	 * 默认不重用地址
+	 * <p>默认不重用地址</p>
 	 */
 	protected UdpServer(int port, String host, String name, T handler) {
 		this(port, host, ADDR_USENEW, name, handler);
 	}
 	
 	/**
-	 * 默认本地地址
+	 * <p>默认本地地址</p>
 	 */
 	protected UdpServer(int port, boolean reuse, String name, T handler) {
 		this(port, ADDR_LOCAL, reuse, name, handler);
@@ -89,7 +89,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements UdpChanne
 	 * @param host 地址
 	 * @param reuse 是否重用地址
 	 * @param name 服务端名称
-	 * @param handler 服务端代理
+	 * @param handler 消息代理
 	 */
 	protected UdpServer(int port, String host, boolean reuse, String name, T handler) {
 		this.name = name;
@@ -123,7 +123,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements UdpChanne
 	}
 	
 	/**
-	 * 多播（组播）
+	 * <p>多播（组播）</p>
 	 */
 	public void join(int ttl, String group) {
 		if(this.channel == null) {
@@ -140,7 +140,8 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements UdpChanne
 	}
 	
 	/**
-	 * 消息代理
+	 * <p>消息代理</p>
+	 * <p>开始消息轮询</p>
 	 */
 	public void handle() {
 		if(this.channel == null) {
@@ -157,7 +158,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements UdpChanne
 	}
 	
 	/**
-	 * 消息轮询
+	 * <p>消息轮询</p>
 	 */
 	private void loopMessage() {
 		this.register();
@@ -203,14 +204,14 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements UdpChanne
 	}
 	
 	/**
-	 * 获取UDP通道
+	 * @return UDP通道
 	 */
 	public DatagramChannel channel() {
 		return this.channel;
 	}
 	
 	/**
-	 * 关闭UDP Server
+	 * <p>关闭UDP Server</p>
 	 */
 	public void close() {
 		LOGGER.info("关闭UDP Server：{}", this.name);
@@ -219,7 +220,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements UdpChanne
 	}
 	
 	/**
-	 * 关闭UDP Server线程池
+	 * <p>关闭UDP Server线程池</p>
 	 */
 	public static final void shutdown() {
 		LOGGER.info("关闭UDP Server线程池");

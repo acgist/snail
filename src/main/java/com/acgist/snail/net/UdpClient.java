@@ -10,7 +10,7 @@ import com.acgist.snail.system.exception.NetException;
 
 /**
  * <p>UDP客户端</p>
- * <p>UDP客户端、服务端通道都是公用一个：</p>
+ * <p>UDP客户端、服务端通道都是公用一个，程序关闭时关闭服务才关闭通道。</p>
  * <ul>
  * 	<li>单例</li>
  * 	<li>UDP通道使用服务器通道</li>
@@ -33,7 +33,7 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessa
 	protected final InetSocketAddress socketAddress;
 	
 	/**
-	 * 新建客户端
+	 * <p>新建客户端</p>
 	 * 
 	 * @param name 客户端名称
 	 * @param handler 消息处理器
@@ -55,7 +55,7 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessa
 	public abstract boolean open();
 	
 	/**
-	 * 打开客户端
+	 * <p>打开客户端</p>
 	 * 
 	 * @param port 端口
 	 * 
@@ -89,8 +89,8 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessa
 	}
 	
 	/**
-	 * <p>关闭资源，标记关闭，不能关闭通道。</p>
-	 * <p>UDP通道只打开一个，程序结束时才能关闭。</p>
+	 * <p>关闭资源</p>
+	 * <p>标记关闭：不能关闭通道（UDP通道单例复用）</p>
 	 */
 	@Override
 	public void close() {

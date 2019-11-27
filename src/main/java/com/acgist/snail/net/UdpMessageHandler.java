@@ -14,8 +14,8 @@ import com.acgist.snail.system.exception.NetException;
 
 /**
  * <p>UDP消息代理</p>
- * <p>非线程安全，使用需要保证每一个消息处理器对应的{@linkplain #socketAddress 远程地址}唯一。</p>
- * <p>注：重写请注意避免循环调用。</p>
+ * <p>非线程安全：使用需要保证每一个消息处理器对应的{@linkplain #socketAddress 远程地址}唯一</p>
+ * <p>注：重写请注意避免循环调用</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -43,7 +43,8 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 	
 	/**
 	 * <p>收到消息</p>
-	 * <p>使用消息处理器处理消息，如果没有实现消息处理器，请重写该方法。</p>
+	 * <p>使用消息处理器处理消息</p>
+	 * <p>如果没有实现消息处理器，请重写该方法。</p>
 	 */
 	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException {
 		if(this.messageCodec == null) {
@@ -53,7 +54,7 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 	}
 	
 	/**
-	 * 消息代理
+	 * <p>消息代理</p>
 	 */
 	public void handle(DatagramChannel channel, InetSocketAddress socketAddress) {
 		this.channel = channel;

@@ -6,14 +6,20 @@ import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.utils.XMLUtils;
 
 /**
- * UPNP请求
+ * <p>UPNP请求</p>
  * 
  * @author acgist
  * @since 1.0.0
  */
 public final class UpnpRequest {
 
+	/**
+	 * SOAP协议
+	 */
 	private static final String NAMESPACE_URI = "http://schemas.xmlsoap.org/soap/envelope/";
+	/**
+	 * SOAP协议
+	 */
 	private static final String ENCODING_STYLE = "http://schemas.xmlsoap.org/soap/encoding/";
 	
 	/**
@@ -21,13 +27,16 @@ public final class UpnpRequest {
 	 */
 	private XMLUtils xml;
 	/**
-	 * 主要内容
+	 * 主体内容
 	 */
 	private Element body;
 	/**
 	 * 服务类型
 	 */
 	private String serviceType;
+	
+	private UpnpRequest() {
+	}
 	
 	public static final UpnpRequest newRequest(String serviceType) {
 		final UpnpRequest request = new UpnpRequest();
@@ -37,7 +46,7 @@ public final class UpnpRequest {
 	}
 	
 	/**
-	 * 新建报文
+	 * <p>新建报文</p>
 	 */
 	private void build() {
 		this.xml = XMLUtils.build();
@@ -47,15 +56,15 @@ public final class UpnpRequest {
 	}
 
 	/**
-	 * <p>外网IP地址请求</p>
+	 * <p>外网IP地址</p>
 	 * <pre>
 	 * <xmp>
-<?xml version="1.0"?>
-<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
-	<s:Body>
-		<u:GetExternalIPAddress xmlns:u="urn:schemas-upnp-org:service:WANIPConnection:1"></u:GetExternalIPAddress>
-	</s:Body>
-</s:Envelope>
+	 * <?xml version="1.0"?>
+	 * <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+	 * 	<s:Body>
+	 * 		<u:GetExternalIPAddress xmlns:u="urn:schemas-upnp-org:service:WANIPConnection:1"></u:GetExternalIPAddress>
+	 * 	</s:Body>
+	 * </s:Envelope>
 	 * </xmp>
 	 * </pre>
 	 */
@@ -68,16 +77,16 @@ public final class UpnpRequest {
 	 * <p>端口映射信息</p>
 	 * <pre>
 	 * <xmp>
-<?xml version="1.0"?>
-<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
-	<s:Body>
-		<u:GetSpecificPortMappingEntry xmlns:u="urn:schemas-upnp-org:service:WANIPConnection:1">
-			<NewRemoteHost></NewRemoteHost>
-			<NewExternalPort>8080</NewExternalPort><!-- 外网端口 -->
-			<NewProtocol>TCP</NewProtocol>
-		</u:GetSpecificPortMappingEntry>
-	</s:Body>
-</s:Envelope>
+	 * <?xml version="1.0"?>
+	 * <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+	 * 	<s:Body>
+	 * 		<u:GetSpecificPortMappingEntry xmlns:u="urn:schemas-upnp-org:service:WANIPConnection:1">
+	 * 			<NewRemoteHost></NewRemoteHost>
+	 * 			<NewExternalPort>8080</NewExternalPort><!-- 外网端口 -->
+	 * 			<NewProtocol>TCP</NewProtocol>
+	 * 		</u:GetSpecificPortMappingEntry>
+	 * 	</s:Body>
+	 * </s:Envelope>
 	 * </xmp>
 	 * </pre>
 	 * 
@@ -93,24 +102,24 @@ public final class UpnpRequest {
 	}
 	
 	/**
-	 * <p>添加端口映射</p>
+	 * <p>端口映射</p>
 	 * <pre>
 	 * <xmp>
-<?xml version="1.0"?>
-<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
-	<s:Body>
-		<u:AddPortMapping xmlns:u="urn:schemas-upnp-org:service:WANIPConnection:1">
-			<NewRemoteHost></NewRemoteHost>
-			<NewExternalPort>8080</NewExternalPort><!-- 外网端口 -->
-			<NewProtocol>TCP</NewProtocol>
-			<NewInternalPort>8080</NewInternalPort><!-- 内网端口 -->
-			<NewInternalClient>192.168.1.100</NewInternalClient><!-- 内网地址 -->
-			<NewEnabled>1</NewEnabled>
-			<NewPortMappingDescription>描述</NewPortMappingDescription>
-			<NewLeaseDuration>0</NewLeaseDuration>
-		</u:AddPortMapping>
-	</s:Body>
-</s:Envelope>
+	 * <?xml version="1.0"?>
+	 * <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+	 * 	<s:Body>
+	 * 		<u:AddPortMapping xmlns:u="urn:schemas-upnp-org:service:WANIPConnection:1">
+	 * 			<NewRemoteHost></NewRemoteHost>
+	 * 			<NewExternalPort>8080</NewExternalPort><!-- 外网端口 -->
+	 * 			<NewProtocol>TCP</NewProtocol>
+	 * 			<NewInternalPort>8080</NewInternalPort><!-- 内网端口 -->
+	 * 			<NewInternalClient>192.168.1.100</NewInternalClient><!-- 内网地址 -->
+	 * 			<NewEnabled>1</NewEnabled>
+	 * 			<NewPortMappingDescription>描述</NewPortMappingDescription>
+	 * 			<NewLeaseDuration>0</NewLeaseDuration>
+	 * 		</u:AddPortMapping>
+	 * 	</s:Body>
+	 * </s:Envelope>
 	 * </xmp>
 	 * </pre>
 	 * 
@@ -136,16 +145,16 @@ public final class UpnpRequest {
 	 * <p>删除端口映射</p>
 	 * <pre>
 	 * <xmp>
-<?xml version="1.0" encoding="UTF-8"?>
-<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
-	<s:Body>
-		<u:DeletePortMapping xmlns:u="urn:schemas-upnp-org:service:WANIPConnection:1">
-			<NewRemoteHost></NewRemoteHost>
-			<NewExternalPort>8080</NewExternalPort>
-			<NewProtocol>TCP</NewProtocol>
-		</u:DeletePortMapping>
-	</s:Body>
-</s:Envelope>
+	 * <?xml version="1.0" encoding="UTF-8"?>
+	 * <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+	 * 	<s:Body>
+	 * 		<u:DeletePortMapping xmlns:u="urn:schemas-upnp-org:service:WANIPConnection:1">
+	 * 			<NewRemoteHost></NewRemoteHost>
+	 * 			<NewExternalPort>8080</NewExternalPort><!-- 外网端口 -->
+	 * 			<NewProtocol>TCP</NewProtocol>
+	 * 		</u:DeletePortMapping>
+	 * 	</s:Body>
+	 * </s:Envelope>
 	 * </xmp>
 	 * </pre>
 	 * 
@@ -161,7 +170,7 @@ public final class UpnpRequest {
 	}
 
 	/**
-	 * XML文本输出
+	 * <p>XML文本输出</p>
 	 */
 	private String xml() {
 		return this.xml.xml(false);

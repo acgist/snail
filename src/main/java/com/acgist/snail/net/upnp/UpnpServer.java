@@ -4,7 +4,7 @@ import com.acgist.snail.net.UdpServer;
 
 /**
  * <p>UPNP服务端</p>
- * <p>不监听UPNP端口，防止收到很多其他应用消息。</p>
+ * <p>不监听UPNP端口：防止收到很多其他应用消息</p>
  * 
  * @author acgist
  * @since 1.0.0

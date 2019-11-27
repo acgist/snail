@@ -9,9 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.http.HTTPClient;
+import com.acgist.snail.net.http.HTTPClient.StatusCode;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.system.config.SystemConfig;
-import com.acgist.snail.system.context.NatContext;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NetUtils;
@@ -21,7 +21,8 @@ import com.acgist.snail.utils.XMLUtils;
 /**
  * <p>UPNP Service</p>
  * <p>Internet Gateway Device</p>
- * <p>端口映射，将内网的端口映射到外网中。如果外网端口已经被映射，需要设置新的映射端口。</p>
+ * <p>端口映射：将内网的端口映射到外网中</p>
+ * <p>如果外网端口已经被映射：设置新的映射端口</p>
  * <p>注：多路由环境使用STUN进行内网穿透</p>
  * 
  * @author acgist
@@ -40,17 +41,17 @@ public final class UpnpService {
 		
 		/** 未初始化 */
 		UNINIT,
-		/** 不可用（已被注册） */
+		/** 不可用：已被注册 */
 		DISABLE,
-		/** 可用（需要注册） */
+		/** 可用：需要注册 */
 		MAPABLE,
-		/** 可用（已被注册） */
+		/** 可用：已被注册 */
 		USEABLE;
 		
 	}
 	
 	/**
-	 * 控制类型，最后一位类型忽略。
+	 * 控制类型：最后一位类型忽略
 	 */
 	private static final String SERVICE_WANIPC = "urn:schemas-upnp-org:service:WANIPConnection:";
 	
@@ -83,7 +84,9 @@ public final class UpnpService {
 	}
 	
 	/**
-	 * 加载信息
+	 * <p>加载信息</p>
+	 * 
+	 * @param location 描述文件地址
 	 */
 	public UpnpService load(String location) throws NetException {
 		LOGGER.info("UPNP设置描述文件地址：{}", location);
@@ -95,7 +98,7 @@ public final class UpnpService {
 		final List<String> serviceTypes = xml.elementValues("serviceType");
 		final List<String> controlUrls = xml.elementValues("controlURL");
 		if(CollectionUtils.isEmpty(serviceTypes)) {
-			LOGGER.warn("UPNP设置失败（服务类型）：{}", serviceTypes);
+			LOGGER.warn("UPNP设置失败（服务类型）：{}", body);
 			return this;
 		}
 		for (int index = 0; index < serviceTypes.size(); index++) {
@@ -114,7 +117,7 @@ public final class UpnpService {
 	}
 
 	/**
-	 * 是否可用
+	 * <p>是否可用</p>
 	 */
 	public boolean useable() {
 		return this.useable;
@@ -141,9 +144,14 @@ public final class UpnpService {
 	/**
 	 * <p>端口映射信息：GetSpecificPortMappingEntry</p>
 	 * <p>请求头：SOAPAction:"urn:schemas-upnp-org:service:WANIPConnection:1#GetSpecificPortMappingEntry"</p>
-	 * <p>如果没有映射：返回{@link HTTPClient#HTTP_INTERNAL_SERVER_ERROR}错误状态码</p>
+	 * <p>如果没有映射：返回{@linkplain StatusCode#INTERNAL_SERVER_ERROR 500}状态码</p>
+	 * 
+	 * @param portExt 外网端口
+	 * @param protocol 协议
 	 * 
 	 * @return {@linkplain Status 状态}
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	public Status getSpecificPortMappingEntry(int portExt, Protocol.Type protocol) throws NetException {
 		if(!this.available) {
@@ -169,8 +177,16 @@ public final class UpnpService {
 	}
 	
 	/**
-	 * <p>添加端口映射：AddPortMapping</p>
+	 * <p>端口映射：AddPortMapping</p>
 	 * <p>请求头：SOAPAction:"urn:schemas-upnp-org:service:WANIPConnection:1#AddPortMapping"</p>
+	 * 
+	 * @param port 内网端口
+	 * @param portExt 外网端口
+	 * @param protocol 协议
+	 * 
+	 * @return 是否成功
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	public boolean addPortMapping(int port, int portExt, Protocol.Type protocol) throws NetException {
 		if(!this.available) {
@@ -189,6 +205,13 @@ public final class UpnpService {
 	/**
 	 * <p>删除端口映射：DeletePortMapping</p>
 	 * <p>请求头：SOAPAction:"urn:schemas-upnp-org:service:WANIPConnection:1#DeletePortMapping"</p>
+	 * 
+	 * @param portExt 外网端口
+	 * @param protocol 协议
+	 * 
+	 * @return 是否成功
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	public boolean deletePortMapping(int portExt, Protocol.Type protocol) throws NetException {
 		if(!this.available) {
@@ -204,7 +227,8 @@ public final class UpnpService {
 	}
 	
 	/**
-	 * 映射端口：映射端口、获取本机外网IP地址。
+	 * <p>映射端口</p>
+	 * <p>如果处于多重路由环境不映射</p>
 	 */
 	public void mapping() throws NetException {
 		if(!this.available) {
@@ -212,16 +236,15 @@ public final class UpnpService {
 		}
 		final String externalIpAddress = this.getExternalIPAddress();
 		if(NetUtils.isLocalIp(externalIpAddress)) {
-			LOGGER.warn("UPNP端口映射获取外网IP地址为本地地址");
+			LOGGER.warn("UPNP端口映射失败：外网IP地址为内网地址");
 		} else {
 			SystemConfig.setExternalIpAddress(externalIpAddress);
 			setPortMapping();
 		}
-		NatContext.getInstance().unlock();
 	}
 	
 	/**
-	 * 端口释放
+	 * <p>端口释放</p>
 	 */
 	public void release() {
 		if(this.useable && this.available) {
@@ -238,14 +261,14 @@ public final class UpnpService {
 	}
 	
 	/**
-	 * 设置控制地址
+	 * <p>设置控制地址</p>
 	 */
 	private void controlUrl() throws NetException {
 		URL url = null;
 		try {
 			url = new URL(this.location);
 		} catch (MalformedURLException e) {
-			throw new NetException("UPNP端口映射获取描述文件地址异常：" + this.location, e);
+			throw new NetException("UPNP端口映射失败（描述文件地址错误）：" + this.location, e);
 		}
 		final StringBuilder builder = new StringBuilder();
 		builder.append(url.getProtocol())
@@ -257,7 +280,7 @@ public final class UpnpService {
 	
 	/**
 	 * <p>端口映射</p>
-	 * <p>如果端口被占用，则端口+1继续映射。</p>
+	 * <p>如果端口被占用：端口+1继续映射</p>
 	 */
 	private void setPortMapping() throws NetException {
 		Status udpStatus = Status.DISABLE, tcpStatus;

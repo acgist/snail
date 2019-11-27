@@ -17,7 +17,7 @@ import com.acgist.snail.net.IMessageHandler;
 import com.acgist.snail.system.exception.NetException;
 
 /**
- * WebSocket消息代理
+ * <p>WebSocket消息代理</p>
  * 
  * @author acgist
  * @since 1.1.0
@@ -26,12 +26,21 @@ public abstract class WebSocketMessageHandler implements IMessageHandler, WebSoc
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WebSocketMessageHandler.class);
 	
+	/**
+	 * 是否关闭
+	 */
 	private boolean close = false;
+	/**
+	 * WebSocket
+	 */
 	protected WebSocket socket;
+	/**
+	 * HttpClient
+	 */
 	protected HttpClient client;
 	
 	/**
-	 * 代理Socket、Client
+	 * <p>代理Socket、Client</p>
 	 */
 	public void handle(WebSocket socket, HttpClient client) {
 		this.socket = socket;

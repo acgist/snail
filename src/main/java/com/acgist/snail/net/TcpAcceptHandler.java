@@ -45,14 +45,14 @@ public final class TcpAcceptHandler<T extends TcpMessageHandler> implements Comp
 	}
 
 	/**
-	 * 消息代理
+	 * <p>消息代理</p>
 	 */
 	private void handle(AsynchronousSocketChannel channel) {
 		BeanUtils.newInstance(this.clazz).handle(channel);
 	}
 	
 	/**
-	 * 接收连接
+	 * <p>接收连接</p>
 	 */
 	private void accept(AsynchronousServerSocketChannel channel) {
 		channel.accept(channel, this);
