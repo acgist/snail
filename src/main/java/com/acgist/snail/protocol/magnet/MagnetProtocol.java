@@ -13,11 +13,11 @@ import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.FileUtils;
 
 /**
- * <p>磁力链接协议（只支持BT磁力链接）</p>
+ * <p>磁力链接协议</p>
  * <p>原理：磁力链接通过Tracker服务器和DHT网络获取Peer，然后使用{@linkplain MetadataMessageHandler 扩展协议}交换种子。</p>
  * <dl>
- * 	<dt>其他实现方式：</dt>
- * 	<dd>使用第三方的种子库（磁力链接转种子）</dd>
+ * 	<dt>其他实现方式</dt>
+ * 	<dd>使用第三方种子库（磁力链接转种子）</dd>
  * </dl>
  * 
  * TODO：磁力链接交换完成后修改文件大小
@@ -88,11 +88,13 @@ public final class MagnetProtocol extends Protocol {
 	
 	/**
 	 * {@inheritDoc}
-	 * <p>注意：一定先检查磁力链接是否已经存在，如果已经存在不能赋值，失败后清除。</p>
+	 * 
+	 * <p>注意：一定要先检查磁力链接是否已经存在（如果已经存在不能赋值：防止清除已下载任务）</p>
 	 */
 	@Override
 	protected void cleanMessage(boolean ok) {
-		if(!ok) { // 失败
+		if(!ok) {
+			// 清除种子信息
 			if(this.magnet != null) {
 				TorrentManager.getInstance().remove(this.magnet.getHash());
 			}
@@ -101,7 +103,7 @@ public final class MagnetProtocol extends Protocol {
 	}
 	
 	/**
-	 * 是否已经存在下载任务
+	 * <p>是否已经存在下载任务</p>
 	 */
 	private void exist(Magnet magnet) throws DownloadException {
 		if(TorrentManager.getInstance().exist(magnet.getHash())) {
@@ -110,14 +112,14 @@ public final class MagnetProtocol extends Protocol {
 	}
 	
 	/**
-	 * 设置磁力链接
+	 * <p>设置磁力链接</p>
 	 */
 	private void magnet(Magnet magnet) throws DownloadException {
 		this.magnet = magnet;
 	}
 	
 	/**
-	 * 创建下载目录
+	 * <p>创建下载目录</p>
 	 */
 	private void buildTorrentFolder() {
 		FileUtils.buildFolder(this.taskEntity.getFile(), false);

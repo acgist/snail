@@ -149,8 +149,11 @@ public abstract class Protocol {
 		}
 		
 		/**
+		 * <p>获取链接的前缀</p>
+		 * 
 		 * @param url 链接
-		 * @return 当前链接的前缀
+		 * 
+		 * @return 前缀
 		 */
 		public String prefix(String url) {
 			for (String value : this.prefix) {
@@ -169,8 +172,11 @@ public abstract class Protocol {
 		}
 		
 		/**
+		 * <p>获取链接的后缀</p>
+		 * 
 		 * @param url 链接
-		 * @return 当前链接的后缀
+		 * 
+		 * @return 后缀
 		 */
 		public String suffix(String url) {
 			for (String value : this.suffix) {
@@ -263,7 +269,7 @@ public abstract class Protocol {
 	}
 
 	/**
-	 * 初始化
+	 * <p>初始化</p>
 	 */
 	public Protocol init(String url) {
 		this.url = url.trim();
@@ -271,7 +277,7 @@ public abstract class Protocol {
 	}
 	
 	/**
-	 * 协议类型
+	 * <p>获取协议类型</p>
 	 * 
 	 * @return 协议类型
 	 */
@@ -280,14 +286,14 @@ public abstract class Protocol {
 	}
 	
 	/**
-	 * 协议名称
+	 * <p>获取协议名称</p>
 	 * 
 	 * @return 协议名称
 	 */
 	public abstract String name();
 	
 	/**
-	 * 验证是否支持协议
+	 * <p>验证是否支持协议</p>
 	 */
 	public boolean verify() {
 		if(this.type == null) {
@@ -297,14 +303,14 @@ public abstract class Protocol {
 	}
 	
 	/**
-	 * 是否可用
+	 * <p>是否可用</p>
 	 * 
 	 * @return 是否可用
 	 */
 	public abstract boolean available();
 	
 	/**
-	 * 创建下载器
+	 * <p>创建下载器</p>
 	 * 
 	 * @param taskSession 下载任务
 	 * 
@@ -314,7 +320,8 @@ public abstract class Protocol {
 	
 	/**
 	 * <p>创建下载任务</p>
-	 * <p>先检查是否需要转换协议，如果需要转换协议调用真实协议进行创建。</p>
+	 * <p>存在协议转换：使用转换后的协议下载</p>
+	 * <p>不存在协议转换：使用当前协议下载</p>
 	 */
 	public ITaskSession buildTaskSession() throws DownloadException {
 		final Protocol convert = convert();
@@ -338,14 +345,15 @@ public abstract class Protocol {
 
 	/**
 	 * <p>协议转换</p>
-	 * <p>如果返回值不为空，则使用返回的协议进行下载。</p>
+	 * <p>如果存在协议转换返回：转换后协议</p>
+	 * <p>如果不存在协议转换返回：null</p>
 	 */
 	protected Protocol convert() throws DownloadException {
 		return null;
 	}
 	
 	/**
-	 * 创建下载任务
+	 * <p>创建下载任务</p>
 	 */
 	protected void buildTaskEntity() throws DownloadException {
 		this.taskEntity = new TaskEntity();
@@ -363,34 +371,34 @@ public abstract class Protocol {
 	}
 	
 	/**
-	 * 预处理
+	 * <p>预处理</p>
 	 */
 	protected void prep() throws DownloadException {
 	}
 	
 	/**
-	 * 设置URL
+	 * <p>设置URL</p>
 	 */
 	protected void buildUrl() throws DownloadException {
 		this.taskEntity.setUrl(this.url);
 	}
 
 	/**
-	 * 设置下载类型
+	 * <p>设置下载类型</p>
 	 */
 	protected void buildType() throws DownloadException {
 		this.taskEntity.setType(this.type);
 	}
 
 	/**
-	 * 设置任务状态
+	 * <p>设置任务状态</p>
 	 */
 	protected void buildStatus() throws DownloadException {
 		this.taskEntity.setStatus(Status.AWAIT);
 	}
 
 	/**
-	 * 获取文件名称
+	 * <p>获取文件名称</p>
 	 */
 	protected String buildFileName() throws DownloadException {
 		String fileName = FileUtils.fileNameFromUrl(this.url);
@@ -399,7 +407,7 @@ public abstract class Protocol {
 	}
 
 	/**
-	 * 设置任务名称
+	 * <p>设置任务名称</p>
 	 */
 	protected void buildName(String fileName) throws DownloadException {
 		String name;
@@ -413,7 +421,7 @@ public abstract class Protocol {
 	}
 	
 	/**
-	 * 设置文件、文件夹
+	 * <p>设置下载文件、文件夹</p>
 	 */
 	protected void buildFile(String fileName) throws DownloadException {
 		final String filePath = DownloadConfig.getPath(fileName);
@@ -425,26 +433,26 @@ public abstract class Protocol {
 	}
 	
 	/**
-	 * 设置任务文件类型
+	 * <p>设置任务文件类型</p>
 	 */
 	protected void buildFileType(String fileName) throws DownloadException {
 		this.taskEntity.setFileType(FileUtils.fileType(fileName));
 	}
 
 	/**
-	 * 设置任务大小
+	 * <p>设置任务大小</p>
 	 */
 	protected void buildSize() throws DownloadException {
 	}
 	
 	/**
-	 * 完成处理
+	 * <p>完成处理</p>
 	 */
 	protected void done() throws DownloadException {
 	}
 	
 	/**
-	 * 持久化任务
+	 * <p>持久化任务</p>
 	 */
 	protected void persistentTaskEntity() throws DownloadException {
 		final TaskRepository repository = new TaskRepository();
@@ -452,7 +460,7 @@ public abstract class Protocol {
 	}
 	
 	/**
-	 * 清理数据
+	 * <p>清理数据</p>
 	 */
 	protected void clean(boolean ok) {
 		this.url = null;
@@ -461,7 +469,7 @@ public abstract class Protocol {
 	}
 	
 	/**
-	 * 清理数据（子类）
+	 * <p>清理数据（子类）</p>
 	 * 
 	 * @param ok 创建状态：true-成功；false-失败；
 	 */
