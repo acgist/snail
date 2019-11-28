@@ -2,7 +2,7 @@ package com.acgist.snail.system.exception;
 
 /**
  * <p>网络异常</p>
- * <p>用途：{@linkplain com.acgist.snail.net 网络协议模块}</p>
+ * <p>用途：{@linkplain com.acgist.snail.net 网络协议}</p>
  * 
  * @author acgist
  * @since 1.0.0

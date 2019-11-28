@@ -124,7 +124,7 @@ public final class TorrentProtocol extends Protocol {
 	
 	private void exist() throws DownloadException {
 		final Torrent torrent = TorrentManager.loadTorrent(this.url);
-		if(TorrentManager.getInstance().exist(torrent.getInfoHash().infoHashHex())) {
+		if(TorrentManager.getInstance().exist(torrent.infoHash().infoHashHex())) {
 			throw new DownloadException("任务已经存在");
 		}
 	}

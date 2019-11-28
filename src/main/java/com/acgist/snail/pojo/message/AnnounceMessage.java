@@ -2,12 +2,13 @@ package com.acgist.snail.pojo.message;
 
 import java.util.Map;
 
+import com.acgist.snail.net.torrent.bootstrap.TrackerLauncher;
 import com.acgist.snail.utils.ObjectUtils;
 
 /**
  * <p>Tracker声明响应消息</p>
- * <p>http://www.bittorrent.org/beps/bep_0015.html</p>
- * <p>https://wiki.theory.org/index.php/BitTorrentSpecification</p>
+ * <p>UDP：http://www.bittorrent.org/beps/bep_0015.html</p>
+ * <p>HTTP：https://wiki.theory.org/index.php/BitTorrentSpecification</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -15,7 +16,7 @@ import com.acgist.snail.utils.ObjectUtils;
 public final class AnnounceMessage {
 
 	/**
-	 * <p>id：transaction_id：TrackerId</p>
+	 * <p>id：{@linkplain TrackerLauncher#id() transaction_id}</p>
 	 */
 	private Integer id;
 	/**

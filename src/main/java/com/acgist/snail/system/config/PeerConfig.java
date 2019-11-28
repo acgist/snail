@@ -122,7 +122,7 @@ public final class PeerConfig {
 	public static final byte PEX_PREFER_ENCRYPTION =	1 << 0;
 	/**
 	 * <p>PEX状态：0x02：做种、上传</p>
-	 * <p>不发送消息：解除阻塞、have、位图</p>
+	 * <p>不发送消息：解除阻塞、have、Piece位图</p>
 	 */
 	public static final byte PEX_UPLOAD_ONLY =			1 << 1;
 	/**
@@ -278,7 +278,7 @@ public final class PeerConfig {
 		NOT_INTERESTED(	(byte) 0x03),
 		/** have */
 		HAVE(			(byte) 0x04),
-		/** 位图 */
+		/** Piece位图 */
 		BITFIELD(		(byte) 0x05),
 		/** 请求 */
 		REQUEST(		(byte) 0x06),
@@ -291,11 +291,11 @@ public final class PeerConfig {
 		/** 扩展 */
 		EXTENSION(		(byte) 0x14),
 		//================FAST Protocol================//
-		/** 所有块 */
+		/** 所有Piece */
 		HAVE_ALL(		(byte) 0x0E),
-		/** 没有块 */
+		/** 没有Piece */
 		HAVE_NONE(		(byte) 0x0F),
-		/** 推荐块 */
+		/** 推荐Piece */
 		SUGGEST_PIECE(	(byte) 0x0D),
 		/** 拒绝请求 */
 		REJECT_REQUEST(	(byte) 0x10),
@@ -525,13 +525,13 @@ public final class PeerConfig {
 	}
 	
 	/**
-	 * Torrent任务动作
+	 * 任务动作
 	 */
 	public enum Action {
 		
 		/** 磁力链接 */
 		MAGNET,
-		/** BT任务 */
+		/** 种子任务 */
 		TORRENT;
 		
 	}

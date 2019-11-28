@@ -32,7 +32,7 @@
 
 ## 使用
 
-Windows稳定版下载：[snail-windows-v1.2.1.zip](https://gitee.com/acgist/snail/attach_files)（解压可以直接运行使用）
+Windows稳定版下载：[snail-windows-v1.2.1.zip](https://gitee.com/acgist/snail/attach_files)（解压可以直接运行）
 
 #### 编译
 

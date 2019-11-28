@@ -8,7 +8,8 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>磁力链接</p>
- * <p>只支持单个文件的Magnet下载，不支持多个文件。</p>
+ * <p>只支持单文件磁力链接下载（不支持多文件）</p>
+ * <p>协议链接：https://baike.baidu.com/item/%E7%A3%81%E5%8A%9B%E9%93%BE%E6%8E%A5/5867775</p>
  * 
  * @author acgist
  * @since 1.1.0
@@ -24,7 +25,7 @@ public final class Magnet {
 		MD5(		"urn:md5:"),
 		/** aich */
 		AICH(		"urn:aich:"),
-		/** btih */
+		/** btih：BitTorrent InfoHash */
 		BTIH(		"urn:btih:"),
 		/** ed2k */
 		ED2K(		"urn:ed2k:"),
@@ -53,50 +54,40 @@ public final class Magnet {
 	}
 	
 	/**
-	 * 类型
-	 */
-	private Type type;
-	/**
-	 * 显示名称
+	 * <p>显示名称</p>
 	 */
 	private String dn;
 	/**
-	 * Tracker服务器列表
-	 */
-	private List<String> tr;
-	/**
-	 * 资源URN
+	 * <p>资源URN</p>
 	 */
 	private String xt;
 	/**
-	 * 文件连接（普通链接）
+	 * <p>文件链接（经过编码）</p>
+	 * <p>BT磁力链接可以直接使用下载种子文件</p>
 	 */
 	private String as;
 	/**
-	 * 绝对资源（P2P链接）
-	 * 
-	 * TODO：种子下载
+	 * <p>绝对资源（经过编码）</p>
+	 * <p>BT磁力链接可以直接使用下载种子文件</p>
 	 */
 	private String xs;
 	/**
-	 * 绝对长度（字节）
+	 * <p>Tracker服务器列表</p>
 	 */
-	private String xl;
+	private List<String> tr;
 	/**
-	 * 文件列表
+	 * <p>类型</p>
+	 * <p>参考：xt</p>
 	 */
-	private String mt;
+	private Type type;
 	/**
-	 * 关键字（用于搜索）
-	 */
-	private String kt;
-	/**
-	 * xt中携带的文件hash
+	 * <p>BT：BitTorrent InfoHashHex</p>
+	 * <p>参考：xt</p>
 	 */
 	private String hash;
 
 	/**
-	 * 添加Tracker服务器
+	 * <p>添加Tracker服务器</p>
 	 */
 	public void addTr(String tr) {
 		if(this.tr == null) {
@@ -106,7 +97,8 @@ public final class Magnet {
 	}
 	
 	/**
-	 * 是否支持下载
+	 * <p>是否支持下载</p>
+	 * <p>类型：{@linkplain Type#BTIH BTIH}</p>
 	 */
 	public boolean supportDownload() {
 		return this.type == Type.BTIH && StringUtils.isNotEmpty(this.hash);
@@ -158,30 +150,6 @@ public final class Magnet {
 
 	public void setXs(String xs) {
 		this.xs = xs;
-	}
-
-	public String getXl() {
-		return xl;
-	}
-
-	public void setXl(String xl) {
-		this.xl = xl;
-	}
-
-	public String getMt() {
-		return mt;
-	}
-
-	public void setMt(String mt) {
-		this.mt = mt;
-	}
-
-	public String getKt() {
-		return kt;
-	}
-
-	public void setKt(String kt) {
-		this.kt = kt;
 	}
 
 	public String getHash() {

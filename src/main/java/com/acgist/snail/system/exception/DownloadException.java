@@ -2,7 +2,7 @@ package com.acgist.snail.system.exception;
 
 /**
  * <p>下载异常</p>
- * <p>用途：{@linkplain com.acgist.snail.downloader 下载器模块}、{@linkplain com.acgist.snail.protocol 下载协议模块}</p>
+ * <p>用途：{@linkplain com.acgist.snail.downloader 下载器}、{@linkplain com.acgist.snail.protocol 下载协议}</p>
  * 
  * @author acgist
  * @since 1.0.0

@@ -6,7 +6,9 @@ import com.acgist.snail.utils.Base32Utils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * 种子InfoHash
+ * <p>种子InfoHash</p>
+ * <p>种子文件：包含所有信息</p>
+ * <p>磁力链接：size=0、info=null</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -14,15 +16,15 @@ import com.acgist.snail.utils.StringUtils;
 public final class InfoHash {
 
 	/**
-	 * 种子info数据长度
+	 * <p>种子info数据长度</p>
 	 */
 	private int size;
 	/**
-	 * 种子info数据
+	 * <p>种子info数据</p>
 	 */
 	private byte[] info;
 	/**
-	 * 种子info数据hash
+	 * <p>种子info数据hash</p>
 	 */
 	private final byte[] infoHash;
 	
@@ -31,7 +33,7 @@ public final class InfoHash {
 	}
 
 	/**
-	 * 生成InfoHash
+	 * <p>生成InfoHash</p>
 	 * 
 	 * @param data 种子Info
 	 */
@@ -43,7 +45,7 @@ public final class InfoHash {
 	}
 	
 	/**
-	 * 生成InfoHash
+	 * <p>生成InfoHash</p>
 	 * 
 	 * @param hash 种子Info的Hash
 	 */
@@ -82,14 +84,14 @@ public final class InfoHash {
 	}
 	
 	/**
-	 * 16进制info的hash（小写）（40位）
+	 * <p>16进制info的hash（小写）（40位）</p>
 	 */
 	public String infoHashHex() {
 		return StringUtils.hex(this.infoHash);
 	}
 	
 	/**
-	 * 网络info的hash
+	 * <p>网络info的hash编码</p>
 	 */
 	public String infoHashUrl() {
 		int index = 0;

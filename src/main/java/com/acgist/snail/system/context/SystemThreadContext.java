@@ -71,7 +71,7 @@ public final class SystemThreadContext {
 	}
 
 	/**
-	 * <p>定时任务（不重复）</p>
+	 * <p>定时任务（不重复执行）</p>
 	 * 
 	 * @param delay 延迟时间
 	 * @param unit 时间单位
@@ -86,7 +86,7 @@ public final class SystemThreadContext {
 	}
 	
 	/**
-	 * <p>定时任务（重复）</p>
+	 * <p>定时任务（重复执行）</p>
 	 * <p>固定时间（周期不受执行时间影响）</p>
 	 * 
 	 * @param delay 延迟时间
@@ -105,7 +105,7 @@ public final class SystemThreadContext {
 	}
 	
 	/**
-	 * <p>定时任务（重复）</p>
+	 * <p>定时任务（重复执行）</p>
 	 * <p>固定周期（周期受到执行时间影响）</p>
 	 * 
 	 * @param delay 延迟时间

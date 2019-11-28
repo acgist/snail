@@ -9,7 +9,8 @@ import com.acgist.snail.system.bencode.BEncodeDecoder;
 import com.acgist.snail.utils.CollectionUtils;
 
 /**
- * 文件信息
+ * <p>文件信息</p>
+ * <p>种子文件包含多个下载文件时使用</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -21,10 +22,7 @@ public final class TorrentFile {
 	 */
 	public static final String SEPARATOR = "/";
 	
-	/**
-	 * 是否选中下载
-	 */
-	private boolean selected = false;
+	//================种子文件自带信息================//
 	/**
 	 * 文件大小
 	 */
@@ -45,6 +43,12 @@ public final class TorrentFile {
 	 * 路径UTF8
 	 */
 	private List<String> pathUtf8;
+	
+	//================种子文件临时信息================//
+	/**
+	 * 是否选中下载
+	 */
+	private transient boolean selected = false;
 
 	protected TorrentFile() {
 	}
@@ -73,21 +77,21 @@ public final class TorrentFile {
 	}
 
 	/**
-	 * 是否选中
+	 * <p>是否选中下载</p>
 	 */
 	public boolean selected() {
 		return this.selected;
 	}
 
 	/**
-	 * 设置选中
+	 * <p>设置选中下载</p>
 	 */
 	public void selected(boolean selected) {
 		this.selected = selected;
 	}
 	
 	/**
-	 * 拼接路径
+	 * <p>文件路径</p>
 	 */
 	public String path() {
 		if (CollectionUtils.isNotEmpty(this.pathUtf8)) {
@@ -97,7 +101,7 @@ public final class TorrentFile {
 	}
 	
 	/**
-	 * <p>读取路径</p>
+	 * <p>获取文件路径</p>
 	 * <p>每个元素都是一个字节数组</p>
 	 */
 	private static final List<String> path(List<Object> path) {
@@ -105,7 +109,7 @@ public final class TorrentFile {
 			.map(value -> BEncodeDecoder.getString(value))
 			.collect(Collectors.toList());
 	}
-	
+
 	public Long getLength() {
 		return length;
 	}

@@ -3,8 +3,8 @@ package com.acgist.snail.utils;
 import java.util.BitSet;
 
 /**
- * <p>位图工具</p>
- * <p>每个Piece占一位，每个字节的高位（末尾）表示八个Piece中的第一块，没有下载的Piece填充0。</p>
+ * <p>Piece位图工具</p>
+ * <p>每个Piece占一位，每个字节的高位（末尾）表示八个Piece中的第一块，没有下载的Piece使用0占位。</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -12,13 +12,13 @@ import java.util.BitSet;
 public final class BitfieldUtils {
 
 	/**
-	 * <p>位图转为字节数组</p>
-	 * <p>注：即使Piece没有下载但是传递时依旧要填充0</p>
+	 * <p>Piece位图转为字节数组</p>
+	 * <p>注：即使Piece没有下载传递时依旧要使用0占位</p>
 	 * 
-	 * @param pieceSize 块数量
-	 * @param pieces 已下载位图
+	 * @param pieceSize Piece数量
+	 * @param pieces 已下载Piece位图
 	 * 
-	 * @return 位图数组
+	 * @return Piece位图字节数组
 	 */
 	public static final byte[] toBytes(final int pieceSize, final BitSet pieces) {
 		final int byteSize = NumberUtils.ceilDiv(pieceSize, 8);
@@ -32,11 +32,11 @@ public final class BitfieldUtils {
 	}
 	
 	/**
-	 * <p>字节数组转为位图</p>
+	 * <p>字节数组转为Piece位图</p>
 	 * 
 	 * @param bitfield 字节数组
 	 * 
-	 * @return 位图数组
+	 * @return Piece位图
 	 */
 	public static final BitSet toBitSet(final byte[] bitfield) {
 		for (int index = 0; index < bitfield.length; index++) {

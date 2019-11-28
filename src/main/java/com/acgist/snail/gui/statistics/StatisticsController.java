@@ -207,28 +207,28 @@ public final class StatisticsController extends Controller implements Initializa
 		final List<XYChart.Data<String, Number>> uploadPeer = new ArrayList<>();
 		final List<XYChart.Data<String, Number>> downloadPeer = new ArrayList<>();
 		peers.forEach(peer -> {
-			if(peer.dht()) {
+			if(peer.fromDht()) {
 				dht.incrementAndGet();
 			}
 			if(peer.available()) {
 				available.incrementAndGet();
 			}
-			if(peer.pex()) {
+			if(peer.fromPex()) {
 				pex.incrementAndGet();
 			}
 			if(peer.utp()) {
 				utp.incrementAndGet();
 			}
-			if(peer.lsd()) {
+			if(peer.fromLsd()) {
 				lsd.incrementAndGet();
 			}
-			if(peer.tracker()) {
+			if(peer.fromTacker()) {
 				tracker.incrementAndGet();
 			}
-			if(peer.connect()) {
+			if(peer.fromConnect()) {
 				connect.incrementAndGet();
 			}
-			if(peer.holepunch()) {
+			if(peer.fromHolepunch()) {
 				holepunch.incrementAndGet();
 			}
 			if(peer.uploading()) {

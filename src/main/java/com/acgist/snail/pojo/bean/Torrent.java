@@ -55,6 +55,7 @@ public final class Torrent {
 	 */
 	public static final String ATTR_NODES = "nodes";
 	
+	//================种子文件自带信息================//
 	/**
 	 * 注释
 	 */
@@ -91,10 +92,13 @@ public final class Torrent {
 	 * DHT节点
 	 */
 	private Map<String, Integer> nodes;
+	
+	//================种子文件临时信息================//
 	/**
-	 * InfoHash
+	 * <p>InfoHash</p>
+	 * <p>种子文件加载完成时保存InfoHash，防止计算种子hash不一致。</p>
 	 */
-	private InfoHash infoHash;
+	private transient InfoHash infoHash;
 
 	protected Torrent() {
 	}
@@ -128,7 +132,8 @@ public final class Torrent {
 	}
 	
 	/**
-	 * 任务名称，优先使用nameUtf8，如果不存在使用name。
+	 * <p>任务名称</p>
+	 * <p>优先使用{@link TorrentInfo#getNameUtf8()}然后使用{@link TorrentInfo#getName()}</p>
 	 */
 	public String name() {
 		String name = this.info.getNameUtf8();
@@ -139,8 +144,22 @@ public final class Torrent {
 	}
 	
 	/**
-	 * <p>读取tracker服务器列表</p>
-	 * <p>每个元素都是一个list，每个list里面有一个tracker服务器地址。</p>
+	 * 获取InfoHash
+	 */
+	public InfoHash infoHash() {
+		return this.infoHash;
+	}
+
+	/**
+	 * 设置InfoHash
+	 */
+	public void infoHash(InfoHash infoHash) {
+		this.infoHash = infoHash;
+	}
+	
+	/**
+	 * <p>获取tracker服务器列表</p>
+	 * <p>每个元素都是一个list，每个list里面包含一个tracker服务器地址。</p>
 	 */
 	private static final List<String> announceList(List<Object> announceList) {
 		return announceList.stream()
@@ -153,7 +172,7 @@ public final class Torrent {
 	}
 	
 	/**
-	 * <p>读取DHT节点</p>
+	 * <p>获取DHT节点</p>
 	 * <p>每个元素都是一个list，每个list里面包含节点的IP和端口。</p>
 	 */
 	private static final Map<String, Integer> nodes(List<Object> nodes) {
@@ -218,11 +237,11 @@ public final class Torrent {
 	public void setCreationDate(Long creationDate) {
 		this.creationDate = creationDate;
 	}
-	
+
 	public String getAnnounce() {
 		return announce;
 	}
-	
+
 	public void setAnnounce(String announce) {
 		this.announce = announce;
 	}
@@ -234,11 +253,11 @@ public final class Torrent {
 	public void setAnnounceList(List<String> announceList) {
 		this.announceList = announceList;
 	}
-	
+
 	public TorrentInfo getInfo() {
 		return info;
 	}
-	
+
 	public void setInfo(TorrentInfo info) {
 		this.info = info;
 	}
@@ -249,14 +268,6 @@ public final class Torrent {
 
 	public void setNodes(Map<String, Integer> nodes) {
 		this.nodes = nodes;
-	}
-
-	public InfoHash getInfoHash() {
-		return infoHash;
-	}
-
-	public void setInfoHash(InfoHash infoHash) {
-		this.infoHash = infoHash;
 	}
 
 }

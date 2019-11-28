@@ -8,7 +8,7 @@ import com.acgist.snail.system.bencode.BEncodeEncoder;
 import com.acgist.snail.system.exception.NetException;
 
 /**
- * Application消息（系统消息）
+ * <p>Application消息（系统消息）</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -31,7 +31,7 @@ public class ApplicationMessage {
 	 */
 	public enum Type {
 		
-		// 被动消息
+		//================被动消息================//
 		
 		/** GUI注册 */
 		GUI,
@@ -54,7 +54,7 @@ public class ApplicationMessage {
 		/** 删除任务 */
 		TASK_DELETE,
 		
-		// 主动消息
+		//================主动消息================//
 		
 		/** 提示窗口 */
 		ALERT,
@@ -66,7 +66,7 @@ public class ApplicationMessage {
 		RESPONSE;
 
 		/**
-		 * 消息类型转换：忽略大小写
+		 * <p>消息类型转换（忽略大小写）</p>
 		 */
 		public static final Type valueOfName(String name) {
 			final var types = Type.values();
@@ -81,7 +81,7 @@ public class ApplicationMessage {
 	}
 
 	/**
-	 * 类型
+	 * 消息类型
 	 */
 	private Type type;
 	/**
@@ -102,7 +102,7 @@ public class ApplicationMessage {
 	}
 	
 	/**
-	 * 读取系统消息（B编码）
+	 * <p>读取系统消息（B编码）</p>
 	 */
 	public static final ApplicationMessage valueOf(String content) {
 		try {
@@ -119,34 +119,43 @@ public class ApplicationMessage {
 			}
 			return ApplicationMessage.message(messageType, body);
 		} catch (NetException e) {
-			LOGGER.error("系统消息读取异常", e);
+			LOGGER.error("读取系统消息异常", e);
 		}
 		return null;
 	}
 	
 	/**
-	 * 消息
+	 * <p>消息</p>
+	 * 
+	 * @param type 消息类型
 	 */
 	public static final ApplicationMessage message(Type type) {
 		return message(type, null);
 	}
 	
 	/**
-	 * 消息
+	 * <p>消息</p>
+	 * 
+	 * @param type 消息类型
+	 * @param body 消息内容
 	 */
 	public static final ApplicationMessage message(Type type, String body) {
 		return new ApplicationMessage(type, body);
 	}
 	
 	/**
-	 * 文本
+	 * <p>文本</p>
+	 * 
+	 * @param body 消息内容
 	 */
 	public static final ApplicationMessage text(String body) {
 		return message(Type.TEXT, body);
 	}
 	
 	/**
-	 * 响应
+	 * <p>响应</p>
+	 * 
+	 * @param body 消息内容
 	 */
 	public static final ApplicationMessage response(String body) {
 		return message(Type.RESPONSE, body);
@@ -169,7 +178,7 @@ public class ApplicationMessage {
 	}
 	
 	/**
-	 * 转换为B编码字符串
+	 * <p>转换为B编码字符串</p>
 	 */
 	@Override
 	public String toString() {

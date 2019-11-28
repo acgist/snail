@@ -7,7 +7,7 @@ import com.acgist.snail.pojo.ITaskSession.Status;
 import com.acgist.snail.protocol.Protocol.Type;
 
 /**
- * 任务 - 实体接口
+ * <p>任务 - 实体接口</p>
  * 
  * @author acgist
  * @since 1.2.0
