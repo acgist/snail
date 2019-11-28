@@ -1,7 +1,7 @@
 package com.acgist.snail.system.config;
 
 /**
- * UTP配置
+ * <p>UTP配置</p>
  * 
  * @author acgist
  * @since 1.1.0
@@ -33,6 +33,7 @@ public final class UtpConfig {
 	 * 版本
 	 */
 	public static final byte UTP_VERSION = 1;
+	
 	//================消息类型（类型 + 版本）================//
 	/**
 	 * 消息类型：数据

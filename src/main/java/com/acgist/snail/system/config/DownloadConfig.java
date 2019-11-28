@@ -13,7 +13,7 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>下载配置</p>
- * <p>默认从配置文件加载，如果数据有配置则使用数据库配置覆盖。</p>
+ * <p>默认从配置文件加载，如果数据库有配置，则使用数据库配置覆盖。</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -27,7 +27,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	private static final String DOWNLOAD_CONFIG = "/config/download.properties";
 	
 	/**
-	 * 上传速度和下载速度比例：上传速度 = 下载速度 / 比例
+	 * 下载速度和上传速度的比例 = 下载速度 / 上传速度
 	 */
 	private static final int UPLOAD_DOWNLOAD_SCALE = 4;
 	
@@ -88,7 +88,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	private int downloadBufferByte;
 	
 	/**
-	 * 配置文件加载
+	 * <p>配置文件加载</p>
 	 */
 	private void initFromProperties() {
 		this.path = getString(DOWNLOAD_PATH);
@@ -100,7 +100,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 数据库配置加载
+	 * <p>数据库配置加载</p>
 	 */
 	private void initFromDatabase() {
 		final ConfigRepository configRepository = new ConfigRepository();
@@ -120,7 +120,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 日志
+	 * <p>日志</p>
 	 */
 	private void logger() {
 		LOGGER.info("下载目录：{}", this.path);
@@ -132,7 +132,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 设置下载目录
+	 * <p>设置下载目录</p>
 	 */
 	public static final void setPath(String path) {
 		final ConfigRepository configRepository = new ConfigRepository();
@@ -141,7 +141,9 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 下载目录：如果文件路径存在返回文件路径，如果不存在获取user.dir路径+文件路径。
+	 * <p>下载目录</p>
+	 * <p>如果文件路径存在返回文件路径</p>
+	 * <p>如果不存在获取user.dir路径 + 文件路径</p>
 	 */
 	public static final String getPath() {
 		String path = INSTANCE.path;
@@ -155,7 +157,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 
 	/**
-	 * 下载目录：下载目录+文件名称
+	 * <p>下载目录：下载目录 + 文件名称</p>
 	 */
 	public static final String getPath(String fileName) {
 		if(StringUtils.isEmpty(fileName)) {
@@ -165,7 +167,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 设置下载任务数量
+	 * <p>设置下载任务数量</p>
 	 */
 	public static final void setSize(int size) {
 		final ConfigRepository configRepository = new ConfigRepository();
@@ -174,14 +176,14 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 
 	/**
-	 * 下载任务数量
+	 * <p>下载任务数量</p>
 	 */
 	public static final int getSize() {
 		return INSTANCE.size;
 	}
 	
 	/**
-	 * 设置消息提示
+	 * <p>设置消息提示</p>
 	 */
 	public static final void setNotice(boolean notice) {
 		final ConfigRepository configRepository = new ConfigRepository();
@@ -190,14 +192,14 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 
 	/**
-	 * 消息提示
+	 * <p>消息提示</p>
 	 */
 	public static final boolean getNotice() {
 		return INSTANCE.notice;
 	}
 	
 	/**
-	 * 设置下载速度（单个）（KB）
+	 * <p>设置下载速度（单个）（KB）</p>
 	 */
 	public static final void setBuffer(int buffer) {
 		final ConfigRepository configRepository = new ConfigRepository();
@@ -207,14 +209,14 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 下载速度（单个）（KB）
+	 * <p>下载速度（单个）（KB）</p>
 	 */
 	public static final int getBuffer() {
 		return INSTANCE.buffer;
 	}
 
 	/**
-	 * 设置下载速度和上传速度
+	 * <p>设置下载速度和上传速度</p>
 	 */
 	private static final void buildDownloadUploadBuffer() {
 		INSTANCE.downloadBufferByte = INSTANCE.buffer * SystemConfig.DATA_SCALE;
@@ -222,21 +224,21 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 下载速度（单个）（B）
+	 * <p>下载速度（单个）（B）</p>
 	 */
 	public static final int getDownloadBufferByte() {
 		return INSTANCE.downloadBufferByte;
 	}
 	
 	/**
-	 * 上传速度（单个）（B）
+	 * <p>上传速度（单个）（B）</p>
 	 */
 	public static final int getUploadBufferByte() {
 		return INSTANCE.uploadBufferByte;
 	}
 	
 	/**
-	 * 设置最后一次选择目录
+	 * <p>设置最后一次选择目录</p>
 	 */
 	public static final void setLastPath(String lastPath) {
 		final ConfigRepository configRepository = new ConfigRepository();
@@ -245,7 +247,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 最后一次选择目录
+	 * <p>最后一次选择目录</p>
 	 */
 	public static final String getLastPath() {
 		if(StringUtils.isEmpty(INSTANCE.lastPath)) {
@@ -256,14 +258,14 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 最后一次选择目录文件：如果不存在选择默认使用下载目录
+	 * <p>最后一次选择目录文件：如果不存在选择默认使用下载目录</p>
 	 */
 	public static final File getLastPathFile() {
 		return new File(getLastPath());
 	}
 	
 	/**
-	 * 设置磁盘缓存（单个）（MB）
+	 * <p>设置磁盘缓存（单个）（MB）</p>
 	 */
 	public static final void setMemoryBuffer(int memoryBuffer) {
 		final ConfigRepository configRepository = new ConfigRepository();
@@ -272,14 +274,14 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 
 	/**
-	 * 磁盘缓存（单个）（MB）
+	 * <p>磁盘缓存（单个）（MB）</p>
 	 */
 	public static final int getMemoryBuffer() {
 		return INSTANCE.memoryBuffer;
 	}
 
 	/**
-	 * 磁盘缓存（单个）（B）
+	 * <p>磁盘缓存（单个）（B）</p>
 	 */
 	public static final int getMemoryBufferByte() {
 		return INSTANCE.memoryBuffer * SystemConfig.ONE_MB;

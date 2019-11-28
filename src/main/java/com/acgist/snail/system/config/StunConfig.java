@@ -1,7 +1,7 @@
 package com.acgist.snail.system.config;
 
 /**
- * STUN配置
+ * <p>STUN配置</p>
  * 
  * @author acgist
  * @since 1.2.0
@@ -28,7 +28,6 @@ public final class StunConfig {
      * TransactionID长度
      */
     public static final int TRANSACTION_ID_LENGTH = 12;
-    
     /**
      * IPv4
      */
@@ -100,7 +99,7 @@ public final class StunConfig {
     	}
     	
     	/**
-    	 * 计算对应方法的MessageType值
+    	 * <p>计算对应方法的MessageType值</p>
     	 */
     	public short type(MethodType methodType) {
     		return (short) (
@@ -134,7 +133,7 @@ public final class StunConfig {
      */
     public enum AttributeType {
     	
-    	// 强制理解：0x0000-0x7FFF
+    	//================强制理解：0x0000-0x7FFF================//
     	/** 端口映射：明文 */
     	MAPPED_ADDRESS(		(short) 0x0001),
     	RESPONSE_ADDRESS(	(short) 0x0002),
@@ -152,7 +151,7 @@ public final class StunConfig {
     	NONCE(				(short) 0x0015),
     	/** 端口映射：使用异或处理数据 */
     	XOR_MAPPED_ADDRESS(	(short) 0x0020),
-    	// 选择理解：0x8000-0xFFFF
+    	//================选择理解：0x8000-0xFFFF================//
     	SOFTWARE(			(short) 0x8022),
     	ALTERNATE_SERVER(	(short) 0x8023),
     	FINGERPRINT(		(short) 0x8028);

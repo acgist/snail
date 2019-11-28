@@ -29,28 +29,28 @@ public final class LambdaOptional<T> {
 	}
 	
 	/**
-	 * 设置数据
+	 * <p>设置数据</p>
 	 */
 	public void set(T t) {
 		this.t = t;
 	}
 	
 	/**
-	 * 获取数据
+	 * <p>获取数据</p>
 	 */
 	public T get() {
 		return this.t;
 	}
 	
 	/**
-	 * 没有数据
+	 * <p>没有数据</p>
 	 */
 	public boolean isEmpty() {
 		return this.t == null;
 	}
 	
 	/**
-	 * 含有数据
+	 * <p>含有数据</p>
 	 */
 	public boolean isPresent() {
 		return !isEmpty();

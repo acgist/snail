@@ -6,7 +6,7 @@ import com.acgist.snail.system.exception.ArgumentException;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * 回收站
+ * <p>回收站</p>
  * 
  * @author acgist
  * @since 1.1.0
@@ -23,7 +23,7 @@ public abstract class Recycle {
 	protected final File file;
 	
 	/**
-	 * 回收站构造器
+	 * <p>回收站构造器</p>
 	 * 
 	 * @param path 文件路径：必须是完整路径（不能填写相对路径）
 	 */
@@ -36,7 +36,7 @@ public abstract class Recycle {
 	}
 	
 	/**
-	 * 删除文件
+	 * <p>删除文件</p>
 	 * 
 	 * @return true-删除成功；false-删除失败；
 	 */

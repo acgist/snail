@@ -33,7 +33,7 @@ public final class DatabaseInitializer extends Initializer {
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * <p>如果数据库表没有创建，执行建表语句。</p>
+	 * <p>如果数据库表没有创建：执行建表语句</p>
 	 */
 	@Override
 	protected void init() {

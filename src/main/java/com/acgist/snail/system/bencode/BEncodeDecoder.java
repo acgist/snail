@@ -19,18 +19,14 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * <p>B编码解码器</p>
  * <dl>
- * 	<dt>类型：</dt>
+ * 	<dt>类型</dt>
  * 	<dd>i：数字（Long）</dd>
  * 	<dd>l：列表：list</dd>
  * 	<dd>d：字典：map</dd>
  * 	<dd>e：结尾</dd>
  * </dl>
- * <p>
- * 所有值除了Long，其他均为byte[]，需要自己类型转换。
- * </p>
- * <p>
- * 解析前必须调用{@link #nextType()}、{@link #nextMap()}、{@link #nextList()}任一方法。
- * </p>
+ * <p>所有类型除了Long，其他均为byte[]，需要自己进行类型转换。</p>
+ * <p>解析前必须调用{@link #nextType()}、{@link #nextMap()}、{@link #nextList()}任一方法</p>
  * 
  * 
  * @author acgist
@@ -88,13 +84,13 @@ public final class BEncodeDecoder {
 	 */
 	private Map<String, Object> map;
 	/**
-	 * 原始数据，不需要关闭。
+	 * 原始数据：不需要关闭
 	 */
 	private final ByteArrayInputStream inputStream;
 	
 	private BEncodeDecoder(byte[] bytes) {
 		if(bytes == null) {
-			throw new ArgumentException("B编码内容错误（bytes=null）");
+			throw new ArgumentException("B编码内容错误（bytes为空）");
 		}
 		if(bytes.length < 2) {
 			throw new ArgumentException("B编码内容错误（长度）");
@@ -104,7 +100,7 @@ public final class BEncodeDecoder {
 	
 	public static final BEncodeDecoder newInstance(String content) {
 		if(content == null) {
-			throw new ArgumentException("B编码内容错误（content=null）");
+			throw new ArgumentException("B编码内容错误（content为空）");
 		}
 		return new BEncodeDecoder(content.getBytes());
 	}
@@ -114,16 +110,16 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * 是否含有更多数据
+	 * <p>是否含有更多数据</p>
 	 */
 	public boolean more() {
 		return this.inputStream != null && this.inputStream.available() > 0;
 	}
 	
 	/**
-	 * 是否不包含数据
+	 * <p>数据是否为空</p>
 	 * 
-	 * @return true-不包含；false-包含；
+	 * @return true-空数据；false-非空数据；
 	 */
 	public boolean isEmpty() {
 		if(this.type == Type.LIST) {
@@ -136,16 +132,17 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * 是否包含数据
+	 * <p>是否包含数据</p>
 	 * 
-	 * @return true-包含；false-不包含；
+	 * @return true-非空数据；false-空数据；
 	 */
 	public boolean isNotEmpty() {
 		return !isEmpty();
 	}
 	
 	/**
-	 * 下一个数据类型
+	 * <p>下一个数据类型</p>
+	 * <p>获取下一个数据类型，同时解析下一个数据。</p>
 	 */
 	public Type nextType() throws PacketSizeException {
 		if(!more()) {
@@ -167,7 +164,8 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * 获取下一个List，如果不是List返回null。
+	 * <p>获取下一个List</p>
+	 * <p>如果下一个数据类型不是List返回null</p>
 	 */
 	public List<Object> nextList() throws PacketSizeException {
 		final var type = nextType();
@@ -178,7 +176,8 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * 获取下一个Map，如果不是Map返回null。
+	 * <p>获取下一个Map</p>
+	 * <p>如果下一个数据类型不是Map返回null</p>
 	 */
 	public Map<String, Object> nextMap() throws PacketSizeException {
 		final var type = nextType();
@@ -189,7 +188,7 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * 读取剩余所有数据
+	 * <p>读取剩余所有数据</p>
 	 */
 	public byte[] oddBytes() {
 		if(this.inputStream == null) {
@@ -199,7 +198,7 @@ public final class BEncodeDecoder {
 	}
 
 	/**
-	 * 剩余所有数据输出字符串
+	 * <p>读取剩余所有数据并转为字符串</p>
 	 */
 	public String oddString() {
 		final var bytes = oddBytes();
@@ -210,7 +209,7 @@ public final class BEncodeDecoder {
 	}
 
 	/**
-	 * 数值
+	 * <p>数值</p>
 	 */
 	private static final Long i(ByteArrayInputStream inputStream) {
 		int index;
@@ -232,7 +231,7 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * map
+	 * <p>map</p>
 	 */
 	private static final Map<String, Object> d(ByteArrayInputStream inputStream) throws PacketSizeException {
 		int index;
@@ -303,7 +302,7 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * list
+	 * <p>list</p>
 	 */
 	private static final List<Object> l(ByteArrayInputStream inputStream) throws PacketSizeException {
 		int index;
@@ -353,9 +352,9 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * 读取符合长度的字符数组
+	 * <p>读取符合长度的字符数组</p>
 	 * 
-	 * @param lengthBuilder 长度字符串，获取长度后清空。
+	 * @param lengthBuilder 长度字符串：获取长度后清空
 	 * @param inputStream 字符流
 	 * 
 	 * @return 字符数组
@@ -464,7 +463,7 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>使用LinkedHashMap，不能乱序，否者计算的hash值将会改变。</p>
+	 * <p>使用LinkedHashMap防止乱序（乱序后计算的hash值将会改变）</p>
 	 */
 	public static final Map<String, Object> getMap(Map<?, ?> map, String key) {
 		if(map == null) {
@@ -483,7 +482,7 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * 字符数组转字符串
+	 * <p>字符数组转字符串</p>
 	 */
 	public static final String getString(Object object) {
 		if(object == null) {

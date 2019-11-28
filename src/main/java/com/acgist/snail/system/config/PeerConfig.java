@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * <p>Peer配置</p>
  * <dl>
- * 	<dt>命名方式：</dt>
+ * 	<dt>命名方式</dt>
  * 	<dd>Azureus-style：-名称（2）+版本（4）-随机数：-SA1000-...</dd>
  * 	<dd>Shadow's-style：名称（1）+版本（4）-----随机数：S1000-----...</dd>
  * </dl>
@@ -27,7 +27,7 @@ public final class PeerConfig {
 	 */
 	private static final String UNKNOWN = "unknown";
 	/**
-	 * 最大失败次数，超过这个次数将标记失败。
+	 * 最大失败次数：超过这个次数将标记失败
 	 */
 	public static final int MAX_FAIL_TIMES = 3;
 	/**
@@ -43,7 +43,8 @@ public final class PeerConfig {
 	 */
 	public static final byte[] HANDSHAKE_RESERVED = {0, 0, 0, 0, 0, 0, 0, 0};
 	/**
-	 * 保留位：[7]-0x01：DHT Protocol
+	 * <p>保留位：[7]-0x01：DHT Protocol</p>
+	 * <p>DHT</p>
 	 */
 	public static final byte DHT_PROTOCOL =       1 << 0;
 	/**
@@ -52,7 +53,8 @@ public final class PeerConfig {
 	 */
 	public static final byte PEER_EXCHANGE =      1 << 1;
 	/**
-	 * 保留位：[7]-0x04：FAST Protocol
+	 * <p>保留位：[7]-0x04：FAST Protocol</p>
+	 * <p>FAST</p>
 	 */
 	public static final byte FAST_PROTOCOL =      1 << 2;
 	/**
@@ -116,27 +118,26 @@ public final class PeerConfig {
 	 */
 	public static final byte STATUS_DOWNLOAD = 1 << 0;
 	/**
-	 * <p>PEX状态：0x01：偏爱加密</p>
-	 * <p>加密握手</p>
+	 * <p>pex flags：0x01：偏爱加密</p>
 	 */
 	public static final byte PEX_PREFER_ENCRYPTION =	1 << 0;
 	/**
-	 * <p>PEX状态：0x02：做种、上传</p>
+	 * <p>pex flags：0x02：做种、上传</p>
 	 * <p>不发送消息：解除阻塞、have、Piece位图</p>
 	 */
 	public static final byte PEX_UPLOAD_ONLY =			1 << 1;
 	/**
-	 * PEX状态：0x04：支持UTP协议
+	 * <p>pex flags：0x04：支持UTP协议</p>
 	 */
 	public static final byte PEX_UTP =					1 << 2;
 	/**
-	 * PEX状态：0x08：支持holepunch协议
+	 * <p>pex flags：0x08：支持holepunch协议</p>
 	 * 
 	 * TODO：连接失败时通过holepunch连接
 	 */
 	public static final byte PEX_HOLEPUNCH =			1 << 3;
 	/**
-	 * PEX状态：0x10：可以连接
+	 * <p>pex flags：0x10：可以连接</p>
 	 * 
 	 * TODO：Peer优先使用
 	 */
@@ -221,7 +222,7 @@ public final class PeerConfig {
 	}
 	
 	/**
-	 * 来源名称
+	 * <p>来源名称</p>
 	 */
 	public static final String source(byte source) {
 		switch (source) {
@@ -243,9 +244,9 @@ public final class PeerConfig {
 	}
 	
 	/**
-	 * 客户端名称
+	 * <p>客户端名称</p>
 	 * 
-	 * @param peerId 客户端PeerId
+	 * @param peerId PeerId
 	 */
 	public static final String name(byte[] peerId) {
 		if(peerId == null || peerId.length < 3) {
@@ -256,7 +257,7 @@ public final class PeerConfig {
 	}
 	
 	/**
-	 * 设置NAT穿透
+	 * <p>设置NAT穿透</p>
 	 */
 	public static final void nat() {
 		HANDSHAKE_RESERVED[7] |= NAT_TRAVERSAL;

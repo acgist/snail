@@ -26,12 +26,12 @@ public abstract class PropertiesConfig {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesConfig.class);
 
 	/**
-	 * TODO：初始化后清除
+	 * TODO：初始化完成后删除
 	 */
 	protected PropertiesUtils properties;
 
 	/**
-	 * 初始化配置文件
+	 * <p>初始化配置文件</p>
 	 * 
 	 * @param path 配置文件路径
 	 */
@@ -83,7 +83,7 @@ public abstract class PropertiesConfig {
 	}
 	
 	/**
-	 * 保存配置
+	 * <p>保存配置</p>
 	 * 
 	 * @param data 数据
 	 * @param file 文件
@@ -99,7 +99,7 @@ public abstract class PropertiesConfig {
 			properties.putAll(data);
 			properties.store(output, SystemConfig.getName());
 		} catch (IOException e) {
-			LOGGER.error("保存配置异常，文件路径：{}", file.getPath(), e);
+			LOGGER.error("保存配置异常：{}", file.getPath(), e);
 		}
 	}
 	

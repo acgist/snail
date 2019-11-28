@@ -95,7 +95,9 @@ public final class CryptConfig {
 	public static final int PUBLIC_KEY_LENGTH = 96;
 	/**
 	 * <p>私钥长度</p>
-	 * <p>随机长度：128~180，超过180只能增加计算时间，并不能提高安全性。推荐长度：160</p>
+	 * <p>随机长度：128~180</p>
+	 * <p>超过180只能增加计算时间，并不能提高安全性。</p>
+	 * <p>推荐长度：160</p>
 	 */
 	public static final int PRIVATE_KEY_LENGTH = 20;
 	/**

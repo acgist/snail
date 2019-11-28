@@ -16,7 +16,7 @@ public abstract class Initializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Initializer.class);
 	
 	/**
-	 * 同步初始化
+	 * <p>同步初始化</p>
 	 */
 	public void sync() {
 		try {
@@ -27,7 +27,7 @@ public abstract class Initializer {
 	}
 	
 	/**
-	 * 异步初始化
+	 * <p>异步初始化</p>
 	 */
 	public void asyn() {
 		SystemThreadContext.submit(() -> {
@@ -40,7 +40,7 @@ public abstract class Initializer {
 	}
 	
 	/**
-	 * 初始化
+	 * <p>初始化</p>
 	 * 
 	 * @throws Exception 初始化异常
 	 */

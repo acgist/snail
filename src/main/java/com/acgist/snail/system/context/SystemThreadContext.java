@@ -48,8 +48,8 @@ public final class SystemThreadContext {
 	/** UDP处理器线程 */
 	public static final String SNAIL_THREAD_UTP_HANDLER = SNAIL_THREAD + "-UTP-Handler";
 	/**
-	 * <p>系统线程池：加快系统运行、防止卡顿。</p>
-	 * <p>例如：初始化、关闭资源、文件校验等。</p>
+	 * <p>系统线程池：加快系统运行、防止卡顿</p>
+	 * <p>例如：初始化、关闭资源、文件校验等等</p>
 	 */
 	private static final ExecutorService EXECUTOR;
 	/**
@@ -64,7 +64,9 @@ public final class SystemThreadContext {
 	}
 	
 	/**
-	 * <p>异步执行</p>
+	 * <p>异步任务</p>
+	 * 
+	 * @param runnable 任务
 	 */
 	public static final void submit(Runnable runnable) {
 		EXECUTOR.submit(runnable);
@@ -124,7 +126,7 @@ public final class SystemThreadContext {
 	}
 	
 	/**
-	 * <p>创建线程池</p>
+	 * <p>创建固定线程池</p>
 	 * 
 	 * @param corePoolSize 初始线程数量
 	 * @param maximumPoolSize 最大线程数量
@@ -178,7 +180,7 @@ public final class SystemThreadContext {
 	}
 	
 	/**
-	 * 创建线程池工厂
+	 * <p>创建线程池工厂</p>
 	 * 
 	 * @param poolName 线程池名称
 	 */
@@ -195,7 +197,7 @@ public final class SystemThreadContext {
 	}
 	
 	/**
-	 * 关闭系统线程池
+	 * <p>关闭系统线程池</p>
 	 */
 	public static final void shutdown() {
 		LOGGER.info("关闭系统线程池");
@@ -204,7 +206,7 @@ public final class SystemThreadContext {
 	}
 	
 	/**
-	 * 关闭线程池
+	 * <p>关闭线程池</p>
 	 */
 	public static final void shutdown(ExecutorService executor) {
 		if(executor == null || executor.isShutdown()) {

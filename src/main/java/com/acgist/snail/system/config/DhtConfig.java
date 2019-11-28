@@ -73,7 +73,7 @@ public final class DhtConfig extends PropertiesConfig {
 	 */
 	public static final String KEY_TOKEN = "token";
 	/**
-	 * Peers
+	 * Peer列表
 	 */
 	public static final String KEY_VALUES = "values";
 	/**
@@ -89,7 +89,8 @@ public final class DhtConfig extends PropertiesConfig {
 	 */
 	public static final String KEY_IMPLIED_PORT = "implied_port";
 	/**
-	 * 自动配置：忽略配置端口，直接使用UDP端口作为对等端口，并且支持uTP。
+	 * <p>自动配置：忽略端口配置</p>
+	 * <p>直接使用UDP连接端口作为对等端口并支持uTP</p>
 	 */
 	public static final Integer IMPLIED_PORT_AUTO = 1;
 	/**
@@ -123,12 +124,12 @@ public final class DhtConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>DHT响应错误：</p>
+	 * <p>DHT响应错误</p>
 	 * <dl>
-	 *	<dt>[0]：错误编码：</dt>
+	 *	<dt>[0]：错误编码</dt>
 	 *	<dd>201：一般错误</dd>
 	 *	<dd>202：服务错误</dd>
-	 *	<dd>203：协议错误（不规范的包、无效参数、错误token）</dd>
+	 *	<dd>203：协议错误（不规范的包、无效参数、错误Token）</dd>
 	 *	<dd>204：未知方法</dd>
 	 *	<dt>[1]：错误描述</dt>
 	 * </dl>
@@ -225,14 +226,14 @@ public final class DhtConfig extends PropertiesConfig {
 	}
 
 	/**
-	 * 获取所有DHT节点
+	 * @return 所有DHT节点
 	 */
 	public Map<String, String> nodes() {
 		return this.nodes;
 	}
 
 	/**
-	 * 保存DHT节点
+	 * <p>保存DHT节点配置</p>
 	 */
 	public void persistent() {
 		LOGGER.debug("保存DHT节点配置");

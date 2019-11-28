@@ -14,7 +14,7 @@ import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * <p>NAT（内网穿透）</p>
- * <p>优先使用UPNP，失败后使用STUN。</p>
+ * <p>优先使用UPNP进行端口映射，UPNP映射失败后使用STUN。</p>
  * 
  * @author acgist
  * @since 1.2.0
@@ -26,7 +26,7 @@ public final class NatContext {
 	private static final NatContext INSTANCE = new NatContext();
 	
 	/**
-	 * UPNP配置超时时间
+	 * UPNP端口映射超时时间
 	 */
 	private static final int UPNP_CONFIG_TIMEOUT = SystemConfig.CONNECT_TIMEOUT;
 	
@@ -40,7 +40,7 @@ public final class NatContext {
 	}
 	
 	/**
-	 * 初始化NAT服务
+	 * <p>初始化NAT服务</p>
 	 */
 	public void init() {
 		LOGGER.info("初始化NAT服务");
@@ -52,7 +52,7 @@ public final class NatContext {
 	}
 	
 	/**
-	 * 关闭NAT服务
+	 * <p>关闭NAT服务</p>
 	 */
 	public void shutdown() {
 		LOGGER.info("关闭NAT服务");
@@ -61,7 +61,7 @@ public final class NatContext {
 	}
 
 	/**
-	 * 释放锁
+	 * <p>释放锁</p>
 	 */
 	public void unlock() {
 		synchronized (this.upnpLock) {

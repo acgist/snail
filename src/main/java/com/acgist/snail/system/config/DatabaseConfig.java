@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 数据库配置
+ * <p>数据库配置</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -38,7 +38,7 @@ public final class DatabaseConfig extends PropertiesConfig {
 	}
 
 	/**
-	 * 初始化
+	 * <p>初始化</p>
 	 */
 	private void init() {
 		INSTANCE.url = getString("acgist.database.h2.url");
@@ -49,7 +49,7 @@ public final class DatabaseConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 日志
+	 * <p>日志</p>
 	 */
 	private void logger() {
 		LOGGER.info("数据库地址：{}", INSTANCE.url);
@@ -60,35 +60,35 @@ public final class DatabaseConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 数据库地址
+	 * <p>数据库地址</p>
 	 */
 	public static final String getUrl() {
 		return INSTANCE.url;
 	}
 	
 	/**
-	 * 数据库驱动
+	 * <p>数据库驱动</p>
 	 */
 	public static final String getDriver() {
 		return INSTANCE.driver;
 	}
 
 	/**
-	 * 数据库用户
+	 * <p>数据库用户</p>
 	 */
 	public static final String getUser() {
 		return INSTANCE.user;
 	}
 
 	/**
-	 * 数据库密码
+	 * <p>数据库密码</p>
 	 */
 	public static final String getPassword() {
 		return INSTANCE.password;
 	}
 	
 	/**
-	 * 数据库建表文件
+	 * <p>数据库建表文件</p>
 	 */
 	public static final String getTableSQL() {
 		return INSTANCE.tableSQL;

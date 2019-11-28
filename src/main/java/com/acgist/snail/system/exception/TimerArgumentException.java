@@ -14,6 +14,9 @@ public class TimerArgumentException extends ArgumentException {
 		super("定时任务时间异常");
 	}
 	
+	/**
+	 * @param time 时间（周期）
+	 */
 	public TimerArgumentException(long time) {
 		super("定时任务时间错误：" + time);
 	}
