@@ -37,11 +37,11 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MetadataMessageHandler.class);
 	
 	/**
-	 * 数据交换块大小：16KB
+	 * 数据交换Slice大小：16KB
 	 */
 	public static final int SLICE_LENGTH = 16 * SystemConfig.ONE_KB;
 	/**
-	 * piece index：piece索引
+	 * piece index：Slice索引
 	 */
 	private static final String ARG_PIECE = "piece";
 	/**
@@ -124,7 +124,7 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 	/**
 	 * <p>发送消息：data</p>
 	 * 
-	 * @param piece 种子slice索引
+	 * @param piece Slice索引
 	 */
 	public void data(int piece) {
 		LOGGER.debug("发送metadata消息-data：{}", piece);
@@ -143,7 +143,7 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 		if(end >= bytes.length) {
 			length = bytes.length - begin;
 		}
-		final byte[] x = new byte[length]; // InfoHash块数据
+		final byte[] x = new byte[length]; // Slice数据
 		System.arraycopy(bytes, begin, x, 0, length);
 		final var data = buildMessage(PeerConfig.MetadataType.DATA, piece);
 		data.put(ARG_TOTAL_SIZE, this.infoHash.size());
@@ -175,13 +175,13 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 		if(end >= bytes.length) {
 			length = bytes.length - begin;
 		}
-		final byte[] x = decoder.oddBytes(); // 获取剩余数据作为块数据
+		final byte[] x = decoder.oddBytes(); // 剩余数据作为Slice数据
 		System.arraycopy(x, 0, bytes, begin, length);
 		final byte[] sourceHash = this.infoHash.infoHash();
 		final byte[] targetHash = StringUtils.sha1(bytes);
 		// 判断hash值是否相等：相等表示已经下载完成，完成后保存种子文件。
 		if(ArrayUtils.equals(sourceHash, targetHash)) {
-			this.torrentSession.saveTorrentFile();
+			this.torrentSession.saveTorrent();
 		}
 	}
 	

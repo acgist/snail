@@ -40,8 +40,9 @@ import com.acgist.snail.utils.CollectionUtils;
 
 /**
  * <p>Torrent Session</p>
- * <p>负责下载任务整体调度，查询Peer、文件管理等。</p>
- * <p>任务一定需要先设置上传，然后才能进行下载。</p>
+ * <p>负责下载任务整体调度：查询Peer、文件管理等</p>
+ * <p>BT任务需要先上传才能进行下载</p>
+ * <p>磁力链接不存在下载和上次状态</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -51,7 +52,7 @@ public final class TorrentSession {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentSession.class);
 	
 	/**
-	 * PEX优化定时
+	 * PEX优化任务执行周期
 	 */
 	private static final Duration PEX_INTERVAL = Duration.ofSeconds(SystemConfig.getPexInterval());
 	/**
@@ -63,16 +64,17 @@ public final class TorrentSession {
 	 */
 	private static final Duration TRACKER_INTERVAL = Duration.ofSeconds(SystemConfig.getTrackerInterval());
 	/**
-	 * Peer优化定时
+	 * Peer优化任务执行周期
 	 */
 	private static final Duration PEER_OPTIMIZE_INTERVAL = Duration.ofSeconds(SystemConfig.getPeerOptimizeInterval());
 
 	/**
-	 * 动作：磁力链接转换、文件下载
+	 * 动作：磁力链接转换、种子任务下载
 	 */
 	private Action action;
 	/**
-	 * 准备状态
+	 * <p>准备状态</p>
+	 * <p>任务已经准备所有基础数据</p>
 	 */
 	private volatile boolean ready = false;
 	/**
@@ -88,15 +90,15 @@ public final class TorrentSession {
 	 */
 	private Magnet magnet;
 	/**
-	 * 种子
+	 * 种子信息
 	 */
 	private Torrent torrent;
 	/**
-	 * 种子信息
+	 * 种子InfoHash
 	 */
 	private InfoHash infoHash;
 	/**
-	 * 任务
+	 * 任务信息
 	 */
 	private ITaskSession taskSession;
 	/**
@@ -121,7 +123,7 @@ public final class TorrentSession {
 	private TrackerLauncherGroup trackerLauncherGroup;
 	/**
 	 * <p>线程池</p>
-	 * <p>使用缓存线程池，防止过多下载时出现卡死现象。</p>
+	 * <p>使用缓存线程池：防止过多下载时出现卡死现象</p>
 	 */
 	private ExecutorService executor;
 	/**
@@ -151,7 +153,7 @@ public final class TorrentSession {
 	
 	private TorrentSession(InfoHash infoHash, Torrent torrent) throws DownloadException {
 		if(infoHash == null) {
-			throw new DownloadException("创建TorrentSession失败（InfoHash）");
+			throw new DownloadException("创建TorrentSession失败（InfoHash为空）");
 		}
 		this.torrent = torrent;
 		this.infoHash = infoHash;
@@ -162,9 +164,9 @@ public final class TorrentSession {
 	}
 	
 	/**
-	 * 磁力链接转换
+	 * <p>磁力链接转换</p>
 	 * 
-	 * @return true-下载完成；false-未完成；
+	 * @return true-下载完成；false-等待下载；
 	 */
 	public boolean magnet(ITaskSession taskSession) throws DownloadException {
 		this.action = Action.MAGNET;
@@ -186,7 +188,7 @@ public final class TorrentSession {
 	
 	/**
 	 * <p>开始上传</p>
-	 * <p>分享已下载数据</p>
+	 * <p>准备：定时线程池、文件流、Peer上传</p>
 	 */
 	public TorrentSession upload(ITaskSession taskSession) throws DownloadException {
 		this.taskSession = taskSession;
@@ -200,7 +202,7 @@ public final class TorrentSession {
 	}
 
 	/**
-	 * 默认加载加载Peer
+	 * <p>开始下载</p>
 	 * 
 	 * @see {@link #download(boolean)}
 	 */
@@ -209,18 +211,19 @@ public final class TorrentSession {
 	}
 	
 	/**
-	 * <p>开始下载：加载线程池、Peer、Tracker、DHT</p>
-	 * <p>如果任务已经完成或文件已经下载完成不会再加载线程池、Peer、Tracker、DHT</p>
-	 * <p>需要先调用{@link #upload(TaskSession)}对任务进行分享</p>
+	 * <p>开始下载</p>
+	 * <p>准备：线程池、Tracker、DHT、Peer下载</p>
+	 * <p>如果任务已经完成或文件已经下载完成不会再加载准备数据</p>
+	 * <p>需要先调用{@link #upload(TaskSession)}对任务进行上传</p>
 	 * 
-	 * @param findPeer 是否查找Peer：true-使用Tracker、DHT查找Peer；false-不查找；
+	 * @param findPeer 是否查找Peer（加载Tracker、DHT）：true-查找；false-不查找；
 	 * 
-	 * @return true-下载完成；false-未完成；
+	 * @return true-下载完成；false-等待下载；
 	 */
 	public boolean download(boolean findPeer) throws DownloadException {
 		this.action = Action.TORRENT;
 		if(this.taskSession == null) {
-			throw new DownloadException("下载任务不存在");
+			throw new DownloadException("下载任务没有上传");
 		}
 		if(this.taskSession.complete() || this.torrentStreamGroup.complete()) {
 			return true;
@@ -249,56 +252,73 @@ public final class TorrentSession {
 	}
 
 	/**
-	 * 加载磁力链接
+	 * <p>加载磁力链接</p>
 	 */
 	private void loadMagnet() throws DownloadException {
 		this.magnet = MagnetBuilder.newInstance(this.taskSession.getUrl()).build();
 	}
 	
 	/**
-	 * 加载线程池
+	 * <p>加载线程池</p>
 	 */
 	private void loadExecutor() {
 		this.executor = SystemThreadContext.newCacheExecutor(SystemThreadContext.SNAIL_THREAD_BT);
 	}
 
 	/**
-	 * 加载定时线程池
+	 * <p>加载定时线程池</p>
 	 */
 	private void loadExecutorTimer() {
 		this.executorTimer = SystemThreadContext.newTimerExecutor(2, SystemThreadContext.SNAIL_THREAD_BT_TIMER);
 	}
 	
 	/**
-	 * 加载文件流
+	 * <p>加载文件流</p>
 	 */
 	private void loadTorrentStreamGroup() {
 		this.torrentStreamGroup = TorrentStreamGroup.newInstance(
 			this.taskSession.downloadFolder().getPath(),
-			setSelectedFiles(),
+			buildSelectedFiles(),
 			this
 		);
 	}
 
 	/**
-	 * 加载PeerDownloader
+	 * <p>加载PeerDownloader</p>
 	 */
 	private void loadPeerDownloaderGroup() {
 		this.peerDownloaderGroup = PeerDownloaderGroup.newInstance(this);
 	}
 	
 	/**
-	 * <p>加载PeerDownloader定时优化任务</p>
-	 * <p>第一次任务执行延迟4秒，让加载Peer的任务执行4秒，防止一开始没有Peer数据而导致的长时间等待。</p>
+	 * <p>加载PeerDownloader定时任务</p>
+	 * <p>任务延迟4秒执行，等待加载Peer的任务执行4秒，防止没有Peer数据导致的长时间等待。</p>
 	 */
 	private void loadPeerDownloaderGroupTimer() {
 		this.peerDownloaderGroupTimer = this.timerFixedDelay(4L, PEER_OPTIMIZE_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
-			this.peerDownloaderGroup.optimize(); // 优化下载Peer下载
+			this.peerDownloaderGroup.optimize(); // 优化Peer下载
 		});
 	}
 
 	/**
-	 * 加载PeerUploader下载
+	 * <p>加载PeerUploader</p>
+	 */
+	private void loadPeerUploaderGroup() {
+		this.peerUploaderGroup = PeerUploaderGroup.newInstance(this);
+	}
+	
+	/**
+	 * <p>加载PeerUploader定时任务</p>
+	 */
+	private void loadPeerUploaderGroupTimer() {
+		this.peerUploaderGroupTimer = this.timerFixedDelay(PEER_OPTIMIZE_INTERVAL.toSeconds(), PEER_OPTIMIZE_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
+			this.peerUploaderGroup.optimize(); // 优化Peer上传
+		});
+	}
+	
+	/**
+	 * <p>加载PeerUploader下载</p>
+	 * <p>如果连接的Peer已经解除阻塞，开始发送下载请求。</p>
 	 */
 	private void loadPeerUploaderDownload() {
 		this.submit(() -> {
@@ -307,23 +327,7 @@ public final class TorrentSession {
 	}
 	
 	/**
-	 * 加载PeerUploader
-	 */
-	private void loadPeerUploaderGroup() {
-		this.peerUploaderGroup = PeerUploaderGroup.newInstance(this);
-	}
-	
-	/**
-	 * 加载PeerUploader定时优化任务
-	 */
-	private void loadPeerUploaderGroupTimer() {
-		this.peerUploaderGroupTimer = this.timerFixedDelay(PEER_OPTIMIZE_INTERVAL.toSeconds(), PEER_OPTIMIZE_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
-			this.peerUploaderGroup.optimize(); // 优化连接Peer连接
-		});
-	}
-
-	/**
-	 * 加载Tracker
+	 * <p>加载Tracker</p>
 	 */
 	private void loadTrackerLauncherGroup() throws DownloadException {
 		this.trackerLauncherGroup = TrackerLauncherGroup.newInstance(this);
@@ -331,7 +335,7 @@ public final class TorrentSession {
 	}
 
 	/**
-	 * 加载Tracker定时查询任务
+	 * <p>加载Tracker定时任务</p>
 	 */
 	private void loadTrackerLauncherGroupTimer() {
 		this.trackerLauncherGroupTimer = this.timerFixedDelay(0L, TRACKER_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
@@ -340,13 +344,14 @@ public final class TorrentSession {
 	}
 	
 	/**
-	 * 加载DHT：将种子文件中的节点加入到DHT网络中
+	 * <p>加载DHT</p>
+	 * <p>如果种子文件自带DHT节点，将这些节点也加入到DHT网络中。</p>
 	 */
 	private void loadDhtLauncher() {
 		this.dhtLauncher = DhtLauncher.newInstance(this);
-		if(this.action == Action.TORRENT) {
+		if(this.action == Action.TORRENT) { // 种子下载任务
 			final var nodes = this.torrent.getNodes();
-			if(CollectionUtils.isNotEmpty(nodes)) { // 添加DHT节点
+			if(CollectionUtils.isNotEmpty(nodes)) { // 添加种子自带DHT节点
 				nodes.forEach((host, port) -> {
 					this.dhtLauncher.put(host, port);
 				});
@@ -355,14 +360,14 @@ public final class TorrentSession {
 	}
 
 	/**
-	 * 加载DHT定时任务
+	 * <p>加载DHT定时任务</p>
 	 */
 	private void loadDhtLauncherTimer() {
 		this.dhtLauncherTimer = this.timerFixedDelay(DHT_INTERVAL.getSeconds(), DHT_INTERVAL.getSeconds(), TimeUnit.SECONDS, this.dhtLauncher);
 	}
 	
 	/**
-	 * 加载PEX定时任务
+	 * <p>加载PEX定时任务</p>
 	 */
 	private void loadPexTimer() {
 		this.pexTimer = this.timerFixedDelay(PEX_INTERVAL.toSeconds(), PEX_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
@@ -371,14 +376,14 @@ public final class TorrentSession {
 	}
 	
 	/**
-	 * 异步执行
+	 * <p>异步执行</p>
 	 */
 	public void submit(Runnable runnable) {
 		this.executor.submit(runnable);
 	}
 	
 	/**
-	 * 定时任务（不重复）
+	 * <p>定时任务（不重复执行）</p>
 	 */
 	public ScheduledFuture<?> timer(long delay, TimeUnit unit, Runnable runnable) {
 		if(delay < 0) {
@@ -389,7 +394,7 @@ public final class TorrentSession {
 	}
 	
 	/**
-	 * 定时任务（重复）
+	 * <p>定时任务（重复执行）</p>
 	 */
 	public ScheduledFuture<?> timer(long delay, long period, TimeUnit unit, Runnable runnable) {
 		if(delay < 0) {
@@ -402,7 +407,7 @@ public final class TorrentSession {
 	}
 	
 	/**
-	 * 定时任务（重复）
+	 * <p>定时任务（重复执行）</p>
 	 */
 	public ScheduledFuture<?> timerFixedDelay(long delay, long period, TimeUnit unit, Runnable runnable) {
 		if(delay < 0) {
@@ -415,9 +420,9 @@ public final class TorrentSession {
 	}
 	
 	/**
-	 * 设置选择的下载文件并返回文件列表
+	 * <p>设置种子文件中被选择下载文件并返回文件列表</p>
 	 */
-	private List<TorrentFile> setSelectedFiles() {
+	private List<TorrentFile> buildSelectedFiles() {
 		final TorrentInfo torrentInfo = this.torrent.getInfo();
 		final List<TorrentFile> torrentFiles = torrentInfo.files();
 		final List<String> selectedFiles = this.taskSession.selectTorrentFiles();
@@ -434,8 +439,8 @@ public final class TorrentSession {
 	/**
 	 * <dl>
 	 * 	<dt>检测任务是否下载完成</dt>
-	 * 	<dd>如果已经完成直接返回</dd>
-	 * 	<dd>BT任务：文件下载完成</dd>
+	 * 	<dd>如果已经完成直接返回完成</dd>
+	 * 	<dd>种子任务：文件下载完成</dd>
 	 * 	<dd>磁力链接：种子文件下载完成</dd>
 	 * </dl>
 	 */
@@ -451,7 +456,8 @@ public final class TorrentSession {
 	}
 	
 	/**
-	 * 检测是否完成下载：完成后刷出缓存并且解除下载锁
+	 * <p>检测任务是否下载完成</p>
+	 * <p>如果任务已经完成：刷出缓存、解除下载锁、UploadOnly</p>
 	 */
 	public void checkCompletedAndDone() {
 		if(this.torrentStreamGroup.complete()) {
@@ -459,14 +465,14 @@ public final class TorrentSession {
 			this.torrentStreamGroup.flush();
 			final var downloader = this.taskSession.downloader();
 			if(downloader != null) {
-				downloader.unlockDownload();
+				downloader.unlockDownload(); // 解除下载锁
 			}
 			PeerManager.getInstance().uploadOnly(this.infoHashHex());
 		}
 	}
 	
 	/**
-	 * 释放资源（磁力链接）
+	 * <p>释放资源（磁力链接）</p>
 	 */
 	public void releaseMagnet() {
 		LOGGER.debug("Torrent释放资源（磁力链接下载）");
@@ -475,8 +481,7 @@ public final class TorrentSession {
 	}
 	
 	/**
-	 * <p>释放资源（释放下载使用的资源）</p>
-	 * <p>注：不释放文件资源</p>
+	 * <p>释放资源（释放下载资源）</p>
 	 */
 	public void releaseDownload() {
 		LOGGER.debug("Torrent释放资源（下载）");
@@ -498,7 +503,7 @@ public final class TorrentSession {
 	}
 	
 	/**
-	 * 释放资源（释放分享使用的资源）
+	 * <p>释放资源（释放上传资源）</p>
 	 */
 	public void releaseUpload() {
 		LOGGER.debug("Torrent释放资源（上传）");
@@ -526,51 +531,52 @@ public final class TorrentSession {
 	}
 
 	/**
-	 * <p>挑选一个Piece下载</p>
+	 * @see {@link TorrentStreamGroup#pick(BitSet, BitSet)}
 	 */
 	public TorrentPiece pick(final BitSet peerPieces, final BitSet suggestPieces) {
 		return torrentStreamGroup.pick(peerPieces, suggestPieces);
 	}
 	
 	/**
-	 * <p>读取Piece数据</p>
+	 * @see {@link TorrentStreamGroup#read(int, int, int)}
 	 */
 	public byte[] read(int index, int begin, int length) throws NetException {
 		return this.torrentStreamGroup.read(index, begin, length);
 	}
 
 	/**
-	 * <p>保存Piece数据</p>
+	 * @see {@link TorrentStreamGroup#write(TorrentPiece)}
 	 */
 	public boolean write(TorrentPiece piece) {
 		return this.torrentStreamGroup.write(piece);
 	}
 	
 	/**
-	 * 是否已下载Piece
+	 * @see {@link TorrentStreamGroup#havePiece(int)}
 	 */
 	public boolean havePiece(int index) {
 		return this.torrentStreamGroup.havePiece(index);
 	}
 
 	/**
-	 * <p>Piece下载失败</p>
+	 * @see {@link TorrentStreamGroup#undone(TorrentPiece)}
 	 */
 	public void undone(TorrentPiece piece) {
 		this.torrentStreamGroup.undone(piece);
 	}
 	
 	/**
-	 * 保存种子文件，重新加载种子和InfoHash。
+	 * <p>保存种子文件</p>
+	 * <p>重新加载种子文件和InfoHash</p>
 	 */
-	public void saveTorrentFile() {
+	public void saveTorrent() {
 		final TorrentBuilder builder = TorrentBuilder.newInstance(this.infoHash, this.trackerLauncherGroup.trackers());
-		final String torrentFile = builder.buildFile(this.taskSession.downloadFolder().getPath());
-		this.taskSession.setTorrent(torrentFile);
+		final String torrentFilePath = builder.buildFile(this.taskSession.downloadFolder().getPath());
+		this.taskSession.setTorrent(torrentFilePath);
 		this.taskSession.update();
 		try {
-			this.torrent = TorrentManager.loadTorrent(torrentFile);
-			this.infoHash = this.torrent.getInfoHash();
+			this.torrent = TorrentManager.loadTorrent(torrentFilePath);
+			this.infoHash = this.torrent.infoHash();
 		} catch (DownloadException e) {
 			LOGGER.error("解析种子异常", e);
 		}
@@ -581,59 +587,66 @@ public final class TorrentSession {
 	}
 	
 	/**
-	 * 创建接入连接
+	 * @see {@link PeerUploaderGroup#newPeerUploader(PeerSession, PeerSubMessageHandler)}
 	 */
 	public PeerUploader newPeerUploader(PeerSession peerSession, PeerSubMessageHandler peerSubMessageHandler) {
 		return this.peerUploaderGroup.newPeerUploader(peerSession, peerSubMessageHandler);
 	}
 	
 	/**
-	 * 添加DHT节点
+	 * @see {@link DhtLauncher#put(String, Integer)}
 	 */
 	public void newDhtNode(String host, int port) {
 		if(this.dhtLauncher != null) {
-			LOGGER.debug("DHT扩展添加DHT节点：{}-{}", host, port);
 			this.dhtLauncher.put(host, port);
 		}
 	}
 	
 	/**
-	 * 重新获取下载大小
+	 * <p>重新设置下载大小</p>
 	 */
 	public void resize(long size) {
 		this.taskSession.downloadSize(size);
 	}
 
 	/**
-	 * 是否可以上传
+	 * <p>是否可以上传</p>
 	 */
 	public boolean uploadable() {
 		return this.uploadable;
 	}
 	
 	/**
-	 * 是否可以下载
+	 * <p>是否可以下载</p>
 	 */
 	public boolean downloadable() {
 		return this.downloadable;
 	}
 	
 	/**
-	 * 任务是否下载中
+	 * <p>任务是否下载中</p>
 	 */
 	public boolean downloading() {
 		return this.taskSession.download();
 	}
 	
 	/**
-	 * 任务是否完成
+	 * <p>任务是否完成</p>
 	 */
 	public boolean completed() {
 		return this.taskSession.complete();
 	}
 	
 	/**
-	 * 需要验证{@link #taskSession}是否为空，任务只加载并没有开始下载时会导致空指针。
+	 * @return 任务是否准备完成
+	 */
+	public boolean ready() {
+		return this.ready;
+	}
+	
+	/**
+	 * <p>任务名称</p>
+	 * <p>需要验证{@linkplain #taskSession 任务信息}是否为空：任务加载后没有开始下载时会导致空指针</p>
 	 */
 	public String name() {
 		if(this.taskSession == null) {
@@ -647,14 +660,30 @@ public final class TorrentSession {
 		}
 	}
 	
+	/**
+	 * @see {@link TaskSession#getSize()}
+	 */
+	public long size() {
+		return this.taskSession.getSize();
+	}
+	
+	/**
+	 * @see {@link TorrentStreamGroup#fullPieces(BitSet)}
+	 */
 	public void fullPieces(BitSet pieces) {
 		this.torrentStreamGroup.fullPieces(pieces);
 	}
 	
+	/**
+	 * @see {@link TorrentStreamGroup#fullPieces()}
+	 */
 	public void fullPieces() {
 		this.torrentStreamGroup.fullPieces();
 	}
 	
+	/**
+	 * @see {@link TorrentStreamGroup#health()}
+	 */
 	public int health() {
 		if(this.torrentStreamGroup != null) {
 			return this.torrentStreamGroup.health();
@@ -662,46 +691,65 @@ public final class TorrentSession {
 		return 0;
 	}
 	
-	public long size() {
-		return this.taskSession.getSize();
-	}
-	
+	/**
+	 * @see {@link TorrentStreamGroup#pieces()}
+	 */
 	public BitSet pieces() {
 		return this.torrentStreamGroup.pieces();
 	}
 	
+	/**
+	 * @see {@link TorrentStreamGroup#allPieces()}
+	 */
 	public BitSet allPieces() {
 		return this.torrentStreamGroup.allPieces();
 	}
 	
-	public boolean ready() {
-		return this.ready;
-	}
-	
+	/**
+	 * @return 任务动作
+	 */
 	public Action action() {
 		return this.action;
 	}
 	
+	/**
+	 * @return 磁力链接
+	 */
 	public Magnet magnet() {
 		return this.magnet;
 	}
 	
+	/**
+	 * @return 种子信息
+	 */
 	public Torrent torrent() {
 		return this.torrent;
 	}
 	
+	/**
+	 * @return InfoHash
+	 */
 	public InfoHash infoHash() {
 		return this.infoHash;
 	}
 	
+	/**
+	 * @see {@link InfoHash#infoHashHex()}
+	 */
 	public String infoHashHex() {
 		return this.infoHash.infoHashHex();
 	}
 	
+	/**
+	 * @return 任务信息
+	 */
 	public ITaskSession taskSession() {
 		return this.taskSession;
 	}
 	
+	/**
+	 * @return 是否是私有种子
+	 */
 	public boolean isPrivateTorrent() {
 		if(this.torrent == null) {
 			return false;
@@ -710,7 +758,7 @@ public final class TorrentSession {
 	}
 	
 	/**
-	 * 需要判断{@link #taskSession}是否为空，任务加载时Peer接入会导致空指针。
+	 * <p>获取任务统计信息</p>
 	 */
 	public IStatisticsSession statistics() {
 		return this.taskSession.statistics();

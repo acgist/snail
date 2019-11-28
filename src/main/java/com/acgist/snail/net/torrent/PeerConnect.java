@@ -210,7 +210,7 @@ public abstract class PeerConnect {
 	 * @param bytes Piece数据
 	 */
 	public final void piece(int index, int begin, byte[] bytes) {
-		// 数据不完整抛弃当前块：重新选择下载块
+		// 数据不完整抛弃当前Piece：重新选择下载Piece
 		if(bytes == null || this.downloadPiece == null) {
 			return;
 		}
@@ -364,10 +364,10 @@ public abstract class PeerConnect {
 		}
 		// 挑选Piece
 		if(this.peerSession.isPeerUnchoked()) { // 解除阻塞
-			LOGGER.debug("选择下载块：解除阻塞");
+			LOGGER.debug("选择下载Piece：解除阻塞");
 			this.downloadPiece = this.torrentSession.pick(this.peerSession.availablePieces(), this.peerSession.suggestPieces());
 		} else { // 快速允许
-			LOGGER.debug("选择下载块：快速允许");
+			LOGGER.debug("选择下载Piece：快速允许");
 			this.downloadPiece = this.torrentSession.pick(this.peerSession.allowedPieces(), this.peerSession.allowedPieces());
 		}
 		if(this.downloadPiece != null) {

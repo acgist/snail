@@ -45,7 +45,7 @@ public final class TorrentStreamGroup {
 	 */
 	private final BitSet pieces;
 	/**
-	 * 被选中的Piece位图
+	 * 选中下载Piece位图
 	 */
 	private final BitSet selectPieces;
 	/**
@@ -56,10 +56,10 @@ public final class TorrentStreamGroup {
 	 * <p>完整Piece位图</p>
 	 * <p>计算文件健康度</p>
 	 * <dl>
-	 * 	<dt>更新</dt>
-	 * 	<dd>位图交换</dd>
+	 * 	<dt>更新条件</dt>
 	 * 	<dd>本地初始化</dd>
 	 * 	<dd>haveAll消息</dd>
+	 * 	<dd>交换Piece位图</dd>
 	 * </dl>
 	 * <p>注：have消息不更新</p>
 	 */
@@ -174,7 +174,7 @@ public final class TorrentStreamGroup {
 	 * <p>如果跨越多个文件则合并返回</p>
 	 * 
 	 * @param index Piece索引
-	 * @param begin 块偏移
+	 * @param begin Piece偏移
 	 * @param length 数据长度
 	 */
 	public byte[] read(final int index, final int begin, final int length) throws NetException {
@@ -255,21 +255,23 @@ public final class TorrentStreamGroup {
 	}
 	
 	/**
-	 * <p>已下载位图</p>
+	 * <p>已下载Piece位图</p>
 	 */
 	public BitSet pieces() {
 		return this.pieces;
 	}
 	
 	/**
-	 * <p>完整Piece设置</p>
+	 * <p>设置完整Piece位图</p>
 	 */
 	public void fullPieces(BitSet pieces) {
 		if(this.full) {
 			return;
 		}
 		this.fullPieces.or(pieces);
-		this.fullPieces.and(this.selectPieces); // 必须是选中的块：防止部分下载时健康度超过100
+		// 排除没有选中的Piece：防止部分下载时健康度超过100
+		this.fullPieces.and(this.selectPieces);
+		// 计算选中下载的Piece是否全部健康
 		final BitSet condition = new BitSet();
 		condition.or(this.selectPieces);
 		condition.andNot(this.fullPieces);
@@ -280,7 +282,7 @@ public final class TorrentStreamGroup {
 	}
 	
 	/**
-	 * <p>完整Piece设置</p>
+	 * <p>设置完整Piece位图</p>
 	 */
 	public void fullPieces() {
 		if(this.full) {
@@ -304,14 +306,14 @@ public final class TorrentStreamGroup {
 	}
 	
 	/**
-	 * 需要下载位图
+	 * @return 选中下载Piece位图
 	 */
 	public BitSet selectPieces() {
 		return this.selectPieces;
 	}
 
 	/**
-	 * 所有位图
+	 * @return 所有Piece位图
 	 */
 	public BitSet allPieces() {
 		final int pieceSize = this.torrent.getInfo().pieceSize();
@@ -321,7 +323,7 @@ public final class TorrentStreamGroup {
 	}
 	
 	/**
-	 * 剩余没有下载的Piece数量
+	 * @return 剩余没有下载的Piece数量
 	 * 
 	 * @since 1.0.2
 	 */
@@ -340,7 +342,7 @@ public final class TorrentStreamGroup {
 	}
 
 	/**
-	 * 刷出缓存
+	 * <p>刷出缓存</p>
 	 */
 	public void flush() {
 		LOGGER.debug("刷出缓存");

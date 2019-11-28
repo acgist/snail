@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.gui.GuiHandler;
 import com.acgist.snail.gui.GuiHandler.SnailNoticeType;
+import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.ITaskSession.Status;
 import com.acgist.snail.system.IStatistics;
@@ -194,6 +195,11 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	@Override
 	public void download(int buffer) {
 		this.taskSession.statistics().download(buffer);
+	}
+	
+	@Override
+	public IStatisticsSession statistics() {
+		return this.taskSession.statistics();
 	}
 	
 	/**

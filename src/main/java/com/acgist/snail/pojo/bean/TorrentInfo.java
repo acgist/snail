@@ -9,8 +9,8 @@ import com.acgist.snail.system.bencode.BEncodeDecoder;
 import com.acgist.snail.system.config.SystemConfig;
 
 /**
- * <p>文件列表信息</p>
- * <p>单文件时files为空</p>
+ * <p>文件信息</p>
+ * <p>种子文件hash：此类信息转为B编码计算SHA-1散列值（注意顺序）</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -18,7 +18,8 @@ import com.acgist.snail.system.config.SystemConfig;
 public final class TorrentInfo {
 
 	/**
-	 * 填充文件前缀（不需要下载和显示）
+	 * <p>填充文件前缀</p>
+	 * <p>不需要下载和显示</p>
 	 */
 	public static final String PADDING_FILE_PREFIX = "_____padding_file";
 	/**
@@ -27,32 +28,38 @@ public final class TorrentInfo {
 	public static final byte PRIVATE_TORRENT = 1;
 	
 	/**
-	 * 名称（单文件）
+	 * <p>名称</p>
+	 * <p>单文件种子使用</p>
 	 */
 	private String name;
 	/**
-	 * 名称UTF8（单文件）
+	 * <p>名称UTF8</p>
+	 * <p>单文件种子使用</p>
 	 */
 	private String nameUtf8;
 	/**
-	 * 文件大小（单文件）
+	 * <p>文件大小</p>
+	 * <p>单文件种子使用</p>
 	 */
 	private Long length;
 	/**
-	 * ed2k（单文件）
+	 * <p>ed2k</p>
+	 * <p>单文件种子使用</p>
 	 */
 	private byte[] ed2k;
 	/**
-	 * filehash（单文件）
+	 * <p>filehash</p>
+	 * <p>单文件种子使用</p>
 	 */
 	private byte[] filehash;
 	/**
 	 * <p>特征信息</p>
-	 * <p>所有块的hash合并</p>
+	 * <p>所有Piece hash集合</p>
+	 * <p>长度：Piece数量 * {@linkplain SystemConfig#SHA1_HASH_LENGTH 20}</p>
 	 */
 	private byte[] pieces;
 	/**
-	 * 每个块大小
+	 * Piece大小
 	 */
 	private Long pieceLength;
 	/**
@@ -72,11 +79,12 @@ public final class TorrentInfo {
 	 */
 	private String publisherUrlUtf8;
 	/**
-	 * 私有种子
+	 * <p>私有种子：数值等于{@link #PRIVATE_TORRENT}</p>
 	 */
 	private Long privateTorrent;
 	/**
-	 * 文件列表（多文件）
+	 * <p>文件列表</p>
+	 * <p>多文件种子使用，单文件种子为空。</p>
 	 */
 	private List<TorrentFile> files;
 
@@ -110,24 +118,25 @@ public final class TorrentInfo {
 	}
 	
 	/**
-	 * Piece总数量
+	 * <p>Piece数量</p>
 	 */
 	public int pieceSize() {
 		return this.pieces.length / SystemConfig.SHA1_HASH_LENGTH;
 	}
 	
 	/**
-	 * 是否是私有种子
+	 * <p>是否是私有种子</p>
 	 */
 	public boolean isPrivateTorrent() {
 		return this.privateTorrent == null ? false : this.privateTorrent.byteValue() == PRIVATE_TORRENT;
 	}
 	
 	/**
-	 * 列出下载文件（兼容单个文件）
+	 * <p>列出下载文件列表（兼容单文件种子）</p>
+	 * <p>每个文件包含完整的路径</p>
 	 */
 	public List<TorrentFile> files() {
-		if (this.files.isEmpty()) {
+		if (this.files.isEmpty()) { // 单文件种子
 			final TorrentFile file = new TorrentFile();
 			file.setEd2k(this.ed2k);
 			file.setFilehash(this.filehash);
@@ -139,14 +148,14 @@ public final class TorrentInfo {
 				file.setPathUtf8(List.of(this.nameUtf8));
 			}
 			return List.of(file);
-		} else {
+		} else { // 多文件种子
 			return this.files;
 		}
 	}
 	
 	/**
-	 * <p>读取文件列表</p>
-	 * <p>每个元素都是一个map</p>
+	 * <p>获取多文件种子文件列表</p>
+	 * <p>每个元素都是一个Map，Map里面包含文件信息。</p>
 	 */
 	private static final List<TorrentFile> files(List<Object> files) {
 		return files.stream()

@@ -3,7 +3,7 @@ package com.acgist.snail.pojo;
 import com.acgist.snail.pojo.ITaskSession.Status;
 
 /**
- * 任务 - 数据库接口
+ * <p>任务 - 数据库接口</p>
  * 
  * @author acgist
  * @since 1.2.0

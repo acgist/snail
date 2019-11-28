@@ -11,7 +11,7 @@ import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * <p>Statistics Session</p>
- * <p>下载统计：速度、限速、统计等</p>
+ * <p>统计信息：速度、限速、统计等</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -101,6 +101,11 @@ public final class StatisticsSession implements IStatisticsSession {
 	}
 	
 	@Override
+	public IStatisticsSession statistics() {
+		return this;
+	}
+	
+	@Override
 	public long uploadSpeed() {
 		return this.uploadSpeed.speed();
 	}
@@ -131,7 +136,7 @@ public final class StatisticsSession implements IStatisticsSession {
 	}
 	
 	/**
-	 * 上传速度限制
+	 * <p>上传速度限制</p>
 	 */
 	private void uploadBufferLimit(long buffer) {
 		final long interval = System.currentTimeMillis() - this.uploadBufferLimitTime;
@@ -165,7 +170,7 @@ public final class StatisticsSession implements IStatisticsSession {
 	}
 	
 	/**
-	 * 下载速度限制
+	 * <p>下载速度限制</p>
 	 */
 	private void downloadBufferLimit(long buffer) {
 		final long interval = System.currentTimeMillis() - this.downloadBufferLimitTime;

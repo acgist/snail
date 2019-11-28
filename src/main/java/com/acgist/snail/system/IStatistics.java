@@ -1,5 +1,7 @@
 package com.acgist.snail.system;
 
+import com.acgist.snail.pojo.IStatisticsSession;
+
 /**
  * <p>统计接口</p>
  * 
@@ -21,5 +23,12 @@ public interface IStatistics {
 	 * @param buffer 下载数据大小
 	 */
 	void download(int buffer);
+	
+	/**
+	 * <p>获取统计信息</p>
+	 * 
+	 * @return 统计信息
+	 */
+	IStatisticsSession statistics();
 
 }

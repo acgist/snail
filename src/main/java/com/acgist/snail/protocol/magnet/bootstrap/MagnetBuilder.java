@@ -25,14 +25,11 @@ public final class MagnetBuilder {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(MagnetBuilder.class);
 	
-	public static final String QUERY_XT = "xt";
 	public static final String QUERY_DN = "dn";
-	public static final String QUERY_TR = "tr";
+	public static final String QUERY_XT = "xt";
 	public static final String QUERY_AS = "as";
 	public static final String QUERY_XS = "xs";
-	public static final String QUERY_XL = "xl";
-	public static final String QUERY_MT = "mt";
-	public static final String QUERY_KT = "kt";
+	public static final String QUERY_TR = "tr";
 	
 	private final String url;
 	
@@ -56,8 +53,7 @@ public final class MagnetBuilder {
 		this.magnet = new Magnet();
 		if(Protocol.Type.verifyMagnetHash32(this.url)) {
 			this.magnet.setType(Type.BTIH);
-			final InfoHash infoHash = InfoHash.newInstance(this.url);
-			this.magnet.setHash(infoHash.infoHashHex());
+			this.magnet.setHash(InfoHash.newInstance(this.url).infoHashHex());
 			return this.magnet;
 		}
 		if(Protocol.Type.verifyMagnetHash40(this.url)) {
@@ -75,14 +71,11 @@ public final class MagnetBuilder {
 				key = query.substring(0, index);
 				value = query.substring(index + 1);
 				switch (key) {
-				case QUERY_XT:
-					xt(value);
-					break;
 				case QUERY_DN:
 					dn(value);
 					break;
-				case QUERY_TR:
-					tr(value);
+				case QUERY_XT:
+					xt(value);
 					break;
 				case QUERY_AS:
 					as(value);
@@ -90,14 +83,8 @@ public final class MagnetBuilder {
 				case QUERY_XS:
 					xs(value);
 					break;
-				case QUERY_XL:
-					xl(value);
-					break;
-				case QUERY_MT:
-					mt(value);
-					break;
-				case QUERY_KT:
-					kt(value);
+				case QUERY_TR:
+					tr(value);
 					break;
 				default:
 					LOGGER.debug("磁力链接错误（参数不支持）：{}-{}，磁力链接：{}", key, value, this.url);
@@ -112,7 +99,7 @@ public final class MagnetBuilder {
 	}
 	
 	/**
-	 * 解析XT：支持BT下载
+	 * <p>解析XT：支持BT下载</p>
 	 */
 	private void xt(String value) throws DownloadException {
 		if(StringUtils.isEmpty(value)) {
@@ -126,8 +113,7 @@ public final class MagnetBuilder {
 		String hash = value.substring(xt.length());
 		// 32位磁力链接转为40位磁力链接
 		if(Protocol.Type.verifyMagnetHash32(hash)) {
-			final InfoHash infoHash = InfoHash.newInstance(hash);
-			hash = infoHash.infoHashHex();
+			hash = InfoHash.newInstance(hash).infoHashHex();
 		}
 		this.magnet.setHash(hash);
 		this.magnet.setType(Magnet.Type.BTIH);
@@ -135,10 +121,6 @@ public final class MagnetBuilder {
 	
 	private void dn(String value) {
 		this.magnet.setDn(value);
-	}
-	
-	private void tr(String value) {
-		this.magnet.addTr(value);
 	}
 	
 	private void as(String value) {
@@ -149,16 +131,8 @@ public final class MagnetBuilder {
 		this.magnet.setXs(value);
 	}
 	
-	private void xl(String value) {
-		this.magnet.setXl(value);
-	}
-	
-	private void mt(String value) {
-		this.magnet.setMt(value);
-	}
-	
-	private void kt(String value) {
-		this.magnet.setKt(value);
+	private void tr(String value) {
+		this.magnet.addTr(value);
 	}
 	
 }

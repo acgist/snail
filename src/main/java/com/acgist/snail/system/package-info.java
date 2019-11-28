@@ -1,5 +1,5 @@
 /**
- * <h1>Snail系统模块</h1>
+ * <h1>Snail系统</h1>
  * <p>系统上下文、配置等</p>
  * 
  * @author acgist

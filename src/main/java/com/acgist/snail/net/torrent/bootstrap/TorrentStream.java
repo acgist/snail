@@ -36,7 +36,7 @@ public final class TorrentStream {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentStream.class);
 
 	/**
-	 * 每个块的大小
+	 * Piece大小
 	 */
 	private final long pieceLength;
 	/**
@@ -84,17 +84,17 @@ public final class TorrentStream {
 	 */
 	private int fileEndPieceIndex;
 	/**
-	 * 当前文件位图
+	 * 已下载Piece位图
 	 */
 	private final BitSet pieces;
 	/**
-	 * <p>暂停位图</p>
+	 * <p>暂停Piece位图</p>
 	 * <p>上次下载失败的Piece，下次请求时不选择，选择成功后清除，以后还可以选择该Piece。</p>
 	 * <p>主要用来处理两个文件处于同一个Piece，并且两个文件没有同时被选择下载。</p>
 	 */
 	private final BitSet pausePieces;
 	/**
-	 * 下载中位图
+	 * 下载中Piece位图
 	 */
 	private final BitSet downloadPieces;
 	/**
@@ -146,7 +146,7 @@ public final class TorrentStream {
 			buildFileAsyn(complete, sizeCount);
 			selectPieces.set(this.fileBeginPieceIndex, this.fileEndPieceIndex + 1);
 			LOGGER.debug(
-				"TorrentStream信息，块大小：{}，文件路径：{}，文件大小：{}，文件开始偏移：{}，文件Piece数量：{}，文件Piece开始索引：{}，文件Piece结束索引：{}",
+				"TorrentStream信息，Piece大小：{}，文件路径：{}，文件大小：{}，文件开始偏移：{}，文件Piece数量：{}，文件Piece开始索引：{}，文件Piece结束索引：{}",
 				this.pieceLength,
 				this.file,
 				this.fileSize,
@@ -202,8 +202,8 @@ public final class TorrentStream {
 	 * 如果挑选不到符合条件的Piece并且任务处于接近完成状态时（{@linkplain SystemConfig#getPieceRepeatSize() 接近完成剩余Piece数量}），那么可以选择下载中的Piece进行下载。
 	 * </p>
 	 * 
-	 * @param peerPieces Peer位图
-	 * @param suggestPieces Peer推荐位图：优先使用
+	 * @param peerPieces Peer已下载Piece位图
+	 * @param suggestPieces Peer推荐Piece位图：优先使用
 	 */
 	public TorrentPiece pick(final BitSet peerPieces, final BitSet suggestPieces) {
 		if(peerPieces.isEmpty()) {
@@ -212,20 +212,20 @@ public final class TorrentStream {
 		synchronized (this) {
 			final BitSet pickPieces = new BitSet();
 			if(!suggestPieces.isEmpty()) {
-				// 推荐位图：优先使用
+				// Peer推荐Piece位图：优先使用
 				pickPieces.or(suggestPieces);
 				pickPieces.andNot(this.pieces);
 				pickPieces.andNot(this.pausePieces);
 				pickPieces.andNot(this.downloadPieces);
 			}
 			if(pickPieces.isEmpty()) {
-				// Peer位图
+				// Peer已下载Piece位图
 				pickPieces.or(peerPieces);
 				pickPieces.andNot(this.pieces);
 				pickPieces.andNot(this.pausePieces);
 				pickPieces.andNot(this.downloadPieces);
 			}
-			this.pausePieces.clear(); // 清空暂停位图
+			this.pausePieces.clear(); // 清空暂停Piece位图
 			if(pickPieces.isEmpty()) {
 				if(this.torrentStreamGroup.remainingPieceSize() <= SystemConfig.getPieceRepeatSize()) {
 					LOGGER.debug("选择Piece：任务接近完成并且找不到更多Piece（开始重复选择未下载的Piece）");
@@ -236,7 +236,7 @@ public final class TorrentStream {
 						return null;
 					}
 				} else {
-					// 排除暂停位图
+					// 排除暂停Piece位图
 					pickPieces.or(peerPieces);
 					pickPieces.andNot(this.pieces);
 					pickPieces.andNot(this.downloadPieces);
@@ -269,7 +269,7 @@ public final class TorrentStream {
 	}
 
 	/**
-	 * <p>读取块数据</p>
+	 * <p>读取Piece数据</p>
 	 * <p>数据大小：{@link #pieceLength}</p>
 	 * <p>默认偏移：0</p>
 	 * 
@@ -280,7 +280,7 @@ public final class TorrentStream {
 	}
 	
 	/**
-	 * <p>读取块数据</p>
+	 * <p>读取Piece数据</p>
 	 * <p>默认偏移：0</p>
 	 * 
 	 * @param index Piece索引
@@ -291,7 +291,7 @@ public final class TorrentStream {
 	}
 	
 	/**
-	 * <p>读取块数据</p>
+	 * <p>读取Piece数据</p>
 	 * 
 	 * @param index Piece索引
 	 * @param size 数据大小
@@ -304,14 +304,14 @@ public final class TorrentStream {
 	}
 	
 	/**
-	 * <p>读取块数据</p>
+	 * <p>读取Piece数据</p>
 	 * <p>如果选择的Piece不在文件范围内返回：null</p>
 	 * <p>如果读取数据只有部分符合文件的范围，会自动修正范围，读取符合部分数据返回。</p>
 	 * 
 	 * @param index Piece索引
 	 * @param size 数据大小
 	 * @param pos 数据偏移
-	 * @param ignorePieces 忽略已下载位图（读取文件验证）
+	 * @param ignorePieces 忽略已下载Piece位图（文件校验）
 	 */
 	private byte[] read(int index, int size, int pos, boolean ignorePieces) {
 		if(!haveIndex(index)) {
@@ -320,7 +320,7 @@ public final class TorrentStream {
 		if(!ignorePieces && !havePiece(index)) {
 			return null;
 		}
-		long seek = 0L;
+		long seek = 0L; // 文件偏移
 		final long beginPos = this.pieceLength * index + pos;
 		final long endPos = beginPos + size;
 		if(beginPos >= this.fileEndPos) {
@@ -329,11 +329,12 @@ public final class TorrentStream {
 		if(endPos <= this.fileBeginPos) {
 			return null;
 		}
-		if(beginPos <= this.fileBeginPos) {
+		if(beginPos <= this.fileBeginPos) { // Piece包含文件开始
 			size = (int) (size - (this.fileBeginPos - beginPos));
-		} else {
+		} else { // 文件包含Piece开始
 			seek = beginPos - this.fileBeginPos;
 		}
+		// Piece包含文件结束
 		if(endPos >= this.fileEndPos) {
 			size = (int) (size - (endPos - this.fileEndPos));
 		}
@@ -393,7 +394,7 @@ public final class TorrentStream {
 	
 	/**
 	 * <p>释放资源</p>
-	 * <p>写入已下载块、关闭文件流</p>
+	 * <p>写入已下载Piece、关闭文件流</p>
 	 */
 	public void release() {
 		this.flush();
@@ -435,16 +436,17 @@ public final class TorrentStream {
 		}
 		LOGGER.debug("Piece写入硬盘：{}", piece.getIndex());
 		int offset = 0;
-		long seek = 0L;
+		long seek = 0L; // 文件偏移
 		int length = piece.getLength();
 		final long beginPos = piece.beginPos();
 		final long endPos = piece.endPos();
-		if(beginPos <= this.fileBeginPos) {
+		if(beginPos <= this.fileBeginPos) { // Piece包含文件开始
 			offset = (int) (this.fileBeginPos - beginPos);
 			length = length - offset;
-		} else {
+		} else { // 文件包含Piece开始
 			seek = beginPos - this.fileBeginPos;
 		}
+		// Piece包含文件结束
 		if(endPos >= this.fileEndPos) {
 			length = (int) (length - (endPos - this.fileEndPos));
 		}
@@ -499,7 +501,7 @@ public final class TorrentStream {
 	}
 	
 	/**
-	 * 初始化：已下载块、校验HASH（第一块和最后一块不校验）
+	 * 初始化：已下载Piece、校验HASH（第一块和最后一块不校验）
 	 */
 	private void buildFilePieces(boolean complete) throws IOException {
 		int pos = 0;

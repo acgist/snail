@@ -26,7 +26,7 @@ import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * Task Session
+ * <p>Task Session</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -158,7 +158,7 @@ public final class TaskSession implements ITaskSession {
 			.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 	}
 	
-	//================Table================//
+	//================Gui面板数据绑定================//
 	
 	@Override
 	public String getNameValue() {
@@ -240,7 +240,7 @@ public final class TaskSession implements ITaskSession {
 		GuiHandler.getInstance().refreshTaskStatus(); // 刷新状态
 	}
 	
-	//================Entity================//
+	//================实体================//
 	
 	@Override
 	public String getId() {

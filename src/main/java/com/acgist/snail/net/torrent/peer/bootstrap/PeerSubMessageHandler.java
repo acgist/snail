@@ -332,7 +332,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * <p>处理握手消息</p>
 	 * <p>服务端：初始化、握手、解除阻塞</p>
 	 * <p>客户端：设置PeerId</p>
-	 * <p>通用：发送扩展消息、发送DHT消息、交换位图</p>
+	 * <p>通用：发送扩展消息、发送DHT消息、交换Piece位图</p>
 	 */
 	private void handshake(ByteBuffer buffer) {
 		LOGGER.debug("处理握手消息");
@@ -377,7 +377,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		this.peerSession.id(peerId);
 		this.extension(); // 发送扩展消息：优先交换扩展
 		this.dht(); // 发送DHT消息
-		this.exchangeBitfield(); // 交换位图
+		this.exchangeBitfield(); // 交换Piece位图
 		if(this.server) {
 			this.unchoke(); // 解除阻塞
 		}
@@ -492,7 +492,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * 格式：len=0001 id=0x03
 	 * </p>
 	 * <p>客户端已经拥有Peer所有的Piece时发送不感兴趣</p>
-	 * <p>在交换位图和Piece下载完成后，如果Peer没有更多的Piece时才发送不感兴趣消息，其他情况不发送此消息。</p>
+	 * <p>在交换Piece位图和Piece下载完成后，如果Peer没有更多的Piece时才发送不感兴趣消息，其他情况不发送此消息。</p>
 	 */
 	public void notInterested() {
 		if(this.peerSession.isAmNotInterested()) {
@@ -618,7 +618,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * <p>
 	 * index：Piece索引
 	 * </p>
-	 * <p>注：Superseeding使用，如果下载块后发送此消息，块数据直接在内存中读取，不需要读取硬盘。</p>
+	 * <p>Superseeding使用：下载Piece后发送此消息，Piece数据直接在内存中读取，减少读取硬盘。</p>
 	 */
 	public void suggestPiece(int index) {
 		if(!this.torrentSession.uploadable()) {
@@ -728,19 +728,19 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	
 	/**
 	 * <dl>
-	 * 	<dt>交换位图</dt>
-	 * 	<dd>如果任务已经下载所有Piece，Peer支持FAST扩展，发送haveAll代替位图。</dd>
-	 * 	<dd>如果任务没有下载任何Piece，Peer支持FAST扩展，发送haveNone代替位图。</dd>
-	 * 	<dd>其他情况发送位图</dd>
+	 * 	<dt>交换Piece位图</dt>
+	 * 	<dd>如果任务已经下载所有Piece，Peer支持FAST扩展，发送haveAll代替交换Piece位图。</dd>
+	 * 	<dd>如果任务没有下载任何Piece，Peer支持FAST扩展，发送haveNone代替交换Piece位图。</dd>
+	 * 	<dd>其他情况发送交换Piece位图</dd>
 	 * <dl>
 	 */
 	private void exchangeBitfield() {
 		if(!this.torrentSession.uploadable()) {
-			LOGGER.debug("交换位图：任务不可上传");
+			LOGGER.debug("交换Piece位图：任务不可上传");
 			return;
 		}
 		if(this.peerSession.uploadOnly()) {
-			LOGGER.debug("交换位图：Peer只上传不下载");
+			LOGGER.debug("交换Piece位图：Peer只上传不下载");
 			return;
 		}
 		if(this.peerSession.supportFastExtensionProtocol()) { // 支持FAST扩展
@@ -763,48 +763,48 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	}
 	
 	/**
-	 * <p>发送位图消息</p>
+	 * <p>发送Piece位图消息</p>
 	 * <p>
 	 * 格式：len=0001+X id=0x05 bitfield
 	 * </p>
 	 * <pre>
 	 * X：bitfield.length
-	 * bitfield：位图
+	 * bitfield：Piece位图
 	 * </pre>
 	 */
 	private void bitfield() {
 		if(!this.torrentSession.uploadable()) {
-			LOGGER.debug("发送位图消息：任务不可上传");
+			LOGGER.debug("发送Piece位图消息：任务不可上传");
 			return;
 		}
 		if(this.peerSession.uploadOnly()) {
-			LOGGER.debug("发送位图消息：Peer只上传不下载");
+			LOGGER.debug("发送Piece位图消息：Peer只上传不下载");
 			return;
 		}
 		final BitSet pieces = this.torrentSession.pieces();
-		LOGGER.debug("发送位图消息：{}", pieces);
+		LOGGER.debug("发送Piece位图消息：{}", pieces);
 		final int pieceSize = this.torrentSession.torrent().getInfo().pieceSize();
 		pushMessage(PeerConfig.Type.BITFIELD, BitfieldUtils.toBytes(pieceSize, pieces));
 	}
 	
 	/**
-	 * <p>处理位图消息</p>
+	 * <p>处理Piece位图消息</p>
 	 */
 	private void bitfield(ByteBuffer buffer) {
 		if(!this.torrentSession.downloadable()) {
-			LOGGER.debug("处理位图消息：任务不可下载");
+			LOGGER.debug("处理Piece位图消息：任务不可下载");
 			return;
 		}
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
-		final BitSet pieces = BitfieldUtils.toBitSet(bytes); // Peer位图
-		LOGGER.debug("处理位图消息：{}", pieces);
+		final BitSet pieces = BitfieldUtils.toBitSet(bytes); // Peer已下载Piece位图
+		LOGGER.debug("处理Piece位图消息：{}", pieces);
 		this.peerSession.pieces(pieces);
 		this.torrentSession.fullPieces(pieces);
-		final BitSet notHave = new BitSet(); // 没有下载的位图
+		final BitSet notHave = new BitSet(); // 没有下载的Piece位图
 		notHave.or(pieces);
 		notHave.andNot(this.torrentSession.pieces());
-		LOGGER.debug("处理位图消息（感兴趣位图）：{}", notHave);
+		LOGGER.debug("处理Piece位图消息（感兴趣的Piece位图）：{}", notHave);
 		if(notHave.isEmpty()) {
 			notInterested();
 		} else {

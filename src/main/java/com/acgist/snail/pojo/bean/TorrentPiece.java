@@ -6,7 +6,8 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>Piece下载信息</p>
- * <p>保存时必须是一个完成的Piece：end - begin == length == data.length && pos == begin</p>
+ * <p>保存时必须是下载完成的Piece：end - begin == length == data.length && pos == begin</p>
+ * <p>下载基于文件下载，所以当某个Piece处于两个文件交接处时，该Piece会被分为两次下载。</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -14,12 +15,12 @@ import com.acgist.snail.utils.StringUtils;
 public final class TorrentPiece {
 
 	/**
-	 * 默认每次下载长度：16KB
+	 * 默认下载长度：16KB
 	 */
 	public static final int SLICE_LENGTH = 16 * SystemConfig.ONE_KB;
 
 	/**
-	 * Piece块大小
+	 * Piece大小
 	 */
 	private final long pieceLength;
 	/**
@@ -35,7 +36,7 @@ public final class TorrentPiece {
 	 */
 	private final int end;
 	/**
-	 * 数据的长度：end - begin
+	 * 数据长度：end - begin
 	 */
 	private final int length;
 	/**
@@ -47,15 +48,18 @@ public final class TorrentPiece {
 	 */
 	private final byte[] hash;
 	/**
-	 * 是否校验
+	 * <p>是否校验</p>
+	 * <p>文件第一块和最后一块不验证：多文件可能不同时下载</p>
 	 */
 	private final boolean verify;
 	/**
-	 * 已下载大小
+	 * <p>已下载大小</p>
+	 * <p>每次获取到Slice数据后修改</p>
 	 */
 	private int size;
 	/**
-	 * 请求内偏移
+	 * <p>请求内偏移：当前选择下载Piece数据的内偏移</p>
+	 * <p>每次获取到Slice数据后修改</p>
 	 */
 	private int position;
 	
@@ -77,14 +81,16 @@ public final class TorrentPiece {
 	}
 	
 	/**
-	 * 开始偏移
+	 * <p>开始偏移</p>
+	 * <p>Piece开始位置在整个任务中的绝对偏移</p>
 	 */
 	public long beginPos() {
 		return this.pieceLength * this.getIndex() + this.begin;
 	}
 	
 	/**
-	 * 结束偏移
+	 * <p>结束偏移</p>
+	 * <p>Piece结束位置在整个任务中的绝对偏移</p>
 	 */
 	public long endPos() {
 		return beginPos() + length;
@@ -92,14 +98,14 @@ public final class TorrentPiece {
 	
 	/**
 	 * <p>判断文件是否包含当前Piece</p>
-	 * <p>包含开始，不包含结束，所以判断时都需要使用等于。</p>
+	 * <p>包含开始不包含结束（即两边判断条件一样）：判断时都使用等于</p>
 	 * 
 	 * @param fileBeginPos 文件开始偏移
 	 * @param fileEndPos 文件结束偏移
 	 */
 	public boolean contain(long fileBeginPos, long fileEndPos) {
-		long beginPos = beginPos();
-		long endPos = endPos();
+		final long beginPos = beginPos();
+		final long endPos = endPos();
 		if(endPos <= fileBeginPos) {
 			return false;
 		}
@@ -110,30 +116,30 @@ public final class TorrentPiece {
 	}
 	
 	/**
-	 * 是否还有更多的数据请求
+	 * <p>是否还有更多的数据请求</p>
 	 */
 	public boolean haveMoreSlice() {
 		return this.position < this.length;
 	}
 	
 	/**
-	 * 是否下载完成
+	 * <p>是否下载完成</p>
 	 */
 	public boolean complete() {
 		return this.size >= this.length;
 	}
 	
 	/**
-	 * <p>获取当前整个Piece的偏移</p>
+	 * <p>获取整个Piece内偏移</p>
 	 */
 	public int position() {
 		return this.begin + this.position;
 	}
 	
 	/**
-	 * <p>获取本次获取数据大小</>
-	 * <p>返回0时表示已经发送所有请求</p>
-	 * <p>会修改{@link #position}</p>
+	 * <p>获取本次请求数据大小</>
+	 * <p>0：已经发送所有请求</p>
+	 * <p>修改{@link #position}</p>
 	 */
 	public int length() {
 		if(this.position == this.length) {
@@ -151,9 +157,10 @@ public final class TorrentPiece {
 	}
 	
 	/**
-	 * 放入Slice数据
+	 * <p>放入Slice数据</p>
+	 * <p>修改{@link #size}</p>
 	 * 
-	 * @param begin 数据开始位移
+	 * @param begin 数据开始位移：整个Piece内偏移
 	 * @param bytes 数据
 	 * 
 	 * @return true-完成；false-未完成；
@@ -167,7 +174,7 @@ public final class TorrentPiece {
 	}
 	
 	/**
-	 * 校验数据
+	 * <p>校验数据</p>
 	 */
 	public boolean verify() {
 		if(this.verify) {

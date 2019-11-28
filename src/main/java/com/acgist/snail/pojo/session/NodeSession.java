@@ -5,6 +5,7 @@ import com.acgist.snail.utils.ObjectUtils;
 
 /**
  * <p>Node Session</p>
+ * <p>DHT节点信息</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -38,7 +39,7 @@ public final class NodeSession implements Comparable<NodeSession> {
 	 */
 	private final int port;
 	/**
-	 * 状态
+	 * 节点状态
 	 */
 	private Status status;
 
