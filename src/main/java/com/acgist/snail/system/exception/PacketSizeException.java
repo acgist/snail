@@ -2,7 +2,7 @@ package com.acgist.snail.system.exception;
 
 /**
  * <p>网络包数据长度异常</p>
- * <p>数据长度过大或者错误（小于零）</p>
+ * <p>数据长度过大或者小于零</p>
  * 
  * @author acgist
  * @since 1.1.1

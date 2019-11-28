@@ -32,7 +32,7 @@ public final class TrackerConfig extends PropertiesConfig {
 	 */
 	private static final int MAX_TRACKER_SIZE = 512;
 	/**
-	 * 最大失败次数，超过这个次数会被标记无效。
+	 * 最大失败次数：超过这个次数会被标记无效
 	 */
 	public static final int MAX_FAIL_TIMES = 3;
 	
@@ -153,14 +153,14 @@ public final class TrackerConfig extends PropertiesConfig {
 	}
 
 	/**
-	 * 获取所有Tracker服务器
+	 * @return 所有Tracker服务器
 	 */
 	public List<String> announces() {
 		return this.announces;
 	}
 	
 	/**
-	 * 保存Tracker服务器配置
+	 * <p>保存Tracker服务器配置</p>
 	 */
 	public void persistent() {
 		LOGGER.debug("保存Tracker服务器配置");

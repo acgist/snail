@@ -38,7 +38,7 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	public static final int MIN_BUFFER_KB = 16;
 	/**
-	 * TCP消息缓冲大小：和Piece交换Slice一样
+	 * TCP消息缓冲大小：和Piece交换Slice大小一样
 	 */
 	public static final int TCP_BUFFER_LENGTH = 16 * ONE_KB;
 	/**
@@ -71,7 +71,7 @@ public final class SystemConfig extends PropertiesConfig {
 	public static final int DOWNLOAD_TIMEOUT_MILLIS = DOWNLOAD_TIMEOUT * 1000;
 	/**
 	 * <p>最大的网络包大小</p>
-	 * <p>所有创建ByteBuffer和byte[]对象的长度由外部数据设置时需要验证长度，防止恶意攻击导致内存泄露。</p>
+	 * <p>所有创建ByteBuffer和byte[]对象的长度由外部数据设置时需要验证长度：防止恶意攻击导致内存泄露</p>
 	 */
 	public static final int MAX_NET_BUFFER_LENGTH = 4 * ONE_MB;
 	/**
@@ -120,7 +120,7 @@ public final class SystemConfig extends PropertiesConfig {
 	public static final Duration TASK_REFRESH_INTERVAL = Duration.ofSeconds(4);
 	/**
 	 * <p>用户工作目录</p>
-	 * <p>注意顺序：优先初始化，不能使用类变量，本类初始化时会使用。</p>
+	 * <p>注意：初始化为常量（不能使用类变量：本类初始化时会使用）</p>
 	 */
 	private static final String USER_DIR = System.getProperty("user.dir");
 	
@@ -173,7 +173,7 @@ public final class SystemConfig extends PropertiesConfig {
 	/**
 	 * <p>STUN服务器</p>
 	 * <dl>
-	 * 	<dt>格式：</dt>
+	 * 	<dt>格式</dt>
 	 * 	<dd>host</dd>
 	 * 	<dd>host:port</dd>
 	 * 	<dd>stun:host</dd>
@@ -231,7 +231,7 @@ public final class SystemConfig extends PropertiesConfig {
 	private String externalIpAddress;
 	
 	/**
-	 * 初始化
+	 * <p>初始化</p>
 	 */
 	private void init() {
 		this.name = getString("acgist.system.name");
@@ -256,7 +256,7 @@ public final class SystemConfig extends PropertiesConfig {
 	}
 
 	/**
-	 * 日志
+	 * <p>日志</p>
 	 */
 	private void logger() {
 		LOGGER.info("软件名称：{}", this.name);
@@ -281,70 +281,70 @@ public final class SystemConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 软件名称
+	 * <p>软件名称</p>
 	 */
 	public static final String getName() {
 		return INSTANCE.name;
 	}
 
 	/**
-	 * 软件名称（英文）
+	 * <p>软件名称（英文）</p>
 	 */
 	public static final String getNameEn() {
 		return INSTANCE.nameEn;
 	}
 
 	/**
-	 * 软件版本
+	 * <p>软件版本</p>
 	 */
 	public static final String getVersion() {
 		return INSTANCE.version;
 	}
 
 	/**
-	 * FTP匿名用户
+	 * <p>FTP匿名用户</p>
 	 */
 	public static final String getFtpUser() {
 		return INSTANCE.ftpUser;
 	}
 
 	/**
-	 * FTP匿名密码
+	 * <p>FTP匿名密码</p>
 	 */
 	public static final String getFtpPassword() {
 		return INSTANCE.ftpPassword;
 	}
 	
 	/**
-	 * 作者
+	 * <p>作者</p>
 	 */
 	public static final String getAuthor() {
 		return INSTANCE.author;
 	}
 
 	/**
-	 * 官网与源码
+	 * <p>官网与源码</p>
 	 */
 	public static final String getSource() {
 		return INSTANCE.source;
 	}
 
 	/**
-	 * 问题与建议
+	 * <p>问题与建议</p>
 	 */
 	public static final String getSupport() {
 		return INSTANCE.support;
 	}
 
 	/**
-	 * STUN服务器
+	 * <p>STUN服务器</p>
 	 */
 	public static final String getStunServer() {
 		return INSTANCE.stunServer;
 	}
 	
 	/**
-	 * 系统服务端口
+	 * <p>系统服务端口</p>
 	 */
 	public static final int getServicePort() {
 		return INSTANCE.servicePort;
@@ -359,7 +359,7 @@ public final class SystemConfig extends PropertiesConfig {
 	
 	/**
 	 * <p>设置BT服务端口（外网：Peer、DHT、UTP、STUN）</p>
-	 * <p>UPNP映射时如果端口已经被占用时重新设置的外网端口号</p>
+	 * <p>内网端口和外网端口可能不一致</p>
 	 */
 	public static final void setTorrentPortExt(int torrentPortExt) {
 		LOGGER.info("服务端口（外网：Peer、DHT、UTP、STUN）：{}", torrentPortExt);
@@ -368,7 +368,7 @@ public final class SystemConfig extends PropertiesConfig {
 	
 	/**
 	 * <p>BT服务端口（外网：Peer、DHT、UTP、STUN）</p>
-	 * <p>如果不存在返回{@linkplain #getTorrentPort() 本机端口}。</p>
+	 * <p>如果不存在返回{@linkplain #getTorrentPort() 内网端口}</p>
 	 */
 	public static final int getTorrentPortExt() {
 		if(INSTANCE.torrentPortExt == 0) {
@@ -378,77 +378,77 @@ public final class SystemConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * BT服务端口（外网：Peer、DHT、UTP、STUN）：short
+	 * <p>BT服务端口（外网：Peer、DHT、UTP、STUN）：short</p>
 	 */
 	public static final short getTorrentPortExtShort() {
 		return NetUtils.encodePort(getTorrentPortExt());
 	}
 	
 	/**
-	 * 单个任务Peer数量（同时下载）
+	 * <p>单个任务Peer数量（同时下载）</p>
 	 */
 	public static final int getPeerSize() {
 		return INSTANCE.peerSize;
 	}
 	
 	/**
-	 * 单个任务Tracker数量
+	 * <p>单个任务Tracker数量</p>
 	 */
 	public static final int getTrackerSize() {
 		return INSTANCE.trackerSize;
 	}
 
 	/**
-	 * 任务即将完成时可以重复下载的Piece数量
+	 * <p>任务即将完成时可以重复下载的Piece数量</p>
 	 */
 	public static final int getPieceRepeatSize() {
 		return INSTANCE.pieceRepeatSize;
 	}
 
 	/**
-	 * DHT执行周期（秒）
+	 * <p>DHT执行周期（秒）</p>
 	 */
 	public static final int getDhtInterval() {
 		return INSTANCE.dhtInterval;
 	}
 	
 	/**
-	 * PEX执行周期（秒）
+	 * <p>PEX执行周期（秒）</p>
 	 */
 	public static final int getPexInterval() {
 		return INSTANCE.pexInterval;
 	}
 	
 	/**
-	 * 本地发现执行周期（秒）
+	 * <p>本地发现执行周期（秒）</p>
 	 */
 	public static final int getLsdInterval() {
 		return INSTANCE.lsdInterval;
 	}
 	
 	/**
-	 * Tracker执行周期（秒）
+	 * <p>Tracker执行周期（秒）</p>
 	 */
 	public static final int getTrackerInterval() {
 		return INSTANCE.trackerInterval;
 	}
 	
 	/**
-	 * Peer（连接、接入）优化周期（秒）
+	 * <p>Peer（连接、接入）优化周期（秒）</p>
 	 */
 	public static final int getPeerOptimizeInterval() {
 		return INSTANCE.peerOptimizeInterval;
 	}
 
 	/**
-	 * 用户工作目录
+	 * <p>用户工作目录</p>
 	 */
 	public static final String userDir() {
 		return SystemConfig.USER_DIR;
 	}
 	
 	/**
-	 * 用户工作目录中的文件路径
+	 * <p>用户工作目录中的文件路径</p>
 	 * 
 	 * @param path 文件相对路径：以“/”开头
 	 */
@@ -457,14 +457,14 @@ public final class SystemConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 获取软件信息：软件名称（英文） 软件版本
+	 * <p>获取软件信息：软件名称（英文） 软件版本</p>
 	 */
 	public static final String getNameEnAndVersion() {
 		return INSTANCE.nameEn + " " + INSTANCE.version;
 	}
 
 	/**
-	 * 设置外网IP地址
+	 * <p>设置外网IP地址</p>
 	 */
 	public static final void setExternalIpAddress(String externalIpAddress) {
 		LOGGER.info("设置外网IP地址：{}", externalIpAddress);
@@ -472,7 +472,7 @@ public final class SystemConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 获取外网IP地址
+	 * <p>获取外网IP地址</p>
 	 */
 	public static final String getExternalIpAddress() {
 		return INSTANCE.externalIpAddress;

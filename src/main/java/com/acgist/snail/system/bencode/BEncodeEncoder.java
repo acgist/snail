@@ -13,8 +13,8 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.system.bencode.BEncodeDecoder.Type;
 
 /**
- * <p>B编码</p>
- * <p>支持数据类型：Number、String、byte[]。</p>
+ * <p>B编码编码器</p>
+ * <p>支持数据类型：Number、String、byte[]</p>
  * <pre>
  * encoder
  * 	.newList().put("1").put("2").flush()
@@ -47,7 +47,7 @@ public final class BEncodeEncoder {
 	 */
 	private BEncodeDecoder.Type type;
 	/**
-	 * 输出数据，不需要关闭。
+	 * 输出数据：不需要关闭
 	 */
 	private ByteArrayOutputStream outputStream;
 	
@@ -60,7 +60,7 @@ public final class BEncodeEncoder {
 	}
 
 	/**
-	 * 新建List
+	 * <p>新建List</p>
 	 */
 	public BEncodeEncoder newList() {
 		this.type = Type.LIST;
@@ -69,7 +69,7 @@ public final class BEncodeEncoder {
 	}
 	
 	/**
-	 * 新建Map
+	 * <p>新建Map</p>
 	 */
 	public BEncodeEncoder newMap() {
 		this.type = Type.MAP;
@@ -78,7 +78,7 @@ public final class BEncodeEncoder {
 	}
 	
 	/**
-	 * 向List中添加数据
+	 * <p>向List中添加数据</p>
 	 */
 	public BEncodeEncoder put(Object value) {
 		if(this.type == Type.LIST) {
@@ -88,7 +88,7 @@ public final class BEncodeEncoder {
 	}
 	
 	/**
-	 * 向List中添加数据
+	 * <p>向List中添加数据</p>
 	 */
 	public BEncodeEncoder put(List<?> list) {
 		if(this.type == Type.LIST) {
@@ -98,7 +98,7 @@ public final class BEncodeEncoder {
 	}
 	
 	/**
-	 * 向Map中添加数据
+	 * <p>向Map中添加数据</p>
 	 */
 	public BEncodeEncoder put(String key, Object value) {
 		if(this.type == Type.MAP) {
@@ -108,7 +108,7 @@ public final class BEncodeEncoder {
 	}
 	
 	/**
-	 * 向Map中添加数据
+	 * <p>向Map中添加数据</p>
 	 */
 	public BEncodeEncoder put(Map<String, Object> map) {
 		if(this.type == Type.MAP) {
@@ -118,7 +118,7 @@ public final class BEncodeEncoder {
 	}
 
 	/**
-	 * 将List和Map中的数据写入字符流，配合put系列方法使用。
+	 * <p>将List和Map中的数据写入字符流（配合put系列方法使用）</p>
 	 */
 	public BEncodeEncoder flush() {
 		if(this.type == Type.MAP) {
@@ -132,7 +132,7 @@ public final class BEncodeEncoder {
 	}
 
 	/**
-	 * 写入List
+	 * <p>写入List</p>
 	 */
 	public BEncodeEncoder write(List<?> list) {
 		if(list == null) {
@@ -147,7 +147,7 @@ public final class BEncodeEncoder {
 	}
 	
 	/**
-	 * 写入map
+	 * <p>写入Map</p>
 	 */
 	public BEncodeEncoder write(Map<?, ?> map) {
 		if(map == null) {
@@ -165,7 +165,7 @@ public final class BEncodeEncoder {
 	}
 	
 	/**
-	 * 写入字符数组
+	 * <p>写入字符数组</p>
 	 */
 	public BEncodeEncoder write(byte[] bytes) {
 		try {
@@ -179,7 +179,7 @@ public final class BEncodeEncoder {
 	}
 	
 	/**
-	 * 写入B编码对象
+	 * <p>写入B编码对象</p>
 	 */
 	private void writeBEncodeValue(Object value) {
 		if(value instanceof Number) {
@@ -199,7 +199,7 @@ public final class BEncodeEncoder {
 	}
 	
 	/**
-	 * 写入B编码数值
+	 * <p>写入B编码数值</p>
 	 */
 	private void writeBEncodeNumber(Number number) {
 		this.write(BEncodeDecoder.TYPE_I);
@@ -208,7 +208,7 @@ public final class BEncodeEncoder {
 	}
 	
 	/**
-	 * 写入B编码字符数组
+	 * <p>写入B编码字符数组</p>
 	 */
 	private void writeBEncodeBytes(byte[] bytes) {
 		this.write(String.valueOf(bytes.length).getBytes());
@@ -217,21 +217,21 @@ public final class BEncodeEncoder {
 	}
 	
 	/**
-	 * 写入字符
+	 * <p>写入字符</p>
 	 */
 	private void write(char value) {
 		this.outputStream.write(value);
 	}
 	
 	/**
-	 * 获取字符流
+	 * <p>获取字符流</p>
 	 */
 	public byte[] bytes() {
 		return this.outputStream.toByteArray();
 	}
 
 	/**
-	 * 获取字符串，将关闭字符流。
+	 * <p>获取字符串</p>
 	 */
 	@Override
 	public String toString() {
@@ -239,28 +239,28 @@ public final class BEncodeEncoder {
 	}
 	
 	/**
-	 * List转为B编码字符数组
+	 * <p>List转为B编码字符数组</p>
 	 */
 	public static final byte[] encodeList(List<?> list) {
 		return newInstance().write(list).bytes();
 	}
 	
 	/**
-	 * List转为B编码字符串
+	 * <p>List转为B编码字符串</p>
 	 */
 	public static final String encodeListString(List<?> list) {
 		return new String(encodeList(list));
 	}
 	
 	/**
-	 * Map转为B编码字符数组
+	 * <p>Map转为B编码字符数组</p>
 	 */
 	public static final byte[] encodeMap(Map<?, ?> map) {
 		return newInstance().write(map).bytes();
 	}
 	
 	/**
-	 * Map转为B编码字符串
+	 * <p>Map转为B编码字符串</p>
 	 */
 	public static final String encodeMapString(Map<?, ?> map) {
 		return new String(encodeMap(map));

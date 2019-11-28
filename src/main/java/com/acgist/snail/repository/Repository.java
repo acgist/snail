@@ -19,7 +19,7 @@ import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * 数据库
+ * <p>数据库</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -29,7 +29,7 @@ public abstract class Repository<T extends BaseEntity> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Repository.class);
 	
 	/**
-	 * 字段正则表达式
+	 * 数据库列正则表达式
 	 */
 	private static final String COLUMN_REGEX = "[a-zA-Z]+";
 	/**
@@ -49,8 +49,8 @@ public abstract class Repository<T extends BaseEntity> {
 	 */
 	private final String table;
 	/**
-	 * <p>查询实体的类型</p>
-	 * <p>注：反射获取泛型时存在警告，不使用反射获取泛型。</p>
+	 * <p>实体类型</p>
+	 * <p>注：不使用反射获取泛型（反射获取泛型时存在警告）</p>
 	 */
 	private final Class<T> entityClazz;
 	
@@ -61,9 +61,9 @@ public abstract class Repository<T extends BaseEntity> {
 	
 	/**
 	 * <dl>
-	 * 	<dt>合并：</dt>
-	 * 	<dd>存在ID：更新</dd>
-	 * 	<dd>不存在ID：保存</dd>
+	 * 	<dt>合并</dt>
+	 * 	<dd>存在：更新</dd>
+	 * 	<dd>不存在：保存</dd>
 	 * </dl>
 	 */
 	public void merge(T t) {
@@ -78,7 +78,7 @@ public abstract class Repository<T extends BaseEntity> {
 	}
 	
 	/**
-	 * 保存
+	 * <p>保存</p>
 	 */
 	public void save(T t) {
 		if(t == null) {
@@ -160,7 +160,7 @@ public abstract class Repository<T extends BaseEntity> {
 	}
 	
 	/**
-	 * 删除
+	 * <p>删除</p>
 	 */
 	public void delete(String id) {
 		if(id == null) {
@@ -175,7 +175,7 @@ public abstract class Repository<T extends BaseEntity> {
 	}
 
 	/**
-	 * 查找
+	 * <p>查找</p>
 	 */
 	public T findOne(String id) {
 		if(id == null) {
@@ -190,13 +190,13 @@ public abstract class Repository<T extends BaseEntity> {
 		if(CollectionUtils.isEmpty(list)) {
 			return null;
 		}
-		T t = newInstance();
+		final T t = newInstance();
 		BeanUtils.setProperties(t, list.get(0));
 		return t;
 	}
 	
 	/**
-	 * 查找
+	 * <p>查找</p>
 	 */
 	public T findOne(String property, String value) {
 		if(property == null) {
@@ -213,13 +213,13 @@ public abstract class Repository<T extends BaseEntity> {
 		if(CollectionUtils.isEmpty(list)) {
 			return null;
 		}
-		T t = newInstance();
+		final T t = newInstance();
 		BeanUtils.setProperties(t, list.get(0));
 		return t;
 	}
 	
 	/**
-	 * 查找
+	 * <p>查找</p>
 	 */
 	public List<T> findList(String sql, Object ... parameters) {
 		if(sql == null) {
@@ -231,7 +231,7 @@ public abstract class Repository<T extends BaseEntity> {
 		}
 		return list.stream()
 			.map(wrapper -> {
-				T t = newInstance();
+				final T t = newInstance();
 				BeanUtils.setProperties(t, wrapper);
 				return t;
 			})
@@ -239,7 +239,7 @@ public abstract class Repository<T extends BaseEntity> {
 	}
 	
 	/**
-	 * 查找
+	 * <p>查找所有数据</p>
 	 */
 	public List<T> findAll() {
 		final StringBuilder sql = new StringBuilder();
@@ -252,7 +252,7 @@ public abstract class Repository<T extends BaseEntity> {
 		}
 		return list.stream()
 			.map(wrapper -> {
-				T t = newInstance();
+				final T t = newInstance();
 				BeanUtils.setProperties(t, wrapper);
 				return t;
 			})
@@ -260,7 +260,7 @@ public abstract class Repository<T extends BaseEntity> {
 	}
 	
 	/**
-	 * 新建实体
+	 * <p>新建实体</p>
 	 */
 	private T newInstance() {
 		return BeanUtils.newInstance(this.entityClazz);

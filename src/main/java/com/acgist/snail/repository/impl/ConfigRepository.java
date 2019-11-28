@@ -4,7 +4,7 @@ import com.acgist.snail.pojo.entity.ConfigEntity;
 import com.acgist.snail.repository.Repository;
 
 /**
- * 配置
+ * <p>配置</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -16,7 +16,7 @@ public final class ConfigRepository extends Repository<ConfigEntity> {
 	}
 
 	/**
-	 * 根据配置名称查询配置
+	 * <p>根据配置名称查询配置</p>
 	 * 
 	 * @param name 配置名称
 	 * 
@@ -27,11 +27,11 @@ public final class ConfigRepository extends Repository<ConfigEntity> {
 	}
 	
 	/**
-	 * 根据配置名称删除配置
+	 * <p>根据配置名称删除配置</p>
 	 * 
 	 * @param name 配置名称
 	 * 
-	 * @return 删除结果：true-成功；false-配置不存在；
+	 * @return 删除结果：true-成功；false-失败（配置不存在）；
 	 */
 	public boolean deleteName(String name) {
 		final ConfigEntity entity = findOne(ConfigEntity.PROPERTY_NAME, name);
@@ -44,9 +44,9 @@ public final class ConfigRepository extends Repository<ConfigEntity> {
 	
 	/**
 	 * <dl>
-	 * 	<dt>更新配置</dt>
-	 * 	<dd>不存在保存</dd>
-	 * 	<dd>存在更新</dd>
+	 * 	<dt>合并配置</dt>
+	 * 	<dd>存在：更新</dd>
+	 * 	<dd>不存在：保存</dd>
 	 * </dl>
 	 */
 	public void merge(String name, String value) {

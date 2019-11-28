@@ -54,8 +54,7 @@ public final class SystemContext {
 	
 	/**
 	 * <p>开启系统监听</p>
-	 * <p>开启监听失败表示已经启动了一个系统实例，发送消息唤醒之前的实例窗口。</p>
-	 * <p>启动检测：如果已经启动实例，唤醒已启动的窗口。</p>
+	 * <p>启动检测：开启监听失败表示已经启动了一个系统实例，发送消息唤醒之前的实例窗口。</p>
 	 */
 	public static final boolean listen() {
 		final boolean ok = ApplicationServer.getInstance().listen();
@@ -87,7 +86,7 @@ public final class SystemContext {
 	}
 	
 	/**
-	 * 系统信息
+	 * <p>系统信息</p>
 	 */
 	public static final void info() {
 		final var runtime = Runtime.getRuntime();
@@ -111,8 +110,7 @@ public final class SystemContext {
 
 	/**
 	 * <p>系统关闭</p>
-	 * <p>创建的所有线程均是守护线程，所以可以不用手动shutdown。</p>
-	 * <p>手动shutdown时必须关闭系统资源，否者会导致卡顿。</p>
+	 * <p>创建的所有线程均是守护线程，所以可以不用手动关闭。</p>
 	 */
 	public static final void shutdown() {
 		if(SystemContext.available()) {
@@ -146,14 +144,14 @@ public final class SystemContext {
 	}
 
 	/**
-	 * 系统是否可用
+	 * <p>系统是否可用</p>
 	 */
 	public static final boolean available() {
 		return !SystemContext.shutdown;
 	}
 
 	/**
-	 * 系统名称
+	 * <p>系统名称</p>
 	 */
 	public static final String osName() {
 		if(SystemContext.osName == null) {

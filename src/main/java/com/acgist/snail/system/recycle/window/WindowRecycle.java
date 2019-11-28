@@ -16,7 +16,7 @@ import com.acgist.snail.utils.NumberUtils;
 
 /**
  * <p>Window回收站</p>
- * <p>注：支持Win10</p>
+ * <p>支持系统：Win10</p>
  * 
  * @author acgist
  * @since 1.1.0
@@ -49,7 +49,7 @@ public final class WindowRecycle extends Recycle {
 	 * 删除文件信息文件路径
 	 */
 	private String deleteInfoFile;
-	
+
 	public WindowRecycle(String path) {
 		super(path);
 		this.buildRecycle();
@@ -57,7 +57,21 @@ public final class WindowRecycle extends Recycle {
 	}
 
 	/**
-	 * 设置回收站路径
+	 * <p>是否支持系统</p>
+	 * 
+	 * @param osName 系统名称
+	 * 
+	 * @return true-支持；false-不支持；
+	 */
+	public static final boolean support(String osName) {
+		return osName != null &&
+			(
+				"Windows 10".equals(osName)
+			);
+	}
+	
+	/**
+	 * <p>设置回收站路径</p>
 	 */
 	private void buildRecycle() {
 		final String disk = this.path.substring(0, 1).toUpperCase(); // 盘符
@@ -78,7 +92,7 @@ public final class WindowRecycle extends Recycle {
 	}
 	
 	/**
-	 * 设置回收文件名称
+	 * <p>设置回收文件名称</p>
 	 */
 	private void buildRecycleName() {
 		String ext = null;
@@ -95,14 +109,14 @@ public final class WindowRecycle extends Recycle {
 	}
 	
 	/**
-	 * 创建删除文件
+	 * <p>创建删除文件</p>
 	 */
 	private boolean buildFile() {
 		return this.file.renameTo(new File(this.deleteFile));
 	}
 
 	/**
-	 * 创建删除文件信息文件
+	 * <p>创建删除文件信息文件</p>
 	 */
 	private void buildInfoFile() {
 		FileUtils.write(this.deleteInfoFile, buildInfo());
@@ -162,7 +176,7 @@ public final class WindowRecycle extends Recycle {
 	}
 
 	/**
-	 * 删除文件信息需要将斜杠转换成系统斜杠
+	 * <p>删除文件信息需要将斜杠转换成系统斜杠</p>
 	 */
 	private String buildPath() {
 		String path = this.path;

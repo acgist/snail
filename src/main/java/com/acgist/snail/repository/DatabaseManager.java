@@ -43,7 +43,9 @@ public final class DatabaseManager {
 	private Connection connection;
 
 	/**
-	 * 查询表是否存在
+	 * <p>查询表是否存在</p>
+	 * 
+	 * @param table 表名
 	 */
 	public boolean haveTable(String table) {
 		final List<ResultSetWrapper> tables = select("show tables");
@@ -56,7 +58,10 @@ public final class DatabaseManager {
 	}
 	
 	/**
-	 * 查询
+	 * <p>查询</p>
+	 * 
+	 * @param sql SQL
+	 * @param parameters 参数
 	 */
 	public List<ResultSetWrapper> select(String sql, Object ... parameters) {
 		ResultSet result = null;
@@ -81,7 +86,10 @@ public final class DatabaseManager {
 	}
 
 	/**
-	 * 更新
+	 * <p>更新</p>
+	 * 
+	 * @param sql SQL
+	 * @param parameters 参数
 	 */
 	public boolean update(String sql, Object ... parameters) {
 		boolean ok = false;
@@ -106,19 +114,19 @@ public final class DatabaseManager {
 	}
 	
 	/**
-	 * 关闭资源
+	 * <p>关闭资源</p>
 	 */
 	public void shutdown() {
-		LOGGER.info("数据库释放");
+		LOGGER.info("释放数据库");
 		try {
 			this.closeConnection();
 		} catch (Exception e) {
-			LOGGER.error("数据库释放异常", e);
+			LOGGER.error("释放数据库异常", e);
 		}
 	}
 	
 	/**
-	 * 结果集封装
+	 * <p>结果集封装</p>
 	 */
 	private List<ResultSetWrapper> wrapperResultSet(ResultSet result) throws SQLException {
 		final String[] columns = columnNames(result);
@@ -134,7 +142,7 @@ public final class DatabaseManager {
 	}
 	
 	/**
-	 * 获取列名
+	 * <p>获取列名</p>
 	 */
 	private String[] columnNames(ResultSet result) throws SQLException {
 		final ResultSetMetaData meta = result.getMetaData();
@@ -147,7 +155,7 @@ public final class DatabaseManager {
 	}
 
 	/**
-	 * 获取连接
+	 * <p>获取连接</p>
 	 */
 	private Connection connection() throws SQLException {
 		if(this.connection != null) {
@@ -166,6 +174,9 @@ public final class DatabaseManager {
 		return connection();
 	}
 	
+	/**
+	 * <p>关闭连接</p>
+	 */
 	private void closeConnection() {
 		try {
 			if(this.connection != null && !this.connection.isClosed()) {
@@ -177,6 +188,12 @@ public final class DatabaseManager {
 		}
 	}
 	
+	/**
+	 * <p>关闭资源</p>
+	 * 
+	 * @param result 结果集
+	 * @param statement 处理器
+	 */
 	private void close(ResultSet result, PreparedStatement statement) {
 		if(result != null) {
 			try {

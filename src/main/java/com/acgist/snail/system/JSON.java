@@ -27,11 +27,11 @@ public class JSON {
 	 * <p>特殊字符</p>
 	 * <p>Chrome浏览器控制台执行：</p>
 	 * <pre>
-for (var i = 0, value = '', array = []; i < 0xFFFF; i++) {
-    value = JSON.stringify(String.fromCharCode(i));
-    value.indexOf("\\") > -1 && array.push(value);
-}
-console.log(array.join(", "));
+	 * for (var i = 0, value = '', array = []; i < 0xFFFF; i++) {
+	 *     value = JSON.stringify(String.fromCharCode(i));
+	 *     value.indexOf("\\") > -1 && array.push(value);
+	 * }
+	 * console.log(array.join(", "));
 	 * </pre>
 	 * <p>其他特殊字符（不处理）：D800~DFFF</p>
 	 */
@@ -149,7 +149,7 @@ console.log(array.join(", "));
 	}
 	
 	/**
-	 * 序列化
+	 * <p>序列化</p>
 	 */
 	private String serialize() {
 		final StringBuilder builder = new StringBuilder();
@@ -163,6 +163,9 @@ console.log(array.join(", "));
 		return builder.toString();
 	}
 
+	/**
+	 * <p>序列化Map</p>
+	 */
 	private void serializeMap(Map<?, ?> map, StringBuilder builder) {
 		if(map == null) {
 			throw new ArgumentException("JSON序列化错误：Map=null");
@@ -180,6 +183,9 @@ console.log(array.join(", "));
 		builder.append(JSON_MAP_SUFFIX);
 	}
 	
+	/**
+	 * <p>序列化List</p>
+	 */
 	private void serializeList(List<?> list, StringBuilder builder) {
 		if(list == null) {
 			throw new ArgumentException("JSON序列化错误：List=null");
@@ -196,7 +202,7 @@ console.log(array.join(", "));
 	}
 	
 	/**
-	 * 序列化JSON属性
+	 * <p>序列化JSON属性</p>
 	 */
 	private void serializeValue(Object object, StringBuilder builder) {
 		if(object == null) {
@@ -219,7 +225,7 @@ console.log(array.join(", "));
 	}
 	
 	/**
-	 * 转义字符
+	 * <p>转义字符</p>
 	 */
 	private String serializeValue(String content) {
 		int index = -1;
@@ -237,7 +243,7 @@ console.log(array.join(", "));
 	}
 	
 	/**
-	 * 反序列化
+	 * <p>反序列化</p>
 	 */
 	private void deserialize(String content) {
 		if(this.type == Type.map) {
@@ -249,6 +255,9 @@ console.log(array.join(", "));
 		}
 	}
 	
+	/**
+	 * <p>反序列化Map</p>
+	 */
 	private void deserializeMap(String content) {
 		this.map = new LinkedHashMap<>();
 		final AtomicInteger index = new AtomicInteger(0);
@@ -260,6 +269,9 @@ console.log(array.join(", "));
 		}
 	}
 	
+	/**
+	 * <p>反序列化List</p>
+	 */
 	private void deserializeList(String content) {
 		this.list = new ArrayList<>();
 		final AtomicInteger index = new AtomicInteger(0);
@@ -271,7 +283,7 @@ console.log(array.join(", "));
 	}
 	
 	/**
-	 * 解析JSON属性
+	 * <p>解析JSON属性</p>
 	 */
 	private Object deserializeValue(AtomicInteger index, String content) {
 		char value;
@@ -340,7 +352,7 @@ console.log(array.join(", "));
 	}
 	
 	/**
-	 * 类型转换
+	 * <p>类型转换</p>
 	 */
 	private Object convertValue(String content) {
 		final String value = content.trim();
