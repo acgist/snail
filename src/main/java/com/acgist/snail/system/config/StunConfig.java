@@ -9,11 +9,11 @@ package com.acgist.snail.system.config;
 public final class StunConfig {
 
 	/**
-	 * 头信息长度
+	 * 头部信息长度
 	 */
 	public static final int STUN_HEADER_LENGTH = 20;
 	/**
-	 * 属性头信息长度
+	 * 属性头部信息长度
 	 */
 	public static final int ATTRIBUTE_HEADER_LENGTH = 4;
 	/**

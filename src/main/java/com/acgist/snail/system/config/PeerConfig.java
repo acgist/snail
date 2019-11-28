@@ -531,7 +531,7 @@ public final class PeerConfig {
 		
 		/** 磁力链接 */
 		MAGNET,
-		/** 种子任务 */
+		/** BT任务 */
 		TORRENT;
 		
 	}

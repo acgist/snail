@@ -10,7 +10,7 @@ import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.UrlUtils;
 
 /**
- * HTTP头信息包装器
+ * <p>HTTP头部信息信息包装器</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -38,7 +38,7 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	 */
 	private static final String BYTES = "bytes";
 	/**
-	 * 文件名
+	 * 文件名称
 	 */
 	private static final String FILENAME = "filename";
 	
@@ -60,10 +60,11 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	}
 	
 	/**
-	 * <p>下载文件名称，如果获取不到下载文件名，返回默认的文件名。</p>
+	 * <p>获取文件名称</p>
+	 * <p>下载文件名称：如果不存在返回默认的文件名称</p>
 	 * <p>Content-Disposition:attachment;filename=snail.jar?version=1.0.0</p>
 	 * 
-	 * @param defaultName 默认文件名
+	 * @param defaultName 默认文件名称
 	 */
 	public String fileName(final String defaultName) {
 		String fileName = header(CONTENT_DISPOSITION);
@@ -71,7 +72,7 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 			return defaultName;
 		}
 		final String fileNameLower = fileName.toLowerCase();
-		if(fileNameLower.contains(FILENAME)) { // 包含文件名
+		if(fileNameLower.contains(FILENAME)) { // 包含文件名称
 			fileName = UrlUtils.decode(fileName); // URL解码
 			int index = fileName.indexOf("=");
 			if(index != -1) {
@@ -92,7 +93,8 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	}
 	
 	/**
-	 * 下载文件大小：Content-Length：102400
+	 * <p>获取文件大小</p>
+	 * <p>Content-Length：102400</p>
 	 */
 	public long fileSize() {
 		long size = 0L;

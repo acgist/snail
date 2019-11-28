@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 数据库结果集包装器
+ * <p>数据库结果集包装器</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -13,47 +13,50 @@ import java.util.Map;
 public final class ResultSetWrapper {
 
 	/**
-	 * 查询结果数据
+	 * 结果集
 	 */
 	private final Map<String, Object> data = new HashMap<>();
 	
 	/**
-	 * 设置查询结果
+	 * <p>设置结果集</p>
+	 * 
+	 * @param key 字段名称
+	 * @param value 字段值
 	 */
 	public void put(String key, Object value) {
 		this.data.put(key.toUpperCase(), value);
 	}
 	
 	/**
-	 * 获取字符串
+	 * @return 字符串
 	 */
 	public String getString(String key) {
 		return (String) getObject(key);
 	}
 	
 	/**
-	 * 获取integer
+	 * @return Integer
 	 */
 	public Integer getInteger(String key) {
 		return (Integer) getObject(key);
 	}
 
 	/**
-	 * 获取long
+	 * @return Long
 	 */
 	public Long getLong(String key) {
 		return (Long) getObject(key);
 	}
 
 	/**
-	 * 获取日期
+	 * @return 日期
 	 */
 	public Date getDate(String key) {
 		return (Date) getObject(key);
 	}
 
 	/**
-	 * 获取对象
+	 * @return 对象
 	 */
 	public Object getObject(String key) {
 		return this.data.get(key.toUpperCase());

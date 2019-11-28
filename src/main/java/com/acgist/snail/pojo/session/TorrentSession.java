@@ -69,7 +69,7 @@ public final class TorrentSession {
 	private static final Duration PEER_OPTIMIZE_INTERVAL = Duration.ofSeconds(SystemConfig.getPeerOptimizeInterval());
 
 	/**
-	 * 动作：磁力链接转换、种子任务下载
+	 * 动作：磁力链接下载、BT任务下载
 	 */
 	private Action action;
 	/**
@@ -440,7 +440,7 @@ public final class TorrentSession {
 	 * <dl>
 	 * 	<dt>检测任务是否下载完成</dt>
 	 * 	<dd>如果已经完成直接返回完成</dd>
-	 * 	<dd>种子任务：文件下载完成</dd>
+	 * 	<dd>BT任务：文件下载完成</dd>
 	 * 	<dd>磁力链接：种子文件下载完成</dd>
 	 * </dl>
 	 */
