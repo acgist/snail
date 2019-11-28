@@ -11,8 +11,8 @@ import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>头信息</p>
- * <p>如果第一行不包含{@link #HEADER_DEFAULT_KV}则读取为协议信息</p>
+ * <p>头部信息包装器</p>
+ * <p>如果第一行不包含{@linkplain #HEADER_DEFAULT_KV 头部信息分隔符}则为协议信息</p>
  * 
  * @author acgist
  * @since 1.1.0
@@ -20,28 +20,28 @@ import com.acgist.snail.utils.StringUtils;
 public class HeaderWrapper {
 	
 	/**
-	 * 头信息分隔符
+	 * 头部信息分隔符
 	 */
 	private static final String DEFAULT_HEADER_KV = ":";
 	/**
-	 * 头信息填充符
+	 * 头部信息填充符
 	 */
 	private static final String DEFAULT_HEADER_PADDING = " ";
 	/**
-	 * 头信息换行符：读取
+	 * 头部信息换行符：读取
 	 */
 	private static final String HEADER_LINE_READER = "\n";
 	/**
-	 * 头信息换行符：写出
+	 * 头部信息换行符：写出
 	 */
 	private static final String HEADER_LINE_WRITER = "\r\n";
 
 	/**
-	 * 头信息分隔符
+	 * 头部信息分隔符
 	 */
 	private final String headerKv;
 	/**
-	 * 头信息填充符
+	 * 头部信息填充符
 	 */
 	private final String headerPadding;
 	/**
@@ -53,15 +53,15 @@ public class HeaderWrapper {
 	 */
 	private final boolean haveProtocol;
 	/**
-	 * 头信息
+	 * 头部信息
 	 */
 	protected final Map<String, List<String>> headers;
 
 	protected HeaderWrapper(String content) {
-		this(DEFAULT_HEADER_KV, content);
+		this(DEFAULT_HEADER_KV, DEFAULT_HEADER_PADDING, content);
 	}
 	
-	protected HeaderWrapper(String headerKv, String content) {
+	protected HeaderWrapper(String headerKv, String headerPadding, String content) {
 		String[] lines;
 		if(StringUtils.isEmpty(content)) {
 			lines = null;
@@ -69,7 +69,7 @@ public class HeaderWrapper {
 			lines = content.split(HEADER_LINE_READER);
 		}
 		this.headerKv = headerKv;
-		this.headerPadding = DEFAULT_HEADER_PADDING;
+		this.headerPadding = headerPadding;
 		this.protocol = buildProtocol(lines);
 		this.haveProtocol = StringUtils.isNotEmpty(this.protocol);
 		this.headers = buildHeaders(lines);
@@ -103,8 +103,8 @@ public class HeaderWrapper {
 		return new HeaderWrapper(content);
 	}
 
-	public static HeaderWrapper newInstance(String headerKv, String content) {
-		return new HeaderWrapper(headerKv, content);
+	public static HeaderWrapper newInstance(String headerKv, String headerPadding, String content) {
+		return new HeaderWrapper(headerKv, headerPadding, content);
 	}
 
 	public static HeaderWrapper newBuilder(String protocol) {
@@ -124,7 +124,7 @@ public class HeaderWrapper {
 	}
 	
 	/**
-	 * 读取协议
+	 * <p>读取协议</p>
 	 */
 	private String buildProtocol(String[] lines) {
 		if(lines == null || lines.length == 0) {
@@ -143,7 +143,7 @@ public class HeaderWrapper {
 	}
 	
 	/**
-	 * 读取头信息
+	 * <p>读取头部信息</p>
 	 */
 	private Map<String, List<String>> buildHeaders(String[] lines) {
 		int index;
@@ -188,11 +188,12 @@ public class HeaderWrapper {
 	}
 	
 	/**
-	 * 读取头信息（多个头信息时读取第一个）
+	 * <p>读取头部信息</p>
+	 * <p>如果头部名称对应多个头部信息时读取第一个</p>
 	 * 
-	 * @param key 头信息名称（忽略大小写）
+	 * @param key 头部名称（忽略大小写）
 	 * 
-	 * @return 头信息值
+	 * @return 头部信息
 	 */
 	public String header(String key) {
 		final var list = headerList(key);
@@ -204,11 +205,11 @@ public class HeaderWrapper {
 	}
 	
 	/**
-	 * 读取头信息
+	 * <p>读取头部信息</p>
 	 * 
-	 * @param key 头信息名称（忽略大小写）
+	 * @param key 头部名称（忽略大小写）
 	 * 
-	 * @return 头信息值
+	 * @return 头部信息集合
 	 */
 	public List<String> headerList(String key) {
 		if(isEmpty()) {
@@ -234,21 +235,21 @@ public class HeaderWrapper {
 	}
 	
 	/**
-	 * @return 所有头信息
+	 * @return 所有头部信息
 	 */
 	public Map<String, List<String>> allHeaders() {
 		return this.headers;
 	}
 
 	/**
-	 * 设置头信息
+	 * <p>设置头部信息<p>
 	 * 
 	 * @param key 名称
-	 * @param value 值
+	 * @param value 信息
 	 */
 	public HeaderWrapper header(String key, String value) {
 		if(this.headers == null) {
-			throw new ArgumentException("请求头（headers）未初始化");
+			throw new ArgumentException("头部信息未初始化");
 		}
 		var list = this.headers.get(key);
 		if(list == null) {
@@ -260,7 +261,7 @@ public class HeaderWrapper {
 	}
 	
 	/**
-	 * 写出头信息
+	 * <p>写出头部信息</p>
 	 */
 	public String build() {
 		final StringBuilder builder = new StringBuilder();
@@ -283,14 +284,14 @@ public class HeaderWrapper {
 	}
 	
 	/**
-	 * header数据是否为空
+	 * <p>头部信息数据是否为空</p>
 	 */
 	public boolean isEmpty() {
 		return CollectionUtils.isEmpty(this.headers);
 	}
 	
 	/**
-	 * header数据是否不为空
+	 * <p>头部信息数据是否不为空</p>
 	 */
 	public boolean isNotEmpty() {
 		return !isEmpty();

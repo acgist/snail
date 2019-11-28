@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * <p>SDP头信息</p>
+ * <p>SDP头部信息封装器</p>
  * 
  * @author acgist
  * @since 1.2.0
@@ -12,16 +12,16 @@ import java.util.Map;
 public final class SdpHeaderWrapper extends HeaderWrapper {
 
 	/**
-	 * 头信息分隔符
+	 * 头部信息分隔符
 	 */
 	private static final String DEFAULT_HEADER_KV = "=";
 	/**
-	 * 头信息填充符
+	 * 头部信息填充符
 	 */
 	private static final String DEFAULT_HEADER_PADDING = "";
 	
 	private SdpHeaderWrapper(String content) {
-		super(DEFAULT_HEADER_KV, content);
+		super(DEFAULT_HEADER_KV, DEFAULT_HEADER_PADDING, content);
 	}
 	
 	private SdpHeaderWrapper(Map<String, List<String>> headers) {

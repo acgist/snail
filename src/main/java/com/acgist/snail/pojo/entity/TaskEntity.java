@@ -43,13 +43,13 @@ public final class TaskEntity extends BaseEntity implements ITaskSessionEntity {
 	 */
 	private String file;
 	/**
-	 * <p>下载链接：FTP、HTTP、磁力链接、种子任务</p>
+	 * <p>下载链接：FTP、HTTP、磁力链接、BT任务</p>
 	 * <p>需要转换协议的下载链接（例如：迅雷链接）会直接转换为实际下载链接保存</p>
 	 */
 	private String url;
 	/**
-	 * <p>种子任务种子文件路径</p>
-	 * <p>种子任务下载时默认复制一份种子文件到下载目录</p>
+	 * <p>BT任务种子文件路径</p>
+	 * <p>BT任务下载时默认复制一份种子文件到下载目录</p>
 	 */
 	private String torrent;
 	/**
@@ -66,7 +66,7 @@ public final class TaskEntity extends BaseEntity implements ITaskSessionEntity {
 	private Date endDate;
 	/**
 	 * </p>下载描述</p>
-	 * </p>种子任务保存选择下载文件列表（B编码）</p>
+	 * </p>BT任务保存选择下载文件列表（B编码）</p>
 	 */
 	private String description;
 	

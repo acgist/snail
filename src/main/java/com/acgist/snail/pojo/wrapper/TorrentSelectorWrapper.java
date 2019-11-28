@@ -13,7 +13,7 @@ import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * 种子文件选择包装器
+ * <p>种子文件选择包装器</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -29,7 +29,7 @@ public final class TorrentSelectorWrapper {
 	}
 
 	/**
-	 * 编码器
+	 * <p>编码器</p>
 	 */
 	public static final TorrentSelectorWrapper newEncoder(List<String> list) {
 		final TorrentSelectorWrapper wrapper = new TorrentSelectorWrapper();
@@ -41,7 +41,7 @@ public final class TorrentSelectorWrapper {
 	}
 	
 	/**
-	 * 解析器
+	 * <p>解析器</p>
 	 */
 	public static final TorrentSelectorWrapper newDecoder(String value) {
 		final TorrentSelectorWrapper wrapper = new TorrentSelectorWrapper();
@@ -52,7 +52,7 @@ public final class TorrentSelectorWrapper {
 	}
 	
 	/**
-	 * 编码选择文件
+	 * <p>编码选择文件</p>
 	 */
 	public String serialize() {
 		if(this.encoder == null) {
@@ -62,7 +62,7 @@ public final class TorrentSelectorWrapper {
 	}
 
 	/**
-	 * 解析选择文件
+	 * <p>解析选择文件</p>
 	 */
 	public List<String> deserialize() {
 		if(this.decoder == null) {

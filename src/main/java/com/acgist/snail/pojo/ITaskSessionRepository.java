@@ -21,7 +21,7 @@ public interface ITaskSessionRepository {
 	void delete();
 	
 	/**
-	 * 更新状态：刷新下载
+	 * <p>更新状态</p>
 	 * 
 	 * @param status 任务状态
 	 */

@@ -25,7 +25,7 @@ public interface ITaskSession extends ITaskSessionTable, ITaskSessionEntity, ITa
 		 */
 		AWAIT(		"等待中"),
 		/**
-		 * 任务下载时的状态：不能直接设置此状态，由下载管理器自动修改。
+		 * 任务下载时的状态：由下载管理器自动修改（不能直接设置此状态）
 		 */
 		DOWNLOAD(	"下载中"),
 		/**
@@ -81,11 +81,11 @@ public interface ITaskSession extends ITaskSessionTable, ITaskSessionEntity, ITa
 		UNKNOWN(	"未知", "unknown.png");
 		
 		/**
-		 * 文件类型名称
+		 * 类型名称
 		 */
 		private final String value;
 		/**
-		 * 文件类型图标
+		 * 类型图标
 		 */
 		private final String icon;
 
@@ -110,13 +110,13 @@ public interface ITaskSession extends ITaskSessionTable, ITaskSessionEntity, ITa
 	IDownloader downloader();
 
 	/**
-	 * 删除下载器
+	 * <p>删除下载器</p>
 	 */
 	void removeDownloader();
 	
 	/**
 	 * <p>创建下载器</p>
-	 * <p>如果已经存在直接返回，否者创建下载器。</p>
+	 * <p>如果已经存在下载器直接返回，否者创建下载器。</p>
 	 * 
 	 * @return 下载器
 	 * 
@@ -130,7 +130,7 @@ public interface ITaskSession extends ITaskSessionTable, ITaskSessionEntity, ITa
 	File downloadFolder();
 	
 	/**
-	 * @return BT任务已选择的下载文件
+	 * @return BT任务已选择的下载文件列表
 	 */
 	List<String> selectTorrentFiles();
 
@@ -170,12 +170,12 @@ public interface ITaskSession extends ITaskSessionTable, ITaskSessionEntity, ITa
 	boolean complete();
 	
 	/**
-	 * @return 任务执行状态（在线程池中）：等待中或者下载中
+	 * @return 任务执行状态（在线程池中）：等待中、下载中
 	 */
 	boolean inThreadPool();
 	
 	/**
-	 * 将任务信息转换为Map对象
+	 * <p>将任务信息转换为Map对象</p>
 	 * 
 	 * @return 任务信息
 	 */
