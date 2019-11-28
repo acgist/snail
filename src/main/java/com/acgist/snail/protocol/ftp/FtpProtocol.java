@@ -10,7 +10,7 @@ import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
 
 /**
- * FTP协议
+ * <p>FTP协议</p>
  * 
  * @author acgist
  * @since 1.0.0

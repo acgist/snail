@@ -14,7 +14,7 @@ import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * HTTP协议
+ * <p>HTTP协议</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -62,6 +62,7 @@ public final class HttpProtocol extends Protocol {
 	
 	/**
 	 * {@inheritDoc}
+	 * 
 	 * <p>优先使用请求头中的文件名称</p>
 	 */
 	@Override

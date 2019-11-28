@@ -145,6 +145,7 @@ public final class TorrentStream {
 			buildFilePiece();
 			buildFileAsyn(complete, sizeCount);
 			selectPieces.set(this.fileBeginPieceIndex, this.fileEndPieceIndex + 1);
+			// TODO：{}，使用多行文本
 			LOGGER.debug(
 				"TorrentStream信息，Piece大小：{}，文件路径：{}，文件大小：{}，文件开始偏移：{}，文件Piece数量：{}，文件Piece开始索引：{}，文件Piece结束索引：{}",
 				this.pieceLength,

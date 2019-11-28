@@ -15,8 +15,8 @@ import com.acgist.snail.utils.UrlUtils;
 
 /**
  * <p>磁力链接创建</p>
- * <p>现在解析只支持BT下载，其他下载连接均不支持，并且只支持单个文件，不支持多文件下载。</p>
- * <p>参考文章：https://www.cnblogs.com/linuxws/p/10166685.html</p>
+ * <p>磁力链接解析只支持BT类型磁力链接，其他磁力链接均不支持。</p>
+ * <p>BT类型磁力链接中也只支持单文件下载，不支持多文件下载。</p>
  * 
  * @author acgist
  * @since 1.1.0
@@ -31,8 +31,13 @@ public final class MagnetBuilder {
 	public static final String QUERY_XS = "xs";
 	public static final String QUERY_TR = "tr";
 	
+	/**
+	 * 磁力链接
+	 */
 	private final String url;
-	
+	/**
+	 * 磁力链接信息
+	 */
 	private Magnet magnet;
 	
 	private MagnetBuilder(String url) {
@@ -44,23 +49,26 @@ public final class MagnetBuilder {
 	}
 	
 	/**
-	 * <p>解析磁力链接磁力链接信息</p>
+	 * <p>解析磁力链接信息</p>
 	 */
 	public Magnet build() throws DownloadException {
 		if(!Protocol.Type.MAGNET.verify(this.url)) {
 			throw new DownloadException("磁力链接格式错误：" + this.url);
 		}
 		this.magnet = new Magnet();
+		// 32位磁力链接
 		if(Protocol.Type.verifyMagnetHash32(this.url)) {
 			this.magnet.setType(Type.BTIH);
 			this.magnet.setHash(InfoHash.newInstance(this.url).infoHashHex());
 			return this.magnet;
 		}
+		// 40位磁力链接
 		if(Protocol.Type.verifyMagnetHash40(this.url)) {
 			this.magnet.setType(Type.BTIH);
 			this.magnet.setHash(this.url);
 			return this.magnet;
 		}
+		// 完整磁力链接
 		int index;
 		String key, value;
 		final URI uri = URI.create(this.url);
@@ -87,7 +95,7 @@ public final class MagnetBuilder {
 					tr(value);
 					break;
 				default:
-					LOGGER.debug("磁力链接错误（参数不支持）：{}-{}，磁力链接：{}", key, value, this.url);
+					LOGGER.debug("磁力链接不支持的参数：{}-{}，磁力链接：{}", key, value, this.url);
 					break;
 				}
 			}

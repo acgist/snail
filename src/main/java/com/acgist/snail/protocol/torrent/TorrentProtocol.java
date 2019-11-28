@@ -14,7 +14,7 @@ import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.FileUtils;
 
 /**
- * BT协议
+ * <p>BT协议</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -56,6 +56,9 @@ public final class TorrentProtocol extends Protocol {
 		return INSTANCE;
 	}
 
+	/**
+	 * <p>设置种子文件操作类型</p>
+	 */
 	public void operation(TorrentHandle operation) {
 		this.handle = operation;
 	}
@@ -109,11 +112,13 @@ public final class TorrentProtocol extends Protocol {
 	
 	/**
 	 * {@inheritDoc}
-	 * <p>注意：一定先检查BT任务是否已经存在，如果已经存在不能赋值，失败后清除。</p>
+	 * 
+	 * <p>注意：一定先检查BT任务是否已经存在（如果已经存在不能赋值：防止清除已下载任务）</p>
 	 */
 	@Override
 	protected void cleanMessage(boolean ok) {
-		if(!ok) { // 失败
+		if(!ok) {
+			// 清除种子信息
 			if(this.torrentSession != null) {
 				TorrentManager.getInstance().remove(this.torrentSession.infoHashHex());
 			}
@@ -122,6 +127,9 @@ public final class TorrentProtocol extends Protocol {
 		this.torrentSession = null;
 	}
 	
+	/**
+	 * <p>判断任务是否已经存在</p>
+	 */
 	private void exist() throws DownloadException {
 		final Torrent torrent = TorrentManager.loadTorrent(this.url);
 		if(TorrentManager.getInstance().exist(torrent.infoHash().infoHashHex())) {
@@ -132,7 +140,7 @@ public final class TorrentProtocol extends Protocol {
 	/**
 	 * <dl>
 	 * 	<dt>解析种子</dt>
-	 * 	<dd>种子文件地址转换为磁力链接</dd>
+	 * 	<dd>转换磁力链接</dd>
 	 * 	<dd>生成种子信息</dd>
 	 * </dl>
 	 */
@@ -145,14 +153,14 @@ public final class TorrentProtocol extends Protocol {
 	}
 	
 	/**
-	 * 创建下载目录
+	 * <p>创建下载目录</p>
 	 */
 	private void buildTorrentFolder() {
 		FileUtils.buildFolder(this.taskEntity.getFile(), false);
 	}
 
 	/**
-	 * 种子文件操作：拷贝、移动
+	 * <p>种子文件操作：拷贝、移动</p>
 	 */
 	private void torrentFileOperation() {
 		final String fileName = FileUtils.fileNameFromUrl(this.torrentFile);
@@ -166,13 +174,13 @@ public final class TorrentProtocol extends Protocol {
 	}
 
 	/**
-	 * 选择torrent下载文件和设置文件大小
+	 * <p>选择下载文件、设置文件大小</p>
 	 */
 	private void selectTorrentFiles() throws DownloadException {
 		final ITaskSession taskSession = TaskSession.newInstance(this.taskEntity);
 		GuiHandler.getInstance().torrent(taskSession); // 不能抛出异常
 		if(taskSession.selectTorrentFiles().isEmpty()) { // 没有选择下载文件
-			FileUtils.delete(this.taskEntity.getFile());
+			FileUtils.delete(this.taskEntity.getFile()); // 删除已经创建文件
 			throw new DownloadException("请选择下载文件");
 		}
 	}

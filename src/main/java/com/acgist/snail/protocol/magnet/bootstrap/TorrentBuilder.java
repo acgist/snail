@@ -23,7 +23,7 @@ import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.NetUtils;
 
 /**
- * 种子文件创建
+ * <p>种子文件创建</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -63,7 +63,7 @@ public final class TorrentBuilder {
 	}
 
 	/**
-	 * 种子信息
+	 * <p>创建种子信息</p>
 	 */
 	private Map<String, Object> buildFileInfo() {
 		final Map<String, Object> data = new LinkedHashMap<>();
@@ -72,16 +72,16 @@ public final class TorrentBuilder {
 		data.put(Torrent.ATTR_ENCODING, SystemConfig.DEFAULT_CHARSET);
 		data.put(Torrent.ATTR_CREATED_BY, SystemConfig.getNameEnAndVersion());
 		data.put(Torrent.ATTR_CREATION_DATE, DateUtils.unixTimestamp());
-		this.announce(data);
-		this.infoHash(data);
-		this.node(data);
+		this.buildAnnounce(data);
+		this.buildInfo(data);
+		this.buildNodes(data);
 		return data;
 	}
 
 	/**
-	 * 设置Tracker服务器列表
+	 * <p>设置Tracker服务器列表</p>
 	 */
-	private void announce(Map<String, Object> data) {
+	private void buildAnnounce(Map<String, Object> data) {
 		if(CollectionUtils.isEmpty(this.trackers)) {
 			return;
 		}
@@ -99,9 +99,9 @@ public final class TorrentBuilder {
 	}
 	
 	/**
-	 * 设置InfoHash
+	 * <p>设置种子信息</p>
 	 */
-	private void infoHash(Map<String, Object> data) {
+	private void buildInfo(Map<String, Object> data) {
 		try {
 			final var decoder = BEncodeDecoder.newInstance(this.infoHash.info());
 			data.put(Torrent.ATTR_INFO, decoder.nextMap());
@@ -111,9 +111,9 @@ public final class TorrentBuilder {
 	}
 
 	/**
-	 * 设置DHT节点
+	 * <p>设置DHT节点</p>
 	 */
-	private void node(Map<String, Object> data) {
+	private void buildNodes(Map<String, Object> data) {
 		final var sessions = NodeManager.getInstance().findNode(this.infoHash.infoHash());
 		if(CollectionUtils.isNotEmpty(sessions)) {
 			final var nodes = sessions.stream()
@@ -127,22 +127,23 @@ public final class TorrentBuilder {
 	}
 	
 	/**
-	 * 文件名称
+	 * <p>文件名称</p>
 	 */
 	private String fileName() {
 		return this.infoHash.infoHashHex() + Protocol.Type.TORRENT.defaultSuffix();
 	}
 
 	/**
-	 * 保存种子文件
+	 * <p>保存种子文件</p>
 	 * 
 	 * @param filePath 文件路径
-	 * @param fileInfo 数据
+	 * @param fileInfo 种子数据
 	 */
 	private void createFile(String filePath, Map<String, Object> fileInfo) {
 		final File file = new File(filePath);
-		// 文件已存在时不创建
+		// 文件已存在时不保存
 		if(file.exists()) {
+			LOGGER.debug("种子文件已存在：{}", filePath);
 			return;
 		}
 		LOGGER.debug("保存种子文件：{}", filePath);
