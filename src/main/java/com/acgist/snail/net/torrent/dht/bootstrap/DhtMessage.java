@@ -14,15 +14,15 @@ import com.acgist.snail.system.config.DhtConfig;
 public abstract class DhtMessage {
 
 	/**
-	 * 请求ID
+	 * <p>请求ID</p>
 	 */
 	protected final byte[] t;
 	/**
-	 * 类型：请求、响应
+	 * <p>类型：请求、响应</p>
 	 */
 	protected final String y;
 	/**
-	 * 地址：请求、响应
+	 * <p>地址：请求、响应</p>
 	 */
 	protected InetSocketAddress socketAddress;
 
@@ -115,7 +115,7 @@ public abstract class DhtMessage {
 	}
 	
 	/**
-	 * 获取参数：请求、请求
+	 * <p>获取参数：请求、请求</p>
 	 * 
 	 * @param key 参数名称
 	 * 
@@ -124,7 +124,7 @@ public abstract class DhtMessage {
 	public abstract Object get(String key);
 	
 	/**
-	 * 设置参数
+	 * <p>设置参数</p>
 	 * 
 	 * @param key 参数名称
 	 * @param value 参数值

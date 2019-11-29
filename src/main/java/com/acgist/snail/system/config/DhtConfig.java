@@ -29,63 +29,63 @@ public final class DhtConfig extends PropertiesConfig {
 	private static final String DHT_CONFIG = "/config/bt.dht.properties";
 	
 	/**
-	 * 标记ID：请求ID（默认两个字节）
+	 * <p>标记ID：请求ID（默认两个字节）</p>
 	 */
 	public static final String KEY_T = "t";
 	/**
-	 * 消息类型：请求、响应
+	 * <p>消息类型：请求、响应</p>
 	 */
 	public static final String KEY_Y = "y";
 	/**
-	 * 请求消息、请求类型
+	 * <p>请求消息、请求类型</p>
 	 */
 	public static final String KEY_Q = "q";
 	/**
-	 * 请求参数
+	 * <p>请求参数</p>
 	 */
 	public static final String KEY_A = "a";
 	/**
-	 * 响应消息、响应参数
+	 * <p>响应消息、响应参数</p>
 	 */
 	public static final String KEY_R = "r";
 	/**
-	 * 错误
+	 * <p>错误</p>
 	 */
 	public static final String KEY_E = "e";
 	/**
-	 * 客户端版本：不一定存在
+	 * <p>客户端版本：不一定存在</p>
 	 */
 	public static final String KEY_V = "v";
 	/**
-	 * NodeId
+	 * <p>NodeId</p>
 	 */
 	public static final String KEY_ID = "id";
 	/**
-	 * 下载端口
+	 * <p>下载端口</p>
 	 */
 	public static final String KEY_PORT = "port";
 	/**
-	 * 节点信息
+	 * <p>节点信息</p>
 	 */
 	public static final String KEY_NODES = "nodes";
 	/**
-	 * Token：{@link QType#ANNOUNCE_PEER}使用
+	 * <p>Token：{@link QType#ANNOUNCE_PEER}使用</p>
 	 */
 	public static final String KEY_TOKEN = "token";
 	/**
-	 * Peer列表
+	 * <p>Peer列表</p>
 	 */
 	public static final String KEY_VALUES = "values";
 	/**
-	 * 目标：NodeId/InfoHash
+	 * <p>目标：NodeId/InfoHash</p>
 	 */
 	public static final String KEY_TARGET = "target";
 	/**
-	 * InfoHash
+	 * <p>InfoHash</p>
 	 */
 	public static final String KEY_INFO_HASH = "info_hash";
 	/**
-	 * 0|1：{@link #IMPLIED_PORT_AUTO}、{@link #IMPLIED_PORT_CONFIG}
+	 * <p>0|1：{@link #IMPLIED_PORT_AUTO}、{@link #IMPLIED_PORT_CONFIG}</p>
 	 */
 	public static final String KEY_IMPLIED_PORT = "implied_port";
 	/**
@@ -94,27 +94,27 @@ public final class DhtConfig extends PropertiesConfig {
 	 */
 	public static final Integer IMPLIED_PORT_AUTO = 1;
 	/**
-	 * 配置端口
+	 * <p>配置端口</p>
 	 */
 	public static final Integer IMPLIED_PORT_CONFIG = 0;
 	/**
-	 * GetPeer：Peer列表长度
+	 * <p>GetPeer：Peer列表长度</p>
 	 */
 	public static final int GET_PEER_SIZE = 32;
 	/**
-	 * NodeId长度
+	 * <p>NodeId长度</p>
 	 */
 	public static final int NODE_ID_LENGTH = 20;
 	/**
-	 * Node最大数量：超过这个数量会均匀剔除多余Node
+	 * <p>Node最大数量：超过这个数量会均匀剔除多余Node</p>
 	 */
 	public static final int MAX_NODE_SIZE = 1024;
 	/**
-	 * DHT请求清理周期
+	 * <p>DHT请求清理周期</p>
 	 */
 	public static final int DHT_REQUEST_CLEAN_INTERVAL = 10;
 	/**
-	 * DHT响应超时
+	 * <p>DHT响应超时</p>
 	 */
 	public static final Duration TIMEOUT = Duration.ofSeconds(SystemConfig.RECEIVE_TIMEOUT);
 	
@@ -146,7 +146,7 @@ public final class DhtConfig extends PropertiesConfig {
 		CODE_204(204);
 		
 		/**
-		 * 错误编码
+		 * <p>错误编码</p>
 		 */
 		private final int code;
 		
@@ -161,7 +161,7 @@ public final class DhtConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * DHT请求类型
+	 * <p>DHT请求类型</p>
 	 */
 	public enum QType {
 		
@@ -175,7 +175,7 @@ public final class DhtConfig extends PropertiesConfig {
 		ANNOUNCE_PEER(	"announce_peer");
 		
 		/**
-		 * 类型名称
+		 * <p>类型名称</p>
 		 */
 		private final String value;
 		
@@ -200,7 +200,7 @@ public final class DhtConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 默认DHT节点：NodeID=host:port
+	 * <p>默认DHT节点：NodeID=host:port</p>
 	 */
 	private final Map<String, String> nodes = new LinkedHashMap<>();
 	

@@ -40,7 +40,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 /**
- * 统计窗口控制器
+ * <p>统计窗口控制器</p>
  * 
  * @author acgist
  * @since 1.2.0
@@ -102,7 +102,7 @@ public final class StatisticsController extends Controller implements Initializa
 	}
 
 	/**
-	 * 刷新按钮
+	 * <p>刷新按钮</p>
 	 */
 	@FXML
 	public void handleRefreshAction(ActionEvent event) {
@@ -110,7 +110,7 @@ public final class StatisticsController extends Controller implements Initializa
 	}
 	
 	/**
-	 * 统计信息
+	 * <p>统计信息</p>
 	 */
 	public void statistics() {
 		this.system();
@@ -120,14 +120,14 @@ public final class StatisticsController extends Controller implements Initializa
 	}
 	
 	/**
-	 * 释放资源
+	 * <p>释放资源</p>
 	 */
 	public void release() {
 		this.chart.getChildren().clear();
 	}
 
 	/**
-	 * 统计系统信息：累计上传大小、累计下载大小
+	 * <p>统计系统信息：累计上传大小、累计下载大小</p>
 	 */
 	private void system() {
 		final var statistics = SystemStatistics.getInstance().statistics();
@@ -136,7 +136,7 @@ public final class StatisticsController extends Controller implements Initializa
 	}
 	
 	/**
-	 * 统计DHT信息：节点数量、各种状态节点数量
+	 * <p>统计DHT信息：节点数量、各种状态节点数量</p>
 	 */
 	private void dht() {
 		final List<NodeSession> nodes = NodeManager.getInstance().nodes();
@@ -149,7 +149,7 @@ public final class StatisticsController extends Controller implements Initializa
 	}
 	
 	/**
-	 * 统计Tracker信息：Tracker数量、各种状态Tracker数量
+	 * <p>统计Tracker信息：Tracker数量、各种状态Tracker数量</p>
 	 */
 	private void tracker() {
 		final List<TrackerClient> clients = TrackerManager.getInstance().clients();
@@ -161,7 +161,7 @@ public final class StatisticsController extends Controller implements Initializa
 	}
 	
 	/**
-	 * 统计BT任务信息
+	 * <p>统计BT任务信息</p>
 	 */
 	private void infoHash() {
 		final var defaultValue = this.selectInfoHashs.getValue();
@@ -179,7 +179,7 @@ public final class StatisticsController extends Controller implements Initializa
 	}
 	
 	/**
-	 * 不需要显示调用：选择下载任务时自动刷新
+	 * <p>不需要显示调用：选择下载任务时自动刷新</p>
 	 */
 	private void peer() {
 		final SelectInfoHash value = (SelectInfoHash) this.selectInfoHashs.getValue();
@@ -308,14 +308,14 @@ public final class StatisticsController extends Controller implements Initializa
 	}
 	
 	/**
-	 * 选择BT任务事件
+	 * <p>选择BT任务事件</p>
 	 */
 	private EventHandler<ActionEvent> selectEvent = (event) -> {
 		this.peer();
 	};
 	
 	/**
-	 * 下载任务
+	 * <p>下载任务</p>
 	 */
 	public static final class SelectInfoHash {
 

@@ -33,11 +33,11 @@ public final class TorrentBuilder {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentBuilder.class);
 	
 	/**
-	 * InfoHash
+	 * <p>InfoHash</p>
 	 */
 	private final InfoHash infoHash;
 	/**
-	 * Tracker服务器
+	 * <p>Tracker服务器</p>
 	 */
 	private final List<String> trackers;
 	

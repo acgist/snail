@@ -27,7 +27,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	private static final String DOWNLOAD_CONFIG = "/config/download.properties";
 	
 	/**
-	 * 下载速度和上传速度的比例 = 下载速度 / 上传速度
+	 * <p>下载速度和上传速度的比例 = 下载速度 / 上传速度
 	 */
 	private static final int UPLOAD_DOWNLOAD_SCALE = 4;
 	
@@ -55,35 +55,35 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 下载目录
+	 * <p>下载目录</p>
 	 */
 	private String path;
 	/**
-	 * 下载任务数量
+	 * <p>下载任务数量</p>
 	 */
 	private int size;
 	/**
-	 * 消息提示
+	 * <p>消息提示</p>
 	 */
 	private boolean notice;
 	/**
-	 * 下载速度（单个）（KB）
+	 * <p>下载速度（单个）（KB）</p>
 	 */
 	private int buffer;
 	/**
-	 * 最后一次选择目录
+	 * <p>最后一次选择目录</p>
 	 */
 	private String lastPath;
 	/**
-	 * 磁盘缓存（单个）（MB）
+	 * <p>磁盘缓存（单个）（MB）</p>
 	 */
 	private int memoryBuffer;
 	/**
-	 * 上传速度（B）
+	 * <p>上传速度（B）</p>
 	 */
 	private int uploadBufferByte;
 	/**
-	 * 下载速度（B）
+	 * <p>下载速度（B）</p>
 	 */
 	private int downloadBufferByte;
 	

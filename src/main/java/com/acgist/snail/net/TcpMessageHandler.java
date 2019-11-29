@@ -29,15 +29,15 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	private static final Logger LOGGER = LoggerFactory.getLogger(TcpMessageHandler.class);
 	
 	/**
-	 * 是否关闭
+	 * <p>是否关闭</p>
 	 */
 	private boolean close = false;
 	/**
-	 * Socket
+	 * <p>Socket</p>
 	 */
 	protected AsynchronousSocketChannel socket;
 	/**
-	 * 消息处理器
+	 * <p>消息处理器</p>
 	 */
 	protected IMessageCodec<ByteBuffer> messageCodec;
 	

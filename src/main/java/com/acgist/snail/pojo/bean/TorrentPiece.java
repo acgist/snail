@@ -15,36 +15,36 @@ import com.acgist.snail.utils.StringUtils;
 public final class TorrentPiece {
 
 	/**
-	 * 默认下载长度：16KB
+	 * <p>默认下载长度：16KB</p>
 	 */
 	public static final int SLICE_LENGTH = 16 * SystemConfig.ONE_KB;
 
 	/**
-	 * Piece大小
+	 * <p>Piece大小</p>
 	 */
 	private final long pieceLength;
 	/**
-	 * Piece索引
+	 * <p>Piece索引</p>
 	 */
 	private final int index;
 	/**
-	 * Piece开始偏移
+	 * <p>Piece开始偏移</p>
 	 */
 	private final int begin;
 	/**
-	 * Piece结束偏移
+	 * <p>Piece结束偏移</p>
 	 */
 	private final int end;
 	/**
-	 * 数据长度：end - begin
+	 * <p>数据长度：end - begin</p>
 	 */
 	private final int length;
 	/**
-	 * 数据
+	 * <p>数据</p>
 	 */
 	private final byte[] data;
 	/**
-	 * 校验数据
+	 * <p>校验数据</p>
 	 */
 	private final byte[] hash;
 	/**

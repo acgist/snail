@@ -23,7 +23,7 @@ import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
- * FTP消息代理
+ * <p>FTP消息代理</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -33,11 +33,11 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 	private static final Logger LOGGER = LoggerFactory.getLogger(FtpMessageHandler.class);
 	
 	/**
-	 * 命令超时时间
+	 * <p>命令超时时间</p>
 	 */
 	private static final Duration TIMEOUT = Duration.ofSeconds(SystemConfig.RECEIVE_TIMEOUT);
 	/**
-	 * 消息分隔符
+	 * <p>消息分隔符</p>
 	 */
 	private static final String SPLIT = "\r\n";
 	/**
@@ -47,19 +47,19 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 	private static final String END_REGEX = "\\d{3} .*";
 	
 	/**
-	 * 输入流Socket
+	 * <p>输入流Socket</p>
 	 */
 	private Socket inputSocket;
 	/**
-	 * 输入流
+	 * <p>输入流</p>
 	 */
 	private InputStream inputStream;
 	/**
-	 * 登陆状态
+	 * <p>登陆状态</p>
 	 */
 	private boolean login = false;
 	/**
-	 * 断点续传
+	 * <p>断点续传</p>
 	 */
 	private boolean range = false;
 	/**
@@ -68,11 +68,11 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 	 */
 	private String charset = SystemConfig.CHARSET_GBK;
 	/**
-	 * 错误信息
+	 * <p>错误信息</p>
 	 */
 	private String failMessage;
 	/**
-	 * 命令锁：等待命令执行响应
+	 * <p>命令锁：等待命令执行响应</p>
 	 */
 	private final AtomicBoolean lock = new AtomicBoolean(false);
 	
@@ -208,14 +208,14 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 	}
 
 	/**
-	 * 重置命令锁
+	 * <p>重置命令锁</p>
 	 */
 	public void resetLock() {
 		this.lock.set(false);
 	}
 	
 	/**
-	 * 命令锁加锁
+	 * <p>命令锁加锁</p>
 	 */
 	public void lock() {
 		if(!this.lock.get()) {
@@ -228,7 +228,7 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 	}
 	
 	/**
-	 * 命令锁解锁
+	 * <p>命令锁解锁</p>
 	 */
 	private void unlock() {
 		synchronized (this.lock) {

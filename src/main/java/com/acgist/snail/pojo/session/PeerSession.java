@@ -24,11 +24,11 @@ import com.acgist.snail.utils.StringUtils;
 public final class PeerSession implements IStatistics {
 	
 	/**
-	 * PeerId
+	 * <p>PeerId</p>
 	 */
 	private byte[] id;
 	/**
-	 * Peer客户端名称
+	 * <p>Peer客户端名称</p>
 	 */
 	private String clientName;
 	/**
@@ -37,35 +37,35 @@ public final class PeerSession implements IStatistics {
 	 */
 	private byte[] reserved;
 	/**
-	 * pex flags
+	 * <p>pex flags</p>
 	 */
 	private volatile byte flags = 0;
 	/**
-	 * 状态：下载中、上传中
+	 * <p>状态：下载中、上传中</p>
 	 */
 	private volatile byte status = 0;
 	/**
-	 * 来源
+	 * <p>来源</p>
 	 */
 	private volatile byte source = 0;
 	/**
-	 * 失败次数
+	 * <p>失败次数</p>
 	 */
 	private volatile int failTimes = 0;
 	/**
-	 * Peer地址
+	 * <p>Peer地址</p>
 	 */
 	private String host;
 	/**
-	 * Peer端口
+	 * <p>Peer端口</p>
 	 */
 	private Integer port;
 	/**
-	 * DHT端口
+	 * <p>DHT端口</p>
 	 */
 	private Integer dhtPort;
 	/**
-	 * Peer已下载Piece位图
+	 * <p>Peer已下载Piece位图</p>
 	 */
 	private final BitSet pieces;
 	/**
@@ -84,35 +84,35 @@ public final class PeerSession implements IStatistics {
 	 */
 	private final BitSet allowedPieces;
 	/**
-	 * 客户端将Peer阻塞：阻塞-1（true）、非阻塞-0
+	 * <p>客户端将Peer阻塞：阻塞-1（true）、非阻塞-0</p>
 	 */
 	private volatile boolean amChoked;
 	/**
-	 * 客户端对Peer感兴趣：感兴趣-1（true）、不感兴趣-0
+	 * <p>客户端对Peer感兴趣：感兴趣-1（true）、不感兴趣-0</p>
 	 */
 	private volatile boolean amInterested;
 	/**
-	 * Peer将客户阻塞：阻塞-1（true）、非阻塞-0
+	 * <p>Peer将客户阻塞：阻塞-1（true）、非阻塞-0</p>
 	 */
 	private volatile boolean peerChoked;
 	/**
-	 * Peer对客户端感兴趣：感兴趣-1（true）、不感兴趣-0
+	 * <p>Peer对客户端感兴趣：感兴趣-1（true）、不感兴趣-0</p>
 	 */
 	private volatile boolean peerInterested;
 	/**
-	 * Peer上传
+	 * <p>Peer上传</p>
 	 */
 	private PeerUploader peerUploader;
 	/**
-	 * Peer下载
+	 * <p>Peer下载</p>
 	 */
 	private PeerDownloader peerDownloader;
 	/**
-	 * 统计信息
+	 * <p>统计信息</p>
 	 */
 	private final IStatisticsSession statistics;
 	/**
-	 * 支持的扩展协议：协议=协议ID
+	 * <p>支持的扩展协议：协议=协议ID</p>
 	 */
 	private final Map<PeerConfig.ExtensionType, Byte> extension;
 

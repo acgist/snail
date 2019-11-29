@@ -19,43 +19,43 @@ import com.acgist.snail.utils.ThreadUtils;
 public final class StatisticsSession implements IStatisticsSession {
 
 	/**
-	 * 限速开关
+	 * <p>限速开关</p>
 	 */
 	private final boolean limit;
 	/**
-	 * 父类统计
+	 * <p>父类统计</p>
 	 */
 	private final IStatisticsSession parent;
 	/**
-	 * 累计上传大小
+	 * <p>累计上传大小</p>
 	 */
 	private final AtomicLong uploadSize = new AtomicLong(0);
 	/**
-	 * 累计下载大小
+	 * <p>累计下载大小</p>
 	 */
 	private final AtomicLong downloadSize = new AtomicLong(0);
 	/**
-	 * 上传速度
+	 * <p>上传速度</p>
 	 */
 	private final SpeedSession uploadSpeed = new SpeedSession();
 	/**
-	 * 下载速度
+	 * <p>下载速度</p>
 	 */
 	private final SpeedSession downloadSpeed = new SpeedSession();
 	/**
-	 * 上传限速采样
+	 * <p>上传限速采样</p>
 	 */
 	private final AtomicLong uploadBufferLimit = new AtomicLong(0);
 	/**
-	 * 上传限速最后一次采样时间
+	 * <p>上传限速最后一次采样时间</p>
 	 */
 	private volatile long uploadBufferLimitTime;
 	/**
-	 * 下载限速采样
+	 * <p>下载限速采样</p>
 	 */
 	private final AtomicLong downloadBufferLimit = new AtomicLong(0);
 	/**
-	 * 下载限速最后一次采样时间
+	 * <p>下载限速最后一次采样时间</p>
 	 */
 	private volatile long downloadBufferLimitTime;
 	

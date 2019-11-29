@@ -57,44 +57,44 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	private static final Logger LOGGER = LoggerFactory.getLogger(UtpMessageHandler.class);
 	
 	/**
-	 * UTP消息请求头字节长度
+	 * <p>UTP消息请求头字节长度</p>
 	 */
 	private static final int UTP_HEADER_LENGTH = 20;
 	/**
-	 * UTP消息最小字节长度
+	 * <p>UTP消息最小字节长度</p>
 	 */
 	private static final int UTP_MIN_LENGTH = 20;
 	/**
-	 * 扩展消息最小字节长度
+	 * <p>扩展消息最小字节长度</p>
 	 */
 	private static final int UTP_EXT_MIN_LENGTH = 2;
 	
 	/**
-	 * 是否连接
+	 * <p>是否连接</p>
 	 */
 	private boolean connect;
 	/**
-	 * 接收连接ID
+	 * <p>接收连接ID</p>
 	 */
 	private final short recvId;
 	/**
-	 * 发送连接ID
+	 * <p>发送连接ID</p>
 	 */
 	private final short sendId;
 	/**
-	 * UTP Service
+	 * <p>UTP Service</p>
 	 */
 	private final UtpService utpService;
 	/**
-	 * 发送窗口
+	 * <p>发送窗口</p>
 	 */
 	private final UtpWindow sendWindow;
 	/**
-	 * 接收窗口
+	 * <p>接收窗口</p>
 	 */
 	private final UtpWindow recvWindow;
 	/**
-	 * 连接锁
+	 * <p>连接锁</p>
 	 */
 	private final AtomicBoolean connectLock;
 	/**
@@ -103,19 +103,19 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	 */
 	private final BlockingQueue<UtpRequest> requests;
 	/**
-	 * Peer代理
+	 * <p>Peer代理</p>
 	 */
 	private final PeerSubMessageHandler peerSubMessageHandler;
 	
 	/**
-	 * 服务端
+	 * <p>服务端</p>
 	 */
 	public UtpMessageHandler(final short connectionId, InetSocketAddress socketAddress) {
 		this(PeerSubMessageHandler.newInstance(), socketAddress, connectionId, true);
 	}
 
 	/**
-	 * 客户端
+	 * <p>客户端</p>
 	 */
 	public UtpMessageHandler(PeerSubMessageHandler peerSubMessageHandler, InetSocketAddress socketAddress) {
 		this(peerSubMessageHandler, socketAddress, (short) 0, false);

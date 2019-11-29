@@ -20,23 +20,23 @@ public final class AnnounceMessage {
 	 */
 	private Integer id;
 	/**
-	 * TrackerId：HTTP Tracker
+	 * <p>TrackerId：HTTP Tracker</p>
 	 */
 	private String trackerId;
 	/**
-	 * 下次请求等待时间
+	 * <p>下次请求等待时间</p>
 	 */
 	private Integer interval;
 	/**
-	 * 做种Peer数量
+	 * <p>做种Peer数量</p>
 	 */
 	private Integer seeder;
 	/**
-	 * 下载Peer数量
+	 * <p>下载Peer数量</p>
 	 */
 	private Integer leecher;
 	/**
-	 * Peers数据（IP和端口）
+	 * <p>Peers数据（IP和端口）</p>
 	 */
 	private Map<String, Integer> peers;
 

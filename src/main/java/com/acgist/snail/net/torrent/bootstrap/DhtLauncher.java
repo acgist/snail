@@ -27,7 +27,7 @@ public final class DhtLauncher implements Runnable {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DhtLauncher.class);
 	
 	/**
-	 * 种子信息
+	 * <p>种子信息</p>
 	 */
 	private final InfoHash infoHash;
 	/**
@@ -59,7 +59,7 @@ public final class DhtLauncher implements Runnable {
 	}
 	
 	/**
-	 * Peer客户端加入DHT节点
+	 * <p>Peer客户端加入DHT节点</p>
 	 * 
 	 * @param host 地址
 	 * @param port 端口
@@ -71,7 +71,7 @@ public final class DhtLauncher implements Runnable {
 	}
 
 	/**
-	 * 将临时节点加入系统中
+	 * <p>将临时节点加入系统中</p>
 	 */
 	private void joinSystemNodes() {
 		this.nodes.forEach(address -> {
@@ -102,7 +102,7 @@ public final class DhtLauncher implements Runnable {
 	}
 	
 	/**
-	 * 使用DHT节点查询Peer
+	 * <p>使用DHT节点查询Peer</p>
 	 */
 	private void findPeers(List<InetSocketAddress> list) {
 		if(CollectionUtils.isEmpty(list)) {

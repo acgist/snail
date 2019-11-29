@@ -17,15 +17,15 @@ import com.acgist.snail.utils.StringUtils;
 public final class MultilineMessageCodec extends MessageCodec<String, String> {
 
 	/**
-	 * 换行符
+	 * <p>换行符</p>
 	 */
 	private final String split;
 	/**
-	 * 多行结束符（正则表达式）
+	 * <p>多行结束符（正则表达式）</p>
 	 */
 	private final String endRegex;
 	/**
-	 * 多行消息
+	 * <p>多行消息</p>
 	 */
 	private final StringBuilder message;
 	

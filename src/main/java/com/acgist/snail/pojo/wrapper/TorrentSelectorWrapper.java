@@ -22,7 +22,13 @@ public final class TorrentSelectorWrapper {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentSelectorWrapper.class);
 
+	/**
+	 * <p>编码器</p>
+	 */
 	private BEncodeEncoder encoder;
+	/**
+	 * <p>解码器</p>
+	 */
 	private BEncodeDecoder decoder;
 
 	private TorrentSelectorWrapper() {

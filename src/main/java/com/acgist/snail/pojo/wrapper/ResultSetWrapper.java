@@ -13,7 +13,7 @@ import java.util.Map;
 public final class ResultSetWrapper {
 
 	/**
-	 * 结果集
+	 * <p>结果集Map</p>
 	 */
 	private final Map<String, Object> data = new HashMap<>();
 	

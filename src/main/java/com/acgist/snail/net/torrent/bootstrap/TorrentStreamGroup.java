@@ -36,20 +36,20 @@ public final class TorrentStreamGroup {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentStreamGroup.class);
 
 	/**
-	 * 计算文件大小等待时间
+	 * <p>计算文件大小等待时间</p>
 	 */
 	private static final int DOWNLOAD_SIZE_TIMEOUT = 120;
 	
 	/**
-	 * 已下载Piece位图
+	 * <p>已下载Piece位图</p>
 	 */
 	private final BitSet pieces;
 	/**
-	 * 选中下载Piece位图
+	 * <p>选中下载Piece位图</p>
 	 */
 	private final BitSet selectPieces;
 	/**
-	 * 是否完整
+	 * <p>是否完整</p>
 	 */
 	private boolean full;
 	/**
@@ -65,15 +65,15 @@ public final class TorrentStreamGroup {
 	 */
 	private final BitSet fullPieces;
 	/**
-	 * 缓冲大小：数据下载时修改
+	 * <p>缓冲大小：数据下载时修改</p>
 	 */
 	private final AtomicLong fileBuffer;
 	/**
-	 * 是否初始化完成
+	 * <p>是否初始化完成</p>
 	 */
 	private volatile boolean done = false;
 	/**
-	 * 种子信息
+	 * <p>种子信息</p>
 	 */
 	private final Torrent torrent;
 	/**
@@ -225,7 +225,7 @@ public final class TorrentStreamGroup {
 	}
 	
 	/**
-	 * 是否已下载Piece
+	 * <p>是否已下载Piece</p>
 	 * 
 	 * @param index Piece索引
 	 */
@@ -352,7 +352,7 @@ public final class TorrentStreamGroup {
 	}
 	
 	/**
-	 * 下载文件大小
+	 * <p>下载文件大小</p>
 	 */
 	public long size() {
 		long size = 0L;
@@ -376,7 +376,7 @@ public final class TorrentStreamGroup {
 	}
 
 	/**
-	 * 资源释放
+	 * <p>资源释放</p>
 	 */
 	public void release() {
 		LOGGER.debug("释放TorrentStreamGroup");

@@ -23,15 +23,15 @@ public final class TorrentAcceptHandler extends UdpAcceptHandler {
 	private static final TorrentAcceptHandler INSTANCE = new TorrentAcceptHandler();
 	
 	/**
-	 * DHT消息开头字符
+	 * <p>DHT消息开头字符</p>
 	 */
 	private static final byte DHT_HEADER = 'd';
 	/**
-	 * STUN消息开头字符：请求、指示
+	 * <p>STUN消息开头字符：请求、指示</p>
 	 */
 	private static final byte STUN_HEADER_SEND = 0x00;
 	/**
-	 * STUN消息开头字符：响应
+	 * <p>STUN消息开头字符：响应</p>
 	 */
 	private static final byte STUN_HEADER_RECV = 0x01;
 	
@@ -43,15 +43,15 @@ public final class TorrentAcceptHandler extends UdpAcceptHandler {
 	}
 	
 	/**
-	 * UTP Service
+	 * <p>UTP Service</p>
 	 */
 	private final UtpService utpService = UtpService.getInstance();
 	/**
-	 * DHT消息代理
+	 * <p>DHT消息代理</p>
 	 */
 	private final DhtMessageHandler dhtMessageHandler = new DhtMessageHandler();
 	/**
-	 * STUN消息代理
+	 * <p>STUN消息代理</p>
 	 */
 	private final StunMessageHandler stunMessageHandler = new StunMessageHandler();
 	

@@ -13,23 +13,23 @@ import com.acgist.snail.utils.DateUtils;
 public final class UtpWindowData {
 
 	/**
-	 * seqnr
+	 * <p>seqnr</p>
 	 */
 	private final short seqnr;
 	/**
-	 * 时间戳（微秒）：发送时重新修改
+	 * <p>时间戳（微秒）：发送时重新修改</p>
 	 */
 	private volatile int timestamp;
 	/**
-	 * 发送次数
+	 * <p>发送次数</p>
 	 */
 	private volatile byte pushTimes;
 	/**
-	 * 负载数据：握手时没有负载数据
+	 * <p>负载数据：握手时没有负载数据</p>
 	 */
 	private final byte[] data;
 	/**
-	 * 数据长度
+	 * <p>数据长度</p>
 	 */
 	private final int length;
 	

@@ -24,19 +24,19 @@ public final class SpeedSession {
 	private static final long SAMPLE_TIME = SystemConfig.TASK_REFRESH_INTERVAL.toMillis() - DateUtils.ONE_SECOND;
 
 	/**
-	 * 速度
+	 * <p>速度</p>
 	 */
 	private long speed = 0L;
 	/**
-	 * 最后一次采样时间
+	 * <p>最后一次采样时间</p>
 	 */
 	private long bufferSampleTime = System.currentTimeMillis();
 	/**
-	 * 速度采样
+	 * <p>速度采样</p>
 	 */
 	private final AtomicInteger bufferSample = new AtomicInteger(0);
 	/**
-	 * 当前采样位置
+	 * <p>当前采样位置</p>
 	 */
 	private byte index = 0;
 	/**

@@ -56,7 +56,7 @@ public final class HTTPClient {
 		INTERNAL_SERVER_ERROR(				500);
 		
 		/**
-		 * 状态码
+		 * <p>状态码</p>
 		 */
 		private final int code;
 		
@@ -65,7 +65,7 @@ public final class HTTPClient {
 		}
 		
 		/**
-		 * 判断状态码是否相等
+		 * <p>判断状态码是否相等</p>
 		 * 
 		 * @param code 状态码
 		 * 
@@ -78,11 +78,11 @@ public final class HTTPClient {
 	}
 	
 	/**
-	 * HTTP客户端信息（User-Agent）
+	 * <p>HTTP客户端信息（User-Agent）</p>
 	 */
 	private static final String USER_AGENT;
 	/**
-	 * HTTP线程池
+	 * <p>HTTP线程池</p>
 	 */
 	private static final ExecutorService EXECUTOR = SystemThreadContext.newExecutor(2, 10, 100, 60L, SystemThreadContext.SNAIL_THREAD_HTTP);
 	
@@ -103,11 +103,11 @@ public final class HTTPClient {
 	}
 	
 	/**
-	 * HttpClient
+	 * <p>HttpClient</p>
 	 */
 	private final HttpClient client;
 	/**
-	 * 请求Builder
+	 * <p>请求Builder</p>
 	 */
 	private final Builder builder;
 	
@@ -117,7 +117,7 @@ public final class HTTPClient {
 	}
 	
 	/**
-	 * 新建客户端
+	 * <p>新建客户端</p>
 	 * 
 	 * @see {@link #newInstance(String, int, int)}
 	 */
@@ -149,7 +149,7 @@ public final class HTTPClient {
 	}
 	
 	/**
-	 * 设置请求头
+	 * <p>设置请求头</p>
 	 * 
 	 * @param name 名称
 	 * @param value 值
@@ -162,7 +162,7 @@ public final class HTTPClient {
 	}
 
 	/**
-	 * 执行GET请求
+	 * <p>执行GET请求</p>
 	 * 
 	 * @param handler 响应体处理器
 	 * 
@@ -178,7 +178,7 @@ public final class HTTPClient {
 	}
 	
 	/**
-	 * 执行POST请求
+	 * <p>执行POST请求</p>
 	 * 
 	 * @param data 请求数据
 	 * @param handler 响应体处理器
@@ -199,7 +199,7 @@ public final class HTTPClient {
 	}
 	
 	/**
-	 * 执行POST表单请求
+	 * <p>执行POST表单请求</p>
 	 * 
 	 * @param data 请求表单数据
 	 * @param handler 响应体处理器
@@ -217,7 +217,7 @@ public final class HTTPClient {
 	}
 	
 	/**
-	 * 执行HEAD请求
+	 * <p>执行HEAD请求</p>
 	 * 
 	 * @return 响应头
 	 * 
@@ -236,7 +236,7 @@ public final class HTTPClient {
 	}
 	
 	/**
-	 * 执行请求
+	 * <p>执行请求</p>
 	 * 
 	 * @param request 请求
 	 * @param handler 响应体处理器
@@ -260,7 +260,7 @@ public final class HTTPClient {
 	}
 	
 	/**
-	 * 执行异步请求
+	 * <p>执行异步请求</p>
 	 * 
 	 * @param request 请求
 	 * @param handler 响应体处理器
@@ -275,7 +275,7 @@ public final class HTTPClient {
 	}
 
 	/**
-	 * 表单数据
+	 * <p>表单数据</p>
 	 */
 	private BodyPublisher newFormBodyPublisher(Map<String, String> data) {
 		if(CollectionUtils.isEmpty(data)) {
@@ -290,7 +290,7 @@ public final class HTTPClient {
 	}
 	
 	/**
-	 * 执行GET请求
+	 * <p>执行GET请求</p>
 	 * 
 	 * @see {@link #get(String, java.net.http.HttpResponse.BodyHandler, int, int)}
 	 */
@@ -299,7 +299,7 @@ public final class HTTPClient {
 	}
 	
 	/**
-	 * 执行GET请求
+	 * <p>执行GET请求</p>
 	 * 
 	 * @param url 请求地址
 	 * @param handler 响应体处理器
@@ -316,35 +316,35 @@ public final class HTTPClient {
 	}
 	
 	/**
-	 * 成功：{@link StatusCode#OK}
+	 * <p>成功：{@link StatusCode#OK}</p>
 	 */
 	public static final <T> boolean ok(HttpResponse<T> response) {
 		return statusCode(response, StatusCode.OK);
 	}
 	
 	/**
-	 * 断点续传：{@link StatusCode#PARTIAL_CONTENT}
+	 * <p>断点续传：{@link StatusCode#PARTIAL_CONTENT}</p>
 	 */
 	public static final <T> boolean partialContent(HttpResponse<T> response) {
 		return statusCode(response, StatusCode.PARTIAL_CONTENT);
 	}
 
 	/**
-	 * 无法满足请求范围：{@link StatusCode#REQUESTED_RANGE_NOT_SATISFIABLE}
+	 * <p>无法满足请求范围：{@link StatusCode#REQUESTED_RANGE_NOT_SATISFIABLE}</p>
 	 */
 	public static final <T> boolean requestedRangeNotSatisfiable(HttpResponse<T> response) {
 		return statusCode(response, StatusCode.REQUESTED_RANGE_NOT_SATISFIABLE);
 	}
 	
 	/**
-	 * 服务器错误：{@link StatusCode#REQUESTED_RANGE_NOT_SATISFIABLE}
+	 * <p>服务器错误：{@link StatusCode#REQUESTED_RANGE_NOT_SATISFIABLE}</p>
 	 */
 	public static final <T> boolean internalServerError(HttpResponse<T> response) {
 		return statusCode(response, StatusCode.INTERNAL_SERVER_ERROR);
 	}
 	
 	/**
-	 * 验证响应状态码
+	 * <p>验证响应状态码</p>
 	 */
 	private static final <T> boolean statusCode(HttpResponse<T> response, StatusCode statusCode) {
 		return response != null && statusCode.equal(response.statusCode());
@@ -383,7 +383,7 @@ public final class HTTPClient {
 	}
 	
 //	/**
-//	 * 信任所有证书
+//	 * <p>信任所有证书</p>
 //	 */
 //	private static final TrustManager[] TRUST_ALL_CERT_MANAGER = new TrustManager[] {
 //		new X509TrustManager() {

@@ -28,16 +28,16 @@ public final class TrackerConfig extends PropertiesConfig {
 	private static final String TRACKER_CONFIG = "/config/bt.tracker.properties";
 
 	/**
-	 * 最大的Tracker服务器保存数量
+	 * <p>最大的Tracker服务器保存数量</p>
 	 */
 	private static final int MAX_TRACKER_SIZE = 512;
 	/**
-	 * 最大失败次数：超过这个次数会被标记无效
+	 * <p>最大失败次数：超过这个次数会被标记无效</p>
 	 */
 	public static final int MAX_FAIL_TIMES = 3;
 	
 	/**
-	 * 声明（announce）事件
+	 * <p>声明（announce）事件</p>
 	 */
 	public enum Event {
 		
@@ -51,11 +51,11 @@ public final class TrackerConfig extends PropertiesConfig {
 		STOPPED(	3, "stopped");
 		
 		/**
-		 * 事件ID
+		 * <p>事件ID</p>
 		 */
 		private final int id;
 		/**
-		 * 事件名称
+		 * <p>事件名称</p>
 		 */
 		private final String value;
 
@@ -75,7 +75,7 @@ public final class TrackerConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * Tracker动作
+	 * <p>Tracker动作</p>
 	 */
 	public enum Action {
 		
@@ -89,11 +89,11 @@ public final class TrackerConfig extends PropertiesConfig {
 		ERROR(		3, "error");
 		
 		/**
-		 * 动作ID
+		 * 动作ID</p>
 		 */
 		private final int id;
 		/**
-		 * 动作名称
+		 * 动作名称</p>
 		 */
 		private final String value;
 
@@ -136,7 +136,7 @@ public final class TrackerConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 默认Tracker声明地址：index=AnnounceUrl
+	 * <p>默认Tracker声明地址：index=AnnounceUrl</p>
 	 */
 	private final List<String> announces = new ArrayList<>();
 	

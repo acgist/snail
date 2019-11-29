@@ -29,7 +29,7 @@ public final class PeerUploaderGroup {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerUploaderGroup.class);
 	
 	/**
-	 * PeerUploader队列
+	 * <p>PeerUploader队列</p>
 	 */
 	private final BlockingQueue<PeerUploader> peerUploaders;
 	
@@ -86,7 +86,7 @@ public final class PeerUploaderGroup {
 	}
 	
 	/**
-	 * 优化PeerUploader
+	 * <p>优化PeerUploader</p>
 	 */
 	public void optimize() {
 		LOGGER.debug("优化PeerUploader");
@@ -177,7 +177,7 @@ public final class PeerUploaderGroup {
 	}
 	
 	/**
-	 * PeerUploader加入队列
+	 * <p>PeerUploader加入队列</p>
 	 */
 	private void offer(PeerUploader peerUploader) {
 		final var ok = this.peerUploaders.offer(peerUploader);

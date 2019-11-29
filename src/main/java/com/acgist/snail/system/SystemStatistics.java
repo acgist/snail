@@ -16,7 +16,7 @@ public final class SystemStatistics {
 	private static final SystemStatistics INSTANCE = new SystemStatistics();
 	
 	/**
-	 * 全局系统统计
+	 * <p>全局系统统计</p>
 	 */
 	private IStatisticsSession statistics;
 	

@@ -16,7 +16,7 @@ import com.acgist.snail.system.exception.NetException;
 public interface IMessageHandler {
 	
 	/**
-	 * 没有超时时间：一直等待
+	 * <p>没有超时时间：一直等待</p>
 	 */
 	int TIMEOUT_NONE = 0;
 	

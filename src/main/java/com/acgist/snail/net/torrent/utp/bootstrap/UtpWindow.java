@@ -28,15 +28,15 @@ public final class UtpWindow {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UtpWindow.class);
 	
 	/**
-	 * 默认最大超时时间（微秒）
+	 * <p>默认最大超时时间（微秒）</p>
 	 */
 	private static final int MAX_TIMEOUT = 500 * 1000;
 	/**
-	 * 最小窗口
+	 * <p>最小窗口</p>
 	 */
 	private static final int MIN_WND_SIZE = 16;
 	/**
-	 * 最大窗口
+	 * <p>最大窗口</p>
 	 */
 	private static final int MAX_WND_SIZE = 64;
 	/**
@@ -56,7 +56,7 @@ public final class UtpWindow {
 	private volatile int timeout;
 	
 	/**
-	 * 是否关闭
+	 * <p>是否关闭</p>
 	 */
 	private volatile boolean close = false;
 	/**
@@ -100,7 +100,7 @@ public final class UtpWindow {
 	 */
 	private final Map<Short, UtpWindowData> wndMap;
 	/**
-	 * 发送窗口控制信号量
+	 * <p>发送窗口控制信号量</p>
 	 */
 	private final Semaphore semaphore;
 	

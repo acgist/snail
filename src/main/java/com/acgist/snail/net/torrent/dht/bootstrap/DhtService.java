@@ -3,7 +3,7 @@ package com.acgist.snail.net.torrent.dht.bootstrap;
 import com.acgist.snail.system.config.SystemConfig;
 
 /**
- * DHT Service
+ * <p>DHT Service</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -15,16 +15,16 @@ public final class DhtService {
 	private static final DhtService INSTANCE = new DhtService();
 	
 	/**
-	 * 请求id最小值
+	 * <p>请求id最小值</p>
 	 */
 	private static final int MIN_ID_VALUE = 0;
 	/**
-	 * 请求id最大值
+	 * <p>请求id最大值</p>
 	 */
 	private static final int MAX_ID_VALUE = 2 << 15;
 
 	/**
-	 * 请求ID
+	 * <p>请求ID</p>
 	 */
 	private int requestId = MIN_ID_VALUE;
 

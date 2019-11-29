@@ -32,11 +32,11 @@ public final class MagnetBuilder {
 	public static final String QUERY_TR = "tr";
 	
 	/**
-	 * 磁力链接
+	 * <p>磁力链接</p>
 	 */
 	private final String url;
 	/**
-	 * 磁力链接信息
+	 * <p>磁力链接信息</p>
 	 */
 	private Magnet magnet;
 	

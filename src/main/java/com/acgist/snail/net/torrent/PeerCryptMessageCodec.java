@@ -23,11 +23,11 @@ public final class PeerCryptMessageCodec extends MessageCodec<ByteBuffer, ByteBu
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerCryptMessageCodec.class);
 	
 	/**
-	 * Peer消息代理
+	 * <p>Peer消息代理</p>
 	 */
 	private final PeerSubMessageHandler peerSubMessageHandler;
 	/**
-	 * MSE加密握手代理
+	 * <p>MSE加密握手代理</p>
 	 */
 	private final MSECryptHandshakeHandler mseCryptHandshakeHandler;
 	

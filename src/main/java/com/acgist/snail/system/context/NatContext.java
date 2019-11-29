@@ -26,12 +26,12 @@ public final class NatContext {
 	private static final NatContext INSTANCE = new NatContext();
 	
 	/**
-	 * UPNP端口映射超时时间
+	 * <p>UPNP端口映射超时时间</p>
 	 */
 	private static final int UPNP_CONFIG_TIMEOUT = SystemConfig.CONNECT_TIMEOUT;
 	
 	/**
-	 * UPNP等待锁
+	 * <p>UPNP等待锁</p>
 	 */
 	private final Object upnpLock = new Object();
 	

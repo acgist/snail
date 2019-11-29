@@ -15,7 +15,7 @@ import com.acgist.snail.system.exception.NetException;
 public final class LineMessageCodec extends MessageCodec<String, String> {
 
 	/**
-	 * 换行符
+	 * <p>换行符</p>
 	 */
 	private final String split;
 	/**

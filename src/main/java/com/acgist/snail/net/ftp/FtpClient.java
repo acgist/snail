@@ -25,27 +25,27 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FtpClient.class);
 	
 	/**
-	 * 连接状态
+	 * <p>连接状态</p>
 	 */
 	private boolean connect = false;
 	/**
-	 * 服务器地址
+	 * <p>服务器地址</p>
 	 */
 	private final String host;
 	/**
-	 * 服务器端口
+	 * <p>服务器端口</p>
 	 */
 	private final int port;
 	/**
-	 * 用户账号
+	 * <p>用户账号</p>
 	 */
 	private final String user;
 	/**
-	 * 用户密码
+	 * <p>用户密码</p>
 	 */
 	private final String password;
 	/**
-	 * 文件路径
+	 * <p>文件路径</p>
 	 */
 	private final String filePath;
 	/**
@@ -188,7 +188,7 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	}
 	
 	/**
-	 * 登陆服务器
+	 * <p>登陆服务器</p>
 	 */
 	private void login() {
 		command("USER " + this.user);
@@ -196,7 +196,7 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	}
 	
 	/**
-	 * 设置编码
+	 * <p>设置编码</p>
 	 */
 	private void charset() {
 		command("FEAT"); // 列出扩展命令
@@ -207,7 +207,7 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	}
 	
 	/**
-	 * 切换被动模式
+	 * <p>切换被动模式</p>
 	 */
 	private void changeMode() {
 		command("PASV");

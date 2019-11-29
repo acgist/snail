@@ -21,15 +21,15 @@ public abstract class ExtensionTypeMessageHandler implements IExtensionMessageHa
 	private static final Logger LOGGER = LoggerFactory.getLogger(ExtensionTypeMessageHandler.class);
 	
 	/**
-	 * 扩展协议类型
+	 * <p>扩展协议类型</p>
 	 */
 	protected final ExtensionType extensionType;
 	/**
-	 * PeerSession
+	 * <p>PeerSession</p>
 	 */
 	protected final PeerSession peerSession;
 	/**
-	 * 扩展协议处理器
+	 * <p>扩展协议处理器</p>
 	 */
 	protected final ExtensionMessageHandler extensionMessageHandler;
 	

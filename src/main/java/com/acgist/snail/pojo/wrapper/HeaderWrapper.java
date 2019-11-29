@@ -20,40 +20,40 @@ import com.acgist.snail.utils.StringUtils;
 public class HeaderWrapper {
 	
 	/**
-	 * 头部信息分隔符
+	 * <p>头部信息分隔符</p>
 	 */
 	private static final String DEFAULT_HEADER_KV = ":";
 	/**
-	 * 头部信息填充符
+	 * <p>头部信息填充符</p>
 	 */
 	private static final String DEFAULT_HEADER_PADDING = " ";
 	/**
-	 * 头部信息换行符：读取
+	 * <p>头部信息换行符：读取</p>
 	 */
 	private static final String HEADER_LINE_READER = "\n";
 	/**
-	 * 头部信息换行符：写出
+	 * <p>头部信息换行符：写出</p>
 	 */
 	private static final String HEADER_LINE_WRITER = "\r\n";
 
 	/**
-	 * 头部信息分隔符
+	 * <p>头部信息分隔符</p>
 	 */
 	private final String headerKv;
 	/**
-	 * 头部信息填充符
+	 * <p>头部信息填充符</p>
 	 */
 	private final String headerPadding;
 	/**
-	 * 协议
+	 * <p>协议</p>
 	 */
 	private final String protocol;
 	/**
-	 * 是否含有协议
+	 * <p>是否含有协议</p>
 	 */
 	private final boolean haveProtocol;
 	/**
-	 * 头部信息
+	 * <p>头部信息</p>
 	 */
 	protected final Map<String, List<String>> headers;
 

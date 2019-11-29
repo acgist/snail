@@ -39,7 +39,7 @@ public final class DhtClient extends UdpClient<DhtMessageHandler> {
 	}
 	
 	/**
-	 * Ping
+	 * <p>Ping</p>
 	 * 
 	 * @return 节点
 	 */
@@ -48,7 +48,7 @@ public final class DhtClient extends UdpClient<DhtMessageHandler> {
 	}
 	
 	/**
-	 * 查询节点
+	 * <p>查询节点</p>
 	 * 
 	 * @param target InfoHashHex
 	 */
@@ -57,7 +57,7 @@ public final class DhtClient extends UdpClient<DhtMessageHandler> {
 	}
 	
 	/**
-	 * 查询节点
+	 * <p>查询节点</p>
 	 * 
 	 * @param target NodeId或者InfoHash
 	 */
@@ -66,28 +66,28 @@ public final class DhtClient extends UdpClient<DhtMessageHandler> {
 	}
 	
 	/**
-	 * 查询Peer
+	 * <p>查询Peer</p>
 	 */
 	public void getPeers(InfoHash infoHash) {
 		this.getPeers(infoHash.infoHash());
 	}
 
 	/**
-	 * 查询Peer
+	 * <p>查询Peer</p>
 	 */
 	public void getPeers(byte[] infoHash) {
 		this.handler.getPeers(this.socketAddress, infoHash);
 	}
 	
 	/**
-	 * 声明Peer
+	 * <p>声明Peer</p>
 	 */
 	public void announcePeer(byte[] token, InfoHash infoHash) {
 		this.announcePeer(token, infoHash.infoHash());
 	}
 
 	/**
-	 * 声明Peer
+	 * <p>声明Peer</p>
 	 */
 	public void announcePeer(byte[] token, byte[] infoHash) {
 		this.handler.announcePeer(this.socketAddress, token, infoHash);

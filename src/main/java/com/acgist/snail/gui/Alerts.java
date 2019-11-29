@@ -9,7 +9,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 /**
- * 提示窗口工具
+ * <p>提示窗口工具</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -17,13 +17,13 @@ import javafx.stage.Stage;
 public final class Alerts {
 	
 	/**
-	 * 不允许实例化
+	 * <p>不允许实例化</p>
 	 */
 	private Alerts() {
 	}
 
 	/**
-	 * 提示窗口
+	 * <p>提示窗口</p>
 	 * 
 	 * @param title 标题
 	 * @param message 内容
@@ -35,7 +35,7 @@ public final class Alerts {
 	}
 	
 	/**
-	 * 警告窗口
+	 * <p>警告窗口</p>
 	 * 
 	 * @param title 标题
 	 * @param message 内容
@@ -47,7 +47,7 @@ public final class Alerts {
 	}
 	
 	/**
-	 * 提示窗口
+	 * <p>提示窗口</p>
 	 * 
 	 * @param title 标题
 	 * @param message 内容

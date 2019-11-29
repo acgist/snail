@@ -39,51 +39,51 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ExtensionMessageHandler.class);
 	
 	/**
-	 * 偏爱明文
+	 * <p>偏爱明文</p>
 	 */
 	private static final int PLAINTEXT = 0;
 	/**
-	 * 偏爱加密
+	 * <p>偏爱加密</p>
 	 */
 	private static final int ENCRYPT = 1;
 	/**
-	 * 只上传不下载
+	 * <p>只上传不下载</p>
 	 */
 	private static final int UPLOAD_ONLY = 1;
 	/**
-	 * 默认支持未完成请求数量
+	 * <p>默认支持未完成请求数量</p>
 	 */
 	private static final int DEFAULT_REQQ = 128;
 	/**
-	 * 扩展协议信息
+	 * <p>扩展协议信息</p>
 	 */
 	private static final String EX_M = "m";
 	/**
-	 * 软件信息（名称和版本）
+	 * <p>软件信息（名称和版本）</p>
 	 */
 	private static final String EX_V = "v";
 	/**
-	 * 端口
+	 * <p>端口</p>
 	 */
 	private static final String EX_P = "p";
 	/**
-	 * 偏爱加密
+	 * <p>偏爱加密</p>
 	 */
 	private static final String EX_E = "e";
 	/**
-	 * 支持未完成请求数量
+	 * <p>支持未完成请求数量</p>
 	 */
 	private static final String EX_REQQ = "reqq";
 //	/**
-//	 * IPv4地址
+//	 * <p>IPv4地址</p>
 //	 */
 //	private static final String EX_IPV4 = "ipv4";
 //	/**
-//	 * IPv6地址
+//	 * <p>IPv6地址</p>
 //	 */
 //	private static final String EX_IPV6 = "ipv6";
 	/**
-	 * 外网IP地址
+	 * <p>外网IP地址</p>
 	 */
 	private static final String EX_YOURIP = "yourip";
 	/**
@@ -92,16 +92,16 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 */
 	private static final String EX_UPLOAD_ONLY = "upload_only";
 	/**
-	 * ut_metadata：种子InfoHash数据大小
+	 * <p>ut_metadata：种子InfoHash数据大小</p>
 	 */
 	private static final String EX_METADATA_SIZE = "metadata_size";
 
 	/**
-	 * 是否已经发送握手
+	 * <p>是否已经发送握手</p>
 	 */
 	private volatile boolean handshakeSend = false;
 	/**
-	 * 是否已经接收握手
+	 * <p>是否已经接收握手</p>
 	 */
 	private volatile boolean handshakeRecv = false;
 	

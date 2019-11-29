@@ -11,12 +11,12 @@ import com.acgist.snail.pojo.ITaskSession.Status;
 public interface ITaskSessionRepository {
 
 	/**
-	 * 更新
+	 * <p>更新</p>
 	 */
 	void update();
 	
 	/**
-	 * 删除
+	 * <p>删除</p>
 	 */
 	void delete();
 	

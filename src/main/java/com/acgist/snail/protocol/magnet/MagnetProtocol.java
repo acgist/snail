@@ -29,6 +29,9 @@ public final class MagnetProtocol extends Protocol {
 	
 	private static final MagnetProtocol INSTANCE = new MagnetProtocol();
 
+	/**
+	 * <p>磁力链接信息</p>
+	 */
 	private Magnet magnet;
 	
 	private MagnetProtocol() {

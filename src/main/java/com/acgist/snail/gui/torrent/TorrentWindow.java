@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 /**
- * 编辑任务窗口
+ * <p>编辑任务窗口</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -43,7 +43,7 @@ public final class TorrentWindow extends Window<TorrentController> {
 	}
 	
 	/**
-	 * 显示下载任务信息
+	 * <p>显示下载任务信息</p>
 	 */
 	public void show(ITaskSession taskSession) {
 		this.controller.tree(taskSession);
@@ -51,7 +51,7 @@ public final class TorrentWindow extends Window<TorrentController> {
 	}
 	
 	/**
-	 * 窗口隐藏：释放资源
+	 * <p>窗口隐藏：释放资源</p>
 	 */
 	private void windowHidden() {
 		this.stage.addEventFilter(WindowEvent.WINDOW_HIDDEN, (event) -> {

@@ -39,29 +39,29 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 	
 	//================IPv4================//
 	/**
-	 * 地址
+	 * <p>地址</p>
 	 */
 	private static final String ADDED = "added";
 	/**
-	 * 属性
+	 * <p>属性</p>
 	 */
 	private static final String ADDEDF = "added.f";
 	/**
-	 * 删除地址
+	 * <p>删除地址</p>
 	 */
 	private static final String DROPPED = "dropped";
 	
 	//================IPv6================//
 	/**
-	 * 地址
+	 * <p>地址</p>
 	 */
 	private static final String ADDED6 = "added6";
 	/**
-	 * 属性
+	 * <p>属性</p>
 	 */
 	private static final String ADDED6F = "added6.f";
 	/**
-	 * 删除地址
+	 * <p>删除地址</p>
 	 */
 	private static final String DROPPED6 = "dropped6";
 	

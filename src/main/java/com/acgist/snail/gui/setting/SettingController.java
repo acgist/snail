@@ -25,7 +25,7 @@ import javafx.scene.text.Text;
 import javafx.util.StringConverter;
 
 /**
- * 设置窗口控制器
+ * <p>设置窗口控制器</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -35,7 +35,7 @@ public final class SettingController extends Controller implements Initializable
 //	private static final Logger LOGGER = LoggerFactory.getLogger(SettingController.class);
 
 	/**
-	 * 大小滑块滑动大小：超过这个值时滑动必须是该值的整数倍
+	 * <p>大小滑块滑动大小：超过这个值时滑动必须是该值的整数倍</p>
 	 */
 	private static final int STEP_WIDTH = 512;
 	
@@ -65,7 +65,7 @@ public final class SettingController extends Controller implements Initializable
 	}
 
 	/**
-	 * 下载目录
+	 * <p>下载目录</p>
 	 */
 	@FXML
 	public void handlePathAction(ActionEvent event) {
@@ -78,7 +78,7 @@ public final class SettingController extends Controller implements Initializable
 	}
 
 	/**
-	 * 消息提示
+	 * <p>消息提示</p>
 	 */
 	@FXML
 	public void handleNoticeAction(ActionEvent event) {
@@ -86,7 +86,7 @@ public final class SettingController extends Controller implements Initializable
 	}
 	
 	/**
-	 * 初始化配置
+	 * <p>初始化配置</p>
 	 */
 	private void initSetting() {
 		this.pathValue.setText(DownloadConfig.getPath());
@@ -97,7 +97,7 @@ public final class SettingController extends Controller implements Initializable
 	}
 	
 	/**
-	 * 初始化控件
+	 * <p>初始化控件</p>
 	 */
 	private void initControl() {
 		// 初始化下载目录
@@ -117,7 +117,7 @@ public final class SettingController extends Controller implements Initializable
 	}
 	
 	/**
-	 * 打开下载目录
+	 * <p>打开下载目录</p>
 	 */
 	private EventHandler<MouseEvent> openDownloadPath = (event) -> {
 		File open = new File(DownloadConfig.getPath());
@@ -125,7 +125,7 @@ public final class SettingController extends Controller implements Initializable
 	};
 
 	/**
-	 * 下载任务数量监听
+	 * <p>下载任务数量监听</p>
 	 */
 	private ChangeListener<? super Number> sizeListener = (obs, oldVal, newVal) -> {
 		int value = newVal.intValue(); // 设置整数个任务
@@ -136,7 +136,7 @@ public final class SettingController extends Controller implements Initializable
 	};
 	
 	/**
-	 * 下载任务数量保存
+	 * <p>下载任务数量保存</p>
 	 */
 	private EventHandler<MouseEvent> sizeReleaseAction = (event) -> {
 		final Double value = this.size.getValue();
@@ -144,7 +144,7 @@ public final class SettingController extends Controller implements Initializable
 	};
 	
 	/**
-	 * 下载速度监听
+	 * <p>下载速度监听</p>
 	 */
 	private ChangeListener<? super Number> bufferListener = (obs, oldVal, newVal) -> {
 		int value = newVal.intValue();
@@ -157,7 +157,7 @@ public final class SettingController extends Controller implements Initializable
 	};
 	
 	/**
-	 * 下载速度保存
+	 * <p>下载速度保存</p>
 	 */
 	private EventHandler<MouseEvent> bufferReleaseAction = (event) -> {
 		final Double value = this.buffer.getValue();
@@ -165,7 +165,7 @@ public final class SettingController extends Controller implements Initializable
 	};
 	
 	/**
-	 * 下载速度格式
+	 * <p>下载速度格式</p>
 	 */
 	private StringConverter<Double> bufferFormatter = new StringConverter<Double>() {
 		@Override
@@ -179,7 +179,7 @@ public final class SettingController extends Controller implements Initializable
 	};
 	
 	/**
-	 * 磁盘缓存监听
+	 * <p>磁盘缓存监听</p>
 	 */
 	private ChangeListener<? super Number> memoryBufferListener = (obs, oldVal, newVal) -> {
 		final int value = newVal.intValue();
@@ -187,7 +187,7 @@ public final class SettingController extends Controller implements Initializable
 	};
 	
 	/**
-	 * 磁盘缓存保存
+	 * <p>磁盘缓存保存</p>
 	 */
 	private EventHandler<MouseEvent> memoryBufferReleaseAction = (event) -> {
 		final Double value = this.memoryBuffer.getValue();
@@ -195,7 +195,7 @@ public final class SettingController extends Controller implements Initializable
 	};
 	
 	/**
-	 * 磁盘缓存格式
+	 * <p>磁盘缓存格式</p>
 	 */
 	private StringConverter<Double> memoryBufferFormatter = new StringConverter<Double>() {
 		@Override

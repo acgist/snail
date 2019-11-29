@@ -35,19 +35,19 @@ public final class BEncodeEncoder {
 	private static final Logger LOGGER = LoggerFactory.getLogger(BEncodeEncoder.class);
 	
 	/**
-	 * list
+	 * <p>list</p>
 	 */
 	private List<Object> list;
 	/**
-	 * map
+	 * <p>map</p>
 	 */
 	private Map<String, Object> map;
 	/**
-	 * 数据类型
+	 * <p>数据类型</p>
 	 */
 	private BEncodeDecoder.Type type;
 	/**
-	 * 输出数据：不需要关闭
+	 * <p>输出数据：不需要关闭</p>
 	 */
 	private ByteArrayOutputStream outputStream;
 	

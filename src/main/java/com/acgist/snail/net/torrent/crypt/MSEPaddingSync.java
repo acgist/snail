@@ -18,19 +18,19 @@ import com.acgist.snail.utils.ObjectUtils;
 public final class MSEPaddingSync {
 
 	/**
-	 * Padding数据数量
+	 * <p>Padding数据数量</p>
 	 */
 	private int count;
 	/**
-	 * 当前Padding数据
+	 * <p>当前Padding数据</p>
 	 */
 	private byte[] bytes;
 	/**
-	 * 剩余Padding数据长度
+	 * <p>剩余Padding数据长度</p>
 	 */
 	private short length = -1;
 	/**
-	 * Padding数据集合
+	 * <p>Padding数据集合</p>
 	 */
 	private final List<byte[]> list;
 	
@@ -44,7 +44,7 @@ public final class MSEPaddingSync {
 	}
 	
 	/**
-	 * Padding数据同步
+	 * <p>Padding数据同步</p>
 	 * 
 	 * @param buffer Padding数据
 	 * 

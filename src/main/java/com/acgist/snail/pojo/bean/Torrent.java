@@ -19,77 +19,77 @@ import com.acgist.snail.utils.StringUtils;
 public final class Torrent {
 
 	/**
-	 * 注释
+	 * <p>注释</p>
 	 */
 	public static final String ATTR_COMMENT = "comment";
 	/**
-	 * 注释UTF8
+	 * <p>注释UTF8</p>
 	 */
 	public static final String ATTR_COMMENT_UTF8 = "comment.utf-8";
 	/**
-	 * 编码
+	 * <p>编码</p>
 	 */
 	public static final String ATTR_ENCODING = "encoding";
 	/**
-	 * 创建者
+	 * <p>创建者</p>
 	 */
 	public static final String ATTR_CREATED_BY = "created by";
 	/**
-	 * 创建时间
+	 * <p>创建时间</p>
 	 */
 	public static final String ATTR_CREATION_DATE = "creation date";
 	/**
-	 * Tracker服务器
+	 * <p>Tracker服务器</p>
 	 */
 	public static final String ATTR_ANNOUNCE = "announce";
 	/**
-	 * Tracker服务器列表
+	 * <p>Tracker服务器列表</p>
 	 */
 	public static final String ATTR_ANNOUNCE_LIST = "announce-list";
 	/**
-	 * 文件信息
+	 * <p>文件信息</p>
 	 */
 	public static final String ATTR_INFO = "info";
 	/**
-	 * DHT节点
+	 * <p>DHT节点</p>
 	 */
 	public static final String ATTR_NODES = "nodes";
 	
 	//================种子文件自带信息================//
 	/**
-	 * 注释
+	 * <p>注释</p>
 	 */
 	private String comment;
 	/**
-	 * 注释UTF8
+	 * <p>注释UTF8</p>
 	 */
 	private String commentUtf8;
 	/**
-	 * 编码
+	 * <p>编码</p>
 	 */
 	private String encoding;
 	/**
-	 * 创建者
+	 * <p>创建者</p>
 	 */
 	private String createdBy;
 	/**
-	 * 创建时间
+	 * <p>创建时间</p>
 	 */
 	private Long creationDate;
 	/**
-	 * Tracker服务器
+	 * <p>Tracker服务器</p>
 	 */
 	private String announce;
 	/**
-	 * Tracker服务器列表
+	 * <p>Tracker服务器列表</p>
 	 */
 	private List<String> announceList;
 	/**
-	 * 文件信息
+	 * <p>文件信息</p>
 	 */
 	private TorrentInfo info;
 	/**
-	 * DHT节点
+	 * <p>DHT节点</p>
 	 */
 	private Map<String, Integer> nodes;
 	
@@ -144,14 +144,14 @@ public final class Torrent {
 	}
 	
 	/**
-	 * 获取InfoHash
+	 * <p>获取InfoHash</p>
 	 */
 	public InfoHash infoHash() {
 		return this.infoHash;
 	}
 
 	/**
-	 * 设置InfoHash
+	 * <p>设置InfoHash</p>
 	 */
 	public void infoHash(InfoHash infoHash) {
 		this.infoHash = infoHash;

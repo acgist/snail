@@ -27,15 +27,15 @@ public abstract class WebSocketMessageHandler implements IMessageHandler, WebSoc
 	private static final Logger LOGGER = LoggerFactory.getLogger(WebSocketMessageHandler.class);
 	
 	/**
-	 * 是否关闭
+	 * <p>是否关闭</p>
 	 */
 	private boolean close = false;
 	/**
-	 * WebSocket
+	 * <p>WebSocket</p>
 	 */
 	protected WebSocket socket;
 	/**
-	 * HttpClient
+	 * <p>HttpClient</p>
 	 */
 	protected HttpClient client;
 	

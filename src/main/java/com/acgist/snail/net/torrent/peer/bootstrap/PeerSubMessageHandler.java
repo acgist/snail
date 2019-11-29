@@ -63,60 +63,60 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerSubMessageHandler.class);
 	
 	/**
-	 * 握手超时时间
+	 * <p>握手超时时间</p>
 	 */
 	public static final int HANDSHAKE_TIMEOUT = SystemConfig.CONNECT_TIMEOUT;
 	
 	/**
-	 * 是否已经发送握手
+	 * <p>是否已经发送握手</p>
 	 */
 	private volatile boolean handshakeSend = false;
 	/**
-	 * 是否已经处理握手
+	 * <p>是否已经处理握手</p>
 	 */
 	private volatile boolean handshakeRecv = false;
 	/**
-	 * 是否是客户端
+	 * <p>是否是客户端</p>
 	 */
 	private final boolean server;
 	/**
-	 * Peer信息
+	 * <p>Peer信息</p>
 	 */
 	private PeerSession peerSession;
 	/**
-	 * Torrent信息
+	 * <p>Torrent信息</p>
 	 */
 	private TorrentSession torrentSession;
 	/**
-	 * Peer上传客户端
+	 * <p>Peer上传客户端</p>
 	 */
 	private PeerUploader peerUploader;
 	/**
-	 * Peer下载客户端
+	 * <p>Peer下载客户端</p>
 	 */
 	private PeerDownloader peerDownloader;
 	/**
-	 * 消息代理
+	 * <p>消息代理</p>
 	 */
 	private IMessageEncryptHandler messageEncryptHandler;
 	/**
-	 * 扩展消息代理
+	 * <p>扩展消息代理</p>
 	 */
 	private ExtensionMessageHandler extensionMessageHandler;
 	/**
-	 * DHT扩展消息代理
+	 * <p>DHT扩展消息代理</p>
 	 */
 	private DhtExtensionMessageHandler dhtExtensionMessageHandler;
 	
 	/**
-	 * 服务端
+	 * <p>服务端</p>
 	 */
 	private PeerSubMessageHandler() {
 		this.server = true;
 	}
 
 	/**
-	 * 客户端
+	 * <p>客户端</p>
 	 */
 	private PeerSubMessageHandler(PeerSession peerSession, TorrentSession torrentSession) {
 		this.server = false;
@@ -124,21 +124,21 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	}
 	
 	/**
-	 * 服务端
+	 * <p>服务端</p>
 	 */
 	public static final PeerSubMessageHandler newInstance() {
 		return new PeerSubMessageHandler();
 	}
 
 	/**
-	 * 客户端
+	 * <p>客户端</p>
 	 */
 	public static final PeerSubMessageHandler newInstance(PeerSession peerSession, TorrentSession torrentSession) {
 		return new PeerSubMessageHandler(peerSession, torrentSession);
 	}
 
 	/**
-	 * 初始化
+	 * <p>初始化</p>
 	 */
 	private void init(PeerSession peerSession, TorrentSession torrentSession, byte[] reserved) {
 		peerSession.reserved(reserved);

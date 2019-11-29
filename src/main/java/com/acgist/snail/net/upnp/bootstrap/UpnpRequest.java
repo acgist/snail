@@ -14,24 +14,24 @@ import com.acgist.snail.utils.XMLUtils;
 public final class UpnpRequest {
 
 	/**
-	 * SOAP协议
+	 * <p>SOAP协议</p>
 	 */
 	private static final String NAMESPACE_URI = "http://schemas.xmlsoap.org/soap/envelope/";
 	/**
-	 * SOAP协议
+	 * <p>SOAP协议</p>
 	 */
 	private static final String ENCODING_STYLE = "http://schemas.xmlsoap.org/soap/encoding/";
 	
 	/**
-	 * XML工具
+	 * <p>XML工具</p>
 	 */
 	private XMLUtils xml;
 	/**
-	 * 主体内容
+	 * <p>主体内容</p>
 	 */
 	private Element body;
 	/**
-	 * 服务类型
+	 * <p>服务类型</p>
 	 */
 	private String serviceType;
 	

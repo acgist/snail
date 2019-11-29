@@ -34,22 +34,22 @@ import com.acgist.snail.utils.StringUtils;
 public final class TaskSession implements ITaskSession {
 
 	/**
-	 * 时间格式工厂
+	 * <p>时间格式工厂</p>
 	 */
 	private static final ThreadLocal<SimpleDateFormat> FORMATER = ThreadLocal.withInitial(() -> {
 		return new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	});
 
 	/**
-	 * 下载器
+	 * <p>下载器</p>
 	 */
 	private IDownloader downloader;
 	/**
-	 * 任务
+	 * <p>任务</p>
 	 */
 	private final TaskEntity entity;
 	/**
-	 * 统计
+	 * <p>统计</p>
 	 */
 	private final IStatisticsSession statistics;
 	

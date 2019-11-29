@@ -18,35 +18,35 @@ import com.acgist.snail.utils.CollectionUtils;
 public final class TorrentFile {
 
 	/**
-	 * 文件路径拼接时分隔符
+	 * <p>文件路径拼接时分隔符</p>
 	 */
 	public static final String SEPARATOR = "/";
 	
 	//================种子文件自带信息================//
 	/**
-	 * 文件大小
+	 * <p>文件大小</p>
 	 */
 	private Long length;
 	/**
-	 * ed2k
+	 * <p>ed2k</p>
 	 */
 	private byte[] ed2k;
 	/**
-	 * filehash
+	 * <p>filehash</p>
 	 */
 	private byte[] filehash;
 	/**
-	 * 路径
+	 * <p>路径</p>
 	 */
 	private List<String> path;
 	/**
-	 * 路径UTF8
+	 * <p>路径UTF8</p>
 	 */
 	private List<String> pathUtf8;
 	
 	//================种子文件临时信息================//
 	/**
-	 * 是否选中下载
+	 * <p>是否选中下载</p>
 	 */
 	private transient boolean selected = false;
 

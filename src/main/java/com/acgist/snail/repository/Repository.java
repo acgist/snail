@@ -29,11 +29,11 @@ public abstract class Repository<T extends BaseEntity> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Repository.class);
 	
 	/**
-	 * 数据库列正则表达式
+	 * <p>数据库列正则表达式</p>
 	 */
 	private static final String COLUMN_REGEX = "[a-zA-Z]+";
 	/**
-	 * 数据库列验证
+	 * <p>数据库列验证</p>
 	 */
 	private static final Function<String, String> COLUMN_VERIFY = (value) -> {
 		if(StringUtils.regex(value, COLUMN_REGEX, true)) {
@@ -45,7 +45,7 @@ public abstract class Repository<T extends BaseEntity> {
 	private final DatabaseManager databaseManager = DatabaseManager.getInstance();
 	
 	/**
-	 * 数据库表名
+	 * <p>数据库表名</p>
 	 */
 	private final String table;
 	/**
@@ -65,6 +65,8 @@ public abstract class Repository<T extends BaseEntity> {
 	 * 	<dd>存在：更新</dd>
 	 * 	<dd>不存在：保存</dd>
 	 * </dl>
+	 * 
+	 * @param t 实体
 	 */
 	public void merge(T t) {
 		if(t == null) {
@@ -79,6 +81,8 @@ public abstract class Repository<T extends BaseEntity> {
 	
 	/**
 	 * <p>保存</p>
+	 * 
+	 * @param 实体
 	 */
 	public void save(T t) {
 		if(t == null) {
@@ -117,6 +121,8 @@ public abstract class Repository<T extends BaseEntity> {
 	/**
 	 * <p>更新</p>
 	 * <p>更新所有字段</p>
+	 * 
+	 * @param t 实体
 	 */
 	public void update(T t) {
 		if(t == null) {
@@ -161,6 +167,8 @@ public abstract class Repository<T extends BaseEntity> {
 	
 	/**
 	 * <p>删除</p>
+	 * 
+	 * @param id id
 	 */
 	public void delete(String id) {
 		if(id == null) {
@@ -176,6 +184,10 @@ public abstract class Repository<T extends BaseEntity> {
 
 	/**
 	 * <p>查找</p>
+	 * 
+	 * @param id
+	 * 
+	 * @return 实体
 	 */
 	public T findOne(String id) {
 		if(id == null) {
@@ -197,6 +209,11 @@ public abstract class Repository<T extends BaseEntity> {
 	
 	/**
 	 * <p>查找</p>
+	 * 
+	 * @param property 属性名称
+	 * @param value 属性值
+	 * 
+	 * @return 实体
 	 */
 	public T findOne(String property, String value) {
 		if(property == null) {
@@ -220,6 +237,11 @@ public abstract class Repository<T extends BaseEntity> {
 	
 	/**
 	 * <p>查找</p>
+	 * 
+	 * @param sql sql
+	 * @param parameters 参数
+	 * 
+	 * @return 实体列表
 	 */
 	public List<T> findList(String sql, Object ... parameters) {
 		if(sql == null) {
@@ -240,6 +262,8 @@ public abstract class Repository<T extends BaseEntity> {
 	
 	/**
 	 * <p>查找所有数据</p>
+	 * 
+	 * @return 实体列表
 	 */
 	public List<T> findAll() {
 		final StringBuilder sql = new StringBuilder();

@@ -8,7 +8,7 @@ import com.acgist.snail.pojo.ITaskSessionEntity;
 import com.acgist.snail.protocol.Protocol.Type;
 
 /**
- * Entity - 任务
+ * <p>Entity - 任务</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -18,28 +18,28 @@ public final class TaskEntity extends BaseEntity implements ITaskSessionEntity {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * 任务表名
+	 * <p>任务表名</p>
 	 */
 	public static final String TABLE_NAME = "tb_task";
 	/**
-	 * 任务名称
+	 * <p>任务名称</p>
 	 */
 	public static final String PROPERTY_NAME = "name";
 	
 	/**
-	 * 任务名称
+	 * <p>任务名称</p>
 	 */
 	private String name;
 	/**
-	 * 协议类型
+	 * <p>协议类型</p>
 	 */
 	private Type type;
 	/**
-	 * 文件类型
+	 * <p>文件类型</p>
 	 */
 	private FileType fileType;
 	/**
-	 * 文件路径或目录路径
+	 * <p>文件路径或目录路径</p>
 	 */
 	private String file;
 	/**
@@ -53,15 +53,15 @@ public final class TaskEntity extends BaseEntity implements ITaskSessionEntity {
 	 */
 	private String torrent;
 	/**
-	 * 任务状态
+	 * <p>任务状态</p>
 	 */
 	private Status status;
 	/**
-	 * 文件大小（B）
+	 * <p>文件大小（B）</p>
 	 */
 	private Long size;
 	/**
-	 * 完成时间
+	 * <p>完成时间</p>
 	 */
 	private Date endDate;
 	/**

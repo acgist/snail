@@ -24,20 +24,20 @@ public final class PeerService {
 	private static final PeerService INSTANCE = new PeerService();
 	
 	/**
-	 * 版本信息长度
+	 * <p>版本信息长度</p>
 	 */
 	private static final int VERSION_LENGTH = 4;
 	/**
-	 * PeerId前缀：AS=ACGIST Snail
+	 * <p>PeerId前缀：AS=ACGIST Snail</p>
 	 */
 	private static final String PEER_ID_PREFIX = "AS";
 	
 	/**
-	 * 20位系统ID
+	 * <p>20位系统ID</p>
 	 */
 	private final byte[] peerId;
 	/**
-	 * PeerId：HTTP传输编码
+	 * <p>PeerId：HTTP传输编码</p>
 	 */
 	private final String peerIdUrl;
 

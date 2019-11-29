@@ -6,7 +6,7 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 
 /**
- * 控制器
+ * <p>控制器</p>
  * 
  * @author acgist
  * @since 1.1.0
@@ -14,7 +14,7 @@ import javafx.scene.input.Dragboard;
 public abstract class Controller {
 
 	/**
-	 * 双击次数
+	 * <p>双击次数</p>
 	 */
 	protected static final int DOUBLE_CLICK_COUNT = 2;
 	

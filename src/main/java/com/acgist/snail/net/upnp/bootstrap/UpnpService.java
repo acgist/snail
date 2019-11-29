@@ -35,7 +35,7 @@ public final class UpnpService {
 	private static final UpnpService INSTANCE = new UpnpService();
 	
 	/**
-	 * UPNP映射状态
+	 * <p>UPNP映射状态</p>
 	 */
 	public enum Status {
 		
@@ -51,28 +51,28 @@ public final class UpnpService {
 	}
 	
 	/**
-	 * 控制类型：最后一位类型忽略
+	 * <p>控制类型：最后一位类型忽略</p>
 	 */
 	private static final String SERVICE_WANIPC = "urn:schemas-upnp-org:service:WANIPConnection:";
 	
 	/**
-	 * 描述文件地址
+	 * <p>描述文件地址</p>
 	 */
 	private String location;
 	/**
-	 * 控制地址
+	 * <p>控制地址</p>
 	 */
 	private String controlUrl;
 	/**
-	 * 服务类型
+	 * <p>服务类型</p>
 	 */
 	private String serviceType;
 	/**
-	 * 可用状态
+	 * <p>可用状态</p>
 	 */
 	private volatile boolean available = false;
 	/**
-	 * 映射状态
+	 * <p>映射状态</p>
 	 */
 	private volatile boolean useable = false;
 
