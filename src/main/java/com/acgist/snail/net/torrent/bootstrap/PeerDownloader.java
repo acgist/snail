@@ -111,6 +111,8 @@ public final class PeerDownloader extends PeerConnect {
 					LOGGER.debug("Peer连接（uTP）（holepunch）：{}-{}", this.peerSession.host(), this.peerSession.port());
 					final UtpClient utpClient = UtpClient.newInstance(this.peerSession, this.peerSubMessageHandler);
 					return utpClient.connect();
+				} else {
+					LOGGER.debug("没有收到holepunch连接消息");
 				}
 			}
 		}
