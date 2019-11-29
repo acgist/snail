@@ -38,16 +38,16 @@ public final class PeerDownloaderGroup {
 	 */
 	private static final int BUILD_SIZE = 2;
 	/**
-	 * 单次创建PeerDownloader最大数量（包含失败）
+	 * <p>单次创建PeerDownloader最大数量（包含失败）</p>
 	 */
 	private static final int MAX_BUILD_SIZE = 64;
 	
 	/**
-	 * 是否继续创建PeerDownloader
+	 * <p>是否继续创建PeerDownloader</p>
 	 */
 	private final AtomicBoolean build = new AtomicBoolean(false);
 	/**
-	 * 创建PeerDownloader信号量
+	 * <p>创建PeerDownloader信号量</p>
 	 */
 	private final Semaphore buildSemaphore = new Semaphore(BUILD_SIZE);
 	/**
@@ -248,7 +248,7 @@ public final class PeerDownloaderGroup {
 	}
 	
 	/**
-	 * PeerDownloader加入队列
+	 * <p>PeerDownloader加入队列</p>
 	 */
 	private void offer(PeerDownloader peerDownloader) {
 		final var ok = this.peerDownloaders.offer(peerDownloader);
@@ -285,7 +285,7 @@ public final class PeerDownloaderGroup {
 	}
 	
 	/**
-	 * 释放信号量：设置创建状态
+	 * <p>释放信号量：设置创建状态</p>
 	 */
 	private void release(boolean build) {
 		this.build.set(build);

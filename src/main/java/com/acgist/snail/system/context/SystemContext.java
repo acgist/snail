@@ -44,11 +44,11 @@ public final class SystemContext {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SystemContext.class);
 
 	/**
-	 * 系统状态
+	 * <p>系统状态</p>
 	 */
 	private static boolean shutdown = false;
 	/**
-	 * 系统名称
+	 * <p>系统名称</p>
 	 */
 	private static String osName;
 	

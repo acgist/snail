@@ -22,51 +22,51 @@ public final class SystemConfig extends PropertiesConfig {
 	private static final String SYSTEM_CONFIG = "/config/system.properties";
 
 	/**
-	 * 数据大小比例
+	 * <p>数据大小比例</p>
 	 */
 	public static final int DATA_SCALE = 1024;
 	/**
-	 * 1KB数据大小：1KB = 1024B
+	 * <p>1KB数据大小：1KB = 1024B</p>
 	 */
 	public static final int ONE_KB = DATA_SCALE;
 	/**
-	 * 1MB数据大小：1MB = 1024KB = 1024 * 1024B
+	 * <p>1MB数据大小：1MB = 1024KB = 1024 * 1024B</p>
 	 */
 	public static final int ONE_MB = DATA_SCALE * ONE_KB;
 	/**
-	 * 最小下载速度：16KB
+	 * <p>最小下载速度：16KB</p>
 	 */
 	public static final int MIN_BUFFER_KB = 16;
 	/**
-	 * TCP消息缓冲大小：和Piece交换Slice大小一样
+	 * <p>TCP消息缓冲大小：和Piece交换Slice大小一样</p>
 	 */
 	public static final int TCP_BUFFER_LENGTH = 16 * ONE_KB;
 	/**
-	 * UDP消息缓存大小
+	 * <p>UDP消息缓存大小</p>
 	 */
 	public static final int UDP_BUFFER_LENGTH = 2 * ONE_KB;
 	/**
-	 * 连接超时时间（秒）
+	 * <p>连接超时时间（秒）</p>
 	 */
 	public static final int CONNECT_TIMEOUT = 5;
 	/**
-	 * 连接超时时间（毫秒）
+	 * <p>连接超时时间（毫秒）</p>
 	 */
 	public static final int CONNECT_TIMEOUT_MILLIS = CONNECT_TIMEOUT * 1000;
 	/**
-	 * 接收超时时间（秒）
+	 * <p>接收超时时间（秒）</p>
 	 */
 	public static final int RECEIVE_TIMEOUT = 5;
 	/**
-	 * 接收超时时间（毫秒）
+	 * <p>接收超时时间（毫秒）</p>
 	 */
 	public static final int RECEIVE_TIMEOUT_MILLIS = RECEIVE_TIMEOUT * 1000;
 	/**
-	 * 下载超时时间（秒）
+	 * <p>下载超时时间（秒）</p>
 	 */
 	public static final int DOWNLOAD_TIMEOUT = 60;
 	/**
-	 * 下载超时时间（毫秒）
+	 * <p>下载超时时间（毫秒）</p>
 	 */
 	public static final int DOWNLOAD_TIMEOUT_MILLIS = DOWNLOAD_TIMEOUT * 1000;
 	/**
@@ -75,47 +75,47 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	public static final int MAX_NET_BUFFER_LENGTH = 4 * ONE_MB;
 	/**
-	 * SHA1的HASH值长度：20
+	 * <p>SHA1的HASH值长度：20</p>
 	 */
 	public static final int SHA1_HASH_LENGTH = 20;
 	/**
-	 * 编码：GBK
+	 * <p>编码：GBK</p>
 	 */
 	public static final String CHARSET_GBK = "GBK";
 	/**
-	 * 编码：UTF-8
+	 * <p>编码：UTF-8</p>
 	 */
 	public static final String CHARSET_UTF8 = "UTF-8";
 	/**
-	 * 编码：ASCII
+	 * <p>编码：ASCII</p>
 	 */
 	public static final String CHARSET_ASCII = "ASCII";
 	/**
-	 * 编码：ISO-8859-1
+	 * <p>编码：ISO-8859-1</p>
 	 */
 	public static final String CHARSET_ISO_8859_1 = "ISO-8859-1";
 	/**
-	 * 系统默认编码（file.encoding）
+	 * <p>系统默认编码（file.encoding）</p>
 	 */
 	public static final String DEFAULT_CHARSET = CHARSET_UTF8;
 	/**
-	 * 无符号BYTE最大值
+	 * <p>无符号BYTE最大值</p>
 	 */
 	public static final int UNSIGNED_BYTE_MAX = 2 << 7;
 	/**
-	 * 数字
+	 * <p>数字</p>
 	 */
 	public static final String DIGIT = "0123456789";
 	/**
-	 * 字符（小写）
+	 * <p>字符（小写）</p>
 	 */
 	public static final String LETTER = "abcdefghijklmnopqrstuvwxyz";
 	/**
-	 * 字符（大写）
+	 * <p>字符（大写）</p>
 	 */
 	public static final String LETTER_UPPER = LETTER.toUpperCase();
 	/**
-	 * 任务列表刷新时间
+	 * <p>任务列表刷新时间</p>
 	 */
 	public static final Duration TASK_REFRESH_INTERVAL = Duration.ofSeconds(4);
 	/**
@@ -139,35 +139,35 @@ public final class SystemConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 软件名称
+	 * <p>软件名称</p>
 	 */
 	private String name;
 	/**
-	 * 软件名称（英文）
+	 * <p>软件名称（英文）</p>
 	 */
 	private String nameEn;
 	/**
-	 * 软件版本
+	 * <p>软件版本</p>
 	 */
 	private String version;
 	/**
-	 * FTP匿名用户
+	 * <p>FTP匿名用户</p>
 	 */
 	private String ftpUser;
 	/**
-	 * FTP匿名密码
+	 * <p>FTP匿名密码</p>
 	 */
 	private String ftpPassword;
 	/**
-	 * 作者
+	 * <p>作者</p>
 	 */
 	private String author;
 	/**
-	 * 官网与源码
+	 * <p>官网与源码</p>
 	 */
 	private String source;
 	/**
-	 * 问题与建议
+	 * <p>问题与建议</p>
 	 */
 	private String support;
 	/**
@@ -182,51 +182,51 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	private String stunServer;
 	/**
-	 * 系统服务端口（本地服务：启动检测）
+	 * <p>系统服务端口（本地服务：启动检测）</p>
 	 */
 	private int servicePort;
 	/**
-	 * BT服务端口（本地端口：Peer、DHT、UTP、STUN）
+	 * <p>BT服务端口（本地端口：Peer、DHT、UTP、STUN）</p>
 	 */
 	private int torrentPort;
 	/**
-	 * BT服务端口（外网映射：Peer、DHT、UTP、STUN）
+	 * <p>BT服务端口（外网映射：Peer、DHT、UTP、STUN）</p>
 	 */
 	private int torrentPortExt = 0;
 	/**
-	 * 单个任务Peer数量（同时下载）
+	 * <p>单个任务Peer数量（同时下载）</p>
 	 */
 	private int peerSize;
 	/**
-	 * 单个任务Tracker数量
+	 * <p>单个任务Tracker数量</p>
 	 */
 	private int trackerSize;
 	/**
-	 * 任务即将完成时可以重复下载的Piece数量
+	 * <p>任务即将完成时可以重复下载的Piece数量</p>
 	 */
 	private int pieceRepeatSize;
 	/**
-	 * DHT执行周期（秒）
+	 * <p>DHT执行周期（秒）</p>
 	 */
 	private int dhtInterval;
 	/**
-	 * PEX执行周期（秒）
+	 * <p>PEX执行周期（秒）</p>
 	 */
 	private int pexInterval;
 	/**
-	 * 本地发现执行周期（秒）
+	 * <p>本地发现执行周期（秒）</p>
 	 */
 	private int lsdInterval;
 	/**
-	 * Tracker执行周期（秒）
+	 * <p>Tracker执行周期（秒）</p>
 	 */
 	private int trackerInterval;
 	/**
-	 * Peer（连接、接入）优化周期（秒）
+	 * <p>Peer（连接、接入）优化周期（秒）</p>
 	 */
 	private int peerOptimizeInterval;
 	/**
-	 * 外网IP地址
+	 * <p>外网IP地址</p>
 	 */
 	private String externalIpAddress;
 	

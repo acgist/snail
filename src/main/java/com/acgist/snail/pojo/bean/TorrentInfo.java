@@ -23,7 +23,7 @@ public final class TorrentInfo {
 	 */
 	public static final String PADDING_FILE_PREFIX = "_____padding_file";
 	/**
-	 * 私有种子
+	 * <p>私有种子</p>
 	 */
 	public static final byte PRIVATE_TORRENT = 1;
 	
@@ -59,23 +59,23 @@ public final class TorrentInfo {
 	 */
 	private byte[] pieces;
 	/**
-	 * Piece大小
+	 * <p>Piece大小</p>
 	 */
 	private Long pieceLength;
 	/**
-	 * 发布者
+	 * <p>发布者</p>
 	 */
 	private String publisher;
 	/**
-	 * 发布者UTF8
+	 * <p>发布者UTF8</p>
 	 */
 	private String publisherUtf8;
 	/**
-	 * 发布者URL
+	 * <p>发布者URL</p>
 	 */
 	private String publisherUrl;
 	/**
-	 * 发布者URL UTF8
+	 * <p>发布者URL UTF8</p>
 	 */
 	private String publisherUrlUtf8;
 	/**

@@ -77,7 +77,7 @@ public final class TrackerLauncherGroup {
 	}
 
 	/**
-	 * 查询Peer
+	 * <p>查询Peer</p>
 	 */
 	public void findPeer() {
 		this.trackerLaunchers.forEach(launcher -> {
@@ -86,7 +86,7 @@ public final class TrackerLauncherGroup {
 	}
 
 	/**
-	 * 释放资源
+	 * <p>释放资源</p>
 	 */
 	public void release() {
 		LOGGER.debug("释放TrackerLauncherGroup");

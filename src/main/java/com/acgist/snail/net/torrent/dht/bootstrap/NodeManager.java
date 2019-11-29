@@ -38,32 +38,32 @@ public final class NodeManager {
 	private static final NodeManager INSTANCE = new NodeManager();
 	
 	/**
-	 * Token长度
+	 * <p>Token长度</p>
 	 */
 	private static final int TOKEN_LENGTH = 8;
 	/**
-	 * Node查找时返回的Node列表长度
+	 * <p>Node查找时返回的Node列表长度</p>
 	 */
 	private static final int NODE_FIND_SIZE = 8;
 	/**
-	 * Node查找时分片大小
+	 * <p>Node查找时分片大小</p>
 	 */
 	private static final int NODE_FIND_SLICE_SIZE = 3;
 	/**
-	 * Node查找时分片最小列表长度
+	 * <p>Node查找时分片最小列表长度</p>
 	 */
 	private static final int NODE_FIND_MIN_SLICE_SIZE = NODE_FIND_SIZE * NODE_FIND_SLICE_SIZE;
 	
 	/**
-	 * 当前客户端的Token
+	 * <p>当前客户端的Token</p>
 	 */
 	private final byte[] token;
 	/**
-	 * 当前客户端的NodeId
+	 * <p>当前客户端的NodeId</p>
 	 */
 	private final byte[] nodeId;
 	/**
-	 * 节点列表
+	 * <p>节点列表</p>
 	 */
 	private final List<NodeSession> nodes;
 	
@@ -78,21 +78,21 @@ public final class NodeManager {
 	}
 	
 	/**
-	 * 当前系统nodeId
+	 * <p>当前系统nodeId</p>
 	 */
 	public byte[] nodeId() {
 		return nodeId;
 	}
 	
 	/**
-	 * 当前系统token
+	 * <p>当前系统token</p>
 	 */
 	public byte[] token() {
 		return token;
 	}
 	
 	/**
-	 * 生成NodeId
+	 * <p>生成NodeId</p>
 	 */
 	private byte[] buildNodeId() {
 		LOGGER.debug("生成NodeId");
@@ -105,7 +105,7 @@ public final class NodeManager {
 	}
 	
 	/**
-	 * 生成Token
+	 * <p>生成Token</p>
 	 */
 	private byte[] buildToken() {
 		LOGGER.debug("生成Token");
@@ -129,7 +129,7 @@ public final class NodeManager {
 	}
 
 	/**
-	 * 注册{@linkplain DhtConfig#nodes() 默认节点}
+	 * <p>注册{@linkplain DhtConfig#nodes() 默认节点}</p>
 	 */
 	public void register() {
 		final var nodes = DhtConfig.getInstance().nodes();
@@ -195,7 +195,7 @@ public final class NodeManager {
 	}
 	
 	/**
-	 * Node验证
+	 * <p>Node验证</p>
 	 */
 	private NodeSession verify(String host, Integer port) {
 		final DhtClient client = DhtClient.newInstance(host, port);
@@ -312,7 +312,7 @@ public final class NodeManager {
 	}
 	
 	/**
-	 * 标记可用节点
+	 * <p>标记可用节点</p>
 	 */
 	public void available(Response response) {
 		if(response != null) {
@@ -326,7 +326,7 @@ public final class NodeManager {
 	}
 	
 	/**
-	 * 选择Node
+	 * <p>选择Node</p>
 	 */
 	private NodeSession select(byte[] nodeId) {
 		for (NodeSession nodeSession : this.nodes) {

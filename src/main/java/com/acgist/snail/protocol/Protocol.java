@@ -23,20 +23,20 @@ import com.acgist.snail.utils.StringUtils;
 public abstract class Protocol {
 	
 	/**
-	 * 磁力链接：标准
+	 * <p>磁力链接：标准</p>
 	 */
 	private static final String MAGNET_BASIC = "magnet:\\?.+";
 	/**
-	 * 磁力链接：32位HASH
+	 * <p>磁力链接：32位HASH</p>
 	 */
 	private static final String MAGNET_HASH_32 = "[a-zA-Z0-9]{32}";
 	/**
-	 * 磁力链接：40位HASH
+	 * <p>磁力链接：40位HASH</p>
 	 */
 	private static final String MAGNET_HASH_40 = "[a-zA-Z0-9]{40}";
 	
 	/**
-	 * 协议类型
+	 * <p>协议类型</p>
 	 */
 	public enum Type {
 
@@ -106,23 +106,23 @@ public abstract class Protocol {
 		);
 		
 		/**
-		 * 正则表达式
+		 * <p>正则表达式</p>
 		 */
 		private final String[] regexs;
 		/**
-		 * 前缀
+		 * <p>前缀</p>
 		 */
 		private final String[] prefix;
 		/**
-		 * 后缀
+		 * <p>后缀</p>
 		 */
 		private final String[] suffix;
 		/**
-		 * 默认前缀
+		 * <p>默认前缀</p>
 		 */
 		private final String defaultPrefix;
 		/**
-		 * 默认后缀
+		 * <p>默认后缀</p>
 		 */
 		private final String defaultSuffix;
 		
@@ -202,7 +202,7 @@ public abstract class Protocol {
 		}
 		
 		/**
-		 * 验证链接是否属于该协议
+		 * <p>验证链接是否属于该协议</p>
 		 * 
 		 * @param url 链接
 		 * 
@@ -219,7 +219,7 @@ public abstract class Protocol {
 		}
 		
 		/**
-		 * 将HASH转为磁力链接（完整链接）
+		 * <p>将HASH转为磁力链接（完整链接）</p>
 		 */
 		public static final String buildMagnet(String hash) {
 			if(verifyMagnet(hash)) {
@@ -229,21 +229,21 @@ public abstract class Protocol {
 		}
 		
 		/**
-		 * 验证磁力链接（完整链接）
+		 * <p>验证磁力链接（完整链接）</p>
 		 */
 		public static final boolean verifyMagnet(String url) {
 			return StringUtils.regex(url, MAGNET_BASIC, true);
 		}
 		
 		/**
-		 * 验证32位磁力链接HASH
+		 * <p>验证32位磁力链接HASH</p>
 		 */
 		public static final boolean verifyMagnetHash32(String url) {
 			return StringUtils.regex(url, MAGNET_HASH_32, true);
 		}
 		
 		/**
-		 * 验证40位磁力链接HASH
+		 * <p>验证40位磁力链接HASH</p>
 		 */
 		public static final boolean verifyMagnetHash40(String url) {
 			return StringUtils.regex(url, MAGNET_HASH_40, true);
@@ -252,15 +252,15 @@ public abstract class Protocol {
 	}
 	
 	/**
-	 * 下载任务类型
+	 * <p>下载任务类型</p>
 	 */
 	protected final Type type;
 	/**
-	 * 下载地址
+	 * <p>下载地址</p>
 	 */
 	protected String url;
 	/**
-	 * 下载任务
+	 * <p>下载任务</p>
 	 */
 	protected TaskEntity taskEntity;
 	

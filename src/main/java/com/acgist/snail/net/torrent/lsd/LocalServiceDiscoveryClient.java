@@ -26,7 +26,7 @@ public final class LocalServiceDiscoveryClient extends UdpClient<LocalServiceDis
 	private static final Logger LOGGER = LoggerFactory.getLogger(LocalServiceDiscoveryClient.class);
 	
 	/**
-	 * BT-SEARCH协议
+	 * <p>BT-SEARCH协议</p>
 	 */
 	private static final String PROTOCOL = "BT-SEARCH * HTTP/1.1";
 	

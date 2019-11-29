@@ -24,11 +24,11 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessa
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpClient.class);
 
 	/**
-	 * 客户端名称
+	 * <p>客户端名称</p>
 	 */
 	private final String name;
 	/**
-	 * 远程地址
+	 * <p>远程地址</p>
 	 */
 	protected final InetSocketAddress socketAddress;
 	

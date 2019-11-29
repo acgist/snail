@@ -42,7 +42,7 @@ public final class GuiHandler {
 	private static final GuiHandler INSTANCE = new GuiHandler();
 	
 	/**
-	 * 提示窗口类型
+	 * <p>提示窗口类型</p>
 	 */
 	public enum SnailAlertType {
 		
@@ -80,7 +80,7 @@ public final class GuiHandler {
 	}
 	
 	/**
-	 * 提示消息类型
+	 * <p>提示消息类型</p>
 	 */
 	public enum SnailNoticeType {
 		
@@ -119,15 +119,15 @@ public final class GuiHandler {
 	 */
 	private static final Map<GuiEvent.Type, GuiEvent> EVENTS = new HashMap<>(GuiEvent.Type.values().length);
 	/**
-	 * 本地GUI
+	 * <p>本地GUI</p>
 	 */
 	public static final String MODE_GUI = "gui";
 	/**
-	 * 后台模式
+	 * <p>后台模式</p>
 	 */
 	public static final String MODE_DAEMO = "daemo";
 	/**
-	 * 阻塞锁时间：365天
+	 * <p>阻塞锁时间：365天</p>
 	 */
 	private static final int LOCK_DAYS = 365;
 	
@@ -144,15 +144,15 @@ public final class GuiHandler {
 	}
 	
 	/**
-	 * 本地GUI：JavaFX
+	 * <p>本地GUI：JavaFX</p>
 	 */
 	private boolean gui = true;
 	/**
-	 * 阻塞锁：使用扩展GUI时阻止程序关闭
+	 * <p>阻塞锁：使用扩展GUI时阻止程序关闭</p>
 	 */
 	private final Object lock = new Object();
 	/**
-	 * 扩展GUI消息代理
+	 * <p>扩展GUI消息代理</p>
 	 */
 	private IMessageHandler extendGuiMessageHandler;
 	
@@ -164,7 +164,7 @@ public final class GuiHandler {
 	}
 	
 	/**
-	 * 注册事件
+	 * <p>注册事件</p>
 	 */
 	public static final void register(GuiEvent event) {
 		LOGGER.debug("注册GUI事件：{}-{}", event.type(), event.name());
@@ -181,7 +181,7 @@ public final class GuiHandler {
 	}
 	
 	/**
-	 * 初始化GUI
+	 * <p>初始化GUI</p>
 	 */
 	public GuiHandler init(String ... args) {
 		if(args == null || args.length < 1) {
@@ -195,7 +195,7 @@ public final class GuiHandler {
 	}
 	
 	/**
-	 * 显示窗口
+	 * <p>显示窗口</p>
 	 */
 	public GuiHandler show() {
 		this.event(Type.SHOW);
@@ -203,7 +203,7 @@ public final class GuiHandler {
 	}
 	
 	/**
-	 * 隐藏窗口
+	 * <p>隐藏窗口</p>
 	 */
 	public GuiHandler hide() {
 		this.event(Type.HIDE);
@@ -211,7 +211,7 @@ public final class GuiHandler {
 	}
 	
 	/**
-	 * 退出窗口
+	 * <p>退出窗口</p>
 	 */
 	public GuiHandler exit() {
 		this.event(Type.EXIT);
@@ -219,7 +219,7 @@ public final class GuiHandler {
 	}
 
 	/**
-	 * 创建窗口
+	 * <p>创建窗口</p>
 	 */
 	public GuiHandler build() {
 		event(Type.BUILD);
@@ -227,7 +227,7 @@ public final class GuiHandler {
 	}
 	
 	/**
-	 * 提示窗口
+	 * <p>提示窗口</p>
 	 * 
 	 * @param title 标题
 	 * @param message 内容
@@ -238,7 +238,7 @@ public final class GuiHandler {
 	}
 
 	/**
-	 * 提示窗口
+	 * <p>提示窗口</p>
 	 * 
 	 * @param title 标题
 	 * @param message 内容
@@ -250,7 +250,7 @@ public final class GuiHandler {
 	}
 	
 	/**
-	 * 提示消息
+	 * <p>提示消息</p>
 	 * 
 	 * @param title 标题
 	 * @param message 内容
@@ -261,7 +261,7 @@ public final class GuiHandler {
 	}
 	
 	/**
-	 * 提示消息
+	 * <p>提示消息</p>
 	 * 
 	 * @param title 标题
 	 * @param message 内容
@@ -273,7 +273,7 @@ public final class GuiHandler {
 	}
 	
 	/**
-	 * 种子文件选择
+	 * <p>种子文件选择</p>
 	 */
 	public GuiHandler torrent(ITaskSession taskSession) {
 		event(Type.TORRENT, taskSession);
@@ -281,7 +281,7 @@ public final class GuiHandler {
 	}
 	
 	/**
-	 * 刷新任务列表
+	 * <p>刷新任务列表</p>
 	 */
 	public GuiHandler refreshTaskList() {
 		event(Type.REFRESH_TASK_LIST);
@@ -289,7 +289,7 @@ public final class GuiHandler {
 	}
 	
 	/**
-	 * 刷新任务状态
+	 * <p>刷新任务状态</p>
 	 */
 	public GuiHandler refreshTaskStatus() {
 		event(Type.REFRESH_TASK_STATUS);
@@ -297,7 +297,7 @@ public final class GuiHandler {
 	}
 
 	/**
-	 * 执行事件
+	 * <p>执行事件</p>
 	 * 
 	 * @param type 类型
 	 * @param args 参数
@@ -316,7 +316,7 @@ public final class GuiHandler {
 	}
 	
 	/**
-	 * 注册扩展GUI消息代理
+	 * <p>注册扩展GUI消息代理</p>
 	 */
 	public boolean extendGuiMessageHandler(IMessageHandler extendGuiMessageHandler) {
 		if(this.gui) {
@@ -330,7 +330,7 @@ public final class GuiHandler {
 	}
 	
 	/**
-	 * 发送扩展GUI消息
+	 * <p>发送扩展GUI消息</p>
 	 */
 	public void sendExtendGuiMessage(ApplicationMessage message) {
 		if(this.extendGuiMessageHandler != null && message != null) {
@@ -343,7 +343,7 @@ public final class GuiHandler {
 	}
 	
 	/**
-	 * 阻塞锁：防止系统自动关闭
+	 * <p>阻塞锁：防止系统自动关闭</p>
 	 */
 	public void lock() {
 		synchronized (this.lock) {
@@ -352,7 +352,7 @@ public final class GuiHandler {
 	}
 	
 	/**
-	 * 唤醒阻塞锁
+	 * <p>唤醒阻塞锁</p>
 	 */
 	public void unlock() {
 		synchronized (this.lock) {

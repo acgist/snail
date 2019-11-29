@@ -14,11 +14,11 @@ import com.acgist.snail.system.exception.NetException;
 public final class UtpRequest {
 
 	/**
-	 * 窗口数据
+	 * <p>窗口数据</p>
 	 */
 	private final UtpWindowData windowData;
 	/**
-	 * 消息处理
+	 * <p>消息处理</p>
 	 */
 	private final IMessageCodec<ByteBuffer> messageCodec;
 	

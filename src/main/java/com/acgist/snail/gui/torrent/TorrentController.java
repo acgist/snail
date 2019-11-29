@@ -30,7 +30,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 /**
- * 编辑任务窗口控制器
+ * <p>编辑任务窗口控制器</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -49,11 +49,11 @@ public final class TorrentController extends Controller implements Initializable
 	private VBox downloadBox;
 	
 	/**
-	 * 任务信息
+	 * <p>任务信息</p>
 	 */
 	private ITaskSession taskSession;
 	/**
-	 * 任务文件选择器
+	 * <p>任务文件选择器</p>
 	 */
 	private SelectorManager selectorManager;
 	
@@ -69,7 +69,7 @@ public final class TorrentController extends Controller implements Initializable
 	}
 
 	/**
-	 * 显示树形菜单
+	 * <p>显示树形菜单</p>
 	 */
 	public void tree(ITaskSession taskSession) {
 		Torrent torrent = null;
@@ -92,7 +92,7 @@ public final class TorrentController extends Controller implements Initializable
 	}
 	
 	/**
-	 * 释放资源
+	 * <p>释放资源</p>
 	 */
 	public void release() {
 		this.selectorManager = null;
@@ -100,7 +100,7 @@ public final class TorrentController extends Controller implements Initializable
 	}
 	
 	/**
-	 * 创建树形菜单
+	 * <p>创建树形菜单</p>
 	 */
 	private TreeView<HBox> buildTree() {
 		final TreeView<HBox> tree = new TreeView<>();
@@ -114,7 +114,7 @@ public final class TorrentController extends Controller implements Initializable
 	}
 	
 	/**
-	 * 下载按钮事件
+	 * <p>下载按钮事件</p>
 	 */
 	private EventHandler<ActionEvent> downloadEvent = (event) -> {
 		final var list = this.selectorManager.description();

@@ -16,7 +16,7 @@ public final class CryptConfig {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CryptConfig.class);
 	
 	/**
-	 * 加密算法
+	 * <p>加密算法</p>
 	 */
 	public enum CryptAlgo {
 		
@@ -26,7 +26,7 @@ public final class CryptConfig {
 		ARC4(	  0x02);
 		
 		/**
-		 * provide
+		 * <p>provide</p>
 		 */
 		private final int provide;
 		
@@ -41,7 +41,7 @@ public final class CryptConfig {
 	}
 	
 	/**
-	 * 加密策略
+	 * <p>加密策略</p>
 	 */
 	public enum Strategy {
 		
@@ -55,11 +55,11 @@ public final class CryptConfig {
 		ENCRYPT(			true,  CryptAlgo.ARC4.provide);
 		
 		/**
-		 * 是否加密
+		 * <p>是否加密</p>
 		 */
 		private final boolean crypt;
 		/**
-		 * 加密模式：crypto_provide
+		 * <p>加密模式：crypto_provide</p>
 		 */
 		private final int provide;
 		
@@ -79,18 +79,18 @@ public final class CryptConfig {
 	}
 	
 	/**
-	 * Prime P(768 bit safe prime)
+	 * <p>Prime P(768 bit safe prime)</p>
 	 */
 	public static final BigInteger P = new BigInteger(
 		"FFFFFFFFFFFFFFFFC90FDAA22168C234C4C6628B80DC1CD129024E088A67CC74020BBEA63B139B22514A08798E3404DDEF9519B3CD3A431B302B0A6DF25F14374FE1356D6D51C245E485B576625E7EC6F44C42E9A63A36210000000000090563",
 		16
 	);
 	/**
-	 * Generator G
+	 * <p>Generator G</p>
 	 */
 	public static final BigInteger G = BigInteger.valueOf(2);
 	/**
-	 * 公钥长度
+	 * <p>公钥长度</p>
 	 */
 	public static final int PUBLIC_KEY_LENGTH = 96;
 	/**
@@ -101,19 +101,19 @@ public final class CryptConfig {
 	 */
 	public static final int PRIVATE_KEY_LENGTH = 20;
 	/**
-	 * 填充最大随机长度
+	 * <p>填充最大随机长度</p>
 	 */
 	public static final int PADDING_MAX_LENGTH = 512;
 	/**
-	 * VC长度
+	 * <p>VC长度</p>
 	 */
 	public static final int VC_LENGTH = 8;
 	/**
-	 * VC数据：八字节（0x00）
+	 * <p>VC数据：八字节（0x00）</p>
 	 */
 	public static final byte[] VC = new byte[VC_LENGTH];
 	/**
-	 * 默认加密策略
+	 * <p>默认加密策略</p>
 	 */
 	public static final Strategy STRATEGY = Strategy.PREFER_PLAINTEXT;
 

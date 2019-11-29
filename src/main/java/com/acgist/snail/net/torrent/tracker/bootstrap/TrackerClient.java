@@ -24,7 +24,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerClient.class);
 	
 	/**
-	 * 想要获取的Peer数量
+	 * <p>想要获取的Peer数量</p>
 	 */
 	protected static final int WANT_PEER_SIZE = 50;
 	
@@ -39,15 +39,15 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	 */
 	protected final Integer id;
 	/**
-	 * 协议类型
+	 * <p>协议类型</p>
 	 */
 	protected final Protocol.Type type;
 	/**
-	 * 刮檫地址
+	 * <p>刮檫地址</p>
 	 */
 	protected final String scrapeUrl;
 	/**
-	 * 声明地址
+	 * <p>声明地址</p>
 	 */
 	protected final String announceUrl;
 	/**
@@ -56,11 +56,11 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	 */
 	private int failTimes = 0;
 	/**
-	 * 失败原因
+	 * <p>失败原因</p>
 	 */
 	private String failMessage;
 	/**
-	 * 是否可用
+	 * <p>是否可用</p>
 	 */
 	private boolean available = true;
 	
@@ -219,7 +219,6 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	}
 	
 	/**
-	 * <p>重写equals方法</p>
 	 * <p>相等：声明URL一致</p>
 	 */
 	@Override

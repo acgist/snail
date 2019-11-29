@@ -23,6 +23,9 @@ public final class WsTrackerClient extends TrackerClient {
 
 //	private static final Logger LOGGER = LoggerFactory.getLogger(WsTrackerClient.class);
 	
+	/**
+	 * <p>TrackerClient</p>
+	 */
 	private final com.acgist.snail.net.ws.tracker.TrackerClient trackerClient;
 	
 	private WsTrackerClient(String scrapeUrl, String announceUrl) throws NetException {

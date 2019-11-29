@@ -38,7 +38,7 @@ public final class DatabaseManager {
 	}
 	
 	/**
-	 * 连接
+	 * <p>连接</p>
 	 */
 	private Connection connection;
 

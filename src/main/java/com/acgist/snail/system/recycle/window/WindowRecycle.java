@@ -26,27 +26,27 @@ public final class WindowRecycle extends Recycle {
 	private static final Logger LOGGER = LoggerFactory.getLogger(WindowRecycle.class);
 
 	/**
-	 * 回收站路径
+	 * <p>回收站路径</p>
 	 */
 	private static final String RECYCLE_FOLDER = "$RECYCLE.BIN";
 	/**
-	 * 删除文件前缀
+	 * <p>删除文件前缀</p>
 	 */
 	private static final String FILE_PREFIX = "$R";
 	/**
-	 * 删除文件信息文件前缀
+	 * <p>删除文件信息文件前缀</p>
 	 */
 	private static final String INFO_PREFIX = "$I";
 	/**
-	 * 回收站路径
+	 * <p>回收站路径</p>
 	 */
 	private String recyclePath;
 	/**
-	 * 删除文件路径
+	 * <p>删除文件路径</p>
 	 */
 	private String deleteFile;
 	/**
-	 * 删除文件信息文件路径
+	 * <p>删除文件信息文件路径</p>
 	 */
 	private String deleteInfoFile;
 

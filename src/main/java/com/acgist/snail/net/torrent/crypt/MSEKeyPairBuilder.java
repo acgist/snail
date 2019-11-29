@@ -15,10 +15,8 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>MSE密钥对Builder（DH交换）</p>
- * <p>
- * 一的补码（one's complement）：反码（正数=原码、负数=反码）<br>
- * 二的补码（two's complement）：补码（正数=原码、负数=反码+1）
- * </p>
+ * <p>一的补码（one's complement）：反码（正数=原码、负数=反码）</p>
+ * <p>二的补码（two's complement）：补码（正数=原码、负数=反码+1）</p>
  * 
  * @author acgist
  * @since 1.1.0
@@ -26,7 +24,7 @@ import com.acgist.snail.utils.StringUtils;
 public final class MSEKeyPairBuilder {
 
 	/**
-	 * 公钥生成使用随机数
+	 * <p>公钥生成使用随机数</p>
 	 */
 	private final Random random;
 
@@ -39,7 +37,7 @@ public final class MSEKeyPairBuilder {
 	}
 
 	/**
-	 * 创建密钥对
+	 * <p>创建密钥对</p>
 	 */
 	public KeyPair buildKeyPair() {
 		final MSEPrivateKey privateKey = new MSEPrivateKey(this.random);
@@ -48,7 +46,7 @@ public final class MSEKeyPairBuilder {
 	}
 
 	/**
-	 * 创建S：DH Secret
+	 * <p>创建S：DH Secret</p>
 	 */
 	public static final BigInteger buildDHSecret(BigInteger publicKey, PrivateKey privateKey) {
 		if(privateKey instanceof MSEPrivateKey) {
@@ -58,7 +56,7 @@ public final class MSEKeyPairBuilder {
 	}
 
 	/**
-	 * MSE公钥
+	 * <p>MSE公钥</p>
 	 */
 	private static final class MSEPublicKey implements PublicKey {
 
@@ -103,7 +101,7 @@ public final class MSEKeyPairBuilder {
 	}
 
 	/**
-	 * MSE私钥
+	 * <p>MSE私钥</p>
 	 */
 	private static final class MSEPrivateKey implements PrivateKey {
 
@@ -118,7 +116,7 @@ public final class MSEKeyPairBuilder {
 		}
 
 		/**
-		 * Xa Xb
+		 * <p>Xa Xb</p>
 		 */
 		private BigInteger buildPrivateKey(Random random) {
 			final byte[] bytes = new byte[CryptConfig.PRIVATE_KEY_LENGTH];
@@ -139,7 +137,7 @@ public final class MSEKeyPairBuilder {
 		}
 		
 		/**
-		 * DH secret: S = (Ya^Xb) mod P = (Yb^Xa) mod P
+		 * <p>DH secret: S = (Ya^Xb) mod P = (Yb^Xa) mod P</p>
 		 */
 		public BigInteger buildDHSecret(MSEPublicKey publicKey) {
 			return publicKey.getValue().modPow(this.value, CryptConfig.P);

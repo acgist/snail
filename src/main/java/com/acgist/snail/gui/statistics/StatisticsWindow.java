@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 /**
- * 统计窗口
+ * <p>统计窗口</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -42,7 +42,7 @@ public final class StatisticsWindow extends Window<StatisticsController> {
 	}
 
 	/**
-	 * 统计信息
+	 * <p>统计信息</p>
 	 */
 	public void statistics() {
 		this.controller.statistics();
@@ -50,7 +50,7 @@ public final class StatisticsWindow extends Window<StatisticsController> {
 	}
 	
 	/**
-	 * 窗口隐藏：释放资源
+	 * <p>窗口隐藏：释放资源</p>
 	 */
 	private void windowHidden() {
 		this.stage.addEventFilter(WindowEvent.WINDOW_HIDDEN, (event) -> {

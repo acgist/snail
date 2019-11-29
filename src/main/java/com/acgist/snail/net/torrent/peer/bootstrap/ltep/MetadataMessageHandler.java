@@ -37,19 +37,19 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MetadataMessageHandler.class);
 	
 	/**
-	 * 数据交换Slice大小：16KB
+	 * <p>数据交换Slice大小：16KB</p>
 	 */
 	public static final int SLICE_LENGTH = 16 * SystemConfig.ONE_KB;
 	/**
-	 * piece index：Slice索引
+	 * <p>piece index：Slice索引</p>
 	 */
 	private static final String ARG_PIECE = "piece";
 	/**
-	 * {@linkplain MetadataType 消息类型}
+	 * <p>{@linkplain MetadataType 消息类型}</p>
 	 */
 	private static final String ARG_MSG_TYPE = "msg_type";
 	/**
-	 * InfoHash种子文件数据大小
+	 * <p>InfoHash种子文件数据大小</p>
 	 */
 	private static final String ARG_TOTAL_SIZE = "total_size";
 	

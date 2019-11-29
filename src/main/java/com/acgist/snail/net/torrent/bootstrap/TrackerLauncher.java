@@ -27,7 +27,7 @@ public final class TrackerLauncher {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerLauncher.class);
 	
 	/**
-	 * 客户端
+	 * <p>客户端</p>
 	 */
 	private final TrackerClient client;
 	
@@ -40,23 +40,23 @@ public final class TrackerLauncher {
 	 */
 	private final Integer id;
 	/**
-	 * 下次等待时间
+	 * <p>下次等待时间</p>
 	 */
 	private Integer interval;
 	/**
-	 * 已完成数量
+	 * <p>已完成数量</p>
 	 */
 	private Integer seeder;
 	/**
-	 * 未完成数量
+	 * <p>未完成数量</p>
 	 */
 	private Integer leecher;
 	/**
-	 * 可用状态
+	 * <p>可用状态</p>
 	 */
 	private boolean available = true;
 	/**
-	 * 是否需要释放
+	 * <p>是否需要释放</p>
 	 */
 	private boolean needRelease = false;
 	
@@ -86,7 +86,7 @@ public final class TrackerLauncher {
 	}
 
 	/**
-	 * 查找Peer
+	 * <p>查找Peer</p>
 	 */
 	public void findPeer() {
 		this.needRelease = true;
@@ -120,7 +120,7 @@ public final class TrackerLauncher {
 	}
 	
 	/**
-	 * 添加Peer
+	 * <p>添加Peer</p>
 	 */
 	private void peer(Map<String, Integer> peers) {
 		if(CollectionUtils.isEmpty(peers)) {

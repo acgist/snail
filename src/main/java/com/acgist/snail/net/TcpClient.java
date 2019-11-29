@@ -27,7 +27,7 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 	private static final Logger LOGGER = LoggerFactory.getLogger(TcpClient.class);
 	
 	/**
-	 * 客户端线程池
+	 * <p>客户端线程池</p>
 	 */
 	private static final AsynchronousChannelGroup GROUP;
 	
@@ -42,11 +42,11 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 	}
 	
 	/**
-	 * 客户端名称
+	 * <p>客户端名称</p>
 	 */
 	private String name;
 	/**
-	 * 超时时间
+	 * <p>超时时间</p>
 	 */
 	private int timeout;
 	

@@ -25,19 +25,19 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpMessageHandler.class);
 
 	/**
-	 * 是否关闭
+	 * <p>是否关闭</p>
 	 */
 	protected volatile boolean close = false;
 	/**
-	 * 通道
+	 * <p>通道</p>
 	 */
 	protected DatagramChannel channel;
 	/**
-	 * 远程地址
+	 * <p>远程地址</p>
 	 */
 	protected InetSocketAddress socketAddress;
 	/**
-	 * 消息处理器
+	 * <p>消息处理器</p>
 	 */
 	protected IMessageCodec<ByteBuffer> messageCodec;
 	

@@ -61,7 +61,7 @@ public final class GetPeersResponse extends Response {
 	}
 	
 	/**
-	 * 获取Peer列表并且加入系统Peer列表
+	 * <p>获取Peer列表并且加入系统Peer列表</p>
 	 */
 	public List<PeerSession> getValues(Request request) {
 		final byte[] infoHash = request.getBytes(DhtConfig.KEY_INFO_HASH);

@@ -17,7 +17,7 @@ import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.ObjectUtils;
 
 /**
- * DHT响应
+ * <p>DHT响应</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -25,7 +25,7 @@ import com.acgist.snail.utils.ObjectUtils;
 public class Response extends DhtMessage {
 
 	/**
-	 * 响应参数
+	 * <p>响应参数</p>
 	 */
 	private final Map<String, Object> r;
 	/**
@@ -52,7 +52,7 @@ public class Response extends DhtMessage {
 	}
 
 	/**
-	 * 处理响应
+	 * <p>处理响应</p>
 	 */
 	public static final Response valueOf(final BEncodeDecoder decoder) {
 		final byte[] t = decoder.getBytes(DhtConfig.KEY_T);
@@ -84,7 +84,7 @@ public class Response extends DhtMessage {
 	}
 	
 	/**
-	 * B编码后的字节数组
+	 * <p>B编码后的字节数组</p>
 	 */
 	public byte[] toBytes() {
 		final Map<String, Object> response = new LinkedHashMap<>();
@@ -138,14 +138,14 @@ public class Response extends DhtMessage {
 	}
 
 	/**
-	 * 是否成功
+	 * <p>是否成功</p>
 	 */
 	public boolean success() {
 		return CollectionUtils.isEmpty(this.e);
 	}
 
 	/**
-	 * 错误代码
+	 * <p>错误代码</p>
 	 */
 	public int errorCode() {
 		if(this.e.size() > 0) {
@@ -156,7 +156,7 @@ public class Response extends DhtMessage {
 	}
 
 	/**
-	 * 错误描述
+	 * <p>错误描述</p>
 	 */
 	public String errorMessage() {
 		if(this.e.size() > 1) {
@@ -167,7 +167,7 @@ public class Response extends DhtMessage {
 	}
 
 	/**
-	 * 错误响应
+	 * <p>错误响应</p>
 	 * 
 	 * @param id 响应ID
 	 * @param code 错误编码

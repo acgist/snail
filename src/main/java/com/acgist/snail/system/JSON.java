@@ -44,7 +44,7 @@ public class JSON {
 		'\"', '\\'
 	};
 	/**
-	 * 特殊字符对应编码
+	 * <p>特殊字符对应编码</p>
 	 */
 	private static final String[] CHARS_ENCODE = new String[] {
 		"\\u0000", "\\u0001", "\\u0002", "\\u0003", "\\u0004", "\\u0005",
@@ -55,48 +55,48 @@ public class JSON {
 		"\\\"", "\\\\"
 	};
 	/**
-	 * Map前缀
+	 * <p>Map前缀</p>
 	 */
 	private static final char JSON_MAP_PREFIX = '{';
 	/**
-	 * Map后缀
+	 * <p>Map后缀</p>
 	 */
 	private static final char JSON_MAP_SUFFIX = '}';
 	/**
-	 * List前缀
+	 * <p>List前缀</p>
 	 */
 	private static final char JSON_LIST_PREFIX = '[';
 	/**
-	 * List后缀
+	 * <p>List后缀</p>
 	 */
 	private static final char JSON_LIST_SUFFIX = ']';
 	/**
-	 * JSON：键值分隔符
+	 * <p>JSON：键值分隔符</p>
 	 */
 	private static final char JSON_KV = ':';
 	/**
-	 * JSON：属性分隔符
+	 * <p>JSON：属性分隔符</p>
 	 */
 	private static final char JSON_ATTR = ',';
 	/**
-	 * JSON：字符串
+	 * <p>JSON：字符串</p>
 	 */
 	private static final char JSON_STRING = '"';
 	/**
-	 * JSON：boolean：true
+	 * <p>JSON：boolean：true</p>
 	 */
 	private static final String JSON_BOOLEAN_TRUE = "true";
 	/**
-	 * JSON：boolean：false
+	 * <p>JSON：boolean：false</p>
 	 */
 	private static final String JSON_BOOLEAN_FALSE = "false";
 	/**
-	 * JSON：null
+	 * <p>JSON：null</p>
 	 */
 	private static final String JSON_NULL = "null";
 	
 	/**
-	 * 类型
+	 * <p>类型</p>
 	 */
 	public enum Type {
 

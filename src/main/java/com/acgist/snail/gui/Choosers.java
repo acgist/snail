@@ -19,13 +19,13 @@ import javafx.stage.Window;
 public final class Choosers {
 
 	/**
-	 * 不允许实例化
+	 * <p>不允许实例化</p>
 	 */
 	private Choosers() {
 	}
 	
 	/**
-	 * 选择文件
+	 * <p>选择文件</p>
 	 * 
 	 * @param window 当前窗体：模态
 	 * @param title 标题
@@ -47,7 +47,7 @@ public final class Choosers {
 	}
 	
 	/**
-	 * 选择目录
+	 * <p>选择目录</p>
 	 * 
 	 * @param window 当前窗体：模态
 	 * @param title 标题
@@ -66,7 +66,7 @@ public final class Choosers {
 	}
 	
 	/**
-	 * 设置上次选择目录
+	 * <p>设置上次选择目录</p>
 	 */
 	private static final void lastPath(FileChooser chooser) {
 		final File file = DownloadConfig.getLastPathFile();
@@ -76,7 +76,7 @@ public final class Choosers {
 	}
 	
 	/**
-	 * 设置上次选择目录
+	 * <p>设置上次选择目录</p>
 	 */
 	private static final void lastPath(DirectoryChooser chooser) {
 		final File file = DownloadConfig.getLastPathFile();

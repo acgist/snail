@@ -9,36 +9,36 @@ package com.acgist.snail.system.config;
 public final class StunConfig {
 
 	/**
-	 * 头部信息长度
+	 * <p>头部信息长度</p>
 	 */
 	public static final int STUN_HEADER_LENGTH = 20;
 	/**
-	 * 属性头部信息长度
+	 * <p>属性头部信息长度</p>
 	 */
 	public static final int ATTRIBUTE_HEADER_LENGTH = 4;
 	/**
-	 * 默认端口
+	 * <p>默认端口</p>
 	 */
 	public static final int DEFAULT_PORT = 3478;
 	/**
-	 * 固定值
+	 * <p>固定值</p>
 	 */
     public static final int MAGIC_COOKIE = 0x2112A442;
     /**
-     * TransactionID长度
+     * <p>TransactionID长度</p>
      */
     public static final int TRANSACTION_ID_LENGTH = 12;
     /**
-     * IPv4
+     * <p>IPv4</p>
      */
     public static final int IPV4 = 0x01;
     /**
-     * IPv6
+     * <p>IPv6</p>
      */
     public static final int IPV6 = 0x02;
     
     /**
-     * 方法类型
+     * <p>方法类型</p>
      */
     public enum MethodType {
     	
@@ -48,7 +48,7 @@ public final class StunConfig {
     	public static final short VALUE_MASK = 0b0000_0000_0000_0001;
     	
     	/**
-    	 * 方法ID
+    	 * <p>方法ID
     	 */
     	private final short id;
     	
@@ -63,7 +63,7 @@ public final class StunConfig {
     }
     
     /**
-     * 消息类型
+     * <p>消息类型</p>
      */
     public enum MessageType {
     	
@@ -77,20 +77,20 @@ public final class StunConfig {
     	ERROR_RESPONSE(		(byte) 0b11);
     	
     	/**
-    	 * C1
+    	 * <p>C1</p>
     	 */
         public static final short C1_MASK = 0b0000_0001_0000_0000;
         /**
-         * C0
+         * <p>C0</p>
          */
         public static final short C0_MASK = 0b0000_0000_0001_0000;
         /**
-         * 前两位必须为零
+         * <p>前两位必须为零</p>
          */
         public static final short TYPE_MASK = 0b0011_1111_1111_1111;
         
         /**
-         * 消息ID
+         * <p>消息ID</p>
          */
     	private final byte id;
     	
@@ -157,7 +157,7 @@ public final class StunConfig {
     	FINGERPRINT(		(short) 0x8028);
     	
     	/**
-    	 * 属性ID
+    	 * <p>属性ID</p>
     	 */
     	private final short id;
     	
@@ -182,7 +182,7 @@ public final class StunConfig {
     }
 
     /**
-     * 错误编码：300-699
+     * <p>错误编码：300-699</p>
      */
     public enum ErrorCode {
     	
@@ -200,7 +200,7 @@ public final class StunConfig {
     	SERVER_ERROR(		500);
     	
     	/**
-    	 * 错误编码
+    	 * <p>错误编码</p>
     	 */
     	private final int code;
     	

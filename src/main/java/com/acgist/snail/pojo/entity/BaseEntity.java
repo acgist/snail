@@ -7,7 +7,7 @@ import com.acgist.snail.utils.ObjectUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * Entity - 基类
+ * <p>Entity - 基类</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -17,28 +17,28 @@ public class BaseEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * ID
+	 * <p>ID</p>
 	 */
 	public static final String PROPERTY_ID = "id";
 	/**
-	 * 创建时间
+	 * <p>创建时间</p>
 	 */
 	public static final String PROPERTY_CREATE_DATE = "createDate";
 	/**
-	 * 修改时间
+	 * <p>修改时间</p>
 	 */
 	public static final String PROPERTY_MODIFY_DATE = "modifyDate";
 	
 	/**
-	 * ID
+	 * <p>ID</p>
 	 */
 	protected String id;
 	/**
-	 * 创建日期
+	 * <p>创建日期</p>
 	 */
 	protected Date createDate;
 	/**
-	 * 修改日期
+	 * <p>修改日期</p>
 	 */
 	protected Date modifyDate;
 	
@@ -86,17 +86,11 @@ public class BaseEntity implements Serializable {
 		this.modifyDate = modifyDate;
 	}
 
-	/**
-	 * 重写hashCode方法
-	 */
 	@Override
 	public int hashCode() {
 		return ObjectUtils.hashCode(this.id);
 	}
 	
-	/**
-	 * 重写equals方法
-	 */
 	@Override
 	public boolean equals(Object object) {
 		if(ObjectUtils.equals(this, object)) {
@@ -109,9 +103,6 @@ public class BaseEntity implements Serializable {
 		return false;
 	}
 	
-	/**
-	 * 重写toString方法
-	 */
 	@Override
 	public String toString() {
 		return ObjectUtils.toString(this);

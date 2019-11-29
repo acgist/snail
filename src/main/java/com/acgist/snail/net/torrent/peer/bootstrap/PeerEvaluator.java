@@ -33,7 +33,7 @@ public final class PeerEvaluator {
 	private static final PeerEvaluator INSTANCE = new PeerEvaluator();
 
 	/**
-	 * Peer计分类型
+	 * <p>Peer计分类型</p>
 	 */
 	public enum Type {
 		
@@ -43,7 +43,7 @@ public final class PeerEvaluator {
 		DOWNLOAD((byte) 0x03);
 
 		/**
-		 * 评分
+		 * <p>评分</p>
 		 */
 		private final byte score;
 		
@@ -58,7 +58,7 @@ public final class PeerEvaluator {
 	}
 	
 	/**
-	 * IP步长
+	 * <p>IP步长</p>
 	 */
 	private static final int RANGE_STEP = 2 << 15;
 	/**
@@ -67,20 +67,20 @@ public final class PeerEvaluator {
 	 */
 	private static final int MIN_SCOREABLE_DOWNLOAD_LENGTH = SystemConfig.ONE_MB;
 	/**
-	 * 范围配置：数据库配置名称
+	 * <p>范围配置：数据库配置名称</p>
 	 */
 	private static final String ACGIST_SYSTEM_RANGE = "acgist.system.range";
 	
 	/**
-	 * 可用状态
+	 * <p>可用状态</p>
 	 */
 	private boolean available;
 	/**
-	 * 优质Peer最低分：取平均分
+	 * <p>优质Peer最低分：取平均分</p>
 	 */
 	private long horizontal = 0L;
 	/**
-	 * IP区域：IP=评分
+	 * <p>IP区域：IP=评分</p>
 	 */
 	private final Map<Integer, Long> ranges;
 	

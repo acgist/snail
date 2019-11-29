@@ -31,7 +31,7 @@ public final class AnnouncePeerRequest extends Request {
 	}
 	
 	/**
-	 * 创建请求
+	 * <p>创建请求</p>
 	 * 
 	 * @param token token
 	 * @param infoHash InfoHash

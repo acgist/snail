@@ -9,7 +9,7 @@ package com.acgist.snail.system;
 public final class LambdaOptional<T> {
 
 	/**
-	 * 数据
+	 * <p>数据</p>
 	 */
 	private T t;
 	

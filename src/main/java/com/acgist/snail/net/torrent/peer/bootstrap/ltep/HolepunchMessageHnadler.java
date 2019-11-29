@@ -36,11 +36,11 @@ public class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(HolepunchMessageHnadler.class);
 
 	/**
-	 * IPv4
+	 * <p>IPv4</p>
 	 */
 	private static final byte IPV4 = 0x00;
 //	/**
-//	 * IPv6
+//	 * <p>IPv6</p>
 //	 */
 //	private static final byte IPV6 = 0x01;
 	

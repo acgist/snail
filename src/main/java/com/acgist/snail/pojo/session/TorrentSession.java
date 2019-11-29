@@ -52,24 +52,24 @@ public final class TorrentSession {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentSession.class);
 	
 	/**
-	 * PEX优化任务执行周期
+	 * <p>PEX优化任务执行周期</p>
 	 */
 	private static final Duration PEX_INTERVAL = Duration.ofSeconds(SystemConfig.getPexInterval());
 	/**
-	 * DHT任务执行周期
+	 * <p>DHT任务执行周期</p>
 	 */
 	private static final Duration DHT_INTERVAL = Duration.ofSeconds(SystemConfig.getDhtInterval());
 	/**
-	 * Tracker任务执行周期
+	 * <p>Tracker任务执行周期</p>
 	 */
 	private static final Duration TRACKER_INTERVAL = Duration.ofSeconds(SystemConfig.getTrackerInterval());
 	/**
-	 * Peer优化任务执行周期
+	 * <p>Peer优化任务执行周期</p>
 	 */
 	private static final Duration PEER_OPTIMIZE_INTERVAL = Duration.ofSeconds(SystemConfig.getPeerOptimizeInterval());
 
 	/**
-	 * 动作：磁力链接下载、BT任务下载
+	 * <p>动作：磁力链接下载、BT任务下载</p>
 	 */
 	private Action action;
 	/**
@@ -78,47 +78,47 @@ public final class TorrentSession {
 	 */
 	private volatile boolean ready = false;
 	/**
-	 * 上传状态
+	 * <p>上传状态</p>
 	 */
 	private volatile boolean uploadable = false;
 	/**
-	 * 下载状态
+	 * <p>下载状态</p>
 	 */
 	private volatile boolean downloadable = false;
 	/**
-	 * 磁力链接
+	 * <p>磁力链接</p>
 	 */
 	private Magnet magnet;
 	/**
-	 * 种子信息
+	 * <p>种子信息</p>
 	 */
 	private Torrent torrent;
 	/**
-	 * 种子InfoHash
+	 * <p>种子InfoHash</p>
 	 */
 	private InfoHash infoHash;
 	/**
-	 * 任务信息
+	 * <p>任务信息</p>
 	 */
 	private ITaskSession taskSession;
 	/**
-	 * DHT任务
+	 * <p>DHT任务</p>
 	 */
 	private DhtLauncher dhtLauncher;
 	/**
-	 * PeerUploader组
+	 * <p>PeerUploader组</p>
 	 */
 	private PeerUploaderGroup peerUploaderGroup;
 	/**
-	 * PeerDownloader组
+	 * <p>PeerDownloader组</p>
 	 */
 	private PeerDownloaderGroup peerDownloaderGroup;
 	/**
-	 * 文件流组
+	 * <p>文件流组</p>
 	 */
 	private TorrentStreamGroup torrentStreamGroup;
 	/**
-	 * Tracker组
+	 * <p>Tracker组</p>
 	 */
 	private TrackerLauncherGroup trackerLauncherGroup;
 	/**
@@ -127,27 +127,27 @@ public final class TorrentSession {
 	 */
 	private ExecutorService executor;
 	/**
-	 * 定时线程池
+	 * <p>定时线程池</p>
 	 */
 	private ScheduledExecutorService executorTimer;
 	/**
-	 * PEX定时器
+	 * <p>PEX定时器</p>
 	 */
 	private ScheduledFuture<?> pexTimer;
 	/**
-	 * DHT定时器
+	 * <p>DHT定时器</p>
 	 */
 	private ScheduledFuture<?> dhtLauncherTimer;
 	/**
-	 * PeerUploaderGroup定时器
+	 * <p>PeerUploaderGroup定时器</p>
 	 */
 	private ScheduledFuture<?> peerUploaderGroupTimer;
 	/**
-	 * PeerDownloaderGroup定时器
+	 * <p>PeerDownloaderGroup定时器</p>
 	 */
 	private ScheduledFuture<?> peerDownloaderGroupTimer;
 	/**
-	 * TrackerLauncherGroup定时器
+	 * <p>TrackerLauncherGroup定时器</p>
 	 */
 	private ScheduledFuture<?> trackerLauncherGroupTimer;
 	

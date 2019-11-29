@@ -21,7 +21,7 @@ public abstract class TcpServer<T extends TcpMessageHandler> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TcpServer.class);
 	
 	/**
-	 * 服务端线程池
+	 * <p>服务端线程池</p>
 	 */
 	private static final AsynchronousChannelGroup GROUP;
 	
@@ -36,15 +36,15 @@ public abstract class TcpServer<T extends TcpMessageHandler> {
 	}
 	
 	/**
-	 * 服务端名称
+	 * <p>服务端名称</p>
 	 */
 	private final String name;
 	/**
-	 * 消息代理类型
+	 * <p>消息代理类型</p>
 	 */
 	private final Class<T> clazz;
 	/**
-	 * TCP Server
+	 * <p>TCP Server</p>
 	 */
 	private AsynchronousServerSocketChannel server;
 	

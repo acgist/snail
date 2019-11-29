@@ -39,11 +39,11 @@ public final class HttpTrackerClient extends TrackerClient {
 	private static final Logger LOGGER = LoggerFactory.getLogger(HttpTrackerClient.class);
 	
 	/**
-	 * 刮檫URL
+	 * <p>刮檫URL</p>
 	 */
 	private static final String SCRAPE_URL_SUFFIX = "/scrape";
 	/**
-	 * 声明URL
+	 * <p>声明URL</p>
 	 */
 	private static final String ANNOUNCE_URL_SUFFIX = "/announce";
 	

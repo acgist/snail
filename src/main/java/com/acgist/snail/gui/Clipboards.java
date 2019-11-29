@@ -12,13 +12,13 @@ import javafx.scene.input.ClipboardContent;
 public final class Clipboards {
 
 	/**
-	 * 不允许实例化
+	 * <p>不允许实例化</p>
 	 */
 	private Clipboards() {
 	}
 	
 	/**
-	 * 拷贝文本内容到剪切板
+	 * <p>拷贝文本内容到剪切板</p>
 	 * 
 	 * @param value 文本内容
 	 */

@@ -18,15 +18,15 @@ public final class ScrapeMessage {
 	 */
 	private Integer id;
 	/**
-	 * 做种Peer数量
+	 * <p>做种Peer数量</p>
 	 */
 	private Integer seeder;
 	/**
-	 * 下载Peer数量
+	 * <p>下载Peer数量</p>
 	 */
 	private Integer leecher;
 	/**
-	 * 完成Peer数量
+	 * <p>完成Peer数量</p>
 	 */
 	private Integer completed;
 

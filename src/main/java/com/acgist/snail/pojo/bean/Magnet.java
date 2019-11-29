@@ -17,7 +17,7 @@ import com.acgist.snail.utils.StringUtils;
 public final class Magnet {
 
 	/**
-	 * 磁力链接类型
+	 * <p>磁力链接类型</p>
 	 */
 	public enum Type {
 		

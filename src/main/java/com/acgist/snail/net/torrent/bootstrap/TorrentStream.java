@@ -34,55 +34,55 @@ public final class TorrentStream {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentStream.class);
 
 	/**
-	 * Piece大小
+	 * <p>Piece大小</p>
 	 */
 	private final long pieceLength;
 	/**
-	 * 缓冲大小：写入文件时修改（TorrentStreamGroup中引用）
+	 * <p>缓冲大小：写入文件时修改（TorrentStreamGroup中引用）</p>
 	 */
 	private final AtomicLong fileBuffer;
 	/**
-	 * 已下载大小：写入文件时修改
+	 * <p>已下载大小：写入文件时修改</p>
 	 */
 	private final AtomicLong fileDownloadSize;
 	/**
-	 * 下载文件组
+	 * <p>下载文件组</p>
 	 */
 	private final TorrentStreamGroup torrentStreamGroup;
 	/**
-	 * Piece缓存队列
+	 * <p>Piece缓存队列</p>
 	 */
 	private final BlockingQueue<TorrentPiece> filePieces;
 	/**
-	 * 文件路径
+	 * <p>文件路径</p>
 	 */
 	private String file;
 	/**
-	 * 文件大小
+	 * <p>文件大小</p>
 	 */
 	private long fileSize;
 	/**
-	 * 文件开始偏移：包含该值
+	 * <p>文件开始偏移：包含该值</p>
 	 */
 	private long fileBeginPos;
 	/**
-	 * 文件结束偏移：不包含该值
+	 * <p>文件结束偏移：不包含该值</p>
 	 */
 	private long fileEndPos;
 	/**
-	 * 文件Piece数量
+	 * <p>文件Piece数量</p>
 	 */
 	private int filePieceSize;
 	/**
-	 * 文件Piece开始索引
+	 * <p>文件Piece开始索引</p>
 	 */
 	private int fileBeginPieceIndex;
 	/**
-	 * 文件Piece结束索引
+	 * <p>文件Piece结束索引</p>
 	 */
 	private int fileEndPieceIndex;
 	/**
-	 * 已下载Piece位图
+	 * <p>已下载Piece位图</p>
 	 */
 	private final BitSet pieces;
 	/**
@@ -92,7 +92,7 @@ public final class TorrentStream {
 	 */
 	private final BitSet pausePieces;
 	/**
-	 * 下载中Piece位图
+	 * <p>下载中Piece位图</p>
 	 */
 	private final BitSet downloadPieces;
 	/**
@@ -351,14 +351,14 @@ public final class TorrentStream {
 	}
 	
 	/**
-	 * 已下载大小
+	 * <p>已下载大小</p>
 	 */
 	public long size() {
 		return this.fileDownloadSize.get();
 	}
 	
 	/**
-	 * Piece下载完成
+	 * <p>Piece下载完成</p>
 	 */
 	private void done(int index) {
 		this.pieces.set(index); // 下载成功
@@ -367,7 +367,7 @@ public final class TorrentStream {
 	}
 
 	/**
-	 * Piece下载失败
+	 * <p>Piece下载失败</p>
 	 * 
 	 * @param piece 下载失败Piece
 	 */
@@ -383,7 +383,7 @@ public final class TorrentStream {
 	}
 	
 	/**
-	 * 是否下载完成
+	 * <p>是否下载完成</p>
 	 * 
 	 * @return true-完成；false-未完成；
 	 */
@@ -405,7 +405,7 @@ public final class TorrentStream {
 	}
 	
 	/**
-	 * 刷出所有缓存：保存到硬盘
+	 * <p>刷出所有缓存：保存到硬盘</p>
 	 */
 	public void flush() {
 		synchronized (this) {
@@ -461,7 +461,7 @@ public final class TorrentStream {
 	}
 	
 	/**
-	 * 初始化：第一块索引、最后一块索引等
+	 * <p>初始化：第一块索引、最后一块索引等</p>
 	 */
 	private void buildFilePiece() {
 		this.fileBeginPieceIndex = (int) (this.fileBeginPos / this.pieceLength);
@@ -500,7 +500,7 @@ public final class TorrentStream {
 	}
 	
 	/**
-	 * 初始化：已下载Piece、校验HASH（第一块和最后一块不校验）
+	 * <p>初始化：已下载Piece、校验HASH（第一块和最后一块不校验）</p>
 	 */
 	private void buildFilePieces(boolean complete) throws IOException {
 		int pos = 0;
@@ -552,7 +552,7 @@ public final class TorrentStream {
 	}
 	
 	/**
-	 * 初始化：已下载文件大小
+	 * <p>初始化：已下载文件大小</p>
 	 */
 	private void buildFileDownloadSize() {
 		long size = 0L;
@@ -575,28 +575,28 @@ public final class TorrentStream {
 	}
 	
 	/**
-	 * 第一块的偏移
+	 * <p>第一块的偏移</p>
 	 */
 	private int firstPiecePos() {
 		return (int) (this.fileBeginPos - (this.fileBeginPieceIndex * this.pieceLength));
 	}
 	
 	/**
-	 * 第一块的大小
+	 * <p>第一块的大小</p>
 	 */
 	private int firstPieceSize() {
 		return (int) (this.pieceLength - firstPiecePos());
 	}
 	
 	/**
-	 * 最后一块的大小=偏移
+	 * <p>最后一块的大小=偏移</p>
 	 */
 	private int lastPieceSize() {
 		return (int) (this.fileEndPos - (this.pieceLength * this.fileEndPieceIndex));
 	}
 
 	/**
-	 * 是否有数据
+	 * <p>是否有数据</p>
 	 */
 	private boolean haveData(byte[] bytes) {
 		if(bytes == null) {
@@ -611,7 +611,7 @@ public final class TorrentStream {
 	}
 
 	/**
-	 * 文件是否包含Piece
+	 * <p>文件是否包含Piece</p>
 	 * 
 	 * @param index Piece索引
 	 */
@@ -624,7 +624,7 @@ public final class TorrentStream {
 	}
 	
 	/**
-	 * 是否含有Piece数据
+	 * <p>是否含有Piece数据</p>
 	 */
 	private boolean havePiece(int index) {
 		return this.pieces.get(index);

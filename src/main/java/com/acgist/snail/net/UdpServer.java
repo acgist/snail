@@ -40,19 +40,19 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements UdpChanne
 	}
 	
 	/**
-	 * 服务端名称
+	 * <p>服务端名称</p>
 	 */
 	private String name;
 	/**
-	 * 消息代理
+	 * <p>消息代理</p>
 	 */
 	private final T handler;
 	/**
-	 * Selector：每个服务端独立
+	 * <p>Selector：每个服务端独立</p>
 	 */
 	private final Selector selector;
 	/**
-	 * UDP通道
+	 * <p>UDP通道</p>
 	 */
 	protected final DatagramChannel channel;
 

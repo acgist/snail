@@ -13,7 +13,7 @@ import com.acgist.snail.utils.ObjectUtils;
 public final class NodeSession implements Comparable<NodeSession> {
 
 	/**
-	 * DHT节点状态
+	 * <p>DHT节点状态</p>
 	 */
 	public enum Status {
 		
@@ -27,19 +27,19 @@ public final class NodeSession implements Comparable<NodeSession> {
 	}
 	
 	/**
-	 * 节点ID
+	 * <p>节点ID</p>
 	 */
 	private final byte[] id;
 	/**
-	 * 节点地址
+	 * <p>节点地址</p>
 	 */
 	private final String host;
 	/**
-	 * 节点端口
+	 * <p>节点端口</p>
 	 */
 	private final int port;
 	/**
-	 * 节点状态
+	 * <p>节点状态</p>
 	 */
 	private Status status;
 

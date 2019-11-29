@@ -18,16 +18,16 @@ public class ApplicationMessage {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationMessage.class);
 	
 	/**
-	 * 失败
+	 * <p>失败</p>
 	 */
 	public static final String FAIL = "fail";
 	/**
-	 * 成功
+	 * <p>成功</p>
 	 */
 	public static final String SUCCESS = "success";
 
 	/**
-	 * 系统消息类型
+	 * <p>系统消息类型</p>
 	 */
 	public enum Type {
 		
@@ -81,11 +81,11 @@ public class ApplicationMessage {
 	}
 
 	/**
-	 * 消息类型
+	 * <p>消息类型</p>
 	 */
 	private Type type;
 	/**
-	 * 消息内容
+	 * <p>消息内容</p>
 	 */
 	private String body;
 

@@ -24,7 +24,7 @@ public final class TorrentProtocol extends Protocol {
 	private static final TorrentProtocol INSTANCE = new TorrentProtocol();
 
 	/**
-	 * 种子文件操作类型
+	 * <p>种子文件操作类型</p>
 	 */
 	public enum TorrentHandle {
 		
@@ -36,15 +36,15 @@ public final class TorrentProtocol extends Protocol {
 	}
 	
 	/**
-	 * 种子文件路径
+	 * <p>种子文件路径</p>
 	 */
 	private String torrentFile;
 	/**
-	 * 种子信息
+	 * <p>种子信息</p>
 	 */
 	private TorrentSession torrentSession;
 	/**
-	 * 种子文件操作类型
+	 * <p>种子文件操作类型</p>
 	 */
 	private TorrentHandle handle = TorrentHandle.COPY;
 	

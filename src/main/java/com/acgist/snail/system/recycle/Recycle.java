@@ -14,11 +14,11 @@ import com.acgist.snail.utils.StringUtils;
 public abstract class Recycle {
 
 	/**
-	 * 原始文件路径
+	 * <p>原始文件路径</p>
 	 */
 	protected final String path;
 	/**
-	 * 原始文件
+	 * <p>原始文件</p>
 	 */
 	protected final File file;
 	

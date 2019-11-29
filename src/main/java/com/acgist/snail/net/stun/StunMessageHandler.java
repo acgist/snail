@@ -161,7 +161,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	}
 	
 	/**
-	 * 读取属性
+	 * <p>读取属性</p>
 	 */
 	private ByteBuffer readResponseAttribute(ByteBuffer buffer, short length) {
 		final byte[] message = new byte[length];
@@ -170,14 +170,14 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	}
 	
 	/**
-	 * 发送{@link AttributeType#MAPPED_ADDRESS}消息
+	 * <p>发送{@link AttributeType#MAPPED_ADDRESS}消息</p>
 	 */
 	public void mappedAddress() {
 		pushBindingMessage(StunConfig.MessageType.REQUEST, StunConfig.AttributeType.MAPPED_ADDRESS, null);
 	}
 	
 	/**
-	 * 处理{@link AttributeType#MAPPED_ADDRESS}消息
+	 * <p>处理{@link AttributeType#MAPPED_ADDRESS}消息</p>
 	 * 
 	 * <pre>
      *  0                   1                   2                   3
@@ -211,7 +211,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	}
 	
 	/**
-	 * 处理{@link AttributeType#XOR_MAPPED_ADDRESS}消息
+	 * <p>处理{@link AttributeType#XOR_MAPPED_ADDRESS}消息</p>
 	 * 
 	 * <pre>
      *  0                   1                   2                   3
@@ -247,7 +247,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	}
 	
 	/**
-	 * 处理{@link AttributeType#ERROR_CODE}消息
+	 * <p>处理{@link AttributeType#ERROR_CODE}消息</p>
 	 * 
 	 * <pre>
      *  0                   1                   2                   3
@@ -279,7 +279,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	}
 	
 	/**
-	 * 发送绑定消息
+	 * <p>发送绑定消息</p>
 	 */
 	private void pushBindingMessage(StunConfig.MessageType messageType, StunConfig.AttributeType attributeType, byte[] value) {
 		final byte[] message = buildBindingMessage(messageType, buildAttribute(attributeType, value));
@@ -291,14 +291,14 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	}
 	
 	/**
-	 * 创建绑定消息
+	 * <p>创建绑定消息</p>
 	 */
 	private byte[] buildBindingMessage(StunConfig.MessageType messageType, byte[] attribute) {
 		return this.buildMessage(StunConfig.MethodType.BINDING, messageType, attribute);
 	}
 	
 	/**
-	 * 创建消息
+	 * <p>创建消息</p>
 	 */
 	private byte[] buildMessage(StunConfig.MethodType methodType, StunConfig.MessageType messageType, byte[] attribute) {
 		final ByteBuffer buffer = ByteBuffer.allocate(StunConfig.STUN_HEADER_LENGTH + attribute.length);
@@ -311,7 +311,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	}
 
 	/**
-	 * 创建属性
+	 * <p>创建属性</p>
 	 */
 	private byte[] buildAttribute(StunConfig.AttributeType attributeType, byte[] value) {
 		final short valueLength = (short) (value == null ? 0 : value.length);

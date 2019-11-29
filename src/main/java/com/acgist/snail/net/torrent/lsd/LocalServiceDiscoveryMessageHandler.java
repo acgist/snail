@@ -34,15 +34,15 @@ public final class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler
 	private static final Logger LOGGER = LoggerFactory.getLogger(LocalServiceDiscoveryMessageHandler.class);
 
 	/**
-	 * 端口
+	 * <p>端口</p>
 	 */
 	private static final String HEADER_PORT = "Port";
 	/**
-	 * Cookie：区别软件本身消息
+	 * <p>Cookie：区别软件本身消息</p>
 	 */
 	private static final String HEADER_COOKIE = "cookie";
 	/**
-	 * InfoHash
+	 * <p>InfoHash</p>
 	 */
 	private static final String HEADER_INFOHASH = "Infohash";
 

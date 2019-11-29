@@ -23,7 +23,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
 /**
- * BT文件选择器
+ * <p>BT文件选择器</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -31,11 +31,11 @@ import javafx.scene.text.Text;
 public final class SelectorManager {
 
 	/**
-	 * 下载按钮
+	 * <p>下载按钮</p>
 	 */
 	private final Button download;
 	/**
-	 * 树形菜单根节点
+	 * <p>树形菜单根节点</p>
 	 */
 	private final TreeItem<HBox> root;
 	/**
@@ -45,7 +45,7 @@ public final class SelectorManager {
 	private final Map<String, Selector> selector = new HashMap<>();;
 
 	/**
-	 * 选择器
+	 * <p>选择器</p>
 	 * 
 	 * @param name 任务名称
 	 * @param download 下载按钮
@@ -64,7 +64,7 @@ public final class SelectorManager {
 	}
 
 	/**
-	 * 创建树形菜单
+	 * <p>创建树形菜单</p>
 	 * 
 	 * @param path 文件路径
 	 * @param size 文件大小
@@ -91,7 +91,7 @@ public final class SelectorManager {
 	}
 	
 	/**
-	 * 创建树形菜单
+	 * <p>创建树形菜单</p>
 	 * 
 	 * @param parent 父节点
 	 * @param path 路径
@@ -192,7 +192,7 @@ public final class SelectorManager {
 	}
 	
 	/**
-	 * 设置按钮文本
+	 * <p>设置按钮文本</p>
 	 */
 	private void buttonSize() {
 		this.download.setText("下载（" + FileUtils.formatSize(size()) + "）");
@@ -221,28 +221,28 @@ public final class SelectorManager {
 }
 
 /**
- * 选择文件
+ * <p>选择文件</p>
  */
 class Selector {
 
 	/**
-	 * 文件路径
+	 * <p>文件路径</p>
 	 */
 	private final String path;
 	/**
-	 * 文件大小：文件夹=0
+	 * <p>文件大小：文件夹=0</p>
 	 */
 	private final long size;
 	/**
-	 * 是否是文件：true=文件；false=文件夹；
+	 * <p>是否是文件：true=文件；false=文件夹；</p>
 	 */
 	private final boolean file;
 	/**
-	 * 选择框
+	 * <p>选择框</p>
 	 */
 	private final CheckBox checkBox;
 	/**
-	 * 树形菜单节点
+	 * <p>树形菜单节点</p>
 	 */
 	private final TreeItem<HBox> treeItem;
 
@@ -255,7 +255,7 @@ class Selector {
 	}
 
 	/**
-	 * 是否选中
+	 * <p>是否选中</p>
 	 * 
 	 * @return true-选中；false-未选中；
 	 */
@@ -264,7 +264,7 @@ class Selector {
 	}
 
 	/**
-	 * 设置选中
+	 * <p>设置选中</p>
 	 * 
 	 * @param selected true-选中；false-未选中；
 	 */

@@ -41,7 +41,7 @@ public final class UtpRequestQueue {
 	 */
 	private final ExecutorService executor;
 	/**
-	 * 请求处理队列集合
+	 * <p>请求处理队列集合</p>
 	 */
 	private final List<BlockingQueue<UtpRequest>> queues;
 	
@@ -97,7 +97,7 @@ public final class UtpRequestQueue {
 	}
 	
 	/**
-	 * 关闭UTP请求处理线程池
+	 * <p>关闭UTP请求处理线程池</p>
 	 */
 	public void shutdown() {
 		LOGGER.info("关闭UTP请求处理线程池");

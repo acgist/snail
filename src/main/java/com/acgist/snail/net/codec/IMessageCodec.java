@@ -32,7 +32,7 @@ public interface IMessageCodec<T> {
 	}
 	
 	/**
-	 * 消息编码
+	 * <p>消息编码</p>
 	 * 
 	 * @param message 消息
 	 * 
@@ -43,7 +43,7 @@ public interface IMessageCodec<T> {
 	}
 
 	/**
-	 * 消息编码
+	 * <p>消息编码</p>
 	 * 
 	 * @param message 消息
 	 */
@@ -51,7 +51,7 @@ public interface IMessageCodec<T> {
 	}
 	
 	/**
-	 * 消息解码
+	 * <p>消息解码</p>
 	 * 
 	 * @param message 消息
 	 * 
@@ -61,7 +61,7 @@ public interface IMessageCodec<T> {
 	}
 	
 	/**
-	 * 消息解码
+	 * <p>消息解码</p>
 	 * 
 	 * @param message 消息
 	 * @param address 地址
@@ -72,7 +72,7 @@ public interface IMessageCodec<T> {
 	}
 	
 	/**
-	 * 处理消息
+	 * <p>处理消息</p>
 	 * 
 	 * @param message 消息
 	 * 
@@ -82,7 +82,7 @@ public interface IMessageCodec<T> {
 	}
 	
 	/**
-	 * 处理消息
+	 * <p>处理消息</p>
 	 * 
 	 * @param message 消息
 	 * @param address 地址

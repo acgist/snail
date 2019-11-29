@@ -16,32 +16,32 @@ import com.acgist.snail.utils.StringUtils;
 public final class FtpClientBuilder {
 
 	/**
-	 * FTP默认端口
+	 * <p>FTP默认端口</p>
 	 */
 	private static final int DEFAULT_PORT = 21;
 	
 	/**
-	 * 下载链接
+	 * <p>下载链接</p>
 	 */
 	private final String url;
 	/**
-	 * 服务器地址
+	 * <p>服务器地址</p>
 	 */
 	private String host;
 	/**
-	 * 服务器端口
+	 * <p>服务器端口</p>
 	 */
 	private int port;
 	/**
-	 * 用户账号
+	 * <p>用户账号</p>
 	 */
 	private String user;
 	/**
-	 * 用户密码
+	 * <p>用户密码</p>
 	 */
 	private String password;
 	/**
-	 * 文件路径
+	 * <p>文件路径</p>
 	 */
 	private String filePath;
 	
@@ -54,7 +54,7 @@ public final class FtpClientBuilder {
 	}
 	
 	/**
-	 * 创建FtpClient
+	 * <p>创建FtpClient</p>
 	 */
 	public FtpClient build() {
 		this.decodeUrl();
@@ -68,7 +68,7 @@ public final class FtpClientBuilder {
 	}
 	
 	/**
-	 * 解析URL：地址、端口、用户、文件等信息
+	 * <p>解析URL：地址、端口、用户、文件等信息</p>
 	 */
 	private void decodeUrl() {
 		final URI uri = URI.create(this.url);
@@ -84,7 +84,7 @@ public final class FtpClientBuilder {
 	}
 
 	/**
-	 * 解析用户授权信息
+	 * <p>解析用户授权信息</p>
 	 */
 	private void decodeUserInfo(String userInfo) {
 		if(StringUtils.isEmpty(userInfo)) {

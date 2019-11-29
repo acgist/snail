@@ -37,7 +37,7 @@ public final class BEncodeDecoder {
 	private static final Logger LOGGER = LoggerFactory.getLogger(BEncodeDecoder.class);
 	
 	/**
-	 * B编码数据类型
+	 * <p>B编码数据类型</p>
 	 */
 	public enum Type {
 		
@@ -51,40 +51,40 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * 结尾
+	 * <p>结尾</p>
 	 */
 	public static final char TYPE_E = 'e';
 	/**
-	 * 数字
+	 * <p>数字</p>
 	 */
 	public static final char TYPE_I = 'i';
 	/**
-	 * list
+	 * <p>list</p>
 	 */
 	public static final char TYPE_L = 'l';
 	/**
-	 * map
+	 * <p>map</p>
 	 */
 	public static final char TYPE_D = 'd';
 	/**
-	 * 分隔符
+	 * <p>分隔符</p>
 	 */
 	public static final char SEPARATOR = ':';
 	
 	/**
-	 * 数据类型
+	 * <p>数据类型</p>
 	 */
 	private Type type;
 	/**
-	 * list
+	 * <p>list</p>
 	 */
 	private List<Object> list;
 	/**
-	 * map
+	 * <p>map</p>
 	 */
 	private Map<String, Object> map;
 	/**
-	 * 原始数据：不需要关闭
+	 * <p>原始数据：不需要关闭</p>
 	 */
 	private final ByteArrayInputStream inputStream;
 	

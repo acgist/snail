@@ -12,7 +12,7 @@ import javafx.util.Duration;
 public final class Tooltips {
 
 	/**
-	 * 不允许实例化
+	 * <p>不允许实例化</p>
 	 */
 	private Tooltips() {
 	}
@@ -30,7 +30,7 @@ public final class Tooltips {
 	}
 	
 	/**
-	 * 创建提示框
+	 * <p>创建提示框</p>
 	 * 
 	 * @param value 提示内容
 	 * @param millis 显示时间：毫秒

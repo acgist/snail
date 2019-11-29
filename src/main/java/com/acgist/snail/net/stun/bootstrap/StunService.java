@@ -14,7 +14,7 @@ import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * Stun Service
+ * <p>Stun Service</p>
  * 
  * @author acgist
  * @since 1.2.0
@@ -49,7 +49,7 @@ public final class StunService {
 	}
 	
 	/**
-	 * 设置端口映射信息
+	 * <p>设置端口映射信息</p>
 	 * 
 	 * @param externalIpAddress 外网IP地址
 	 * @param port 外网端口
@@ -62,7 +62,7 @@ public final class StunService {
 	}
 
 	/**
-	 * 设置STUN服务器地址
+	 * <p>设置STUN服务器地址</p>
 	 */
 	private InetSocketAddress buildServerAddress() {
 		// 格式：stun:stun1.l.google.com:19302

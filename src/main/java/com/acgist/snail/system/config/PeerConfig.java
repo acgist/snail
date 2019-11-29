@@ -23,23 +23,23 @@ import java.util.Map;
 public final class PeerConfig {
 	
 	/**
-	 * 未知终端
+	 * <p>未知终端</p>
 	 */
 	private static final String UNKNOWN = "unknown";
 	/**
-	 * 最大失败次数：超过这个次数将标记失败
+	 * <p>最大失败次数：超过这个次数将标记失败</p>
 	 */
 	public static final int MAX_FAIL_TIMES = 3;
 	/**
-	 * PeerId长度
+	 * <p>PeerId长度</p>
 	 */
 	public static final int PEER_ID_LENGTH = 20;
 	/**
-	 * 保留位（reserved）长度
+	 * <p>保留位（reserved）长度</p>
 	 */
 	public static final int RESERVED_LENGTH = 8;
 	/**
-	 * 保留位（reserved）
+	 * <p>保留位（reserved）</p>
 	 */
 	public static final byte[] HANDSHAKE_RESERVED = {0, 0, 0, 0, 0, 0, 0, 0};
 	/**
@@ -70,51 +70,51 @@ public final class PeerConfig {
 	 */
 	public static final byte EXTENSION_PROTOCOL = 1 << 4;
 	/**
-	 * 握手消息长度
+	 * <p>握手消息长度</p>
 	 */
 	public static final int HANDSHAKE_LENGTH = 68;
 	/**
-	 * 协议名称
+	 * <p>协议名称</p>
 	 */
 	public static final String HANDSHAKE_NAME = "BitTorrent protocol";
 	/**
-	 * 协议字节数组
+	 * <p>协议字节数组</p>
 	 */
 	public static final byte[] HANDSHAKE_NAME_BYTES = HANDSHAKE_NAME.getBytes();
 	/**
-	 * 协议字节数组长度
+	 * <p>协议字节数组长度</p>
 	 */
 	public static final int HANDSHAKE_NAME_LENGTH = HANDSHAKE_NAME_BYTES.length;
 	/**
-	 * Peer来源：PEX
+	 * <p>Peer来源：PEX</p>
 	 */
 	public static final byte SOURCE_PEX =			1 << 0;
 	/**
-	 * Peer来源：DHT
+	 * <p>Peer来源：DHT</p>
 	 */
 	public static final byte SOURCE_DHT =			1 << 1;
 	/**
-	 * Peer来源：本地发现
+	 * <p>Peer来源：本地发现</p>
 	 */
 	public static final byte SOURCE_LSD =			1 << 2;
 	/**
-	 * Peer来源：Tracker
+	 * <p>Peer来源：Tracker</p>
 	 */
 	public static final byte SOURCE_TRACKER =		1 << 3;
 	/**
-	 * Peer来源：客户端接入
+	 * <p>Peer来源：客户端接入</p>
 	 */
 	public static final byte SOURCE_CONNECT =		1 << 4;
 	/**
-	 * Peer来源：holepunch
+	 * <p>Peer来源：holepunch</p>
 	 */
 	public static final byte SOURCE_HOLEPUNCH =		1 << 5;
 	/**
-	 * Peer状态：上传
+	 * <p>Peer状态：上传</p>
 	 */
 	public static final byte STATUS_UPLOAD =   1 << 1;
 	/**
-	 * Peer状态：下载
+	 * <p>Peer状态：下载</p>
 	 */
 	public static final byte STATUS_DOWNLOAD = 1 << 0;
 	/**
@@ -143,7 +143,7 @@ public final class PeerConfig {
 	 */
 	public static final byte PEX_OUTGO =				1 << 4;
 	/**
-	 * 客户端名称
+	 * <p>客户端名称</p>
 	 */
 	private static final Map<String, String> PEER_NAMES = new HashMap<>();
 
@@ -304,7 +304,7 @@ public final class PeerConfig {
 		ALLOWED_FAST(	(byte) 0x11);
 		
 		/**
-		 * 消息ID
+		 * <p>消息ID</p>
 		 */
 		private final byte id;
 		
@@ -329,7 +329,7 @@ public final class PeerConfig {
 	}
 	
 	/**
-	 * Peer扩展协议消息类型
+	 * <p>Peer扩展协议消息类型</p>
 	 */
 	public enum ExtensionType {
 		
@@ -347,19 +347,19 @@ public final class PeerConfig {
 		LT_DONTHAVE(	(byte) 0x05, "lt_donthave",		true,	true);
 
 		/**
-		 * 消息ID：自定义
+		 * <p>消息ID：自定义</p>
 		 */
 		private final byte id;
 		/**
-		 * 协议名称
+		 * <p>协议名称</p>
 		 */
 		private final String value;
 		/**
-		 * 是否支持
+		 * <p>是否支持</p>
 		 */
 		private final boolean support;
 		/**
-		 * 是否通知：握手时通知Peer支持该扩展
+		 * <p>是否通知：握手时通知Peer支持该扩展</p>
 		 */
 		private final boolean notice;
 		
@@ -414,7 +414,7 @@ public final class PeerConfig {
 	}
 	
 	/**
-	 * Metadata扩展协议消息类型
+	 * <p>Metadata扩展协议消息类型</p>
 	 */
 	public enum MetadataType {
 		
@@ -426,7 +426,7 @@ public final class PeerConfig {
 		REJECT(	(byte) 0x02);
 		
 		/**
-		 * 消息ID
+		 * <p>消息ID</p>
 		 */
 		private final byte id;
 		
@@ -451,7 +451,7 @@ public final class PeerConfig {
 	}
 
 	/**
-	 * Holepunch扩展协议消息类型
+	 * <p>Holepunch扩展协议消息类型</p>
 	 */
 	public enum HolepunchType {
 		
@@ -463,7 +463,7 @@ public final class PeerConfig {
 		ERROR(		(byte) 0x02);
 		
 		/**
-		 * 消息ID
+		 * <p>消息ID</p>
 		 */
 		private final byte id;
 		
@@ -511,7 +511,7 @@ public final class PeerConfig {
 		CODE_04((byte) 0x04);
 		
 		/**
-		 * 错误编码
+		 * <p>错误编码</p>
 		 */
 		private final byte code;
 		
@@ -526,7 +526,7 @@ public final class PeerConfig {
 	}
 	
 	/**
-	 * 任务动作
+	 * <p>任务动作</p>
 	 */
 	public enum Action {
 		

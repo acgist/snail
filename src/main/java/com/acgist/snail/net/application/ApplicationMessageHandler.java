@@ -25,7 +25,7 @@ import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * 系统消息代理
+ * <p>系统消息代理</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -35,7 +35,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationMessageHandler.class);
 	
 	/**
-	 * 消息分隔符
+	 * <p>消息分隔符</p>
 	 */
 	private static final String SPLIT = "\r\n";
 	
@@ -110,7 +110,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	}
 	
 	/**
-	 * 注册扩展GUI
+	 * <p>注册扩展GUI</p>
 	 */
 	private void onGui(ApplicationMessage message) {
 		final boolean ok = GuiHandler.getInstance().extendGuiMessageHandler(this);
@@ -130,21 +130,21 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	}
 	
 	/**
-	 * 关闭连接
+	 * <p>关闭连接</p>
 	 */
 	private void onClose(ApplicationMessage message) {
 		this.close();
 	}
 	
 	/**
-	 * 唤醒窗口
+	 * <p>唤醒窗口</p>
 	 */
 	private void onNotify(ApplicationMessage message) {
 		GuiHandler.getInstance().show();
 	}
 	
 	/**
-	 * 关闭程序
+	 * <p>关闭程序</p>
 	 */
 	private void onShutdown(ApplicationMessage message) {
 		SystemContext.shutdown();

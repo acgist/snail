@@ -47,13 +47,14 @@ public final class SystemThreadContext {
 	public static final String SNAIL_THREAD_UDP_SERVER = SNAIL_THREAD + "-UDP-Server";
 	/** UDP处理器线程 */
 	public static final String SNAIL_THREAD_UTP_HANDLER = SNAIL_THREAD + "-UTP-Handler";
+	
 	/**
 	 * <p>系统线程池：加快系统运行、防止卡顿</p>
 	 * <p>例如：初始化、关闭资源、文件校验等等</p>
 	 */
 	private static final ExecutorService EXECUTOR;
 	/**
-	 * 系统定时线程池：定时任务
+	 * <p>系统定时线程池：定时任务</p>
 	 */
 	private static final ScheduledExecutorService EXECUTOR_TIMER;
 	
@@ -235,7 +236,7 @@ public final class SystemThreadContext {
 	}
 	
 	/**
-	 * 关闭定时线程池
+	 * <p>关闭定时线程池</p>
 	 * 
 	 * @param scheduledFuture 定时线程池
 	 * 

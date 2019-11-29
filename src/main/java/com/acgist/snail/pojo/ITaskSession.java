@@ -16,33 +16,33 @@ import com.acgist.snail.system.exception.DownloadException;
 public interface ITaskSession extends ITaskSessionTable, ITaskSessionEntity, ITaskSessionRepository {
 
 	/**
-	 * 任务状态
+	 * <p>任务状态</p>
 	 */
 	public enum Status {
 		
 		/**
-		 * 任务添加到下载队列时处于等待状态
+		 * <p>任务添加到下载队列时处于等待状态</p>
 		 */
 		AWAIT(		"等待中"),
 		/**
-		 * 任务下载时的状态：由下载管理器自动修改（不能直接设置此状态）
+		 * <p>任务下载时的状态：由下载管理器自动修改（不能直接设置此状态）</p>
 		 */
 		DOWNLOAD(	"下载中"),
 		/**
-		 * 任务暂停
+		 * <p>任务暂停</p>
 		 */
 		PAUSE(		"暂停"),
 		/**
-		 * 任务完成：完成状态不能转换为其他任何状态
+		 * <p>任务完成：完成状态不能转换为其他任何状态</p>
 		 */
 		COMPLETE(	"完成"),
 		/**
-		 * 任务失败
+		 * <p>任务失败</p>
 		 */
 		FAIL(		"失败");
 		
 		/**
-		 * 状态名称
+		 * <p>状态名称</p>
 		 */
 		private final String value;
 		
@@ -57,7 +57,7 @@ public interface ITaskSession extends ITaskSessionTable, ITaskSessionEntity, ITa
 	}
 	
 	/**
-	 * 文件类型
+	 * <p>文件类型</p>
 	 */
 	public enum FileType {
 		
@@ -81,11 +81,11 @@ public interface ITaskSession extends ITaskSessionTable, ITaskSessionEntity, ITa
 		UNKNOWN(	"未知", "unknown.png");
 		
 		/**
-		 * 类型名称
+		 * <p>类型名称</p>
 		 */
 		private final String value;
 		/**
-		 * 类型图标
+		 * <p>类型图标</p>
 		 */
 		private final String icon;
 

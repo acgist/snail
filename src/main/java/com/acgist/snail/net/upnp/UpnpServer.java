@@ -16,15 +16,15 @@ public final class UpnpServer extends UdpServer<UpnpAcceptHandler> {
 	private static final UpnpServer INSTANCE = new UpnpServer();
 	
 	/**
-	 * TTL
+	 * <p>TTL</p>
 	 */
 	private static final int UPNP_TTL = 2;
 	/**
-	 * UPNP端口
+	 * <p>UPNP端口</p>
 	 */
 	public static final int UPNP_PORT = 1900;
 	/**
-	 * UPNP地址
+	 * <p>UPNP地址</p>
 	 */
 	public static final String UPNP_HOST = "239.255.255.250";
 	

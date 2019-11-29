@@ -35,7 +35,7 @@ import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 
 /**
- * 托盘菜单
+ * <p>托盘菜单</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -47,7 +47,7 @@ public final class TrayMenu extends Menu {
 	private static final TrayMenu INSTANCE;
 	
 	/**
-	 * 窗口高度
+	 * <p>窗口高度</p>
 	 */
 	private static final int MENU_WINDOW_HEIGHT = 150;
 	
@@ -59,15 +59,15 @@ public final class TrayMenu extends Menu {
 	}
 	
 	/**
-	 * 是否支持托盘
+	 * <p>是否支持托盘</p>
 	 */
 	private final boolean support;
 	/**
-	 * 托盘容器
+	 * <p>托盘容器</p>
 	 */
 	private Stage trayStage;
 	/**
-	 * 托盘
+	 * <p>托盘</p>
 	 */
 	private TrayIcon trayIcon;
 	
@@ -119,7 +119,7 @@ public final class TrayMenu extends Menu {
 	}
 	
 	/**
-	 * 添加系统托盘
+	 * <p>添加系统托盘</p>
 	 */
 	private void enableTray() {
 		final MouseListener mouseListener = new MouseInputAdapter() {
@@ -157,21 +157,21 @@ public final class TrayMenu extends Menu {
 	}
 	
 	/**
-	 * 提示信息（提示）
+	 * <p>提示信息（提示）</p>
 	 */
 	public void info(String title, String content) {
 		notice(title, content, MessageType.INFO);
 	}
 	
 	/**
-	 * 提示信息（警告）
+	 * <p>提示信息（警告）</p>
 	 */
 	public void warn(String title, String content) {
 		notice(title, content, MessageType.WARNING);
 	}
 
 	/**
-	 * 提示信息
+	 * <p>提示信息</p>
 	 */
 	public void notice(String title, String content, MessageType type) {
 		if(DownloadConfig.getNotice() && this.support) {
@@ -180,7 +180,7 @@ public final class TrayMenu extends Menu {
 	}
 	
 	/**
-	 * 关闭托盘
+	 * <p>关闭托盘</p>
 	 */
 	public static final void exit() {
 		if(TrayMenu.getInstance().support) {
@@ -190,7 +190,7 @@ public final class TrayMenu extends Menu {
 	}
 	
 	/**
-	 * 创建托盘菜单容器
+	 * <p>创建托盘菜单容器</p>
 	 */
 	private Stage createTrayStage() {
 		final FlowPane trayPane = new FlowPane();
@@ -210,7 +210,7 @@ public final class TrayMenu extends Menu {
 	}
 	
 	/**
-	 * 显示
+	 * <p>显示</p>
 	 */
 	private EventHandler<ActionEvent> showAction = (event) -> {
 		Platform.runLater(() -> {
@@ -219,7 +219,7 @@ public final class TrayMenu extends Menu {
 	};
 	
 	/**
-	 * 隐藏
+	 * <p>隐藏</p>
 	 */
 	private EventHandler<ActionEvent> hideAction = (event) -> {
 		Platform.runLater(() -> {
@@ -228,35 +228,35 @@ public final class TrayMenu extends Menu {
 	};
 	
 	/**
-	 * 退出
+	 * <p>退出</p>
 	 */
 	private EventHandler<ActionEvent> exitAction = (event) -> {
 		SystemContext.shutdown();
 	};
 	
 	/**
-	 * 关于
+	 * <p>关于</p>
 	 */
 	private EventHandler<ActionEvent> aboutAction = (event) -> {
 		AboutWindow.getInstance().show();
 	};
 	
 	/**
-	 * 官网与源码
+	 * <p>官网与源码</p>
 	 */
 	private EventHandler<ActionEvent> sourceAction = (event) -> {
 		BrowseUtils.open(SystemConfig.getSource());
 	};
 	
 	/**
-	 * 问题与建议
+	 * <p>问题与建议</p>
 	 */
 	private EventHandler<ActionEvent> supportAction = (event) -> {
 		BrowseUtils.open(SystemConfig.getSupport());
 	};
 	
 	/**
-	 * 窗口隐藏时移除托盘菜单的容器
+	 * <p>窗口隐藏时移除托盘菜单的容器</p>
 	 */
 	private EventHandler<WindowEvent> windowHiddenAction = (event) -> {
 		Platform.runLater(() -> {

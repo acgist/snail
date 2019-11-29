@@ -23,19 +23,19 @@ public final class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDis
 	private static final LocalServiceDiscoveryServer INSTANCE = new LocalServiceDiscoveryServer();
 
 	/**
-	 * TTL
+	 * <p>TTL</p>
 	 */
 	private static final int LSD_TTL = 2;
 	/**
-	 * 本地发现端口
+	 * <p>本地发现端口</p>
 	 */
 	public static final int LSD_PORT = 6771;
 	/**
-	 * 本地发现IPv4地址
+	 * <p>本地发现IPv4地址</p>
 	 */
 	public static final String LSD_HOST = "239.192.152.143";
 	/**
-	 * 本地发现IPv6地址
+	 * <p>本地发现IPv6地址</p>
 	 */
 	public static final String LSD_HOST_IPV6 = "[ff15::efc0:988f]";
 	

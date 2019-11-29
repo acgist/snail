@@ -39,16 +39,16 @@ public final class TrackerManager {
 	private static final TrackerManager INSTANCE = new TrackerManager();
 
 	/**
-	 * 任务Tracker最大数量
+	 * <p>任务Tracker最大数量</p>
 	 */
 	private static final int MAX_TRACKER_SIZE = SystemConfig.getTrackerSize();
 	
 	/**
-	 * Tracker客户端Map：{@link TrackerClient#id()}=Tracker客户端
+	 * <p>Tracker客户端Map：{@link TrackerClient#id()}=Tracker客户端</p>
 	 */
 	private final Map<Integer, TrackerClient> trackerClients;
 	/**
-	 * Tracker执行器Map：{@link TrackerLauncher#id()}=Tracker执行器
+	 * <p>Tracker执行器Map：{@link TrackerLauncher#id()}=Tracker执行器</p>
 	 */
 	private final Map<Integer, TrackerLauncher> trackerLaunchers;
 	

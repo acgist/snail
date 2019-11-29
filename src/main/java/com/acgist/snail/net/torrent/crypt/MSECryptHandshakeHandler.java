@@ -58,16 +58,16 @@ public final class MSECryptHandshakeHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MSECryptHandshakeHandler.class);
 
 	/**
-	 * 缓冲区大小：4KB
+	 * <p>缓冲区大小：4KB</p>
 	 */
 	private static final int BUFFER_LENGTH = 4 * SystemConfig.ONE_KB;
 	/**
-	 * 加密握手超时时间：不能超过{@linkplain PeerSubMessageHandler#HANDSHAKE_TIMEOUT Peer握手超时时间}
+	 * <p>加密握手超时时间：不能超过{@linkplain PeerSubMessageHandler#HANDSHAKE_TIMEOUT Peer握手超时时间}</p>
 	 */
 	private static final int HANDSHAKE_TIMEOUT = PeerSubMessageHandler.HANDSHAKE_TIMEOUT;
 	
 	/**
-	 * 加密握手步骤
+	 * <p>加密握手步骤</p>
 	 */
 	public enum Step {
 		
@@ -91,47 +91,47 @@ public final class MSECryptHandshakeHandler {
 	}
 	
 	/**
-	 * 当前步骤（默认：接收公钥）
+	 * <p>当前步骤（默认：接收公钥）</p>
 	 */
 	private Step step = Step.RECEIVE_PUBLIC_KEY;
 	/**
-	 * 是否处理完成（握手处理）
+	 * <p>是否处理完成（握手处理）</p>
 	 */
 	private volatile boolean complete = false;
 	/**
-	 * 是否加密：默认明文
+	 * <p>是否加密：默认明文</p>
 	 */
 	private volatile boolean crypt = false;
 	/**
-	 * 握手等待锁
+	 * <p>握手等待锁</p>
 	 */
 	private final Object handshakeLock = new Object();
 	/**
-	 * 加密套件
+	 * <p>加密套件</p>
 	 */
 	private MSECipher cipher;
 	/**
-	 * 临时加密套件：VC数据查找时使用
+	 * <p>临时加密套件：VC数据查找时使用</p>
 	 */
 	private MSECipher cipherTmp;
 	/**
-	 * 密钥对
+	 * <p>密钥对</p>
 	 */
 	private KeyPair keyPair;
 	/**
-	 * 加密策略
+	 * <p>加密策略</p>
 	 */
 	private Strategy strategy;
 	/**
-	 * 数据缓冲
+	 * <p>数据缓冲</p>
 	 */
 	private ByteBuffer buffer;
 	/**
-	 * S：DH Secret
+	 * <p>S：DH Secret</p>
 	 */
 	private BigInteger dhSecret;
 	/**
-	 * Padding数据同步
+	 * <p>Padding数据同步</p>
 	 */
 	private MSEPaddingSync msePaddingSync;
 	
@@ -151,21 +151,21 @@ public final class MSECryptHandshakeHandler {
 	}
 
 	/**
-	 * 是否需要加密
+	 * <p>是否需要加密</p>
 	 */
 	public boolean needEncrypt() {
 		return this.peerSubMessageHandler.needEncrypt();
 	}
 	
 	/**
-	 * 是否处理完成
+	 * <p>是否处理完成</p>
 	 */
 	public boolean complete() {
 		return this.complete;
 	}
 
 	/**
-	 * 发送握手消息
+	 * <p>发送握手消息</p>
 	 */
 	public void handshake() {
 		this.step = Step.SEND_PUBLIC_KEY;
@@ -173,7 +173,7 @@ public final class MSECryptHandshakeHandler {
 	}
 
 	/**
-	 * 处理握手消息
+	 * <p>处理握手消息</p>
 	 */
 	public void handshake(ByteBuffer buffer) throws NetException {
 		try {
@@ -223,14 +223,14 @@ public final class MSECryptHandshakeHandler {
 	}
 	
 	/**
-	 * 设置明文
+	 * <p>设置明文</p>
 	 */
 	public void plaintext() {
 		this.complete(true, false);
 	}
 	
 	/**
-	 * 加密：不改变buffer读取和写入状态
+	 * <p>加密：不改变buffer读取和写入状态</p>
 	 */
 	public void encrypt(ByteBuffer buffer) {
 		if(this.crypt) {
@@ -239,7 +239,7 @@ public final class MSECryptHandshakeHandler {
 	}
 	
 	/**
-	 * 解密：不改变buffer读取和写入状态
+	 * <p>解密：不改变buffer读取和写入状态</p>
 	 */
 	public void decrypt(ByteBuffer buffer) {
 		if(this.crypt) {
@@ -248,7 +248,7 @@ public final class MSECryptHandshakeHandler {
 	}
 	
 	/**
-	 * 握手等待锁
+	 * <p>握手等待锁</p>
 	 */
 	public void handshakeLock() {
 		if(!this.complete) {
@@ -265,7 +265,7 @@ public final class MSECryptHandshakeHandler {
 	}
 	
 	/**
-	 * 唤醒握手等待
+	 * <p>唤醒握手等待</p>
 	 */
 	private void handshakeUnlock() {
 		synchronized (this.handshakeLock) {
@@ -294,7 +294,7 @@ public final class MSECryptHandshakeHandler {
 	private static final int PUBLIC_KEY_MAX_LENGTH = PUBLIC_KEY_MIN_LENGTH + CryptConfig.PADDING_MAX_LENGTH;
 	
 	/**
-	 * 接收公钥
+	 * <p>接收公钥</p>
 	 */
 	private void receivePublicKey() throws NetException {
 		LOGGER.debug("加密握手（接收公钥）步骤：{}", this.step);
@@ -374,7 +374,7 @@ public final class MSECryptHandshakeHandler {
 	private static final int PROVIDE_MAX_LENGTH = PROVIDE_MIN_LENGTH + CryptConfig.PADDING_MAX_LENGTH;
 	
 	/**
-	 * 接收加密协议协商
+	 * <p>接收加密协议协商</p>
 	 */
 	private void receiveProvide() throws NetException {
 		LOGGER.debug("加密握手（接收加密协议协商）步骤：{}", this.step);
@@ -438,7 +438,7 @@ public final class MSECryptHandshakeHandler {
 	}
 	
 	/**
-	 * 接收加密协议协商Padding
+	 * <p>接收加密协议协商Padding</p>
 	 */
 	private void receiveProvidePadding() throws PacketSizeException {
 		LOGGER.debug("加密握手（接收加密协议协商Padding）步骤：{}", this.step);
@@ -479,7 +479,7 @@ public final class MSECryptHandshakeHandler {
 	private static final int CONFIRM_MAX_LENGTH = CONFIRM_MIN_LENGTH + CryptConfig.PADDING_MAX_LENGTH;
 	
 	/**
-	 * 接收确认加密协议
+	 * <p>接收确认加密协议</p>
 	 */
 	private void receiveConfirm() throws NetException {
 		LOGGER.debug("加密握手（接收确认加密协议）步骤：{}", this.step);
@@ -508,7 +508,7 @@ public final class MSECryptHandshakeHandler {
 	}
 	
 	/**
-	 * 接收确认加密协议Padding
+	 * <p>接收确认加密协议Padding</p>
 	 */
 	private void receiveConfirmPadding() throws PacketSizeException {
 		LOGGER.debug("加密握手（接收确认加密协议Padding）步骤：{}", this.step);
@@ -558,7 +558,7 @@ public final class MSECryptHandshakeHandler {
 	}
 	
 	/**
-	 * 填充：随机值
+	 * <p>填充：随机值</p>
 	 */
 	private byte[] buildPadding(int maxLength) {
 		final Random random = NumberUtils.random();
@@ -570,7 +570,7 @@ public final class MSECryptHandshakeHandler {
 	}
 	
 	/**
-	 * 填充：0
+	 * <p>填充：0</p>
 	 */
 	private byte[] buildZeroPadding(int maxLength) {
 		final Random random = NumberUtils.random();
@@ -598,7 +598,7 @@ public final class MSECryptHandshakeHandler {
 	}
 	
 	/**
-	 * 数据匹配
+	 * <p>数据匹配</p>
 	 * 
 	 * @param bytes 匹配数据
 	 */
@@ -632,7 +632,7 @@ public final class MSECryptHandshakeHandler {
 	}
 	
 	/**
-	 * 设置完成
+	 * <p>设置完成</p>
 	 * 
 	 * @param complete 是否完成
 	 * @param crypt 是否加密

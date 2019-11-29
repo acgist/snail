@@ -30,25 +30,25 @@ public final class MSECipher {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MSECipher.class);
 
 	/**
-	 * 加密算法名称
+	 * <p>加密算法名称</p>
 	 */
 	private static final String ARC4_ALGO = "ARCFOUR";
 	/**
-	 * 加密算法
+	 * <p>加密算法</p>
 	 */
 	private static final String ARC4_ALGO_TRANSFORMATION = ARC4_ALGO + "/ECB/NoPadding";
 
 	/**
-	 * 加密
+	 * <p>加密</p>
 	 */
 	private final Cipher encryptCipher;
 	/**
-	 * 解密
+	 * <p>解密</p>
 	 */
 	private final Cipher decryptCipher;
 	
 	/**
-	 * 加密套件
+	 * <p>加密套件</p>
 	 * 
 	 * @param S DH Secret
 	 * @param infoHash InfoHash
@@ -64,7 +64,7 @@ public final class MSECipher {
 	}
 	
 	/**
-	 * 请求客户端
+	 * <p>请求客户端</p>
 	 * 
 	 * @param S DH Secret
 	 * @param infoHash InfoHash
@@ -74,7 +74,7 @@ public final class MSECipher {
 	}
 	
 	/**
-	 * 接入客户端
+	 * <p>接入客户端</p>
 	 * 
 	 * @param S DH Secret
 	 * @param infoHash InfoHash
@@ -84,7 +84,7 @@ public final class MSECipher {
 	}
 
 	/**
-	 * 加密
+	 * <p>加密</p>
 	 */
 	public void encrypt(ByteBuffer buffer) {
 		synchronized (this) {
@@ -108,7 +108,7 @@ public final class MSECipher {
 	}
 	
 	/**
-	 * 加密
+	 * <p>加密</p>
 	 */
 	public byte[] encrypt(byte[] bytes) throws NetException {
 		try {
@@ -119,7 +119,7 @@ public final class MSECipher {
 	}
 	
 	/**
-	 * 解密
+	 * <p>解密</p>
 	 */
 	public void decrypt(ByteBuffer buffer) {
 		synchronized (this) {
@@ -143,7 +143,7 @@ public final class MSECipher {
 	}
 	
 	/**
-	 * 解密
+	 * <p>解密</p>
 	 */
 	public byte[] decrypt(byte[] bytes) throws NetException {
 		try {
@@ -154,35 +154,35 @@ public final class MSECipher {
 	}
 	
 	/**
-	 * 加密Cipher
+	 * <p>加密Cipher</p>
 	 */
 	public Cipher getEncryptCipher() {
 		return this.encryptCipher;
 	}
 
 	/**
-	 * 解密Cipher
+	 * <p>解密Cipher</p>
 	 */
 	public Cipher getDecryptCipher() {
 		return this.decryptCipher;
 	}
 
 	/**
-	 * 创建请求客户端加密Key
+	 * <p>创建请求客户端加密Key</p>
 	 */
 	private Key buildSendKey(byte[] S, byte[] SKEY) {
 		return buildKey("keyA", S, SKEY);
 	}
 
 	/**
-	 * 创建接入客户端加密Key
+	 * <p>创建接入客户端加密Key</p>
 	 */
 	private Key buildRecvKey(byte[] S, byte[] SKEY) {
 		return buildKey("keyB", S, SKEY);
 	}
 
 	/**
-	 * 创建Key
+	 * <p>创建Key</p>
 	 */
 	private Key buildKey(String s, byte[] S, byte[] SKEY) {
 		final MessageDigest digest = DigestUtils.sha1();
@@ -193,7 +193,7 @@ public final class MSECipher {
 	}
 
 	/**
-	 * 创建Cipher
+	 * <p>创建Cipher</p>
 	 */
 	private Cipher buildCipher(int mode, String transformation, Key key) {
 		try {

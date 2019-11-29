@@ -6,7 +6,7 @@ import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.image.ImageView;
 
 /**
- * 菜单
+ * <p>菜单</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -27,21 +27,21 @@ public abstract class Menu extends ContextMenu {
 	}
 	
 	/**
-	 * 添加菜单
+	 * <p>添加菜单</p>
 	 */
 	protected void addMenu(MenuItem menuItem) {
 		this.getItems().add(menuItem);
 	}
 	
 	/**
-	 * 添加菜单分隔
+	 * <p>添加菜单分隔</p>
 	 */
 	protected void addSeparator() {
 		this.addMenu(new SeparatorMenuItem());
 	}
 	
 	/**
-	 * 创建菜单
+	 * <p>创建菜单</p>
 	 * 
 	 * @param value 名称
 	 * 
@@ -52,7 +52,7 @@ public abstract class Menu extends ContextMenu {
 	}
 	
 	/**
-	 * 创建菜单
+	 * <p>创建菜单</p>
 	 * 
 	 * @param value 名称
 	 * @param icon 图标
@@ -68,7 +68,7 @@ public abstract class Menu extends ContextMenu {
 	}
 	
 	/**
-	 * 初始化所有菜单
+	 * <p>初始化所有菜单</p>
 	 */
 	protected abstract void initMenu();
 	

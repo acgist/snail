@@ -24,7 +24,7 @@ public final class TrackerMessageHandler extends UdpMessageHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerMessageHandler.class);
 
 	/**
-	 * Announce消息最大长度
+	 * <p>Announce消息最大长度</p>
 	 */
 	private static final int ANNOUNCE_MIN_LENGTH = 20;
 	

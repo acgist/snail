@@ -42,15 +42,15 @@ public abstract class PeerConnect {
 	 */
 	private static final int MAX_WAIT_SLICE_REQUEST_SIZE = 4;
 	/**
-	 * SLICE请求等待时间
+	 * <p>SLICE请求等待时间</p>
 	 */
 	private static final int SLICE_WAIT_TIME = 10;
 	/**
-	 * PICEC完成等待时间
+	 * <p>PICEC完成等待时间</p>
 	 */
 	private static final int PIECE_WAIT_TIME = 30;
 	/**
-	 * 释放时等待时间
+	 * <p>释放时等待时间</p>
 	 */
 	private static final int RELEASE_WAIT_TIME = 4;
 	
@@ -60,35 +60,35 @@ public abstract class PeerConnect {
 	 */
 	protected volatile boolean marked = false;
 	/**
-	 * 连接状态
+	 * <p>连接状态</p>
 	 */
 	protected volatile boolean available = false;
 	/**
-	 * 是否下载
+	 * <p>是否下载</p>
 	 */
 	private volatile boolean downloading = false;
 	/**
-	 * 当前下载Piece信息
+	 * <p>当前下载Piece信息</p>
 	 */
 	private TorrentPiece downloadPiece;
 	/**
-	 * Peer上传评分
+	 * <p>Peer上传评分</p>
 	 */
 	private final AtomicLong uploadMark = new AtomicLong(0);
 	/**
-	 * Peer下载评分
+	 * <p>Peer下载评分</p>
 	 */
 	private final AtomicLong downloadMark = new AtomicLong(0);
 	/**
-	 * Piece分片锁
+	 * <p>Piece分片锁</p>
 	 */
 	private final AtomicInteger countLock = new AtomicInteger(0);
 	/**
-	 * Peer释放锁
+	 * <p>Peer释放锁</p>
 	 */
 	private final AtomicBoolean releaseLock = new AtomicBoolean(false);
 	/**
-	 * Piece完成锁
+	 * <p>Piece完成锁</p>
 	 */
 	private final AtomicBoolean completeLock = new AtomicBoolean(false);
 	
