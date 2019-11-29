@@ -119,6 +119,7 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 				if(addedf != null && addedf.length > index.get()) {
 					peerSession.flags(addedf[index.getAndIncrement()]);
 				}
+				peerSession.pexSource(this.peerSession); // 设置Pex来源
 			});
 		}
 	}

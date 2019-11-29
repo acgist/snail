@@ -27,6 +27,7 @@ import com.acgist.snail.utils.StringUtils;
  * 	<dd>目标方如果不希望连接发起方时，直接忽略连接消息，不能响应错误给中继。</dd>
  * 	<dd>发起方如果没有在扩展协议握手时表示支持holepunch扩展协议，中继应该忽略所有消息。</dd>
  * </dl>
+ * <p>Pex交换后，如果不能直接连接Peer，Pex源作为中继实现连接。</p>
  * 
  * @author acgist
  * @since 1.1.0
@@ -95,13 +96,15 @@ public class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	/**
 	 * <p>发送消息：rendezvous</p>
 	 * 
-	 * @param host 地址
-	 * @param port 端口
+	 * @param peerSession peerSession
 	 */
-	public void rendezvous(String host, int port) {
+	public void rendezvous(PeerSession peerSession) {
+		final String host = peerSession.host();
+		final int port = peerSession.port();
 		LOGGER.debug("发送holepunch消息-rendezvous：{}-{}", host, port);
 		final ByteBuffer message = buildMessage(HolepunchType.RENDEZVOUS, host, port);
 		this.pushMessage(message);
+		peerSession.holepunchLock(); // 加锁
 	}
 	
 	/**
@@ -142,15 +145,9 @@ public class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 		// 发送发送方连接消息
 		this.connect(host, port);
 		// 发送目标方连接消息
-		final var peerUploader = peerSession.peerUploader();
-		if(peerUploader != null) {
-			peerUploader.holepunchConnect(this.peerSession.host(), this.peerSession.port());
-			return;
-		}
-		final var peerDownloader = peerSession.peerDownloader();
-		if(peerDownloader != null) {
-			peerDownloader.holepunchConnect(this.peerSession.host(), this.peerSession.port());
-			return;
+		final var peerConnect = peerSession.peerConnect();
+		if(peerConnect != null) {
+			peerConnect.holepunchConnect(this.peerSession.host(), this.peerSession.port());
 		}
 	}
 	
@@ -165,7 +162,7 @@ public class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	/**
 	 * <p>处理消息：connect</p>
 	 */
-	public void onConnect(String host, int port) {
+	private void onConnect(String host, int port) {
 		LOGGER.debug("处理holepunch消息-connect：{}-{}", host, port);
 		var peerSession = PeerManager.getInstance().findPeerSession(this.torrentSession.infoHashHex(), host);
 		if(peerSession == null) { // 没有时创建
@@ -176,18 +173,23 @@ public class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 				port,
 				PeerConfig.SOURCE_HOLEPUNCH);
 		}
-		if(peerSession.connected()) {
-			LOGGER.debug("处理holepunch消息-connect：目标已连接");
-			return;
-		}
-		final var peerSubMessageHandler = PeerSubMessageHandler.newInstance(peerSession, this.torrentSession);
-		final var client = UtpClient.newInstance(peerSession, peerSubMessageHandler);
-		if(client.connect()) {
-			LOGGER.debug("处理holepunch消息-connect：连接成功");
-			peerSession.flags(PeerConfig.PEX_UTP);
-			client.close();
+		if(peerSession.holepunchWait()) {
+			LOGGER.debug("处理holepunch消息-connect：唤醒等待");
+			peerSession.holepunchUnlock();
 		} else {
-			LOGGER.debug("处理holepunch消息-connect：连接失败");
+			if(peerSession.connected()) {
+				LOGGER.debug("处理holepunch消息-connect：目标已连接");
+				return;
+			}
+			final var peerSubMessageHandler = PeerSubMessageHandler.newInstance(peerSession, this.torrentSession);
+			final var client = UtpClient.newInstance(peerSession, peerSubMessageHandler);
+			if(client.connect()) {
+				LOGGER.debug("处理holepunch消息-connect：连接成功");
+				peerSession.flags(PeerConfig.PEX_UTP);
+				client.close();
+			} else {
+				LOGGER.debug("处理holepunch消息-connect：连接失败");
+			}
 		}
 	}
 

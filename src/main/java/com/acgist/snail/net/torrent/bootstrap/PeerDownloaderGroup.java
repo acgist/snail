@@ -1,7 +1,5 @@
 package com.acgist.snail.net.torrent.bootstrap;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
@@ -51,12 +49,6 @@ public final class PeerDownloaderGroup {
 	 */
 	private final Semaphore buildSemaphore = new Semaphore(BUILD_SIZE);
 	/**
-	 * <p>优质Peer</p>
-	 * <p>每次优化时挑选的优质Peer，在发送pex消息时发送给连接的Peer。</p>
-	 * <p>优质Peer：可以下载</p>
-	 */
-	private final List<PeerSession> optimize = new ArrayList<>();
-	/**
 	 * <p>PeerDownloader队列</p>
 	 */
 	private final BlockingQueue<PeerDownloader> peerDownloaders = new LinkedBlockingQueue<>();
@@ -87,18 +79,6 @@ public final class PeerDownloaderGroup {
 		}
 	}
 	
-	/**
-	 * <p>获取优质Peer</p>
-	 * <p>返回后清除优质Peer列表</p>
-	 * 
-	 * @return 优质Peer
-	 */
-	public List<PeerSession> optimizePeerSession() {
-		final var list = new ArrayList<>(this.optimize);
-		this.optimize.clear(); // 清除列表
-		return list;
-	}
-
 	/**
 	 * <p>资源释放</p>
 	 * <p>释放所有PeerDownloader</p>
@@ -223,8 +203,6 @@ public final class PeerDownloaderGroup {
 			if(downloadMark <= 0) {
 				inferiorPeerDownloader(tmp);
 				continue;
-			} else {
-				this.optimize.add(tmp.peerSession());
 			}
 			if(inferior == null) {
 				inferior = tmp;

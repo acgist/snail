@@ -1,10 +1,12 @@
 package com.acgist.snail.pojo.session;
 
 import java.net.InetSocketAddress;
+import java.time.Duration;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.acgist.snail.net.torrent.PeerConnect;
 import com.acgist.snail.net.torrent.bootstrap.PeerDownloader;
 import com.acgist.snail.net.torrent.bootstrap.PeerUploader;
 import com.acgist.snail.pojo.IStatisticsSession;
@@ -13,6 +15,7 @@ import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.ObjectUtils;
 import com.acgist.snail.utils.StringUtils;
+import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * <p>Peer Session</p>
@@ -99,6 +102,24 @@ public final class PeerSession implements IStatistics {
 	 * <p>Peer对客户端感兴趣：感兴趣-1（true）、不感兴趣-0</p>
 	 */
 	private volatile boolean peerInterested;
+	/**
+	 * <p>holepunch是否等待</p>
+	 */
+	private volatile boolean holepunchWait = false;
+	/**
+	 * <p>holepunch是否连接</p>
+	 */
+	private volatile boolean holepunchConnect = false;
+	/**
+	 * <p>holepunch等待锁</p>
+	 * <p>向中继发出rendezvous消息进入等待，收到中继connect消息后设置可以连接唤醒等待锁。</p>
+	 */
+	private final Object holepunchLock = new Object();
+	/**
+	 * <p>PEX来源</p>
+	 * <p>直接连接不上时使用holepunch协议连接</p>
+	 */
+	private PeerSession pexSource;
 	/**
 	 * <p>Peer上传</p>
 	 */
@@ -693,6 +714,75 @@ public final class PeerSession implements IStatistics {
 	 */
 	public boolean uploadOnly() {
 		return verifyFlags(PeerConfig.PEX_UPLOAD_ONLY);
+	}
+	
+	/**
+	 * <p>是否支持holepunch协议</p>
+	 */
+	public boolean holepunch() {
+		return verifyFlags(PeerConfig.PEX_HOLEPUNCH);
+	}
+	
+	/**
+	 * <p>获取Pex来源</p>
+	 */
+	public PeerSession pexSource() {
+		return this.pexSource;
+	}
+	
+	/**
+	 * <p>设置Pex来源</p>
+	 */
+	public void pexSource(PeerSession pexSource) {
+		this.pexSource = pexSource;
+	}
+
+	/**
+	 * <p>holepunch加锁</p>
+	 */
+	public void holepunchLock() {
+		if(this.holepunchConnect) { // 已经连接
+			return;
+		}
+		synchronized (this.holepunchLock) {
+			this.holepunchWait = true;
+			ThreadUtils.wait(this.holepunchLock, Duration.ofSeconds(PeerConfig.HOLEPUNCH_LOCK_TIME));
+			this.holepunchWait = false;
+		}
+	}
+	
+	/**
+	 * <p>holepunch解锁</p>
+	 */
+	public void holepunchUnlock() {
+		synchronized (this.holepunchLock) {
+			this.holepunchConnect = true;
+			this.holepunchLock.notifyAll();
+		}
+	}
+	
+	/**
+	 * <p>holepunch是否等待</p>
+	 */
+	public boolean holepunchWait() {
+		return this.holepunchWait;
+	}
+	
+	/**
+	 * <p>holepunch是否连接</p>
+	 */
+	public boolean holeunchConnect() {
+		return this.holepunchConnect;
+	}
+	
+	/**
+	 * <p>获取Peer连接</p>
+	 * <p>优先顺序：{@link #peerDownloader}、{@link #peerUploader}</p>
+	 */
+	public PeerConnect peerConnect() {
+		return
+			this.peerDownloader != null ? this.peerDownloader :
+			this.peerUploader != null ? this.peerUploader : null;
 	}
 	
 	public PeerUploader peerUploader() {

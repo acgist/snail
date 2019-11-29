@@ -371,7 +371,7 @@ public final class TorrentSession {
 	 */
 	private void loadPexTimer() {
 		this.pexTimer = this.timerFixedDelay(PEX_INTERVAL.toSeconds(), PEX_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
-			PeerManager.getInstance().pex(this.infoHashHex(), this.peerDownloaderGroup.optimizePeerSession());
+			PeerManager.getInstance().pex(this.infoHashHex());
 		});
 	}
 	

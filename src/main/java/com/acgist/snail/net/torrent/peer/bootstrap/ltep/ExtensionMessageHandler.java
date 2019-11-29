@@ -308,9 +308,9 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	/**
 	 * <p>发送holepunch消息-rendezvous</p>
 	 */
-	public void holepunchRendezvous(String host, Integer port) {
+	public void holepunchRendezvous(PeerSession peerSession) {
 		if(this.holepunchMessageHnadler.supportExtensionType()) {
-			this.holepunchMessageHnadler.rendezvous(host, port);
+			this.holepunchMessageHnadler.rendezvous(peerSession);
 		}
 	}
 	

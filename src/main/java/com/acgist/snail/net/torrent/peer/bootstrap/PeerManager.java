@@ -89,7 +89,7 @@ public final class PeerManager {
 	/**
 	 * <p>添加Peer</p>
 	 * <p>优先级高的Peer插入尾部优先使用</p>
-	 * <p>优先级计算：本地发现、主动连接、Peer评分、PEX可以连接</p>
+	 * <p>优先级计算：PEX、本地发现、主动连接、Peer评分</p>
 	 * 
 	 * @param infoHashHex InfoHashHex
 	 * @param parent 任务下载统计
@@ -112,9 +112,9 @@ public final class PeerManager {
 						}
 						peerSession = PeerSession.newInstance(parent, host, port);
 						if(
+							source == PeerConfig.SOURCE_PEX || // PEX
 							source == PeerConfig.SOURCE_LSD || // 本地发现
 							source == PeerConfig.SOURCE_CONNECT || // 主动连接
-//							source == PeerConfig.SOURCE_HOLEPUNCH || // holepunch
 							PeerEvaluator.getInstance().eval(peerSession) // Peer评分
 						) {
 							deque.offerLast(peerSession); // 插入尾部：优先级高
@@ -184,14 +184,10 @@ public final class PeerManager {
 		final AtomicInteger count = new AtomicInteger(0);
 		list.stream()
 			.forEach(session -> {
-				final var peerUploader = session.peerUploader();
-				final var peerDownloader = session.peerDownloader();
-				if(peerUploader != null && peerUploader.available()) {
+				final var peerConnect = session.peerConnect();
+				if(peerConnect != null && peerConnect.available()) {
 					count.incrementAndGet();
-					peerUploader.have(index);
-				} else if(peerDownloader != null && peerDownloader.available()) {
-					count.incrementAndGet();
-					peerDownloader.have(index);
+					peerConnect.have(index);
 				}
 			});
 		LOGGER.debug("发送have消息：通知Peer数量：{}", count.get());
@@ -201,27 +197,27 @@ public final class PeerManager {
 	 * <p>发送pex消息</p>
 	 * <p>只发送给当前连接的Peer</p>
 	 */
-	public void pex(String infoHashHex, List<PeerSession> optimize) {
-		final byte[] bytes = PeerExchangeMessageHandler.buildMessage(optimize);
-		if(bytes == null) {
+	public void pex(String infoHashHex) {
+		final var list = listConnectPeer(infoHashHex);
+		// 优质Peer：下载数据
+		final var optimize = list.stream()
+			.filter(session -> session.statistics().downloadSize() > 0)
+			.collect(Collectors.toList());
+		final byte[] message = PeerExchangeMessageHandler.buildMessage(optimize);
+		if(message == null) {
 			LOGGER.debug("发送pex消息失败：消息为空");
 			return;
 		}
-		final var list = listConnectPeer(infoHashHex);
 		final AtomicInteger count = new AtomicInteger(0);
 		list.stream()
 			.forEach(session -> {
-				final var peerUploader = session.peerUploader();
-				final var peerDownloader = session.peerDownloader();
-				if(peerUploader != null && peerUploader.available()) {
+				final var peerConnect = session.peerConnect();
+				if(peerConnect != null && peerConnect.available()) {
 					count.incrementAndGet();
-					peerUploader.pex(bytes);
-				} else if(peerDownloader != null && peerDownloader.available()) {
-					count.incrementAndGet();
-					peerDownloader.pex(bytes);
+					peerConnect.pex(message);
 				}
 			});
-		LOGGER.debug("发送pex消息：优质Peer数量：{}，通知Peer数量：{}", optimize.size(), count.get());
+		LOGGER.debug("发送pex消息：通知Peer数量：{}", count.get());
 	}
 	
 	/**
@@ -233,14 +229,10 @@ public final class PeerManager {
 		final AtomicInteger count = new AtomicInteger(0);
 		list.stream()
 			.forEach(session -> {
-				final var peerUploader = session.peerUploader();
-				final var peerDownloader = session.peerDownloader();
-				if(peerUploader != null && peerUploader.available()) {
+				final var peerConnect = session.peerConnect();
+				if(peerConnect != null && peerConnect.available()) {
 					count.incrementAndGet();
-					peerUploader.uploadOnly();
-				} else if(peerDownloader != null && peerDownloader.available()) {
-					count.incrementAndGet();
-					peerDownloader.uploadOnly();
+					peerConnect.uploadOnly();
 				}
 			});
 		LOGGER.debug("发送uploadOnly消息：通知Peer数量：{}", count.get());

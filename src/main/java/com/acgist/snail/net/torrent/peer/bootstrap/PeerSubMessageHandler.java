@@ -1014,8 +1014,8 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	/**
 	 * <p>发送扩展消息：holepunch-rendezvous</p>
 	 */
-	public void holepunch(String host, Integer port) {
-		this.extensionMessageHandler.holepunchRendezvous(host, port);
+	public void holepunchRendezvous(PeerSession peerSession) {
+		this.extensionMessageHandler.holepunchRendezvous(peerSession);
 	}
 	
 	/**
