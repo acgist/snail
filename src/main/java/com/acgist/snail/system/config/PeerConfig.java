@@ -143,6 +143,10 @@ public final class PeerConfig {
 	 */
 	public static final byte PEX_OUTGO =				1 << 4;
 	/**
+	 * <p>holepunchLock锁定时间</p>
+	 */
+	public static final int HOLEPUNCH_LOCK_TIME = 2;
+	/**
 	 * <p>客户端名称</p>
 	 */
 	private static final Map<String, String> PEER_NAMES = new HashMap<>();

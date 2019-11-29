@@ -125,7 +125,16 @@ public abstract class PeerConnect {
 	}
 	
 	/**
-	 * <p>发送holepunch连接消息</p>
+	 * <p>发送holepunch消息-rendezvous</p>
+	 * 
+	 * @param peerSession peerSession
+	 */
+	public final void holepunchRendezvous(PeerSession peerSession) {
+		this.peerSubMessageHandler.holepunchRendezvous(peerSession);
+	}
+	
+	/**
+	 * <p>发送holepunch消息-connect</p>
 	 * 
 	 * @param host 目标地址
 	 * @param port 目标端口
