@@ -53,8 +53,6 @@ java -server -Xms128m -Xmx256m -jar snail-{version}.jar
 javaw -server -Xms128m -Xmx256m -jar snail-{version}.jar
 ```
 
-> FTP、HTTP下载大文件时建议优化JVM参数：`-XX:NewRatio=2 -XX:SurvivorRatio=2`
-
 #### Maven
 
 ```xml
