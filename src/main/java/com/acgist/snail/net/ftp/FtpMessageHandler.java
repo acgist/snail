@@ -103,7 +103,7 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 			this.login = true;
 		} else if(StringUtils.startsWith(message, "226 ")) { // 下载完成
 		} else if(StringUtils.startsWith(message, "502 ")) { // 不支持命令
-			LOGGER.debug("FTP错误消息（不支持命令）：{}", message);
+			LOGGER.debug("处理FTP消息错误（不支持命令）：{}", message);
 		} else if(StringUtils.startsWith(message, "211-")) { // 服务器状态：扩展命令
 			// 判断是否支持UTF8指令
 			if(message.toUpperCase().contains(SystemConfig.CHARSET_UTF8)) {

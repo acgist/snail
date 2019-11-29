@@ -23,9 +23,7 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>Torrent下载文件流</p>
- * <p>
- * 下载：每次下载必须是一个完整的Piece（除了文件开头和结尾可能不是一个完整的Piece）
- * </p>
+ * <p>下载：每次下载必须是一个完整的Piece（除了文件开头和结尾可能不是一个完整的Piece）</p>
  * <p>注：多线程读取写入时seek操作可能导致写入数据错乱</p>
  * 
  * @author acgist
@@ -428,11 +426,11 @@ public final class TorrentStream {
 	}
 	
 	/**
-	 * <p>写入硬盘</p>
+	 * <p>Piece写入硬盘</p>
 	 */
 	private void flush(TorrentPiece piece) {
 		if(!haveIndex(piece.getIndex())) {
-			LOGGER.warn("Piece写入硬盘错误（不包含）：{}", piece.getIndex());
+			LOGGER.warn("Piece写入硬盘失败（不包含）：{}", piece.getIndex());
 			return;
 		}
 		LOGGER.debug("Piece写入硬盘：{}", piece.getIndex());
@@ -458,7 +456,7 @@ public final class TorrentStream {
 			this.fileStream.seek(seek);
 			this.fileStream.write(piece.getData(), offset, length);
 		} catch (IOException e) {
-			LOGGER.error("TorrentStream写入异常", e);
+			LOGGER.error("Piece写入硬盘异常", e);
 		}
 	}
 	

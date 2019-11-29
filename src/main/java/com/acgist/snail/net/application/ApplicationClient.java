@@ -33,18 +33,18 @@ public final class ApplicationClient extends TcpClient<ApplicationMessageHandler
 	}
 	
 	/**
-	 * 发送客户端消息
+	 * <p>发送系统消息</p>
 	 */
 	public void send(ApplicationMessage message) {
 		try {
 			send(message.toString());
 		} catch (NetException e) {
-			LOGGER.error("Application消息发送异常", e);
+			LOGGER.error("发送系统消息异常", e);
 		}
 	}
 	
 	/**
-	 * 唤起主窗口
+	 * <p>唤起主窗口</p>
 	 */
 	public static final void notifyWindow() {
 		final ApplicationClient client = ApplicationClient.newInstance();

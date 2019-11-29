@@ -70,7 +70,7 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 		final var decoder = BEncodeDecoder.newInstance(bytes);
 		decoder.nextMap();
 		if(decoder.isEmpty()) {
-			LOGGER.warn("DHT消息错误（格式）：{}", decoder.oddString());
+			LOGGER.warn("处理DHT消息错误（格式）：{}", decoder.oddString());
 			return;
 		}
 		final String y = decoder.getString(DhtConfig.KEY_Y); // 消息类型
@@ -83,7 +83,7 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 			response.setSocketAddress(socketAddress);
 			onResponse(response);
 		} else {
-			LOGGER.warn("DHT消息错误（类型不支持）：{}", y);
+			LOGGER.warn("处理DHT消息错误（类型不支持）：{}", y);
 		}
 	}
 	
@@ -95,9 +95,9 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 	 */
 	private void onRequest(final Request request, final InetSocketAddress socketAddress) {
 		Response response = null;
-		LOGGER.debug("DHT处理请求：{}", request.getQ());
+		LOGGER.debug("处理DHT请求：{}", request.getQ());
 		if(request.getQ() == null) {
-			LOGGER.warn("DHT处理请求失败（类型不支持）：{}", request.getQ());
+			LOGGER.warn("处理DHT请求失败（类型不支持）：{}", request.getQ());
 			response = Response.error(request.getT(), ErrorCode.CODE_204.code(), "不支持的请求类型");
 		} else {
 			switch (request.getQ()) {
@@ -114,7 +114,7 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 				response = announcePeer(request);
 				break;
 			default:
-				LOGGER.info("DHT处理请求失败（类型未适配）：{}", request.getQ());
+				LOGGER.info("处理DHT请求失败（类型未适配）：{}", request.getQ());
 				response = Response.error(request.getT(), ErrorCode.CODE_202.code(), "未适配的请求类型");
 				break;
 			}
@@ -130,16 +130,16 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 	private void onResponse(final Response response) {
 		final Request request = DhtManager.getInstance().response(response);
 		if(request == null) {
-			LOGGER.warn("DHT处理响应失败：没有对应的请求");
+			LOGGER.warn("处理DHT响应失败：没有对应的请求");
 			return;
 		}
-		LOGGER.debug("DHT处理响应：{}", request.getQ());
+		LOGGER.debug("处理DHT响应：{}", request.getQ());
 		if(request.getQ() == null) {
-			LOGGER.warn("DHT处理响应失败（类型不支持）：{}", request.getQ());
+			LOGGER.warn("处理DHT响应失败（类型不支持）：{}", request.getQ());
 			return;
 		}
 		if(!SUCCESS_VERIFY.apply(response)) {
-			LOGGER.warn("DHT处理响应失败（失败响应）：{}", response);
+			LOGGER.warn("处理DHT响应失败（失败响应）：{}", response);
 			return;
 		}
 		switch (request.getQ()) {
@@ -156,7 +156,7 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 			announcePeer(request, response);
 			break;
 		default:
-			LOGGER.info("DHT处理响应失败（类型未适配）：{}", request.getQ());
+			LOGGER.info("处理DHT响应失败（类型未适配）：{}", request.getQ());
 			break;
 		}
 	}
