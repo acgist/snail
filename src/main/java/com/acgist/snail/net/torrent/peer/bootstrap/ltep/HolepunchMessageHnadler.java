@@ -27,7 +27,7 @@ import com.acgist.snail.utils.StringUtils;
  * 	<dd>目标方如果不希望连接发起方时，直接忽略连接消息，不能响应错误给中继。</dd>
  * 	<dd>发起方如果没有在扩展协议握手时表示支持holepunch扩展协议，中继应该忽略所有消息。</dd>
  * </dl>
- * <p>Pex交换后，如果不能直接连接Peer，Pex源作为中继实现连接。</p>
+ * <p>Pex交换的Peer如果不能直接连接，Pex源Peer作为中继通过holepunch协议实现连接。</p>
  * 
  * @author acgist
  * @since 1.1.0

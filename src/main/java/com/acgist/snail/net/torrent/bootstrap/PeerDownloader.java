@@ -53,10 +53,10 @@ public final class PeerDownloader extends PeerConnect {
 	/**
 	 * <dl>
 	 * 	<dt>建立连接</dt>
-	 * 	<dd>支持UTP：使用UTP</dd>
-	 * 	<dd>不支持UTP：优先使用TCP，如果TCP连接失败，切换UTP重试。</dd>
+	 * 	<dd>支持UTP：使用UTP协议连接</dd>
+	 * 	<dd>不支持UTP：先使用TCP协议连接，如果TCP连接失败使用UTP协议重试。</dd>
 	 * </dl>
-	 * <p>使用UTP连接失败后，如果Peer来源PEX并且支持holepunch协议，使用holepunch连接。</p>
+	 * <p>连接失败后使用holepunch协议连接</p>
 	 */
 	private boolean connect() {
 		if(this.peerSession.utp()) {
@@ -75,6 +75,7 @@ public final class PeerDownloader extends PeerConnect {
 			if(tcpOk) {
 				return tcpOk;
 			} else {
+				// TODO：判断是否直接连接：OUTGO
 				LOGGER.debug("Peer连接（uTP）（重试）：{}-{}", this.peerSession.host(), this.peerSession.port());
 				final UtpClient utpClient = UtpClient.newInstance(this.peerSession, this.peerSubMessageHandler);
 				final boolean utpOk = utpClient.connect();
@@ -89,21 +90,25 @@ public final class PeerDownloader extends PeerConnect {
 	}
 
 	/**
-	 * <p>使用holepunch协议实现连接</p>
+	 * <p>使用holepunch协议连接</p>
 	 */
 	private boolean holepunchConnect() {
 		final PeerSession pexSource = this.peerSession.pexSource();
 		if(
-			pexSource != null &&
-			pexSource.holepunch() &&
-			pexSource.connected() &&
-			this.peerSession.holepunch()
+			pexSource != null && // 中继：Pex来源Peer
+			pexSource.holepunch() && // 中继支持holepunch
+			pexSource.connected() && // 中继已经连接
+			this.peerSession.holepunch() // 目标支持holepunch
 		) {
 			final var peerConnect = pexSource.peerConnect();
 			if(peerConnect != null) {
-				// 向中继发送rendezvous消息
-				peerConnect.holepunchRendezvous(this.peerSession);
+				if(!this.peerSession.holeunchConnect()) {
+					// 向中继发送rendezvous消息
+					peerConnect.holepunchRendezvous(this.peerSession);
+				}
+				// 已经收到holepunch连接消息使用UTP协议连接
 				if(this.peerSession.holeunchConnect()) {
+					LOGGER.debug("Peer连接（uTP）（holepunch）：{}-{}", this.peerSession.host(), this.peerSession.port());
 					final UtpClient utpClient = UtpClient.newInstance(this.peerSession, this.peerSubMessageHandler);
 					return utpClient.connect();
 				}
