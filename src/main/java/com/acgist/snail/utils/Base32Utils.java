@@ -9,14 +9,14 @@ package com.acgist.snail.utils;
 public final class Base32Utils {
 
 	/**
-	 * 编码字符
+	 * <p>编码字符</p>
 	 */
 	private static final char[] BASE_32_ENCODE = {
 		'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
 		'2', '3', '4', '5', '6', '7'
 	};
 	/**
-	 * 解码字符
+	 * <p>解码字符</p>
 	 */
 	private static final byte[] BASE_32_DECODE;
 
@@ -34,7 +34,11 @@ public final class Base32Utils {
 	}
 
 	/**
-	 * 编码
+	 * <p>编码</p>
+	 * 
+	 * @param bytes 原始数据
+	 * 
+	 * @return 编码后字符串
 	 */
 	public static final String encode(final byte[] bytes) {
 		if(bytes == null) {
@@ -64,7 +68,11 @@ public final class Base32Utils {
 	}
 
 	/**
-	 * 解码
+	 * <p>解码</p>
+	 * 
+	 * @param content 编码后字符串
+	 * 
+	 * @return 原始数据
 	 */
 	public static final byte[] decode(final String content) {
 		if(content == null) {

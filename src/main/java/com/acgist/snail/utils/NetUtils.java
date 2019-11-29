@@ -14,7 +14,7 @@ import com.acgist.snail.system.LambdaOptional;
 
 /**
  * <p>网络工具</p>
- * <p>获取地址推荐使用方法：{@link InetAddress#getHostAddress()}、{@link InetSocketAddress#getHostString()}；不推荐使用：{@link InetSocketAddress#getHostName()};</p>
+ * <p>获取地址方法：{@link InetAddress#getHostAddress()}、{@link InetSocketAddress#getHostString()}、<del>{@link InetSocketAddress#getHostName()}</del></p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -24,15 +24,15 @@ public final class NetUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(NetUtils.class);
 	
 	/**
-	 * 本机名称
+	 * <p>本机名称</p>
 	 */
 	private static final String LOCAL_HOST_NAME;
 	/**
-	 * 本机地址（多个物理地址获取其中一个）
+	 * <p>本机地址（多个物理地址）</p>
 	 */
 	private static final String LOCAL_HOST_ADDRESS;
 	/**
-	 * 本机默认物理网卡（多个物理网卡获取其中一个）
+	 * <p>本机默认物理网卡（多个物理网卡）</p>
 	 */
 	private static final NetworkInterface DEFAULT_NETWORK_INTERFACE;
 	
@@ -77,19 +77,19 @@ public final class NetUtils {
 	}
 	
 	/**
-	 * 最大端口号
+	 * <p>最大端口号</p>
 	 */
 	public static final int MAX_PORT = 2 << 15;
 	/**
-	 * 本机IP地址
+	 * <p>本机IP地址</p>
 	 */
 	public static final String LOCAL_IP = "127.0.0.1";
 	/**
-	 * 本机HOST
+	 * <p>本机HOST</p>
 	 */
 	public static final String LOCAL_HOST = "localhost";
 	/**
-	 * IP地址正则表达式
+	 * <p>IP地址正则表达式</p>
 	 */
 	private static final String IP_REGEX = "(\\d{0,3}\\.){3}\\d{0,3}";
 	/**
@@ -114,14 +114,17 @@ public final class NetUtils {
 	private static final long C_NATIVE_IP_BEGIN = encodeIpToLong("192.168.0.0");
 	private static final long C_NATIVE_IP_END = encodeIpToLong("192.168.255.255");
 	/**
-	 * 本地回环地址
+	 * <p>本地回环地址</p>
 	 */
 	private static final long L_NATIVE_IP_BEGIN = encodeIpToLong("127.0.0.0");
 	private static final long L_NATIVE_IP_END = encodeIpToLong("127.255.255.255");
 	
 	/**
 	 * <p>端口编码</p>
-	 * <p>int端口转换为short</p>
+	 * 
+	 * @param port int端口
+	 * 
+	 * @return short端口
 	 */
 	public static final short encodePort(int port) {
 		return (short) port;
@@ -129,7 +132,10 @@ public final class NetUtils {
 
 	/**
 	 * <p>端口解码</p>
-	 * <p>short端口转换为int</p>
+	 * 
+	 * @param port short端口
+	 * 
+	 * @return int端口
 	 */
 	public static final int decodePort(short port) {
 		return Short.toUnsignedInt(port);
@@ -137,7 +143,10 @@ public final class NetUtils {
 	
 	/**
 	 * <p>IP地址编码</p>
-	 * <p>IP地址转换为int</p>
+	 * 
+	 * @param ip IP地址（字符串）
+	 * 
+	 * @return IP地址（int）
 	 */
 	public static final int encodeIpToInt(String ip) {
 		return (int) encodeIpToLong(ip);
@@ -145,7 +154,10 @@ public final class NetUtils {
 	
 	/**
 	 * <p>IP地址编码</p>
-	 * <p>IP地址转换为long</p>
+	 * 
+	 * @param ip IP地址（字符串）
+	 * 
+	 * @return IP地址（long）
 	 */
 	public static final long encodeIpToLong(String ip) {
 		long result = 0, value;
@@ -159,7 +171,10 @@ public final class NetUtils {
 
 	/**
 	 * <p>IP地址解码</p>
-	 * <p>int转换为IP地址</p>
+	 * 
+	 * @param value IP地址（int）
+	 * 
+	 * @return IP地址（字符串）
 	 */
 	public static final String decodeIntToIp(int value) {
 		return decodeLongToIp(Integer.toUnsignedLong(value));
@@ -167,7 +182,10 @@ public final class NetUtils {
 	
 	/**
 	 * <p>IP地址解码</p>
-	 * <p>long转换为IP地址</p>
+	 * 
+	 * @param value IP地址（long）
+	 * 
+	 * @return IP地址（字符串）
 	 */
 	public static final String decodeLongToIp(long value) {
 		return
@@ -179,6 +197,10 @@ public final class NetUtils {
 	
 	/**
 	 * <p>IPv6地址编码</p>
+	 * 
+	 * @param ip IP地址（字符串）
+	 * 
+	 * @return IP地址（字节数组）
 	 */
 	public static final byte[] encodeIPv6(String ip) {
 		try {
@@ -191,6 +213,10 @@ public final class NetUtils {
 	
 	/**
 	 * <p>IPv6地址解码</p>
+	 * 
+	 * @param value IP地址（字节数组）
+	 * 
+	 * @return IP地址（字符串）
 	 */
 	public static final String decodeIPv6(byte[] value) {
 		try {
@@ -202,38 +228,50 @@ public final class NetUtils {
 	}
 	
 	/**
-	 * 获取本机名称
+	 * @return 本机名称
 	 */
 	public static final String localHostName() {
 		return LOCAL_HOST_NAME;
 	}
 
 	/**
-	 * 获取本机地址
+	 * @return 本机地址
 	 */
 	public static final String localHostAddress() {
 		return LOCAL_HOST_ADDRESS;
 	}
 	
 	/**
-	 * 获取本机默认物理网卡
+	 * @return 本机默认物理网卡
 	 */
 	public static final NetworkInterface defaultNetworkInterface() {
 		return DEFAULT_NETWORK_INTERFACE;
 	}
 	
 	/**
-	 * 验证IP地址
+	 * <p>是否是IP地址</p>
+	 * 
+	 * TODO：IPv6
+	 * 
+	 * @param host IP地址
+	 * 
+	 * @return true-是；false-不是；
 	 */
 	public static final boolean isIp(String host) {
 		return StringUtils.regex(host, IP_REGEX, true);
 	}
 
 	/**
-	 * 判断是否是本地IP地址
+	 * <p>是否是本地IP地址</p>
+	 * 
+	 * TODO：IPv6
+	 * 
+	 * @param host IP地址
+	 * 
+	 * @return true-是；false-不是；
 	 */
-	public static final boolean isLocalIp(String ip) {
-		final long value = encodeIpToLong(ip);
+	public static final boolean isLocalIp(String host) {
+		final long value = encodeIpToLong(host);
 		return
 			(A_NATIVE_IP_BEGIN <= value && value <= A_NATIVE_IP_END) ||
 			(B_NATIVE_IP_BEGIN <= value && value <= B_NATIVE_IP_END) ||
@@ -242,19 +280,23 @@ public final class NetUtils {
 	}
 	
 	/**
-	 * 创建本地socket地址
+	 * <p>创建Socket地址</p>
 	 * 
 	 * @param port 端口
+	 * 
+	 * @return Socket地址
 	 */
 	public static final InetSocketAddress buildSocketAddress(final int port) {
 		return buildSocketAddress(null, port);
 	}
 	
 	/**
-	 * 创建socket地址
+	 * <p>创建Socket地址</p>
 	 * 
 	 * @param host 地址
 	 * @param port 端口
+	 * 
+	 * @return Socket地址
 	 */
 	public static final InetSocketAddress buildSocketAddress(final String host, final int port) {
 		if(StringUtils.isEmpty(host)) {

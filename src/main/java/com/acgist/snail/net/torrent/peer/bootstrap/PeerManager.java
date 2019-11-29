@@ -35,8 +35,7 @@ public final class PeerManager {
 	/**
 	 * <p>下载队列</p>
 	 * <p>下载时Peer从队列中剔除，当Peer使用结束后重新放回下载队列。</p>
-	 * <p>key=InfoHashHex</p>
-	 * <p>value=Peer双端队列（尾部优先使用）</p>
+	 * <p>InfoHashHex=Peer双端队列（尾部优先使用）</p>
 	 */
 	private final Map<String, Deque<PeerSession>> peers;
 	/**

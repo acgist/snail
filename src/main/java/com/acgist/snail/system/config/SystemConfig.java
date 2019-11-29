@@ -32,7 +32,7 @@ public final class SystemConfig extends PropertiesConfig {
 	/**
 	 * 1MB数据大小：1MB = 1024KB = 1024 * 1024B
 	 */
-	public static final int ONE_MB = 1024 * 1024;
+	public static final int ONE_MB = DATA_SCALE * ONE_KB;
 	/**
 	 * 最小下载速度：16KB
 	 */

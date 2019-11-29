@@ -165,7 +165,7 @@ public final class BEncodeEncoder {
 	}
 	
 	/**
-	 * <p>写入字符数组</p>
+	 * <p>写入字节数组</p>
 	 */
 	public BEncodeEncoder write(byte[] bytes) {
 		try {
@@ -208,7 +208,7 @@ public final class BEncodeEncoder {
 	}
 	
 	/**
-	 * <p>写入B编码字符数组</p>
+	 * <p>写入B编码字节数组</p>
 	 */
 	private void writeBEncodeBytes(byte[] bytes) {
 		this.write(String.valueOf(bytes.length).getBytes());
@@ -239,7 +239,7 @@ public final class BEncodeEncoder {
 	}
 	
 	/**
-	 * <p>List转为B编码字符数组</p>
+	 * <p>List转为B编码字节数组</p>
 	 */
 	public static final byte[] encodeList(List<?> list) {
 		return newInstance().write(list).bytes();
@@ -253,7 +253,7 @@ public final class BEncodeEncoder {
 	}
 	
 	/**
-	 * <p>Map转为B编码字符数组</p>
+	 * <p>Map转为B编码字节数组</p>
 	 */
 	public static final byte[] encodeMap(Map<?, ?> map) {
 		return newInstance().write(map).bytes();

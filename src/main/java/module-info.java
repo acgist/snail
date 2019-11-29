@@ -3,7 +3,7 @@
  * <p>基于Java、JavaFX开发的下载工具，支持下载协议：BT（BitTorrent）、FTP、HTTP。</p>
  * <p>开放整个模块（反射使用）</p>
  * 
- * TODO：稀有块、阻塞算法（Peer）、图表选中切换颜色
+ * TODO：稀有块、阻塞算法（Peer）、图标选中切换颜色
  * 
  * @author acgist
  * @since 1.0.0

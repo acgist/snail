@@ -43,14 +43,14 @@ public final class LambdaOptional<T> {
 	}
 	
 	/**
-	 * <p>没有数据</p>
+	 * <p>数据是否为空</p>
 	 */
 	public boolean isEmpty() {
 		return this.t == null;
 	}
 	
 	/**
-	 * <p>含有数据</p>
+	 * <p>是否含有数据</p>
 	 */
 	public boolean isPresent() {
 		return !isEmpty();

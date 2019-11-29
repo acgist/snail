@@ -32,7 +32,7 @@ public final class TorrentManager {
 	
 	/**
 	 * <p>BT任务MAP</p>
-	 * <p>key=InfoHashHex、value=BT任务</p>
+	 * <p>InfoHashHex=BT任务</p>
 	 */
 	private Map<String, TorrentSession> torrentSessions;
 	

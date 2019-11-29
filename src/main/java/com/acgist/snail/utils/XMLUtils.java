@@ -37,17 +37,17 @@ public final class XMLUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(XMLUtils.class);
 
 	/**
-	 * 格式化输出
+	 * <p>格式化输出</p>
 	 */
 	private static final String DOM_FORMAT_PRETTY_PRINT = "format-pretty-print";
 	
 	/**
-	 * 根节点
+	 * <p>根节点</p>
 	 */
 	private Document document;
 	
 	/**
-	 * 创建XML
+	 * <p>创建XML</p>
 	 */
 	public static final XMLUtils build() {
 		final XMLUtils utils = new XMLUtils();
@@ -61,7 +61,7 @@ public final class XMLUtils {
 	}
 	
 	/**
-	 * 解析XML
+	 * <p>解析XML</p>
 	 */
 	public static final XMLUtils load(String xml) {
 		final XMLUtils utils = new XMLUtils();
@@ -76,7 +76,7 @@ public final class XMLUtils {
 	}
 	
 	/**
-	 * 创建XML工厂
+	 * <p>创建XML工厂</p>
 	 */
 	private static final DocumentBuilderFactory buildFactory() {
 		final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -95,35 +95,59 @@ public final class XMLUtils {
 	}
 
 	/**
-	 * 获取节点
+	 * @return 节点
 	 */
 	public Document document() {
 		return this.document;
 	}
 	
 	/**
-	 * 创建标签
+	 * <p>创建节点</p>
+	 * 
+	 * @param node 父节点
+	 * @param name 节点名称
+	 * 
+	 * @return 节点
 	 */
 	public Element element(Node node, String name) {
 		return element(node, name, null);
 	}
 	
 	/**
-	 * 创建标签
+	 * <p>创建节点</p>
+	 * 
+	 * @param node 父节点
+	 * @param name 节点名称
+	 * @param text 节点文本
+	 * 
+	 * @return 节点
 	 */
 	public Element element(Node node, String name, String text) {
 		return elementNS(node, name, text, null);
 	}
 	
 	/**
-	 * 创建标签（命名空间）
+	 * <p>创建节点（命名空间）</p>
+	 * 
+	 * @param node 父节点
+	 * @param name 节点名称
+	 * @param namespaceUri 命名空间
+	 * 
+	 * @return 节点
 	 */
 	public Element elementNS(Node node, String name, String namespaceUri) {
 		return elementNS(node, name, null, namespaceUri);
 	}
 	
 	/**
-	 * 创建标签（命名空间）
+	 * <p>创建节点（命名空间）</p>
+	 * 
+	 * @param node 父节点
+	 * @param name 节点名称
+	 * @param text 节点文本
+	 * @param namespaceUri 命名空间
+	 * 
+	 * @return 节点
 	 */
 	public Element elementNS(Node node, String name, String text, String namespaceUri) {
 		Element element = null;
@@ -140,7 +164,12 @@ public final class XMLUtils {
 	}
 
 	/**
-	 * 读取节点值：多个节点返回第一个
+	 * <p>读取节点值</p>
+	 * <p>多个节点返回第一个</p>
+	 * 
+	 * @param name 节点名称
+	 * 
+	 * @return 节点
 	 */
 	public String elementValue(String name) {
 		final NodeList list = this.document.getElementsByTagName(name);
@@ -151,7 +180,11 @@ public final class XMLUtils {
 	}
 
 	/**
-	 * 读取节点值：多个节点返回全部
+	 * <p>读取节点值</p>
+	 * 
+	 * @param name 节点名称
+	 * 
+	 * @return 节点值列表
 	 */
 	public List<String> elementValues(String name) {
 		final NodeList list = this.document.getElementsByTagName(name);
@@ -167,16 +200,20 @@ public final class XMLUtils {
 	}
 	
 	/**
-	 * 输出XML（不格式化）
+	 * <p>输出XML（不格式化）</p>
+	 * 
+	 * @return xml
 	 */
 	public String xml() {
 		return xml(false);
 	}
 	
 	/**
-	 * 输出XML
+	 * <p>输出XML</p>
 	 * 
 	 * @param format 是否格式化
+	 * 
+	 * @return xml
 	 */
 	public String xml(boolean format) {
 		try {

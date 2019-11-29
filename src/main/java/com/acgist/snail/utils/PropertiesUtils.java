@@ -28,10 +28,12 @@ public final class PropertiesUtils {
 	}
 	
 	/**
-	 * <p>获取实例</p>
-	 * <p>优先从UserDir加载，加载失败时加载默认配置。</p>
+	 * <p>创建实例</p>
+	 * <p>优先从UserDir加载配置，加载失败后加载默认配置。</p>
 	 * 
 	 * @param path 配置文件
+	 * 
+	 * @return Properties工具
 	 */
 	public static final PropertiesUtils getInstance(String path) {
 		Properties properties = loadUserDir(path);
@@ -42,7 +44,7 @@ public final class PropertiesUtils {
 	}
 	
 	/**
-	 * 加载配置（UserDir）
+	 * <p>加载配置（UserDir）</p>
 	 */
 	private static final Properties loadUserDir(String path) {
 		final File file = FileUtils.userDirFile(path);
@@ -54,13 +56,13 @@ public final class PropertiesUtils {
 			properties = new Properties();
 			properties.load(input);
 		} catch (IOException e) {
-			LOGGER.error("读取配置文件异常，文件路径：{}", path, e);
+			LOGGER.error("读取配置文件异常：{}", path, e);
 		}
 		return properties;
 	}
 	
 	/**
-	 * 加载配置（Resource）
+	 * <p>加载配置（Resource）</p>
 	 */
 	private static final Properties load(String path) {
 		if(PropertiesUtils.class.getResource(path) == null) {
@@ -71,13 +73,13 @@ public final class PropertiesUtils {
 			properties = new Properties();
 			properties.load(input);
 		} catch (IOException e) {
-			LOGGER.error("读取配置文件异常，文件路径：{}", path, e);
+			LOGGER.error("读取配置文件异常：{}", path, e);
 		}
 		return properties;
 	}
 	
 	/**
-	 * 读取String
+	 * <p>读取String</p>
 	 * 
 	 * @param name 属性名称
 	 * 
@@ -123,14 +125,16 @@ public final class PropertiesUtils {
 	}
 	
 	/**
-	 * 获取配置
+	 * @return 配置
 	 */
 	public Properties properties() {
 		return this.properties;
 	}
 	
 	/**
-	 * 是否存在配置
+	 * <p>是否存在配置</p>
+	 * 
+	 * @return true-存在；false-不存在；
 	 */
 	public boolean haveProperties() {
 		return this.properties != null;

@@ -27,7 +27,13 @@ public final class BeanUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(BeanUtils.class);
 	
 	/**
-	 * 反射生成实例：调用默认构造方法（无参）
+	 * <p>使用反射生成实例：调用默认构造方法（无参）</p>
+	 * 
+	 * @param <T> 类型泛型
+	 * 
+	 * @param clazz 类型Class
+	 * 
+	 * @return 实体
 	 */
 	public static final <T> T newInstance(final Class<T> clazz) {
 		if(clazz == null) {
@@ -42,13 +48,18 @@ public final class BeanUtils {
 	}
 	
 	/**
+	 * <p>将对象属性转为Map</p>
 	 * <dl>
-	 * 	<dt>将对象转为Map，类型转换：</dt>
+	 * 	<dt>类型转换</dt>
 	 * 	<dd>String -&gt; String</dd>
 	 * 	<dd>Number -&gt; Number</dd>
 	 * 	<dd>Enum   -&gt; String</dd>
-	 * 	<dd>Date   -&gt; String：yyyyMMddHHmmss</dd>
+	 * 	<dd>Date   -&gt; String(yyyyMMddHHmmss)</dd>
 	 * </dl>
+	 * 
+	 * @param instance 对象
+	 * 
+	 * @return 对象属性Map
 	 */
 	public static final Map<String, Object> toMap(Object instance) {
 		final Map<String, Object> map = new HashMap<>();
@@ -68,12 +79,16 @@ public final class BeanUtils {
 	}
 	
 	/**
-	 * <p>获取属性</p>
+	 * <p>获取类型属性</p>
 	 * <dl>
-	 * 	<dt>不获取：</dt>
+	 * 	<dt>不获取的属性</dt>
 	 * 	<dd>静态：static</dd>
 	 * 	<dd>瞬时：transient</dd>
 	 * </dl>
+	 * 
+	 * @param clazz 类型
+	 * 
+	 * @return 属性数组
 	 */
 	public static final String[] properties(Class<?> clazz) {
 		String[] properties = null;
@@ -98,7 +113,12 @@ public final class BeanUtils {
 	}
 	
 	/**
-	 * <p>获取属性值</p>
+	 * <p>获取对象属性值</p>
+	 * 
+	 * @param instance 对象
+	 * @param properties 对象属性集合
+	 * 
+	 * @return 属性值集合
 	 */
 	public static final Object[] propertiesValue(Object instance, String[] properties) {
 		return Stream
@@ -109,6 +129,11 @@ public final class BeanUtils {
 	
 	/**
 	 * <p>获取属性值</p>
+	 * 
+	 * @param instance 对象
+	 * @param property 对象属性
+	 * 
+	 * @return 属性值
 	 */
 	public static final Object propertyValue(Object instance, String property) {
 		final Class<?> clazz = instance.getClass();
@@ -123,6 +148,9 @@ public final class BeanUtils {
 	
 	/**
 	 * <p>属性装配</p>
+	 * 
+	 * @param instance 对象
+	 * @param wrapper 属性包装器
 	 */
 	public static final void setProperties(Object instance, ResultSetWrapper wrapper) {
 		final Class<?> clazz = instance.getClass();
@@ -141,6 +169,10 @@ public final class BeanUtils {
 	/**
 	 * <p>类型打包</p>
 	 * <p>枚举类型转换为字符串类型</p>
+	 * 
+	 * @param object 属性原始值
+	 * 
+	 * @return 属性打包值
 	 */
 	public static final Object pack(Object object) {
 		if(object == null) {
@@ -155,7 +187,12 @@ public final class BeanUtils {
 	
 	/**
 	 * <p>类型拆包</p>
-	 * <p>枚举读取、长字符串读取</p>
+	 * <p>类型：枚举、长字符串</p>
+	 * 
+	 * @param clazz 属性类型
+	 * @param value 属性打包值
+	 * 
+	 * @return 属性原始值
 	 */
 	public static final Object unpack(Class<?> clazz, Object value) {
 		if(clazz == null || value == null) {

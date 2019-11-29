@@ -284,14 +284,14 @@ public class HeaderWrapper {
 	}
 	
 	/**
-	 * <p>头部信息数据是否为空</p>
+	 * <p>头部信息是否为空</p>
 	 */
 	public boolean isEmpty() {
 		return CollectionUtils.isEmpty(this.headers);
 	}
 	
 	/**
-	 * <p>头部信息数据是否不为空</p>
+	 * <p>头部信息是否含有数据</p>
 	 */
 	public boolean isNotEmpty() {
 		return !isEmpty();

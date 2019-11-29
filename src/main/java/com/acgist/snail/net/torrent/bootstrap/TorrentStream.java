@@ -544,6 +544,7 @@ public final class TorrentStream {
 				}
 			}
 		}
+		// TODO：多行日志：LOGGER*，
 		if(LOGGER.isDebugEnabled()) {
 			LOGGER.debug("当前文件已下载Piece数量：{}，剩余下载Piece数量：{}",
 				this.pieces.cardinality(),
