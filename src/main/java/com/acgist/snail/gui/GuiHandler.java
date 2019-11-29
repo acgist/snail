@@ -115,7 +115,7 @@ public final class GuiHandler {
 	
 	/**
 	 * <p>事件列表</p>
-	 * <p>key=事件类型；value=事件；</p>
+	 * <p>事件类型=事件</p>
 	 */
 	private static final Map<GuiEvent.Type, GuiEvent> EVENTS = new HashMap<>(GuiEvent.Type.values().length);
 	/**

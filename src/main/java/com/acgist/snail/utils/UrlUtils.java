@@ -20,7 +20,7 @@ public final class UrlUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UrlUtils.class);
 	
 	/**
-	 * URL编码
+	 * <p>URL编码</p>
 	 */
 	public static final String encode(String url) {
 		try {
@@ -32,7 +32,7 @@ public final class UrlUtils {
 	}
 
 	/**
-	 * URL解码
+	 * <p>URL解码</p>
 	 */
 	public static final String decode(String url) {
 		try {

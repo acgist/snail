@@ -245,7 +245,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 		if(uploadOnly != null && uploadOnly.intValue() == UPLOAD_ONLY) {
 			this.peerSession.flags(PeerConfig.PEX_UPLOAD_ONLY);
 		}
-		// 支持的扩展协议：key=扩展协议名称；value=扩展协议标识；
+		// 支持的扩展协议：扩展协议名称=扩展协议标识
 		final Map<String, Object> supportTypes = decoder.getMap(EX_M);
 		if(CollectionUtils.isNotEmpty(supportTypes)) {
 			supportTypes.entrySet().forEach(entry -> {

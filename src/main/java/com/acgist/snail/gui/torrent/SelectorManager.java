@@ -40,7 +40,7 @@ public final class SelectorManager {
 	private final TreeItem<HBox> root;
 	/**
 	 * <p>选择器MAP</p>
-	 * <p>key=文件路径；value=选择文件；</p>
+	 * <p>文件路径=选择文件</p>
 	 */
 	private final Map<String, Selector> selector = new HashMap<>();;
 

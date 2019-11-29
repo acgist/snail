@@ -13,16 +13,16 @@ import java.util.Map;
 public final class PeerUtils {
 
 	/**
-	 * allowedFast固定值
+	 * <p>allowedFast固定值</p>
 	 */
 	private static final int ALLOWED_FAST_MASK = 0xFFFFFF00;
 	/**
-	 * allowedFast固定值：k（快速允许Piece长度）
+	 * <p>allowedFast固定值：k（快速允许Piece长度）</p>
 	 */
 	private static final int ALLOWED_FAST_K = 10;
 	
 	/**
-	 * 读取IP和端口信息
+	 * @see {@link #read(ByteBuffer, int)}
 	 */
 	public static final Map<String, Integer> read(byte[] bytes) {
 		if(bytes == null) {
@@ -33,10 +33,12 @@ public final class PeerUtils {
 	}
 	
 	/**
-	 * 读取IP和端口信息
+	 * <p>读取IP和端口信息</p>
 	 * 
 	 * @param buffer 数据
 	 * @param length 数据长度
+	 * 
+	 * @return IP=端口
 	 */
 	public static final Map<String, Integer> read(ByteBuffer buffer, int length) {
 		if(buffer == null) {
@@ -52,11 +54,11 @@ public final class PeerUtils {
 	}
 	
 	/**
-	 * 快速允许Piece索引
+	 * <p>计算快速允许Piece索引</p>
 	 * 
 	 * @param pieceSize Piece数量
 	 * @param ip Peer IP地址
-	 * @param infoHash 种子InfoHash
+	 * @param infoHash InfoHash
 	 * 
 	 * @return 快速允许Piece索引
 	 */

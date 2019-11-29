@@ -23,11 +23,17 @@ public final class NumberUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(NumberUtils.class);
 	
+	/**
+	 * <p>最小唯一编号索引</p>
+	 */
 	private static final int MIN_INT_INDEX = 1000;
+	/**
+	 * <p>最大唯一编号索引</p>
+	 */
 	private static final int MAX_INT_INDEX = 9999;
 	
 	/**
-	 * 唯一编号索引
+	 * <p>唯一编号索引</p>
 	 */
 	private static int index = MIN_INT_INDEX;
 	
@@ -51,7 +57,11 @@ public final class NumberUtils {
 	}
 	
 	/**
-	 * 字符数组转int（大端）
+	 * <p>字节数组转int（大端）</p>
+	 * 
+	 * @param bytes 字节数组
+	 * 
+	 * @return int
 	 */
 	public static final int bytesToInt(byte[] bytes) {
 		int value = 0;
@@ -63,7 +73,11 @@ public final class NumberUtils {
 	}
 	
 	/**
-	 * int转字符数组（大端）
+	 * <p>int转字节数组（大端）</p>
+	 * 
+	 * @param value int
+	 * 
+	 * @return 字节数组
 	 */
 	public static final byte[] intToBytes(int value) {
 		final byte[] bytes = new byte[4];
@@ -75,9 +89,13 @@ public final class NumberUtils {
 	}
 	
 	/**
-	 * 字符数组转short（大端）
+	 * <p>字节数组转short（大端）</p>
+	 * 
+	 * @param bytes 字节数组
+	 * 
+	 * @return short
 	 */
-	public static final int bytesToShort(byte[] bytes) {
+	public static final short bytesToShort(byte[] bytes) {
 		short value = 0;
 		value += ((bytes[0] & 0xFF) << 8);
 		value += bytes[1] & 0xFF;
@@ -85,7 +103,11 @@ public final class NumberUtils {
 	}
 	
 	/**
-	 * short转字符数组（大端）
+	 * <p>short转字节数组（大端）</p>
+	 * 
+	 * @param value short
+	 * 
+	 * @return 字节数组
 	 */
 	public static final byte[] shortToBytes(short value) {
 		final byte[] bytes = new byte[2];
@@ -96,6 +118,11 @@ public final class NumberUtils {
 	
 	/**
 	 * <p>向上取整</p>
+	 * 
+	 * @param dividend 被除数
+	 * @param divisor 除数
+	 * 
+	 * @param 商
 	 */
 	public static final int ceilDiv(long dividend, long divisor) {
 		int value = (int) (dividend / divisor);
@@ -106,7 +133,11 @@ public final class NumberUtils {
 	}
 
 	/**
-	 * 统计数字位上1的个数
+	 * <p>统计数字位上是1的个数</p>
+	 * 
+	 * @param number 数字
+	 * 
+	 * @return 位上是1的个数
 	 */
 	public static final byte bitCount(int number) {
 		byte count = 0;
@@ -118,10 +149,12 @@ public final class NumberUtils {
 	}
 	
 	/**
-	 * 大整数转为无符号二进制字符数组
+	 * <p>大整数转为无符号二进制字节数组</p>
 	 * 
-	 * @param value 原始大整数
-	 * @param length 二进制字符数组长度
+	 * @param value 大整数
+	 * @param length 二进制字节数组长度
+	 * 
+	 * @return 字节数组
 	 */
 	public static final byte[] encodeUnsigned(BigInteger value, int length) {
 		if (length < 1) {
@@ -143,10 +176,12 @@ public final class NumberUtils {
 	}
 
 	/**
-	 * 无符号二进制字符数组转为大整数
+	 * <p>无符号二进制字节数组转为大整数</p>
 	 * 
-	 * @param buffer 二进制字符数组
-	 * @param length 二进制字符数组长度
+	 * @param buffer 字节数组
+	 * @param length 二进制字节数组长度
+	 * 
+	 * @return 大整数
 	 */
 	public static final BigInteger decodeUnsigned(ByteBuffer buffer, int length) {
 		if (length < 1 || buffer.remaining() < length) {
@@ -167,7 +202,9 @@ public final class NumberUtils {
 	}
 	
 	/**
-	 * 获取随机数工具
+	 * <p>获取随机数工具</p>
+	 * 
+	 * @return 随机数工具
 	 */
 	public static final Random random() {
 		try {

@@ -29,59 +29,69 @@ public final class StringUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(StringUtils.class);
 	
 	/**
-	 * 正负整数正则表达式
+	 * <p>整数正则表达式（包含正负）</p>
 	 */
 	private static final String NUMERIC_REGEX = "\\-?[0-9]+";
 	
 	/**
-	 * 小数正则表达式
+	 * <p>小数、整数正则表达式（包含正负）</p>
 	 */
 	private static final String DECIMAL_REGEX = "\\-?[0-9]+(\\.[0-9]+)?";
 	
 	/**
-	 * 否空字符串
+	 * <p>字符串是否为空</p>
 	 */
 	public static final boolean isEmpty(String value) {
 		return value == null || value.isEmpty();
 	}
 
 	/**
-	 * 非空字符串
+	 * <p>字符串是否不为空</p>
 	 */
 	public static final boolean isNotEmpty(String value) {
 		return !isEmpty(value);
 	}
 	
 	/**
-	 * 数字字符串：正负整数
+	 * <p>是否是数字（整数）</p>
 	 */
 	public static final boolean isNumeric(String value) {
 		return StringUtils.regex(value, NUMERIC_REGEX, true);
 	}
 
 	/**
-	 * 小数字符串：包含小数
+	 * <p>是否是数字（整数、小数）</p>
 	 */
 	public static final boolean isDecimal(String value) {
 		return StringUtils.regex(value, DECIMAL_REGEX, true);
 	}
 	
 	/**
-	 * 字符串开始
+	 * <p>字符串是否以前缀开始</p>
+	 * 
+	 * @param value 字符串
+	 * @param prefix 前缀
+	 * 
+	 * @return true-是；false-不是；
 	 */
 	public static final boolean startsWith(String value, String prefix) {
 		return value != null && prefix != null && value.startsWith(prefix);
 	}
 	
 	/**
-	 * 字符串结束
+	 * <p>字符串是否以后缀结束</p>
+	 * 
+	 * @param value 字符串
+	 * @param suffix 后缀
+	 * 
+	 * @return true-是；false-不是；
 	 */
 	public static final boolean endsWith(String value, String suffix) {
 		return value != null && suffix != null && value.endsWith(suffix);
 	}
 	
 	/**
-	 * 字符数组转为十六进制字符串
+	 * <p>字节数组转为十六进制字符串</p>
 	 */
 	public static final String hex(byte[] bytes) {
 		if(bytes == null) {
@@ -100,7 +110,7 @@ public final class StringUtils {
 	}
 	
 	/**
-	 * 十六进制字符串转为字符数组
+	 * <p>十六进制字符串转为字节数组</p>
 	 */
 	public static final byte[] unhex(String text) {
 		if(text == null) {
@@ -124,7 +134,7 @@ public final class StringUtils {
 	}
 
 	/**
-	 * SHA-1散列计算
+	 * <p>SHA-1散列计算</p>
 	 */
 	public static final byte[] sha1(byte[] bytes) {
 		final MessageDigest digest = DigestUtils.sha1();
@@ -133,19 +143,20 @@ public final class StringUtils {
 	}
 	
 	/**
-	 * SHA-1散列计算并转为十六进制字符串
+	 * <p>SHA-1散列计算并转为十六进制字符串</p>
 	 */
 	public static final String sha1Hex(byte[] bytes) {
 		return StringUtils.hex(sha1(bytes));
 	}
 	
 	/**
-	 * 字符串解码
+	 * <p>字符串解码</p>
+	 * <p>将经过编码的字符串解码为系统默认编码字符串</p>
 	 * 
 	 * @param value 原始字符串
 	 * @param charset 原始编码
 	 * 
-	 * @return 系统默认编码的字符串
+	 * @return 字符串（系统默认编码）
 	 */
 	public static final String charset(String value, String charset) {
 		if(StringUtils.isEmpty(value) || StringUtils.isEmpty(charset)) {
@@ -160,11 +171,11 @@ public final class StringUtils {
 	}
 
 	/**
-	 * 正则表达式验证
+	 * <p>正则表达式验证</p>
 	 * 
 	 * @param value 字符串
 	 * @param regex 正则表达式
-	 * @param ignoreCase 忽略大小写
+	 * @param ignoreCase 是否忽略大小写
 	 * 
 	 * @return true：匹配；false：不匹配；
 	 */
@@ -183,7 +194,12 @@ public final class StringUtils {
 	}
 	
 	/**
-	 * 判断字符串是否相等
+	 * <p>字符串是否相等</p>
+	 * 
+	 * @param source 原始字符串
+	 * @param target 目标字符串
+	 * 
+	 * @return true-相等；false-不相等；
 	 */
 	public static final boolean equals(String source, String target) {
 		if(source == null) {
@@ -194,7 +210,7 @@ public final class StringUtils {
 	}
 	
 	/**
-	 * 判断字符串是否相等：忽略大小写
+	 * <p>字符串是否相等：忽略大小写</p>
 	 */
 	public static final boolean equalsIgnoreCase(String source, String target) {
 		if(source == null) {
@@ -205,7 +221,7 @@ public final class StringUtils {
 	}
 
 	/**
-	 * 转换Unicode
+	 * <p>转换Unicode字符串</p>
 	 */
 	public static final String toUnicode(String content) {
 		char value;
@@ -222,7 +238,7 @@ public final class StringUtils {
 	}
 	
 	/**
-	 * 读取Unicode
+	 * <p>读取Unicode字符串</p>
 	 */
 	public static final String ofUnicode(String unicode) {
 		final String[] hex = unicode.split("\\\\u");
@@ -234,14 +250,22 @@ public final class StringUtils {
 	}
 	
 	/**
-	 * ByteBuffer解码
+	 * <p>ByteBuffer转为字符串</p>
+	 * <p>默认编码：{@link SystemConfig#DEFAULT_CHARSET}</p>
+	 * 
+	 * @see {@link #ofByteBuffer(ByteBuffer, String)}
 	 */
 	public static final String ofByteBuffer(ByteBuffer buffer) {
 		return ofByteBuffer(buffer, SystemConfig.DEFAULT_CHARSET);
 	}
 	
 	/**
-	 * ByteBuffer解码
+	 * <p>ByteBuffer转为字符串</p>
+	 * 
+	 * @param buffer 字节缓冲区
+	 * @param charset 编码
+	 * 
+	 * @return 字符串
 	 */
 	public static final String ofByteBuffer(ByteBuffer buffer, String charset) {
 		if(charset == null) {
@@ -257,13 +281,18 @@ public final class StringUtils {
 			content = decoder.decode(buffer).toString();
 			buffer.compact();
 		} catch (CharacterCodingException e) {
-			LOGGER.error("ByteBuffer解码异常", e);
+			LOGGER.error("ByteBuffer转为字符串异常", e);
 		}
 		return content;
 	}
 	
 	/**
-	 * 输入流转为字符串
+	 * <p>输入流转为字符串</p>
+	 * 
+	 * @param input 输入流
+	 * @param charset 编码
+	 * 
+	 * @return 字符串
 	 */
 	public static final String ofInputStream(InputStream input, String charset) {
 		if(input == null) {

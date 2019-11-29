@@ -12,28 +12,28 @@ import java.util.Map;
 public final class CollectionUtils {
 
 	/**
-	 * 空集合
+	 * <p>集合是否为空</p>
 	 */
 	public static final boolean isEmpty(Collection<?> list) {
 		return list == null || list.isEmpty();
 	}
 	
 	/**
-	 * 非空集合
+	 * <p>集合是否包含数据</p>
 	 */
 	public static final boolean isNotEmpty(Collection<?> list) {
 		return !isEmpty(list);
 	}
 
 	/**
-	 * 空Map
+	 * <p>Map是否为空</p>
 	 */
 	public static final boolean isEmpty(Map<?, ?> map) {
 		return map == null || map.isEmpty();
 	}
 
 	/**
-	 * 非空Map
+	 * <p>Map是否包含数据</p>
 	 */
 	public static final boolean isNotEmpty(Map<?, ?> map) {
 		return !isEmpty(map);

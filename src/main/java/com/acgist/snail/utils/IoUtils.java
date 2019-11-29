@@ -23,7 +23,7 @@ public final class IoUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(IoUtils.class);
 	
 	/**
-	 * 关闭输入流
+	 * <p>关闭InputStream</p>
 	 */
 	public static final void close(InputStream input) {
 		try {
@@ -31,12 +31,12 @@ public final class IoUtils {
 				input.close();
 			}
 		} catch (Exception e) {
-			LOGGER.error("关闭输入流异常", e);
+			LOGGER.error("关闭InputStream异常", e);
 		}
 	}
 	
 	/**
-	 * 关闭输出流
+	 * <p>关闭OutputStream</p>
 	 */
 	public static final void close(OutputStream output) {
 		try {
@@ -45,12 +45,12 @@ public final class IoUtils {
 				output.close();
 			}
 		} catch (Exception e) {
-			LOGGER.error("关闭输出流异常", e);
+			LOGGER.error("关闭OutputStream异常", e);
 		}
 	}
 	
 	/**
-	 * 关闭Socket
+	 * <p>关闭Socket</p>
 	 */
 	public static final void close(Socket socket) {
 		if(socket != null && !socket.isClosed()) {
@@ -63,33 +63,33 @@ public final class IoUtils {
 	}
 	
 	/**
-	 * 关闭异步Socket
+	 * <p>关闭AsynchronousSocketChannel</p>
 	 */
 	public static final void close(AsynchronousSocketChannel socket) {
 		if(socket != null && socket.isOpen()) {
 			try {
 				socket.close();
 			} catch (Exception e) {
-				LOGGER.error("关闭异步Socket异常", e);
+				LOGGER.error("关闭AsynchronousSocketChannel异常", e);
 			}
 		}
 	}
 	
 	/**
-	 * 关闭异步Socket Server
+	 * <p>关闭AsynchronousServerSocketChannel</p>
 	 */
 	public static final void close(AsynchronousServerSocketChannel server) {
 		if(server != null && server.isOpen()) {
 			try {
 				server.close();
 			} catch (Exception e) {
-				LOGGER.error("关闭异步Socket Server异常", e);
+				LOGGER.error("关闭AsynchronousServerSocketChannel异常", e);
 			}
 		}
 	}
 	
 	/**
-	 * 关闭异步通道组
+	 * <p>关闭AsynchronousChannelGroup</p>
 	 */
 	public static final void close(AsynchronousChannelGroup group) {
 		if(group != null && !group.isShutdown()) {
@@ -98,20 +98,20 @@ public final class IoUtils {
 	}
 	
 	/**
-	 * 关闭UDP Channel
+	 * <p>关闭DatagramChannel</p>
 	 */
 	public static final void close(DatagramChannel channel) {
 		if(channel != null && channel.isOpen()) {
 			try {
 				channel.close();
 			} catch (Exception e) {
-				LOGGER.error("关闭UDP Channel异常", e);
+				LOGGER.error("关闭DatagramChannel异常", e);
 			}
 		}
 	}
 
 	/**
-	 * 关闭Selector
+	 * <p>关闭Selector</p>
 	 */
 	public static final void close(Selector selector) {
 		if(selector != null && selector.isOpen()) {

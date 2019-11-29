@@ -119,7 +119,7 @@ public final class BEncodeDecoder {
 	/**
 	 * <p>数据是否为空</p>
 	 * 
-	 * @return true-空数据；false-非空数据；
+	 * @return true-为空；false-非空；
 	 */
 	public boolean isEmpty() {
 		if(this.type == Type.LIST) {
@@ -134,7 +134,7 @@ public final class BEncodeDecoder {
 	/**
 	 * <p>是否包含数据</p>
 	 * 
-	 * @return true-非空数据；false-空数据；
+	 * @return true-非空；false-为空；
 	 */
 	public boolean isNotEmpty() {
 		return !isEmpty();
@@ -352,12 +352,12 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>读取符合长度的字符数组</p>
+	 * <p>读取符合长度的字节数组</p>
 	 * 
 	 * @param lengthBuilder 长度字符串：获取长度后清空
-	 * @param inputStream 字符流
+	 * @param inputStream 字节流
 	 * 
-	 * @return 字符数组
+	 * @return 字节数组
 	 * 
 	 * @throws PacketSizeException 超过最大网络包大小
 	 */
@@ -482,7 +482,7 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>字符数组转字符串</p>
+	 * <p>字节数组转字符串</p>
 	 */
 	public static final String getString(Object object) {
 		if(object == null) {

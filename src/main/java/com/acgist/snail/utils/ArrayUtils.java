@@ -14,7 +14,7 @@ import com.acgist.snail.system.exception.ArgumentException;
 public final class ArrayUtils {
 
 	/**
-	 * 不存在索引
+	 * <p>不存在索引</p>
 	 */
 	public static final int NO_INDEX = -1;
 	
@@ -73,7 +73,7 @@ public final class ArrayUtils {
 	}
 	
 	/**
-	 * 异或运算
+	 * <p>异或运算</p>
 	 * 
 	 * @param sources 原始数据
 	 * @param targets 比较数据
@@ -122,35 +122,35 @@ public final class ArrayUtils {
 	}
 	
 	/**
-	 * 空数组
+	 * <p>数组是否为空</p>
 	 */
 	public static final boolean isEmpty(Object[] objects) {
 		return objects == null || objects.length == 0;
 	}
 	
 	/**
-	 * 非空数组
+	 * <p>数组是否包含数据</p>
 	 */
 	public static final boolean isNotEmpty(Object[] objects) {
 		return !isEmpty(objects);
 	}
 	
 	/**
-	 * 空字节数组
+	 * <p>字节数组是否为空</p>
 	 */
 	public static final boolean isEmpty(byte[] value) {
 		return value == null || value.length == 0;
 	}
 
 	/**
-	 * 非空字节数组
+	 * <p>字节数组是否包含数据</p>
 	 */
 	public static final boolean isNotEmpty(byte[] value) {
 		return !isEmpty(value);
 	}
 	
 	/**
-	 * 随机字符数组
+	 * <p>随机字节数组</p>
 	 */
 	public static final byte[] random(int length) {
 		final byte[] bytes = new byte[length];
@@ -162,7 +162,7 @@ public final class ArrayUtils {
 	}
 	
 	/**
-	 * 查找数组索引
+	 * <p>查找数组索引</p>
 	 * 
 	 * @see {@link #indexOf(int[], int, int, int)}
 	 */
@@ -171,7 +171,7 @@ public final class ArrayUtils {
 	}
 	
 	/**
-	 * 查找数组索引
+	 * <p>查找数组索引</p>
 	 * 
 	 * @param values 数组
 	 * @param begin 开始位置
@@ -190,7 +190,7 @@ public final class ArrayUtils {
 	}
 	
 	/**
-	 * 查找字符索引
+	 * <p>查找字符索引</p>
 	 * 
 	 * @param chars 数组
 	 * @param value 查找字符

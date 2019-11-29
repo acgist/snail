@@ -16,7 +16,9 @@ public final class ThreadUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ThreadUtils.class);
 	
 	/**
-	 * 线程休眠
+	 * <p>线程休眠</p>
+	 * 
+	 * @param millis 休眠时间（毫秒）
 	 */
 	public static final void sleep(long millis) {
 		try {
