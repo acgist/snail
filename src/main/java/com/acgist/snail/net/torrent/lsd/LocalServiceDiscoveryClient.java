@@ -51,7 +51,7 @@ public final class LocalServiceDiscoveryClient extends UdpClient<LocalServiceDis
 			return;
 		}
 		if(LOGGER.isDebugEnabled()) {
-			LOGGER.debug("发送本地发现消息，InfoHash：{}", String.join(",", infoHashs));
+			LOGGER.debug("发送本地发现消息（InfoHash）：{}", String.join(",", infoHashs));
 		}
 		try {
 			send(buildLocalSearch(infoHashs));

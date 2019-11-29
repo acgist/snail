@@ -59,8 +59,8 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 			try {
 				torrentSession.upload(this.taskSession);
 			} catch (DownloadException e) {
-				LOGGER.error("BT任务分享异常", e);
-				fail("BT任务分享失败：" + e.getMessage());
+				LOGGER.error("BT任务上传异常", e);
+				fail("BT任务上传失败：" + e.getMessage());
 			}
 		}
 		return torrentSession;

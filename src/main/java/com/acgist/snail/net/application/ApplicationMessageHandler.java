@@ -181,7 +181,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	}
 
 	/**
-	 * 任务列表（B编码）
+	 * <p>任务列表（B编码）</p>
 	 * 
 	 * @since 1.1.1
 	 */
@@ -246,7 +246,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	}
 	
 	/**
-	 * 选择TaskSession
+	 * <p>选择TaskSession</p>
 	 * 
 	 * @since 1.1.1
 	 */
@@ -258,14 +258,14 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	}
 	
 	/**
-	 * 处理系统响应
+	 * <p>处理系统响应</p>
 	 */
 	private void onResponse(ApplicationMessage message) {
 		LOGGER.debug("处理系统响应：{}", message.getBody());
 	}
 
 	/**
-	 * 发送系统消息
+	 * <p>发送系统消息</p>
 	 */
 	private void send(ApplicationMessage message) {
 		try {

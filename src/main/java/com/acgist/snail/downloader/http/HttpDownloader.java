@@ -76,11 +76,8 @@ public final class HttpDownloader extends SingleFileDownloader {
 			if(headers.range()) { // 支持断点续传
 				final long begin = headers.beginRange();
 				if(size != begin) {
-					// TODO：多行文本
 					LOGGER.warn(
-						"HTTP下载错误（已下载大小和开始下载位置不符）：{}-{}" +
-						"\r\n" +
-						"HTTP响应头：{}",
+						"HTTP下载错误（已下载大小和开始下载位置不符）：{}-{}，HTTP响应头：{}",
 						size, begin,
 						headers.allHeaders()
 					);

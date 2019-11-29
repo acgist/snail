@@ -19,7 +19,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
- * 窗口
+ * <p>窗口</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -29,11 +29,11 @@ public abstract class Window<T extends Initializable> extends Application {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Window.class);
 	
 	/**
-	 * 容器
+	 * <p>容器</p>
 	 */
 	protected Stage stage;
 	/**
-	 * 控制器
+	 * <p>控制器</p>
 	 */
 	protected T controller;
 	
@@ -47,14 +47,14 @@ public abstract class Window<T extends Initializable> extends Application {
 	}
 	
 	/**
-	 * 设置ICON
+	 * <p>设置ICON</p>
 	 */
 	protected void icon() {
 		this.stage.getIcons().add(new Image("/image/logo.png"));
 	}
 	
 	/**
-	 * ESC隐藏窗口
+	 * <p>ESC隐藏窗口</p>
 	 */
 	protected void esc() {
 		this.stage.addEventHandler(KeyEvent.KEY_RELEASED, (event) -> {
@@ -65,7 +65,7 @@ public abstract class Window<T extends Initializable> extends Application {
 	}
 	
 	/**
-	 * 会话框通用设置：{@link #icon}、{@link #esc}
+	 * <p>会话框通用设置：{@link #icon}、{@link #esc}</p>
 	 */
 	protected void dialogWindow() {
 		icon();
@@ -73,14 +73,14 @@ public abstract class Window<T extends Initializable> extends Application {
 	}
 	
 	/**
-	 * 禁止改变窗口大小
+	 * <p>禁止改变窗口大小</p>
 	 */
 	protected void disableResize() {
 		this.stage.setResizable(false);
 	}
 	
 	/**
-	 * 加载fxml、controller
+	 * <p>加载fxml、controller</p>
 	 * 
 	 * @param <X> 面板泛型
 	 * @param fxml fxml路径
@@ -97,7 +97,7 @@ public abstract class Window<T extends Initializable> extends Application {
 	}
 	
 	/**
-	 * 创建窗口
+	 * <p>创建窗口</p>
 	 * 
 	 * @param stage 容器
 	 * @param title 标题
@@ -117,7 +117,7 @@ public abstract class Window<T extends Initializable> extends Application {
 	}
 	
 	/**
-	 * 显示窗口（异步）
+	 * <p>显示窗口（异步）</p>
 	 */
 	public void show() {
 		if(SystemContext.available()) {
@@ -126,7 +126,7 @@ public abstract class Window<T extends Initializable> extends Application {
 	}
 	
 	/**
-	 * 显示窗口（同步）
+	 * <p>显示窗口（同步）</p>
 	 */
 	public void showAndWait() {
 		if(SystemContext.available()) {
@@ -135,7 +135,7 @@ public abstract class Window<T extends Initializable> extends Application {
 	}
 	
 	/**
-	 * 隐藏窗口
+	 * <p>隐藏窗口</p>
 	 */
 	public void hide() {
 		this.stage.hide();
@@ -150,21 +150,21 @@ public abstract class Window<T extends Initializable> extends Application {
 	}
 	
 	/**
-	 * 窗口是否显示
+	 * <p>窗口是否显示</p>
 	 */
 	public boolean isShowing() {
 		return this.stage.isShowing();
 	}
 	
 	/**
-	 * 容器
+	 * @return 容器
 	 */
 	public Stage stage() {
 		return this.stage;
 	}
 	
 	/**
-	 * 控制器
+	 * @return 控制器
 	 */
 	public T controller() {
 		return this.controller;
