@@ -162,6 +162,7 @@ public final class PeerDownloaderGroup {
 			}
 			return true;
 		} else {
+			LOGGER.debug("挑选Peer失败");
 			return false;
 		}
 	}
