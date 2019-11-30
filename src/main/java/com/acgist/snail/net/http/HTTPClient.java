@@ -12,11 +12,19 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpRequest.Builder;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLParameters;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +40,7 @@ import com.acgist.snail.utils.UrlUtils;
 /**
  * <p>HTTP客户端</p>
  * <p>使用JDK内置HTTP客户端</p>
+ * <p>配置参考：https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -83,8 +92,6 @@ public final class HTTPClient {
 	private static final String USER_AGENT;
 	/**
 	 * <p>HTTP线程池</p>
-	 * 
-	 * TODO：找到有时占用CPU过高原因
 	 */
 	private static final ExecutorService EXECUTOR = SystemThreadContext.newExecutor(2, 10, 100, 60L, SystemThreadContext.SNAIL_THREAD_HTTP);
 	
@@ -368,56 +375,13 @@ public final class HTTPClient {
 			.followRedirects(Redirect.NORMAL) // 重定向：正常
 //			.followRedirects(Redirect.ALWAYS) // 重定向：全部
 //			.proxy(ProxySelector.getDefault()) // 代理
-//			.sslContext(newSSLContext()) // SSL上下文：SSLContext.getDefault()
-			// SSL加密套件：RSA和ECDSA签名根据证书类型选择（ECDH不推荐使用）
-//			.sslParameters(new SSLParameters(new String[] {
-//				"TLS_AES_128_GCM_SHA256",
-//				"TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
-//				"TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
-//				"TLS_RSA_WITH_AES_128_CBC_SHA256",
-//				"TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256",
-//				"TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256"
-//			}, new String[] {"TLSv1.2", "TLSv1.3"}))
+//			.sslContext(newSSLContext()) // SSL上下文
+			.sslParameters(newSSLParameters()) // SSL参数
 //			.authenticator(Authenticator.getDefault()) // 认证
 //			.cookieHandler(CookieHandler.getDefault()) // Cookie
 			.connectTimeout(Duration.ofSeconds(timeout)) // 超时
 			.build();
 	}
-	
-//	/**
-//	 * <p>信任所有证书</p>
-//	 */
-//	private static final TrustManager[] TRUST_ALL_CERT_MANAGER = new TrustManager[] {
-//		new X509TrustManager() {
-//			public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-//				return null;
-//			}
-//			public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {
-//			}
-//			public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {
-//			}
-//		}
-//	};
-//	
-//	/**
-//	 * <p>新建SSLContext</p>
-//	 * <p>协议链接：https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#SSLContext</p>
-//	 */
-//	private static final SSLContext newSSLContext() {
-//		SSLContext sslContext = null;
-//		try {
-//			sslContext = SSLContext.getInstance("TLSv1.2"); // SSL、SSLv2、SSLv3、TLS、TLSv1、TLSv1.1、TLSv1.2、TLSv1.3
-//			sslContext.init(null, TRUST_ALL_CERT_MANAGER, new SecureRandom());
-//		} catch (KeyManagementException | NoSuchAlgorithmException e) {
-//			LOGGER.error("新建SSLContext异常", e);
-//			try {
-//				sslContext = SSLContext.getDefault();
-//			} catch (NoSuchAlgorithmException ex) {
-//				LOGGER.error("新建默认SSLContext异常", ex);
-//			}
-//		}
-//		return sslContext;
-//	}
 
 	/**
 	 * <p>新建请求Builder</p>
@@ -434,6 +398,62 @@ public final class HTTPClient {
 			.version(Version.HTTP_1_1) // HTTP协议使用1.1版本：2.0版本没有普及
 			.timeout(Duration.ofSeconds(timeout))
 			.header("User-Agent", USER_AGENT);
+	}
+	
+	/**
+	 * <p>新建SSLParameters</p>
+	 */
+	private static final SSLParameters newSSLParameters() {
+		final var sslParameters = new SSLParameters();
+		// SSL加密套件：RSA和ECDSA签名根据证书类型选择（ECDH不推荐使用）
+//		sslParameters.setCipherSuites(new String[] {
+//			"TLS_AES_128_GCM_SHA256",
+//			"TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+//			"TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
+//			"TLS_RSA_WITH_AES_128_CBC_SHA256",
+//			"TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256",
+//			"TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256"
+//		});
+		// 不使用TLSv1.3：CPU占用过高
+		sslParameters.setProtocols(new String[] {"TLSv1.1", "TLSv1.2"});
+		// HTTP协议配置：newBuilder
+//		sslParameters.setApplicationProtocols(new String[] {"h2", "http/1.1"});
+		return sslParameters;
+	}
+	
+	/**
+	 * <p>信任所有证书</p>
+	 */
+	private static final TrustManager[] TRUST_ALL_CERT_MANAGER = new TrustManager[] {
+		new X509TrustManager() {
+			public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+				return null;
+			}
+			public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {
+			}
+			public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {
+			}
+		}
+	};
+	
+	/**
+	 * <p>新建SSLContext</p>
+	 */
+	public static final SSLContext newSSLContext() {
+		SSLContext sslContext = null;
+		try {
+			// SSL、SSLv2、SSLv3、TLS、TLSv1、TLSv1.1、TLSv1.2、TLSv1.3
+			sslContext = SSLContext.getInstance("TLSv1.2");
+			sslContext.init(null, TRUST_ALL_CERT_MANAGER, new SecureRandom());
+		} catch (KeyManagementException | NoSuchAlgorithmException e) {
+			LOGGER.error("新建SSLContext异常", e);
+			try {
+				sslContext = SSLContext.getDefault();
+			} catch (NoSuchAlgorithmException ex) {
+				LOGGER.error("新建默认SSLContext异常", ex);
+			}
+		}
+		return sslContext;
 	}
 
 }
