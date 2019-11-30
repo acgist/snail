@@ -83,6 +83,8 @@ public final class HTTPClient {
 	private static final String USER_AGENT;
 	/**
 	 * <p>HTTP线程池</p>
+	 * 
+	 * TODO：找到有时占用CPU过高原因
 	 */
 	private static final ExecutorService EXECUTOR = SystemThreadContext.newExecutor(2, 10, 100, 60L, SystemThreadContext.SNAIL_THREAD_HTTP);
 	
