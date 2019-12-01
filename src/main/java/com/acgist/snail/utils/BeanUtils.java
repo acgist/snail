@@ -217,11 +217,10 @@ public final class BeanUtils {
 		}
 		if(value instanceof JdbcClob) { // 长字符串
 			final JdbcClob clob = (JdbcClob) value;
-			try {
+			try(final Reader reader = clob.getCharacterStream()) {
 				int index;
 				final char[] chars = new char[1024];
 				final StringBuilder builder = new StringBuilder();
-				final Reader reader = clob.getCharacterStream();
 				while((index = reader.read(chars)) != -1) {
 					builder.append(new String(chars, 0, index));
 				}
