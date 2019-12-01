@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import com.acgist.snail.protocol.Protocol;
 
-public class ThunderTest {
+public class ThunderTest extends BaseTest {
 
 	@Test
 	public void read() {
@@ -16,7 +16,7 @@ public class ThunderTest {
 		String newUrl = new String(Base64.getMimeDecoder().decode(url));
 //		String newUrl = new String(Base64.getDecoder().decode(url));
 		newUrl = newUrl.substring(2, newUrl.length() - 2);
-		System.out.println(newUrl);
+		this.log(newUrl);
 	}
 	
 }

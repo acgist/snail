@@ -2,15 +2,15 @@ package com.acgist.snail.tracker;
 
 import org.junit.Test;
 
+import com.acgist.snail.BaseTest;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerClient;
 import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerManager;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.utils.ThreadUtils;
 
-public class TrackerClientUdpTest {
+public class TrackerClientUdpTest extends BaseTest {
 
 	@Test
 	public void announce() throws NetException, DownloadException {
@@ -22,7 +22,7 @@ public class TrackerClientUdpTest {
 		TrackerClient client = list.get(0);
 		client.announce(1000, session);
 		client.scrape(1000, session);
-		ThreadUtils.sleep(Long.MAX_VALUE);
+		this.pause();
 	}
 	
 }

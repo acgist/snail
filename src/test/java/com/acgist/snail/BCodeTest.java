@@ -10,7 +10,7 @@ import com.acgist.snail.system.bencode.BEncodeDecoder;
 import com.acgist.snail.system.bencode.BEncodeEncoder;
 import com.acgist.snail.system.exception.PacketSizeException;
 
-public class BCodeTest {
+public class BCodeTest extends BaseTest {
 
 	@Test
 	public void rw() throws PacketSizeException {
@@ -24,17 +24,17 @@ public class BCodeTest {
 //			.newMap().put("aa", "bb").put("cc", "dd").flush()
 //			.write("xxxx".getBytes())
 //			.toString();
-		System.out.println(content);
+		this.log(content);
 		BEncodeDecoder decoder = BEncodeDecoder.newInstance(content.getBytes());
-		decoder.nextList().forEach(value -> System.out.println(new String((byte[]) value)));
+		decoder.nextList().forEach(value -> this.log(new String((byte[]) value)));
 		decoder.nextMap().forEach((key, value) -> {
 			if(value instanceof Long) {
-				System.out.println(key + "=" + value);
+				this.log(key + "=" + value);
 			} else {
-				System.out.println(key + "=" + new String((byte[]) value));
+				this.log(key + "=" + new String((byte[]) value));
 			}
 		});
-		System.out.println(decoder.oddString());
+		this.log(decoder.oddString());
 		
 	}
 	
@@ -45,13 +45,13 @@ public class BCodeTest {
 		map.put("b", null);
 		map.put("c", "c");
 		String content = new String(BEncodeEncoder.encodeMap(map));
-		System.out.println(content);
+		this.log(content);
 		var decoder = BEncodeDecoder.newInstance(content);
 		decoder.nextMap().forEach((key, value) -> {
 			if(value instanceof Number) {
-				System.out.println(key + "-" + value);
+				this.log(key + "-" + value);
 			} else {
-				System.out.println(key + "-" + new String((byte[]) value));
+				this.log(key + "-" + new String((byte[]) value));
 			}
 		});
 	}
@@ -60,7 +60,7 @@ public class BCodeTest {
 	public void error() throws PacketSizeException {
 		var decoder = BEncodeDecoder.newInstance("d8:completei6e10:downloadedi17e10:incompletei0e8:intervali924e12:min intervali462e5:peers36:����m�Wj���LmA�s;I�ʆL��TTz�e");
 		var map = decoder.nextMap();
-		System.out.println(map);
+		this.log(map);
 	}
 	
 }

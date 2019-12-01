@@ -2,20 +2,20 @@ package com.acgist.snail.upnp;
 
 import org.junit.Test;
 
+import com.acgist.snail.BaseTest;
 import com.acgist.snail.net.upnp.UpnpClient;
 import com.acgist.snail.net.upnp.bootstrap.UpnpRequest;
 import com.acgist.snail.net.upnp.bootstrap.UpnpResponse;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.utils.NetUtils;
-import com.acgist.snail.utils.ThreadUtils;
 
-public class UpnpClientTest {
+public class UpnpClientTest extends BaseTest {
 
 	@Test
 	public void upnp() {
 		UpnpClient client = UpnpClient.newInstance();
 		client.mSearch();
-		ThreadUtils.sleep(Long.MAX_VALUE);
+		this.pause();
 	}
 
 	@Test
@@ -24,7 +24,7 @@ public class UpnpClientTest {
 //		String xml = request.buildGetExternalIPAddress();
 //		String xml = request.buildGetSpecificPortMappingEntry(8080, Protocol.Type.TCP);
 		String xml = request.buildAddPortMapping(8080, NetUtils.localHostAddress(), 8080, Protocol.Type.TCP);
-		System.out.println(xml);
+		this.log(xml);
 	}
 	
 	@Test
@@ -38,7 +38,7 @@ public class UpnpClientTest {
 		+ "		</u:GetExternalIPAddressResponse>"
 		+ "	</SOAP-ENV:Body>"
 		+ "</SOAP-ENV:Envelope>";
-		System.out.println(UpnpResponse.parseGetExternalIPAddress(xml));
+		this.log(UpnpResponse.parseGetExternalIPAddress(xml));
 	}
 	
 }

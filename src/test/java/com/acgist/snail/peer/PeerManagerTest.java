@@ -4,11 +4,12 @@ import java.util.concurrent.Executors;
 
 import org.junit.Test;
 
+import com.acgist.snail.BaseTest;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
-public class PeerManagerTest {
+public class PeerManagerTest extends BaseTest {
 
 	@Test
 	public void add() {
@@ -23,7 +24,7 @@ public class PeerManagerTest {
 				PeerManager.getInstance().newPeerSession("1234", null, "183.6.115.59", 19999, (byte) 1);
 			});
 		}
-		ThreadUtils.sleep(Long.MAX_VALUE);
+		this.pause();
 	}
 	
 	@Test
@@ -50,7 +51,7 @@ public class PeerManagerTest {
 				}
 			}
 		});
-		ThreadUtils.sleep(Long.MAX_VALUE);
+		this.pause();
 	}
 	
 }

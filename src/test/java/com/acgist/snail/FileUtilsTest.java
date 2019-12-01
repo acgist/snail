@@ -10,12 +10,12 @@ import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 
-public class FileUtilsTest {
+public class FileUtilsTest extends BaseTest {
 	
 	@Test
 	public void fileNameUrl() {
-		System.out.println(FileUtils.fileNameFromUrl("http://casd/%e8%ae%a2%e5%8d%95fds.mpe?xx"));
-		System.out.println(FileUtils.fileNameFromUrl("https://www.acgist.com/demo/weixin/view?xx?xx"));
+		this.log(FileUtils.fileNameFromUrl("http://casd/%e8%ae%a2%e5%8d%95fds.mpe?xx"));
+		this.log(FileUtils.fileNameFromUrl("https://www.acgist.com/demo/weixin/view?xx?xx"));
 	}
 	
 	@Test
@@ -23,39 +23,39 @@ public class FileUtilsTest {
 		HTTPClient client = HTTPClient.newInstance("https://www.acgist.com/demo/weixin/view");
 		var headers = client.head();
 		headers.allHeaders().forEach((key, value) -> {
-			System.out.println(key + "<---->" + value);
+			this.log(key + "<---->" + value);
 		});
-		System.out.println(headers.header("SERVER"));
+		this.log(headers.header("SERVER"));
 	}
 	
 	@Test
 	public void fileType() {
-		System.out.println(FileUtils.fileType("http://casd/fds.mp4"));
-		System.out.println(FileUtils.fileType("http://casd/fds.JPEG"));
+		this.log(FileUtils.fileType("http://casd/fds.mp4"));
+		this.log(FileUtils.fileType("http://casd/fds.JPEG"));
 	}
 	
 //	@Test
 //	public void fileTypeSort() {
 //		FileUtils.FILE_TYPE_EXT.forEach((key, value) -> {
-//			System.out.println(key);
+//			this.log(key);
 //			var list = new ArrayList<>(value);
 //			Collections.sort(list);
-//			System.out.println("\"" + String.join("\", \"", list) + "\"");
+//			this.log("\"" + String.join("\", \"", list) + "\"");
 //		});
 //	}
 	
 	@Test
 	public void size() {
-		System.out.println(FileUtils.fileSize("E:\\gitee\\snail\\download\\MY-1.211.0.exe"));
+		this.log(FileUtils.fileSize("E:\\gitee\\snail\\download\\MY-1.211.0.exe"));
 	}
 	
 	@Test
 	public void verify() {
 		FileUtils.md5("F:\\迅雷下载\\我的大叔\\[我的大叔][E008].mkv").forEach((key, value) -> {
-			System.out.println(value + "=" + key);
+			this.log(value + "=" + key);
 		});
 		FileUtils.sha1("F:\\迅雷下载\\我的大叔\\[我的大叔][E008].mkv").forEach((key, value) -> {
-			System.out.println(value + "=" + key);
+			this.log(value + "=" + key);
 		});
 	}
 	
@@ -64,18 +64,18 @@ public class FileUtilsTest {
 	 */
 	@Test
 	public void order() {
-		System.out.println(ByteOrder.nativeOrder());
+		this.log(ByteOrder.nativeOrder());
 		ByteBuffer buffer = ByteBuffer.allocate(2);
 		buffer.order(ByteOrder.LITTLE_ENDIAN);
 		buffer.putChar('你');
-		System.out.println(StringUtils.hex(buffer.array()));
+		this.log(StringUtils.hex(buffer.array()));
 		buffer = ByteBuffer.allocate(2);
 		buffer.putChar('你');
-		System.out.println(StringUtils.hex(buffer.array()));
+		this.log(StringUtils.hex(buffer.array()));
 		buffer = ByteBuffer.allocate(2);
 		buffer.order(ByteOrder.BIG_ENDIAN);
 		buffer.putChar('你');
-		System.out.println(StringUtils.hex(buffer.array()));
+		this.log(StringUtils.hex(buffer.array()));
 	}
 	
 }

@@ -5,14 +5,13 @@ import org.junit.Test;
 import com.acgist.snail.net.torrent.lsd.LocalServiceDiscoveryClient;
 import com.acgist.snail.net.torrent.lsd.LocalServiceDiscoveryServer;
 import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.utils.ThreadUtils;
 
-public class LSDTest {
+public class LSDTest extends BaseTest {
 
 	@Test
 	public void server() {
 		LocalServiceDiscoveryServer.getInstance();
-		ThreadUtils.sleep(Long.MAX_VALUE);
+		this.pause();
 	}
 	
 	@Test

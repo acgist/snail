@@ -11,14 +11,14 @@ import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
-public class NetTest {
+public class NetTest extends BaseTest {
 
 	@Test
 	public void ip() {
 		ApplicationClient client = ApplicationClient.newInstance();
 		final var ok = client.connect();
 		client.send(ApplicationMessage.text("测试"));
-		System.out.println(ok);
+		this.log(ok);
 		ThreadUtils.sleep(10000);
 	}
 	
@@ -26,27 +26,27 @@ public class NetTest {
 	public void test() throws SocketException {
 		NetworkInterface.networkInterfaces().forEach(x -> {
 			x.getInetAddresses().asIterator().forEachRemaining(v -> {
-				System.out.println("地址：" + v);
-				System.out.println(v.isAnyLocalAddress());
-				System.out.println(v.isLoopbackAddress());
-				System.out.println(v.isLinkLocalAddress());
-				System.out.println(v.isSiteLocalAddress());
-				System.out.println(v.isMulticastAddress());
+				this.log("地址：" + v);
+				this.log(v.isAnyLocalAddress());
+				this.log(v.isLoopbackAddress());
+				this.log(v.isLinkLocalAddress());
+				this.log(v.isSiteLocalAddress());
+				this.log(v.isMulticastAddress());
 			});
-			System.out.println(x);
+			this.log(x);
 		});
-		System.out.println(NetUtils.localHostName());
-		System.out.println(NetUtils.localHostAddress());
-		System.out.println(NetUtils.defaultNetworkInterface());
+		this.log(NetUtils.localHostName());
+		this.log(NetUtils.localHostAddress());
+		this.log(NetUtils.defaultNetworkInterface());
 	}
 	
 	@Test
 	public void ipv6() {
 		String ipv6 = "fe80::f84b:bc3a:9556:683d";
 		byte[] bytes = NetUtils.encodeIPv6(ipv6);
-		System.out.println(StringUtils.hex(bytes));
+		this.log(StringUtils.hex(bytes));
 		String value = NetUtils.decodeIPv6(bytes);
-		System.out.println(value);
+		this.log(value);
 	}
 	
 }

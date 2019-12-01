@@ -8,17 +8,17 @@ import org.junit.Test;
 
 import com.acgist.snail.system.JSON;
 
-public class JSONTest {
+public class JSONTest extends BaseTest {
 	
 	@Test
 	public void deserialize() {
 		JSON json = JSON.ofString("{\"name\":\"你,:{}好\",\"age\":30,\"marry\" :true , \"wife\": null , \"like\":[\"动漫\",\"洞箫\"]}");
-		System.out.println(json.getString("name"));
-		System.out.println(json.getInteger("age"));
-		System.out.println(json.getBoolean("marry"));
-		System.out.println(json.get("wife"));
-		System.out.println(json.getJSON("like").getList());
-		System.out.println(json.toJSON());
+		this.log(json.getString("name"));
+		this.log(json.getInteger("age"));
+		this.log(json.getBoolean("marry"));
+		this.log(json.get("wife"));
+		this.log(json.getJSON("like").getList());
+		this.log(json.toJSON());
 	}
 	
 	@Test
@@ -34,10 +34,10 @@ public class JSONTest {
 		map = new HashMap<>(map);
 		map.put("wife", null);
 		JSON json = JSON.ofMap(map);
-		System.out.println(json.toJSON());
-		System.out.println(json.getJSON("json"));
-		System.out.println(json.getJSON("json").get("like"));
-		System.out.println(json.getJSON("json").getJSON("like"));
+		this.log(json.toJSON());
+		this.log(json.getJSON("json"));
+		this.log(json.getJSON("json").get("like"));
+		this.log(json.getJSON("json").getJSON("like"));
 	}
 
 	@Test
@@ -57,7 +57,7 @@ public class JSONTest {
 			map.put("wife", null);
 			JSON.ofMap(map);
 		}
-		System.out.println(System.currentTimeMillis() - begin);
+		this.log(System.currentTimeMillis() - begin);
 	}
 	
 }

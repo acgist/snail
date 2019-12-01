@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.junit.Test;
 
+import com.acgist.snail.BaseTest;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.bootstrap.PeerDownloader;
 import com.acgist.snail.pojo.bean.InfoHash;
@@ -22,13 +23,10 @@ import com.acgist.snail.utils.PeerUtils;
 import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
-public class PeerClientTest {
+public class PeerClientTest extends BaseTest {
 	
-	/**
-	 * 下载
-	 */
 	@Test
-	public void download() throws DownloadException {
+	public void testDownload() throws DownloadException {
 //		String path = "e:/snail/0.torrent";
 //		String path = "e:/snail/1.torrent";
 //		String path = "e:/snail/12.torrent";
@@ -60,7 +58,7 @@ public class PeerClientTest {
 //		Integer port = 18888;
 		Integer port = 49160; // FDM测试端口
 //		Integer port = 15000; // 本地迅雷测试端口
-		System.out.println("已下载：" + torrentSession.pieces());
+		this.log("已下载：" + torrentSession.pieces());
 		StatisticsSession statisticsSession = new StatisticsSession();
 		PeerSession peerSession = PeerSession.newInstance(statisticsSession, host, port);
 		peerSession.flags(PeerConfig.PEX_UTP); // UTP支持
@@ -68,18 +66,15 @@ public class PeerClientTest {
 		launcher.handshake();
 		new Thread(() -> {
 			while(true) {
-				System.out.println("下载速度：" + statisticsSession.downloadSpeed());
+				this.log("下载速度：" + statisticsSession.downloadSpeed());
 				ThreadUtils.sleep(1000);
 			}
 		}).start();
-		ThreadUtils.sleep(Long.MAX_VALUE);
+		this.pause();
 	}
 
-	/**
-	 * 下载种子
-	 */
 	@Test
-	public void torrent() throws DownloadException {
+	public void testTorrent() throws DownloadException {
 //		String path = "e:/snail/12.torrent";
 //		String path = "e:/snail/123.torrent";
 //		String path = "e:/snail/1234.torrent";
@@ -100,14 +95,14 @@ public class PeerClientTest {
 		PeerSession peerSession = PeerSession.newInstance(new StatisticsSession(), host, port);
 		PeerDownloader launcher = PeerDownloader.newInstance(peerSession, torrentSession);
 		launcher.handshake();
-		ThreadUtils.sleep(Long.MAX_VALUE);
+		this.pause();
 	}
 
 	@Test
-	public void allowedFast() {
+	public void testAllowedFast() {
 		int[] values = PeerUtils.allowedFast(1313, "80.4.4.200", StringUtils.unhex("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"));
 		for (int value : values) {
-			System.out.println(value);
+			this.log(value);
 		}
 	}
 	

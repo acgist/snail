@@ -9,21 +9,21 @@ import com.acgist.snail.pojo.wrapper.ResultSetWrapper;
 import com.acgist.snail.repository.DatabaseManager;
 import com.acgist.snail.repository.impl.ConfigRepository;
 
-public class DbTest {
+public class DbTest extends BaseTest {
 
 	@Test
 	public void select() {
 		List<ResultSetWrapper> list = DatabaseManager.getInstance().select("select * from tb_config");
 		list.forEach(value -> {
-			System.out.println(value);
+			this.log(value);
 		});
 	}
 	
 	@Test
 	public void findOne() {
 		ConfigRepository repository = new ConfigRepository();
-		System.out.println(repository.findOne("47576f4a-fc42-480d-92de-183eb3f0de2d"));
-		System.out.println(repository.findOne(ConfigEntity.PROPERTY_NAME, "xxxx"));
+		this.log(repository.findOne("47576f4a-fc42-480d-92de-183eb3f0de2d"));
+		this.log(repository.findOne(ConfigEntity.PROPERTY_NAME, "xxxx"));
 	}
 	
 	@Test
@@ -54,8 +54,8 @@ public class DbTest {
 	public void findList() {
 		ConfigRepository repository = new ConfigRepository();
 		repository.findList("select * from tb_config").forEach(value -> {
-			System.out.println(value.getId());
-			System.out.println(value);
+			this.log(value.getId());
+			this.log(value);
 		});
 	}
 	

@@ -2,13 +2,14 @@ package com.acgist.snail.tracker;
 
 import org.junit.Test;
 
+import com.acgist.snail.BaseTest;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.tracker.bootstrap.impl.HttpTrackerClient;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
 
-public class TrackerClientHttpTest {
+public class TrackerClientHttpTest extends BaseTest {
 
 	@Test
 	public void announce() throws DownloadException, NetException {

@@ -14,7 +14,7 @@ import org.junit.Test;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.ThreadUtils;
 
-public class ThreadTest {
+public class ThreadTest extends BaseTest {
 	
 	@Test
 	public void semaphore() throws InterruptedException {
@@ -24,7 +24,7 @@ public class ThreadTest {
 			pool.submit(() -> {
 				try {
 					semaphore.acquire();
-					System.out.println("++++");
+					this.log("++++");
 					ThreadUtils.sleep(1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -39,7 +39,7 @@ public class ThreadTest {
 				semaphore.release();
 			}
 		});
-		ThreadUtils.sleep(Long.MAX_VALUE);
+		this.pause();
 	}
 
 	@Test
@@ -51,7 +51,7 @@ public class ThreadTest {
 			pool.submit(() -> {
 				try {
 					lock.lock();
-					System.out.println("++++");
+					this.log("++++");
 					ThreadUtils.sleep(1000);
 				} finally {
 //					lock.unlock();
@@ -64,7 +64,7 @@ public class ThreadTest {
 				lock.unlock();
 			}
 		});
-		ThreadUtils.sleep(Long.MAX_VALUE);
+		this.pause();
 	}
 	
 	@Test
@@ -72,32 +72,32 @@ public class ThreadTest {
 		long sleep = 1000000;
 		ExecutorService exe = Executors.newFixedThreadPool(2);
 		exe.submit(() -> {
-			System.out.println("1");
+			this.log("1");
 			ThreadUtils.sleep(sleep);
 		});
 		exe.submit(() -> {
-			System.out.println("2");
+			this.log("2");
 			Object lock = new Object();
 			synchronized (lock) {
 				ThreadUtils.wait(lock, Duration.ofSeconds(sleep));
 			}
 		});
 		exe.submit(() -> {
-			System.out.println("3");
+			this.log("3");
 			ThreadUtils.sleep(sleep);
 		});
-		ThreadUtils.sleep(Long.MAX_VALUE);
+		this.pause();
 	}
 	
 	@Test
 	public void timer() {
 		var executor = SystemThreadContext.newTimerExecutor(10, "test");
 		var task = executor.scheduleAtFixedRate(() -> {
-			System.out.println("----");
+			this.log("----");
 		}, 0, 2, TimeUnit.SECONDS);
 		ThreadUtils.sleep(4L);
 		task.cancel(true);
-		ThreadUtils.sleep(Long.MAX_VALUE);
+		this.pause();
 	}
 	
 	@Test
@@ -109,7 +109,7 @@ public class ThreadTest {
 				bitSet.set(x);
 			});
 		}
-		System.out.println(bitSet.cardinality());
+		this.log(bitSet.cardinality());
 	}
 	
 }

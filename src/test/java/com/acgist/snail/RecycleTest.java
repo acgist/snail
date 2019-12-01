@@ -13,7 +13,7 @@ import com.acgist.snail.system.recycle.window.WindowRecycle;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 
-public class RecycleTest {
+public class RecycleTest extends BaseTest {
 
 	@Test
 	public void deleteOld() {
@@ -29,15 +29,15 @@ public class RecycleTest {
 		db.delete();
 		WindowRecycle recycle = new WindowRecycle("E:\\AA.txt");
 		byte[] bytes = recycle.buildInfo();
-		System.out.println(StringUtils.hex(bytes));
+		this.log(StringUtils.hex(bytes));
 		File file = new File("E://AA.txt");
 		File info = new File("E:/$RECYCLE.BIN/S-1-5-21-1082702080-4186364021-1016170526-1001/$Itest1234.txt");
 		if(file.exists()) {
 			FileUtils.write(info.getPath(), bytes);
 			boolean ok = file.renameTo(new File("E:/$RECYCLE.BIN/S-1-5-21-1082702080-4186364021-1016170526-1001/$Rtest1234.txt"));
-			System.out.println("移动结果：" + ok);
+			this.log("移动结果：" + ok);
 		} else {
-			System.out.println("文件不存在");
+			this.log("文件不存在");
 		}
 	}
 	
@@ -46,7 +46,7 @@ public class RecycleTest {
 	@Test
 	public void readInfo() throws IOException {
 		byte[] bytes = Files.readAllBytes(Paths.get(URI.create("file:///E:/$RECYCLE.BIN/S-1-5-21-1082702080-4186364021-1016170526-1001/$I8VSPPW.txt")));
-		System.out.println(bytes.length);
+		this.log(bytes.length);
 		System.err.println(StringUtils.hex(bytes));
 	}
 	
@@ -54,7 +54,7 @@ public class RecycleTest {
 	public void changeDate() {
 		WindowRecycle recycle = new WindowRecycle("E:\\AA.txt");
 		byte[] bytes = recycle.buildInfo();
-		System.out.println(StringUtils.hex(bytes));
+		this.log(StringUtils.hex(bytes));
 		File info = new File("E:/$RECYCLE.BIN/S-1-5-21-1082702080-4186364021-1016170526-1001/$I0W1UDC.txt");
 		FileUtils.write(info.getPath(), bytes);
 	}
@@ -64,7 +64,7 @@ public class RecycleTest {
 		File file = new File("E:/$RECYCLE.BIN/");
 		File[] files = file.listFiles();
 		for (File f : files) {
-			System.out.println(f);
+			this.log(f);
 		}
 	}
 	

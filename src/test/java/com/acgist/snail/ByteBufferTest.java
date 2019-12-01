@@ -6,41 +6,41 @@ import org.junit.Test;
 
 import com.acgist.snail.utils.StringUtils;
 
-public class ByteBufferTest {
+public class ByteBufferTest extends BaseTest {
 
 	@Test
 	public void readContent() {
 		ByteBuffer buffer = ByteBuffer.wrap("1234".getBytes());
 		buffer.compact();
 //		buffer.flip();
-		System.out.println(buffer);
-		System.out.println(StringUtils.ofByteBuffer(buffer));
+		this.log(buffer);
+		this.log(StringUtils.ofByteBuffer(buffer));
 	}
 	
 	@Test
 	public void append() {
 		ByteBuffer buffer = ByteBuffer.allocate(100);
 		buffer.put("1234".getBytes());
-		System.out.println(buffer);
+		this.log(buffer);
 		buffer.flip();
-		System.out.println(buffer);
+		this.log(buffer);
 		buffer.put("5678".getBytes());
-		System.out.println(buffer);
+		this.log(buffer);
 		buffer.flip();
-		System.out.println(buffer);
+		this.log(buffer);
 		buffer.compact();
-		System.out.println(buffer);
+		this.log(buffer);
 	}
 	
 	@Test
 	public void put() {
 		ByteBuffer buffer = ByteBuffer.wrap("1234".getBytes());
 		ByteBuffer x = ByteBuffer.allocate(4);
-		System.out.println(buffer);
-		System.out.println(x);
+		this.log(buffer);
+		this.log(x);
 		x.put(buffer);
-		System.out.println(buffer);
-		System.out.println(x);
+		this.log(buffer);
+		this.log(x);
 	}
 	
 	@Test
@@ -49,7 +49,7 @@ public class ByteBufferTest {
 		for (int i = 0; i < 10000; i++) {
 			match();
 		}
-		System.out.println("消耗：" + (System.currentTimeMillis() - begin));
+		this.log("消耗：" + (System.currentTimeMillis() - begin));
 	}
 	
 	@Test
@@ -63,7 +63,7 @@ public class ByteBufferTest {
 		final int length = bytes.length;
 		if(buffer.remaining() < length) {
 			buffer.compact();
-			System.out.println("不匹配");
+			this.log("不匹配");
 			print(buffer);
 			return;
 		}
@@ -81,21 +81,21 @@ public class ByteBufferTest {
 		if(index == length) { // 匹配
 			buffer.position(buffer.position() - length);
 			buffer.compact();
-			System.out.println("匹配");
+			this.log("匹配");
 			print(buffer);
 		} else { // 不匹配
 			buffer.compact();
-			System.out.println("不匹配");
+			this.log("不匹配");
 			print(buffer);
 		}
 	}
 	
 	private void print(ByteBuffer buffer) {
-		System.out.println(buffer);
+		this.log(buffer);
 		buffer.flip();
 		byte[] v = new byte[buffer.remaining()];
 		buffer.get(v);
-		System.out.println(new String(v));
+		this.log(new String(v));
 	}
 	
 }

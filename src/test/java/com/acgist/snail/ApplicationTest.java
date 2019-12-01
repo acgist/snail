@@ -13,14 +13,13 @@ import com.acgist.snail.pojo.message.ApplicationMessage;
 import com.acgist.snail.pojo.message.ApplicationMessage.Type;
 import com.acgist.snail.system.bencode.BEncodeEncoder;
 import com.acgist.snail.system.context.SystemThreadContext;
-import com.acgist.snail.utils.ThreadUtils;
 
-public class ApplicationTest {
+public class ApplicationTest extends BaseTest {
 
 	@Test
 	public void server() {
 		ApplicationServer.getInstance().listen();
-		ThreadUtils.sleep(Long.MAX_VALUE);
+		this.pause();
 	}
 	
 	@Test

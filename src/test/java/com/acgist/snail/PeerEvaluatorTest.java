@@ -11,7 +11,7 @@ import com.acgist.snail.repository.impl.ConfigRepository;
 import com.acgist.snail.system.bencode.BEncodeEncoder;
 import com.acgist.snail.utils.NetUtils;
 
-public class PeerEvaluatorTest {
+public class PeerEvaluatorTest extends BaseTest {
 
 	@Test
 	public void load() {
@@ -25,16 +25,14 @@ public class PeerEvaluatorTest {
 				return a.getValue().compareTo(b.getValue()); // 评分
 			})
 			.forEach(entry -> {
-				System.out.print(String.format("%05d", entry.getKey()) + "=" + String.format("%05d", entry.getValue()));
-				System.out.print("-");
-				System.out.println(NetUtils.decodeLongToIp(1L * (2 << 15) * entry.getKey()));
+				this.log(String.format("%05d", entry.getKey()) + "=" + String.format("%05d", entry.getValue()) + "-" + NetUtils.decodeLongToIp(1L * (2 << 15) * entry.getKey()));
 			});
-			System.out.println("数量：" + map.size());
+			this.log("数量：" + map.size());
 		} else {
-			System.out.println("--");
+			this.log("--");
 		}
 		long end = System.currentTimeMillis();
-		System.out.println(end - begin);
+		this.log(end - begin);
 	}
 	
 	@Test
@@ -52,7 +50,7 @@ public class PeerEvaluatorTest {
 		DatabaseManager.getInstance();
 		ConfigRepository repository = new ConfigRepository();
 		boolean delete = repository.deleteName("acgist.system.range");
-		System.out.println("删除结果：" + delete);
+		this.log("删除结果：" + delete);
 	}
 	
 }
