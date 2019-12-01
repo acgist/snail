@@ -6,18 +6,18 @@ import java.nio.ByteBuffer;
 import com.acgist.snail.net.UdpAcceptHandler;
 import com.acgist.snail.net.UdpMessageHandler;
 
-public class UdpTestAcceptHandler extends UdpAcceptHandler {
+public class UdpAcceptHandlerTest extends UdpAcceptHandler {
 
-	private static final UdpTestAcceptHandler INSTANCE = new UdpTestAcceptHandler();
+	private static final UdpAcceptHandlerTest INSTANCE = new UdpAcceptHandlerTest();
 	
-	private UdpTestAcceptHandler() {
+	private UdpAcceptHandlerTest() {
 	}
 	
-	public static final UdpTestAcceptHandler getInstance() {
+	public static final UdpAcceptHandlerTest getInstance() {
 		return INSTANCE;
 	}
 	
-	private final UdpTestMessageHandler udpTestMessageHandler = new UdpTestMessageHandler();
+	private final UdpMessageHandlerTest udpTestMessageHandler = new UdpMessageHandlerTest();
 	
 	@Override
 	public UdpMessageHandler messageHandler(ByteBuffer buffer, InetSocketAddress socketAddress) {

@@ -6,15 +6,15 @@ import org.junit.Test;
 
 import com.acgist.snail.utils.ThreadUtils;
 
-public class BitSetTest {
+public class BitSetTest extends BaseTest {
 
 	@Test
 	public void test() {
 		BitSet set = new BitSet();
 		set.set(60);
-		System.out.println(set.size());
-		System.out.println(set.length());
-		System.out.println(set.cardinality());
+		this.log(set.size());
+		this.log(set.length());
+		this.log(set.cardinality());
 	}
 	
 	@Test
@@ -27,7 +27,7 @@ public class BitSetTest {
 			index.set(i);
 			or.or(index);
 		}
-		System.out.println(System.currentTimeMillis() - begin);
+		this.log(System.currentTimeMillis() - begin);
 	}
 	
 }

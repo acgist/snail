@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.BaseTest;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.TorrentServer;
 import com.acgist.snail.net.torrent.bootstrap.PeerDownloader;
@@ -23,9 +22,7 @@ import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.ThreadUtils;
 
-public class PeerServerTest {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(PeerServerTest.class);
+public class PeerServerTest extends BaseTest {
 	
 	/**
 	 * 服务端提供下载
@@ -54,7 +51,7 @@ public class PeerServerTest {
 		PeerServer server = PeerServer.getInstance();
 		server.listen();
 		TorrentServer.getInstance();
-		ThreadUtils.sleep(Long.MAX_VALUE);
+		this.pause();
 	}
 
 	/**
@@ -97,7 +94,7 @@ public class PeerServerTest {
 //		ThreadUtils.sleep(4000); // 等待信息交换
 //		var pexMessage = PeerExchangeMessageHandler.buildMessage(List.of(peerSession));
 //		launcher.handler().pex(pexMessage);
-		ThreadUtils.sleep(Long.MAX_VALUE);
+		this.pause();
 	}
 
 }

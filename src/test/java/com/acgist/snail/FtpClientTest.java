@@ -9,7 +9,7 @@ import org.junit.Test;
 import com.acgist.snail.net.ftp.bootstrap.FtpClientBuilder;
 import com.acgist.snail.system.exception.NetException;
 
-public class FtpClientTest {
+public class FtpClientTest extends BaseTest {
 
 	@Test
 	public void download() throws FileNotFoundException, IOException, NetException {
@@ -17,13 +17,13 @@ public class FtpClientTest {
 		var client = FtpClientBuilder.newInstance("ftp://localhost/VS2012中文旗舰版/vs_ultimate.exe").build();
 		var ok = client.connect();
 		if(!ok) {
-			System.out.println("FTP服务器连接失败");
+			this.log("FTP服务器连接失败");
 			return;
 		}
-		System.out.println(client.size());
+		this.log(client.size());
 		var input = client.download();
 		if(input == null) {
-			System.out.println(client.failMessage("未知错误"));
+			this.log(client.failMessage("未知错误"));
 		} else {
 			var output = new FileOutputStream("e://ftp");
 			input.transferTo(output);
@@ -31,7 +31,7 @@ public class FtpClientTest {
 			output.close();
 		}
 		client.close();
-		System.out.println("OK");
+		this.log("OK");
 	}
 	
 }

@@ -5,6 +5,7 @@ import java.io.RandomAccessFile;
 
 import org.junit.Test;
 
+import com.acgist.snail.BaseTest;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.bootstrap.TorrentStreamGroup;
 import com.acgist.snail.pojo.session.TorrentSession;
@@ -14,7 +15,7 @@ import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
-public class TorrentStreamGroupTest {
+public class TorrentStreamGroupTest extends BaseTest {
 
 	@Test
 	public void read() throws DownloadException {
@@ -40,7 +41,7 @@ public class TorrentStreamGroupTest {
 ////		piece.setData(buffer.array());
 //		piece.setLength(4);
 //		group.pieces(piece);
-		System.out.println(group.pieces());
+		this.log(group.pieces());
 		group.release();
 	}
 	
@@ -62,25 +63,25 @@ public class TorrentStreamGroupTest {
 		var downloadPieces = group.pieces();
 		int index = downloadPieces.nextSetBit(0);
 		int length = session.torrent().getInfo().getPieceLength().intValue();
-		System.out.println(downloadPieces.cardinality());
-		System.out.println("总长度：" + session.torrent().getInfo().pieceSize());
+		this.log(downloadPieces.cardinality());
+		this.log("总长度：" + session.torrent().getInfo().pieceSize());
 		long begin = System.currentTimeMillis();
 		while(downloadPieces.nextSetBit(index) >= 0) {
 			var piece = group.read(index, 0, length);
 			if(piece == null) {
-				System.out.println("序号：" + index + "->null");
+				this.log("序号：" + index + "->null");
 				index++;
 				continue;
 			}
 			if(!ArrayUtils.equals(StringUtils.sha1(piece), group.pieceHash(index))) {
 //			if(!StringUtils.sha1Hex(piece).equals(StringUtils.hex(select(pieces, index)))) {
-				System.out.println("序号：" + index + "->" + StringUtils.sha1Hex(piece) + "=" + StringUtils.hex(group.pieceHash(index)));
+				this.log("序号：" + index + "->" + StringUtils.sha1Hex(piece) + "=" + StringUtils.hex(group.pieceHash(index)));
 			}
 			index++;
 		}
-		System.out.println("校验时间：" + (System.currentTimeMillis() - begin));
-		System.out.println(downloadPieces);
-		System.out.println(group.selectPieces());
+		this.log("校验时间：" + (System.currentTimeMillis() - begin));
+		this.log(downloadPieces);
+		this.log(group.selectPieces());
 	}
 
 	@Test
@@ -97,7 +98,7 @@ public class TorrentStreamGroupTest {
 		streamA.read(byteA);
 		streamB.seek(index * pieceSize);
 		streamB.read(byteB);
-		System.out.println(ArrayUtils.equals(byteA, byteB));
+		this.log(ArrayUtils.equals(byteA, byteB));
 		streamA.close();
 		streamB.close();
 	}

@@ -7,7 +7,7 @@ import org.junit.Test;
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.system.exception.NetException;
 
-public class HTTPClientTest {
+public class HTTPClientTest extends BaseTest {
 
 	@Test
 	public void request() throws NetException {
@@ -15,15 +15,15 @@ public class HTTPClientTest {
 		var response = client.get(BodyHandlers.ofString());
 //		var response = client.post("test", BodyHandlers.ofString());
 //		var response = client.post(null, BodyHandlers.ofString());
-		System.out.println(response.body());
+		this.log(response.body());
 	}
 	
 	@Test
 	public void fileName() throws NetException {
 		var header = HTTPClient.newInstance("https://g18.gdl.netease.com/MY-1.246.1.apk").head();
 //		var header = HTTPClient.newInstance("https://g37.gdl.netease.com/onmyoji_setup_9.4.0.zip").head();
-		System.out.println(header.fileName("test"));
-		System.out.println(header);
+		this.log(header.fileName("test"));
+		this.log(header);
 	}
 	
 }

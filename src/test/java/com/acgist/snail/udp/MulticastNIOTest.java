@@ -4,27 +4,28 @@ import java.net.InetSocketAddress;
 
 import org.junit.Test;
 
+import com.acgist.snail.BaseTest;
 import com.acgist.snail.net.UdpClient;
 import com.acgist.snail.net.UdpServer;
 import com.acgist.snail.net.upnp.UpnpServer;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.ThreadUtils;
 
-public class MulticastNIOTest {
+public class MulticastNIOTest extends BaseTest {
 	
 	@Test
 	public void server() {
-		UdpServer<UdpTestAcceptHandler> server = new UdpServer<>(UpnpServer.UPNP_PORT, "TestServer", UdpTestAcceptHandler.getInstance()) {};
+		UdpServer<UdpAcceptHandlerTest> server = new UdpServer<>(UpnpServer.UPNP_PORT, "TestServer", UdpAcceptHandlerTest.getInstance()) {};
 		server.join(2, UpnpServer.UPNP_HOST);
 		server.handle();
-		ThreadUtils.sleep(Long.MAX_VALUE);
+		this.pause();
 	}
 
 	@Test
 	public void client() throws NetException {
 		InetSocketAddress socketAddress = new InetSocketAddress(UpnpServer.UPNP_HOST, UpnpServer.UPNP_PORT);
-		UdpTestMessageHandler handler = new UdpTestMessageHandler();
-		UdpClient<UdpTestMessageHandler> client = new UdpClient<UdpTestMessageHandler>("TestClient", handler, socketAddress) {
+		UdpMessageHandlerTest handler = new UdpMessageHandlerTest();
+		UdpClient<UdpMessageHandlerTest> client = new UdpClient<UdpMessageHandlerTest>("TestClient", handler, socketAddress) {
 			@Override
 			public boolean open() {
 				return this.open(PORT_AUTO);

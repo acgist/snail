@@ -12,13 +12,13 @@ import com.acgist.snail.pojo.ITaskSession.FileType;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.utils.BeanUtils;
 
-public class BeanUtilsTest {
+public class BeanUtilsTest extends BaseTest {
 
 	@Test
 	public void read() {
 		TaskEntity entity = new TaskEntity();
 		entity.setId("1234");
-		System.out.println(BeanUtils.propertyValue(entity, "id"));
+		this.log(BeanUtils.propertyValue(entity, "id"));
 	}
 	
 	@Test
@@ -36,9 +36,9 @@ public class BeanUtilsTest {
 			.map(property -> BeanUtils.propertyValue(entity, property))
 			.toArray();
 		
-		System.out.println(sqlProperty);
-		System.out.println(sqlValue);
-		System.out.println(Arrays.asList(parameters));
+		this.log(sqlProperty);
+		this.log(sqlValue);
+		this.log(Arrays.asList(parameters));
 	}
 	
 	@Test
@@ -48,18 +48,18 @@ public class BeanUtilsTest {
 			final var enums = descriptor.getPropertyType().getEnumConstants();
 			for (Object object : enums) {
 				if(object.toString().equals("PAUSE")) {
-					System.out.println(object);
-					System.out.println(object.getClass());
+					this.log(object);
+					this.log(object.getClass());
 				}
 			}
-//			System.out.println(Enum.valueOf(((Class<Enum>) descriptor.getPropertyType()), "PAUSE"));
+//			this.log(Enum.valueOf(((Class<Enum>) descriptor.getPropertyType()), "PAUSE"));
 		}
 	}
 	
 	@Test
 	public void unpack() {
 		final var value = BeanUtils.unpack(FileType.class, "VIDEO");
-		System.out.println(value);
+		this.log(value);
 	}
 	
 }

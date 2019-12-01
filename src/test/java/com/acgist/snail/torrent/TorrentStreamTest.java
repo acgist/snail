@@ -11,10 +11,11 @@ import java.nio.file.StandardOpenOption;
 
 import org.junit.Test;
 
+import com.acgist.snail.BaseTest;
 import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
-public class TorrentStreamTest {
+public class TorrentStreamTest extends BaseTest {
 
 	@Test
 	public void read() throws IOException {
@@ -23,8 +24,8 @@ public class TorrentStreamTest {
 		stream.seek(1000);
 		byte[] bytes = new byte[1024];
 		stream.read(bytes);
-		System.out.println(stream.length());
-		ThreadUtils.sleep(Long.MAX_VALUE);
+		this.log(stream.length());
+		this.pause();
 		stream.close();
 	}
 	
@@ -39,7 +40,7 @@ public class TorrentStreamTest {
 			StringUtils.sha1(bytes);
 		}
 		long end = System.currentTimeMillis();
-		System.out.println(end - begin);
+		this.log(end - begin);
 		file.close();
 	}
 	
@@ -57,7 +58,7 @@ public class TorrentStreamTest {
 			StringUtils.sha1(bytes);
 		}
 		long end = System.currentTimeMillis();
-		System.out.println(end - begin);
+		this.log(end - begin);
 		file.close();
 	}
 	

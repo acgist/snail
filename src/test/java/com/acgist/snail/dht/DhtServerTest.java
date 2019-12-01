@@ -2,50 +2,49 @@ package com.acgist.snail.dht;
 
 import org.junit.Test;
 
+import com.acgist.snail.BaseTest;
 import com.acgist.snail.net.torrent.dht.DhtClient;
 import com.acgist.snail.pojo.bean.InfoHash;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.utils.ThreadUtils;
 
-public class DhtServerTest {
+public class DhtServerTest extends BaseTest {
 
 	private static final String HOST = "127.0.0.1";
 	private static final int PORT = 18888; // 本地DHT测试端口
 	
 	@Test
-	public void ping() {
+	public void testPing() {
 		DhtClient client = DhtClient.newInstance(HOST, PORT);
 		NodeSession node = client.ping();
-		System.out.println(node);
-		ThreadUtils.sleep(Long.MAX_VALUE);
+		this.log(node);
 	}
 	
 	@Test
-	public void findNode() {
+	public void testFindNode() {
 //		NodeManager.getInstance().newNodeSession("12345678901234567890".getBytes(), "1234", 1234);
 		DhtClient client = DhtClient.newInstance(HOST, PORT);
-		final String target = "5E5324691812CAA0032EA76E813CCFC4D04E7E9E";
+		String target = "5E5324691812CAA0032EA76E813CCFC4D04E7E9E";
 		client.findNode(target);
-		ThreadUtils.sleep(Long.MAX_VALUE);
+		this.pause();
 	}
 	
 	@Test
-	public void getPeers() throws DownloadException {
+	public void testGetPeers() throws DownloadException {
 		DhtClient client = DhtClient.newInstance(HOST, PORT);
-		final String target = "5E5324691812CAA0032EA76E813CCFC4D04E7E9E";
-		final InfoHash infoHash = InfoHash.newInstance(target);
+		String target = "5E5324691812CAA0032EA76E813CCFC4D04E7E9E";
+		InfoHash infoHash = InfoHash.newInstance(target);
 		client.getPeers(infoHash);
-		ThreadUtils.sleep(Long.MAX_VALUE);
+		this.pause();
 	}
 	
 	@Test
-	public void announcePeer() throws DownloadException {
+	public void testAnnouncePeer() throws DownloadException {
 		DhtClient client = DhtClient.newInstance(HOST, PORT);
-		final String target = "5E5324691812CAA0032EA76E813CCFC4D04E7E9E";
-		final InfoHash infoHash = InfoHash.newInstance(target);
+		String target = "5E5324691812CAA0032EA76E813CCFC4D04E7E9E";
+		InfoHash infoHash = InfoHash.newInstance(target);
 		client.announcePeer("1234".getBytes(), infoHash);
-		ThreadUtils.sleep(Long.MAX_VALUE);
+		this.pause();
 	}
 	
 }

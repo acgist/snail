@@ -7,7 +7,7 @@ import org.junit.Test;
 import com.acgist.snail.net.torrent.crypt.MSEPaddingSync;
 import com.acgist.snail.system.exception.NetException;
 
-public class PaddingMatcherTest {
+public class PaddingMatcherTest extends BaseTest {
 
 	@Test
 	public void cos() throws NetException {
@@ -15,7 +15,7 @@ public class PaddingMatcherTest {
 		for (int index = 0; index < 100000; index++) {
 			sync();
 		}
-		System.out.println(System.currentTimeMillis() - begin);
+		this.log(System.currentTimeMillis() - begin);
 	}
 	
 	@Test
@@ -29,8 +29,8 @@ public class PaddingMatcherTest {
 		buffer.flip();
 		
 		boolean ok = sync.sync(buffer);
-		System.out.println(ok);
-		System.out.println(sync);
+		this.log(ok);
+		this.log(sync);
 		
 		ByteBuffer append = ByteBuffer.allocate(98);
 		append.put("0".repeat(96).getBytes());
@@ -38,27 +38,27 @@ public class PaddingMatcherTest {
 		append.flip();
 		
 		ok = sync.sync(append);
-		System.out.println(ok);
-		System.out.println(sync);
+		this.log(ok);
+		this.log(sync);
 		
 //		ByteBuffer append = ByteBuffer.allocate(96);
 //		append.put("0".repeat(96).getBytes());
 //		append.flip();
 //		
 //		ok = sync.sync(append);
-//		System.out.println(ok);
-//		System.out.println(sync);
+//		this.log(ok);
+//		this.log(sync);
 //		
 //		ByteBuffer zero = ByteBuffer.allocate(2);
 //		zero.putShort((short) 0);
 //		zero.flip();
 //		
 //		ok = sync.sync(zero);
-//		System.out.println(ok);
-//		System.out.println(sync);
+//		this.log(ok);
+//		this.log(sync);
 		
 		sync.allPadding().forEach(bytes -> {
-			System.out.println("内容：" + new String(bytes));
+			this.log("内容：" + new String(bytes));
 		});
 	}
 	

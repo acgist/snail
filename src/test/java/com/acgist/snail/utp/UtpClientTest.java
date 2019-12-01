@@ -2,6 +2,7 @@ package com.acgist.snail.utp;
 
 import org.junit.Test;
 
+import com.acgist.snail.BaseTest;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.net.torrent.utp.UtpClient;
@@ -10,7 +11,7 @@ import com.acgist.snail.pojo.session.StatisticsSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.exception.DownloadException;
 
-public class UtpClientTest {
+public class UtpClientTest extends BaseTest {
 
 	@Test
 	public void connect() throws DownloadException {
@@ -24,7 +25,7 @@ public class UtpClientTest {
 		PeerSubMessageHandler peerSubMessageHandler = PeerSubMessageHandler.newInstance(peerSession, torrentSession);
 		UtpClient utpClient = UtpClient.newInstance(peerSession, peerSubMessageHandler);
 		boolean ok = utpClient.connect();
-		System.out.println(ok);
+		this.log(ok);
 	}
 	
 }
