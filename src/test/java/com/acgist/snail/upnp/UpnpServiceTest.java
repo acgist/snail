@@ -15,34 +15,34 @@ public class UpnpServiceTest extends BaseTest {
 	private String serviceUrl = "http://192.168.1.1:10087/rootDesc.xml";
 	
 	@Test
-	public void getExternalIPAddress() throws NetException {
+	public void testGetExternalIPAddress() throws NetException {
 		UpnpService.getInstance().load(this.serviceUrl);
 		this.log(UpnpService.getInstance().getExternalIPAddress());
 	}
 
 	@Test
-	public void getSpecificPortMappingEntry() throws NetException {
+	public void testGetSpecificPortMappingEntry() throws NetException {
 		UpnpService.getInstance().load(this.serviceUrl);
 		this.log(UpnpService.getInstance().getSpecificPortMappingEntry(18888, Protocol.Type.TCP));
 		this.log(UpnpService.getInstance().getSpecificPortMappingEntry(18888, Protocol.Type.UDP));
 	}
 
 	@Test
-	public void addPortMapping() throws NetException {
+	public void testAddPortMapping() throws NetException {
 		UpnpService.getInstance().load(this.serviceUrl);
 		this.log(UpnpService.getInstance().addPortMapping(18888, 18888, Protocol.Type.TCP));
 		this.log(UpnpService.getInstance().addPortMapping(18888, 18888, Protocol.Type.UDP));
 	}
 
 	@Test
-	public void deletePortMapping() throws NetException {
+	public void testDeletePortMapping() throws NetException {
 		UpnpService.getInstance().load(this.serviceUrl);
 		this.log(UpnpService.getInstance().deletePortMapping(18888, Protocol.Type.TCP));
 		this.log(UpnpService.getInstance().deletePortMapping(18888, Protocol.Type.UDP));
 	}
 	
 	@Test
-	public void setting() throws NetException {
+	public void testSetting() throws NetException {
 		UpnpService.getInstance().load(this.serviceUrl);
 		UpnpService.getInstance().mapping();
 	}

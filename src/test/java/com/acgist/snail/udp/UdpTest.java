@@ -14,11 +14,7 @@ import com.acgist.snail.utils.ThreadUtils;
 public class UdpTest extends BaseTest {
 
 	@Test
-	public void ipversion() {
-	}
-	
-	@Test
-	public void client() {
+	public void testClient() {
 		final int port = 18888;
 		InetSocketAddress socketAddress = new InetSocketAddress("127.0.0.1", port);
 		UdpMessageHandlerTest handler = new UdpMessageHandlerTest();
