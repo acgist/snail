@@ -22,8 +22,8 @@
 	<description>基于Java、JavaFX开发的下载工具，支持下载协议：BT（BitTorrent）、FTP、HTTP。</description>
 	<inceptionYear>2019</inceptionYear>
 
+	<!-- 属性配置 -->
 	<properties>
-		<!-- 配置 -->
 		<vendor>acgist</vendor>
 		<module>${project.groupId}.${project.artifactId}</module>
 		<encoding>UTF-8</encoding>
@@ -55,12 +55,12 @@
 	<dependencies>
 		<!--
 		GUI：JavaFX
-		隐式引入依赖：javafx-base、javafx-controls、javafx-graphics
+		隐式依赖：javafx-base、javafx-controls、javafx-graphics
 		-->
 		<!--
-		编译系统和运行系统不一致时，解决办法（下面两种任选一种）：
+		编译系统和运行系统不一致时：
 		1.添加编译参数：-D javafx.platform=win|mac|linux
-		2.显式引入依赖：javafx-base、javafx-controls、javafx-graphics，所有JavaFX依赖添加属性：<classifier>${os.name}</classifier>
+		2.显式引入隐式依赖并添加属性：<classifier>${os.name}</classifier>
 		-->
 		<dependency>
 			<groupId>org.openjfx</groupId>
@@ -75,7 +75,7 @@
 		</dependency>
 		<!--
 		日志：slf4j、logback
-		隐式引入依赖：slf4j-api、logback-core
+		隐式依赖：slf4j-api、logback-core
 		-->
 		<!--
 		<dependency>
@@ -130,7 +130,7 @@
 		-->
 		<!-- Maven插件 -->
 		<plugins>
-			<!-- 编译代码 -->
+			<!-- compiler -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -141,7 +141,7 @@
 					<encoding>${encoding}</encoding>
 				</configuration>
 			</plugin>
-			<!-- 资源文件 -->
+			<!-- resources -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
@@ -161,7 +161,7 @@
 						</resource>
 						<resource>
 							<directory>/</directory>
-							<!-- 配置properties替换属性 -->
+							<!-- 配置文件属性替换：properties -->
 							<filtering>false</filtering>
 							<targetPath>META-INF/</targetPath>
 							<includes>
@@ -172,7 +172,7 @@
 					</resources>
 				</configuration>
 				<executions>
-					<!-- 自动复制环境资源文件 -->
+					<!-- 自动复制环境资源 -->
 					<execution>
 						<id>auto-copy-resources-profiles</id>
 						<phase>compile</phase>
@@ -180,11 +180,11 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<!-- 覆盖文件 -->
+							<!-- 覆盖资源 -->
 							<overwrite>true</overwrite>
 							<outputDirectory>${project.build.outputDirectory}</outputDirectory>
 							<resources>
-								<!-- 环境资源文件 -->
+								<!-- 环境资源 -->
 								<resource>
 									<directory>src/main/resources/profiles/${package.environment}</directory>
 									<filtering>false</filtering>
@@ -195,12 +195,13 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- 打包属性 -->
+			<!-- jar -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>${maven.jar.version}</version>
 				<configuration>
+					<!-- MANIFEST.MF -->
 					<archive>
 						<manifest>
 							<mainClass>com.acgist.main.Application</mainClass>
@@ -221,7 +222,7 @@
 					</archive>
 				</configuration>
 			</plugin>
-			<!-- 打包依赖：mvn dependency:auto-copy-dependencies-lib -->
+			<!-- dependency：mvn dependency:auto-copy-dependencies-lib -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
@@ -243,12 +244,13 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- 打包源码：mvn source:auto-jar-no-fork -->
+			<!-- source：mvn source:auto-jar-no-fork -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
 				<version>${maven.source.version}</version>
 				<executions>
+					<!-- 自动打包源码 -->
 					<execution>
 						<id>auto-jar-no-fork</id>
 						<phase>package</phase>
@@ -261,7 +263,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- 打包文档：mvn javadoc:auto-javadoc-jar -->
+			<!-- javadoc：mvn javadoc:auto-javadoc-jar -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
@@ -276,6 +278,7 @@
 					<description>${project.description}</description>
 				</configuration>
 				<executions>
+					<!-- 自动打包文档 -->
 					<execution>
 						<id>auto-javadoc-jar</id>
 						<phase>package</phase>
@@ -336,7 +339,7 @@
 		</license>
 	</licenses>
 
-	<!-- 开发者 -->
+	<!-- 开发人员 -->
 	<developers>
 		<developer>
 			<id>acgist</id>
