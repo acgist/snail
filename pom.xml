@@ -41,11 +41,11 @@
 		<junit.version>4.12</junit.version>
 		<!-- Maven插件 -->
 		<maven.gpg.version>1.6</maven.gpg.version>
-		<maven.jar.version>3.1.1</maven.jar.version>
+		<maven.jar.version>3.2.0</maven.jar.version>
 		<maven.nexus.version>1.6.8</maven.nexus.version>
-		<maven.source.version>3.0.1</maven.source.version>
-		<maven.javadoc.version>3.1.0</maven.javadoc.version>
-		<maven.compiler.version>3.8.0</maven.compiler.version>
+		<maven.source.version>3.2.0</maven.source.version>
+		<maven.javadoc.version>3.1.1</maven.javadoc.version>
+		<maven.compiler.version>3.8.1</maven.compiler.version>
 		<maven.resources.version>3.1.0</maven.resources.version>
 		<maven.dependency.version>3.1.1</maven.dependency.version>
 		<!-- 文件编码 -->
@@ -120,33 +120,15 @@
 	</profiles>
 	
 	<build>
-		<!-- 资源 -->
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>false</filtering>
-				<includes>
-					<include>**</include>
-				</includes>
-				<!-- 排除环境文件 -->
-				<excludes>
-					<exclude>profiles/**</exclude>
-				</excludes>
-			</resource>
-			<resource>
-				<directory></directory>
-				<filtering>false</filtering>
-				<targetPath>META-INF/</targetPath>
-				<includes>
-					<include>LICENSE</include>
-					<include>README.md</include>
-				</includes>
-			</resource>
-		</resources>
+		<!-- 资源文件 -->
+		<!--
+		<resources></resources>
+		-->
+		<!-- 配置filter属性路径 -->
 		<!--
 		<filters></filters>
 		-->
-		<!-- 插件 -->
+		<!-- Maven插件 -->
 		<plugins>
 			<!-- 编译代码 -->
 			<plugin>
@@ -164,9 +146,35 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>${maven.resources.version}</version>
+				<configuration>
+					<resources>
+						<resource>
+							<directory>src/main/resources</directory>
+							<filtering>false</filtering>
+							<includes>
+								<include>**</include>
+							</includes>
+							<!-- 排除环境资源文件 -->
+							<excludes>
+								<exclude>profiles/**</exclude>
+							</excludes>
+						</resource>
+						<resource>
+							<directory>/</directory>
+							<!-- 配置properties替换属性 -->
+							<filtering>false</filtering>
+							<targetPath>META-INF/</targetPath>
+							<includes>
+								<include>LICENSE</include>
+								<include>README.md</include>
+							</includes>
+						</resource>
+					</resources>
+				</configuration>
 				<executions>
+					<!-- 自动复制环境资源文件 -->
 					<execution>
-						<id>copy-resources</id>
+						<id>auto-copy-resources-profiles</id>
 						<phase>compile</phase>
 						<goals>
 							<goal>copy-resources</goal>
@@ -176,7 +184,7 @@
 							<overwrite>true</overwrite>
 							<outputDirectory>${project.build.outputDirectory}</outputDirectory>
 							<resources>
-								<!-- 环境 -->
+								<!-- 环境资源文件 -->
 								<resource>
 									<directory>src/main/resources/profiles/${package.environment}</directory>
 									<filtering>false</filtering>
@@ -213,14 +221,15 @@
 					</archive>
 				</configuration>
 			</plugin>
-			<!-- 打包依赖 -->
+			<!-- 打包依赖：mvn dependency:auto-copy-dependencies-lib -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
 				<version>${maven.dependency.version}</version><!--$NO-MVN-MAN-VER$-->
 				<executions>
+					<!-- 自动复制依赖包 -->
 					<execution>
-						<id>copy-dependencies</id>
+						<id>auto-copy-dependencies-lib</id>
 						<phase>package</phase>
 						<goals>
 							<goal>copy-dependencies</goal>
@@ -234,15 +243,14 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- 打包源码：mvn source:jar-no-fork -->
-			<!-- 问题：release环境不能正确包含环境配置 -->
+			<!-- 打包源码：mvn source:auto-jar-no-fork -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
 				<version>${maven.source.version}</version>
 				<executions>
 					<execution>
-						<id>jar-no-fork</id>
+						<id>auto-jar-no-fork</id>
 						<phase>package</phase>
 						<goals>
 							<goal>jar-no-fork</goal>
@@ -253,30 +261,31 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- JavaDoc：跳过：mvn -D maven.javadoc.skip=true -->
+			<!-- 打包文档：mvn javadoc:auto-javadoc-jar -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>${maven.javadoc.version}</version>
+				<configuration>
+					<!-- 忽略警告信息：注解、标签等等 -->
+					<doclint>none</doclint>
+					<charset>${encoding}</charset>
+					<encoding>${encoding}</encoding>
+					<aggregate>true</aggregate>
+					<docencoding>${encoding}</docencoding>
+					<description>${project.description}</description>
+				</configuration>
 				<executions>
 					<execution>
-						<id>jar</id>
+						<id>auto-javadoc-jar</id>
+						<phase>package</phase>
 						<goals>
 							<goal>jar</goal>
 						</goals>
-						<configuration>
-							<!-- 忽略警告信息：注解、标签等等 -->
-							<doclint>none</doclint>
-							<charset>${encoding}</charset>
-							<encoding>${encoding}</encoding>
-							<aggregate>true</aggregate>
-							<docencoding>${encoding}</docencoding>
-							<description>${project.description}</description>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>
-			<!-- gpg -->
+			<!-- deploy：gpg -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
@@ -284,14 +293,14 @@
 				<executions>
 					<execution>
 						<id>sign</id>
+						<phase>verify</phase>
 						<goals>
 							<goal>sign</goal>
 						</goals>
-						<phase>verify</phase>
 					</execution>
 				</executions>
 			</plugin>
-			<!-- Sonatype -->
+			<!-- deploy：sonatype -->
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
