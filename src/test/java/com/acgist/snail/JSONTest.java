@@ -41,7 +41,7 @@ public class JSONTest extends BaseTest {
 	}
 
 	@Test
-	public void cos() {
+	public void testCost() {
 		long begin = System.currentTimeMillis();
 		for (int i = 0; i < 100000; i++) {
 			// 反序列化

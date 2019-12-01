@@ -10,7 +10,7 @@ import com.acgist.snail.system.exception.NetException;
 public class PaddingMatcherTest extends BaseTest {
 
 	@Test
-	public void cos() throws NetException {
+	public void testCost() throws NetException {
 		long begin = System.currentTimeMillis();
 		for (int index = 0; index < 100000; index++) {
 			sync();

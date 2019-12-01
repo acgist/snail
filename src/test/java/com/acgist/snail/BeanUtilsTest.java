@@ -15,14 +15,14 @@ import com.acgist.snail.utils.BeanUtils;
 public class BeanUtilsTest extends BaseTest {
 
 	@Test
-	public void read() {
+	public void testRead() {
 		TaskEntity entity = new TaskEntity();
 		entity.setId("1234");
 		this.log(BeanUtils.propertyValue(entity, "id"));
 	}
 	
 	@Test
-	public void buildSQL() {
+	public void testBuildSQL() {
 		TaskEntity entity = new TaskEntity();
 		entity.setName("测试");
 		final String[] properties = BeanUtils.properties(entity.getClass());
@@ -42,7 +42,7 @@ public class BeanUtilsTest extends BaseTest {
 	}
 	
 	@Test
-	public void enumProperty() throws IntrospectionException {
+	public void testEnumProperty() throws IntrospectionException {
 		PropertyDescriptor descriptor = new PropertyDescriptor("status", TaskEntity.class);
 		if(descriptor.getPropertyType().isEnum()) {
 			final var enums = descriptor.getPropertyType().getEnumConstants();
@@ -57,7 +57,7 @@ public class BeanUtilsTest extends BaseTest {
 	}
 	
 	@Test
-	public void unpack() {
+	public void testUnpack() {
 		final var value = BeanUtils.unpack(FileType.class, "VIDEO");
 		this.log(value);
 	}

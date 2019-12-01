@@ -17,13 +17,13 @@ import com.acgist.snail.system.context.SystemThreadContext;
 public class ApplicationTest extends BaseTest {
 
 	@Test
-	public void server() {
+	public void testServer() {
 		ApplicationServer.getInstance().listen();
 		this.pause();
 	}
 	
 	@Test
-	public void client() {
+	public void testClient() {
 		final ApplicationClient client = ApplicationClient.newInstance();
 		client.connect();
 		String message = null;
@@ -64,7 +64,7 @@ public class ApplicationTest extends BaseTest {
 	}
 	
 	@Test
-	public void thread() throws InterruptedException {
+	public void testThread() throws InterruptedException {
 		final ApplicationClient client = ApplicationClient.newInstance();
 		client.connect();
 		var pool = SystemThreadContext.newCacheExecutor("test");

@@ -12,16 +12,16 @@ import com.acgist.snail.net.torrent.utp.bootstrap.UtpWindowData;
 public class UtpWindowHandlerTest extends BaseTest {
 
 	@Test
-	public void cos() throws IOException {
+	public void testCost() throws IOException {
 		UtpWindow handler = UtpWindow.newInstance();
-		long begin = System.currentTimeMillis();
+		this.cost();
 		for (int i = 1; i < 100000; i++) {
 			UtpWindowData windowData = handler.receive(0, (short) i, ByteBuffer.allocate(10));
 			if(windowData == null) {
 				this.log(i);
 			}
 		}
-		this.log(System.currentTimeMillis() - begin);
+		this.costed();
 	}
 
 }

@@ -44,7 +44,7 @@ public class ByteBufferTest extends BaseTest {
 	}
 	
 	@Test
-	public void cos() {
+	public void testCost() {
 		long begin = System.currentTimeMillis();
 		for (int i = 0; i < 10000; i++) {
 			match();

@@ -18,16 +18,16 @@ public class BitSetTest extends BaseTest {
 	}
 	
 	@Test
-	public void cos() {
+	public void testCost() {
 		ThreadUtils.sleep(2000);
-		long begin = System.currentTimeMillis();
+		this.cost();
 		BitSet or = new BitSet();
 		BitSet index = new BitSet();
 		for (int i = 0; i < 100000; i++) {
 			index.set(i);
 			or.or(index);
 		}
-		this.log(System.currentTimeMillis() - begin);
+		this.costed();
 	}
 	
 }
