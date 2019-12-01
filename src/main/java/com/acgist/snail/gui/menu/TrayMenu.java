@@ -146,8 +146,8 @@ public final class TrayMenu extends Menu {
 				}
 			}
 		};
-		try {
-			final BufferedImage image = ImageIO.read(MainWindow.class.getResourceAsStream("/image/16/logo.png"));
+		try(final var input = MainWindow.class.getResourceAsStream("/image/16/logo.png")) {
+			final BufferedImage image = ImageIO.read(input);
 			this.trayIcon = new TrayIcon(image, SystemConfig.getName());
 			this.trayIcon.addMouseListener(mouseListener);
 			SystemTray.getSystemTray().add(this.trayIcon);

@@ -15,6 +15,8 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -426,12 +428,15 @@ public final class HTTPClient {
 	 */
 	private static final TrustManager[] TRUST_ALL_CERT_MANAGER = new TrustManager[] {
 		new X509TrustManager() {
-			public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+			@Override
+			public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+			}
+			@Override
+			public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+			}
+			@Override
+			public X509Certificate[] getAcceptedIssuers() {
 				return null;
-			}
-			public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {
-			}
-			public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {
 			}
 		}
 	};
@@ -442,7 +447,7 @@ public final class HTTPClient {
 	public static final SSLContext newSSLContext() {
 		SSLContext sslContext = null;
 		try {
-			// SSL、SSLv2、SSLv3、TLS、TLSv1、TLSv1.1、TLSv1.2、TLSv1.3
+			// SSL协议：SSL、SSLv2、SSLv3、TLS、TLSv1、TLSv1.1、TLSv1.2、TLSv1.3
 			sslContext = SSLContext.getInstance("TLSv1.2");
 			sslContext.init(null, TRUST_ALL_CERT_MANAGER, new SecureRandom());
 		} catch (KeyManagementException | NoSuchAlgorithmException e) {
