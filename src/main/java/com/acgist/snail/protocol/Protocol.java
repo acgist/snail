@@ -402,7 +402,7 @@ public abstract class Protocol {
 	 */
 	protected String buildFileName() throws DownloadException {
 		String fileName = FileUtils.fileNameFromUrl(this.url);
-		fileName = FileUtils.fileName(fileName);
+		fileName = FileUtils.fileNameFormat(fileName);
 		return fileName;
 	}
 

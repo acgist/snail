@@ -7,11 +7,11 @@ import com.acgist.snail.net.upnp.bootstrap.UpnpService;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.system.exception.NetException;
 
-/**
- * serviceUrl通过UPNPClient获取
- */
 public class UpnpServiceTest extends BaseTest {
 
+	/**
+	 * <p>使用MSearch查询</p>
+	 */
 	private String serviceUrl = "http://192.168.1.1:10087/rootDesc.xml";
 	
 	@Test
@@ -42,9 +42,8 @@ public class UpnpServiceTest extends BaseTest {
 	}
 	
 	@Test
-	public void testSetting() throws NetException {
-		UpnpService.getInstance().load(this.serviceUrl);
-		UpnpService.getInstance().mapping();
+	public void testMapping() throws NetException {
+		UpnpService.getInstance().load(this.serviceUrl).mapping();
 	}
 
 }

@@ -13,11 +13,9 @@ import com.acgist.snail.system.exception.NetException;
 public class TrackerClientUdpTest extends BaseTest {
 
 	@Test
-	public void announce() throws NetException, DownloadException {
+	public void testAnnounce() throws NetException, DownloadException {
 		String path = "e:/snail/12345.torrent";
 		TorrentSession session = TorrentManager.getInstance().newTorrentSession(path);
-//		UdpTrackerClient client = UdpTrackerClient.newInstance("udp://exodus.desync.com:6969/announce");
-//		TrackerManager.getInstance().newTrackerLauncher(client, session);
 		var list = TrackerManager.getInstance().clients("udp://explodie.org:6969/announce", null);
 		TrackerClient client = list.get(0);
 		client.announce(1000, session);

@@ -389,6 +389,22 @@ public class JSON {
 		}
 	}
 	
+	public Map<Object, Object> getMap() {
+		return this.map;
+	}
+	
+	public List<Object> getList() {
+		return this.list;
+	}
+	
+	/**
+	 * <p>获取JSON对象</p>
+	 * <p>如果对象是JSON对象直接返回，如果是字符串转为JSON对象。</p>
+	 * 
+	 * @param key 属性名称
+	 * 
+	 * @return JSON对象
+	 */
 	public JSON getJSON(Object key) {
 		final Object value = get(key);
 		if(value == null) {
@@ -402,26 +418,53 @@ public class JSON {
 		}
 	}
 	
-	public List<Object> getList() {
-		return this.list;
-	}
-	
+	/**
+	 * <p>获取Integer属性</p>
+	 * 
+	 * @param key 属性名称
+	 * 
+	 * @return Integer
+	 */
 	public Integer getInteger(Object key) {
 		return (Integer) this.get(key);
 	}
 
+	/**
+	 * <p>获取Boolean属性</p>
+	 * 
+	 * @param key 属性名称
+	 * 
+	 * @return Boolean
+	 */
 	public Boolean getBoolean(Object key) {
 		return (Boolean) this.get(key);
 	}
 	
+	/**
+	 * <p>获取String属性</p>
+	 * 
+	 * @param key 属性名称
+	 * 
+	 * @return String
+	 */
 	public String getString(Object key) {
 		return (String) this.get(key);
 	}
 	
+	/**
+	 * <p>获取属性</p>
+	 * 
+	 * @param key 属性名称
+	 * 
+	 * @return 属性对象
+	 */
 	public Object get(Object key) {
 		return this.map.get(key);
 	}
 	
+	/**
+	 * @return JSON字符串
+	 */
 	public String toJSON() {
 		return this.serialize();
 	}

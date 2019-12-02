@@ -12,7 +12,7 @@ import com.acgist.snail.repository.impl.ConfigRepository;
 public class DbTest extends BaseTest {
 
 	@Test
-	public void select() {
+	public void testSelect() {
 		List<ResultSetWrapper> list = DatabaseManager.getInstance().select("select * from tb_config");
 		list.forEach(value -> {
 			this.log(value);
@@ -20,41 +20,43 @@ public class DbTest extends BaseTest {
 	}
 	
 	@Test
-	public void findOne() {
+	public void testFindOne() {
 		ConfigRepository repository = new ConfigRepository();
-		this.log(repository.findOne("47576f4a-fc42-480d-92de-183eb3f0de2d"));
-		this.log(repository.findOne(ConfigEntity.PROPERTY_NAME, "xxxx"));
+		this.log(repository.findOne("4d9949b4-854a-4eab-b7ea-80ed93f55259"));
+		this.log(repository.findOne(ConfigEntity.PROPERTY_NAME, "test"));
 	}
 	
 	@Test
-	public void save() {
+	public void testSave() {
 		ConfigRepository repository = new ConfigRepository();
 		ConfigEntity entity = new ConfigEntity();
-		entity.setId("47576f4a-fc42-480d-92de-183eb3f0de2d");
-		entity.setName("xxxx");
+		entity.setName("test");
+		entity.setValue("test-save");
 		repository.save(entity);
+		System.out.println(entity.getId());
 	}
 	
 	@Test
-	public void update() {
+	public void testUpdate() {
 		ConfigRepository repository = new ConfigRepository();
 		ConfigEntity entity = new ConfigEntity();
-		entity.setId("47576f4a-fc42-480d-92de-183eb3f0de2d");
-		entity.setName("xxxx");
+		entity.setId("86d1715e-3960-4f0f-8936-22d03040ef83");
+		entity.setName("test");
+		entity.setValue("test-update");
 		repository.update(entity);
 	}
 	
 	@Test
-	public void delete() {
+	public void testDelete() {
 		ConfigRepository repository = new ConfigRepository();
-		repository.delete("4e65eef9-35f9-441c-b049-fbc5dc6d97e4");
+		repository.delete("225b6777-c3d5-49d7-a4bc-60fa4bb6f17c");
+		repository.delete("86d1715e-3960-4f0f-8936-22d03040ef83");
 	}
 	
 	@Test
-	public void findList() {
+	public void testFindList() {
 		ConfigRepository repository = new ConfigRepository();
 		repository.findList("select * from tb_config").forEach(value -> {
-			this.log(value.getId());
 			this.log(value);
 		});
 	}

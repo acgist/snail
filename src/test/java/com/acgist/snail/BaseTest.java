@@ -53,7 +53,8 @@ public class BaseTest {
 	}
 	
 	protected void costed() {
-		final long cos = System.currentTimeMillis() - this.cos.get();
+		final long time = System.currentTimeMillis();
+		final long cos = time - this.cos.getAndSet(time);
 		this.LOGGER.info("消耗时间：毫秒：{}，秒：{}", cos, cos / 1000);
 	}
 	

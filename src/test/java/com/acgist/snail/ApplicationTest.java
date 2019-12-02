@@ -28,7 +28,9 @@ public class ApplicationTest extends BaseTest {
 		client.connect();
 		String message = null;
 		Scanner scanner = new Scanner(System.in);
-//		while ((message = scanner.next()) != null) { // 使用next()读取时会按照空白行（空格、Tab、Enter）拆分，使用nextLine()不会被拆分。
+		// 使用next()会按照空白字符（空格、Tab、Enter）读取
+//		while ((message = scanner.next()) != null) {
+		// 使用nextLine()按照换行读取
 		while ((message = scanner.nextLine()) != null) {
 			if(message.equalsIgnoreCase(Type.CLOSE.name())) {
 				client.send(ApplicationMessage.message(Type.CLOSE, message));

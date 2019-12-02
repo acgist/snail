@@ -125,7 +125,7 @@ public final class WindowRecycle extends Recycle {
 	/**
 	 * <p>创建删除文件信息</p>
 	 */
-	public byte[] buildInfo() {
+	private byte[] buildInfo() {
 		final String path = buildPath();
 		final ByteArrayOutputStream out = new ByteArrayOutputStream();
 		// 固定值

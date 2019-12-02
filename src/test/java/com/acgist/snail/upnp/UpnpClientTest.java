@@ -12,14 +12,14 @@ import com.acgist.snail.utils.NetUtils;
 public class UpnpClientTest extends BaseTest {
 
 	@Test
-	public void upnp() {
+	public void testMSearch() {
 		UpnpClient client = UpnpClient.newInstance();
 		client.mSearch();
 		this.pause();
 	}
 
 	@Test
-	public void request() {
+	public void testRequest() {
 		UpnpRequest request = UpnpRequest.newRequest("urn:schemas-upnp-org:service:WANIPConnection:1");
 //		String xml = request.buildGetExternalIPAddress();
 //		String xml = request.buildGetSpecificPortMappingEntry(8080, Protocol.Type.TCP);
@@ -28,7 +28,7 @@ public class UpnpClientTest extends BaseTest {
 	}
 	
 	@Test
-	public void response() {
+	public void testResponse() {
 		// TODO：多行文本块
 		String xml = "<?xml version=\"1.0\"?>"
 		+ "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" SOAP-ENV:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">"

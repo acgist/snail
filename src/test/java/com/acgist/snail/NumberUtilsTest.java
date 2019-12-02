@@ -1,31 +1,30 @@
 package com.acgist.snail;
 
-import java.math.BigInteger;
 import java.nio.ByteBuffer;
 
 import org.junit.Test;
 
+import com.acgist.snail.system.config.CryptConfig;
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.StringUtils;
 
 public class NumberUtilsTest extends BaseTest {
 
 	@Test
-	public void unsigned() {
-		byte[] x = new byte[] {0, (byte) 0xd8, (byte) 0xf0};
-		this.log(new BigInteger(x));
-//		var number = new BigInteger("10000");
-		var number = new BigInteger("-10000");
-		this.log(StringUtils.hex(number.toByteArray()));
-		this.log(new BigInteger(number.toByteArray()));
-		var bytes = NumberUtils.encodeUnsigned(number, 100);
-		this.log(StringUtils.hex(bytes));
-		this.log(new BigInteger(bytes));
-		this.log(NumberUtils.decodeUnsigned(ByteBuffer.wrap(bytes), bytes.length));
+	public void testUnsigned() {
+		var random = NumberUtils.random();
+		final byte[] bytes = new byte[CryptConfig.PRIVATE_KEY_LENGTH];
+		for (int index = 0; index < CryptConfig.PRIVATE_KEY_LENGTH; index++) {
+			bytes[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_MAX);
+		}
+		var value = NumberUtils.decodeUnsigned(ByteBuffer.wrap(bytes), CryptConfig.PRIVATE_KEY_LENGTH);
+		this.log(value);
+		this.log(NumberUtils.encodeUnsigned(value, CryptConfig.PUBLIC_KEY_LENGTH));
 	}
 	
 	@Test
-	public void bytes() {
+	public void testBytes() {
 		short value = (short) 18888;
 //		short value = Short.MIN_VALUE;
 //		short value = Short.MAX_VALUE;
