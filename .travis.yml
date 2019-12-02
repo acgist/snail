@@ -1,7 +1,12 @@
+# 语言
 language: java
 
+# Java版本
 jdk:
   - openjdk11
 
+# 跳过安装
 install: true
-script: mvn clean package -P release -D skipTests
+
+# 编译命令
+script: mvn clean package -P release -D skipTests=true -D gpg.skip=true
