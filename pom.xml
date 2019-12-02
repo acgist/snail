@@ -9,7 +9,7 @@
 	-D skipTests：编译测试代码
 	-D maven.test.skip=true：跳过编译测试代码
 	-->
-	<!-- 版本配置：pom.xml、snail.ini、config.bat、system.properties、README.md -->
+	<!-- 版本配置：pom.xml、snail.ini、config.bat、system.properties -->
 	
 	<modelVersion>4.0.0</modelVersion>
 	

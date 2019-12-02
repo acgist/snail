@@ -124,7 +124,7 @@ javaw -server -Xms128m -Xmx256m -jar snail-{version}.jar
 
 *√=完成、○-进行中、×-未开始、?-待定*
 
-## License
+## 依赖项目
 
 |软件|License|许可|
 |:--|:--:|:--|
@@ -132,7 +132,6 @@ javaw -server -Xms128m -Xmx256m -jar snail-{version}.jar
 |[slf4j](https://www.slf4j.org)|[License](https://www.slf4j.org/license.html)|MIT|
 |[logback](https://logback.qos.ch)|[License](https://logback.qos.ch/license.html)|LGPL 2.1/EPL 1.0|
 |[JavaFX](https://wiki.openjdk.java.net/display/OpenJFX/Main)|[License](http://openjdk.java.net/legal/gplv2+ce.html)|GPL 2.0|
-|[Snail](https://gitee.com/acgist/snail)|[License](https://gitee.com/acgist/snail/blob/master/LICENSE)|BSD 3-clause|
 
 ## 其他
 
