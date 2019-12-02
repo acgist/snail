@@ -75,7 +75,7 @@ public final class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteB
 					} else { // 没有消息：跳出循环
 						break;
 					}
-				} else if(length >= SystemConfig.MAX_NET_BUFFER_LENGTH || length < 0) {
+				} else if(length > SystemConfig.MAX_NET_BUFFER_LENGTH || length < 0) {
 					throw new PacketSizeException(length);
 				}
 				this.buffer = ByteBuffer.allocate(length);

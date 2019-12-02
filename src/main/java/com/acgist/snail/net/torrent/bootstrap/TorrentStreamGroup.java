@@ -71,7 +71,7 @@ public final class TorrentStreamGroup {
 	/**
 	 * <p>是否初始化完成</p>
 	 */
-	private volatile boolean done = false;
+	private volatile boolean ready = false;
 	/**
 	 * <p>种子信息</p>
 	 */
@@ -140,17 +140,24 @@ public final class TorrentStreamGroup {
 				LOGGER.debug("统计下载文件大小等待异常", e);
 				Thread.currentThread().interrupt();
 			} finally {
-				torrentStreamGroup.done = true;
+				torrentStreamGroup.ready = true;
 			}
 		});
 		return torrentStreamGroup;
 	}
 	
 	/**
+	 * <p>是否初始化完成</p>
+	 */
+	public boolean ready() {
+		return this.ready;
+	}
+	
+	/**
 	 * <p>发送have消息</p>
 	 */
 	public void have(int index) {
-		if(this.done) { // 初始化完成才开始发送have消息
+		if(this.ready) { // 初始化完成才开始发送have消息
 			this.torrentSession.have(index);
 		}
 	}
@@ -178,7 +185,7 @@ public final class TorrentStreamGroup {
 	 * @param length 数据长度
 	 */
 	public byte[] read(final int index, final int begin, final int length) throws NetException {
-		if(length >= SystemConfig.MAX_NET_BUFFER_LENGTH || length < 0) {
+		if(length > SystemConfig.MAX_NET_BUFFER_LENGTH || length < 0) {
 			throw new PacketSizeException(length);
 		}
 		final ByteBuffer buffer = ByteBuffer.allocate(length);

@@ -512,6 +512,7 @@ public final class TorrentStream {
 		if(this.fileStream.length() == 0) {
 			return;
 		}
+		// TODO：优化加载速度
 		for (int index = this.fileBeginPieceIndex; index <= this.fileEndPieceIndex; index++) {
 			if(complete) {
 				this.done(index);
