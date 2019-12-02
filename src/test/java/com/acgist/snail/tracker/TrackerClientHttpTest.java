@@ -12,7 +12,7 @@ import com.acgist.snail.system.exception.NetException;
 public class TrackerClientHttpTest extends BaseTest {
 
 	@Test
-	public void announce() throws DownloadException, NetException {
+	public void testAnnounce() throws DownloadException, NetException {
 		String path = "e:/snail/12345.torrent";
 		TorrentSession session = TorrentManager.getInstance().newTorrentSession(path);
 		HttpTrackerClient client = HttpTrackerClient.newInstance("http://www.proxmox.com:6969/announce"); // TODO：解析

@@ -19,7 +19,7 @@ import com.acgist.snail.utils.ThreadUtils;
 public class TorrentStreamGroupTest extends BaseTest {
 
 	@Test
-	public void verify() throws DownloadException, NetException {
+	public void testVerify() throws DownloadException, NetException {
 		String path = "e:/snail/verify.torrent";
 		TorrentSession session = TorrentManager.getInstance().newTorrentSession(path);
 		TaskEntity entity = new TaskEntity();
