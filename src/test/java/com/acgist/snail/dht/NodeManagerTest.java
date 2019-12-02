@@ -23,16 +23,9 @@ public class NodeManagerTest extends BaseTest {
 		this.log(ArrayUtils.compareUnsigned(hex1, hex2));
 	}
 
-	public String buildId() {
-		final Random random = new Random();
-		long value;
-		while((value = random.nextInt()) < 0) {
-		}
-		return String.format("%040d", value);
-	}
-	
 	@Test
 	public void testFindNode() {
+		this.info();
 		List<NodeSession> nodes = new ArrayList<>();
 		for (int index = 100000; index < 110000; index++) {
 			nodes.add(NodeManager.getInstance().newNodeSession(StringUtils.unhex(buildId()), "0", 0));
@@ -41,25 +34,28 @@ public class NodeManagerTest extends BaseTest {
 		NodeManager.getInstance().sortNodes();
 		String id = "0000000000000000000000000000000000613709";
 		this.log("id=================>" + id);
-		long begin = System.currentTimeMillis();
+		this.cost();
 		var list = NodeManager.getInstance().findNode(id);
-		long end = System.currentTimeMillis();
-		this.log("查询时间：" + (end - begin));
+		this.costed();
 		list.forEach(node -> {
-			this.log(node);
 			this.log(StringUtils.hex(node.getId()));
 		});
-		this.log("--------");
 		id = buildId();
 		this.log("id=================>" + id);
-		begin = System.currentTimeMillis();
+		this.cost();
 		list = NodeManager.getInstance().findNode(id);
-		end = System.currentTimeMillis();
-		this.log("查询时间：" + (end - begin));
+		this.costed();
 		list.forEach(node -> {
-			this.log(node);
 			this.log(StringUtils.hex(node.getId()));
 		});
 	}
 
+	private String buildId() {
+		final Random random = new Random();
+		long value;
+		while((value = random.nextInt()) < 0) {
+		}
+		return String.format("%040d", value);
+	}
+	
 }

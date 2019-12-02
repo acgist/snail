@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import com.acgist.snail.BaseTest;
 import com.acgist.snail.net.torrent.dht.DhtClient;
+import com.acgist.snail.net.torrent.dht.bootstrap.NodeManager;
 import com.acgist.snail.pojo.bean.InfoHash;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.system.exception.DownloadException;
@@ -22,7 +23,8 @@ public class DhtServerTest extends BaseTest {
 	
 	@Test
 	public void testFindNode() {
-//		NodeManager.getInstance().newNodeSession("12345678901234567890".getBytes(), "1234", 1234);
+		NodeManager.getInstance().newNodeSession("12345678901234567890".getBytes(), "1234", 1234);
+		NodeManager.getInstance().sortNodes();
 		DhtClient client = DhtClient.newInstance(HOST, PORT);
 		String target = "5E5324691812CAA0032EA76E813CCFC4D04E7E9E";
 		client.findNode(target);

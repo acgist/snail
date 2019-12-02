@@ -10,6 +10,7 @@ import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.TorrentServer;
 import com.acgist.snail.net.torrent.bootstrap.PeerDownloader;
 import com.acgist.snail.net.torrent.peer.PeerServer;
+import com.acgist.snail.pojo.bean.TorrentInfo;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.StatisticsSession;
@@ -24,25 +25,20 @@ import com.acgist.snail.utils.ThreadUtils;
 
 public class PeerServerTest extends BaseTest {
 	
-	/**
-	 * 服务端提供下载
-	 */
 	@Test
-	public void server() throws DownloadException {
+	public void testServer() throws DownloadException {
 		DatabaseConfig.getInstance();
-//		String path = "e:/snail/1234.torrent";
 		String path = "e:/snail/12345.torrent";
-//		String path = "e:/snail/123456.torrent";
 		TorrentSession torrentSession = TorrentManager.getInstance().newTorrentSession(path);
 		var files = torrentSession.torrent().getInfo().files();
 		List<String> list = new ArrayList<>();
 		files.forEach(file -> {
-			if(!file.path().contains("_____padding_file")) {
+			if(!file.path().contains(TorrentInfo.PADDING_FILE_PREFIX)) {
 				list.add(file.path());
 			}
 		});
 		TaskEntity entity = new TaskEntity();
-		entity.setFile("e://tmp/server/");
+		entity.setFile("e:/tmp/server/");
 		entity.setType(Type.TORRENT);
 		final TorrentSelectorWrapper wrapper = TorrentSelectorWrapper.newEncoder(list);
 		entity.setSize(100L * 1024 * 1024);
@@ -54,26 +50,22 @@ public class PeerServerTest extends BaseTest {
 		this.pause();
 	}
 
-	/**
-	 * 客户端下载
-	 */
 	@Test
 	public void client() throws DownloadException {
-//		String path = "e:/snail/1234.torrent";
 		String path = "e:/snail/12345.torrent";
-//		String path = "e:/snail/123456.torrent";
 		TorrentSession torrentSession = TorrentManager.getInstance().newTorrentSession(path);
 		var files = torrentSession.torrent().getInfo().files();
 		List<String> list = new ArrayList<>();
+		// 选择下载文件
 		files.forEach(file -> {
-			if(!file.path().contains("_____padding_file")) {
+			if(!file.path().contains(TorrentInfo.PADDING_FILE_PREFIX)) {
 				if(file.path().contains("Vol.1")) {
 					list.add(file.path());
 				}
 			}
 		});
 		TaskEntity entity = new TaskEntity();
-		entity.setFile("e://tmp/client/");
+		entity.setFile("e:/tmp/client/");
 		entity.setType(Type.TORRENT);
 		final TorrentSelectorWrapper wrapper = TorrentSelectorWrapper.newEncoder(list);
 		entity.setDescription(wrapper.serialize());
@@ -91,9 +83,6 @@ public class PeerServerTest extends BaseTest {
 				ThreadUtils.sleep(1000);
 			}
 		}).start();
-//		ThreadUtils.sleep(4000); // 等待信息交换
-//		var pexMessage = PeerExchangeMessageHandler.buildMessage(List.of(peerSession));
-//		launcher.handler().pex(pexMessage);
 		this.pause();
 	}
 

@@ -19,7 +19,7 @@ public class TorrentStreamTest extends BaseTest {
 
 	@Test
 	public void read() throws IOException {
-		RandomAccessFile stream = new RandomAccessFile("e://tmp.txt", "rwd");
+		RandomAccessFile stream = new RandomAccessFile("e:/tmp.txt", "rwd");
 		stream.write(2);
 		stream.seek(1000);
 		byte[] bytes = new byte[1024];
@@ -64,7 +64,7 @@ public class TorrentStreamTest extends BaseTest {
 	
 	@Test
 	public void writeRead() throws Exception {
-		byte[] bytes = Files.readAllBytes(Path.of("F://壁纸/01.png"));
+		byte[] bytes = Files.readAllBytes(Path.of("F:/壁纸/01.png"));
 		var channel = FileChannel.open(Path.of("F:/TEST.png"), StandardOpenOption.READ, StandardOpenOption.WRITE);
 		channel.write(ByteBuffer.wrap(bytes));
 //		channel.force(true);

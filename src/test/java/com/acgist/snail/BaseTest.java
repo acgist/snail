@@ -5,6 +5,11 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.utils.ThreadUtils;
+
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.LoggerContext;
+
 public class BaseTest {
 
 	protected Logger LOGGER = LoggerFactory.getLogger(this.getClass());
@@ -15,19 +20,29 @@ public class BaseTest {
 	protected AtomicLong cos = new AtomicLong();
 	
 	/**
+	 * <p>设置日志级别</p>
+	 */
+	protected void info() {
+		final LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+		context.getLoggerList().forEach(logger -> {
+			logger.setLevel(Level.INFO);
+		});
+	}
+	
+	/**
 	 * <p>记录日志</p>
 	 * 
 	 * @param log 日志信息
 	 */
 	protected void log(Object log) {
-		LOGGER.debug("{}", log);
+		LOGGER.info("{}", log);
 	}
 	
 	/**
 	 * <p>阻止自动关闭</p>
 	 */
 	protected void pause() {
-		this.pause();
+		ThreadUtils.sleep(Long.MAX_VALUE);
 	}
 	
 	/**
@@ -39,7 +54,7 @@ public class BaseTest {
 	
 	protected void costed() {
 		final long cos = System.currentTimeMillis() - this.cos.get();
-		this.LOGGER.debug("消耗时间：毫秒：{}，秒：{}", cos, cos / 1000);
+		this.LOGGER.info("消耗时间：毫秒：{}，秒：{}", cos, cos / 1000);
 	}
 	
 }

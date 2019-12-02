@@ -25,7 +25,7 @@ public class FtpClientTest extends BaseTest {
 		if(input == null) {
 			this.log(client.failMessage("未知错误"));
 		} else {
-			var output = new FileOutputStream("e://ftp");
+			var output = new FileOutputStream("e:/ftp");
 			input.transferTo(output);
 			output.flush();
 			output.close();

@@ -12,15 +12,15 @@ import com.acgist.snail.utils.ThreadUtils;
 
 public class DhtClientTest extends BaseTest {
 
-	private static final String HOST = "127.0.0.1";
-	private static final int PORT = 49160; // FDM测试端口
+	// 本地FDM测试节点
+//	private static final String HOST = "127.0.0.1";
+//	private static final int PORT = 49160;
 	
-//	private static final String HOST = "router.bittorrent.com";
-//	private static final int PORT = 6881;
+	private static final String HOST = "router.bittorrent.com";
+	private static final int PORT = 6881;
 	
 	@Test
 	public void testPing() {
-//		NodeManager.getInstance().newNodeSession(HOST, PORT);
 		DhtClient client = DhtClient.newInstance(HOST, PORT);
 		NodeSession node = client.ping();
 		this.log(node);
