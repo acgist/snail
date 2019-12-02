@@ -24,6 +24,7 @@
 		<img alt="BitTorrent" src="https://img.shields.io/badge/BitTorrent-BEP-orange.svg?style=flat-square" />
 	</a>
 	<br />
+	<img alt="Travis (.org)" src="https://img.shields.io/travis/acgist/snail?style=flat-square" />
 	<img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/acgist/snail?color=crimson&style=flat-square" />
 	<img alt="GitHub" src="https://img.shields.io/github/license/acgist/snail?style=flat-square" />
 </p>
