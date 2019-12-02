@@ -1,6 +1,6 @@
 /**
  * <h1>BT任务下载</h1>
- * <table border="1">
+ * <table border="1" summary="包名">
  * 	<tr>
  * 		<th>包名</th>
  * 		<th align="left">功能</th>
