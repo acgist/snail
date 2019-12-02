@@ -1,6 +1,7 @@
 package com.acgist.snail.net.torrent.tracker.bootstrap.impl;
 
 import java.net.http.HttpResponse.BodyHandlers;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -157,7 +158,14 @@ public final class HttpTrackerClient extends TrackerClient {
 		final Integer minInterval = decoder.getInteger("min interval");
 		final String failureReason = decoder.getString("failure reason");
 		final String warngingMessage = decoder.getString("warnging message");
-		final var peers = PeerUtils.read(decoder.getBytes("peers"));
+		final var object = decoder.get("peers");
+		Map<String, Integer> peers;
+		if(object instanceof List) {
+			// TODO：解析
+			peers = null;
+		} else {
+			peers = PeerUtils.read((byte[]) object);
+		}
 		final AnnounceMessage message = new AnnounceMessage();
 		message.setId(sid);
 		if(StringUtils.isNotEmpty(failureReason)) {

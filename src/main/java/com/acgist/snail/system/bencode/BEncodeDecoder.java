@@ -383,6 +383,17 @@ public final class BEncodeDecoder {
 		return bytes;
 	}
 	
+	public Object get(String key) {
+		return get(this.map, key);
+	}
+	
+	public static final Object get(Map<?, ?> map, String key) {
+		if(map == null) {
+			return null;
+		}
+		return map.get(key);
+	}
+	
 	public Byte getByte(String key) {
 		return getByte(this.map, key);
 	}
