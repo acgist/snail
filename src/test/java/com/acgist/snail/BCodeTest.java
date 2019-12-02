@@ -13,7 +13,7 @@ import com.acgist.snail.system.exception.PacketSizeException;
 public class BCodeTest extends BaseTest {
 
 	@Test
-	public void testRw() throws PacketSizeException {
+	public void testReadWrite() throws PacketSizeException {
 		BEncodeEncoder encoder = BEncodeEncoder.newInstance();
 		encoder.write(List.of("a", "b"));
 		encoder.write(Map.of("1", "2"));
@@ -39,7 +39,7 @@ public class BCodeTest extends BaseTest {
 	}
 	
 	@Test
-	public void testNullRW() throws PacketSizeException {
+	public void testNull() throws PacketSizeException {
 		Map<String, Object> map = new LinkedHashMap<>();
 		map.put("a", 1);
 		map.put("b", null);
@@ -57,7 +57,7 @@ public class BCodeTest extends BaseTest {
 	}
 	
 	@Test
-	public void testError() throws PacketSizeException {
+	public void testMap() throws PacketSizeException {
 		var decoder = BEncodeDecoder.newInstance("d8:completei6e10:downloadedi17e10:incompletei0e8:intervali924e12:min intervali462e5:peers36:����m�Wj���LmA�s;I�ʆL��TTz�e");
 		var map = decoder.nextMap();
 		this.log(map);

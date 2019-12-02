@@ -4,15 +4,17 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.net.upnp.UpnpServer;
 import com.acgist.snail.pojo.wrapper.HeaderWrapper;
+import com.acgist.snail.system.exception.NetException;
 
 public class HeaderWrapperTest extends BaseTest {
 
 	private static final String NEW_LINE = "\r\n";
 	
 	@Test
-	public void build() {
+	public void testBuild() {
 		final StringBuilder builder = new StringBuilder();
 		builder
 			.append("M-SEARCH * HTTP/1.1").append(NEW_LINE)
@@ -33,7 +35,17 @@ public class HeaderWrapperTest extends BaseTest {
 	}
 	
 	@Test
-	public void buildMulti() {
+	public void testHttp() throws NetException {
+		HTTPClient client = HTTPClient.newInstance("https://www.acgist.com/demo/weixin/view");
+		var headers = client.head();
+		headers.allHeaders().forEach((key, value) -> {
+			this.log(key + "<==>" + value);
+		});
+		this.log(headers.header("SERVER"));
+	}
+	
+	@Test
+	public void testBuildMSearch() {
 		HeaderWrapper wrapper = HeaderWrapper.newBuilder("M-SEARCH * HTTP/1.1");
 		wrapper
 			.header("HOST", "1234")

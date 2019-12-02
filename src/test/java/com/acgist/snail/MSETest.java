@@ -12,7 +12,7 @@ import com.acgist.snail.utils.StringUtils;
 public class MSETest extends BaseTest {
 
 	@Test
-	public void dh() {
+	public void testMSE() {
 		MSEKeyPairBuilder mseKeyPairBuilder = MSEKeyPairBuilder.newInstance();
 		var a = mseKeyPairBuilder.buildKeyPair();
 		var b = mseKeyPairBuilder.buildKeyPair();

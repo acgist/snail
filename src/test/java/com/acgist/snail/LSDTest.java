@@ -9,13 +9,13 @@ import com.acgist.snail.system.exception.NetException;
 public class LSDTest extends BaseTest {
 
 	@Test
-	public void server() {
+	public void testServer() {
 		LocalServiceDiscoveryServer.getInstance();
 		this.pause();
 	}
 	
 	@Test
-	public void client() throws NetException {
+	public void testClient() throws NetException {
 		var client = LocalServiceDiscoveryClient.newInstance();
 		client.localSearch(
 			"28b5e72737f183cb36182fcc8991d5cbf7ce627c",

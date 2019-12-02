@@ -9,7 +9,7 @@ import com.acgist.snail.utils.StringUtils;
 public class ByteBufferTest extends BaseTest {
 
 	@Test
-	public void readContent() {
+	public void testRead() {
 		ByteBuffer buffer = ByteBuffer.wrap("1234".getBytes());
 		buffer.compact();
 //		buffer.flip();
@@ -18,7 +18,7 @@ public class ByteBufferTest extends BaseTest {
 	}
 	
 	@Test
-	public void append() {
+	public void testAppend() {
 		ByteBuffer buffer = ByteBuffer.allocate(100);
 		buffer.put("1234".getBytes());
 		this.log(buffer);
@@ -33,31 +33,20 @@ public class ByteBufferTest extends BaseTest {
 	}
 	
 	@Test
-	public void put() {
-		ByteBuffer buffer = ByteBuffer.wrap("1234".getBytes());
-		ByteBuffer x = ByteBuffer.allocate(4);
-		this.log(buffer);
-		this.log(x);
-		x.put(buffer);
-		this.log(buffer);
-		this.log(x);
-	}
-	
-	@Test
 	public void testCost() {
-		long begin = System.currentTimeMillis();
+		this.cost();
 		for (int i = 0; i < 10000; i++) {
-			match();
+			testMatch();
 		}
-		this.log("消耗：" + (System.currentTimeMillis() - begin));
+		this.costed();
 	}
 	
 	@Test
-	public void match() {
+	public void testMatch() {
 		int index = 0;
 		String name = "123456";
-//		ByteBuffer buffer = ByteBuffer.wrap("1123456".getBytes());
-		ByteBuffer buffer = ByteBuffer.wrap("11233456".getBytes());
+		ByteBuffer buffer = ByteBuffer.wrap("1123456".getBytes());
+//		ByteBuffer buffer = ByteBuffer.wrap("11233456".getBytes());
 //		ByteBuffer buffer = ByteBuffer.wrap("112231234e56".getBytes());
 		byte[] bytes = name.getBytes();
 		final int length = bytes.length;

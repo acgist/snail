@@ -11,15 +11,15 @@ public class PaddingMatcherTest extends BaseTest {
 
 	@Test
 	public void testCost() throws NetException {
-		long begin = System.currentTimeMillis();
+		this.cost();
 		for (int index = 0; index < 100000; index++) {
-			sync();
+			testSync();
 		}
-		this.log(System.currentTimeMillis() - begin);
+		this.costed();
 	}
 	
 	@Test
-	public void sync() throws NetException {
+	public void testSync() throws NetException {
 		MSEPaddingSync sync = MSEPaddingSync.newInstance(3);
 		ByteBuffer buffer = ByteBuffer.allocate(100);
 		buffer.putShort((short) 2).put("12".getBytes());

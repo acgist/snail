@@ -10,7 +10,7 @@ import com.acgist.snail.utils.NetUtils;
 public class StunTest extends BaseTest {
 
 	@Test
-	public void config() {
+	public void testMessageType() {
 		short value = StunConfig.MessageType.REQUEST.type(MethodType.BINDING);
 		this.log(value);
 		this.log(String.format("%016d", Integer.valueOf(Integer.toBinaryString(value))));
@@ -30,7 +30,7 @@ public class StunTest extends BaseTest {
 	}
 	
 	@Test
-	public void mappedAddress() {
+	public void testMmappedAddress() {
 //		StunClient client = StunClient.newInstance("stun.l.google.com", 19302);
 //		StunClient client = StunClient.newInstance("stun1.l.google.com", 19302);
 		StunClient client = StunClient.newInstance("stun2.l.google.com", 19302);
@@ -45,14 +45,14 @@ public class StunTest extends BaseTest {
 	}
 	
 	@Test
-	public void xor() {
+	public void testXOR() {
 		short port = 4938;
 		int ip = -1777019015;
 		int realPort = port ^ (StunConfig.MAGIC_COOKIE >> 16);
-		this.log(realPort);
+		this.log("真实端口：" + realPort);
 		int realIp = ip ^ StunConfig.MAGIC_COOKIE;
-		this.log(realIp);
-		this.log(NetUtils.decodeIntToIp(realIp));
+		this.log("真实IP：" + realIp);
+		this.log("真实IP地址：" + NetUtils.decodeIntToIp(realIp));
 	}
 	
 }

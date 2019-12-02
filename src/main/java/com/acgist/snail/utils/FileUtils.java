@@ -151,7 +151,7 @@ public final class FileUtils {
 			return url;
 		}
 		String fileName = UrlUtils.decode(url);
-		// 反斜杠转换
+		// 斜杠转换
 		if(fileName.contains("\\")) {
 			fileName = fileName.replace("\\", "/");
 		}
@@ -167,14 +167,14 @@ public final class FileUtils {
 	}
 	
 	/**
-	 * <p>获取正确的文件名称<p>
+	 * <p>文件名称格式化<p>
 	 * <p>去掉{@linkplain #FILENAME_REPLACE_REGEX 文件名禁用字符}<p>
 	 * 
 	 * @param name 文件名称
 	 * 
 	 * @return 文件名称
 	 */
-	public static final String fileName(String name) {
+	public static final String fileNameFormat(String name) {
 		if(StringUtils.isNotEmpty(name)) { // 去掉不支持的字符
 			name = name.replaceAll(FILENAME_REPLACE_REGEX, FILENAME_REPLACE_CHAR);
 		}

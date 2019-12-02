@@ -11,12 +11,11 @@ import com.acgist.snail.utils.ObjectUtils;
 public class ObjectUtilsTest extends BaseTest {
 
 	@Test
-	public void toStringTest() {
+	public void testToString() {
 		List<String> list = new ArrayList<>();
 		list.add("1");
 		list.add("2");
 		this.log(ObjectUtils.toString(list));
-		
 		ConfigEntity config = new ConfigEntity();
 		config.setId("1234");
 		config.setName("test");

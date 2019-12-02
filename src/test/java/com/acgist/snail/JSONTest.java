@@ -11,7 +11,7 @@ import com.acgist.snail.system.JSON;
 public class JSONTest extends BaseTest {
 	
 	@Test
-	public void deserialize() {
+	public void testDeserialize() {
 		JSON json = JSON.ofString("{\"name\":\"你,:{}好\",\"age\":30,\"marry\" :true , \"wife\": null , \"like\":[\"动漫\",\"洞箫\"]}");
 		this.log(json.getString("name"));
 		this.log(json.getInteger("age"));
@@ -22,7 +22,7 @@ public class JSONTest extends BaseTest {
 	}
 	
 	@Test
-	public void serialize() {
+	public void testSerialize() {
 		Map<Object, Object> map = Map.of(
 			"name", "\b你,:{}好",
 			"age", 30,
@@ -42,7 +42,7 @@ public class JSONTest extends BaseTest {
 
 	@Test
 	public void testCost() {
-		long begin = System.currentTimeMillis();
+		this.cost();
 		for (int i = 0; i < 100000; i++) {
 			// 反序列化
 //			JSON.ofString("{\"name\":\"你,:{}好\",\"age\":30,\"marry\" :true , \"wife\": null , \"like\":[\"动漫\",\"洞箫\"]}");
@@ -57,7 +57,7 @@ public class JSONTest extends BaseTest {
 			map.put("wife", null);
 			JSON.ofMap(map);
 		}
-		this.log(System.currentTimeMillis() - begin);
+		this.costed();
 	}
 	
 }

@@ -167,11 +167,12 @@ public final class UpnpService {
 		if(HTTPClient.internalServerError(response)) {
 			return Status.MAPABLE;
 		}
-		final var registerIp = UpnpResponse.parseGetSpecificPortMappingEntry(body);
+		final var mappingIp = UpnpResponse.parseGetSpecificPortMappingEntry(body);
 		final var localIp = NetUtils.localHostAddress();
-		if(localIp.equals(registerIp)) {
+		if(localIp.equals(mappingIp)) {
 			return Status.USEABLE;
 		} else {
+			LOGGER.debug("UPNP端口已被映射：{}-{}", mappingIp, portExt);
 			return Status.DISABLE;
 		}
 	}

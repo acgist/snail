@@ -3,6 +3,7 @@ package com.acgist.snail;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -25,6 +26,7 @@ public class BeanUtilsTest extends BaseTest {
 	public void testBuildSQL() {
 		TaskEntity entity = new TaskEntity();
 		entity.setName("测试");
+		entity.setCreateDate(new Date());
 		final String[] properties = BeanUtils.properties(entity.getClass());
 		final String sqlProperty = Stream.of(properties)
 			.map(property -> "`" + property + "`")
@@ -36,9 +38,9 @@ public class BeanUtilsTest extends BaseTest {
 			.map(property -> BeanUtils.propertyValue(entity, property))
 			.toArray();
 		
-		this.log(sqlProperty);
-		this.log(sqlValue);
-		this.log(Arrays.asList(parameters));
+		this.log("属性名：" + sqlProperty);
+		this.log("SQL:" + sqlValue);
+		this.log("属性值：" + Arrays.asList(parameters));
 	}
 	
 	@Test
@@ -60,6 +62,7 @@ public class BeanUtilsTest extends BaseTest {
 	public void testUnpack() {
 		final var value = BeanUtils.unpack(FileType.class, "VIDEO");
 		this.log(value);
+		this.log(value.getClass());
 	}
 	
 }
