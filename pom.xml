@@ -161,7 +161,7 @@
 							</excludes>
 						</resource>
 						<resource>
-							<directory>/</directory>
+							<directory>./</directory>
 							<filtering>false</filtering>
 							<targetPath>META-INF/</targetPath>
 							<!-- 开源协议、README -->
