@@ -15,7 +15,7 @@ import com.acgist.snail.system.exception.DownloadException;
 public class TorrentBuilderTest extends BaseTest {
 
 	@Test
-	public void build() throws DownloadException {
+	public void testBuild() throws DownloadException {
 		String path = "e:/snail/12345.torrent";
 		TorrentSession session = TorrentManager.getInstance().newTorrentSession(path);
 		InfoHash infoHash = session.infoHash();

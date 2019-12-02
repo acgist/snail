@@ -51,7 +51,7 @@ public class PeerServerTest extends BaseTest {
 	}
 
 	@Test
-	public void client() throws DownloadException {
+	public void testClient() throws DownloadException {
 		String path = "e:/snail/12345.torrent";
 		TorrentSession torrentSession = TorrentManager.getInstance().newTorrentSession(path);
 		var files = torrentSession.torrent().getInfo().files();
