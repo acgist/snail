@@ -6,6 +6,8 @@
 	
 	<!--
 	mvn -e clean package deploy -P release -D skipTests -D javafx.platform=win|mac|linux
+	-D skipTests：编译测试代码
+	-D maven.test.skip=true：跳过编译测试代码
 	-->
 	<!-- 版本配置：pom.xml、snail.ini、config.bat、system.properties、README.md -->
 	
@@ -243,7 +245,10 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- source：mvn source:auto-jar-no-fork -->
+			<!--
+			source：mvn source:auto-jar-no-fork
+			-D maven.source.skip=true
+			-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
