@@ -1,0 +1,6 @@
+language: java
+
+jdk:
+  - openjdk11
+  
+script: mvn clean package -P release -D skipTests

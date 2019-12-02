@@ -5,7 +5,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	
 	<!--
-	mvn clean package deploy -P release -D skipTests -D javafx.platform=win|mac|linux
+	mvn -e clean package deploy -P release -D skipTests -D javafx.platform=win|mac|linux
 	-->
 	<!-- 版本配置：pom.xml、snail.ini、config.bat、system.properties、README.md -->
 	
@@ -128,7 +128,7 @@
 		-->
 		<!-- Maven插件 -->
 		<plugins>
-			<!-- compiler -->
+			<!-- compile：mvn compile -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -139,7 +139,7 @@
 					<encoding>${encoding}</encoding>
 				</configuration>
 			</plugin>
-			<!-- resources -->
+			<!-- resources：mvn resources:resources -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
@@ -194,7 +194,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- jar -->
+			<!-- jar：mvn jar:jar -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -262,7 +262,10 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- javadoc：mvn javadoc:auto-javadoc-jar -->
+			<!--
+			javadoc：mvn javadoc:auto-javadoc-jar
+			-D maven.javadoc.skip=true
+			-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
@@ -287,7 +290,10 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- deploy：gpg -->
+			<!--
+			deploy：mvn gpg:sign
+			-D gpg.skip=true
+			-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
@@ -302,7 +308,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- deploy：sonatype -->
+			<!-- deploy：mvn deploy -->
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
@@ -366,7 +372,7 @@
 		<system>Gitee Issues</system>
 	</issueManagement>
 	
-	<!-- 发布：mvn deploy -e -->
+	<!-- 发布：mvn deploy -->
 	<!-- https://oss.sonatype.org/ -->
 	<!-- https://issues.sonatype.org/browse/OSSRH-51336 -->
 	<distributionManagement>

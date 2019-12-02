@@ -9,7 +9,7 @@
 		<img alt="Author" src="https://img.shields.io/badge/Author-acgist-red.svg?style=flat-square" />
 	</a>
 	<a target="_blank" href="https://gitee.com/acgist/snail">
-		<img alt="Version" src="https://img.shields.io/badge/Version-1.2.2-blue.svg?style=flat-square" />
+		<img alt="Version" src="https://img.shields.io/badge/Version-1.2.2-lightgrey.svg?style=flat-square" />
 	</a>
 	<a target="_blank" href="https://gitee.com/acgist/snail/releases/v1.2.1">
 		<img alt="Release" src="https://img.shields.io/badge/Release-1.2.1-blueviolet.svg?style=flat-square" />
@@ -18,7 +18,7 @@
 		<img alt="Java" src="https://img.shields.io/badge/Java-11-yellow.svg?style=flat-square" />
 	</a>
 	<a target="_blank" href="https://openjfx.io/">
-		<img alt="JavaFX" src="https://img.shields.io/badge/JavaFX-11-green.svg?style=flat-square" />
+		<img alt="JavaFX" src="https://img.shields.io/badge/JavaFX-11-blue.svg?style=flat-square" />
 	</a>
 	<a target="_blank" href="https://www.bittorrent.org/beps/bep_0000.html">
 		<img alt="BitTorrent" src="https://img.shields.io/badge/BitTorrent-BEP-orange.svg?style=flat-square" />
@@ -73,13 +73,13 @@ javaw -server -Xms128m -Xmx256m -jar snail-{version}.jar
 
 #### 协议进度
 
-|BEP|进度|
+|协议|进度|
 |:--|:--:|
-|最终协议||
+|最终||
 |[The BitTorrent Protocol Specification](http://www.bittorrent.org/beps/bep_0003.html)|√|
 |[Known Number Allocations](http://www.bittorrent.org/beps/bep_0004.html)|√|
 |[Peer ID Conventions](http://www.bittorrent.org/beps/bep_0020.html)|√|
-|公开协议||
+|接受||
 |[DHT Protocol](http://www.bittorrent.org/beps/bep_0005.html)|√|
 |[Fast Extension](http://www.bittorrent.org/beps/bep_0006.html)|√|
 |[Extension for Peers to Send Metadata Files](http://www.bittorrent.org/beps/bep_0009.html)|√|
@@ -93,7 +93,7 @@ javaw -server -Xms128m -Xmx256m -jar snail-{version}.jar
 |[Private Torrents](http://www.bittorrent.org/beps/bep_0027.html)|√|
 |[uTorrent Transport Protocol](http://www.bittorrent.org/beps/bep_0029.html)|√|
 |[Holepunch Extension](http://www.bittorrent.org/beps/bep_0055.html)|√|
-|协议草案||
+|草案||
 |[IPv6 Tracker Extension](http://www.bittorrent.org/beps/bep_0007.html)|×|
 |[Superseeding](http://www.bittorrent.org/beps/bep_0016.html)|?|
 |[HTTP Seeding (Hoffman-style)](http://www.bittorrent.org/beps/bep_0017.html)|?|
@@ -116,7 +116,7 @@ javaw -server -Xms128m -Xmx256m -jar snail-{version}.jar
 |[The BitTorrent Protocol Specification v2](http://www.bittorrent.org/beps/bep_0052.html)|?|
 |[Magnet URI extension - Select specific file indices for download](http://www.bittorrent.org/beps/bep_0053.html)|?|
 |[The lt_donthave extension](http://www.bittorrent.org/beps/bep_0054.html)|√|
-|其他协议||
+|其他||
 |IPv6|○|
 |[STUN](https://www.rfc-editor.org/rfc/rfc5389.txt)|√|
 |[UPnP](http://upnp.org/specs/arch/UPnP-arch-DeviceArchitecture-v1.0.pdf)|√|
