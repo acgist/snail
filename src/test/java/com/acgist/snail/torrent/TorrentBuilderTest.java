@@ -22,7 +22,7 @@ public class TorrentBuilderTest extends BaseTest {
 		NodeManager.getInstance().newNodeSession("12345678901234567890".getBytes(), "192.168.1.1", 18888);
 		var trackers = List.of("https://www.acgist.com", "https://www.acgist.com/1", "https://www.acgist.com/2");
 		TorrentBuilder builder = TorrentBuilder.newInstance(infoHash, trackers);
-		builder.buildFile("e:/snail/build");
+		builder.buildFile("e:/tmp/torrent");
 	}
 	
 }

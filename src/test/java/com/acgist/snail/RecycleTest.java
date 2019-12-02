@@ -27,10 +27,10 @@ public class RecycleTest extends BaseTest {
 		File db = new File("E:/$RECYCLE.BIN/S-1-5-21-1082702080-4186364021-1016170526-1001/$Rtest1234.txt");
 		da.delete();
 		db.delete();
-		WindowRecycle recycle = new WindowRecycle("E:\\AA.txt");
+		WindowRecycle recycle = new WindowRecycle("E:/AA.txt");
 		byte[] bytes = recycle.buildInfo();
 		this.log(StringUtils.hex(bytes));
-		File file = new File("E://AA.txt");
+		File file = new File("E:/AA.txt");
 		File info = new File("E:/$RECYCLE.BIN/S-1-5-21-1082702080-4186364021-1016170526-1001/$Itest1234.txt");
 		if(file.exists()) {
 			FileUtils.write(info.getPath(), bytes);

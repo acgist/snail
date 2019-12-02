@@ -70,7 +70,7 @@ public class TorrentTest extends BaseTest {
 	public void time() throws DownloadException {
 		long begin = System.currentTimeMillis();
 		for (int i = 0; i < 10000; i++) {
-			TorrentManager.loadTorrent("e://fa493c8add6d907a0575631831033dcf94ba5217.torrent");
+			TorrentManager.loadTorrent("e:/fa493c8add6d907a0575631831033dcf94ba5217.torrent");
 		}
 		long end = System.currentTimeMillis();
 		this.log(end - begin);
