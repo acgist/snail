@@ -5,10 +5,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	
 	<!--
-	mvn clean package deploy -P release -D skipTests
-	-D javafx.platform=win|mac|linux
+	mvn clean package deploy -P release -D skipTests -D javafx.platform=win|mac|linux
 	-->
-	<!-- 版本配置：pom.xml、snail.ini、README.md、config.bat、system.properties -->
+	<!-- 版本配置：pom.xml、snail.ini、config.bat、system.properties、README.md -->
 	
 	<modelVersion>4.0.0</modelVersion>
 	
@@ -21,8 +20,7 @@
 	<version>1.2.1</version>
 	<description>基于Java、JavaFX开发的下载工具，支持下载协议：BT（BitTorrent）、FTP、HTTP。</description>
 	<inceptionYear>2019</inceptionYear>
-
-	<!-- 属性配置 -->
+	
 	<properties>
 		<vendor>acgist</vendor>
 		<module>${project.groupId}.${project.artifactId}</module>
@@ -120,13 +118,13 @@
 	</profiles>
 	
 	<build>
+		<!-- 属性替换配置文件路径 -->
+		<!--
+		<filters></filters>
+		-->
 		<!-- 资源文件 -->
 		<!--
 		<resources></resources>
-		-->
-		<!-- 配置filter属性路径 -->
-		<!--
-		<filters></filters>
 		-->
 		<!-- Maven插件 -->
 		<plugins>
@@ -150,6 +148,7 @@
 					<resources>
 						<resource>
 							<directory>src/main/resources</directory>
+							<!-- 配置文件属性替换：properties -->
 							<filtering>false</filtering>
 							<includes>
 								<include>**</include>
@@ -161,9 +160,9 @@
 						</resource>
 						<resource>
 							<directory>/</directory>
-							<!-- 配置文件属性替换：properties -->
 							<filtering>false</filtering>
 							<targetPath>META-INF/</targetPath>
+							<!-- 开源协议、README -->
 							<includes>
 								<include>LICENSE</include>
 								<include>README.md</include>
@@ -269,7 +268,7 @@
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>${maven.javadoc.version}</version>
 				<configuration>
-					<!-- 忽略警告信息：注解、标签等等 -->
+					<!-- 忽略警告：注解、标签等 -->
 					<doclint>none</doclint>
 					<charset>${encoding}</charset>
 					<encoding>${encoding}</encoding>
