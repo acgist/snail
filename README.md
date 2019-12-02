@@ -8,17 +8,14 @@
 	<a target="_blank" href="https://www.acgist.com">
 		<img alt="Author" src="https://img.shields.io/badge/Author-acgist-red.svg?style=flat-square" />
 	</a>
-	<a target="_blank" href="https://gitee.com/acgist/snail">
-		<img alt="Version" src="https://img.shields.io/badge/Version-1.2.2-lightgrey.svg?style=flat-square" />
-	</a>
-	<a target="_blank" href="https://gitee.com/acgist/snail/releases/v1.2.1">
-		<img alt="Release" src="https://img.shields.io/badge/Release-1.2.1-blueviolet.svg?style=flat-square" />
+	<a target="_blank" href="https://gitee.com/acgist/snail/releases">
+		<img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/acgist/snail?style=flat-square">
 	</a>
 	<a target="_blank" href="https://openjdk.java.net/">
 		<img alt="Java" src="https://img.shields.io/badge/Java-11-yellow.svg?style=flat-square" />
 	</a>
 	<a target="_blank" href="https://openjfx.io/">
-		<img alt="JavaFX" src="https://img.shields.io/badge/JavaFX-11-blue.svg?style=flat-square" />
+		<img alt="JavaFX" src="https://img.shields.io/badge/JavaFX-11-blueviolet.svg?style=flat-square" />
 	</a>
 	<a target="_blank" href="https://www.bittorrent.org/beps/bep_0000.html">
 		<img alt="BitTorrent" src="https://img.shields.io/badge/BitTorrent-BEP-orange.svg?style=flat-square" />
@@ -26,6 +23,9 @@
 	<br />
 	<img alt="Travis (.org)" src="https://img.shields.io/travis/acgist/snail?style=flat-square" />
 	<img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/acgist/snail?color=crimson&style=flat-square" />
+	<!--
+	<img alt="GitHub All Releases" src="https://img.shields.io/github/downloads/acgist/snail/total?style=flat-square">
+	-->
 	<img alt="GitHub" src="https://img.shields.io/github/license/acgist/snail?style=flat-square" />
 </p>
 
