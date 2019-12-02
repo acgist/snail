@@ -149,7 +149,8 @@
 				<configuration>
 					<resources>
 						<resource>
-							<directory>src/main/resources</directory>
+							<!-- 可以配置：src/main/resources -->
+							<directory>./src/main/resources</directory>
 							<!-- 配置文件属性替换：properties -->
 							<filtering>false</filtering>
 							<includes>
@@ -161,6 +162,7 @@
 							</excludes>
 						</resource>
 						<resource>
+							<!-- travis-ci配置斜杠编译卡住 -->
 							<directory>./</directory>
 							<filtering>false</filtering>
 							<targetPath>META-INF/</targetPath>
