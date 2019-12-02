@@ -8,9 +8,6 @@
 	<a target="_blank" href="https://www.acgist.com">
 		<img alt="Author" src="https://img.shields.io/badge/Author-acgist-red.svg?style=flat-square" />
 	</a>
-	<a target="_blank" href="https://gitee.com/acgist/snail/releases">
-		<img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/acgist/snail?style=flat-square">
-	</a>
 	<a target="_blank" href="https://openjdk.java.net/">
 		<img alt="Java" src="https://img.shields.io/badge/Java-11-yellow.svg?style=flat-square" />
 	</a>
@@ -22,9 +19,10 @@
 	</a>
 	<br />
 	<img alt="Travis (.org)" src="https://img.shields.io/travis/acgist/snail?style=flat-square" />
+	<img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/acgist/snail?style=flat-square" />
 	<img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/acgist/snail?color=crimson&style=flat-square" />
 	<!--
-	<img alt="GitHub All Releases" src="https://img.shields.io/github/downloads/acgist/snail/total?style=flat-square">
+	<img alt="GitHub All Releases" src="https://img.shields.io/github/downloads/acgist/snail/total?style=flat-square" />
 	-->
 	<img alt="GitHub" src="https://img.shields.io/github/license/acgist/snail?style=flat-square" />
 </p>
