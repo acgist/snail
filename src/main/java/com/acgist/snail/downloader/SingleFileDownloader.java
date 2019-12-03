@@ -28,16 +28,16 @@ public abstract class SingleFileDownloader extends Downloader {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SingleFileDownloader.class);
 	
 	/**
-	 * 单次下载字节长度：16KB
+	 * <p>下载字节缓存大小：{@value}</p>
 	 */
 	protected static final int EXCHANGE_BYTES_LENGTH = 16 * SystemConfig.ONE_KB;
 	
 	/**
-	 * 输入流
+	 * <p>输入流</p>
 	 */
 	protected InputStream input;
 	/**
-	 * 输出流
+	 * <p>输出流</p>
 	 */
 	protected OutputStream output;
 	
@@ -69,7 +69,7 @@ public abstract class SingleFileDownloader extends Downloader {
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * <p>如果没有数据下载，任务会被读取下载流阻塞，直接关闭下载流，避免任务不能正常结束。</p>
+	 * <p>如果没有数据下载，任务会被{@linkplain InputStream#read(byte[], int, int) 读取下载流方法}阻塞，通过直接关闭下载流来避免任务不能正常结束。</p>
 	 */
 	@Override
 	public void unlockDownload() {
@@ -80,12 +80,16 @@ public abstract class SingleFileDownloader extends Downloader {
 	}
 	
 	/**
-	 * <p>判断任务是否完成：读取长度等于-1或者下载数据等于任务长度</p>
+	 * <dl>
+	 * 	<dt>任务是否下载完成</dt>
+	 * 	<dd>读取数据长度小于等于{@code -1}</dd>
+	 * 	<dd>任务长度小于等于已下载数据长度</dd>
+	 * </dl>
 	 */
 	protected boolean isComplete(int length) {
-		final long size = this.taskSession.getSize();
-		final long downloadSize = this.taskSession.downloadSize();
-		return length == -1 || size == downloadSize;
+		return
+			length <= -1 ||
+			this.taskSession.getSize() <= this.taskSession.downloadSize();
 	}
 	
 	/**
@@ -107,7 +111,7 @@ public abstract class SingleFileDownloader extends Downloader {
 	
 	/**
 	 * <p>创建下载输入流</p>
-	 * <p>需要验证是否支持断点续传，如果支持需要重新设置任务已下载大小。</p>
+	 * <p>先验证是否支持断点续传，如果支持可以重新设置任务已下载大小。</p>
 	 */
 	protected abstract void buildInput();
 

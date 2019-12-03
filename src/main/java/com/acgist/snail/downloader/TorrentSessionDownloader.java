@@ -29,7 +29,7 @@ public abstract class TorrentSessionDownloader extends Downloader {
 	 */
 	protected TorrentSession torrentSession;
 	/**
-	 * <p>下载锁：下载时阻塞下载器线程</p>
+	 * <p>下载锁：下载时阻塞下载线程</p>
 	 */
 	protected final Object downloadLock = new Object();
 	
@@ -46,11 +46,11 @@ public abstract class TorrentSessionDownloader extends Downloader {
 	
 	@Override
 	public void delete() {
-		// 删除任务信息：Peer信息、种子信息
+		// 删除任务信息
 		if(this.torrentSession != null) {
 			final String infoHashHex = this.torrentSession.infoHashHex();
-			PeerManager.getInstance().remove(infoHashHex);
-			TorrentManager.getInstance().remove(infoHashHex);
+			PeerManager.getInstance().remove(infoHashHex); // Peer信息
+			TorrentManager.getInstance().remove(infoHashHex); // 种子信息
 		}
 		super.delete();
 	}
@@ -74,10 +74,13 @@ public abstract class TorrentSessionDownloader extends Downloader {
 	
 	/**
 	 * <p>加载TorrentSession任务信息</p>
+	 * 
+	 * @return 任务信息
 	 */
 	protected TorrentSession loadTorrentSession() {
 		final var torrentPath = this.taskSession.getTorrent();
 		try {
+			// 加载磁力链接信息
 			final var magnet = MagnetBuilder.newInstance(this.taskSession.getUrl()).build();
 			final var infoHashHex = magnet.getHash();
 			return TorrentManager.getInstance().newTorrentSession(infoHashHex, torrentPath);

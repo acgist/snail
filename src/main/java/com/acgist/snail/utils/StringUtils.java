@@ -53,7 +53,7 @@ public final class StringUtils {
 	}
 	
 	/**
-	 * <p>是否是数字（整数）</p>
+	 * <p>是否是数字（整数）：{@value #NUMERIC_REGEX}</p>
 	 */
 	public static final boolean isNumeric(String value) {
 		return StringUtils.regex(value, NUMERIC_REGEX, true);

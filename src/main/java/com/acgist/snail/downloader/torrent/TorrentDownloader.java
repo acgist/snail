@@ -10,7 +10,6 @@ import com.acgist.snail.system.exception.DownloadException;
 
 /**
  * <p>BT下载器</p>
- * <p>{@linkplain #loadTorrentSession() 任务加载}时，打开上传功能，直到任务删除或者软件关闭。</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -50,7 +49,7 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * <p>加载完成立即上传任务</p>
+	 * <p>加载完成立即开启上传服务，直到任务删除或者软件关闭。</p>
 	 */
 	@Override
 	protected TorrentSession loadTorrentSession() {
