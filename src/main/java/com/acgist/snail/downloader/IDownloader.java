@@ -14,46 +14,46 @@ import com.acgist.snail.pojo.ITaskSession.Status;
 public interface IDownloader extends Runnable {
 	
 	/**
-	 * 任务ID
+	 * <p>获取任务ID</p>
 	 * 
 	 * @return 任务ID
 	 */
 	String id();
 	
 	/**
-	 * 任务名称
+	 * <p>获取任务名称</p>
 	 * 
 	 * @return 任务名称
 	 */
 	String name();
 	
 	/**
-	 * 任务是否处于下载中
+	 * <p>任务是否处于下载中</p>
 	 * 
-	 * @return true-{@linkplain Status#DOWNLOAD 下载中}；false-未下载；
+	 * @return {@code true}-{@linkplain Status#DOWNLOAD 下载中}；{@code false}-未下载；
 	 */
 	boolean downloading();
 	
 	/**
-	 * 任务信息
+	 * <p>获取任务信息</p>
 	 * 
 	 * @return 任务信息
 	 */
 	ITaskSession taskSession();
 
 	/**
-	 * 开始任务
+	 * <p>开始任务</p>
 	 */
 	void start();
 	
 	/**
-	 * 暂停任务
+	 * <p>暂停任务</p>
 	 */
 	void pause();
 
 	/**
 	 * <p>标记失败</p>
-	 * <p>更新任务状态、提示失败信息</p>
+	 * <p>更新任务状态（{@linkplain Status#FAIL 失败}）、提示失败信息</p>
 	 * 
 	 * @param message 失败信息
 	 */
@@ -61,12 +61,12 @@ public interface IDownloader extends Runnable {
 	
 	/**
 	 * <p>删除任务</p>
-	 * <p>先暂停任务，然后等待任务正常结束后删除任务。</p>
+	 * <p>先暂停任务，然后等待任务结束后删除任务。</p>
 	 */
 	void delete();
 	
 	/**
-	 * 刷新任务
+	 * <p>刷新任务</p>
 	 */
 	void refresh();
 	
@@ -88,26 +88,27 @@ public interface IDownloader extends Runnable {
 	void download() throws IOException;
 	
 	/**
-	 * <p>解除下载等待锁</p>
+	 * <p>唤醒下载等待锁</p>
 	 */
 	void unlockDownload();
+	
+	/**
+	 * <p>检查任务完成状态</p>
+	 * <p>如果任务已经完成则标记为完成状态</p>
+	 */
+	void checkComplete();
+	
+	/**
+	 * <p>获取已下载文件大小</p>
+	 * <p>默认直接通过本地文件获取已下载大小，这种方式可能会出现误差，必要时请重写并通过{@link ITaskSession#downloadSize(long)}方法设置已下载大小。</p>
+	 * 
+	 * @return 已下载文件大小
+	 */
+	long downloadSize();
 	
 	/**
 	 * <p>释放资源</p>
 	 */
 	void release();
-	
-	/**
-	 * <p>完成任务</p>
-	 */
-	void complete();
-	
-	/**
-	 * <p>获取已下载文件大小</p>
-	 * <p>直接通过本地文件获取已下载大小，可能出现误差，必要时请重写或者调用{@link ITaskSession#downloadSize(long)}设置。</p>
-	 * 
-	 * @return 已下载文件大小
-	 */
-	long downloadSize();
 
 }

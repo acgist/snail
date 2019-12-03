@@ -22,11 +22,13 @@ public final class Application {
 	 * <table border="1" summary="启动参数">
 	 * 	<tr>
 	 * 		<th>参数</th>
+	 * 		<th>默认</th>
 	 * 		<th align="left">描述</th>
 	 * 	</tr>
 	 * 	<tr>
-	 * 		<td>args[0]</td>
-	 * 		<td><strong>gui</strong>：本地GUI；daemo：后台模式；</td>
+	 * 		<td>{@code args[0]}</td>
+	 * 		<td>{@code gui}</td>
+	 * 		<td>{@code gui}：本地GUI；{@code daemo}：后台模式；</td>
 	 * 	</tr>
 	 * </table>
 	 * 
