@@ -14,7 +14,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 
 /**
- * 关于窗口控制器
+ * <p>关于窗口控制器</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -35,7 +35,7 @@ public final class AboutController extends Controller implements Initializable {
 	}
 
 	/**
-	 * 作者按钮
+	 * <p>作者按钮</p>
 	 */
 	@FXML
 	public void handleAuthorAction(ActionEvent event) {
@@ -43,7 +43,7 @@ public final class AboutController extends Controller implements Initializable {
 	}
 	
 	/**
-	 * 源码按钮
+	 * <p>源码按钮</p>
 	 */
 	@FXML
 	public void handleSourceAction(ActionEvent event) {
@@ -51,7 +51,7 @@ public final class AboutController extends Controller implements Initializable {
 	}
 	
 	/**
-	 * 支持按钮
+	 * <p>支持按钮</p>
 	 */
 	@FXML
 	public void handleSupportAction(ActionEvent event) {
@@ -59,7 +59,7 @@ public final class AboutController extends Controller implements Initializable {
 	}
 
 	/**
-	 * 设置软件名称
+	 * <p>设置软件名称</p>
 	 */
 	private void buildName() {
 		final StringBuilder name = new StringBuilder();
@@ -71,7 +71,7 @@ public final class AboutController extends Controller implements Initializable {
 	}
 	
 	/**
-	 * 设置软件版本
+	 * <p>设置软件版本</p>
 	 */
 	private void buildVersion() {
 		this.version.setText(SystemConfig.getVersion());

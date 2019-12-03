@@ -85,6 +85,10 @@ public abstract class Downloader implements IDownloader, IStatistics {
 		if(this.taskSession.download()) {
 			return;
 		}
+		// 任务已经完成
+		if(this.taskSession.complete()) {
+			return;
+		}
 		this.updateStatus(Status.AWAIT);
 	}
 	
@@ -92,6 +96,10 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	public void pause() {
 		// 任务已经暂停不修改状态
 		if(this.taskSession.pause()) {
+			return;
+		}
+		// 任务已经完成
+		if(this.taskSession.complete()) {
 			return;
 		}
 		this.updateStatus(Status.PAUSE);

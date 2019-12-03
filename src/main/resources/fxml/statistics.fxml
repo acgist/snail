@@ -32,7 +32,7 @@
 			</TextFlow>
 			<TextFlow>
 				<Label>可用：</Label>
-				<Text fx:id="dhtAvailable" styleClass="available">0</Text>
+				<Text fx:id="dhtAvailable">0</Text>
 			</TextFlow>
 			<TextFlow>
 				<Label>未知：</Label>
@@ -53,7 +53,7 @@
 			</TextFlow>
 			<TextFlow>
 				<Label>可用：</Label>
-				<Text fx:id="trackerAvailable" styleClass="available">0</Text>
+				<Text fx:id="trackerAvailable">0</Text>
 			</TextFlow>
 			<TextFlow>
 				<Label>禁用：</Label>
@@ -77,7 +77,7 @@
 			</TextFlow>
 			<TextFlow>
 				<Label>可用：</Label>
-				<Text fx:id="peerAvailable" styleClass="available">0</Text>
+				<Text fx:id="peerAvailable">0</Text>
 			</TextFlow>
 			<TextFlow>
 				<Label>uTP：</Label>

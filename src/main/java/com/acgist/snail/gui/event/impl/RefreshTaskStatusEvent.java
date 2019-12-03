@@ -6,7 +6,7 @@ import com.acgist.snail.gui.main.TaskDisplay;
 import com.acgist.snail.pojo.message.ApplicationMessage;
 
 /**
- * GUI刷新任务状态事件
+ * <p>GUI刷新任务状态事件</p>
  * 
  * @author acgist
  * @since 1.1.0

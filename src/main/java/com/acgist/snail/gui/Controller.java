@@ -14,9 +14,17 @@ import javafx.scene.input.Dragboard;
 public abstract class Controller {
 
 	/**
-	 * <p>双击次数</p>
+	 * <p>双击次数：{@value}</p>
 	 */
 	protected static final int DOUBLE_CLICK_COUNT = 2;
+	/**
+	 * <p>FXML样式路径：{@value}</p>
+	 */
+	public static final String FXML_STYLE = "/style/fxml.css";
+	/**
+	 * <p>图表文件路径：{@value}</p>
+	 */
+	public static final String LOGO_ICON = "/image/logo.png";
 	
 	/**
 	 * <p>获取拖入面板（Dragboard）的数据</p>

@@ -9,7 +9,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
- * 新建窗口
+ * <p>新建窗口</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -40,9 +40,9 @@ public final class BuildWindow extends Window<BuildController> {
 	}
 	
 	/**
-	 * 显示新建窗口并设置下载地址
+	 * <p>显示新建窗口并设置下载链接</p>
 	 * 
-	 * @param url 下载地址
+	 * @param url 下载链接
 	 */
 	public void show(String url) {
 		this.controller.setUrl(url);

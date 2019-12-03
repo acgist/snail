@@ -1,5 +1,6 @@
 package com.acgist.snail.gui;
 
+import javafx.scene.Scene;
 import javafx.scene.control.Tooltip;
 import javafx.util.Duration;
 
@@ -19,7 +20,7 @@ public final class Tooltips {
 	
 	/**
 	 * <p>创建提示框</p>
-	 * <p>默认显示时间：200（毫秒）</p>
+	 * <p>默认显示时间（毫秒）：200</p>
 	 * 
 	 * @param value 提示内容
 	 * 
@@ -40,8 +41,9 @@ public final class Tooltips {
 	public static final Tooltip newTooltip(String value, int millis) {
 		final Tooltip tooltip = new Tooltip(value);
 		tooltip.setShowDelay(Duration.millis(millis));
-		tooltip.setStyle("-fx-text-fill:#000;-fx-background-color:#fff;");
-		tooltip.setOpacity(0.94D);
+		final Scene scene = tooltip.getScene();
+		// 导入样式文件
+		scene.getStylesheets().add(Tooltips.class.getResource(Controller.FXML_STYLE).toExternalForm());
 		return tooltip;
 	}
 	

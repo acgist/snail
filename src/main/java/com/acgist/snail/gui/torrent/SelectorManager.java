@@ -257,7 +257,7 @@ class Selector {
 	/**
 	 * <p>是否选中</p>
 	 * 
-	 * @return true-选中；false-未选中；
+	 * @return {@code true}-选中；{@code false}-未选中；
 	 */
 	public boolean isSelected() {
 		return this.checkBox.isSelected();
@@ -266,7 +266,7 @@ class Selector {
 	/**
 	 * <p>设置选中</p>
 	 * 
-	 * @param selected true-选中；false-未选中；
+	 * @param selected {@code true}-选中；{@code false}-未选中；
 	 */
 	public void setSelected(boolean selected) {
 		this.checkBox.setSelected(selected);

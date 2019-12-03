@@ -26,7 +26,7 @@ import javafx.scene.control.MenuItem;
 import javafx.stage.WindowEvent;
 
 /**
- * 任务菜单
+ * <p>任务菜单</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -43,7 +43,6 @@ public final class TaskMenu extends Menu {
 	}
 	
 	private TaskMenu() {
-		init();
 		initMenu();
 	}
 	
@@ -97,28 +96,28 @@ public final class TaskMenu extends Menu {
 	}
 	
 	/**
-	 * 开始
+	 * <p>开始</p>
 	 */
 	private EventHandler<ActionEvent> startEvent = (event) -> {
 		MainWindow.getInstance().controller().start();
 	};
 	
 	/**
-	 * 暂停
+	 * <p>暂停</p>
 	 */
 	private EventHandler<ActionEvent> pauseEvent = (event) -> {
 		MainWindow.getInstance().controller().pause();
 	};
 	
 	/**
-	 * 删除
+	 * <p>删除</p>
 	 */
 	private EventHandler<ActionEvent> deleteEvent = (event) -> {
 		MainWindow.getInstance().controller().delete();
 	};
 	
 	/**
-	 * 复制地址
+	 * <p>复制地址</p>
 	 */
 	private EventHandler<ActionEvent> copyUrlEvent = (event) -> {
 		MainWindow.getInstance().controller().selected().forEach(session -> {
@@ -127,7 +126,7 @@ public final class TaskMenu extends Menu {
 	};
 	
 	/**
-	 * 文件选择
+	 * <p>文件选择</p>
 	 */
 	private EventHandler<ActionEvent> torrentEvent = (event) -> {
 		if(!MainWindow.getInstance().controller().haveSelectedTorrent()) {
@@ -142,7 +141,7 @@ public final class TaskMenu extends Menu {
 	};
 	
 	/**
-	 * 导出种子
+	 * <p>导出种子</p>
 	 */
 	private EventHandler<ActionEvent> exportTorrentEvent = (event) -> {
 		if(!MainWindow.getInstance().controller().haveSelectedTorrent()) {
@@ -162,7 +161,7 @@ public final class TaskMenu extends Menu {
 	};
 	
 	/**
-	 * 文件校验
+	 * <p>文件校验</p>
 	 */
 	private EventHandler<ActionEvent> verifyEvent = (event) -> {
 		SystemThreadContext.submit(() -> {
@@ -192,7 +191,7 @@ public final class TaskMenu extends Menu {
 	};
 	
 	/**
-	 * 打开目录
+	 * <p>打开目录</p>
 	 */
 	private EventHandler<ActionEvent> openFolderEvent = (event) -> {
 		MainWindow.getInstance().controller().selected().forEach(session -> {
@@ -201,7 +200,7 @@ public final class TaskMenu extends Menu {
 	};
 	
 	/**
-	 * BT任务显示：文件选择、导出种子
+	 * <p>BT任务显示：文件选择、导出种子</p>
 	 */
 	private EventHandler<WindowEvent> windowShownAction = (event) -> {
 		if(MainWindow.getInstance().controller().haveSelectedTorrent()) {

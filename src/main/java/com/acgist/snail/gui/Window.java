@@ -50,7 +50,7 @@ public abstract class Window<T extends Initializable> extends Application {
 	 * <p>设置ICON</p>
 	 */
 	protected void icon() {
-		this.stage.getIcons().add(new Image("/image/logo.png"));
+		this.stage.getIcons().add(new Image(Controller.LOGO_ICON));
 	}
 	
 	/**

@@ -1,78 +1,85 @@
-/**
- * 参考链接：https://docs.oracle.com/javafx/2/api/javafx/scene/doc-files/cssref.html
-/*
 /** 通用样式 */
 .root {
-	-fx-font-size:16;
+	-fx-font-size:16px;
 	-fx-alignment:center;
-	/**
-	 * 默认边框背景样式
-	-fx-background-insets:0;
-	-fx-background-color:#F4F4F4;
-	*/
-	/**
-	 * 选中填充颜色
-	-fx-accent:transparent;
-	*/
-	/**
-	 * 选中边框颜色
-	-fx-focus-color:transparent;
-	*/
 }
+/** 提示样式 */
 .root .tooltip {
+	-fx-opacity:0.94;
+	-fx-text-fill:#000000;
 	-fx-background-radius:0;
+	-fx-background-color:#ffffff;
 }
+/** 按钮样式 */
 .root .button {
-	/**
+	-fx-border-width:1px;
+	-fx-border-color:#c8c8c8;
 	-fx-background-radius:0;
-	*/
+	-fx-background-color:#E1E1E1;
 }
+.root .button:hover {
+	-fx-text-fill:#ffffff;
+	-fx-border-color:#0096C9;
+	-fx-background-color:#0096C9;
+}
+/** 文本框样式 */
+.root .text-field {
+	-fx-border-width:1px;
+	-fx-border-color:#c8c8c8;
+	-fx-background-radius:0;
+}
+.root .text-field:hover, .root .text-field:focused {
+	-fx-border-color:#0096C9;
+}
+/** 菜单样式 */
 .root .context-menu {
-	-fx-padding:1;
+	-fx-padding:1px;
+	-fx-opacity:0.94;
+}
+/** 托盘样式 */
+.tray {
+	-fx-font-size:14px;
 }
 /** about.fxml */
 .about {
 }
 /** build.fxml */
 .build .urlValue {
-	-fx-padding:10 0;
+	-fx-padding:10px 0;
 }
 .build .urlValue TextFlow {
-	-fx-padding:0 10 0 0;
+	-fx-padding:0 10px 0 0;
 }
 .build .urlValue TextField {
-	-fx-pref-width:400;
+	-fx-pref-width:400px;
 }
 .build .option {
 	-fx-alignment:center_right;
 }
 .build .option .cancel {
-	-fx-padding:0 10;
+	-fx-padding:0 10px;
 }
 /** main.fxml */
 .main .header {
-	-fx-padding:1 2;
-	-fx-pref-height:40;
+	-fx-padding:2px;
 	-fx-alignment:center_left;
 }
 .main .footer {
-	-fx-padding:1 2;
-	-fx-pref-height:40;
+	-fx-padding:2px;
 }
 .main .footer .footerButton {
 	-fx-alignment:center_left;
 }
 .main .footer .footerStatus {
-	-fx-font-size:14;
+	-fx-font-size:14px;
 	-fx-alignment:center_right;
 }
 .main .footer .footerStatus Label {
-	-fx-padding:0 2;
+	-fx-padding:0 2px;
 }
 .main .taskTable {
-	/** 修改边框样式 */
 	-fx-padding:0;
-	-fx-border-width:1px 0 1px 0;
+	-fx-border-width:1px 0;
 	-fx-border-color:#c8c8c8;
 	-fx-background-insets:0;
 }
@@ -88,50 +95,47 @@
 	-fx-background-color:transparent;
 }
 .setting HBox {
-	-fx-padding:6 0;
+	-fx-padding:6px 0;
 }
 .setting .name {
-	-fx-pref-width:200;
+	-fx-pref-width:200px;
 	-fx-text-alignment:right;
 }
 .setting .slider {
-	-fx-pref-width:300;
+	-fx-pref-width:300px;
 }
 .setting .path Button {
-	-fx-padding:6 10;
+	-fx-padding:6px 10px;
 }
 .setting .path TextFlow {
-	-fx-padding:6 0;
-}
-.setting .path .pathValue {
-	-fx-padding:6;
+	-fx-padding:6px;
 }
 /** statistics.fxml */
 .statistics .info TextFlow {
-	-fx-pref-width:140;
+	-fx-pref-width:140px;
 }
 .statistics .system TextFlow {
-	-fx-pref-width:220;
+	-fx-pref-width:220px;
 }
 .statistics .info TextFlow.title {
-	-fx-pref-width:80;
-}
-.statistics .available {
-	-fx-fill:green;
+	-fx-pref-width:80px;
 }
 .statistics .infoHash TextFlow.title {
-	-fx-padding:6 0;
+	-fx-padding:6px 0;
 }
 .statistics .infoHash ChoiceBox {
-	-fx-pref-width:400;
+	-fx-pref-width:400px;
 }
 .statistics .chart {
-	-fx-pref-width:800;
-	-fx-pref-height:400;
+	-fx-pref-width:800px;
+	-fx-pref-height:400px;
 }
 /** torrent.fxml */
 .torrent .tree {
 	-fx-background-color:transparent;
+}
+.torrent .tree-cell:selected {
+	-fx-text-fill:#ffffff;
 }
 .torrent .downloadBox {
 	-fx-alignment:center;

@@ -25,7 +25,7 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.FlowPane;
 
 /**
- * 新建窗口控制器
+ * <p>新建窗口控制器</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -47,7 +47,7 @@ public final class BuildController extends Controller implements Initializable {
 	}
 	
 	/**
-	 * 选择种子按钮
+	 * <p>选择种子按钮</p>
 	 */
 	@FXML
 	public void handleTorrentAction(ActionEvent event) {
@@ -58,7 +58,7 @@ public final class BuildController extends Controller implements Initializable {
 	}
 
 	/**
-	 * 确认下载按钮
+	 * <p>确认下载按钮</p>
 	 */
 	@FXML
 	public void handleBuildAction(ActionEvent event) {
@@ -82,7 +82,7 @@ public final class BuildController extends Controller implements Initializable {
 	}
 
 	/**
-	 * 取消下载按钮
+	 * <p>取消下载按钮</p>
 	 */
 	@FXML
 	public void handleCancelAction(ActionEvent event) {
@@ -91,7 +91,7 @@ public final class BuildController extends Controller implements Initializable {
 	}
 	
 	/**
-	 * 设置下载地址
+	 * <p>设置下载地址</p>
 	 */
 	public void setUrl(String url) {
 		if(url != null) {
@@ -100,7 +100,7 @@ public final class BuildController extends Controller implements Initializable {
 	}
 	
 	/**
-	 * 拖入文件事件（显示）
+	 * <p>拖入文件事件（显示）</p>
 	 */
 	private EventHandler<DragEvent> dragOverAction = (event) -> {
 		if (event.getGestureSource() != this.root) {
@@ -115,7 +115,7 @@ public final class BuildController extends Controller implements Initializable {
 	};
 	
 	/**
-	 * 拖入文件事件（加载）
+	 * <p>拖入文件事件（加载）</p>
 	 */
 	private EventHandler<DragEvent> dragDroppedAction = (event) -> {
 		final String url = dragboard(event);

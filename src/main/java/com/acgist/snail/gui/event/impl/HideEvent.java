@@ -6,7 +6,7 @@ import com.acgist.snail.gui.main.MainWindow;
 import javafx.application.Platform;
 
 /**
- * GUI隐藏窗口事件
+ * <p>GUI隐藏窗口事件</p>
  * 
  * @author acgist
  * @since 1.1.0

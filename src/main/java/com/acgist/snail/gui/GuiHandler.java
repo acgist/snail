@@ -28,7 +28,7 @@ import com.acgist.snail.utils.ThreadUtils;
 import javafx.scene.control.Alert.AlertType;
 
 /**
- * <p>GUI接口</p>
+ * <p>GUI处理器</p>
  * 
  * TODO：Loading
  * 
@@ -119,15 +119,15 @@ public final class GuiHandler {
 	 */
 	private static final Map<GuiEvent.Type, GuiEvent> EVENTS = new HashMap<>(GuiEvent.Type.values().length);
 	/**
-	 * <p>本地GUI</p>
+	 * <p>本地GUI：{@value}</p>
 	 */
 	public static final String MODE_GUI = "gui";
 	/**
-	 * <p>后台模式</p>
+	 * <p>后台模式：{@value}</p>
 	 */
 	public static final String MODE_DAEMO = "daemo";
 	/**
-	 * <p>阻塞锁时间：365天</p>
+	 * <p>阻塞锁时间（天）：{@value}</p>
 	 */
 	private static final int LOCK_DAYS = 365;
 	

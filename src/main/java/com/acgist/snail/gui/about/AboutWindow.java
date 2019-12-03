@@ -9,7 +9,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
- * 关于窗口
+ * <p>关于窗口</p>
  * 
  * @author acgist
  * @since 1.0.0
