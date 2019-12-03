@@ -166,9 +166,12 @@ public final class StatisticsController extends Controller implements Initializa
 	private void infoHash() {
 		final var defaultValue = this.selectInfoHashs.getValue();
 		final ObservableList<SelectInfoHash> obs = FXCollections.observableArrayList();
-		TorrentManager.getInstance().allTorrentSession().forEach(session -> {
-			obs.add(new SelectInfoHash(session.infoHashHex(), session.name()));
-		});
+		TorrentManager.getInstance().allTorrentSession()
+			.stream()
+			.filter(session -> session.ready()) // 准备完成
+			.forEach(session -> {
+				obs.add(new SelectInfoHash(session.infoHashHex(), session.name()));
+			});
 		this.selectInfoHashs.setItems(obs);
 		if(defaultValue == null) {
 			this.selectInfoHashs.getSelectionModel().select(0);
