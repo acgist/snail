@@ -18,7 +18,7 @@
 			</TextFlow>
 		</HBox>
 		
-		<HBox styleClass="urlValue">
+		<HBox styleClass="url">
 			<TextFlow>
 				<TextField fx:id="urlValue" />
 			</TextFlow>
