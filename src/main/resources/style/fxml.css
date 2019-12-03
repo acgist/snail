@@ -31,6 +31,16 @@
 .root .text-field:hover, .root .text-field:focused {
 	-fx-border-color:#0096C9;
 }
+/** 下拉框样式 */
+.root .choice-box {
+	-fx-border-width:1px;
+	-fx-border-color:#c8c8c8;
+	-fx-background-radius:0;
+	-fx-background-color:#E1E1E1;
+}
+.root .choice-box:hover, .root .choice-box:focused {
+	-fx-border-color:#0096C9;
+}
 /** 菜单样式 */
 .root .context-menu {
 	-fx-padding:1px;
@@ -83,9 +93,24 @@
 	-fx-border-color:#c8c8c8;
 	-fx-background-insets:0;
 }
+.main .taskTable .column-header {
+	-fx-border-width:0 1px 1px 0;
+	-fx-border-color:#c8c8c8;
+	-fx-background-color:#E1E1E1;
+	-fx-padding:4px;
+	-fx-pref-height:40px;
+}
+.main .taskTable .table-row-cell:focused {
+	-fx-border-width:1px 0;
+	-fx-background-insets:0;
+	-fx-border-color:#EDEDED;
+}
+.main .taskTable .table-row-cell:selected {
+	-fx-background-color:#0096C9;
+}
 .main .taskTable HBox {
-	-fx-padding:4;
-	-fx-pref-height:40;
+	-fx-padding:4px;
+	-fx-pref-height:40px;
 }
 .main .taskTable TableRow:selected Text {
 	-fx-fill:white;
@@ -134,7 +159,7 @@
 .torrent .tree {
 	-fx-background-color:transparent;
 }
-.torrent .tree-cell:selected {
+.torrent .tree-cell {
 	-fx-text-fill:#ffffff;
 }
 .torrent .downloadBox {
