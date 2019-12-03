@@ -2,10 +2,14 @@
 .root {
 	-fx-font-size:16px;
 	-fx-alignment:center;
+	/* 基本透明度 */
+	-fx-snail-opacity:0.94;
+	/* 基本边框颜色 */
+	-fx-snail-border-color:#c8c8c8;
 }
 /** 提示样式 */
 .root .tooltip {
-	-fx-opacity:0.94;
+	-fx-opacity:-fx-snail-opacity;
 	-fx-text-fill:#000000;
 	-fx-background-radius:0;
 	-fx-background-color:#ffffff;
@@ -13,7 +17,7 @@
 /** 按钮样式 */
 .root .button {
 	-fx-border-width:1px;
-	-fx-border-color:#c8c8c8;
+	-fx-border-color:-fx-snail-border-color;
 	-fx-background-radius:0;
 	-fx-background-color:#E1E1E1;
 }
@@ -25,7 +29,7 @@
 /** 文本框样式 */
 .root .text-field {
 	-fx-border-width:1px;
-	-fx-border-color:#c8c8c8;
+	-fx-border-color:-fx-snail-border-color;
 	-fx-background-radius:0;
 }
 .root .text-field:hover,
@@ -35,7 +39,7 @@
 /** 下拉框样式 */
 .root .choice-box {
 	-fx-border-width:1px;
-	-fx-border-color:#c8c8c8;
+	-fx-border-color:-fx-snail-border-color;
 	-fx-background-radius:0;
 	-fx-background-color:#E1E1E1;
 }
@@ -46,7 +50,7 @@
 /** 菜单样式 */
 .root .context-menu {
 	-fx-padding:1px;
-	-fx-opacity:0.94;
+	-fx-opacity:-fx-snail-opacity;
 }
 /** 托盘样式 */
 .tray {
@@ -92,14 +96,14 @@
 .main .taskTable {
 	-fx-padding:0;
 	-fx-border-width:1px 0;
-	-fx-border-color:#c8c8c8;
+	-fx-border-color:-fx-snail-border-color;
 	-fx-background-insets:0;
 }
 .main .taskTable .column-header {
 	-fx-padding:4px;
 	-fx-pref-height:40px;
 	-fx-border-width:0 1px 1px 0;
-	-fx-border-color:#c8c8c8;
+	-fx-border-color:-fx-snail-border-color;
 	-fx-background-color:#E1E1E1;
 }
 .main .taskTable HBox {
