@@ -14,19 +14,6 @@ import javafx.scene.image.ImageView;
 public abstract class Menu extends ContextMenu {
 
 	/**
-	 * <p>初始化</p>
-	 * <dl>
-	 * 	<dt>基本样式</dt>
-	 * 	<dd>透明：0.94</dd>
-	 * 	<dd>边框：1</dd>
-	 * </dl>
-	 */
-	protected void init() {
-		this.setOpacity(0.94D);
-		this.setStyle("-fx-padding:1;");
-	}
-	
-	/**
 	 * <p>添加菜单</p>
 	 */
 	protected void addMenu(MenuItem menuItem) {

@@ -7,7 +7,7 @@ import com.acgist.snail.gui.menu.TrayMenu;
 import javafx.application.Platform;
 
 /**
- * GUI退出窗口事件
+ * <p>GUI退出窗口事件</p>
  * 
  * @author acgist
  * @since 1.1.0

@@ -14,7 +14,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
- * 主窗口
+ * <p>主窗口</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -52,7 +52,7 @@ public final class MainWindow extends Window<MainController> {
 	}
 
 	/**
-	 * F1：帮助
+	 * <p>F1：帮助</p>
 	 */
 	private void help() {
 		this.stage.addEventHandler(KeyEvent.KEY_RELEASED, (event) -> {
@@ -63,7 +63,7 @@ public final class MainWindow extends Window<MainController> {
 	}
 	
 	/**
-	 * F12：统计
+	 * <p>F12：统计</p>
 	 */
 	private void statistics() {
 		this.stage.addEventHandler(KeyEvent.KEY_RELEASED, (event) -> {

@@ -11,7 +11,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
 /**
- * 任务单元格
+ * <p>任务单元格</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -19,15 +19,15 @@ import javafx.scene.text.Text;
 public final class TaskCell extends TableCell<ITaskSession, String> {
 
 	/**
-	 * 对齐方式
+	 * <p>对齐方式</p>
 	 */
 	private final Pos pos;
 	/**
-	 * 是否显示Icon
+	 * <p>是否显示Icon</p>
 	 */
 	private final boolean icon;
 	/**
-	 * 是否显示Tooltip
+	 * <p>是否显示Tooltip</p>
 	 */
 	private final boolean tooltip;
 	

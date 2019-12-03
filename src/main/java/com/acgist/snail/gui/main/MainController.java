@@ -54,7 +54,7 @@ import javafx.scene.text.Text;
 import javafx.util.Callback;
 
 /**
- * 主窗口控制器
+ * <p>主窗口控制器</p>
  * 
  * TODO：任务太多时滚动条优化
  * 
@@ -66,7 +66,7 @@ public final class MainController extends Controller implements Initializable {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
 	
 	/**
-	 * 任务列表显示类型
+	 * <p>任务列表显示类型</p>
 	 */
 	public enum Filter {
 		
@@ -80,7 +80,7 @@ public final class MainController extends Controller implements Initializable {
 	}
 	
 	/**
-	 * 显示列表过滤器
+	 * <p>显示列表过滤器</p>
 	 */
 	private Filter filter = Filter.ALL;
 	
@@ -143,7 +143,7 @@ public final class MainController extends Controller implements Initializable {
 	}
 
 	/**
-	 * 新建按钮
+	 * <p>新建按钮</p>
 	 */
 	@FXML
 	public void handleBuildAction(ActionEvent event) {
@@ -151,7 +151,7 @@ public final class MainController extends Controller implements Initializable {
 	}
 
 	/**
-	 * 开始按钮
+	 * <p>开始按钮</p>
 	 */
 	@FXML
 	public void handleStartAction(ActionEvent event) {
@@ -159,7 +159,7 @@ public final class MainController extends Controller implements Initializable {
 	}
 
 	/**
-	 * 暂停按钮
+	 * <p>暂停按钮</p>
 	 */
 	@FXML
 	public void handlePauseAction(ActionEvent event) {
@@ -167,7 +167,7 @@ public final class MainController extends Controller implements Initializable {
 	}
 	
 	/**
-	 * 删除按钮
+	 * <p>删除按钮</p>
 	 */
 	@FXML
 	public void handleDeleteAction(ActionEvent event) {
@@ -175,7 +175,7 @@ public final class MainController extends Controller implements Initializable {
 	}
 	
 	/**
-	 * 关于按钮
+	 * <p>关于按钮</p>
 	 */
 	@FXML
 	public void handleAboutAction(ActionEvent event) {
@@ -183,7 +183,7 @@ public final class MainController extends Controller implements Initializable {
 	}
 	
 	/**
-	 * 设置按钮
+	 * <p>设置按钮</p>
 	 */
 	@FXML
 	public void handleSettingAction(ActionEvent event) {
@@ -191,7 +191,7 @@ public final class MainController extends Controller implements Initializable {
 	}
 	
 	/**
-	 * 全部任务按钮
+	 * <p>全部任务按钮</p>
 	 */
 	@FXML
 	public void handleAllAction(ActionEvent event) {
@@ -200,7 +200,7 @@ public final class MainController extends Controller implements Initializable {
 	}
 
 	/**
-	 * 下载中任务按钮
+	 * <p>下载中任务按钮</p>
 	 */
 	@FXML
 	public void handleDownloadAction(ActionEvent event) {
@@ -209,7 +209,7 @@ public final class MainController extends Controller implements Initializable {
 	}
 	
 	/**
-	 * 下载完成任务按钮
+	 * <p>下载完成任务按钮</p>
 	 */
 	@FXML
 	public void handleCompleteAction(ActionEvent event) {
@@ -218,7 +218,7 @@ public final class MainController extends Controller implements Initializable {
 	}
 	
 	/**
-	 * 刷新任务列表
+	 * <p>刷新任务列表</p>
 	 */
 	public void refreshTaskList() {
 		final ObservableList<ITaskSession> obs = FXCollections.observableArrayList();
@@ -242,7 +242,7 @@ public final class MainController extends Controller implements Initializable {
 	}
 	
 	/**
-	 * 刷新任务状态
+	 * <p>刷新任务状态</p>
 	 */
 	public void refreshTaskStatus() {
 		this.taskTable.refresh(); // 刷新Table
@@ -256,7 +256,9 @@ public final class MainController extends Controller implements Initializable {
 	}
 	
 	/**
-	 * 获取选中任务
+	 * <p>获取选中任务列表</p>
+	 * 
+	 * @return 选中任务列表
 	 */
 	public List<ITaskSession> selected() {
 		return this.taskTable.getSelectionModel().getSelectedItems().stream()
@@ -264,14 +266,18 @@ public final class MainController extends Controller implements Initializable {
 	}
 	
 	/**
-	 * 是否选中任务
+	 * <p>是否选中任务</p>
+	 * 
+	 * @return {@code true}-选中；{@code false}-未选中；
 	 */
 	public boolean haveSelected() {
 		return !this.selected().isEmpty();
 	}
 	
 	/**
-	 * 是否选中BT任务
+	 * <p>是否选中BT任务</p>
+	 * 
+	 * @return {@code true}-选中；{@code false}-未选中；
 	 */
 	public boolean haveSelectedTorrent() {
 		return this.selected().stream()
@@ -279,7 +285,7 @@ public final class MainController extends Controller implements Initializable {
 	}
 
 	/**
-	 * 开始选中任务
+	 * <p>开始选中任务</p>
 	 */
 	public void start() {
 		this.selected().forEach(session -> {
@@ -292,7 +298,7 @@ public final class MainController extends Controller implements Initializable {
 	}
 	
 	/**
-	 * 暂停选中任务
+	 * <p>暂停选中任务</p>
 	 */
 	public void pause() {
 		this.selected().forEach(session -> {
@@ -301,7 +307,7 @@ public final class MainController extends Controller implements Initializable {
 	}
 	
 	/**
-	 * 删除选中任务
+	 * <p>删除选中任务</p>
 	 */
 	public void delete() {
 		if(!this.haveSelected()) {
@@ -316,7 +322,7 @@ public final class MainController extends Controller implements Initializable {
 	}
 
 	/**
-	 * 设置列
+	 * <p>设置列</p>
 	 * 
 	 * @param column 列
 	 * @param pos 对齐
@@ -333,7 +339,7 @@ public final class MainController extends Controller implements Initializable {
 	}
 	
 	/**
-	 * 数据行
+	 * <p>设置行</p>
 	 */
 	private Callback<TableView<ITaskSession>, TableRow<ITaskSession>> rowFactory = (tableView) -> {
 		final TableRow<ITaskSession> row = new TableRow<>();
@@ -345,7 +351,7 @@ public final class MainController extends Controller implements Initializable {
 	};
 	
 	/**
-	 * 拖入文件事件（显示）
+	 * <p>拖入文件事件（显示）</p>
 	 */
 	private EventHandler<DragEvent> dragOverAction = (event) -> {
 		if (event.getGestureSource() != this.taskTable) {
@@ -360,7 +366,7 @@ public final class MainController extends Controller implements Initializable {
 	};
 	
 	/**
-	 * 拖入文件事件（加载）
+	 * <p>拖入文件事件（加载）</p>
 	 */
 	private EventHandler<DragEvent> dragDroppedAction = (event) -> {
 		final String url = dragboard(event);
@@ -372,7 +378,7 @@ public final class MainController extends Controller implements Initializable {
 	};
 	
 	/**
-	 * 双击事件
+	 * <p>双击事件</p>
 	 */
 	private EventHandler<MouseEvent> rowClickAction = (event) -> {
 		if(event.getClickCount() == DOUBLE_CLICK_COUNT) { // 双击

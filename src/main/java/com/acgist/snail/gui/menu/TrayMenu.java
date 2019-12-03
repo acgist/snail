@@ -14,6 +14,7 @@ import javax.swing.event.MouseInputAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.gui.Controller;
 import com.acgist.snail.gui.Menu;
 import com.acgist.snail.gui.about.AboutWindow;
 import com.acgist.snail.gui.main.MainWindow;
@@ -74,7 +75,6 @@ public final class TrayMenu extends Menu {
 	private TrayMenu() {
 		this.support = SystemTray.isSupported();
 		if(this.support) {
-			init();
 			initMenu();
 			enableTray();
 		}
@@ -195,7 +195,11 @@ public final class TrayMenu extends Menu {
 	private Stage createTrayStage() {
 		final FlowPane trayPane = new FlowPane();
 		trayPane.setBackground(Background.EMPTY);
+		// 添加托盘样式
+		trayPane.getStyleClass().add("tray");
 		final Scene trayScene = new Scene(trayPane);
+		// 导入样式文件
+		trayScene.getStylesheets().add(TrayMenu.class.getResource(Controller.FXML_STYLE).toExternalForm());
 		trayScene.setFill(Color.TRANSPARENT);
 		final Stage trayStage = new Stage();
 		trayStage.initStyle(StageStyle.UTILITY);

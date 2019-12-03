@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.gui.event.GuiEvent;
+import com.acgist.snail.gui.event.GuiEventEx;
 import com.acgist.snail.gui.torrent.TorrentWindow;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.pojo.ITaskSession;
@@ -24,14 +24,14 @@ import javafx.application.Platform;
  * @author acgist
  * @since 1.1.1
  */
-public final class TorrentEvent extends GuiEvent {
+public final class TorrentEvent extends GuiEventEx {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentEvent.class);
 	
 	private static final TorrentEvent INSTANCE = new TorrentEvent();
 	
 	/**
-	 * 种子文件选择列表（B编码）
+	 * <p>种子文件选择列表（B编码）</p>
 	 */
 	private String files;
 	
@@ -44,16 +44,7 @@ public final class TorrentEvent extends GuiEvent {
 	}
 
 	@Override
-	protected void executeNative(Object ... args) {
-		executeEx(true, args);
-	}
-
-	@Override
-	protected void executeExtend(Object ... args) {
-		executeEx(false, args);
-	}
-	
-	private void executeEx(boolean gui, Object ... args) {
+	protected void executeEx(boolean gui, Object ... args) {
 		if(args == null) {
 			LOGGER.warn("种子文件选择（参数错误）：{}", args);
 		} else if(args.length == 1) {
@@ -104,7 +95,7 @@ public final class TorrentEvent extends GuiEvent {
 	}
 	
 	/**
-	 * 设置种子文件选择列表
+	 * <p>设置种子文件选择列表</p>
 	 * 
 	 * @param files 种子文件选择列表（B编码）
 	 */

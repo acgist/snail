@@ -35,7 +35,8 @@ public final class SettingController extends Controller implements Initializable
 //	private static final Logger LOGGER = LoggerFactory.getLogger(SettingController.class);
 
 	/**
-	 * <p>大小滑块滑动大小：超过这个值时滑动必须是该值的整数倍</p>
+	 * <p>大小滑块滑动大小：{@value}</p>
+	 * <p>超过这个值时滑动必须是该值的整数倍</p>
 	 */
 	private static final int STEP_WIDTH = 512;
 	

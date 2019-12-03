@@ -9,17 +9,18 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.gui.GuiHandler;
 import com.acgist.snail.gui.GuiHandler.SnailNoticeType;
 import com.acgist.snail.gui.event.GuiEvent;
+import com.acgist.snail.gui.event.GuiEventEx;
 import com.acgist.snail.gui.menu.TrayMenu;
 import com.acgist.snail.pojo.message.ApplicationMessage;
 import com.acgist.snail.system.bencode.BEncodeEncoder;
 
 /**
- * GUI提示消息事件
+ * <p>GUI提示消息事件</p>
  * 
  * @author acgist
  * @since 1.1.0
  */
-public final class NoticeEvent extends GuiEvent {
+public final class NoticeEvent extends GuiEventEx {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(NoticeEvent.class);
 	
@@ -34,16 +35,7 @@ public final class NoticeEvent extends GuiEvent {
 	}
 	
 	@Override
-	protected void executeNative(Object ... args) {
-		executeEx(true, args);
-	}
-
-	@Override
-	protected void executeExtend(Object ... args) {
-		executeEx(false, args);
-	}
-
-	private void executeEx(boolean gui, Object ... args) {
+	protected void executeEx(boolean gui, Object ... args) {
 		SnailNoticeType type;
 		String title, message;
 		if(args == null) {

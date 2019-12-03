@@ -1,7 +1,7 @@
 package com.acgist.snail.gui.event;
 
 /**
- * GUI事件
+ * <p>GUI事件</p>
  * 
  * @author acgist
  * @since 1.1.0
@@ -9,7 +9,7 @@ package com.acgist.snail.gui.event;
 public abstract class GuiEvent {
 
 	/**
-	 * GUI事件类型
+	 * <p>GUI事件类型</p>
 	 */
 	public enum Type {
 		
@@ -35,11 +35,11 @@ public abstract class GuiEvent {
 	}
 
 	/**
-	 * 事件类型
+	 * <p>事件类型</p>
 	 */
 	protected final Type type;
 	/**
-	 * 事件名称
+	 * <p>事件名称</p>
 	 */
 	protected final String name;
 	
@@ -49,9 +49,9 @@ public abstract class GuiEvent {
 	}
 
 	/**
-	 * 执行事件
+	 * <p>执行GUI事件</p>
 	 * 
-	 * @param gui 本地事件：true-本地；false-扩展；
+	 * @param gui 是否是本地GUI事件：{@code true}-本地GUI；{@code false}-扩展GUI；
 	 * @param args 参数
 	 */
 	public void execute(boolean gui, Object ... args) {
@@ -63,14 +63,14 @@ public abstract class GuiEvent {
 	}
 	
 	/**
-	 * 本地GUI
+	 * <p>本地GUI</p>
 	 * 
 	 * @param args 参数
 	 */
 	protected abstract void executeNative(Object ... args);
 	
 	/**
-	 * 扩展GUI
+	 * <p>扩展GUI</p>
 	 * 
 	 * @param args 参数
 	 */

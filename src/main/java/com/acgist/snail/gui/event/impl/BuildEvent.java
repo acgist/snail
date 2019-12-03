@@ -12,7 +12,7 @@ import com.acgist.snail.system.context.SystemThreadContext;
 import javafx.application.Platform;
 
 /**
- * GUI创建窗口事件
+ * <p>GUI创建窗口事件</p>
  * 
  * @author acgist
  * @since 1.1.0

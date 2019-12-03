@@ -23,11 +23,11 @@ public final class TaskDisplay {
 	private static final TaskDisplay INSTANCE = new TaskDisplay();
 
 	/**
-	 * 主窗口控制器
+	 * <p>主窗口控制器</p>
 	 */
 	private MainController controller;
 	/**
-	 * 初始化锁
+	 * <p>初始化锁</p>
 	 */
 	private final Object lock = new Object();
 	
@@ -39,7 +39,7 @@ public final class TaskDisplay {
 	}
 	
 	/**
-	 * 启动下载任务列表刷新定时器
+	 * <p>启动下载任务列表刷新定时器</p>
 	 */
 	public void newTimer(MainController controller) {
 		LOGGER.info("启动下载任务列表刷新定时器");
@@ -55,7 +55,7 @@ public final class TaskDisplay {
 	}
 
 	/**
-	 * 刷新任务数据
+	 * <p>刷新任务数据</p>
 	 */
 	public void refreshTaskList() {
 		MainController controller = INSTANCE.controller;
@@ -69,7 +69,7 @@ public final class TaskDisplay {
 	}
 	
 	/**
-	 * 刷新任务状态
+	 * <p>刷新任务状态</p>
 	 */
 	public void refreshTaskStatus() {
 		MainController controller = INSTANCE.controller;
