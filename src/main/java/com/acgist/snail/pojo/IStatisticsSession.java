@@ -64,4 +64,14 @@ public interface IStatisticsSession extends IStatistics {
 	 */
 	void downloadSize(long size);
 	
+	/**
+	 * <p>重置上传速度</p>
+	 */
+	void resetUploadSpeed();
+	
+	/**
+	 * <p>重置下载速度</p>
+	 */
+	void resetDownloadSpeed();
+	
 }

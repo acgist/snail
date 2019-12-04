@@ -61,7 +61,9 @@ public final class PeerUploader extends PeerConnect {
 		} finally {
 			this.peerSession.statusOff(PeerConfig.STATUS_UPLOAD);
 			this.peerSession.peerUploader(null);
-			this.peerSession.reset();
+			if(!this.peerSession.downloading()) { // 没有下载重置
+				this.peerSession.reset();
+			}
 		}
 	}
 	

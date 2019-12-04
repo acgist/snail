@@ -142,7 +142,6 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 */
 	private void init(PeerSession peerSession, TorrentSession torrentSession, byte[] reserved) {
 		peerSession.reserved(reserved);
-		peerSession.reset();
 		this.peerSession = peerSession;
 		this.torrentSession = torrentSession;
 		this.extensionMessageHandler = ExtensionMessageHandler.newInstance(this.peerSession, this.torrentSession, this);

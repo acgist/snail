@@ -160,12 +160,11 @@ public final class PeerSession implements IStatistics {
 	 * <p>重置状态：阻塞、感兴趣</p>
 	 */
 	public void reset() {
+		// 重置状态
 		this.amChoked = true;
 		this.amInterested = false;
 		this.peerChoked = true;
 		this.peerInterested = false;
-//		this.suggestPieces.clear();
-//		this.allowedPieces.clear();
 	}
 	
 	/**

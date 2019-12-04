@@ -136,7 +136,9 @@ public final class PeerDownloader extends PeerConnect {
 		} finally {
 			this.peerSession.statusOff(PeerConfig.STATUS_DOWNLOAD);
 			this.peerSession.peerDownloader(null);
-			this.peerSession.reset();
+			if(!this.peerSession.uploading()) { // 没有上传重置
+				this.peerSession.reset();
+			}
 		}
 	}
 

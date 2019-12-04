@@ -88,5 +88,14 @@ public final class SpeedSession {
 		// 存在误差
 		return value / SAMPLE_SIZE / SAMPLE_TIME;
 	}
+
+	/**
+	 * <p>重置速度统计</p>
+	 */
+	public void reset() {
+		for (int index = 0; index < bufferSamples.length; index++) {
+			bufferSamples[index] = 0;
+		}
+	}
 	
 }
