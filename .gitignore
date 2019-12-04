@@ -1,13 +1,7 @@
-#忽略文件
 .project
 .settings
 .classpath
-.factorypath
-.springBeans
-.apt_generated
-.apt_generated_tests
 
-#忽略目录
 /logs/
 /target/
 /config/
