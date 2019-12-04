@@ -237,9 +237,17 @@
 .statistics .info .infoHash ChoiceBox {
 	-fx-pref-width:400px;
 }
-.statistics .chart {
+.statistics .charts {
 	-fx-pref-width:800px;
 	-fx-pref-height:400px;
+}
+/* 上传图表颜色 */
+.statistics .charts .default-color0.chart-bar {
+	-fx-bar-fill:-fx-snail-border-color;
+}
+/* 下载图表颜色 */
+.statistics .charts .default-color1.chart-bar {
+	-fx-bar-fill:-fx-snail-main-color;
 }
 /**
  * 编辑种子：torrent.fxml

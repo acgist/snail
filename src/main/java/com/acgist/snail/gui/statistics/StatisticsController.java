@@ -98,7 +98,7 @@ public final class StatisticsController extends Controller implements Initializa
 	@FXML
 	private ChoiceBox<SelectInfoHash> selectInfoHashs;
 	@FXML
-	private VBox chart;
+	private VBox charts;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -127,7 +127,7 @@ public final class StatisticsController extends Controller implements Initializa
 	 * <p>释放资源</p>
 	 */
 	public void release() {
-		this.chart.getChildren().clear();
+		this.charts.getChildren().clear();
 	}
 
 	/**
@@ -310,8 +310,8 @@ public final class StatisticsController extends Controller implements Initializa
 		downloadPeer.forEach(data -> {
 			Tooltip.install(data.getNode(), Tooltips.newTooltip(String.format("IP：%s 下载：%.2fMB", data.getXValue(), data.getYValue())));
 		});
-		this.chart.getChildren().clear();
-		this.chart.getChildren().add(stackedBarChart);
+		this.charts.getChildren().clear();
+		this.charts.getChildren().add(stackedBarChart);
 	}
 	
 	/**
