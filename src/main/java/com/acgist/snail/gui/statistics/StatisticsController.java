@@ -36,6 +36,7 @@ import javafx.scene.chart.StackedBarChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Tooltip;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
@@ -48,6 +49,9 @@ import javafx.scene.text.Text;
 public final class StatisticsController extends Controller implements Initializable {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(StatisticsController.class);
+	
+	@FXML
+	private FlowPane root;
 	
 	@FXML
 	private Text upload;

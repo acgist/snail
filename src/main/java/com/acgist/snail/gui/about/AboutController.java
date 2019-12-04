@@ -23,6 +23,7 @@ public final class AboutController extends Controller implements Initializable {
 	
 	@FXML
 	private GridPane root;
+	
 	@FXML
 	private Text name;
 	@FXML

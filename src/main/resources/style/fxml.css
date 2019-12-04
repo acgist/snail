@@ -1,65 +1,94 @@
-/** 通用样式 */
+/**
+ *通用样式
+ */
 .root {
 	-fx-font-size:16px;
 	-fx-alignment:center;
 	/* 基本透明度 */
 	-fx-snail-opacity:0.94;
 	/* 基本边框颜色 */
-	-fx-snail-border-color:#c8c8c8;
+	-fx-snail-border-color:#C8C8C8;
+	/* 基本主要颜色 */
+	-fx-snail-main-color:#0099CC;
+	/* 基本空白颜色 */
+	-fx-snail-element-color:#E0E0E0;
+	/* 基本背景颜色 */
+	-fx-snail-background-color:#F4F4F4;
 }
-/** 提示样式 */
+/**
+ * 托盘样式
+ */
+.tray {
+	-fx-font-size:14px;
+}
+/**
+ * 提示样式
+ */
 .root .tooltip {
 	-fx-opacity:-fx-snail-opacity;
 	-fx-text-fill:#000000;
+	-fx-background-insets:0;
 	-fx-background-radius:0;
-	-fx-background-color:#ffffff;
+	-fx-background-color:#FFFFFF;
+	-fx-effect:dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 4, 0.0, 0, 0);
 }
-/** 按钮样式 */
+/**
+ * 按钮样式
+ */
 .root .button {
 	-fx-border-width:1px;
 	-fx-border-color:-fx-snail-border-color;
+	-fx-background-insets:0;
 	-fx-background-radius:0;
-	-fx-background-color:#E1E1E1;
+	-fx-background-color:-fx-snail-element-color;
 }
 .root .button:hover {
-	-fx-text-fill:#ffffff;
-	-fx-border-color:#0096C9;
-	-fx-background-color:#0096C9;
+	-fx-text-fill:#FFFFFF;
+	-fx-border-color:-fx-snail-main-color;
+	-fx-background-color:-fx-snail-main-color;
 }
-/** 文本框样式 */
+/**
+ * 文本框样式
+ */
 .root .text-field {
 	-fx-border-width:1px;
 	-fx-border-color:-fx-snail-border-color;
+	-fx-background-insets:0;
 	-fx-background-radius:0;
 }
 .root .text-field:hover,
 .root .text-field:focused {
-	-fx-border-color:#0096C9;
+	-fx-border-color:-fx-snail-main-color;
 }
-/** 下拉框样式 */
+/**
+ * 下拉框样式
+ */
 .root .choice-box {
 	-fx-border-width:1px;
 	-fx-border-color:-fx-snail-border-color;
+	-fx-background-insets:0;
 	-fx-background-radius:0;
-	-fx-background-color:#E1E1E1;
+	-fx-background-color:-fx-snail-element-color;
 }
 .root .choice-box:hover,
 .root .choice-box:focused {
-	-fx-border-color:#0096C9;
+	-fx-border-color:-fx-snail-main-color;
 }
-/** 菜单样式 */
+/**
+ * 菜单样式
+ */
 .root .context-menu {
 	-fx-padding:1px;
 	-fx-opacity:-fx-snail-opacity;
 }
-/** 托盘样式 */
-.tray {
-	-fx-font-size:14px;
-}
-/** about.fxml */
+/**
+ * 关于窗口：about.fxml
+ */
 .about {
 }
-/** build.fxml */
+/**
+ * 新建窗口：build.fxml
+ */
 .build .url {
 	-fx-padding:10px 0;
 }
@@ -75,7 +104,9 @@
 .build .option .cancel {
 	-fx-padding:0 10px;
 }
-/** main.fxml */
+/**
+ * 主窗口：main.fxml
+ */
 .main .header {
 	-fx-padding:2px;
 	-fx-alignment:center_left;
@@ -83,94 +114,158 @@
 .main .footer {
 	-fx-padding:2px;
 }
-.main .footer .footerButton {
+.main .footer .filters {
 	-fx-alignment:center_left;
 }
-.main .footer .footerStatus {
+.main .footer .statuses {
 	-fx-font-size:14px;
 	-fx-alignment:center_right;
 }
-.main .footer .footerStatus Label {
+.main .footer .statuses Label {
 	-fx-padding:0 2px;
 }
-.main .taskTable {
+/* 表格 */
+.main .table-view {
 	-fx-padding:0;
 	-fx-border-width:1px 0;
 	-fx-border-color:-fx-snail-border-color;
 	-fx-background-insets:0;
 }
-.main .taskTable .column-header {
-	-fx-padding:4px;
+/* 表头 */
+.main .table-view .column-header,
+/* 空闲表头 */
+.main .table-view .filler {
 	-fx-pref-height:40px;
 	-fx-border-width:0 1px 1px 0;
 	-fx-border-color:-fx-snail-border-color;
-	-fx-background-color:#E1E1E1;
+	-fx-background-color:-fx-snail-element-color;
 }
-.main .taskTable HBox {
-	-fx-padding:4px;
-	-fx-pref-height:40px;
+/* 表格单元 */
+.main .table-view .table-cell {
+	/* 不设置padding不能垂直居中 */
+	-fx-padding:0 2px;
+	-fx-pref-height:48px;
 }
-.main .taskTable .table-row-cell:focused {
-    -fx-background-color: -fx-table-cell-border-color, -fx-control-inner-background;
-    -fx-background-insets: 0, 0 0 1 0;
+/* 表行 */
+.main .table-view .table-row-cell {
+	/* 去掉表行横线 */
+	/*
+	-fx-background-insets:0;
+	*/
 }
-.main .taskTable .table-row-cell:selected {
-	-fx-background-color:#0096C9;
+/* 没有数据表格单元 */
+.main .table-view .table-row-cell:empty .table-cell {
+	/* 去掉没有数据表格单元竖线 */
+	/*
+	-fx-border-width:0px;
+	*/
 }
-.main .taskTable .table-row-cell:selected Text {
-	-fx-fill:white;
+/* 获得焦点表格 */
+.main .table-view:focused .table-row-cell:focused {
+	-fx-background-color:-fx-table-cell-border-color, -fx-control-inner-background;
+	-fx-background-insets:0, 0 0 1 0;
 }
-/** setting.fxml */
+.main .table-view:focused .table-row-cell:selected {
+	-fx-background-color:-fx-snail-main-color;
+}
+.main .table-view:focused .table-row-cell:selected Text {
+	-fx-fill:#FFFFFF;
+}
+/* 失去焦点表格 */
+.main .table-view .table-row-cell:selected {
+	-fx-background-color:-fx-snail-element-color;
+}
+/* 垂直滚动条 */
+/*
+.main .table-view .virtual-flow .scroll-bar:vertical {
+	-fx-pref-width:0;
+}
+*/
+/* 水平滚动条 */
+.main .table-view .virtual-flow .scroll-bar:horizontal {
+	/* 关闭滚动条 */
+	-fx-pref-height:0;
+}
+.main .table-view .virtual-flow .scroll-bar:horizontal .increment-button .increment-arrow {
+	/* 影藏箭头 */
+	-fx-background-color: transparent;
+}
+.main .table-view .virtual-flow .scroll-bar:horizontal .decrement-button .decrement-arrow {
+	/* 影藏箭头 */
+	-fx-background-color: transparent;
+}
+/**
+ * 设置窗口：setting.fxml
+ */
 .setting .scrollPane {
 	-fx-background-color:transparent;
 }
 .setting HBox {
 	-fx-padding:6px 0;
 }
-.setting .name {
+.setting HBox TextFlow {
 	-fx-pref-width:200px;
 	-fx-text-alignment:right;
 }
-.setting .slider {
-	-fx-pref-width:300px;
+.setting .path .name {
+	-fx-padding:6px 0;
+}
+.setting .path .value {
+	-fx-padding:6px;
 }
 .setting .path Button {
 	-fx-padding:6px 10px;
 }
-.setting .path TextFlow {
-	-fx-padding:6px;
+.setting .slider {
+	-fx-pref-width:300px;
 }
-/** statistics.fxml */
+/**
+ * 统计窗口：statistics.fxml
+ */
 .statistics .info TextFlow {
 	-fx-pref-width:140px;
 }
-.statistics .system TextFlow {
+.statistics .info .system TextFlow {
 	-fx-pref-width:220px;
 }
 .statistics .info TextFlow.title {
 	-fx-pref-width:80px;
 }
-.statistics .infoHash TextFlow.title {
+.statistics .info .infoHash TextFlow.title {
 	-fx-padding:6px 0;
 }
-.statistics .infoHash ChoiceBox {
+.statistics .info .infoHash ChoiceBox {
 	-fx-pref-width:400px;
 }
 .statistics .chart {
 	-fx-pref-width:800px;
 	-fx-pref-height:400px;
 }
-/** torrent.fxml */
-.torrent .tree {
-	-fx-background-color:transparent;
+/**
+ * 编辑种子：torrent.fxml
+ */
+.torrent .tree-view {
+	-fx-border-width:0 0 1px 0;
+	-fx-border-color:-fx-snail-border-color;
+	-fx-background-insets:0;
 }
-.torrent .tree .tree-cell:focused,
-.torrent .tree .tree-cell:selected {
-	-fx-background-color:#ffffff;
+.torrent .tree-view .tree-cell {
+    -fx-background-color:-fx-snail-background-color;
+    -fx-background-insets:0;
 }
-.torrent .tree .tree-cell:selected .check-box {
+/* 箭头 */
+.torrent .tree-view .tree-cell .arrow {
+    -fx-background-color:#000000;
+}
+.torrent .tree-view .tree-cell:focused,
+.torrent .tree-view .tree-cell:selected {
+	-fx-background-color:-fx-snail-background-color;
+    -fx-background-insets:0;
+}
+.torrent .tree-view .tree-cell:selected .check-box {
 	-fx-text-fill:#000000;
 }
 .torrent .downloadBox {
+	-fx-padding:2px 0;
 	-fx-alignment:center;
 }

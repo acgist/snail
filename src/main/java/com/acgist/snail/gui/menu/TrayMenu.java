@@ -199,7 +199,7 @@ public final class TrayMenu extends Menu {
 		trayPane.getStyleClass().add("tray");
 		final Scene trayScene = new Scene(trayPane);
 		// 导入样式文件
-		trayScene.getStylesheets().add(TrayMenu.class.getResource(Controller.FXML_STYLE).toExternalForm());
+		trayScene.getStylesheets().add(Controller.FXML_STYLE);
 		trayScene.setFill(Color.TRANSPARENT);
 		final Stage trayStage = new Stage();
 		trayStage.initStyle(StageStyle.UTILITY);

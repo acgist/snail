@@ -15,12 +15,12 @@
 	<TextFlow GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="3">
 		<Label>软件名称：</Label>
 		<Text fx:id="name">蜗牛（Snail）</Text>
-	</TextFlow>	
+	</TextFlow>
 
 	<TextFlow GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="3">
 		<Label>软件版本：</Label>
 		<Text fx:id="version">1.0.0</Text>
-	</TextFlow>	
+	</TextFlow>
 	
 	<TextFlow GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="3">
 		<Label>开发语言：</Label>
