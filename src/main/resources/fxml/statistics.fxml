@@ -137,6 +137,6 @@
 		</HBox>
 	</VBox>
 	
-	<VBox fx:id="chart" styleClass="chart"></VBox>
+	<VBox fx:id="charts" styleClass="charts"></VBox>
 	
 </FlowPane>
