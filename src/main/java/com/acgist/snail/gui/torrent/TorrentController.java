@@ -41,6 +41,7 @@ public final class TorrentController extends Controller implements Initializable
 	
 	@FXML
 	private FlowPane root;
+	
 	@FXML
 	private Button download;
 	@FXML
@@ -105,7 +106,6 @@ public final class TorrentController extends Controller implements Initializable
 	private TreeView<HBox> buildTree() {
 		final TreeView<HBox> tree = new TreeView<>();
 		tree.setId("tree");
-		tree.getStyleClass().add("tree");
 		tree.prefWidthProperty().bind(this.root.widthProperty());
 		tree.prefHeightProperty().bind(this.treeBox.heightProperty());
 		this.treeBox.getChildren().clear();

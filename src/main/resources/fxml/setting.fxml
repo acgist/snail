@@ -20,13 +20,13 @@
 					</Label>
 				</TextFlow>
 				<Button fx:id="path" text="选择目录" onAction="#handlePathAction" />
-				<TextFlow styleClass="pathValue">
+				<TextFlow styleClass="value">
 					<Text fx:id="pathValue" />
 				</TextFlow>
 			</HBox>
 			
 			<HBox>
-				<TextFlow styleClass="name">
+				<TextFlow>
 					<Label>
 						下载数量：
 					</Label>
@@ -35,7 +35,7 @@
 			</HBox>
 			
 			<HBox>
-				<TextFlow styleClass="name">
+				<TextFlow>
 					<Label>
 						下载速度：
 					</Label>
@@ -44,7 +44,7 @@
 			</HBox>
 			
 			<HBox>
-				<TextFlow styleClass="name">
+				<TextFlow>
 					<Label>
 						磁盘缓存：
 					</Label>
@@ -53,7 +53,7 @@
 			</HBox>
 				
 			<HBox>
-				<TextFlow styleClass="name">
+				<TextFlow>
 					<Label>
 						消息提示：
 					</Label>

@@ -44,6 +44,7 @@ public final class SettingController extends Controller implements Initializable
 	private FlowPane root;
 	@FXML
 	private ScrollPane scrollPane;
+	
 	@FXML
 	private Text pathValue;
 	@FXML

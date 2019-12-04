@@ -13,7 +13,7 @@
 
 	<VBox>
 		<HBox>
-			<TextFlow styleClass="name">
+			<TextFlow>
 				<Label>请输入下载链接 、磁力链接或选择种子文件：</Label>
 			</TextFlow>
 		</HBox>

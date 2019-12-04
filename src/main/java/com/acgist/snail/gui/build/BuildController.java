@@ -36,6 +36,7 @@ public final class BuildController extends Controller implements Initializable {
 	
 	@FXML
 	private FlowPane root;
+	
 	@FXML
 	private TextField urlValue;
 	

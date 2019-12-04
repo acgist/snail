@@ -43,7 +43,7 @@ public final class Tooltips {
 		tooltip.setShowDelay(Duration.millis(millis));
 		final Scene scene = tooltip.getScene();
 		// 导入样式文件
-		scene.getStylesheets().add(Tooltips.class.getResource(Controller.FXML_STYLE).toExternalForm());
+		scene.getStylesheets().add(Controller.FXML_STYLE);
 		return tooltip;
 	}
 	

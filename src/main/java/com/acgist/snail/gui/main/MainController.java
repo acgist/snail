@@ -86,14 +86,15 @@ public final class MainController extends Controller implements Initializable {
 	
 	@FXML
 	private BorderPane root;
+	
 	@FXML
 	private HBox header;
 	@FXML
 	private HBox footer;
 	@FXML
-	private HBox footerButton;
+	private HBox filters;
 	@FXML
-	private HBox footerStatus;
+	private HBox statuses;
 	@FXML
 	private Label downloadBuffer;
 	@FXML
@@ -125,7 +126,7 @@ public final class MainController extends Controller implements Initializable {
 		// 设置列
 		taskCell(this.name, Pos.CENTER_LEFT, true, true, this.taskTable.widthProperty().multiply(3D).divide(10D));
 		taskCell(this.status, Pos.CENTER, false, false, this.taskTable.widthProperty().multiply(1D).divide(10D));
-		taskCell(this.progress, Pos.CENTER_LEFT, false, false, this.taskTable.widthProperty().multiply(2D).divide(10D).subtract(10));
+		taskCell(this.progress, Pos.CENTER_LEFT, false, false, this.taskTable.widthProperty().multiply(2D).divide(10D));
 		taskCell(this.createDate, Pos.CENTER, false, false, this.taskTable.widthProperty().multiply(2D).divide(10D));
 		taskCell(this.endDate, Pos.CENTER, false, false, this.taskTable.widthProperty().multiply(2D).divide(10D));
 		// 设置行
@@ -133,8 +134,8 @@ public final class MainController extends Controller implements Initializable {
 		// 绑定属性
 		this.taskTable.prefWidthProperty().bind(this.root.widthProperty());
 		this.taskTable.prefHeightProperty().bind(this.root.prefHeightProperty().subtract(80D));
-		this.footerButton.prefWidthProperty().bind(this.root.widthProperty().multiply(0.5D));
-		this.footerStatus.prefWidthProperty().bind(this.root.widthProperty().multiply(0.5D));
+		this.filters.prefWidthProperty().bind(this.root.widthProperty().multiply(0.5D));
+		this.statuses.prefWidthProperty().bind(this.root.widthProperty().multiply(0.5D));
 		// 文件拖拽
 		this.taskTable.setOnDragOver(this.dragOverAction);
 		this.taskTable.setOnDragDropped(this.dragDroppedAction);

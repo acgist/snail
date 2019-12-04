@@ -14,7 +14,7 @@
 	xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
 	
 	<top>
-		<HBox fx:id="header" styleClass="header">
+		<HBox styleClass="header">
 			<Button fx:id="build" text="新建" onAction="#handleBuildAction" />
 			<Button fx:id="start" text="开始" onAction="#handleStartAction" />
 			<Button fx:id="pause" text="暂停" onAction="#handlePauseAction" />
@@ -25,10 +25,10 @@
 	</top>
 	
 	<center>
-		<TableView fx:id="taskTable" styleClass="taskTable">
+		<TableView fx:id="taskTable">
 			<columns>
 				<!--
-				下载文件名称：轻音少女（点击名称查看详情）
+				下载文件名称：轻音少女
 				-->
 				<TableColumn fx:id="name" text="名称" styleClass="name">
 					<cellValueFactory>
@@ -48,7 +48,7 @@
 				</TableColumn>
 				<!--
 				下载进度：
-					下载中：20%（2G/4G）
+					下载：20%（2G/4G）
 					完成：100%（4G）
 				-->
 				<TableColumn fx:id="progress" text="进度" styleClass="progress">
@@ -66,7 +66,7 @@
 				</TableColumn>
 				<!--
 				完成时间：
-					下载中：剩余时间：2小时
+					下载：剩余时间：2小时
 					完成：2019-01-01 12:10
 				-->
 				<TableColumn fx:id="endDate" text="完成时间" styleClass="endDate">
@@ -79,13 +79,13 @@
 	</center>
 	
 	<bottom>
-		<HBox fx:id="footer" styleClass="footer">
-			<HBox fx:id="footerButton" styleClass="footerButton">
+		<HBox styleClass="footer">
+			<HBox fx:id="filters" styleClass="filters">
 				<Button fx:id="all" text="全部" onAction="#handleAllAction" />
 				<Button fx:id="download" text="下载中" onAction="#handleDownloadAction" />
 				<Button fx:id="complete" text="下载完成" onAction="#handleCompleteAction" />
 			</HBox>
-			<HBox fx:id="footerStatus" styleClass="footerStatus">
+			<HBox fx:id="statuses" styleClass="statuses">
 				<Label text="↓" />
 				<Label fx:id="downloadBuffer" text="0KB/S" />
 				<Label text="↑" />
@@ -93,5 +93,5 @@
 			</HBox>
 		</HBox>
 	</bottom>
-	
+
 </BorderPane>

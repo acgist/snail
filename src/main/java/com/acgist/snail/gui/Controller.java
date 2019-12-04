@@ -22,7 +22,7 @@ public abstract class Controller {
 	 */
 	public static final String FXML_STYLE = "/style/fxml.css";
 	/**
-	 * <p>图表文件路径：{@value}</p>
+	 * <p>图标文件路径：{@value}</p>
 	 */
 	public static final String LOGO_ICON = "/image/logo.png";
 	
