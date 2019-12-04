@@ -13,8 +13,6 @@ import com.acgist.snail.utils.ThreadUtils;
  * <p>Statistics Session</p>
  * <p>统计信息：速度、限速、统计等</p>
  * 
- * TODO：优化PeerSession可以不统计速度
- * 
  * @author acgist
  * @since 1.0.0
  */
@@ -24,6 +22,10 @@ public final class StatisticsSession implements IStatisticsSession {
 	 * <p>限速开关</p>
 	 */
 	private final boolean limit;
+	/**
+	 * <p>速度统计开关</p>
+	 */
+	private final boolean speed;
 	/**
 	 * <p>父类统计</p>
 	 */
@@ -39,11 +41,11 @@ public final class StatisticsSession implements IStatisticsSession {
 	/**
 	 * <p>上传速度</p>
 	 */
-	private final SpeedSession uploadSpeed = new SpeedSession();
+	private final SpeedSession uploadSpeed;
 	/**
 	 * <p>下载速度</p>
 	 */
-	private final SpeedSession downloadSpeed = new SpeedSession();
+	private final SpeedSession downloadSpeed;
 	/**
 	 * <p>上传限速采样</p>
 	 */
@@ -62,19 +64,27 @@ public final class StatisticsSession implements IStatisticsSession {
 	private volatile long downloadBufferLimitTime;
 	
 	public StatisticsSession() {
-		this(false, null);
-	}
-	
-	public StatisticsSession(IStatisticsSession parent) {
-		this(false, parent);
+		this(false, true, null);
 	}
 	
 	public StatisticsSession(boolean limit, IStatisticsSession parent) {
+		this(limit, true, parent);
+	}
+	
+	public StatisticsSession(boolean limit, boolean speed, IStatisticsSession parent) {
 		this.limit = limit;
+		this.speed = speed;
 		this.parent = parent;
 		final long time = System.currentTimeMillis();
 		this.uploadBufferLimitTime = time;
 		this.downloadBufferLimitTime = time;
+		if(speed) {
+			this.uploadSpeed = new SpeedSession();
+			this.downloadSpeed = new SpeedSession();
+		} else {
+			this.uploadSpeed = null;
+			this.downloadSpeed = null;
+		}
 	}
 
 	@Override
@@ -87,9 +97,11 @@ public final class StatisticsSession implements IStatisticsSession {
 		if(this.parent != null) {
 			this.parent.upload(buffer);
 		}
-		this.uploadSpeed.buffer(buffer);
+		if(this.speed) {
+			this.uploadSpeed.buffer(buffer);
+		}
 		this.uploadSize.addAndGet(buffer);
-		uploadBufferLimit(buffer);
+		this.uploadBufferLimit(buffer);
 	}
 	
 	@Override
@@ -97,9 +109,11 @@ public final class StatisticsSession implements IStatisticsSession {
 		if(this.parent != null) {
 			this.parent.download(buffer);
 		}
-		this.downloadSpeed.buffer(buffer);
+		if(this.speed) {
+			this.downloadSpeed.buffer(buffer);
+		}
 		this.downloadSize.addAndGet(buffer);
-		downloadBufferLimit(buffer);
+		this.downloadBufferLimit(buffer);
 	}
 	
 	@Override
@@ -109,12 +123,18 @@ public final class StatisticsSession implements IStatisticsSession {
 	
 	@Override
 	public long uploadSpeed() {
-		return this.uploadSpeed.speed();
+		if(this.speed) {
+			return this.uploadSpeed.speed();
+		}
+		return 0L;
 	}
 
 	@Override
 	public long downloadSpeed() {
-		return this.downloadSpeed.speed();
+		if(this.speed) {
+			return this.downloadSpeed.speed();
+		}
+		return 0L;
 	}
 	
 	@Override
@@ -139,12 +159,16 @@ public final class StatisticsSession implements IStatisticsSession {
 
 	@Override
 	public void resetUploadSpeed() {
-		this.uploadSpeed.reset();		
+		if(this.speed) {
+			this.uploadSpeed.reset();		
+		}
 	}
 	
 	@Override
 	public void resetDownloadSpeed() {
-		this.downloadSpeed.reset();
+		if(this.speed) {
+			this.downloadSpeed.reset();
+		}
 	}
 	
 	/**
@@ -176,6 +200,7 @@ public final class StatisticsSession implements IStatisticsSession {
 		} else {
 			if(interval >= DateUtils.ONE_SECOND) {
 //				this.uploadBufferLimit.set(0); // 不限速不清零
+				// 不限速但是必须更新时间
 				this.uploadBufferLimitTime = System.currentTimeMillis();
 			}
 		}
@@ -210,6 +235,7 @@ public final class StatisticsSession implements IStatisticsSession {
 		} else {
 			if(interval >= DateUtils.ONE_SECOND) {
 //				this.downloadBufferLimit.set(0); // 不限速不清零
+				// 不限速但是必须更新时间
 				this.downloadBufferLimitTime = System.currentTimeMillis();
 			}
 		}
