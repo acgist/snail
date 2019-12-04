@@ -149,7 +149,7 @@ public final class PeerSession implements IStatistics {
 		this.suggestPieces = new BitSet();
 		this.allowedPieces = new BitSet();
 		this.extension = new HashMap<>();
-		this.statistics = new StatisticsSession(parent);
+		this.statistics = new StatisticsSession(false, false, parent);
 	}
 	
 	public static final PeerSession newInstance(IStatisticsSession parent, String host, Integer port) {
