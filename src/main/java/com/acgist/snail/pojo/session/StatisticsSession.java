@@ -13,6 +13,8 @@ import com.acgist.snail.utils.ThreadUtils;
  * <p>Statistics Session</p>
  * <p>统计信息：速度、限速、统计等</p>
  * 
+ * TODO：优化PeerSession可以不统计速度
+ * 
  * @author acgist
  * @since 1.0.0
  */
@@ -133,6 +135,16 @@ public final class StatisticsSession implements IStatisticsSession {
 	@Override
 	public void downloadSize(long size) {
 		this.downloadSize.set(size);
+	}
+
+	@Override
+	public void resetUploadSpeed() {
+		this.uploadSpeed.reset();		
+	}
+	
+	@Override
+	public void resetDownloadSpeed() {
+		this.downloadSpeed.reset();
 	}
 	
 	/**
