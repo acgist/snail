@@ -27,6 +27,9 @@ public class FileUtilsTest extends BaseTest {
 		long size = FileUtils.fileSize("F:\\迅雷下载\\我的大叔\\[我的大叔][E008].mkv");
 		this.log(size);
 		this.log(FileUtils.formatSize(size));
+		this.log(FileUtils.formatSize(1024L));
+		this.log(FileUtils.formatSize(1024L * 1024));
+		this.log(FileUtils.formatSize(1024L * 1024 - 1));
 	}
 	
 	@Test

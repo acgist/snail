@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.system.config.SystemConfig;
 
 /**
- * <p>Properties工具</p>
+ * <p>配置工具</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -28,12 +28,12 @@ public final class PropertiesUtils {
 	}
 	
 	/**
-	 * <p>创建实例</p>
-	 * <p>优先从UserDir加载配置，加载失败后加载默认配置。</p>
+	 * <p>创建配置工具对象</p>
+	 * <p>优先从用户工作目录（UserDir）加载配置，加载失败后加载默认配置。</p>
 	 * 
-	 * @param path 配置文件
+	 * @param path 文件路径
 	 * 
-	 * @return Properties工具
+	 * @return 配置工具对象
 	 */
 	public static final PropertiesUtils getInstance(String path) {
 		Properties properties = loadUserDir(path);
@@ -45,6 +45,10 @@ public final class PropertiesUtils {
 	
 	/**
 	 * <p>加载配置（UserDir）</p>
+	 * 
+	 * @param path 文件路径
+	 * 
+	 * @return 配置信息
 	 */
 	private static final Properties loadUserDir(String path) {
 		final File file = FileUtils.userDirFile(path);
@@ -63,6 +67,10 @@ public final class PropertiesUtils {
 	
 	/**
 	 * <p>加载配置（Resource）</p>
+	 * 
+	 * @param path 文件路径
+	 * 
+	 * @return 配置信息
 	 */
 	private static final Properties load(String path) {
 		if(PropertiesUtils.class.getResource(path) == null) {
@@ -79,7 +87,8 @@ public final class PropertiesUtils {
 	}
 	
 	/**
-	 * <p>读取String</p>
+	 * <p>读取{@code String}配置</p>
+	 * <p>没有配置默认返回：{@code null}</p>
 	 * 
 	 * @param name 属性名称
 	 * 
@@ -90,8 +99,8 @@ public final class PropertiesUtils {
 	}
 	
 	/**
-	 * <p>读取Boolean</p>
-	 * <p>默认：null</p>
+	 * <p>读取{@code Boolean}配置</p>
+	 * <p>没有配置默认返回：{@code null}</p>
 	 * 
 	 * @param name 属性名称
 	 * 
@@ -109,8 +118,8 @@ public final class PropertiesUtils {
 	}
 	
 	/**
-	 * <p>读取Integer</p>
-	 * <p>默认：null</p>
+	 * <p>读取{@code Integer}配置</p>
+	 * <p>没有配置默认返回：{@code null}</p>
 	 * 
 	 * @param name 属性名称
 	 * 
@@ -125,6 +134,8 @@ public final class PropertiesUtils {
 	}
 	
 	/**
+	 * <p>获取配置</p>
+	 * 
 	 * @return 配置
 	 */
 	public Properties properties() {
@@ -134,7 +145,7 @@ public final class PropertiesUtils {
 	/**
 	 * <p>是否存在配置</p>
 	 * 
-	 * @return true-存在；false-不存在；
+	 * @return {@code true}-存在；{@code false}-不存在；
 	 */
 	public boolean haveProperties() {
 		return this.properties != null;

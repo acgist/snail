@@ -15,6 +15,7 @@ import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.ObjectUtils;
+import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>DHT响应</p>
@@ -199,7 +200,7 @@ public class Response extends DhtMessage {
 	
 	@Override
 	public String toString() {
-		return ObjectUtils.toString(this, this.t, this.y, this.r, this.e);
+		return ObjectUtils.toString(this, StringUtils.hex(this.t), this.y, this.r, this.e);
 	}
 	
 }

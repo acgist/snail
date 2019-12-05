@@ -80,7 +80,7 @@ public final class HTTPClient {
 		 * 
 		 * @param code 状态码
 		 * 
-		 * @return true-相等；false-不相等；
+		 * @return true-相等；false-不等；
 		 */
 		public final boolean equal(int code) {
 			return this.code == code;

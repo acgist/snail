@@ -23,4 +23,10 @@ public class ObjectUtilsTest extends BaseTest {
 		this.log(ObjectUtils.toString(config, config.getId(), config.getName()));
 	}
 	
+	@Test
+	public void testHashCode() {
+		byte[] bytes = new byte[] {1, 2, 3};
+		System.out.println(ObjectUtils.hashCode(bytes));
+	}
+	
 }

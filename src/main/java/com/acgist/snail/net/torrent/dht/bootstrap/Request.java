@@ -14,6 +14,7 @@ import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.ObjectUtils;
+import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
@@ -180,7 +181,7 @@ public class Request extends DhtMessage {
 	
 	@Override
 	public String toString() {
-		return ObjectUtils.toString(this, this.t, this.y, this.q, this.a);
+		return ObjectUtils.toString(this, StringUtils.hex(this.t), this.y, this.q, this.a);
 	}
 	
 }

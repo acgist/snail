@@ -27,8 +27,8 @@ public final class BeanUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(BeanUtils.class);
 	
 	/**
-	 * <p>反射生成实例</p>
-	 * <p>调用默认构造方法（无参）</p>
+	 * <p>通过反射生成实例对象</p>
+	 * <p>调用默认无参构造方法</p>
 	 * 
 	 * @param <T> 类型泛型
 	 * @param clazz 实例类型
@@ -48,7 +48,7 @@ public final class BeanUtils {
 	}
 	
 	/**
-	 * <p>将对象属性转为Map</p>
+	 * <p>将实例对象所有属性转为{@code Map}</p>
 	 * <dl>
 	 * 	<dt>类型转换</dt>
 	 * 	<dd>{@code String} -&gt; {@code String}</dd>
@@ -59,7 +59,7 @@ public final class BeanUtils {
 	 * 
 	 * @param instance 实例对象
 	 * 
-	 * @return 对象属性Map
+	 * @return 对象属性{@code Map}
 	 */
 	public static final Map<String, Object> toMap(Object instance) {
 		final Map<String, Object> map = new HashMap<>();
@@ -79,7 +79,7 @@ public final class BeanUtils {
 	}
 	
 	/**
-	 * <p>获取类型属性</p>
+	 * <p>获取类型所有属性</p>
 	 * <dl>
 	 * 	<dt>不获取的属性</dt>
 	 * 	<dd>静态：{@code static}</dd>
@@ -88,7 +88,7 @@ public final class BeanUtils {
 	 * 
 	 * @param clazz 类型
 	 * 
-	 * @return 属性
+	 * @return 属性数组
 	 */
 	public static final String[] properties(Class<?> clazz) {
 		String[] properties = null;
@@ -113,12 +113,12 @@ public final class BeanUtils {
 	}
 	
 	/**
-	 * <p>获取对象属性值</p>
+	 * <p>获取实例对象指定属性的属性值</p>
 	 * 
 	 * @param instance 实例对象
-	 * @param properties 对象属性
+	 * @param properties 属性数组
 	 * 
-	 * @return 属性值
+	 * @return 属性值数组
 	 */
 	public static final Object[] propertiesValue(Object instance, String[] properties) {
 		return Stream
@@ -128,10 +128,10 @@ public final class BeanUtils {
 	}
 	
 	/**
-	 * <p>获取属性值</p>
+	 * <p>获取实例对象指定的属性值</p>
 	 * 
 	 * @param instance 实例对象
-	 * @param property 对象属性
+	 * @param property 属性名称
 	 * 
 	 * @return 属性值
 	 */
