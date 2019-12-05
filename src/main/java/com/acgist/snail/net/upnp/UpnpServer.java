@@ -27,6 +27,10 @@ public final class UpnpServer extends UdpServer<UpnpAcceptHandler> {
 	 * <p>UPNP地址</p>
 	 */
 	public static final String UPNP_HOST = "239.255.255.250";
+	/**
+	 * <p>UPNP根设备</p>
+	 */
+	public static final String UPNP_ROOT_DEVICE = "upnp:rootdevice";
 	
 	private UpnpServer() {
 		super("UPNP Server", UpnpAcceptHandler.getInstance());

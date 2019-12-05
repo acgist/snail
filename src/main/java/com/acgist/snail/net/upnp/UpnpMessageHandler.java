@@ -31,11 +31,6 @@ public final class UpnpMessageHandler extends UdpMessageHandler implements IMess
 	 * <p>描述文件地址响应头名称</p>
 	 */
 	private static final String HEADER_LOCATION = "location";
-	/**
-	 * <p>Internet Gateway Device</p>
-	 * <p>最后一位类型忽略</p>
-	 */
-	private static final String UPNP_DEVICE_IGD = "urn:schemas-upnp-org:device:InternetGatewayDevice:";
 	
 	public UpnpMessageHandler() {
 		this.messageCodec = new StringMessageCodec(this);
@@ -47,7 +42,7 @@ public final class UpnpMessageHandler extends UdpMessageHandler implements IMess
 		// 判断是否支持UPNP设置
 		final boolean support = headers.allHeaders().values().stream()
 			.anyMatch(list -> list.stream()
-				.anyMatch(value -> StringUtils.startsWith(value, UPNP_DEVICE_IGD))
+				.anyMatch(value -> StringUtils.startsWith(value, UpnpServer.UPNP_ROOT_DEVICE))
 			);
 		if(!support) {
 			LOGGER.info("UPNP设置失败（驱动）：{}", message);
