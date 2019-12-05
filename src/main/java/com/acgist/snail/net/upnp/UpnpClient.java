@@ -57,9 +57,9 @@ public final class UpnpClient extends UdpClient<UpnpMessageHandler> {
 		final HeaderWrapper builder = HeaderWrapper.newBuilder(PROTOCOL);
 		builder
 			.header("HOST", UpnpServer.UPNP_HOST + ":" + UpnpServer.UPNP_PORT)
-			.header("MX", "3")
-			.header("ST", "urn:schemas-upnp-org:device:InternetGatewayDevice:1")
-			.header("MAN", "\"ssdp:discover\"");
+			.header("ST", UpnpServer.UPNP_ROOT_DEVICE)
+			.header("MAN", "\"ssdp:discover\"")
+			.header("MX", "3");
 		return builder.build();
 	}
 
