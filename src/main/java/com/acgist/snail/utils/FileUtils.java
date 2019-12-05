@@ -41,12 +41,11 @@ public final class FileUtils {
 	 */
 	private static final String[] FILE_LENGTH_UNIT = {"B", "KB", "M", "G", "T"};
 	/**
-	 * <p>文件名禁用字符正则表达式</p>
-	 * <p>文件名禁用字符：:/\*?<>|</p>
+	 * <p>文件名禁用字符正则表达式：{@value}</p>
 	 */
 	private static final String FILENAME_REPLACE_REGEX = "[:/\\\\\\*\\?\\<\\>\\|]";
 	/**
-	 * <p>文件名禁用字符替换字符</p>
+	 * <p>文件名禁用字符替换字符：{@value}</p>
 	 */
 	private static final String FILENAME_REPLACE_CHAR = "";
 	/**
@@ -55,30 +54,39 @@ public final class FileUtils {
 	private static final Map<FileType, List<String>> FILE_TYPE_EXT = new HashMap<>();
 	
 	static {
+		// 图片
 		FILE_TYPE_EXT.put(FileType.IMAGE, List.of(
 			"bmp", "cdr", "gif", "ico", "jpeg", "jpg", "png", "psd", "svg"
 		));
+		// 视频
 		FILE_TYPE_EXT.put(FileType.VIDEO, List.of(
 			"3gp", "avi", "flv", "mkv", "mov", "mp4", "mvb", "rm", "rmvb"
 		));
+		// 音频
 		FILE_TYPE_EXT.put(FileType.AUDIO, List.of(
 			"aac", "flac", "mp3", "ogg", "wav", "wma", "wmv"
 		));
+		// 脚本
 		FILE_TYPE_EXT.put(FileType.SCRIPT, List.of(
 			"asp", "bat", "c", "cmd", "cpp", "h", "java", "js", "jsp", "php", "py", "sh"
 		));
+		// 种子
 		FILE_TYPE_EXT.put(FileType.TORRENT, List.of(
 			"torrent"
 		));
+		// 压缩文件
 		FILE_TYPE_EXT.put(FileType.COMPRESS, List.of(
 			"7z", "bz2", "gz", "iso", "jar", "rar", "tar", "z", "zip"
 		));
+		// 文档
 		FILE_TYPE_EXT.put(FileType.DOCUMENT, List.of(
 			"css", "doc", "docx", "htm", "html", "pdf", "ppt", "pptx", "txt", "wps", "xls", "xlsx", "xml"
 		));
+		// 安装程序
 		FILE_TYPE_EXT.put(FileType.INSTALL, List.of(
 			"apk", "com", "deb", "exe", "rpm"
 		));
+		// 未知·
 		FILE_TYPE_EXT.put(FileType.UNKNOWN, List.of(
 		));
 	}
@@ -95,7 +103,7 @@ public final class FileUtils {
 		}
 		final File file = new File(filePath);
 		if(!file.exists()) {
-			LOGGER.warn("删除文件不存在：{}", filePath);
+			LOGGER.debug("删除文件不存在：{}", filePath);
 			return;
 		}
 		LOGGER.info("删除文件：{}", filePath);
@@ -108,7 +116,8 @@ public final class FileUtils {
 	 * @param file 文件
 	 */
 	private static final void delete(final File file) {
-		if(file.isDirectory()) { // 目录
+		// 删除目录
+		if(file.isDirectory()) {
 			final File[] files = file.listFiles();
 			for (File children : files) {
 				delete(children); // 删除子文件
@@ -121,26 +130,26 @@ public final class FileUtils {
 	}
 	
 	/**
-	 * <p>删除文件（回收站）</p>
+	 * <p>使用回收站删除文件</p>
 	 * 
 	 * @param filePath 文件路径
 	 * 
-	 * @return 删除结果
+	 * @return {@code true}-删除成功；{@code false}-删除失败；
 	 */
 	public static final boolean recycle(final String filePath) {
 		if(StringUtils.isEmpty(filePath)) {
 			return false;
 		}
 		final var recycle = RecycleManager.newInstance(filePath);
-		if(recycle == null) {
+		if(recycle == null) { // 不支持回收站
 			return false;
 		}
 		return recycle.delete();
 	}
 	
 	/**
-	 * <p>通过URL获取文件名称</p>
-	 * <p>去掉：协议、域名、路径、参数</p>
+	 * <p>从URL中获取文件名称</p>
+	 * <p>过滤：协议、域名、路径、参数</p>
 	 * 
 	 * @param url URL
 	 * 
@@ -150,35 +159,40 @@ public final class FileUtils {
 		if(StringUtils.isEmpty(url)) {
 			return url;
 		}
+		// URL解码
 		String fileName = UrlUtils.decode(url);
 		// 斜杠转换
 		if(fileName.contains("\\")) {
 			fileName = fileName.replace("\\", "/");
 		}
+		// 过滤：协议、域名、路径
 		int index = fileName.lastIndexOf("/");
 		if(index != -1) {
 			fileName = fileName.substring(index + 1);
 		}
+		// 过滤：参数
 		index = fileName.indexOf("?");
 		if(index != -1) {
 			fileName = fileName.substring(0, index);
 		}
-		return fileName;
+		return fileName.trim();
 	}
 	
 	/**
 	 * <p>文件名称格式化<p>
-	 * <p>去掉{@linkplain #FILENAME_REPLACE_REGEX 文件名禁用字符}<p>
+	 * <p>过滤：{@value #FILENAME_REPLACE_REGEX}<p>
 	 * 
 	 * @param name 文件名称
 	 * 
 	 * @return 文件名称
 	 */
 	public static final String fileNameFormat(String name) {
-		if(StringUtils.isNotEmpty(name)) { // 去掉不支持的字符
+		// 过滤文件名禁用字符
+		if(StringUtils.isNotEmpty(name)) {
 			name = name.replaceAll(FILENAME_REPLACE_REGEX, FILENAME_REPLACE_CHAR);
 		}
-		if(StringUtils.isEmpty(name)) { // 随机名称
+		// 过滤后名称为空：随机名称
+		if(StringUtils.isEmpty(name)) {
 			name = NumberUtils.build().toString();
 		}
 		return name.trim();
@@ -242,10 +256,10 @@ public final class FileUtils {
 	 * <p>文件写入</p>
 	 * 
 	 * @param filePath 文件路径
-	 * @param bytes 数据
+	 * @param bytes 文件数据
 	 */
 	public static final void write(String filePath, byte[] bytes) {
-		buildFolder(filePath, true);
+		buildFolder(filePath, true); // 创建目录
 		try(final var output = new FileOutputStream(filePath)) {
 			output.write(bytes);
 		} catch (IOException e) {
@@ -256,13 +270,15 @@ public final class FileUtils {
 	/**
 	 * <p>文件移动</p>
 	 * 
+	 * TODO：优化至此
+	 * 
 	 * @param source 原始文件
 	 * @param target 目标文件
 	 */
 	public static final void move(String source, String target) {
-		final File srcFile = new File(source);
+		final File sourceFile = new File(source);
 		final File targetFile = new File(target);
-		if(!srcFile.renameTo(targetFile)) {
+		if(!sourceFile.renameTo(targetFile)) {
 			LOGGER.warn("文件移动失败：原始文件：{}，目标文件：{}", source, target);
 		}
 	}

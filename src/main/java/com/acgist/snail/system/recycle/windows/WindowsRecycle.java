@@ -1,4 +1,4 @@
-package com.acgist.snail.system.recycle.window;
+package com.acgist.snail.system.recycle.windows;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -15,15 +15,15 @@ import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.NumberUtils;
 
 /**
- * <p>Window回收站</p>
+ * <p>Windows回收站</p>
  * <p>支持系统：Win10</p>
  * 
  * @author acgist
  * @since 1.1.0
  */
-public final class WindowRecycle extends Recycle {
+public final class WindowsRecycle extends Recycle {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(WindowRecycle.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(WindowsRecycle.class);
 
 	/**
 	 * <p>回收站路径</p>
@@ -50,7 +50,7 @@ public final class WindowRecycle extends Recycle {
 	 */
 	private String deleteInfoFile;
 
-	public WindowRecycle(String path) {
+	public WindowsRecycle(String path) {
 		super(path);
 		this.buildRecycle();
 		this.buildRecycleName();
@@ -135,7 +135,7 @@ public final class WindowRecycle extends Recycle {
 			out.write(0);
 		}
 		// 时间戳
-		final long timestamp = DateUtils.windowTimestamp();
+		final long timestamp = DateUtils.windowsTimestamp();
 		final ByteBuffer buffer = ByteBuffer.allocate(8);
 		// 设置CPU默认大小端模式
 		buffer.order(ByteOrder.nativeOrder());

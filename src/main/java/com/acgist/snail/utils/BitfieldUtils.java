@@ -4,7 +4,7 @@ import java.util.BitSet;
 
 /**
  * <p>Piece位图工具</p>
- * <p>每个Piece占一位，每个字节的高位（末尾）表示八个Piece中的第一块，没有下载的Piece使用0占位。</p>
+ * <p>每个Piece占一位，每个字节的高位（末尾）表示八个Piece中的第一块，没有下载的Piece使用{@code 0}占位。</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -12,11 +12,11 @@ import java.util.BitSet;
 public final class BitfieldUtils {
 
 	/**
-	 * <p>Piece位图转为字节数组</p>
-	 * <p>注：即使Piece没有下载传递时依旧要使用0占位</p>
+	 * <p>Piece位图转为Piece位图字节数组</p>
+	 * <p>注：即使Piece没有下载传递时依旧要使用{@code 0}占位</p>
 	 * 
 	 * @param pieceSize Piece数量
-	 * @param pieces 已下载Piece位图
+	 * @param pieces Piece位图
 	 * 
 	 * @return Piece位图字节数组
 	 */
@@ -32,9 +32,9 @@ public final class BitfieldUtils {
 	}
 	
 	/**
-	 * <p>字节数组转为Piece位图</p>
+	 * <p>Piece位图字节数组转为Piece位图</p>
 	 * 
-	 * @param bitfield 字节数组
+	 * @param bitfield Piece位图字节数组
 	 * 
 	 * @return Piece位图
 	 */
@@ -46,14 +46,14 @@ public final class BitfieldUtils {
 	}
 	
 	/**
-	 * <p>高低位互换：01000001->10000010</p>
+	 * <p>高低位互换：01000001 -&gt; 10000010</p>
 	 */
 	private static final byte reverse(final byte value) {
-		int opt = value;
-		opt = (opt & 0B11110000) >> 4 | (opt & 0B00001111) << 4;
-		opt = (opt & 0B11001100) >> 2 | (opt & 0B00110011) << 2;
-		opt = (opt & 0B10101010) >> 1 | (opt & 0B01010101) << 1;
-		return (byte) opt;
+		int result = value;
+		result = (result & 0B11110000) >> 4 | (result & 0B00001111) << 4;
+		result = (result & 0B11001100) >> 2 | (result & 0B00110011) << 2;
+		result = (result & 0B10101010) >> 1 | (result & 0B01010101) << 1;
+		return (byte) result;
 	}
 
 }

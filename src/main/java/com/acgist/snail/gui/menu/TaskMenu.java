@@ -162,6 +162,8 @@ public final class TaskMenu extends Menu {
 	
 	/**
 	 * <p>文件校验</p>
+	 * 
+	 * TODO：优化显示
 	 */
 	private EventHandler<ActionEvent> verifyEvent = (event) -> {
 		SystemThreadContext.submit(() -> {
