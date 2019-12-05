@@ -201,7 +201,7 @@ public final class TaskSession implements ITaskSession {
 				} else {
 					// 剩余下载时间
 					final long second = (this.entity.getSize() - this.statistics.downloadSize()) / downloadSpeed;
-					return DateUtils.formatSecond(second);
+					return DateUtils.format(second);
 				}
 			} else {
 				return "-";

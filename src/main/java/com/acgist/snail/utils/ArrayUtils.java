@@ -126,6 +126,8 @@ public final class ArrayUtils {
 	/**
 	 * <p>数组是否为空</p>
 	 * 
+	 * @param objects 数组
+	 * 
 	 * @return {@code true}-空数组；{@code false}-非空数组；
 	 */
 	public static final boolean isEmpty(Object[] objects) {
@@ -134,6 +136,8 @@ public final class ArrayUtils {
 	
 	/**
 	 * <p>数组是否非空</p>
+	 * 
+	 * @param objects 数组
 	 * 
 	 * @return {@code true}-非空数组；{@code false}-空数组；
 	 */
@@ -144,6 +148,8 @@ public final class ArrayUtils {
 	/**
 	 * <p>字节数组是否为空</p>
 	 * 
+	 * @param value 字节数组
+	 * 
 	 * @return {@code true}-空数组；{@code false}-非空数组；
 	 */
 	public static final boolean isEmpty(byte[] value) {
@@ -153,6 +159,8 @@ public final class ArrayUtils {
 	/**
 	 * <p>字节数组是否非空</p>
 	 * 
+	 * @param value 字节数组
+	 * 
 	 * @return {@code true}-非空数组；{@code false}-空数组；
 	 */
 	public static final boolean isNotEmpty(byte[] value) {
@@ -161,6 +169,8 @@ public final class ArrayUtils {
 	
 	/**
 	 * <p>随机字节数组</p>
+	 * 
+	 * @param length 数组长度
 	 * 
 	 * @return 字节数组
 	 */

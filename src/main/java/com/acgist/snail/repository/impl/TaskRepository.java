@@ -28,7 +28,8 @@ public final class TaskRepository extends Repository<TaskEntity> {
 	public void delete(TaskEntity entity) {
 		LOGGER.info("删除任务：{}", entity.getName());
 		final boolean ok = FileUtils.recycle(entity.getFile());
-		if(!ok) { // 不支持回收站直接删除文件
+		if(!ok) {
+			LOGGER.debug("不支持回收站直接删除文件：{}", entity.getFile());
 			FileUtils.delete(entity.getFile());
 		}
 		// 删除数据库信息

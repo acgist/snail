@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.system.context.SystemContext;
-import com.acgist.snail.system.recycle.window.WindowRecycle;
+import com.acgist.snail.system.recycle.windows.WindowsRecycle;
 
 /**
  * <p>回收站管理器</p>
@@ -26,8 +26,8 @@ public final class RecycleManager {
 	static {
 		final String osName = SystemContext.osName();
 		LOGGER.info("初始化回收站：{}", osName);
-		if(WindowRecycle.support(osName)) {
-			BUILDER = (path) -> new WindowRecycle(path);
+		if(WindowsRecycle.support(osName)) {
+			BUILDER = (path) -> new WindowsRecycle(path);
 		} else {
 			BUILDER = null;
 		}
