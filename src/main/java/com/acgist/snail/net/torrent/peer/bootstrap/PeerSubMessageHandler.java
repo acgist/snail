@@ -377,9 +377,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		this.extension(); // 发送扩展消息：优先交换扩展
 		this.dht(); // 发送DHT消息
 		this.exchangeBitfield(); // 交换Piece位图
-		if(this.server) {
-			this.unchoke(); // 解除阻塞
-		}
+		this.unchoke(); // 解除阻塞
 	}
 
 	/**
