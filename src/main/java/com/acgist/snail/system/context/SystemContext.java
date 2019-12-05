@@ -13,7 +13,6 @@ import com.acgist.snail.net.application.ApplicationServer;
 import com.acgist.snail.net.torrent.TorrentServer;
 import com.acgist.snail.net.torrent.lsd.LocalServiceDiscoveryServer;
 import com.acgist.snail.net.torrent.peer.PeerServer;
-import com.acgist.snail.net.torrent.peer.bootstrap.PeerEvaluator;
 import com.acgist.snail.net.torrent.tracker.TrackerServer;
 import com.acgist.snail.net.torrent.utp.bootstrap.UtpRequestQueue;
 import com.acgist.snail.repository.DatabaseManager;
@@ -129,7 +128,6 @@ public final class SystemContext {
 				TcpServer.shutdown();
 				UdpServer.shutdown();
 				UtpRequestQueue.getInstance().shutdown();
-				PeerEvaluator.getInstance().shutdown();
 				DatabaseManager.getInstance().shutdown();
 				DhtConfig.getInstance().persistent();
 				TrackerConfig.getInstance().persistent();

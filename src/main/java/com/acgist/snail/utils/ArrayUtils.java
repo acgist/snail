@@ -14,7 +14,7 @@ import com.acgist.snail.system.exception.ArgumentException;
 public final class ArrayUtils {
 
 	/**
-	 * <p>不存在索引</p>
+	 * <p>不存在索引：{@value}</p>
 	 */
 	public static final int NO_INDEX = -1;
 	
@@ -24,6 +24,8 @@ public final class ArrayUtils {
 	 * 
 	 * @param sources 原始数据
 	 * @param targets 比较数据
+	 * 
+	 * @return {@code true}-相等；{@code false}-不相等；
 	 */
 	public static final boolean equals(byte[] sources, byte[] targets) {
 		if(sources == targets) {
@@ -52,7 +54,7 @@ public final class ArrayUtils {
 	 * @param sources 原始数据
 	 * @param targets 比较数据
 	 * 
-	 * @return 1：原始数据大；-1：比较数据大；0：相等；
+	 * @return {@code 1}-原始数据大；{@code -1}-比较数据大；{@code 0}-相等；
 	 * 
 	 * @since 1.1.0
 	 */
@@ -123,13 +125,17 @@ public final class ArrayUtils {
 	
 	/**
 	 * <p>数组是否为空</p>
+	 * 
+	 * @return {@code true}-空数组；{@code false}-非空数组；
 	 */
 	public static final boolean isEmpty(Object[] objects) {
 		return objects == null || objects.length == 0;
 	}
 	
 	/**
-	 * <p>数组是否包含数据</p>
+	 * <p>数组是否非空</p>
+	 * 
+	 * @return {@code true}-非空数组；{@code false}-空数组；
 	 */
 	public static final boolean isNotEmpty(Object[] objects) {
 		return !isEmpty(objects);
@@ -137,13 +143,17 @@ public final class ArrayUtils {
 	
 	/**
 	 * <p>字节数组是否为空</p>
+	 * 
+	 * @return {@code true}-空数组；{@code false}-非空数组；
 	 */
 	public static final boolean isEmpty(byte[] value) {
 		return value == null || value.length == 0;
 	}
 
 	/**
-	 * <p>字节数组是否包含数据</p>
+	 * <p>字节数组是否非空</p>
+	 * 
+	 * @return {@code true}-非空数组；{@code false}-空数组；
 	 */
 	public static final boolean isNotEmpty(byte[] value) {
 		return !isEmpty(value);
@@ -151,6 +161,8 @@ public final class ArrayUtils {
 	
 	/**
 	 * <p>随机字节数组</p>
+	 * 
+	 * @return 字节数组
 	 */
 	public static final byte[] random(int length) {
 		final byte[] bytes = new byte[length];
@@ -162,8 +174,6 @@ public final class ArrayUtils {
 	}
 	
 	/**
-	 * <p>查找数组索引</p>
-	 * 
 	 * @see {@link #indexOf(int[], int, int, int)}
 	 */
 	public static final int indexOf(int[] values, int value) {
@@ -178,7 +188,7 @@ public final class ArrayUtils {
 	 * @param end 结束位置
 	 * @param value 查找数值
 	 * 
-	 * @return 索引：{@linkplain ArrayUtils#NO_INDEX -1}=不存在
+	 * @return 索引：{@linkplain ArrayUtils#NO_INDEX -1}-不存在
 	 */
 	public static final int indexOf(int[] values, int begin, int end, int value) {
 		for (int index = begin; index < end; index++) {
@@ -195,7 +205,7 @@ public final class ArrayUtils {
 	 * @param chars 数组
 	 * @param value 查找字符
 	 * 
-	 * @return 索引：{@linkplain ArrayUtils#NO_INDEX -1}=不存在
+	 * @return 索引：{@linkplain ArrayUtils#NO_INDEX -1}-不存在
 	 */
 	public static final int indexOf(char[] chars, char value) {
 		for (int index = 0; index < chars.length; index++) {

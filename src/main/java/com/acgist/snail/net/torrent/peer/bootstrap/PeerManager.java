@@ -89,7 +89,7 @@ public final class PeerManager {
 	/**
 	 * <p>添加Peer</p>
 	 * <p>优先级高的Peer插入尾部优先使用</p>
-	 * <p>优先级计算：PEX、本地发现、主动连接、Peer评分</p>
+	 * <p>优先级计算：PEX、本地发现、主动连接</p>
 	 * 
 	 * @param infoHashHex InfoHashHex
 	 * @param parent 任务下载统计
@@ -114,8 +114,7 @@ public final class PeerManager {
 						if(
 							source == PeerConfig.SOURCE_PEX || // PEX
 							source == PeerConfig.SOURCE_LSD || // 本地发现
-							source == PeerConfig.SOURCE_CONNECT || // 主动连接
-							PeerEvaluator.getInstance().eval(peerSession) // Peer评分
+							source == PeerConfig.SOURCE_CONNECT // 主动连接
 						) {
 							deque.offerLast(peerSession); // 插入尾部：优先级高
 						} else {
