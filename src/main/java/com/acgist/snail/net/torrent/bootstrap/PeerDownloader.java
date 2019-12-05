@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.torrent.PeerConnect;
 import com.acgist.snail.net.torrent.peer.PeerClient;
-import com.acgist.snail.net.torrent.peer.bootstrap.PeerEvaluator;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.net.torrent.utp.UtpClient;
 import com.acgist.snail.pojo.session.PeerSession;
@@ -40,8 +39,6 @@ public final class PeerDownloader extends PeerConnect {
 	public boolean handshake() {
 		final boolean ok = connect();
 		if(ok) {
-			// 连接评分
-			PeerEvaluator.getInstance().score(this.peerSession, PeerEvaluator.Type.CONNECT);
 			this.peerSubMessageHandler.handshake(this); // 发送握手消息
 		} else {
 			this.peerSession.fail(); // 记录失败次数

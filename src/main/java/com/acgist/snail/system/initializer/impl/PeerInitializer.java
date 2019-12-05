@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.torrent.peer.PeerServer;
-import com.acgist.snail.net.torrent.peer.bootstrap.PeerEvaluator;
 import com.acgist.snail.system.initializer.Initializer;
 
 /**
@@ -28,7 +27,6 @@ public final class PeerInitializer extends Initializer {
 	protected void init() {
 		LOGGER.info("初始化Peer");
 		PeerServer.getInstance().listen();
-		PeerEvaluator.getInstance().init();
 	}
 
 }

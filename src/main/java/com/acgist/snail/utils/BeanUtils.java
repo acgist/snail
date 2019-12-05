@@ -27,13 +27,13 @@ public final class BeanUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(BeanUtils.class);
 	
 	/**
-	 * <p>使用反射生成实例：调用默认构造方法（无参）</p>
+	 * <p>反射生成实例</p>
+	 * <p>调用默认构造方法（无参）</p>
 	 * 
 	 * @param <T> 类型泛型
+	 * @param clazz 实例类型
 	 * 
-	 * @param clazz 类型Class
-	 * 
-	 * @return 实体
+	 * @return 实例对象
 	 */
 	public static final <T> T newInstance(final Class<T> clazz) {
 		if(clazz == null) {
@@ -51,13 +51,13 @@ public final class BeanUtils {
 	 * <p>将对象属性转为Map</p>
 	 * <dl>
 	 * 	<dt>类型转换</dt>
-	 * 	<dd>String -&gt; String</dd>
-	 * 	<dd>Number -&gt; Number</dd>
-	 * 	<dd>Enum   -&gt; String</dd>
-	 * 	<dd>Date   -&gt; String(yyyyMMddHHmmss)</dd>
+	 * 	<dd>{@code String} -&gt; {@code String}</dd>
+	 * 	<dd>{@code Number} -&gt; {@code Number}</dd>
+	 * 	<dd>{@code Enum}   -&gt; {@code String}</dd>
+	 * 	<dd>{@code Date}   -&gt; {@code String(yyyyMMddHHmmss)}</dd>
 	 * </dl>
 	 * 
-	 * @param instance 对象
+	 * @param instance 实例对象
 	 * 
 	 * @return 对象属性Map
 	 */
@@ -82,18 +82,18 @@ public final class BeanUtils {
 	 * <p>获取类型属性</p>
 	 * <dl>
 	 * 	<dt>不获取的属性</dt>
-	 * 	<dd>静态：static</dd>
-	 * 	<dd>瞬时：transient</dd>
+	 * 	<dd>静态：{@code static}</dd>
+	 * 	<dd>瞬时：{@code transient}</dd>
 	 * </dl>
 	 * 
 	 * @param clazz 类型
 	 * 
-	 * @return 属性数组
+	 * @return 属性
 	 */
 	public static final String[] properties(Class<?> clazz) {
 		String[] properties = null;
 		final Class<?> superClazz = clazz.getSuperclass(); // 父类
-		if(superClazz != null) {
+		if(superClazz != null) { // 递归获取属性
 			properties = properties(superClazz);
 		} else {
 			properties = new String[0];
@@ -115,10 +115,10 @@ public final class BeanUtils {
 	/**
 	 * <p>获取对象属性值</p>
 	 * 
-	 * @param instance 对象
-	 * @param properties 对象属性集合
+	 * @param instance 实例对象
+	 * @param properties 对象属性
 	 * 
-	 * @return 属性值集合
+	 * @return 属性值
 	 */
 	public static final Object[] propertiesValue(Object instance, String[] properties) {
 		return Stream
@@ -130,7 +130,7 @@ public final class BeanUtils {
 	/**
 	 * <p>获取属性值</p>
 	 * 
-	 * @param instance 对象
+	 * @param instance 实例对象
 	 * @param property 对象属性
 	 * 
 	 * @return 属性值
@@ -141,7 +141,7 @@ public final class BeanUtils {
 			final PropertyDescriptor descriptor = new PropertyDescriptor(property, clazz);
 			return descriptor.getReadMethod().invoke(instance);
 		} catch (Exception e) {
-			LOGGER.error("反射获取属性值异常", e);
+			LOGGER.error("获取属性值异常", e);
 		}
 		return null;
 	}
@@ -149,7 +149,7 @@ public final class BeanUtils {
 	/**
 	 * <p>属性装配</p>
 	 * 
-	 * @param instance 对象
+	 * @param instance 实例对象
 	 * @param wrapper 属性包装器
 	 */
 	public static final void setProperties(Object instance, ResultSetWrapper wrapper) {
@@ -161,14 +161,14 @@ public final class BeanUtils {
 				final Object value = unpack(descriptor.getPropertyType(), wrapper.getObject(property));
 				descriptor.getWriteMethod().invoke(instance, value);
 			} catch (Exception e) {
-				LOGGER.info("反射属性装配异常", e);
+				LOGGER.info("属性装配异常", e);
 			}
 		}
 	}
 	
 	/**
 	 * <p>类型打包</p>
-	 * <p>枚举类型转换为字符串类型</p>
+	 * <p>处理类型：枚举</p>
 	 * 
 	 * @param object 属性原始值
 	 * 
@@ -187,7 +187,7 @@ public final class BeanUtils {
 	
 	/**
 	 * <p>类型拆包</p>
-	 * <p>类型：枚举、长字符串</p>
+	 * <p>处理类型：枚举、长字符串</p>
 	 * 
 	 * @param clazz 属性类型
 	 * @param value 属性打包值
@@ -198,40 +198,42 @@ public final class BeanUtils {
 		if(clazz == null || value == null) {
 			return null;
 		}
-		if(clazz.isEnum()) { // 枚举类型
-			final var enums = clazz.getEnumConstants();
-			// 下面方法存在泛型警告
-//			return Enum.valueOf((Class<Enum>) clazz, value.toString());
-			for (Object object : enums) {
-				// 转换枚举使用name()方法
-//				final Enum<?> enumValue = (Enum<?>) object;
-//				if(enumValue.name().equals(value.toString())) {
-//					return object;
-//				}
-				// 直接使用toString()方法
-				if(object.toString().equals(value.toString())) {
-					return object;
-				}
-			}
-			return null;
+		// 枚举类型
+		if(clazz.isEnum()) {
+			return unpackEnum(clazz, value);
 		}
-		if(value instanceof JdbcClob) { // 长字符串
-			final JdbcClob clob = (JdbcClob) value;
-			try(final Reader reader = clob.getCharacterStream()) {
-				int index;
-				final char[] chars = new char[1024];
-				final StringBuilder builder = new StringBuilder();
-				while((index = reader.read(chars)) != -1) {
-					builder.append(new String(chars, 0, index));
-				}
-				return builder.toString();
-			} catch (Exception e) {
-				LOGGER.error("JdbcClob读取异常", e);
-			} finally {
-				clob.free();
-			}
+		// 长字符串
+		if(value instanceof JdbcClob) {
+			return unpackJdbcClob(clazz, value);
 		}
 		return value;
+	}
+	
+	private static final Object unpackEnum(Class<?> clazz, Object value) {
+		final var enums = clazz.getEnumConstants();
+		for (Object object : enums) {
+			if(object.toString().equals(value.toString())) {
+				return object;
+			}
+		}
+		return null;
+	}
+	
+	private static final Object unpackJdbcClob(Class<?> clazz, Object value) {
+		int index;
+		final JdbcClob clob = (JdbcClob) value;
+		final StringBuilder builder = new StringBuilder();
+		try(final Reader reader = clob.getCharacterStream()) {
+			final char[] chars = new char[1024];
+			while((index = reader.read(chars)) != -1) {
+				builder.append(new String(chars, 0, index));
+			}
+		} catch (Exception e) {
+			LOGGER.error("读取JdbcClob数据异常", e);
+		} finally {
+			clob.free();
+		}
+		return builder.toString();
 	}
 	
 }

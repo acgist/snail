@@ -8,8 +8,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.torrent.peer.bootstrap.PeerEvaluator;
-import com.acgist.snail.net.torrent.peer.bootstrap.PeerEvaluator.Type;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.pojo.bean.TorrentPiece;
 import com.acgist.snail.pojo.session.PeerSession;
@@ -413,8 +411,6 @@ public abstract class PeerConnect {
 						}
 					}
 				}
-				// Peer评估
-				PeerEvaluator.getInstance().score(this.peerSession, Type.DOWNLOAD);
 			}
 		} catch (Exception e) {
 			LOGGER.error("PeerConnect释放下载异常", e);
