@@ -37,8 +37,8 @@ public final class PeerUploader extends PeerConnect {
 	@Override
 	public void download() {
 		if(
-			this.peerSession.isPeerUnchoked() || // 解除阻塞
-			this.peerSession.supportAllowedFast() // 快速允许
+			this.peerSession.supportAllowedFast() || // 快速允许
+			this.peerConnectSession.isPeerUnchoked() // 解除阻塞
 		) {
 			super.download();
 		}
@@ -61,9 +61,6 @@ public final class PeerUploader extends PeerConnect {
 		} finally {
 			this.peerSession.statusOff(PeerConfig.STATUS_UPLOAD);
 			this.peerSession.peerUploader(null);
-			if(!this.peerSession.downloading()) { // 没有下载重置
-				this.peerSession.reset();
-			}
 		}
 	}
 	

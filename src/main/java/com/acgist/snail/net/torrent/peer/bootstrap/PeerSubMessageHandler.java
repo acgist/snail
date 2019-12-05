@@ -9,11 +9,13 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.codec.IMessageCodec;
 import com.acgist.snail.net.torrent.IMessageEncryptHandler;
+import com.acgist.snail.net.torrent.PeerConnect;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.bootstrap.PeerDownloader;
 import com.acgist.snail.net.torrent.bootstrap.PeerUploader;
 import com.acgist.snail.net.torrent.peer.bootstrap.dht.DhtExtensionMessageHandler;
 import com.acgist.snail.net.torrent.peer.bootstrap.ltep.ExtensionMessageHandler;
+import com.acgist.snail.pojo.session.PeerConnectSession;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.PeerConfig;
@@ -84,17 +86,17 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 */
 	private PeerSession peerSession;
 	/**
+	 * <p>Peer连接：PeerUploader、PeerDownloader</p>
+	 */
+	private PeerConnect peerConnect;
+	/**
+	 * <p>Peer连接信息</p>
+	 */
+	private PeerConnectSession peerConnectSession;
+	/**
 	 * <p>Torrent信息</p>
 	 */
 	private TorrentSession torrentSession;
-	/**
-	 * <p>Peer上传客户端</p>
-	 */
-	private PeerUploader peerUploader;
-	/**
-	 * <p>Peer下载客户端</p>
-	 */
-	private PeerDownloader peerDownloader;
 	/**
 	 * <p>消息代理</p>
 	 */
@@ -182,8 +184,9 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			PeerConfig.SOURCE_CONNECT);
 		final PeerUploader peerUploader = torrentSession.newPeerUploader(peerSession, this);
 		if(peerUploader != null) {
-			this.peerUploader = peerUploader;
-			peerSession.peerUploader(this.peerUploader);
+			this.peerConnect = peerUploader;
+			this.peerConnectSession = peerUploader.peerConnectSession();
+			peerSession.peerUploader(peerUploader);
 			init(peerSession, torrentSession, reserved);
 			return true;
 		} else {
@@ -314,9 +317,10 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	public void handshake(PeerDownloader peerDownloader) {
 		LOGGER.debug("发送握手消息");
 		this.handshakeSend = true;
-		this.peerDownloader = peerDownloader;
-		if(this.peerSession != null && this.peerDownloader != null) {
-			this.peerSession.peerDownloader(this.peerDownloader);
+		if(peerDownloader != null) {
+			this.peerConnect = peerDownloader;
+			this.peerConnectSession = peerDownloader.peerConnectSession();
+			this.peerSession.peerDownloader(peerDownloader);
 		}
 		final ByteBuffer buffer = ByteBuffer.allocate(PeerConfig.HANDSHAKE_LENGTH);
 		buffer.put((byte) PeerConfig.HANDSHAKE_NAME_LENGTH);
@@ -400,7 +404,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 */
 	public void choke() {
 		LOGGER.debug("发送阻塞消息");
-		this.peerSession.amChoked();
+		this.peerConnectSession.amChoked();
 		pushMessage(PeerConfig.Type.CHOKE, null);
 	}
 
@@ -409,12 +413,10 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 */
 	private void choke(ByteBuffer buffer) {
 		LOGGER.debug("处理阻塞消息");
-		this.peerSession.peerChoked();
+		this.peerConnectSession.peerChoked();
 		// 不释放资源：让系统自动优化剔除
-//		if(this.peerDownloader != null) {
-//			this.peerDownloader.release();
-//		} else if(this.peerUploader != null) {
-//			this.peerUploader.release();
+//		if(this.peerConnect != null) {
+//			this.peerConnect.release();
 //		}
 	}
 	
@@ -434,12 +436,12 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			LOGGER.debug("发送解除阻塞消息：Peer只上传不下载");
 			return;
 		}
-		if(this.peerSession.isAmUnchoked()) {
+		if(this.peerConnectSession.isAmUnchoked()) {
 			LOGGER.debug("发送解除阻塞消息：已经解除");
 			return;
 		}
 		LOGGER.debug("发送解除阻塞消息");
-		this.peerSession.amUnchoked();
+		this.peerConnectSession.amUnchoked();
 		pushMessage(PeerConfig.Type.UNCHOKE, null);
 	}
 	
@@ -453,7 +455,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			return;
 		}
 		LOGGER.debug("处理解除阻塞消息");
-		this.peerSession.peerUnchoked();
+		this.peerConnectSession.peerUnchoked();
 		this.unchoke();
 		this.unchokeDownload();
 	}
@@ -466,12 +468,12 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * <p>收到have消息时，如果客户端没有对应的Piece，发送感兴趣消息表示客户端对Peer感兴趣。</p>
 	 */
 	private void interested() {
-		if(this.peerSession.isAmInterested()) {
+		if(this.peerConnectSession.isAmInterested()) {
 			LOGGER.debug("发送感兴趣消息：已经感兴趣");
 			return;
 		}
 		LOGGER.debug("发送感兴趣消息");
-		this.peerSession.amInterested();
+		this.peerConnectSession.amInterested();
 		pushMessage(PeerConfig.Type.INTERESTED, null);
 	}
 
@@ -480,7 +482,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 */
 	private void interested(ByteBuffer buffer) {
 		LOGGER.debug("处理感兴趣消息");
-		this.peerSession.peerInterested();
+		this.peerConnectSession.peerInterested();
 	}
 
 	/**
@@ -492,12 +494,12 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * <p>在交换Piece位图和Piece下载完成后，如果Peer没有更多的Piece时才发送不感兴趣消息，其他情况不发送此消息。</p>
 	 */
 	public void notInterested() {
-		if(this.peerSession.isAmNotInterested()) {
+		if(this.peerConnectSession.isAmNotInterested()) {
 			LOGGER.debug("发送不感兴趣消息：已经不感兴趣");
 			return;
 		}
 		LOGGER.debug("发送不感兴趣消息");
-		this.peerSession.amNotInterested();
+		this.peerConnectSession.amNotInterested();
 		pushMessage(PeerConfig.Type.NOT_INTERESTED, null);
 	}
 
@@ -506,7 +508,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 */
 	private void notInterested(ByteBuffer buffer) {
 		LOGGER.debug("处理不感兴趣消息");
-		this.peerSession.peerNotInterested();
+		this.peerConnectSession.peerNotInterested();
 	}
 
 	/**
@@ -826,7 +828,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			LOGGER.debug("发送request消息：任务不可下载");
 			return;
 		}
-		if(this.peerSession.isPeerChoked()) {
+		if(this.peerConnectSession.isPeerChoked()) {
 			LOGGER.debug("发送request消息：阻塞");
 			return;
 		}
@@ -849,7 +851,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		final int index = buffer.getInt();
 		final int begin = buffer.getInt();
 		final int length = buffer.getInt();
-		if(this.peerSession.isAmChoked()) {
+		if(this.peerConnectSession.isAmChoked()) {
 			LOGGER.debug("处理request消息：阻塞");
 			rejectRequest(index, begin, length);
 			return;
@@ -918,10 +920,8 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			bytes = new byte[remaining];
 			buffer.get(bytes);
 		}
-		if(this.peerDownloader != null) {
-			this.peerDownloader.piece(index, begin, bytes);
-		} else if(this.peerUploader != null) {
-			this.peerUploader.piece(index, begin, bytes);
+		if(this.peerConnect != null) {
+			this.peerConnect.piece(index, begin, bytes);
 		}
 	}
 
@@ -1144,13 +1144,11 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 */
 	private void unchokeDownload() {
 		if(
-			this.peerSession != null &&
-			this.peerSession.isPeerUnchoked()
+			this.peerConnectSession != null &&
+			this.peerConnectSession.isPeerUnchoked()
 		) {
-			if(this.peerDownloader != null) {
-				this.peerDownloader.download();
-			} else if(this.peerUploader != null) {
-				this.peerUploader.download();
+			if(this.peerConnect != null) {
+				this.peerConnect.download();
 			}
 		}
 	}
@@ -1161,13 +1159,12 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	private void allowedFastDownload() {
 		if(
 			this.peerSession != null &&
-			this.peerSession.isPeerChoked() &&
-			this.peerSession.supportAllowedFast()
+			this.peerSession.supportAllowedFast() &&
+			this.peerConnectSession != null &&
+			this.peerConnectSession.isPeerChoked()
 		) {
-			if(this.peerDownloader != null) {
-				this.peerDownloader.download();
-			} else if(this.peerUploader != null) {
-				this.peerUploader.download();
+			if(this.peerConnect != null) {
+				this.peerConnect.download();
 			}
 		}
 	}

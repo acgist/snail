@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.pojo.bean.TorrentPiece;
+import com.acgist.snail.pojo.session.PeerConnectSession;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.utils.ObjectUtils;
@@ -89,6 +90,10 @@ public abstract class PeerConnect {
 	 * <p>Piece完成锁</p>
 	 */
 	private final AtomicBoolean completeLock = new AtomicBoolean(false);
+	/**
+	 * <p>Peer连接信息</p>
+	 */
+	protected final PeerConnectSession peerConnectSession = new PeerConnectSession();
 	
 	protected final PeerSession peerSession;
 	protected final TorrentSession torrentSession;
@@ -106,6 +111,10 @@ public abstract class PeerConnect {
 	
 	public final TorrentSession torrentSession() {
 		return this.torrentSession;
+	}
+	
+	public final PeerConnectSession peerConnectSession() {
+		return this.peerConnectSession;
 	}
 	
 	/**
@@ -370,7 +379,7 @@ public abstract class PeerConnect {
 			this.undone();
 		}
 		// 挑选Piece
-		if(this.peerSession.isPeerUnchoked()) { // 解除阻塞
+		if(this.peerConnectSession.isPeerUnchoked()) { // 解除阻塞
 			LOGGER.debug("选择下载Piece：解除阻塞");
 			this.downloadPiece = this.torrentSession.pick(this.peerSession.availablePieces(), this.peerSession.suggestPieces());
 		} else { // 快速允许
