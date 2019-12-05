@@ -24,31 +24,31 @@ public final class NumberUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(NumberUtils.class);
 	
 	/**
-	 * <p>最小唯一编号索引</p>
+	 * <p>最小唯一编号索引：{@value}</p>
 	 */
-	private static final int MIN_INT_INDEX = 1000;
+	private static final int MIN_INDEX = 1000;
 	/**
-	 * <p>最大唯一编号索引</p>
+	 * <p>最大唯一编号索引：{@value}</p>
 	 */
-	private static final int MAX_INT_INDEX = 9999;
+	private static final int MAX_INDEX = 9999;
 	
 	/**
 	 * <p>唯一编号索引</p>
 	 */
-	private static int index = MIN_INT_INDEX;
+	private static int index = MIN_INDEX;
 	
 	/**
 	 * <p>生成唯一编号</p>
-	 * <p>长度：8</p>
-	 * <p>格式：index(4) + mmss</p>
+	 * <p>长度：{@code 8}</p>
+	 * <p>格式：{@link #index} + {@code mmss}</p>
 	 */
 	public static final Integer build() {
 		final StringBuilder builder = new StringBuilder();
 		synchronized(NumberUtils.class) {
 			int index = NumberUtils.index;
 			builder.append(index);
-			if(++index > MAX_INT_INDEX) {
-				index = MIN_INT_INDEX;
+			if(++index > MAX_INDEX) {
+				index = MIN_INDEX;
 			}
 			NumberUtils.index = index;
 		}
@@ -57,11 +57,11 @@ public final class NumberUtils {
 	}
 	
 	/**
-	 * <p>字节数组转int（大端）</p>
+	 * <p>字节数组转{@code int}（大端）</p>
 	 * 
 	 * @param bytes 字节数组
 	 * 
-	 * @return int
+	 * @return {@code int}
 	 */
 	public static final int bytesToInt(byte[] bytes) {
 		int value = 0;
@@ -73,9 +73,9 @@ public final class NumberUtils {
 	}
 	
 	/**
-	 * <p>int转字节数组（大端）</p>
+	 * <p>{@code int}转字节数组（大端）</p>
 	 * 
-	 * @param value int
+	 * @param value {@code int}
 	 * 
 	 * @return 字节数组
 	 */
@@ -89,11 +89,11 @@ public final class NumberUtils {
 	}
 	
 	/**
-	 * <p>字节数组转short（大端）</p>
+	 * <p>字节数组转{@code short}（大端）</p>
 	 * 
 	 * @param bytes 字节数组
 	 * 
-	 * @return short
+	 * @return {@code short}
 	 */
 	public static final short bytesToShort(byte[] bytes) {
 		short value = 0;
@@ -103,9 +103,9 @@ public final class NumberUtils {
 	}
 	
 	/**
-	 * <p>short转字节数组（大端）</p>
+	 * <p>{@code short}转字节数组（大端）</p>
 	 * 
-	 * @param value short
+	 * @param value {@code short}
 	 * 
 	 * @return 字节数组
 	 */
@@ -118,6 +118,11 @@ public final class NumberUtils {
 	
 	/**
 	 * <p>向上取整</p>
+	 * <pre>
+	 * ceilDiv(2, 2) = 1;
+	 * ceilDiv(3, 2) = 2;
+	 * ceilDiv(4, 2) = 2;
+	 * </pre>
 	 * 
 	 * @param dividend 被除数
 	 * @param divisor 除数
@@ -133,11 +138,11 @@ public final class NumberUtils {
 	}
 
 	/**
-	 * <p>统计数字位上是1的个数</p>
+	 * <p>统计数字位上是{@code 1}的个数</p>
 	 * 
 	 * @param number 数字
 	 * 
-	 * @return 位上是1的个数
+	 * @return 个数
 	 */
 	public static final byte bitCount(int number) {
 		byte count = 0;
@@ -202,9 +207,9 @@ public final class NumberUtils {
 	}
 	
 	/**
-	 * <p>获取随机数工具</p>
+	 * <p>获取随机数对象</p>
 	 * 
-	 * @return 随机数工具
+	 * @return 随机数对象
 	 */
 	public static final Random random() {
 		try {

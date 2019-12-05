@@ -16,11 +16,11 @@ public final class LoggerUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(LoggerUtils.class);
 	
 	/**
-	 * <p>关闭系统日志</p>
-	 * <p>将缓存的日志数据写入到日志文件</p>
+	 * <p>关闭日志系统</p>
+	 * <p>将日志缓存数据写入日志文件</p>
 	 */
 	public static final void shutdown() {
-		LOGGER.debug("关闭系统日志");
+		LOGGER.debug("关闭日志系统");
 		final LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
 		context.stop();
 	}

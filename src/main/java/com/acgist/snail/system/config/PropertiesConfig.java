@@ -25,9 +25,6 @@ public abstract class PropertiesConfig {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesConfig.class);
 
-	/**
-	 * TODO：初始化完成后删除
-	 */
 	protected PropertiesUtils properties;
 
 	/**

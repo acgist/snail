@@ -5,7 +5,7 @@ import java.util.Map;
 
 /**
  * <p>Object工具</p>
- * <p>提供重写toString、equals、hashCode等方法</p>
+ * <p>提供重写{@code equals}、{@code toString}、{@code hashCode}等方法</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -13,11 +13,29 @@ import java.util.Map;
 public final class ObjectUtils {
 
 	/**
-	 * <p>重写hashCode方法</p>
+	 * <p>判断对象是否相等（判断引用）</p>
 	 * 
-	 * @param values 属性
+	 * @param source 原始对象：{@code this}
+	 * @param target 比较对象
 	 * 
-	 * @return hashCode
+	 * @return {@code true}-相等；{@code false}-不等；
+	 */
+	public static final boolean equals(Object source, Object target) {
+		if(source == null) {
+			return target == null;
+		} else if(source == target) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * <p>计算{@code hashCode}</p>
+	 * 
+	 * @param values 属性值
+	 * 
+	 * @return {@code hashCode}
 	 */
 	public static final int hashCode(Object ... values) {
 		if(values == null) {
@@ -33,53 +51,59 @@ public final class ObjectUtils {
 	}
 	
 	/**
-	 * <p>对象是否相等（判断引用）</p>
+	 * <p>计算{@code hashCode}</p>
 	 * 
-	 * @param source 原始对象：this
-	 * @param target 比较对象
+	 * @param bytes 字符数组
 	 * 
-	 * @return true-相等；false-不相等；
+	 * @return {@code hashCode}
 	 */
-	public static final boolean equals(Object source, Object target) {
-		if(source == null) {
-			return target == null;
-		} else if(source == target) {
-			return true;
-		} else {
-			return false;
+	public static final int hashCode(byte[] bytes) {
+		if(bytes == null) {
+			return 0;
 		}
+		int hashCode = 0;
+		for (byte value : bytes) {
+			hashCode += value;
+		}
+		return hashCode;
 	}
 	
 	/**
-	 * <p>对象是否可以相互访问</p>
-	 * <p>不推荐使用：使用instanceof替代</p>
-	 * 
-	 * @param source 原始对象：this（父类）
-	 * @param target 比较对象（子类）
-	 * 
-	 * @return true-可以访问；false-不可以访问；
-	 */
-	@Deprecated
-	public static final boolean assignableClazz(Object source, Object target) {
-		if(source.getClass().isAssignableFrom(target.getClass())) {
-			return true;
-		}
-		return false;
-	}
-	
-	/**
-	 * <p>重写toString方法</p>
+	 * <p>计算{@code toString}</p>
+	 * <p>如果{@code values}等于{@code null}，{@code object}必须提供{@code getter}。</p>
 	 * 
 	 * @param object 对象
-	 * @param values 属性
+	 * @param values 属性值
 	 * 
-	 * @return toString
+	 * @return {@code toString}
 	 */
 	public static final String toString(Object object, Object ... values) {
+		if(object == null) {
+			return null;
+		}
 		final StringBuilder builder = new StringBuilder();
-		builder.append(object.getClass().getSimpleName());
-		builder.append("=[");
-		if(values.length > 0) {
+		builder
+			.append(object.getClass().getSimpleName())
+			.append("[");
+		if(ArrayUtils.isEmpty(values)) {
+			if(object instanceof List) { // List
+				builder.append(object.toString());
+			} else if(object instanceof Map) { // Map
+				builder.append(object.toString());
+			} else {
+				// 属性
+				final var properties = BeanUtils.properties(object.getClass());
+				for (String property : properties) {
+					builder
+						.append(property)
+						.append("=")
+						.append(BeanUtils.propertyValue(object, property))
+						.append(",");
+				}
+				builder.setLength(builder.length() - 1);
+			}
+		
+		} else {
 			for (Object value : values) {
 				builder.append(value).append(",");
 			}
@@ -90,37 +114,20 @@ public final class ObjectUtils {
 	}
 	
 	/**
-	 * <p>重写toString方法</p>
-	 * <p>注：对象属性需要提供getter</p>
+	 * <p>判断对象是否可以相互访问</p>
+	 * <p>不推荐使用：使用{@code instanceof}替代</p>
 	 * 
-	 * @param object 对象
+	 * @param source 原始对象：{@code this}（父类）
+	 * @param target 比较对象（子类）
 	 * 
-	 * @return toString
+	 * @return {@code true}-可以访问；{@code false}-不可访问；
 	 */
-	public static final String toString(Object object) {
-		if(object == null) {
-			return null;
+	@Deprecated
+	public static final boolean assignableClazz(Object source, Object target) {
+		if(source.getClass().isAssignableFrom(target.getClass())) {
+			return true;
 		}
-		if(object instanceof List) {
-			return object.toString();
-		} else if(object instanceof Map) {
-			return object.toString();
-		} else {
-			final StringBuilder builder = new StringBuilder();
-			builder
-				.append(object.getClass().getSimpleName())
-				.append("[");
-			final var properties = BeanUtils.properties(object.getClass());
-			for (String property : properties) {
-				builder.append(property).append("=").append(BeanUtils.propertyValue(object, property)).append(",");
-			}
-			final int length = builder.length();
-			if(length > 1) {
-				builder.setLength(length - 1);
-				builder.append("]");
-			}
-			return builder.toString();
-		}
+		return false;
 	}
-
+	
 }

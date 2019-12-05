@@ -14,18 +14,18 @@ import com.acgist.snail.system.exception.ArgumentException;
 public final class ArrayUtils {
 
 	/**
-	 * <p>不存在索引：{@value}</p>
+	 * <p>查找索引时没有匹配索引：{@value}</p>
 	 */
 	public static final int NO_INDEX = -1;
 	
 	/**
-	 * <p>数组比较</p>
+	 * <p>判断数组是否相等</p>
 	 * <p>相等：数组元素全部一致</p>
 	 * 
 	 * @param sources 原始数据
 	 * @param targets 比较数据
 	 * 
-	 * @return {@code true}-相等；{@code false}-不相等；
+	 * @return {@code true}-相等；{@code false}-不等；
 	 */
 	public static final boolean equals(byte[] sources, byte[] targets) {
 		if(sources == targets) {
@@ -54,7 +54,7 @@ public final class ArrayUtils {
 	 * @param sources 原始数据
 	 * @param targets 比较数据
 	 * 
-	 * @return {@code 1}-原始数据大；{@code -1}-比较数据大；{@code 0}-相等；
+	 * @return {@code 1}-{@code sources}大；{@code -1}-{@code targets}大；{@code 0}-相等；
 	 * 
 	 * @since 1.1.0
 	 */
@@ -184,6 +184,9 @@ public final class ArrayUtils {
 	}
 	
 	/**
+	 * @param values 数组
+	 * @param value 查找数值
+	 * 
 	 * @see {@link #indexOf(int[], int, int, int)}
 	 */
 	public static final int indexOf(int[] values, int value) {
@@ -191,14 +194,14 @@ public final class ArrayUtils {
 	}
 	
 	/**
-	 * <p>查找数组索引</p>
+	 * <p>查找{@code int}数组索引</p>
 	 * 
-	 * @param values 数组
+	 * @param values {@code int}数组
 	 * @param begin 开始位置
 	 * @param end 结束位置
-	 * @param value 查找数值
+	 * @param value 查找{@code int}
 	 * 
-	 * @return 索引：{@linkplain ArrayUtils#NO_INDEX -1}-不存在
+	 * @return 索引：{@linkplain ArrayUtils#NO_INDEX -1}-没有匹配
 	 */
 	public static final int indexOf(int[] values, int begin, int end, int value) {
 		for (int index = begin; index < end; index++) {
@@ -210,12 +213,12 @@ public final class ArrayUtils {
 	}
 	
 	/**
-	 * <p>查找字符索引</p>
+	 * <p>查找{@code char}数组索引</p>
 	 * 
-	 * @param chars 数组
-	 * @param value 查找字符
+	 * @param chars {@code char}数组
+	 * @param value 查找{@code char}
 	 * 
-	 * @return 索引：{@linkplain ArrayUtils#NO_INDEX -1}-不存在
+	 * @return 索引：{@linkplain ArrayUtils#NO_INDEX -1}-没有匹配
 	 */
 	public static final int indexOf(char[] chars, char value) {
 		for (int index = 0; index < chars.length; index++) {

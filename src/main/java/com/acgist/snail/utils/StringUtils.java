@@ -29,69 +29,89 @@ public final class StringUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(StringUtils.class);
 	
 	/**
-	 * <p>整数正则表达式（包含正负）</p>
+	 * <p>整数正则表达式（包含正负）：{@value}</p>
 	 */
 	private static final String NUMERIC_REGEX = "\\-?[0-9]+";
 	
 	/**
-	 * <p>小数、整数正则表达式（包含正负）</p>
+	 * <p>小数、整数正则表达式（包含正负）：{@value}</p>
 	 */
 	private static final String DECIMAL_REGEX = "\\-?[0-9]+(\\.[0-9]+)?";
 	
 	/**
 	 * <p>字符串是否为空</p>
+	 * 
+	 * @param value 字符串
+	 * 
+	 * @return {@code true}-空；{@code false}-非空；
 	 */
 	public static final boolean isEmpty(String value) {
 		return value == null || value.isEmpty();
 	}
 
 	/**
-	 * <p>字符串是否不为空</p>
+	 * <p>字符串是否非空</p>
+	 * 
+	 * @param value 字符串
+	 * 
+	 * @return {@code true}-非空；{@code false}-空；
 	 */
 	public static final boolean isNotEmpty(String value) {
 		return !isEmpty(value);
 	}
 	
 	/**
-	 * <p>是否是数字（整数）：{@value #NUMERIC_REGEX}</p>
+	 * <p>判断{@code value}是不是{@linkplain #NUMERIC_REGEX 数字（整数）}</p>
+	 * 
+	 * @param value 字符串
+	 * 
+	 * @return {@code true}-是；{@code false}-不是；
 	 */
 	public static final boolean isNumeric(String value) {
 		return StringUtils.regex(value, NUMERIC_REGEX, true);
 	}
 
 	/**
-	 * <p>是否是数字（整数、小数）</p>
+	 * <p>判断{@code value}是不是{@linkplain #DECIMAL_REGEX 数字（小数、整数）}：</p>
+	 * 
+	 * @param value 字符串
+	 * 
+	 * @return {@code true}-是；{@code false}-不是；
 	 */
 	public static final boolean isDecimal(String value) {
 		return StringUtils.regex(value, DECIMAL_REGEX, true);
 	}
 	
 	/**
-	 * <p>字符串是否以前缀开始</p>
+	 * <p>判断{@code value}是不是以{@code prefix}开始</p>
 	 * 
 	 * @param value 字符串
 	 * @param prefix 前缀
 	 * 
-	 * @return true-是；false-不是；
+	 * @return {@code true}-是；{@code false}-不是；
 	 */
 	public static final boolean startsWith(String value, String prefix) {
 		return value != null && prefix != null && value.startsWith(prefix);
 	}
 	
 	/**
-	 * <p>字符串是否以后缀结束</p>
+	 * <p>判断{@code value}是不是以{@code suffix}结束</p>
 	 * 
 	 * @param value 字符串
 	 * @param suffix 后缀
 	 * 
-	 * @return true-是；false-不是；
+	 * @return {@code true}-是；{@code false}-不是；
 	 */
 	public static final boolean endsWith(String value, String suffix) {
 		return value != null && suffix != null && value.endsWith(suffix);
 	}
 	
 	/**
-	 * <p>字节数组转为十六进制字符串</p>
+	 * <p>将{@code bytes}转为十六进制字符串</p>
+	 * 
+	 * @param bytes 字节数组
+	 * 
+	 * @return 十六进制字符串
 	 */
 	public static final String hex(byte[] bytes) {
 		if(bytes == null) {
@@ -110,7 +130,11 @@ public final class StringUtils {
 	}
 	
 	/**
-	 * <p>十六进制字符串转为字节数组</p>
+	 * <p>将{@code text}转为字节数组</p>
+	 * 
+	 * @param text 十六进制字符串
+	 * 
+	 * @return 字节数组
 	 */
 	public static final byte[] unhex(String text) {
 		if(text == null) {
@@ -134,7 +158,11 @@ public final class StringUtils {
 	}
 
 	/**
-	 * <p>SHA-1散列计算</p>
+	 * <p>计算{@code bytes}的SHA-1散列值</p>
+	 * 
+	 * @param bytes 字节数组
+	 * 
+	 * @return SHA-1散列值
 	 */
 	public static final byte[] sha1(byte[] bytes) {
 		final MessageDigest digest = DigestUtils.sha1();
@@ -143,7 +171,11 @@ public final class StringUtils {
 	}
 	
 	/**
-	 * <p>SHA-1散列计算并转为十六进制字符串</p>
+	 * <p>计算{@code bytes}的SHA-1散列值并转为十六进制字符串</p>
+	 * 
+	 * @param bytes 字节数组
+	 * 
+	 * @return {@code bytes}的SHA-1散列值十六进制字符串
 	 */
 	public static final String sha1Hex(byte[] bytes) {
 		return StringUtils.hex(sha1(bytes));
@@ -199,7 +231,7 @@ public final class StringUtils {
 	 * @param source 原始字符串
 	 * @param target 目标字符串
 	 * 
-	 * @return true-相等；false-不相等；
+	 * @return true-相等；false-不等；
 	 */
 	public static final boolean equals(String source, String target) {
 		if(source == null) {

@@ -1,5 +1,6 @@
 package com.acgist.snail.utils;
 
+import java.io.Closeable;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
@@ -21,9 +22,26 @@ import org.slf4j.LoggerFactory;
 public final class IoUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(IoUtils.class);
+
+	/**
+	 * <p>关闭{@code Closeable}</p>
+	 * 
+	 * @param closeable {@code Closeable}
+	 */
+	public static final void close(Closeable closeable) {
+		try {
+			if(closeable != null) {
+				closeable.close();
+			}
+		} catch (Exception e) {
+			LOGGER.error("关闭Closeable异常", e);
+		}
+	}
 	
 	/**
-	 * <p>关闭InputStream</p>
+	 * <p>关闭{@code InputStream}</p>
+	 * 
+	 * @param input {@code InputStream}
 	 */
 	public static final void close(InputStream input) {
 		try {
@@ -36,7 +54,9 @@ public final class IoUtils {
 	}
 	
 	/**
-	 * <p>关闭OutputStream</p>
+	 * <p>关闭{@code OutputStream}</p>
+	 * 
+	 * @param output {@code OutputStream}
 	 */
 	public static final void close(OutputStream output) {
 		try {
@@ -50,76 +70,92 @@ public final class IoUtils {
 	}
 	
 	/**
-	 * <p>关闭Socket</p>
+	 * <p>关闭{@code Socket}</p>
+	 * 
+	 * @param socket {@code Socket}
 	 */
 	public static final void close(Socket socket) {
-		if(socket != null && !socket.isClosed()) {
-			try {
+		try {
+			if(socket != null && !socket.isClosed()) {
 				socket.close();
-			} catch (Exception e) {
-				LOGGER.error("关闭Socket异常", e);
 			}
+		} catch (Exception e) {
+			LOGGER.error("关闭Socket异常", e);
 		}
 	}
 	
 	/**
-	 * <p>关闭AsynchronousSocketChannel</p>
+	 * <p>关闭{@code AsynchronousSocketChannel}</p>
+	 * 
+	 * @param socket {@code AsynchronousSocketChannel}
 	 */
 	public static final void close(AsynchronousSocketChannel socket) {
-		if(socket != null && socket.isOpen()) {
-			try {
+		try {
+			if(socket != null && socket.isOpen()) {
 				socket.close();
-			} catch (Exception e) {
-				LOGGER.error("关闭AsynchronousSocketChannel异常", e);
 			}
+		} catch (Exception e) {
+			LOGGER.error("关闭AsynchronousSocketChannel异常", e);
 		}
 	}
 	
 	/**
-	 * <p>关闭AsynchronousServerSocketChannel</p>
+	 * <p>关闭{@code AsynchronousServerSocketChannel}</p>
+	 * 
+	 * @param server {@code AsynchronousServerSocketChannel}
 	 */
 	public static final void close(AsynchronousServerSocketChannel server) {
-		if(server != null && server.isOpen()) {
-			try {
+		try {
+			if(server != null && server.isOpen()) {
 				server.close();
-			} catch (Exception e) {
-				LOGGER.error("关闭AsynchronousServerSocketChannel异常", e);
 			}
+		} catch (Exception e) {
+			LOGGER.error("关闭AsynchronousServerSocketChannel异常", e);
 		}
 	}
 	
 	/**
-	 * <p>关闭AsynchronousChannelGroup</p>
+	 * <p>关闭{@code AsynchronousChannelGroup}</p>
+	 * 
+	 * @param group {@code AsynchronousChannelGroup}
 	 */
 	public static final void close(AsynchronousChannelGroup group) {
-		if(group != null && !group.isShutdown()) {
-			group.shutdown();
+		try {
+			if(group != null && !group.isShutdown()) {
+				group.shutdown();
+			}
+		} catch (Exception e) {
+			LOGGER.error("关闭AsynchronousChannelGroup异常", e);
 		}
 	}
 	
 	/**
-	 * <p>关闭DatagramChannel</p>
+	 * <p>关闭{@code DatagramChannel}</p>
+	 * 
+	 * @param channel {@code DatagramChannel}
 	 */
 	public static final void close(DatagramChannel channel) {
-		if(channel != null && channel.isOpen()) {
-			try {
+		try {
+			if(channel != null && channel.isOpen()) {
 				channel.close();
-			} catch (Exception e) {
-				LOGGER.error("关闭DatagramChannel异常", e);
 			}
+		} catch (Exception e) {
+			LOGGER.error("关闭DatagramChannel异常", e);
 		}
 	}
 
 	/**
-	 * <p>关闭Selector</p>
+	 * <p>关闭{@code Selector}</p>
+	 * 
+	 * @param selector {@code Selector}
 	 */
 	public static final void close(Selector selector) {
-		if(selector != null && selector.isOpen()) {
-			try {
+		try {
+			if(selector != null && selector.isOpen()) {
 				selector.close();
-			} catch (Exception e) {
-				LOGGER.error("关闭Selector异常", e);
 			}
+		} catch (Exception e) {
+			LOGGER.error("关闭Selector异常", e);
 		}
 	}
 

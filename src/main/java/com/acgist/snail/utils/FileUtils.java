@@ -2,7 +2,6 @@ package com.acgist.snail.utils;
 
 import java.awt.Desktop;
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -270,8 +269,6 @@ public final class FileUtils {
 	/**
 	 * <p>文件移动</p>
 	 * 
-	 * TODO：优化至此
-	 * 
 	 * @param source 原始文件
 	 * @param target 目标文件
 	 */
@@ -279,7 +276,7 @@ public final class FileUtils {
 		final File sourceFile = new File(source);
 		final File targetFile = new File(target);
 		if(!sourceFile.renameTo(targetFile)) {
-			LOGGER.warn("文件移动失败：原始文件：{}，目标文件：{}", source, target);
+			LOGGER.warn("文件移动失败，原始文件：{}，目标文件：{}", source, target);
 		}
 	}
 	
@@ -291,19 +288,19 @@ public final class FileUtils {
 	 */
 	public static final void copy(String source, String target) {
 		try(
-			final var input = new BufferedInputStream(new FileInputStream(source));
-			final var output = new BufferedOutputStream(new FileOutputStream(target));
+			final var input = new FileInputStream(source);
+			final var output = new FileOutputStream(target);
 		) {
 			input.transferTo(output);
 		} catch (IOException e) {
-			LOGGER.error("文件拷贝异常", e);
+			LOGGER.error("文件拷贝异常，原始文件：{}，目标文件：{}", source, target, e);
 		}
 	}
 	
 	/**
-	 * <p>文件路径</p>
+	 * <p>获取文件路径</p>
 	 * 
-	 * @param folder 目录
+	 * @param folder 文件目录
 	 * @param fileName 文件名称
 	 * 
 	 * @return 文件路径
@@ -329,7 +326,7 @@ public final class FileUtils {
 		int index = 0;
 		BigDecimal decimal = new BigDecimal(size);
 		while(decimal.longValue() >= SystemConfig.DATA_SCALE) {
-			if(++index == FILE_LENGTH_UNIT.length) {
+			if(++index >= FILE_LENGTH_UNIT.length) {
 				index = FILE_LENGTH_UNIT.length - 1;
 				break;
 			}
@@ -341,7 +338,7 @@ public final class FileUtils {
 	/**
 	 * <p>文件大小格式化（MB）</p>
 	 * 
-	 * @param size 文件大小（B）
+	 * @param size 文件大小
 	 * 
 	 * @return 文件大小（MB）
 	 */
@@ -356,6 +353,7 @@ public final class FileUtils {
 	
 	/**
 	 * <p>获取文件大小</p>
+	 * <p>支持目录，如果文件路径是目录，递归统计目录中所有文件大小。</p>
 	 * 
 	 * @param path 文件路径
 	 * 
@@ -367,13 +365,13 @@ public final class FileUtils {
 		if(!file.exists()) {
 			return 0L;
 		}
-		if(file.isFile()) {
+		if(file.isFile()) { // 文件
 			try {
 				size = Files.size(Paths.get(path));
 			} catch (IOException e) {
 				LOGGER.error("获取文件大小异常", e);
 			}
-		} else {
+		} else { // 目录
 			final File[] files = file.listFiles();
 			for (File children : files) {
 				size += fileSize(children.getPath());
@@ -384,43 +382,45 @@ public final class FileUtils {
 	
 	/**
 	 * <p>创建文件夹</p>
-	 * <p>如果路径是文件：创建父目录</p>
-	 * <p>如果路径是目录：创建目录</p>
 	 * 
-	 * @param path 路径
-	 * @param file 是否是文件：true-文件；false-文件夹；
+	 * @param path 文件路径
+	 * @param isFile {@code path}是否是文件：{@code true}-文件；{@code false}-目录；
+	 * 
+	 * @see {@link #buildFolder(File, boolean)}
 	 */
-	public static final void buildFolder(String path, boolean file) {
-		final File opt = new File(path);
-		buildFolder(opt, file);
+	public static final void buildFolder(String path, boolean isFile) {
+		final File file = new File(path);
+		buildFolder(file, isFile);
 	}
 	
 	/**
 	 * <p>创建文件夹</p>
-	 * <p>如果路径是文件：创建父目录</p>
-	 * <p>如果路径是目录：创建目录</p>
+	 * <p>如果{@code file}是文件：创建父目录</p>
+	 * <p>如果{@code file}是目录：创建目录</p>
 	 * 
-	 * @param opt 文件
-	 * @param file 是否是文件：true-文件；false-文件夹；
+	 * @param file 文件
+	 * @param isFile {@code opt}是否是文件：{@code true}-文件；{@code false}-目录；
 	 */
-	public static final void buildFolder(File opt, boolean file) {
-		if(opt.exists()) {
+	public static final void buildFolder(File file, boolean isFile) {
+		if(file.exists()) {
 			return;
 		}
-		if(file) {
-			opt = opt.getParentFile();
+		if(isFile) {
+			file = file.getParentFile();
 		}
-		if(!opt.exists()) {
-			opt.mkdirs();
+		if(!file.exists()) {
+			file.mkdirs();
 		}
 	}
 	
 	/**
 	 * <p>计算文件MD5值</p>
 	 * 
-	 * @param path 文件（支持目录）
+	 * @param path 文件
 	 * 
-	 * @return 文件MD5值
+	 * @return 文件MD5值：文件路径=MD5值
+	 * 
+	 * @see {@link #hash(String, String)}
 	 */
 	public static final Map<String, String> md5(String path) {
 		return hash(path, DigestUtils.ALGO_MD5);
@@ -429,23 +429,24 @@ public final class FileUtils {
 	/**
 	 * <p>计算文件SHA-1值</p>
 	 * 
-	 * @param path 文件（支持目录）
+	 * @param path 文件
 	 * 
-	 * @return 文件SHA-1值
+	 * @return 文件SHA-1值：文件路径=SHA-1值
+	 * 
+	 * @see {@link #hash(String, String)}
 	 */
 	public static final Map<String, String> sha1(String path) {
 		return hash(path, DigestUtils.ALGO_SHA1);
 	}
 	
 	/**
-	 * <p>散列计算</p>
-	 * <p>如果是文件计算文件散列值</p>
-	 * <p>如果是目录计算每一个文件的散列值</p>
+	 * <p>文件散列计算</p>
+	 * <p>支持目录，如果{@code path}是文件目录，递归计算目录中的所有文件散列值。</p>
 	 * 
 	 * @param path 文件路径
-	 * @param algo 散列算法：MD5/SHA-1
+	 * @param algo 算法名称
 	 * 
-	 * @return 文件散列值（文件路径=散列值）
+	 * @return 文件散列值：文件路径=散列值
 	 */
 	private static final Map<String, String> hash(String path, String algo) {
 		final File file = new File(path);
@@ -453,7 +454,7 @@ public final class FileUtils {
 			return null;
 		}
 		final Map<String, String> data = new HashMap<>();
-		if (!file.isFile()) {
+		if (file.isDirectory()) {
 			final File[] files = file.listFiles();
 			for (File children : files) {
 				data.putAll(hash(children.getPath(), algo));
@@ -468,7 +469,7 @@ public final class FileUtils {
 					digest.update(bytes, 0, length);
 				}
 			} catch (IOException e) {
-				LOGGER.error("文件散列计算异常", e);
+				LOGGER.error("文件散列计算异常：{}-{}", algo, path, e);
 				return data;
 			}
 			data.put(path, StringUtils.hex(digest.digest()));
@@ -479,7 +480,7 @@ public final class FileUtils {
 	/**
 	 * <p>获取用户工作目录中的文件</p>
 	 * 
-	 * @param path 文件相对路径：以“/”开头
+	 * @param path 文件相对路径：以{@code /}开头
 	 * 
 	 * @return 文件
 	 */

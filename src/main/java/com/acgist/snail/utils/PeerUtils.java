@@ -13,15 +13,17 @@ import java.util.Map;
 public final class PeerUtils {
 
 	/**
-	 * <p>allowedFast固定值</p>
+	 * <p>allowedFast固定值：{@value}</p>
 	 */
 	private static final int ALLOWED_FAST_MASK = 0xFFFFFF00;
 	/**
-	 * <p>allowedFast固定值：k（快速允许Piece长度）</p>
+	 * <p>allowedFast快速允许Piece长度（k）：{@value}</p>
 	 */
 	private static final int ALLOWED_FAST_K = 10;
 	
 	/**
+	 * @param bytes 数据
+	 * 
 	 * @see {@link #read(ByteBuffer, int)}
 	 */
 	public static final Map<String, Integer> read(byte[] bytes) {
@@ -55,9 +57,10 @@ public final class PeerUtils {
 	
 	/**
 	 * <p>计算快速允许Piece索引</p>
+	 * <p>协议链接：http://www.bittorrent.org/beps/bep_0006.html</p>
 	 * 
-	 * @param pieceSize Piece数量
-	 * @param ip Peer IP地址
+	 * @param pieceSize Piece数量：种子Piece总量
+	 * @param ipAddress IP地址：Peer地址
 	 * @param infoHash InfoHash
 	 * 
 	 * @return 快速允许Piece索引
