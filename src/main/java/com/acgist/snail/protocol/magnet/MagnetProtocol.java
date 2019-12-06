@@ -20,8 +20,6 @@ import com.acgist.snail.utils.FileUtils;
  * 	<dd>使用第三方种子库（磁力链接转种子）</dd>
  * </dl>
  * 
- * TODO：磁力链接交换完成后修改文件大小
- * 
  * @author acgist
  * @since 1.0.0
  */

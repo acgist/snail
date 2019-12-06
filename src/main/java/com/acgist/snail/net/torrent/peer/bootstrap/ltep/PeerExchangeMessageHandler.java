@@ -28,8 +28,6 @@ import com.acgist.snail.utils.PeerUtils;
  * 
  * TODO：IPv6
  * 
- * TODO：holepunch连接
- * 
  * @author acgist
  * @since 1.0.0
  */
