@@ -307,7 +307,7 @@ public final class MSECryptHandshakeHandler {
 //		Diffie Hellman Ya, PadA
 //		Diffie Hellman Yb, PadB
 		this.buffer.flip();
-		final BigInteger publicKey = NumberUtils.decodeUnsigned(this.buffer, CryptConfig.PUBLIC_KEY_LENGTH);
+		final BigInteger publicKey = NumberUtils.decodeBigInteger(this.buffer, CryptConfig.PUBLIC_KEY_LENGTH);
 		this.buffer.compact();
 		this.dhSecret = MSEKeyPairBuilder.buildDHSecret(publicKey, this.keyPair.getPrivate());
 		if(this.step == Step.RECEIVE_PUBLIC_KEY) {
@@ -334,7 +334,7 @@ public final class MSECryptHandshakeHandler {
 		if(torrentSession == null) {
 			throw new NetException("加密握手失败（种子信息不存在）");
 		}
-		final byte[] dhSecretBytes = NumberUtils.encodeUnsigned(this.dhSecret, CryptConfig.PUBLIC_KEY_LENGTH);
+		final byte[] dhSecretBytes = NumberUtils.encodeBigInteger(this.dhSecret, CryptConfig.PUBLIC_KEY_LENGTH);
 		final InfoHash infoHash = torrentSession.infoHash();
 		this.cipher = MSECipher.newSender(dhSecretBytes, infoHash);
 		this.cipherTmp = MSECipher.newSender(dhSecretBytes, infoHash);
@@ -378,7 +378,7 @@ public final class MSECryptHandshakeHandler {
 	 */
 	private void receiveProvide() throws NetException {
 		LOGGER.debug("加密握手（接收加密协议协商）步骤：{}", this.step);
-		final byte[] dhSecretBytes = NumberUtils.encodeUnsigned(this.dhSecret, CryptConfig.PUBLIC_KEY_LENGTH);
+		final byte[] dhSecretBytes = NumberUtils.encodeBigInteger(this.dhSecret, CryptConfig.PUBLIC_KEY_LENGTH);
 		final MessageDigest digest = DigestUtils.sha1();
 //		HASH('req1', S)
 		digest.update("req1".getBytes());

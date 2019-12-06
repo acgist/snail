@@ -29,17 +29,17 @@ public final class StringUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(StringUtils.class);
 	
 	/**
-	 * <p>整数正则表达式（包含正负）：{@value}</p>
+	 * <p>数字正则表达式（正负、整数）：{@value}</p>
 	 */
 	private static final String NUMERIC_REGEX = "\\-?[0-9]+";
 	
 	/**
-	 * <p>小数、整数正则表达式（包含正负）：{@value}</p>
+	 * <p>数字正则表达式（正负、小数、整数）：{@value}</p>
 	 */
 	private static final String DECIMAL_REGEX = "\\-?[0-9]+(\\.[0-9]+)?";
 	
 	/**
-	 * <p>字符串是否为空</p>
+	 * <p>判断{@code value}是否为空</p>
 	 * 
 	 * @param value 字符串
 	 * 
@@ -50,7 +50,7 @@ public final class StringUtils {
 	}
 
 	/**
-	 * <p>字符串是否非空</p>
+	 * <p>判断{@code value}是否非空</p>
 	 * 
 	 * @param value 字符串
 	 * 
@@ -61,7 +61,7 @@ public final class StringUtils {
 	}
 	
 	/**
-	 * <p>判断{@code value}是不是{@linkplain #NUMERIC_REGEX 数字（整数）}</p>
+	 * <p>判断{@code value}是不是{@linkplain #NUMERIC_REGEX 数字}</p>
 	 * 
 	 * @param value 字符串
 	 * 
@@ -72,7 +72,7 @@ public final class StringUtils {
 	}
 
 	/**
-	 * <p>判断{@code value}是不是{@linkplain #DECIMAL_REGEX 数字（小数、整数）}：</p>
+	 * <p>判断{@code value}是不是{@linkplain #DECIMAL_REGEX 数字}</p>
 	 * 
 	 * @param value 字符串
 	 * 
@@ -130,28 +130,28 @@ public final class StringUtils {
 	}
 	
 	/**
-	 * <p>将{@code text}转为字节数组</p>
+	 * <p>将{@code content}转为字节数组</p>
 	 * 
-	 * @param text 十六进制字符串
+	 * @param content 十六进制字符串
 	 * 
 	 * @return 字节数组
 	 */
-	public static final byte[] unhex(String text) {
-		if(text == null) {
+	public static final byte[] unhex(String content) {
+		if(content == null) {
 			return null;
 		}
 		byte[] result;
-		int length = text.length();
+		int length = content.length();
 		if (length % 2 == 1) { // 奇数
 			length++;
 			result = new byte[(length / 2)];
-			text = "0" + text;
+			content = "0" + content;
 		} else { // 偶数
 			result = new byte[(length / 2)];
 		}
 		int jndex = 0;
 		for (int index = 0; index < length; index += 2) {
-			result[jndex] = (byte) Integer.parseInt(text.substring(index, index + 2), 16);
+			result[jndex] = (byte) Integer.parseInt(content.substring(index, index + 2), 16);
 			jndex++;
 		}
 		return result;
@@ -175,20 +175,20 @@ public final class StringUtils {
 	 * 
 	 * @param bytes 字节数组
 	 * 
-	 * @return {@code bytes}的SHA-1散列值十六进制字符串
+	 * @return 十六进制SHA-1散列值字符串
 	 */
 	public static final String sha1Hex(byte[] bytes) {
 		return StringUtils.hex(sha1(bytes));
 	}
 	
 	/**
-	 * <p>字符串解码</p>
-	 * <p>将经过编码的字符串解码为系统默认编码字符串</p>
+	 * <p>字符串编码转换</p>
+	 * <p>将编码为{@code charset}的字符串{@code value}解码为系统默认编码字符串</p>
 	 * 
 	 * @param value 原始字符串
 	 * @param charset 原始编码
 	 * 
-	 * @return 字符串（系统默认编码）
+	 * @return 系统编码字符串
 	 */
 	public static final String charset(String value, String charset) {
 		if(StringUtils.isEmpty(value) || StringUtils.isEmpty(charset)) {
@@ -197,19 +197,19 @@ public final class StringUtils {
 		try {
 			return new String(value.getBytes(charset));
 		} catch (UnsupportedEncodingException e) {
-			LOGGER.error("字符串解码异常：{}-{}", charset, value, e);
+			LOGGER.error("字符串编码转换异常：{}-{}", charset, value, e);
 		}
 		return value;
 	}
 
 	/**
-	 * <p>正则表达式验证</p>
+	 * <p>判断{@code value}是否匹配正则表达式{@code regex}</p>
 	 * 
 	 * @param value 字符串
 	 * @param regex 正则表达式
 	 * @param ignoreCase 是否忽略大小写
 	 * 
-	 * @return true：匹配；false：不匹配；
+	 * @return {@code true}-匹配；{@code false}-不匹配；
 	 */
 	public static final boolean regex(String value, String regex, boolean ignoreCase) {
 		if(value == null || regex == null) {
@@ -226,12 +226,12 @@ public final class StringUtils {
 	}
 	
 	/**
-	 * <p>字符串是否相等</p>
+	 * <p>判断字符串是否相等</p>
 	 * 
 	 * @param source 原始字符串
 	 * @param target 目标字符串
 	 * 
-	 * @return true-相等；false-不等；
+	 * @return {@code true}-相等；{@code false}-不等；
 	 */
 	public static final boolean equals(String source, String target) {
 		if(source == null) {
@@ -242,7 +242,12 @@ public final class StringUtils {
 	}
 	
 	/**
-	 * <p>字符串是否相等：忽略大小写</p>
+	 * <p>判断字符串是否相等（忽略大小写）</p>
+	 * 
+	 * @param source 原始字符串
+	 * @param target 目标字符串
+	 * 
+	 * @return {@code true}-相等；{@code false}-不等；
 	 */
 	public static final boolean equalsIgnoreCase(String source, String target) {
 		if(source == null) {
@@ -253,7 +258,11 @@ public final class StringUtils {
 	}
 
 	/**
-	 * <p>转换Unicode字符串</p>
+	 * <p>将字符串转换为Unicode字符串</p>
+	 * 
+	 * @param content 字符串
+	 * 
+	 * @return Unicode字符串
 	 */
 	public static final String toUnicode(String content) {
 		char value;
@@ -271,6 +280,10 @@ public final class StringUtils {
 	
 	/**
 	 * <p>读取Unicode字符串</p>
+	 * 
+	 * @param unicode Unicode字符串
+	 * 
+	 * @return 字符串
 	 */
 	public static final String ofUnicode(String unicode) {
 		final String[] hex = unicode.split("\\\\u");
@@ -282,8 +295,10 @@ public final class StringUtils {
 	}
 	
 	/**
-	 * <p>ByteBuffer转为字符串</p>
+	 * <p>将{@code ByteBuffer}转为字符串</p>
 	 * <p>默认编码：{@link SystemConfig#DEFAULT_CHARSET}</p>
+	 * 
+	 * @param buffer 字节缓存
 	 * 
 	 * @see {@link #ofByteBuffer(ByteBuffer, String)}
 	 */
@@ -292,9 +307,9 @@ public final class StringUtils {
 	}
 	
 	/**
-	 * <p>ByteBuffer转为字符串</p>
+	 * <p>将{@code ByteBuffer}转为字符串</p>
 	 * 
-	 * @param buffer 字节缓冲区
+	 * @param buffer 字节缓冲
 	 * @param charset 编码
 	 * 
 	 * @return 字符串
@@ -319,7 +334,7 @@ public final class StringUtils {
 	}
 	
 	/**
-	 * <p>输入流转为字符串</p>
+	 * <p>将输入流转为字符串</p>
 	 * 
 	 * @param input 输入流
 	 * @param charset 编码

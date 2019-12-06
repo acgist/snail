@@ -20,27 +20,35 @@ public final class UrlUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UrlUtils.class);
 	
 	/**
-	 * <p>URL编码</p>
+	 * <p>对{@code content}进行URL编码</p>
+	 * 
+	 * @param content 待编码内容
+	 * 
+	 * @return 编码后内容
 	 */
-	public static final String encode(String url) {
+	public static final String encode(String content) {
 		try {
-			return URLEncoder.encode(url, SystemConfig.DEFAULT_CHARSET);
+			return URLEncoder.encode(content, SystemConfig.DEFAULT_CHARSET);
 		} catch (UnsupportedEncodingException e) {
-			LOGGER.error("URL编码异常：{}", url, e);
+			LOGGER.error("URL编码异常：{}", content, e);
 		}
-		return url;
+		return content;
 	}
 
 	/**
-	 * <p>URL解码</p>
+	 * <p>对{@code content}进行URL解码</p>
+	 * 
+	 * @param content 待解码内容
+	 * 
+	 * @return 解码后内容
 	 */
-	public static final String decode(String url) {
+	public static final String decode(String content) {
 		try {
-			return URLDecoder.decode(url, SystemConfig.DEFAULT_CHARSET);
+			return URLDecoder.decode(content, SystemConfig.DEFAULT_CHARSET);
 		} catch (UnsupportedEncodingException e) {
-			LOGGER.error("URL解码异常：{}", url, e);
+			LOGGER.error("URL解码异常：{}", content, e);
 		}
-		return url;
+		return content;
 	}
 	
 }

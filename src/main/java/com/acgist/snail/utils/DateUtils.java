@@ -36,19 +36,19 @@ public final class DateUtils {
 	 */
 	private static final int JAVA_WINDOWS_TIMESTAMP_SCALE = 10_000;
 	/**
-	 * <p>一秒钟（毫秒）</p>
+	 * <p>一秒钟（毫秒）：{@value}</p>
 	 */
 	public static final long ONE_SECOND = 1000L;
 	/**
-	 * <p>一分钟（秒数）</p>
+	 * <p>一分钟（秒数）：{@value}</p>
 	 */
 	private static final long ONE_MINUTE = 60L;
 	/**
-	 * <p>一小时（秒数）</p>
+	 * <p>一小时（秒数）：{@value}</p>
 	 */
 	private static final long ONE_HOUR = ONE_MINUTE * 60;
 	/**
-	 * <p>一天（秒数）</p>
+	 * <p>一天（秒数）：{@value}</p>
 	 */
 	private static final long ONE_DAY = ONE_HOUR * 24;
 	

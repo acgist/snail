@@ -178,7 +178,7 @@ public final class FileUtils {
 	}
 	
 	/**
-	 * <p>文件名称格式化<p>
+	 * <p>文件名称过滤<p>
 	 * <p>过滤：{@value #FILENAME_REPLACE_REGEX}<p>
 	 * 
 	 * @param name 文件名称
@@ -353,7 +353,7 @@ public final class FileUtils {
 	
 	/**
 	 * <p>获取文件大小</p>
-	 * <p>支持目录，如果文件路径是目录，递归统计目录中所有文件大小。</p>
+	 * <p>如果{@code path}是目录，递归统计目录中所有文件大小。</p>
 	 * 
 	 * @param path 文件路径
 	 * 
@@ -441,7 +441,7 @@ public final class FileUtils {
 	
 	/**
 	 * <p>文件散列计算</p>
-	 * <p>支持目录，如果{@code path}是文件目录，递归计算目录中的所有文件散列值。</p>
+	 * <p>如果{@code path}是目录，递归计算目录中的所有文件散列值。</p>
 	 * 
 	 * @param path 文件路径
 	 * @param algo 算法名称
@@ -480,7 +480,7 @@ public final class FileUtils {
 	/**
 	 * <p>获取用户工作目录中的文件</p>
 	 * 
-	 * @param path 文件相对路径：以{@code /}开头
+	 * @param path 文件相对路径：{@code /}开头
 	 * 
 	 * @return 文件
 	 */

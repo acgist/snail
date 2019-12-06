@@ -37,7 +37,7 @@ public final class XMLUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(XMLUtils.class);
 
 	/**
-	 * <p>格式化输出</p>
+	 * <p>XML格式化输出：{@value}</p>
 	 */
 	private static final String DOM_FORMAT_PRETTY_PRINT = "format-pretty-print";
 	
@@ -48,6 +48,8 @@ public final class XMLUtils {
 	
 	/**
 	 * <p>创建XML</p>
+	 * 
+	 * @return XML工具对象
 	 */
 	public static final XMLUtils build() {
 		final XMLUtils utils = new XMLUtils();
@@ -62,6 +64,10 @@ public final class XMLUtils {
 	
 	/**
 	 * <p>解析XML</p>
+	 * 
+	 * @param xml XML内容
+	 * 
+	 * @return XML工具对象
 	 */
 	public static final XMLUtils load(String xml) {
 		final XMLUtils utils = new XMLUtils();
@@ -76,7 +82,9 @@ public final class XMLUtils {
 	}
 	
 	/**
-	 * <p>创建XML工厂</p>
+	 * <p>创建{@code DocumentBuilderFactory}</p>
+	 * 
+	 * @return {@code DocumentBuilderFactory}
 	 */
 	private static final DocumentBuilderFactory buildFactory() {
 		final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -89,13 +97,13 @@ public final class XMLUtils {
 			factory.setXIncludeAware(false);
 			factory.setExpandEntityReferences(false);
 		} catch (ParserConfigurationException e) {
-			LOGGER.error("创建XML工厂异常 ", e);
+			LOGGER.error("设置DocumentBuilderFactory异常 ", e);
 		}
 		return factory;
 	}
 
 	/**
-	 * @return 节点
+	 * @return 根节点
 	 */
 	public Document document() {
 		return this.document;
@@ -127,7 +135,7 @@ public final class XMLUtils {
 	}
 	
 	/**
-	 * <p>创建节点（命名空间）</p>
+	 * <p>创建节点</p>
 	 * 
 	 * @param node 父节点
 	 * @param name 节点名称
@@ -140,7 +148,7 @@ public final class XMLUtils {
 	}
 	
 	/**
-	 * <p>创建节点（命名空间）</p>
+	 * <p>创建节点</p>
 	 * 
 	 * @param node 父节点
 	 * @param name 节点名称
@@ -164,12 +172,12 @@ public final class XMLUtils {
 	}
 
 	/**
-	 * <p>读取节点值</p>
-	 * <p>多个节点返回第一个</p>
+	 * <p>读取节点文本</p>
+	 * <p>如果存在多个节点默认返回第一个节点</p>
 	 * 
 	 * @param name 节点名称
 	 * 
-	 * @return 节点
+	 * @return 节点文本
 	 */
 	public String elementValue(String name) {
 		final NodeList list = this.document.getElementsByTagName(name);
@@ -180,11 +188,11 @@ public final class XMLUtils {
 	}
 
 	/**
-	 * <p>读取节点值</p>
+	 * <p>读取节点文本列表</p>
 	 * 
 	 * @param name 节点名称
 	 * 
-	 * @return 节点值列表
+	 * @return 节点文本列表
 	 */
 	public List<String> elementValues(String name) {
 		final NodeList list = this.document.getElementsByTagName(name);
@@ -200,9 +208,10 @@ public final class XMLUtils {
 	}
 	
 	/**
-	 * <p>输出XML（不格式化）</p>
+	 * <p>输出XML</p>
+	 * <p>默认不格式化</p>
 	 * 
-	 * @return xml
+	 * @return XML
 	 */
 	public String xml() {
 		return xml(false);
@@ -213,11 +222,10 @@ public final class XMLUtils {
 	 * 
 	 * @param format 是否格式化
 	 * 
-	 * @return xml
+	 * @return XML
 	 */
 	public String xml(boolean format) {
-		try {
-			final Writer writer = new StringWriter();
+		try(final Writer writer = new StringWriter()) { // 可以不用关闭
 			final DOMImplementationRegistry registry = DOMImplementationRegistry.newInstance();
 			final DOMImplementationLS ementation = (DOMImplementationLS) registry.getDOMImplementation("LS");
 			final LSOutput output = ementation.createLSOutput();
@@ -232,7 +240,7 @@ public final class XMLUtils {
 			}
 			serializer.write(this.document, output);
 			return writer.toString();
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | ClassCastException e) {
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | ClassCastException | IOException e) {
 			LOGGER.error("输出XML异常", e);
 		}
 		return null;

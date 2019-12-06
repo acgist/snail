@@ -127,7 +127,7 @@ public final class NumberUtils {
 	 * @param dividend 被除数
 	 * @param divisor 除数
 	 * 
-	 * @param 商
+	 * @return 商
 	 */
 	public static final int ceilDiv(long dividend, long divisor) {
 		int value = (int) (dividend / divisor);
@@ -154,23 +154,24 @@ public final class NumberUtils {
 	}
 	
 	/**
-	 * <p>大整数转为无符号二进制字节数组</p>
+	 * <p>大整数转为二进制字节数组</p>
 	 * 
 	 * @param value 大整数
-	 * @param length 二进制字节数组长度
+	 * @param length 数组长度
 	 * 
 	 * @return 字节数组
 	 */
-	public static final byte[] encodeUnsigned(BigInteger value, int length) {
+	public static final byte[] encodeBigInteger(BigInteger value, int length) {
 		if (length < 1) {
-			throw new ArgumentException("数组长度错误");
+			throw new ArgumentException("数组长度错误：" + length);
 		}
-		byte[] bytes = value.toByteArray();
+		byte[] bytes = value.toByteArray(); // 二进制补码
+		// 去掉符号位
 		if (bytes[0] == 0) {
 			bytes = Arrays.copyOfRange(bytes, 1, bytes.length);
 		}
 		if (bytes.length > length) {
-			throw new ArgumentException("数组长度错误");
+			throw new ArgumentException("数组长度错误：" + length);
 		}
 		if (bytes.length < length) {
 			final byte[] copy = bytes;
@@ -181,27 +182,28 @@ public final class NumberUtils {
 	}
 
 	/**
-	 * <p>无符号二进制字节数组转为大整数</p>
+	 * <p>二进制字节数组转为大整数</p>
 	 * 
 	 * @param buffer 字节数组
-	 * @param length 二进制字节数组长度
+	 * @param length 数组长度
 	 * 
 	 * @return 大整数
 	 */
-	public static final BigInteger decodeUnsigned(ByteBuffer buffer, int length) {
+	public static final BigInteger decodeBigInteger(ByteBuffer buffer, int length) {
 		if (length < 1 || buffer.remaining() < length) {
-			throw new ArgumentException("数组长度错误");
+			throw new ArgumentException("数组长度错误：" + length);
 		}
-		byte b;
 		int index = 0;
-		while ((b = buffer.get()) == 0 && ++index < length) { // 去掉前导零
+		byte nonzero;
+		// 去掉前导零
+		while ((nonzero = buffer.get()) == 0 && ++index < length) {
 		}
 		if (index == length) {
 			return BigInteger.ZERO;
 		}
 		final int newLength = length - index;
 		final byte[] bytes = new byte[newLength];
-		bytes[0] = b;
+		bytes[0] = nonzero;
 		buffer.get(bytes, 1, newLength - 1);
 		return new BigInteger(1, bytes);
 	}
@@ -215,7 +217,7 @@ public final class NumberUtils {
 		try {
 			return SecureRandom.getInstanceStrong();
 		} catch (NoSuchAlgorithmException e) {
-			LOGGER.error("获取随机数工具异常", e);
+			LOGGER.error("获取随机数对象异常", e);
 		}
 		return new Random();
 	}
