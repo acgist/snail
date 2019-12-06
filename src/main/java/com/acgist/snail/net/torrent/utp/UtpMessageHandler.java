@@ -345,6 +345,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 			if(this.ackRetry.incrementAndGet() > UtpConfig.FAST_ACK_RETRY_TIMES) {
 				final var packet = this.sendWindow.lastUnack();
 				if(packet != null) {
+					LOGGER.debug("UTP消息快速重传：{}-{}", acknr, packet.getSeqnr());
 					this.data(packet);
 				}
 			}
