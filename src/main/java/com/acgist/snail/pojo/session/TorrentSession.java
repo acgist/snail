@@ -37,6 +37,7 @@ import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.system.exception.TimerArgumentException;
 import com.acgist.snail.utils.CollectionUtils;
+import com.acgist.snail.utils.FileUtils;
 
 /**
  * <p>BT任务信息</p>
@@ -581,6 +582,9 @@ public final class TorrentSession {
 			LOGGER.error("解析种子异常", e);
 		}
 		final var downloader = this.taskSession.downloader();
+		final long size = FileUtils.fileSize(torrentFilePath);
+		this.taskSession.setSize(size); // 设置任务大小
+		this.taskSession.downloadSize(size); // 设置已下载大小
 		if(downloader != null) {
 			downloader.unlockDownload();
 		}

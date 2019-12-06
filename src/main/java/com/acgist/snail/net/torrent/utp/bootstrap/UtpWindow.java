@@ -249,7 +249,9 @@ public final class UtpWindow {
 				} else {
 					this.seqnr = nextWindowData.getSeqnr();
 					this.timestamp = nextWindowData.getTimestamp();
-					output.write(nextWindowData.getData());
+					if(nextWindowData.haveData()) {
+						output.write(nextWindowData.getData());
+					}
 				}
 			}
 			final byte[] bytes = output.toByteArray();

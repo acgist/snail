@@ -60,8 +60,6 @@ public final class PeerConfig {
 	/**
 	 * <p>保留位：[7]-0x08：NAT Traversal</p>
 	 * <p>NAT穿透</p>
-	 * 
-	 * TODO：holepunch
 	 */
 	public static final byte NAT_TRAVERSAL =      1 << 3;
 	/**
@@ -132,14 +130,10 @@ public final class PeerConfig {
 	public static final byte PEX_UTP =					1 << 2;
 	/**
 	 * <p>pex flags：0x08：支持holepunch协议</p>
-	 * 
-	 * TODO：连接失败时通过holepunch连接
 	 */
 	public static final byte PEX_HOLEPUNCH =			1 << 3;
 	/**
 	 * <p>pex flags：0x10：可以连接</p>
-	 * 
-	 * TODO：Peer优先使用
 	 */
 	public static final byte PEX_OUTGO =				1 << 4;
 	/**
