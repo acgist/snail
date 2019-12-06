@@ -110,7 +110,7 @@ public final class UtpWindow {
 	 */
 	private final Semaphore semaphore;
 	/**
-	 * <p>UTP窗口请求数据队列</p>
+	 * <p>UTP窗口请求队列</p>
 	 */
 	private final BlockingQueue<UtpRequest> requests;
 	/**
@@ -118,6 +118,19 @@ public final class UtpWindow {
 	 */
 	private final IMessageCodec<ByteBuffer> messageCodec;
 	
+	/**
+	 * @see {@link #UtpWindow(IMessageCodec)}
+	 */
+	private UtpWindow() {
+		this(null);
+	}
+	
+	/**
+	 * <p>创建窗口对象</p>
+	 * <p>如果消息处理器等于{@code null}时不创建请求队列</p>
+	 * 
+	 * @param messageCodec 消息处理器
+	 */
 	private UtpWindow(IMessageCodec<ByteBuffer> messageCodec) {
 		this.rtt = 0;
 		this.rttVar = 0;
@@ -127,11 +140,32 @@ public final class UtpWindow {
 		this.timestamp = 0;
 		this.wndMap = new LinkedHashMap<>();
 		this.semaphore = new Semaphore(MIN_WND_SIZE);
-		this.requests = UtpRequestQueue.getInstance().queue();
-		this.messageCodec = messageCodec;
+		if(messageCodec == null) {
+			this.requests = null;
+			this.messageCodec = null;
+		} else {
+			this.requests = UtpRequestQueue.getInstance().queue();
+			this.messageCodec = messageCodec;
+		}
 	}
 	
-	public static final UtpWindow newInstance(IMessageCodec<ByteBuffer> messageCodec) {
+	/**
+	 * <p>创建发送窗口对象</p>
+	 * <p>发送窗口不接收和处理请求，不创建请求队列。</p>
+	 * 
+	 * @return 窗口对象
+	 */
+	public static final UtpWindow newSendInstance() {
+		return new UtpWindow();
+	}
+	
+	/**
+	 * <p>创建接收窗口对象</p>
+	 * <p>接收窗口接收和处理请求，创建请求队列。</p>
+	 * 
+	 * @return 窗口对象
+	 */
+	public static final UtpWindow newRecvInstance(IMessageCodec<ByteBuffer> messageCodec) {
 		return new UtpWindow(messageCodec);
 	}
 	

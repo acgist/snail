@@ -125,8 +125,8 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 		final var peerCryptMessageCodec = new PeerCryptMessageCodec(peerUnpackMessageCodec, this.peerSubMessageHandler);
 		this.messageCodec = peerCryptMessageCodec;
 		this.utpService = UtpService.getInstance();
-		this.sendWindow = UtpWindow.newInstance(this.messageCodec);
-		this.recvWindow = UtpWindow.newInstance(this.messageCodec);
+		this.sendWindow = UtpWindow.newSendInstance();
+		this.recvWindow = UtpWindow.newRecvInstance(this.messageCodec);
 		this.ackRetry = new AtomicInteger(0);
 		this.connectLock = new AtomicBoolean(false);
 		this.socketAddress = socketAddress;
