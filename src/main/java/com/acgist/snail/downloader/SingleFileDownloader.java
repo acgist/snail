@@ -69,22 +69,24 @@ public abstract class SingleFileDownloader extends Downloader {
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * <p>如果没有数据下载，任务会被{@linkplain InputStream#read(byte[], int, int) 读取下载流方法}阻塞，通过直接关闭下载流来避免任务不能正常结束。</p>
+	 * <p>如果没有数据下载，任务会被{@linkplain InputStream#read(byte[], int, int) 下载流读取方法}阻塞，通过直接关闭下载流来避免任务不能正常结束。</p>
 	 */
 	@Override
 	public void unlockDownload() {
 		if(!this.taskSession.statistics().downloading()) {
-			LOGGER.debug("单文件下载解锁：没有速度关闭下载流");
+			LOGGER.debug("单个文件下载解锁：没有速度关闭下载流");
 			IoUtils.close(this.input);
 		}
 	}
 	
 	/**
 	 * <dl>
-	 * 	<dt>任务是否下载完成</dt>
+	 * 	<dt>判断任务是否下载完成</dt>
 	 * 	<dd>读取数据长度小于等于{@code -1}</dd>
 	 * 	<dd>任务长度小于等于已下载数据长度</dd>
 	 * </dl>
+	 * 
+	 * @return {@code true}-下载完成；{@code false}-没有完成；
 	 */
 	protected boolean isComplete(int length) {
 		return
@@ -93,12 +95,13 @@ public abstract class SingleFileDownloader extends Downloader {
 	}
 	
 	/**
-	 * <p>创建下载输出流</p>
+	 * <p>创建{@linkplain #output 输出流}</p>
+	 * <p>创建时需要验证是否支持断点续传所以优先{@linkplain #buildInput() 创建输入流}</p>
 	 */
 	protected void buildOutput() {
 		try {
 			final long size = this.taskSession.downloadSize();
-			if(size == 0L) { // 文件大小=0：不支持断点续传
+			if(size == 0L) { // 不支持断点续传
 				this.output = new BufferedOutputStream(new FileOutputStream(this.taskSession.getFile()), DownloadConfig.getMemoryBufferByte());
 			} else { // 支持断点续传
 				this.output = new BufferedOutputStream(new FileOutputStream(this.taskSession.getFile(), true), DownloadConfig.getMemoryBufferByte());
@@ -110,8 +113,8 @@ public abstract class SingleFileDownloader extends Downloader {
 	}
 	
 	/**
-	 * <p>创建下载输入流</p>
-	 * <p>先验证是否支持断点续传，如果支持可以重新设置任务已下载大小。</p>
+	 * <p>创建{@linkplain #input 输入流}</p>
+	 * <p>先验证是否支持断点续传，如果支持重新设置任务已下载大小。</p>
 	 */
 	protected abstract void buildInput();
 

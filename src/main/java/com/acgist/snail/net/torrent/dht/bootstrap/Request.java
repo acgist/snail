@@ -154,7 +154,7 @@ public class Request extends DhtMessage {
 	}
 	
 	/**
-	 * 唤醒等待
+	 * 释放等待
 	 */
 	public void notifyResponse() {
 		synchronized (this) {

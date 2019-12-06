@@ -49,13 +49,25 @@ public final class BeanUtils {
 	
 	/**
 	 * <p>将实例对象所有属性转为{@code Map}</p>
-	 * <dl>
-	 * 	<dt>类型转换</dt>
-	 * 	<dd>{@code String} -&gt; {@code String}</dd>
-	 * 	<dd>{@code Number} -&gt; {@code Number}</dd>
-	 * 	<dd>{@code Enum}   -&gt; {@code String}</dd>
-	 * 	<dd>{@code Date}   -&gt; {@code String(yyyyMMddHHmmss)}</dd>
-	 * </dl>
+	 * 
+	 * <table border="1" summary="属性类型转换">
+	 * 	<tr>
+	 * 		<td>{@code String}</td>
+	 * 		<td>{@code String}</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>{@code Number}</td>
+	 * 		<td>{@code Number}</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>{@code Enum}</td>
+	 * 		<td>{@code String}</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>{@code Date}</td>
+	 * 		<td>{@code String(yyyyMMddHHmmss)}</td>
+	 * 	</tr>
+	 * </table>
 	 * 
 	 * @param instance 实例对象
 	 * 

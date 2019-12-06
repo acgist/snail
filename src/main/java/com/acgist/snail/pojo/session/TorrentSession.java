@@ -39,7 +39,7 @@ import com.acgist.snail.system.exception.TimerArgumentException;
 import com.acgist.snail.utils.CollectionUtils;
 
 /**
- * <p>Torrent Session</p>
+ * <p>BT任务信息</p>
  * <p>负责下载任务整体调度：查询Peer、文件管理等</p>
  * <p>BT任务需要先上传才能进行下载</p>
  * <p>磁力链接不存在下载和上次状态</p>

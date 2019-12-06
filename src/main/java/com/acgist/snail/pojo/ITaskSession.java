@@ -8,7 +8,7 @@ import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.system.exception.DownloadException;
 
 /**
- * <p>任务接口</p>
+ * <p>任务信息</p>
  * 
  * @author acgist
  * @since 1.2.0

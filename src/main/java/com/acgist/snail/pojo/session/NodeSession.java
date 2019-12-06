@@ -4,7 +4,6 @@ import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.ObjectUtils;
 
 /**
- * <p>Node Session</p>
  * <p>DHT节点信息</p>
  * 
  * @author acgist

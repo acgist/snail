@@ -22,6 +22,13 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 		super(taskSession);
 	}
 
+	/**
+	 * <p>创建BT下载器</p>
+	 * 
+	 * @param taskSession 任务信息
+	 * 
+	 * @return BT下载器对象
+	 */
 	public static final TorrentDownloader newInstance(ITaskSession taskSession) {
 		return new TorrentDownloader(taskSession);
 	}
@@ -74,8 +81,8 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 				this.complete = this.torrentSession.download();
 			}
 		} catch (DownloadException e) {
-			LOGGER.error("BT任务加载异常", e);
-			fail("BT任务加载失败：" + e.getMessage());
+			LOGGER.error("BT任务下载异常", e);
+			fail("BT任务下载失败：" + e.getMessage());
 		}
 	}
 

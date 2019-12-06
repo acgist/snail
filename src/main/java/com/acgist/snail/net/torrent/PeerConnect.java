@@ -235,14 +235,14 @@ public abstract class PeerConnect {
 			return;
 		}
 		downloadMark(bytes.length); // 下载评分
-		// 请求数据下载完成：唤醒下载等待
+		// 请求数据下载完成：释放下载等待
 		synchronized (this.countLock) {
 			if (this.countLock.addAndGet(-1) <= 0) {
 				this.countLock.notifyAll();
 			}
 		}
 		final boolean complete = this.downloadPiece.put(begin, bytes);
-		// 唤醒下载完成等待
+		// 释放下载完成等待
 		if(complete) {
 			synchronized (this.completeLock) {
 				if (this.completeLock.getAndSet(true)) {
@@ -340,7 +340,7 @@ public abstract class PeerConnect {
 				ThreadUtils.wait(this.completeLock, Duration.ofSeconds(PIECE_WAIT_TIME));
 			}
 		}
-		// 如果已经释放：唤醒释放锁
+		// 如果已经释放：释放释放锁
 		if(this.releaseLock.get()) {
 			synchronized (this.releaseLock) {
 				if(this.releaseLock.getAndSet(true)) {

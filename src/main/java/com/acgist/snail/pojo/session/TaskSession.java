@@ -26,7 +26,7 @@ import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>Task Session</p>
+ * <p>任务信息</p>
  * 
  * @author acgist
  * @since 1.0.0

@@ -18,8 +18,8 @@ import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
- * <p>Peer Session</p>
- * <p>Peer信息：IP地址、端口、下载统计、上传统计等等</p>
+ * <p>Peer信息</p>
+ * <p>IP地址、端口、下载统计、上传统计等等</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -96,7 +96,7 @@ public final class PeerSession implements IStatistics {
 	private volatile boolean holepunchConnect = false;
 	/**
 	 * <p>holepunch等待锁</p>
-	 * <p>向中继发出rendezvous消息进入等待，收到中继connect消息后设置可以连接唤醒等待锁。</p>
+	 * <p>向中继发出rendezvous消息进入等待，收到中继connect消息后设置可以连接释放等待锁。</p>
 	 */
 	private final Object holepunchLock = new Object();
 	/**
@@ -580,7 +580,7 @@ public final class PeerSession implements IStatistics {
 	}
 
 	/**
-	 * <p>holepunch加锁</p>
+	 * <p>holepunch等待锁</p>
 	 */
 	public void holepunchLock() {
 		if(this.holepunchConnect) { // 已经连接
@@ -594,9 +594,9 @@ public final class PeerSession implements IStatistics {
 	}
 	
 	/**
-	 * <p>holepunch解锁</p>
+	 * <p>释放holepunch等待锁</p>
 	 */
-	public void holepunchUnlock() {
+	public void unlockHolepunch() {
 		synchronized (this.holepunchLock) {
 			this.holepunchConnect = true;
 			this.holepunchLock.notifyAll();
