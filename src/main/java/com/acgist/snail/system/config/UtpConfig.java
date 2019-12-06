@@ -72,6 +72,10 @@ public final class UtpConfig {
 	 * <p>最大发送次数</p>
 	 */
 	public static final byte MAX_PUSH_TIMES = 3;
+	/**
+	 * <p>快速重传发送ACK次数：{@value}</p>
+	 */
+	public static final byte FAST_ACK_RETRY_TIMES = 3;
 	
 	/**
 	 * <p>类型</p>

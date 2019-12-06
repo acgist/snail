@@ -6,8 +6,8 @@ import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +17,6 @@ import com.acgist.snail.net.torrent.IMessageEncryptHandler;
 import com.acgist.snail.net.torrent.PeerCryptMessageCodec;
 import com.acgist.snail.net.torrent.PeerUnpackMessageCodec;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
-import com.acgist.snail.net.torrent.utp.bootstrap.UtpRequest;
-import com.acgist.snail.net.torrent.utp.bootstrap.UtpRequestQueue;
 import com.acgist.snail.net.torrent.utp.bootstrap.UtpService;
 import com.acgist.snail.net.torrent.utp.bootstrap.UtpWindow;
 import com.acgist.snail.net.torrent.utp.bootstrap.UtpWindowData;
@@ -94,14 +92,13 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	 */
 	private final UtpWindow recvWindow;
 	/**
+	 * <p>收到ack消息重复次数</p>
+	 */
+	private final AtomicInteger ackRetry;
+	/**
 	 * <p>连接锁</p>
 	 */
 	private final AtomicBoolean connectLock;
-	/**
-	 * <p>UTP窗口请求数据队列</p>
-	 * <p>UTP请求数据异步执行，防止阻塞导致不能及时处理响应信息。</p>
-	 */
-	private final BlockingQueue<UtpRequest> requests;
 	/**
 	 * <p>Peer代理</p>
 	 */
@@ -128,10 +125,10 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 		final var peerCryptMessageCodec = new PeerCryptMessageCodec(peerUnpackMessageCodec, this.peerSubMessageHandler);
 		this.messageCodec = peerCryptMessageCodec;
 		this.utpService = UtpService.getInstance();
-		this.sendWindow = UtpWindow.newInstance();
-		this.recvWindow = UtpWindow.newInstance();
+		this.sendWindow = UtpWindow.newInstance(this.messageCodec);
+		this.recvWindow = UtpWindow.newInstance(this.messageCodec);
+		this.ackRetry = new AtomicInteger(0);
 		this.connectLock = new AtomicBoolean(false);
-		this.requests = UtpRequestQueue.getInstance().queue();
 		this.socketAddress = socketAddress;
 		if(recv) { // 服务端
 			this.sendId = connectionId;
@@ -300,44 +297,33 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	 * <p>处理数据消息</p>
 	 */
 	private void data(int timestamp, short seqnr, short acknr, ByteBuffer buffer) throws NetException {
-		UtpWindowData windowData = null;
 		try {
-			windowData = this.recvWindow.receive(timestamp, seqnr, buffer);
+			this.recvWindow.receive(timestamp, seqnr, buffer);
 		} catch (IOException e) {
 			throw new NetException(e);
 		}
-		if(windowData != null) {
-			LOGGER.debug("处理数据消息：{}", windowData.getSeqnr());
-			this.state(windowData.getTimestamp(), windowData.getSeqnr());
-			// 同步处理
-//			this.messageCodec.decode(windowData.buffer());
-			// 异步处理
-			if(!this.requests.offer(UtpRequest.newInstance(windowData, this.messageCodec))) {
-				LOGGER.warn("UTP请求插入请求队列失败");
-			}
-		}
+		this.state(timestamp, this.recvWindow.seqnr()); // 确认最后一次接收编号
 	}
 	
 	/**
 	 * <p>发送数据消息</p>
 	 */
 	private void data(UtpWindowData windowData) {
-		if(windowData.haveData()) {
-			LOGGER.debug("发送数据消息：{}", windowData.getSeqnr());
-			final ByteBuffer buffer = buildHeader(UtpConfig.TYPE_DATA, windowData.getLength() + UTP_HEADER_LENGTH);
-			buffer.putShort(this.sendId);
-			buffer.putInt(windowData.pushUpdateGetTimestamp()); // 更新发送时间
-			buffer.putInt(windowData.getTimestamp() - this.recvWindow.timestamp());
-			buffer.putInt(this.recvWindow.remainWndSize());
-			buffer.putShort(windowData.getSeqnr());
-			buffer.putShort(this.recvWindow.seqnr()); // acknr=请求seqnr
-			buffer.put(windowData.getData());
-			this.pushMessage(buffer);
-		}
+		LOGGER.debug("发送数据消息：{}", windowData.getSeqnr());
+		final ByteBuffer buffer = buildHeader(UtpConfig.TYPE_DATA, windowData.getLength() + UTP_HEADER_LENGTH);
+		buffer.putShort(this.sendId);
+		buffer.putInt(windowData.pushUpdateGetTimestamp()); // 更新发送时间
+		buffer.putInt(windowData.getTimestamp() - this.recvWindow.timestamp());
+		buffer.putInt(this.recvWindow.remainWndSize());
+		buffer.putShort(windowData.getSeqnr());
+		buffer.putShort(this.recvWindow.seqnr()); // acknr=请求seqnr
+		buffer.put(windowData.getData());
+		this.pushMessage(buffer);
 	}
 
 	/**
 	 * <p>处理响应消息</p>
+	 * <p>如果多次返回已处理的数据编号，则视为丢包重新发送最后一个未确认数据包。</p>
 	 */
 	private void state(int timestamp, short seqnr, short acknr, int wndSize) {
 		LOGGER.debug("处理响应消息：{}", acknr);
@@ -351,7 +337,18 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 				this.connectLock.notifyAll();
 			}
 		}
-		this.sendWindow.ack(acknr, wndSize);
+		final boolean ok = this.sendWindow.ack(acknr, wndSize);
+		if(ok) { // TODO：已处理清零，还是递减到零
+			this.ackRetry.set(0);
+		} else {
+			// 未处理递增
+			if(this.ackRetry.incrementAndGet() > UtpConfig.FAST_ACK_RETRY_TIMES) {
+				final var packet = this.sendWindow.lastUnack();
+				if(packet != null) {
+					this.data(packet);
+				}
+			}
+		}
 	}
 	
 	/**

@@ -14,30 +14,30 @@ import com.acgist.snail.system.exception.NetException;
 public final class UtpRequest {
 
 	/**
-	 * <p>窗口数据</p>
+	 * <p>请求数据</p>
 	 */
-	private final UtpWindowData windowData;
+	private final ByteBuffer buffer;
 	/**
-	 * <p>消息处理</p>
+	 * <p>消息处理器</p>
 	 */
 	private final IMessageCodec<ByteBuffer> messageCodec;
 	
-	private UtpRequest(UtpWindowData windowData, IMessageCodec<ByteBuffer> messageCodec) {
-		this.windowData = windowData;
+	private UtpRequest(ByteBuffer buffer, IMessageCodec<ByteBuffer> messageCodec) {
+		this.buffer = buffer;
 		this.messageCodec = messageCodec;
 	}
 	
-	public static final UtpRequest newInstance(UtpWindowData windowData, IMessageCodec<ByteBuffer> messageCodec) {
-		return new UtpRequest(windowData, messageCodec);
+	public static final UtpRequest newInstance(ByteBuffer buffer, IMessageCodec<ByteBuffer> messageCodec) {
+		return new UtpRequest(buffer, messageCodec);
 	}
 	
 	/**
-	 * <p>执行请求</p>
+	 * <p>处理请求</p>
 	 * 
 	 * @throws NetException 网络异常
 	 */
 	public void execute() throws NetException {
-		this.messageCodec.decode(this.windowData.buffer());
+		this.messageCodec.decode(this.buffer);
 	}
 	
 }

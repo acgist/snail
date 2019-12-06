@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.net.codec.IMessageCodec;
 import com.acgist.snail.system.config.UtpConfig;
 import com.acgist.snail.utils.DateUtils;
 
@@ -26,27 +28,30 @@ import com.acgist.snail.utils.DateUtils;
 public final class UtpWindow {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UtpWindow.class);
-	
+
 	/**
-	 * <p>默认最大超时时间（微秒）</p>
+	 * <p>默认最大超时时间（微秒）：{@value}</p>
 	 */
 	private static final int MAX_TIMEOUT = 500 * 1000;
 	/**
-	 * <p>最小窗口</p>
+	 * <p>最小窗口大小：{@value}</p>
 	 */
 	private static final int MIN_WND_SIZE = 16;
 	/**
-	 * <p>最大窗口</p>
+	 * <p>最大窗口大小：{@value}</p>
 	 */
 	private static final int MAX_WND_SIZE = 64;
 	/**
-	 * <p>获取信号量超时时间：秒</p>
-	 * <p>防止长时间获取信号量，从而导致UTP队列阻塞。</p>
+	 * <p>获取信号量超时时间（秒）：{@value}</p>
+	 * <p>防止长时间获取不到信号量导致线程阻塞</p>
 	 */
 	private static final int SEMAPHORE_TIMEOUT = 2;
 	
 	//================流量控制、阻塞控制================//
 	
+	/**
+	 * <p>当前窗口大小</p>
+	 */
 	private volatile int wnd = MIN_WND_SIZE;
 	
 	//================超时================//
@@ -94,17 +99,26 @@ public final class UtpWindow {
 	/**
 	 * <dl>
 	 * 	<dt>窗口数据</dt>
-	 * 	<dd>接收端：未处理的数据（不连贯的数据）</dd>
-	 * 	<dd>发送端：未收到响应的数据</dd>
+	 * 	<dd>接收端：未处理的数据</dd>
+	 * 	<dd>发送端：未响应的数据</dd>
 	 * </dl>
+	 * <p>UTP数据没有数据可能是不连贯的</p>
 	 */
 	private final Map<Short, UtpWindowData> wndMap;
 	/**
 	 * <p>发送窗口控制信号量</p>
 	 */
 	private final Semaphore semaphore;
+	/**
+	 * <p>UTP窗口请求数据队列</p>
+	 */
+	private final BlockingQueue<UtpRequest> requests;
+	/**
+	 * <p>消息处理器</p>
+	 */
+	private final IMessageCodec<ByteBuffer> messageCodec;
 	
-	private UtpWindow() {
+	private UtpWindow(IMessageCodec<ByteBuffer> messageCodec) {
 		this.rtt = 0;
 		this.rttVar = 0;
 		this.timeout = MAX_TIMEOUT;
@@ -113,10 +127,12 @@ public final class UtpWindow {
 		this.timestamp = 0;
 		this.wndMap = new LinkedHashMap<>();
 		this.semaphore = new Semaphore(MIN_WND_SIZE);
+		this.requests = UtpRequestQueue.getInstance().queue();
+		this.messageCodec = messageCodec;
 	}
 	
-	public static final UtpWindow newInstance() {
-		return new UtpWindow();
+	public static final UtpWindow newInstance(IMessageCodec<ByteBuffer> messageCodec) {
+		return new UtpWindow(messageCodec);
 	}
 	
 	/**
@@ -132,7 +148,7 @@ public final class UtpWindow {
 	}
 
 	/**
-	 * <p>接收窗口：获取剩余窗口缓存大小</p>
+	 * <p>获取剩余窗口缓存大小</p>
 	 */
 	public int remainWndSize() {
 		synchronized (this) {
@@ -141,16 +157,22 @@ public final class UtpWindow {
 	}
 	
 	/**
-	 * <p>发送数据：没有负载</p>
+	 * <p>发送数据</p>
+	 * <p>没有负载</p>
+	 * 
+	 * @see {@link #build(byte[])}
 	 */
 	public UtpWindowData build() {
 		return build(null);
 	}
 	
 	/**
-	 * <p>发送数据：递增seqnr</p>
+	 * <p>发送数据</p>
+	 * <p>递增seqnr</p>
 	 * 
 	 * @param data 数据
+	 * 
+	 * @return 窗口数据
 	 */
 	public UtpWindowData build(byte[] data) {
 		this.acquire(); // 不能加锁
@@ -163,7 +185,9 @@ public final class UtpWindow {
 	}
 
 	/**
-	 * <p>发送窗口：获取超时的数据包（丢包）</p>
+	 * <p>获取超时的数据包</p>
+	 * 
+	 * @return 超时的数据包
 	 */
 	public List<UtpWindowData> timeoutWindowData() {
 		synchronized (this) {
@@ -178,17 +202,20 @@ public final class UtpWindow {
 	}
 	
 	/**
-	 * <p>响应：移除发送数据并更新超时时间</p>
+	 * <p>处理响应</p>
+	 * <p>移除已经响应数据并更新超时时间</p>
 	 * 
-	 * @param acknr 响应编号：最后处理编号（移除小于等于响应编号的请求）
+	 * @param acknr 响应编号：最后处理编号
 	 * @param wndSize 剩余窗口大小
+	 * 
+	 * @return 是否处理数据：{@code true}-已处理；{@code false}-未处理；
 	 */
-	public void ack(final short acknr, int wndSize) {
+	public boolean ack(final short acknr, int wndSize) {
 		synchronized (this) {
 			this.wndSize = wndSize;
 			this.maxWndSize = Math.max(this.maxWndSize, wndSize);
 			final int timestamp = DateUtils.timestampUs();
-			this.wndMap.entrySet().stream()
+			final var ackList = this.wndMap.entrySet().stream()
 				.filter(entry -> {
 					// 移除编号小于等于当前响应编号的数据
 					final short diff = (short) (acknr - entry.getKey());
@@ -198,12 +225,17 @@ public final class UtpWindow {
 					timeout(timestamp - entry.getValue().getTimestamp()); // 计算超时
 				})
 				.map(Entry::getKey)
-				.collect(Collectors.toList())
-				.forEach(seqnr -> {
+				.collect(Collectors.toList());
+			if(ackList.isEmpty()) {
+				return false;
+			} else {
+				ackList.forEach(seqnr -> {
 					this.release(); // 释放信号量
 					this.take(seqnr); // 删除数据
 				});
-			this.wnd();
+				this.wnd();
+				return true;
+			}
 		}
 	}
 	
@@ -230,12 +262,11 @@ public final class UtpWindow {
 	 * @param seqnr 请求编号
 	 * @param buffer 请求数据
 	 */
-	public UtpWindowData receive(int timestamp, short seqnr, ByteBuffer buffer) throws IOException {
+	public void receive(int timestamp, short seqnr, ByteBuffer buffer) throws IOException {
 		synchronized (this) {
 			final short diff = (short) (this.seqnr - seqnr);
 			if(diff >= 0) { // seqnr已被处理
-				// TODO：已被处理再次响应
-				return null;
+				return;
 			}
 			storage(timestamp, seqnr, buffer); // 先保存数据
 			UtpWindowData nextWindowData;
@@ -249,16 +280,31 @@ public final class UtpWindow {
 				} else {
 					this.seqnr = nextWindowData.getSeqnr();
 					this.timestamp = nextWindowData.getTimestamp();
-					if(nextWindowData.haveData()) {
-						output.write(nextWindowData.getData());
-					}
+					output.write(nextWindowData.getData());
 				}
 			}
 			final byte[] bytes = output.toByteArray();
 			if(bytes.length == 0) {
-				return null;
+				return;
 			}
-			return UtpWindowData.newInstance(this.seqnr, this.timestamp, bytes);
+			LOGGER.debug("处理数据消息：{}", this.seqnr);
+			// 同步处理
+//			this.messageCodec.decode(windowData.buffer());
+			// 异步处理
+			if(!this.requests.offer(UtpRequest.newInstance(ByteBuffer.wrap(bytes).compact(), this.messageCodec))) {
+				LOGGER.warn("UTP请求插入请求队列失败：{}", this.seqnr);
+			}
+		}
+	}
+	
+	/**
+	 * <p>获取最后一个未确认数据包</p>
+	 * 
+	 * @return 最后一个未确认数据包
+	 */
+	public UtpWindowData lastUnack() {
+		synchronized (this) {
+			return this.wndMap.get((short) (this.seqnr + 1));
 		}
 	}
 	
