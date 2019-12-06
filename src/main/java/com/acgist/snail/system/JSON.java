@@ -24,8 +24,8 @@ public class JSON {
 	private static final Logger LOGGER = LoggerFactory.getLogger(JSON.class);
 	
 	/**
-	 * <p>特殊字符</p>
-	 * <p>Chrome浏览器控制台执行：</p>
+	 * <p>JSON特殊字符</p>
+	 * <p>Chrome浏览器控制台执行以下代码获取特殊字符：</p>
 	 * <pre>
 	 * for (var i = 0, value = '', array = []; i < 0xFFFF; i++) {
 	 *     value = JSON.stringify(String.fromCharCode(i));
@@ -55,19 +55,19 @@ public class JSON {
 		"\\\"", "\\\\"
 	};
 	/**
-	 * <p>Map前缀</p>
+	 * <p>{@code Map}前缀</p>
 	 */
 	private static final char JSON_MAP_PREFIX = '{';
 	/**
-	 * <p>Map后缀</p>
+	 * <p>{@code Map}后缀</p>
 	 */
 	private static final char JSON_MAP_SUFFIX = '}';
 	/**
-	 * <p>List前缀</p>
+	 * <p>{@code List}前缀</p>
 	 */
 	private static final char JSON_LIST_PREFIX = '[';
 	/**
-	 * <p>List后缀</p>
+	 * <p>{@code List}后缀</p>
 	 */
 	private static final char JSON_LIST_SUFFIX = ']';
 	/**
@@ -83,20 +83,20 @@ public class JSON {
 	 */
 	private static final char JSON_STRING = '"';
 	/**
-	 * <p>JSON：boolean：true</p>
+	 * <p>JSON：{@code null}</p>
+	 */
+	private static final String JSON_NULL = "null";
+	/**
+	 * <p>JSON：{@code boolean}类型：{@code true}</p>
 	 */
 	private static final String JSON_BOOLEAN_TRUE = "true";
 	/**
-	 * <p>JSON：boolean：false</p>
+	 * <p>JSON：{@code boolean}类型：{@code false}</p>
 	 */
 	private static final String JSON_BOOLEAN_FALSE = "false";
-	/**
-	 * <p>JSON：null</p>
-	 */
-	private static final String JSON_NULL = "null";
 	
 	/**
-	 * <p>类型</p>
+	 * <p>JSON数据类型</p>
 	 */
 	public enum Type {
 
@@ -108,12 +108,19 @@ public class JSON {
 	}
 	
 	private Type type;
-	private Map<Object, Object> map;
 	private List<Object> list;
+	private Map<Object, Object> map;
 	
 	private JSON() {
 	}
 	
+	/**
+	 * <p>使用{@code map}生成JSON对象</p>
+	 * 
+	 * @param map {@code Map}
+	 * 
+	 * @return JSON对象
+	 */
 	public static final JSON ofMap(Map<Object, Object> map) {
 		final JSON json = new JSON();
 		json.map = map;
@@ -121,6 +128,13 @@ public class JSON {
 		return json;
 	}
 	
+	/**
+	 * <p>使用{@code list}生成JSON对象</p>
+	 * 
+	 * @param list {@code List}
+	 * 
+	 * @return JSON对象
+	 */
 	public static final JSON ofList(List<Object> list) {
 		final JSON json = new JSON();
 		json.list = list;

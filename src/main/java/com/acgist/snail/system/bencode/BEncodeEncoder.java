@@ -179,7 +179,7 @@ public final class BEncodeEncoder {
 	}
 	
 	/**
-	 * <p>写入B编码对象</p>
+	 * <p>写入B编码数据</p>
 	 */
 	private void writeBEncodeValue(Object value) {
 		if(value instanceof Number) {
