@@ -116,6 +116,7 @@ list.stream()
 * 声明`long`类型时数值后面添加`L`标记
 * 异常如果没有抛出必须使用日志框架记录
 * 必须处理所有警告（不允许通过注解`@SuppressWarnings`忽略）
+* 新增代码不能使用除了Java内置模块和已经添加依赖（h2/slf4j/logback/JavaFX）外的其他依赖
 
 ```
 // 数组
