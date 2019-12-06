@@ -162,8 +162,6 @@ public final class TaskMenu extends Menu {
 	
 	/**
 	 * <p>文件校验</p>
-	 * 
-	 * TODO：优化显示
 	 */
 	private EventHandler<ActionEvent> verifyEvent = (event) -> {
 		SystemThreadContext.submit(() -> {
@@ -185,6 +183,7 @@ public final class TaskMenu extends Menu {
 					});
 					final Optional<ButtonType> optional = Alerts.info("文件SHA-1校验", builder.toString());
 					if(optional.isPresent() && ButtonType.OK == optional.get()) {
+						// 点击确认自动复制信息
 						Clipboards.copy(builder.toString());
 					}
 				});
