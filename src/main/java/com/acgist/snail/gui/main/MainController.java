@@ -56,8 +56,6 @@ import javafx.util.Callback;
 /**
  * <p>主窗口控制器</p>
  * 
- * TODO：任务太多时滚动条优化
- * 
  * @author acgist
  * @since 1.0.0
  */
