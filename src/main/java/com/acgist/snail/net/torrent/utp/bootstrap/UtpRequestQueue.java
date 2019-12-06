@@ -26,27 +26,28 @@ public final class UtpRequestQueue {
 	private static final UtpRequestQueue INSTANCE = new UtpRequestQueue();
 	
 	/**
-	 * <p>请求队列数量</p>
-	 * <p>使用相同数量的线程处理请求</p>
+	 * <p>请求队列数量：{@value}</p>
 	 */
 	private static final int QUEUE_SIZE = 4;
 	
 	/**
-	 * <p>队列索引</p>
-	 * <p>每次获取请求队列后递增，保证UTP请求被均匀分配。</p>
+	 * <p>请求队列索引</p>
+	 * <p>每次获取请求队列后递增，保证UTP连接被均匀分配到请求队列。</p>
 	 */
 	private final AtomicInteger index = new AtomicInteger(0);
 	/**
 	 * <p>请求队列处理线程池</p>
+	 * <p>线程池大小：{@value #QUEUE_SIZE}</p>
 	 */
 	private final ExecutorService executor;
 	/**
-	 * <p>请求处理队列集合</p>
+	 * <p>请求队列集合</p>
+	 * <p>集合大小：{@value #QUEUE_SIZE}</p>
 	 */
 	private final List<BlockingQueue<UtpRequest>> queues;
 	
-	public UtpRequestQueue() {
-		LOGGER.debug("启动UTP请求处理线程：{}", QUEUE_SIZE);
+	private UtpRequestQueue() {
+		LOGGER.debug("启动UTP请求队列：{}", QUEUE_SIZE);
 		this.queues = new ArrayList<>(QUEUE_SIZE);
 		this.executor = SystemThreadContext.newExecutor(QUEUE_SIZE, QUEUE_SIZE, 1000, 60, SystemThreadContext.SNAIL_THREAD_UTP_HANDLER);
 		buildQueues();
@@ -57,7 +58,9 @@ public final class UtpRequestQueue {
 	}
 	
 	/**
-	 * @return 请求处理队列
+	 * <p>获取请求队列</p>
+	 * 
+	 * @return 请求队列
 	 */
 	public BlockingQueue<UtpRequest> queue() {
 		final int index = this.index.getAndIncrement() % QUEUE_SIZE;
@@ -69,7 +72,7 @@ public final class UtpRequestQueue {
 	 */
 	private void buildQueues() {
 		for (int index = 0; index < QUEUE_SIZE; index++) {
-			final var queue = new LinkedBlockingQueue<UtpRequest>();
+			final var queue = new LinkedBlockingQueue<UtpRequest>(); // 创建队列
 			buildQueueExecute(queue);
 			this.queues.add(queue);
 		}
@@ -85,22 +88,22 @@ public final class UtpRequestQueue {
 					final var request = queue.take();
 					request.execute();
 				} catch (NetException e) {
-					LOGGER.error("UTP请求执行异常", e);
+					LOGGER.error("UTP处理请求异常", e);
 				} catch (InterruptedException e) {
-					LOGGER.debug("UTP请求执行异常", e);
+					LOGGER.debug("UTP处理请求异常", e);
 					Thread.currentThread().interrupt();
 				} catch (Exception e) {
-					LOGGER.error("UTP请求执行异常", e);
+					LOGGER.error("UTP处理请求异常", e);
 				}
 			}
 		});
 	}
 	
 	/**
-	 * <p>关闭UTP请求处理线程池</p>
+	 * <p>关闭UTP请求队列处理线程池</p>
 	 */
 	public void shutdown() {
-		LOGGER.info("关闭UTP请求处理线程池");
+		LOGGER.info("关闭UTP请求队列处理线程池");
 		SystemThreadContext.shutdown(this.executor);
 	}
 	
