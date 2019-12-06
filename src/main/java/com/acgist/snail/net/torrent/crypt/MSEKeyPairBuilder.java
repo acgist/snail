@@ -71,7 +71,7 @@ public final class MSEKeyPairBuilder {
 		}
 
 		private byte[] buildEncoded() {
-			return NumberUtils.encodeUnsigned(this.value, CryptConfig.PUBLIC_KEY_LENGTH);
+			return NumberUtils.encodeBigInteger(this.value, CryptConfig.PUBLIC_KEY_LENGTH);
 		}
 		
 		public BigInteger getValue() {
@@ -123,7 +123,7 @@ public final class MSEKeyPairBuilder {
 			for (int index = 0; index < CryptConfig.PRIVATE_KEY_LENGTH; index++) {
 				bytes[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_MAX);
 			}
-			return NumberUtils.decodeUnsigned(ByteBuffer.wrap(bytes), CryptConfig.PRIVATE_KEY_LENGTH);
+			return NumberUtils.decodeBigInteger(ByteBuffer.wrap(bytes), CryptConfig.PRIVATE_KEY_LENGTH);
 		}
 		
 		/**

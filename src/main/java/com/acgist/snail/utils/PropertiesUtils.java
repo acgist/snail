@@ -29,9 +29,9 @@ public final class PropertiesUtils {
 	
 	/**
 	 * <p>创建配置工具对象</p>
-	 * <p>优先从用户工作目录（UserDir）加载配置，加载失败后加载默认配置。</p>
+	 * <p>优先加载用户工作目录（UserDir）配置，如果加载失败则加载默认（Resource）配置。</p>
 	 * 
-	 * @param path 文件路径
+	 * @param path 配置文件相对路径：{@code /}开头
 	 * 
 	 * @return 配置工具对象
 	 */
@@ -44,7 +44,7 @@ public final class PropertiesUtils {
 	}
 	
 	/**
-	 * <p>加载配置（UserDir）</p>
+	 * <p>加载用户工作目录配置（UserDir）</p>
 	 * 
 	 * @param path 文件路径
 	 * 
@@ -66,7 +66,7 @@ public final class PropertiesUtils {
 	}
 	
 	/**
-	 * <p>加载配置（Resource）</p>
+	 * <p>加载默认配置（Resource）</p>
 	 * 
 	 * @param path 文件路径
 	 * 
@@ -143,7 +143,7 @@ public final class PropertiesUtils {
 	}
 	
 	/**
-	 * <p>是否存在配置</p>
+	 * <p>判断是否存在配置</p>
 	 * 
 	 * @return {@code true}-存在；{@code false}-不存在；
 	 */

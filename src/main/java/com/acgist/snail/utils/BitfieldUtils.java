@@ -46,7 +46,7 @@ public final class BitfieldUtils {
 	}
 	
 	/**
-	 * <p>高低位互换：01000001 -&gt; 10000010</p>
+	 * <p>大端小端互转：{@code 01000001} -&gt; {@code 10000010}</p>
 	 */
 	private static final byte reverse(final byte value) {
 		int result = value;

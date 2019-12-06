@@ -17,9 +17,9 @@ public final class BrowseUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(BrowseUtils.class);
 	
 	/**
-	 * <p>浏览器打开网页</p>
+	 * <p>浏览器打开{@code url}</p>
 	 * 
-	 * @param url 网络地址
+	 * @param url URL地址
 	 */
 	public static final void open(final String url) {
 		try {

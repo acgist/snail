@@ -21,13 +21,13 @@ public class MSETest extends BaseTest {
 		this.log(a.getPrivate());
 		this.log(b.getPublic());
 		this.log(b.getPrivate());
-		var aKey = NumberUtils.decodeUnsigned(ByteBuffer.wrap(a.getPublic().getEncoded()), CryptConfig.PUBLIC_KEY_LENGTH);
-		var bKey = NumberUtils.decodeUnsigned(ByteBuffer.wrap(b.getPublic().getEncoded()), CryptConfig.PUBLIC_KEY_LENGTH);
+		var aKey = NumberUtils.decodeBigInteger(ByteBuffer.wrap(a.getPublic().getEncoded()), CryptConfig.PUBLIC_KEY_LENGTH);
+		var bKey = NumberUtils.decodeBigInteger(ByteBuffer.wrap(b.getPublic().getEncoded()), CryptConfig.PUBLIC_KEY_LENGTH);
 		this.log("双方密钥");
 		this.log(StringUtils.hex(aKey.toByteArray()));
 		this.log(StringUtils.hex(bKey.toByteArray()));
-		var as = NumberUtils.encodeUnsigned(MSEKeyPairBuilder.buildDHSecret(aKey, b.getPrivate()), CryptConfig.PUBLIC_KEY_LENGTH);
-		var bs = NumberUtils.encodeUnsigned(MSEKeyPairBuilder.buildDHSecret(bKey, a.getPrivate()), CryptConfig.PUBLIC_KEY_LENGTH);
+		var as = NumberUtils.encodeBigInteger(MSEKeyPairBuilder.buildDHSecret(aKey, b.getPrivate()), CryptConfig.PUBLIC_KEY_LENGTH);
+		var bs = NumberUtils.encodeBigInteger(MSEKeyPairBuilder.buildDHSecret(bKey, a.getPrivate()), CryptConfig.PUBLIC_KEY_LENGTH);
 		this.log("加密S");
 		this.log(StringUtils.hex(as));
 		this.log(StringUtils.hex(bs));

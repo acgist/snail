@@ -35,7 +35,7 @@ public final class PeerUtils {
 	}
 	
 	/**
-	 * <p>读取IP和端口信息</p>
+	 * <p>读取IP和端口</p>
 	 * 
 	 * @param buffer 数据
 	 * @param length 数据长度

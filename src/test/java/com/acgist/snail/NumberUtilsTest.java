@@ -18,9 +18,9 @@ public class NumberUtilsTest extends BaseTest {
 		for (int index = 0; index < CryptConfig.PRIVATE_KEY_LENGTH; index++) {
 			bytes[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_MAX);
 		}
-		var value = NumberUtils.decodeUnsigned(ByteBuffer.wrap(bytes), CryptConfig.PRIVATE_KEY_LENGTH);
+		var value = NumberUtils.decodeBigInteger(ByteBuffer.wrap(bytes), CryptConfig.PRIVATE_KEY_LENGTH);
 		this.log(value);
-		this.log(NumberUtils.encodeUnsigned(value, CryptConfig.PUBLIC_KEY_LENGTH));
+		this.log(NumberUtils.encodeBigInteger(value, CryptConfig.PUBLIC_KEY_LENGTH));
 	}
 	
 	@Test
