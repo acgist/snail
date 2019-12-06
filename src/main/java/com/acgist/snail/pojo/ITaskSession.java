@@ -175,9 +175,9 @@ public interface ITaskSession extends ITaskSessionTable, ITaskSessionEntity, ITa
 	boolean inThreadPool();
 	
 	/**
-	 * <p>将任务信息转换为Map对象</p>
+	 * <p>将任务信息转换为Map</p>
 	 * 
-	 * @return 任务信息
+	 * @return 任务信息Map
 	 */
 	Map<String, Object> taskMessage();
 	

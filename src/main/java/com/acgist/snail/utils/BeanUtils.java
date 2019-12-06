@@ -27,13 +27,13 @@ public final class BeanUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(BeanUtils.class);
 	
 	/**
-	 * <p>通过反射生成实例对象</p>
+	 * <p>通过反射生成{@code clazz}实例对象</p>
 	 * <p>调用默认无参构造方法</p>
 	 * 
 	 * @param <T> 类型泛型
-	 * @param clazz 实例类型
+	 * @param clazz 对象类型
 	 * 
-	 * @return 实例对象
+	 * @return 对象
 	 */
 	public static final <T> T newInstance(final Class<T> clazz) {
 		if(clazz == null) {
@@ -42,7 +42,7 @@ public final class BeanUtils {
 		try {
 			return clazz.getDeclaredConstructor().newInstance();
 		} catch (Exception e) {
-			LOGGER.error("反射生成实例异常", e);
+			LOGGER.error("反射生成实例对象异常", e);
 		}
 		return null;
 	}
