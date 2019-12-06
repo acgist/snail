@@ -265,9 +265,9 @@ public final class MSECryptHandshakeHandler {
 	}
 	
 	/**
-	 * <p>唤醒握手等待</p>
+	 * <p>释放握手等待</p>
 	 */
-	private void handshakeUnlock() {
+	private void unlockHandshake() {
 		synchronized (this.handshakeLock) {
 			this.handshakeLock.notifyAll();
 		}
@@ -646,7 +646,7 @@ public final class MSECryptHandshakeHandler {
 		this.dhSecret = null;
 		this.cipherTmp = null;
 		this.msePaddingSync = null;
-		this.handshakeUnlock();
+		this.unlockHandshake();
 	}
 
 }

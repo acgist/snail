@@ -10,8 +10,8 @@ import com.acgist.snail.utils.DateUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
- * <p>Statistics Session</p>
- * <p>统计信息：速度、限速、统计等</p>
+ * <p>统计信息</p>
+ * <p>速度、限速、统计等</p>
  * 
  * @author acgist
  * @since 1.0.0

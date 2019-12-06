@@ -32,6 +32,13 @@ public final class FtpDownloader extends SingleFileDownloader {
 		super(taskSession);
 	}
 
+	/**
+	 * <p>创建FTP下载器</p>
+	 * 
+	 * @param taskSession 任务信息
+	 * 
+	 * @return FTP下载器对象
+	 */
 	public static final FtpDownloader newInstance(ITaskSession taskSession) {
 		return new FtpDownloader(taskSession);
 	}
@@ -39,9 +46,9 @@ public final class FtpDownloader extends SingleFileDownloader {
 	@Override
 	public void release() {
 		if(this.client != null) {
-			this.client.close();
+			this.client.close(); // 关闭FTP客户端
 		}
-//		IoUtils.close(this.input); // FtpClient已经关闭
+//		IoUtils.close(this.input); // FTP客户端关闭时已经关闭
 		IoUtils.close(this.output);
 		super.release();
 	}
@@ -50,7 +57,7 @@ public final class FtpDownloader extends SingleFileDownloader {
 	protected void buildInput() {
 		// 已下载大小
 		final long size = FileUtils.fileSize(this.taskSession.getFile());
-		// 创建FtpClient
+		// FTP客户端
 		this.client = FtpClientBuilder.newInstance(this.taskSession.getUrl()).build();
 		final boolean ok = this.client.connect(); // 建立连接
 		if(ok) {

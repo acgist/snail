@@ -6,7 +6,7 @@ import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.DateUtils;
 
 /**
- * <p>速度统计</p>
+ * <p>速度信息</p>
  * 
  * @author acgist
  * @since 1.2.2

@@ -174,8 +174,8 @@ public class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 				PeerConfig.SOURCE_HOLEPUNCH);
 		}
 		if(peerSession.holepunchWait()) {
-			LOGGER.debug("处理holepunch消息-connect：唤醒等待");
-			peerSession.holepunchUnlock();
+			LOGGER.debug("处理holepunch消息-connect：释放holepunch等待锁");
+			peerSession.unlockHolepunch();
 		} else {
 			if(peerSession.connected()) {
 				LOGGER.debug("处理holepunch消息-connect：目标已连接");

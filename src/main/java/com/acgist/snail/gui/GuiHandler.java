@@ -148,7 +148,8 @@ public final class GuiHandler {
 	 */
 	private boolean gui = true;
 	/**
-	 * <p>阻塞锁：使用扩展GUI时阻止程序关闭</p>
+	 * <p>扩展GUI阻塞锁</p>
+	 * <p>使用扩展GUI时阻止程序关闭</p>
 	 */
 	private final Object lock = new Object();
 	/**
@@ -343,7 +344,7 @@ public final class GuiHandler {
 	}
 	
 	/**
-	 * <p>阻塞锁：防止系统自动关闭</p>
+	 * <p>扩展GUI阻塞锁</p>
 	 */
 	public void lock() {
 		synchronized (this.lock) {
@@ -352,7 +353,7 @@ public final class GuiHandler {
 	}
 	
 	/**
-	 * <p>唤醒阻塞锁</p>
+	 * <p>释放扩展GUI阻塞锁</p>
 	 */
 	public void unlock() {
 		synchronized (this.lock) {

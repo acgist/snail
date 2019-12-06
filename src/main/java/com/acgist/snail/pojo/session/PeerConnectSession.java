@@ -1,7 +1,6 @@
 package com.acgist.snail.pojo.session;
 
 /**
- * <p>Peer Connect Session</p>
  * <p>Peer连接信息</p>
  * 
  * @author acgist

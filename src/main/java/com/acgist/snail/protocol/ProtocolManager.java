@@ -143,7 +143,7 @@ public class ProtocolManager {
 	}
 
 	/**
-	 * 设置可用状态，唤醒阻塞线程。
+	 * 设置可用状态，释放阻塞线程。
 	 */
 	public void available(boolean available) {
 		synchronized (this.availableLock) {

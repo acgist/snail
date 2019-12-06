@@ -32,7 +32,7 @@ public final class ExitEvent extends GuiEvent {
 
 	@Override
 	protected void executeExtend(Object ... args) {
-		GuiHandler.getInstance().unlock(); // 唤醒扩展GUI阻塞锁
+		GuiHandler.getInstance().unlock(); // 释放扩展GUI阻塞锁
 	}
 	
 }

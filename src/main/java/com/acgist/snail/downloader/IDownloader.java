@@ -28,7 +28,7 @@ public interface IDownloader extends Runnable {
 	String name();
 	
 	/**
-	 * <p>任务是否处于下载中</p>
+	 * <p>判断任务是否正在下载</p>
 	 * 
 	 * @return {@code true}-{@linkplain Status#DOWNLOAD 下载中}；{@code false}-未下载；
 	 */
@@ -61,7 +61,7 @@ public interface IDownloader extends Runnable {
 	
 	/**
 	 * <p>删除任务</p>
-	 * <p>先暂停任务，然后等待任务结束后删除任务。</p>
+	 * <p>先暂停任务等任务结束后再删除任务</p>
 	 */
 	void delete();
 	
@@ -73,7 +73,7 @@ public interface IDownloader extends Runnable {
 	/**
 	 * <dl>
 	 * 	<dt>打开任务</dt>
-	 * 	<dd>初始下载信息</dd>
+	 * 	<dd>初始化下载信息</dd>
 	 * 	<dd>打开下载数据流</dd>
 	 * 	<dd>打开本地文件流</dd>
 	 * </dl>
@@ -88,12 +88,12 @@ public interface IDownloader extends Runnable {
 	void download() throws IOException;
 	
 	/**
-	 * <p>唤醒下载等待锁</p>
+	 * <p>释放下载锁</p>
 	 */
 	void unlockDownload();
 	
 	/**
-	 * <p>检查任务完成状态</p>
+	 * <p>检查任务是否完成</p>
 	 * <p>如果任务已经完成则标记为完成状态</p>
 	 */
 	void checkComplete();

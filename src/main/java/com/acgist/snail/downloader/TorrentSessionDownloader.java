@@ -15,7 +15,7 @@ import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
- * <p>TorrentSession任务下载器</p>
+ * <p>BT任务下载器</p>
  * 
  * @author acgist
  * @since 1.1.1
@@ -25,11 +25,12 @@ public abstract class TorrentSessionDownloader extends Downloader {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentSessionDownloader.class);
 
 	/**
-	 * <p>Torrent任务信息</p>
+	 * <p>BT任务信息</p>
 	 */
 	protected TorrentSession torrentSession;
 	/**
-	 * <p>下载锁：下载时阻塞下载线程</p>
+	 * <p>下载锁</p>
+	 * <p>下载时阻塞下载线程</p>
 	 */
 	protected final Object downloadLock = new Object();
 	
@@ -73,7 +74,7 @@ public abstract class TorrentSessionDownloader extends Downloader {
 	}
 	
 	/**
-	 * <p>加载TorrentSession任务信息</p>
+	 * <p>加载BT任务信息</p>
 	 * 
 	 * @return 任务信息
 	 */
@@ -85,8 +86,8 @@ public abstract class TorrentSessionDownloader extends Downloader {
 			final var infoHashHex = magnet.getHash();
 			return TorrentManager.getInstance().newTorrentSession(infoHashHex, torrentPath);
 		} catch (DownloadException e) {
-			LOGGER.error("TorrentSession任务加载异常", e);
-			fail("TorrentSession任务加载失败：" + e.getMessage());
+			LOGGER.error("BT任务加载异常", e);
+			fail("BT任务加载失败：" + e.getMessage());
 		}
 		return null;
 	}

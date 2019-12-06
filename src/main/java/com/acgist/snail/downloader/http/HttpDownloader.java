@@ -31,6 +31,13 @@ public final class HttpDownloader extends SingleFileDownloader {
 		super(taskSession);
 	}
 
+	/**
+	 * <p>创建HTTP下载器</p>
+	 * 
+	 * @param taskSession 任务信息
+	 * 
+	 * @return HTTP下载器对象
+	 */
 	public static final HttpDownloader newInstance(ITaskSession taskSession) {
 		return new HttpDownloader(taskSession);
 	}
@@ -44,21 +51,39 @@ public final class HttpDownloader extends SingleFileDownloader {
 	
 	/**
 	 * {@inheritDoc}
-	 * <dl>
-	 * 	<dt>断点续传设置（Range）</dt>
-	 * 	<dd>Range：bytes=0-499：0-499字节范围</dd>
-	 * 	<dd>Range：bytes=500-999：500-999字节范围</dd>
-	 * 	<dd>Range：bytes=-500：最后500字节</dd>
-	 * 	<dd>Range：bytes=500-：500字节开始到结束</dd>
-	 * 	<dd>Range：bytes=0-0,-1：第一个字节和最后一个字节</dd>
-	 * 	<dd>Range：bytes=500-600,601-999：同时指定多个范围</dd>
-	 * </dl>
+	 * 
+	 * <table border="1" summary="HTTP协议断点续传设置">
+	 * 	<tr>
+	 * 		<td>{@code Range: bytes=0-499}</td>
+	 * 		<td>{@code 0}-{@code 499}字节范围</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>{@code Range: bytes=500-999}</td>
+	 * 		<td>{@code 500}-{@code 999}字节范围</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>{@code Range: bytes=-500}</td>
+	 * 		<td>最后{@code 500}字节</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>{@code Range: bytes=500-}</td>
+	 * 		<td>{@code 500}字节开始到结束</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>{@code Range: bytes=0-0,-1}</td>
+	 * 		<td>第一个字节和最后一个字节</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>{@code Range: bytes=500-600,601-999}</td>
+	 * 		<td>同时指定多个范围</td>
+	 * 	</tr>
+	 * </table>
 	 */
 	@Override
 	protected void buildInput() {
 		// 已下载大小
 		final long size = FileUtils.fileSize(this.taskSession.getFile());
-		// 创建HTTPClient
+		// HTTP客户端
 		final var client = HTTPClient.newInstance(this.taskSession.getUrl(), SystemConfig.CONNECT_TIMEOUT, SystemConfig.DOWNLOAD_TIMEOUT);
 		HttpResponse<InputStream> response = null; // 响应
 		try {
@@ -77,7 +102,7 @@ public final class HttpDownloader extends SingleFileDownloader {
 				final long begin = headers.beginRange();
 				if(size != begin) {
 					LOGGER.warn(
-						"HTTP下载错误（已下载大小和开始下载位置不符）：{}-{}，HTTP响应头：{}",
+						"HTTP下载错误（已下载大小和开始下载位置不符），开始位置：{}，响应位置：{}，HTTP响应头部：{}",
 						size, begin,
 						headers.allHeaders()
 					);
@@ -86,14 +111,18 @@ public final class HttpDownloader extends SingleFileDownloader {
 			} else {
 				this.taskSession.downloadSize(0L);
 			}
-		} else if(HTTPClient.requestedRangeNotSatisfiable(response)) { // 无法满足的请求范围
+		} else if(HTTPClient.requestedRangeNotSatisfiable(response)) {
 			if(this.taskSession.downloadSize() == this.taskSession.getSize()) {
 				this.complete = true;
 			} else {
 				fail("无法满足文件下载范围：" + size);
 			}
 		} else {
-			fail("HTTP请求失败（" + response.statusCode() + "）");
+			if(response == null) {
+				fail("HTTP请求失败");
+			} else {
+				fail("HTTP请求失败（" + response.statusCode() + "）");
+			}
 		}
 	}
 

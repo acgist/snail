@@ -37,7 +37,7 @@ public final class DownloaderManager {
 	 */
 	private final ExecutorService executor;
 	/**
-	 * <p>下载器Map</p>
+	 * <p>下载队列</p>
 	 * <p>任务ID=下载器</p>
 	 */
 	private final Map<String, IDownloader> downloaderMap;
@@ -88,7 +88,7 @@ public final class DownloaderManager {
 	
 	/**
 	 * <p>添加下载任务</p>
-	 * <p>只将任务添加到下载器线程池，不修改任务状态。</p>
+	 * <p>只将下载任务添加到下载队列，不修改任务状态。</p>
 	 * 
 	 * @param taskSession 下载任务
 	 * 
@@ -107,7 +107,7 @@ public final class DownloaderManager {
 					downloader = taskSession.buildDownloader();
 				}
 				if(downloader == null) {
-					throw new DownloadException("下载器不存在");
+					throw new DownloadException("创建下载器失败，下载协议：" + taskSession.getType());
 				}
 				this.downloaderMap.put(downloader.id(), downloader);
 				return downloader;
@@ -137,16 +137,16 @@ public final class DownloaderManager {
 
 	/**
 	 * <p>删除任务</p>
-	 * <p>立即从下载器Map中删除，实际删除任务在后台进行。</p>
+	 * <p>从{@linkplain #downloaderMap 下载队列}中立即删除，实际删除操作在后台进行。</p>
 	 * 
 	 * @param taskSession 下载任务
 	 */
 	public void delete(ITaskSession taskSession) {
-		// 需要定义后台删除线程外面：防止从队列立即删除时导致空指针
+		// 需要定义在后台删除任务外面：防止从下载队列中删除后导致空指针
 		final var downloader = downloader(taskSession);
 		// 后台删除任务
 		SystemThreadContext.submit(() -> downloader.delete());
-		// 队列立即删除（GUI）
+		// 下载队列删除
 		this.downloaderMap.remove(taskSession.getId());
 		// 刷新任务列表
 		GuiHandler.getInstance().refreshTaskList();
@@ -154,7 +154,7 @@ public final class DownloaderManager {
 	
 	/**
 	 * <p>切换下载器</p>
-	 * <p>移除旧的下载器，重新创建新的下载器并开始下载。</p>
+	 * <p>先删除任务旧的下载器并从{@linkplain #downloaderMap 下载队列}中删除，然后重新下载。</p>
 	 * 
 	 * @param taskSession 下载任务
 	 * 
@@ -162,11 +162,13 @@ public final class DownloaderManager {
 	 */
 	public void changeDownloaderRestart(ITaskSession taskSession) throws DownloadException {
 		taskSession.removeDownloader(); // 删除旧下载器
-		this.downloaderMap.remove(taskSession.getId()); // 移除下载MAP
-		this.start(taskSession);
+		this.downloaderMap.remove(taskSession.getId()); // 下载队列删除
+		this.start(taskSession); // 重新下载
 	}
 
 	/**
+	 * <p>获取下载任务的下载器</p>
+	 * 
 	 * @param taskSession 下载任务
 	 * 
 	 * @return 下载器
@@ -176,6 +178,8 @@ public final class DownloaderManager {
 	}
 	
 	/**
+	 * <p>获取所有下载任务列表</p>
+	 * 
 	 * @return 所有下载任务列表
 	 */
 	public List<ITaskSession> allTask() {
@@ -187,15 +191,15 @@ public final class DownloaderManager {
 	/**
 	 * <dl>
 	 * 	<dt>刷新下载任务</dt>
-	 * 	<dd>如果没满下载任务数量：增加下载任务线程</dd>
-	 * 	<dd>如果超过下载任务数量：减小下载任务线程</dd>
+	 * 	<dd>如果小于下载任务数量：增加下载任务线程</dd>
+	 * 	<dd>如果大于下载任务数量：减小下载任务线程</dd>
 	 * </dl>
 	 * <p>任务完成、暂停等操作时刷新下载任务</p>
 	 */
 	public void refresh() {
 		synchronized (this) {
 			final var downloaders = this.downloaderMap.values();
-			// 当前运行的下载器数量
+			// 当前任务下载数量
 			final long count = downloaders.stream()
 				.filter(IDownloader::downloading)
 				.count();
@@ -228,7 +232,7 @@ public final class DownloaderManager {
 		} catch (Exception e) {
 			LOGGER.error("关闭下载器管理器异常", e);
 		}
-//		SystemThreadContext.shutdown(this.executor); // 不直接关闭：线程关闭需要时间
+//		SystemThreadContext.shutdown(this.executor); // 不直接关闭线程池：等待任务自动结束
 	}
 
 }

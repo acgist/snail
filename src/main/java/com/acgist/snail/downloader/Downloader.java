@@ -26,16 +26,18 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Downloader.class);
 	
 	/**
-	 * <p>删除锁等待时间（秒）：{@value}</p>
+	 * <p>{@linkplain #deleteLock 删除锁}等待时间（秒）：{@value}</p>
 	 */
 	private static final int DELETE_WAIT_TIME = 5;
 	
 	/**
 	 * <p>失败状态</p>
+	 * <p>{@code true}-任务失败；{@code false}-任务正常；</p>
 	 */
 	protected volatile boolean fail = false;
 	/**
 	 * <p>完成状态</p>
+	 * <p>{@code true}-任务完成；{@code false}-任务没有完成；</p>
 	 */
 	protected volatile boolean complete = false;
 	/**
@@ -43,9 +45,10 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	 */
 	protected final ITaskSession taskSession;
 	/**
-	 * <p>任务删除锁</p>
-	 * <p>任务不处于下载中时标记：true</p>
-	 * <p>删除任务时检查是否可以删除：{@code true}-可以删除；{@code false}-不能删除（等待下载结束）；</p>
+	 * <p>删除锁</p>
+	 * <p>{@code true}-任务没有下载（可以删除）；</p>
+	 * <p>{@code false}-任务正在下载（不能删除）；</p>
+	 * <p>任务删除时检查该锁判断是否可以删除任务，如果任务不能删除需要等待任务结束。</p>
 	 */
 	private final AtomicBoolean deleteLock = new AtomicBoolean(false);
 
@@ -53,7 +56,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 		this.taskSession = taskSession;
 		// 已下载大小
 		this.taskSession.downloadSize(downloadSize());
-		// 任务不处于下载中时标记：true
+		// 任务没有下载标记删除锁：true
 		if(!this.taskSession.download()) {
 			this.deleteLock.set(true);
 		}
@@ -81,11 +84,11 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	
 	@Override
 	public void start() {
-		// 任务已经开始下载不修改状态
+		// 任务已经开始不修改状态
 		if(this.taskSession.download()) {
 			return;
 		}
-		// 任务已经完成
+		// 任务已经完成不修改状态
 		if(this.taskSession.complete()) {
 			return;
 		}
@@ -98,7 +101,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 		if(this.taskSession.pause()) {
 			return;
 		}
-		// 任务已经完成
+		// 任务已经完成不修改状态
 		if(this.taskSession.complete()) {
 			return;
 		}
@@ -110,7 +113,8 @@ public abstract class Downloader implements IDownloader, IStatistics {
 		this.fail = true;
 		this.updateStatus(Status.FAIL);
 		final StringBuilder noticeMessage = new StringBuilder();
-		noticeMessage.append(this.name())
+		noticeMessage
+			.append(this.name())
 			.append("下载失败：");
 		if(message != null) {
 			noticeMessage.append(message);
@@ -162,9 +166,9 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	
 	@Override
 	public void run() {
-		// 任务已经处于下载中时直接跳过，防止多次点击暂停开始导致后面线程阻塞，进而不能下载其他任务。
+		// 任务已经开始下载直接跳过，防止多次点击暂停开始导致阻塞后面下载任务线程。
 		if(this.taskSession.download()) {
-			LOGGER.debug("任务已经处于下载中：{}", this.name());
+			LOGGER.debug("任务已经开始下载：{}", this.name());
 			return;
 		}
 		synchronized (this.taskSession) {
@@ -182,7 +186,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 				}
 				this.checkComplete(); // 检查完成状态
 				this.release(); // 释放资源
-				this.unlockDelete(); // 唤醒删除锁
+				this.unlockDelete(); // 释放删除锁
 				LOGGER.info("任务下载结束：{}", name());
 			} else {
 				LOGGER.warn("任务状态错误：{}", this.name());
@@ -207,7 +211,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	
 	/**
 	 * <dl>
-	 * 	<dt>是否可以下载</dt>
+	 * 	<dt>判断任务是否可以下载</dt>
 	 * 	<dd>未被标记{@linkplain #fail 失败}</dd>
 	 * 	<dd>未被标记{@linkplain #complete 完成}</dd>
 	 * 	<dd>任务处于{@linkplain ITaskSession#download() 下载中}</dd>
@@ -223,7 +227,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	}
 
 	/**
-	 * <p>唤醒{@linkplain #deleteLock 删除锁}</p>
+	 * <p>释放{@linkplain #deleteLock 删除锁}</p>
 	 */
 	private void unlockDelete() {
 		synchronized (this.deleteLock) {
@@ -234,9 +238,9 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	
 	/**
 	 * <p>修改任务状态</p>
-	 * <p>唤醒下载等待锁、更新任务状态</p>
+	 * <p>释放下载锁、修改任务状态</p>
 	 * 
-	 * @param status 状态
+	 * @param status 任务状态
 	 */
 	private void updateStatus(Status status) {
 		this.unlockDownload();

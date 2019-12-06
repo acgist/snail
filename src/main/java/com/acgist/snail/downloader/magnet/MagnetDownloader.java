@@ -9,7 +9,7 @@ import com.acgist.snail.system.exception.DownloadException;
 
 /**
  * <p>磁力链接下载器</p>
- * <p>原理：先将磁力链接转为种子，然后转为BT任务下载。</p>
+ * <p>下载原理：先将磁力链接转为种子文件，然后将任务转为BT任务进行下载。</p>
  * 
  * @author acgist
  * @since 1.1.0
@@ -22,6 +22,13 @@ public final class MagnetDownloader extends TorrentSessionDownloader {
 		super(taskSession);
 	}
 	
+	/**
+	 * <p>创建磁力链接下载器</p>
+	 * 
+	 * @param taskSession 任务信息
+	 * 
+	 * @return 磁力链接下载器对象
+	 */
 	public static final MagnetDownloader newInstance(ITaskSession taskSession) {
 		return new MagnetDownloader(taskSession);
 	}
@@ -49,8 +56,8 @@ public final class MagnetDownloader extends TorrentSessionDownloader {
 				this.complete = this.torrentSession.magnet(this.taskSession);
 			}
 		} catch (DownloadException e) {
-			LOGGER.error("磁力链接任务加载异常", e);
-			fail("磁力链接任务加载失败：" + e.getMessage());
+			LOGGER.error("磁力链接任务下载异常", e);
+			fail("磁力链接任务下载失败：" + e.getMessage());
 		}
 	}
 
