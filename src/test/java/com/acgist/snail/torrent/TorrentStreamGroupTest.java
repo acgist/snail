@@ -33,12 +33,7 @@ public class TorrentStreamGroupTest extends BaseTest {
 			file.selected(true);
 		});
 		TorrentStreamGroup group = TorrentStreamGroup.newInstance("e:/tmp/verify", files, session);
-		while(true) {
-			ThreadUtils.sleep(1000);
-			if(group.ready()) {
-				break;
-			}
-		}
+		ThreadUtils.sleep(10000); // 等待任务准备完成
 		var downloadPieces = group.pieces();
 		int index = downloadPieces.nextSetBit(0);
 		int length = session.torrent().getInfo().getPieceLength().intValue();

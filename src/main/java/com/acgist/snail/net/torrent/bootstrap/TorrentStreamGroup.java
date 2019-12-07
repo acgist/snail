@@ -69,16 +69,13 @@ public final class TorrentStreamGroup {
 	 */
 	private final AtomicLong fileBuffer;
 	/**
-	 * <p>是否初始化完成</p>
-	 */
-	private volatile boolean ready = false;
-	/**
 	 * <p>种子信息</p>
 	 */
 	private final Torrent torrent;
 	/**
 	 * <p>文件流集合</p>
 	 * <p>注意顺序（跨越文件数据读取）</p>
+	 * <p>可能存在下载到一半后不需要下载的情况，不从集合中删除，标记为不下载即可。</p>
 	 */
 	private final List<TorrentStream> streams;
 	private final TorrentSession torrentSession;
@@ -98,6 +95,7 @@ public final class TorrentStreamGroup {
 	public static final TorrentStreamGroup newInstance(String folder, List<TorrentFile> files, TorrentSession torrentSession) {
 		final Torrent torrent = torrentSession.torrent();
 		final TorrentInfo torrentInfo = torrent.getInfo();
+		final long pieceLength = torrentInfo.getPieceLength();
 		final boolean complete = torrentSession.completed();
 		final BitSet pieces = new BitSet(torrentInfo.pieceSize());
 		final BitSet selectPieces = new BitSet(torrentInfo.pieceSize());
@@ -107,17 +105,74 @@ public final class TorrentStreamGroup {
 		final int fileCount = (int) files.stream()
 			.filter(file -> file.selected())
 			.count();
+		torrentStreamGroup.load(fileCount, pieceLength, complete, folder, files);
+		return torrentStreamGroup;
+	}
+	
+	/**
+	 * <p>重新加载</p>
+	 * 
+	 * @return 新增下载文件数量
+	 */
+	public int reload(String folder, List<TorrentFile> files, TorrentSession torrentSession) {
+		if(CollectionUtils.isNotEmpty(files)) {
+			final Torrent torrent = torrentSession.torrent();
+			final TorrentInfo torrentInfo = torrent.getInfo();
+			final long pieceLength = torrentInfo.getPieceLength();
+			final int fileCount = (int) files.stream()
+				.filter(file -> file.selected())
+				.filter(file -> {
+					final String path = FileUtils.file(folder, file.path()); // 文佳路径
+					return this.haveStream(path) == null;
+				}).count();
+			this.load(fileCount, pieceLength, false, folder, files);
+			return fileCount;
+		}
+		return 0;
+	}
+	
+	/**
+	 * <p>加载任务</p>
+	 * <p>需要下载文件：没有加载-加载；已经加载-重载；</p>
+	 * <p>不用下载文件：没有加载-忽略；已经加载-卸载；</p>
+	 * 
+	 * @param fileCount 加载文件数量
+	 * @param pieceLength Piece长度
+	 * @param complete 任务是否完成
+	 * @param folder 任务下载目录
+	 * @param files 任务文件列表
+	 */
+	private void load(int fileCount, long pieceLength, boolean complete, String folder, List<TorrentFile> files) {
 		final var startTime = System.currentTimeMillis(); // 开始时间
+		this.full = false; // 健康度重新检查
+		this.selectPieces.clear(); // 清除所有已选择Piece
 		// 异步线程执行完成计数器
 		final CountDownLatch sizeCount = new CountDownLatch(fileCount);
+		// 开始加载下载文件
 		if(CollectionUtils.isNotEmpty(files)) {
 			long pos = 0;
 			for (TorrentFile file : files) {
+				final String path = FileUtils.file(folder, file.path()); // 文佳路径
+				final TorrentStream old = this.haveStream(path);
 				try {
-					if(file.selected()) {
-						final TorrentStream stream = TorrentStream.newInstance(torrentInfo.getPieceLength(), torrentStreamGroup.fileBuffer, torrentStreamGroup);
-						stream.buildFile(FileUtils.file(folder, file.path()), file.getLength(), pos, selectPieces, complete, sizeCount);
-						streams.add(stream);
+					if(file.selected()) { // 加载选择下载的文件
+						if(old == null) {
+							LOGGER.debug("文件选中下载（加载）：{}", path);
+							final TorrentStream stream = TorrentStream.newInstance(pieceLength, this.fileBuffer, this);
+							stream.buildFile(path, file.getLength(), pos, this.selectPieces, complete, sizeCount);
+							this.streams.add(stream);
+						} else {
+							LOGGER.debug("文件选中下载（重载）：{}", path);
+							old.buildSelectPieces(this.selectPieces);
+							old.install();
+						}
+					} else {
+						if(old == null) {
+							LOGGER.debug("文件没有未选中下载（忽略）：{}", path);
+						} else {
+							LOGGER.debug("文件没有未选中下载（卸载）：{}", path);
+							old.uninstall();
+						}
 					}
 				} catch (Exception e) {
 					LOGGER.error("TorrentStream创建异常：{}", file.path(), e);
@@ -125,41 +180,48 @@ public final class TorrentStreamGroup {
 				pos += file.getLength();
 			}
 		}
+		// 文件排序
+		// TODO
+		// 异步等待加载完成
 		SystemThreadContext.submit(() -> {
 			try {
 				final var ok = sizeCount.await(DOWNLOAD_SIZE_TIMEOUT, TimeUnit.SECONDS);
 				if(ok) {
 					final var finishTime = System.currentTimeMillis(); // 结束时间
-					LOGGER.debug("{}-任务准备完成消耗时间：{}", torrent.name(), (finishTime - startTime));
-					torrentSession.resize(torrentStreamGroup.size());
-					torrentStreamGroup.fullPieces(torrentStreamGroup.pieces());
+					LOGGER.debug("{}-任务准备完成消耗时间：{}", this.torrent.name(), (finishTime - startTime));
+					this.torrentSession.resize(this.size());
+					this.fullPieces(this.pieces());
 				} else {
-					LOGGER.warn("{}-任务准备超时", torrent.name());
+					LOGGER.warn("{}-任务准备超时", this.torrent.name());
 				}
 			} catch (InterruptedException e) {
 				LOGGER.debug("统计下载文件大小等待异常", e);
 				Thread.currentThread().interrupt();
-			} finally {
-				torrentStreamGroup.ready = true;
 			}
 		});
-		return torrentStreamGroup;
 	}
 	
 	/**
-	 * <p>是否初始化完成</p>
+	 * <p>获取对应文件路径的文件流</p>
+	 * 
+	 * @param path 文件路径
+	 * 
+	 * @return 文件流：{@code null}-没有加载
 	 */
-	public boolean ready() {
-		return this.ready;
+	private TorrentStream haveStream(String path) {
+		for (TorrentStream torrentStream : this.streams) {
+			if(torrentStream.equals(path)) {
+				return torrentStream;
+			}
+		}
+		return null;
 	}
 	
 	/**
 	 * <p>发送have消息</p>
 	 */
 	public void have(int index) {
-		if(this.ready) { // 初始化完成才开始发送have消息
-			this.torrentSession.have(index);
-		}
+		this.torrentSession.have(index);
 	}
 	
 	/**
@@ -168,9 +230,11 @@ public final class TorrentStreamGroup {
 	public TorrentPiece pick(final BitSet peerPieces, final BitSet suggestPieces) {
 		TorrentPiece pickPiece = null;
 		for (TorrentStream torrentStream : this.streams) {
-			pickPiece = torrentStream.pick(peerPieces, suggestPieces);
-			if(pickPiece != null) {
-				break;
+			if(torrentStream.select()) { // 下载选中文件
+				pickPiece = torrentStream.pick(peerPieces, suggestPieces);
+				if(pickPiece != null) {
+					break;
+				}
 			}
 		}
 		return pickPiece;
@@ -359,7 +423,7 @@ public final class TorrentStreamGroup {
 	}
 	
 	/**
-	 * <p>下载文件大小</p>
+	 * <p>已下载文件大小</p>
 	 */
 	public long size() {
 		long size = 0L;

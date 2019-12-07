@@ -664,6 +664,17 @@ public final class TorrentSession {
 	}
 	
 	/**
+	 * @see {@link TorrentStreamGroup#reload(String, List, TorrentSession)}
+	 */
+	public int reload() {
+		return this.torrentStreamGroup.reload(
+			this.taskSession.downloadFolder().getPath(),
+			buildSelectedFiles(),
+			this
+		);
+	}
+	
+	/**
 	 * @see {@link TaskSession#getSize()}
 	 */
 	public long size() {
