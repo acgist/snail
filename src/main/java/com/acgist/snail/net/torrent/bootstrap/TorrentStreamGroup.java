@@ -148,30 +148,34 @@ public final class TorrentStreamGroup {
 		this.selectPieces.clear(); // 清除所有已选择Piece
 		// 异步线程执行完成计数器
 		final CountDownLatch sizeCount = new CountDownLatch(fileCount);
+		final List<TorrentStream> sortList = new ArrayList<>(); // 排序
 		// 开始加载下载文件
 		if(CollectionUtils.isNotEmpty(files)) {
 			long pos = 0;
 			for (TorrentFile file : files) {
 				final String path = FileUtils.file(folder, file.path()); // 文佳路径
-				final TorrentStream old = this.haveStream(path);
+				final TorrentStream oldStream = this.haveStream(path);
 				try {
 					if(file.selected()) { // 加载选择下载的文件
-						if(old == null) {
+						if(oldStream == null) {
 							LOGGER.debug("文件选中下载（加载）：{}", path);
 							final TorrentStream stream = TorrentStream.newInstance(pieceLength, this.fileBuffer, this);
 							stream.buildFile(path, file.getLength(), pos, this.selectPieces, complete, sizeCount);
 							this.streams.add(stream);
+							sortList.add(stream);
 						} else {
 							LOGGER.debug("文件选中下载（重载）：{}", path);
-							old.buildSelectPieces(this.selectPieces);
-							old.install();
+							oldStream.buildSelectPieces(this.selectPieces);
+							oldStream.install();
+							sortList.add(oldStream);
 						}
 					} else {
-						if(old == null) {
+						if(oldStream == null) {
 							LOGGER.debug("文件没有未选中下载（忽略）：{}", path);
 						} else {
 							LOGGER.debug("文件没有未选中下载（卸载）：{}", path);
-							old.uninstall();
+							oldStream.uninstall();
+							sortList.add(oldStream);
 						}
 					}
 				} catch (Exception e) {
@@ -181,7 +185,11 @@ public final class TorrentStreamGroup {
 			}
 		}
 		// 文件排序
-		// TODO
+		this.streams.sort((a, b) -> {
+			final int aIndex = sortList.indexOf(a);
+			final int bIndex = sortList.indexOf(b);
+			return Integer.compare(aIndex, bIndex);
+		});
 		// 异步等待加载完成
 		SystemThreadContext.submit(() -> {
 			try {

@@ -19,6 +19,7 @@ import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.FileUtils;
+import com.acgist.snail.utils.ObjectUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -676,6 +677,11 @@ public final class TorrentStream {
 	 */
 	private boolean havePiece(int index) {
 		return this.pieces.get(index);
+	}
+	
+	@Override
+	public String toString() {
+		return ObjectUtils.toString(this, this.file);
 	}
 
 }
