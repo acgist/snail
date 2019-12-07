@@ -1,5 +1,8 @@
 package com.acgist.snail.torrent;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 
 import com.acgist.snail.BaseTest;
@@ -55,6 +58,20 @@ public class TorrentStreamGroupTest extends BaseTest {
 		this.costed();
 		this.log("已经下载Piece：" + downloadPieces);
 		this.log("选择下载Piece：" + group.selectPieces());
+	}
+	
+	@Test
+	public void testSort() {
+		var source = new ArrayList<>(List.of("4", "1", "2", "3", "2", "3"));
+		var target = List.of("1", "3", "2");
+		source.sort((a, b) -> {
+			int indexA = target.indexOf(a);
+			int indexB = target.indexOf(b);
+			return Integer.compare(indexA, indexB);
+//			return indexA > indexB ? 1 : (indexA == indexB ? 0 : -1);
+		});
+		System.out.println(source);
+		System.out.println(target);
 	}
 
 }
