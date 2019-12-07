@@ -14,6 +14,7 @@ import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
+import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * <p>PeerDownloader组</p>
@@ -39,6 +40,10 @@ public final class PeerDownloaderGroup {
 	 * <p>单次创建PeerDownloader最大数量（包含失败）</p>
 	 */
 	private static final int MAX_BUILD_SIZE = 64;
+	/**
+	 * <p>自旋时间</p>
+	 */
+	private static final int SPIN_LOCK_TIME = 1000;
 	
 	/**
 	 * <p>是否继续创建PeerDownloader</p>
@@ -69,6 +74,7 @@ public final class PeerDownloaderGroup {
 	 */
 	public void optimize() {
 		LOGGER.debug("优化PeerDownloader");
+		this.spinLock();
 		synchronized (this.peerDownloaders) {
 			try {
 				inferiorPeerDownloaders();
@@ -95,6 +101,21 @@ public final class PeerDownloaderGroup {
 				PeerManager.getInstance().preference(this.torrentSession.infoHashHex(), launcher.peerSession());
 			});
 			this.peerDownloaders.clear();
+		}
+	}
+	
+	/**
+	 * <p>自旋</p>
+	 * <p>下载器检查是否找到Peer，如果没有找到进行自旋等待。</p>
+	 */
+	private void spinLock() {
+		final PeerManager peerManager = PeerManager.getInstance();
+		final String infoHashHex = this.torrentSession.infoHashHex();
+		while(this.torrentSession.downloading()) {
+			if(peerManager.havePeerSession(infoHashHex)) {
+				break;
+			}
+			ThreadUtils.sleep(SPIN_LOCK_TIME);
 		}
 	}
 	

@@ -65,11 +65,22 @@ public final class PeerManager {
 	/**
 	 * <p>存档队列拷贝</p>
 	 */
-	public List<PeerSession> listPeers(String infoHashHex) {
+	public List<PeerSession> listPeerSession(String infoHashHex) {
 		final var list = list(infoHashHex);
 		synchronized (list) {
 			return new ArrayList<>(list);
 		}
+	}
+	
+	/**
+	 * <p>判断是否找到Peer</p>
+	 * 
+	 * @param infoHashHex InfoHashHex
+	 * 
+	 * @return {@code true}-找到；{@code false}-没有找到；
+	 */
+	public boolean havePeerSession(String infoHashHex) {
+		return !list(infoHashHex).isEmpty();
 	}
 	
 	/**
