@@ -35,7 +35,7 @@ public final class PeerDownloaderGroup {
 	 * <p>同时创建PeerDownloader数量</p>
 	 * <p>注：不要超过TorrentSession线程池大小（如果是固定线程池）</p>
 	 */
-	private static final int BUILD_SIZE = 2;
+	private static final int BUILD_SIZE = 3;
 	/**
 	 * <p>单次创建PeerDownloader最大数量（包含失败）</p>
 	 */

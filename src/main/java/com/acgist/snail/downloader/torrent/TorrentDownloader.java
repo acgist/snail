@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.TorrentSessionDownloader;
 import com.acgist.snail.pojo.ITaskSession;
+import com.acgist.snail.pojo.ITaskSession.Status;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.exception.DownloadException;
 
@@ -44,7 +45,18 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 	
 	@Override
 	public void refresh() {
-		// TODO：修改下载文件时修改TorrentStreamGroup
+		// 任务没有被加载，不用重新加载，开始下载会自动加载。
+		if(this.torrentSession == null) {
+			return;
+		}
+		final int fileCount = this.torrentSession.reload(); // 从新加载任务
+		if(fileCount > 0) {
+			// 已经下载完成：修改为暂停状态
+			if(this.taskSession.complete()) {
+				this.taskSession.setStatus(Status.PAUSE);
+				this.taskSession.update();
+			}
+		}
 	}
 	
 	@Override

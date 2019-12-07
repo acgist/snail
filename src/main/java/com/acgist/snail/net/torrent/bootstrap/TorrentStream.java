@@ -34,6 +34,10 @@ public final class TorrentStream {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentStream.class);
 
 	/**
+	 * <p>文件是否被选中下载</p>
+	 */
+	private volatile boolean select;
+	/**
 	 * <p>Piece大小</p>
 	 */
 	private final long pieceLength;
@@ -142,7 +146,8 @@ public final class TorrentStream {
 			this.fileStream = new RandomAccessFile(this.file, "rw");
 			buildFilePiece();
 			buildFileAsyn(complete, sizeCount);
-			selectPieces.set(this.fileBeginPieceIndex, this.fileEndPieceIndex + 1);
+			buildSelectPieces(selectPieces);
+			install();
 			// TODO：{}，使用多行文本
 			LOGGER.debug(
 				"TorrentStream信息，Piece大小：{}，文件路径：{}，文件大小：{}，文件开始偏移：{}，文件Piece数量：{}，文件Piece开始索引：{}，文件Piece结束索引：{}",
@@ -155,6 +160,49 @@ public final class TorrentStream {
 				this.fileEndPieceIndex
 			);
 		}
+	}
+	
+	/**
+	 * <p>加载文件流</p>
+	 */
+	public void install() {
+		this.select = true;
+	}
+	
+	/**
+	 * <p>卸载文件流</p>
+	 */
+	public void uninstall() {
+		this.select = false;
+	}
+	
+	/**
+	 * <p>判断是否被选中下载</p>
+	 * 
+	 * @return {@code true}-选中；{@code false}-没有选中；
+	 */
+	public boolean select() {
+		return this.select;
+	}
+	
+	/**
+	 * <p>判断{@code path}是不是当前文件流的文件路径</p>
+	 * 
+	 * @param path 文件路径
+	 * 
+	 * @return {@code true}-是；{@code false}-不是；
+	 */
+	public boolean equals(String path) {
+		return StringUtils.equals(path, this.file);
+	}
+	
+	/**
+	 * <p>加载被选中的Piece</p>
+	 * 
+	 * @param selectPieces 被选中的Piece
+	 */
+	public void buildSelectPieces(final BitSet selectPieces) {
+		selectPieces.set(this.fileBeginPieceIndex, this.fileEndPieceIndex + 1);
 	}
 	
 	/**

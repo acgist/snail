@@ -87,7 +87,7 @@ public final class TorrentController extends Controller implements Initializable
 		this.selectorManager = SelectorManager.newInstance(torrent.name(), this.download, tree);
 		torrentInfo.files().stream()
 			.filter(file -> !file.path().startsWith(TorrentInfo.PADDING_FILE_PREFIX)) // 去掉填充文件
-			.sorted((a, b) -> a.path().compareTo(b.path())) // 文件排序
+//			.sorted((a, b) -> a.path().compareTo(b.path())) // 禁用文件排序：种子文件有序排列
 			.forEach(file -> this.selectorManager.build(file.path(), file.getLength()));
 		this.selectorManager.select(taskSession);
 	}
