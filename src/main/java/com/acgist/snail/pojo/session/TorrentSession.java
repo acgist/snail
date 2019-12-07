@@ -293,10 +293,9 @@ public final class TorrentSession {
 	
 	/**
 	 * <p>加载PeerDownloader定时任务</p>
-	 * <p>任务延迟4秒执行，等待加载Peer的任务执行4秒，防止没有Peer数据导致的长时间等待。</p>
 	 */
 	private void loadPeerDownloaderGroupTimer() {
-		this.peerDownloaderGroupTimer = this.timerFixedDelay(4L, PEER_OPTIMIZE_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
+		this.peerDownloaderGroupTimer = this.timerFixedDelay(0, PEER_OPTIMIZE_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> {
 			this.peerDownloaderGroup.optimize(); // 优化Peer下载
 		});
 	}

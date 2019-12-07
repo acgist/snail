@@ -196,7 +196,7 @@ public final class StatisticsController extends Controller implements Initializa
 		LOGGER.debug("统计信息：{}", value.getName());
 		final String infoHashHex = value.getHash();
 		// Peer
-		final var peers = PeerManager.getInstance().listPeers(infoHashHex);
+		final var peers = PeerManager.getInstance().listPeerSession(infoHashHex);
 		final var utp = new AtomicInteger(0);
 		final var available = new AtomicInteger(0);
 		// 来源

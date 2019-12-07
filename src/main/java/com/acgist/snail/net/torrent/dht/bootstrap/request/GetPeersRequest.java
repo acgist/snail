@@ -47,7 +47,7 @@ public final class GetPeersRequest extends Request {
 		final TorrentSession torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
 		if(torrentSession != null) {
 			final ByteBuffer buffer = ByteBuffer.allocate(6);
-			final var list = PeerManager.getInstance().listPeers(infoHashHex);
+			final var list = PeerManager.getInstance().listPeerSession(infoHashHex);
 			if(CollectionUtils.isNotEmpty(list)) {
 				final var values = list.stream()
 					.filter(peer -> peer.available())

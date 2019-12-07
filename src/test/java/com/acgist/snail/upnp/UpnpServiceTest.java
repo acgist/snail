@@ -12,7 +12,7 @@ public class UpnpServiceTest extends BaseTest {
 	/**
 	 * <p>使用MSearch查询</p>
 	 */
-	private String serviceUrl = "http://192.168.1.1:10087/rootDesc.xml";
+	private String serviceUrl = "http://192.168.1.1:5351/rootDesc.xml";
 	
 	@Test
 	public void testGetExternalIPAddress() throws NetException {
