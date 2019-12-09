@@ -42,7 +42,6 @@ public final class BuildController extends Controller implements Initializable {
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		// 文件拖拽
 		this.root.setOnDragOver(this.dragOverAction);
 		this.root.setOnDragDropped(this.dragDroppedAction);
 	}
@@ -92,7 +91,9 @@ public final class BuildController extends Controller implements Initializable {
 	}
 	
 	/**
-	 * <p>设置下载地址</p>
+	 * <p>设置下载链接</p>
+	 * 
+	 * @param url 下载链接
 	 */
 	public void setUrl(String url) {
 		if(url != null) {

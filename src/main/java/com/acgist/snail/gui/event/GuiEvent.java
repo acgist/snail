@@ -63,14 +63,14 @@ public abstract class GuiEvent {
 	}
 	
 	/**
-	 * <p>本地GUI</p>
+	 * <p>执行本地GUI事件</p>
 	 * 
 	 * @param args 参数
 	 */
 	protected abstract void executeNative(Object ... args);
 	
 	/**
-	 * <p>扩展GUI</p>
+	 * <p>执行扩展GUI事件</p>
 	 * 
 	 * @param args 参数
 	 */

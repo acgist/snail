@@ -18,7 +18,7 @@ import com.acgist.snail.utils.StringUtils;
 import javafx.application.Platform;
 
 /**
- * <p>种子文件选择事件</p>
+ * <p>GUI种子文件选择事件</p>
  * <p>不能抛出异常：抛出异常后{@link TorrentProtocol}创建下载时不能正常的删除临时文件</p>
  * 
  * @author acgist

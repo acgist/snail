@@ -421,7 +421,7 @@ public abstract class Protocol {
 	}
 	
 	/**
-	 * <p>设置下载文件、文件夹</p>
+	 * <p>设置下载文件、目录</p>
 	 */
 	protected void buildFile(String fileName) throws DownloadException {
 		final String filePath = DownloadConfig.getPath(fileName);

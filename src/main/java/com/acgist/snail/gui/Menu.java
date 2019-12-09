@@ -15,6 +15,8 @@ public abstract class Menu extends ContextMenu {
 
 	/**
 	 * <p>添加菜单</p>
+	 * 
+	 * @param menuItem 菜单
 	 */
 	protected void addMenu(MenuItem menuItem) {
 		this.getItems().add(menuItem);

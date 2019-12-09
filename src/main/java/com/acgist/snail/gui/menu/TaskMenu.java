@@ -61,15 +61,16 @@ public final class TaskMenu extends Menu {
 	
 	@Override
 	protected void initMenu() {
+		// 创建按钮
 		this.startMenu = buildMenuItem("开始", "/image/16/start.png");
 		this.pauseMenu = buildMenuItem("暂停", "/image/16/pause.png");
 		this.deleteMenu = buildMenuItem("删除", "/image/16/delete.png");
-		this.copyUrlMenu = buildMenuItem("复制地址", "/image/16/download.png");
+		this.copyUrlMenu = buildMenuItem("复制链接", "/image/16/download.png");
 		this.torrentMenu = buildMenuItem("文件选择", "/image/16/edit.png");
 		this.exportTorrentMenu = buildMenuItem("导出种子", "/image/16/export.png");
 		this.verifyMenu = buildMenuItem("文件校验", "/image/16/verify.png");
 		this.openFolderMenu = buildMenuItem("打开目录", "/image/16/folder.png");
-		
+		// 设置按钮事件
 		this.startMenu.setOnAction(this.startEvent);
 		this.pauseMenu.setOnAction(this.pauseEvent);
 		this.deleteMenu.setOnAction(this.deleteEvent);
@@ -78,7 +79,7 @@ public final class TaskMenu extends Menu {
 		this.exportTorrentMenu.setOnAction(this.exportTorrentEvent);
 		this.verifyMenu.setOnAction(this.verifyEvent);
 		this.openFolderMenu.setOnAction(this.openFolderEvent);
-		
+		// 添加按钮
 		addMenu(this.startMenu);
 		addMenu(this.pauseMenu);
 		addMenu(this.deleteMenu);
@@ -89,7 +90,7 @@ public final class TaskMenu extends Menu {
 		this.addSeparator();
 		addMenu(this.verifyMenu);
 		addMenu(this.openFolderMenu);
-		
+		// 窗口显示事件
 		this.addEventFilter(WindowEvent.WINDOW_SHOWN, this.windowShownAction); // 事件捕获阶段处理事件
 //		this.addEventHandler(WindowEvent.WINDOW_SHOWN, this.windowShownAction); // 事件冒泡阶段处理事件
 //		this.setEventHandler(WindowEvent.WINDOW_SHOWN, this.windowShownAction); // 事件冒泡阶段处理事件（只能存在一个）
@@ -117,7 +118,7 @@ public final class TaskMenu extends Menu {
 	};
 	
 	/**
-	 * <p>复制地址</p>
+	 * <p>复制链接</p>
 	 */
 	private EventHandler<ActionEvent> copyUrlEvent = (event) -> {
 		MainWindow.getInstance().controller().selected().forEach(session -> {
@@ -177,7 +178,7 @@ public final class TaskMenu extends Menu {
 				});
 			} else {
 				Platform.runLater(() -> {
-					StringBuilder builder = new StringBuilder();
+					final StringBuilder builder = new StringBuilder();
 					hash.forEach((key, value) -> {
 						builder.append(value).append("=").append(FileUtils.fileNameFromUrl(key)).append("\n");
 					});
@@ -201,7 +202,7 @@ public final class TaskMenu extends Menu {
 	};
 	
 	/**
-	 * <p>BT任务显示：文件选择、导出种子</p>
+	 * <p>窗口显示时如果选中任务中有BT任务时显示按钮：文件选择、导出种子</p>
 	 */
 	private EventHandler<WindowEvent> windowShownAction = (event) -> {
 		if(MainWindow.getInstance().controller().haveSelectedTorrent()) {
@@ -211,7 +212,6 @@ public final class TaskMenu extends Menu {
 			INSTANCE.torrentMenu.setDisable(true);
 			INSTANCE.exportTorrentMenu.setDisable(true);
 		}
-//		event.consume(); // 事件已被处理
 	};
 	
 }

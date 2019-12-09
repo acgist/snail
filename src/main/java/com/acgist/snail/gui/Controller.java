@@ -27,7 +27,7 @@ public abstract class Controller {
 	public static final String LOGO_ICON = "/image/logo.png";
 	
 	/**
-	 * <p>获取拖入面板（Dragboard）的数据</p>
+	 * <p>获取拖入面板的数据</p>
 	 * <p>支持数据：文本、链接、文件（路径）</p>
 	 * 
 	 * @param event 拖拽事件

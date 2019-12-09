@@ -30,8 +30,6 @@ import javafx.scene.control.Alert.AlertType;
 /**
  * <p>GUI处理器</p>
  * 
- * TODO：Loading
- * 
  * @author acgist
  * @since 1.1.0
  */
@@ -58,7 +56,7 @@ public final class GuiHandler {
 		ERROR;
 		
 		/**
-		 * @return JavaFX提示类型
+		 * @return JavaFX窗口类型
 		 */
 		public final AlertType getAlertType() {
 			switch (this) {
@@ -114,7 +112,7 @@ public final class GuiHandler {
 	}
 	
 	/**
-	 * <p>事件列表</p>
+	 * <p>事件列表Map</p>
 	 * <p>事件类型=事件</p>
 	 */
 	private static final Map<GuiEvent.Type, GuiEvent> EVENTS = new HashMap<>(GuiEvent.Type.values().length);
@@ -127,7 +125,7 @@ public final class GuiHandler {
 	 */
 	public static final String MODE_DAEMO = "daemo";
 	/**
-	 * <p>阻塞锁时间（天）：{@value}</p>
+	 * <p>扩展GUI阻塞锁时间（天）：{@value}</p>
 	 */
 	private static final int LOCK_DAYS = 365;
 	
@@ -144,7 +142,7 @@ public final class GuiHandler {
 	}
 	
 	/**
-	 * <p>本地GUI：JavaFX</p>
+	 * <p>是否使用本地GUI：JavaFX</p>
 	 */
 	private boolean gui = true;
 	/**
@@ -173,16 +171,9 @@ public final class GuiHandler {
 	}
 
 	/**
-	 * @param type 事件类型
+	 * <p>初始化GUI处理器</p>
 	 * 
-	 * @return 事件
-	 */
-	private static final GuiEvent handler(GuiEvent.Type type) {
-		return EVENTS.get(type);
-	}
-	
-	/**
-	 * <p>初始化GUI</p>
+	 * @return GUI处理器
 	 */
 	public GuiHandler init(String ... args) {
 		if(args == null || args.length < 1) {
@@ -197,6 +188,8 @@ public final class GuiHandler {
 	
 	/**
 	 * <p>显示窗口</p>
+	 * 
+	 * @return GUI处理器
 	 */
 	public GuiHandler show() {
 		this.event(Type.SHOW);
@@ -205,6 +198,8 @@ public final class GuiHandler {
 	
 	/**
 	 * <p>隐藏窗口</p>
+	 * 
+	 * @return GUI处理器
 	 */
 	public GuiHandler hide() {
 		this.event(Type.HIDE);
@@ -213,6 +208,8 @@ public final class GuiHandler {
 	
 	/**
 	 * <p>退出窗口</p>
+	 * 
+	 * @return GUI处理器
 	 */
 	public GuiHandler exit() {
 		this.event(Type.EXIT);
@@ -221,6 +218,8 @@ public final class GuiHandler {
 
 	/**
 	 * <p>创建窗口</p>
+	 * 
+	 * @return GUI处理器
 	 */
 	public GuiHandler build() {
 		event(Type.BUILD);
@@ -232,6 +231,8 @@ public final class GuiHandler {
 	 * 
 	 * @param title 标题
 	 * @param message 内容
+	 * 
+	 * @return GUI处理器
 	 */
 	public GuiHandler alert(String title, String message) {
 		this.alert(title, message, SnailAlertType.INFO);
@@ -244,6 +245,8 @@ public final class GuiHandler {
 	 * @param title 标题
 	 * @param message 内容
 	 * @param type 类型
+	 * 
+	 * @return GUI处理器
 	 */
 	public GuiHandler alert(String title, String message, SnailAlertType type) {
 		this.event(Type.ALERT, title, message, type);
@@ -255,6 +258,8 @@ public final class GuiHandler {
 	 * 
 	 * @param title 标题
 	 * @param message 内容
+	 * 
+	 * @return GUI处理器
 	 */
 	public GuiHandler notice(String title, String message) {
 		this.notice(title, message, SnailNoticeType.INFO);
@@ -267,6 +272,8 @@ public final class GuiHandler {
 	 * @param title 标题
 	 * @param message 内容
 	 * @param type 类型
+	 * 
+	 * @return GUI处理器
 	 */
 	public GuiHandler notice(String title, String message, SnailNoticeType type) {
 		this.event(Type.NOTICE, title, message, type);
@@ -275,6 +282,8 @@ public final class GuiHandler {
 	
 	/**
 	 * <p>种子文件选择</p>
+	 * 
+	 * @return GUI处理器
 	 */
 	public GuiHandler torrent(ITaskSession taskSession) {
 		event(Type.TORRENT, taskSession);
@@ -283,6 +292,8 @@ public final class GuiHandler {
 	
 	/**
 	 * <p>刷新任务列表</p>
+	 * 
+	 * @return GUI处理器
 	 */
 	public GuiHandler refreshTaskList() {
 		event(Type.REFRESH_TASK_LIST);
@@ -291,6 +302,8 @@ public final class GuiHandler {
 	
 	/**
 	 * <p>刷新任务状态</p>
+	 * 
+	 * @return GUI处理器
 	 */
 	public GuiHandler refreshTaskStatus() {
 		event(Type.REFRESH_TASK_STATUS);
@@ -302,12 +315,14 @@ public final class GuiHandler {
 	 * 
 	 * @param type 类型
 	 * @param args 参数
+	 * 
+	 * @return GUI处理器
 	 */
 	public GuiHandler event(GuiEvent.Type type, Object ... args) {
 		if(type == null) {
 			return this;
 		}
-		final GuiEvent event = handler(type);
+		final GuiEvent event = EVENTS.get(type);
 		if(event == null) {
 			LOGGER.warn("未知GUI事件：{}", type);
 			return this;
@@ -318,6 +333,8 @@ public final class GuiHandler {
 	
 	/**
 	 * <p>注册扩展GUI消息代理</p>
+	 * 
+	 * @return 是否注册成功
 	 */
 	public boolean extendGuiMessageHandler(IMessageHandler extendGuiMessageHandler) {
 		if(this.gui) {
@@ -332,6 +349,8 @@ public final class GuiHandler {
 	
 	/**
 	 * <p>发送扩展GUI消息</p>
+	 * 
+	 * @param message 扩展GUI消息
 	 */
 	public void sendExtendGuiMessage(ApplicationMessage message) {
 		if(this.extendGuiMessageHandler != null && message != null) {

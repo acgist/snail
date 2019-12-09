@@ -172,14 +172,14 @@ public final class StatisticsController extends Controller implements Initializa
 		final ObservableList<SelectInfoHash> obs = FXCollections.observableArrayList();
 		TorrentManager.getInstance().allTorrentSession()
 			.stream()
-			.filter(session -> session.ready()) // 准备完成
+			.filter(session -> session.done()) // 准备完成
 			.forEach(session -> {
 				obs.add(new SelectInfoHash(session.infoHashHex(), session.name()));
 			});
 		this.selectInfoHashs.setItems(obs);
-		if(defaultValue == null) {
+		if(defaultValue == null) { // 没有选中任务：默认选中第一个任务
 			this.selectInfoHashs.getSelectionModel().select(0);
-		} else {
+		} else { // 已经选中任务：选中之前选中的任务
 			final int index = obs.indexOf(defaultValue);
 			this.selectInfoHashs.getSelectionModel().select(index);
 		}
@@ -361,7 +361,7 @@ public final class StatisticsController extends Controller implements Initializa
 		
 		/**
 		 * <p>重写toString设置下拉框显示名称</p>
-		 * <p>或者使用<code>this.selectInfoHashs.converterProperty().set</code>来设置</p>
+		 * <p>或者使用{@code this.selectInfoHashs.converterProperty().set}来设置</p>
 		 */
 		@Override
 		public String toString() {

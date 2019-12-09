@@ -39,10 +39,12 @@ public final class TaskDisplay {
 	}
 	
 	/**
-	 * <p>启动下载任务列表刷新定时器</p>
+	 * <p>启动任务列表刷新定时器</p>
+	 * 
+	 * @param controller 主窗口控制器
 	 */
 	public void newTimer(MainController controller) {
-		LOGGER.info("启动下载任务列表刷新定时器");
+		LOGGER.info("启动任务列表刷新定时器");
 		synchronized (this) {
 			if(this.controller == null) {
 				this.controller = controller;

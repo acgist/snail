@@ -54,7 +54,7 @@ public abstract class Window<T extends Initializable> extends Application {
 	}
 	
 	/**
-	 * <p>ESC隐藏窗口</p>
+	 * <p>设置ESC隐藏窗口</p>
 	 */
 	protected void esc() {
 		this.stage.addEventHandler(KeyEvent.KEY_RELEASED, (event) -> {
@@ -65,18 +65,26 @@ public abstract class Window<T extends Initializable> extends Application {
 	}
 	
 	/**
-	 * <p>会话框通用设置：{@link #icon}、{@link #esc}</p>
-	 */
-	protected void dialogWindow() {
-		icon();
-		esc();
-	}
-	
-	/**
 	 * <p>禁止改变窗口大小</p>
 	 */
 	protected void disableResize() {
 		this.stage.setResizable(false);
+	}
+	
+	/**
+	 * <p>设置窗口最大化</p>
+	 * <p>如果不设置此配置，窗口最小化隐藏到托盘后，从托盘显示出来时不能正常显示窗口。</p>
+	 */
+	protected void maximize() {
+		this.stage.setIconified(false);
+	}
+	
+	/**
+	 * <p>对话框通用设置：{@link #icon}、{@link #esc}</p>
+	 */
+	protected void dialogWindow() {
+		icon();
+		esc();
 	}
 	
 	/**
@@ -142,15 +150,9 @@ public abstract class Window<T extends Initializable> extends Application {
 	}
 	
 	/**
-	 * <p>设置窗口最大化</p>
-	 * <p>如果不设置此配置，窗口最小化隐藏到托盘后，从托盘显示出来时不能正常显示窗口。</p>
-	 */
-	public void maximize() {
-		this.stage.setIconified(false);
-	}
-	
-	/**
-	 * <p>窗口是否显示</p>
+	 * <p>判断窗口是否显示</p>
+	 * 
+	 * @return {@code true}-显示；{@code false}-隐藏；
 	 */
 	public boolean isShowing() {
 		return this.stage.isShowing();

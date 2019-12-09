@@ -52,7 +52,7 @@ public final class Alerts {
 	 * 
 	 * @param title 标题
 	 * @param message 内容
-	 * @param type 窗口类型
+	 * @param type 类型
 	 * 
 	 * @return 点击按钮类型
 	 */

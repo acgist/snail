@@ -171,9 +171,9 @@ public final class TorrentStreamGroup {
 						}
 					} else {
 						if(oldStream == null) {
-							LOGGER.debug("文件没有未选中下载（忽略）：{}", path);
+							LOGGER.debug("文件没有没有选中下载（忽略）：{}", path);
 						} else {
-							LOGGER.debug("文件没有未选中下载（卸载）：{}", path);
+							LOGGER.debug("文件没有没有选中下载（卸载）：{}", path);
 							oldStream.uninstall();
 							sortList.add(oldStream);
 						}
