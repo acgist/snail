@@ -240,7 +240,7 @@ public final class UpnpService {
 			LOGGER.warn("UPNP端口映射失败：外网IP地址为内网地址");
 		} else {
 			SystemConfig.setExternalIpAddress(externalIpAddress);
-			setPortMapping();
+			portMapping();
 		}
 	}
 	
@@ -281,9 +281,9 @@ public final class UpnpService {
 	
 	/**
 	 * <p>端口映射</p>
-	 * <p>如果端口被占用：端口+1继续映射</p>
+	 * <p>如果端口被占用：端口{@code +1}继续映射</p>
 	 */
-	private void setPortMapping() throws NetException {
+	private void portMapping() throws NetException {
 		Status udpStatus = Status.DISABLE, tcpStatus;
 		int portExt = SystemConfig.getTorrentPort(); // 外网端口
 		while(true) {

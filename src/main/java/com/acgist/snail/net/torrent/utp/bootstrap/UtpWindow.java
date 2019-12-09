@@ -392,8 +392,8 @@ public final class UtpWindow {
 	
 	/**
 	 * <p>流量控制和阻塞控制</p>
-	 * <p>超时时间等于默认超时时间：窗口 + 1</p>
-	 * <p>超时时间大于默认超时时间：窗口 / 2</p>
+	 * <p>超时时间等于默认超时时间：窗口{@code +1}</p>
+	 * <p>超时时间大于默认超时时间：窗口{@code /2}</p>
 	 */
 	private void wnd() {
 		if(this.timeout <= MAX_TIMEOUT) {

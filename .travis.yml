@@ -1,3 +1,9 @@
+# 系统
+os:
+  - osx
+  - linux
+  - windows
+
 # 语言
 language: java
 
