@@ -33,8 +33,6 @@ public final class PeerDownloader extends PeerConnect {
 	/**
 	 * <p>握手</p>
 	 * <p>建立连接、发送握手</p>
-	 * 
-	 * TODO：去掉保留地址
 	 */
 	public boolean handshake() {
 		final boolean ok = connect();
