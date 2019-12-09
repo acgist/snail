@@ -74,14 +74,6 @@ public final class UtpWindow {
 	private volatile int wndSize;
 	/**
 	 * <dl>
-	 * 	<dt>最大窗口大小</dt>
-	 * 	<dd>接收端：发送端最大窗口大小</dd>
-	 * 	<dd>发送端：接收端最大窗口大小</dd>
-	 * </dl>
-	 */
-	private volatile int maxWndSize;
-	/**
-	 * <dl>
 	 * 	<dt>seqnr</dt>
 	 * 	<dd>接收端：最后处理的seqnr</dd>
 	 * 	<dd>发送端：最后发送的seqnr</dd>
@@ -102,7 +94,7 @@ public final class UtpWindow {
 	 * 	<dd>接收端：未处理的数据</dd>
 	 * 	<dd>发送端：未响应的数据</dd>
 	 * </dl>
-	 * <p>UTP数据没有数据可能是不连贯的</p>
+	 * <p>数据可能是不连贯的</p>
 	 */
 	private final Map<Short, UtpWindowData> wndMap;
 	/**
@@ -183,6 +175,8 @@ public final class UtpWindow {
 
 	/**
 	 * <p>获取剩余窗口缓存大小</p>
+	 * 
+	 * @return 剩余窗口缓存大小
 	 */
 	public int remainWndSize() {
 		synchronized (this) {
@@ -238,16 +232,16 @@ public final class UtpWindow {
 	/**
 	 * <p>处理响应</p>
 	 * <p>移除已经响应数据并更新超时时间</p>
+	 * <p>如果响应编号没有处理说明没有丢包，如果响应编号已经处理说明可能发生丢包。</p>
 	 * 
 	 * @param acknr 响应编号：最后处理编号
 	 * @param wndSize 剩余窗口大小
 	 * 
-	 * @return 是否处理数据：{@code true}-已处理；{@code false}-未处理；
+	 * @return 是否丢包：{@code true}-丢包；{@code false}-没有丢包；
 	 */
 	public boolean ack(final short acknr, int wndSize) {
 		synchronized (this) {
 			this.wndSize = wndSize;
-			this.maxWndSize = Math.max(this.maxWndSize, wndSize);
 			final int timestamp = DateUtils.timestampUs();
 			final var ackList = this.wndMap.entrySet().stream()
 				.filter(entry -> {
@@ -256,40 +250,28 @@ public final class UtpWindow {
 					return diff >= 0;
 				})
 				.peek(entry -> {
-					timeout(timestamp - entry.getValue().getTimestamp()); // 计算超时
+					timeout(timestamp - entry.getValue().getTimestamp()); // 计算超时时间
 				})
 				.map(Entry::getKey)
 				.collect(Collectors.toList());
 			if(ackList.isEmpty()) {
-				return false;
+				return true;
 			} else {
 				ackList.forEach(seqnr -> {
 					this.release(); // 释放信号量
 					this.take(seqnr); // 删除数据
 				});
 				this.wnd();
-				return true;
+				return false;
 			}
-		}
-	}
-	
-	/**
-	 * <p>丢弃超时数据</p>
-	 * 
-	 * @param seqnr 响应编号
-	 */
-	public void discard(short seqnr) {
-		synchronized (this) {
-			this.take(seqnr);
 		}
 	}
 	
 	/**
 	 * <dl>
 	 * 	<dt>接收数据</dt>
-	 * 	<dd>如果seqnr数据已被处理：返回null</dd>
-	 * 	<dd>如果seqnr != 下一个编号：放入缓存，返回null。</dd>
-	 * 	<dd>如果seqnr == 下一个编号：读取数据，更新seqnr，然后继续获取seqnr直到seqnr != 下一个编号为止，最后合并返回。</dd>
+	 * 	<dd>如果seqnr != 下一个编号：放入缓存</dd>
+	 * 	<dd>如果seqnr == 下一个编号：放入缓存、读取数据、更新seqnr，然后继续获取seqnr直到seqnr != 下一个编号为止，最后合并消息并处理。</dd>
 	 * </dl>
 	 * 
 	 * @param timestamp 时间戳
@@ -307,7 +289,7 @@ public final class UtpWindow {
 			short nextSeqnr = this.seqnr;
 			final var output = new ByteArrayOutputStream();
 			while(true) {
-				nextSeqnr = (short) (nextSeqnr + 1); // 下一个seqnr
+				nextSeqnr = (short) (nextSeqnr + 1); // 下一个请求编号
 				nextWindowData = take(nextSeqnr);
 				if(nextWindowData == null) {
 					break;
@@ -343,7 +325,19 @@ public final class UtpWindow {
 	}
 	
 	/**
-	 * <p>取出窗口数据：更新窗口被占用大小</p>
+	 * <p>丢弃超时数据</p>
+	 * 
+	 * @param seqnr 请求编号
+	 */
+	public void discard(short seqnr) {
+		synchronized (this) {
+			this.take(seqnr);
+		}
+	}
+	
+	/**
+	 * <p>取出窗口数据</p>
+	 * <p>取出窗口数据并更新窗口大小</p>
 	 * 
 	 * @param seqnr 请求编号
 	 */
@@ -408,7 +402,6 @@ public final class UtpWindow {
 				this.release();
 			}
 		} else {
-			LOGGER.debug("出现超时：缩小窗口");
 			final int wnd = this.wnd / 2;
 			if(wnd > MIN_WND_SIZE) {
 				this.wnd = wnd;
@@ -453,7 +446,7 @@ public final class UtpWindow {
 	
 	/**
 	 * <p>关闭窗口</p>
-	 * <p>标记关闭、释放一个信号量</p>
+	 * <p>标记关闭、释放信号量</p>
 	 */
 	public void close() {
 		this.close = true;

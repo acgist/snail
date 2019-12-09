@@ -17,7 +17,7 @@ public final class UtpWindowData {
 	 */
 	private final short seqnr;
 	/**
-	 * <p>时间戳（微秒）：发送时重新修改</p>
+	 * <p>时间戳（微秒）</p>
 	 */
 	private volatile int timestamp;
 	/**
@@ -25,7 +25,8 @@ public final class UtpWindowData {
 	 */
 	private volatile byte pushTimes;
 	/**
-	 * <p>负载数据：握手时没有负载数据</p>
+	 * <p>负载数据</p>
+	 * <p>握手消息没有负载数据</p>
 	 */
 	private final byte[] data;
 	/**
