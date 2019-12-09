@@ -62,8 +62,8 @@ public final class TorrentController extends Controller implements Initializable
 	public void initialize(URL location, ResourceBundle resources) {
 		// 设置属性
 		this.downloadBox.prefWidthProperty().bind(this.root.widthProperty());
-		this.treeBox.prefWidthProperty().bind(this.root.widthProperty());
 		this.downloadBox.prefHeightProperty().setValue(40D);
+		this.treeBox.prefWidthProperty().bind(this.root.widthProperty());
 		this.treeBox.prefHeightProperty().bind(this.root.heightProperty().subtract(40D));
 		// 绑定事件
 		this.download.setOnAction(this.downloadEvent);
@@ -71,6 +71,8 @@ public final class TorrentController extends Controller implements Initializable
 
 	/**
 	 * <p>显示树形菜单</p>
+	 * 
+	 * @param taskSession 任务信息
 	 */
 	public void tree(ITaskSession taskSession) {
 		Torrent torrent = null;
@@ -102,6 +104,8 @@ public final class TorrentController extends Controller implements Initializable
 	
 	/**
 	 * <p>创建树形菜单</p>
+	 * 
+	 * @return 树形菜单
 	 */
 	private TreeView<HBox> buildTree() {
 		final TreeView<HBox> tree = new TreeView<>();

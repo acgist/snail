@@ -93,20 +93,21 @@ public final class TrayMenu extends Menu {
 
 	@Override
 	protected void initMenu() {
+		// 创建按钮
 		this.showMenu = buildMenuItem("显示", "/image/16/show.png");
 		this.hideMenu = buildMenuItem("隐藏", "/image/16/hide.png");
 		this.sourceMenu = buildMenuItem("官网与源码", "/image/16/source.png");
 		this.supportMenu = buildMenuItem("问题与建议", "/image/16/support.png");
 		this.aboutMenu = buildMenuItem("关于", "/image/16/about.png");
 		this.exitMenu = buildMenuItem("退出", "/image/16/exit.png");
-		
+		// 设置按钮事件
 		this.showMenu.setOnAction(this.showAction);
 		this.hideMenu.setOnAction(this.hideAction);
 		this.exitMenu.setOnAction(this.exitAction);
 		this.aboutMenu.setOnAction(this.aboutAction);
 		this.sourceMenu.setOnAction(this.sourceAction);
 		this.supportMenu.setOnAction(this.supportAction);
-		
+		// 添加按钮
 		addMenu(this.showMenu);
 		addMenu(this.hideMenu);
 		addMenu(this.sourceMenu);
@@ -114,7 +115,7 @@ public final class TrayMenu extends Menu {
 		addMenu(this.aboutMenu);
 		this.addSeparator();
 		addMenu(this.exitMenu);
-		
+		// 设置窗口隐藏事件
 		this.addEventFilter(WindowEvent.WINDOW_HIDDEN, this.windowHiddenAction);
 	}
 	
@@ -122,11 +123,11 @@ public final class TrayMenu extends Menu {
 	 * <p>添加系统托盘</p>
 	 */
 	private void enableTray() {
+		// 托盘鼠标事件
 		final MouseListener mouseListener = new MouseInputAdapter() {
 			@Override
 			public void mouseClicked(java.awt.event.MouseEvent event) {
-				// 左键：显示隐藏
-				if (event.getButton() == java.awt.event.MouseEvent.BUTTON1) {
+				if (event.getButton() == java.awt.event.MouseEvent.BUTTON1) { // 左键：显示隐藏
 					if (MainWindow.getInstance().isShowing()) {
 						Platform.runLater(() -> {
 							MainWindow.getInstance().hide();
@@ -136,8 +137,8 @@ public final class TrayMenu extends Menu {
 							MainWindow.getInstance().show();
 						});
 					}
-				} else if(event.getButton() == java.awt.event.MouseEvent.BUTTON3) {
-					// 右键：托盘菜单
+				} else if(event.getButton() == java.awt.event.MouseEvent.BUTTON3) { // 右键：托盘菜单
+					// 显示托盘菜单
 					Platform.runLater(() -> {
 						final int x = event.getXOnScreen();
 						final int y = event.getYOnScreen() - MENU_WINDOW_HEIGHT;
@@ -146,6 +147,7 @@ public final class TrayMenu extends Menu {
 				}
 			}
 		};
+		// 添加系统托盘
 		try(final var input = MainWindow.class.getResourceAsStream("/image/16/logo.png")) {
 			final BufferedImage image = ImageIO.read(input);
 			this.trayIcon = new TrayIcon(image, SystemConfig.getName());
@@ -158,6 +160,9 @@ public final class TrayMenu extends Menu {
 	
 	/**
 	 * <p>提示信息（提示）</p>
+	 * 
+	 * @param title 标题
+	 * @param content 内容
 	 */
 	public void info(String title, String content) {
 		notice(title, content, MessageType.INFO);
@@ -165,6 +170,9 @@ public final class TrayMenu extends Menu {
 	
 	/**
 	 * <p>提示信息（警告）</p>
+	 * 
+	 * @param title 标题
+	 * @param content 内容
 	 */
 	public void warn(String title, String content) {
 		notice(title, content, MessageType.WARNING);
@@ -172,6 +180,10 @@ public final class TrayMenu extends Menu {
 
 	/**
 	 * <p>提示信息</p>
+	 * 
+	 * @param title 标题
+	 * @param content 内容
+	 * @param type 类型
 	 */
 	public void notice(String title, String content, MessageType type) {
 		if(DownloadConfig.getNotice() && this.support) {
@@ -200,6 +212,7 @@ public final class TrayMenu extends Menu {
 		final Scene trayScene = new Scene(trayPane);
 		// 导入样式文件
 		trayScene.getStylesheets().add(Controller.FXML_STYLE);
+		// 隐藏托盘容器
 		trayScene.setFill(Color.TRANSPARENT);
 		final Stage trayStage = new Stage();
 		trayStage.initStyle(StageStyle.UTILITY);
@@ -260,7 +273,7 @@ public final class TrayMenu extends Menu {
 	};
 	
 	/**
-	 * <p>窗口隐藏时移除托盘菜单的容器</p>
+	 * <p>窗口隐藏时：移除托盘菜单容器</p>
 	 */
 	private EventHandler<WindowEvent> windowHiddenAction = (event) -> {
 		Platform.runLater(() -> {

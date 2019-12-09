@@ -39,13 +39,13 @@ public final class SelectorManager {
 	 */
 	private final TreeItem<HBox> root;
 	/**
-	 * <p>选择器MAP</p>
+	 * <p>选择器Map</p>
 	 * <p>文件路径=选择文件</p>
 	 */
 	private final Map<String, Selector> selector = new HashMap<>();;
 
 	/**
-	 * <p>选择器</p>
+	 * <p>BT文件选择器</p>
 	 * 
 	 * @param name 任务名称
 	 * @param download 下载按钮
@@ -64,7 +64,7 @@ public final class SelectorManager {
 	}
 
 	/**
-	 * <p>创建树形菜单</p>
+	 * <p>创建文件菜单</p>
 	 * 
 	 * @param path 文件路径
 	 * @param size 文件大小
@@ -91,12 +91,12 @@ public final class SelectorManager {
 	}
 	
 	/**
-	 * <p>创建树形菜单</p>
+	 * <p>创建文件菜单</p>
 	 * 
 	 * @param parent 父节点
-	 * @param path 路径
-	 * @param name 名称
-	 * @param size 大小
+	 * @param path 文件路径
+	 * @param name 文件名称
+	 * @param size 文件大小
 	 */
 	private TreeItem<HBox> buildTreeItem(TreeItem<HBox> parent, String path, String name, Long size) {
 		if(this.selector.containsKey(path)) { // 如果已经创建跳过：路径菜单
@@ -143,8 +143,9 @@ public final class SelectorManager {
 
 	/**
 	 * <p>设置选择文件</p>
-	 * <p>如果没有选中文件使用自动选择</p>
-	 * <p>自动选择：选择大于平均值的文件</p>
+	 * <p>如果没有选中文件使用自动选择：选择大于平均值的文件</p>
+	 * 
+	 * @param taskSession 任务信息
 	 */
 	public void select(ITaskSession taskSession) {
 		final var list = taskSession.selectTorrentFiles();
@@ -200,7 +201,7 @@ public final class SelectorManager {
 	
 	/**
 	 * <p>选择框事件</p>
-	 * <p>选择子目录、选择父目录、计算选中文件大小</p>
+	 * <p>选择子目录、选择父目录、设置按钮文本</p>
 	 */
 	private EventHandler<ActionEvent> selectAction = (event) -> {
 		final CheckBox checkBox = (CheckBox) event.getSource();
@@ -230,11 +231,11 @@ class Selector {
 	 */
 	private final String path;
 	/**
-	 * <p>文件大小：文件夹=0</p>
+	 * <p>文件大小：目录等于{@code 0}</p>
 	 */
 	private final long size;
 	/**
-	 * <p>是否是文件：true=文件；false=文件夹；</p>
+	 * <p>是否是文件：{@code true}-文件；{@code false}-目录；</p>
 	 */
 	private final boolean file;
 	/**
@@ -242,7 +243,7 @@ class Selector {
 	 */
 	private final CheckBox checkBox;
 	/**
-	 * <p>树形菜单节点</p>
+	 * <p>文件菜单节点</p>
 	 */
 	private final TreeItem<HBox> treeItem;
 
@@ -255,18 +256,18 @@ class Selector {
 	}
 
 	/**
-	 * <p>是否选中</p>
+	 * <p>判断是否被选中</p>
 	 * 
-	 * @return {@code true}-选中；{@code false}-未选中；
+	 * @return {@code true}-选中；{@code false}-没有选中；
 	 */
 	public boolean isSelected() {
 		return this.checkBox.isSelected();
 	}
 
 	/**
-	 * <p>设置选中</p>
+	 * <p>设置是否被选中</p>
 	 * 
-	 * @param selected {@code true}-选中；{@code false}-未选中；
+	 * @param selected {@code true}-选中；{@code false}-没有选中；
 	 */
 	public void setSelected(boolean selected) {
 		this.checkBox.setSelected(selected);

@@ -74,10 +74,9 @@ public final class TorrentSession {
 	 */
 	private Action action;
 	/**
-	 * <p>准备状态</p>
-	 * <p>任务已经准备所有基础数据</p>
+	 * <p>是否准备完成</p>
 	 */
-	private volatile boolean ready = false;
+	private volatile boolean done = false;
 	/**
 	 * <p>上传状态</p>
 	 */
@@ -183,7 +182,7 @@ public final class TorrentSession {
 		this.loadPeerUploaderGroupTimer();
 		this.loadPeerDownloaderGroup();
 		this.loadPeerDownloaderGroupTimer();
-		this.ready = true;
+		this.done = true;
 		return this.torrent != null;
 	}
 	
@@ -197,8 +196,8 @@ public final class TorrentSession {
 		this.loadTorrentStreamGroup();
 		this.loadPeerUploaderGroup();
 		this.loadPeerUploaderGroupTimer();
+		this.done = true;
 		this.uploadable = true;
-		this.ready = true;
 		return this;
 	}
 
@@ -515,7 +514,7 @@ public final class TorrentSession {
 			this.torrentStreamGroup.release();
 		}
 		SystemThreadContext.shutdownNow(this.executorTimer);
-		this.ready = false;
+		this.done = false;
 		this.uploadable = false;
 	}
 
@@ -572,7 +571,7 @@ public final class TorrentSession {
 	public void saveTorrent() {
 		final TorrentBuilder builder = TorrentBuilder.newInstance(this.infoHash, this.trackerLauncherGroup.trackers());
 		final String torrentFilePath = builder.buildFile(this.taskSession.downloadFolder().getPath());
-		this.taskSession.setTorrent(torrentFilePath);
+		this.taskSession.setTorrent(torrentFilePath); // 保存种子文件路径
 		this.taskSession.update();
 		try {
 			this.torrent = TorrentManager.loadTorrent(torrentFilePath);
@@ -641,10 +640,10 @@ public final class TorrentSession {
 	}
 	
 	/**
-	 * @return 任务是否准备完成
+	 * @return 是否准备完成
 	 */
-	public boolean ready() {
-		return this.ready;
+	public boolean done() {
+		return this.done;
 	}
 	
 	/**

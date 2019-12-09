@@ -44,6 +44,8 @@ public final class TorrentWindow extends Window<TorrentController> {
 	
 	/**
 	 * <p>显示下载任务信息</p>
+	 * 
+	 * @param taskSession 任务信息
 	 */
 	public void show(ITaskSession taskSession) {
 		this.controller.tree(taskSession);

@@ -78,7 +78,7 @@ public final class MainController extends Controller implements Initializable {
 	}
 	
 	/**
-	 * <p>显示列表过滤器</p>
+	 * <p>任务列表显示类型</p>
 	 */
 	private Filter filter = Filter.ALL;
 	
@@ -199,7 +199,7 @@ public final class MainController extends Controller implements Initializable {
 	}
 
 	/**
-	 * <p>下载中任务按钮</p>
+	 * <p>下载任务按钮</p>
 	 */
 	@FXML
 	public void handleDownloadAction(ActionEvent event) {
@@ -208,7 +208,7 @@ public final class MainController extends Controller implements Initializable {
 	}
 	
 	/**
-	 * <p>下载完成任务按钮</p>
+	 * <p>完成任务按钮</p>
 	 */
 	@FXML
 	public void handleCompleteAction(ActionEvent event) {
@@ -218,6 +218,7 @@ public final class MainController extends Controller implements Initializable {
 	
 	/**
 	 * <p>刷新任务列表</p>
+	 * <p>重新设置表格数据</p>
 	 */
 	public void refreshTaskList() {
 		final ObservableList<ITaskSession> obs = FXCollections.observableArrayList();
@@ -242,6 +243,7 @@ public final class MainController extends Controller implements Initializable {
 	
 	/**
 	 * <p>刷新任务状态</p>
+	 * <p>不设置表格数据，只刷新任务状态。</p>
 	 */
 	public void refreshTaskStatus() {
 		this.taskTable.refresh(); // 刷新Table
@@ -267,7 +269,7 @@ public final class MainController extends Controller implements Initializable {
 	/**
 	 * <p>是否选中任务</p>
 	 * 
-	 * @return {@code true}-选中；{@code false}-未选中；
+	 * @return {@code true}-选中；{@code false}-没有选中；
 	 */
 	public boolean haveSelected() {
 		return !this.selected().isEmpty();
@@ -276,7 +278,7 @@ public final class MainController extends Controller implements Initializable {
 	/**
 	 * <p>是否选中BT任务</p>
 	 * 
-	 * @return {@code true}-选中；{@code false}-未选中；
+	 * @return {@code true}-选中；{@code false}-没有选中；
 	 */
 	public boolean haveSelectedTorrent() {
 		return this.selected().stream()
@@ -324,7 +326,7 @@ public final class MainController extends Controller implements Initializable {
 	 * <p>设置列</p>
 	 * 
 	 * @param column 列
-	 * @param pos 对齐
+	 * @param pos 对齐方式
 	 * @param icon 是否显示Icon
 	 * @param tooltip 是否显示Tooltip
 	 * @param widthBinding 宽度绑定
@@ -386,15 +388,15 @@ public final class MainController extends Controller implements Initializable {
 			if(session == null) {
 				return;
 			}
-			if(session.complete()) { // 下载完成=打开任务
-				if(session.getType() == Type.MAGNET) { // 磁力链接任务完成转换BT任务
+			if(session.complete()) { // 下载完成：打开任务
+				if(session.getType() == Type.MAGNET) { // 磁力链接：转换BT任务
 					TorrentWindow.getInstance().show(session);
-				} else {
+				} else { // 其他：打开下载文件
 					FileUtils.openInDesktop(new File(session.getFile()));
 				}
-			} else if(session.inThreadPool()) { // 处于下载线程=暂停下载
+			} else if(session.inThreadPool()) { // 处于下载线程：暂停下载
 				DownloaderManager.getInstance().pause(session);
-			} else { // 其他=开始下载
+			} else { // 其他：开始下载
 				try {
 					DownloaderManager.getInstance().start(session);
 				} catch (DownloadException e) {

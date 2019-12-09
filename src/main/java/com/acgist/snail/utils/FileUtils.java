@@ -381,7 +381,7 @@ public final class FileUtils {
 	}
 	
 	/**
-	 * <p>创建文件夹</p>
+	 * <p>创建目录</p>
 	 * 
 	 * @param path 文件路径
 	 * @param isFile {@code path}是否是文件：{@code true}-文件；{@code false}-目录；
@@ -394,7 +394,7 @@ public final class FileUtils {
 	}
 	
 	/**
-	 * <p>创建文件夹</p>
+	 * <p>创建目录</p>
 	 * <p>如果{@code file}是文件：创建父目录</p>
 	 * <p>如果{@code file}是目录：创建目录</p>
 	 * 

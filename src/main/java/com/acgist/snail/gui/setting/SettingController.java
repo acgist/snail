@@ -35,7 +35,7 @@ public final class SettingController extends Controller implements Initializable
 //	private static final Logger LOGGER = LoggerFactory.getLogger(SettingController.class);
 
 	/**
-	 * <p>大小滑块滑动大小：{@value}</p>
+	 * <p>下载速度滑块滑动大小：{@value}</p>
 	 * <p>超过这个值时滑动必须是该值的整数倍</p>
 	 */
 	private static final int STEP_WIDTH = 512;
@@ -122,8 +122,8 @@ public final class SettingController extends Controller implements Initializable
 	 * <p>打开下载目录</p>
 	 */
 	private EventHandler<MouseEvent> openDownloadPath = (event) -> {
-		File open = new File(DownloadConfig.getPath());
-		FileUtils.openInDesktop(open);
+		final File file = new File(DownloadConfig.getPath());
+		FileUtils.openInDesktop(file);
 	};
 
 	/**
@@ -152,7 +152,7 @@ public final class SettingController extends Controller implements Initializable
 		int value = newVal.intValue();
 		if(value < SystemConfig.MIN_BUFFER_KB) { // 最小下载速度
 			value = SystemConfig.MIN_BUFFER_KB;
-		} else if(value > STEP_WIDTH) { // 超过512KB时设置为512KB整数倍
+		} else if(value > STEP_WIDTH) { // 超过滑块大小时设置为滑块大小的整数倍
 			value = value / STEP_WIDTH * STEP_WIDTH;
 		}
 		this.buffer.setValue(value);

@@ -167,7 +167,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			LOGGER.warn("Peer接入失败：种子信息不存在");
 			return false;
 		}
-		if(!torrentSession.ready()) {
+		if(!torrentSession.done()) {
 			LOGGER.debug("Peer接入失败：任务没有准备完成");
 			return false;
 		}
