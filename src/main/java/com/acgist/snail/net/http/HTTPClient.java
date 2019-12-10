@@ -80,7 +80,7 @@ public final class HTTPClient {
 		 * 
 		 * @param code 状态码
 		 * 
-		 * @return true-相等；false-不等；
+		 * @return {@code true}-相等；{@code false}-不等；
 		 */
 		public final boolean equals(int code) {
 			return this.code == code;
@@ -114,7 +114,7 @@ public final class HTTPClient {
 	}
 	
 	/**
-	 * <p>HttpClient</p>
+	 * <p>原生HTTP客户端</p>
 	 */
 	private final HttpClient client;
 	/**
@@ -129,6 +129,8 @@ public final class HTTPClient {
 	
 	/**
 	 * <p>新建客户端</p>
+	 * 
+	 * @param url 请求地址
 	 * 
 	 * @see {@link #newInstance(String, int, int)}
 	 */
@@ -153,7 +155,9 @@ public final class HTTPClient {
 	}
 	
 	/**
-	 * @return 原生HttpClient
+	 * <p>获取原生HTTP客户端</p>
+	 * 
+	 * @return 原生HTTP客户端
 	 */
 	public HttpClient client() {
 		return this.client;
@@ -175,6 +179,7 @@ public final class HTTPClient {
 	/**
 	 * <p>执行GET请求</p>
 	 * 
+	 * @param <T> 响应体泛型
 	 * @param handler 响应体处理器
 	 * 
 	 * @return 响应
@@ -191,6 +196,7 @@ public final class HTTPClient {
 	/**
 	 * <p>执行POST请求</p>
 	 * 
+	 * @param <T> 响应体泛型
 	 * @param data 请求数据
 	 * @param handler 响应体处理器
 	 * 
@@ -212,6 +218,7 @@ public final class HTTPClient {
 	/**
 	 * <p>执行POST表单请求</p>
 	 * 
+	 * @param <T> 响应体泛型
 	 * @param data 请求表单数据
 	 * @param handler 响应体处理器
 	 * 
@@ -249,6 +256,7 @@ public final class HTTPClient {
 	/**
 	 * <p>执行请求</p>
 	 * 
+	 * @param <T> 响应体泛型
 	 * @param request 请求
 	 * @param handler 响应体处理器
 	 * 
@@ -273,10 +281,11 @@ public final class HTTPClient {
 	/**
 	 * <p>执行异步请求</p>
 	 * 
+	 * @param <T> 响应体泛型
 	 * @param request 请求
 	 * @param handler 响应体处理器
 	 * 
-	 * @return 响应线程
+	 * @return 响应异步线程
 	 */
 	public <T> CompletableFuture<HttpResponse<T>> requestAsync(HttpRequest request, HttpResponse.BodyHandler<T> handler) {
 		if(this.client == null || request == null) {
@@ -286,7 +295,11 @@ public final class HTTPClient {
 	}
 
 	/**
-	 * <p>表单数据</p>
+	 * <p>创建表单提交器</p>
+	 * 
+	 * @param data 表单数据
+	 * 
+	 * @return 表单提交器
 	 */
 	private BodyPublisher newFormBodyPublisher(Map<String, String> data) {
 		if(CollectionUtils.isEmpty(data)) {
@@ -303,6 +316,12 @@ public final class HTTPClient {
 	/**
 	 * <p>执行GET请求</p>
 	 * 
+	 * @param <T> 响应体泛型
+	 * @param url 请求链接
+	 * @param handler 响应体处理器
+	 * 
+	 * @throws NetException 网络异常
+	 * 
 	 * @see {@link #get(String, java.net.http.HttpResponse.BodyHandler, int, int)}
 	 */
 	public static final <T> HttpResponse<T> get(String url, HttpResponse.BodyHandler<T> handler) throws NetException {
@@ -312,10 +331,11 @@ public final class HTTPClient {
 	/**
 	 * <p>执行GET请求</p>
 	 * 
+	 * @param <T> 响应体泛型
 	 * @param url 请求地址
 	 * @param handler 响应体处理器
-	 * @param connectTimeout 超时时间（连接）
-	 * @param receiveTimeout 超时时间（响应）
+	 * @param connectTimeout 超时时间（连接），单位：秒
+	 * @param receiveTimeout 超时时间（响应），单位：秒
 	 * 
 	 * @return 响应
 	 * 
@@ -327,35 +347,61 @@ public final class HTTPClient {
 	}
 	
 	/**
-	 * <p>成功：{@link StatusCode#OK}</p>
+	 * <p>是否成功：{@link StatusCode#OK}</p>
+	 * 
+	 * @param <T> 响应体泛型
+	 * @param response 响应
+	 * 
+	 * @return {@code true}-成功；{@code false}-失败；
 	 */
 	public static final <T> boolean ok(HttpResponse<T> response) {
 		return statusCode(response, StatusCode.OK);
 	}
 	
 	/**
-	 * <p>断点续传：{@link StatusCode#PARTIAL_CONTENT}</p>
+	 * <p>是否支持断点续传：{@link StatusCode#PARTIAL_CONTENT}</p>
+	 * 
+	 * @param <T> 响应体泛型
+	 * @param response 响应
+	 * 
+	 * @return {@code true}-支持；{@code false}-不支持；
 	 */
 	public static final <T> boolean partialContent(HttpResponse<T> response) {
 		return statusCode(response, StatusCode.PARTIAL_CONTENT);
 	}
 
 	/**
-	 * <p>无法满足请求范围：{@link StatusCode#REQUESTED_RANGE_NOT_SATISFIABLE}</p>
+	 * <p>是否无法满足请求范围：{@link StatusCode#REQUESTED_RANGE_NOT_SATISFIABLE}</p>
+	 * 
+	 * @param <T> 响应体泛型
+	 * @param response 响应
+	 * 
+	 * @return {@code true}-无法满足；{@code false}-可以满足；
 	 */
 	public static final <T> boolean requestedRangeNotSatisfiable(HttpResponse<T> response) {
 		return statusCode(response, StatusCode.REQUESTED_RANGE_NOT_SATISFIABLE);
 	}
 	
 	/**
-	 * <p>服务器错误：{@link StatusCode#REQUESTED_RANGE_NOT_SATISFIABLE}</p>
+	 * <p>是否服务器错误：{@link StatusCode#REQUESTED_RANGE_NOT_SATISFIABLE}</p>
+	 * 
+	 * @param <T> 响应体泛型
+	 * @param response 响应
+	 * 
+	 * @return {@code true}-是；{@code false}-不是；
 	 */
 	public static final <T> boolean internalServerError(HttpResponse<T> response) {
 		return statusCode(response, StatusCode.INTERNAL_SERVER_ERROR);
 	}
 	
 	/**
-	 * <p>验证响应状态码</p>
+	 * <p>判断响应状态码是否匹配</p>
+	 * 
+	 * @param <T> 响应体泛型
+	 * @param response 响应
+	 * @param statusCode 状态码
+	 * 
+	 * @return {@code true}-匹配；{@code false}-不匹配；
 	 */
 	private static final <T> boolean statusCode(HttpResponse<T> response, StatusCode statusCode) {
 		return response != null && statusCode.equals(response.statusCode());
@@ -363,9 +409,9 @@ public final class HTTPClient {
 	
 	/**
 	 * <p>新建原生HTTP客户端</p>
-	 * <p>设置sslContext需要同时设置sslParameters才有效</p>
+	 * <p>设置{@code sslContext}需要同时设置{@code sslParameters}才有效</p>
 	 * 
-	 * @param timeout 超时时间（连接）
+	 * @param timeout 超时时间（连接），单位：秒
 	 * 
 	 * @return 原生HTTP客户端
 	 */
@@ -389,7 +435,7 @@ public final class HTTPClient {
 	 * <p>新建请求Builder</p>
 	 * 
 	 * @param url 请求地址
-	 * @param timeout 超时时间（响应）
+	 * @param timeout 超时时间（响应），单位：秒
 	 * 
 	 * @return 请求Builder
 	 */
@@ -403,7 +449,9 @@ public final class HTTPClient {
 	}
 	
 	/**
-	 * <p>新建SSLParameters</p>
+	 * <p>新建{@code SSLParameters}</p>
+	 * 
+	 * @return {@code SSLParameters}
 	 */
 	private static final SSLParameters newSSLParameters() {
 		final var sslParameters = new SSLParameters();
@@ -424,25 +472,9 @@ public final class HTTPClient {
 	}
 	
 	/**
-	 * <p>信任所有证书</p>
-	 */
-	private static final TrustManager[] TRUST_ALL_CERT_MANAGER = new TrustManager[] {
-		new X509TrustManager() {
-			@Override
-			public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-			}
-			@Override
-			public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-			}
-			@Override
-			public X509Certificate[] getAcceptedIssuers() {
-				return null;
-			}
-		}
-	};
-	
-	/**
-	 * <p>新建SSLContext</p>
+	 * <p>新建{@code SSLContext}</p>
+	 * 
+	 * @return {@code SSLContext}
 	 */
 	public static final SSLContext newSSLContext() {
 		SSLContext sslContext = null;
@@ -460,5 +492,23 @@ public final class HTTPClient {
 		}
 		return sslContext;
 	}
+	
+	/**
+	 * <p>信任所有证书</p>
+	 */
+	private static final TrustManager[] TRUST_ALL_CERT_MANAGER = new TrustManager[] {
+		new X509TrustManager() {
+			@Override
+			public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+			}
+			@Override
+			public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+			}
+			@Override
+			public X509Certificate[] getAcceptedIssuers() {
+				return null;
+			}
+		}
+	};
 
 }

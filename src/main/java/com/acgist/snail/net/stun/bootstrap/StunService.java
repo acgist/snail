@@ -62,7 +62,9 @@ public final class StunService {
 	}
 
 	/**
-	 * <p>设置STUN服务器地址</p>
+	 * <p>获取STUN服务器地址</p>
+	 * 
+	 * @return STUN服务器地址
 	 */
 	private InetSocketAddress buildServerAddress() {
 		// 格式：stun:stun1.l.google.com:19302

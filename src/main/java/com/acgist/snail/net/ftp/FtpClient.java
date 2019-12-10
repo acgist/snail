@@ -14,8 +14,7 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>FTP客户端</p>
- * <p>默认编码：GBK</p>
- * <p>登陆成功后会发送FEAT指令，如果服务器支持UTF8指令，使用UTF-8编码。</p>
+ * <p>登陆成功后发送{@code FEAT}指令，如果服务器支持{@code UTF8}指令，使用{@code UTF-8}编码，否者使用{@code GBK}编码。</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -50,7 +49,7 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	private final String filePath;
 	/**
 	 * <p>编码</p>
-	 * <p>默认编码：GBK</p>
+	 * <p>默认编码：{@code GBK}</p>
 	 */
 	private String charset = SystemConfig.CHARSET_GBK;
 
@@ -87,6 +86,8 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	 * <p>默认重新下载（不用断点续传）</p>
 	 * 
 	 * @return 文件流
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	public InputStream download() throws NetException {
 		return this.download(null);
@@ -98,6 +99,8 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	 * @param downloadSize 断点续传位置
 	 * 
 	 * @return 文件流
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	public InputStream download(Long downloadSize) throws NetException {
 		if(!this.connect) {
@@ -119,7 +122,42 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	}
 	
 	/**
+	 * <p>获取文件大小</p>
+	 * <p>返回格式：{@code -rwx------ 1 user group 102400 Jan 01 2020 SnailLauncher.exe}</p>
+	 * <table border="1" summary="FTP文件大小格式">
+	 * 	<tr>
+	 * 		<th>内容</th><th>释义</th>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>-rwx------</td>
+	 * 		<td>
+	 * 			首个字符：{@code d}表示目录、{@code -}表示文件；<br>
+	 * 			其他字符：{@code r}表示可读、{@code w}表示可写、{@code x}表示可执行（参考Linux文件权限）；
+	 * 		</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>1</td><td>位置</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>user</td><td>所属用户</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>group</td><td>所属分组</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>102400</td><td>文件大小</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>Jan 01 2020</td><td>创建时间</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>SnailLauncher.exe</td><td>文件名称</td>
+	 * 	</tr>
+	 * </table>
+	 * 
 	 * @return 文件大小
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	public Long size() throws NetException {
 		if(!this.connect) {
@@ -134,16 +172,6 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 			if(data == null) {
 				throw new NetException(this.failMessage("未知错误"));
 			}
-			/*
-			 * -rwx------ 1 user group 989344 Jul 01 2020 SnailLauncher.exe
-			 * 第一部分：-rwx------：第一个字符：d表示目录、-表示文件，后面字符：r表示可读、w表示可写、x表示可执行
-			 * 第二部分：1：未知
-			 * 第三部分：user：所属用户
-			 * 第四部分：group：所属分组
-			 * 第五部分：989344：文件大小
-			 * 第六部分：Jul 01 2020：创建时间
-			 * 第七部分：SnailLauncher.exe：文件名称
-			 */
 			final Optional<String> optional = Stream.of(data.split(" "))
 				.map(String::trim)
 				.filter(StringUtils::isNotEmpty)
@@ -171,7 +199,9 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	}
 	
 	/**
-	 * @return 是否支持断点续传
+	 * <p>判断是否支持断点续传</p>
+	 * 
+	 * @return {@code true}-支持；{@code false}-不支持；
 	 */
 	public boolean range() {
 		if(!this.connect) {
@@ -181,7 +211,9 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	}
 	
 	/**
-	 * @return 错误信息
+	 * @param defaultMessage 默认错误信息
+	 * 
+	 * @see {@link FtpMessageHandler#failMessage(String)}
 	 */
 	public String failMessage(String defaultMessage) {
 		return this.handler.failMessage(defaultMessage);

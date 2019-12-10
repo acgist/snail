@@ -61,7 +61,9 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	}
 	
 	/**
-	 * <p>处理消息</p>
+	 * <p>处理系统消息</p>
+	 * 
+	 * @param 系统消息
 	 */
 	private void execute(ApplicationMessage message) {
 		if(message.getType() == null) {
@@ -110,7 +112,9 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	}
 	
 	/**
-	 * <p>注册扩展GUI</p>
+	 * <p>注册GUI</p>
+	 * 
+	 * @param message 系统消息
 	 */
 	private void onGui(ApplicationMessage message) {
 		final boolean ok = GuiHandler.getInstance().extendGuiMessageHandler(this);
@@ -123,7 +127,9 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 
 	/**
 	 * <p>文本消息</p>
-	 * <p>原因返回</p>
+	 * <p>原样返回</p>
+	 * 
+	 * @param message 系统消息
 	 */
 	private void onText(ApplicationMessage message) {
 		send(ApplicationMessage.response(message.getBody()));
@@ -131,6 +137,8 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	
 	/**
 	 * <p>关闭连接</p>
+	 * 
+	 * @param message 系统消息
 	 */
 	private void onClose(ApplicationMessage message) {
 		this.close();
@@ -138,6 +146,8 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	
 	/**
 	 * <p>唤醒窗口</p>
+	 * 
+	 * @param message 系统消息
 	 */
 	private void onNotify(ApplicationMessage message) {
 		GuiHandler.getInstance().show();
@@ -145,18 +155,22 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	
 	/**
 	 * <p>关闭程序</p>
+	 * 
+	 * @param message 系统消息
 	 */
 	private void onShutdown(ApplicationMessage message) {
 		SystemContext.shutdown();
 	}
 	
 	/**
-	 * <p>新建下载任务</p>
+	 * <p>新建任务</p>
 	 * <dl>
 	 * 	<dt>body：Map（B编码）</dt>
 	 * 	<dd>url：下载链接</dd>
 	 * 	<dd>files：种子文件选择列表（文件包含路径：snail/video/demo.mp4）</dd>
 	 * </dl>
+	 * 
+	 * @param message 系统消息
 	 * 
 	 * @since 1.1.1
 	 */
@@ -181,7 +195,10 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	}
 
 	/**
-	 * <p>任务列表（B编码）</p>
+	 * <p>任务列表</p>
+	 * <p>返回任务列表（B编码）</p>
+	 * 
+	 * @param message 系统消息
 	 * 
 	 * @since 1.1.1
 	 */
@@ -196,6 +213,8 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	/**
 	 * <p>开始任务</p>
 	 * <p>body：任务ID</p>
+	 * 
+	 * @param message 系统消息
 	 * 
 	 * @since 1.1.1
 	 */
@@ -217,6 +236,8 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	 * <p>暂停任务</p>
 	 * <p>body：任务ID</p>
 	 * 
+	 * @param message 系统消息
+	 * 
 	 * @since 1.1.1
 	 */
 	private void onTaskPause(ApplicationMessage message) {
@@ -233,6 +254,8 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	 * <p>删除任务</p>
 	 * <p>body：任务ID</p>
 	 * 
+	 * @param message 系统消息
+	 * 
 	 * @since 1.1.1
 	 */
 	private void onTaskDelete(ApplicationMessage message) {
@@ -246,7 +269,12 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	}
 	
 	/**
-	 * <p>选择TaskSession</p>
+	 * <p>获取任务信息</p>
+	 * <p>body：任务ID</p>
+	 * 
+	 * @param message 系统消息
+	 * 
+	 * @return 任务信息
 	 * 
 	 * @since 1.1.1
 	 */
@@ -258,14 +286,18 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	}
 	
 	/**
-	 * <p>处理系统响应</p>
+	 * <p>响应消息</p>
+	 * 
+	 * @param message 系统消息
 	 */
 	private void onResponse(ApplicationMessage message) {
-		LOGGER.debug("处理系统响应：{}", message.getBody());
+		LOGGER.debug("系统响应：{}", message.getBody());
 	}
 
 	/**
 	 * <p>发送系统消息</p>
+	 * 
+	 * @param message 系统消息
 	 */
 	private void send(ApplicationMessage message) {
 		try {
