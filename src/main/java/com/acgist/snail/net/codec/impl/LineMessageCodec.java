@@ -15,12 +15,13 @@ import com.acgist.snail.system.exception.NetException;
 public final class LineMessageCodec extends MessageCodec<String, String> {
 
 	/**
-	 * <p>换行符</p>
+	 * <p>消息分隔符</p>
+	 * <p>使用消息分隔符区分多条消息</p>
 	 */
 	private final String split;
 	/**
 	 * <p>上次没有处理完成的消息</p>
-	 * <p>下次收到消息拼接在一起处理</p>
+	 * <p>由于传输协议（TCP/UDP）在传输过程中可能会出现粘包拆包导致消息不完整，所以记录上次没有处理完成的不完整消息，合并到下次接收的消息一起处理。</p>
 	 */
 	private String message = "";
 	
@@ -33,7 +34,7 @@ public final class LineMessageCodec extends MessageCodec<String, String> {
 	protected void decode(String messages, InetSocketAddress address, boolean haveAddress) throws NetException {
 		String message;
 		final int length = this.split.length();
-		messages = this.message + messages; // 拼接上次没有处理完成的消息
+		messages = this.message + messages; // 合并上次没有处理完成的消息
 		if(messages.contains(this.split)) {
 			int index = messages.indexOf(this.split);
 			while(index >= 0) {
@@ -48,6 +49,7 @@ public final class LineMessageCodec extends MessageCodec<String, String> {
 	
 	@Override
 	public String encode(String message) {
+		// 拼接消息分隔符
 		return this.messageCodec.encode(message) + this.split;
 	}
 	

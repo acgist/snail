@@ -35,7 +35,7 @@ public class ApplicationMessage {
 		
 		/** GUI注册 */
 		GUI,
-		/** 文本 */
+		/** 文本消息 */
 		TEXT,
 		/** 关闭连接 */
 		CLOSE,
@@ -60,9 +60,9 @@ public class ApplicationMessage {
 		ALERT,
 		/** 提示消息 */
 		NOTICE,
-		/** 刷新（任务） */
+		/** 刷新任务 */
 		REFRESH,
-		/** 响应 */
+		/** 响应消息 */
 		RESPONSE;
 
 		/**

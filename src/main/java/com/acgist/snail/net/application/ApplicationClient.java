@@ -34,6 +34,8 @@ public final class ApplicationClient extends TcpClient<ApplicationMessageHandler
 	
 	/**
 	 * <p>发送系统消息</p>
+	 * 
+	 * @param message 系统消息
 	 */
 	public void send(ApplicationMessage message) {
 		try {
@@ -44,7 +46,8 @@ public final class ApplicationClient extends TcpClient<ApplicationMessageHandler
 	}
 	
 	/**
-	 * <p>唤起主窗口</p>
+	 * <p>唤醒主窗口</p>
+	 * <p>向已经启动的系统实例发送唤醒消息</p>
 	 */
 	public static final void notifyWindow() {
 		final ApplicationClient client = ApplicationClient.newInstance();
@@ -55,7 +58,7 @@ public final class ApplicationClient extends TcpClient<ApplicationMessageHandler
 				client.send(ApplicationMessage.message(ApplicationMessage.Type.CLOSE));
 			}
 		} catch (Exception e) {
-			LOGGER.error("唤起主窗口异常", e);
+			LOGGER.error("唤醒主窗口异常", e);
 		} finally {
 			client.close();
 		}

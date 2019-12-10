@@ -65,8 +65,8 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(StunMessageHandler.class);
 	
 	/**
-	 * <p>属性对齐：32位（4字节）对齐</p>
-	 * <p>不足填充：0</p>
+	 * <p>属性对齐：{@value}</p>
+	 * <p>STUN属性需要32位（4字节）对齐（不足填充{@code 0}）</p>
 	 */
 	private static final short STUN_ATTRIBUTE_PADDING_LENGTH = 4;
 
@@ -109,6 +109,10 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	/**
 	 * <p>循环处理响应属性</p>
 	 * <p>注：属性可能同时返回多条</p>
+	 * 
+	 * @param buffer 属性消息
+	 * 
+	 * @throws PacketSizeException 网络包异常
 	 */
 	private void loopResponseAttribute(ByteBuffer buffer) throws PacketSizeException {
 		while(buffer.hasRemaining()) {
@@ -118,6 +122,10 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	
 	/**
 	 * <p>处理响应属性</p>
+	 * 
+	 * @param buffer 属性消息
+	 * 
+	 * @throws PacketSizeException 网络包异常
 	 */
 	private void onResponseAttribute(ByteBuffer buffer) throws PacketSizeException {
 		if(buffer.remaining() < 4) {
@@ -127,7 +135,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 			return;
 		}
 		final short typeId = buffer.getShort();
-		// 4字节对齐长度
+		// 对齐
 		final short length = (short) (NumberUtils.ceilDiv(buffer.getShort(), STUN_ATTRIBUTE_PADDING_LENGTH) * STUN_ATTRIBUTE_PADDING_LENGTH);
 		if(length > SystemConfig.MAX_NET_BUFFER_LENGTH) {
 			throw new PacketSizeException(length);
@@ -161,7 +169,12 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	}
 	
 	/**
-	 * <p>读取属性</p>
+	 * <p>按长度读取属性消息</p>
+	 * 
+	 * @param buffer 属性消息
+	 * @param length 消息长度
+	 * 
+	 * @return 属性消息
 	 */
 	private ByteBuffer readResponseAttribute(ByteBuffer buffer, short length) {
 		final byte[] message = new byte[length];
@@ -189,7 +202,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
      * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 	 * </pre>
 	 * 
-	 * @param buffer 消息
+	 * @param buffer 属性消息
 	 */
 	private void mappedAddress(ByteBuffer buffer) {
 		if(buffer.remaining() < 8) {
@@ -223,7 +236,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
      * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 	 * </pre>
 	 * 
-	 * @param buffer 消息
+	 * @param buffer 属性消息
 	 */
 	public void xorMappedAddress(ByteBuffer buffer) {
 		if(buffer.remaining() < 8) {
@@ -259,7 +272,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
      * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 	 * </pre>
 	 * 
-	 * @param buffer 消息
+	 * @param buffer 属性消息
 	 */
 	public void errorCode(ByteBuffer buffer) {
 		if(buffer.remaining() < 4) {
@@ -280,42 +293,62 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	
 	/**
 	 * <p>发送绑定消息</p>
+	 * 
+	 * @param messageType 消息类型
+	 * @param attributeType 属性类型
+	 * @param value 消息
 	 */
 	private void pushBindingMessage(StunConfig.MessageType messageType, StunConfig.AttributeType attributeType, byte[] value) {
-		final byte[] message = buildBindingMessage(messageType, buildAttribute(attributeType, value));
+		final byte[] message = buildBindingMessage(messageType, buildAttributeMessage(attributeType, value));
 		try {
 			this.send(message);
 		} catch (NetException e) {
-			LOGGER.error("STUN消息发送异常", e);
+			LOGGER.error("STUN绑定消息发送异常", e);
 		}
 	}
 	
 	/**
 	 * <p>创建绑定消息</p>
+	 * 
+	 * @param messageType 消息类型
+	 * @param attributeMessage 属性消息
+	 * 
+	 * @return 绑定消息
 	 */
-	private byte[] buildBindingMessage(StunConfig.MessageType messageType, byte[] attribute) {
-		return this.buildMessage(StunConfig.MethodType.BINDING, messageType, attribute);
+	private byte[] buildBindingMessage(StunConfig.MessageType messageType, byte[] attributeMessage) {
+		return this.buildMessage(StunConfig.MethodType.BINDING, messageType, attributeMessage);
 	}
 	
 	/**
 	 * <p>创建消息</p>
+	 * 
+	 * @param methodType 方法类型
+	 * @param messageType 消息类型
+	 * @param attributeMessage 属性消息
+	 * 
+	 * @return 消息
 	 */
-	private byte[] buildMessage(StunConfig.MethodType methodType, StunConfig.MessageType messageType, byte[] attribute) {
-		final ByteBuffer buffer = ByteBuffer.allocate(StunConfig.STUN_HEADER_LENGTH + attribute.length);
+	private byte[] buildMessage(StunConfig.MethodType methodType, StunConfig.MessageType messageType, byte[] attributeMessage) {
+		final ByteBuffer buffer = ByteBuffer.allocate(StunConfig.STUN_HEADER_LENGTH + attributeMessage.length);
 		buffer.putShort(messageType.type(methodType)); // Message Type
-		buffer.putShort((short) attribute.length); // Message Length
+		buffer.putShort((short) attributeMessage.length); // Message Length
 		buffer.putInt(StunConfig.MAGIC_COOKIE); // Magic Cookie
 		buffer.put(ArrayUtils.random(StunConfig.TRANSACTION_ID_LENGTH)); // Transaction ID
-		buffer.put(attribute);
+		buffer.put(attributeMessage);
 		return buffer.array();
 	}
 
 	/**
-	 * <p>创建属性</p>
+	 * <p>创建属性消息</p>
+	 * 
+	 * @param attributeType 属性类型
+	 * @param value 消息
+	 * 
+	 * @return 属性消息
 	 */
-	private byte[] buildAttribute(StunConfig.AttributeType attributeType, byte[] value) {
+	private byte[] buildAttributeMessage(StunConfig.AttributeType attributeType, byte[] value) {
 		final short valueLength = (short) (value == null ? 0 : value.length);
-		// 4字节对齐
+		// 对齐
 		final int length = NumberUtils.ceilDiv(StunConfig.ATTRIBUTE_HEADER_LENGTH + valueLength, STUN_ATTRIBUTE_PADDING_LENGTH) * STUN_ATTRIBUTE_PADDING_LENGTH;
 		final ByteBuffer buffer = ByteBuffer.allocate(length);
 		buffer.putShort(attributeType.id());

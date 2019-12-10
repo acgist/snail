@@ -21,7 +21,7 @@ public abstract class MessageCodec<T, X> implements IMessageCodec<T> {
 	 */
 	protected final IMessageCodec<X> messageCodec;
 
-	public MessageCodec(IMessageCodec<X> messageCodec) {
+	protected MessageCodec(IMessageCodec<X> messageCodec) {
 		this.messageCodec = messageCodec;
 	}
 
@@ -42,7 +42,7 @@ public abstract class MessageCodec<T, X> implements IMessageCodec<T> {
 	
 	/**
 	 * <p>消息解码</p>
-	 * <p>必须调用{@link #doNext(Object, InetSocketAddress, boolean)}</p>
+	 * <p>必须调用{@link #doNext(Object, InetSocketAddress, boolean)}执行{@linkplain #messageCodec 下一个消息处理器}</p>
 	 * 
 	 * @param message 消息
 	 * @param address 地址

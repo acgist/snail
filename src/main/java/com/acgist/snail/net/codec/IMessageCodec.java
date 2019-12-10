@@ -7,11 +7,22 @@ import com.acgist.snail.system.exception.NetException;
 
 /**
  * <p>消息处理器接口</p>
- * <p>最终处理器：消息消费</p>
- * <p>中间处理器：编码、解码</p>
- * <p>实现{@linkplain IMessageCodec 消息处理器接口}的类属于最终处理器</p>
- * <p>继承{@linkplain MessageCodec 消息处理器适配器}的类属于中间处理器</p>
- * <p>注：一定要注意编码和解码的逻辑顺序（防止多个处理器结合使用时出现错误）</p>
+ * <table border="1" summary="消息处理器">
+ * 	<tr>
+ * 		<th>处理器</th><th>功能</th><th>实现</th>
+ * 	</tr>
+ * 	<tr>
+ * 		<td>中间处理器</td>
+ * 		<td>编码解码</td>
+ * 		<td>继承{@linkplain MessageCodec 消息处理器适配器}</td>
+ * 	</tr>
+ * 	<tr>
+ * 		<td>最终处理器</td>
+ * 		<td>消息消费</td>
+ * 		<td>实现{@linkplain IMessageCodec 消息处理器接口}</td>
+ * 	</tr>
+ * </table>
+ * <p>注意编码解码的逻辑顺序（防止多个处理器结合使用时出现错误）</p>
  * 
  * @param <T> 输入类型
  * 
@@ -21,11 +32,11 @@ import com.acgist.snail.system.exception.NetException;
 public interface IMessageCodec<T> {
 
 	/**
-	 * <p>解码是否完成</p>
-	 * <p>继续执行：{@link #decode(Object)}或者{@link #decode(Object, InetSocketAddress)}</p>
-	 * <p>完成执行：{@link #onMessage(Object)}或者{@link #onMessage(Object, InetSocketAddress)}</p>
+	 * <p>判断是否完成解码</p>
+	 * <p>消息解码：{@link #decode(Object)}或者{@link #decode(Object, InetSocketAddress)}</p>
+	 * <p>处理消息：{@link #onMessage(Object)}或者{@link #onMessage(Object, InetSocketAddress)}</p>
 	 * 
-	 * @return true-完成；false-继续；
+	 * @return {@code true}-完成（处理消息）；{@code false}-没有完成（消息解码）；
 	 */
 	default boolean done() {
 		return true;
