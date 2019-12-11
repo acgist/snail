@@ -63,14 +63,14 @@ public final class TaskMenu extends Menu {
 	@Override
 	protected void initMenu() {
 		// 创建按钮
-		this.startMenu = buildMenuItem("开始", SnailIcon.PLAY3);
-		this.pauseMenu = buildMenuItem("暂停", SnailIcon.PAUSE2);
-		this.deleteMenu = buildMenuItem("删除", SnailIcon.BIN);
-		this.copyUrlMenu = buildMenuItem("复制链接", SnailIcon.LINK);
-		this.torrentMenu = buildMenuItem("文件选择", SnailIcon.EQUALIZER);
-		this.exportTorrentMenu = buildMenuItem("导出种子", SnailIcon.SHARE);
-		this.verifyMenu = buildMenuItem("文件校验", SnailIcon.CHECKMARK);
-		this.openFolderMenu = buildMenuItem("打开目录", SnailIcon.FOLDER_OPEN);
+		this.startMenu = buildMenuItem("开始", SnailIcon.AS_PLAY3);
+		this.pauseMenu = buildMenuItem("暂停", SnailIcon.AS_PAUSE2);
+		this.deleteMenu = buildMenuItem("删除", SnailIcon.AS_BIN);
+		this.copyUrlMenu = buildMenuItem("复制链接", SnailIcon.AS_LINK);
+		this.torrentMenu = buildMenuItem("文件选择", SnailIcon.AS_EQUALIZER);
+		this.exportTorrentMenu = buildMenuItem("导出种子", SnailIcon.AS_SHARE);
+		this.verifyMenu = buildMenuItem("文件校验", SnailIcon.AS_CHECKMARK);
+		this.openFolderMenu = buildMenuItem("打开目录", SnailIcon.AS_FOLDER_OPEN);
 		// 设置按钮事件
 		this.startMenu.setOnAction(this.startEvent);
 		this.pauseMenu.setOnAction(this.pauseEvent);
