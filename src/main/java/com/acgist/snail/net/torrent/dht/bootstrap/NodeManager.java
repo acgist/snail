@@ -152,12 +152,18 @@ public final class NodeManager {
 	/**
 	 * <p>添加DHT节点</p>
 	 * <p>先验证状态，通过验证后加入列表，设置为可用节点。</p>
+	 * 
+	 * @param host 地址
+	 * @param port 端口
+	 * 
+	 * @return DHT节点
 	 */
-	public void newNodeSession(String host, Integer port) {
+	public NodeSession newNodeSession(String host, Integer port) {
 		final NodeSession nodeSession = verify(host, port);
 		if(nodeSession != null) {
 			nodeSession.setStatus(NodeSession.Status.AVAILABLE); // 标记可用
 		}
+		return nodeSession;
 	}
 	
 	/**

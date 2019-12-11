@@ -134,6 +134,7 @@ public final class PeerConfig {
 	public static final byte PEX_HOLEPUNCH =			1 << 3;
 	/**
 	 * <p>pex flags：0x10：可以连接</p>
+	 * <p>可以直接连接</p>
 	 */
 	public static final byte PEX_OUTGO =				1 << 4;
 	/**
