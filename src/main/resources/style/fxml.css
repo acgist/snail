@@ -19,7 +19,6 @@
  * 图标样式
  */
 .snail-icon {
-	-fx-padding:0 2px;
 	-fx-font-size:16px;
 	-fx-font-family:"AcgistSnail";
 }
@@ -143,6 +142,7 @@
 	-fx-background-insets:0;
 }
 .main .table-view .snail-icon {
+	-fx-padding:0 2px;
 	-fx-font-size:20px;
 }
 .main .placeholder .snail-icon {
