@@ -1,12 +1,13 @@
 package com.acgist.snail.gui.main;
 
+import com.acgist.snail.gui.Fonts;
 import com.acgist.snail.gui.Tooltips;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.ITaskSession.FileType;
 
 import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
@@ -48,12 +49,9 @@ public final class TaskCell extends TableCell<ITaskSession, String> {
 			// 添加图标：文件类型
 			if(this.icon) {
 //				name.setCursor(Cursor.HAND); // 设置手势
-				FileType fileType = taskSession.getFileType();
-				if(fileType == null) {
-					fileType = FileType.UNKNOWN;
-				}
-				final ImageView fileTypeIcon = new ImageView("/image/32/" + fileType.icon());
-				box.getChildren().add(fileTypeIcon);
+				final FileType fileType = taskSession.getFileType();
+				final Label iconLabel = Fonts.fileTypeIconLabel(fileType);
+				box.getChildren().add(iconLabel);
 			}
 			// 添加提示
 			if(this.tooltip) {

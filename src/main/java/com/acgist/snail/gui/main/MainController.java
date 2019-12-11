@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.gui.Alerts;
 import com.acgist.snail.gui.Controller;
+import com.acgist.snail.gui.Fonts.SnailIcon;
 import com.acgist.snail.gui.about.AboutWindow;
 import com.acgist.snail.gui.build.BuildWindow;
 import com.acgist.snail.gui.menu.TaskMenu;
@@ -35,6 +36,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
@@ -42,7 +44,6 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
@@ -115,11 +116,7 @@ public final class MainController extends Controller implements Initializable {
 		// 设置多选
 		this.taskTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		// 设置无数据时提示内容
-		final var placeholderImage = new ImageView("/image/64/download_02.png");
-		final var placeholderText = new Text("点击新建按钮或者拖动下载链接、种子文件开始下载");
-		placeholderText.setFill(Color.rgb(198, 198, 198));
-		final var placeholder = new VBox(placeholderImage, placeholderText);
-		placeholder.setAlignment(Pos.CENTER);
+		final var placeholder = buildPlaceholder();
 		this.taskTable.setPlaceholder(placeholder);
 		// 设置列
 		taskCell(this.name, Pos.CENTER_LEFT, true, true, this.taskTable.widthProperty().multiply(3D).divide(10D));
@@ -139,6 +136,27 @@ public final class MainController extends Controller implements Initializable {
 		this.taskTable.setOnDragDropped(this.dragDroppedAction);
 		// 定时刷新
 		TaskDisplay.getInstance().newTimer(this);
+	}
+
+	/**
+	 * <p>创建没有下载任务时的提示信息</p>
+	 * 
+	 * @return 提示信息
+	 */
+	private Node buildPlaceholder() {
+		// 颜色
+		final var color = Color.rgb(198, 198, 198);
+		// 图标
+		final var iconLabel = SnailIcon.DOWNLOAD.iconLabel();
+		iconLabel.getStyleClass().add("placeholder"); // 特殊样式
+		iconLabel.setTextFill(color);
+		// 文本
+		final var text = new Text("点击新建按钮或者拖动下载链接、种子文件开始下载");
+		text.setFill(color);
+		// 提示信息
+		final var placeholder = new VBox(iconLabel, text);
+		placeholder.setAlignment(Pos.CENTER);
+		return placeholder;
 	}
 
 	/**

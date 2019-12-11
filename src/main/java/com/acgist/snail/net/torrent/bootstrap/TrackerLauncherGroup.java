@@ -67,7 +67,6 @@ public final class TrackerLauncherGroup {
 		}
 		clients.stream()
 			.map(client -> {
-				LOGGER.debug("加载TrackerLauncher：ID：{}，announceUrl：{}", client.id(), client.announceUrl());
 				return TrackerManager.getInstance().newTrackerLauncher(client, this.torrentSession);
 			})
 			.filter(launcer -> launcer != null)

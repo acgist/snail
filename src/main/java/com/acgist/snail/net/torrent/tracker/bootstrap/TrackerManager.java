@@ -66,6 +66,7 @@ public final class TrackerManager {
 	 */
 	public TrackerLauncher newTrackerLauncher(TrackerClient client, TorrentSession torrentSession) {
 		final TrackerLauncher launcher = TrackerLauncher.newInstance(client, torrentSession);
+		LOGGER.debug("加载TrackerLauncher：{}-{}，announceUrl：{}", launcher.id(), client.id(), client.announceUrl());
 		this.trackerLaunchers.put(launcher.id(), launcher);
 		return launcher;
 	}

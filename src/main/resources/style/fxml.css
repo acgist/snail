@@ -16,10 +16,12 @@
 	-fx-snail-background-color:#F4F4F4;
 }
 /**
- * 托盘样式
+ * 图标样式
  */
-.tray {
-	-fx-font-size:14px;
+.snail-icon {
+	-fx-padding:0 2px;
+	-fx-font-size:16px;
+	-fx-font-family:"AcgistSnail";
 }
 /**
  * 提示样式
@@ -82,6 +84,15 @@
 	-fx-opacity:-fx-snail-opacity;
 }
 /**
+ * 托盘样式
+ */
+.tray {
+	-fx-font-size:14px;
+}
+.tray .snail-icon {
+	-fx-font-size:14px;
+}
+/**
  * 关于窗口：about.fxml
  */
 .about {
@@ -130,6 +141,12 @@
 	-fx-border-width:1px 0;
 	-fx-border-color:-fx-snail-border-color;
 	-fx-background-insets:0;
+}
+.main .table-view .snail-icon {
+	-fx-font-size:20px;
+}
+.main .placeholder .snail-icon {
+	-fx-font-size:64px;
 }
 /* 表头 */
 .main .table-view .column-header,
