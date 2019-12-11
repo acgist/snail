@@ -104,6 +104,7 @@ public final class UpnpService {
 		for (int index = 0; index < serviceTypes.size(); index++) {
 			final String serviceType = serviceTypes.get(index);
 			if(StringUtils.startsWith(serviceType, SERVICE_WANIPC)) {
+				this.available = true;
 				this.serviceType = serviceType;
 				this.controlUrl = controlUrls.get(index);
 				this.controlUrl();
@@ -112,7 +113,6 @@ public final class UpnpService {
 				break;
 			}
 		}
-		this.available = true;
 		return this;
 	}
 
