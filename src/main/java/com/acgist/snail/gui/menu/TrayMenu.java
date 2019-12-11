@@ -95,8 +95,8 @@ public final class TrayMenu extends Menu {
 	@Override
 	protected void initMenu() {
 		// 创建按钮
-		this.showMenu = buildMenuItem("显示", SnailIcon.EYE);
-		this.hideMenu = buildMenuItem("隐藏", SnailIcon.EYE_BLOCKED);
+		this.showMenu = buildMenuItem("显示", SnailIcon.ENLARGE);
+		this.hideMenu = buildMenuItem("隐藏", SnailIcon.SHRINK);
 		this.sourceMenu = buildMenuItem("官网与源码", SnailIcon.HOME2);
 		this.supportMenu = buildMenuItem("问题与建议", SnailIcon.ROCKET);
 		this.aboutMenu = buildMenuItem("关于", SnailIcon.INFO);
