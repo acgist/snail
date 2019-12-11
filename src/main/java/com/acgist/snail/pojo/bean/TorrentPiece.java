@@ -138,7 +138,7 @@ public final class TorrentPiece {
 	
 	/**
 	 * <p>获取本次请求数据大小</>
-	 * <p>0：已经发送所有请求</p>
+	 * <p>{@code 0}：已经发送所有请求</p>
 	 * <p>修改{@link #position}</p>
 	 */
 	public int length() {
@@ -165,12 +165,45 @@ public final class TorrentPiece {
 	 * 
 	 * @return true-完成；false-未完成；
 	 */
-	public boolean put(final int begin, final byte[] bytes) {
+	public boolean write(final int begin, final byte[] bytes) {
 		synchronized (this) {
 			System.arraycopy(bytes, 0, this.data, begin - this.begin, bytes.length);
 			this.size += bytes.length;
 			return complete();
 		}
+	}
+	
+	/**
+	 * <p>读取Piece数据</p>
+	 * 
+	 * @param begin 数据开始位移：整个Piece内偏移
+	 * @param size 长度
+	 * 
+	 * @return Piece数据
+	 */
+	public byte[] read(final int begin, final int size) {
+		if(begin >= this.end) {
+			return null;
+		}
+		final int end = begin + size;
+		if(end <= this.begin) {
+			return null;
+		}
+		int beginPos = begin - this.begin; // 当前数据开始偏移
+		final int endPos = end - this.begin; // 当前数据结束偏移
+		if(beginPos < 0) {
+			beginPos = 0;
+		}
+		int length = endPos - beginPos; // 读取数据真实长度
+		if (length + beginPos > this.data.length) {
+			length = this.data.length - beginPos;
+		}
+		if(length <= 0) {
+			return null;
+		}
+		final byte[] bytes = new byte[length];
+		System.arraycopy(this.data, beginPos, bytes, 0, length);
+		return bytes;
 	}
 	
 	/**

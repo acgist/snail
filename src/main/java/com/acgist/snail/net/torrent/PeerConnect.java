@@ -241,7 +241,7 @@ public abstract class PeerConnect {
 				this.countLock.notifyAll();
 			}
 		}
-		final boolean complete = this.downloadPiece.put(begin, bytes);
+		final boolean complete = this.downloadPiece.write(begin, bytes);
 		// 释放下载完成等待
 		if(complete) {
 			synchronized (this.completeLock) {
