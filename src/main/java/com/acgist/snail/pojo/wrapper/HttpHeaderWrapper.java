@@ -63,6 +63,7 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	 * <p>获取文件名称</p>
 	 * <p>下载文件名称：如果不存在返回默认的文件名称</p>
 	 * <p>Content-Disposition:attachment;filename=snail.jar?version=1.0.0</p>
+	 * <p>Content-Disposition:attachment;filename="snail.jar"</p>
 	 * 
 	 * @param defaultName 默认文件名称
 	 */
@@ -76,7 +77,13 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 			fileName = UrlUtils.decode(fileName); // URL解码
 			int index = fileName.indexOf("=");
 			if(index != -1) {
+				// 截取名称
 				fileName = fileName.substring(index + 1);
+				// 去掉引号
+				if(fileName.startsWith("\"") && fileName.endsWith("\"")) {
+					fileName = fileName.substring(1, fileName.length() - 1);
+				}
+				// 去掉参数
 				index = fileName.indexOf("?");
 				if(index != -1) {
 					fileName = fileName.substring(0, index);

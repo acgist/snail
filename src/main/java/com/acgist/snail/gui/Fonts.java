@@ -49,8 +49,8 @@ public final class Fonts {
 	 */
 	public enum SnailIcon {
 		
-		HOME			 (''),
-		HOME2			 (''),
+		HOME             (''),
+		HOME2            (''),
 		HOME3            (''),
 		IMAGE            (''),
 		IMAGES           (''),
