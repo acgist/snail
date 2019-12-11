@@ -24,8 +24,7 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>Torrent下载文件流</p>
- * <p>下载：每次下载必须是一个完整的Piece（除了文件开头和结尾可能不是一个完整的Piece）</p>
- * <p>注：多线程读取写入时seek操作可能导致写入数据错乱</p>
+ * <p>除了文件开头和结尾的Piece，每次下载必须是一个完整的Piece。</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -43,11 +42,12 @@ public final class TorrentStream {
 	 */
 	private final long pieceLength;
 	/**
-	 * <p>缓冲大小：写入文件时修改（TorrentStreamGroup中引用）</p>
+	 * <p>缓冲大小</p>
+	 * <p>所有文件Piece缓冲数据大小（TorrentStreamGroup中的引用）</p>
 	 */
 	private final AtomicLong fileBuffer;
 	/**
-	 * <p>已下载大小：写入文件时修改</p>
+	 * <p>已下载大小</p>
 	 */
 	private final AtomicLong fileDownloadSize;
 	/**
@@ -368,6 +368,10 @@ public final class TorrentStream {
 		if(!ignorePieces && !havePiece(index)) {
 			return null;
 		}
+		final TorrentPiece torrentPiece = this.torrentPiece(index); // 获取缓存数据
+		if(torrentPiece != null) {
+			return torrentPiece.read(pos, size);
+		}
 		long seek = 0L; // 文件偏移
 		final long beginPos = this.pieceLength * index + pos;
 		final long endPos = beginPos + size;
@@ -391,7 +395,7 @@ public final class TorrentStream {
 		}
 		final byte[] bytes = new byte[size];
 		try {
-			this.fileStream.seek(seek);
+			this.fileStream.seek(seek); // 注意线程安全
 			this.fileStream.read(bytes);
 		} catch (IOException e) {
 			LOGGER.error("Piece读取异常：{}-{}-{}-{}", index, size, pos, ignorePieces, e);
@@ -438,6 +442,25 @@ public final class TorrentStream {
 	 */
 	public boolean complete() {
 		return this.pieces.cardinality() >= this.filePieceSize;
+	}
+	
+	/**
+	 * <p>读取缓存中的Piece数据</p>
+	 * 
+	 * @param index  Piece索引
+	 * 
+	 * @return Piece数据：{@code null}-没有
+	 */
+	private TorrentPiece torrentPiece(int index) {
+		TorrentPiece torrentPiece;
+		final var iterator = this.filePieces.iterator();
+		while(iterator.hasNext()) {
+			torrentPiece = iterator.next();
+			if(torrentPiece.getIndex() == index) {
+				return torrentPiece;
+			}
+		}
+		return null;
 	}
 	
 	/**
@@ -502,7 +525,7 @@ public final class TorrentStream {
 			return;
 		}
 		try {
-			this.fileStream.seek(seek);
+			this.fileStream.seek(seek); // 注意线程安全
 			this.fileStream.write(piece.getData(), offset, length);
 		} catch (IOException e) {
 			LOGGER.error("Piece写入硬盘异常", e);

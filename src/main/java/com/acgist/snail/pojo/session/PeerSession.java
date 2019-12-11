@@ -464,14 +464,18 @@ public final class PeerSession implements IStatistics {
 	 * <p>设置状态</p>
 	 */
 	public void status(byte status) {
-		this.status |= status;
+		synchronized (this) {
+			this.status |= status;
+		}
 	}
 	
 	/**
 	 * <p>取消状态</p>
 	 */
 	public void statusOff(byte status) {
-		this.status &= ~status;
+		synchronized (this) {
+			this.status &= ~status;
+		}
 	}
 	
 	/**
@@ -513,14 +517,18 @@ public final class PeerSession implements IStatistics {
 	 * <p>设置pex flags</p>
 	 */
 	public void flags(byte flags) {
-		this.flags |= flags;
+		synchronized (this) {
+			this.flags |= flags;
+		}
 	}
 	
 	/**
 	 * <p>取消pex flags</p>
 	 */
 	public void flagsOff(byte flags) {
-		this.flags &= ~flags;
+		synchronized (this) {
+			this.flags &= ~flags;
+		}
 	}
 
 	/**

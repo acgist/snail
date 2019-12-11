@@ -147,7 +147,7 @@ public final class MainController extends Controller implements Initializable {
 		// 颜色
 		final var color = Color.rgb(198, 198, 198);
 		// 图标
-		final var iconLabel = SnailIcon.DOWNLOAD.iconLabel();
+		final var iconLabel = SnailIcon.DOWNLOAD3.iconLabel();
 		iconLabel.getStyleClass().add("placeholder"); // 特殊样式
 		iconLabel.setTextFill(color);
 		// 文本

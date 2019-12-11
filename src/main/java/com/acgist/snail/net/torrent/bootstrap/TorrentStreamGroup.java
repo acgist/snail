@@ -65,7 +65,8 @@ public final class TorrentStreamGroup {
 	 */
 	private final BitSet fullPieces;
 	/**
-	 * <p>缓冲大小：数据下载时修改</p>
+	 * <p>缓冲大小</p>
+	 * <p>所有文件Piece缓冲数据大小</p>
 	 */
 	private final AtomicLong fileBuffer;
 	/**

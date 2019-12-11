@@ -31,13 +31,14 @@ public final class PeerUploaderGroup {
 	/**
 	 * <p>PeerUploader队列</p>
 	 */
-	private final BlockingQueue<PeerUploader> peerUploaders;
-	
+	private final BlockingQueue<PeerUploader> peerUploaders = new LinkedBlockingQueue<>();;
+	/**
+	 * <p>任务信息</p>
+	 */
 	private final TorrentSession torrentSession;
 	
 	private PeerUploaderGroup(TorrentSession torrentSession) {
 		this.torrentSession = torrentSession;
-		this.peerUploaders = new LinkedBlockingQueue<>();
 	}
 	
 	public static final PeerUploaderGroup newInstance(TorrentSession torrentSession) {
@@ -46,6 +47,7 @@ public final class PeerUploaderGroup {
 	
 	/**
 	 * <p>开始下载</p>
+	 * <p>如果Peer接入支持下载则发送下载请求</p>
 	 */
 	public void download() {
 		synchronized (this.peerUploaders) {
@@ -54,13 +56,18 @@ public final class PeerUploaderGroup {
 	}
 	
 	/**
-	 * <p>创建接入连接</p>
+	 * <p>创建Peer接入连接</p>
+	 * 
+	 * @param peerSession Peer信息
+	 * @param peerSubMessageHandler Peer消息代理
+	 * 
+	 * @return Peer接入
 	 */
 	public PeerUploader newPeerUploader(PeerSession peerSession, PeerSubMessageHandler peerSubMessageHandler) {
 		synchronized (this.peerUploaders) {
 			LOGGER.debug("Peer接入：{}-{}", peerSession.host(), peerSession.port());
 			if(!connectable(peerSession)) {
-				LOGGER.debug("Peer拒绝接入（超过最大接入数量）：{}-{}", peerSession.host(), peerSession.port());
+				LOGGER.debug("Peer接入失败：{}-{}", peerSession.host(), peerSession.port());
 				return null;
 			}
 			final PeerUploader peerUploader = PeerUploader.newInstance(peerSession, this.torrentSession, peerSubMessageHandler);
@@ -72,10 +79,14 @@ public final class PeerUploaderGroup {
 	
 	/**
 	 * <dl>
-	 * 	<dt>是否允许连接</dt>
+	 * 	<dt>判断是否允许连接</dt>
 	 * 	<dd>Peer当前正在下载</dd>
 	 * 	<dd>当前连接小于最大连接数量</dd>
 	 * </dl>
+	 * 
+	 * @param peerSession Peer信息
+	 * 
+	 * @return {@code true}-允许；{@code false}-不允许；
 	 */
 	private boolean connectable(PeerSession peerSession) {
 		if(peerSession != null && peerSession.downloading()) {
@@ -145,15 +156,15 @@ public final class PeerUploaderGroup {
 				continue;
 			}
 			// 获取评分
-			uploadMark = tmp.uploadMark();
-			downloadMark = tmp.downloadMark();
+			uploadMark = tmp.uploadMark(); // 上传评分
+			downloadMark = tmp.downloadMark(); // 下载评分
 			// 首次评分忽略
 			if(!tmp.marked()) {
 				offerSize++;
 				this.offer(tmp);
 				continue;
 			}
-			// 下载数据提供上传
+			// 提供下载的Peer提供上传
 			if(downloadMark > 0L) {
 				offerSize++;
 				this.offer(tmp);
@@ -178,6 +189,8 @@ public final class PeerUploaderGroup {
 	
 	/**
 	 * <p>PeerUploader加入队列</p>
+	 * 
+	 * @param peerUploader PeerUploader
 	 */
 	private void offer(PeerUploader peerUploader) {
 		final var ok = this.peerUploaders.offer(peerUploader);
@@ -188,6 +201,8 @@ public final class PeerUploaderGroup {
 	
 	/**
 	 * <p>剔除劣质Peer</p>
+	 * 
+	 * @param peerUploader 劣质Peer
 	 */
 	private void inferiorPeerUploader(PeerUploader peerUploader) {
 		if(peerUploader != null) {

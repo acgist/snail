@@ -32,16 +32,17 @@ public final class PeerDownloaderGroup {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerDownloaderGroup.class);
 	
 	/**
-	 * <p>同时创建PeerDownloader数量</p>
-	 * <p>注：不要超过TorrentSession线程池大小（如果是固定线程池）</p>
+	 * <p>同时创建PeerDownloader数量：{@value}</p>
+	 * <p>如果TorrentSession线程池是固定线程池，请不要超过线程池大小。</p>
 	 */
 	private static final int BUILD_SIZE = 3;
 	/**
-	 * <p>单次创建PeerDownloader最大数量（包含失败）</p>
+	 * <p>单次创建PeerDownloader最大数量：{@value}</p>
+	 * <p>包含失败次数</p>
 	 */
 	private static final int MAX_BUILD_SIZE = 64;
 	/**
-	 * <p>自旋时间</p>
+	 * <p>没有Peer自旋时间：{@value}</p>
 	 */
 	private static final int SPIN_LOCK_TIME = 1000;
 	
@@ -57,7 +58,9 @@ public final class PeerDownloaderGroup {
 	 * <p>PeerDownloader队列</p>
 	 */
 	private final BlockingQueue<PeerDownloader> peerDownloaders = new LinkedBlockingQueue<>();
-	
+	/**
+	 * <p>任务信息</p>
+	 */
 	private final TorrentSession torrentSession;
 	
 	private PeerDownloaderGroup(TorrentSession torrentSession) {
@@ -71,10 +74,11 @@ public final class PeerDownloaderGroup {
 	/**
 	 * <p>优化PeerDownloader</p>
 	 * <p>剔除劣质PeerDownloader、创建PeerDownloader</p>
+	 * <p>如果没有Peer自旋等待直到找到Peer才开始下载</p>
 	 */
 	public void optimize() {
 		LOGGER.debug("优化PeerDownloader");
-		this.spinLock();
+		this.spinLock(); // 开始自旋
 		synchronized (this.peerDownloaders) {
 			try {
 				inferiorPeerDownloaders();
@@ -91,13 +95,14 @@ public final class PeerDownloaderGroup {
 	 */
 	public void release() {
 		LOGGER.debug("释放PeerDownloaderGroup");
-		// 解除PeerDownloader锁：防止暂停任务同时执行优化任务导致卡死
+		// 解除信号量：防止暂停任务时正在执行优化任务导致获取不到锁进而卡死暂停任务操作
 		this.release(false);
 		synchronized (this.peerDownloaders) {
 			this.peerDownloaders.forEach(launcher -> {
 				SystemThreadContext.submit(() -> {
 					launcher.release();
 				});
+				// 下载列表中的Peer属于优质Peer
 				PeerManager.getInstance().preference(this.torrentSession.infoHashHex(), launcher.peerSession());
 			});
 			this.peerDownloaders.clear();
@@ -105,7 +110,7 @@ public final class PeerDownloaderGroup {
 	}
 	
 	/**
-	 * <p>自旋</p>
+	 * <p>自旋等待</p>
 	 * <p>下载器检查是否找到Peer，如果没有找到进行自旋等待。</p>
 	 */
 	private void spinLock() {
@@ -155,13 +160,13 @@ public final class PeerDownloaderGroup {
 	 * <p>创建PeerDownloader</p>
 	 * <p>从Peer队列尾部拿出一个Peer创建下载，失败后插入Peer队列头部。</p>
 	 * <dl>
-	 * 	<dt>跳出创建循环</dt>
+	 * 	<dt>跳出创建循环条件</dt>
 	 * 	<dd>任务不处于下载状态</dd>
-	 * 	<dd>处于下载中的Peer数量大于等于配置的最大数量</dd>
+	 * 	<dd>下载队列的Peer数量大于等于配置的最大数量</dd>
 	 * 	<dd>不能查找到更多的Peer</dd>
 	 * </dl>
 	 * 
-	 * @return true-继续；false-停止；
+	 * @return 创建状态：{@code true}-继续；{@code false}-停止；
 	 */
 	private boolean buildPeerDownloader() {
 		if(!this.torrentSession.downloading()) {
@@ -183,17 +188,16 @@ public final class PeerDownloaderGroup {
 			}
 			return true;
 		} else {
-			LOGGER.debug("挑选Peer失败");
 			return false;
 		}
 	}
 	
 	/**
 	 * <p>剔除劣质Peer</p>
-	 * <p>劣质Peer：评分最低的Peer</p>
-	 * <p>直接剔除：不可用的Peer（评分=0、状态不可用）</p>
-	 * <p>劣质Peer：释放劣质Peer，然后放入Peer队列头部（如果最后Peer列表小于系统最大数量不剔除劣质Peer）</p>
-	 * <p>必须循环完所有的PeerDownloader，从而清除评分进行新一轮的评分，防止评分被累计计算。</p>
+	 * <p>直接剔除：不可用的Peer（评分等于{@code 0}、状态不可用）</p>
+	 * <p>劣质Peer：评分最低的Peer为劣质Peer，释放劣质Peer后放入Peer队列头部。</p>
+	 * <p>如果最后Peer列表小于系统最大数量不剔除劣质Peer</p>
+	 * <p>必须循环完所有的PeerDownloader，从而清除评分进行新一轮的评分，防止评分被重复计算。</p>
 	 */
 	private void inferiorPeerDownloaders() {
 		LOGGER.debug("剔除劣质PeerDownloader");
@@ -249,6 +253,8 @@ public final class PeerDownloaderGroup {
 	
 	/**
 	 * <p>PeerDownloader加入队列</p>
+	 * 
+	 * @param peerDownloader PeerDownloader
 	 */
 	private void offer(PeerDownloader peerDownloader) {
 		final var ok = this.peerDownloaders.offer(peerDownloader);
@@ -260,6 +266,8 @@ public final class PeerDownloaderGroup {
 	/**
 	 * <p>剔除劣质Peer</p>
 	 * <p>释放Peer资源、放入Peer队列头部</p>
+	 * 
+	 * @param peerDownloader 劣质Peer
 	 */
 	private void inferiorPeerDownloader(PeerDownloader peerDownloader) {
 		if(peerDownloader != null) {
@@ -286,6 +294,8 @@ public final class PeerDownloaderGroup {
 	
 	/**
 	 * <p>释放信号量：设置创建状态</p>
+	 * 
+	 * @param build 创建状态：{@code true}-继续；{@code false}-停止；
 	 */
 	private void release(boolean build) {
 		this.build.set(build);
