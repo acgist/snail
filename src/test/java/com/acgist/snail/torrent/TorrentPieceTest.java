@@ -26,4 +26,23 @@ public class TorrentPieceTest extends BaseTest {
 		this.log(piece.read(20, 0)); // 不包含
 	}
 	
+
+	@Test
+	public void testCost() {
+		final int pieceLength = 1024;
+		final int begin = 10;
+		final int end = 20;
+		TorrentPiece piece = TorrentPiece.newInstance(null, pieceLength, 0, begin, end, false);
+		byte[] bytes = new byte[end - begin];
+		for (int index = begin; index <  end; index++) {
+			bytes[index - begin] = (byte) index;
+		}
+		piece.write(begin, bytes);
+		this.cost();
+		for (int i = 0; i < 100000; i++) {
+			piece.read(0, 20);
+		}
+		this.costed();
+	}
+	
 }

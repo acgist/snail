@@ -157,7 +157,7 @@ public final class TorrentPiece {
 	}
 	
 	/**
-	 * <p>放入Slice数据</p>
+	 * <p>写入Slice数据</p>
 	 * <p>修改{@link #size}</p>
 	 * 
 	 * @param begin 数据开始位移：整个Piece内偏移
@@ -174,12 +174,12 @@ public final class TorrentPiece {
 	}
 	
 	/**
-	 * <p>读取Piece数据</p>
+	 * <p>读取Slice数据</p>
 	 * 
 	 * @param begin 数据开始位移：整个Piece内偏移
 	 * @param size 长度
 	 * 
-	 * @return Piece数据
+	 * @return Slice数据
 	 */
 	public byte[] read(final int begin, final int size) {
 		if(begin >= this.end) {
@@ -189,15 +189,15 @@ public final class TorrentPiece {
 		if(end <= this.begin) {
 			return null;
 		}
-		int beginPos = begin - this.begin; // 当前数据开始偏移
-		final int endPos = end - this.begin; // 当前数据结束偏移
-		if(beginPos < 0) {
-			beginPos = 0;
+		int beginPos = 0; // 当前数据开始偏移
+		if(begin > this.begin) {
+			beginPos = begin - this.begin;
 		}
-		int length = endPos - beginPos; // 读取数据真实长度
-		if (length + beginPos > this.data.length) {
-			length = this.data.length - beginPos;
+		int endPos = end - this.begin; // 当前数据结束偏移
+		if (endPos > this.data.length) {
+			endPos = this.data.length;
 		}
+		final int length = endPos - beginPos; // 读取数据真实长度
 		if(length <= 0) {
 			return null;
 		}
