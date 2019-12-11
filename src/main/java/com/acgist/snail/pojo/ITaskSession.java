@@ -62,44 +62,35 @@ public interface ITaskSession extends ITaskSessionTable, ITaskSessionEntity, ITa
 	public enum FileType {
 		
 		/** 图片 */
-		IMAGE(		"图片", "image.png"),
+		IMAGE(		"图片"),
 		/** 视频 */
-		VIDEO(		"视频", "video.png"),
+		VIDEO(		"视频"),
 		/** 音频 */
-		AUDIO(		"音频", "audio.png"),
+		AUDIO(		"音频"),
 		/** 脚本 */
-		SCRIPT(		"脚本", "script.png"),
+		SCRIPT(		"脚本"),
 		/** BT */
-		TORRENT(	"BT", "torrent.png"),
+		TORRENT(	"BT"),
 		/** 压缩 */
-		COMPRESS(	"压缩", "compress.png"),
+		COMPRESS(	"压缩"),
 		/** 文档 */
-		DOCUMENT(	"文档", "document.png"),
+		DOCUMENT(	"文档"),
 		/** 安装包 */
-		INSTALL(	"安装包", "install.png"),
+		INSTALL(	"安装包"),
 		/** 未知 */
-		UNKNOWN(	"未知", "unknown.png");
+		UNKNOWN(	"未知");
 		
 		/**
 		 * <p>类型名称</p>
 		 */
 		private final String value;
-		/**
-		 * <p>类型图标</p>
-		 */
-		private final String icon;
 
-		private FileType(String value, String icon) {
+		private FileType(String value) {
 			this.value = value;
-			this.icon = icon;
 		}
 
 		public String value() {
 			return value;
-		}
-
-		public String icon() {
-			return icon;
 		}
 
 	}

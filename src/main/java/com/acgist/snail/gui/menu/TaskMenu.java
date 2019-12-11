@@ -12,6 +12,7 @@ import com.acgist.snail.gui.Alerts;
 import com.acgist.snail.gui.Choosers;
 import com.acgist.snail.gui.Clipboards;
 import com.acgist.snail.gui.Menu;
+import com.acgist.snail.gui.Fonts.SnailIcon;
 import com.acgist.snail.gui.main.MainWindow;
 import com.acgist.snail.gui.torrent.TorrentWindow;
 import com.acgist.snail.protocol.Protocol.Type;
@@ -62,14 +63,14 @@ public final class TaskMenu extends Menu {
 	@Override
 	protected void initMenu() {
 		// 创建按钮
-		this.startMenu = buildMenuItem("开始", "/image/16/start.png");
-		this.pauseMenu = buildMenuItem("暂停", "/image/16/pause.png");
-		this.deleteMenu = buildMenuItem("删除", "/image/16/delete.png");
-		this.copyUrlMenu = buildMenuItem("复制链接", "/image/16/download.png");
-		this.torrentMenu = buildMenuItem("文件选择", "/image/16/edit.png");
-		this.exportTorrentMenu = buildMenuItem("导出种子", "/image/16/export.png");
-		this.verifyMenu = buildMenuItem("文件校验", "/image/16/verify.png");
-		this.openFolderMenu = buildMenuItem("打开目录", "/image/16/folder.png");
+		this.startMenu = buildMenuItem("开始", SnailIcon.PLAY3);
+		this.pauseMenu = buildMenuItem("暂停", SnailIcon.PAUSE2);
+		this.deleteMenu = buildMenuItem("删除", SnailIcon.BIN);
+		this.copyUrlMenu = buildMenuItem("复制链接", SnailIcon.LINK);
+		this.torrentMenu = buildMenuItem("文件选择", SnailIcon.EQUALIZER);
+		this.exportTorrentMenu = buildMenuItem("导出种子", SnailIcon.SHARE);
+		this.verifyMenu = buildMenuItem("文件校验", SnailIcon.CHECKMARK);
+		this.openFolderMenu = buildMenuItem("打开目录", SnailIcon.FOLDER_OPEN);
 		// 设置按钮事件
 		this.startMenu.setOnAction(this.startEvent);
 		this.pauseMenu.setOnAction(this.pauseEvent);

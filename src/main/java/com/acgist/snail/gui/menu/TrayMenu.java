@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.gui.Controller;
+import com.acgist.snail.gui.Fonts.SnailIcon;
 import com.acgist.snail.gui.Menu;
 import com.acgist.snail.gui.about.AboutWindow;
 import com.acgist.snail.gui.main.MainWindow;
@@ -94,12 +95,12 @@ public final class TrayMenu extends Menu {
 	@Override
 	protected void initMenu() {
 		// 创建按钮
-		this.showMenu = buildMenuItem("显示", "/image/16/show.png");
-		this.hideMenu = buildMenuItem("隐藏", "/image/16/hide.png");
-		this.sourceMenu = buildMenuItem("官网与源码", "/image/16/source.png");
-		this.supportMenu = buildMenuItem("问题与建议", "/image/16/support.png");
-		this.aboutMenu = buildMenuItem("关于", "/image/16/about.png");
-		this.exitMenu = buildMenuItem("退出", "/image/16/exit.png");
+		this.showMenu = buildMenuItem("显示", SnailIcon.EYE);
+		this.hideMenu = buildMenuItem("隐藏", SnailIcon.EYE_BLOCKED);
+		this.sourceMenu = buildMenuItem("官网与源码", SnailIcon.HOME2);
+		this.supportMenu = buildMenuItem("问题与建议", SnailIcon.ROCKET);
+		this.aboutMenu = buildMenuItem("关于", SnailIcon.INFO);
+		this.exitMenu = buildMenuItem("退出", SnailIcon.SWITCH);
 		// 设置按钮事件
 		this.showMenu.setOnAction(this.showAction);
 		this.hideMenu.setOnAction(this.hideAction);

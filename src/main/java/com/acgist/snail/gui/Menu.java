@@ -1,9 +1,10 @@
 package com.acgist.snail.gui;
 
+import com.acgist.snail.gui.Fonts.SnailIcon;
+
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.image.ImageView;
 
 /**
  * <p>菜单</p>
@@ -48,11 +49,11 @@ public abstract class Menu extends ContextMenu {
 	 * 
 	 * @return 菜单
 	 */
-	protected MenuItem buildMenuItem(String value, String icon) {
+	protected MenuItem buildMenuItem(String value, SnailIcon icon) {
 		if(icon == null) {
 			return new MenuItem(value);
 		} else {
-			return new MenuItem(value, new ImageView(icon));
+			return new MenuItem(value, icon.iconLabel());
 		}
 	}
 	

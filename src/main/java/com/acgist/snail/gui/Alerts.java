@@ -22,7 +22,7 @@ public final class Alerts {
 	 */
 	private Alerts() {
 	}
-
+	
 	/**
 	 * <p>提示窗口</p>
 	 * 
