@@ -95,12 +95,12 @@ public final class TrayMenu extends Menu {
 	@Override
 	protected void initMenu() {
 		// 创建按钮
-		this.showMenu = buildMenuItem("显示", SnailIcon.ENLARGE);
-		this.hideMenu = buildMenuItem("隐藏", SnailIcon.SHRINK);
-		this.sourceMenu = buildMenuItem("官网与源码", SnailIcon.HOME2);
-		this.supportMenu = buildMenuItem("问题与建议", SnailIcon.ROCKET);
-		this.aboutMenu = buildMenuItem("关于", SnailIcon.INFO);
-		this.exitMenu = buildMenuItem("退出", SnailIcon.SWITCH);
+		this.showMenu = buildMenuItem("显示", SnailIcon.AS_ENLARGE);
+		this.hideMenu = buildMenuItem("隐藏", SnailIcon.AS_SHRINK);
+		this.sourceMenu = buildMenuItem("官网与源码", SnailIcon.AS_HOME2);
+		this.supportMenu = buildMenuItem("问题与建议", SnailIcon.AS_ROCKET);
+		this.aboutMenu = buildMenuItem("关于", SnailIcon.AS_INFO);
+		this.exitMenu = buildMenuItem("退出", SnailIcon.AS_SWITCH);
 		// 设置按钮事件
 		this.showMenu.setOnAction(this.showAction);
 		this.hideMenu.setOnAction(this.hideAction);
