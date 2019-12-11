@@ -79,9 +79,11 @@ public final class DhtLauncher implements Runnable {
 	 * @param peerNodes 客户端节点队列
 	 */
 	private void joinSystemNodes(List<InetSocketAddress> peerNodes) {
-		peerNodes.forEach(address -> {
-			NodeManager.getInstance().newNodeSession(address.getHostString(), address.getPort());
-		});
+		if(CollectionUtils.isNotEmpty(peerNodes)) {
+			peerNodes.forEach(address -> {
+				NodeManager.getInstance().newNodeSession(address.getHostString(), address.getPort());
+			});
+		}
 	}
 	
 	/**
