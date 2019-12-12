@@ -14,7 +14,7 @@ import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.UrlUtils;
 
 /**
- * <p>磁力链接创建</p>
+ * <p>磁力链接Builder</p>
  * <p>磁力链接解析只支持BT类型磁力链接，其他磁力链接均不支持。</p>
  * <p>BT类型磁力链接中也只支持单文件下载，不支持多文件下载。</p>
  * 

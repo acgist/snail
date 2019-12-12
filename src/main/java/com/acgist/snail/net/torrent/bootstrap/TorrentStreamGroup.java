@@ -296,9 +296,7 @@ public final class TorrentStreamGroup {
 	 * @see {@link TorrentStream#read(int, int, int)}
 	 */
 	public byte[] read(final int index, final int begin, final int length) throws NetException {
-		if(length > SystemConfig.MAX_NET_BUFFER_LENGTH || length < 0) {
-			throw new PacketSizeException(length);
-		}
+		PacketSizeException.verify(length);
 		final ByteBuffer buffer = ByteBuffer.allocate(length);
 		for (TorrentStream torrentStream : this.streams) {
 			final byte[] bytes = torrentStream.read(index, length, begin);

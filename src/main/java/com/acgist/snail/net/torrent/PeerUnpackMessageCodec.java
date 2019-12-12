@@ -6,7 +6,6 @@ import java.nio.ByteBuffer;
 import com.acgist.snail.net.codec.MessageCodec;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.system.config.PeerConfig;
-import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.system.exception.PacketSizeException;
 
@@ -75,9 +74,8 @@ public final class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteB
 					} else { // 没有消息：跳出循环
 						break;
 					}
-				} else if(length > SystemConfig.MAX_NET_BUFFER_LENGTH || length < 0) {
-					throw new PacketSizeException(length);
 				}
+				PacketSizeException.verify(length);
 				this.buffer = ByteBuffer.allocate(length);
 			} else {
 				// 上次消息没有读取完成：计算剩余消息数据长度

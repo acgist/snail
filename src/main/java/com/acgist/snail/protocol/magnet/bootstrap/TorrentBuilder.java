@@ -23,7 +23,7 @@ import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.NetUtils;
 
 /**
- * <p>种子文件创建</p>
+ * <p>种子文件Builder</p>
  * 
  * @author acgist
  * @since 1.0.0

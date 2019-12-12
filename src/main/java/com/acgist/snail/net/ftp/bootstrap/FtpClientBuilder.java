@@ -7,7 +7,7 @@ import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>FTP客户端创建工具</p>
+ * <p>FTP客户端Builder</p>
  * <p>使用FTP链接创建FTP客户端</p>
  * 
  * @author acgist
