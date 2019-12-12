@@ -205,7 +205,7 @@ public final class Fonts {
 		 * 
 		 * @return 图标字符
 		 */
-		public char value() {
+		public final char value() {
 			return (char) (ICON_CHAR_BEGIN + this.ordinal());
 		}
 		
@@ -214,7 +214,7 @@ public final class Fonts {
 		 * 
 		 * @return 图标标签
 		 */
-		public Label iconLabel() {
+		public final Label iconLabel() {
 			return Fonts.iconLabel(this);
 		}
 		

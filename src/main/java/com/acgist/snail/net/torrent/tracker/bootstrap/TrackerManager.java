@@ -244,7 +244,7 @@ public final class TrackerManager {
 		}
 		final Optional<TrackerClient> optional = this.trackerClients.values().stream()
 			.filter(client -> {
-				return client.equal(announceUrl);
+				return client.equalsAnnounceUrl(announceUrl);
 			}).findFirst();
 		if(optional.isPresent()) {
 			return optional.get();

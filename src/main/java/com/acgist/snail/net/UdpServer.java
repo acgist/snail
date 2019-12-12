@@ -161,7 +161,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements UdpChanne
 	 * <p>消息轮询</p>
 	 */
 	private void loopMessage() {
-		this.register();
+		this.selector();
 		while (this.channel.isOpen()) {
 			this.receive();
 		}
@@ -170,7 +170,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements UdpChanne
 	/**
 	 * <p>注册Selector消息读取</p>
 	 */
-	private void register() {
+	private void selector() {
 		try {
 			this.channel.register(this.selector, SelectionKey.OP_READ);
 		} catch (ClosedChannelException e) {

@@ -82,7 +82,7 @@ public final class HTTPClient {
 		 * 
 		 * @return {@code true}-相等；{@code false}-不等；
 		 */
-		public final boolean equal(int code) {
+		public final boolean equalsCode(int code) {
 			return this.code == code;
 		}
 		
@@ -404,7 +404,7 @@ public final class HTTPClient {
 	 * @return {@code true}-匹配；{@code false}-不匹配；
 	 */
 	private static final <T> boolean statusCode(HttpResponse<T> response, StatusCode statusCode) {
-		return response != null && statusCode.equal(response.statusCode());
+		return response != null && statusCode.equalsCode(response.statusCode());
 	}
 	
 	/**
