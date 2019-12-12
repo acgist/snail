@@ -218,7 +218,7 @@ public final class TorrentStream {
 	 * 
 	 * @return {@code true}-是；{@code false}-不是；
 	 */
-	public boolean equals(String path) {
+	public boolean equal(String path) {
 		return StringUtils.equals(path, this.file);
 	}
 	

@@ -239,7 +239,7 @@ public final class TorrentStreamGroup {
 	 */
 	private TorrentStream haveStream(String path) {
 		for (TorrentStream torrentStream : this.streams) {
-			if(torrentStream.equals(path)) {
+			if(torrentStream.equal(path)) {
 				return torrentStream;
 			}
 		}

@@ -302,7 +302,7 @@ public final class PeerManager {
 	private PeerSession findPeerSession(List<PeerSession> list, String host) {
 		final Optional<PeerSession> optional = list.stream()
 			.filter(peer -> {
-				return peer.equals(host);
+				return peer.equal(host);
 			}).findFirst();
 		if(optional.isPresent()) {
 			return optional.get();
