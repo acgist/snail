@@ -12,7 +12,7 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>头部信息包装器</p>
- * <p>如果第一行不包含{@linkplain #HEADER_DEFAULT_KV 头部信息分隔符}则为协议信息</p>
+ * <p>如果第一行不包含{@linkplain #headerKv 头部信息分隔符}则为协议信息</p>
  * 
  * @author acgist
  * @since 1.1.0

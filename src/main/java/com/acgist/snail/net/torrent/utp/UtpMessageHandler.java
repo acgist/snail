@@ -241,7 +241,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	/**
 	 * <p>连接</p>
 	 * 
-	 * @param 是否连接成功
+	 * @return 是否连接成功
 	 */
 	public boolean connect() {
 		this.connect = false;

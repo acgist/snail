@@ -82,7 +82,7 @@ public abstract class Repository<T extends BaseEntity> {
 	/**
 	 * <p>保存</p>
 	 * 
-	 * @param 实体
+	 * @param t 实体
 	 */
 	public void save(T t) {
 		if(t == null) {

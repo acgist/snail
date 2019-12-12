@@ -214,7 +214,7 @@ public final class TorrentSession {
 	 * <p>开始下载</p>
 	 * <p>准备：线程池、Tracker、DHT、Peer下载</p>
 	 * <p>如果任务已经完成或文件已经下载完成不会再加载准备数据</p>
-	 * <p>需要先调用{@link #upload(TaskSession)}对任务进行上传</p>
+	 * <p>需要先调用{@link #upload(ITaskSession)}对任务进行上传</p>
 	 * 
 	 * @param findPeer 是否查找Peer（加载Tracker、DHT）：true-查找；false-不查找；
 	 * 
