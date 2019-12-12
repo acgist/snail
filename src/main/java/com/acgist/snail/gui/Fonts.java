@@ -192,7 +192,7 @@ public final class Fonts {
 		AS_ONEDRIVE;
 		
 		/**
-		 * <p>字符开始序号：{@value}</p>
+		 * <p>字符开始索引：{@value}</p>
 		 */
 		private static final int ICON_CHAR_BEGIN = 0xE900;
 		
@@ -201,7 +201,7 @@ public final class Fonts {
 
 		/**
 		 * <p>获取图标字符</p>
-		 * <p>字符：{@code ICON_CHAR_BEGIN} + 枚举序号</p>
+		 * <p>字符：{@code ICON_CHAR_BEGIN} + 枚举索引</p>
 		 * 
 		 * @return 图标字符
 		 */

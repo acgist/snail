@@ -465,7 +465,7 @@ public final class TorrentStream {
 	/**
 	 * <p>设置下载完成Piece</p>
 	 * 
-	 * @param index Piece序号
+	 * @param index Piece索引
 	 */
 	private void done(int index) {
 		this.pieces.set(index); // 下载成功
@@ -507,7 +507,7 @@ public final class TorrentStream {
 		try {
 			this.fileStream.close();
 		} catch (IOException e) {
-			LOGGER.error("文件流关闭异常", e);
+			LOGGER.error("TorrentStream关闭异常", e);
 		}
 	}
 	
@@ -593,7 +593,7 @@ public final class TorrentStream {
 	
 	/**
 	 * <p>加载文件Piece</p>
-	 * <p>第一块Piece序号、最后一块Piece序号、文件Piece数量</p>
+	 * <p>第一块Piece索引、最后一块Piece索引、文件Piece数量</p>
 	 */
 	private void buildFilePiece() {
 		this.fileBeginPieceIndex = (int) (this.fileBeginPos / this.pieceLength);

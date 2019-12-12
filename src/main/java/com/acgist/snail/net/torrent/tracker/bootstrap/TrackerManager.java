@@ -75,6 +75,7 @@ public final class TrackerManager {
 	 * <p>删除TrackerLauncher</p>
 	 */
 	public void release(Integer id) {
+		LOGGER.debug("删除TrackerLauncher：{}", id);
 		this.trackerLaunchers.remove(id);
 	}
 	
