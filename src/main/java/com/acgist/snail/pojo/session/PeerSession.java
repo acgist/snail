@@ -139,7 +139,7 @@ public final class PeerSession implements IStatistics {
 	/**
 	 * <p>判断是否相等：IP地址是否一致（不判断端口）</p>
 	 */
-	public boolean equal(String host) {
+	public boolean equalsHost(String host) {
 		return StringUtils.equals(this.host, host);
 	}
 	

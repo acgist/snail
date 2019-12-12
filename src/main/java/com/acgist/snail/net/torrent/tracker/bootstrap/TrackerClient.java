@@ -204,7 +204,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	/**
 	 * <p>判断当前TrackerClient的声明URL和声明URL是否一致</p>
 	 */
-	public boolean equal(String announceUrl) {
+	public boolean equalsAnnounceUrl(String announceUrl) {
 		return this.announceUrl.equals(announceUrl);
 	}
 	
