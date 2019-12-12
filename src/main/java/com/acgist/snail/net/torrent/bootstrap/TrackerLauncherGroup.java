@@ -15,8 +15,8 @@ import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.exception.DownloadException;
 
 /**
- * <p>TrackerLauncher组</p>
- * <p>TrackerLauncher加载和管理</p>
+ * <p>Tracker执行器组</p>
+ * <p>Tracker执行器加载和管理</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -25,7 +25,13 @@ public final class TrackerLauncherGroup {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerLauncherGroup.class);
 	
+	/**
+	 * <p>BT任务信息</p>
+	 */
 	private final TorrentSession torrentSession;
+	/**
+	 * <p>Tracker执行器集合</p>
+	 */
 	private final List<TrackerLauncher> trackerLaunchers;
 	
 	private TrackerLauncherGroup(TorrentSession torrentSession) {
@@ -38,7 +44,9 @@ public final class TrackerLauncherGroup {
 	}
 
 	/**
-	 * @return 所有当前使用的Tracker服务器地址列表
+	 * <p>获取当前使用的所有Tracker服务器声明地址</p>
+	 * 
+	 * @return 当前使用的所有Tracker服务器声明地址
 	 */
 	public List<String> trackers() {
 		synchronized (this.trackerLaunchers) {
@@ -50,16 +58,19 @@ public final class TrackerLauncherGroup {
 	
 	/**
 	 * <p>加载TrackerLauncher</p>
-	 * <p>优先使用种子的Tracker，如果不够可以继续从系统Tracker列表添加（私有种子不添加）</p>
+	 * <p>优先使用种子的Tracker，如果数量不够可以从系统Tracker列表中添加。</p>
+	 * <p>私有种子不从系统Tracker列表中添加</p>
+	 * 
+	 * @throws DownloadException 下载异常
 	 */
 	public void loadTracker() throws DownloadException {
 		List<TrackerClient> clients = null;
-		final var action = this.torrentSession.action();
+		final var action = this.torrentSession.action(); // 下载动作
 		if(action == Action.TORRENT) { // BT任务
-			var torrent = this.torrentSession.torrent();
+			final var torrent = this.torrentSession.torrent();
 			clients = TrackerManager.getInstance().clients(torrent.getAnnounce(), torrent.getAnnounceList(), this.torrentSession.isPrivateTorrent());
 		} else if(action == Action.MAGNET) { // 磁力链接任务
-			var magnet = this.torrentSession.magnet();
+			final var magnet = this.torrentSession.magnet();
 			clients = TrackerManager.getInstance().clients(null, magnet.getTr());
 		} else {
 			LOGGER.warn("加载TrackerLauncher失败（未知动作）：{}", action);
@@ -76,7 +87,9 @@ public final class TrackerLauncherGroup {
 	}
 
 	/**
-	 * <p>查询Peer</p>
+	 * <p>查找Peer</p>
+	 * 
+	 * @see {@link TrackerLauncher#findPeer()}
 	 */
 	public void findPeer() {
 		this.trackerLaunchers.forEach(launcher -> {

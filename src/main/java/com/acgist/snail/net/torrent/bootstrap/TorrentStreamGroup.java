@@ -25,8 +25,8 @@ import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.FileUtils;
 
 /**
- * <p>TorrentStream组</p>
- * <p>Torrent任务对下载文件进行管理</p>
+ * <p>文件流组</p>
+ * <p>管理BT任务下载文件</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -36,7 +36,7 @@ public final class TorrentStreamGroup {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentStreamGroup.class);
 
 	/**
-	 * <p>计算文件大小等待时间</p>
+	 * <p>计算文件大小等待时间（秒）：{@code}</p>
 	 */
 	private static final int DOWNLOAD_SIZE_TIMEOUT = 120;
 	
@@ -45,28 +45,28 @@ public final class TorrentStreamGroup {
 	 */
 	private final BitSet pieces;
 	/**
-	 * <p>选中下载Piece位图</p>
+	 * <p>被选中Piece位图</p>
 	 */
 	private final BitSet selectPieces;
 	/**
-	 * <p>是否完整</p>
+	 * <p>是否含有完整的被选中Piece位图数据</p>
+	 * <p>含有完整数据健康度等于{@code 100}</p>
 	 */
 	private boolean full;
 	/**
 	 * <p>完整Piece位图</p>
-	 * <p>计算文件健康度</p>
+	 * <p>已下载Piece位图和Peer含有的Piece位图数据，用来计算健康度。</p>
 	 * <dl>
 	 * 	<dt>更新条件</dt>
-	 * 	<dd>本地初始化</dd>
-	 * 	<dd>haveAll消息</dd>
-	 * 	<dd>交换Piece位图</dd>
+	 * 	<dd>加载本地文件</dd>
+	 * 	<dd>收到haveAll消息</dd>
+	 * 	<dd>收到交换Piece位图消息</dd>
 	 * </dl>
-	 * <p>注：have消息不更新</p>
 	 */
 	private final BitSet fullPieces;
 	/**
-	 * <p>缓冲大小</p>
-	 * <p>所有文件Piece缓冲数据大小</p>
+	 * <p>Piece缓存大小</p>
+	 * <p>所有文件流中Piece缓存队列数据大小</p>
 	 */
 	private final AtomicLong fileBuffer;
 	/**
@@ -76,9 +76,12 @@ public final class TorrentStreamGroup {
 	/**
 	 * <p>文件流集合</p>
 	 * <p>注意顺序（跨越文件数据读取）</p>
-	 * <p>可能存在下载到一半后不需要下载的情况，不从集合中删除，标记为不下载即可。</p>
+	 * <p>如果文件开始选择下载然后不选择下载时，文件流不删除，标记为不下载即可。</p>
 	 */
 	private final List<TorrentStream> streams;
+	/**
+	 * <p>BT任务信息</p>
+	 */
 	private final TorrentSession torrentSession;
 
 	private TorrentStreamGroup(BitSet pieces, BitSet selectPieces, List<TorrentStream> streams, TorrentSession torrentSession) {
@@ -93,6 +96,15 @@ public final class TorrentStreamGroup {
 		this.fileBuffer = new AtomicLong(0);
 	}
 	
+	/**
+	 * <p>创建文件流组</p>
+	 * 
+	 * @param folder 任务下载目录
+	 * @param files 任务文件
+	 * @param torrentSession BT任务信息
+	 * 
+	 * @return 文件流组
+	 */
 	public static final TorrentStreamGroup newInstance(String folder, List<TorrentFile> files, TorrentSession torrentSession) {
 		final Torrent torrent = torrentSession.torrent();
 		final TorrentInfo torrentInfo = torrent.getInfo();
@@ -113,6 +125,10 @@ public final class TorrentStreamGroup {
 	/**
 	 * <p>重新加载</p>
 	 * 
+	 * @param folder 任务下载目录
+	 * @param files 任务文件
+	 * @param torrentSession BT任务信息
+	 * 
 	 * @return 新增下载文件数量
 	 */
 	public int reload(String folder, List<TorrentFile> files, TorrentSession torrentSession) {
@@ -120,11 +136,12 @@ public final class TorrentStreamGroup {
 			final Torrent torrent = torrentSession.torrent();
 			final TorrentInfo torrentInfo = torrent.getInfo();
 			final long pieceLength = torrentInfo.getPieceLength();
+			// 需要加载文件数量
 			final int fileCount = (int) files.stream()
 				.filter(file -> file.selected())
 				.filter(file -> {
 					final String path = FileUtils.file(folder, file.path()); // 文佳路径
-					return this.haveStream(path) == null;
+					return this.haveStream(path) == null; // 文件未被加载
 				}).count();
 			this.load(fileCount, pieceLength, false, folder, files);
 			return fileCount;
@@ -152,7 +169,7 @@ public final class TorrentStreamGroup {
 		final List<TorrentStream> sortList = new ArrayList<>(); // 排序
 		// 开始加载下载文件
 		if(CollectionUtils.isNotEmpty(files)) {
-			long pos = 0;
+			long pos = 0; // 数据偏移
 			for (TorrentFile file : files) {
 				final String path = FileUtils.file(folder, file.path()); // 文佳路径
 				final TorrentStream oldStream = this.haveStream(path);
@@ -200,7 +217,7 @@ public final class TorrentStreamGroup {
 				final var ok = sizeCount.await(DOWNLOAD_SIZE_TIMEOUT, TimeUnit.SECONDS);
 				if(ok) {
 					final var finishTime = System.currentTimeMillis(); // 结束时间
-					LOGGER.debug("{}-任务准备完成消耗时间：{}", this.torrent.name(), (finishTime - startTime));
+					LOGGER.debug("{}-任务准备完成，消耗时间：{}", this.torrent.name(), (finishTime - startTime));
 					this.torrentSession.resize(this.size());
 					this.fullPieces(this.pieces());
 				} else {
@@ -231,13 +248,25 @@ public final class TorrentStreamGroup {
 	
 	/**
 	 * <p>发送have消息</p>
+	 * 
+	 * @param index Piece索引
+	 * 
+	 * @see {@link TorrentSession#have(int)}
 	 */
 	public void have(int index) {
 		this.torrentSession.have(index);
 	}
 	
 	/**
-	 * <p>挑选一个Piece下载</p>
+	 * <p>挑选下载Piece</p>
+	 * <p>如果文件流没有被选中下载不挑选Piece</p>
+	 * 
+	 * @param peerPieces Peer已下载Piece位图
+	 * @param suggestPieces Peer推荐Piece位图
+	 * 
+	 * @return 下载Piece
+	 * 
+	 * @see {@link TorrentStream#pick(BitSet, BitSet)}
 	 */
 	public TorrentPiece pick(final BitSet peerPieces, final BitSet suggestPieces) {
 		TorrentPiece pickPiece = null;
@@ -259,6 +288,12 @@ public final class TorrentStreamGroup {
 	 * @param index Piece索引
 	 * @param begin Piece偏移
 	 * @param length 数据长度
+	 * 
+	 * @return Piece数据
+	 * 
+	 * @throws NetException 网络异常
+	 * 
+	 * @see {@link TorrentStream#read(int, int, int)}
 	 */
 	public byte[] read(final int index, final int begin, final int length) throws NetException {
 		if(length > SystemConfig.MAX_NET_BUFFER_LENGTH || length < 0) {
@@ -275,16 +310,20 @@ public final class TorrentStreamGroup {
 			}
 		}
 		if(buffer.position() < length) {
-			LOGGER.warn("读取Piece数据错误：读取长度：{}，要求长度：{}", buffer.position(), length);
+			LOGGER.warn("读取Piece数据错误，读取长度：{}，要求长度：{}", buffer.position(), length);
 			return null;
 		}
 		return buffer.array();
 	}
 
 	/**
-	 * <p>保存Piece数据</p>
+	 * <p>保存Piece</p>
+	 * 
+	 * @param piece Piece数据
 	 * 
 	 * @return 是否保存成功
+	 * 
+	 * @see {@link TorrentStream#write(TorrentPiece)}
 	 */
 	public boolean write(TorrentPiece piece) {
 		boolean ok = false;
@@ -294,13 +333,15 @@ public final class TorrentStreamGroup {
 				ok = true;
 			}
 		}
+		// 判断是否刷出缓存
 		final long oldValue = this.fileBuffer.get();
 		if(oldValue > DownloadConfig.getMemoryBufferByte()) {
 			if(this.fileBuffer.compareAndSet(oldValue, 0)) {
-				LOGGER.debug("缓冲区占满：刷出缓存");
+				LOGGER.debug("缓冲区被占满");
 				this.flush();
 			}
 		}
+		// 保存成功发送have消息
 		if(ok) {
 			this.have(piece.getIndex());
 		}
@@ -314,9 +355,11 @@ public final class TorrentStreamGroup {
 	}
 	
 	/**
-	 * <p>是否已下载Piece</p>
+	 * <p>判断是否已下载Piece</p>
 	 * 
 	 * @param index Piece索引
+	 * 
+	 * @return {@code true}-已下载；{@code false}-未下载；
 	 */
 	public boolean havePiece(int index) {
 		if(index < 0) {
@@ -327,6 +370,8 @@ public final class TorrentStreamGroup {
 	
 	/**
 	 * <p>设置已下载的Piece</p>
+	 * 
+	 * @param index Piece索引
 	 */
 	public void done(int index) {
 		synchronized (this.pieces) {
@@ -335,7 +380,11 @@ public final class TorrentStreamGroup {
 	}
 	
 	/**
-	 * <p>Piece下载失败</p>
+	 * <p>设置Piece下载失败</p>
+	 * 
+	 * @param piece Piece
+	 * 
+	 * @see {@link TorrentStream#undone(TorrentPiece)}
 	 */
 	public void undone(TorrentPiece piece) {
 		for (TorrentStream torrentStream : this.streams) {
@@ -344,14 +393,61 @@ public final class TorrentStreamGroup {
 	}
 	
 	/**
-	 * <p>已下载Piece位图</p>
+	 * <p>获取已下载Piece位图</p>
+	 * 
+	 * @return 已下载Piece位图
 	 */
 	public BitSet pieces() {
 		return this.pieces;
 	}
 	
 	/**
+	 * <p>获取被选中Piece位图</p>
+	 * 
+	 * @return 被选中Piece位图
+	 */
+	public BitSet selectPieces() {
+		return this.selectPieces;
+	}
+
+	/**
+	 * <p>获取所有Piece位图</p>
+	 * 
+	 * @return 所有Piece位图
+	 */
+	public BitSet allPieces() {
+		final int pieceSize = this.torrent.getInfo().pieceSize();
+		final var allPieces = new BitSet(pieceSize);
+		allPieces.set(0, pieceSize);
+		return allPieces;
+	}
+	
+	/**
+	 * <p>获取剩余选中未下载的Piece数量</p>
+	 * 
+	 * @return 剩余选中未下载的Piece数量
+	 * 
+	 * @since 1.0.2
+	 */
+	public int remainingPieceSize() {
+		return this.selectPieces.cardinality() - this.pieces.cardinality();
+	}
+	
+	/**
 	 * <p>设置完整Piece位图</p>
+	 */
+	public void fullPieces() {
+		if(this.full) {
+			return;
+		}
+		this.full = true;
+		this.fullPieces.clear();
+	}
+	
+	/**
+	 * <p>设置完整Piece位图</p>
+	 * 
+	 * @param pieces Piece位图
 	 */
 	public void fullPieces(BitSet pieces) {
 		if(this.full) {
@@ -371,19 +467,11 @@ public final class TorrentStreamGroup {
 	}
 	
 	/**
-	 * <p>设置完整Piece位图</p>
-	 */
-	public void fullPieces() {
-		if(this.full) {
-			return;
-		}
-		this.full = true;
-		this.fullPieces.clear();
-	}
-	
-	/**
-	 * <p>健康度：0~100</p>
-	 * <p>健康度：当前连接Peer有的Piece数量 ÷ 选择下载的Piece数量</p>
+	 * <p>获取健康度</p>
+	 * <p>健康度范围：{@code 0} ~ {@code 100}</p>
+	 * <p>健康度：完整Piece数量除以选中下载Piece数量</p>
+	 * 
+	 * @return 健康度
 	 */
 	public int health() {
 		final int health = 100;
@@ -395,33 +483,11 @@ public final class TorrentStreamGroup {
 	}
 	
 	/**
-	 * @return 选中下载Piece位图
-	 */
-	public BitSet selectPieces() {
-		return this.selectPieces;
-	}
-
-	/**
-	 * @return 所有Piece位图
-	 */
-	public BitSet allPieces() {
-		final int pieceSize = this.torrent.getInfo().pieceSize();
-		final var allPieces = new BitSet(pieceSize);
-		allPieces.set(0, pieceSize);
-		return allPieces;
-	}
-	
-	/**
-	 * @return 剩余没有下载的Piece数量
+	 * <p>获取Piece的Hash数据</p>
 	 * 
-	 * @since 1.0.2
-	 */
-	public int remainingPieceSize() {
-		return this.selectPieces.cardinality() - this.pieces.cardinality();
-	}
-	
-	/**
-	 * @return Piece的校验Hash
+	 * @param index Piece索引
+	 * 
+	 * @return Piece的Hash数据
 	 */
 	public byte[] pieceHash(int index) {
 		final byte[] pieces = this.torrent.getInfo().getPieces();
@@ -441,7 +507,11 @@ public final class TorrentStreamGroup {
 	}
 	
 	/**
-	 * <p>已下载文件大小</p>
+	 * <p>获取任务已下载大小</p>
+	 * 
+	 * @return 任务已下载大小
+	 * 
+	 * @see {@link TorrentStream#size()}
 	 */
 	public long size() {
 		long size = 0L;
@@ -452,8 +522,10 @@ public final class TorrentStreamGroup {
 	}
 	
 	/**
-	 * <p>检测是否下载完成</p>
-	 * <p>所有的TorrentStream完成才算完成</p>
+	 * <p>检测任务是否下载完成</p>
+	 * <p>完成：所有文件流下载完成</p>
+	 * 
+	 * @return {@code true}-完成；{@code false}-没有完成；
 	 */
 	public boolean complete() {
 		for (TorrentStream torrentStream : this.streams) {

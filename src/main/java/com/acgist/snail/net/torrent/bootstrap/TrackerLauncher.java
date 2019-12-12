@@ -30,7 +30,9 @@ public final class TrackerLauncher {
 	 * <p>客户端</p>
 	 */
 	private final TrackerClient client;
-	
+	/**
+	 * <p>BT任务信息</p>
+	 */
 	private final TorrentSession torrentSession;
 //	private final TrackerLauncherGroup trackerLauncherGroup;
 	
@@ -57,6 +59,7 @@ public final class TrackerLauncher {
 	private boolean available = true;
 	/**
 	 * <p>是否需要释放</p>
+	 * <p>查找Peer后需要释放</p>
 	 */
 	private boolean needRelease = false;
 	
@@ -72,6 +75,8 @@ public final class TrackerLauncher {
 	}
 
 	/**
+	 * <p>获取ID</p>
+	 * 
 	 * @return ID
 	 */
 	public Integer id() {
@@ -79,6 +84,8 @@ public final class TrackerLauncher {
 	}
 	
 	/**
+	 * <p>获取声明地址</p>
+	 * 
 	 * @return 声明地址
 	 */
 	public String announceUrl() {
@@ -90,20 +97,22 @@ public final class TrackerLauncher {
 	 */
 	public void findPeer() {
 		this.needRelease = true;
-		if(available()) {
+		if(this.available()) {
 			LOGGER.debug("TrackerLauncher查找Peer：{}", this.client.announceUrl());
 			this.client.findPeers(this.id, this.torrentSession);
 		}
 	}
 
 	/**
-	 * <p>收到声明响应</p>
+	 * <p>收到声明响应消息</p>
+	 * 
+	 * @param message 声明响应消息
 	 */
 	public void announce(AnnounceMessage message) {
 		if(message == null) {
 			return;
 		}
-		if(!available()) {
+		if(!this.available()) {
 			return;
 		}
 		this.interval = message.getInterval();
@@ -121,6 +130,8 @@ public final class TrackerLauncher {
 	
 	/**
 	 * <p>添加Peer</p>
+	 * 
+	 * @param peers Peer列表
 	 */
 	private void peer(Map<String, Integer> peers) {
 		if(CollectionUtils.isEmpty(peers)) {
@@ -153,14 +164,17 @@ public final class TrackerLauncher {
 					this.client.stop(this.id, this.torrentSession);
 				}
 			} catch (NetException e) {
-				LOGGER.error("TrackerLauncher释放异常", e);
+				LOGGER.error("TrackerLauncher关闭异常", e);
 			}
 			TrackerManager.getInstance().release(this.id);
 		}
 	}
 	
 	/**
+	 * <p>获取是否可用</p>
 	 * <p>可用状态：TrackerLauncher可用、TrackerClient可用</p>
+	 * 
+	 * @return {@code true}-可用；{@code false}-不可用；
 	 */
 	private boolean available() {
 		return this.available && this.client.available();
