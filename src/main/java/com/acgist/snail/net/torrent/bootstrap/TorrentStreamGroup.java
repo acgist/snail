@@ -147,7 +147,7 @@ public final class TorrentStreamGroup {
 		final var startTime = System.currentTimeMillis(); // 开始时间
 		this.full = false; // 健康度重新检查
 		this.selectPieces.clear(); // 清除所有已选择Piece
-		// 异步线程执行完成计数器
+		// 异步文件加载计数器
 		final CountDownLatch sizeCount = new CountDownLatch(fileCount);
 		final List<TorrentStream> sortList = new ArrayList<>(); // 排序
 		// 开始加载下载文件
@@ -160,8 +160,11 @@ public final class TorrentStreamGroup {
 					if(file.selected()) { // 加载选择下载的文件
 						if(oldStream == null) {
 							LOGGER.debug("文件选中下载（加载）：{}", path);
-							final TorrentStream stream = TorrentStream.newInstance(pieceLength, this.fileBuffer, this);
-							stream.buildFile(path, file.getLength(), pos, this.selectPieces, complete, sizeCount);
+							final TorrentStream stream = TorrentStream.newInstance(
+								pieceLength, path, file.getLength(), pos,
+								this.fileBuffer, this,
+								this.selectPieces, complete, sizeCount
+							);
 							this.streams.add(stream);
 							sortList.add(stream);
 						} else {
@@ -239,7 +242,7 @@ public final class TorrentStreamGroup {
 	public TorrentPiece pick(final BitSet peerPieces, final BitSet suggestPieces) {
 		TorrentPiece pickPiece = null;
 		for (TorrentStream torrentStream : this.streams) {
-			if(torrentStream.select()) { // 下载选中文件
+			if(torrentStream.selected()) { // 下载选中文件
 				pickPiece = torrentStream.pick(peerPieces, suggestPieces);
 				if(pickPiece != null) {
 					break;
@@ -300,6 +303,12 @@ public final class TorrentStreamGroup {
 		}
 		if(ok) {
 			this.have(piece.getIndex());
+		}
+		if(LOGGER.isDebugEnabled()) {
+			LOGGER.debug("当前任务已下载Piece数量：{}，剩余下载Piece数量：{}",
+				this.pieces.cardinality(),
+				this.remainingPieceSize()
+			);
 		}
 		return ok;
 	}
