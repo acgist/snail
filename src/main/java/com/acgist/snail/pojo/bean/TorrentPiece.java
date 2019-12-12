@@ -137,7 +137,7 @@ public final class TorrentPiece {
 	}
 	
 	/**
-	 * <p>获取本次请求数据大小</>
+	 * <p>获取本次请求数据大小</p>
 	 * <p>{@code 0}：已经发送所有请求</p>
 	 * <p>修改{@link #position}</p>
 	 */

@@ -248,7 +248,7 @@ public final class PeerSession implements IStatistics {
 	/**
 	 * <p>设置下载错误Piece位图</p>
 	 * 
-	 * @param Piece索引
+	 * @param index Piece索引
 	 */
 	public void badPieces(int index) {
 		this.badPieces.set(index);
