@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.ArgumentException;
 import com.acgist.snail.system.exception.PacketSizeException;
 import com.acgist.snail.utils.StringUtils;
@@ -367,9 +366,7 @@ public final class BEncodeDecoder {
 			throw new ArgumentException("B编码格式错误（数字）：" + number);
 		}
 		final int length = Integer.parseInt(number);
-		if(length > SystemConfig.MAX_NET_BUFFER_LENGTH) {
-			throw new PacketSizeException(length);
-		}
+		PacketSizeException.verify(length);
 		lengthBuilder.setLength(0);
 		final byte[] bytes = new byte[length];
 		try {

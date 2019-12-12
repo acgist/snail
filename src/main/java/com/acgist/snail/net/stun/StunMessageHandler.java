@@ -10,7 +10,6 @@ import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.net.stun.bootstrap.StunService;
 import com.acgist.snail.system.config.StunConfig;
 import com.acgist.snail.system.config.StunConfig.AttributeType;
-import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.system.exception.PacketSizeException;
 import com.acgist.snail.utils.ArrayUtils;
@@ -85,9 +84,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 			return;
 		}
 		final short length = buffer.getShort();
-		if(length > SystemConfig.MAX_NET_BUFFER_LENGTH) {
-			throw new PacketSizeException(length);
-		}
+		PacketSizeException.verify(length);
 		final int magicCookie = buffer.getInt();
 		if(magicCookie != StunConfig.MAGIC_COOKIE) {
 			LOGGER.warn("处理STUN消息错误（MAGIC COOKIE）：{}", magicCookie);
@@ -137,9 +134,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 		final short typeId = buffer.getShort();
 		// 对齐
 		final short length = (short) (NumberUtils.ceilDiv(buffer.getShort(), STUN_ATTRIBUTE_PADDING_LENGTH) * STUN_ATTRIBUTE_PADDING_LENGTH);
-		if(length > SystemConfig.MAX_NET_BUFFER_LENGTH) {
-			throw new PacketSizeException(length);
-		}
+		PacketSizeException.verify(length);
 		if(buffer.remaining() < length) {
 			LOGGER.error("处理STUN消息-属性错误（剩余长度）：{}-{}", buffer.remaining(), length);
 			return;

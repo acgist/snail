@@ -8,7 +8,7 @@ import com.acgist.snail.system.exception.PacketSizeException;
 import com.acgist.snail.utils.ObjectUtils;
 
 /**
- * <p>Padding数据同步</p>
+ * <p>Padding数据同步工具</p>
  * <p>同步数据格式：(len(padding) + padding)+</p>
  * <p>长度数据类型：short</p>
  * 
@@ -39,6 +39,13 @@ public final class MSEPaddingSync {
 		this.list = new ArrayList<>(count);
 	}
 	
+	/**
+	 * <p>创建同步工具</p>
+	 * 
+	 * @param count Padding数据数量
+	 * 
+	 * @return 同步工具
+	 */
 	public static final MSEPaddingSync newInstance(int count) {
 		return new MSEPaddingSync(count);
 	}
@@ -48,41 +55,43 @@ public final class MSEPaddingSync {
 	 * 
 	 * @param buffer Padding数据
 	 * 
-	 * @return 是否同步完成：true-完成；false-未完成；
+	 * @return {@code true}-完成；{@code false}-没有完成；
+	 * 
+	 * @throws PacketSizeException 网络包大小异常
 	 */
 	public boolean sync(ByteBuffer buffer) throws PacketSizeException {
 		if(this.count == 0) {
 			return true;
 		}
+		// 没有剩余数据
 		if(!buffer.hasRemaining()) {
 			return false;
 		}
+		// 开始新的同步数据
 		if(this.length == -1) {
 			if(buffer.remaining() < 2) {
 				return false;
 			}
+			// 获取数据长度
 			this.length = buffer.getShort();
-			// 不可能大于：SystemConfig.MAX_NET_BUFFER_LENGTH
-			if(this.length < 0) {
-				throw new PacketSizeException(this.length);
-			}
+			PacketSizeException.verify(this.length);
 			this.bytes = new byte[this.length];
 		}
 		final int remaining = buffer.remaining();
-		if(this.length == 0) {
+		if(this.length == 0) { // 数据完整：没有数据
 			this.count--;
 			this.length = -1;
 			this.list.add(this.bytes);
 			buffer.compact().flip();
-			return sync(buffer);
-		} else if(remaining >= this.length) {
+			return this.sync(buffer);
+		} else if(remaining >= this.length) { // 数据完整：含有数据
 			buffer.get(this.bytes, this.bytes.length - this.length, this.length);
 			this.count--;
 			this.length = -1;
 			this.list.add(this.bytes);
 			buffer.compact().flip();
-			return sync(buffer);
-		} else {
+			return this.sync(buffer);
+		} else { // 数据不完整
 			buffer.get(this.bytes, this.bytes.length - this.length, remaining);
 			this.length -= remaining;
 			buffer.compact();
@@ -91,6 +100,8 @@ public final class MSEPaddingSync {
 	}
 	
 	/**
+	 * <p>获取所有的Padding数据</p>
+	 * 
 	 * @return 所有的Padding数据
 	 */
 	public List<byte[]> allPadding() {

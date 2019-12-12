@@ -81,11 +81,8 @@ public final class SystemThreadContext {
 	 * @param runnable 任务
 	 */
 	public static final ScheduledFuture<?> timer(long delay, TimeUnit unit, Runnable runnable) {
-		if(delay < 0) {
-			throw new TimerArgumentException(delay);
-		} else {
-			return EXECUTOR_TIMER.schedule(runnable, delay, unit);
-		}
+		TimerArgumentException.verify(delay);
+		return EXECUTOR_TIMER.schedule(runnable, delay, unit);
 	}
 	
 	/**
@@ -98,13 +95,9 @@ public final class SystemThreadContext {
 	 * @param runnable 任务
 	 */
 	public static final ScheduledFuture<?> timer(long delay, long period, TimeUnit unit, Runnable runnable) {
-		if(delay < 0) {
-			throw new TimerArgumentException(delay);
-		} else if(period < 0) {
-			throw new TimerArgumentException(period);
-		} else {
-			return EXECUTOR_TIMER.scheduleAtFixedRate(runnable, delay, period, unit);
-		}
+		TimerArgumentException.verify(delay);
+		TimerArgumentException.verify(period);
+		return EXECUTOR_TIMER.scheduleAtFixedRate(runnable, delay, period, unit);
 	}
 	
 	/**
@@ -117,13 +110,9 @@ public final class SystemThreadContext {
 	 * @param runnable 任务
 	 */
 	public static final ScheduledFuture<?> timerFixedDelay(long delay, long period, TimeUnit unit, Runnable runnable) {
-		if(delay < 0) {
-			throw new TimerArgumentException(delay);
-		} else if(period < 0) {
-			throw new TimerArgumentException(period);
-		} else {
-			return EXECUTOR_TIMER.scheduleWithFixedDelay(runnable, delay, period, unit);
-		}
+		TimerArgumentException.verify(delay);
+		TimerArgumentException.verify(period);
+		return EXECUTOR_TIMER.scheduleWithFixedDelay(runnable, delay, period, unit);
 	}
 	
 	/**

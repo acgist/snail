@@ -1,5 +1,7 @@
 package com.acgist.snail.system.exception;
 
+import com.acgist.snail.system.config.SystemConfig;
+
 /**
  * <p>网络包数据长度异常</p>
  * <p>数据长度过大或者小于零</p>
@@ -10,6 +12,34 @@ package com.acgist.snail.system.exception;
 public class PacketSizeException extends NetException {
 
 	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * <p>验证网络包大小</p>
+	 * <p>网络包大小格式错误抛出异常：{@link PacketSizeException}</p>
+	 * 
+	 * @param length 网络包大小
+	 * 
+	 * @throws PacketSizeException 网络包大小异常
+	 */
+	public static final void verify(short length) throws PacketSizeException {
+		if(length < 0 || length > SystemConfig.MAX_NET_BUFFER_LENGTH) {
+			throw new PacketSizeException(length);
+		}
+	}
+	
+	/**
+	 * <p>验证网络包大小</p>
+	 * <p>网络包大小格式错误抛出异常：{@link PacketSizeException}</p>
+	 * 
+	 * @param length 网络包大小
+	 * 
+	 * @throws PacketSizeException 网络包大小异常
+	 */
+	public static final void verify(int length) throws PacketSizeException {
+		if(length < 0 || length > SystemConfig.MAX_NET_BUFFER_LENGTH) {
+			throw new PacketSizeException(length);
+		}
+	}
 
 	public PacketSizeException() {
 		super("网络包数据长度异常");

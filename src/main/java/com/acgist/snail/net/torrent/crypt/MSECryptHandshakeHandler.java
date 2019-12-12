@@ -58,11 +58,12 @@ public final class MSECryptHandshakeHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MSECryptHandshakeHandler.class);
 
 	/**
-	 * <p>缓冲区大小：4KB</p>
+	 * <p>缓冲区大小：{@value}</p>
 	 */
 	private static final int BUFFER_LENGTH = 4 * SystemConfig.ONE_KB;
 	/**
-	 * <p>加密握手超时时间：不能超过{@linkplain PeerSubMessageHandler#HANDSHAKE_TIMEOUT Peer握手超时时间}</p>
+	 * <p>加密握手超时时间：{@value}</p>
+	 * <p>不能超过{@link PeerSubMessageHandler#HANDSHAKE_TIMEOUT}</p>
 	 */
 	private static final int HANDSHAKE_TIMEOUT = PeerSubMessageHandler.HANDSHAKE_TIMEOUT;
 	
@@ -91,19 +92,21 @@ public final class MSECryptHandshakeHandler {
 	}
 	
 	/**
-	 * <p>当前步骤（默认：接收公钥）</p>
+	 * <p>当前步骤</p>
+	 * <p>默认：接收公钥</p>
 	 */
 	private Step step = Step.RECEIVE_PUBLIC_KEY;
 	/**
-	 * <p>是否处理完成（握手处理）</p>
+	 * <p>握手是否完成</p>
 	 */
 	private volatile boolean complete = false;
 	/**
-	 * <p>是否加密：默认明文</p>
+	 * <p>是否加密</p>
+	 * <p>默认：明文</p>
 	 */
 	private volatile boolean crypt = false;
 	/**
-	 * <p>握手等待锁</p>
+	 * <p>加密握手锁</p>
 	 */
 	private final Object handshakeLock = new Object();
 	/**
@@ -111,9 +114,10 @@ public final class MSECryptHandshakeHandler {
 	 */
 	private MSECipher cipher;
 	/**
-	 * <p>临时加密套件：VC数据查找时使用</p>
+	 * <p>临时加密套件</p>
+	 * <p>VC数据查找时使用，加密握手完成后释放。</p>
 	 */
-	private MSECipher cipherTmp;
+	private MSECipher cipherVC;
 	/**
 	 * <p>密钥对</p>
 	 */
@@ -131,7 +135,7 @@ public final class MSECryptHandshakeHandler {
 	 */
 	private BigInteger dhSecret;
 	/**
-	 * <p>Padding数据同步</p>
+	 * <p>Padding数据同步工具</p>
 	 */
 	private MSEPaddingSync msePaddingSync;
 	
@@ -151,14 +155,18 @@ public final class MSECryptHandshakeHandler {
 	}
 
 	/**
-	 * <p>是否需要加密</p>
+	 * <p>判断是否需要加密</p>
+	 * 
+	 * @return {@code true}-加密；{@code false}-明文；
 	 */
 	public boolean needEncrypt() {
 		return this.peerSubMessageHandler.needEncrypt();
 	}
 	
 	/**
-	 * <p>是否处理完成</p>
+	 * <p>判断握手是否完成</p>
+	 * 
+	 * @return {@code true}-完成；{@code false}-没有完成；
 	 */
 	public boolean complete() {
 		return this.complete;
@@ -174,10 +182,14 @@ public final class MSECryptHandshakeHandler {
 
 	/**
 	 * <p>处理握手消息</p>
+	 * 
+	 * @param buffer 握手消息
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	public void handshake(ByteBuffer buffer) throws NetException {
 		try {
-			if(checkPeerHandshake(buffer)) {
+			if(this.checkPeerHandshake(buffer)) {
 				LOGGER.debug("加密握手（跳过）：收到Peer握手消息");
 				return;
 			}
@@ -186,25 +198,25 @@ public final class MSECryptHandshakeHandler {
 				case SEND_PUBLIC_KEY:
 				case RECEIVE_PUBLIC_KEY:
 					this.buffer.put(buffer);
-					receivePublicKey();
+					this.receivePublicKey();
 					break;
 				case RECEIVE_PROVIDE:
 					this.buffer.put(buffer);
-					receiveProvide();
+					this.receiveProvide();
 					break;
 				case RECEIVE_PROVIDE_PADDING:
 					this.cipher.decrypt(buffer);
 					this.buffer.put(buffer);
-					receiveProvidePadding();
+					this.receiveProvidePadding();
 					break;
 				case RECEIVE_CONFIRM:
 					this.buffer.put(buffer);
-					receiveConfirm();
+					this.receiveConfirm();
 					break;
 				case RECEIVE_CONFIRM_PADDING:
 					this.cipher.decrypt(buffer);
 					this.buffer.put(buffer);
-					receiveConfirmPadding();
+					this.receiveConfirmPadding();
 					break;
 				default:
 					LOGGER.warn("加密握手失败（步骤不支持）：{}", this.step);
@@ -230,7 +242,10 @@ public final class MSECryptHandshakeHandler {
 	}
 	
 	/**
-	 * <p>加密：不改变buffer读取和写入状态</p>
+	 * <p>数据加密</p>
+	 * <p>不改变buffer读取和写入状态</p>
+	 * 
+	 * @param buffer 数据
 	 */
 	public void encrypt(ByteBuffer buffer) {
 		if(this.crypt) {
@@ -239,7 +254,10 @@ public final class MSECryptHandshakeHandler {
 	}
 	
 	/**
-	 * <p>解密：不改变buffer读取和写入状态</p>
+	 * <p>数据解密</p>
+	 * <p>不改变buffer读取和写入状态</p>
+	 * 
+	 * @param buffer 数据
 	 */
 	public void decrypt(ByteBuffer buffer) {
 		if(this.crypt) {
@@ -248,7 +266,7 @@ public final class MSECryptHandshakeHandler {
 	}
 	
 	/**
-	 * <p>握手等待锁</p>
+	 * <p>加密握手锁</p>
 	 */
 	public void handshakeLock() {
 		if(!this.complete) {
@@ -258,6 +276,7 @@ public final class MSECryptHandshakeHandler {
 				}
 			}
 		}
+		// 加密没有完成设置明文
 		if(!this.complete) {
 			LOGGER.debug("加密握手失败：使用明文");
 			this.plaintext();
@@ -265,7 +284,7 @@ public final class MSECryptHandshakeHandler {
 	}
 	
 	/**
-	 * <p>释放握手等待</p>
+	 * <p>释放加密握手锁</p>
 	 */
 	private void unlockHandshake() {
 		synchronized (this.handshakeLock) {
@@ -295,6 +314,8 @@ public final class MSECryptHandshakeHandler {
 	
 	/**
 	 * <p>接收公钥</p>
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	private void receivePublicKey() throws NetException {
 		LOGGER.debug("加密握手（接收公钥）步骤：{}", this.step);
@@ -316,6 +337,8 @@ public final class MSECryptHandshakeHandler {
 		} else if(this.step == Step.SEND_PUBLIC_KEY) {
 			sendProvide();
 			this.step = Step.RECEIVE_CONFIRM;
+		} else {
+			LOGGER.warn("加密握手失败（接收公钥未知步骤）：{}", this.step);
 		}
 	}
 	
@@ -337,7 +360,7 @@ public final class MSECryptHandshakeHandler {
 		final byte[] dhSecretBytes = NumberUtils.encodeBigInteger(this.dhSecret, CryptConfig.PUBLIC_KEY_LENGTH);
 		final InfoHash infoHash = torrentSession.infoHash();
 		this.cipher = MSECipher.newSender(dhSecretBytes, infoHash);
-		this.cipherTmp = MSECipher.newSender(dhSecretBytes, infoHash);
+		this.cipherVC = MSECipher.newSender(dhSecretBytes, infoHash);
 		ByteBuffer buffer = ByteBuffer.allocate(40); // 20 + 20
 		final MessageDigest digest = DigestUtils.sha1();
 //		HASH('req1', S)
@@ -375,6 +398,8 @@ public final class MSECryptHandshakeHandler {
 	
 	/**
 	 * <p>接收加密协议协商</p>
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	private void receiveProvide() throws NetException {
 		LOGGER.debug("加密握手（接收加密协议协商）步骤：{}", this.step);
@@ -384,6 +409,7 @@ public final class MSECryptHandshakeHandler {
 		digest.update("req1".getBytes());
 		digest.update(dhSecretBytes);
 		final byte[] req1 = digest.digest();
+		// 匹配数据
 		if(!match(req1)) {
 			return;
 		}
@@ -396,7 +422,7 @@ public final class MSECryptHandshakeHandler {
 		this.buffer.flip();
 		final byte[] req1Peer = new byte[20];
 		this.buffer.get(req1Peer);
-		// 不在验证req1
+		// 数据匹配不再验证req1
 //		if(!ArrayUtils.equals(req1, req1Peer)) {
 //			throw new NetException("加密握手失败（数据匹配错误）");
 //		}
@@ -408,6 +434,7 @@ public final class MSECryptHandshakeHandler {
 		digest.update(dhSecretBytes);
 		final byte[] req3 = digest.digest();
 		InfoHash infoHash = null;
+		// 获取种子信息
 		for (InfoHash tmp : TorrentManager.getInstance().allInfoHash()) {
 			digest.reset();
 			digest.update("req2".getBytes());
@@ -429,16 +456,18 @@ public final class MSECryptHandshakeHandler {
 		this.cipher.decrypt(this.buffer);
 		final byte[] vc = new byte[CryptConfig.VC_LENGTH];
 		this.buffer.get(vc);
-		final int provide = this.buffer.getInt(); // 协议选择
+		final int provide = this.buffer.getInt(); // 协商选择
 		LOGGER.debug("加密握手（接收加密协议协商选择）：{}", provide);
-		this.strategy = selectStrategy(provide); // 选择协议
+		this.strategy = selectStrategy(provide); // 选择策略
 		this.step = Step.RECEIVE_PROVIDE_PADDING;
-		this.msePaddingSync = MSEPaddingSync.newInstance(2);
+		this.msePaddingSync = MSEPaddingSync.newInstance(2); // PadC IA
 		this.receiveProvidePadding();
 	}
 	
 	/**
 	 * <p>接收加密协议协商Padding</p>
+	 * 
+	 * @throws PacketSizeException 数据包大小异常
 	 */
 	private void receiveProvidePadding() throws PacketSizeException {
 		LOGGER.debug("加密握手（接收加密协议协商Padding）步骤：{}", this.step);
@@ -480,10 +509,12 @@ public final class MSECryptHandshakeHandler {
 	
 	/**
 	 * <p>接收确认加密协议</p>
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	private void receiveConfirm() throws NetException {
 		LOGGER.debug("加密握手（接收确认加密协议）步骤：{}", this.step);
-		final byte[] vcMatch = this.cipherTmp.decrypt(CryptConfig.VC);
+		final byte[] vcMatch = this.cipherVC.decrypt(CryptConfig.VC);
 		if(!match(vcMatch)) {
 			return;
 		}
@@ -498,9 +529,9 @@ public final class MSECryptHandshakeHandler {
 		this.cipher.decrypt(this.buffer);
 		final byte[] vc = new byte[CryptConfig.VC_LENGTH];
 		this.buffer.get(vc);
-		final int provide = this.buffer.getInt(); // 协议选择
-		LOGGER.debug("加密握手（接收确认加密协议选择）：{}", provide);
-		this.strategy = selectStrategy(provide); // 选择协议
+		final int provide = this.buffer.getInt(); // 协商选择
+		LOGGER.debug("加密握手（接收确认加密协商选择）：{}", provide);
+		this.strategy = selectStrategy(provide); // 选择策略
 		LOGGER.debug("加密握手（接收确认加密协议）：{}", this.strategy);
 		this.step = Step.RECEIVE_CONFIRM_PADDING;
 		this.msePaddingSync = MSEPaddingSync.newInstance(1);
@@ -509,6 +540,8 @@ public final class MSECryptHandshakeHandler {
 	
 	/**
 	 * <p>接收确认加密协议Padding</p>
+	 * 
+	 * @throws PacketSizeException 网络包大小异常
 	 */
 	private void receiveConfirmPadding() throws PacketSizeException {
 		LOGGER.debug("加密握手（接收确认加密协议Padding）步骤：{}", this.step);
@@ -524,16 +557,22 @@ public final class MSECryptHandshakeHandler {
 	}
 	
 	/**
-	 * <p>选择策略</p>
+	 * <p>选择加密策略</p>
 	 * <p>协商：根据接入客户端和本地综合选择出使用加密或者明文</p>
 	 * <p>确认：加密或者明文</p>
+	 * 
+	 * @param provide 加密协商
+	 * 
+	 * @return 加密策略
 	 */
 	private CryptConfig.Strategy selectStrategy(int provide) throws NetException {
+		// 客户端是否支持明文
 		final boolean plaintext = (provide & CryptAlgo.PLAINTEXT.provide()) == CryptAlgo.PLAINTEXT.provide();
+		// 客户端是否支持加密
 		final boolean crypt = 	  (provide & CryptAlgo.ARC4.provide()) == CryptAlgo.ARC4.provide();
 		Strategy selected = null;
 		if (plaintext || crypt) {
-			switch (CryptConfig.STRATEGY) { // 本地配置
+			switch (CryptConfig.STRATEGY) { // 本地策略
 			case PLAINTEXT:
 				selected = plaintext ? Strategy.PLAINTEXT : null;
 				break;
@@ -552,13 +591,17 @@ public final class MSECryptHandshakeHandler {
 			}
 		}
 		if (selected == null) {
-			throw new NetException("加密握手失败（加密协议不支持）：" + provide);
+			throw new NetException("加密握手失败（加密协商不支持）：" + provide);
 		}
 		return selected;
 	}
 	
 	/**
 	 * <p>填充：随机值</p>
+	 * 
+	 * @param maxLength 填充长度
+	 * 
+	 * @return 填充数据
 	 */
 	private byte[] buildPadding(int maxLength) {
 		final Random random = NumberUtils.random();
@@ -570,7 +613,11 @@ public final class MSECryptHandshakeHandler {
 	}
 	
 	/**
-	 * <p>填充：0</p>
+	 * <p>填充：{@code 0}</p>
+	 * 
+	 * @param maxLength 填充长度
+	 * 
+	 * @return 填充数据
 	 */
 	private byte[] buildZeroPadding(int maxLength) {
 		final Random random = NumberUtils.random();
@@ -580,16 +627,25 @@ public final class MSECryptHandshakeHandler {
 	/**
 	 * <p>判断是否是Peer握手消息</p>
 	 * <p>如果是Peer握手消息直接使用明文</p>
+	 * 
+	 * @param buffer 消息
+	 * 
+	 * @return {@code true}-Peer握手；{@code false}-加密握手；
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	private boolean checkPeerHandshake(ByteBuffer buffer) throws NetException {
 		final byte first = buffer.get();
+		// 判断首个字符
 		if(first == PeerConfig.HANDSHAKE_NAME_LENGTH && buffer.remaining() >= PeerConfig.HANDSHAKE_NAME_LENGTH) {
+			// 判断协议名称
 			final byte[] names = new byte[PeerConfig.HANDSHAKE_NAME_LENGTH];
 			buffer.get(names);
-			if(ArrayUtils.equals(names, PeerConfig.HANDSHAKE_NAME_BYTES)) { // 握手消息直接使用明文
+			if(ArrayUtils.equals(names, PeerConfig.HANDSHAKE_NAME_BYTES)) {
+				// 握手消息直接使用明文
 				this.complete(true, false);
 				buffer.position(0); // 重置长度
-				this.peerUnpackMessageCodec.decode(buffer);
+				this.peerUnpackMessageCodec.decode(buffer); // 处理消息
 				return true;
 			}
 		}
@@ -598,9 +654,11 @@ public final class MSECryptHandshakeHandler {
 	}
 	
 	/**
-	 * <p>数据匹配</p>
+	 * <p>判断数据是否匹配成功</p>
 	 * 
 	 * @param bytes 匹配数据
+	 * 
+	 * @return {@code true}-成功；{@code false}-失败；
 	 */
 	private boolean match(byte[] bytes) {
 		int index = 0;
@@ -632,7 +690,7 @@ public final class MSECryptHandshakeHandler {
 	}
 	
 	/**
-	 * <p>设置完成</p>
+	 * <p>设置握手完成</p>
 	 * 
 	 * @param complete 是否完成
 	 * @param crypt 是否加密
@@ -644,7 +702,7 @@ public final class MSECryptHandshakeHandler {
 		this.keyPair = null;
 		this.strategy = null;
 		this.dhSecret = null;
-		this.cipherTmp = null;
+		this.cipherVC = null;
 		this.msePaddingSync = null;
 		this.unlockHandshake();
 	}

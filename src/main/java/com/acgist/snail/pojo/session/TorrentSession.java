@@ -385,37 +385,26 @@ public final class TorrentSession {
 	 * <p>定时任务（不重复执行）</p>
 	 */
 	public ScheduledFuture<?> timer(long delay, TimeUnit unit, Runnable runnable) {
-		if(delay < 0) {
-			throw new TimerArgumentException(delay);
-		} else {
-			return this.executorTimer.schedule(runnable, delay, unit);
-		}
+		TimerArgumentException.verify(delay);
+		return this.executorTimer.schedule(runnable, delay, unit);
 	}
 	
 	/**
 	 * <p>定时任务（重复执行）</p>
 	 */
 	public ScheduledFuture<?> timer(long delay, long period, TimeUnit unit, Runnable runnable) {
-		if(delay < 0) {
-			throw new TimerArgumentException(delay);
-		} else if(period < 0) {
-			throw new TimerArgumentException(period);
-		} else {
-			return this.executorTimer.scheduleAtFixedRate(runnable, delay, period, unit);
-		}
+		TimerArgumentException.verify(delay);
+		TimerArgumentException.verify(period);
+		return this.executorTimer.scheduleAtFixedRate(runnable, delay, period, unit);
 	}
 	
 	/**
 	 * <p>定时任务（重复执行）</p>
 	 */
 	public ScheduledFuture<?> timerFixedDelay(long delay, long period, TimeUnit unit, Runnable runnable) {
-		if(delay < 0) {
-			throw new TimerArgumentException(delay);
-		} else if(period < 0) {
-			throw new TimerArgumentException(period);
-		} else {
-			return this.executorTimer.scheduleWithFixedDelay(runnable, delay, period, unit);
-		}
+		TimerArgumentException.verify(delay);
+		TimerArgumentException.verify(period);
+		return this.executorTimer.scheduleWithFixedDelay(runnable, delay, period, unit);
 	}
 	
 	/**

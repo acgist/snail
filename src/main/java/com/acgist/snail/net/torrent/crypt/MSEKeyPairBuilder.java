@@ -16,7 +16,7 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * <p>MSE密钥对Builder（DH交换）</p>
  * <p>一的补码（one's complement）：反码（正数=原码、负数=反码）</p>
- * <p>二的补码（two's complement）：补码（正数=原码、负数=反码+1）</p>
+ * <p>二的补码（two's complement）：补码（正数=原码、负数=反码+{@code 1}）</p>
  * 
  * @author acgist
  * @since 1.1.0
@@ -38,6 +38,8 @@ public final class MSEKeyPairBuilder {
 
 	/**
 	 * <p>创建密钥对</p>
+	 * 
+	 * @return 密钥对
 	 */
 	public KeyPair buildKeyPair() {
 		final MSEPrivateKey privateKey = new MSEPrivateKey(this.random);
@@ -47,6 +49,11 @@ public final class MSEKeyPairBuilder {
 
 	/**
 	 * <p>创建S：DH Secret</p>
+	 * 
+	 * @param publicKey 公钥
+	 * @param privateKey 密钥
+	 * 
+	 * @return DH Secret
 	 */
 	public static final BigInteger buildDHSecret(BigInteger publicKey, PrivateKey privateKey) {
 		if(privateKey instanceof MSEPrivateKey) {
@@ -62,7 +69,13 @@ public final class MSEKeyPairBuilder {
 
 		private static final long serialVersionUID = 1L;
 		
+		/**
+		 * <p>publicKey</p>
+		 */
 		private final BigInteger value;
+		/**
+		 * <p>公钥数据</p>
+		 */
 		private final byte[] encoded;
 
 		private MSEPublicKey(BigInteger value) {
@@ -107,8 +120,14 @@ public final class MSEKeyPairBuilder {
 
 		private static final long serialVersionUID = 1L;
 		
-		private final BigInteger value; // privateKey
-		private final MSEPublicKey publicKey; // publicKey
+		/**
+		 * <p>privateKey</p>
+		 */
+		private final BigInteger value;
+		/**
+		 * <p>publicKey</p>
+		 */
+		private final MSEPublicKey publicKey;
 
 		private MSEPrivateKey(Random random) {
 			this.value = buildPrivateKey(random);
@@ -117,6 +136,10 @@ public final class MSEKeyPairBuilder {
 
 		/**
 		 * <p>Xa Xb</p>
+		 * 
+		 * @param random 随机数工具
+		 * 
+		 * @return privateKey
 		 */
 		private BigInteger buildPrivateKey(Random random) {
 			final byte[] bytes = new byte[CryptConfig.PRIVATE_KEY_LENGTH];
@@ -131,13 +154,19 @@ public final class MSEKeyPairBuilder {
 		 * Pubkey of A: Ya = (G^Xa) mod P
 		 * Pubkey of B: Yb = (G^Xb) mod P
 		 * </pre>
+		 * 
+		 * @return publicKey
 		 */
 		private MSEPublicKey buildPublicKey() {
 			return new MSEPublicKey(CryptConfig.G.modPow(this.value, CryptConfig.P));
 		}
 		
 		/**
-		 * <p>DH secret: S = (Ya^Xb) mod P = (Yb^Xa) mod P</p>
+		 * <p>DH Secret: S = (Ya^Xb) mod P = (Yb^Xa) mod P</p>
+		 * 
+		 * @param publicKey publicKey
+		 * 
+		 * @return DH Secret
 		 */
 		public BigInteger buildDHSecret(MSEPublicKey publicKey) {
 			return publicKey.getValue().modPow(this.value, CryptConfig.P);
