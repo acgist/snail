@@ -1,4 +1,4 @@
-package com.acgist.snail.net.web;
+package com.acgist.snail.net.web.bootstrap;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
