@@ -93,9 +93,9 @@ public final class HTTPClient {
 	 */
 	private static final String USER_AGENT;
 	/**
-	 * <p>HTTP线程池</p>
+	 * <p>HTTP客户端线程池</p>
 	 */
-	private static final ExecutorService EXECUTOR = SystemThreadContext.newExecutor(2, 10, 100, 60L, SystemThreadContext.SNAIL_THREAD_HTTP);
+	private static final ExecutorService EXECUTOR = SystemThreadContext.newExecutor(2, 10, 100, 60L, SystemThreadContext.SNAIL_THREAD_HTTP_CLIENT);
 	
 	static {
 		final StringBuilder userAgentBuilder = new StringBuilder();

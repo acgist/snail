@@ -39,6 +39,7 @@ open module com.acgist.snail {
 	
 	//================JDK================//
 	requires transitive jdk.crypto.ec;
+	requires transitive jdk.httpserver;
 	requires transitive jdk.unsupported;
 	
 	//================JavaFX================//
