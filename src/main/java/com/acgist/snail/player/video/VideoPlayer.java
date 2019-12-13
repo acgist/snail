@@ -1,7 +1,11 @@
 package com.acgist.snail.player.video;
 
 /**
- * <p>视频比特率：1kByte/s=8kbit/s</p>
+ * <p>视频播放器</p>
+ * <p>视频比特率：{@code 1kByte/s=8kbit/s}</p>
+ * 
+ * @author acgist
+ * @since 1.3.0
  */
 public final class VideoPlayer {
 
