@@ -76,6 +76,15 @@ public final class HTTPClient {
 		}
 		
 		/**
+		 * <p>获取状态码</p>
+		 * 
+		 * @return 状态码
+		 */
+		public final int code() {
+			return this.code;
+		}
+		
+		/**
 		 * <p>判断状态码是否相等</p>
 		 * 
 		 * @param code 状态码
