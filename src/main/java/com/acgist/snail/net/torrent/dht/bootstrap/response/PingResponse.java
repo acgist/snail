@@ -4,7 +4,7 @@ import com.acgist.snail.net.torrent.dht.bootstrap.Request;
 import com.acgist.snail.net.torrent.dht.bootstrap.Response;
 
 /**
- * Ping
+ * <p>Ping</p>
  * 
  * @author acgist
  * @since 1.0.0

@@ -18,7 +18,7 @@ import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
- * DHT请求
+ * <p>DHT请求</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -26,32 +26,39 @@ import com.acgist.snail.utils.ThreadUtils;
 public class Request extends DhtMessage {
 
 	/**
-	 * 请求类型
+	 * <p>请求类型</p>
 	 */
 	private final DhtConfig.QType q;
 	/**
-	 * 请求参数
+	 * <p>请求参数</p>
 	 */
 	private final Map<String, Object> a;
 	/**
-	 * 请求时间戳
+	 * <p>请求时间戳</p>
 	 */
 	private final long timestamp;
 	/**
-	 * 响应
+	 * <p>响应</p>
 	 */
 	private Response response;
 	
 	/**
-	 * <p>设置NodeId</p>
+	 * <p>生成NodeId</p>
+	 * 
+	 * @param q 请求类型
 	 */
 	protected Request(DhtConfig.QType q) {
-		this(DhtService.getInstance().requestId(), DhtConfig.KEY_Q, q, new LinkedHashMap<>());
+		this(DhtService.getInstance().buildRequestId(), DhtConfig.KEY_Q, q, new LinkedHashMap<>());
 		this.put(DhtConfig.KEY_ID, NodeManager.getInstance().nodeId());
 	}
 	
 	/**
-	 * <p>不设置NodeId</p>
+	 * <p>不生成NodeId</p>
+	 * 
+	 * @param t 消息ID
+	 * @param y 消息类型：响应
+	 * @param q 请求类型
+	 * @param a 请求参数
 	 */
 	private Request(byte[] t, String y, DhtConfig.QType q, Map<String, Object> a) {
 		super(t, y);
@@ -61,7 +68,11 @@ public class Request extends DhtMessage {
 	}
 
 	/**
-	 * 处理请求
+	 * <p>读取请求</p>
+	 * 
+	 * @param decoder 消息
+	 * 
+	 * @return 请求
 	 */
 	public static final Request valueOf(final BEncodeDecoder decoder) {
 		final byte[] t = decoder.getBytes(DhtConfig.KEY_T);
@@ -93,7 +104,9 @@ public class Request extends DhtMessage {
 	}
 
 	/**
-	 * 是否已经响应
+	 * <p>判断是否已经响应</p>
+	 * 
+	 * @return {@code true}-已经响应；{@code false}-没有响应；
 	 */
 	public boolean haveResponse() {
 		return this.response != null;
@@ -113,7 +126,9 @@ public class Request extends DhtMessage {
 	}
 	
 	/**
-	 * B编码后的字节数组
+	 * <p>将消息转为B编码的字节数组</p>
+	 * 
+	 * @return B编码的字节数组
 	 */
 	public byte[] toBytes() {
 		final Map<String, Object> request = new LinkedHashMap<>();
@@ -125,7 +140,11 @@ public class Request extends DhtMessage {
 	}
 	
 	/**
-	 * <p>节点序列化</p>
+	 * <p>节点列表序列化</p>
+	 * 
+	 * @param nodes 节点列表
+	 * 
+	 * @return 序列化后数据
 	 */
 	protected static final byte[] serializeNodes(List<NodeSession> nodes) {
 		if(CollectionUtils.isEmpty(nodes)) {
@@ -143,7 +162,7 @@ public class Request extends DhtMessage {
 	}
 	
 	/**
-	 * 等待响应
+	 * <p>等待响应</p>
 	 */
 	public void waitResponse() {
 		synchronized (this) {
@@ -154,7 +173,7 @@ public class Request extends DhtMessage {
 	}
 	
 	/**
-	 * 释放等待
+	 * <p>释放响应等待</p>
 	 */
 	public void notifyResponse() {
 		synchronized (this) {

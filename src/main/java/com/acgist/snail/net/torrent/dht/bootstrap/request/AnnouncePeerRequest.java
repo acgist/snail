@@ -35,6 +35,8 @@ public final class AnnouncePeerRequest extends Request {
 	 * 
 	 * @param token token
 	 * @param infoHash InfoHash
+	 * 
+	 * @return 请求
 	 */
 	public static final AnnouncePeerRequest newRequest(byte[] token, byte[] infoHash) {
 		final AnnouncePeerRequest request = new AnnouncePeerRequest();
@@ -47,23 +49,30 @@ public final class AnnouncePeerRequest extends Request {
 	
 	/**
 	 * <p>处理请求</p>
+	 * 
+	 * @param request 请求
+	 * 
+	 * @return 响应
 	 */
 	public static final AnnouncePeerResponse execute(Request request) {
 		final byte[] token = request.getBytes(DhtConfig.KEY_TOKEN);
+		// 验证Token
 		if(!ArrayUtils.equals(token, NodeManager.getInstance().token())) {
-			return AnnouncePeerResponse.newInstance(Response.error(request.getT(), ErrorCode.CODE_203.code(), "Token错误"));
+			return AnnouncePeerResponse.newInstance(Response.buildErrorResponse(request.getT(), ErrorCode.CODE_203.code(), "Token错误"));
 		}
 		final byte[] infoHash = request.getBytes(DhtConfig.KEY_INFO_HASH);
 		final String infoHashHex = StringUtils.hex(infoHash);
 		final TorrentSession torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
 		if(torrentSession != null) {
-			final Integer port = request.getInteger(DhtConfig.KEY_PORT);
+			// 默认端口
+			Integer peerPort = request.getInteger(DhtConfig.KEY_PORT);
 			final Integer impliedPort = request.getInteger(DhtConfig.KEY_IMPLIED_PORT);
 			final InetSocketAddress socketAddress = request.getSocketAddress();
 			final String peerHost = socketAddress.getHostString();
+			// 是否自动配置端口
 			final boolean impliedPortAuto = DhtConfig.IMPLIED_PORT_AUTO.equals(impliedPort);
-			Integer peerPort = port;
-			if(impliedPortAuto) { // 自动配置端口
+			if(impliedPortAuto) {
+				// 自动配置端口
 				peerPort = socketAddress.getPort();
 			}
 			final var peerSession = PeerManager.getInstance().newPeerSession(
@@ -72,7 +81,8 @@ public final class AnnouncePeerRequest extends Request {
 				peerHost,
 				peerPort,
 				PeerConfig.SOURCE_DHT);
-			if(impliedPortAuto) { // 支持UTP
+			if(impliedPortAuto) {
+				// 支持UTP
 				peerSession.flags(PeerConfig.PEX_UTP);
 			}
 		}

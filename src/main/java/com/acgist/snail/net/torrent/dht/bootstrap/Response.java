@@ -36,7 +36,9 @@ public class Response extends DhtMessage {
 	private final List<Object> e;
 
 	/**
-	 * <p>设置NodeId</p>
+	 * <p>生成NodeId</p>
+	 * 
+	 * @param t 节点ID
 	 */
 	protected Response(byte[] t) {
 		this(t, DhtConfig.KEY_R, new LinkedHashMap<>(), null);
@@ -44,7 +46,12 @@ public class Response extends DhtMessage {
 	}
 	
 	/**
-	 * <p>不设置NodeId</p>
+	 * <p>不生成NodeId</p>
+	 * 
+	 * @param t 消息ID
+	 * @param y 消息类型：响应
+	 * @param r 响应参数
+	 * @param e 错误参数
 	 */
 	protected Response(byte[] t, String y, Map<String, Object> r, List<Object> e) {
 		super(t, y);
@@ -53,7 +60,11 @@ public class Response extends DhtMessage {
 	}
 
 	/**
-	 * <p>处理响应</p>
+	 * <p>读取响应</p>
+	 * 
+	 * @param decoder 消息
+	 * 
+	 * @return 响应
 	 */
 	public static final Response valueOf(final BEncodeDecoder decoder) {
 		final byte[] t = decoder.getBytes(DhtConfig.KEY_T);
@@ -85,7 +96,9 @@ public class Response extends DhtMessage {
 	}
 	
 	/**
-	 * <p>B编码后的字节数组</p>
+	 * <p>将消息转为B编码的字节数组</p>
+	 * 
+	 * @return B编码的字节数组
 	 */
 	public byte[] toBytes() {
 		final Map<String, Object> response = new LinkedHashMap<>();
@@ -101,8 +114,13 @@ public class Response extends DhtMessage {
 	}
 
 	/**
-	 * <p>节点反序列化</p>
-	 * <p>节点加入系统列表</p>
+	 * <p>反序列化节点列表</p>
+	 * 
+	 * @param 序列化后数据
+	 * 
+	 * @return 节点列表
+	 * 
+	 * @see {@link #deserializeNode(ByteBuffer)}
 	 */
 	protected static final List<NodeSession> deserializeNodes(byte[] bytes) {
 		if(bytes == null) {
@@ -122,8 +140,12 @@ public class Response extends DhtMessage {
 	}
 	
 	/**
-	 * <p>节点反序列化</p>
-	 * <p>节点加入系统列表</p>
+	 * <p>反序列化节点</p>
+	 * <p>节点自动加入系统列表</p>
+	 * 
+	 * @param buffer 消息
+	 * 
+	 * @return 节点
 	 */
 	private static final NodeSession deserializeNode(ByteBuffer buffer) {
 		if(buffer.hasRemaining()) {
@@ -131,22 +153,25 @@ public class Response extends DhtMessage {
 			buffer.get(nodeId);
 			final String host = NetUtils.decodeIntToIp(buffer.getInt());
 			final int port = NetUtils.decodePort(buffer.getShort());
-			// 这里不排序，所有节点加入列表后再调用排序方法。
-			final NodeSession nodeSession = NodeManager.getInstance().newNodeSession(nodeId, host, port);
-			return nodeSession;
+			// 不排序：所有节点加入系统列表后再统一排序
+			return NodeManager.getInstance().newNodeSession(nodeId, host, port);
 		}
 		return null;
 	}
 
 	/**
-	 * <p>是否成功</p>
+	 * <p>判断是否是成功响应</p>
+	 * 
+	 * @return {@code true}-成功响应；{@code false}-失败响应；
 	 */
 	public boolean success() {
 		return CollectionUtils.isEmpty(this.e);
 	}
 
 	/**
-	 * <p>错误代码</p>
+	 * <p>获取错误代码</p>
+	 * 
+	 * @return 错误代码
 	 */
 	public int errorCode() {
 		if(this.e.size() > 0) {
@@ -157,7 +182,9 @@ public class Response extends DhtMessage {
 	}
 
 	/**
-	 * <p>错误描述</p>
+	 * <p>获取错误描述</p>
+	 * 
+	 * @return 错误描述
 	 */
 	public String errorMessage() {
 		if(this.e.size() > 1) {
@@ -168,13 +195,15 @@ public class Response extends DhtMessage {
 	}
 
 	/**
-	 * <p>错误响应</p>
+	 * <p>生成错误响应</p>
 	 * 
 	 * @param id 响应ID
 	 * @param code 错误编码
 	 * @param message 错误描述
+	 * 
+	 * @return 错误响应
 	 */
-	public static final Response error(byte[] id, int code, String message) {
+	public static final Response buildErrorResponse(byte[] id, int code, String message) {
 		final List<Object> list = new ArrayList<>(2);
 		list.add(code);
 		list.add(message);

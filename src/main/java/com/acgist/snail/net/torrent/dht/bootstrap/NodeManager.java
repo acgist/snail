@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.torrent.dht.DhtClient;
 import com.acgist.snail.pojo.session.NodeSession;
-import com.acgist.snail.pojo.session.NodeSession.Status;
 import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.ArrayUtils;
@@ -38,21 +37,21 @@ public final class NodeManager {
 	private static final NodeManager INSTANCE = new NodeManager();
 	
 	/**
-	 * <p>Token长度</p>
+	 * <p>Token长度：{@value}</p>
 	 */
 	private static final int TOKEN_LENGTH = 8;
 	/**
-	 * <p>Node查找时返回的Node列表长度</p>
+	 * <p>Node查找时返回的Node列表长度：{@value}</p>
 	 */
-	private static final int NODE_FIND_SIZE = 8;
+	private static final int FIND_NODE_SIZE = 8;
 	/**
-	 * <p>Node查找时分片大小</p>
+	 * <p>Node查找时分片大小：{@value}</p>
 	 */
-	private static final int NODE_FIND_SLICE_SIZE = 3;
+	private static final int FIND_NODE_SLICE_SIZE = 3;
 	/**
-	 * <p>Node查找时分片最小列表长度</p>
+	 * <p>Node查找时分片最小列表长度：{@value}</p>
 	 */
-	private static final int NODE_FIND_MIN_SLICE_SIZE = NODE_FIND_SIZE * NODE_FIND_SLICE_SIZE;
+	private static final int FIND_NODE_MIN_SLICE_SIZE = FIND_NODE_SIZE * FIND_NODE_SLICE_SIZE;
 	
 	/**
 	 * <p>当前客户端的Token</p>
@@ -78,24 +77,30 @@ public final class NodeManager {
 	}
 	
 	/**
-	 * <p>当前系统nodeId</p>
+	 * <p>获取系统NodeId</p>
+	 * 
+	 * @return 系统NodeId
 	 */
 	public byte[] nodeId() {
-		return nodeId;
+		return this.nodeId;
 	}
 	
 	/**
-	 * <p>当前系统token</p>
+	 * <p>获取系统Token</p>
+	 * 
+	 * @return 系统Token
 	 */
 	public byte[] token() {
-		return token;
+		return this.token;
 	}
 	
 	/**
-	 * <p>生成NodeId</p>
+	 * <p>生成系统NodeId</p>
+	 * 
+	 * @return 系统NodeId
 	 */
 	private byte[] buildNodeId() {
-		LOGGER.debug("生成NodeId");
+		LOGGER.debug("生成系统NodeId");
 		final byte[] nodeIds = new byte[DhtConfig.NODE_ID_LENGTH];
 		final Random random = NumberUtils.random();
 		for (int index = 0; index < DhtConfig.NODE_ID_LENGTH; index++) {
@@ -105,10 +110,12 @@ public final class NodeManager {
 	}
 	
 	/**
-	 * <p>生成Token</p>
+	 * <p>生成系统Token</p>
+	 * 
+	 * @return 系统Token
 	 */
 	private byte[] buildToken() {
-		LOGGER.debug("生成Token");
+		LOGGER.debug("生成系统Token");
 		final byte[] token = new byte[TOKEN_LENGTH];
 		final byte[] tokens = (SystemConfig.LETTER + SystemConfig.LETTER_UPPER + SystemConfig.DIGIT).getBytes();
 		final int length = tokens.length;
@@ -120,6 +127,8 @@ public final class NodeManager {
 	}
 	
 	/**
+	 * <p>获取所有节点的拷贝</p>
+	 * 
 	 * @return 所有节点的拷贝
 	 */
 	public List<NodeSession> nodes() {
@@ -143,15 +152,17 @@ public final class NodeManager {
 					if(StringUtils.isNotEmpty(host) && StringUtils.isNumeric(port)) {
 						newNodeSession(StringUtils.unhex(nodeId), host, Integer.valueOf(port));
 					}
+				} else {
+					LOGGER.warn("节点格式错误：{}-{}", nodeId, address);
 				}
 			});
-			sortNodes();
+			sortNodes(); // 排序
 		}
 	}
 	
 	/**
 	 * <p>添加DHT节点</p>
-	 * <p>先验证状态，通过验证后加入列表，设置为可用节点。</p>
+	 * <p>先验证状态，通过验证后加入系统节点列表，设置为可用状态。</p>
 	 * 
 	 * @param host 地址
 	 * @param port 端口
@@ -170,6 +181,12 @@ public final class NodeManager {
 	 * <p>添加DHT节点</p>
 	 * <p>加入时不验证状态，使用时才验证。</p>
 	 * <p>添加完成后需要调用{@link #sortNodes()}进行排序</p>
+	 * 
+	 * @param nodeId 节点ID
+	 * @param host 地址
+	 * @param port 端口
+	 * 
+	 * @return DHT节点
 	 */
 	public NodeSession newNodeSession(byte[] nodeId, String host, Integer port) {
 		synchronized (this.nodes) {
@@ -191,8 +208,8 @@ public final class NodeManager {
 	}
 
 	/**
-	 * <p>排序</p>
-	 * <p>{@linkplain #newNodeSession(byte[], String, Integer) 添加DHT节点}后需要进行排序</p>
+	 * <p>排序节点</p>
+	 * <p>{@linkplain #newNodeSession(byte[], String, Integer) 添加DHT节点}后进行排序，添加大量节点时可以在添加完成后一次性排序。</p>
 	 */
 	public void sortNodes() {
 		synchronized (this.nodes) {
@@ -201,7 +218,12 @@ public final class NodeManager {
 	}
 	
 	/**
-	 * <p>Node验证</p>
+	 * <p>验证节点</p>
+	 * 
+	 * @param host 地址
+	 * @param port 端口
+	 * 
+	 * @return DHT节点：{@code null}-无效节点
 	 */
 	private NodeSession verify(String host, Integer port) {
 		final DhtClient client = DhtClient.newInstance(host, port);
@@ -209,22 +231,30 @@ public final class NodeManager {
 	}
 
 	/**
-	 * <p>查找Node</p>
+	 * <p>查找节点列表</p>
+	 * 
+	 * @param target InfoHashHex或者NodeIdHex
+	 * 
+	 * @return 节点列表
 	 */
 	public List<NodeSession> findNode(String target) {
 		return this.findNode(StringUtils.unhex(target));
 	}
 	
 	/**
-	 * <p>查找Node</p>
-	 * <p>筛选排除{@linkplain Status#VERIFY 验证}节点</p>
+	 * <p>查找节点列表</p>
 	 * 
-	 * TODO：缓存结果
+	 * @param target InfoHash或者NodeId
+	 * 
+	 * @return 节点列表
+	 * 
+	 * TODO：缓存结果（使用WeakReference）
 	 */
 	public List<NodeSession> findNode(byte[] target) {
 		List<NodeSession> nodes; // 筛选节点的副本
 		synchronized (this.nodes) {
 			nodes = this.nodes.stream()
+				// 排除正在验证中的节点
 				.filter(node -> node.getStatus() != NodeSession.Status.VERIFY)
 				.collect(Collectors.toList());
 		}
@@ -232,16 +262,15 @@ public final class NodeManager {
 	}
 
 	/**
-	 * <p>查找Node</p>
-	 * <p>查找最近（异或运算）的一段NodeId</p>
-	 * <p>查找时节点组成一个环形结构，然后{@linkplain #NODE_FIND_SLICE_SIZE 分片}。</p>
+	 * <p>查找节点列表</p>
+	 * <p>查找时节点列表组成一个环形结构并{@linkplain #FIND_NODE_SLICE_SIZE 分片}，然后在所有分片中选出最接近目标的片段，然后使用该片段继续查找直到找到最小片段为止。</p>
 	 * 
 	 * @param nodes 节点列表
 	 * @param target 目标
 	 * @param begin 开始索引
 	 * @param end 结束索引
 	 * 
-	 * @return 最近的节点列表
+	 * @return 节点列表
 	 */
 	private List<NodeSession> findNode(final List<NodeSession> nodes, final byte[] target, final int begin, final int end) {
 		int selectSize; // 当前选择Node的总数量
@@ -251,23 +280,23 @@ public final class NodeManager {
 		} else { // 接头
 			selectSize = end + nodeSize - begin;
 		}
-		if(selectSize < NODE_FIND_MIN_SLICE_SIZE) { // 小于最小列表时开始排序返回最近列表
+		if(selectSize < FIND_NODE_MIN_SLICE_SIZE) { // 最小片段选择节点
 			return selectNode(nodes, target, begin, end);
 		} else { // 分片
 			// 分片中Node的数量
-			final int sliceSize = selectSize / NODE_FIND_SLICE_SIZE;
+			final int sliceSize = selectSize / FIND_NODE_SLICE_SIZE;
 			int sliceA, sliceB, sliceC;
-			// 下标大于节点数量：从头开始选择
-			if(end > begin) {
+			// 分割节点下标
+			if(end > begin) { // 顺序
 				sliceA = begin;
 				sliceB = sliceA + sliceSize;
 				sliceC = sliceB + sliceSize;
-			} else {
+			} else { // 接头
 				sliceA = begin;
 				sliceB = (sliceA + sliceSize) % nodeSize;
 				sliceC = (sliceB + sliceSize) % nodeSize;
 			}
-			// 节点
+			// 分割节点
 			final var nodeA = nodes.get(sliceA);
 			final var nodeB = nodes.get(sliceB);
 			final var nodeC = nodes.get(sliceC);
@@ -275,22 +304,30 @@ public final class NodeManager {
 			final int diffIndexA = ArrayUtils.diffIndex(nodeA.getId(), target);
 			final int diffIndexB = ArrayUtils.diffIndex(nodeB.getId(), target);
 			final int diffIndexC = ArrayUtils.diffIndex(nodeC.getId(), target);
+			// 选择最接近的片段
 			if(diffIndexA > diffIndexB && diffIndexA > diffIndexC) {
 				return findNode(nodes, target, sliceC, sliceB);
 			} else if(diffIndexB > diffIndexA && diffIndexB > diffIndexC) {
 				return findNode(nodes, target, sliceA, sliceC);
 			} else if(diffIndexC > diffIndexA && diffIndexC > diffIndexB) {
 				return findNode(nodes, target, sliceB, sliceA);
-			} else { // 如果三个值一致时直接选择节点
+			} else { // 三个值一致时选择节点
 				return this.selectNode(nodes, target, begin, end);
 			}
 		}
 	}
 
 	/**
-	 * <p>选择Node</p>
+	 * <p>选择节点列表</p>
 	 * <p>排序查找最近的节点</p>
 	 * <p>如果节点处于未知状态则修改为验证状态</p>
+	 * 
+	 * @param nodes 节点列表
+	 * @param target 目标
+	 * @param begin 开始索引
+	 * @param end 结束索引
+	 * 
+	 * @return 节点列表
 	 */
 	private List<NodeSession> selectNode(final List<NodeSession> nodes, final byte[] target, final int begin, final int end) {
 		Stream<NodeSession> select;
@@ -307,7 +344,7 @@ public final class NodeManager {
 				return ArrayUtils.compareUnsigned(a.getKey(), b.getKey());
 			})
 			.map(Map.Entry::getValue)
-			.limit(NODE_FIND_SIZE)
+			.limit(FIND_NODE_SIZE)
 			.peek(node -> {
 				// 设置状态
 				if(node.getStatus() == NodeSession.Status.UNUSE) {
@@ -318,7 +355,9 @@ public final class NodeManager {
 	}
 	
 	/**
-	 * <p>标记可用节点</p>
+	 * <p>标记节点为可用状态</p>
+	 * 
+	 * @param response 响应
 	 */
 	public void available(Response response) {
 		if(response != null) {
@@ -332,7 +371,11 @@ public final class NodeManager {
 	}
 	
 	/**
-	 * <p>选择Node</p>
+	 * <p>选择节点</p>
+	 * 
+	 * @param nodeId 节点ID
+	 * 
+	 * @return 节点
 	 */
 	private NodeSession select(byte[] nodeId) {
 		for (NodeSession nodeSession : this.nodes) {

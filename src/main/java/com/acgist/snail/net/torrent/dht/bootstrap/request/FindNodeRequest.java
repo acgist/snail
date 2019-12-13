@@ -18,9 +18,11 @@ public final class FindNodeRequest extends Request {
 	}
 	
 	/**
-	 * 创建请求
+	 * <p>创建请求</p>
 	 * 
-	 * @param target InfoHash或者NodeId
+	 * @param target NodeId
+	 * 
+	 * @return 请求
 	 */
 	public static final FindNodeRequest newRequest(byte[] target) {
 		final FindNodeRequest request = new FindNodeRequest();
@@ -30,6 +32,10 @@ public final class FindNodeRequest extends Request {
 
 	/**
 	 * <p>处理请求</p>
+	 * 
+	 * @param request 请求
+	 * 
+	 * @return 响应
 	 */
 	public static final FindNodeResponse execute(Request request) {
 		final FindNodeResponse response = FindNodeResponse.newInstance(request);
