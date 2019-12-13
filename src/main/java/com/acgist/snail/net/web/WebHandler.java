@@ -10,7 +10,7 @@ import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.net.web.bootstrap.HtmlBuilder;
 import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
 import com.acgist.snail.system.config.SystemConfig;
-import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.utils.StringUtils;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -25,6 +25,11 @@ import com.sun.net.httpserver.HttpHandler;
 public final class WebHandler implements HttpHandler {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(WebHandler.class);
+	
+	/**
+	 * <p>网站图标</p>
+	 */
+	private static final String FAVICON_ICO = "favicon.ico";
 
 	private WebHandler() {
 	}
@@ -51,7 +56,7 @@ public final class WebHandler implements HttpHandler {
 	 * @param path 请求路径
 	 * @param exchange 交换机
 	 * 
-	 * @throws NetException 网络异常
+	 * @throws IOException IO异常
 	 */
 	private void execute(String path, HttpExchange exchange) throws IOException {
 		final StringTokenizer tokenizer = new StringTokenizer(path, "/");
@@ -75,10 +80,10 @@ public final class WebHandler implements HttpHandler {
 	 * 
 	 * @param exchange 交换机
 	 * 
-	 * @throws NetException 网络异常 
+	 * @throws IOException IO异常
 	 */
 	private void tasks(HttpExchange exchange) throws IOException {
-		this.response(HtmlBuilder.getInstance().buildTasks(), exchange);
+		this.writeHtml(HtmlBuilder.getInstance().buildTasks(), exchange);
 	}
 	
 	/**
@@ -87,27 +92,56 @@ public final class WebHandler implements HttpHandler {
 	 * @param id 任务ID
 	 * @param exchange 交换机
 	 * 
-	 * @throws NetException 网络异常
+	 * @throws IOException IO异常
 	 */
 	private void files(String id, HttpExchange exchange) throws IOException {
-		this.response(HtmlBuilder.getInstance().buildFiles(id), exchange);
+		if(StringUtils.equals(id, FAVICON_ICO)) {
+			this.writeFaviconIco(exchange);
+		} else {
+			this.writeHtml(HtmlBuilder.getInstance().buildFiles(id), exchange);
+		}
+	}
+	
+	/**
+	 * <p>响应网站图标</p>
+	 * 
+	 * @param exchange 交换机
+	 */
+	private void writeFaviconIco(HttpExchange exchange) {
+		final var output = exchange.getResponseBody();
+		final var headers = exchange.getResponseHeaders();
+		this.header("image/x-icon", headers);
+		try (final var input = this.getClass().getResourceAsStream("/image/logo.ico")) {
+			final var bytes = input.readAllBytes();
+			exchange.sendResponseHeaders(HTTPClient.StatusCode.OK.code(), bytes.length);
+			output.write(bytes);
+			output.close();
+		} catch (Exception e) {
+			LOGGER.error("响应网站图标异常", e);
+		}
 	}
 	
 	/**
 	 * <p>响应HTML</p>
 	 * 
 	 * @param html HTML
+	 * @param exchange 交换机
 	 * 
-	 * @throws NetException 网络异常
+	 * @throws IOException IO异常
 	 */
-	private void response(String html, HttpExchange exchange) throws IOException {
+	private void writeHtml(String html, HttpExchange exchange) throws IOException {
 		final var output = exchange.getResponseBody();
 		final var headers = exchange.getResponseHeaders();
-		headers.add(HttpHeaderWrapper.CONTENT_TYPE, "text/html"); // HTML
-		this.header(headers);
+		this.header("text/html", headers);
+		if(StringUtils.isEmpty(html)) {
+			exchange.sendResponseHeaders(HTTPClient.StatusCode.NOT_FOUND.code(), 0);
+			output.close();
+			return;
+		}
 		final var bytes = html.getBytes();
 		exchange.sendResponseHeaders(HTTPClient.StatusCode.OK.code(), bytes.length);
 		output.write(bytes);
+		output.close();
 	}
 	
 	/**
@@ -123,11 +157,14 @@ public final class WebHandler implements HttpHandler {
 	/**
 	 * <p>设置通用头部信息</p>
 	 * 
+	 * @param type MIME类型
 	 * @param headers 头部信息
 	 */
-	private void header(Headers headers) {
+	private void header(String type, Headers headers) {
 		// 服务器名称
 		headers.add("Server", SystemConfig.getNameEn());
+		// MIME类型
+		headers.add(HttpHeaderWrapper.CONTENT_TYPE, type);
 	}
 	
 }

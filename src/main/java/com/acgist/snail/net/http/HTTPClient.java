@@ -61,6 +61,8 @@ public final class HTTPClient {
 		OK(									200),
 		/** 断点续传 */
 		PARTIAL_CONTENT(					206),
+		/** 请求文件不存在 */
+		NOT_FOUND(							404),
 		/** 无法满足请求范围 */
 		REQUESTED_RANGE_NOT_SATISFIABLE(	416),
 		/** 服务器错误 */

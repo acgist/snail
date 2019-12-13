@@ -15,9 +15,11 @@ import com.acgist.snail.net.torrent.lsd.LocalServiceDiscoveryServer;
 import com.acgist.snail.net.torrent.peer.PeerServer;
 import com.acgist.snail.net.torrent.tracker.TrackerServer;
 import com.acgist.snail.net.torrent.utp.bootstrap.UtpRequestQueue;
+import com.acgist.snail.net.web.WebServer;
 import com.acgist.snail.repository.DatabaseManager;
 import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.system.config.TrackerConfig;
+import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.system.initializer.impl.ConfigInitializer;
 import com.acgist.snail.system.initializer.impl.DatabaseInitializer;
 import com.acgist.snail.system.initializer.impl.DhtInitializer;
@@ -82,6 +84,11 @@ public final class SystemContext {
 		TorrentInitializer.newInstance().asyn();
 		DownloaderInitializer.newInstance().asyn();
 		LocalServiceDiscoveryInitializer.newInstance().asyn();
+		try {
+			// TODO：异步
+			WebServer.getInstance().launch();
+		} catch (NetException e) {
+		} 
 	}
 	
 	/**
@@ -127,6 +134,7 @@ public final class SystemContext {
 				TcpClient.shutdown();
 				TcpServer.shutdown();
 				UdpServer.shutdown();
+				WebServer.getInstance().shutdown();
 				UtpRequestQueue.getInstance().shutdown();
 				DatabaseManager.getInstance().shutdown();
 				DhtConfig.getInstance().persistent();
