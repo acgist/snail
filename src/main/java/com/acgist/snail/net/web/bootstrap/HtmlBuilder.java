@@ -8,6 +8,9 @@ import java.nio.file.Paths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.downloader.DownloaderManager;
+import com.acgist.snail.system.exception.NetException;
+
 /**
  * <p>Html Builder</p>
  * 
@@ -24,6 +27,10 @@ public final class HtmlBuilder {
 	 * <p>HTML模板路径</p>
 	 */
 	private static final String TEMPATE_PATH = "/html/index.html";
+	/**
+	 * <p>HTML模板替换标签</p>
+	 */
+	private static final String TOKEN_TAG = "{{}}";
 	
 	/**
 	 * <p>HTML模板</p>
@@ -55,12 +62,63 @@ public final class HtmlBuilder {
 		return null;
 	}
 	
+	/**
+	 * <p>创建所有任务HTML</p>
+	 * <pre>
+	 * <xmp>
+	 *	<ul>
+	 *		<li>
+	 *			<a href="/id">snail-v1.0.0.zip</a>
+	 *		</li>
+	 *	</ul>
+	 * </xmp>
+	 * </pre>
+	 * 
+	 * @return 所有任务HTML
+	 */
 	public String buildTasks() {
-		return this.template;
+		final StringBuilder builder = new StringBuilder();
+		builder.append("<ul>");
+		DownloaderManager.getInstance().allTask().forEach(taskSession -> {
+			builder.append("<li>");
+			builder.append("<a href=\"/" + taskSession.getId() + "\">" + taskSession.getName() + "</a>");
+			builder.append("<li>");
+		});
+		builder.append("</ul>");
+		return this.template.replace(TOKEN_TAG, builder.toString());
 	}
 
-	public String buildFiles(String id) {		
-		return this.template;
+	/**
+	 * <p>创建任务文件HTML</p>
+	 *	<ul>
+	 *		<li>
+	 *			<a>snail-v1.0.0.zip</a>
+	 *			<div class="plan"></div>
+	 *		</li>
+	 *	</ul>
+	 * 
+	 * @param id 任务ID
+	 * 
+	 * @return 任务文件HTML
+	 * 
+	 * @throws NetException 网络异常
+	 */
+	public String buildFiles(String id) {	
+		final StringBuilder builder = new StringBuilder();
+		final var optional = DownloaderManager.getInstance().allTask().stream()
+			.filter(taskSession -> taskSession.getId().equals(id))
+			.findFirst();
+		if(optional.isEmpty()) {
+			return null;
+		}
+//		builder.append("<ul>");
+//		optional.get().selectTorrentFiles().forEach(taskSession -> {
+//			builder.append("<li>");
+//			builder.append("<a href=\"/" + taskSession.getId() + "\">" + taskSession.getName() + "</a>");
+//			builder.append("<li>");
+//		});
+//		builder.append("</ul>");
+		return this.template.replace(TOKEN_TAG, builder.toString());
 	}
 	
 }

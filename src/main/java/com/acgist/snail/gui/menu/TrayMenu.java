@@ -51,7 +51,7 @@ public final class TrayMenu extends Menu {
 	/**
 	 * <p>窗口高度</p>
 	 */
-	private static final int MENU_WINDOW_HEIGHT = 150;
+	private static final int MENU_WINDOW_HEIGHT = 100;
 	
 	static {
 		LOGGER.debug("初始化托盘菜单");
@@ -109,13 +109,13 @@ public final class TrayMenu extends Menu {
 		this.sourceMenu.setOnAction(this.sourceAction);
 		this.supportMenu.setOnAction(this.supportAction);
 		// 添加按钮
-		addMenu(this.showMenu);
-		addMenu(this.hideMenu);
-		addMenu(this.sourceMenu);
-		addMenu(this.supportMenu);
-		addMenu(this.aboutMenu);
+		this.addMenu(this.showMenu);
+		this.addMenu(this.hideMenu);
+		this.addMenu(this.sourceMenu);
+		this.addMenu(this.supportMenu);
+		this.addMenu(this.aboutMenu);
 		this.addSeparator();
-		addMenu(this.exitMenu);
+		this.addMenu(this.exitMenu);
 		// 设置窗口隐藏事件
 		this.addEventFilter(WindowEvent.WINDOW_HIDDEN, this.windowHiddenAction);
 	}

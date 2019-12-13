@@ -16,8 +16,10 @@ import com.acgist.snail.gui.Menu;
 import com.acgist.snail.gui.main.MainWindow;
 import com.acgist.snail.gui.torrent.TorrentWindow;
 import com.acgist.snail.protocol.Protocol.Type;
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.FileUtils;
+import com.acgist.snail.utils.NetUtils;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -54,6 +56,7 @@ public final class TaskMenu extends Menu {
 	private MenuItem startMenu;
 	private MenuItem pauseMenu;
 	private MenuItem deleteMenu;
+	private MenuItem playMenu;
 	private MenuItem copyUrlMenu;
 	private MenuItem torrentMenu;
 	private MenuItem exportTorrentMenu;
@@ -66,6 +69,7 @@ public final class TaskMenu extends Menu {
 		this.startMenu = buildMenuItem("开始", SnailIcon.AS_PLAY3);
 		this.pauseMenu = buildMenuItem("暂停", SnailIcon.AS_PAUSE2);
 		this.deleteMenu = buildMenuItem("删除", SnailIcon.AS_BIN);
+		this.playMenu = buildMenuItem("播放", SnailIcon.AS_PLAY2);
 		this.copyUrlMenu = buildMenuItem("复制链接", SnailIcon.AS_LINK);
 		this.torrentMenu = buildMenuItem("文件选择", SnailIcon.AS_EQUALIZER);
 		this.exportTorrentMenu = buildMenuItem("导出种子", SnailIcon.AS_SHARE);
@@ -75,23 +79,25 @@ public final class TaskMenu extends Menu {
 		this.startMenu.setOnAction(this.startEvent);
 		this.pauseMenu.setOnAction(this.pauseEvent);
 		this.deleteMenu.setOnAction(this.deleteEvent);
+		this.playMenu.setOnAction(this.playEvent);
 		this.copyUrlMenu.setOnAction(this.copyUrlEvent);
 		this.torrentMenu.setOnAction(this.torrentEvent);
 		this.exportTorrentMenu.setOnAction(this.exportTorrentEvent);
 		this.verifyMenu.setOnAction(this.verifyEvent);
 		this.openFolderMenu.setOnAction(this.openFolderEvent);
 		// 添加按钮
-		addMenu(this.startMenu);
-		addMenu(this.pauseMenu);
-		addMenu(this.deleteMenu);
-		addMenu(this.copyUrlMenu);
+		this.addMenu(this.startMenu);
+		this.addMenu(this.pauseMenu);
+		this.addMenu(this.deleteMenu);
+		this.addMenu(this.playMenu);
+		this.addMenu(this.copyUrlMenu);
 		// BT任务按钮
 		this.addSeparator();
-		addMenu(this.torrentMenu);
-		addMenu(this.exportTorrentMenu);
+		this.addMenu(this.torrentMenu);
+		this.addMenu(this.exportTorrentMenu);
 		this.addSeparator();
-		addMenu(this.verifyMenu);
-		addMenu(this.openFolderMenu);
+		this.addMenu(this.verifyMenu);
+		this.addMenu(this.openFolderMenu);
 		// 窗口显示事件
 		this.addEventFilter(WindowEvent.WINDOW_SHOWN, this.windowShownAction); // 事件捕获阶段处理事件
 //		this.addEventHandler(WindowEvent.WINDOW_SHOWN, this.windowShownAction); // 事件冒泡阶段处理事件
@@ -117,6 +123,19 @@ public final class TaskMenu extends Menu {
 	 */
 	private EventHandler<ActionEvent> deleteEvent = (event) -> {
 		MainWindow.getInstance().controller().delete();
+	};
+	
+	/**
+	 * <p>播放</p>
+	 */
+	private EventHandler<ActionEvent> playEvent = (event) -> {
+		MainWindow.getInstance().controller().selected().forEach(taskSession -> {
+			final StringBuilder builder = new StringBuilder();
+			builder.append("http://") // 协议
+				.append(NetUtils.localHostAddress()).append(":").append(SystemConfig.getWebServerPort()) // IP和端口
+				.append("/").append(taskSession.getId()); // 路径
+			Clipboards.copy(builder.toString());
+		});
 	};
 	
 	/**
