@@ -1,4 +1,4 @@
-package com.acgist.snail.player.web;
+package com.acgist.snail.net.web;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
@@ -31,7 +31,7 @@ public final class WebServer {
 	/**
 	 * <p>HTTP服务器线程池</p>
 	 */
-	private static final ExecutorService EXECUTOR = SystemThreadContext.newExecutor(1, BACKLOG, 100, 60L, SystemThreadContext.SNAIL_THREAD_HTTP_SERVER);
+	private static final ExecutorService EXECUTOR = SystemThreadContext.newExecutor(2, BACKLOG, 100, 60L, SystemThreadContext.SNAIL_THREAD_HTTP_SERVER);
 	
 	private final HttpServer server;
 	

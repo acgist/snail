@@ -1,6 +1,8 @@
 package com.acgist.snail;
 
 import java.net.http.HttpResponse.BodyHandlers;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
 
 import org.junit.Test;
 
@@ -24,6 +26,28 @@ public class HTTPClientTest extends BaseTest {
 //		var header = HTTPClient.newInstance("https://g37.gdl.netease.com/onmyoji_setup_9.4.0.zip").head();
 		this.log(header);
 		this.log("文件名称：" + header.fileName("test"));
+	}
+	
+	@Test
+	public void testThread() throws Exception {
+		int count = 10;
+		var executor = Executors.newFixedThreadPool(count);
+		var downLatch = new CountDownLatch(count);
+		this.cost();
+		for (int index = 0; index < 20; index++) {
+			executor.submit(() -> {
+				try {
+					var body = HTTPClient.get("https://www.acgist.com", BodyHandlers.ofString());
+					this.log(body);
+				} catch (NetException e) {
+					this.log(e);
+				} finally {
+					downLatch.countDown();
+				}
+			});
+		}
+		downLatch.await();
+		this.costed();
 	}
 	
 }
