@@ -29,8 +29,6 @@ public final class SystemThreadContext {
 	public static final String SNAIL_THREAD = "Snail-Thread";
 	/** BT线程 */
 	public static final String SNAIL_THREAD_BT = SNAIL_THREAD + "-BT";
-	/** HTTP线程 */
-	public static final String SNAIL_THREAD_HTTP = SNAIL_THREAD + "-HTTP";
 	/** 定时线程 */
 	public static final String SNAIL_THREAD_TIMER = SNAIL_THREAD + "-Timer";
 	/** BT定时线程 */
@@ -47,6 +45,10 @@ public final class SystemThreadContext {
 	public static final String SNAIL_THREAD_UDP_SERVER = SNAIL_THREAD + "-UDP-Server";
 	/** UDP处理器线程 */
 	public static final String SNAIL_THREAD_UTP_HANDLER = SNAIL_THREAD + "-UTP-Handler";
+	/** HTTP客户端线程 */
+	public static final String SNAIL_THREAD_HTTP_CLIENT = SNAIL_THREAD + "-HTTP-Client";
+	/** HTTP服务端线程 */
+	public static final String SNAIL_THREAD_HTTP_SERVER = SNAIL_THREAD + "-HTTP-Server";
 	
 	/**
 	 * <p>系统线程池：加快系统运行、防止卡顿</p>

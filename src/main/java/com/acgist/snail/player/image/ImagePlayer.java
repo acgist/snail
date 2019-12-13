@@ -1,5 +1,5 @@
 package com.acgist.snail.player.image;
 
-public class ImagePlayer {
+public final class ImagePlayer {
 
 }
