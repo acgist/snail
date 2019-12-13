@@ -135,6 +135,12 @@ javaw -server -Xms128m -Xmx256m -jar snail-{version}.jar
 
 ## 其他
 
+#### 播放
+
+点击任务右键播放按钮可以复制播放地址，可以将地址在电脑、手机浏览器中打开播放下载任务。
+
+*功能尚未开发完成*
+
 #### GUI开发
 
 JavaFX Scene Builder

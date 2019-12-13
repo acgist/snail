@@ -5,7 +5,7 @@ import com.acgist.snail.net.torrent.dht.bootstrap.response.PingResponse;
 import com.acgist.snail.system.config.DhtConfig;
 
 /**
- * Ping
+ * <p>Ping</p>
  * 
  * @author acgist
  * @since 1.0.0

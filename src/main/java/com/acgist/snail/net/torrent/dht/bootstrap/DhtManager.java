@@ -13,7 +13,7 @@ import com.acgist.snail.utils.ArrayUtils;
 
 /**
  * <p>DHT管理器</p>
- * <p>管理内容：DHT请求</p>
+ * <p>管理DHT请求</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -25,7 +25,7 @@ public final class DhtManager {
 	private static final DhtManager INSTANCE = new DhtManager();
 	
 	/**
-	 * <p>请求列表</p>
+	 * <p>DHT请求列表</p>
 	 */
 	private final List<Request> requests;
 	
@@ -49,7 +49,9 @@ public final class DhtManager {
 	
 	/**
 	 * <p>放入请求</p>
-	 * <p>删除旧请求</p>
+	 * <p>如果请求列表中有相同ID的请求删除旧请求</p>
+	 * 
+	 * @param request 请求
 	 */
 	public void put(Request request) {
 		if(request == null) {
@@ -66,12 +68,17 @@ public final class DhtManager {
 	
 	/**
 	 * <p>设置响应</p>
-	 * <p>删除并返回请求、设置Node为可用状态</p>
+	 * <p>删除响应对应的请求并返回，同时设置对应节点为可用状态。</p>
+	 * 
+	 * @param response 响应
+	 * 
+	 * @return 请求
 	 */
 	public Request response(Response response) {
 		if(response == null) {
 			return null;
 		}
+		// 设置节点为可用状态
 		NodeManager.getInstance().available(response);
 		Request request = null;
 		synchronized (this.requests) {
@@ -86,7 +93,6 @@ public final class DhtManager {
 	
 	/**
 	 * <p>处理DHT超时请求</p>
-	 * <p>处理方式：清除</p>
 	 */
 	private void timeout() {
 		LOGGER.debug("处理DHT超时请求");
@@ -105,7 +111,11 @@ public final class DhtManager {
 	}
 	
 	/**
-	 * <p>移除请求</p>
+	 * <p>移除并返回请求</p>
+	 * 
+	 * @param id 消息ID
+	 * 
+	 * @return 请求
 	 */
 	private Request remove(byte[] id) {
 		Request request;

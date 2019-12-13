@@ -27,9 +27,11 @@ public final class GetPeersRequest extends Request {
 	}
 	
 	/**
-	 * 创建请求
+	 * <p>创建请求</p>
 	 * 
 	 * @param infoHash InfoHash
+	 * 
+	 * @return 请求
 	 */
 	public static final GetPeersRequest newRequest(byte[] infoHash) {
 		final GetPeersRequest request = new GetPeersRequest();
@@ -39,6 +41,11 @@ public final class GetPeersRequest extends Request {
 
 	/**
 	 * <p>处理请求</p>
+	 * <p>能够查找到Peer返回Peer，反之返回最近的Node节点。</p>
+	 * 
+	 * @param request 请求
+	 * 
+	 * @return 响应
 	 */
 	public static final GetPeersResponse execute(Request request) {
 		final GetPeersResponse response = GetPeersResponse.newInstance(request);
@@ -48,10 +55,10 @@ public final class GetPeersRequest extends Request {
 		if(torrentSession != null) {
 			final ByteBuffer buffer = ByteBuffer.allocate(6);
 			final var list = PeerManager.getInstance().listPeerSession(infoHashHex);
-			if(CollectionUtils.isNotEmpty(list)) {
+			if(CollectionUtils.isNotEmpty(list)) { // 返回Peer
 				final var values = list.stream()
-					.filter(peer -> peer.available())
-					.filter(peer -> peer.connected()) // 只返回连接中的Peer
+					.filter(peer -> peer.available()) // 可用
+					.filter(peer -> peer.connected()) // 连接
 					.limit(DhtConfig.GET_PEER_SIZE)
 					.map(peer -> {
 						buffer.putInt(NetUtils.encodeIpToInt(peer.host()));
@@ -61,7 +68,7 @@ public final class GetPeersRequest extends Request {
 					})
 					.collect(Collectors.toList());
 				response.put(DhtConfig.KEY_VALUES, values);
-			} else {
+			} else { // 返回Node
 				final var nodes = NodeManager.getInstance().findNode(infoHash);
 				response.put(DhtConfig.KEY_NODES, serializeNodes(nodes));
 			}

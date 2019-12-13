@@ -6,7 +6,8 @@ import java.util.List;
 import com.acgist.snail.system.config.DhtConfig;
 
 /**
- * <p>DHT请求、响应超类</p>
+ * <p>DHT消息</p>
+ * <p>DHT请求、DHT响应</p>
  *
  * @author acgist
  * @since 1.1.0
@@ -14,11 +15,12 @@ import com.acgist.snail.system.config.DhtConfig;
 public abstract class DhtMessage {
 
 	/**
-	 * <p>请求ID</p>
+	 * <p>消息ID</p>
+	 * <p>消息ID=请求ID=响应ID</p>
 	 */
 	protected final byte[] t;
 	/**
-	 * <p>类型：请求、响应</p>
+	 * <p>消息类型</p>
 	 */
 	protected final String y;
 	/**
@@ -48,13 +50,17 @@ public abstract class DhtMessage {
 	}
 	
 	/**
-	 * @return 请求ID
+	 * <p>获取消息ID</p>
+	 * 
+	 * @return 消息ID
 	 */
 	public byte[] getId() {
 		return getT();
 	}
 	
 	/**
+	 * <p>获取NodeId</p>
+	 * 
 	 * @return NodeId
 	 */
 	public byte[] getNodeId() {
@@ -62,9 +68,11 @@ public abstract class DhtMessage {
 	}
 	
 	/**
+	 * <p>获取Integer参数</p>
+	 * 
 	 * @param key 参数名称
 	 * 
-	 * @return Integer参数：请求、响应
+	 * @return Integer参数
 	 */
 	public Integer getInteger(String key) {
 		final Long value = getLong(key);
@@ -75,9 +83,11 @@ public abstract class DhtMessage {
 	}
 	
 	/**
+	 * <p>获取字符串参数</p>
+	 * 
 	 * @param key 参数名称
 	 * 
-	 * @return 字符串参数：请求、响应
+	 * @return 字符串参数
 	 */
 	public String getString(String key) {
 		final byte[] bytes = getBytes(key);
@@ -88,38 +98,45 @@ public abstract class DhtMessage {
 	}
 	
 	/**
+	 * <p>获取List参数</p>
+	 * 
 	 * @param key 参数名称
 	 * 
-	 * @return List参数：响应、响应
+	 * @return List参数
 	 */
 	public List<?> getList(String key) {
 		return (List<?>) this.get(key);
 	}
 	
 	/**
+	 * <p>获取Long参数</p>
+	 * 
 	 * @param key 参数名称
 	 * 
-	 * @return Long参数：请求、响应
+	 * @return Long参数
 	 */
 	public Long getLong(String key) {
 		return (Long) this.get(key);
 	}
 	
 	/**
+	 * <p>获取byte[]数组参数</p>
+	 * 
 	 * @param key 参数名称
 	 * 
-	 * @return byte[]参数：请求、响应
+	 * @return byte[]参数
 	 */
 	public byte[] getBytes(String key) {
 		return (byte[]) this.get(key);
 	}
 	
 	/**
-	 * <p>获取参数：请求、请求</p>
+	 * 
+	 * <p>获取Object参数</p>
 	 * 
 	 * @param key 参数名称
 	 * 
-	 * @return 参数
+	 * @return Object参数
 	 */
 	public abstract Object get(String key);
 	

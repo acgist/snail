@@ -98,7 +98,7 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 		LOGGER.debug("处理DHT请求：{}", request.getQ());
 		if(request.getQ() == null) {
 			LOGGER.warn("处理DHT请求失败（类型不支持）：{}", request.getQ());
-			response = Response.error(request.getT(), ErrorCode.CODE_204.code(), "不支持的请求类型");
+			response = Response.buildErrorResponse(request.getT(), ErrorCode.CODE_204.code(), "不支持的请求类型");
 		} else {
 			switch (request.getQ()) {
 			case PING:
@@ -115,7 +115,7 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 				break;
 			default:
 				LOGGER.info("处理DHT请求失败（类型未适配）：{}", request.getQ());
-				response = Response.error(request.getT(), ErrorCode.CODE_202.code(), "未适配的请求类型");
+				response = Response.buildErrorResponse(request.getT(), ErrorCode.CODE_202.code(), "未适配的请求类型");
 				break;
 			}
 		}
