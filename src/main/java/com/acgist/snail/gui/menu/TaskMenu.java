@@ -84,8 +84,9 @@ public final class TaskMenu extends Menu {
 		addMenu(this.startMenu);
 		addMenu(this.pauseMenu);
 		addMenu(this.deleteMenu);
-		this.addSeparator();
 		addMenu(this.copyUrlMenu);
+		// BT任务按钮
+		this.addSeparator();
 		addMenu(this.torrentMenu);
 		addMenu(this.exportTorrentMenu);
 		this.addSeparator();
