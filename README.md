@@ -133,13 +133,11 @@ javaw -server -Xms128m -Xmx256m -jar snail-{version}.jar
 |[logback](https://logback.qos.ch)|[License](https://logback.qos.ch/license.html)|LGPL 2.1/EPL 1.0|
 |[JavaFX](https://wiki.openjdk.java.net/display/OpenJFX/Main)|[License](http://openjdk.java.net/legal/gplv2+ce.html)|GPL 2.0|
 
-## 其他
-
-#### 播放
+## 播放
 
 点击右键任务菜单的播放按钮复制播放地址，使用播放工具打开连接即可播放。
 
-###### 播放工具
+#### 播放工具
 
 * 浏览器：电脑、移动端
 * 视频播放器：KMPlayer、MX播放器
@@ -147,6 +145,8 @@ javaw -server -Xms128m -Xmx256m -jar snail-{version}.jar
 > 视频播放器使用**网络串流**功能打开连接
 
 *功能尚未开发完成*
+
+## 其他
 
 #### GUI开发
 
