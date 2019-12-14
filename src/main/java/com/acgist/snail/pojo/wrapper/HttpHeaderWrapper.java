@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.UrlUtils;
@@ -105,6 +106,17 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 			if(StringUtils.isEmpty(fileName)) {
 				return defaultName;
 			}
+			// 全型->半型
+			final char[] chars = fileName.toCharArray();
+			for (int i = 0; i < chars.length; i++) {
+				if(chars[i] >= 0xFF00 && chars[i] <= 0xFFEF) {
+					chars[i] = (char) (chars[i] & 0x00FF);
+				}
+			}
+			fileName = new String(chars);
+			// 处理ISO-8859-1编码
+			fileName = StringUtils.charset(fileName, SystemConfig.CHARSET_ISO_8859_1); // 默认：UTF-8
+//			fileName = StringUtils.charset(fileName, SystemConfig.CHARSET_ISO_8859_1, SystemConfig.CHARSET_GBK);
 			return fileName;
 		} else {
 			return defaultName;
