@@ -126,22 +126,22 @@ public final class WebHandler implements HttpHandler {
 	 */
 	private void files(String id, HttpExchange exchange, OutputStream output, Headers requestHeaders, Headers responseHeaders) throws IOException {
 		if(StringUtils.equals(id, FAVICON_ICO)) {
-			this.writeImage("/image/logo.ico", exchange, output, requestHeaders, responseHeaders);
+			this.writeFile("/image/logo.ico", exchange, output, requestHeaders, responseHeaders);
 		} else {
 			this.writeHtml(HtmlBuilder.getInstance().buildFiles(id), exchange, output, requestHeaders, responseHeaders);
 		}
 	}
 	
 	/**
-	 * <p>响应图片</p>
+	 * <p>响应文件</p>
 	 * 
-	 * @param file 图片文件
+	 * @param file 文件路径：resources
 	 * @param exchange 交换机
 	 * @param output 输出流
 	 * @param requestHeaders 请求头
 	 * @param responseHeaders 响应头
 	 */
-	private void writeImage(String file, HttpExchange exchange, OutputStream output, Headers requestHeaders, Headers responseHeaders) {
+	private void writeFile(String file, HttpExchange exchange, OutputStream output, Headers requestHeaders, Headers responseHeaders) {
 		this.contentType(MimeConfig.mimeType(file), responseHeaders);
 		try (final var input = this.getClass().getResourceAsStream(file)) {
 			final var bytes = input.readAllBytes();
