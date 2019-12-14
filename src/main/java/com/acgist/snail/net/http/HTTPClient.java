@@ -44,6 +44,8 @@ import com.acgist.snail.utils.UrlUtils;
  * <p>使用JDK内置HTTP客户端</p>
  * <p>配置参考：https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html</p>
  * 
+ * TODO：头部信息包含中文文件名称的时候乱码：ISO-8859-1，其他工具正常 
+ * 
  * @author acgist
  * @since 1.0.0
  */
@@ -256,7 +258,7 @@ public final class HTTPClient {
 		final var request = this.builder
 			.method("HEAD", BodyPublishers.noBody())
 			.build();
-		final var response = request(request, BodyHandlers.ofString());
+		final var response = request(request, BodyHandlers.discarding());
 		HttpHeaders httpHeaders = null;
 		if(HTTPClient.ok(response)) {
 			httpHeaders = response.headers();
