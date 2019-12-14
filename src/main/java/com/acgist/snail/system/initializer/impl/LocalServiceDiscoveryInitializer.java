@@ -15,8 +15,9 @@ import com.acgist.snail.system.initializer.Initializer;
 public final class LocalServiceDiscoveryInitializer extends Initializer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LocalServiceDiscoveryInitializer.class);
-	
+
 	private LocalServiceDiscoveryInitializer() {
+		super(6); // 延迟启动
 	}
 	
 	public static final LocalServiceDiscoveryInitializer newInstance() {

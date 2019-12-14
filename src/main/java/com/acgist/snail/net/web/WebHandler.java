@@ -1,6 +1,8 @@
 package com.acgist.snail.net.web;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.StringTokenizer;
 
 import org.slf4j.Logger;
@@ -9,7 +11,10 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.net.web.bootstrap.HtmlBuilder;
 import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
+import com.acgist.snail.system.config.MimeConfig;
+import com.acgist.snail.system.config.MimeConfig.MimeType;
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.StringUtils;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
@@ -39,14 +44,30 @@ public final class WebHandler implements HttpHandler {
 	}
 	
 	@Override
-	public void handle(HttpExchange exchange) throws IOException {
-		final var uri = exchange.getRequestURI();
-		final String path = uri.getPath();
+	public void handle(HttpExchange exchange) {
+		InputStream input = null;
+		OutputStream output = null;
+		Headers requestHeaders = null;
+		Headers responseHeaders = null;
+		final var path = exchange.getRequestURI().getPath();
 		try {
-			this.execute(path, exchange);
-		} catch (IOException e) {
+			input = exchange.getRequestBody();
+			output = exchange.getResponseBody();
+			requestHeaders = exchange.getRequestHeaders();
+			responseHeaders = exchange.getResponseHeaders();
+			this.header(responseHeaders); // 设置通用响应头
+			this.execute(path, exchange, output, requestHeaders, responseHeaders);
+		} catch (Exception e) {
 			LOGGER.error("处理请求异常：{}", path, e);
-			this.tasks(exchange); // 发生异常返回任务列表
+			try {
+				// 发生异常返回任务列表
+				this.tasks(exchange, output, requestHeaders, responseHeaders);
+			} catch (Exception ex) {
+				LOGGER.error("响应任务列表异常", ex);
+			}
+		} finally {
+			IoUtils.close(input);
+			IoUtils.close(output);
 		}
 	}
 
@@ -55,18 +76,21 @@ public final class WebHandler implements HttpHandler {
 	 * 
 	 * @param path 请求路径
 	 * @param exchange 交换机
+	 * @param output 输出流
+	 * @param requestHeaders 请求头
+	 * @param responseHeaders 响应头
 	 * 
 	 * @throws IOException IO异常
 	 */
-	private void execute(String path, HttpExchange exchange) throws IOException {
+	private void execute(String path, HttpExchange exchange, OutputStream output, Headers requestHeaders, Headers responseHeaders) throws IOException {
 		final StringTokenizer tokenizer = new StringTokenizer(path, "/");
 		final int count = tokenizer.countTokens();
 		switch (count) {
 		case 0:
-			this.tasks(exchange);
+			this.tasks(exchange, output, requestHeaders, responseHeaders);
 			break;
 		case 1:
-			this.files(tokenizer.nextToken(), exchange);
+			this.files(tokenizer.nextToken(), exchange, output, requestHeaders, responseHeaders);
 			break;
 		case 2:
 		default:
@@ -79,11 +103,14 @@ public final class WebHandler implements HttpHandler {
 	 * <p>显示所有任务</p>
 	 * 
 	 * @param exchange 交换机
+	 * @param output 输出流
+	 * @param requestHeaders 请求头
+	 * @param responseHeaders 响应头
 	 * 
 	 * @throws IOException IO异常
 	 */
-	private void tasks(HttpExchange exchange) throws IOException {
-		this.writeHtml(HtmlBuilder.getInstance().buildTasks(), exchange);
+	private void tasks(HttpExchange exchange, OutputStream output, Headers requestHeaders, Headers responseHeaders) throws IOException {
+		this.writeHtml(HtmlBuilder.getInstance().buildTasks(), exchange, output, requestHeaders, responseHeaders);
 	}
 	
 	/**
@@ -91,31 +118,35 @@ public final class WebHandler implements HttpHandler {
 	 * 
 	 * @param id 任务ID
 	 * @param exchange 交换机
+	 * @param output 输出流
+	 * @param requestHeaders 请求头
+	 * @param responseHeaders 响应头
 	 * 
 	 * @throws IOException IO异常
 	 */
-	private void files(String id, HttpExchange exchange) throws IOException {
+	private void files(String id, HttpExchange exchange, OutputStream output, Headers requestHeaders, Headers responseHeaders) throws IOException {
 		if(StringUtils.equals(id, FAVICON_ICO)) {
-			this.writeFaviconIco(exchange);
+			this.writeImage("/image/logo.ico", exchange, output, requestHeaders, responseHeaders);
 		} else {
-			this.writeHtml(HtmlBuilder.getInstance().buildFiles(id), exchange);
+			this.writeHtml(HtmlBuilder.getInstance().buildFiles(id), exchange, output, requestHeaders, responseHeaders);
 		}
 	}
 	
 	/**
-	 * <p>响应网站图标</p>
+	 * <p>响应图片</p>
 	 * 
+	 * @param file 图片文件
 	 * @param exchange 交换机
+	 * @param output 输出流
+	 * @param requestHeaders 请求头
+	 * @param responseHeaders 响应头
 	 */
-	private void writeFaviconIco(HttpExchange exchange) {
-		final var output = exchange.getResponseBody();
-		final var headers = exchange.getResponseHeaders();
-		this.header("image/x-icon", headers);
-		try (final var input = this.getClass().getResourceAsStream("/image/logo.ico")) {
+	private void writeImage(String file, HttpExchange exchange, OutputStream output, Headers requestHeaders, Headers responseHeaders) {
+		this.contentType(MimeConfig.mimeType(file), responseHeaders);
+		try (final var input = this.getClass().getResourceAsStream(file)) {
 			final var bytes = input.readAllBytes();
 			exchange.sendResponseHeaders(HTTPClient.StatusCode.OK.code(), bytes.length);
 			output.write(bytes);
-			output.close();
 		} catch (Exception e) {
 			LOGGER.error("响应网站图标异常", e);
 		}
@@ -126,22 +157,21 @@ public final class WebHandler implements HttpHandler {
 	 * 
 	 * @param html HTML
 	 * @param exchange 交换机
+	 * @param output 输出流
+	 * @param requestHeaders 请求头
+	 * @param responseHeaders 响应头
 	 * 
 	 * @throws IOException IO异常
 	 */
-	private void writeHtml(String html, HttpExchange exchange) throws IOException {
-		final var output = exchange.getResponseBody();
-		final var headers = exchange.getResponseHeaders();
-		this.header("text/html", headers);
+	private void writeHtml(String html, HttpExchange exchange, OutputStream output, Headers requestHeaders, Headers responseHeaders) throws IOException {
+		this.contentType(MimeType.TEXT_HTML, responseHeaders);
 		if(StringUtils.isEmpty(html)) {
 			exchange.sendResponseHeaders(HTTPClient.StatusCode.NOT_FOUND.code(), 0);
-			output.close();
 			return;
 		}
 		final var bytes = html.getBytes();
 		exchange.sendResponseHeaders(HTTPClient.StatusCode.OK.code(), bytes.length);
 		output.write(bytes);
-		output.close();
 	}
 	
 	/**
@@ -157,14 +187,21 @@ public final class WebHandler implements HttpHandler {
 	/**
 	 * <p>设置通用头部信息</p>
 	 * 
-	 * @param type MIME类型
 	 * @param headers 头部信息
 	 */
-	private void header(String type, Headers headers) {
+	private void header(Headers headers) {
 		// 服务器名称
-		headers.add("Server", SystemConfig.getNameEn());
-		// MIME类型
-		headers.add(HttpHeaderWrapper.CONTENT_TYPE, type);
+		headers.add(HttpHeaderWrapper.SERVER, SystemConfig.getNameEn());
+	}
+	
+	/**
+	 * <p>设置响应类型</p>
+	 * 
+	 * @param mimeType MIME类型
+	 * @param headers 头部信息
+	 */
+	private void contentType(MimeType mimeType, Headers headers) {
+		headers.add(HttpHeaderWrapper.CONTENT_TYPE, mimeType.value());
 	}
 	
 }

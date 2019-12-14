@@ -59,11 +59,11 @@ public final class FileUtils {
 		));
 		// 视频
 		FILE_TYPE_EXT.put(FileType.VIDEO, List.of(
-			"3gp", "avi", "flv", "mkv", "mov", "mp4", "mvb", "rm", "rmvb"
+			"3gp", "avi", "flv", "mkv", "mov", "mp4", "mvb", "rm", "rmvb", "wmv"
 		));
 		// 音频
 		FILE_TYPE_EXT.put(FileType.AUDIO, List.of(
-			"aac", "flac", "mp3", "ogg", "wav", "wma", "wmv"
+			"aac", "flac", "mp3", "ogg", "wav", "wma"
 		));
 		// 脚本
 		FILE_TYPE_EXT.put(FileType.SCRIPT, List.of(

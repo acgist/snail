@@ -18,17 +18,21 @@ import com.acgist.snail.utils.UrlUtils;
 public final class HttpHeaderWrapper extends HeaderWrapper {
 
 	/**
+	 * <p>服务器名称</p>
+	 */
+	public static final String SERVER = "Server";
+	/**
 	 * <p>MIME类型</p>
 	 */
 	public static final String CONTENT_TYPE = "Content-Type";
 	/**
-	 * <p>断点续传：下载范围</p>
-	 */
-	public static final String CONTENT_RANGE = "Content-Range";
-	/**
-	 * <p>断点续传：范围请求</p>
+	 * <p>接收范围请求</p>
 	 */
 	public static final String ACCEPT_RANGES = "Accept-Ranges";
+	/**
+	 * <p>请求下载范围</p>
+	 */
+	public static final String CONTENT_RANGE = "Content-Range";
 	/**
 	 * <p>下载大小</p>
 	 */
@@ -38,11 +42,15 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	 */
 	public static final String CONTENT_DISPOSITION = "Content-Disposition";
 	/**
-	 * <p>范围请求：支持断点续传</p>
+	 * <p>接收范围请求</p>
+	 * 
+	 * @see {@link #ACCEPT_RANGES}
 	 */
 	public static final String BYTES = "bytes";
 	/**
 	 * <p>文件名称</p>
+	 * 
+	 * @see {@link #CONTENT_DISPOSITION}
 	 */
 	public static final String FILENAME = "filename";
 	

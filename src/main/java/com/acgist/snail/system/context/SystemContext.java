@@ -19,7 +19,6 @@ import com.acgist.snail.net.web.WebServer;
 import com.acgist.snail.repository.DatabaseManager;
 import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.system.config.TrackerConfig;
-import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.system.initializer.impl.ConfigInitializer;
 import com.acgist.snail.system.initializer.impl.DatabaseInitializer;
 import com.acgist.snail.system.initializer.impl.DhtInitializer;
@@ -30,6 +29,7 @@ import com.acgist.snail.system.initializer.impl.PeerInitializer;
 import com.acgist.snail.system.initializer.impl.ProtocolInitializer;
 import com.acgist.snail.system.initializer.impl.TorrentInitializer;
 import com.acgist.snail.system.initializer.impl.TrackerInitializer;
+import com.acgist.snail.system.initializer.impl.WebServerInitializer;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.LoggerUtils;
 import com.acgist.snail.utils.NetUtils;
@@ -83,12 +83,8 @@ public final class SystemContext {
 		TrackerInitializer.newInstance().asyn();
 		TorrentInitializer.newInstance().asyn();
 		DownloaderInitializer.newInstance().asyn();
+		WebServerInitializer.newInstance().asyn();
 		LocalServiceDiscoveryInitializer.newInstance().asyn();
-		try {
-			// TODO：异步
-			WebServer.getInstance().launch();
-		} catch (NetException e) {
-		} 
 	}
 	
 	/**

@@ -1,5 +1,7 @@
 package com.acgist.snail.system.initializer;
 
+import java.util.concurrent.TimeUnit;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -7,6 +9,7 @@ import com.acgist.snail.system.context.SystemThreadContext;
 
 /**
  * <p>初始化</p>
+ * <p>设置{@code delay}后将延迟启动</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -15,6 +18,20 @@ public abstract class Initializer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Initializer.class);
 	
+	/**
+	 * <p>延迟启动</p>
+	 * <p>单位：秒</p>
+	 */
+	private final int delay;
+
+	protected Initializer() {
+		this(0);
+	}
+	
+	protected Initializer(int delay) {
+		this.delay = delay;
+	}
+
 	/**
 	 * <p>同步初始化</p>
 	 */
@@ -30,13 +47,19 @@ public abstract class Initializer {
 	 * <p>异步初始化</p>
 	 */
 	public void asyn() {
-		SystemThreadContext.submit(() -> {
+		// 任务
+		final Runnable runnable = () -> {
 			try {
 				this.init();
 			} catch (Exception e) {
 				LOGGER.error("异步初始化异常", e);
 			}
-		});
+		};
+		if(this.delay <= 0) { // 立即初始化
+			SystemThreadContext.submit(runnable);
+		} else { // 延迟初始化
+			SystemThreadContext.timer(this.delay, TimeUnit.SECONDS, runnable);
+		}
 	}
 	
 	/**
