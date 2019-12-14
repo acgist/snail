@@ -1,6 +1,7 @@
 package com.acgist.snail.pojo.wrapper;
 
 import java.net.http.HttpHeaders;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -106,17 +107,24 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 			if(StringUtils.isEmpty(fileName)) {
 				return defaultName;
 			}
-			// 全型->半型
+			// HttpClient工具自动将汉字ISO-8859-1字符加0xFF00
 			final char[] chars = fileName.toCharArray();
 			for (int i = 0; i < chars.length; i++) {
-				if(chars[i] >= 0xFF00 && chars[i] <= 0xFFEF) {
-					chars[i] = (char) (chars[i] & 0x00FF);
-				}
+				// 转为ISO-8859-1单字节
+				chars[i] = (char) (chars[i] & 0x00FF);
 			}
 			fileName = new String(chars);
-			// 处理ISO-8859-1编码
-			fileName = StringUtils.charset(fileName, SystemConfig.CHARSET_ISO_8859_1); // 默认：UTF-8
-//			fileName = StringUtils.charset(fileName, SystemConfig.CHARSET_ISO_8859_1, SystemConfig.CHARSET_GBK);
+			// 处理ISO-8859-1编码：GBK转为UTF8基本乱码；UTF8转为GBK也会乱码但是可能只是不是原来的字符
+			// GBK
+			final String fileNameGBK = StringUtils.charset(fileName, SystemConfig.CHARSET_ISO_8859_1, SystemConfig.CHARSET_GBK);
+			// UTF-8
+			final String fileNameUTF8 = StringUtils.charset(fileName, SystemConfig.CHARSET_ISO_8859_1);
+			if(Charset.forName(SystemConfig.CHARSET_GBK).newEncoder().canEncode(fileNameUTF8)) {
+				return fileNameUTF8;
+			}
+			if(Charset.forName(SystemConfig.CHARSET_GBK).newEncoder().canEncode(fileNameGBK)) {
+				return fileNameGBK;
+			}
 			return fileName;
 		} else {
 			return defaultName;
