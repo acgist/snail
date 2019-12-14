@@ -145,6 +145,11 @@ public final class WebHandler implements HttpHandler {
 		this.contentType(MimeConfig.mimeType(file), responseHeaders);
 		try (final var input = this.getClass().getResourceAsStream(file)) {
 			final var bytes = input.readAllBytes();
+			// 中文文件名称问题
+			// 使用URL编码解决
+//			responseHeaders.add("Content-Disposition", "attachment; filename=" + UrlUtils.encode("蜗牛.txt"));
+			// 设置ISO-8859-1编码解决
+//			responseHeaders.add("Content-Disposition", "attachment; filename=" + new String("蜗牛.txt".getBytes(), SystemConfig.CHARSET_ISO_8859_1));
 			exchange.sendResponseHeaders(HTTPClient.StatusCode.OK.code(), bytes.length);
 			output.write(bytes);
 		} catch (Exception e) {

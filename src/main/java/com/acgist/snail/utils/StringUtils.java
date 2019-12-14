@@ -183,21 +183,39 @@ public final class StringUtils {
 	
 	/**
 	 * <p>字符串编码转换</p>
-	 * <p>将编码为{@code charset}的字符串{@code value}解码为系统默认编码字符串</p>
 	 * 
-	 * @param value 原始字符串
-	 * @param charset 原始编码
+	 * @param value 字符串
+	 * @param from 输入编码
 	 * 
-	 * @return 系统编码字符串
+	 * @return 字符串
+	 * 
+	 * @see {@link #charset(String, String, String)}
 	 */
-	public static final String charset(String value, String charset) {
-		if(StringUtils.isEmpty(value) || StringUtils.isEmpty(charset)) {
+	public static final String charset(String value, String from) {
+		return charset(value, from, null);
+	}
+	
+	/**
+	 * <p>字符串编码转换</p>
+	 * 
+	 * @param value 字符串
+	 * @param from 输入编码
+	 * @param to 输出编码：{@code null}-系统默认编码
+	 * 
+	 * @return 字符串
+	 */
+	public static final String charset(String value, String from, String to) {
+		if(StringUtils.isEmpty(value) || StringUtils.isEmpty(from)) {
 			return value;
 		}
 		try {
-			return new String(value.getBytes(charset));
+			if(to == null) {
+				return new String(value.getBytes(from));
+			} else {
+				return new String(value.getBytes(from), to);
+			}
 		} catch (UnsupportedEncodingException e) {
-			LOGGER.error("字符串编码转换异常：{}-{}", charset, value, e);
+			LOGGER.error("字符串编码转换异常：{}-{}-{}", from, to, value, e);
 		}
 		return value;
 	}
