@@ -107,24 +107,30 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 			if(StringUtils.isEmpty(fileName)) {
 				return defaultName;
 			}
-			// HttpClient工具自动将汉字ISO-8859-1字符加0xFF00
+			// HttpClient工具汉字ISO-8859-1字符转为char没有去掉符号（& 0xFF）
 			final char[] chars = fileName.toCharArray();
 			for (int i = 0; i < chars.length; i++) {
-				// 转为ISO-8859-1单字节
+				// 去掉符号
 				chars[i] = (char) (chars[i] & 0x00FF);
 			}
 			fileName = new String(chars);
-			// 处理ISO-8859-1编码：GBK转为UTF8基本乱码；UTF8转为GBK也会乱码但是可能只是不是原来的字符
+			// 处理ISO-8859-1编码
 			// GBK
 			final String fileNameGBK = StringUtils.charset(fileName, SystemConfig.CHARSET_ISO_8859_1, SystemConfig.CHARSET_GBK);
 			// UTF-8
 			final String fileNameUTF8 = StringUtils.charset(fileName, SystemConfig.CHARSET_ISO_8859_1);
+			/*
+			 * <p>判断依据</p>
+			 * <p>GBK转为UTF8基本乱码</p>
+			 * <p>UTF8转为GBK也会乱码，可能只是不是原来的字符，但是可以也是属于GBK字符。</p>
+			 */
 			if(Charset.forName(SystemConfig.CHARSET_GBK).newEncoder().canEncode(fileNameUTF8)) {
 				return fileNameUTF8;
 			}
 			if(Charset.forName(SystemConfig.CHARSET_GBK).newEncoder().canEncode(fileNameGBK)) {
 				return fileNameGBK;
 			}
+			// 其他编码直接返回
 			return fileName;
 		} else {
 			return defaultName;
