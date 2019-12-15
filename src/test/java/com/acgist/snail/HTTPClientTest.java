@@ -10,6 +10,32 @@ import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.system.exception.NetException;
 
 public class HTTPClientTest extends BaseTest {
+	
+	@Test
+	public void testChar() throws Exception {
+		// 错误代码：￨ﾜﾗ￧ﾉﾛ.txt
+		var name = "蜗牛.txt";
+		read(new String(new String(name.getBytes(), "ISO-8859-1").getBytes()));
+	}
+	
+	private void read(String name) throws Exception {
+		this.log(name);
+		var bytes = name.getBytes("ISO-8859-1");
+		var chars = name.toCharArray();
+		var chare = new char[bytes.length];
+		for (int i = 0; i < chars.length; i++) {
+//			this.log(bytes[i] + "=" + ((char) (bytes[i])) + "=" + ((char) (0xFF & bytes[i])));
+			// 如果不做0xFF操作异常
+//			chare[i] = (char) (bytes[i] & 0xFF); // 正常
+			chare[i] = (char) (bytes[i]); // 异常
+		}
+		this.log(new String(chare));
+		this.log(bytes.length);
+		this.log(bytes);
+		this.log(chars.length);
+		this.log(chars);
+		this.log(chars[0] & 0xFF);
+	}
 
 	@Test
 	public void testRequest() throws NetException {
