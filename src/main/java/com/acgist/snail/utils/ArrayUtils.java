@@ -67,7 +67,7 @@ public final class ArrayUtils {
 			final int length = sources.length;
 			for (int index = 0; index < length; index++) {
 				if(sources[index] != targets[index]) {
-					return ((char) sources[index]) > ((char) targets[index]) ? 1 : -1;
+					return ((char) (sources[index] & 0xFF)) > ((char) (targets[index] & 0xFF)) ? 1 : -1;
 				}
 			}
 			return 0;
