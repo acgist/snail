@@ -27,15 +27,15 @@ public final class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDis
 	 */
 	private static final int LSD_TTL = 2;
 	/**
-	 * <p>本地发现端口</p>
+	 * <p>端口</p>
 	 */
 	public static final int LSD_PORT = 6771;
 	/**
-	 * <p>本地发现IPv4地址</p>
+	 * <p>IPv4组播地址</p>
 	 */
 	public static final String LSD_HOST = "239.192.152.143";
 	/**
-	 * <p>本地发现IPv6地址</p>
+	 * <p>IPv6组播地址</p>
 	 */
 	public static final String LSD_HOST_IPV6 = "[ff15::efc0:988f]";
 	
@@ -56,14 +56,14 @@ public final class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDis
 		LOGGER.debug("注册本地发现服务：定时任务");
 		final Integer interval = SystemConfig.getLsdInterval();
 		SystemThreadContext.timerFixedDelay(interval, interval, TimeUnit.SECONDS, () -> {
-			this.broadcast();
+			this.multicast();
 		});
 	}
 	
 	/**
 	 * <p>发送本地发现消息</p>
 	 */
-	private void broadcast() {
+	private void multicast() {
 		LOGGER.debug("发送本地发现消息");
 		final LocalServiceDiscoveryClient client = LocalServiceDiscoveryClient.newInstance();
 		TorrentManager.getInstance().allTorrentSession().forEach(session -> {

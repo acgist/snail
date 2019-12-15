@@ -45,6 +45,8 @@ public final class LocalServiceDiscoveryClient extends UdpClient<LocalServiceDis
 	
 	/**
 	 * <p>发送本地发现消息</p>
+	 * 
+	 * @param infoHashs InfoHash数组
 	 */
 	public void localSearch(String ... infoHashs) {
 		if(ArrayUtils.isEmpty(infoHashs)) {
@@ -62,6 +64,10 @@ public final class LocalServiceDiscoveryClient extends UdpClient<LocalServiceDis
 	
 	/**
 	 * <p>创建本地发现消息</p>
+	 * 
+	 * @param infoHashs InfoHash数组
+	 * 
+	 * @return 本地发现消息
 	 */
 	private String buildLocalSearch(String ... infoHashs) {
 		final String peerId = StringUtils.hex(PeerService.getInstance().peerId());

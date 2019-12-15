@@ -24,8 +24,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>Local Service Discovery</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0014.html</p>
  * 
- * TODO：协议判断
- * 
  * @author acgist
  * @since 1.1.0
  */
@@ -38,7 +36,8 @@ public final class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler
 	 */
 	private static final String HEADER_PORT = "Port";
 	/**
-	 * <p>Cookie：区别软件本身消息</p>
+	 * <p>Cookie</p>
+	 * <p>区别软件本身消息</p>
 	 */
 	private static final String HEADER_COOKIE = "cookie";
 	/**
