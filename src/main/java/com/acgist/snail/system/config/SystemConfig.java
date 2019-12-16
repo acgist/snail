@@ -194,10 +194,6 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	private int torrentPortExt = 0;
 	/**
-	 * <p>WebServer端口</p>
-	 */
-	private int webServerPort;
-	/**
 	 * <p>单个任务Peer数量（同时下载）</p>
 	 */
 	private int peerSize;
@@ -249,7 +245,6 @@ public final class SystemConfig extends PropertiesConfig {
 		this.stunServer = getString("acgist.system.stun.server");
 		this.servicePort = getInteger("acgist.service.port", 16888);
 		this.torrentPort = getInteger("acgist.torrent.port", 18888);
-		this.webServerPort = getInteger("acgist.web.server.port", 8888);
 		this.peerSize = getInteger("acgist.peer.size", 20);
 		this.trackerSize = getInteger("acgist.tracker.size", 50);
 		this.pieceRepeatSize = getInteger("acgist.piece.repeat.size", 4);
@@ -274,7 +269,6 @@ public final class SystemConfig extends PropertiesConfig {
 		LOGGER.info("问题与建议：{}", this.support);
 		LOGGER.info("系统服务端口：{}", this.servicePort);
 		LOGGER.info("BT服务端口（Peer、DHT、UTP、STUN）：{}", this.torrentPort);
-		LOGGER.info("WebServer端口：{}", this.webServerPort);
 		LOGGER.info("单个任务Peer数量（同时下载）：{}", this.peerSize);
 		LOGGER.info("单个任务Tracker数量：{}", this.trackerSize);
 		LOGGER.info("任务即将完成时可以重复下载的Piece数量：{}", this.pieceRepeatSize);
@@ -388,15 +382,6 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	public static final short getTorrentPortExtShort() {
 		return NetUtils.encodePort(getTorrentPortExt());
-	}
-	
-	/**
-	 * <p>WebServer端口</p>
-	 * 
-	 * @return WebServer端口
-	 */
-	public static final int getWebServerPort() {
-		return INSTANCE.webServerPort;
 	}
 	
 	/**
