@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.http.HTTPClient;
-import com.acgist.snail.net.web.bootstrap.HtmlBuilder;
+import com.acgist.snail.net.web.bootstrap.TemplateBuilder;
 import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
 import com.acgist.snail.system.config.MimeConfig;
 import com.acgist.snail.system.config.MimeConfig.MimeType;
@@ -87,14 +87,17 @@ public final class WebHandler implements HttpHandler {
 		final int count = tokenizer.countTokens();
 		switch (count) {
 		case 0:
+			// 任务列表
 			this.tasks(exchange, output, requestHeaders, responseHeaders);
 			break;
 		case 1:
+			// 任务文件列表
 			this.files(tokenizer.nextToken(), exchange, output, requestHeaders, responseHeaders);
 			break;
 		case 2:
 		default:
-			this.play(tokenizer.nextToken(), tokenizer.nextToken(), exchange);
+			// 播放任务文件
+			this.play(tokenizer.nextToken(), tokenizer.nextToken(), exchange, output, requestHeaders, responseHeaders);
 			break;
 		}
 	}
@@ -110,7 +113,7 @@ public final class WebHandler implements HttpHandler {
 	 * @throws IOException IO异常
 	 */
 	private void tasks(HttpExchange exchange, OutputStream output, Headers requestHeaders, Headers responseHeaders) throws IOException {
-		this.writeHtml(HtmlBuilder.getInstance().buildTasks(), exchange, output, requestHeaders, responseHeaders);
+		this.writeHtml(TemplateBuilder.getInstance().buildTasks(), exchange, output, requestHeaders, responseHeaders);
 	}
 	
 	/**
@@ -128,27 +131,31 @@ public final class WebHandler implements HttpHandler {
 		if(StringUtils.equals(id, FAVICON_ICO)) {
 			this.writeFile("/image/logo.ico", exchange, output, requestHeaders, responseHeaders);
 		} else {
-			this.writeHtml(HtmlBuilder.getInstance().buildFiles(id), exchange, output, requestHeaders, responseHeaders);
+			this.writeHtml(TemplateBuilder.getInstance().buildFiles(id), exchange, output, requestHeaders, responseHeaders);
 		}
 	}
 	
 	/**
 	 * <p>响应文件</p>
 	 * 
-	 * @param file 文件路径：resources
+	 * @param path 文件路径：resources
 	 * @param exchange 交换机
 	 * @param output 输出流
 	 * @param requestHeaders 请求头
 	 * @param responseHeaders 响应头
 	 */
-	private void writeFile(String file, HttpExchange exchange, OutputStream output, Headers requestHeaders, Headers responseHeaders) {
-		this.contentType(MimeConfig.mimeType(file), responseHeaders);
-		try (final var input = this.getClass().getResourceAsStream(file)) {
+	private void writeFile(String path, HttpExchange exchange, OutputStream output, Headers requestHeaders, Headers responseHeaders) {
+		this.contentType(MimeConfig.mimeType(path), responseHeaders);
+		try (final var input = this.getClass().getResourceAsStream(path)) {
+			if(input == null) {
+				this.notFound(exchange);
+				return;
+			}
 			final var bytes = input.readAllBytes();
 			// 中文文件名称问题
 			// 使用URL编码解决
 //			responseHeaders.add("Content-Disposition", "attachment; filename=" + UrlUtils.encode("蜗牛.txt"));
-			// 设置ISO-8859-1编码解决
+			// 使用ISO-8859-1编码解决
 //			responseHeaders.add("Content-Disposition", "attachment; filename=" + new String("蜗牛.txt".getBytes(), SystemConfig.CHARSET_ISO_8859_1));
 			exchange.sendResponseHeaders(HTTPClient.StatusCode.OK.code(), bytes.length);
 			output.write(bytes);
@@ -171,7 +178,7 @@ public final class WebHandler implements HttpHandler {
 	private void writeHtml(String html, HttpExchange exchange, OutputStream output, Headers requestHeaders, Headers responseHeaders) throws IOException {
 		this.contentType(MimeType.TEXT_HTML, responseHeaders);
 		if(StringUtils.isEmpty(html)) {
-			exchange.sendResponseHeaders(HTTPClient.StatusCode.NOT_FOUND.code(), 0);
+			this.notFound(exchange);
 			return;
 		}
 		final var bytes = html.getBytes();
@@ -180,13 +187,27 @@ public final class WebHandler implements HttpHandler {
 	}
 	
 	/**
+	 * <p>404</p>
+	 * 
+	 * @param exchange 交换机
+	 * 
+	 * @throws IOException IO异常
+	 */
+	private void notFound(HttpExchange exchange) throws IOException {
+		exchange.sendResponseHeaders(HTTPClient.StatusCode.NOT_FOUND.code(), 0);
+	}
+	
+	/**
 	 * <p>播放文件</p>
 	 * 
 	 * @param id 任务ID
 	 * @param path 文件路径
 	 * @param exchange 交换机
+	 * @param output 输出流
+	 * @param requestHeaders 请求头
+	 * @param responseHeaders 响应头
 	 */
-	private void play(String id, String path, HttpExchange exchange) {
+	private void play(String id, String path, HttpExchange exchange, OutputStream output, Headers requestHeaders, Headers responseHeaders) {
 	}
 
 	/**
