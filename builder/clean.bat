@@ -15,7 +15,7 @@ if exist %project% rd /S /Q %project%
 cd ..
 
 echo -----------------------------------------------
-echo Çå³ýMAVEN
+echo Çå³ýMaven
 echo -----------------------------------------------
 call mvn clean -D skipTests
 
