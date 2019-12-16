@@ -28,7 +28,7 @@ public class FileUtilsTest extends BaseTest {
 	
 	@Test
 	public void testFileSize() {
-		long size = FileUtils.fileSize("F:\\\\迅雷下载\\\\我的大叔\\\\[我的大叔][E008].mkv");
+		long size = FileUtils.fileSize("F:\\迅雷下载\\我的大叔\\[我的大叔][E008].mkv");
 		this.log(size);
 		this.log(FileUtils.formatSize(size));
 		this.log(FileUtils.formatSize(1024L));
@@ -39,11 +39,11 @@ public class FileUtilsTest extends BaseTest {
 	@Test
 	public void testVerify() {
 		this.cost();
-		FileUtils.md5("F:\\\\迅雷下载\\\\我的大叔\\\\[我的大叔][E008].mkv").forEach((key, value) -> {
+		FileUtils.md5("F:\\迅雷下载\\我的大叔\\[我的大叔][E008].mkv").forEach((key, value) -> {
 			this.log(value + "=" + key);
 		});
 		this.costed();
-		FileUtils.sha1("F:\\\\迅雷下载\\\\我的大叔\\\\[我的大叔][E008].mkv").forEach((key, value) -> {
+		FileUtils.sha1("F:\\迅雷下载\\我的大叔\\[我的大叔][E008].mkv").forEach((key, value) -> {
 			this.log(value + "=" + key);
 		});
 		this.costed();
