@@ -26,7 +26,7 @@ public class ObjectUtilsTest extends BaseTest {
 	@Test
 	public void testHashCode() {
 		byte[] bytes = new byte[] {1, 2, 3};
-		System.out.println(ObjectUtils.hashCode(bytes));
+		this.log(ObjectUtils.hashCode(bytes));
 	}
 	
 }

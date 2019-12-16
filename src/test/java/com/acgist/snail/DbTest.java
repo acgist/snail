@@ -33,7 +33,7 @@ public class DbTest extends BaseTest {
 		entity.setName("test");
 		entity.setValue("test-save");
 		repository.save(entity);
-		System.out.println(entity.getId());
+		this.log(entity.getId());
 	}
 	
 	@Test

@@ -29,6 +29,7 @@ public final class MimeConfig {
 		AUDIO_ACC("audio/x-aac"),
 		AUDIO_FLAC("audio/x-flac"),
 		AUDIO_MP3("audio/mpeg"),
+		AUDIO_M4A("audio/x-m4a"),
 		AUDIO_OGG("audio/ogg"),
 		AUDIO_WAV("audio/x-wav"),
 		AUDIO_WMA("audio/x-ms-wma"),
@@ -42,7 +43,9 @@ public final class MimeConfig {
 		VIDEO_MVB("application/x-msmediaview"),
 		VIDEO_RM("application/vnd.rn-realmedia"),
 		VIDEO_RMVB("application/vnd.rn-realmedia-vbr"),
-		VIDEO_WMV("video/x-ms-wmv");
+		VIDEO_WMV("video/x-ms-wmv"),
+		// 未知二进制流
+		APPLICATION_OCTET_STREAM("application/octet-stream");
 		
 		/**
 		 * <p>MIME</p>
@@ -74,6 +77,7 @@ public final class MimeConfig {
 		MIMES.put(MimeType.AUDIO_ACC, List.of("acc"));
 		MIMES.put(MimeType.AUDIO_FLAC, List.of("flac"));
 		MIMES.put(MimeType.AUDIO_MP3, List.of("mp3"));
+		MIMES.put(MimeType.AUDIO_M4A, List.of("m4a"));
 		MIMES.put(MimeType.AUDIO_OGG, List.of("ogg"));
 		MIMES.put(MimeType.AUDIO_WAV, List.of("wav"));
 		MIMES.put(MimeType.AUDIO_WMA, List.of("wma"));
@@ -95,12 +99,12 @@ public final class MimeConfig {
 	 * 
 	 * @param file 文件
 	 * 
-	 * @return MIME类型
+	 * @return MIME类型：默认-{@link MimeType#APPLICATION_OCTET_STREAM}
 	 */
 	public static final MimeType mimeType(String file) {
 		final String ext = FileUtils.fileExt(file);
 		if(ext == null) {
-			return null;
+			return MimeType.APPLICATION_OCTET_STREAM;
 		}
 		final var optional = MIMES.entrySet().stream()
 			.filter(entry -> {
@@ -109,7 +113,7 @@ public final class MimeConfig {
 			.map(Entry::getKey)
 			.findFirst();
 		if(optional.isEmpty()) {
-			return null;
+			return MimeType.APPLICATION_OCTET_STREAM;
 		}
 		return optional.get();
 	}

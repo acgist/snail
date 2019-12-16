@@ -29,10 +29,12 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	public static final String CONTENT_TYPE = "Content-Type";
 	/**
 	 * <p>接收范围请求</p>
+	 * <p>没有接收{@link #RANGE}时返回全部数据</p>
 	 */
 	public static final String ACCEPT_RANGES = "Accept-Ranges";
 	/**
 	 * <p>请求下载范围</p>
+	 * <p>接收{@link #RANGE}时返回范围数据</p>
 	 */
 	public static final String CONTENT_RANGE = "Content-Range";
 	/**
@@ -43,6 +45,36 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	 * <p>下载描述</p>
 	 */
 	public static final String CONTENT_DISPOSITION = "Content-Disposition";
+	/**
+	 * <p>范围请求</p>
+	 * <table border="1" summary="HTTP协议断点续传设置">
+	 * 	<tr>
+	 * 		<td>{@code Range: bytes=0-499}</td>
+	 * 		<td>{@code 0}-{@code 499}字节范围</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>{@code Range: bytes=500-999}</td>
+	 * 		<td>{@code 500}-{@code 999}字节范围</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>{@code Range: bytes=-500}</td>
+	 * 		<td>最后{@code 500}字节</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>{@code Range: bytes=500-}</td>
+	 * 		<td>{@code 500}字节开始到结束</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>{@code Range: bytes=0-0,-1}</td>
+	 * 		<td>第一个字节和最后一个字节</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>{@code Range: bytes=500-600,601-999}</td>
+	 * 		<td>同时指定多个范围</td>
+	 * 	</tr>
+	 * </table>
+	 */
+	public static final String RANGE = "Range";
 	/**
 	 * <p>接收范围请求</p>
 	 * 
@@ -123,7 +155,7 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 			// GBK
 			final String fileNameGBK = StringUtils.charset(fileName, SystemConfig.CHARSET_ISO_8859_1, SystemConfig.CHARSET_GBK);
 			// UTF-8
-			final String fileNameUTF8 = StringUtils.charset(fileName, SystemConfig.CHARSET_ISO_8859_1);
+			final String fileNameUTF8 = StringUtils.charsetFrom(fileName, SystemConfig.CHARSET_ISO_8859_1);
 			/*
 			 * <p>判断依据</p>
 			 * <p>GBK转为UTF8基本乱码</p>

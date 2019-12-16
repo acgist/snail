@@ -191,7 +191,7 @@ public final class StringUtils {
 	 * 
 	 * @see {@link #charset(String, String, String)}
 	 */
-	public static final String charset(String value, String from) {
+	public static final String charsetFrom(String value, String from) {
 		return charset(value, from, null);
 	}
 	
@@ -199,17 +199,35 @@ public final class StringUtils {
 	 * <p>字符串编码转换</p>
 	 * 
 	 * @param value 字符串
-	 * @param from 输入编码
+	 * @param to 输出编码
+	 * 
+	 * @return 字符串
+	 * 
+	 * @see {@link #charset(String, String, String)}
+	 */
+	public static final String charsetTo(String value, String to) {
+		return charset(value, null, to);
+	}
+	
+	/**
+	 * <p>字符串编码转换</p>
+	 * 
+	 * @param value 字符串
+	 * @param from 输入编码：{@code null}-系统默认编码
 	 * @param to 输出编码：{@code null}-系统默认编码
 	 * 
 	 * @return 字符串
 	 */
 	public static final String charset(String value, String from, String to) {
-		if(StringUtils.isEmpty(value) || StringUtils.isEmpty(from)) {
+		if(StringUtils.isEmpty(value)) {
 			return value;
 		}
 		try {
-			if(to == null) {
+			if(from == null && to == null) {
+				return value;
+			} else if(from == null) {
+				return new String(value.getBytes(), to);
+			} else if(to == null) {
 				return new String(value.getBytes(from));
 			} else {
 				return new String(value.getBytes(from), to);
