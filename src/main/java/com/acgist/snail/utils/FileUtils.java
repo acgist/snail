@@ -63,7 +63,7 @@ public final class FileUtils {
 		));
 		// 音频
 		FILE_TYPE_EXT.put(FileType.AUDIO, List.of(
-			"aac", "flac", "mp3", "ogg", "wav", "wma"
+			"aac", "flac", "m4a", "mp3", "ogg", "wav", "wma"
 		));
 		// 脚本
 		FILE_TYPE_EXT.put(FileType.SCRIPT, List.of(

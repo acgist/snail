@@ -23,14 +23,14 @@ public class ReferenceTest extends BaseTest {
 			// 虚引用
 //			list.add(new PhantomReference<T>(referent, q)); // ReferenceQueue
 		}
-		System.out.println(list.size());
+		this.log(list.size());
 		System.gc();
-		System.out.println(list.size());
+		this.log(list.size());
 		list.forEach(i -> {
 			if(i instanceof Reference) {
-				System.out.println("r=" + ((Reference<?>) i).get());
+				this.log("r=" + ((Reference<?>) i).get());
 			} else {
-				System.out.println("i=" + i);
+				this.log("i=" + i);
 			}
 		});
 	}

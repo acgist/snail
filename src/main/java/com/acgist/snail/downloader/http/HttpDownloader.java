@@ -52,32 +52,7 @@ public final class HttpDownloader extends SingleFileDownloader {
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * <table border="1" summary="HTTP协议断点续传设置">
-	 * 	<tr>
-	 * 		<td>{@code Range: bytes=0-499}</td>
-	 * 		<td>{@code 0}-{@code 499}字节范围</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>{@code Range: bytes=500-999}</td>
-	 * 		<td>{@code 500}-{@code 999}字节范围</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>{@code Range: bytes=-500}</td>
-	 * 		<td>最后{@code 500}字节</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>{@code Range: bytes=500-}</td>
-	 * 		<td>{@code 500}字节开始到结束</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>{@code Range: bytes=0-0,-1}</td>
-	 * 		<td>第一个字节和最后一个字节</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>{@code Range: bytes=500-600,601-999}</td>
-	 * 		<td>同时指定多个范围</td>
-	 * 	</tr>
-	 * </table>
+	 * @see {@link HttpHeaderWrapper#RANGE}
 	 */
 	@Override
 	protected void buildInput() {
@@ -88,7 +63,7 @@ public final class HttpDownloader extends SingleFileDownloader {
 		HttpResponse<InputStream> response = null; // 响应
 		try {
 			response = client
-				.header("Range", "bytes=" + size + "-")
+				.header(HttpHeaderWrapper.RANGE, "bytes=" + size + "-")
 				.get(BodyHandlers.ofInputStream());
 		} catch (NetException e) {
 			LOGGER.error("HTTP请求异常", e);

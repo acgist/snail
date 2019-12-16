@@ -70,8 +70,8 @@ public class TorrentStreamGroupTest extends BaseTest {
 			return Integer.compare(indexA, indexB);
 //			return indexA > indexB ? 1 : (indexA == indexB ? 0 : -1);
 		});
-		System.out.println(source);
-		System.out.println(target);
+		this.log(source);
+		this.log(target);
 	}
 
 }

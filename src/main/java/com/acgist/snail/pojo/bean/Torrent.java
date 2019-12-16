@@ -138,7 +138,7 @@ public final class Torrent {
 	public String name() {
 		String name = this.info.getNameUtf8();
 		if(StringUtils.isEmpty(name)) {
-			name = StringUtils.charset(this.info.getName(), this.getEncoding());
+			name = StringUtils.charsetFrom(this.info.getName(), this.getEncoding());
 		}
 		return name;
 	}

@@ -189,6 +189,21 @@ public final class DownloaderManager {
 	}
 	
 	/**
+	 * <p>获取任务信息</p>
+	 * 
+	 * @param id 任务ID
+	 * 
+	 * @return 任务信息
+	 */
+	public ITaskSession taskSession(String id) {
+		final var downloader = this.downloaderMap.get(id);
+		if(downloader == null) {
+			return null;
+		}
+		return downloader.taskSession();
+	}
+	
+	/**
 	 * <dl>
 	 * 	<dt>刷新下载任务</dt>
 	 * 	<dd>如果小于下载任务数量：增加下载任务线程</dd>
