@@ -2,10 +2,14 @@ package com.acgist.snail;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.channels.FileChannel;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 import org.junit.Test;
 
@@ -70,8 +74,8 @@ public class FileUtilsTest extends BaseTest {
 	public void multiple() {
 		String file = "e://text.txt";
 		try (
-			OutputStream output = new FileOutputStream(file);
 			InputStream input = new FileInputStream(file);
+			OutputStream output = new FileOutputStream(file);
 		) {
 			output.write("1234".getBytes());
 			final byte[] bytes = new byte[4];
@@ -79,6 +83,14 @@ public class FileUtilsTest extends BaseTest {
 			this.log(bytes);
 		} catch (Exception e) {
 		}
+	}
+
+	@Test
+	public void fileLock() throws IOException {
+		final var channel = FileChannel.open(Paths.get("e://text.txt"), StandardOpenOption.READ, StandardOpenOption.WRITE);
+		channel.lock(0, Long.MAX_VALUE, true);
+//		RandomAccessFile file = new RandomAccessFile("e://text.txt", "rw");
+		this.pause();
 	}
 	
 }

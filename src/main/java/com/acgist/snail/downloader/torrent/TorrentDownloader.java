@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.TorrentSessionDownloader;
+import com.acgist.snail.gui.GuiHandler;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.ITaskSession.Status;
 import com.acgist.snail.pojo.session.TorrentSession;
@@ -47,6 +48,10 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 	public void refresh() {
 		// 任务没有被加载，不用重新加载，开始下载会自动加载。
 		if(this.torrentSession == null) {
+			// 如果任务已经完成不会再次加载
+			if(this.taskSession.complete()) {
+				GuiHandler.getInstance().alert("下载失败", "任务已经完成");
+			}
 			return;
 		}
 		final int fileCount = this.torrentSession.reload(); // 从新加载任务
