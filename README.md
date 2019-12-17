@@ -67,7 +67,9 @@ javaw -server -Xms128m -Xmx256m -jar snail-{version}.jar
 |FTP|√|
 |HTTP|√|
 
-#### 协议进度
+<details>
+
+<summary>BT协议进度</summary>
 
 |协议|进度|
 |:--|:--:|
@@ -118,6 +120,8 @@ javaw -server -Xms128m -Xmx256m -jar snail-{version}.jar
 |[UPnP](http://upnp.org/specs/arch/UPnP-arch-DeviceArchitecture-v1.0.pdf)|√|
 |upload_only|√|
 |[Message Stream Encryption](https://wiki.vuze.com/w/Message_Stream_Encryption)|√|
+
+</details>
 
 *√=完成、○-进行中、×-未开始、?-待定*
 
