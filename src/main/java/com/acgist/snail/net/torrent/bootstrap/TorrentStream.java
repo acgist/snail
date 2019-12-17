@@ -557,8 +557,7 @@ public final class TorrentStream {
 		} else { // 文件包含Piece开始
 			seek = beginPos - this.fileBeginPos;
 		}
-		// Piece包含文件结束
-		if(endPos >= this.fileEndPos) {
+		if(endPos >= this.fileEndPos) { // Piece包含文件结束
 			length = (int) (length - (endPos - this.fileEndPos));
 		}
 		if(length <= 0) {

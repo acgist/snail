@@ -24,6 +24,7 @@
 }
 /**
  * 提示样式
+ * Tooltip->.tooltip
  */
 .root .tooltip {
 	-fx-opacity:-fx-snail-opacity;
@@ -35,6 +36,7 @@
 }
 /**
  * 按钮样式
+ * Button->.button
  */
 .root .button {
 	-fx-border-width:1px;
@@ -50,6 +52,7 @@
 }
 /**
  * 文本框样式
+ * TextField->.text-field
  */
 .root .text-field {
 	-fx-border-width:1px;
@@ -63,6 +66,7 @@
 }
 /**
  * 下拉框样式
+ * ChoiceBox->.choice-box
  */
 .root .choice-box {
 	-fx-border-width:1px;
@@ -77,6 +81,7 @@
 }
 /**
  * 菜单样式
+ * ContextMenu->.context-menu
  */
 .root .context-menu {
 	-fx-padding:1px;
@@ -134,7 +139,10 @@
 .main .footer .statuses Label {
 	-fx-padding:0 2px;
 }
-/* 表格 */
+/*
+ * 表格样式
+ * TableView->.table-view
+ */
 .main .table-view {
 	-fx-padding:0;
 	-fx-border-width:1px 0;
@@ -148,36 +156,48 @@
 .main .placeholder .snail-icon {
 	-fx-font-size:64px;
 }
-/* 表头 */
+/*
+ * 表头样式
+ */
 .main .table-view .column-header,
-/* 空闲表头 */
+/*
+ * 空闲表头样式
+ */
 .main .table-view .filler {
 	-fx-pref-height:40px;
 	-fx-border-width:0 1px 1px 0;
 	-fx-border-color:-fx-snail-border-color;
 	-fx-background-color:-fx-snail-element-color;
 }
-/* 表格单元 */
+/*
+ * 表格单元样式
+ */
 .main .table-view .table-cell {
 	/* 不设置padding不能垂直居中 */
 	-fx-padding:0 2px;
 	-fx-pref-height:48px;
 }
-/* 表行 */
+/*
+ * 表格行样式
+ */
 .main .table-view .table-row-cell {
 	/* 去掉表行横线 */
 	/*
 	-fx-background-insets:0;
 	*/
 }
-/* 没有数据表格单元 */
+/*
+ * 没有数据单元样式
+ */
 .main .table-view .table-row-cell:empty .table-cell {
 	/* 去掉没有数据表格单元竖线 */
 	/*
 	-fx-border-width:0px;
 	*/
 }
-/* 获得焦点表格 */
+/*
+ * 获得焦点表格行样式
+ */
 .main .table-view:focused .table-row-cell:focused {
 	-fx-background-color:-fx-table-cell-border-color, -fx-control-inner-background;
 	-fx-background-insets:0, 0 0 1 0;
@@ -188,47 +208,55 @@
 .main .table-view:focused .table-row-cell:selected Text {
 	-fx-fill:#FFFFFF;
 }
-/* 失去焦点表格 */
+/*
+ * 失去焦点表格行样式
+ */
 .main .table-view .table-row-cell:selected {
 	-fx-background-color:-fx-snail-element-color;
 }
-/* 垂直滚动条 */
+/*
+ * 垂直滚动条
+ */
 /*
 .main .table-view .virtual-flow .scroll-bar:vertical {
 	-fx-pref-width:0;
 }
 */
-/* 水平滚动条 */
+/*
+ * 水平滚动条
+ */
 .main .table-view .virtual-flow .scroll-bar:horizontal {
-	/* 关闭滚动条 */
 	-fx-pref-height:0;
 }
 .main .table-view .virtual-flow .scroll-bar:horizontal .increment-button .increment-arrow {
 	/* 影藏箭头 */
-	-fx-background-color: transparent;
+	-fx-background-color:transparent;
 }
 .main .table-view .virtual-flow .scroll-bar:horizontal .decrement-button .decrement-arrow {
 	/* 影藏箭头 */
-	-fx-background-color: transparent;
+	-fx-background-color:transparent;
 }
 /**
  * 设置窗口：setting.fxml
+ * ScrollPane->.scroll-pane
  */
-.setting .scrollPane {
+.setting .scroll-pane {
+	-fx-padding:20px 0 0 0;
 	-fx-background-color:transparent;
 }
 .setting HBox {
 	-fx-padding:6px 0;
 }
 .setting HBox TextFlow {
-	-fx-pref-width:200px;
+	-fx-pref-width:190px;
 	-fx-text-alignment:right;
 }
 .setting .path .name {
 	-fx-padding:6px 0;
 }
-.setting .path .value {
+.setting .path .path-value {
 	-fx-padding:6px;
+	-fx-pref-width:200px;
 }
 .setting .path Button {
 	-fx-padding:6px 10px;
@@ -254,16 +282,24 @@
 .statistics .info .infoHash ChoiceBox {
 	-fx-pref-width:400px;
 }
-.statistics .charts {
+.statistics .tabs {
+	-fx-padding:0 0 10px 0;
+}
+.statistics .statistics-box {
 	-fx-pref-width:800px;
 	-fx-pref-height:400px;
+	-fx-alignment:top_center;
 }
-/* 上传图表颜色 */
-.statistics .charts .default-color0.chart-bar {
+/*
+ * 上传图表颜色
+ */
+.statistics .statistics-box .default-color0.chart-bar {
 	-fx-bar-fill:-fx-snail-border-color;
 }
-/* 下载图表颜色 */
-.statistics .charts .default-color1.chart-bar {
+/*
+ * 下载图表颜色
+ */
+.statistics .statistics-box .default-color1.chart-bar {
 	-fx-bar-fill:-fx-snail-main-color;
 }
 /**
@@ -278,7 +314,9 @@
     -fx-background-color:-fx-snail-background-color;
     -fx-background-insets:0;
 }
-/* 箭头 */
+/*
+ * 箭头
+ */
 .torrent .tree-view .tree-cell .arrow {
     -fx-background-color:#000000;
 }

@@ -50,6 +50,15 @@ public final class StatisticsController extends Controller implements Initializa
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(StatisticsController.class);
 	
+	public enum Filter {
+		
+		/** 流量统计 */
+		CHART,
+		/** 下载统计 */
+		PIECE;
+		
+	}
+	
 	@FXML
 	private FlowPane root;
 	
@@ -98,7 +107,9 @@ public final class StatisticsController extends Controller implements Initializa
 	@FXML
 	private ChoiceBox<SelectInfoHash> selectInfoHashs;
 	@FXML
-	private VBox charts;
+	private VBox statisticsBox;
+	
+	private Filter filter = Filter.CHART;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -111,6 +122,18 @@ public final class StatisticsController extends Controller implements Initializa
 	@FXML
 	public void handleRefreshAction(ActionEvent event) {
 		this.statistics();
+	}
+	
+	@FXML
+	public void handleChartAction(ActionEvent event) {
+		this.filter = Filter.CHART;
+		this.chart();
+	}
+	
+	@FXML
+	public void handlePieceAction(ActionEvent event) {
+		this.filter = Filter.PIECE;
+		this.piece();
 	}
 	
 	/**
@@ -127,7 +150,7 @@ public final class StatisticsController extends Controller implements Initializa
 	 * <p>释放资源</p>
 	 */
 	public void release() {
-		this.charts.getChildren().clear();
+		this.statisticsBox.getChildren().clear();
 	}
 
 	/**
@@ -188,7 +211,7 @@ public final class StatisticsController extends Controller implements Initializa
 	/**
 	 * <p>不需要显示调用：选择下载任务时自动刷新</p>
 	 */
-	private void peer() {
+	private void chart() {
 		final SelectInfoHash value = (SelectInfoHash) this.selectInfoHashs.getValue();
 		if(value == null) {
 			return;
@@ -310,15 +333,31 @@ public final class StatisticsController extends Controller implements Initializa
 		downloadPeer.forEach(data -> {
 			Tooltip.install(data.getNode(), Tooltips.newTooltip(String.format("IP：%s 下载：%.2fMB", data.getXValue(), data.getYValue())));
 		});
-		this.charts.getChildren().clear();
-		this.charts.getChildren().add(stackedBarChart);
+		this.statisticsBox.getChildren().clear();
+		this.statisticsBox.getChildren().add(stackedBarChart);
+	}
+	
+	private void piece() {
+		final SelectInfoHash value = (SelectInfoHash) this.selectInfoHashs.getValue();
+		if(value == null) {
+			return;
+		}
+		final String infoHashHex = value.getHash();
+		final var torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
+		final CanvasPainter painter = CanvasPainter.newInstance(12, 50, torrentSession.allPieces().size(), torrentSession.pieces());
+		this.statisticsBox.getChildren().clear();
+		this.statisticsBox.getChildren().add(painter.draw().canvas());
 	}
 	
 	/**
 	 * <p>选择BT任务事件</p>
 	 */
 	private EventHandler<ActionEvent> selectEvent = (event) -> {
-		this.peer();
+		if(this.filter == Filter.CHART) {
+			this.chart();
+		} else {
+			this.piece();
+		}
 	};
 	
 	/**

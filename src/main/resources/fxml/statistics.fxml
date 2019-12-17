@@ -135,8 +135,12 @@
 				<Text fx:id="health">0</Text>
 			</TextFlow>
 		</HBox>
+		<HBox fx:id="tabs" styleClass="tabs">
+			<Button fx:id="chart" text="流量统计" onAction="#handleChartAction" />
+			<Button fx:id="piece" text="下载统计" onAction="#handlePieceAction" />
+		</HBox>
 	</VBox>
 	
-	<VBox fx:id="charts" styleClass="charts"></VBox>
+	<VBox fx:id="statisticsBox" styleClass="statistics-box"></VBox>
 	
 </FlowPane>

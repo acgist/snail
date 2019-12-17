@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 
 import com.acgist.snail.gui.Choosers;
 import com.acgist.snail.gui.Controller;
+import com.acgist.snail.gui.Tooltips;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.FileUtils;
@@ -17,11 +18,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.text.Text;
 import javafx.util.StringConverter;
 
 /**
@@ -46,7 +47,7 @@ public final class SettingController extends Controller implements Initializable
 	private ScrollPane scrollPane;
 	
 	@FXML
-	private Text pathValue;
+	private Label pathValue;
 	@FXML
 	private Slider size;
 	@FXML
@@ -75,7 +76,7 @@ public final class SettingController extends Controller implements Initializable
 		if (file != null) {
 			final String path = file.getPath();
 			DownloadConfig.setPath(path);
-			this.pathValue.setText(DownloadConfig.getPath());
+			this.pathValue(DownloadConfig.getPath());
 		}
 	}
 
@@ -91,7 +92,7 @@ public final class SettingController extends Controller implements Initializable
 	 * <p>初始化配置</p>
 	 */
 	private void initSetting() {
-		this.pathValue.setText(DownloadConfig.getPath());
+		this.pathValue(DownloadConfig.getPath());
 		this.size.setValue(DownloadConfig.getSize());
 		this.buffer.setValue(DownloadConfig.getBuffer());
 		this.memoryBuffer.setValue(DownloadConfig.getMemoryBuffer());
@@ -209,5 +210,15 @@ public final class SettingController extends Controller implements Initializable
 			return Double.valueOf(label.substring(0, label.length() - 1));
 		}
 	};
+	
+	/**
+	 * <p>设置下载路径</p>
+	 * 
+	 * @param path 下载路径
+	 */
+	private void pathValue(String path) {
+		this.pathValue.setText(path);
+		this.pathValue.setTooltip(Tooltips.newTooltip(path));
+	}
 	
 }
