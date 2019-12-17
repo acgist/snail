@@ -21,9 +21,6 @@
 	<img alt="Travis (.org)" src="https://img.shields.io/travis/acgist/snail?style=flat-square" />
 	<img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/acgist/snail?style=flat-square" />
 	<img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/acgist/snail?color=crimson&style=flat-square" />
-	<!--
-	<img alt="GitHub All Releases" src="https://img.shields.io/github/downloads/acgist/snail/total?style=flat-square" />
-	-->
 	<img alt="GitHub" src="https://img.shields.io/github/license/acgist/snail?style=flat-square" />
 </p>
 
@@ -133,34 +130,32 @@ javaw -server -Xms128m -Xmx256m -jar snail-{version}.jar
 |[logback](https://logback.qos.ch)|[License](https://logback.qos.ch/license.html)|LGPL 2.1/EPL 1.0|
 |[JavaFX](https://wiki.openjdk.java.net/display/OpenJFX/Main)|[License](http://openjdk.java.net/legal/gplv2+ce.html)|GPL 2.0|
 
-## 播放
+## 视频播放
 
 蜗牛专注下载，不会实现边下边播功能。
 
 #### 技巧
 
-虽然没有实现边下边播功能，但是下载时理论上是按序下载，所以已经下载的部分是可以直接使用播放器进行播放的。
+虽然没有实现边下边播功能，但是理论上下载是按序下载，所以已下载的部分可以直接使用播放器进行播放。
 
 > 可以通过`F12`查看已经下载的部分
 
 ## 其他
 
-#### GUI开发
-
-JavaFX Scene Builder
-
-#### GIT仓库
-
-GITEE：[https://gitee.com/acgist/snail](https://gitee.com/acgist/snail)  
-GITHUB：[https://github.com/acgist/snail](https://github.com/acgist/snail)
-
 #### 维基
 
 [Wiki](https://gitee.com/acgist/snail/wikis)
 
-#### 界面
+#### GIT
 
-![界面](https://static.acgist.com/demo/snail/snail.png "界面")
+GITEE：[https://gitee.com/acgist/snail](https://gitee.com/acgist/snail)  
+GITHUB：[https://github.com/acgist/snail](https://github.com/acgist/snail)
+
+#### GUI
+
+![GUI](https://static.acgist.com/demo/snail/snail.png "GUI")
+
+> GUI绘制工具：JavaFX Scene Builder
 
 #### 更多
 
