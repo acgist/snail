@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
- * <p>日期工具</p>
+ * <p>时间工具</p>
  * 
  * @author acgist
  * @since 1.0.0

@@ -49,7 +49,7 @@ public final class ResultSetWrapper {
 	}
 
 	/**
-	 * @return 日期
+	 * @return 时间
 	 */
 	public Date getDate(String key) {
 		return (Date) getObject(key);

@@ -6,14 +6,21 @@
 	-fx-alignment:center;
 	/* 基本透明度 */
 	-fx-snail-opacity:0.94;
-	/* 基本边框颜色 */
-	-fx-snail-border-color:#C8C8C8;
 	/* 基本主要颜色 */
 	-fx-snail-main-color:#0099CC;
-	/* 基本空白颜色 */
+	/* 基本边框颜色 */
+	-fx-snail-border-color:#C8C8C8;
+	/* 基本元素颜色 */
 	-fx-snail-element-color:#E0E0E0;
 	/* 基本背景颜色 */
 	-fx-snail-background-color:#F4F4F4;
+	/** 基本颜色 */
+	-fx-snail-red-color:#DD3355;
+	-fx-snail-blue-color:#1199FF;
+	-fx-snail-gray-color:#808080;
+	-fx-snail-green-color:#008800;
+	-fx-snail-orange-color:#EE8811;
+	-fx-snail-violet-color:#8822EE;
 }
 /**
  * 图标样式
@@ -267,22 +274,28 @@
 /**
  * 统计窗口：statistics.fxml
  */
-.statistics .info TextFlow {
-	-fx-pref-width:140px;
+.statistics .info-box TextFlow {
+	-fx-padding:3px 0;
+	-fx-pref-width:130px;
+	-fx-border-width:0 0 0 10px;
+	-fx-border-color:-fx-snail-main-color;
+	-fx-background-color:-fx-snail-main-color;
 }
-.statistics .info .system TextFlow {
-	-fx-pref-width:220px;
+.statistics .info-box TextFlow Label {
+	-fx-padding:0 5px;
+	-fx-text-fill:#FFFFFF;
 }
-.statistics .info TextFlow.title {
-	-fx-pref-width:80px;
+.statistics .info-box TextFlow Text {
+	-fx-fill:#FFFFFF;
+	-fx-font-weight:bold;
 }
-.statistics .info .infoHash TextFlow.title {
-	-fx-padding:6px 0;
+.statistics .info-box .info-hash {
+	-fx-padding:4px 0;
 }
-.statistics .info .infoHash ChoiceBox {
+.statistics .info-box .info-hash ChoiceBox {
 	-fx-pref-width:400px;
 }
-.statistics .tabs {
+.statistics .info-box .tabs {
 	-fx-padding:0 0 10px 0;
 }
 .statistics .statistics-box {
@@ -290,17 +303,82 @@
 	-fx-pref-height:400px;
 	-fx-alignment:top_center;
 }
-/*
- * 上传图表颜色
+/**
+ * 背景颜色 = 边框颜色 * 透明度
  */
-.statistics .statistics-box .default-color0.chart-bar {
-	-fx-bar-fill:-fx-snail-border-color;
+.statistics .info-box TextFlow.red {
+	-fx-border-color:-fx-snail-red-color;
+	-fx-background-color:derive(-fx-snail-red-color, 40%);
 }
-/*
- * 下载图表颜色
- */
+.statistics .info-box TextFlow.blue {
+	-fx-border-color:-fx-snail-blue-color;
+	-fx-background-color:derive(-fx-snail-blue-color, 40%);
+}
+.statistics .info-box TextFlow.gray {
+	-fx-border-color:-fx-snail-gray-color;
+	-fx-background-color:derive(-fx-snail-gray-color, 40%);
+}
+.statistics .info-box TextFlow.green {
+	-fx-border-color:-fx-snail-green-color;
+	-fx-background-color:derive(-fx-snail-green-color, 40%);
+}
+.statistics .info-box TextFlow.orange {
+	-fx-border-color:-fx-snail-orange-color;
+	-fx-background-color:derive(-fx-snail-orange-color, 40%);
+}
+.statistics .info-box TextFlow.violet {
+	-fx-border-color:-fx-snail-violet-color;
+	-fx-background-color:derive(-fx-snail-violet-color, 40%);
+}
+.statistics .system TextFlow {
+	-fx-padding:10px;
+	-fx-pref-width:260px;
+}
+.statistics .system TextFlow Text {
+	-fx-font-size:24px;
+}
+.statistics .system TextFlow Label {
+	-fx-padding:0 10px 0 0;
+}
+.statistics .statistics-box .health {
+	-fx-padding:4px 0;
+	-fx-alignment:center;
+}
+.statistics .statistics-box .default-color0.chart-bar {
+	-fx-bar-fill:-fx-snail-red-color;
+}
 .statistics .statistics-box .default-color1.chart-bar {
-	-fx-bar-fill:-fx-snail-main-color;
+	-fx-bar-fill:-fx-snail-blue-color;
+}
+.statistics .statistics-box .default-color2.chart-bar {
+	-fx-bar-fill:-fx-snail-gray-color;
+}
+.statistics .statistics-box .default-color3.chart-bar {
+	-fx-bar-fill:-fx-snail-green-color;
+}
+.statistics .statistics-box .default-color4.chart-bar {
+	-fx-bar-fill:-fx-snail-orange-color;
+}
+.statistics .statistics-box .default-color5.chart-bar {
+	-fx-bar-fill:-fx-snail-violet-color;
+}
+.statistics .statistics-box .default-color0.chart-pie {
+	-fx-pie-color:-fx-snail-red-color;
+}
+.statistics .statistics-box .default-color1.chart-pie {
+	-fx-pie-color:-fx-snail-blue-color;
+}
+.statistics .statistics-box .default-color2.chart-pie {
+	-fx-pie-color:-fx-snail-gray-color;
+}
+.statistics .statistics-box .default-color3.chart-pie {
+	-fx-pie-color:-fx-snail-green-color;
+}
+.statistics .statistics-box .default-color4.chart-pie {
+	-fx-pie-color:-fx-snail-orange-color;
+}
+.statistics .statistics-box .default-color5.chart-pie {
+	-fx-pie-color:-fx-snail-violet-color;
 }
 /**
  * 编辑种子：torrent.fxml
@@ -328,7 +406,7 @@
 .torrent .tree-view .tree-cell:selected .check-box {
 	-fx-text-fill:#000000;
 }
-.torrent .downloadBox {
+.torrent .download-box {
 	-fx-padding:2px 0;
 	-fx-alignment:center;
 }
