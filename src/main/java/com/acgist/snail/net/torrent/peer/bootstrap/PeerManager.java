@@ -54,6 +54,11 @@ public final class PeerManager {
 	
 	/**
 	 * <p>查找PeerSession</p>
+	 * 
+	 * @param infoHashHex InfoHashHex
+	 * @param host Peer地址
+	 * 
+	 * @return Peer信息
 	 */
 	public PeerSession findPeerSession(String infoHashHex, String host) {
 		final var list = list(infoHashHex);
@@ -63,7 +68,11 @@ public final class PeerManager {
 	}
 	
 	/**
-	 * <p>存档队列拷贝</p>
+	 * <p>Peer存档队列拷贝</p>
+	 * 
+	 * @param infoHashHex InfoHashHex
+	 * 
+	 * @return Peer存档队列
 	 */
 	public List<PeerSession> listPeerSession(String infoHashHex) {
 		final var list = list(infoHashHex);
@@ -84,7 +93,9 @@ public final class PeerManager {
 	}
 	
 	/**
-	 * <p>删除任务对应的所有队列</p>
+	 * <p>删除{@code InfoHashHex}对应的所有队列</p>
+	 * 
+	 * @param infoHashHex InfoHashHex
 	 */
 	public void remove(String infoHashHex) {
 		// 删除下载队列
@@ -141,7 +152,10 @@ public final class PeerManager {
 	}
 	
 	/**
-	 * <p>下载队列添加劣质Peer：插入头部</p>
+	 * <p>添加劣质Peer：插入头部</p>
+	 * 
+	 * @param infoHashHex InfoHashHex
+	 * @param peerSession Peer信息
 	 */
 	public void inferior(String infoHashHex, PeerSession peerSession) {
 		final var deque = deque(infoHashHex);
@@ -151,7 +165,10 @@ public final class PeerManager {
 	}
 	
 	/**
-	 * <p>下载队列添加优质Peer：插入尾部</p>
+	 * <p>添加优质Peer：插入尾部</p>
+	 * 
+	 * @param infoHashHex InfoHashHex
+	 * @param peerSession Peer信息
 	 */
 	public void preference(String infoHashHex, PeerSession peerSession) {
 		final var deque = deque(infoHashHex);
@@ -161,7 +178,12 @@ public final class PeerManager {
 	}
 	
 	/**
-	 * <p>从下载队列尾部选择一个可用的Peer</p>
+	 * <p>选择一个可用的Peer</p>
+	 * <p>从下载队列尾部挑选</p>
+	 * 
+	 * @param infoHashHex InfoHashHex
+	 * 
+	 * @return Peer信息
 	 */
 	public PeerSession pick(String infoHashHex) {
 		final var deque = deque(infoHashHex);
@@ -188,6 +210,9 @@ public final class PeerManager {
 	/**
 	 * <p>发送have消息</p>
 	 * <p>只发送给当前连接的Peer</p>
+	 * 
+	 * @param infoHashHex InfoHashHex
+	 * @param index Piece索引
 	 */
 	public void have(String infoHashHex, int index) {
 		final var list = listConnectPeer(infoHashHex);
@@ -206,6 +231,8 @@ public final class PeerManager {
 	/**
 	 * <p>发送pex消息</p>
 	 * <p>只发送给当前连接的Peer</p>
+	 * 
+	 * @param infoHashHex InfoHashHex
 	 */
 	public void pex(String infoHashHex) {
 		final var list = listConnectPeer(infoHashHex);
@@ -233,6 +260,8 @@ public final class PeerManager {
 	/**
 	 * <p>发送uploadOnly消息</p>
 	 * <p>只发送给当前连接的Peer</p>
+	 * 
+	 * @param infoHashHex InfoHashHex
 	 */
 	public void uploadOnly(String infoHashHex) {
 		final var list = listConnectPeer(infoHashHex);
@@ -249,6 +278,10 @@ public final class PeerManager {
 	}
 	
 	/**
+	 * <p>获取任务下载队列</p>
+	 * 
+	 * @param infoHashHex InfoHashHex
+	 * 
 	 * @return 任务下载队列
 	 */
 	private Deque<PeerSession> deque(String infoHashHex) {
@@ -263,6 +296,10 @@ public final class PeerManager {
 	}
 	
 	/**
+	 * <p>获取任务存档队列</p>
+	 * 
+	 * @param infoHashHex InfoHashHex
+	 * 
 	 * @return 任务存档队列
 	 */
 	private List<PeerSession> list(String infoHashHex) {
@@ -279,6 +316,10 @@ public final class PeerManager {
 	/**
 	 * <p>获取存档队列中当前连接的Peer队列拷贝</p>
 	 * <p>连接中的Peer：上传中、下载中</p>
+	 * 
+	 * @param infoHashHex InfoHashHex
+	 * 
+	 * @return 连接的Peer队列拷贝
 	 */
 	private List<PeerSession> listConnectPeer(String infoHashHex) {
 		final var list = list(infoHashHex);
@@ -297,7 +338,9 @@ public final class PeerManager {
 	 * <p>查找PeerSession</p>
 	 * 
 	 * @param list Peer队列
-	 * @param host IP地址
+	 * @param host Peer地址
+	 * 
+	 * @return Peer信息
 	 */
 	private PeerSession findPeerSession(List<PeerSession> list, String host) {
 		final Optional<PeerSession> optional = list.stream()

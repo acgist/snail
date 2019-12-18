@@ -24,11 +24,12 @@ public final class PeerService {
 	private static final PeerService INSTANCE = new PeerService();
 	
 	/**
-	 * <p>版本信息长度</p>
+	 * <p>版本信息长度：{@value}</p>
 	 */
 	private static final int VERSION_LENGTH = 4;
 	/**
-	 * <p>PeerId前缀：AS=ACGIST Snail</p>
+	 * <p>PeerId前缀：{@value}</p>
+	 * <p>AS=ACGIST Snail</p>
 	 */
 	private static final String PEER_ID_PREFIX = "AS";
 	
@@ -37,7 +38,7 @@ public final class PeerService {
 	 */
 	private final byte[] peerId;
 	/**
-	 * <p>PeerId：HTTP传输编码</p>
+	 * <p>HTTP传输编码PeerId</p>
 	 */
 	private final String peerIdUrl;
 
@@ -52,6 +53,8 @@ public final class PeerService {
 	
 	/**
 	 * <p>生成PeerId</p>
+	 * 
+	 * @return PeerId
 	 */
 	private byte[] buildPeerId() {
 		final byte[] peerIds = new byte[PeerConfig.PEER_ID_LENGTH];
@@ -79,6 +82,8 @@ public final class PeerService {
 	
 	/**
 	 * <p>生成PeerIdUrl</p>
+	 * 
+	 * @return PeerIdUrl
 	 */
 	private String buildPeerIdUrl() {
 		int index = 0;
@@ -94,6 +99,8 @@ public final class PeerService {
 	}
 	
 	/**
+	 * <p>获取PeerId</p>
+	 * 
 	 * @return PeerId
 	 */
 	public byte[] peerId() {
@@ -101,7 +108,9 @@ public final class PeerService {
 	}
 	
 	/**
-	 * @return PeerIdUrl：HTTP传输编码
+	 * <p>获取PeerIdUrl</p>
+	 * 
+	 * @return PeerIdUrl
 	 */
 	public String peerIdUrl() {
 		return this.peerIdUrl;

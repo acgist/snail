@@ -56,6 +56,8 @@ public final class DhtExtensionMessageHandler implements IExtensionMessageHandle
 	
 	/**
 	 * <p>处理DHT消息：设置DHT端口、添加DHT节点</p>
+	 * 
+	 * @param buffer 消息
 	 */
 	private void port(ByteBuffer buffer) {
 		final int port = NetUtils.decodePort(buffer.getShort());

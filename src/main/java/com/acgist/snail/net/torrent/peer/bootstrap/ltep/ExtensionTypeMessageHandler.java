@@ -67,6 +67,8 @@ public abstract class ExtensionTypeMessageHandler implements IExtensionMessageHa
 	}
 	
 	/**
+	 * <p>获取扩展协议ID</p>
+	 * 
 	 * @return 扩展协议ID
 	 */
 	protected Byte extensionTypeId() {
@@ -75,6 +77,8 @@ public abstract class ExtensionTypeMessageHandler implements IExtensionMessageHa
 
 	/**
 	 * <p>发送扩展消息</p>
+	 * 
+	 * @param buffer 扩展消息
 	 */
 	protected void pushMessage(ByteBuffer buffer) {
 		this.pushMessage(buffer.array());
@@ -82,6 +86,8 @@ public abstract class ExtensionTypeMessageHandler implements IExtensionMessageHa
 	
 	/**
 	 * <p>发送扩展消息</p>
+	 * 
+	 * @param bytes 扩展消息
 	 */
 	protected void pushMessage(byte[] bytes) {
 		this.extensionMessageHandler.pushMessage(extensionTypeId(), bytes);

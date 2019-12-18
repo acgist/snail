@@ -37,29 +37,29 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 	
 	//================IPv4================//
 	/**
-	 * <p>地址</p>
+	 * <p>地址：{@value}</p>
 	 */
 	private static final String ADDED = "added";
 	/**
-	 * <p>属性</p>
+	 * <p>属性：{@value}</p>
 	 */
 	private static final String ADDEDF = "added.f";
 	/**
-	 * <p>删除地址</p>
+	 * <p>删除地址：{@value}</p>
 	 */
 	private static final String DROPPED = "dropped";
 	
 	//================IPv6================//
 	/**
-	 * <p>地址</p>
+	 * <p>地址：{@value}</p>
 	 */
 	private static final String ADDED6 = "added6";
 	/**
-	 * <p>属性</p>
+	 * <p>属性：{@value}</p>
 	 */
 	private static final String ADDED6F = "added6.f";
 	/**
-	 * <p>删除地址</p>
+	 * <p>删除地址：{@value}</p>
 	 */
 	private static final String DROPPED6 = "dropped6";
 	
@@ -81,6 +81,8 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 	
 	/**
 	 * <p>发送消息：pex</p>
+	 * 
+	 * @param bytes 消息
 	 */
 	public void pex(byte[] bytes) {
 		LOGGER.debug("发送pex消息");
@@ -89,6 +91,10 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 	
 	/**
 	 * <p>处理消息：pex</p>
+	 * 
+	 * @param buffer 消息
+	 * 
+	 * @throws PacketSizeException 网络包异常
 	 * 
 	 * TODO：IPv6
 	 */
@@ -124,6 +130,10 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 	
 	/**
 	 * <p>创建pex消息</p>
+	 * 
+	 * @param optimize 优质Peer列表
+	 * 
+	 * @return 消息
 	 * 
 	 * TODO：IPv6
 	 */

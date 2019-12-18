@@ -37,11 +37,11 @@ public class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(HolepunchMessageHnadler.class);
 
 	/**
-	 * <p>IPv4</p>
+	 * <p>IPv4：{@value}</p>
 	 */
 	private static final byte IPV4 = 0x00;
 //	/**
-//	 * <p>IPv6</p>
+//	 * <p>IPv6：{@value}</p>
 //	 */
 //	private static final byte IPV6 = 0x01;
 	
@@ -153,6 +153,9 @@ public class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	
 	/**
 	 * <p>发送消息：connect</p>
+	 * 
+	 * @param host Peer地址
+	 * @param port Peer端口
 	 */
 	public void connect(String host, int port) {
 		LOGGER.debug("发送holepunch消息-connect：{}-{}", host, port);
@@ -161,6 +164,9 @@ public class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	
 	/**
 	 * <p>处理消息：connect</p>
+	 * 
+	 * @param host Peer地址
+	 * @param port Peer端口
 	 */
 	private void onConnect(String host, int port) {
 		LOGGER.debug("处理holepunch消息-connect：{}-{}", host, port);
@@ -195,6 +201,10 @@ public class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 
 	/**
 	 * <p>发送消息：error</p>
+	 * 
+	 * @param host Peer地址
+	 * @param port Peer端口
+	 * @param errorCode 错误编码
 	 */
 	private void error(String host, int port, HolepunchErrorCode errorCode) {
 		LOGGER.debug("发送holepunch消息-error：{}-{}-{}", host, port, errorCode);
@@ -203,6 +213,10 @@ public class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	
 	/**
 	 * <p>处理消息：error</p>
+	 * 
+	 * @param host Peer地址
+	 * @param port Peer端口
+	 * @param errorCode 错误编码
 	 */
 	private void onError(String host, int port, int errorCode) {
 		LOGGER.warn("处理holepunch消息-error：{}-{}-{}", host, port, errorCode);
@@ -210,6 +224,12 @@ public class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	
 	/**
 	 * <p>创建消息</p>
+	 * 
+	 * @param type 消息类型
+	 * @param host Peer地址
+	 * @param port Peer端口
+	 * 
+	 * @return 消息
 	 * 
 	 * @see #buildMessage(HolepunchType, String, int, HolepunchErrorCode)
 	 */
@@ -221,9 +241,11 @@ public class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	 * <p>创建消息</p>
 	 * 
 	 * @param type 消息类型
-	 * @param host 地址
-	 * @param port 端口
-	 * @param errorCode 错误编码：非错误消息=null
+	 * @param host Peer地址
+	 * @param port Peer端口
+	 * @param errorCode 错误编码：非错误消息等于{@code null}
+	 * 
+	 * @return 消息
 	 * 
 	 * TODO：IPv6
 	 */
