@@ -13,7 +13,6 @@ import com.acgist.snail.utils.NumberUtils;
 /**
  * <p>The lt_donthave extension</p>
  * <p>协议链接：http://bittorrent.org/beps/bep_0054.html</p>
- * 
  * <p>宣布不再含有某个Piece</p>
  * 
  * @author acgist
@@ -49,6 +48,8 @@ public final class DontHaveExtensionMessageHandler extends ExtensionTypeMessageH
 	
 	/**
 	 * <p>处理dontHave消息</p>
+	 * 
+	 * @param buffer 消息
 	 */
 	private void dontHave(ByteBuffer buffer) {
 		final int index = buffer.getInt();

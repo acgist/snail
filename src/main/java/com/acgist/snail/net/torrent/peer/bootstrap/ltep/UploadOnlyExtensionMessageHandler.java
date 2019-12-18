@@ -20,7 +20,7 @@ public final class UploadOnlyExtensionMessageHandler extends ExtensionTypeMessag
 	private static final Logger LOGGER = LoggerFactory.getLogger(UploadOnlyExtensionMessageHandler.class);
 	
 	/**
-	 * <p>只上传不下载</p>
+	 * <p>只上传不下载：{@value}</p>
 	 */
 	private static final byte UPLOAD_ONLY = 0x01;
 	
@@ -49,6 +49,8 @@ public final class UploadOnlyExtensionMessageHandler extends ExtensionTypeMessag
 	
 	/**
 	 * <p>处理uploadOnly消息</p>
+	 * 
+	 * @param buffer 消息
 	 */
 	private void uploadOnly(ByteBuffer buffer) {
 		if(!buffer.hasRemaining()) {

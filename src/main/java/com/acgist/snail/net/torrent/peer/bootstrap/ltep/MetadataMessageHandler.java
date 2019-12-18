@@ -37,19 +37,19 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MetadataMessageHandler.class);
 	
 	/**
-	 * <p>数据交换Slice大小：16KB</p>
+	 * <p>数据交换Slice大小：{@value}</p>
 	 */
 	public static final int SLICE_LENGTH = 16 * SystemConfig.ONE_KB;
 	/**
-	 * <p>piece index：Slice索引</p>
+	 * <p>Slice索引：{@value}</p>
 	 */
 	private static final String ARG_PIECE = "piece";
 	/**
-	 * <p>{@linkplain MetadataType 消息类型}</p>
+	 * <p>{@linkplain MetadataType 消息类型}：{@value}</p>
 	 */
 	private static final String ARG_MSG_TYPE = "msg_type";
 	/**
-	 * <p>InfoHash种子文件数据大小</p>
+	 * <p>InfoHash种子文件数据大小：{@value}</p>
 	 */
 	private static final String ARG_TOTAL_SIZE = "total_size";
 	
@@ -114,6 +114,8 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 	
 	/**
 	 * <p>处理消息：request</p>
+	 * 
+	 * @param decoder 消息（B编码解码器）
 	 */
 	private void request(BEncodeDecoder decoder) {
 		LOGGER.debug("处理metadata消息-request");
@@ -153,7 +155,7 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 	/**
 	 * <p>处理消息：data</p>
 	 * 
-	 * @param decoder B编码数据
+	 * @param decoder 消息（B编码解码器）
 	 */
 	private void data(BEncodeDecoder decoder) {
 		LOGGER.debug("处理metadata消息-data");
@@ -186,7 +188,7 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 	}
 	
 	/**
-	 * 发送消息：reject
+	 * <p>发送消息：reject</p>
 	 */
 	public void reject() {
 		LOGGER.debug("发送metadata消息-reject");
@@ -195,16 +197,21 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 	}
 	
 	/**
-	 * 处理消息：reject
+	 * <p>处理消息：reject</p>
+	 * 
+	 * @param decoder 消息（B编码解码器）
 	 */
 	private void reject(BEncodeDecoder decoder) {
 		LOGGER.debug("处理metadata消息-reject");
 	}
 	
 	/**
-	 * 创建消息
+	 * <p>创建消息</p>
 	 * 
-	 * @param type metadata消息类型
+	 * @param type 消息类型
+	 * @param piece Slice索引
+	 * 
+	 * @return 消息
 	 */
 	private Map<String, Object> buildMessage(PeerConfig.MetadataType type, int piece) {
 		final Map<String, Object> message = new LinkedHashMap<>();
@@ -214,14 +221,19 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 	}
 	
 	/**
-	 * 发送消息
+	 * <p>发送消息</p>
+	 * 
+	 * @param data 消息
 	 */
 	private void pushMessage(Map<String, Object> data) {
 		this.pushMessage(data, null);
 	}
 	
 	/**
-	 * 发送消息
+	 * <p>发送消息</p>
+	 * 
+	 * @param data 消息
+	 * @param x Slice数据
 	 */
 	private void pushMessage(Map<String, Object> data, byte[] x) {
 		final var encoder = BEncodeEncoder.newInstance();

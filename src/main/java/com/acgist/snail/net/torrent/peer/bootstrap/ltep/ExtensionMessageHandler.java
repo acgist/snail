@@ -39,60 +39,64 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ExtensionMessageHandler.class);
 	
 	/**
-	 * <p>偏爱明文</p>
+	 * <p>偏爱明文：{@value}</p>
 	 */
 	private static final int PLAINTEXT = 0;
 	/**
-	 * <p>偏爱加密</p>
+	 * <p>偏爱加密：{@value}</p>
 	 */
 	private static final int ENCRYPT = 1;
 	/**
-	 * <p>只上传不下载</p>
+	 * <p>只上传不下载：{@value}</p>
 	 */
 	private static final int UPLOAD_ONLY = 1;
 	/**
-	 * <p>默认支持未完成请求数量</p>
+	 * <p>默认支持未完成请求数量：{@value}</p>
 	 */
 	private static final int DEFAULT_REQQ = 128;
 	/**
-	 * <p>扩展协议信息</p>
+	 * <p>扩展协议信息：{@value}</p>
 	 */
 	private static final String EX_M = "m";
 	/**
-	 * <p>软件信息（名称和版本）</p>
+	 * <p>软件信息（名称和版本）：{@value}</p>
 	 */
 	private static final String EX_V = "v";
 	/**
-	 * <p>端口</p>
+	 * <p>端口：{@value}</p>
 	 */
 	private static final String EX_P = "p";
 	/**
-	 * <p>偏爱加密</p>
+	 * <p>偏爱加密：{@value}</p>
 	 */
 	private static final String EX_E = "e";
 	/**
-	 * <p>支持未完成请求数量</p>
+	 * <p>支持未完成请求数量：{@value}</p>
 	 */
 	private static final String EX_REQQ = "reqq";
 //	/**
-//	 * <p>IPv4地址</p>
+//	 * <p>IPv4地址：{@value}</p>
 //	 */
 //	private static final String EX_IPV4 = "ipv4";
 //	/**
-//	 * <p>IPv6地址</p>
+//	 * <p>IPv6地址：{@value}</p>
 //	 */
 //	private static final String EX_IPV6 = "ipv6";
 	/**
-	 * <p>外网IP地址</p>
+	 * <p>外网IP地址：{@value}</p>
 	 */
 	private static final String EX_YOURIP = "yourip";
 	/**
-	 * <p>任务已经完成：只上传不下载</p>
+	 * <p>只上传不下载：{@value}</p>
+	 * <p>任务完成只上传不下载</p>
 	 * <p>协议链接：http://bittorrent.org/beps/bep_0021.html</p>
+	 * 
+	 * @see {@link #UPLOAD_ONLY}
 	 */
 	private static final String EX_UPLOAD_ONLY = "upload_only";
 	/**
-	 * <p>ut_metadata：种子InfoHash数据大小</p>
+	 * <p>种子InfoHash数据大小：{@value}</p>
+	 * <p>ut_metadata协议使用</p>
 	 */
 	private static final String EX_METADATA_SIZE = "metadata_size";
 
@@ -208,6 +212,10 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 
 	/**
 	 * <p>处理握手消息</p>
+	 * 
+	 * @param buffer 消息
+	 * 
+	 * @throws PacketSizeException 网络包异常
 	 */
 	private void handshake(ByteBuffer buffer) throws PacketSizeException {
 		LOGGER.debug("处理扩展消息-握手");
@@ -275,6 +283,10 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	
 	/**
 	 * <p>发送pex消息</p>
+	 * 
+	 * @param bytes 消息
+	 * 
+	 * @see {@link PeerExchangeMessageHandler#pex(byte[])}
 	 */
 	public void pex(byte[] bytes) {
 		if(this.peerExchangeMessageHandler.supportExtensionType()) {
@@ -284,6 +296,10 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	
 	/**
 	 * <p>处理pex消息</p>
+	 * 
+	 * @param buffer 消息
+	 * 
+	 * @see {@link PeerExchangeMessageHandler#onMessage(ByteBuffer)}
 	 */
 	private void pex(ByteBuffer buffer) throws NetException {
 		this.peerExchangeMessageHandler.onMessage(buffer);
@@ -291,6 +307,8 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	
 	/**
 	 * <p>发送metadata消息</p>
+	 * 
+	 * @see {@link MetadataMessageHandler#request()}
 	 */
 	public void metadata() {
 		if(this.metadataMessageHandler.supportExtensionType()) {
@@ -300,6 +318,10 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	
 	/**
 	 * <p>处理metadata消息</p>
+	 * 
+	 * @param buffer 消息
+	 * 
+	 * @see {@link MetadataMessageHandler#onMessage(ByteBuffer)}
 	 */
 	private void metadata(ByteBuffer buffer) throws NetException {
 		this.metadataMessageHandler.onMessage(buffer);
@@ -307,6 +329,10 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	
 	/**
 	 * <p>发送holepunch消息-rendezvous</p>
+	 * 
+	 * @param peerSession Peer信息
+	 * 
+	 * @see {@link HolepunchMessageHnadler#rendezvous(PeerSession)}
 	 */
 	public void holepunchRendezvous(PeerSession peerSession) {
 		if(this.holepunchMessageHnadler.supportExtensionType()) {
@@ -316,6 +342,11 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	
 	/**
 	 * <p>发送holepunch消息-connect</p>
+	 * 
+	 * @param host Peer地址
+	 * @param port Peer端口
+	 * 
+	 * @see {@link HolepunchMessageHnadler#connect(String, int)}
 	 */
 	public void holepunchConnect(String host, Integer port) {
 		if(this.holepunchMessageHnadler.supportExtensionType()) {
@@ -325,6 +356,12 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	
 	/**
 	 * <p>处理holepunch消息</p>
+	 * 
+	 * @param buffer 消息
+	 * 
+	 * @throws NetException 网络异常
+	 * 
+	 * @see {@link HolepunchMessageHnadler#onMessage(ByteBuffer)}
 	 */
 	private void holepunch(ByteBuffer buffer) throws NetException {
 		this.holepunchMessageHnadler.onMessage(buffer);
@@ -332,6 +369,8 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 
 	/**
 	 * <p>发送uploadOnly消息</p>
+	 * 
+	 * @see {@link UploadOnlyExtensionMessageHandler#uploadOnly()}
 	 */
 	public void uploadOnly() {
 		if(this.uploadOnlyExtensionMessageHandler.supportExtensionType()) {
@@ -341,6 +380,12 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	
 	/**
 	 * <p>处理uploadOnly消息</p>
+	 * 
+	 * @param buffer 消息
+	 * 
+	 * @throws NetException 网络异常
+	 * 
+	 * @see {@link UploadOnlyExtensionMessageHandler#onMessage(ByteBuffer)}
 	 */
 	private void uploadOnly(ByteBuffer buffer) throws NetException {
 		this.uploadOnlyExtensionMessageHandler.onMessage(buffer);
@@ -348,6 +393,10 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	
 	/**
 	 * <p>发送dontHave消息</p>
+	 * 
+	 * @param index Piece索引
+	 * 
+	 * @see {@link DontHaveExtensionMessageHandler#dontHave(int)}
 	 */
 	public void dontHave(int index) {
 		if(this.dontHaveExtensionMessageHandler.supportExtensionType()) {
@@ -357,6 +406,12 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	
 	/**
 	 * <p>处理dontHave消息</p>
+	 * 
+	 * @param buffer 消息
+	 * 
+	 * @throws NetException 网络异常
+	 * 
+	 * @see {@link DontHaveExtensionMessageHandler#onMessage(ByteBuffer)}
 	 */
 	private void dontHave(ByteBuffer buffer) throws NetException {
 		this.dontHaveExtensionMessageHandler.onMessage(buffer);
@@ -365,8 +420,10 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	/**
 	 * <p>创建扩展消息</p>
 	 * 
-	 * @param type 扩展消息类型
-	 * @param bytes 扩展消息数据
+	 * @param type 消息类型
+	 * @param bytes 消息数据
+	 * 
+	 * @return 扩展消息
 	 */
 	private byte[] buildMessage(byte type, byte[] bytes) {
 		final byte[] message = new byte[bytes.length + 1];
