@@ -153,7 +153,7 @@ GITHUB：[https://github.com/acgist/snail](https://github.com/acgist/snail)
 
 #### GUI
 
-![蜗牛](https://static.acgist.com/demo/snail/snail.png "蜗牛")
+![蜗牛](https://static.acgist.com/demo/snail/snail.png?v=1.2.2 "蜗牛")
 ![统计](https://static.acgist.com/demo/snail/statistics03.png "统计")
 
 > GUI绘制工具：JavaFX Scene Builder
