@@ -11,9 +11,9 @@
 	fx:controller="com.acgist.snail.gui.torrent.TorrentController"
 	xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
 	
-	<VBox fx:id="treeBox" styleClass="treeBox"></VBox>
+	<VBox fx:id="treeBox"></VBox>
 	
-	<VBox fx:id="downloadBox" styleClass="downloadBox">
+	<VBox fx:id="downloadBox" styleClass="download-box">
 		<Button fx:id="download">下载</Button>
 	</VBox>
 	

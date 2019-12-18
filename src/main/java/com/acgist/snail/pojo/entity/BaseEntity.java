@@ -34,11 +34,11 @@ public class BaseEntity implements Serializable {
 	 */
 	protected String id;
 	/**
-	 * <p>创建日期</p>
+	 * <p>创建时间</p>
 	 */
 	protected Date createDate;
 	/**
-	 * <p>修改日期</p>
+	 * <p>修改时间</p>
 	 */
 	protected Date modifyDate;
 	
@@ -59,28 +59,28 @@ public class BaseEntity implements Serializable {
 	}
 
 	/**
-	 * @return 创建日期
+	 * @return 创建时间
 	 */
 	public Date getCreateDate() {
 		return createDate;
 	}
 
 	/**
-	 * @param createDate 创建日期
+	 * @param createDate 创建时间
 	 */
 	public void setCreateDate(Date createDate) {
 		this.createDate = createDate;
 	}
 
 	/**
-	 * @return 修改日期
+	 * @return 修改时间
 	 */
 	public Date getModifyDate() {
 		return modifyDate;
 	}
 
 	/**
-	 * @param modifyDate 修改日期
+	 * @param modifyDate 修改时间
 	 */
 	public void setModifyDate(Date modifyDate) {
 		this.modifyDate = modifyDate;
