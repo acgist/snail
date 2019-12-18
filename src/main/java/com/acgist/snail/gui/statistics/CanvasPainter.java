@@ -23,11 +23,11 @@ public final class CanvasPainter {
 	/**
 	 * <p>默认填充高宽</p>
 	 */
-	private static final int WH = 16;
+	private static final int DEFAULT_WH = 16;
 	/**
 	 * <p>默认列数</p>
 	 */
-	private static final int COL = 50;
+	private static final int DEFAULT_COL = 50;
 	
 	/**
 	 * <p>填充高宽</p>
@@ -91,7 +91,7 @@ public final class CanvasPainter {
 	}
 
 	private CanvasPainter(int length, BitSet bitSet) {
-		this(WH, COL, length, bitSet);
+		this(DEFAULT_WH, DEFAULT_COL, length, bitSet);
 	}
 	
 	private CanvasPainter(int wh, int col, int length, BitSet bitSet) {
