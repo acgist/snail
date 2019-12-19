@@ -1,40 +1,43 @@
 @echo off
 
-rem Èí¼şÃû³Æ
+rem UTF-8
+chcp 65001
+
+rem è½¯ä»¶åç§°
 set project=snail
-rem Èí¼ş°æ±¾
+rem è½¯ä»¶ç‰ˆæœ¬
 set version=1.2.2
 
-rem ±àÒëÂ·¾¶
+rem ç¼–è¯‘è·¯å¾„
 set builder=.\builder\
-rem ´ò°üÄ¿Â¼
+rem æ‰“åŒ…ç›®å½•
 set target=%builder%%project%\
 
-rem ÒÀÀµÂ·¾¶
+rem ä¾èµ–è·¯å¾„
 set lib=lib
-rem ÔËĞĞ»·¾³Â·¾¶
+rem è¿è¡Œç¯å¢ƒè·¯å¾„
 set runtime=java
 
-rem JARÎÄ¼ş
+rem JARæ–‡ä»¶
 set jar=%project%-%version%.jar
 
-rem BATÅäÖÃÎÄ¼ş
+rem BATé…ç½®æ–‡ä»¶
 set config=config.bat
-rem BATÆô¶¯ÎÄ¼ş
+rem BATå¯åŠ¨æ–‡ä»¶
 set startup=startup.bat
 
-rem Æô¶¯Æ÷ÎÄ¼ş
+rem å¯åŠ¨å™¨æ–‡ä»¶
 set exe=SnailLauncher.exe
-rem Æô¶¯Æ÷ÅäÖÃ
+rem å¯åŠ¨å™¨é…ç½®
 set ini=snail.ini
-rem Æô¶¯Æ÷Ô´Âë
+rem å¯åŠ¨å™¨æºç 
 set launcher=.\SnailLauncher\
-rem Æô¶¯Æ÷±àÒëÂ·¾¶
+rem å¯åŠ¨å™¨ç¼–è¯‘è·¯å¾„
 set launcherBuild=.\SnailLauncher\build\
-rem Æô¶¯Æ÷ÎÄ¼şÂ·¾¶
+rem å¯åŠ¨å™¨æ–‡ä»¶è·¯å¾„
 set launcherExe=%launcherBuild%src\Release\%exe%
-rem Æô¶¯Æ÷ÅäÖÃÂ·¾¶
+rem å¯åŠ¨å™¨é…ç½®è·¯å¾„
 set launcherIni=%launcher%src\%ini%
 
-rem JavaÒÀÀµÄ£¿é
+rem Javaä¾èµ–æ¨¡å—
 set modules="java.xml,java.sql,java.base,java.desktop,java.naming,java.compiler,java.logging,java.scripting,java.instrument,java.management,java.net.http,java.transaction.xa,jdk.crypto.ec,jdk.unsupported"

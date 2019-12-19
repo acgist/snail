@@ -1,26 +1,26 @@
 @echo off
 
-rem ¼ÓÔØÅäÖÃÎÄ¼ş
+rem åŠ è½½é…ç½®æ–‡ä»¶
 call config.bat
 
-rem ÓÃ»§È·ÈÏ
-set /p input=ÇëÈ·ÈÏÊÇ·ñÇå³ıÒÑÉú³ÉÎÄ¼ş£¨Y/N£©£¿
-if /i %input%==Y (echo ¿ªÊ¼Çå³ı) else (exit)
+rem ç”¨æˆ·ç¡®è®¤
+set /p input=è¯·ç¡®è®¤æ˜¯å¦æ¸…é™¤å·²ç”Ÿæˆæ–‡ä»¶ï¼ˆY/Nï¼‰ï¼Ÿ
+if /i %input%==Y (echo å¼€å§‹æ¸…é™¤) else (exit)
 
 echo -----------------------------------------------
-echo Çå³ıÎÄ¼ş
+echo æ¸…é™¤æ–‡ä»¶
 echo -----------------------------------------------
 if exist %project% rd /S /Q %project%
 
 cd ..
 
 echo -----------------------------------------------
-echo Çå³ıMaven
+echo æ¸…é™¤Maven
 echo -----------------------------------------------
 call mvn clean -D skipTests
 
 echo -----------------------------------------------
-echo Çå³ıÆô¶¯Æ÷
+echo æ¸…é™¤å¯åŠ¨å™¨
 echo -----------------------------------------------
 if exist %launcherBuild% rd /S /Q %launcherBuild%
 

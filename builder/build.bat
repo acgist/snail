@@ -1,37 +1,37 @@
 @echo off
 
-rem ¼ÓÔØÅäÖÃÎÄ¼ş
+rem åŠ è½½é…ç½®æ–‡ä»¶
 call config.bat
 
-echo ¿ªÊ¼¹¹½¨ÏîÄ¿¡¾%project%¡¿
+echo å¼€å§‹æ„å»ºé¡¹ç›®ã€%project%ã€‘
 
-rem È·ÈÏ°æ±¾ĞÅÏ¢£ºpom.xml¡¢builder/config.bat¡¢SnailLauncher/src/snail.ini¡¢src/main/resources/config/system.properties
-set /p input=ÇëÈ·ÈÏÅäÖÃÎÄ¼ş°æ±¾ĞÅÏ¢ÊÇ·ñÒ»ÖÂ£¨Y/N£©£¿
+rem ç¡®è®¤ç‰ˆæœ¬ä¿¡æ¯ï¼špom.xmlã€builder/config.batã€SnailLauncher/src/snail.iniã€src/main/resources/config/system.properties
+set /p input=è¯·ç¡®è®¤é…ç½®æ–‡ä»¶ç‰ˆæœ¬ä¿¡æ¯æ˜¯å¦ä¸€è‡´ï¼ˆY/Nï¼‰ï¼Ÿ
 if /i %input%==Y (
   echo -----------------------------------------------
-  echo ¹¹½¨ÏîÄ¿
+  echo æ„å»ºé¡¹ç›®
   echo -----------------------------------------------
 ) else (
   exit
 )
 
-rem Çå³ıÎÄ¼ş
+rem æ¸…é™¤æ–‡ä»¶
 call clean.bat
 
 cd ..\
 
 echo -----------------------------------------------
-echo ±àÒëÏîÄ¿
+echo ç¼–è¯‘é¡¹ç›®
 echo -----------------------------------------------
 call mvn clean package -P release -D skipTests
 
 echo -----------------------------------------------
-echo ÔËĞĞ»·¾³
+echo è¿è¡Œç¯å¢ƒ
 echo -----------------------------------------------
 call jlink --add-modules %modules% --output %target%%runtime%
 
 echo -----------------------------------------------
-echo ±àÒëÆô¶¯Æ÷
+echo ç¼–è¯‘å¯åŠ¨å™¨
 echo -----------------------------------------------
 cd %launcher%
 call mkdir build
@@ -42,7 +42,7 @@ call cmake --build . --config Release
 cd ..\..\
 
 echo -----------------------------------------------
-echo ¿½±´ÎÄ¼ş
+echo æ‹·è´æ–‡ä»¶
 echo -----------------------------------------------
 call xcopy /S /Q .\target\%lib%\* %target%%lib%\
 call copy .\target\%jar% %target%
@@ -54,7 +54,7 @@ call copy %builder%%startup% %target%%startup%
 cd %builder%
 
 echo -----------------------------------------------
-echo ¹¹½¨³É¹¦
+echo æ„å»ºæˆåŠŸ
 echo -----------------------------------------------
 
 exit
