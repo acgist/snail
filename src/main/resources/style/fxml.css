@@ -290,13 +290,19 @@
 	-fx-font-weight:bold;
 }
 .statistics .info-box .info-hash {
-	-fx-padding:4px 0;
+	-fx-padding:5px 0;
 }
 .statistics .info-box .info-hash ChoiceBox {
-	-fx-pref-width:400px;
+	-fx-pref-width:390px;
+}
+.statistics .info-box .info-hash Button {
+	-fx-pref-width:130px;
 }
 .statistics .info-box .tabs {
-	-fx-padding:0 0 10px 0;
+	-fx-padding:0 0 5px 0;
+}
+.statistics .info-box .tabs Button {
+	-fx-pref-width:130px;
 }
 .statistics .statistics-box {
 	-fx-pref-width:800px;
@@ -341,7 +347,7 @@
 	-fx-padding:0 10px 0 0;
 }
 .statistics .statistics-box .health {
-	-fx-padding:4px 0;
+	-fx-padding:5px 0;
 	-fx-alignment:center;
 }
 .statistics .statistics-box .default-color0.chart-bar {
