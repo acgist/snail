@@ -1,6 +1,6 @@
-//{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ Éú³ÉµÄ°üº¬ÎÄ¼ş
-// ¹© SnailLauncher.rc Ê¹ÓÃ
+ï»¿// {{NO_DEPENDENCIES}}
+// Microsoft Visual C++ ç”Ÿæˆçš„åŒ…å«æ–‡ä»¶
+// ä¾› SnailLauncher.rc ä½¿ç”¨
 //
 
 #define IDR_MAINFRAME                   128

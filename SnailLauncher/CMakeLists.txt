@@ -1,15 +1,15 @@
-# ÉèÖÃ×îµÍ°æ±¾
+# è®¾ç½®æœ€ä½ç‰ˆæœ¬
 cmake_minimum_required(VERSION 3.0)
-# ÉèÖÃÏîÄ¿Ãû³Æ
+# è®¾ç½®é¡¹ç›®åç§°
 project(SnailLauncher)
-# ÉèÖÃ×Ö·û¼¯
+# è®¾ç½®å­—ç¬¦é›†
 add_definitions(-DUNICODE -D_UNICODE)
-# ÉèÖÃ¹²ÏíDLL
+# è®¾ç½®å…±äº«DLL
 #add_definitions(-D_AFXDLL)
 #set(CMAKE_MFC_FLAG 2)
-# ÉèÖÃ¾²Ì¬DLL
+# è®¾ç½®é™æ€DLL
 set(CMAKE_MFC_FLAG 1)
 set(CMAKE_CXX_FLAGS_RELEASE "/MT")
 set(CMAKE_CXX_FLAGS_DEBUG "/MTd")
-# ÉèÖÃÔ´ÂëÂ·¾¶
+# è®¾ç½®æºç è·¯å¾„
 add_subdirectory(src)

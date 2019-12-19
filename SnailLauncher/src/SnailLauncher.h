@@ -1,21 +1,21 @@
-// SnailLauncher.h : SnailLauncher Ó¦ÓÃ³ÌĞòµÄÖ÷Í·ÎÄ¼ş
+ï»¿// SnailLauncher.h : SnailLauncher åº”ç”¨ç¨‹åºçš„ä¸»å¤´æ–‡ä»¶
 //
 
 #pragma once
 
-// Ö÷·ûºÅ
+// ä¸»ç¬¦å·
 #include "resource.h"
 
 class SnailLauncher : public CWinApp {
 public:
 	SnailLauncher();
 
-// ÖØĞ´
+// é‡å†™
 public:
 	virtual BOOL InitInstance();
 	virtual int ExitInstance();
 
-// ÊµÏÖ
+// å®ç°
 public:
 	DECLARE_MESSAGE_MAP();
 };

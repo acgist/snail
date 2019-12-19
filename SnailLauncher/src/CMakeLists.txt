@@ -1,9 +1,9 @@
-# ÉèÖÃJVMÍ·ÎÄ¼ş
+# è®¾ç½®JVMå¤´æ–‡ä»¶
 include_directories("../../builder/snail/java/include/" "../../builder/snail/java/include/win32/")
-# ÉèÖÃÔ´Âë
+# è®¾ç½®æºç 
 FILE(GLOB H_FILES "./*.h")
 FILE(GLOB RC_FILES "./*.rc")
 FILE(GLOB CPP_FILES "./*.cpp")
-# ÉèÖÃÉú³É¿ÉÖ´ĞĞÎÄ¼ş
+# è®¾ç½®ç”Ÿæˆå¯æ‰§è¡Œæ–‡ä»¶
 add_executable(SnailLauncher ${H_FILES} ${RC_FILES} ${CPP_FILES})
 set_target_properties(SnailLauncher PROPERTIES LINK_FLAGS "/SUBSYSTEM:WINDOWS")
