@@ -1,4 +1,10 @@
--- 配置
+/**
+ * 建表SQL语句
+ * 如果项目启动没有初始化数据库，使用该SQL语句初始化数据库。
+ */
+/**
+ * 配置
+ */
 create table tb_config (
 	`id` VARCHAR(36) NOT NULL,
     `createDate` TIMESTAMP NOT NULL,
@@ -7,7 +13,9 @@ create table tb_config (
     `value` MEDIUMTEXT DEFAULT NULL,
 	PRIMARY KEY (`id`)
 );
--- 任务：BT下载文件过多时可以修改description类型
+/**
+ * 任务
+ */
 create table tb_task (
 	`id` VARCHAR(36) NOT NULL,
     `createDate` TIMESTAMP NOT NULL,
