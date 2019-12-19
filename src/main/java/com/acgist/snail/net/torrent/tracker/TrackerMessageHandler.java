@@ -24,7 +24,7 @@ public final class TrackerMessageHandler extends UdpMessageHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerMessageHandler.class);
 
 	/**
-	 * <p>Announce消息最大长度</p>
+	 * <p>Announce消息最大长度：{@value}</p>
 	 */
 	private static final int ANNOUNCE_MIN_LENGTH = 20;
 	
@@ -59,6 +59,8 @@ public final class TrackerMessageHandler extends UdpMessageHandler {
 
 	/**
 	 * <p>连接消息</p>
+	 * 
+	 * @param buffer 消息
 	 */
 	private void doConnect(ByteBuffer buffer) {
 		final int trackerId = buffer.getInt();
@@ -68,6 +70,8 @@ public final class TrackerMessageHandler extends UdpMessageHandler {
 
 	/**
 	 * <p>声明消息</p>
+	 * 
+	 * @param buffer 消息
 	 */
 	private void doAnnounce(ByteBuffer buffer) {
 		final int length = buffer.limit(); // 消息长度
@@ -86,6 +90,8 @@ public final class TrackerMessageHandler extends UdpMessageHandler {
 	
 	/**
 	 * <p>刮檫消息</p>
+	 * 
+	 * @param buffer 消息
 	 */
 	private void doScrape(ByteBuffer buffer) {
 		final ScrapeMessage message = new ScrapeMessage();
@@ -98,6 +104,8 @@ public final class TrackerMessageHandler extends UdpMessageHandler {
 
 	/**
 	 * <p>错误消息</p>
+	 * 
+	 * @param buffer 消息
 	 */
 	private void doError(ByteBuffer buffer) {
 		final var trackerId = buffer.getInt();

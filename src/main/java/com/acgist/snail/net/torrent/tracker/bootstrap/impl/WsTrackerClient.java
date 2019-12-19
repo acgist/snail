@@ -33,6 +33,15 @@ public final class WsTrackerClient extends TrackerClient {
 		this.trackerClient = com.acgist.snail.net.ws.tracker.TrackerClient.newInstance(this.announceUrl);
 	}
 
+	/**
+	 * <p>创建Tracker客户端</p>
+	 * 
+	 * @param announceUrl 声明地址
+	 * 
+	 * @return 客户端
+	 * 
+	 * @throws NetException 网络异常
+	 */
 	public static final WsTrackerClient newInstance(String announceUrl) throws NetException {
 		return new WsTrackerClient(announceUrl, announceUrl);
 	}

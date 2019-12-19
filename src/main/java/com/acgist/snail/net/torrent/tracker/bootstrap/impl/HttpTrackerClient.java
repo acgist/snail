@@ -58,6 +58,15 @@ public final class HttpTrackerClient extends TrackerClient {
 		super(scrapeUrl, announceUrl, Protocol.Type.HTTP);
 	}
 
+	/**
+	 * <p>创建Tracker客户端</p>
+	 * 
+	 * @param announceUrl 声明地址
+	 * 
+	 * @return 客户端
+	 * 
+	 * @throws NetException 网络异常
+	 */
 	public static final HttpTrackerClient newInstance(String announceUrl) throws NetException {
 		final String scrapeUrl = buildScrapeUrl(announceUrl);
 		return new HttpTrackerClient(scrapeUrl, announceUrl);
@@ -66,7 +75,8 @@ public final class HttpTrackerClient extends TrackerClient {
 	@Override
 	public void announce(Integer sid, TorrentSession torrentSession) throws NetException {
 		final String announceMessage = (String) buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STARTED);
-		final var response = HTTPClient.get(announceMessage, BodyHandlers.ofByteArray()); // 注意：不能使用BodyHandlers.ofString()
+		// 注意：不能使用BodyHandlers.ofString()
+		final var response = HTTPClient.get(announceMessage, BodyHandlers.ofByteArray());
 		if(!HTTPClient.ok(response)) {
 			throw new NetException("HTTP Tracker声明失败");
 		}
@@ -136,6 +146,11 @@ public final class HttpTrackerClient extends TrackerClient {
 	
 	/**
 	 * <p>创建刮檫消息</p>
+	 * 
+	 * @param sid sid
+	 * @param torrentSession BT任务信息
+	 * 
+	 * @return 刮檫消息
 	 */
 	private String buildScrapeMessage(Integer sid, TorrentSession torrentSession) {
 		if(StringUtils.isEmpty(this.scrapeUrl)) {
@@ -149,6 +164,11 @@ public final class HttpTrackerClient extends TrackerClient {
 
 	/**
 	 * <p>声明消息转换</p>
+	 * 
+	 * @param sid sid
+	 * @param decoder B编码解码器
+	 * 
+	 * @return 声明消息
 	 */
 	private static final AnnounceMessage convertAnnounceMessage(Integer sid, BEncodeDecoder decoder) {
 		final String trackerId = decoder.getString("tracker id");
@@ -189,6 +209,9 @@ public final class HttpTrackerClient extends TrackerClient {
 	
 	/**
 	 * <p>刮檫消息转换</p>
+	 * 
+	 * @param sid skd
+	 * @param B编码解码器
 	 */
 	private static final void convertScrapeMessage(Integer sid, BEncodeDecoder decoder) {
 		final var files = decoder.getMap("files");
@@ -211,16 +234,41 @@ public final class HttpTrackerClient extends TrackerClient {
 	
 	/**
 	 * <p>创建scrapeUrl</p>
-	 * <p>announceUrl转换scrapeUrl：</p>
-	 * <pre>
-	 *	~http://example.com/announce			-> ~http://example.com/scrape
-	 *	~http://example.com/x/announce			-> ~http://example.com/x/scrape
-	 *	~http://example.com/announce.php		-> ~http://example.com/scrape.php
-	 *	~http://example.com/a					-> (scrape not supported)
-	 *	~http://example.com/announce?x2%0644	-> ~http://example.com/scrape?x2%0644
-	 *	~http://example.com/announce?x=2/4		-> (scrape not supported)
-	 *	~http://example.com/x%064announce		-> (scrape not supported)
-	 * </pre>
+	 * <p>announceUrl转换scrapeUrl</p>
+	 * <table border="1">
+	 * 	<tr>
+	 * 		<td>~http://example.com/announce</td>
+	 * 		<td>~http://example.com/scrape</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>~http://example.com/x/announce</td>
+	 * 		<td>~http://example.com/x/scrape</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>~http://example.com/announce.php</td>
+	 * 		<td>~http://example.com/scrape.php</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>~http://example.com/a</td>
+	 * 		<td>(scrape not supported)</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>~http://example.com/announce?x2%0644</td>
+	 * 		<td>~http://example.com/scrape?x2%0644</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>~http://example.com/announce?x=2/4</td>
+	 * 		<td>(scrape not supported)</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>~http://example.com/x%064announce</td>
+	 * 		<td>(scrape not supported)</td>
+	 * 	</tr>
+	 * </table>
+	 * 
+	 * @param url 声明URL
+	 * 
+	 * @return 刮檫URL
 	 */
 	private static final String buildScrapeUrl(String url) {
 		if(url.contains(ANNOUNCE_URL_SUFFIX)) {

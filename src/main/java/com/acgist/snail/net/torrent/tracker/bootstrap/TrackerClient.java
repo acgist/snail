@@ -24,7 +24,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerClient.class);
 	
 	/**
-	 * <p>想要获取的Peer数量</p>
+	 * <p>想要获取的Peer数量：{@value}</p>
 	 */
 	protected static final int WANT_PEER_SIZE = 50;
 	
@@ -64,7 +64,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	 */
 	private boolean available = true;
 	
-	public TrackerClient(String scrapeUrl, String announceUrl, Protocol.Type type) throws NetException {
+	protected TrackerClient(String scrapeUrl, String announceUrl, Protocol.Type type) throws NetException {
 		if(StringUtils.isEmpty(announceUrl)) {
 			throw new NetException("Tracker声明地址错误（不支持）：" + announceUrl);
 		}
@@ -76,7 +76,9 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	}
 
 	/**
-	 * <p>是否可用</p>
+	 * <p>判断是否可用</p>
+	 * 
+	 * @return {@code true}-可用；{@code false}-禁用；
 	 */
 	public boolean available() {
 		return this.available;
@@ -202,7 +204,11 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	}
 	
 	/**
-	 * <p>判断当前TrackerClient的声明URL和声明URL是否一致</p>
+	 * <p>判断当前客户端的声明URL和声明URL是否相同</p>
+	 * 
+	 * @param announceUrl 声明地址
+	 * 
+	 * @return {@code true}-相同；{@code fasle}-不同；
 	 */
 	public boolean equalsAnnounceUrl(String announceUrl) {
 		return this.announceUrl.equals(announceUrl);
@@ -210,7 +216,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	
 	@Override
 	public int compareTo(TrackerClient client) {
-		return this.weight == client.weight ? 0 : this.weight > client.weight ? 1 : -1;
+		return Integer.compare(this.weight, client.weight);
 	}
 	
 	@Override
@@ -219,7 +225,11 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	}
 	
 	/**
-	 * <p>相等：声明URL一致</p>
+	 * <p>客户端声明地址相同时相等</p>
+	 * 
+	 * @param object 客户端
+	 * 
+	 * @return {@code true}-相等；{@code false}-不等；
 	 */
 	@Override
 	public boolean equals(Object object) {
