@@ -44,11 +44,13 @@ public final class TrackerManager {
 	private static final int MAX_TRACKER_SIZE = SystemConfig.getTrackerSize();
 	
 	/**
-	 * <p>Tracker客户端Map：{@link TrackerClient#id()}=Tracker客户端</p>
+	 * <p>Tracker客户端Map</p>
+	 * <p>{@link TrackerClient#id()}=Tracker客户端</p>
 	 */
 	private final Map<Integer, TrackerClient> trackerClients;
 	/**
-	 * <p>Tracker执行器Map：{@link TrackerLauncher#id()}=Tracker执行器</p>
+	 * <p>Tracker执行器Map</p>
+	 * <p>{@link TrackerLauncher#id()}=Tracker执行器</p>
 	 */
 	private final Map<Integer, TrackerLauncher> trackerLaunchers;
 	
@@ -63,6 +65,11 @@ public final class TrackerManager {
 
 	/**
 	 * <p>新建TrackerLauncher</p>
+	 * 
+	 * @param client TrackerClient
+	 * @param torrentSession BT任务信息
+	 * 
+	 * @return TrackerLauncher
 	 */
 	public TrackerLauncher newTrackerLauncher(TrackerClient client, TorrentSession torrentSession) {
 		final TrackerLauncher launcher = TrackerLauncher.newInstance(client, torrentSession);
@@ -73,6 +80,8 @@ public final class TrackerManager {
 	
 	/**
 	 * <p>删除TrackerLauncher</p>
+	 * 
+	 * @param id {@link TrackerLauncher#id()}
 	 */
 	public void release(Integer id) {
 		LOGGER.debug("删除TrackerLauncher：{}", id);
@@ -81,6 +90,8 @@ public final class TrackerManager {
 	
 	/**
 	 * <p>处理announce信息</p>
+	 * 
+	 * @param message 消息
 	 */
 	public void announce(AnnounceMessage message) {
 		if(message == null) {
@@ -97,6 +108,8 @@ public final class TrackerManager {
 	
 	/**
 	 * <p>处理scrape消息</p>
+	 * 
+	 * @param message 消息
 	 */
 	public void scrape(ScrapeMessage message) {
 		if(message == null) {
@@ -113,9 +126,13 @@ public final class TrackerManager {
 	
 	/**
 	 * <p>处理连接ID消息</p>
+	 * 
+	 * @param trackerId {@link TrackerClient#id()}
+	 * @param connectionId 连接ID
 	 */
 	public void connectionId(int trackerId, long connectionId) {
 		final var client = this.trackerClients.get(trackerId);
+		// 只有UDP Tracker需要获取连接ID
 		if(client != null && client.type() == Protocol.Type.UDP) {
 			final UdpTrackerClient udpTrackerClient = (UdpTrackerClient) client;
 			udpTrackerClient.connectionId(connectionId);
@@ -123,6 +140,8 @@ public final class TrackerManager {
 	}
 	
 	/**
+	 * <p>获取Tracker客户端列表</p>
+	 * 
 	 * @return TrackerClient列表拷贝
 	 */
 	public List<TrackerClient> clients() {
@@ -130,7 +149,15 @@ public final class TrackerManager {
 	}
 	
 	/**
+	 * <p>获取TrackerClient列表</p>
 	 * <p>默认不是私有种子</p>
+	 * 
+	 * @param announceUrl 声明地址
+	 * @param announceUrls 声明地址集合
+	 * 
+	 * @return TrackerClient列表
+	 * 
+	 * @throws DownloadException 下载异常
 	 * 
 	 * @see #clients(String, List, boolean)
 	 */
@@ -139,7 +166,7 @@ public final class TrackerManager {
 	}
 
 	/**
-	 * <p>获取可用的TrackerClient列表</p>
+	 * <p>获取TrackerClient列表</p>
 	 * <p>通过传入的声明地址获取TrackerClient，如果声明地址没有被注册为TrackerClient则自动注册。</p>
 	 * <p>如果获取的数量不满足单个任务最大数量，并且不是私有种子时，将会使用系统的TrackerClient补充。</p>
 	 * 
@@ -147,7 +174,9 @@ public final class TrackerManager {
 	 * @param announceUrls 声明地址集合
 	 * @param privateTorrent 是否是私有种子
 	 * 
-	 * @return 可用的TrackerClient列表
+	 * @return TrackerClient列表
+	 * 
+	 * @throws DownloadException 下载异常
 	 */
 	public List<TrackerClient> clients(String announceUrl, List<String> announceUrls, boolean privateTorrent) throws DownloadException {
 		final List<TrackerClient> clients = register(announceUrl, announceUrls);
@@ -171,6 +200,8 @@ public final class TrackerManager {
 	 * 
 	 * @param size 补充数量
 	 * @param clients 已有客户端
+	 * 
+	 * @return TrackerClient列表
 	 */
 	private List<TrackerClient> clients(int size, List<TrackerClient> clients) {
 		return this.trackerClients.values().stream()
@@ -184,6 +215,10 @@ public final class TrackerManager {
 	
 	/**
 	 * <p>注册{@linkplain TrackerConfig#announces() 默认Tracker}</p>
+	 * 
+	 * @return TrackerClient列表
+	 * 
+	 * @throws DownloadException 下载异常
 	 */
 	public List<TrackerClient> register() throws DownloadException {
 		return register(TrackerConfig.getInstance().announces());
@@ -194,6 +229,10 @@ public final class TrackerManager {
 	 * 
 	 * @param announceUrl 声明地址
 	 * @param announceUrls 声明地址集合
+	 * 
+	 * @return TrackerClient列表
+	 * 
+	 * @throws DownloadException 下载异常
 	 */
 	private List<TrackerClient> register(String announceUrl, List<String> announceUrls) throws DownloadException {
 		final List<String> announces = new ArrayList<>();
@@ -210,6 +249,10 @@ public final class TrackerManager {
 	 * <p>注册TrackerClient</p>
 	 * 
 	 * @param announceUrls 声明地址集合
+	 * 
+	 * @return TrackerClient列表
+	 * 
+	 * @throws DownloadException 下载异常
 	 */
 	private List<TrackerClient> register(List<String> announceUrls) throws DownloadException {
 		if(announceUrls == null) {
@@ -237,6 +280,10 @@ public final class TrackerManager {
 	 * <p>如果已经注册直接返回</p>
 	 * 
 	 * @param announceUrl 声明地址
+	 * 
+	 * @return TrackerClient
+	 * 
+	 * @throws DownloadException 下载异常
 	 */
 	private TrackerClient register(String announceUrl) throws DownloadException {
 		if(StringUtils.isEmpty(announceUrl)) {
@@ -258,6 +305,12 @@ public final class TrackerManager {
 	/**
 	 * <p>创建TrackerClient代理</p>
 	 * <p>如果第一次创建失败将链接使用URL解码后再次创建</p>
+	 * 
+	 * @param announceUrl 声明地址
+	 * 
+	 * @return TrackerClient
+	 * 
+	 * @throws DownloadException 下载异常
 	 */
 	private TrackerClient buildClientProxy(final String announceUrl) throws DownloadException {
 		TrackerClient client = buildClient(announceUrl);
@@ -273,7 +326,13 @@ public final class TrackerManager {
 	/**
 	 * <p>创建TrackerClient</p>
 	 * 
-	 * TODO：ws客户度
+	 * @param announceUrl 声明地址
+	 * 
+	 * @return TrackerClient
+	 * 
+	 * @throws DownloadException 下载异常
+	 * 
+	 * TODO：ws客户端
 	 */
 	private TrackerClient buildClient(final String announceUrl) throws DownloadException {
 		if(Protocol.Type.HTTP.verify(announceUrl)) {

@@ -58,6 +58,15 @@ public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker
 		this.trackerClient = TrackerClient.newInstance(NetUtils.buildSocketAddress(this.host, this.port));
 	}
 
+	/**
+	 * <p>创建Tracker客户端</p>
+	 * 
+	 * @param announceUrl 声明地址
+	 * 
+	 * @return 客户端
+	 * 
+	 * @throws NetException 网络异常
+	 */
 	public static final UdpTrackerClient newInstance(String announceUrl) throws NetException {
 		return new UdpTrackerClient(announceUrl, announceUrl);
 	}
@@ -107,6 +116,8 @@ public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker
 
 	/**
 	 * <p>设置connectionId</p>
+	 * 
+	 * @param connectionId 连接ID
 	 */
 	public void connectionId(Long connectionId) {
 		LOGGER.debug("UDP Tracker设置连接ID：{}", connectionId);
@@ -118,6 +129,8 @@ public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker
 	
 	/**
 	 * <p>发送获取连接ID消息</p>
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	private void buildConnectionId() throws NetException {
 		LOGGER.debug("UDP Tracker发送获取连接ID消息");
@@ -126,6 +139,10 @@ public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker
 	
 	/**
 	 * <p>发送消息</p>
+	 * 
+	 * @param buffer 消息
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	private void send(ByteBuffer buffer) throws NetException {
 		this.trackerClient.send(buffer);
@@ -133,6 +150,8 @@ public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker
 
 	/**
 	 * <p>创建获取连接ID消息</p>
+	 * 
+	 * @return 消息
 	 */
 	private ByteBuffer buildConnectionIdMessage() {
 		ByteBuffer buffer = ByteBuffer.allocate(16);
@@ -163,6 +182,11 @@ public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker
 
 	/**
 	 * <p>创建刮檫消息</p>
+	 * 
+	 * @param sid sid
+	 * @param torrentSession BT信息
+	 * 
+	 * @return 消息
 	 */
 	private ByteBuffer buildScrapeMessage(Integer sid, TorrentSession torrentSession) {
 		final ByteBuffer buffer = ByteBuffer.allocate(36);
