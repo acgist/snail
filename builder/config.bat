@@ -1,7 +1,7 @@
 @echo off
 
 rem UTF-8
-chcp 65001
+chcp 65001>nul
 
 rem 软件名称
 set project=snail
