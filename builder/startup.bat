@@ -1,14 +1,14 @@
 @echo off
 
-rem ¼ÓÔØÅäÖÃÎÄ¼ş
+rem åŠ è½½é…ç½®æ–‡ä»¶
 call config.bat
 
-echo Æô¶¯ÏîÄ¿¡¾%project%¡¿
+echo å¯åŠ¨é¡¹ç›®ã€%project%ã€‘
 
-rem ÉèÖÃ»·¾³±äÁ¿
+rem è®¾ç½®ç¯å¢ƒå˜é‡
 set path=.\%runtime%\bin
 
-rem Æô¶¯ÃüÁî
+rem å¯åŠ¨å‘½ä»¤
 call start "snail" javaw -server -Xms128m -Xmx256m -XX:NewRatio=2 -XX:SurvivorRatio=2 -jar %jar%
 
 exit
