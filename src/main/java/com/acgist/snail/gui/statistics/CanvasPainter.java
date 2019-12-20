@@ -179,36 +179,91 @@ public final class CanvasPainter {
 	}
 
 	/**
-	 * <p>画图</p>
+	 * <p>开始画图</p>
 	 * 
-	 * @return 工具
+	 * @return {@code this}
 	 */
 	public CanvasPainter draw() {
-		this.build();
-		this.drawBackground();
-		this.drawBorder();
 		this.drawFill();
 		return this;
 	}
 	
 	/**
-	 * <p>创建基本信息</p>
+	 * <p>开始画图</p>
+	 * 
+	 * @param bitSet 数据
+	 * 
+	 * @return {@code this}
 	 */
-	private void build() {
-		// 计算高宽
-		this.width = this.col * (this.wh + this.borderWh) + this.borderWh; // 列数 * (宽度 + 边框) + 右边框
-		this.height = this.row * (this.wh + this.borderWh) + this.borderWh; // 行数 * (高度 + 边框) + 底边框
-		// 创建画布和画笔
-		this.canvas = new Canvas(this.width, this.height);
+	public CanvasPainter draw(BitSet bitSet) {
+		this.bitSet.or(bitSet);
+		this.drawFill();
+		return this;
+	}
+	
+	/**
+	 * <p>开始画图</p>
+	 * 
+	 * @param index 数据索引
+	 * 
+	 * @return {@code this}
+	 */
+	public CanvasPainter draw(int index) {
+		// 已经包含
+		if(this.bitSet.get(index)) {
+			return this;
+		}
+		this.bitSet.set(index);
+		this.graphics.save();
+		final int wh = this.wh + this.borderWh;
+		final int row = index / this.col;
+		final int col = index % this.col;
+		this.drawFill(index, col, row, wh);
+		this.graphics.restore();
+		return this;
+	}
+	
+	/**
+	 * <p>创建画布、画笔，画出背景和边框。</p>
+	 * 
+	 * @return {@code this}
+	 */
+	public CanvasPainter build() {
+		return this.build(null);
+	}
+	
+	/**
+	 * <p>创建画布和画笔，画出背景和边框。</p>
+	 * 
+	 * @param canvas 画布
+	 * 
+	 * @return {@code this}
+	 */
+	public CanvasPainter build(Canvas canvas) {
+		if(this.canvas == null) {
+			// 计算高宽
+			this.width = this.col * (this.wh + this.borderWh) + this.borderWh; // 列数 * (宽度 + 边框) + 右边框
+			this.height = this.row * (this.wh + this.borderWh) + this.borderWh; // 行数 * (高度 + 边框) + 底边框
+			// 创建画布
+			this.canvas = new Canvas(this.width, this.height);
+		} else {
+			this.canvas = canvas;
+		}
+		// 创建画笔
 		this.graphics = this.canvas.getGraphicsContext2D();
+		this.drawBackground();
+		this.drawBorder();
+		return this;
 	}
 
 	/**
-	 * <p>背景颜色</p>
+	 * <p>背景</p>
 	 */
 	private void drawBackground() {
 		this.graphics.save();
+		// 清空背景
 		this.graphics.clearRect(0, 0, this.width, this.height);
+		// 背景
 		this.graphics.setFill(this.background);
 		this.graphics.fillRect(0, 0, this.width, this.height);
 		this.graphics.restore();
@@ -243,7 +298,7 @@ public final class CanvasPainter {
 	}
 	
 	/**
-	 * <p>填充</p>
+	 * <p>填充数据</p>
 	 */
 	private void drawFill() {
 		this.graphics.save();
@@ -252,15 +307,27 @@ public final class CanvasPainter {
 		for (int index = 0; index < this.length; index++) {
 			row = index / this.col;
 			col = index % this.col;
-			if(this.bitSet.get(index)) {
-				this.graphics.setFill(this.fillColor);
-				this.graphics.fillRect(col * wh + this.borderWh, row * wh + this.borderWh, this.wh, this.wh);
-			} else {
-				this.graphics.setFill(this.noneColor);
-				this.graphics.fillRect(col * wh + this.borderWh, row * wh + this.borderWh, this.wh, this.wh);
-			}
+			this.drawFill(index, col, row, wh);
 		}
 		this.graphics.restore();
+	}
+	
+	/**
+	 * <p>填充数据</p>
+	 * 
+	 * @param index 数据索引
+	 * @param col 列
+	 * @param row 行
+	 * @param wh 填充高宽
+	 */
+	private void drawFill(int index, int col, int row, int wh) {
+		if(this.bitSet.get(index)) {
+			this.graphics.setFill(this.fillColor);
+			this.graphics.fillRect(col * wh + this.borderWh, row * wh + this.borderWh, this.wh, this.wh);
+		} else {
+			this.graphics.setFill(this.noneColor);
+			this.graphics.fillRect(col * wh + this.borderWh, row * wh + this.borderWh, this.wh, this.wh);
+		}
 	}
 	
 	/**
@@ -269,7 +336,7 @@ public final class CanvasPainter {
 	 * @return 画布
 	 */
 	public Canvas canvas() {
-		Objects.requireNonNull(this.canvas, "没有画图");
+		Objects.requireNonNull(this.canvas, "没有创建画布");
 		return this.canvas;
 	}
 	

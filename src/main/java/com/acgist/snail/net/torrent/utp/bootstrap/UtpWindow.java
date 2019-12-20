@@ -136,6 +136,7 @@ public final class UtpWindow {
 			this.requests = null;
 			this.messageCodec = null;
 		} else {
+			// 同一个窗口必须将消息发送到同一个请求队列防止消息出现乱序
 			this.requests = UtpRequestQueue.getInstance().queue();
 			this.messageCodec = messageCodec;
 		}
