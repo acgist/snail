@@ -197,6 +197,10 @@ public final class CanvasPainter {
 	 */
 	public CanvasPainter draw(BitSet bitSet) {
 		this.bitSet.or(bitSet);
+		// 没有数据增加
+		if(this.bitSet.cardinality() == bitSet.cardinality()) {
+			return this;
+		}
 		this.drawFill();
 		return this;
 	}
@@ -209,7 +213,7 @@ public final class CanvasPainter {
 	 * @return {@code this}
 	 */
 	public CanvasPainter draw(int index) {
-		// 已经包含
+		// 已经包含数据
 		if(this.bitSet.get(index)) {
 			return this;
 		}
