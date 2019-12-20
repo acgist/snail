@@ -4,6 +4,8 @@ import java.util.BitSet;
 import java.util.Random;
 
 import com.acgist.snail.gui.statistics.CanvasPainter;
+import com.acgist.snail.system.context.SystemThreadContext;
+import com.acgist.snail.utils.ThreadUtils;
 
 import javafx.application.Application;
 import javafx.scene.Group;
@@ -27,7 +29,13 @@ public class BitmapPainterTest extends Application {
 //		CanvasPainter painter = CanvasPainter.newInstance(16, 50, 990, bitSet, Color.BLACK, Color.BLACK, Color.WHITE);
 		primaryStage.setTitle("画布");
 		Group root = new Group();
-		root.getChildren().add(painter.draw().canvas());
+		root.getChildren().add(painter.build().draw().canvas());
+		SystemThreadContext.submit(() -> {
+			while(true) {
+				painter.draw(random.nextInt(size));
+				ThreadUtils.sleep(100);
+			}
+		});
 		primaryStage.setScene(new Scene(root));
 		primaryStage.show();
 	}

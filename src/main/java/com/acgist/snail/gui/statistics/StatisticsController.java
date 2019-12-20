@@ -399,8 +399,9 @@ public final class StatisticsController extends Controller implements Initializa
 		// 已下载Piece位图
 		final int pieceSize = torrentSession.torrent().getInfo().pieceSize();
 		final CanvasPainter painter = CanvasPainter.newInstance(12, 50, pieceSize, torrentSession.pieces());
+		painter.build().draw();
 		this.statisticsBox.getChildren().clear();
-		this.statisticsBox.getChildren().add(painter.draw().canvas());
+		this.statisticsBox.getChildren().add(painter.canvas());
 		// 健康度
 		final Text healthText = new Text("健康度：" + torrentSession.health() + "%");
 		final TextFlow healthTextFlow = new TextFlow(healthText);
