@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.gui.Alerts;
 import com.acgist.snail.gui.Controller;
 import com.acgist.snail.gui.Tooltips;
 import com.acgist.snail.net.torrent.TorrentManager;
@@ -397,7 +398,13 @@ public final class StatisticsController extends Controller implements Initializa
 		}
 		final var torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
 		// 已下载Piece位图
-		final int pieceSize = torrentSession.torrent().getInfo().pieceSize();
+		final var torrent = torrentSession.torrent();
+		if(torrent == null) { // 磁力链接为空
+			this.peer();
+			Alerts.info("提示消息", "磁力链接不能查看下载统计");
+			return;
+		}
+		final int pieceSize = torrent.getInfo().pieceSize();
 		final CanvasPainter painter = CanvasPainter.newInstance(12, 50, pieceSize, torrentSession.pieces());
 		painter.build().draw();
 		this.statisticsBox.getChildren().clear();
