@@ -341,6 +341,8 @@ public final class UtpWindow {
 	 * <p>取出窗口数据并更新窗口大小</p>
 	 * 
 	 * @param seqnr 请求编号
+	 * 
+	 * @return 窗口数据
 	 */
 	private UtpWindowData take(short seqnr) {
 		final UtpWindowData windowData = this.wndMap.remove(seqnr);
@@ -357,6 +359,8 @@ public final class UtpWindow {
 	 * @param timestamp 时间戳
 	 * @param seqnr 请求编号
 	 * @param buffer 请求数据
+	 * 
+	 * @return 窗口数据
 	 */
 	private UtpWindowData storage(final int timestamp, final short seqnr, final ByteBuffer buffer) {
 		final byte[] bytes = new byte[buffer.remaining()];
@@ -370,6 +374,8 @@ public final class UtpWindow {
 	 * @param timestamp 时间戳
 	 * @param seqnr 请求编号
 	 * @param bytes 请求数据
+	 * 
+	 * @return 窗口数据
 	 */
 	private UtpWindowData storage(final int timestamp, final short seqnr, byte[] bytes) {
 		final UtpWindowData windowData = UtpWindowData.newInstance(seqnr, timestamp, bytes);

@@ -33,6 +33,8 @@ public final class UtpClient extends UdpClient<UtpMessageHandler> {
 
 	/**
 	 * <p>连接</p>
+	 * 
+	 * @return {@code true}-连接成功；{@code false}-连接失败；
 	 */
 	public boolean connect() {
 		return this.handler.connect();

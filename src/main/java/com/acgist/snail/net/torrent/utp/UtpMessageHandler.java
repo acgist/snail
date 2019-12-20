@@ -141,6 +141,8 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	}
 	
 	/**
+	 * <p>获取Key</p>
+	 * 
 	 * @return key
 	 */
 	public String key() {
@@ -211,6 +213,8 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	 * <p>UDP拆包</p>
 	 * 
 	 * @param buffer 消息
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	private void sendPacket(ByteBuffer buffer) throws NetException {
 		if(!available()) {
@@ -302,6 +306,8 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	 * @param seqnr 请求编号
 	 * @param acknr 响应编号
 	 * @param buffer 消息
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	private void data(int timestamp, short seqnr, short acknr, ByteBuffer buffer) throws NetException {
 		try {
@@ -315,7 +321,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	/**
 	 * <p>发送数据消息</p>
 	 * 
-	 * @param 数据消息
+	 * @param windowData 数据消息
 	 */
 	private void data(UtpWindowData windowData) {
 		LOGGER.debug("发送数据消息：{}", windowData.getSeqnr());
@@ -482,6 +488,8 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	 * 
 	 * @param type 消息类型
 	 * @param size 消息长度
+	 * 
+	 * @return 消息
 	 */
 	private ByteBuffer buildHeader(byte type, int size) {
 		final ByteBuffer buffer = ByteBuffer.allocate(size);
