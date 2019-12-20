@@ -33,11 +33,11 @@ public final class UtpService {
 	
 	/**
 	 * <p>连接ID</p>
-	 * <p>每次获取递增</p>
 	 */
 	private int connectionId = 0;
 	/**
-	 * <p>UTP消息代理</p>
+	 * <p>UTP消息代理Map</p>
+	 * <p>key={@link #buildKey(short, InetSocketAddress)}</p>
 	 */
 	private final Map<String, UtpMessageHandler> utpMessageHandlers = new ConcurrentHashMap<>();
 	
@@ -60,6 +60,7 @@ public final class UtpService {
 	
 	/**
 	 * <p>获取连接ID</p>
+	 * <p>每次获取递增</p>
 	 * 
 	 * @return 连接ID
 	 */
@@ -74,7 +75,7 @@ public final class UtpService {
 	 * <p>如果已经存在直接返回，否者创建并返回。</p>
 	 * 
 	 * @param connectionId 连接ID
-	 * @param socketAddress 请求地址
+	 * @param socketAddress 连接地址
 	 * 
 	 * @return UTP消息代理
 	 */
@@ -118,7 +119,7 @@ public final class UtpService {
 	 * 
 	 * @return key
 	 */
-	public String buildKey(Short connectionId, InetSocketAddress socketAddress) {
+	public String buildKey(short connectionId, InetSocketAddress socketAddress) {
 		return socketAddress.getHostString() + socketAddress.getPort() + connectionId;
 	}
 	
@@ -140,7 +141,7 @@ public final class UtpService {
 							return true;
 						}
 					})
-					.collect(Collectors.toList())
+					.collect(Collectors.toList()) // 转换List再关闭：关闭时会删除
 					.forEach(value -> value.close());
 			} catch (Exception e) {
 				LOGGER.error("处理超时UTP消息异常", e);

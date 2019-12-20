@@ -3,6 +3,7 @@ package com.acgist.snail.net.torrent.tracker.bootstrap.impl;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -122,7 +123,8 @@ public final class HttpTrackerClient extends TrackerClient {
 			LOGGER.warn("HTTP Tracker刮檫消息错误（格式）：{}", decoder.oddString());
 			return;
 		}
-		convertScrapeMessage(sid, decoder);
+		final var messages = convertScrapeMessage(sid, decoder);
+		messages.forEach(message -> TrackerManager.getInstance().scrape(message));
 	}
 	
 	@Override
@@ -210,26 +212,27 @@ public final class HttpTrackerClient extends TrackerClient {
 	/**
 	 * <p>刮檫消息转换</p>
 	 * 
-	 * @param sid skd
-	 * @param B编码解码器
+	 * @param sid sid
+	 * @param decoder B编码解码器
 	 */
-	private static final void convertScrapeMessage(Integer sid, BEncodeDecoder decoder) {
+	private static final List<ScrapeMessage> convertScrapeMessage(Integer sid, BEncodeDecoder decoder) {
 		final var files = decoder.getMap("files");
 		if(files == null) {
 			LOGGER.debug("HTTP Tracker刮檫消息错误：{}", new String(decoder.oddBytes()));
-			return;
+			return List.of();
 		}
-		files.forEach((key, value) -> {
-			if(value != null) {
+		return files.values().stream()
+			.filter(value -> value != null)
+			.map(value -> {
 				final Map<?, ?> map = (Map<?, ?>) value;
 				final ScrapeMessage message = new ScrapeMessage();
 				message.setId(sid);
 				message.setSeeder(BEncodeDecoder.getInteger(map, "downloaded"));
 				message.setCompleted(BEncodeDecoder.getInteger(map, "complete"));
 				message.setLeecher(BEncodeDecoder.getInteger(map, "incomplete"));
-				TrackerManager.getInstance().scrape(message);
-			}
-		});
+				return message;
+			})
+			.collect(Collectors.toList());
 	}
 	
 	/**

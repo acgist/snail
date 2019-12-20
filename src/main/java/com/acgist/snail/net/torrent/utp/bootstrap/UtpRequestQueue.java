@@ -15,6 +15,7 @@ import com.acgist.snail.system.exception.NetException;
 
 /**
  * <p>UTP请求队列</p>
+ * <p>请求队列用来异步处理UTP请求，每个接收窗口对应一个请求队列，每个请求队列可以处理多个窗口。</p>
  * 
  * @author acgist
  * @since 1.2.0
@@ -80,6 +81,8 @@ public final class UtpRequestQueue {
 
 	/**
 	 * <p>创建请求队列处理线程</p>
+	 * 
+	 * @param queue 请求队列
 	 */
 	private void buildQueueExecute(BlockingQueue<UtpRequest> queue) {
 		this.executor.submit(() -> {

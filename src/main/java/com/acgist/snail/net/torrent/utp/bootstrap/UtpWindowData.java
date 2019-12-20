@@ -68,12 +68,18 @@ public final class UtpWindowData {
 		return this.length;
 	}
 
+	/**
+	 * <p>将数据转为buffer数据</p>
+	 * 
+	 * @return buffer
+	 */
 	public ByteBuffer buffer() {
 		return ByteBuffer.wrap(this.data).compact();
 	}
 	
 	/**
-	 * <p>发送时更新数据：时间戳、发送次数</p>
+	 * <p>更新数据并返回时间戳</p>
+	 * <p>更新数据：时间戳、发送次数</p>
 	 * 
 	 * @return 时间戳
 	 */
