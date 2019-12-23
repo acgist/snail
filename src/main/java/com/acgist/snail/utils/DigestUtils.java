@@ -7,7 +7,7 @@ import com.acgist.snail.system.exception.ArgumentException;
 
 /**
  * <p>散列算法工具</p>
- * <p>散列算法可以计算数据摘要</p>
+ * <p>散列算法：计算数据摘要</p>
  * 
  * @author acgist
  * @since 1.1.1
