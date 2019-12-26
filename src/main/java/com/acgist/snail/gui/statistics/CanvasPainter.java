@@ -14,6 +14,7 @@ import javafx.scene.paint.Color;
  * <p>使用画布实现</p>
  * 
  * TODO：观察者实时更新
+ * TODO：标记全部Piece和选择Piece和下载Piece
  * 
  * @author acgist
  * @since 1.0.0
