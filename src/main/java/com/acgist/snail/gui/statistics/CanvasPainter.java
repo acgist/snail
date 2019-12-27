@@ -14,7 +14,6 @@ import javafx.scene.paint.Color;
  * <p>使用画布实现</p>
  * 
  * TODO：观察者实时更新
- * TODO：标记全部Piece和选择Piece和下载Piece
  * 
  * @author acgist
  * @since 1.0.0
@@ -31,6 +30,10 @@ public final class CanvasPainter {
 	 * <p>默认列数</p>
 	 */
 	private static final int DEFAULT_COL = 50;
+	/**
+	 * <p>边框高宽</p>
+	 */
+	private static final int BORDER_WH = 1;
 	
 	/**
 	 * <p>填充高宽</p>
@@ -53,9 +56,17 @@ public final class CanvasPainter {
 	 */
 	private final BitSet bitSet;
 	/**
+	 * <p>选择数据</p>
+	 */
+	private final BitSet selectBitSet;
+	/**
 	 * <p>存在填充颜色</p>
 	 */
 	private final Color fillColor;
+	/**
+	 * <p>选择填充颜色</p>
+	 */
+	private final Color selectColor;
 	/**
 	 * <p>没有填充颜色</p>
 	 */
@@ -84,40 +95,41 @@ public final class CanvasPainter {
 	 * <p>画笔</p>
 	 */
 	private GraphicsContext graphics;
-	/**
-	 * <p>边框高宽</p>
-	 */
-	private final int borderWh = 1;
 	
 	private CanvasPainter(BitSet bitSet) {
-		this(bitSet.size(), bitSet);
+		this(bitSet.size(), bitSet, bitSet);
 	}
 
-	private CanvasPainter(int length, BitSet bitSet) {
-		this(DEFAULT_WH, DEFAULT_COL, length, bitSet);
+	private CanvasPainter(int length, BitSet bitSet, BitSet selectBitSet) {
+		this(DEFAULT_WH, DEFAULT_COL, length, bitSet, selectBitSet);
 	}
 	
-	private CanvasPainter(int wh, int col, int length, BitSet bitSet) {
+	private CanvasPainter(int wh, int col, int length, BitSet bitSet, BitSet selectBitSet) {
 		this(
-			wh, col, length, bitSet,
+			wh, col, length, bitSet, selectBitSet,
 			Color.rgb(0, 153, 204),
+			Color.rgb(255, 232, 159),
 			Color.rgb(200, 200, 200),
 			Color.BLACK, Color.WHITE
 		);
 	}
 	
 	private CanvasPainter(
-		int wh, int col, int length, BitSet bitSet,
-		Color fillColor, Color noneColor, Color borderColor, Color background
+		int wh, int col,
+		int length, BitSet bitSet, BitSet selectBitSet,
+		Color fillColor, Color selectColor, Color noneColor,
+		Color borderColor, Color background
 	) {
 		this.wh = wh;
 		this.col = col;
 		this.row = NumberUtils.ceilDiv(length, col);
 		this.fillColor = fillColor;
+		this.selectColor = selectColor;
 		this.noneColor = noneColor;
 		this.borderColor = borderColor;
 		this.background = background;
 		this.length = length;
+		this.selectBitSet = selectBitSet;
 		this.bitSet = bitSet;
 	}
 	
@@ -137,11 +149,12 @@ public final class CanvasPainter {
 	 * 
 	 * @param length 数据长度
 	 * @param bitSet 数据
+	 * @param selectBitSet 选择数据
 	 * 
 	 * @return 工具
 	 */
-	public static final CanvasPainter newInstance(int length, BitSet bitSet) {
-		return new CanvasPainter(length, bitSet);
+	public static final CanvasPainter newInstance(int length, BitSet bitSet, BitSet selectBitSet) {
+		return new CanvasPainter(length, bitSet, selectBitSet);
 	}
 	
 	/**
@@ -151,11 +164,12 @@ public final class CanvasPainter {
 	 * @param col 列数
 	 * @param length 数据长度
 	 * @param bitSet 数据
+	 * @param selectBitSet 选择数据
 	 * 
 	 * @return 工具
 	 */
-	public static final CanvasPainter newInstance(int wh, int col, int length, BitSet bitSet) {
-		return new CanvasPainter(wh, col, length, bitSet);
+	public static final CanvasPainter newInstance(int wh, int col, int length, BitSet bitSet, BitSet selectBitSet) {
+		return new CanvasPainter(wh, col, length, bitSet, selectBitSet);
 	}
 	
 	/**
@@ -165,7 +179,9 @@ public final class CanvasPainter {
 	 * @param col 列数
 	 * @param length 数据长度
 	 * @param bitSet 数据
+	 * @param selectBitSet 选择数据
 	 * @param fillColor 存在填充颜色
+	 * @param selectColor 选择填充颜色
 	 * @param noneColor 没有填充颜色
 	 * @param borderColor 边框颜色
 	 * @param background 背景颜色
@@ -173,10 +189,17 @@ public final class CanvasPainter {
 	 * @return 工具
 	 */
 	public static final CanvasPainter newInstance(
-		int wh, int col, int length, BitSet bitSet,
-		Color fillColor, Color noneColor, Color borderColor, Color background
+		int wh, int col,
+		int length, BitSet bitSet, BitSet selectBitSet,
+		Color fillColor, Color selectColor, Color noneColor,
+		Color borderColor, Color background
 	) {
-		return new CanvasPainter(wh, col, length, bitSet, fillColor, noneColor, borderColor, background);
+		return new CanvasPainter(
+			wh, col,
+			length, bitSet, selectBitSet,
+			fillColor, selectColor, noneColor,
+			borderColor, background
+		);
 	}
 
 	/**
@@ -220,7 +243,7 @@ public final class CanvasPainter {
 		}
 		this.bitSet.set(index);
 		this.graphics.save();
-		final int wh = this.wh + this.borderWh;
+		final int wh = this.wh + BORDER_WH;
 		final int row = index / this.col;
 		final int col = index % this.col;
 		this.drawFill(index, col, row, wh);
@@ -247,8 +270,8 @@ public final class CanvasPainter {
 	public CanvasPainter build(Canvas canvas) {
 		if(this.canvas == null) {
 			// 计算高宽
-			this.width = this.col * (this.wh + this.borderWh) + this.borderWh; // 列数 * (宽度 + 边框) + 右边框
-			this.height = this.row * (this.wh + this.borderWh) + this.borderWh; // 行数 * (高度 + 边框) + 底边框
+			this.width = this.col * (this.wh + BORDER_WH) + BORDER_WH; // 列数 * (宽度 + 边框) + 右边框
+			this.height = this.row * (this.wh + BORDER_WH) + BORDER_WH; // 行数 * (高度 + 边框) + 底边框
 			// 创建画布
 			this.canvas = new Canvas(this.width, this.height);
 		} else {
@@ -280,25 +303,25 @@ public final class CanvasPainter {
 	private void drawBorder() {
 		this.graphics.save();
 		this.graphics.setStroke(this.borderColor);
-		this.graphics.setLineWidth(this.borderWh);
+		this.graphics.setLineWidth(BORDER_WH);
 		// 列
-		final int width = this.wh + this.borderWh;
+		final int width = this.wh + BORDER_WH;
 		int x = 0;
 		for (int index = 0; index < this.col; index++) {
 			x = index * width;
 			this.graphics.strokeLine(x, 0, x, this.height);
 		}
 		// 右边框
-		this.graphics.strokeLine(this.width - this.borderWh, 0, this.width - this.borderWh, this.height);
+		this.graphics.strokeLine(this.width - BORDER_WH, 0, this.width - BORDER_WH, this.height);
 		// 行
-		final int height = this.wh + this.borderWh;
+		final int height = this.wh + BORDER_WH;
 		int y = 0;
 		for (int index = 0; index < this.row; index++) {
 			y = index * height;
 			this.graphics.strokeLine(0, y, this.width, y);
 		}
 		// 底边框
-		this.graphics.strokeLine(0, this.height - this.borderWh, this.width, this.height - this.borderWh);
+		this.graphics.strokeLine(0, this.height - BORDER_WH, this.width, this.height - BORDER_WH);
 		this.graphics.restore();
 	}
 	
@@ -308,7 +331,7 @@ public final class CanvasPainter {
 	private void drawFill() {
 		this.graphics.save();
 		int col, row;
-		final int wh = this.wh + this.borderWh;
+		final int wh = this.wh + BORDER_WH;
 		for (int index = 0; index < this.length; index++) {
 			row = index / this.col;
 			col = index % this.col;
@@ -328,11 +351,12 @@ public final class CanvasPainter {
 	private void drawFill(int index, int col, int row, int wh) {
 		if(this.bitSet.get(index)) {
 			this.graphics.setFill(this.fillColor);
-			this.graphics.fillRect(col * wh + this.borderWh, row * wh + this.borderWh, this.wh, this.wh);
+		} else if(this.selectBitSet.get(index)) {
+			this.graphics.setFill(this.selectColor);
 		} else {
 			this.graphics.setFill(this.noneColor);
-			this.graphics.fillRect(col * wh + this.borderWh, row * wh + this.borderWh, this.wh, this.wh);
 		}
+		this.graphics.fillRect(col * wh + BORDER_WH, row * wh + BORDER_WH, this.wh, this.wh);
 	}
 	
 	/**
