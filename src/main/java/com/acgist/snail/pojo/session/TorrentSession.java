@@ -687,10 +687,7 @@ public final class TorrentSession {
 	 * @see {@link TorrentStreamGroup#health()}
 	 */
 	public int health() {
-		if(this.torrentStreamGroup != null) {
-			return this.torrentStreamGroup.health();
-		}
-		return 0;
+		return this.torrentStreamGroup.health();
 	}
 	
 	/**
@@ -698,6 +695,13 @@ public final class TorrentSession {
 	 */
 	public BitSet pieces() {
 		return this.torrentStreamGroup.pieces();
+	}
+	
+	/**
+	 * @see {@link TorrentStreamGroup#selectPieces()}
+	 */
+	public BitSet selectPieces() {
+		return this.torrentStreamGroup.selectPieces();
 	}
 	
 	/**

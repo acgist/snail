@@ -400,12 +400,13 @@ public final class StatisticsController extends Controller implements Initializa
 		// 已下载Piece位图
 		final var torrent = torrentSession.torrent();
 		if(torrent == null) { // 磁力链接为空
+			this.filter = Filter.PEER;
 			this.peer();
 			Alerts.info("提示消息", "磁力链接不能查看下载统计");
 			return;
 		}
 		final int pieceSize = torrent.getInfo().pieceSize();
-		final CanvasPainter painter = CanvasPainter.newInstance(12, 50, pieceSize, torrentSession.pieces());
+		final CanvasPainter painter = CanvasPainter.newInstance(12, 50, pieceSize, torrentSession.pieces(), torrentSession.selectPieces());
 		painter.build().draw();
 		this.statisticsBox.getChildren().clear();
 		this.statisticsBox.getChildren().add(painter.canvas());
