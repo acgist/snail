@@ -28,6 +28,8 @@ import javafx.util.StringConverter;
 /**
  * <p>设置窗口控制器</p>
  * 
+ * TODO：修改下载任务数量时刷新下载
+ * 
  * @author acgist
  * @since 1.0.0
  */
