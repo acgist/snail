@@ -404,6 +404,11 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 				return;
 			}
 		}
+		// Peer连接成功，还没有握手时，Peer主动发送消息需要判断是否已经连接防止空指针。
+		if(this.peerConnect == null) {
+			LOGGER.warn("Peer消息代理没有连接");
+			return;
+		}
 		this.peerSession.id(peerId);
 		this.extension(); // 发送扩展消息：优先交换扩展
 		this.dht(); // 发送DHT消息
@@ -465,7 +470,6 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			LOGGER.debug("发送解除阻塞消息：Peer只上传不下载");
 			return;
 		}
-		// TODO：连接信息空指针
 		if(this.peerConnectSession.isAmUnchoked()) {
 			LOGGER.debug("发送解除阻塞消息：已经解除");
 			return;
