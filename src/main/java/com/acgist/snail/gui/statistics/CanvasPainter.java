@@ -268,7 +268,7 @@ public final class CanvasPainter {
 	 * @return {@code this}
 	 */
 	public CanvasPainter build(Canvas canvas) {
-		if(this.canvas == null) {
+		if(canvas == null) {
 			// 计算高宽
 			this.width = this.col * (this.wh + BORDER_WH) + BORDER_WH; // 列数 * (宽度 + 边框) + 右边框
 			this.height = this.row * (this.wh + BORDER_WH) + BORDER_WH; // 行数 * (高度 + 边框) + 底边框
