@@ -390,10 +390,14 @@ public final class UtpWindow {
 	 * @param packetRtt 时间差
 	 */
 	private void timeout(final int packetRtt) {
-		final int delta = this.rtt - packetRtt;
-		this.rtt += (packetRtt - this.rtt) / 8;
-		this.rttVar += (Math.abs(delta) - this.rttVar) / 4;
-		this.timeout = Math.max(this.rtt + this.rttVar * 4, MAX_TIMEOUT);
+		int rtt = this.rtt;
+		int rttVar = this.rttVar;
+		final int delta = rtt - packetRtt;
+		rtt += (packetRtt - rtt) / 8;
+		rttVar += (Math.abs(delta) - rttVar) / 4;
+		this.rtt = rtt;
+		this.rttVar = rttVar;
+		this.timeout = Math.max(rtt + rttVar * 4, MAX_TIMEOUT);
 		LOGGER.debug("UTP超时时间：{}", this.timeout);
 	}
 	
