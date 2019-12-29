@@ -465,6 +465,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			LOGGER.debug("发送解除阻塞消息：Peer只上传不下载");
 			return;
 		}
+		// TODO：连接信息空指针
 		if(this.peerConnectSession.isAmUnchoked()) {
 			LOGGER.debug("发送解除阻塞消息：已经解除");
 			return;
