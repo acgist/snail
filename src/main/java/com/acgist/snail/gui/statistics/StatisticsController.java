@@ -434,7 +434,7 @@ public final class StatisticsController extends Controller implements Initializa
 	/**
 	 * <p>选择BT任务事件</p>
 	 */
-	private EventHandler<ActionEvent> selectEvent = (event) -> {
+	private EventHandler<ActionEvent> selectEvent = event -> {
 		if(this.filter == Filter.FLOW) {
 			this.flow();
 		} else if(this.filter == Filter.PIECE) {

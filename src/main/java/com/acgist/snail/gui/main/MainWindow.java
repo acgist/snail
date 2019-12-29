@@ -55,7 +55,7 @@ public final class MainWindow extends Window<MainController> {
 	 * <p>F1：帮助</p>
 	 */
 	private void help() {
-		this.stage.addEventHandler(KeyEvent.KEY_RELEASED, (event) -> {
+		this.stage.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
 			if(event.getCode() == KeyCode.F1) {
 				BrowseUtils.open(SystemConfig.getSupport());
 			}
@@ -66,7 +66,7 @@ public final class MainWindow extends Window<MainController> {
 	 * <p>F12：统计</p>
 	 */
 	private void statistics() {
-		this.stage.addEventHandler(KeyEvent.KEY_RELEASED, (event) -> {
+		this.stage.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
 			if(event.getCode() == KeyCode.F12) {
 				StatisticsWindow.getInstance().statistics();
 			}

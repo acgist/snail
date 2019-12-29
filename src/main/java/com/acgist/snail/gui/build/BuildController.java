@@ -104,7 +104,7 @@ public final class BuildController extends Controller implements Initializable {
 	/**
 	 * <p>拖入文件事件（显示）</p>
 	 */
-	private EventHandler<DragEvent> dragOverAction = (event) -> {
+	private EventHandler<DragEvent> dragOverAction = event -> {
 		if (event.getGestureSource() != this.root) {
 			final String url = dragboard(event);
 			if(ProtocolManager.getInstance().support(url)) {
@@ -119,7 +119,7 @@ public final class BuildController extends Controller implements Initializable {
 	/**
 	 * <p>拖入文件事件（加载）</p>
 	 */
-	private EventHandler<DragEvent> dragDroppedAction = (event) -> {
+	private EventHandler<DragEvent> dragDroppedAction = event -> {
 		final String url = dragboard(event);
 		if(StringUtils.isNotEmpty(url)) {
 			setUrl(url);

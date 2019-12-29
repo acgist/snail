@@ -2,7 +2,7 @@ package com.acgist.snail.gui;
 
 import java.awt.TrayIcon.MessageType;
 import java.time.Duration;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -115,7 +115,7 @@ public final class GuiHandler {
 	 * <p>事件列表Map</p>
 	 * <p>事件类型=事件</p>
 	 */
-	private static final Map<GuiEvent.Type, GuiEvent> EVENTS = new HashMap<>(GuiEvent.Type.values().length);
+	private static final Map<GuiEvent.Type, GuiEvent> EVENTS = new EnumMap<>(GuiEvent.Type.class);
 	/**
 	 * <p>本地GUI：{@value}</p>
 	 */

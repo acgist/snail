@@ -25,9 +25,7 @@ public final class HideEvent extends GuiEvent {
 
 	@Override
 	protected void executeNative(Object ... args) {
-		Platform.runLater(() -> {
-			MainWindow.getInstance().hide();
-		});
+		Platform.runLater(() -> MainWindow.getInstance().hide());
 	}
 
 	@Override

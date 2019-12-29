@@ -187,7 +187,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 				this.checkComplete(); // 检查完成状态
 				this.release(); // 释放资源
 				this.unlockDelete(); // 释放删除锁
-				LOGGER.info("任务下载结束：{}", name());
+				LOGGER.info("任务下载结束：{}", this.name());
 			} else {
 				LOGGER.warn("任务状态错误：{}", this.name());
 			}

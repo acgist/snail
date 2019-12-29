@@ -203,7 +203,7 @@ public final class SelectorManager {
 	 * <p>选择框事件</p>
 	 * <p>选择子目录、选择父目录、设置按钮文本</p>
 	 */
-	private EventHandler<ActionEvent> selectAction = (event) -> {
+	private EventHandler<ActionEvent> selectAction = event -> {
 		final CheckBox checkBox = (CheckBox) event.getSource();
 		final boolean selected = checkBox.isSelected();
 		// 前缀

@@ -120,7 +120,7 @@ public final class TorrentController extends Controller implements Initializable
 	/**
 	 * <p>下载按钮事件</p>
 	 */
-	private EventHandler<ActionEvent> downloadEvent = (event) -> {
+	private EventHandler<ActionEvent> downloadEvent = event -> {
 		final var list = this.selectorManager.description();
 		if(list.isEmpty()) {
 			Alerts.warn("下载失败", "请选择下载文件");

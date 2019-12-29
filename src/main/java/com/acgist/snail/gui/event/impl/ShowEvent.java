@@ -25,9 +25,7 @@ public final class ShowEvent extends GuiEvent {
 	
 	@Override
 	protected void executeNative(Object ... args) {
-		Platform.runLater(() -> {
-			MainWindow.getInstance().show();
-		});
+		Platform.runLater(() -> MainWindow.getInstance().show());
 	}
 
 	@Override

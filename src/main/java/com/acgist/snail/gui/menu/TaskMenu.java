@@ -101,28 +101,28 @@ public final class TaskMenu extends Menu {
 	/**
 	 * <p>开始</p>
 	 */
-	private EventHandler<ActionEvent> startEvent = (event) -> {
+	private EventHandler<ActionEvent> startEvent = event -> {
 		MainWindow.getInstance().controller().start();
 	};
 	
 	/**
 	 * <p>暂停</p>
 	 */
-	private EventHandler<ActionEvent> pauseEvent = (event) -> {
+	private EventHandler<ActionEvent> pauseEvent = event -> {
 		MainWindow.getInstance().controller().pause();
 	};
 	
 	/**
 	 * <p>删除</p>
 	 */
-	private EventHandler<ActionEvent> deleteEvent = (event) -> {
+	private EventHandler<ActionEvent> deleteEvent = event -> {
 		MainWindow.getInstance().controller().delete();
 	};
 	
 	/**
 	 * <p>复制链接</p>
 	 */
-	private EventHandler<ActionEvent> copyUrlEvent = (event) -> {
+	private EventHandler<ActionEvent> copyUrlEvent = event -> {
 		MainWindow.getInstance().controller().selected().forEach(session -> {
 			Clipboards.copy(session.getUrl());
 		});
@@ -131,7 +131,7 @@ public final class TaskMenu extends Menu {
 	/**
 	 * <p>文件选择</p>
 	 */
-	private EventHandler<ActionEvent> torrentEvent = (event) -> {
+	private EventHandler<ActionEvent> torrentEvent = event -> {
 		if(!MainWindow.getInstance().controller().haveSelectedTorrent()) {
 			return;
 		}
@@ -146,7 +146,7 @@ public final class TaskMenu extends Menu {
 	/**
 	 * <p>导出种子</p>
 	 */
-	private EventHandler<ActionEvent> exportTorrentEvent = (event) -> {
+	private EventHandler<ActionEvent> exportTorrentEvent = event -> {
 		if(!MainWindow.getInstance().controller().haveSelectedTorrent()) {
 			return;
 		}
@@ -166,7 +166,7 @@ public final class TaskMenu extends Menu {
 	/**
 	 * <p>文件校验</p>
 	 */
-	private EventHandler<ActionEvent> verifyEvent = (event) -> {
+	private EventHandler<ActionEvent> verifyEvent = event -> {
 		SystemThreadContext.submit(() -> {
 			final Map<String, String> hash = new HashMap<>();
 			MainWindow.getInstance().controller().selected().forEach(session -> {
@@ -197,7 +197,7 @@ public final class TaskMenu extends Menu {
 	/**
 	 * <p>打开目录</p>
 	 */
-	private EventHandler<ActionEvent> openFolderEvent = (event) -> {
+	private EventHandler<ActionEvent> openFolderEvent = event -> {
 		MainWindow.getInstance().controller().selected().forEach(session -> {
 			FileUtils.openInDesktop(session.downloadFolder());
 		});
@@ -206,7 +206,7 @@ public final class TaskMenu extends Menu {
 	/**
 	 * <p>窗口显示时如果选中任务中有BT任务时显示按钮：文件选择、导出种子</p>
 	 */
-	private EventHandler<WindowEvent> windowShownAction = (event) -> {
+	private EventHandler<WindowEvent> windowShownAction = event -> {
 		if(MainWindow.getInstance().controller().haveSelectedTorrent()) {
 			INSTANCE.torrentMenu.setDisable(false);
 			INSTANCE.exportTorrentMenu.setDisable(false);

@@ -53,7 +53,7 @@ public final class StatisticsWindow extends Window<StatisticsController> {
 	 * <p>窗口隐藏：释放资源</p>
 	 */
 	private void windowHidden() {
-		this.stage.addEventFilter(WindowEvent.WINDOW_HIDDEN, (event) -> {
+		this.stage.addEventFilter(WindowEvent.WINDOW_HIDDEN, event -> {
 			this.controller.release();
 		});
 	}
