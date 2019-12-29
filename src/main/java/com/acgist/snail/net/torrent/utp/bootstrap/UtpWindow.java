@@ -407,19 +407,19 @@ public final class UtpWindow {
 	 * <p>超时时间大于默认超时时间：窗口{@code /2}</p>
 	 */
 	private void wnd() {
+		int wnd = this.wnd;
 		if(this.timeout <= MAX_TIMEOUT) {
-			if(this.wnd < MAX_WND_SIZE) {
-				this.wnd++;
+			if(wnd < MAX_WND_SIZE) {
+				wnd++;
 				this.release();
 			}
 		} else {
-			final int wnd = this.wnd / 2;
-			if(wnd > MIN_WND_SIZE) {
-				this.wnd = wnd;
-			} else {
+			wnd = wnd / 2;
+			if(wnd < MIN_WND_SIZE) {
 				this.wnd = MIN_WND_SIZE;
 			}
 		}
+		this.wnd = wnd;
 		LOGGER.debug("UTP窗口大小：{}", this.wnd);
 	}
 	
