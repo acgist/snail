@@ -122,7 +122,7 @@ public final class SettingController extends Controller implements Initializable
 	/**
 	 * <p>打开下载目录</p>
 	 */
-	private EventHandler<MouseEvent> openDownloadPath = (event) -> {
+	private EventHandler<MouseEvent> openDownloadPath = event -> {
 		final File file = new File(DownloadConfig.getPath());
 		FileUtils.openInDesktop(file);
 	};
@@ -141,7 +141,7 @@ public final class SettingController extends Controller implements Initializable
 	/**
 	 * <p>下载任务数量保存</p>
 	 */
-	private EventHandler<MouseEvent> sizeReleaseAction = (event) -> {
+	private EventHandler<MouseEvent> sizeReleaseAction = event -> {
 		final Double value = this.size.getValue();
 		DownloadConfig.setSize(value.intValue());
 	};
@@ -162,7 +162,7 @@ public final class SettingController extends Controller implements Initializable
 	/**
 	 * <p>下载速度保存</p>
 	 */
-	private EventHandler<MouseEvent> bufferReleaseAction = (event) -> {
+	private EventHandler<MouseEvent> bufferReleaseAction = event -> {
 		final Double value = this.buffer.getValue();
 		DownloadConfig.setBuffer(value.intValue());
 	};
@@ -192,7 +192,7 @@ public final class SettingController extends Controller implements Initializable
 	/**
 	 * <p>磁盘缓存保存</p>
 	 */
-	private EventHandler<MouseEvent> memoryBufferReleaseAction = (event) -> {
+	private EventHandler<MouseEvent> memoryBufferReleaseAction = event -> {
 		final Double value = this.memoryBuffer.getValue();
 		DownloadConfig.setMemoryBuffer(value.intValue());
 	};

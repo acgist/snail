@@ -65,8 +65,6 @@ public final class DownloaderManager {
 			if(session != null) {
 				this.start(session);
 			}
-		} catch (DownloadException e) {
-			throw e;
 		} finally {
 			GuiHandler.getInstance().refreshTaskList();
 		}

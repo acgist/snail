@@ -253,9 +253,7 @@ public final class MainController extends Controller implements Initializable {
 					return true;
 				}
 			})
-			.forEach(session -> {
-				obs.add(session);
-			});
+			.forEach(session -> obs.add(session));
 		this.taskTable.setItems(obs);
 	}
 	
@@ -320,9 +318,7 @@ public final class MainController extends Controller implements Initializable {
 	 * <p>暂停选中任务</p>
 	 */
 	public void pause() {
-		this.selected().forEach(session -> {
-			DownloaderManager.getInstance().pause(session);
-		});
+		this.selected().forEach(session -> DownloaderManager.getInstance().pause(session));
 	}
 	
 	/**
@@ -334,9 +330,7 @@ public final class MainController extends Controller implements Initializable {
 		}
 		final var optional = Alerts.build("删除确认", "删除选中任务？", AlertType.CONFIRMATION);
 		if(optional.isPresent() && optional.get() == ButtonType.OK) {
-			this.selected().forEach(session -> {
-				DownloaderManager.getInstance().delete(session);
-			});
+			this.selected().forEach(session -> DownloaderManager.getInstance().delete(session));
 		}
 	}
 
@@ -352,15 +346,13 @@ public final class MainController extends Controller implements Initializable {
 	private void taskCell(TableColumn<ITaskSession, String> column, Pos pos, boolean icon, boolean tooltip, DoubleBinding widthBinding) {
 		column.prefWidthProperty().bind(widthBinding);
 		column.setResizable(false); // 禁止修改大小
-		column.setCellFactory((tableColumn) -> {
-			return new TaskCell(pos, icon, tooltip);
-		});
+		column.setCellFactory((tableColumn) -> new TaskCell(pos, icon, tooltip));
 	}
 	
 	/**
 	 * <p>设置行</p>
 	 */
-	private Callback<TableView<ITaskSession>, TableRow<ITaskSession>> rowFactory = (tableView) -> {
+	private Callback<TableView<ITaskSession>, TableRow<ITaskSession>> rowFactory = tableView -> {
 		final TableRow<ITaskSession> row = new TableRow<>();
 		row.setOnMouseClicked(this.rowClickAction); // 左键双击
 		row.setContextMenu(TaskMenu.getInstance()); // 右键菜单
@@ -372,7 +364,7 @@ public final class MainController extends Controller implements Initializable {
 	/**
 	 * <p>拖入文件事件（显示）</p>
 	 */
-	private EventHandler<DragEvent> dragOverAction = (event) -> {
+	private EventHandler<DragEvent> dragOverAction = event -> {
 		if (event.getGestureSource() != this.taskTable) {
 			final String url = dragboard(event);
 			if(ProtocolManager.getInstance().support(url)) {
@@ -387,7 +379,7 @@ public final class MainController extends Controller implements Initializable {
 	/**
 	 * <p>拖入文件事件（加载）</p>
 	 */
-	private EventHandler<DragEvent> dragDroppedAction = (event) -> {
+	private EventHandler<DragEvent> dragDroppedAction = event -> {
 		final String url = dragboard(event);
 		if(StringUtils.isNotEmpty(url)) {
 			BuildWindow.getInstance().show(url);
@@ -399,7 +391,7 @@ public final class MainController extends Controller implements Initializable {
 	/**
 	 * <p>双击事件</p>
 	 */
-	private EventHandler<MouseEvent> rowClickAction = (event) -> {
+	private EventHandler<MouseEvent> rowClickAction = event -> {
 		if(event.getClickCount() == DOUBLE_CLICK_COUNT) { // 双击
 			final var row = (TableRow<?>) event.getSource();
 			final var session = (ITaskSession) row.getItem();

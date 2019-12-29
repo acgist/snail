@@ -57,7 +57,7 @@ public abstract class Window<T extends Initializable> extends Application {
 	 * <p>设置ESC隐藏窗口</p>
 	 */
 	protected void esc() {
-		this.stage.addEventHandler(KeyEvent.KEY_RELEASED, (event) -> {
+		this.stage.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
 			if(event.getCode() == KeyCode.ESCAPE) {
 				this.stage.hide();
 			}

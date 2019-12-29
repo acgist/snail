@@ -230,7 +230,7 @@ public final class TrayMenu extends Menu {
 	/**
 	 * <p>显示</p>
 	 */
-	private EventHandler<ActionEvent> showAction = (event) -> {
+	private EventHandler<ActionEvent> showAction = event -> {
 		Platform.runLater(() -> {
 			MainWindow.getInstance().show();
 		});
@@ -239,7 +239,7 @@ public final class TrayMenu extends Menu {
 	/**
 	 * <p>隐藏</p>
 	 */
-	private EventHandler<ActionEvent> hideAction = (event) -> {
+	private EventHandler<ActionEvent> hideAction = event -> {
 		Platform.runLater(() -> {
 			MainWindow.getInstance().hide();
 		});
@@ -248,35 +248,35 @@ public final class TrayMenu extends Menu {
 	/**
 	 * <p>退出</p>
 	 */
-	private EventHandler<ActionEvent> exitAction = (event) -> {
+	private EventHandler<ActionEvent> exitAction = event -> {
 		SystemContext.shutdown();
 	};
 	
 	/**
 	 * <p>关于</p>
 	 */
-	private EventHandler<ActionEvent> aboutAction = (event) -> {
+	private EventHandler<ActionEvent> aboutAction = event -> {
 		AboutWindow.getInstance().show();
 	};
 	
 	/**
 	 * <p>官网与源码</p>
 	 */
-	private EventHandler<ActionEvent> sourceAction = (event) -> {
+	private EventHandler<ActionEvent> sourceAction = event -> {
 		BrowseUtils.open(SystemConfig.getSource());
 	};
 	
 	/**
 	 * <p>问题与建议</p>
 	 */
-	private EventHandler<ActionEvent> supportAction = (event) -> {
+	private EventHandler<ActionEvent> supportAction = event -> {
 		BrowseUtils.open(SystemConfig.getSupport());
 	};
 	
 	/**
 	 * <p>窗口隐藏时：移除托盘菜单容器</p>
 	 */
-	private EventHandler<WindowEvent> windowHiddenAction = (event) -> {
+	private EventHandler<WindowEvent> windowHiddenAction = event -> {
 		Platform.runLater(() -> {
 			if(this.trayStage != null) {
 				this.trayStage.close();
