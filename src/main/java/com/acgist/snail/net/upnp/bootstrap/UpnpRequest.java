@@ -3,7 +3,7 @@ package com.acgist.snail.net.upnp.bootstrap;
 import org.w3c.dom.Element;
 
 import com.acgist.snail.protocol.Protocol;
-import com.acgist.snail.utils.XMLUtils;
+import com.acgist.snail.system.XML;
 
 /**
  * <p>UPNP请求</p>
@@ -14,18 +14,18 @@ import com.acgist.snail.utils.XMLUtils;
 public final class UpnpRequest {
 
 	/**
-	 * <p>SOAP协议</p>
+	 * <p>SOAP协议：{@value}</p>
 	 */
 	private static final String NAMESPACE_URI = "http://schemas.xmlsoap.org/soap/envelope/";
 	/**
-	 * <p>SOAP协议</p>
+	 * <p>SOAP协议：{@value}</p>
 	 */
 	private static final String ENCODING_STYLE = "http://schemas.xmlsoap.org/soap/encoding/";
 	
 	/**
 	 * <p>XML工具</p>
 	 */
-	private XMLUtils xml;
+	private XML xml;
 	/**
 	 * <p>主体内容</p>
 	 */
@@ -49,7 +49,7 @@ public final class UpnpRequest {
 	 * <p>新建报文</p>
 	 */
 	private void build() {
-		this.xml = XMLUtils.build();
+		this.xml = XML.build();
 		final Element envelope = this.xml.elementNS(xml.document(), "s:Envelope", NAMESPACE_URI);
 		envelope.setAttributeNS(NAMESPACE_URI, "encodingStyle", ENCODING_STYLE);
 		this.body = this.xml.element(envelope, "s:Body");
@@ -67,6 +67,8 @@ public final class UpnpRequest {
 	 * </s:Envelope>
 	 * </xmp>
 	 * </pre>
+	 * 
+	 * @return 请求内容
 	 */
 	public String buildGetExternalIPAddress() {
 		this.xml.elementNS(this.body, "u:GetExternalIPAddress", this.serviceType);
@@ -92,6 +94,8 @@ public final class UpnpRequest {
 	 * 
 	 * @param portExt 外网端口
 	 * @param protocol 协议
+	 * 
+	 * @return 请求内容
 	 */
 	public String buildGetSpecificPortMappingEntry(int portExt, Protocol.Type protocol) {
 		final Element mapping = this.xml.elementNS(this.body, "u:GetSpecificPortMappingEntry", this.serviceType);
@@ -127,6 +131,8 @@ public final class UpnpRequest {
 	 * @param address 内网地址
 	 * @param portExt 外网端口
 	 * @param protocol 协议
+	 * 
+	 * @return 请求内容
 	 */
 	public String buildAddPortMapping(int port, String address, int portExt, Protocol.Type protocol) {
 		final Element mapping = this.xml.elementNS(this.body, "u:AddPortMapping", this.serviceType);
@@ -160,6 +166,8 @@ public final class UpnpRequest {
 	 * 
 	 * @param portExt 外网端口
 	 * @param protocol 协议
+	 * 
+	 * @return 请求内容
 	 */
 	public String buildDeletePortMapping(int portExt, Protocol.Type protocol) {
 		final Element mapping = this.xml.elementNS(body, "u:DeletePortMapping", this.serviceType);
@@ -171,6 +179,8 @@ public final class UpnpRequest {
 
 	/**
 	 * <p>XML文本输出</p>
+	 * 
+	 * @return XML文本
 	 */
 	private String xml() {
 		return this.xml.xml(false);

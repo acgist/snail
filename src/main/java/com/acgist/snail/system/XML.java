@@ -1,4 +1,4 @@
-package com.acgist.snail.utils;
+package com.acgist.snail.system;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -25,16 +25,17 @@ import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.SAXException;
 
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>XML工具</p>
+ * <p>XML</p>
  * 
  * @author acgist
  * @since 1.0.0
  */
-public final class XMLUtils {
+public final class XML {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(XMLUtils.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(XML.class);
 
 	/**
 	 * <p>XML格式化输出：{@value}</p>
@@ -51,34 +52,34 @@ public final class XMLUtils {
 	 * 
 	 * @return XML工具对象
 	 */
-	public static final XMLUtils build() {
-		final XMLUtils utils = new XMLUtils();
+	public static final XML build() {
+		final XML xml = new XML();
 		final DocumentBuilderFactory factory = buildFactory();
 		try {
-			utils.document = factory.newDocumentBuilder().newDocument();
+			xml.document = factory.newDocumentBuilder().newDocument();
 		} catch (ParserConfigurationException e) {
 			LOGGER.error("创建XML异常", e);
 		}
-		return utils;
+		return xml;
 	}
 	
 	/**
 	 * <p>解析XML</p>
 	 * 
-	 * @param xml XML内容
+	 * @param content XML内容
 	 * 
 	 * @return XML工具对象
 	 */
-	public static final XMLUtils load(String xml) {
-		final XMLUtils utils = new XMLUtils();
+	public static final XML load(String content) {
+		final XML xml = new XML();
 		final DocumentBuilderFactory factory = buildFactory();
 		try {
 			final DocumentBuilder builder = factory.newDocumentBuilder();
-			utils.document = builder.parse(new ByteArrayInputStream(xml.getBytes()));
+			xml.document = builder.parse(new ByteArrayInputStream(content.getBytes()));
 		} catch (ParserConfigurationException | SAXException | IOException e) {
-			LOGGER.info("解析XML异常：{}", xml, e);
+			LOGGER.info("解析XML异常：{}", content, e);
 		}
-		return utils;
+		return xml;
 	}
 	
 	/**

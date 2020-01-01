@@ -11,12 +11,12 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.net.http.HTTPClient.StatusCode;
 import com.acgist.snail.protocol.Protocol;
+import com.acgist.snail.system.XML;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
-import com.acgist.snail.utils.XMLUtils;
 
 /**
  * <p>UPNP Service</p>
@@ -87,13 +87,17 @@ public final class UpnpService {
 	 * <p>加载信息</p>
 	 * 
 	 * @param location 描述文件地址
+	 * 
+	 * @return UpnpService
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	public UpnpService load(String location) throws NetException {
 		LOGGER.info("UPNP设置描述文件地址：{}", location);
 		this.location = location;
 		final var response = HTTPClient.get(this.location, BodyHandlers.ofString());
 		final var body = response.body();
-		final var xml = XMLUtils.load(body);
+		final var xml = XML.load(body);
 		// 服务类型和服务地址
 		final List<String> serviceTypes = xml.elementValues("serviceType");
 		final List<String> controlUrls = xml.elementValues("controlURL");
@@ -117,7 +121,9 @@ public final class UpnpService {
 	}
 
 	/**
-	 * <p>是否可用</p>
+	 * <p>判断是否可用</p>
+	 * 
+	 * @return 是否可用
 	 */
 	public boolean useable() {
 		return this.useable;
@@ -126,6 +132,10 @@ public final class UpnpService {
 	/**
 	 * <p>外网IP地址：GetExternalIPAddress</p>
 	 * <p>请求头：SOAPAction:"urn:schemas-upnp-org:service:WANIPConnection:1#GetExternalIPAddress"</p>
+	 * 
+	 * @return 外网IP地址
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	public String getExternalIPAddress() throws NetException {
 		if(!this.available) {
@@ -230,6 +240,8 @@ public final class UpnpService {
 	/**
 	 * <p>映射端口</p>
 	 * <p>如果处于多重路由环境不映射</p>
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	public void mapping() throws NetException {
 		if(!this.available) {
@@ -263,6 +275,8 @@ public final class UpnpService {
 	
 	/**
 	 * <p>设置控制地址</p>
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	private void controlUrl() throws NetException {
 		URL url = null;
@@ -282,6 +296,8 @@ public final class UpnpService {
 	/**
 	 * <p>端口映射</p>
 	 * <p>如果端口被占用：端口{@code +1}继续映射</p>
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	private void portMapping() throws NetException {
 		Status udpStatus = Status.DISABLE, tcpStatus;
