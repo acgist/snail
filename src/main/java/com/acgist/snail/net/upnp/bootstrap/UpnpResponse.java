@@ -1,7 +1,7 @@
 package com.acgist.snail.net.upnp.bootstrap;
 
+import com.acgist.snail.system.XML;
 import com.acgist.snail.utils.StringUtils;
-import com.acgist.snail.utils.XMLUtils;
 
 /**
  * <p>UPNP响应</p>
@@ -26,13 +26,15 @@ public final class UpnpResponse {
 	 * </xmp>
 	 * </pre>
 	 * 
+	 * @param body XML响应内容
+	 * 
 	 * @return 外网IP地址
 	 */
 	public static final String parseGetExternalIPAddress(String body) {
 		if(StringUtils.isEmpty(body)) {
 			return null;
 		}
-		final XMLUtils xml = XMLUtils.load(body);
+		final XML xml = XML.load(body);
 		return xml.elementValue("NewExternalIPAddress");
 	}
 	
@@ -55,13 +57,15 @@ public final class UpnpResponse {
 	 * </xmp>
 	 * </pre>
 	 * 
+	 * @param body XML响应内容
+	 * 
 	 * @return 端口映射的内网IP地址
 	 */
 	public static final String parseGetSpecificPortMappingEntry(String body) {
 		if(StringUtils.isEmpty(body)) {
 			return null;
 		}
-		final XMLUtils xml = XMLUtils.load(body);
+		final XML xml = XML.load(body);
 		return xml.elementValue("NewInternalClient");
 	}
 

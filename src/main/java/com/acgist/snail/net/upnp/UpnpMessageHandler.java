@@ -28,7 +28,7 @@ public final class UpnpMessageHandler extends UdpMessageHandler implements IMess
 	private static final Logger LOGGER = LoggerFactory.getLogger(UpnpMessageHandler.class);
 
 	/**
-	 * <p>描述文件地址响应头名称</p>
+	 * <p>描述文件地址响应头名称：{@value}</p>
 	 */
 	private static final String HEADER_LOCATION = "location";
 	
