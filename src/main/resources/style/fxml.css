@@ -305,12 +305,14 @@
 }
 .statistics .scroll-pane {
 	-fx-padding:0;
+	-fx-pref-width:800px;
+	-fx-pref-height:400px;
 	-fx-background-color:transparent;
 }
 .statistics .statistics-box {
+	-fx-alignment:top_center;
 	-fx-pref-width:800px;
 	-fx-pref-height:400px;
-	-fx-alignment:top_center;
 }
 /**
  * <p>背景颜色 = 边框颜色 * 透明度</p>
