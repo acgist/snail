@@ -11,7 +11,7 @@
 	fx:controller="com.acgist.snail.gui.setting.SettingController"
 	xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
 	
-	<ScrollPane fx:id="scrollPane" hbarPolicy="AS_NEEDED">
+	<ScrollPane fx:id="scrollPane" vbarPolicy="AS_NEEDED" hbarPolicy="NEVER">
 		<VBox>
 			<HBox styleClass="path">
 				<TextFlow styleClass="name">

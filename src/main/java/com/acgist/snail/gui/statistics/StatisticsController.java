@@ -47,8 +47,6 @@ import javafx.scene.text.TextFlow;
 /**
  * <p>统计窗口控制器</p>
  * 
- * TODO：Piece太多滚动条
- * 
  * @author acgist
  * @since 1.2.0
  */

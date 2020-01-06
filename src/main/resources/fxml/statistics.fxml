@@ -71,6 +71,8 @@
 		</HBox>
 	</VBox>
 	
-	<VBox fx:id="statisticsBox" styleClass="statistics-box"></VBox>
+	<ScrollPane vbarPolicy="AS_NEEDED" hbarPolicy="NEVER">
+		<VBox fx:id="statisticsBox" styleClass="statistics-box"></VBox>
+	</ScrollPane>
 	
 </FlowPane>
