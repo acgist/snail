@@ -19,39 +19,39 @@ import com.acgist.snail.utils.StringUtils;
 public final class Torrent {
 
 	/**
-	 * <p>注释</p>
+	 * <p>注释：{@value}</p>
 	 */
 	public static final String ATTR_COMMENT = "comment";
 	/**
-	 * <p>注释UTF8</p>
+	 * <p>注释UTF8：{@value}</p>
 	 */
 	public static final String ATTR_COMMENT_UTF8 = "comment.utf-8";
 	/**
-	 * <p>编码</p>
+	 * <p>编码：{@value}</p>
 	 */
 	public static final String ATTR_ENCODING = "encoding";
 	/**
-	 * <p>创建者</p>
+	 * <p>创建者：{@value}</p>
 	 */
 	public static final String ATTR_CREATED_BY = "created by";
 	/**
-	 * <p>创建时间</p>
+	 * <p>创建时间：{@value}</p>
 	 */
 	public static final String ATTR_CREATION_DATE = "creation date";
 	/**
-	 * <p>Tracker服务器</p>
+	 * <p>Tracker服务器：{@value}</p>
 	 */
 	public static final String ATTR_ANNOUNCE = "announce";
 	/**
-	 * <p>Tracker服务器列表</p>
+	 * <p>Tracker服务器列表：{@value}</p>
 	 */
 	public static final String ATTR_ANNOUNCE_LIST = "announce-list";
 	/**
-	 * <p>文件信息</p>
+	 * <p>文件信息：{@value}</p>
 	 */
 	public static final String ATTR_INFO = "info";
 	/**
-	 * <p>DHT节点</p>
+	 * <p>DHT节点：{@value}</p>
 	 */
 	public static final String ATTR_NODES = "nodes";
 	
@@ -132,8 +132,10 @@ public final class Torrent {
 	}
 	
 	/**
-	 * <p>任务名称</p>
+	 * <p>获取任务名称</p>
 	 * <p>优先使用{@link TorrentInfo#getNameUtf8()}然后使用{@link TorrentInfo#getName()}</p>
+	 * 
+	 * @return 任务名称
 	 */
 	public String name() {
 		String name = this.info.getNameUtf8();
@@ -145,6 +147,8 @@ public final class Torrent {
 	
 	/**
 	 * <p>获取InfoHash</p>
+	 * 
+	 * @return InfoHash
 	 */
 	public InfoHash infoHash() {
 		return this.infoHash;
@@ -152,14 +156,20 @@ public final class Torrent {
 
 	/**
 	 * <p>设置InfoHash</p>
+	 * 
+	 * @param infoHash InfoHash
 	 */
 	public void infoHash(InfoHash infoHash) {
 		this.infoHash = infoHash;
 	}
 	
 	/**
-	 * <p>获取tracker服务器列表</p>
-	 * <p>每个元素都是一个list，每个list里面包含一个tracker服务器地址。</p>
+	 * <p>获取Tracker服务器列表</p>
+	 * <p>每个元素都是一个list，每个list里面包含一个Tracker服务器地址。</p>
+	 * 
+	 * @param announceList Tracker服务器数据
+	 * 
+	 * @return Tracker服务器列表
 	 */
 	private static final List<String> announceList(List<Object> announceList) {
 		return announceList.stream()
@@ -174,6 +184,10 @@ public final class Torrent {
 	/**
 	 * <p>获取DHT节点</p>
 	 * <p>每个元素都是一个list，每个list里面包含节点的IP和端口。</p>
+	 * 
+	 * @param nodes DHT节点数据
+	 * 
+	 * @return DHT节点
 	 */
 	private static final Map<String, Integer> nodes(List<Object> nodes) {
 		return nodes.stream()

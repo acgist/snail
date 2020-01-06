@@ -18,12 +18,12 @@ import com.acgist.snail.system.config.SystemConfig;
 public final class TorrentInfo {
 
 	/**
-	 * <p>填充文件前缀</p>
+	 * <p>填充文件前缀：{@value}</p>
 	 * <p>不需要下载和显示</p>
 	 */
 	public static final String PADDING_FILE_PREFIX = "_____padding_file";
 	/**
-	 * <p>私有种子</p>
+	 * <p>私有种子：{@value}</p>
 	 */
 	public static final byte PRIVATE_TORRENT = 1;
 	
@@ -79,7 +79,9 @@ public final class TorrentInfo {
 	 */
 	private String publisherUrlUtf8;
 	/**
-	 * <p>私有种子：数值等于{@link #PRIVATE_TORRENT}</p>
+	 * <p>私有种子</p>
+	 * 
+	 * @see {@link #PRIVATE_TORRENT}
 	 */
 	private Long privateTorrent;
 	/**
@@ -119,6 +121,8 @@ public final class TorrentInfo {
 	
 	/**
 	 * <p>Piece数量</p>
+	 * 
+	 * @return Piece数量
 	 */
 	public int pieceSize() {
 		return this.pieces.length / SystemConfig.SHA1_HASH_LENGTH;
@@ -126,14 +130,18 @@ public final class TorrentInfo {
 	
 	/**
 	 * <p>是否是私有种子</p>
+	 * 
+	 * @return 是否是私有种子
 	 */
 	public boolean isPrivateTorrent() {
 		return this.privateTorrent == null ? false : this.privateTorrent.byteValue() == PRIVATE_TORRENT;
 	}
 	
 	/**
-	 * <p>列出下载文件列表（兼容单文件种子）</p>
+	 * <p>获取下载文件列表（兼容单文件种子）</p>
 	 * <p>每个文件包含完整的路径</p>
+	 * 
+	 * @return 下载文件列表
 	 */
 	public List<TorrentFile> files() {
 		if (this.files.isEmpty()) { // 单文件种子
@@ -156,6 +164,10 @@ public final class TorrentInfo {
 	/**
 	 * <p>获取多文件种子文件列表</p>
 	 * <p>每个元素都是一个Map，Map里面包含文件信息。</p>
+	 * 
+	 * @param files 文件信息
+	 * 
+	 * @return 文件列表
 	 */
 	private static final List<TorrentFile> files(List<Object> files) {
 		return files.stream()
