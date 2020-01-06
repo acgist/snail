@@ -20,6 +20,10 @@ public abstract class UdpAcceptHandler {
 	/**
 	 * <p>消息代理</p>
 	 * <p>使用消息代理处理消息</p>
+	 * 
+	 * @param channel 通道
+	 * @param buffer 消息
+	 * @param socketAddress 地址
 	 */
 	public void handle(DatagramChannel channel, ByteBuffer buffer, InetSocketAddress socketAddress) {
 		final UdpMessageHandler handler = messageHandler(buffer, socketAddress);

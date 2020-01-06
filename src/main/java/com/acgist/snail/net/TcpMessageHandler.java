@@ -45,6 +45,10 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	 * <p>收到消息</p>
 	 * <p>使用消息处理器处理消息</p>
 	 * <p>如果没有实现消息处理器，请重写该方法。</p>
+	 * 
+	 * @param buffer 消息
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	public void onReceive(ByteBuffer buffer) throws NetException {
 		if(this.messageCodec == null) {
@@ -56,6 +60,8 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	/**
 	 * <p>消息代理</p>
 	 * <p>开始消息轮询</p>
+	 * 
+	 * @param socket 通道
 	 */
 	public void handle(AsynchronousSocketChannel socket) {
 		this.socket = socket;

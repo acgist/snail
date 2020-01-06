@@ -8,7 +8,6 @@ import com.acgist.snail.system.exception.NetException;
 
 /**
  * <p>消息代理</p>
- * <p>消息发送</p>
  * 
  * @author acgist
  * @since 1.1.0
@@ -16,14 +15,15 @@ import com.acgist.snail.system.exception.NetException;
 public interface IMessageHandler {
 	
 	/**
-	 * <p>没有超时时间：一直等待</p>
+	 * <p>没有超时时间：{@value}</p>
+	 * <p>一直等待</p>
 	 */
 	int TIMEOUT_NONE = 0;
 	
 	/**
 	 * <p>可用状态</p>
 	 * 
-	 * @return true：可用；false：不可用；
+	 * @return true-可用；false-禁用；
 	 */
 	boolean available();
 	

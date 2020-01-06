@@ -99,6 +99,8 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements UdpChanne
 	}
 	
 	/**
+	 * <p>创建Selector</p>
+	 * 
 	 * @return Selector
 	 */
 	private Selector buildSelector() {
@@ -111,6 +113,12 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements UdpChanne
 	}
 	
 	/**
+	 * <p>创建UDP通道</p>
+	 * 
+	 * @param port 端口
+	 * @param host 地址
+	 * @param reuse 重用地址
+	 * 
 	 * @return UDP通道
 	 */
 	private DatagramChannel buildChannel(int port, String host, boolean reuse) {
@@ -124,6 +132,9 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements UdpChanne
 	
 	/**
 	 * <p>多播（组播）</p>
+	 * 
+	 * @param ttl TTL
+	 * @param group 分组
 	 */
 	public void join(int ttl, String group) {
 		if(this.channel == null) {

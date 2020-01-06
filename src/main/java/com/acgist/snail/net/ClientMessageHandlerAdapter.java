@@ -8,13 +8,15 @@ import com.acgist.snail.system.exception.NetException;
 /**
  * <p>Client消息代理适配器</p>
  * 
+ * @param <T> 消息代理
+ * 
  * @author acgist
  * @since 1.1.0
  */
 public abstract class ClientMessageHandlerAdapter<T extends IMessageHandler> implements IMessageHandler {
 
 	/**
-	 * 消息代理
+	 * <p>消息代理</p>
 	 */
 	protected final T handler;
 	

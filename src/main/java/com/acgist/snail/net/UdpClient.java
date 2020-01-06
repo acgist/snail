@@ -78,7 +78,6 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessa
 	 * @param channel 通道
 	 * 
 	 * @return 打开状态
-	 * 
 	 */
 	public boolean open(DatagramChannel channel) {
 		if(channel == null) {

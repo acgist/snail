@@ -18,25 +18,29 @@ import com.acgist.snail.utils.NetUtils;
 public interface UdpChannel {
 	
 	/**
-	 * 随机端口
+	 * <p>随机端口：{@value}</p>
 	 */
 	int PORT_AUTO = -1;
 	/**
-	 * 本机地址
+	 * <p>本机地址</p>
 	 */
 	String ADDR_LOCAL = null;
 	/**
-	 * 重用地址
+	 * <p>重用地址</p>
 	 */
 	boolean ADDR_REUSE = true;
 	/**
-	 * 不重用地址
+	 * <p>不重用地址</p>
 	 */
 	boolean ADDR_USENEW = false;
 	
 	/**
 	 * <p>创建UDP通道</p>
 	 * <p>通道属性：本机地址、随机端口、不重用地址</p>
+	 * 
+	 * @return UDP通道
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	public default DatagramChannel buildUdpChannel() throws NetException {
 		return buildUdpChannel(PORT_AUTO, ADDR_LOCAL, ADDR_USENEW);
@@ -45,6 +49,12 @@ public interface UdpChannel {
 	/**
 	 * <p>创建UDP通道</p>
 	 * <p>通道属性：本机地址、不重用地址</p>
+	 * 
+	 * @param port 端口
+	 * 
+	 * @return UDP通道
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	public default DatagramChannel buildUdpChannel(int port) throws NetException {
 		return buildUdpChannel(port, ADDR_LOCAL, ADDR_USENEW);
@@ -53,6 +63,13 @@ public interface UdpChannel {
 	/**
 	 * <p>创建UDP通道</p>
 	 * <p>通道属性：不重用地址</p>
+	 * 
+	 * @param port 端口
+	 * @param host 地址
+	 * 
+	 * @return UDP通道
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	public default DatagramChannel buildUdpChannel(int port, String host) throws NetException {
 		return buildUdpChannel(port, host, ADDR_USENEW);
@@ -61,6 +78,13 @@ public interface UdpChannel {
 	/**
 	 * <p>创建UDP通道</p>
 	 * <p>通道属性：本机地址</p>
+	 * 
+	 * @param port 端口
+	 * @param reuse 重用
+	 * 
+	 * @return UDP通道
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	public default DatagramChannel buildUdpChannel(int port, boolean reuse) throws NetException {
 		return buildUdpChannel(port, ADDR_LOCAL, reuse);
