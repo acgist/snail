@@ -1,18 +1,18 @@
 /**
- *通用样式
+ * <p>通用样式</p>
  */
 .root {
 	-fx-font-size:16px;
 	-fx-alignment:center;
-	/* 基本透明度 */
+	/** 基本透明度 */
 	-fx-snail-opacity:0.94;
-	/* 基本主要颜色 */
+	/** 基本主要颜色 */
 	-fx-snail-main-color:#0099CC;
-	/* 基本边框颜色 */
+	/** 基本边框颜色 */
 	-fx-snail-border-color:#C8C8C8;
-	/* 基本元素颜色 */
+	/** 基本元素颜色 */
 	-fx-snail-element-color:#E0E0E0;
-	/* 基本背景颜色 */
+	/** 基本背景颜色 */
 	-fx-snail-background-color:#F4F4F4;
 	/** 基本颜色 */
 	-fx-snail-red-color:#DD3355;
@@ -23,15 +23,15 @@
 	-fx-snail-violet-color:#8822EE;
 }
 /**
- * 图标样式
+ * <p>图标样式</p>
  */
 .snail-icon {
 	-fx-font-size:16px;
 	-fx-font-family:"SnailIcon";
 }
 /**
- * 提示样式
- * Tooltip->.tooltip
+ * <p>提示样式</p>
+ * <p>Tooltip->.tooltip</p>
  */
 .root .tooltip {
 	-fx-opacity:-fx-snail-opacity;
@@ -42,8 +42,8 @@
 	-fx-effect:dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 4, 0.0, 0, 0);
 }
 /**
- * 按钮样式
- * Button->.button
+ * <p>按钮样式</p>
+ * <p>Button->.button</p>
  */
 .root .button {
 	-fx-border-width:1px;
@@ -58,8 +58,8 @@
 	-fx-background-color:-fx-snail-main-color;
 }
 /**
- * 文本框样式
- * TextField->.text-field
+ * <p>文本框样式</p>
+ * <p>TextField->.text-field</p>
  */
 .root .text-field {
 	-fx-border-width:1px;
@@ -72,8 +72,8 @@
 	-fx-border-color:-fx-snail-main-color;
 }
 /**
- * 下拉框样式
- * ChoiceBox->.choice-box
+ * <p>下拉框样式</p>
+ * <p>ChoiceBox->.choice-box</p>
  */
 .root .choice-box {
 	-fx-border-width:1px;
@@ -87,15 +87,15 @@
 	-fx-border-color:-fx-snail-main-color;
 }
 /**
- * 菜单样式
- * ContextMenu->.context-menu
+ * <p>菜单样式</p>
+ * <p>ContextMenu->.context-menu</p>
  */
 .root .context-menu {
 	-fx-padding:1px;
 	-fx-opacity:-fx-snail-opacity;
 }
 /**
- * 托盘样式
+ * <p>托盘样式</p>
  */
 .tray {
 	-fx-font-size:14px;
@@ -104,12 +104,12 @@
 	-fx-font-size:14px;
 }
 /**
- * 关于窗口：about.fxml
+ * <p>关于窗口：about.fxml</p>
  */
 .about {
 }
 /**
- * 新建窗口：build.fxml
+ * <p>新建窗口：build.fxml</p>
  */
 .build .url {
 	-fx-padding:10px 0;
@@ -127,7 +127,7 @@
 	-fx-padding:0 10px;
 }
 /**
- * 主窗口：main.fxml
+ * <p>主窗口：main.fxml</p>
  */
 .main .header {
 	-fx-padding:2px;
@@ -147,8 +147,8 @@
 	-fx-padding:0 2px;
 }
 /*
- * 表格样式
- * TableView->.table-view
+ * <p>表格样式</p>
+ * <p>TableView->.table-view</p>
  */
 .main .table-view {
 	-fx-padding:0;
@@ -163,13 +163,9 @@
 .main .placeholder .snail-icon {
 	-fx-font-size:64px;
 }
-/*
- * 表头样式
- */
+/** 表头样式 */
 .main .table-view .column-header,
-/*
- * 空闲表头样式
- */
+/** 空闲表头样式 */
 .main .table-view .filler {
 	-fx-pref-height:40px;
 	-fx-border-width:0 1px 1px 0;
@@ -177,38 +173,41 @@
 	-fx-background-color:-fx-snail-element-color;
 }
 /*
- * 表格单元样式
+ * <p>表格单元样式</p>
  */
 .main .table-view .table-cell {
-	/* 不设置padding不能垂直居中 */
+	/** 设置padding（垂直居中） */
 	-fx-padding:0 2px;
 	-fx-pref-height:48px;
 }
 /*
- * 表格行样式
+ * <p>表格行样式</p>
  */
 .main .table-view .table-row-cell {
-	/* 去掉表行横线 */
+	/** 去掉表格行横线 */
 	/*
 	-fx-background-insets:0;
 	*/
 }
 /*
- * 没有数据单元样式
+ * <p>没有数据单元样式</p>
  */
 .main .table-view .table-row-cell:empty .table-cell {
-	/* 去掉没有数据表格单元竖线 */
+	/** 去掉没有数据表格单元竖线 */
 	/*
 	-fx-border-width:0px;
 	*/
 }
 /*
- * 获得焦点表格行样式
+ * <p>获得焦点表格行样式</p>
  */
 .main .table-view:focused .table-row-cell:focused {
 	-fx-background-color:-fx-table-cell-border-color, -fx-control-inner-background;
 	-fx-background-insets:0, 0 0 1 0;
 }
+/*
+ * <p>选中表格行样式</p>
+ */
 .main .table-view:focused .table-row-cell:selected {
 	-fx-background-color:-fx-snail-main-color;
 }
@@ -216,13 +215,13 @@
 	-fx-fill:#FFFFFF;
 }
 /*
- * 失去焦点表格行样式
+ * <p>失去焦点表格行样式</p>
  */
 .main .table-view .table-row-cell:selected {
 	-fx-background-color:-fx-snail-element-color;
 }
 /*
- * 垂直滚动条
+ * <p>垂直滚动条</p>
  */
 /*
 .main .table-view .virtual-flow .scroll-bar:vertical {
@@ -230,22 +229,22 @@
 }
 */
 /*
- * 水平滚动条
+ * <p>水平滚动条</p>
  */
 .main .table-view .virtual-flow .scroll-bar:horizontal {
 	-fx-pref-height:0;
 }
 .main .table-view .virtual-flow .scroll-bar:horizontal .increment-button .increment-arrow {
-	/* 影藏箭头 */
+	/** 影藏箭头 */
 	-fx-background-color:transparent;
 }
 .main .table-view .virtual-flow .scroll-bar:horizontal .decrement-button .decrement-arrow {
-	/* 影藏箭头 */
+	/** 影藏箭头 */
 	-fx-background-color:transparent;
 }
 /**
- * 设置窗口：setting.fxml
- * ScrollPane->.scroll-pane
+ * <p>设置窗口：setting.fxml</p>
+ * <p>ScrollPane->.scroll-pane</p>
  */
 .setting .scroll-pane {
 	-fx-padding:20px 0 0 0;
@@ -272,7 +271,7 @@
 	-fx-pref-width:300px;
 }
 /**
- * 统计窗口：statistics.fxml
+ * <p>统计窗口：statistics.fxml</p>
  */
 .statistics .info-box TextFlow {
 	-fx-padding:3px 0;
@@ -310,7 +309,7 @@
 	-fx-alignment:top_center;
 }
 /**
- * 背景颜色 = 边框颜色 * 透明度
+ * <p>背景颜色 = 边框颜色 * 透明度</p>
  */
 .statistics .info-box TextFlow.red {
 	-fx-border-color:-fx-snail-red-color;
@@ -387,7 +386,7 @@
 	-fx-pie-color:-fx-snail-violet-color;
 }
 /**
- * 编辑种子：torrent.fxml
+ * <p>编辑种子：torrent.fxml</p>
  */
 .torrent .tree-view {
 	-fx-border-width:0 0 1px 0;
@@ -399,7 +398,7 @@
     -fx-background-insets:0;
 }
 /*
- * 箭头
+ * <p>箭头</p>
  */
 .torrent .tree-view .tree-cell .arrow {
     -fx-background-color:#000000;
