@@ -5,6 +5,7 @@ import java.io.File;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.pojo.entity.ConfigEntity;
 import com.acgist.snail.repository.impl.ConfigRepository;
 import com.acgist.snail.system.exception.ArgumentException;
@@ -27,7 +28,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	private static final String DOWNLOAD_CONFIG = "/config/download.properties";
 	
 	/**
-	 * <p>下载速度和上传速度的比例 = 下载速度 / 上传速度
+	 * <p>下载速度和上传速度的比例 = 下载速度 / 上传速度</p>
 	 */
 	private static final int UPLOAD_DOWNLOAD_SCALE = 4;
 	
@@ -43,6 +44,7 @@ public final class DownloadConfig extends PropertiesConfig {
 		INSTANCE.initFromProperties();
 		INSTANCE.initFromDatabase();
 		buildDownloadUploadBuffer();
+		buildMemoryBufferByte();
 		INSTANCE.logger();
 	}
 	
@@ -80,12 +82,19 @@ public final class DownloadConfig extends PropertiesConfig {
 	private int memoryBuffer;
 	/**
 	 * <p>上传速度（B）</p>
+	 * <p>缓存：防止重复计算</p>
 	 */
 	private int uploadBufferByte;
 	/**
 	 * <p>下载速度（B）</p>
+	 * <p>缓存：防止重复计算</p>
 	 */
 	private int downloadBufferByte;
+	/**
+	 * <p>磁盘缓存（B）</p>
+	 * <p>缓存：防止重复计算</p>
+	 */
+	private int memoryBufferByte;
 	
 	/**
 	 * <p>配置文件加载</p>
@@ -133,17 +142,24 @@ public final class DownloadConfig extends PropertiesConfig {
 	
 	/**
 	 * <p>设置下载目录</p>
+	 * 
+	 * @param path 下载目录
 	 */
 	public static final void setPath(String path) {
-		final ConfigRepository configRepository = new ConfigRepository();
+		if(StringUtils.equals(INSTANCE.path, path)) {
+			return;
+		}
 		INSTANCE.path = path;
+		final ConfigRepository configRepository = new ConfigRepository();
 		configRepository.merge(DOWNLOAD_PATH, path);
 	}
 	
 	/**
-	 * <p>下载目录</p>
-	 * <p>如果文件路径存在返回文件路径</p>
-	 * <p>如果不存在获取user.dir路径 + 文件路径</p>
+	 * <p>获取下载目录</p>
+	 * <p>下载目录存在：返回下载目录路径</p>
+	 * <p>下载目录不在：返回{@code user.dir}路径 + 下载目录路径</p>
+	 * 
+	 * @return 下载目录
 	 */
 	public static final String getPath() {
 		String path = INSTANCE.path;
@@ -157,7 +173,12 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 
 	/**
-	 * <p>下载目录：下载目录 + 文件名称</p>
+	 * <p>获取文件路径</p>
+	 * <p>下载目录 + 文件名称</p>
+	 * 
+	 * @param fileName 文件名称
+	 * 
+	 * @return 文件路径
 	 */
 	public static final String getPath(String fileName) {
 		if(StringUtils.isEmpty(fileName)) {
@@ -168,15 +189,23 @@ public final class DownloadConfig extends PropertiesConfig {
 	
 	/**
 	 * <p>设置下载任务数量</p>
+	 * 
+	 * @param size 下载任务数量
 	 */
 	public static final void setSize(int size) {
-		final ConfigRepository configRepository = new ConfigRepository();
+		if(INSTANCE.size == size) {
+			return;
+		}
 		INSTANCE.size = size;
+		final ConfigRepository configRepository = new ConfigRepository();
 		configRepository.merge(DOWNLOAD_SIZE, String.valueOf(size));
+		DownloaderManager.getInstance().refresh(); // 刷新下载
 	}
 
 	/**
-	 * <p>下载任务数量</p>
+	 * <p>获取下载任务数量</p>
+	 * 
+	 * @return 下载任务数量
 	 */
 	public static final int getSize() {
 		return INSTANCE.size;
@@ -184,15 +213,22 @@ public final class DownloadConfig extends PropertiesConfig {
 	
 	/**
 	 * <p>设置消息提示</p>
+	 * 
+	 * @param notice 是否提示消息
 	 */
 	public static final void setNotice(boolean notice) {
-		final ConfigRepository configRepository = new ConfigRepository();
+		if(INSTANCE.notice == notice) {
+			return;
+		}
 		INSTANCE.notice = notice;
+		final ConfigRepository configRepository = new ConfigRepository();
 		configRepository.merge(DOWNLOAD_NOTICE, String.valueOf(notice));
 	}
 
 	/**
-	 * <p>消息提示</p>
+	 * <p>获取消息提示</p>
+	 * 
+	 * @return 是否提示消息
 	 */
 	public static final boolean getNotice() {
 		return INSTANCE.notice;
@@ -200,21 +236,46 @@ public final class DownloadConfig extends PropertiesConfig {
 	
 	/**
 	 * <p>设置下载速度（单个）（KB）</p>
+	 * 
+	 * @param buffer 下载速度
 	 */
 	public static final void setBuffer(int buffer) {
-		final ConfigRepository configRepository = new ConfigRepository();
+		if(INSTANCE.buffer == buffer) {
+			return;
+		}
 		INSTANCE.buffer = buffer;
+		final ConfigRepository configRepository = new ConfigRepository();
 		configRepository.merge(DOWNLOAD_BUFFER, String.valueOf(buffer));
 		buildDownloadUploadBuffer();
 	}
 	
 	/**
-	 * <p>下载速度（单个）（KB）</p>
+	 * <p>获取下载速度（单个）（KB）</p>
+	 * 
+	 * @return 下载速度
 	 */
 	public static final int getBuffer() {
 		return INSTANCE.buffer;
 	}
-
+	
+	/**
+	 * <p>获取上传速度（单个）（B）</p>
+	 * 
+	 * @param 上传速度
+	 */
+	public static final int getUploadBufferByte() {
+		return INSTANCE.uploadBufferByte;
+	}
+	
+	/**
+	 * <p>获取下载速度（单个）（B）</p>
+	 * 
+	 * @return 下载速度
+	 */
+	public static final int getDownloadBufferByte() {
+		return INSTANCE.downloadBufferByte;
+	}
+	
 	/**
 	 * <p>设置下载速度和上传速度</p>
 	 */
@@ -224,30 +285,24 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>下载速度（单个）（B）</p>
-	 */
-	public static final int getDownloadBufferByte() {
-		return INSTANCE.downloadBufferByte;
-	}
-	
-	/**
-	 * <p>上传速度（单个）（B）</p>
-	 */
-	public static final int getUploadBufferByte() {
-		return INSTANCE.uploadBufferByte;
-	}
-	
-	/**
 	 * <p>设置最后一次选择目录</p>
+	 * 
+	 * @param 最后一次选择目录
 	 */
 	public static final void setLastPath(String lastPath) {
-		final ConfigRepository configRepository = new ConfigRepository();
+		if(StringUtils.equals(INSTANCE.lastPath, lastPath)) {
+			return;
+		}
 		INSTANCE.lastPath = lastPath;
+		final ConfigRepository configRepository = new ConfigRepository();
 		configRepository.merge(DOWNLOAD_LAST_PATH, lastPath);
 	}
 	
 	/**
-	 * <p>最后一次选择目录</p>
+	 * <p>获取最后一次选择目录</p>
+	 * <p>如果最后一次选择目录为空，返回下载目录。</p>
+	 * 
+	 * @return 最后一次选择目录
 	 */
 	public static final String getLastPath() {
 		if(StringUtils.isEmpty(INSTANCE.lastPath)) {
@@ -258,7 +313,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>最后一次选择目录文件：如果不存在选择默认使用下载目录</p>
+	 * <p>获取最后一次选择目录文件</p>
 	 */
 	public static final File getLastPathFile() {
 		return new File(getLastPath());
@@ -266,25 +321,42 @@ public final class DownloadConfig extends PropertiesConfig {
 	
 	/**
 	 * <p>设置磁盘缓存（单个）（MB）</p>
+	 * 
+	 * @param memoryBuffer 磁盘缓存
 	 */
 	public static final void setMemoryBuffer(int memoryBuffer) {
-		final ConfigRepository configRepository = new ConfigRepository();
+		if(INSTANCE.memoryBuffer == memoryBuffer) {
+			return;
+		}
 		INSTANCE.memoryBuffer = memoryBuffer;
+		final ConfigRepository configRepository = new ConfigRepository();
 		configRepository.merge(DOWNLOAD_MEMORY_BUFFER, String.valueOf(memoryBuffer));
+		buildMemoryBufferByte();
 	}
 
 	/**
-	 * <p>磁盘缓存（单个）（MB）</p>
+	 * <p>获取磁盘缓存（单个）（MB）</p>
+	 * 
+	 * @return 磁盘缓存
 	 */
 	public static final int getMemoryBuffer() {
 		return INSTANCE.memoryBuffer;
 	}
 
 	/**
-	 * <p>磁盘缓存（单个）（B）</p>
+	 * <p>获取磁盘缓存（单个）（B）</p>
+	 * 
+	 * @return 磁盘缓存
 	 */
 	public static final int getMemoryBufferByte() {
-		return INSTANCE.memoryBuffer * SystemConfig.ONE_MB;
+		return INSTANCE.memoryBufferByte;
+	}
+	
+	/**
+	 * <p>设置磁盘缓存</p>
+	 */
+	private static final void buildMemoryBufferByte() {
+		INSTANCE.memoryBufferByte = INSTANCE.memoryBuffer * SystemConfig.ONE_MB;
 	}
 	
 }
