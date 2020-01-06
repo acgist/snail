@@ -33,7 +33,7 @@ set ini=snail.ini
 rem 启动器源码
 set launcher=.\SnailLauncher\
 rem 启动器编译路径
-set launcherBuild=.\SnailLauncher\build\
+set launcherBuild=%launcher%build\
 rem 启动器文件路径
 set launcherExe=%launcherBuild%src\Release\%exe%
 rem 启动器配置路径
