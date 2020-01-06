@@ -15,7 +15,7 @@ import com.acgist.snail.utils.StringUtils;
 public final class TorrentPiece {
 
 	/**
-	 * <p>默认下载长度：16KB</p>
+	 * <p>默认下载长度：{@value}</p>
 	 */
 	public static final int SLICE_LENGTH = 16 * SystemConfig.ONE_KB;
 

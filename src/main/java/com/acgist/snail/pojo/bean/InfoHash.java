@@ -36,6 +36,8 @@ public final class InfoHash {
 	 * <p>生成InfoHash</p>
 	 * 
 	 * @param data 种子Info
+	 * 
+	 * @return InfoHash
 	 */
 	public static final InfoHash newInstance(byte[] data) {
 		final InfoHash infoHash = new InfoHash(StringUtils.sha1(data));
@@ -47,7 +49,11 @@ public final class InfoHash {
 	/**
 	 * <p>生成InfoHash</p>
 	 * 
-	 * @param hash 种子Info的Hash
+	 * @param hash 种子info数据hash
+	 * 
+	 * @return InfoHash
+	 * 
+	 * @throws DownloadException 下载异常
 	 */
 	public static final InfoHash newInstance(String hash) throws DownloadException {
 		if(hash == null) {
@@ -84,14 +90,18 @@ public final class InfoHash {
 	}
 	
 	/**
-	 * <p>16进制info的hash（小写）（40位）</p>
+	 * <p>16进制种子info数据hash（小写）（40位）</p>
+	 * 
+	 * @return 16进制种子info数据hash
 	 */
 	public String infoHashHex() {
 		return StringUtils.hex(this.infoHash);
 	}
 	
 	/**
-	 * <p>网络info的hash编码</p>
+	 * <p>网络编码种子info数据hash</p>
+	 * 
+	 * @return 网络编码种子info数据hash
 	 */
 	public String infoHashUrl() {
 		int index = 0;

@@ -39,7 +39,7 @@ public final class Magnet {
 		BITPRINT(	"urn:bitprint:");
 		
 		/**
-		 * xt
+		 * <p>xt</p>
 		 */
 		private final String xt;
 		
@@ -88,6 +88,8 @@ public final class Magnet {
 
 	/**
 	 * <p>添加Tracker服务器</p>
+	 * 
+	 * @param tr Tracker服务器
 	 */
 	public void addTr(String tr) {
 		if(this.tr == null) {
@@ -99,6 +101,8 @@ public final class Magnet {
 	/**
 	 * <p>是否支持下载</p>
 	 * <p>类型：{@linkplain Type#BTIH BTIH}</p>
+	 * 
+	 * @return 是否支持下载
 	 */
 	public boolean supportDownload() {
 		return this.type == Type.BTIH && StringUtils.isNotEmpty(this.hash);

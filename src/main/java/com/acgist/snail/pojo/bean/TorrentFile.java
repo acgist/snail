@@ -18,7 +18,7 @@ import com.acgist.snail.utils.CollectionUtils;
 public final class TorrentFile {
 
 	/**
-	 * <p>文件路径拼接时分隔符</p>
+	 * <p>文件路径拼接时分隔符：{@value}</p>
 	 */
 	public static final String SEPARATOR = "/";
 	
@@ -78,6 +78,8 @@ public final class TorrentFile {
 
 	/**
 	 * <p>是否选中下载</p>
+	 * 
+	 * @return 是否选中下载
 	 */
 	public boolean selected() {
 		return this.selected;
@@ -85,13 +87,17 @@ public final class TorrentFile {
 
 	/**
 	 * <p>设置选中下载</p>
+	 * 
+	 * @param selected 是否选中下载
 	 */
 	public void selected(boolean selected) {
 		this.selected = selected;
 	}
 	
 	/**
-	 * <p>文件路径</p>
+	 * <p>获取文件路径</p>
+	 * 
+	 * @return 文件路径
 	 */
 	public String path() {
 		if (CollectionUtils.isNotEmpty(this.pathUtf8)) {
@@ -103,6 +109,10 @@ public final class TorrentFile {
 	/**
 	 * <p>获取文件路径</p>
 	 * <p>每个元素都是一个字节数组</p>
+	 * 
+	 * @param path 文件路径信息
+	 * 
+	 * @return 文件路径
 	 */
 	private static final List<String> path(List<Object> path) {
 		return path.stream()
