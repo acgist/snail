@@ -68,6 +68,8 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 	 * 
 	 * @param host 服务端地址
 	 * @param port 服务端端口
+	 * 
+	 * @return 连接状态
 	 */
 	protected boolean connect(final String host, final int port) {
 		boolean ok = true;

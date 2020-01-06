@@ -20,7 +20,7 @@ public final class TcpAcceptHandler<T extends TcpMessageHandler> implements Comp
 	private static final Logger LOGGER = LoggerFactory.getLogger(TcpAcceptHandler.class);
 	
 	/**
-	 * 消息代理类型
+	 * <p>消息代理类型</p>
 	 */
 	private final Class<T> clazz;
 	
@@ -46,6 +46,8 @@ public final class TcpAcceptHandler<T extends TcpMessageHandler> implements Comp
 
 	/**
 	 * <p>消息代理</p>
+	 * 
+	 * @param channel 通道
 	 */
 	private void handle(AsynchronousSocketChannel channel) {
 		BeanUtils.newInstance(this.clazz).handle(channel);
@@ -53,6 +55,8 @@ public final class TcpAcceptHandler<T extends TcpMessageHandler> implements Comp
 	
 	/**
 	 * <p>接收连接</p>
+	 * 
+	 * @param channel 通道
 	 */
 	private void accept(AsynchronousServerSocketChannel channel) {
 		channel.accept(channel, this);

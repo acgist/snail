@@ -29,7 +29,7 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 	 */
 	protected volatile boolean close = false;
 	/**
-	 * <p>通道</p>
+	 * <p>UDP通道</p>
 	 */
 	protected DatagramChannel channel;
 	/**
@@ -45,6 +45,11 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 	 * <p>收到消息</p>
 	 * <p>使用消息处理器处理消息</p>
 	 * <p>如果没有实现消息处理器，请重写该方法。</p>
+	 * 
+	 * @param buffer 消息
+	 * @param socketAddress 地址
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException {
 		if(this.messageCodec == null) {
@@ -55,6 +60,9 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 	
 	/**
 	 * <p>消息代理</p>
+	 * 
+	 * @param channel 通道
+	 * @param socketAddress 地址
 	 */
 	public void handle(DatagramChannel channel, InetSocketAddress socketAddress) {
 		this.channel = channel;
@@ -100,6 +108,11 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 	
 	/**
 	 * <p>发送消息</p>
+	 * 
+	 * @param buffer 消息
+	 * @param socketAddress 地址
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	protected void send(ByteBuffer buffer, SocketAddress socketAddress) throws NetException {
 		if(!available()) {
