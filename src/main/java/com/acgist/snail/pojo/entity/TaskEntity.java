@@ -18,11 +18,11 @@ public final class TaskEntity extends BaseEntity implements ITaskSessionEntity {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * <p>任务表名</p>
+	 * <p>任务表名：{@value}</p>
 	 */
 	public static final String TABLE_NAME = "tb_task";
 	/**
-	 * <p>任务名称</p>
+	 * <p>任务名称：{@value}</p>
 	 */
 	public static final String PROPERTY_NAME = "name";
 	
