@@ -14,16 +14,17 @@
 			<maxHistory>30</maxHistory>
 			<fileNamePattern>logs/${system.name}.log-%d{yyyy-MM-dd}</fileNamePattern>
 		</rollingPolicy>
+		<!-- 缓存大小：8KB -->
+		<!-- 系统关闭时请关闭日志框架（防止缓存日志丢失） -->
+		<bufferSize>8192</bufferSize>
+		<!-- 禁止立即刷新（配置缓存日志） -->
+		<immediateFlush>false</immediateFlush>
 		<!--
 		推荐：使用encoder替换layout，否者系统会在启动时有一个警告日志。
 		<layout class="ch.qos.logback.classic.PatternLayout">
 			<pattern>${system.pattern}</pattern>
 		</layout>
 		-->
-		<!-- 缓存大小：8KB -->
-		<bufferSize>8192</bufferSize>
-		<!-- 不立即刷新，缓存默认：8KB（系统关闭时请关闭日志框架，防止日志不能flush导致丢失） -->
-		<immediateFlush>false</immediateFlush>
 		<encoder>
 			<charset>${system.charset}</charset>
 			<pattern>${system.pattern}</pattern>

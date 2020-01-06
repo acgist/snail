@@ -17,15 +17,15 @@ public class BaseEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * <p>ID</p>
+	 * <p>ID：{@value}</p>
 	 */
 	public static final String PROPERTY_ID = "id";
 	/**
-	 * <p>创建时间</p>
+	 * <p>创建时间：{@value}</p>
 	 */
 	public static final String PROPERTY_CREATE_DATE = "createDate";
 	/**
-	 * <p>修改时间</p>
+	 * <p>修改时间：{@value}</p>
 	 */
 	public static final String PROPERTY_MODIFY_DATE = "modifyDate";
 	

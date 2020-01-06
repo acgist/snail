@@ -1,9 +1,9 @@
 /**
- * 建表SQL语句
- * 如果项目启动没有初始化数据库，使用该SQL语句初始化数据库。
+ * <p>建表SQL语句</p>
+ * <p>如果项目启动数据库没有初始化，使用该SQL语句初始化数据库。</p>
  */
 /**
- * 配置
+ * <p>配置</p>
  */
 create table tb_config (
 	`id` VARCHAR(36) NOT NULL,
@@ -14,7 +14,7 @@ create table tb_config (
 	PRIMARY KEY (`id`)
 );
 /**
- * 任务
+ * <p>任务</p>
  */
 create table tb_task (
 	`id` VARCHAR(36) NOT NULL,
