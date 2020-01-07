@@ -14,7 +14,7 @@ import com.acgist.snail.utils.DateUtils;
 public final class SpeedSession {
 	
 	/**
-	 * <p>采样次数</p>
+	 * <p>采样次数：{@value}</p>
 	 */
 	private static final byte SAMPLE_SIZE = 10;
 	/**
@@ -41,7 +41,7 @@ public final class SpeedSession {
 	private byte index = 0;
 	/**
 	 * <p>速度采样集合</p>
-	 * <p>每次计算速度时采样一次放入到集合，删除超过{@linkplain #SAMPLE_SIZE 采样次数}的样本。</p>
+	 * <p>每次计算速度时采样一次放入到集合，覆盖超过{@linkplain #SAMPLE_SIZE 采样次数}的样本。</p>
 	 */
 	private final int[] bufferSamples = new int[SAMPLE_SIZE];
 	
@@ -73,6 +73,8 @@ public final class SpeedSession {
 
 	/**
 	 * <p>计算速度</p>
+	 * 
+	 * @return 速度
 	 */
 	private long calculateSpeed() {
 		// 采样
@@ -93,8 +95,8 @@ public final class SpeedSession {
 	 * <p>重置速度统计</p>
 	 */
 	public void reset() {
-		for (int index = 0; index < bufferSamples.length; index++) {
-			bufferSamples[index] = 0;
+		for (int index = 0; index < this.bufferSamples.length; index++) {
+			this.bufferSamples[index] = 0;
 		}
 	}
 	

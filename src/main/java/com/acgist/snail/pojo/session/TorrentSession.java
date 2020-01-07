@@ -151,6 +151,15 @@ public final class TorrentSession {
 	 */
 	private ScheduledFuture<?> trackerLauncherGroupTimer;
 	
+	/**
+	 * <p>BT任务信息</p>
+	 * <p>磁力链接下载种子文件可以为空</p>
+	 * 
+	 * @param infoHash InfoHash
+	 * @param torrent 种子文件
+	 * 
+	 * @throws DownloadException 下载异常
+	 */
 	private TorrentSession(InfoHash infoHash, Torrent torrent) throws DownloadException {
 		if(infoHash == null) {
 			throw new DownloadException("创建TorrentSession失败（InfoHash为空）");
@@ -159,6 +168,9 @@ public final class TorrentSession {
 		this.infoHash = infoHash;
 	}
 	
+	/**
+	 * @see #TorrentSession(InfoHash, Torrent)
+	 */
 	public static final TorrentSession newInstance(InfoHash infoHash, Torrent torrent) throws DownloadException {
 		return new TorrentSession(infoHash, torrent);
 	}
@@ -166,7 +178,11 @@ public final class TorrentSession {
 	/**
 	 * <p>磁力链接转换</p>
 	 * 
+	 * @param taskSession 任务信息
+	 * 
 	 * @return true-下载完成；false-等待下载；
+	 * 
+	 * @throws DownloadException 下载异常
 	 */
 	public boolean magnet(ITaskSession taskSession) throws DownloadException {
 		this.action = Action.MAGNET;
@@ -188,7 +204,12 @@ public final class TorrentSession {
 	
 	/**
 	 * <p>开始上传</p>
-	 * <p>准备：定时线程池、文件流、Peer上传</p>
+	 * 
+	 * @param taskSession 任务信息
+	 * 
+	 * @return BT任务信息
+	 * 
+	 * @throws DownloadException 下载异常
 	 */
 	public TorrentSession upload(ITaskSession taskSession) throws DownloadException {
 		this.taskSession = taskSession;
@@ -212,13 +233,14 @@ public final class TorrentSession {
 	
 	/**
 	 * <p>开始下载</p>
-	 * <p>准备：线程池、Tracker、DHT、Peer下载</p>
-	 * <p>如果任务已经完成或文件已经下载完成不会再加载准备数据</p>
+	 * <p>如果任务已经完成或文件已经下载完成直接返回下载完成</p>
 	 * <p>需要先调用{@link #upload(ITaskSession)}对任务进行上传</p>
 	 * 
 	 * @param findPeer 是否查找Peer（加载Tracker、DHT）：true-查找；false-不查找；
 	 * 
 	 * @return true-下载完成；false-等待下载；
+	 * 
+	 * @throws DownloadException 下载异常
 	 */
 	public boolean download(boolean findPeer) throws DownloadException {
 		this.action = Action.TORRENT;
@@ -253,6 +275,8 @@ public final class TorrentSession {
 
 	/**
 	 * <p>加载磁力链接</p>
+	 * 
+	 * @throws DownloadException 下载异常
 	 */
 	private void loadMagnet() throws DownloadException {
 		this.magnet = MagnetBuilder.newInstance(this.taskSession.getUrl()).build();
@@ -317,7 +341,7 @@ public final class TorrentSession {
 	
 	/**
 	 * <p>加载PeerUploader下载</p>
-	 * <p>如果连接的Peer已经解除阻塞，开始发送下载请求。</p>
+	 * <p>如果连接的Peer可以下载，开始发送下载请求。</p>
 	 */
 	private void loadPeerUploaderDownload() {
 		this.submit(() -> {
@@ -327,6 +351,8 @@ public final class TorrentSession {
 	
 	/**
 	 * <p>加载Tracker</p>
+	 * 
+	 * @throws DownloadException 下载异常
 	 */
 	private void loadTrackerLauncherGroup() throws DownloadException {
 		this.trackerLauncherGroup = TrackerLauncherGroup.newInstance(this);
@@ -376,6 +402,8 @@ public final class TorrentSession {
 	
 	/**
 	 * <p>异步执行</p>
+	 * 
+	 * @param runnable 任务
 	 */
 	public void submit(Runnable runnable) {
 		this.executor.submit(runnable);
@@ -383,6 +411,12 @@ public final class TorrentSession {
 	
 	/**
 	 * <p>定时任务（不重复执行）</p>
+	 * 
+	 * @param delay 延迟时间
+	 * @param unit 时间单位
+	 * @param runnable 任务
+	 * 
+	 * @return 定时任务
 	 */
 	public ScheduledFuture<?> timer(long delay, TimeUnit unit, Runnable runnable) {
 		TimerArgumentException.verify(delay);
@@ -391,6 +425,13 @@ public final class TorrentSession {
 	
 	/**
 	 * <p>定时任务（重复执行）</p>
+	 * 
+	 * @param delay 延迟时间
+	 * @param period 执行周期
+	 * @param unit 时间单位
+	 * @param runnable 任务
+	 * 
+	 * @return 定时任务
 	 */
 	public ScheduledFuture<?> timer(long delay, long period, TimeUnit unit, Runnable runnable) {
 		TimerArgumentException.verify(delay);
@@ -400,6 +441,13 @@ public final class TorrentSession {
 	
 	/**
 	 * <p>定时任务（重复执行）</p>
+	 * 
+	 * @param delay 延迟时间
+	 * @param period 执行周期
+	 * @param unit 时间单位
+	 * @param runnable 任务
+	 * 
+	 * @return 定时任务
 	 */
 	public ScheduledFuture<?> timerFixedDelay(long delay, long period, TimeUnit unit, Runnable runnable) {
 		TimerArgumentException.verify(delay);
@@ -408,7 +456,9 @@ public final class TorrentSession {
 	}
 	
 	/**
-	 * <p>设置种子文件中被选择下载文件并返回文件列表</p>
+	 * <p>设置种子文件中选择下载的文件并返回文件列表</p>
+	 * 
+	 * @return 选择下载文件列表
 	 */
 	private List<TorrentFile> buildSelectedFiles() {
 		final TorrentInfo torrentInfo = this.torrent.getInfo();
@@ -425,12 +475,11 @@ public final class TorrentSession {
 	}
 
 	/**
-	 * <dl>
-	 * 	<dt>检测任务是否下载完成</dt>
-	 * 	<dd>如果已经完成直接返回完成</dd>
-	 * 	<dd>BT任务：文件下载完成</dd>
-	 * 	<dd>磁力链接：种子文件下载完成</dd>
-	 * </dl>
+	 * <p>检测任务是否下载完成</p>
+	 * <p>BT任务：文件下载完成</p>
+	 * <p>磁力链接：种子文件下载完成</p>
+	 * 
+	 * @return 是否下载完成
 	 */
 	public boolean checkCompleted() {
 		if(completed()) {
@@ -508,6 +557,30 @@ public final class TorrentSession {
 	}
 
 	/**
+	 * <p>保存种子文件</p>
+	 * <p>重新加载种子文件和InfoHash</p>
+	 */
+	public void saveTorrent() {
+		final TorrentBuilder builder = TorrentBuilder.newInstance(this.infoHash, this.trackerLauncherGroup.trackers());
+		final String torrentFilePath = builder.buildFile(this.taskSession.downloadFolder().getPath());
+		this.taskSession.setTorrent(torrentFilePath); // 保存种子文件路径
+		this.taskSession.update();
+		try {
+			this.torrent = TorrentManager.loadTorrent(torrentFilePath);
+			this.infoHash = this.torrent.infoHash();
+		} catch (DownloadException e) {
+			LOGGER.error("解析种子异常", e);
+		}
+		final var downloader = this.taskSession.downloader();
+		final long size = FileUtils.fileSize(torrentFilePath);
+		this.taskSession.setSize(size); // 设置任务大小
+		this.taskSession.downloadSize(size); // 设置已下载大小
+		if(downloader != null) {
+			downloader.unlockDownload();
+		}
+	}
+	
+	/**
 	 * <p>发送have消息</p>
 	 * 
 	 * @param index Piece索引
@@ -517,11 +590,175 @@ public final class TorrentSession {
 	public void have(int index) {
 		PeerManager.getInstance().have(this.infoHashHex(), index);
 	}
+	
+	/**
+	 * <p>获取任务动作</p>
+	 * 
+	 * @return 任务动作
+	 */
+	public Action action() {
+		return this.action;
+	}
+	
+	/**
+	 * <p>获取磁力链接</p>
+	 * 
+	 * @return 磁力链接
+	 */
+	public Magnet magnet() {
+		return this.magnet;
+	}
+	
+	/**
+	 * <p>获取种子信息</p>
+	 * 
+	 * @return 种子信息
+	 */
+	public Torrent torrent() {
+		return this.torrent;
+	}
+	
+	/**
+	 * <p>获取InfoHash</p>
+	 * 
+	 * @return InfoHash
+	 */
+	public InfoHash infoHash() {
+		return this.infoHash;
+	}
+	
+	/**
+	 * <p>获取任务信息</p>
+	 * 
+	 * @return 任务信息
+	 */
+	public ITaskSession taskSession() {
+		return this.taskSession;
+	}
+	
+	/**
+	 * <p>判断是否是私有种子</p>
+	 * 
+	 * @return 是否是私有种子
+	 */
+	public boolean isPrivateTorrent() {
+		if(this.torrent == null) {
+			return false;
+		}
+		return this.torrent.getInfo().isPrivateTorrent();
+	}
+	
+	/**
+	 * <p>判断是否准备完成</p>
+	 * 
+	 * @return 是否准备完成
+	 */
+	public boolean done() {
+		return this.done;
+	}
 
+	/**
+	 * <p>判断是否可以上传</p>
+	 * 
+	 * @return 是否可以上传
+	 */
+	public boolean uploadable() {
+		return this.uploadable;
+	}
+	
+	/**
+	 * <p>判断是否可以下载</p>
+	 * 
+	 * @return 是否可以下载
+	 */
+	public boolean downloadable() {
+		return this.downloadable;
+	}
+	
+	/**
+	 * <p>获取任务名称</p>
+	 * 
+	 * @return 任务名称
+	 */
+	public String name() {
+		// 任务加载后没有开始下载时任务信息可能为空
+		if(this.taskSession == null) {
+			if(this.torrent == null) {
+				return this.infoHash.infoHashHex();
+			} else {
+				return this.torrent.name();
+			}
+		} else {
+			return this.taskSession.getName();
+		}
+	}
+	
+	/**
+	 * @see {@link InfoHash#infoHashHex()}
+	 */
+	public String infoHashHex() {
+		return this.infoHash.infoHashHex();
+	}
+	
+	/**
+	 * @see {@link TaskSession#getSize()}
+	 */
+	public long size() {
+		return this.taskSession.getSize();
+	}
+	
+	/**
+	 * @see {@link ITaskSession#downloadSize(long)}
+	 */
+	public void resize(long size) {
+		this.taskSession.downloadSize(size);
+	}
+	
+	/**
+	 * @see {@link ITaskSession#download()}
+	 */
+	public boolean downloading() {
+		return this.taskSession.download();
+	}
+	
+	/**
+	 * @see {@link ITaskSession#complete()}
+	 */
+	public boolean completed() {
+		return this.taskSession.complete();
+	}
+	
+	/**
+	 * @see {@link ITaskSession#statistics()}
+	 */
+	public IStatisticsSession statistics() {
+		return this.taskSession.statistics();
+	}
+	
+	/**
+	 * @see {@link DhtLauncher#put(String, Integer)}
+	 */
+	public void newDhtNode(String host, int port) {
+		if(this.dhtLauncher != null) {
+			this.dhtLauncher.put(host, port);
+		}
+	}
+	
+	/**
+	 * @see {@link TorrentStreamGroup#reload(String, List, TorrentSession)}
+	 */
+	public int reload() {
+		return this.torrentStreamGroup.reload(
+			this.taskSession.downloadFolder().getPath(),
+			buildSelectedFiles(),
+			this
+		);
+	}
+	
 	/**
 	 * @see {@link TorrentStreamGroup#pick(BitSet, BitSet)}
 	 */
-	public TorrentPiece pick(final BitSet peerPieces, final BitSet suggestPieces) {
+	public TorrentPiece pick(BitSet peerPieces, BitSet suggestPieces) {
 		return torrentStreamGroup.pick(peerPieces, suggestPieces);
 	}
 	
@@ -551,122 +788,6 @@ public final class TorrentSession {
 	 */
 	public void undone(TorrentPiece piece) {
 		this.torrentStreamGroup.undone(piece);
-	}
-	
-	/**
-	 * <p>保存种子文件</p>
-	 * <p>重新加载种子文件和InfoHash</p>
-	 */
-	public void saveTorrent() {
-		final TorrentBuilder builder = TorrentBuilder.newInstance(this.infoHash, this.trackerLauncherGroup.trackers());
-		final String torrentFilePath = builder.buildFile(this.taskSession.downloadFolder().getPath());
-		this.taskSession.setTorrent(torrentFilePath); // 保存种子文件路径
-		this.taskSession.update();
-		try {
-			this.torrent = TorrentManager.loadTorrent(torrentFilePath);
-			this.infoHash = this.torrent.infoHash();
-		} catch (DownloadException e) {
-			LOGGER.error("解析种子异常", e);
-		}
-		final var downloader = this.taskSession.downloader();
-		final long size = FileUtils.fileSize(torrentFilePath);
-		this.taskSession.setSize(size); // 设置任务大小
-		this.taskSession.downloadSize(size); // 设置已下载大小
-		if(downloader != null) {
-			downloader.unlockDownload();
-		}
-	}
-	
-	/**
-	 * @see {@link PeerUploaderGroup#newPeerUploader(PeerSession, PeerSubMessageHandler)}
-	 */
-	public PeerUploader newPeerUploader(PeerSession peerSession, PeerSubMessageHandler peerSubMessageHandler) {
-		return this.peerUploaderGroup.newPeerUploader(peerSession, peerSubMessageHandler);
-	}
-	
-	/**
-	 * @see {@link DhtLauncher#put(String, Integer)}
-	 */
-	public void newDhtNode(String host, int port) {
-		if(this.dhtLauncher != null) {
-			this.dhtLauncher.put(host, port);
-		}
-	}
-	
-	/**
-	 * <p>重新设置下载大小</p>
-	 */
-	public void resize(long size) {
-		this.taskSession.downloadSize(size);
-	}
-
-	/**
-	 * <p>是否可以上传</p>
-	 */
-	public boolean uploadable() {
-		return this.uploadable;
-	}
-	
-	/**
-	 * <p>是否可以下载</p>
-	 */
-	public boolean downloadable() {
-		return this.downloadable;
-	}
-	
-	/**
-	 * <p>任务是否下载中</p>
-	 */
-	public boolean downloading() {
-		return this.taskSession.download();
-	}
-	
-	/**
-	 * <p>任务是否完成</p>
-	 */
-	public boolean completed() {
-		return this.taskSession.complete();
-	}
-	
-	/**
-	 * @return 是否准备完成
-	 */
-	public boolean done() {
-		return this.done;
-	}
-	
-	/**
-	 * <p>任务名称</p>
-	 * <p>需要验证{@linkplain #taskSession 任务信息}是否为空：任务加载后没有开始下载时会导致空指针</p>
-	 */
-	public String name() {
-		if(this.taskSession == null) {
-			if(this.torrent == null) {
-				return this.infoHash.infoHashHex();
-			} else {
-				return this.torrent.name();
-			}
-		} else {
-			return this.taskSession.getName();
-		}
-	}
-	
-	/**
-	 * @see {@link TorrentStreamGroup#reload(String, List, TorrentSession)}
-	 */
-	public int reload() {
-		return this.torrentStreamGroup.reload(
-			this.taskSession.downloadFolder().getPath(),
-			buildSelectedFiles(),
-			this
-		);
-	}
-	
-	/**
-	 * @see {@link TaskSession#getSize()}
-	 */
-	public long size() {
-		return this.taskSession.getSize();
 	}
 	
 	/**
@@ -712,62 +833,10 @@ public final class TorrentSession {
 	}
 	
 	/**
-	 * @return 任务动作
+	 * @see {@link PeerUploaderGroup#newPeerUploader(PeerSession, PeerSubMessageHandler)}
 	 */
-	public Action action() {
-		return this.action;
-	}
-	
-	/**
-	 * @return 磁力链接
-	 */
-	public Magnet magnet() {
-		return this.magnet;
-	}
-	
-	/**
-	 * @return 种子信息
-	 */
-	public Torrent torrent() {
-		return this.torrent;
-	}
-	
-	/**
-	 * @return InfoHash
-	 */
-	public InfoHash infoHash() {
-		return this.infoHash;
-	}
-	
-	/**
-	 * @see {@link InfoHash#infoHashHex()}
-	 */
-	public String infoHashHex() {
-		return this.infoHash.infoHashHex();
-	}
-	
-	/**
-	 * @return 任务信息
-	 */
-	public ITaskSession taskSession() {
-		return this.taskSession;
-	}
-	
-	/**
-	 * @return 是否是私有种子
-	 */
-	public boolean isPrivateTorrent() {
-		if(this.torrent == null) {
-			return false;
-		}
-		return this.torrent.getInfo().isPrivateTorrent();
-	}
-	
-	/**
-	 * <p>获取任务统计信息</p>
-	 */
-	public IStatisticsSession statistics() {
-		return this.taskSession.statistics();
+	public PeerUploader newPeerUploader(PeerSession peerSession, PeerSubMessageHandler peerSubMessageHandler) {
+		return this.peerUploaderGroup.newPeerUploader(peerSession, peerSubMessageHandler);
 	}
 	
 }

@@ -50,8 +50,6 @@ public class BaseEntity implements Serializable {
 	}
 
 	/**
-	 * <p>自动设置</p>
-	 * 
 	 * @param id ID
 	 */
 	public void setId(String id) {

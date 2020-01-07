@@ -90,6 +90,8 @@ public final class PeerConnectSession {
 	
 	/**
 	 * <p>客户端是否阻塞Peer</p>
+	 * 
+	 * @return 是否阻塞
 	 */
 	public boolean isAmChoked() {
 		return this.amChoked;
@@ -97,6 +99,8 @@ public final class PeerConnectSession {
 	
 	/**
 	 * <p>客户端是否解除Peer阻塞</p>
+	 * 
+	 * @return 是否解除阻塞
 	 */
 	public boolean isAmUnchoked() {
 		return !this.amChoked;
@@ -104,6 +108,8 @@ public final class PeerConnectSession {
 	
 	/**
 	 * <p>客户端是否对Peer感兴趣</p>
+	 * 
+	 * @return 是否感兴趣
 	 */
 	public boolean isAmInterested() {
 		return this.amInterested;
@@ -111,6 +117,8 @@ public final class PeerConnectSession {
 	
 	/**
 	 * <p>客户端是否对Peer不感兴趣</p>
+	 * 
+	 * @return 是否不感兴趣
 	 */
 	public boolean isAmNotInterested() {
 		return !this.amInterested;
@@ -118,6 +126,8 @@ public final class PeerConnectSession {
 	
 	/**
 	 * <p>Peer是否阻塞客户端</p>
+	 * 
+	 * @return 是否阻塞
 	 */
 	public boolean isPeerChoked() {
 		return this.peerChoked;
@@ -125,6 +135,8 @@ public final class PeerConnectSession {
 	
 	/**
 	 * <p>Peer是否解除客户端阻塞</p>
+	 * 
+	 * @return 是否解除阻塞
 	 */
 	public boolean isPeerUnchoked() {
 		return !this.peerChoked;
@@ -132,6 +144,8 @@ public final class PeerConnectSession {
 	
 	/**
 	 * <p>Peer是否对客户端感兴趣</p>
+	 * 
+	 * @return 是否感兴趣
 	 */
 	public boolean isPeerInterested() {
 		return this.peerInterested;
@@ -139,20 +153,28 @@ public final class PeerConnectSession {
 	
 	/**
 	 * <p>Peer是否对客户端不感兴趣</p>
+	 * 
+	 * @return 是否不感兴趣
 	 */
 	public boolean isPeerNotInterested() {
 		return !this.peerInterested;
 	}
 	
 	/**
+	 * <p>判断是否可以上传</p>
 	 * <p>可以上传：Peer对客户端感兴趣并且客户端未阻塞Peer</p>
+	 * 
+	 * @return 是否可以上传
 	 */
 	public boolean uploadable() {
 		return this.peerInterested && !this.amChoked;
 	}
 	
 	/**
+	 * <p>判断是否可以下载</p>
 	 * <p>可以下载：客户端对Peer感兴趣并且Peer未阻塞客户端</p>
+	 * 
+	 * @return 是否可以下载
 	 */
 	public boolean downloadable() {
 		return this.amInterested && !this.peerChoked;
