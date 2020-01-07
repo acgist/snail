@@ -8,7 +8,8 @@ import com.acgist.snail.system.bencode.BEncodeEncoder;
 import com.acgist.snail.system.exception.NetException;
 
 /**
- * <p>Application消息（系统消息）</p>
+ * <p>Application消息</p>
+ * <p>通过系统消息可以实现系统管理和任务管理</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -18,11 +19,11 @@ public class ApplicationMessage {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationMessage.class);
 	
 	/**
-	 * <p>失败</p>
+	 * <p>失败：{@value}</p>
 	 */
 	public static final String FAIL = "fail";
 	/**
-	 * <p>成功</p>
+	 * <p>成功：{@value}</p>
 	 */
 	public static final String SUCCESS = "success";
 
@@ -67,6 +68,10 @@ public class ApplicationMessage {
 
 		/**
 		 * <p>消息类型转换（忽略大小写）</p>
+		 * 
+		 * @param name 类型名称
+		 * 
+		 * @return 消息类型
 		 */
 		public static final Type valueOfName(String name) {
 			final var types = Type.values();
@@ -102,7 +107,11 @@ public class ApplicationMessage {
 	}
 	
 	/**
-	 * <p>读取系统消息（B编码）</p>
+	 * <p>读取系统文本消息（B编码）</p>
+	 * 
+	 * @param content 系统文本消息
+	 * 
+	 * @return 系统消息
 	 */
 	public static final ApplicationMessage valueOf(String content) {
 		try {
@@ -119,7 +128,7 @@ public class ApplicationMessage {
 			}
 			return ApplicationMessage.message(messageType, body);
 		} catch (NetException e) {
-			LOGGER.error("读取系统消息异常", e);
+			LOGGER.error("读取系统消息异常：{}", content, e);
 		}
 		return null;
 	}
@@ -128,6 +137,8 @@ public class ApplicationMessage {
 	 * <p>消息</p>
 	 * 
 	 * @param type 消息类型
+	 * 
+	 * @return 系统消息
 	 */
 	public static final ApplicationMessage message(Type type) {
 		return message(type, null);
@@ -138,6 +149,8 @@ public class ApplicationMessage {
 	 * 
 	 * @param type 消息类型
 	 * @param body 消息内容
+	 * 
+	 * @return 系统消息
 	 */
 	public static final ApplicationMessage message(Type type, String body) {
 		return new ApplicationMessage(type, body);
@@ -147,6 +160,8 @@ public class ApplicationMessage {
 	 * <p>文本</p>
 	 * 
 	 * @param body 消息内容
+	 * 
+	 * @return 系统消息
 	 */
 	public static final ApplicationMessage text(String body) {
 		return message(Type.TEXT, body);
@@ -156,6 +171,8 @@ public class ApplicationMessage {
 	 * <p>响应</p>
 	 * 
 	 * @param body 消息内容
+	 * 
+	 * @return 系统消息
 	 */
 	public static final ApplicationMessage response(String body) {
 		return message(Type.RESPONSE, body);
@@ -178,7 +195,9 @@ public class ApplicationMessage {
 	}
 	
 	/**
-	 * <p>转换为B编码字符串</p>
+	 * <p>转为系统文本消息（B编码）</p>
+	 * 
+	 * @return 系统文本消息
 	 */
 	@Override
 	public String toString() {

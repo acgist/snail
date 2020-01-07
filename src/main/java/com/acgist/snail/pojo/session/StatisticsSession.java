@@ -173,6 +173,8 @@ public final class StatisticsSession implements IStatisticsSession {
 	
 	/**
 	 * <p>上传速度限制</p>
+	 * 
+	 * @param buffer 下载数据大小
 	 */
 	private void uploadBufferLimit(long buffer) {
 		final long interval = System.currentTimeMillis() - this.uploadBufferLimitTime;
@@ -208,6 +210,8 @@ public final class StatisticsSession implements IStatisticsSession {
 	
 	/**
 	 * <p>下载速度限制</p>
+	 * 
+	 * @param buffer 下载数据大小
 	 */
 	private void downloadBufferLimit(long buffer) {
 		final long interval = System.currentTimeMillis() - this.downloadBufferLimitTime;

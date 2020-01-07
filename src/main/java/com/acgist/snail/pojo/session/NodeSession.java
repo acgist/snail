@@ -84,7 +84,7 @@ public final class NodeSession implements Comparable<NodeSession> {
 		}
 		return 0;
 	}
-
+	
 	@Override
 	public int hashCode() {
 		return ObjectUtils.hashCode(this.id);
