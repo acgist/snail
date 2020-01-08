@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.acgist.snail.system.exception.ArgumentException;
+
 /**
  * <p>数据库结果集包装器</p>
  * 
@@ -13,12 +15,14 @@ import java.util.Map;
 public final class ResultSetWrapper {
 
 	/**
-	 * <p>结果集Map</p>
+	 * <p>结果集数据</p>
+	 * <p>key=字段名称（大写）</p>
+	 * <p>value=字段值</p>
 	 */
 	private final Map<String, Object> data = new HashMap<>();
 	
 	/**
-	 * <p>设置结果集</p>
+	 * <p>设置结果集数据</p>
 	 * 
 	 * @param key 字段名称
 	 * @param value 字段值
@@ -28,6 +32,10 @@ public final class ResultSetWrapper {
 	}
 	
 	/**
+	 * <p>获取字符串</p>
+	 * 
+	 * @param key 字段名称
+	 * 
 	 * @return 字符串
 	 */
 	public String getString(String key) {
@@ -35,6 +43,10 @@ public final class ResultSetWrapper {
 	}
 	
 	/**
+	 * <p>获取Integer</p>
+	 * 
+	 * @param key 字段名称
+	 * 
 	 * @return Integer
 	 */
 	public Integer getInteger(String key) {
@@ -42,6 +54,10 @@ public final class ResultSetWrapper {
 	}
 
 	/**
+	 * <p>获取Long</p>
+	 * 
+	 * @param key 字段名称
+	 * 
 	 * @return Long
 	 */
 	public Long getLong(String key) {
@@ -49,6 +65,10 @@ public final class ResultSetWrapper {
 	}
 
 	/**
+	 * <p>获取时间</p>
+	 * 
+	 * @param key 字段名称
+	 * 
 	 * @return 时间
 	 */
 	public Date getDate(String key) {
@@ -56,9 +76,16 @@ public final class ResultSetWrapper {
 	}
 
 	/**
+	 * <p>获取对象</p>
+	 * 
+	 * @param key 字段名称
+	 * 
 	 * @return 对象
 	 */
 	public Object getObject(String key) {
+		if(key == null) {
+			throw new ArgumentException("字段名称为空");
+		}
 		return this.data.get(key.toUpperCase());
 	}
 
