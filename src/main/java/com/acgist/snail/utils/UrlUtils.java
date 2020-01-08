@@ -34,7 +34,8 @@ public final class UrlUtils {
 	 */
 	public static final String encode(String content) {
 		try {
-			return URLEncoder.encode(content, SystemConfig.DEFAULT_CHARSET)
+			return URLEncoder
+				.encode(content, SystemConfig.DEFAULT_CHARSET)
 				.replace("+", "%20"); // 空格变成加号
 		} catch (UnsupportedEncodingException e) {
 			LOGGER.error("URL编码异常：{}", content, e);

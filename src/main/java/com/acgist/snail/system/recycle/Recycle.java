@@ -29,7 +29,7 @@ public abstract class Recycle {
 	 */
 	protected Recycle(String path) {
 		if(StringUtils.isEmpty(path)) {
-			throw new ArgumentException("回收站路径格式错误：" + path);
+			throw new ArgumentException("路径格式错误：" + path);
 		}
 		this.path = path;
 		this.file = new File(path);
@@ -38,7 +38,7 @@ public abstract class Recycle {
 	/**
 	 * <p>删除文件</p>
 	 * 
-	 * @return true-删除成功；false-删除失败；
+	 * @return {@code true}-成功；{@code false}-失败；
 	 */
 	public abstract boolean delete();
 
