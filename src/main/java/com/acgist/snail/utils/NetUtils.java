@@ -107,6 +107,7 @@ public final class NetUtils {
 				final int nowIndex = networkInterface.getIndex();
 				networkInterface.getInterfaceAddresses().forEach(interfaceAddress -> {
 					final var inetAddress = interfaceAddress.getAddress(); // 地址
+					// TODO：获取网关IP
 //					final var broadcast = interfaceAddress.getBroadcast(); // 广播地址
 //					final var mask = interfaceAddress.getNetworkPrefixLength(); // mask
 					if(
