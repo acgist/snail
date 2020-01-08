@@ -68,6 +68,11 @@ public final class UpnpService {
 	 */
 	private String serviceType;
 	/**
+	 * <p>映射状态</p>
+	 * <p>如果已经映射设置为{@code true}，防止重复映射。</p>
+	 */
+	private volatile boolean mapping = false;
+	/**
 	 * <p>可用状态</p>
 	 */
 	private volatile boolean available = false;
@@ -91,6 +96,8 @@ public final class UpnpService {
 	 * @return UpnpService
 	 * 
 	 * @throws NetException 网络异常
+	 * 
+	 * TODO：验证网关IP
 	 */
 	public UpnpService load(String location) throws NetException {
 		LOGGER.info("UPNP设置描述文件地址：{}", location);
@@ -108,6 +115,7 @@ public final class UpnpService {
 		for (int index = 0; index < serviceTypes.size(); index++) {
 			final String serviceType = serviceTypes.get(index);
 			if(StringUtils.startsWith(serviceType, SERVICE_WANIPC)) {
+				this.mapping = false;
 				this.available = true;
 				this.serviceType = serviceType;
 				this.controlUrl = controlUrls.get(index);
@@ -247,6 +255,10 @@ public final class UpnpService {
 		if(!this.available) {
 			return;
 		}
+		if(this.mapping) {
+			return;
+		}
+		this.mapping = true;
 		final String externalIpAddress = this.getExternalIPAddress();
 		if(NetUtils.isLocalIp(externalIpAddress)) {
 			LOGGER.warn("UPNP端口映射失败：外网IP地址为内网地址");
