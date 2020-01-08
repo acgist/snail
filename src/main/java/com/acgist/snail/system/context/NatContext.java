@@ -10,6 +10,7 @@ import com.acgist.snail.net.upnp.UpnpClient;
 import com.acgist.snail.net.upnp.UpnpServer;
 import com.acgist.snail.net.upnp.bootstrap.UpnpService;
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
@@ -44,11 +45,15 @@ public final class NatContext {
 	 */
 	public void init() {
 		LOGGER.info("初始化NAT服务");
-		UpnpClient.newInstance().mSearch();
-		synchronized (this.upnpLock) {
-			ThreadUtils.wait(this.upnpLock, Duration.ofSeconds(UPNP_CONFIG_TIMEOUT));
+		if(NetUtils.isLocalIp(NetUtils.localHostAddress())) {
+			UpnpClient.newInstance().mSearch();
+			synchronized (this.upnpLock) {
+				ThreadUtils.wait(this.upnpLock, Duration.ofSeconds(UPNP_CONFIG_TIMEOUT));
+			}
+			StunService.getInstance().mapping();
+		} else {
+			LOGGER.info("已是公网IP地址忽略NAT设置");
 		}
-		StunService.getInstance().mapping();
 	}
 	
 	/**
@@ -56,8 +61,10 @@ public final class NatContext {
 	 */
 	public void shutdown() {
 		LOGGER.info("关闭NAT服务");
-		UpnpService.getInstance().release();
-		UpnpServer.getInstance().close();
+		if(NetUtils.isLocalIp(NetUtils.localHostAddress())) {
+			UpnpService.getInstance().release();
+			UpnpServer.getInstance().close();
+		}
 	}
 
 	/**

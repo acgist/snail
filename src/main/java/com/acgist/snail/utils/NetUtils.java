@@ -105,7 +105,10 @@ public final class NetUtils {
 			// 处理多个物理网卡和虚拟网卡
 			NetworkInterface.networkInterfaces().forEach(networkInterface -> {
 				final int nowIndex = networkInterface.getIndex();
-				networkInterface.getInetAddresses().asIterator().forEachRemaining(inetAddress -> {
+				networkInterface.getInterfaceAddresses().forEach(interfaceAddress -> {
+					final var inetAddress = interfaceAddress.getAddress(); // 地址
+//					final var broadcast = interfaceAddress.getBroadcast(); // 广播地址
+//					final var mask = interfaceAddress.getNetworkPrefixLength(); // mask
 					if(
 						index.get() > nowIndex && // 索引最小网卡
 						inetAddress.isSiteLocalAddress() && // 本机地址
