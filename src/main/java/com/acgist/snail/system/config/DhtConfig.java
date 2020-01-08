@@ -3,7 +3,6 @@ package com.acgist.snail.system.config;
 import java.time.Duration;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -213,8 +212,7 @@ public final class DhtConfig extends PropertiesConfig {
 	}
 	
 	private void init() {
-		final Properties properties = this.properties.properties();
-		properties.entrySet().forEach(entry -> {
+		this.properties.entrySet().forEach(entry -> {
 			final String nodeId = (String) entry.getKey();
 			final String address = (String) entry.getValue();
 			if(StringUtils.isNotEmpty(nodeId) && StringUtils.isNotEmpty(address)) {

@@ -22,7 +22,13 @@ import org.slf4j.LoggerFactory;
 public final class IoUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(IoUtils.class);
-
+	
+	/**
+	 * <p>工具类禁止实例化</p>
+	 */
+	private IoUtils() {
+	}
+	
 	/**
 	 * <p>关闭{@code Closeable}</p>
 	 * 

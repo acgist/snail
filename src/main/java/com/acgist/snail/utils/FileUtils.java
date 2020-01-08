@@ -36,6 +36,12 @@ public final class FileUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FileUtils.class);
 	
 	/**
+	 * <p>工具类禁止实例化</p>
+	 */
+	private FileUtils() {
+	}
+	
+	/**
 	 * <p>文件大小单位</p>
 	 */
 	private static final String[] FILE_LENGTH_UNIT = {"B", "KB", "M", "G", "T"};

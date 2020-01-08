@@ -20,6 +20,12 @@ public final class UrlUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UrlUtils.class);
 	
 	/**
+	 * <p>工具类禁止实例化</p>
+	 */
+	private UrlUtils() {
+	}
+	
+	/**
 	 * <p>对{@code content}进行URL编码</p>
 	 * 
 	 * @param content 待编码内容

@@ -15,6 +15,12 @@ import com.acgist.snail.system.exception.ArgumentException;
 public final class DigestUtils {
 	
 	/**
+	 * <p>工具类禁止实例化</p>
+	 */
+	private DigestUtils() {
+	}
+	
+	/**
 	 * <p>散列算法：{@value}</p>
 	 */
 	public static final String ALGO_MD5 = "MD5";

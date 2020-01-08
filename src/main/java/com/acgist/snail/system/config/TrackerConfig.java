@@ -2,7 +2,6 @@ package com.acgist.snail.system.config;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -141,8 +140,7 @@ public final class TrackerConfig extends PropertiesConfig {
 	private final List<String> announces = new ArrayList<>();
 	
 	private void init() {
-		final Properties properties = this.properties.properties();
-		properties.entrySet().forEach(entry -> {
+		this.properties.entrySet().forEach(entry -> {
 			final String announce = (String) entry.getValue();
 			if(StringUtils.isNotEmpty(announce)) {
 				announces.add(announce);

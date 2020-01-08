@@ -14,6 +14,12 @@ import java.util.Date;
 public final class DateUtils {
 
 	/**
+	 * <p>工具类禁止实例化</p>
+	 */
+	private DateUtils() {
+	}
+	
+	/**
 	 * <p>默认时间格式：{@value}</p>
 	 */
 	public static final String DEFAULT_PATTERN = "yyyy-MM-dd HH:mm:ss";
