@@ -11,7 +11,13 @@ import java.util.Map;
  * @since 1.0.0
  */
 public final class PeerUtils {
-
+	
+	/**
+	 * <p>工具类禁止实例化</p>
+	 */
+	private PeerUtils() {
+	}
+	
 	/**
 	 * <p>allowedFast固定值：{@value}</p>
 	 */

@@ -12,6 +12,12 @@ import java.util.Map;
 public final class CollectionUtils {
 
 	/**
+	 * <p>工具类禁止实例化</p>
+	 */
+	private CollectionUtils() {
+	}
+	
+	/**
 	 * <p>集合是否为空</p>
 	 * 
 	 * @param 集合

@@ -14,6 +14,12 @@ import com.acgist.snail.system.exception.ArgumentException;
 public final class ArrayUtils {
 
 	/**
+	 * <p>工具类禁止实例化</p>
+	 */
+	private ArrayUtils() {
+	}
+	
+	/**
 	 * <p>查找索引时没有匹配索引：{@value}</p>
 	 */
 	public static final int NO_INDEX = -1;

@@ -16,6 +16,12 @@ public final class LoggerUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(LoggerUtils.class);
 	
 	/**
+	 * <p>工具类禁止实例化</p>
+	 */
+	private LoggerUtils() {
+	}
+	
+	/**
 	 * <p>关闭日志系统</p>
 	 * <p>将日志缓存数据写入日志文件</p>
 	 */

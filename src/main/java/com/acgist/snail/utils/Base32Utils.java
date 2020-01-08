@@ -9,6 +9,12 @@ package com.acgist.snail.utils;
 public final class Base32Utils {
 
 	/**
+	 * <p>工具类禁止实例化</p>
+	 */
+	private Base32Utils() {
+	}
+	
+	/**
 	 * <p>编码字符</p>
 	 */
 	private static final char[] BASE_32_ENCODE = {

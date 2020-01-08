@@ -29,6 +29,12 @@ public final class StringUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(StringUtils.class);
 	
 	/**
+	 * <p>工具类禁止实例化</p>
+	 */
+	private StringUtils() {
+	}
+	
+	/**
 	 * <p>数字正则表达式（正负、整数）：{@value}</p>
 	 */
 	private static final String NUMERIC_REGEX = "\\-?[0-9]+";

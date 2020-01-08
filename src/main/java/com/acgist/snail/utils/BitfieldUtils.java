@@ -12,6 +12,12 @@ import java.util.BitSet;
 public final class BitfieldUtils {
 
 	/**
+	 * <p>工具类禁止实例化</p>
+	 */
+	private BitfieldUtils() {
+	}
+	
+	/**
 	 * <p>Piece位图转为Piece位图字节数组</p>
 	 * <p>注：即使Piece没有下载传递时依旧要使用{@code 0}占位</p>
 	 * 

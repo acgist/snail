@@ -25,6 +25,12 @@ import com.acgist.snail.pojo.wrapper.ResultSetWrapper;
 public final class BeanUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BeanUtils.class);
+
+	/**
+	 * <p>工具类禁止实例化</p>
+	 */
+	private BeanUtils() {
+	}
 	
 	/**
 	 * <p>通过反射生成{@code clazz}实例对象</p>

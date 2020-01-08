@@ -24,6 +24,12 @@ public final class NumberUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(NumberUtils.class);
 	
 	/**
+	 * <p>工具类禁止实例化</p>
+	 */
+	private NumberUtils() {
+	}
+	
+	/**
 	 * <p>最小唯一编号索引：{@value}</p>
 	 */
 	private static final int MIN_INDEX = 1000;

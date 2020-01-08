@@ -17,6 +17,12 @@ public final class BrowseUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(BrowseUtils.class);
 	
 	/**
+	 * <p>工具类禁止实例化</p>
+	 */
+	private BrowseUtils() {
+	}
+	
+	/**
 	 * <p>浏览器打开{@code url}</p>
 	 * 
 	 * @param url URL地址

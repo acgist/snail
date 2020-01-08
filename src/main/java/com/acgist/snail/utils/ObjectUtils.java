@@ -11,7 +11,13 @@ import java.util.Map;
  * @since 1.0.0
  */
 public final class ObjectUtils {
-
+	
+	/**
+	 * <p>工具类禁止实例化</p>
+	 */
+	private ObjectUtils() {
+	}
+	
 	/**
 	 * <p>判断对象是否相等（判断引用）</p>
 	 * 
