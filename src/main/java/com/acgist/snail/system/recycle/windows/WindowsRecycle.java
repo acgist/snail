@@ -26,17 +26,22 @@ public final class WindowsRecycle extends Recycle {
 	private static final Logger LOGGER = LoggerFactory.getLogger(WindowsRecycle.class);
 
 	/**
-	 * <p>回收站路径</p>
+	 * <p>系统：{@value}</p>
+	 */
+	private static final String OS_WINDOWS_10 = "Windows 10";
+	/**
+	 * <p>回收站路径：{@value}</p>
 	 */
 	private static final String RECYCLE_FOLDER = "$RECYCLE.BIN";
 	/**
-	 * <p>删除文件前缀</p>
+	 * <p>删除文件前缀：{@value}</p>
 	 */
 	private static final String FILE_PREFIX = "$R";
 	/**
-	 * <p>删除文件信息文件前缀</p>
+	 * <p>删除文件信息文件前缀：{@value}</p>
 	 */
 	private static final String INFO_PREFIX = "$I";
+	
 	/**
 	 * <p>回收站路径</p>
 	 */
@@ -64,10 +69,7 @@ public final class WindowsRecycle extends Recycle {
 	 * @return true-支持；false-不支持；
 	 */
 	public static final boolean support(String osName) {
-		return osName != null &&
-			(
-				"Windows 10".equals(osName)
-			);
+		return OS_WINDOWS_10.equals(osName);
 	}
 	
 	/**
@@ -80,9 +82,10 @@ public final class WindowsRecycle extends Recycle {
 		if(!recycleFile.exists()) {
 			throw new ArgumentException("回收站文件不存在：" + recycleFolder);
 		}
-		// 获取当前用户回收站：其他用户回收站没有权限查看，所以获取不到文件列表。
+		// 获取当前用户回收站文件目录
 		final File[] files = recycleFile.listFiles();
 		for (File file : files) {
+			// 其他用户回收站没有权限查看：获取不到文件列表
 			if(file.listFiles() != null) {
 				this.recyclePath = file.getAbsolutePath();
 				LOGGER.debug("回收站路径：{}", this.recyclePath);
@@ -105,11 +108,14 @@ public final class WindowsRecycle extends Recycle {
 		}
 		this.deleteFile = this.recyclePath + File.separator + FILE_PREFIX + name;
 		this.deleteInfoFile = this.recyclePath + File.separator + INFO_PREFIX + name;
-		LOGGER.debug("删除文件路径：{}，删除信息文件路径：{}", this.deleteFile, this.deleteInfoFile);
+		LOGGER.debug("删除文件路径：{}，删除文件信息文件路径：{}", this.deleteFile, this.deleteInfoFile);
 	}
 	
 	/**
-	 * <p>创建删除文件</p>
+	 * <p>删除文件</p>
+	 * <p>文件移动成为删除文件</p>
+	 * 
+	 * @return 是否删除成功
 	 */
 	private boolean buildFile() {
 		return this.file.renameTo(new File(this.deleteFile));
@@ -124,6 +130,8 @@ public final class WindowsRecycle extends Recycle {
 	
 	/**
 	 * <p>创建删除文件信息</p>
+	 * 
+	 * @return 删除文件信息
 	 */
 	private byte[] buildInfo() {
 		final String path = buildPath();
@@ -143,15 +151,9 @@ public final class WindowsRecycle extends Recycle {
 		for (byte value : buffer.array()) {
 			out.write(value);
 		}
-		// 固定值 + path.length();
+		// 文件路径长度：固定值 + path.length();
 		final char length = (char) (1 + path.length());
-		if(length > 0xFF) {
-			out.write(length & 0xFF);
-			out.write(length >> 8 & 0xFF);
-		} else {
-			out.write(length);
-			out.write(0);
-		}
+		putChar(out, length);
 		// 固定值
 		for (int index = 0; index < 2; index++) {
 			out.write(0);
@@ -160,13 +162,7 @@ public final class WindowsRecycle extends Recycle {
 		char value;
 		for (int index = 0; index < path.length(); index++) {
 			value = path.charAt(index);
-			if(value > 0xFF) {
-				out.write(value & 0xFF);
-				out.write(value >> 8 & 0xFF);
-			} else {
-				out.write(value);
-				out.write(0);
-			}
+			putChar(out, value);
 		}
 		// 固定值
 		for (int index = 0; index < 2; index++) {
@@ -174,9 +170,38 @@ public final class WindowsRecycle extends Recycle {
 		}
 		return out.toByteArray();
 	}
+	
+	/**
+	 * <p>写入{@code char}数据</p>
+	 * <p>注意：CPU大小端</p>
+	 * 
+	 * @param out 字符流
+	 * @param value 数据
+	 */
+	private void putChar(ByteArrayOutputStream out, char value) {
+		if(value > 0xFF) {
+			if(ByteOrder.nativeOrder() == ByteOrder.LITTLE_ENDIAN) { // 小端
+				out.write(value & 0xFF);
+				out.write(value >> 8 & 0xFF);
+			} else { // 大端
+				out.write(value >> 8 & 0xFF);
+				out.write(value & 0xFF);
+			}
+		} else {
+			if(ByteOrder.nativeOrder() == ByteOrder.LITTLE_ENDIAN) { // 小端
+				out.write(value);
+				out.write(0);
+			} else { // 大端
+				out.write(0);
+				out.write(value);
+			}
+		}
+	}
 
 	/**
 	 * <p>删除文件信息需要将斜杠转换成系统斜杠</p>
+	 * 
+	 * @return 删除文件路径
 	 */
 	private String buildPath() {
 		String path = this.path;

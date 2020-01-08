@@ -19,7 +19,7 @@ public final class RecycleManager {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RecycleManager.class);
 	
 	/**
-	 * <p>回收站</p>
+	 * <p>回收站创建器</p>
 	 */
 	private static final Function<String, Recycle> BUILDER;
 	
@@ -29,12 +29,17 @@ public final class RecycleManager {
 		if(WindowsRecycle.support(osName)) {
 			BUILDER = (path) -> new WindowsRecycle(path);
 		} else {
+			LOGGER.warn("不支持回收站：{}", osName);
 			BUILDER = null;
 		}
 	}
 	
 	/**
 	 * <p>创建回收站</p>
+	 * 
+	 * @param path 文件路径
+	 * 
+	 * @return 回收站
 	 */
 	public static final Recycle newInstance(String path) {
 		if(BUILDER == null) {
