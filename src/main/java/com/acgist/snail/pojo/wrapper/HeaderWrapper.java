@@ -20,19 +20,19 @@ import com.acgist.snail.utils.StringUtils;
 public class HeaderWrapper {
 	
 	/**
-	 * <p>头部信息分隔符</p>
+	 * <p>头部信息分隔符：{@value}</p>
 	 */
 	private static final String DEFAULT_HEADER_KV = ":";
 	/**
-	 * <p>头部信息填充符</p>
+	 * <p>头部信息填充符：{@value}</p>
 	 */
 	private static final String DEFAULT_HEADER_PADDING = " ";
 	/**
-	 * <p>头部信息换行符：读取</p>
+	 * <p>头部信息换行符（读取）：{@value}</p>
 	 */
 	private static final String HEADER_LINE_READER = "\n";
 	/**
-	 * <p>头部信息换行符：写出</p>
+	 * <p>头部信息换行符（写出）：{@value}</p>
 	 */
 	private static final String HEADER_LINE_WRITER = "\r\n";
 
@@ -125,6 +125,10 @@ public class HeaderWrapper {
 	
 	/**
 	 * <p>读取协议</p>
+	 * 
+	 * @param lines 头部信息
+	 * 
+	 * @return 协议
 	 */
 	private String buildProtocol(String[] lines) {
 		if(lines == null || lines.length == 0) {
@@ -144,6 +148,10 @@ public class HeaderWrapper {
 	
 	/**
 	 * <p>读取头部信息</p>
+	 * 
+	 * @param lines 头部信息
+	 * 
+	 * @return 头部信息
 	 */
 	private Map<String, List<String>> buildHeaders(String[] lines) {
 		int index;
@@ -153,7 +161,7 @@ public class HeaderWrapper {
 		if(lines == null) {
 			return headers;
 		}
-		final int begin = this.haveProtocol ? 1 : 0;
+		final int begin = this.haveProtocol ? 1 : 0; // 是否含有协议
 		for (int jndex = begin; jndex < lines.length; jndex++) {
 			line = lines[jndex];
 			if(line == null) {
@@ -228,6 +236,8 @@ public class HeaderWrapper {
 	}
 	
 	/**
+	 * <p>获取协议</p>
+	 * 
 	 * @return 协议
 	 */
 	public String protocol() {
@@ -235,6 +245,8 @@ public class HeaderWrapper {
 	}
 	
 	/**
+	 * <p>获取所有头部信息</p>
+	 * 
 	 * @return 所有头部信息
 	 */
 	public Map<String, List<String>> allHeaders() {
@@ -246,6 +258,8 @@ public class HeaderWrapper {
 	 * 
 	 * @param key 名称
 	 * @param value 信息
+	 * 
+	 * @return {@code this}
 	 */
 	public HeaderWrapper header(String key, String value) {
 		if(this.headers == null) {
@@ -261,7 +275,9 @@ public class HeaderWrapper {
 	}
 	
 	/**
-	 * <p>写出头部信息</p>
+	 * <p>写出头部信息文本</p>
+	 * 
+	 * @return 头部信息文本
 	 */
 	public String build() {
 		final StringBuilder builder = new StringBuilder();
@@ -284,14 +300,18 @@ public class HeaderWrapper {
 	}
 	
 	/**
-	 * <p>头部信息是否为空</p>
+	 * <p>判断头部信息是否为空</p>
+	 * 
+	 * @return 是否为空
 	 */
 	public boolean isEmpty() {
 		return CollectionUtils.isEmpty(this.headers);
 	}
 	
 	/**
-	 * <p>头部信息是否含有数据</p>
+	 * <p>判断头部信息是否含有数据</p>
+	 * 
+	 * @return 是否含有数据
 	 */
 	public boolean isNotEmpty() {
 		return !isEmpty();

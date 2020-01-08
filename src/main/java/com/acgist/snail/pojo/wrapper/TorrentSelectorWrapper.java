@@ -35,7 +35,11 @@ public final class TorrentSelectorWrapper {
 	}
 
 	/**
-	 * <p>编码器</p>
+	 * <p>创建编码器</p>
+	 * 
+	 * @param list 选择文件列表
+	 * 
+	 * @return 包装器
 	 */
 	public static final TorrentSelectorWrapper newEncoder(List<String> list) {
 		final TorrentSelectorWrapper wrapper = new TorrentSelectorWrapper();
@@ -48,6 +52,10 @@ public final class TorrentSelectorWrapper {
 	
 	/**
 	 * <p>解析器</p>
+	 * 
+	 * @param value 选择文件列表（B编码）
+	 * 
+	 * @return 包装器
 	 */
 	public static final TorrentSelectorWrapper newDecoder(String value) {
 		final TorrentSelectorWrapper wrapper = new TorrentSelectorWrapper();
@@ -59,6 +67,8 @@ public final class TorrentSelectorWrapper {
 	
 	/**
 	 * <p>编码选择文件</p>
+	 * 
+	 * @return 选择文件列表（B编码）
 	 */
 	public String serialize() {
 		if(this.encoder == null) {
@@ -69,6 +79,8 @@ public final class TorrentSelectorWrapper {
 
 	/**
 	 * <p>解析选择文件</p>
+	 * 
+	 * @return 选择文件列表
 	 */
 	public List<String> deserialize() {
 		if(this.decoder == null) {

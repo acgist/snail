@@ -182,7 +182,7 @@ public class JSON {
 	 */
 	private void serializeMap(Map<?, ?> map, StringBuilder builder) {
 		if(map == null) {
-			throw new ArgumentException("JSON序列化错误：Map=null");
+			throw new ArgumentException("JSON序列化错误（Map为空）");
 		}
 		builder.append(JSON_MAP_PREFIX);
 		if(!map.isEmpty()) {
@@ -202,7 +202,7 @@ public class JSON {
 	 */
 	private void serializeList(List<?> list, StringBuilder builder) {
 		if(list == null) {
-			throw new ArgumentException("JSON序列化错误：List=null");
+			throw new ArgumentException("JSON序列化错误（List为空）");
 		}
 		builder.append(JSON_LIST_PREFIX);
 		if(!list.isEmpty()) {

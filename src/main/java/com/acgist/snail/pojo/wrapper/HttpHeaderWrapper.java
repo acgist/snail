@@ -20,33 +20,33 @@ import com.acgist.snail.utils.UrlUtils;
 public final class HttpHeaderWrapper extends HeaderWrapper {
 
 	/**
-	 * <p>服务器名称</p>
+	 * <p>服务器名称：{@value}</p>
 	 */
 	public static final String SERVER = "Server";
 	/**
-	 * <p>MIME类型</p>
+	 * <p>MIME类型：{@value}</p>
 	 */
 	public static final String CONTENT_TYPE = "Content-Type";
 	/**
-	 * <p>接收范围请求</p>
+	 * <p>接收范围请求：{@value}</p>
 	 * <p>没有接收{@link #RANGE}时返回全部数据</p>
 	 */
 	public static final String ACCEPT_RANGES = "Accept-Ranges";
 	/**
-	 * <p>请求下载范围</p>
+	 * <p>请求下载范围：{@value}</p>
 	 * <p>接收{@link #RANGE}时返回范围数据</p>
 	 */
 	public static final String CONTENT_RANGE = "Content-Range";
 	/**
-	 * <p>下载大小</p>
+	 * <p>下载大小：{@value}</p>
 	 */
 	public static final String CONTENT_LENGTH = "Content-Length";
 	/**
-	 * <p>下载描述</p>
+	 * <p>下载描述：{@value}</p>
 	 */
 	public static final String CONTENT_DISPOSITION = "Content-Disposition";
 	/**
-	 * <p>范围请求</p>
+	 * <p>范围请求：{@value}</p>
 	 * <table border="1" summary="HTTP协议断点续传设置">
 	 * 	<tr>
 	 * 		<td>{@code Range: bytes=0-499}</td>
@@ -76,13 +76,13 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	 */
 	public static final String RANGE = "Range";
 	/**
-	 * <p>接收范围请求</p>
+	 * <p>接收范围请求：{@value}</p>
 	 * 
 	 * @see {@link #ACCEPT_RANGES}
 	 */
 	public static final String BYTES = "bytes";
 	/**
-	 * <p>文件名称</p>
+	 * <p>文件名称：{@value}</p>
 	 * 
 	 * @see {@link #CONTENT_DISPOSITION}
 	 */
@@ -112,6 +112,8 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	 * <p>Content-Disposition:attachment;filename="snail.jar"</p>
 	 * 
 	 * @param defaultName 默认文件名称
+	 * 
+	 * @return 文件名称
 	 */
 	public String fileName(final String defaultName) {
 		String fileName = header(CONTENT_DISPOSITION);
@@ -177,6 +179,8 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	/**
 	 * <p>获取文件大小</p>
 	 * <p>Content-Length：102400</p>
+	 * 
+	 * @return 文件大小
 	 */
 	public long fileSize() {
 		long size = 0L;
@@ -190,11 +194,11 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	}
 	
 	/**
-	 * <dl>
-	 * 	<dt>是否支持断点续传</dt>
-	 * 	<dd>accept-ranges=bytes</dd>
-	 * 	<dd>content-range=bytes 0-100/100</dd>
-	 * </dl>
+	 * <p>判断是否支持断点续传</p>
+	 * <p>Accept-Ranges=bytes</p>
+	 * <p>Content-Range=bytes 0-100/100</p>
+	 * 
+	 * @return 是否支持断点续传
 	 */
 	public boolean range() {
 		boolean range = false;
@@ -211,14 +215,16 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 
 	/**
 	 * <p>获取开始下载位置</p>
-	 * <p>content-range=bytes 0-100/100</p>
+	 * <p>Content-Range=bytes 0-100/100</p>
+	 * 
+	 * @return 开始下载位置
 	 */
 	public long beginRange() {
 		long range = 0L;
 		final String contentRange = header(CONTENT_RANGE);
 		if(contentRange != null) {
 			final int endIndex = contentRange.lastIndexOf("-");
-			final String value = contentRange.substring(5, endIndex).trim();
+			final String value = contentRange.substring(BYTES.length(), endIndex).trim();
 			if(StringUtils.isNumeric(value)) {
 				range = Long.parseLong(value);
 			}

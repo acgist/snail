@@ -96,6 +96,8 @@ public interface ITaskSession extends ITaskSessionTable, ITaskSessionEntity, ITa
 	}
 	
 	/**
+	 * <p>获取下载器</p>
+	 * 
 	 * @return 下载器
 	 */
 	IDownloader downloader();
@@ -116,59 +118,83 @@ public interface ITaskSession extends ITaskSessionTable, ITaskSessionEntity, ITa
 	IDownloader buildDownloader() throws DownloadException;
 	
 	/**
+	 * <p>获取下载目录</p>
+	 * 
 	 * @return 下载目录
 	 */
 	File downloadFolder();
 	
 	/**
-	 * @return BT任务已选择的下载文件列表
+	 * <p>获取BT任务选择下载文件列表</p>
+	 * 
+	 * @return BT任务选择下载文件列表
 	 */
 	List<String> selectTorrentFiles();
 
 	/**
+	 * <p>获取统计信息</p>
+	 * 
 	 * @return 统计信息
 	 */
 	IStatisticsSession statistics();
 	
 	/**
+	 * <p>获取已下载大小</p>
+	 * 
 	 * @return 已下载大小
 	 */
 	long downloadSize();
 	
 	/**
+	 * <p>设置已下载大小</p>
+	 * 
 	 * @param size 已下载大小
 	 */
 	void downloadSize(long size);
 
 	/**
-	 * @return 等待状态
+	 * <p>判断任务是否处于等待状态</p>
+	 * 
+	 * @return 是否处于等待状态
 	 */
 	boolean await();
 	
 	/**
-	 * @return 暂停状态
+	 * <p>判断任务是否处于暂停状态</p>
+	 * 
+	 * @return 是否处于暂停状态
 	 */
 	boolean pause();
 	
 	/**
-	 * @return 下载状态
+	 * <p>判断任务是否处于下载状态</p>
+	 * 
+	 * @return 是否处于下载状态
 	 */
 	boolean download();
 	
 	/**
-	 * @return 完成状态
+	 * <p>判断任务是否处于完成状态</p>
+	 * 
+	 * @return 是否处于完成状态
 	 */
 	boolean complete();
 	
 	/**
-	 * @return 任务执行状态（在线程池中）：等待中、下载中
+	 * <p>判断任务是否处于执行状态</p>
+	 * <p>执行状态（在线程池中）：等待中、下载中</p>
+	 * 
+	 * @return 是否处于执行状态
+	 * 
+	 * @see #await()
+	 * @see #download()
 	 */
 	boolean inThreadPool();
 	
 	/**
-	 * <p>将任务信息转换为Map</p>
+	 * <p>获取任务信息（Map）</p>
 	 * 
-	 * @return 任务信息Map
+	 * @return 任务信息
 	 */
 	Map<String, Object> taskMessage();
 	

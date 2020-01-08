@@ -35,31 +35,43 @@ public interface IStatisticsSession extends IStatistics {
 	void download(int buffer);
 	
 	/**
+	 * <p>获取上传速度</p>
+	 * 
 	 * @return 上传速度
 	 */
 	long uploadSpeed();
 	
 	/**
+	 * <p>获取下载速度</p>
+	 * 
 	 * @return 下载速度
 	 */
 	long downloadSpeed();
 	
 	/**
+	 * <p>获取累计上传大小</p>
+	 * 
 	 * @return 累计上传大小
 	 */
 	long uploadSize();
 
 	/**
+	 * <p>设置累计上传大小</p>
+	 * 
 	 * @param size 累计上传大小
 	 */
 	void uploadSize(long size);
 	
 	/**
+	 * <p>获取累计下载大小</p>
+	 * 
 	 * @return 累计下载大小
 	 */
 	long downloadSize();
 	
 	/**
+	 * <p>设置累计下载大小</p>
+	 * 
 	 * @param size 累计下载大小
 	 */
 	void downloadSize(long size);

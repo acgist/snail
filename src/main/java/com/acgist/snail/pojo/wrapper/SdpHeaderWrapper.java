@@ -12,11 +12,11 @@ import java.util.Map;
 public final class SdpHeaderWrapper extends HeaderWrapper {
 
 	/**
-	 * <p>头部信息分隔符</p>
+	 * <p>头部信息分隔符：{@value}</p>
 	 */
 	private static final String DEFAULT_HEADER_KV = "=";
 	/**
-	 * <p>头部信息填充符</p>
+	 * <p>头部信息填充符：{@value}</p>
 	 */
 	private static final String DEFAULT_HEADER_PADDING = "";
 	
