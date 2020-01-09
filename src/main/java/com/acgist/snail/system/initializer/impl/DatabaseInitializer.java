@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.pojo.entity.ConfigEntity;
 import com.acgist.snail.repository.DatabaseManager;
 import com.acgist.snail.system.config.DatabaseConfig;
 import com.acgist.snail.system.initializer.Initializer;
@@ -45,10 +44,10 @@ public final class DatabaseInitializer extends Initializer {
 	}
 	
 	/**
-	 * <p>查询表是否存在</p>
+	 * <p>查询表是否初始化</p>
 	 */
 	private boolean exist() {
-		return this.databaseManager.haveTable(ConfigEntity.TABLE_NAME);
+		return this.databaseManager.haveTable();
 	}
 
 	/**

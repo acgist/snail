@@ -43,11 +43,9 @@ public final class ConfigRepository extends Repository<ConfigEntity> {
 	}
 	
 	/**
-	 * <dl>
-	 * 	<dt>合并配置</dt>
-	 * 	<dd>存在：更新</dd>
-	 * 	<dd>不存在：保存</dd>
-	 * </dl>
+	 * <p>合并配置</p>
+	 * <p>配置存在：更新</p>
+	 * <p>配置不存在：保存</p>
 	 */
 	public void merge(String name, String value) {
 		ConfigEntity entity = findOne(ConfigEntity.PROPERTY_NAME, name);

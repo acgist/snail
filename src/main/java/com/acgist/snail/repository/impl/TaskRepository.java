@@ -24,6 +24,8 @@ public final class TaskRepository extends Repository<TaskEntity> {
 	/**
 	 * <p>删除任务</p>
 	 * <p>删除文件时优先使用回收站，如果不支持回收站直接删除文件。</p>
+	 * 
+	 * @param entity 任务
 	 */
 	public void delete(TaskEntity entity) {
 		LOGGER.info("删除任务：{}", entity.getName());

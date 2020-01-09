@@ -1,9 +1,11 @@
 package com.acgist.snail.utils;
 
 import java.beans.PropertyDescriptor;
+import java.io.IOException;
 import java.io.Reader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -168,7 +170,7 @@ public final class BeanUtils {
 	 * <p>属性装配</p>
 	 * 
 	 * @param instance 实例对象
-	 * @param wrapper 属性包装器
+	 * @param wrapper 结果集
 	 */
 	public static final void setProperties(Object instance, ResultSetWrapper wrapper) {
 		final Class<?> clazz = instance.getClass();
@@ -227,6 +229,14 @@ public final class BeanUtils {
 		return value;
 	}
 	
+	/**
+	 * <p>读取枚举数据</p>
+	 * 
+	 * @param clazz 类型
+	 * @param value 数据
+	 * 
+	 * @return 数据对象
+	 */
 	private static final Object unpackEnum(Class<?> clazz, Object value) {
 		final var enums = clazz.getEnumConstants();
 		for (Object object : enums) {
@@ -237,6 +247,14 @@ public final class BeanUtils {
 		return null;
 	}
 	
+	/**
+	 * <p>读取{@code JdbcClob}数据</p>
+	 * 
+	 * @param clazz 类型
+	 * @param value 数据
+	 * 
+	 * @return 数据对象
+	 */
 	private static final Object unpackJdbcClob(Class<?> clazz, Object value) {
 		int index;
 		final JdbcClob clob = (JdbcClob) value;
@@ -246,7 +264,7 @@ public final class BeanUtils {
 			while((index = reader.read(chars)) != -1) {
 				builder.append(new String(chars, 0, index));
 			}
-		} catch (Exception e) {
+		} catch (SQLException | IOException e) {
 			LOGGER.error("读取JdbcClob数据异常", e);
 		} finally {
 			clob.free();
