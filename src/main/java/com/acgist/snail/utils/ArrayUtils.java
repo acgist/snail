@@ -134,7 +134,7 @@ public final class ArrayUtils {
 	 * 
 	 * @param objects 数组
 	 * 
-	 * @return {@code true}-空数组；{@code false}-非空数组；
+	 * @return {@code true}-空；{@code false}-非空；
 	 */
 	public static final boolean isEmpty(Object[] objects) {
 		return objects == null || objects.length == 0;
@@ -145,7 +145,7 @@ public final class ArrayUtils {
 	 * 
 	 * @param objects 数组
 	 * 
-	 * @return {@code true}-非空数组；{@code false}-空数组；
+	 * @return {@code true}-非空；{@code false}-空；
 	 */
 	public static final boolean isNotEmpty(Object[] objects) {
 		return !isEmpty(objects);
@@ -154,23 +154,23 @@ public final class ArrayUtils {
 	/**
 	 * <p>字节数组是否为空</p>
 	 * 
-	 * @param value 字节数组
+	 * @param bytes 字节数组
 	 * 
-	 * @return {@code true}-空数组；{@code false}-非空数组；
+	 * @return {@code true}-空；{@code false}-非空；
 	 */
-	public static final boolean isEmpty(byte[] value) {
-		return value == null || value.length == 0;
+	public static final boolean isEmpty(byte[] bytes) {
+		return bytes == null || bytes.length == 0;
 	}
 
 	/**
 	 * <p>字节数组是否非空</p>
 	 * 
-	 * @param value 字节数组
+	 * @param bytes 字节数组
 	 * 
-	 * @return {@code true}-非空数组；{@code false}-空数组；
+	 * @return {@code true}-非空；{@code false}-空；
 	 */
-	public static final boolean isNotEmpty(byte[] value) {
-		return !isEmpty(value);
+	public static final boolean isNotEmpty(byte[] bytes) {
+		return !isEmpty(bytes);
 	}
 	
 	/**
@@ -207,7 +207,7 @@ public final class ArrayUtils {
 	 * @param end 结束位置
 	 * @param value 查找{@code int}
 	 * 
-	 * @return 索引：{@linkplain ArrayUtils#NO_INDEX -1}-没有匹配
+	 * @return 索引：{@value #NO_INDEX}-没有匹配
 	 */
 	public static final int indexOf(int[] values, int begin, int end, int value) {
 		for (int index = begin; index < end; index++) {
@@ -224,7 +224,7 @@ public final class ArrayUtils {
 	 * @param chars {@code char}数组
 	 * @param value 查找{@code char}
 	 * 
-	 * @return 索引：{@linkplain ArrayUtils#NO_INDEX -1}-没有匹配
+	 * @return 索引：{@value #NO_INDEX}-没有匹配
 	 */
 	public static final int indexOf(char[] chars, char value) {
 		for (int index = 0; index < chars.length; index++) {

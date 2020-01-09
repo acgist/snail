@@ -54,7 +54,8 @@ public final class FileUtils {
 	 */
 	private static final String FILENAME_REPLACE_CHAR = "";
 	/**
-	 * <p>文件类型和文件后缀（扩展名）：类型=后缀</p>
+	 * <p>文件类型和文件后缀（扩展名）</p>
+	 * <p>类型=后缀</p>
 	 */
 	private static final Map<FileType, List<String>> FILE_TYPE_EXT = new HashMap<>();
 	
@@ -139,7 +140,7 @@ public final class FileUtils {
 	 * 
 	 * @param filePath 文件路径
 	 * 
-	 * @return {@code true}-删除成功；{@code false}-删除失败；
+	 * @return {@code true}-成功；{@code false}-失败；
 	 */
 	public static final boolean recycle(final String filePath) {
 		if(StringUtils.isEmpty(filePath)) {

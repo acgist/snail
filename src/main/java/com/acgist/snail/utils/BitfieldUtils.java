@@ -19,7 +19,6 @@ public final class BitfieldUtils {
 	
 	/**
 	 * <p>Piece位图转为Piece位图字节数组</p>
-	 * <p>注：即使Piece没有下载传递时依旧要使用{@code 0}占位</p>
 	 * 
 	 * @param pieceSize Piece数量
 	 * @param pieces Piece位图
@@ -53,6 +52,10 @@ public final class BitfieldUtils {
 	
 	/**
 	 * <p>大端小端互转：{@code 01000001} -&gt; {@code 10000010}</p>
+	 * 
+	 * @param value 数据
+	 * 
+	 * @return 结果
 	 */
 	private static final byte reverse(final byte value) {
 		int result = value;

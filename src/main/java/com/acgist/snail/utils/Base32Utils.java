@@ -40,7 +40,7 @@ public final class Base32Utils {
 	}
 
 	/**
-	 * <p>将{@code bytes}编码</p>
+	 * <p>编码</p>
 	 * 
 	 * @param bytes 原始数据
 	 * 
@@ -74,7 +74,7 @@ public final class Base32Utils {
 	}
 
 	/**
-	 * <p>将{@code content}解码</p>
+	 * <p>解码</p>
 	 * 
 	 * @param content 编码后字符串
 	 * 

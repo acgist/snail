@@ -47,6 +47,8 @@ public final class NumberUtils {
 	 * <p>生成唯一编号</p>
 	 * <p>长度：{@code 8}</p>
 	 * <p>格式：{@link #index} + {@code mmss}</p>
+	 * 
+	 * @return 编号
 	 */
 	public static final Integer build() {
 		final StringBuilder builder = new StringBuilder();

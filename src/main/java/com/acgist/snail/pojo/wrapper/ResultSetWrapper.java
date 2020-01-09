@@ -7,7 +7,7 @@ import java.util.Map;
 import com.acgist.snail.system.exception.ArgumentException;
 
 /**
- * <p>数据库结果集包装器</p>
+ * <p>结果集包装器</p>
  * 
  * @author acgist
  * @since 1.0.0

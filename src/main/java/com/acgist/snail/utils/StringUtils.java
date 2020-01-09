@@ -35,17 +35,17 @@ public final class StringUtils {
 	}
 	
 	/**
-	 * <p>数字正则表达式（正负、整数）：{@value}</p>
+	 * <p>数字正则表达式（正负整数）：{@value}</p>
 	 */
 	private static final String NUMERIC_REGEX = "\\-?[0-9]+";
 	
 	/**
-	 * <p>数字正则表达式（正负、小数、整数）：{@value}</p>
+	 * <p>数字正则表达式（正负小数、正负整数）：{@value}</p>
 	 */
 	private static final String DECIMAL_REGEX = "\\-?[0-9]+(\\.[0-9]+)?";
 	
 	/**
-	 * <p>判断{@code value}是否为空</p>
+	 * <p>字符串是否为空</p>
 	 * 
 	 * @param value 字符串
 	 * 
@@ -56,7 +56,7 @@ public final class StringUtils {
 	}
 
 	/**
-	 * <p>判断{@code value}是否非空</p>
+	 * <p>字符串是否非空</p>
 	 * 
 	 * @param value 字符串
 	 * 
@@ -67,7 +67,8 @@ public final class StringUtils {
 	}
 	
 	/**
-	 * <p>判断{@code value}是不是{@linkplain #NUMERIC_REGEX 数字}</p>
+	 * <p>判断{@code value}是不是{@linkplain #NUMERIC_REGEX 数值}</p>
+	 * <p>正负整数</p>
 	 * 
 	 * @param value 字符串
 	 * 
@@ -78,7 +79,8 @@ public final class StringUtils {
 	}
 
 	/**
-	 * <p>判断{@code value}是不是{@linkplain #DECIMAL_REGEX 数字}</p>
+	 * <p>判断{@code value}是不是{@linkplain #DECIMAL_REGEX 数值}</p>
+	 * <p>正负小数、正负整数</p>
 	 * 
 	 * @param value 字符串
 	 * 
@@ -113,7 +115,7 @@ public final class StringUtils {
 	}
 	
 	/**
-	 * <p>将{@code bytes}转为十六进制字符串</p>
+	 * <p>将字节数组转为十六进制字符串</p>
 	 * 
 	 * @param bytes 字节数组
 	 * 
@@ -136,7 +138,7 @@ public final class StringUtils {
 	}
 	
 	/**
-	 * <p>将{@code content}转为字节数组</p>
+	 * <p>将十六进制字符串转为字节数组</p>
 	 * 
 	 * @param content 十六进制字符串
 	 * 
