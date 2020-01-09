@@ -35,13 +35,14 @@ public final class BeanUtils {
 	}
 	
 	/**
-	 * <p>通过反射生成{@code clazz}实例对象</p>
+	 * <p>通过反射生成实例</p>
 	 * <p>调用默认无参构造方法</p>
 	 * 
 	 * @param <T> 类型泛型
-	 * @param clazz 对象类型
 	 * 
-	 * @return 对象
+	 * @param clazz 类型
+	 * 
+	 * @return 实例
 	 */
 	public static final <T> T newInstance(final Class<T> clazz) {
 		if(clazz == null) {
@@ -50,13 +51,13 @@ public final class BeanUtils {
 		try {
 			return clazz.getDeclaredConstructor().newInstance();
 		} catch (Exception e) {
-			LOGGER.error("反射生成实例对象异常", e);
+			LOGGER.error("通过反射生成实例异常：{}", clazz, e);
 		}
 		return null;
 	}
 	
 	/**
-	 * <p>将实例对象所有属性转为{@code Map}</p>
+	 * <p>获取实例属性{@code Map}</p>
 	 * 
 	 * <table border="1" summary="属性类型转换">
 	 * 	<tr>
@@ -77,9 +78,9 @@ public final class BeanUtils {
 	 * 	</tr>
 	 * </table>
 	 * 
-	 * @param instance 实例对象
+	 * @param instance 实例
 	 * 
-	 * @return 对象属性{@code Map}
+	 * @return 属性{@code Map}
 	 */
 	public static final Map<String, Object> toMap(Object instance) {
 		final Map<String, Object> map = new HashMap<>();
@@ -99,7 +100,7 @@ public final class BeanUtils {
 	}
 	
 	/**
-	 * <p>获取类型所有属性</p>
+	 * <p>获取类型所有属性名称</p>
 	 * <dl>
 	 * 	<dt>不获取的属性</dt>
 	 * 	<dd>静态：{@code static}</dd>
@@ -108,7 +109,7 @@ public final class BeanUtils {
 	 * 
 	 * @param clazz 类型
 	 * 
-	 * @return 属性数组
+	 * @return 所有属性名称
 	 */
 	public static final String[] properties(Class<?> clazz) {
 		String[] properties = null;
@@ -133,12 +134,12 @@ public final class BeanUtils {
 	}
 	
 	/**
-	 * <p>获取实例对象指定属性的属性值</p>
+	 * <p>获取实例指定属性名称的属性值</p>
 	 * 
-	 * @param instance 实例对象
-	 * @param properties 属性数组
+	 * @param instance 实例
+	 * @param properties 属性名称
 	 * 
-	 * @return 属性值数组
+	 * @return 属性值
 	 */
 	public static final Object[] propertiesValue(Object instance, String[] properties) {
 		return Stream
@@ -148,9 +149,9 @@ public final class BeanUtils {
 	}
 	
 	/**
-	 * <p>获取实例对象指定的属性值</p>
+	 * <p>获取实例对象指定属性名称的属性值</p>
 	 * 
-	 * @param instance 实例对象
+	 * @param instance 实例
 	 * @param property 属性名称
 	 * 
 	 * @return 属性值
@@ -161,16 +162,16 @@ public final class BeanUtils {
 			final PropertyDescriptor descriptor = new PropertyDescriptor(property, clazz);
 			return descriptor.getReadMethod().invoke(instance);
 		} catch (Exception e) {
-			LOGGER.error("获取属性值异常", e);
+			LOGGER.error("获取实例对象指定属性名称的属性值异常：{}-{}", clazz, property, e);
 		}
 		return null;
 	}
 	
 	/**
-	 * <p>属性装配</p>
+	 * <p>设置实例属性</p>
 	 * 
-	 * @param instance 实例对象
-	 * @param wrapper 结果集
+	 * @param instance 实例
+	 * @param wrapper 结果集包装器
 	 */
 	public static final void setProperties(Object instance, ResultSetWrapper wrapper) {
 		final Class<?> clazz = instance.getClass();
@@ -181,7 +182,7 @@ public final class BeanUtils {
 				final Object value = unpack(descriptor.getPropertyType(), wrapper.getObject(property));
 				descriptor.getWriteMethod().invoke(instance, value);
 			} catch (Exception e) {
-				LOGGER.info("属性装配异常", e);
+				LOGGER.info("设置实例属性异常：{}-{}", clazz, property, e);
 			}
 		}
 	}
@@ -190,9 +191,9 @@ public final class BeanUtils {
 	 * <p>类型打包</p>
 	 * <p>处理类型：枚举</p>
 	 * 
-	 * @param object 属性原始值
+	 * @param object 原始数据
 	 * 
-	 * @return 属性打包值
+	 * @return 打包数据
 	 */
 	public static final Object pack(Object object) {
 		if(object == null) {
@@ -209,10 +210,10 @@ public final class BeanUtils {
 	 * <p>类型拆包</p>
 	 * <p>处理类型：枚举、长字符串</p>
 	 * 
-	 * @param clazz 属性类型
-	 * @param value 属性打包值
+	 * @param clazz 数据类型
+	 * @param value 打包数据
 	 * 
-	 * @return 属性原始值
+	 * @return 原始数据
 	 */
 	public static final Object unpack(Class<?> clazz, Object value) {
 		if(clazz == null || value == null) {
@@ -230,12 +231,12 @@ public final class BeanUtils {
 	}
 	
 	/**
-	 * <p>读取枚举数据</p>
+	 * <p>枚举拆包</p>
 	 * 
 	 * @param clazz 类型
-	 * @param value 数据
+	 * @param value 打包数据
 	 * 
-	 * @return 数据对象
+	 * @return 原始数据
 	 */
 	private static final Object unpackEnum(Class<?> clazz, Object value) {
 		final var enums = clazz.getEnumConstants();
@@ -248,12 +249,12 @@ public final class BeanUtils {
 	}
 	
 	/**
-	 * <p>读取{@code JdbcClob}数据</p>
+	 * <p>{@code JdbcClob}拆包</p>
 	 * 
 	 * @param clazz 类型
-	 * @param value 数据
+	 * @param value 打包数据
 	 * 
-	 * @return 数据对象
+	 * @return 原始数据
 	 */
 	private static final Object unpackJdbcClob(Class<?> clazz, Object value) {
 		int index;
@@ -265,7 +266,7 @@ public final class BeanUtils {
 				builder.append(new String(chars, 0, index));
 			}
 		} catch (SQLException | IOException e) {
-			LOGGER.error("读取JdbcClob数据异常", e);
+			LOGGER.error("JdbcClob拆包异常：{}-{}", clazz, value, e);
 		} finally {
 			clob.free();
 		}

@@ -17,14 +17,30 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>B编码解码器</p>
- * <dl>
- * 	<dt>类型</dt>
- * 	<dd>i：数字（Long）</dd>
- * 	<dd>l：列表：list</dd>
- * 	<dd>d：字典：map</dd>
- * 	<dd>e：结尾</dd>
- * </dl>
- * <p>所有类型除了Long，其他均为byte[]，需要自己进行类型转换。</p>
+ * 
+ * <table border="1" summary="类型">
+ * 	<tr>
+ * 		<th>符号</th>
+ * 		<th>类型</th>
+ * 	</tr>
+ * 	<tr>
+ * 		<td align="center">{@code i}</td>
+ * 		<td>数字：{@code Long}</td>
+ * 	</tr>
+ * 	<tr>
+ * 		<td align="center">{@code l}</td>
+ * 		<td>列表：{@code List}</td>
+ * 	</tr>
+ * 	<tr>
+ * 		<td align="center">{@code d}</td>
+ * 		<td>字典：{@code Map}</td>
+ * 	</tr>
+ * 	<tr>
+ * 		<td align="center">{@code e}</td>
+ * 		<td>结尾</td>
+ * 	</tr>
+ * </table>
+ * <p>所有类型除了{@code Long}，其他均为{@code byte[]}，需要自己进行类型转换。</p>
  * <p>解析前必须调用{@link #nextType()}、{@link #nextMap()}、{@link #nextList()}任一方法</p>
  * 
  * 
@@ -50,23 +66,23 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>结尾</p>
+	 * <p>结尾：{@value}</p>
 	 */
 	public static final char TYPE_E = 'e';
 	/**
-	 * <p>数字</p>
+	 * <p>数字：{@value}</p>
 	 */
 	public static final char TYPE_I = 'i';
 	/**
-	 * <p>list</p>
+	 * <p>list：{@value}</p>
 	 */
 	public static final char TYPE_L = 'l';
 	/**
-	 * <p>map</p>
+	 * <p>map：{@value}</p>
 	 */
 	public static final char TYPE_D = 'd';
 	/**
-	 * <p>分隔符</p>
+	 * <p>分隔符：{@value}</p>
 	 */
 	public static final char SEPARATOR = ':';
 	
@@ -83,13 +99,13 @@ public final class BEncodeDecoder {
 	 */
 	private Map<String, Object> map;
 	/**
-	 * <p>原始数据：不需要关闭</p>
+	 * <p>原始数据（不需要关闭）</p>
 	 */
 	private final ByteArrayInputStream inputStream;
 	
 	private BEncodeDecoder(byte[] bytes) {
 		if(bytes == null) {
-			throw new ArgumentException("B编码内容错误（bytes为空）");
+			throw new ArgumentException("B编码内容错误（数据为空）");
 		}
 		if(bytes.length < 2) {
 			throw new ArgumentException("B编码内容错误（长度）");
@@ -99,7 +115,7 @@ public final class BEncodeDecoder {
 	
 	public static final BEncodeDecoder newInstance(String content) {
 		if(content == null) {
-			throw new ArgumentException("B编码内容错误（content为空）");
+			throw new ArgumentException("B编码内容错误（数据为空）");
 		}
 		return new BEncodeDecoder(content.getBytes());
 	}
@@ -109,7 +125,9 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>是否含有更多数据</p>
+	 * <p>判断是否含有更多数据</p>
+	 * 
+	 * @return 是否含有更多数据
 	 */
 	public boolean more() {
 		return this.inputStream != null && this.inputStream.available() > 0;
@@ -118,7 +136,7 @@ public final class BEncodeDecoder {
 	/**
 	 * <p>数据是否为空</p>
 	 * 
-	 * @return true-为空；false-非空；
+	 * @return {@code true}-空；{@code false}-非空；
 	 */
 	public boolean isEmpty() {
 		if(this.type == Type.LIST) {
@@ -131,17 +149,21 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>是否包含数据</p>
+	 * <p>数据是否非空</p>
 	 * 
-	 * @return true-非空；false-为空；
+	 * @return {@code true}-非空；{@code false}-空；
 	 */
 	public boolean isNotEmpty() {
 		return !isEmpty();
 	}
 	
 	/**
-	 * <p>下一个数据类型</p>
+	 * <p>获取下一个数据类型</p>
 	 * <p>获取下一个数据类型，同时解析下一个数据。</p>
+	 * 
+	 * @return 下一个数据类型
+	 * 
+	 * @throws PacketSizeException 网络包大小异常
 	 */
 	public Type nextType() throws PacketSizeException {
 		if(!more()) {
@@ -164,7 +186,11 @@ public final class BEncodeDecoder {
 	
 	/**
 	 * <p>获取下一个List</p>
-	 * <p>如果下一个数据类型不是List返回null</p>
+	 * <p>如果下一个数据类型不是{@code List}返回{@code null}</p>
+	 * 
+	 * @return 下一个List
+	 * 
+	 * @throws PacketSizeException 网络包大小异常
 	 */
 	public List<Object> nextList() throws PacketSizeException {
 		final var type = nextType();
@@ -176,7 +202,11 @@ public final class BEncodeDecoder {
 	
 	/**
 	 * <p>获取下一个Map</p>
-	 * <p>如果下一个数据类型不是Map返回null</p>
+	 * <p>如果下一个数据类型不是{@code Map}返回{@code null}</p>
+	 * 
+	 * @return 下一个Map
+	 * 
+	 * @throws PacketSizeException 网络包大小异常
 	 */
 	public Map<String, Object> nextMap() throws PacketSizeException {
 		final var type = nextType();
@@ -188,6 +218,8 @@ public final class BEncodeDecoder {
 	
 	/**
 	 * <p>读取剩余所有数据</p>
+	 * 
+	 * @return 剩余所有数据
 	 */
 	public byte[] oddBytes() {
 		if(this.inputStream == null) {
@@ -198,6 +230,8 @@ public final class BEncodeDecoder {
 
 	/**
 	 * <p>读取剩余所有数据并转为字符串</p>
+	 * 
+	 * @return 剩余数据字符串
 	 */
 	public String oddString() {
 		final var bytes = oddBytes();
@@ -208,7 +242,11 @@ public final class BEncodeDecoder {
 	}
 
 	/**
-	 * <p>数值</p>
+	 * <p>读取数值</p>
+	 * 
+	 * @param inputStream 数据
+	 * 
+	 * @return 数值
 	 */
 	private static final Long i(ByteArrayInputStream inputStream) {
 		int index;
@@ -230,7 +268,13 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>map</p>
+	 * <p>读取map</p>
+	 * 
+	 * @param inputStream 数据
+	 * 
+	 * @return map
+	 * 
+	 * @throws PacketSizeException 网络包大小异常
 	 */
 	private static final Map<String, Object> d(ByteArrayInputStream inputStream) throws PacketSizeException {
 		int index;
@@ -301,7 +345,13 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>list</p>
+	 * <p>读取list</p>
+	 * 
+	 * @param inputStream 数据
+	 * 
+	 * @return list
+	 * 
+	 * @throws PacketSizeException 网络包大小异常
 	 */
 	private static final List<Object> l(ByteArrayInputStream inputStream) throws PacketSizeException {
 		int index;
@@ -358,7 +408,7 @@ public final class BEncodeDecoder {
 	 * 
 	 * @return 字节数组
 	 * 
-	 * @throws PacketSizeException 超过最大网络包大小
+	 * @throws PacketSizeException 网络包大小异常
 	 */
 	private static final byte[] read(StringBuilder lengthBuilder, ByteArrayInputStream inputStream) throws PacketSizeException {
 		final var number = lengthBuilder.toString();

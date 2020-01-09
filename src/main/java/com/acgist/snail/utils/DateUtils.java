@@ -63,13 +63,7 @@ public final class DateUtils {
 	 * 
 	 * @param value 时间（单位：秒）
 	 * 
-	 * @return
-	 * <dl>
-	 * 	<dt>格式化字符串</dt>
-	 * 	<dd>XX天XX小时</dd>
-	 * 	<dd>XX小时XX分钟</dd>
-	 * 	<dd>XX分钟XX秒</dd>
-	 * </dl>
+	 * @return XX天XX小时、XX小时XX分钟、XX分钟XX秒
 	 */
 	public static final String format(long value) {
 		final StringBuilder builder = new StringBuilder();
@@ -178,7 +172,7 @@ public final class DateUtils {
 	}
 	
 	/**
-	 * <p>时间戳（微秒）</p>
+	 * <p>获取时间戳（微秒）</p>
 	 * 
 	 * @return 时间戳（微秒）
 	 */
@@ -187,7 +181,7 @@ public final class DateUtils {
 	}
 
 	/**
-	 * <p>Windows时间戳</p>
+	 * <p>获取Windows时间戳</p>
 	 * 
 	 * @return Windows时间戳
 	 */
@@ -196,8 +190,7 @@ public final class DateUtils {
 	}
 	
 	/**
-	 * <p>Windows时间戳（扩展）</p>
-	 * <p>使用时间转换</p>
+	 * <p>获取Windows时间戳（扩展）</p>
 	 * 
 	 * @return Windows时间戳
 	 */

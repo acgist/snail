@@ -273,11 +273,11 @@ public final class NetUtils {
 	/**
 	 * <p>是否是IP地址</p>
 	 * 
-	 * TODO：IPv6
-	 * 
 	 * @param host IP地址
 	 * 
 	 * @return {@code true}-是；{@code false}-不是；
+	 * 
+	 * TODO：IPv6
 	 */
 	public static final boolean isIp(String host) {
 		return StringUtils.regex(host, IP_REGEX, true);
@@ -286,13 +286,14 @@ public final class NetUtils {
 	/**
 	 * <p>是否是本地IP地址</p>
 	 * 
-	 * TODO：IPv6
-	 * 
 	 * @param host IP地址
 	 * 
 	 * @return {@code true}-是；{@code false}-不是；
+	 * 
+	 * TODO：IPv6
 	 */
 	public static final boolean isLocalIp(String host) {
+//		return InetAddress.getByName(host).isSiteLocalAddress(); // 不能验证本地回环地址
 		final long value = encodeIpToLong(host);
 		return
 			(NATIVE_A_IP_BEGIN <= value && value <= NATIVE_A_IP_END) ||

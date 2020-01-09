@@ -23,7 +23,7 @@ public final class BrowseUtils {
 	}
 	
 	/**
-	 * <p>浏览器打开{@code url}</p>
+	 * <p>浏览器打开网页</p>
 	 * 
 	 * @param url URL地址
 	 */

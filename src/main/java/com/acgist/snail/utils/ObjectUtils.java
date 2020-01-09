@@ -119,21 +119,4 @@ public final class ObjectUtils {
 		return builder.toString();
 	}
 	
-	/**
-	 * <p>判断对象是否可以相互访问</p>
-	 * <p>不推荐使用：使用{@code instanceof}替代</p>
-	 * 
-	 * @param source 原始对象：{@code this}（父类）
-	 * @param target 比较对象（子类）
-	 * 
-	 * @return {@code true}-可以访问；{@code false}-不可访问；
-	 */
-	@Deprecated
-	public static final boolean assignableClazz(Object source, Object target) {
-		if(source.getClass().isAssignableFrom(target.getClass())) {
-			return true;
-		}
-		return false;
-	}
-	
 }

@@ -126,11 +126,11 @@ public final class DatabaseManager {
 	}
 	
 	/**
-	 * <p>封装结果集</p>
+	 * <p>结果集包装器</p>
 	 * 
 	 * @param result 结果集
 	 * 
-	 * @return 封装结果集
+	 * @return 结果集包装器
 	 * 
 	 * @throws SQLException SQL异常
 	 */
