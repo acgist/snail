@@ -29,7 +29,7 @@ public abstract class Repository<T extends BaseEntity> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Repository.class);
 	
 	/**
-	 * <p>数据库列正则表达式</p>
+	 * <p>数据库列正则表达式：{@value}</p>
 	 */
 	private static final String COLUMN_REGEX = "[a-zA-Z]+";
 	/**
@@ -60,11 +60,9 @@ public abstract class Repository<T extends BaseEntity> {
 	}
 	
 	/**
-	 * <dl>
-	 * 	<dt>合并</dt>
-	 * 	<dd>存在：更新</dd>
-	 * 	<dd>不存在：保存</dd>
-	 * </dl>
+	 * <p>合并</p>
+	 * <p>数据存在：更新</p>
+	 * <p>数据不存在：保存</p>
 	 * 
 	 * @param t 实体
 	 */
@@ -202,9 +200,7 @@ public abstract class Repository<T extends BaseEntity> {
 		if(CollectionUtils.isEmpty(list)) {
 			return null;
 		}
-		final T t = newInstance();
-		BeanUtils.setProperties(t, list.get(0));
-		return t;
+		return newInstance(list.get(0));
 	}
 	
 	/**
@@ -230,9 +226,7 @@ public abstract class Repository<T extends BaseEntity> {
 		if(CollectionUtils.isEmpty(list)) {
 			return null;
 		}
-		final T t = newInstance();
-		BeanUtils.setProperties(t, list.get(0));
-		return t;
+		return newInstance(list.get(0));
 	}
 	
 	/**
@@ -252,11 +246,7 @@ public abstract class Repository<T extends BaseEntity> {
 			return List.of();
 		}
 		return list.stream()
-			.map(wrapper -> {
-				final T t = newInstance();
-				BeanUtils.setProperties(t, wrapper);
-				return t;
-			})
+			.map(wrapper -> newInstance(wrapper))
 			.collect(Collectors.toList());
 	}
 	
@@ -270,21 +260,26 @@ public abstract class Repository<T extends BaseEntity> {
 		sql
 			.append("SELECT * FROM ")
 			.append(this.table);
-		final List<ResultSetWrapper> list = this.databaseManager.select(sql.toString());
-		if(CollectionUtils.isEmpty(list)) {
-			return List.of();
-		}
-		return list.stream()
-			.map(wrapper -> {
-				final T t = newInstance();
-				BeanUtils.setProperties(t, wrapper);
-				return t;
-			})
-			.collect(Collectors.toList());
+		return this.findList(sql.toString());
 	}
 	
 	/**
 	 * <p>新建实体</p>
+	 * 
+	 * @param wrapper 数据
+	 * 
+	 * @return 实体
+	 */
+	private T newInstance(ResultSetWrapper wrapper) {
+		final T t = newInstance();
+		BeanUtils.setProperties(t, wrapper);
+		return t;
+	}
+	
+	/**
+	 * <p>新建实体</p>
+	 * 
+	 * @return 实体
 	 */
 	private T newInstance() {
 		return BeanUtils.newInstance(this.entityClazz);

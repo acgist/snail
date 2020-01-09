@@ -17,6 +17,7 @@ import com.acgist.snail.system.config.DatabaseConfig;
 import com.acgist.snail.system.exception.RepositoryException;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.BeanUtils;
+import com.acgist.snail.utils.CollectionUtils;
 
 /**
  * <p>数据库管理器</p>
@@ -43,18 +44,13 @@ public final class DatabaseManager {
 	private Connection connection;
 
 	/**
-	 * <p>查询表是否存在</p>
+	 * <p>查询表是否初始化</p>
 	 * 
-	 * @param table 表名
+	 * @return 是否初始化
 	 */
-	public boolean haveTable(String table) {
+	public boolean haveTable() {
 		final List<ResultSetWrapper> tables = select("show tables");
-		for (ResultSetWrapper wrapper : tables) {
-			if(table.equalsIgnoreCase(wrapper.getString("TABLE_NAME"))) {
-				return true;
-			}
-		}
-		return false;
+		return CollectionUtils.isNotEmpty(tables);
 	}
 	
 	/**
@@ -62,6 +58,8 @@ public final class DatabaseManager {
 	 * 
 	 * @param sql SQL
 	 * @param parameters 参数
+	 * 
+	 * @return 查询结果
 	 */
 	public List<ResultSetWrapper> select(String sql, Object ... parameters) {
 		ResultSet result = null;
@@ -90,6 +88,8 @@ public final class DatabaseManager {
 	 * 
 	 * @param sql SQL
 	 * @param parameters 参数
+	 * 
+	 * @return 更新结果
 	 */
 	public boolean update(String sql, Object ... parameters) {
 		boolean ok = false;
@@ -126,7 +126,13 @@ public final class DatabaseManager {
 	}
 	
 	/**
-	 * <p>结果集封装</p>
+	 * <p>封装结果集</p>
+	 * 
+	 * @param result 结果集
+	 * 
+	 * @return 封装结果集
+	 * 
+	 * @throws SQLException SQL异常
 	 */
 	private List<ResultSetWrapper> wrapperResultSet(ResultSet result) throws SQLException {
 		final String[] columns = columnNames(result);
@@ -143,6 +149,12 @@ public final class DatabaseManager {
 	
 	/**
 	 * <p>获取列名</p>
+	 * 
+	 * @param result 结果集
+	 * 
+	 * @return 列名
+	 * 
+	 * @throws SQLException SQL异常
 	 */
 	private String[] columnNames(ResultSet result) throws SQLException {
 		final ResultSetMetaData meta = result.getMetaData();
@@ -156,6 +168,10 @@ public final class DatabaseManager {
 
 	/**
 	 * <p>获取连接</p>
+	 * 
+	 * @return 连接
+	 * 
+	 * @throws SQLException SQL异常
 	 */
 	private Connection connection() throws SQLException {
 		if(this.connection != null) {
