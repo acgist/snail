@@ -26,7 +26,7 @@ public final class HttpProtocol extends Protocol {
 	private static final HttpProtocol INSTANCE = new HttpProtocol();
 
 	/**
-	 * <p>获取HTTP下载响应头的最大重试次数</p>
+	 * <p>获取HTTP下载响应头的最大重试次数：{@value}</p>
 	 */
 	private static final int HTTP_HEADER_RETRY_MAX_TIMES = 3;
 
@@ -86,6 +86,8 @@ public final class HttpProtocol extends Protocol {
 
 	/**
 	 * <p>获取HTTP下载响应头</p>
+	 * 
+	 * @throws DownloadException 下载异常
 	 */
 	private void buildHttpHeader() throws DownloadException {
 		int index = 0;

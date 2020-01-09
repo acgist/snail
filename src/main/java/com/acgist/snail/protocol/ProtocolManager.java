@@ -29,11 +29,11 @@ public class ProtocolManager {
 	private static final ProtocolManager INSTANCE = new ProtocolManager();
 	
 	/**
-	 * 下载协议
+	 * <p>下载协议</p>
 	 */
 	private final List<Protocol> protocols;
 	/**
-	 * 可用锁：协议没有加载完成时阻塞所有获取协议的线程
+	 * <p>可用锁：协议没有加载完成时阻塞所有获取协议的线程</p>
 	 */
 	private final AtomicBoolean availableLock = new AtomicBoolean(false);
 	
@@ -46,16 +46,26 @@ public class ProtocolManager {
 	}
 	
 	/**
-	 * 注册协议
+	 * <p>注册协议</p>
+	 * 
+	 * @param protocol 协议
+	 * 
+	 * @return {@link ProtocolManager}
 	 */
-	public <T extends Protocol> ProtocolManager register(Protocol protocol) {
+	public ProtocolManager register(Protocol protocol) {
 		LOGGER.info("注册下载协议：{}", protocol.name());
 		this.protocols.add(protocol);
 		return this;
 	}
 	
 	/**
-	 * 创建下载器
+	 * <p>创建下载器</p>
+	 * 
+	 * @param taskSession 任务信息
+	 * 
+	 * @return 下载器
+	 * 
+	 * @throws DownloadException 下载异常
 	 */
 	public IDownloader buildDownloader(ITaskSession taskSession) throws DownloadException {
 		synchronized (this.protocols) {
@@ -76,9 +86,13 @@ public class ProtocolManager {
 	}
 	
 	/**
-	 * 新建下载任务
+	 * <p>新建下载任务</p>
 	 * 
 	 * @param url 下载链接
+	 * 
+	 * @return 任务信息
+	 * 
+	 * @throws DownloadException 下载异常
 	 */
 	public ITaskSession buildTaskSession(String url) throws DownloadException {
 		synchronized (this.protocols) {
@@ -91,9 +105,11 @@ public class ProtocolManager {
 	}
 
 	/**
-	 * 判断是否支持下载
+	 * <p>判断是否支持下载</p>
 	 * 
 	 * @param url 下载链接
+	 * 
+	 * @return {@code true}-支持；{@code false}-不支持；
 	 */
 	public boolean support(String url) {
 		synchronized (this.protocols) {
@@ -103,9 +119,11 @@ public class ProtocolManager {
 	}
 
 	/**
-	 * 获取下载协议
+	 * <p>获取下载协议</p>
 	 * 
 	 * @param url 下载链接
+	 * 
+	 * @return 下载协议
 	 */
 	public Protocol protocol(String url) {
 		if(StringUtils.isEmpty(url)) {
@@ -125,7 +143,11 @@ public class ProtocolManager {
 	}
 
 	/**
-	 * 状态是否可用，阻塞线程。
+	 * <p>判断状态是否可用（阻塞线程）</p>
+	 * 
+	 * @return 是否可用
+	 * 
+	 * @throws DownloadException 下载异常
 	 */
 	public boolean available() throws DownloadException {
 		if(!this.availableLock.get()) {
@@ -143,7 +165,9 @@ public class ProtocolManager {
 	}
 
 	/**
-	 * 设置可用状态，释放阻塞线程。
+	 * <p>设置可用状态（释放阻塞线程）</p>
+	 * 
+	 * @param available 是否可用
 	 */
 	public void available(boolean available) {
 		synchronized (this.availableLock) {
