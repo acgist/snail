@@ -53,7 +53,9 @@ public final class TorrentBuilder {
 	/**
 	 * <p>创建种子文件</p>
 	 * 
-	 * @param path 文件路径
+	 * @param path 保存目录
+	 * 
+	 * @return 文件路径
 	 */
 	public String buildFile(String path) {
 		final String filePath = FileUtils.file(path, fileName());
@@ -64,6 +66,8 @@ public final class TorrentBuilder {
 
 	/**
 	 * <p>创建种子信息</p>
+	 * 
+	 * @return 种子信息
 	 */
 	private Map<String, Object> buildFileInfo() {
 		final Map<String, Object> data = new LinkedHashMap<>();
@@ -80,6 +84,8 @@ public final class TorrentBuilder {
 
 	/**
 	 * <p>设置Tracker服务器列表</p>
+	 * 
+	 * @param data 种子信息
 	 */
 	private void buildAnnounce(Map<String, Object> data) {
 		if(CollectionUtils.isEmpty(this.trackers)) {
@@ -100,6 +106,8 @@ public final class TorrentBuilder {
 	
 	/**
 	 * <p>设置种子信息</p>
+	 * 
+	 * @param data 种子信息
 	 */
 	private void buildInfo(Map<String, Object> data) {
 		try {
@@ -112,6 +120,8 @@ public final class TorrentBuilder {
 
 	/**
 	 * <p>设置DHT节点</p>
+	 * 
+	 * @param data 种子信息
 	 */
 	private void buildNodes(Map<String, Object> data) {
 		final var sessions = NodeManager.getInstance().findNode(this.infoHash.infoHash());
@@ -127,7 +137,9 @@ public final class TorrentBuilder {
 	}
 	
 	/**
-	 * <p>文件名称</p>
+	 * <p>获取文件名称</p>
+	 * 
+	 * @return 文件名称
 	 */
 	private String fileName() {
 		return this.infoHash.infoHashHex() + Protocol.Type.TORRENT.defaultSuffix();
@@ -143,7 +155,7 @@ public final class TorrentBuilder {
 		final File file = new File(filePath);
 		// 文件已存在时不保存
 		if(file.exists()) {
-			LOGGER.debug("种子文件已存在：{}", filePath);
+			LOGGER.info("种子文件已存在：{}", filePath);
 			return;
 		}
 		LOGGER.debug("保存种子文件：{}", filePath);

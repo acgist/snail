@@ -58,6 +58,8 @@ public final class TorrentProtocol extends Protocol {
 
 	/**
 	 * <p>设置种子文件操作类型</p>
+	 * 
+	 * @param operation 种子文件操作
 	 */
 	public void operation(TorrentHandle operation) {
 		this.handle = operation;
@@ -129,6 +131,8 @@ public final class TorrentProtocol extends Protocol {
 	
 	/**
 	 * <p>判断任务是否已经存在</p>
+	 * 
+	 * @throws 下载异常
 	 */
 	private void exist() throws DownloadException {
 		final Torrent torrent = TorrentManager.loadTorrent(this.url);
@@ -138,11 +142,10 @@ public final class TorrentProtocol extends Protocol {
 	}
 	
 	/**
-	 * <dl>
-	 * 	<dt>解析种子</dt>
-	 * 	<dd>转换磁力链接</dd>
-	 * 	<dd>生成种子信息</dd>
-	 * </dl>
+	 * <p>解析种子</p>
+	 * <p>转换磁力链接、生成种子信息</p>
+	 * 
+	 * @throws DownloadException 下载异常
 	 */
 	private void torrent() throws DownloadException {
 		final String torrentFile = this.url;
@@ -175,6 +178,8 @@ public final class TorrentProtocol extends Protocol {
 
 	/**
 	 * <p>选择下载文件、设置文件大小</p>
+	 * 
+	 * @throws DownloadException 下载异常
 	 */
 	private void selectTorrentFiles() throws DownloadException {
 		final ITaskSession taskSession = TaskSession.newInstance(this.taskEntity);

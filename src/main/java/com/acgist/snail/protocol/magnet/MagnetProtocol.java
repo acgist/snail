@@ -105,6 +105,10 @@ public final class MagnetProtocol extends Protocol {
 	
 	/**
 	 * <p>是否已经存在下载任务</p>
+	 * 
+	 * @param magnet 磁力链接信息
+	 * 
+	 * @throws 下载异常
 	 */
 	private void exist(Magnet magnet) throws DownloadException {
 		if(TorrentManager.getInstance().exist(magnet.getHash())) {
@@ -114,6 +118,10 @@ public final class MagnetProtocol extends Protocol {
 	
 	/**
 	 * <p>设置磁力链接</p>
+	 * 
+	 * @param magnet 磁力链接信息
+	 * 
+	 * @throws 下载异常
 	 */
 	private void magnet(Magnet magnet) throws DownloadException {
 		this.magnet = magnet;

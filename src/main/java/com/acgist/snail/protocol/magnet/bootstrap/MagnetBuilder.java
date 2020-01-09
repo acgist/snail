@@ -25,10 +25,25 @@ public final class MagnetBuilder {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(MagnetBuilder.class);
 	
+	/**
+	 * <p>显示名称：{@value}</p>
+	 */
 	public static final String QUERY_DN = "dn";
+	/**
+	 * <p>资源URN：{@value}</p>
+	 */
 	public static final String QUERY_XT = "xt";
+	/**
+	 * <p>文件链接（经过编码）：{@value}</p>
+	 */
 	public static final String QUERY_AS = "as";
+	/**
+	 * <p>绝对资源（经过编码）：{@value}</p>
+	 */
 	public static final String QUERY_XS = "xs";
+	/**
+	 * <p>Tracker服务器列表：{@value}</p>
+	 */
 	public static final String QUERY_TR = "tr";
 	
 	/**
@@ -50,6 +65,10 @@ public final class MagnetBuilder {
 	
 	/**
 	 * <p>解析磁力链接信息</p>
+	 * 
+	 * @return 磁力链接信息
+	 * 
+	 * @throws DownloadException 下载异常
 	 */
 	public Magnet build() throws DownloadException {
 		if(!Protocol.Type.MAGNET.verify(this.url)) {
@@ -108,6 +127,10 @@ public final class MagnetBuilder {
 	
 	/**
 	 * <p>解析XT：支持BT下载</p>
+	 * 
+	 * @param value XT
+	 * 
+	 * @throws DownloadException 下载异常
 	 */
 	private void xt(String value) throws DownloadException {
 		if(StringUtils.isEmpty(value)) {
