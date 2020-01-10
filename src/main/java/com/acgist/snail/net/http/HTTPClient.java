@@ -193,6 +193,7 @@ public final class HTTPClient {
 	 * <p>执行GET请求</p>
 	 * 
 	 * @param <T> 响应体泛型
+	 * 
 	 * @param handler 响应体处理器
 	 * 
 	 * @return 响应
@@ -210,6 +211,7 @@ public final class HTTPClient {
 	 * <p>执行POST请求</p>
 	 * 
 	 * @param <T> 响应体泛型
+	 * 
 	 * @param data 请求数据
 	 * @param handler 响应体处理器
 	 * 
@@ -232,6 +234,7 @@ public final class HTTPClient {
 	 * <p>执行POST表单请求</p>
 	 * 
 	 * @param <T> 响应体泛型
+	 * 
 	 * @param data 请求表单数据
 	 * @param handler 响应体处理器
 	 * 
@@ -270,6 +273,7 @@ public final class HTTPClient {
 	 * <p>执行请求</p>
 	 * 
 	 * @param <T> 响应体泛型
+	 * 
 	 * @param request 请求
 	 * @param handler 响应体处理器
 	 * 
@@ -295,6 +299,7 @@ public final class HTTPClient {
 	 * <p>执行异步请求</p>
 	 * 
 	 * @param <T> 响应体泛型
+	 * 
 	 * @param request 请求
 	 * @param handler 响应体处理器
 	 * 
@@ -330,6 +335,7 @@ public final class HTTPClient {
 	 * <p>执行GET请求</p>
 	 * 
 	 * @param <T> 响应体泛型
+	 * 
 	 * @param url 请求链接
 	 * @param handler 响应体处理器
 	 * 
@@ -347,6 +353,7 @@ public final class HTTPClient {
 	 * <p>执行GET请求</p>
 	 * 
 	 * @param <T> 响应体泛型
+	 * 
 	 * @param url 请求地址
 	 * @param handler 响应体处理器
 	 * @param connectTimeout 超时时间（连接），单位：秒
@@ -365,6 +372,7 @@ public final class HTTPClient {
 	 * <p>是否成功：{@link StatusCode#OK}</p>
 	 * 
 	 * @param <T> 响应体泛型
+	 * 
 	 * @param response 响应
 	 * 
 	 * @return {@code true}-成功；{@code false}-失败；
@@ -377,6 +385,7 @@ public final class HTTPClient {
 	 * <p>是否支持断点续传：{@link StatusCode#PARTIAL_CONTENT}</p>
 	 * 
 	 * @param <T> 响应体泛型
+	 * 
 	 * @param response 响应
 	 * 
 	 * @return {@code true}-支持；{@code false}-不支持；
@@ -389,6 +398,7 @@ public final class HTTPClient {
 	 * <p>是否无法满足请求范围：{@link StatusCode#REQUESTED_RANGE_NOT_SATISFIABLE}</p>
 	 * 
 	 * @param <T> 响应体泛型
+	 * 
 	 * @param response 响应
 	 * 
 	 * @return {@code true}-无法满足；{@code false}-可以满足；
@@ -401,6 +411,7 @@ public final class HTTPClient {
 	 * <p>是否服务器错误：{@link StatusCode#REQUESTED_RANGE_NOT_SATISFIABLE}</p>
 	 * 
 	 * @param <T> 响应体泛型
+	 * 
 	 * @param response 响应
 	 * 
 	 * @return {@code true}-是；{@code false}-不是；
@@ -413,6 +424,7 @@ public final class HTTPClient {
 	 * <p>判断响应状态码是否匹配</p>
 	 * 
 	 * @param <T> 响应体泛型
+	 * 
 	 * @param response 响应
 	 * @param statusCode 状态码
 	 * 

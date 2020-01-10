@@ -144,7 +144,7 @@ public final class SystemContext {
 	}
 
 	/**
-	 * <p>系统是否可用</p>
+	 * <p>判断系统是否可用</p>
 	 * 
 	 * @return 是否可用
 	 */

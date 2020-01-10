@@ -15,6 +15,7 @@ import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * <p>NAT（内网穿透）</p>
+ * <p>已是公网IP不会进行内网穿透</p>
  * <p>优先使用UPNP进行端口映射，UPNP映射失败后使用STUN。</p>
  * 
  * @author acgist
@@ -68,7 +69,7 @@ public final class NatContext {
 	}
 
 	/**
-	 * <p>释放锁</p>
+	 * <p>释放UPNP等待锁</p>
 	 */
 	public void unlock() {
 		synchronized (this.upnpLock) {

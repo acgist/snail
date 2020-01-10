@@ -55,43 +55,43 @@ public class JSON {
 		"\\\"", "\\\\"
 	};
 	/**
-	 * <p>{@code Map}前缀</p>
+	 * <p>{@code Map}前缀：{@value}</p>
 	 */
 	private static final char JSON_MAP_PREFIX = '{';
 	/**
-	 * <p>{@code Map}后缀</p>
+	 * <p>{@code Map}后缀：{@value}</p>
 	 */
 	private static final char JSON_MAP_SUFFIX = '}';
 	/**
-	 * <p>{@code List}前缀</p>
+	 * <p>{@code List}前缀：{@value}</p>
 	 */
 	private static final char JSON_LIST_PREFIX = '[';
 	/**
-	 * <p>{@code List}后缀</p>
+	 * <p>{@code List}后缀：{@value}</p>
 	 */
 	private static final char JSON_LIST_SUFFIX = ']';
 	/**
-	 * <p>JSON：键值分隔符</p>
+	 * <p>键值分隔符：{@value}</p>
 	 */
 	private static final char JSON_KV = ':';
 	/**
-	 * <p>JSON：属性分隔符</p>
+	 * <p>属性分隔符：{@value}</p>
 	 */
 	private static final char JSON_ATTR = ',';
 	/**
-	 * <p>JSON：字符串</p>
+	 * <p>字符串：{@value}</p>
 	 */
 	private static final char JSON_STRING = '"';
 	/**
-	 * <p>JSON：{@code null}</p>
+	 * <p>{@code null}：{@value}</p>
 	 */
 	private static final String JSON_NULL = "null";
 	/**
-	 * <p>JSON：{@code boolean}类型：{@code true}</p>
+	 * <p>{@code boolean}类型：{@value}</p>
 	 */
 	private static final String JSON_BOOLEAN_TRUE = "true";
 	/**
-	 * <p>JSON：{@code boolean}类型：{@code false}</p>
+	 * <p>{@code boolean}类型：{@value}</p>
 	 */
 	private static final String JSON_BOOLEAN_FALSE = "false";
 	
@@ -107,8 +107,17 @@ public class JSON {
 		
 	}
 	
+	/**
+	 * <p>类型</p>
+	 */
 	private Type type;
+	/**
+	 * <p>List</p>
+	 */
 	private List<Object> list;
+	/**
+	 * <p>Map</p>
+	 */
 	private Map<Object, Object> map;
 	
 	private JSON() {
@@ -142,6 +151,13 @@ public class JSON {
 		return json;
 	}
 
+	/**
+	 * <p>将字符串转为为JSON对象</p>
+	 * 
+	 * @param content 字符串
+	 * 
+	 * @return JSON对象
+	 */
 	public static final JSON ofString(String content) {
 		if(StringUtils.isEmpty(content)) {
 			throw new ArgumentException("JSON格式错误：" + content);
@@ -163,7 +179,9 @@ public class JSON {
 	}
 	
 	/**
-	 * <p>序列化</p>
+	 * <p>序列化JSON对象</p>
+	 * 
+	 * @return JSON字符串
 	 */
 	private String serialize() {
 		final StringBuilder builder = new StringBuilder();
@@ -179,6 +197,9 @@ public class JSON {
 
 	/**
 	 * <p>序列化Map</p>
+	 * 
+	 * @param map Map
+	 * @param builder JSON字符串Builder
 	 */
 	private void serializeMap(Map<?, ?> map, StringBuilder builder) {
 		if(map == null) {
@@ -199,6 +220,9 @@ public class JSON {
 	
 	/**
 	 * <p>序列化List</p>
+	 * 
+	 * @param list List
+	 * @param builder JSON字符串Builder
 	 */
 	private void serializeList(List<?> list, StringBuilder builder) {
 		if(list == null) {
@@ -216,13 +240,16 @@ public class JSON {
 	}
 	
 	/**
-	 * <p>序列化JSON属性</p>
+	 * <p>序列化Java对象</p>
+	 * 
+	 * @param object Java对象
+	 * @param builder JSON字符串
 	 */
 	private void serializeValue(Object object, StringBuilder builder) {
 		if(object == null) {
 			builder.append(JSON_NULL);
 		} else if(object instanceof String) {
-			builder.append(JSON_STRING).append(serializeValue((String) object)).append(JSON_STRING);
+			builder.append(JSON_STRING).append(encodeValue((String) object)).append(JSON_STRING);
 		} else if(object instanceof Boolean) {
 			builder.append(object.toString());
 		} else if(object instanceof Number) {
@@ -234,14 +261,18 @@ public class JSON {
 		} else if(object instanceof List) {
 			serializeList((List<?>) object, builder);
 		} else {
-			builder.append(JSON_STRING).append(serializeValue(object.toString())).append(JSON_STRING);
+			builder.append(JSON_STRING).append(encodeValue(object.toString())).append(JSON_STRING);
 		}
 	}
 	
 	/**
-	 * <p>转义字符</p>
+	 * <p>转义JSON字符串</p>
+	 * 
+	 * @param content 待转义字符串
+	 * 
+	 * @return 转义后字符串
 	 */
-	private String serializeValue(String content) {
+	private String encodeValue(String content) {
 		int index = -1;
 		final char[] chars = content.toCharArray();
 		final StringBuilder builder = new StringBuilder();
@@ -257,7 +288,9 @@ public class JSON {
 	}
 	
 	/**
-	 * <p>反序列化</p>
+	 * <p>反序列化JSON字符串</p>
+	 * 
+	 * @param content JSON字符串
 	 */
 	private void deserialize(String content) {
 		if(this.type == Type.map) {
@@ -271,6 +304,8 @@ public class JSON {
 	
 	/**
 	 * <p>反序列化Map</p>
+	 * 
+	 * @param content JSON字符串
 	 */
 	private void deserializeMap(String content) {
 		this.map = new LinkedHashMap<>();
@@ -285,6 +320,8 @@ public class JSON {
 	
 	/**
 	 * <p>反序列化List</p>
+	 * 
+	 * @param content JSON字符串
 	 */
 	private void deserializeList(String content) {
 		this.list = new ArrayList<>();
@@ -297,7 +334,12 @@ public class JSON {
 	}
 	
 	/**
-	 * <p>解析JSON属性</p>
+	 * <p>反序列化JSON字符串</p>
+	 * 
+	 * @param index 字符索引
+	 * @param content JSON字符串
+	 * 
+	 * @return Java对象
 	 */
 	private Object deserializeValue(AtomicInteger index, String content) {
 		char value;
@@ -367,6 +409,10 @@ public class JSON {
 	
 	/**
 	 * <p>类型转换</p>
+	 * 
+	 * @param content JSON字符串
+	 * 
+	 * @return Java对象
 	 */
 	private Object convertValue(String content) {
 		final String value = content.trim();
