@@ -91,6 +91,7 @@ public abstract class Window<T extends Initializable> extends Application {
 	 * <p>加载fxml、controller</p>
 	 * 
 	 * @param <X> 面板泛型
+	 * 
 	 * @param fxml fxml路径
 	 * 
 	 * @return 面板

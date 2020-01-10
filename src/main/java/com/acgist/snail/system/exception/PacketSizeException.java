@@ -20,6 +20,8 @@ public class PacketSizeException extends NetException {
 	 * @param length 网络包大小
 	 * 
 	 * @throws PacketSizeException 网络包大小异常
+	 * 
+	 * @see SystemConfig#MAX_NET_BUFFER_LENGTH
 	 */
 	public static final void verify(short length) throws PacketSizeException {
 		if(length < 0 || length > SystemConfig.MAX_NET_BUFFER_LENGTH) {
@@ -34,6 +36,8 @@ public class PacketSizeException extends NetException {
 	 * @param length 网络包大小
 	 * 
 	 * @throws PacketSizeException 网络包大小异常
+	 * 
+	 * @see SystemConfig#MAX_NET_BUFFER_LENGTH
 	 */
 	public static final void verify(int length) throws PacketSizeException {
 		if(length < 0 || length > SystemConfig.MAX_NET_BUFFER_LENGTH) {

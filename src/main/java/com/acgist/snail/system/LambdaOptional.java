@@ -38,6 +38,7 @@ public final class LambdaOptional<T> {
 	 * <p>获取工具对象</p>
 	 * 
 	 * @param <T> 数据类型
+	 * 
 	 * @param t 数据
 	 * 
 	 * @return 工具对象
