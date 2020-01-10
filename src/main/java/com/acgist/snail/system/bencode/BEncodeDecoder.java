@@ -56,9 +56,9 @@ public final class BEncodeDecoder {
 	 */
 	public enum Type {
 		
-		/** map */
+		/** Map */
 		MAP,
-		/** list */
+		/** List */
 		LIST,
 		/** 未知 */
 		NONE;
@@ -74,11 +74,11 @@ public final class BEncodeDecoder {
 	 */
 	public static final char TYPE_I = 'i';
 	/**
-	 * <p>list：{@value}</p>
+	 * <p>List：{@value}</p>
 	 */
 	public static final char TYPE_L = 'l';
 	/**
-	 * <p>map：{@value}</p>
+	 * <p>Map：{@value}</p>
 	 */
 	public static final char TYPE_D = 'd';
 	/**
@@ -91,11 +91,11 @@ public final class BEncodeDecoder {
 	 */
 	private Type type;
 	/**
-	 * <p>list</p>
+	 * <p>List</p>
 	 */
 	private List<Object> list;
 	/**
-	 * <p>map</p>
+	 * <p>Map</p>
 	 */
 	private Map<String, Object> map;
 	/**
@@ -170,13 +170,13 @@ public final class BEncodeDecoder {
 			LOGGER.warn("B编码没有更多数据");
 			return this.type = Type.NONE;
 		}
-		char type = (char) this.inputStream.read();
+		final char type = (char) this.inputStream.read();
 		switch (type) {
 		case TYPE_D:
-			this.map = d(this.inputStream);
+			this.map = readMap(this.inputStream);
 			return this.type = Type.MAP;
 		case TYPE_L:
-			this.list = l(this.inputStream);
+			this.list = readList(this.inputStream);
 			return this.type = Type.LIST;
 		default:
 			LOGGER.warn("B编码错误（类型未适配）：{}", type);
@@ -186,7 +186,7 @@ public final class BEncodeDecoder {
 	
 	/**
 	 * <p>获取下一个List</p>
-	 * <p>如果下一个数据类型不是{@code List}返回{@code null}</p>
+	 * <p>如果下一个数据类型不是{@code List}返回空{@code List}</p>
 	 * 
 	 * @return 下一个List
 	 * 
@@ -202,7 +202,7 @@ public final class BEncodeDecoder {
 	
 	/**
 	 * <p>获取下一个Map</p>
-	 * <p>如果下一个数据类型不是{@code Map}返回{@code null}</p>
+	 * <p>如果下一个数据类型不是{@code Map}返回空{@code Map}</p>
 	 * 
 	 * @return 下一个Map
 	 * 
@@ -242,13 +242,13 @@ public final class BEncodeDecoder {
 	}
 
 	/**
-	 * <p>读取数值</p>
+	 * <p>读取数值：{@value #TYPE_I}</p>
 	 * 
 	 * @param inputStream 数据
 	 * 
 	 * @return 数值
 	 */
-	private static final Long i(ByteArrayInputStream inputStream) {
+	private Long readLong(ByteArrayInputStream inputStream) {
 		int index;
 		char indexChar;
 		final StringBuilder valueBuilder = new StringBuilder();
@@ -268,15 +268,15 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>读取map</p>
+	 * <p>读取Map：{@value #TYPE_D}</p>
 	 * 
 	 * @param inputStream 数据
 	 * 
-	 * @return map
+	 * @return Map
 	 * 
 	 * @throws PacketSizeException 网络包大小异常
 	 */
-	private static final Map<String, Object> d(ByteArrayInputStream inputStream) throws PacketSizeException {
+	private Map<String, Object> readMap(ByteArrayInputStream inputStream) throws PacketSizeException {
 		int index;
 		char indexChar;
 		String key = null;
@@ -289,26 +289,26 @@ public final class BEncodeDecoder {
 				return map;
 			case TYPE_I:
 				if(key != null) {
-					map.put(key, i(inputStream));
+					map.put(key, readLong(inputStream));
 					key = null;
 				} else {
-					LOGGER.warn("B编码key=null跳过");
+					LOGGER.warn("B编码key为空跳过");
 				}
 				break;
 			case TYPE_L:
 				if(key != null) {
-					map.put(key, l(inputStream));
+					map.put(key, readList(inputStream));
 					key = null;
 				} else {
-					LOGGER.warn("B编码key=null跳过");
+					LOGGER.warn("B编码key为空跳过");
 				}
 				break;
 			case TYPE_D:
 				if(key != null) {
-					map.put(key, d(inputStream));
+					map.put(key, readMap(inputStream));
 					key = null;
 				} else {
-					LOGGER.warn("B编码key=null跳过");
+					LOGGER.warn("B编码key为空跳过");
 				}
 				break;
 			case '0':
@@ -345,15 +345,15 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>读取list</p>
+	 * <p>读取List：{@value #TYPE_L}</p>
 	 * 
 	 * @param inputStream 数据
 	 * 
-	 * @return list
+	 * @return List
 	 * 
 	 * @throws PacketSizeException 网络包大小异常
 	 */
-	private static final List<Object> l(ByteArrayInputStream inputStream) throws PacketSizeException {
+	private List<Object> readList(ByteArrayInputStream inputStream) throws PacketSizeException {
 		int index;
 		char indexChar;
 		final List<Object> list = new ArrayList<Object>();
@@ -364,13 +364,13 @@ public final class BEncodeDecoder {
 			case TYPE_E:
 				return list;
 			case TYPE_I:
-				list.add(i(inputStream));
+				list.add(readLong(inputStream));
 				break;
 			case TYPE_L:
-				list.add(l(inputStream));
+				list.add(readList(inputStream));
 				break;
 			case TYPE_D:
-				list.add(d(inputStream));
+				list.add(readMap(inputStream));
 				break;
 			case '0':
 			case '1':
@@ -410,7 +410,7 @@ public final class BEncodeDecoder {
 	 * 
 	 * @throws PacketSizeException 网络包大小异常
 	 */
-	private static final byte[] read(StringBuilder lengthBuilder, ByteArrayInputStream inputStream) throws PacketSizeException {
+	private byte[] read(StringBuilder lengthBuilder, ByteArrayInputStream inputStream) throws PacketSizeException {
 		final var number = lengthBuilder.toString();
 		if(!StringUtils.isNumeric(number)) {
 			throw new ArgumentException("B编码格式错误（数字）：" + number);
@@ -430,10 +430,25 @@ public final class BEncodeDecoder {
 		return bytes;
 	}
 	
+	/**
+	 * <p>获取对象</p>
+	 * 
+	 * @param key 键
+	 * 
+	 * @return 对象
+	 */
 	public Object get(String key) {
 		return get(this.map, key);
 	}
 	
+	/**
+	 * <p>获取对象</p>
+	 * 
+	 * @param map 数据
+	 * @param key 键
+	 * 
+	 * @return 对象
+	 */
 	public static final Object get(Map<?, ?> map, String key) {
 		if(map == null) {
 			return null;
@@ -441,10 +456,25 @@ public final class BEncodeDecoder {
 		return map.get(key);
 	}
 	
+	/**
+	 * <p>获取字节</p>
+	 * 
+	 * @param key 键
+	 * 
+	 * @return 字节
+	 */
 	public Byte getByte(String key) {
 		return getByte(this.map, key);
 	}
 	
+	/**
+	 * <p>获取字节</p>
+	 * 
+	 * @param map 数据
+	 * @param key 键
+	 * 
+	 * @return 字节
+	 */
 	public static final Byte getByte(Map<?, ?> map, String key) {
 		final Long value = getLong(map, key);
 		if(value == null) {
@@ -453,10 +483,25 @@ public final class BEncodeDecoder {
 		return value.byteValue();
 	}
 	
+	/**
+	 * <p>获取数值</p>
+	 * 
+	 * @param key 键
+	 * 
+	 * @return 数值
+	 */
 	public Integer getInteger(String key) {
 		return getInteger(this.map, key);
 	}
 	
+	/**
+	 * <p>获取数值</p>
+	 * 
+	 * @param map 数据
+	 * @param key 键
+	 * 
+	 * @return 数值
+	 */
 	public static final Integer getInteger(Map<?, ?> map, String key) {
 		final Long value = getLong(map, key);
 		if(value == null) {
@@ -465,10 +510,25 @@ public final class BEncodeDecoder {
 		return value.intValue();
 	}
 	
+	/**
+	 * <p>获取数值</p>
+	 * 
+	 * @param key 键
+	 * 
+	 * @return 数值
+	 */
 	public Long getLong(String key) {
 		return getLong(this.map, key);
 	}
 	
+	/**
+	 * <p>获取数值</p>
+	 * 
+	 * @param map 数据
+	 * @param key 键
+	 * 
+	 * @return 数值
+	 */
 	public static final Long getLong(Map<?, ?> map, String key) {
 		if(map == null) {
 			return null;
@@ -476,10 +536,25 @@ public final class BEncodeDecoder {
 		return (Long) map.get(key);
 	}
 	
+	/**
+	 * <p>获取字符串</p>
+	 * 
+	 * @param key 键
+	 * 
+	 * @return 字符串
+	 */
 	public String getString(String key) {
 		return getString(this.map, key);
 	}
 	
+	/**
+	 * <p>获取字符串</p>
+	 * 
+	 * @param map 数据
+	 * @param key 键
+	 * 
+	 * @return 字符串
+	 */
 	public static final String getString(Map<?, ?> map, String key) {
 		final var bytes = getBytes(map, key);
 		if(bytes == null) {
@@ -488,10 +563,44 @@ public final class BEncodeDecoder {
 		return new String(bytes);
 	}
 	
+	/**
+	 * <p>将对象转为字符串</p>
+	 * 
+	 * @param object 数据
+	 * 
+	 * @return 字符串
+	 */
+	public static final String getString(Object object) {
+		if(object == null) {
+			return null;
+		}
+		if(object instanceof byte[]) {
+			final byte[] bytes = (byte[]) object;
+			return new String(bytes);
+		} else {
+			return object.toString();
+		}
+	}
+	
+	/**
+	 * <p>获取字符数组</p>
+	 * 
+	 * @param key 键
+	 * 
+	 * @return 字符数组
+	 */
 	public byte[] getBytes(String key) {
 		return getBytes(this.map, key);
 	}
 	
+	/**
+	 * <p>获取字符数组</p>
+	 * 
+	 * @param map 数据
+	 * @param key 键
+	 * 
+	 * @return 字符数组
+	 */
 	public static final byte[] getBytes(Map<?, ?> map, String key) {
 		if(map == null) {
 			return null;
@@ -499,10 +608,25 @@ public final class BEncodeDecoder {
 		return (byte[]) map.get(key);
 	}
 	
+	/**
+	 * <p>获取集合</p>
+	 * 
+	 * @param key 键
+	 * 
+	 * @return 集合
+	 */
 	public List<Object> getList(String key) {
 		return getList(this.map, key);
 	}
 	
+	/**
+	 * <p>获取集合</p>
+	 * 
+	 * @param map 数据
+	 * @param key 键
+	 * 
+	 * @return 集合
+	 */
 	public static final List<Object> getList(Map<?, ?> map, String key) {
 		if(map == null) {
 			return List.of();
@@ -516,38 +640,38 @@ public final class BEncodeDecoder {
 			.collect(Collectors.toList());
 	}
 	
+	/**
+	 * <p>获取Map</p>
+	 * 
+	 * @param key 键
+	 * 
+	 * @return Map
+	 */
 	public Map<String, Object> getMap(String key) {
 		return getMap(this.map, key);
 	}
 	
 	/**
-	 * <p>使用LinkedHashMap防止乱序（乱序后计算的hash值将会改变）</p>
+	 * <p>获取Map</p>
+	 * <p>使用LinkedHashMap防止乱序（乱序后计算的Hash值将会改变）</p>
+	 * 
+	 * @param map 数据
+	 * @param key 键
+	 * 
+	 * @return Map
 	 */
 	public static final Map<String, Object> getMap(Map<?, ?> map, String key) {
 		if(map == null) {
-			return null;
+			return Map.of();
 		}
 		final var tmp = (Map<?, ?>) map.get(key);
 		if(tmp == null) {
-			return null;
+			return Map.of();
 		}
 		return tmp.entrySet().stream()
 			.filter(entry -> entry.getKey() != null)
-			.map(entry -> {
-				return Map.entry(entry.getKey().toString(), entry.getValue());
-			})
+			.map(entry -> Map.entry(entry.getKey().toString(), entry.getValue()))
 			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new));
-	}
-	
-	/**
-	 * <p>字节数组转字符串</p>
-	 */
-	public static final String getString(Object object) {
-		if(object == null) {
-			return null;
-		}
-		final byte[] bytes = (byte[]) object;
-		return new String(bytes);
 	}
 	
 }

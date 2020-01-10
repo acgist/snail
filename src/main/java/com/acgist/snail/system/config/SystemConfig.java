@@ -75,7 +75,7 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	public static final int MAX_NET_BUFFER_LENGTH = 4 * ONE_MB;
 	/**
-	 * <p>SHA1的HASH值长度：20</p>
+	 * <p>SHA-1的Hash值长度：20</p>
 	 */
 	public static final int SHA1_HASH_LENGTH = 20;
 	/**

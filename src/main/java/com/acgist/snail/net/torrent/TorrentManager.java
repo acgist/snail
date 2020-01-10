@@ -151,7 +151,7 @@ public final class TorrentManager {
 				throw new DownloadException("种子文件格式错误");
 			}
 			final var torrent = Torrent.valueOf(decoder);
-			// 直接转储原始信息：防止顺序不对导致种子hash计算错误
+			// 直接转储原始信息：防止顺序不对导致种子Hash计算错误
 			final var info = decoder.getMap("info");
 			final var infoHash = InfoHash.newInstance(BEncodeEncoder.encodeMap(info));
 			torrent.infoHash(infoHash);

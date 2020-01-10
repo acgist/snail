@@ -10,7 +10,7 @@ import com.acgist.snail.system.config.SystemConfig;
 
 /**
  * <p>文件信息</p>
- * <p>种子文件hash：此类信息转为B编码计算SHA-1散列值（注意顺序）</p>
+ * <p>种子文件Hash：此类信息转为B编码计算SHA-1散列值（注意顺序）</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -54,7 +54,7 @@ public final class TorrentInfo {
 	private byte[] filehash;
 	/**
 	 * <p>特征信息</p>
-	 * <p>所有Piece hash集合</p>
+	 * <p>所有Piece Hash集合</p>
 	 * <p>长度：Piece数量 * {@linkplain SystemConfig#SHA1_HASH_LENGTH 20}</p>
 	 */
 	private byte[] pieces;
