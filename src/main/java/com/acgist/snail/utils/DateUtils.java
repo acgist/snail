@@ -98,7 +98,9 @@ public final class DateUtils {
 	 * 
 	 * @param date 时间
 	 * 
-	 * @see {@link #dateToString(Date, String)}
+	 * @return 格式化字符串
+	 * 
+	 * @see #dateToString(Date, String)
 	 */
 	public static final String dateToString(Date date) {
 		return dateToString(date, DEFAULT_PATTERN);

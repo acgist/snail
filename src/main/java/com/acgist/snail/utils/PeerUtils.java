@@ -30,7 +30,9 @@ public final class PeerUtils {
 	/**
 	 * @param bytes 数据
 	 * 
-	 * @see {@link #read(ByteBuffer, int)}
+	 * @return IP=端口
+	 * 
+	 * @see #read(ByteBuffer, int)
 	 */
 	public static final Map<String, Integer> read(byte[] bytes) {
 		if(bytes == null) {

@@ -54,6 +54,8 @@ public final class SystemContext {
 	/**
 	 * <p>开启系统监听</p>
 	 * <p>启动检测：开启监听失败表示已经启动了一个系统实例，发送消息唤醒之前的实例窗口。</p>
+	 * 
+	 * @return 是否监听成功
 	 */
 	public static final boolean listen() {
 		final boolean ok = ApplicationServer.getInstance().listen();
@@ -143,13 +145,17 @@ public final class SystemContext {
 
 	/**
 	 * <p>系统是否可用</p>
+	 * 
+	 * @return 是否可用
 	 */
 	public static final boolean available() {
 		return !SystemContext.shutdown;
 	}
 
 	/**
-	 * <p>系统名称</p>
+	 * <p>获取系统名称</p>
+	 * 
+	 * @return 系统名称
 	 */
 	public static final String osName() {
 		if(SystemContext.osName == null) {

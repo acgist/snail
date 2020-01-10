@@ -106,6 +106,9 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	
 	/**
 	 * <p>服务端</p>
+	 * 
+	 * @param connectionId 连接ID
+	 * @param socketAddress 地址
 	 */
 	public UtpMessageHandler(final short connectionId, InetSocketAddress socketAddress) {
 		this(PeerSubMessageHandler.newInstance(), socketAddress, connectionId, true);
@@ -113,6 +116,9 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 
 	/**
 	 * <p>客户端</p>
+	 * 
+	 * @param peerSubMessageHandler Peer消息代理
+	 * @param socketAddress 地址
 	 */
 	public UtpMessageHandler(PeerSubMessageHandler peerSubMessageHandler, InetSocketAddress socketAddress) {
 		this(peerSubMessageHandler, socketAddress, (short) 0, false);

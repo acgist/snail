@@ -69,6 +69,8 @@ public final class SettingController extends Controller implements Initializable
 
 	/**
 	 * <p>下载目录</p>
+	 * 
+	 * @param event 事件
 	 */
 	@FXML
 	public void handlePathAction(ActionEvent event) {
@@ -82,6 +84,8 @@ public final class SettingController extends Controller implements Initializable
 
 	/**
 	 * <p>消息提示</p>
+	 * 
+	 * @param event 事件
 	 */
 	@FXML
 	public void handleNoticeAction(ActionEvent event) {

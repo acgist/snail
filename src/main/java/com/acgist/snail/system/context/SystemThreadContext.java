@@ -81,6 +81,8 @@ public final class SystemThreadContext {
 	 * @param delay 延迟时间
 	 * @param unit 时间单位
 	 * @param runnable 任务
+	 * 
+	 * @return 定时任务
 	 */
 	public static final ScheduledFuture<?> timer(long delay, TimeUnit unit, Runnable runnable) {
 		TimerArgumentException.verify(delay);
@@ -95,6 +97,8 @@ public final class SystemThreadContext {
 	 * @param period 周期时间
 	 * @param unit 时间单位
 	 * @param runnable 任务
+	 * 
+	 * @return 定时任务
 	 */
 	public static final ScheduledFuture<?> timer(long delay, long period, TimeUnit unit, Runnable runnable) {
 		TimerArgumentException.verify(delay);
@@ -110,6 +114,8 @@ public final class SystemThreadContext {
 	 * @param period 周期时间
 	 * @param unit 时间单位
 	 * @param runnable 任务
+	 * 
+	 * @return 定时任务
 	 */
 	public static final ScheduledFuture<?> timerFixedDelay(long delay, long period, TimeUnit unit, Runnable runnable) {
 		TimerArgumentException.verify(delay);
@@ -125,6 +131,8 @@ public final class SystemThreadContext {
 	 * @param queueSize 等待线程队列长度
 	 * @param keepAliveTime 线程空闲时间（秒）
 	 * @param name 线程名称
+	 * 
+	 * @return 线程池
 	 */
 	public static final ExecutorService newExecutor(int corePoolSize, int maximumPoolSize, int queueSize, long keepAliveTime, String name) {
 		return new ThreadPoolExecutor(
@@ -146,6 +154,8 @@ public final class SystemThreadContext {
 	 * </dl>
 	 * 
 	 * @param name 线程池名称
+	 * 
+	 * @return 线程池
 	 */
 	public static final ExecutorService newCacheExecutor(String name) {
 		return new ThreadPoolExecutor(
@@ -163,6 +173,8 @@ public final class SystemThreadContext {
 	 * 
 	 * @param corePoolSize 初始线程数量
 	 * @param name 线程池名称
+	 * 
+	 * @return 线程池
 	 */
 	public static final ScheduledExecutorService newTimerExecutor(int corePoolSize, String name) {
 		return new ScheduledThreadPoolExecutor(
@@ -175,6 +187,8 @@ public final class SystemThreadContext {
 	 * <p>创建线程池工厂</p>
 	 * 
 	 * @param poolName 线程池名称
+	 * 
+	 * @return 线程池工厂
 	 */
 	private static final ThreadFactory newThreadFactory(String poolName) {
 		return new ThreadFactory() {
@@ -199,6 +213,8 @@ public final class SystemThreadContext {
 	
 	/**
 	 * <p>关闭线程池</p>
+	 * 
+	 * @param executor 线程池
 	 */
 	public static final void shutdown(ExecutorService executor) {
 		if(executor == null || executor.isShutdown()) {
@@ -214,6 +230,8 @@ public final class SystemThreadContext {
 	/**
 	 * <p>关闭线程池</p>
 	 * <p>注意：立即关闭可能导致部分任务没有执行</p>
+	 * 
+	 * @param executor 线程池
 	 */
 	public static final void shutdownNow(ExecutorService executor) {
 		if(executor == null || executor.isShutdown()) {

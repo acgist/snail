@@ -89,7 +89,7 @@ public final class TrackerLauncherGroup {
 	/**
 	 * <p>查找Peer</p>
 	 * 
-	 * @see {@link TrackerLauncher#findPeer()}
+	 * @see TrackerLauncher#findPeer()
 	 */
 	public void findPeer() {
 		this.trackerLaunchers.forEach(launcher -> {

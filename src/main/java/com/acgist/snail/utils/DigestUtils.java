@@ -34,7 +34,7 @@ public final class DigestUtils {
 	 * 
 	 * @return MD5散列算法对象
 	 * 
-	 * @see {@link #digest(String)}
+	 * @see #digest(String)
 	 */
 	public static final MessageDigest md5() {
 		return digest(ALGO_MD5);
@@ -45,7 +45,7 @@ public final class DigestUtils {
 	 * 
 	 * @return SHA-1散列算法对象
 	 * 
-	 * @see {@link #digest(String)}
+	 * @see #digest(String)
 	 */
 	public static final MessageDigest sha1() {
 		return digest(ALGO_SHA1);

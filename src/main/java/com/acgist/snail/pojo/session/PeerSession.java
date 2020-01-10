@@ -141,6 +141,8 @@ public final class PeerSession implements IStatistics {
 	 * <p>判断是否相等</p>
 	 * <p>相等：IP地址一致（忽略端口）</p>
 	 * 
+	 * @param host Peer地址
+	 * 
 	 * @return 是否相等
 	 */
 	public boolean equalsHost(String host) {
@@ -592,7 +594,7 @@ public final class PeerSession implements IStatistics {
 	/**
 	 * <p>设置pex flags</p>
 	 * 
-	 * @param pex flags
+	 * @param flags pex flags
 	 */
 	public void flags(byte flags) {
 		synchronized (this) {

@@ -116,11 +116,11 @@ public class Response extends DhtMessage {
 	/**
 	 * <p>反序列化节点列表</p>
 	 * 
-	 * @param 序列化后数据
+	 * @param bytes 序列化后数据
 	 * 
 	 * @return 节点列表
 	 * 
-	 * @see {@link #deserializeNode(ByteBuffer)}
+	 * @see #deserializeNode(ByteBuffer)
 	 */
 	protected static final List<NodeSession> deserializeNodes(byte[] bytes) {
 		if(bytes == null) {

@@ -164,6 +164,8 @@ public final class GuiHandler {
 	
 	/**
 	 * <p>注册事件</p>
+	 * 
+	 * @param event 事件
 	 */
 	public static final void register(GuiEvent event) {
 		LOGGER.debug("注册GUI事件：{}-{}", event.type(), event.name());
@@ -172,6 +174,8 @@ public final class GuiHandler {
 
 	/**
 	 * <p>初始化GUI处理器</p>
+	 * 
+	 * @param args 参数
 	 * 
 	 * @return GUI处理器
 	 */
@@ -283,6 +287,8 @@ public final class GuiHandler {
 	/**
 	 * <p>种子文件选择</p>
 	 * 
+	 * @param taskSession 任务信息
+	 * 
 	 * @return GUI处理器
 	 */
 	public GuiHandler torrent(ITaskSession taskSession) {
@@ -333,6 +339,8 @@ public final class GuiHandler {
 	
 	/**
 	 * <p>注册扩展GUI消息代理</p>
+	 * 
+	 * @param extendGuiMessageHandler 扩展GUI消息代理
 	 * 
 	 * @return 是否注册成功
 	 */

@@ -112,6 +112,8 @@ public final class StatisticsController extends Controller implements Initializa
 	
 	/**
 	 * <p>刷新按钮</p>
+	 * 
+	 * @param event 事件
 	 */
 	@FXML
 	public void handleRefreshAction(ActionEvent event) {
@@ -120,6 +122,8 @@ public final class StatisticsController extends Controller implements Initializa
 	
 	/**
 	 * <p>Peer统计</p>
+	 * 
+	 * @param event 事件
 	 */
 	@FXML
 	public void handlePeerAction(ActionEvent event) {
@@ -129,6 +133,8 @@ public final class StatisticsController extends Controller implements Initializa
 	
 	/**
 	 * <p>流量统计</p>
+	 * 
+	 * @param event 事件
 	 */
 	@FXML
 	public void handleFlowAction(ActionEvent event) {
@@ -138,6 +144,8 @@ public final class StatisticsController extends Controller implements Initializa
 	
 	/**
 	 * <p>下载统计</p>
+	 * 
+	 * @param event 事件
 	 */
 	@FXML
 	public void handlePieceAction(ActionEvent event) {

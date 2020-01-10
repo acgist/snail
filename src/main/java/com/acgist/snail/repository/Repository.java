@@ -183,7 +183,7 @@ public abstract class Repository<T extends BaseEntity> {
 	/**
 	 * <p>查找</p>
 	 * 
-	 * @param id
+	 * @param id ID
 	 * 
 	 * @return 实体
 	 */

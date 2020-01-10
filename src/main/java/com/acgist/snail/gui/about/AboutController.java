@@ -37,6 +37,8 @@ public final class AboutController extends Controller implements Initializable {
 
 	/**
 	 * <p>作者按钮</p>
+	 * 
+	 * @param event 事件
 	 */
 	@FXML
 	public void handleAuthorAction(ActionEvent event) {
@@ -45,6 +47,8 @@ public final class AboutController extends Controller implements Initializable {
 	
 	/**
 	 * <p>源码按钮</p>
+	 * 
+	 * @param event 事件
 	 */
 	@FXML
 	public void handleSourceAction(ActionEvent event) {
@@ -53,6 +57,8 @@ public final class AboutController extends Controller implements Initializable {
 	
 	/**
 	 * <p>支持按钮</p>
+	 * 
+	 * @param event 事件
 	 */
 	@FXML
 	public void handleSupportAction(ActionEvent event) {

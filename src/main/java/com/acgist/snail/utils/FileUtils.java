@@ -185,8 +185,8 @@ public final class FileUtils {
 	}
 	
 	/**
-	 * <p>文件名称过滤<p>
-	 * <p>过滤：{@value #FILENAME_REPLACE_REGEX}<p>
+	 * <p>文件名称过滤</p>
+	 * <p>过滤：{@value #FILENAME_REPLACE_REGEX}</p>
 	 * 
 	 * @param name 文件名称
 	 * 
@@ -393,7 +393,7 @@ public final class FileUtils {
 	 * @param path 文件路径
 	 * @param isFile {@code path}是否是文件：{@code true}-文件；{@code false}-目录；
 	 * 
-	 * @see {@link #buildFolder(File, boolean)}
+	 * @see #buildFolder(File, boolean)
 	 */
 	public static final void buildFolder(String path, boolean isFile) {
 		final File file = new File(path);
@@ -427,7 +427,7 @@ public final class FileUtils {
 	 * 
 	 * @return 文件MD5值：文件路径=MD5值
 	 * 
-	 * @see {@link #hash(String, String)}
+	 * @see #hash(String, String)
 	 */
 	public static final Map<String, String> md5(String path) {
 		return hash(path, DigestUtils.ALGO_MD5);
@@ -440,7 +440,7 @@ public final class FileUtils {
 	 * 
 	 * @return 文件SHA-1值：文件路径=SHA-1值
 	 * 
-	 * @see {@link #hash(String, String)}
+	 * @see #hash(String, String)
 	 */
 	public static final Map<String, String> sha1(String path) {
 		return hash(path, DigestUtils.ALGO_SHA1);

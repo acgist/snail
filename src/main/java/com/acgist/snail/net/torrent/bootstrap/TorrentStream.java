@@ -357,7 +357,7 @@ public final class TorrentStream {
 	 * 
 	 * @return Piece数据
 	 * 
-	 * @see {@link #read(int, int, int, boolean)}
+	 * @see #read(int, int, int, boolean)
 	 */
 	public byte[] read(int index) {
 		return read(index, (int) this.pieceLength);
@@ -372,7 +372,7 @@ public final class TorrentStream {
 	 * 
 	 * @return Piece数据
 	 * 
-	 * @see {@link #read(int, int, int, boolean)}
+	 * @see #read(int, int, int, boolean)
 	 */
 	public byte[] read(int index, int size) {
 		return read(index, size, 0);
@@ -387,7 +387,7 @@ public final class TorrentStream {
 	 * 
 	 * @return Piece数据
 	 * 
-	 * @see {@link #read(int, int, int, boolean)}
+	 * @see #read(int, int, int, boolean)
 	 */
 	public byte[] read(int index, int size, int pos) {
 		synchronized (this) {

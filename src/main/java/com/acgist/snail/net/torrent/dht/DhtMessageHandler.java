@@ -164,6 +164,10 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 	/**
 	 * <p>发送请求：ping</p>
 	 * <p>检测节点是否可达，该方法同步阻塞，收到响应后添加系统节点。</p>
+	 * 
+	 * @param socketAddress 地址
+	 * 
+	 * @return 节点信息
 	 */
 	public NodeSession ping(InetSocketAddress socketAddress) {
 		LOGGER.debug("发送DHT请求：ping");
@@ -195,6 +199,9 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 	
 	/**
 	 * <p>发送请求：findNode</p>
+	 * 
+	 * @param socketAddress 地址
+	 * @param target NodeId或者InfoHash
 	 */
 	public void findNode(InetSocketAddress socketAddress, byte[] target) {
 		LOGGER.debug("发送DHT请求：findNode");
@@ -204,6 +211,10 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 	
 	/**
 	 * <p>处理请求：findNode</p>
+	 * 
+	 * @param request 请求
+	 * 
+	 * @return 响应
 	 */
 	private Response findNode(Request request) {
 		return FindNodeRequest.execute(request);
@@ -211,6 +222,9 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 	
 	/**
 	 * <p>处理响应：findNode</p>
+	 * 
+	 * @param request 请求
+	 * @param response 响应
 	 */
 	private void findNode(Request request, Response response) {
 		FindNodeResponse.newInstance(response).getNodes();
@@ -218,6 +232,9 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 
 	/**
 	 * <p>发送请求：getPeers</p>
+	 * 
+	 * @param socketAddress 地址
+	 * @param infoHash InfoHash
 	 */
 	public void getPeers(InetSocketAddress socketAddress, byte[] infoHash) {
 		LOGGER.debug("发送DHT请求：getPeers");
@@ -227,6 +244,10 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 
 	/**
 	 * <p>处理请求：getPeers</p>
+	 * 
+	 * @param request 请求
+	 * 
+	 * @return 响应
 	 */
 	private Response getPeers(Request request) {
 		return GetPeersRequest.execute(request);
@@ -235,6 +256,9 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 	/**
 	 * <p>处理响应：getPeers</p>
 	 * <p>处理完成后发送声明消息</p>
+	 * 
+	 * @param request 请求
+	 * @param response 响应
 	 */
 	private void getPeers(Request request, Response response) {
 		final GetPeersResponse getPeersResponse = GetPeersResponse.newInstance(response);
@@ -258,6 +282,10 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 	
 	/**
 	 * <p>发送请求：announcePeer</p>
+	 * 
+	 * @param socketAddress 地址
+	 * @param token Token
+	 * @param infoHash InfoHash
 	 */
 	public void announcePeer(InetSocketAddress socketAddress, byte[] token, byte[] infoHash) {
 		LOGGER.debug("发送DHT请求：announcePeer");
@@ -267,6 +295,10 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 	
 	/**
 	 * <p>处理请求：announcePeer</p>
+	 * 
+	 * @param request 请求
+	 * 
+	 * @return 响应
 	 */
 	private Response announcePeer(Request request) {
 		return AnnouncePeerRequest.execute(request);
@@ -274,12 +306,18 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 
 	/**
 	 * <p>处理响应：announcePeer</p>
+	 * 
+	 * @param request 请求
+	 * @param response 响应
 	 */
 	private void announcePeer(Request request, Response response) {
 	}
 
 	/**
 	 * <p>发送请求</p>
+	 * 
+	 * @param request 请求
+	 * @param socketAddress 地址
 	 */
 	private void pushMessage(Request request, InetSocketAddress socketAddress) {
 		request.setSocketAddress(socketAddress);
@@ -290,6 +328,9 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 	
 	/**
 	 * <p>发送响应</p>
+	 * 
+	 * @param response 响应
+	 * @param socketAddress 地址
 	 */
 	private void pushMessage(Response response, InetSocketAddress socketAddress) {
 		if(response != null) {
@@ -300,6 +341,9 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 	
 	/**
 	 * <p>发送数据</p>
+	 * 
+	 * @param buffer 消息
+	 * @param socketAddress 地址
 	 */
 	private void pushMessage(ByteBuffer buffer, InetSocketAddress socketAddress) {
 		try {

@@ -124,7 +124,8 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	/**
 	 * <p>获取文件大小</p>
 	 * <p>返回格式：{@code -rwx------ 1 user group 102400 Jan 01 2020 SnailLauncher.exe}</p>
-	 * <table border="1" summary="FTP文件大小格式">
+	 * <table border="1">
+	 * 	<caption>FTP文件大小格式</caption>
 	 * 	<tr>
 	 * 		<th>内容</th><th>释义</th>
 	 * 	</tr>
@@ -213,7 +214,9 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	/**
 	 * @param defaultMessage 默认错误信息
 	 * 
-	 * @see {@link FtpMessageHandler#failMessage(String)}
+	 * @return 错误信息
+	 * 
+	 * @see FtpMessageHandler#failMessage(String)
 	 */
 	public String failMessage(String defaultMessage) {
 		return this.handler.failMessage(defaultMessage);

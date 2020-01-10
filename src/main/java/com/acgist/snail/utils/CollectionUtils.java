@@ -20,9 +20,9 @@ public final class CollectionUtils {
 	/**
 	 * <p>集合是否为空</p>
 	 * 
-	 * @param 集合
+	 * @param list 集合
 	 * 
-	 * @retrun {@code true}-空；{@code false}-非空；
+	 * @return {@code true}-空；{@code false}-非空；
 	 */
 	public static final boolean isEmpty(Collection<?> list) {
 		return list == null || list.isEmpty();
@@ -31,9 +31,9 @@ public final class CollectionUtils {
 	/**
 	 * <p>集合是否非空</p>
 	 * 
-	 * @param 集合
+	 * @param list 集合
 	 * 
-	 * @retrun {@code true}-非空；{@code false}-空；
+	 * @return {@code true}-非空；{@code false}-空；
 	 */
 	public static final boolean isNotEmpty(Collection<?> list) {
 		return !isEmpty(list);
@@ -44,7 +44,7 @@ public final class CollectionUtils {
 	 * 
 	 * @param map {@code Map}
 	 * 
-	 * @retrun {@code true}-空；{@code false}-非空；
+	 * @return {@code true}-空；{@code false}-非空；
 	 */
 	public static final boolean isEmpty(Map<?, ?> map) {
 		return map == null || map.isEmpty();
@@ -55,7 +55,7 @@ public final class CollectionUtils {
 	 * 
 	 * @param map {@code Map}
 	 * 
-	 * @retrun {@code true}-非空；{@code false}-空；
+	 * @return {@code true}-非空；{@code false}-空；
 	 */
 	public static final boolean isNotEmpty(Map<?, ?> map) {
 		return !isEmpty(map);

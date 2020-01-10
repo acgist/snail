@@ -18,7 +18,8 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * <p>B编码解码器</p>
  * 
- * <table border="1" summary="类型">
+ * <table border="1">
+ * 	<caption>类型</caption>
  * 	<tr>
  * 		<th>符号</th>
  * 		<th>类型</th>

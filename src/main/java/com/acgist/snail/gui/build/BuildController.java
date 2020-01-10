@@ -48,6 +48,8 @@ public final class BuildController extends Controller implements Initializable {
 	
 	/**
 	 * <p>选择种子按钮</p>
+	 * 
+	 * @param event 事件
 	 */
 	@FXML
 	public void handleTorrentAction(ActionEvent event) {
@@ -59,6 +61,8 @@ public final class BuildController extends Controller implements Initializable {
 
 	/**
 	 * <p>确认下载按钮</p>
+	 * 
+	 * @param event 事件
 	 */
 	@FXML
 	public void handleBuildAction(ActionEvent event) {
@@ -83,6 +87,8 @@ public final class BuildController extends Controller implements Initializable {
 
 	/**
 	 * <p>取消下载按钮</p>
+	 * 
+	 * @param event 事件
 	 */
 	@FXML
 	public void handleCancelAction(ActionEvent event) {

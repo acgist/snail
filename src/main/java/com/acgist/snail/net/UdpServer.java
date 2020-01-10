@@ -58,6 +58,9 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements UdpChanne
 
 	/**
 	 * <p>默认随机端口、本地地址、不重用地址</p>
+	 * 
+	 * @param name 服务端名称
+	 * @param handler 消息代理
 	 */
 	protected UdpServer(String name, T handler) {
 		this(PORT_AUTO, ADDR_LOCAL, ADDR_USENEW, name, handler);
@@ -65,6 +68,10 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements UdpChanne
 	
 	/**
 	 * <p>默认本地地址、不重用地址</p>
+	 * 
+	 * @param port 端口
+	 * @param name 服务端名称
+	 * @param handler 消息代理
 	 */
 	protected UdpServer(int port, String name, T handler) {
 		this(port, ADDR_LOCAL, ADDR_USENEW, name, handler);
@@ -72,6 +79,11 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements UdpChanne
 	
 	/**
 	 * <p>默认不重用地址</p>
+	 * 
+	 * @param port 端口
+	 * @param host 地址
+	 * @param name 服务端名称
+	 * @param handler 消息代理
 	 */
 	protected UdpServer(int port, String host, String name, T handler) {
 		this(port, host, ADDR_USENEW, name, handler);
@@ -79,6 +91,11 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements UdpChanne
 	
 	/**
 	 * <p>默认本地地址</p>
+	 * 
+	 * @param port 端口
+	 * @param reuse 是否重用地址
+	 * @param name 服务端名称
+	 * @param handler 消息代理
 	 */
 	protected UdpServer(int port, boolean reuse, String name, T handler) {
 		this(port, ADDR_LOCAL, reuse, name, handler);

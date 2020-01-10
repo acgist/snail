@@ -143,7 +143,9 @@ public final class HTTPClient {
 	 * 
 	 * @param url 请求地址
 	 * 
-	 * @see {@link #newInstance(String, int, int)}
+	 * @return {@link HTTPClient}
+	 * 
+	 * @see #newInstance(String, int, int)
 	 */
 	public static final HTTPClient newInstance(String url) {
 		return newInstance(url, SystemConfig.CONNECT_TIMEOUT, SystemConfig.RECEIVE_TIMEOUT);
@@ -331,9 +333,11 @@ public final class HTTPClient {
 	 * @param url 请求链接
 	 * @param handler 响应体处理器
 	 * 
+	 * @return 响应
+	 * 
 	 * @throws NetException 网络异常
 	 * 
-	 * @see {@link #get(String, java.net.http.HttpResponse.BodyHandler, int, int)}
+	 * @see #get(String, java.net.http.HttpResponse.BodyHandler, int, int)
 	 */
 	public static final <T> HttpResponse<T> get(String url, HttpResponse.BodyHandler<T> handler) throws NetException {
 		return get(url, handler, SystemConfig.CONNECT_TIMEOUT, SystemConfig.RECEIVE_TIMEOUT);
