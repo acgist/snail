@@ -19,6 +19,9 @@ public final class SystemConfig extends PropertiesConfig {
 	
 	private static final SystemConfig INSTANCE = new SystemConfig();
 	
+	/**
+	 * <p>配置文件</p>
+	 */
 	private static final String SYSTEM_CONFIG = "/config/system.properties";
 
 	/**
@@ -26,88 +29,92 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	public static final int DATA_SCALE = 1024;
 	/**
-	 * <p>1KB数据大小：1KB = 1024B</p>
+	 * <p>1KB数据大小：{@value}</p>
+	 * <p>1KB = 1024B</p>
 	 */
 	public static final int ONE_KB = DATA_SCALE;
 	/**
-	 * <p>1MB数据大小：1MB = 1024KB = 1024 * 1024B</p>
+	 * <p>1MB数据大小：{@value}</p>
+	 * <p>1MB = 1024KB = 1024 * 1024B</p>
 	 */
 	public static final int ONE_MB = DATA_SCALE * ONE_KB;
 	/**
-	 * <p>最小下载速度：16KB</p>
+	 * <p>最小下载速度：{@value}</p>
+	 * <p>16KB</p>
 	 */
 	public static final int MIN_BUFFER_KB = 16;
 	/**
-	 * <p>TCP消息缓冲大小：和Piece交换Slice大小一样</p>
+	 * <p>TCP消息缓冲大小：{@value}</p>
+	 * <p>大小和Piece交换Slice大小一样</p>
 	 */
 	public static final int TCP_BUFFER_LENGTH = 16 * ONE_KB;
 	/**
-	 * <p>UDP消息缓存大小</p>
+	 * <p>UDP消息缓存大小：{@value}</p>
 	 */
 	public static final int UDP_BUFFER_LENGTH = 2 * ONE_KB;
 	/**
-	 * <p>连接超时时间（秒）</p>
+	 * <p>连接超时时间（秒）：{@value}</p>
 	 */
 	public static final int CONNECT_TIMEOUT = 5;
 	/**
-	 * <p>连接超时时间（毫秒）</p>
+	 * <p>连接超时时间（毫秒）：{@value}</p>
 	 */
 	public static final int CONNECT_TIMEOUT_MILLIS = CONNECT_TIMEOUT * 1000;
 	/**
-	 * <p>接收超时时间（秒）</p>
+	 * <p>接收超时时间（秒）：{@value}</p>
 	 */
 	public static final int RECEIVE_TIMEOUT = 5;
 	/**
-	 * <p>接收超时时间（毫秒）</p>
+	 * <p>接收超时时间（毫秒）：{@value}</p>
 	 */
 	public static final int RECEIVE_TIMEOUT_MILLIS = RECEIVE_TIMEOUT * 1000;
 	/**
-	 * <p>下载超时时间（秒）</p>
+	 * <p>下载超时时间（秒）：{@value}</p>
 	 */
 	public static final int DOWNLOAD_TIMEOUT = 60;
 	/**
-	 * <p>下载超时时间（毫秒）</p>
+	 * <p>下载超时时间（毫秒）：{@value}</p>
 	 */
 	public static final int DOWNLOAD_TIMEOUT_MILLIS = DOWNLOAD_TIMEOUT * 1000;
 	/**
-	 * <p>最大的网络包大小</p>
+	 * <p>最大的网络包大小：{@value}</p>
 	 * <p>所有创建ByteBuffer和byte[]对象的长度由外部数据设置时需要验证长度：防止恶意攻击导致内存泄露</p>
 	 */
 	public static final int MAX_NET_BUFFER_LENGTH = 4 * ONE_MB;
 	/**
-	 * <p>SHA-1的Hash值长度：20</p>
+	 * <p>SHA-1的Hash值长度：{@value}</p>
 	 */
 	public static final int SHA1_HASH_LENGTH = 20;
 	/**
-	 * <p>编码：GBK</p>
+	 * <p>编码：{@value}</p>
 	 */
-	public static final String CHARSET_GBK = "GBK";
+	public static final String CHARSET_GBK =		"GBK";
 	/**
-	 * <p>编码：UTF-8</p>
+	 * <p>编码：{@value}</p>
 	 */
-	public static final String CHARSET_UTF8 = "UTF-8";
+	public static final String CHARSET_UTF8 =		"UTF-8";
 	/**
-	 * <p>编码：ASCII</p>
+	 * <p>编码：{@value}</p>
 	 */
-	public static final String CHARSET_ASCII = "ASCII";
+	public static final String CHARSET_ASCII =		"ASCII";
 	/**
-	 * <p>编码：ISO-8859-1</p>
+	 * <p>编码：{@value}</p>
 	 */
 	public static final String CHARSET_ISO_8859_1 = "ISO-8859-1";
 	/**
-	 * <p>系统默认编码（file.encoding）</p>
+	 * <p>系统默认编码（file.encoding）：{@value}</p>
 	 */
 	public static final String DEFAULT_CHARSET = CHARSET_UTF8;
 	/**
-	 * <p>无符号BYTE最大值</p>
+	 * <p>无符号BYTE最大值：{@value}</p>
 	 */
 	public static final int UNSIGNED_BYTE_MAX = 2 << 7;
 	/**
-	 * <p>数字</p>
+	 * <p>数字：{@value}</p>
 	 */
 	public static final String DIGIT = "0123456789";
 	/**
-	 * <p>字符（小写）</p>
+	 * <p>字符（小写）：{@value}</p>
 	 */
 	public static final String LETTER = "abcdefghijklmnopqrstuvwxyz";
 	/**
@@ -190,7 +197,7 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	private int torrentPort;
 	/**
-	 * <p>BT服务端口（外网映射：Peer、DHT、UTP、STUN）</p>
+	 * <p>BT服务端口（外网端口：Peer、DHT、UTP、STUN）</p>
 	 */
 	private int torrentPortExt = 0;
 	/**
@@ -281,94 +288,111 @@ public final class SystemConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>软件名称</p>
+	 * <p>获取软件名称</p>
+	 * 
+	 * @return 软件名称
 	 */
 	public static final String getName() {
 		return INSTANCE.name;
 	}
 
 	/**
-	 * <p>软件名称（英文）</p>
+	 * <p>获取软件名称（英文）</p>
+	 * 
+	 * @return 软件名称（英文）
 	 */
 	public static final String getNameEn() {
 		return INSTANCE.nameEn;
 	}
 
 	/**
-	 * <p>软件版本</p>
+	 * <p>获取软件版本</p>
+	 * 
+	 * @return 软件版本
 	 */
 	public static final String getVersion() {
 		return INSTANCE.version;
 	}
 
 	/**
-	 * <p>FTP匿名用户</p>
+	 * <p>获取FTP匿名用户</p>
+	 * 
+	 * @return FTP匿名用户
 	 */
 	public static final String getFtpUser() {
 		return INSTANCE.ftpUser;
 	}
 
 	/**
-	 * <p>FTP匿名密码</p>
+	 * <p>获取FTP匿名密码</p>
+	 * 
+	 * @return FTP匿名密码
 	 */
 	public static final String getFtpPassword() {
 		return INSTANCE.ftpPassword;
 	}
 	
 	/**
-	 * <p>作者</p>
+	 * <p>获取作者</p>
+	 * 
+	 * @return 作者
 	 */
 	public static final String getAuthor() {
 		return INSTANCE.author;
 	}
 
 	/**
-	 * <p>官网与源码</p>
+	 * <p>获取官网与源码</p>
+	 * 
+	 * @return 官网与源码
 	 */
 	public static final String getSource() {
 		return INSTANCE.source;
 	}
 
 	/**
-	 * <p>问题与建议</p>
+	 * <p>获取问题与建议</p>
+	 * 
+	 * @return 问题与建议
 	 */
 	public static final String getSupport() {
 		return INSTANCE.support;
 	}
 
 	/**
-	 * <p>STUN服务器</p>
+	 * <p>获取STUN服务器</p>
+	 * 
+	 * @return STUN服务器
 	 */
 	public static final String getStunServer() {
 		return INSTANCE.stunServer;
 	}
 	
 	/**
-	 * <p>系统服务端口</p>
+	 * <p>获取系统服务端口</p>
+	 * 
+	 * @return 系统服务端口
 	 */
 	public static final int getServicePort() {
 		return INSTANCE.servicePort;
 	}
 
 	/**
-	 * <p>BT服务端口（本机：Peer、DHT、UTP、STUN）</p>
+	 * <p>获取BT服务端口</p>
+	 * <p>本地端口：Peer、DHT、UTP、STUN</p>
+	 * 
+	 * @return BT服务端口
 	 */
 	public static final int getTorrentPort() {
 		return INSTANCE.torrentPort;
 	}
 	
 	/**
-	 * <p>设置BT服务端口（外网：Peer、DHT、UTP、STUN）</p>
-	 * <p>内网端口和外网端口可能不一致</p>
-	 */
-	public static final void setTorrentPortExt(int torrentPortExt) {
-		LOGGER.info("服务端口（外网：Peer、DHT、UTP、STUN）：{}", torrentPortExt);
-		INSTANCE.torrentPortExt = torrentPortExt;
-	}
-	
-	/**
-	 * <p>BT服务端口（外网：Peer、DHT、UTP、STUN）</p>
-	 * <p>如果不存在返回{@linkplain #getTorrentPort() 内网端口}</p>
+	 * <p>获取BT服务端口</p>
+	 * <p>外网端口：Peer、DHT、UTP、STUN</p>
+	 * <p>如果不存在返回{@linkplain #getTorrentPort() 本地端口}</p>
+	 * 
+	 * @return BT服务端口
 	 */
 	public static final int getTorrentPortExt() {
 		if(INSTANCE.torrentPortExt == 0) {
@@ -378,86 +402,124 @@ public final class SystemConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>BT服务端口（外网：Peer、DHT、UTP、STUN）：short</p>
+	 * <p>设置BT服务端口</p>
+	 * <p>外网端口：Peer、DHT、UTP、STUN</p>
+	 * <p>本地端口和外网端口可能不一致</p>
+	 * 
+	 * @param torrentPortExt BT服务端口
+	 */
+	public static final void setTorrentPortExt(int torrentPortExt) {
+		LOGGER.info("BT服务端口（外网端口：Peer、DHT、UTP、STUN）：{}", torrentPortExt);
+		INSTANCE.torrentPortExt = torrentPortExt;
+	}
+	
+	/**
+	 * <p>获取BT服务端口（short）</p>
+	 * <p>外网端口：Peer、DHT、UTP、STUN</p>
+	 * 
+	 * @return BT服务端口
 	 */
 	public static final short getTorrentPortExtShort() {
 		return NetUtils.encodePort(getTorrentPortExt());
 	}
 	
 	/**
-	 * <p>单个任务Peer数量（同时下载）</p>
+	 * <p>获取单个任务Peer数量（同时下载）</p>
+	 * 
+	 * @return 单个任务Peer数量
 	 */
 	public static final int getPeerSize() {
 		return INSTANCE.peerSize;
 	}
 	
 	/**
-	 * <p>单个任务Tracker数量</p>
+	 * <p>获取单个任务Tracker数量</p>
+	 * 
+	 * @return 单个任务Tracker数量
 	 */
 	public static final int getTrackerSize() {
 		return INSTANCE.trackerSize;
 	}
 
 	/**
-	 * <p>任务即将完成时可以重复下载的Piece数量</p>
+	 * <p>获取任务即将完成时可以重复下载的Piece数量</p>
+	 * 
+	 * @return 任务即将完成时可以重复下载的Piece数量
 	 */
 	public static final int getPieceRepeatSize() {
 		return INSTANCE.pieceRepeatSize;
 	}
 
 	/**
-	 * <p>DHT执行周期（秒）</p>
+	 * <p>获取DHT执行周期（秒）</p>
+	 * 
+	 * @return DHT执行周期
 	 */
 	public static final int getDhtInterval() {
 		return INSTANCE.dhtInterval;
 	}
 	
 	/**
-	 * <p>PEX执行周期（秒）</p>
+	 * <p>获取PEX执行周期（秒）</p>
+	 * 
+	 * @return PEX执行周期
 	 */
 	public static final int getPexInterval() {
 		return INSTANCE.pexInterval;
 	}
 	
 	/**
-	 * <p>本地发现执行周期（秒）</p>
+	 * <p>获取本地发现执行周期（秒）</p>
+	 * 
+	 * @return 本地发现执行周期
 	 */
 	public static final int getLsdInterval() {
 		return INSTANCE.lsdInterval;
 	}
 	
 	/**
-	 * <p>Tracker执行周期（秒）</p>
+	 * <p>获取Tracker执行周期（秒）</p>
+	 * 
+	 * @return Tracker执行周期
 	 */
 	public static final int getTrackerInterval() {
 		return INSTANCE.trackerInterval;
 	}
 	
 	/**
-	 * <p>Peer（连接、接入）优化周期（秒）</p>
+	 * <p>获取Peer（连接、接入）优化周期（秒）</p>
+	 * 
+	 * @return Peer优化周期
 	 */
 	public static final int getPeerOptimizeInterval() {
 		return INSTANCE.peerOptimizeInterval;
 	}
 
 	/**
-	 * <p>用户工作目录</p>
+	 * <p>获取用户工作目录</p>
+	 * 
+	 * @return 用户工作目录
 	 */
 	public static final String userDir() {
 		return SystemConfig.USER_DIR;
 	}
 	
 	/**
-	 * <p>用户工作目录中的文件路径</p>
+	 * <p>获取用户工作目录中的文件路径</p>
 	 * 
 	 * @param path 文件相对路径：以“/”开头
+	 * 
+	 * @return 文件路径
 	 */
 	public static final String userDir(String path) {
 		return SystemConfig.USER_DIR + path;
 	}
 	
 	/**
-	 * <p>获取软件信息：软件名称（英文） 软件版本</p>
+	 * <p>获取软件信息</p>
+	 * <p>软件信息：软件名称（英文） + " " + 软件版本</p>
+	 * 
+	 * @return 软件信息
 	 */
 	public static final String getNameEnAndVersion() {
 		return INSTANCE.nameEn + " " + INSTANCE.version;
@@ -465,6 +527,8 @@ public final class SystemConfig extends PropertiesConfig {
 
 	/**
 	 * <p>设置外网IP地址</p>
+	 * 
+	 * @param externalIpAddress 外网IP地址
 	 */
 	public static final void setExternalIpAddress(String externalIpAddress) {
 		LOGGER.info("设置外网IP地址：{}", externalIpAddress);
@@ -473,6 +537,8 @@ public final class SystemConfig extends PropertiesConfig {
 	
 	/**
 	 * <p>获取外网IP地址</p>
+	 * 
+	 * @return 外网IP地址
 	 */
 	public static final String getExternalIpAddress() {
 		return INSTANCE.externalIpAddress;

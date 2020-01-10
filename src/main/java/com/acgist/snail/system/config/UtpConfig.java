@@ -10,31 +10,31 @@ public final class UtpConfig {
 
 	//================帧类型================//
 	/**
-	 * <p>数据</p>
+	 * <p>数据：{@value}</p>
 	 */
 	public static final byte ST_DATA  = 0;
 	/**
-	 * <p>结束</p>
+	 * <p>结束：{@value}</p>
 	 */
 	public static final byte ST_FIN   = 1;
 	/**
-	 * <p>响应</p>
+	 * <p>响应：{@value}</p>
 	 */
 	public static final byte ST_STATE = 2;
 	/**
-	 * <p>重置</p>
+	 * <p>重置：{@value}</p>
 	 */
 	public static final byte ST_RESET = 3;
 	/**
-	 * <p>握手</p>
+	 * <p>握手：{@value}</p>
 	 */
 	public static final byte ST_SYN   = 4;
+	//================版本================//
 	/**
-	 * <p>版本</p>
+	 * <p>版本：{@value}</p>
 	 */
 	public static final byte UTP_VERSION = 1;
-	
-	//================消息类型（类型 + 版本）================//
+	//================消息类型（帧类型 + 版本）================//
 	/**
 	 * <p>消息类型：数据</p>
 	 */
@@ -60,16 +60,17 @@ public final class UtpConfig {
 	 */
 	public static final byte EXTENSION = 0;
 	/**
+	 * <p>UTP最大包长度：{@value}</p>
 	 * <p>UDP最大包长度：1500 - 20(IP头) - 8(UDP头) = 1472</p>
 	 * <p>UTP最大包长度：1472 - 20(UTP扩展消息头) = 1452</p>
 	 */
 	public static final int UTP_PACKET_MAX_LENGTH = 1452;
 	/**
-	 * <p>默认窗口大小</p>
+	 * <p>默认窗口大小：{@value}</p>
 	 */
 	public static final int WND_SIZE = 1024 * 1024;
 	/**
-	 * <p>最大发送次数</p>
+	 * <p>最大发送次数：{@value}</p>
 	 */
 	public static final byte MAX_PUSH_TIMES = 3;
 	/**
@@ -78,7 +79,11 @@ public final class UtpConfig {
 	public static final byte FAST_ACK_RETRY_TIMES = 3;
 	
 	/**
-	 * <p>类型</p>
+	 * <p>获取类型名称</p>
+	 * 
+	 * @param type 类型标识
+	 * 
+	 * @return 类型名称
 	 */
 	public static final String type(byte type) {
 		return

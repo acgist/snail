@@ -25,91 +25,114 @@ public final class DhtConfig extends PropertiesConfig {
 	
 	private static final DhtConfig INSTANCE = new DhtConfig();
 	
+	/**
+	 * <p>配置文件：{@value}</p>
+	 */
 	private static final String DHT_CONFIG = "/config/bt.dht.properties";
 	
 	/**
-	 * <p>标记ID：请求ID（默认两个字节）</p>
+	 * <p>标记ID：{@value}</p>
+	 * <p>消息ID、请求ID、响应ID（默认两个字节）</p>
 	 */
 	public static final String KEY_T = "t";
 	/**
-	 * <p>消息类型：请求、响应</p>
+	 * <p>消息类型：{@value}</p>
+	 * <p>请求：{@value #KEY_Q}</p>
+	 * <p>响应：{@value #KEY_R}</p>
 	 */
 	public static final String KEY_Y = "y";
 	/**
-	 * <p>请求消息、请求类型</p>
+	 * <p>请求消息、请求类型：{@value}</p>
+	 * <p>请求消息：{@link #KEY_Y}</p>
+	 * <p>请求类型：{@link QType}</p>
 	 */
 	public static final String KEY_Q = "q";
 	/**
-	 * <p>请求参数</p>
-	 */
-	public static final String KEY_A = "a";
-	/**
-	 * <p>响应消息、响应参数</p>
+	 * <p>响应消息、响应参数：{@value}</p>
+	 * <p>响应消息：{@link #KEY_Y}</p>
+	 * <p>响应参数类型：{@code Map}</p>
 	 */
 	public static final String KEY_R = "r";
 	/**
-	 * <p>错误</p>
+	 * <p>请求参数：{@value}</p>
+	 * <p>请求参数类型：{@code Map}</p>
+	 */
+	public static final String KEY_A = "a";
+	/**
+	 * <p>响应错误：{@value}</p>
+	 * <p>响应错误类型：{@code Map}</p>
+	 * 
+	 * @see ErrorCode
 	 */
 	public static final String KEY_E = "e";
 	/**
-	 * <p>客户端版本：不一定存在</p>
+	 * <p>客户端版本：{@value}</p>
+	 * <p>不一定存在</p>
 	 */
 	public static final String KEY_V = "v";
 	/**
-	 * <p>NodeId</p>
+	 * <p>NodeId：{@value}</p>
 	 */
 	public static final String KEY_ID = "id";
 	/**
-	 * <p>下载端口</p>
+	 * <p>下载端口：{@value}</p>
 	 */
 	public static final String KEY_PORT = "port";
 	/**
-	 * <p>节点信息</p>
-	 */
-	public static final String KEY_NODES = "nodes";
-	/**
-	 * <p>Token：{@link QType#ANNOUNCE_PEER}使用</p>
+	 * <p>Token：{@value}</p>
+	 * <p>{@linkplain QType#ANNOUNCE_PEER 声明Peer}使用</p>
 	 */
 	public static final String KEY_TOKEN = "token";
 	/**
-	 * <p>Peer列表</p>
+	 * <p>节点信息：{@value}</p>
+	 */
+	public static final String KEY_NODES = "nodes";
+	/**
+	 * <p>Peer列表：{@value}</p>
 	 */
 	public static final String KEY_VALUES = "values";
 	/**
-	 * <p>目标：NodeId/InfoHash</p>
+	 * <p>目标：{@value}</p>
+	 * <p>NodeId/InfoHash</p>
 	 */
 	public static final String KEY_TARGET = "target";
 	/**
-	 * <p>InfoHash</p>
+	 * <p>InfoHash：{@value}</p>
 	 */
 	public static final String KEY_INFO_HASH = "info_hash";
 	/**
-	 * <p>0|1：{@link #IMPLIED_PORT_AUTO}、{@link #IMPLIED_PORT_CONFIG}</p>
+	 * <p>是否自动获取端口：{@value}</p>
+	 * 
+	 * @see #IMPLIED_PORT_AUTO
+	 * @see #IMPLIED_PORT_CONFIG
 	 */
 	public static final String KEY_IMPLIED_PORT = "implied_port";
 	/**
-	 * <p>自动配置：忽略端口配置</p>
-	 * <p>直接使用UDP连接端口作为对等端口并支持uTP</p>
+	 * <p>自动配置（忽略端口配置）</p>
+	 * <p>使用UDP连接端口作为对等端口并支持uTP</p>
 	 */
 	public static final Integer IMPLIED_PORT_AUTO = 1;
 	/**
 	 * <p>配置端口</p>
+	 * <p>使用消息配置端口</p>
 	 */
 	public static final Integer IMPLIED_PORT_CONFIG = 0;
 	/**
-	 * <p>GetPeer：Peer列表长度</p>
+	 * <p>Peer列表长度：{@value}</p>
+	 * <p>{@linkplain QType#GET_PEERS 查找Peer}使用</p>
 	 */
 	public static final int GET_PEER_SIZE = 32;
 	/**
-	 * <p>NodeId长度</p>
+	 * <p>NodeId长度：{@value}</p>
 	 */
 	public static final int NODE_ID_LENGTH = 20;
 	/**
-	 * <p>Node最大数量：超过这个数量会均匀剔除多余Node</p>
+	 * <p>Node最大数量：{@value}</p>
+	 * <p>超过最大数量均匀剔除多余Node</p>
 	 */
 	public static final int MAX_NODE_SIZE = 1024;
 	/**
-	 * <p>DHT请求清理周期</p>
+	 * <p>DHT请求清理周期：{@value}</p>
 	 */
 	public static final int DHT_REQUEST_CLEAN_INTERVAL = 10;
 	/**
@@ -199,7 +222,8 @@ public final class DhtConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>默认DHT节点：NodeID=host:port</p>
+	 * <p>默认DHT节点</p>
+	 * <p>NodeID=host:port</p>
 	 */
 	private final Map<String, String> nodes = new LinkedHashMap<>();
 	
@@ -211,6 +235,9 @@ public final class DhtConfig extends PropertiesConfig {
 		return INSTANCE;
 	}
 	
+	/**
+	 * <p>初始化配置文件</p>
+	 */
 	private void init() {
 		this.properties.entrySet().forEach(entry -> {
 			final String nodeId = (String) entry.getKey();
@@ -224,6 +251,8 @@ public final class DhtConfig extends PropertiesConfig {
 	}
 
 	/**
+	 * <p>获取所有DHT节点</p>
+	 * 
 	 * @return 所有DHT节点
 	 */
 	public Map<String, String> nodes() {

@@ -24,14 +24,18 @@ public final class TrackerConfig extends PropertiesConfig {
 	
 	private static final TrackerConfig INSTANCE = new TrackerConfig();
 	
+	/**
+	 * <p>配置文件</p>
+	 */
 	private static final String TRACKER_CONFIG = "/config/bt.tracker.properties";
 
 	/**
-	 * <p>最大的Tracker服务器保存数量</p>
+	 * <p>最大的Tracker服务器保存数量：{@value}</p>
 	 */
 	private static final int MAX_TRACKER_SIZE = 512;
 	/**
-	 * <p>最大失败次数：超过这个次数会被标记无效</p>
+	 * <p>最大请求失败次数：{@value}</p>
+	 * <p>超过最大次数标记无效</p>
 	 */
 	public static final int MAX_FAIL_TIMES = 3;
 	
@@ -135,10 +139,14 @@ public final class TrackerConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>默认Tracker声明地址：index=AnnounceUrl</p>
+	 * <p>默认Tracker服务器</p>
+	 * <p>index=AnnounceUrl</p>
 	 */
 	private final List<String> announces = new ArrayList<>();
 	
+	/**
+	 * <p>初始化配置文件</p>
+	 */
 	private void init() {
 		this.properties.entrySet().forEach(entry -> {
 			final String announce = (String) entry.getValue();
@@ -151,6 +159,8 @@ public final class TrackerConfig extends PropertiesConfig {
 	}
 
 	/**
+	 * <p>获取所有Tracker服务器</p>
+	 * 
 	 * @return 所有Tracker服务器
 	 */
 	public List<String> announces() {
