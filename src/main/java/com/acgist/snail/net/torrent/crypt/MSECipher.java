@@ -120,6 +120,8 @@ public final class MSECipher {
 	 * @param bytes 原始数据
 	 * 
 	 * @return 加密数据
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	public byte[] encrypt(byte[] bytes) throws NetException {
 		try {
@@ -164,6 +166,8 @@ public final class MSECipher {
 	 * @param bytes 加密数据
 	 * 
 	 * @return 原始数据
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	public byte[] decrypt(byte[] bytes) throws NetException {
 		try {

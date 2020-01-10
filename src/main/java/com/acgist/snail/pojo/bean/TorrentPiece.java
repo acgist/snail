@@ -6,7 +6,6 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>Piece下载信息</p>
- * <p>保存时必须是下载完成的Piece：end - begin == length == data.length && pos == begin</p>
  * <p>下载基于文件下载，所以当某个Piece处于两个文件交接处时，该Piece会被分为两次下载。</p>
  * 
  * @author acgist
@@ -83,6 +82,8 @@ public final class TorrentPiece {
 	/**
 	 * <p>开始偏移</p>
 	 * <p>Piece开始位置在整个任务中的绝对偏移</p>
+	 * 
+	 * @return 开始偏移
 	 */
 	public long beginPos() {
 		return this.pieceLength * this.getIndex() + this.begin;
@@ -91,6 +92,8 @@ public final class TorrentPiece {
 	/**
 	 * <p>结束偏移</p>
 	 * <p>Piece结束位置在整个任务中的绝对偏移</p>
+	 * 
+	 * @return 结束偏移
 	 */
 	public long endPos() {
 		return beginPos() + length;
@@ -102,6 +105,8 @@ public final class TorrentPiece {
 	 * 
 	 * @param fileBeginPos 文件开始偏移
 	 * @param fileEndPos 文件结束偏移
+	 * 
+	 * @return 是否包含
 	 */
 	public boolean contain(long fileBeginPos, long fileEndPos) {
 		final long beginPos = beginPos();
@@ -117,6 +122,8 @@ public final class TorrentPiece {
 	
 	/**
 	 * <p>是否还有更多的数据请求</p>
+	 * 
+	 * @return 是否还有更多
 	 */
 	public boolean haveMoreSlice() {
 		return this.position < this.length;
@@ -124,6 +131,8 @@ public final class TorrentPiece {
 	
 	/**
 	 * <p>是否下载完成</p>
+	 * 
+	 * @return 是否完成
 	 */
 	public boolean complete() {
 		return this.size >= this.length;
@@ -131,6 +140,8 @@ public final class TorrentPiece {
 	
 	/**
 	 * <p>获取整个Piece内偏移</p>
+	 * 
+	 * @return 整个Piece内偏移
 	 */
 	public int position() {
 		return this.begin + this.position;
@@ -140,6 +151,8 @@ public final class TorrentPiece {
 	 * <p>获取本次请求数据大小</p>
 	 * <p>{@code 0}：已经发送所有请求</p>
 	 * <p>修改{@link #position}</p>
+	 * 
+	 * @return 本地请求数据大小
 	 */
 	public int length() {
 		if(this.position == this.length) {
@@ -208,6 +221,8 @@ public final class TorrentPiece {
 	
 	/**
 	 * <p>校验数据</p>
+	 * 
+	 * @return 是否校验成功
 	 */
 	public boolean verify() {
 		if(this.verify) {

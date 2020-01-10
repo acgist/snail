@@ -67,6 +67,8 @@ public final class DhtClient extends UdpClient<DhtMessageHandler> {
 	
 	/**
 	 * <p>查询Peer</p>
+	 * 
+	 * @param infoHash InfoHash
 	 */
 	public void getPeers(InfoHash infoHash) {
 		this.getPeers(infoHash.infoHash());
@@ -74,6 +76,8 @@ public final class DhtClient extends UdpClient<DhtMessageHandler> {
 
 	/**
 	 * <p>查询Peer</p>
+	 * 
+	 * @param infoHash InfoHash
 	 */
 	public void getPeers(byte[] infoHash) {
 		this.handler.getPeers(this.socketAddress, infoHash);
@@ -81,6 +85,9 @@ public final class DhtClient extends UdpClient<DhtMessageHandler> {
 	
 	/**
 	 * <p>声明Peer</p>
+	 * 
+	 * @param token Token
+	 * @param infoHash InfoHash
 	 */
 	public void announcePeer(byte[] token, InfoHash infoHash) {
 		this.announcePeer(token, infoHash.infoHash());
@@ -88,6 +95,9 @@ public final class DhtClient extends UdpClient<DhtMessageHandler> {
 
 	/**
 	 * <p>声明Peer</p>
+	 * 
+	 * @param token Token
+	 * @param infoHash InfoHash
 	 */
 	public void announcePeer(byte[] token, byte[] infoHash) {
 		this.handler.announcePeer(this.socketAddress, token, infoHash);

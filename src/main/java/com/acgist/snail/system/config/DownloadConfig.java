@@ -294,7 +294,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	/**
 	 * <p>获取上传速度（单个）（B）</p>
 	 * 
-	 * @param 上传速度
+	 * @return 上传速度
 	 */
 	public static final int getUploadBufferByte() {
 		return INSTANCE.uploadBufferByte;
@@ -320,7 +320,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	/**
 	 * <p>设置最后一次选择目录</p>
 	 * 
-	 * @param 最后一次选择目录
+	 * @param lastPath 最后一次选择目录
 	 */
 	public static final void setLastPath(String lastPath) {
 		if(StringUtils.equals(INSTANCE.lastPath, lastPath)) {
@@ -347,6 +347,8 @@ public final class DownloadConfig extends PropertiesConfig {
 	
 	/**
 	 * <p>获取最后一次选择目录文件</p>
+	 * 
+	 * @return 最后一次选择目录文件
 	 */
 	public static final File getLastPathFile() {
 		return new File(getLastPath());

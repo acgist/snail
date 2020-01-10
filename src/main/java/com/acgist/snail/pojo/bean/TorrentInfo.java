@@ -81,7 +81,7 @@ public final class TorrentInfo {
 	/**
 	 * <p>私有种子</p>
 	 * 
-	 * @see {@link #PRIVATE_TORRENT}
+	 * @see #PRIVATE_TORRENT
 	 */
 	private Long privateTorrent;
 	/**

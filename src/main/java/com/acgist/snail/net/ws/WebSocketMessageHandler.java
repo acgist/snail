@@ -41,6 +41,9 @@ public abstract class WebSocketMessageHandler implements IMessageHandler, WebSoc
 	
 	/**
 	 * <p>代理Socket、Client</p>
+	 * 
+	 * @param socket socket
+	 * @param client client
 	 */
 	public void handle(WebSocket socket, HttpClient client) {
 		this.socket = socket;

@@ -161,6 +161,8 @@ public final class MainController extends Controller implements Initializable {
 
 	/**
 	 * <p>新建按钮</p>
+	 * 
+	 * @param event 事件
 	 */
 	@FXML
 	public void handleBuildAction(ActionEvent event) {
@@ -169,6 +171,8 @@ public final class MainController extends Controller implements Initializable {
 
 	/**
 	 * <p>开始按钮</p>
+	 * 
+	 * @param event 事件
 	 */
 	@FXML
 	public void handleStartAction(ActionEvent event) {
@@ -177,6 +181,8 @@ public final class MainController extends Controller implements Initializable {
 
 	/**
 	 * <p>暂停按钮</p>
+	 * 
+	 * @param event 事件
 	 */
 	@FXML
 	public void handlePauseAction(ActionEvent event) {
@@ -185,6 +191,8 @@ public final class MainController extends Controller implements Initializable {
 	
 	/**
 	 * <p>删除按钮</p>
+	 * 
+	 * @param event 事件
 	 */
 	@FXML
 	public void handleDeleteAction(ActionEvent event) {
@@ -193,6 +201,8 @@ public final class MainController extends Controller implements Initializable {
 	
 	/**
 	 * <p>关于按钮</p>
+	 * 
+	 * @param event 事件
 	 */
 	@FXML
 	public void handleAboutAction(ActionEvent event) {
@@ -201,6 +211,8 @@ public final class MainController extends Controller implements Initializable {
 	
 	/**
 	 * <p>设置按钮</p>
+	 * 
+	 * @param event 事件
 	 */
 	@FXML
 	public void handleSettingAction(ActionEvent event) {
@@ -209,6 +221,8 @@ public final class MainController extends Controller implements Initializable {
 	
 	/**
 	 * <p>全部任务按钮</p>
+	 * 
+	 * @param event 事件
 	 */
 	@FXML
 	public void handleAllAction(ActionEvent event) {
@@ -218,6 +232,8 @@ public final class MainController extends Controller implements Initializable {
 
 	/**
 	 * <p>下载任务按钮</p>
+	 * 
+	 * @param event 事件
 	 */
 	@FXML
 	public void handleDownloadAction(ActionEvent event) {
@@ -227,6 +243,8 @@ public final class MainController extends Controller implements Initializable {
 	
 	/**
 	 * <p>完成任务按钮</p>
+	 * 
+	 * @param event 事件
 	 */
 	@FXML
 	public void handleCompleteAction(ActionEvent event) {

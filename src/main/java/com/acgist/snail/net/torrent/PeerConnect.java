@@ -119,6 +119,8 @@ public abstract class PeerConnect {
 	
 	/**
 	 * <p>发送have消息</p>
+	 * 
+	 * @param index Piece索引
 	 */
 	public final void have(int index) {
 		this.peerSubMessageHandler.have(index);
@@ -126,6 +128,8 @@ public abstract class PeerConnect {
 	
 	/**
 	 * <p>发送pex消息</p>
+	 * 
+	 * @param bytes Pex消息
 	 */
 	public final void pex(byte[] bytes) {
 		this.peerSubMessageHandler.pex(bytes);
@@ -158,14 +162,18 @@ public abstract class PeerConnect {
 	}
 	
 	/**
-	 * <p>是否可用</p>
+	 * <p>判断是否可用</p>
+	 * 
+	 * @return 是否可用
 	 */
 	public final boolean available() {
 		return this.available && this.peerSubMessageHandler.available();
 	}
 	
 	/**
-	 * <p>是否评分</p>
+	 * <p>判断是否评分</p>
+	 * 
+	 * @return 是否评分
 	 */
 	public final boolean marked() {
 		if(this.marked) {
@@ -179,6 +187,8 @@ public abstract class PeerConnect {
 	 * <p>Peer上传评分</p>
 	 * <p>评分 = 当前下载大小 - 上次下载大小</p>
 	 * <p>计算评分后记录当前下载大小</p>
+	 * 
+	 * @return Peer上传评分
 	 */
 	public final long uploadMark() {
 		final long nowSize = this.peerSession.statistics().uploadSize();
@@ -190,13 +200,17 @@ public abstract class PeerConnect {
 	 * <p>Peer下载评分</p>
 	 * <p>评分 = 下载数据大小</p>
 	 * <p>评分后清除数据：不累计分数</p>
+	 * 
+	 * @return Peer下载评分
 	 */
 	public final long downloadMark() {
 		return this.downloadMark.getAndSet(0);
 	}
 
 	/**
-	 * <p>计算评分：下载数据大小</p>
+	 * <p>计算评分</p>
+	 * 
+	 * @param buffer 下载数据大小
 	 */
 	private void downloadMark(int buffer) {
 		this.downloadMark.addAndGet(buffer);
@@ -237,7 +251,7 @@ public abstract class PeerConnect {
 		downloadMark(bytes.length); // 下载评分
 		// 请求数据下载完成：释放下载等待
 		synchronized (this.countLock) {
-			if (this.countLock.addAndGet(-1) <= 0) {
+			if (this.countLock.decrementAndGet() <= 0) {
 				this.countLock.notifyAll();
 			}
 		}
@@ -323,7 +337,7 @@ public abstract class PeerConnect {
 					}
 				}
 			}
-			this.countLock.addAndGet(1);
+			this.countLock.incrementAndGet();
 			final int begin = this.downloadPiece.position();
 			final int length = this.downloadPiece.length(); // 顺序不能调换
 			this.peerSubMessageHandler.request(index, begin, length);

@@ -86,6 +86,8 @@ public abstract class SingleFileDownloader extends Downloader {
 	 * 	<dd>任务长度小于等于已下载数据长度</dd>
 	 * </dl>
 	 * 
+	 * @param length 数据长度
+	 * 
 	 * @return {@code true}-下载完成；{@code false}-没有完成；
 	 */
 	protected boolean isComplete(int length) {

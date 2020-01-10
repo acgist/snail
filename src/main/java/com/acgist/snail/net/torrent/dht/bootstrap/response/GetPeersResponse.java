@@ -58,7 +58,7 @@ public final class GetPeersResponse extends Response {
 	 * 
 	 * @return Peer列表
 	 * 
-	 * @see {@link #getValues(Request)}
+	 * @see #getValues(Request)
 	 */
 	public List<PeerSession> getPeers(Request request) {
 		return this.getValues(request);
@@ -112,7 +112,7 @@ public final class GetPeersResponse extends Response {
 	 * 
 	 * @return {@code true}-含有；{@code false}-不含；
 	 * 
-	 * @see {@link #haveValues()}
+	 * @see #haveValues()
 	 */
 	public boolean havePeers() {
 		return haveValues();

@@ -47,7 +47,8 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	public static final String CONTENT_DISPOSITION = "Content-Disposition";
 	/**
 	 * <p>范围请求：{@value}</p>
-	 * <table border="1" summary="HTTP协议断点续传设置">
+	 * <table border="1">
+	 * 	<caption>HTTP协议断点续传设置</caption>
 	 * 	<tr>
 	 * 		<td>{@code Range: bytes=0-499}</td>
 	 * 		<td>{@code 0}-{@code 499}字节范围</td>
@@ -78,13 +79,13 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	/**
 	 * <p>接收范围请求：{@value}</p>
 	 * 
-	 * @see {@link #ACCEPT_RANGES}
+	 * @see #ACCEPT_RANGES
 	 */
 	public static final String BYTES = "bytes";
 	/**
 	 * <p>文件名称：{@value}</p>
 	 * 
-	 * @see {@link #CONTENT_DISPOSITION}
+	 * @see #CONTENT_DISPOSITION
 	 */
 	public static final String FILENAME = "filename";
 	

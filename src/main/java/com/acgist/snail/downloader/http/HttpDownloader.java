@@ -52,7 +52,7 @@ public final class HttpDownloader extends SingleFileDownloader {
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * @see {@link HttpHeaderWrapper#RANGE}
+	 * @see HttpHeaderWrapper#RANGE
 	 */
 	@Override
 	protected void buildInput() {

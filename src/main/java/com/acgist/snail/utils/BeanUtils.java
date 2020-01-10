@@ -59,7 +59,8 @@ public final class BeanUtils {
 	/**
 	 * <p>获取实例属性{@code Map}</p>
 	 * 
-	 * <table border="1" summary="属性类型转换">
+	 * <table border="1">
+	 * 	<caption>属性类型转换</caption>
 	 * 	<tr>
 	 * 		<td>{@code String}</td>
 	 * 		<td>{@code String}</td>

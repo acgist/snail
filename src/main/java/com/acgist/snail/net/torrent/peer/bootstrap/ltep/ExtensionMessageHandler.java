@@ -91,7 +91,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 * <p>任务完成只上传不下载</p>
 	 * <p>协议链接：http://bittorrent.org/beps/bep_0021.html</p>
 	 * 
-	 * @see {@link #UPLOAD_ONLY}
+	 * @see #UPLOAD_ONLY
 	 */
 	private static final String EX_UPLOAD_ONLY = "upload_only";
 	/**
@@ -286,7 +286,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 * 
 	 * @param bytes 消息
 	 * 
-	 * @see {@link PeerExchangeMessageHandler#pex(byte[])}
+	 * @see PeerExchangeMessageHandler#pex(byte[])
 	 */
 	public void pex(byte[] bytes) {
 		if(this.peerExchangeMessageHandler.supportExtensionType()) {
@@ -299,7 +299,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 * 
 	 * @param buffer 消息
 	 * 
-	 * @see {@link PeerExchangeMessageHandler#onMessage(ByteBuffer)}
+	 * @see PeerExchangeMessageHandler#onMessage(ByteBuffer)
 	 */
 	private void pex(ByteBuffer buffer) throws NetException {
 		this.peerExchangeMessageHandler.onMessage(buffer);
@@ -308,7 +308,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	/**
 	 * <p>发送metadata消息</p>
 	 * 
-	 * @see {@link MetadataMessageHandler#request()}
+	 * @see MetadataMessageHandler#request()
 	 */
 	public void metadata() {
 		if(this.metadataMessageHandler.supportExtensionType()) {
@@ -321,7 +321,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 * 
 	 * @param buffer 消息
 	 * 
-	 * @see {@link MetadataMessageHandler#onMessage(ByteBuffer)}
+	 * @see MetadataMessageHandler#onMessage(ByteBuffer)
 	 */
 	private void metadata(ByteBuffer buffer) throws NetException {
 		this.metadataMessageHandler.onMessage(buffer);
@@ -332,7 +332,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 * 
 	 * @param peerSession Peer信息
 	 * 
-	 * @see {@link HolepunchMessageHnadler#rendezvous(PeerSession)}
+	 * @see HolepunchMessageHnadler#rendezvous(PeerSession)
 	 */
 	public void holepunchRendezvous(PeerSession peerSession) {
 		if(this.holepunchMessageHnadler.supportExtensionType()) {
@@ -346,7 +346,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 * @param host Peer地址
 	 * @param port Peer端口
 	 * 
-	 * @see {@link HolepunchMessageHnadler#connect(String, int)}
+	 * @see HolepunchMessageHnadler#connect(String, int)
 	 */
 	public void holepunchConnect(String host, Integer port) {
 		if(this.holepunchMessageHnadler.supportExtensionType()) {
@@ -361,7 +361,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 * 
 	 * @throws NetException 网络异常
 	 * 
-	 * @see {@link HolepunchMessageHnadler#onMessage(ByteBuffer)}
+	 * @see HolepunchMessageHnadler#onMessage(ByteBuffer)
 	 */
 	private void holepunch(ByteBuffer buffer) throws NetException {
 		this.holepunchMessageHnadler.onMessage(buffer);
@@ -370,7 +370,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	/**
 	 * <p>发送uploadOnly消息</p>
 	 * 
-	 * @see {@link UploadOnlyExtensionMessageHandler#uploadOnly()}
+	 * @see UploadOnlyExtensionMessageHandler#uploadOnly()
 	 */
 	public void uploadOnly() {
 		if(this.uploadOnlyExtensionMessageHandler.supportExtensionType()) {
@@ -385,7 +385,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 * 
 	 * @throws NetException 网络异常
 	 * 
-	 * @see {@link UploadOnlyExtensionMessageHandler#onMessage(ByteBuffer)}
+	 * @see UploadOnlyExtensionMessageHandler#onMessage(ByteBuffer)
 	 */
 	private void uploadOnly(ByteBuffer buffer) throws NetException {
 		this.uploadOnlyExtensionMessageHandler.onMessage(buffer);
@@ -396,7 +396,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 * 
 	 * @param index Piece索引
 	 * 
-	 * @see {@link DontHaveExtensionMessageHandler#dontHave(int)}
+	 * @see DontHaveExtensionMessageHandler#dontHave(int)
 	 */
 	public void dontHave(int index) {
 		if(this.dontHaveExtensionMessageHandler.supportExtensionType()) {
@@ -411,7 +411,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 * 
 	 * @throws NetException 网络异常
 	 * 
-	 * @see {@link DontHaveExtensionMessageHandler#onMessage(ByteBuffer)}
+	 * @see DontHaveExtensionMessageHandler#onMessage(ByteBuffer)
 	 */
 	private void dontHave(ByteBuffer buffer) throws NetException {
 		this.dontHaveExtensionMessageHandler.onMessage(buffer);

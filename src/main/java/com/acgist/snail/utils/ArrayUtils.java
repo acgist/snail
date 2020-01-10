@@ -193,7 +193,9 @@ public final class ArrayUtils {
 	 * @param values 数组
 	 * @param value 查找数值
 	 * 
-	 * @see {@link #indexOf(int[], int, int, int)}
+	 * @return 索引：{@value #NO_INDEX}-没有匹配
+	 * 
+	 * @see #indexOf(int[], int, int, int)
 	 */
 	public static final int indexOf(int[] values, int value) {
 		return indexOf(values, 0, values.length, value);

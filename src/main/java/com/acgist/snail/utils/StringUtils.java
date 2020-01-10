@@ -197,7 +197,7 @@ public final class StringUtils {
 	 * 
 	 * @return 字符串
 	 * 
-	 * @see {@link #charset(String, String, String)}
+	 * @see #charset(String, String, String)
 	 */
 	public static final String charsetFrom(String value, String from) {
 		return charset(value, from, null);
@@ -211,7 +211,7 @@ public final class StringUtils {
 	 * 
 	 * @return 字符串
 	 * 
-	 * @see {@link #charset(String, String, String)}
+	 * @see #charset(String, String, String)
 	 */
 	public static final String charsetTo(String value, String to) {
 		return charset(value, null, to);
@@ -344,7 +344,9 @@ public final class StringUtils {
 	 * 
 	 * @param buffer 字节缓存
 	 * 
-	 * @see {@link #ofByteBuffer(ByteBuffer, String)}
+	 * @return 字符串
+	 * 
+	 * @see #ofByteBuffer(ByteBuffer, String)
 	 */
 	public static final String ofByteBuffer(ByteBuffer buffer) {
 		return ofByteBuffer(buffer, SystemConfig.DEFAULT_CHARSET);

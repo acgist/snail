@@ -19,7 +19,8 @@ public final class Application {
 	/**
 	 * <p>启动方法</p>
 	 * 
-	 * <table border="1" summary="启动参数">
+	 * <table border="1">
+	 * 	<caption>启动参数</caption>
 	 * 	<tr>
 	 * 		<th>参数</th>
 	 * 		<th>默认</th>

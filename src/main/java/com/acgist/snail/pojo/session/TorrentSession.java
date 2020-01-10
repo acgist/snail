@@ -169,6 +169,13 @@ public final class TorrentSession {
 	}
 	
 	/**
+	 * @param infoHash InfoHash
+	 * @param torrent 种子信息
+	 * 
+	 * @return BT任务信息
+	 * 
+	 * @throws DownloadException 下载异常
+	 * 
 	 * @see #TorrentSession(InfoHash, Torrent)
 	 */
 	public static final TorrentSession newInstance(InfoHash infoHash, Torrent torrent) throws DownloadException {
@@ -225,7 +232,11 @@ public final class TorrentSession {
 	/**
 	 * <p>开始下载</p>
 	 * 
-	 * @see {@link #download(boolean)}
+	 * @return 是否开始下载
+	 * 
+	 * @throws DownloadException 下载异常
+	 * 
+	 * @see #download(boolean)
 	 */
 	public boolean download() throws DownloadException {
 		return this.download(true);
@@ -694,49 +705,64 @@ public final class TorrentSession {
 	}
 	
 	/**
-	 * @see {@link InfoHash#infoHashHex()}
+	 * @return 16进制种子info数据Hash
+	 * 
+	 * @see InfoHash#infoHashHex()
 	 */
 	public String infoHashHex() {
 		return this.infoHash.infoHashHex();
 	}
 	
 	/**
-	 * @see {@link TaskSession#getSize()}
+	 * @return 文件大小（B）
+	 * 
+	 * @see ITaskSession#getSize()
 	 */
 	public long size() {
 		return this.taskSession.getSize();
 	}
 	
 	/**
-	 * @see {@link ITaskSession#downloadSize(long)}
+	 * @param size 已下载大小
+	 * 
+	 * @see ITaskSession#downloadSize(long)
 	 */
 	public void resize(long size) {
 		this.taskSession.downloadSize(size);
 	}
 	
 	/**
-	 * @see {@link ITaskSession#download()}
+	 * @return 是否处于下载状态
+	 * 
+	 * @see ITaskSession#download()
 	 */
 	public boolean downloading() {
 		return this.taskSession.download();
 	}
 	
 	/**
-	 * @see {@link ITaskSession#complete()}
+	 * @return 是否处于完成状态
+	 * 
+	 * @see ITaskSession#complete()
 	 */
 	public boolean completed() {
 		return this.taskSession.complete();
 	}
 	
 	/**
-	 * @see {@link ITaskSession#statistics()}
+	 * @return 统计信息
+	 * 
+	 * @see ITaskSession#statistics()
 	 */
 	public IStatisticsSession statistics() {
 		return this.taskSession.statistics();
 	}
 	
 	/**
-	 * @see {@link DhtLauncher#put(String, Integer)}
+	 * @param host 地址
+	 * @param port 端口
+	 * 
+	 * @see DhtLauncher#put(String, Integer)
 	 */
 	public void newDhtNode(String host, int port) {
 		if(this.dhtLauncher != null) {
@@ -745,7 +771,9 @@ public final class TorrentSession {
 	}
 	
 	/**
-	 * @see {@link TorrentStreamGroup#reload(String, List, TorrentSession)}
+	 * @return 新增下载文件数量
+	 * 
+	 * @see TorrentStreamGroup#reload(String, List, TorrentSession)
 	 */
 	public int reload() {
 		return this.torrentStreamGroup.reload(
@@ -756,84 +784,122 @@ public final class TorrentSession {
 	}
 	
 	/**
-	 * @see {@link TorrentStreamGroup#pick(BitSet, BitSet)}
+	 * @param peerPieces Peer已下载Piece位图
+	 * @param suggestPieces Peer推荐Piece位图
+	 * 
+	 * @return 下载Piece
+	 * 
+	 * @see TorrentStreamGroup#pick(BitSet, BitSet)
 	 */
 	public TorrentPiece pick(BitSet peerPieces, BitSet suggestPieces) {
 		return torrentStreamGroup.pick(peerPieces, suggestPieces);
 	}
 	
 	/**
-	 * @see {@link TorrentStreamGroup#read(int, int, int)}
+	 * @param index Piece索引
+	 * @param begin Piece偏移
+	 * @param length 数据长度
+	 * 
+	 * @return Piece数据
+	 * 
+	 * @throws NetException 网络异常
+	 * 
+	 * @see TorrentStreamGroup#read(int, int, int)
 	 */
 	public byte[] read(int index, int begin, int length) throws NetException {
 		return this.torrentStreamGroup.read(index, begin, length);
 	}
 
 	/**
-	 * @see {@link TorrentStreamGroup#write(TorrentPiece)}
+	 * @param piece Piece数据
+	 * 
+	 * @return 是否保存成功
+	 * 
+	 * @see TorrentStreamGroup#write(TorrentPiece)
 	 */
 	public boolean write(TorrentPiece piece) {
 		return this.torrentStreamGroup.write(piece);
 	}
 	
 	/**
-	 * @see {@link TorrentStreamGroup#havePiece(int)}
+	 * @param index Piece索引
+	 * 
+	 * @return {@code true}-已下载；{@code false}-未下载；
+	 * 
+	 * @see TorrentStreamGroup#havePiece(int)
 	 */
 	public boolean havePiece(int index) {
 		return this.torrentStreamGroup.havePiece(index);
 	}
 
 	/**
-	 * @see {@link TorrentStreamGroup#undone(TorrentPiece)}
+	 * @param piece Piece
+	 * 
+	 * @see TorrentStreamGroup#undone(TorrentPiece)
 	 */
 	public void undone(TorrentPiece piece) {
 		this.torrentStreamGroup.undone(piece);
 	}
 	
 	/**
-	 * @see {@link TorrentStreamGroup#fullPieces(BitSet)}
+	 * @param pieces Piece位图
+	 * 
+	 * @see TorrentStreamGroup#fullPieces(BitSet)
 	 */
 	public void fullPieces(BitSet pieces) {
 		this.torrentStreamGroup.fullPieces(pieces);
 	}
 	
 	/**
-	 * @see {@link TorrentStreamGroup#fullPieces()}
+	 * @see TorrentStreamGroup#fullPieces()
 	 */
 	public void fullPieces() {
 		this.torrentStreamGroup.fullPieces();
 	}
 	
 	/**
-	 * @see {@link TorrentStreamGroup#health()}
+	 * @return 健康度
+	 * 
+	 * @see TorrentStreamGroup#health()
 	 */
 	public int health() {
 		return this.torrentStreamGroup.health();
 	}
 	
 	/**
-	 * @see {@link TorrentStreamGroup#pieces()}
+	 * @return 已下载Piece位图
+	 * 
+	 * @see TorrentStreamGroup#pieces()
 	 */
 	public BitSet pieces() {
 		return this.torrentStreamGroup.pieces();
 	}
 	
 	/**
-	 * @see {@link TorrentStreamGroup#selectPieces()}
+	 * @return 被选中Piece位图
+	 * 
+	 * @see TorrentStreamGroup#selectPieces()
 	 */
 	public BitSet selectPieces() {
 		return this.torrentStreamGroup.selectPieces();
 	}
 	
 	/**
-	 * @see {@link TorrentStreamGroup#allPieces()}
+	 * @return 所有Piece位图
+	 * 
+	 * @see TorrentStreamGroup#allPieces()
 	 */
 	public BitSet allPieces() {
 		return this.torrentStreamGroup.allPieces();
 	}
 	
 	/**
-	 * @see {@link PeerUploaderGroup#newPeerUploader(PeerSession, PeerSubMessageHandler)}
+	 * @param peerSession Peer信息
+	 * @param peerSubMessageHandler Peer消息代理
+	 * 
+	 * @return Peer接入
+	 * 
+	 * @see PeerUploaderGroup#newPeerUploader(PeerSession, PeerSubMessageHandler)
 	 */
 	public PeerUploader newPeerUploader(PeerSession peerSession, PeerSubMessageHandler peerSubMessageHandler) {
 		return this.peerUploaderGroup.newPeerUploader(peerSession, peerSubMessageHandler);

@@ -7,7 +7,8 @@ import com.acgist.snail.system.exception.NetException;
 
 /**
  * <p>消息处理器接口</p>
- * <table border="1" summary="消息处理器">
+ * <table border="1">
+ * 	<caption>消息处理器</caption>
  * 	<tr>
  * 		<th>处理器</th><th>功能</th><th>实现</th>
  * 	</tr>

@@ -111,7 +111,7 @@ public final class UtpWindow {
 	private final IMessageCodec<ByteBuffer> messageCodec;
 	
 	/**
-	 * @see {@link #UtpWindow(IMessageCodec)}
+	 * @see #UtpWindow(IMessageCodec)
 	 */
 	private UtpWindow() {
 		this(null);
@@ -156,6 +156,8 @@ public final class UtpWindow {
 	 * <p>创建接收窗口对象</p>
 	 * <p>接收窗口接收和处理请求，创建请求队列。</p>
 	 * 
+	 * @param messageCodec 消息代理
+	 * 
 	 * @return 窗口对象
 	 */
 	public static final UtpWindow newRecvInstance(IMessageCodec<ByteBuffer> messageCodec) {
@@ -189,7 +191,9 @@ public final class UtpWindow {
 	 * <p>发送数据</p>
 	 * <p>没有负载</p>
 	 * 
-	 * @see {@link #build(byte[])}
+	 * @return 窗口数据
+	 * 
+	 * @see #build(byte[])
 	 */
 	public UtpWindowData build() {
 		return build(null);
@@ -278,6 +282,8 @@ public final class UtpWindow {
 	 * @param timestamp 时间戳
 	 * @param seqnr 请求编号
 	 * @param buffer 请求数据
+	 * 
+	 * @throws IOException IO异常
 	 */
 	public void receive(int timestamp, short seqnr, ByteBuffer buffer) throws IOException {
 		synchronized (this) {

@@ -251,7 +251,7 @@ public final class TorrentStreamGroup {
 	 * 
 	 * @param index Piece索引
 	 * 
-	 * @see {@link TorrentSession#have(int)}
+	 * @see TorrentSession#have(int)
 	 */
 	public void have(int index) {
 		this.torrentSession.have(index);
@@ -266,7 +266,7 @@ public final class TorrentStreamGroup {
 	 * 
 	 * @return 下载Piece
 	 * 
-	 * @see {@link TorrentStream#pick(BitSet, BitSet)}
+	 * @see TorrentStream#pick(BitSet, BitSet)
 	 */
 	public TorrentPiece pick(final BitSet peerPieces, final BitSet suggestPieces) {
 		TorrentPiece pickPiece = null;
@@ -293,7 +293,7 @@ public final class TorrentStreamGroup {
 	 * 
 	 * @throws NetException 网络异常
 	 * 
-	 * @see {@link TorrentStream#read(int, int, int)}
+	 * @see TorrentStream#read(int, int, int)
 	 */
 	public byte[] read(final int index, final int begin, final int length) throws NetException {
 		PacketSizeException.verify(length);
@@ -321,7 +321,7 @@ public final class TorrentStreamGroup {
 	 * 
 	 * @return 是否保存成功
 	 * 
-	 * @see {@link TorrentStream#write(TorrentPiece)}
+	 * @see TorrentStream#write(TorrentPiece)
 	 */
 	public boolean write(TorrentPiece piece) {
 		boolean ok = false;
@@ -382,7 +382,7 @@ public final class TorrentStreamGroup {
 	 * 
 	 * @param piece Piece
 	 * 
-	 * @see {@link TorrentStream#undone(TorrentPiece)}
+	 * @see TorrentStream#undone(TorrentPiece)
 	 */
 	public void undone(TorrentPiece piece) {
 		for (TorrentStream torrentStream : this.streams) {
@@ -509,7 +509,7 @@ public final class TorrentStreamGroup {
 	 * 
 	 * @return 任务已下载大小
 	 * 
-	 * @see {@link TorrentStream#size()}
+	 * @see TorrentStream#size()
 	 */
 	public long size() {
 		long size = 0L;

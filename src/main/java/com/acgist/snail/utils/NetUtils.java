@@ -64,7 +64,7 @@ public final class NetUtils {
 	 */
 	private static final long NATIVE_A_IP_BEGIN = encodeIpToLong("10.0.0.0");
 	/**
-	 * @see {@link #NATIVE_A_IP_BEGIN}
+	 * @see #NATIVE_A_IP_BEGIN
 	 */
 	private static final long NATIVE_A_IP_END = encodeIpToLong("10.255.255.255");
 	/**
@@ -74,7 +74,7 @@ public final class NetUtils {
 	 */
 	private static final long NATIVE_B_IP_BEGIN = encodeIpToLong("172.16.0.0");
 	/**
-	 * @see {@link #NATIVE_B_IP_BEGIN}
+	 * @see #NATIVE_B_IP_BEGIN
 	 */
 	private static final long NATIVE_B_IP_END = encodeIpToLong("172.31.255.255");
 	/**
@@ -84,7 +84,7 @@ public final class NetUtils {
 	 */
 	private static final long NATIVE_C_IP_BEGIN = encodeIpToLong("192.168.0.0");
 	/**
-	 * @see {@link #NATIVE_C_IP_BEGIN}
+	 * @see #NATIVE_C_IP_BEGIN
 	 */
 	private static final long NATIVE_C_IP_END = encodeIpToLong("192.168.255.255");
 	/**
@@ -92,7 +92,7 @@ public final class NetUtils {
 	 */
 	private static final long NATIVE_L_IP_BEGIN = encodeIpToLong("127.0.0.0");
 	/**
-	 * @see {@link #NATIVE_L_IP_BEGIN}
+	 * @see #NATIVE_L_IP_BEGIN
 	 */
 	private static final long NATIVE_L_IP_END = encodeIpToLong("127.255.255.255");
 	
