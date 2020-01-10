@@ -5,15 +5,6 @@ import java.util.Map;
 
 /**
  * <p>Peer配置</p>
- * <dl>
- * 	<dt>命名方式</dt>
- * 	<dd>Azureus-style：-名称（2）+版本（4）-随机数：-SA1000-...</dd>
- * 	<dd>Shadow's-style：名称（1）+版本（4）-----随机数：S1000-----...</dd>
- * </dl>
- * <p>Peer ID Conventions</p>
- * <p>协议链接：http://www.bittorrent.org/beps/bep_0020.html</p>
- * <p>保留位</p>
- * <p>协议链接：http://www.bittorrent.org/beps/bep_0004.html</p>
  * <p>PEX状态</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0011.html</p>
  * 
@@ -23,64 +14,66 @@ import java.util.Map;
 public final class PeerConfig {
 	
 	/**
-	 * <p>未知终端</p>
+	 * <p>未知终端：{@value}</p>
 	 */
 	private static final String UNKNOWN = "unknown";
 	/**
-	 * <p>最大失败次数：超过这个次数将标记失败</p>
+	 * <p>最大连接失败次数：{@value}</p>
+	 * <p>超过最大次数标记失败</p>
 	 */
 	public static final int MAX_FAIL_TIMES = 3;
 	/**
-	 * <p>PeerId长度</p>
+	 * <p>PeerId长度：{@value}</p>
 	 */
 	public static final int PEER_ID_LENGTH = 20;
 	/**
-	 * <p>保留位（reserved）长度</p>
+	 * <p>保留位长度：{@value}</p>
 	 */
 	public static final int RESERVED_LENGTH = 8;
 	/**
-	 * <p>保留位（reserved）</p>
+	 * <p>保留位</p>
+	 * <p>协议链接：http://www.bittorrent.org/beps/bep_0004.html</p>
 	 */
 	public static final byte[] HANDSHAKE_RESERVED = {0, 0, 0, 0, 0, 0, 0, 0};
 	/**
-	 * <p>保留位：[7]-0x01：DHT Protocol</p>
-	 * <p>DHT</p>
+	 * <p>DHT保留位：{@value}</p>
+	 * <p>[7]-0x01：DHT Protocol</p>
 	 */
 	public static final byte DHT_PROTOCOL =       1 << 0;
 	/**
-	 * <p>保留位：[7]-0x02：Peer Exchange</p>
-	 * <p>PEX</p>
+	 * <p>PEX保留位：{@value}</p>
+	 * <p>[7]-0x02：Peer Exchange</p>
 	 */
 	public static final byte PEER_EXCHANGE =      1 << 1;
 	/**
-	 * <p>保留位：[7]-0x04：FAST Protocol</p>
-	 * <p>FAST</p>
+	 * <p>FAST保留位：{@value}</p>
+	 * <p>[7]-0x04：FAST Protocol</p>
 	 */
 	public static final byte FAST_PROTOCOL =      1 << 2;
 	/**
-	 * <p>保留位：[7]-0x08：NAT Traversal</p>
-	 * <p>NAT穿透</p>
+	 * <p>NAT保留位：{@value}</p>
+	 * <p>[7]-0x08：NAT Traversal</p>
 	 */
 	public static final byte NAT_TRAVERSAL =      1 << 3;
 	/**
-	 * <p>保留位：[5]-0x10：Extension Protocol</p>
-	 * <p>扩展协议</p>
+	 * <p>扩展协议保留位：{@value}</p>
+	 * <p>[5]-0x10：Extension Protocol</p>
 	 */
 	public static final byte EXTENSION_PROTOCOL = 1 << 4;
 	/**
-	 * <p>握手消息长度</p>
+	 * <p>握手消息长度：{@value}</p>
 	 */
 	public static final int HANDSHAKE_LENGTH = 68;
 	/**
-	 * <p>协议名称</p>
+	 * <p>协议名称：{@value}</p>
 	 */
 	public static final String HANDSHAKE_NAME = "BitTorrent protocol";
 	/**
-	 * <p>协议字节数组</p>
+	 * <p>协议名称字节数组</p>
 	 */
 	public static final byte[] HANDSHAKE_NAME_BYTES = HANDSHAKE_NAME.getBytes();
 	/**
-	 * <p>协议字节数组长度</p>
+	 * <p>协议名称字节数组长度</p>
 	 */
 	public static final int HANDSHAKE_NAME_LENGTH = HANDSHAKE_NAME_BYTES.length;
 	/**
@@ -116,33 +109,45 @@ public final class PeerConfig {
 	 */
 	public static final byte STATUS_DOWNLOAD = 1 << 0;
 	/**
-	 * <p>pex flags：0x01：偏爱加密</p>
+	 * <p>pex flags：0x01</p>
+	 * <p>偏爱加密</p>
 	 */
 	public static final byte PEX_PREFER_ENCRYPTION =	1 << 0;
 	/**
-	 * <p>pex flags：0x02：做种、上传</p>
+	 * <p>pex flags：0x02</p>
+	 * <p>做种、上传：只上传不下载</p>
 	 * <p>不发送消息：解除阻塞、have、Piece位图</p>
 	 */
 	public static final byte PEX_UPLOAD_ONLY =			1 << 1;
 	/**
-	 * <p>pex flags：0x04：支持UTP协议</p>
+	 * <p>pex flags：0x04</p>
+	 * <p>支持UTP协议</p>
 	 */
 	public static final byte PEX_UTP =					1 << 2;
 	/**
-	 * <p>pex flags：0x08：支持holepunch协议</p>
+	 * <p>pex flags：0x08</p>
+	 * <p>支持holepunch协议</p>
 	 */
 	public static final byte PEX_HOLEPUNCH =			1 << 3;
 	/**
-	 * <p>pex flags：0x10：可以连接</p>
-	 * <p>可以直接连接</p>
+	 * <p>pex flags：0x10</p>
+	 * <p>可以连接：可以直接连接</p>
 	 */
 	public static final byte PEX_OUTGO =				1 << 4;
 	/**
-	 * <p>holepunchLock锁定时间</p>
+	 * <p>holepunch连接锁定时间</p>
 	 */
 	public static final int HOLEPUNCH_LOCK_TIME = 2;
 	/**
-	 * <p>客户端名称</p>
+	 * <p>Peer ID Conventions</p>
+	 * <p>协议链接：http://www.bittorrent.org/beps/bep_0020.html</p>
+	 * <p>PeerID和客户端名称转换</p>
+	 * <dl>
+	 * 	<dt>命名方式</dt>
+	 * 	<dd>Azureus-style：-名称（2）+版本（4）-随机数：-SA1000-...</dd>
+	 * 	<dd>Shadow's-style：名称（1）+版本（4）-----随机数：S1000-----...</dd>
+	 * </dl>
+	 * <p>支持命名方式：Azureus-style</p>
 	 */
 	private static final Map<String, String> PEER_NAMES = new HashMap<>();
 
@@ -221,7 +226,11 @@ public final class PeerConfig {
 	}
 	
 	/**
-	 * <p>来源名称</p>
+	 * <p>获取来源名称</p>
+	 * 
+	 * @param source 来源
+	 * 
+	 * @return 来源名称
 	 */
 	public static final String source(byte source) {
 		switch (source) {
@@ -243,9 +252,11 @@ public final class PeerConfig {
 	}
 	
 	/**
-	 * <p>客户端名称</p>
+	 * <p>获取客户端名称</p>
 	 * 
 	 * @param peerId PeerId
+	 * 
+	 * @return 客户端名称
 	 */
 	public static final String name(byte[] peerId) {
 		if(peerId == null || peerId.length < 3) {
@@ -256,7 +267,8 @@ public final class PeerConfig {
 	}
 	
 	/**
-	 * <p>设置NAT穿透</p>
+	 * <p>设置NAT</p>
+	 * <p>使用STUN穿透时设置保留位NAT配置</p>
 	 */
 	public static final void nat() {
 		HANDSHAKE_RESERVED[7] |= NAT_TRAVERSAL;

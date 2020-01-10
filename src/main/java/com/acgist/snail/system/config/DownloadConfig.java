@@ -25,18 +25,51 @@ public final class DownloadConfig extends PropertiesConfig {
 	
 	private static final DownloadConfig INSTANCE = new DownloadConfig();
 	
+	/**
+	 * <p>配置文件</p>
+	 */
 	private static final String DOWNLOAD_CONFIG = "/config/download.properties";
 	
 	/**
-	 * <p>下载速度和上传速度的比例 = 下载速度 / 上传速度</p>
+	 * <p>下载速度和上传速度的比例：{@value}</p>
+	 * <p>比例 = 下载速度 / 上传速度</p>
 	 */
 	private static final int UPLOAD_DOWNLOAD_SCALE = 4;
-	
+	/**
+	 * <p>配置名称：{@value}</p>
+	 * 
+	 * @see #path
+	 */
 	private static final String DOWNLOAD_PATH = "acgist.download.path";
+	/**
+	 * <p>配置名称：{@value}</p>
+	 * 
+	 * @see #size
+	 */
 	private static final String DOWNLOAD_SIZE = "acgist.download.size";
+	/**
+	 * <p>配置名称：{@value}</p>
+	 * 
+	 * @see #notice
+	 */
 	private static final String DOWNLOAD_NOTICE = "acgist.download.notice";
+	/**
+	 * <p>配置名称：{@value}</p>
+	 * 
+	 * @see #buffer
+	 */
 	private static final String DOWNLOAD_BUFFER = "acgist.download.buffer";
+	/**
+	 * <p>配置名称：{@value}</p>
+	 * 
+	 * @see #lastPath
+	 */
 	private static final String DOWNLOAD_LAST_PATH = "acgist.download.last.path";
+	/**
+	 * <p>配置名称：{@value}</p>
+	 * 
+	 * @see #memoryBuffer
+	 */
 	private static final String DOWNLOAD_MEMORY_BUFFER = "acgist.download.memory.buffer";
 	
 	static {
@@ -81,23 +114,23 @@ public final class DownloadConfig extends PropertiesConfig {
 	 */
 	private int memoryBuffer;
 	/**
-	 * <p>上传速度（B）</p>
+	 * <p>上传速度（单个）（B）</p>
 	 * <p>缓存：防止重复计算</p>
 	 */
 	private int uploadBufferByte;
 	/**
-	 * <p>下载速度（B）</p>
+	 * <p>下载速度（单个）（B）</p>
 	 * <p>缓存：防止重复计算</p>
 	 */
 	private int downloadBufferByte;
 	/**
-	 * <p>磁盘缓存（B）</p>
+	 * <p>磁盘缓存（单个）（B）</p>
 	 * <p>缓存：防止重复计算</p>
 	 */
 	private int memoryBufferByte;
 	
 	/**
-	 * <p>配置文件加载</p>
+	 * <p>加载配置文件</p>
 	 */
 	private void initFromProperties() {
 		this.path = getString(DOWNLOAD_PATH);
@@ -109,7 +142,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>数据库配置加载</p>
+	 * <p>加载数据库配置</p>
 	 */
 	private void initFromDatabase() {
 		final ConfigRepository configRepository = new ConfigRepository();

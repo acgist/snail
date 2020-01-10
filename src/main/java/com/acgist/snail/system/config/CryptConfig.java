@@ -90,22 +90,22 @@ public final class CryptConfig {
 	 */
 	public static final BigInteger G = BigInteger.valueOf(2);
 	/**
-	 * <p>公钥长度</p>
+	 * <p>公钥长度：{@value}</p>
 	 */
 	public static final int PUBLIC_KEY_LENGTH = 96;
 	/**
-	 * <p>私钥长度</p>
+	 * <p>私钥长度：{@value}</p>
 	 * <p>随机长度：128~180</p>
 	 * <p>超过180只能增加计算时间，并不能提高安全性。</p>
 	 * <p>推荐长度：160</p>
 	 */
 	public static final int PRIVATE_KEY_LENGTH = 20;
 	/**
-	 * <p>填充最大随机长度</p>
+	 * <p>填充最大随机长度：{@value}</p>
 	 */
 	public static final int PADDING_MAX_LENGTH = 512;
 	/**
-	 * <p>VC长度</p>
+	 * <p>VC长度：{@value}</p>
 	 */
 	public static final int VC_LENGTH = 8;
 	/**

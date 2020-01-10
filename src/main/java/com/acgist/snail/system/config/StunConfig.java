@@ -9,31 +9,31 @@ package com.acgist.snail.system.config;
 public final class StunConfig {
 
 	/**
-	 * <p>头部信息长度</p>
+	 * <p>头部信息长度：{@value}</p>
 	 */
 	public static final int STUN_HEADER_LENGTH = 20;
 	/**
-	 * <p>属性头部信息长度</p>
+	 * <p>属性头部信息长度：{@value}</p>
 	 */
 	public static final int ATTRIBUTE_HEADER_LENGTH = 4;
 	/**
-	 * <p>默认端口</p>
+	 * <p>默认端口：{@value}</p>
 	 */
 	public static final int DEFAULT_PORT = 3478;
 	/**
-	 * <p>固定值</p>
+	 * <p>固定值：{@value}</p>
 	 */
     public static final int MAGIC_COOKIE = 0x2112A442;
     /**
-     * <p>TransactionID长度</p>
+     * <p>TransactionID长度：{@value}</p>
      */
     public static final int TRANSACTION_ID_LENGTH = 12;
     /**
-     * <p>IPv4</p>
+     * <p>IPv4：{@value}</p>
      */
     public static final int IPV4 = 0x01;
     /**
-     * <p>IPv6</p>
+     * <p>IPv6：{@value}</p>
      */
     public static final int IPV6 = 0x02;
     
@@ -48,7 +48,7 @@ public final class StunConfig {
     	public static final short VALUE_MASK = 0b0000_0000_0000_0001;
     	
     	/**
-    	 * <p>方法ID
+    	 * <p>方法ID</p>
     	 */
     	private final short id;
     	
@@ -77,15 +77,15 @@ public final class StunConfig {
     	ERROR_RESPONSE(		(byte) 0b11);
     	
     	/**
-    	 * <p>C1</p>
+    	 * <p>C1：{@value}</p>
     	 */
         public static final short C1_MASK = 0b0000_0001_0000_0000;
         /**
-         * <p>C0</p>
+         * <p>C0：{@value}</p>
          */
         public static final short C0_MASK = 0b0000_0000_0001_0000;
         /**
-         * <p>前两位必须为零</p>
+         * <p>前两位必须为零：{@value}</p>
          */
         public static final short TYPE_MASK = 0b0011_1111_1111_1111;
         
@@ -100,6 +100,10 @@ public final class StunConfig {
     	
     	/**
     	 * <p>计算对应方法的MessageType值</p>
+    	 * 
+    	 * @param methodType 方法类型
+    	 * 
+    	 * @return 方法类型标识
     	 */
     	public short type(MethodType methodType) {
     		return (short) (
