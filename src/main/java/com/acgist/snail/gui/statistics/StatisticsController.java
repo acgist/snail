@@ -449,7 +449,7 @@ public final class StatisticsController extends Controller implements Initializa
 	 */
 	public static final class SelectInfoHash {
 
-		private final String hash; // 任务HASH
+		private final String hash; // 任务Hash
 		private final String name; // 任务名称
 
 		public SelectInfoHash(String hash, String name) {

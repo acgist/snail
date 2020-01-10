@@ -26,7 +26,7 @@ public class TorrentTest extends BaseTest {
 		this.log("Piece数量：" + torrent.getInfo().pieceSize());
 		this.log("Piece长度：" + torrent.getInfo().getPieceLength());
 		this.log("Piece Hash长度：" + torrent.getInfo().getPieces().length);
-		this.log("种子HASH：" + session.infoHash().infoHashHex());
+		this.log("种子Hash：" + session.infoHash().infoHashHex());
 		this.log("创建时间：" + DateUtils.unixToJavaDate(torrent.getCreationDate()));
 		this.log("创建时间：" + torrent.getCreationDate());
 		this.log("创建时间戳：" + torrent.getEncoding());
@@ -45,13 +45,13 @@ public class TorrentTest extends BaseTest {
 		this.log("文件名称UTF-8：" + torrentInfo.getNameUtf8());
 		this.log("文件大小：" + torrentInfo.getLength());
 		this.log("文件ED2K：" + torrentInfo.getEd2k());
-		this.log("文件HASH：" + torrentInfo.getFilehash());
+		this.log("文件Hash：" + torrentInfo.getFilehash());
 		// 多文件
 		if (torrentInfo.getFiles().size() > 0) {
 			for (TorrentFile file : torrentInfo.getFiles()) {
 				this.log("文件大小：" + file.getLength());
 				this.log("文件ED2K：" + StringUtils.hex(file.getEd2k()));
-				this.log("文件HASH：" + StringUtils.hex(file.getFilehash()));
+				this.log("文件Hash：" + StringUtils.hex(file.getFilehash()));
 				if (file.getPath().size() > 0) {
 					this.log("文件路径：" + String.join("/", file.getPath()));
 					this.log("文件路径UTF-8：" + String.join("/", file.getPathUtf8()));

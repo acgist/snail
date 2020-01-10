@@ -15,8 +15,8 @@ public class BCodeTest extends BaseTest {
 	@Test
 	public void testReadWrite() throws PacketSizeException {
 		BEncodeEncoder encoder = BEncodeEncoder.newInstance();
-		encoder.write(List.of("a", "b"));
-		encoder.write(Map.of("1", "2"));
+		encoder.writeList(List.of("a", "b"));
+		encoder.writeMap(Map.of("1", "2"));
 		encoder.write("xxxx".getBytes());
 		String content = encoder.toString();
 //		String content = encoder

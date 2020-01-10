@@ -27,11 +27,11 @@ public abstract class Protocol {
 	 */
 	private static final String MAGNET_BASIC = "magnet:\\?.+";
 	/**
-	 * <p>磁力链接（32位HASH）：{@value}</p>
+	 * <p>磁力链接（32位Hash）：{@value}</p>
 	 */
 	private static final String MAGNET_HASH_32 = "[a-zA-Z0-9]{32}";
 	/**
-	 * <p>磁力链接（40位HASH）：{@value}</p>
+	 * <p>磁力链接（40位Hash）：{@value}</p>
 	 */
 	private static final String MAGNET_HASH_40 = "[a-zA-Z0-9]{40}";
 	
@@ -219,9 +219,9 @@ public abstract class Protocol {
 		}
 		
 		/**
-		 * <p>将HASH转为完整磁力链接</p>
+		 * <p>将Hash转为完整磁力链接</p>
 		 * 
-		 * @param hash 磁力链接HASH
+		 * @param hash 磁力链接Hash
 		 * 
 		 * @return 完整磁力链接
 		 */
@@ -244,7 +244,7 @@ public abstract class Protocol {
 		}
 		
 		/**
-		 * <p>判断是否是32位磁力链接HASH</p>
+		 * <p>判断是否是32位磁力链接Hash</p>
 		 * 
 		 * @param url 磁力链接
 		 * 
@@ -255,7 +255,7 @@ public abstract class Protocol {
 		}
 		
 		/**
-		 * <p>判断是否是40位磁力链接HASH</p>
+		 * <p>判断是否是40位磁力链接Hash</p>
 		 * 
 		 * @param url 磁力链接
 		 * 

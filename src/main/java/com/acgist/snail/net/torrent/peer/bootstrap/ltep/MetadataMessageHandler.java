@@ -181,7 +181,7 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 		System.arraycopy(x, 0, bytes, begin, length);
 		final byte[] sourceHash = this.infoHash.infoHash();
 		final byte[] targetHash = StringUtils.sha1(bytes);
-		// 判断hash值是否相等：相等表示已经下载完成，完成后保存种子文件。
+		// 判断Hash值是否相等：相等表示已经下载完成，完成后保存种子文件。
 		if(ArrayUtils.equals(sourceHash, targetHash)) {
 			this.torrentSession.saveTorrent();
 		}

@@ -24,7 +24,7 @@ public final class InfoHash {
 	 */
 	private byte[] info;
 	/**
-	 * <p>种子info数据hash</p>
+	 * <p>种子info数据Hash</p>
 	 */
 	private final byte[] infoHash;
 	
@@ -49,7 +49,7 @@ public final class InfoHash {
 	/**
 	 * <p>生成InfoHash</p>
 	 * 
-	 * @param hash 种子info数据hash
+	 * @param hash 种子info数据Hash
 	 * 
 	 * @return InfoHash
 	 * 
@@ -57,7 +57,7 @@ public final class InfoHash {
 	 */
 	public static final InfoHash newInstance(String hash) throws DownloadException {
 		if(hash == null) {
-			throw new DownloadException("不支持的hash：" + hash);
+			throw new DownloadException("不支持的Hash：" + hash);
 		}
 		hash = hash.trim();
 		if(Protocol.Type.verifyMagnetHash40(hash)) {
@@ -65,7 +65,7 @@ public final class InfoHash {
 		} else if(Protocol.Type.verifyMagnetHash32(hash)) {
 			return new InfoHash(Base32Utils.decode(hash));
 		} else {
-			throw new DownloadException("不支持的hash：" + hash);
+			throw new DownloadException("不支持的Hash：" + hash);
 		}
 	}
 	
@@ -90,18 +90,18 @@ public final class InfoHash {
 	}
 	
 	/**
-	 * <p>16进制种子info数据hash（小写）（40位）</p>
+	 * <p>16进制种子info数据Hash（小写）（40位）</p>
 	 * 
-	 * @return 16进制种子info数据hash
+	 * @return 16进制种子info数据Hash
 	 */
 	public String infoHashHex() {
 		return StringUtils.hex(this.infoHash);
 	}
 	
 	/**
-	 * <p>网络编码种子info数据hash</p>
+	 * <p>网络编码种子info数据Hash</p>
 	 * 
-	 * @return 网络编码种子info数据hash
+	 * @return 网络编码种子info数据Hash
 	 */
 	public String infoHashUrl() {
 		int index = 0;

@@ -96,7 +96,7 @@ public final class Torrent {
 	//================种子文件临时信息================//
 	/**
 	 * <p>InfoHash</p>
-	 * <p>种子文件加载完成时保存InfoHash，防止计算种子hash不一致。</p>
+	 * <p>种子文件加载完成时保存InfoHash，防止计算种子Hash不一致。</p>
 	 */
 	private transient InfoHash infoHash;
 

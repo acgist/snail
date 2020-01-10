@@ -644,7 +644,7 @@ public final class TorrentStream {
 	
 	/**
 	 * <p>加载文件Piece位图</p>
-	 * <p>任务没有完成时已下载的Piece需要校验HASH（第一块和最后一块不校验）</p>
+	 * <p>任务没有完成时已下载的Piece需要校验Hash（第一块和最后一块不校验）</p>
 	 * 
 	 * @param complete 任务是否完成
 	 * 
@@ -685,12 +685,12 @@ public final class TorrentStream {
 				}
 			}
 			bytes = read(index, length, pos, true); // 读取数据
-			if(verify) { // 校验HASH
+			if(verify) { // 校验Hash
 				hash = StringUtils.sha1(bytes);
 				if(ArrayUtils.equals(hash, this.torrentStreamGroup.pieceHash(index))) {
 					this.done(index);
 				}
-			} else { // 不校验HASH：验证是否有数据
+			} else { // 不校验Hash：验证是否有数据
 				if(this.haveData(bytes)) {
 					this.done(index);
 				}
