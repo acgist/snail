@@ -19,4 +19,12 @@ public class ThunderTest extends BaseTest {
 		this.log(newUrl);
 	}
 	
+	@Test
+	public void testBuildUrl() {
+		String url = "ftp://localhost/VS2012中文旗舰版/license.htm";
+		url = "AA" + url + "ZZ";
+		url = Base64.getMimeEncoder().encodeToString(url.getBytes());
+		this.log(Protocol.Type.THUNDER.defaultPrefix() + url);
+	}
+	
 }

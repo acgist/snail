@@ -56,8 +56,4 @@ public final class FtpProtocol extends Protocol {
 		}
 	}
 
-	@Override
-	protected void cleanMessage(boolean ok) {
-	}
-
 }

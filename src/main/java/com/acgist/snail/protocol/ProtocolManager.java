@@ -22,7 +22,7 @@ import com.acgist.snail.utils.ThreadUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class ProtocolManager {
+public final class ProtocolManager {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ProtocolManager.class);
 
@@ -100,7 +100,7 @@ public class ProtocolManager {
 			if(protocol == null) {
 				throw new DownloadException("不支持的下载链接：" + url);
 			}
-			return protocol.buildTaskSession();
+			return protocol.buildTaskSession(url.trim());
 		}
 	}
 
@@ -113,8 +113,7 @@ public class ProtocolManager {
 	 */
 	public boolean support(String url) {
 		synchronized (this.protocols) {
-			final Protocol protocol = protocol(url);
-			return protocol != null;
+			return protocol(url) != null;
 		}
 	}
 
@@ -123,7 +122,7 @@ public class ProtocolManager {
 	 * 
 	 * @param url 下载链接
 	 * 
-	 * @return 下载协议
+	 * @return 下载协议：{@code null}-不支持
 	 */
 	public Protocol protocol(String url) {
 		if(StringUtils.isEmpty(url)) {
@@ -132,8 +131,7 @@ public class ProtocolManager {
 		synchronized (this.protocols) {
 			final Optional<Protocol> optional = this.protocols.stream()
 				.filter(protocol -> protocol.available())
-				.peek(protocol -> protocol.init(url))
-				.filter(protocol -> protocol.verify())
+				.filter(protocol -> protocol.verify(url.trim()))
 				.findFirst();
 			if(optional.isEmpty()) {
 				return null;
