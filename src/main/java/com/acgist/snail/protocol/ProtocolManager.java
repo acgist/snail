@@ -68,21 +68,19 @@ public final class ProtocolManager {
 	 * @throws DownloadException 下载异常
 	 */
 	public IDownloader buildDownloader(ITaskSession taskSession) throws DownloadException {
-		synchronized (this.protocols) {
-			final var type = taskSession.getType();
-			final Optional<Protocol> optional = this.protocols.stream()
-				.filter(protocol -> protocol.available())
-				.filter(protocol -> protocol.type() == type)
-				.findFirst();
-			if(optional.isEmpty()) {
-				throw new DownloadException("不支持的下载类型：" + type);
-			}
-			final IDownloader downloader = optional.get().buildDownloader(taskSession);
-			if(downloader == null) {
-				throw new DownloadException("不支持的下载类型：" + type);
-			}
-			return downloader;
+		final var type = taskSession.getType();
+		final Optional<Protocol> optional = this.protocols.stream()
+			.filter(protocol -> protocol.available())
+			.filter(protocol -> protocol.type() == type)
+			.findFirst();
+		if(optional.isEmpty()) {
+			throw new DownloadException("不支持的下载类型：" + type);
 		}
+		final IDownloader downloader = optional.get().buildDownloader(taskSession);
+		if(downloader == null) {
+			throw new DownloadException("不支持的下载类型：" + type);
+		}
+		return downloader;
 	}
 	
 	/**
@@ -95,13 +93,11 @@ public final class ProtocolManager {
 	 * @throws DownloadException 下载异常
 	 */
 	public ITaskSession buildTaskSession(String url) throws DownloadException {
-		synchronized (this.protocols) {
-			final Protocol protocol = protocol(url);
-			if(protocol == null) {
-				throw new DownloadException("不支持的下载链接：" + url);
-			}
-			return protocol.buildTaskSession(url.trim());
+		final Protocol protocol = protocol(url);
+		if(protocol == null) {
+			throw new DownloadException("不支持的下载链接：" + url);
 		}
+		return protocol.buildTaskSession(url.trim());
 	}
 
 	/**
@@ -112,9 +108,7 @@ public final class ProtocolManager {
 	 * @return {@code true}-支持；{@code false}-不支持；
 	 */
 	public boolean support(String url) {
-		synchronized (this.protocols) {
-			return protocol(url) != null;
-		}
+		return protocol(url) != null;
 	}
 
 	/**
@@ -128,16 +122,14 @@ public final class ProtocolManager {
 		if(StringUtils.isEmpty(url)) {
 			return null;
 		}
-		synchronized (this.protocols) {
-			final Optional<Protocol> optional = this.protocols.stream()
-				.filter(protocol -> protocol.available())
-				.filter(protocol -> protocol.verify(url.trim()))
-				.findFirst();
-			if(optional.isEmpty()) {
-				return null;
-			}
-			return optional.get();
+		final Optional<Protocol> optional = this.protocols.stream()
+			.filter(protocol -> protocol.available())
+			.filter(protocol -> protocol.verify(url.trim()))
+			.findFirst();
+		if(optional.isEmpty()) {
+			return null;
 		}
+		return optional.get();
 	}
 
 	/**

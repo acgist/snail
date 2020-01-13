@@ -15,7 +15,6 @@ import com.acgist.snail.utils.StringUtils;
 
 /***
  * <p>下载协议</p>
- * <p>非线程安全</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -339,7 +338,7 @@ public abstract class Protocol {
 	 * 
 	 * @throws DownloadException 下载异常
 	 */
-	public ITaskSession buildTaskSession(String url) throws DownloadException {
+	public synchronized ITaskSession buildTaskSession(String url) throws DownloadException {
 		this.url = url;
 		boolean ok = true;
 		try {
