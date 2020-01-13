@@ -47,17 +47,17 @@ public final class ThunderProtocol extends Protocol {
 	}
 	
 	@Override
-	protected Protocol convert() throws DownloadException {
-		final String prefix = Protocol.Type.THUNDER.prefix(this.url);
-		final String url = this.url.substring(prefix.length());
-		String realUrl = new String(Base64.getMimeDecoder().decode(url)); // getMimeDecoder防止长度非4的整数倍导致的异常
+	public ITaskSession buildTaskSession(String url) throws DownloadException {
+		final String prefix = Protocol.Type.THUNDER.prefix(url);
+		String realUrl = url.substring(prefix.length());
+		realUrl = new String(Base64.getMimeDecoder().decode(realUrl)); // getMimeDecoder防止长度非4的整数倍导致的异常
 		realUrl = realUrl.substring(2, realUrl.length() - 2);
 		LOGGER.debug("迅雷原始链接：{}", realUrl);
-		return ProtocolManager.getInstance().protocol(realUrl);
+		final var realProtocol = ProtocolManager.getInstance().protocol(realUrl);
+		if(realProtocol == null) {
+			throw new DownloadException("不支持的下载链接：" + url);
+		}
+		return realProtocol.buildTaskSession(realUrl);
 	}
 	
-	@Override
-	protected void cleanMessage(boolean ok) {
-	}
-
 }

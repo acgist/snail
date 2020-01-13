@@ -35,8 +35,8 @@ public final class ProtocolInitializer extends Initializer {
 			.register(FtpProtocol.getInstance())
 			.register(HttpProtocol.getInstance())
 			.register(MagnetProtocol.getInstance())
-			.register(TorrentProtocol.getInstance())
 			.register(ThunderProtocol.getInstance())
+			.register(TorrentProtocol.getInstance())
 			.available(true);
 	}
 

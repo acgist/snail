@@ -285,18 +285,6 @@ public abstract class Protocol {
 	}
 
 	/**
-	 * <p>初始化</p>
-	 * 
-	 * @param url 下载链接
-	 * 
-	 * @return {@link Protocol}
-	 */
-	public Protocol init(String url) {
-		this.url = url.trim();
-		return this;
-	}
-	
-	/**
 	 * <p>获取协议类型</p>
 	 * 
 	 * @return 协议类型
@@ -315,13 +303,15 @@ public abstract class Protocol {
 	/**
 	 * <p>判断协议是否支持下载链接</p>
 	 * 
+	 * @param url 下载链接
+	 * 
 	 * @return {@code true}-支持；{@code false}-不支持；
 	 */
-	public boolean verify() {
+	public boolean verify(String url) {
 		if(this.type == null) {
 			return false;
 		}
-		return this.type.verify(this.url);
+		return this.type.verify(url);
 	}
 	
 	/**
@@ -342,18 +332,15 @@ public abstract class Protocol {
 	
 	/**
 	 * <p>创建下载任务</p>
-	 * <p>存在协议转换：使用转换后的协议下载</p>
-	 * <p>不存在协议转换：使用当前协议下载</p>
+	 * 
+	 * @param url 下载链接
 	 * 
 	 * @return 任务信息
 	 * 
 	 * @throws DownloadException 下载异常
 	 */
-	public ITaskSession buildTaskSession() throws DownloadException {
-		final Protocol convert = convert();
-		if(convert != null) {
-			return convert.buildTaskSession();
-		}
+	public ITaskSession buildTaskSession(String url) throws DownloadException {
+		this.url = url;
 		boolean ok = true;
 		try {
 			buildTaskEntity();
@@ -369,19 +356,6 @@ public abstract class Protocol {
 		}
 	}
 
-	/**
-	 * <p>协议转换</p>
-	 * <p>如果存在协议转换返回：转换后协议</p>
-	 * <p>如果不存在协议转换返回：null</p>
-	 * 
-	 * @return 转换协议
-	 * 
-	 * @throws DownloadException 下载异常
-	 */
-	protected Protocol convert() throws DownloadException {
-		return null;
-	}
-	
 	/**
 	 * <p>创建下载任务</p>
 	 * 
@@ -529,7 +503,7 @@ public abstract class Protocol {
 	protected void clean(boolean ok) {
 		this.url = null;
 		this.taskEntity = null;
-		cleanMessage(ok);
+		this.cleanMessage(ok);
 	}
 	
 	/**
@@ -537,6 +511,7 @@ public abstract class Protocol {
 	 * 
 	 * @param ok 创建状态：true-成功；false-失败；
 	 */
-	protected abstract void cleanMessage(boolean ok);
+	protected void cleanMessage(boolean ok) {
+	}
 	
 }
