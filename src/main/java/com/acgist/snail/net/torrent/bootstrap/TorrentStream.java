@@ -34,6 +34,12 @@ import com.acgist.snail.utils.StringUtils;
 public final class TorrentStream {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentStream.class);
+	
+	/**
+	 * <p>异步加载文件大小：{@value}</p>
+	 * <p>超过{@value}异步加载文件信息</p>
+	 */
+	private static final int ASYN_SIZE = 100 * SystemConfig.ONE_MB;
 
 	/**
 	 * <p>文件是否被选中下载</p>
@@ -607,13 +613,16 @@ public final class TorrentStream {
 	/**
 	 * <p>异步加载文件</p>
 	 * <p>加载完成{@code sizeCount}计数</p>
-	 * <p>任务已经完成：同步加载；反之异步加载；</p>
+	 * <p>同步加载：小文件、任务已经完成</p>
+	 * <p>异步加载：其他所有情况</p>
 	 * 
 	 * @param complete 任务是否完成
 	 * @param sizeCount 文件加载计算器
 	 */
 	private void buildFileAsyn(boolean complete, CountDownLatch sizeCount) {
-		if(complete) { // 同步
+		if(complete) { // 同步：任务完成
+			this.buildFile(complete, sizeCount);
+		} else if(this.fileSize < ASYN_SIZE) { // 同步：小文件
 			this.buildFile(complete, sizeCount);
 		} else { // 异步
 			final var lock = this;
