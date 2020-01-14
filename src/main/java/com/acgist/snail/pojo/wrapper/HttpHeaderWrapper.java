@@ -187,9 +187,9 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 		if(StringUtils.isEmpty(fileName)) {
 			return defaultName;
 		}
-		final var encoder = Charset.forName(SystemConfig.CHARSET_GBK).newEncoder();
+		final var gbkEncoder = Charset.forName(SystemConfig.CHARSET_GBK).newEncoder();
 		// 只是进行URL编码
-		if(encoder.canEncode(fileName)) {
+		if(gbkEncoder.canEncode(fileName)) {
 			return fileName;
 		}
 		// HttpClient工具汉字ISO-8859-1字符转为char没有去掉符号（& 0xFF）
@@ -209,10 +209,10 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 		 * <p>GBK转为UTF8基本乱码</p>
 		 * <p>UTF8转为GBK也会乱码，可能只是不是原来的字符，但是可以也是属于GBK字符。</p>
 		 */
-		if(encoder.canEncode(fileNameUTF8)) {
+		if(gbkEncoder.canEncode(fileNameUTF8)) {
 			return fileNameUTF8;
 		}
-		if(encoder.canEncode(fileNameGBK)) {
+		if(gbkEncoder.canEncode(fileNameGBK)) {
 			return fileNameGBK;
 		}
 		// 其他编码直接返回
