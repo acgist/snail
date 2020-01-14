@@ -142,24 +142,24 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 		int index;
 		// URL解码
 		fileName = UrlUtils.decode(fileName);
-		// 删除：filename
+		// 删除：filename前面内容
 		index = fileName.indexOf(FILENAME);
 		if(index != -1) {
 			fileName = fileName.substring(index + FILENAME.length());
 		}
-		// 删除：等号
+		// 删除：等号前面内容
 		index = fileName.indexOf("=");
 		if(index != -1) {
 			fileName = fileName.substring(index + 1);
 		}
-		// 删除：分号
+		// 删除：分号后面内容
 		index = fileName.indexOf(";");
 		if(index != -1) {
 			fileName = fileName.substring(0, index);
 		}
 		// 删除：空格
 		fileName = fileName.trim();
-		// 删除：引号
+		// 删除：引号前后内容
 		if(fileName.startsWith("\'") && fileName.endsWith("\'")) {
 			fileName = fileName.substring(1, fileName.length() - 1);
 		}
