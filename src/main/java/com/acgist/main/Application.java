@@ -24,12 +24,12 @@ public final class Application {
 	 * 	<tr>
 	 * 		<th>参数</th>
 	 * 		<th>默认</th>
-	 * 		<th align="left">描述</th>
+	 * 		<th>描述</th>
 	 * 	</tr>
 	 * 	<tr>
 	 * 		<td>{@code args[0]}</td>
 	 * 		<td>{@code gui}</td>
-	 * 		<td>{@code gui}：本地GUI；{@code daemo}：后台模式；</td>
+	 * 		<td>{@code gui}-本地GUI；{@code daemo}-后台模式；</td>
 	 * 	</tr>
 	 * </table>
 	 * 

@@ -29,7 +29,7 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 	 * 
 	 * @param taskSession 任务信息
 	 * 
-	 * @return BT下载器对象
+	 * @return {@link TorrentDownloader}
 	 */
 	public static final TorrentDownloader newInstance(ITaskSession taskSession) {
 		return new TorrentDownloader(taskSession);
@@ -46,17 +46,17 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 	
 	@Override
 	public void refresh() {
-		// 任务没有被加载，不用重新加载，开始下载会自动加载。
+		// 任务没有被加载：不用重新加载，开始下载自动加载。
 		if(this.torrentSession == null) {
-			// 如果任务已经完成不会再次加载
+			// 任务已经完成不会再次加载：任务下载完成软件重启
 			if(this.taskSession.complete()) {
 				GuiHandler.getInstance().alert("下载失败", "任务已经完成");
 			}
 			return;
 		}
-		final int fileCount = this.torrentSession.reload(); // 从新加载任务
+		final int fileCount = this.torrentSession.reload(); // 重新加载任务
 		if(fileCount > 0) {
-			// 已经下载完成：修改为暂停状态
+			// 已经下载完成：修改暂停状态（任务下载完成软件没有重启）
 			if(this.taskSession.complete()) {
 				this.taskSession.setStatus(Status.PAUSE);
 				this.taskSession.update();

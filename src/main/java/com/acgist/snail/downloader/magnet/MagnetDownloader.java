@@ -27,7 +27,7 @@ public final class MagnetDownloader extends TorrentSessionDownloader {
 	 * 
 	 * @param taskSession 任务信息
 	 * 
-	 * @return 磁力链接下载器对象
+	 * @return {@link MagnetDownloader}
 	 */
 	public static final MagnetDownloader newInstance(ITaskSession taskSession) {
 		return new MagnetDownloader(taskSession);

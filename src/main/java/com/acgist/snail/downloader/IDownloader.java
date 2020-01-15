@@ -61,7 +61,7 @@ public interface IDownloader extends Runnable {
 	
 	/**
 	 * <p>删除任务</p>
-	 * <p>先暂停任务等任务结束后再删除任务</p>
+	 * <p>先暂停任务，等任务结束下载后再删除任务。</p>
 	 */
 	void delete();
 	
@@ -94,13 +94,12 @@ public interface IDownloader extends Runnable {
 	
 	/**
 	 * <p>检查任务是否完成</p>
-	 * <p>如果任务已经完成则标记为完成状态</p>
+	 * <p>任务已经完成：标记为完成状态</p>
 	 */
 	void checkComplete();
 	
 	/**
 	 * <p>获取已下载文件大小</p>
-	 * <p>默认直接通过本地文件获取已下载大小，这种方式可能会出现误差，必要时请重写并通过{@link ITaskSession#downloadSize(long)}方法设置已下载大小。</p>
 	 * 
 	 * @return 已下载文件大小
 	 */

@@ -36,7 +36,7 @@ public final class HttpDownloader extends SingleFileDownloader {
 	 * 
 	 * @param taskSession 任务信息
 	 * 
-	 * @return HTTP下载器对象
+	 * @return {@link HttpDownloader}
 	 */
 	public static final HttpDownloader newInstance(ITaskSession taskSession) {
 		return new HttpDownloader(taskSession);
@@ -76,10 +76,10 @@ public final class HttpDownloader extends SingleFileDownloader {
 			if(headers.range()) { // 支持断点续传
 				final long begin = headers.beginRange();
 				if(size != begin) {
+					// TODO：多行文本
 					LOGGER.warn(
 						"HTTP下载错误（已下载大小和开始下载位置不符），开始位置：{}，响应位置：{}，HTTP响应头部：{}",
-						size, begin,
-						headers.allHeaders()
+						size, begin, headers.allHeaders()
 					);
 				}
 				this.taskSession.downloadSize(size);
@@ -96,7 +96,7 @@ public final class HttpDownloader extends SingleFileDownloader {
 			if(response == null) {
 				fail("HTTP请求失败");
 			} else {
-				fail("HTTP请求失败（" + response.statusCode() + "）");
+				fail("HTTP请求失败：" + response.statusCode());
 			}
 		}
 	}

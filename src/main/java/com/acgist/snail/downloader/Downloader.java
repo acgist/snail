@@ -13,6 +13,7 @@ import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.ITaskSession.Status;
 import com.acgist.snail.system.IStatistics;
 import com.acgist.snail.utils.FileUtils;
+import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
@@ -31,13 +32,13 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	private static final int DELETE_WAIT_TIME = 5;
 	
 	/**
-	 * <p>失败状态</p>
-	 * <p>{@code true}-任务失败；{@code false}-任务正常；</p>
+	 * <p>任务失败状态</p>
+	 * <p>{@code true}-失败；{@code false}-正常；</p>
 	 */
 	protected volatile boolean fail = false;
 	/**
-	 * <p>完成状态</p>
-	 * <p>{@code true}-任务完成；{@code false}-任务没有完成；</p>
+	 * <p>任务完成状态</p>
+	 * <p>{@code true}-下载完成；{@code false}-没有完成；</p>
 	 */
 	protected volatile boolean complete = false;
 	/**
@@ -48,7 +49,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	 * <p>删除锁</p>
 	 * <p>{@code true}-任务没有下载（可以删除）；</p>
 	 * <p>{@code false}-任务正在下载（不能删除）；</p>
-	 * <p>任务删除时检查该锁判断是否可以删除任务，如果任务不能删除需要等待任务结束。</p>
+	 * <p>任务删除时检查该锁，判断是否可以删除任务，如果任务不能删除需要等待任务结束。</p>
 	 */
 	private final AtomicBoolean deleteLock = new AtomicBoolean(false);
 
@@ -116,10 +117,10 @@ public abstract class Downloader implements IDownloader, IStatistics {
 		noticeMessage
 			.append(this.name())
 			.append("下载失败：");
-		if(message != null) {
-			noticeMessage.append(message);
-		} else {
+		if(StringUtils.isEmpty(message)) {
 			noticeMessage.append("未知错误");
+		} else {
+			noticeMessage.append(message);
 		}
 		GuiHandler.getInstance().notice("下载失败", noticeMessage.toString(), SnailNoticeType.WARN);
 	}
@@ -150,10 +151,15 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	public void checkComplete() {
 		if(this.complete) {
 			this.updateStatus(Status.COMPLETE);
-			GuiHandler.getInstance().notice("下载完成", this.name() + "已经下载完成");
+			GuiHandler.getInstance().notice("下载完成", "任务下载完成：" + this.name());
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * <p>默认直接获取本地文件大小，这种方式可能会出现误差，必要时请重写并通过{@link ITaskSession#downloadSize(long)}方法设置已下载大小。</p>
+	 */
 	@Override
 	public long downloadSize() {
 		return FileUtils.fileSize(this.taskSession.getFile());
@@ -166,7 +172,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	
 	@Override
 	public void run() {
-		// 任务已经开始下载直接跳过，防止多次点击暂停开始导致阻塞后面下载任务线程。
+		// 任务已经开始下载直接跳过：防止多次点击暂停开始导致阻塞后面下载任务线程
 		if(this.taskSession.download()) {
 			LOGGER.debug("任务已经开始下载：{}", this.name());
 			return;
@@ -189,7 +195,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 				this.unlockDelete(); // 释放删除锁
 				LOGGER.info("任务下载结束：{}", this.name());
 			} else {
-				LOGGER.warn("任务状态错误：{}", this.name());
+				LOGGER.warn("任务状态错误：{}-{}", this.name(), this.taskSession.getStatus());
 			}
 		}
 	}
@@ -214,12 +220,12 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	 * 	<dt>判断任务是否可以下载</dt>
 	 * 	<dd>未被标记{@linkplain #fail 失败}</dd>
 	 * 	<dd>未被标记{@linkplain #complete 完成}</dd>
-	 * 	<dd>任务处于{@linkplain ITaskSession#download() 下载中}</dd>
+	 * 	<dd>任务处于{@linkplain ITaskSession#download() 下载状态}</dd>
 	 * </dl>
 	 * 
 	 * @return {@code true}-可以下载；{@code false}-不能下载；
 	 */
-	protected boolean ok() {
+	protected boolean downloadable() {
 		return
 			!this.fail &&
 			!this.complete &&
