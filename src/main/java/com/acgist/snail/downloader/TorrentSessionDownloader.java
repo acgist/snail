@@ -30,7 +30,7 @@ public abstract class TorrentSessionDownloader extends Downloader {
 	protected TorrentSession torrentSession;
 	/**
 	 * <p>下载锁</p>
-	 * <p>下载时阻塞下载线程</p>
+	 * <p>下载时阻塞下载任务线程</p>
 	 */
 	protected final Object downloadLock = new Object();
 	
@@ -50,15 +50,15 @@ public abstract class TorrentSessionDownloader extends Downloader {
 		// 删除任务信息
 		if(this.torrentSession != null) {
 			final String infoHashHex = this.torrentSession.infoHashHex();
-			PeerManager.getInstance().remove(infoHashHex); // Peer信息
-			TorrentManager.getInstance().remove(infoHashHex); // 种子信息
+			PeerManager.getInstance().remove(infoHashHex); // 删除Peer信息
+			TorrentManager.getInstance().remove(infoHashHex); // 删除种子信息
 		}
 		super.delete();
 	}
 	
 	@Override
 	public void download() throws IOException {
-		while(ok()) {
+		while(downloadable()) {
 			synchronized (this.downloadLock) {
 				ThreadUtils.wait(this.downloadLock, Duration.ofSeconds(Integer.MAX_VALUE));
 				this.complete = this.torrentSession.checkCompleted();
@@ -76,7 +76,7 @@ public abstract class TorrentSessionDownloader extends Downloader {
 	/**
 	 * <p>加载BT任务信息</p>
 	 * 
-	 * @return 任务信息
+	 * @return BT任务信息
 	 */
 	protected TorrentSession loadTorrentSession() {
 		final var torrentPath = this.taskSession.getTorrent();

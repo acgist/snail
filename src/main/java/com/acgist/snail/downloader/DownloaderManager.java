@@ -37,7 +37,7 @@ public final class DownloaderManager {
 	 */
 	private final ExecutorService executor;
 	/**
-	 * <p>下载队列</p>
+	 * <p>下载器Map</p>
 	 * <p>任务ID=下载器</p>
 	 */
 	private final Map<String, IDownloader> downloaderMap;
@@ -72,8 +72,9 @@ public final class DownloaderManager {
 	
 	/**
 	 * <p>开始下载任务</p>
+	 * <p>添加下载任务并开始下载</p>
 	 * 
-	 * @param taskSession 下载任务
+	 * @param taskSession 任务信息
 	 * 
 	 * @throws DownloadException 下载异常
 	 */
@@ -86,9 +87,9 @@ public final class DownloaderManager {
 	
 	/**
 	 * <p>添加下载任务</p>
-	 * <p>只将下载任务添加到下载队列，不修改任务状态。</p>
+	 * <p>只添加下载任务，不修改任务状态。</p>
 	 * 
-	 * @param taskSession 下载任务
+	 * @param taskSession 任务信息
 	 * 
 	 * @return 下载器
 	 * 
@@ -118,7 +119,7 @@ public final class DownloaderManager {
 	/**
 	 * <p>暂停任务</p>
 	 * 
-	 * @param taskSession 下载任务
+	 * @param taskSession 任务信息
 	 */
 	public void pause(ITaskSession taskSession) {
 		downloader(taskSession).pause();
@@ -127,7 +128,7 @@ public final class DownloaderManager {
 	/**
 	 * <p>刷新任务</p>
 	 * 
-	 * @param taskSession 下载任务
+	 * @param taskSession 任务信息
 	 */
 	public void refresh(ITaskSession taskSession) {
 		downloader(taskSession).refresh();
@@ -137,7 +138,7 @@ public final class DownloaderManager {
 	 * <p>删除任务</p>
 	 * <p>从{@linkplain #downloaderMap 下载队列}中立即删除，实际删除操作在后台进行。</p>
 	 * 
-	 * @param taskSession 下载任务
+	 * @param taskSession 任务信息
 	 */
 	public void delete(ITaskSession taskSession) {
 		// 需要定义在后台删除任务外面：防止从下载队列中删除后导致空指针
@@ -152,9 +153,9 @@ public final class DownloaderManager {
 	
 	/**
 	 * <p>切换下载器</p>
-	 * <p>先删除任务旧的下载器并从{@linkplain #downloaderMap 下载队列}中删除，然后重新下载。</p>
+	 * <p>先删除任务旧下载器，然后从{@linkplain #downloaderMap 下载队列}中删除任务，最后重新下载。</p>
 	 * 
-	 * @param taskSession 下载任务
+	 * @param taskSession 任务信息
 	 * 
 	 * @throws DownloadException 下载异常
 	 */
@@ -167,7 +168,7 @@ public final class DownloaderManager {
 	/**
 	 * <p>获取下载任务的下载器</p>
 	 * 
-	 * @param taskSession 下载任务
+	 * @param taskSession 任务信息
 	 * 
 	 * @return 下载器
 	 */
@@ -207,7 +208,6 @@ public final class DownloaderManager {
 	 * 	<dd>如果小于下载任务数量：增加下载任务线程</dd>
 	 * 	<dd>如果大于下载任务数量：减小下载任务线程</dd>
 	 * </dl>
-	 * <p>任务完成、暂停等操作时刷新下载任务</p>
 	 */
 	public void refresh() {
 		synchronized (this) {

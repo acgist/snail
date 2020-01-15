@@ -55,7 +55,7 @@ public abstract class SingleFileDownloader extends Downloader {
 	public void download() throws IOException {
 		int length = 0;
 		final byte[] bytes = new byte[EXCHANGE_BYTES_LENGTH];
-		while(ok()) {
+		while(downloadable()) {
 			length = this.input.read(bytes, 0, bytes.length);
 			if(isComplete(length)) {
 				this.complete = true;
@@ -69,7 +69,7 @@ public abstract class SingleFileDownloader extends Downloader {
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * <p>如果没有数据下载，任务会被{@linkplain InputStream#read(byte[], int, int) 下载流读取方法}阻塞，通过直接关闭下载流来避免任务不能正常结束。</p>
+	 * <p>如果没有数据下载，任务会被{@link InputStream#read(byte[], int, int)}阻塞，通过直接关闭下载流来避免任务不能正常结束。</p>
 	 */
 	@Override
 	public void unlockDownload() {
@@ -86,7 +86,7 @@ public abstract class SingleFileDownloader extends Downloader {
 	 * 	<dd>任务长度小于等于已下载数据长度</dd>
 	 * </dl>
 	 * 
-	 * @param length 数据长度
+	 * @param length 读取数据长度
 	 * 
 	 * @return {@code true}-下载完成；{@code false}-没有完成；
 	 */
@@ -98,7 +98,7 @@ public abstract class SingleFileDownloader extends Downloader {
 	
 	/**
 	 * <p>创建{@linkplain #output 输出流}</p>
-	 * <p>创建时需要验证是否支持断点续传所以优先{@linkplain #buildInput() 创建输入流}</p>
+	 * <p>创建时需要验证是否支持断点续传，所以优先{@linkplain #buildInput() 创建输入流}。</p>
 	 */
 	protected void buildOutput() {
 		try {

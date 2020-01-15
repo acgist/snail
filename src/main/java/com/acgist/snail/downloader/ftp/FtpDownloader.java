@@ -37,7 +37,7 @@ public final class FtpDownloader extends SingleFileDownloader {
 	 * 
 	 * @param taskSession 任务信息
 	 * 
-	 * @return FTP下载器对象
+	 * @return {@link FtpDownloader}
 	 */
 	public static final FtpDownloader newInstance(ITaskSession taskSession) {
 		return new FtpDownloader(taskSession);
@@ -64,7 +64,7 @@ public final class FtpDownloader extends SingleFileDownloader {
 			try {
 				final var inputStream = this.client.download(size);
 				this.input = new BufferedInputStream(inputStream);
-				if(this.client.range()) {
+				if(this.client.range()) { // 支持断点续传
 					this.taskSession.downloadSize(size);
 				} else {
 					this.taskSession.downloadSize(0L);
