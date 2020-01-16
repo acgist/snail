@@ -70,7 +70,7 @@ public final class TorrentPiece {
 		this.hash = hash;
 		this.verify = verify;
 		this.length = end - begin;
-		this.data = new byte[length];
+		this.data = new byte[this.length];
 		this.size = 0;
 		this.position = 0;
 	}
