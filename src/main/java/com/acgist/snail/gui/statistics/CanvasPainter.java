@@ -23,15 +23,15 @@ public final class CanvasPainter {
 //	private static final Logger LOGGER = LoggerFactory.getLogger(CanvasPainter.class);
 
 	/**
-	 * <p>默认填充高宽</p>
+	 * <p>默认填充高宽：{@value}</p>
 	 */
 	private static final int DEFAULT_WH = 16;
 	/**
-	 * <p>默认列数</p>
+	 * <p>默认列数：{@value}</p>
 	 */
 	private static final int DEFAULT_COL = 50;
 	/**
-	 * <p>边框高宽</p>
+	 * <p>边框高宽：{@value}</p>
 	 */
 	private static final int BORDER_WH = 1;
 	
@@ -138,7 +138,7 @@ public final class CanvasPainter {
 	 * 
 	 * @param bitSet 数据
 	 * 
-	 * @return 工具
+	 * @return {@link CanvasPainter}
 	 */
 	public static final CanvasPainter newInstance(BitSet bitSet) {
 		return new CanvasPainter(bitSet);
@@ -151,7 +151,7 @@ public final class CanvasPainter {
 	 * @param bitSet 数据
 	 * @param selectBitSet 选择数据
 	 * 
-	 * @return 工具
+	 * @return {@link CanvasPainter}
 	 */
 	public static final CanvasPainter newInstance(int length, BitSet bitSet, BitSet selectBitSet) {
 		return new CanvasPainter(length, bitSet, selectBitSet);
@@ -166,7 +166,7 @@ public final class CanvasPainter {
 	 * @param bitSet 数据
 	 * @param selectBitSet 选择数据
 	 * 
-	 * @return 工具
+	 * @return {@link CanvasPainter}
 	 */
 	public static final CanvasPainter newInstance(int wh, int col, int length, BitSet bitSet, BitSet selectBitSet) {
 		return new CanvasPainter(wh, col, length, bitSet, selectBitSet);
@@ -186,7 +186,7 @@ public final class CanvasPainter {
 	 * @param borderColor 边框颜色
 	 * @param background 背景颜色
 	 * 
-	 * @return 工具
+	 * @return {@link CanvasPainter}
 	 */
 	public static final CanvasPainter newInstance(
 		int wh, int col,
