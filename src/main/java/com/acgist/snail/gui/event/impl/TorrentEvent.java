@@ -19,7 +19,7 @@ import javafx.application.Platform;
 
 /**
  * <p>GUI种子文件选择事件</p>
- * <p>不能抛出异常：抛出异常后{@link TorrentProtocol}创建下载时不能正常的删除临时文件</p>
+ * <p>不能抛出异常：抛出异常会导致{@link TorrentProtocol}创建任务不能正常的删除临时文件</p>
  * 
  * @author acgist
  * @since 1.1.1
@@ -63,6 +63,11 @@ public final class TorrentEvent extends GuiEventEx {
 		}
 	}
 	
+	/**
+	 * <p>本地GUI</p>
+	 * 
+	 * @param taskSession 任务信息
+	 */
 	private void executeNativeEx(ITaskSession taskSession) {
 		if(Platform.isFxApplicationThread()) { // JavaFX线程
 			TorrentWindow.getInstance().show(taskSession);
@@ -71,6 +76,11 @@ public final class TorrentEvent extends GuiEventEx {
 		}
 	}
 	
+	/**
+	 * <p>扩展GUI</p>
+	 * 
+	 * @param taskSession 任务信息
+	 */
 	private void executeExtendEx(ITaskSession taskSession) {
 		if(StringUtils.isEmpty(this.files)) {
 			return;

@@ -5,7 +5,7 @@ import java.util.ResourceBundle;
 
 import com.acgist.snail.gui.Controller;
 import com.acgist.snail.system.config.SystemConfig;
-import com.acgist.snail.utils.BrowseUtils;
+import com.acgist.snail.utils.BrowserUtils;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -42,27 +42,27 @@ public final class AboutController extends Controller implements Initializable {
 	 */
 	@FXML
 	public void handleAuthorAction(ActionEvent event) {
-		BrowseUtils.open(SystemConfig.getAuthor());
+		BrowserUtils.open(SystemConfig.getAuthor());
 	}
 	
 	/**
-	 * <p>源码按钮</p>
+	 * <p>官网与源码按钮</p>
 	 * 
 	 * @param event 事件
 	 */
 	@FXML
 	public void handleSourceAction(ActionEvent event) {
-		BrowseUtils.open(SystemConfig.getSource());
+		BrowserUtils.open(SystemConfig.getSource());
 	}
 	
 	/**
-	 * <p>支持按钮</p>
+	 * <p>问题与建议按钮</p>
 	 * 
 	 * @param event 事件
 	 */
 	@FXML
 	public void handleSupportAction(ActionEvent event) {
-		BrowseUtils.open(SystemConfig.getSupport());
+		BrowserUtils.open(SystemConfig.getSupport());
 	}
 
 	/**

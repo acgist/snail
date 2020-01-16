@@ -54,17 +54,31 @@ public final class NoticeEvent extends GuiEventEx {
 			return;
 		}
 		if(gui) {
-			executeNativeEx(title, message, type);
+			executeNativeEx(type, title, message);
 		} else {
-			executeExtendEx(title, message, type);
+			executeExtendEx(type, title, message);
 		}
 	}
 	
-	private void executeNativeEx(String title, String message, SnailNoticeType type) {
+	/**
+	 * <p>本地提示消息</p>
+	 * 
+	 * @param type 类型
+	 * @param title 标题
+	 * @param message 消息
+	 */
+	private void executeNativeEx(SnailNoticeType type, String title, String message) {
 		TrayMenu.getInstance().notice(title, message, type.getMessageType());
 	}
 	
-	private void executeExtendEx(String title, String message, SnailNoticeType type) {
+	/**
+	 * <p>扩展提示消息</p>
+	 * 
+	 * @param type 类型
+	 * @param title 标题
+	 * @param message 消息
+	 */
+	private void executeExtendEx(SnailNoticeType type, String title, String message) {
 		final ApplicationMessage applicationMessage = ApplicationMessage.message(ApplicationMessage.Type.NOTICE);
 		final Map<String, String> map = new HashMap<>(3);
 		map.put("type", type.name());

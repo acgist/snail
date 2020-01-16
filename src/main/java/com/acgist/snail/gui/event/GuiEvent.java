@@ -51,7 +51,7 @@ public abstract class GuiEvent {
 	/**
 	 * <p>执行GUI事件</p>
 	 * 
-	 * @param gui 是否是本地GUI事件：{@code true}-本地GUI；{@code false}-扩展GUI；
+	 * @param gui {@code true}-本地GUI；{@code false}-扩展GUI；
 	 * @param args 参数
 	 */
 	public void execute(boolean gui, Object ... args) {
@@ -76,10 +76,20 @@ public abstract class GuiEvent {
 	 */
 	protected abstract void executeExtend(Object ... args);
 	
+	/**
+	 * <p>获取事件类型</p>
+	 * 
+	 * @return 事件类型
+	 */
 	public Type type() {
 		return this.type;
 	}
 	
+	/**
+	 * <p>获取事件名称</p>
+	 * 
+	 * @return 事件名称
+	 */
 	public String name() {
 		return this.name;
 	}
