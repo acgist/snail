@@ -9,7 +9,6 @@ import com.acgist.snail.system.context.SystemContext;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -21,10 +20,12 @@ import javafx.stage.Stage;
 /**
  * <p>窗口</p>
  * 
+ * @param <T> 窗口控制器
+ * 
  * @author acgist
  * @since 1.0.0
  */
-public abstract class Window<T extends Initializable> extends Application {
+public abstract class Window<T extends Controller> extends Application {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Window.class);
 	
@@ -47,7 +48,7 @@ public abstract class Window<T extends Initializable> extends Application {
 	}
 	
 	/**
-	 * <p>设置ICON</p>
+	 * <p>设置Icon</p>
 	 */
 	protected void icon() {
 		this.stage.getIcons().add(new Image(Controller.LOGO_ICON));
@@ -80,11 +81,14 @@ public abstract class Window<T extends Initializable> extends Application {
 	}
 	
 	/**
-	 * <p>对话框通用设置：{@link #icon}、{@link #esc}</p>
+	 * <p>对话框通用设置</p>
+	 * 
+	 * @see #icon()
+	 * @see #esc()
 	 */
 	protected void dialogWindow() {
-		icon();
-		esc();
+		this.icon();
+		this.esc();
 	}
 	
 	/**
@@ -160,6 +164,8 @@ public abstract class Window<T extends Initializable> extends Application {
 	}
 	
 	/**
+	 * <p>获取容器</p>
+	 * 
 	 * @return 容器
 	 */
 	public Stage stage() {
@@ -167,6 +173,8 @@ public abstract class Window<T extends Initializable> extends Application {
 	}
 	
 	/**
+	 * <p>获取控制器</p>
+	 * 
 	 * @return 控制器
 	 */
 	public T controller() {

@@ -67,6 +67,8 @@ public final class Choosers {
 	
 	/**
 	 * <p>设置上次选择目录</p>
+	 * 
+	 * @param chooser 文件选择器
 	 */
 	private static final void lastPath(FileChooser chooser) {
 		final File file = DownloadConfig.getLastPathFile();
@@ -77,6 +79,8 @@ public final class Choosers {
 	
 	/**
 	 * <p>设置上次选择目录</p>
+	 * 
+	 * @param chooser 目录选择器
 	 */
 	private static final void lastPath(DirectoryChooser chooser) {
 		final File file = DownloadConfig.getLastPathFile();

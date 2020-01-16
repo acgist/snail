@@ -44,13 +44,6 @@ public final class SelectorManager {
 	 */
 	private final Map<String, Selector> selector = new HashMap<>();;
 
-	/**
-	 * <p>BT文件选择器</p>
-	 * 
-	 * @param name 任务名称
-	 * @param download 下载按钮
-	 * @param tree 树形菜单
-	 */
 	private SelectorManager(String name, Button download, TreeView<HBox> tree) {
 		final TreeItem<HBox> root = buildTreeItem(null, "", name, null);
 		root.setExpanded(true);
@@ -59,6 +52,15 @@ public final class SelectorManager {
 		this.download = download;
 	}
 	
+	/**
+	 * <p>创建BT文件选择器</p>
+	 * 
+	 * @param name 任务名称
+	 * @param download 下载按钮
+	 * @param tree 树形菜单
+	 * 
+	 * @return {@link SelectorManager}
+	 */
 	public static final SelectorManager newInstance(String name, Button download, TreeView<HBox> tree) {
 		return new SelectorManager(name, download, tree);
 	}
@@ -121,6 +123,8 @@ public final class SelectorManager {
 	}
 	
 	/**
+	 * <p>获取选择文件大小</p>
+	 * 
 	 * @return 选择文件大小
 	 */
 	public Long size() {
@@ -131,6 +135,8 @@ public final class SelectorManager {
 	}
 	
 	/**
+	 * <p>获取选择文件列表</p>
+	 * 
 	 * @return 选择文件列表
 	 */
 	public List<String> description() {
@@ -219,78 +225,80 @@ public final class SelectorManager {
 		buttonSize();
 	};
 	
-}
-
-/**
- * <p>选择文件</p>
- */
-class Selector {
-
 	/**
-	 * <p>文件路径</p>
+	 * <p>选择文件</p>
 	 */
-	private final String path;
-	/**
-	 * <p>文件大小：目录等于{@code 0}</p>
-	 */
-	private final long size;
-	/**
-	 * <p>是否是文件：{@code true}-文件；{@code false}-目录；</p>
-	 */
-	private final boolean file;
-	/**
-	 * <p>选择框</p>
-	 */
-	private final CheckBox checkBox;
-	/**
-	 * <p>文件菜单节点</p>
-	 */
-	private final TreeItem<HBox> treeItem;
-
-	public Selector(String path, Long size, CheckBox checkBox, TreeItem<HBox> treeItem) {
-		this.path = path;
-		this.size = (size == null || size == 0L) ? 0 : size;
-		this.file = (size == null || size == 0L) ? false : true;
-		this.checkBox = checkBox;
-		this.treeItem = treeItem;
-	}
-
-	/**
-	 * <p>判断是否被选中</p>
-	 * 
-	 * @return {@code true}-选中；{@code false}-没有选中；
-	 */
-	public boolean isSelected() {
-		return this.checkBox.isSelected();
-	}
-
-	/**
-	 * <p>设置是否被选中</p>
-	 * 
-	 * @param selected {@code true}-选中；{@code false}-没有选中；
-	 */
-	public void setSelected(boolean selected) {
-		this.checkBox.setSelected(selected);
+	protected static final class Selector {
+		
+		/**
+		 * <p>文件路径</p>
+		 */
+		private final String path;
+		/**
+		 * <p>文件大小</p>
+		 * <p>目录等于{@code 0}</p>
+		 */
+		private final long size;
+		/**
+		 * <p>是否是文件</p>
+		 * <p>{@code true}-文件；{@code false}-目录；</p>
+		 */
+		private final boolean file;
+		/**
+		 * <p>选择框</p>
+		 */
+		private final CheckBox checkBox;
+		/**
+		 * <p>文件菜单节点</p>
+		 */
+		private final TreeItem<HBox> treeItem;
+		
+		public Selector(String path, Long size, CheckBox checkBox, TreeItem<HBox> treeItem) {
+			this.path = path;
+			this.size = (size == null || size == 0L) ? 0 : size;
+			this.file = (size == null || size == 0L) ? false : true;
+			this.checkBox = checkBox;
+			this.treeItem = treeItem;
+		}
+		
+		/**
+		 * <p>判断是否被选中</p>
+		 * 
+		 * @return {@code true}-选中；{@code false}-没有选中；
+		 */
+		public boolean isSelected() {
+			return this.checkBox.isSelected();
+		}
+		
+		/**
+		 * <p>设置是否被选中</p>
+		 * 
+		 * @param selected {@code true}-选中；{@code false}-没有选中；
+		 */
+		public void setSelected(boolean selected) {
+			this.checkBox.setSelected(selected);
+		}
+		
+		public String getPath() {
+			return path;
+		}
+		
+		public long getSize() {
+			return size;
+		}
+		
+		public boolean isFile() {
+			return file;
+		}
+		
+		public CheckBox getCheckBox() {
+			return checkBox;
+		}
+		
+		public TreeItem<HBox> getTreeItem() {
+			return treeItem;
+		}
+		
 	}
 	
-	public String getPath() {
-		return path;
-	}
-
-	public long getSize() {
-		return size;
-	}
-
-	public boolean isFile() {
-		return file;
-	}
-
-	public CheckBox getCheckBox() {
-		return checkBox;
-	}
-
-	public TreeItem<HBox> getTreeItem() {
-		return treeItem;
-	}
-
 }

@@ -204,6 +204,8 @@ public final class TrayMenu extends Menu {
 	
 	/**
 	 * <p>创建托盘菜单容器</p>
+	 * 
+	 * @return 容器
 	 */
 	private Stage createTrayStage() {
 		final FlowPane trayPane = new FlowPane();

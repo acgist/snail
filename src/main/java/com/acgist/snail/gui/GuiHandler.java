@@ -56,6 +56,8 @@ public final class GuiHandler {
 		ERROR;
 		
 		/**
+		 * <p>获取JavaFX窗口类型</p>
+		 * 
 		 * @return JavaFX窗口类型
 		 */
 		public final AlertType getAlertType() {
@@ -92,6 +94,8 @@ public final class GuiHandler {
 		ERROR;
 		
 		/**
+		 * <p>获取JavaFX消息类型</p>
+		 * 
 		 * @return JavaFX消息类型
 		 */
 		public final MessageType getMessageType() {
@@ -226,7 +230,7 @@ public final class GuiHandler {
 	 * @return GUI处理器
 	 */
 	public GuiHandler build() {
-		event(Type.BUILD);
+		this.event(Type.BUILD);
 		return this;
 	}
 	
@@ -292,7 +296,7 @@ public final class GuiHandler {
 	 * @return GUI处理器
 	 */
 	public GuiHandler torrent(ITaskSession taskSession) {
-		event(Type.TORRENT, taskSession);
+		this.event(Type.TORRENT, taskSession);
 		return this;
 	}
 	
@@ -302,7 +306,7 @@ public final class GuiHandler {
 	 * @return GUI处理器
 	 */
 	public GuiHandler refreshTaskList() {
-		event(Type.REFRESH_TASK_LIST);
+		this.event(Type.REFRESH_TASK_LIST);
 		return this;
 	}
 	
@@ -312,7 +316,7 @@ public final class GuiHandler {
 	 * @return GUI处理器
 	 */
 	public GuiHandler refreshTaskStatus() {
-		event(Type.REFRESH_TASK_STATUS);
+		this.event(Type.REFRESH_TASK_STATUS);
 		return this;
 	}
 

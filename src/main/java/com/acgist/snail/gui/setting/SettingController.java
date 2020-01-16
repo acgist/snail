@@ -136,7 +136,7 @@ public final class SettingController extends Controller implements Initializable
 	 */
 	private ChangeListener<? super Number> sizeListener = (obs, oldVal, newVal) -> {
 		int value = newVal.intValue(); // 设置整数个任务
-		if(value == 0) { // 不能设置：0
+		if(value <= 0) { // 不能设置：0
 			value = 1;
 		}
 		this.size.setValue(value);

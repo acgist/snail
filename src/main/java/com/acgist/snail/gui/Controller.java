@@ -6,7 +6,7 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 
 /**
- * <p>控制器</p>
+ * <p>窗口控制器</p>
  * 
  * @author acgist
  * @since 1.1.0

@@ -55,13 +55,13 @@ public final class StatisticsController extends Controller implements Initializa
 	private static final Logger LOGGER = LoggerFactory.getLogger(StatisticsController.class);
 	
 	/**
-	 * <p>图表宽度</p>
+	 * <p>图表宽度：{@value}</p>
 	 */
-	private final int CHART_WIDTH = 800;
+	private static final int CHART_WIDTH = 800;
 	/**
-	 * <p>图表高度</p>
+	 * <p>图表高度：{@value}</p>
 	 */
-	private final int CHART_HEIGHT = 400;
+	private static final int CHART_HEIGHT = 400;
 	
 	/**
 	 * <p>统计信息筛选</p>
@@ -155,6 +155,11 @@ public final class StatisticsController extends Controller implements Initializa
 	
 	/**
 	 * <p>统计信息</p>
+	 * 
+	 * @see #system()
+	 * @see #dht()
+	 * @see #tracker()
+	 * @see #infoHash()
 	 */
 	public void statistics() {
 		this.system();
@@ -455,7 +460,7 @@ public final class StatisticsController extends Controller implements Initializa
 	/**
 	 * <p>下载任务</p>
 	 */
-	public static final class SelectInfoHash {
+	protected static final class SelectInfoHash {
 
 		private final String hash; // 任务Hash
 		private final String name; // 任务名称
