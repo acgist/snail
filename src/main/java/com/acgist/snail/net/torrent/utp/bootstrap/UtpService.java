@@ -53,9 +53,12 @@ public final class UtpService {
 	 */
 	public void register() {
 		LOGGER.debug("注册UTP服务：定时任务");
-		SystemThreadContext.timerFixedDelay(UTP_INTERVAL, UTP_INTERVAL, TimeUnit.SECONDS, () -> {
-			this.timeout();
-		});
+		SystemThreadContext.timerFixedDelay(
+			UTP_INTERVAL,
+			UTP_INTERVAL,
+			TimeUnit.SECONDS,
+			() -> this.timeout()
+		);
 	}
 	
 	/**

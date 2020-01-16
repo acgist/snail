@@ -11,7 +11,7 @@ import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
- * <p>任务刷新器</p>
+ * <p>任务列表刷新器</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -48,7 +48,12 @@ public final class TaskDisplay {
 		synchronized (this) {
 			if(this.controller == null) {
 				this.controller = controller;
-				SystemThreadContext.timer(0, SystemConfig.TASK_REFRESH_INTERVAL.toSeconds(), TimeUnit.SECONDS, () -> refreshTaskStatus());
+				SystemThreadContext.timer(
+					0,
+					SystemConfig.TASK_REFRESH_INTERVAL.toSeconds(),
+					TimeUnit.SECONDS,
+					() -> refreshTaskStatus()
+				);
 				synchronized (this.lock) {
 					this.lock.notifyAll();
 				}
