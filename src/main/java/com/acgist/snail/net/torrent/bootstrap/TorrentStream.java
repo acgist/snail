@@ -309,7 +309,7 @@ public final class TorrentStream {
 			// 最后一块获取结束偏移
 			if(index == this.fileEndPieceIndex) {
 				verify = false;
-				end = lastPieceSize();
+				end = lastPiecePos();
 			}
 			return TorrentPiece.newInstance(this.torrentStreamGroup.pieceHash(index), this.pieceLength, index, begin, end, verify);
 		}
