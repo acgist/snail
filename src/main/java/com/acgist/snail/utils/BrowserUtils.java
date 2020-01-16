@@ -12,14 +12,14 @@ import org.slf4j.LoggerFactory;
  * @author acgist
  * @since 1.0.0
  */
-public final class BrowseUtils {
+public final class BrowserUtils {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(BrowseUtils.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(BrowserUtils.class);
 	
 	/**
 	 * <p>工具类禁止实例化</p>
 	 */
-	private BrowseUtils() {
+	private BrowserUtils() {
 	}
 	
 	/**

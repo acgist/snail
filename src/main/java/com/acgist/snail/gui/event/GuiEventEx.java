@@ -24,9 +24,9 @@ public abstract class GuiEventEx extends GuiEvent {
 	}
 	
 	/**
-	 * <p>处理变长参数GUI事件</p>
+	 * <p>执行变长参数GUI事件</p>
 	 * 
-	 * @param gui 是否是本地GUI事件：{@code true}-本地GUI；{@code false}-扩展GUI；
+	 * @param gui {@code true}-本地GUI；{@code false}-扩展GUI；
 	 * @param args 参数
 	 */
 	protected abstract void executeEx(boolean gui, Object ... args);

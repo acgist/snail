@@ -80,7 +80,7 @@ public final class BuildController extends Controller implements Initializable {
 			Alerts.warn("下载失败", e.getMessage());
 		}
 		if(ok) {
-			setUrl(""); // 清除下载链接
+			this.cleanUrl();
 			BuildWindow.getInstance().hide();
 		}
 	}
@@ -92,8 +92,15 @@ public final class BuildController extends Controller implements Initializable {
 	 */
 	@FXML
 	public void handleCancelAction(ActionEvent event) {
-		setUrl("");
+		this.cleanUrl();
 		BuildWindow.getInstance().hide();
+	}
+	
+	/**
+	 * <p>清空下载链接</p>
+	 */
+	public void cleanUrl() {
+		this.setUrl("");
 	}
 	
 	/**

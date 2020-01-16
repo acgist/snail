@@ -60,10 +60,24 @@ public final class AlertEvent extends GuiEventEx {
 		}
 	}
 
+	/**
+	 * <p>本地提示窗口</p>
+	 * 
+	 * @param type 类型
+	 * @param title 标题
+	 * @param message 消息
+	 */
 	private void executeNativeEx(SnailAlertType type, String title, String message) {
 		Alerts.build(title, message, type.getAlertType());
 	}
 	
+	/**
+	 * <p>扩展提示窗口</p>
+	 * 
+	 * @param type 类型
+	 * @param title 标题
+	 * @param message 消息
+	 */
 	private void executeExtendEx(SnailAlertType type, String title, String message) {
 		final ApplicationMessage applicationMessage = ApplicationMessage.message(ApplicationMessage.Type.ALERT);
 		final Map<String, String> map = new HashMap<>(3);
