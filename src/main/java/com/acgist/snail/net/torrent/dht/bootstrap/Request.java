@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.system.bencode.BEncodeDecoder;
@@ -150,13 +151,17 @@ public class Request extends DhtMessage {
 		if(CollectionUtils.isEmpty(nodes)) {
 			return new byte[0];
 		}
-		final ByteBuffer buffer = ByteBuffer.allocate(26 * nodes.size()); // 20 + 4 + 2
-		for (NodeSession node : nodes) {
-			if(NetUtils.isIp(node.getHost())) { // 只分享IP地址
-				buffer.put(node.getId());
-				buffer.putInt(NetUtils.encodeIpToInt(node.getHost()));
-				buffer.putShort(NetUtils.encodePort(node.getPort()));
-			}
+		final var availableNodes = nodes.stream()
+			.filter(node -> NetUtils.isIp(node.getHost())) // 只分享IP地址
+			.collect(Collectors.toList());
+		if(CollectionUtils.isEmpty(availableNodes)) {
+			return new byte[0];
+		}
+		final ByteBuffer buffer = ByteBuffer.allocate(26 * availableNodes.size()); // 20 + 4 + 2
+		for (NodeSession node : availableNodes) {
+			buffer.put(node.getId());
+			buffer.putInt(NetUtils.encodeIpToInt(node.getHost()));
+			buffer.putShort(NetUtils.encodePort(node.getPort()));
 		}
 		return buffer.array();
 	}

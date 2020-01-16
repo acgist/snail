@@ -52,10 +52,12 @@ public final class GetPeersRequest extends Request {
 		final byte[] infoHash = request.getBytes(DhtConfig.KEY_INFO_HASH);
 		final String infoHashHex = StringUtils.hex(infoHash);
 		final TorrentSession torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
+		boolean needNodes = true;
 		if(torrentSession != null) {
 			final ByteBuffer buffer = ByteBuffer.allocate(6);
 			final var list = PeerManager.getInstance().listPeerSession(infoHashHex);
 			if(CollectionUtils.isNotEmpty(list)) { // 返回Peer
+				needNodes = false;
 				final var values = list.stream()
 					.filter(peer -> peer.available()) // 可用
 					.filter(peer -> peer.connected()) // 连接
@@ -68,10 +70,12 @@ public final class GetPeersRequest extends Request {
 					})
 					.collect(Collectors.toList());
 				response.put(DhtConfig.KEY_VALUES, values);
-			} else { // 返回Node
-				final var nodes = NodeManager.getInstance().findNode(infoHash);
-				response.put(DhtConfig.KEY_NODES, serializeNodes(nodes));
 			}
+		}
+		// 没有Peer返回节点
+		if(needNodes) {
+			final var nodes = NodeManager.getInstance().findNode(infoHash);
+			response.put(DhtConfig.KEY_NODES, serializeNodes(nodes));
 		}
 		return response;
 	}

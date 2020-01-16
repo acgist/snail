@@ -14,6 +14,8 @@ public class DhtServerTest extends BaseTest {
 	private static final String HOST = "127.0.0.1";
 	private static final int PORT = 18888; // 本地DHT测试端口
 	
+	private static final String HASH = "5E5324691812CAA0032EA76E813CCFC4D04E7E9E";
+	
 	@Test
 	public void testPing() {
 		DhtClient client = DhtClient.newInstance(HOST, PORT);
@@ -23,19 +25,19 @@ public class DhtServerTest extends BaseTest {
 	
 	@Test
 	public void testFindNode() {
-		NodeManager.getInstance().newNodeSession("12345678901234567890".getBytes(), "1234", 1234);
+		NodeManager.getInstance().newNodeSession("12345678901234567890".getBytes(), "192.168.1.100", 1234);
 		NodeManager.getInstance().sortNodes();
 		DhtClient client = DhtClient.newInstance(HOST, PORT);
-		String target = "5E5324691812CAA0032EA76E813CCFC4D04E7E9E";
-		client.findNode(target);
+		client.findNode(HASH);
 		this.pause();
 	}
 	
 	@Test
 	public void testGetPeers() throws DownloadException {
+		NodeManager.getInstance().newNodeSession("12345678901234567890".getBytes(), "192.168.1.100", 1234);
+		NodeManager.getInstance().sortNodes();
 		DhtClient client = DhtClient.newInstance(HOST, PORT);
-		String target = "5E5324691812CAA0032EA76E813CCFC4D04E7E9E";
-		InfoHash infoHash = InfoHash.newInstance(target);
+		InfoHash infoHash = InfoHash.newInstance(HASH);
 		client.getPeers(infoHash);
 		this.pause();
 	}
@@ -43,8 +45,7 @@ public class DhtServerTest extends BaseTest {
 	@Test
 	public void testAnnouncePeer() throws DownloadException {
 		DhtClient client = DhtClient.newInstance(HOST, PORT);
-		String target = "5E5324691812CAA0032EA76E813CCFC4D04E7E9E";
-		InfoHash infoHash = InfoHash.newInstance(target);
+		InfoHash infoHash = InfoHash.newInstance(HASH);
 		client.announcePeer("1234".getBytes(), infoHash);
 		this.pause();
 	}

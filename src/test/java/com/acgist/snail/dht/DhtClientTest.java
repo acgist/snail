@@ -19,6 +19,8 @@ public class DhtClientTest extends BaseTest {
 	private static final String HOST = "router.bittorrent.com";
 	private static final int PORT = 6881;
 	
+	private static final String HASH = "5E5324691812EAA0032EA76E813CCFC4D04E7E9E";
+	
 	@Test
 	public void testPing() {
 		DhtClient client = DhtClient.newInstance(HOST, PORT);
@@ -29,19 +31,17 @@ public class DhtClientTest extends BaseTest {
 	@Test
 	public void testFindNode() {
 		DhtClient client = DhtClient.newInstance(HOST, PORT);
-		String target = "5E5324691812EAA0032EA76E813CCFC4D04E7E9E";
-		client.findNode(target);
+		client.findNode(HASH);
 		this.pause();
 	}
 	
 	@Test
 	public void testGetPeers() throws DownloadException {
 		DhtClient client = DhtClient.newInstance(HOST, PORT);
-		String hash = "5E5324691812EAA0032EA76E813CCFC4D04E7E9E";
-		InfoHash infoHash = InfoHash.newInstance(hash);
+		InfoHash infoHash = InfoHash.newInstance(HASH);
 		client.getPeers(infoHash);
 		while(true) {
-			var nodes = NodeManager.getInstance().findNode(hash);
+			var nodes = NodeManager.getInstance().findNode(HASH);
 			nodes.forEach(node -> {
 				DhtClient nodeClient = DhtClient.newInstance(node.getHost(), node.getPort());
 				nodeClient.getPeers(infoHash);
