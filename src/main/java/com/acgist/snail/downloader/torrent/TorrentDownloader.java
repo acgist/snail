@@ -59,6 +59,7 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 			// 已经下载完成：修改暂停状态（任务下载完成软件没有重启）
 			if(this.taskSession.complete()) {
 				this.taskSession.setStatus(Status.PAUSE);
+				this.taskSession.setEndDate(null);
 				this.taskSession.update();
 			}
 		}
