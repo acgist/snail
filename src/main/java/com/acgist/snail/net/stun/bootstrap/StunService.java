@@ -40,6 +40,7 @@ public final class StunService {
 		} else {
 			final var address = buildServerAddress();
 			if(address == null) {
+				LOGGER.warn("STUN服务器配置错误");
 				return;
 			}
 			LOGGER.debug("STUN服务器地址：{}", address);
