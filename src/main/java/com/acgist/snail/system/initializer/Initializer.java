@@ -58,7 +58,11 @@ public abstract class Initializer {
 		if(this.delay <= 0) { // 立即初始化
 			SystemThreadContext.submit(runnable);
 		} else { // 延迟初始化
-			SystemThreadContext.timer(this.delay, TimeUnit.SECONDS, runnable);
+			SystemThreadContext.timer(
+				this.delay,
+				TimeUnit.SECONDS,
+				runnable
+			);
 		}
 	}
 	

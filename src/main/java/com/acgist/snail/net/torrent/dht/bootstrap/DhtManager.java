@@ -42,9 +42,12 @@ public final class DhtManager {
 	 */
 	public void register() {
 		LOGGER.debug("注册DHT服务：定时任务");
-		SystemThreadContext.timerFixedDelay(DhtConfig.DHT_REQUEST_CLEAN_INTERVAL, DhtConfig.DHT_REQUEST_CLEAN_INTERVAL, TimeUnit.MINUTES, () -> {
-			this.timeout(); // 处理超时请求
-		});
+		SystemThreadContext.timerFixedDelay(
+			DhtConfig.DHT_REQUEST_CLEAN_INTERVAL,
+			DhtConfig.DHT_REQUEST_CLEAN_INTERVAL,
+			TimeUnit.MINUTES,
+			() -> this.timeout() // 处理超时请求
+		);
 	}
 	
 	/**

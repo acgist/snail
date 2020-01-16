@@ -119,11 +119,11 @@ public final class MainController extends Controller implements Initializable {
 		final var placeholder = buildPlaceholder();
 		this.taskTable.setPlaceholder(placeholder);
 		// 设置列
-		taskCell(this.name, Pos.CENTER_LEFT, true, true, this.taskTable.widthProperty().multiply(3D).divide(10D));
-		taskCell(this.status, Pos.CENTER, false, false, this.taskTable.widthProperty().multiply(1D).divide(10D));
-		taskCell(this.progress, Pos.CENTER_LEFT, false, false, this.taskTable.widthProperty().multiply(2D).divide(10D));
-		taskCell(this.createDate, Pos.CENTER, false, false, this.taskTable.widthProperty().multiply(2D).divide(10D));
-		taskCell(this.endDate, Pos.CENTER, false, false, this.taskTable.widthProperty().multiply(2D).divide(10D));
+		this.taskCell(this.name,		Pos.CENTER_LEFT, true, 	true,  this.taskTable.widthProperty().multiply(3D).divide(10D));
+		this.taskCell(this.status,		Pos.CENTER,		 false, false, this.taskTable.widthProperty().multiply(1D).divide(10D));
+		this.taskCell(this.progress,	Pos.CENTER_LEFT, false, false, this.taskTable.widthProperty().multiply(2D).divide(10D));
+		this.taskCell(this.createDate,	Pos.CENTER,		 false, false, this.taskTable.widthProperty().multiply(2D).divide(10D));
+		this.taskCell(this.endDate,		Pos.CENTER,		 false, false, this.taskTable.widthProperty().multiply(2D).divide(10D));
 		// 设置行
 		this.taskTable.setRowFactory(this.rowFactory);
 		// 绑定属性
@@ -364,7 +364,7 @@ public final class MainController extends Controller implements Initializable {
 	private void taskCell(TableColumn<ITaskSession, String> column, Pos pos, boolean icon, boolean tooltip, DoubleBinding widthBinding) {
 		column.prefWidthProperty().bind(widthBinding);
 		column.setResizable(false); // 禁止修改大小
-		column.setCellFactory((tableColumn) -> new TaskCell(pos, icon, tooltip));
+		column.setCellFactory(tableColumn -> new TaskCell(pos, icon, tooltip));
 	}
 	
 	/**
@@ -374,9 +374,36 @@ public final class MainController extends Controller implements Initializable {
 		final TableRow<ITaskSession> row = new TableRow<>();
 		row.setOnMouseClicked(this.rowClickAction); // 左键双击
 		row.setContextMenu(TaskMenu.getInstance()); // 右键菜单
-//		row.selectedProperty().addListener((obs, old, now) -> {
-//		});
 		return row;
+	};
+	
+	/**
+	 * <p>双击事件</p>
+	 */
+	private EventHandler<MouseEvent> rowClickAction = event -> {
+		if(event.getClickCount() == DOUBLE_CLICK_COUNT) { // 双击
+			final var row = (TableRow<?>) event.getSource();
+			final var session = (ITaskSession) row.getItem();
+			if(session == null) {
+				return;
+			}
+			if(session.complete()) { // 下载完成：打开任务
+				if(session.getType() == Type.MAGNET) { // 磁力链接：转换BT任务
+					TorrentWindow.getInstance().show(session);
+				} else { // 其他：打开下载文件
+					// TODO：文件可能存在病毒
+					FileUtils.openInDesktop(new File(session.getFile()));
+				}
+			} else if(session.inThreadPool()) { // 处于下载线程：暂停下载
+				DownloaderManager.getInstance().pause(session);
+			} else { // 其他：开始下载
+				try {
+					DownloaderManager.getInstance().start(session);
+				} catch (DownloadException e) {
+					LOGGER.error("开始下载任务异常", e);
+				}
+			}
+		}
 	};
 	
 	/**
@@ -404,34 +431,6 @@ public final class MainController extends Controller implements Initializable {
 		}
 		event.setDropCompleted(true);
 		event.consume();
-	};
-	
-	/**
-	 * <p>双击事件</p>
-	 */
-	private EventHandler<MouseEvent> rowClickAction = event -> {
-		if(event.getClickCount() == DOUBLE_CLICK_COUNT) { // 双击
-			final var row = (TableRow<?>) event.getSource();
-			final var session = (ITaskSession) row.getItem();
-			if(session == null) {
-				return;
-			}
-			if(session.complete()) { // 下载完成：打开任务
-				if(session.getType() == Type.MAGNET) { // 磁力链接：转换BT任务
-					TorrentWindow.getInstance().show(session);
-				} else { // 其他：打开下载文件
-					FileUtils.openInDesktop(new File(session.getFile()));
-				}
-			} else if(session.inThreadPool()) { // 处于下载线程：暂停下载
-				DownloaderManager.getInstance().pause(session);
-			} else { // 其他：开始下载
-				try {
-					DownloaderManager.getInstance().start(session);
-				} catch (DownloadException e) {
-					LOGGER.error("开始下载任务异常", e);
-				}
-			}
-		}
 	};
 	
 }
