@@ -24,6 +24,7 @@ import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.system.SystemStatistics;
 import com.acgist.snail.system.exception.DownloadException;
+import com.acgist.snail.utils.DesktopUtils;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -392,7 +393,7 @@ public final class MainController extends Controller implements Initializable {
 					TorrentWindow.getInstance().show(session);
 				} else { // 其他：打开下载文件
 					// TODO：文件可能存在病毒
-					FileUtils.openInDesktop(new File(session.getFile()));
+					DesktopUtils.open(new File(session.getFile()));
 				}
 			} else if(session.inThreadPool()) { // 处于下载线程：暂停下载
 				DownloaderManager.getInstance().pause(session);

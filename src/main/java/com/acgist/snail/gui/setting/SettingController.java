@@ -9,7 +9,7 @@ import com.acgist.snail.gui.Controller;
 import com.acgist.snail.gui.Tooltips;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.config.SystemConfig;
-import com.acgist.snail.utils.FileUtils;
+import com.acgist.snail.utils.DesktopUtils;
 
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
@@ -128,7 +128,7 @@ public final class SettingController extends Controller implements Initializable
 	 */
 	private EventHandler<MouseEvent> openDownloadPath = event -> {
 		final File file = new File(DownloadConfig.getPath());
-		FileUtils.openInDesktop(file);
+		DesktopUtils.open(file);
 	};
 
 	/**

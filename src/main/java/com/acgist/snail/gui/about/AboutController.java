@@ -5,7 +5,7 @@ import java.util.ResourceBundle;
 
 import com.acgist.snail.gui.Controller;
 import com.acgist.snail.system.config.SystemConfig;
-import com.acgist.snail.utils.BrowserUtils;
+import com.acgist.snail.utils.DesktopUtils;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -42,7 +42,7 @@ public final class AboutController extends Controller implements Initializable {
 	 */
 	@FXML
 	public void handleAuthorAction(ActionEvent event) {
-		BrowserUtils.open(SystemConfig.getAuthor());
+		DesktopUtils.browse(SystemConfig.getAuthor());
 	}
 	
 	/**
@@ -52,7 +52,7 @@ public final class AboutController extends Controller implements Initializable {
 	 */
 	@FXML
 	public void handleSourceAction(ActionEvent event) {
-		BrowserUtils.open(SystemConfig.getSource());
+		DesktopUtils.browse(SystemConfig.getSource());
 	}
 	
 	/**
@@ -62,7 +62,7 @@ public final class AboutController extends Controller implements Initializable {
 	 */
 	@FXML
 	public void handleSupportAction(ActionEvent event) {
-		BrowserUtils.open(SystemConfig.getSupport());
+		DesktopUtils.browse(SystemConfig.getSupport());
 	}
 
 	/**
