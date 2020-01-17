@@ -22,7 +22,7 @@ import com.acgist.snail.gui.main.MainWindow;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.context.SystemContext;
-import com.acgist.snail.utils.BrowserUtils;
+import com.acgist.snail.utils.DesktopUtils;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -265,14 +265,14 @@ public final class TrayMenu extends Menu {
 	 * <p>官网与源码</p>
 	 */
 	private EventHandler<ActionEvent> sourceAction = event -> {
-		BrowserUtils.open(SystemConfig.getSource());
+		DesktopUtils.browse(SystemConfig.getSource());
 	};
 	
 	/**
 	 * <p>问题与建议</p>
 	 */
 	private EventHandler<ActionEvent> supportAction = event -> {
-		BrowserUtils.open(SystemConfig.getSupport());
+		DesktopUtils.browse(SystemConfig.getSupport());
 	};
 	
 	/**

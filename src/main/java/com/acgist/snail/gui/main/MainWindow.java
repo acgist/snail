@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.gui.Window;
 import com.acgist.snail.gui.statistics.StatisticsWindow;
 import com.acgist.snail.system.config.SystemConfig;
-import com.acgist.snail.utils.BrowserUtils;
+import com.acgist.snail.utils.DesktopUtils;
 
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -57,7 +57,7 @@ public final class MainWindow extends Window<MainController> {
 	private void help() {
 		this.stage.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
 			if(event.getCode() == KeyCode.F1) {
-				BrowserUtils.open(SystemConfig.getSupport());
+				DesktopUtils.browse(SystemConfig.getSupport());
 			}
 		});
 	}

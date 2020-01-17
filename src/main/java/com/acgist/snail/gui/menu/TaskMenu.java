@@ -17,6 +17,7 @@ import com.acgist.snail.gui.main.MainWindow;
 import com.acgist.snail.gui.torrent.TorrentWindow;
 import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.system.context.SystemThreadContext;
+import com.acgist.snail.utils.DesktopUtils;
 import com.acgist.snail.utils.FileUtils;
 
 import javafx.application.Platform;
@@ -199,7 +200,7 @@ public final class TaskMenu extends Menu {
 	 */
 	private EventHandler<ActionEvent> openFolderEvent = event -> {
 		MainWindow.getInstance().controller().selected().forEach(session -> {
-			FileUtils.openInDesktop(session.downloadFolder());
+			DesktopUtils.open(session.downloadFolder());
 		});
 	};
 	

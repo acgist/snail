@@ -1,6 +1,5 @@
 package com.acgist.snail.utils;
 
-import java.awt.Desktop;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -245,19 +244,6 @@ public final class FileUtils {
 		return null;
 	}
 	
-	/**
-	 * <p>使用资源管理器打开文件</p>
-	 * 
-	 * @param file 文件
-	 */
-	public static final void openInDesktop(File file) {
-		try {
-			Desktop.getDesktop().open(file);
-		} catch (IOException e) {
-			LOGGER.error("资源管理器打开文件异常", e);
-		}
-	}
-
 	/**
 	 * <p>文件写入</p>
 	 * 
