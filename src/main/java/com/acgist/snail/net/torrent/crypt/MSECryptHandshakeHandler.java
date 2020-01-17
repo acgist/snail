@@ -569,7 +569,7 @@ public final class MSECryptHandshakeHandler {
 		// 客户端是否支持明文
 		final boolean plaintext = (provide & CryptAlgo.PLAINTEXT.provide()) == CryptAlgo.PLAINTEXT.provide();
 		// 客户端是否支持加密
-		final boolean crypt = 	  (provide & CryptAlgo.ARC4.provide()) == CryptAlgo.ARC4.provide();
+		final boolean crypt = (provide & CryptAlgo.ARC4.provide()) == CryptAlgo.ARC4.provide();
 		Strategy selected = null;
 		if (plaintext || crypt) {
 			switch (CryptConfig.STRATEGY) { // 本地策略

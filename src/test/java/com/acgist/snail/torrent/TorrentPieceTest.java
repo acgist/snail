@@ -14,7 +14,7 @@ public class TorrentPieceTest extends BaseTest {
 		final int end = 20;
 		TorrentPiece piece = TorrentPiece.newInstance(null, pieceLength, 0, begin, end, false);
 		byte[] bytes = new byte[end - begin];
-		for (int index = begin; index <  end; index++) {
+		for (int index = begin; index < end; index++) {
 			bytes[index - begin] = (byte) index;
 		}
 		piece.write(begin, bytes);
@@ -34,7 +34,7 @@ public class TorrentPieceTest extends BaseTest {
 		final int end = 20;
 		TorrentPiece piece = TorrentPiece.newInstance(null, pieceLength, 0, begin, end, false);
 		byte[] bytes = new byte[end - begin];
-		for (int index = begin; index <  end; index++) {
+		for (int index = begin; index < end; index++) {
 			bytes[index - begin] = (byte) index;
 		}
 		piece.write(begin, bytes);
