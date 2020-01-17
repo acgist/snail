@@ -28,8 +28,8 @@ public class JSON {
 	 * <p>Chrome浏览器控制台执行以下代码获取特殊字符：</p>
 	 * <pre>
 	 * for (var i = 0, value = '', array = []; i < 0xFFFF; i++) {
-	 *     value = JSON.stringify(String.fromCharCode(i));
-	 *     value.indexOf("\\") > -1 && array.push(value);
+	 * 		value = JSON.stringify(String.fromCharCode(i));
+	 * 		value.indexOf("\\") > -1 && array.push(value);
 	 * }
 	 * console.log(array.join(", "));
 	 * </pre>

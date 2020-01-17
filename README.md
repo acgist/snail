@@ -53,9 +53,9 @@ javaw -server -Xms128m -Xmx256m -jar snail-{version}.jar
 
 ```xml
 <dependency>
-    <groupId>com.acgist</groupId>
-    <artifactId>snail</artifactId>
-    <version>{release.version}</version>
+	<groupId>com.acgist</groupId>
+	<artifactId>snail</artifactId>
+	<version>{release.version}</version>
 </dependency>
 ```
 
@@ -148,7 +148,8 @@ javaw -server -Xms128m -Xmx256m -jar snail-{version}.jar
 
 #### GIT
 
-GITEE：[https://gitee.com/acgist/snail](https://gitee.com/acgist/snail)  
+GITEE：[https://gitee.com/acgist/snail](https://gitee.com/acgist/snail)
+
 GITHUB：[https://github.com/acgist/snail](https://github.com/acgist/snail)
 
 #### GUI

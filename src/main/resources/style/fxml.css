@@ -400,19 +400,19 @@
 	-fx-background-insets:0;
 }
 .torrent .tree-view .tree-cell {
-    -fx-background-color:-fx-snail-background-color;
-    -fx-background-insets:0;
+	-fx-background-color:-fx-snail-background-color;
+	-fx-background-insets:0;
 }
 /*
  * <p>箭头</p>
  */
 .torrent .tree-view .tree-cell .arrow {
-    -fx-background-color:#000000;
+	-fx-background-color:#000000;
 }
 .torrent .tree-view .tree-cell:focused,
 .torrent .tree-view .tree-cell:selected {
 	-fx-background-color:-fx-snail-background-color;
-    -fx-background-insets:0;
+	-fx-background-insets:0;
 }
 .torrent .tree-view .tree-cell:selected .check-box {
 	-fx-text-fill:#000000;

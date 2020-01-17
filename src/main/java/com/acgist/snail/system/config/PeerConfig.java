@@ -39,27 +39,27 @@ public final class PeerConfig {
 	 * <p>DHT保留位：{@value}</p>
 	 * <p>[7]-0x01：DHT Protocol</p>
 	 */
-	public static final byte DHT_PROTOCOL =       1 << 0;
+	public static final byte DHT_PROTOCOL =			1 << 0;
 	/**
 	 * <p>PEX保留位：{@value}</p>
 	 * <p>[7]-0x02：Peer Exchange</p>
 	 */
-	public static final byte PEER_EXCHANGE =      1 << 1;
+	public static final byte PEER_EXCHANGE =		1 << 1;
 	/**
 	 * <p>FAST保留位：{@value}</p>
 	 * <p>[7]-0x04：FAST Protocol</p>
 	 */
-	public static final byte FAST_PROTOCOL =      1 << 2;
+	public static final byte FAST_PROTOCOL =		1 << 2;
 	/**
 	 * <p>NAT保留位：{@value}</p>
 	 * <p>[7]-0x08：NAT Traversal</p>
 	 */
-	public static final byte NAT_TRAVERSAL =      1 << 3;
+	public static final byte NAT_TRAVERSAL =		1 << 3;
 	/**
 	 * <p>扩展协议保留位：{@value}</p>
 	 * <p>[5]-0x10：Extension Protocol</p>
 	 */
-	public static final byte EXTENSION_PROTOCOL = 1 << 4;
+	public static final byte EXTENSION_PROTOCOL =	1 << 4;
 	/**
 	 * <p>握手消息长度：{@value}</p>
 	 */
@@ -103,11 +103,11 @@ public final class PeerConfig {
 	/**
 	 * <p>Peer状态：上传</p>
 	 */
-	public static final byte STATUS_UPLOAD =   1 << 1;
+	public static final byte STATUS_UPLOAD =	1 << 1;
 	/**
 	 * <p>Peer状态：下载</p>
 	 */
-	public static final byte STATUS_DOWNLOAD = 1 << 0;
+	public static final byte STATUS_DOWNLOAD =	1 << 0;
 	/**
 	 * <p>pex flags：0x01</p>
 	 * <p>偏爱加密</p>
