@@ -14,9 +14,9 @@ import org.slf4j.LoggerFactory;
 /**
  * <p>桌面工具</p>
  * <pre>
- * // Linux不能直接将JavaFX线程中调用AWT的打开文件和浏览网页，需要转换类型：
+ * // 不能直接在JavaFX线程中调用AWT线程，需要转换：
  * SwingUtilities.invokeLater(() -> {});
- * // 直接使用JavaFX打开文件和浏览网页：
+ * // 直接使用JavaFX自带方法打开文件和浏览网页：
  * Application.getHostServices().showDocument(uri);
  * </pre>
  * 
@@ -47,10 +47,6 @@ public final class DesktopUtils {
 				} catch (IOException e) {
 					LOGGER.error("资源管理器打开文件异常", e);
 				}
-			});
-		} else if(support(Action.BROWSE_FILE_DIR)) {
-			SwingUtilities.invokeLater(() -> {
-				Desktop.getDesktop().browseFileDirectory(file);
 			});
 		} else {
 			LOGGER.info("系统不支持打开文件：{}", file.getPath());
