@@ -6,11 +6,19 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 
+import javax.swing.SwingUtilities;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * <p>桌面工具</p>
+ * <pre>
+ * // Linux不能直接将JavaFX线程中调用AWT的打开文件和浏览网页，需要转换类型：
+ * SwingUtilities.invokeLater(() -> {});
+ * // 直接使用JavaFX打开文件和浏览网页：
+ * Application.getHostServices().showDocument(uri);
+ * </pre>
  * 
  * @author acgist
  * @since 1.0.0
@@ -33,15 +41,19 @@ public final class DesktopUtils {
 	 */
 	public static final void open(final File file) {
 		if(support(Action.OPEN)) {
-			try {
-				Desktop.getDesktop().open(file);
-			} catch (IOException e) {
-				LOGGER.error("资源管理器打开文件异常", e);
-			}
+			SwingUtilities.invokeLater(() -> {
+				try {
+					Desktop.getDesktop().open(file);
+				} catch (IOException e) {
+					LOGGER.error("资源管理器打开文件异常", e);
+				}
+			});
 		} else if(support(Action.BROWSE_FILE_DIR)) {
-			Desktop.getDesktop().browseFileDirectory(file);
+			SwingUtilities.invokeLater(() -> {
+				Desktop.getDesktop().browseFileDirectory(file);
+			});
 		} else {
-			LOGGER.info("系统不支持：{}", file.getPath());
+			LOGGER.info("系统不支持打开文件：{}", file.getPath());
 		}
 	}
 	
@@ -53,13 +65,15 @@ public final class DesktopUtils {
 	 */
 	public static final void browse(final String url) {
 		if(support(Action.BROWSE)) {
-			try {
-				Desktop.getDesktop().browse(URI.create(url));
-			} catch (IOException e) {
-				LOGGER.error("浏览器打开网页异常：{}", url, e);
-			}
+			SwingUtilities.invokeLater(() -> {
+				try {
+					Desktop.getDesktop().browse(URI.create(url));
+				} catch (IOException e) {
+					LOGGER.error("浏览器打开网页异常：{}", url, e);
+				}
+			});
 		} else {
-			LOGGER.info("系统不支持：{}", url);
+			LOGGER.info("系统不支持打开网页链接：{}", url);
 		}
 	}
 	
