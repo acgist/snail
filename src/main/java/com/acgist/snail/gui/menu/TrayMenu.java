@@ -38,6 +38,10 @@ import javafx.stage.WindowEvent;
 
 /**
  * <p>托盘菜单</p>
+ * <pre>
+ * // 系统托盘使用AWT实现不能直接调用JavaFX线程，需要转换类型：
+ * Platform.runLater(() -> {});
+ * </pre>
  * 
  * @author acgist
  * @since 1.0.0
