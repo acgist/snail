@@ -50,7 +50,7 @@ public final class UtpRequestQueue {
 	private UtpRequestQueue() {
 		LOGGER.debug("启动UTP请求队列：{}", QUEUE_SIZE);
 		this.queues = new ArrayList<>(QUEUE_SIZE);
-		this.executor = SystemThreadContext.newExecutor(QUEUE_SIZE, QUEUE_SIZE, 1000, 60, SystemThreadContext.SNAIL_THREAD_UTP_HANDLER);
+		this.executor = SystemThreadContext.newExecutor(QUEUE_SIZE, QUEUE_SIZE, 1000, 60, SystemThreadContext.SNAIL_THREAD_UTP_QUEUE);
 		buildQueues();
 	}
 	
