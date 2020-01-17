@@ -32,9 +32,11 @@ public final class SystemThreadContext {
 	/** 定时线程 */
 	public static final String SNAIL_THREAD_TIMER = SNAIL_THREAD + "-Timer";
 	/** BT定时线程 */
-	public static final String SNAIL_THREAD_BT_TIMER = SNAIL_THREAD + "-BT-Timer";
+	public static final String SNAIL_THREAD_BT_TIMER = SNAIL_THREAD_BT + "-Timer";
 	/** JavaFX平台线程 */
 	public static final String SNAIL_THREAD_PLATFORM = SNAIL_THREAD + "-Platform";
+	/** UTP队列线程 */
+	public static final String SNAIL_THREAD_UTP_QUEUE = SNAIL_THREAD + "-UTP-Queue";
 	/** 下载器线程 */
 	public static final String SNAIL_THREAD_DOWNLOADER = SNAIL_THREAD + "-Downloader";
 	/** TCP客户端线程 */
@@ -43,12 +45,8 @@ public final class SystemThreadContext {
 	public static final String SNAIL_THREAD_TCP_SERVER = SNAIL_THREAD + "-TCP-Server";
 	/** UDP服务端线程 */
 	public static final String SNAIL_THREAD_UDP_SERVER = SNAIL_THREAD + "-UDP-Server";
-	/** UDP处理器线程 */
-	public static final String SNAIL_THREAD_UTP_HANDLER = SNAIL_THREAD + "-UTP-Handler";
 	/** HTTP客户端线程 */
 	public static final String SNAIL_THREAD_HTTP_CLIENT = SNAIL_THREAD + "-HTTP-Client";
-	/** HTTP服务端线程 */
-	public static final String SNAIL_THREAD_HTTP_SERVER = SNAIL_THREAD + "-HTTP-Server";
 	
 	/**
 	 * <p>系统线程池：加快系统运行、防止卡顿</p>

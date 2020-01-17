@@ -106,7 +106,7 @@ public final class HTTPClient {
 	/**
 	 * <p>HTTP客户端线程池</p>
 	 */
-	private static final ExecutorService EXECUTOR = SystemThreadContext.newExecutor(2, 10, 100, 60L, SystemThreadContext.SNAIL_THREAD_HTTP_CLIENT);
+	private static final ExecutorService EXECUTOR = SystemThreadContext.newExecutor(2, 10, 1000, 60L, SystemThreadContext.SNAIL_THREAD_HTTP_CLIENT);
 	
 	static {
 		final StringBuilder userAgentBuilder = new StringBuilder();
