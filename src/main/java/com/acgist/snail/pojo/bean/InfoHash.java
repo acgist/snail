@@ -3,6 +3,7 @@ package com.acgist.snail.pojo.bean;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.Base32Utils;
+import com.acgist.snail.utils.PeerUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -27,9 +28,16 @@ public final class InfoHash {
 	 * <p>种子info数据Hash</p>
 	 */
 	private final byte[] infoHash;
+	/**
+	 * <p>HTTP传输编码种子info数据Hash</p>
+	 * 
+	 * @see #infoHash
+	 */
+	private final String infoHashUrl;
 	
 	private InfoHash(byte[] infoHash) {
 		this.infoHash = infoHash;
+		this.infoHashUrl = buildInfoHashUrl();
 	}
 
 	/**
@@ -69,6 +77,18 @@ public final class InfoHash {
 		}
 	}
 	
+	/**
+	 * <p>创建HTTP传输编码种子info数据Hash</p>
+	 * 
+	 * @return HTTP传输编码种子info数据Hash
+	 */
+	private String buildInfoHashUrl() {
+		// 标准编码
+		return PeerUtils.urlEncode(this.infoHash);
+		// 全部编码
+//		return PeerUtils.urlEncode(this.infoHashHex());
+	}
+	
 	public int size() {
 		return this.size;
 	}
@@ -99,20 +119,12 @@ public final class InfoHash {
 	}
 	
 	/**
-	 * <p>网络编码种子info数据Hash</p>
+	 * <p>获取HTTP传输编码种子info数据Hash</p>
 	 * 
-	 * @return 网络编码种子info数据Hash
+	 * @return HTTP传输编码种子info数据Hash
 	 */
 	public String infoHashUrl() {
-		int index = 0;
-		final String infoHashHex = infoHashHex();
-		final int length = infoHashHex.length();
-		final StringBuilder builder = new StringBuilder();
-		do {
-			builder.append("%").append(infoHashHex.substring(index, index + 2));
-			index += 2;
-		} while (index < length);
-		return builder.toString();
+		return this.infoHashUrl;
 	}
 	
 }

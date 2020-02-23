@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.NumberUtils;
+import com.acgist.snail.utils.PeerUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -45,6 +46,7 @@ public final class PeerService {
 	private PeerService() {
 		this.peerId = buildPeerId();
 		this.peerIdUrl = buildPeerIdUrl();
+		LOGGER.info("PeerIdUrl：{}", this.peerIdUrl);
 	}
 	
 	public static final PeerService getInstance() {
@@ -86,16 +88,10 @@ public final class PeerService {
 	 * @return PeerIdUrl
 	 */
 	private String buildPeerIdUrl() {
-		int index = 0;
-		final String peerIdHex = StringUtils.hex(this.peerId);
-		final int length = peerIdHex.length();
-		final StringBuilder builder = new StringBuilder();
-		do {
-			builder.append("%").append(peerIdHex.substring(index, index + 2));
-			index += 2;
-		} while (index < length);
-		LOGGER.info("PeerIdUrl：{}", builder);
-		return builder.toString();
+		// 标准编码
+		return PeerUtils.urlEncode(this.peerId);
+		// 全部编码
+//		return PeerUtils.urlEncode(this.peerIdHex());
 	}
 	
 	/**
@@ -105,6 +101,15 @@ public final class PeerService {
 	 */
 	public byte[] peerId() {
 		return this.peerId;
+	}
+	
+	/**
+	 * <p>获取16进制PeerId</p>
+	 * 
+	 * @return 16进制PeerId
+	 */
+	public String peerIdHex() {
+		return StringUtils.hex(this.peerId);
 	}
 	
 	/**

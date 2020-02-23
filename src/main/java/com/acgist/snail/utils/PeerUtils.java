@@ -26,7 +26,7 @@ public final class PeerUtils {
 	 * <p>allowedFast快速允许Piece长度（k）：{@value}</p>
 	 */
 	private static final int ALLOWED_FAST_K = 10;
-	
+
 	/**
 	 * @param bytes 数据
 	 * 
@@ -90,6 +90,62 @@ public final class PeerUtils {
 			}
 		}
 		return seqs;
+	}
+	
+	/**
+	 * <p>HTTP传输编码（PeerId、InfoHash）</p>
+	 * <p>全部编码：忽略不用编码字符</p>
+	 * 
+	 * @param hex PeerId、InfoHash
+	 * 
+	 * @return HTTP传输编码结果
+	 */
+	public static final String urlEncode(String hex) {
+		int index = 0;
+		final int length = hex.length();
+		final StringBuilder builder = new StringBuilder();
+		do {
+			builder.append("%").append(hex.substring(index, index + 2));
+			index += 2;
+		} while (index < length);
+		return builder.toString();
+	}
+	
+	/**
+	 * <p>HTTP传输编码（PeerId、InfoHash）</p>
+	 * <p>不用编码字符：0-9、a-z、A-Z、'.'、'-'、'_'、'~'</p>
+	 * <p>协议链接：https://wiki.theory.org/index.php/BitTorrentSpecification#Tracker_HTTP.2FHTTPS_Protocol</p>
+	 * 
+	 * @param hex PeerId、InfoHash
+	 * 
+	 * @return HTTP传输编码结果
+	 */
+	public static final String urlEncode(byte[] bytes) {
+		char value;
+		String valueHex;
+		final StringBuilder builder = new StringBuilder();
+		for (int index = 0; index < bytes.length; index++) {
+			value = (char) bytes[index];
+			if(
+				(value >= '0' && value <= '9') ||
+				(value >= 'a' && value <= 'z') ||
+				(value >= 'A' && value <= 'Z') ||
+				value == '.' ||
+				value == '-' ||
+				value == '_' ||
+				value == '~'
+			) {
+				builder.append(value);
+			} else {
+				valueHex = Integer.toHexString(value & 0xFF);
+				builder.append("%");
+				if(valueHex.length() < 2) {
+					builder.append("0");
+				}
+				builder.append(valueHex);
+			}
+		}
+		return builder.toString();
 	}
 	
 }
