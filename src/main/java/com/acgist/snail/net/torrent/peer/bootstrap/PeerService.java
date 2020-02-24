@@ -35,6 +35,7 @@ public final class PeerService {
 	private static final String PEER_ID_PREFIX = "AS";
 	
 	/**
+	 * <p>PeerId</p>
 	 * <p>20位系统ID</p>
 	 */
 	private final byte[] peerId;
@@ -46,6 +47,7 @@ public final class PeerService {
 	private PeerService() {
 		this.peerId = buildPeerId();
 		this.peerIdUrl = buildPeerIdUrl();
+		LOGGER.info("PeerId：{}", new String(this.peerId));
 		LOGGER.info("PeerIdUrl：{}", this.peerIdUrl);
 	}
 	
@@ -78,7 +80,6 @@ public final class PeerService {
 		for (int index = peerIdPrefix.length(); index < PeerConfig.PEER_ID_LENGTH; index++) {
 			peerIds[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_MAX);
 		}
-		LOGGER.info("PeerId：{}", new String(peerIds));
 		return peerIds;
 	}
 	
