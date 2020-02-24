@@ -78,9 +78,9 @@ public final class InfoHash {
 	}
 	
 	/**
-	 * <p>创建HTTP传输编码种子info数据Hash</p>
+	 * <p>创建InfoHashUrl</p>
 	 * 
-	 * @return HTTP传输编码种子info数据Hash
+	 * @return InfoHashUrl
 	 */
 	private String buildInfoHashUrl() {
 		// 标准编码
