@@ -13,39 +13,39 @@ import com.acgist.snail.utils.ThreadUtils;
 public class DhtClientTest extends BaseTest {
 
 	// 本地FDM测试节点
-//	private static final String HOST = "127.0.0.1";
 //	private static final int PORT = 49160;
-	
-	private static final String HOST = "router.bittorrent.com";
+//	private static final String HOST = "127.0.0.1";
+	// DHT节点
 	private static final int PORT = 6881;
-	
+	private static final String HOST = "router.bittorrent.com";
+	// 种子HASH
 	private static final String HASH = "5E5324691812EAA0032EA76E813CCFC4D04E7E9E";
 	
 	@Test
 	public void testPing() {
-		DhtClient client = DhtClient.newInstance(HOST, PORT);
-		NodeSession node = client.ping();
-		this.log(node);
+		final DhtClient client = DhtClient.newInstance(HOST, PORT);
+		final NodeSession node = client.ping();
+		this.log("节点信息：{}", node);
 	}
 	
 	@Test
 	public void testFindNode() {
-		DhtClient client = DhtClient.newInstance(HOST, PORT);
+		final DhtClient client = DhtClient.newInstance(HOST, PORT);
 		client.findNode(HASH);
 		this.pause();
 	}
 	
 	@Test
 	public void testGetPeers() throws DownloadException {
-		DhtClient client = DhtClient.newInstance(HOST, PORT);
-		InfoHash infoHash = InfoHash.newInstance(HASH);
+		final DhtClient client = DhtClient.newInstance(HOST, PORT);
+		final InfoHash infoHash = InfoHash.newInstance(HASH);
 		client.getPeers(infoHash);
 		while(true) {
-			var nodes = NodeManager.getInstance().findNode(HASH);
-			nodes.forEach(node -> {
-				DhtClient nodeClient = DhtClient.newInstance(node.getHost(), node.getPort());
+			NodeManager.getInstance().findNode(HASH).forEach(node -> {
+				final DhtClient nodeClient = DhtClient.newInstance(node.getHost(), node.getPort());
 				nodeClient.getPeers(infoHash);
 			});
+			this.log("系统节点数量：{}", NodeManager.getInstance().nodes().size());
 			ThreadUtils.sleep(5000);
 		}
 	}

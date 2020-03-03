@@ -229,7 +229,7 @@ public class Response extends DhtMessage {
 	
 	@Override
 	public String toString() {
-		return ObjectUtils.toString(this, StringUtils.hex(this.t), this.y, this.r, this.e);
+		return ObjectUtils.toString(this, StringUtils.hex(this.t), this.y, this.r, this.errorCode(), this.errorMessage());
 	}
 	
 }
