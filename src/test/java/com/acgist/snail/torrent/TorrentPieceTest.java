@@ -9,11 +9,11 @@ public class TorrentPieceTest extends BaseTest {
 
 	@Test
 	public void testRead() {
-		final int pieceLength = 1024;
-		final int begin = 10;
-		final int end = 20;
-		TorrentPiece piece = TorrentPiece.newInstance(null, pieceLength, 0, begin, end, false);
-		byte[] bytes = new byte[end - begin];
+		final int pieceLength = 1024; // Piece长度
+		final int begin = 10; // 开始偏移
+		final int end = 20; // 结束偏移
+		final var piece = TorrentPiece.newInstance(null, pieceLength, 0, begin, end, false);
+		final byte[] bytes = new byte[end - begin];
 		for (int index = begin; index < end; index++) {
 			bytes[index - begin] = (byte) index;
 		}
@@ -23,7 +23,7 @@ public class TorrentPieceTest extends BaseTest {
 		this.log(piece.read(0, 12)); // 包含开始
 		this.log(piece.read(18, 20)); // 包含结束
 		this.log(piece.read(0, 10)); // 不包含
-		this.log(piece.read(20, 0)); // 不包含
+		this.log(piece.read(20, 10)); // 不包含
 	}
 	
 
@@ -32,8 +32,8 @@ public class TorrentPieceTest extends BaseTest {
 		final int pieceLength = 1024;
 		final int begin = 10;
 		final int end = 20;
-		TorrentPiece piece = TorrentPiece.newInstance(null, pieceLength, 0, begin, end, false);
-		byte[] bytes = new byte[end - begin];
+		final var piece = TorrentPiece.newInstance(null, pieceLength, 0, begin, end, false);
+		final byte[] bytes = new byte[end - begin];
 		for (int index = begin; index < end; index++) {
 			bytes[index - begin] = (byte) index;
 		}

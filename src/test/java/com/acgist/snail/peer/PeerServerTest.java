@@ -38,13 +38,13 @@ public class PeerServerTest extends BaseTest {
 			}
 		});
 		final var wrapper = TorrentSelectorWrapper.newEncoder(list);
-		final TaskEntity entity = new TaskEntity();
+		final var entity = new TaskEntity();
 		entity.setFile("e:/tmp/server/");
 		entity.setType(Type.TORRENT);
 		entity.setSize(100L * 1024 * 1024);
 		entity.setDescription(wrapper.serialize());
 		torrentSession.upload(TaskSession.newInstance(entity));
-		final PeerServer server = PeerServer.getInstance(); // Peer服务
+		final var server = PeerServer.getInstance(); // Peer服务
 		server.listen();
 		TorrentServer.getInstance();
 		this.pause();
@@ -69,17 +69,17 @@ public class PeerServerTest extends BaseTest {
 			}
 		});
 		final var wrapper = TorrentSelectorWrapper.newEncoder(list);
-		final TaskEntity entity = new TaskEntity();
+		final var entity = new TaskEntity();
 		entity.setFile("e:/tmp/client/"); // 设置下载路径
 		entity.setType(Type.TORRENT); // 设置下载类型
 		entity.setDescription(wrapper.serialize()); // 设置下载文件
 		torrentSession.upload(TaskSession.newInstance(entity)).download(false); // 禁止自动加载Peer
 		final String host = "127.0.0.1";
 		final Integer port = 18888;
-		final StatisticsSession statisticsSession = new StatisticsSession(); // 统计
-		final PeerSession peerSession = PeerSession.newInstance(statisticsSession, host, port); // Peer
+		final var statisticsSession = new StatisticsSession(); // 统计
+		final var peerSession = PeerSession.newInstance(statisticsSession, host, port); // Peer
 		peerSession.flags(PeerConfig.PEX_UTP); // UTP支持
-		final PeerDownloader launcher = PeerDownloader.newInstance(peerSession, torrentSession); // 下载器
+		final var launcher = PeerDownloader.newInstance(peerSession, torrentSession); // 下载器
 		launcher.handshake();
 		new Thread(() -> {
 			while(true) {

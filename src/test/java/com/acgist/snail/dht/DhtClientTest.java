@@ -6,7 +6,6 @@ import com.acgist.snail.BaseTest;
 import com.acgist.snail.net.torrent.dht.DhtClient;
 import com.acgist.snail.net.torrent.dht.bootstrap.NodeManager;
 import com.acgist.snail.pojo.bean.InfoHash;
-import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.ThreadUtils;
 
@@ -23,22 +22,22 @@ public class DhtClientTest extends BaseTest {
 	
 	@Test
 	public void testPing() {
-		final DhtClient client = DhtClient.newInstance(HOST, PORT);
-		final NodeSession node = client.ping();
+		final var client = DhtClient.newInstance(HOST, PORT);
+		final var node = client.ping();
 		this.log("节点信息：{}", node);
 	}
 	
 	@Test
 	public void testFindNode() {
-		final DhtClient client = DhtClient.newInstance(HOST, PORT);
+		final var client = DhtClient.newInstance(HOST, PORT);
 		client.findNode(HASH);
 		this.pause();
 	}
 	
 	@Test
 	public void testGetPeers() throws DownloadException {
-		final DhtClient client = DhtClient.newInstance(HOST, PORT);
-		final InfoHash infoHash = InfoHash.newInstance(HASH);
+		final var client = DhtClient.newInstance(HOST, PORT);
+		final var infoHash = InfoHash.newInstance(HASH);
 		client.getPeers(infoHash);
 		while(true) {
 			NodeManager.getInstance().findNode(HASH).forEach(node -> {

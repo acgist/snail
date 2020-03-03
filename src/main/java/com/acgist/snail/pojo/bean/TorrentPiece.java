@@ -62,6 +62,9 @@ public final class TorrentPiece {
 	 */
 	private int position;
 	
+	/**
+	 * @see #newInstance(byte[], long, int, int, int, boolean)
+	 */
 	private TorrentPiece(byte[] hash, long pieceLength, int index, int begin, int end, boolean verify) {
 		this.pieceLength = pieceLength;
 		this.index = index;
@@ -75,6 +78,18 @@ public final class TorrentPiece {
 		this.position = 0;
 	}
 
+	/**
+	 * <p>Piece下载信息</p>
+	 * 
+	 * @param hash 校验数据
+	 * @param pieceLength Piece大小
+	 * @param index Piece索引
+	 * @param begin Piece开始偏移
+	 * @param end Piece结束偏移
+	 * @param verify 是否校验
+	 * 
+	 * @return Piece下载信息
+	 */
 	public static final TorrentPiece newInstance(byte[] hash, long pieceLength, int index, int begin, int end, boolean verify) {
 		return new TorrentPiece(hash, pieceLength, index, begin, end, verify);
 	}
