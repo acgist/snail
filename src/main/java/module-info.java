@@ -1,10 +1,10 @@
 /**
  * <h1>Sanil（蜗牛）</h1>
  * <p>基于Java、JavaFX开发的下载工具，支持下载协议：BT（BitTorrent）、FTP、HTTP。</p>
- * <p>开放整个模块（反射使用）</p>
+ * <p>官网地址：https://gitee.com/acgist/snail</p>
  * 
- * TODO：稀有块、阻塞算法（Peer）、图标选中切换颜色
- * TODO：每天优化一个包的代码
+ * TODO：稀有块、阻塞算法（Peer）
+ * TODO：代码优化：添加测试、优化注释
  * 
  * @author acgist
  * @since 1.0.0
@@ -18,13 +18,13 @@ open module com.acgist.snail {
 	exports com.acgist.snail.net;
 	exports com.acgist.snail.pojo;
 	exports com.acgist.snail.pojo.message;
-	exports com.acgist.snail.protocol;
-	exports com.acgist.snail.downloader;
 	exports com.acgist.snail.system;
 	exports com.acgist.snail.system.context;
+	exports com.acgist.snail.protocol;
+	exports com.acgist.snail.downloader;
 	
 	//================Java================//
-	requires java.base; // java.base不能使用transitive修饰
+	requires java.base; // 不能使用transitive修饰
 	requires transitive java.sql;
 	requires transitive java.xml;
 	requires transitive java.naming;
@@ -46,7 +46,7 @@ open module com.acgist.snail {
 	requires transitive javafx.controls;
 	requires transitive javafx.graphics;
 
-	//================其他依赖================//
+	//================依赖================//
 	requires transitive org.slf4j;
 	requires transitive com.h2database;
 	requires transitive ch.qos.logback.core;
