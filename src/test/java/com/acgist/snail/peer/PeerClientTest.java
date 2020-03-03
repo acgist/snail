@@ -28,33 +28,33 @@ public class PeerClientTest extends BaseTest {
 	
 	@Test
 	public void testDownload() throws DownloadException {
-		String path = "e:/snail/0000.torrent";
-		TorrentSession torrentSession = TorrentManager.getInstance().newTorrentSession(path);
-		var files = torrentSession.torrent().getInfo().files();
-		List<String> list = new ArrayList<>();
-		AtomicLong size = new AtomicLong(0);
+		final var path = "e:/snail/1f4f28a6df2ea7899328cbef1dfaaeec9920cdb3.torrent"; // 种子文件
+		final var torrentSession = TorrentManager.getInstance().newTorrentSession(path);
+		final var files = torrentSession.torrent().getInfo().files();
+		final var size = new AtomicLong(0);
+		final List<String> list = new ArrayList<>();
 		// 选择下载文件
 		files.forEach(file -> {
-			if(!file.path().contains(TorrentInfo.PADDING_FILE_PREFIX)) {
+			if(!file.path().startsWith(TorrentInfo.PADDING_FILE_PREFIX)) {
 				list.add(file.path());
 			}
 			size.addAndGet(file.getLength());
 		});
-		TaskEntity entity = new TaskEntity();
-		entity.setFile("e:/tmp/download/");
-		entity.setType(Type.TORRENT);
-		final TorrentSelectorWrapper wrapper = TorrentSelectorWrapper.newEncoder(list);
-		entity.setDescription(wrapper.serialize());
-		torrentSession.upload(TaskSession.newInstance(entity)).download(false);
-		String host = "127.0.0.1";
-//		Integer port = 18888;
-		Integer port = 49160; // FDM测试端口
-//		Integer port = 15000; // 迅雷测试端口
+		final var wrapper = TorrentSelectorWrapper.newEncoder(list);
+		final TaskEntity entity = new TaskEntity();
+		entity.setFile("e:/tmp/download/"); // 设置下载路径
+		entity.setType(Type.TORRENT); // 设置下载类型
+		entity.setDescription(wrapper.serialize()); // 设置下载文件
+		torrentSession.upload(TaskSession.newInstance(entity)).download(false); // 禁止自动加载Peer
+		final String host = "127.0.0.1";
+//		final Integer port = 15000; // 迅雷测试端口
+//		final Integer port = 18888; // 蜗牛测试端口
+		final Integer port = 49160; // FDM测试端口
 		this.log("已下载Piece：" + torrentSession.pieces());
-		StatisticsSession statisticsSession = new StatisticsSession();
-		PeerSession peerSession = PeerSession.newInstance(statisticsSession, host, port);
+		final StatisticsSession statisticsSession = new StatisticsSession(); // 统计
+		final PeerSession peerSession = PeerSession.newInstance(statisticsSession, host, port); // Peer
 		peerSession.flags(PeerConfig.PEX_UTP); // UTP支持
-		PeerDownloader launcher = PeerDownloader.newInstance(peerSession, torrentSession);
+		final PeerDownloader launcher = PeerDownloader.newInstance(peerSession, torrentSession); // 下载器
 		launcher.handshake(); // 发送握手
 		new Thread(() -> {
 			while(true) {
@@ -67,27 +67,28 @@ public class PeerClientTest extends BaseTest {
 
 	@Test
 	public void testTorrent() throws DownloadException {
-		TorrentSession torrentSession = TorrentSession.newInstance(InfoHash.newInstance("673423d505e968a84a8518a28afe15366bcf0ce7"), null);
-		TaskEntity entity = new TaskEntity();
+		final var hash = "1f4f28a6df2ea7899328cbef1dfaaeec9920cdb3";
+		final var torrentSession = TorrentSession.newInstance(InfoHash.newInstance(hash), null);
+		final TaskEntity entity = new TaskEntity();
 		entity.setFile("e:/tmp/torrent/");
 		entity.setType(Type.TORRENT);
-		entity.setUrl("673423d505e968a84a8518a28afe15366bcf0ce7");
+		entity.setUrl(hash);
 		torrentSession.magnet(TaskSession.newInstance(entity));
-		String host = "127.0.0.1";
-//		Integer port = 18888;
-		Integer port = 49160; // FDM测试端口
-//		Integer port = 15000; // 迅雷测试端口
-		PeerSession peerSession = PeerSession.newInstance(new StatisticsSession(), host, port);
-		PeerDownloader launcher = PeerDownloader.newInstance(peerSession, torrentSession);
+		final String host = "127.0.0.1";
+//		final Integer port = 15000; // 迅雷测试端口
+//		final Integer port = 18888; // 蜗牛测试端口
+		final Integer port = 49160; // FDM测试端口
+		final PeerSession peerSession = PeerSession.newInstance(new StatisticsSession(), host, port);
+		final PeerDownloader launcher = PeerDownloader.newInstance(peerSession, torrentSession);
 		launcher.handshake();
 		this.pause();
 	}
 
 	@Test
 	public void testAllowedFast() {
-		int[] values = PeerUtils.allowedFast(1313, "80.4.4.200", StringUtils.unhex("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"));
+		final int[] values = PeerUtils.allowedFast(1313, "80.4.4.200", StringUtils.unhex("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"));
 		for (int value : values) {
-			this.log(value);
+			this.log("Piece索引：{}", value);
 		}
 	}
 	
