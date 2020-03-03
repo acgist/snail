@@ -41,7 +41,7 @@ public class PeerClientTest extends BaseTest {
 			size.addAndGet(file.getLength());
 		});
 		final var wrapper = TorrentSelectorWrapper.newEncoder(list);
-		final TaskEntity entity = new TaskEntity();
+		final var entity = new TaskEntity();
 		entity.setFile("e:/tmp/download/"); // 设置下载路径
 		entity.setType(Type.TORRENT); // 设置下载类型
 		entity.setDescription(wrapper.serialize()); // 设置下载文件
@@ -51,10 +51,10 @@ public class PeerClientTest extends BaseTest {
 //		final Integer port = 18888; // 蜗牛测试端口
 		final Integer port = 49160; // FDM测试端口
 		this.log("已下载Piece：" + torrentSession.pieces());
-		final StatisticsSession statisticsSession = new StatisticsSession(); // 统计
-		final PeerSession peerSession = PeerSession.newInstance(statisticsSession, host, port); // Peer
+		final var statisticsSession = new StatisticsSession(); // 统计
+		final var peerSession = PeerSession.newInstance(statisticsSession, host, port); // Peer
 		peerSession.flags(PeerConfig.PEX_UTP); // UTP支持
-		final PeerDownloader launcher = PeerDownloader.newInstance(peerSession, torrentSession); // 下载器
+		final var launcher = PeerDownloader.newInstance(peerSession, torrentSession); // 下载器
 		launcher.handshake(); // 发送握手
 		new Thread(() -> {
 			while(true) {
@@ -69,7 +69,7 @@ public class PeerClientTest extends BaseTest {
 	public void testTorrent() throws DownloadException {
 		final var hash = "1f4f28a6df2ea7899328cbef1dfaaeec9920cdb3";
 		final var torrentSession = TorrentSession.newInstance(InfoHash.newInstance(hash), null);
-		final TaskEntity entity = new TaskEntity();
+		final var entity = new TaskEntity();
 		entity.setFile("e:/tmp/torrent/");
 		entity.setType(Type.TORRENT);
 		entity.setUrl(hash);
@@ -78,8 +78,8 @@ public class PeerClientTest extends BaseTest {
 //		final Integer port = 15000; // 迅雷测试端口
 //		final Integer port = 18888; // 蜗牛测试端口
 		final Integer port = 49160; // FDM测试端口
-		final PeerSession peerSession = PeerSession.newInstance(new StatisticsSession(), host, port);
-		final PeerDownloader launcher = PeerDownloader.newInstance(peerSession, torrentSession);
+		final var peerSession = PeerSession.newInstance(new StatisticsSession(), host, port);
+		final var launcher = PeerDownloader.newInstance(peerSession, torrentSession);
 		launcher.handshake();
 		this.pause();
 	}

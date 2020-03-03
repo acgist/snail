@@ -16,8 +16,8 @@ public class NodeManagerTest extends BaseTest {
 
 	@Test
 	public void testCompare() {
-		byte[] hex1 = ArrayUtils.xor(StringUtils.unhex("c15419ae6b3bdfd8e983062b0650ad114ce41859"), StringUtils.unhex("c15417e6aeab33732a59085d826edd29978f9afa"));
-		byte[] hex2 = ArrayUtils.xor(StringUtils.unhex("c1540515408feb76af06c6c588b1b345b5173c42"), StringUtils.unhex("c15417e6aeab33732a59085d826edd29978f9afa"));
+		final byte[] hex1 = ArrayUtils.xor(StringUtils.unhex("c15419ae6b3bdfd8e983062b0650ad114ce41859"), StringUtils.unhex("c15417e6aeab33732a59085d826edd29978f9afa"));
+		final byte[] hex2 = ArrayUtils.xor(StringUtils.unhex("c1540515408feb76af06c6c588b1b345b5173c42"), StringUtils.unhex("c15417e6aeab33732a59085d826edd29978f9afa"));
 		this.log(StringUtils.hex(hex1));
 		this.log(StringUtils.hex(hex2));
 		this.log(ArrayUtils.compareUnsigned(hex1, hex2));
