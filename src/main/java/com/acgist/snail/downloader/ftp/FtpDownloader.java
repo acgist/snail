@@ -2,9 +2,6 @@ package com.acgist.snail.downloader.ftp;
 
 import java.io.BufferedInputStream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.downloader.SingleFileDownloader;
 import com.acgist.snail.net.ftp.FtpClient;
 import com.acgist.snail.net.ftp.bootstrap.FtpClientBuilder;
@@ -21,7 +18,7 @@ import com.acgist.snail.utils.IoUtils;
  */
 public final class FtpDownloader extends SingleFileDownloader {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(FtpDownloader.class);
+//	private static final Logger LOGGER = LoggerFactory.getLogger(FtpDownloader.class);
 
 	/**
 	 * <p>FTP客户端</p>
@@ -54,24 +51,19 @@ public final class FtpDownloader extends SingleFileDownloader {
 	}
 
 	@Override
-	protected void buildInput() {
-		// 已下载大小
-		final long size = FileUtils.fileSize(this.taskSession.getFile());
+	protected void buildInput() throws NetException {
 		// FTP客户端
 		this.client = FtpClientBuilder.newInstance(this.taskSession.getUrl()).build();
 		final boolean ok = this.client.connect(); // 建立连接
 		if(ok) {
-			try {
-				final var inputStream = this.client.download(size);
-				this.input = new BufferedInputStream(inputStream);
-				if(this.client.range()) { // 支持断点续传
-					this.taskSession.downloadSize(size);
-				} else {
-					this.taskSession.downloadSize(0L);
-				}
-			} catch (NetException e) {
-				LOGGER.error("FTP下载异常", e);
-				fail("FTP下载失败：" + e.getMessage());
+			// 已下载大小
+			final long size = FileUtils.fileSize(this.taskSession.getFile());
+			final var inputStream = this.client.download(size);
+			this.input = new BufferedInputStream(inputStream);
+			if(this.client.range()) { // 支持断点续传
+				this.taskSession.downloadSize(size);
+			} else {
+				this.taskSession.downloadSize(0L);
 			}
 		} else {
 			fail("FTP服务器连接失败");

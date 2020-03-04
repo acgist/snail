@@ -183,8 +183,8 @@ public abstract class Downloader implements IDownloader, IStatistics {
 				this.fail = false; // 重置下载失败状态
 				this.deleteLock.set(false); // 设置删除锁状态
 				this.taskSession.setStatus(Status.DOWNLOAD); // 修改任务状态
-				this.open();
 				try {
+					this.open();
 					this.download();
 				} catch (Exception e) {
 					LOGGER.error("任务下载异常", e);

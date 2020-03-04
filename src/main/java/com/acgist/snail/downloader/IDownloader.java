@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.ITaskSession.Status;
+import com.acgist.snail.system.exception.DownloadException;
+import com.acgist.snail.system.exception.NetException;
 
 /**
  * <p>下载器</p>
@@ -77,8 +79,11 @@ public interface IDownloader extends Runnable {
 	 * 	<dd>打开下载数据流</dd>
 	 * 	<dd>打开本地文件流</dd>
 	 * </dl>
+	 * 
+	 * @throws NetException 网络异常
+	 * @throws DownloadException 下载异常
 	 */
-	void open();
+	void open() throws NetException, DownloadException;
 	
 	/**
 	 * <p>下载任务</p>

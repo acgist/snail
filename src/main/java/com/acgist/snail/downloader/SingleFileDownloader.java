@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.system.exception.DownloadException;
+import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.IoUtils;
 
 /**
@@ -46,7 +48,7 @@ public abstract class SingleFileDownloader extends Downloader {
 	}
 	
 	@Override
-	public void open() {
+	public void open() throws NetException, DownloadException {
 		buildInput();
 		buildOutput();
 	}
@@ -99,8 +101,10 @@ public abstract class SingleFileDownloader extends Downloader {
 	/**
 	 * <p>创建{@linkplain #output 输出流}</p>
 	 * <p>创建时需要验证是否支持断点续传，所以优先{@linkplain #buildInput() 创建输入流}。</p>
+	 * 
+	 * @throws DownloadException 下载异常
 	 */
-	protected void buildOutput() {
+	protected void buildOutput() throws DownloadException {
 		try {
 			final long size = this.taskSession.downloadSize();
 			if(size == 0L) { // 不支持断点续传
@@ -109,15 +113,17 @@ public abstract class SingleFileDownloader extends Downloader {
 				this.output = new BufferedOutputStream(new FileOutputStream(this.taskSession.getFile(), true), DownloadConfig.getMemoryBufferByte());
 			}
 		} catch (FileNotFoundException e) {
-			LOGGER.error("下载文件打开异常", e);
-			fail("下载文件打开失败：" + e.getMessage());
+			throw new DownloadException("下载文件打开失败", e);
 		}
 	}
 	
 	/**
 	 * <p>创建{@linkplain #input 输入流}</p>
 	 * <p>先验证是否支持断点续传，如果支持重新设置任务已下载大小。</p>
+	 * 
+	 * @throws NetException 网络异常
+	 * @throws DownloadException 下载异常
 	 */
-	protected abstract void buildInput();
+	protected abstract void buildInput() throws NetException, DownloadException;
 
 }

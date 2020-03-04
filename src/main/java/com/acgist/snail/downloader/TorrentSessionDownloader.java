@@ -3,15 +3,13 @@ package com.acgist.snail.downloader;
 import java.io.IOException;
 import java.time.Duration;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.magnet.bootstrap.MagnetBuilder;
 import com.acgist.snail.system.exception.DownloadException;
+import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
@@ -22,7 +20,7 @@ import com.acgist.snail.utils.ThreadUtils;
  */
 public abstract class TorrentSessionDownloader extends Downloader {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentSessionDownloader.class);
+//	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentSessionDownloader.class);
 
 	/**
 	 * <p>BT任务信息</p>
@@ -39,10 +37,10 @@ public abstract class TorrentSessionDownloader extends Downloader {
 	}
 	
 	@Override
-	public void open() {
+	public void open() throws NetException, DownloadException {
 		// 不能在构造函数中初始化：防止种子被删除后还能点击下载
 		this.torrentSession = this.loadTorrentSession();
-		loadDownload();
+		this.loadDownload();
 	}
 	
 	@Override
@@ -77,24 +75,24 @@ public abstract class TorrentSessionDownloader extends Downloader {
 	 * <p>加载BT任务信息</p>
 	 * 
 	 * @return BT任务信息
+	 * 
+	 * @throws NetException 网络异常
+	 * @throws DownloadException 下载异常
 	 */
-	protected TorrentSession loadTorrentSession() {
+	protected TorrentSession loadTorrentSession() throws NetException, DownloadException {
 		final var torrentPath = this.taskSession.getTorrent();
-		try {
-			// 加载磁力链接信息
-			final var magnet = MagnetBuilder.newInstance(this.taskSession.getUrl()).build();
-			final var infoHashHex = magnet.getHash();
-			return TorrentManager.getInstance().newTorrentSession(infoHashHex, torrentPath);
-		} catch (DownloadException e) {
-			LOGGER.error("BT任务加载异常", e);
-			fail("BT任务加载失败：" + e.getMessage());
-		}
-		return null;
+		// 加载磁力链接信息
+		final var magnet = MagnetBuilder.newInstance(this.taskSession.getUrl()).build();
+		final var infoHashHex = magnet.getHash();
+		return TorrentManager.getInstance().newTorrentSession(infoHashHex, torrentPath);
 	}
 
 	/**
 	 * <p>开始下载</p>
+	 * 
+	 * @throws NetException 网络异常
+	 * @throws DownloadException 下载异常
 	 */
-	protected abstract void loadDownload();
+	protected abstract void loadDownload() throws NetException, DownloadException;
 	
 }

@@ -55,21 +55,15 @@ public final class HttpDownloader extends SingleFileDownloader {
 	 * @see HttpHeaderWrapper#RANGE
 	 */
 	@Override
-	protected void buildInput() {
+	protected void buildInput() throws NetException {
 		// 已下载大小
 		final long size = FileUtils.fileSize(this.taskSession.getFile());
 		// HTTP客户端
 		final var client = HTTPClient.newInstance(this.taskSession.getUrl(), SystemConfig.CONNECT_TIMEOUT, SystemConfig.DOWNLOAD_TIMEOUT);
-		HttpResponse<InputStream> response = null; // 响应
-		try {
-			response = client
-				.header(HttpHeaderWrapper.RANGE, "bytes=" + size + "-")
-				.get(BodyHandlers.ofInputStream());
-		} catch (NetException e) {
-			LOGGER.error("HTTP请求异常", e);
-			fail("HTTP请求失败：" + e.getMessage());
-			return;
-		}
+		// HTTP响应
+		final HttpResponse<InputStream> response = client
+			.header(HttpHeaderWrapper.RANGE, "bytes=" + size + "-")
+			.get(BodyHandlers.ofInputStream());
 		if(HTTPClient.ok(response) || HTTPClient.partialContent(response)) {
 			final var headers = HttpHeaderWrapper.newInstance(response.headers());
 			this.input = new BufferedInputStream(response.body());
