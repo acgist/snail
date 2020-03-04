@@ -47,7 +47,7 @@ public final class ThunderProtocol extends Protocol {
 	}
 	
 	@Override
-	public ITaskSession buildTaskSession(String url) throws DownloadException {
+	public synchronized ITaskSession buildTaskSession(String url) throws DownloadException {
 		final String prefix = Protocol.Type.THUNDER.prefix(url);
 		String realUrl = url.substring(prefix.length());
 		realUrl = new String(Base64.getMimeDecoder().decode(realUrl)); // getMimeDecoder防止长度非4的整数倍导致的异常
