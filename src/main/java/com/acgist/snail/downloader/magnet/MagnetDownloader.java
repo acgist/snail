@@ -1,8 +1,5 @@
 package com.acgist.snail.downloader.magnet;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.downloader.TorrentSessionDownloader;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.system.exception.DownloadException;
@@ -16,7 +13,7 @@ import com.acgist.snail.system.exception.DownloadException;
  */
 public final class MagnetDownloader extends TorrentSessionDownloader {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(MagnetDownloader.class);
+//	private static final Logger LOGGER = LoggerFactory.getLogger(MagnetDownloader.class);
 
 	public MagnetDownloader(ITaskSession taskSession) {
 		super(taskSession);
@@ -50,14 +47,9 @@ public final class MagnetDownloader extends TorrentSessionDownloader {
 	}
 	
 	@Override
-	protected void loadDownload() {
-		try {
-			if(this.torrentSession != null) {
-				this.complete = this.torrentSession.magnet(this.taskSession);
-			}
-		} catch (DownloadException e) {
-			LOGGER.error("磁力链接任务下载异常", e);
-			fail("磁力链接任务下载失败：" + e.getMessage());
+	protected void loadDownload() throws DownloadException {
+		if(this.torrentSession != null) {
+			this.complete = this.torrentSession.magnet(this.taskSession);
 		}
 	}
 

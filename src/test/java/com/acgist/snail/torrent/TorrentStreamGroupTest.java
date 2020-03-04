@@ -11,7 +11,6 @@ import com.acgist.snail.net.torrent.bootstrap.TorrentStreamGroup;
 import com.acgist.snail.pojo.ITaskSession.Status;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.session.TaskSession;
-import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
@@ -23,41 +22,41 @@ public class TorrentStreamGroupTest extends BaseTest {
 
 	@Test
 	public void testVerify() throws DownloadException, NetException {
-		String path = "e:/snail/verify.torrent";
-		TorrentSession session = TorrentManager.getInstance().newTorrentSession(path);
-		TaskEntity entity = new TaskEntity();
+		final var path = "e:/snail/verify.torrent";
+		final var session = TorrentManager.getInstance().newTorrentSession(path);
+		final var entity = new TaskEntity();
 		entity.setFile("e:/tmp/verify/");
 		entity.setType(Type.TORRENT);
 		entity.setStatus(Status.COMPLETE);
 		session.upload(TaskSession.newInstance(entity));
-		var files = session.torrent().getInfo().files();
+		final var files = session.torrent().getInfo().files();
 		// 选择下载文件
 		files.forEach(file -> {
 			file.selected(true);
 		});
-		TorrentStreamGroup group = TorrentStreamGroup.newInstance("e:/tmp/verify", files, session);
+		final var group = TorrentStreamGroup.newInstance("e:/tmp/verify", files, session);
 		ThreadUtils.sleep(10000); // 等待任务准备完成
-		var downloadPieces = group.pieces();
+		final var downloadPieces = group.pieces();
 		int index = downloadPieces.nextSetBit(0);
-		int length = session.torrent().getInfo().getPieceLength().intValue();
-		this.log("Piece长度：" + length);
-		this.log("Piece数量：" + session.torrent().getInfo().pieceSize());
+		final int length = session.torrent().getInfo().getPieceLength().intValue();
+		this.log("Piece长度：{}", length);
+		this.log("Piece数量：{}", session.torrent().getInfo().pieceSize());
 		this.cost();
-		while(downloadPieces.nextSetBit(index) >= 0) {
+		while(!downloadPieces.isEmpty() && downloadPieces.nextSetBit(index) >= 0) {
 			var piece = group.read(index, 0, length);
 			if(piece == null) {
-				this.log("Piece读取错误：" + index + "->null");
+				this.log("Piece读取错误：{}->null", index);
 				index++;
 				continue;
 			}
 			if(!ArrayUtils.equals(StringUtils.sha1(piece), group.pieceHash(index))) {
-				this.log("Piece校验失败：" + index + "->" + StringUtils.sha1Hex(piece) + "=" + StringUtils.hex(group.pieceHash(index)));
+				this.log("Piece校验失败：{}->{}={}", index, StringUtils.sha1Hex(piece), StringUtils.hex(group.pieceHash(index)));
 			}
 			index++;
 		}
 		this.costed();
-		this.log("已经下载Piece：" + downloadPieces);
-		this.log("选择下载Piece：" + group.selectPieces());
+		this.log("已经下载Piece：{}", downloadPieces);
+		this.log("选择下载Piece：{}", group.selectPieces());
 	}
 	
 	@Test
