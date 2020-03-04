@@ -18,8 +18,6 @@ import com.acgist.snail.utils.IoUtils;
  */
 public final class FtpDownloader extends SingleFileDownloader {
 	
-//	private static final Logger LOGGER = LoggerFactory.getLogger(FtpDownloader.class);
-
 	/**
 	 * <p>FTP客户端</p>
 	 */
