@@ -54,17 +54,21 @@ public abstract class SingleFileDownloader extends Downloader {
 	}
 
 	@Override
-	public void download() throws IOException {
+	public void download() throws DownloadException {
 		int length = 0;
 		final byte[] bytes = new byte[EXCHANGE_BYTES_LENGTH];
-		while(downloadable()) {
-			length = this.input.read(bytes, 0, bytes.length);
-			if(isComplete(length)) {
-				this.complete = true;
-				break;
+		try {
+			while(downloadable()) {
+				length = this.input.read(bytes, 0, bytes.length);
+				if(isComplete(length)) {
+					this.complete = true;
+					break;
+				}
+				this.output.write(bytes, 0, length);
+				this.download(length);
 			}
-			this.output.write(bytes, 0, length);
-			this.download(length);
+		} catch (IOException e) {
+			throw new DownloadException("数据流操作失败", e);
 		}
 	}
 
