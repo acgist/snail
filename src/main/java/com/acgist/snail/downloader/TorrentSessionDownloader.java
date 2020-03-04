@@ -1,6 +1,5 @@
 package com.acgist.snail.downloader;
 
-import java.io.IOException;
 import java.time.Duration;
 
 import com.acgist.snail.net.torrent.TorrentManager;
@@ -55,7 +54,7 @@ public abstract class TorrentSessionDownloader extends Downloader {
 	}
 	
 	@Override
-	public void download() throws IOException {
+	public void download() throws DownloadException {
 		while(downloadable()) {
 			synchronized (this.downloadLock) {
 				ThreadUtils.wait(this.downloadLock, Duration.ofSeconds(Integer.MAX_VALUE));
@@ -76,10 +75,9 @@ public abstract class TorrentSessionDownloader extends Downloader {
 	 * 
 	 * @return BT任务信息
 	 * 
-	 * @throws NetException 网络异常
 	 * @throws DownloadException 下载异常
 	 */
-	protected TorrentSession loadTorrentSession() throws NetException, DownloadException {
+	protected TorrentSession loadTorrentSession() throws DownloadException {
 		final var torrentPath = this.taskSession.getTorrent();
 		// 加载磁力链接信息
 		final var magnet = MagnetBuilder.newInstance(this.taskSession.getUrl()).build();
@@ -90,9 +88,8 @@ public abstract class TorrentSessionDownloader extends Downloader {
 	/**
 	 * <p>开始下载</p>
 	 * 
-	 * @throws NetException 网络异常
 	 * @throws DownloadException 下载异常
 	 */
-	protected abstract void loadDownload() throws NetException, DownloadException;
+	protected abstract void loadDownload() throws DownloadException;
 	
 }

@@ -1,7 +1,5 @@
 package com.acgist.snail.downloader;
 
-import java.io.IOException;
-
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.ITaskSession.Status;
 import com.acgist.snail.system.exception.DownloadException;
@@ -88,9 +86,9 @@ public interface IDownloader extends Runnable {
 	/**
 	 * <p>下载任务</p>
 	 * 
-	 * @throws IOException 下载异常
+	 * @throws DownloadException 下载异常
 	 */
-	void download() throws IOException;
+	void download() throws DownloadException;
 	
 	/**
 	 * <p>释放下载锁</p>

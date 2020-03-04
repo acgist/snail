@@ -6,7 +6,6 @@ import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.ITaskSession.Status;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.system.exception.NetException;
 
 /**
  * <p>BT下载器</p>
@@ -77,7 +76,7 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 	 * <p>加载完成立即开启上传服务，直到任务删除或者软件关闭。</p>
 	 */
 	@Override
-	protected TorrentSession loadTorrentSession() throws NetException, DownloadException {
+	protected TorrentSession loadTorrentSession() throws DownloadException {
 		final var torrentSession = super.loadTorrentSession();
 		if(torrentSession != null) {
 			torrentSession.upload(this.taskSession);
@@ -86,7 +85,7 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 	}
 	
 	@Override
-	protected void loadDownload() throws NetException, DownloadException {
+	protected void loadDownload() throws DownloadException {
 		if(this.torrentSession != null) {
 			this.complete = this.torrentSession.download();
 		}
