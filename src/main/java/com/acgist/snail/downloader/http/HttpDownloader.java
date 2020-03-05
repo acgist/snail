@@ -64,6 +64,7 @@ public final class HttpDownloader extends SingleFileDownloader {
 		final HttpResponse<InputStream> response = client
 			.header(HttpHeaderWrapper.RANGE, "bytes=" + size + "-")
 			.get(BodyHandlers.ofInputStream());
+		// 请求成功和部分请求成功
 		if(HTTPClient.ok(response) || HTTPClient.partialContent(response)) {
 			final var headers = HttpHeaderWrapper.newInstance(response.headers());
 			this.input = new BufferedInputStream(response.body());

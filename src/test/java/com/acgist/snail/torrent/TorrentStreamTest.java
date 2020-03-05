@@ -14,14 +14,15 @@ import com.acgist.snail.utils.StringUtils;
 
 public class TorrentStreamTest extends BaseTest {
 
+	private final int PIECE_SIZE = 8 * 1024 * 1024;
+	
 	@Test
 	public void testRandomAccessFile() throws IOException {
-		RandomAccessFile file = new RandomAccessFile("E:/tmp/verify/[sdy4.net]言叶之庭 The.Garden.of.Words.2013.BluRay.720p.x264.3Audio-NowYS.mkv", "rw");
-		int pieceSize = 8 * 1024 * 1024;
-		byte[] bytes = new byte[pieceSize];
+		final RandomAccessFile file = new RandomAccessFile("E:/tmp/verify/[sdy4.net]言叶之庭 The.Garden.of.Words.2013.BluRay.720p.x264.3Audio-NowYS.mkv", "rw");
+		final byte[] bytes = new byte[PIECE_SIZE];
 		this.cost();
 		for (int index = 0; index < 256; index++) {
-			file.seek(index * pieceSize);
+			file.seek(index * PIECE_SIZE);
 			file.read(bytes, 0, bytes.length);
 			StringUtils.sha1(bytes);
 		}
@@ -31,15 +32,14 @@ public class TorrentStreamTest extends BaseTest {
 	
 	@Test
 	public void testFileChannel() throws IOException {
-		FileChannel file = FileChannel.open(Paths.get("E:/tmp/verify/[sdy4.net]言叶之庭 The.Garden.of.Words.2013.BluRay.720p.x264.3Audio-NowYS.mkv"), StandardOpenOption.READ, StandardOpenOption.WRITE);
-		int pieceSize = 8 * 1024 * 1024;
-		ByteBuffer buffer = ByteBuffer.allocate(pieceSize);
+		final FileChannel file = FileChannel.open(Paths.get("E:/tmp/verify/[sdy4.net]言叶之庭 The.Garden.of.Words.2013.BluRay.720p.x264.3Audio-NowYS.mkv"), StandardOpenOption.READ, StandardOpenOption.WRITE);
+		final ByteBuffer buffer = ByteBuffer.allocate(PIECE_SIZE);
 		this.cost();
 		for (int index = 0; index < 256; index++) {
-			file.position(index * pieceSize);
+			file.position(index * PIECE_SIZE);
 			file.read(buffer);
 			buffer.flip();
-			byte[] bytes = new byte[buffer.remaining()];
+			final byte[] bytes = new byte[buffer.remaining()];
 			buffer.get(bytes);
 			StringUtils.sha1(bytes);
 		}
