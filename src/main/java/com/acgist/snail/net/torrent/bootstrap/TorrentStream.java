@@ -695,7 +695,7 @@ public final class TorrentStream {
 			}
 			bytes = read(index, length, pos, true); // 读取数据
 			if(verify) { // 校验Hash
-				hash = StringUtils.sha1(bytes);
+				hash = StringUtils.sha1(bytes); // TODO：优化使用一个算法对象
 				if(ArrayUtils.equals(hash, this.torrentStreamGroup.pieceHash(index))) {
 					this.done(index);
 				}
