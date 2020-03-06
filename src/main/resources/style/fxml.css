@@ -91,6 +91,15 @@
 	-fx-border-color:-fx-snail-main-color;
 }
 /**
+ * <p>滚动条样式</p>
+ */
+.root .scroll-bar {
+	-fx-background-color:-fx-snail-background-color;
+}
+.root .scroll-bar .thumb {
+	-fx-background-radius:0;
+}
+/**
  * <p>菜单样式</p>
  * <p>ContextMenu->.context-menu</p>
  */
