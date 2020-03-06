@@ -15,6 +15,7 @@ import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.ArrayUtils;
+import com.acgist.snail.utils.DigestUtils;
 import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
@@ -71,6 +72,19 @@ public class TorrentStreamGroupTest extends BaseTest {
 		});
 		this.log(source);
 		this.log(target);
+	}
+	
+	@Test
+	public void testSha1Cost() {
+		final byte[] bytes = "test".getBytes();
+		this.cost();
+		final var digest = DigestUtils.sha1();
+		for (int index = 0; index < 100000; index++) {
+//			StringUtils.sha1(bytes);
+			digest.digest(bytes);
+			digest.reset();
+		}
+		this.costed();
 	}
 
 }
