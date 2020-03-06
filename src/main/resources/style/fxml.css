@@ -6,13 +6,13 @@
 	-fx-alignment:center;
 	/** 基本透明度 */
 	-fx-snail-opacity:0.94;
-	/** 基本主要颜色 */
+	/** 主要颜色 */
 	-fx-snail-main-color:#0099CC;
-	/** 基本边框颜色 */
+	/** 边框颜色 */
 	-fx-snail-border-color:#C8C8C8;
-	/** 基本元素颜色 */
+	/** 元素颜色 */
 	-fx-snail-element-color:#E0E0E0;
-	/** 基本背景颜色 */
+	/** 背景颜色 */
 	-fx-snail-background-color:#F4F4F4;
 	/** 基本颜色 */
 	-fx-snail-red-color:#DD3355;
@@ -21,6 +21,10 @@
 	-fx-snail-green-color:#008800;
 	-fx-snail-orange-color:#EE8811;
 	-fx-snail-violet-color:#8822EE;
+	/** 焦点颜色 */
+	-fx-focus-color:derive(-fx-snail-main-color, 40%);
+	/** 选中颜色 */
+	-fx-selection-bar:-fx-snail-main-color;
 }
 /**
  * <p>图标样式</p>
@@ -155,6 +159,7 @@
 	-fx-border-width:1px 0;
 	-fx-border-color:-fx-snail-border-color;
 	-fx-background-insets:0;
+	-fx-background-radius:0;
 }
 .main .table-view .snail-icon {
 	-fx-padding:0 2px;
@@ -187,10 +192,11 @@
 	/** 去掉表格行横线 */
 	/*
 	-fx-background-insets:0;
+	-fx-background-radius:0;
 	*/
 }
 /*
- * <p>没有数据单元样式</p>
+ * <p>没有数据表格单元样式</p>
  */
 .main .table-view .table-row-cell:empty .table-cell {
 	/** 去掉没有数据表格单元竖线 */
@@ -202,8 +208,10 @@
  * <p>获得焦点表格行样式</p>
  */
 .main .table-view:focused .table-row-cell:focused {
-	-fx-background-color:-fx-table-cell-border-color, -fx-control-inner-background;
+	/** 去掉获得焦点但是没有选中时的边框 */
 	-fx-background-insets:0, 0 0 1 0;
+	-fx-background-radius:0;
+	-fx-background-color:-fx-table-cell-border-color, -fx-control-inner-background;
 }
 /*
  * <p>选中表格行样式</p>
@@ -398,21 +406,24 @@
 	-fx-border-width:0 0 1px 0;
 	-fx-border-color:-fx-snail-border-color;
 	-fx-background-insets:0;
+	-fx-background-radius:0;
 }
 .torrent .tree-view .tree-cell {
-	-fx-background-color:-fx-snail-background-color;
 	-fx-background-insets:0;
+	-fx-background-radius:0;
+	-fx-background-color:-fx-snail-background-color;
 }
 /*
- * <p>箭头</p>
+ * <p>箭头样式</p>
  */
 .torrent .tree-view .tree-cell .arrow {
 	-fx-background-color:#000000;
 }
 .torrent .tree-view .tree-cell:focused,
 .torrent .tree-view .tree-cell:selected {
-	-fx-background-color:-fx-snail-background-color;
 	-fx-background-insets:0;
+	-fx-background-radius:0;
+	-fx-background-color:-fx-snail-background-color;
 }
 .torrent .tree-view .tree-cell:selected .check-box {
 	-fx-text-fill:#000000;

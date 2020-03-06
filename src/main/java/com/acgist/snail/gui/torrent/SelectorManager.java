@@ -42,7 +42,7 @@ public final class SelectorManager {
 	 * <p>选择器Map</p>
 	 * <p>文件路径=选择文件</p>
 	 */
-	private final Map<String, Selector> selector = new HashMap<>();;
+	private final Map<String, Selector> selector = new HashMap<>();
 
 	private SelectorManager(String name, Button download, TreeView<HBox> tree) {
 		final TreeItem<HBox> root = buildTreeItem(null, "", name, null);
