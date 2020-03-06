@@ -1,12 +1,13 @@
 package com.acgist.snail.downloader.magnet;
 
 import com.acgist.snail.downloader.TorrentSessionDownloader;
+import com.acgist.snail.downloader.torrent.TorrentDownloader;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.system.exception.DownloadException;
 
 /**
  * <p>磁力链接下载器</p>
- * <p>下载原理：先将磁力链接转为种子文件，然后将任务转为BT任务进行下载。</p>
+ * <p>下载原理：先将磁力链接转为种子文件，然后转为{@link TorrentDownloader}进行下载。</p>
  * 
  * @author acgist
  * @since 1.1.0
@@ -15,7 +16,7 @@ public final class MagnetDownloader extends TorrentSessionDownloader {
 	
 //	private static final Logger LOGGER = LoggerFactory.getLogger(MagnetDownloader.class);
 
-	public MagnetDownloader(ITaskSession taskSession) {
+	private MagnetDownloader(ITaskSession taskSession) {
 		super(taskSession);
 	}
 	
