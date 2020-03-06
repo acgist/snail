@@ -31,7 +31,7 @@ public final class PeerUploaderGroup {
 	/**
 	 * <p>PeerUploader队列</p>
 	 */
-	private final BlockingQueue<PeerUploader> peerUploaders = new LinkedBlockingQueue<>();;
+	private final BlockingQueue<PeerUploader> peerUploaders = new LinkedBlockingQueue<>();
 	/**
 	 * <p>任务信息</p>
 	 */
