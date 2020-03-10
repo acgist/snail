@@ -218,6 +218,11 @@ public final class Fonts {
 			return Fonts.iconLabel(this);
 		}
 		
+		@Override
+		public final String toString() {
+			return Character.toString(this.value());
+		}
+		
 	}
 	
 	/**
@@ -234,7 +239,7 @@ public final class Fonts {
 	 * @return 图标标签
 	 */
 	public static final Label iconLabel(SnailIcon icon) {
-		final Label iconLabel = new Label(Character.toString(icon.value()));
+		final Label iconLabel = new Label(icon.toString());
 		iconLabel.getStyleClass().add(ICON_CLASS); // 添加样式
 		iconLabel.setFont(Font.font(FONT_NAME)); // 设置字体
 		return iconLabel;

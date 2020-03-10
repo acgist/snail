@@ -153,7 +153,7 @@
 	-fx-alignment:center_left;
 }
 .main .footer .statuses {
-	-fx-font-size:14px;
+	-fx-font-size:16px;
 	-fx-alignment:center_right;
 }
 .main .footer .statuses Label {
