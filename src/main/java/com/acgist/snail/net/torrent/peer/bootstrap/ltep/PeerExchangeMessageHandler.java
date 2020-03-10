@@ -151,7 +151,7 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 				addedBuffer.putShort(NetUtils.encodePort(session.port()));
 				addedfBuffer.put(session.flags());
 			});
-		final Map<String, Object> data = new HashMap<>(6);
+		final Map<String, Object> data = new HashMap<>(9);
 		final byte[] emptyBytes = new byte[0];
 		data.put(ADDED, addedBuffer.array());
 		data.put(ADDEDF, addedfBuffer.array());
