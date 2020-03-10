@@ -96,7 +96,11 @@ public final class MainController extends Controller implements Initializable {
 	@FXML
 	private HBox statuses;
 	@FXML
+	private Label downloadStatus;
+	@FXML
 	private Label downloadBuffer;
+	@FXML
+	private Label uploadStatus;
 	@FXML
 	private Label uploadBuffer;
 	@FXML
@@ -114,6 +118,9 @@ public final class MainController extends Controller implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		// 设置状态符号
+		this.downloadStatus.setText(SnailIcon.AS_CLOUD_DOWNLOAD.toString());
+		this.uploadStatus.setText(SnailIcon.AS_CLOUD_UPLOAD.toString());
 		// 设置多选
 		this.taskTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		// 设置无数据时提示内容
