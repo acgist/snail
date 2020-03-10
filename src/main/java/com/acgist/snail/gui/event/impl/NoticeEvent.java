@@ -80,7 +80,7 @@ public final class NoticeEvent extends GuiEventEx {
 	 */
 	private void executeExtendEx(SnailNoticeType type, String title, String message) {
 		final ApplicationMessage applicationMessage = ApplicationMessage.message(ApplicationMessage.Type.NOTICE);
-		final Map<String, String> map = new HashMap<>(3);
+		final Map<String, String> map = new HashMap<>(5);
 		map.put("type", type.name());
 		map.put("title", title);
 		map.put("message", message);
