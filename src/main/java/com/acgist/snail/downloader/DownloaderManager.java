@@ -37,7 +37,7 @@ public final class DownloaderManager {
 	 */
 	private final ExecutorService executor;
 	/**
-	 * <p>下载器Map</p>
+	 * <p>下载队列</p>
 	 * <p>任务ID=下载器</p>
 	 */
 	private final Map<String, IDownloader> downloaderMap;
@@ -99,7 +99,7 @@ public final class DownloaderManager {
 		if(ProtocolManager.getInstance().available()) {
 			synchronized (this) {
 				if(taskSession == null) {
-					return null;
+					throw new DownloadException("任务信息为空");
 				}
 				var downloader = downloader(taskSession);
 				if(downloader == null) {
@@ -141,7 +141,7 @@ public final class DownloaderManager {
 	 * @param taskSession 任务信息
 	 */
 	public void delete(ITaskSession taskSession) {
-		// 需要定义在后台删除任务外面：防止从下载队列中删除后导致空指针
+		// 定义下载器：防止队列删除后后台删除空指针
 		final var downloader = downloader(taskSession);
 		// 后台删除任务
 		SystemThreadContext.submit(() -> downloader.delete());
@@ -186,22 +186,7 @@ public final class DownloaderManager {
 			.map(IDownloader::taskSession)
 			.collect(Collectors.toList());
 	}
-	
-	/**
-	 * <p>获取任务信息</p>
-	 * 
-	 * @param id 任务ID
-	 * 
-	 * @return 任务信息
-	 */
-	public ITaskSession taskSession(String id) {
-		final var downloader = this.downloaderMap.get(id);
-		if(downloader == null) {
-			return null;
-		}
-		return downloader.taskSession();
-	}
-	
+		
 	/**
 	 * <dl>
 	 * 	<dt>刷新下载任务</dt>
@@ -212,7 +197,7 @@ public final class DownloaderManager {
 	public void refresh() {
 		synchronized (this) {
 			final var downloaders = this.downloaderMap.values();
-			// 当前任务下载数量
+			// 当前任务正在下载数量
 			final long count = downloaders.stream()
 				.filter(IDownloader::downloading)
 				.count();
