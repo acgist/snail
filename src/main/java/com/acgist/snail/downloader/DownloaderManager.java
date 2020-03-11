@@ -79,10 +79,7 @@ public final class DownloaderManager {
 	 * @throws DownloadException 下载异常
 	 */
 	public void start(ITaskSession taskSession) throws DownloadException {
-		final var downloader = this.submit(taskSession);
-		if(downloader != null) {
-			downloader.start();
-		}
+		this.submit(taskSession).start();
 	}
 	
 	/**
