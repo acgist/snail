@@ -173,13 +173,14 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	@Override
 	public void run() {
 		// 任务已经开始下载直接跳过：防止多次点击暂停开始导致阻塞后面下载任务线程
+		final String name = this.name();
 		if(this.taskSession.download()) {
-			LOGGER.debug("任务已经开始下载：{}", this.name());
+			LOGGER.debug("任务已经开始下载：{}", name);
 			return;
 		}
 		synchronized (this.taskSession) {
 			if(this.taskSession.await()) {
-				LOGGER.info("开始下载任务：{}", this.name());
+				LOGGER.info("开始下载任务：{}", name);
 				this.fail = false; // 重置下载失败状态
 				this.deleteLock.set(false); // 设置删除锁状态
 				this.taskSession.setStatus(Status.DOWNLOAD); // 修改任务状态
@@ -193,9 +194,9 @@ public abstract class Downloader implements IDownloader, IStatistics {
 				this.checkComplete(); // 检查完成状态
 				this.release(); // 释放资源
 				this.unlockDelete(); // 释放删除锁
-				LOGGER.info("任务下载结束：{}", this.name());
+				LOGGER.info("任务下载结束：{}", name);
 			} else {
-				LOGGER.warn("任务状态错误：{}-{}", this.name(), this.taskSession.getStatus());
+				LOGGER.warn("任务状态错误：{}-{}", name, this.taskSession.getStatus());
 			}
 		}
 	}
