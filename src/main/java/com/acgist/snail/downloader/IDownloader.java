@@ -6,7 +6,7 @@ import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
 
 /**
- * <p>下载器</p>
+ * <p>下载器接口</p>
  * 
  * @author acgist
  * @since 1.0.0

@@ -17,7 +17,7 @@ import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
- * <p>下载器</p>
+ * <p>下载器抽象类</p>
  * 
  * @author acgist
  * @since 1.0.0
