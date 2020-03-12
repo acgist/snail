@@ -48,6 +48,11 @@ public abstract class SingleFileDownloader extends Downloader {
 		super(taskSession);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * <p>创建{@linkplain #output 输出流}时需要验证是否支持断点续传，所以优先创建{@linkplain #input 输入流}。</p>
+	 */
 	@Override
 	public void open() throws NetException, DownloadException {
 		buildInput();
@@ -76,12 +81,12 @@ public abstract class SingleFileDownloader extends Downloader {
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * <p>如果没有数据下载，任务会被{@link InputStream#read(byte[], int, int)}阻塞，通过直接关闭下载流来避免任务不能正常结束。</p>
+	 * <p>如果没有数据下载，任务会被读取输入流阻塞，通过直接关闭输入流来避免任务不能正常结束。</p>
 	 */
 	@Override
 	public void unlockDownload() {
-		if(!this.taskSession.statistics().downloading()) {
-			LOGGER.debug("单个文件下载解锁：没有速度关闭下载流");
+		if(!this.statistics().downloading()) {
+			LOGGER.debug("单个文件下载解锁：没有速度关闭输入流");
 			IoUtils.close(this.input);
 		}
 	}
@@ -105,7 +110,6 @@ public abstract class SingleFileDownloader extends Downloader {
 	
 	/**
 	 * <p>创建{@linkplain #output 输出流}</p>
-	 * <p>创建时需要验证是否支持断点续传，所以优先{@linkplain #buildInput() 创建输入流}。</p>
 	 * 
 	 * @throws DownloadException 下载异常
 	 */
