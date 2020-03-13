@@ -6,7 +6,7 @@
  * <p>配置</p>
  */
 create table tb_config (
-	`id` VARCHAR(36) NOT NULL,
+	`id` CHAR(36) NOT NULL,
 	`createDate` TIMESTAMP NOT NULL,
 	`modifyDate` TIMESTAMP NOT NULL,
 	`name` VARCHAR(256) DEFAULT NULL,
@@ -17,7 +17,7 @@ create table tb_config (
  * <p>任务</p>
  */
 create table tb_task (
-	`id` VARCHAR(36) NOT NULL,
+	`id` CHAR(36) NOT NULL,
 	`createDate` TIMESTAMP NOT NULL,
 	`modifyDate` TIMESTAMP NOT NULL,
 	`name` VARCHAR(1024) DEFAULT NULL,
