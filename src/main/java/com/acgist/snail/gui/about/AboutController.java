@@ -69,12 +69,12 @@ public final class AboutController extends Controller implements Initializable {
 	 * <p>设置软件名称</p>
 	 */
 	private void buildName() {
-		final StringBuilder name = new StringBuilder();
-		name.append(SystemConfig.getName())
+		final StringBuilder builder = new StringBuilder();
+		builder.append(SystemConfig.getName())
 			.append("（")
 			.append(SystemConfig.getNameEn())
 			.append("）");
-		this.name.setText(name.toString());
+		this.name.setText(builder.toString());
 	}
 	
 	/**
