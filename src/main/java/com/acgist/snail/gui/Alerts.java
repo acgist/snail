@@ -59,11 +59,9 @@ public final class Alerts {
 	public static final Optional<ButtonType> build(String title, String message, AlertType type) {
 		final Alert alert = new Alert(type);
 		final Scene scene = alert.getDialogPane().getScene();
-		// 导入样式文件
-		scene.getStylesheets().add(Controller.FXML_STYLE);
+		scene.getStylesheets().add(Controller.FXML_STYLE); // 导入样式文件
 		final Stage stage = (Stage) scene.getWindow();
-		// 添加图标
-		stage.getIcons().add(new Image(Controller.LOGO_ICON));
+		stage.getIcons().add(new Image(Controller.LOGO_ICON)); // 设置图标
 		alert.setTitle(title);
 		alert.setHeaderText(null);
 		alert.setContentText(message);
