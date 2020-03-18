@@ -33,11 +33,11 @@ import javafx.scene.control.Alert.AlertType;
  * @author acgist
  * @since 1.1.0
  */
-public final class GuiHandler {
+public final class GuiManager {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(GuiHandler.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(GuiManager.class);
 	
-	private static final GuiHandler INSTANCE = new GuiHandler();
+	private static final GuiManager INSTANCE = new GuiManager();
 	
 	/**
 	 * <p>提示窗口类型</p>
@@ -159,10 +159,10 @@ public final class GuiHandler {
 	 */
 	private IMessageHandler extendGuiMessageHandler;
 	
-	private GuiHandler() {
+	private GuiManager() {
 	}
 	
-	public static final GuiHandler getInstance() {
+	public static final GuiManager getInstance() {
 		return INSTANCE;
 	}
 	
@@ -183,7 +183,7 @@ public final class GuiHandler {
 	 * 
 	 * @return GUI处理器
 	 */
-	public GuiHandler init(String ... args) {
+	public GuiManager init(String ... args) {
 		if(args == null || args.length < 1) {
 			this.gui = true;
 		} else {
@@ -199,7 +199,7 @@ public final class GuiHandler {
 	 * 
 	 * @return GUI处理器
 	 */
-	public GuiHandler show() {
+	public GuiManager show() {
 		this.event(Type.SHOW);
 		return this;
 	}
@@ -209,7 +209,7 @@ public final class GuiHandler {
 	 * 
 	 * @return GUI处理器
 	 */
-	public GuiHandler hide() {
+	public GuiManager hide() {
 		this.event(Type.HIDE);
 		return this;
 	}
@@ -219,7 +219,7 @@ public final class GuiHandler {
 	 * 
 	 * @return GUI处理器
 	 */
-	public GuiHandler exit() {
+	public GuiManager exit() {
 		this.event(Type.EXIT);
 		return this;
 	}
@@ -229,7 +229,7 @@ public final class GuiHandler {
 	 * 
 	 * @return GUI处理器
 	 */
-	public GuiHandler build() {
+	public GuiManager build() {
 		this.event(Type.BUILD);
 		return this;
 	}
@@ -242,7 +242,7 @@ public final class GuiHandler {
 	 * 
 	 * @return GUI处理器
 	 */
-	public GuiHandler alert(String title, String message) {
+	public GuiManager alert(String title, String message) {
 		this.alert(title, message, SnailAlertType.INFO);
 		return this;
 	}
@@ -256,7 +256,7 @@ public final class GuiHandler {
 	 * 
 	 * @return GUI处理器
 	 */
-	public GuiHandler alert(String title, String message, SnailAlertType type) {
+	public GuiManager alert(String title, String message, SnailAlertType type) {
 		this.event(Type.ALERT, title, message, type);
 		return this;
 	}
@@ -269,7 +269,7 @@ public final class GuiHandler {
 	 * 
 	 * @return GUI处理器
 	 */
-	public GuiHandler notice(String title, String message) {
+	public GuiManager notice(String title, String message) {
 		this.notice(title, message, SnailNoticeType.INFO);
 		return this;
 	}
@@ -283,7 +283,7 @@ public final class GuiHandler {
 	 * 
 	 * @return GUI处理器
 	 */
-	public GuiHandler notice(String title, String message, SnailNoticeType type) {
+	public GuiManager notice(String title, String message, SnailNoticeType type) {
 		this.event(Type.NOTICE, title, message, type);
 		return this;
 	}
@@ -295,7 +295,7 @@ public final class GuiHandler {
 	 * 
 	 * @return GUI处理器
 	 */
-	public GuiHandler torrent(ITaskSession taskSession) {
+	public GuiManager torrent(ITaskSession taskSession) {
 		this.event(Type.TORRENT, taskSession);
 		return this;
 	}
@@ -305,7 +305,7 @@ public final class GuiHandler {
 	 * 
 	 * @return GUI处理器
 	 */
-	public GuiHandler refreshTaskList() {
+	public GuiManager refreshTaskList() {
 		this.event(Type.REFRESH_TASK_LIST);
 		return this;
 	}
@@ -315,7 +315,7 @@ public final class GuiHandler {
 	 * 
 	 * @return GUI处理器
 	 */
-	public GuiHandler refreshTaskStatus() {
+	public GuiManager refreshTaskStatus() {
 		this.event(Type.REFRESH_TASK_STATUS);
 		return this;
 	}
@@ -328,7 +328,7 @@ public final class GuiHandler {
 	 * 
 	 * @return GUI处理器
 	 */
-	public GuiHandler event(GuiEvent.Type type, Object ... args) {
+	public GuiManager event(GuiEvent.Type type, Object ... args) {
 		if(type == null) {
 			return this;
 		}

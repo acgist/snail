@@ -6,8 +6,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.gui.GuiHandler;
-import com.acgist.snail.gui.GuiHandler.SnailNoticeType;
+import com.acgist.snail.gui.GuiManager;
+import com.acgist.snail.gui.GuiManager.SnailNoticeType;
 import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.ITaskSession.Status;
@@ -122,7 +122,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 		} else {
 			noticeMessage.append(message);
 		}
-		GuiHandler.getInstance().notice("下载失败", noticeMessage.toString(), SnailNoticeType.WARN);
+		GuiManager.getInstance().notice("下载失败", noticeMessage.toString(), SnailNoticeType.WARN);
 	}
 	
 	@Override
@@ -151,7 +151,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	public void checkComplete() {
 		if(this.complete) {
 			this.updateStatus(Status.COMPLETE);
-			GuiHandler.getInstance().notice("下载完成", "任务下载完成：" + this.name());
+			GuiManager.getInstance().notice("下载完成", "任务下载完成：" + this.name());
 		}
 	}
 	

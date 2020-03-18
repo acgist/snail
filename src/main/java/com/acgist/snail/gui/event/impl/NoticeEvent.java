@@ -6,8 +6,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.gui.GuiHandler;
-import com.acgist.snail.gui.GuiHandler.SnailNoticeType;
+import com.acgist.snail.gui.GuiManager;
+import com.acgist.snail.gui.GuiManager.SnailNoticeType;
 import com.acgist.snail.gui.event.GuiEvent;
 import com.acgist.snail.gui.event.GuiEventEx;
 import com.acgist.snail.gui.menu.TrayMenu;
@@ -86,7 +86,7 @@ public final class NoticeEvent extends GuiEventEx {
 		map.put("message", message);
 		final String body = BEncodeEncoder.encodeMapString(map);
 		applicationMessage.setBody(body);
-		GuiHandler.getInstance().sendExtendGuiMessage(applicationMessage);
+		GuiManager.getInstance().sendExtendGuiMessage(applicationMessage);
 	}
 
 }

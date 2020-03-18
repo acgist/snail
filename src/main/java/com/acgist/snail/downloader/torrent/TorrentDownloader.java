@@ -1,7 +1,7 @@
 package com.acgist.snail.downloader.torrent;
 
 import com.acgist.snail.downloader.TorrentSessionDownloader;
-import com.acgist.snail.gui.GuiHandler;
+import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.ITaskSession.Status;
 import com.acgist.snail.pojo.session.TorrentSession;
@@ -47,7 +47,7 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 		if(this.torrentSession == null) {
 			// 任务已经完成不会再次加载：任务下载完成软件重启
 			if(this.taskSession.complete()) {
-				GuiHandler.getInstance().alert("下载失败", "任务已经完成");
+				GuiManager.getInstance().alert("下载失败", "任务已经完成");
 			}
 			return;
 		}

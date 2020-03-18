@@ -3,7 +3,7 @@ package com.acgist.main;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.gui.GuiHandler;
+import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.system.context.SystemContext;
 
 /**
@@ -41,7 +41,7 @@ public final class Application {
 		final boolean enable = SystemContext.listen(); // 启动系统监听
 		if(enable) {
 			SystemContext.init(); // 初始化系统上下文
-			GuiHandler.getInstance().init(args).build(); // 初始化GUI
+			GuiManager.getInstance().init(args).build(); // 初始化GUI
 		} else {
 			LOGGER.debug("启动监听失败");
 		}
