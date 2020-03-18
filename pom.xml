@@ -392,13 +392,6 @@
 			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 			<name>Nexus Snapshot Repository</name>
 		</snapshotRepository>
-		<!--
-		<repository>
-			<id>github</id>
-			<url>https://maven.pkg.github.com/acgist/snail</url>
-			<name>GitHub acgist/snail Apache Maven Packages</name>
-		</repository>
-		-->
 	</distributionManagement>
 
 </project>
