@@ -42,8 +42,7 @@ public final class Tooltips {
 		final Tooltip tooltip = new Tooltip(value);
 		tooltip.setShowDelay(Duration.millis(millis));
 		final Scene scene = tooltip.getScene();
-		// 导入样式文件
-		scene.getStylesheets().add(Controller.FXML_STYLE);
+		scene.getStylesheets().add(Controller.FXML_STYLE); // 导入样式文件
 		return tooltip;
 	}
 	
