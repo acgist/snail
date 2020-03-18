@@ -1,6 +1,6 @@
 package com.acgist.snail.gui.event.impl;
 
-import com.acgist.snail.gui.GuiHandler;
+import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.event.GuiEvent;
 import com.acgist.snail.gui.main.TaskDisplay;
 import com.acgist.snail.pojo.message.ApplicationMessage;
@@ -31,7 +31,7 @@ public final class RefreshTaskStatusEvent extends GuiEvent {
 	@Override
 	protected void executeExtend(Object ... args) {
 		final ApplicationMessage message = ApplicationMessage.message(ApplicationMessage.Type.REFRESH);
-		GuiHandler.getInstance().sendExtendGuiMessage(message);
+		GuiManager.getInstance().sendExtendGuiMessage(message);
 	}
 
 }

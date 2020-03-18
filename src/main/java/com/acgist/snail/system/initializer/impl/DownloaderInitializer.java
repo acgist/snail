@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.DownloaderManager;
-import com.acgist.snail.gui.GuiHandler;
+import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.repository.impl.TaskRepository;
@@ -48,7 +48,7 @@ public final class DownloaderInitializer extends Initializer {
 					}
 				});
 			DownloaderManager.getInstance().refresh(); // 刷新下载
-			GuiHandler.getInstance().refreshTaskList(); // 刷新状态
+			GuiManager.getInstance().refreshTaskList(); // 刷新状态
 		}
 	}
 

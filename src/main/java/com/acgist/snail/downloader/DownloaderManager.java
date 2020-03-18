@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.gui.GuiHandler;
+import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.system.config.DownloadConfig;
@@ -66,7 +66,7 @@ public final class DownloaderManager {
 				this.start(session);
 			}
 		} finally {
-			GuiHandler.getInstance().refreshTaskList();
+			GuiManager.getInstance().refreshTaskList();
 		}
 	}
 	
@@ -145,7 +145,7 @@ public final class DownloaderManager {
 		// 下载队列删除
 		this.downloaderMap.remove(taskSession.getId());
 		// 刷新任务列表
-		GuiHandler.getInstance().refreshTaskList();
+		GuiManager.getInstance().refreshTaskList();
 	}
 	
 	/**

@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.DownloaderManager;
-import com.acgist.snail.gui.GuiHandler;
+import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.event.impl.TorrentEvent;
 import com.acgist.snail.net.TcpMessageHandler;
 import com.acgist.snail.net.codec.IMessageCodec;
@@ -117,7 +117,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	 * @param message 系统消息
 	 */
 	private void onGui(ApplicationMessage message) {
-		final boolean ok = GuiHandler.getInstance().extendGuiMessageHandler(this);
+		final boolean ok = GuiManager.getInstance().extendGuiMessageHandler(this);
 		if(ok) {
 			send(ApplicationMessage.response(ApplicationMessage.SUCCESS));
 		} else {
@@ -150,7 +150,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	 * @param message 系统消息
 	 */
 	private void onNotify(ApplicationMessage message) {
-		GuiHandler.getInstance().show();
+		GuiManager.getInstance().show();
 	}
 	
 	/**

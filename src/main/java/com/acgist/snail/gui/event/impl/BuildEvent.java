@@ -3,7 +3,7 @@ package com.acgist.snail.gui.event.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.gui.GuiHandler;
+import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.event.GuiEvent;
 import com.acgist.snail.gui.main.MainWindow;
 import com.acgist.snail.gui.menu.TrayMenu;
@@ -46,7 +46,7 @@ public final class BuildEvent extends GuiEvent {
 
 	@Override
 	protected void executeExtend(Object ... args) {
-		GuiHandler.getInstance().lock(); // 扩展GUI阻塞锁
+		GuiManager.getInstance().lock(); // 扩展GUI阻塞锁
 	}
 	
 }

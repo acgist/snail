@@ -1,6 +1,6 @@
 package com.acgist.snail.gui.event.impl;
 
-import com.acgist.snail.gui.GuiHandler;
+import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.event.GuiEvent;
 import com.acgist.snail.gui.menu.TrayMenu;
 
@@ -32,7 +32,7 @@ public final class ExitEvent extends GuiEvent {
 
 	@Override
 	protected void executeExtend(Object ... args) {
-		GuiHandler.getInstance().unlock(); // 释放扩展GUI阻塞锁
+		GuiManager.getInstance().unlock(); // 释放扩展GUI阻塞锁
 	}
 	
 }

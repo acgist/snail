@@ -2,7 +2,7 @@ package com.acgist.snail.protocol.torrent;
 
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.downloader.torrent.TorrentDownloader;
-import com.acgist.snail.gui.GuiHandler;
+import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.ITaskSession.FileType;
@@ -183,7 +183,7 @@ public final class TorrentProtocol extends Protocol {
 	 */
 	private void selectTorrentFiles() throws DownloadException {
 		final ITaskSession taskSession = TaskSession.newInstance(this.taskEntity);
-		GuiHandler.getInstance().torrent(taskSession); // 不能抛出异常
+		GuiManager.getInstance().torrent(taskSession); // 不能抛出异常
 		if(taskSession.selectTorrentFiles().isEmpty()) { // 没有选择下载文件
 			FileUtils.delete(this.taskEntity.getFile()); // 删除已经创建文件
 			throw new DownloadException("请选择下载文件");

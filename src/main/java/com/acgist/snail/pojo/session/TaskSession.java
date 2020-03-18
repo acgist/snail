@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.downloader.IDownloader;
-import com.acgist.snail.gui.GuiHandler;
+import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.entity.TaskEntity;
@@ -237,7 +237,7 @@ public final class TaskSession implements ITaskSession {
 		final TaskRepository repository = new TaskRepository();
 		repository.update(this.entity);
 		DownloaderManager.getInstance().refresh(); // 刷新下载
-		GuiHandler.getInstance().refreshTaskStatus(); // 刷新状态
+		GuiManager.getInstance().refreshTaskStatus(); // 刷新状态
 	}
 	
 	//================实体================//

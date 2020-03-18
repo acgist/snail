@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.DownloaderManager;
-import com.acgist.snail.gui.GuiHandler;
+import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.net.TcpClient;
 import com.acgist.snail.net.TcpServer;
 import com.acgist.snail.net.UdpServer;
@@ -118,7 +118,7 @@ public final class SystemContext {
 			SystemContext.shutdown = true;
 			SystemThreadContext.submit(() -> {
 				LOGGER.info("系统关闭中...");
-				GuiHandler.getInstance().hide();
+				GuiManager.getInstance().hide();
 				DownloaderManager.getInstance().shutdown();
 				NatContext.getInstance().shutdown();
 				PeerServer.getInstance().close();
@@ -133,13 +133,13 @@ public final class SystemContext {
 				DatabaseManager.getInstance().shutdown();
 				DhtConfig.getInstance().persistent();
 				TrackerConfig.getInstance().persistent();
-				GuiHandler.getInstance().exit();
+				GuiManager.getInstance().exit();
 				SystemThreadContext.shutdown();
 				LOGGER.info("系统已关闭");
 				LoggerUtils.shutdown();
 			});
 		} else {
-			GuiHandler.getInstance().alert("关闭提示", "系统正在关闭中...");
+			GuiManager.getInstance().alert("关闭提示", "系统正在关闭中...");
 		}
 	}
 
