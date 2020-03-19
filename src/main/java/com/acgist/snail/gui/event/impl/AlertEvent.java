@@ -38,7 +38,8 @@ public final class AlertEvent extends GuiEventEx {
 	@Override
 	protected void executeEx(GuiManager.Mode mode, Object ... args) {
 		SnailAlertType type;
-		String title, message;
+		String title;
+		String message;
 		if(args == null) {
 			LOGGER.warn("提示窗口错误（参数错误）：{}", args);
 			return;

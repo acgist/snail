@@ -37,7 +37,7 @@ public final class BuildEvent extends GuiEvent {
 		final Thread javaFXThread = new Thread();
 		javaFXThread.setName(SystemThreadContext.SNAIL_THREAD_PLATFORM);
 		javaFXThread.setDaemon(true);
-		Platform.startup(javaFXThread);
+		Platform.startup(javaFXThread); // 异步启动
 		Platform.runLater(() -> {
 			TrayMenu.getInstance();
 			MainWindow.getInstance().show();

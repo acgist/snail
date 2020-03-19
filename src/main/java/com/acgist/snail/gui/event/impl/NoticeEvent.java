@@ -38,7 +38,8 @@ public final class NoticeEvent extends GuiEventEx {
 	@Override
 	protected void executeEx(GuiManager.Mode mode, Object ... args) {
 		SnailNoticeType type;
-		String title, message;
+		String title;
+		String message;
 		if(args == null) {
 			LOGGER.warn("提示消息错误（参数错误）：{}", args);
 			return;

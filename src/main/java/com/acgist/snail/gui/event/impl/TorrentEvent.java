@@ -85,19 +85,20 @@ public final class TorrentEvent extends GuiEventEx {
 	 */
 	private void executeExtendEx(ITaskSession taskSession) {
 		if(StringUtils.isEmpty(this.files)) {
+			LOGGER.debug("种子文件选择没有文件信息：{}", this.files);
 			return;
 		}
 		try {
 			final var decoder = BEncodeDecoder.newInstance(this.files);
 			// 选择文件列表
-			final var files = decoder.nextList().stream()
+			final var selectFiles = decoder.nextList().stream()
 				.map(object -> BEncodeDecoder.getString(object))
 				.collect(Collectors.toList());
 			final var torrent = TorrentManager.getInstance().newTorrentSession(taskSession.getTorrent()).torrent();
 			// 选择文件大小
 			final long size = torrent.getInfo().files().stream()
 				.filter(file -> !file.path().startsWith(TorrentInfo.PADDING_FILE_PREFIX))
-				.filter(file -> files.contains(file.path()))
+				.filter(file -> selectFiles.contains(file.path()))
 				.collect(Collectors.summingLong(TorrentFile::getLength));
 			taskSession.setSize(size);
 			taskSession.setDescription(this.files);

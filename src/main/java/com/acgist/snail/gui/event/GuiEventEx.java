@@ -30,7 +30,7 @@ public abstract class GuiEventEx extends GuiEvent {
 	 * <p>执行变长参数GUI事件</p>
 	 * 
 	 * @param mode 运行模式
-	 * @param args 参数
+	 * @param args 变长参数
 	 */
 	protected abstract void executeEx(GuiManager.Mode mode, Object ... args);
 
