@@ -46,7 +46,7 @@ public class ApplicationTest extends BaseTest {
 				client.send(ApplicationMessage.message(Type.NOTIFY, message));
 			} else if(message.equalsIgnoreCase(Type.TASK_NEW.name())) {
 				Map<String, String> map = new HashMap<>();
-				map.put("url", "http://mirror.bit.edu.cn/apache/tomcat/tomcat-9/v9.0.24/bin/apache-tomcat-9.0.24-windows-x86.zip");
+				map.put("url", "https://mirrors.tuna.tsinghua.edu.cn/apache/tomcat/tomcat-9/v9.0.33/bin/apache-tomcat-9.0.33.zip");
 //				map.put("url", "E:\\snail\\0000.torrent");
 //				map.put("files", "l50:[UHA-WINGS][Vinland Saga][01][x264 1080p][CHT].mp4e");
 				client.send(ApplicationMessage.message(Type.TASK_NEW, BEncodeEncoder.encodeMapString(map)));
