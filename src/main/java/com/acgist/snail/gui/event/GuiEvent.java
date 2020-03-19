@@ -1,5 +1,8 @@
 package com.acgist.snail.gui.event;
 
+import com.acgist.snail.gui.GuiManager;
+import com.acgist.snail.gui.GuiManager.Mode;
+
 /**
  * <p>GUI事件</p>
  * 
@@ -21,9 +24,9 @@ public abstract class GuiEvent {
 		EXIT,
 		/** 创建窗口 */
 		BUILD,
-		/** 窗口信息 */
+		/** 提示窗口 */
 		ALERT,
-		/** 提示信息 */
+		/** 提示消息 */
 		NOTICE,
 		/** 种子文件选择 */
 		TORRENT,
@@ -51,11 +54,11 @@ public abstract class GuiEvent {
 	/**
 	 * <p>执行GUI事件</p>
 	 * 
-	 * @param gui {@code true}-本地GUI；{@code false}-扩展GUI；
+	 * @param mode 运行模式
 	 * @param args 参数
 	 */
-	public void execute(boolean gui, Object ... args) {
-		if(gui) {
+	public void execute(GuiManager.Mode mode, Object ... args) {
+		if(mode == Mode.NATIVE) {
 			this.executeNative(args);
 		} else {
 			this.executeExtend(args);

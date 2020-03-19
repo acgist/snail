@@ -1,5 +1,8 @@
 package com.acgist.snail.gui.event;
 
+import com.acgist.snail.gui.GuiManager;
+import com.acgist.snail.gui.GuiManager.Mode;
+
 /**
  * <p>GUI事件扩展</p>
  * <p>处理变长参数GUI事件</p>
@@ -15,20 +18,20 @@ public abstract class GuiEventEx extends GuiEvent {
 	
 	@Override
 	protected void executeNative(Object ... args) {
-		executeEx(true, args);
+		executeEx(Mode.NATIVE, args);
 	}
 
 	@Override
 	protected void executeExtend(Object ... args) {
-		executeEx(false, args);
+		executeEx(Mode.EXTEND, args);
 	}
 	
 	/**
 	 * <p>执行变长参数GUI事件</p>
 	 * 
-	 * @param gui {@code true}-本地GUI；{@code false}-扩展GUI；
+	 * @param mode 运行模式
 	 * @param args 参数
 	 */
-	protected abstract void executeEx(boolean gui, Object ... args);
+	protected abstract void executeEx(GuiManager.Mode mode, Object ... args);
 
 }

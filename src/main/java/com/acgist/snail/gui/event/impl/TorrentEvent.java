@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.gui.GuiManager;
+import com.acgist.snail.gui.GuiManager.Mode;
 import com.acgist.snail.gui.event.GuiEventEx;
 import com.acgist.snail.gui.torrent.TorrentWindow;
 import com.acgist.snail.net.torrent.TorrentManager;
@@ -44,13 +46,13 @@ public final class TorrentEvent extends GuiEventEx {
 	}
 
 	@Override
-	protected void executeEx(boolean gui, Object ... args) {
+	protected void executeEx(GuiManager.Mode mode, Object ... args) {
 		if(args == null) {
 			LOGGER.warn("种子文件选择（参数错误）：{}", args);
 		} else if(args.length == 1) {
 			final Object object = args[0];
 			if(object instanceof ITaskSession) {
-				if(gui) {
+				if(mode == Mode.NATIVE) {
 					executeNativeEx((ITaskSession) object);
 				} else {
 					executeExtendEx((ITaskSession) object);
@@ -69,7 +71,7 @@ public final class TorrentEvent extends GuiEventEx {
 	 * @param taskSession 任务信息
 	 */
 	private void executeNativeEx(ITaskSession taskSession) {
-		if(Platform.isFxApplicationThread()) { // JavaFX线程
+		if(Platform.isFxApplicationThread()) { // JavaFX线程：本地GUI
 			TorrentWindow.getInstance().show(taskSession);
 		} else { // 非JavaFX线程：扩展GUI
 			executeExtendEx(taskSession);
