@@ -45,6 +45,11 @@ public final class StringUtils {
 	private static final String DECIMAL_REGEX = "\\-?[0-9]+(\\.[0-9]+)?";
 	
 	/**
+	 * <p>参数键值对连接符：{@value}</p>
+	 */
+	private static final String ARG_KEY_VALUE_MARK = "=";
+	
+	/**
 	 * <p>字符串是否为空</p>
 	 * 
 	 * @param value 字符串
@@ -406,6 +411,26 @@ public final class StringUtils {
 			LOGGER.error("输入流转为字符串异常", e);
 		}
 		return builder.toString();
+	}
+	
+	/**
+	 * <p>获取参数值</p>
+	 * 
+	 * @param arg 参数键值对
+	 * @param key 参数键
+	 * 
+	 * @return 参数值
+	 */
+	public static final String argValue(final String arg, final String key) {
+		String value = arg;
+		if(startsWith(value, key)) { // 去掉键
+			value = value.substring(key.length());
+			if(startsWith(value, ARG_KEY_VALUE_MARK)) { // 去掉键值对连接符
+				value = value.substring(ARG_KEY_VALUE_MARK.length());
+				return value;
+			}
+		}
+		return null;
 	}
 	
 }

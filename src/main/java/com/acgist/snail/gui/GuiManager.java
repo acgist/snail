@@ -23,6 +23,7 @@ import com.acgist.snail.net.IMessageHandler;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.message.ApplicationMessage;
 import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
 import javafx.scene.control.Alert.AlertType;
@@ -38,6 +39,24 @@ public final class GuiManager {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GuiManager.class);
 	
 	private static final GuiManager INSTANCE = new GuiManager();
+	
+	/**
+	 * <p>运行模式</p>
+	 */
+	public enum Mode {
+		
+		/**
+		 * <p>本地模式：本地GUI</p>
+		 * <p>本地GUI：JavaFX</p>
+		 */
+		NATIVE,
+		/**
+		 * <p>后台模式：扩展GUI</p>
+		 * <p>扩展GUI：自定义实现，通过系统消息进行任务管理。</p>
+		 */
+		EXTEND;
+		
+	}
 	
 	/**
 	 * <p>提示窗口类型</p>
@@ -121,17 +140,13 @@ public final class GuiManager {
 	 */
 	private static final Map<GuiEvent.Type, GuiEvent> EVENTS = new EnumMap<>(GuiEvent.Type.class);
 	/**
-	 * <p>本地GUI：{@value}</p>
-	 */
-	public static final String MODE_GUI = "gui";
-	/**
-	 * <p>后台模式：{@value}</p>
-	 */
-	public static final String MODE_DAEMO = "daemo";
-	/**
 	 * <p>扩展GUI阻塞锁时间（天）：{@value}</p>
 	 */
 	private static final int LOCK_DAYS = 365;
+	/**
+	 * <p>启动参数：运行模式</p>
+	 */
+	private static final String ARGS_MODE = "mode";
 	
 	static {
 		register(BuildEvent.getInstance());
@@ -146,9 +161,10 @@ public final class GuiManager {
 	}
 	
 	/**
-	 * <p>是否使用本地GUI：JavaFX</p>
+	 * <p>运行模式</p>
+	 * <p>默认：本地GUI</p>
 	 */
-	private boolean gui = true;
+	private Mode mode = Mode.NATIVE;
 	/**
 	 * <p>扩展GUI阻塞锁</p>
 	 * <p>使用扩展GUI时阻止程序关闭</p>
@@ -184,13 +200,20 @@ public final class GuiManager {
 	 * @return GUI处理器
 	 */
 	public GuiManager init(String ... args) {
-		if(args == null || args.length < 1) {
-			this.gui = true;
+		if(args == null) {
+			// 没有参数
 		} else {
-			final String arg = args[0];
-			this.gui = !MODE_DAEMO.equalsIgnoreCase(arg);
+			LOGGER.info("启动参数：{}", String.join(",", args));
+			String value;
+			for (String arg : args) {
+				// 运行模式
+				value = StringUtils.argValue(arg, ARGS_MODE);
+				if(value != null && Mode.EXTEND.name().equalsIgnoreCase(value)) {
+					this.mode = Mode.EXTEND;
+					LOGGER.info("运行模式：{}", this.mode);
+				}
+			}
 		}
-		LOGGER.info("运行模式：{}", this.gui ? "本地GUI" : "后台模式");
 		return this;
 	}
 	
@@ -337,7 +360,7 @@ public final class GuiManager {
 			LOGGER.warn("未知GUI事件：{}", type);
 			return this;
 		}
-		event.execute(this.gui, args);
+		event.execute(this.mode, args);
 		return this;
 	}
 	
@@ -349,7 +372,7 @@ public final class GuiManager {
 	 * @return 是否注册成功
 	 */
 	public boolean extendGuiMessageHandler(IMessageHandler extendGuiMessageHandler) {
-		if(this.gui) {
+		if(this.mode == Mode.NATIVE) {
 			LOGGER.debug("已经启用本地GUI：忽略注册扩展GUI消息代理");
 			return false;
 		} else {

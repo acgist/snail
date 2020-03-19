@@ -27,9 +27,9 @@ public final class Application {
 	 * 		<th>描述</th>
 	 * 	</tr>
 	 * 	<tr>
-	 * 		<td>{@code args[0]}</td>
-	 * 		<td>{@code gui}</td>
-	 * 		<td>{@code gui}-本地GUI；{@code daemo}-后台模式；</td>
+	 * 		<td>{@code mode}</td>
+	 * 		<td>{@code native}</td>
+	 * 		<td>{@code native}-本地GUI；{@code extend}-扩展GUI；</td>
 	 * 	</tr>
 	 * </table>
 	 * 

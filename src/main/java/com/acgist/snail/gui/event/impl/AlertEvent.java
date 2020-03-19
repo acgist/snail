@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.gui.Alerts;
 import com.acgist.snail.gui.GuiManager;
+import com.acgist.snail.gui.GuiManager.Mode;
 import com.acgist.snail.gui.GuiManager.SnailAlertType;
 import com.acgist.snail.gui.event.GuiEvent;
 import com.acgist.snail.gui.event.GuiEventEx;
@@ -35,7 +36,7 @@ public final class AlertEvent extends GuiEventEx {
 	}
 
 	@Override
-	protected void executeEx(boolean gui, Object ... args) {
+	protected void executeEx(GuiManager.Mode mode, Object ... args) {
 		SnailAlertType type;
 		String title, message;
 		if(args == null) {
@@ -53,7 +54,7 @@ public final class AlertEvent extends GuiEventEx {
 			LOGGER.warn("提示窗口错误（参数长度错误）：{}", args.length);
 			return;
 		}
-		if(gui) {
+		if(mode == Mode.NATIVE) {
 			executeNativeEx(type, title, message);
 		} else {
 			executeExtendEx(type, title, message);

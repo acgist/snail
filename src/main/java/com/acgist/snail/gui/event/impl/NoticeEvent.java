@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.gui.GuiManager;
+import com.acgist.snail.gui.GuiManager.Mode;
 import com.acgist.snail.gui.GuiManager.SnailNoticeType;
 import com.acgist.snail.gui.event.GuiEvent;
 import com.acgist.snail.gui.event.GuiEventEx;
@@ -35,7 +36,7 @@ public final class NoticeEvent extends GuiEventEx {
 	}
 	
 	@Override
-	protected void executeEx(boolean gui, Object ... args) {
+	protected void executeEx(GuiManager.Mode mode, Object ... args) {
 		SnailNoticeType type;
 		String title, message;
 		if(args == null) {
@@ -53,7 +54,7 @@ public final class NoticeEvent extends GuiEventEx {
 			LOGGER.warn("提示消息错误（参数长度错误）：{}", args.length);
 			return;
 		}
-		if(gui) {
+		if(mode == Mode.NATIVE) {
 			executeNativeEx(type, title, message);
 		} else {
 			executeExtendEx(type, title, message);
