@@ -38,12 +38,10 @@ public final class StringUtils {
 	 * <p>数字正则表达式（正负整数）：{@value}</p>
 	 */
 	private static final String NUMERIC_REGEX = "\\-?[0-9]+";
-	
 	/**
 	 * <p>数字正则表达式（正负小数、正负整数）：{@value}</p>
 	 */
 	private static final String DECIMAL_REGEX = "\\-?[0-9]+(\\.[0-9]+)?";
-	
 	/**
 	 * <p>参数键值对连接符：{@value}</p>
 	 */
