@@ -29,7 +29,7 @@ import com.acgist.snail.utils.ThreadUtils;
 import javafx.scene.control.Alert.AlertType;
 
 /**
- * <p>GUI处理器</p>
+ * <p>GUI管理器</p>
  * 
  * @author acgist
  * @since 1.1.0
@@ -52,7 +52,7 @@ public final class GuiManager {
 		NATIVE,
 		/**
 		 * <p>后台模式：扩展GUI</p>
-		 * <p>扩展GUI：自定义实现，通过系统消息进行任务管理。</p>
+		 * <p>扩展GUI：自定义实现，通过系统消息和系统通知来完成系统管理和任务管理。</p>
 		 */
 		EXTEND;
 		
@@ -193,11 +193,11 @@ public final class GuiManager {
 	}
 
 	/**
-	 * <p>初始化GUI处理器</p>
+	 * <p>初始化GUI管理器</p>
 	 * 
 	 * @param args 参数
 	 * 
-	 * @return GUI处理器
+	 * @return GUI管理器
 	 */
 	public GuiManager init(String ... args) {
 		if(args == null) {
@@ -220,7 +220,7 @@ public final class GuiManager {
 	/**
 	 * <p>显示窗口</p>
 	 * 
-	 * @return GUI处理器
+	 * @return GUI管理器
 	 */
 	public GuiManager show() {
 		this.event(Type.SHOW);
@@ -230,7 +230,7 @@ public final class GuiManager {
 	/**
 	 * <p>隐藏窗口</p>
 	 * 
-	 * @return GUI处理器
+	 * @return GUI管理器
 	 */
 	public GuiManager hide() {
 		this.event(Type.HIDE);
@@ -240,7 +240,7 @@ public final class GuiManager {
 	/**
 	 * <p>退出窗口</p>
 	 * 
-	 * @return GUI处理器
+	 * @return GUI管理器
 	 */
 	public GuiManager exit() {
 		this.event(Type.EXIT);
@@ -250,7 +250,7 @@ public final class GuiManager {
 	/**
 	 * <p>创建窗口</p>
 	 * 
-	 * @return GUI处理器
+	 * @return GUI管理器
 	 */
 	public GuiManager build() {
 		this.event(Type.BUILD);
@@ -263,7 +263,7 @@ public final class GuiManager {
 	 * @param title 标题
 	 * @param message 内容
 	 * 
-	 * @return GUI处理器
+	 * @return GUI管理器
 	 */
 	public GuiManager alert(String title, String message) {
 		this.alert(title, message, SnailAlertType.INFO);
@@ -277,7 +277,7 @@ public final class GuiManager {
 	 * @param message 内容
 	 * @param type 类型
 	 * 
-	 * @return GUI处理器
+	 * @return GUI管理器
 	 */
 	public GuiManager alert(String title, String message, SnailAlertType type) {
 		this.event(Type.ALERT, title, message, type);
@@ -290,7 +290,7 @@ public final class GuiManager {
 	 * @param title 标题
 	 * @param message 内容
 	 * 
-	 * @return GUI处理器
+	 * @return GUI管理器
 	 */
 	public GuiManager notice(String title, String message) {
 		this.notice(title, message, SnailNoticeType.INFO);
@@ -304,7 +304,7 @@ public final class GuiManager {
 	 * @param message 内容
 	 * @param type 类型
 	 * 
-	 * @return GUI处理器
+	 * @return GUI管理器
 	 */
 	public GuiManager notice(String title, String message, SnailNoticeType type) {
 		this.event(Type.NOTICE, title, message, type);
@@ -316,7 +316,7 @@ public final class GuiManager {
 	 * 
 	 * @param taskSession 任务信息
 	 * 
-	 * @return GUI处理器
+	 * @return GUI管理器
 	 */
 	public GuiManager torrent(ITaskSession taskSession) {
 		this.event(Type.TORRENT, taskSession);
@@ -326,7 +326,7 @@ public final class GuiManager {
 	/**
 	 * <p>刷新任务列表</p>
 	 * 
-	 * @return GUI处理器
+	 * @return GUI管理器
 	 */
 	public GuiManager refreshTaskList() {
 		this.event(Type.REFRESH_TASK_LIST);
@@ -336,7 +336,7 @@ public final class GuiManager {
 	/**
 	 * <p>刷新任务状态</p>
 	 * 
-	 * @return GUI处理器
+	 * @return GUI管理器
 	 */
 	public GuiManager refreshTaskStatus() {
 		this.event(Type.REFRESH_TASK_STATUS);
@@ -349,7 +349,7 @@ public final class GuiManager {
 	 * @param type 类型
 	 * @param args 参数
 	 * 
-	 * @return GUI处理器
+	 * @return GUI管理器
 	 */
 	public GuiManager event(GuiEvent.Type type, Object ... args) {
 		if(type == null) {
@@ -360,6 +360,7 @@ public final class GuiManager {
 			LOGGER.warn("未知GUI事件：{}", type);
 			return this;
 		}
+		// TODO：线程安全
 		event.execute(this.mode, args);
 		return this;
 	}
