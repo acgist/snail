@@ -30,6 +30,7 @@ public final class HideEvent extends GuiEvent {
 
 	@Override
 	protected void executeExtend(Object ... args) {
+		// TODO：实现
 	}
 	
 }
