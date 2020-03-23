@@ -155,14 +155,14 @@ public final class MainController extends Controller implements Initializable {
 		// 颜色
 		final var color = Color.rgb(198, 198, 198);
 		// 图标
-		final var iconLabel = SnailIcon.AS_DOWNLOAD3.iconLabel();
-		iconLabel.getStyleClass().add("placeholder"); // 特殊样式
-		iconLabel.setTextFill(color);
+		final var icon = SnailIcon.AS_DOWNLOAD3.iconLabel();
+		icon.getStyleClass().add("placeholder"); // 特殊样式
+		icon.setTextFill(color);
 		// 文本
 		final var text = new Text("点击新建按钮或者拖动下载链接、种子文件开始下载");
 		text.setFill(color);
 		// 提示信息
-		final var placeholder = new VBox(iconLabel, text);
+		final var placeholder = new VBox(icon, text);
 		placeholder.setAlignment(Pos.CENTER);
 		return placeholder;
 	}

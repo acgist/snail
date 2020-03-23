@@ -679,6 +679,7 @@ public final class TorrentStream {
 				pos = this.firstPiecePos();
 				length = this.firstPieceSize();
 			} else {
+				// TODO：只有单个文件、填充文件
 				if(index == this.fileBeginPieceIndex) {
 					verify = false;
 					pos = this.firstPiecePos();

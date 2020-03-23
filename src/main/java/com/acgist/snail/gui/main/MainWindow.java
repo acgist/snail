@@ -40,9 +40,9 @@ public final class MainWindow extends Window<MainController> {
 	@Override
 	public void start(Stage stage) throws Exception {
 		this.buildWindow(stage, SystemConfig.getName(), 1000, 600, "/fxml/main.fxml", Modality.NONE);
-		icon();
-		help();
-		statistics();
+		this.icon();
+		this.help();
+		this.statistics();
 	}
 	
 	@Override
