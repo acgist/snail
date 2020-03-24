@@ -109,9 +109,11 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	/**
 	 * <p>获取文件名称</p>
 	 * <p>下载文件名称：如果不存在返回默认的文件名称</p>
-	 * <p>Content-Disposition:attachment;filename="snail.jar"</p>
-	 * <p>Content-Disposition:attachment;filename=snail.jar?version=1.0.0</p>
-	 * <p>Content-Disposition:inline;filename="snail.jar";filename*=utf-8''snail.jar</p>
+	 * <pre>
+	 * Content-Disposition:attachment;filename="snail.jar"
+	 * Content-Disposition:attachment;filename=snail.jar?version=1.0.0
+	 * Content-Disposition:inline;filename="snail.jar";filename*=utf-8''snail.jar
+	 * </pre>
 	 * 
 	 * @param defaultName 默认文件名称
 	 * 
