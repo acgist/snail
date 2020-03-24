@@ -45,7 +45,7 @@ public final class StringUtils {
 	/**
 	 * <p>参数键值对连接符：{@value}</p>
 	 */
-	private static final String ARG_KEY_VALUE_MARK = "=";
+	private static final String ARG_SEPARATOR = "=";
 	
 	/**
 	 * <p>字符串是否为空</p>
@@ -422,9 +422,9 @@ public final class StringUtils {
 	public static final String argValue(final String arg, final String key) {
 		String value = arg;
 		if(startsWith(value, key)) { // 去掉键
-			value = value.substring(key.length());
-			if(startsWith(value, ARG_KEY_VALUE_MARK)) { // 去掉键值对连接符
-				value = value.substring(ARG_KEY_VALUE_MARK.length());
+			value = value.substring(key.length()).trim();
+			if(startsWith(value, ARG_SEPARATOR)) { // 去掉键值对连接符
+				value = value.substring(ARG_SEPARATOR.length()).trim();
 				return value;
 			}
 		}

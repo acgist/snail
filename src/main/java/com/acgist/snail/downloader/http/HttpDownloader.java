@@ -52,7 +52,7 @@ public final class HttpDownloader extends SingleFileDownloader {
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * @see HttpHeaderWrapper#RANGE
+	 * @see HttpHeaderWrapper#HEADER_RANGE
 	 */
 	@Override
 	protected void buildInput() throws NetException {
@@ -62,7 +62,7 @@ public final class HttpDownloader extends SingleFileDownloader {
 		final var client = HTTPClient.newInstance(this.taskSession.getUrl(), SystemConfig.CONNECT_TIMEOUT, SystemConfig.DOWNLOAD_TIMEOUT);
 		// HTTP响应
 		final HttpResponse<InputStream> response = client
-			.header(HttpHeaderWrapper.RANGE, "bytes=" + size + "-")
+			.header(HttpHeaderWrapper.HEADER_RANGE, "bytes=" + size + "-")
 			.get(BodyHandlers.ofInputStream());
 		// 请求成功和部分请求成功
 		if(HTTPClient.ok(response) || HTTPClient.partialContent(response)) {
