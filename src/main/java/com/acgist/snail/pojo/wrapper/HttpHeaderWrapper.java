@@ -22,29 +22,29 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	/**
 	 * <p>服务器名称：{@value}</p>
 	 */
-	public static final String SERVER = "Server";
+	public static final String HEADER_SERVER = "Server";
 	/**
 	 * <p>MIME类型：{@value}</p>
 	 */
-	public static final String CONTENT_TYPE = "Content-Type";
+	public static final String HEADER_CONTENT_TYPE = "Content-Type";
 	/**
 	 * <p>接收范围请求：{@value}</p>
-	 * <p>没有接收{@link #RANGE}时返回全部数据</p>
+	 * <p>没有接收{@link #HEADER_RANGE}时返回全部数据</p>
 	 */
-	public static final String ACCEPT_RANGES = "Accept-Ranges";
+	public static final String HEADER_ACCEPT_RANGES = "Accept-Ranges";
 	/**
 	 * <p>请求下载范围：{@value}</p>
-	 * <p>接收{@link #RANGE}时返回范围数据</p>
+	 * <p>接收{@link #HEADER_RANGE}时返回范围数据</p>
 	 */
-	public static final String CONTENT_RANGE = "Content-Range";
+	public static final String HEADER_CONTENT_RANGE = "Content-Range";
 	/**
 	 * <p>下载大小：{@value}</p>
 	 */
-	public static final String CONTENT_LENGTH = "Content-Length";
+	public static final String HEADER_CONTENT_LENGTH = "Content-Length";
 	/**
 	 * <p>下载描述：{@value}</p>
 	 */
-	public static final String CONTENT_DISPOSITION = "Content-Disposition";
+	public static final String HEADER_CONTENT_DISPOSITION = "Content-Disposition";
 	/**
 	 * <p>范围请求：{@value}</p>
 	 * <table border="1">
@@ -75,19 +75,19 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	 * 	</tr>
 	 * </table>
 	 */
-	public static final String RANGE = "Range";
+	public static final String HEADER_RANGE = "Range";
 	/**
 	 * <p>接收范围请求：{@value}</p>
 	 * 
-	 * @see #ACCEPT_RANGES
+	 * @see #HEADER_ACCEPT_RANGES
 	 */
-	public static final String BYTES = "bytes";
+	public static final String HEADER_BYTES = "bytes";
 	/**
 	 * <p>文件名称：{@value}</p>
 	 * 
-	 * @see #CONTENT_DISPOSITION
+	 * @see #HEADER_CONTENT_DISPOSITION
 	 */
-	public static final String FILENAME = "filename";
+	public static final String HEADER_FILENAME = "filename";
 	
 	private HttpHeaderWrapper(Map<String, List<String>> headers) {
 		super(headers);
@@ -118,12 +118,12 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	 * @return 文件名称
 	 */
 	public String fileName(final String defaultName) {
-		String fileName = header(CONTENT_DISPOSITION);
+		String fileName = header(HEADER_CONTENT_DISPOSITION);
 		if(StringUtils.isEmpty(fileName)) {
 			return defaultName;
 		}
 		final String fileNameLower = fileName.toLowerCase();
-		if(fileNameLower.contains(FILENAME)) { // 包含文件名称
+		if(fileNameLower.contains(HEADER_FILENAME)) { // 包含文件名称
 			fileName = extractFileName(fileName);
 			return charsetFileName(fileName, defaultName);
 		} else {
@@ -143,9 +143,9 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 		// URL解码
 		fileName = UrlUtils.decode(fileName);
 		// 删除：filename前面内容
-		index = fileName.indexOf(FILENAME);
+		index = fileName.indexOf(HEADER_FILENAME);
 		if(index != -1) {
-			fileName = fileName.substring(index + FILENAME.length());
+			fileName = fileName.substring(index + HEADER_FILENAME.length());
 		}
 		// 删除：等号前面内容
 		index = fileName.indexOf("=");
@@ -227,7 +227,7 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	 */
 	public long fileSize() {
 		long size = 0L;
-		final String value = header(CONTENT_LENGTH);
+		final String value = header(HEADER_CONTENT_LENGTH);
 		if(value != null) {
 			if(StringUtils.isNumeric(value)) {
 				size = Long.parseLong(value);
@@ -245,10 +245,10 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	 */
 	public boolean range() {
 		boolean range = false;
-		final String acceptRanges = header(ACCEPT_RANGES);
-		final String contentRange = header(CONTENT_RANGE);
+		final String acceptRanges = header(HEADER_ACCEPT_RANGES);
+		final String contentRange = header(HEADER_CONTENT_RANGE);
 		if(acceptRanges != null) {
-			range = BYTES.equalsIgnoreCase(acceptRanges);
+			range = HEADER_BYTES.equalsIgnoreCase(acceptRanges);
 		}
 		if(contentRange != null) {
 			range = true;
@@ -264,10 +264,10 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	 */
 	public long beginRange() {
 		long range = 0L;
-		final String contentRange = header(CONTENT_RANGE);
+		final String contentRange = header(HEADER_CONTENT_RANGE);
 		if(contentRange != null) {
 			final int endIndex = contentRange.lastIndexOf("-");
-			final String value = contentRange.substring(BYTES.length(), endIndex).trim();
+			final String value = contentRange.substring(HEADER_BYTES.length(), endIndex).trim();
 			if(StringUtils.isNumeric(value)) {
 				range = Long.parseLong(value);
 			}

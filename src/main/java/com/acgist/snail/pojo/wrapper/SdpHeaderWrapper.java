@@ -14,18 +14,18 @@ public final class SdpHeaderWrapper extends HeaderWrapper {
 	/**
 	 * <p>头部信息分隔符：{@value}</p>
 	 */
-	private static final String DEFAULT_HEADER_KV = "=";
+	private static final String DEFAULT_HEADER_SEPARATOR = "=";
 	/**
 	 * <p>头部信息填充符：{@value}</p>
 	 */
 	private static final String DEFAULT_HEADER_PADDING = "";
 	
 	private SdpHeaderWrapper(String content) {
-		super(DEFAULT_HEADER_KV, DEFAULT_HEADER_PADDING, content);
+		super(DEFAULT_HEADER_SEPARATOR, DEFAULT_HEADER_PADDING, content);
 	}
 	
 	private SdpHeaderWrapper(Map<String, List<String>> headers) {
-		super(DEFAULT_HEADER_KV, DEFAULT_HEADER_PADDING, headers);
+		super(DEFAULT_HEADER_SEPARATOR, DEFAULT_HEADER_PADDING, headers);
 	}
 	
 	public static final SdpHeaderWrapper newInstance(String content) {

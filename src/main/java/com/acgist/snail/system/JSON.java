@@ -73,11 +73,11 @@ public class JSON {
 	/**
 	 * <p>键值分隔符：{@value}</p>
 	 */
-	private static final char JSON_KV = ':';
+	private static final char JSON_KV_SEPARATOR = ':';
 	/**
 	 * <p>属性分隔符：{@value}</p>
 	 */
-	private static final char JSON_ATTR = ',';
+	private static final char JSON_ATTR_SEPARATOR = ',';
 	/**
 	 * <p>字符串：{@value}</p>
 	 */
@@ -209,9 +209,9 @@ public class JSON {
 		if(!map.isEmpty()) {
 			map.entrySet().forEach(entry -> {
 				serializeValue(entry.getKey(), builder);
-				builder.append(JSON_KV);
+				builder.append(JSON_KV_SEPARATOR);
 				serializeValue(entry.getValue(), builder);
-				builder.append(JSON_ATTR);
+				builder.append(JSON_ATTR_SEPARATOR);
 			});
 			builder.setLength(builder.length() - 1);
 		}
@@ -232,7 +232,7 @@ public class JSON {
 		if(!list.isEmpty()) {
 			list.forEach(value -> {
 				serializeValue(value, builder);
-				builder.append(JSON_ATTR);
+				builder.append(JSON_ATTR_SEPARATOR);
 			});
 			builder.setLength(builder.length() - 1);
 		}
@@ -361,7 +361,7 @@ public class JSON {
 				json = false;
 			}
 			// 不属于JSON对象和字符串对象出现分隔符：结束循环
-			if(!string && !json && (value == JSON_KV || value == JSON_ATTR)) {
+			if(!string && !json && (value == JSON_KV_SEPARATOR || value == JSON_ATTR_SEPARATOR)) {
 				index.incrementAndGet();
 				break;
 			}
