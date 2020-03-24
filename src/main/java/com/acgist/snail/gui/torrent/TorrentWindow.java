@@ -37,9 +37,9 @@ public final class TorrentWindow extends Window<TorrentController> {
 	@Override
 	public void start(Stage stage) throws Exception {
 		this.buildWindow(stage, "编辑任务", 800, 600, "/fxml/torrent.fxml", Modality.APPLICATION_MODAL);
-		disableResize();
-		dialogWindow();
-		windowHidden();
+		this.disableResize();
+		this.dialogWindow();
+		this.windowHidden();
 	}
 	
 	/**
