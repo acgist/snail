@@ -52,13 +52,37 @@ public final class TaskMenu extends Menu {
 		return INSTANCE;
 	}
 
+	/**
+	 * <p>开始按钮</p>
+	 */
 	private MenuItem startMenu;
+	/**
+	 * <p>暂停按钮</p>
+	 */
 	private MenuItem pauseMenu;
+	/**
+	 * <p>删除按钮</p>
+	 */
 	private MenuItem deleteMenu;
+	/**
+	 * <p>复制链接按钮</p>
+	 */
 	private MenuItem copyUrlMenu;
+	/**
+	 * <p>文件选择按钮</p>
+	 */
 	private MenuItem torrentMenu;
+	/**
+	 * <p>导出种子按钮</p>
+	 */
 	private MenuItem exportTorrentMenu;
+	/**
+	 * <p>文件校验按钮</p>
+	 */
 	private MenuItem verifyMenu;
+	/**
+	 * <p>打开目录按钮</p>
+	 */
 	private MenuItem openFolderMenu;
 	
 	@Override
@@ -81,15 +105,16 @@ public final class TaskMenu extends Menu {
 		this.exportTorrentMenu.setOnAction(this.exportTorrentEvent);
 		this.verifyMenu.setOnAction(this.verifyEvent);
 		this.openFolderMenu.setOnAction(this.openFolderEvent);
-		// 添加按钮
+		// 操作按钮
 		this.addMenu(this.startMenu);
 		this.addMenu(this.pauseMenu);
 		this.addMenu(this.deleteMenu);
 		this.addMenu(this.copyUrlMenu);
-		// BT任务按钮
+		// 种子任务按钮
 		this.addSeparator();
 		this.addMenu(this.torrentMenu);
 		this.addMenu(this.exportTorrentMenu);
+		// 其他按钮
 		this.addSeparator();
 		this.addMenu(this.verifyMenu);
 		this.addMenu(this.openFolderMenu);
@@ -169,20 +194,20 @@ public final class TaskMenu extends Menu {
 	 */
 	private EventHandler<ActionEvent> verifyEvent = event -> {
 		SystemThreadContext.submit(() -> {
-			final Map<String, String> hash = new HashMap<>();
+			final Map<String, String> verifyFileHash = new HashMap<>();
 			MainWindow.getInstance().controller().selected().forEach(session -> {
 				if(session.complete()) {
-					hash.putAll(FileUtils.sha1(session.getFile()));
+					verifyFileHash.putAll(FileUtils.sha1(session.getFile()));
 				}
 			});
-			if(hash.isEmpty()) {
+			if(verifyFileHash.isEmpty()) {
 				Platform.runLater(() -> {
 					Alerts.warn("校验失败", "请等待任务下载完成");
 				});
 			} else {
 				Platform.runLater(() -> {
 					final StringBuilder builder = new StringBuilder();
-					hash.forEach((key, value) -> {
+					verifyFileHash.forEach((key, value) -> {
 						builder.append(value).append("=").append(FileUtils.fileNameFromUrl(key)).append("\n");
 					});
 					final Optional<ButtonType> optional = Alerts.info("文件SHA-1校验", builder.toString());

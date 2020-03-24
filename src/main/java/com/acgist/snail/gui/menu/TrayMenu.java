@@ -90,12 +90,30 @@ public final class TrayMenu extends Menu {
 		return INSTANCE;
 	}
 
+	/**
+	 * <p>显示按钮</p>
+	 */
 	private MenuItem showMenu;
+	/**
+	 * <p>隐藏按钮</p>
+	 */
 	private MenuItem hideMenu;
-	private MenuItem exitMenu;
-	private MenuItem aboutMenu;
+	/**
+	 * <p>官网与源码按钮</p>
+	 */
 	private MenuItem sourceMenu;
+	/**
+	 * <p>问题与建议按钮</p>
+	 */
 	private MenuItem supportMenu;
+	/**
+	 * <p>关于按钮</p>
+	 */
+	private MenuItem aboutMenu;
+	/**
+	 * <p>退出按钮</p>
+	 */
+	private MenuItem exitMenu;
 
 	@Override
 	protected void initMenu() {
@@ -109,10 +127,10 @@ public final class TrayMenu extends Menu {
 		// 设置按钮事件
 		this.showMenu.setOnAction(this.showAction);
 		this.hideMenu.setOnAction(this.hideAction);
-		this.exitMenu.setOnAction(this.exitAction);
-		this.aboutMenu.setOnAction(this.aboutAction);
 		this.sourceMenu.setOnAction(this.sourceAction);
 		this.supportMenu.setOnAction(this.supportAction);
+		this.aboutMenu.setOnAction(this.aboutAction);
+		this.exitMenu.setOnAction(this.exitAction);
 		// 添加按钮
 		this.addMenu(this.showMenu);
 		this.addMenu(this.hideMenu);
