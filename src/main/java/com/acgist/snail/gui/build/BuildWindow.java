@@ -35,8 +35,8 @@ public final class BuildWindow extends Window<BuildController> {
 	@Override
 	public void start(Stage stage) throws Exception {
 		this.buildWindow(stage, "新建下载", 600, 300, "/fxml/build.fxml", Modality.APPLICATION_MODAL);
-		disableResize();
-		dialogWindow();
+		this.disableResize();
+		this.dialogWindow();
 	}
 	
 	/**
