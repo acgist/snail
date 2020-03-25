@@ -63,8 +63,8 @@ public final class SettingController extends Controller implements Initializable
 		this.scrollPane.prefWidthProperty().bind(this.root.widthProperty());
 		this.scrollPane.prefHeightProperty().bind(this.root.heightProperty());
 		// 初始化
-		initSetting();
-		initControl();
+		this.initSetting();
+		this.initControl();
 	}
 
 	/**
@@ -109,7 +109,7 @@ public final class SettingController extends Controller implements Initializable
 	private void initControl() {
 		// 初始化下载目录
 		this.pathValue.setCursor(Cursor.HAND);
-		this.pathValue.setOnMouseClicked(this.openDownloadPath);
+		this.pathValue.setOnMouseClicked(this.pathClickedAction);
 		// 初始化任务数量
 		this.size.valueProperty().addListener(this.sizeListener);
 		this.size.setOnMouseReleased(this.sizeReleaseAction);
@@ -124,9 +124,9 @@ public final class SettingController extends Controller implements Initializable
 	}
 	
 	/**
-	 * <p>打开下载目录</p>
+	 * <p>下载目录事件</p>
 	 */
-	private EventHandler<MouseEvent> openDownloadPath = event -> {
+	private EventHandler<MouseEvent> pathClickedAction = event -> {
 		final File file = new File(DownloadConfig.getPath());
 		DesktopUtils.open(file);
 	};
@@ -135,7 +135,7 @@ public final class SettingController extends Controller implements Initializable
 	 * <p>下载任务数量监听</p>
 	 */
 	private ChangeListener<? super Number> sizeListener = (obs, oldVal, newVal) -> {
-		int value = newVal.intValue(); // 设置整数个任务
+		int value = newVal.intValue(); // 设置整数任务
 		if(value <= 0) { // 不能设置：0
 			value = 1;
 		}
