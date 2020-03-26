@@ -191,12 +191,12 @@ public final class StatisticsController extends Controller implements Initializa
 	 */
 	private void dht() {
 		final List<NodeSession> nodes = NodeManager.getInstance().nodes();
-		final Map<NodeSession.Status, Long> dhtGroup = nodes.stream()
+		final Map<NodeSession.Status, Long> nodeGroup = nodes.stream()
 			.collect(Collectors.groupingBy(NodeSession::getStatus, Collectors.counting()));
 		this.dhtTotal.setText(String.valueOf(nodes.size()));
-		this.dhtUnuse.setText(String.valueOf(dhtGroup.getOrDefault(NodeSession.Status.UNUSE, 0L)));
-		this.dhtVerify.setText(String.valueOf(dhtGroup.getOrDefault(NodeSession.Status.VERIFY, 0L)));
-		this.dhtAvailable.setText(String.valueOf(dhtGroup.getOrDefault(NodeSession.Status.AVAILABLE, 0L)));
+		this.dhtUnuse.setText(String.valueOf(nodeGroup.getOrDefault(NodeSession.Status.UNUSE, 0L)));
+		this.dhtVerify.setText(String.valueOf(nodeGroup.getOrDefault(NodeSession.Status.VERIFY, 0L)));
+		this.dhtAvailable.setText(String.valueOf(nodeGroup.getOrDefault(NodeSession.Status.AVAILABLE, 0L)));
 	}
 	
 	/**
@@ -204,11 +204,11 @@ public final class StatisticsController extends Controller implements Initializa
 	 */
 	private void tracker() {
 		final List<TrackerClient> clients = TrackerManager.getInstance().clients();
-		final Map<Boolean, Long> trackerGroup = clients.stream()
+		final Map<Boolean, Long> clientGroup = clients.stream()
 			.collect(Collectors.groupingBy(TrackerClient::available, Collectors.counting()));
 		this.trackerTotal.setText(String.valueOf(clients.size()));
-		this.trackerDisable.setText(String.valueOf(trackerGroup.getOrDefault(Boolean.FALSE, 0L)));
-		this.trackerAvailable.setText(String.valueOf(trackerGroup.getOrDefault(Boolean.TRUE, 0L)));
+		this.trackerDisable.setText(String.valueOf(clientGroup.getOrDefault(Boolean.FALSE, 0L)));
+		this.trackerAvailable.setText(String.valueOf(clientGroup.getOrDefault(Boolean.TRUE, 0L)));
 	}
 	
 	/**
@@ -221,9 +221,11 @@ public final class StatisticsController extends Controller implements Initializa
 			.filter(session -> session.done()) // 准备完成
 			.forEach(session -> obs.add(new SelectInfoHash(session.infoHashHex(), session.name())));
 		this.selectInfoHashs.setItems(obs);
-		if(defaultValue == null) { // 没有选中任务：默认选中第一个任务
+		if(defaultValue == null) {
+			// 没有选中任务：默认选中第一个任务
 			this.selectInfoHashs.getSelectionModel().select(0);
-		} else { // 已经选中任务：选中之前选中的任务
+		} else {
+			// 已经选中任务：选中之前选中的任务
 			final int index = obs.indexOf(defaultValue);
 			this.selectInfoHashs.getSelectionModel().select(index);
 		}
@@ -416,8 +418,9 @@ public final class StatisticsController extends Controller implements Initializa
 			return;
 		}
 		final int pieceSize = torrent.getInfo().pieceSize();
-		final CanvasPainter painter = CanvasPainter.newInstance(12, 50, pieceSize, torrentSession.pieces(), torrentSession.selectPieces());
-		painter.build().draw();
+		final CanvasPainter painter = CanvasPainter.newInstance(12, 50, pieceSize, torrentSession.pieces(), torrentSession.selectPieces())
+			.build()
+			.draw();
 		this.statisticsBox.getChildren().clear();
 		this.statisticsBox.getChildren().add(painter.canvas());
 		// 健康度
@@ -459,8 +462,14 @@ public final class StatisticsController extends Controller implements Initializa
 	 */
 	protected static final class SelectInfoHash {
 
-		private final String hash; // 任务Hash
-		private final String name; // 任务名称
+		/**
+		 * <p>任务Hash</p>
+		 */
+		private final String hash;
+		/**
+		 * <p>任务名称</p>
+		 */
+		private final String name;
 
 		public SelectInfoHash(String hash, String name) {
 			this.hash = hash;

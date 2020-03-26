@@ -129,8 +129,8 @@ public final class CanvasPainter {
 		this.borderColor = borderColor;
 		this.background = background;
 		this.length = length;
-		this.selectBitSet = selectBitSet;
 		this.bitSet = bitSet;
+		this.selectBitSet = selectBitSet;
 	}
 	
 	/**
