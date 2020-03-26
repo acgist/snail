@@ -261,7 +261,7 @@ public final class CanvasPainter {
 	}
 	
 	/**
-	 * <p>创建画布和画笔，画出背景和边框。</p>
+	 * <p>创建画布、画笔，画出背景和边框。</p>
 	 * 
 	 * @param canvas 画布
 	 * 

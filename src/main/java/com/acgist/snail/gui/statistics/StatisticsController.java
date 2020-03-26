@@ -217,12 +217,9 @@ public final class StatisticsController extends Controller implements Initializa
 	private void infoHash() {
 		final var defaultValue = this.selectInfoHashs.getValue();
 		final ObservableList<SelectInfoHash> obs = FXCollections.observableArrayList();
-		TorrentManager.getInstance().allTorrentSession()
-			.stream()
+		TorrentManager.getInstance().allTorrentSession().stream()
 			.filter(session -> session.done()) // 准备完成
-			.forEach(session -> {
-				obs.add(new SelectInfoHash(session.infoHashHex(), session.name()));
-			});
+			.forEach(session -> obs.add(new SelectInfoHash(session.infoHashHex(), session.name())));
 		this.selectInfoHashs.setItems(obs);
 		if(defaultValue == null) { // 没有选中任务：默认选中第一个任务
 			this.selectInfoHashs.getSelectionModel().select(0);
@@ -437,7 +434,7 @@ public final class StatisticsController extends Controller implements Initializa
 	 * @return 选中InfoHashHex
 	 */
 	private String selectInfoHashHex() {
-		final SelectInfoHash value = (SelectInfoHash) this.selectInfoHashs.getValue();
+		final SelectInfoHash value = this.selectInfoHashs.getValue();
 		if(value == null) {
 			return null;
 		}
