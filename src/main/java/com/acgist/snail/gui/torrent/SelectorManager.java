@@ -76,14 +76,14 @@ public final class SelectorManager {
 		TreeItem<HBox> parent = this.root;
 		// 包含路径时创建路径菜单
 		if(path.contains(TorrentFile.SEPARATOR)) {
-			String parentPath = "";
 			TreeItem<HBox> treeItem = null;
+			final StringBuilder parentPath = new StringBuilder("");
 			final String[] paths = path.split(TorrentFile.SEPARATOR);
 			// 创建路径菜单
-			for (int index = 0; index < paths.length - 1; index++) {
+			for (int index = 0; index < paths.length - 1; index++) { // 数量大时forEach效率很低
 				final String value = paths[index];
-				parentPath += value + TorrentFile.SEPARATOR;
-				treeItem = buildTreeItem(parent, parentPath, value, null);
+				parentPath.append(value).append(TorrentFile.SEPARATOR);
+				treeItem = buildTreeItem(parent, parentPath.toString(), value, null);
 				parent = treeItem;
 			}
 			name = paths[paths.length - 1];
@@ -101,8 +101,9 @@ public final class SelectorManager {
 	 * @param size 文件大小
 	 */
 	private TreeItem<HBox> buildTreeItem(TreeItem<HBox> parent, String path, String name, Long size) {
-		if(this.selector.containsKey(path)) { // 如果已经创建跳过：路径菜单
-			return this.selector.get(path).getTreeItem();
+		final Selector oldSelector = this.selector.get(path);
+		if(oldSelector != null) { // 如果已经创建跳过：路径菜单
+			return oldSelector.getTreeItem();
 		}
 		final CheckBox checkBox = new CheckBox(name);
 		checkBox.setPrefWidth(500);
@@ -141,8 +142,8 @@ public final class SelectorManager {
 	 */
 	public List<String> description() {
 		return this.selector.entrySet().stream()
-			.filter(entry -> entry.getValue().isSelected()) // 选中
 			.filter(entry -> entry.getValue().isFile()) // 文件
+			.filter(entry -> entry.getValue().isSelected()) // 选中
 			.map(Entry::getKey)
 			.collect(Collectors.toList());
 	}
