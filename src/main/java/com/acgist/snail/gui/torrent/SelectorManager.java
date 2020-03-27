@@ -115,7 +115,7 @@ public final class SelectorManager {
 			final Text text = new Text(FileUtils.formatSize(size));
 			box.getChildren().add(text);
 		}
-		final TreeItem<HBox> treeItem = new TreeItem<HBox>(box);
+		final TreeItem<HBox> treeItem = new TreeItem<>(box);
 		this.selector.put(path, new Selector(path, size, checkBox, treeItem));
 		if(parent != null) { // 根节点没有父节点
 			parent.getChildren().add(treeItem);
