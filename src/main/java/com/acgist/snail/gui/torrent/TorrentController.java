@@ -61,10 +61,11 @@ public final class TorrentController extends Controller implements Initializable
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// 设置属性
+		final double downloadBoxHeight = 40D; // 下载按钮高度
 		this.downloadBox.prefWidthProperty().bind(this.root.widthProperty());
-		this.downloadBox.prefHeightProperty().setValue(40D);
+		this.downloadBox.prefHeightProperty().setValue(downloadBoxHeight);
 		this.treeBox.prefWidthProperty().bind(this.root.widthProperty());
-		this.treeBox.prefHeightProperty().bind(this.root.heightProperty().subtract(40D));
+		this.treeBox.prefHeightProperty().bind(this.root.heightProperty().subtract(downloadBoxHeight));
 		// 绑定事件
 		this.download.setOnAction(this.downloadEvent);
 	}
@@ -85,9 +86,8 @@ public final class TorrentController extends Controller implements Initializable
 			Alerts.warn("下载失败", "种子文件解析失败：" + e.getMessage());
 			return;
 		}
-		final TorrentInfo torrentInfo = torrent.getInfo();
 		this.selectorManager = SelectorManager.newInstance(torrent.name(), this.download, tree);
-		torrentInfo.files().stream()
+		torrent.getInfo().files().stream()
 			.filter(file -> !file.path().startsWith(TorrentInfo.PADDING_FILE_PREFIX)) // 去掉填充文件
 			.forEach(file -> this.selectorManager.build(file.path(), file.getLength()));
 		this.selectorManager.select(taskSession);
