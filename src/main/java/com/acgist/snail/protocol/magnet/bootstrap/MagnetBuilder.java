@@ -56,7 +56,7 @@ public final class MagnetBuilder {
 	private Magnet magnet;
 	
 	private MagnetBuilder(String url) {
-		this.url = UrlUtils.decode(url);
+		this.url = url;
 	}
 
 	public static final MagnetBuilder newInstance(String url) {
@@ -96,7 +96,7 @@ public final class MagnetBuilder {
 			index = query.indexOf("=");
 			if(index >= 0 && query.length() > index) {
 				key = query.substring(0, index);
-				value = query.substring(index + 1);
+				value = UrlUtils.decode(query.substring(index + 1));
 				switch (key) {
 				case QUERY_DN:
 					dn(value);
