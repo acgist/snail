@@ -61,9 +61,10 @@ public final class Alerts {
 		final Scene scene = alert.getDialogPane().getScene();
 		scene.getStylesheets().add(Controller.FXML_STYLE); // 导入样式文件
 		final Stage stage = (Stage) scene.getWindow();
-		stage.getIcons().add(new Image(Controller.LOGO_ICON)); // 设置图标
+		stage.getIcons().add(new Image(Controller.LOGO_ICON_200)); // 设置图标
 		alert.setTitle(title);
-		alert.setHeaderText(null);
+//		alert.setGraphic(null); // 去掉图标
+		alert.setHeaderText(null); // 去掉头部
 		alert.setContentText(message);
 		return alert.showAndWait();
 	}

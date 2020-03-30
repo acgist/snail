@@ -30,7 +30,7 @@ public final class Choosers {
 	 * @param window 当前窗体：模态
 	 * @param title 标题
 	 * @param description 过滤器描述
-	 * @param filters 过滤器类型（文件类型后缀）：*.torrent
+	 * @param filters 过滤器类型（文件类型后缀）：{@code *.torrent}
 	 * 
 	 * @return 选择文件
 	 */

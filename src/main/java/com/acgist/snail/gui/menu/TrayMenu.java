@@ -172,7 +172,7 @@ public final class TrayMenu extends Menu {
 			}
 		};
 		// 添加系统托盘
-		try(final var input = MainWindow.class.getResourceAsStream("/image/16/logo.png")) {
+		try(final var input = MainWindow.class.getResourceAsStream(Controller.LOGO_ICON_16)) {
 			final BufferedImage image = ImageIO.read(input);
 			this.trayIcon = new TrayIcon(image, SystemConfig.getName());
 			this.trayIcon.addMouseListener(mouseListener);

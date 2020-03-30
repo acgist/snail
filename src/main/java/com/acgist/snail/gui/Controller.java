@@ -22,9 +22,13 @@ public abstract class Controller {
 	 */
 	public static final String FXML_STYLE = "/style/fxml.css";
 	/**
-	 * <p>图标文件路径：{@value}</p>
+	 * <p>图标文件路径（16PX）：{@value}</p>
 	 */
-	public static final String LOGO_ICON = "/image/logo.png";
+	public static final String LOGO_ICON_16 = "/image/16/logo.png";
+	/**
+	 * <p>图标文件路径（200PX）：{@value}</p>
+	 */
+	public static final String LOGO_ICON_200 = "/image/logo.png";
 	
 	/**
 	 * <p>获取拖入面板的数据</p>
