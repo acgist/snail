@@ -33,7 +33,7 @@ public final class Fonts {
 	/**
 	 * <p>图标样式：{@value}</p>
 	 */
-	private static final String ICON_CLASS = "snail-icon";
+	private static final String FONT_ICON_CLASS = "snail-icon";
 	
 	static {
 		LOGGER.debug("加载字体：{}-{}", FONT_NAME, FONT_PATH);
@@ -45,8 +45,8 @@ public final class Fonts {
 	}
 
 	/**
-	 * <p>图标</p>
-	 * <p>图标工具：https://icomoon.io/app/#/select</p>
+	 * <p>图标字体</p>
+	 * <p>制作工具：https://icomoon.io/app/#/select</p>
 	 */
 	public enum SnailIcon {
 		
@@ -193,20 +193,21 @@ public final class Fonts {
 		
 		/**
 		 * <p>字符开始索引：{@value}</p>
+		 * <p>UTF-8编码（E000-F8FF）：自行使用区域</p>
 		 */
-		private static final int ICON_CHAR_BEGIN = 0xE900;
+		private static final char ICON_CHAR_CODE = 0xE900;
 		
 		private SnailIcon() {
 		}
 
 		/**
 		 * <p>获取图标字符</p>
-		 * <p>字符：{@code ICON_CHAR_BEGIN} + 枚举索引</p>
+		 * <p>字符：{@link #ICON_CHAR_CODE} + 枚举索引</p>
 		 * 
 		 * @return 图标字符
 		 */
 		public final char value() {
-			return (char) (ICON_CHAR_BEGIN + this.ordinal());
+			return (char) (ICON_CHAR_CODE + this.ordinal());
 		}
 		
 		/**
@@ -240,7 +241,7 @@ public final class Fonts {
 	 */
 	public static final Label iconLabel(SnailIcon icon) {
 		final Label iconLabel = new Label(icon.toString());
-		iconLabel.getStyleClass().add(ICON_CLASS); // 添加样式
+		iconLabel.getStyleClass().add(FONT_ICON_CLASS); // 添加样式
 		iconLabel.setFont(Font.font(FONT_NAME)); // 设置字体
 		return iconLabel;
 	}

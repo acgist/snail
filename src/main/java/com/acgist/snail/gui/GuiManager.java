@@ -208,7 +208,7 @@ public final class GuiManager {
 			for (String arg : args) {
 				// 运行模式
 				value = StringUtils.argValue(arg, ARGS_MODE);
-				if(value != null && Mode.EXTEND.name().equalsIgnoreCase(value)) {
+				if(Mode.EXTEND.name().equalsIgnoreCase(value)) {
 					this.mode = Mode.EXTEND;
 					LOGGER.info("运行模式：{}", this.mode);
 				}

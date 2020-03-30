@@ -51,7 +51,7 @@ public abstract class Window<T extends Controller> extends Application {
 	 * <p>设置Icon</p>
 	 */
 	protected void icon() {
-		this.stage.getIcons().add(new Image(Controller.LOGO_ICON));
+		this.stage.getIcons().add(new Image(Controller.LOGO_ICON_200));
 	}
 	
 	/**
@@ -66,18 +66,18 @@ public abstract class Window<T extends Controller> extends Application {
 	}
 	
 	/**
+	 * <p>设置窗口最大化</p>
+	 * <p>如果不设置该项，窗口最小化隐藏到托盘后，从托盘显示出来时不能正常显示窗口。</p>
+	 */
+	protected void maximize() {
+		this.stage.setIconified(false);
+	}
+	
+	/**
 	 * <p>禁止改变窗口大小</p>
 	 */
 	protected void disableResize() {
 		this.stage.setResizable(false);
-	}
-	
-	/**
-	 * <p>设置窗口最大化</p>
-	 * <p>如果不设置此配置，窗口最小化隐藏到托盘后，从托盘显示出来时不能正常显示窗口。</p>
-	 */
-	protected void maximize() {
-		this.stage.setIconified(false);
 	}
 	
 	/**
