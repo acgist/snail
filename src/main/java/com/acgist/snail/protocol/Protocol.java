@@ -16,6 +16,8 @@ import com.acgist.snail.utils.StringUtils;
 /***
  * <p>下载协议</p>
  * 
+ * TODO：是否实现m3u8下载
+ * 
  * @author acgist
  * @since 1.0.0
  */
