@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.gui.GuiManager;
+import com.acgist.snail.gui.GuiManager.Mode;
 import com.acgist.snail.gui.event.impl.TorrentEvent;
 import com.acgist.snail.net.TcpMessageHandler;
 import com.acgist.snail.net.codec.IMessageCodec;
@@ -35,12 +36,12 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationMessageHandler.class);
 	
 	/**
-	 * <p>消息分隔符</p>
+	 * <p>多条消息分隔符：{@value}</p>
 	 */
-	private static final String SPLIT = "\r\n";
+	private static final String SEPARATOR = "\r\n";
 	
 	public ApplicationMessageHandler() {
-		final var lineMessageCodec = new LineMessageCodec(this, SPLIT);
+		final var lineMessageCodec = new LineMessageCodec(this, SEPARATOR);
 		final var stringMessageCodec = new StringMessageCodec(lineMessageCodec);
 		this.messageCodec = stringMessageCodec;
 	}
@@ -63,7 +64,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	/**
 	 * <p>处理系统消息</p>
 	 * 
-	 * @param 系统消息
+	 * @param message 系统消息
 	 */
 	private void execute(ApplicationMessage message) {
 		if(message.getType() == null) {
@@ -73,25 +74,25 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 		LOGGER.debug("处理系统消息：{}", message);
 		switch (message.getType()) {
 		case GUI:
-			onGui(message);
+			onGui();
 			break;
 		case TEXT:
 			onText(message);
 			break;
 		case CLOSE:
-			onClose(message);
+			onClose();
 			break;
 		case NOTIFY:
-			onNotify(message);
+			onNotify();
 			break;
 		case SHUTDOWN:
-			onShutdown(message);
+			onShutdown();
 			break;
 		case TASK_NEW:
 			onTaskNew(message);
 			break;
 		case TASK_LIST:
-			onTaskList(message);
+			onTaskList();
 			break;
 		case TASK_START:
 			onTaskStart(message);
@@ -113,10 +114,9 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	
 	/**
 	 * <p>注册GUI</p>
-	 * 
-	 * @param message 系统消息
+	 * <p>将当前连接的消息代理注册为GUI消息代理，需要使用{@linkplain Mode#EXTEND 后台模式}启动。</p>
 	 */
-	private void onGui(ApplicationMessage message) {
+	private void onGui() {
 		final boolean ok = GuiManager.getInstance().extendGuiMessageHandler(this);
 		if(ok) {
 			send(ApplicationMessage.response(ApplicationMessage.SUCCESS));
@@ -127,7 +127,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 
 	/**
 	 * <p>文本消息</p>
-	 * <p>原样返回</p>
+	 * <p>原样返回文本</p>
 	 * 
 	 * @param message 系统消息
 	 */
@@ -137,28 +137,22 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	
 	/**
 	 * <p>关闭连接</p>
-	 * 
-	 * @param message 系统消息
 	 */
-	private void onClose(ApplicationMessage message) {
+	private void onClose() {
 		this.close();
 	}
 	
 	/**
 	 * <p>唤醒窗口</p>
-	 * 
-	 * @param message 系统消息
 	 */
-	private void onNotify(ApplicationMessage message) {
+	private void onNotify() {
 		GuiManager.getInstance().show();
 	}
 	
 	/**
 	 * <p>关闭程序</p>
-	 * 
-	 * @param message 系统消息
 	 */
-	private void onShutdown(ApplicationMessage message) {
+	private void onShutdown() {
 		SystemContext.shutdown();
 	}
 	
@@ -167,7 +161,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	 * <dl>
 	 * 	<dt>body：Map（B编码）</dt>
 	 * 	<dd>url：下载链接</dd>
-	 * 	<dd>files：种子文件选择列表（文件包含路径：snail/video/demo.mp4）</dd>
+	 * 	<dd>files：种子文件选择列表（B编码）</dd>
 	 * </dl>
 	 * 
 	 * @param message 系统消息
@@ -195,14 +189,12 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	}
 
 	/**
-	 * <p>任务列表</p>
+	 * <p>获取任务列表</p>
 	 * <p>返回任务列表（B编码）</p>
-	 * 
-	 * @param message 系统消息
 	 * 
 	 * @since 1.1.1
 	 */
-	private void onTaskList(ApplicationMessage message) {
+	private void onTaskList() {
 		final List<Map<String, Object>> list = DownloaderManager.getInstance().allTask().stream()
 			.map(session -> session.taskMessage())
 			.collect(Collectors.toList());
@@ -269,6 +261,15 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	}
 	
 	/**
+	 * <p>响应消息</p>
+	 * 
+	 * @param message 系统消息
+	 */
+	private void onResponse(ApplicationMessage message) {
+		LOGGER.debug("收到系统响应：{}", message.getBody());
+	}
+	
+	/**
 	 * <p>获取任务信息</p>
 	 * <p>body：任务ID</p>
 	 * 
@@ -283,15 +284,6 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 		return DownloaderManager.getInstance().allTask().stream()
 			.filter(session -> session.getId().equals(body))
 			.findFirst();
-	}
-	
-	/**
-	 * <p>响应消息</p>
-	 * 
-	 * @param message 系统消息
-	 */
-	private void onResponse(ApplicationMessage message) {
-		LOGGER.debug("系统响应：{}", message.getBody());
 	}
 
 	/**

@@ -39,7 +39,7 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 	/**
 	 * <p>消息分隔符：{@value}</p>
 	 */
-	private static final String SPLIT = "\r\n";
+	private static final String SEPARATOR = "\r\n";
 	/**
 	 * <p>多行消息结束符：{@value}</p>
 	 * <p>扩展命令{@code FEAT}返回多行信息</p>
@@ -78,8 +78,8 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 	private final AtomicBoolean lock = new AtomicBoolean(false);
 	
 	public FtpMessageHandler() {
-		final var multilineMessageCodec = new MultilineMessageCodec(this, SPLIT, END_REGEX);
-		final var lineMessageCodec = new LineMessageCodec(multilineMessageCodec, SPLIT);
+		final var multilineMessageCodec = new MultilineMessageCodec(this, SEPARATOR, END_REGEX);
+		final var lineMessageCodec = new LineMessageCodec(multilineMessageCodec, SEPARATOR);
 		final var stringMessageCodec = new StringMessageCodec(lineMessageCodec);
 		this.messageCodec = stringMessageCodec;
 	}

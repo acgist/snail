@@ -20,7 +20,7 @@ public final class MultilineMessageCodec extends MessageCodec<String, String> {
 	 * <p>消息分隔符</p>
 	 * <p>使用消息分隔符区分多条消息</p>
 	 */
-	private final String split;
+	private final String separator;
 	/**
 	 * <p>多行消息结束符（正则表达式）</p>
 	 * <p>消息匹配多行消息结束符成功时合并为一条消息</p>
@@ -31,9 +31,9 @@ public final class MultilineMessageCodec extends MessageCodec<String, String> {
 	 */
 	private final StringBuilder message;
 	
-	public MultilineMessageCodec(IMessageCodec<String> messageCodec, String split, String endRegex) {
+	public MultilineMessageCodec(IMessageCodec<String> messageCodec, String separator, String endRegex) {
 		super(messageCodec);
-		this.split = split;
+		this.separator = separator;
 		this.endRegex = endRegex;
 		this.message = new StringBuilder();
 	}
@@ -45,7 +45,7 @@ public final class MultilineMessageCodec extends MessageCodec<String, String> {
 			this.doNext(this.message.toString(), address, haveAddress);
 			this.message.setLength(0);
 		} else {
-			this.message.append(message).append(this.split);
+			this.message.append(message).append(this.separator);
 		}
 	}
 
