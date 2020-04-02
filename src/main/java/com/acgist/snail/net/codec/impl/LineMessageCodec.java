@@ -18,30 +18,30 @@ public final class LineMessageCodec extends MessageCodec<String, String> {
 	 * <p>消息分隔符</p>
 	 * <p>使用消息分隔符区分多条消息</p>
 	 */
-	private final String split;
+	private final String separator;
 	/**
 	 * <p>上次没有处理完成的消息</p>
 	 * <p>由于传输协议（TCP/UDP）在传输过程中可能会出现粘包拆包导致消息不完整，所以记录上次没有处理完成的不完整消息，合并到下次接收的消息一起处理。</p>
 	 */
 	private String message = "";
 	
-	public LineMessageCodec(IMessageCodec<String> messageCodec, String split) {
+	public LineMessageCodec(IMessageCodec<String> messageCodec, String separator) {
 		super(messageCodec);
-		this.split = split;
+		this.separator = separator;
 	}
 
 	@Override
 	protected void decode(String messages, InetSocketAddress address, boolean haveAddress) throws NetException {
 		String message;
-		final int length = this.split.length();
+		final int length = this.separator.length();
 		messages = this.message + messages; // 合并上次没有处理完成的消息
-		if(messages.contains(this.split)) {
-			int index = messages.indexOf(this.split);
+		if(messages.contains(this.separator)) {
+			int index = messages.indexOf(this.separator);
 			while(index >= 0) {
 				message = messages.substring(0, index);
 				this.doNext(message, address, haveAddress);
 				messages = messages.substring(index + length);
-				index = messages.indexOf(this.split);
+				index = messages.indexOf(this.separator);
 			}
 		}
 		this.message = messages;
@@ -50,7 +50,7 @@ public final class LineMessageCodec extends MessageCodec<String, String> {
 	@Override
 	public String encode(String message) {
 		// 拼接消息分隔符
-		return this.messageCodec.encode(message) + this.split;
+		return this.messageCodec.encode(message) + this.separator;
 	}
 	
 }
