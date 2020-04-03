@@ -112,6 +112,7 @@ public final class TorrentStream {
 	 * <p>文件流</p>
 	 * 
 	 * TODO：替换FileChannel
+	 * TODO：下载完成修改读写模式
 	 */
 	private final RandomAccessFile fileStream;
 	
