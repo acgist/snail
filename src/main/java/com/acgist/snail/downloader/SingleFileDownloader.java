@@ -20,7 +20,7 @@ import com.acgist.snail.utils.IoUtils;
 /**
  * <p>单个文件任务下载器</p>
  * 
- * TODO：分段下载技术（断点续传支持）
+ * TODO：分段下载技术（断点续传支持：突破网盘限速）
  * TODO：大文件下载内存优化
  * 
  * @author acgist
