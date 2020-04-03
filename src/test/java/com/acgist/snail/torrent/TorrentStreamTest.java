@@ -47,4 +47,12 @@ public class TorrentStreamTest extends BaseTest {
 		file.close();
 	}
 	
+	@Test
+	public void testShare() throws IOException {
+		final RandomAccessFile file = new RandomAccessFile("E:\\学习\\zookeeper-3.4.8.tar.gz", "r");
+		file.read();
+		this.pause();
+		file.close();
+	}
+	
 }
