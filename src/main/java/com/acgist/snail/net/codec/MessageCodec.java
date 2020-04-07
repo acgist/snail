@@ -7,6 +7,23 @@ import com.acgist.snail.system.exception.NetException;
 
 /**
  * <p>消息处理器适配器</p>
+ * <table border="1">
+ * 	<caption>消息处理器</caption>
+ * 	<tr>
+ * 		<th>处理器</th><th>功能</th><th>实现</th>
+ * 	</tr>
+ * 	<tr>
+ * 		<td>中间处理器</td>
+ * 		<td>消息编码、消息解码</td>
+ * 		<td>继承{@linkplain MessageCodec 消息处理器适配器}</td>
+ * 	</tr>
+ * 	<tr>
+ * 		<td>最终处理器</td>
+ * 		<td>消息消费、消息处理</td>
+ * 		<td>实现{@linkplain IMessageCodec 消息处理器接口}</td>
+ * 	</tr>
+ * </table>
+ * <p>注意编码解码的逻辑顺序（防止多个处理器结合使用时出现错误）</p>
  * 
  * @param <T> 输入类型
  * @param <X> 输出类型
@@ -30,6 +47,26 @@ public abstract class MessageCodec<T, X> implements IMessageCodec<T> {
 		return false;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * <p>必须执行{@linkplain #messageCodec 下一个消息处理器}的{@link #encode(String)}方法</p>
+	 */
+	@Override
+	public String encode(String message) {
+		return this.messageCodec.encode(message);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * <p>必须执行{@linkplain #messageCodec 下一个消息处理器}的{@link #encode(ByteBuffer)}方法</p>
+	 */
+	@Override
+	public void encode(ByteBuffer message) {
+		this.messageCodec.encode(message);
+	}
+	
 	@Override
 	public void decode(T message) throws NetException {
 		this.decode(message, null, false);
@@ -42,7 +79,7 @@ public abstract class MessageCodec<T, X> implements IMessageCodec<T> {
 	
 	/**
 	 * <p>消息解码</p>
-	 * <p>必须调用{@link #doNext(Object, InetSocketAddress, boolean)}执行{@linkplain #messageCodec 下一个消息处理器}</p>
+	 * <p>必须执行{@linkplain #messageCodec 下一个消息处理器}的{@link #doNext(Object, InetSocketAddress, boolean)}方法</p>
 	 * 
 	 * @param message 消息
 	 * @param address 地址
@@ -75,16 +112,6 @@ public abstract class MessageCodec<T, X> implements IMessageCodec<T> {
 				this.messageCodec.decode(message);
 			}
 		}
-	}
-	
-	@Override
-	public String encode(String message) {
-		return this.messageCodec.encode(message);
-	}
-	
-	@Override
-	public void encode(ByteBuffer message) {
-		this.messageCodec.encode(message);
 	}
 	
 	/**
