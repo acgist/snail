@@ -49,6 +49,13 @@ public final class FtpClientBuilder {
 		this.url = url;
 	}
 
+	/**
+	 * <p>创建FtpClientBuilder</p>
+	 * 
+	 * @param url FTP链接
+	 * 
+	 * @return FtpClientBuilder
+	 */
 	public static final FtpClientBuilder newInstance(String url) {
 		return new FtpClientBuilder(url);
 	}
@@ -75,7 +82,7 @@ public final class FtpClientBuilder {
 	private void decodeUrl() {
 		final URI uri = URI.create(this.url);
 		final String userInfo = uri.getUserInfo();
-		decodeUserInfo(userInfo);
+		this.decodeUserInfo(userInfo);
 		this.host = uri.getHost();
 		int port = uri.getPort();
 		if(port == -1) {
@@ -87,9 +94,11 @@ public final class FtpClientBuilder {
 
 	/**
 	 * <p>解析用户信息</p>
+	 * 
+	 * @param userInfo 用户信息
 	 */
 	private void decodeUserInfo(String userInfo) {
-		if(StringUtils.isEmpty(userInfo)) {
+		if(StringUtils.isEmpty(userInfo)) { // 默认用户
 			this.user = SystemConfig.getFtpUser();
 			this.password = SystemConfig.getFtpPassword();
 		} else {

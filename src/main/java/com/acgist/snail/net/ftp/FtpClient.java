@@ -62,12 +62,24 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 		this.filePath = filePath;
 	}
 	
+	/**
+	 * <p>创建FTP客户端</p>
+	 * 
+	 * @param host 服务器地址
+	 * @param port 服务器端口
+	 * @param user 用户账号
+	 * @param password 用户密码
+	 * @param filePath 文件路径
+	 * 
+	 * @return FTP客户端
+	 */
 	public static final FtpClient newInstance(String host, int port, String user, String password, String filePath) {
 		return new FtpClient(host, port, user, password, filePath);
 	}
 
 	@Override
 	public boolean connect() {
+		this.handler.resetLock();
 		this.connect = connect(this.host, this.port);
 		this.handler.lock(); // 锁定：等待FTP欢迎消息
 		if(this.connect) {
@@ -103,16 +115,14 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	 * @throws NetException 网络异常
 	 */
 	public InputStream download(Long downloadSize) throws NetException {
-		if(!this.connect) {
-			throw new NetException(this.failMessage("FTP服务器连接失败"));
-		}
+		this.checkConnect();
 		synchronized (this) {
-			changeMode();
-			command("TYPE I"); // 设置数据模式：二进制
+			this.changeMode();
+			this.command("TYPE I"); // 设置数据模式：二进制
 			if(downloadSize != null && downloadSize > 0L) {
-				command("REST " + downloadSize); // 断点续传位置
+				this.command("REST " + downloadSize); // 断点续传位置
 			}
-			command("RETR " + this.filePath); // 下载文件
+			this.command("RETR " + this.filePath); // 下载文件
 			final var input = this.handler.inputStream(); // 文件流
 			if(input == null) {
 				throw new NetException(this.failMessage("打开FTP文件流失败"));
@@ -161,13 +171,11 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	 * @throws NetException 网络异常
 	 */
 	public Long size() throws NetException {
-		if(!this.connect) {
-			throw new NetException(this.failMessage("FTP服务器连接失败"));
-		}
+		this.checkConnect();
 		synchronized (this) {
 			this.changeMode();
-			command("TYPE A"); // 切换数据模式：ASCII
-			command("LIST " + this.filePath); // 列出文件信息
+			this.command("TYPE A"); // 切换数据模式：ASCII
+			this.command("LIST " + this.filePath); // 列出文件信息
 			final InputStream inputStream = this.handler.inputStream();
 			final String data = StringUtils.ofInputStream(inputStream, this.charset);
 			if(data == null) {
@@ -192,10 +200,9 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	 */
 	@Override
 	public void close() {
-		if(!this.connect) {
-			return;
+		if(this.connect) {
+			this.command("QUIT", false); // 退出命令
 		}
-		command("QUIT", false); // 退出命令
 		super.close();
 	}
 	
@@ -203,11 +210,11 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	 * <p>判断是否支持断点续传</p>
 	 * 
 	 * @return {@code true}-支持；{@code false}-不支持；
+	 * 
+	 * @throws NetException 网络异常
 	 */
-	public boolean range() {
-		if(!this.connect) {
-			return false;
-		}
+	public boolean range() throws NetException {
+		this.checkConnect();
 		return this.handler.range();
 	}
 	
@@ -226,18 +233,18 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	 * <p>登陆服务器</p>
 	 */
 	private void login() {
-		command("USER " + this.user);
-		command("PASS " + this.password);
+		this.command("USER " + this.user);
+		this.command("PASS " + this.password);
 	}
 	
 	/**
 	 * <p>设置编码</p>
 	 */
 	private void charset() {
-		command("FEAT"); // 列出扩展命令
+		this.command("FEAT"); // 列出扩展命令
 		this.charset = this.handler.charset();
 		if(SystemConfig.CHARSET_UTF8.equals(this.charset)) {
-			command("OPTS UTF8 ON"); // 设置UTF8
+			this.command("OPTS UTF8 ON"); // 设置UTF8
 		}
 	}
 	
@@ -245,7 +252,7 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	 * <p>切换被动模式</p>
 	 */
 	private void changeMode() {
-		command("PASV");
+		this.command("PASV");
 	}
 	
 	/**
@@ -276,6 +283,17 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 			}
 		} catch (NetException e) {
 			LOGGER.error("发送FTP命令异常：{}", command, e);
+		}
+	}
+	
+	/**
+	 * <p>验证是否已经连接成功</p>
+	 * 
+	 * @throws NetException 网络异常
+	 */
+	private void checkConnect() throws NetException {
+		if(!this.connect) {
+			throw new NetException(this.failMessage("FTP服务器连接失败"));
 		}
 	}
 
