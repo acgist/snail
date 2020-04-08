@@ -14,6 +14,7 @@ public class FtpClientTest extends BaseTest {
 
 	@Test
 	public void testDownload() throws FileNotFoundException, IOException, NetException {
+//		String path = "ftp://user:password@localhost/Snail.exe";
 //		String path = "ftp://localhost/elk/elasticsearch-6.4.1.zip";
 		String path = "ftp://localhost/VS2012中文旗舰版/vs_ultimate.exe";
 		var client = FtpClientBuilder.newInstance(path).build();
