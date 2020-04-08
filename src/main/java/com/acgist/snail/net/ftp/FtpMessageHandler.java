@@ -90,13 +90,10 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 		if(StringUtils.startsWith(message, "530 ")) { // 登陆失败
 			this.login = false;
 			this.failMessage = "登陆失败";
-			this.close();
 		} else if(StringUtils.startsWith(message, "550 ")) { // 文件不存在
 			this.failMessage = "文件不存在";
-			this.close();
 		} else if(StringUtils.startsWith(message, "421 ")) { // 打开连接失败
 			this.failMessage = "打开连接失败";
-			this.close();
 		} else if(StringUtils.startsWith(message, "350 ")) { // 支持断点续传
 			this.range = true;
 		} else if(StringUtils.startsWith(message, "220 ")) { // 退出系统
@@ -112,11 +109,11 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 				LOGGER.debug("设置FTP编码：{}", this.charset);
 			}
 		} else if(StringUtils.startsWith(message, "227 ")) { // 进入被动模式：打开文件下载Socket
-			release(); // 释放旧的资源
+			this.release(); // 释放旧的资源
 			// 被动模式格式：227 Entering Passive Mode (127,0,0,1,36,158).
 			final int opening = message.indexOf('(');
 			final int closing = message.indexOf(')', opening + 1);
-			if (closing > 0) {
+			if (opening >= 0 && closing > opening) {
 				final String data = message.substring(opening + 1, closing);
 				final StringTokenizer tokenizer = new StringTokenizer(data, ",");
 				final String host = tokenizer.nextToken() + "." + tokenizer.nextToken() + "." + tokenizer.nextToken() + "." + tokenizer.nextToken();
@@ -200,6 +197,15 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 	}
 	
 	/**
+	 * <p>释放文件下载资源</p>
+	 * <p>关闭文件流、Socket，不关闭命令通道。</p>
+	 */
+	private void release() {
+		IoUtils.close(this.inputStream);
+		IoUtils.close(this.inputSocket);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * 
 	 * <p>释放文件下载资源和关闭命令通道</p>
@@ -208,15 +214,6 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 	public void close() {
 		this.release();
 		super.close();
-	}
-	
-	/**
-	 * <p>释放文件下载资源</p>
-	 * <p>关闭文件流、Socket，不关闭命令通道。</p>
-	 */
-	private void release() {
-		IoUtils.close(this.inputStream);
-		IoUtils.close(this.inputSocket);
 	}
 
 	/**
