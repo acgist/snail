@@ -117,10 +117,10 @@ public abstract class MessageCodec<T, X> implements IMessageCodec<T> {
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * <p>消息最终处理器请实现{@linkplain IMessageCodec 消息处理器接口}</p>
+	 * @deprecated 消息最终处理器请实现{@linkplain IMessageCodec 消息处理器接口}
 	 */
 	@Override
-	@Deprecated
+	@Deprecated(since = "1.0.0")
 	public void onMessage(T message) throws NetException {
 		IMessageCodec.super.onMessage(message);
 	}
@@ -128,10 +128,10 @@ public abstract class MessageCodec<T, X> implements IMessageCodec<T> {
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * <p>消息最终处理器请实现{@linkplain IMessageCodec 消息处理器接口}</p>
+	 * @deprecated 消息最终处理器请实现{@linkplain IMessageCodec 消息处理器接口}
 	 */
 	@Override
-	@Deprecated
+	@Deprecated(since = "1.0.0")
 	public void onMessage(T message, InetSocketAddress address) throws NetException {
 		IMessageCodec.super.onMessage(message, address);
 	}
