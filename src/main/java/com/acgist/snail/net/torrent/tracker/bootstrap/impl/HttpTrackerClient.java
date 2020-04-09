@@ -78,7 +78,7 @@ public final class HttpTrackerClient extends TrackerClient {
 		final String announceMessage = (String) buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STARTED);
 		// 注意：不能使用BodyHandlers.ofString()
 		final var response = HTTPClient.get(announceMessage, BodyHandlers.ofByteArray());
-		if(!HTTPClient.ok(response)) {
+		if(!HTTPClient.StatusCode.OK.verifyCode(response)) {
 			throw new NetException("HTTP Tracker声明失败");
 		}
 		final var body = response.body();
@@ -113,7 +113,7 @@ public final class HttpTrackerClient extends TrackerClient {
 			return;
 		}
 		final var response = HTTPClient.get(scrapeMessage, BodyHandlers.ofByteArray());
-		if(!HTTPClient.ok(response)) {
+		if(!HTTPClient.StatusCode.OK.verifyCode(response)) {
 			throw new NetException("HTTP Tracker刮檫失败");
 		}
 		final var body = response.body();

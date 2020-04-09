@@ -20,7 +20,7 @@ import java.security.cert.X509Certificate;
 import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 
 import javax.net.ssl.SSLContext;
@@ -61,6 +61,14 @@ public final class HTTPClient {
 		OK(									200),
 		/** 断点续传 */
 		PARTIAL_CONTENT(					206),
+		/** 永久重定向 */
+		MOVED_PERMANENTLY(					301),
+		/** 临时重定向，参考：{@link #SEE_OTHER}、{@link #TEMPORARY_REDIRECT} */
+		FOUND(								302),
+		/** 临时重定向：请求已被处理，POST不能获取参数 */
+		SEE_OTHER(							303),
+		/** 临时重定向：请求没有处理，POST可以获取参数 */
+		TEMPORARY_REDIRECT(					307),
 		/** 请求文件不存在 */
 		NOT_FOUND(							404),
 		/** 无法满足请求范围 */
@@ -97,6 +105,19 @@ public final class HTTPClient {
 			return this.code == code;
 		}
 		
+		/**
+		 * <p>判断响应状态码是否匹配</p>
+		 * 
+		 * @param <T> 响应体泛型
+		 * 
+		 * @param response 响应
+		 * 
+		 * @return {@code true}-匹配；{@code false}-不匹配；
+		 */
+		public final <T> boolean verifyCode(HttpResponse<T> response) {
+			return response != null && this.equalsCode(response.statusCode());
+		}
+		
 	}
 	
 	/**
@@ -106,18 +127,18 @@ public final class HTTPClient {
 	/**
 	 * <p>HTTP客户端线程池</p>
 	 */
-	private static final ExecutorService EXECUTOR = SystemThreadContext.newExecutor(2, 10, 1000, 60L, SystemThreadContext.SNAIL_THREAD_HTTP_CLIENT);
+	private static final Executor EXECUTOR = SystemThreadContext.newExecutor(2, 10, 1000, 60L, SystemThreadContext.SNAIL_THREAD_HTTP_CLIENT);
 	
 	static {
 		final StringBuilder userAgentBuilder = new StringBuilder();
 		userAgentBuilder
 			.append("Mozilla/5.0")
 			.append(" ")
-			.append("(")
+			.append("(compatible; ")
 			.append(SystemConfig.getNameEn())
 			.append("/")
 			.append(SystemConfig.getVersion())
-			.append("; ")
+			.append("; +")
 			.append(SystemConfig.getSupport())
 			.append(")");
 		USER_AGENT = userAgentBuilder.toString();
@@ -153,13 +174,13 @@ public final class HTTPClient {
 	
 	/**
 	 * <p>新建客户端</p>
-	 * <p>HTTP请求版本{@link Version#HTTP_1_1}</p>
+	 * <p>HTTP请求协议版本：{@link Version#HTTP_1_1}</p>
 	 * 
 	 * @param url 请求地址
 	 * @param connectTimeout 超时时间（连接），单位：秒
 	 * @param receiveTimeout 超时时间（响应），单位：秒
 	 * 
-	 * @return HTTP客户端
+	 * @return {@link HTTPClient}
 	 */
 	public static final HTTPClient newInstance(String url, int connectTimeout, int receiveTimeout) {
 		final HttpClient client = newClient(connectTimeout);
@@ -243,7 +264,8 @@ public final class HTTPClient {
 	 * @throws NetException 网络异常
 	 */
 	public <T> HttpResponse<T> postForm(Map<String, String> data, HttpResponse.BodyHandler<T> handler) throws NetException {
-		this.builder.header("Content-type", "application/x-www-form-urlencoded;charset=" + SystemConfig.DEFAULT_CHARSET);
+		// 设置表单请求
+		this.builder.header(HttpHeaderWrapper.HEADER_CONTENT_TYPE, "application/x-www-form-urlencoded;charset=" + SystemConfig.DEFAULT_CHARSET);
 		final var request = this.builder
 			.POST(newFormBodyPublisher(data))
 			.build();
@@ -263,7 +285,7 @@ public final class HTTPClient {
 			.build();
 		final var response = request(request, BodyHandlers.discarding());
 		HttpHeaders httpHeaders = null;
-		if(HTTPClient.ok(response)) {
+		if(HTTPClient.StatusCode.OK.verifyCode(response)) {
 			httpHeaders = response.headers();
 		}
 		return HttpHeaderWrapper.newInstance(httpHeaders);
@@ -324,9 +346,7 @@ public final class HTTPClient {
 			return BodyPublishers.noBody();
 		}
 		final String body = data.entrySet().stream()
-			.map(entry -> {
-				return entry.getKey() + "=" + UrlUtils.encode(entry.getValue());
-			})
+			.map(entry -> entry.getKey() + "=" + UrlUtils.encode(entry.getValue()))
 			.collect(Collectors.joining("&"));
 		return BodyPublishers.ofString(body);
 	}
@@ -369,74 +389,8 @@ public final class HTTPClient {
 	}
 	
 	/**
-	 * <p>是否成功：{@link StatusCode#OK}</p>
-	 * 
-	 * @param <T> 响应体泛型
-	 * 
-	 * @param response 响应
-	 * 
-	 * @return {@code true}-成功；{@code false}-失败；
-	 */
-	public static final <T> boolean ok(HttpResponse<T> response) {
-		return statusCode(response, StatusCode.OK);
-	}
-	
-	/**
-	 * <p>是否支持断点续传：{@link StatusCode#PARTIAL_CONTENT}</p>
-	 * 
-	 * @param <T> 响应体泛型
-	 * 
-	 * @param response 响应
-	 * 
-	 * @return {@code true}-支持；{@code false}-不支持；
-	 */
-	public static final <T> boolean partialContent(HttpResponse<T> response) {
-		return statusCode(response, StatusCode.PARTIAL_CONTENT);
-	}
-
-	/**
-	 * <p>是否无法满足请求范围：{@link StatusCode#REQUESTED_RANGE_NOT_SATISFIABLE}</p>
-	 * 
-	 * @param <T> 响应体泛型
-	 * 
-	 * @param response 响应
-	 * 
-	 * @return {@code true}-无法满足；{@code false}-可以满足；
-	 */
-	public static final <T> boolean requestedRangeNotSatisfiable(HttpResponse<T> response) {
-		return statusCode(response, StatusCode.REQUESTED_RANGE_NOT_SATISFIABLE);
-	}
-	
-	/**
-	 * <p>是否服务器错误：{@link StatusCode#REQUESTED_RANGE_NOT_SATISFIABLE}</p>
-	 * 
-	 * @param <T> 响应体泛型
-	 * 
-	 * @param response 响应
-	 * 
-	 * @return {@code true}-是；{@code false}-不是；
-	 */
-	public static final <T> boolean internalServerError(HttpResponse<T> response) {
-		return statusCode(response, StatusCode.INTERNAL_SERVER_ERROR);
-	}
-	
-	/**
-	 * <p>判断响应状态码是否匹配</p>
-	 * 
-	 * @param <T> 响应体泛型
-	 * 
-	 * @param response 响应
-	 * @param statusCode 状态码
-	 * 
-	 * @return {@code true}-匹配；{@code false}-不匹配；
-	 */
-	private static final <T> boolean statusCode(HttpResponse<T> response, StatusCode statusCode) {
-		return response != null && statusCode.equalsCode(response.statusCode());
-	}
-	
-	/**
 	 * <p>新建原生HTTP客户端</p>
-	 * <p>设置{@code sslContext}需要同时设置{@code sslParameters}才有效</p>
+	 * <p>设置{@code SSLContext}需要同时设置{@code SSLParameters}</p>
 	 * 
 	 * @param timeout 超时时间（连接），单位：秒
 	 * 
@@ -446,7 +400,7 @@ public final class HTTPClient {
 		return HttpClient
 			.newBuilder()
 			.executor(EXECUTOR) // 线程池
-			.version(Version.HTTP_1_1)
+			.version(Version.HTTP_1_1) // 协议版本
 			.followRedirects(Redirect.NORMAL) // 重定向：正常
 //			.followRedirects(Redirect.ALWAYS) // 重定向：全部
 //			.proxy(ProxySelector.getDefault()) // 代理
@@ -466,7 +420,7 @@ public final class HTTPClient {
 	 * 
 	 * @return 请求Builder
 	 */
-	private static final Builder newBuilder(String url, int timeout) {
+	public static final Builder newBuilder(String url, int timeout) {
 		return HttpRequest
 			.newBuilder()
 			.uri(URI.create(url))
@@ -480,7 +434,7 @@ public final class HTTPClient {
 	 * 
 	 * @return {@code SSLParameters}
 	 */
-	private static final SSLParameters newSSLParameters() {
+	public static final SSLParameters newSSLParameters() {
 		final var sslParameters = new SSLParameters();
 		// SSL加密套件：RSA和ECDSA签名根据证书类型选择（ECDH不推荐使用）
 //		sslParameters.setCipherSuites(new String[] {
@@ -508,7 +462,7 @@ public final class HTTPClient {
 		try {
 			// SSL协议：SSL、SSLv2、SSLv3、TLS、TLSv1、TLSv1.1、TLSv1.2、TLSv1.3
 			sslContext = SSLContext.getInstance("TLSv1.2");
-			sslContext.init(null, TRUST_ALL_CERT_MANAGER, new SecureRandom());
+			sslContext.init(null, ALLOWED_ALL_TRUST_MANAGER, new SecureRandom());
 		} catch (KeyManagementException | NoSuchAlgorithmException e) {
 			LOGGER.error("新建SSLContext异常", e);
 			try {
@@ -523,7 +477,7 @@ public final class HTTPClient {
 	/**
 	 * <p>信任所有证书</p>
 	 */
-	private static final TrustManager[] TRUST_ALL_CERT_MANAGER = new TrustManager[] {
+	private static final TrustManager[] ALLOWED_ALL_TRUST_MANAGER = new TrustManager[] {
 		new X509TrustManager() {
 			@Override
 			public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {

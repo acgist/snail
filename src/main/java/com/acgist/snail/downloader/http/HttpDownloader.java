@@ -65,7 +65,10 @@ public final class HttpDownloader extends SingleFileDownloader {
 			.header(HttpHeaderWrapper.HEADER_RANGE, "bytes=" + size + "-")
 			.get(BodyHandlers.ofInputStream());
 		// 请求成功和部分请求成功
-		if(HTTPClient.ok(response) || HTTPClient.partialContent(response)) {
+		if(
+			HTTPClient.StatusCode.OK.verifyCode(response) ||
+			HTTPClient.StatusCode.PARTIAL_CONTENT.verifyCode(response)
+		) {
 			final var headers = HttpHeaderWrapper.newInstance(response.headers());
 			this.input = new BufferedInputStream(response.body());
 			if(headers.range()) { // 支持断点续传
@@ -81,7 +84,7 @@ public final class HttpDownloader extends SingleFileDownloader {
 			} else {
 				this.taskSession.downloadSize(0L);
 			}
-		} else if(HTTPClient.requestedRangeNotSatisfiable(response)) {
+		} else if(HTTPClient.StatusCode.REQUESTED_RANGE_NOT_SATISFIABLE.verifyCode(response)) {
 			if(this.taskSession.downloadSize() == this.taskSession.getSize()) {
 				this.complete = true;
 			} else {
