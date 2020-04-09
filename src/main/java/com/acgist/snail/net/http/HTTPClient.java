@@ -15,7 +15,6 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.time.Duration;
 import java.util.Map;
@@ -480,10 +479,12 @@ public final class HTTPClient {
 	private static final TrustManager[] ALLOWED_ALL_TRUST_MANAGER = new TrustManager[] {
 		new X509TrustManager() {
 			@Override
-			public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+			public void checkClientTrusted(X509Certificate[] chain, String authType) {
+				// 如果不信任证书抛出异常：CertificateException
 			}
 			@Override
-			public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+			public void checkServerTrusted(X509Certificate[] chain, String authType) {
+				// 如果不信任证书抛出异常：CertificateException
 			}
 			@Override
 			public X509Certificate[] getAcceptedIssuers() {
