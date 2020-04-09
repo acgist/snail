@@ -183,7 +183,7 @@ public final class UpnpService {
 			.header("SOAPAction", "\"" + this.serviceType + "#GetSpecificPortMappingEntry\"")
 			.post(xml, BodyHandlers.ofString());
 		final var body = response.body();
-		if(HTTPClient.internalServerError(response)) {
+		if(HTTPClient.StatusCode.INTERNAL_SERVER_ERROR.verifyCode(response)) {
 			return Status.MAPABLE;
 		}
 		final var mappingIp = UpnpResponse.parseGetSpecificPortMappingEntry(body);
@@ -219,7 +219,7 @@ public final class UpnpService {
 		final var response = client
 			.header("SOAPAction", "\"" + this.serviceType + "#AddPortMapping\"")
 			.post(xml, BodyHandlers.ofString());
-		return HTTPClient.ok(response);
+		return HTTPClient.StatusCode.OK.verifyCode(response);
 	}
 	
 	/**
@@ -243,7 +243,7 @@ public final class UpnpService {
 		final var response = client
 			.header("SOAPAction", "\"" + this.serviceType + "#DeletePortMapping\"")
 			.post(xml, BodyHandlers.ofString());
-		return HTTPClient.ok(response);
+		return HTTPClient.StatusCode.OK.verifyCode(response);
 	}
 	
 	/**
