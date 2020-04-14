@@ -125,7 +125,7 @@ public final class NumberUtils {
 	}
 	
 	/**
-	 * <p>向上取整</p>
+	 * <p>向上取整（除法）</p>
 	 * <pre>
 	 * ceilDiv(2, 2) = 1;
 	 * ceilDiv(3, 2) = 2;
@@ -135,16 +135,33 @@ public final class NumberUtils {
 	 * @param dividend 被除数
 	 * @param divisor 除数
 	 * 
-	 * @return 商
+	 * @return 结果
 	 */
-	public static final int ceilDiv(long dividend, long divisor) {
-		int value = (int) (dividend / divisor);
+	public static final int ceilDiv(int dividend, int divisor) {
+		int value = dividend / divisor;
 		if(dividend % divisor != 0) {
 			value++;
 		}
 		return value;
 	}
 
+	/**
+	 * <p>向上取整（乘法）</p>
+	 * <pre>
+	 * ceilMult(2, 2) = 2;
+	 * ceilMult(3, 2) = 4;
+	 * ceilMult(4, 2) = 4;
+	 * </pre>
+	 * 
+	 * @param dividend 被除数
+	 * @param divisor 除数
+	 * 
+	 * @return 结果
+	 */
+	public static final int ceilMult(int dividend, int divisor) {
+		return ceilDiv(dividend, divisor) * divisor;
+	}
+	
 	/**
 	 * <p>统计数字位上是{@code 1}的个数</p>
 	 * 

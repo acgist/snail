@@ -51,7 +51,7 @@ public final class BitfieldUtils {
 	}
 	
 	/**
-	 * <p>大端小端互转：{@code 01000001} -&gt; {@code 10000010}</p>
+	 * <p>大端小端互转：{@code 0100_0001} -&gt; {@code 1000_0010}</p>
 	 * 
 	 * @param value 数据
 	 * 
@@ -59,9 +59,9 @@ public final class BitfieldUtils {
 	 */
 	private static final byte reverse(final byte value) {
 		int result = value;
-		result = (result & 0B11110000) >> 4 | (result & 0B00001111) << 4;
-		result = (result & 0B11001100) >> 2 | (result & 0B00110011) << 2;
-		result = (result & 0B10101010) >> 1 | (result & 0B01010101) << 1;
+		result = (result & 0B1111_0000) >> 4 | (result & 0B0000_1111) << 4;
+		result = (result & 0B1100_1100) >> 2 | (result & 0B0011_0011) << 2;
+		result = (result & 0B1010_1010) >> 1 | (result & 0B0101_0101) << 1;
 		return (byte) result;
 	}
 

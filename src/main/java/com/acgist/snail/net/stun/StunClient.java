@@ -16,19 +16,41 @@ import com.acgist.snail.utils.NetUtils;
  */
 public final class StunClient extends UdpClient<StunMessageHandler> {
 	
-	public StunClient(InetSocketAddress socketAddress) {
+	private StunClient(final InetSocketAddress socketAddress) {
 		super("STUN Client", new StunMessageHandler(), socketAddress);
 	}
 	
+	/**
+	 * <p>创建Stun客户端</p>
+	 * 
+	 * @param host 服务器地址
+	 * 
+	 * @return Stun客户端
+	 */
 	public static final StunClient newInstance(final String host) {
 		return newInstance(NetUtils.buildSocketAddress(host, StunConfig.DEFAULT_PORT));
 	}
 	
+	/**
+	 * <p>创建Stun客户端</p>
+	 * 
+	 * @param host 服务器地址
+	 * @param port 服务器端口
+	 * 
+	 * @return Stun客户端
+	 */
 	public static final StunClient newInstance(final String host, final int port) {
 		return newInstance(NetUtils.buildSocketAddress(host, port));
 	}
 	
-	public static final StunClient newInstance(InetSocketAddress socketAddress) {
+	/**
+	 * <p>创建Stun客户端</p>
+	 * 
+	 * @param socketAddress 服务器地址
+	 * 
+	 * @return Stun客户端
+	 */
+	public static final StunClient newInstance(final InetSocketAddress socketAddress) {
 		return new StunClient(socketAddress);
 	}
 

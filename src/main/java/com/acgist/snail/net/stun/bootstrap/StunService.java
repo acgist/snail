@@ -44,8 +44,7 @@ public final class StunService {
 				return;
 			}
 			LOGGER.debug("STUN服务器地址：{}", address);
-			final var client = StunClient.newInstance(address);
-			client.mappedAddress();
+			StunClient.newInstance(address).mappedAddress();
 		}
 	}
 	
@@ -68,25 +67,29 @@ public final class StunService {
 	 * @return STUN服务器地址
 	 */
 	private InetSocketAddress buildServerAddress() {
-		// 格式：stun:stun1.l.google.com:19302
 		final String server = SystemConfig.getStunServer();
 		if(StringUtils.isEmpty(server)) {
-			LOGGER.warn("STUN服务器错误：{}", server);
+			LOGGER.warn("STUN服务器格式错误：{}", server);
 			return null;
 		}
 		final String[] values = server.split(":");
 		if(values.length == 1) {
-			return NetUtils.buildSocketAddress(values[0], StunConfig.DEFAULT_PORT);
+			// 格式：stun1.l.google.com
+			if(StringUtils.isNotEmpty(values[0])) {
+				return NetUtils.buildSocketAddress(values[0], StunConfig.DEFAULT_PORT);
+			}
 		} else if(values.length == 2) {
-			if(StringUtils.isNumeric(values[1])) {
+			// 格式：stun1.l.google.com:19302
+			if(StringUtils.isNotEmpty(values[0]) && StringUtils.isNumeric(values[1])) {
 				return NetUtils.buildSocketAddress(values[0], Integer.parseInt(values[1]));
 			}
 		} else if(values.length == 3) {
-			if(StringUtils.isNumeric(values[2])) {
+			// 格式：stun:stun1.l.google.com:19302
+			if(StringUtils.isNotEmpty(values[1]) && StringUtils.isNumeric(values[2])) {
 				return NetUtils.buildSocketAddress(values[1], Integer.parseInt(values[2]));
 			}
 		}
-		LOGGER.warn("STUN服务器错误：{}", server);
+		LOGGER.warn("STUN服务器格式错误：{}", server);
 		return null;
 	}
 	

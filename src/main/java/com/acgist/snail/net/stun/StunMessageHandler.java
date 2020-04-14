@@ -77,7 +77,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	@Override
 	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException {
 		buffer.flip();
-		final short type = buffer.getShort();
+		final short type = (short) (buffer.getShort() & 0B0011_1111_1111_1111);
 		final var messageType = StunConfig.MessageType.valueOf(type);
 		if(messageType == null) {
 			LOGGER.warn("处理STUN消息错误（类型不支持）：{}", type);
@@ -128,12 +128,13 @@ public final class StunMessageHandler extends UdpMessageHandler {
 		if(buffer.remaining() < 4) {
 			final short length = (short) buffer.remaining();
 			final ByteBuffer message = readResponseAttribute(buffer, length);
-			LOGGER.error("处理STUN消息-属性错误（长度）：{}-{}", length, new String(message.array()));
+			final String body = new String(message.array());
+			LOGGER.error("处理STUN消息-属性错误（长度）：{}-{}", length, body);
 			return;
 		}
 		final short typeId = buffer.getShort();
 		// 对齐
-		final short length = (short) (NumberUtils.ceilDiv(buffer.getShort(), STUN_ATTRIBUTE_PADDING_LENGTH) * STUN_ATTRIBUTE_PADDING_LENGTH);
+		final short length = (short) (NumberUtils.ceilMult(buffer.getShort(), STUN_ATTRIBUTE_PADDING_LENGTH));
 		PacketSizeException.verify(length);
 		if(buffer.remaining() < length) {
 			LOGGER.error("处理STUN消息-属性错误（剩余长度）：{}-{}", buffer.remaining(), length);
@@ -142,7 +143,8 @@ public final class StunMessageHandler extends UdpMessageHandler {
 		final var attributeType = StunConfig.AttributeType.valueOf(typeId);
 		if(attributeType == null) {
 			final ByteBuffer message = readResponseAttribute(buffer, length);
-			LOGGER.warn("处理STUN消息-属性错误（类型不支持）：{}-{}", typeId, new String(message.array()));
+			final String body = new String(message.array());
+			LOGGER.warn("处理STUN消息-属性错误（类型不支持）：{}-{}", typeId, body);
 			return;
 		}
 		LOGGER.debug("处理STUN消息-属性：{}-{}", attributeType, length);
@@ -158,7 +160,8 @@ public final class StunMessageHandler extends UdpMessageHandler {
 			errorCode(message);
 			break;
 		default:
-			LOGGER.warn("处理STUN消息-属性错误（类型未适配）：{}-{}", attributeType, new String(message.array()));
+			final String body = new String(message.array());
+			LOGGER.warn("处理STUN消息-属性错误（类型未适配）：{}-{}", attributeType, body);
 			break;
 		}
 	}
@@ -243,10 +246,10 @@ public final class StunMessageHandler extends UdpMessageHandler {
 		if(family == StunConfig.IPV4) {
 			final short port = buffer.getShort();
 			final int ip = buffer.getInt();
-			final short portShort = (short) (port ^ (StunConfig.MAGIC_COOKIE >> 16));
-			final int ipInt = ip ^ StunConfig.MAGIC_COOKIE;
-			final int portExt = NetUtils.decodePort(portShort);
-			final String ipExt = NetUtils.decodeIntToIp(ipInt);
+			final short portValue = (short) (port ^ (StunConfig.MAGIC_COOKIE >> 16));
+			final int ipValue = ip ^ StunConfig.MAGIC_COOKIE;
+			final int portExt = NetUtils.decodePort(portValue);
+			final String ipExt = NetUtils.decodeIntToIp(ipValue);
 			LOGGER.debug("处理STUN消息-XOR_MAPPED_ADDRESS：{}-{}-{}-{}", header, family, portExt, ipExt);
 			StunService.getInstance().mapping(ipExt, portExt);
 		} else {
@@ -274,8 +277,8 @@ public final class StunMessageHandler extends UdpMessageHandler {
 			LOGGER.warn("处理STUN消息-ERROR_CODE错误（长度）：{}", buffer.remaining());
 			return;
 		}
-		buffer.getShort(); // 消耗0
-		final byte clazz = buffer.get();
+		buffer.getShort(); // 去掉保留位
+		final byte clazz = (byte) (buffer.get() & 0B0000_0111);
 		final byte number = buffer.get();
 		String message = null;
 		if(buffer.hasRemaining()) {
@@ -283,7 +286,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 			buffer.get(bytes);
 			message = new String(bytes);
 		}
-		LOGGER.warn("处理STUN消息-ERROR_CODE：{}{}-{}", clazz, number, message);
+		LOGGER.warn("处理STUN消息-ERROR_CODE：{}-{}-{}", clazz, number, message);
 	}
 	
 	/**
@@ -344,7 +347,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	private byte[] buildAttributeMessage(StunConfig.AttributeType attributeType, byte[] value) {
 		final short valueLength = (short) (value == null ? 0 : value.length);
 		// 对齐
-		final int length = NumberUtils.ceilDiv(StunConfig.ATTRIBUTE_HEADER_LENGTH + valueLength, STUN_ATTRIBUTE_PADDING_LENGTH) * STUN_ATTRIBUTE_PADDING_LENGTH;
+		final int length = NumberUtils.ceilMult(StunConfig.ATTRIBUTE_HEADER_LENGTH + valueLength, STUN_ATTRIBUTE_PADDING_LENGTH);
 		final ByteBuffer buffer = ByteBuffer.allocate(length);
 		buffer.putShort(attributeType.id());
 		buffer.putShort(valueLength);
