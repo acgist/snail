@@ -79,15 +79,15 @@ public final class StunConfig {
 		/**
 		 * <p>C1：{@value}</p>
 		 */
-		public static final short C1_MASK = 0b0000_0001_0000_0000;
+		public static final short C1_MASK = 0B0000_0001_0000_0000;
 		/**
 		 * <p>C0：{@value}</p>
 		 */
-		public static final short C0_MASK = 0b0000_0000_0001_0000;
+		public static final short C0_MASK = 0B0000_0000_0001_0000;
 		/**
 		 * <p>前两位必须为零：{@value}</p>
 		 */
-		public static final short TYPE_MASK = 0b0011_1111_1111_1111;
+		public static final short TYPE_MASK = 0B0011_1111_1111_1111;
 		
 		/**
 		 * <p>消息ID</p>
