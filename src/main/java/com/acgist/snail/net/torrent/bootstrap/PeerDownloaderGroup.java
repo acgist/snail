@@ -209,8 +209,8 @@ public final class PeerDownloaderGroup {
 	private void inferiorPeerDownloaders() {
 		LOGGER.debug("剔除劣质PeerDownloader");
 		int index = 0;
-		long tmpMark = 0; // 当前评分
-		long minMark = 0; // 最小评分
+		long tmpDownloadMark = 0; // 当前下载评分
+		long minDownloadMark = 0; // 最小下载评分
 		PeerDownloader tmpDownloader = null; // 当前PeerDownloader
 		PeerDownloader inferiorDownloader = null; // 劣质PeerDownloader
 		final int size = this.peerDownloaders.size();
@@ -228,24 +228,24 @@ public final class PeerDownloaderGroup {
 				continue;
 			}
 			// 获取评分同时清除评分
-			tmpMark = tmpDownloader.downloadMark();
+			tmpDownloadMark = tmpDownloader.downloadMark();
 			// 首次评分忽略
 			if(!tmpDownloader.marked()) {
 				this.offer(tmpDownloader);
 				continue;
 			}
 			// 没有评分
-			if(tmpMark <= 0) {
+			if(tmpDownloadMark <= 0) {
 				inferiorPeerDownloader(tmpDownloader);
 				continue;
 			}
 			if(inferiorDownloader == null) {
 				inferiorDownloader = tmpDownloader;
-				minMark = tmpMark;
-			} else if(tmpMark < minMark) {
+				minDownloadMark = tmpDownloadMark;
+			} else if(tmpDownloadMark < minDownloadMark) {
 				this.offer(inferiorDownloader);
 				inferiorDownloader = tmpDownloader;
-				minMark = tmpMark;
+				minDownloadMark = tmpDownloadMark;
 			} else {
 				this.offer(tmpDownloader);
 			}
