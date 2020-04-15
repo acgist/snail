@@ -57,7 +57,7 @@ public final class TorrentSession {
 	 */
 	private static final Duration PEX_INTERVAL = Duration.ofSeconds(SystemConfig.getPexInterval());
 	/**
-	 * <p>DHT任务执行周期</p>
+	 * <p>DHT定时任务执行周期</p>
 	 */
 	private static final Duration DHT_INTERVAL = Duration.ofSeconds(SystemConfig.getDhtInterval());
 	/**
@@ -102,7 +102,7 @@ public final class TorrentSession {
 	 */
 	private ITaskSession taskSession;
 	/**
-	 * <p>DHT任务</p>
+	 * <p>DHT定时任务</p>
 	 */
 	private DhtLauncher dhtLauncher;
 	/**
@@ -266,7 +266,7 @@ public final class TorrentSession {
 			this.loadTrackerLauncherGroup();
 			this.loadTrackerLauncherGroupTimer();
 			if(this.isPrivateTorrent()) {
-				LOGGER.debug("私有种子：不加载DHT任务");
+				LOGGER.debug("私有种子：不加载DHT定时任务");
 			} else {
 				this.loadDhtLauncher();
 				this.loadDhtLauncherTimer();

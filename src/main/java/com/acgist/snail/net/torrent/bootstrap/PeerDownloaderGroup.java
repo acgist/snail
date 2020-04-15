@@ -59,7 +59,7 @@ public final class PeerDownloaderGroup {
 	 */
 	private final BlockingQueue<PeerDownloader> peerDownloaders = new LinkedBlockingQueue<>();
 	/**
-	 * <p>任务信息</p>
+	 * <p>BT任务信息</p>
 	 */
 	private final TorrentSession torrentSession;
 	
@@ -67,6 +67,13 @@ public final class PeerDownloaderGroup {
 		this.torrentSession = torrentSession;
 	}
 	
+	/**
+	 * <p>创建PeerDownloader组</p>
+	 * 
+	 * @param torrentSession BT任务信息
+	 * 
+	 * @return PeerDownloader组
+	 */
 	public static final PeerDownloaderGroup newInstance(TorrentSession torrentSession) {
 		return new PeerDownloaderGroup(torrentSession);
 	}
@@ -202,51 +209,53 @@ public final class PeerDownloaderGroup {
 	private void inferiorPeerDownloaders() {
 		LOGGER.debug("剔除劣质PeerDownloader");
 		int index = 0;
-		PeerDownloader tmp = null;
-		PeerDownloader inferior = null; // 劣质PeerDownloader
-		long downloadMark = 0, minMark = 0;
+		long tmpMark = 0; // 当前评分
+		long minMark = 0; // 最小评分
+		PeerDownloader tmpDownloader = null; // 当前PeerDownloader
+		PeerDownloader inferiorDownloader = null; // 劣质PeerDownloader
 		final int size = this.peerDownloaders.size();
 		while(true) {
 			if(index++ >= size) {
 				break;
 			}
-			tmp = this.peerDownloaders.poll();
-			if(tmp == null) {
+			tmpDownloader = this.peerDownloaders.poll();
+			if(tmpDownloader == null) {
 				break;
 			}
 			// 状态不可用直接剔除
-			if(!tmp.available()) {
-				inferiorPeerDownloader(tmp);
+			if(!tmpDownloader.available()) {
+				inferiorPeerDownloader(tmpDownloader);
 				continue;
 			}
-			// 获取评分
-			downloadMark = tmp.downloadMark();
+			// 获取评分同时清除评分
+			tmpMark = tmpDownloader.downloadMark();
 			// 首次评分忽略
-			if(!tmp.marked()) {
-				this.offer(tmp);
+			if(!tmpDownloader.marked()) {
+				this.offer(tmpDownloader);
 				continue;
 			}
-			if(downloadMark <= 0) {
-				inferiorPeerDownloader(tmp);
+			// 没有评分
+			if(tmpMark <= 0) {
+				inferiorPeerDownloader(tmpDownloader);
 				continue;
 			}
-			if(inferior == null) {
-				inferior = tmp;
-				minMark = downloadMark;
-			} else if(downloadMark < minMark) {
-				this.offer(inferior);
-				inferior = tmp;
-				minMark = downloadMark;
+			if(inferiorDownloader == null) {
+				inferiorDownloader = tmpDownloader;
+				minMark = tmpMark;
+			} else if(tmpMark < minMark) {
+				this.offer(inferiorDownloader);
+				inferiorDownloader = tmpDownloader;
+				minMark = tmpMark;
 			} else {
-				this.offer(tmp);
+				this.offer(tmpDownloader);
 			}
 		}
-		if(inferior != null) {
+		if(inferiorDownloader != null) {
 			// 如果当前Peer连接数量小于系统配置最大数量不剔除
 			if(this.peerDownloaders.size() < SystemConfig.getPeerSize()) {
-				this.offer(inferior);
+				this.offer(inferiorDownloader);
 			} else {
-				inferiorPeerDownloader(inferior);
+				inferiorPeerDownloader(inferiorDownloader);
 			}
 		}
 	}
