@@ -137,52 +137,53 @@ public final class PeerUploaderGroup {
 	private void inferiorPeerUploaders() {
 		LOGGER.debug("剔除无效PeerUploader");
 		int index = 0;
-		PeerUploader tmp;
 		int offerSize = 0; // 有效数量
-		long uploadMark, downloadMark;
+		long uploadMark;
+		long downloadMark;
+		PeerUploader tmpDownloader;
 		final int size = this.peerUploaders.size();
 		final int maxSize = SystemConfig.getPeerSize();
 		while(true) {
 			if(index++ >= size) {
 				break;
 			}
-			tmp = this.peerUploaders.poll();
-			if(tmp == null) {
+			tmpDownloader = this.peerUploaders.poll();
+			if(tmpDownloader == null) {
 				break;
 			}
 			// 状态不可用直接剔除
-			if(!tmp.available()) {
-				inferiorPeerUploader(tmp);
+			if(!tmpDownloader.available()) {
+				inferiorPeerUploader(tmpDownloader);
 				continue;
 			}
 			// 获取评分
-			uploadMark = tmp.uploadMark(); // 上传评分
-			downloadMark = tmp.downloadMark(); // 下载评分
+			uploadMark = tmpDownloader.uploadMark(); // 上传评分
+			downloadMark = tmpDownloader.downloadMark(); // 下载评分
 			// 首次评分忽略
-			if(!tmp.marked()) {
+			if(!tmpDownloader.marked()) {
 				offerSize++;
-				this.offer(tmp);
+				this.offer(tmpDownloader);
 				continue;
 			}
 			// 提供下载的Peer提供上传
 			if(downloadMark > 0L) {
 				offerSize++;
-				this.offer(tmp);
+				this.offer(tmpDownloader);
 				continue;
 			}
 			// 提供下载的Peer提供上传
-			if(tmp.peerSession().downloading()) {
+			if(tmpDownloader.peerSession().downloading()) {
 				offerSize++;
-				this.offer(tmp);
+				this.offer(tmpDownloader);
 				continue;
 			}
 			if(uploadMark <= 0L) {
-				inferiorPeerUploader(tmp);
+				inferiorPeerUploader(tmpDownloader);
 			} else if(offerSize > maxSize) {
-				inferiorPeerUploader(tmp);
+				inferiorPeerUploader(tmpDownloader);
 			} else {
 				offerSize++;
-				this.offer(tmp);
+				this.offer(tmpDownloader);
 			}
 		}
 	}
