@@ -101,9 +101,9 @@ public class JSON {
 	public enum Type {
 
 		/** map */
-		map,
+		MAP,
 		/** list */
-		list;
+		LIST;
 		
 	}
 	
@@ -133,7 +133,7 @@ public class JSON {
 	public static final JSON ofMap(Map<Object, Object> map) {
 		final JSON json = new JSON();
 		json.map = map;
-		json.type = Type.map;
+		json.type = Type.MAP;
 		return json;
 	}
 	
@@ -147,7 +147,7 @@ public class JSON {
 	public static final JSON ofList(List<Object> list) {
 		final JSON json = new JSON();
 		json.list = list;
-		json.type = Type.list;
+		json.type = Type.LIST;
 		return json;
 	}
 
@@ -167,9 +167,9 @@ public class JSON {
 		final char prefix = content.charAt(0);
 		final char suffix = content.charAt(content.length() - 1);
 		if(prefix == JSON_MAP_PREFIX && suffix == JSON_MAP_SUFFIX) {
-			json.type = Type.map;
+			json.type = Type.MAP;
 		} else if(prefix == JSON_LIST_PREFIX && suffix == JSON_LIST_SUFFIX) {
-			json.type = Type.list;
+			json.type = Type.LIST;
 		} else {
 			throw new ArgumentException("JSON格式错误（类型）：" + content);
 		}
@@ -185,9 +185,9 @@ public class JSON {
 	 */
 	private String serialize() {
 		final StringBuilder builder = new StringBuilder();
-		if(this.type == Type.map) {
+		if(this.type == Type.MAP) {
 			this.serializeMap(this.map, builder);
-		} else if(this.type == Type.list) {
+		} else if(this.type == Type.LIST) {
 			this.serializeList(this.list, builder);
 		} else {
 			throw new ArgumentException("JSON类型错误：" + this.type);
@@ -293,9 +293,9 @@ public class JSON {
 	 * @param content JSON字符串
 	 */
 	private void deserialize(String content) {
-		if(this.type == Type.map) {
+		if(this.type == Type.MAP) {
 			deserializeMap(content);
-		} else if(this.type == Type.list) {
+		} else if(this.type == Type.LIST) {
 			deserializeList(content);
 		} else {
 			throw new ArgumentException("JSON类型错误：" + this.type);
