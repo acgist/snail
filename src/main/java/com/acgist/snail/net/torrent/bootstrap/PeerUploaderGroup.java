@@ -33,7 +33,7 @@ public final class PeerUploaderGroup {
 	 */
 	private final BlockingQueue<PeerUploader> peerUploaders = new LinkedBlockingQueue<>();
 	/**
-	 * <p>任务信息</p>
+	 * <p>BT任务信息</p>
 	 */
 	private final TorrentSession torrentSession;
 	
@@ -41,6 +41,13 @@ public final class PeerUploaderGroup {
 		this.torrentSession = torrentSession;
 	}
 	
+	/**
+	 * <p>创建PeerUploader组</p>
+	 * 
+	 * @param torrentSession BT任务信息
+	 * 
+	 * @return PeerUploader组
+	 */
 	public static final PeerUploaderGroup newInstance(TorrentSession torrentSession) {
 		return new PeerUploaderGroup(torrentSession);
 	}
@@ -118,9 +125,7 @@ public final class PeerUploaderGroup {
 		LOGGER.debug("释放PeerUploaderGroup");
 		synchronized (this.peerUploaders) {
 			this.peerUploaders.forEach(connect -> {
-				SystemThreadContext.submit(() -> {
-					connect.release();
-				});
+				SystemThreadContext.submit(() -> connect.release());
 			});
 			this.peerUploaders.clear();
 		}
@@ -209,9 +214,7 @@ public final class PeerUploaderGroup {
 		if(peerUploader != null) {
 			final PeerSession peerSession = peerUploader.peerSession();
 			LOGGER.debug("剔除无效PeerUploader：{}-{}", peerSession.host(), peerSession.port());
-			SystemThreadContext.submit(() -> {
-				peerUploader.release();
-			});
+			SystemThreadContext.submit(() -> peerUploader.release());
 		}
 	}
 	
