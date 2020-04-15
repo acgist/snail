@@ -26,6 +26,14 @@ public final class PeerDownloader extends PeerConnect {
 		super(peerSession, torrentSession, PeerSubMessageHandler.newInstance(peerSession, torrentSession));
 	}
 	
+	/**
+	 * <p>创建Peer下载</p>
+	 * 
+	 * @param peerSession Peer信息
+	 * @param torrentSession BT任务信息
+	 * 
+	 * @return Peer下载
+	 */
 	public static final PeerDownloader newInstance(PeerSession peerSession, TorrentSession torrentSession) {
 		return new PeerDownloader(peerSession, torrentSession);
 	}
@@ -37,7 +45,7 @@ public final class PeerDownloader extends PeerConnect {
 	 * @return 是否握手成功
 	 */
 	public boolean handshake() {
-		final boolean ok = connect();
+		final boolean ok = this.connect();
 		if(ok) {
 			this.peerSubMessageHandler.handshake(this); // 发送握手消息
 		} else {
@@ -61,7 +69,7 @@ public final class PeerDownloader extends PeerConnect {
 			if(utpOk) {
 				return utpOk;
 			} else {
-				return this.holepunchConnect(false);
+				return this.holepunchConnect(false); // 不需要再使用UTP重试
 			}
 		} else {
 			LOGGER.debug("Peer连接（TCP）：{}-{}", this.peerSession.host(), this.peerSession.port());
@@ -70,14 +78,14 @@ public final class PeerDownloader extends PeerConnect {
 			if(tcpOk) {
 				return tcpOk;
 			} else {
-				return this.holepunchConnect(true);
+				return this.holepunchConnect(true); // 需要使用UTP重试
 			}
 		}
 	}
 
 	/**
 	 * <p>使用holepunch协议连接</p>
-	 * <p>如果Peer不可以直接连接使用holepunch协议连接，如果连接失败并且可以使用UTP重试最后使用UTP重试连接。</p>
+	 * <p>如果Peer不可以直接连接使用holepunch协议连接，如果连接失败并且可以使用UTP重试时再使用UTP重试连接。</p>
 	 * 
 	 * @param utpRetry 是否可以使用UTP重试
 	 * 
@@ -105,7 +113,7 @@ public final class PeerDownloader extends PeerConnect {
 						final UtpClient utpClient = UtpClient.newInstance(this.peerSession, this.peerSubMessageHandler);
 						return utpClient.connect();
 					} else {
-						LOGGER.debug("没有收到holepunch连接消息");
+						LOGGER.debug("Peer连接（uTP）（holepunch）：连接失败");
 					}
 				}
 			}

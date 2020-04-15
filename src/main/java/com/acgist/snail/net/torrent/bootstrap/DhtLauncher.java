@@ -16,7 +16,7 @@ import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NetUtils;
 
 /**
- * <p>DHT任务</p>
+ * <p>DHT定时任务</p>
  * <p>定时使用系统最近的DHT节点和{@link #peerNodes}查询Peer</p>
  * 
  * @author acgist
@@ -40,6 +40,13 @@ public final class DhtLauncher implements Runnable {
 		this.infoHash = torrentSession.infoHash();
 	}
 	
+	/**
+	 * <p>创建DHT定时任务</p>
+	 * 
+	 * @param torrentSession BT任务信息
+	 * 
+	 * @return DHT定时任务
+	 */
 	public static final DhtLauncher newInstance(TorrentSession torrentSession) {
 		return new DhtLauncher(torrentSession);
 	}
@@ -53,9 +60,9 @@ public final class DhtLauncher implements Runnable {
 			this.peerNodes.clear(); // 清空节点信息
 		}
 		try {
-			joinSystemNodes(nodes);
-			final var list = pick(nodes);
-			findPeers(list);
+			this.joinSystemNodes(nodes);
+			final var list = this.pick(nodes);
+			this.findPeers(list);
 		} catch (Exception e) {
 			LOGGER.error("执行DHT定时任务异常", e);
 		}
@@ -80,9 +87,9 @@ public final class DhtLauncher implements Runnable {
 	 */
 	private void joinSystemNodes(List<InetSocketAddress> peerNodes) {
 		if(CollectionUtils.isNotEmpty(peerNodes)) {
-			peerNodes.forEach(address -> {
-				NodeManager.getInstance().newNodeSession(address.getHostString(), address.getPort());
-			});
+			peerNodes.forEach(
+				address -> NodeManager.getInstance().newNodeSession(address.getHostString(), address.getPort())
+			);
 		}
 	}
 	
@@ -116,11 +123,11 @@ public final class DhtLauncher implements Runnable {
 	 */
 	private void findPeers(List<InetSocketAddress> list) {
 		if(CollectionUtils.isEmpty(list)) {
+			LOGGER.debug("DHT定时任务没有节点可用");
 			return;
 		}
 		for (InetSocketAddress socketAddress : list) {
-			final DhtClient client = DhtClient.newInstance(socketAddress);
-			client.getPeers(this.infoHash.infoHash());
+			DhtClient.newInstance(socketAddress).getPeers(this.infoHash.infoHash());
 		}
 	}
 	
