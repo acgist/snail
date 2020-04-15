@@ -25,6 +25,15 @@ public final class PeerUploader extends PeerConnect {
 		this.available = true;
 	}
 	
+	/**
+	 * <p>创建Peer接入</p>
+	 * 
+	 * @param peerSession Peer信息
+	 * @param torrentSession BT任务信息
+	 * @param peerSubMessageHandler Peer消息代理
+	 * 
+	 * @return Peer接入
+	 */
 	public static final PeerUploader newInstance(PeerSession peerSession, TorrentSession torrentSession, PeerSubMessageHandler peerSubMessageHandler) {
 		return new PeerUploader(peerSession, torrentSession, peerSubMessageHandler);
 	}
