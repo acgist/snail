@@ -56,6 +56,7 @@ public final class TorrentStreamGroup {
 	/**
 	 * <p>完整Piece位图</p>
 	 * <p>已下载Piece位图和Peer含有的Piece位图数据，用来计算健康度。</p>
+	 * <p>只计算选中下载的Piece</p>
 	 * <dl>
 	 * 	<dt>更新条件</dt>
 	 * 	<dd>加载本地文件</dd>
@@ -89,7 +90,7 @@ public final class TorrentStreamGroup {
 		this.selectPieces = selectPieces;
 		this.full = false;
 		this.fullPieces = new BitSet();
-		this.fullPieces.or(this.pieces);
+		this.fullPieces(this.pieces);
 		this.fileBufferSize = new AtomicLong(0);
 		this.torrent = torrentSession.torrent();
 		this.streams = streams;
