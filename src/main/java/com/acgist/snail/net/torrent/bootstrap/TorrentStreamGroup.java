@@ -428,7 +428,10 @@ public final class TorrentStreamGroup {
 	 * @since 1.0.2
 	 */
 	public int remainingPieceSize() {
-		return this.selectPieces.cardinality() - this.pieces.cardinality();
+		final BitSet condition = new BitSet();
+		condition.or(this.selectPieces); // 已选址下载
+		condition.andNot(this.pieces); // 排除已下载
+		return condition.cardinality();
 	}
 	
 	/**
