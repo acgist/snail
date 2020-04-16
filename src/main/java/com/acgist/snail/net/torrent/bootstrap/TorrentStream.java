@@ -50,23 +50,6 @@ public final class TorrentStream {
 	 */
 	private final long pieceLength;
 	/**
-	 * <p>缓冲大小</p>
-	 * <p>所有文件Piece缓冲数据大小（TorrentStreamGroup中的引用）</p>
-	 */
-	private final AtomicLong fileBuffer;
-	/**
-	 * <p>已下载大小</p>
-	 */
-	private final AtomicLong fileDownloadSize;
-	/**
-	 * <p>下载文件组</p>
-	 */
-	private final TorrentStreamGroup torrentStreamGroup;
-	/**
-	 * <p>Piece缓存队列</p>
-	 */
-	private final BlockingQueue<TorrentPiece> filePieces;
-	/**
 	 * <p>文件路径</p>
 	 */
 	private final String file;
@@ -83,17 +66,30 @@ public final class TorrentStream {
 	 */
 	private final long fileEndPos;
 	/**
-	 * <p>文件Piece数量</p>
-	 */
-	private int filePieceSize;
-	/**
 	 * <p>文件Piece开始索引</p>
 	 */
-	private int fileBeginPieceIndex;
+	private final int fileBeginPieceIndex;
 	/**
 	 * <p>文件Piece结束索引</p>
 	 */
-	private int fileEndPieceIndex;
+	private final int fileEndPieceIndex;
+	/**
+	 * <p>文件Piece数量</p>
+	 */
+	private final int filePieceSize;
+	/**
+	 * <p>缓冲大小</p>
+	 * <p>所有文件Piece缓冲数据大小（TorrentStreamGroup中的引用）</p>
+	 */
+	private final AtomicLong fileBufferSize;
+	/**
+	 * <p>已下载大小</p>
+	 */
+	private final AtomicLong fileDownloadSize;
+	/**
+	 * <p>Piece缓存队列</p>
+	 */
+	private final BlockingQueue<TorrentPiece> filePieces;
 	/**
 	 * <p>已下载Piece位图</p>
 	 */
@@ -115,24 +111,37 @@ public final class TorrentStream {
 	 * TODO：下载完成修改读写模式
 	 */
 	private final RandomAccessFile fileStream;
+	/**
+	 * <p>下载文件组</p>
+	 */
+	private final TorrentStreamGroup torrentStreamGroup;
 	
 	private TorrentStream(
 		long pieceLength, String file, long size, long pos,
-		AtomicLong fileBuffer, TorrentStreamGroup torrentStreamGroup
+		AtomicLong fileBufferSize, TorrentStreamGroup torrentStreamGroup
 	) throws DownloadException {
 		this.pieceLength = pieceLength;
 		this.file = file;
 		this.fileSize = size;
 		this.fileBeginPos = pos;
 		this.fileEndPos = pos + size;
-		this.fileBuffer = fileBuffer;
-		this.torrentStreamGroup = torrentStreamGroup;
+		this.fileBufferSize = fileBufferSize;
+		this.fileDownloadSize = new AtomicLong(0);
+		this.filePieces = new LinkedBlockingQueue<>();
+		this.fileBeginPieceIndex = (int) (this.fileBeginPos / this.pieceLength);
+		this.fileEndPieceIndex = (int) (this.fileEndPos / this.pieceLength);
+		final int filePieceSize = this.fileEndPieceIndex - this.fileBeginPieceIndex;
+		final int endPieceSize = (int) (this.fileEndPos % this.pieceLength);
+		if(endPieceSize > 0) { // 最后一块包含数据
+			this.filePieceSize = filePieceSize + 1;
+		} else { // 最后一块没有包含数据
+			this.filePieceSize = filePieceSize;
+		}
 		this.pieces = new BitSet();
 		this.pausePieces = new BitSet();
 		this.downloadPieces = new BitSet();
-		this.fileDownloadSize = new AtomicLong(0);
-		this.filePieces = new LinkedBlockingQueue<>();
 		this.fileStream = this.buildFileStream(); // 创建文件流
+		this.torrentStreamGroup = torrentStreamGroup;
 	}
 	
 	/**
@@ -142,10 +151,10 @@ public final class TorrentStream {
 	 * @param file 文件路径
 	 * @param size 文件大小
 	 * @param pos 文件开始偏移
-	 * @param fileBuffer 缓冲大小
+	 * @param fileBufferSize 缓冲大小
 	 * @param torrentStreamGroup 文件流组
-	 * @param selectPieces 被选中的Piece
 	 * @param complete 是否完成
+	 * @param selectPieces 被选中的Piece
 	 * @param sizeCount 异步文件加载计数器
 	 * 
 	 * @return 文件流
@@ -154,21 +163,21 @@ public final class TorrentStream {
 	 */
 	public static final TorrentStream newInstance(
 		long pieceLength, String file, long size, long pos,
-		AtomicLong fileBuffer, TorrentStreamGroup torrentStreamGroup,
-		BitSet selectPieces, boolean complete, CountDownLatch sizeCount
+		AtomicLong fileBufferSize, TorrentStreamGroup torrentStreamGroup,
+		boolean complete, BitSet selectPieces, CountDownLatch sizeCount
 	) throws DownloadException {
-		final var stream = new TorrentStream(pieceLength, file, size, pos, fileBuffer, torrentStreamGroup);
-		stream.buildFilePiece(); // 加载文件Piece
+		final var stream = new TorrentStream(pieceLength, file, size, pos, fileBufferSize, torrentStreamGroup);
 		stream.buildFileAsyn(complete, sizeCount); // 异步加载文件
 		stream.buildSelectPieces(selectPieces); // 加载被选中的Piece
 		stream.install();
 		// TODO：{}，使用多行文本
 		LOGGER.debug(
-			"创建文件流信息，Piece大小：{}，文件路径：{}，文件大小：{}，文件开始偏移：{}，文件Piece数量：{}，文件Piece开始索引：{}，文件Piece结束索引：{}",
+			"创建文件流信息，Piece大小：{}，文件路径：{}，文件大小：{}，文件开始偏移：{}，文件结束偏移：{}，文件Piece数量：{}，文件Piece开始索引：{}，文件Piece结束索引：{}",
 			stream.pieceLength,
 			stream.file,
 			stream.fileSize,
 			stream.fileBeginPos,
+			stream.fileEndPos,
 			stream.filePieceSize,
 			stream.fileBeginPieceIndex,
 			stream.fileEndPieceIndex
@@ -341,12 +350,13 @@ public final class TorrentStream {
 				LOGGER.debug("保存Piece：{}", piece.getIndex());
 				this.done(piece.getIndex());
 				// 更新缓存大小
-				this.fileBuffer.addAndGet(piece.getLength());
+				this.fileBufferSize.addAndGet(piece.getLength());
 				// 设置已下载大小
 				this.buildFileDownloadSize();
 				// 下载完成数据刷出
 				if(this.complete()) {
 					this.flush();
+					// TODO：修改文件为读模式
 				}
 			} else {
 				LOGGER.warn("保存Piece失败：{}", piece.getIndex());
@@ -595,20 +605,6 @@ public final class TorrentStream {
 			}
 		}
 		return null;
-	}
-	
-	/**
-	 * <p>加载文件Piece</p>
-	 * <p>第一块Piece索引、最后一块Piece索引、文件Piece数量</p>
-	 */
-	private void buildFilePiece() {
-		this.fileBeginPieceIndex = (int) (this.fileBeginPos / this.pieceLength);
-		this.fileEndPieceIndex = (int) (this.fileEndPos / this.pieceLength);
-		this.filePieceSize = this.fileEndPieceIndex - this.fileBeginPieceIndex;
-		int endPieceSize = (int) (this.fileEndPos % this.pieceLength);
-		if(endPieceSize > 0) { // 最后一块包含部分数据
-			this.filePieceSize++;
-		}
 	}
 	
 	/**

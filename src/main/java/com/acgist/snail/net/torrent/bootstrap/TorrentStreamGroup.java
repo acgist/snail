@@ -36,7 +36,7 @@ public final class TorrentStreamGroup {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentStreamGroup.class);
 
 	/**
-	 * <p>计算文件大小等待时间（秒）：{@code}</p>
+	 * <p>计算文件大小等待时间（秒）：{@value}</p>
 	 */
 	private static final int DOWNLOAD_SIZE_TIMEOUT = 120;
 	
@@ -68,7 +68,7 @@ public final class TorrentStreamGroup {
 	 * <p>Piece缓存大小</p>
 	 * <p>所有文件流中Piece缓存队列数据大小</p>
 	 */
-	private final AtomicLong fileBuffer;
+	private final AtomicLong fileBufferSize;
 	/**
 	 * <p>种子信息</p>
 	 */
@@ -90,10 +90,10 @@ public final class TorrentStreamGroup {
 		this.full = false;
 		this.fullPieces = new BitSet();
 		this.fullPieces.or(this.pieces);
-		this.streams = streams;
+		this.fileBufferSize = new AtomicLong(0);
 		this.torrent = torrentSession.torrent();
+		this.streams = streams;
 		this.torrentSession = torrentSession;
-		this.fileBuffer = new AtomicLong(0);
 	}
 	
 	/**
@@ -179,8 +179,8 @@ public final class TorrentStreamGroup {
 							LOGGER.debug("文件选中下载（加载）：{}", path);
 							final TorrentStream stream = TorrentStream.newInstance(
 								pieceLength, path, file.getLength(), pos,
-								this.fileBuffer, this,
-								this.selectPieces, complete, sizeCount
+								this.fileBufferSize, this,
+								complete, this.selectPieces, sizeCount
 							);
 							this.streams.add(stream);
 							sortList.add(stream);
@@ -332,9 +332,9 @@ public final class TorrentStreamGroup {
 			}
 		}
 		// 判断是否刷出缓存
-		final long oldValue = this.fileBuffer.get();
+		final long oldValue = this.fileBufferSize.get();
 		if(oldValue > DownloadConfig.getMemoryBufferByte()) {
-			if(this.fileBuffer.compareAndSet(oldValue, 0)) {
+			if(this.fileBufferSize.compareAndSet(oldValue, 0)) {
 				LOGGER.debug("缓冲区被占满");
 				this.flush();
 			}
