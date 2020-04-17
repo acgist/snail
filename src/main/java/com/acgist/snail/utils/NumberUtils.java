@@ -60,7 +60,7 @@ public final class NumberUtils {
 			}
 			NumberUtils.index = index;
 		}
-		builder.append(DateUtils.dateToString(new Date(), "mmss"));
+		builder.append(DateUtils.dateToString(new Date(), "HHmm"));
 		return Integer.valueOf(builder.toString());
 	}
 	
