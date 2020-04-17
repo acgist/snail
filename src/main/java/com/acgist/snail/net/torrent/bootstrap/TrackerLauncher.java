@@ -34,7 +34,6 @@ public final class TrackerLauncher {
 	 * <p>BT任务信息</p>
 	 */
 	private final TorrentSession torrentSession;
-//	private final TrackerLauncherGroup trackerLauncherGroup;
 	
 	/**
 	 * <p>transaction_id</p>
@@ -67,9 +66,16 @@ public final class TrackerLauncher {
 		this.id = NumberUtils.build();
 		this.client = client;
 		this.torrentSession = torrentSession;
-//		this.trackerLauncherGroup = torrentSession.trackerLauncherGroup();
 	}
 	
+	/**
+	 * <p>创建Tracker执行器</p>
+	 * 
+	 * @param client TrackerClient
+	 * @param torrentSession BT任务信息
+	 * 
+	 * @return Tracker执行器
+	 */
 	public static final TrackerLauncher newInstance(TrackerClient client, TorrentSession torrentSession) {
 		return new TrackerLauncher(client, torrentSession);
 	}
@@ -98,7 +104,7 @@ public final class TrackerLauncher {
 	public void findPeer() {
 		this.needRelease = true;
 		if(this.available()) {
-			LOGGER.debug("TrackerLauncher查找Peer：{}", this.client.announceUrl());
+			LOGGER.debug("TrackerLauncher查找Peer：{}", this.announceUrl());
 			this.client.findPeers(this.id, this.torrentSession);
 		}
 	}
@@ -113,6 +119,7 @@ public final class TrackerLauncher {
 			return;
 		}
 		if(!this.available()) {
+			LOGGER.debug("收到声明响应消息：Tracker执行器无效");
 			return;
 		}
 		this.interval = message.getInterval();
@@ -121,7 +128,7 @@ public final class TrackerLauncher {
 		this.peer(message.getPeers());
 		LOGGER.debug(
 			"{}-收到声明响应：做种Peer数量：{}，下载Peer数量：{}，下次请求时间：{}",
-			this.client.announceUrl(),
+			this.announceUrl(),
 			this.seeder,
 			this.leecher,
 			this.interval
@@ -138,14 +145,13 @@ public final class TrackerLauncher {
 			return;
 		}
 		final PeerManager manager = PeerManager.getInstance();
-		peers.forEach((host, port) -> {
-			manager.newPeerSession(
-				this.torrentSession.infoHashHex(),
-				this.torrentSession.statistics(),
-				host,
-				port,
-				PeerConfig.SOURCE_TRACKER);
-		});
+		peers.forEach((host, port) -> manager.newPeerSession(
+			this.torrentSession.infoHashHex(),
+			this.torrentSession.statistics(),
+			host,
+			port,
+			PeerConfig.SOURCE_TRACKER
+		));
 	}
 
 	/**
@@ -153,14 +159,15 @@ public final class TrackerLauncher {
 	 * <p>暂停发送stop消息、完成发送complete消息</p>
 	 */
 	public void release() {
-		if(this.needRelease && available()) {
+		if(this.needRelease && this.available()) {
 			this.available = false;
+			this.needRelease = false;
 			try {
 				if(this.torrentSession.completed()) { // 任务完成
-					LOGGER.debug("Tracker完成通知：{}", this.client.announceUrl());
+					LOGGER.debug("Tracker完成通知：{}", this.announceUrl());
 					this.client.complete(this.id, this.torrentSession);
 				} else { // 任务暂停
-					LOGGER.debug("Tracker暂停通知：{}", this.client.announceUrl());
+					LOGGER.debug("Tracker暂停通知：{}", this.announceUrl());
 					this.client.stop(this.id, this.torrentSession);
 				}
 			} catch (NetException e) {

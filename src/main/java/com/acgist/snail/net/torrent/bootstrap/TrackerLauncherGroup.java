@@ -39,6 +39,13 @@ public final class TrackerLauncherGroup {
 		this.trackerLaunchers = new ArrayList<>();
 	}
 	
+	/**
+	 * <p>创建Tracker执行器组</p>
+	 * 
+	 * @param torrentSession BT任务信息
+	 * 
+	 * @return Tracker执行器组
+	 */
 	public static final TrackerLauncherGroup newInstance(TorrentSession torrentSession) {
 		return new TrackerLauncherGroup(torrentSession);
 	}
@@ -51,7 +58,7 @@ public final class TrackerLauncherGroup {
 	public List<String> trackers() {
 		synchronized (this.trackerLaunchers) {
 			return this.trackerLaunchers.stream()
-				.map(launcher -> launcher.announceUrl())
+				.map(TrackerLauncher::announceUrl)
 				.collect(Collectors.toList());
 		}
 	}
@@ -77,13 +84,8 @@ public final class TrackerLauncherGroup {
 			return;
 		}
 		clients.stream()
-			.map(client -> {
-				return TrackerManager.getInstance().newTrackerLauncher(client, this.torrentSession);
-			})
-			.filter(launcer -> launcer != null)
-			.forEach(launcher -> {
-				this.trackerLaunchers.add(launcher);
-			});
+			.map(client -> TrackerManager.getInstance().newTrackerLauncher(client, this.torrentSession))
+			.forEach(launcher -> this.trackerLaunchers.add(launcher));
 	}
 
 	/**
@@ -92,9 +94,7 @@ public final class TrackerLauncherGroup {
 	 * @see TrackerLauncher#findPeer()
 	 */
 	public void findPeer() {
-		this.trackerLaunchers.forEach(launcher -> {
-			launcher.findPeer();
-		});
+		this.trackerLaunchers.forEach(launcher -> launcher.findPeer());
 	}
 
 	/**
@@ -102,11 +102,9 @@ public final class TrackerLauncherGroup {
 	 */
 	public void release() {
 		LOGGER.debug("释放TrackerLauncherGroup");
-		this.trackerLaunchers.forEach(launcher -> {
-			SystemThreadContext.submit(() -> {
-				launcher.release();
-			});
-		});
+		this.trackerLaunchers.forEach(launcher -> SystemThreadContext.submit(
+			() -> launcher.release()
+		));
 		this.trackerLaunchers.clear();
 	}
 	
