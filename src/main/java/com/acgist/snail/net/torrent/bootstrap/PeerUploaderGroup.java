@@ -94,6 +94,8 @@ public final class PeerUploaderGroup {
 	 * @param peerSession Peer信息
 	 * 
 	 * @return {@code true}-允许；{@code false}-不允许；
+	 * 
+	 * TODO：通常大多数数据都是从接入Peer下载获得，是否考虑放大接入限制
 	 */
 	private boolean connectable(PeerSession peerSession) {
 		if(peerSession != null && peerSession.downloading()) {

@@ -55,8 +55,8 @@ public final class MSECipher {
 	 * @param sender 是否是请求客户端
 	 */
 	private MSECipher(byte[] S, InfoHash infoHash, boolean sender) {
-		final Key sendKey = buildSendKey(S, infoHash.infoHash());
-		final Key recvKey = buildRecvKey(S, infoHash.infoHash());
+		final Key sendKey = this.buildSendKey(S, infoHash.infoHash());
+		final Key recvKey = this.buildRecvKey(S, infoHash.infoHash());
 		final Key encryptKey = sender ? sendKey : recvKey;
 		final Key decryptKey = sender ? recvKey : sendKey;
 		this.decryptCipher = buildCipher(Cipher.DECRYPT_MODE, ARC4_ALGO_TRANSFORMATION, decryptKey);
