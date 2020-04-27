@@ -221,8 +221,7 @@ public final class NumberUtils {
 		int index = 0;
 		byte nonzero;
 		// 去掉前导零
-		while ((nonzero = buffer.get()) == 0 && ++index < length) {
-		}
+		while ((nonzero = buffer.get()) == 0 && ++index < length);
 		if (index == length) {
 			return BigInteger.ZERO;
 		}

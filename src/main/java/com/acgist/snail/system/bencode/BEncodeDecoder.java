@@ -2,6 +2,7 @@ package com.acgist.snail.system.bencode;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -114,6 +115,13 @@ public final class BEncodeDecoder {
 		this.inputStream = new ByteArrayInputStream(bytes);
 	}
 	
+	/**
+	 * <p>创建B编码解码器</p>
+	 * 
+	 * @param content 数据
+	 * 
+	 * @return B编码解码器
+	 */
 	public static final BEncodeDecoder newInstance(String content) {
 		if(content == null) {
 			throw new ArgumentException("B编码内容错误（数据为空）");
@@ -121,6 +129,29 @@ public final class BEncodeDecoder {
 		return new BEncodeDecoder(content.getBytes());
 	}
 	
+	/**
+	 * <p>创建B编码解码器</p>
+	 * 
+	 * @param buffer 数据
+	 * 
+	 * @return B编码解码器
+	 */
+	public static final BEncodeDecoder newInstance(ByteBuffer buffer) {
+		if(buffer == null) {
+			throw new ArgumentException("B编码内容错误（数据为空）");
+		}
+		final byte[] bytes = new byte[buffer.remaining()];
+		buffer.get(bytes);
+		return new BEncodeDecoder(bytes);
+	}
+	
+	/**
+	 * <p>创建B编码解码器</p>
+	 * 
+	 * @param bytes 数据
+	 * 
+	 * @return B编码解码器
+	 */
 	public static final BEncodeDecoder newInstance(byte[] bytes) {
 		return new BEncodeDecoder(bytes);
 	}

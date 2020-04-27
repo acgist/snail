@@ -220,9 +220,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	private void handshake(ByteBuffer buffer) throws PacketSizeException {
 		LOGGER.debug("处理扩展消息-握手");
 		this.handshakeRecv = true;
-		final byte[] bytes = new byte[buffer.remaining()];
-		buffer.get(bytes);
-		final var decoder = BEncodeDecoder.newInstance(bytes);
+		final var decoder = BEncodeDecoder.newInstance(buffer);
 		decoder.nextMap();
 		if(decoder.isEmpty()) {
 			LOGGER.warn("处理扩展消息-握手失败（格式）：{}", decoder.oddString());

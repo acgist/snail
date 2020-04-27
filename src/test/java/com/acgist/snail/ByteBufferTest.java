@@ -87,4 +87,15 @@ public class ByteBufferTest extends BaseTest {
 		this.log(new String(v));
 	}
 	
+	@Test
+	public void testFlipCompact() {
+		ByteBuffer buffer = ByteBuffer.wrap("123456".getBytes());
+		this.log(buffer);
+		buffer.flip();
+		this.log(buffer);
+		buffer = ByteBuffer.wrap("123456".getBytes());
+		buffer.compact();
+		this.log(buffer);
+	}
+	
 }

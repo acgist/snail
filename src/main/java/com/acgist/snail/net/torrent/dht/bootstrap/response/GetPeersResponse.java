@@ -14,6 +14,7 @@ import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.system.config.PeerConfig;
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -85,7 +86,7 @@ public final class GetPeersResponse extends Response {
 		}
 		byte[] bytes;
 		PeerSession session;
-		final ByteBuffer buffer = ByteBuffer.allocate(6);
+		final ByteBuffer buffer = ByteBuffer.allocate(SystemConfig.IP_PORT_LENGTH);
 		final List<PeerSession> list = new ArrayList<>();
 		for (Object object : values) {
 			bytes = (byte[]) object;
@@ -96,7 +97,8 @@ public final class GetPeersResponse extends Response {
 				torrentSession.statistics(),
 				NetUtils.decodeIntToIp(buffer.getInt()),
 				NetUtils.decodePort(buffer.getShort()),
-				PeerConfig.SOURCE_DHT);
+				PeerConfig.SOURCE_DHT
+			);
 			buffer.flip();
 			list.add(session);
 		}

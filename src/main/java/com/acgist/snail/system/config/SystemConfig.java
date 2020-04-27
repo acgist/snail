@@ -44,6 +44,10 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	public static final int MIN_BUFFER_KB = 16;
 	/**
+	 * <p>IP和端口占用字节大小：{@value}</p>
+	 */
+	public static final int IP_PORT_LENGTH = 6;
+	/**
 	 * <p>TCP消息缓冲大小：{@value}</p>
 	 * <p>大小和Piece交换Slice大小一样</p>
 	 */
