@@ -997,14 +997,12 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		final int index = buffer.getInt();
 		final int begin = buffer.getInt();
 		LOGGER.debug("处理piece消息：{}-{}", index, begin);
-		final int remaining = buffer.remaining();
-		byte[] bytes = null;
-		if(remaining > 0) {
-			bytes = new byte[remaining];
+		if(buffer.hasRemaining()) {
+			final byte[] bytes = new byte[buffer.remaining()];
 			buffer.get(bytes);
-		}
-		if(this.peerConnect != null) {
-			this.peerConnect.piece(index, begin, bytes);
+			if(this.peerConnect != null) {
+				this.peerConnect.piece(index, begin, bytes);
+			}
 		}
 	}
 

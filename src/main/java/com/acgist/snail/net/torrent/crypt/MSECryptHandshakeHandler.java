@@ -188,6 +188,7 @@ public final class MSECryptHandshakeHandler {
 	 * @throws NetException 网络异常
 	 */
 	public void handshake(ByteBuffer buffer) throws NetException {
+		// buffer.flip(); // 此处不需要调用此方法，解密时已经调用。
 		try {
 			if(this.checkPeerHandshake(buffer)) {
 				LOGGER.debug("加密握手（跳过）：收到Peer握手消息");

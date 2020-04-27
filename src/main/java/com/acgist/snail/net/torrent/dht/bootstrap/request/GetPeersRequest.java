@@ -10,6 +10,7 @@ import com.acgist.snail.net.torrent.dht.bootstrap.response.GetPeersResponse;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.DhtConfig;
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -54,7 +55,7 @@ public final class GetPeersRequest extends Request {
 		final TorrentSession torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
 		boolean needNodes = true;
 		if(torrentSession != null) {
-			final ByteBuffer buffer = ByteBuffer.allocate(6);
+			final ByteBuffer buffer = ByteBuffer.allocate(SystemConfig.IP_PORT_LENGTH);
 			final var list = PeerManager.getInstance().listPeerSession(infoHashHex);
 			if(CollectionUtils.isNotEmpty(list)) { // 返回Peer
 				needNodes = false;

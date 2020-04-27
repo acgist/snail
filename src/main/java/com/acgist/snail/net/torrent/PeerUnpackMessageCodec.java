@@ -46,6 +46,7 @@ public final class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteB
 	
 	@Override
 	public void decode(ByteBuffer buffer, InetSocketAddress address, boolean haveAddress) throws NetException {
+		// buffer.flip(); // 此处不需要调用此方法，解密时已经调用。
 		int length = 0; // 消息数据长度
 		while(true) {
 			if(this.buffer == null) {

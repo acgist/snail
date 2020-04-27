@@ -68,9 +68,7 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 
 	@Override
 	public void doMessage(ByteBuffer buffer) throws NetException {
-		final byte[] bytes = new byte[buffer.remaining()];
-		buffer.get(bytes);
-		final var decoder = BEncodeDecoder.newInstance(bytes);
+		final var decoder = BEncodeDecoder.newInstance(buffer);
 		decoder.nextMap();
 		if(decoder.isEmpty()) {
 			LOGGER.warn("处理metadata消息错误（格式）：{}", decoder.oddString());

@@ -4,6 +4,8 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.acgist.snail.system.config.SystemConfig;
+
 /**
  * <p>Peer工具</p>
  * 
@@ -39,23 +41,22 @@ public final class PeerUtils {
 			return null;
 		}
 		final ByteBuffer buffer = ByteBuffer.wrap(bytes);
-		return read(buffer, bytes.length);
+		return read(buffer);
 	}
 	
 	/**
 	 * <p>读取IP和端口</p>
 	 * 
 	 * @param buffer 数据
-	 * @param length 数据长度
 	 * 
 	 * @return IP=端口
 	 */
-	public static final Map<String, Integer> read(ByteBuffer buffer, int length) {
+	public static final Map<String, Integer> read(ByteBuffer buffer) {
 		if(buffer == null) {
 			return null;
 		}
 		final Map<String, Integer> data = new HashMap<>();
-		while (buffer.position() < length) {
+		while (buffer.remaining() >= SystemConfig.IP_PORT_LENGTH) {
 			final String ip = NetUtils.decodeIntToIp(buffer.getInt());
 			final int port = NetUtils.decodePort(buffer.getShort());
 			data.put(ip, port);

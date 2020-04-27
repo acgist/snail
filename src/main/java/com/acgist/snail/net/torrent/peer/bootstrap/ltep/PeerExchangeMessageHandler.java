@@ -15,6 +15,7 @@ import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.bencode.BEncodeDecoder;
 import com.acgist.snail.system.bencode.BEncodeEncoder;
 import com.acgist.snail.system.config.PeerConfig;
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.config.PeerConfig.ExtensionType;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.system.exception.PacketSizeException;
@@ -100,9 +101,7 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 	 */
 	private void pex(ByteBuffer buffer) throws PacketSizeException {
 		LOGGER.debug("处理pex消息");
-		final byte[] bytes = new byte[buffer.remaining()];
-		buffer.get(bytes);
-		final var decoder = BEncodeDecoder.newInstance(bytes);
+		final var decoder = BEncodeDecoder.newInstance(buffer);
 		decoder.nextMap();
 		if(decoder.isEmpty()) {
 			LOGGER.warn("处理pex消息错误（格式）：{}", decoder.oddString());
@@ -141,7 +140,7 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 		if(CollectionUtils.isEmpty(optimize)) {
 			return null;
 		}
-		final int length = 6 * optimize.size();
+		final int length = SystemConfig.IP_PORT_LENGTH * optimize.size();
 		final ByteBuffer addedBuffer = ByteBuffer.allocate(length);
 		final ByteBuffer addedfBuffer = ByteBuffer.allocate(optimize.size());
 		optimize.stream()

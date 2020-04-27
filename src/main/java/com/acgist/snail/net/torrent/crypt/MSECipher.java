@@ -50,17 +50,12 @@ public final class MSECipher {
 	/**
 	 * <p>加解密套件</p>
 	 * 
-	 * @param S DH Secret
-	 * @param infoHash InfoHash
-	 * @param sender 是否是请求客户端
+	 * @param encryptKey 加密Key
+	 * @param decryptKey 解密Key
 	 */
-	private MSECipher(byte[] S, InfoHash infoHash, boolean sender) {
-		final Key sendKey = this.buildSendKey(S, infoHash.infoHash());
-		final Key recvKey = this.buildRecvKey(S, infoHash.infoHash());
-		final Key encryptKey = sender ? sendKey : recvKey;
-		final Key decryptKey = sender ? recvKey : sendKey;
-		this.decryptCipher = buildCipher(Cipher.DECRYPT_MODE, ARC4_ALGO_TRANSFORMATION, decryptKey);
+	private MSECipher(Key encryptKey, Key decryptKey) {
 		this.encryptCipher = buildCipher(Cipher.ENCRYPT_MODE, ARC4_ALGO_TRANSFORMATION, encryptKey);
+		this.decryptCipher = buildCipher(Cipher.DECRYPT_MODE, ARC4_ALGO_TRANSFORMATION, decryptKey);
 	}
 	
 	/**
@@ -72,7 +67,9 @@ public final class MSECipher {
 	 * @return 加解密套件
 	 */
 	public static final MSECipher newSender(byte[] S, InfoHash infoHash) {
-		return new MSECipher(S, infoHash, true);
+		final Key sendKey = buildSendKey(S, infoHash.infoHash());
+		final Key recvKey = buildRecvKey(S, infoHash.infoHash());
+		return new MSECipher(sendKey, recvKey);
 	}
 	
 	/**
@@ -84,7 +81,9 @@ public final class MSECipher {
 	 * @return 加解密套件
 	 */
 	public static final MSECipher newRecver(byte[] S, InfoHash infoHash) {
-		return new MSECipher(S, infoHash, false);
+		final Key sendKey = buildSendKey(S, infoHash.infoHash());
+		final Key recvKey = buildRecvKey(S, infoHash.infoHash());
+		return new MSECipher(recvKey, sendKey);
 	}
 
 	/**
@@ -187,7 +186,7 @@ public final class MSECipher {
 	 * 
 	 * @return Key
 	 */
-	private Key buildSendKey(byte[] S, byte[] SKEY) {
+	private static final Key buildSendKey(byte[] S, byte[] SKEY) {
 		return buildKey("keyA", S, SKEY);
 	}
 
@@ -199,7 +198,7 @@ public final class MSECipher {
 	 * 
 	 * @return Key
 	 */
-	private Key buildRecvKey(byte[] S, byte[] SKEY) {
+	private static final Key buildRecvKey(byte[] S, byte[] SKEY) {
 		return buildKey("keyB", S, SKEY);
 	}
 
@@ -212,7 +211,7 @@ public final class MSECipher {
 	 * 
 	 * @return Key
 	 */
-	private Key buildKey(String s, byte[] S, byte[] SKEY) {
+	private static final Key buildKey(String s, byte[] S, byte[] SKEY) {
 		final MessageDigest digest = DigestUtils.sha1();
 		digest.update(s.getBytes());
 		digest.update(S);
