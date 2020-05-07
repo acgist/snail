@@ -84,11 +84,12 @@ public final class FtpClientBuilder {
 		final String userInfo = uri.getUserInfo();
 		this.decodeUserInfo(userInfo);
 		this.host = uri.getHost();
-		int port = uri.getPort();
+		final int port = uri.getPort();
 		if(port == -1) {
-			port = DEFAULT_PORT;
+			this.port = DEFAULT_PORT;
+		} else {
+			this.port = port;
 		}
-		this.port = port;
 		this.filePath = uri.getPath();
 	}
 

@@ -59,11 +59,12 @@ public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker
 		super(scrapeUrl, announceUrl, Protocol.Type.UDP);
 		final URI uri = URI.create(announceUrl);
 		this.host = uri.getHost();
-		int port = uri.getPort();
+		final int port = uri.getPort();
 		if(port == -1) {
-			port = DEFAULT_PORT;
+			this.port = DEFAULT_PORT;
+		} else {
+			this.port = port;
 		}
-		this.port = port;
 		this.trackerClient = TrackerClient.newInstance(NetUtils.buildSocketAddress(this.host, this.port));
 	}
 
