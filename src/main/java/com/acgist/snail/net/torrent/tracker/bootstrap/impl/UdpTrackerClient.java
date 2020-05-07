@@ -33,6 +33,11 @@ public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker
 	private static final long PROTOCOL_ID = 0x41727101980L;
 	
 	/**
+	 * <p>UDP Tracker默认端口：{@value}</p>
+	 */
+	private static final int DEFAULT_PORT = 80;
+	
+	/**
 	 * <p>地址</p>
 	 */
 	private final String host;
@@ -54,7 +59,11 @@ public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker
 		super(scrapeUrl, announceUrl, Protocol.Type.UDP);
 		final URI uri = URI.create(announceUrl);
 		this.host = uri.getHost();
-		this.port = uri.getPort();
+		int port = uri.getPort();
+		if(port == -1) {
+			port = DEFAULT_PORT;
+		}
+		this.port = port;
 		this.trackerClient = TrackerClient.newInstance(NetUtils.buildSocketAddress(this.host, this.port));
 	}
 

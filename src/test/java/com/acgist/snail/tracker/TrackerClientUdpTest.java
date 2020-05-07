@@ -16,7 +16,8 @@ public class TrackerClientUdpTest extends BaseTest {
 	public void testAnnounce() throws NetException, DownloadException {
 		String path = "e:/snail/12345.torrent";
 		TorrentSession session = TorrentManager.getInstance().newTorrentSession(path);
-		var list = TrackerManager.getInstance().clients("udp://explodie.org:6969/announce", null);
+//		var list = TrackerManager.getInstance().clients("udp://explodie.org:6969/announce", null);
+		var list = TrackerManager.getInstance().clients("udp://retracker.akado-ural.ru/announce", null);
 		TrackerClient client = list.get(0);
 		client.announce(1000, session);
 		client.scrape(1000, session);
