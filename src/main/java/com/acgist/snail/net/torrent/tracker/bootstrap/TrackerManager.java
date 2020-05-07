@@ -266,6 +266,8 @@ public final class TrackerManager {
 						return register(announceUrl);
 					} catch (DownloadException e) {
 						LOGGER.error("TrackerClient注册异常：{}", announceUrl, e);
+					} catch (Exception e) {
+						LOGGER.error("TrackerClient注册异常：{}", announceUrl, e);
 					}
 					return null;
 				})
