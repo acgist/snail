@@ -1,5 +1,6 @@
 package com.acgist.snail;
 
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 
 import org.junit.Test;
@@ -31,6 +32,16 @@ public class MSETest extends BaseTest {
 		this.log("加密S");
 		this.log(StringUtils.hex(as));
 		this.log(StringUtils.hex(bs));
+	}
+	
+	@Test
+	public void testBigInteger() {
+		byte[] value = NumberUtils.intToBytes(-1);
+		this.log(value);
+		value[0] = 0;
+		value = new BigInteger(1, value).toByteArray();
+		this.log(value);
+		this.log(NumberUtils.bytesToInt(value));
 	}
 	
 }

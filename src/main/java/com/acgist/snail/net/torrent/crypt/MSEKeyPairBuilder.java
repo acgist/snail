@@ -32,6 +32,11 @@ public final class MSEKeyPairBuilder {
 		this.random = NumberUtils.random();
 	}
 	
+	/**
+	 * <p>创建MSE密钥对Builder</p>
+	 * 
+	 * @return MSE密钥对Builder
+	 */
 	public static final MSEKeyPairBuilder newInstance() {
 		return new MSEKeyPairBuilder();
 	}
@@ -80,13 +85,9 @@ public final class MSEKeyPairBuilder {
 
 		private MSEPublicKey(BigInteger value) {
 			this.value = value;
-			this.encoded = buildEncoded();
+			this.encoded = NumberUtils.encodeBigInteger(value, CryptConfig.PUBLIC_KEY_LENGTH);
 		}
 
-		private byte[] buildEncoded() {
-			return NumberUtils.encodeBigInteger(this.value, CryptConfig.PUBLIC_KEY_LENGTH);
-		}
-		
 		public BigInteger getValue() {
 			return this.value;
 		}

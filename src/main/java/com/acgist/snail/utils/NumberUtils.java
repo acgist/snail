@@ -186,12 +186,12 @@ public final class NumberUtils {
 	 * 
 	 * @return 字节数组
 	 */
-	public static final byte[] encodeBigInteger(BigInteger value, int length) {
+	public static final byte[] encodeBigInteger(final BigInteger value, final int length) {
 		if (length < 1) {
 			throw new ArgumentException("数组长度错误：" + length);
 		}
 		byte[] bytes = value.toByteArray(); // 二进制补码
-		// 去掉符号位
+		// 符号位是零
 		if (bytes[0] == 0) {
 			bytes = Arrays.copyOfRange(bytes, 1, bytes.length);
 		}
@@ -214,7 +214,7 @@ public final class NumberUtils {
 	 * 
 	 * @return 大整数
 	 */
-	public static final BigInteger decodeBigInteger(ByteBuffer buffer, int length) {
+	public static final BigInteger decodeBigInteger(final ByteBuffer buffer, final int length) {
 		if (length < 1 || buffer.remaining() < length) {
 			throw new ArgumentException("数组长度错误：" + length);
 		}
@@ -222,14 +222,16 @@ public final class NumberUtils {
 		byte nonzero;
 		// 去掉前导零
 		while ((nonzero = buffer.get()) == 0 && ++index < length);
+		// 所有均是零
 		if (index == length) {
 			return BigInteger.ZERO;
 		}
 		final int newLength = length - index;
 		final byte[] bytes = new byte[newLength];
+		// 读取非零数据
 		bytes[0] = nonzero;
 		buffer.get(bytes, 1, newLength - 1);
-		return new BigInteger(1, bytes);
+		return new BigInteger(1, bytes); // 正整数
 	}
 	
 	/**
