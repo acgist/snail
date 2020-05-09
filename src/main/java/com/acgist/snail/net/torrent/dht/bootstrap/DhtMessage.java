@@ -16,11 +16,15 @@ public abstract class DhtMessage {
 
 	/**
 	 * <p>消息ID</p>
-	 * <p>消息ID=请求ID=响应ID</p>
+	 * <p>消息ID：请求ID=响应ID</p>
+	 * 
+	 * @see DhtConfig#KEY_T
 	 */
 	protected final byte[] t;
 	/**
 	 * <p>消息类型</p>
+	 * 
+	 * @see DhtConfig#KEY_Y
 	 */
 	protected final String y;
 	/**
@@ -28,23 +32,47 @@ public abstract class DhtMessage {
 	 */
 	protected InetSocketAddress socketAddress;
 
-	public DhtMessage(byte[] t, String y) {
+	/**
+	 * @param t 消息ID
+	 * @param y 消息类型
+	 */
+	protected DhtMessage(byte[] t, String y) {
 		this.t = t;
 		this.y = y;
 	}
 
+	/**
+	 * <p>获取消息ID</p>
+	 * 
+	 * @return 消息ID
+	 */
 	public byte[] getT() {
 		return t;
 	}
 
+	/**
+	 * <p>获取消息类型</p>
+	 * 
+	 * @return 消息类型
+	 */
 	public String getY() {
 		return y;
 	}
 	
+	/**
+	 * <p>获取地址</p>
+	 * 
+	 * @return 地址
+	 */
 	public InetSocketAddress getSocketAddress() {
 		return socketAddress;
 	}
 
+	/**
+	 * <p>设置地址</p>
+	 * 
+	 * @param socketAddress 地址
+	 */
 	public void setSocketAddress(InetSocketAddress socketAddress) {
 		this.socketAddress = socketAddress;
 	}
@@ -98,17 +126,6 @@ public abstract class DhtMessage {
 	}
 	
 	/**
-	 * <p>获取List参数</p>
-	 * 
-	 * @param key 参数名称
-	 * 
-	 * @return List参数
-	 */
-	public List<?> getList(String key) {
-		return (List<?>) this.get(key);
-	}
-	
-	/**
 	 * <p>获取Long参数</p>
 	 * 
 	 * @param key 参数名称
@@ -120,7 +137,7 @@ public abstract class DhtMessage {
 	}
 	
 	/**
-	 * <p>获取byte[]数组参数</p>
+	 * <p>获取byte[]参数</p>
 	 * 
 	 * @param key 参数名称
 	 * 
@@ -128,6 +145,17 @@ public abstract class DhtMessage {
 	 */
 	public byte[] getBytes(String key) {
 		return (byte[]) this.get(key);
+	}
+	
+	/**
+	 * <p>获取List参数</p>
+	 * 
+	 * @param key 参数名称
+	 * 
+	 * @return List参数
+	 */
+	public List<?> getList(String key) {
+		return (List<?>) this.get(key);
 	}
 	
 	/**

@@ -319,7 +319,7 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 	 */
 	private void pushMessage(DhtRequest request, InetSocketAddress socketAddress) {
 		request.setSocketAddress(socketAddress);
-		DhtManager.getInstance().put(request);
+		DhtManager.getInstance().request(request);
 		final ByteBuffer buffer = ByteBuffer.wrap(request.toBytes());
 		pushMessage(buffer, socketAddress);
 	}

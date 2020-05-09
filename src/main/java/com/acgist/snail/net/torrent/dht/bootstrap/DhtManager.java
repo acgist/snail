@@ -56,7 +56,7 @@ public final class DhtManager {
 	 * 
 	 * @param request 请求
 	 */
-	public void put(DhtRequest request) {
+	public void request(DhtRequest request) {
 		if(request == null) {
 			return;
 		}
@@ -87,10 +87,9 @@ public final class DhtManager {
 		synchronized (this.requests) {
 			request = remove(response.getId());
 		}
-		if(request == null) {
-			return null;
+		if(request != null) {
+			request.setResponse(response);
 		}
-		request.setResponse(response);
 		return request;
 	}
 	

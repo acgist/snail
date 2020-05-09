@@ -198,7 +198,8 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			torrentSession.statistics(),
 			socketAddress.getHostString(),
 			null,
-			PeerConfig.SOURCE_CONNECT);
+			PeerConfig.SOURCE_CONNECT
+		);
 		final PeerUploader peerUploader = torrentSession.newPeerUploader(peerSession, this);
 		if(peerUploader != null) {
 			this.peerConnect = peerUploader;

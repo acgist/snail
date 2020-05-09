@@ -81,6 +81,11 @@ public final class GetPeersRequest extends DhtRequest {
 		return response;
 	}
 	
+	/**
+	 * <p>获取InfoHash</p>
+	 * 
+	 * @return InfoHash
+	 */
 	public byte[] getInfoHash() {
 		return getBytes(DhtConfig.KEY_INFO_HASH);
 	}

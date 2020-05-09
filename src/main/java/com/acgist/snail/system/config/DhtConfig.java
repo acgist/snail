@@ -32,7 +32,7 @@ public final class DhtConfig extends PropertiesConfig {
 	
 	/**
 	 * <p>标记ID：{@value}</p>
-	 * <p>消息ID、请求ID、响应ID（默认两个字节）</p>
+	 * <p>消息ID：请求ID、响应ID（默认两个字节）</p>
 	 */
 	public static final String KEY_T = "t";
 	/**

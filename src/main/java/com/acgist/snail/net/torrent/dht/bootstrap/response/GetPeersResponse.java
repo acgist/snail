@@ -43,10 +43,20 @@ public final class GetPeersResponse extends DhtResponse {
 		return new GetPeersResponse(request.getT());
 	}
 	
+	/**
+	 * <p>获取Token</p>
+	 * 
+	 * @return Token
+	 */
 	public byte[] getToken() {
 		return getBytes(DhtConfig.KEY_TOKEN);
 	}
 	
+	/**
+	 * <p>获取节点并加入系统</p>
+	 * 
+	 * @return 节点列表
+	 */
 	public List<NodeSession> getNodes() {
 		final byte[] bytes = this.getBytes(DhtConfig.KEY_NODES);
 		return deserializeNodes(bytes);
@@ -105,6 +115,11 @@ public final class GetPeersResponse extends DhtResponse {
 		return list;
 	}
 	
+	/**
+	 * <p>判断是否含有节点</p>
+	 * 
+	 * @return {@code true}-含有；{@code false}-不含；
+	 */
 	public boolean haveNodes() {
 		return get(DhtConfig.KEY_NODES) != null;
 	}

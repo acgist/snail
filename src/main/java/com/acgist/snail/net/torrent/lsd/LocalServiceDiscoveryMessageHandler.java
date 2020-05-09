@@ -89,7 +89,8 @@ public final class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler
 				torrentSession.statistics(),
 				host,
 				Integer.valueOf(port),
-				PeerConfig.SOURCE_LSD);
+				PeerConfig.SOURCE_LSD
+			);
 		}
 	}
 
