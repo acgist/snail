@@ -1,6 +1,6 @@
 package com.acgist.snail.net.torrent.dht.bootstrap.request;
 
-import com.acgist.snail.net.torrent.dht.bootstrap.Request;
+import com.acgist.snail.net.torrent.dht.bootstrap.DhtRequest;
 import com.acgist.snail.net.torrent.dht.bootstrap.response.PingResponse;
 import com.acgist.snail.system.config.DhtConfig;
 
@@ -10,7 +10,7 @@ import com.acgist.snail.system.config.DhtConfig;
  * @author acgist
  * @since 1.0.0
  */
-public final class PingRequest extends Request {
+public final class PingRequest extends DhtRequest {
 
 	private PingRequest() {
 		super(DhtConfig.QType.PING);
@@ -20,7 +20,7 @@ public final class PingRequest extends Request {
 		return new PingRequest();
 	}
 
-	public static final PingResponse execute(Request request) {
+	public static final PingResponse execute(DhtRequest request) {
 		return PingResponse.newInstance(request);
 	}
 	

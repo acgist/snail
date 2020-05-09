@@ -2,8 +2,8 @@ package com.acgist.snail.net.torrent.dht.bootstrap.response;
 
 import java.util.List;
 
-import com.acgist.snail.net.torrent.dht.bootstrap.Request;
-import com.acgist.snail.net.torrent.dht.bootstrap.Response;
+import com.acgist.snail.net.torrent.dht.bootstrap.DhtRequest;
+import com.acgist.snail.net.torrent.dht.bootstrap.DhtResponse;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.system.config.DhtConfig;
 
@@ -13,21 +13,21 @@ import com.acgist.snail.system.config.DhtConfig;
  * @author acgist
  * @since 1.0.0
  */
-public final class FindNodeResponse extends Response {
+public final class FindNodeResponse extends DhtResponse {
 
 	private FindNodeResponse(byte[] t) {
 		super(t);
 	}
 	
-	private FindNodeResponse(Response response) {
+	private FindNodeResponse(DhtResponse response) {
 		super(response.getT(), response.getY(), response.getR(), response.getE());
 	}
 
-	public static final FindNodeResponse newInstance(Response response) {
+	public static final FindNodeResponse newInstance(DhtResponse response) {
 		return new FindNodeResponse(response);
 	}
 
-	public static final FindNodeResponse newInstance(Request request) {
+	public static final FindNodeResponse newInstance(DhtRequest request) {
 		return new FindNodeResponse(request.getT());
 	}
 	

@@ -27,7 +27,7 @@ public final class DhtManager {
 	/**
 	 * <p>DHT请求列表</p>
 	 */
-	private final List<Request> requests;
+	private final List<DhtRequest> requests;
 	
 	private DhtManager() {
 		this.requests = new LinkedList<>();
@@ -56,12 +56,12 @@ public final class DhtManager {
 	 * 
 	 * @param request 请求
 	 */
-	public void put(Request request) {
+	public void put(DhtRequest request) {
 		if(request == null) {
 			return;
 		}
 		synchronized (this.requests) {
-			final Request old = remove(request.getId());
+			final DhtRequest old = remove(request.getId());
 			if(old != null) {
 				LOGGER.warn("旧DHT请求没有收到响应（删除）");
 			}
@@ -77,13 +77,13 @@ public final class DhtManager {
 	 * 
 	 * @return 请求
 	 */
-	public Request response(Response response) {
+	public DhtRequest response(DhtResponse response) {
 		if(response == null) {
 			return null;
 		}
 		// 设置节点为可用状态
 		NodeManager.getInstance().available(response);
-		Request request = null;
+		DhtRequest request = null;
 		synchronized (this.requests) {
 			request = remove(response.getId());
 		}
@@ -100,7 +100,7 @@ public final class DhtManager {
 	private void timeout() {
 		LOGGER.debug("处理DHT超时请求");
 		synchronized (this.requests) {
-			Request request;
+			DhtRequest request;
 			final long timeout = DhtConfig.TIMEOUT.toMillis();
 			final long timestamp = System.currentTimeMillis();
 			final var iterator = this.requests.iterator();
@@ -120,8 +120,8 @@ public final class DhtManager {
 	 * 
 	 * @return 请求
 	 */
-	private Request remove(byte[] id) {
-		Request request;
+	private DhtRequest remove(byte[] id) {
+		DhtRequest request;
 		final var iterator = this.requests.iterator();
 		while(iterator.hasNext()) {
 			request = iterator.next();

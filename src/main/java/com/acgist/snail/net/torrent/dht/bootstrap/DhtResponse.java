@@ -23,7 +23,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class Response extends DhtMessage {
+public class DhtResponse extends DhtMessage {
 
 	/**
 	 * <p>响应参数</p>
@@ -40,7 +40,7 @@ public class Response extends DhtMessage {
 	 * 
 	 * @param t 节点ID
 	 */
-	protected Response(byte[] t) {
+	protected DhtResponse(byte[] t) {
 		this(t, DhtConfig.KEY_R, new LinkedHashMap<>(), null);
 		this.put(DhtConfig.KEY_ID, NodeManager.getInstance().nodeId());
 	}
@@ -53,7 +53,7 @@ public class Response extends DhtMessage {
 	 * @param r 响应参数
 	 * @param e 错误参数
 	 */
-	protected Response(byte[] t, String y, Map<String, Object> r, List<Object> e) {
+	protected DhtResponse(byte[] t, String y, Map<String, Object> r, List<Object> e) {
 		super(t, y);
 		this.r = r;
 		this.e = e;
@@ -66,12 +66,12 @@ public class Response extends DhtMessage {
 	 * 
 	 * @return 响应
 	 */
-	public static final Response valueOf(final BEncodeDecoder decoder) {
+	public static final DhtResponse valueOf(final BEncodeDecoder decoder) {
 		final byte[] t = decoder.getBytes(DhtConfig.KEY_T);
 		final String y = decoder.getString(DhtConfig.KEY_Y);
 		final Map<String, Object> r = decoder.getMap(DhtConfig.KEY_R);
 		final List<Object> e = decoder.getList(DhtConfig.KEY_E);
-		return new Response(t, y, r, e);
+		return new DhtResponse(t, y, r, e);
 	}
 	
 	public Map<String, Object> getR() {
@@ -203,11 +203,11 @@ public class Response extends DhtMessage {
 	 * 
 	 * @return 错误响应
 	 */
-	public static final Response buildErrorResponse(byte[] id, int code, String message) {
+	public static final DhtResponse buildErrorResponse(byte[] id, int code, String message) {
 		final List<Object> list = new ArrayList<>(2);
 		list.add(code);
 		list.add(message);
-		return new Response(id, DhtConfig.KEY_R, null, list);
+		return new DhtResponse(id, DhtConfig.KEY_R, null, list);
 	}
 	
 	@Override
@@ -220,8 +220,8 @@ public class Response extends DhtMessage {
 		if(ObjectUtils.equals(this, object)) {
 			return true;
 		}
-		if(object instanceof Response) {
-			final Response response = (Response) object;
+		if(object instanceof DhtResponse) {
+			final DhtResponse response = (DhtResponse) object;
 			return ArrayUtils.equals(this.t, response.t);
 		}
 		return false;
