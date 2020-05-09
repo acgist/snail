@@ -359,7 +359,7 @@ public final class NodeManager {
 	 * 
 	 * @param response 响应
 	 */
-	public void available(Response response) {
+	public void available(DhtResponse response) {
 		if(response != null) {
 			synchronized (this.nodes) {
 				final NodeSession node = select(response.getNodeId());

@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.dht.bootstrap.NodeManager;
-import com.acgist.snail.net.torrent.dht.bootstrap.Request;
+import com.acgist.snail.net.torrent.dht.bootstrap.DhtRequest;
 import com.acgist.snail.net.torrent.dht.bootstrap.response.GetPeersResponse;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
 import com.acgist.snail.pojo.session.TorrentSession;
@@ -21,7 +21,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public final class GetPeersRequest extends Request {
+public final class GetPeersRequest extends DhtRequest {
 
 	private GetPeersRequest() {
 		super(DhtConfig.QType.GET_PEERS);
@@ -48,7 +48,7 @@ public final class GetPeersRequest extends Request {
 	 * 
 	 * @return 响应
 	 */
-	public static final GetPeersResponse execute(Request request) {
+	public static final GetPeersResponse execute(DhtRequest request) {
 		final GetPeersResponse response = GetPeersResponse.newInstance(request);
 		final byte[] infoHash = request.getBytes(DhtConfig.KEY_INFO_HASH);
 		final String infoHashHex = StringUtils.hex(infoHash);

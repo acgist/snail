@@ -6,8 +6,8 @@ import java.util.List;
 
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.dht.bootstrap.NodeManager;
-import com.acgist.snail.net.torrent.dht.bootstrap.Request;
-import com.acgist.snail.net.torrent.dht.bootstrap.Response;
+import com.acgist.snail.net.torrent.dht.bootstrap.DhtRequest;
+import com.acgist.snail.net.torrent.dht.bootstrap.DhtResponse;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.pojo.session.PeerSession;
@@ -24,22 +24,22 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public final class GetPeersResponse extends Response {
+public final class GetPeersResponse extends DhtResponse {
 
 	private GetPeersResponse(byte[] t) {
 		super(t);
 		this.put(DhtConfig.KEY_TOKEN, NodeManager.getInstance().token());
 	}
 	
-	private GetPeersResponse(Response response) {
+	private GetPeersResponse(DhtResponse response) {
 		super(response.getT(), response.getY(), response.getR(), response.getE());
 	}
 
-	public static final GetPeersResponse newInstance(Response response) {
+	public static final GetPeersResponse newInstance(DhtResponse response) {
 		return new GetPeersResponse(response);
 	}
 
-	public static final GetPeersResponse newInstance(Request request) {
+	public static final GetPeersResponse newInstance(DhtRequest request) {
 		return new GetPeersResponse(request.getT());
 	}
 	
@@ -59,9 +59,9 @@ public final class GetPeersResponse extends Response {
 	 * 
 	 * @return Peer列表
 	 * 
-	 * @see #getValues(Request)
+	 * @see #getValues(DhtRequest)
 	 */
-	public List<PeerSession> getPeers(Request request) {
+	public List<PeerSession> getPeers(DhtRequest request) {
 		return this.getValues(request);
 	}
 	
@@ -73,7 +73,7 @@ public final class GetPeersResponse extends Response {
 	 * 
 	 * @return Peer列表
 	 */
-	public List<PeerSession> getValues(Request request) {
+	public List<PeerSession> getValues(DhtRequest request) {
 		final byte[] infoHash = request.getBytes(DhtConfig.KEY_INFO_HASH);
 		final String infoHashHex = StringUtils.hex(infoHash);
 		final TorrentSession torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);

@@ -4,8 +4,8 @@ import java.net.InetSocketAddress;
 
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.dht.bootstrap.NodeManager;
-import com.acgist.snail.net.torrent.dht.bootstrap.Request;
-import com.acgist.snail.net.torrent.dht.bootstrap.Response;
+import com.acgist.snail.net.torrent.dht.bootstrap.DhtRequest;
+import com.acgist.snail.net.torrent.dht.bootstrap.DhtResponse;
 import com.acgist.snail.net.torrent.dht.bootstrap.response.AnnouncePeerResponse;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
 import com.acgist.snail.pojo.session.TorrentSession;
@@ -22,7 +22,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public final class AnnouncePeerRequest extends Request {
+public final class AnnouncePeerRequest extends DhtRequest {
 
 //	private static final Logger LOGGER = LoggerFactory.getLogger(AnnouncePeerRequest.class);
 	
@@ -54,11 +54,11 @@ public final class AnnouncePeerRequest extends Request {
 	 * 
 	 * @return 响应
 	 */
-	public static final AnnouncePeerResponse execute(Request request) {
+	public static final AnnouncePeerResponse execute(DhtRequest request) {
 		final byte[] token = request.getBytes(DhtConfig.KEY_TOKEN);
 		// 验证Token
 		if(!ArrayUtils.equals(token, NodeManager.getInstance().token())) {
-			return AnnouncePeerResponse.newInstance(Response.buildErrorResponse(request.getT(), ErrorCode.CODE_203.code(), "Token错误"));
+			return AnnouncePeerResponse.newInstance(DhtResponse.buildErrorResponse(request.getT(), ErrorCode.CODE_203.code(), "Token错误"));
 		}
 		final byte[] infoHash = request.getBytes(DhtConfig.KEY_INFO_HASH);
 		final String infoHashHex = StringUtils.hex(infoHash);

@@ -24,7 +24,7 @@ import com.acgist.snail.utils.ThreadUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class Request extends DhtMessage {
+public class DhtRequest extends DhtMessage {
 
 	/**
 	 * <p>请求类型</p>
@@ -41,14 +41,14 @@ public class Request extends DhtMessage {
 	/**
 	 * <p>响应</p>
 	 */
-	private Response response;
+	private DhtResponse response;
 	
 	/**
 	 * <p>生成NodeId</p>
 	 * 
 	 * @param q 请求类型
 	 */
-	protected Request(DhtConfig.QType q) {
+	protected DhtRequest(DhtConfig.QType q) {
 		this(DhtService.getInstance().buildRequestId(), DhtConfig.KEY_Q, q, new LinkedHashMap<>());
 		this.put(DhtConfig.KEY_ID, NodeManager.getInstance().nodeId());
 	}
@@ -61,7 +61,7 @@ public class Request extends DhtMessage {
 	 * @param q 请求类型
 	 * @param a 请求参数
 	 */
-	private Request(byte[] t, String y, DhtConfig.QType q, Map<String, Object> a) {
+	private DhtRequest(byte[] t, String y, DhtConfig.QType q, Map<String, Object> a) {
 		super(t, y);
 		this.q = q;
 		this.a = a;
@@ -75,13 +75,13 @@ public class Request extends DhtMessage {
 	 * 
 	 * @return 请求
 	 */
-	public static final Request valueOf(final BEncodeDecoder decoder) {
+	public static final DhtRequest valueOf(final BEncodeDecoder decoder) {
 		final byte[] t = decoder.getBytes(DhtConfig.KEY_T);
 		final String y = decoder.getString(DhtConfig.KEY_Y);
 		final String q = decoder.getString(DhtConfig.KEY_Q);
 		final QType type = DhtConfig.QType.valueOfQ(q);
 		final Map<String, Object> a = decoder.getMap(DhtConfig.KEY_A);
-		return new Request(t, y, type, a);
+		return new DhtRequest(t, y, type, a);
 	}
 	
 	public QType getQ() {
@@ -96,11 +96,11 @@ public class Request extends DhtMessage {
 		return timestamp;
 	}
 
-	public Response getResponse() {
+	public DhtResponse getResponse() {
 		return response;
 	}
 
-	public void setResponse(Response response) {
+	public void setResponse(DhtResponse response) {
 		this.response = response;
 	}
 
@@ -196,8 +196,8 @@ public class Request extends DhtMessage {
 		if(ObjectUtils.equals(this, object)) {
 			return true;
 		}
-		if(object instanceof Request) {
-			final Request request = (Request) object;
+		if(object instanceof DhtRequest) {
+			final DhtRequest request = (DhtRequest) object;
 			return ArrayUtils.equals(this.t, request.t);
 		}
 		return false;
