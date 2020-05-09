@@ -177,7 +177,8 @@ public class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 				this.torrentSession.statistics(),
 				host,
 				port,
-				PeerConfig.SOURCE_HOLEPUNCH);
+				PeerConfig.SOURCE_HOLEPUNCH
+			);
 		}
 		if(peerSession.holepunchWait()) {
 			LOGGER.debug("处理holepunch消息-connect：释放holepunch等待锁");

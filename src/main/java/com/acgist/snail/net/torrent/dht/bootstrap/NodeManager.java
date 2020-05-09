@@ -95,21 +95,6 @@ public final class NodeManager {
 	}
 	
 	/**
-	 * <p>生成系统NodeId</p>
-	 * 
-	 * @return 系统NodeId
-	 */
-	private byte[] buildNodeId() {
-		LOGGER.debug("生成系统NodeId");
-		final byte[] nodeIds = new byte[DhtConfig.NODE_ID_LENGTH];
-		final Random random = NumberUtils.random();
-		for (int index = 0; index < DhtConfig.NODE_ID_LENGTH; index++) {
-			nodeIds[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_MAX);
-		}
-		return nodeIds;
-	}
-	
-	/**
 	 * <p>生成系统Token</p>
 	 * 
 	 * @return 系统Token
@@ -124,6 +109,21 @@ public final class NodeManager {
 			token[index] = tokens[random.nextInt(length)];
 		}
 		return token;
+	}
+	
+	/**
+	 * <p>生成系统NodeId</p>
+	 * 
+	 * @return 系统NodeId
+	 */
+	private byte[] buildNodeId() {
+		LOGGER.debug("生成系统NodeId");
+		final byte[] nodeIds = new byte[DhtConfig.NODE_ID_LENGTH];
+		final Random random = NumberUtils.random();
+		for (int index = 0; index < DhtConfig.NODE_ID_LENGTH; index++) {
+			nodeIds[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_MAX);
+		}
+		return nodeIds;
 	}
 	
 	/**

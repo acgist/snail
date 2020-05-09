@@ -6,6 +6,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.system.bencode.BEncodeDecoder;
 import com.acgist.snail.system.bencode.BEncodeEncoder;
@@ -24,6 +27,8 @@ import com.acgist.snail.utils.StringUtils;
  * @since 1.0.0
  */
 public class DhtResponse extends DhtMessage {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(DhtResponse.class);
 
 	/**
 	 * <p>响应参数</p>
@@ -74,10 +79,20 @@ public class DhtResponse extends DhtMessage {
 		return new DhtResponse(t, y, r, e);
 	}
 	
+	/**
+	 * <p>获取响应参数</p>
+	 * 
+	 * @return 响应参数
+	 */
 	public Map<String, Object> getR() {
 		return r;
 	}
 
+	/**
+	 * <p>获取错误参数</p>
+	 * 
+	 * @return 错误参数
+	 */
 	public List<Object> getE() {
 		return e;
 	}
@@ -100,7 +115,7 @@ public class DhtResponse extends DhtMessage {
 	 * 
 	 * @return B编码的字节数组
 	 */
-	public byte[] toBytes() {
+	public final byte[] toBytes() {
 		final Map<String, Object> response = new LinkedHashMap<>();
 		response.put(DhtConfig.KEY_T, this.t);
 		response.put(DhtConfig.KEY_Y, this.y);
@@ -115,6 +130,7 @@ public class DhtResponse extends DhtMessage {
 
 	/**
 	 * <p>反序列化节点列表</p>
+	 * <p>节点自动加入系统</p>
 	 * 
 	 * @param bytes 序列化后数据
 	 * 
@@ -141,7 +157,8 @@ public class DhtResponse extends DhtMessage {
 	
 	/**
 	 * <p>反序列化节点</p>
-	 * <p>节点自动加入系统列表</p>
+	 * <p>节点自动加入系统</p>
+	 * <p>不排序：所有节点加入系统列表后再统一排序</p>
 	 * 
 	 * @param buffer 消息
 	 * 
@@ -153,7 +170,6 @@ public class DhtResponse extends DhtMessage {
 			buffer.get(nodeId);
 			final String host = NetUtils.decodeIntToIp(buffer.getInt());
 			final int port = NetUtils.decodePort(buffer.getShort());
-			// 不排序：所有节点加入系统列表后再统一排序
 			return NodeManager.getInstance().newNodeSession(nodeId, host, port);
 		}
 		return null;
@@ -174,11 +190,15 @@ public class DhtResponse extends DhtMessage {
 	 * @return 错误代码
 	 */
 	public int errorCode() {
-		if(this.e.size() > 0) {
-			return ((Long) this.e.get(0)).intValue();
-		} else {
-			return ErrorCode.CODE_201.code();
+		if(this.e != null && this.e.size() > 0) {
+			final var value = this.e.get(0);
+			if(value instanceof Number) {
+				return ((Number) value).intValue();
+			} else {
+				LOGGER.warn("DHT不支持的错误代码类型：{}", value);
+			}
 		}
+		return ErrorCode.CODE_201.code();
 	}
 
 	/**
@@ -187,11 +207,17 @@ public class DhtResponse extends DhtMessage {
 	 * @return 错误描述
 	 */
 	public String errorMessage() {
-		if(this.e.size() > 1) {
-			return new String((byte[]) this.e.get(1));
-		} else {
-			return "未知错误";
+		if(this.e != null && this.e.size() > 1) {
+			final var value = this.e.get(1);
+			if(value instanceof byte[]) {
+				return new String((byte[]) value);
+			} else if(value instanceof String) {
+				return (String) value;
+			} else {
+				LOGGER.warn("DHT不支持的错误描述类型：{}", value);
+			}
 		}
+		return "未知错误";
 	}
 
 	/**

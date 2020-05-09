@@ -31,6 +31,11 @@ public final class FindNodeResponse extends DhtResponse {
 		return new FindNodeResponse(request.getT());
 	}
 	
+	/**
+	 * <p>获取节点并加入系统</p>
+	 * 
+	 * @return 节点列表
+	 */
 	public List<NodeSession> getNodes() {
 		final byte[] bytes = this.getBytes(DhtConfig.KEY_NODES);
 		return deserializeNodes(bytes);

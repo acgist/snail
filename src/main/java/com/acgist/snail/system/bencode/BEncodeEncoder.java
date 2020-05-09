@@ -239,8 +239,9 @@ public final class BEncodeEncoder {
 		} else if(value instanceof Map) {
 			writeMap((Map<?, ?>) value);
 		} else {
-			this.writeBytes(new byte[] {});
 			LOGGER.debug("B编码错误（类型未适配）：{}", value);
+			// 类型不支持时添加空字符数组
+			this.writeBytes(new byte[] {});
 		}
 	}
 	

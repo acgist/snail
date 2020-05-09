@@ -84,22 +84,47 @@ public class DhtRequest extends DhtMessage {
 		return new DhtRequest(t, y, type, a);
 	}
 	
+	/**
+	 * <p>获取请求类型</p>
+	 * 
+	 * @return 请求类型
+	 */
 	public QType getQ() {
 		return q;
 	}
 
+	/**
+	 * <p>获取请求参数</p>
+	 * 
+	 * @return 请求参数
+	 */
 	public Map<String, Object> getA() {
 		return a;
 	}
 	
+	/**
+	 * <p>获取请求时间戳</p>
+	 * 
+	 * @return 请求时间戳
+	 */
 	public long getTimestamp() {
 		return timestamp;
 	}
 
+	/**
+	 * <p>获取响应</p>
+	 * 
+	 * @return 响应
+	 */
 	public DhtResponse getResponse() {
 		return response;
 	}
 
+	/**
+	 * <p>设置响应</p>
+	 * 
+	 * @param response 响应
+	 */
 	public void setResponse(DhtResponse response) {
 		this.response = response;
 	}
@@ -131,7 +156,7 @@ public class DhtRequest extends DhtMessage {
 	 * 
 	 * @return B编码的字节数组
 	 */
-	public byte[] toBytes() {
+	public final byte[] toBytes() {
 		final Map<String, Object> request = new LinkedHashMap<>();
 		request.put(DhtConfig.KEY_T, this.t);
 		request.put(DhtConfig.KEY_Y, this.y);

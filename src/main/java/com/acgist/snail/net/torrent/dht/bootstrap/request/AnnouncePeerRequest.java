@@ -18,6 +18,7 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>声明Peer</p>
+ * <p>声明当前节点作为Peer进行下载和上传</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -80,7 +81,8 @@ public final class AnnouncePeerRequest extends DhtRequest {
 				torrentSession.statistics(),
 				peerHost,
 				peerPort,
-				PeerConfig.SOURCE_DHT);
+				PeerConfig.SOURCE_DHT
+			);
 			if(impliedPortAuto) {
 				// 支持UTP
 				peerSession.flags(PeerConfig.PEX_UTP);
@@ -89,18 +91,38 @@ public final class AnnouncePeerRequest extends DhtRequest {
 		return AnnouncePeerResponse.newInstance(request);
 	}
 	
+	/**
+	 * <p>获取端口</p>
+	 * 
+	 * @return 端口
+	 */
 	public Integer getPort() {
 		return getInteger(DhtConfig.KEY_PORT);
 	}
 	
+	/**
+	 * <p>获取Token</p>
+	 * 
+	 * @return Token
+	 */
 	public byte[] getToken() {
 		return getBytes(DhtConfig.KEY_TOKEN);
 	}
 	
+	/**
+	 * <p>获取InfoHash</p>
+	 * 
+	 * @return InfoHash
+	 */
 	public byte[] getInfoHash() {
 		return getBytes(DhtConfig.KEY_INFO_HASH);
 	}
 	
+	/**
+	 * <p>获取ImpliedPort</p>
+	 * 
+	 * @return ImpliedPort
+	 */
 	public Integer getImpliedPort() {
 		return getInteger(DhtConfig.KEY_IMPLIED_PORT);
 	}
