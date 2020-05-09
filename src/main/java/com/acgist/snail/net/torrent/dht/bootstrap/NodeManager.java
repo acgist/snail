@@ -145,7 +145,7 @@ public final class NodeManager {
 		if(CollectionUtils.isNotEmpty(nodes)) {
 			nodes.forEach((nodeId, address) -> {
 				LOGGER.debug("注册默认节点：{}-{}", nodeId, address);
-				final int index = address.lastIndexOf(":");
+				final int index = address.lastIndexOf(':');
 				if(index != -1) {
 					final String host = address.substring(0, index);
 					final String port = address.substring(index + 1);
@@ -322,12 +322,8 @@ public final class NodeManager {
 			select = Stream.concat(nodes.stream().limit(end), nodes.stream().skip(begin));
 		}
 		return select
-			.map(node -> {
-				return Map.entry(ArrayUtils.xor(node.getId(), target), node);
-			})
-			.sorted((a, b) -> {
-				return ArrayUtils.compareUnsigned(a.getKey(), b.getKey());
-			})
+			.map(node -> Map.entry(ArrayUtils.xor(node.getId(), target), node))
+			.sorted((a, b) -> ArrayUtils.compareUnsigned(a.getKey(), b.getKey()))
 			.map(Map.Entry::getValue)
 			.limit(FIND_NODE_SIZE)
 			.peek(node -> {
