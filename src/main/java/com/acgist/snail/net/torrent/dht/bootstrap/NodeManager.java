@@ -170,7 +170,8 @@ public final class NodeManager {
 	 * @return DHT节点
 	 */
 	public NodeSession newNodeSession(String host, Integer port) {
-		final NodeSession nodeSession = verify(host, port);
+		final DhtClient client = DhtClient.newInstance(host, port);
+		final NodeSession nodeSession = client.ping();
 		if(nodeSession != null) {
 			nodeSession.setStatus(NodeSession.Status.AVAILABLE); // 标记可用
 		}
@@ -191,9 +192,6 @@ public final class NodeManager {
 	public NodeSession newNodeSession(byte[] nodeId, String host, Integer port) {
 		synchronized (this.nodes) {
 			NodeSession nodeSession = select(nodeId);
-			if(nodeSession != null) {
-				return nodeSession;
-			}
 			if(nodeSession == null) {
 				nodeSession = NodeSession.newInstance(nodeId, host, port);
 				if(nodeSession.getId().length == DhtConfig.NODE_ID_LENGTH) {
@@ -217,19 +215,6 @@ public final class NodeManager {
 		}
 	}
 	
-	/**
-	 * <p>验证节点</p>
-	 * 
-	 * @param host 地址
-	 * @param port 端口
-	 * 
-	 * @return DHT节点：{@code null}-无效节点
-	 */
-	private NodeSession verify(String host, Integer port) {
-		final DhtClient client = DhtClient.newInstance(host, port);
-		return client.ping();
-	}
-
 	/**
 	 * <p>查找节点列表</p>
 	 * 
