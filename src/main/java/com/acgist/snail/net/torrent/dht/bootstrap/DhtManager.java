@@ -82,7 +82,7 @@ public final class DhtManager {
 			return null;
 		}
 		// 设置节点为可用状态
-		NodeManager.getInstance().available(response);
+		NodeManager.getInstance().available(response.getNodeId());
 		DhtRequest request = null;
 		synchronized (this.requests) {
 			request = remove(response.getId());

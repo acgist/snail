@@ -77,21 +77,21 @@ public final class NodeManager {
 	}
 	
 	/**
-	 * <p>获取系统NodeId</p>
-	 * 
-	 * @return 系统NodeId
-	 */
-	public byte[] nodeId() {
-		return this.nodeId;
-	}
-	
-	/**
 	 * <p>获取系统Token</p>
 	 * 
 	 * @return 系统Token
 	 */
 	public byte[] token() {
 		return this.token;
+	}
+	
+	/**
+	 * <p>获取系统NodeId</p>
+	 * 
+	 * @return 系统NodeId
+	 */
+	public byte[] nodeId() {
+		return this.nodeId;
 	}
 	
 	/**
@@ -150,13 +150,13 @@ public final class NodeManager {
 					final String host = address.substring(0, index);
 					final String port = address.substring(index + 1);
 					if(StringUtils.isNotEmpty(host) && StringUtils.isNumeric(port)) {
-						newNodeSession(StringUtils.unhex(nodeId), host, Integer.valueOf(port));
+						this.newNodeSession(StringUtils.unhex(nodeId), host, Integer.valueOf(port));
 					}
 				} else {
 					LOGGER.warn("节点格式错误：{}-{}", nodeId, address);
 				}
 			});
-			sortNodes(); // 排序
+			this.sortNodes(); // 排序
 		}
 	}
 	
@@ -191,7 +191,7 @@ public final class NodeManager {
 	 */
 	public NodeSession newNodeSession(byte[] nodeId, String host, Integer port) {
 		synchronized (this.nodes) {
-			NodeSession nodeSession = select(nodeId);
+			NodeSession nodeSession = this.select(nodeId);
 			if(nodeSession == null) {
 				nodeSession = NodeSession.newInstance(nodeId, host, port);
 				if(nodeSession.getId().length == DhtConfig.NODE_ID_LENGTH) {
@@ -266,7 +266,7 @@ public final class NodeManager {
 			selectSize = end + nodeSize - begin;
 		}
 		if(selectSize < FIND_NODE_MIN_SLICE_SIZE) { // 最小片段选择节点
-			return selectNode(nodes, target, begin, end);
+			return this.selectNode(nodes, target, begin, end);
 		} else { // 分片
 			// 分片中Node的数量
 			final int sliceSize = selectSize / FIND_NODE_SLICE_SIZE;
@@ -291,11 +291,11 @@ public final class NodeManager {
 			final int diffIndexC = ArrayUtils.diffIndex(nodeC.getId(), target);
 			// 选择最接近的片段
 			if(diffIndexA > diffIndexB && diffIndexA > diffIndexC) {
-				return findNode(nodes, target, sliceC, sliceB);
+				return this.findNode(nodes, target, sliceC, sliceB);
 			} else if(diffIndexB > diffIndexA && diffIndexB > diffIndexC) {
-				return findNode(nodes, target, sliceA, sliceC);
+				return this.findNode(nodes, target, sliceA, sliceC);
 			} else if(diffIndexC > diffIndexA && diffIndexC > diffIndexB) {
-				return findNode(nodes, target, sliceB, sliceA);
+				return this.findNode(nodes, target, sliceB, sliceA);
 			} else { // 三个值一致时选择节点
 				return this.selectNode(nodes, target, begin, end);
 			}
@@ -338,15 +338,13 @@ public final class NodeManager {
 	/**
 	 * <p>标记节点为可用状态</p>
 	 * 
-	 * @param response 响应
+	 * @param nodeId 节点ID
 	 */
-	public void available(DhtResponse response) {
-		if(response != null) {
-			synchronized (this.nodes) {
-				final NodeSession node = select(response.getNodeId());
-				if(node != null) {
-					node.setStatus(NodeSession.Status.AVAILABLE);
-				}
+	public void available(byte[] nodeId) {
+		synchronized (this.nodes) {
+			final NodeSession node = this.select(nodeId);
+			if(node != null) {
+				node.setStatus(NodeSession.Status.AVAILABLE);
 			}
 		}
 	}
@@ -359,6 +357,9 @@ public final class NodeManager {
 	 * @return 节点
 	 */
 	private NodeSession select(byte[] nodeId) {
+		if(nodeId == null) {
+			return null;
+		}
 		for (NodeSession nodeSession : this.nodes) {
 			if(ArrayUtils.equals(nodeId, nodeSession.getId())) {
 				return nodeSession;
