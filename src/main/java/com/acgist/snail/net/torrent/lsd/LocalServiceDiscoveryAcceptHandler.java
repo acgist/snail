@@ -18,7 +18,12 @@ public final class LocalServiceDiscoveryAcceptHandler extends UdpAcceptHandler {
 	
 	private LocalServiceDiscoveryAcceptHandler() {
 	}
-	
+
+	/**
+	 * <p>创建本地发现接收器</p>
+	 * 
+	 * @return 本地发现接收器
+	 */
 	public static final LocalServiceDiscoveryAcceptHandler getInstance() {
 		return INSTANCE;
 	}

@@ -32,18 +32,22 @@ public final class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler
 	private static final Logger LOGGER = LoggerFactory.getLogger(LocalServiceDiscoveryMessageHandler.class);
 
 	/**
+	 * <p>地址</p>
+	 */
+	public static final String HEADER_HOST = "Host";
+	/**
 	 * <p>端口</p>
 	 */
-	private static final String HEADER_PORT = "Port";
+	public static final String HEADER_PORT = "Port";
 	/**
 	 * <p>Cookie</p>
 	 * <p>区别软件本身消息</p>
 	 */
-	private static final String HEADER_COOKIE = "cookie";
+	public static final String HEADER_COOKIE = "cookie";
 	/**
 	 * <p>InfoHash</p>
 	 */
-	private static final String HEADER_INFOHASH = "Infohash";
+	public static final String HEADER_INFOHASH = "Infohash";
 
 	public LocalServiceDiscoveryMessageHandler() {
 		this.messageCodec = new StringMessageCodec(this);
@@ -61,9 +65,7 @@ public final class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler
 			if(ArrayUtils.equals(peerId, PeerService.getInstance().peerId())) {
 				LOGGER.debug("本地发现消息处理失败：忽略本机");
 			} else {
-				infoHashHexs.forEach(infoHashHex -> {
-					doInfoHash(host, port, infoHashHex);
-				});
+				infoHashHexs.forEach(infoHashHex -> this.doInfoHash(host, port, infoHashHex));
 			}
 		} else {
 			LOGGER.debug("本地发现消息处理失败（不支持）：{}", message);

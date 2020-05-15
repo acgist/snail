@@ -21,6 +21,7 @@ public class LSDTest extends BaseTest {
 			"28b5e72737f183cb36182fcc8991d5cbf7ce627c",
 			"28b5e72737f183cb36182fcc8991d5cbf7ce6271"
 		);
+		client.localSearch("28b5e72737f183cb36182fcc8991d5cbf7ce6272");
 	}
 	
 }

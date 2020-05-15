@@ -23,28 +23,33 @@ public final class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDis
 	private static final LocalServiceDiscoveryServer INSTANCE = new LocalServiceDiscoveryServer();
 
 	/**
-	 * <p>TTL</p>
+	 * <p>TTL：{@value}</p>
 	 */
 	private static final int LSD_TTL = 2;
 	/**
-	 * <p>端口</p>
+	 * <p>端口：{@value}</p>
 	 */
 	public static final int LSD_PORT = 6771;
 	/**
-	 * <p>IPv4组播地址</p>
+	 * <p>IPv4组播地址：{@value}</p>
 	 */
 	public static final String LSD_HOST = "239.192.152.143";
 	/**
-	 * <p>IPv6组播地址</p>
+	 * <p>IPv6组播地址：{@value}</p>
 	 */
 	public static final String LSD_HOST_IPV6 = "[ff15::efc0:988f]";
 	
-	public LocalServiceDiscoveryServer() {
+	private LocalServiceDiscoveryServer() {
 		super(LSD_PORT, true, "LSD Server", LocalServiceDiscoveryAcceptHandler.getInstance());
 		this.join(LSD_TTL, LSD_HOST);
 		this.handle();
 	}
 	
+	/**
+	 * <p>本地发现服务端</p>
+	 * 
+	 * @return 本地发现服务端
+	 */
 	public static final LocalServiceDiscoveryServer getInstance() {
 		return INSTANCE;
 	}
