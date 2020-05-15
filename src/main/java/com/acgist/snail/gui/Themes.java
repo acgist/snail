@@ -36,6 +36,10 @@ public final class Themes {
 	 */
 	private static final String THEME_COLOR_COMMAND = "REG QUERY " + THEME_COLOR_PATH + " /v " + THEME_COLOR_KEY;
 	/**
+	 * <p>默认主题颜色</p>
+	 */
+	private static final Color DEFAULT_THEME_COLOR = Color.rgb(0, 153, 204);
+	/**
 	 * <p>系统主题</p>
 	 */
 	private static final Color SYSTEM_COLOR;
@@ -102,18 +106,24 @@ public final class Themes {
 	 * @return 颜色
 	 */
 	private static final Color convertColor(String colorValue) {
+		Color theme;
 		if(colorValue == null) {
-			return Color.rgb(0, 153, 204);
+			theme = DEFAULT_THEME_COLOR;
+		} else {
+			final int value = (int) Long.parseLong(colorValue.substring(2), 16);
+			final int alpha = (int) ((value >> 24) & 0xFF);
+			final int blud = (int) ((value >> 16) & 0xFF);
+			final int green = (int) ((value >> 8) & 0xFF);
+			final int red = (int) (value & 0xFF);
+			final double opacity = alpha > 255D ? 1D : alpha / 255D;
+			if(alpha == 0) {
+				theme = Color.rgb(red, green, blud);
+			} else {
+				theme = Color.rgb(red, green, blud, opacity);
+			}
 		}
-		LOGGER.debug("系统主题颜色：{}", colorValue);
-		final int value = (int) Long.parseLong(colorValue.substring(2), 16);
-		final int alpha = (int) ((value >> 24) & 0xFF);
-		final int blud = (int) ((value >> 16) & 0xFF);
-		final int green = (int) ((value >> 8) & 0xFF);
-		final int red = (int) (value & 0xFF);
-		final double opacity = alpha > 255D ? 1D : alpha / 255D;
-		LOGGER.info(String.format("系统主题颜色：rgba(%d, %d, %d, %.2f)", red, green, blud, opacity));
-		return Color.rgb(red, green, blud, opacity);
+		LOGGER.info("系统主题颜色：{}-{}", colorValue, theme);
+		return theme;
 	}
 	
 }
