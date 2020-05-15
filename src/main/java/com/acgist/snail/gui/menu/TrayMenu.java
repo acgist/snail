@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.gui.Controller;
 import com.acgist.snail.gui.Fonts.SnailIcon;
 import com.acgist.snail.gui.Menu;
+import com.acgist.snail.gui.Themes;
 import com.acgist.snail.gui.about.AboutWindow;
 import com.acgist.snail.gui.main.MainWindow;
 import com.acgist.snail.system.config.DownloadConfig;
@@ -236,6 +237,8 @@ public final class TrayMenu extends Menu {
 		// 添加托盘样式
 		trayPane.getStyleClass().add("tray");
 		final Scene trayScene = new Scene(trayPane);
+		// 设置主题样式
+		trayScene.getRoot().setStyle(Themes.getThemeStyle());
 		// 导入样式文件
 		trayScene.getStylesheets().add(Controller.FXML_STYLE);
 		// 隐藏托盘容器
