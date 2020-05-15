@@ -54,7 +54,7 @@ public final class UpnpMessageHandler extends UdpMessageHandler implements IMess
 				UpnpService.getInstance().load(location).mapping();
 			}
 		} catch (NetException e) {
-			LOGGER.error("UPNP端口映射异常", e);
+			LOGGER.error("UPNP端口映射异常：{}", location, e);
 		} finally {
 			NatContext.getInstance().unlock(); // 解锁NAT
 		}
