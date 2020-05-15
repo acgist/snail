@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.UdpClient;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerService;
-import com.acgist.snail.net.upnp.UpnpServer;
 import com.acgist.snail.pojo.wrapper.HeaderWrapper;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
@@ -30,17 +29,22 @@ public final class LocalServiceDiscoveryClient extends UdpClient<LocalServiceDis
 	 */
 	private static final String PROTOCOL = "BT-SEARCH * HTTP/1.1";
 	
-	public LocalServiceDiscoveryClient(InetSocketAddress socketAddress) {
+	private LocalServiceDiscoveryClient(InetSocketAddress socketAddress) {
 		super("LSD Client", new LocalServiceDiscoveryMessageHandler(), socketAddress);
 	}
 
+	/**
+	 * <p>创建本地发现客户端</p>
+	 * 
+	 * @param socketAddress 地址
+	 */
 	public static final LocalServiceDiscoveryClient newInstance() {
 		return new LocalServiceDiscoveryClient(NetUtils.buildSocketAddress(LocalServiceDiscoveryServer.LSD_HOST, LocalServiceDiscoveryServer.LSD_PORT));
 	}
 
 	@Override
 	public boolean open() {
-		return this.open(UpnpServer.getInstance().channel());
+		return this.open(LocalServiceDiscoveryServer.getInstance().channel());
 	}
 	
 	/**
@@ -56,7 +60,7 @@ public final class LocalServiceDiscoveryClient extends UdpClient<LocalServiceDis
 			LOGGER.debug("发送本地发现消息（InfoHash）：{}", String.join(",", infoHashs));
 		}
 		try {
-			send(buildLocalSearch(infoHashs));
+			this.send(this.buildLocalSearch(infoHashs));
 		} catch (NetException e) {
 			LOGGER.error("发送本地发现消息异常", e);
 		}
@@ -73,11 +77,11 @@ public final class LocalServiceDiscoveryClient extends UdpClient<LocalServiceDis
 		final String peerId = StringUtils.hex(PeerService.getInstance().peerId());
 		final HeaderWrapper builder = HeaderWrapper.newBuilder(PROTOCOL);
 		builder
-			.header("Host", LocalServiceDiscoveryServer.LSD_HOST + ":" + LocalServiceDiscoveryServer.LSD_PORT)
-			.header("Port", String.valueOf(SystemConfig.getTorrentPort()))
-			.header("cookie", peerId); // 区别软件本身消息
+			.header(LocalServiceDiscoveryMessageHandler.HEADER_HOST, LocalServiceDiscoveryServer.LSD_HOST + ":" + LocalServiceDiscoveryServer.LSD_PORT)
+			.header(LocalServiceDiscoveryMessageHandler.HEADER_PORT, String.valueOf(SystemConfig.getTorrentPort()))
+			.header(LocalServiceDiscoveryMessageHandler.HEADER_COOKIE, peerId);
 		for (String infoHash : infoHashs) {
-			builder.header("Infohash", infoHash);
+			builder.header(LocalServiceDiscoveryMessageHandler.HEADER_INFOHASH, infoHash);
 		}
 		return builder.build();
 	}
