@@ -124,6 +124,7 @@ public abstract class Window<T extends Controller> extends Application {
 	protected void buildWindow(Stage stage, String title, int width, int height, String fxml, Modality modality) throws IOException {
 		final Parent root = this.loadFxml(fxml);
 		final Scene scene = new Scene(root, width, height);
+		root.setStyle(Themes.getThemeStyle());
 		stage.initModality(modality);
 		stage.setScene(scene);
 		stage.setTitle(title);
