@@ -25,10 +25,25 @@ public final class DhtClient extends UdpClient<DhtMessageHandler> {
 		super("DHT Client", new DhtMessageHandler(), socketAddress);
 	}
 	
+	/**
+	 * <p>创建DHT客户端</p>
+	 * 
+	 * @param host 地址
+	 * @param port 端口
+	 * 
+	 * @return DHT客户端
+	 */
 	public static final DhtClient newInstance(final String host, final int port) {
 		return newInstance(NetUtils.buildSocketAddress(host, port));
 	}
 	
+	/**
+	 * <p>创建DHT客户端</p>
+	 * 
+	 * @param socketAddress 地址
+	 * 
+	 * @return DHT客户端
+	 */
 	public static final DhtClient newInstance(InetSocketAddress socketAddress) {
 		return new DhtClient(socketAddress);
 	}
@@ -50,7 +65,7 @@ public final class DhtClient extends UdpClient<DhtMessageHandler> {
 	/**
 	 * <p>查询节点</p>
 	 * 
-	 * @param target InfoHashHex
+	 * @param target NodeId或者InfoHash
 	 */
 	public void findNode(String target) {
 		this.findNode(StringUtils.unhex(target));
