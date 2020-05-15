@@ -6,7 +6,7 @@ chcp 65001>nul
 rem 软件名称
 set project=snail
 rem 软件版本
-set version=1.3.0
+set version=1.3.1
 
 rem 编译路径
 set builder=.\builder\
