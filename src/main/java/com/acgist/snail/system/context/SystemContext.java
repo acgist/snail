@@ -43,6 +43,43 @@ public final class SystemContext {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SystemContext.class);
 
 	/**
+	 * <p>系统类型</p>
+	 */
+	public enum SystemType {
+		
+		MAC("Mac OS", "Mac OS X"),
+		LINUX("Linux"),
+		WINDOWS("Windows XP", "Windows Vista", "Windows 10");
+		
+		/**
+		 * <p>系统名称</p>
+		 */
+		public final String[] osNames;
+
+		private SystemType(String ... osNames) {
+			this.osNames = osNames;
+		}
+
+		/**
+		 * <p>获取当前系统</p>
+		 * 
+		 * @return 当前系统
+		 */
+		public static final SystemType local() {
+			final String osName = SystemContext.osName();
+			for (SystemType type : SystemType.values()) {
+				for (String value : type.osNames) {
+					if(value.equals(osName)) {
+						return type;
+					}
+				}
+			}
+			return null;
+		}
+		
+	}
+	
+	/**
 	 * <p>系统状态</p>
 	 */
 	private static boolean shutdown = false;

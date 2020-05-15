@@ -18,6 +18,8 @@ import com.acgist.snail.utils.NumberUtils;
  * <p>Windows回收站</p>
  * <p>支持系统：Win10</p>
  * 
+ * TODO：测试win7、win xp
+ * 
  * @author acgist
  * @since 1.1.0
  */
@@ -25,10 +27,6 @@ public final class WindowsRecycle extends Recycle {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(WindowsRecycle.class);
 
-	/**
-	 * <p>系统：{@value}</p>
-	 */
-	private static final String OS_WINDOWS_10 = "Windows 10";
 	/**
 	 * <p>回收站路径：{@value}</p>
 	 */
@@ -61,17 +59,6 @@ public final class WindowsRecycle extends Recycle {
 		this.buildRecycleName();
 	}
 
-	/**
-	 * <p>是否支持系统</p>
-	 * 
-	 * @param osName 系统名称
-	 * 
-	 * @return true-支持；false-不支持；
-	 */
-	public static final boolean support(String osName) {
-		return OS_WINDOWS_10.equals(osName);
-	}
-	
 	/**
 	 * <p>设置回收站路径</p>
 	 */
