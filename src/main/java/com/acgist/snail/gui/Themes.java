@@ -1,13 +1,13 @@
 package com.acgist.snail.gui;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.system.context.SystemContext.SystemType;
 import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -42,34 +42,47 @@ public final class Themes {
 	/**
 	 * <p>系统主题</p>
 	 */
-	private static final Color SYSTEM_COLOR;
+	private static final Color SYSTEM_THEME_COLOR;
+	/**
+	 * <p>系统主题样式</p>
+	 */
+	private static final String SYSTEM_THEME_STYLE;
 	
 	static {
-		SYSTEM_COLOR = getThemeColor();
+		// 获取主题颜色
+		final SystemType type = SystemType.local();
+		Color color;
+		switch (type) {
+		case WINDOWS:
+			color = windowsThemeColor();
+			break;
+		default:
+			color = DEFAULT_THEME_COLOR;
+			break;
+		}
+		SYSTEM_THEME_COLOR = color;
+		// 设置主题样式
+		final String colorHex = SYSTEM_THEME_COLOR.toString();
+		final StringBuilder themeStyle = new StringBuilder();
+		themeStyle.append("-fx-snail-main-color:#").append(colorHex.toString().substring(2, colorHex.length() - 2)).append(";");
+		SYSTEM_THEME_STYLE = themeStyle.toString();
 	}
 	
 	/**
-	 * <p>获取系统主题颜色样式</p>
+	 * <p>获取系统主题样式</p>
 	 * 
-	 * @return 系统主题颜色样式
-	 * 
-	 * TODO：缓存
+	 * @return 系统主题样式
 	 */
 	public static final String getThemeStyle() {
-		final String colorHex = SYSTEM_COLOR.toString();
-		final StringBuilder themeStyle = new StringBuilder();
-		themeStyle.append("-fx-snail-main-color:#").append(colorHex.toString().substring(2, colorHex.length() - 2)).append(";");
-		return themeStyle.toString();
+		return SYSTEM_THEME_STYLE;
 	}
 	
 	/**
 	 * <p>获取Windows主题颜色</p>
 	 * 
 	 * @return 主题颜色
-	 * 
-	 * TODO：兼容mac、linux
 	 */
-	public static final Color getThemeColor() {
+	private static final Color windowsThemeColor() {
 		String color = null;
 		Process process = null;
 		OutputStream output = null;
@@ -82,11 +95,12 @@ public final class Themes {
 			while ((line = reader.readLine()) != null) {
 				line = line.trim();
 				if(StringUtils.startsWith(line, THEME_COLOR_KEY)) {
-					color = line.substring(line.length() - 10).trim();
+					final int index = line.indexOf("0x");
+					color = line.substring(index).trim();
 					break;
 				}
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			LOGGER.error("获取Windows主题颜色异常", e);
 		} finally {
 			IoUtils.close(output);
@@ -95,17 +109,17 @@ public final class Themes {
 				process.destroy();
 			}
 		}
-		return convertColor(color);
+		return convertWindowsColor(color);
 	}
 
 	/**
-	 * <p>颜色转换</p>
+	 * <p>Windows颜色转换</p>
 	 * 
-	 * @param colorValue 十六进制颜色字符：0xffffffff
+	 * @param colorValue 十六进制颜色字符：0xffffff、0xffffffff
 	 * 
 	 * @return 颜色
 	 */
-	private static final Color convertColor(String colorValue) {
+	private static final Color convertWindowsColor(String colorValue) {
 		Color theme;
 		if(colorValue == null) {
 			theme = DEFAULT_THEME_COLOR;

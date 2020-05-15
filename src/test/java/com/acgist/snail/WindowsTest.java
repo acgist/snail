@@ -4,8 +4,6 @@ import org.junit.Test;
 
 import com.acgist.snail.gui.Themes;
 
-import javafx.scene.paint.Color;
-
 public class WindowsTest extends BaseTest {
 
 	@Test
@@ -36,8 +34,6 @@ public class WindowsTest extends BaseTest {
 
 	@Test
 	public void getThemeCommand() throws Exception {
-		Color color = Themes.getThemeColor();
-		this.log(color.toString());
 		this.log(Themes.getThemeStyle());
 	}
 

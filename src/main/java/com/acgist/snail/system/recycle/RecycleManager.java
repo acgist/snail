@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.system.context.SystemContext;
+import com.acgist.snail.system.context.SystemContext.SystemType;
 import com.acgist.snail.system.recycle.windows.WindowsRecycle;
 
 /**
@@ -24,13 +25,21 @@ public final class RecycleManager {
 	private static final Function<String, Recycle> BUILDER;
 	
 	static {
-		final String osName = SystemContext.osName();
-		LOGGER.info("初始化回收站：{}", osName);
-		if(WindowsRecycle.support(osName)) {
-			BUILDER = (path) -> new WindowsRecycle(path);
-		} else {
-			LOGGER.warn("不支持回收站：{}", osName);
+		final SystemType systemType = SystemType.local();
+		if(systemType == null) {
+			LOGGER.warn("不支持回收站：{}", SystemContext.osName());
 			BUILDER = null;
+		} else {
+			LOGGER.info("初始化回收站：{}", systemType);
+			switch (systemType) {
+			case WINDOWS:
+				BUILDER = (path) -> new WindowsRecycle(path);
+				break;
+			default:
+				LOGGER.warn("不支持回收站：{}", systemType);
+				BUILDER = null;
+				break;
+			}
 		}
 	}
 	
