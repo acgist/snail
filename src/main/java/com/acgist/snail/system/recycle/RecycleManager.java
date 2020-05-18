@@ -35,6 +35,7 @@ public final class RecycleManager {
 			case WINDOWS:
 				BUILDER = (path) -> new WindowsRecycle(path);
 				break;
+			// TODO：Mac、Linux
 			default:
 				LOGGER.warn("不支持回收站：{}", systemType);
 				BUILDER = null;

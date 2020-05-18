@@ -24,38 +24,39 @@ public final class Themes {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Themes.class);
 
 	/**
-	 * <p>主题颜色PATH</p>
-	 */
-	private static final String THEME_COLOR_PATH = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\History\\Colors";
-	/**
-	 * <p>主题颜色KEY</p>
-	 */
-	private static final String THEME_COLOR_KEY = "ColorHistory0";
-	/**
-	 * <p>获取主题颜色命令</p>
-	 */
-	private static final String THEME_COLOR_COMMAND = "REG QUERY " + THEME_COLOR_PATH + " /v " + THEME_COLOR_KEY;
-	/**
 	 * <p>默认主题颜色</p>
 	 */
 	private static final Color DEFAULT_THEME_COLOR = Color.rgb(0, 153, 204);
 	/**
-	 * <p>系统主题</p>
+	 * <p>系统主题颜色</p>
 	 */
 	private static final Color SYSTEM_THEME_COLOR;
 	/**
 	 * <p>系统主题样式</p>
 	 */
 	private static final String SYSTEM_THEME_STYLE;
+	/**
+	 * <p>Windows主题颜色PATH</p>
+	 */
+	private static final String THEME_COLOR_PATH = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\History\\Colors";
+	/**
+	 * <p>Windows主题颜色KEY</p>
+	 */
+	private static final String THEME_COLOR_KEY = "ColorHistory0";
+	/**
+	 * <p>Windows获取主题颜色命令</p>
+	 */
+	private static final String THEME_COLOR_COMMAND = "REG QUERY " + THEME_COLOR_PATH + " /v " + THEME_COLOR_KEY;
 	
 	static {
-		// 获取主题颜色
 		final SystemType type = SystemType.local();
+		// 获取主题颜色
 		Color color;
 		switch (type) {
 		case WINDOWS:
 			color = windowsThemeColor();
 			break;
+		// TODO：Mac、Linux
 		default:
 			color = DEFAULT_THEME_COLOR;
 			break;
@@ -64,6 +65,7 @@ public final class Themes {
 		// 设置主题样式
 		final String colorHex = SYSTEM_THEME_COLOR.toString();
 		final StringBuilder themeStyle = new StringBuilder();
+		// 设置主题颜色
 		themeStyle.append("-fx-snail-main-color:#").append(colorHex.toString().substring(2, colorHex.length() - 2)).append(";");
 		SYSTEM_THEME_STYLE = themeStyle.toString();
 	}
@@ -125,18 +127,18 @@ public final class Themes {
 			theme = DEFAULT_THEME_COLOR;
 		} else {
 			final int value = (int) Long.parseLong(colorValue.substring(2), 16);
-			final int alpha = (int) ((value >> 24) & 0xFF);
+			final int alpha = (int) ((value >> 24) & 0xFF); // 透明度：可能不存在
 			final int blud = (int) ((value >> 16) & 0xFF);
 			final int green = (int) ((value >> 8) & 0xFF);
 			final int red = (int) (value & 0xFF);
-			final double opacity = alpha > 255D ? 1D : alpha / 255D;
-			if(alpha == 0) {
+			final double opacity = alpha >= 255D ? 1D : alpha / 255D;
+			if(alpha == 0) { // 没有透明度默认设置不透明
 				theme = Color.rgb(red, green, blud);
 			} else {
 				theme = Color.rgb(red, green, blud, opacity);
 			}
 		}
-		LOGGER.info("系统主题颜色：{}-{}", colorValue, theme);
+		LOGGER.info("Windows系统主题颜色：{}-{}", colorValue, theme);
 		return theme;
 	}
 	
