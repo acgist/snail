@@ -182,4 +182,15 @@ public abstract class Window<T extends Controller> extends Application {
 		return this.controller;
 	}
 	
+	/**
+	 * <p>设置控件主题</p>
+	 * 
+	 * @param scene 场景
+	 */
+	public static final void applyTheme(Scene scene) {
+		final Parent root = scene.getRoot();
+		root.setStyle(Themes.getThemeStyle()); // 设置主题样式
+		root.getStylesheets().add(Controller.FXML_STYLE); // 导入样式文件
+	}
+	
 }
