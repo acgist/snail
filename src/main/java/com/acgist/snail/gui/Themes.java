@@ -14,7 +14,7 @@ import com.acgist.snail.utils.StringUtils;
 import javafx.scene.paint.Color;
 
 /**
- * <p>Windows工具</p>
+ * <p>主题工具</p>
  * 
  * @author acgist
  * @since 1.4.0
