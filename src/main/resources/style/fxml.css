@@ -25,6 +25,7 @@
 	-fx-focus-color:derive(-fx-snail-main-color, 40%);
 	/** 选中颜色 */
 	-fx-selection-bar:-fx-snail-main-color;
+	-fx-selection-bar-text:#FFFFFF;
 }
 /**
  * <p>图标样式</p>
@@ -57,7 +58,7 @@
 	-fx-background-color:-fx-snail-element-color;
 }
 .root .button:hover {
-	-fx-text-fill:#FFFFFF;
+	-fx-text-fill:-fx-selection-bar-text;
 	-fx-border-color:-fx-snail-main-color;
 	-fx-background-color:-fx-snail-main-color;
 }
@@ -91,6 +92,12 @@
 	-fx-border-color:-fx-snail-main-color;
 }
 /**
+ * <p>下拉框已选择标记</p>
+ */
+.root .radio-menu-item:focused:checked .left-container .radio {
+	-fx-background-color:-fx-selection-bar-text;
+}
+/**
  * <p>滚动条样式</p>
  */
 .root .scroll-bar {
@@ -106,6 +113,12 @@
 .root .context-menu {
 	-fx-padding:1px;
 	-fx-opacity:-fx-snail-opacity;
+}
+.root .context-menu .menu-item:focused .label {
+	-fx-text-fill:-fx-selection-bar-text;
+}
+.root .context-menu .menu-item:focused .snail-icon {
+	-fx-text-fill:-fx-selection-bar-text;
 }
 /**
  * <p>托盘样式</p>
@@ -229,7 +242,10 @@
 	-fx-background-color:-fx-snail-main-color;
 }
 .main .table-view:focused .table-row-cell:selected Text {
-	-fx-fill:#FFFFFF;
+	-fx-fill:-fx-selection-bar-text;
+}
+.main .table-view:focused .table-row-cell:selected .snail-icon {
+	-fx-text-fill:-fx-selection-bar-text;
 }
 /*
  * <p>失去焦点表格行样式</p>
