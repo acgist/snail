@@ -25,15 +25,20 @@ public abstract class ExtensionTypeMessageHandler implements IExtensionMessageHa
 	 */
 	protected final ExtensionType extensionType;
 	/**
-	 * <p>PeerSession</p>
+	 * <p>Peer信息</p>
 	 */
 	protected final PeerSession peerSession;
 	/**
-	 * <p>扩展协议处理器</p>
+	 * <p>扩展协议代理</p>
 	 */
 	protected final ExtensionMessageHandler extensionMessageHandler;
 	
-	public ExtensionTypeMessageHandler(ExtensionType extensionType, PeerSession peerSession, ExtensionMessageHandler extensionMessageHandler) {
+	/**
+	 * @param extensionType 扩展协议类型
+	 * @param peerSession Peer信息
+	 * @param extensionMessageHandler 扩展协议代理
+	 */
+	protected ExtensionTypeMessageHandler(ExtensionType extensionType, PeerSession peerSession, ExtensionMessageHandler extensionMessageHandler) {
 		this.extensionType = extensionType;
 		this.peerSession = peerSession;
 		this.extensionMessageHandler = extensionMessageHandler;
@@ -62,7 +67,7 @@ public abstract class ExtensionTypeMessageHandler implements IExtensionMessageHa
 	 * 
 	 * @return true-支持；false-不支持；
 	 */
-	public boolean supportExtensionType() {
+	protected boolean supportExtensionType() {
 		return this.peerSession.supportExtensionType(this.extensionType);
 	}
 	
@@ -90,7 +95,7 @@ public abstract class ExtensionTypeMessageHandler implements IExtensionMessageHa
 	 * @param bytes 扩展消息
 	 */
 	protected void pushMessage(byte[] bytes) {
-		this.extensionMessageHandler.pushMessage(extensionTypeId(), bytes);
+		this.extensionMessageHandler.pushMessage(this.extensionTypeId(), bytes);
 	}
 	
 }

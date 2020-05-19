@@ -27,6 +27,7 @@ import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
+ * <p>扩展协议代理</p>
  * <p>LTEP（Libtorrent Extension Protocol）扩展协议</p>
  * <p>Extension Protocol</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0010.html</p>
@@ -41,11 +42,11 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	/**
 	 * <p>偏爱明文：{@value}</p>
 	 */
-	private static final int PLAINTEXT = 0;
+	private static final int PREFER_PLAINTEXT = 0;
 	/**
 	 * <p>偏爱加密：{@value}</p>
 	 */
-	private static final int ENCRYPT = 1;
+	private static final int PREFER_ENCRYPT = 1;
 	/**
 	 * <p>只上传不下载：{@value}</p>
 	 */
@@ -68,6 +69,9 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	private static final String EX_P = "p";
 	/**
 	 * <p>偏爱加密：{@value}</p>
+	 * 
+	 * @see #PREFER_PLAINTEXT
+	 * @see #PREFER_ENCRYPT
 	 */
 	private static final String EX_E = "e";
 	/**
@@ -132,6 +136,15 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 		this.uploadOnlyExtensionMessageHandler = UploadOnlyExtensionMessageHandler.newInstance(peerSession, this);
 	}
 	
+	/**
+	 * <p>创建扩展协议代理</p>
+	 * 
+	 * @param peerSession Peer信息
+	 * @param torrentSession BT任务信息
+	 * @param peerSubMessageHandler Peer消息代理
+	 * 
+	 * @return 扩展协议代理
+	 */
 	public static final ExtensionMessageHandler newInstance(PeerSession peerSession, TorrentSession torrentSession, PeerSubMessageHandler peerSubMessageHandler) {
 		return new ExtensionMessageHandler(peerSession, torrentSession, peerSubMessageHandler);
 	}
@@ -147,22 +160,22 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 		LOGGER.debug("处理扩展消息类型：{}", extensionType);
 		switch (extensionType) {
 		case HANDSHAKE:
-			handshake(buffer);
+			this.handshake(buffer);
 			break;
 		case UT_PEX:
-			pex(buffer);
+			this.pex(buffer);
 			break;
 		case UT_METADATA:
-			metadata(buffer);
+			this.metadata(buffer);
 			break;
 		case UT_HOLEPUNCH:
-			holepunch(buffer);
+			this.holepunch(buffer);
 			break;
 		case UPLOAD_ONLY:
-			uploadOnly(buffer);
+			this.uploadOnly(buffer);
 			break;
 		case LT_DONTHAVE:
-			dontHave(buffer);
+			this.dontHave(buffer);
 			break;
 		default:
 			LOGGER.info("处理扩展消息错误（类型未适配）：{}", extensionType);
@@ -189,7 +202,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 			message.put(EX_P, SystemConfig.getTorrentPortExt()); // 外网监听TCP端口
 		}
 		message.put(EX_V, SystemConfig.getNameEnAndVersion()); // 客户端信息（名称、版本）
-		message.put(EX_E, CryptConfig.STRATEGY.crypt() ? ENCRYPT : PLAINTEXT); // 偏爱加密
+		message.put(EX_E, CryptConfig.STRATEGY.crypt() ? PREFER_ENCRYPT : PREFER_PLAINTEXT); // 偏爱加密
 		// 外网IP地址：TODO：IPv6
 		final String yourip = SystemConfig.getExternalIpAddress();
 		if(StringUtils.isNotEmpty(yourip)) {
@@ -238,25 +251,25 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 		}
 		// 偏爱加密
 		final Long encrypt = decoder.getLong(EX_E);
-		if(encrypt != null && encrypt.intValue() == ENCRYPT) {
+		if(encrypt != null && encrypt.intValue() == PREFER_ENCRYPT) {
 			this.peerSession.flags(PeerConfig.PEX_PREFER_ENCRYPTION);
-		}
-		// 种子InfoHash数据长度
-		final Long metadataSize = decoder.getLong(EX_METADATA_SIZE);
-		if(metadataSize != null && this.infoHash.size() <= 0) {
-			this.infoHash.size(metadataSize.intValue());
 		}
 		// 只上传不下载
 		final Long uploadOnly = decoder.getLong(EX_UPLOAD_ONLY);
 		if(uploadOnly != null && uploadOnly.intValue() == UPLOAD_ONLY) {
 			this.peerSession.flags(PeerConfig.PEX_UPLOAD_ONLY);
 		}
+		// 种子InfoHash数据长度
+		final Long metadataSize = decoder.getLong(EX_METADATA_SIZE);
+		if(metadataSize != null && this.infoHash.size() <= 0) {
+			this.infoHash.size(metadataSize.intValue());
+		}
 		// 支持的扩展协议：扩展协议名称=扩展协议标识
 		final Map<String, Object> supportTypes = decoder.getMap(EX_M);
 		if(CollectionUtils.isNotEmpty(supportTypes)) {
 			supportTypes.entrySet().forEach(entry -> {
 				final Long typeId = (Long) entry.getValue();
-				final String typeValue = (String) entry.getKey();
+				final String typeValue = entry.getKey();
 				final PeerConfig.ExtensionType extensionType = PeerConfig.ExtensionType.valueOfValue(typeValue);
 				if(extensionType == PeerConfig.ExtensionType.UT_HOLEPUNCH) {
 					this.peerSession.flags(PeerConfig.PEX_HOLEPUNCH);
@@ -271,11 +284,11 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 		}
 		// 发送握手
 		if(!this.handshakeSend) {
-			handshake();
+			this.handshake();
 		}
 		// 种子文件下载
 		if(this.torrentSession.action() == Action.MAGNET) {
-			metadata();
+			this.metadata();
 		}
 	}
 	
@@ -296,6 +309,8 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 * <p>处理pex消息</p>
 	 * 
 	 * @param buffer 消息
+	 * 
+	 * @throws NetException 网络异常
 	 * 
 	 * @see PeerExchangeMessageHandler#onMessage(ByteBuffer)
 	 */
@@ -318,6 +333,8 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 * <p>处理metadata消息</p>
 	 * 
 	 * @param buffer 消息
+	 * 
+	 * @throws NetException 网络异常
 	 * 
 	 * @see MetadataMessageHandler#onMessage(ByteBuffer)
 	 */
@@ -437,7 +454,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 * @param bytes 扩展消息数据
 	 */
 	public void pushMessage(byte type, byte[] bytes) {
-		this.peerSubMessageHandler.pushMessage(PeerConfig.Type.EXTENSION, buildMessage(type, bytes));
+		this.peerSubMessageHandler.pushMessage(PeerConfig.Type.EXTENSION, this.buildMessage(type, bytes));
 	}
 
 }

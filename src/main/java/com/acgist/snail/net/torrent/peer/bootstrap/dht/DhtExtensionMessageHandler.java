@@ -29,20 +29,29 @@ public final class DhtExtensionMessageHandler implements IExtensionMessageHandle
 	private final TorrentSession torrentSession;
 	
 	private final PeerSubMessageHandler peerSubMessageHandler;
-
-	public static final DhtExtensionMessageHandler newInstance(PeerSession peerSession, TorrentSession torrentSession, PeerSubMessageHandler peerSubMessageHandler) {
-		return new DhtExtensionMessageHandler(peerSession, torrentSession, peerSubMessageHandler);
-	}
 	
 	private DhtExtensionMessageHandler(PeerSession peerSession, TorrentSession torrentSession, PeerSubMessageHandler peerSubMessageHandler) {
 		this.peerSession = peerSession;
 		this.torrentSession = torrentSession;
 		this.peerSubMessageHandler = peerSubMessageHandler;
 	}
+
+	/**
+	 * <p>创建DHT扩展协议代理</p>
+	 * 
+	 * @param peerSession Peer信息
+	 * @param torrentSession BT任务信息
+	 * @param peerSubMessageHandler Peer消息代理
+	 * 
+	 * @return DHT扩展协议代理
+	 */
+	public static final DhtExtensionMessageHandler newInstance(PeerSession peerSession, TorrentSession torrentSession, PeerSubMessageHandler peerSubMessageHandler) {
+		return new DhtExtensionMessageHandler(peerSession, torrentSession, peerSubMessageHandler);
+	}
 	
 	@Override
 	public void onMessage(ByteBuffer buffer) {
-		port(buffer);
+		this.port(buffer);
 	}
 
 	/**
@@ -55,15 +64,17 @@ public final class DhtExtensionMessageHandler implements IExtensionMessageHandle
 	}
 	
 	/**
-	 * <p>处理DHT消息：设置DHT端口、添加DHT节点</p>
+	 * <p>处理DHT消息</p>
+	 * <p>设置DHT端口、添加DHT节点</p>
 	 * 
 	 * @param buffer 消息
 	 */
 	private void port(ByteBuffer buffer) {
 		final int port = NetUtils.decodePort(buffer.getShort());
-		LOGGER.debug("处理DHT消息：{}", port);
+		final String host = this.peerSession.host();
+		LOGGER.debug("处理DHT消息：{}-{}", host, port);
 		this.peerSession.dhtPort(port);
-		this.torrentSession.newDhtNode(this.peerSession.host(), port);
+		this.torrentSession.newDhtNode(host, port);
 	}
 
 }
