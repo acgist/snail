@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.system.config.PeerConfig.ExtensionType;
-import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.NumberUtils;
 
 /**
@@ -26,13 +25,21 @@ public final class DontHaveExtensionMessageHandler extends ExtensionTypeMessageH
 		super(ExtensionType.LT_DONTHAVE, peerSession, extensionMessageHandler);
 	}
 
+	/**
+	 * <p>创建DontHave扩展代理</p>
+	 * 
+	 * @param peerSession Peer信息
+	 * @param extensionMessageHandler 扩展协议代理
+	 * 
+	 * @return DontHave扩展代理
+	 */
 	public static final DontHaveExtensionMessageHandler newInstance(PeerSession peerSession, ExtensionMessageHandler extensionMessageHandler) {
 		return new DontHaveExtensionMessageHandler(peerSession, extensionMessageHandler);
 	}
 	
 	@Override
-	protected void doMessage(ByteBuffer buffer) throws NetException {
-		dontHave(buffer);
+	protected void doMessage(ByteBuffer buffer) {
+		this.dontHave(buffer);
 	}
 	
 	/**

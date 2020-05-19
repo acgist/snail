@@ -1146,7 +1146,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * @param payload 负载
 	 */
 	public void pushMessage(PeerConfig.Type type, byte[] payload) {
-		this.sendEncrypt(buildMessage(type, payload));
+		this.sendEncrypt(this.buildMessage(type, payload));
 	}
 	
 	/**
