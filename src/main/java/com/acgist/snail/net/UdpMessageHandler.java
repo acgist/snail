@@ -74,17 +74,17 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 		return !this.close && this.channel != null;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * <p>如果没有设置消息处理器，请重写该方法。</p>
+	 */
 	@Override
 	public void send(String message, String charset) throws NetException {
 		if(this.messageCodec == null) {
 			throw new NetException("请实现消息处理器");
 		}
-		send(this.charset(this.messageCodec.encode(message), charset));
-	}
-
-	@Override
-	public void send(ByteBuffer buffer) throws NetException {
-		this.send(buffer, TIMEOUT_NONE);
+		this.send(this.charset(this.messageCodec.encode(message), charset));
 	}
 	
 	@Override
@@ -108,13 +108,14 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 	
 	/**
 	 * <p>发送消息</p>
+	 * <p>不允许重写，请直接重写{@link #send(ByteBuffer, int)}方法。</p>
 	 * 
 	 * @param buffer 消息
 	 * @param socketAddress 地址
 	 * 
 	 * @throws NetException 网络异常
 	 */
-	protected void send(ByteBuffer buffer, SocketAddress socketAddress) throws NetException {
+	protected final void send(ByteBuffer buffer, SocketAddress socketAddress) throws NetException {
 		if(!available()) {
 			LOGGER.debug("UDP消息发送失败：通道不可用");
 			return;

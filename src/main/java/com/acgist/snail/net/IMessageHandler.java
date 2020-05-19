@@ -35,7 +35,7 @@ public interface IMessageHandler {
 	 * @throws NetException 网络异常
 	 */
 	default void send(String message) throws NetException {
-		send(message, null);
+		this.send(message, null);
 	}
 	
 	/**
@@ -49,7 +49,7 @@ public interface IMessageHandler {
 	 * @since 1.1.0
 	 */
 	default void send(String message, String charset) throws NetException {
-		send(this.charset(message, charset));
+		this.send(this.charset(message, charset));
 	}
 	
 	/**
@@ -60,7 +60,7 @@ public interface IMessageHandler {
 	 * @throws NetException 网络异常
 	 */
 	default void send(byte[] message) throws NetException {
-		send(ByteBuffer.wrap(message));
+		this.send(ByteBuffer.wrap(message));
 	}
 	
 	/**
@@ -71,7 +71,7 @@ public interface IMessageHandler {
 	 * @throws NetException 网络异常
 	 */
 	default void send(ByteBuffer buffer) throws NetException {
-		send(buffer, TIMEOUT_NONE);
+		this.send(buffer, TIMEOUT_NONE);
 	}
 	
 	/**

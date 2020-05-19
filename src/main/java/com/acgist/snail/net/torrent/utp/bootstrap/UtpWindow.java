@@ -156,7 +156,7 @@ public final class UtpWindow {
 	 * <p>创建接收窗口对象</p>
 	 * <p>接收窗口接收和处理请求，创建请求队列。</p>
 	 * 
-	 * @param messageCodec 消息代理
+	 * @param messageCodec 消息处理器
 	 * 
 	 * @return 窗口对象
 	 */

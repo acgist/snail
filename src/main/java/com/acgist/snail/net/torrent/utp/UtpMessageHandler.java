@@ -100,7 +100,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	 */
 	private final AtomicBoolean connectLock;
 	/**
-	 * <p>Peer代理</p>
+	 * <p>Peer消息代理</p>
 	 */
 	private final PeerSubMessageHandler peerSubMessageHandler;
 	
