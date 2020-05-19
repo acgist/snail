@@ -73,12 +73,17 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 		return !this.close && this.socket != null;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * <p>如果没有设置消息处理器，请重写该方法。</p>
+	 */
 	@Override
 	public void send(String message, String charset) throws NetException {
 		if(this.messageCodec == null) {
 			throw new NetException("请实现消息处理器");
 		}
-		send(this.charset(this.messageCodec.encode(message), charset));
+		this.send(this.charset(this.messageCodec.encode(message), charset));
 	}
 	
 	@Override
