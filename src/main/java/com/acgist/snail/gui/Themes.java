@@ -49,17 +49,21 @@ public final class Themes {
 	private static final String THEME_COLOR_COMMAND = "REG QUERY " + THEME_COLOR_PATH + " /v " + THEME_COLOR_KEY;
 	
 	static {
-		final SystemType type = SystemType.local();
+		final SystemType systemType = SystemType.local();
 		// 获取主题颜色
 		Color color;
-		switch (type) {
-		case WINDOWS:
-			color = windowsThemeColor();
-			break;
-		// TODO：Mac、Linux
-		default:
+		if(systemType == null) {
 			color = DEFAULT_THEME_COLOR;
-			break;
+		} else {
+			switch (systemType) {
+			case WINDOWS:
+				color = windowsThemeColor();
+				break;
+				// TODO：Mac、Linux
+			default:
+				color = DEFAULT_THEME_COLOR;
+				break;
+			}
 		}
 		SYSTEM_THEME_COLOR = color;
 		// 设置主题样式

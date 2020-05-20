@@ -49,7 +49,7 @@ public final class SystemContext {
 		
 		MAC("Mac OS", "Mac OS X"),
 		LINUX("Linux"),
-		WINDOWS("Windows XP", "Windows Vista", "Windows 10");
+		WINDOWS("Windows XP", "Windows Vista", "Windows 7", "Windows 10");
 		
 		/**
 		 * <p>系统名称</p>
@@ -74,6 +74,7 @@ public final class SystemContext {
 					}
 				}
 			}
+			LOGGER.info("未知系统：{}", osName);
 			return null;
 		}
 		
