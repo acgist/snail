@@ -431,4 +431,44 @@ public final class StringUtils {
 		return null;
 	}
 	
+	/**
+	 * <p>将对象转为字符串</p>
+	 * 
+	 * @param object 对象
+	 * 
+	 * @return 字符串
+	 */
+	public static final String getString(Object object) {
+		return getString(object, null);
+	}
+	
+	/**
+	 * <p>将对象转为字符串</p>
+	 * 
+	 * @param object 对象
+	 * @param encoding 编码
+	 * 
+	 * @return 字符串
+	 */
+	public static final String getString(Object object, String encoding) {
+		if(object == null) {
+			return null;
+		}
+		if(object instanceof byte[]) {
+			final byte[] bytes = (byte[]) object;
+			if(encoding == null) {
+				return new String(bytes);
+			} else {
+				try {
+					return new String(bytes, encoding);
+				} catch (UnsupportedEncodingException e) {
+					LOGGER.error("字符编码异常：{}", encoding, e);
+				}
+				return new String(bytes);
+			}
+		} else {
+			return object.toString();
+		}
+	}
+	
 }

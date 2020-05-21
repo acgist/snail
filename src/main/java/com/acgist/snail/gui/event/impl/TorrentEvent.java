@@ -92,7 +92,7 @@ public final class TorrentEvent extends GuiEventEx {
 			final var decoder = BEncodeDecoder.newInstance(this.files);
 			// 选择文件列表
 			final var selectFiles = decoder.nextList().stream()
-				.map(object -> BEncodeDecoder.getString(object))
+				.map(object -> StringUtils.getString(object))
 				.collect(Collectors.toList());
 			final var torrent = TorrentManager.getInstance().newTorrentSession(taskSession.getTorrent()).torrent();
 			// 选择文件大小

@@ -3,6 +3,7 @@ package com.acgist.snail.pojo.bean;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.acgist.snail.system.bencode.BEncodeDecoder;
@@ -26,6 +27,58 @@ public final class TorrentInfo {
 	 * <p>私有种子：{@value}</p>
 	 */
 	public static final byte PRIVATE_TORRENT = 1;
+	/**
+	 * <p>文件名称：{@value}</p>
+	 */
+	public static final String ATTR_NAME = "name";
+	/**
+	 * <p>文件名称UTF8：{@value}</p>
+	 */
+	public static final String ATTR_NAME_UTF8 = "name.utf-8";
+	/**
+	 * <p>文件大小：{@value}</p>
+	 */
+	public static final String ATTR_LENGTH = "length";
+	/**
+	 * <p>文件ED2K：{@value}</p>
+	 */
+	public static final String ATTR_ED2K = "ed2k";
+	/**
+	 * <p>文件Hash：{@value}</p>
+	 */
+	public static final String ATTR_FILEHASH = "filehash";
+	/**
+	 * <p>特征信息：{@value}</p>
+	 */
+	public static final String ATTR_PIECES = "pieces";
+	/**
+	 * <p>Piece大小：{@value}</p>
+	 */
+	public static final String ATTR_PIECE_LENGTH = "piece length";
+	/**
+	 * <p>发布者：{@value}</p>
+	 */
+	public static final String ATTR_PUBLISHER = "publisher";
+	/**
+	 * <p>发布者UTF8：{@value}</p>
+	 */
+	public static final String ATTR_PUBLISHER_UTF8 = "publisher.utf-8";
+	/**
+	 * <p>发布者URL：{@value}</p>
+	 */
+	public static final String ATTR_PUBLISHER_URL = "publisher-url";
+	/**
+	 * <p>发布者URL UTF8：{@value}</p>
+	 */
+	public static final String ATTR_PUBLISHER_URL_UTF8 = "publisher-url.utf-8";
+	/**
+	 * <p>私有种子：{@value}</p>
+	 */
+	public static final String ATTR_PRIVATE = "private";
+	/**
+	 * <p>文件列表：{@value}</p>
+	 */
+	public static final String ATTR_FILES = "files";
 	
 	/**
 	 * <p>名称</p>
@@ -93,26 +146,32 @@ public final class TorrentInfo {
 	protected TorrentInfo() {
 	}
 
-	public static final TorrentInfo valueOf(Map<String, Object> map) {
-		if(map == null) {
-			return null;
-		}
+	/**
+	 * <p>读取种子信息</p>
+	 * 
+	 * @param map 种子信息
+	 * @param encoding 编码
+	 * 
+	 * @return 种子信息
+	 */
+	public static final TorrentInfo valueOf(Map<String, Object> map, String encoding) {
+		Objects.requireNonNull(map, "种子信息为空");
 		final TorrentInfo info = new TorrentInfo();
-		info.setName(BEncodeDecoder.getString(map, "name"));
-		info.setNameUtf8(BEncodeDecoder.getString(map, "name.utf-8"));
-		info.setLength(BEncodeDecoder.getLong(map, "length"));
-		info.setEd2k(BEncodeDecoder.getBytes(map, "ed2k"));
-		info.setFilehash(BEncodeDecoder.getBytes(map, "filehash"));
-		info.setPieces(BEncodeDecoder.getBytes(map, "pieces"));
-		info.setPieceLength(BEncodeDecoder.getLong(map, "piece length"));
-		info.setPublisher(BEncodeDecoder.getString(map, "publisher"));
-		info.setPublisherUtf8(BEncodeDecoder.getString(map, "publisher.utf-8"));
-		info.setPublisherUrl(BEncodeDecoder.getString(map, "publisher-url"));
-		info.setPublisherUrlUtf8(BEncodeDecoder.getString(map, "publisher-url.utf-8"));
-		info.setPrivateTorrent(BEncodeDecoder.getLong(map, "private"));
-		final List<Object> files = BEncodeDecoder.getList(map, "files");
+		info.setName(BEncodeDecoder.getString(map, ATTR_NAME, encoding));
+		info.setNameUtf8(BEncodeDecoder.getString(map, ATTR_NAME_UTF8));
+		info.setLength(BEncodeDecoder.getLong(map, ATTR_LENGTH));
+		info.setEd2k(BEncodeDecoder.getBytes(map, ATTR_ED2K));
+		info.setFilehash(BEncodeDecoder.getBytes(map, ATTR_FILEHASH));
+		info.setPieces(BEncodeDecoder.getBytes(map, ATTR_PIECES));
+		info.setPieceLength(BEncodeDecoder.getLong(map, ATTR_PIECE_LENGTH));
+		info.setPublisher(BEncodeDecoder.getString(map, ATTR_PUBLISHER, encoding));
+		info.setPublisherUtf8(BEncodeDecoder.getString(map, ATTR_PUBLISHER_UTF8));
+		info.setPublisherUrl(BEncodeDecoder.getString(map, ATTR_PUBLISHER_URL, encoding));
+		info.setPublisherUrlUtf8(BEncodeDecoder.getString(map, ATTR_PUBLISHER_URL_UTF8));
+		info.setPrivateTorrent(BEncodeDecoder.getLong(map, ATTR_PRIVATE));
+		final List<Object> files = BEncodeDecoder.getList(map, ATTR_FILES);
 		if(files != null) {
-			info.setFiles(files(files));
+			info.setFiles(readFiles(files, encoding));
 		} else {
 			info.setFiles(new ArrayList<>());
 		}
@@ -166,19 +225,18 @@ public final class TorrentInfo {
 	 * <p>每个元素都是一个Map，Map里面包含文件信息。</p>
 	 * 
 	 * @param files 文件信息
+	 * @param encoding 编码
 	 * 
 	 * @return 文件列表
 	 */
-	private static final List<TorrentFile> files(List<Object> files) {
+	private static final List<TorrentFile> readFiles(List<Object> files, String encoding) {
 		return files.stream()
-			.map(value -> {
-				return (Map<?, ?>) value;
-			})
-			.map(value -> {
-				return TorrentFile.valueOf(value);
-			})
+			.map(value -> (Map<?, ?>) value)
+			.map(value -> TorrentFile.valueOf(value, encoding))
 			.collect(Collectors.toList());
 	}
+	
+	// ============== GETTER SETTER ============== //
 	
 	public String getName() {
 		return name;

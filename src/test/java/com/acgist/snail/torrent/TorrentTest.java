@@ -16,7 +16,8 @@ public class TorrentTest extends BaseTest {
 
 	@Test
 	public void testRead() throws Exception {
-		String path = "e:/snail/868f1199b18d05bf103aa8a8321f6428854d712e.torrent";
+		String path = "e:/snail/07E1B909D8D193D80E440A8593FB57A658223A0E.torrent";
+//		String path = "e:/snail/868f1199b18d05bf103aa8a8321f6428854d712e.torrent";
 //		String path = "e:/snail/11e38a5270e15c60534ca48977b7d77a3c4f6340.torrent";
 //		String path = "e:/snail/0B156834B59B0FF64EE0C9305D4D6EDE421196E6.torrent";
 //		String path = "e:/snail/641000d9be79ad8947701c338c06211ba69e1b09.torrent";
@@ -27,9 +28,11 @@ public class TorrentTest extends BaseTest {
 		this.log("Piece长度：" + torrent.getInfo().getPieceLength());
 		this.log("Piece Hash长度：" + torrent.getInfo().getPieces().length);
 		this.log("种子Hash：" + session.infoHash().infoHashHex());
-		this.log("创建时间：" + DateUtils.unixToJavaDate(torrent.getCreationDate()));
+		if(torrent.getCreationDate() != null) {
+			this.log("创建时间：" + DateUtils.unixToJavaDate(torrent.getCreationDate()));
+		}
 		this.log("创建时间：" + torrent.getCreationDate());
-		this.log("创建时间戳：" + torrent.getEncoding());
+		this.log("编码格式：" + torrent.getEncoding());
 		this.log("创建者：" + torrent.getCreatedBy());
 		this.log("私有种子：" + torrent.getInfo().getPrivateTorrent());
 		this.log("Tracker：" + torrent.getAnnounce());
@@ -44,8 +47,8 @@ public class TorrentTest extends BaseTest {
 		this.log("文件名称：" + torrentInfo.getName());
 		this.log("文件名称UTF-8：" + torrentInfo.getNameUtf8());
 		this.log("文件大小：" + torrentInfo.getLength());
-		this.log("文件ED2K：" + torrentInfo.getEd2k());
-		this.log("文件Hash：" + torrentInfo.getFilehash());
+		this.log("文件ED2K：" + StringUtils.hex(torrentInfo.getEd2k()));
+		this.log("文件Hash：" + StringUtils.hex(torrentInfo.getFilehash()));
 		// 多文件
 		if (torrentInfo.getFiles().size() > 0) {
 			for (TorrentFile file : torrentInfo.getFiles()) {

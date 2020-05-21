@@ -89,9 +89,7 @@ public final class TorrentSelectorWrapper {
 		try {
 			return this.decoder.nextList().stream()
 				.filter(object -> object != null)
-				.map(object -> {
-					return BEncodeDecoder.getString(object);
-				})
+				.map(object -> StringUtils.getString(object))
 				.collect(Collectors.toList());
 		} catch (PacketSizeException e) {
 			LOGGER.error("解析选择文件异常", e);
