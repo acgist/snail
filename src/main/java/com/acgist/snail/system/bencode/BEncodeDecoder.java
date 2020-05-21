@@ -582,36 +582,42 @@ public final class BEncodeDecoder {
 	/**
 	 * <p>获取字符串</p>
 	 * 
+	 * @param key 键
+	 * @param encoding 编码
+	 * 
+	 * @return 字符串
+	 */
+	public String getString(String key, String encoding) {
+		return getString(this.map, key, encoding);
+	}
+	
+	/**
+	 * <p>获取字符串</p>
+	 * 
 	 * @param map 数据
 	 * @param key 键
 	 * 
 	 * @return 字符串
 	 */
 	public static final String getString(Map<?, ?> map, String key) {
+		return getString(map, key, null);
+	}
+	
+	/**
+	 * <p>获取字符串</p>
+	 * 
+	 * @param map 数据
+	 * @param key 键
+	 * @param encoding 编码
+	 * 
+	 * @return 字符串
+	 */
+	public static final String getString(Map<?, ?> map, String key, String encoding) {
 		final var bytes = getBytes(map, key);
 		if(bytes == null) {
 			return null;
 		}
-		return new String(bytes);
-	}
-	
-	/**
-	 * <p>将对象转为字符串</p>
-	 * 
-	 * @param object 数据
-	 * 
-	 * @return 字符串
-	 */
-	public static final String getString(Object object) {
-		if(object == null) {
-			return null;
-		}
-		if(object instanceof byte[]) {
-			final byte[] bytes = (byte[]) object;
-			return new String(bytes);
-		} else {
-			return object.toString();
-		}
+		return StringUtils.getString(bytes, encoding);
 	}
 	
 	/**
@@ -663,11 +669,11 @@ public final class BEncodeDecoder {
 		if(map == null) {
 			return List.of();
 		}
-		final var tmp = (List<?>) map.get(key);
-		if(tmp == null) {
+		final var result = (List<?>) map.get(key);
+		if(result == null) {
 			return List.of();
 		}
-		return tmp.stream()
+		return result.stream()
 			.map(value -> value)
 			.collect(Collectors.toList());
 	}
@@ -696,11 +702,11 @@ public final class BEncodeDecoder {
 		if(map == null) {
 			return Map.of();
 		}
-		final var tmp = (Map<?, ?>) map.get(key);
-		if(tmp == null) {
+		final var result = (Map<?, ?>) map.get(key);
+		if(result == null) {
 			return Map.of();
 		}
-		return tmp.entrySet().stream()
+		return result.entrySet().stream()
 			.filter(entry -> entry.getKey() != null)
 			.map(entry -> Map.entry(entry.getKey().toString(), entry.getValue()))
 			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new));

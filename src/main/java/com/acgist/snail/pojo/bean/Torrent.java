@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.acgist.snail.system.bencode.BEncodeDecoder;
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -55,7 +57,7 @@ public final class Torrent {
 	 */
 	public static final String ATTR_NODES = "nodes";
 	
-	//================种子文件自带信息================//
+	// ============== 种子文件自带信息 ============== //
 	/**
 	 * <p>注释</p>
 	 */
@@ -93,7 +95,7 @@ public final class Torrent {
 	 */
 	private Map<String, Integer> nodes;
 	
-	//================种子文件临时信息================//
+	// ============== 种子文件临时信息 ============== //
 	/**
 	 * <p>InfoHash</p>
 	 * <p>种子文件加载完成时保存InfoHash，防止计算种子Hash不一致。</p>
@@ -103,28 +105,44 @@ public final class Torrent {
 	protected Torrent() {
 	}
 	
+	/**
+	 * <p>读取种子信息</p>
+	 * 
+	 * @param decoder 种子编码
+	 * 
+	 * @return 种子信息
+	 */
 	public static final Torrent valueOf(BEncodeDecoder decoder) {
+		Objects.requireNonNull(decoder, "种子信息为空");
 		final Torrent torrent = new Torrent();
-		torrent.setComment(decoder.getString(ATTR_COMMENT));
+		// 原始编码
+		final String originalEncoding = decoder.getString(ATTR_ENCODING);
+		// 默认使用编码：GBK
+		final String encoding = originalEncoding == null ? SystemConfig.CHARSET_GBK: originalEncoding;
+		torrent.setEncoding(originalEncoding);
+		torrent.setComment(decoder.getString(ATTR_COMMENT, encoding));
 		torrent.setCommentUtf8(decoder.getString(ATTR_COMMENT_UTF8));
-		torrent.setEncoding(decoder.getString(ATTR_ENCODING));
 		torrent.setCreatedBy(decoder.getString(ATTR_CREATED_BY));
 		torrent.setCreationDate(decoder.getLong(ATTR_CREATION_DATE));
+		// 读取Tracker服务器
 		torrent.setAnnounce(decoder.getString(ATTR_ANNOUNCE));
+		// 读取Tracker服务器列表
 		final List<Object> announceList = decoder.getList(ATTR_ANNOUNCE_LIST);
 		if(announceList != null) {
-			torrent.setAnnounceList(announceList(announceList));
+			torrent.setAnnounceList(readAnnounceList(announceList));
 		} else {
 			torrent.setAnnounceList(new ArrayList<>(0));
 		}
+		// 读取种子信息
 		final Map<String, Object> info = decoder.getMap(ATTR_INFO);
 		if(info != null) {
-			final TorrentInfo torrentInfo = TorrentInfo.valueOf(info);
+			final TorrentInfo torrentInfo = TorrentInfo.valueOf(info, encoding);
 			torrent.setInfo(torrentInfo);
 		}
+		// 读取DHT节点
 		final List<Object> nodes = decoder.getList(ATTR_NODES);
 		if(nodes != null) {
-			torrent.setNodes(nodes(nodes));
+			torrent.setNodes(readNodes(nodes));
 		} else {
 			torrent.setNodes(new LinkedHashMap<>());
 		}
@@ -140,7 +158,7 @@ public final class Torrent {
 	public String name() {
 		String name = this.info.getNameUtf8();
 		if(StringUtils.isEmpty(name)) {
-			name = StringUtils.charsetFrom(this.info.getName(), this.getEncoding());
+			name = this.info.getName();
 		}
 		return name;
 	}
@@ -171,13 +189,13 @@ public final class Torrent {
 	 * 
 	 * @return Tracker服务器列表
 	 */
-	private static final List<String> announceList(List<Object> announceList) {
+	private static final List<String> readAnnounceList(List<Object> announceList) {
 		return announceList.stream()
 			.flatMap(value -> {
 				final List<?> values = (List<?>) value;
 				return values.stream();
 			})
-			.map(value -> BEncodeDecoder.getString(value))
+			.map(value -> StringUtils.getString(value))
 			.collect(Collectors.toList());
 	}
 	
@@ -189,12 +207,12 @@ public final class Torrent {
 	 * 
 	 * @return DHT节点
 	 */
-	private static final Map<String, Integer> nodes(List<Object> nodes) {
+	private static final Map<String, Integer> readNodes(List<Object> nodes) {
 		return nodes.stream()
 			.map(value -> {
 				final List<?> values = (List<?>) value;
 				if(values.size() == 2) {
-					final String host = BEncodeDecoder.getString(values.get(0));
+					final String host = StringUtils.getString(values.get(0));
 					final Long port = (Long) values.get(1);
 					if(StringUtils.isNumeric(host)) { // 紧凑型
 						return Map.entry(
@@ -212,6 +230,8 @@ public final class Torrent {
 			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new));
 	}
 
+	// ============== GETTER SETTER ============== //
+	
 	public String getComment() {
 		return comment;
 	}

@@ -68,6 +68,8 @@ public final class TorrentBuilder {
 	 * <p>创建种子信息</p>
 	 * 
 	 * @return 种子信息
+	 * 
+	 * TODO：由于这里不能获取到原始的编码，所以可能出现乱码。
 	 */
 	private Map<String, Object> buildFileInfo() {
 		final Map<String, Object> data = new LinkedHashMap<>();
