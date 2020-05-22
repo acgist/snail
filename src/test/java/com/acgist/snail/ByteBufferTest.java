@@ -1,6 +1,11 @@
 package com.acgist.snail;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.BitSet;
 
 import org.junit.Test;
 
@@ -8,6 +13,17 @@ import com.acgist.snail.utils.StringUtils;
 
 public class ByteBufferTest extends BaseTest {
 
+	@Test
+	public void bitSet() throws IOException {
+		BitSet set = new BitSet();
+		set.set(0, 102400);
+		this.cost();
+		byte[] bytes = set.toByteArray();
+		this.log(bytes.length);
+		Files.write(Paths.get("E://tmp", "map.txt"), bytes, StandardOpenOption.WRITE);
+		this.costed();
+	}
+	
 	@Test
 	public void testRead() {
 		ByteBuffer buffer = ByteBuffer.wrap("1234".getBytes());

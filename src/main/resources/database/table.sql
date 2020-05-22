@@ -15,6 +15,10 @@ create table tb_config (
 );
 /**
  * <p>任务</p>
+ * <p>
+ * 超大BT文件保存Pieces数据而不是每次都校验文件
+ * `pieces` BINARY(12800) DEFAULT NULL,
+ * </p>
  */
 create table tb_task (
 	`id` CHAR(36) NOT NULL,
