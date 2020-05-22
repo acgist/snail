@@ -691,8 +691,9 @@ public final class TorrentStream {
 					length = (int) this.pieceLength;
 				}
 			}
-			bytes = read(index, length, pos, true); // 读取数据
+			bytes = this.read(index, length, pos, true); // 读取数据
 			if(verify) { // 校验Hash
+				// TODO：超大BT文件保存Pieces数据而不是每次都校验文件，接头数据还是需要区别
 				hash = StringUtils.sha1(bytes); // TODO：优化使用一个算法对象
 				if(ArrayUtils.equals(hash, this.torrentStreamGroup.pieceHash(index))) {
 					this.done(index);
