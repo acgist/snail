@@ -1,4 +1,4 @@
-package com.acgist.snail.system.bencode;
+package com.acgist.snail.system.format;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

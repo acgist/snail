@@ -21,10 +21,10 @@ import com.acgist.snail.net.torrent.dht.bootstrap.response.FindNodeResponse;
 import com.acgist.snail.net.torrent.dht.bootstrap.response.GetPeersResponse;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.system.bencode.BEncodeDecoder;
 import com.acgist.snail.system.config.DhtConfig;
 import com.acgist.snail.system.config.DhtConfig.ErrorCode;
 import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.system.format.BEncodeDecoder;
 import com.acgist.snail.utils.StringUtils;
 
 /**

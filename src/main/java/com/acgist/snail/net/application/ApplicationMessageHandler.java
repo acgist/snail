@@ -18,11 +18,11 @@ import com.acgist.snail.net.codec.impl.LineMessageCodec;
 import com.acgist.snail.net.codec.impl.StringMessageCodec;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.message.ApplicationMessage;
-import com.acgist.snail.system.bencode.BEncodeDecoder;
-import com.acgist.snail.system.bencode.BEncodeEncoder;
 import com.acgist.snail.system.context.SystemContext;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.system.format.BEncodeDecoder;
+import com.acgist.snail.system.format.BEncodeEncoder;
 import com.acgist.snail.utils.StringUtils;
 
 /**

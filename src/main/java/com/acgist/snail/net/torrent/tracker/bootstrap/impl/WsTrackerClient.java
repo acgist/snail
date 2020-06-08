@@ -7,9 +7,9 @@ import com.acgist.snail.net.torrent.peer.bootstrap.PeerService;
 import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerClient;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.Protocol;
-import com.acgist.snail.system.JSON;
 import com.acgist.snail.system.config.TrackerConfig;
 import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.system.format.JSON;
 
 /**
  * <p>Tracker WS（WebSocket）客户端</p>

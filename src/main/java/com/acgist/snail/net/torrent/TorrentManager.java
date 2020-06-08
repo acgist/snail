@@ -12,10 +12,10 @@ import java.util.stream.Collectors;
 import com.acgist.snail.pojo.bean.InfoHash;
 import com.acgist.snail.pojo.bean.Torrent;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.system.bencode.BEncodeDecoder;
-import com.acgist.snail.system.bencode.BEncodeEncoder;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.system.format.BEncodeDecoder;
+import com.acgist.snail.system.format.BEncodeEncoder;
 import com.acgist.snail.utils.StringUtils;
 
 /**

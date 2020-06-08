@@ -3,9 +3,9 @@ package com.acgist.snail.pojo.message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.system.bencode.BEncodeDecoder;
-import com.acgist.snail.system.bencode.BEncodeEncoder;
 import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.system.format.BEncodeDecoder;
+import com.acgist.snail.system.format.BEncodeEncoder;
 
 /**
  * <p>Application消息</p>
