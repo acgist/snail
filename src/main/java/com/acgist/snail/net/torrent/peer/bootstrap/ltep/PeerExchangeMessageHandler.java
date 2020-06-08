@@ -64,6 +64,9 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 	 */
 	private static final String DROPPED6 = "dropped6";
 	
+	/**
+	 * <p>BT任务信息</p>
+	 */
 	private final TorrentSession torrentSession;
 	
 	private PeerExchangeMessageHandler(PeerSession peerSession, TorrentSession torrentSession, ExtensionMessageHandler extensionMessageHandler) {
@@ -71,13 +74,22 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 		this.torrentSession = torrentSession;
 	}
 	
+	/**
+	 * <p>创建PEX消息代理</p>
+	 * 
+	 * @param peerSession Peer
+	 * @param torrentSession BT任务信息
+	 * @param extensionMessageHandler 扩展消息代理
+	 * 
+	 * @return PEX消息代理
+	 */
 	public static final PeerExchangeMessageHandler newInstance(PeerSession peerSession, TorrentSession torrentSession, ExtensionMessageHandler extensionMessageHandler) {
 		return new PeerExchangeMessageHandler(peerSession, torrentSession, extensionMessageHandler);
 	}
 	
 	@Override
 	public void doMessage(ByteBuffer buffer) throws NetException {
-		pex(buffer);
+		this.pex(buffer);
 	}
 	
 	/**

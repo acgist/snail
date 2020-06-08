@@ -48,6 +48,12 @@ public final class XML {
 	private Document document;
 	
 	/**
+	 * <p>禁止主动创建实例</p>
+	 */
+	private XML() {
+	}
+	
+	/**
 	 * <p>创建XML</p>
 	 * 
 	 * @return XML工具对象
