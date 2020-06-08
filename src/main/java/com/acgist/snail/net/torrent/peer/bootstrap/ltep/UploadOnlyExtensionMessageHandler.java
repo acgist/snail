@@ -28,13 +28,21 @@ public final class UploadOnlyExtensionMessageHandler extends ExtensionTypeMessag
 		super(ExtensionType.UPLOAD_ONLY, peerSession, extensionMessageHandler);
 	}
 
+	/**
+	 * <p>创建uploadOnly消息代理</p>
+	 * 
+	 * @param peerSession Peer
+	 * @param extensionMessageHandler 扩展消息代理
+	 * 
+	 * @return uploadOnly消息代理
+	 */
 	public static final UploadOnlyExtensionMessageHandler newInstance(PeerSession peerSession, ExtensionMessageHandler extensionMessageHandler) {
 		return new UploadOnlyExtensionMessageHandler(peerSession, extensionMessageHandler);
 	}
 	
 	@Override
 	public void doMessage(ByteBuffer buffer) {
-		uploadOnly(buffer);
+		this.uploadOnly(buffer);
 	}
 
 	/**
