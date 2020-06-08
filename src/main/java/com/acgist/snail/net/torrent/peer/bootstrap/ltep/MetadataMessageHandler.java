@@ -11,13 +11,13 @@ import com.acgist.snail.pojo.bean.InfoHash;
 import com.acgist.snail.pojo.bean.Torrent;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.system.bencode.BEncodeDecoder;
-import com.acgist.snail.system.bencode.BEncodeEncoder;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.PeerConfig.ExtensionType;
 import com.acgist.snail.system.config.PeerConfig.MetadataType;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.system.format.BEncodeDecoder;
+import com.acgist.snail.system.format.BEncodeEncoder;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -53,7 +53,13 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 	 */
 	private static final String ARG_TOTAL_SIZE = "total_size";
 	
+	/**
+	 * <p>InfoHash</p>
+	 */
 	private final InfoHash infoHash;
+	/**
+	 * <p>BT任务信息</p>
+	 */
 	private final TorrentSession torrentSession;
 	
 	private MetadataMessageHandler(PeerSession peerSession, TorrentSession torrentSession, ExtensionMessageHandler extensionMessageHandler) {
@@ -62,6 +68,15 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 		this.torrentSession = torrentSession;
 	}
 	
+	/**
+	 * <p>创建Metadata消息代理</p>
+	 * 
+	 * @param peerSession Peer
+	 * @param torrentSession BT任务信息
+	 * @param extensionMessageHandler 扩展消息代理
+	 * 
+	 * @return Metadata消息代理
+	 */
 	public static final MetadataMessageHandler newInstance(PeerSession peerSession, TorrentSession torrentSession, ExtensionMessageHandler extensionMessageHandler) {
 		return new MetadataMessageHandler(peerSession, torrentSession, extensionMessageHandler);
 	}
@@ -83,13 +98,13 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 		LOGGER.debug("处理metadata消息类型：{}", metadataType);
 		switch (metadataType) {
 		case REQUEST:
-			request(decoder);
+			this.request(decoder);
 			break;
 		case DATA:
-			data(decoder);
+			this.data(decoder);
 			break;
 		case REJECT:
-			reject(decoder);
+			this.reject(decoder);
 			break;
 		default:
 			LOGGER.info("处理metadata消息错误（类型未适配）：{}", metadataType);
@@ -105,8 +120,8 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 		final int size = this.infoHash.size();
 		final int messageSize = NumberUtils.ceilDiv(size, SLICE_LENGTH);
 		for (int index = 0; index < messageSize; index++) {
-			final var request = buildMessage(PeerConfig.MetadataType.REQUEST, index);
-			pushMessage(request);
+			final var request = this.buildMessage(PeerConfig.MetadataType.REQUEST, index);
+			this.pushMessage(request);
 		}
 	}
 	
@@ -118,7 +133,7 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 	private void request(BEncodeDecoder decoder) {
 		LOGGER.debug("处理metadata消息-request");
 		final int piece = decoder.getInteger(ARG_PIECE);
-		data(piece);
+		this.data(piece);
 	}
 
 	/**
@@ -130,13 +145,13 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 		LOGGER.debug("发送metadata消息-data：{}", piece);
 		final byte[] bytes = this.infoHash.info(); // InfoHash数据
 		if(bytes == null) {
-			reject();
+			this.reject();
 			return;
 		}
 		final int begin = piece * SLICE_LENGTH;
 		final int end = begin + SLICE_LENGTH;
 		if(begin > bytes.length) {
-			reject();
+			this.reject();
 			return;
 		}
 		int length = SLICE_LENGTH;
@@ -145,9 +160,9 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 		}
 		final byte[] x = new byte[length]; // Slice数据
 		System.arraycopy(bytes, begin, x, 0, length);
-		final var data = buildMessage(PeerConfig.MetadataType.DATA, piece);
+		final var data = this.buildMessage(PeerConfig.MetadataType.DATA, piece);
 		data.put(ARG_TOTAL_SIZE, this.infoHash.size());
-		pushMessage(data, x);
+		this.pushMessage(data, x);
 	}
 
 	/**
@@ -190,8 +205,8 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 	 */
 	public void reject() {
 		LOGGER.debug("发送metadata消息-reject");
-		final var reject = buildMessage(PeerConfig.MetadataType.REJECT, 0);
-		pushMessage(reject);
+		final var reject = this.buildMessage(PeerConfig.MetadataType.REJECT, 0);
+		this.pushMessage(reject);
 	}
 	
 	/**

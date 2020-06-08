@@ -6,8 +6,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import com.acgist.snail.system.bencode.BEncodeDecoder;
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.system.format.BEncodeDecoder;
 
 /**
  * <p>文件信息</p>

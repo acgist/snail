@@ -1,4 +1,4 @@
-package com.acgist.snail.system.bencode;
+package com.acgist.snail.system.format;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -10,7 +10,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.system.bencode.BEncodeDecoder.Type;
+import com.acgist.snail.system.format.BEncodeDecoder.Type;
 
 /**
  * <p>B编码编码器</p>

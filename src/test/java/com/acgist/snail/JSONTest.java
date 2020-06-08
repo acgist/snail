@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.acgist.snail.system.JSON;
+import com.acgist.snail.system.format.JSON;
 
 public class JSONTest extends BaseTest {
 	

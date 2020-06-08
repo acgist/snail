@@ -14,7 +14,7 @@ import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.bean.TorrentFile;
 import com.acgist.snail.pojo.bean.TorrentInfo;
 import com.acgist.snail.protocol.torrent.TorrentProtocol;
-import com.acgist.snail.system.bencode.BEncodeDecoder;
+import com.acgist.snail.system.format.BEncodeDecoder;
 import com.acgist.snail.utils.StringUtils;
 
 import javafx.application.Platform;

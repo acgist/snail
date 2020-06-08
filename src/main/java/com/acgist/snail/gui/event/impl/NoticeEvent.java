@@ -13,7 +13,7 @@ import com.acgist.snail.gui.event.GuiEvent;
 import com.acgist.snail.gui.event.GuiEventEx;
 import com.acgist.snail.gui.menu.TrayMenu;
 import com.acgist.snail.pojo.message.ApplicationMessage;
-import com.acgist.snail.system.bencode.BEncodeEncoder;
+import com.acgist.snail.system.format.BEncodeEncoder;
 
 /**
  * <p>GUI提示消息事件</p>

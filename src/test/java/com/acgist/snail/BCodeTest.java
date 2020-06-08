@@ -6,9 +6,9 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.acgist.snail.system.bencode.BEncodeDecoder;
-import com.acgist.snail.system.bencode.BEncodeEncoder;
 import com.acgist.snail.system.exception.PacketSizeException;
+import com.acgist.snail.system.format.BEncodeDecoder;
+import com.acgist.snail.system.format.BEncodeEncoder;
 
 public class BCodeTest extends BaseTest {
 
