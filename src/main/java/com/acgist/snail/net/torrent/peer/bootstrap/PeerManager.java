@@ -33,13 +33,14 @@ public final class PeerManager {
 	private static final PeerManager INSTANCE = new PeerManager();
 	
 	/**
-	 * <p>下载队列</p>
+	 * <p>Peer下载队列</p>
 	 * <p>下载时Peer从队列中剔除，当Peer使用结束后重新放回下载队列。</p>
 	 * <p>InfoHashHex=Peer双端队列（尾部优先使用）</p>
 	 */
 	private final Map<String, Deque<PeerSession>> peers;
 	/**
 	 * <p>Peer存档队列</p>
+	 * <p>InfoHashHex=Peer队列</p>
 	 */
 	private final Map<String, List<PeerSession>> storagePeers;
 	
@@ -61,9 +62,9 @@ public final class PeerManager {
 	 * @return Peer信息
 	 */
 	public PeerSession findPeerSession(String infoHashHex, String host) {
-		final var list = list(infoHashHex);
+		final var list = this.list(infoHashHex);
 		synchronized (list) {
-			return findPeerSession(list, host);
+			return this.findPeerSession(list, host);
 		}
 	}
 	
@@ -75,7 +76,7 @@ public final class PeerManager {
 	 * @return Peer存档队列
 	 */
 	public List<PeerSession> listPeerSession(String infoHashHex) {
-		final var list = list(infoHashHex);
+		final var list = this.list(infoHashHex);
 		synchronized (list) {
 			return new ArrayList<>(list);
 		}
@@ -89,7 +90,7 @@ public final class PeerManager {
 	 * @return {@code true}-找到；{@code false}-没有找到；
 	 */
 	public boolean havePeerSession(String infoHashHex) {
-		return !list(infoHashHex).isEmpty();
+		return !this.list(infoHashHex).isEmpty();
 	}
 	
 	/**
@@ -123,11 +124,11 @@ public final class PeerManager {
 	 */
 	public PeerSession newPeerSession(String infoHashHex, IStatisticsSession parent, String host, Integer port, byte source) {
 		synchronized (this) {
-			final var list = list(infoHashHex);
-			final var deque = deque(infoHashHex);
+			final var list = this.list(infoHashHex); // 存档队列
+			final var deque = this.deque(infoHashHex); // 下载队列
 			synchronized (list) {
 				synchronized (deque) {
-					PeerSession peerSession = findPeerSession(list, host);
+					PeerSession peerSession = this.findPeerSession(list, host);
 					if(peerSession == null) {
 						if(LOGGER.isDebugEnabled()) {
 							LOGGER.debug("添加PeerSession：{}-{}，来源：{}", host, port, PeerConfig.source(source));
@@ -158,7 +159,7 @@ public final class PeerManager {
 	 * @param peerSession Peer信息
 	 */
 	public void inferior(String infoHashHex, PeerSession peerSession) {
-		final var deque = deque(infoHashHex);
+		final var deque = this.deque(infoHashHex);
 		synchronized (deque) {
 			deque.offerFirst(peerSession);
 		}
@@ -171,7 +172,7 @@ public final class PeerManager {
 	 * @param peerSession Peer信息
 	 */
 	public void preference(String infoHashHex, PeerSession peerSession) {
-		final var deque = deque(infoHashHex);
+		final var deque = this.deque(infoHashHex);
 		synchronized (deque) {
 			deque.offerLast(peerSession);
 		}
@@ -186,7 +187,7 @@ public final class PeerManager {
 	 * @return Peer信息
 	 */
 	public PeerSession pick(String infoHashHex) {
-		final var deque = deque(infoHashHex);
+		final var deque = this.deque(infoHashHex);
 		synchronized (deque) {
 			int index = 0;
 			final int size = deque.size();
@@ -215,7 +216,7 @@ public final class PeerManager {
 	 * @param index Piece索引
 	 */
 	public void have(String infoHashHex, int index) {
-		final var list = listConnectPeer(infoHashHex);
+		final var list = this.listConnectPeer(infoHashHex);
 		final AtomicInteger count = new AtomicInteger(0);
 		list.stream()
 			.forEach(session -> {
@@ -225,7 +226,7 @@ public final class PeerManager {
 					peerConnect.have(index);
 				}
 			});
-		LOGGER.debug("发送have消息：通知Peer数量：{}", count.get());
+		LOGGER.debug("发送have消息，通知Peer数量：{}", count.get());
 	}
 	
 	/**
@@ -235,7 +236,7 @@ public final class PeerManager {
 	 * @param infoHashHex InfoHashHex
 	 */
 	public void pex(String infoHashHex) {
-		final var list = listConnectPeer(infoHashHex);
+		final var list = this.listConnectPeer(infoHashHex);
 		// 优质Peer：下载数据
 		final var optimize = list.stream()
 			.filter(session -> session.statistics().downloadSize() > 0)
@@ -254,7 +255,7 @@ public final class PeerManager {
 					peerConnect.pex(message);
 				}
 			});
-		LOGGER.debug("发送pex消息：通知Peer数量：{}", count.get());
+		LOGGER.debug("发送pex消息，通知Peer数量：{}", count.get());
 	}
 	
 	/**
@@ -264,7 +265,7 @@ public final class PeerManager {
 	 * @param infoHashHex InfoHashHex
 	 */
 	public void uploadOnly(String infoHashHex) {
-		final var list = listConnectPeer(infoHashHex);
+		final var list = this.listConnectPeer(infoHashHex);
 		final AtomicInteger count = new AtomicInteger(0);
 		list.stream()
 			.forEach(session -> {
@@ -274,7 +275,7 @@ public final class PeerManager {
 					peerConnect.uploadOnly();
 				}
 			});
-		LOGGER.debug("发送uploadOnly消息：通知Peer数量：{}", count.get());
+		LOGGER.debug("发送uploadOnly消息，通知Peer数量：{}", count.get());
 	}
 	
 	/**
@@ -322,7 +323,7 @@ public final class PeerManager {
 	 * @return 连接的Peer队列拷贝
 	 */
 	private List<PeerSession> listConnectPeer(String infoHashHex) {
-		final var list = list(infoHashHex);
+		final var list = this.list(infoHashHex);
 		if(CollectionUtils.isEmpty(list)) {
 			return List.of();
 		}
@@ -344,9 +345,8 @@ public final class PeerManager {
 	 */
 	private PeerSession findPeerSession(List<PeerSession> list, String host) {
 		final Optional<PeerSession> optional = list.stream()
-			.filter(peer -> {
-				return peer.equalsHost(host);
-			}).findFirst();
+			.filter(peer -> peer.equalsHost(host))
+			.findFirst();
 		if(optional.isPresent()) {
 			return optional.get();
 		}

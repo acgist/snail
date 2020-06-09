@@ -193,6 +193,7 @@ public final class PeerDownloaderGroup {
 			}
 			return true;
 		} else {
+			LOGGER.debug("没有可用Peer进行下载");
 			return false;
 		}
 	}
