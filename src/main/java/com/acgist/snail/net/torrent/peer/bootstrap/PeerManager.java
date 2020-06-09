@@ -287,15 +287,10 @@ public final class PeerManager {
 	 */
 	private Deque<PeerSession> deque(String infoHashHex) {
 		synchronized (this.peers) {
-			Deque<PeerSession> deque = this.peers.get(infoHashHex);
-			if(deque == null) {
-				deque = new LinkedBlockingDeque<>();
-				this.peers.put(infoHashHex, deque);
-			}
-			return deque;
+			return this.peers.computeIfAbsent(infoHashHex, key -> new LinkedBlockingDeque<>());
 		}
 	}
-	
+
 	/**
 	 * <p>获取任务存档队列</p>
 	 * 
@@ -305,12 +300,7 @@ public final class PeerManager {
 	 */
 	private List<PeerSession> list(String infoHashHex) {
 		synchronized (this.storagePeers) {
-			List<PeerSession> list = this.storagePeers.get(infoHashHex);
-			if(list == null) {
-				list = new ArrayList<>();
-				this.storagePeers.put(infoHashHex, list);
-			}
-			return list;
+			return this.storagePeers.computeIfAbsent(infoHashHex, key -> new ArrayList<>());
 		}
 	}
 	
