@@ -94,7 +94,7 @@ public final class DownloaderManager {
 	 */
 	public IDownloader submit(ITaskSession taskSession) throws DownloadException {
 		if(ProtocolManager.getInstance().available()) {
-			synchronized (this) {
+			synchronized (this.downloaderMap) {
 				if(taskSession == null) {
 					throw new DownloadException("任务信息为空");
 				}
@@ -192,7 +192,7 @@ public final class DownloaderManager {
 	 * </dl>
 	 */
 	public void refresh() {
-		synchronized (this) {
+		synchronized (this.downloaderMap) {
 			final var downloaders = this.downloaderMap.values();
 			// 当前任务正在下载数量
 			final long count = downloaders.stream()

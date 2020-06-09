@@ -100,13 +100,9 @@ public final class PeerManager {
 	 */
 	public void remove(String infoHashHex) {
 		// 删除下载队列
-		synchronized (this.peers) {
-			this.peers.remove(infoHashHex);
-		}
+		this.peers.remove(infoHashHex);
 		// 删除存档队列
-		synchronized (this.storagePeers) {
-			this.storagePeers.remove(infoHashHex);
-		}
+		this.storagePeers.remove(infoHashHex);
 	}
 	
 	/**
