@@ -258,23 +258,21 @@ public final class TrackerManager {
 		if(announceUrls == null) {
 			announceUrls = new ArrayList<>();
 		}
-		synchronized (this.trackerClients) {
-			return announceUrls.stream()
-				.map(announceUrl -> announceUrl.trim())
-				.map(announceUrl -> {
-					try {
-						return register(announceUrl);
-					} catch (DownloadException e) {
-						LOGGER.error("TrackerClient注册异常：{}", announceUrl, e);
-					} catch (Exception e) {
-						LOGGER.error("TrackerClient注册异常：{}", announceUrl, e);
-					}
-					return null;
-				})
-				.filter(client -> client != null)
-				.filter(client -> client.available())
-				.collect(Collectors.toList());
-		}
+		return announceUrls.stream()
+			.map(announceUrl -> announceUrl.trim())
+			.map(announceUrl -> {
+				try {
+					return register(announceUrl);
+				} catch (DownloadException e) {
+					LOGGER.error("TrackerClient注册异常：{}", announceUrl, e);
+				} catch (Exception e) {
+					LOGGER.error("TrackerClient注册异常：{}", announceUrl, e);
+				}
+				return null;
+			})
+			.filter(client -> client != null)
+			.filter(client -> client.available())
+			.collect(Collectors.toList());
 	}
 	
 	/**
@@ -291,17 +289,19 @@ public final class TrackerManager {
 		if(StringUtils.isEmpty(announceUrl)) {
 			return null;
 		}
-		final Optional<TrackerClient> optional = this.trackerClients.values().stream()
-			.filter(client -> {
-				return client.equalsAnnounceUrl(announceUrl);
-			}).findFirst();
-		if(optional.isPresent()) {
-			return optional.get();
+		synchronized (this.trackerClients) {
+			final Optional<TrackerClient> optional = this.trackerClients.values().stream()
+				.filter(client -> {
+					return client.equalsAnnounceUrl(announceUrl);
+				}).findFirst();
+			if(optional.isPresent()) {
+				return optional.get();
+			}
+			final TrackerClient client = buildClientProxy(announceUrl);
+			this.trackerClients.put(client.id(), client);
+			LOGGER.debug("注册TrackerClient：ID：{}，AnnounceUrl：{}", client.id(), client.announceUrl());
+			return client;
 		}
-		final TrackerClient client = buildClientProxy(announceUrl);
-		this.trackerClients.put(client.id(), client);
-		LOGGER.debug("注册TrackerClient：ID：{}，AnnounceUrl：{}", client.id(), client.announceUrl());
-		return client;
 	}
 
 	/**

@@ -48,21 +48,17 @@ public final class TorrentManager {
 	 * @return 所有的InfoHash拷贝
 	 */
 	public List<InfoHash> allInfoHash() {
-		synchronized (this.torrentSessions) {
-			return this.torrentSessions.values().stream()
-				.map(session -> session.infoHash())
-				.collect(Collectors.toList());
-		}
+		return this.torrentSessions.values().stream()
+			.map(session -> session.infoHash())
+			.collect(Collectors.toList());
 	}
 
 	/**
 	 * @return 所有的TorrentSession拷贝
 	 */
 	public List<TorrentSession> allTorrentSession() {
-		synchronized (this.torrentSessions) {
-			return this.torrentSessions.values().stream()
-				.collect(Collectors.toList());
-		}
+		return this.torrentSessions.values().stream()
+			.collect(Collectors.toList());
 	}
 	
 	/**
@@ -82,9 +78,7 @@ public final class TorrentManager {
 	 * @param infoHashHex InfoHashHex
 	 */
 	public void remove(String infoHashHex) {
-		synchronized (this.torrentSessions) {
-			this.torrentSessions.remove(infoHashHex);
-		}
+		this.torrentSessions.remove(infoHashHex);
 	}
 	
 	/**
