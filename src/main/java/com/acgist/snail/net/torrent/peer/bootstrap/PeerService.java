@@ -13,7 +13,7 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>Peer Service</p>
- * <p>管理客户端的PeerId和端口</p>
+ * <p>管理客户端的PeerId</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -45,8 +45,8 @@ public final class PeerService {
 	private final String peerIdUrl;
 
 	private PeerService() {
-		this.peerId = buildPeerId();
-		this.peerIdUrl = buildPeerIdUrl();
+		this.peerId = this.buildPeerId();
+		this.peerIdUrl = this.buildPeerIdUrl();
 		LOGGER.info("PeerId：{}", new String(this.peerId));
 		LOGGER.info("PeerIdUrl：{}", this.peerIdUrl);
 	}
