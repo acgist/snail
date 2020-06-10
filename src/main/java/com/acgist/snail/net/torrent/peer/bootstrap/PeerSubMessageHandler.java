@@ -677,6 +677,10 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * @param index Piece索引
 	 */
 	public void suggestPiece(int index) {
+		if(!this.peerSession.supportFastExtensionProtocol()) {
+			LOGGER.debug("发送suggestPiece消息：Peer不支持Fast扩展");
+			return;
+		}
 		if(!this.torrentSession.uploadable()) {
 			LOGGER.debug("发送suggestPiece消息：任务不可上传");
 			return;
@@ -725,6 +729,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 */
 	private void rejectRequest(int index, int begin, int length) {
 		if(!this.peerSession.supportFastExtensionProtocol()) {
+			LOGGER.debug("发送rejectRequest消息：Peer不支持Fast扩展");
 			return;
 		}
 		LOGGER.debug("发送rejectRequest消息：{}-{}-{}", index, begin, length);
@@ -759,6 +764,10 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * @param index Piece索引
 	 */
 	public void allowedFast(int index) {
+		if(!this.peerSession.supportFastExtensionProtocol()) {
+			LOGGER.debug("发送allowedFast消息：Peer不支持Fast扩展");
+			return;
+		}
 		if(!this.torrentSession.uploadable()) {
 			LOGGER.debug("发送allowedFast消息：任务不可上传");
 			return;
