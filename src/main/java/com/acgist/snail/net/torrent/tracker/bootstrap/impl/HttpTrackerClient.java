@@ -222,6 +222,7 @@ public final class HttpTrackerClient extends TrackerClient {
 			return List.of();
 		}
 		return files.values().stream()
+//			.filter(Objects::nonNull) // 可以替换以下方法
 			.filter(value -> value != null)
 			.map(value -> {
 				final Map<?, ?> map = (Map<?, ?>) value;
