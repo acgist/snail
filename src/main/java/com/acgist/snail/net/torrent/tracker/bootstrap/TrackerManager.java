@@ -71,7 +71,7 @@ public final class TrackerManager {
 	 * 
 	 * @return TrackerLauncher
 	 */
-	public TrackerLauncher newTrackerLauncher(TrackerClient client, TorrentSession torrentSession) {
+	public TrackerLauncher buildTrackerLauncher(TrackerClient client, TorrentSession torrentSession) {
 		final TrackerLauncher launcher = TrackerLauncher.newInstance(client, torrentSession);
 		LOGGER.debug("加载TrackerLauncher：{}-{}，announceUrl：{}", launcher.id(), client.id(), client.announceUrl());
 		this.trackerLaunchers.put(launcher.id(), launcher);
@@ -83,7 +83,7 @@ public final class TrackerManager {
 	 * 
 	 * @param id {@link TrackerLauncher#id()}
 	 */
-	public void release(Integer id) {
+	public void removeTrackerLauncher(Integer id) {
 		LOGGER.debug("删除TrackerLauncher：{}", id);
 		this.trackerLaunchers.remove(id);
 	}
@@ -167,7 +167,6 @@ public final class TrackerManager {
 
 	/**
 	 * <p>获取TrackerClient列表</p>
-	 * <p>通过传入的声明地址获取TrackerClient，如果声明地址没有被注册为TrackerClient则自动注册。</p>
 	 * <p>如果获取的数量不满足单个任务最大数量，并且不是私有种子时，将会使用系统的TrackerClient补充。</p>
 	 * 
 	 * @param announceUrl 声明地址
@@ -179,14 +178,14 @@ public final class TrackerManager {
 	 * @throws DownloadException 下载异常
 	 */
 	public List<TrackerClient> clients(String announceUrl, List<String> announceUrls, boolean privateTorrent) throws DownloadException {
-		final List<TrackerClient> clients = register(announceUrl, announceUrls);
+		final List<TrackerClient> clients = this.buildTrackerClient(announceUrl, announceUrls);
 		if(privateTorrent) {
 			LOGGER.debug("私有种子：不补充Tracker");
 			return clients;
 		}
 		final int size = clients.size();
 		if(size < MAX_TRACKER_SIZE) {
-			final var subjoin = clients(MAX_TRACKER_SIZE - size, clients);
+			final var subjoin = this.clients(MAX_TRACKER_SIZE - size, clients);
 			if(!subjoin.isEmpty()) {
 				clients.addAll(subjoin);
 			}
@@ -205,9 +204,7 @@ public final class TrackerManager {
 	 */
 	private List<TrackerClient> clients(int size, List<TrackerClient> clients) {
 		return this.trackerClients.values().stream()
-			.filter(client -> {
-				return client.available() && (clients != null && !clients.contains(client));
-			})
+			.filter(client -> client.available() && (clients != null && !clients.contains(client)))
 			.sorted() // 排序
 			.limit(size)
 			.collect(Collectors.toList());
@@ -221,11 +218,11 @@ public final class TrackerManager {
 	 * @throws DownloadException 下载异常
 	 */
 	public List<TrackerClient> register() throws DownloadException {
-		return register(TrackerConfig.getInstance().announces());
+		return this.buildTrackerClient(TrackerConfig.getInstance().announces());
 	}
 	
 	/**
-	 * <p>注册TrackerClient</p>
+	 * <p>创建TrackerClient列表</p>
 	 * 
 	 * @param announceUrl 声明地址
 	 * @param announceUrls 声明地址集合
@@ -234,7 +231,7 @@ public final class TrackerManager {
 	 * 
 	 * @throws DownloadException 下载异常
 	 */
-	private List<TrackerClient> register(String announceUrl, List<String> announceUrls) throws DownloadException {
+	private List<TrackerClient> buildTrackerClient(String announceUrl, List<String> announceUrls) throws DownloadException {
 		final List<String> announces = new ArrayList<>();
 		if(StringUtils.isNotEmpty(announceUrl)) {
 			announces.add(announceUrl);
@@ -242,11 +239,11 @@ public final class TrackerManager {
 		if(CollectionUtils.isNotEmpty(announceUrls)) {
 			announces.addAll(announceUrls);
 		}
-		return register(announces);
+		return this.buildTrackerClient(announces);
 	}
 
 	/**
-	 * <p>注册TrackerClient</p>
+	 * <p>创建TrackerClient列表</p>
 	 * 
 	 * @param announceUrls 声明地址集合
 	 * 
@@ -254,15 +251,14 @@ public final class TrackerManager {
 	 * 
 	 * @throws DownloadException 下载异常
 	 */
-	private List<TrackerClient> register(List<String> announceUrls) throws DownloadException {
+	private List<TrackerClient> buildTrackerClient(List<String> announceUrls) throws DownloadException {
 		if(announceUrls == null) {
 			announceUrls = new ArrayList<>();
 		}
 		return announceUrls.stream()
-			.map(announceUrl -> announceUrl.trim())
 			.map(announceUrl -> {
 				try {
-					return register(announceUrl);
+					return this.buildTrackerClient(announceUrl.trim());
 				} catch (DownloadException e) {
 					LOGGER.error("TrackerClient注册异常：{}", announceUrl, e);
 				} catch (Exception e) {
@@ -270,14 +266,13 @@ public final class TrackerManager {
 				}
 				return null;
 			})
-			.filter(client -> client != null)
-			.filter(client -> client.available())
+			.filter(client -> client != null && client.available())
 			.collect(Collectors.toList());
 	}
 	
 	/**
-	 * <p>注册TrackerClient</p>
-	 * <p>如果已经注册直接返回</p>
+	 * <p>创建TrackerClient</p>
+	 * <p>通过传入的声明地址创建TrackerClient，如果没有被创建则创建TrackerClient并返回，反之直接返回已经创建的TrackerClient。</p>
 	 * 
 	 * @param announceUrl 声明地址
 	 * 
@@ -285,19 +280,18 @@ public final class TrackerManager {
 	 * 
 	 * @throws DownloadException 下载异常
 	 */
-	private TrackerClient register(String announceUrl) throws DownloadException {
+	private TrackerClient buildTrackerClient(String announceUrl) throws DownloadException {
 		if(StringUtils.isEmpty(announceUrl)) {
 			return null;
 		}
 		synchronized (this.trackerClients) {
 			final Optional<TrackerClient> optional = this.trackerClients.values().stream()
-				.filter(client -> {
-					return client.equalsAnnounceUrl(announceUrl);
-				}).findFirst();
+				.filter(client -> client.equalsAnnounceUrl(announceUrl))
+				.findFirst();
 			if(optional.isPresent()) {
 				return optional.get();
 			}
-			final TrackerClient client = buildClientProxy(announceUrl);
+			final TrackerClient client = this.buildClientProxy(announceUrl);
 			this.trackerClients.put(client.id(), client);
 			LOGGER.debug("注册TrackerClient：ID：{}，AnnounceUrl：{}", client.id(), client.announceUrl());
 			return client;
@@ -315,9 +309,9 @@ public final class TrackerManager {
 	 * @throws DownloadException 下载异常
 	 */
 	private TrackerClient buildClientProxy(final String announceUrl) throws DownloadException {
-		TrackerClient client = buildClient(announceUrl);
+		TrackerClient client = this.buildClient(announceUrl);
 		if(client == null) {
-			client = buildClient(UrlUtils.decode(announceUrl)); // URL解码
+			client = this.buildClient(UrlUtils.decode(announceUrl)); // URL解码
 		}
 		if(client == null) {
 			throw new DownloadException("创建TrackerClient失败（Tracker协议不支持）：" + announceUrl);

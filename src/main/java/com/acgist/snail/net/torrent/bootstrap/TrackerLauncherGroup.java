@@ -84,7 +84,7 @@ public final class TrackerLauncherGroup {
 			return;
 		}
 		clients.stream()
-			.map(client -> TrackerManager.getInstance().newTrackerLauncher(client, this.torrentSession))
+			.map(client -> TrackerManager.getInstance().buildTrackerLauncher(client, this.torrentSession))
 			.forEach(launcher -> this.trackerLaunchers.add(launcher));
 	}
 
