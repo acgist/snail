@@ -173,7 +173,7 @@ public final class TrackerLauncher {
 			} catch (NetException e) {
 				LOGGER.error("TrackerLauncher关闭异常", e);
 			}
-			TrackerManager.getInstance().release(this.id);
+			TrackerManager.getInstance().removeTrackerLauncher(this.id);
 		}
 	}
 	

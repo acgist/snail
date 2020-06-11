@@ -56,14 +56,23 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	 */
 	private int failTimes = 0;
 	/**
-	 * <p>失败原因</p>
-	 */
-	private String failMessage;
-	/**
 	 * <p>是否可用</p>
 	 */
 	private boolean available = true;
+	/**
+	 * <p>失败原因</p>
+	 */
+	private String failMessage;
 	
+	/**
+	 * <p>Tracker客户端</p>
+	 * 
+	 * @param scrapeUrl 刮擦URL
+	 * @param announceUrl 声明URL
+	 * @param type 协议类型
+	 * 
+	 * @throws NetException 网络异常
+	 */
 	protected TrackerClient(String scrapeUrl, String announceUrl, Protocol.Type type) throws NetException {
 		if(StringUtils.isEmpty(announceUrl)) {
 			throw new NetException("Tracker声明地址错误（不支持）：" + announceUrl);
@@ -76,15 +85,6 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	}
 
 	/**
-	 * <p>判断是否可用</p>
-	 * 
-	 * @return {@code true}-可用；{@code false}-禁用；
-	 */
-	public boolean available() {
-		return this.available;
-	}
-	
-	/**
 	 * <p>查找Peer</p>
 	 * <p>查找到的结果放入Peer列表</p>
 	 * 
@@ -92,18 +92,18 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	 * @param torrentSession BT任务信息
 	 */
 	public void findPeers(Integer sid, TorrentSession torrentSession) {
-		if(!available()) {
+		if(!this.available()) {
 			return;
 		}
 		try {
-			announce(sid, torrentSession); // 发送声明消息
-			this.failTimes = 0;
+			this.announce(sid, torrentSession); // 发送声明消息
 			this.weight++;
+			this.failTimes = 0; // 成功直接清空失败次数
 		} catch (Exception e) {
-			LOGGER.error("查找Peer异常：失败次数：{}，声明地址：{}", this.failTimes, this.announceUrl, e);
+			LOGGER.error("查找Peer异常，失败次数：{}，声明地址：{}", this.failTimes, this.announceUrl, e);
 			this.weight--;
 			if(++this.failTimes >= TrackerConfig.MAX_FAIL_TIMES) {
-				LOGGER.warn("TrackerClient停用：失败次数：{}，声明地址：{}", this.failTimes, this.announceUrl, e);
+				LOGGER.warn("TrackerClient停用，失败次数：{}，声明地址：{}", this.failTimes, this.announceUrl);
 				this.available = false;
 				this.failMessage = e.getMessage();
 			}
@@ -122,7 +122,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	
 	/**
 	 * <p>完成</p>
-	 * <p>任务下载完成时发送</p>
+	 * <p>任务完成时发送</p>
 	 * 
 	 * @param sid sid
 	 * @param torrentSession BT任务信息
@@ -133,7 +133,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	
 	/**
 	 * <p>停止</p>
-	 * <p>任务暂停是发送</p>
+	 * <p>任务暂停时发送</p>
 	 * 
 	 * @param sid sid
 	 * @param torrentSession BT任务信息
@@ -187,18 +187,56 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	 */
 	protected abstract Object buildAnnounceMessageEx(Integer sid, TorrentSession torrentSession, TrackerConfig.Event event, long download, long left, long upload);
 	
+	/**
+	 * <p>获取客户端ID</p>
+	 * 
+	 * @return 客户端ID
+	 */
 	public Integer id() {
 		return this.id;
 	}
 	
+	/**
+	 * <p>获取客户端类型</p>
+	 * 
+	 * @return 客户端类型
+	 */
 	public Protocol.Type type() {
 		return this.type;
 	}
 	
+	/**
+	 * <p>获取刮擦URL</p>
+	 * 
+	 * @return 刮擦URL
+	 */
+	public String scrapeUrl() {
+		return this.scrapeUrl;
+	}
+	
+	/**
+	 * <p>获取客户端声明URL</p>
+	 * 
+	 * @return 客户端声明URL
+	 */
 	public String announceUrl() {
 		return this.announceUrl;
 	}
 	
+	/**
+	 * <p>判断是否可用</p>
+	 * 
+	 * @return {@code true}-可用；{@code false}-禁用；
+	 */
+	public boolean available() {
+		return this.available;
+	}
+	
+	/**
+	 * <p>获取失败原因</p>
+	 * 
+	 * @return 失败原因
+	 */
 	public String failMessage() {
 		return this.failMessage;
 	}
