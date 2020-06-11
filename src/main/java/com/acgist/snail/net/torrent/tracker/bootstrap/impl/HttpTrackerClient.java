@@ -41,11 +41,11 @@ public final class HttpTrackerClient extends TrackerClient {
 	private static final Logger LOGGER = LoggerFactory.getLogger(HttpTrackerClient.class);
 	
 	/**
-	 * <p>刮檫URL</p>
+	 * <p>刮檫URL：{@value}</p>
 	 */
 	private static final String SCRAPE_URL_SUFFIX = "/scrape";
 	/**
-	 * <p>声明URL</p>
+	 * <p>声明URL：{@value}</p>
 	 */
 	private static final String ANNOUNCE_URL_SUFFIX = "/announce";
 	
@@ -64,7 +64,7 @@ public final class HttpTrackerClient extends TrackerClient {
 	 * 
 	 * @param announceUrl 声明地址
 	 * 
-	 * @return 客户端
+	 * @return Tracker客户端
 	 * 
 	 * @throws NetException 网络异常
 	 */
@@ -75,7 +75,7 @@ public final class HttpTrackerClient extends TrackerClient {
 
 	@Override
 	public void announce(Integer sid, TorrentSession torrentSession) throws NetException {
-		final String announceMessage = (String) buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STARTED);
+		final String announceMessage = (String) this.buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STARTED);
 		// 注意：不能使用BodyHandlers.ofString()
 		final var response = HTTPClient.get(announceMessage, BodyHandlers.ofByteArray());
 		if(!HTTPClient.StatusCode.OK.verifyCode(response)) {
@@ -95,19 +95,19 @@ public final class HttpTrackerClient extends TrackerClient {
 	
 	@Override
 	public void complete(Integer sid, TorrentSession torrentSession) throws NetException {
-		final String announceMessage = (String) buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.COMPLETED);
+		final String announceMessage = (String) this.buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.COMPLETED);
 		HTTPClient.get(announceMessage, BodyHandlers.ofString());
 	}
 	
 	@Override
 	public void stop(Integer sid, TorrentSession torrentSession) throws NetException {
-		final String announceMessage = (String) buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STOPPED);
+		final String announceMessage = (String) this.buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STOPPED);
 		HTTPClient.get(announceMessage, BodyHandlers.ofString());
 	}
 	
 	@Override
 	public void scrape(Integer sid, TorrentSession torrentSession) throws NetException {
-		final String scrapeMessage = buildScrapeMessage(sid, torrentSession);
+		final String scrapeMessage = this.buildScrapeMessage(sid, torrentSession);
 		if(scrapeMessage == null) {
 			LOGGER.debug("HTTP Tracker刮檫消息错误（不支持）：{}", this.announceUrl);
 			return;
@@ -274,7 +274,7 @@ public final class HttpTrackerClient extends TrackerClient {
 	 * @return 刮檫URL
 	 */
 	private static final String buildScrapeUrl(String url) {
-		if(url.contains(ANNOUNCE_URL_SUFFIX)) {
+		if(url != null && url.contains(ANNOUNCE_URL_SUFFIX)) {
 			return url.replace(ANNOUNCE_URL_SUFFIX, SCRAPE_URL_SUFFIX);
 		}
 		return null;

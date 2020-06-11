@@ -38,7 +38,7 @@ public final class WsTrackerClient extends TrackerClient {
 	 * 
 	 * @param announceUrl 声明地址
 	 * 
-	 * @return 客户端
+	 * @return Tracker客户端
 	 * 
 	 * @throws NetException 网络异常
 	 */
@@ -48,19 +48,19 @@ public final class WsTrackerClient extends TrackerClient {
 	
 	@Override
 	public void announce(Integer sid, TorrentSession torrentSession) throws NetException {
-		final String announceMessage = (String) buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STARTED);
+		final String announceMessage = (String) this.buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STARTED);
 		this.trackerClient.send(announceMessage);
 	}
 
 	@Override
 	public void complete(Integer sid, TorrentSession torrentSession) throws NetException {
-		final String announceMessage = (String) buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.COMPLETED);
+		final String announceMessage = (String) this.buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.COMPLETED);
 		this.trackerClient.send(announceMessage);
 	}
 
 	@Override
 	public void stop(Integer sid, TorrentSession torrentSession) throws NetException {
-		final String announceMessage = (String) buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STOPPED);
+		final String announceMessage = (String) this.buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STOPPED);
 		this.trackerClient.send(announceMessage);
 	}
 
