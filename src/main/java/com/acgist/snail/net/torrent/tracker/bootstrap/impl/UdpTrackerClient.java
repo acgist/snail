@@ -29,9 +29,11 @@ import com.acgist.snail.utils.ThreadUtils;
 public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker.bootstrap.TrackerClient {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpTrackerClient.class);
-	
+
+	/**
+	 * <p>协议固定值：{@value}</p>
+	 */
 	private static final long PROTOCOL_ID = 0x41727101980L;
-	
 	/**
 	 * <p>UDP Tracker默认端口：{@value}</p>
 	 */
@@ -73,7 +75,7 @@ public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker
 	 * 
 	 * @param announceUrl 声明地址
 	 * 
-	 * @return 客户端
+	 * @return Tracker客户端
 	 * 
 	 * @throws NetException 网络异常
 	 */
@@ -87,7 +89,7 @@ public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker
 		if(this.connectionId == null) {
 			synchronized (this) {
 				if(this.connectionId == null) {
-					buildConnectionId();
+					this.buildConnectionId();
 				}
 				ThreadUtils.wait(this, Duration.ofSeconds(SystemConfig.CONNECT_TIMEOUT));
 				if(this.connectionId == null) {
@@ -96,31 +98,31 @@ public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker
 			}
 		}
 		if(this.connectionId != null) {
-			final ByteBuffer announceMessage = (ByteBuffer) buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STARTED);
-			send(announceMessage);
+			final ByteBuffer announceMessage = (ByteBuffer) this.buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STARTED);
+			this.send(announceMessage);
 		}
 	}
 
 	@Override
 	public void complete(Integer sid, TorrentSession torrentSession) throws NetException {
 		if(this.connectionId != null) {
-			final ByteBuffer announceMessage = (ByteBuffer) buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.COMPLETED);
-			send(announceMessage);
+			final ByteBuffer announceMessage = (ByteBuffer) this.buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.COMPLETED);
+			this.send(announceMessage);
 		}
 	}
 	
 	@Override
 	public void stop(Integer sid, TorrentSession torrentSession) throws NetException {
 		if(this.connectionId != null) {
-			final ByteBuffer announceMessage = (ByteBuffer) buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STOPPED);
-			send(announceMessage);
+			final ByteBuffer announceMessage = (ByteBuffer) this.buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STOPPED);
+			this.send(announceMessage);
 		}
 	}
 	
 	@Override
 	public void scrape(Integer sid, TorrentSession torrentSession) throws NetException {
 		if(this.connectionId != null) {
-			send(buildScrapeMessage(sid, torrentSession));
+			this.send(buildScrapeMessage(sid, torrentSession));
 		}
 	}
 
@@ -144,7 +146,7 @@ public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker
 	 */
 	private void buildConnectionId() throws NetException {
 		LOGGER.debug("UDP Tracker发送获取连接ID消息");
-		send(buildConnectionIdMessage());
+		this.send(buildConnectionIdMessage());
 	}
 	
 	/**
@@ -164,7 +166,7 @@ public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker
 	 * @return 消息
 	 */
 	private ByteBuffer buildConnectionIdMessage() {
-		ByteBuffer buffer = ByteBuffer.allocate(16);
+		final ByteBuffer buffer = ByteBuffer.allocate(16);
 		buffer.putLong(PROTOCOL_ID);
 		buffer.putInt(TrackerConfig.Action.CONNECT.id());
 		buffer.putInt(this.id); // 使用客户端ID：收到响应时回写连接ID
