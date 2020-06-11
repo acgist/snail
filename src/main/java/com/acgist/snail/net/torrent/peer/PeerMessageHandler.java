@@ -20,7 +20,7 @@ public final class PeerMessageHandler extends TcpMessageHandler implements IMess
 //	private static final Logger LOGGER = LoggerFactory.getLogger(PeerMessageHandler.class);
 	
 	/**
-	 * <p>Peer代理</p>
+	 * <p>Peer消息代理</p>
 	 */
 	private final PeerSubMessageHandler peerSubMessageHandler;
 
