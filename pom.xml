@@ -20,7 +20,7 @@
 	
 	<name>snail</name>
 	<version>1.3.1</version>
-	<description>基于Java、JavaFX开发的下载工具，支持下载协议：BT（BitTorrent）、FTP、HTTP。</description>
+	<description>基于Java、JavaFX开发的下载工具，支持下载协议：BT（BitTorrent、磁力链接、种子）、FTP、HTTP。</description>
 	<inceptionYear>2019</inceptionYear>
 	
 	<properties>
