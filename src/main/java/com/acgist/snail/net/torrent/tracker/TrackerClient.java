@@ -16,6 +16,13 @@ public final class TrackerClient extends UdpClient<TrackerMessageHandler> {
 		super("Tracker Client", new TrackerMessageHandler(), socketAddress);
 	}
 	
+	/**
+	 * <p>创建Tracker客户端</p>
+	 * 
+	 * @param socketAddress 地址
+	 * 
+	 * @return Tracker客户端
+	 */
 	public static final TrackerClient newInstance(InetSocketAddress socketAddress) {
 		return new TrackerClient(socketAddress);
 	}
