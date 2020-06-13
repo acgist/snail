@@ -23,6 +23,9 @@ public final class TrackerAcceptHandler extends UdpAcceptHandler {
 		return INSTANCE;
 	}
 	
+	/**
+	 * <p>重复使用消息代理</p>
+	 */
 	private final TrackerMessageHandler trackerMessageHandler = new TrackerMessageHandler();
 	
 	@Override
