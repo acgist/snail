@@ -28,7 +28,7 @@ import com.acgist.snail.utils.DateUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
- * <p>uTP消息</p>
+ * <p>uTP消息代理</p>
  * <p>uTorrent transport protocol</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0029.html</p>
  * <p>uTP头格式</p>
@@ -335,7 +335,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 		buffer.putShort(this.sendId);
 		buffer.putInt(windowData.pushUpdateGetTimestamp()); // 更新发送时间
 		buffer.putInt(windowData.getTimestamp() - this.recvWindow.timestamp());
-		buffer.putInt(this.recvWindow.remainWndSize());
+		buffer.putInt(this.recvWindow.wndSize());
 		buffer.putShort(windowData.getSeqnr());
 		buffer.putShort(this.recvWindow.seqnr()); // acknr=请求seqnr
 		buffer.put(windowData.getData());
@@ -391,7 +391,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 		buffer.putShort(this.sendId);
 		buffer.putInt(now);
 		buffer.putInt(now - timestamp);
-		buffer.putInt(this.recvWindow.remainWndSize());
+		buffer.putInt(this.recvWindow.wndSize());
 		buffer.putShort(this.sendWindow.seqnr());
 		buffer.putShort(seqnr); // acknr=请求seqnr
 		this.pushMessage(buffer);

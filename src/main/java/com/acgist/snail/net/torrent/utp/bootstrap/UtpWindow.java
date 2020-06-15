@@ -48,17 +48,26 @@ public final class UtpWindow {
 	private static final int SEMAPHORE_TIMEOUT = 2;
 	
 	//================流量控制、阻塞控制================//
-	
 	/**
 	 * <p>当前窗口大小</p>
 	 */
 	private volatile int wnd = MIN_WND_SIZE;
+	//================流量控制、阻塞控制================//
 	
-	//================超时================//
-	
+	//================超时计算================//
+	/**
+	 * <p>往返时间</p>
+	 */
 	private volatile int rtt;
+	/**
+	 * <p>RTT平均偏差样本</p>
+	 */
 	private volatile int rttVar;
+	/**
+	 * <p>超时时间</p>
+	 */
 	private volatile int timeout;
+	//================超时计算================//
 	
 	/**
 	 * <p>是否关闭</p>
@@ -94,7 +103,7 @@ public final class UtpWindow {
 	 * 	<dd>接收端：未处理的数据</dd>
 	 * 	<dd>发送端：未响应的数据</dd>
 	 * </dl>
-	 * <p>数据可能是不连贯的</p>
+	 * <p>数据可能是不连贯的：先收到后发送的数据包</p>
 	 */
 	private final Map<Short, UtpWindowData> wndMap;
 	/**
@@ -133,11 +142,13 @@ public final class UtpWindow {
 		this.wndMap = new LinkedHashMap<>();
 		this.semaphore = new Semaphore(MIN_WND_SIZE);
 		if(messageCodec == null) {
+			// 发送窗口对象
 			this.requests = null;
 			this.messageCodec = null;
 		} else {
+			// 接收窗口对象
 			// 同一个窗口必须将消息发送到同一个请求队列防止消息出现乱序
-			this.requests = UtpRequestQueue.getInstance().queue();
+			this.requests = UtpRequestQueue.getInstance().requestQueue();
 			this.messageCodec = messageCodec;
 		}
 	}
@@ -181,7 +192,7 @@ public final class UtpWindow {
 	 * 
 	 * @return 剩余窗口缓存大小
 	 */
-	public int remainWndSize() {
+	public int wndSize() {
 		synchronized (this) {
 			return UtpConfig.WND_SIZE - this.wndSize;
 		}
@@ -196,7 +207,7 @@ public final class UtpWindow {
 	 * @see #build(byte[])
 	 */
 	public UtpWindowData build() {
-		return build(null);
+		return this.build(null);
 	}
 	
 	/**
@@ -211,7 +222,7 @@ public final class UtpWindow {
 		this.acquire(); // 不能加锁
 		synchronized (this) {
 			this.timestamp = DateUtils.timestampUs();
-			final UtpWindowData windowData = storage(this.timestamp, this.seqnr, data);
+			final UtpWindowData windowData = this.storage(this.timestamp, this.seqnr, data);
 			this.seqnr++;
 			return windowData;
 		}
@@ -227,9 +238,7 @@ public final class UtpWindow {
 			final int timestamp = DateUtils.timestampUs();
 			final int timeout = this.timeout;
 			return this.wndMap.values().stream()
-				.filter(windowData -> {
-					return timestamp - windowData.getTimestamp() > timeout;
-				})
+				.filter(windowData -> timestamp - windowData.getTimestamp() > timeout)
 				.collect(Collectors.toList());
 		}
 	}
@@ -244,7 +253,7 @@ public final class UtpWindow {
 	 * 
 	 * @return 是否丢包：{@code true}-丢包；{@code false}-没有丢包；
 	 */
-	public boolean ack(final short acknr, int wndSize) {
+	public boolean ack(final short acknr, final int wndSize) {
 		synchronized (this) {
 			this.wndSize = wndSize;
 			final int timestamp = DateUtils.timestampUs();
@@ -255,7 +264,7 @@ public final class UtpWindow {
 					return diff >= 0;
 				})
 				.peek(entry -> {
-					timeout(timestamp - entry.getValue().getTimestamp()); // 计算超时时间
+					this.timeout(timestamp - entry.getValue().getTimestamp()); // 计算超时时间
 				})
 				.map(Entry::getKey)
 				.collect(Collectors.toList());
@@ -291,13 +300,13 @@ public final class UtpWindow {
 			if(diff >= 0) { // seqnr已被处理
 				return;
 			}
-			storage(timestamp, seqnr, buffer); // 先保存数据
+			this.storage(timestamp, seqnr, buffer); // 先保存数据
 			UtpWindowData nextWindowData;
 			short nextSeqnr = this.seqnr;
 			final var output = new ByteArrayOutputStream();
 			while(true) {
 				nextSeqnr = (short) (nextSeqnr + 1); // 下一个请求编号
-				nextWindowData = take(nextSeqnr);
+				nextWindowData = this.take(nextSeqnr);
 				if(nextWindowData == null) {
 					break;
 				} else {
@@ -393,7 +402,7 @@ public final class UtpWindow {
 	/**
 	 * <p>计算超时时间</p>
 	 * 
-	 * @param packetRtt 时间差
+	 * @param packetRtt 数据包往返时间
 	 */
 	private void timeout(final int packetRtt) {
 		int rtt = this.rtt;
@@ -470,10 +479,20 @@ public final class UtpWindow {
 		this.release();
 	}
 	
+	/**
+	 * <p>获取seqnr</p>
+	 * 
+	 * @return seqnr
+	 */
 	public short seqnr() {
 		return this.seqnr;
 	}
 	
+	/**
+	 * <p>获取timestamp</p>
+	 * 
+	 * @return timestamp
+	 */
 	public int timestamp() {
 		return this.timestamp;
 	}

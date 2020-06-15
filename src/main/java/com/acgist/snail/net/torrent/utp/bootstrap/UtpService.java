@@ -83,7 +83,7 @@ public final class UtpService {
 	 * @return UTP消息代理
 	 */
 	public UdpMessageHandler get(short connectionId, InetSocketAddress socketAddress) {
-		final String key = buildKey(connectionId, socketAddress);
+		final String key = this.buildKey(connectionId, socketAddress);
 		final UtpMessageHandler utpMessageHandler = this.utpMessageHandlers.get(key);
 		if(utpMessageHandler != null) {
 			return utpMessageHandler;
@@ -144,7 +144,7 @@ public final class UtpService {
 							return true;
 						}
 					})
-					.collect(Collectors.toList()) // 转换List再关闭：关闭时会删除
+					.collect(Collectors.toList()) // 转换List再关闭：防止关闭时删除消息代理产生异常
 					.forEach(value -> value.close());
 			} catch (Exception e) {
 				LOGGER.error("处理超时UTP消息异常", e);

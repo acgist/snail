@@ -51,7 +51,7 @@ public final class UtpRequestQueue {
 		LOGGER.debug("启动UTP请求队列：{}", QUEUE_SIZE);
 		this.queues = new ArrayList<>(QUEUE_SIZE);
 		this.executor = SystemThreadContext.newExecutor(QUEUE_SIZE, QUEUE_SIZE, 1000, 60, SystemThreadContext.SNAIL_THREAD_UTP_QUEUE);
-		buildQueues();
+		this.buildQueues();
 	}
 	
 	public static final UtpRequestQueue getInstance() {
@@ -63,7 +63,7 @@ public final class UtpRequestQueue {
 	 * 
 	 * @return 请求队列
 	 */
-	public BlockingQueue<UtpRequest> queue() {
+	public BlockingQueue<UtpRequest> requestQueue() {
 		final int index = this.index.getAndIncrement() % QUEUE_SIZE;
 		return this.queues.get(index);
 	}
@@ -74,7 +74,7 @@ public final class UtpRequestQueue {
 	private void buildQueues() {
 		for (int index = 0; index < QUEUE_SIZE; index++) {
 			final var queue = new LinkedBlockingQueue<UtpRequest>(); // 创建队列
-			buildQueueExecute(queue);
+			this.buildQueueExecute(queue);
 			this.queues.add(queue);
 		}
 	}
