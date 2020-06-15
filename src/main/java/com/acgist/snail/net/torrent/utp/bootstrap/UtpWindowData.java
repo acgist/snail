@@ -44,26 +44,60 @@ public final class UtpWindowData {
 		this.length = data.length;
 	}
 	
+	/**
+	 * <p>创建窗口数据</p>
+	 * 
+	 * @param seqnr seqnr
+	 * @param timestamp 时间戳
+	 * @param data 负载数据
+	 * 
+	 * @return 窗口数据
+	 */
 	public static final UtpWindowData newInstance(short seqnr, int timestamp, byte[] data) {
 		return new UtpWindowData(seqnr, timestamp, data);
 	}
 
+	/**
+	 * <p>获取seqnr</p>
+	 * 
+	 * @return seqnr
+	 */
 	public short getSeqnr() {
 		return this.seqnr;
 	}
 
+	/**
+	 * <p>获取时间戳</p>
+	 * 
+	 * @return 时间戳
+	 */
 	public int getTimestamp() {
 		return this.timestamp;
 	}
 
+	/**
+	 * <p>获取发送次数</p>
+	 * 
+	 * @return 发送次数
+	 */
 	public byte getPushTimes() {
 		return this.pushTimes;
 	}
 
+	/**
+	 * <p>获取负载数据</p>
+	 * 
+	 * @return 负载数据
+	 */
 	public byte[] getData() {
 		return this.data;
 	}
 
+	/**
+	 * <p>获取数据长度</p>
+	 * 
+	 * @return 数据长度
+	 */
 	public int getLength() {
 		return this.length;
 	}
@@ -71,7 +105,7 @@ public final class UtpWindowData {
 	/**
 	 * <p>将数据转为buffer数据</p>
 	 * 
-	 * @return buffer
+	 * @return buffer数据
 	 */
 	public ByteBuffer buffer() {
 		return ByteBuffer.wrap(this.data).compact();

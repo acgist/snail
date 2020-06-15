@@ -27,6 +27,14 @@ public final class UtpRequest {
 		this.messageCodec = messageCodec;
 	}
 	
+	/**
+	 * <p>创建UTP请求</p>
+	 * 
+	 * @param buffer 请求数据
+	 * @param messageCodec 消息处理器
+	 * 
+	 * @return UTP请求
+	 */
 	public static final UtpRequest newInstance(ByteBuffer buffer, IMessageCodec<ByteBuffer> messageCodec) {
 		return new UtpRequest(buffer, messageCodec);
 	}
