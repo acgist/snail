@@ -21,7 +21,7 @@ public interface IMessageEncryptHandler extends IMessageHandler {
 	 * @throws NetException 网络异常
 	 */
 	default void sendEncrypt(ByteBuffer buffer) throws NetException {
-		sendEncrypt(buffer, TIMEOUT_NONE);
+		this.sendEncrypt(buffer, TIMEOUT_NONE);
 	}
 	
 	/**
