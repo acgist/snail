@@ -116,7 +116,7 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 	 * @throws NetException 网络异常
 	 */
 	protected final void send(ByteBuffer buffer, SocketAddress socketAddress) throws NetException {
-		if(!available()) {
+		if(!this.available()) {
 			LOGGER.debug("UDP消息发送失败：通道不可用");
 			return;
 		}

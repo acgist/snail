@@ -57,7 +57,7 @@ public abstract class WebSocketMessageHandler implements IMessageHandler, WebSoc
 
 	@Override
 	public void send(ByteBuffer buffer, int timeout) throws NetException {
-		if(!available()) {
+		if(!this.available()) {
 			LOGGER.debug("WebSocket消息发送失败：Socket不可用");
 			return;
 		}
