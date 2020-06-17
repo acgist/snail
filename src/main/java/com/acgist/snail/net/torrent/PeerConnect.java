@@ -94,25 +94,55 @@ public abstract class PeerConnect {
 	 * <p>Peer连接信息</p>
 	 */
 	protected final PeerConnectSession peerConnectSession = new PeerConnectSession();
-	
+	/**
+	 * <p>Peer信息</p>
+	 */
 	protected final PeerSession peerSession;
+	/**
+	 * <p>BT任务信息</p>
+	 */
 	protected final TorrentSession torrentSession;
+	/**
+	 * <p>Peer消息代理</p>
+	 */
 	protected final PeerSubMessageHandler peerSubMessageHandler;
 	
+	/**
+	 * <p>Peer连接</p>
+	 * 
+	 * @param peerSession Peer信息
+	 * @param torrentSession BT任务信息
+	 * @param peerSubMessageHandler Peer消息代理
+	 */
 	protected PeerConnect(PeerSession peerSession, TorrentSession torrentSession, PeerSubMessageHandler peerSubMessageHandler) {
 		this.peerSession = peerSession;
 		this.torrentSession = torrentSession;
 		this.peerSubMessageHandler = peerSubMessageHandler;
 	}
 
+	/**
+	 * <p>获取Peer信息</p>
+	 * 
+	 * @return Peer信息
+	 */
 	public final PeerSession peerSession() {
 		return this.peerSession;
 	}
 	
+	/**
+	 * <p>获取BT任务信息</p>
+	 * 
+	 * @return BT任务信息
+	 */
 	public final TorrentSession torrentSession() {
 		return this.torrentSession;
 	}
 	
+	/**
+	 * <p>获取Peer连接信息</p>
+	 * 
+	 * @return Peer连接信息
+	 */
 	public final PeerConnectSession peerConnectSession() {
 		return this.peerConnectSession;
 	}
@@ -311,7 +341,7 @@ public abstract class PeerConnect {
 	 * @return 是否可以继续下载
 	 */
 	private boolean request() {
-		if(!available()) {
+		if(!this.available()) {
 			return false;
 		}
 		if(!this.torrentSession.downloadable()) {
@@ -326,7 +356,7 @@ public abstract class PeerConnect {
 		}
 		final int index = this.downloadPiece.getIndex();
 		final var sliceAwaitTime = Duration.ofSeconds(SLICE_WAIT_TIME);
-		while(available()) {
+		while(this.available()) {
 			if (this.countLock.get() >= SLICE_REQUEST_SIZE) {
 				synchronized (this.countLock) {
 					ThreadUtils.wait(this.countLock, sliceAwaitTime);
