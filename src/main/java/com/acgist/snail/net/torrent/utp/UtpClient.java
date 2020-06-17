@@ -13,7 +13,13 @@ import com.acgist.snail.pojo.session.PeerSession;
  */
 public final class UtpClient extends UdpClient<UtpMessageHandler> {
 
+	/**
+	 * <p>Peer信息</p>
+	 */
 	private final PeerSession peerSession;
+	/**
+	 * <p>Peer消息代理</p>
+	 */
 	private final PeerSubMessageHandler peerSubMessageHandler;
 	
 	private UtpClient(PeerSession peerSession, PeerSubMessageHandler peerSubMessageHandler) {
@@ -22,6 +28,14 @@ public final class UtpClient extends UdpClient<UtpMessageHandler> {
 		this.peerSubMessageHandler = peerSubMessageHandler;
 	}
 	
+	/**
+	 * <p>创建UTP客户端</p>
+	 * 
+	 * @param peerSession Peer信息
+	 * @param peerSubMessageHandler Peer消息代理
+	 * 
+	 * @return UTP客户端
+	 */
 	public static final UtpClient newInstance(PeerSession peerSession, PeerSubMessageHandler peerSubMessageHandler) {
 		return new UtpClient(peerSession, peerSubMessageHandler);
 	}
@@ -40,10 +54,20 @@ public final class UtpClient extends UdpClient<UtpMessageHandler> {
 		return this.handler.connect();
 	}
 
+	/**
+	 * <p>获取Peer信息</p>
+	 * 
+	 * @return Peer信息
+	 */
 	public PeerSession peerSession() {
 		return this.peerSession;
 	}
 	
+	/**
+	 * <p>获取Peer消息代理</p>
+	 * 
+	 * @return Peer消息代理
+	 */
 	public PeerSubMessageHandler peerSubMessageHandler() {
 		return this.peerSubMessageHandler;
 	}
