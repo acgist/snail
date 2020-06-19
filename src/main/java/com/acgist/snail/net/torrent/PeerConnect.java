@@ -316,7 +316,7 @@ public abstract class PeerConnect {
 		boolean ok = true;
 		while(ok) {
 			try {
-				ok = request();
+				ok = this.request();
 			} catch (Exception e) {
 				LOGGER.error("Peer请求异常", e);
 				ok = false;

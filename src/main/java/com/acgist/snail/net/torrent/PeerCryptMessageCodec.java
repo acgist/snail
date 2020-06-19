@@ -31,6 +31,12 @@ public final class PeerCryptMessageCodec extends MessageCodec<ByteBuffer, ByteBu
 	 */
 	private final MSECryptHandshakeHandler mseCryptHandshakeHandler;
 	
+	/**
+	 * <p>Peer消息处理器</p>
+	 * 
+	 * @param peerUnpackMessageCodec Peer消息代理
+	 * @param peerSubMessageHandler MSE加密握手代理
+	 */
 	public PeerCryptMessageCodec(PeerUnpackMessageCodec peerUnpackMessageCodec, PeerSubMessageHandler peerSubMessageHandler) {
 		super(peerUnpackMessageCodec);
 		this.peerSubMessageHandler = peerSubMessageHandler;
