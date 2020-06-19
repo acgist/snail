@@ -38,6 +38,11 @@ public final class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteB
 	 */
 	private final PeerSubMessageHandler peerSubMessageHandler;
 	
+	/**
+	 * <p>Peer消息处理器</p>
+	 * 
+	 * @param peerSubMessageHandler Peer消息代理
+	 */
 	public PeerUnpackMessageCodec(PeerSubMessageHandler peerSubMessageHandler) {
 		super(peerSubMessageHandler);
 		this.lengthStick = ByteBuffer.allocate(INT_BYTE_LENGTH);
