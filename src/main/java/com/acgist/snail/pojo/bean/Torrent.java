@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.format.BEncodeDecoder;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -116,10 +115,8 @@ public final class Torrent {
 		Objects.requireNonNull(decoder, "种子信息为空");
 		final Torrent torrent = new Torrent();
 		// 原始编码
-		final String originalEncoding = decoder.getString(ATTR_ENCODING);
-		// 默认使用编码：GBK
-		final String encoding = originalEncoding == null ? SystemConfig.CHARSET_GBK: originalEncoding;
-		torrent.setEncoding(originalEncoding);
+		final String encoding = decoder.getString(ATTR_ENCODING);
+		torrent.setEncoding(encoding);
 		torrent.setComment(decoder.getString(ATTR_COMMENT, encoding));
 		torrent.setCommentUtf8(decoder.getString(ATTR_COMMENT_UTF8));
 		torrent.setCreatedBy(decoder.getString(ATTR_CREATED_BY));

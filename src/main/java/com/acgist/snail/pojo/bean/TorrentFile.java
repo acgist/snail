@@ -145,7 +145,7 @@ public final class TorrentFile {
 	 */
 	private static final List<String> readPath(List<Object> path, String encoding) {
 		return path.stream()
-			.map(value -> StringUtils.getString(value, encoding))
+			.map(value -> StringUtils.getStringCharset(value, encoding))
 			.collect(Collectors.toList());
 	}
 

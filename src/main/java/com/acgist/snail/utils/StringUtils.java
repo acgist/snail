@@ -432,7 +432,34 @@ public final class StringUtils {
 	}
 	
 	/**
+	 * <p>获取文本编码</p>
+	 * <p>支持编码：GBK、UTF-8</p>
+	 * 
+	 * @param content 文本内容
+	 * 
+	 * @return 编码格式
+	 */
+	public static final String getCharset(String content) {
+		if(StringUtils.isEmpty(content)) {
+			return SystemConfig.CHARSET_UTF8;
+		}
+		// UTF-8
+		final var gbkEncoder = Charset.forName(SystemConfig.CHARSET_GBK).newEncoder();
+		if(gbkEncoder.canEncode(content)) {
+			return SystemConfig.CHARSET_UTF8;
+		}
+		// GBK
+		final String gbkContent = StringUtils.charsetTo(content, SystemConfig.CHARSET_GBK);
+		if(gbkEncoder.canEncode(gbkContent)) {
+			return SystemConfig.CHARSET_GBK;
+		}
+		// 默认编码：UTF-8
+		return SystemConfig.CHARSET_UTF8;
+	}
+	
+	/**
 	 * <p>将对象转为字符串</p>
+	 * <p>默认编码：UTF-8</p>
 	 * 
 	 * @param object 对象
 	 * 
@@ -444,6 +471,7 @@ public final class StringUtils {
 	
 	/**
 	 * <p>将对象转为字符串</p>
+	 * <p>编码可以为空，默认编码：UTF-8</p>
 	 * 
 	 * @param object 对象
 	 * @param encoding 编码
@@ -468,6 +496,28 @@ public final class StringUtils {
 			}
 		} else {
 			return object.toString();
+		}
+	}
+	
+	/**
+	 * <p>将对象转为字符串</p>
+	 * <p>自动获取编码，自动转换支持编码：GBK、UTF-8</p>
+	 * 
+	 * @param object 对象
+	 * @param encoding 编码
+	 * 
+	 * @return 字符串
+	 */
+	public static final String getStringCharset(Object object, String encoding) {
+		if(encoding != null) {
+			return getString(object, encoding);
+		} else {
+			final String objectUtf8 = getString(object, encoding);
+			final String charset = getCharset(objectUtf8);
+			if(SystemConfig.CHARSET_GBK.equals(charset)) {
+				return getString(object, SystemConfig.CHARSET_GBK);
+			}
+			return objectUtf8;
 		}
 	}
 	
