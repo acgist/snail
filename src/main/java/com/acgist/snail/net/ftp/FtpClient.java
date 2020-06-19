@@ -276,10 +276,10 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 			LOGGER.debug("发送FTP命令：{}", command);
 			if(lock) {
 				this.handler.resetLock();
-				send(command, this.charset);
+				this.send(command, this.charset);
 				this.handler.lock();
 			} else {
-				send(command, this.charset);
+				this.send(command, this.charset);
 			}
 		} catch (NetException e) {
 			LOGGER.error("发送FTP命令异常：{}", command, e);
