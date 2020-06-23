@@ -257,9 +257,7 @@ public abstract class PeerConnect {
 			synchronized (this) {
 				if(!this.downloading) {
 					this.downloading = true;
-					this.torrentSession.submit(() -> {
-						this.requests();
-					});
+					this.torrentSession.submit(() -> this.requests());
 				}
 			}
 		}
