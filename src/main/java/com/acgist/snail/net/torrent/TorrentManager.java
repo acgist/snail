@@ -34,7 +34,7 @@ public final class TorrentManager {
 	 * <p>BT任务MAP</p>
 	 * <p>InfoHashHex=BT任务</p>
 	 */
-	private Map<String, TorrentSession> torrentSessions;
+	private final Map<String, TorrentSession> torrentSessions;
 	
 	private TorrentManager() {
 		this.torrentSessions = new ConcurrentHashMap<>();
@@ -45,6 +45,8 @@ public final class TorrentManager {
 	}
 	
 	/**
+	 * <p>获取所有的InfoHash拷贝</p>
+	 * 
 	 * @return 所有的InfoHash拷贝
 	 */
 	public List<InfoHash> allInfoHash() {
@@ -54,6 +56,8 @@ public final class TorrentManager {
 	}
 
 	/**
+	 * <p>获取所有的TorrentSession拷贝</p>
+	 * 
 	 * @return 所有的TorrentSession拷贝
 	 */
 	public List<TorrentSession> allTorrentSession() {
@@ -95,7 +99,8 @@ public final class TorrentManager {
 	/**
 	 * <p>新建TorrentSession</p>
 	 * <p>如果已存在InfoHashHex：直接返回</p>
-	 * <p>如果不存在InfoHashHex：path为空时使用InfoHashHex加载、path不为空使用path加载</p>
+	 * <p>如果不存在InfoHashHex：优先使用path加载，如果path为空时使用InfoHashHex加载。</p>
+	 * <p>使用InfoHashHex加载的BT任务信息用于磁力链接下载</p>
 	 * 
 	 * @param infoHashHex InfoHashHex
 	 * @param path 种子文件路径
@@ -105,14 +110,14 @@ public final class TorrentManager {
 	 * @throws DownloadException 下载异常
 	 */
 	public TorrentSession newTorrentSession(String infoHashHex, String path) throws DownloadException {
-		final var session = torrentSession(infoHashHex);
+		final var session = this.torrentSession(infoHashHex);
 		if(session != null) {
 			return session;
 		}
 		if(StringUtils.isEmpty(path)) {
-			return newTorrentSession(InfoHash.newInstance(infoHashHex), null);
+			return this.newTorrentSession(InfoHash.newInstance(infoHashHex), null);
 		} else {
-			return newTorrentSession(path);
+			return this.newTorrentSession(path);
 		}
 	}
 
@@ -127,7 +132,7 @@ public final class TorrentManager {
 	 */
 	public TorrentSession newTorrentSession(String path) throws DownloadException {
 		final Torrent torrent = loadTorrent(path);
-		return newTorrentSession(torrent.infoHash(), torrent);
+		return this.newTorrentSession(torrent.infoHash(), torrent);
 	}
 	
 	/**

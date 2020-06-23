@@ -108,7 +108,6 @@ public final class ObjectUtils {
 				}
 				builder.setLength(builder.length() - 1);
 			}
-		
 		} else {
 			for (Object value : values) {
 				builder.append(value).append(",");

@@ -29,27 +29,27 @@ public abstract class PeerConnect {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerConnect.class);
 
 	/**
-	 * <p>Piece每次请求SLICE数量</p>
+	 * <p>Piece每次请求SLICE数量：{@value}</p>
 	 * <p>注：过大会导致UTP信号量阻塞</p>
 	 * 
 	 * TODO：根据速度优化
 	 */
 	private static final int SLICE_REQUEST_SIZE = 2;
 	/**
-	 * <p>最大等待请求最大数量</p>
+	 * <p>最大等待请求最大数量：{@value}</p>
 	 * <p>超过这个数量直接跳出下载</p>
 	 */
 	private static final int MAX_WAIT_SLICE_REQUEST_SIZE = 4;
 	/**
-	 * <p>SLICE请求等待时间</p>
+	 * <p>SLICE请求等待时间：{@value}</p>
 	 */
 	private static final int SLICE_WAIT_TIME = 10;
 	/**
-	 * <p>PICEC完成等待时间</p>
+	 * <p>PICEC完成等待时间：{@value}</p>
 	 */
 	private static final int PIECE_WAIT_TIME = 30;
 	/**
-	 * <p>释放时等待时间</p>
+	 * <p>释放时等待时间：{@value}</p>
 	 */
 	private static final int RELEASE_WAIT_TIME = 4;
 	
@@ -80,8 +80,11 @@ public abstract class PeerConnect {
 	private final AtomicLong downloadMark = new AtomicLong(0);
 	/**
 	 * <p>Piece分片锁</p>
+	 * 
+	 * @see #SLICE_REQUEST_SIZE
+	 * @see #MAX_WAIT_SLICE_REQUEST_SIZE
 	 */
-	private final AtomicInteger countLock = new AtomicInteger(0);
+	private final AtomicInteger sliceLock = new AtomicInteger(0);
 	/**
 	 * <p>Peer释放锁</p>
 	 */
@@ -278,11 +281,11 @@ public abstract class PeerConnect {
 			LOGGER.warn("下载Piece索引和当前Piece索引不符：{}-{}", index, this.downloadPiece.getIndex());
 			return;
 		}
-		downloadMark(bytes.length); // 下载评分
+		this.downloadMark(bytes.length); // 下载评分
 		// 请求数据下载完成：释放下载等待
-		synchronized (this.countLock) {
-			if (this.countLock.decrementAndGet() <= 0) {
-				this.countLock.notifyAll();
+		synchronized (this.sliceLock) {
+			if (this.sliceLock.decrementAndGet() <= 0) {
+				this.sliceLock.notifyAll();
 			}
 		}
 		final boolean complete = this.downloadPiece.write(begin, bytes);
@@ -357,17 +360,17 @@ public abstract class PeerConnect {
 		final int index = this.downloadPiece.getIndex();
 		final var sliceAwaitTime = Duration.ofSeconds(SLICE_WAIT_TIME);
 		while(this.available()) {
-			if (this.countLock.get() >= SLICE_REQUEST_SIZE) {
-				synchronized (this.countLock) {
-					ThreadUtils.wait(this.countLock, sliceAwaitTime);
+			if (this.sliceLock.get() >= SLICE_REQUEST_SIZE) {
+				synchronized (this.sliceLock) {
+					ThreadUtils.wait(this.sliceLock, sliceAwaitTime);
 					// 等待slice数量超过最大等待数量跳出循环
-					if (this.countLock.get() >= MAX_WAIT_SLICE_REQUEST_SIZE) {
-						LOGGER.debug("请求数量超过最大等待数量：{}-{}", this.downloadPiece.getIndex(), this.countLock.get());
+					if (this.sliceLock.get() >= MAX_WAIT_SLICE_REQUEST_SIZE) {
+						LOGGER.debug("请求数量超过最大等待数量：{}-{}", this.downloadPiece.getIndex(), this.sliceLock.get());
 						break;
 					}
 				}
 			}
-			this.countLock.incrementAndGet();
+			this.sliceLock.incrementAndGet();
 			final int begin = this.downloadPiece.position();
 			final int length = this.downloadPiece.length(); // 顺序不能调换
 			this.peerSubMessageHandler.request(index, begin, length);
@@ -434,7 +437,7 @@ public abstract class PeerConnect {
 			LOGGER.debug("选取Piece：{}-{}-{}", this.downloadPiece.getIndex(), this.downloadPiece.getBegin(), this.downloadPiece.getEnd());
 		}
 		// 设置状态
-		this.countLock.set(0);
+		this.sliceLock.set(0);
 		this.completeLock.set(false);
 	}
 	
