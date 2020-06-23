@@ -222,7 +222,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	 * 
 	 * @throws NetException 网络异常
 	 */
-	private void sendPacket(ByteBuffer buffer) throws NetException {
+	private void sendPacket(ByteBuffer buffer) {
 		if(!this.available()) {
 			LOGGER.debug("UTP消息发送失败：通道不可用");
 			return;
