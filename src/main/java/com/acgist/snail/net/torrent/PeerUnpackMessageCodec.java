@@ -20,7 +20,7 @@ import com.acgist.snail.system.exception.PacketSizeException;
 public final class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteBuffer> {
 
 	/**
-	 * <p>int类型数据字符长度</p>
+	 * <p>int类型数据字符长度：{@value}</p>
 	 */
 	private static final int INT_BYTE_LENGTH = 4;
 	
