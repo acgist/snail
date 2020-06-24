@@ -19,7 +19,7 @@ public final class UpnpResponse {
 	 * <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
 	 * 	<s:Body>
 	 * 		<u:GetExternalIPAddressResponse xmlns:u="urn:schemas-upnp-org:service:WANIPConnection:1">
-	 * 			<NewExternalIPAddress>219.137.140.38</NewExternalIPAddress>
+	 * 			<NewExternalIPAddress>114.114.114.114</NewExternalIPAddress>
 	 * 		</u:GetExternalIPAddressResponse>
 	 * 	</s:Body>
 	 * </s:Envelope>

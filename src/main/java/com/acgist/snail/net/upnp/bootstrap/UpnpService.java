@@ -119,8 +119,7 @@ public final class UpnpService {
 				this.available = true;
 				this.remapping = true; // 控制地址重新映射
 				this.serviceType = serviceType;
-				this.controlUrl = controlUrls.get(index);
-				this.controlUrl();
+				this.buildControlUrl(controlUrls.get(index));
 				LOGGER.info("UPNP服务类型：{}", this.serviceType);
 				LOGGER.info("UPNP控制地址：{}", this.controlUrl);
 				break;
@@ -197,7 +196,7 @@ public final class UpnpService {
 	}
 	
 	/**
-	 * <p>端口映射：AddPortMapping</p>
+	 * <p>添加端口映射：AddPortMapping</p>
 	 * <p>请求头：SOAPAction:"urn:schemas-upnp-org:service:WANIPConnection:1#AddPortMapping"</p>
 	 * 
 	 * @param port 内网端口
@@ -263,7 +262,7 @@ public final class UpnpService {
 				LOGGER.warn("UPNP端口映射失败：外网IP地址为内网地址");
 			} else {
 				SystemConfig.setExternalIpAddress(externalIpAddress);
-				addMapping();
+				this.addMapping();
 			}
 		}
 	}
@@ -288,9 +287,11 @@ public final class UpnpService {
 	/**
 	 * <p>设置控制地址</p>
 	 * 
+	 * @param controlUrl 控制地址（相对路径）
+	 * 
 	 * @throws NetException 网络异常
 	 */
-	private void controlUrl() throws NetException {
+	private void buildControlUrl(String controlUrl) throws NetException {
 		URL url = null;
 		try {
 			url = new URL(this.location);
@@ -301,7 +302,7 @@ public final class UpnpService {
 		builder.append(url.getProtocol())
 			.append("://")
 			.append(url.getAuthority())
-			.append(this.controlUrl);
+			.append(controlUrl);
 		this.controlUrl = builder.toString();
 	}
 	
