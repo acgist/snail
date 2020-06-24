@@ -16,11 +16,11 @@ public final class UpnpRequest {
 	/**
 	 * <p>SOAP协议：{@value}</p>
 	 */
-	private static final String NAMESPACE_URI = "http://schemas.xmlsoap.org/soap/envelope/";
+	private static final String NAMESPACE_ENVELOPE = "http://schemas.xmlsoap.org/soap/envelope/";
 	/**
 	 * <p>SOAP协议：{@value}</p>
 	 */
-	private static final String ENCODING_STYLE = "http://schemas.xmlsoap.org/soap/encoding/";
+	private static final String NAMESPANCE_ENCODING = "http://schemas.xmlsoap.org/soap/encoding/";
 	
 	/**
 	 * <p>XML工具</p>
@@ -33,15 +33,25 @@ public final class UpnpRequest {
 	/**
 	 * <p>服务类型</p>
 	 */
-	private String serviceType;
+	private final String serviceType;
 	
-	private UpnpRequest() {
+	/**
+	 * @param serviceType 服务类型
+	 */
+	private UpnpRequest(String serviceType) {
+		this.serviceType = serviceType;
 	}
 	
+	/**
+	 * <p>创建请求</p>
+	 * 
+	 * @param serviceType 服务类型
+	 * 
+	 * @return 请求
+	 */
 	public static final UpnpRequest newRequest(String serviceType) {
-		final UpnpRequest request = new UpnpRequest();
+		final UpnpRequest request = new UpnpRequest(serviceType);
 		request.build();
-		request.serviceType = serviceType;
 		return request;
 	}
 	
@@ -50,8 +60,8 @@ public final class UpnpRequest {
 	 */
 	private void build() {
 		this.xml = XML.build();
-		final Element envelope = this.xml.elementNS(xml.document(), "s:Envelope", NAMESPACE_URI);
-		envelope.setAttributeNS(NAMESPACE_URI, "encodingStyle", ENCODING_STYLE);
+		final Element envelope = this.xml.elementNS(xml.document(), "s:Envelope", NAMESPACE_ENVELOPE);
+		envelope.setAttributeNS(NAMESPACE_ENVELOPE, "encodingStyle", NAMESPANCE_ENCODING);
 		this.body = this.xml.element(envelope, "s:Body");
 	}
 
@@ -72,7 +82,7 @@ public final class UpnpRequest {
 	 */
 	public String buildGetExternalIPAddress() {
 		this.xml.elementNS(this.body, "u:GetExternalIPAddress", this.serviceType);
-		return xml();
+		return this.xml();
 	}
 	
 	/**
@@ -102,7 +112,7 @@ public final class UpnpRequest {
 		this.xml.element(mapping, "NewRemoteHost", "");
 		this.xml.element(mapping, "NewExternalPort", String.valueOf(portExt));
 		this.xml.element(mapping, "NewProtocol", protocol.name().toUpperCase());
-		return xml();
+		return this.xml();
 	}
 	
 	/**
@@ -144,7 +154,7 @@ public final class UpnpRequest {
 		this.xml.element(mapping, "NewEnabled", "1");
 		this.xml.element(mapping, "NewPortMappingDescription", "Snail");
 		this.xml.element(mapping, "NewLeaseDuration", "0");
-		return xml();
+		return this.xml();
 	}
 	
 	/**
@@ -174,7 +184,7 @@ public final class UpnpRequest {
 		this.xml.element(mapping, "NewRemoteHost", "");
 		this.xml.element(mapping, "NewExternalPort", String.valueOf(portExt));
 		this.xml.element(mapping, "NewProtocol", protocol.name().toUpperCase());
-		return xml();
+		return this.xml();
 	}
 
 	/**

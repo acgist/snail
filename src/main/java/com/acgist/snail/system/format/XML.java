@@ -125,7 +125,7 @@ public final class XML {
 	 * @return 节点
 	 */
 	public Element element(Node node, String name) {
-		return element(node, name, null);
+		return this.element(node, name, null);
 	}
 	
 	/**
@@ -138,7 +138,7 @@ public final class XML {
 	 * @return 节点
 	 */
 	public Element element(Node node, String name, String text) {
-		return elementNS(node, name, text, null);
+		return this.elementNS(node, name, text, null);
 	}
 	
 	/**
@@ -151,7 +151,7 @@ public final class XML {
 	 * @return 节点
 	 */
 	public Element elementNS(Node node, String name, String namespaceUri) {
-		return elementNS(node, name, null, namespaceUri);
+		return this.elementNS(node, name, null, namespaceUri);
 	}
 	
 	/**
@@ -221,7 +221,7 @@ public final class XML {
 	 * @return XML
 	 */
 	public String xml() {
-		return xml(false);
+		return this.xml(false);
 	}
 	
 	/**
