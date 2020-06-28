@@ -68,13 +68,12 @@ public final class TorrentBuilder {
 	 * <p>创建种子信息</p>
 	 * 
 	 * @return 种子信息
-	 * 
-	 * TODO：由于这里不能获取到原始的编码，所以可能出现乱码。
 	 */
 	private Map<String, Object> buildFileInfo() {
 		final Map<String, Object> data = new LinkedHashMap<>();
 		data.put(Torrent.ATTR_COMMENT, SystemConfig.getSource());
 		data.put(Torrent.ATTR_COMMENT_UTF8, SystemConfig.getSource());
+		// TODO：这里编码可能出现乱码
 		data.put(Torrent.ATTR_ENCODING, SystemConfig.DEFAULT_CHARSET);
 		data.put(Torrent.ATTR_CREATED_BY, SystemConfig.getNameEnAndVersion());
 		data.put(Torrent.ATTR_CREATION_DATE, DateUtils.unixTimestamp());

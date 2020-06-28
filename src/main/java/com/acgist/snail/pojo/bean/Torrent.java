@@ -223,7 +223,7 @@ public final class Torrent {
 					return null;
 				}
 			})
-			.filter(value -> value != null)
+			.filter(Objects::nonNull)
 			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new));
 	}
 
