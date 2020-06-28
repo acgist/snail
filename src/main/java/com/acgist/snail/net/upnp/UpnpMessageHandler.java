@@ -52,6 +52,8 @@ public final class UpnpMessageHandler extends UdpMessageHandler implements IMess
 		try {
 			if(StringUtils.isNotEmpty(location)) {
 				UpnpService.getInstance().load(location).mapping();
+			} else {
+				LOGGER.debug("UPNP没有描述文件地址：{}", message);
 			}
 		} catch (NetException e) {
 			LOGGER.error("UPNP端口映射异常：{}", location, e);
