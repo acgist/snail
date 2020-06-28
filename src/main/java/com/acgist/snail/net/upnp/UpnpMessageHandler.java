@@ -45,7 +45,7 @@ public final class UpnpMessageHandler extends UdpMessageHandler implements IMess
 				.anyMatch(value -> StringUtils.startsWith(value, UpnpServer.UPNP_ROOT_DEVICE))
 			);
 		if(!support) {
-			LOGGER.info("UPNP设置失败（驱动）：{}", message);
+			LOGGER.info("UPNP设置失败（不支持的驱动）：{}", message);
 			return;
 		}
 		final String location = headers.header(HEADER_LOCATION);
