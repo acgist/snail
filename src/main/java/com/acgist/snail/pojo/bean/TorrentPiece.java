@@ -62,10 +62,7 @@ public final class TorrentPiece {
 	 */
 	private int position;
 	
-	/**
-	 * @see #newInstance(byte[], long, int, int, int, boolean)
-	 */
-	private TorrentPiece(byte[] hash, long pieceLength, int index, int begin, int end, boolean verify) {
+	private TorrentPiece(long pieceLength, int index, int begin, int end, byte[] hash, boolean verify) {
 		this.pieceLength = pieceLength;
 		this.index = index;
 		this.begin = begin;
@@ -81,17 +78,17 @@ public final class TorrentPiece {
 	/**
 	 * <p>Piece下载信息</p>
 	 * 
-	 * @param hash 校验数据
 	 * @param pieceLength Piece大小
 	 * @param index Piece索引
 	 * @param begin Piece开始偏移
 	 * @param end Piece结束偏移
+	 * @param hash 校验数据
 	 * @param verify 是否校验
 	 * 
 	 * @return Piece下载信息
 	 */
-	public static final TorrentPiece newInstance(byte[] hash, long pieceLength, int index, int begin, int end, boolean verify) {
-		return new TorrentPiece(hash, pieceLength, index, begin, end, verify);
+	public static final TorrentPiece newInstance(long pieceLength, int index, int begin, int end, byte[] hash, boolean verify) {
+		return new TorrentPiece(pieceLength, index, begin, end, hash, verify);
 	}
 	
 	/**
@@ -101,7 +98,7 @@ public final class TorrentPiece {
 	 * @return 开始偏移
 	 */
 	public long beginPos() {
-		return this.pieceLength * this.getIndex() + this.begin;
+		return this.pieceLength * this.index + this.begin;
 	}
 	
 	/**
@@ -111,7 +108,7 @@ public final class TorrentPiece {
 	 * @return 结束偏移
 	 */
 	public long endPos() {
-		return beginPos() + length;
+		return this.beginPos() + this.length;
 	}
 	
 	/**
@@ -124,8 +121,8 @@ public final class TorrentPiece {
 	 * @return 是否包含
 	 */
 	public boolean contain(long fileBeginPos, long fileEndPos) {
-		final long beginPos = beginPos();
-		final long endPos = endPos();
+		final long beginPos = this.beginPos();
+		final long endPos = this.endPos();
 		if(endPos <= fileBeginPos) {
 			return false;
 		}
@@ -191,13 +188,13 @@ public final class TorrentPiece {
 	 * @param begin 数据开始位移：整个Piece内偏移
 	 * @param bytes 数据
 	 * 
-	 * @return true-完成；false-未完成；
+	 * @return true-完成；false-没有完成；
 	 */
 	public boolean write(final int begin, final byte[] bytes) {
 		synchronized (this) {
 			System.arraycopy(bytes, 0, this.data, begin - this.begin, bytes.length);
 			this.size += bytes.length;
-			return complete();
+			return this.complete();
 		}
 	}
 	
@@ -246,25 +243,59 @@ public final class TorrentPiece {
 		}
 		return true;
 	}
-	
+
+	/**
+	 * <p>获取Piece大小</p>
+	 * 
+	 * @return Piece大小
+	 */
+	public long getPieceLength() {
+		return this.pieceLength;
+	}
+
+	/**
+	 * <p>获取Piece索引</p>
+	 * 
+	 * @return Piece索引
+	 */
 	public int getIndex() {
-		return index;
+		return this.index;
 	}
 
+	/**
+	 * <p>获取Piece开始偏移</p>
+	 * 
+	 * @return Piece开始偏移
+	 */
 	public int getBegin() {
-		return begin;
+		return this.begin;
 	}
 
+	/**
+	 * <p>获取Piece结束偏移</p>
+	 * 
+	 * @return Piece结束偏移
+	 */
 	public int getEnd() {
-		return end;
+		return this.end;
 	}
 
+	/**
+	 * <p>获取数据长度</p>
+	 * 
+	 * @return 数据长度
+	 */
 	public int getLength() {
-		return length;
+		return this.length;
 	}
 
+	/**
+	 * <p>获取数据</p>
+	 * 
+	 * @return 数据
+	 */
 	public byte[] getData() {
-		return data;
+		return this.data;
 	}
 
 }

@@ -132,20 +132,21 @@ public final class MagnetBuilder {
 	 * 
 	 * @throws DownloadException 下载异常
 	 */
-	private void xt(String value) throws DownloadException {
+	private void xt(final String value) throws DownloadException {
 		if(StringUtils.isEmpty(value)) {
 			return;
 		}
-		final String xt = Magnet.Type.BTIH.xt();
-		if(!value.startsWith(xt)) {
+		final String prefix = Magnet.Type.BTIH.prefix();
+		if(!value.startsWith(prefix)) {
 			LOGGER.debug("磁力链接不支持的XT：{}", value);
 			return;
 		}
-		String hash = value.substring(xt.length());
+		String hash = value.substring(prefix.length());
 		// 32位磁力链接转为40位磁力链接
 		if(Protocol.Type.verifyMagnetHash32(hash)) {
 			hash = InfoHash.newInstance(hash).infoHashHex();
 		}
+		this.magnet.setXt(value);
 		this.magnet.setHash(hash);
 		this.magnet.setType(Magnet.Type.BTIH);
 	}

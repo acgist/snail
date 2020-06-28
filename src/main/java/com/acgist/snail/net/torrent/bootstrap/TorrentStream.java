@@ -321,7 +321,7 @@ public final class TorrentStream {
 				verify = false;
 				end = lastPiecePos();
 			}
-			return TorrentPiece.newInstance(this.torrentStreamGroup.pieceHash(index), this.pieceLength, index, begin, end, verify);
+			return TorrentPiece.newInstance(this.pieceLength, index, begin, end, this.torrentStreamGroup.pieceHash(index), verify);
 		}
 	}
 

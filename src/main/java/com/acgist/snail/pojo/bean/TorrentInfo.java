@@ -238,106 +238,236 @@ public final class TorrentInfo {
 	
 	// ============== GETTER SETTER ============== //
 	
+	/**
+	 * <p>获取名称</p>
+	 * 
+	 * @return 名称
+	 */
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
+	/**
+	 * <p>设置名称</p>
+	 * 
+	 * @param name 名称
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * <p>获取名称UTF8</p>
+	 * 
+	 * @return 名称UTF8
+	 */
 	public String getNameUtf8() {
-		return nameUtf8;
+		return this.nameUtf8;
 	}
 
+	/**
+	 * <p>设置名称UTF8</p>
+	 * 
+	 * @param nameUtf8 名称UTF8
+	 */
 	public void setNameUtf8(String nameUtf8) {
 		this.nameUtf8 = nameUtf8;
 	}
 
+	/**
+	 * <p>获取文件大小</p>
+	 * 
+	 * @return 文件大小
+	 */
 	public Long getLength() {
-		return length;
+		return this.length;
 	}
 
+	/**
+	 * <p>设置文件大小</p>
+	 * 
+	 * @param length 文件大小
+	 */
 	public void setLength(Long length) {
 		this.length = length;
 	}
 
+	/**
+	 * <p>获取ed2k</p>
+	 * 
+	 * @return ed2k
+	 */
 	public byte[] getEd2k() {
-		return ed2k;
+		return this.ed2k;
 	}
 	
+	/**
+	 * <p>设置ed2k</p>
+	 * 
+	 * @param ed2k ed2k
+	 */
 	public void setEd2k(byte[] ed2k) {
 		this.ed2k = ed2k;
 	}
 
+	/**
+	 * <p>获取filehash</p>
+	 * 
+	 * @return filehash
+	 */
 	public byte[] getFilehash() {
-		return filehash;
+		return this.filehash;
 	}
 
+	/**
+	 * <p>设置filehash</p>
+	 * 
+	 * @param filehash filehash
+	 */
 	public void setFilehash(byte[] filehash) {
 		this.filehash = filehash;
 	}
 
+	/**
+	 * <p>获取特征信息</p>
+	 * 
+	 * @return 特征信息
+	 */
 	public byte[] getPieces() {
-		return pieces;
+		return this.pieces;
 	}
 
+	/**
+	 * <p>设置特征信息</p>
+	 * 
+	 * @param pieces 特征信息
+	 */
 	public void setPieces(byte[] pieces) {
 		this.pieces = pieces;
 	}
 
+	/**
+	 * <p>获取发布者</p>
+	 * 
+	 * @return 发布者
+	 */
 	public String getPublisher() {
-		return publisher;
+		return this.publisher;
 	}
 
+	/**
+	 * <p>设置发布者</p>
+	 * 
+	 * @param publisher 发布者
+	 */
 	public void setPublisher(String publisher) {
 		this.publisher = publisher;
 	}
 
+	/**
+	 * <p>获取发布者UTF8</p>
+	 * 
+	 * @return 发布者UTF8
+	 */
 	public String getPublisherUtf8() {
-		return publisherUtf8;
+		return this.publisherUtf8;
 	}
 
+	/**
+	 * <p>设置发布者UTF8</p>
+	 * 
+	 * @param publisherUtf8 发布者UTF8
+	 */
 	public void setPublisherUtf8(String publisherUtf8) {
 		this.publisherUtf8 = publisherUtf8;
 	}
 
+	/**
+	 * <p>获取发布者URL</p>
+	 * 
+	 * @return 发布者URL
+	 */
 	public String getPublisherUrl() {
-		return publisherUrl;
+		return this.publisherUrl;
 	}
 
+	/**
+	 * <p>设置发布者URL</p>
+	 * 
+	 * @param publisherUrl 发布者URL
+	 */
 	public void setPublisherUrl(String publisherUrl) {
 		this.publisherUrl = publisherUrl;
 	}
 
+	/**
+	 * <p>获取发布者URL UTF8</p>
+	 * 
+	 * @return 发布者URL UTF8
+	 */
 	public String getPublisherUrlUtf8() {
-		return publisherUrlUtf8;
+		return this.publisherUrlUtf8;
 	}
 
+	/**
+	 * <p>设置发布者URL UTF8</p>
+	 * 
+	 * @param publisherUrlUtf8 发布者URL UTF8
+	 */
 	public void setPublisherUrlUtf8(String publisherUrlUtf8) {
 		this.publisherUrlUtf8 = publisherUrlUtf8;
 	}
 
+	/**
+	 * <p>获取私有种子</p>
+	 * 
+	 * @return 私有种子
+	 */
 	public Long getPrivateTorrent() {
-		return privateTorrent;
+		return this.privateTorrent;
 	}
 
+	/**
+	 * <p>设置私有种子</p>
+	 * 
+	 * @param privateTorrent 私有种子
+	 */
 	public void setPrivateTorrent(Long privateTorrent) {
 		this.privateTorrent = privateTorrent;
 	}
 
+	/**
+	 * <p>获取Piece大小</p>
+	 * 
+	 * @return Piece大小
+	 */
 	public Long getPieceLength() {
-		return pieceLength;
+		return this.pieceLength;
 	}
 
+	/**
+	 * <p>设置Piece大小</p>
+	 * 
+	 * @param pieceLength Piece大小
+	 */
 	public void setPieceLength(Long pieceLength) {
 		this.pieceLength = pieceLength;
 	}
 
+	/**
+	 * <p>获取文件列表</p>
+	 * 
+	 * @return 文件列表
+	 */
 	public List<TorrentFile> getFiles() {
-		return files;
+		return this.files;
 	}
 
+	/**
+	 * <p>设置文件列表</p>
+	 * 
+	 * @param files 文件列表
+	 */
 	public void setFiles(List<TorrentFile> files) {
 		this.files = files;
 	}

@@ -369,8 +369,9 @@ public abstract class PeerConnect {
 				}
 			}
 			this.sliceLock.incrementAndGet();
+			// 顺序不能调换：position、length
 			final int begin = this.downloadPiece.position();
-			final int length = this.downloadPiece.length(); // 顺序不能调换
+			final int length = this.downloadPiece.length();
 			this.peerSubMessageHandler.request(index, begin, length);
 			// 是否还有更多SLICE
 			if(!this.downloadPiece.haveMoreSlice()) {

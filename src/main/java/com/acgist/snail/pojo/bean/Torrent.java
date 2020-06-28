@@ -229,74 +229,164 @@ public final class Torrent {
 
 	// ============== GETTER SETTER ============== //
 	
+	/**
+	 * <p>获取注释</p>
+	 * 
+	 * @return 注释
+	 */
 	public String getComment() {
-		return comment;
+		return this.comment;
 	}
 
+	/**
+	 * <p>设置注释</p>
+	 * 
+	 * @param comment 注释
+	 */
 	public void setComment(String comment) {
 		this.comment = comment;
 	}
 
+	/**
+	 * <p>获取注释UTF8</p>
+	 * 
+	 * @return 注释UTF8
+	 */
 	public String getCommentUtf8() {
-		return commentUtf8;
+		return this.commentUtf8;
 	}
 
+	/**
+	 * <p>设置注释UTF8</p>
+	 * 
+	 * @param commentUtf8 注释UTF8
+	 */
 	public void setCommentUtf8(String commentUtf8) {
 		this.commentUtf8 = commentUtf8;
 	}
 
+	/**
+	 * <p>获取编码</p>
+	 * 
+	 * @return 编码
+	 */
 	public String getEncoding() {
-		return encoding;
+		return this.encoding;
 	}
 
+	/**
+	 * <p>设置编码</p>
+	 * 
+	 * @param encoding 编码
+	 */
 	public void setEncoding(String encoding) {
 		this.encoding = encoding;
 	}
 
+	/**
+	 * <p>获取创建者</p>
+	 * 
+	 * @return 创建者
+	 */
 	public String getCreatedBy() {
-		return createdBy;
+		return this.createdBy;
 	}
 
+	/**
+	 * <p>设置创建者</p>
+	 * 
+	 * @param createdBy 创建者
+	 */
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
 
+	/**
+	 * <p>获取创建时间</p>
+	 * 
+	 * @return 创建时间
+	 */
 	public Long getCreationDate() {
-		return creationDate;
+		return this.creationDate;
 	}
 
+	/**
+	 * <p>设置创建时间</p>
+	 * 
+	 * @param creationDate 创建时间
+	 */
 	public void setCreationDate(Long creationDate) {
 		this.creationDate = creationDate;
 	}
 
+	/**
+	 * <p>获取Tracker服务器</p>
+	 * 
+	 * @return Tracker服务器
+	 */
 	public String getAnnounce() {
-		return announce;
+		return this.announce;
 	}
 
+	/**
+	 * <p>设置Tracker服务器</p>
+	 * 
+	 * @param announce Tracker服务器
+	 */
 	public void setAnnounce(String announce) {
 		this.announce = announce;
 	}
 
+	/**
+	 * <p>获取Tracker服务器列表</p>
+	 * 
+	 * @return Tracker服务器列表
+	 */
 	public List<String> getAnnounceList() {
-		return announceList;
+		return this.announceList;
 	}
 
+	/**
+	 * <p>设置Tracker服务器列表</p>
+	 * 
+	 * @param announceList Tracker服务器列表
+	 */
 	public void setAnnounceList(List<String> announceList) {
 		this.announceList = announceList;
 	}
 
+	/**
+	 * <p>获取文件信息</p>
+	 * 
+	 * @return 文件信息
+	 */
 	public TorrentInfo getInfo() {
-		return info;
+		return this.info;
 	}
 
+	/**
+	 * <p>设置文件信息</p>
+	 * 
+	 * @param info 文件信息
+	 */
 	public void setInfo(TorrentInfo info) {
 		this.info = info;
 	}
 
+	/**
+	 * <p>获取DHT节点</p>
+	 * 
+	 * @return DHT节点
+	 */
 	public Map<String, Integer> getNodes() {
-		return nodes;
+		return this.nodes;
 	}
 
+	/**
+	 * <p>设置DHT节点</p>
+	 * 
+	 * @param nodes DHT节点
+	 */
 	public void setNodes(Map<String, Integer> nodes) {
 		this.nodes = nodes;
 	}

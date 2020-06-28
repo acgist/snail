@@ -29,7 +29,7 @@ public final class InfoHash {
 	 */
 	private final byte[] infoHash;
 	/**
-	 * <p>HTTP传输编码种子info数据Hash</p>
+	 * <p>种子info数据Hash（HTTP传输编码）</p>
 	 * 
 	 * @see #infoHash
 	 */
@@ -37,7 +37,7 @@ public final class InfoHash {
 	
 	private InfoHash(byte[] infoHash) {
 		this.infoHash = infoHash;
-		this.infoHashUrl = buildInfoHashUrl();
+		this.infoHashUrl = this.buildInfoHashUrl();
 	}
 
 	/**
@@ -64,7 +64,7 @@ public final class InfoHash {
 	 * @throws DownloadException 下载异常
 	 */
 	public static final InfoHash newInstance(String hash) throws DownloadException {
-		if(hash == null) {
+		if(StringUtils.isEmpty(hash)) {
 			throw new DownloadException("不支持的Hash：" + hash);
 		}
 		hash = hash.trim();
@@ -89,24 +89,49 @@ public final class InfoHash {
 //		return PeerUtils.urlEncode(this.infoHashHex());
 	}
 	
+	/**
+	 * <p>获取种子info数据长度</p>
+	 * 
+	 * @return 种子info数据长度
+	 */
 	public int size() {
 		return this.size;
 	}
 	
+	/**
+	 * <p>设置种子info数据长度</p>
+	 * 
+	 * @param size 种子info数据长度
+	 */
 	public void size(int size) {
 		this.size = size;
 	}
 	
+	/**
+	 * <p>获取种子info数据</p>
+	 * 
+	 * @return 种子info数据
+	 */
 	public byte[] info() {
 		return this.info;
 	}
 	
+	/**
+	 * <p>设置种子info数据</p>
+	 * 
+	 * @param info 种子info数据
+	 */
 	public void info(byte[] info) {
 		this.info = info;
 	}
 
+	/**
+	 * <p>获取种子info数据Hash</p>
+	 * 
+	 * @return 种子info数据Hash
+	 */
 	public byte[] infoHash() {
-		return infoHash;
+		return this.infoHash;
 	}
 	
 	/**
@@ -119,9 +144,9 @@ public final class InfoHash {
 	}
 	
 	/**
-	 * <p>获取HTTP传输编码种子info数据Hash</p>
+	 * <p>获取种子info数据Hash（HTTP传输编码）</p>
 	 * 
-	 * @return HTTP传输编码种子info数据Hash
+	 * @return 种子info数据Hash（HTTP传输编码）
 	 */
 	public String infoHashUrl() {
 		return this.infoHashUrl;
