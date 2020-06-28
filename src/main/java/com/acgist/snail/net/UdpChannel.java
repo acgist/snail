@@ -22,7 +22,7 @@ public interface UdpChannel {
 	 */
 	int PORT_AUTO = -1;
 	/**
-	 * <p>本机地址：{@value}</p>
+	 * <p>本机地址</p>
 	 */
 	String ADDR_LOCAL = null;
 	/**
