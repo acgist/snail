@@ -25,8 +25,8 @@ import com.acgist.snail.system.exception.NetException;
  * </table>
  * <p>注意编码解码的逻辑顺序（防止多个处理器结合使用时出现错误）</p>
  * 
- * @param <T> 输入类型
- * @param <X> 输出类型
+ * @param <T> 输入消息泛型
+ * @param <X> 输出消息泛型
  * 
  * @author acgist
  * @since 1.1.1

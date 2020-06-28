@@ -22,13 +22,23 @@ import com.acgist.snail.system.exception.NetException;
  */
 public abstract class WebSocketClient<T extends WebSocketMessageHandler> extends ClientMessageHandlerAdapter<T> implements IMessageHandler {
 
+	/**
+	 * <p>WebSocket客户端</p>
+	 * 
+	 * @param url 地址
+	 * @param connectTimeout 超时时间（连接）
+	 * @param receiveTimeout 超时时间（接收）
+	 * @param handler WebSocket消息代理
+	 * 
+	 * @throws NetException 网络异常
+	 */
 	protected WebSocketClient(String url, int connectTimeout, int receiveTimeout, T handler) throws NetException {
 		super(handler);
 		this.buildWebSocket(url, connectTimeout, receiveTimeout);
 	}
 	
 	/**
-	 * <p>创建WebSocket</p>
+	 * <p>WebSocket客户端</p>
 	 * 
 	 * @param url 地址
 	 * @param connectTimeout 超时时间（连接）

@@ -28,6 +28,15 @@ public final class TcpAcceptHandler<T extends TcpMessageHandler> implements Comp
 		this.clazz = clazz;
 	}
 	
+	/**
+	 * <p>创建TCP客户端接收代理</p>
+	 * 
+	 * @param <T> 消息代理泛型
+	 * 
+	 * @param clazz 消息代理类型
+	 * 
+	 * @return TCP客户端接收代理
+	 */
 	public static final <T extends TcpMessageHandler> TcpAcceptHandler<T> newInstance(Class<T> clazz) {
 		return new TcpAcceptHandler<>(clazz);
 	}

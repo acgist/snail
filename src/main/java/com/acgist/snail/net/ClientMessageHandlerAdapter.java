@@ -8,7 +8,7 @@ import com.acgist.snail.system.exception.NetException;
 /**
  * <p>Client消息代理适配器</p>
  * 
- * @param <T> 消息代理
+ * @param <T> 消息代理泛型
  * 
  * @author acgist
  * @since 1.1.0
