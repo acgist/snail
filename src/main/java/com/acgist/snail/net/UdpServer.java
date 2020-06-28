@@ -33,6 +33,9 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements UdpChanne
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpServer.class);
 	
+	/**
+	 * <p>UDP服务端消息处理器线程</p>
+	 */
 	private static final ExecutorService EXECUTOR;
 	
 	static {
@@ -57,28 +60,31 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements UdpChanne
 	protected final DatagramChannel channel;
 
 	/**
-	 * <p>默认随机端口、本地地址、不重用地址</p>
+	 * <p>UDP服务端</p>
+	 * <p>通道属性：随机端口、本地地址、不重用地址</p>
 	 * 
 	 * @param name 服务端名称
 	 * @param handler 消息代理
 	 */
 	protected UdpServer(String name, T handler) {
-		this(PORT_AUTO, ADDR_LOCAL, ADDR_USENEW, name, handler);
+		this(PORT_AUTO, ADDR_LOCAL, ADDR_REUSE_NOT, name, handler);
 	}
 	
 	/**
-	 * <p>默认本地地址、不重用地址</p>
+	 * <p>UDP服务端</p>
+	 * <p>通道属性：本地地址、不重用地址</p>
 	 * 
 	 * @param port 端口
 	 * @param name 服务端名称
 	 * @param handler 消息代理
 	 */
 	protected UdpServer(int port, String name, T handler) {
-		this(port, ADDR_LOCAL, ADDR_USENEW, name, handler);
+		this(port, ADDR_LOCAL, ADDR_REUSE_NOT, name, handler);
 	}
 	
 	/**
-	 * <p>默认不重用地址</p>
+	 * <p>UDP服务端</p>
+	 * <p>通道属性：不重用地址</p>
 	 * 
 	 * @param port 端口
 	 * @param host 地址
@@ -86,11 +92,12 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements UdpChanne
 	 * @param handler 消息代理
 	 */
 	protected UdpServer(int port, String host, String name, T handler) {
-		this(port, host, ADDR_USENEW, name, handler);
+		this(port, host, ADDR_REUSE_NOT, name, handler);
 	}
 	
 	/**
-	 * <p>默认本地地址</p>
+	 * <p>UDP服务端</p>
+	 * <p>通道属性：本地地址</p>
 	 * 
 	 * @param port 端口
 	 * @param reuse 是否重用地址
@@ -102,6 +109,8 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements UdpChanne
 	}
 	
 	/**
+	 * <p>UDP服务端</p>
+	 * 
 	 * @param port 端口
 	 * @param host 地址
 	 * @param reuse 是否重用地址
@@ -193,6 +202,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements UdpChanne
 		while (this.channel.isOpen()) {
 			this.receive();
 		}
+		LOGGER.debug("UDP Server退出消息轮询：{}", this.name);
 	}
 	
 	/**
@@ -219,8 +229,9 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements UdpChanne
 					iterator.remove(); // 移除已经取出来的信息
 					if (selectionKey.isValid() && selectionKey.isReadable()) {
 						final ByteBuffer buffer = ByteBuffer.allocate(SystemConfig.UDP_BUFFER_LENGTH);
-						// 单例客户端通道=服务端通道，TCP需要这样获取不同的通道。
+						// 服务器多例：获取不同通道
 						// final DatagramChannel channel = (DatagramChannel) selectionKey.channel();
+						// 服务端单例：客户端通道=服务端通道
 						final InetSocketAddress socketAddress = (InetSocketAddress) this.channel.receive(buffer);
 						this.handler.handle(this.channel, buffer, socketAddress);
 					}
@@ -232,6 +243,8 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements UdpChanne
 	}
 	
 	/**
+	 * <p>获取UDP通道</p>
+	 * 
 	 * @return UDP通道
 	 */
 	public DatagramChannel channel() {

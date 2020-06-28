@@ -22,28 +22,28 @@ public interface UdpChannel {
 	 */
 	int PORT_AUTO = -1;
 	/**
-	 * <p>本机地址</p>
+	 * <p>本机地址：{@value}</p>
 	 */
 	String ADDR_LOCAL = null;
 	/**
-	 * <p>重用地址</p>
+	 * <p>重用地址：{@value}</p>
 	 */
 	boolean ADDR_REUSE = true;
 	/**
-	 * <p>不重用地址</p>
+	 * <p>不重用地址：{@value}</p>
 	 */
-	boolean ADDR_USENEW = false;
+	boolean ADDR_REUSE_NOT = false;
 	
 	/**
 	 * <p>创建UDP通道</p>
-	 * <p>通道属性：本机地址、随机端口、不重用地址</p>
+	 * <p>通道属性：随机端口、本机地址、不重用地址</p>
 	 * 
 	 * @return UDP通道
 	 * 
 	 * @throws NetException 网络异常
 	 */
-	public default DatagramChannel buildUdpChannel() throws NetException {
-		return buildUdpChannel(PORT_AUTO, ADDR_LOCAL, ADDR_USENEW);
+	default DatagramChannel buildUdpChannel() throws NetException {
+		return this.buildUdpChannel(PORT_AUTO, ADDR_LOCAL, ADDR_REUSE_NOT);
 	}
 	
 	/**
@@ -56,8 +56,8 @@ public interface UdpChannel {
 	 * 
 	 * @throws NetException 网络异常
 	 */
-	public default DatagramChannel buildUdpChannel(int port) throws NetException {
-		return buildUdpChannel(port, ADDR_LOCAL, ADDR_USENEW);
+	default DatagramChannel buildUdpChannel(int port) throws NetException {
+		return this.buildUdpChannel(port, ADDR_LOCAL, ADDR_REUSE_NOT);
 	}
 	
 	/**
@@ -71,8 +71,8 @@ public interface UdpChannel {
 	 * 
 	 * @throws NetException 网络异常
 	 */
-	public default DatagramChannel buildUdpChannel(int port, String host) throws NetException {
-		return buildUdpChannel(port, host, ADDR_USENEW);
+	default DatagramChannel buildUdpChannel(int port, String host) throws NetException {
+		return this.buildUdpChannel(port, host, ADDR_REUSE_NOT);
 	}
 	
 	/**
@@ -86,8 +86,8 @@ public interface UdpChannel {
 	 * 
 	 * @throws NetException 网络异常
 	 */
-	public default DatagramChannel buildUdpChannel(int port, boolean reuse) throws NetException {
-		return buildUdpChannel(port, ADDR_LOCAL, reuse);
+	default DatagramChannel buildUdpChannel(int port, boolean reuse) throws NetException {
+		return this.buildUdpChannel(port, ADDR_LOCAL, reuse);
 	}
 	
 	/**
@@ -95,17 +95,18 @@ public interface UdpChannel {
 	 * 
 	 * @param port 端口：{@linkplain #PORT_AUTO 随机端口}
 	 * @param host 地址：{@linkplain #ADDR_LOCAL 本机地址}
-	 * @param reuse 是否重用地址：{@linkplain #ADDR_REUSE 重用}、{@linkplain #ADDR_USENEW 不重用}
+	 * @param reuse 是否重用地址：{@linkplain #ADDR_REUSE 重用}、{@linkplain #ADDR_REUSE_NOT 不重用}
 	 * 
 	 * @return UDP通道
 	 * 
 	 * @throws NetException 网络异常
 	 */
-	public default DatagramChannel buildUdpChannel(int port, String host, boolean reuse) throws NetException {
+	default DatagramChannel buildUdpChannel(int port, String host, boolean reuse) throws NetException {
 		boolean ok = true;
 		DatagramChannel channel = null;
 		try {
 //			channel = DatagramChannel.open();
+			// TODO：IPv6
 			channel = DatagramChannel.open(StandardProtocolFamily.INET); // IPv4
 			channel.configureBlocking(false); // 不阻塞
 			if(reuse) {
