@@ -4,7 +4,6 @@ import com.acgist.snail.net.UdpServer;
 
 /**
  * <p>UPNP服务端</p>
- * <p>不监听UPNP端口：防止收到很多其他应用消息</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -33,6 +32,7 @@ public final class UpnpServer extends UdpServer<UpnpAcceptHandler> {
 	public static final String UPNP_ROOT_DEVICE = "upnp:rootdevice";
 	
 	private UpnpServer() {
+		// 不监听UPNP端口：防止收到很多其他应用消息
 		super("UPNP Server", UpnpAcceptHandler.getInstance());
 		this.join(UPNP_TTL, UPNP_HOST);
 		this.handle();
