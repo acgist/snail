@@ -20,7 +20,7 @@ import javafx.stage.Stage;
 /**
  * <p>窗口</p>
  * 
- * @param <T> 窗口控制器
+ * @param <T> 控制器泛型
  * 
  * @author acgist
  * @since 1.0.0

@@ -10,6 +10,6 @@ import com.acgist.snail.net.ws.WebSocketMessageHandler;
  * @author acgist
  * @since 1.2.0
  */
-public class TrackerMessageHandler extends WebSocketMessageHandler {
+public final class TrackerMessageHandler extends WebSocketMessageHandler {
 
 }

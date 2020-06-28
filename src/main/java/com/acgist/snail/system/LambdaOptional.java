@@ -4,7 +4,7 @@ package com.acgist.snail.system;
  * <p>Lambda表达式工具</p>
  * <p>用来传递数据</p>
  * 
- * @param <T> 数据类型
+ * @param <T> 数据泛型
  * 
  * @author acgist
  * @since 1.2.0
@@ -26,7 +26,7 @@ public final class LambdaOptional<T> {
 	/**
 	 * <p>获取工具对象</p>
 	 * 
-	 * @param <T> 数据类型
+	 * @param <T> 数据泛型
 	 * 
 	 * @return 工具对象
 	 */
@@ -37,7 +37,7 @@ public final class LambdaOptional<T> {
 	/**
 	 * <p>获取工具对象</p>
 	 * 
-	 * @param <T> 数据类型
+	 * @param <T> 数据泛型
 	 * 
 	 * @param t 数据
 	 * 

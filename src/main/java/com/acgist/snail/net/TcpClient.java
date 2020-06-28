@@ -50,6 +50,13 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 	 */
 	private int timeout;
 	
+	/**
+	 * <p>TCP客户端</p>
+	 * 
+	 * @param name 客户端名称
+	 * @param timeout 超时时间
+	 * @param handler 消息代理
+	 */
 	protected TcpClient(String name, int timeout, T handler) {
 		super(handler);
 		this.name = name;

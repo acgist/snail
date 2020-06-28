@@ -48,6 +48,12 @@ public abstract class TcpServer<T extends TcpMessageHandler> {
 	 */
 	private AsynchronousServerSocketChannel server;
 	
+	/**
+	 * <p>TCP服务端</p>
+	 * 
+	 * @param name 服务端名称
+	 * @param clazz 消息代理类型
+	 */
 	protected TcpServer(String name, Class<T> clazz) {
 		this.name = name;
 		this.clazz = clazz;

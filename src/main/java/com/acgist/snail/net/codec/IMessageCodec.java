@@ -8,7 +8,7 @@ import com.acgist.snail.system.exception.NetException;
 /**
  * <p>消息处理器接口</p>
  * 
- * @param <T> 输入类型
+ * @param <T> 输入消息泛型
  * 
  * @author acgist
  * @since 1.1.1
