@@ -68,7 +68,7 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessa
 		} catch (NetException e) {
 			LOGGER.error("打开UDP客户端异常", e);
 		}
-		return open(channel);
+		return this.open(channel);
 	}
 
 	/**

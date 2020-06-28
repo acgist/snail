@@ -31,7 +31,7 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	/**
 	 * <p>是否关闭</p>
 	 */
-	private boolean close = false;
+	private volatile boolean close = false;
 	/**
 	 * <p>Socket</p>
 	 */
