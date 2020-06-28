@@ -151,42 +151,92 @@ public final class TorrentFile {
 
 	// ==============GETTER SETTER============== //
 	
+	/**
+	 * <p>获取文件大小</p>
+	 * 
+	 * @return 文件大小
+	 */
 	public Long getLength() {
-		return length;
+		return this.length;
 	}
 
+	/**
+	 * <p>设置文件大小</p>
+	 * 
+	 * @param length 文件大小
+	 */
 	public void setLength(Long length) {
 		this.length = length;
 	}
 
+	/**
+	 * <p>获取ed2k</p>
+	 * 
+	 * @return ed2k
+	 */
 	public byte[] getEd2k() {
-		return ed2k;
+		return this.ed2k;
 	}
 
+	/**
+	 * <p>设置ed2k</p>
+	 * 
+	 * @param ed2k ed2k
+	 */
 	public void setEd2k(byte[] ed2k) {
 		this.ed2k = ed2k;
 	}
 
+	/**
+	 * <p>获取filehash</p>
+	 * 
+	 * @return filehash
+	 */
 	public byte[] getFilehash() {
-		return filehash;
+		return this.filehash;
 	}
 
+	/**
+	 * <p>设置filehash</p>
+	 * 
+	 * @param filehash filehash
+	 */
 	public void setFilehash(byte[] filehash) {
 		this.filehash = filehash;
 	}
 
+	/**
+	 * <p>获取路径</p>
+	 * 
+	 * @return 路径
+	 */
 	public List<String> getPath() {
-		return path;
+		return this.path;
 	}
 
+	/**
+	 * <p>设置路径</p>
+	 * 
+	 * @param path 路径
+	 */
 	public void setPath(List<String> path) {
 		this.path = path;
 	}
 
+	/**
+	 * <p>获取路径UTF8</p>
+	 * 
+	 * @return 路径UTF8
+	 */
 	public List<String> getPathUtf8() {
-		return pathUtf8;
+		return this.pathUtf8;
 	}
 
+	/**
+	 * <p>设置路径UTF8</p>
+	 * 
+	 * @param pathUtf8 路径UTF8
+	 */
 	public void setPathUtf8(List<String> pathUtf8) {
 		this.pathUtf8 = pathUtf8;
 	}

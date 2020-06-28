@@ -17,8 +17,10 @@ open module com.acgist.snail {
 	exports com.acgist.snail.gui.event;
 	exports com.acgist.snail.net;
 	exports com.acgist.snail.pojo;
+	exports com.acgist.snail.pojo.bean;
 	exports com.acgist.snail.pojo.message;
 	exports com.acgist.snail.system;
+	exports com.acgist.snail.system.format;
 	exports com.acgist.snail.system.context;
 	exports com.acgist.snail.protocol;
 	exports com.acgist.snail.downloader;

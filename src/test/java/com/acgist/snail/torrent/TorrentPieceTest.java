@@ -12,7 +12,7 @@ public class TorrentPieceTest extends BaseTest {
 		final int pieceLength = 1024; // Piece长度
 		final int begin = 10; // 开始偏移
 		final int end = 20; // 结束偏移
-		final var piece = TorrentPiece.newInstance(null, pieceLength, 0, begin, end, false);
+		final var piece = TorrentPiece.newInstance(pieceLength, 0, begin, end, null, false);
 		final byte[] bytes = new byte[end - begin];
 		for (int index = begin; index < end; index++) {
 			bytes[index - begin] = (byte) index;
@@ -32,7 +32,7 @@ public class TorrentPieceTest extends BaseTest {
 		final int pieceLength = 1024;
 		final int begin = 10;
 		final int end = 20;
-		final var piece = TorrentPiece.newInstance(null, pieceLength, 0, begin, end, false);
+		final var piece = TorrentPiece.newInstance(pieceLength, 0, begin, end, null, false);
 		final byte[] bytes = new byte[end - begin];
 		for (int index = begin; index < end; index++) {
 			bytes[index - begin] = (byte) index;

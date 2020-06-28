@@ -39,16 +39,21 @@ public final class Magnet {
 		BITPRINT(	"urn:bitprint:");
 		
 		/**
-		 * <p>xt</p>
+		 * <p>XT前缀</p>
 		 */
-		private final String xt;
+		private final String prefix;
 		
-		private Type(String xt) {
-			this.xt = xt;
+		private Type(String prefix) {
+			this.prefix = prefix;
 		}
 		
-		public String xt() {
-			return this.xt;
+		/**
+		 * <p>获取XT前缀</p>
+		 * 
+		 * @return XT前缀
+		 */
+		public String prefix() {
+			return this.prefix;
 		}
 		
 	}
@@ -76,13 +81,15 @@ public final class Magnet {
 	 */
 	private List<String> tr;
 	/**
-	 * <p>类型</p>
-	 * <p>参考：xt</p>
+	 * <p>磁力链接类型</p>
+	 * 
+	 * @see Type
 	 */
 	private Type type;
 	/**
 	 * <p>BT：BitTorrent InfoHashHex</p>
-	 * <p>参考：xt</p>
+	 * 
+	 * @see Type
 	 */
 	private String hash;
 
@@ -108,65 +115,135 @@ public final class Magnet {
 		return this.type == Type.BTIH && StringUtils.isNotEmpty(this.hash);
 	}
 	
-	public Type getType() {
-		return type;
-	}
-
-	public void setType(Type type) {
-		this.type = type;
-	}
-
+	/**
+	 * <p>获取显示名称</p>
+	 * 
+	 * @return 显示名称
+	 */
 	public String getDn() {
-		return dn;
+		return this.dn;
 	}
 
+	/**
+	 * <p>设置显示名称</p>
+	 * 
+	 * @param dn 显示名称
+	 */
 	public void setDn(String dn) {
 		this.dn = dn;
 	}
 
-	public List<String> getTr() {
-		return tr;
-	}
-
-	public void setTr(List<String> tr) {
-		this.tr = tr;
-	}
-
+	/**
+	 * <p>获取资源URN</p>
+	 * 
+	 * @return 资源URN
+	 */
 	public String getXt() {
-		return xt;
+		return this.xt;
 	}
 
+	/**
+	 * <p>设置资源URN</p>
+	 * 
+	 * @param xt 资源URN
+	 */
 	public void setXt(String xt) {
 		this.xt = xt;
 	}
 
+	/**
+	 * <p>获取文件链接</p>
+	 * 
+	 * @return 文件链接
+	 */
 	public String getAs() {
-		return as;
+		return this.as;
 	}
 
+	/**
+	 * <p>设置文件链接</p>
+	 * 
+	 * @param as 文件链接
+	 */
 	public void setAs(String as) {
 		this.as = as;
 	}
 
+	/**
+	 * <p>获取绝对资源</p>
+	 * 
+	 * @return 绝对资源
+	 */
 	public String getXs() {
-		return xs;
+		return this.xs;
 	}
 
+	/**
+	 * <p>设置绝对资源</p>
+	 * 
+	 * @param xs 绝对资源
+	 */
 	public void setXs(String xs) {
 		this.xs = xs;
 	}
-
-	public String getHash() {
-		return hash;
+	
+	/**
+	 * <p>获取Tracker服务器列表</p>
+	 * 
+	 * @return Tracker服务器列表
+	 */
+	public List<String> getTr() {
+		return this.tr;
+	}
+	
+	/**
+	 * <p>设置Tracker服务器列表</p>
+	 * 
+	 * @param tr Tracker服务器列表
+	 */
+	public void setTr(List<String> tr) {
+		this.tr = tr;
+	}
+	
+	/**
+	 * <p>获取磁力链接类型</p>
+	 * 
+	 * @return 磁力链接类型
+	 */
+	public Type getType() {
+		return this.type;
+	}
+	
+	/**
+	 * <p>设置磁力链接类型</p>
+	 * 
+	 * @param type 磁力链接类型
+	 */
+	public void setType(Type type) {
+		this.type = type;
 	}
 
+	/**
+	 * <p>获取Hash</p>
+	 * 
+	 * @return Hash
+	 */
+	public String getHash() {
+		return this.hash;
+	}
+
+	/**
+	 * <p>设置Hash</p>
+	 * 
+	 * @param hash Hash
+	 */
 	public void setHash(String hash) {
 		this.hash = hash;
 	}
 
 	@Override
 	public String toString() {
-		return ObjectUtils.toString(this, this.type, this.hash, this.dn, this.tr);
+		return ObjectUtils.toString(this, this.dn, this.tr, this.type, this.hash);
 	}
 	
 }

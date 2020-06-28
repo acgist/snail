@@ -189,9 +189,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements UdpChanne
 			LOGGER.warn("UDP Server通道已经关闭：{}", this.name);
 			return;
 		}
-		EXECUTOR.submit(() -> {
-			this.loopMessage();
-		});
+		EXECUTOR.submit(() -> this.loopMessage());
 	}
 	
 	/**
