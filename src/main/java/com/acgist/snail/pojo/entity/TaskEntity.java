@@ -70,12 +70,9 @@ public final class TaskEntity extends Entity implements ITaskSessionEntity {
 	 */
 	private String description;
 	
-	public TaskEntity() {
-	}
-	
 	@Override
 	public String getName() {
-		return name;
+		return this.name;
 	}
 	
 	@Override
@@ -85,7 +82,7 @@ public final class TaskEntity extends Entity implements ITaskSessionEntity {
 	
 	@Override
 	public Type getType() {
-		return type;
+		return this.type;
 	}
 	
 	@Override
@@ -95,7 +92,7 @@ public final class TaskEntity extends Entity implements ITaskSessionEntity {
 	
 	@Override
 	public FileType getFileType() {
-		return fileType;
+		return this.fileType;
 	}
 	
 	@Override
@@ -105,7 +102,7 @@ public final class TaskEntity extends Entity implements ITaskSessionEntity {
 	
 	@Override
 	public String getFile() {
-		return file;
+		return this.file;
 	}
 	
 	@Override
@@ -115,7 +112,7 @@ public final class TaskEntity extends Entity implements ITaskSessionEntity {
 	
 	@Override
 	public String getUrl() {
-		return url;
+		return this.url;
 	}
 	
 	@Override
@@ -125,7 +122,7 @@ public final class TaskEntity extends Entity implements ITaskSessionEntity {
 	
 	@Override
 	public String getTorrent() {
-		return torrent;
+		return this.torrent;
 	}
 	
 	@Override
@@ -135,7 +132,7 @@ public final class TaskEntity extends Entity implements ITaskSessionEntity {
 	
 	@Override
 	public Status getStatus() {
-		return status;
+		return this.status;
 	}
 	
 	@Override
@@ -145,7 +142,7 @@ public final class TaskEntity extends Entity implements ITaskSessionEntity {
 	
 	@Override
 	public Long getSize() {
-		return size;
+		return this.size;
 	}
 	
 	@Override
@@ -155,7 +152,7 @@ public final class TaskEntity extends Entity implements ITaskSessionEntity {
 	
 	@Override
 	public Date getEndDate() {
-		return endDate;
+		return this.endDate;
 	}
 	
 	@Override
@@ -165,7 +162,7 @@ public final class TaskEntity extends Entity implements ITaskSessionEntity {
 	
 	@Override
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 	
 	@Override

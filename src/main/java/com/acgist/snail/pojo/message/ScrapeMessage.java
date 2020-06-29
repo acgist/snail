@@ -14,7 +14,9 @@ import com.acgist.snail.utils.ObjectUtils;
 public final class ScrapeMessage {
 
 	/**
-	 * <p>id：{@linkplain TrackerLauncher#id() transaction_id}</p>
+	 * <p>ID</p>
+	 * 
+	 * @see TrackerLauncher#id()
 	 */
 	private Integer id;
 	/**
@@ -30,34 +32,74 @@ public final class ScrapeMessage {
 	 */
 	private Integer completed;
 
+	/**
+	 * <p>获取ID</p>
+	 * 
+	 * @return ID
+	 */
 	public Integer getId() {
-		return id;
+		return this.id;
 	}
 
+	/**
+	 * <p>设置ID</p>
+	 * 
+	 * @param id ID
+	 */
 	public void setId(Integer id) {
 		this.id = id;
 	}
 
+	/**
+	 * <p>获取做种Peer数量</p>
+	 * 
+	 * @return 做种Peer数量
+	 */
 	public Integer getSeeder() {
-		return seeder;
+		return this.seeder;
 	}
 
+	/**
+	 * <p>设置做种Peer数量</p>
+	 * 
+	 * @param seeder 做种Peer数量
+	 */
 	public void setSeeder(Integer seeder) {
 		this.seeder = seeder;
 	}
 
+	/**
+	 * <p>获取下载Peer数量</p>
+	 * 
+	 * @return 下载Peer数量
+	 */
 	public Integer getLeecher() {
-		return leecher;
+		return this.leecher;
 	}
 
+	/**
+	 * <p>设置下载Peer数量</p>
+	 * 
+	 * @param leecher 下载Peer数量
+	 */
 	public void setLeecher(Integer leecher) {
 		this.leecher = leecher;
 	}
 
+	/**
+	 * <p>获取完成Peer数量</p>
+	 * 
+	 * @return 完成Peer数量
+	 */
 	public Integer getCompleted() {
-		return completed;
+		return this.completed;
 	}
 
+	/**
+	 * <p>设置完成Peer数量</p>
+	 * 
+	 * @param completed 完成Peer数量
+	 */
 	public void setCompleted(Integer completed) {
 		this.completed = completed;
 	}
