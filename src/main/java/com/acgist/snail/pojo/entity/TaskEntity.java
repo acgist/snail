@@ -13,7 +13,7 @@ import com.acgist.snail.protocol.Protocol.Type;
  * @author acgist
  * @since 1.0.0
  */
-public final class TaskEntity extends BaseEntity implements ITaskSessionEntity {
+public final class TaskEntity extends Entity implements ITaskSessionEntity {
 
 	private static final long serialVersionUID = 1L;
 

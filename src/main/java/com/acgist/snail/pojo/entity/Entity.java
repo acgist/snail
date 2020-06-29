@@ -12,7 +12,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public class BaseEntity implements Serializable {
+public class Entity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -43,6 +43,8 @@ public class BaseEntity implements Serializable {
 	protected Date modifyDate;
 	
 	/**
+	 * <p>获取ID</p>
+	 * 
 	 * @return ID
 	 */
 	public String getId() {
@@ -50,6 +52,8 @@ public class BaseEntity implements Serializable {
 	}
 
 	/**
+	 * <p>设置ID</p>
+	 * 
 	 * @param id ID
 	 */
 	public void setId(String id) {
@@ -57,6 +61,8 @@ public class BaseEntity implements Serializable {
 	}
 
 	/**
+	 * <p>获取创建时间</p>
+	 * 
 	 * @return 创建时间
 	 */
 	public Date getCreateDate() {
@@ -64,6 +70,8 @@ public class BaseEntity implements Serializable {
 	}
 
 	/**
+	 * <p>设置创建时间</p>
+	 * 
 	 * @param createDate 创建时间
 	 */
 	public void setCreateDate(Date createDate) {
@@ -71,6 +79,8 @@ public class BaseEntity implements Serializable {
 	}
 
 	/**
+	 * <p>获取修改时间</p>
+	 * 
 	 * @return 修改时间
 	 */
 	public Date getModifyDate() {
@@ -78,6 +88,8 @@ public class BaseEntity implements Serializable {
 	}
 
 	/**
+	 * <p>设置修改时间</p>
+	 * 
 	 * @param modifyDate 修改时间
 	 */
 	public void setModifyDate(Date modifyDate) {
@@ -94,8 +106,8 @@ public class BaseEntity implements Serializable {
 		if(ObjectUtils.equals(this, object)) {
 			return true;
 		}
-		if(object instanceof BaseEntity) {
-			final BaseEntity entity = (BaseEntity) object;
+		if(object instanceof Entity) {
+			final Entity entity = (Entity) object;
 			return StringUtils.equals(this.id, entity.id);
 		}
 		return false;
