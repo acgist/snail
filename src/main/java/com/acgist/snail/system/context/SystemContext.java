@@ -54,7 +54,7 @@ public final class SystemContext {
 		/**
 		 * <p>系统名称</p>
 		 */
-		public final String[] osNames;
+		private final String[] osNames;
 
 		private SystemType(String ... osNames) {
 			this.osNames = osNames;
