@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.pojo.entity.BaseEntity;
+import com.acgist.snail.pojo.entity.Entity;
 import com.acgist.snail.pojo.wrapper.ResultSetWrapper;
 import com.acgist.snail.system.exception.RepositoryException;
 import com.acgist.snail.utils.BeanUtils;
@@ -24,7 +24,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public abstract class Repository<T extends BaseEntity> {
+public abstract class Repository<T extends Entity> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Repository.class);
 	
@@ -134,8 +134,8 @@ public abstract class Repository<T extends BaseEntity> {
 		final String sqlProperty = Stream.of(properties)
 			.filter(property -> {
 				return
-					!BaseEntity.PROPERTY_ID.equals(property) &&
-					!BaseEntity.PROPERTY_CREATE_DATE.equals(property);
+					!Entity.PROPERTY_ID.equals(property) &&
+					!Entity.PROPERTY_CREATE_DATE.equals(property);
 			})
 			.map(property -> "`" + property + "` = ?")
 			.collect(Collectors.joining(","));
@@ -143,8 +143,8 @@ public abstract class Repository<T extends BaseEntity> {
 				Stream.of(properties)
 					.filter(property -> {
 						return
-							!BaseEntity.PROPERTY_ID.equals(property) &&
-							!BaseEntity.PROPERTY_CREATE_DATE.equals(property);
+							!Entity.PROPERTY_ID.equals(property) &&
+							!Entity.PROPERTY_CREATE_DATE.equals(property);
 					})
 					.map(property -> BeanUtils.propertyValue(t, property)),
 				Stream.of(t.getId())
