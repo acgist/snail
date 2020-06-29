@@ -94,13 +94,6 @@ public class ApplicationMessage {
 	 */
 	private String body;
 
-	private ApplicationMessage() {
-	}
-	
-	private ApplicationMessage(Type type) {
-		this.type = type;
-	}
-
 	private ApplicationMessage(Type type, String body) {
 		this.type = type;
 		this.body = body;
@@ -178,18 +171,38 @@ public class ApplicationMessage {
 		return message(Type.RESPONSE, body);
 	}
 	
+	/**
+	 * <p>获取消息类型</p>
+	 * 
+	 * @return 消息类型
+	 */
 	public Type getType() {
-		return type;
+		return this.type;
 	}
 
+	/**
+	 * <p>设置消息类型</p>
+	 * 
+	 * @param type 消息类型
+	 */
 	public void setType(Type type) {
 		this.type = type;
 	}
 
+	/**
+	 * <p>获取消息内容</p>
+	 * 
+	 * @return 消息内容
+	 */
 	public String getBody() {
-		return body;
+		return this.body;
 	}
 
+	/**
+	 * <p>设置消息内容</p>
+	 * 
+	 * @param body 消息内容
+	 */
 	public void setBody(String body) {
 		this.body = body;
 	}

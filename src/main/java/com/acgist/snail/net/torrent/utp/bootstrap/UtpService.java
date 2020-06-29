@@ -36,8 +36,8 @@ public final class UtpService {
 	 */
 	private int connectionId = 0;
 	/**
-	 * <p>UTP消息代理Map</p>
-	 * <p>key={@link #buildKey(short, InetSocketAddress)}</p>
+	 * <p>UTP消息代理</p>
+	 * <p>{@link #buildKey(short, InetSocketAddress)}=消息代理</p>
 	 */
 	private final Map<String, UtpMessageHandler> utpMessageHandlers = new ConcurrentHashMap<>();
 	

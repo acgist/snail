@@ -16,8 +16,7 @@ public final class ResultSetWrapper {
 
 	/**
 	 * <p>结果集数据</p>
-	 * <p>key=字段名称（大写）</p>
-	 * <p>value=字段值</p>
+	 * <p>字段名称（大写）=字段值</p>
 	 */
 	private final Map<String, Object> data = new HashMap<>();
 	

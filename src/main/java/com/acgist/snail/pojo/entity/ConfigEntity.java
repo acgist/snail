@@ -38,7 +38,7 @@ public final class ConfigEntity extends Entity {
 	 * @return 配置名称
 	 */
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	/**
@@ -56,7 +56,7 @@ public final class ConfigEntity extends Entity {
 	 * @return 配置值
 	 */
 	public String getValue() {
-		return value;
+		return this.value;
 	}
 
 	/**
