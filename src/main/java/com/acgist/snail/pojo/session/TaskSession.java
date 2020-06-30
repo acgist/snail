@@ -61,6 +61,15 @@ public final class TaskSession implements ITaskSession {
 		this.statistics = new StatisticsSession(true, SystemStatistics.getInstance().statistics());
 	}
 	
+	/**
+	 * <p>新建任务信息</p>
+	 * 
+	 * @param entity 任务
+	 * 
+	 * @return 任务信息
+	 * 
+	 * @throws DownloadException 下载异常
+	 */
 	public static final ITaskSession newInstance(TaskEntity entity) throws DownloadException {
 		return new TaskSession(entity);
 	}
