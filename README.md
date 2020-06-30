@@ -5,9 +5,11 @@
 </p>
 
 <p align="center">
+	<!--
 	<a target="_blank" href="https://www.acgist.com">
 		<img alt="Author" src="https://img.shields.io/badge/Author-acgist-red.svg?style=flat-square" />
 	</a>
+	-->
 	<a target="_blank" href="https://openjdk.java.net/">
 		<img alt="Java" src="https://img.shields.io/badge/Java-11-yellow.svg?style=flat-square" />
 	</a>
