@@ -248,4 +248,16 @@ public final class NumberUtils {
 		return new Random();
 	}
 	
+	/**
+	 * <p>判断数值是否相等</p>
+	 * 
+	 * @param source 原始数值
+	 * @param target 目标数值
+	 * 
+	 * @return 是否相对
+	 */
+	public static final boolean equals(Number source, Number target) {
+		return source == null ? target == null : source.equals(target);
+	}
+	
 }

@@ -190,6 +190,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			LOGGER.warn("Peer接入失败：远程客户端获取失败");
 			return false;
 		}
+		// TODO：是否自动获取端口
 		final PeerSession peerSession = PeerManager.getInstance().newPeerSession(
 			infoHashHex,
 			torrentSession.statistics(),

@@ -49,26 +49,60 @@ public final class NodeSession implements Comparable<NodeSession> {
 		this.status = Status.UNUSE;
 	}
 	
+	/**
+	 * <p>创建节点</p>
+	 * 
+	 * @param id 节点ID
+	 * @param host 节点地址
+	 * @param port 节点端口
+	 * 
+	 * @return 节点
+	 */
 	public static final NodeSession newInstance(byte[] id, String host, int port) {
 		return new NodeSession(id, host, port);
 	}
 	
+	/**
+	 * <p>获取节点ID</p>
+	 * 
+	 * @return 节点ID
+	 */
 	public byte[] getId() {
 		return id;
 	}
 
+	/**
+	 * <p>获取节点地址</p>
+	 * 
+	 * @return 节点地址
+	 */
 	public String getHost() {
 		return host;
 	}
 
+	/**
+	 * <p>获取节点端口</p>
+	 * 
+	 * @return 节点端口
+	 */
 	public int getPort() {
 		return port;
 	}
 
+	/**
+	 * <p>获取节点状态</p>
+	 * 
+	 * @return 节点状态
+	 */
 	public Status getStatus() {
 		return status;
 	}
 
+	/**
+	 * <p>设置节点状态</p>
+	 * 
+	 * @param status 节点状态
+	 */
 	public void setStatus(Status status) {
 		this.status = status;
 	}

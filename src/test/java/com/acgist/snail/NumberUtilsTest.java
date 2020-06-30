@@ -37,4 +37,12 @@ public class NumberUtilsTest extends BaseTest {
 		this.log(ByteBuffer.wrap(bytes).getShort());
 	}
 	
+	@Test
+	public void testEquals() {
+		this.log(NumberUtils.equals(null, Integer.valueOf(100000)));
+		this.log(NumberUtils.equals(Integer.valueOf(100000), null));
+		this.log(NumberUtils.equals(Integer.valueOf(100000), Integer.valueOf(100010)));
+		this.log(NumberUtils.equals(Integer.valueOf(100000), Integer.valueOf(100000)));
+	}
+	
 }
