@@ -29,7 +29,7 @@ public final class StatisticsSession implements IStatisticsSession {
 	 */
 	private final boolean speed;
 	/**
-	 * <p>父类统计</p>
+	 * <p>上级统计信息</p>
 	 */
 	private final IStatisticsSession parent;
 	/**
@@ -65,14 +65,30 @@ public final class StatisticsSession implements IStatisticsSession {
 	 */
 	private volatile long downloadBufferLimitTime;
 	
+	/**
+	 * <p>统计信息</p>
+	 */
 	public StatisticsSession() {
 		this(false, true, null);
 	}
 	
+	/**
+	 * <p>统计信息</p>
+	 * 
+	 * @param limit 是否限速
+	 * @param parent 上级统计信息
+	 */
 	public StatisticsSession(boolean limit, IStatisticsSession parent) {
 		this(limit, true, parent);
 	}
 	
+	/**
+	 * <p>统计信息</p>
+	 * 
+	 * @param limit 是否限速
+	 * @param speed 是否统计速度
+	 * @param parent 上级统计信息
+	 */
 	public StatisticsSession(boolean limit, boolean speed, IStatisticsSession parent) {
 		this.limit = limit;
 		this.speed = speed;

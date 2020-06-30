@@ -66,6 +66,8 @@ public final class PeerSession implements IStatistics {
 	/**
 	 * <p>保留位</p>
 	 * <p>协议链接：http://www.bittorrent.org/beps/bep_0004.html</p>
+	 * 
+	 * TODO：独立封装
 	 */
 	private byte[] reserved;
 	/**
@@ -456,7 +458,9 @@ public final class PeerSession implements IStatistics {
 	 * @param source 来源标识
 	 */
 	public void source(byte source) {
-		this.source |= source;
+		synchronized (this) {
+			this.source |= source;
+		}
 	}
 
 	/**
@@ -476,7 +480,7 @@ public final class PeerSession implements IStatistics {
 	 * @return 是否来自DHT
 	 */
 	public boolean fromDht() {
-		return verifySource(PeerConfig.SOURCE_DHT);
+		return this.verifySource(PeerConfig.SOURCE_DHT);
 	}
 	
 	/**
@@ -486,7 +490,7 @@ public final class PeerSession implements IStatistics {
 	 * @return 是否来自LSD
 	 */
 	public boolean fromLsd() {
-		return verifySource(PeerConfig.SOURCE_LSD);
+		return this.verifySource(PeerConfig.SOURCE_LSD);
 	}
 	
 	/**
@@ -495,7 +499,7 @@ public final class PeerSession implements IStatistics {
 	 * @return 是否来自PEX
 	 */
 	public boolean fromPex() {
-		return verifySource(PeerConfig.SOURCE_PEX);
+		return this.verifySource(PeerConfig.SOURCE_PEX);
 	}
 
 	/**
@@ -504,7 +508,7 @@ public final class PeerSession implements IStatistics {
 	 * @return 是否来自Tracker
 	 */
 	public boolean fromTacker() {
-		return verifySource(PeerConfig.SOURCE_TRACKER);
+		return this.verifySource(PeerConfig.SOURCE_TRACKER);
 	}
 	
 	/**
@@ -514,7 +518,7 @@ public final class PeerSession implements IStatistics {
 	 * @return 是否来自连接
 	 */
 	public boolean fromConnect() {
-		return verifySource(PeerConfig.SOURCE_CONNECT);
+		return this.verifySource(PeerConfig.SOURCE_CONNECT);
 	}
 	
 	/**
@@ -523,7 +527,7 @@ public final class PeerSession implements IStatistics {
 	 * @return 是否来自Holepunch
 	 */
 	public boolean fromHolepunch() {
-		return verifySource(PeerConfig.SOURCE_HOLEPUNCH);
+		return this.verifySource(PeerConfig.SOURCE_HOLEPUNCH);
 	}
 	
 	/**
@@ -565,7 +569,7 @@ public final class PeerSession implements IStatistics {
 	 * @return 是否上传中
 	 */
 	public boolean uploading() {
-		return verifyStatus(PeerConfig.STATUS_UPLOAD);
+		return this.verifyStatus(PeerConfig.STATUS_UPLOAD);
 	}
 	
 	/**
@@ -574,7 +578,7 @@ public final class PeerSession implements IStatistics {
 	 * @return 是否下载中
 	 */
 	public boolean downloading() {
-		return verifyStatus(PeerConfig.STATUS_DOWNLOAD);
+		return this.verifyStatus(PeerConfig.STATUS_DOWNLOAD);
 	}
 	
 	/**
@@ -586,7 +590,7 @@ public final class PeerSession implements IStatistics {
 	 * @return 是否连接中
 	 */
 	public boolean connected() {
-		return uploading() || downloading();
+		return this.uploading() || this.downloading();
 	}
 	
 	/**
@@ -637,7 +641,7 @@ public final class PeerSession implements IStatistics {
 	 * @return 是否支持UTP
 	 */
 	public boolean utp() {
-		return verifyFlags(PeerConfig.PEX_UTP);
+		return this.verifyFlags(PeerConfig.PEX_UTP);
 	}
 	
 	/**
@@ -646,7 +650,7 @@ public final class PeerSession implements IStatistics {
 	 * @return 是否可以连接
 	 */
 	public boolean outgo() {
-		return verifyFlags(PeerConfig.PEX_OUTGO);
+		return this.verifyFlags(PeerConfig.PEX_OUTGO);
 	}
 
 	/**
@@ -655,7 +659,7 @@ public final class PeerSession implements IStatistics {
 	 * @return 是否偏爱加密
 	 */
 	public boolean encrypt() {
-		return verifyFlags(PeerConfig.PEX_PREFER_ENCRYPTION);
+		return this.verifyFlags(PeerConfig.PEX_PREFER_ENCRYPTION);
 	}
 	
 	/**
@@ -664,7 +668,7 @@ public final class PeerSession implements IStatistics {
 	 * @return 是否只上传不下载
 	 */
 	public boolean uploadOnly() {
-		return verifyFlags(PeerConfig.PEX_UPLOAD_ONLY);
+		return this.verifyFlags(PeerConfig.PEX_UPLOAD_ONLY);
 	}
 	
 	/**
@@ -673,7 +677,7 @@ public final class PeerSession implements IStatistics {
 	 * @return 是否支持holepunch协议
 	 */
 	public boolean holepunch() {
-		return verifyFlags(PeerConfig.PEX_HOLEPUNCH);
+		return this.verifyFlags(PeerConfig.PEX_HOLEPUNCH);
 	}
 	
 	/**
@@ -748,26 +752,56 @@ public final class PeerSession implements IStatistics {
 			this.peerUploader != null ? this.peerUploader : null;
 	}
 	
+	/**
+	 * <p>获取Peer上传</p>
+	 * 
+	 * @return Peer上传
+	 */
 	public PeerUploader peerUploader() {
 		return this.peerUploader;
 	}
 	
+	/**
+	 * <p>设置Peer上传</p>
+	 * 
+	 * @param peerUploader Peer上传
+	 */
 	public void peerUploader(PeerUploader peerUploader) {
 		this.peerUploader = peerUploader;
 	}
 	
+	/**
+	 * <p>获取Peer下载</p>
+	 * 
+	 * @return Peer下载
+	 */
 	public PeerDownloader peerDownloader() {
 		return this.peerDownloader;
 	}
 	
+	/**
+	 * <p>设置Peer下载</p>
+	 * 
+	 * @param peerDownloader Peer下载
+	 */
 	public void peerDownloader(PeerDownloader peerDownloader) {
 		this.peerDownloader = peerDownloader;
 	}
 	
+	/**
+	 * <p>获取Peer地址信息</p>
+	 * 
+	 * @return Peer地址信息
+	 */
 	public InetSocketAddress peerSocketAddress() {
 		return NetUtils.buildSocketAddress(this.host, this.port);
 	}
 	
+	/**
+	 * <p>获取Peer DHT地址信息</p>
+	 * 
+	 * @return Peer DHT地址信息
+	 */
 	public InetSocketAddress dhtSocketAddress() {
 		return NetUtils.buildSocketAddress(this.host, this.dhtPort);
 	}
