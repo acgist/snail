@@ -25,6 +25,10 @@ public final class PeerConnectSession {
 	 */
 	private volatile boolean peerInterested;
 	
+	/**
+	 * <p>Peer连接信息</p>
+	 * <p>默认：阻塞、不感兴趣</p>
+	 */
 	public PeerConnectSession() {
 		this.amChoked = true;
 		this.amInterested = false;

@@ -13,6 +13,7 @@ import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.system.IStatistics;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.utils.NetUtils;
+import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.ObjectUtils;
 import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.ThreadUtils;
@@ -34,11 +35,6 @@ public final class PeerSession implements IStatistics {
 	 * <p>Peer客户端名称</p>
 	 */
 	private String clientName;
-	/**
-	 * <p>保留位</p>
-	 * <p>协议链接：http://www.bittorrent.org/beps/bep_0004.html</p>
-	 */
-	private byte[] reserved;
 	/**
 	 * <p>pex flags</p>
 	 */
@@ -67,6 +63,11 @@ public final class PeerSession implements IStatistics {
 	 * <p>DHT端口</p>
 	 */
 	private Integer dhtPort;
+	/**
+	 * <p>保留位</p>
+	 * <p>协议链接：http://www.bittorrent.org/beps/bep_0004.html</p>
+	 */
+	private byte[] reserved;
 	/**
 	 * <p>已下载Piece位图</p>
 	 */
@@ -133,20 +134,17 @@ public final class PeerSession implements IStatistics {
 		this.statistics = new StatisticsSession(false, false, parent);
 	}
 	
+	/**
+	 * <p>新建Peer信息</p>
+	 * 
+	 * @param parent 上级统计信息
+	 * @param host 地址
+	 * @param port 端口
+	 * 
+	 * @return Peer信息
+	 */
 	public static final PeerSession newInstance(IStatisticsSession parent, String host, Integer port) {
 		return new PeerSession(parent, host, port);
-	}
-	
-	/**
-	 * <p>判断是否相等</p>
-	 * <p>相等：IP地址一致（忽略端口）</p>
-	 * 
-	 * @param host Peer地址
-	 * 
-	 * @return 是否相等
-	 */
-	public boolean equalsHost(String host) {
-		return StringUtils.equals(this.host, host);
 	}
 	
 	@Override
@@ -172,6 +170,15 @@ public final class PeerSession implements IStatistics {
 	public void id(byte[] id) {
 		this.id = id;
 		this.clientName = PeerConfig.name(this.id);
+	}
+	
+	/**
+	 * <p>获取PeerId</p>
+	 * 
+	 * @return PeerId
+	 */
+	public byte[] id() {
+		return this.id;
 	}
 	
 	/**
@@ -770,6 +777,19 @@ public final class PeerSession implements IStatistics {
 		return ObjectUtils.hashCode(this.host);
 	}
 	
+	/**
+	 * <p>判断是否相等</p>
+	 * <p>相等：IP地址一致（忽略端口）</p>
+	 * 
+	 * @param host Peer地址
+	 * @param port Peer端口
+	 * 
+	 * @return 是否相等
+	 */
+	public boolean equals(String host, Integer port) {
+		return StringUtils.equals(this.host, host) && NumberUtils.equals(this.port, port);
+	}
+	
 	@Override
 	public boolean equals(Object object) {
 		if(ObjectUtils.equals(this, object)) {
@@ -777,7 +797,7 @@ public final class PeerSession implements IStatistics {
 		}
 		if(object instanceof PeerSession) {
 			final PeerSession peerSession = (PeerSession) object;
-			return StringUtils.equals(this.host, peerSession.host);
+			return peerSession.equals(this.host, this.port);
 		}
 		return false;
 	}

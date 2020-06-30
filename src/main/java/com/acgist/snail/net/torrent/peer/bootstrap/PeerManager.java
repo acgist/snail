@@ -58,13 +58,14 @@ public final class PeerManager {
 	 * 
 	 * @param infoHashHex InfoHashHex
 	 * @param host Peer地址
+	 * @param port Peer端口
 	 * 
 	 * @return Peer信息
 	 */
-	public PeerSession findPeerSession(String infoHashHex, String host) {
+	public PeerSession findPeerSession(String infoHashHex, String host, Integer port) {
 		final var list = this.list(infoHashHex);
 		synchronized (list) {
-			return this.findPeerSession(list, host);
+			return this.findPeerSession(list, host, port);
 		}
 	}
 	
@@ -124,7 +125,7 @@ public final class PeerManager {
 			final var deque = this.deque(infoHashHex); // 下载队列
 			synchronized (list) {
 				synchronized (deque) {
-					PeerSession peerSession = this.findPeerSession(list, host);
+					PeerSession peerSession = this.findPeerSession(list, host, port);
 					if(peerSession == null) {
 						if(LOGGER.isDebugEnabled()) {
 							LOGGER.debug("添加PeerSession：{}-{}，来源：{}", host, port, PeerConfig.source(source));
@@ -326,12 +327,13 @@ public final class PeerManager {
 	 * 
 	 * @param list Peer队列
 	 * @param host Peer地址
+	 * @param port Peer端口
 	 * 
 	 * @return Peer信息
 	 */
-	private PeerSession findPeerSession(List<PeerSession> list, String host) {
+	private PeerSession findPeerSession(List<PeerSession> list, String host, Integer port) {
 		final Optional<PeerSession> optional = list.stream()
-			.filter(peer -> peer.equalsHost(host))
+			.filter(peer -> peer.equals(host, port))
 			.findFirst();
 		if(optional.isPresent()) {
 			return optional.get();

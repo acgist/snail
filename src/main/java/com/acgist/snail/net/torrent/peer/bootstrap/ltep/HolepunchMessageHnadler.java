@@ -134,7 +134,7 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 			return;
 		}
 		// 目标Peer
-		final var peerSession = PeerManager.getInstance().findPeerSession(this.torrentSession.infoHashHex(), host);
+		final var peerSession = PeerManager.getInstance().findPeerSession(this.torrentSession.infoHashHex(), host, port);
 		// 目标不存在
 		if(peerSession == null) {
 			LOGGER.debug("处理holepunch消息-rendezvous失败：目标不存在");
@@ -183,7 +183,7 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	 */
 	private void onConnect(String host, int port) {
 		LOGGER.debug("处理holepunch消息-connect：{}-{}", host, port);
-		var peerSession = PeerManager.getInstance().findPeerSession(this.torrentSession.infoHashHex(), host);
+		var peerSession = PeerManager.getInstance().findPeerSession(this.torrentSession.infoHashHex(), host, port);
 		if(peerSession == null) { // 没有时创建
 			peerSession = PeerManager.getInstance().newPeerSession(
 				this.torrentSession.infoHashHex(),
