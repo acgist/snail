@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	
+	<!--
+	mvn -e clean package deploy -P release -D skipTests -D javafx.platform=win|mac|linux
+	-D skipTests：编译测试代码
+	-D maven.test.skip=true：跳过编译测试代码
+	-->
+	<!-- 版本配置：pom.xml、builder/config.bat、SnailLauncher/src/snail.ini、src/main/resources/config/system.properties -->
+	
+	<parent>
+		<groupId>com.acgist</groupId>
+		<artifactId>snail-parent</artifactId>
+		<version>1.3.1</version>
+		<relativePath>../</relativePath>
+	</parent>
+	
+	<modelVersion>4.0.0</modelVersion>
+	
+	<groupId>com.acgist</groupId>
+	<artifactId>snail-javafx</artifactId>
+	<packaging>jar</packaging>
+	
+	<url>https://gitee.com/acgist/snail</url>
+	
+	<name>snail</name>
+	<version>1.3.1</version>
+	<description>基于Java、JavaFX开发的下载工具，支持下载协议：BT（BitTorrent、磁力链接、种子）、FTP、HTTP。</description>
+	<inceptionYear>2019</inceptionYear>
+	
+	<properties>
+		<vendor>acgist</vendor>
+		<module>${project.groupId}.${project.artifactId}</module>
+		<encoding>UTF-8</encoding>
+		<!-- 系统：win、mac、linux -->
+		<os.name>win</os.name>
+		<!-- Java -->
+		<java.version>11</java.version>
+		<!-- JavaFX -->
+		<javafx.version>11.0.2</javafx.version>
+		<!-- 依赖 -->
+		<h2.version>1.4.199</h2.version>
+		<slf4j.version>1.8.0-alpha2</slf4j.version>
+		<logback.version>1.3.0-alpha4</logback.version>
+		<!-- JUnit -->
+		<junit.version>4.12</junit.version>
+		<!-- Maven插件 -->
+		<maven.gpg.version>1.6</maven.gpg.version>
+		<maven.jar.version>3.2.0</maven.jar.version>
+		<maven.nexus.version>1.6.8</maven.nexus.version>
+		<maven.source.version>3.2.0</maven.source.version>
+		<maven.javadoc.version>3.1.1</maven.javadoc.version>
+		<maven.compiler.version>3.8.1</maven.compiler.version>
+		<maven.resources.version>3.1.0</maven.resources.version>
+		<maven.dependency.version>3.1.1</maven.dependency.version>
+		<!-- 文件编码 -->
+		<project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
+	</properties>
+
+	<dependencies>
+		<!--
+		GUI：JavaFX
+		隐式依赖：javafx-base、javafx-controls、javafx-graphics
+		-->
+		<!--
+		编译系统和运行系统不一致时：
+		1.添加编译参数：-D javafx.platform=win|mac|linux
+		2.显式引入隐式依赖并添加属性：<classifier>${os.name}</classifier>
+		-->
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-fxml</artifactId>
+			<version>${javafx.version}</version>
+		</dependency>
+		<!-- 数据库：H2 -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>${h2.version}</version>
+		</dependency>
+		<!--
+		日志：slf4j、logback
+		隐式依赖：slf4j-api、logback-core
+		-->
+		<!--
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		-->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+		
+		<!-- 测试：JUnit -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<!-- 环境：mvn -P develop -->
+	<profiles>
+		<profile>
+			<id>develop</id>
+			<activation>
+				<!-- 设置默认 -->
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<package.environment>develop</package.environment>
+			</properties>
+		</profile>
+		<profile>
+			<id>release</id>
+			<properties>
+				<package.environment>release</package.environment>
+			</properties>
+		</profile>
+	</profiles>
+	
+	<build>
+		<!-- 属性替换配置文件路径 -->
+		<!--
+		<filters></filters>
+		-->
+		<!-- 资源文件 -->
+		<!--
+		<resources></resources>
+		-->
+		<!-- Maven插件 -->
+		<plugins>
+			<!-- compile：mvn compile -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven.compiler.version}</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+					<encoding>${encoding}</encoding>
+				</configuration>
+			</plugin>
+			<!-- resources：mvn resources:resources -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>${maven.resources.version}</version>
+				<configuration>
+					<resources>
+						<resource>
+							<directory>src/main/resources</directory>
+							<!-- 配置文件属性替换：properties -->
+							<filtering>false</filtering>
+							<includes>
+								<include>**</include>
+							</includes>
+							<!-- 排除环境资源文件 -->
+							<excludes>
+								<exclude>profiles/**</exclude>
+							</excludes>
+						</resource>
+						<resource>
+							<!-- travis-ci配置斜杠编译卡住 -->
+							<directory>./</directory>
+							<filtering>false</filtering>
+							<targetPath>META-INF/</targetPath>
+							<!-- 开源协议、README -->
+							<includes>
+								<include>LICENSE</include>
+								<include>README.md</include>
+							</includes>
+						</resource>
+					</resources>
+				</configuration>
+				<executions>
+					<!-- 自动复制环境资源 -->
+					<execution>
+						<id>auto-copy-resources-profiles</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<!-- 覆盖资源 -->
+							<overwrite>true</overwrite>
+							<outputDirectory>${project.build.outputDirectory}</outputDirectory>
+							<resources>
+								<!-- 环境资源 -->
+								<resource>
+									<directory>src/main/resources/profiles/${package.environment}</directory>
+									<filtering>false</filtering>
+								</resource>
+							</resources>
+						</configuration>
+						<inherited></inherited>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- jar：mvn jar:jar -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>${maven.jar.version}</version>
+				<configuration>
+					<!-- MANIFEST.MF -->
+					<archive>
+						<manifest>
+							<mainClass>com.acgist.main.Application</mainClass>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>lib</classpathPrefix>
+						</manifest>
+						<manifestEntries>
+							<Built-By>${vendor}</Built-By>
+							<Automatic-Module-Name>${module}</Automatic-Module-Name>
+							<Implementation-Title>${project.artifactId}</Implementation-Title>
+							<Implementation-Vendor>${vendor}</Implementation-Vendor>
+							<Implementation-Vendor-Id>${vendor}</Implementation-Vendor-Id>
+							<Implementation-Version>${project.version}</Implementation-Version>
+							<Specification-Title>${project.artifactId}</Specification-Title>
+							<Specification-Vendor>${vendor}</Specification-Vendor>
+							<Specification-Version>${project.version}</Specification-Version>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+			<!-- dependency：mvn dependency:auto-copy-dependencies-lib -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>${maven.dependency.version}</version><!--$NO-MVN-MAN-VER$-->
+				<executions>
+					<!-- 自动复制依赖包 -->
+					<execution>
+						<id>auto-copy-dependencies-lib</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<stripVersion>false</stripVersion>
+							<includeScope>compile</includeScope>
+							<excludeTransitive>false</excludeTransitive>
+							<outputDirectory>${project.build.directory}/lib</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!--
+			source：mvn source:auto-jar-no-fork
+			-D maven.source.skip=true
+			-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>${maven.source.version}</version>
+				<executions>
+					<!-- 自动打包源码 -->
+					<execution>
+						<id>auto-jar-no-fork</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+						<configuration>
+							<attach>true</attach>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!--
+			javadoc：mvn javadoc:auto-javadoc-jar
+			-D maven.javadoc.skip=true
+			-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${maven.javadoc.version}</version>
+				<configuration>
+					<!-- 忽略警告：注解、标签等 -->
+					<doclint>none</doclint>
+					<charset>${encoding}</charset>
+					<encoding>${encoding}</encoding>
+					<aggregate>true</aggregate>
+					<docencoding>${encoding}</docencoding>
+					<description>${project.description}</description>
+				</configuration>
+				<executions>
+					<!-- 自动打包文档 -->
+					<execution>
+						<id>auto-javadoc-jar</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!--
+			deploy：mvn gpg:sign
+			-D gpg.skip=true
+			-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>${maven.gpg.version}</version>
+				<executions>
+					<execution>
+						<id>sign</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- deploy：mvn deploy -->
+			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<version>${maven.nexus.version}</version>
+				<extensions>true</extensions>
+				<configuration>
+					<serverId>sonatype_releases</serverId>
+					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+					<!-- close后自动release -->
+					<autoReleaseAfterClose>false</autoReleaseAfterClose>
+					<!-- release后自动drop -->
+					<!--
+					<autoDropAfterRelease>true</autoDropAfterRelease>
+					-->
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<!-- 仓库 -->
+	<scm>
+		<tag>HEAD</tag>
+		<url>https://gitee.com/acgist/snail</url>
+		<connection>scm:git:git://gitee.com/acgist/snail</connection>
+		<developerConnection>scm:git:git@gitee.com:acgist/snail</developerConnection>
+	</scm>
+	
+	<!-- 开源许可 -->
+	<licenses>
+		<license>
+			<url>https://opensource.org/licenses/BSD-3-Clause</url>
+			<name>The 3-Clause BSD License</name>
+		</license>
+	</licenses>
+
+	<!-- 开发人员 -->
+	<developers>
+		<developer>
+			<id>acgist</id>
+			<url>https://gitee.com/acgist</url>
+			<name>Sheng Yu</name>
+			<email>admin@acgist.com</email>
+			<timezone>+8</timezone>
+			<organization>https://www.acgist.com</organization>
+			<roles>
+				<role>master</role>
+				<role>developer</role>
+			</roles>
+		</developer>
+	</developers>
+
+	<!-- 组织 -->
+	<organization>
+		<url>https://www.acgist.com</url>
+		<name>acgist</name>
+	</organization>
+	
+	<!-- issues -->
+	<issueManagement>
+		<url>https://gitee.com/acgist/snail/issues</url>
+		<system>Gitee Issues</system>
+	</issueManagement>
+	
+	<!-- 发布：mvn deploy -->
+	<!-- https://oss.sonatype.org/ -->
+	<!-- https://issues.sonatype.org/browse/OSSRH-51336 -->
+	<distributionManagement>
+		<repository>
+			<id>sonatype_releases</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+			<name>Nexus Release Repository</name>
+		</repository>
+		<snapshotRepository>
+			<id>sonatype_snapshots</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<name>Nexus Snapshot Repository</name>
+		</snapshotRepository>
+	</distributionManagement>
+
+</project>

@@ -14,12 +14,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	
 	<groupId>com.acgist</groupId>
-	<artifactId>snail</artifactId>
+	<artifactId>snail-parent</artifactId>
+	<version>1.3.1</version>
+	<packaging>pom</packaging>
 	
 	<url>https://gitee.com/acgist/snail</url>
 	
 	<name>snail</name>
-	<version>1.3.1</version>
 	<description>基于Java、JavaFX开发的下载工具，支持下载协议：BT（BitTorrent、磁力链接、种子）、FTP、HTTP。</description>
 	<inceptionYear>2019</inceptionYear>
 	
@@ -51,6 +52,11 @@
 		<!-- 文件编码 -->
 		<project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
 	</properties>
+
+	<modules>
+		<module>snail</module>
+		<module>snail-javafx</module>
+	</modules>
 
 	<dependencies>
 		<!--

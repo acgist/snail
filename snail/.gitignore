@@ -1,0 +1,11 @@
+.project
+.settings
+.classpath
+
+/logs/
+/target/
+/config/
+/database/
+/download/
+/builder/snail/
+/SnailLauncher/build/
