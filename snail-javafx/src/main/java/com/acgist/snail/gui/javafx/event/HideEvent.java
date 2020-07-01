@@ -1,7 +1,8 @@
-package com.acgist.snail.gui.event.impl;
+package com.acgist.snail.gui.javafx.event;
 
 import com.acgist.snail.gui.event.GuiEvent;
-import com.acgist.snail.gui.main.MainWindow;
+import com.acgist.snail.gui.event.adapter.HideEventAdapter;
+import com.acgist.snail.gui.javafx.main.MainWindow;
 
 import javafx.application.Platform;
 
@@ -11,13 +12,9 @@ import javafx.application.Platform;
  * @author acgist
  * @since 1.1.0
  */
-public final class HideEvent extends GuiEvent {
+public final class HideEvent extends HideEventAdapter {
 
 	private static final HideEvent INSTANCE = new HideEvent();
-	
-	protected HideEvent() {
-		super(Type.HIDE, "隐藏窗口事件");
-	}
 	
 	public static final GuiEvent getInstance() {
 		return INSTANCE;
@@ -28,9 +25,4 @@ public final class HideEvent extends GuiEvent {
 		Platform.runLater(() -> MainWindow.getInstance().hide());
 	}
 
-	@Override
-	protected void executeExtend(Object ... args) {
-		// TODO：实现
-	}
-	
 }

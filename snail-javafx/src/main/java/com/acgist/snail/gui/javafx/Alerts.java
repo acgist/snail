@@ -2,6 +2,8 @@ package com.acgist.snail.gui.javafx;
 
 import java.util.Optional;
 
+import com.acgist.snail.gui.GuiManager.SnailAlertType;
+
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -32,7 +34,7 @@ public final class Alerts {
 	 * @return 点击按钮类型
 	 */
 	public static final Optional<ButtonType> info(String title, String message) {
-		return build(title, message, AlertType.INFORMATION);
+		return build(title, message, SnailAlertType.INFO);
 	}
 	
 	/**
@@ -44,7 +46,7 @@ public final class Alerts {
 	 * @return 点击按钮类型
 	 */
 	public static final Optional<ButtonType> warn(String title, String message) {
-		return build(title, message, AlertType.WARNING);
+		return build(title, message, SnailAlertType.WARN);
 	}
 	
 	/**
@@ -56,8 +58,8 @@ public final class Alerts {
 	 * 
 	 * @return 点击按钮类型
 	 */
-	public static final Optional<ButtonType> build(String title, String message, AlertType type) {
-		final Alert alert = new Alert(type);
+	public static final Optional<ButtonType> build(String title, String message, SnailAlertType type) {
+		final Alert alert = new Alert(getAlertType(type));
 		final Scene scene = alert.getDialogPane().getScene();
 		Window.applyTheme(scene);
 		final Stage stage = (Stage) scene.getWindow();
@@ -67,6 +69,28 @@ public final class Alerts {
 		alert.setHeaderText(null); // 去掉头部
 		alert.setContentText(message);
 		return alert.showAndWait();
+	}
+	
+	/**
+	 * <p>获取JavaFX窗口类型</p>
+	 * 
+	 * @return JavaFX窗口类型
+	 */
+	private static final AlertType getAlertType(SnailAlertType type) {
+		switch (type) {
+		case NONE:
+			return AlertType.NONE;
+		case INFO:
+			return AlertType.INFORMATION;
+		case WARN:
+			return AlertType.WARNING;
+		case CONFIRM:
+			return AlertType.CONFIRMATION;
+		case ERROR:
+			return AlertType.ERROR;
+		default:
+			return AlertType.INFORMATION;
+		}
 	}
 	
 }

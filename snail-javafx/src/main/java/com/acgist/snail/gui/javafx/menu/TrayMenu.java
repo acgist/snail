@@ -14,10 +14,11 @@ import javax.swing.event.MouseInputAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.gui.GuiManager.SnailNoticeType;
 import com.acgist.snail.gui.javafx.Controller;
+import com.acgist.snail.gui.javafx.Fonts.SnailIcon;
 import com.acgist.snail.gui.javafx.Menu;
 import com.acgist.snail.gui.javafx.Window;
-import com.acgist.snail.gui.javafx.Fonts.SnailIcon;
 import com.acgist.snail.gui.javafx.about.AboutWindow;
 import com.acgist.snail.gui.javafx.main.MainWindow;
 import com.acgist.snail.system.config.DownloadConfig;
@@ -190,7 +191,7 @@ public final class TrayMenu extends Menu {
 	 * @param content 内容
 	 */
 	public void info(String title, String content) {
-		notice(title, content, MessageType.INFO);
+		this.notice(title, content, SnailNoticeType.INFO);
 	}
 	
 	/**
@@ -200,7 +201,7 @@ public final class TrayMenu extends Menu {
 	 * @param content 内容
 	 */
 	public void warn(String title, String content) {
-		notice(title, content, MessageType.WARNING);
+		this.notice(title, content, SnailNoticeType.WARN);
 	}
 
 	/**
@@ -210,9 +211,9 @@ public final class TrayMenu extends Menu {
 	 * @param content 内容
 	 * @param type 类型
 	 */
-	public void notice(String title, String content, MessageType type) {
+	public void notice(String title, String content, SnailNoticeType type) {
 		if(DownloadConfig.getNotice() && this.support) {
-			this.trayIcon.displayMessage(title, content, type);
+			this.trayIcon.displayMessage(title, content, this.getMessageType(type));
 		}
 	}
 	
@@ -307,5 +308,26 @@ public final class TrayMenu extends Menu {
 			}
 		});
 	};
+	
+	
+	/**
+	 * <p>获取JavaFX消息类型</p>
+	 * 
+	 * @return JavaFX消息类型
+	 */
+	public final MessageType getMessageType(SnailNoticeType type) {
+		switch (type) {
+		case NONE:
+			return MessageType.NONE;
+		case INFO:
+			return MessageType.INFO;
+		case WARN:
+			return MessageType.WARNING;
+		case ERROR:
+			return MessageType.ERROR;
+		default:
+			return MessageType.INFO;
+		}
+	}
 	
 }

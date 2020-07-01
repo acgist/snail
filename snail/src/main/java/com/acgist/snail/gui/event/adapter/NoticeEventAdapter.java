@@ -1,4 +1,4 @@
-package com.acgist.snail.gui.event.impl;
+package com.acgist.snail.gui.event.adapter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,9 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.GuiManager.Mode;
 import com.acgist.snail.gui.GuiManager.SnailNoticeType;
-import com.acgist.snail.gui.event.GuiEvent;
-import com.acgist.snail.gui.event.GuiEventEx;
-import com.acgist.snail.gui.menu.TrayMenu;
+import com.acgist.snail.gui.event.GuiEventExtend;
 import com.acgist.snail.pojo.message.ApplicationMessage;
 import com.acgist.snail.system.format.BEncodeEncoder;
 
@@ -21,22 +19,16 @@ import com.acgist.snail.system.format.BEncodeEncoder;
  * @author acgist
  * @since 1.1.0
  */
-public final class NoticeEvent extends GuiEventEx {
+public abstract class NoticeEventAdapter extends GuiEventExtend {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(NoticeEvent.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(NoticeEventAdapter.class);
 	
-	private static final NoticeEvent INSTANCE = new NoticeEvent();
-	
-	protected NoticeEvent() {
+	protected NoticeEventAdapter() {
 		super(Type.NOTICE, "提示消息事件");
 	}
 	
-	public static final GuiEvent getInstance() {
-		return INSTANCE;
-	}
-	
 	@Override
-	protected void executeEx(GuiManager.Mode mode, Object ... args) {
+	protected void executeExtend(GuiManager.Mode mode, Object ... args) {
 		SnailNoticeType type;
 		String title;
 		String message;
@@ -56,9 +48,9 @@ public final class NoticeEvent extends GuiEventEx {
 			return;
 		}
 		if(mode == Mode.NATIVE) {
-			executeNativeEx(type, title, message);
+			this.executeNativeExtend(type, title, message);
 		} else {
-			executeExtendEx(type, title, message);
+			this.executeExtendExtend(type, title, message);
 		}
 	}
 	
@@ -69,9 +61,7 @@ public final class NoticeEvent extends GuiEventEx {
 	 * @param title 标题
 	 * @param message 消息
 	 */
-	private void executeNativeEx(SnailNoticeType type, String title, String message) {
-		TrayMenu.getInstance().notice(title, message, type.getMessageType());
-	}
+	protected abstract void executeNativeExtend(SnailNoticeType type, String title, String message);
 	
 	/**
 	 * <p>扩展提示消息</p>
@@ -80,7 +70,7 @@ public final class NoticeEvent extends GuiEventEx {
 	 * @param title 标题
 	 * @param message 消息
 	 */
-	private void executeExtendEx(SnailNoticeType type, String title, String message) {
+	private final void executeExtendExtend(SnailNoticeType type, String title, String message) {
 		final ApplicationMessage applicationMessage = ApplicationMessage.message(ApplicationMessage.Type.NOTICE);
 		final Map<String, String> map = new HashMap<>(5);
 		map.put("type", type.name());

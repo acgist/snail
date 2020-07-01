@@ -1,4 +1,4 @@
-package com.acgist.snail.gui.event.impl;
+package com.acgist.snail.gui.event.adapter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,12 +6,10 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.gui.Alerts;
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.GuiManager.Mode;
 import com.acgist.snail.gui.GuiManager.SnailAlertType;
-import com.acgist.snail.gui.event.GuiEvent;
-import com.acgist.snail.gui.event.GuiEventEx;
+import com.acgist.snail.gui.event.GuiEventExtend;
 import com.acgist.snail.pojo.message.ApplicationMessage;
 import com.acgist.snail.system.format.BEncodeEncoder;
 
@@ -21,22 +19,16 @@ import com.acgist.snail.system.format.BEncodeEncoder;
  * @author acgist
  * @since 1.1.0
  */
-public final class AlertEvent extends GuiEventEx {
+public abstract class AlertEventAdapter extends GuiEventExtend {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AlertEvent.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AlertEventAdapter.class);
 	
-	private static final AlertEvent INSTANCE = new AlertEvent();
-	
-	protected AlertEvent() {
+	protected AlertEventAdapter() {
 		super(Type.ALERT, "提示窗口事件");
 	}
 
-	public static final GuiEvent getInstance() {
-		return INSTANCE;
-	}
-
 	@Override
-	protected void executeEx(GuiManager.Mode mode, Object ... args) {
+	protected final void executeExtend(GuiManager.Mode mode, Object ... args) {
 		SnailAlertType type;
 		String title;
 		String message;
@@ -56,9 +48,9 @@ public final class AlertEvent extends GuiEventEx {
 			return;
 		}
 		if(mode == Mode.NATIVE) {
-			executeNativeEx(type, title, message);
+			this.executeNativeExtend(type, title, message);
 		} else {
-			executeExtendEx(type, title, message);
+			this.executeExtendExtend(type, title, message);
 		}
 	}
 
@@ -69,9 +61,7 @@ public final class AlertEvent extends GuiEventEx {
 	 * @param title 标题
 	 * @param message 消息
 	 */
-	private void executeNativeEx(SnailAlertType type, String title, String message) {
-		Alerts.build(title, message, type.getAlertType());
-	}
+	protected abstract void executeNativeExtend(SnailAlertType type, String title, String message);
 	
 	/**
 	 * <p>扩展提示窗口</p>
@@ -80,7 +70,7 @@ public final class AlertEvent extends GuiEventEx {
 	 * @param title 标题
 	 * @param message 消息
 	 */
-	private void executeExtendEx(SnailAlertType type, String title, String message) {
+	private final void executeExtendExtend(SnailAlertType type, String title, String message) {
 		final ApplicationMessage applicationMessage = ApplicationMessage.message(ApplicationMessage.Type.ALERT);
 		final Map<String, String> map = new HashMap<>(5);
 		map.put("type", type.name());

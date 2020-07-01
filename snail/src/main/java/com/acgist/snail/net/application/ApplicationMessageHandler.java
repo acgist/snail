@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.GuiManager.Mode;
-import com.acgist.snail.gui.event.impl.TorrentEvent;
 import com.acgist.snail.net.TcpMessageHandler;
 import com.acgist.snail.net.codec.IMessageCodec;
 import com.acgist.snail.net.codec.impl.LineMessageCodec;
@@ -179,7 +178,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 			}
 			final String url = decoder.getString("url");
 			final String files = decoder.getString("files");
-			TorrentEvent.getInstance().files(files); // 设置选择文件
+			GuiManager.getInstance().files(files); // 设置选择文件
 			DownloaderManager.getInstance().newTask(url); // 开始下载任务
 			send(ApplicationMessage.response(ApplicationMessage.SUCCESS));
 		} catch (NetException | DownloadException e) {

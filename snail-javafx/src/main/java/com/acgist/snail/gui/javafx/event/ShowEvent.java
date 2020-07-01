@@ -1,7 +1,8 @@
-package com.acgist.snail.gui.event.impl;
+package com.acgist.snail.gui.javafx.event;
 
 import com.acgist.snail.gui.event.GuiEvent;
-import com.acgist.snail.gui.main.MainWindow;
+import com.acgist.snail.gui.event.adapter.ShowEventAdapter;
+import com.acgist.snail.gui.javafx.main.MainWindow;
 
 import javafx.application.Platform;
 
@@ -11,14 +12,10 @@ import javafx.application.Platform;
  * @author acgist
  * @since 1.1.0
  */
-public final class ShowEvent extends GuiEvent {
+public final class ShowEvent extends ShowEventAdapter {
 
 	private static final ShowEvent INSTANCE = new ShowEvent();
 	
-	protected ShowEvent() {
-		super(Type.SHOW, "显示窗口事件");
-	}
-
 	public static final GuiEvent getInstance() {
 		return INSTANCE;
 	}
@@ -26,11 +23,6 @@ public final class ShowEvent extends GuiEvent {
 	@Override
 	protected void executeNative(Object ... args) {
 		Platform.runLater(() -> MainWindow.getInstance().show());
-	}
-
-	@Override
-	protected void executeExtend(Object ... args) {
-		// TODO：实现
 	}
 
 }

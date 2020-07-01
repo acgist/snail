@@ -1,8 +1,8 @@
-package com.acgist.snail.gui.event.impl;
+package com.acgist.snail.gui.javafx.event;
 
-import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.event.GuiEvent;
-import com.acgist.snail.gui.menu.TrayMenu;
+import com.acgist.snail.gui.event.adapter.ExitEventAdapter;
+import com.acgist.snail.gui.javafx.menu.TrayMenu;
 
 import javafx.application.Platform;
 
@@ -12,13 +12,9 @@ import javafx.application.Platform;
  * @author acgist
  * @since 1.1.0
  */
-public final class ExitEvent extends GuiEvent {
+public final class ExitEvent extends ExitEventAdapter {
 
 	private static final ExitEvent INSTANCE = new ExitEvent();
-	
-	protected ExitEvent() {
-		super(Type.EXIT, "退出窗口事件");
-	}
 	
 	public static final GuiEvent getInstance() {
 		return INSTANCE;
@@ -30,9 +26,4 @@ public final class ExitEvent extends GuiEvent {
 		TrayMenu.exit(); // 退出托盘
 	}
 
-	@Override
-	protected void executeExtend(Object ... args) {
-		GuiManager.getInstance().unlock(); // 释放扩展GUI阻塞锁
-	}
-	
 }

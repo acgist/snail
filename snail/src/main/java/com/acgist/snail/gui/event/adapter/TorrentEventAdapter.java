@@ -1,4 +1,4 @@
-package com.acgist.snail.gui.event.impl;
+package com.acgist.snail.gui.event.adapter;
 
 import java.util.stream.Collectors;
 
@@ -7,8 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.GuiManager.Mode;
-import com.acgist.snail.gui.event.GuiEventEx;
-import com.acgist.snail.gui.torrent.TorrentWindow;
+import com.acgist.snail.gui.event.GuiEventExtend;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.bean.TorrentFile;
@@ -17,8 +16,6 @@ import com.acgist.snail.protocol.torrent.TorrentProtocol;
 import com.acgist.snail.system.format.BEncodeDecoder;
 import com.acgist.snail.utils.StringUtils;
 
-import javafx.application.Platform;
-
 /**
  * <p>GUI种子文件选择事件</p>
  * <p>不能抛出异常：抛出异常会导致{@link TorrentProtocol}创建任务不能正常的删除临时文件</p>
@@ -26,36 +23,25 @@ import javafx.application.Platform;
  * @author acgist
  * @since 1.1.1
  */
-public final class TorrentEvent extends GuiEventEx {
+public abstract class TorrentEventAdapter extends GuiEventExtend {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentEvent.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentEventAdapter.class);
 	
-	private static final TorrentEvent INSTANCE = new TorrentEvent();
-	
-	/**
-	 * <p>种子文件选择列表（B编码）</p>
-	 */
-	private String files;
-	
-	protected TorrentEvent() {
+	protected TorrentEventAdapter() {
 		super(Type.TORRENT, "种子文件选择事件");
-	}
-	
-	public static final TorrentEvent getInstance() {
-		return INSTANCE;
 	}
 
 	@Override
-	protected void executeEx(GuiManager.Mode mode, Object ... args) {
+	protected final void executeExtend(GuiManager.Mode mode, Object ... args) {
 		if(args == null) {
 			LOGGER.warn("种子文件选择（参数错误）：{}", args);
 		} else if(args.length == 1) {
 			final Object object = args[0];
 			if(object instanceof ITaskSession) {
 				if(mode == Mode.NATIVE) {
-					executeNativeEx((ITaskSession) object);
+					this.executeNativeExtend((ITaskSession) object);
 				} else {
-					executeExtendEx((ITaskSession) object);
+					this.executeExtendExtend((ITaskSession) object);
 				}
 			} else {
 				LOGGER.warn("种子文件选择（参数类型错误）：{}", object);
@@ -70,26 +56,21 @@ public final class TorrentEvent extends GuiEventEx {
 	 * 
 	 * @param taskSession 任务信息
 	 */
-	private void executeNativeEx(ITaskSession taskSession) {
-		if(Platform.isFxApplicationThread()) { // JavaFX线程：本地GUI
-			TorrentWindow.getInstance().show(taskSession);
-		} else { // 非JavaFX线程：扩展GUI
-			executeExtendEx(taskSession);
-		}
-	}
+	protected abstract void executeNativeExtend(ITaskSession taskSession);
 	
 	/**
 	 * <p>扩展GUI</p>
 	 * 
 	 * @param taskSession 任务信息
 	 */
-	private void executeExtendEx(ITaskSession taskSession) {
-		if(StringUtils.isEmpty(this.files)) {
-			LOGGER.debug("种子文件选择没有文件信息：{}", this.files);
+	protected final void executeExtendExtend(ITaskSession taskSession) {
+		final String files = GuiManager.getInstance().files();
+		if(StringUtils.isEmpty(files)) {
+			LOGGER.debug("种子文件选择没有文件信息：{}", files);
 			return;
 		}
 		try {
-			final var decoder = BEncodeDecoder.newInstance(this.files);
+			final var decoder = BEncodeDecoder.newInstance(files);
 			// 选择文件列表
 			final var selectFiles = decoder.nextList().stream()
 				.map(object -> StringUtils.getString(object))
@@ -101,19 +82,10 @@ public final class TorrentEvent extends GuiEventEx {
 				.filter(file -> selectFiles.contains(file.path()))
 				.collect(Collectors.summingLong(TorrentFile::getLength));
 			taskSession.setSize(size);
-			taskSession.setDescription(this.files);
+			taskSession.setDescription(files);
 		} catch (Exception e) {
-			LOGGER.error("设置种子文件选择异常：{}", this.files, e);
+			LOGGER.error("设置种子文件选择异常：{}", files, e);
 		}
 	}
 	
-	/**
-	 * <p>设置种子文件选择列表</p>
-	 * 
-	 * @param files 种子文件选择列表（B编码）
-	 */
-	public void files(String files) {
-		this.files = files;
-	}
-
 }
