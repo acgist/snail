@@ -4,30 +4,21 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	
-	<!--
-	mvn -e clean package deploy -P release -D skipTests -D javafx.platform=win|mac|linux
-	-D skipTests：编译测试代码
-	-D maven.test.skip=true：跳过编译测试代码
-	-->
-	<!-- 版本配置：pom.xml、builder/config.bat、SnailLauncher/src/snail.ini、src/main/resources/config/system.properties -->
-	
 	<parent>
 		<groupId>com.acgist</groupId>
 		<artifactId>snail-parent</artifactId>
-		<version>1.3.1</version>
+		<version>${acgist.version}</version>
 		<relativePath>../</relativePath>
 	</parent>
 	
 	<modelVersion>4.0.0</modelVersion>
 	
-	<groupId>com.acgist</groupId>
 	<artifactId>snail-javafx</artifactId>
 	<packaging>jar</packaging>
 	
 	<url>https://gitee.com/acgist/snail</url>
 	
-	<name>snail</name>
-	<version>1.3.1</version>
+	<name>snail-javafx</name>
 	<description>基于Java、JavaFX开发的下载工具，支持下载协议：BT（BitTorrent、磁力链接、种子）、FTP、HTTP。</description>
 	<inceptionYear>2019</inceptionYear>
 	
@@ -75,27 +66,11 @@
 			<artifactId>javafx-fxml</artifactId>
 			<version>${javafx.version}</version>
 		</dependency>
-		<!-- 数据库：H2 -->
+		<!-- Snail -->
 		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<version>${h2.version}</version>
-		</dependency>
-		<!--
-		日志：slf4j、logback
-		隐式依赖：slf4j-api、logback-core
-		-->
-		<!--
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-		-->
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>${logback.version}</version>
+			<groupId>com.acgist</groupId>
+			<artifactId>snail</artifactId>
+			<version>${acgist.version}</version>
 		</dependency>
 		
 		<!-- 测试：JUnit -->
