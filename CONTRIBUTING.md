@@ -81,4 +81,4 @@
 * 提交PR前请阅读[代码规范](./CODE_OF_CONDUCT.md)
 * 将项目fork到自己的项目下（不要直接在仓库下新建分支）
 * 提交PR前先rebase（确保commit记录整洁）
-* 将PR提交到pr分支（不要提交到master分支）
+* 将PR提交到对应pr分支（不要提交到master分支）
