@@ -2,7 +2,7 @@ package com.acgist.snail;
 
 import org.junit.Test;
 
-import com.acgist.snail.gui.Themes;
+import com.acgist.snail.gui.javafx.Themes;
 
 public class WindowsTest extends BaseTest {
 

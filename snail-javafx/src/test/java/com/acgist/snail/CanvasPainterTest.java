@@ -3,7 +3,7 @@ package com.acgist.snail;
 import java.util.BitSet;
 import java.util.Random;
 
-import com.acgist.snail.gui.statistics.CanvasPainter;
+import com.acgist.snail.gui.javafx.statistics.CanvasPainter;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.ThreadUtils;
 
