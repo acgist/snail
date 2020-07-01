@@ -12,6 +12,7 @@
 open module com.acgist.snail {
 
 	//================导出================//
+	// TODO：提高内聚
 	exports com.acgist.snail.gui;
 	exports com.acgist.snail.gui.event;
 	exports com.acgist.snail.gui.event.adapter;
@@ -36,6 +37,7 @@ open module com.acgist.snail {
 	exports com.acgist.snail.utils;
 	
 	//================Java================//
+	// TODO：删除不需要的依赖
 	requires java.base; // 不能使用transitive修饰
 	requires transitive java.sql;
 	requires transitive java.xml;
