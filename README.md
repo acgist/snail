@@ -28,6 +28,15 @@
 
 ----
 
+## 结构
+
+|项目|描述|
+|:--|:--:|
+|snail|下载核心|
+|snail-extend|扩展GUI|
+|snail-javafx|电脑GUI|
+|snail-android|安卓GUI|
+
 ## 使用
 
 Windows稳定版下载：[snail-windows.zip](https://gitee.com/acgist/snail/attach_files)（解压可以直接运行）
