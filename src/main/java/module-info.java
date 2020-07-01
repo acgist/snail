@@ -19,11 +19,14 @@ open module com.acgist.snail {
 	exports com.acgist.snail.pojo;
 	exports com.acgist.snail.pojo.bean;
 	exports com.acgist.snail.pojo.message;
+	exports com.acgist.snail.pojo.wrapper;
 	exports com.acgist.snail.system;
 	exports com.acgist.snail.system.format;
+	exports com.acgist.snail.system.config;
 	exports com.acgist.snail.system.context;
 	exports com.acgist.snail.protocol;
 	exports com.acgist.snail.downloader;
+	exports com.acgist.snail.utils;
 	
 	//================Java================//
 	requires java.base; // 不能使用transitive修饰
