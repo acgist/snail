@@ -14,6 +14,7 @@ open module com.acgist.snail {
 	//================导出================//
 	exports com.acgist.snail.gui;
 	exports com.acgist.snail.gui.event;
+	exports com.acgist.snail.gui.event.adapter;
 	exports com.acgist.snail.net;
 	exports com.acgist.snail.net.torrent to com.acgist.snail.javafx;
 	exports com.acgist.snail.net.torrent.dht.bootstrap to com.acgist.snail.javafx;
@@ -30,6 +31,7 @@ open module com.acgist.snail {
 	exports com.acgist.snail.system.context;
 	exports com.acgist.snail.system.exception;
 	exports com.acgist.snail.protocol;
+	exports com.acgist.snail.protocol.torrent to com.acgist.snail.javafx;
 	exports com.acgist.snail.downloader;
 	exports com.acgist.snail.utils;
 	

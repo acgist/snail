@@ -9,15 +9,6 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.gui.event.GuiEvent;
 import com.acgist.snail.gui.event.GuiEvent.Type;
-import com.acgist.snail.gui.event.impl.AlertEvent;
-import com.acgist.snail.gui.event.impl.BuildEvent;
-import com.acgist.snail.gui.event.impl.ExitEvent;
-import com.acgist.snail.gui.event.impl.HideEvent;
-import com.acgist.snail.gui.event.impl.NoticeEvent;
-import com.acgist.snail.gui.event.impl.RefreshTaskListEvent;
-import com.acgist.snail.gui.event.impl.RefreshTaskStatusEvent;
-import com.acgist.snail.gui.event.impl.ShowEvent;
-import com.acgist.snail.gui.event.impl.TorrentEvent;
 import com.acgist.snail.net.IMessageHandler;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.message.ApplicationMessage;
@@ -71,28 +62,6 @@ public final class GuiManager {
 		/** 错误 */
 		ERROR;
 		
-//		/**
-//		 * <p>获取JavaFX窗口类型</p>
-//		 * 
-//		 * @return JavaFX窗口类型
-//		 */
-//		public final AlertType getAlertType() {
-//			switch (this) {
-//			case NONE:
-//				return AlertType.NONE;
-//			case INFO:
-//				return AlertType.INFORMATION;
-//			case WARN:
-//				return AlertType.WARNING;
-//			case CONFIRM:
-//				return AlertType.CONFIRMATION;
-//			case ERROR:
-//				return AlertType.ERROR;
-//			default:
-//				return AlertType.INFORMATION;
-//			}
-//		}
-		
 	}
 	
 	/**
@@ -108,26 +77,6 @@ public final class GuiManager {
 		WARN,
 		/** 错误 */
 		ERROR;
-		
-//		/**
-//		 * <p>获取JavaFX消息类型</p>
-//		 * 
-//		 * @return JavaFX消息类型
-//		 */
-//		public final MessageType getMessageType() {
-//			switch (this) {
-//			case NONE:
-//				return MessageType.NONE;
-//			case INFO:
-//				return MessageType.INFO;
-//			case WARN:
-//				return MessageType.WARNING;
-//			case ERROR:
-//				return MessageType.ERROR;
-//			default:
-//				return MessageType.INFO;
-//			}
-//		}
 		
 	}
 	
@@ -145,23 +94,15 @@ public final class GuiManager {
 	 */
 	private static final String ARGS_MODE = "mode";
 	
-	static {
-		register(BuildEvent.getInstance());
-		register(ShowEvent.getInstance());
-		register(HideEvent.getInstance());
-		register(ExitEvent.getInstance());
-		register(AlertEvent.getInstance());
-		register(NoticeEvent.getInstance());
-		register(TorrentEvent.getInstance());
-		register(RefreshTaskListEvent.getInstance());
-		register(RefreshTaskStatusEvent.getInstance());
-	}
-	
 	/**
 	 * <p>运行模式</p>
 	 * <p>默认：本地GUI</p>
 	 */
 	private Mode mode = Mode.NATIVE;
+	/**
+	 * <p>种子文件选择列表（B编码）</p>
+	 */
+	private String files;
 	/**
 	 * <p>扩展GUI阻塞锁</p>
 	 * <p>使用扩展GUI时阻止程序关闭</p>
@@ -360,6 +301,24 @@ public final class GuiManager {
 		// TODO：线程安全
 		event.execute(this.mode, args);
 		return this;
+	}
+	
+	/**
+	 * <p>获取种子文件选择列表</p>
+	 * 
+	 * @return 种子文件选择列表（B编码）
+	 */
+	public String files() {
+		return this.files;
+	}
+	
+	/**
+	 * <p>设置种子文件选择列表</p>
+	 * 
+	 * @param files 种子文件选择列表（B编码）
+	 */
+	public void files(String files) {
+		this.files = files;
 	}
 	
 	/**

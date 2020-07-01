@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.DownloaderManager;
+import com.acgist.snail.gui.GuiManager.SnailAlertType;
 import com.acgist.snail.gui.javafx.Alerts;
 import com.acgist.snail.gui.javafx.Controller;
 import com.acgist.snail.gui.javafx.Fonts.SnailIcon;
@@ -38,7 +39,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
@@ -354,7 +354,7 @@ public final class MainController extends Controller implements Initializable {
 		if(!this.haveSelected()) {
 			return;
 		}
-		final var optional = Alerts.build("删除确认", "删除选中任务？", AlertType.CONFIRMATION);
+		final var optional = Alerts.build("删除确认", "删除选中任务？", SnailAlertType.CONFIRM);
 		if(optional.isPresent() && optional.get() == ButtonType.OK) {
 			this.selected().forEach(session -> DownloaderManager.getInstance().delete(session));
 		}

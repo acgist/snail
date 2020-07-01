@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.gui.GuiManager;
+import com.acgist.snail.gui.javafx.GuiJavaFXManager;
 import com.acgist.snail.system.context.SystemContext;
 
 /**
@@ -41,6 +42,7 @@ public final class Application {
 		final boolean enable = SystemContext.listen(); // 启动系统监听
 		if(enable) {
 			SystemContext.init(); // 初始化系统上下文
+			GuiJavaFXManager.getInstance().registerEvent(); // 注册GUI事件
 			GuiManager.getInstance().init(args).build(); // 初始化GUI
 		} else {
 			LOGGER.debug("启动监听失败");

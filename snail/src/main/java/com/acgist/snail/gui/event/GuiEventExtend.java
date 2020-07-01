@@ -10,20 +10,20 @@ import com.acgist.snail.gui.GuiManager.Mode;
  * @author acgist
  * @since 1.1.0
  */
-public abstract class GuiEventEx extends GuiEvent {
+public abstract class GuiEventExtend extends GuiEvent {
 
-	protected GuiEventEx(Type type, String name) {
+	protected GuiEventExtend(Type type, String name) {
 		super(type, name);
 	}
 	
 	@Override
-	protected void executeNative(Object ... args) {
-		executeEx(Mode.NATIVE, args);
+	protected final void executeNative(Object ... args) {
+		this.executeExtend(Mode.NATIVE, args);
 	}
 
 	@Override
-	protected void executeExtend(Object ... args) {
-		executeEx(Mode.EXTEND, args);
+	protected final void executeExtend(Object ... args) {
+		this.executeExtend(Mode.EXTEND, args);
 	}
 	
 	/**
@@ -32,6 +32,6 @@ public abstract class GuiEventEx extends GuiEvent {
 	 * @param mode 运行模式
 	 * @param args 变长参数
 	 */
-	protected abstract void executeEx(GuiManager.Mode mode, Object ... args);
+	protected abstract void executeExtend(GuiManager.Mode mode, Object ... args);
 
 }
