@@ -33,8 +33,8 @@
 |项目|描述|
 |:--|:--:|
 |snail|下载核心|
-|snail-extend|扩展GUI|
 |snail-javafx|电脑GUI|
+|snail-extend|扩展GUI|
 |snail-android|安卓GUI|
 
 ## 使用
