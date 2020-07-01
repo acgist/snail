@@ -14,13 +14,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	
 	<groupId>com.acgist</groupId>
-	<artifactId>snail-parent</artifactId>
+	<artifactId>parent</artifactId>
 	<version>${acgist.version}</version>
 	<packaging>pom</packaging>
 	
 	<url>https://gitee.com/acgist/snail</url>
 	
-	<name>snail-parent</name>
+	<name>parent</name>
 	<description>基于Java、JavaFX开发的下载工具，支持下载协议：BT（BitTorrent、磁力链接、种子）、FTP、HTTP。</description>
 	<inceptionYear>2019</inceptionYear>
 	
@@ -60,43 +60,6 @@
 	</modules>
 
 	<dependencies>
-		<!--
-		GUI：JavaFX
-		隐式依赖：javafx-base、javafx-controls、javafx-graphics
-		-->
-		<!--
-		编译系统和运行系统不一致时：
-		1.添加编译参数：-D javafx.platform=win|mac|linux
-		2.显式引入隐式依赖并添加属性：<classifier>${os.name}</classifier>
-		-->
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-fxml</artifactId>
-			<version>${javafx.version}</version>
-		</dependency>
-		<!-- 数据库：H2 -->
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<version>${h2.version}</version>
-		</dependency>
-		<!--
-		日志：slf4j、logback
-		隐式依赖：slf4j-api、logback-core
-		-->
-		<!--
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-		-->
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>${logback.version}</version>
-		</dependency>
-		
 		<!-- 测试：JUnit -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -203,33 +166,6 @@
 						<inherited></inherited>
 					</execution>
 				</executions>
-			</plugin>
-			<!-- jar：mvn jar:jar -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>${maven.jar.version}</version>
-				<configuration>
-					<!-- MANIFEST.MF -->
-					<archive>
-						<manifest>
-							<mainClass>com.acgist.main.Application</mainClass>
-							<addClasspath>true</addClasspath>
-							<classpathPrefix>lib</classpathPrefix>
-						</manifest>
-						<manifestEntries>
-							<Built-By>${vendor}</Built-By>
-							<Automatic-Module-Name>${module}</Automatic-Module-Name>
-							<Implementation-Title>${project.artifactId}</Implementation-Title>
-							<Implementation-Vendor>${vendor}</Implementation-Vendor>
-							<Implementation-Vendor-Id>${vendor}</Implementation-Vendor-Id>
-							<Implementation-Version>${project.version}</Implementation-Version>
-							<Specification-Title>${project.artifactId}</Specification-Title>
-							<Specification-Vendor>${vendor}</Specification-Vendor>
-							<Specification-Version>${project.version}</Specification-Version>
-						</manifestEntries>
-					</archive>
-				</configuration>
 			</plugin>
 			<!-- dependency：mvn dependency:auto-copy-dependencies-lib -->
 			<plugin>
