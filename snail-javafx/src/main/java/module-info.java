@@ -9,29 +9,11 @@
  * @author acgist
  * @since 1.0.0
  */
-open module com.acgist.snail {
+open module com.acgist.snail.javafx {
 
 	//================导出================//
-	exports com.acgist.snail.gui;
-	exports com.acgist.snail.gui.event;
-	exports com.acgist.snail.net;
-	exports com.acgist.snail.net.torrent to com.acgist.snail.javafx;
-	exports com.acgist.snail.net.torrent.dht.bootstrap to com.acgist.snail.javafx;
-	exports com.acgist.snail.net.torrent.peer.bootstrap to com.acgist.snail.javafx;
-	exports com.acgist.snail.net.torrent.tracker.bootstrap to com.acgist.snail.javafx;
-	exports com.acgist.snail.pojo;
-	exports com.acgist.snail.pojo.bean;
-	exports com.acgist.snail.pojo.message;
-	exports com.acgist.snail.pojo.wrapper;
-	exports com.acgist.snail.pojo.session to com.acgist.snail.javafx;
-	exports com.acgist.snail.system;
-	exports com.acgist.snail.system.format;
-	exports com.acgist.snail.system.config;
-	exports com.acgist.snail.system.context;
-	exports com.acgist.snail.system.exception;
-	exports com.acgist.snail.protocol;
-	exports com.acgist.snail.downloader;
-	exports com.acgist.snail.utils;
+	exports com.acgist.main;
+	exports com.acgist.snail.gui.javafx;
 	
 	//================Java================//
 	requires java.base; // 不能使用transitive修饰
@@ -51,9 +33,15 @@ open module com.acgist.snail {
 	requires transitive jdk.crypto.ec;
 	requires transitive jdk.unsupported;
 	
+	//================JavaFX================//
+	requires transitive javafx.fxml;
+	requires transitive javafx.controls;
+	requires transitive javafx.graphics;
+
 	//================依赖================//
 	requires transitive org.slf4j;
 	requires transitive com.h2database;
+	requires transitive com.acgist.snail;
 	requires transitive ch.qos.logback.core;
 	requires transitive ch.qos.logback.classic;
 

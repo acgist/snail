@@ -45,6 +45,8 @@ import com.acgist.snail.utils.FileUtils;
  * <p>BT任务需要先上传才能进行下载</p>
  * <p>磁力链接不存在下载和上次状态</p>
  * 
+ * TODO：接口
+ * 
  * @author acgist
  * @since 1.0.0
  */

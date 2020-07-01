@@ -1,6 +1,5 @@
 package com.acgist.snail.gui;
 
-import java.awt.TrayIcon.MessageType;
 import java.time.Duration;
 import java.util.EnumMap;
 import java.util.Map;
@@ -25,8 +24,6 @@ import com.acgist.snail.pojo.message.ApplicationMessage;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.ThreadUtils;
-
-import javafx.scene.control.Alert.AlertType;
 
 /**
  * <p>GUI管理器</p>
@@ -74,27 +71,27 @@ public final class GuiManager {
 		/** 错误 */
 		ERROR;
 		
-		/**
-		 * <p>获取JavaFX窗口类型</p>
-		 * 
-		 * @return JavaFX窗口类型
-		 */
-		public final AlertType getAlertType() {
-			switch (this) {
-			case NONE:
-				return AlertType.NONE;
-			case INFO:
-				return AlertType.INFORMATION;
-			case WARN:
-				return AlertType.WARNING;
-			case CONFIRM:
-				return AlertType.CONFIRMATION;
-			case ERROR:
-				return AlertType.ERROR;
-			default:
-				return AlertType.INFORMATION;
-			}
-		}
+//		/**
+//		 * <p>获取JavaFX窗口类型</p>
+//		 * 
+//		 * @return JavaFX窗口类型
+//		 */
+//		public final AlertType getAlertType() {
+//			switch (this) {
+//			case NONE:
+//				return AlertType.NONE;
+//			case INFO:
+//				return AlertType.INFORMATION;
+//			case WARN:
+//				return AlertType.WARNING;
+//			case CONFIRM:
+//				return AlertType.CONFIRMATION;
+//			case ERROR:
+//				return AlertType.ERROR;
+//			default:
+//				return AlertType.INFORMATION;
+//			}
+//		}
 		
 	}
 	
@@ -112,25 +109,25 @@ public final class GuiManager {
 		/** 错误 */
 		ERROR;
 		
-		/**
-		 * <p>获取JavaFX消息类型</p>
-		 * 
-		 * @return JavaFX消息类型
-		 */
-		public final MessageType getMessageType() {
-			switch (this) {
-			case NONE:
-				return MessageType.NONE;
-			case INFO:
-				return MessageType.INFO;
-			case WARN:
-				return MessageType.WARNING;
-			case ERROR:
-				return MessageType.ERROR;
-			default:
-				return MessageType.INFO;
-			}
-		}
+//		/**
+//		 * <p>获取JavaFX消息类型</p>
+//		 * 
+//		 * @return JavaFX消息类型
+//		 */
+//		public final MessageType getMessageType() {
+//			switch (this) {
+//			case NONE:
+//				return MessageType.NONE;
+//			case INFO:
+//				return MessageType.INFO;
+//			case WARN:
+//				return MessageType.WARNING;
+//			case ERROR:
+//				return MessageType.ERROR;
+//			default:
+//				return MessageType.INFO;
+//			}
+//		}
 		
 	}
 	
