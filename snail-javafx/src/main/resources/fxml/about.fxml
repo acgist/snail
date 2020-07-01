@@ -9,7 +9,7 @@
 	fx:id="root"
 	hgap="7" vgap="3"
 	styleClass="root,about" stylesheets="@/style/fxml.css"
-	fx:controller="com.acgist.snail.gui.about.AboutController"
+	fx:controller="com.acgist.snail.gui.javafx.about.AboutController"
 	xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
 
 	<TextFlow GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="3">
