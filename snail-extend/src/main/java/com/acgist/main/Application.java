@@ -14,7 +14,7 @@ import com.acgist.snail.system.format.BEncodeEncoder;
  * <p>Snail启动类</p>
  * 
  * @author acgist
- * @since 1.0.0
+ * @since 1.4.0
  */
 public final class Application {
 

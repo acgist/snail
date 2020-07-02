@@ -15,7 +15,7 @@ import com.acgist.snail.gui.GuiManager;
  * <p>JavaFX GUI管理器</p>
  * 
  * @author acgist
- * @since 1.1.0
+ * @since 1.4.0
  */
 public final class ExtendGuiManager {
 
