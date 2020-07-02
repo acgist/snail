@@ -17,6 +17,7 @@ open module com.acgist.snail {
 	exports com.acgist.snail.gui.event;
 	exports com.acgist.snail.gui.event.adapter;
 	exports com.acgist.snail.net;
+	exports com.acgist.snail.net.application;
 	exports com.acgist.snail.net.torrent;
 	exports com.acgist.snail.net.torrent.bootstrap;
 	exports com.acgist.snail.net.torrent.dht.bootstrap;

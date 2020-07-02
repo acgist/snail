@@ -64,7 +64,7 @@ public class TorrentEventAdapter extends GuiEventExtend {
 	 * 
 	 * @param taskSession 任务信息
 	 */
-	protected final void executeExtendExtend(ITaskSession taskSession) {
+	protected void executeExtendExtend(ITaskSession taskSession) {
 		final String files = GuiManager.getInstance().files();
 		if(StringUtils.isEmpty(files)) {
 			LOGGER.debug("种子文件选择没有文件信息：{}", files);

@@ -20,7 +20,7 @@ public class ShowEventAdapter extends GuiEvent {
 	}
 
 	@Override
-	protected final void executeExtend(Object ... args) {
+	protected void executeExtend(Object ... args) {
 		// TODO：实现
 	}
 
