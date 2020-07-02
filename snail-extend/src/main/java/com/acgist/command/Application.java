@@ -1,4 +1,4 @@
-package com.acgist.main;
+package com.acgist.command;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +12,8 @@ import com.acgist.snail.system.format.BEncodeEncoder;
 
 /**
  * <p>Snail启动类</p>
+ * <p>使用系统消息与后台模式启动的Snail（蜗牛）进行通信和下载</p>
+ * <p>后台模式启动：`snail-javafx`</p>
  * 
  * @author acgist
  * @since 1.4.0
@@ -20,17 +22,15 @@ public final class Application {
 
 	/**
 	 * <p>启动方法</p>
-	 * <p>请使用后台模式启动`snail-javafx`</p>
-	 * <p>如果消息乱码，请添加启动参数："-Dfile.encoding=UTF-8"</p>
 	 * 
 	 * @param args 启动参数
 	 */
 	public static final void main(String[] args) {
+		String message = null;
+		final Scanner scanner = new Scanner(System.in);
 		ExtendGuiManager.getInstance().registerEvent();
 		final ApplicationClient client = ApplicationClient.newInstance();
 		client.connect();
-		String message = null;
-		Scanner scanner = new Scanner(System.in);
 		while ((message = scanner.nextLine()) != null) {
 			if(message.equalsIgnoreCase(Type.CLOSE.name())) {
 				client.send(ApplicationMessage.message(Type.CLOSE, message));

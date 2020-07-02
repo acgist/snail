@@ -9,7 +9,7 @@
 open module com.acgist.snail.extend {
 
 	//================导出================//
-	exports com.acgist.main;
+	exports com.acgist.command;
 	
 	//================Java================//
 	requires java.base;
