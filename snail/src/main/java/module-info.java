@@ -43,7 +43,6 @@ open module com.acgist.snail {
 	requires transitive java.xml;
 	requires transitive java.naming;
 	requires transitive java.logging;
-	requires transitive java.desktop;
 	requires transitive java.net.http;
 	requires transitive java.compiler;
 	requires transitive java.scripting;

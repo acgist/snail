@@ -16,22 +16,8 @@ open module com.acgist.snail.javafx {
 	exports com.acgist.snail.gui.javafx;
 	
 	//================Java================//
-	requires java.base; // 不能使用transitive修饰
-	requires transitive java.sql;
-	requires transitive java.xml;
-	requires transitive java.naming;
-	requires transitive java.logging;
+	requires java.base;
 	requires transitive java.desktop;
-	requires transitive java.net.http;
-	requires transitive java.compiler;
-	requires transitive java.scripting;
-	requires transitive java.instrument;
-	requires transitive java.management;
-	requires transitive java.transaction.xa;
-	
-	//================JDK================//
-	requires transitive jdk.crypto.ec;
-	requires transitive jdk.unsupported;
 	
 	//================JavaFX================//
 	requires transitive javafx.fxml;
@@ -39,10 +25,6 @@ open module com.acgist.snail.javafx {
 	requires transitive javafx.graphics;
 
 	//================依赖================//
-	requires transitive org.slf4j;
-	requires transitive com.h2database;
 	requires transitive com.acgist.snail;
-	requires transitive ch.qos.logback.core;
-	requires transitive ch.qos.logback.classic;
 
 }

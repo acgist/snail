@@ -19,13 +19,13 @@ import com.acgist.snail.gui.javafx.build.BuildWindow;
 import com.acgist.snail.gui.javafx.menu.TaskMenu;
 import com.acgist.snail.gui.javafx.setting.SettingWindow;
 import com.acgist.snail.gui.javafx.torrent.TorrentWindow;
+import com.acgist.snail.gui.utils.DesktopUtils;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.ITaskSession.Status;
 import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.system.SystemStatistics;
 import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.utils.DesktopUtils;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 

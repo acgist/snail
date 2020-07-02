@@ -1,7 +1,5 @@
 package com.acgist.snail;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.stream.Collectors;
@@ -11,6 +9,7 @@ import org.junit.Test;
 
 import com.acgist.snail.pojo.ITaskSession.FileType;
 import com.acgist.snail.pojo.entity.TaskEntity;
+import com.acgist.snail.system.PropertyDescriptor;
 import com.acgist.snail.utils.BeanUtils;
 
 public class BeanUtilsTest extends BaseTest {
@@ -44,7 +43,7 @@ public class BeanUtilsTest extends BaseTest {
 	}
 	
 	@Test
-	public void testEnumProperty() throws IntrospectionException {
+	public void testEnumProperty() {
 		PropertyDescriptor descriptor = new PropertyDescriptor("status", TaskEntity.class);
 		if(descriptor.getPropertyType().isEnum()) {
 			final var enums = descriptor.getPropertyType().getEnumConstants();

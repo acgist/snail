@@ -1,10 +1,8 @@
 package com.acgist.snail.utils;
 
-import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.io.Reader;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -17,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.wrapper.ResultSetWrapper;
+import com.acgist.snail.system.PropertyDescriptor;
 
 /**
  * <p>Bean工具</p>
@@ -102,11 +101,6 @@ public final class BeanUtils {
 	
 	/**
 	 * <p>获取类型所有属性名称</p>
-	 * <dl>
-	 * 	<dt>不获取的属性</dt>
-	 * 	<dd>静态：{@code static}</dd>
-	 * 	<dd>瞬时：{@code transient}</dd>
-	 * </dl>
 	 * 
 	 * @param clazz 类型
 	 * 
@@ -124,11 +118,7 @@ public final class BeanUtils {
 		return Stream.concat(
 			Stream
 				.of(fields)
-				.filter(field -> {
-					return 
-						!Modifier.isStatic(field.getModifiers()) && // 非静态属性
-						!Modifier.isTransient(field.getModifiers()); // 非瞬时属性
-				})
+				.filter(field -> !PropertyDescriptor.ignoreProperty(field))
 				.map(field -> field.getName()),
 			Stream.of(properties)
 		).toArray(String[]::new);
