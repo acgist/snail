@@ -19,7 +19,7 @@ rem 运行环境路径
 set runtime=java
 
 rem JAR文件
-set jar=%project%-%version%.jar
+set jar=%project%.javafx-%version%.jar
 
 rem BAT配置文件
 set config=config.bat

@@ -53,8 +53,6 @@ mvn clean package -P release -D skipTests
 #### 启动
 
 ```bash
-# 乱码添加参数："-Dfile.encoding=UTF-8"
-
 # Linux
 java -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar
 
