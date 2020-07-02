@@ -1,4 +1,4 @@
-package com.acgist.snail;
+package com.acgist.snail.javafx;
 
 import java.util.BitSet;
 import java.util.Random;

@@ -1,4 +1,4 @@
-package com.acgist.snail.utils;
+package com.acgist.snail.gui.utils;
 
 import java.awt.Desktop;
 import java.awt.Desktop.Action;

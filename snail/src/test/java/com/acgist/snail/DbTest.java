@@ -22,7 +22,7 @@ public class DbTest extends BaseTest {
 	@Test
 	public void testFindOne() {
 		ConfigRepository repository = new ConfigRepository();
-		this.log(repository.findOne("4d9949b4-854a-4eab-b7ea-80ed93f55259"));
+		this.log(repository.findOne("52d11667-2a35-4967-a112-b57b58687e72"));
 		this.log(repository.findOne(ConfigEntity.PROPERTY_NAME, "test"));
 	}
 	
@@ -40,7 +40,7 @@ public class DbTest extends BaseTest {
 	public void testUpdate() {
 		ConfigRepository repository = new ConfigRepository();
 		ConfigEntity entity = new ConfigEntity();
-		entity.setId("86d1715e-3960-4f0f-8936-22d03040ef83");
+		entity.setId("52d11667-2a35-4967-a112-b57b58687e72");
 		entity.setName("test");
 		entity.setValue("test-update");
 		repository.update(entity);

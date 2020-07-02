@@ -5,8 +5,8 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.gui.javafx.Window;
 import com.acgist.snail.gui.javafx.statistics.StatisticsWindow;
+import com.acgist.snail.gui.utils.DesktopUtils;
 import com.acgist.snail.system.config.SystemConfig;
-import com.acgist.snail.utils.DesktopUtils;
 
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;

@@ -1,4 +1,4 @@
-package com.acgist.snail;
+package com.acgist.snail.javafx;
 
 import java.awt.Desktop;
 import java.io.File;
@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import com.acgist.snail.utils.DesktopUtils;
+import com.acgist.snail.gui.utils.DesktopUtils;
 
 public class DesktopTest extends BaseTest {
 

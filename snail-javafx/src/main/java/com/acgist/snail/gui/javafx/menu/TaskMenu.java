@@ -15,9 +15,9 @@ import com.acgist.snail.gui.javafx.Menu;
 import com.acgist.snail.gui.javafx.Fonts.SnailIcon;
 import com.acgist.snail.gui.javafx.main.MainWindow;
 import com.acgist.snail.gui.javafx.torrent.TorrentWindow;
+import com.acgist.snail.gui.utils.DesktopUtils;
 import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.system.context.SystemThreadContext;
-import com.acgist.snail.utils.DesktopUtils;
 import com.acgist.snail.utils.FileUtils;
 
 import javafx.application.Platform;
