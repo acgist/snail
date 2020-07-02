@@ -188,7 +188,7 @@ public final class GuiManager {
 	 * @return GUI管理器
 	 */
 	public GuiManager alert(String title, String message) {
-		this.alert(title, message, MessageType.INFO);
+		this.alert(title, message, GuiManager.MessageType.INFO);
 		return this;
 	}
 
@@ -201,7 +201,7 @@ public final class GuiManager {
 	 * 
 	 * @return GUI管理器
 	 */
-	public GuiManager alert(String title, String message, MessageType type) {
+	public GuiManager alert(String title, String message, GuiManager.MessageType type) {
 		this.event(Type.ALERT, title, message, type);
 		return this;
 	}
@@ -215,7 +215,7 @@ public final class GuiManager {
 	 * @return GUI管理器
 	 */
 	public GuiManager notice(String title, String message) {
-		this.notice(title, message, MessageType.INFO);
+		this.notice(title, message, GuiManager.MessageType.INFO);
 		return this;
 	}
 	
@@ -228,7 +228,7 @@ public final class GuiManager {
 	 * 
 	 * @return GUI管理器
 	 */
-	public GuiManager notice(String title, String message, MessageType type) {
+	public GuiManager notice(String title, String message, GuiManager.MessageType type) {
 		this.event(Type.NOTICE, title, message, type);
 		return this;
 	}
