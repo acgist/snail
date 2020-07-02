@@ -14,6 +14,7 @@ import com.acgist.snail.system.format.BEncodeEncoder;
  * <p>Snail启动类</p>
  * <p>使用系统消息与后台模式启动的Snail（蜗牛）进行通信和下载</p>
  * <p>后台模式启动：`snail-javafx`</p>
+ * <p>扩展GUI可以自行实现Socket连接和消息处理</p>
  * 
  * @author acgist
  * @since 1.4.0
