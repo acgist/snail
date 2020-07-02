@@ -10,12 +10,17 @@ import com.acgist.snail.pojo.message.ApplicationMessage;
  * @author acgist
  * @since 1.1.0
  */
-public abstract class RefreshTaskListEventAdapter extends GuiEvent {
+public class RefreshTaskListEventAdapter extends GuiEvent {
 
 	protected RefreshTaskListEventAdapter() {
 		super(Type.REFRESH_TASK_LIST, "刷新任务列表事件");
 	}
 
+	@Override
+	protected void executeNative(Object... args) {
+		this.executeExtend(args);
+	}
+	
 	@Override
 	protected final void executeExtend(Object ... args) {
 		final ApplicationMessage message = ApplicationMessage.message(ApplicationMessage.Type.REFRESH);

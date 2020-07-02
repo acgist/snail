@@ -19,13 +19,6 @@ public final class NoticeEvent extends NoticeEventAdapter {
 		return INSTANCE;
 	}
 	
-	/**
-	 * <p>本地提示消息</p>
-	 * 
-	 * @param type 类型
-	 * @param title 标题
-	 * @param message 消息
-	 */
 	@Override
 	protected void executeNativeExtend(SnailNoticeType type, String title, String message) {
 		TrayMenu.getInstance().notice(title, message, type);

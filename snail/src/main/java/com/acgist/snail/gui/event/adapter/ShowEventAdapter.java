@@ -8,10 +8,15 @@ import com.acgist.snail.gui.event.GuiEvent;
  * @author acgist
  * @since 1.1.0
  */
-public abstract class ShowEventAdapter extends GuiEvent {
+public class ShowEventAdapter extends GuiEvent {
 
 	protected ShowEventAdapter() {
 		super(Type.SHOW, "显示窗口事件");
+	}
+	
+	@Override
+	protected void executeNative(Object... args) {
+		this.executeExtend(args);
 	}
 
 	@Override

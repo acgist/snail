@@ -9,10 +9,15 @@ import com.acgist.snail.gui.event.GuiEvent;
  * @author acgist
  * @since 1.1.0
  */
-public abstract class BuildEventAdapter extends GuiEvent {
+public class BuildEventAdapter extends GuiEvent {
 	
 	protected BuildEventAdapter() {
 		super(Type.BUILD, "创建窗口事件");
+	}
+	
+	@Override
+	protected void executeNative(Object... args) {
+		this.executeExtend(args);
 	}
 
 	@Override

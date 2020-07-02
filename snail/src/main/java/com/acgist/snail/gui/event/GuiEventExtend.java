@@ -12,6 +12,12 @@ import com.acgist.snail.gui.GuiManager.Mode;
  */
 public abstract class GuiEventExtend extends GuiEvent {
 
+	/**
+	 * <p>GUI事件扩展</p>
+	 * 
+	 * @param type 事件类型
+	 * @param name 事件名称
+	 */
 	protected GuiEventExtend(Type type, String name) {
 		super(type, name);
 	}

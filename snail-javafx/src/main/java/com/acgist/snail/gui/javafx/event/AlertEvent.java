@@ -19,13 +19,6 @@ public final class AlertEvent extends AlertEventAdapter {
 		return INSTANCE;
 	}
 
-	/**
-	 * <p>本地提示窗口</p>
-	 * 
-	 * @param type 类型
-	 * @param title 标题
-	 * @param message 消息
-	 */
 	@Override
 	protected void executeNativeExtend(SnailAlertType type, String title, String message) {
 		Alerts.build(title, message, type);

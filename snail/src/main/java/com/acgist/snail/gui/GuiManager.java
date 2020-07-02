@@ -351,6 +351,8 @@ public final class GuiManager {
 			} catch (NetException e) {
 				LOGGER.error("发送扩展GUI消息异常", e);
 			}
+		} else {
+			LOGGER.warn("发送扩展GUI消息失败");
 		}
 	}
 	
