@@ -28,9 +28,9 @@ public class AlertEventAdapter extends GuiEventExtend {
 
 	@Override
 	protected final void executeExtend(GuiManager.Mode mode, Object ... args) {
-		GuiManager.MessageType type;
 		String title;
 		String message;
+		GuiManager.MessageType type;
 		if(args == null) {
 			LOGGER.warn("提示窗口错误（参数错误）：{}", args);
 			return;

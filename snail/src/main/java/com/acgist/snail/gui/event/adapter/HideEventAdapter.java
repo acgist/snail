@@ -21,7 +21,6 @@ public class HideEventAdapter extends GuiEvent {
 	
 	@Override
 	protected final void executeExtend(Object ... args) {
-		// TODO：实现
 	}
 	
 }
