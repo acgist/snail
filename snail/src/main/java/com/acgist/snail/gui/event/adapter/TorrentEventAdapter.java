@@ -12,13 +12,12 @@ import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.bean.TorrentFile;
 import com.acgist.snail.pojo.bean.TorrentInfo;
-import com.acgist.snail.protocol.torrent.TorrentProtocol;
 import com.acgist.snail.system.format.BEncodeDecoder;
 import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>GUI种子文件选择事件</p>
- * <p>不能抛出异常：抛出异常会导致{@link TorrentProtocol}创建任务不能正常的删除临时文件</p>
+ * <p>不能抛出异常：抛出异常会导致创建任务不能正常的删除临时文件</p>
  * 
  * @author acgist
  * @since 1.1.1

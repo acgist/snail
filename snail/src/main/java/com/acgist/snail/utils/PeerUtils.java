@@ -34,7 +34,7 @@ public final class PeerUtils {
 	 * 
 	 * @return IP=端口
 	 * 
-	 * @see #read(ByteBuffer, int)
+	 * @see #read(ByteBuffer)
 	 */
 	public static final Map<String, Integer> read(byte[] bytes) {
 		if(bytes == null) {
@@ -117,7 +117,7 @@ public final class PeerUtils {
 	 * <p>不用编码字符：0-9、a-z、A-Z、'.'、'-'、'_'、'~'</p>
 	 * <p>协议链接：https://wiki.theory.org/index.php/BitTorrentSpecification#Tracker_HTTP.2FHTTPS_Protocol</p>
 	 * 
-	 * @param hex PeerId、InfoHash
+	 * @param bytes PeerId、InfoHash
 	 * 
 	 * @return HTTP传输编码结果
 	 */

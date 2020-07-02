@@ -12,32 +12,32 @@
 open module com.acgist.snail {
 
 	//================导出================//
-	// TODO：提高内聚
+	exports com.acgist.snail.downloader;
 	exports com.acgist.snail.gui;
 	exports com.acgist.snail.gui.event;
 	exports com.acgist.snail.gui.event.adapter;
 	exports com.acgist.snail.net;
-	exports com.acgist.snail.net.torrent to com.acgist.snail.javafx;
-	exports com.acgist.snail.net.torrent.dht.bootstrap to com.acgist.snail.javafx;
-	exports com.acgist.snail.net.torrent.peer.bootstrap to com.acgist.snail.javafx;
-	exports com.acgist.snail.net.torrent.tracker.bootstrap to com.acgist.snail.javafx;
+	exports com.acgist.snail.net.torrent;
+	exports com.acgist.snail.net.torrent.bootstrap;
+	exports com.acgist.snail.net.torrent.dht.bootstrap;
+	exports com.acgist.snail.net.torrent.peer.bootstrap;
+	exports com.acgist.snail.net.torrent.tracker.bootstrap;
 	exports com.acgist.snail.pojo;
 	exports com.acgist.snail.pojo.bean;
+	exports com.acgist.snail.pojo.entity;
 	exports com.acgist.snail.pojo.message;
+	exports com.acgist.snail.pojo.session;
 	exports com.acgist.snail.pojo.wrapper;
-	exports com.acgist.snail.pojo.session to com.acgist.snail.javafx;
 	exports com.acgist.snail.system;
-	exports com.acgist.snail.system.format;
 	exports com.acgist.snail.system.config;
+	exports com.acgist.snail.system.format;
 	exports com.acgist.snail.system.context;
 	exports com.acgist.snail.system.exception;
 	exports com.acgist.snail.protocol;
-	exports com.acgist.snail.protocol.torrent to com.acgist.snail.javafx;
-	exports com.acgist.snail.downloader;
+	exports com.acgist.snail.repository;
 	exports com.acgist.snail.utils;
 	
 	//================Java================//
-	// TODO：删除不需要的依赖
 	requires java.base; // 不能使用transitive修饰
 	requires transitive java.sql;
 	requires transitive java.xml;
