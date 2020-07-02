@@ -93,7 +93,7 @@
 					<!-- MANIFEST.MF -->
 					<archive>
 						<manifest>
-							<mainClass>com.acgist.main.Application</mainClass>
+							<mainClass>com.acgist.extend.Application</mainClass>
 							<addClasspath>true</addClasspath>
 							<classpathPrefix>lib</classpathPrefix>
 						</manifest>
