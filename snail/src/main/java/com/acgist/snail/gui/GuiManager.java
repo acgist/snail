@@ -47,9 +47,9 @@ public final class GuiManager {
 	}
 	
 	/**
-	 * <p>提示窗口类型</p>
+	 * <p>消息类型</p>
 	 */
-	public enum SnailAlertType {
+	public enum MessageType {
 		
 		/** 普通 */
 		NONE,
@@ -59,22 +59,6 @@ public final class GuiManager {
 		WARN,
 		/** 确认 */
 		CONFIRM,
-		/** 错误 */
-		ERROR;
-		
-	}
-	
-	/**
-	 * <p>提示消息类型</p>
-	 */
-	public enum SnailNoticeType {
-		
-		/** 普通 */
-		NONE,
-		/** 提示 */
-		INFO,
-		/** 警告 */
-		WARN,
 		/** 错误 */
 		ERROR;
 		
@@ -204,7 +188,7 @@ public final class GuiManager {
 	 * @return GUI管理器
 	 */
 	public GuiManager alert(String title, String message) {
-		this.alert(title, message, SnailAlertType.INFO);
+		this.alert(title, message, MessageType.INFO);
 		return this;
 	}
 
@@ -217,7 +201,7 @@ public final class GuiManager {
 	 * 
 	 * @return GUI管理器
 	 */
-	public GuiManager alert(String title, String message, SnailAlertType type) {
+	public GuiManager alert(String title, String message, MessageType type) {
 		this.event(Type.ALERT, title, message, type);
 		return this;
 	}
@@ -231,7 +215,7 @@ public final class GuiManager {
 	 * @return GUI管理器
 	 */
 	public GuiManager notice(String title, String message) {
-		this.notice(title, message, SnailNoticeType.INFO);
+		this.notice(title, message, MessageType.INFO);
 		return this;
 	}
 	
@@ -244,7 +228,7 @@ public final class GuiManager {
 	 * 
 	 * @return GUI管理器
 	 */
-	public GuiManager notice(String title, String message, SnailNoticeType type) {
+	public GuiManager notice(String title, String message, MessageType type) {
 		this.event(Type.NOTICE, title, message, type);
 		return this;
 	}

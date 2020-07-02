@@ -1,6 +1,6 @@
 package com.acgist.snail.gui.javafx.event;
 
-import com.acgist.snail.gui.GuiManager.SnailAlertType;
+import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.event.GuiEvent;
 import com.acgist.snail.gui.event.adapter.AlertEventAdapter;
 import com.acgist.snail.gui.javafx.Alerts;
@@ -20,7 +20,7 @@ public final class AlertEvent extends AlertEventAdapter {
 	}
 
 	@Override
-	protected void executeNativeExtend(SnailAlertType type, String title, String message) {
+	protected void executeNativeExtend(GuiManager.MessageType type, String title, String message) {
 		Alerts.build(title, message, type);
 	}
 

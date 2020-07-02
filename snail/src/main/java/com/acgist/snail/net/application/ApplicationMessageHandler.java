@@ -11,8 +11,6 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.GuiManager.Mode;
-import com.acgist.snail.gui.GuiManager.SnailAlertType;
-import com.acgist.snail.gui.GuiManager.SnailNoticeType;
 import com.acgist.snail.net.TcpMessageHandler;
 import com.acgist.snail.net.codec.IMessageCodec;
 import com.acgist.snail.net.codec.impl.LineMessageCodec;
@@ -284,7 +282,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 			final String type = decoder.getString("type");
 			final String title = decoder.getString("title");
 			final String content = decoder.getString("message");
-			GuiManager.getInstance().alert(title, content, SnailAlertType.valueOf(type));
+			GuiManager.getInstance().alert(title, content, GuiManager.MessageType.valueOf(type));
 		} catch (PacketSizeException e) {
 			LOGGER.warn("处理窗口消息异常", e);
 		}
@@ -303,7 +301,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 			final String type = decoder.getString("type");
 			final String title = decoder.getString("title");
 			final String content = decoder.getString("message");
-			GuiManager.getInstance().notice(title, content, SnailNoticeType.valueOf(type));
+			GuiManager.getInstance().notice(title, content, GuiManager.MessageType.valueOf(type));
 		} catch (PacketSizeException e) {
 			LOGGER.warn("处理提示消息异常", e);
 		}

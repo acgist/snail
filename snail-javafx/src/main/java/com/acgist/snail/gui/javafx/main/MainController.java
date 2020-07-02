@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.DownloaderManager;
-import com.acgist.snail.gui.GuiManager.SnailAlertType;
+import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.javafx.Alerts;
 import com.acgist.snail.gui.javafx.Controller;
 import com.acgist.snail.gui.javafx.Fonts.SnailIcon;
@@ -354,7 +354,7 @@ public final class MainController extends Controller implements Initializable {
 		if(!this.haveSelected()) {
 			return;
 		}
-		final var optional = Alerts.build("删除确认", "删除选中任务？", SnailAlertType.CONFIRM);
+		final var optional = Alerts.build("删除确认", "删除选中任务？", GuiManager.MessageType.CONFIRM);
 		if(optional.isPresent() && optional.get() == ButtonType.OK) {
 			this.selected().forEach(session -> DownloaderManager.getInstance().delete(session));
 		}

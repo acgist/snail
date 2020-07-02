@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.GuiManager.Mode;
-import com.acgist.snail.gui.GuiManager.SnailNoticeType;
 import com.acgist.snail.gui.event.GuiEventExtend;
 import com.acgist.snail.pojo.message.ApplicationMessage;
 import com.acgist.snail.system.format.BEncodeEncoder;
@@ -29,7 +28,7 @@ public class NoticeEventAdapter extends GuiEventExtend {
 	
 	@Override
 	protected final void executeExtend(GuiManager.Mode mode, Object ... args) {
-		SnailNoticeType type;
+		GuiManager.MessageType type;
 		String title;
 		String message;
 		if(args == null) {
@@ -38,11 +37,11 @@ public class NoticeEventAdapter extends GuiEventExtend {
 		} else if(args.length == 2) {
 			title = (String) args[0];
 			message = (String) args[1];
-			type = SnailNoticeType.INFO;
+			type = GuiManager.MessageType.INFO;
 		} else if(args.length == 3) {
 			title = (String) args[0];
 			message = (String) args[1];
-			type = (SnailNoticeType) args[2];
+			type = (GuiManager.MessageType) args[2];
 		} else {
 			LOGGER.warn("提示消息错误（参数长度错误）：{}", args.length);
 			return;
@@ -61,7 +60,7 @@ public class NoticeEventAdapter extends GuiEventExtend {
 	 * @param title 标题
 	 * @param message 消息
 	 */
-	protected void executeNativeExtend(SnailNoticeType type, String title, String message) {
+	protected void executeNativeExtend(GuiManager.MessageType type, String title, String message) {
 		this.executeExtendExtend(type, title, message);
 	}
 	
@@ -72,7 +71,7 @@ public class NoticeEventAdapter extends GuiEventExtend {
 	 * @param title 标题
 	 * @param message 消息
 	 */
-	protected void executeExtendExtend(SnailNoticeType type, String title, String message) {
+	protected void executeExtendExtend(GuiManager.MessageType type, String title, String message) {
 		final ApplicationMessage applicationMessage = ApplicationMessage.message(ApplicationMessage.Type.NOTICE);
 		final Map<String, String> map = new HashMap<>(5);
 		map.put("type", type.name());
