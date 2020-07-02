@@ -44,8 +44,8 @@ cd ..\..\
 echo -----------------------------------------------
 echo 拷贝文件
 echo -----------------------------------------------
-call xcopy /S /Q .\target\%lib%\* %target%%lib%\
-call copy .\target\%jar% %target%
+call xcopy /S /Q .\snail-javafx\target\%lib%\* %target%%lib%\
+call copy .\snail-javafx\target\%jar% %target%
 call copy %launcherExe% %target%%exe%
 call copy %launcherIni% %target%%ini%
 call copy %builder%%config% %target%%config%
