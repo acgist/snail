@@ -54,10 +54,10 @@ mvn clean package -P release -D skipTests
 
 ```bash
 # Linux
-java -server -Xms128m -Xmx256m -jar snail-{version}.jar
+java -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar
 
 # Windows
-javaw -server -Xms128m -Xmx256m -jar snail-{version}.jar
+javaw -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar
 ```
 
 #### Maven

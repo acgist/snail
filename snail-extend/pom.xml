@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	
+	<parent>
+		<groupId>com.acgist</groupId>
+		<artifactId>parent</artifactId>
+		<version>${acgist.version}</version>
+		<relativePath>../</relativePath>
+	</parent>
+	
+	<modelVersion>4.0.0</modelVersion>
+	
+	<artifactId>snail.extend</artifactId>
+	<packaging>jar</packaging>
+	
+	<dependencies>
+		<!-- Snail -->
+		<dependency>
+			<groupId>com.acgist</groupId>
+			<artifactId>snail</artifactId>
+			<version>${acgist.version}</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<!-- Maven插件 -->
+		<plugins>
+			<!-- resources：mvn resources:resources -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>${maven.resources.version}</version>
+				<configuration>
+					<resources>
+						<resource>
+							<directory>src/main/resources</directory>
+							<!-- 配置文件属性替换：properties -->
+							<filtering>false</filtering>
+							<includes>
+								<include>**</include>
+							</includes>
+							<!-- 排除环境资源文件 -->
+							<excludes>
+								<exclude>profiles/**</exclude>
+							</excludes>
+						</resource>
+						<resource>
+							<!-- travis-ci配置斜杠编译卡住 -->
+							<directory>./</directory>
+							<filtering>false</filtering>
+							<targetPath>META-INF/</targetPath>
+							<!-- 开源协议、README -->
+							<includes>
+								<include>../LICENSE</include>
+								<include>../README.md</include>
+							</includes>
+						</resource>
+					</resources>
+				</configuration>
+				<executions>
+					<!-- 自动复制环境资源 -->
+					<execution>
+						<id>auto-copy-resources-profiles</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<!-- 覆盖资源 -->
+							<overwrite>true</overwrite>
+							<outputDirectory>${project.build.outputDirectory}</outputDirectory>
+							<resources>
+								<!-- 环境资源 -->
+								<resource>
+									<directory>src/main/resources/profiles/${package.environment}</directory>
+									<filtering>false</filtering>
+								</resource>
+							</resources>
+						</configuration>
+						<inherited></inherited>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- jar：mvn jar:jar -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>${maven.jar.version}</version>
+				<configuration>
+					<!-- MANIFEST.MF -->
+					<archive>
+						<manifest>
+							<mainClass>com.acgist.main.Application</mainClass>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>lib</classpathPrefix>
+						</manifest>
+						<manifestEntries>
+							<Built-By>${vendor}</Built-By>
+							<Automatic-Module-Name>${module}</Automatic-Module-Name>
+							<Implementation-Title>${project.artifactId}</Implementation-Title>
+							<Implementation-Vendor>${vendor}</Implementation-Vendor>
+							<Implementation-Vendor-Id>${vendor}</Implementation-Vendor-Id>
+							<Implementation-Version>${project.version}</Implementation-Version>
+							<Specification-Title>${project.artifactId}</Specification-Title>
+							<Specification-Vendor>${vendor}</Specification-Vendor>
+							<Specification-Version>${project.version}</Specification-Version>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
