@@ -21,6 +21,7 @@ public final class Application {
 	/**
 	 * <p>启动方法</p>
 	 * <p>请使用后台模式启动`snail-javafx`</p>
+	 * <p>如果消息乱码，请添加启动参数："-Dfile.encoding=UTF-8"</p>
 	 * 
 	 * @param args 启动参数
 	 */
@@ -40,12 +41,15 @@ public final class Application {
 				client.close();
 				break;
 			} else if(message.equalsIgnoreCase(Type.GUI.name())) {
+				// 注册外部GUI
 				client.send(ApplicationMessage.message(Type.GUI, message));
 			} else if(message.equalsIgnoreCase(Type.NOTIFY.name())) {
 				client.send(ApplicationMessage.message(Type.NOTIFY, message));
 			} else if(message.equalsIgnoreCase(Type.TASK_NEW.name())) {
-				Map<String, String> map = new HashMap<>();
+				final Map<String, String> map = new HashMap<>();
+				// 单个文件任务
 				map.put("url", "https://mirror.bit.edu.cn/apache/tomcat/tomcat-9/v9.0.36/bin/apache-tomcat-9.0.36.zip");
+				// BT任务
 //				map.put("url", "E:\\snail\\0000.torrent");
 //				map.put("files", "l50:[UHA-WINGS][Vinland Saga][01][x264 1080p][CHT].mp4e");
 				client.send(ApplicationMessage.message(Type.TASK_NEW, BEncodeEncoder.encodeMapString(map)));
