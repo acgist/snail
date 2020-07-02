@@ -148,8 +148,8 @@ public final class GuiManager {
 				value = StringUtils.argValue(arg, ARGS_MODE);
 				if(Mode.EXTEND.name().equalsIgnoreCase(value)) {
 					this.mode = Mode.EXTEND;
-					LOGGER.info("运行模式：{}", this.mode);
 				}
+				LOGGER.info("运行模式：{}", this.mode);
 			}
 		}
 		return this;

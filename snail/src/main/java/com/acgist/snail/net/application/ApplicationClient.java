@@ -39,7 +39,7 @@ public final class ApplicationClient extends TcpClient<ApplicationMessageHandler
 	 */
 	public void send(ApplicationMessage message) {
 		try {
-			send(message.toString());
+			this.send(message.toString());
 		} catch (NetException e) {
 			LOGGER.error("发送系统消息异常", e);
 		}

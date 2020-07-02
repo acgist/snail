@@ -72,7 +72,7 @@ public class AlertEventAdapter extends GuiEventExtend {
 	 * @param title 标题
 	 * @param message 消息
 	 */
-	protected final void executeExtendExtend(SnailAlertType type, String title, String message) {
+	protected void executeExtendExtend(SnailAlertType type, String title, String message) {
 		final ApplicationMessage applicationMessage = ApplicationMessage.message(ApplicationMessage.Type.ALERT);
 		final Map<String, String> map = new HashMap<>(5);
 		map.put("type", type.name());

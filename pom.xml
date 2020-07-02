@@ -25,7 +25,7 @@
 	<packaging>pom</packaging>
 	
 	<url>https://gitee.com/acgist/snail</url>
-	<name>蜗牛</name>
+	<name>parent</name>
 	<description>基于Java、JavaFX开发的下载工具，支持下载协议：BT（BitTorrent、磁力链接、种子）、FTP、HTTP。</description>
 	<inceptionYear>2019</inceptionYear>
 	
@@ -59,6 +59,7 @@
 	<modules>
 		<module>snail</module>
 		<module>snail-javafx</module>
+		<module>snail-extend</module>
 	</modules>
 
 	<dependencies>

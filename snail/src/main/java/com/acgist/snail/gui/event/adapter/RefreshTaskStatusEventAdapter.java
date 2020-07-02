@@ -22,7 +22,7 @@ public class RefreshTaskStatusEventAdapter extends GuiEvent {
 	}
 	
 	@Override
-	protected final void executeExtend(Object ... args) {
+	protected void executeExtend(Object ... args) {
 		final ApplicationMessage message = ApplicationMessage.message(ApplicationMessage.Type.REFRESH);
 		GuiManager.getInstance().sendExtendGuiMessage(message);
 	}
