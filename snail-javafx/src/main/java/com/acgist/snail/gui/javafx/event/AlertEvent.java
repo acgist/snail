@@ -5,6 +5,8 @@ import com.acgist.snail.gui.event.GuiEvent;
 import com.acgist.snail.gui.event.adapter.AlertEventAdapter;
 import com.acgist.snail.gui.javafx.Alerts;
 
+import javafx.application.Platform;
+
 /**
  * <p>GUI提示窗口事件</p>
  * 
@@ -21,7 +23,7 @@ public final class AlertEvent extends AlertEventAdapter {
 
 	@Override
 	protected void executeNativeExtend(GuiManager.MessageType type, String title, String message) {
-		Alerts.build(title, message, type);
+		Platform.runLater(() -> Alerts.build(title, message, type));
 	}
 
 }
