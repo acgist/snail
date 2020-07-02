@@ -14,7 +14,7 @@ import javax.swing.event.MouseInputAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.gui.GuiManager.SnailNoticeType;
+import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.javafx.Controller;
 import com.acgist.snail.gui.javafx.Fonts.SnailIcon;
 import com.acgist.snail.gui.javafx.Menu;
@@ -191,7 +191,7 @@ public final class TrayMenu extends Menu {
 	 * @param content 内容
 	 */
 	public void info(String title, String content) {
-		this.notice(title, content, SnailNoticeType.INFO);
+		this.notice(title, content, GuiManager.MessageType.INFO);
 	}
 	
 	/**
@@ -201,7 +201,7 @@ public final class TrayMenu extends Menu {
 	 * @param content 内容
 	 */
 	public void warn(String title, String content) {
-		this.notice(title, content, SnailNoticeType.WARN);
+		this.notice(title, content, GuiManager.MessageType.WARN);
 	}
 
 	/**
@@ -211,7 +211,7 @@ public final class TrayMenu extends Menu {
 	 * @param content 内容
 	 * @param type 类型
 	 */
-	public void notice(String title, String content, SnailNoticeType type) {
+	public void notice(String title, String content, GuiManager.MessageType type) {
 		if(DownloadConfig.getNotice() && this.support) {
 			this.trayIcon.displayMessage(title, content, this.getMessageType(type));
 		}
@@ -315,7 +315,7 @@ public final class TrayMenu extends Menu {
 	 * 
 	 * @return JavaFX消息类型
 	 */
-	public final MessageType getMessageType(SnailNoticeType type) {
+	public final MessageType getMessageType(GuiManager.MessageType type) {
 		switch (type) {
 		case NONE:
 			return MessageType.NONE;

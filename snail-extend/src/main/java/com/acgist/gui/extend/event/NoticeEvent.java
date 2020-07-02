@@ -3,7 +3,7 @@ package com.acgist.gui.extend.event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.gui.GuiManager.SnailNoticeType;
+import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.event.GuiEvent;
 import com.acgist.snail.gui.event.adapter.NoticeEventAdapter;
 
@@ -24,7 +24,7 @@ public final class NoticeEvent extends NoticeEventAdapter {
 	}
 	
 	@Override
-	protected void executeExtendExtend(SnailNoticeType type, String title, String message) {
+	protected void executeExtendExtend(GuiManager.MessageType type, String title, String message) {
 		LOGGER.debug("收到提示消息信息：{}-{}-{}", type, title, message);
 	}
 	
