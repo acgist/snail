@@ -19,7 +19,7 @@ import com.acgist.snail.system.format.BEncodeEncoder;
  * @author acgist
  * @since 1.1.0
  */
-public abstract class NoticeEventAdapter extends GuiEventExtend {
+public class NoticeEventAdapter extends GuiEventExtend {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(NoticeEventAdapter.class);
 	
@@ -28,7 +28,7 @@ public abstract class NoticeEventAdapter extends GuiEventExtend {
 	}
 	
 	@Override
-	protected void executeExtend(GuiManager.Mode mode, Object ... args) {
+	protected final void executeExtend(GuiManager.Mode mode, Object ... args) {
 		SnailNoticeType type;
 		String title;
 		String message;
@@ -61,7 +61,9 @@ public abstract class NoticeEventAdapter extends GuiEventExtend {
 	 * @param title 标题
 	 * @param message 消息
 	 */
-	protected abstract void executeNativeExtend(SnailNoticeType type, String title, String message);
+	protected void executeNativeExtend(SnailNoticeType type, String title, String message) {
+		this.executeExtendExtend(type, title, message);
+	}
 	
 	/**
 	 * <p>扩展提示消息</p>
@@ -70,7 +72,7 @@ public abstract class NoticeEventAdapter extends GuiEventExtend {
 	 * @param title 标题
 	 * @param message 消息
 	 */
-	private final void executeExtendExtend(SnailNoticeType type, String title, String message) {
+	protected final void executeExtendExtend(SnailNoticeType type, String title, String message) {
 		final ApplicationMessage applicationMessage = ApplicationMessage.message(ApplicationMessage.Type.NOTICE);
 		final Map<String, String> map = new HashMap<>(5);
 		map.put("type", type.name());

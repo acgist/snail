@@ -46,6 +46,12 @@ public abstract class GuiEvent {
 	 */
 	protected final String name;
 	
+	/**
+	 * <p>GUI事件</p>
+	 * 
+	 * @param type 事件类型
+	 * @param name 事件名称
+	 */
 	protected GuiEvent(Type type, String name) {
 		this.type = type;
 		this.name = name;
@@ -57,7 +63,7 @@ public abstract class GuiEvent {
 	 * @param mode 运行模式
 	 * @param args 参数
 	 */
-	public void execute(GuiManager.Mode mode, Object ... args) {
+	public final void execute(GuiManager.Mode mode, Object ... args) {
 		if(mode == Mode.NATIVE) {
 			this.executeNative(args);
 		} else {

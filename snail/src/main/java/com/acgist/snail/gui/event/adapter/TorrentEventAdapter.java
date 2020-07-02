@@ -23,7 +23,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.1.1
  */
-public abstract class TorrentEventAdapter extends GuiEventExtend {
+public class TorrentEventAdapter extends GuiEventExtend {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentEventAdapter.class);
 	
@@ -56,7 +56,9 @@ public abstract class TorrentEventAdapter extends GuiEventExtend {
 	 * 
 	 * @param taskSession 任务信息
 	 */
-	protected abstract void executeNativeExtend(ITaskSession taskSession);
+	protected void executeNativeExtend(ITaskSession taskSession) {
+		this.executeExtendExtend(taskSession);
+	}
 	
 	/**
 	 * <p>扩展GUI</p>
