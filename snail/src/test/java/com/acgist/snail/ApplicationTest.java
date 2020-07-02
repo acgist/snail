@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
+import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.net.application.ApplicationClient;
 import com.acgist.snail.net.application.ApplicationServer;
 import com.acgist.snail.pojo.message.ApplicationMessage;
@@ -58,6 +59,20 @@ public class ApplicationTest extends BaseTest {
 				client.send(ApplicationMessage.message(Type.TASK_PAUSE, "37f48162-d306-4fff-b161-f1231a3f7e48"));
 			} else if(message.equalsIgnoreCase(Type.TASK_DELETE.name())) {
 				client.send(ApplicationMessage.message(Type.TASK_DELETE, "37f48162-d306-4fff-b161-f1231a3f7e48"));
+			} else if(message.equalsIgnoreCase(Type.ALERT.name())) {
+				final Map<String, String> map = new HashMap<>(5);
+				map.put("type", GuiManager.MessageType.INFO.name());
+				map.put("title", "测试");
+				map.put("message", "你们好啊");
+				final String body = BEncodeEncoder.encodeMapString(map);
+				client.send(ApplicationMessage.message(Type.ALERT, body));
+			} else if(message.equalsIgnoreCase(Type.NOTICE.name())) {
+				final Map<String, String> map = new HashMap<>(5);
+				map.put("type", GuiManager.MessageType.INFO.name());
+				map.put("title", "测试");
+				map.put("message", "你们好啊");
+				final String body = BEncodeEncoder.encodeMapString(map);
+				client.send(ApplicationMessage.message(Type.NOTICE, body));
 			} else {
 				client.send(ApplicationMessage.text(message));
 			}
