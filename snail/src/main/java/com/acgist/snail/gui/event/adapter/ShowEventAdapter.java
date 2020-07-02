@@ -21,7 +21,6 @@ public class ShowEventAdapter extends GuiEvent {
 
 	@Override
 	protected void executeExtend(Object ... args) {
-		// TODO：实现
 	}
 
 }
