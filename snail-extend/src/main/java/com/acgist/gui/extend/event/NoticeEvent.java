@@ -11,7 +11,7 @@ import com.acgist.snail.gui.event.adapter.NoticeEventAdapter;
  * <p>GUI提示消息事件</p>
  * 
  * @author acgist
- * @since 1.1.0
+ * @since 1.4.0
  */
 public final class NoticeEvent extends NoticeEventAdapter {
 	
