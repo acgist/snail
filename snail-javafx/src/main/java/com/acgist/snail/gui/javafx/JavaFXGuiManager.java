@@ -12,16 +12,19 @@ import com.acgist.snail.gui.javafx.event.ShowEvent;
 import com.acgist.snail.gui.javafx.event.TorrentEvent;
 
 /**
- * <p>GUI JavaFX管理器</p>
+ * <p>JavaFX GUI管理器</p>
  * 
  * @author acgist
  * @since 1.1.0
  */
-public class GuiJavaFXManager {
+public final class JavaFXGuiManager {
 
-	private static final GuiJavaFXManager INSTANCE = new GuiJavaFXManager();
+	private static final JavaFXGuiManager INSTANCE = new JavaFXGuiManager();
 	
-	public static final GuiJavaFXManager getInstance() {
+	private JavaFXGuiManager() {
+	}
+	
+	public static final JavaFXGuiManager getInstance() {
 		return INSTANCE;
 	}
 	
