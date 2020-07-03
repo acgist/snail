@@ -12,7 +12,7 @@ import com.acgist.snail.system.format.BEncodeEncoder;
 
 /**
  * <p>Snail启动类</p>
- * <p>使用系统消息与后台模式启动的Snail（蜗牛）进行通信和下载</p>
+ * <p>通过系统消息管理Snail（蜗牛）</p>
  * <p>后台模式启动：`snail-javafx`</p>
  * <p>扩展GUI可以自行实现Socket连接和消息处理</p>
  * 
@@ -51,8 +51,8 @@ public final class Application {
 				// 单个文件任务
 				map.put("url", "https://mirror.bit.edu.cn/apache/tomcat/tomcat-9/v9.0.36/bin/apache-tomcat-9.0.36.zip");
 				// BT任务
-//				map.put("url", "E:\\snail\\0000.torrent");
-//				map.put("files", "l50:[UHA-WINGS][Vinland Saga][01][x264 1080p][CHT].mp4e");
+//				map.put("url", "种子文件路径");
+//				map.put("files", "B编码下载文件列表");
 				client.send(ApplicationMessage.message(Type.TASK_NEW, BEncodeEncoder.encodeMapString(map)));
 			} else if(message.equalsIgnoreCase(Type.TASK_LIST.name())) {
 				client.send(ApplicationMessage.message(Type.TASK_LIST, message));
