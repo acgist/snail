@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.repository.Repository;
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.FileUtils;
 
 /**
@@ -29,10 +30,12 @@ public final class TaskRepository extends Repository<TaskEntity> {
 	 */
 	public void delete(TaskEntity entity) {
 		LOGGER.info("删除任务：{}", entity.getName());
-		final boolean ok = FileUtils.recycle(entity.getFile());
-		if(!ok) {
-			LOGGER.debug("不支持回收站直接删除文件：{}", entity.getFile());
-			FileUtils.delete(entity.getFile());
+		if(SystemConfig.getTaskFileDelete()) {
+			final boolean ok = FileUtils.recycle(entity.getFile());
+			if(!ok) {
+				LOGGER.debug("不支持回收站直接删除文件：{}", entity.getFile());
+				FileUtils.delete(entity.getFile());
+			}
 		}
 		// 删除数据库信息
 		this.delete(entity.getId());
