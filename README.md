@@ -72,6 +72,8 @@ javaw -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar
 </dependency>
 ```
 
+[更多帮助](./HELP.md)
+
 ## 开发进度
 
 |功能|进度|
@@ -154,10 +156,6 @@ javaw -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar
 > 可以通过`F12`查看已经下载的部分
 
 ## 其他
-
-#### 维基
-
-[Wiki](https://gitee.com/acgist/snail/wikis)
 
 #### GIT
 
