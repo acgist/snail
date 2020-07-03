@@ -1,4 +1,4 @@
-package com.acgist.extend;
+package com.acgist.main;
 
 import java.util.concurrent.TimeUnit;
 
@@ -20,9 +20,9 @@ import com.acgist.snail.utils.ArrayUtils;
  * @author acgist
  * @since 1.4.0
  */
-public class Application {
+public class CodeApplication {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CodeApplication.class);
 	
 	/**
 	 * <p>启动方法</p>

@@ -1,4 +1,4 @@
-package com.acgist.command;
+package com.acgist.main;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +19,7 @@ import com.acgist.snail.system.format.BEncodeEncoder;
  * @author acgist
  * @since 1.4.0
  */
-public final class Application {
+public final class SocketApplication {
 
 	/**
 	 * <p>启动方法</p>
