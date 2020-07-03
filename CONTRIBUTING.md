@@ -78,10 +78,10 @@
 * 关联Issue（选填）：如果PR有关联的Issue必须关联Issue
 * 详细描述：详细描述PR修改的内容
 * 测试用例（选填）：测试用例
+* 提交PR前请阅读[代码规范](./CODE_OF_CONDUCT.md)
 
 #### 提交PR步骤
 
-* 提交PR前请阅读[代码规范](./CODE_OF_CONDUCT.md)
 * 将项目fork到自己的项目下（不要直接在仓库下新建分支）
 * 提交PR前先rebase（确保commit记录整洁）
 * 将PR提交到对应pr分支（不要提交到master分支）
