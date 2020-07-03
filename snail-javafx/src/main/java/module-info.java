@@ -1,6 +1,6 @@
 /**
  * <h1>Sanil（蜗牛）</h1>
- * <p>基于JavaFX开发的Snail（蜗牛）图形界面</p>
+ * <p>通过JavaFX开发的图形界面管理Snail（蜗牛）</p>
  * <p>官网地址：https://gitee.com/acgist/snail</p>
  * 
  * @author acgist
