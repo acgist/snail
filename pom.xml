@@ -241,7 +241,7 @@
 					<executions>
 						<!-- 自动打包源码 -->
 						<execution>
-							<id>auto-jar-no-fork</id>
+							<id>auto-build-source</id>
 							<phase>package</phase>
 							<goals>
 								<goal>jar-no-fork</goal>
@@ -269,7 +269,7 @@
 					<executions>
 						<!-- 自动打包文档 -->
 						<execution>
-							<id>auto-jar</id>
+							<id>auto-build-javadoc</id>
 							<phase>package</phase>
 							<goals>
 								<goal>jar</goal>
@@ -307,7 +307,7 @@
 					<executions>
 						<!-- 自动生成签名 -->
 						<execution>
-							<id>auto-sign</id>
+							<id>auto-build-sign</id>
 							<phase>verify</phase>
 							<goals>
 								<goal>sign</goal>
