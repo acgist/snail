@@ -33,7 +33,7 @@
 
 提交问题报告前，请先排除一些基本问题：
 
-* 阅读[维基](https://gitee.com/acgist/snail/wikis)是否已经提供解决方法
+* 阅读[帮助](./HELP.md)是否已经提供解决方法
 * 检查[Issues](https://gitee.com/acgist/snail/issues)是否已经提交过此问题
 * 检查JDK、网络、路由、防火墙配置（排除环境因素）
 * 检查运行系统和JavaFX依赖系统是否一致
@@ -55,7 +55,7 @@
 
 #### 提交建议准备
 
-* 查看[Issues](https://gitee.com/acgist/snail/issues)是否已经提交过此建议
+* 检查[Issues](https://gitee.com/acgist/snail/issues)是否已经提交过此建议
 
 #### 提交建议规范
 
@@ -78,6 +78,9 @@
 * 关联Issue（选填）：如果PR有关联的Issue必须关联Issue
 * 详细描述：详细描述PR修改的内容
 * 测试用例（选填）：测试用例
+
+#### 提交PR步骤
+
 * 提交PR前请阅读[代码规范](./CODE_OF_CONDUCT.md)
 * 将项目fork到自己的项目下（不要直接在仓库下新建分支）
 * 提交PR前先rebase（确保commit记录整洁）
