@@ -231,8 +231,6 @@ BT文件是分片下载的，部分任务会存在一个分片里面包含多个
 
 ## 开发帮助
 
-通过系统消息管理Snail（蜗牛）或者直接使用代码管理参考项目`snail-extend`
-
 系统消息和系统通知使用B编码Map类型消息，每条消息含有类型`type`和主体`body`。
 
 ```
@@ -322,7 +320,7 @@ java -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar mode=[native|exte
 
 ### 内存溢出
 
-使用FTP、HTTP下载大文件时如果出现内存泄露，建议优化JVM参数：`-XX:NewRatio=2 -XX:SurvivorRatio=2`
+使用FTP、HTTP下载大文件时如果出现内存溢出，建议优化JVM参数：`-XX:NewRatio=2 -XX:SurvivorRatio=2`
 
 ```bash
 # Linux
