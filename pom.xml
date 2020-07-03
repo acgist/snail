@@ -16,7 +16,7 @@
 	跳过生成签名：-D gpg.skip=true
 	跳过源码打包：-D maven.source.skip=true
 	跳过文档生成：-D maven.javadoc.skip=true
-	编译不同系统：-D javafx.platform=win|mac|linux
+	编译指定系统：-D javafx.platform=win|mac|linux
 	跳过测试（编译测试代码）：-D skipTests
 	跳过测试（跳过编译测试代码）：-D maven.test.skip=true
 	-->
@@ -315,7 +315,7 @@
 						</execution>
 					</executions>
 				</plugin>
-				<!-- 部署项目 -->
+				<!-- 发布项目 -->
 				<plugin>
 					<groupId>org.sonatype.plugins</groupId>
 					<artifactId>nexus-staging-maven-plugin</artifactId>
@@ -346,7 +346,7 @@
 				<version>${h2.version}</version>
 			</dependency>
 			<!--
-			日志：slf4j、logback
+			日志：logback
 			隐式依赖：slf4j-api、logback-core
 			-->
 			<dependency>
@@ -360,7 +360,7 @@
 			
 			编译系统和运行系统不一致时：
 			1.添加编译参数：-D javafx.platform=win|mac|linux
-			2.显式引入隐式依赖并添加属性：<classifier>win|mac|linux</classifier>
+			2.添加依赖属性：<classifier>win|mac|linux</classifier>
 			-->
 			<dependency>
 				<groupId>org.openjfx</groupId>

@@ -31,7 +31,7 @@
 ## 结构
 
 |项目|描述|
-|:--|:--:|
+|:--|:--|
 |snail|下载核心|
 |snail-javafx|电脑GUI|
 |snail-extend|扩展GUI|
@@ -44,13 +44,15 @@ Windows稳定版下载：[snail-windows.zip](https://gitee.com/acgist/snail/atta
 #### 编译
 
 ```bash
-# 编译系统和运行系统不一致时添加参数：-D javafx.platform=win|mac|linux
+# 编译系统和运行系统不一致时添加编译参数：-D javafx.platform=win|mac|linux
 mvn clean package -P release -D skipTests
 ```
 
 > 推荐下载[发行版](https://gitee.com/acgist/snail/releases)编译（最新分支可能存在未开发完成的任务）
 
 #### 启动
+
+下载核心无法直接启动，需要结合`snail.javafx`或者`snail.extend`使用。
 
 ```bash
 # Linux
