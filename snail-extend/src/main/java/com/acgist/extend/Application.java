@@ -15,7 +15,7 @@ import com.acgist.snail.utils.ArrayUtils;
 
 /**
  * <p>Snail启动类</p>
- * <p>不使用GUI直接使用代码进行任务下载</p>
+ * <p>直接使用代码进行任务下载</p>
  * 
  * @author acgist
  * @since 1.4.0
