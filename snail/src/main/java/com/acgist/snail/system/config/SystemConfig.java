@@ -193,6 +193,10 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	private String stunServer;
 	/**
+	 * <p>删除任务是否删除文件</p>
+	 */
+	private boolean taskFileDelete;
+	/**
 	 * <p>系统服务端口（本地服务：启动检测）</p>
 	 */
 	private int servicePort;
@@ -245,25 +249,26 @@ public final class SystemConfig extends PropertiesConfig {
 	 * <p>初始化</p>
 	 */
 	private void init() {
-		this.name = getString("acgist.system.name");
-		this.nameEn = getString("acgist.system.name.en");
-		this.version = getString("acgist.system.version");
-		this.ftpUser = getString("acgist.system.ftp.user");
-		this.ftpPassword = getString("acgist.system.ftp.password");
-		this.author = getString("acgist.system.author");
-		this.source = getString("acgist.system.source");
-		this.support = getString("acgist.system.support");
-		this.stunServer = getString("acgist.system.stun.server");
-		this.servicePort = getInteger("acgist.service.port", 16888);
-		this.torrentPort = getInteger("acgist.torrent.port", 18888);
-		this.peerSize = getInteger("acgist.peer.size", 20);
-		this.trackerSize = getInteger("acgist.tracker.size", 50);
-		this.pieceRepeatSize = getInteger("acgist.piece.repeat.size", 4);
-		this.dhtInterval = getInteger("acgist.dht.interval", 120);
-		this.pexInterval = getInteger("acgist.pex.interval", 120);
-		this.lsdInterval = getInteger("acgist.lsd.interval", 120);
-		this.trackerInterval = getInteger("acgist.tracker.interval", 120);
-		this.peerOptimizeInterval = getInteger("acgist.peer.optimize.interval", 60);
+		this.name = this.getString("acgist.system.name");
+		this.nameEn = this.getString("acgist.system.name.en");
+		this.version = this.getString("acgist.system.version");
+		this.ftpUser = this.getString("acgist.system.ftp.user");
+		this.ftpPassword = this.getString("acgist.system.ftp.password");
+		this.author = this.getString("acgist.system.author");
+		this.source = this.getString("acgist.system.source");
+		this.support = this.getString("acgist.system.support");
+		this.stunServer = this.getString("acgist.system.stun.server");
+		this.taskFileDelete = this.getBoolean("acgist.task.file.delete", false);
+		this.servicePort = this.getInteger("acgist.service.port", 16888);
+		this.torrentPort = this.getInteger("acgist.torrent.port", 18888);
+		this.peerSize = this.getInteger("acgist.peer.size", 20);
+		this.trackerSize = this.getInteger("acgist.tracker.size", 50);
+		this.pieceRepeatSize = this.getInteger("acgist.piece.repeat.size", 4);
+		this.dhtInterval = this.getInteger("acgist.dht.interval", 120);
+		this.pexInterval = this.getInteger("acgist.pex.interval", 120);
+		this.lsdInterval = this.getInteger("acgist.lsd.interval", 120);
+		this.trackerInterval = this.getInteger("acgist.tracker.interval", 120);
+		this.peerOptimizeInterval = this.getInteger("acgist.peer.optimize.interval", 60);
 	}
 
 	/**
@@ -278,6 +283,8 @@ public final class SystemConfig extends PropertiesConfig {
 		LOGGER.info("作者：{}", this.author);
 		LOGGER.info("官网与源码：{}", this.source);
 		LOGGER.info("问题与建议：{}", this.support);
+		LOGGER.info("STUN服务器：{}", this.stunServer);
+		LOGGER.info("删除任务是否删除文件：{}", this.taskFileDelete);
 		LOGGER.info("系统服务端口：{}", this.servicePort);
 		LOGGER.info("BT服务端口（Peer、DHT、UTP、STUN）：{}", this.torrentPort);
 		LOGGER.info("单个任务Peer数量（同时下载）：{}", this.peerSize);
@@ -370,6 +377,15 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	public static final String getStunServer() {
 		return INSTANCE.stunServer;
+	}
+	
+	/**
+	 * <p>获取删除任务是否删除文件</p>
+	 * 
+	 * @return 删除任务是否删除文件
+	 */
+	public static final boolean getTaskFileDelete() {
+		return INSTANCE.taskFileDelete;
 	}
 	
 	/**
