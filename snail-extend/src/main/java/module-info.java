@@ -1,6 +1,6 @@
 /**
  * <h1>Sanil（蜗牛）</h1>
- * <p>Snail（蜗牛）使用后台模式</p>
+ * <p>通过系统消息管理Snail（蜗牛）</p>
  * <p>官网地址：https://gitee.com/acgist/snail</p>
  * 
  * @author acgist

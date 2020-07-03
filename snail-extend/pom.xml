@@ -17,101 +17,79 @@
 	<packaging>jar</packaging>
 	
 	<dependencies>
-		<!-- Snail -->
 		<dependency>
 			<groupId>com.acgist</groupId>
 			<artifactId>snail</artifactId>
-			<version>${acgist.version}</version>
 		</dependency>
 	</dependencies>
 
 	<build>
 		<!-- Maven插件 -->
 		<plugins>
-			<!-- resources：mvn resources:resources -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>${maven.resources.version}</version>
-				<configuration>
-					<resources>
-						<resource>
-							<directory>src/main/resources</directory>
-							<!-- 配置文件属性替换：properties -->
-							<filtering>false</filtering>
-							<includes>
-								<include>**</include>
-							</includes>
-							<!-- 排除环境资源文件 -->
-							<excludes>
-								<exclude>profiles/**</exclude>
-							</excludes>
-						</resource>
-						<resource>
-							<!-- travis-ci配置斜杠编译卡住 -->
-							<directory>./</directory>
-							<filtering>false</filtering>
-							<targetPath>META-INF/</targetPath>
-							<!-- 开源协议、README -->
-							<includes>
-								<include>../LICENSE</include>
-								<include>../README.md</include>
-							</includes>
-						</resource>
-					</resources>
-				</configuration>
-				<executions>
-					<!-- 自动复制环境资源 -->
-					<execution>
-						<id>auto-copy-resources-profiles</id>
-						<phase>compile</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<!-- 覆盖资源 -->
-							<overwrite>true</overwrite>
-							<outputDirectory>${project.build.outputDirectory}</outputDirectory>
-							<resources>
-								<!-- 环境资源 -->
-								<resource>
-									<directory>src/main/resources/profiles/${package.environment}</directory>
-									<filtering>false</filtering>
-								</resource>
-							</resources>
-						</configuration>
-						<inherited></inherited>
-					</execution>
-				</executions>
-			</plugin>
-			<!-- jar：mvn jar:jar -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>${maven.jar.version}</version>
 				<configuration>
-					<!-- MANIFEST.MF -->
 					<archive>
 						<manifest>
 							<mainClass>com.acgist.extend.Application</mainClass>
 							<addClasspath>true</addClasspath>
 							<classpathPrefix>lib</classpathPrefix>
 						</manifest>
-						<manifestEntries>
-							<Built-By>${vendor}</Built-By>
-							<Automatic-Module-Name>${module}</Automatic-Module-Name>
-							<Implementation-Title>${project.artifactId}</Implementation-Title>
-							<Implementation-Vendor>${vendor}</Implementation-Vendor>
-							<Implementation-Vendor-Id>${vendor}</Implementation-Vendor-Id>
-							<Implementation-Version>${project.version}</Implementation-Version>
-							<Specification-Title>${project.artifactId}</Specification-Title>
-							<Specification-Vendor>${vendor}</Specification-Vendor>
-							<Specification-Version>${project.version}</Specification-Version>
-						</manifestEntries>
 					</archive>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
 
+	<!-- 基本信息 -->
+	<url>https://gitee.com/acgist/snail</url>
+	<name>snail.extend</name>
+	<description>通过系统消息管理Snail（蜗牛）</description>
+	<inceptionYear>2019</inceptionYear>
+
+	<!-- 仓库信息 -->
+	<scm>
+		<tag>HEAD</tag>
+		<url>https://gitee.com/acgist/snail</url>
+		<connection>scm:git:git://gitee.com/acgist/snail</connection>
+		<developerConnection>scm:git:git@gitee.com:acgist/snail</developerConnection>
+	</scm>
+	
+	<!-- 开源许可 -->
+	<licenses>
+		<license>
+			<url>https://opensource.org/licenses/BSD-3-Clause</url>
+			<name>The 3-Clause BSD License</name>
+		</license>
+	</licenses>
+
+	<!-- 开发人员 -->
+	<developers>
+		<developer>
+			<id>acgist</id>
+			<url>https://gitee.com/acgist</url>
+			<name>Sheng Yu</name>
+			<email>admin@acgist.com</email>
+			<timezone>+8</timezone>
+			<organization>https://www.acgist.com</organization>
+			<roles>
+				<role>master</role>
+				<role>developer</role>
+			</roles>
+		</developer>
+	</developers>
+
+	<!-- 组织信息 -->
+	<organization>
+		<url>https://www.acgist.com</url>
+		<name>acgist</name>
+	</organization>
+	
+	<!-- issues -->
+	<issueManagement>
+		<url>https://gitee.com/acgist/snail/issues</url>
+		<system>Gitee Issues</system>
+	</issueManagement>
+	
 </project>
