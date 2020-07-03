@@ -176,7 +176,7 @@ GITHUB：[https://github.com/acgist/snail](https://github.com/acgist/snail)
 
 ## 贡献
 
-欢迎大家提出问题和建议，但是请不要提交到评论区（会被删除），如果有问题和建议请提交[Issues](https://gitee.com/acgist/snail/issues)
+如果遇到问题或者建议可以提交到[Issues](https://gitee.com/acgist/snail/issues)
 
 提交Issues/PR前请阅读[贡献规范](./CONTRIBUTING.md)
 
