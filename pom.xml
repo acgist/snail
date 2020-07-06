@@ -7,9 +7,12 @@
 	<!--
 	版本配置：
 	pom.xml
+	snail/pom.xml
+	snail-extend/pom.xml
+	snail-javafx/pom.xml
 	builder/config.bat
 	SnailLauncher/src/snail.ini
-	src/main/resources/config/system.properties
+	snail/src/main/resources/config/system.properties
 	
 	编译命令：
 	mvn -e clean package deploy -P release -D skipTests
@@ -25,12 +28,12 @@
 	
 	<groupId>com.acgist</groupId>
 	<artifactId>parent</artifactId>
-	<version>1.4.0</version>
+	<version>1.4.1</version>
 	<packaging>pom</packaging>
 	
 	<properties>
 		<!-- 版本 -->
-		<acgist.version>1.4.0</acgist.version>
+		<acgist.version>1.4.1</acgist.version>
 		<!-- 作者 -->
 		<vendor>acgist</vendor>
 		<!-- 模块 -->
