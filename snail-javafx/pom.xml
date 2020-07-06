@@ -7,8 +7,7 @@
 	<parent>
 		<groupId>com.acgist</groupId>
 		<artifactId>parent</artifactId>
-		<version>${acgist.version}</version>
-		<relativePath>../</relativePath>
+		<version>1.4.0</version>
 	</parent>
 	
 	<modelVersion>4.0.0</modelVersion>

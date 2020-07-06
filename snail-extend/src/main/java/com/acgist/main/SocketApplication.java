@@ -56,7 +56,7 @@ public final class SocketApplication {
 			} else if(message.equalsIgnoreCase(Type.TASK_NEW.name())) {
 				final Map<String, String> map = new HashMap<>();
 				// 单个文件任务
-				map.put("url", "https://mirror.bit.edu.cn/apache/tomcat/tomcat-9/v9.0.36/bin/apache-tomcat-9.0.36.zip");
+				map.put("url", "下载地址");
 				// BT任务
 //				map.put("url", "种子文件路径");
 //				map.put("files", "B编码下载文件列表");
