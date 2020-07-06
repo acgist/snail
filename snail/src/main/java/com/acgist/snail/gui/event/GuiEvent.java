@@ -30,6 +30,8 @@ public abstract class GuiEvent {
 		NOTICE,
 		/** 种子文件选择 */
 		TORRENT,
+		/** 响应消息 */
+		RESPONSE,
 		/** 刷新任务列表：添加、删除 */
 		REFRESH_TASK_LIST,
 		/** 刷新任务状态：开始、暂停 */

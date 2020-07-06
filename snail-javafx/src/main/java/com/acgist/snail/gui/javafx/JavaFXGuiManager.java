@@ -8,6 +8,7 @@ import com.acgist.snail.gui.javafx.event.HideEvent;
 import com.acgist.snail.gui.javafx.event.NoticeEvent;
 import com.acgist.snail.gui.javafx.event.RefreshTaskListEvent;
 import com.acgist.snail.gui.javafx.event.RefreshTaskStatusEvent;
+import com.acgist.snail.gui.javafx.event.ResponseEvent;
 import com.acgist.snail.gui.javafx.event.ShowEvent;
 import com.acgist.snail.gui.javafx.event.TorrentEvent;
 
@@ -39,6 +40,7 @@ public final class JavaFXGuiManager {
 		GuiManager.register(AlertEvent.getInstance());
 		GuiManager.register(NoticeEvent.getInstance());
 		GuiManager.register(TorrentEvent.getInstance());
+		GuiManager.register(ResponseEvent.getInstance());
 		GuiManager.register(RefreshTaskListEvent.getInstance());
 		GuiManager.register(RefreshTaskStatusEvent.getInstance());
 	}

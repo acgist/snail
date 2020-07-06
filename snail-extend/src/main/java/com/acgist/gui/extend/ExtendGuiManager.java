@@ -7,6 +7,7 @@ import com.acgist.gui.extend.event.HideEvent;
 import com.acgist.gui.extend.event.NoticeEvent;
 import com.acgist.gui.extend.event.RefreshTaskListEvent;
 import com.acgist.gui.extend.event.RefreshTaskStatusEvent;
+import com.acgist.gui.extend.event.ResponseEvent;
 import com.acgist.gui.extend.event.ShowEvent;
 import com.acgist.gui.extend.event.TorrentEvent;
 import com.acgist.snail.gui.GuiManager;
@@ -39,6 +40,7 @@ public final class ExtendGuiManager {
 		GuiManager.register(AlertEvent.getInstance());
 		GuiManager.register(NoticeEvent.getInstance());
 		GuiManager.register(TorrentEvent.getInstance());
+		GuiManager.register(ResponseEvent.getInstance());
 		GuiManager.register(RefreshTaskListEvent.getInstance());
 		GuiManager.register(RefreshTaskStatusEvent.getInstance());
 	}

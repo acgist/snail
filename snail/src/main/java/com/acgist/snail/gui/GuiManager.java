@@ -246,6 +246,16 @@ public final class GuiManager {
 	}
 	
 	/**
+	 * <p>响应消息</p>
+	 * 
+	 * @param message 消息
+	 */
+	public GuiManager response(String message) {
+		this.event(Type.RESPONSE, message);
+		return this;
+	}
+	
+	/**
 	 * <p>刷新任务列表</p>
 	 * 
 	 * @return GUI管理器
@@ -357,5 +367,5 @@ public final class GuiManager {
 			this.lock.notifyAll();
 		}
 	}
-	
+
 }
