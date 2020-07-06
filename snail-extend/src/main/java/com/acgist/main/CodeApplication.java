@@ -37,7 +37,7 @@ public class CodeApplication {
 			SystemContext.init(); // 初始化系统上下文
 			// 后台模式启动
 			if(ArrayUtils.isEmpty(args)) {
-				args = new String[] {"mode=extend"};
+				args = new String[] { "mode=extend" };
 			}
 			ExtendGuiManager.getInstance().registerEvent(); // 注册事件
 			createTaskAsyn();
@@ -55,10 +55,10 @@ public class CodeApplication {
 		SystemThreadContext.timer(4, TimeUnit.SECONDS, () -> {
 			try {
 				// 单个文件任务
-//				DownloaderManager.getInstance().newTask("https://mirror.bit.edu.cn/apache/tomcat/tomcat-9/v9.0.36/bin/apache-tomcat-9.0.36.zip");
+				DownloaderManager.getInstance().newTask("下载地址");
 				// BT任务
-				GuiManager.getInstance().files("l62:[Nekomoe kissaten][Fruits Basket S2 (2019)][13][720p][CHS].mp4e"); // 设置选择文件
-				DownloaderManager.getInstance().newTask("E:\\snail\\extend.torrent"); // 开始下载任务
+//				GuiManager.getInstance().files("B编码下载文件列表"); // 设置选择文件
+//				DownloaderManager.getInstance().newTask("种子文件路径"); // 开始下载任务
 			} catch (DownloadException e) {
 				LOGGER.error("下载异常", e);
 			}
