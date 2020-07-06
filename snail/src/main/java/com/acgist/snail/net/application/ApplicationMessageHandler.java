@@ -322,7 +322,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	 * @param message 系统消息
 	 */
 	private void onResponse(ApplicationMessage message) {
-		LOGGER.debug("收到系统响应：{}", message.getBody());
+		GuiManager.getInstance().response(message.getBody());
 	}
 	
 	/**
