@@ -39,24 +39,30 @@ public class CodeApplication {
 			if(ArrayUtils.isEmpty(args)) {
 				args = new String[] {"mode=extend"};
 			}
-			// 注册事件
-			ExtendGuiManager.getInstance().registerEvent();
-			SystemThreadContext.timer(4, TimeUnit.SECONDS, () -> {
-				try {
-					// 单个文件任务
-//					DownloaderManager.getInstance().newTask("https://mirror.bit.edu.cn/apache/tomcat/tomcat-9/v9.0.36/bin/apache-tomcat-9.0.36.zip");
-					// BT任务
-					GuiManager.getInstance().files("l62:[Nekomoe kissaten][Fruits Basket S2 (2019)][13][720p][CHS].mp4e"); // 设置选择文件
-					DownloaderManager.getInstance().newTask("E:\\snail\\extend.torrent"); // 开始下载任务
-				} catch (DownloadException e) {
-					LOGGER.error("下载异常", e);
-				}
-			});
+			ExtendGuiManager.getInstance().registerEvent(); // 注册事件
+			createTaskAsyn();
 			GuiManager.getInstance().init(args).build(); // 初始化GUI
 		} else {
 			LOGGER.debug("启动监听失败");
 		}
 		LOGGER.info("系统启动完成");
+	}
+
+	/**
+	 * <p>异步创建任务</p>
+	 */
+	private static final void createTaskAsyn() {
+		SystemThreadContext.timer(4, TimeUnit.SECONDS, () -> {
+			try {
+				// 单个文件任务
+//				DownloaderManager.getInstance().newTask("https://mirror.bit.edu.cn/apache/tomcat/tomcat-9/v9.0.36/bin/apache-tomcat-9.0.36.zip");
+				// BT任务
+				GuiManager.getInstance().files("l62:[Nekomoe kissaten][Fruits Basket S2 (2019)][13][720p][CHS].mp4e"); // 设置选择文件
+				DownloaderManager.getInstance().newTask("E:\\snail\\extend.torrent"); // 开始下载任务
+			} catch (DownloadException e) {
+				LOGGER.error("下载异常", e);
+			}
+		});
 	}
 	
 }

@@ -27,9 +27,17 @@ public final class SocketApplication {
 	 * @param args 启动参数
 	 */
 	public static final void main(String[] args) {
+		ExtendGuiManager.getInstance().registerEvent(); // 注册事件
+		createSocketMessage();
+	}
+
+	/**
+	 * <p>连接Socket使用系统消息</p>
+	 * <p>优先发送GUI命令注册扩展GUI，然后发送其他命令进行操作。</p>
+	 */
+	private static void createSocketMessage() {
 		String message = null;
 		final Scanner scanner = new Scanner(System.in);
-		ExtendGuiManager.getInstance().registerEvent();
 		final ApplicationClient client = ApplicationClient.newInstance();
 		client.connect();
 		while ((message = scanner.nextLine()) != null) {
@@ -42,7 +50,6 @@ public final class SocketApplication {
 				client.close();
 				break;
 			} else if(message.equalsIgnoreCase(Type.GUI.name())) {
-				// 注册外部GUI
 				client.send(ApplicationMessage.message(Type.GUI, message));
 			} else if(message.equalsIgnoreCase(Type.NOTIFY.name())) {
 				client.send(ApplicationMessage.message(Type.NOTIFY, message));

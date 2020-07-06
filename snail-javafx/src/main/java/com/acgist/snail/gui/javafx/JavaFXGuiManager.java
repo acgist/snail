@@ -33,10 +33,10 @@ public final class JavaFXGuiManager {
 	 * <p>注册GUI事件</p>
 	 */
 	public void registerEvent() {
-		GuiManager.register(BuildEvent.getInstance());
 		GuiManager.register(ShowEvent.getInstance());
 		GuiManager.register(HideEvent.getInstance());
 		GuiManager.register(ExitEvent.getInstance());
+		GuiManager.register(BuildEvent.getInstance());
 		GuiManager.register(AlertEvent.getInstance());
 		GuiManager.register(NoticeEvent.getInstance());
 		GuiManager.register(TorrentEvent.getInstance());
