@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +27,7 @@ import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.SAXException;
 
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.system.exception.ArgumentException;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -63,10 +66,10 @@ public final class XML {
 		final DocumentBuilderFactory factory = buildFactory();
 		try {
 			xml.document = factory.newDocumentBuilder().newDocument();
+			return xml;
 		} catch (ParserConfigurationException e) {
-			LOGGER.error("创建XML异常", e);
+			throw new ArgumentException("创建XML失败", e);
 		}
-		return xml;
 	}
 	
 	/**
@@ -82,10 +85,25 @@ public final class XML {
 		try {
 			final DocumentBuilder builder = factory.newDocumentBuilder();
 			xml.document = builder.parse(new ByteArrayInputStream(content.getBytes()));
+			return xml;
 		} catch (ParserConfigurationException | SAXException | IOException e) {
-			LOGGER.info("解析XML异常：{}", content, e);
+			throw new ArgumentException("解析XML失败：" + content, e);
 		}
-		return xml;
+	}
+	
+	/**
+	 * <p>解析XML</p>
+	 * 
+	 * @param content XML文件路径
+	 * 
+	 * @return XML工具对象
+	 */
+	public static final XML loadFile(String filePath) {
+		try {
+			return load(Files.readString(Paths.get(filePath)));
+		} catch (IOException e) {
+			throw new ArgumentException("解析XML失败：" + filePath, e);
+		}
 	}
 	
 	/**
