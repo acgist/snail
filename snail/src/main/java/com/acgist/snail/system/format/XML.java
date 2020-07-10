@@ -94,7 +94,7 @@ public final class XML {
 	/**
 	 * <p>解析XML</p>
 	 * 
-	 * @param content XML文件路径
+	 * @param filePath XML文件路径
 	 * 
 	 * @return XML工具对象
 	 */
