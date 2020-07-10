@@ -27,7 +27,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	
 	<groupId>com.acgist</groupId>
-	<artifactId>parent</artifactId>
+	<artifactId>snail.parent</artifactId>
 	<version>1.4.1</version>
 	<packaging>pom</packaging>
 	
@@ -387,7 +387,7 @@
 	
 	<!-- 基本信息 -->
 	<url>https://gitee.com/acgist/snail</url>
-	<name>parent</name>
+	<name>snail.parent</name>
 	<description>基于Java、JavaFX开发的下载工具，支持下载协议：BT（BitTorrent、磁力链接、种子）、FTP、HTTP。</description>
 	<inceptionYear>2019</inceptionYear>
 
