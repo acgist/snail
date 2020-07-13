@@ -1,6 +1,5 @@
 package com.acgist.snail;
 
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
