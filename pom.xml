@@ -72,9 +72,9 @@
 	<dependencies>
 		<!-- 测试：JUnit -->
 		<dependency>
-		    <groupId>org.junit.jupiter</groupId>
-		    <artifactId>junit-jupiter</artifactId>
-		    <scope>test</scope>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
@@ -378,9 +378,9 @@
 			</dependency>
 			<!-- 测试：JUnit -->
 			<dependency>
-			    <groupId>org.junit.jupiter</groupId>
-			    <artifactId>junit-jupiter</artifactId>
-			    <version>${junit.version}</version>
+				<groupId>org.junit.jupiter</groupId>
+				<artifactId>junit-jupiter</artifactId>
+				<version>${junit.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
