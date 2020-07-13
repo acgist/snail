@@ -1,5 +1,6 @@
 package com.acgist.snail.pojo.bean;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,9 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.1.0
  */
-public final class Magnet {
+public final class Magnet implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * <p>磁力链接类型</p>

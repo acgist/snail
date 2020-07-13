@@ -1,5 +1,7 @@
 package com.acgist.snail.pojo.bean;
 
+import java.io.Serializable;
+
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.Base32Utils;
@@ -14,8 +16,10 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public final class InfoHash {
+public final class InfoHash implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	/**
 	 * <p>种子info数据长度</p>
 	 */

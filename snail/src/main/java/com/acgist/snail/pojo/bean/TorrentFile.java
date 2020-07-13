@@ -1,5 +1,6 @@
 package com.acgist.snail.pojo.bean;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -17,8 +18,10 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public final class TorrentFile {
+public final class TorrentFile implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	/**
 	 * <p>文件路径拼接时分隔符：{@value}</p>
 	 */
