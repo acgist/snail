@@ -36,9 +36,9 @@ public final class TaskSession implements ITaskSession {
 	/**
 	 * <p>时间格式工厂</p>
 	 */
-	private static final ThreadLocal<SimpleDateFormat> FORMATER = ThreadLocal.withInitial(() -> {
-		return new SimpleDateFormat("yyyy-MM-dd HH:mm");
-	});
+	private static final ThreadLocal<SimpleDateFormat> FORMATER = ThreadLocal.withInitial(
+		() -> new SimpleDateFormat("yyyy-MM-dd HH:mm")
+	);
 
 	/**
 	 * <p>下载器</p>
@@ -161,9 +161,7 @@ public final class TaskSession implements ITaskSession {
 	@Override
 	public Map<String, Object> taskMessage() {
 		return BeanUtils.toMap(this.entity).entrySet().stream()
-			.filter(entry -> {
-				return entry.getKey() != null && entry.getValue() != null;
-			})
+			.filter(entry -> entry.getKey() != null && entry.getValue() != null)
 			.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 	}
 	

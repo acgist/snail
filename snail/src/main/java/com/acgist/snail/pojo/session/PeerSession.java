@@ -3,7 +3,7 @@ package com.acgist.snail.pojo.session;
 import java.net.InetSocketAddress;
 import java.time.Duration;
 import java.util.BitSet;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 import com.acgist.snail.net.torrent.PeerConnect;
@@ -132,7 +132,7 @@ public final class PeerSession implements IStatistics {
 		this.badPieces = new BitSet();
 		this.suggestPieces = new BitSet();
 		this.allowedPieces = new BitSet();
-		this.extension = new HashMap<>();
+		this.extension = new EnumMap<>(PeerConfig.ExtensionType.class);
 		this.statistics = new StatisticsSession(false, false, parent);
 	}
 	
@@ -747,9 +747,7 @@ public final class PeerSession implements IStatistics {
 	 * @return Peer连接
 	 */
 	public PeerConnect peerConnect() {
-		return
-			this.peerDownloader != null ? this.peerDownloader :
-			this.peerUploader != null ? this.peerUploader : null;
+		return this.peerDownloader != null ? this.peerDownloader : this.peerUploader;
 	}
 	
 	/**

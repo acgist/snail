@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
+import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.config.PeerConfig;
@@ -59,11 +60,16 @@ public final class PeerDownloaderGroup {
 	 */
 	private final BlockingQueue<PeerDownloader> peerDownloaders = new LinkedBlockingQueue<>();
 	/**
+	 * <p>任务信息</p>
+	 */
+	private final ITaskSession taskSession;
+	/**
 	 * <p>BT任务信息</p>
 	 */
 	private final TorrentSession torrentSession;
 	
 	private PeerDownloaderGroup(TorrentSession torrentSession) {
+		this.taskSession = torrentSession.taskSession();
 		this.torrentSession = torrentSession;
 	}
 	
@@ -121,7 +127,7 @@ public final class PeerDownloaderGroup {
 	private void spinLock() {
 		final PeerManager peerManager = PeerManager.getInstance();
 		final String infoHashHex = this.torrentSession.infoHashHex();
-		while(this.torrentSession.downloading()) {
+		while(this.taskSession.download()) {
 			if(peerManager.havePeerSession(infoHashHex)) {
 				break;
 			}
@@ -174,7 +180,7 @@ public final class PeerDownloaderGroup {
 	 * @return 创建状态：{@code true}-继续；{@code false}-停止；
 	 */
 	private boolean buildPeerDownloader() {
-		if(!this.torrentSession.downloading()) {
+		if(!this.taskSession.download()) {
 			return false;
 		}
 		if(this.peerDownloaders.size() >= SystemConfig.getPeerSize()) {

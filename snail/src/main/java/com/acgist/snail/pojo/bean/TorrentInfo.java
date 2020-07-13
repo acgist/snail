@@ -1,5 +1,6 @@
 package com.acgist.snail.pojo.bean;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,8 +17,10 @@ import com.acgist.snail.system.format.BEncodeDecoder;
  * @author acgist
  * @since 1.0.0
  */
-public final class TorrentInfo {
+public final class TorrentInfo implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	/**
 	 * <p>填充文件前缀：{@value}</p>
 	 * <p>不需要下载和显示</p>
@@ -193,7 +196,7 @@ public final class TorrentInfo {
 	 * @return 是否是私有种子
 	 */
 	public boolean isPrivateTorrent() {
-		return this.privateTorrent == null ? false : this.privateTorrent.byteValue() == PRIVATE_TORRENT;
+		return this.privateTorrent != null && this.privateTorrent.byteValue() == PRIVATE_TORRENT;
 	}
 	
 	/**
