@@ -4,7 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.net.ftp.bootstrap.FtpClientBuilder;
 import com.acgist.snail.system.exception.NetException;

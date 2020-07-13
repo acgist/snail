@@ -3,7 +3,7 @@ package com.acgist.snail;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.pojo.entity.ConfigEntity;
 import com.acgist.snail.utils.ObjectUtils;

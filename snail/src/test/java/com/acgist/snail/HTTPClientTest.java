@@ -1,6 +1,6 @@
 package com.acgist.snail;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.UnsupportedEncodingException;
 import java.net.http.HttpHeaders;
@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;

@@ -1,6 +1,6 @@
 package com.acgist.snail.dht;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.BaseTest;
 import com.acgist.snail.net.torrent.dht.bootstrap.DhtResponse;

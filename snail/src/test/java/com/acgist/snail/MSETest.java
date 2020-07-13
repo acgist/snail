@@ -3,7 +3,7 @@ package com.acgist.snail;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.net.torrent.crypt.MSEKeyPairBuilder;
 import com.acgist.snail.system.config.CryptConfig;

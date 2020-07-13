@@ -2,7 +2,7 @@ package com.acgist.snail;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.system.PropertyDescriptor;

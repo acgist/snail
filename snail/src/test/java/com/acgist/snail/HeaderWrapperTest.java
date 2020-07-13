@@ -1,8 +1,8 @@
 package com.acgist.snail;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.net.upnp.UpnpServer;
