@@ -1,6 +1,6 @@
 package com.acgist.snail.torrent;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.BaseTest;
 import com.acgist.snail.pojo.bean.TorrentPiece;

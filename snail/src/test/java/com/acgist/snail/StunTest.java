@@ -1,6 +1,6 @@
 package com.acgist.snail;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.net.stun.StunClient;
 import com.acgist.snail.system.config.StunConfig;

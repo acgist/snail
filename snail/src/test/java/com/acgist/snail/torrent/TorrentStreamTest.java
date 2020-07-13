@@ -7,7 +7,7 @@ import java.nio.channels.FileChannel;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.BaseTest;
 import com.acgist.snail.utils.StringUtils;

@@ -3,7 +3,7 @@ package com.acgist.snail;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;

@@ -1,6 +1,6 @@
 package com.acgist.snail;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.protocol.ProtocolManager;

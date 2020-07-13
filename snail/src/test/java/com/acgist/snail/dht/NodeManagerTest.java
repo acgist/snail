@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.BaseTest;
 import com.acgist.snail.net.torrent.dht.bootstrap.NodeManager;

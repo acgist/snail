@@ -1,6 +1,6 @@
 package com.acgist.snail.javafx;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.gui.GuiManager.MessageType;
 import com.acgist.snail.gui.javafx.Alerts;

@@ -1,6 +1,7 @@
 package com.acgist.snail;
 
-import static org.junit.Assert.assertEquals;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,7 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Properties;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.format.XML;

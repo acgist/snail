@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.net.application.ApplicationClient;
