@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
  * <p>桌面工具</p>
  * <pre>
  * // 不能直接在JavaFX线程中调用AWT线程，需要转换：
- * SwingUtilities.invokeLater(() -> {});
+ * SwingUtilities.invokeLater(() -&gt; {});
  * // 直接使用JavaFX自带方法打开文件和浏览网页：
  * Application.getHostServices().showDocument(uri);
  * </pre>

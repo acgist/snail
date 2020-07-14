@@ -43,7 +43,7 @@ import javafx.stage.WindowEvent;
  * <p>系统托盘使用AWT实现</p>
  * <pre>
  * // 不能直接在AWT线程中调用JavaFX线程，需要转换：
- * Platform.runLater(() -> {});
+ * Platform.runLater(() -&gt; {});
  * </pre>
  * 
  * @author acgist
