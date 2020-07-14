@@ -269,9 +269,11 @@
 						<docencoding>${encoding}</docencoding>
 						<description>${project.description}</description>
 						<!-- 忽略模块描述 -->
+						<!--
 						<sourceFileExcludes>
 							<sourceFileExclude>**/module-info.java</sourceFileExclude>
 						</sourceFileExcludes>
+						-->
 					</configuration>
 					<executions>
 						<!-- 自动打包文档 -->

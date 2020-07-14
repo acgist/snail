@@ -35,8 +35,6 @@ public final class LocalServiceDiscoveryClient extends UdpClient<LocalServiceDis
 
 	/**
 	 * <p>创建本地发现客户端</p>
-	 * 
-	 * @param socketAddress 地址
 	 */
 	public static final LocalServiceDiscoveryClient newInstance() {
 		return new LocalServiceDiscoveryClient(NetUtils.buildSocketAddress(LocalServiceDiscoveryServer.LSD_HOST, LocalServiceDiscoveryServer.LSD_PORT));
