@@ -57,7 +57,7 @@ public final class HttpProtocol extends Protocol {
 
 	@Override
 	protected void prep() throws DownloadException {
-		buildHttpHeader();
+		this.buildHttpHeader();
 	}
 	
 	/**

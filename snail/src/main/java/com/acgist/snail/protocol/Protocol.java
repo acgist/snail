@@ -344,7 +344,7 @@ public abstract class Protocol {
 		this.url = url;
 		boolean ok = true;
 		try {
-			buildTaskEntity();
+			this.buildTaskEntity();
 			return TaskSession.newInstance(this.taskEntity);
 		} catch (DownloadException e) {
 			ok = false;
@@ -364,17 +364,17 @@ public abstract class Protocol {
 	 */
 	protected void buildTaskEntity() throws DownloadException {
 		this.taskEntity = new TaskEntity();
-		prep();
-		buildUrl();
-		buildType();
-		buildStatus();
-		final String fileName = buildFileName();
-		buildName(fileName);
-		buildFile(fileName);
-		buildFileType(fileName);
-		buildSize();
-		done();
-		persistentTaskEntity();
+		this.prep();
+		this.buildUrl();
+		this.buildType();
+		this.buildStatus();
+		final String fileName = this.buildFileName();
+		this.buildName(fileName);
+		this.buildFile(fileName);
+		this.buildFileType(fileName);
+		this.buildSize();
+		this.done();
+		this.persistentTaskEntity();
 	}
 	
 	/**
