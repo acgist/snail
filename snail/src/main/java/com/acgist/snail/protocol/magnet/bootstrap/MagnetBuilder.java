@@ -15,8 +15,7 @@ import com.acgist.snail.utils.UrlUtils;
 
 /**
  * <p>磁力链接Builder</p>
- * <p>磁力链接解析只支持BT类型磁力链接，其他磁力链接均不支持。</p>
- * <p>BT类型磁力链接中也只支持单文件下载，不支持多文件下载。</p>
+ * <p>磁力链接解析只支持单条BT类型磁力链接</p>
  * 
  * @author acgist
  * @since 1.1.0
@@ -55,11 +54,28 @@ public final class MagnetBuilder {
 	 */
 	private Magnet magnet;
 	
-	private MagnetBuilder(String url) {
+	/**
+	 * @param url 磁力链接
+	 * 
+	 * @throws DownloadException 下载异常
+	 */
+	private MagnetBuilder(String url) throws DownloadException {
+		if(!Protocol.Type.MAGNET.verify(url)) {
+			throw new DownloadException("磁力链接格式错误：" + url);
+		}
 		this.url = url;
 	}
 
-	public static final MagnetBuilder newInstance(String url) {
+	/**
+	 * <p>获取磁力链接Builder</p>
+	 * 
+	 * @param url 磁力链接
+	 * 
+	 * @return 磁力链接Builder
+	 * 
+	 * @throws DownloadException 下载异常
+	 */
+	public static final MagnetBuilder newInstance(String url) throws DownloadException {
 		return new MagnetBuilder(url);
 	}
 	
@@ -71,9 +87,6 @@ public final class MagnetBuilder {
 	 * @throws DownloadException 下载异常
 	 */
 	public Magnet build() throws DownloadException {
-		if(!Protocol.Type.MAGNET.verify(this.url)) {
-			throw new DownloadException("磁力链接格式错误：" + this.url);
-		}
 		this.magnet = new Magnet();
 		// 32位磁力链接
 		if(Protocol.Type.verifyMagnetHash32(this.url)) {
@@ -89,7 +102,8 @@ public final class MagnetBuilder {
 		}
 		// 完整磁力链接
 		int index;
-		String key, value;
+		String key;
+		String value;
 		final URI uri = URI.create(this.url);
 		final String[] querys = uri.getSchemeSpecificPart().substring(1).split("&");
 		for (String query : querys) {
@@ -99,24 +113,26 @@ public final class MagnetBuilder {
 				value = UrlUtils.decode(query.substring(index + 1));
 				switch (key) {
 				case QUERY_DN:
-					dn(value);
+					this.dn(value);
 					break;
 				case QUERY_XT:
-					xt(value);
+					this.xt(value);
 					break;
 				case QUERY_AS:
-					as(value);
+					this.as(value);
 					break;
 				case QUERY_XS:
-					xs(value);
+					this.xs(value);
 					break;
 				case QUERY_TR:
-					tr(value);
+					this.tr(value);
 					break;
 				default:
 					LOGGER.debug("磁力链接不支持的参数：{}-{}，磁力链接：{}", key, value, this.url);
 					break;
 				}
+			} else {
+				LOGGER.debug("磁力链接错误参数：{}，磁力链接：{}", query, this.url);
 			}
 		}
 		if(this.magnet.supportDownload()) {

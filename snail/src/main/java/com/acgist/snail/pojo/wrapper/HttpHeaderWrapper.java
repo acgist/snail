@@ -12,7 +12,7 @@ import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.UrlUtils;
 
 /**
- * <p>HTTP头部信息信息包装器</p>
+ * <p>HTTP头部信息包装器</p>
  * 
  * @author acgist
  * @since 1.0.0

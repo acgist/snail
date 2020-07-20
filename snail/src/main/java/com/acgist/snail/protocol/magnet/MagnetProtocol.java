@@ -58,8 +58,8 @@ public final class MagnetProtocol extends Protocol {
 	@Override
 	protected void prep() throws DownloadException {
 		final Magnet magnet = MagnetBuilder.newInstance(this.url).build();
-		exist(magnet);
-		magnet(magnet);
+		this.exist(magnet);
+		this.magnet(magnet);
 	}
 	
 	@Override
@@ -84,7 +84,7 @@ public final class MagnetProtocol extends Protocol {
 	
 	@Override
 	protected void done() {
-		buildTorrentFolder();
+		this.buildTorrentFolder();
 	}
 	
 	/**
@@ -93,7 +93,8 @@ public final class MagnetProtocol extends Protocol {
 	 * <p>注意：一定要先检查磁力链接是否已经存在（如果已经存在不能赋值：防止清除已下载任务）</p>
 	 */
 	@Override
-	protected void cleanMessage(boolean ok) {
+	protected void clean(boolean ok) {
+		super.clean(ok);
 		if(!ok) {
 			// 清除种子信息
 			if(this.magnet != null) {
@@ -108,7 +109,7 @@ public final class MagnetProtocol extends Protocol {
 	 * 
 	 * @param magnet 磁力链接信息
 	 * 
-	 * @throws 下载异常
+	 * @throws DownloadException 下载异常
 	 */
 	private void exist(Magnet magnet) throws DownloadException {
 		if(TorrentManager.getInstance().exist(magnet.getHash())) {
@@ -121,7 +122,7 @@ public final class MagnetProtocol extends Protocol {
 	 * 
 	 * @param magnet 磁力链接信息
 	 * 
-	 * @throws 下载异常
+	 * @throws DownloadException 下载异常
 	 */
 	private void magnet(Magnet magnet) throws DownloadException {
 		this.magnet = magnet;

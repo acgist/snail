@@ -420,9 +420,8 @@ public abstract class Protocol {
 	 * @throws DownloadException 下载异常
 	 */
 	protected String buildFileName() throws DownloadException {
-		String fileName = FileUtils.fileNameFromUrl(this.url);
-		fileName = FileUtils.fileNameFormat(fileName);
-		return fileName;
+		final String fileName = FileUtils.fileNameFromUrl(this.url);
+		return FileUtils.fileNameFormat(fileName);
 	}
 
 	/**
@@ -504,15 +503,6 @@ public abstract class Protocol {
 	protected void clean(boolean ok) {
 		this.url = null;
 		this.taskEntity = null;
-		this.cleanMessage(ok);
 	}
-	
-	/**
-	 * <p>清理数据（子类）</p>
-	 * 
-	 * @param ok 创建状态：true-成功；false-失败；
-	 */
-	protected void cleanMessage(boolean ok) {
-	}
-	
+
 }

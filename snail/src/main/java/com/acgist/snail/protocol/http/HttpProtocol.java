@@ -29,7 +29,10 @@ public final class HttpProtocol extends Protocol {
 	 * <p>获取HTTP下载响应头的最大重试次数：{@value}</p>
 	 */
 	private static final int HTTP_HEADER_RETRY_MAX_TIMES = 3;
-
+	
+	/**
+	 * <p>HTTP头部信息</p>
+	 */
 	private HttpHeaderWrapper httpHeaderWrapper;
 	
 	private HttpProtocol() {
@@ -63,11 +66,12 @@ public final class HttpProtocol extends Protocol {
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * <p>优先使用请求头中的文件名称</p>
+	 * <p>优先使用头部信息中的文件名称</p>
 	 */
 	@Override
 	protected String buildFileName() throws DownloadException {
 		String fileName = this.httpHeaderWrapper.fileName(null);
+		// 获取失败使用默认名称
 		if(StringUtils.isEmpty(fileName)) {
 			fileName = super.buildFileName();
 		}
@@ -80,12 +84,13 @@ public final class HttpProtocol extends Protocol {
 	}
 	
 	@Override
-	protected void cleanMessage(boolean ok) {
+	protected void clean(boolean ok) {
+		super.clean(ok);
 		this.httpHeaderWrapper = null;
 	}
 
 	/**
-	 * <p>获取HTTP下载响应头</p>
+	 * <p>获取HTTP头部信息</p>
 	 * 
 	 * @throws DownloadException 下载异常
 	 */
@@ -96,7 +101,7 @@ public final class HttpProtocol extends Protocol {
 			try {
 				this.httpHeaderWrapper = HTTPClient.newInstance(this.url).head();
 			} catch (NetException e) {
-				LOGGER.error("获取HTTP下载响应头异常", e);
+				LOGGER.error("获取HTTP头部信息异常：{}", index, e);
 			}
 			if(this.httpHeaderWrapper != null && this.httpHeaderWrapper.isNotEmpty()) {
 				break;
@@ -106,7 +111,7 @@ public final class HttpProtocol extends Protocol {
 			}
 		}
 		if(this.httpHeaderWrapper == null || this.httpHeaderWrapper.isEmpty()) {
-			throw new DownloadException("获取HTTP下载响应头失败");
+			throw new DownloadException("获取HTTP头部信息失败");
 		}
 	}
 	
