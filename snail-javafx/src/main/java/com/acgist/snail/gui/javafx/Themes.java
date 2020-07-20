@@ -3,7 +3,7 @@ package com.acgist.snail.gui.javafx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.gui.javafx.theme.Theme;
+import com.acgist.snail.gui.javafx.theme.ITheme;
 import com.acgist.snail.gui.javafx.theme.WindowsTheme;
 import com.acgist.snail.system.context.SystemContext.SystemType;
 
@@ -34,7 +34,7 @@ public final class Themes {
 
 	static {
 		final SystemType systemType = SystemType.local();
-		Theme themeHandler = null;
+		ITheme themeHandler = null;
 		if(systemType != null) {
 			switch (systemType) {
 			case WINDOWS:

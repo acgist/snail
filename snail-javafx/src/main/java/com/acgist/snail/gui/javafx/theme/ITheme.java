@@ -8,7 +8,7 @@ import javafx.scene.paint.Color;
  * @author acgist
  * @since 1.4.0
  */
-public interface Theme {
+public interface ITheme {
 	
 	/**
 	 * <p>获取系统主题颜色</p>
