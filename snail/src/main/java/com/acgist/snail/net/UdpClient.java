@@ -19,7 +19,7 @@ import com.acgist.snail.system.exception.NetException;
  * @author acgist
  * @since 1.0.0
  */
-public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessageHandlerAdapter<T> implements UdpChannel {
+public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessageHandlerAdapter<T> implements IUdpChannel {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpClient.class);
 

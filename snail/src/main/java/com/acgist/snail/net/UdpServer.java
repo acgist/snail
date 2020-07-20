@@ -29,7 +29,7 @@ import com.acgist.snail.utils.NetUtils;
  * @author acgist
  * @since 1.0.0
  */
-public abstract class UdpServer<T extends UdpAcceptHandler> implements UdpChannel {
+public abstract class UdpServer<T extends UdpAcceptHandler> implements IUdpChannel {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpServer.class);
 	

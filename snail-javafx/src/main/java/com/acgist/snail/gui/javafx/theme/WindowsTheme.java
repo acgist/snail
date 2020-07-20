@@ -19,7 +19,7 @@ import javafx.scene.paint.Color;
  * @author acgist
  * @since 1.4.0
  */
-public final class WindowsTheme implements Theme {
+public final class WindowsTheme implements ITheme {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(WindowsTheme.class);
 

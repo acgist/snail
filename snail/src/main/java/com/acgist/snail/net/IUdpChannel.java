@@ -15,7 +15,7 @@ import com.acgist.snail.utils.NetUtils;
  * @author acgist
  * @since 1.2.1
  */
-public interface UdpChannel {
+public interface IUdpChannel {
 	
 	/**
 	 * <p>随机端口：{@value}</p>
