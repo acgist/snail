@@ -82,8 +82,8 @@ public final class TorrentProtocol extends Protocol {
 
 	@Override
 	protected void prep() throws DownloadException {
-		exist();
-		torrent();
+		this.exist();
+		this.torrent();
 	}
 
 	@Override
@@ -107,9 +107,9 @@ public final class TorrentProtocol extends Protocol {
 	
 	@Override
 	protected void done() throws DownloadException {
-		buildTorrentFolder();
-		torrentFileOperation();
-		selectTorrentFiles();
+		this.buildTorrentFolder();
+		this.torrentFileOperation();
+		this.selectTorrentFiles();
 	}
 	
 	/**
@@ -118,7 +118,8 @@ public final class TorrentProtocol extends Protocol {
 	 * <p>注意：一定先检查BT任务是否已经存在（如果已经存在不能赋值：防止清除已下载任务）</p>
 	 */
 	@Override
-	protected void cleanMessage(boolean ok) {
+	protected void clean(boolean ok) {
+		super.clean(ok);
 		if(!ok) {
 			// 清除种子信息
 			if(this.torrentSession != null) {
@@ -132,7 +133,7 @@ public final class TorrentProtocol extends Protocol {
 	/**
 	 * <p>判断任务是否已经存在</p>
 	 * 
-	 * @throws 下载异常
+	 * @throws DownloadException 下载异常
 	 */
 	private void exist() throws DownloadException {
 		final Torrent torrent = TorrentManager.loadTorrent(this.url);

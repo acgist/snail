@@ -41,11 +41,23 @@ public final class TorrentBuilder {
 	 */
 	private final List<String> trackers;
 	
+	/**
+	 * @param infoHash InfoHash
+	 * @param trackers Tracker服务器
+	 */
 	private TorrentBuilder(InfoHash infoHash, List<String> trackers) {
 		this.infoHash = infoHash;
 		this.trackers = trackers;
 	}
 	
+	/**
+	 * <p>创建种子文件Builder</p>
+	 * 
+	 * @param infoHash InfoHash
+	 * @param trackers Tracker服务器
+	 * 
+	 * @return 种子文件Builder
+	 */
 	public static final TorrentBuilder newInstance(InfoHash infoHash, List<String> trackers) {
 		return new TorrentBuilder(infoHash, trackers);
 	}
@@ -58,8 +70,8 @@ public final class TorrentBuilder {
 	 * @return 文件路径
 	 */
 	public String buildFile(String path) {
-		final String filePath = FileUtils.file(path, fileName());
-		final Map<String, Object> fileInfo = buildFileInfo();
+		final String filePath = FileUtils.file(path, this.fileName());
+		final Map<String, Object> fileInfo = this.buildFileInfo();
 		this.createFile(filePath, fileInfo);
 		return filePath;
 	}
