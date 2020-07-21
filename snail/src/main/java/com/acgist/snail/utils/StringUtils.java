@@ -521,4 +521,19 @@ public final class StringUtils {
 		}
 	}
 	
+	
+	/**
+	 * <p>去掉字符串所有空白字符</p>
+	 * 
+	 * @param content 原始内容
+	 * 
+	 * @return 去掉空白字符的字符串
+	 */
+	public static final String trimAllBlank(String content) {
+		if(content == null) {
+			return content;
+		}
+		return content.replaceAll("\\s", "");
+	}
+	
 }
