@@ -353,7 +353,7 @@ public abstract class Protocol {
 			ok = false;
 			throw new DownloadException("下载失败", e);
 		} finally {
-			clean(ok);
+			this.clean(ok);
 		}
 	}
 
@@ -432,12 +432,11 @@ public abstract class Protocol {
 	 * @throws DownloadException 下载异常
 	 */
 	protected void buildName(String fileName) throws DownloadException {
-		String name;
-		int index = fileName.lastIndexOf(".");
+		String name = fileName;
+		// 去掉后缀
+		final int index = fileName.lastIndexOf(".");
 		if(index != -1) {
 			name = fileName.substring(0, index);
-		} else {
-			name = fileName;
 		}
 		this.taskEntity.setName(name);
 	}

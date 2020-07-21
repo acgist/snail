@@ -3,13 +3,14 @@ package com.acgist.snail.gui.utils;
 import java.awt.Desktop;
 import java.awt.Desktop.Action;
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 
 import javax.swing.SwingUtilities;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>桌面工具</p>
@@ -40,11 +41,14 @@ public final class DesktopUtils {
 	 * @param file 文件
 	 */
 	public static final void open(final File file) {
-		if(support(Action.OPEN)) {
+		if(
+			file != null && file.exists() &&
+			support(Action.OPEN)
+		) {
 			SwingUtilities.invokeLater(() -> {
 				try {
 					Desktop.getDesktop().open(file);
-				} catch (IOException e) {
+				} catch (Exception e) {
 					LOGGER.error("资源管理器打开文件异常", e);
 				}
 			});
@@ -60,11 +64,14 @@ public final class DesktopUtils {
 	 * @param url 网页链接
 	 */
 	public static final void browse(final String url) {
-		if(support(Action.BROWSE)) {
+		if(
+			StringUtils.isNotEmpty(url) &&
+			support(Action.BROWSE)
+		) {
 			SwingUtilities.invokeLater(() -> {
 				try {
 					Desktop.getDesktop().browse(URI.create(url));
-				} catch (IOException e) {
+				} catch (Exception e) {
 					LOGGER.error("浏览器打开网页异常：{}", url, e);
 				}
 			});
