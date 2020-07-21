@@ -93,11 +93,11 @@ public final class ProtocolManager {
 	 * @throws DownloadException 下载异常
 	 */
 	public ITaskSession buildTaskSession(String url) throws DownloadException {
-		final Protocol protocol = protocol(url);
-		if(protocol == null) {
+		final Optional<Protocol> protocol = this.protocol(url);
+		if(protocol.isEmpty()) {
 			throw new DownloadException("不支持的下载链接：" + url);
 		}
-		return protocol.buildTaskSession(url.trim());
+		return protocol.get().buildTaskSession(url.trim());
 	}
 
 	/**
@@ -108,7 +108,7 @@ public final class ProtocolManager {
 	 * @return {@code true}-支持；{@code false}-不支持；
 	 */
 	public boolean support(String url) {
-		return protocol(url) != null;
+		return this.protocol(url).isPresent();
 	}
 
 	/**
@@ -116,20 +116,16 @@ public final class ProtocolManager {
 	 * 
 	 * @param url 下载链接
 	 * 
-	 * @return 下载协议：{@code null}-不支持
+	 * @return 下载协议
 	 */
-	public Protocol protocol(String url) {
+	public Optional<Protocol> protocol(String url) {
 		if(StringUtils.isEmpty(url)) {
-			return null;
+			return Optional.empty();
 		}
-		final Optional<Protocol> optional = this.protocols.stream()
+		return this.protocols.stream()
 			.filter(protocol -> protocol.available())
 			.filter(protocol -> protocol.verify(url.trim()))
 			.findFirst();
-		if(optional.isEmpty()) {
-			return null;
-		}
-		return optional.get();
 	}
 
 	/**

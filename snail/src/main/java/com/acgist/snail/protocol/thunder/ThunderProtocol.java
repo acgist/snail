@@ -61,10 +61,10 @@ public final class ThunderProtocol extends Protocol {
 		final String sourceUrl = this.sourceUrl(url);
 		LOGGER.debug("迅雷原始链接：{}", sourceUrl);
 		final var realProtocol = ProtocolManager.getInstance().protocol(sourceUrl);
-		if(realProtocol == null) {
+		if(realProtocol.isEmpty()) {
 			throw new DownloadException("不支持的下载链接：" + url);
 		}
-		return realProtocol.buildTaskSession(sourceUrl);
+		return realProtocol.get().buildTaskSession(sourceUrl);
 	}
 	
 	/**
