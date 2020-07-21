@@ -10,6 +10,7 @@ import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.system.exception.DownloadException;
+import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>迅雷协议</p>
@@ -22,6 +23,15 @@ public final class ThunderProtocol extends Protocol {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ThunderProtocol.class);
 	
 	private static final ThunderProtocol INSTANCE = new ThunderProtocol();
+	
+	/**
+	 * <p>迅雷链接拼接前缀：{@value}</p>
+	 */
+	private static final String THUNDER_PREFIX = "AA";
+	/**
+	 * <p>迅雷链接拼接后缀：{@value}</p>
+	 */
+	private static final String THUNDER_SUFFIX = "ZZ";
 
 	private ThunderProtocol() {
 		super(Type.THUNDER);
@@ -47,17 +57,43 @@ public final class ThunderProtocol extends Protocol {
 	}
 	
 	@Override
-	public synchronized ITaskSession buildTaskSession(String url) throws DownloadException {
-		final String prefix = Protocol.Type.THUNDER.prefix(url);
-		String realUrl = url.substring(prefix.length());
-		realUrl = new String(Base64.getMimeDecoder().decode(realUrl)); // getMimeDecoder防止长度非4的整数倍导致的异常
-		realUrl = realUrl.substring(2, realUrl.length() - 2);
-		LOGGER.debug("迅雷原始链接：{}", realUrl);
-		final var realProtocol = ProtocolManager.getInstance().protocol(realUrl);
+	public synchronized ITaskSession buildTaskSession(final String url) throws DownloadException {
+		final String sourceUrl = this.sourceUrl(url);
+		LOGGER.debug("迅雷原始链接：{}", sourceUrl);
+		final var realProtocol = ProtocolManager.getInstance().protocol(sourceUrl);
 		if(realProtocol == null) {
 			throw new DownloadException("不支持的下载链接：" + url);
 		}
-		return realProtocol.buildTaskSession(realUrl);
+		return realProtocol.buildTaskSession(sourceUrl);
+	}
+	
+	/**
+	 * <p>迅雷链接转换原始链接</p>
+	 * 
+	 * @param url 迅雷链接
+	 * 
+	 * @return 原始链接
+	 */
+	public String sourceUrl(String url) {
+		final String prefix = Protocol.Type.THUNDER.prefix(url);
+		String sourceUrl = url.substring(prefix.length());
+		sourceUrl = new String(Base64.getMimeDecoder().decode(sourceUrl)); // getMimeDecoder防止长度非4的整数倍导致的异常
+		sourceUrl = sourceUrl.substring(THUNDER_PREFIX.length(), sourceUrl.length() - THUNDER_SUFFIX.length());
+		return sourceUrl;
+	}
+	
+	/**
+	 * <p>原始链接转换迅雷链接</p>
+	 * 
+	 * @param url 原始链接
+	 * 
+	 * @return 迅雷链接
+	 */
+	public String thunderUrl(String url) {
+		String thunderUrl = THUNDER_PREFIX + url + THUNDER_SUFFIX;
+		thunderUrl = Base64.getMimeEncoder().encodeToString(thunderUrl.getBytes());
+		thunderUrl = Protocol.Type.THUNDER.defaultPrefix() + thunderUrl;
+		return StringUtils.trimAllBlank(thunderUrl);
 	}
 	
 }
