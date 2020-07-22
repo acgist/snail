@@ -37,7 +37,7 @@ public final class DatabaseInitializer extends Initializer {
 	@Override
 	protected void init() {
 		LOGGER.info("初始化数据库");
-		if(haveTable()) { // 已经创建
+		if(databaseInit()) { // 已经创建
 			LOGGER.debug("数据库已经初始化");
 		} else { // 没有创建：执行创建语句
 			buildTable();
@@ -45,12 +45,12 @@ public final class DatabaseInitializer extends Initializer {
 	}
 	
 	/**
-	 * <p>查询表是否初始化</p>
+	 * <p>查询数据库是否初始化</p>
 	 * 
 	 * @return 是否初始化
 	 */
-	private boolean haveTable() {
-		return this.databaseManager.haveTable();
+	private boolean databaseInit() {
+		return this.databaseManager.databaseInit();
 	}
 
 	/**

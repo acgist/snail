@@ -39,17 +39,17 @@ public final class DatabaseManager {
 	}
 	
 	/**
-	 * <p>连接</p>
+	 * <p>数据库连接</p>
 	 */
 	private Connection connection;
 
 	/**
-	 * <p>查询表是否初始化</p>
+	 * <p>查询数据库是否初始化</p>
 	 * 
 	 * @return 是否初始化
 	 */
-	public boolean haveTable() {
-		final List<ResultSetWrapper> tables = select("show tables");
+	public boolean databaseInit() {
+		final List<ResultSetWrapper> tables = this.select("show tables");
 		return CollectionUtils.isNotEmpty(tables);
 	}
 	
@@ -65,7 +65,7 @@ public final class DatabaseManager {
 		ResultSet result = null;
 		PreparedStatement statement = null;
 		try {
-			final Connection connection = connection();
+			final Connection connection = this.connection();
 			statement = connection.prepareStatement(sql);
 			if(ArrayUtils.isNotEmpty(parameters)) {
 				for (int index = 0; index < parameters.length; index++) {
@@ -73,13 +73,13 @@ public final class DatabaseManager {
 				}
 			}
 			result = statement.executeQuery();
-			return wrapperResultSet(result);
+			return this.wrapperResultSet(result);
 		} catch (SQLException e) {
-			LOGGER.error("执行SQL查询异常：{}", sql, e);
-			closeConnection();
+			LOGGER.error("执行SQL查询异常：{}-{}", sql, parameters, e);
+			this.closeConnection();
 			throw new RepositoryException(e);
 		} finally {
-			close(result, statement);
+			this.close(result, statement);
 		}
 	}
 
@@ -95,7 +95,7 @@ public final class DatabaseManager {
 		boolean ok = false;
 		PreparedStatement statement = null;
 		try {
-			final Connection connection = connection();
+			final Connection connection = this.connection();
 			statement = connection.prepareStatement(sql);
 			if(ArrayUtils.isNotEmpty(parameters)) {
 				for (int index = 0; index < parameters.length; index++) {
@@ -104,11 +104,11 @@ public final class DatabaseManager {
 			}
 			ok = statement.execute();
 		} catch (SQLException e) {
-			LOGGER.error("执行SQL更新异常：{}", sql, e);
-			closeConnection();
+			LOGGER.error("执行SQL更新异常：{}-{}", sql, parameters, e);
+			this.closeConnection();
 			throw new RepositoryException(e);
 		} finally {
-			close(null, statement);
+			this.close(null, statement);
 		}
 		return ok;
 	}
@@ -135,7 +135,7 @@ public final class DatabaseManager {
 	 * @throws SQLException SQL异常
 	 */
 	private List<ResultSetWrapper> wrapperResultSet(ResultSet result) throws SQLException {
-		final String[] columns = columnNames(result);
+		final String[] columns = this.columnNames(result);
 		final List<ResultSetWrapper> list = new ArrayList<>();
 		while(result.next()) {
 			final ResultSetWrapper wrapper = new ResultSetWrapper();
@@ -181,13 +181,17 @@ public final class DatabaseManager {
 			if(this.connection == null) {
 				try {
 					Class.forName(DatabaseConfig.getDriver());
-					this.connection = DriverManager.getConnection(DatabaseConfig.getUrl(), DatabaseConfig.getUser(), DatabaseConfig.getPassword());
+					this.connection = DriverManager.getConnection(
+						DatabaseConfig.getUrl(),
+						DatabaseConfig.getUser(),
+						DatabaseConfig.getPassword()
+					);
 				} catch (ClassNotFoundException | SQLException e) {
 					LOGGER.error("打开JDBC连接异常", e);
 				}
 			}
 		}
-		return connection();
+		return this.connection();
 	}
 	
 	/**

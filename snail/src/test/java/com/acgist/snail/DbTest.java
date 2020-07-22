@@ -2,15 +2,22 @@ package com.acgist.snail;
 
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.pojo.entity.ConfigEntity;
 import com.acgist.snail.pojo.wrapper.ResultSetWrapper;
 import com.acgist.snail.repository.DatabaseManager;
 import com.acgist.snail.repository.impl.ConfigRepository;
+import com.acgist.snail.system.initializer.impl.DatabaseInitializer;
 
 public class DbTest extends BaseTest {
 
+	@BeforeAll
+	public static final void init() {
+		DatabaseInitializer.newInstance().sync();
+	}
+	
 	@Test
 	public void testSelect() {
 		List<ResultSetWrapper> list = DatabaseManager.getInstance().select("select * from tb_config");
@@ -22,7 +29,7 @@ public class DbTest extends BaseTest {
 	@Test
 	public void testFindOne() {
 		ConfigRepository repository = new ConfigRepository();
-		this.log(repository.findOne("52d11667-2a35-4967-a112-b57b58687e72"));
+		this.log(repository.findOne("d08e76e1-5b05-47c4-9224-eb1dd0f0c898"));
 		this.log(repository.findOne(ConfigEntity.PROPERTY_NAME, "test"));
 	}
 	
@@ -40,7 +47,7 @@ public class DbTest extends BaseTest {
 	public void testUpdate() {
 		ConfigRepository repository = new ConfigRepository();
 		ConfigEntity entity = new ConfigEntity();
-		entity.setId("52d11667-2a35-4967-a112-b57b58687e72");
+		entity.setId("d08e76e1-5b05-47c4-9224-eb1dd0f0c898");
 		entity.setName("test");
 		entity.setValue("test-update");
 		repository.update(entity);
