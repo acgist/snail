@@ -30,6 +30,7 @@ public final class TaskRepository extends Repository<TaskEntity> {
 	 */
 	public void delete(TaskEntity entity) {
 		LOGGER.info("删除任务：{}", entity.getName());
+		// 删除文件
 		if(SystemConfig.getTaskFileDelete()) {
 			final boolean ok = FileUtils.recycle(entity.getFile());
 			if(!ok) {
@@ -37,7 +38,7 @@ public final class TaskRepository extends Repository<TaskEntity> {
 				FileUtils.delete(entity.getFile());
 			}
 		}
-		// 删除数据库信息
+		// 删除数据
 		this.delete(entity.getId());
 	}
 

@@ -23,20 +23,21 @@ public final class ConfigRepository extends Repository<ConfigEntity> {
 	 * @return 配置
 	 */
 	public ConfigEntity findName(String name) {
-		return findOne(ConfigEntity.PROPERTY_NAME, name);
+		return this.findOne(ConfigEntity.PROPERTY_NAME, name);
 	}
 	
 	/**
 	 * <p>根据配置名称删除配置</p>
+	 * <p>配置不存在时删除失败</p>
 	 * 
 	 * @param name 配置名称
 	 * 
-	 * @return 删除结果：true-成功；false-失败（配置不存在）；
+	 * @return 删除结果：true-成功；false-失败；
 	 */
 	public boolean deleteName(String name) {
-		final ConfigEntity entity = findOne(ConfigEntity.PROPERTY_NAME, name);
+		final ConfigEntity entity = this.findName(name);
 		if(entity != null) {
-			delete(entity.getId());
+			this.delete(entity.getId());
 			return true;
 		}
 		return false;
@@ -51,15 +52,15 @@ public final class ConfigRepository extends Repository<ConfigEntity> {
 	 * @param value 配置值
 	 */
 	public void merge(String name, String value) {
-		ConfigEntity entity = findOne(ConfigEntity.PROPERTY_NAME, name);
+		ConfigEntity entity = this.findName(name);
 		if(entity == null) {
 			entity = new ConfigEntity();
 			entity.setName(name);
 			entity.setValue(value);
-			save(entity);
+			this.save(entity);
 		} else {
 			entity.setValue(value);
-			update(entity);
+			this.update(entity);
 		}
 	}
 

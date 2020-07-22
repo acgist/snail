@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -33,13 +33,13 @@ public abstract class Repository<T extends Entity> {
 	 */
 	private static final String COLUMN_REGEX = "[a-zA-Z]+";
 	/**
-	 * <p>数据库列验证</p>
+	 * <p>更新字段验证</p>
+	 * <p>不更新字段：ID、创建时间</p>
 	 */
-	private static final Function<String, String> COLUMN_VERIFY = (value) -> {
-		if(StringUtils.regex(value, COLUMN_REGEX, true)) {
-			return value;
-		}
-		throw new RepositoryException("数据库列格式错误：" + value);
+	private static final Predicate<String> UPDATE_PROPERTY_VERIFY = (property) -> {
+		return
+			!Entity.PROPERTY_ID.equals(property) &&
+			!Entity.PROPERTY_CREATE_DATE.equals(property);
 	};
 	
 	private final DatabaseManager databaseManager = DatabaseManager.getInstance();
@@ -71,9 +71,9 @@ public abstract class Repository<T extends Entity> {
 			throw new RepositoryException("合并参数错误：" + t);
 		}
 		if(t.getId() == null) {
-			save(t);
+			this.save(t);
 		} else {
-			update(t);
+			this.update(t);
 		}
 	}
 	
@@ -118,7 +118,7 @@ public abstract class Repository<T extends Entity> {
 
 	/**
 	 * <p>更新</p>
-	 * <p>更新所有字段</p>
+	 * <p>更新除ID和创建时间外的所有字段</p>
 	 * 
 	 * @param t 实体
 	 */
@@ -132,20 +132,12 @@ public abstract class Repository<T extends Entity> {
 		t.setModifyDate(new Date());
 		final String[] properties = BeanUtils.properties(t.getClass());
 		final String sqlProperty = Stream.of(properties)
-			.filter(property -> {
-				return
-					!Entity.PROPERTY_ID.equals(property) &&
-					!Entity.PROPERTY_CREATE_DATE.equals(property);
-			})
+			.filter(UPDATE_PROPERTY_VERIFY)
 			.map(property -> "`" + property + "` = ?")
 			.collect(Collectors.joining(","));
 		final Object[] parameters = Stream.concat(
 				Stream.of(properties)
-					.filter(property -> {
-						return
-							!Entity.PROPERTY_ID.equals(property) &&
-							!Entity.PROPERTY_CREATE_DATE.equals(property);
-					})
+					.filter(UPDATE_PROPERTY_VERIFY)
 					.map(property -> BeanUtils.propertyValue(t, property)),
 				Stream.of(t.getId())
 			).toArray();
@@ -200,7 +192,7 @@ public abstract class Repository<T extends Entity> {
 		if(CollectionUtils.isEmpty(list)) {
 			return null;
 		}
-		return newInstance(list.get(0));
+		return this.newInstance(list.get(0));
 	}
 	
 	/**
@@ -215,18 +207,21 @@ public abstract class Repository<T extends Entity> {
 		if(property == null) {
 			throw new RepositoryException("查询参数错误：" + property);
 		}
+		if(!StringUtils.regex(value, COLUMN_REGEX, true)) {
+			throw new RepositoryException("查询参数错误：" + property);
+		}
 		final StringBuilder sql = new StringBuilder();
 		sql
 			.append("SELECT * FROM ")
 			.append(this.table)
 			.append(" WHERE ")
-			.append(COLUMN_VERIFY.apply(property))
+			.append(property)
 			.append(" = ? limit 1");
 		final List<ResultSetWrapper> list = this.databaseManager.select(sql.toString(), value);
 		if(CollectionUtils.isEmpty(list)) {
 			return null;
 		}
-		return newInstance(list.get(0));
+		return this.newInstance(list.get(0));
 	}
 	
 	/**
@@ -246,7 +241,7 @@ public abstract class Repository<T extends Entity> {
 			return List.of();
 		}
 		return list.stream()
-			.map(wrapper -> newInstance(wrapper))
+			.map(wrapper -> this.newInstance(wrapper))
 			.collect(Collectors.toList());
 	}
 	
@@ -271,7 +266,7 @@ public abstract class Repository<T extends Entity> {
 	 * @return 实体
 	 */
 	private T newInstance(ResultSetWrapper wrapper) {
-		final T t = newInstance();
+		final T t = this.newInstance();
 		BeanUtils.setProperties(t, wrapper);
 		return t;
 	}
