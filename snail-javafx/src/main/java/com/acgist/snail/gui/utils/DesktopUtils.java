@@ -42,7 +42,7 @@ public final class DesktopUtils {
 	 */
 	public static final void open(final File file) {
 		if(
-			file != null && file.exists() &&
+			file.exists() &&
 			support(Action.OPEN)
 		) {
 			SwingUtilities.invokeLater(() -> {
