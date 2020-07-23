@@ -57,23 +57,23 @@ public final class HTTPClient {
 	public enum StatusCode {
 		
 		/** 成功 */
-		OK(									200),
+		OK(200),
 		/** 断点续传 */
-		PARTIAL_CONTENT(					206),
+		PARTIAL_CONTENT(206),
 		/** 永久重定向 */
-		MOVED_PERMANENTLY(					301),
+		MOVED_PERMANENTLY(301),
 		/** 临时重定向，参考：{@link #SEE_OTHER}、{@link #TEMPORARY_REDIRECT} */
-		FOUND(								302),
+		FOUND(302),
 		/** 临时重定向：请求已被处理，POST不能获取参数 */
-		SEE_OTHER(							303),
+		SEE_OTHER(303),
 		/** 临时重定向：请求没有处理，POST可以获取参数 */
-		TEMPORARY_REDIRECT(					307),
+		TEMPORARY_REDIRECT(307),
 		/** 请求文件不存在 */
-		NOT_FOUND(							404),
+		NOT_FOUND(404),
 		/** 无法满足请求范围 */
-		REQUESTED_RANGE_NOT_SATISFIABLE(	416),
+		REQUESTED_RANGE_NOT_SATISFIABLE(416),
 		/** 服务器错误 */
-		INTERNAL_SERVER_ERROR(				500);
+		INTERNAL_SERVER_ERROR(500);
 		
 		/**
 		 * <p>状态码</p>

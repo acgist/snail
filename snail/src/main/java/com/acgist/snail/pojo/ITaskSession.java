@@ -23,23 +23,23 @@ public interface ITaskSession extends ITaskSessionTable, ITaskSessionEntity, ITa
 		/**
 		 * <p>任务添加到下载队列时处于等待状态</p>
 		 */
-		AWAIT(		"等待中"),
+		AWAIT("等待中"),
 		/**
 		 * <p>任务下载时的状态：由下载管理器自动修改（不能直接设置此状态）</p>
 		 */
-		DOWNLOAD(	"下载中"),
+		DOWNLOAD("下载中"),
 		/**
 		 * <p>任务暂停</p>
 		 */
-		PAUSE(		"暂停"),
+		PAUSE("暂停"),
 		/**
 		 * <p>任务完成：完成状态不能转换为其他任何状态</p>
 		 */
-		COMPLETE(	"完成"),
+		COMPLETE("完成"),
 		/**
 		 * <p>任务失败</p>
 		 */
-		FAIL(		"失败");
+		FAIL("失败");
 		
 		/**
 		 * <p>状态名称</p>
@@ -62,23 +62,23 @@ public interface ITaskSession extends ITaskSessionTable, ITaskSessionEntity, ITa
 	public enum FileType {
 		
 		/** 图片 */
-		IMAGE(		"图片"),
+		IMAGE("图片"),
 		/** 视频 */
-		VIDEO(		"视频"),
+		VIDEO("视频"),
 		/** 音频 */
-		AUDIO(		"音频"),
+		AUDIO("音频"),
 		/** 脚本 */
-		SCRIPT(		"脚本"),
+		SCRIPT("脚本"),
 		/** BT */
-		TORRENT(	"BT"),
+		TORRENT("BT"),
 		/** 压缩 */
-		COMPRESS(	"压缩"),
+		COMPRESS("压缩"),
 		/** 文档 */
-		DOCUMENT(	"文档"),
+		DOCUMENT("文档"),
 		/** 安装包 */
-		INSTALL(	"安装包"),
+		INSTALL("安装包"),
 		/** 未知 */
-		UNKNOWN(	"未知");
+		UNKNOWN("未知");
 		
 		/**
 		 * <p>类型名称</p>

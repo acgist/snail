@@ -68,13 +68,13 @@ public final class StunConfig {
 	public enum MessageType {
 		
 		/** 请求：服务器会响应 */
-		REQUEST(			(byte) 0b00),
+		REQUEST((byte) 0b00),
 		/** 指示：服务器不响应 */
-		INDICATION(			(byte) 0b01),
+		INDICATION((byte) 0b01),
 		/** 响应：成功 */
-		SUCCESS_RESPONSE(	(byte) 0b10),
+		SUCCESS_RESPONSE((byte) 0b10),
 		/** 响应：失败 */
-		ERROR_RESPONSE(		(byte) 0b11);
+		ERROR_RESPONSE((byte) 0b11);
 		
 		/**
 		 * <p>C1：{@value}</p>
@@ -139,26 +139,26 @@ public final class StunConfig {
 		
 		//================强制理解：0x0000-0x7FFF================//
 		/** 端口映射：明文 */
-		MAPPED_ADDRESS(		(short) 0x0001),
-		RESPONSE_ADDRESS(	(short) 0x0002),
-		CHANGE_ADDRESS(		(short) 0x0003),
-		SOURCE_ADDRESS(		(short) 0x0004),
-		CHANGED_ADDRESS(	(short) 0x0005),
-		USERNAME(			(short) 0x0006),
-		PASSWORD(			(short) 0x0007),
-		MESSAGE_INTEGRITY(	(short) 0x0008),
+		MAPPED_ADDRESS((short) 0x0001),
+		RESPONSE_ADDRESS((short) 0x0002),
+		CHANGE_ADDRESS((short) 0x0003),
+		SOURCE_ADDRESS((short) 0x0004),
+		CHANGED_ADDRESS((short) 0x0005),
+		USERNAME((short) 0x0006),
+		PASSWORD((short) 0x0007),
+		MESSAGE_INTEGRITY((short) 0x0008),
 		/** 错误：错误响应时使用 */
-		ERROR_CODE(			(short) 0x0009),
-		UNKNOWN_ATTRIBUTES(	(short) 0x000A),
-		REFLECTED_FROM(		(short) 0x000B),
-		REALM(				(short) 0x0014),
-		NONCE(				(short) 0x0015),
+		ERROR_CODE((short) 0x0009),
+		UNKNOWN_ATTRIBUTES((short) 0x000A),
+		REFLECTED_FROM((short) 0x000B),
+		REALM((short) 0x0014),
+		NONCE((short) 0x0015),
 		/** 端口映射：使用异或处理数据 */
-		XOR_MAPPED_ADDRESS(	(short) 0x0020),
+		XOR_MAPPED_ADDRESS((short) 0x0020),
 		//================选择理解：0x8000-0xFFFF================//
-		SOFTWARE(			(short) 0x8022),
-		ALTERNATE_SERVER(	(short) 0x8023),
-		FINGERPRINT(		(short) 0x8028);
+		SOFTWARE((short) 0x8022),
+		ALTERNATE_SERVER((short) 0x8023),
+		FINGERPRINT((short) 0x8028);
 		
 		/**
 		 * <p>属性ID</p>
@@ -191,17 +191,17 @@ public final class StunConfig {
 	public enum ErrorCode {
 		
 		/** 尝试替换 */
-		TRY_ALTERNATE(		300),
+		TRY_ALTERNATE(300),
 		/** 请求错误 */
-		BAD_REQUEST(		400),
+		BAD_REQUEST(400),
 		/** 没有授权 */
-		UNAUTHORIZED(		401),
+		UNAUTHORIZED(401),
 		/** 未知属性 */
-		UNKNOWN_ATTRIBUTE(	420),
+		UNKNOWN_ATTRIBUTE(420),
 		/** NONCE过期 */
-		STALE_NONCE(		438),
+		STALE_NONCE(438),
 		/** 服务器错误 */
-		SERVER_ERROR(		500);
+		SERVER_ERROR(500);
 		
 		/**
 		 * <p>错误编码</p>

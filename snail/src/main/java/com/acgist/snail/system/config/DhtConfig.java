@@ -188,13 +188,13 @@ public final class DhtConfig extends PropertiesConfig {
 	public enum QType {
 		
 		/** ping */
-		PING(			"ping"),
+		PING("ping"),
 		/** 查找节点 */
-		FIND_NODE(		"find_node"),
+		FIND_NODE("find_node"),
 		/** 查找Peer */
-		GET_PEERS(		"get_peers"),
+		GET_PEERS("get_peers"),
 		/** 声明Peer */
-		ANNOUNCE_PEER(	"announce_peer");
+		ANNOUNCE_PEER("announce_peer");
 		
 		/**
 		 * <p>类型名称</p>

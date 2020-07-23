@@ -281,38 +281,38 @@ public final class PeerConfig {
 	public enum Type {
 		
 		/** 阻塞 */
-		CHOKE(			(byte) 0x00),
+		CHOKE((byte) 0x00),
 		/** 解除阻塞 */
-		UNCHOKE(		(byte) 0x01),
+		UNCHOKE((byte) 0x01),
 		/** 感兴趣 */
-		INTERESTED(		(byte) 0x02),
+		INTERESTED((byte) 0x02),
 		/** 不感兴趣 */
-		NOT_INTERESTED(	(byte) 0x03),
+		NOT_INTERESTED((byte) 0x03),
 		/** have */
-		HAVE(			(byte) 0x04),
+		HAVE((byte) 0x04),
 		/** Piece位图 */
-		BITFIELD(		(byte) 0x05),
+		BITFIELD((byte) 0x05),
 		/** 请求 */
-		REQUEST(		(byte) 0x06),
+		REQUEST((byte) 0x06),
 		/** 数据 */
-		PIECE(			(byte) 0x07),
+		PIECE((byte) 0x07),
 		/** 取消 */
-		CANCEL(			(byte) 0x08),
+		CANCEL((byte) 0x08),
 		/** DHT */
-		DHT(			(byte) 0x09),
+		DHT((byte) 0x09),
 		/** 扩展 */
-		EXTENSION(		(byte) 0x14),
+		EXTENSION((byte) 0x14),
 		//================FAST Protocol================//
 		/** 所有Piece */
-		HAVE_ALL(		(byte) 0x0E),
+		HAVE_ALL((byte) 0x0E),
 		/** 没有Piece */
-		HAVE_NONE(		(byte) 0x0F),
+		HAVE_NONE((byte) 0x0F),
 		/** 推荐Piece */
-		SUGGEST_PIECE(	(byte) 0x0D),
+		SUGGEST_PIECE((byte) 0x0D),
 		/** 拒绝请求 */
-		REJECT_REQUEST(	(byte) 0x10),
+		REJECT_REQUEST((byte) 0x10),
 		/** 快速允许 */
-		ALLOWED_FAST(	(byte) 0x11);
+		ALLOWED_FAST((byte) 0x11);
 		
 		/**
 		 * <p>消息ID</p>
@@ -345,17 +345,17 @@ public final class PeerConfig {
 	public enum ExtensionType {
 		
 		/** 握手 */
-		HANDSHAKE(		(byte) 0x00, "handshake",		true,	false),
+		HANDSHAKE((byte) 0x00, "handshake", true, false),
 		/** ut_pex */
-		UT_PEX(			(byte) 0x01, "ut_pex",			true,	true),
+		UT_PEX((byte) 0x01, "ut_pex", true, true),
 		/** ut_metadata */
-		UT_METADATA(	(byte) 0x02, "ut_metadata",		true,	true),
+		UT_METADATA((byte) 0x02, "ut_metadata", true, true),
 		/** ut_holepunch */
-		UT_HOLEPUNCH(	(byte) 0x03, "ut_holepunch",	true,	true),
+		UT_HOLEPUNCH((byte) 0x03, "ut_holepunch", true, true),
 		/** upload_only */
-		UPLOAD_ONLY(	(byte) 0x04, "upload_only",		true,	true),
+		UPLOAD_ONLY((byte) 0x04, "upload_only", true, true),
 		/** lt_donthave */
-		LT_DONTHAVE(	(byte) 0x05, "lt_donthave",		true,	true);
+		LT_DONTHAVE((byte) 0x05, "lt_donthave", true, true);
 
 		/**
 		 * <p>消息ID：自定义</p>
@@ -432,9 +432,9 @@ public final class PeerConfig {
 		/** 请求 */
 		REQUEST((byte) 0x00),
 		/** 数据 */
-		DATA(	(byte) 0x01),
+		DATA((byte) 0x01),
 		/** 拒绝 */
-		REJECT(	(byte) 0x02);
+		REJECT((byte) 0x02);
 		
 		/**
 		 * <p>消息ID</p>
@@ -467,11 +467,11 @@ public final class PeerConfig {
 	public enum HolepunchType {
 		
 		/** 约定 */
-		RENDEZVOUS(	(byte) 0x00),
+		RENDEZVOUS((byte) 0x00),
 		/** 连接 */
-		CONNECT(	(byte) 0x01),
+		CONNECT((byte) 0x01),
 		/** 错误 */
-		ERROR(		(byte) 0x02);
+		ERROR((byte) 0x02);
 		
 		/**
 		 * <p>消息ID</p>

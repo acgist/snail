@@ -127,11 +127,11 @@ public final class MainController extends Controller implements Initializable {
 		final var placeholder = buildPlaceholder();
 		this.taskTable.setPlaceholder(placeholder);
 		// 设置列
-		this.taskCell(this.name,		Pos.CENTER_LEFT, true, 	true,  this.taskTable.widthProperty().multiply(3D).divide(10D));
-		this.taskCell(this.status,		Pos.CENTER,		 false, false, this.taskTable.widthProperty().multiply(1D).divide(10D));
-		this.taskCell(this.progress,	Pos.CENTER_LEFT, false, false, this.taskTable.widthProperty().multiply(2D).divide(10D));
-		this.taskCell(this.createDate,	Pos.CENTER,		 false, false, this.taskTable.widthProperty().multiply(2D).divide(10D));
-		this.taskCell(this.endDate,		Pos.CENTER,		 false, false, this.taskTable.widthProperty().multiply(2D).divide(10D));
+		this.taskCell(this.name, Pos.CENTER_LEFT, true, true, this.taskTable.widthProperty().multiply(3D).divide(10D));
+		this.taskCell(this.status, Pos.CENTER, false, false, this.taskTable.widthProperty().multiply(1D).divide(10D));
+		this.taskCell(this.progress, Pos.CENTER_LEFT, false, false, this.taskTable.widthProperty().multiply(2D).divide(10D));
+		this.taskCell(this.createDate, Pos.CENTER, false, false, this.taskTable.widthProperty().multiply(2D).divide(10D));
+		this.taskCell(this.endDate, Pos.CENTER, false, false, this.taskTable.widthProperty().multiply(2D).divide(10D));
 		// 设置行
 		this.taskTable.setRowFactory(this.rowFactory);
 		// 绑定属性
