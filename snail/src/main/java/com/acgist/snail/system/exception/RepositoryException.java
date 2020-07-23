@@ -20,7 +20,7 @@ public class RepositoryException extends RuntimeException {
 	 * 
 	 * @param object 参数
 	 */
-	public static final void isNull(Object object) {
+	public static final void requireNull(Object object) {
 		if(object != null) {
 			throw new RepositoryException("参数错误：" + object);
 		}
@@ -31,7 +31,7 @@ public class RepositoryException extends RuntimeException {
 	 * 
 	 * @param object 参数
 	 */
-	public static final void isNotNull(Object object) {
+	public static final void requireNotNull(Object object) {
 		if(object == null) {
 			throw new RepositoryException("参数错误：" + object);
 		}
