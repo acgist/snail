@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.wrapper.ResultSetWrapper;
 import com.acgist.snail.system.config.DatabaseConfig;
-import com.acgist.snail.system.exception.RepositoryException;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.BeanUtils;
 import com.acgist.snail.utils.CollectionUtils;
@@ -77,10 +76,10 @@ public final class DatabaseManager {
 		} catch (SQLException e) {
 			LOGGER.error("执行SQL查询异常：{}-{}", sql, parameters, e);
 			this.closeConnection();
-			throw new RepositoryException(e);
 		} finally {
 			this.close(result, statement);
 		}
+		return List.of();
 	}
 
 	/**
@@ -106,7 +105,6 @@ public final class DatabaseManager {
 		} catch (SQLException e) {
 			LOGGER.error("执行SQL更新异常：{}-{}", sql, parameters, e);
 			this.closeConnection();
-			throw new RepositoryException(e);
 		} finally {
 			this.close(null, statement);
 		}

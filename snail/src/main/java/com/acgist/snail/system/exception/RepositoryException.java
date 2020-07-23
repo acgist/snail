@@ -14,6 +14,28 @@ public class RepositoryException extends RuntimeException {
 	public RepositoryException() {
 		super("数据库异常");
 	}
+	
+	/**
+	 * <p>判断参数是否为空，如果不为空抛出异常。</p>
+	 * 
+	 * @param object 参数
+	 */
+	public static final void isNull(Object object) {
+		if(object != null) {
+			throw new RepositoryException("参数错误：" + object);
+		}
+	}
+	
+	/**
+	 * <p>判断参数是否不为空，如果为空抛出异常。</p>
+	 * 
+	 * @param object 参数
+	 */
+	public static final void isNotNull(Object object) {
+		if(object == null) {
+			throw new RepositoryException("参数错误：" + object);
+		}
+	}
 
 	public RepositoryException(String message) {
 		super(message);

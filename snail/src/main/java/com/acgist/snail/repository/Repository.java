@@ -36,7 +36,7 @@ public abstract class Repository<T extends Entity> {
 	 * <p>更新字段验证</p>
 	 * <p>不更新字段：ID、创建时间</p>
 	 */
-	private static final Predicate<String> UPDATE_PROPERTY_VERIFY = (property) -> {
+	private static final Predicate<String> UPDATE_PROPERTY_VERIFY = property -> {
 		return
 			!Entity.PROPERTY_ID.equals(property) &&
 			!Entity.PROPERTY_CREATE_DATE.equals(property);
@@ -67,9 +67,7 @@ public abstract class Repository<T extends Entity> {
 	 * @param t 实体
 	 */
 	public void merge(T t) {
-		if(t == null) {
-			throw new RepositoryException("合并参数错误：" + t);
-		}
+		RepositoryException.isNotNull(t);
 		if(t.getId() == null) {
 			this.save(t);
 		} else {
@@ -83,12 +81,8 @@ public abstract class Repository<T extends Entity> {
 	 * @param t 实体
 	 */
 	public void save(T t) {
-		if(t == null) {
-			throw new RepositoryException("保存参数错误：" + t);
-		}
-		if(t.getId() != null) {
-			throw new RepositoryException("保存参数错误（ID）：" + t.getId());
-		}
+		RepositoryException.isNotNull(t);
+		RepositoryException.isNull(t.getId());
 		t.setId(UUID.randomUUID().toString());
 		t.setCreateDate(new Date());
 		t.setModifyDate(new Date());
@@ -123,12 +117,8 @@ public abstract class Repository<T extends Entity> {
 	 * @param t 实体
 	 */
 	public void update(T t) {
-		if(t == null) {
-			throw new RepositoryException("修改参数错误：" + t);
-		}
-		if(t.getId() == null) {
-			throw new RepositoryException("修改参数错误（ID）：" + t.getId());
-		}
+		RepositoryException.isNotNull(t);
+		RepositoryException.isNotNull(t.getId());
 		t.setModifyDate(new Date());
 		final String[] properties = BeanUtils.properties(t.getClass());
 		final String sqlProperty = Stream.of(properties)
@@ -161,9 +151,7 @@ public abstract class Repository<T extends Entity> {
 	 * @param id id
 	 */
 	public void delete(String id) {
-		if(id == null) {
-			throw new RepositoryException("删除参数错误：" + id);
-		}
+		RepositoryException.isNotNull(id);
 		final StringBuilder sql = new StringBuilder();
 		sql
 			.append("DELETE FROM ")
@@ -180,9 +168,7 @@ public abstract class Repository<T extends Entity> {
 	 * @return 实体
 	 */
 	public T findOne(String id) {
-		if(id == null) {
-			throw new RepositoryException("查询参数错误：" + id);
-		}
+		RepositoryException.isNotNull(id);
 		final StringBuilder sql = new StringBuilder();
 		sql
 			.append("SELECT * FROM ")
@@ -204,11 +190,9 @@ public abstract class Repository<T extends Entity> {
 	 * @return 实体
 	 */
 	public T findOne(String property, String value) {
-		if(property == null) {
-			throw new RepositoryException("查询参数错误：" + property);
-		}
+		RepositoryException.isNotNull(property);
 		if(!StringUtils.regex(property, COLUMN_REGEX, true)) {
-			throw new RepositoryException("查询参数错误：" + property);
+			throw new RepositoryException("参数错误：" + property);
 		}
 		final StringBuilder sql = new StringBuilder();
 		sql
@@ -233,9 +217,7 @@ public abstract class Repository<T extends Entity> {
 	 * @return 实体列表
 	 */
 	public List<T> findList(String sql, Object ... parameters) {
-		if(sql == null) {
-			throw new RepositoryException("查询参数错误：" + sql);
-		}
+		RepositoryException.isNotNull(sql);
 		final List<ResultSetWrapper> list = this.databaseManager.select(sql, parameters);
 		if(CollectionUtils.isEmpty(list)) {
 			return List.of();
