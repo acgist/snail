@@ -47,10 +47,6 @@ public final class TaskMenu extends Menu {
 		LOGGER.debug("初始化任务菜单");
 		INSTANCE = new TaskMenu();
 	}
-	
-	private TaskMenu() {
-		this.initMenu();
-	}
 
 	/**
 	 * <p>开始按钮</p>
@@ -84,6 +80,10 @@ public final class TaskMenu extends Menu {
 	 * <p>打开目录按钮</p>
 	 */
 	private MenuItem openFolderMenu;
+	
+	private TaskMenu() {
+		this.initMenu();
+	}
 	
 	@Override
 	protected void initMenu() {

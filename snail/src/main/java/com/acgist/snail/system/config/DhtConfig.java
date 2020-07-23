@@ -88,7 +88,7 @@ public final class DhtConfig extends PropertiesConfig {
 	 */
 	public static final String KEY_TOKEN = "token";
 	/**
-	 * <p>节点信息：{@value}</p>
+	 * <p>节点列表：{@value}</p>
 	 */
 	public static final String KEY_NODES = "nodes";
 	/**
@@ -136,7 +136,7 @@ public final class DhtConfig extends PropertiesConfig {
 	 */
 	public static final int MAX_NODE_SIZE = 1024;
 	/**
-	 * <p>DHT请求清理周期：{@value}</p>
+	 * <p>DHT请求清理周期：{@value}分钟</p>
 	 */
 	public static final int DHT_REQUEST_CLEAN_INTERVAL = 10;
 	/**
@@ -180,6 +180,11 @@ public final class DhtConfig extends PropertiesConfig {
 			this.code = code;
 		}
 		
+		/**
+		 * <p>获取错误编码</p>
+		 * 
+		 * @return 错误编码
+		 */
 		public int code() {
 			return this.code;
 		}
@@ -209,10 +214,22 @@ public final class DhtConfig extends PropertiesConfig {
 			this.value = value;
 		}
 		
+		/**
+		 * <p>获取类型名称</p>
+		 * 
+		 * @return 类型名称
+		 */
 		public String value() {
 			return this.value;
 		}
 		
+		/**
+		 * <p>通过类型名称获取类型</p>
+		 * 
+		 * @param value 类型名称
+		 * 
+		 * @return 类型
+		 */
 		public static final QType valueOfQ(String value) {
 			final var types = QType.values();
 			for (QType type : types) {
@@ -231,7 +248,7 @@ public final class DhtConfig extends PropertiesConfig {
 	 */
 	private final Map<String, String> nodes = new LinkedHashMap<>();
 	
-	public DhtConfig() {
+	private DhtConfig() {
 		super(DHT_CONFIG);
 	}
 	
@@ -268,8 +285,11 @@ public final class DhtConfig extends PropertiesConfig {
 		final var map = nodes.stream()
 			.filter(node -> node.getStatus() != NodeSession.Status.VERIFY)
 			.limit(MAX_NODE_SIZE)
-			.collect(Collectors.toMap(node -> StringUtils.hex(node.getId()), node -> node.getHost() + ":" + node.getPort()));
-		persistent(map, FileUtils.userDirFile(DHT_CONFIG));
+			.collect(Collectors.toMap(
+				node -> StringUtils.hex(node.getId()),
+				node -> node.getHost() + ":" + node.getPort())
+			);
+		this.persistent(map, FileUtils.userDirFile(DHT_CONFIG));
 	}
 	
 }

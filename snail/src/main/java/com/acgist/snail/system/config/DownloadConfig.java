@@ -133,12 +133,12 @@ public final class DownloadConfig extends PropertiesConfig {
 	 * <p>加载配置文件</p>
 	 */
 	private void initFromProperties() {
-		this.path = getString(DOWNLOAD_PATH);
-		this.size = getInteger(DOWNLOAD_SIZE, 4);
-		this.buffer = getInteger(DOWNLOAD_BUFFER, 1024);
-		this.notice = getBoolean(DOWNLOAD_NOTICE, true);
-		this.lastPath = getString(DOWNLOAD_LAST_PATH);
-		this.memoryBuffer = getInteger(DOWNLOAD_MEMORY_BUFFER, 8);
+		this.path = this.getString(DOWNLOAD_PATH);
+		this.size = this.getInteger(DOWNLOAD_SIZE, 4);
+		this.buffer = this.getInteger(DOWNLOAD_BUFFER, 1024);
+		this.notice = this.getBoolean(DOWNLOAD_NOTICE, true);
+		this.lastPath = this.getString(DOWNLOAD_LAST_PATH);
+		this.memoryBuffer = this.getInteger(DOWNLOAD_MEMORY_BUFFER, 8);
 	}
 	
 	/**
@@ -148,17 +148,17 @@ public final class DownloadConfig extends PropertiesConfig {
 		final ConfigRepository configRepository = new ConfigRepository();
 		ConfigEntity entity = null;
 		entity = configRepository.findName(DOWNLOAD_PATH);
-		this.path = getString(entity, this.path);
+		this.path = this.getString(entity, this.path);
 		entity = configRepository.findName(DOWNLOAD_SIZE);
-		this.size = getInteger(entity, this.size);
+		this.size = this.getInteger(entity, this.size);
 		entity = configRepository.findName(DOWNLOAD_NOTICE);
-		this.notice = getBoolean(entity, this.notice);
+		this.notice = this.getBoolean(entity, this.notice);
 		entity = configRepository.findName(DOWNLOAD_BUFFER);
-		this.buffer = getInteger(entity, this.buffer);
+		this.buffer = this.getInteger(entity, this.buffer);
 		entity = configRepository.findName(DOWNLOAD_LAST_PATH);
-		this.lastPath = getString(entity, this.lastPath);
+		this.lastPath = this.getString(entity, this.lastPath);
 		entity = configRepository.findName(DOWNLOAD_MEMORY_BUFFER);
-		this.memoryBuffer = getInteger(entity, this.memoryBuffer);
+		this.memoryBuffer = this.getInteger(entity, this.memoryBuffer);
 	}
 	
 	/**

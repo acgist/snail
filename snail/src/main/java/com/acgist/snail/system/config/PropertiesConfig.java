@@ -175,11 +175,11 @@ public abstract class PropertiesConfig {
 	 * @return 配置值
 	 */
 	protected Boolean getBoolean(String name) {
-		final String value = getString(name);
+		final String value = this.getString(name);
 		if(Boolean.TRUE.toString().equalsIgnoreCase(value)) {
-			return true;
+			return Boolean.TRUE;
 		} else if(Boolean.FALSE.toString().equalsIgnoreCase(value)) {
-			return false;
+			return Boolean.FALSE;
 		} else {
 			return null;
 		}
@@ -219,7 +219,7 @@ public abstract class PropertiesConfig {
 	 * @return 配置值
 	 */
 	protected Integer getInteger(String name) {
-		final String value = getString(name);
+		final String value = this.getString(name);
 		if(StringUtils.isNumeric(value)) {
 			return Integer.valueOf(value);
 		}
