@@ -65,7 +65,7 @@ public abstract class Repository<T extends Entity> {
 	 * @param t 实体
 	 */
 	public void merge(T t) {
-		RepositoryException.isNotNull(t);
+		RepositoryException.requireNotNull(t);
 		if(t.getId() == null) {
 			this.save(t);
 		} else {
@@ -79,8 +79,8 @@ public abstract class Repository<T extends Entity> {
 	 * @param t 实体
 	 */
 	public void save(T t) {
-		RepositoryException.isNotNull(t);
-		RepositoryException.isNull(t.getId());
+		RepositoryException.requireNotNull(t);
+		RepositoryException.requireNull(t.getId());
 		t.setId(UUID.randomUUID().toString());
 		t.setCreateDate(new Date());
 		t.setModifyDate(new Date());
@@ -115,8 +115,8 @@ public abstract class Repository<T extends Entity> {
 	 * @param t 实体
 	 */
 	public void update(T t) {
-		RepositoryException.isNotNull(t);
-		RepositoryException.isNotNull(t.getId());
+		RepositoryException.requireNotNull(t);
+		RepositoryException.requireNotNull(t.getId());
 		t.setModifyDate(new Date());
 		final String[] properties = BeanUtils.properties(t.getClass());
 		final String sqlProperty = Stream.of(properties)
@@ -149,7 +149,7 @@ public abstract class Repository<T extends Entity> {
 	 * @param id id
 	 */
 	public void delete(String id) {
-		RepositoryException.isNotNull(id);
+		RepositoryException.requireNotNull(id);
 		final StringBuilder sql = new StringBuilder();
 		sql
 			.append("DELETE FROM ")
@@ -166,7 +166,7 @@ public abstract class Repository<T extends Entity> {
 	 * @return 实体
 	 */
 	public T findOne(String id) {
-		RepositoryException.isNotNull(id);
+		RepositoryException.requireNotNull(id);
 		final StringBuilder sql = new StringBuilder();
 		sql
 			.append("SELECT * FROM ")
@@ -188,7 +188,7 @@ public abstract class Repository<T extends Entity> {
 	 * @return 实体
 	 */
 	public T findOne(String property, String value) {
-		RepositoryException.isNotNull(property);
+		RepositoryException.requireNotNull(property);
 		if(!StringUtils.regex(property, COLUMN_REGEX, true)) {
 			throw new RepositoryException("参数错误：" + property);
 		}
@@ -215,7 +215,7 @@ public abstract class Repository<T extends Entity> {
 	 * @return 实体列表
 	 */
 	public List<T> findList(String sql, Object ... parameters) {
-		RepositoryException.isNotNull(sql);
+		RepositoryException.requireNotNull(sql);
 		final List<ResultSetWrapper> list = this.databaseManager.select(sql, parameters);
 		if(CollectionUtils.isEmpty(list)) {
 			return List.of();
