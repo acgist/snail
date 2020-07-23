@@ -45,7 +45,7 @@ public final class StunConfig {
 		/** 绑定：请求/响应、指示 */
 		BINDING((short) 0x01);
 		
-		public static final short VALUE_MASK = 0b0000_0000_0000_0001;
+		public static final short VALUE_MASK = 0B0000_0000_0000_0001;
 		
 		/**
 		 * <p>方法ID</p>
@@ -68,13 +68,13 @@ public final class StunConfig {
 	public enum MessageType {
 		
 		/** 请求：服务器会响应 */
-		REQUEST((byte) 0b00),
+		REQUEST((byte) 0B00),
 		/** 指示：服务器不响应 */
-		INDICATION((byte) 0b01),
+		INDICATION((byte) 0B01),
 		/** 响应：成功 */
-		SUCCESS_RESPONSE((byte) 0b10),
+		SUCCESS_RESPONSE((byte) 0B10),
 		/** 响应：失败 */
-		ERROR_RESPONSE((byte) 0b11);
+		ERROR_RESPONSE((byte) 0B11);
 		
 		/**
 		 * <p>C1：{@value}</p>

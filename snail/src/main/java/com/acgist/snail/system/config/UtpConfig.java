@@ -3,6 +3,8 @@ package com.acgist.snail.system.config;
 /**
  * <p>UTP配置</p>
  * 
+ * TODO：帧类型和消息类型可以使用枚举替换
+ * 
  * @author acgist
  * @since 1.1.0
  */
@@ -54,7 +56,7 @@ public final class UtpConfig {
 	/**
 	 * <p>消息类型：握手</p>
 	 */
-	public static final byte TYPE_SYN = (ST_SYN	<< 4) | (UTP_VERSION & 0xFF);
+	public static final byte TYPE_SYN = (ST_SYN << 4) | (UTP_VERSION & 0xFF);
 	/**
 	 * <p>扩展</p>
 	 */
