@@ -178,7 +178,7 @@ public final class StatisticsSession implements IStatisticsSession {
 	@Override
 	public void resetUploadSpeed() {
 		if(this.speed) {
-			this.uploadSpeed.reset();		
+			this.uploadSpeed.reset();
 		}
 	}
 	

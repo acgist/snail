@@ -12,23 +12,23 @@ public final class UtpConfig {
 	/**
 	 * <p>数据：{@value}</p>
 	 */
-	public static final byte ST_DATA =	0;
+	public static final byte ST_DATA = 0;
 	/**
 	 * <p>结束：{@value}</p>
 	 */
-	public static final byte ST_FIN =	1;
+	public static final byte ST_FIN = 1;
 	/**
 	 * <p>响应：{@value}</p>
 	 */
-	public static final byte ST_STATE =	2;
+	public static final byte ST_STATE = 2;
 	/**
 	 * <p>重置：{@value}</p>
 	 */
-	public static final byte ST_RESET =	3;
+	public static final byte ST_RESET = 3;
 	/**
 	 * <p>握手：{@value}</p>
 	 */
-	public static final byte ST_SYN =	4;
+	public static final byte ST_SYN = 4;
 	//================版本================//
 	/**
 	 * <p>版本：{@value}</p>
@@ -38,23 +38,23 @@ public final class UtpConfig {
 	/**
 	 * <p>消息类型：数据</p>
 	 */
-	public static final byte TYPE_DATA =	(ST_DATA << 4) | (UTP_VERSION & 0xFF);
+	public static final byte TYPE_DATA = (ST_DATA << 4) | (UTP_VERSION & 0xFF);
 	/**
 	 * <p>消息类型：结束</p>
 	 */
-	public static final byte TYPE_FIN =		(ST_FIN << 4) | (UTP_VERSION & 0xFF);
+	public static final byte TYPE_FIN = (ST_FIN << 4) | (UTP_VERSION & 0xFF);
 	/**
 	 * <p>消息类型：响应</p>
 	 */
-	public static final byte TYPE_STATE =	(ST_STATE << 4) | (UTP_VERSION & 0xFF);
+	public static final byte TYPE_STATE = (ST_STATE << 4) | (UTP_VERSION & 0xFF);
 	/**
 	 * <p>消息类型：重置</p>
 	 */
-	public static final byte TYPE_RESET =	(ST_RESET << 4) | (UTP_VERSION & 0xFF);
+	public static final byte TYPE_RESET = (ST_RESET << 4) | (UTP_VERSION & 0xFF);
 	/**
 	 * <p>消息类型：握手</p>
 	 */
-	public static final byte TYPE_SYN = 	(ST_SYN	<< 4) | (UTP_VERSION & 0xFF);
+	public static final byte TYPE_SYN = (ST_SYN	<< 4) | (UTP_VERSION & 0xFF);
 	/**
 	 * <p>扩展</p>
 	 */
