@@ -45,13 +45,13 @@ public final class TrackerConfig extends PropertiesConfig {
 	public enum Event {
 		
 		/** none */
-		NONE(		0, "none"),
+		NONE(0, "none"),
 		/** 完成 */
-		COMPLETED(	1, "completed"),
+		COMPLETED(1, "completed"),
 		/** 开始 */
-		STARTED(	2, "started"),
+		STARTED(2, "started"),
 		/** 停止 */
-		STOPPED(	3, "stopped");
+		STOPPED(3, "stopped");
 		
 		/**
 		 * <p>事件ID</p>
@@ -83,13 +83,13 @@ public final class TrackerConfig extends PropertiesConfig {
 	public enum Action {
 		
 		/** 连接 */
-		CONNECT(	0, "connect"),
+		CONNECT(0, "connect"),
 		/** 声明 */
-		ANNOUNCE(	1, "announce"),
+		ANNOUNCE(1, "announce"),
 		/** 刮檫 */
-		SCRAPE(		2, "scrape"),
+		SCRAPE(2, "scrape"),
 		/** 错误 */
-		ERROR(		3, "error");
+		ERROR(3, "error");
 		
 		/**
 		 * 动作ID</p>
