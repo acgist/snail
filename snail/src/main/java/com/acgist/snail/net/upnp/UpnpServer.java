@@ -14,6 +14,10 @@ public final class UpnpServer extends UdpServer<UpnpAcceptHandler> {
 	
 	private static final UpnpServer INSTANCE = new UpnpServer();
 	
+	public static final UpnpServer getInstance() {
+		return INSTANCE;
+	}
+	
 	/**
 	 * <p>TTL</p>
 	 */
@@ -36,10 +40,6 @@ public final class UpnpServer extends UdpServer<UpnpAcceptHandler> {
 		super("UPNP Server", UpnpAcceptHandler.getInstance());
 		this.join(UPNP_TTL, UPNP_HOST);
 		this.handle();
-	}
-	
-	public static final UpnpServer getInstance() {
-		return INSTANCE;
 	}
 	
 }

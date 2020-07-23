@@ -16,4 +16,7 @@ public final class TorrentEvent extends TorrentEventAdapter {
 		return INSTANCE;
 	}
 	
+	private TorrentEvent() {
+	}
+	
 }

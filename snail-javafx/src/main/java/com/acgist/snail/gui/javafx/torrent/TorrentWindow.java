@@ -22,16 +22,16 @@ public final class TorrentWindow extends Window<TorrentController> {
 	
 	private static final TorrentWindow INSTANCE;
 	
+	public static final TorrentWindow getInstance() {
+		return INSTANCE;
+	}
+	
 	static {
 		LOGGER.debug("初始化编辑任务窗口");
 		INSTANCE = new TorrentWindow();
 	}
 	
 	private TorrentWindow() {
-	}
-
-	public static final TorrentWindow getInstance() {
-		return INSTANCE;
 	}
 	
 	@Override

@@ -20,16 +20,16 @@ public final class AboutWindow extends Window<AboutController> {
 	
 	private static final AboutWindow INSTANCE;
 	
+	public static final AboutWindow getInstance() {
+		return INSTANCE;
+	}
+	
 	static {
 		LOGGER.debug("初始化关于窗口");
 		INSTANCE = new AboutWindow();
 	}
 	
 	private AboutWindow() {
-	}
-
-	public static final AboutWindow getInstance() {
-		return INSTANCE;
 	}
 	
 	@Override

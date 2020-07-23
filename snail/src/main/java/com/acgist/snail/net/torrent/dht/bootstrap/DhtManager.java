@@ -24,6 +24,10 @@ public final class DhtManager {
 	
 	private static final DhtManager INSTANCE = new DhtManager();
 	
+	public static final DhtManager getInstance() {
+		return INSTANCE;
+	}
+	
 	/**
 	 * <p>DHT请求列表</p>
 	 */
@@ -31,10 +35,6 @@ public final class DhtManager {
 	
 	private DhtManager() {
 		this.requests = new LinkedList<>();
-	}
-	
-	public static final DhtManager getInstance() {
-		return INSTANCE;
 	}
 	
 	/**

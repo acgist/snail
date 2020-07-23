@@ -36,6 +36,10 @@ public final class NodeManager {
 	
 	private static final NodeManager INSTANCE = new NodeManager();
 	
+	public static final NodeManager getInstance() {
+		return INSTANCE;
+	}
+	
 	/**
 	 * <p>Token长度：{@value}</p>
 	 */
@@ -70,10 +74,6 @@ public final class NodeManager {
 		this.token = buildToken();
 		this.nodeId = buildNodeId();
 		this.nodes = new ArrayList<>();
-	}
-	
-	public static final NodeManager getInstance() {
-		return INSTANCE;
 	}
 	
 	/**

@@ -13,12 +13,12 @@ public final class ApplicationServer extends TcpServer<ApplicationMessageHandler
 
 	private static final ApplicationServer INSTANCE = new ApplicationServer();
 	
-	private ApplicationServer() {
-		super("Application Server", ApplicationMessageHandler.class);
-	}
-	
 	public static final ApplicationServer getInstance() {
 		return INSTANCE;
+	}
+	
+	private ApplicationServer() {
+		super("Application Server", ApplicationMessageHandler.class);
 	}
 	
 	@Override

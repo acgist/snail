@@ -28,6 +28,10 @@ public final class ProtocolManager {
 
 	private static final ProtocolManager INSTANCE = new ProtocolManager();
 	
+	public static final ProtocolManager getInstance() {
+		return INSTANCE;
+	}
+	
 	/**
 	 * <p>下载协议</p>
 	 */
@@ -39,10 +43,6 @@ public final class ProtocolManager {
 	
 	private ProtocolManager() {
 		this.protocols = new ArrayList<>();
-	}
-	
-	public static final ProtocolManager getInstance() {
-		return INSTANCE;
 	}
 	
 	/**

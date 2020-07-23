@@ -22,6 +22,9 @@ public final class ResponseEvent extends ResponseEventAdapter {
 		return INSTANCE;
 	}
 	
+	private ResponseEvent() {
+	}
+	
 	@Override
 	protected void executeNativeExtend(String message) {
 		LOGGER.debug("收到响应消息：{}", message);

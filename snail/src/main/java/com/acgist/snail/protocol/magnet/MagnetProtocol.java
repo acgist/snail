@@ -26,6 +26,10 @@ import com.acgist.snail.utils.FileUtils;
 public final class MagnetProtocol extends Protocol {
 	
 	private static final MagnetProtocol INSTANCE = new MagnetProtocol();
+	
+	public static final MagnetProtocol getInstance() {
+		return INSTANCE;
+	}
 
 	/**
 	 * <p>磁力链接信息</p>
@@ -34,10 +38,6 @@ public final class MagnetProtocol extends Protocol {
 	
 	private MagnetProtocol() {
 		super(Type.MAGNET);
-	}
-	
-	public static final MagnetProtocol getInstance() {
-		return INSTANCE;
 	}
 	
 	@Override

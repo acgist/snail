@@ -21,6 +21,9 @@ public final class AlertEvent extends AlertEventAdapter {
 		return INSTANCE;
 	}
 
+	private AlertEvent() {
+	}
+	
 	@Override
 	protected void executeNativeExtend(GuiManager.MessageType type, String title, String message) {
 		Platform.runLater(() -> Alerts.build(title, message, type));

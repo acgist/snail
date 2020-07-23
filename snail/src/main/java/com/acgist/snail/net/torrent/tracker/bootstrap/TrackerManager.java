@@ -37,6 +37,10 @@ public final class TrackerManager {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerManager.class);
 	
 	private static final TrackerManager INSTANCE = new TrackerManager();
+	
+	public static final TrackerManager getInstance() {
+		return INSTANCE;
+	}
 
 	/**
 	 * <p>任务Tracker最大数量</p>
@@ -57,10 +61,6 @@ public final class TrackerManager {
 	private TrackerManager() {
 		this.trackerClients = new ConcurrentHashMap<>();
 		this.trackerLaunchers = new ConcurrentHashMap<>();
-	}
-
-	public static final TrackerManager getInstance() {
-		return INSTANCE;
 	}
 
 	/**

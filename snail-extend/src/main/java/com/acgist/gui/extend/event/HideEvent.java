@@ -16,5 +16,8 @@ public final class HideEvent extends HideEventAdapter {
 	public static final GuiEvent getInstance() {
 		return INSTANCE;
 	}
+	
+	private HideEvent() {
+	}
 
 }

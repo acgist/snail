@@ -21,6 +21,9 @@ public final class RefreshTaskListEvent extends RefreshTaskListEventAdapter {
 	public static final GuiEvent getInstance() {
 		return INSTANCE;
 	}
+	
+	private RefreshTaskListEvent() {
+	}
 
 	@Override
 	protected void executeExtend(Object... args) {

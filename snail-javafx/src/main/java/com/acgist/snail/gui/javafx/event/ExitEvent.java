@@ -19,6 +19,9 @@ public final class ExitEvent extends ExitEventAdapter {
 	public static final GuiEvent getInstance() {
 		return INSTANCE;
 	}
+	
+	private ExitEvent() {
+	}
 
 	@Override
 	protected void executeNative(Object ... args) {

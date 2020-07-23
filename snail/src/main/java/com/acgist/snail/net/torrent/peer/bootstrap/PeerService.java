@@ -24,6 +24,10 @@ public final class PeerService {
 	
 	private static final PeerService INSTANCE = new PeerService();
 	
+	public static final PeerService getInstance() {
+		return INSTANCE;
+	}
+	
 	/**
 	 * <p>版本信息长度：{@value}</p>
 	 */
@@ -49,10 +53,6 @@ public final class PeerService {
 		this.peerIdUrl = this.buildPeerIdUrl();
 		LOGGER.info("PeerId：{}", new String(this.peerId));
 		LOGGER.info("PeerIdUrl：{}", this.peerIdUrl);
-	}
-	
-	public static final PeerService getInstance() {
-		return INSTANCE;
 	}
 	
 	/**

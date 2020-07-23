@@ -19,6 +19,9 @@ public final class NoticeEvent extends NoticeEventAdapter {
 		return INSTANCE;
 	}
 	
+	private NoticeEvent() {
+	}
+	
 	@Override
 	protected void executeNativeExtend(GuiManager.MessageType type, String title, String message) {
 		TrayMenu.getInstance().notice(title, message, type);

@@ -16,16 +16,11 @@ public final class LocalServiceDiscoveryAcceptHandler extends UdpAcceptHandler {
 
 	private static final LocalServiceDiscoveryAcceptHandler INSTANCE = new LocalServiceDiscoveryAcceptHandler();
 	
-	private LocalServiceDiscoveryAcceptHandler() {
-	}
-
-	/**
-	 * <p>创建本地发现接收器</p>
-	 * 
-	 * @return 本地发现接收器
-	 */
 	public static final LocalServiceDiscoveryAcceptHandler getInstance() {
 		return INSTANCE;
+	}
+	
+	private LocalServiceDiscoveryAcceptHandler() {
 	}
 
 	/**

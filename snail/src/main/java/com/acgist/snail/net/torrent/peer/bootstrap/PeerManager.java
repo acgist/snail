@@ -32,6 +32,10 @@ public final class PeerManager {
 
 	private static final PeerManager INSTANCE = new PeerManager();
 	
+	public static final PeerManager getInstance() {
+		return INSTANCE;
+	}
+	
 	/**
 	 * <p>Peer下载队列</p>
 	 * <p>下载时Peer从队列中剔除，当Peer使用结束后重新放回下载队列。</p>
@@ -47,10 +51,6 @@ public final class PeerManager {
 	private PeerManager() {
 		this.peers = new ConcurrentHashMap<>();
 		this.storagePeers = new ConcurrentHashMap<>();
-	}
-	
-	public static final PeerManager getInstance() {
-		return INSTANCE;
 	}
 	
 	/**

@@ -28,6 +28,10 @@ public final class GuiManager {
 	
 	private static final GuiManager INSTANCE = new GuiManager();
 	
+	public static final GuiManager getInstance() {
+		return INSTANCE;
+	}
+	
 	/**
 	 * <p>运行模式</p>
 	 */
@@ -98,10 +102,6 @@ public final class GuiManager {
 	private IMessageHandler extendGuiMessageHandler;
 	
 	private GuiManager() {
-	}
-	
-	public static final GuiManager getInstance() {
-		return INSTANCE;
 	}
 	
 	/**

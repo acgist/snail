@@ -39,17 +39,17 @@ public final class TaskMenu extends Menu {
 	
 	private static final TaskMenu INSTANCE;
 	
+	public static final TaskMenu getInstance() {
+		return INSTANCE;
+	}
+	
 	static {
 		LOGGER.debug("初始化任务菜单");
 		INSTANCE = new TaskMenu();
 	}
 	
 	private TaskMenu() {
-		initMenu();
-	}
-	
-	public static final TaskMenu getInstance() {
-		return INSTANCE;
+		this.initMenu();
 	}
 
 	/**

@@ -207,7 +207,7 @@ public abstract class Repository<T extends Entity> {
 		if(property == null) {
 			throw new RepositoryException("查询参数错误：" + property);
 		}
-		if(!StringUtils.regex(value, COLUMN_REGEX, true)) {
+		if(!StringUtils.regex(property, COLUMN_REGEX, true)) {
 			throw new RepositoryException("查询参数错误：" + property);
 		}
 		final StringBuilder sql = new StringBuilder();

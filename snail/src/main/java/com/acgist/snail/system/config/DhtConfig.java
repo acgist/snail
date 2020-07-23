@@ -25,6 +25,10 @@ public final class DhtConfig extends PropertiesConfig {
 	
 	private static final DhtConfig INSTANCE = new DhtConfig();
 	
+	public static final DhtConfig getInstance() {
+		return INSTANCE;
+	}
+	
 	/**
 	 * <p>配置文件：{@value}</p>
 	 */
@@ -229,10 +233,6 @@ public final class DhtConfig extends PropertiesConfig {
 	
 	public DhtConfig() {
 		super(DHT_CONFIG);
-	}
-	
-	public static final DhtConfig getInstance() {
-		return INSTANCE;
 	}
 	
 	/**

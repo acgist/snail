@@ -34,6 +34,10 @@ public final class UpnpService {
 	
 	private static final UpnpService INSTANCE = new UpnpService();
 	
+	public static final UpnpService getInstance() {
+		return INSTANCE;
+	}
+	
 	/**
 	 * <p>UPNP映射状态</p>
 	 */
@@ -82,10 +86,6 @@ public final class UpnpService {
 	private volatile boolean remapping = false;
 
 	private UpnpService() {
-	}
-
-	public static final UpnpService getInstance() {
-		return INSTANCE;
 	}
 	
 	/**

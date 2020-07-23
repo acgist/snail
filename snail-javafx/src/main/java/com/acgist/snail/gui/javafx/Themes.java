@@ -62,6 +62,9 @@ public final class Themes {
 		SYSTEM_THEME_STYLE = themeStyle.toString();
 	}
 	
+	private Themes() {
+	}
+	
 	/**
 	 * <p>获取系统主题样式</p>
 	 * 

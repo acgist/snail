@@ -26,6 +26,10 @@ public final class UtpRequestQueue {
 
 	private static final UtpRequestQueue INSTANCE = new UtpRequestQueue();
 	
+	public static final UtpRequestQueue getInstance() {
+		return INSTANCE;
+	}
+	
 	/**
 	 * <p>请求队列数量：{@value}</p>
 	 */
@@ -52,10 +56,6 @@ public final class UtpRequestQueue {
 		this.queues = new ArrayList<>(QUEUE_SIZE);
 		this.executor = SystemThreadContext.newExecutor(QUEUE_SIZE, QUEUE_SIZE, 1000, 60, SystemThreadContext.SNAIL_THREAD_UTP_QUEUE);
 		this.buildQueues();
-	}
-	
-	public static final UtpRequestQueue getInstance() {
-		return INSTANCE;
 	}
 	
 	/**

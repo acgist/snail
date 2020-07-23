@@ -20,6 +20,9 @@ public final class ShowEvent extends ShowEventAdapter {
 		return INSTANCE;
 	}
 	
+	private ShowEvent() {
+	}
+	
 	@Override
 	protected void executeNative(Object ... args) {
 		Platform.runLater(() -> MainWindow.getInstance().show());

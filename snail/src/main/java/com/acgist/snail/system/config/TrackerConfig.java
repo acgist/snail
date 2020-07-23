@@ -24,6 +24,10 @@ public final class TrackerConfig extends PropertiesConfig {
 	
 	private static final TrackerConfig INSTANCE = new TrackerConfig();
 	
+	public static final TrackerConfig getInstance() {
+		return INSTANCE;
+	}
+	
 	/**
 	 * <p>配置文件</p>
 	 */
@@ -38,6 +42,11 @@ public final class TrackerConfig extends PropertiesConfig {
 	 * <p>超过最大次数标记无效</p>
 	 */
 	public static final int MAX_FAIL_TIMES = 3;
+	
+	static {
+		LOGGER.info("初始化Tracker服务器配置");
+		INSTANCE.init();
+	}
 	
 	/**
 	 * <p>声明（announce）事件</p>
@@ -125,24 +134,15 @@ public final class TrackerConfig extends PropertiesConfig {
 		
 	}
 	
-	static {
-		LOGGER.info("初始化Tracker服务器配置");
-		INSTANCE.init();
-	}
-	
-	public TrackerConfig() {
-		super(TRACKER_CONFIG);
-	}
-	
-	public static final TrackerConfig getInstance() {
-		return INSTANCE;
-	}
-	
 	/**
 	 * <p>默认Tracker服务器</p>
 	 * <p>index=AnnounceUrl</p>
 	 */
 	private final List<String> announces = new ArrayList<>();
+	
+	public TrackerConfig() {
+		super(TRACKER_CONFIG);
+	}
 	
 	/**
 	 * <p>初始化配置文件</p>
