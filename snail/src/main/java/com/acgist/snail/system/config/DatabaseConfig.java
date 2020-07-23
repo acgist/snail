@@ -15,15 +15,15 @@ public final class DatabaseConfig extends PropertiesConfig {
 	
 	private static final DatabaseConfig INSTANCE = new DatabaseConfig();
 	
+	public static final DatabaseConfig getInstance() {
+		return INSTANCE;
+	}
+	
 	/**
 	 * <p>配置文件：{@value}</p>
 	 */
 	private static final String DATABASE_CONFIG = "/config/database.properties";
 	
-	private DatabaseConfig() {
-		super(DATABASE_CONFIG);
-	}
-
 	static {
 		LOGGER.info("初始化数据库配置");
 		INSTANCE.init();
@@ -50,11 +50,11 @@ public final class DatabaseConfig extends PropertiesConfig {
 	 * <p>数据库建表文件</p>
 	 */
 	private String tableSQL;
-	
-	public static final DatabaseConfig getInstance() {
-		return INSTANCE;
-	}
 
+	private DatabaseConfig() {
+		super(DATABASE_CONFIG);
+	}
+	
 	/**
 	 * <p>初始化</p>
 	 */

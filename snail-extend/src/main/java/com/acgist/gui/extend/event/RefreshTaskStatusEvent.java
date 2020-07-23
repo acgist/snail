@@ -17,4 +17,7 @@ public final class RefreshTaskStatusEvent extends RefreshTaskStatusEventAdapter 
 		return INSTANCE;
 	}
 	
+	private RefreshTaskStatusEvent() {
+	}
+	
 }

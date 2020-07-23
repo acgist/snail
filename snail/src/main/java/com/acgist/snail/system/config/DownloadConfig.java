@@ -25,6 +25,10 @@ public final class DownloadConfig extends PropertiesConfig {
 	
 	private static final DownloadConfig INSTANCE = new DownloadConfig();
 	
+	public static final DownloadConfig getInstance() {
+		return INSTANCE;
+	}
+	
 	/**
 	 * <p>配置文件</p>
 	 */
@@ -76,17 +80,13 @@ public final class DownloadConfig extends PropertiesConfig {
 		LOGGER.info("初始化下载配置");
 		INSTANCE.initFromProperties();
 		INSTANCE.initFromDatabase();
-		buildDownloadUploadBuffer();
-		buildMemoryBufferByte();
+		INSTANCE.buildDownloadUploadBuffer();
+		INSTANCE.buildMemoryBufferByte();
 		INSTANCE.logger();
 	}
 	
 	private DownloadConfig() {
 		super(DOWNLOAD_CONFIG);
-	}
-	
-	public static final DownloadConfig getInstance() {
-		return INSTANCE;
 	}
 	
 	/**
@@ -279,7 +279,7 @@ public final class DownloadConfig extends PropertiesConfig {
 		INSTANCE.buffer = buffer;
 		final ConfigRepository configRepository = new ConfigRepository();
 		configRepository.merge(DOWNLOAD_BUFFER, String.valueOf(buffer));
-		buildDownloadUploadBuffer();
+		INSTANCE.buildDownloadUploadBuffer();
 	}
 	
 	/**
@@ -312,9 +312,9 @@ public final class DownloadConfig extends PropertiesConfig {
 	/**
 	 * <p>设置下载速度和上传速度</p>
 	 */
-	private static final void buildDownloadUploadBuffer() {
-		INSTANCE.downloadBufferByte = INSTANCE.buffer * SystemConfig.DATA_SCALE;
-		INSTANCE.uploadBufferByte = INSTANCE.downloadBufferByte / UPLOAD_DOWNLOAD_SCALE;
+	private void buildDownloadUploadBuffer() {
+		this.downloadBufferByte = this.buffer * SystemConfig.DATA_SCALE;
+		this.uploadBufferByte = this.downloadBufferByte / UPLOAD_DOWNLOAD_SCALE;
 	}
 	
 	/**
@@ -366,7 +366,7 @@ public final class DownloadConfig extends PropertiesConfig {
 		INSTANCE.memoryBuffer = memoryBuffer;
 		final ConfigRepository configRepository = new ConfigRepository();
 		configRepository.merge(DOWNLOAD_MEMORY_BUFFER, String.valueOf(memoryBuffer));
-		buildMemoryBufferByte();
+		INSTANCE.buildMemoryBufferByte();
 	}
 
 	/**
@@ -390,8 +390,8 @@ public final class DownloadConfig extends PropertiesConfig {
 	/**
 	 * <p>设置磁盘缓存</p>
 	 */
-	private static final void buildMemoryBufferByte() {
-		INSTANCE.memoryBufferByte = INSTANCE.memoryBuffer * SystemConfig.ONE_MB;
+	private void buildMemoryBufferByte() {
+		this.memoryBufferByte = this.memoryBuffer * SystemConfig.ONE_MB;
 	}
 	
 }

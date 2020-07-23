@@ -24,12 +24,6 @@ public final class NetUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(NetUtils.class);
 	
 	/**
-	 * <p>工具类禁止实例化</p>
-	 */
-	private NetUtils() {
-	}
-	
-	/**
 	 * <p>本机名称</p>
 	 */
 	private static final String LOCAL_HOST_NAME;
@@ -139,6 +133,12 @@ public final class NetUtils {
 		LOGGER.info("本机名称：{}", LOCAL_HOST_NAME);
 		LOGGER.info("本机地址：{}", LOCAL_HOST_ADDRESS);
 		LOGGER.info("本机默认物理网卡：{}", DEFAULT_NETWORK_INTERFACE);
+	}
+	
+	/**
+	 * <p>工具类禁止实例化</p>
+	 */
+	private NetUtils() {
 	}
 	
 	/**

@@ -16,5 +16,8 @@ public final class BuildEvent extends BuildEventAdapter {
 	public static final GuiEvent getInstance() {
 		return INSTANCE;
 	}
+	
+	private BuildEvent() {
+	}
 
 }

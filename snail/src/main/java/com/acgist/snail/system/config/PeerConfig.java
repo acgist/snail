@@ -225,6 +225,9 @@ public final class PeerConfig {
 		PEER_NAMES.put("-ZT", "ZipTorrent");
 	}
 	
+	private PeerConfig() {
+	}
+	
 	/**
 	 * <p>获取来源名称</p>
 	 * 

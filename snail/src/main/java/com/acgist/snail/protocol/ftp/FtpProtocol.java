@@ -19,12 +19,12 @@ public final class FtpProtocol extends Protocol {
 	
 	private static final FtpProtocol INSTANCE = new FtpProtocol();
 	
-	private FtpProtocol() {
-		super(Type.FTP);
-	}
-	
 	public static final FtpProtocol getInstance() {
 		return INSTANCE;
+	}
+	
+	private FtpProtocol() {
+		super(Type.FTP);
 	}
 
 	@Override

@@ -23,6 +23,9 @@ public final class AlertEvent extends AlertEventAdapter {
 		return INSTANCE;
 	}
 	
+	private AlertEvent() {
+	}
+	
 	@Override
 	protected void executeExtendExtend(GuiManager.MessageType type, String title, String message) {
 		LOGGER.debug("收到提示窗口信息：{}-{}-{}", type, title, message);

@@ -24,6 +24,10 @@ public final class HttpProtocol extends Protocol {
 	private static final Logger LOGGER = LoggerFactory.getLogger(HttpProtocol.class);
 	
 	private static final HttpProtocol INSTANCE = new HttpProtocol();
+	
+	public static final HttpProtocol getInstance() {
+		return INSTANCE;
+	}
 
 	/**
 	 * <p>获取HTTP下载响应头的最大重试次数：{@value}</p>
@@ -37,10 +41,6 @@ public final class HttpProtocol extends Protocol {
 	
 	private HttpProtocol() {
 		super(Type.HTTP);
-	}
-	
-	public static final HttpProtocol getInstance() {
-		return INSTANCE;
 	}
 	
 	@Override

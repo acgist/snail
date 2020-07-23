@@ -21,6 +21,10 @@ public final class TaskDisplay {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskDisplay.class);
 	
 	private static final TaskDisplay INSTANCE = new TaskDisplay();
+	
+	public static final TaskDisplay getInstance() {
+		return INSTANCE;
+	}
 
 	/**
 	 * <p>主窗口控制器</p>
@@ -32,10 +36,6 @@ public final class TaskDisplay {
 	private final Object lock = new Object();
 	
 	private TaskDisplay() {
-	}
-	
-	public static final TaskDisplay getInstance() {
-		return INSTANCE;
 	}
 	
 	/**

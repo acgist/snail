@@ -21,16 +21,16 @@ public final class StatisticsWindow extends Window<StatisticsController> {
 	
 	private static final StatisticsWindow INSTANCE;
 	
+	public static final StatisticsWindow getInstance() {
+		return INSTANCE;
+	}
+	
 	static {
 		LOGGER.debug("初始化统计窗口");
 		INSTANCE = new StatisticsWindow();
 	}
 	
 	private StatisticsWindow() {
-	}
-
-	public static final StatisticsWindow getInstance() {
-		return INSTANCE;
 	}
 	
 	@Override

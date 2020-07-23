@@ -12,6 +12,10 @@ public final class DhtService {
 	
 	private static final DhtService INSTANCE = new DhtService();
 	
+	public static final DhtService getInstance() {
+		return INSTANCE;
+	}
+	
 	/**
 	 * <p>消息ID最小值：{@value}</p>
 	 */
@@ -27,10 +31,6 @@ public final class DhtService {
 	private int requestId = MIN_ID_VALUE;
 
 	private DhtService() {
-	}
-	
-	public static final DhtService getInstance() {
-		return INSTANCE;
 	}
 
 	/**

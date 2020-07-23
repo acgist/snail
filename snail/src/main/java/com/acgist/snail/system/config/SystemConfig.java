@@ -19,6 +19,10 @@ public final class SystemConfig extends PropertiesConfig {
 	
 	private static final SystemConfig INSTANCE = new SystemConfig();
 	
+	public static final SystemConfig getInstance() {
+		return INSTANCE;
+	}
+	
 	/**
 	 * <p>配置文件</p>
 	 */
@@ -135,18 +139,10 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	private static final String USER_DIR = System.getProperty("user.dir");
 	
-	private SystemConfig() {
-		super(SYSTEM_CONFIG);
-	}
-
 	static {
 		LOGGER.info("初始化系统配置");
 		INSTANCE.init();
 		INSTANCE.logger();
-	}
-
-	public static final SystemConfig getInstance() {
-		return INSTANCE;
 	}
 	
 	/**
@@ -244,6 +240,10 @@ public final class SystemConfig extends PropertiesConfig {
 	 * <p>外网IP地址</p>
 	 */
 	private String externalIpAddress;
+	
+	private SystemConfig() {
+		super(SYSTEM_CONFIG);
+	}
 	
 	/**
 	 * <p>初始化</p>

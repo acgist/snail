@@ -22,6 +22,10 @@ import com.acgist.snail.utils.FileUtils;
 public final class TorrentProtocol extends Protocol {
 	
 	private static final TorrentProtocol INSTANCE = new TorrentProtocol();
+	
+	public static final TorrentProtocol getInstance() {
+		return INSTANCE;
+	}
 
 	/**
 	 * <p>种子文件操作类型</p>
@@ -50,10 +54,6 @@ public final class TorrentProtocol extends Protocol {
 	
 	private TorrentProtocol() {
 		super(Type.TORRENT);
-	}
-	
-	public static final TorrentProtocol getInstance() {
-		return INSTANCE;
 	}
 
 	/**

@@ -55,6 +55,10 @@ public final class TrayMenu extends Menu {
 	
 	private static final TrayMenu INSTANCE;
 	
+	public static final TrayMenu getInstance() {
+		return INSTANCE;
+	}
+	
 	/**
 	 * <p>窗口高度</p>
 	 */
@@ -79,19 +83,6 @@ public final class TrayMenu extends Menu {
 	 * <p>托盘</p>
 	 */
 	private TrayIcon trayIcon;
-	
-	private TrayMenu() {
-		this.support = SystemTray.isSupported();
-		if(this.support) {
-			initMenu();
-			enableTray();
-		}
-	}
-	
-	public static final TrayMenu getInstance() {
-		return INSTANCE;
-	}
-
 	/**
 	 * <p>显示按钮</p>
 	 */
@@ -117,6 +108,14 @@ public final class TrayMenu extends Menu {
 	 */
 	private MenuItem exitMenu;
 
+	private TrayMenu() {
+		this.support = SystemTray.isSupported();
+		if(this.support) {
+			this.initMenu();
+			this.enableTray();
+		}
+	}
+	
 	@Override
 	protected void initMenu() {
 		// 创建按钮

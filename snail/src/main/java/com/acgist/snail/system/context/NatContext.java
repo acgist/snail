@@ -27,6 +27,10 @@ public final class NatContext {
 	
 	private static final NatContext INSTANCE = new NatContext();
 	
+	public static final NatContext getInstance() {
+		return INSTANCE;
+	}
+	
 	/**
 	 * <p>UPNP端口映射超时时间</p>
 	 */
@@ -37,8 +41,7 @@ public final class NatContext {
 	 */
 	private final Object upnpLock = new Object();
 	
-	public static final NatContext getInstance() {
-		return INSTANCE;
+	private NatContext() {
 	}
 	
 	/**

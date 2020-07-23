@@ -25,16 +25,16 @@ public final class MainWindow extends Window<MainController> {
 	
 	private static final MainWindow INSTANCE;
 	
+	public static final MainWindow getInstance() {
+		return INSTANCE;
+	}
+	
 	static {
 		LOGGER.debug("初始化主窗口");
 		INSTANCE = new MainWindow();
 	}
 	
 	private MainWindow() {
-	}
-
-	public static final MainWindow getInstance() {
-		return INSTANCE;
 	}
 	
 	@Override

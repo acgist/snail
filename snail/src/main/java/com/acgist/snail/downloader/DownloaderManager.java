@@ -28,6 +28,10 @@ public final class DownloaderManager {
 	
 	private static final DownloaderManager INSTANCE = new DownloaderManager();
 	
+	public static final DownloaderManager getInstance() {
+		return INSTANCE;
+	}
+	
 	/**
 	 * <p>下载协议管理器</p>
 	 */
@@ -46,10 +50,6 @@ public final class DownloaderManager {
 		this.manager = ProtocolManager.getInstance();
 		this.executor = SystemThreadContext.newCacheExecutor(SystemThreadContext.SNAIL_THREAD_DOWNLOADER);
 		this.downloaderMap = new ConcurrentHashMap<>(DownloadConfig.getSize());
-	}
-	
-	public static final DownloaderManager getInstance() {
-		return INSTANCE;
 	}
 	
 	/**

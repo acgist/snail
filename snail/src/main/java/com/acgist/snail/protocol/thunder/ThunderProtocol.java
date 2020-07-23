@@ -24,6 +24,10 @@ public final class ThunderProtocol extends Protocol {
 	
 	private static final ThunderProtocol INSTANCE = new ThunderProtocol();
 	
+	public static final ThunderProtocol getInstance() {
+		return INSTANCE;
+	}
+	
 	/**
 	 * <p>迅雷链接拼接前缀：{@value}</p>
 	 */
@@ -35,10 +39,6 @@ public final class ThunderProtocol extends Protocol {
 
 	private ThunderProtocol() {
 		super(Type.THUNDER);
-	}
-	
-	public static final ThunderProtocol getInstance() {
-		return INSTANCE;
 	}
 	
 	@Override

@@ -30,6 +30,10 @@ public final class TorrentManager {
 	
 	private static final TorrentManager INSTANCE = new TorrentManager();
 	
+	public static final TorrentManager getInstance() {
+		return INSTANCE;
+	}
+	
 	/**
 	 * <p>BT任务MAP</p>
 	 * <p>InfoHashHex=BT任务</p>
@@ -38,10 +42,6 @@ public final class TorrentManager {
 	
 	private TorrentManager() {
 		this.torrentSessions = new ConcurrentHashMap<>();
-	}
-	
-	public static final TorrentManager getInstance() {
-		return INSTANCE;
 	}
 	
 	/**

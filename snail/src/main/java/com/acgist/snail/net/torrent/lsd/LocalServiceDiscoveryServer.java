@@ -21,6 +21,10 @@ public final class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDis
 	private static final Logger LOGGER = LoggerFactory.getLogger(LocalServiceDiscoveryServer.class);
 	
 	private static final LocalServiceDiscoveryServer INSTANCE = new LocalServiceDiscoveryServer();
+	
+	public static final LocalServiceDiscoveryServer getInstance() {
+		return INSTANCE;
+	}
 
 	/**
 	 * <p>TTL：{@value}</p>
@@ -43,15 +47,6 @@ public final class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDis
 		super(LSD_PORT, true, "LSD Server", LocalServiceDiscoveryAcceptHandler.getInstance());
 		this.join(LSD_TTL, LSD_HOST);
 		this.handle();
-	}
-	
-	/**
-	 * <p>本地发现服务端</p>
-	 * 
-	 * @return 本地发现服务端
-	 */
-	public static final LocalServiceDiscoveryServer getInstance() {
-		return INSTANCE;
 	}
 
 	/**

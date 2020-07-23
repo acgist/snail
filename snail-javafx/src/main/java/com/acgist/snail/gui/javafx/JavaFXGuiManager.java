@@ -22,11 +22,11 @@ public final class JavaFXGuiManager {
 
 	private static final JavaFXGuiManager INSTANCE = new JavaFXGuiManager();
 	
-	private JavaFXGuiManager() {
-	}
-	
 	public static final JavaFXGuiManager getInstance() {
 		return INSTANCE;
+	}
+	
+	private JavaFXGuiManager() {
 	}
 	
 	/**

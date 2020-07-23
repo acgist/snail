@@ -27,6 +27,9 @@ public final class BuildEvent extends BuildEventAdapter {
 		return INSTANCE;
 	}
 	
+	private BuildEvent() {
+	}
+	
 	@Override
 	protected void executeNative(Object ... args) {
 		LOGGER.info("创建GUI窗口");

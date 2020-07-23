@@ -19,6 +19,9 @@ public final class TorrentEvent extends TorrentEventAdapter {
 	public static final TorrentEvent getInstance() {
 		return INSTANCE;
 	}
+	
+	private TorrentEvent() {
+	}
 
 	@Override
 	protected void executeNativeExtend(ITaskSession taskSession) {

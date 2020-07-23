@@ -22,11 +22,11 @@ public final class ExtendGuiManager {
 
 	private static final ExtendGuiManager INSTANCE = new ExtendGuiManager();
 	
-	private ExtendGuiManager() {
-	}
-	
 	public static final ExtendGuiManager getInstance() {
 		return INSTANCE;
+	}
+	
+	private ExtendGuiManager() {
 	}
 	
 	/**

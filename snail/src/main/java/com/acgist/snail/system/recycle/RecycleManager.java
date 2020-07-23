@@ -44,6 +44,9 @@ public final class RecycleManager {
 		}
 	}
 	
+	private RecycleManager() {
+	}
+	
 	/**
 	 * <p>创建回收站</p>
 	 * 

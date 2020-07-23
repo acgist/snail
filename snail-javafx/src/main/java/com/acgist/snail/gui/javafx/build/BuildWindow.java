@@ -20,16 +20,16 @@ public final class BuildWindow extends Window<BuildController> {
 	
 	private static final BuildWindow INSTANCE;
 	
+	public static final BuildWindow getInstance() {
+		return INSTANCE;
+	}
+	
 	static {
 		LOGGER.debug("初始化新建窗口");
 		INSTANCE = new BuildWindow();
 	}
 	
 	private BuildWindow() {
-	}
-
-	public static final BuildWindow getInstance() {
-		return INSTANCE;
 	}
 	
 	@Override

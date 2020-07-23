@@ -14,14 +14,14 @@ public final class PeerServer extends TcpServer<PeerMessageHandler> {
 	
 //	private static final Logger LOGGER = LoggerFactory.getLogger(PeerServer.class);
 	
-	private PeerServer() {
-		super("Peer Server", PeerMessageHandler.class);
-	}
-
 	private static final PeerServer INSTANCE = new PeerServer();
 	
 	public static final PeerServer getInstance() {
 		return INSTANCE;
+	}
+	
+	private PeerServer() {
+		super("Peer Server", PeerMessageHandler.class);
 	}
 	
 	@Override

@@ -34,6 +34,11 @@ public final class CryptConfig {
 			this.provide = provide;
 		}
 
+		/**
+		 * <p>获取provide</p>
+		 * 
+		 * @return provide
+		 */
 		public int provide() {
 			return this.provide;
 		}
@@ -68,10 +73,20 @@ public final class CryptConfig {
 			this.provide = provide;
 		}
 		
+		/**
+		 * <p>是否加密</p>
+		 * 
+		 * @return true-加密；false-不加密；
+		 */
 		public boolean crypt() {
 			return this.crypt;
 		}
 		
+		/**
+		 * <p>获取加密模式</p>
+		 * 
+		 * @return 加密模式
+		 */
 		public int provide() {
 			return this.provide;
 		}
@@ -119,6 +134,9 @@ public final class CryptConfig {
 
 	static {
 		LOGGER.info("默认加密策略：{}", CryptConfig.STRATEGY);
+	}
+	
+	private CryptConfig() {
 	}
 	
 }

@@ -23,6 +23,9 @@ public final class NoticeEvent extends NoticeEventAdapter {
 		return INSTANCE;
 	}
 	
+	private NoticeEvent() {
+	}
+	
 	@Override
 	protected void executeExtendExtend(GuiManager.MessageType type, String title, String message) {
 		LOGGER.debug("收到提示消息信息：{}-{}-{}", type, title, message);

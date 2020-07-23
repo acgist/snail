@@ -15,6 +15,10 @@ public final class SystemStatistics {
 	
 	private static final SystemStatistics INSTANCE = new SystemStatistics();
 	
+	public static final SystemStatistics getInstance() {
+		return INSTANCE;
+	}
+	
 	/**
 	 * <p>系统全局统计</p>
 	 */
@@ -22,10 +26,6 @@ public final class SystemStatistics {
 	
 	private SystemStatistics() {
 		this.statistics = new StatisticsSession();
-	}
-	
-	public static final SystemStatistics getInstance() {
-		return INSTANCE;
 	}
 	
 	/**

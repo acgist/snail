@@ -17,4 +17,7 @@ public final class ExitEvent extends ExitEventAdapter {
 		return INSTANCE;
 	}
 	
+	private ExitEvent() {
+	}
+	
 }

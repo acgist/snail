@@ -17,4 +17,7 @@ public final class ShowEvent extends ShowEventAdapter {
 		return INSTANCE;
 	}
 	
+	private ShowEvent() {
+	}
+	
 }

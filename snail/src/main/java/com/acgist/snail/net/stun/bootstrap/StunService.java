@@ -28,6 +28,9 @@ public final class StunService {
 	public static final StunService getInstance() {
 		return INSTANCE;
 	}
+	
+	private StunService() {
+	}
 
 	/**
 	 * <p>端口映射</p>

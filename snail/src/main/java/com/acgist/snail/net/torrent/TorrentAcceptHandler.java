@@ -22,6 +22,10 @@ public final class TorrentAcceptHandler extends UdpAcceptHandler {
 	
 	private static final TorrentAcceptHandler INSTANCE = new TorrentAcceptHandler();
 	
+	public static final TorrentAcceptHandler getInstance() {
+		return INSTANCE;
+	}
+	
 	/**
 	 * <p>DHT消息开头字符</p>
 	 */
@@ -36,10 +40,6 @@ public final class TorrentAcceptHandler extends UdpAcceptHandler {
 	private static final byte STUN_HEADER_RECV = 0x01;
 	
 	private TorrentAcceptHandler() {
-	}
-	
-	public static final TorrentAcceptHandler getInstance() {
-		return INSTANCE;
 	}
 	
 	/**

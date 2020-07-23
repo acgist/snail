@@ -18,6 +18,9 @@ public final class RefreshTaskStatusEvent extends RefreshTaskStatusEventAdapter 
 		return INSTANCE;
 	}
 	
+	private RefreshTaskStatusEvent() {
+	}
+	
 	@Override
 	protected void executeNative(Object ... args) {
 		TaskDisplay.getInstance().refreshTaskStatus();

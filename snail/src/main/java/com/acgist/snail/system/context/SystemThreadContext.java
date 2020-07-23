@@ -64,6 +64,9 @@ public final class SystemThreadContext {
 		EXECUTOR_TIMER = newTimerExecutor(2, SNAIL_THREAD_TIMER);
 	}
 	
+	private SystemThreadContext() {
+	}
+	
 	/**
 	 * <p>异步任务</p>
 	 * 

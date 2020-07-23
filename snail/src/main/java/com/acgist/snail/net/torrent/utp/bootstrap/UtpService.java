@@ -26,6 +26,10 @@ public final class UtpService {
 	
 	private static final UtpService INSTANCE = new UtpService();
 	
+	public static final UtpService getInstance() {
+		return INSTANCE;
+	}
+	
 	/**
 	 * <p>UTP超时定时任务执行周期（秒）：{@value}</p>
 	 */
@@ -42,10 +46,6 @@ public final class UtpService {
 	private final Map<String, UtpMessageHandler> utpMessageHandlers = new ConcurrentHashMap<>();
 	
 	private UtpService() {
-	}
-	
-	public static final UtpService getInstance() {
-		return INSTANCE;
 	}
 	
 	/**

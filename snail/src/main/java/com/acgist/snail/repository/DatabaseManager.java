@@ -31,9 +31,6 @@ public final class DatabaseManager {
 	
 	private static final DatabaseManager INSTANCE = new DatabaseManager();
 	
-	private DatabaseManager() {
-	}
-	
 	public static final DatabaseManager getInstance() {
 		return INSTANCE;
 	}
@@ -42,6 +39,9 @@ public final class DatabaseManager {
 	 * <p>数据库连接</p>
 	 */
 	private Connection connection;
+	
+	private DatabaseManager() {
+	}
 
 	/**
 	 * <p>查询数据库是否初始化</p>

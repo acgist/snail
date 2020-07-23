@@ -18,6 +18,9 @@ public final class RefreshTaskListEvent extends RefreshTaskListEventAdapter {
 		return INSTANCE;
 	}
 	
+	private RefreshTaskListEvent() {
+	}
+	
 	@Override
 	protected void executeNative(Object ... args) {
 		TaskDisplay.getInstance().refreshTaskList();
