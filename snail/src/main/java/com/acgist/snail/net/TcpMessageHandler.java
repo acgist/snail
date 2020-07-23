@@ -151,13 +151,13 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 			LOGGER.debug("TCP消息接收失败（长度）：{}", result);
 		} else {
 			try {
-				onReceive(buffer);
+				this.onReceive(buffer);
 			} catch (NetException e) {
 				LOGGER.error("TCP消息接收异常", e);
 			}
 		}
-		if(available()) {
-			loopMessage();
+		if(this.available()) {
+			this.loopMessage();
 		} else {
 			LOGGER.debug("TCP消息代理跳出循环：{}", result);
 		}
@@ -172,7 +172,7 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	 * <p>消息轮询</p>
 	 */
 	private void loopMessage() {
-		if(available()) {
+		if(this.available()) {
 			final ByteBuffer buffer = ByteBuffer.allocate(SystemConfig.TCP_BUFFER_LENGTH);
 			this.socket.read(buffer, buffer, this);
 		}
