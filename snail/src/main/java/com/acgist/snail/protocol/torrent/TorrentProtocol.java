@@ -103,6 +103,7 @@ public final class TorrentProtocol extends Protocol {
 	
 	@Override
 	protected void buildSize() throws DownloadException {
+		// 设置选择下载文件时计算大小
 	}
 	
 	@Override

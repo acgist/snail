@@ -96,17 +96,13 @@ public final class HttpProtocol extends Protocol {
 	 */
 	private void buildHttpHeader() throws DownloadException {
 		int index = 0;
-		while(true) {
-			index++;
+		while(index++ < HTTP_HEADER_RETRY_MAX_TIMES) {
 			try {
 				this.httpHeaderWrapper = HTTPClient.newInstance(this.url).head();
 			} catch (NetException e) {
 				LOGGER.error("获取HTTP头部信息异常：{}", index, e);
 			}
 			if(this.httpHeaderWrapper != null && this.httpHeaderWrapper.isNotEmpty()) {
-				break;
-			}
-			if(index >= HTTP_HEADER_RETRY_MAX_TIMES) {
 				break;
 			}
 		}

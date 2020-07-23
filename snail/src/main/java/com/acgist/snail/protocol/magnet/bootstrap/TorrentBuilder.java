@@ -104,9 +104,7 @@ public final class TorrentBuilder {
 		if(CollectionUtils.isEmpty(this.trackers)) {
 			return;
 		}
-		if(this.trackers.size() > 0) {
-			data.put(Torrent.ATTR_ANNOUNCE, this.trackers.get(0));
-		}
+		data.put(Torrent.ATTR_ANNOUNCE, this.trackers.get(0));
 		if(this.trackers.size() > 1) {
 			data.put(
 				Torrent.ATTR_ANNOUNCE_LIST,
