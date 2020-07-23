@@ -36,11 +36,9 @@ public abstract class Repository<T extends Entity> {
 	 * <p>更新字段验证</p>
 	 * <p>不更新字段：ID、创建时间</p>
 	 */
-	private static final Predicate<String> UPDATE_PROPERTY_VERIFY = property -> {
-		return
-			!Entity.PROPERTY_ID.equals(property) &&
-			!Entity.PROPERTY_CREATE_DATE.equals(property);
-	};
+	private static final Predicate<String> UPDATE_PROPERTY_VERIFY = property ->
+		!Entity.PROPERTY_ID.equals(property) &&
+		!Entity.PROPERTY_CREATE_DATE.equals(property);
 	
 	private final DatabaseManager databaseManager = DatabaseManager.getInstance();
 	

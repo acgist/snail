@@ -157,7 +157,7 @@ public final class ProtocolManager {
 	 */
 	public void available(boolean available) {
 		synchronized (this.availableLock) {
-			this.availableLock.set(true);
+			this.availableLock.set(available);
 			this.availableLock.notifyAll();
 		}
 	}

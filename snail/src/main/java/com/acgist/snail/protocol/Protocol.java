@@ -434,7 +434,7 @@ public abstract class Protocol {
 	protected void buildName(String fileName) throws DownloadException {
 		String name = fileName;
 		// 去掉后缀
-		final int index = fileName.lastIndexOf(".");
+		final int index = fileName.lastIndexOf('.');
 		if(index != -1) {
 			name = fileName.substring(0, index);
 		}

@@ -59,7 +59,7 @@ public final class MagnetProtocol extends Protocol {
 	protected void prep() throws DownloadException {
 		final Magnet magnet = MagnetBuilder.newInstance(this.url).build();
 		this.exist(magnet);
-		this.magnet(magnet);
+		this.magnet = magnet;
 	}
 	
 	@Override
@@ -115,17 +115,6 @@ public final class MagnetProtocol extends Protocol {
 		if(TorrentManager.getInstance().exist(magnet.getHash())) {
 			throw new DownloadException("任务已经存在");
 		}
-	}
-	
-	/**
-	 * <p>设置磁力链接</p>
-	 * 
-	 * @param magnet 磁力链接信息
-	 * 
-	 * @throws DownloadException 下载异常
-	 */
-	private void magnet(Magnet magnet) throws DownloadException {
-		this.magnet = magnet;
 	}
 	
 	/**

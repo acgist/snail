@@ -107,7 +107,7 @@ public final class MagnetBuilder {
 		final URI uri = URI.create(this.url);
 		final String[] querys = uri.getSchemeSpecificPart().substring(1).split("&");
 		for (String query : querys) {
-			index = query.indexOf("=");
+			index = query.indexOf('=');
 			if(index >= 0 && query.length() > index) {
 				key = query.substring(0, index);
 				value = UrlUtils.decode(query.substring(index + 1));
