@@ -326,10 +326,22 @@ public final class PeerConfig {
 			this.id = id;
 		}
 		
+		/**
+		 * <p>获取消息ID</p>
+		 * 
+		 * @return 消息ID
+		 */
 		public byte id() {
 			return this.id;
 		}
 		
+		/**
+		 * <p>通过消息ID获取协议类型</p>
+		 * 
+		 * @param id 消息ID
+		 * 
+		 * @return 协议类型
+		 */
 		public static final Type valueOf(byte id) {
 			final var types = Type.values();
 			for (Type type : types) {
@@ -384,22 +396,49 @@ public final class PeerConfig {
 			this.notice = notice;
 		}
 		
+		/**
+		 * <p>获取消息ID</p>
+		 * 
+		 * @return 消息ID
+		 */
 		public byte id() {
 			return this.id;
 		}
 		
+		/**
+		 * <p>获取协议名称</p>
+		 * 
+		 * @return 协议名称
+		 */
 		public String value() {
 			return this.value;
 		}
 		
+		/**
+		 * <p>是否支持</p>
+		 * 
+		 * @return true-支持；false-不支持；
+		 */
 		public boolean support() {
 			return this.support;
 		}
 		
+		/**
+		 * <p>是否通知</p>
+		 * 
+		 * @return true-通知；false-不通知；
+		 */
 		public boolean notice() {
 			return this.notice;
 		}
 		
+		/**
+		 * <p>通过消息ID获取协议消息类型</p>
+		 * 
+		 * @param id 消息ID
+		 * 
+		 * @return 协议消息类型
+		 */
 		public static final ExtensionType valueOf(byte id) {
 			final var types = ExtensionType.values();
 			for (ExtensionType type : types) {
@@ -410,6 +449,13 @@ public final class PeerConfig {
 			return null;
 		}
 		
+		/**
+		 * <p>通过协议名称获取协议消息类型</p>
+		 * 
+		 * @param value 协议名称
+		 * 
+		 * @return 协议消息类型
+		 */
 		public static final ExtensionType valueOfValue(String value) {
 			final var types = ExtensionType.values();
 			for (ExtensionType type : types) {
@@ -448,10 +494,22 @@ public final class PeerConfig {
 			this.id = id;
 		}
 		
+		/**
+		 * <p>获取消息ID</p>
+		 * 
+		 * @return 消息ID
+		 */
 		public byte id() {
 			return this.id;
 		}
 		
+		/**
+		 * <p>通过消息ID获取协议消息类型</p>
+		 * 
+		 * @param id 消息ID
+		 * 
+		 * @return 协议消息类型
+		 */
 		public static final MetadataType valueOf(byte id) {
 			final var types = MetadataType.values();
 			for (MetadataType type : types) {
@@ -485,10 +543,22 @@ public final class PeerConfig {
 			this.id = id;
 		}
 		
+		/**
+		 * <p>获取消息ID</p>
+		 * 
+		 * @return 消息ID
+		 */
 		public byte id() {
 			return this.id;
 		}
 		
+		/**
+		 * <p>通过消息ID获取协议消息类型</p>
+		 * 
+		 * @param id 消息ID
+		 * 
+		 * @return 协议消息类型
+		 */
 		public static final HolepunchType valueOf(byte id) {
 			final var types = HolepunchType.values();
 			for (HolepunchType type : types) {
@@ -533,6 +603,11 @@ public final class PeerConfig {
 			this.code = code;
 		}
 		
+		/**
+		 * <p>获取错误编码</p>
+		 * 
+		 * @return 错误编码
+		 */
 		public byte code() {
 			return this.code;
 		}
