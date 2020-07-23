@@ -118,7 +118,7 @@ public final class TrackerManager {
 		final Integer id = message.getId();
 		final TrackerLauncher trackerLauncher = this.trackerLaunchers.get(id);
 		if(trackerLauncher != null) {
-			LOGGER.debug("Tracker刮檫消息：{}，做种：{}，完成：{}，下载：{}", id, message.getSeeder(), message.getCompleted(), message.getLeecher());	
+			LOGGER.debug("Tracker刮檫消息：{}，做种：{}，完成：{}，下载：{}", id, message.getSeeder(), message.getCompleted(), message.getLeecher());
 		} else {
 			LOGGER.debug("TrackerLauncher不存在（ScrapeMessage）：{}", message);
 		}

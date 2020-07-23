@@ -92,15 +92,15 @@ public final class SystemConfig extends PropertiesConfig {
 	/**
 	 * <p>编码：{@value}</p>
 	 */
-	public static final String CHARSET_GBK =		"GBK";
+	public static final String CHARSET_GBK = "GBK";
 	/**
 	 * <p>编码：{@value}</p>
 	 */
-	public static final String CHARSET_UTF8 =		"UTF-8";
+	public static final String CHARSET_UTF8 = "UTF-8";
 	/**
 	 * <p>编码：{@value}</p>
 	 */
-	public static final String CHARSET_ASCII =		"ASCII";
+	public static final String CHARSET_ASCII = "ASCII";
 	/**
 	 * <p>编码：{@value}</p>
 	 */
