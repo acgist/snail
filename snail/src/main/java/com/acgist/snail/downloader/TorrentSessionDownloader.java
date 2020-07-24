@@ -1,7 +1,5 @@
 package com.acgist.snail.downloader;
 
-import java.time.Duration;
-
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
 import com.acgist.snail.pojo.ITaskSession;
@@ -9,7 +7,6 @@ import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.magnet.bootstrap.MagnetBuilder;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * <p>BT任务下载器</p>
@@ -17,7 +14,7 @@ import com.acgist.snail.utils.ThreadUtils;
  * @author acgist
  * @since 1.1.1
  */
-public abstract class TorrentSessionDownloader extends Downloader {
+public abstract class TorrentSessionDownloader extends MultiFileDownloader {
 	
 //	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentSessionDownloader.class);
 
@@ -25,11 +22,6 @@ public abstract class TorrentSessionDownloader extends Downloader {
 	 * <p>BT任务信息</p>
 	 */
 	protected TorrentSession torrentSession;
-	/**
-	 * <p>下载锁</p>
-	 * <p>下载时阻塞下载任务线程</p>
-	 */
-	protected final Object downloadLock = new Object();
 	
 	protected TorrentSessionDownloader(ITaskSession taskSession) {
 		super(taskSession);
@@ -39,7 +31,7 @@ public abstract class TorrentSessionDownloader extends Downloader {
 	public void open() throws NetException, DownloadException {
 		// 不能在构造函数中初始化：防止种子被删除后还能点击下载
 		this.torrentSession = this.loadTorrentSession();
-		this.loadDownload();
+		super.open();
 	}
 	
 	@Override
@@ -55,19 +47,8 @@ public abstract class TorrentSessionDownloader extends Downloader {
 	
 	@Override
 	public void download() throws DownloadException {
-		while(downloadable()) {
-			synchronized (this.downloadLock) {
-				ThreadUtils.wait(this.downloadLock, Duration.ofSeconds(Integer.MAX_VALUE));
-				this.complete = this.torrentSession.checkCompleted();
-			}
-		}
-	}
-	
-	@Override
-	public void unlockDownload() {
-		synchronized (this.downloadLock) {
-			this.downloadLock.notifyAll();
-		}
+		super.download();
+		this.complete = this.torrentSession.checkCompleted();
 	}
 	
 	/**
@@ -85,11 +66,4 @@ public abstract class TorrentSessionDownloader extends Downloader {
 		return TorrentManager.getInstance().newTorrentSession(infoHashHex, torrentPath);
 	}
 
-	/**
-	 * <p>开始下载</p>
-	 * 
-	 * @throws DownloadException 下载异常
-	 */
-	protected abstract void loadDownload() throws DownloadException;
-	
 }

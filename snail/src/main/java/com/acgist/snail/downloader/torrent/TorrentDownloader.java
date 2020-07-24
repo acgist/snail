@@ -8,7 +8,7 @@ import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.system.exception.DownloadException;
 
 /**
- * <p>BT下载器</p>
+ * <p>BT任务下载器</p>
  * 
  * @author acgist
  * @since 1.0.0
@@ -22,7 +22,7 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 	}
 
 	/**
-	 * <p>创建BT下载器</p>
+	 * <p>创建BT任务下载器</p>
 	 * 
 	 * @param taskSession 任务信息
 	 * 

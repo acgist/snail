@@ -74,6 +74,14 @@ public abstract class Protocol {
 			"ftp://",
 			""
 		),
+		/** hls */
+		HLS(
+			new String[] {"http://.+\\.m3u8", "https://.+\\.m3u8"},
+			new String[] {},
+			new String[] {".m3u8"},
+			"",
+			".m3u8"
+		),
 		/** http、https */
 		HTTP(
 			new String[] {"http://.+", "https://.+"},
