@@ -6,7 +6,7 @@ import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.system.exception.DownloadException;
 
 /**
- * <p>磁力链接下载器</p>
+ * <p>磁力链接任务下载器</p>
  * <p>下载原理：先将磁力链接转为种子文件，然后转为{@link TorrentDownloader}进行下载。</p>
  * 
  * @author acgist
@@ -21,7 +21,7 @@ public final class MagnetDownloader extends TorrentSessionDownloader {
 	}
 	
 	/**
-	 * <p>创建磁力链接下载器</p>
+	 * <p>创建磁力链接任务下载器</p>
 	 * 
 	 * @param taskSession 任务信息
 	 * 
