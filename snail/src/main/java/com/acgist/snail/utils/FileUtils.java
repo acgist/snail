@@ -55,11 +55,11 @@ public final class FileUtils {
 	static {
 		// 图片
 		FILE_TYPE_EXT.put(FileType.IMAGE, List.of(
-			"bmp", "cdr", "gif", "ico", "jpeg", "jpg", "png", "psd", "svg"
+			"bmp", "cdr", "gif", "ico", "jpeg", "jpg", "png", "psd", "svg", "webp"
 		));
 		// 视频
 		FILE_TYPE_EXT.put(FileType.VIDEO, List.of(
-			"3gp", "avi", "flv", "mkv", "mov", "mp4", "mvb", "rm", "rmvb", "wmv"
+			"3gp", "avi", "flv", "m3u8", "mkv", "mov", "mp4", "mpeg", "mvb", "rm", "rmvb", "wmv"
 		));
 		// 音频
 		FILE_TYPE_EXT.put(FileType.AUDIO, List.of(
@@ -67,7 +67,7 @@ public final class FileUtils {
 		));
 		// 脚本
 		FILE_TYPE_EXT.put(FileType.SCRIPT, List.of(
-			"asp", "bat", "c", "cmd", "cpp", "h", "java", "js", "jsp", "php", "py", "sh"
+			"asp", "bat", "c", "cmd", "cpp", "h", "java", "js", "jsp", "php", "py", "sh", "sql"
 		));
 		// 种子
 		FILE_TYPE_EXT.put(FileType.TORRENT, List.of(
@@ -75,15 +75,15 @@ public final class FileUtils {
 		));
 		// 压缩文件
 		FILE_TYPE_EXT.put(FileType.COMPRESS, List.of(
-			"7z", "bz2", "gz", "iso", "jar", "rar", "tar", "z", "zip"
+			"7z", "bz2", "dmg", "gz", "iso", "jar", "rar", "tar", "z", "zip"
 		));
 		// 文档
 		FILE_TYPE_EXT.put(FileType.DOCUMENT, List.of(
-			"css", "doc", "docx", "htm", "html", "pdf", "ppt", "pptx", "txt", "wps", "xls", "xlsx", "xml"
+			"css", "csv", "doc", "docx", "htm", "html", "json", "log", "md", "pdf", "ppt", "pptx", "txt", "wps", "xls", "xlsx", "xml"
 		));
 		// 安装程序
 		FILE_TYPE_EXT.put(FileType.INSTALL, List.of(
-			"apk", "com", "deb", "exe", "rpm"
+			"apk", "com", "deb", "exe", "pkg", "rpm"
 		));
 		// 未知·
 		FILE_TYPE_EXT.put(FileType.UNKNOWN, List.of(
