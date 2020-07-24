@@ -82,20 +82,20 @@ public final class HlsClient implements Runnable {
 		if(this.check()) {
 			// 校验成功
 		} else {
-			this.buildInput();
-			this.buildOutput();
-			final byte[] bytes = new byte[EXCHANGE_BYTES_LENGTH];
-			int length;
-			while(this.hlsSession.downloadable()) {
-				length = this.input.read(bytes, 0, bytes.length);
-				if(isComplete(length)) {
-					this.complete = true;
-					break;
-				}
-				this.output.write(bytes, 0, length);
-				this.download(length);
-				this.hlsSession.download(buffer); // 设置下载速度
-			}
+//			this.buildInput();
+//			this.buildOutput();
+//			final byte[] bytes = new byte[EXCHANGE_BYTES_LENGTH];
+//			int length;
+//			while(this.hlsSession.downloadable()) {
+//				length = this.input.read(bytes, 0, bytes.length);
+//				if(isComplete(length)) {
+//					this.complete = true;
+//					break;
+//				}
+//				this.output.write(bytes, 0, length);
+//				this.download(length);
+//				this.hlsSession.download(buffer); // 设置下载速度
+//			}
 		}
 		this.hlsSession.downloadSize(size); // 设置下载大小
 		IoUtils.close(this.input);

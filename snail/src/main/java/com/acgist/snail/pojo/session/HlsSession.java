@@ -4,7 +4,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicLong;
 
-import com.acgist.snail.net.hls.HlsClient;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
@@ -66,7 +65,7 @@ public final class HlsSession {
 	public void download() {
 		final var links = this.taskSession.selectTorrentFiles();
 		for (String link : links) {
-			this.executor.submit(new HlsClient(link));
+//			this.executor.submit(new HlsClient(link));
 		}
 	}
 	
