@@ -78,9 +78,10 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 */
 	private volatile boolean handshakeRecv = false;
 	/**
-	 * <p>是否是客户端</p>
+	 * <p>是否是服务端</p>
 	 */
 	private final boolean server;
+	
 	/**
 	 * <p>Peer连接：PeerUploader、PeerDownloader</p>
 	 */
