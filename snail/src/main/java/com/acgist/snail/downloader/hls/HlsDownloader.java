@@ -31,5 +31,11 @@ public final class HlsDownloader extends MultiFileDownloader {
 	protected void loadDownload() throws DownloadException {
 		
 	}
+	
+	@Override
+	protected boolean checkCompleted() {
+		// TODO：实现
+		return true;
+	}
 
 }

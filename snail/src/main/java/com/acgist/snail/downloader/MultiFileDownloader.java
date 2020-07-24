@@ -35,6 +35,7 @@ public abstract class MultiFileDownloader extends Downloader {
 		while(this.downloadable()) {
 			synchronized (this.downloadLock) {
 				ThreadUtils.wait(this.downloadLock, Duration.ofSeconds(Integer.MAX_VALUE));
+				this.complete = this.checkCompleted();
 			}
 		}
 	}
@@ -52,5 +53,12 @@ public abstract class MultiFileDownloader extends Downloader {
 	 * @throws DownloadException 下载异常
 	 */
 	protected abstract void loadDownload() throws DownloadException;
+
+	/**
+	 * <p>判断是否下载完成</p>
+	 * 
+	 * @return true-完成；false-没有完成；
+	 */
+	protected abstract boolean checkCompleted();
 	
 }

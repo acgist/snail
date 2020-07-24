@@ -45,12 +45,6 @@ public abstract class TorrentSessionDownloader extends MultiFileDownloader {
 		super.delete();
 	}
 	
-	@Override
-	public void download() throws DownloadException {
-		super.download();
-		this.complete = this.torrentSession.checkCompleted();
-	}
-	
 	/**
 	 * <p>加载BT任务信息</p>
 	 * 
@@ -64,6 +58,11 @@ public abstract class TorrentSessionDownloader extends MultiFileDownloader {
 		final var magnet = MagnetBuilder.newInstance(this.taskSession.getUrl()).build();
 		final var infoHashHex = magnet.getHash();
 		return TorrentManager.getInstance().newTorrentSession(infoHashHex, torrentPath);
+	}
+	
+	@Override
+	protected boolean checkCompleted() {
+		return this.torrentSession.checkCompleted();
 	}
 
 }
