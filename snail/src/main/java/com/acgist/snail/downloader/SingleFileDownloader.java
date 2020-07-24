@@ -55,8 +55,8 @@ public abstract class SingleFileDownloader extends Downloader {
 	 */
 	@Override
 	public void open() throws NetException, DownloadException {
-		buildInput();
-		buildOutput();
+		this.buildInput();
+		this.buildOutput();
 	}
 
 	@Override
@@ -64,9 +64,9 @@ public abstract class SingleFileDownloader extends Downloader {
 		int length = 0;
 		final byte[] bytes = new byte[EXCHANGE_BYTES_LENGTH];
 		try {
-			while(downloadable()) {
+			while(this.downloadable()) {
 				length = this.input.read(bytes, 0, bytes.length);
-				if(isComplete(length)) {
+				if(this.isComplete(length)) {
 					this.complete = true;
 					break;
 				}

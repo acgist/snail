@@ -59,10 +59,10 @@ public final class TorrentProtocol extends Protocol {
 	/**
 	 * <p>设置种子文件操作类型</p>
 	 * 
-	 * @param operation 种子文件操作
+	 * @param handle 种子文件操作
 	 */
-	public void operation(TorrentHandle operation) {
-		this.handle = operation;
+	public void torrentHandle(TorrentHandle handle) {
+		this.handle = handle;
 	}
 	
 	@Override
@@ -108,8 +108,8 @@ public final class TorrentProtocol extends Protocol {
 	
 	@Override
 	protected void done() throws DownloadException {
-		this.buildTorrentFolder();
-		this.torrentFileOperation();
+		this.buildFolder();
+		this.torrentHandle();
 		this.selectTorrentFiles();
 	}
 	
@@ -160,14 +160,14 @@ public final class TorrentProtocol extends Protocol {
 	/**
 	 * <p>创建下载目录</p>
 	 */
-	private void buildTorrentFolder() {
+	private void buildFolder() {
 		FileUtils.buildFolder(this.taskEntity.getFile(), false);
 	}
 
 	/**
 	 * <p>种子文件操作：拷贝、移动</p>
 	 */
-	private void torrentFileOperation() {
+	private void torrentHandle() {
 		final String fileName = FileUtils.fileNameFromUrl(this.torrentFile);
 		final String newFilePath = FileUtils.file(this.taskEntity.getFile(), fileName);
 		if(this.handle == TorrentHandle.MOVE) {

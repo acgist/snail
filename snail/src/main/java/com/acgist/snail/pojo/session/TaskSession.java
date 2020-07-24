@@ -104,11 +104,9 @@ public final class TaskSession implements ITaskSession {
 		}
 	}
 	
+	// TODO：改名
 	@Override
 	public List<String> selectTorrentFiles() {
-		if(this.entity.getType() != Type.TORRENT) {
-			return List.of();
-		}
 		final String description = this.entity.getDescription();
 		if(StringUtils.isEmpty(description)) {
 			return List.of();
@@ -155,7 +153,7 @@ public final class TaskSession implements ITaskSession {
 	
 	@Override
 	public boolean inThreadPool() {
-		return await() || download();
+		return this.await() || this.download();
 	}
 	
 	@Override
@@ -174,7 +172,7 @@ public final class TaskSession implements ITaskSession {
 
 	@Override
 	public String getStatusValue() {
-		if(download()) {
+		if(this.download()) {
 			return FileUtils.formatSize(this.statistics.downloadSpeed()) + "/S";
 		} else {
 			return this.entity.getStatus().getValue();
@@ -183,7 +181,7 @@ public final class TaskSession implements ITaskSession {
 	
 	@Override
 	public String getProgressValue() {
-		if(complete()) {
+		if(this.complete()) {
 			return FileUtils.formatSize(this.entity.getSize());
 		} else {
 			return FileUtils.formatSize(this.statistics.downloadSize()) + "/" + FileUtils.formatSize(this.entity.getSize());
@@ -201,7 +199,7 @@ public final class TaskSession implements ITaskSession {
 	@Override
 	public String getEndDateValue() {
 		if(this.entity.getEndDate() == null) {
-			if(download()) {
+			if(this.download()) {
 				final long downloadSpeed = this.statistics.downloadSpeed();
 				if(downloadSpeed == 0L) {
 					return "-";
