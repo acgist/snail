@@ -29,6 +29,8 @@ public final class SystemThreadContext {
 	public static final String SNAIL_THREAD = "Snail-Thread";
 	/** BT线程 */
 	public static final String SNAIL_THREAD_BT = SNAIL_THREAD + "-BT";
+	/** HLS线程 */
+	public static final String SNAIL_THREAD_HLS = SNAIL_THREAD + "-HLS";
 	/** 定时线程 */
 	public static final String SNAIL_THREAD_TIMER = SNAIL_THREAD + "-Timer";
 	/** BT定时线程 */

@@ -55,7 +55,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	protected Downloader(ITaskSession taskSession) {
 		this.taskSession = taskSession;
 		// 已下载大小
-		this.taskSession.downloadSize(downloadSize());
+		this.taskSession.downloadSize(this.downloadSize());
 		// 任务没有下载标记删除锁：true
 		if(!this.taskSession.download()) {
 			this.deleteLock.set(true);

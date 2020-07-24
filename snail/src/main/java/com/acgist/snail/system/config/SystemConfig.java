@@ -217,6 +217,10 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	private int pieceRepeatSize;
 	/**
+	 * <p>HLS下载线程数量</p>
+	 */
+	private int hlsThreadSize;
+	/**
 	 * <p>DHT执行周期（秒）</p>
 	 */
 	private int dhtInterval;
@@ -264,6 +268,7 @@ public final class SystemConfig extends PropertiesConfig {
 		this.peerSize = this.getInteger("acgist.peer.size", 20);
 		this.trackerSize = this.getInteger("acgist.tracker.size", 50);
 		this.pieceRepeatSize = this.getInteger("acgist.piece.repeat.size", 4);
+		this.hlsThreadSize = this.getInteger("acgist.hls.thread.size", 10);
 		this.dhtInterval = this.getInteger("acgist.dht.interval", 120);
 		this.pexInterval = this.getInteger("acgist.pex.interval", 120);
 		this.lsdInterval = this.getInteger("acgist.lsd.interval", 120);
@@ -290,6 +295,7 @@ public final class SystemConfig extends PropertiesConfig {
 		LOGGER.info("单个任务Peer数量（同时下载）：{}", this.peerSize);
 		LOGGER.info("单个任务Tracker数量：{}", this.trackerSize);
 		LOGGER.info("任务即将完成时可以重复下载的Piece数量：{}", this.pieceRepeatSize);
+		LOGGER.info("HLS下载线程数量", this.hlsThreadSize);
 		LOGGER.info("DHT执行周期（秒）：{}", this.dhtInterval);
 		LOGGER.info("PEX执行周期（秒）：{}", this.pexInterval);
 		LOGGER.info("本地发现执行周期（秒）：{}", this.lsdInterval);
@@ -468,6 +474,15 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	public static final int getPieceRepeatSize() {
 		return INSTANCE.pieceRepeatSize;
+	}
+	
+	/**
+	 * <p>获取HLS下载线程数量</p>
+	 * 
+	 * @return HLS下载线程数量
+	 */
+	public static final int getHlsThreadSize() {
+		return INSTANCE.hlsThreadSize;
 	}
 
 	/**
