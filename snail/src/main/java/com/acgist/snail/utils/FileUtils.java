@@ -53,23 +53,23 @@ public final class FileUtils {
 	private static final Map<FileType, List<String>> FILE_TYPE_EXT = new HashMap<>();
 	
 	static {
-		// 图片
+		// 图片文件
 		FILE_TYPE_EXT.put(FileType.IMAGE, List.of(
 			"bmp", "cdr", "gif", "ico", "jpeg", "jpg", "png", "psd", "svg", "webp"
 		));
-		// 视频
+		// 视频文件
 		FILE_TYPE_EXT.put(FileType.VIDEO, List.of(
-			"3gp", "avi", "flv", "m3u8", "mkv", "mov", "mp4", "mpeg", "mvb", "rm", "rmvb", "wmv"
+			"3gp", "avi", "flv", "m3u", "m3u8", "mkv", "mov", "mp4", "mpeg", "mvb", "rm", "rmvb", "wmv"
 		));
-		// 音频
+		// 音频文件
 		FILE_TYPE_EXT.put(FileType.AUDIO, List.of(
 			"aac", "flac", "m4a", "mp3", "ogg", "wav", "wma"
 		));
-		// 脚本
+		// 脚本文件
 		FILE_TYPE_EXT.put(FileType.SCRIPT, List.of(
 			"asp", "bat", "c", "cmd", "cpp", "h", "java", "js", "jsp", "php", "py", "sh", "sql"
 		));
-		// 种子
+		// 种子文件
 		FILE_TYPE_EXT.put(FileType.TORRENT, List.of(
 			"torrent"
 		));
@@ -77,7 +77,7 @@ public final class FileUtils {
 		FILE_TYPE_EXT.put(FileType.COMPRESS, List.of(
 			"7z", "bz2", "dmg", "gz", "iso", "jar", "rar", "tar", "z", "zip"
 		));
-		// 文档
+		// 文档文件
 		FILE_TYPE_EXT.put(FileType.DOCUMENT, List.of(
 			"css", "csv", "doc", "docx", "htm", "html", "json", "log", "md", "pdf", "ppt", "pptx", "txt", "wps", "xls", "xlsx", "xml"
 		));
@@ -85,7 +85,7 @@ public final class FileUtils {
 		FILE_TYPE_EXT.put(FileType.INSTALL, List.of(
 			"apk", "com", "deb", "exe", "pkg", "rpm"
 		));
-		// 未知·
+		// 未知文件
 		FILE_TYPE_EXT.put(FileType.UNKNOWN, List.of(
 		));
 	}
