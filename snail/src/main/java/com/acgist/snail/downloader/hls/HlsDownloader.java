@@ -1,6 +1,6 @@
 package com.acgist.snail.downloader.hls;
 
-import com.acgist.snail.downloader.MultiFileDownloader;
+import com.acgist.snail.downloader.MultifileDownloader;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.system.exception.DownloadException;
 
@@ -10,7 +10,7 @@ import com.acgist.snail.system.exception.DownloadException;
  * @author acgist
  * @since 1.4.1
  */
-public final class HlsDownloader extends MultiFileDownloader {
+public final class HlsDownloader extends MultifileDownloader {
 
 	protected HlsDownloader(ITaskSession taskSession) {
 		super(taskSession);

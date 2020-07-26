@@ -15,7 +15,7 @@ import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.ITaskSession.Status;
 import com.acgist.snail.pojo.bean.Torrent;
 import com.acgist.snail.pojo.bean.TorrentInfo;
-import com.acgist.snail.pojo.wrapper.TorrentSelectorWrapper;
+import com.acgist.snail.pojo.wrapper.MultifileSelectorWrapper;
 import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.system.exception.DownloadException;
 
@@ -126,7 +126,7 @@ public final class TorrentController extends Controller implements Initializable
 			return;
 		}
 		this.taskSession.setSize(this.selectorManager.size());
-		final TorrentSelectorWrapper wrapper = TorrentSelectorWrapper.newEncoder(list);
+		final MultifileSelectorWrapper wrapper = MultifileSelectorWrapper.newEncoder(list);
 		this.taskSession.setDescription(wrapper.serialize());
 		if(this.taskSession.getId() != null) { // 已经保存数据库
 			boolean magnetToTorrent = false;

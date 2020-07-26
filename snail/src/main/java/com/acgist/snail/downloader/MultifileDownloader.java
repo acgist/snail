@@ -13,7 +13,7 @@ import com.acgist.snail.utils.ThreadUtils;
  * @author acgist
  * @since 1.4.1
  */
-public abstract class MultiFileDownloader extends Downloader {
+public abstract class MultifileDownloader extends Downloader {
 
 	/**
 	 * <p>下载锁</p>
@@ -21,7 +21,7 @@ public abstract class MultiFileDownloader extends Downloader {
 	 */
 	protected final Object downloadLock = new Object();
 	
-	protected MultiFileDownloader(ITaskSession taskSession) {
+	protected MultifileDownloader(ITaskSession taskSession) {
 		super(taskSession);
 	}
 	

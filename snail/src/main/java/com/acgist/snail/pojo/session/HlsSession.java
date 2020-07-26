@@ -63,7 +63,7 @@ public final class HlsSession {
 	 * <p>开始下载</p>
 	 */
 	public void download() {
-		final var links = this.taskSession.selectTorrentFiles();
+		final var links = this.taskSession.multifileSelected();
 		for (String link : links) {
 //			this.executor.submit(new HlsClient(link));
 		}

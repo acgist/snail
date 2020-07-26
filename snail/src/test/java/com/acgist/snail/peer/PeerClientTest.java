@@ -16,7 +16,7 @@ import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.StatisticsSession;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.pojo.wrapper.TorrentSelectorWrapper;
+import com.acgist.snail.pojo.wrapper.MultifileSelectorWrapper;
 import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.exception.DownloadException;
@@ -40,7 +40,7 @@ public class PeerClientTest extends BaseTest {
 			}
 			size.addAndGet(file.getLength());
 		});
-		final var wrapper = TorrentSelectorWrapper.newEncoder(list);
+		final var wrapper = MultifileSelectorWrapper.newEncoder(list);
 		final var entity = new TaskEntity();
 		entity.setFile("e:/tmp/download/"); // 设置下载路径
 		entity.setType(Type.TORRENT); // 设置下载类型
