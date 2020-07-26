@@ -488,7 +488,7 @@ public final class TorrentSession {
 	private List<TorrentFile> buildSelectedFiles() {
 		final TorrentInfo torrentInfo = this.torrent.getInfo();
 		final List<TorrentFile> torrentFiles = torrentInfo.files();
-		final List<String> selectedFiles = this.taskSession.selectTorrentFiles();
+		final List<String> selectedFiles = this.taskSession.multifileSelected();
 		for (TorrentFile torrentFile : torrentFiles) {
 			torrentFile.selected(selectedFiles.contains(torrentFile.path()));
 		}

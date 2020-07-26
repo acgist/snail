@@ -8,7 +8,7 @@ import com.acgist.snail.downloader.hls.HlsDownloader;
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.bean.M3u8;
-import com.acgist.snail.pojo.wrapper.TorrentSelectorWrapper;
+import com.acgist.snail.pojo.wrapper.MultifileSelectorWrapper;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.protocol.hls.bootstrap.M3u8Builder;
 import com.acgist.snail.system.exception.DownloadException;
@@ -108,7 +108,7 @@ public final class HlsProtocol extends Protocol {
 	 * <p>保持下载文件列表</p>
 	 */
 	private void selectFiles() {
-		final TorrentSelectorWrapper wrapper = TorrentSelectorWrapper.newEncoder(this.m3u8.getLinks());
+		final MultifileSelectorWrapper wrapper = MultifileSelectorWrapper.newEncoder(this.m3u8.getLinks());
 		this.taskEntity.setDescription(wrapper.serialize());
 	}
 	

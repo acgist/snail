@@ -125,11 +125,11 @@ public interface ITaskSession extends ITaskSessionTable, ITaskSessionEntity, ITa
 	File downloadFolder();
 	
 	/**
-	 * <p>获取BT任务选择下载文件列表</p>
+	 * <p>获取多文件下载任务选择下载文件列表</p>
 	 * 
-	 * @return BT任务选择下载文件列表
+	 * @return 多文件下载任务选择下载文件列表
 	 */
-	List<String> selectTorrentFiles();
+	List<String> multifileSelected();
 
 	/**
 	 * <p>获取统计信息</p>

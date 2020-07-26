@@ -14,7 +14,7 @@ import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.entity.TaskEntity;
-import com.acgist.snail.pojo.wrapper.TorrentSelectorWrapper;
+import com.acgist.snail.pojo.wrapper.MultifileSelectorWrapper;
 import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.repository.impl.TaskRepository;
@@ -104,14 +104,13 @@ public final class TaskSession implements ITaskSession {
 		}
 	}
 	
-	// TODO：改名
 	@Override
-	public List<String> selectTorrentFiles() {
+	public List<String> multifileSelected() {
 		final String description = this.entity.getDescription();
 		if(StringUtils.isEmpty(description)) {
 			return List.of();
 		} else {
-			final TorrentSelectorWrapper wrapper = TorrentSelectorWrapper.newDecoder(description);
+			final MultifileSelectorWrapper wrapper = MultifileSelectorWrapper.newDecoder(description);
 			return wrapper.deserialize();
 		}
 	}

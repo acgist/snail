@@ -14,7 +14,7 @@ import com.acgist.snail.system.exception.NetException;
  * @author acgist
  * @since 1.1.1
  */
-public abstract class TorrentSessionDownloader extends MultiFileDownloader {
+public abstract class TorrentSessionDownloader extends MultifileDownloader {
 	
 //	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentSessionDownloader.class);
 

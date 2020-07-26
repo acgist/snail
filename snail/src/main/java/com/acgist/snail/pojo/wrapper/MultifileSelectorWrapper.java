@@ -13,16 +13,14 @@ import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>种子文件选择包装器</p>
- * 
- * TODO：改名
+ * <p>多文件选择包装器</p>
  * 
  * @author acgist
  * @since 1.0.0
  */
-public final class TorrentSelectorWrapper {
+public final class MultifileSelectorWrapper {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentSelectorWrapper.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MultifileSelectorWrapper.class);
 
 	/**
 	 * <p>编码器</p>
@@ -33,7 +31,7 @@ public final class TorrentSelectorWrapper {
 	 */
 	private BEncodeDecoder decoder;
 
-	private TorrentSelectorWrapper() {
+	private MultifileSelectorWrapper() {
 	}
 
 	/**
@@ -43,8 +41,8 @@ public final class TorrentSelectorWrapper {
 	 * 
 	 * @return 包装器
 	 */
-	public static final TorrentSelectorWrapper newEncoder(List<String> list) {
-		final TorrentSelectorWrapper wrapper = new TorrentSelectorWrapper();
+	public static final MultifileSelectorWrapper newEncoder(List<String> list) {
+		final MultifileSelectorWrapper wrapper = new MultifileSelectorWrapper();
 		if(CollectionUtils.isNotEmpty(list)) {
 			wrapper.encoder = BEncodeEncoder.newInstance();
 			wrapper.encoder.newList().put(list);
@@ -59,8 +57,8 @@ public final class TorrentSelectorWrapper {
 	 * 
 	 * @return 包装器
 	 */
-	public static final TorrentSelectorWrapper newDecoder(String value) {
-		final TorrentSelectorWrapper wrapper = new TorrentSelectorWrapper();
+	public static final MultifileSelectorWrapper newDecoder(String value) {
+		final MultifileSelectorWrapper wrapper = new MultifileSelectorWrapper();
 		if(StringUtils.isNotEmpty(value)) {
 			wrapper.decoder = BEncodeDecoder.newInstance(value);
 		}

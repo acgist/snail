@@ -186,7 +186,7 @@ public final class TorrentProtocol extends Protocol {
 	private void selectTorrentFiles() throws DownloadException {
 		final ITaskSession taskSession = TaskSession.newInstance(this.taskEntity);
 		GuiManager.getInstance().torrent(taskSession); // 不能抛出异常
-		if(taskSession.selectTorrentFiles().isEmpty()) { // 没有选择下载文件
+		if(taskSession.multifileSelected().isEmpty()) { // 没有选择下载文件
 			FileUtils.delete(this.taskEntity.getFile()); // 删除已经创建文件
 			throw new DownloadException("请选择下载文件");
 		}

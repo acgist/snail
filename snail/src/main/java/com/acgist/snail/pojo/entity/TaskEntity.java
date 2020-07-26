@@ -66,8 +66,9 @@ public final class TaskEntity extends Entity implements ITaskSessionEntity {
 	private Date endDate;
 	/**
 	 * </p>下载描述</p>
-	 * </p>HLS任务保持下载文件链接（B编码）</p>
-	 * </p>BT任务保存选择下载文件列表（B编码）</p>
+	 * </p>多文件下载时保持下载文件列表（B编码）</p>
+	 * </p>HLS任务文件链接</p>
+	 * </p>BT任务文件列表</p>
 	 */
 	private String description;
 	

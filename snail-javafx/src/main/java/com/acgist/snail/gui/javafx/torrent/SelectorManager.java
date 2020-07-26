@@ -155,7 +155,7 @@ public final class SelectorManager {
 	 * @param taskSession 任务信息
 	 */
 	public void select(ITaskSession taskSession) {
-		final var list = taskSession.selectTorrentFiles();
+		final var list = taskSession.multifileSelected();
 		if(CollectionUtils.isNotEmpty(list)) { // 已选择文件
 			this.selector.entrySet().stream()
 				.filter(entry -> list.contains(entry.getKey()))

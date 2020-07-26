@@ -15,7 +15,7 @@ import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.StatisticsSession;
 import com.acgist.snail.pojo.session.TaskSession;
-import com.acgist.snail.pojo.wrapper.TorrentSelectorWrapper;
+import com.acgist.snail.pojo.wrapper.MultifileSelectorWrapper;
 import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.system.config.DatabaseConfig;
 import com.acgist.snail.system.config.PeerConfig;
@@ -37,7 +37,7 @@ public class PeerServerTest extends BaseTest {
 				list.add(file.path());
 			}
 		});
-		final var wrapper = TorrentSelectorWrapper.newEncoder(list);
+		final var wrapper = MultifileSelectorWrapper.newEncoder(list);
 		final var entity = new TaskEntity();
 		entity.setFile("e:/tmp/server/");
 		entity.setType(Type.TORRENT);
@@ -68,7 +68,7 @@ public class PeerServerTest extends BaseTest {
 				}
 			}
 		});
-		final var wrapper = TorrentSelectorWrapper.newEncoder(list);
+		final var wrapper = MultifileSelectorWrapper.newEncoder(list);
 		final var entity = new TaskEntity();
 		entity.setFile("e:/tmp/client/"); // 设置下载路径
 		entity.setType(Type.TORRENT); // 设置下载类型
