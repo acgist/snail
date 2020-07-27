@@ -54,23 +54,22 @@ public final class HlsSession {
 	 */
 	private final ExecutorService executor;
 	/**
-	 * <p>下载链接列表</p>
-	 */
-	private final List<String> links;
-	/**
 	 * <p>HLS下载客户端</p>
 	 */
 	private final List<HlsClient> clients;
 	
 	private HlsSession(ITaskSession taskSession) {
-		this.downloadable = true;
 		this.downloadFileSize = new AtomicInteger();
 		this.downloadSize = new AtomicLong();
 		this.taskSession = taskSession;
 		this.executor = SystemThreadContext.newExecutor(POOL_SIZE, POOL_SIZE, 1000, 60L, SystemThreadContext.SNAIL_THREAD_HLS);
-		this.links = taskSession.multifileSelected();
-		this.fileSize = this.links.size();
-		this.clients = new ArrayList<>();
+		final var links = taskSession.multifileSelected();
+		this.fileSize = links.size();
+		this.clients = new ArrayList<>(this.fileSize);
+		for (String link : links) {
+			final var client = new HlsClient(link, taskSession, this);
+			this.clients.add(client);
+		}
 	}
 	
 	/**
@@ -89,10 +88,9 @@ public final class HlsSession {
 	 * <p>任务全部下载结束后，如果任务可以下载并且没有完成将继续下载。</p>
 	 */
 	public void download() {
+		this.downloadable = true;
 		synchronized (this.clients) {
-			for (String link : this.links) {
-				final var client = new HlsClient(link, this, this.taskSession);
-				this.clients.add(client);
+			for (HlsClient client : this.clients) {
 				this.executor.submit(client);
 			}
 		}
@@ -101,22 +99,22 @@ public final class HlsSession {
 	/**
 	 * <p>客户端下载失败重复添加</p>
 	 * 
-	 * @param hlsClient 客户端
+	 * @param client 客户端
 	 */
-	public void download(HlsClient hlsClient) {
+	public void download(HlsClient client) {
 		if(this.downloadable) {
-			this.executor.submit(hlsClient);
+			this.executor.submit(client);
 		}
 	}
 	
 	/**
 	 * <p>下载完成移除客户端</p>
 	 * 
-	 * @param hlsClient 客户端
+	 * @param client 客户端
 	 */
-	public void remove(HlsClient hlsClient) {
+	public void remove(HlsClient client) {
 		synchronized (this.clients) {
-			this.clients.remove(hlsClient);
+			this.clients.remove(client);
 		}
 	}
 	
@@ -185,6 +183,14 @@ public final class HlsSession {
 		synchronized (this.clients) {
 			this.clients.forEach(client -> client.release());
 		}
+	}
+
+	/**
+	 * <p>释放资源并且清除所有数据</p>
+	 */
+	public void shutdown() {
+		this.release();
+		LOGGER.debug("HLS任务关闭资源：{}", this.taskSession.getName());
 		this.clients.clear();
 		SystemThreadContext.shutdown(this.executor);
 	}

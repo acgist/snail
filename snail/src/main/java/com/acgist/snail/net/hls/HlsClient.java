@@ -73,7 +73,7 @@ public final class HlsClient implements Runnable {
 	 */
 	private final HlsSession hlsSession;
 	
-	public HlsClient(String link, HlsSession hlsSession, ITaskSession taskSession) {
+	public HlsClient(String link, ITaskSession taskSession, HlsSession hlsSession) {
 		this.link = link;
 		final String fileName = FileUtils.fileNameFromUrl(link);
 		this.path = Paths.get(taskSession.getFile(), fileName).toString();
@@ -230,6 +230,8 @@ public final class HlsClient implements Runnable {
 		LOGGER.debug("HLS客户端释放：{}", this.link);
 		IoUtils.close(this.input);
 		IoUtils.close(this.output);
+		this.input = null;
+		this.output = null;
 	}
 	
 }
