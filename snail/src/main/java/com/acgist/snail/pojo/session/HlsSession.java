@@ -3,6 +3,7 @@ package com.acgist.snail.pojo.session;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
@@ -33,6 +34,14 @@ public final class HlsSession {
 	 */
 	private volatile boolean downloadable = false;
 	/**
+	 * <p>文件总数量</p>
+	 */
+	private final int fileSize;
+	/**
+	 * <p>已下载文件总数量</p>
+	 */
+	private final AtomicInteger downloadFileSize;
+	/**
 	 * <p>已下载大小</p>
 	 */
 	private final AtomicLong downloadSize;
@@ -45,15 +54,22 @@ public final class HlsSession {
 	 */
 	private final ExecutorService executor;
 	/**
+	 * <p>下载链接列表</p>
+	 */
+	private final List<String> links;
+	/**
 	 * <p>HLS下载客户端</p>
 	 */
 	private final List<HlsClient> clients;
 	
 	private HlsSession(ITaskSession taskSession) {
 		this.downloadable = true;
+		this.downloadFileSize = new AtomicInteger();
 		this.downloadSize = new AtomicLong();
 		this.taskSession = taskSession;
 		this.executor = SystemThreadContext.newExecutor(POOL_SIZE, POOL_SIZE, 1000, 60L, SystemThreadContext.SNAIL_THREAD_HLS);
+		this.links = taskSession.multifileSelected();
+		this.fileSize = this.links.size();
 		this.clients = new ArrayList<>();
 	}
 	
@@ -73,9 +89,8 @@ public final class HlsSession {
 	 * <p>任务全部下载结束后，如果任务可以下载并且没有完成将继续下载。</p>
 	 */
 	public void download() {
-		final var links = this.taskSession.multifileSelected();
 		synchronized (this.clients) {
-			for (String link : links) {
+			for (String link : this.links) {
 				final var client = new HlsClient(link, this, this.taskSession);
 				this.clients.add(client);
 				this.executor.submit(client);
@@ -95,14 +110,29 @@ public final class HlsSession {
 	}
 	
 	/**
+	 * <p>下载完成移除客户端</p>
+	 * 
+	 * @param hlsClient 客户端
+	 */
+	public void remove(HlsClient hlsClient) {
+		synchronized (this.clients) {
+			this.clients.remove(hlsClient);
+		}
+	}
+	
+	/**
 	 * <p>设置已下载大小</p>
 	 * 
 	 * @param size 已下载大小
 	 */
 	public void downloadSize(long size) {
-		this.downloadSize.addAndGet(size);
-		this.taskSession.setSize(this.downloadSize.get());
-		this.taskSession.downloadSize(this.downloadSize.get());
+		// 设置已下载大小
+		final long downloadSize = this.downloadSize.addAndGet(size);
+		this.taskSession.downloadSize(downloadSize);
+		final int fileSize = this.downloadFileSize.incrementAndGet();
+		// 预测文件总大小：存在误差
+		final long taskFileSize = downloadSize * this.fileSize / fileSize;
+		this.taskSession.setSize(taskFileSize);
 	}
 	
 	/**
@@ -129,7 +159,7 @@ public final class HlsSession {
 	 * @return 是否完成
 	 */
 	public boolean checkCompleted() {
-		return this.clients.stream().allMatch(HlsClient::isCompleted);
+		return this.downloadFileSize.get() >= this.fileSize;
 	}
 	
 	/**
@@ -155,6 +185,7 @@ public final class HlsSession {
 		synchronized (this.clients) {
 			this.clients.forEach(client -> client.release());
 		}
+		this.clients.clear();
 		SystemThreadContext.shutdown(this.executor);
 	}
 

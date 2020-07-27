@@ -114,10 +114,10 @@ public final class HlsClient implements Runnable {
 				LOGGER.error("HLS下载异常：{}", this.link, e);
 			}
 		}
-		IoUtils.close(this.input);
-		IoUtils.close(this.output);
+		this.release();
 		if(this.completed) {
 			LOGGER.debug("HLS文件下载完成：{}", this.link);
+			this.hlsSession.remove(this);
 			this.hlsSession.downloadSize(size); // 设置下载大小
 			this.hlsSession.checkCompletedAndDone();
 		} else {
@@ -128,21 +128,13 @@ public final class HlsClient implements Runnable {
 	}
 	
 	/**
-	 * <p>任务是否完成</p>
-	 * 
-	 * @return true-完成；false-没有完成；
-	 */
-	public boolean isCompleted() {
-		return this.completed;
-	}
-	
-	/**
 	 * <p>校验文件</p>
 	 * <p>文件是否存在、大小是否正确</p>
 	 * 
 	 * @return 校验是否成功
 	 */
 	private boolean checkCompleted() {
+		// 如果文件已经完成直接返回完成
 		if(this.completed) {
 			return this.completed;
 		}
@@ -235,7 +227,8 @@ public final class HlsClient implements Runnable {
 	 * <p>释放资源</p>
 	 */
 	public void release() {
-		
+		IoUtils.close(this.input);
+		IoUtils.close(this.output);
 	}
 	
 }
