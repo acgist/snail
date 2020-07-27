@@ -129,7 +129,7 @@ javaw -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar
 |0054|[The lt_donthave extension](http://www.bittorrent.org/beps/bep_0054.html)|√|
 |其他|-|-|
 |-|IPv6|○|
-|-|[HLS](https://tools.ietf.org/html/rfc8216)|○|
+|-|[HLS](https://tools.ietf.org/html/rfc8216)|√|
 |-|[STUN](https://www.rfc-editor.org/rfc/rfc5389.txt)|√|
 |-|[UPnP](http://upnp.org/specs/arch/UPnP-arch-DeviceArchitecture-v1.0.pdf)|√|
 |-|upload_only|√|

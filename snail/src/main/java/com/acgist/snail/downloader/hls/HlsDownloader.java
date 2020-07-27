@@ -84,7 +84,12 @@ public final class HlsDownloader extends MultifileDownloader {
 				this.taskSession.getFile(),
 				this.taskSession.multifileSelected()
 			);
-			linker.link();
+			final long size = linker.link();
+			// 重新设置文件大小
+			if(size >= 0L && size != this.taskSession.getSize()) {
+				this.taskSession.setSize(size);
+				this.taskSession.update();
+			}
 		}
 	}
 	

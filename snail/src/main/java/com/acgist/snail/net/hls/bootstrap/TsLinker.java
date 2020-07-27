@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.IoUtils;
 
 /**
@@ -26,6 +27,11 @@ import com.acgist.snail.utils.IoUtils;
 public final class TsLinker {
 
 	private final Logger LOGGER = LoggerFactory.getLogger(TsLinker.class);
+	
+	/**
+	 * <p>文件后缀</p>
+	 */
+	private static final String SUFFIX = ".ts";
 	
 	/**
 	 * <p>任务名称</p>
@@ -61,8 +67,10 @@ public final class TsLinker {
 	
 	/**
 	 * <p>连接文件</p>
+	 * 
+	 * @return 文件大小
 	 */
-	public void link() {
+	public long link() {
 		final var files = this.links.stream()
 			.map(link -> {
 				int index = link.lastIndexOf('/');
@@ -77,7 +85,7 @@ public final class TsLinker {
 			})
 			.collect(Collectors.toList());
 		OutputStream output = null;
-		final File target = Paths.get(this.path, name).toFile();
+		final File target = Paths.get(this.path, this.name + SUFFIX).toFile();
 		try {
 			output = new FileOutputStream(target);
 			for (File file : files) {
@@ -88,6 +96,7 @@ public final class TsLinker {
 		} finally {
 			IoUtils.close(output);
 		}
+		return FileUtils.fileSize(target.getAbsolutePath());
 	}
 	
 	/**

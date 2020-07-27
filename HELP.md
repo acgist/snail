@@ -322,6 +322,10 @@ java -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar mode=[native|exte
 
 使用FTP、HTTP下载大文件时如果出现内存溢出，建议优化JVM参数：`-XX:NewRatio=2 -XX:SurvivorRatio=2`
 
+### 下载一段时间没有速度
+
+如果出现开始下载有速度，下载一段时间后没有速度了，可以先暂停任务或重启软件再开始下载。
+
 ```bash
 # Linux
 java -server -Xms128m -Xmx256m -XX:NewRatio=2 -XX:SurvivorRatio=2 -jar snail.javafx-{version}.jar
