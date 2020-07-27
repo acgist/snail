@@ -85,7 +85,7 @@ public final class HlsClient implements Runnable {
 	@Override
 	public void run() {
 		if(!this.hlsSession.downloadable()) {
-			LOGGER.debug("任务已经不能下载：{}", this.link);
+			LOGGER.debug("HLS任务不能下载：{}", this.link);
 			return;
 		}
 		LOGGER.debug("下载文件：{}", this.link);
@@ -93,7 +93,7 @@ public final class HlsClient implements Runnable {
 		if(this.checkCompleted()) {
 			size = this.size;
 			this.completed = true;
-			LOGGER.debug("文件校验成功：{}-{}", this.link, this.path);
+			LOGGER.debug("HLS文件校验成功：{}", this.link);
 		} else {
 			try {
 				int length = 0;
@@ -106,9 +106,9 @@ public final class HlsClient implements Runnable {
 						this.completed = true;
 						break;
 					}
+					size += length;
 					this.output.write(bytes, 0, length);
 					this.hlsSession.download(length); // 设置下载速度
-					size += length;
 				}
 			} catch (Exception e) {
 				LOGGER.error("HLS下载异常：{}", this.link, e);
@@ -116,12 +116,14 @@ public final class HlsClient implements Runnable {
 		}
 		IoUtils.close(this.input);
 		IoUtils.close(this.output);
-		this.hlsSession.downloadSize(size); // 设置下载大小
 		if(this.completed) {
+			LOGGER.debug("HLS文件下载完成：{}", this.link);
+			this.hlsSession.downloadSize(size); // 设置下载大小
 			this.hlsSession.checkCompletedAndDone();
 		} else {
+			LOGGER.debug("HLS文件下载失败：{}", this.link);
 			// 下载失败重新添加下载
-			this.hlsSession.submit(this);
+			this.hlsSession.download(this);
 		}
 	}
 	
@@ -156,7 +158,7 @@ public final class HlsClient implements Runnable {
 			this.size = header.fileSize();
 			return this.size == size;
 		} catch (NetException e) {
-			LOGGER.error("HLS初始化失败：{}", this.link, e);
+			LOGGER.error("HLS初始化异常：{}", this.link, e);
 		}
 		return false;
 	}
@@ -172,7 +174,7 @@ public final class HlsClient implements Runnable {
 	private boolean isComplete(int length, long size) {
 		return
 			length <= -1 ||
-			(this.size != 0 && size <= this.size);
+			(this.size > 0 && this.size <= size);
 	}
 	
 	/**

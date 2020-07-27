@@ -37,7 +37,7 @@ public class HeaderWrapperTest extends BaseTest {
 	@Test
 	public void testHttp() throws NetException {
 //		HTTPClient client = HTTPClient.newInstance("https://www.acgist.com/demo/weixin/view");
-		HTTPClient client = HTTPClient.newInstance("https://g37.gdl.netease.com/onmyoji_setup_10.6.0.zip");
+		HTTPClient client = HTTPClient.newInstance("https://youku.com-youku.com/20180122/OgFJZjkT/900kb/hls/BM3D1t5288298.ts");
 		var headers = client.head();
 		headers.allHeaders().forEach((key, value) -> {
 			this.log(key + "<==>" + value);
