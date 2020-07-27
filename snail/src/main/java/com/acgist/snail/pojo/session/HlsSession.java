@@ -88,8 +88,10 @@ public final class HlsSession {
 	 * 
 	 * @param hlsClient 客户端
 	 */
-	public void submit(HlsClient hlsClient) {
-		this.executor.submit(hlsClient);
+	public void download(HlsClient hlsClient) {
+		if(this.downloadable) {
+			this.executor.submit(hlsClient);
+		}
 	}
 	
 	/**
@@ -148,12 +150,12 @@ public final class HlsSession {
 	 * <p>释放资源</p>
 	 */
 	public void release() {
-		LOGGER.debug("释放任务：{}", this.taskSession.getName());
+		LOGGER.debug("HLS任务释放资源：{}", this.taskSession.getName());
+		this.downloadable = false;
 		synchronized (this.clients) {
 			this.clients.forEach(client -> client.release());
 		}
 		SystemThreadContext.shutdown(this.executor);
-		this.downloadable = false;
 	}
 
 }

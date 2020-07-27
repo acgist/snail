@@ -1,5 +1,8 @@
 package com.acgist.snail.downloader.hls;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.downloader.MultifileDownloader;
 import com.acgist.snail.net.hls.bootstrap.TsLinker;
 import com.acgist.snail.pojo.ITaskSession;
@@ -15,6 +18,8 @@ import com.acgist.snail.system.exception.NetException;
  */
 public final class HlsDownloader extends MultifileDownloader {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(HlsDownloader.class);
+	
 	/**
 	 * <p>HLS任务信息</p>
 	 */
@@ -43,26 +48,9 @@ public final class HlsDownloader extends MultifileDownloader {
 	
 	@Override
 	public void release() {
+		this.link();
 		this.hlsSession.release();
 		super.release();
-		if(this.complete) {
-			// 连接文件
-			final TsLinker linker = TsLinker.newInstance(
-				this.taskSession.getName(),
-				this.taskSession.getFile(),
-				this.taskSession.multifileSelected()
-			);
-			linker.link();
-		}
-	}
-	
-	/**
-	 * <p>加载HLS任务信息</p>
-	 * 
-	 * @return HLS任务信息
-	 */
-	private HlsSession loadHlsSession() {
-		return HlsSession.newInstance(this.taskSession);
 	}
 	
 	@Override
@@ -75,4 +63,29 @@ public final class HlsDownloader extends MultifileDownloader {
 		return this.hlsSession.checkCompleted();
 	}
 
+	/**
+	 * <p>加载HLS任务信息</p>
+	 * 
+	 * @return HLS任务信息
+	 */
+	private HlsSession loadHlsSession() {
+		return HlsSession.newInstance(this.taskSession);
+	}
+	
+	/**
+	 * <p>文件连接</p>
+	 */
+	private void link() {
+		if(this.complete) {
+			LOGGER.debug("HLS任务连接文件：{}", this.taskSession.getName());
+			// 连接文件
+			final TsLinker linker = TsLinker.newInstance(
+				this.taskSession.getName(),
+				this.taskSession.getFile(),
+				this.taskSession.multifileSelected()
+			);
+			linker.link();
+		}
+	}
+	
 }

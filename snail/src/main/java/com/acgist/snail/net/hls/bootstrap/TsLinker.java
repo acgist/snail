@@ -65,11 +65,15 @@ public final class TsLinker {
 	public void link() {
 		final var files = this.links.stream()
 			.map(link -> {
-				final int index = link.lastIndexOf('/');
+				int index = link.lastIndexOf('/');
 				if(index >= 0) {
 					link = link.substring(index);
 				}
-				return Paths.get(this.path, link.substring(index)).toFile();
+				index = link.lastIndexOf('\\');
+				if(index >= 0) {
+					link = link.substring(index);
+				}
+				return Paths.get(this.path, link).toFile();
 			})
 			.collect(Collectors.toList());
 		OutputStream output = null;
