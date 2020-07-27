@@ -70,7 +70,7 @@ public final class HttpDownloader extends SingleFileDownloader {
 			HTTPClient.StatusCode.PARTIAL_CONTENT.verifyCode(response)
 		) {
 			final var headers = HttpHeaderWrapper.newInstance(response.headers());
-			this.input = new BufferedInputStream(response.body());
+			this.input = new BufferedInputStream(response.body(), EXCHANGE_BYTES_LENGTH);
 			if(headers.range()) { // 支持断点续传
 				final long begin = headers.beginRange();
 				if(size != begin) {

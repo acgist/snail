@@ -150,7 +150,7 @@ public final class HlsClient implements Runnable {
 			this.size = header.fileSize();
 			return this.size == size;
 		} catch (NetException e) {
-			LOGGER.error("HLS初始化异常：{}", this.link, e);
+			LOGGER.error("HLS客户端初始化异常：{}", this.link, e);
 		}
 		return false;
 	}
@@ -189,7 +189,7 @@ public final class HlsClient implements Runnable {
 			HTTPClient.StatusCode.PARTIAL_CONTENT.verifyCode(response)
 		) {
 			final var headers = HttpHeaderWrapper.newInstance(response.headers());
-			this.input = new BufferedInputStream(response.body());
+			this.input = new BufferedInputStream(response.body(), EXCHANGE_BYTES_LENGTH);
 			if(headers.range()) { // 支持断点续传
 				final long begin = headers.beginRange();
 				if(size != begin) {
@@ -202,7 +202,7 @@ public final class HlsClient implements Runnable {
 				this.range = true;
 			}
 		} else {
-			throw new NetException("创建输入流失败");
+			throw new NetException("HLS客户端输入流创建失败");
 		}
 	}
 	
@@ -227,6 +227,7 @@ public final class HlsClient implements Runnable {
 	 * <p>释放资源</p>
 	 */
 	public void release() {
+		LOGGER.debug("HLS客户端释放：{}", this.link);
 		IoUtils.close(this.input);
 		IoUtils.close(this.output);
 	}
