@@ -2,10 +2,8 @@ package com.acgist.snail.net.hls.bootstrap;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Paths;
 import java.util.List;
@@ -16,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.FileUtils;
-import com.acgist.snail.utils.IoUtils;
 
 /**
  * <p>TL文件连接器</p>
@@ -26,7 +23,7 @@ import com.acgist.snail.utils.IoUtils;
  */
 public final class TsLinker {
 
-	private final Logger LOGGER = LoggerFactory.getLogger(TsLinker.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TsLinker.class);
 	
 	/**
 	 * <p>文件后缀</p>
@@ -84,17 +81,13 @@ public final class TsLinker {
 				return Paths.get(this.path, link).toFile();
 			})
 			.collect(Collectors.toList());
-		OutputStream output = null;
 		final File target = Paths.get(this.path, this.name + SUFFIX).toFile();
-		try {
-			output = new FileOutputStream(target);
+		try(final var output = new FileOutputStream(target)) {
 			for (File file : files) {
 				this.link(file, output);
 			}
-		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
 			LOGGER.error("文件连接异常", e);
-		} finally {
-			IoUtils.close(output);
 		}
 		return FileUtils.fileSize(target.getAbsolutePath());
 	}
@@ -106,18 +99,14 @@ public final class TsLinker {
 	 * @param output 输出流
 	 */
 	private void link(File file, OutputStream output) {
-		InputStream input = null;
-		try {
+		try(final var input = new FileInputStream(file)) {
 			int length = 0;
-			input = new FileInputStream(file);
 			final byte[] bytes = new byte[16 * SystemConfig.ONE_KB];
 			while((length = input.read(bytes)) >= 0) {
 				output.write(bytes, 0, length);
 			}
 		} catch (IOException e) {
 			LOGGER.error("文件连接异常", e);
-		} finally {
-			IoUtils.close(input);
 		}
 	}
 	
