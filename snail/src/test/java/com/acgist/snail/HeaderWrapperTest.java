@@ -36,12 +36,16 @@ public class HeaderWrapperTest extends BaseTest {
 	
 	@Test
 	public void testHttp() throws NetException {
-		HTTPClient client = HTTPClient.newInstance("https://www.acgist.com/demo/weixin/view");
+//		HTTPClient client = HTTPClient.newInstance("https://www.acgist.com/demo/weixin/view");
+		HTTPClient client = HTTPClient.newInstance("https://g37.gdl.netease.com/onmyoji_setup_10.6.0.zip");
 		var headers = client.head();
 		headers.allHeaders().forEach((key, value) -> {
 			this.log(key + "<==>" + value);
 		});
 		this.log(headers.header("SERVER"));
+		this.log(headers.header("Accept-Ranges"));
+		this.log(headers.header("Content-Range"));
+		this.log(headers.header("Content-Length"));
 	}
 	
 	@Test

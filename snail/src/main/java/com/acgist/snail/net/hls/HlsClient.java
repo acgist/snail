@@ -51,55 +51,87 @@ public final class HlsClient implements Runnable {
 	/**
 	 * <p>文件大小</p>
 	 */
-	private int size;
+	private long size;
 	/**
 	 * <p>是否支持断点续传</p>
 	 */
 	private boolean range;
 	/**
+	 * <p>是否下载完成</p>
+	 */
+	private volatile boolean completed;
+	/**
 	 * <p>输入流</p>
 	 */
-	protected InputStream input;
+	private InputStream input;
 	/**
 	 * <p>输出流</p>
 	 */
-	protected OutputStream output;
+	private OutputStream output;
 	/**
 	 * <p>HLS任务信息</p>
 	 */
-	private HlsSession hlsSession;
+	private final HlsSession hlsSession;
 	
-	public HlsClient(String link, ITaskSession taskSession) {
+	public HlsClient(String link, HlsSession hlsSession, ITaskSession taskSession) {
 		this.link = link;
-		this.range = false;
 		final String fileName = FileUtils.fileNameFromUrl(link);
 		this.path = Paths.get(taskSession.getFile(), fileName).toString();
+		this.range = false;
+		this.completed = false;
+		this.hlsSession = hlsSession;
 	}
 
 	@Override
 	public void run() {
-		LOGGER.debug("下载文件：{}", this.link);
-		if(this.check()) {
-			// 校验成功
-		} else {
-//			this.buildInput();
-//			this.buildOutput();
-//			final byte[] bytes = new byte[EXCHANGE_BYTES_LENGTH];
-//			int length;
-//			while(this.hlsSession.downloadable()) {
-//				length = this.input.read(bytes, 0, bytes.length);
-//				if(isComplete(length)) {
-//					this.complete = true;
-//					break;
-//				}
-//				this.output.write(bytes, 0, length);
-//				this.download(length);
-//				this.hlsSession.download(buffer); // 设置下载速度
-//			}
+		if(!this.hlsSession.downloadable()) {
+			LOGGER.debug("任务已经不能下载：{}", this.link);
+			return;
 		}
-		this.hlsSession.downloadSize(size); // 设置下载大小
+		LOGGER.debug("下载文件：{}", this.link);
+		long size = 0;
+		if(this.checkCompleted()) {
+			size = this.size;
+			this.completed = true;
+			LOGGER.debug("文件校验成功：{}-{}", this.link, this.path);
+		} else {
+			try {
+				int length = 0;
+				this.buildInput();
+				this.buildOutput();
+				final byte[] bytes = new byte[EXCHANGE_BYTES_LENGTH];
+				while(this.hlsSession.downloadable()) {
+					length = this.input.read(bytes, 0, bytes.length);
+					if(this.isComplete(length, size)) {
+						this.completed = true;
+						break;
+					}
+					this.output.write(bytes, 0, length);
+					this.hlsSession.download(length); // 设置下载速度
+					size += length;
+				}
+			} catch (Exception e) {
+				LOGGER.error("HLS下载异常：{}", this.link, e);
+			}
+		}
 		IoUtils.close(this.input);
 		IoUtils.close(this.output);
+		this.hlsSession.downloadSize(size); // 设置下载大小
+		if(this.completed) {
+			this.hlsSession.checkCompletedAndDone();
+		} else {
+			// 下载失败重新添加下载
+			this.hlsSession.submit(this);
+		}
+	}
+	
+	/**
+	 * <p>任务是否完成</p>
+	 * 
+	 * @return true-完成；false-没有完成；
+	 */
+	public boolean isCompleted() {
+		return this.completed;
 	}
 	
 	/**
@@ -108,20 +140,39 @@ public final class HlsClient implements Runnable {
 	 * 
 	 * @return 校验是否成功
 	 */
-	private boolean check() {
+	private boolean checkCompleted() {
+		if(this.completed) {
+			return this.completed;
+		}
 		final File file = new File(this.path);
 		if(!file.exists()) {
 			return false;
 		}
 		// 已下载大小
 		final long size = FileUtils.fileSize(this.path);
-		// TODO：HTTP读取文件大小
+		try {
+			// 文件实际大小
+			final var header = HTTPClient.newInstance(this.link).head();
+			this.size = header.fileSize();
+			return this.size == size;
+		} catch (NetException e) {
+			LOGGER.error("HLS初始化失败：{}", this.link, e);
+		}
 		return false;
 	}
 
-	private boolean isComplete(int length) {
+	/**
+	 * <p>验证是否下载完成</p>
+	 * 
+	 * @param length 当前下载大小
+	 * @param size 累计下载大小
+	 * 
+	 * @return 是否完成
+	 */
+	private boolean isComplete(int length, long size) {
 		return
-			length <= -1;
+			length <= -1 ||
+			(this.size != 0 && size <= this.size);
 	}
 	
 	/**
@@ -156,8 +207,9 @@ public final class HlsClient implements Runnable {
 				}
 				this.range = true;
 			}
+		} else {
+			throw new NetException("创建输入流失败");
 		}
-		throw new NetException("创建输入流失败");
 	}
 	
 	/**
@@ -175,6 +227,13 @@ public final class HlsClient implements Runnable {
 		} catch (FileNotFoundException e) {
 			throw new DownloadException("下载文件打开失败", e);
 		}
+	}
+
+	/**
+	 * <p>释放资源</p>
+	 */
+	public void release() {
+		
 	}
 	
 }

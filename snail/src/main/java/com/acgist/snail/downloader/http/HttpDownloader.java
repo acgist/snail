@@ -88,13 +88,13 @@ public final class HttpDownloader extends SingleFileDownloader {
 			if(this.taskSession.downloadSize() == this.taskSession.getSize()) {
 				this.complete = true;
 			} else {
-				fail("无法满足文件下载范围：" + size);
+				this.fail("无法满足文件下载范围：" + size);
 			}
 		} else {
 			if(response == null) {
-				fail("HTTP请求失败");
+				this.fail("HTTP请求失败");
 			} else {
-				fail("HTTP请求失败：" + response.statusCode());
+				this.fail("HTTP请求失败：" + response.statusCode());
 			}
 		}
 	}
