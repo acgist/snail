@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.MultifileDownloader;
+import com.acgist.snail.net.hls.bootstrap.HlsManager;
 import com.acgist.snail.net.hls.bootstrap.TsLinker;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.session.HlsSession;
@@ -49,7 +50,12 @@ public final class HlsDownloader extends MultifileDownloader {
 	@Override
 	public void release() {
 		this.link();
-		this.hlsSession.release();
+		if(this.complete) {
+			this.hlsSession.shutdown();
+			HlsManager.getInstance().remove(this.taskSession);
+		} else {
+			this.hlsSession.release();
+		}
 		super.release();
 	}
 	
@@ -69,7 +75,7 @@ public final class HlsDownloader extends MultifileDownloader {
 	 * @return HLS任务信息
 	 */
 	private HlsSession loadHlsSession() {
-		return HlsSession.newInstance(this.taskSession);
+		return HlsManager.getInstance().hlsSession(this.taskSession);
 	}
 	
 	/**
