@@ -1,9 +1,7 @@
 package com.acgist.snail.pojo.bean;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
-import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.ObjectUtils;
 
 /**
@@ -37,10 +35,6 @@ public final class M3u8 {
 	 * <p>如果是多级M3U8列表，安装码率从小到大排序。</p>
 	 */
 	private final List<String> links;
-	/**
-	 * <p>获取文件索引</p>
-	 */
-	private final AtomicInteger index;
 	
 	/**
 	 * @param type 类型
@@ -49,34 +43,6 @@ public final class M3u8 {
 	public M3u8(Type type, List<String> links) {
 		this.type = type;
 		this.links = links;
-		this.index = new AtomicInteger(0);
-	}
-
-	/**
-	 * <p>是否还有下一个文件</p>
-	 * 
-	 * @return true-有；fasle-没有；
-	 */
-	public boolean havaNextFile() {
-		synchronized (this.index) {
-			return this.index.get() < this.links.size();
-		}
-	}
-	
-	/**
-	 * <p>获取下一个文件下载地址</p>
-	 * 
-	 * @return 文件下载地址
-	 * 
-	 * @throws DownloadException 下载异常
-	 */
-	public String nextFileLink() throws DownloadException {
-		if(this.index.get() >= this.links.size()) {
-			throw new DownloadException("没有更多数据");
-		}
-		synchronized (this.index) {
-			return this.links.get(this.index.getAndIncrement());
-		}
 	}
 	
 	/**
