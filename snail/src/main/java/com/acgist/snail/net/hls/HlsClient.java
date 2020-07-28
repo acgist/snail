@@ -36,11 +36,6 @@ public final class HlsClient implements Runnable {
 	private static final Logger LOGGER = LoggerFactory.getLogger(HlsClient.class);
 	
 	/**
-	 * <p>下载字节缓存大小：{@value}</p>
-	 */
-	protected static final int EXCHANGE_BYTES_LENGTH = 16 * SystemConfig.ONE_KB;
-	
-	/**
 	 * <p>下载路径</p>
 	 */
 	private final String link;
@@ -99,7 +94,7 @@ public final class HlsClient implements Runnable {
 				int length = 0;
 				this.buildInput();
 				this.buildOutput();
-				final byte[] bytes = new byte[EXCHANGE_BYTES_LENGTH];
+				final byte[] bytes = new byte[SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH];
 				while(this.hlsSession.downloadable()) {
 					length = this.input.read(bytes, 0, bytes.length);
 					if(this.isComplete(length, size)) {
@@ -189,7 +184,7 @@ public final class HlsClient implements Runnable {
 			HTTPClient.StatusCode.PARTIAL_CONTENT.verifyCode(response)
 		) {
 			final var headers = HttpHeaderWrapper.newInstance(response.headers());
-			this.input = new BufferedInputStream(response.body(), EXCHANGE_BYTES_LENGTH);
+			this.input = new BufferedInputStream(response.body(), SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH);
 			if(headers.range()) { // 支持断点续传
 				final long begin = headers.beginRange();
 				if(size != begin) {

@@ -9,14 +9,6 @@ package com.acgist.snail.system.config;
 public final class StunConfig {
 
 	/**
-	 * <p>头部信息长度：{@value}</p>
-	 */
-	public static final int STUN_HEADER_LENGTH = 20;
-	/**
-	 * <p>属性头部信息长度：{@value}</p>
-	 */
-	public static final int ATTRIBUTE_HEADER_LENGTH = 4;
-	/**
 	 * <p>默认端口：{@value}</p>
 	 */
 	public static final int DEFAULT_PORT = 3478;
@@ -24,6 +16,14 @@ public final class StunConfig {
 	 * <p>固定值：{@value}</p>
 	 */
 	public static final int MAGIC_COOKIE = 0x2112A442;
+	/**
+	 * <p>头部信息长度：{@value}</p>
+	 */
+	public static final int STUN_HEADER_LENGTH = 20;
+	/**
+	 * <p>属性头部信息长度：{@value}</p>
+	 */
+	public static final int ATTRIBUTE_HEADER_LENGTH = 4;
 	/**
 	 * <p>TransactionID长度：{@value}</p>
 	 */
@@ -36,6 +36,9 @@ public final class StunConfig {
 	 * <p>IPv6：{@value}</p>
 	 */
 	public static final int IPV6 = 0x02;
+	
+	private StunConfig() {
+	}
 	
 	/**
 	 * <p>方法类型</p>
@@ -56,6 +59,11 @@ public final class StunConfig {
 			this.id = id;
 		}
 		
+		/**
+		 * <p>获取方法ID</p>
+		 * 
+		 * @return 方法ID
+		 */
 		public short id() {
 			return this.id;
 		}
@@ -77,13 +85,13 @@ public final class StunConfig {
 		ERROR_RESPONSE((byte) 0B11);
 		
 		/**
-		 * <p>C1：{@value}</p>
-		 */
-		public static final short C1_MASK = 0B0000_0001_0000_0000;
-		/**
 		 * <p>C0：{@value}</p>
 		 */
 		public static final short C0_MASK = 0B0000_0000_0001_0000;
+		/**
+		 * <p>C1：{@value}</p>
+		 */
+		public static final short C1_MASK = 0B0000_0001_0000_0000;
 		/**
 		 * <p>前两位必须为零：{@value}</p>
 		 */
@@ -114,6 +122,13 @@ public final class StunConfig {
 			) & TYPE_MASK);
 		}
 		
+		/**
+		 * <p>通过方法类型标识获取方法类型</p>
+		 * 
+		 * @param value 方法类型标识
+		 * 
+		 * @return 方法类型
+		 */
 		public static final MessageType valueOf(short value) {
 			final byte id = (byte) (
 			(
@@ -169,10 +184,22 @@ public final class StunConfig {
 			this.id = id;
 		}
 		
+		/**
+		 * <p>获取属性ID</p>
+		 * 
+		 * @return 属性ID
+		 */
 		public short id() {
 			return this.id;
 		}
 
+		/**
+		 * <p>通过属性ID获取属性类型</p>
+		 * 
+		 * @param id 属性ID
+		 * 
+		 * @return 属性类型
+		 */
 		public static final AttributeType valueOf(short id) {
 			final var types = AttributeType.values();
 			for (AttributeType attributeType : types) {
@@ -212,6 +239,11 @@ public final class StunConfig {
 			this.code = code;
 		}
 		
+		/**
+		 * <p>获取错误编码</p>
+		 * 
+		 * @return 错误编码
+		 */
 		public int code() {
 			return this.code;
 		}

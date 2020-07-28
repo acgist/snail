@@ -10,6 +10,7 @@ import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.net.stun.bootstrap.StunService;
 import com.acgist.snail.system.config.StunConfig;
 import com.acgist.snail.system.config.StunConfig.AttributeType;
+import com.acgist.snail.system.config.StunConfig.MessageType;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.system.exception.PacketSizeException;
 import com.acgist.snail.utils.ArrayUtils;
@@ -77,7 +78,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	@Override
 	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException {
 		buffer.flip();
-		final short type = (short) (buffer.getShort() & 0B0011_1111_1111_1111);
+		final short type = (short) (buffer.getShort() & MessageType.TYPE_MASK);
 		final var messageType = StunConfig.MessageType.valueOf(type);
 		if(messageType == null) {
 			LOGGER.warn("处理STUN消息错误（类型不支持）：{}", type);

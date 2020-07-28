@@ -29,7 +29,7 @@ public final class TrackerConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>配置文件</p>
+	 * <p>配置文件：{@value}</p>
 	 */
 	private static final String TRACKER_CONFIG = "/config/bt.tracker.properties";
 
@@ -76,10 +76,20 @@ public final class TrackerConfig extends PropertiesConfig {
 			this.value = value;
 		}
 
+		/**
+		 * <p>获取事件ID</p>
+		 * 
+		 * @return 事件ID
+		 */
 		public int id() {
 			return this.id;
 		}
 		
+		/**
+		 * <p>获取事件名称</p>
+		 * 
+		 * @return 事件名称
+		 */
 		public String value() {
 			return this.value;
 		}
@@ -101,11 +111,11 @@ public final class TrackerConfig extends PropertiesConfig {
 		ERROR(3, "error");
 		
 		/**
-		 * 动作ID</p>
+		 * <p>动作ID</p>
 		 */
 		private final int id;
 		/**
-		 * 动作名称</p>
+		 * <p>动作名称</p>
 		 */
 		private final String value;
 
@@ -114,14 +124,31 @@ public final class TrackerConfig extends PropertiesConfig {
 			this.value = value;
 		}
 		
+		/**
+		 * <p>获取动作ID</p>
+		 * 
+		 * @return 动作ID
+		 */
 		public int id() {
 			return this.id;
 		}
 		
+		/**
+		 * <p>获取动作名称</p>
+		 * 
+		 * @return 动作名称
+		 */
 		public String value() {
 			return this.value;
 		}
 		
+		/**
+		 * <p>通过动作ID获取动作</p>
+		 * 
+		 * @param id 动作ID
+		 * 
+		 * @return 动作
+		 */
 		public static final Action valueOf(int id) {
 			final var values = Action.values();
 			for (Action action : values) {
@@ -140,7 +167,7 @@ public final class TrackerConfig extends PropertiesConfig {
 	 */
 	private final List<String> announces = new ArrayList<>();
 	
-	public TrackerConfig() {
+	private TrackerConfig() {
 		super(TRACKER_CONFIG);
 	}
 	
@@ -151,7 +178,7 @@ public final class TrackerConfig extends PropertiesConfig {
 		this.properties.entrySet().forEach(entry -> {
 			final String announce = (String) entry.getValue();
 			if(StringUtils.isNotEmpty(announce)) {
-				announces.add(announce);
+				this.announces.add(announce);
 			} else {
 				LOGGER.warn("注册默认Tracker服务器失败：{}", announce);
 			}
@@ -178,7 +205,7 @@ public final class TrackerConfig extends PropertiesConfig {
 			.filter(client -> client.available())
 			.limit(MAX_TRACKER_SIZE)
 			.collect(Collectors.toMap(client -> String.format("%04d", index.incrementAndGet()), client -> client.announceUrl()));
-		persistent(map, FileUtils.userDirFile(TRACKER_CONFIG));
+		this.persistent(map, FileUtils.userDirFile(TRACKER_CONFIG));
 	}
 	
 }

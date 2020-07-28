@@ -30,7 +30,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>配置文件</p>
+	 * <p>配置文件：{@value}</p>
 	 */
 	private static final String DOWNLOAD_CONFIG = "/config/download.properties";
 	

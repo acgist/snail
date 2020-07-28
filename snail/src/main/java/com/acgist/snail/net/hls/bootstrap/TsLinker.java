@@ -101,7 +101,7 @@ public final class TsLinker {
 	private void link(File file, OutputStream output) {
 		try(final var input = new FileInputStream(file)) {
 			int length = 0;
-			final byte[] bytes = new byte[16 * SystemConfig.ONE_KB];
+			final byte[] bytes = new byte[SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH];
 			while((length = input.read(bytes)) >= 0) {
 				output.write(bytes, 0, length);
 			}
