@@ -45,7 +45,7 @@
 		<!-- JavaFX -->
 		<javafx.version>11.0.2</javafx.version>
 		<!-- 依赖 -->
-		<h2.version>1.4.199</h2.version>
+		<h2.version>1.4.200</h2.version>
 		<logback.version>1.3.0-alpha4</logback.version>
 		<!-- JUnit -->
 		<junit.version>5.6.2</junit.version>
@@ -54,10 +54,10 @@
 		<maven.jar.version>3.2.0</maven.jar.version>
 		<maven.nexus.version>1.6.8</maven.nexus.version>
 		<maven.source.version>3.2.0</maven.source.version>
-		<maven.javadoc.version>3.1.1</maven.javadoc.version>
+		<maven.javadoc.version>3.2.0</maven.javadoc.version>
 		<maven.compiler.version>3.8.1</maven.compiler.version>
 		<maven.resources.version>3.1.0</maven.resources.version>
-		<maven.dependency.version>3.1.1</maven.dependency.version>
+		<maven.dependency.version>3.1.2</maven.dependency.version>
 		<!-- 文件编码 -->
 		<project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
 	</properties>
