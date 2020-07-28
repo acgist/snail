@@ -44,7 +44,7 @@ public abstract class PropertiesConfig {
 	 * <p>加载配置文件</p>
 	 * <p>优先加载用户工作目录（UserDir）配置，如果加载失败则加载默认（Resource）配置。</p>
 	 * 
-	 * @param path 配置文件相对路径：{@code /}开头
+	 * @param path 配置文件相对路径
 	 * 
 	 * @return 配置信息
 	 */

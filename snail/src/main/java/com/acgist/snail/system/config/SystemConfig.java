@@ -548,7 +548,7 @@ public final class SystemConfig extends PropertiesConfig {
 	/**
 	 * <p>获取用户工作目录中的文件路径</p>
 	 * 
-	 * @param path 文件相对路径：以“/”开头
+	 * @param path 文件相对路径
 	 * 
 	 * @return 文件路径
 	 */

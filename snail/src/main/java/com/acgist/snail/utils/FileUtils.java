@@ -473,7 +473,7 @@ public final class FileUtils {
 	/**
 	 * <p>获取用户工作目录中的文件</p>
 	 * 
-	 * @param path 文件相对路径：{@code /}开头
+	 * @param path 文件相对路径
 	 * 
 	 * @return 文件
 	 */
