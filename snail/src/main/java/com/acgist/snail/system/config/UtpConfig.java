@@ -70,7 +70,7 @@ public final class UtpConfig {
 	/**
 	 * <p>默认窗口大小：{@value}</p>
 	 */
-	public static final int WND_SIZE = 1024 * 1024;
+	public static final int WND_SIZE = SystemConfig.ONE_MB;
 	/**
 	 * <p>最大发送次数：{@value}</p>
 	 */
@@ -88,12 +88,20 @@ public final class UtpConfig {
 	 * @return 类型名称
 	 */
 	public static final String type(byte type) {
-		return
-			type == ST_DATA ? "DATA" :
-			type == ST_FIN ? "FIN" :
-			type == ST_STATE ? "STATE" :
-			type == ST_RESET ? "RESET" :
-			type == ST_SYN ? "SYN" : "UNKNOW";
+		switch (type) {
+		case ST_DATA:
+			return "DATA";
+		case ST_FIN:
+			return "FIN";
+		case ST_STATE:
+			return "STATE";
+		case ST_RESET:
+			return "RESET";
+		case ST_SYN:
+			return "SYN";
+		default:
+			return "UNKNOW";
+		}
 	}
 	
 }

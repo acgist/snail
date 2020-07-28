@@ -64,7 +64,7 @@ public final class WindowsRecycle extends Recycle {
 	 */
 	private void buildRecycle() {
 		final String disk = this.path.substring(0, 1).toUpperCase(); // 盘符
-		final String recycleFolder = disk + ":" + File.separator + RECYCLE_FOLDER;
+		final String recycleFolder = FileUtils.file(disk + ":", RECYCLE_FOLDER);
 		final File recycleFile = new File(recycleFolder);
 		if(!recycleFile.exists()) {
 			throw new ArgumentException("回收站文件不存在：" + recycleFolder);
@@ -93,8 +93,8 @@ public final class WindowsRecycle extends Recycle {
 		if(ext != null) {
 			name = name + "." + ext;
 		}
-		this.deleteFile = this.recyclePath + File.separator + FILE_PREFIX + name;
-		this.deleteInfoFile = this.recyclePath + File.separator + INFO_PREFIX + name;
+		this.deleteFile = FileUtils.file(this.recyclePath, FILE_PREFIX + name);
+		this.deleteInfoFile = FileUtils.file(this.recyclePath, INFO_PREFIX + name);
 		LOGGER.debug("删除文件路径：{}，删除文件信息文件路径：{}", this.deleteFile, this.deleteInfoFile);
 	}
 	

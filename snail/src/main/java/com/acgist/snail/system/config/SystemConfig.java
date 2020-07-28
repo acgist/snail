@@ -1,5 +1,6 @@
 package com.acgist.snail.system.config;
 
+import java.nio.file.Paths;
 import java.time.Duration;
 
 import org.slf4j.Logger;
@@ -24,10 +25,10 @@ public final class SystemConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>配置文件</p>
+	 * <p>配置文件：{@value}</p>
 	 */
 	private static final String SYSTEM_CONFIG = "/config/system.properties";
-
+	
 	/**
 	 * <p>数据大小比例：{@value}</p>
 	 */
@@ -61,6 +62,11 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	public static final int UDP_BUFFER_LENGTH = 2 * ONE_KB;
 	/**
+	 * <p>数据传输默认大小：{@value}</p>
+	 * <p>一般IO读写缓存数据大小</p>
+	 */
+	public static final int DEFAULT_EXCHANGE_BYTES_LENGTH = 16 * ONE_KB;
+	/**
 	 * <p>连接超时时间（秒）：{@value}</p>
 	 */
 	public static final int CONNECT_TIMEOUT = 5;
@@ -79,7 +85,7 @@ public final class SystemConfig extends PropertiesConfig {
 	/**
 	 * <p>下载超时时间（秒）：{@value}</p>
 	 */
-	public static final int DOWNLOAD_TIMEOUT = 60;
+	public static final int DOWNLOAD_TIMEOUT = 30;
 	/**
 	 * <p>下载超时时间（毫秒）：{@value}</p>
 	 */
@@ -547,7 +553,7 @@ public final class SystemConfig extends PropertiesConfig {
 	 * @return 文件路径
 	 */
 	public static final String userDir(String path) {
-		return SystemConfig.USER_DIR + path;
+		return Paths.get(SystemConfig.USER_DIR, path).toString();
 	}
 	
 	/**

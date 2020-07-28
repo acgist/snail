@@ -31,11 +31,6 @@ public abstract class SingleFileDownloader extends Downloader {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SingleFileDownloader.class);
 	
 	/**
-	 * <p>下载字节缓存大小：{@value}</p>
-	 */
-	protected static final int EXCHANGE_BYTES_LENGTH = 16 * SystemConfig.ONE_KB;
-	
-	/**
 	 * <p>输入流</p>
 	 */
 	protected InputStream input;
@@ -62,7 +57,7 @@ public abstract class SingleFileDownloader extends Downloader {
 	@Override
 	public void download() throws DownloadException {
 		int length = 0;
-		final byte[] bytes = new byte[EXCHANGE_BYTES_LENGTH];
+		final byte[] bytes = new byte[SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH];
 		try {
 			while(this.downloadable()) {
 				length = this.input.read(bytes, 0, bytes.length);

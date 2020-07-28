@@ -455,7 +455,7 @@ public final class FileUtils {
 			return data;
 		} else {
 			int length;
-			final byte bytes[] = new byte[16 * 1024];
+			final byte bytes[] = new byte[SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH];
 			final MessageDigest digest = DigestUtils.digest(algo);
 			try (final var input = new BufferedInputStream(new FileInputStream(file))) {
 				while ((length = input.read(bytes)) != -1) {
