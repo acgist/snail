@@ -17,7 +17,7 @@ import com.acgist.snail.system.format.BEncodeDecoder;
  * @author acgist
  * @since 1.0.0
  */
-public final class TorrentInfo implements Serializable {
+public final class TorrentInfo extends TorrentFileMatedata implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -93,21 +93,6 @@ public final class TorrentInfo implements Serializable {
 	 * <p>单文件种子使用</p>
 	 */
 	private String nameUtf8;
-	/**
-	 * <p>文件大小</p>
-	 * <p>单文件种子使用</p>
-	 */
-	private Long length;
-	/**
-	 * <p>ed2k</p>
-	 * <p>单文件种子使用</p>
-	 */
-	private byte[] ed2k;
-	/**
-	 * <p>filehash</p>
-	 * <p>单文件种子使用</p>
-	 */
-	private byte[] filehash;
 	/**
 	 * <p>特征信息</p>
 	 * <p>所有Piece Hash集合</p>
@@ -275,60 +260,6 @@ public final class TorrentInfo implements Serializable {
 	 */
 	public void setNameUtf8(String nameUtf8) {
 		this.nameUtf8 = nameUtf8;
-	}
-
-	/**
-	 * <p>获取文件大小</p>
-	 * 
-	 * @return 文件大小
-	 */
-	public Long getLength() {
-		return this.length;
-	}
-
-	/**
-	 * <p>设置文件大小</p>
-	 * 
-	 * @param length 文件大小
-	 */
-	public void setLength(Long length) {
-		this.length = length;
-	}
-
-	/**
-	 * <p>获取ed2k</p>
-	 * 
-	 * @return ed2k
-	 */
-	public byte[] getEd2k() {
-		return this.ed2k;
-	}
-	
-	/**
-	 * <p>设置ed2k</p>
-	 * 
-	 * @param ed2k ed2k
-	 */
-	public void setEd2k(byte[] ed2k) {
-		this.ed2k = ed2k;
-	}
-
-	/**
-	 * <p>获取filehash</p>
-	 * 
-	 * @return filehash
-	 */
-	public byte[] getFilehash() {
-		return this.filehash;
-	}
-
-	/**
-	 * <p>设置filehash</p>
-	 * 
-	 * @param filehash filehash
-	 */
-	public void setFilehash(byte[] filehash) {
-		this.filehash = filehash;
 	}
 
 	/**
