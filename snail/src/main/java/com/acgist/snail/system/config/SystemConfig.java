@@ -301,7 +301,7 @@ public final class SystemConfig extends PropertiesConfig {
 		LOGGER.info("单个任务Peer数量（同时下载）：{}", this.peerSize);
 		LOGGER.info("单个任务Tracker数量：{}", this.trackerSize);
 		LOGGER.info("任务即将完成时可以重复下载的Piece数量：{}", this.pieceRepeatSize);
-		LOGGER.info("HLS下载线程数量", this.hlsThreadSize);
+		LOGGER.info("HLS下载线程数量：{}", this.hlsThreadSize);
 		LOGGER.info("DHT执行周期（秒）：{}", this.dhtInterval);
 		LOGGER.info("PEX执行周期（秒）：{}", this.pexInterval);
 		LOGGER.info("本地发现执行周期（秒）：{}", this.lsdInterval);

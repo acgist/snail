@@ -14,6 +14,7 @@ import com.acgist.snail.pojo.bean.M3u8;
 import com.acgist.snail.pojo.bean.M3u8.Type;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.system.exception.DownloadException;
+import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.ObjectUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -333,7 +334,7 @@ public final class M3u8Builder {
 		 */
 		public String[] values() {
 			if(this.value == null) {
-				return null;
+				return new String[] {};
 			}
 			return this.value.split(",");
 		}
@@ -345,11 +346,11 @@ public final class M3u8Builder {
 		 */
 		public Map<String, String> attrs() {
 			final String[] values = this.values();
-			if(values == null) {
-				return null;
+			if(ArrayUtils.isEmpty(values)) {
+				return Map.of();
 			}
-			final Map<String, String> attrs = new HashMap<>(values.length);
 			int index;
+			final Map<String, String> attrs = new HashMap<>(values.length);
 			for (String attr : values) {
 				index = attr.indexOf('=');
 				if(index < 0) {

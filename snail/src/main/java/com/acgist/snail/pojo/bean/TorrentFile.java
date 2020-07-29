@@ -18,7 +18,7 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public final class TorrentFile implements Serializable {
+public final class TorrentFile extends TorrentFileMatedata implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -48,18 +48,6 @@ public final class TorrentFile implements Serializable {
 	public static final String ATTR_PATH_UTF8 = "path.utf-8";
 	
 	//================种子文件自带信息================//
-	/**
-	 * <p>文件大小</p>
-	 */
-	private Long length;
-	/**
-	 * <p>ed2k</p>
-	 */
-	private byte[] ed2k;
-	/**
-	 * <p>filehash</p>
-	 */
-	private byte[] filehash;
 	/**
 	 * <p>路径</p>
 	 */
@@ -154,60 +142,6 @@ public final class TorrentFile implements Serializable {
 
 	// ==============GETTER SETTER============== //
 	
-	/**
-	 * <p>获取文件大小</p>
-	 * 
-	 * @return 文件大小
-	 */
-	public Long getLength() {
-		return this.length;
-	}
-
-	/**
-	 * <p>设置文件大小</p>
-	 * 
-	 * @param length 文件大小
-	 */
-	public void setLength(Long length) {
-		this.length = length;
-	}
-
-	/**
-	 * <p>获取ed2k</p>
-	 * 
-	 * @return ed2k
-	 */
-	public byte[] getEd2k() {
-		return this.ed2k;
-	}
-
-	/**
-	 * <p>设置ed2k</p>
-	 * 
-	 * @param ed2k ed2k
-	 */
-	public void setEd2k(byte[] ed2k) {
-		this.ed2k = ed2k;
-	}
-
-	/**
-	 * <p>获取filehash</p>
-	 * 
-	 * @return filehash
-	 */
-	public byte[] getFilehash() {
-		return this.filehash;
-	}
-
-	/**
-	 * <p>设置filehash</p>
-	 * 
-	 * @param filehash filehash
-	 */
-	public void setFilehash(byte[] filehash) {
-		this.filehash = filehash;
-	}
-
 	/**
 	 * <p>获取路径</p>
 	 * 
