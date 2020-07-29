@@ -34,7 +34,7 @@ public final class StreamContext {
 	 * <p>下载有效时间：{@value}</p>
 	 * <p>超过这个时间没有数据更新关闭输入流</p>
 	 */
-	private static final long EFFECT_TIME = 10 * DateUtils.ONE_SECOND;
+	private static final long EFFECT_TIME = 30 * DateUtils.ONE_SECOND;
 	
 	/**
 	 * <p>数据流信息列表</p>

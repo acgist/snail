@@ -3,7 +3,6 @@ package com.acgist.snail.downloader;
 import java.io.BufferedOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -36,10 +35,6 @@ public abstract class SingleFileDownloader extends Downloader {
 	 * <p>输出流</p>
 	 */
 	protected OutputStream output;
-	/**
-	 * <p>数据流信息</p>
-	 */
-	private StreamSession streamSession;
 	
 	protected SingleFileDownloader(ITaskSession taskSession) {
 		super(taskSession);
@@ -54,13 +49,13 @@ public abstract class SingleFileDownloader extends Downloader {
 	public void open() throws NetException, DownloadException {
 		this.buildInput();
 		this.buildOutput();
-		this.streamSession = StreamContext.getInstance().newStreamSession(this.input);
 	}
 
 	@Override
 	public void download() throws DownloadException {
 		int length = 0;
 		final byte[] bytes = new byte[SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH];
+		final StreamSession streamSession = StreamContext.getInstance().newStreamSession(this.input);
 		try {
 			while(this.downloadable()) {
 				length = this.input.read(bytes, 0, bytes.length);
@@ -69,19 +64,16 @@ public abstract class SingleFileDownloader extends Downloader {
 					break;
 				}
 				this.output.write(bytes, 0, length);
-				this.streamSession.heartbeat();
+				streamSession.heartbeat();
 				this.download(length);
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new DownloadException("数据流操作失败", e);
+		} finally {
+			StreamContext.getInstance().removeStreamSession(streamSession);
 		}
 	}
 
-	@Override
-	public void unlockDownload() {
-		StreamContext.getInstance().removeStreamSession(this.streamSession);
-	}
-	
 	/**
 	 * <dl>
 	 * 	<dt>判断任务是否下载完成</dt>

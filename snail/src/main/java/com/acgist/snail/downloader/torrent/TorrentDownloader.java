@@ -68,6 +68,7 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 			this.torrentSession.releaseDownload(); // 释放下载资源
 			this.statistics().resetDownloadSpeed(); // 重置下载速度
 		}
+		super.release();
 	}
 	
 	/**

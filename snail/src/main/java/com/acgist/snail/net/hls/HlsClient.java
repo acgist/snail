@@ -66,10 +66,6 @@ public final class HlsClient implements Runnable {
 	 */
 	private OutputStream output;
 	/**
-	 * <p>数据流信息</p>
-	 */
-	private StreamSession streamSession;
-	/**
 	 * <p>HLS任务信息</p>
 	 */
 	private final HlsSession hlsSession;
@@ -96,16 +92,16 @@ public final class HlsClient implements Runnable {
 			this.completed = true;
 			LOGGER.debug("HLS文件校验成功：{}", this.link);
 		} else {
+			int length = 0;
+			final byte[] bytes = new byte[SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH];
+			final StreamSession streamSession = StreamContext.getInstance().newStreamSession(this.input);
 			try {
-				int length = 0;
 				this.buildInput(size);
 				this.buildOutput();
-				this.streamSession = StreamContext.getInstance().newStreamSession(this.input);
 				// 不支持断点续传：重置已下载大小
 				if(!this.range) {
 					size = 0L;
 				}
-				final byte[] bytes = new byte[SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH];
 				while(this.hlsSession.downloadable()) {
 					length = this.input.read(bytes, 0, bytes.length);
 					if(this.isComplete(length, size)) {
@@ -114,11 +110,13 @@ public final class HlsClient implements Runnable {
 					}
 					size += length;
 					this.output.write(bytes, 0, length);
-					this.streamSession.heartbeat();
+					streamSession.heartbeat();
 					this.hlsSession.download(length); // 设置下载速度
 				}
 			} catch (Exception e) {
 				LOGGER.error("HLS下载异常：{}", this.link, e);
+			} finally {
+				StreamContext.getInstance().removeStreamSession(streamSession);
 			}
 		}
 		this.release();
@@ -235,7 +233,6 @@ public final class HlsClient implements Runnable {
 	 */
 	public void release() {
 		LOGGER.debug("HLS客户端释放：{}", this.link);
-		StreamContext.getInstance().removeStreamSession(this.streamSession);
 		IoUtils.close(this.input);
 		IoUtils.close(this.output);
 		this.input = null;
