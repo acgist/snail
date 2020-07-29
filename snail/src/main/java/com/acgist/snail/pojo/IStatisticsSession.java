@@ -11,14 +11,6 @@ import com.acgist.snail.system.IStatistics;
 public interface IStatisticsSession extends IStatistics {
 
 	/**
-	 * <p>判断是否在下载数据</p>
-	 * <p>最后一次下载限速采样时间是否在一秒内</p>
-	 * 
-	 * @return 是否下载数据
-	 */
-	boolean downloading();
-	
-	/**
 	 * {@inheritDoc}
 	 * 
 	 * <p>如果存在上级优先更新上级数据：防止限速导致上级更新不及时</p>
@@ -63,16 +55,16 @@ public interface IStatisticsSession extends IStatistics {
 	void uploadSize(long size);
 	
 	/**
-	 * <p>获取累计下载大小</p>
+	 * <p>获取已下载大小</p>
 	 * 
-	 * @return 累计下载大小
+	 * @return 已下载大小
 	 */
 	long downloadSize();
 	
 	/**
-	 * <p>设置累计下载大小</p>
+	 * <p>设置已下载大小</p>
 	 * 
-	 * @param size 累计下载大小
+	 * @param size 已下载大小
 	 */
 	void downloadSize(long size);
 	

@@ -257,7 +257,7 @@ public final class M3u8Builder {
 	/**
 	 * <p>标签</p>
 	 */
-	public static class Tag {
+	public static final class Tag {
 		
 		/**
 		 * <p>标签名称</p>

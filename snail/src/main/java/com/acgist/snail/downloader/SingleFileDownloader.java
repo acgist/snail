@@ -7,15 +7,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.system.context.StreamContext;
+import com.acgist.snail.system.context.StreamContext.StreamSession;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.utils.IoUtils;
 
 /**
  * <p>单文件任务下载器</p>
@@ -28,7 +26,7 @@ import com.acgist.snail.utils.IoUtils;
  */
 public abstract class SingleFileDownloader extends Downloader {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(SingleFileDownloader.class);
+//	private static final Logger LOGGER = LoggerFactory.getLogger(SingleFileDownloader.class);
 	
 	/**
 	 * <p>输入流</p>
@@ -38,6 +36,10 @@ public abstract class SingleFileDownloader extends Downloader {
 	 * <p>输出流</p>
 	 */
 	protected OutputStream output;
+	/**
+	 * <p>数据流信息</p>
+	 */
+	private StreamSession streamSession;
 	
 	protected SingleFileDownloader(ITaskSession taskSession) {
 		super(taskSession);
@@ -52,6 +54,7 @@ public abstract class SingleFileDownloader extends Downloader {
 	public void open() throws NetException, DownloadException {
 		this.buildInput();
 		this.buildOutput();
+		this.streamSession = StreamContext.getInstance().newStreamSession(this.input);
 	}
 
 	@Override
@@ -66,6 +69,7 @@ public abstract class SingleFileDownloader extends Downloader {
 					break;
 				}
 				this.output.write(bytes, 0, length);
+				this.streamSession.heartbeat();
 				this.download(length);
 			}
 		} catch (IOException e) {
@@ -73,17 +77,9 @@ public abstract class SingleFileDownloader extends Downloader {
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * <p>如果没有数据下载，任务会被读取输入流阻塞，通过直接关闭输入流来避免任务不能正常结束。</p>
-	 */
 	@Override
 	public void unlockDownload() {
-		if(!this.statistics().downloading()) {
-			LOGGER.debug("单个文件下载解锁：没有速度关闭输入流");
-			IoUtils.close(this.input);
-		}
+		StreamContext.getInstance().removeStreamSession(this.streamSession);
 	}
 	
 	/**

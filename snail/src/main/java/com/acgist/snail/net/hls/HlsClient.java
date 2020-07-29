@@ -20,6 +20,8 @@ import com.acgist.snail.pojo.session.HlsSession;
 import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
 import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.system.context.StreamContext;
+import com.acgist.snail.system.context.StreamContext.StreamSession;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.FileUtils;
@@ -64,6 +66,10 @@ public final class HlsClient implements Runnable {
 	 */
 	private OutputStream output;
 	/**
+	 * <p>数据流信息</p>
+	 */
+	private StreamSession streamSession;
+	/**
 	 * <p>HLS任务信息</p>
 	 */
 	private final HlsSession hlsSession;
@@ -84,16 +90,21 @@ public final class HlsClient implements Runnable {
 			return;
 		}
 		LOGGER.debug("下载文件：{}", this.link);
-		long size = 0;
-		if(this.checkCompleted()) {
-			size = this.size;
+		// 已下载大小
+		long size = FileUtils.fileSize(this.path);
+		if(this.checkCompleted(size)) {
 			this.completed = true;
 			LOGGER.debug("HLS文件校验成功：{}", this.link);
 		} else {
 			try {
 				int length = 0;
-				this.buildInput();
+				this.buildInput(size);
 				this.buildOutput();
+				this.streamSession = StreamContext.getInstance().newStreamSession(this.input);
+				// 不支持断点续传：重置已下载大小
+				if(!this.range) {
+					size = 0L;
+				}
 				final byte[] bytes = new byte[SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH];
 				while(this.hlsSession.downloadable()) {
 					length = this.input.read(bytes, 0, bytes.length);
@@ -103,6 +114,7 @@ public final class HlsClient implements Runnable {
 					}
 					size += length;
 					this.output.write(bytes, 0, length);
+					this.streamSession.heartbeat();
 					this.hlsSession.download(length); // 设置下载速度
 				}
 			} catch (Exception e) {
@@ -126,9 +138,11 @@ public final class HlsClient implements Runnable {
 	 * <p>校验文件</p>
 	 * <p>文件是否存在、大小是否正确</p>
 	 * 
+	 * @param size 已下载大小
+	 * 
 	 * @return 校验是否成功
 	 */
-	private boolean checkCompleted() {
+	private boolean checkCompleted(final long size) {
 		// 如果文件已经完成直接返回完成
 		if(this.completed) {
 			return this.completed;
@@ -137,8 +151,6 @@ public final class HlsClient implements Runnable {
 		if(!file.exists()) {
 			return false;
 		}
-		// 已下载大小
-		final long size = FileUtils.fileSize(this.path);
 		try {
 			// 文件实际大小
 			final var header = HTTPClient.newInstance(this.link).head();
@@ -154,7 +166,7 @@ public final class HlsClient implements Runnable {
 	 * <p>验证是否下载完成</p>
 	 * 
 	 * @param length 当前下载大小
-	 * @param size 累计下载大小
+	 * @param size 已下载大小
 	 * 
 	 * @return 是否完成
 	 */
@@ -167,11 +179,11 @@ public final class HlsClient implements Runnable {
 	/**
 	 * <p>创建输入流</p>
 	 * 
+	 * @param size 已下载大小
+	 * 
 	 * @throws NetException 网络异常
 	 */
-	private void buildInput() throws NetException {
-		// 已下载大小
-		final long size = FileUtils.fileSize(this.path);
+	private void buildInput(final long size) throws NetException {
 		// HTTP客户端
 		final var client = HTTPClient.newInstance(this.link, SystemConfig.CONNECT_TIMEOUT, SystemConfig.DOWNLOAD_TIMEOUT);
 		// HTTP响应
@@ -223,6 +235,7 @@ public final class HlsClient implements Runnable {
 	 */
 	public void release() {
 		LOGGER.debug("HLS客户端释放：{}", this.link);
+		StreamContext.getInstance().removeStreamSession(this.streamSession);
 		IoUtils.close(this.input);
 		IoUtils.close(this.output);
 		this.input = null;

@@ -37,7 +37,7 @@ public final class StatisticsSession implements IStatisticsSession {
 	 */
 	private final AtomicLong uploadSize = new AtomicLong(0);
 	/**
-	 * <p>累计下载大小</p>
+	 * <p>已下载大小</p>
 	 */
 	private final AtomicLong downloadSize = new AtomicLong(0);
 	/**
@@ -105,11 +105,6 @@ public final class StatisticsSession implements IStatisticsSession {
 		}
 	}
 
-	@Override
-	public boolean downloading() {
-		return System.currentTimeMillis() - this.downloadBufferLimitTime < DateUtils.ONE_SECOND;
-	}
-	
 	@Override
 	public void upload(int buffer) {
 		if(this.parent != null) {
