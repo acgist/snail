@@ -43,11 +43,11 @@ public final class FtpDownloader extends SingleFileDownloader {
 		if(this.client != null) {
 			this.client.close(); // 关闭FTP客户端
 		}
-//		IoUtils.close(this.input); // FTP客户端关闭时已经关闭
+		IoUtils.close(this.input);
 		IoUtils.close(this.output);
 		super.release();
 	}
-
+	
 	@Override
 	protected void buildInput() throws NetException {
 		// FTP客户端

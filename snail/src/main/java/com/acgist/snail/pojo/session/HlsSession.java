@@ -3,7 +3,6 @@ package com.acgist.snail.pojo.session;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
@@ -38,10 +37,6 @@ public final class HlsSession {
 	 */
 	private final int fileSize;
 	/**
-	 * <p>已下载文件总数量</p>
-	 */
-	private final AtomicInteger downloadFileSize;
-	/**
 	 * <p>已下载大小</p>
 	 */
 	private final AtomicLong downloadSize;
@@ -59,7 +54,6 @@ public final class HlsSession {
 	private final List<HlsClient> clients;
 	
 	private HlsSession(ITaskSession taskSession) {
-		this.downloadFileSize = new AtomicInteger();
 		this.downloadSize = new AtomicLong();
 		this.taskSession = taskSession;
 		this.executor = SystemThreadContext.newExecutor(POOL_SIZE, POOL_SIZE, 1000, 60L, SystemThreadContext.SNAIL_THREAD_HLS);
@@ -127,9 +121,13 @@ public final class HlsSession {
 		// 设置已下载大小
 		final long downloadSize = this.downloadSize.addAndGet(size);
 		this.taskSession.downloadSize(downloadSize);
-		final int fileSize = this.downloadFileSize.incrementAndGet();
+		// 已下载文件数量
+		int downloadFileSize;
+		synchronized (this.clients) {
+			downloadFileSize = this.fileSize - this.clients.size();
+		}
 		// 预测文件总大小：存在误差
-		final long taskFileSize = downloadSize * this.fileSize / fileSize;
+		final long taskFileSize = downloadSize * this.fileSize / downloadFileSize;
 		this.taskSession.setSize(taskFileSize);
 	}
 	
@@ -157,7 +155,9 @@ public final class HlsSession {
 	 * @return 是否完成
 	 */
 	public boolean checkCompleted() {
-		return this.downloadFileSize.get() >= this.fileSize;
+		synchronized (this.clients) {
+			return this.clients.isEmpty();
+		}
 	}
 	
 	/**
@@ -191,7 +191,9 @@ public final class HlsSession {
 	public void shutdown() {
 		this.release();
 		LOGGER.debug("HLS任务关闭资源：{}", this.taskSession.getName());
-		this.clients.clear();
+		synchronized (this.clients) {
+			this.clients.clear();
+		}
 		SystemThreadContext.shutdown(this.executor);
 	}
 
