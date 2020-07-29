@@ -235,8 +235,6 @@ public final class HlsClient implements Runnable {
 		LOGGER.debug("HLS客户端释放：{}", this.link);
 		IoUtils.close(this.input);
 		IoUtils.close(this.output);
-		this.input = null;
-		this.output = null;
 	}
 	
 }
