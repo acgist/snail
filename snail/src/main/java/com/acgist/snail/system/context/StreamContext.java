@@ -32,13 +32,17 @@ public final class StreamContext {
 	
 	/**
 	 * <p>下载有效时间：{@value}</p>
-	 * <p>超过这个时间没有数据更新关闭输入流</p>
 	 */
-	private static final long EFFECT_TIME = 4 * DateUtils.ONE_SECOND;
+	private static final long LIVE_TIME = 10 * DateUtils.ONE_SECOND;
+	/**
+	 * <p>下载有效时间（快速）：{@value}</p>
+	 * <p>如果用户快速开始然后快速暂停，会导致出现任务等待中，只能等待定时任务来关闭任务。</p>
+	 */
+	private static final long LIVE_TIME_FAST = 2 * DateUtils.ONE_SECOND;
 	/**
 	 * <p>定时任务时间：{@value}</p>
 	 */
-	private static final long EFFECT_INTERVAL = 10 * DateUtils.ONE_SECOND;
+	private static final long LIVE_CHECK_INTERVAL = 30 * DateUtils.ONE_SECOND;
 	
 	/**
 	 * <p>数据流信息列表</p>
@@ -84,8 +88,8 @@ public final class StreamContext {
 	private void register() {
 		LOGGER.info("注册定时任务：数据流上下文管理");
 		SystemThreadContext.timer(
-			EFFECT_INTERVAL,
-			EFFECT_INTERVAL,
+			LIVE_CHECK_INTERVAL,
+			LIVE_CHECK_INTERVAL,
 			TimeUnit.MILLISECONDS,
 			new StreamCleanTimer(this.sessions)
 		);
@@ -123,9 +127,18 @@ public final class StreamContext {
 		 * @return true-存活；false-死亡；
 		 */
 		public boolean checkLive() {
-			return System.currentTimeMillis() - this.heartbeatTime <= EFFECT_TIME;
+			return System.currentTimeMillis() - this.heartbeatTime <= LIVE_TIME;
 		}
 
+		/**
+		 * <p>快速检测存活</p>
+		 */
+		public void fastCheckLive() {
+			if(System.currentTimeMillis() - this.heartbeatTime > LIVE_TIME_FAST) {
+				this.close();
+			}
+		}
+		
 		/**
 		 * <p>关闭输入流</p>
 		 */
@@ -139,7 +152,7 @@ public final class StreamContext {
 				StreamContext.getInstance().removeStreamSession(this);
 			}
 		}
-		
+
 	}
 	
 	/**
