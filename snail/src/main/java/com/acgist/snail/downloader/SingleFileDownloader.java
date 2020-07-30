@@ -35,6 +35,10 @@ public abstract class SingleFileDownloader extends Downloader {
 	 * <p>输出流</p>
 	 */
 	protected OutputStream output;
+	/**
+	 * <p>数据流信息</p>
+	 */
+	private StreamSession streamSession;
 	
 	protected SingleFileDownloader(ITaskSession taskSession) {
 		super(taskSession);
@@ -55,7 +59,7 @@ public abstract class SingleFileDownloader extends Downloader {
 	public void download() throws DownloadException {
 		int length = 0;
 		final byte[] bytes = new byte[SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH];
-		final StreamSession streamSession = StreamContext.getInstance().newStreamSession(this.input);
+		this.streamSession = StreamContext.getInstance().newStreamSession(this.input);
 		try {
 			while(this.downloadable()) {
 				// TODO：如果不能读取数据会阻塞任务暂停，可以将streamSession提到类变量，然后在unlockDownload方法中强制关闭。
@@ -65,16 +69,23 @@ public abstract class SingleFileDownloader extends Downloader {
 					break;
 				}
 				this.output.write(bytes, 0, length);
-				streamSession.heartbeat();
+				this.streamSession.heartbeat();
 				this.download(length);
 			}
 		} catch (Exception e) {
 			throw new DownloadException("数据流操作失败", e);
 		} finally {
-			StreamContext.getInstance().removeStreamSession(streamSession);
+			StreamContext.getInstance().removeStreamSession(this.streamSession);
 		}
 	}
 
+	@Override
+	public void unlockDownload() {
+		if(this.streamSession != null) {
+			this.streamSession.fastCheckLive();
+		}
+	}
+	
 	/**
 	 * <dl>
 	 * 	<dt>判断任务是否下载完成</dt>
