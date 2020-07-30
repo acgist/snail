@@ -34,7 +34,11 @@ public final class StreamContext {
 	 * <p>下载有效时间：{@value}</p>
 	 * <p>超过这个时间没有数据更新关闭输入流</p>
 	 */
-	private static final long EFFECT_TIME = 30 * DateUtils.ONE_SECOND;
+	private static final long EFFECT_TIME = 4 * DateUtils.ONE_SECOND;
+	/**
+	 * <p>定时任务时间：{@value}</p>
+	 */
+	private static final long EFFECT_INTERVAL = 10 * DateUtils.ONE_SECOND;
 	
 	/**
 	 * <p>数据流信息列表</p>
@@ -80,8 +84,8 @@ public final class StreamContext {
 	private void register() {
 		LOGGER.info("注册定时任务：数据流上下文管理");
 		SystemThreadContext.timer(
-			EFFECT_TIME,
-			EFFECT_TIME,
+			EFFECT_INTERVAL,
+			EFFECT_INTERVAL,
 			TimeUnit.MILLISECONDS,
 			new StreamCleanTimer(this.sessions)
 		);

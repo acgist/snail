@@ -9,7 +9,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
-import java.nio.file.Paths;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +72,7 @@ public final class HlsClient implements Runnable {
 	public HlsClient(String link, ITaskSession taskSession, HlsSession hlsSession) {
 		this.link = link;
 		final String fileName = FileUtils.fileNameFromUrl(link);
-		this.path = Paths.get(taskSession.getFile(), fileName).toString();
+		this.path = FileUtils.file(taskSession.getFile(), fileName);
 		this.range = false;
 		this.completed = false;
 		this.hlsSession = hlsSession;
@@ -171,7 +170,7 @@ public final class HlsClient implements Runnable {
 	private boolean isComplete(int length, long size) {
 		return
 			length <= -1 ||
-			(this.size > 0 && this.size <= size);
+			(this.size > 0L && this.size <= size);
 	}
 	
 	/**
@@ -218,10 +217,15 @@ public final class HlsClient implements Runnable {
 	 */
 	private void buildOutput() throws DownloadException {
 		try {
+			// 如果TS文件小于缓存大小直接使用文件大小
+			int bufferSize = DownloadConfig.getMemoryBufferByte();
+			if(this.size > 0L) {
+				bufferSize = (int) this.size;
+			}
 			if(this.range) { // 支持断点续传
-				this.output = new BufferedOutputStream(new FileOutputStream(this.path, true), DownloadConfig.getMemoryBufferByte());
+				this.output = new BufferedOutputStream(new FileOutputStream(this.path, true), bufferSize);
 			} else { // 不支持断点续传
-				this.output = new BufferedOutputStream(new FileOutputStream(this.path), DownloadConfig.getMemoryBufferByte());
+				this.output = new BufferedOutputStream(new FileOutputStream(this.path), bufferSize);
 			}
 		} catch (FileNotFoundException e) {
 			throw new DownloadException("下载文件打开失败", e);
