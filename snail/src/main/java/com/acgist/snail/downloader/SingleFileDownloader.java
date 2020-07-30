@@ -58,6 +58,7 @@ public abstract class SingleFileDownloader extends Downloader {
 		final StreamSession streamSession = StreamContext.getInstance().newStreamSession(this.input);
 		try {
 			while(this.downloadable()) {
+				// TODO：如果不能读取数据会阻塞任务暂停，可以将streamSession提到类变量，然后在unlockDownload方法中强制关闭。
 				length = this.input.read(bytes, 0, bytes.length);
 				if(this.isComplete(length)) {
 					this.complete = true;
