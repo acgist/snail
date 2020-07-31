@@ -14,7 +14,7 @@ import com.acgist.snail.utils.IoUtils;
 
 /**
  * <p>数据流上下文</p>
- * <p>HTTP下载时读取数据有可能阻塞线程，并且没有抛出异常，导致任务不能正常结束。</p>
+ * <p>HTTP下载时读取数据时会阻塞线程，如果长时间没有数据交流并且没有超时设置，会导致任务不能正常结束。</p>
  * <p>定时查询数据并关闭没有使用的数据流</p>
  * 
  * @author acgist
@@ -70,7 +70,7 @@ public final class StreamContext {
 	}
 	
 	/**
-	 * <p>移除管理</p>
+	 * <p>移除数据流信息管理</p>
 	 * 
 	 * @param streamSession 数据流信息
 	 */
@@ -105,7 +105,7 @@ public final class StreamContext {
 		 */
 		private final InputStream input;
 		/**
-		 * <p>最后一次接收数据时间</p>
+		 * <p>最后一次心跳时间</p>
 		 */
 		private volatile long heartbeatTime;
 	
@@ -132,6 +132,7 @@ public final class StreamContext {
 
 		/**
 		 * <p>快速检测存活</p>
+		 * <p>如果已经没有数据交互直接关闭数据流</p>
 		 */
 		public void fastCheckLive() {
 			if(System.currentTimeMillis() - this.heartbeatTime > LIVE_TIME_FAST) {
@@ -160,6 +161,9 @@ public final class StreamContext {
 	 */
 	public static final class StreamCleanTimer implements Runnable {
 
+		/**
+		 * @see StreamContext#sessions
+		 */
 		private final List<StreamSession> sessions;
 		
 		private StreamCleanTimer(List<StreamSession> sessions) {
@@ -177,7 +181,7 @@ public final class StreamContext {
 					.collect(Collectors.toList());
 			}
 			// 关闭无效任务
-			dieSessions.forEach(session -> session.close());
+			dieSessions.forEach(StreamSession::close);
 		}
 		
 	}
