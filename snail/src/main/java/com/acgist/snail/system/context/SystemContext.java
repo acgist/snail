@@ -42,6 +42,12 @@ public final class SystemContext {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SystemContext.class);
 
+	private static final SystemContext INSTANCE = new SystemContext();
+	
+	public static final SystemContext getInstance() {
+		return INSTANCE;
+	}
+	
 	/**
 	 * <p>系统类型</p>
 	 */
@@ -82,13 +88,17 @@ public final class SystemContext {
 	}
 	
 	/**
-	 * <p>系统状态</p>
-	 */
-	private static boolean shutdown = false;
-	/**
 	 * <p>系统名称</p>
 	 */
-	private static String osName;
+	private final String osName;
+	/**
+	 * <p>系统状态</p>
+	 */
+	private volatile boolean available = true;
+	
+	private SystemContext() {
+		this.osName = System.getProperty("os.name");
+	}
 	
 	/**
 	 * <p>开启系统监听</p>
@@ -154,7 +164,7 @@ public final class SystemContext {
 	 */
 	public static final void shutdown() {
 		if(SystemContext.available()) {
-			SystemContext.shutdown = true;
+			INSTANCE.available = false;
 			SystemThreadContext.submit(() -> {
 				LOGGER.info("系统关闭中...");
 				GuiManager.getInstance().hide();
@@ -181,6 +191,15 @@ public final class SystemContext {
 			GuiManager.getInstance().alert("关闭提示", "系统正在关闭中...");
 		}
 	}
+	
+	/**
+	 * <p>获取系统名称</p>
+	 * 
+	 * @return 系统名称
+	 */
+	public static final String osName() {
+		return INSTANCE.osName;
+	}
 
 	/**
 	 * <p>判断系统是否可用</p>
@@ -188,19 +207,7 @@ public final class SystemContext {
 	 * @return 是否可用
 	 */
 	public static final boolean available() {
-		return !SystemContext.shutdown;
-	}
-
-	/**
-	 * <p>获取系统名称</p>
-	 * 
-	 * @return 系统名称
-	 */
-	public static final String osName() {
-		if(SystemContext.osName == null) {
-			SystemContext.osName = System.getProperty("os.name");
-		}
-		return SystemContext.osName;
+		return INSTANCE.available;
 	}
 	
 }

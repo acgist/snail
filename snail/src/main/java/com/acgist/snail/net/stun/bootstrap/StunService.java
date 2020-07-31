@@ -41,7 +41,7 @@ public final class StunService {
 		if(UpnpService.getInstance().useable()) {
 			LOGGER.info("UPNP映射成功：不使用STUN映射");
 		} else {
-			final var address = buildServerAddress();
+			final var address = this.buildServerAddress();
 			if(address == null) {
 				LOGGER.warn("STUN服务器配置错误");
 				return;

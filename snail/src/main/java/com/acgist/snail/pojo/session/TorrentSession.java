@@ -543,13 +543,13 @@ public final class TorrentSession {
 	 */
 	public void releaseDownload() {
 		LOGGER.debug("Torrent释放资源（下载）");
-		SystemThreadContext.shutdown(this.pexTimer);
-		SystemThreadContext.shutdown(this.peerDownloaderGroupTimer);
+		SystemThreadContext.shutdownNow(this.pexTimer);
+		SystemThreadContext.shutdownNow(this.peerDownloaderGroupTimer);
 		if(this.peerDownloaderGroup != null) {
 			this.peerDownloaderGroup.release();
 		}
-		SystemThreadContext.shutdown(this.dhtLauncherTimer);
-		SystemThreadContext.shutdown(this.trackerLauncherGroupTimer);
+		SystemThreadContext.shutdownNow(this.dhtLauncherTimer);
+		SystemThreadContext.shutdownNow(this.trackerLauncherGroupTimer);
 		if(this.trackerLauncherGroup != null) {
 			this.trackerLauncherGroup.release();
 		}
@@ -565,7 +565,7 @@ public final class TorrentSession {
 	 */
 	public void releaseUpload() {
 		LOGGER.debug("Torrent释放资源（上传）");
-		SystemThreadContext.shutdown(this.peerUploaderGroupTimer);
+		SystemThreadContext.shutdownNow(this.peerUploaderGroupTimer);
 		if(this.peerUploaderGroup != null) {
 			this.peerUploaderGroup.release();
 		}

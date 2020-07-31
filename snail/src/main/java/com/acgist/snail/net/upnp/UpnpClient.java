@@ -44,7 +44,7 @@ public final class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	public void mSearch() {
 		LOGGER.debug("发送M-SEARCH消息");
 		try {
-			send(buildMSearch());
+			this.send(this.buildMSearch());
 		} catch (NetException e) {
 			LOGGER.error("发送M-SEARCH消息异常", e);
 		}

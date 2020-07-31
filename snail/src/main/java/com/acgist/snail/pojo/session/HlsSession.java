@@ -194,7 +194,7 @@ public final class HlsSession {
 		synchronized (this.clients) {
 			this.clients.clear();
 		}
-		SystemThreadContext.shutdown(this.executor);
+		SystemThreadContext.shutdownNow(this.executor);
 	}
 
 }

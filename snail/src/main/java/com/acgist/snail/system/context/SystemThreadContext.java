@@ -149,8 +149,9 @@ public final class SystemThreadContext {
 	}
 	
 	/**
+	 * <p>创建缓存线程池</p>
+	 * 
 	 * <dl>
-	 * 	<dt>创建缓存线程池</dt>
 	 * 	<dd>不限制线程池大小</dd>
 	 * 	<dd>初始线程数量：0</dd>
 	 * 	<dd>线程存活时间：60S</dd>
@@ -220,28 +221,38 @@ public final class SystemThreadContext {
 	 * @param executor 线程池
 	 */
 	public static final void shutdown(ExecutorService executor) {
-		if(executor == null || executor.isShutdown()) {
-			return;
-		}
-		try {
-			executor.shutdown();
-		} catch (Exception e) {
-			LOGGER.error("关闭线程池异常", e);
-		}
+		shutdown(false, executor);
 	}
 	
 	/**
-	 * <p>关闭线程池</p>
-	 * <p>注意：立即关闭可能导致部分任务没有执行</p>
+	 * <p>关闭线程池（立即关闭）</p>
 	 * 
 	 * @param executor 线程池
 	 */
 	public static final void shutdownNow(ExecutorService executor) {
+		shutdown(true, executor);
+	}
+	
+	/**
+	 * <p>关闭线程池</p>
+	 * <p>立即关闭：调用正在运行的任务线程的interrupt方法，队列任务不会被执行，不能继续添加任务。</p>
+	 * <p>不是立即关闭：不能继续添加任务，已添加和正在执行的任务都会执行。</p>
+	 * 
+	 * @param now 是否立即关闭
+	 * @param executor 线程池
+	 * 
+	 * @since 1.4.1
+	 */
+	private static final void shutdown(boolean now, ExecutorService executor) {
 		if(executor == null || executor.isShutdown()) {
 			return;
 		}
 		try {
-			executor.shutdownNow();
+			if(now) {
+				executor.shutdownNow();
+			} else {
+				executor.shutdown();
+			}
 		} catch (Exception e) {
 			LOGGER.error("关闭线程池异常", e);
 		}
@@ -252,16 +263,40 @@ public final class SystemThreadContext {
 	 * 
 	 * @param scheduledFuture 定时线程池
 	 * 
-	 * @since 1.1.0
+	 * @since 1.4.1
 	 */
 	public static final void shutdown(ScheduledFuture<?> scheduledFuture) {
+		shutdown(false, scheduledFuture);
+	}
+	
+	/**
+	 * <p>关闭定时线程池（立即关闭）</p>
+	 * 
+	 * @param scheduledFuture 定时线程池
+	 * 
+	 * @since 1.4.1
+	 */
+	public static final void shutdownNow(ScheduledFuture<?> scheduledFuture) {
+		shutdown(true, scheduledFuture);
+	}
+	
+	/**
+	 * <p>关闭定时线程池</p>
+	 * <p>立即关闭：正在运行的任务将被取消执行，反之不会取消执行。</p>
+	 * 
+	 * @param now 是否立即关闭
+	 * @param scheduledFuture 定时线程池
+	 * 
+	 * @since 1.4.1
+	 */
+	private static final void shutdown(boolean now, ScheduledFuture<?> scheduledFuture) {
 		if(scheduledFuture == null || scheduledFuture.isCancelled()) {
 			return;
 		}
 		try {
-			scheduledFuture.cancel(true);
+			scheduledFuture.cancel(now);
 		} catch (Exception e) {
-			LOGGER.error("定时任务取消异常", e);
+			LOGGER.error("定时任务关闭异常", e);
 		}
 	}
 
