@@ -1,6 +1,9 @@
 package com.acgist.snail;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,6 +76,37 @@ public class BaseTest {
 		final long cos = time - this.cos.getAndSet(time);
 		// TODO：多行文本
 		this.LOGGER.info("消耗时间：毫秒：{}，秒：{}", cos, cos / 1000);
+	}
+	
+	/**
+	 * <p>计算消耗（多次执行）</p>
+	 * 
+	 * @param count 任务数量
+	 * @param thread 线程数量
+	 * @param function 任务
+	 */
+	protected void cost(int count, int thread, Consumer<Void> function) {
+		this.cost();
+		final CountDownLatch latch = new CountDownLatch(count);
+		final var executor = Executors.newFixedThreadPool(thread);
+		for (int index = 0; index < count; index++) {
+			executor.submit(() -> {
+				try {
+					function.accept(null);
+				} catch (Exception e) {
+					this.LOGGER.error("执行异常", e);
+				} finally {
+					latch.countDown();
+				}
+			});
+		}
+		try {
+			latch.await();
+		} catch (InterruptedException e) {
+			this.LOGGER.debug("线程等待异常", e);
+			Thread.currentThread().interrupt();
+		}
+		this.costed();
 	}
 	
 }
