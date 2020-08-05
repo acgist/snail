@@ -19,7 +19,7 @@
 	<a target="_blank" href="https://www.bittorrent.org/beps/bep_0000.html">
 		<img alt="BitTorrent" src="https://img.shields.io/badge/BitTorrent-BEP-orange.svg?style=flat-square" />
 	</a>
-	<img alt="GitHub stars" src="https://img.shields.io/github/stars/acgist/snail?color=dark&style=flat-square" />
+	<img alt="GitHub stars" src="https://img.shields.io/github/stars/acgist/snail?color=B71E24&style=flat-square" />
 	<img alt="Gitee stars" src="https://gitee.com/acgist/snail/badge/star.svg?theme=dark" />
 	<br />
 	<img alt="Travis (.org)" src="https://img.shields.io/travis/acgist/snail?style=flat-square" />
