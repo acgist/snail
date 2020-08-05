@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
@@ -202,9 +203,7 @@ public final class JSON {
 	 * @param builder JSON字符串Builder
 	 */
 	private void serializeMap(Map<?, ?> map, StringBuilder builder) {
-		if(map == null) {
-			throw new ArgumentException("JSON序列化错误（Map为空）");
-		}
+		Objects.requireNonNull(map, "JSON序列化错误（Map为空）");
 		builder.append(JSON_MAP_PREFIX);
 		if(!map.isEmpty()) {
 			map.entrySet().forEach(entry -> {
@@ -225,9 +224,7 @@ public final class JSON {
 	 * @param builder JSON字符串Builder
 	 */
 	private void serializeList(List<?> list, StringBuilder builder) {
-		if(list == null) {
-			throw new ArgumentException("JSON序列化错误（List为空）");
-		}
+		Objects.requireNonNull(list, "JSON序列化错误（List为空）");
 		builder.append(JSON_LIST_PREFIX);
 		if(!list.isEmpty()) {
 			list.forEach(value -> {

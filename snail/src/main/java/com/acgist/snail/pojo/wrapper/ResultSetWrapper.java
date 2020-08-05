@@ -3,8 +3,7 @@ package com.acgist.snail.pojo.wrapper;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.acgist.snail.system.exception.ArgumentException;
+import java.util.Objects;
 
 /**
  * <p>结果集包装器</p>
@@ -82,9 +81,7 @@ public final class ResultSetWrapper {
 	 * @return 对象
 	 */
 	public Object getObject(String key) {
-		if(key == null) {
-			throw new ArgumentException("字段名称为空");
-		}
+		Objects.requireNonNull(key, "字段名称为空");
 		return this.data.get(key.toUpperCase());
 	}
 
