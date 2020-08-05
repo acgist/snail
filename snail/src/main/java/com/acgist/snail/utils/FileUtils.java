@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -21,7 +22,6 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.ITaskSession.FileType;
 import com.acgist.snail.system.config.SystemConfig;
-import com.acgist.snail.system.exception.ArgumentException;
 import com.acgist.snail.system.recycle.RecycleManager;
 
 /**
@@ -299,9 +299,8 @@ public final class FileUtils {
 	 * @return 文件路径
 	 */
 	public static final String file(String folder, String fileName) {
-		if(folder == null || fileName == null) {
-			throw new ArgumentException("文件路径和文件名称格式错误");
-		}
+		Objects.requireNonNull(folder, "文件目录格式错误");
+		Objects.requireNonNull(fileName, "文件名称格式错误");
 		return Paths.get(folder, fileName).toString();
 	}
 

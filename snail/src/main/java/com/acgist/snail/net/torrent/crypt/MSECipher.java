@@ -232,7 +232,7 @@ public final class MSECipher {
 		try {
 			final Cipher cipher = Cipher.getInstance(transformation);
 			cipher.init(mode, key);
-			cipher.update(new byte[1024]); // 丢弃1024字符
+			cipher.update(new byte[1024]); // 丢弃1024字节
 			return cipher;
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException e) {
 			throw new ArgumentException("创建Cipher失败：" + transformation, e);

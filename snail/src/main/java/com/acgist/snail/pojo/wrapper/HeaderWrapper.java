@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
-import com.acgist.snail.system.exception.ArgumentException;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -262,9 +262,7 @@ public class HeaderWrapper {
 	 * @return {@code this}
 	 */
 	public HeaderWrapper header(String key, String value) {
-		if(this.headers == null) {
-			throw new ArgumentException("头部信息未初始化");
-		}
+		Objects.requireNonNull(this.headers, "头部信息未初始化");
 		var list = this.headers.get(key);
 		if(list == null) {
 			list = new ArrayList<>();

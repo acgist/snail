@@ -1,5 +1,6 @@
 package com.acgist.snail.utils;
 
+import java.util.Objects;
 import java.util.Random;
 
 import com.acgist.snail.system.config.SystemConfig;
@@ -65,9 +66,9 @@ public final class ArrayUtils {
 	 * @since 1.1.0
 	 */
 	public static final int compareUnsigned(byte[] sources, byte[] targets) {
-		if(sources == null || targets == null) {
-			throw new ArgumentException("数组比较参数错误");
-		} else if(sources.length != targets.length) {
+		Objects.requireNonNull(sources, "数组比较参数错误");
+		Objects.requireNonNull(targets, "数组比较参数错误");
+		if(sources.length != targets.length) {
 			return sources.length > targets.length ? 1 : -1;
 		} else {
 			final int length = sources.length;
@@ -89,9 +90,9 @@ public final class ArrayUtils {
 	 * @return 结果
 	 */
 	public static final byte[] xor(byte[] sources, byte[] targets) {
-		if (sources == null || targets == null) {
-			throw new ArgumentException("异或运算参数错误");
-		} else if (sources.length != targets.length) {
+		Objects.requireNonNull(sources, "异或运算参数错误");
+		Objects.requireNonNull(targets, "异或运算参数错误");
+		if (sources.length != targets.length) {
 			throw new ArgumentException("异或运算参数错误（长度）");
 		} else {
 			final int length = sources.length;
@@ -114,9 +115,9 @@ public final class ArrayUtils {
 	 * @return 差异索引
 	 */
 	public static final int diffIndex(byte[] sources, byte[] targets) {
-		if (sources == null || targets == null) {
-			throw new ArgumentException("差异索引参数错误");
-		} else if (sources.length != targets.length) {
+		Objects.requireNonNull(sources, "差异索引参数错误");
+		Objects.requireNonNull(targets, "差异索引参数错误");
+		if (sources.length != targets.length) {
 			throw new ArgumentException("差异索引参数错误（长度）");
 		} else {
 			final int length = sources.length;

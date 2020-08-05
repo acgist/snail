@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -106,9 +107,7 @@ public final class BEncodeDecoder {
 	private final ByteArrayInputStream inputStream;
 	
 	private BEncodeDecoder(byte[] bytes) {
-		if(bytes == null) {
-			throw new ArgumentException("B编码内容错误（数据为空）");
-		}
+		Objects.requireNonNull(bytes, "B编码内容错误（数据为空）");
 		if(bytes.length < 2) {
 			throw new ArgumentException("B编码内容错误（长度）");
 		}
@@ -123,9 +122,7 @@ public final class BEncodeDecoder {
 	 * @return B编码解码器
 	 */
 	public static final BEncodeDecoder newInstance(String content) {
-		if(content == null) {
-			throw new ArgumentException("B编码内容错误（数据为空）");
-		}
+		Objects.requireNonNull(content, "B编码内容错误（数据为空）");
 		return new BEncodeDecoder(content.getBytes());
 	}
 	
@@ -137,9 +134,7 @@ public final class BEncodeDecoder {
 	 * @return B编码解码器
 	 */
 	public static final BEncodeDecoder newInstance(ByteBuffer buffer) {
-		if(buffer == null) {
-			throw new ArgumentException("B编码内容错误（数据为空）");
-		}
+		Objects.requireNonNull(buffer, "B编码内容错误（数据为空）");
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
 		return new BEncodeDecoder(bytes);
