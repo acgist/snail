@@ -15,14 +15,24 @@ public class DownloadException extends Exception {
 		super("下载异常");
 	}
 
+	/**
+	 * @param message 错误信息
+	 */
 	public DownloadException(String message) {
 		super(message);
 	}
 
+	/**
+	 * @param cause 原始异常
+	 */
 	public DownloadException(Throwable cause) {
 		super(cause.getMessage(), cause);
 	}
 	
+	/**
+	 * @param message 错误信息
+	 * @param cause 原始异常
+	 */
 	public DownloadException(String message, Throwable cause) {
 		super(message, cause);
 	}

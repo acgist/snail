@@ -10,13 +10,10 @@ package com.acgist.snail.system.exception;
 public class RepositoryException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
-
-	public RepositoryException() {
-		super("数据库异常");
-	}
 	
 	/**
-	 * <p>判断参数是否为空，如果不为空抛出异常。</p>
+	 * <p>判断参数是否为空</p>
+	 * <p>如果不为空抛出{@linkplain RepositoryException 异常}</p>
 	 * 
 	 * @param object 参数
 	 */
@@ -27,7 +24,8 @@ public class RepositoryException extends RuntimeException {
 	}
 	
 	/**
-	 * <p>判断参数是否不为空，如果为空抛出异常。</p>
+	 * <p>判断参数是否不为空</p>
+	 * <p>如果为空抛出{@linkplain RepositoryException 异常}</p>
 	 * 
 	 * @param object 参数
 	 */
@@ -36,15 +34,29 @@ public class RepositoryException extends RuntimeException {
 			throw new RepositoryException("参数错误：" + object);
 		}
 	}
+	
+	public RepositoryException() {
+		super("数据库异常");
+	}
 
+	/**
+	 * @param message 错误信息
+	 */
 	public RepositoryException(String message) {
 		super(message);
 	}
 
+	/**
+	 * @param cause 原始异常
+	 */
 	public RepositoryException(Throwable cause) {
 		super(cause.getMessage(), cause);
 	}
 	
+	/**
+	 * @param message 错误信息
+	 * @param cause 原始异常
+	 */
 	public RepositoryException(String message, Throwable cause) {
 		super(message, cause);
 	}

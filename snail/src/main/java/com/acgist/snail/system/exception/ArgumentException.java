@@ -15,14 +15,24 @@ public class ArgumentException extends RuntimeException {
 		super("参数异常");
 	}
 
+	/**
+	 * @param message 错误信息
+	 */
 	public ArgumentException(String message) {
 		super(message);
 	}
 
+	/**
+	 * @param cause 原始异常
+	 */
 	public ArgumentException(Throwable cause) {
 		super(cause.getMessage(), cause);
 	}
 
+	/**
+	 * @param message 错误信息
+	 * @param cause 原始异常
+	 */
 	public ArgumentException(String message, Throwable cause) {
 		super(message, cause);
 	}

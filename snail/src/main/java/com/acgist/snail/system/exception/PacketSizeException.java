@@ -56,14 +56,24 @@ public class PacketSizeException extends NetException {
 		super("网络包数据长度错误：" + size);
 	}
 
+	/**
+	 * @param message 错误信息
+	 */
 	public PacketSizeException(String message) {
 		super(message);
 	}
 
+	/**
+	 * @param cause 原始异常
+	 */
 	public PacketSizeException(Throwable cause) {
 		super(cause.getMessage(), cause);
 	}
 	
+	/**
+	 * @param message 错误信息
+	 * @param cause 原始异常
+	 */
 	public PacketSizeException(String message, Throwable cause) {
 		super(message, cause);
 	}

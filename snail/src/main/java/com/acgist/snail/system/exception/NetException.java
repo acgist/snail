@@ -15,14 +15,24 @@ public class NetException extends Exception {
 		super("网络异常");
 	}
 
+	/**
+	 * @param message 错误信息
+	 */
 	public NetException(String message) {
 		super(message);
 	}
 
+	/**
+	 * @param cause 原始异常
+	 */
 	public NetException(Throwable cause) {
 		super(cause.getMessage(), cause);
 	}
 	
+	/**
+	 * @param message 错误信息
+	 * @param cause 原始异常
+	 */
 	public NetException(String message, Throwable cause) {
 		super(message, cause);
 	}
