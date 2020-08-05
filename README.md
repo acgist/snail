@@ -5,24 +5,18 @@
 </p>
 
 <p align="center">
-	<!--
-	<a target="_blank" href="https://www.acgist.com">
-		<img alt="Author" src="https://img.shields.io/badge/Author-acgist-red.svg?style=flat-square" />
-	</a>
-	-->
-	<a target="_blank" href="https://openjdk.java.net/">
+	<a target="_blank" href="https://openjdk.java.net">
 		<img alt="Java" src="https://img.shields.io/badge/Java-11-yellow.svg?style=flat-square" />
 	</a>
-	<a target="_blank" href="https://openjfx.io/">
+	<a target="_blank" href="https://openjfx.io">
 		<img alt="JavaFX" src="https://img.shields.io/badge/JavaFX-11-blueviolet.svg?style=flat-square" />
 	</a>
-	<!--
-	<a target="_blank" href="https://www.bittorrent.org/beps/bep_0000.html">
-		<img alt="BitTorrent" src="https://img.shields.io/badge/BitTorrent-BEP-orange.svg?style=flat-square" />
+	<a target="_blank" href="https://github.com/acgist/snail">
+		<img alt="GitHub stars" src="https://img.shields.io/github/stars/acgist/snail?color=red&style=flat-square" />
 	</a>
-	-->
-	<img alt="GitHub stars" src="https://img.shields.io/github/stars/acgist/snail?color=B71E24&style=flat-square" />
-	<img alt="Gitee stars" src="https://gitee.com/acgist/snail/badge/star.svg?theme=dark" />
+	<a target="_blank" href="https://gitee.com/acgist/snail">
+		<img alt="Gitee stars" src="https://gitee.com/acgist/snail/badge/star.svg?theme=dark" />
+	</a>
 	<br />
 	<img alt="Travis (.org)" src="https://img.shields.io/travis/acgist/snail?style=flat-square" />
 	<img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/acgist/snail?style=flat-square" />
