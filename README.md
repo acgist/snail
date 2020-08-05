@@ -16,9 +16,11 @@
 	<a target="_blank" href="https://openjfx.io/">
 		<img alt="JavaFX" src="https://img.shields.io/badge/JavaFX-11-blueviolet.svg?style=flat-square" />
 	</a>
+	<!--
 	<a target="_blank" href="https://www.bittorrent.org/beps/bep_0000.html">
 		<img alt="BitTorrent" src="https://img.shields.io/badge/BitTorrent-BEP-orange.svg?style=flat-square" />
 	</a>
+	-->
 	<img alt="GitHub stars" src="https://img.shields.io/github/stars/acgist/snail?color=B71E24&style=flat-square" />
 	<img alt="Gitee stars" src="https://gitee.com/acgist/snail/badge/star.svg?theme=dark" />
 	<br />
