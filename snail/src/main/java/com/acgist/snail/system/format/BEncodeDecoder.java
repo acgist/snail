@@ -109,7 +109,7 @@ public final class BEncodeDecoder {
 	private BEncodeDecoder(byte[] bytes) {
 		Objects.requireNonNull(bytes, "B编码内容错误（数据为空）");
 		if(bytes.length < 2) {
-			throw new ArgumentException("B编码内容错误（长度）");
+			throw new ArgumentException("B编码内容错误（数据长度）");
 		}
 		this.inputStream = new ByteArrayInputStream(bytes);
 	}

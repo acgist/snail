@@ -235,7 +235,7 @@ public final class MSECipher {
 			cipher.update(new byte[1024]); // 丢弃1024字节
 			return cipher;
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException e) {
-			throw new ArgumentException("创建Cipher失败：" + transformation, e);
+			throw new ArgumentException("创建Cipher失败（不支持的算法）：" + transformation, e);
 		}
 	}
 

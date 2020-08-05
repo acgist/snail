@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.system.exception.TimerArgumentException;
+import com.acgist.snail.system.exception.TimerException;
 
 /**
  * <p>系统线程上下文</p>
@@ -88,7 +88,7 @@ public final class SystemThreadContext {
 	 * @return 定时任务
 	 */
 	public static final ScheduledFuture<?> timer(long delay, TimeUnit unit, Runnable runnable) {
-		TimerArgumentException.verify(delay);
+		TimerException.verify(delay);
 		return EXECUTOR_TIMER.schedule(runnable, delay, unit);
 	}
 	
@@ -104,8 +104,8 @@ public final class SystemThreadContext {
 	 * @return 定时任务
 	 */
 	public static final ScheduledFuture<?> timer(long delay, long period, TimeUnit unit, Runnable runnable) {
-		TimerArgumentException.verify(delay);
-		TimerArgumentException.verify(period);
+		TimerException.verify(delay);
+		TimerException.verify(period);
 		return EXECUTOR_TIMER.scheduleAtFixedRate(runnable, delay, period, unit);
 	}
 	
@@ -121,8 +121,8 @@ public final class SystemThreadContext {
 	 * @return 定时任务
 	 */
 	public static final ScheduledFuture<?> timerFixedDelay(long delay, long period, TimeUnit unit, Runnable runnable) {
-		TimerArgumentException.verify(delay);
-		TimerArgumentException.verify(period);
+		TimerException.verify(delay);
+		TimerException.verify(period);
 		return EXECUTOR_TIMER.scheduleWithFixedDelay(runnable, delay, period, unit);
 	}
 	

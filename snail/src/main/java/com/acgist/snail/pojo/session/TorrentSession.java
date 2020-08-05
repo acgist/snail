@@ -34,7 +34,7 @@ import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.system.exception.TimerArgumentException;
+import com.acgist.snail.system.exception.TimerException;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.FileUtils;
 
@@ -444,7 +444,7 @@ public final class TorrentSession {
 	 * @return 定时任务
 	 */
 	public ScheduledFuture<?> timer(long delay, TimeUnit unit, Runnable runnable) {
-		TimerArgumentException.verify(delay);
+		TimerException.verify(delay);
 		return this.executorTimer.schedule(runnable, delay, unit);
 	}
 	
@@ -459,8 +459,8 @@ public final class TorrentSession {
 	 * @return 定时任务
 	 */
 	public ScheduledFuture<?> timer(long delay, long period, TimeUnit unit, Runnable runnable) {
-		TimerArgumentException.verify(delay);
-		TimerArgumentException.verify(period);
+		TimerException.verify(delay);
+		TimerException.verify(period);
 		return this.executorTimer.scheduleAtFixedRate(runnable, delay, period, unit);
 	}
 	
@@ -475,8 +475,8 @@ public final class TorrentSession {
 	 * @return 定时任务
 	 */
 	public ScheduledFuture<?> timerFixedDelay(long delay, long period, TimeUnit unit, Runnable runnable) {
-		TimerArgumentException.verify(delay);
-		TimerArgumentException.verify(period);
+		TimerException.verify(delay);
+		TimerException.verify(period);
 		return this.executorTimer.scheduleWithFixedDelay(runnable, delay, period, unit);
 	}
 	

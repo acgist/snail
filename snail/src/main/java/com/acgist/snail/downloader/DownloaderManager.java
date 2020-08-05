@@ -103,7 +103,7 @@ public final class DownloaderManager {
 					downloader = taskSession.buildDownloader();
 				}
 				if(downloader == null) {
-					throw new DownloadException("创建下载器失败，下载协议：" + taskSession.getType());
+					throw new DownloadException("创建下载器失败（下载协议：" + taskSession.getType() + "）");
 				}
 				this.downloaderMap.put(downloader.id(), downloader);
 				return downloader;

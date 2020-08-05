@@ -114,6 +114,7 @@ public interface IMessageHandler {
 			try {
 				return message.getBytes(charset);
 			} catch (UnsupportedEncodingException e) {
+				// TODO：多行文本
 				throw new NetException(String.format("字符编码失败，编码：%s，内容：%s", charset, message), e);
 			}
 		}
