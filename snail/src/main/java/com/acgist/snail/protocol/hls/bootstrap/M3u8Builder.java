@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.acgist.snail.pojo.bean.M3u8;
 import com.acgist.snail.pojo.bean.M3u8.Type;
@@ -22,7 +21,8 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * <p>M3U8解析器</p>
  * 
- * TODO：获取文件编码
+ * TODO：文件编码
+ * TODO：加密解密
  * 
  * @author acgist
  * @since 1.4.1
@@ -59,6 +59,7 @@ public final class M3u8Builder {
 	private final String source;
 	/**
 	 * <p>M3U8描述信息</p>
+	 * <p>每行一条</p>
 	 */
 	private final List<String> lines;
 	/**
@@ -101,18 +102,12 @@ public final class M3u8Builder {
 	 * @return M3U8解析器
 	 */
 	public static final M3u8Builder newInstance(String content, String source) {
-		final List<String> lines = Stream.of(content.split("\n"))
-			 .map(value -> value.trim())
-			 .collect(Collectors.toList());
+		final List<String> lines = StringUtils.readLines(content);
 		return new M3u8Builder(source, lines);
 	}
 	
 	/**
 	 * <p>解析M3U8</p>
-	 * <p>URL：</p>
-	 * <p>空行：</p>
-	 * <p>注释、标签：#开头</p>
-	 * <p>属性：跟在标签后面</p>
 	 * 
 	 * @return M3U8
 	 * 
@@ -120,7 +115,7 @@ public final class M3u8Builder {
 	 */
 	public M3u8 build() throws DownloadException {
 		if(CollectionUtils.isEmpty(this.lines)) {
-			throw new DownloadException("M3U8文件解析失败");
+			throw new DownloadException("M3U8文件解析失败（没有描述信息）");
 		}
 		this.buildTags();
 		this.check();
@@ -129,6 +124,10 @@ public final class M3u8Builder {
 	
 	/**
 	 * <p>解析标签</p>
+	 * <p>空行：忽略</p>
+	 * <p>URL：文件地址、M3U8地址</p>
+	 * <p>注释、标签：#开头</p>
+	 * <p>属性：跟在标签后面</p>
 	 * 
 	 * @throws DownloadException 下载异常
 	 */
@@ -139,11 +138,12 @@ public final class M3u8Builder {
 		// 解析标签
 		for (int index = 0; index < this.lines.size(); index++) {
 			line = this.lines.get(index).trim();
+			// 空行跳过
 			if(StringUtils.isEmpty(line)) {
 				continue;
 			}
-			// 标签
 			if(line.indexOf('#') == 0) {
+				// 标签
 				tag = new Tag();
 				this.tags.add(tag);
 				jndex = line.indexOf(':');
@@ -154,8 +154,9 @@ public final class M3u8Builder {
 					tag.setValue(line.substring(jndex + 1).trim());
 				}
 			} else {
+				// URL
 				if(tag == null) {
-					throw new DownloadException("M3U8文件解析失败");
+					throw new DownloadException("M3U8文件解析失败（URL格式错误）");
 				}
 				tag.setUrl(line);
 			}
@@ -169,11 +170,12 @@ public final class M3u8Builder {
 	 */
 	private void check() throws DownloadException {
 		if(this.tags.isEmpty()) {
-			throw new DownloadException("M3U8格式错误");
+			throw new DownloadException("M3U8格式错误（没有标签）");
 		}
+		// 验证类型
 		final String type = this.tags.get(0).getName();
 		if(!TAG_EXTM3U.equalsIgnoreCase(type)) {
-			throw new DownloadException("M3U8格式错误");
+			throw new DownloadException("M3U8格式错误（头部错误）");
 		}
 	}
 	
@@ -187,7 +189,7 @@ public final class M3u8Builder {
 		final boolean stream = this.tags.stream().noneMatch(tag -> TAG_EXT_X_ENDLIST.equalsIgnoreCase(tag.getName()));
 		// 判断多级M3U8列表
 		final boolean multiM3u8 = this.tags.stream().anyMatch(tag -> TAG_EXT_X_STREAM_INF.equalsIgnoreCase(tag.getName()));
-		M3u8.Type type = multiM3u8 ? Type.M3U8 : stream ? Type.STREAM : Type.FILE;
+		final M3u8.Type type = multiM3u8 ? Type.M3U8 : stream ? Type.STREAM : Type.FILE;
 		// 读取文件列表
 		final List<String> links;
 		if(multiM3u8) {
@@ -208,6 +210,7 @@ public final class M3u8Builder {
 		return this.tags.stream()
 			.filter(tag -> TAG_EXT_X_STREAM_INF.equalsIgnoreCase(tag.getName()))
 			.sorted((source, target) -> {
+				// 码率排序
 				final String sourceBandwidth = source.attrs().get(ATTR_BANDWIDTH);
 				final String targetBandwidth = target.attrs().get(ATTR_BANDWIDTH);
 				if(sourceBandwidth == null || targetBandwidth == null) {

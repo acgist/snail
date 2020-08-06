@@ -181,7 +181,7 @@ public final class TaskMenu extends Menu {
 			MainWindow.getInstance().controller().selected().forEach(session -> {
 				if(session.getType() == Type.TORRENT) {
 					final String torrent = session.getTorrent();
-					final String fileName = FileUtils.fileNameFromUrl(torrent);
+					final String fileName = FileUtils.fileName(torrent);
 					final String newFile = FileUtils.file(file.getPath(), fileName);
 					FileUtils.copy(torrent, newFile);
 				}
@@ -208,7 +208,7 @@ public final class TaskMenu extends Menu {
 				Platform.runLater(() -> {
 					final StringBuilder builder = new StringBuilder();
 					verifyFileHash.forEach((key, value) -> {
-						builder.append(value).append("=").append(FileUtils.fileNameFromUrl(key)).append("\n");
+						builder.append(value).append("=").append(FileUtils.fileName(key)).append("\n");
 					});
 					final Optional<ButtonType> optional = Alerts.info("文件SHA-1校验", builder.toString());
 					if(optional.isPresent() && ButtonType.OK == optional.get()) {

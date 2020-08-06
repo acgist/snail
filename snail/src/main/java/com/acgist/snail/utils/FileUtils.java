@@ -160,7 +160,7 @@ public final class FileUtils {
 	 * 
 	 * @return 文件名称
 	 */
-	public static final String fileNameFromUrl(final String url) {
+	public static final String fileName(final String url) {
 		if(StringUtils.isEmpty(url)) {
 			return url;
 		}
@@ -168,7 +168,7 @@ public final class FileUtils {
 		String fileName = UrlUtils.decode(url);
 		// 斜杠转换
 		if(fileName.contains("\\")) {
-			fileName = fileName.replace("\\", "/");
+			fileName = fileName.replace('\\', '/');
 		}
 		// 过滤：协议、域名、路径
 		int index = fileName.lastIndexOf("/");

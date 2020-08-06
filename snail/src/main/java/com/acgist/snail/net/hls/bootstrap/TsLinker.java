@@ -70,15 +70,8 @@ public final class TsLinker {
 	public long link() {
 		final var files = this.links.stream()
 			.map(link -> {
-				int index = link.lastIndexOf('/');
-				if(index >= 0) {
-					link = link.substring(index);
-				}
-				index = link.lastIndexOf('\\');
-				if(index >= 0) {
-					link = link.substring(index);
-				}
-				return Paths.get(this.path, link).toFile();
+				final String fileName = FileUtils.fileName(link);
+				return Paths.get(this.path, fileName).toFile();
 			})
 			.collect(Collectors.toList());
 		final File target = Paths.get(this.path, this.name + SUFFIX).toFile();
@@ -99,9 +92,9 @@ public final class TsLinker {
 	 * @param output 输出流
 	 */
 	private void link(File file, OutputStream output) {
+		int length = 0;
+		final byte[] bytes = new byte[SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH];
 		try(final var input = new FileInputStream(file)) {
-			int length = 0;
-			final byte[] bytes = new byte[SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH];
 			while((length = input.read(bytes)) >= 0) {
 				output.write(bytes, 0, length);
 			}

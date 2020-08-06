@@ -87,8 +87,7 @@ public final class HlsProtocol extends Protocol {
 		}
 		final var m3u8 = M3u8Builder.newInstance(response.body(), this.url).build();
 		if(m3u8.getType() == M3u8.Type.M3U8) {
-			final var links = m3u8.getLinks();
-			this.url = links.get(links.size() - 1); // 默认获取最大码率视频
+			this.url = m3u8.maxRateLink();
 			this.buildM3u8();
 		} else if(m3u8.getType() == M3u8.Type.STREAM) {
 			throw new DownloadException("不支持直播流媒体下载");

@@ -35,7 +35,7 @@ public final class HlsDownloader extends MultifileDownloader {
 	 * 
 	 * @param taskSession 任务信息
 	 * 
-	 * @return {@link HlsDownloader	}
+	 * @return {@link HlsDownloader}
 	 */
 	public static final HlsDownloader newInstance(ITaskSession taskSession) {
 		return new HlsDownloader(taskSession);
@@ -49,8 +49,8 @@ public final class HlsDownloader extends MultifileDownloader {
 	
 	@Override
 	public void release() {
-		this.link();
 		if(this.complete) {
+			this.tsLink();
 			this.hlsSession.shutdown();
 			HlsManager.getInstance().remove(this.taskSession);
 		} else {
@@ -80,22 +80,21 @@ public final class HlsDownloader extends MultifileDownloader {
 	
 	/**
 	 * <p>文件连接</p>
+	 * <p>任务完成时连接TS文件</p>
 	 */
-	private void link() {
-		if(this.complete) {
-			LOGGER.debug("HLS任务连接文件：{}", this.taskSession.getName());
-			// 连接文件
-			final TsLinker linker = TsLinker.newInstance(
-				this.taskSession.getName(),
-				this.taskSession.getFile(),
-				this.taskSession.multifileSelected()
-			);
-			final long size = linker.link();
-			// 重新设置文件大小
-			if(size >= 0L && size != this.taskSession.getSize()) {
-				this.taskSession.setSize(size);
-				this.taskSession.update();
-			}
+	private void tsLink() {
+		LOGGER.debug("HLS任务连接文件：{}", this.taskSession.getName());
+		// 连接文件
+		final TsLinker linker = TsLinker.newInstance(
+			this.taskSession.getName(),
+			this.taskSession.getFile(),
+			this.taskSession.multifileSelected()
+		);
+		final long size = linker.link();
+		// 重新设置文件大小
+		if(size >= 0L && size != this.taskSession.getSize()) {
+			this.taskSession.setSize(size);
+			this.taskSession.update();
 		}
 	}
 	

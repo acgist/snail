@@ -20,9 +20,9 @@ public class FileUtilsTest extends BaseTest {
 	
 	@Test
 	public void testFileNameUrl() {
-		this.log(FileUtils.fileNameFromUrl("%e8%ae%a2%e5%8d%95fds.mpe?xx"));
-		this.log(FileUtils.fileNameFromUrl("http://acgist/%e8%ae%a2%e5%8d%95fds.mpe?xx"));
-		this.log(FileUtils.fileNameFromUrl("https://www.acgist.com/demo/weixin/view?xx?xx"));
+		this.log(FileUtils.fileName("%e8%ae%a2%e5%8d%95fds.mpe?xx"));
+		this.log(FileUtils.fileName("http://acgist/%e8%ae%a2%e5%8d%95fds.mpe?xx"));
+		this.log(FileUtils.fileName("https://www.acgist.com/demo/weixin/view?xx?xx"));
 	}
 	
 	@Test
