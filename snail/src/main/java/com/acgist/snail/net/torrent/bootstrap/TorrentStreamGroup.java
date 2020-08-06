@@ -138,13 +138,13 @@ public final class TorrentStreamGroup {
 			final TorrentInfo torrentInfo = torrent.getInfo();
 			final long pieceLength = torrentInfo.getPieceLength();
 			// 新增加载文件数量：原来没有加载
-			final int fileCount = (int) files.stream()
+			final int loadFileCount = (int) files.stream()
 				.filter(file -> file.selected())
 				.filter(file -> {
 					final String path = FileUtils.file(folder, file.path()); // 文佳路径
 					return this.haveStream(path) == null; // 文件未被加载
 				}).count();
-			return this.load(fileCount, pieceLength, false, folder, files);
+			return this.load(loadFileCount, pieceLength, false, folder, files);
 		}
 		return 0;
 	}
@@ -154,7 +154,7 @@ public final class TorrentStreamGroup {
 	 * <p>需要下载文件：没有加载-加载；已经加载-重载；</p>
 	 * <p>不用下载文件：没有加载-忽略；已经加载-卸载；</p>
 	 * 
-	 * @param fileCount 新增加载文件数量
+	 * @param loadFileCount 新增加载文件数量
 	 * @param pieceLength Piece长度
 	 * @param complete 任务是否完成
 	 * @param folder 任务下载目录
@@ -162,14 +162,14 @@ public final class TorrentStreamGroup {
 	 * 
 	 * @return 新增下载文件数量：原来没有下载
 	 */
-	private int load(int fileCount, long pieceLength, boolean complete, String folder, List<TorrentFile> files) {
+	private int load(int loadFileCount, long pieceLength, boolean complete, String folder, List<TorrentFile> files) {
 		// 新增下载文件数量：原来没有下载
-		int downloadCount = 0;
+		int loadDownloadCount = 0;
 		final var startTime = System.currentTimeMillis(); // 开始时间
 		this.full = false; // 健康度重新检查
 		this.selectPieces.clear(); // 清除所有已选择Piece
 		// 异步文件加载计数器
-		final CountDownLatch sizeCount = new CountDownLatch(fileCount);
+		final CountDownLatch sizeCount = new CountDownLatch(loadFileCount);
 		final List<TorrentStream> sortList = new ArrayList<>(); // 排序
 		// 开始加载下载文件
 		if(CollectionUtils.isNotEmpty(files)) {
@@ -188,13 +188,13 @@ public final class TorrentStreamGroup {
 							);
 							this.streams.add(stream);
 							sortList.add(stream);
-							downloadCount++;
+							loadDownloadCount++;
 						} else {
+							LOGGER.debug("文件选中下载（重载）：{}", path);
 							// 文件没有选中下载
 							if(!oldStream.selected()) {
-								downloadCount++;
+								loadDownloadCount++;
 							}
-							LOGGER.debug("文件选中下载（重载）：{}", path);
 							oldStream.buildSelectPieces(this.selectPieces);
 							oldStream.install();
 							sortList.add(oldStream);
@@ -237,7 +237,7 @@ public final class TorrentStreamGroup {
 				Thread.currentThread().interrupt();
 			}
 		});
-		return downloadCount;
+		return loadDownloadCount;
 	}
 	
 	/**
