@@ -150,12 +150,12 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 			fileName = fileName.substring(index + HEADER_FILENAME.length());
 		}
 		// 删除：等号前面内容
-		index = fileName.indexOf("=");
+		index = fileName.indexOf('=');
 		if(index != -1) {
 			fileName = fileName.substring(index + 1);
 		}
 		// 删除：分号后面内容
-		index = fileName.indexOf(";");
+		index = fileName.indexOf(';');
 		if(index != -1) {
 			fileName = fileName.substring(0, index);
 		}
@@ -169,7 +169,7 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 			fileName = fileName.substring(1, fileName.length() - 1);
 		}
 		// 删除：参数
-		index = fileName.indexOf("?");
+		index = fileName.indexOf('?');
 		if(index != -1) {
 			fileName = fileName.substring(0, index);
 		}
@@ -268,7 +268,7 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 		long range = 0L;
 		final String contentRange = header(HEADER_CONTENT_RANGE);
 		if(contentRange != null) {
-			final int endIndex = contentRange.lastIndexOf("-");
+			final int endIndex = contentRange.lastIndexOf('-');
 			final String value = contentRange.substring(HEADER_BYTES.length(), endIndex).trim();
 			if(StringUtils.isNumeric(value)) {
 				range = Long.parseLong(value);

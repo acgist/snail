@@ -171,12 +171,12 @@ public final class FileUtils {
 			fileName = fileName.replace('\\', '/');
 		}
 		// 过滤：协议、域名、路径
-		int index = fileName.lastIndexOf("/");
+		int index = fileName.lastIndexOf('/');
 		if(index != -1) {
 			fileName = fileName.substring(index + 1);
 		}
 		// 过滤：参数
-		index = fileName.indexOf("?");
+		index = fileName.indexOf('?');
 		if(index != -1) {
 			fileName = fileName.substring(0, index);
 		}
@@ -237,7 +237,7 @@ public final class FileUtils {
 		if(StringUtils.isEmpty(fileName)) {
 			return null;
 		}
-		final int index = fileName.lastIndexOf(".");
+		final int index = fileName.lastIndexOf('.');
 		if(index != -1) {
 			return fileName.substring(index + 1);
 		}

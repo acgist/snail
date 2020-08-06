@@ -3,10 +3,12 @@ package com.acgist.snail.utils;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.system.config.SystemConfig;
 
 /**
@@ -57,6 +59,41 @@ public final class UrlUtils {
 			LOGGER.error("URL解码异常：{}", content, e);
 		}
 		return content;
+	}
+	
+	/**
+	 * <p>获取跳转链接完整路径</p>
+	 * 
+	 * @param source 原始页面链接
+	 * @param target 目标页面链接
+	 * 
+	 * @return 完整链接
+	 */
+	public static final String redirect(final String source, final String target) {
+		Objects.requireNonNull(source, "原始页面链接不能为空");
+		Objects.requireNonNull(target, "目标页面链接不能为空");
+		if(Protocol.Type.HTTP.verify(target)) {
+			// 完整连接
+			return target;
+		} else if(target.startsWith("/")) {
+			// 绝对目录链接
+			final String prefix = Protocol.Type.HTTP.prefix(source);
+			final int index = source.indexOf('/', prefix.length());
+			if(index > prefix.length()) {
+				return source.substring(0, index) + target;
+			} else {
+				return source + target;
+			}
+		} else {
+			// 相对目录链接
+			final String prefix = Protocol.Type.HTTP.prefix(source);
+			final int index = source.lastIndexOf('/');
+			if(index > prefix.length()) {
+				return source.substring(0, index) + "/" + target;
+			} else {
+				return source + "/" + target;
+			}
+		}
 	}
 	
 }
