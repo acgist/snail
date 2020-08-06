@@ -11,12 +11,12 @@ import java.util.stream.Collectors;
 
 import com.acgist.snail.pojo.bean.M3u8;
 import com.acgist.snail.pojo.bean.M3u8.Type;
-import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.ObjectUtils;
 import com.acgist.snail.utils.StringUtils;
+import com.acgist.snail.utils.UrlUtils;
 
 /**
  * <p>M3U8解析器</p>
@@ -219,7 +219,7 @@ public final class M3u8Builder {
 					return Integer.valueOf(sourceBandwidth).compareTo(Integer.valueOf(targetBandwidth));
 				}
 			})
-			.map(tag -> this.convertUrl(tag.getUrl()))
+			.map(tag -> UrlUtils.redirect(this.source, tag.getUrl()))
 			.collect(Collectors.toList());
 	}
 	
@@ -231,31 +231,8 @@ public final class M3u8Builder {
 	private List<String> buildFileLinks() {
 		return this.tags.stream()
 			.filter(tag -> TAG_EXTINF.equalsIgnoreCase(tag.getName()))
-			.map(tag -> this.convertUrl(tag.getUrl()))
+			.map(tag -> UrlUtils.redirect(this.source, tag.getUrl()))
 			.collect(Collectors.toList());
-	}
-
-	/**
-	 * <p>URL转换</p>
-	 * 
-	 * @param url 原始URL
-	 * 
-	 * @return 完整URL
-	 */
-	private String convertUrl(String url) {
-		if(Protocol.Type.HTTP.verify(url)) {
-			// 完整连接
-			return url;
-		} else if(url.startsWith("/")) {
-			// 绝对目录链接
-			final String prefix = Protocol.Type.HTTP.prefix(this.source);
-			final int index = this.source.indexOf('/', prefix.length());
-			return this.source.substring(0, index) + url;
-		} else {
-			// 相对目录链接
-			final int index = this.source.lastIndexOf('/');
-			return this.source.substring(0, index) + "/" + url;
-		}
 	}
 	
 	/**
