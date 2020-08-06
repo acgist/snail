@@ -518,20 +518,22 @@ public final class TorrentStreamGroup {
 	public long size() {
 		long size = 0L;
 		for (TorrentStream torrentStream : this.streams) {
-			size += torrentStream.size();
+			if(torrentStream.selected()) { // 下载选中文件
+				size += torrentStream.size();
+			}
 		}
 		return size;
 	}
 	
 	/**
 	 * <p>检测任务是否下载完成</p>
-	 * <p>完成：所有文件流下载完成</p>
+	 * <p>完成：所有选中文件流下载完成</p>
 	 * 
 	 * @return {@code true}-完成；{@code false}-没有完成；
 	 */
 	public boolean complete() {
 		for (TorrentStream torrentStream : this.streams) {
-			if(!torrentStream.complete()) {
+			if(torrentStream.selected() && !torrentStream.complete()) {
 				return false;
 			}
 		}
