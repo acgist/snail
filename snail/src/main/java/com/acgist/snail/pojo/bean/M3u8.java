@@ -31,8 +31,8 @@ public final class M3u8 {
 	 */
 	private final Type type;
 	/**
-	 * <p>文件列表</p>
-	 * <p>如果是多级M3U8列表，安装码率从小到大排序。</p>
+	 * <p>文件列表、M3U8列表</p>
+	 * <p>多级M3U8列表：按照码率从小到大排序</p>
 	 */
 	private final List<String> links;
 	
@@ -61,6 +61,16 @@ public final class M3u8 {
 	 */
 	public List<String> getLinks() {
 		return links;
+	}
+	
+	/**
+	 * <p>获取码率最大的链接</p>
+	 * 
+	 * @return 码率最大的链接
+	 */
+	public String maxRateLink() {
+		// 码率排序
+		return this.links.get(this.links.size() - 1);
 	}
 
 	@Override

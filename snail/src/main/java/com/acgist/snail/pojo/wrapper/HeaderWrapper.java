@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -30,11 +31,11 @@ public class HeaderWrapper {
 	/**
 	 * <p>头部信息换行符（读取）：{@value}</p>
 	 */
-	private static final String HEADER_LINE_READER = "\n";
+	private static final String HEADER_LINE_READER = SystemConfig.LINE_SEPARATOR;
 	/**
 	 * <p>头部信息换行符（写出）：{@value}</p>
 	 */
-	private static final String HEADER_LINE_WRITER = "\r\n";
+	private static final String HEADER_LINE_WRITER = SystemConfig.LINE_COMPAT_SEPARATOR;
 
 	/**
 	 * <p>头部信息分隔符</p>

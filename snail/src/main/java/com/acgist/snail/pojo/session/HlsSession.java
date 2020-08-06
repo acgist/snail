@@ -113,6 +113,15 @@ public final class HlsSession {
 	}
 	
 	/**
+	 * <p>设置下载速度</p>
+	 * 
+	 * @param buffer 速度
+	 */
+	public void download(int buffer) {
+		this.taskSession.statistics().download(buffer);
+	}
+	
+	/**
 	 * <p>设置已下载大小</p>
 	 * 
 	 * @param size 已下载大小
@@ -129,15 +138,6 @@ public final class HlsSession {
 		// 预测文件总大小：存在误差
 		final long taskFileSize = downloadSize * this.fileSize / downloadFileSize;
 		this.taskSession.setSize(taskFileSize);
-	}
-	
-	/**
-	 * <p>设置下载速度</p>
-	 * 
-	 * @param buffer 速度
-	 */
-	public void download(int buffer) {
-		this.taskSession.statistics().download(buffer);
 	}
 	
 	/**

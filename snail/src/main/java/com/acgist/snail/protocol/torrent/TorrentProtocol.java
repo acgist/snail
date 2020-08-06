@@ -168,7 +168,7 @@ public final class TorrentProtocol extends Protocol {
 	 * <p>种子文件操作：拷贝、移动</p>
 	 */
 	private void torrentHandle() {
-		final String fileName = FileUtils.fileNameFromUrl(this.torrentFile);
+		final String fileName = FileUtils.fileName(this.torrentFile);
 		final String newFilePath = FileUtils.file(this.taskEntity.getFile(), fileName);
 		if(this.handle == TorrentHandle.MOVE) {
 			FileUtils.move(this.torrentFile, newFilePath);

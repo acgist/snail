@@ -46,6 +46,7 @@ public final class HlsClient implements Runnable {
 	private final String path;
 	/**
 	 * <p>文件大小</p>
+	 * <p>通过HTTP HEAD请求获取</p>
 	 */
 	private long size;
 	/**
@@ -71,7 +72,7 @@ public final class HlsClient implements Runnable {
 	
 	public HlsClient(String link, ITaskSession taskSession, HlsSession hlsSession) {
 		this.link = link;
-		final String fileName = FileUtils.fileNameFromUrl(link);
+		final String fileName = FileUtils.fileName(link);
 		this.path = FileUtils.file(taskSession.getFile(), fileName);
 		this.range = false;
 		this.completed = false;
@@ -80,6 +81,10 @@ public final class HlsClient implements Runnable {
 
 	@Override
 	public void run() {
+		if(this.completed) {
+			LOGGER.debug("HLS任务已经完成：{}", this.link);
+			return;
+		}
 		if(!this.hlsSession.downloadable()) {
 			LOGGER.debug("HLS任务不能下载：{}", this.link);
 			return;

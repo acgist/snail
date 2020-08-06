@@ -17,6 +17,7 @@ import com.acgist.snail.net.codec.impl.LineMessageCodec;
 import com.acgist.snail.net.codec.impl.StringMessageCodec;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.message.ApplicationMessage;
+import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.system.context.SystemContext;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
@@ -38,7 +39,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	/**
 	 * <p>多条消息分隔符：{@value}</p>
 	 */
-	private static final String SEPARATOR = "\r\n";
+	private static final String SEPARATOR = SystemConfig.LINE_COMPAT_SEPARATOR;
 	
 	public ApplicationMessageHandler() {
 		final var lineMessageCodec = new LineMessageCodec(this, SEPARATOR);

@@ -10,8 +10,11 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CodingErrorAction;
 import java.security.MessageDigest;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -534,6 +537,22 @@ public final class StringUtils {
 			return content;
 		}
 		return content.replaceAll("\\s", "");
+	}
+	
+	/**
+	 * <p>读取文本每行信息</p>
+	 * 
+	 * @param content 文本
+	 * 
+	 * @return 每行列表
+	 */
+	public static final List<String> readLines(String content) {
+		if(content == null) {
+			return List.of();
+		}
+		return Stream.of(content.split(SystemConfig.LINE_SEPARATOR))
+			 .map(value -> value.trim())
+			 .collect(Collectors.toList());
 	}
 	
 }
