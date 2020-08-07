@@ -352,13 +352,17 @@ public final class JSON {
 			value = content.charAt(index.get());
 			if(value == JSON_STRING) {
 				if(string) {
+					// 结束
 					string = false;
 				} else {
+					// 开始
 					string = true;
 				}
 			} else if(value == JSON_MAP_PREFIX || value == JSON_LIST_PREFIX) {
+				// 开始
 				json = true;
 			} else if(value == JSON_MAP_SUFFIX || value == JSON_LIST_SUFFIX) {
+				// 结束
 				json = false;
 			}
 			// 不属于JSON对象和字符串对象出现分隔符：结束循环
