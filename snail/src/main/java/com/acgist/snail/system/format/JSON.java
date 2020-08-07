@@ -28,7 +28,11 @@ public final class JSON {
 	 * <p>JSON特殊字符</p>
 	 * <p>Chrome浏览器控制台执行以下代码获取特殊字符：</p>
 	 * <pre>
+	 * var array = {};
 	 * for (var i = 0, value = '', array = []; i < 0xFFFF; i++) {
+	 *  	if(i >= 0xD800 && i <= 0xDFFF) {
+	 *  		continue;
+	 *  	}
 	 * 		value = JSON.stringify(String.fromCharCode(i));
 	 * 		value.indexOf("\\") > -1 && array.push(value);
 	 * }
