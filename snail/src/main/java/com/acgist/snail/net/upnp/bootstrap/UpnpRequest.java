@@ -60,7 +60,7 @@ public final class UpnpRequest {
 	 */
 	private void build() {
 		this.xml = XML.build();
-		final Element envelope = this.xml.elementNS(xml.document(), "s:Envelope", NAMESPACE_ENVELOPE);
+		final Element envelope = this.xml.elementNS(this.xml.document(), "s:Envelope", NAMESPACE_ENVELOPE);
 		envelope.setAttributeNS(NAMESPACE_ENVELOPE, "encodingStyle", NAMESPANCE_ENCODING);
 		this.body = this.xml.element(envelope, "s:Body");
 	}

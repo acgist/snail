@@ -188,7 +188,7 @@ public final class BEncodeEncoder {
 	 * 
 	 * @return {@link BEncodeEncoder}
 	 */
-	public BEncodeEncoder writeList(List<?> list) {
+	private BEncodeEncoder writeList(List<?> list) {
 		if(list == null) {
 			return this;
 		}
@@ -207,7 +207,7 @@ public final class BEncodeEncoder {
 	 * 
 	 * @return {@link BEncodeEncoder}
 	 */
-	public BEncodeEncoder writeMap(Map<?, ?> map) {
+	private BEncodeEncoder writeMap(Map<?, ?> map) {
 		if(map == null) {
 			return this;
 		}
@@ -235,9 +235,9 @@ public final class BEncodeEncoder {
 		} else if(value instanceof String) {
 			this.writeBytes(((String) value).getBytes());
 		} else if(value instanceof List) {
-			writeList((List<?>) value);
+			this.writeList((List<?>) value);
 		} else if(value instanceof Map) {
-			writeMap((Map<?, ?>) value);
+			this.writeMap((Map<?, ?>) value);
 		} else {
 			LOGGER.debug("B编码错误（类型未适配）：{}", value);
 			// 类型不支持时添加空字符数组
@@ -283,7 +283,7 @@ public final class BEncodeEncoder {
 	 */
 	@Override
 	public String toString() {
-		return new String(bytes());
+		return new String(this.bytes());
 	}
 	
 	/**
