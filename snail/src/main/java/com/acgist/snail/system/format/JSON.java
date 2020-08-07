@@ -246,7 +246,9 @@ public final class JSON {
 		if(object == null) {
 			builder.append(JSON_NULL);
 		} else if(object instanceof String) {
-			builder.append(JSON_STRING).append(encodeValue((String) object)).append(JSON_STRING);
+			builder.append(JSON_STRING)
+				.append(this.encodeValue((String) object))
+				.append(JSON_STRING);
 		} else if(object instanceof Boolean) {
 			builder.append(object.toString());
 		} else if(object instanceof Number) {
@@ -254,11 +256,13 @@ public final class JSON {
 		} else if(object instanceof JSON) {
 			builder.append(object.toString());
 		} else if(object instanceof Map) {
-			serializeMap((Map<?, ?>) object, builder);
+			this.serializeMap((Map<?, ?>) object, builder);
 		} else if(object instanceof List) {
-			serializeList((List<?>) object, builder);
+			this.serializeList((List<?>) object, builder);
 		} else {
-			builder.append(JSON_STRING).append(encodeValue(object.toString())).append(JSON_STRING);
+			builder.append(JSON_STRING)
+				.append(this.encodeValue(object.toString()))
+				.append(JSON_STRING);
 		}
 	}
 	
@@ -291,9 +295,9 @@ public final class JSON {
 	 */
 	private void deserialize(String content) {
 		if(this.type == Type.MAP) {
-			deserializeMap(content);
+			this.deserializeMap(content);
 		} else if(this.type == Type.LIST) {
-			deserializeList(content);
+			this.deserializeList(content);
 		} else {
 			throw new ArgumentException("JSON类型错误：" + this.type);
 		}
@@ -309,8 +313,8 @@ public final class JSON {
 		final AtomicInteger index = new AtomicInteger(0);
 		while(index.get() < content.length()) {
 			this.map.put(
-				deserializeValue(index, content),
-				deserializeValue(index, content)
+				this.deserializeValue(index, content),
+				this.deserializeValue(index, content)
 			);
 		}
 	}
@@ -325,7 +329,7 @@ public final class JSON {
 		final AtomicInteger index = new AtomicInteger(0);
 		while(index.get() < content.length()) {
 			this.list.add(
-				deserializeValue(index, content)
+				this.deserializeValue(index, content)
 			);
 		}
 	}
@@ -340,9 +344,9 @@ public final class JSON {
 	 */
 	private Object deserializeValue(AtomicInteger index, String content) {
 		char value;
-		boolean string = false; // 是否是字符串对象
-		boolean json = false; // 是否是JSON对象
 		String hexValue;
+		boolean json = false; // 是否是JSON对象
+		boolean string = false; // 是否是字符串对象
 		final StringBuilder builder = new StringBuilder();
 		do {
 			value = content.charAt(index.get());
@@ -401,7 +405,7 @@ public final class JSON {
 				builder.append(value);
 			}
 		} while (index.incrementAndGet() < content.length());
-		return convertValue(builder.toString());
+		return this.convertValue(builder.toString());
 	}
 	
 	/**
@@ -418,27 +422,33 @@ public final class JSON {
 			length > 1 &&
 			value.charAt(0) == JSON_STRING &&
 			value.charAt(value.length() - 1) == JSON_STRING
-		) { // 字符串
+		) {
+			// 字符串
 			return value.substring(1, length - 1); // 去掉引号
 		} else if(
 			JSON_BOOLEAN_TRUE.equals(value) ||
 			JSON_BOOLEAN_FALSE.equals(value)
-		) { // Boolean
+		) {
+			// Boolean
 			return Boolean.valueOf(value);
-		} else if(JSON_NULL.equals(value)) { // null
+		} else if(JSON_NULL.equals(value)) {
+			// null
 			return null;
-		} else if(StringUtils.isDecimal(value)) { // 数字
+		} else if(StringUtils.isDecimal(value)) {
+			// 数字
 			return Integer.valueOf(value);
 		} else if(
 			length > 1 &&
 			value.charAt(0) == JSON_MAP_PREFIX && value.charAt(length - 1) == JSON_MAP_SUFFIX
-		) { // MAP：懒加载
+		) {
+			// MAP：懒加载
 //			return JSON.ofString(value);
 			return value;
 		} else if(
 			length > 1 &&
 			value.charAt(0) == JSON_LIST_PREFIX && value.charAt(length - 1) == JSON_LIST_SUFFIX
-		) { // LIST：懒加载
+		) {
+			// LIST：懒加载
 //			return JSON.ofString(value);
 			return value;
 		} else {
@@ -446,10 +456,20 @@ public final class JSON {
 		}
 	}
 	
+	/**
+	 * <p>获取Map</p>
+	 * 
+	 * @return Map
+	 */
 	public Map<Object, Object> getMap() {
 		return this.map;
 	}
 	
+	/**
+	 * <p>获取List</p>
+	 * 
+	 * @return List
+	 */
 	public List<Object> getList() {
 		return this.list;
 	}

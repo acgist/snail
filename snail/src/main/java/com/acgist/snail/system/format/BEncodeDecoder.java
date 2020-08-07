@@ -181,7 +181,7 @@ public final class BEncodeDecoder {
 	 * @return {@code true}-非空；{@code false}-空；
 	 */
 	public boolean isNotEmpty() {
-		return !isEmpty();
+		return !this.isEmpty();
 	}
 	
 	/**
@@ -193,17 +193,17 @@ public final class BEncodeDecoder {
 	 * @throws PacketSizeException 网络包大小异常
 	 */
 	public Type nextType() throws PacketSizeException {
-		if(!more()) {
+		if(!this.more()) {
 			LOGGER.warn("B编码没有更多数据");
 			return this.type = Type.NONE;
 		}
 		final char type = (char) this.inputStream.read();
 		switch (type) {
 		case TYPE_D:
-			this.map = readMap(this.inputStream);
+			this.map = this.readMap(this.inputStream);
 			return this.type = Type.MAP;
 		case TYPE_L:
-			this.list = readList(this.inputStream);
+			this.list = this.readList(this.inputStream);
 			return this.type = Type.LIST;
 		default:
 			LOGGER.warn("B编码错误（类型未适配）：{}", type);
@@ -220,7 +220,7 @@ public final class BEncodeDecoder {
 	 * @throws PacketSizeException 网络包大小异常
 	 */
 	public List<Object> nextList() throws PacketSizeException {
-		final var type = nextType();
+		final var type = this.nextType();
 		if(type == Type.LIST) {
 			return this.list;
 		}
@@ -236,7 +236,7 @@ public final class BEncodeDecoder {
 	 * @throws PacketSizeException 网络包大小异常
 	 */
 	public Map<String, Object> nextMap() throws PacketSizeException {
-		final var type = nextType();
+		final var type = this.nextType();
 		if(type == Type.MAP) {
 			return this.map;
 		}
@@ -258,10 +258,10 @@ public final class BEncodeDecoder {
 	/**
 	 * <p>读取剩余所有数据并转为字符串</p>
 	 * 
-	 * @return 剩余数据字符串
+	 * @return 剩余所有数据字符串
 	 */
 	public String oddString() {
-		final var bytes = oddBytes();
+		final var bytes = this.oddBytes();
 		if(bytes == null) {
 			return null;
 		}
@@ -316,7 +316,7 @@ public final class BEncodeDecoder {
 				return map;
 			case TYPE_I:
 				if(key != null) {
-					map.put(key, readLong(inputStream));
+					map.put(key, this.readLong(inputStream));
 					key = null;
 				} else {
 					LOGGER.warn("B编码key为空跳过");
@@ -324,7 +324,7 @@ public final class BEncodeDecoder {
 				break;
 			case TYPE_L:
 				if(key != null) {
-					map.put(key, readList(inputStream));
+					map.put(key, this.readList(inputStream));
 					key = null;
 				} else {
 					LOGGER.warn("B编码key为空跳过");
@@ -332,7 +332,7 @@ public final class BEncodeDecoder {
 				break;
 			case TYPE_D:
 				if(key != null) {
-					map.put(key, readMap(inputStream));
+					map.put(key, this.readMap(inputStream));
 					key = null;
 				} else {
 					LOGGER.warn("B编码key为空跳过");
@@ -352,7 +352,7 @@ public final class BEncodeDecoder {
 				break;
 			case SEPARATOR:
 				if(lengthBuilder.length() > 0) {
-					final byte[] bytes = read(lengthBuilder, inputStream);
+					final byte[] bytes = this.read(lengthBuilder, inputStream);
 					if (key == null) {
 						key = new String(bytes);
 					} else {
@@ -391,13 +391,13 @@ public final class BEncodeDecoder {
 			case TYPE_E:
 				return list;
 			case TYPE_I:
-				list.add(readLong(inputStream));
+				list.add(this.readLong(inputStream));
 				break;
 			case TYPE_L:
-				list.add(readList(inputStream));
+				list.add(this.readList(inputStream));
 				break;
 			case TYPE_D:
-				list.add(readMap(inputStream));
+				list.add(this.readMap(inputStream));
 				break;
 			case '0':
 			case '1':
@@ -413,7 +413,7 @@ public final class BEncodeDecoder {
 				break;
 			case SEPARATOR:
 				if(lengthBuilder.length() > 0) {
-					final byte[] bytes = read(lengthBuilder, inputStream);
+					final byte[] bytes = this.read(lengthBuilder, inputStream);
 					list.add(bytes);
 				} else {
 					LOGGER.warn("B编码错误（长度）：{}", lengthBuilder);
