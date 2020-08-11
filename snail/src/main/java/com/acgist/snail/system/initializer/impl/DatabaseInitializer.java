@@ -20,7 +20,7 @@ public final class DatabaseInitializer extends Initializer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseInitializer.class);
 	
-	private DatabaseManager databaseManager = DatabaseManager.getInstance();
+	private final DatabaseManager databaseManager = DatabaseManager.getInstance();
 	
 	private DatabaseInitializer() {
 	}
@@ -37,10 +37,10 @@ public final class DatabaseInitializer extends Initializer {
 	@Override
 	protected void init() {
 		LOGGER.info("初始化数据库");
-		if(databaseInit()) { // 已经创建
+		if(this.databaseInit()) { // 已经创建
 			LOGGER.debug("数据库已经初始化");
 		} else { // 没有创建：执行创建语句
-			buildTable();
+			this.buildTable();
 		}
 	}
 	
