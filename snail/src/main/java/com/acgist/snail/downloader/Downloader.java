@@ -188,7 +188,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 					this.download();
 				} catch (Exception e) {
 					LOGGER.error("任务下载异常", e);
-					fail(e.getMessage());
+					this.fail(e.getMessage());
 				}
 				this.checkComplete(); // 检查完成状态
 				this.release(); // 释放资源
