@@ -50,6 +50,7 @@ public final class WindowsTheme implements ITheme {
 	
 	@Override
 	public Color systemThemeColor() {
+		String line;
 		String color = null;
 		Process process = null;
 		OutputStream output = null;
@@ -58,7 +59,6 @@ public final class WindowsTheme implements ITheme {
 			process = Runtime.getRuntime().exec(THEME_COLOR_COMMAND);
 			output = process.getOutputStream();
 			reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-			String line;
 			while ((line = reader.readLine()) != null) {
 				line = line.trim();
 				if(StringUtils.startsWith(line, THEME_COLOR_KEY)) {
@@ -67,6 +67,7 @@ public final class WindowsTheme implements ITheme {
 					break;
 				}
 			}
+			return this.convertWindowsColor(color);
 		} catch (Exception e) {
 			LOGGER.error("获取Windows主题颜色异常", e);
 		} finally {
@@ -76,7 +77,7 @@ public final class WindowsTheme implements ITheme {
 				process.destroy();
 			}
 		}
-		return this.convertWindowsColor(color);
+		return Themes.DEFAULT_THEME_COLOR;
 	}
 
 	/**
