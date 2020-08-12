@@ -64,7 +64,7 @@ public final class FtpDownloader extends SingleFileDownloader {
 				this.taskSession.downloadSize(0L);
 			}
 		} else {
-			fail("FTP服务器连接失败");
+			this.fail("FTP服务器连接失败");
 		}
 	}
 	
