@@ -335,3 +335,25 @@ javaw -server -Xms128m -Xmx256m -XX:NewRatio=2 -XX:SurvivorRatio=2 -jar snail.ja
 ```
 
 或者调小磁盘缓存
+
+### 启动后没有出现GUI界面
+
+可以查看端口`16888`和`18888`是否被占用了，查看命令：
+
+```bash
+# Linux
+# 查询端口
+netstat -anp|grep 16888
+netstat -anp|grep 18888
+# 查询占用程序
+ps aux|grep pid
+
+#Windows
+# 查询端口
+netstat -ano|findstr 16888
+netstat -ano|findstr 18888
+# 查询占用程序
+tasklist|findstr pid
+```
+
+> pid：端口查询的应用ID
