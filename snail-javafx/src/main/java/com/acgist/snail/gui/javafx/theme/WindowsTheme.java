@@ -92,7 +92,7 @@ public final class WindowsTheme implements ITheme {
 		if(colorValue == null) {
 			theme = Themes.DEFAULT_THEME_COLOR;
 		} else {
-			final int value = (int) Long.parseLong(colorValue.substring(2), 16);
+			final long value = Long.parseLong(colorValue.substring(2), 16);
 			final int alpha = (int) ((value >> 24) & 0xFF); // 透明度：可能不存在
 			final int blud = (int) ((value >> 16) & 0xFF);
 			final int green = (int) ((value >> 8) & 0xFF);
