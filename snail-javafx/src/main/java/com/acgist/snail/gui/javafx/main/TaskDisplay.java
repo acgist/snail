@@ -65,28 +65,30 @@ public final class TaskDisplay {
 	 * <p>刷新任务数据</p>
 	 */
 	public void refreshTaskList() {
-		MainController controller = INSTANCE.controller;
-		while(controller == null) {
-			synchronized (this.lock) {
-				ThreadUtils.wait(this.lock, Duration.ofSeconds(Byte.MAX_VALUE));
-			}
-			controller = INSTANCE.controller;
-		}
-		controller.refreshTaskList();
+		this.controller().refreshTaskList();
 	}
 	
 	/**
 	 * <p>刷新任务状态</p>
 	 */
 	public void refreshTaskStatus() {
-		MainController controller = INSTANCE.controller;
-		while(controller == null) {
+		this.controller().refreshTaskStatus();
+	}
+	
+	/**
+	 * <p>等待{@link #controller}被初始化</p>
+	 * 
+	 * @return 主窗口控制器
+	 */
+	private MainController controller() {
+		while(INSTANCE.controller == null) {
 			synchronized (this.lock) {
-				ThreadUtils.wait(this.lock, Duration.ofSeconds(Byte.MAX_VALUE));
+				if(INSTANCE.controller == null) {
+					ThreadUtils.wait(this.lock, Duration.ofSeconds(Byte.MAX_VALUE));
+				}
 			}
-			controller = INSTANCE.controller;
 		}
-		controller.refreshTaskStatus();
+		return INSTANCE.controller;
 	}
 
 }
