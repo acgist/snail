@@ -1,25 +1,24 @@
 package com.acgist.snail.system;
 
 /**
- * <p>Lambda表达式工具</p>
- * <p>用来传递数据</p>
+ * <p>可修改的Optional</p>
  * 
  * @param <T> 数据泛型
  * 
  * @author acgist
  * @since 1.2.0
  */
-public final class LambdaOptional<T> {
+public final class ModifyOptional<T> {
 
 	/**
 	 * <p>数据</p>
 	 */
 	private T t;
 	
-	private LambdaOptional() {
+	private ModifyOptional() {
 	}
 	
-	private LambdaOptional(T t) {
+	private ModifyOptional(T t) {
 		this.t = t;
 	}
 
@@ -30,8 +29,8 @@ public final class LambdaOptional<T> {
 	 * 
 	 * @return 工具对象
 	 */
-	public static final <T> LambdaOptional<T> newInstance() {
-		return new LambdaOptional<>();
+	public static final <T> ModifyOptional<T> newInstance() {
+		return new ModifyOptional<>();
 	}
 	
 	/**
@@ -43,8 +42,8 @@ public final class LambdaOptional<T> {
 	 * 
 	 * @return 工具对象
 	 */
-	public static final <T> LambdaOptional<T> newInstance(T t) {
-		return new LambdaOptional<>(t);
+	public static final <T> ModifyOptional<T> newInstance(T t) {
+		return new ModifyOptional<>(t);
 	}
 	
 	/**
