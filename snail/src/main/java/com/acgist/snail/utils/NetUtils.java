@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.system.LambdaOptional;
+import com.acgist.snail.system.ModifyOptional;
 
 /**
  * <p>网络工具</p>
@@ -91,9 +91,9 @@ public final class NetUtils {
 	private static final long NATIVE_L_IP_END = encodeIpToLong("127.255.255.255");
 	
 	static {
-		final LambdaOptional<String> localHostName = LambdaOptional.newInstance();
-		final LambdaOptional<String> localHostAddress = LambdaOptional.newInstance();
-		final LambdaOptional<NetworkInterface> defaultNetworkInterface = LambdaOptional.newInstance();
+		final ModifyOptional<String> localHostName = ModifyOptional.newInstance();
+		final ModifyOptional<String> localHostAddress = ModifyOptional.newInstance();
+		final ModifyOptional<NetworkInterface> defaultNetworkInterface = ModifyOptional.newInstance();
 		try {
 			final AtomicInteger index = new AtomicInteger(Integer.MAX_VALUE);
 			// 处理多个物理网卡和虚拟网卡
