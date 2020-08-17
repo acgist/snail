@@ -112,7 +112,7 @@ public final class WindowsRecycle extends Recycle {
 	 * <p>创建删除文件信息文件</p>
 	 */
 	private void buildInfoFile() {
-		FileUtils.write(this.deleteInfoFile, buildInfo());
+		FileUtils.write(this.deleteInfoFile, this.buildInfo());
 	}
 	
 	/**
@@ -121,7 +121,7 @@ public final class WindowsRecycle extends Recycle {
 	 * @return 删除文件信息
 	 */
 	private byte[] buildInfo() {
-		final String path = buildPath();
+		final String path = this.buildPath();
 		final ByteArrayOutputStream out = new ByteArrayOutputStream();
 		// 固定值
 		out.write(2);
@@ -140,7 +140,7 @@ public final class WindowsRecycle extends Recycle {
 		}
 		// 文件路径长度：固定值 + path.length();
 		final char length = (char) (1 + path.length());
-		putChar(out, length);
+		this.putChar(out, length);
 		// 固定值
 		for (int index = 0; index < 2; index++) {
 			out.write(0);
@@ -149,7 +149,7 @@ public final class WindowsRecycle extends Recycle {
 		char value;
 		for (int index = 0; index < path.length(); index++) {
 			value = path.charAt(index);
-			putChar(out, value);
+			this.putChar(out, value);
 		}
 		// 固定值
 		for (int index = 0; index < 2; index++) {
