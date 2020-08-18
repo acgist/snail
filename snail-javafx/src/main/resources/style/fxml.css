@@ -374,15 +374,26 @@
 	-fx-border-color:-fx-snail-violet-color;
 	-fx-background-color:derive(-fx-snail-violet-color, 40%);
 }
-.statistics .system TextFlow {
+.statistics .system-traffic TextFlow {
 	-fx-padding:10px;
 	-fx-pref-width:260px;
 }
-.statistics .system TextFlow Text {
+.statistics .system-traffic TextFlow Text {
 	-fx-font-size:24px;
 }
-.statistics .system TextFlow Label {
+.statistics .system-traffic TextFlow Label {
 	-fx-padding:0 10px 0 0;
+}
+.statistics .system-info {
+	-fx-padding:10px 80px;
+}
+.statistics .system-info TextFlow Text {
+	-fx-pref-width:255px;
+}
+.statistics .system-info TextFlow Label {
+	-fx-pref-width:255px;
+	-fx-padding:0 10px 0 0;
+	-fx-alignment:center_right;
 }
 .statistics .statistics-box .health {
 	-fx-padding:5px 0;

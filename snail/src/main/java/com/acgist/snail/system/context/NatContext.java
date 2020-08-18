@@ -32,6 +32,20 @@ public final class NatContext {
 	}
 	
 	/**
+	 * <p>内网穿透类型</p>
+	 */
+	public enum Type {
+		
+		/** UPNP */
+		UPNP,
+		/** STUN */
+		STUN,
+		/** 没有使用内网穿透 */
+		NONE;
+		
+	}
+	
+	/**
 	 * <p>UPNP端口映射超时时间</p>
 	 */
 	private static final int UPNP_CONFIG_TIMEOUT = SystemConfig.CONNECT_TIMEOUT;
@@ -40,6 +54,11 @@ public final class NatContext {
 	 * <p>UPNP等待锁</p>
 	 */
 	private final Object upnpLock = new Object();
+	
+	/**
+	 * <p>内网穿透类型</p>
+	 */
+	private Type type = Type.NONE;
 	
 	private NatContext() {
 	}
@@ -54,10 +73,26 @@ public final class NatContext {
 			synchronized (this.upnpLock) {
 				ThreadUtils.wait(this.upnpLock, Duration.ofSeconds(UPNP_CONFIG_TIMEOUT));
 			}
-			StunService.getInstance().mapping();
+			if(UpnpService.getInstance().useable()) {
+				LOGGER.info("UPNP映射成功：不使用STUN映射");
+				this.type = Type.UPNP;
+			} else {
+				LOGGER.info("UPNP映射失败：使用STUN映射");
+				this.type = Type.STUN;
+				StunService.getInstance().mapping();
+			}
 		} else {
 			LOGGER.info("已是公网IP地址忽略NAT设置");
 		}
+	}
+	
+	/**
+	 * <p>获取内网穿透类型</p>
+	 * 
+	 * @return 内网穿透类型
+	 */
+	public Type type() {
+		return this.type;
 	}
 	
 	/**

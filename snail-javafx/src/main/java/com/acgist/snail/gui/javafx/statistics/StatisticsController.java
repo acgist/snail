@@ -21,7 +21,10 @@ import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerClient;
 import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerManager;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.system.SystemStatistics;
+import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.system.context.NatContext;
 import com.acgist.snail.utils.FileUtils;
+import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.ObjectUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -37,6 +40,7 @@ import javafx.scene.chart.PieChart;
 import javafx.scene.chart.StackedBarChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
@@ -68,10 +72,12 @@ public final class StatisticsController extends Controller implements Initializa
 	 */
 	public enum Filter {
 		
+		/** 系统信息 */
+		SYSTEM,
 		/** PEER统计 */
 		PEER,
 		/** 流量统计 */
-		FLOW,
+		TRAFFIC,
 		/** 下载统计 */
 		PIECE;
 		
@@ -103,7 +109,7 @@ public final class StatisticsController extends Controller implements Initializa
 	@FXML
 	private VBox statisticsBox;
 	
-	private Filter filter = Filter.FLOW;
+	private Filter filter = Filter.SYSTEM;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -118,6 +124,17 @@ public final class StatisticsController extends Controller implements Initializa
 	@FXML
 	public void handleRefreshAction(ActionEvent event) {
 		this.statistics();
+	}
+	
+	/**
+	 * <p>系统信息</p>
+	 * 
+	 * @param event 事件
+	 */
+	@FXML
+	public void handleSystemAction(ActionEvent event) {
+		this.filter = Filter.SYSTEM;
+		this.system();
 	}
 	
 	/**
@@ -137,9 +154,9 @@ public final class StatisticsController extends Controller implements Initializa
 	 * @param event 事件
 	 */
 	@FXML
-	public void handleFlowAction(ActionEvent event) {
-		this.filter = Filter.FLOW;
-		this.flow();
+	public void handleTrafficAction(ActionEvent event) {
+		this.filter = Filter.TRAFFIC;
+		this.traffic();
 	}
 	
 	/**
@@ -156,13 +173,13 @@ public final class StatisticsController extends Controller implements Initializa
 	/**
 	 * <p>统计信息</p>
 	 * 
-	 * @see #system()
+	 * @see #systemTraffic()
 	 * @see #dht()
 	 * @see #tracker()
 	 * @see #infoHash()
 	 */
 	public void statistics() {
-		this.system();
+		this.systemTraffic();
 		this.dht();
 		this.tracker();
 		this.infoHash();
@@ -176,9 +193,9 @@ public final class StatisticsController extends Controller implements Initializa
 	}
 
 	/**
-	 * <p>统计系统信息</p>
+	 * <p>统计系统流量信息</p>
 	 */
-	private void system() {
+	private void systemTraffic() {
 		final var statistics = SystemStatistics.getInstance().statistics();
 		// 累计上传
 		this.upload.setText(FileUtils.formatSize(statistics.uploadSize()));
@@ -231,6 +248,41 @@ public final class StatisticsController extends Controller implements Initializa
 		}
 	}
 
+	/**
+	 * <p>系统信息</p>
+	 */
+	public void system() {
+		final VBox systemInfo = new VBox(
+			this.buildSystemInfo("本机IP", NetUtils.localHostAddress()),
+			this.buildSystemInfo("外网IP", SystemConfig.getExternalIpAddress()),
+			this.buildSystemInfo("外网端口", SystemConfig.getTorrentPortExt()),
+			this.buildSystemInfo("内网穿透", NatContext.getInstance().type()),
+			this.buildSystemInfo("软件版本", SystemConfig.getVersion()),
+			this.buildSystemInfo("系统名称", System.getProperty("os.name")),
+			this.buildSystemInfo("系统版本", System.getProperty("os.version")),
+			this.buildSystemInfo("Java版本", System.getProperty("java.version")),
+			this.buildSystemInfo("虚拟机名称", System.getProperty("java.vm.name"))
+		);
+		systemInfo.getStyleClass().add("system-info");
+		this.statisticsBox.getChildren().clear();
+		this.statisticsBox.getChildren().add(systemInfo);
+	}
+	
+	/**
+	 * <p>创建系统信息节点</p>
+	 * 
+	 * @param name 名称
+	 * @param info 信息
+	 * 
+	 * @return 节点
+	 */
+	private TextFlow buildSystemInfo(String name, Object info) {
+		final Label label = new Label(name);
+		final Text text = new Text(info.toString());
+		final TextFlow flow = new TextFlow(label, text);
+		return flow;
+	}
+	
 	/**
 	 * <p>Peer统计</p>
 	 */
@@ -322,7 +374,7 @@ public final class StatisticsController extends Controller implements Initializa
 	/**
 	 * <p>流量统计</p>
 	 */
-	private void flow() {
+	private void traffic() {
 		final String infoHashHex = this.selectInfoHashHex();
 		if(infoHashHex == null) {
 			return;
@@ -448,12 +500,14 @@ public final class StatisticsController extends Controller implements Initializa
 	 * <p>选择BT任务事件</p>
 	 */
 	private EventHandler<ActionEvent> selectEvent = event -> {
-		if(this.filter == Filter.FLOW) {
-			this.flow();
+		if(this.filter == Filter.PEER) {
+			this.peer();
+		} else if(this.filter == Filter.TRAFFIC) {
+			this.traffic();
 		} else if(this.filter == Filter.PIECE) {
 			this.piece();
 		} else {
-			this.peer();
+			this.system();
 		}
 	};
 	

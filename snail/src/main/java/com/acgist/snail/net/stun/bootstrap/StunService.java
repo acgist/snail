@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.stun.StunClient;
-import com.acgist.snail.net.upnp.bootstrap.UpnpService;
 import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.system.config.StunConfig;
 import com.acgist.snail.system.config.SystemConfig;
@@ -34,21 +33,15 @@ public final class StunService {
 
 	/**
 	 * <p>端口映射</p>
-	 * <p>如果UPNP端口映射失败：使用STUN映射</p>
-	 * <p>如果UPNP端口映射成功：不使用STUN映射</p>
 	 */
 	public void mapping() {
-		if(UpnpService.getInstance().useable()) {
-			LOGGER.info("UPNP映射成功：不使用STUN映射");
-		} else {
-			final var address = this.buildServerAddress();
-			if(address == null) {
-				LOGGER.warn("STUN服务器配置错误");
-				return;
-			}
-			LOGGER.debug("STUN服务器地址：{}", address);
-			StunClient.newInstance(address).mappedAddress();
+		final var address = this.buildServerAddress();
+		if(address == null) {
+			LOGGER.warn("STUN服务器配置错误");
+			return;
 		}
+		LOGGER.debug("STUN服务器地址：{}", address);
+		StunClient.newInstance(address).mappedAddress();
 	}
 	
 	/**
