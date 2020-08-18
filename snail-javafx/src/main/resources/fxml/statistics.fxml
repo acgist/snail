@@ -12,7 +12,7 @@
 	xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
 	
 	<VBox styleClass="info-box">
-		<HBox fx:id="system" styleClass="system">
+		<HBox fx:id="systemTraffic" styleClass="system-traffic">
 			<TextFlow styleClass="red">
 				<Label>累计上传</Label>
 				<Text fx:id="upload">0</Text>
@@ -65,8 +65,9 @@
 			<Button fx:id="refresh" text="刷新" onAction="#handleRefreshAction" />
 		</HBox>
 		<HBox fx:id="tabs" styleClass="tabs">
+			<Button fx:id="system" text="系统信息" onAction="#handleSystemAction" />
 			<Button fx:id="peer" text="Peer统计" onAction="#handlePeerAction" />
-			<Button fx:id="flow" text="流量统计" onAction="#handleFlowAction" />
+			<Button fx:id="traffic" text="流量统计" onAction="#handleTrafficAction" />
 			<Button fx:id="piece" text="下载统计" onAction="#handlePieceAction" />
 		</HBox>
 	</VBox>
