@@ -74,7 +74,7 @@ public final class NatContext {
 				ThreadUtils.wait(this.upnpLock, Duration.ofSeconds(UPNP_CONFIG_TIMEOUT));
 			}
 			if(UpnpService.getInstance().useable()) {
-				LOGGER.info("UPNP映射成功：不使用STUN映射");
+				LOGGER.info("UPNP映射成功");
 				this.type = Type.UPNP;
 			} else {
 				LOGGER.info("UPNP映射失败：使用STUN映射");
@@ -82,7 +82,7 @@ public final class NatContext {
 				StunService.getInstance().mapping();
 			}
 		} else {
-			LOGGER.info("已是公网IP地址忽略NAT设置");
+			LOGGER.info("已是公网IP地址：忽略NAT设置");
 		}
 	}
 	
