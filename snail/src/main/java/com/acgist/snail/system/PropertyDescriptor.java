@@ -21,7 +21,7 @@ public final class PropertyDescriptor {
 	/**
 	 * <p>方法前缀：{@value}</p>
 	 */
-	private static final String PREFIX_GET = "GET";
+	private static final String PREFIX_GET = "get";
 	/**
 	 * <p>方法前缀：{@value}</p>
 	 */
@@ -54,8 +54,8 @@ public final class PropertyDescriptor {
 	 */
 	public static final boolean ignoreProperty(Field field) {
 		return 
-			Modifier.isStatic(field.getModifiers()) || // 非静态属性
-			Modifier.isTransient(field.getModifiers()); // 非瞬时属性
+			Modifier.isStatic(field.getModifiers()) || // 静态属性
+			Modifier.isTransient(field.getModifiers()); // 瞬时属性
 	}
 	
 	/**
@@ -70,6 +70,7 @@ public final class PropertyDescriptor {
 		String methodName;
 		for (Method method : methods) {
 			methodName = method.getName();
+			// GET方法最多优先判断
 			if(
 				getMethod.equalsIgnoreCase(methodName) ||
 				isMethod.equalsIgnoreCase(methodName)
@@ -109,7 +110,7 @@ public final class PropertyDescriptor {
 			if(clazz == null) {
 				break;
 			}
-			Field[] fields = clazz.getDeclaredFields();
+			final Field[] fields = clazz.getDeclaredFields();
 			for (Field field : fields) {
 				if(!ignoreProperty(field) && field.getName().equals(this.property)) {
 					return field.getType();
