@@ -63,27 +63,76 @@ public final class NumberUtils {
 		builder.append(DateUtils.dateToString(new Date(), "HHmm"));
 		return Integer.valueOf(builder.toString());
 	}
-	
 	/**
-	 * <p>字节数组转{@code int}（大端）</p>
+	 * <p>字节数组转为long（大端）</p>
 	 * 
 	 * @param bytes 字节数组
 	 * 
-	 * @return {@code int}
+	 * @return long
 	 */
-	public static final int bytesToInt(byte[] bytes) {
-		int value = 0;
-		value += ((bytes[0] & 0xFF) << 24);
-		value += ((bytes[1] & 0xFF) << 16);
-		value += ((bytes[2] & 0xFF) << 8);
-		value += bytes[3] & 0xFF;
+	public static final long bytesToLong(byte[] bytes) {
+		long value = 0L;
+		value |= (bytes[0] & 0xFF);
+		value <<= 8;
+		value |= (bytes[1] & 0xFF);
+		value <<= 8;
+		value |= (bytes[2] & 0xFF);
+		value <<= 8;
+		value |= (bytes[3] & 0xFF);
+		value <<= 8;
+		value |= (bytes[4] & 0xFF);
+		value <<= 8;
+		value |= (bytes[5] & 0xFF);
+		value <<= 8;
+		value |= (bytes[6] & 0xFF);
+		value <<= 8;
+		value |= (bytes[7] & 0xFF);
 		return value;
 	}
 	
 	/**
-	 * <p>{@code int}转字节数组（大端）</p>
+	 * <p>long转为字节数组（大端）</p>
 	 * 
-	 * @param value {@code int}
+	 * @param value long
+	 * 
+	 * @return 字节数组
+	 */
+	public static final byte[] longToBytes(long value) {
+		final byte[] bytes = new byte[8];
+		bytes[0] = (byte) ((value >> 56) & 0xFF);
+		bytes[1] = (byte) ((value >> 48) & 0xFF);
+		bytes[2] = (byte) ((value >> 40) & 0xFF);
+		bytes[3] = (byte) ((value >> 32) & 0xFF);
+		bytes[4] = (byte) ((value >> 24) & 0xFF);
+		bytes[5] = (byte) ((value >> 16) & 0xFF);
+		bytes[6] = (byte) ((value >> 8) & 0xFF);
+		bytes[7] = (byte) (value & 0xFF);
+		return bytes;
+	}
+	
+	/**
+	 * <p>字节数组转为int（大端）</p>
+	 * 
+	 * @param bytes 字节数组
+	 * 
+	 * @return int
+	 */
+	public static final int bytesToInt(byte[] bytes) {
+		int value = 0;
+		value |= (bytes[0] & 0xFF);
+		value <<= 8;
+		value |= (bytes[1] & 0xFF);
+		value <<= 8;
+		value |= (bytes[2] & 0xFF);
+		value <<= 8;
+		value |= (bytes[3] & 0xFF);
+		return value;
+	}
+	
+	/**
+	 * <p>int转为字节数组（大端）</p>
+	 * 
+	 * @param value int
 	 * 
 	 * @return 字节数组
 	 */
@@ -97,23 +146,24 @@ public final class NumberUtils {
 	}
 	
 	/**
-	 * <p>字节数组转{@code short}（大端）</p>
+	 * <p>字节数组转为short（大端）</p>
 	 * 
 	 * @param bytes 字节数组
 	 * 
-	 * @return {@code short}
+	 * @return short
 	 */
 	public static final short bytesToShort(byte[] bytes) {
 		short value = 0;
-		value += ((bytes[0] & 0xFF) << 8);
-		value += bytes[1] & 0xFF;
+		value |= (bytes[0] & 0xFF);
+		value <<= 8;
+		value |= (bytes[1] & 0xFF);
 		return value;
 	}
 	
 	/**
-	 * <p>{@code short}转字节数组（大端）</p>
+	 * <p>short转为字节数组（大端）</p>
 	 * 
-	 * @param value {@code short}
+	 * @param value short	
 	 * 
 	 * @return 字节数组
 	 */
