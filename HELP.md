@@ -359,4 +359,4 @@ netstat -ano|findstr 18888
 tasklist|findstr pid
 ```
 
-> pid：端口查询的应用ID
+> pid：查询进程ID
