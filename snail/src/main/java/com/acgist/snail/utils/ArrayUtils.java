@@ -23,7 +23,7 @@ public final class ArrayUtils {
 	/**
 	 * <p>查找索引时没有匹配索引：{@value}</p>
 	 */
-	public static final int NO_INDEX = -1;
+	public static final int NONE_INDEX = -1;
 	
 	/**
 	 * <p>判断数组是否相等</p>
@@ -194,7 +194,7 @@ public final class ArrayUtils {
 	 * @param values 数组
 	 * @param value 查找数值
 	 * 
-	 * @return 索引：{@value #NO_INDEX}-没有匹配
+	 * @return 索引：{@value #NONE_INDEX}-没有匹配
 	 * 
 	 * @see #indexOf(int[], int, int, int)
 	 */
@@ -210,7 +210,7 @@ public final class ArrayUtils {
 	 * @param end 结束位置
 	 * @param value 查找{@code int}
 	 * 
-	 * @return 索引：{@value #NO_INDEX}-没有匹配
+	 * @return 索引：{@value #NONE_INDEX}-没有匹配
 	 */
 	public static final int indexOf(int[] values, int begin, int end, int value) {
 		for (int index = begin; index < end; index++) {
@@ -218,7 +218,7 @@ public final class ArrayUtils {
 				return index;
 			}
 		}
-		return ArrayUtils.NO_INDEX;
+		return ArrayUtils.NONE_INDEX;
 	}
 	
 	/**
@@ -227,7 +227,7 @@ public final class ArrayUtils {
 	 * @param chars {@code char}数组
 	 * @param value 查找{@code char}
 	 * 
-	 * @return 索引：{@value #NO_INDEX}-没有匹配
+	 * @return 索引：{@value #NONE_INDEX}-没有匹配
 	 */
 	public static final int indexOf(char[] chars, char value) {
 		for (int index = 0; index < chars.length; index++) {
@@ -235,7 +235,7 @@ public final class ArrayUtils {
 				return index;
 			}
 		}
-		return ArrayUtils.NO_INDEX;
+		return ArrayUtils.NONE_INDEX;
 	}
 	
 }

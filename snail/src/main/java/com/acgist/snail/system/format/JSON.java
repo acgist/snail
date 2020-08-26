@@ -283,7 +283,7 @@ public final class JSON {
 		final StringBuilder builder = new StringBuilder();
 		for (char value : chars) {
 			index = ArrayUtils.indexOf(CHARS, value);
-			if(index == ArrayUtils.NO_INDEX) {
+			if(index == ArrayUtils.NONE_INDEX) {
 				builder.append(value);
 			} else {
 				builder.append(CHARS_ENCODE[index]);
