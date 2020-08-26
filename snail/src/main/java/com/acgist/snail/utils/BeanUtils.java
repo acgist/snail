@@ -85,12 +85,12 @@ public final class BeanUtils {
 	public static final Map<String, Object> toMap(Object instance) {
 		final Map<String, Object> map = new HashMap<>();
 		final String[] properties = properties(instance.getClass());
-		final SimpleDateFormat formater = new SimpleDateFormat(DateUtils.DEFAULT_PATTERN);
 		for (String property : properties) {
 			final Object object = propertyValue(instance, property);
 			if(object instanceof Enum<?>) {
 				map.put(property, ((Enum<?>) object).name());
 			} else if(object instanceof Date) {
+				final SimpleDateFormat formater = new SimpleDateFormat(DateUtils.DEFAULT_PATTERN);
 				map.put(property, formater.format(object));
 			} else {
 				map.put(property, object);
