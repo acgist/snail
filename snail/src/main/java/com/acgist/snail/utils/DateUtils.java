@@ -70,12 +70,12 @@ public final class DateUtils {
 		final long day = value / ONE_DAY;
 		if(day != 0) {
 			builder.append(day).append("天");
-			value = value - day * ONE_DAY;
+			value = value % ONE_DAY;
 		}
 		final long hour = value / ONE_HOUR;
 		if(hour != 0) {
 			builder.append(hour).append("小时");
-			value = value - hour * ONE_HOUR;
+			value = value % ONE_HOUR;
 			if(day != 0) {
 				return builder.toString();
 			}
@@ -83,7 +83,7 @@ public final class DateUtils {
 		final long minute = value / ONE_MINUTE;
 		if(minute != 0) {
 			builder.append(minute).append("分钟");
-			value = value - minute * ONE_MINUTE;
+			value = value % ONE_MINUTE;
 			if(hour != 0) {
 				return builder.toString();
 			}

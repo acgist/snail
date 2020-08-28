@@ -45,7 +45,7 @@ public final class FileUtils {
 	/**
 	 * <p>文件名禁用字符替换字符：{@value}</p>
 	 */
-	private static final String FILENAME_REPLACE_CHAR = "";
+	private static final String FILENAME_REPLACE_TARGET = "";
 	/**
 	 * <p>文件类型和文件后缀（扩展名）</p>
 	 * <p>类型=后缀</p>
@@ -104,6 +104,7 @@ public final class FileUtils {
 	 */
 	public static final void delete(final String filePath) {
 		if(StringUtils.isEmpty(filePath)) {
+			LOGGER.warn("删除文件为空：{}", filePath);
 			return;
 		}
 		final File file = new File(filePath);
@@ -121,6 +122,7 @@ public final class FileUtils {
 	 * @param file 文件
 	 */
 	private static final void delete(final File file) {
+		Objects.requireNonNull(file);
 		// 删除目录
 		if(file.isDirectory()) {
 			final File[] files = file.listFiles();
@@ -128,8 +130,9 @@ public final class FileUtils {
 				delete(children); // 删除子文件
 			}
 		}
-		final var ok = file.delete(); // 删除当前文件或目录
-		if(!ok) {
+		// 删除当前文件或目录
+		final var success = file.delete();
+		if(!success) {
 			LOGGER.warn("删除文件失败：{}", file.getAbsolutePath());
 		}
 	}
@@ -143,6 +146,7 @@ public final class FileUtils {
 	 */
 	public static final boolean recycle(final String filePath) {
 		if(StringUtils.isEmpty(filePath)) {
+			LOGGER.warn("回收文件为空：{}", filePath);
 			return false;
 		}
 		final var recycle = RecycleManager.newInstance(filePath);
@@ -194,7 +198,7 @@ public final class FileUtils {
 	public static final String fileNameFormat(String name) {
 		// 过滤文件名禁用字符
 		if(StringUtils.isNotEmpty(name)) {
-			name = name.replaceAll(FILENAME_REPLACE_REGEX, FILENAME_REPLACE_CHAR);
+			name = name.replaceAll(FILENAME_REPLACE_REGEX, FILENAME_REPLACE_TARGET);
 		}
 		// 过滤后名称为空：随机名称
 		if(StringUtils.isEmpty(name)) {
@@ -255,7 +259,7 @@ public final class FileUtils {
 		try(final var output = new FileOutputStream(filePath)) {
 			output.write(bytes);
 		} catch (IOException e) {
-			LOGGER.error("文件写入异常", e);
+			LOGGER.error("文件写入异常：{}", filePath, e);
 		}
 	}
 	
@@ -352,21 +356,21 @@ public final class FileUtils {
 	 * @return 文件大小
 	 */
 	public static final long fileSize(String path) {
-		long size = 0L;
 		final File file = new File(path);
 		if(!file.exists()) {
 			return 0L;
 		}
+		long size = 0L;
 		if(file.isFile()) { // 文件
 			try {
-				size = Files.size(Paths.get(path));
+				size = Files.size(file.toPath());
 			} catch (IOException e) {
-				LOGGER.error("获取文件大小异常", e);
+				LOGGER.error("获取文件大小异常：{}", file.getAbsolutePath(), e);
 			}
 		} else { // 目录
 			final File[] files = file.listFiles();
 			for (File children : files) {
-				size += fileSize(children.getPath());
+				size += fileSize(children.getAbsolutePath());
 			}
 		}
 		return size;
@@ -394,7 +398,7 @@ public final class FileUtils {
 	 * @param isFile {@code opt}是否是文件：{@code true}-文件；{@code false}-目录；
 	 */
 	public static final void buildFolder(File file, boolean isFile) {
-		if(file.exists()) {
+		if(file == null || file.exists()) {
 			return;
 		}
 		if(isFile) {
@@ -438,9 +442,11 @@ public final class FileUtils {
 	 * @param path 文件路径
 	 * @param algo 算法名称
 	 * 
-	 * @return 文件散列值：文件路径=散列值
+	 * @return 文件散列值Map：文件路径=散列值
 	 */
 	private static final Map<String, String> hash(String path, String algo) {
+		Objects.requireNonNull(path);
+		Objects.requireNonNull(algo);
 		final File file = new File(path);
 		if(!file.exists()) {
 			return null;
@@ -449,7 +455,7 @@ public final class FileUtils {
 		if (file.isDirectory()) {
 			final File[] files = file.listFiles();
 			for (File children : files) {
-				data.putAll(hash(children.getPath(), algo));
+				data.putAll(hash(children.getAbsolutePath(), algo));
 			}
 			return data;
 		} else {

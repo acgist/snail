@@ -53,7 +53,7 @@ public final class DesktopUtils {
 				}
 			});
 		} else {
-			LOGGER.info("系统不支持打开文件：{}", file.getPath());
+			LOGGER.info("系统不支持打开文件：{}", file.getAbsolutePath());
 		}
 	}
 	

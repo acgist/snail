@@ -54,7 +54,7 @@ public final class BuildController extends Controller implements Initializable {
 	public void handleTorrentAction(ActionEvent event) {
 		final File file = Choosers.chooseFile(BuildWindow.getInstance().stage(), "选择种子", "种子文件", "*.torrent");
 		if (file != null) {
-			setUrl(file.getPath());
+			this.setUrl(file.getAbsolutePath());
 		}
 	}
 

@@ -182,7 +182,7 @@ public final class TaskMenu extends Menu {
 				if(session.getType() == Type.TORRENT) {
 					final String torrent = session.getTorrent();
 					final String fileName = FileUtils.fileName(torrent);
-					final String newFile = FileUtils.file(file.getPath(), fileName);
+					final String newFile = FileUtils.file(file.getAbsolutePath(), fileName);
 					FileUtils.copy(torrent, newFile);
 				}
 			});

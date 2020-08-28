@@ -92,6 +92,7 @@ public final class BeanUtils {
 			if(object instanceof Enum<?>) {
 				map.put(property, ((Enum<?>) object).name());
 			} else if(object instanceof Date) {
+				// TODO：使用JDK最新写法，使用DateUtils工具替换
 				final SimpleDateFormat formater = new SimpleDateFormat(DateUtils.DEFAULT_PATTERN);
 				map.put(property, formater.format(object));
 			} else {

@@ -125,7 +125,7 @@ public abstract class PropertiesConfig {
 			properties.putAll(data);
 			properties.store(output, SystemConfig.getName());
 		} catch (IOException e) {
-			LOGGER.error("保存配置异常：{}", file.getPath(), e);
+			LOGGER.error("保存配置异常：{}", file.getAbsolutePath(), e);
 		}
 	}
 	
