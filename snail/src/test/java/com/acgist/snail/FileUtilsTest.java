@@ -33,7 +33,7 @@ public class FileUtilsTest extends BaseTest {
 	
 	@Test
 	public void testFileSize() {
-		long size = FileUtils.fileSize("F:\\迅雷下载\\我的大叔\\[我的大叔][E008].mkv");
+		long size = FileUtils.fileSize("F:\\迅雷下载\\我的大叔");
 		this.log(size);
 		this.log(FileUtils.formatSize(size));
 		this.log(FileUtils.formatSize(1024L));

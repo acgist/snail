@@ -306,7 +306,7 @@ public final class TorrentSession {
 	 */
 	private void loadTorrentStreamGroup() {
 		this.torrentStreamGroup = TorrentStreamGroup.newInstance(
-			this.taskSession.downloadFolder().getPath(),
+			this.taskSession.downloadFolder().getAbsolutePath(),
 			this.buildSelectedFiles(),
 			this
 		);
@@ -583,7 +583,7 @@ public final class TorrentSession {
 	 */
 	public void saveTorrent() {
 		final TorrentBuilder builder = TorrentBuilder.newInstance(this.infoHash, this.trackerLauncherGroup.trackers());
-		final String torrentFilePath = builder.buildFile(this.taskSession.downloadFolder().getPath());
+		final String torrentFilePath = builder.buildFile(this.taskSession.downloadFolder().getAbsolutePath());
 		this.taskSession.setTorrent(torrentFilePath); // 保存种子文件路径
 		this.taskSession.update();
 		try {
@@ -778,7 +778,7 @@ public final class TorrentSession {
 	 */
 	public int reload() {
 		return this.torrentStreamGroup.reload(
-			this.taskSession.downloadFolder().getPath(),
+			this.taskSession.downloadFolder().getAbsolutePath(),
 			this.buildSelectedFiles(),
 			this
 		);

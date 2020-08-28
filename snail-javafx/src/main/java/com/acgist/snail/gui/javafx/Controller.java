@@ -43,7 +43,7 @@ public abstract class Controller {
 		if(dragboard.hasFiles()) {
 			final var files = dragboard.getFiles();
 			if(CollectionUtils.isNotEmpty(files)) {
-				return files.get(0).getPath();
+				return files.get(0).getAbsolutePath();
 			}
 		} else if(dragboard.hasUrl()) {
 			return dragboard.getUrl();

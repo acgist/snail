@@ -60,7 +60,7 @@ public final class Choosers {
 		lastPath(chooser); // 设置上次选择目录
 		final File file = chooser.showDialog(window);
 		if (file != null) { // 更新上次选择目录
-			DownloadConfig.setLastPath(file.getPath());
+			DownloadConfig.setLastPath(file.getAbsolutePath());
 		}
 		return file;
 	}

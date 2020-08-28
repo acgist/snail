@@ -76,7 +76,7 @@ public final class SettingController extends Controller implements Initializable
 	public void handlePathAction(ActionEvent event) {
 		final File file = Choosers.chooseDirectory(SettingWindow.getInstance().stage(), "下载目录");
 		if (file != null) {
-			final String path = file.getPath();
+			final String path = file.getAbsolutePath();
 			DownloadConfig.setPath(path);
 			this.pathValue(DownloadConfig.getPath());
 		}
