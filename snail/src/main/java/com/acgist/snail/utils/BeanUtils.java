@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.h2.jdbc.JdbcClob;
@@ -83,6 +84,7 @@ public final class BeanUtils {
 	 * @return 属性{@code Map}
 	 */
 	public static final Map<String, Object> toMap(Object instance) {
+		Objects.requireNonNull(instance);
 		final Map<String, Object> map = new HashMap<>();
 		final String[] properties = properties(instance.getClass());
 		for (String property : properties) {
@@ -107,6 +109,7 @@ public final class BeanUtils {
 	 * @return 所有属性名称
 	 */
 	public static final String[] properties(Class<?> clazz) {
+		Objects.requireNonNull(clazz);
 		String[] properties = null;
 		final Class<?> superClazz = clazz.getSuperclass(); // 父类
 		if(superClazz != null) { // 递归获取属性
@@ -148,6 +151,8 @@ public final class BeanUtils {
 	 * @return 属性值
 	 */
 	public static final Object propertyValue(Object instance, String property) {
+		Objects.requireNonNull(instance);
+		Objects.requireNonNull(property);
 		final Class<?> clazz = instance.getClass();
 		try {
 			final PropertyDescriptor descriptor = new PropertyDescriptor(property, clazz);
@@ -165,6 +170,8 @@ public final class BeanUtils {
 	 * @param wrapper 结果集包装器
 	 */
 	public static final void setProperties(Object instance, ResultSetWrapper wrapper) {
+		Objects.requireNonNull(instance);
+		Objects.requireNonNull(wrapper);
 		final Class<?> clazz = instance.getClass();
 		final String[] properties = properties(clazz);
 		for (String property : properties) {
