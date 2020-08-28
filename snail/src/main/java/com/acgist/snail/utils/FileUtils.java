@@ -10,6 +10,7 @@ import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +51,7 @@ public final class FileUtils {
 	 * <p>文件类型和文件后缀（扩展名）</p>
 	 * <p>类型=后缀</p>
 	 */
-	private static final Map<FileType, List<String>> FILE_TYPE_EXT = new HashMap<>();
+	private static final Map<FileType, List<String>> FILE_TYPE_EXT = new EnumMap<>(FileType.class);
 	
 	static {
 		// 图片文件
@@ -131,6 +132,7 @@ public final class FileUtils {
 			}
 		}
 		// 删除当前文件或目录
+//		优化推荐：Files.delete
 		final var success = file.delete();
 		if(!success) {
 			LOGGER.warn("删除文件失败：{}", file.getAbsolutePath());
@@ -460,7 +462,7 @@ public final class FileUtils {
 			return data;
 		} else {
 			int length;
-			final byte bytes[] = new byte[SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH];
+			final byte[] bytes = new byte[SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH];
 			final MessageDigest digest = DigestUtils.digest(algo);
 			try (final var input = new BufferedInputStream(new FileInputStream(file))) {
 				while ((length = input.read(bytes)) != -1) {

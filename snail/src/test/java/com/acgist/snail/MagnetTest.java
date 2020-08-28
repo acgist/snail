@@ -22,11 +22,13 @@ public class MagnetTest extends BaseTest {
 	
 	@Test
 	public void testHash32() {
+//		7JETZCW5NWIHUBLVMMMDCAZ5Z6KLUUQX
 		var content = Base32Utils.encode(StringUtils.unhex("fa493c8add6d907a0575631831033dcf94ba5217"));
 		this.log(content);
 		this.log(content.length());
 //		this.log(new String(Base32Utils.decode(content)));
 		this.log(StringUtils.hex(Base32Utils.decode(content)));
+//		f1f030f304fe5a0e88cdec1fff3da7f3bf557f17
 		this.log(StringUtils.hex(Base32Utils.decode("6HYDB4YE7ZNA5CGN5QP76PNH6O7VK7YX")));
 	}
 	
