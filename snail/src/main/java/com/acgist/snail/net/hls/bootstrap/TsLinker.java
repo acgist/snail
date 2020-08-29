@@ -5,18 +5,28 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.system.exception.ArgumentException;
 import com.acgist.snail.utils.FileUtils;
+import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>TL文件连接器</p>
+ * 
+ * TODO：忽略输出文件，防止重复保存
+ * TODO：加密
  * 
  * @author acgist
  * @since 1.4.1
@@ -96,10 +106,35 @@ public final class TsLinker {
 		final byte[] bytes = new byte[SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH];
 		try(final var input = new FileInputStream(file)) {
 			while((length = input.read(bytes)) >= 0) {
-				output.write(bytes, 0, length);
+				byte[] x = aesDecry(bytes);
+				output.write(x, 0, x.length);
+//				output.write(bytes, 0, length);
 			}
 		} catch (IOException e) {
 			LOGGER.error("文件连接异常", e);
+		}
+	}
+	
+	private final static String AES = "AES";
+	
+	static SecretKeySpec keySpec;
+	static IvParameterSpec ivSpec;
+	static Cipher cipher ;
+	public static byte[] aesDecry(byte[] source) {
+		try {
+		if(keySpec == null)
+		keySpec = new SecretKeySpec(Files.readAllBytes(Paths.get("E:\\tmp\\ts\\kye0")), AES);
+		if(ivSpec == null)
+		ivSpec = new IvParameterSpec(StringUtils.unhex("670d6f57da3d1e54a0942326147cf280"));
+		if(cipher == null) {
+			cipher = Cipher.getInstance("AES/CBC/NoPadding");
+			cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
+		}
+		byte[] result = cipher.update(source);
+//		byte[] result = cipher.doFinal(source);
+		return result;
+		} catch (Exception e) {
+			throw new ArgumentException("机密失败", e);
 		}
 	}
 	
