@@ -119,7 +119,7 @@ public final class HlsProtocol extends Protocol {
 	
 	@Override
 	protected void clean(boolean ok) {
-		HlsManager.getInstance().hlsCrypt(this.taskEntity.getId(), this.m3u8.getHlsCrypt());
+		HlsManager.getInstance().cipher(this.taskEntity.getId(), this.m3u8.getCipher());
 		super.clean(ok);
 		this.m3u8 = null;
 	}

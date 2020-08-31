@@ -3,10 +3,11 @@ package com.acgist.snail.net.hls.bootstrap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.crypto.Cipher;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.hls.crypt.HlsCrypt;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.session.HlsSession;
 
@@ -27,10 +28,10 @@ public final class HlsManager {
 	}
 
 	/**
-	 * <p>HLS加密工具</p>
-	 * <p>任务ID=HLS加密工具</p>
+	 * <p>HLS加密套件</p>
+	 * <p>任务ID=HLS加密套件</p>
 	 */
-	private final Map<String, HlsCrypt> crypts;
+	private final Map<String, Cipher> ciphers;
 	/**
 	 * <p>HLS任务信息</p>
 	 * <p>任务ID=HLS任务信息</p>
@@ -38,31 +39,31 @@ public final class HlsManager {
 	private final Map<String, HlsSession> sessions;
 	
 	private HlsManager() {
-		this.crypts = new ConcurrentHashMap<>();
+		this.ciphers = new ConcurrentHashMap<>();
 		this.sessions = new ConcurrentHashMap<>();
 	}
 
 	/**
-	 * <p>设置加密工具</p>
+	 * <p>设置加密套件</p>
 	 * 
 	 * @param id 任务ID
-	 * @param crypt 加密工具
+	 * @param cipher 加密套件
 	 */
-	public void hlsCrypt(String id, HlsCrypt crypt) {
-		if(id != null && crypt != null) {
-			this.crypts.put(id, crypt);
+	public void cipher(String id, Cipher cipher) {
+		if(id != null && cipher != null) {
+			this.ciphers.put(id, cipher);
 		}
 	}
 	
 	/**
-	 * <p>获取加密工具</p>
+	 * <p>获取加密套件</p>
 	 * 
 	 * @param taskSession 任务信息
 	 * 
-	 * @return 加密工具
+	 * @return 加密套件
 	 */
-	public HlsCrypt hlsCrypt(ITaskSession taskSession) {
-		return this.crypts.get(taskSession.getId());
+	public Cipher cipher(ITaskSession taskSession) {
+		return this.ciphers.get(taskSession.getId());
 	}
 	
 	/**
@@ -84,7 +85,7 @@ public final class HlsManager {
 	 */
 	public void remove(ITaskSession taskSession) {
 		LOGGER.info("移除HLS任务：{}", taskSession.getName());
-		this.crypts.remove(taskSession.getId());
+		this.ciphers.remove(taskSession.getId());
 		this.sessions.remove(taskSession.getId());
 	}
 	

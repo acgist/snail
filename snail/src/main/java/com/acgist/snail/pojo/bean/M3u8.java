@@ -2,7 +2,8 @@ package com.acgist.snail.pojo.bean;
 
 import java.util.List;
 
-import com.acgist.snail.net.hls.crypt.HlsCrypt;
+import javax.crypto.Cipher;
+
 import com.acgist.snail.utils.ObjectUtils;
 
 /**
@@ -28,14 +29,51 @@ public final class M3u8 {
 	}
 	
 	/**
+	 * <p>加密协议</p>
+	 */
+	public enum Protocol {
+		
+		NONE("NONE"),
+		AES_128("AES-128"),
+		SAMPLE_AES("SAMPLE-AES");
+		
+		/**
+		 * <p>加密算法名称</p>
+		 */
+		private final String value;
+		
+		private Protocol(String value) {
+			this.value = value;
+		}
+		
+		/**
+		 * <p>通过加密算法名称获取加密协议</p>
+		 * 
+		 * @param value 加密算法名称
+		 * 
+		 * @return 加密协议
+		 */
+		public static final Protocol of(String value) {
+			final Protocol[] protocols = Protocol.values();
+			for (Protocol protocol : protocols) {
+				if(protocol.value.equals(value)) {
+					return protocol;
+				}
+			}
+			return null;
+		}
+		
+	}
+	
+	/**
 	 * <p>类型</p>
 	 */
 	private final Type type;
 	/**
-	 * <p>加密工具</p>
-	 * <p>为空时表示数据没有加密</p>
+	 * <p>加密套件</p>
+	 * <p>为空时表示不加密</p>
 	 */
-	private final HlsCrypt hlsCrypt;
+	private final Cipher cipher;
 	/**
 	 * <p>文件列表、M3U8列表</p>
 	 * <p>多级M3U8列表：按照码率从小到大排序</p>
@@ -44,12 +82,12 @@ public final class M3u8 {
 	
 	/**
 	 * @param type 类型
-	 * @param hlsCrypt 加密工具
+	 * @param cipher 加密套件
 	 * @param links 文件列表
 	 */
-	public M3u8(Type type, HlsCrypt hlsCrypt, List<String> links) {
+	public M3u8(Type type, Cipher cipher, List<String> links) {
 		this.type = type;
-		this.hlsCrypt = hlsCrypt;
+		this.cipher = cipher;
 		this.links = links;
 	}
 	
@@ -63,12 +101,12 @@ public final class M3u8 {
 	}
 
 	/**
-	 * <p>获取加密工具</p>
+	 * <p>获取加密套件</p>
 	 * 
-	 * @return 加密工具
+	 * @return 加密套件
 	 */
-	public HlsCrypt getHlsCrypt() {
-		return this.hlsCrypt;
+	public Cipher getCipher() {
+		return this.cipher;
 	}
 	
 	/**
