@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.ITaskSession;
+import com.acgist.snail.pojo.bean.M3u8;
 import com.acgist.snail.pojo.session.HlsSession;
 
 /**
@@ -28,10 +29,10 @@ public final class HlsManager {
 	}
 
 	/**
-	 * <p>HLS加密套件</p>
-	 * <p>任务ID=HLS加密套件</p>
+	 * <p>M3U8</p>
+	 * <p>任务ID=M3U8</p>
 	 */
-	private final Map<String, Cipher> ciphers;
+	private final Map<String, M3u8> m3u8s;
 	/**
 	 * <p>HLS任务信息</p>
 	 * <p>任务ID=HLS任务信息</p>
@@ -39,19 +40,19 @@ public final class HlsManager {
 	private final Map<String, HlsSession> sessions;
 	
 	private HlsManager() {
-		this.ciphers = new ConcurrentHashMap<>();
+		this.m3u8s = new ConcurrentHashMap<>();
 		this.sessions = new ConcurrentHashMap<>();
 	}
 
 	/**
-	 * <p>设置加密套件</p>
+	 * <p>设置M3U8</p>
 	 * 
 	 * @param id 任务ID
-	 * @param cipher 加密套件
+	 * @param m3u8 M3U8
 	 */
-	public void cipher(String id, Cipher cipher) {
-		if(id != null && cipher != null) {
-			this.ciphers.put(id, cipher);
+	public void m3u8(String id, M3u8 m3u8) {
+		if(id != null && m3u8 != null) {
+			this.m3u8s.put(id, m3u8);
 		}
 	}
 	
@@ -63,7 +64,11 @@ public final class HlsManager {
 	 * @return 加密套件
 	 */
 	public Cipher cipher(ITaskSession taskSession) {
-		return this.ciphers.get(taskSession.getId());
+		final M3u8 m3u8 = this.m3u8s.get(taskSession.getId());
+		if(m3u8 == null) {
+			return null;
+		}
+		return m3u8.getCipher();
 	}
 	
 	/**
@@ -85,7 +90,7 @@ public final class HlsManager {
 	 */
 	public void remove(ITaskSession taskSession) {
 		LOGGER.info("移除HLS任务：{}", taskSession.getName());
-		this.ciphers.remove(taskSession.getId());
+		this.m3u8s.remove(taskSession.getId());
 		this.sessions.remove(taskSession.getId());
 	}
 	
