@@ -32,6 +32,7 @@ public class HlsCryptAes128 extends HlsCrypt {
 		final SecretKeySpec secretKeySpec = new SecretKeySpec(secret, "AES");
 		final IvParameterSpec ivParameterSpec = new IvParameterSpec(iv);
 		try {
+//			PKCS7Padding：最后一个字节填充大小
 			this.cipher = Cipher.getInstance("AES/CBC/NoPadding");
 			this.cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException e) {

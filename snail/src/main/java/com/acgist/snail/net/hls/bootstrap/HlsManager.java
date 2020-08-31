@@ -49,7 +49,9 @@ public final class HlsManager {
 	 * @param crypt 加密工具
 	 */
 	public void hlsCrypt(String id, HlsCrypt crypt) {
-		this.crypts.put(id, crypt);
+		if(id != null && crypt != null) {
+			this.crypts.put(id, crypt);
+		}
 	}
 	
 	/**
