@@ -21,7 +21,6 @@ open module com.acgist.snail {
 	exports com.acgist.snail.net.codec;
 	exports com.acgist.snail.net.ftp;
 	exports com.acgist.snail.net.hls;
-	exports com.acgist.snail.net.hls.crypt;
 	exports com.acgist.snail.net.hls.bootstrap;
 	exports com.acgist.snail.net.http;
 	exports com.acgist.snail.net.stun;
