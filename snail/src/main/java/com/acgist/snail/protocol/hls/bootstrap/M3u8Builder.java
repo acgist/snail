@@ -2,6 +2,7 @@ package com.acgist.snail.protocol.hls.bootstrap;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,9 +10,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.acgist.snail.net.hls.crypt.HlsCrypt;
+import com.acgist.snail.net.hls.crypt.HlsCryptAes128;
+import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.pojo.bean.M3u8;
 import com.acgist.snail.pojo.bean.M3u8.Type;
+import com.acgist.snail.pojo.wrapper.KeyValueWrapper;
 import com.acgist.snail.system.exception.DownloadException;
+import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.ObjectUtils;
@@ -29,7 +38,7 @@ import com.acgist.snail.utils.UrlUtils;
  */
 public final class M3u8Builder {
 	
-//	private static final Logger LOGGER = LoggerFactory.getLogger(M3u8Builder.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(M3u8Builder.class);
 
 	/**
 	 * <p>类型标签</p>
@@ -39,6 +48,15 @@ public final class M3u8Builder {
 	 * <p>视频分片</p>
 	 */
 	private static final String TAG_EXTINF = "EXTINF";
+	/**
+	 * <p>数据加密</p>
+	 * <p>#EXT-X-KEY:METHOD=AES-128,URI="https://www.acgist.com/key",IV=0x00000000</p>
+	 */
+	private static final String TAG_EXT_X_KEY = "EXT-X-KEY";
+	/**
+	 * <p>序列号</p>
+	 */
+	private static final String TAG_EXT_X_MEDIA_SEQUENCE = "EXT-X-MEDIA-SEQUENCE";
 	/**
 	 * <p>视频结束标记</p>
 	 * <p>如果没有这个标记表示为直播流媒体</p>
@@ -111,9 +129,10 @@ public final class M3u8Builder {
 	 * 
 	 * @return M3U8
 	 * 
+	 * @throws NetException 网络异常
 	 * @throws DownloadException 下载异常
 	 */
-	public M3u8 build() throws DownloadException {
+	public M3u8 build() throws NetException, DownloadException {
 		if(CollectionUtils.isEmpty(this.lines)) {
 			throw new DownloadException("M3U8文件解析失败（没有描述信息）");
 		}
@@ -183,13 +202,16 @@ public final class M3u8Builder {
 	 * <p>创建M3U8信息</p>
 	 * 
 	 * @return M3U8
+	 * 
+	 * @throws NetException 网络异常 
 	 */
-	private M3u8 buildM3u8() {
+	private M3u8 buildM3u8() throws NetException {
 		// 判断是否是流媒体
 		final boolean stream = this.tags.stream().noneMatch(tag -> TAG_EXT_X_ENDLIST.equalsIgnoreCase(tag.getName()));
 		// 判断多级M3U8列表
 		final boolean multiM3u8 = this.tags.stream().anyMatch(tag -> TAG_EXT_X_STREAM_INF.equalsIgnoreCase(tag.getName()));
 		final M3u8.Type type = multiM3u8 ? Type.M3U8 : stream ? Type.STREAM : Type.FILE;
+		final HlsCrypt hlsCrypt = this.buildHlsCrypt();
 		// 读取文件列表
 		final List<String> links;
 		if(multiM3u8) {
@@ -197,8 +219,7 @@ public final class M3u8Builder {
 		} else {
 			links = this.buildFileLinks();
 		}
-		// TODO：读取加密方式
-		return new M3u8(type, links);
+		return new M3u8(type, hlsCrypt, links);
 	}
 	
 	/**
@@ -221,6 +242,80 @@ public final class M3u8Builder {
 			})
 			.map(tag -> UrlUtils.redirect(this.source, tag.getUrl()))
 			.collect(Collectors.toList());
+	}
+
+	/**
+	 * <p>创建加密工具</p>
+	 * 
+	 * @return 加密工具
+	 * 
+	 * @throws NetException 网络异常
+	 */
+	private HlsCrypt buildHlsCrypt() throws NetException {
+		final var keyOptional = this.tags.stream()
+			.filter(tag -> TAG_EXT_X_KEY.equalsIgnoreCase(tag.getName()))
+			.findFirst();
+		if(keyOptional.isEmpty()) {
+			return null;
+		}
+		final String value = keyOptional.get().getValue();
+		final var wrapper = KeyValueWrapper.newInstance(true, ',', '=');
+		final var map = wrapper.decode(value);
+		final String method = map.get("METHOD");
+		final HlsCrypt.Type type = HlsCrypt.Type.of(method);
+		LOGGER.debug("HLS加密算法：{}", method);
+		if(type == null || type == HlsCrypt.Type.NONE) {
+			return null;
+		}
+		if(type == HlsCrypt.Type.AES_128) {
+			final String iv = map.get("IV");
+			final String uri = map.get("URI");
+			return this.buildHlsCryptAes128(iv, uri);
+		}
+		return null;
+	}
+	
+	/**
+	 * <p>创建HlsCryptAes128</p>
+	 * 
+	 * @param iv IV
+	 * @param uri URI
+	 * 
+	 * @return HlsCryptAes128
+	 * 
+	 * @throws NetException 网络异常
+	 */
+	private HlsCrypt buildHlsCryptAes128(String iv, String uri) throws NetException {
+		byte[] ivBytes;
+		final String requestUri = UrlUtils.redirect(this.source, uri);
+		final byte[] secret = HTTPClient.get(requestUri, BodyHandlers.ofByteArray()).body();
+		if(iv == null) {
+			final var sequenceOptional = this.tags.stream()
+				.filter(tag -> TAG_EXT_X_MEDIA_SEQUENCE.equalsIgnoreCase(tag.getName()))
+				.findFirst();
+			if(sequenceOptional.isEmpty()) {
+				LOGGER.error("HLS数据缺少序列号：{}", this.source);
+				return null;
+			}
+			final String sequence = sequenceOptional.get().getValue();
+			final int length = sequence.length();
+			if(length > 32) {
+				LOGGER.error("HLS数据序列号错误：{}", sequence);
+				return null;
+			}
+			final String padding = "0".repeat(32 - length);
+			ivBytes = StringUtils.unhex(padding + sequence);
+		} else {
+			if(iv.length() == 32) {
+				ivBytes = StringUtils.unhex(iv);
+			} else if(iv.length() == 34) {
+				ivBytes = StringUtils.unhex(iv.substring(2));
+			} else {
+				LOGGER.error("HLS数据IV错误：{}-{}", this.source, iv);
+				return null;
+			}
+		}
+		return HlsCryptAes128.newInstance(secret, ivBytes);
 	}
 	
 	/**

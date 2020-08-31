@@ -129,7 +129,7 @@ public final class StunConfig {
 		 * 
 		 * @return 方法类型
 		 */
-		public static final MessageType valueOf(short value) {
+		public static final MessageType of(short value) {
 			final byte id = (byte) (
 			(
 				((value & C1_MASK) >> 7) |
@@ -200,7 +200,7 @@ public final class StunConfig {
 		 * 
 		 * @return 属性类型
 		 */
-		public static final AttributeType valueOf(short id) {
+		public static final AttributeType of(short id) {
 			final var types = AttributeType.values();
 			for (AttributeType attributeType : types) {
 				if(attributeType.id == id) {

@@ -149,7 +149,7 @@ public final class TrackerConfig extends PropertiesConfig {
 		 * 
 		 * @return 动作
 		 */
-		public static final Action valueOf(int id) {
+		public static final Action of(int id) {
 			final var values = Action.values();
 			for (Action action : values) {
 				if(id == action.id) {

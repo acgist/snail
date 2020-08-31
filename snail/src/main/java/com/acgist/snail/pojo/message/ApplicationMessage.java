@@ -73,7 +73,7 @@ public class ApplicationMessage {
 		 * 
 		 * @return 消息类型
 		 */
-		public static final Type valueOfName(String name) {
+		public static final Type of(String name) {
 			final var types = Type.values();
 			for (Type type : types) {
 				if(type.name().equalsIgnoreCase(name)) {
@@ -115,7 +115,7 @@ public class ApplicationMessage {
 			}
 			final String type = decoder.getString("type");
 			final String body = decoder.getString("body");
-			final Type messageType = Type.valueOfName(type);
+			final Type messageType = Type.of(type);
 			if(messageType == null) {
 				return null;
 			}

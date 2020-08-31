@@ -152,7 +152,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	@Override
 	public void onMessage(ByteBuffer buffer) throws NetException {
 		final byte typeId = buffer.get();
-		final ExtensionType extensionType = ExtensionType.valueOf(typeId);
+		final ExtensionType extensionType = ExtensionType.of(typeId);
 		if(extensionType == null) {
 			LOGGER.warn("处理扩展消息错误（类型不支持）：{}", typeId);
 			return;
@@ -270,7 +270,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 			supportTypes.entrySet().forEach(entry -> {
 				final Long typeId = (Long) entry.getValue();
 				final String typeValue = entry.getKey();
-				final PeerConfig.ExtensionType extensionType = PeerConfig.ExtensionType.valueOfValue(typeValue);
+				final PeerConfig.ExtensionType extensionType = PeerConfig.ExtensionType.of(typeValue);
 				if(extensionType == PeerConfig.ExtensionType.UT_HOLEPUNCH) {
 					this.peerSession.flags(PeerConfig.PEX_HOLEPUNCH);
 				}

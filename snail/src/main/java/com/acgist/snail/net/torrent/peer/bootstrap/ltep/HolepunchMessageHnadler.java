@@ -70,7 +70,7 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	@Override
 	public void doMessage(ByteBuffer buffer) {
 		final byte typeId = buffer.get();
-		final HolepunchType holepunchType = PeerConfig.HolepunchType.valueOf(typeId);
+		final HolepunchType holepunchType = PeerConfig.HolepunchType.of(typeId);
 		if(holepunchType == null) {
 			LOGGER.warn("处理holepunch消息错误（类型不支持）：{}", typeId);
 			return;

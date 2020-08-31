@@ -2,6 +2,7 @@ package com.acgist.snail.pojo.bean;
 
 import java.util.List;
 
+import com.acgist.snail.net.hls.crypt.HlsCrypt;
 import com.acgist.snail.utils.ObjectUtils;
 
 /**
@@ -31,6 +32,11 @@ public final class M3u8 {
 	 */
 	private final Type type;
 	/**
+	 * <p>加密工具</p>
+	 * <p>为空时表示数据没有加密</p>
+	 */
+	private final HlsCrypt hlsCrypt;
+	/**
 	 * <p>文件列表、M3U8列表</p>
 	 * <p>多级M3U8列表：按照码率从小到大排序</p>
 	 */
@@ -38,10 +44,12 @@ public final class M3u8 {
 	
 	/**
 	 * @param type 类型
+	 * @param hlsCrypt 加密工具
 	 * @param links 文件列表
 	 */
-	public M3u8(Type type, List<String> links) {
+	public M3u8(Type type, HlsCrypt hlsCrypt, List<String> links) {
 		this.type = type;
+		this.hlsCrypt = hlsCrypt;
 		this.links = links;
 	}
 	
@@ -51,16 +59,25 @@ public final class M3u8 {
 	 * @return 获取类型
 	 */
 	public Type getType() {
-		return type;
+		return this.type;
 	}
 
+	/**
+	 * <p>获取加密工具</p>
+	 * 
+	 * @return 加密工具
+	 */
+	public HlsCrypt getHlsCrypt() {
+		return this.hlsCrypt;
+	}
+	
 	/**
 	 * <p>获取文件列表</p>
 	 * 
 	 * @return 文件列表
 	 */
 	public List<String> getLinks() {
-		return links;
+		return this.links;
 	}
 	
 	/**
