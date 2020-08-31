@@ -12,13 +12,15 @@ public class TsLinkerTest extends BaseTest {
 
 	@Test
 	public void link() {
+		final String name = "index";
 		final File parent = new File("E:\\tmp\\ts\\test");
 		final var links = List.of(parent.listFiles()).stream()
 			.map(file -> file.getAbsolutePath())
+			.filter(path -> !path.contains(name)) // 排除生成文件：防止重复读写
 			.collect(Collectors.toList());
 //		final HlsCrypt crypt = HlsCryptAes128.newInstance(secret, iv);
 		final TsLinker linker = TsLinker.newInstance(
-			"index",
+			name,
 			"E:\\tmp\\ts\\test",
 			null,
 			links

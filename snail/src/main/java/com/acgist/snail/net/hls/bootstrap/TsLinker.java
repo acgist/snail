@@ -19,9 +19,6 @@ import com.acgist.snail.utils.FileUtils;
 /**
  * <p>TL文件连接器</p>
  * 
- * TODO：忽略输出文件，防止重复保存
- * TODO：加密
- * 
  * @author acgist
  * @since 1.4.1
  */
