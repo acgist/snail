@@ -105,7 +105,7 @@ public final class KeyValueWrapper {
 			return null;
 		}
 		final String[] kvs = content.split(String.valueOf(this.separator));
-		final Map<String, String> map = new HashMap<String, String>();
+		final Map<String, String> map = new HashMap<>();
 		int index;
 		String key;
 		String value;

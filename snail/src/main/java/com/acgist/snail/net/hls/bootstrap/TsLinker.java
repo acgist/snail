@@ -9,10 +9,11 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.crypto.Cipher;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.hls.crypt.HlsCrypt;
 import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.FileUtils;
 
@@ -40,18 +41,18 @@ public final class TsLinker {
 	 */
 	private final String path;
 	/**
-	 * <p>加密工具</p>
+	 * <p>加密套件</p>
 	 */
-	private final HlsCrypt hlsCrypt;
+	private final Cipher cipher;
 	/**
 	 * <p>文件链接列表</p>
 	 */
 	private final List<String> links;
 	
-	private TsLinker(String name, String path, HlsCrypt hlsCrypt, List<String> links) {
+	private TsLinker(String name, String path, Cipher cipher, List<String> links) {
 		this.name = name;
 		this.path = path;
-		this.hlsCrypt = hlsCrypt;
+		this.cipher = cipher;
 		this.links = links;
 	}
 	
@@ -60,13 +61,13 @@ public final class TsLinker {
 	 * 
 	 * @param name 任务名称
 	 * @param path 文件路径
-	 * @param hlsCrypt 加密工具
+	 * @param cipher 加密套件
 	 * @param links 文件链接列表
 	 * 
 	 * @return TS连接器
 	 */
-	public static final TsLinker newInstance(String name, String path, HlsCrypt hlsCrypt, List<String> links) {
-		return new TsLinker(name, path, hlsCrypt, links);
+	public static final TsLinker newInstance(String name, String path, Cipher cipher, List<String> links) {
+		return new TsLinker(name, path, cipher, links);
 	}
 	
 	/**
@@ -101,11 +102,11 @@ public final class TsLinker {
 	private void link(File file, OutputStream output) {
 		int length = 0;
 		final byte[] bytes = new byte[SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH];
-		final boolean crypt = this.hlsCrypt != null;
+		final boolean crypt = this.cipher != null;
 		try(final var input = new FileInputStream(file)) {
 			while((length = input.read(bytes)) >= 0) {
 				if(crypt) {
-					final byte[] decrypt = this.hlsCrypt.decrypt(bytes);
+					final byte[] decrypt = this.cipher.update(bytes);
 					output.write(decrypt, 0, decrypt.length);
 				} else {
 					output.write(bytes, 0, length);
