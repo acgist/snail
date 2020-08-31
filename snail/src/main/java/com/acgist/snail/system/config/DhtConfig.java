@@ -230,7 +230,7 @@ public final class DhtConfig extends PropertiesConfig {
 		 * 
 		 * @return 类型
 		 */
-		public static final QType valueOfQ(String value) {
+		public static final QType of(String value) {
 			final var types = QType.values();
 			for (QType type : types) {
 				if(type.value.equals(value)) {

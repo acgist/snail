@@ -44,7 +44,7 @@ public final class TrackerMessageHandler extends UdpMessageHandler {
 	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) {
 		buffer.flip();
 		final int id = buffer.getInt();
-		final var action = Action.valueOf(id);
+		final var action = Action.of(id);
 		if(action == null) {
 			LOGGER.warn("处理Tracker消息错误（类型不支持）：{}", id);
 			return;

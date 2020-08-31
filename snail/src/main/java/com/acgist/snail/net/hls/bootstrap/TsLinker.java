@@ -5,22 +5,16 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.net.hls.crypt.HlsCrypt;
 import com.acgist.snail.system.config.SystemConfig;
-import com.acgist.snail.system.exception.ArgumentException;
 import com.acgist.snail.utils.FileUtils;
-import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>TL文件连接器</p>
@@ -49,13 +43,18 @@ public final class TsLinker {
 	 */
 	private final String path;
 	/**
+	 * <p>加密工具</p>
+	 */
+	private final HlsCrypt hlsCrypt;
+	/**
 	 * <p>文件链接列表</p>
 	 */
 	private final List<String> links;
 	
-	private TsLinker(String name, String path, List<String> links) {
+	private TsLinker(String name, String path, HlsCrypt hlsCrypt, List<String> links) {
 		this.name = name;
 		this.path = path;
+		this.hlsCrypt = hlsCrypt;
 		this.links = links;
 	}
 	
@@ -64,12 +63,13 @@ public final class TsLinker {
 	 * 
 	 * @param name 任务名称
 	 * @param path 文件路径
+	 * @param hlsCrypt 加密工具
 	 * @param links 文件链接列表
 	 * 
 	 * @return TS连接器
 	 */
-	public static final TsLinker newInstance(String name, String path, List<String> links) {
-		return new TsLinker(name, path, links);
+	public static final TsLinker newInstance(String name, String path, HlsCrypt hlsCrypt, List<String> links) {
+		return new TsLinker(name, path, hlsCrypt, links);
 	}
 	
 	/**
@@ -104,37 +104,18 @@ public final class TsLinker {
 	private void link(File file, OutputStream output) {
 		int length = 0;
 		final byte[] bytes = new byte[SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH];
+		final boolean crypt = this.hlsCrypt != null;
 		try(final var input = new FileInputStream(file)) {
 			while((length = input.read(bytes)) >= 0) {
-				byte[] x = aesDecry(bytes);
-				output.write(x, 0, x.length);
-//				output.write(bytes, 0, length);
+				if(crypt) {
+					final byte[] decrypt = this.hlsCrypt.decrypt(bytes);
+					output.write(decrypt, 0, decrypt.length);
+				} else {
+					output.write(bytes, 0, length);
+				}
 			}
 		} catch (IOException e) {
 			LOGGER.error("文件连接异常", e);
-		}
-	}
-	
-	private final static String AES = "AES";
-	
-	static SecretKeySpec keySpec;
-	static IvParameterSpec ivSpec;
-	static Cipher cipher ;
-	public static byte[] aesDecry(byte[] source) {
-		try {
-		if(keySpec == null)
-		keySpec = new SecretKeySpec(Files.readAllBytes(Paths.get("E:\\tmp\\ts\\kye0")), AES);
-		if(ivSpec == null)
-		ivSpec = new IvParameterSpec(StringUtils.unhex("670d6f57da3d1e54a0942326147cf280"));
-		if(cipher == null) {
-			cipher = Cipher.getInstance("AES/CBC/NoPadding");
-			cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
-		}
-		byte[] result = cipher.update(source);
-//		byte[] result = cipher.doFinal(source);
-		return result;
-		} catch (Exception e) {
-			throw new ArgumentException("机密失败", e);
 		}
 	}
 	

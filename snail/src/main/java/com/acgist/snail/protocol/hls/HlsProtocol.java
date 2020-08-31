@@ -5,6 +5,7 @@ import java.net.http.HttpResponse.BodyHandlers;
 
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.downloader.hls.HlsDownloader;
+import com.acgist.snail.net.hls.bootstrap.HlsManager;
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.bean.M3u8;
@@ -58,7 +59,11 @@ public final class HlsProtocol extends Protocol {
 	
 	@Override
 	protected void prep() throws DownloadException {
-		this.buildM3u8();
+		try {
+			this.buildM3u8();
+		} catch (NetException e) {
+			throw new DownloadException("网络异常", e);
+		}
 	}
 	
 	@Override
@@ -75,9 +80,10 @@ public final class HlsProtocol extends Protocol {
 	/**
 	 * <p>获取M3U8信息</p>
 	 * 
+	 * @throws NetException 网络异常
 	 * @throws DownloadException 下载异常
 	 */
-	private void buildM3u8() throws DownloadException {
+	private void buildM3u8() throws NetException, DownloadException {
 		final var client = HTTPClient.newInstance(this.url);
 		HttpResponse<String> response;
 		try {
@@ -113,6 +119,7 @@ public final class HlsProtocol extends Protocol {
 	
 	@Override
 	protected void clean(boolean ok) {
+		HlsManager.getInstance().hlsCrypt(this.taskEntity.getId(), this.m3u8.getHlsCrypt());
 		super.clean(ok);
 		this.m3u8 = null;
 	}

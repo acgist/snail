@@ -16,9 +16,11 @@ public class TsLinkerTest extends BaseTest {
 		final var links = List.of(parent.listFiles()).stream()
 			.map(file -> file.getAbsolutePath())
 			.collect(Collectors.toList());
+//		final HlsCrypt crypt = HlsCryptAes128.newInstance(secret, iv);
 		final TsLinker linker = TsLinker.newInstance(
 			"index",
 			"E:\\tmp\\ts\\test",
+			null,
 			links
 		);
 		linker.link();

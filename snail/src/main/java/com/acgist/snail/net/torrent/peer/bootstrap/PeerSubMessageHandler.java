@@ -259,7 +259,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		buffer.flip();
 		if(this.handshakeRecv) { // 已经握手
 			final byte typeId = buffer.get();
-			final PeerConfig.Type type = PeerConfig.Type.valueOf(typeId);
+			final PeerConfig.Type type = PeerConfig.Type.of(typeId);
 			if(type == null) {
 				LOGGER.warn("处理Peer消息错误（类型不支持）：{}", typeId);
 				return;

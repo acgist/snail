@@ -14,19 +14,19 @@ public class StunTest extends BaseTest {
 		short value = StunConfig.MessageType.REQUEST.type(MethodType.BINDING);
 		this.log(value);
 		this.log(String.format("%016d", Integer.valueOf(Integer.toBinaryString(value))));
-		this.log(StunConfig.MessageType.valueOf(value));
+		this.log(StunConfig.MessageType.of(value));
 		value = StunConfig.MessageType.INDICATION.type(MethodType.BINDING);
 		this.log(value);
 		this.log(String.format("%016d", Integer.valueOf(Integer.toBinaryString(value))));
-		this.log(StunConfig.MessageType.valueOf(value));
+		this.log(StunConfig.MessageType.of(value));
 		value = StunConfig.MessageType.SUCCESS_RESPONSE.type(MethodType.BINDING);
 		this.log(value);
 		this.log(String.format("%016d", Integer.valueOf(Integer.toBinaryString(value))));
-		this.log(StunConfig.MessageType.valueOf(value));
+		this.log(StunConfig.MessageType.of(value));
 		value = StunConfig.MessageType.ERROR_RESPONSE.type(MethodType.BINDING);
 		this.log(value);
 		this.log(String.format("%016d", Integer.valueOf(Integer.toBinaryString(value))));
-		this.log(StunConfig.MessageType.valueOf(value));
+		this.log(StunConfig.MessageType.of(value));
 	}
 	
 	@Test

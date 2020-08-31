@@ -79,7 +79,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException {
 		buffer.flip();
 		final short type = (short) (buffer.getShort() & MessageType.TYPE_MASK);
-		final var messageType = StunConfig.MessageType.valueOf(type);
+		final var messageType = StunConfig.MessageType.of(type);
 		if(messageType == null) {
 			LOGGER.warn("处理STUN消息错误（类型不支持）：{}", type);
 			return;
@@ -141,7 +141,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 			LOGGER.error("处理STUN消息-属性错误（剩余长度）：{}-{}", buffer.remaining(), length);
 			return;
 		}
-		final var attributeType = StunConfig.AttributeType.valueOf(typeId);
+		final var attributeType = StunConfig.AttributeType.of(typeId);
 		if(attributeType == null) {
 			final ByteBuffer message = readResponseAttribute(buffer, length);
 			final String body = new String(message.array());
