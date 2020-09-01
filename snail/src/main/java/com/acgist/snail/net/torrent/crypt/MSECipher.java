@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.bean.InfoHash;
-import com.acgist.snail.system.exception.ArgumentException;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.DigestUtils;
 
@@ -52,8 +51,12 @@ public final class MSECipher {
 	 * 
 	 * @param encryptKey 加密Key
 	 * @param decryptKey 解密Key
+	 * 
+	 * @throws InvalidKeyException 密钥异常
+	 * @throws NoSuchPaddingException 填充异常
+	 * @throws NoSuchAlgorithmException 算法异常
 	 */
-	private MSECipher(Key encryptKey, Key decryptKey) {
+	private MSECipher(Key encryptKey, Key decryptKey) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException {
 		this.encryptCipher = this.buildCipher(Cipher.ENCRYPT_MODE, ARC4_ALGO_TRANSFORMATION, encryptKey);
 		this.decryptCipher = this.buildCipher(Cipher.DECRYPT_MODE, ARC4_ALGO_TRANSFORMATION, decryptKey);
 	}
@@ -65,11 +68,17 @@ public final class MSECipher {
 	 * @param infoHash InfoHash
 	 * 
 	 * @return 加解密套件
+	 * 
+	 * @throws NetException 网络异常
 	 */
-	public static final MSECipher newSender(byte[] S, InfoHash infoHash) {
+	public static final MSECipher newSender(byte[] S, InfoHash infoHash) throws NetException {
 		final Key sendKey = buildSendKey(S, infoHash.infoHash());
 		final Key recvKey = buildRecvKey(S, infoHash.infoHash());
-		return new MSECipher(sendKey, recvKey);
+		try {
+			return new MSECipher(sendKey, recvKey);
+		} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException e) {
+			throw new NetException("创建加密套件失败", e);
+		}
 	}
 	
 	/**
@@ -79,11 +88,17 @@ public final class MSECipher {
 	 * @param infoHash InfoHash
 	 * 
 	 * @return 加解密套件
+	 * 
+	 * @throws NetException 网络异常
 	 */
-	public static final MSECipher newRecver(byte[] S, InfoHash infoHash) {
+	public static final MSECipher newRecver(byte[] S, InfoHash infoHash) throws NetException {
 		final Key sendKey = buildSendKey(S, infoHash.infoHash());
 		final Key recvKey = buildRecvKey(S, infoHash.infoHash());
-		return new MSECipher(recvKey, sendKey);
+		try {
+			return new MSECipher(recvKey, sendKey);
+		} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException e) {
+			throw new NetException("创建加密套件失败", e);
+		}
 	}
 
 	/**
@@ -227,16 +242,16 @@ public final class MSECipher {
 	 * @param key Key
 	 * 
 	 * @return 加解密套件
+	 * 
+	 * @throws InvalidKeyException 密钥异常
+	 * @throws NoSuchPaddingException 填充异常
+	 * @throws NoSuchAlgorithmException 算法异常
 	 */
-	private Cipher buildCipher(int mode, String transformation, Key key) {
-		try {
-			final Cipher cipher = Cipher.getInstance(transformation);
-			cipher.init(mode, key);
-			cipher.update(new byte[1024]); // 丢弃1024字节
-			return cipher;
-		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException e) {
-			throw new ArgumentException("创建Cipher失败（不支持的算法）：" + transformation, e);
-		}
+	private Cipher buildCipher(int mode, String transformation, Key key) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException {
+		final Cipher cipher = Cipher.getInstance(transformation);
+		cipher.init(mode, key);
+		cipher.update(new byte[1024]); // 丢弃1024字节
+		return cipher;
 	}
 
 }

@@ -2,6 +2,7 @@ package com.acgist.snail.net.torrent.crypt;
 
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
+import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.MessageDigest;
 import java.time.Duration;
@@ -348,7 +349,11 @@ public final class MSECryptHandshakeHandler {
 		this.buffer.flip();
 		final BigInteger publicKey = NumberUtils.decodeBigInteger(this.buffer, CryptConfig.PUBLIC_KEY_LENGTH);
 		this.buffer.compact();
-		this.dhSecret = MSEKeyPairBuilder.buildDHSecret(publicKey, this.keyPair.getPrivate());
+		try {
+			this.dhSecret = MSEKeyPairBuilder.buildDHSecret(publicKey, this.keyPair.getPrivate());
+		} catch (InvalidKeyException e) {
+			throw new NetException("获取密钥失败", e);
+		}
 		if(this.step == Step.RECEIVE_PUBLIC_KEY) {
 			this.sendPublicKey();
 			this.step = Step.RECEIVE_PROVIDE;

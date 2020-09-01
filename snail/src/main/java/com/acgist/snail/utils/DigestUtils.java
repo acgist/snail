@@ -3,8 +3,6 @@ package com.acgist.snail.utils;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import com.acgist.snail.system.exception.ArgumentException;
-
 /**
  * <p>散列算法工具</p>
  * <p>散列算法：计算数据摘要</p>
@@ -62,7 +60,7 @@ public final class DigestUtils {
 		try {
 			return MessageDigest.getInstance(algo);
 		} catch (NoSuchAlgorithmException e) {
-			throw new ArgumentException("不支持的散列算法：" + algo, e);
+			throw new IllegalArgumentException("不支持的散列算法：" + algo, e);
 		}
 	}
 	

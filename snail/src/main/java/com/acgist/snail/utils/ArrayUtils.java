@@ -4,7 +4,6 @@ import java.util.Objects;
 import java.util.Random;
 
 import com.acgist.snail.system.config.SystemConfig;
-import com.acgist.snail.system.exception.ArgumentException;
 
 /**
  * <p>数组工具</p>
@@ -93,7 +92,7 @@ public final class ArrayUtils {
 		Objects.requireNonNull(sources, "异或运算参数错误");
 		Objects.requireNonNull(targets, "异或运算参数错误");
 		if (sources.length != targets.length) {
-			throw new ArgumentException("异或运算参数错误（长度）");
+			throw new IllegalArgumentException("异或运算参数错误（长度）");
 		} else {
 			final int length = sources.length;
 			final byte[] result = new byte[length];
@@ -118,7 +117,7 @@ public final class ArrayUtils {
 		Objects.requireNonNull(sources, "差异索引参数错误");
 		Objects.requireNonNull(targets, "差异索引参数错误");
 		if (sources.length != targets.length) {
-			throw new ArgumentException("差异索引参数错误（长度）");
+			throw new IllegalArgumentException("差异索引参数错误（长度）");
 		} else {
 			final int length = sources.length;
 			for (int index = 0; index < length; index++) {

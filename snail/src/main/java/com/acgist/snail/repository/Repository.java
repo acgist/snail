@@ -16,7 +16,6 @@ import com.acgist.snail.pojo.wrapper.ResultSetWrapper;
 import com.acgist.snail.system.exception.RepositoryException;
 import com.acgist.snail.utils.BeanUtils;
 import com.acgist.snail.utils.CollectionUtils;
-import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>数据库</p>
@@ -189,9 +188,7 @@ public abstract class Repository<T extends Entity> {
 	 */
 	public T findOne(String property, String value) {
 		RepositoryException.requireNotNull(property);
-		if(!StringUtils.regex(property, COLUMN_REGEX, true)) {
-			throw new RepositoryException("参数错误：" + property);
-		}
+		RepositoryException.requireMatch(property, COLUMN_REGEX);
 		final StringBuilder sql = new StringBuilder();
 		sql
 			.append("SELECT * FROM ")

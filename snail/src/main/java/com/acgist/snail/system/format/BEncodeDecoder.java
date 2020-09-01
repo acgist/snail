@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.system.exception.ArgumentException;
 import com.acgist.snail.system.exception.PacketSizeException;
 import com.acgist.snail.utils.StringUtils;
 
@@ -109,7 +108,7 @@ public final class BEncodeDecoder {
 	private BEncodeDecoder(byte[] bytes) {
 		Objects.requireNonNull(bytes, "B编码内容错误（数据为空）");
 		if(bytes.length < 2) {
-			throw new ArgumentException("B编码内容错误（数据长度）");
+			throw new IllegalArgumentException("B编码内容错误（数据长度）");
 		}
 		this.inputStream = new ByteArrayInputStream(bytes);
 	}
@@ -284,7 +283,7 @@ public final class BEncodeDecoder {
 			if(indexChar == TYPE_E) {
 				final var number = valueBuilder.toString();
 				if(!StringUtils.isNumeric(number)) {
-					throw new ArgumentException("B编码格式错误（数字）：" + number);
+					throw new IllegalArgumentException("B编码格式错误（数字）：" + number);
 				}
 				return Long.valueOf(number);
 			} else {
@@ -440,7 +439,7 @@ public final class BEncodeDecoder {
 	private byte[] read(StringBuilder lengthBuilder, ByteArrayInputStream inputStream) throws PacketSizeException {
 		final var number = lengthBuilder.toString();
 		if(!StringUtils.isNumeric(number)) {
-			throw new ArgumentException("B编码格式错误（数字）：" + number);
+			throw new IllegalArgumentException("B编码格式错误（数字）：" + number);
 		}
 		final int length = Integer.parseInt(number);
 		PacketSizeException.verify(length);

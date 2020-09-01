@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.pojo.entity.ConfigEntity;
 import com.acgist.snail.repository.impl.ConfigRepository;
-import com.acgist.snail.system.exception.ArgumentException;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -215,7 +214,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	 */
 	public static final String getPath(String fileName) {
 		if(StringUtils.isEmpty(fileName)) {
-			throw new ArgumentException("文件名称格式错误：" + fileName);
+			throw new IllegalArgumentException("文件名称格式错误：" + fileName);
 		}
 		return FileUtils.file(getPath(), fileName);
 	}

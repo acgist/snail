@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -27,7 +28,6 @@ import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.SAXException;
 
 import com.acgist.snail.system.config.SystemConfig;
-import com.acgist.snail.system.exception.ArgumentException;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -66,10 +66,10 @@ public final class XML {
 		final DocumentBuilderFactory factory = buildFactory();
 		try {
 			xml.document = factory.newDocumentBuilder().newDocument();
-			return xml;
 		} catch (ParserConfigurationException e) {
-			throw new ArgumentException("创建XML失败", e);
+			LOGGER.error("创建XML异常", e);
 		}
+		return xml;
 	}
 	
 	/**
@@ -80,15 +80,16 @@ public final class XML {
 	 * @return XML工具对象
 	 */
 	public static final XML load(String content) {
+		Objects.requireNonNull(content, "XML内容为空");
 		final XML xml = new XML();
 		final DocumentBuilderFactory factory = buildFactory();
 		try {
 			final DocumentBuilder builder = factory.newDocumentBuilder();
 			xml.document = builder.parse(new ByteArrayInputStream(content.getBytes()));
-			return xml;
 		} catch (ParserConfigurationException | SAXException | IOException e) {
-			throw new ArgumentException("解析XML失败：" + content, e);
+			LOGGER.error("解析XML异常：{}", content, e);
 		}
+		return xml;
 	}
 	
 	/**
@@ -99,11 +100,13 @@ public final class XML {
 	 * @return XML工具对象
 	 */
 	public static final XML loadFile(String filePath) {
+		String content = null;
 		try {
-			return load(Files.readString(Paths.get(filePath)));
+			content = Files.readString(Paths.get(filePath));
 		} catch (IOException e) {
-			throw new ArgumentException("解析XML失败：" + filePath, e);
+			LOGGER.error("读取XML内容异常：{}", filePath, e);
 		}
+		return load(content);
 	}
 	
 	/**
