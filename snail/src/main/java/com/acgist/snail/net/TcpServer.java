@@ -117,7 +117,7 @@ public abstract class TcpServer<T extends TcpMessageHandler> {
 	 */
 	public static final void shutdown() {
 		LOGGER.info("关闭TCP Server线程池");
-		IoUtils.close(GROUP);
+		SystemThreadContext.shutdown(GROUP);
 	}
 	
 }

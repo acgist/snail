@@ -1,5 +1,6 @@
 package com.acgist.snail.system.context;
 
+import java.nio.channels.AsynchronousChannelGroup;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
@@ -296,7 +297,52 @@ public final class SystemThreadContext {
 		try {
 			scheduledFuture.cancel(now);
 		} catch (Exception e) {
-			LOGGER.error("定时任务关闭异常", e);
+			LOGGER.error("关闭定时任务异常", e);
+		}
+	}
+	
+	/**
+	 * <p>关闭异步通道线程池</p>
+	 * 
+	 * @param group 异步通道线程池
+	 * 
+	 * @since 1.5.0
+	 */
+	public static final void shutdown(AsynchronousChannelGroup group) {
+		shutdown(false, group);
+	}
+	
+	/**
+	 * <p>关闭异步通道线程池（立即关闭）</p>
+	 * 
+	 * @param group 异步通道线程池
+	 * 
+	 * @since 1.5.0
+	 */
+	public static final void shutdownNow(AsynchronousChannelGroup group) {
+		shutdown(true, group);
+	}
+	
+	/**
+	 * <p>关闭异步通道线程池</p>
+	 * 
+	 * @param now 是否立即关闭
+	 * @param group 异步通道线程池
+	 * 
+	 * @since 1.5.0
+	 */
+	private static final void shutdown(boolean now, AsynchronousChannelGroup group) {
+		if(group == null || group.isShutdown()) {
+			return;
+		}
+		try {
+			if(now) {
+				group.shutdownNow();
+			} else {
+				group.shutdown();
+			}
+		} catch (Exception e) {
+			LOGGER.error("关闭异步通道线程池异常", e);
 		}
 	}
 

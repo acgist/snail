@@ -122,7 +122,7 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 	 */
 	public static final void shutdown() {
 		LOGGER.info("关闭TCP Client线程池");
-		IoUtils.close(GROUP);
+		SystemThreadContext.shutdown(GROUP);
 	}
 
 }

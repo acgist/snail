@@ -5,6 +5,7 @@ import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
@@ -182,8 +183,13 @@ public final class NetUtils {
 	 * @return IP地址（{@code long}）
 	 */
 	public static final long encodeIpToLong(String ip) {
-		long result = 0, value;
+		Objects.requireNonNull(ip, "IP地址不能为空");
 		final String[] array = ip.split("\\.");
+		if(array.length != 4) {
+			throw new IllegalArgumentException("IP格式错误：" + ip);
+		}
+		long value;
+		long result = 0;
 		for (int index = 3; index >= 0; index--) {
 			value = Long.parseLong(array[3 - index]);
 			result |= value << (index * 8);

@@ -28,7 +28,9 @@ public final class LoggerUtils {
 	public static final void shutdown() {
 		LOGGER.debug("关闭日志系统");
 		final LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-		context.stop();
+		if(context != null) {
+			context.stop();
+		}
 	}
 
 }
