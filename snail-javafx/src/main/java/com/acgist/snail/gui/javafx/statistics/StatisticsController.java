@@ -279,8 +279,7 @@ public final class StatisticsController extends Controller implements Initializa
 	private TextFlow buildSystemInfo(String name, Object info) {
 		final Label label = new Label(name);
 		final Text text = new Text(info.toString());
-		final TextFlow flow = new TextFlow(label, text);
-		return flow;
+		return new TextFlow(label, text);
 	}
 	
 	/**
