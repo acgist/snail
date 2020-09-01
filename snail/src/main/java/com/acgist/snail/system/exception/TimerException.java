@@ -6,7 +6,7 @@ package com.acgist.snail.system.exception;
  * @author acgist
  * @since 1.2.0
  */
-public class TimerException extends ArgumentException {
+public class TimerException extends IllegalArgumentException {
 
 	private static final long serialVersionUID = 1L;
 
