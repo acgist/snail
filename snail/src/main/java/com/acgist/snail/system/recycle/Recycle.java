@@ -2,7 +2,6 @@ package com.acgist.snail.system.recycle;
 
 import java.io.File;
 
-import com.acgist.snail.system.exception.ArgumentException;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -29,7 +28,7 @@ public abstract class Recycle {
 	 */
 	protected Recycle(String path) {
 		if(StringUtils.isEmpty(path)) {
-			throw new ArgumentException("路径格式错误：" + path);
+			throw new IllegalArgumentException("路径格式错误：" + path);
 		}
 		this.path = path;
 		this.file = new File(path);

@@ -2,6 +2,7 @@ package com.acgist.snail;
 
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
+import java.security.InvalidKeyException;
 
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +14,7 @@ import com.acgist.snail.utils.StringUtils;
 public class MSETest extends BaseTest {
 
 	@Test
-	public void testMSE() {
+	public void testMSE() throws InvalidKeyException {
 		MSEKeyPairBuilder mseKeyPairBuilder = MSEKeyPairBuilder.newInstance();
 		var a = mseKeyPairBuilder.buildKeyPair();
 		var b = mseKeyPairBuilder.buildKeyPair();

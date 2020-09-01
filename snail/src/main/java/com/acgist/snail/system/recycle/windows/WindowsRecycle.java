@@ -8,7 +8,6 @@ import java.nio.ByteOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.system.exception.ArgumentException;
 import com.acgist.snail.system.recycle.Recycle;
 import com.acgist.snail.utils.DateUtils;
 import com.acgist.snail.utils.FileUtils;
@@ -67,7 +66,7 @@ public final class WindowsRecycle extends Recycle {
 		final String recycleFolder = FileUtils.file(disk + ":", RECYCLE_FOLDER);
 		final File recycleFile = new File(recycleFolder);
 		if(!recycleFile.exists()) {
-			throw new ArgumentException("回收站文件不存在：" + recycleFolder);
+			throw new IllegalArgumentException("回收站文件不存在：" + recycleFolder);
 		}
 		// 获取当前用户回收站文件目录
 		final File[] files = recycleFile.listFiles();

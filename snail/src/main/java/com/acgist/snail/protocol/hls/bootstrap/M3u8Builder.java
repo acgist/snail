@@ -25,7 +25,6 @@ import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.pojo.bean.M3u8;
 import com.acgist.snail.pojo.bean.M3u8.Type;
 import com.acgist.snail.pojo.wrapper.KeyValueWrapper;
-import com.acgist.snail.system.exception.ArgumentException;
 import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.ArrayUtils;
@@ -303,7 +302,11 @@ public final class M3u8Builder {
 				return null;
 			}
 		}
-		return this.buildCipher(ivBytes, secret, "AES", "AES/CBC/NoPadding");
+		try {
+			return this.buildCipher(ivBytes, secret, "AES", "AES/CBC/NoPadding");
+		} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException e) {
+			throw new NetException("获取加密套件失败", e);
+		}
 	}
 	
 	/**
@@ -315,18 +318,19 @@ public final class M3u8Builder {
 	 * @param transformation 算法描述
 	 * 
 	 * @return 加密套件
+	 * 
+	 * @throws InvalidKeyException 密钥异常
+	 * @throws NoSuchPaddingException 填充异常
+	 * @throws NoSuchAlgorithmException 算法异常
+	 * @throws InvalidAlgorithmParameterException 参数异常
 	 */
-	private Cipher buildCipher(byte[] iv, byte[] secret, String algorithm, String transformation) {
+	private Cipher buildCipher(byte[] iv, byte[] secret, String algorithm, String transformation) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
 		Cipher cipher = null;
 		final SecretKeySpec secretKeySpec = new SecretKeySpec(secret, algorithm);
 		final IvParameterSpec ivParameterSpec = new IvParameterSpec(iv);
-		try {
-//			PKCS7Padding：最后一个字节填充大小
-			cipher = Cipher.getInstance(transformation);
-			cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
-		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException e) {
-			throw new ArgumentException("不支持的算法", e);
-		}
+//		PKCS7Padding：最后一个字节填充大小
+		cipher = Cipher.getInstance(transformation);
+		cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
 		return cipher;
 	}
 	

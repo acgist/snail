@@ -10,7 +10,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.system.exception.ArgumentException;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -165,7 +164,7 @@ public final class JSON {
 	 */
 	public static final JSON ofString(String content) {
 		if(StringUtils.isEmpty(content)) {
-			throw new ArgumentException("JSON格式错误：" + content);
+			throw new IllegalArgumentException("JSON格式错误：" + content);
 		}
 		content = content.trim();
 		final JSON json = new JSON();
@@ -176,7 +175,7 @@ public final class JSON {
 		} else if(prefix == JSON_LIST_PREFIX && suffix == JSON_LIST_SUFFIX) {
 			json.type = Type.LIST;
 		} else {
-			throw new ArgumentException("JSON格式错误（类型）：" + content);
+			throw new IllegalArgumentException("JSON格式错误：" + content);
 		}
 		content = content.substring(1, content.length() - 1); // 去掉首位字符
 		json.deserialize(content);
@@ -195,7 +194,7 @@ public final class JSON {
 		} else if(this.type == Type.LIST) {
 			this.serializeList(this.list, builder);
 		} else {
-			throw new ArgumentException("JSON类型错误：" + this.type);
+			throw new IllegalArgumentException("JSON类型错误：" + this.type);
 		}
 		return builder.toString();
 	}
@@ -303,7 +302,7 @@ public final class JSON {
 		} else if(this.type == Type.LIST) {
 			this.deserializeList(content);
 		} else {
-			throw new ArgumentException("JSON类型错误：" + this.type);
+			throw new IllegalArgumentException("JSON类型错误：" + this.type);
 		}
 	}
 	
@@ -460,7 +459,7 @@ public final class JSON {
 //			return JSON.ofString(value);
 			return value;
 		} else {
-			throw new ArgumentException("JSON格式错误：" + value);
+			throw new IllegalArgumentException("JSON格式错误：" + value);
 		}
 	}
 	
@@ -499,7 +498,7 @@ public final class JSON {
 		} else if(value instanceof String) {
 			return JSON.ofString((String) value);
 		} else {
-			throw new ArgumentException("JSON转换错误：" + value);
+			throw new IllegalArgumentException("JSON转换错误：" + value);
 		}
 	}
 	

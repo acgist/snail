@@ -1,5 +1,7 @@
 package com.acgist.snail.system.exception;
 
+import com.acgist.snail.utils.StringUtils;
+
 /**
  * <p>数据库异常</p>
  * <p>用途：{@linkplain com.acgist.snail.repository 数据库}</p>
@@ -7,7 +9,7 @@ package com.acgist.snail.system.exception;
  * @author acgist
  * @since 1.0.0
  */
-public class RepositoryException extends RuntimeException {
+public class RepositoryException extends IllegalArgumentException {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -32,6 +34,19 @@ public class RepositoryException extends RuntimeException {
 	public static final void requireNotNull(Object object) {
 		if(object == null) {
 			throw new RepositoryException("参数错误：" + object);
+		}
+	}
+	
+	/**
+	 * <p>判断参数是否匹配正则表达式</p>
+	 * <p>如果不匹配抛出{@linkplain RepositoryException 异常}</p>
+	 * 
+	 * @param value 参数
+	 * @param regex 正则表达式
+	 */
+	public static final void requireMatch(String value, String regex) {
+		if(!StringUtils.regex(value, regex, true)) {
+			throw new RepositoryException("参数错误：" + value);
 		}
 	}
 	

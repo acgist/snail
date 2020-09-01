@@ -2,6 +2,7 @@ package com.acgist.snail.net.torrent.crypt;
 
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
+import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -9,7 +10,6 @@ import java.util.Random;
 
 import com.acgist.snail.system.config.CryptConfig;
 import com.acgist.snail.system.config.SystemConfig;
-import com.acgist.snail.system.exception.ArgumentException;
 import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -59,12 +59,14 @@ public final class MSEKeyPairBuilder {
 	 * @param privateKey 密钥
 	 * 
 	 * @return DH Secret
+	 * 
+	 * @throws InvalidKeyException 密钥异常
 	 */
-	public static final BigInteger buildDHSecret(BigInteger publicKey, PrivateKey privateKey) {
+	public static final BigInteger buildDHSecret(BigInteger publicKey, PrivateKey privateKey) throws InvalidKeyException {
 		if(privateKey instanceof MSEPrivateKey) {
 			return ((MSEPrivateKey) privateKey).buildDHSecret(new MSEPublicKey(publicKey));
 		}
-		throw new ArgumentException("不支持的私钥：" + privateKey);
+		throw new InvalidKeyException("不支持的私钥：" + privateKey);
 	}
 
 	/**

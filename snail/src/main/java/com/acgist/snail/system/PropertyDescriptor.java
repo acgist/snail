@@ -4,8 +4,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-import com.acgist.snail.system.exception.ArgumentException;
-
 /**
  * <p>属性操作</p>
  * 
@@ -78,7 +76,7 @@ public final class PropertyDescriptor {
 				return method;
 			}
 		}
-		throw new ArgumentException("不存在的属性：" + this.property);
+		throw new IllegalArgumentException(this.notFoundProperty());
 	}
 	
 	/**
@@ -96,7 +94,7 @@ public final class PropertyDescriptor {
 				return method;
 			}
 		}
-		throw new ArgumentException("不存在的属性：" + this.property);
+		throw new IllegalArgumentException(this.notFoundProperty());
 	}
 
 	/**
@@ -118,7 +116,14 @@ public final class PropertyDescriptor {
 			}
 			clazz = clazz.getSuperclass();
 		}
-		throw new ArgumentException("不存在的属性：" + this.property);
+		throw new IllegalArgumentException(this.notFoundProperty());
+	}
+	
+	/**
+	 * <p>获取异常信息</p>
+	 */
+	private String notFoundProperty() {
+		return "不存在的属性：" + this.property;
 	}
 	
 }

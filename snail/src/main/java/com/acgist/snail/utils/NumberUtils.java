@@ -11,8 +11,6 @@ import java.util.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.system.exception.ArgumentException;
-
 /**
  * <p>数字工具</p>
  * 
@@ -238,7 +236,7 @@ public final class NumberUtils {
 	 */
 	public static final byte[] encodeBigInteger(final BigInteger value, final int length) {
 		if (length < 1) {
-			throw new ArgumentException("数组长度错误：" + length);
+			throw new IllegalArgumentException("数组长度错误：" + length);
 		}
 		byte[] bytes = value.toByteArray(); // 二进制补码
 		// 符号位是零
@@ -246,7 +244,7 @@ public final class NumberUtils {
 			bytes = Arrays.copyOfRange(bytes, 1, bytes.length);
 		}
 		if (bytes.length > length) {
-			throw new ArgumentException("数组长度错误：" + length);
+			throw new IllegalArgumentException("数组长度错误：" + length);
 		}
 		if (bytes.length < length) {
 			final byte[] copy = bytes;
@@ -266,7 +264,7 @@ public final class NumberUtils {
 	 */
 	public static final BigInteger decodeBigInteger(final ByteBuffer buffer, final int length) {
 		if (length < 1 || buffer.remaining() < length) {
-			throw new ArgumentException("数组长度错误：" + length);
+			throw new IllegalArgumentException("数组长度错误：" + length);
 		}
 		int index = 0;
 		byte nonzero;
