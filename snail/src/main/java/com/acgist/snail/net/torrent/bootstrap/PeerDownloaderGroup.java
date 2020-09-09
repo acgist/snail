@@ -94,8 +94,8 @@ public final class PeerDownloaderGroup {
 		this.spinLock(); // 开始自旋
 		synchronized (this.peerDownloaders) {
 			try {
-				inferiorPeerDownloaders();
-				buildPeerDownloaders();
+				this.inferiorPeerDownloaders();
+				this.buildPeerDownloaders();
 			} catch (Exception e) {
 				LOGGER.error("优化PeerDownloader异常", e);
 			}
