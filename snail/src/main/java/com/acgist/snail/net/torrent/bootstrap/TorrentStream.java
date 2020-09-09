@@ -28,6 +28,8 @@ import com.acgist.snail.utils.StringUtils;
  * <p>Torrent下载文件流</p>
  * <p>除了文件开头和结尾的Piece，每次下载必须是一个完整的Piece。</p>
  * 
+ * TODO：优化使用读写锁
+ * 
  * @author acgist
  * @since 1.0.0
  */
