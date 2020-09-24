@@ -2,10 +2,10 @@ package com.acgist.snail.net.torrent.dht.bootstrap.response;
 
 import java.util.List;
 
+import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.net.torrent.dht.bootstrap.DhtRequest;
 import com.acgist.snail.net.torrent.dht.bootstrap.DhtResponse;
 import com.acgist.snail.pojo.session.NodeSession;
-import com.acgist.snail.system.config.DhtConfig;
 
 /**
  * <p>查找Node</p>

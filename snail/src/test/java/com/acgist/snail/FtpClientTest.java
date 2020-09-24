@@ -6,8 +6,8 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.exception.NetException;
 import com.acgist.snail.net.ftp.bootstrap.FtpClientBuilder;
-import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.FileUtils;
 
 public class FtpClientTest extends BaseTest {

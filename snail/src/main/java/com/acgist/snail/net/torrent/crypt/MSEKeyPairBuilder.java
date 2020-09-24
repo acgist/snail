@@ -8,8 +8,8 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Random;
 
-import com.acgist.snail.system.config.CryptConfig;
-import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.config.CryptConfig;
+import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.StringUtils;
 

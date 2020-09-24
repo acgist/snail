@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.system.context.SystemContext;
+import com.acgist.snail.context.SystemContext;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

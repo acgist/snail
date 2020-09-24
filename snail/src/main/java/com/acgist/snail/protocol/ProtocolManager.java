@@ -9,10 +9,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.context.SystemContext;
 import com.acgist.snail.downloader.IDownloader;
+import com.acgist.snail.exception.DownloadException;
 import com.acgist.snail.pojo.ITaskSession;
-import com.acgist.snail.system.context.SystemContext;
-import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.ThreadUtils;
 

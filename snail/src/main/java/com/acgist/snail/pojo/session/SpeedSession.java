@@ -2,7 +2,7 @@ package com.acgist.snail.pojo.session;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.utils.DateUtils;
 
 /**

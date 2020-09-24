@@ -14,10 +14,10 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.context.SystemThreadContext;
+import com.acgist.snail.exception.DownloadException;
 import com.acgist.snail.pojo.bean.TorrentPiece;
-import com.acgist.snail.system.config.SystemConfig;
-import com.acgist.snail.system.context.SystemThreadContext;
-import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.FileUtils;

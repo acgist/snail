@@ -8,10 +8,10 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.net.hls.HlsClient;
 import com.acgist.snail.pojo.ITaskSession;
-import com.acgist.snail.system.config.SystemConfig;
-import com.acgist.snail.system.context.SystemThreadContext;
 
 /**
  * <p>HSL任务信息</p>

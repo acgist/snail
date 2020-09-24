@@ -8,13 +8,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.PeerConfig;
+import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.system.config.PeerConfig;
-import com.acgist.snail.system.config.SystemConfig;
-import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**

@@ -3,11 +3,11 @@ package com.acgist.snail.net.torrent;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
+import com.acgist.snail.config.PeerConfig;
+import com.acgist.snail.exception.NetException;
+import com.acgist.snail.exception.PacketSizeException;
 import com.acgist.snail.net.codec.MessageCodec;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
-import com.acgist.snail.system.config.PeerConfig;
-import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.system.exception.PacketSizeException;
 
 /**
  * <p>Peer消息处理器：拆包</p>

@@ -3,11 +3,11 @@ package com.acgist.snail.tracker;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.BaseTest;
+import com.acgist.snail.exception.DownloadException;
+import com.acgist.snail.exception.NetException;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.tracker.bootstrap.impl.HttpTrackerClient;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.system.exception.NetException;
 
 public class TrackerClientHttpTest extends BaseTest {
 

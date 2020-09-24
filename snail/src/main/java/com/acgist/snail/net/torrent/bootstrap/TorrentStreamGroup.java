@@ -11,16 +11,16 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.DownloadConfig;
+import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.context.SystemThreadContext;
+import com.acgist.snail.exception.NetException;
+import com.acgist.snail.exception.PacketSizeException;
 import com.acgist.snail.pojo.bean.Torrent;
 import com.acgist.snail.pojo.bean.TorrentFile;
 import com.acgist.snail.pojo.bean.TorrentInfo;
 import com.acgist.snail.pojo.bean.TorrentPiece;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.system.config.DownloadConfig;
-import com.acgist.snail.system.config.SystemConfig;
-import com.acgist.snail.system.context.SystemThreadContext;
-import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.system.exception.PacketSizeException;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.FileUtils;
 

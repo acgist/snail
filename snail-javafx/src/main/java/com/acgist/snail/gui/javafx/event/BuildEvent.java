@@ -3,11 +3,11 @@ package com.acgist.snail.gui.javafx.event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.gui.event.GuiEvent;
 import com.acgist.snail.gui.event.adapter.BuildEventAdapter;
 import com.acgist.snail.gui.javafx.main.MainWindow;
 import com.acgist.snail.gui.javafx.menu.TrayMenu;
-import com.acgist.snail.system.context.SystemThreadContext;
 
 import javafx.application.Platform;
 

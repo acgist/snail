@@ -6,12 +6,12 @@ import java.util.BitSet;
 import java.util.EnumMap;
 import java.util.Map;
 
+import com.acgist.snail.config.PeerConfig;
+import com.acgist.snail.context.IStatistics;
 import com.acgist.snail.net.torrent.PeerConnect;
 import com.acgist.snail.net.torrent.bootstrap.PeerDownloader;
 import com.acgist.snail.net.torrent.bootstrap.PeerUploader;
 import com.acgist.snail.pojo.IStatisticsSession;
-import com.acgist.snail.system.IStatistics;
-import com.acgist.snail.system.config.PeerConfig;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.ObjectUtils;

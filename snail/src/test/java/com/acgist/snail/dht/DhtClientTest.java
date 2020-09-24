@@ -3,10 +3,10 @@ package com.acgist.snail.dht;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.BaseTest;
+import com.acgist.snail.exception.DownloadException;
 import com.acgist.snail.net.torrent.dht.DhtClient;
 import com.acgist.snail.net.torrent.dht.bootstrap.NodeManager;
 import com.acgist.snail.pojo.bean.InfoHash;
-import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.ThreadUtils;
 
 public class DhtClientTest extends BaseTest {

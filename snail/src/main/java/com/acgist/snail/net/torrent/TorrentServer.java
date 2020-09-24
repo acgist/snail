@@ -1,7 +1,7 @@
 package com.acgist.snail.net.torrent;
 
+import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.net.UdpServer;
-import com.acgist.snail.system.config.SystemConfig;
 
 /**
  * <p>Torrent服务端：UTP、DHT、STUN</p>

@@ -6,13 +6,13 @@ import java.nio.ByteBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.StunConfig;
+import com.acgist.snail.config.StunConfig.AttributeType;
+import com.acgist.snail.config.StunConfig.MessageType;
+import com.acgist.snail.exception.NetException;
+import com.acgist.snail.exception.PacketSizeException;
 import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.net.stun.bootstrap.StunService;
-import com.acgist.snail.system.config.StunConfig;
-import com.acgist.snail.system.config.StunConfig.AttributeType;
-import com.acgist.snail.system.config.StunConfig.MessageType;
-import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.system.exception.PacketSizeException;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.NumberUtils;

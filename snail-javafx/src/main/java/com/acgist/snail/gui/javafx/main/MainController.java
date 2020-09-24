@@ -9,7 +9,9 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.context.SystemStatistics;
 import com.acgist.snail.downloader.DownloaderManager;
+import com.acgist.snail.exception.DownloadException;
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.javafx.Alerts;
 import com.acgist.snail.gui.javafx.Controller;
@@ -24,8 +26,6 @@ import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.ITaskSession.Status;
 import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.protocol.ProtocolManager;
-import com.acgist.snail.system.SystemStatistics;
-import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 

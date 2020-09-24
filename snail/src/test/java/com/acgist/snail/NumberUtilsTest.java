@@ -4,8 +4,8 @@ import java.nio.ByteBuffer;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.system.config.CryptConfig;
-import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.config.CryptConfig;
+import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.StringUtils;
 

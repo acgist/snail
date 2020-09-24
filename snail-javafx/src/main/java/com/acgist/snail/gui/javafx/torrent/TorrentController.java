@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.DownloaderManager;
+import com.acgist.snail.exception.DownloadException;
 import com.acgist.snail.gui.javafx.Alerts;
 import com.acgist.snail.gui.javafx.Controller;
 import com.acgist.snail.gui.javafx.main.TaskDisplay;
@@ -17,7 +18,6 @@ import com.acgist.snail.pojo.bean.Torrent;
 import com.acgist.snail.pojo.bean.TorrentInfo;
 import com.acgist.snail.pojo.wrapper.MultifileSelectorWrapper;
 import com.acgist.snail.protocol.Protocol.Type;
-import com.acgist.snail.system.exception.DownloadException;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

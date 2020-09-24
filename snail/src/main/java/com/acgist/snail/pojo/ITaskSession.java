@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.acgist.snail.downloader.IDownloader;
-import com.acgist.snail.system.exception.DownloadException;
+import com.acgist.snail.exception.DownloadException;
 
 /**
  * <p>任务信息</p>

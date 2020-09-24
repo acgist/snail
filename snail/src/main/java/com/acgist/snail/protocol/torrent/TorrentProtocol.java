@@ -2,6 +2,7 @@ package com.acgist.snail.protocol.torrent;
 
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.downloader.torrent.TorrentDownloader;
+import com.acgist.snail.exception.DownloadException;
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.pojo.ITaskSession;
@@ -10,7 +11,6 @@ import com.acgist.snail.pojo.bean.Torrent;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.Protocol;
-import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.FileUtils;
 
 /**

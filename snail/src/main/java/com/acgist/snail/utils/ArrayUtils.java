@@ -3,7 +3,7 @@ package com.acgist.snail.utils;
 import java.util.Objects;
 import java.util.Random;
 
-import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.config.SystemConfig;
 
 /**
  * <p>数组工具</p>

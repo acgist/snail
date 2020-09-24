@@ -5,11 +5,11 @@ import java.net.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.exception.DownloadException;
 import com.acgist.snail.pojo.bean.InfoHash;
 import com.acgist.snail.pojo.bean.Magnet;
 import com.acgist.snail.pojo.bean.Magnet.Type;
 import com.acgist.snail.protocol.Protocol;
-import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.UrlUtils;
 

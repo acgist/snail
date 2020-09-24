@@ -14,7 +14,7 @@ import javax.crypto.Cipher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.utils.FileUtils;
 
 /**

@@ -9,8 +9,8 @@ import java.nio.channels.DatagramChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.exception.NetException;
 import com.acgist.snail.net.codec.IMessageCodec;
-import com.acgist.snail.system.exception.NetException;
 
 /**
  * <p>UDP消息代理</p>

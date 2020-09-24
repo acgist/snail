@@ -3,9 +3,9 @@ package com.acgist.snail.net.codec.impl;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
+import com.acgist.snail.exception.NetException;
 import com.acgist.snail.net.codec.IMessageCodec;
 import com.acgist.snail.net.codec.MessageCodec;
-import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.StringUtils;
 
 /**

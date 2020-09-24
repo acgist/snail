@@ -2,8 +2,8 @@ package com.acgist.snail.net.upnp.bootstrap;
 
 import org.w3c.dom.Element;
 
+import com.acgist.snail.format.XML;
 import com.acgist.snail.protocol.Protocol;
-import com.acgist.snail.system.format.XML;
 
 /**
  * <p>UPNP请求</p>

@@ -3,9 +3,9 @@ package com.acgist.main;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.context.SystemContext;
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.javafx.JavaFXGuiManager;
-import com.acgist.snail.system.context.SystemContext;
 
 /**
  * <p>Snail启动类</p>

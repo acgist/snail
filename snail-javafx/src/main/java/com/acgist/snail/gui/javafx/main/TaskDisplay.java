@@ -6,8 +6,8 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.system.config.SystemConfig;
-import com.acgist.snail.system.context.SystemThreadContext;
+import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**

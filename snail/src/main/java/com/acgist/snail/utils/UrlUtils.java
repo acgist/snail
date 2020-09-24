@@ -8,8 +8,8 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.protocol.Protocol;
-import com.acgist.snail.system.config.SystemConfig;
 
 /**
  * <p>URL工具</p>

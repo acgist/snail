@@ -15,8 +15,8 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.UtpConfig;
 import com.acgist.snail.net.codec.IMessageCodec;
-import com.acgist.snail.system.config.UtpConfig;
 import com.acgist.snail.utils.DateUtils;
 
 /**

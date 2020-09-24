@@ -2,8 +2,8 @@ package com.acgist.snail.pojo.bean;
 
 import java.io.Serializable;
 
+import com.acgist.snail.exception.DownloadException;
 import com.acgist.snail.protocol.Protocol;
-import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.Base32Utils;
 import com.acgist.snail.utils.PeerUtils;
 import com.acgist.snail.utils.StringUtils;

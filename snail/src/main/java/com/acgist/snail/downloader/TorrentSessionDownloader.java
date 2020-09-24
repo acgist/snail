@@ -1,12 +1,12 @@
 package com.acgist.snail.downloader;
 
+import com.acgist.snail.exception.DownloadException;
+import com.acgist.snail.exception.NetException;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.magnet.bootstrap.MagnetBuilder;
-import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.system.exception.NetException;
 
 /**
  * <p>BT任务下载器</p>

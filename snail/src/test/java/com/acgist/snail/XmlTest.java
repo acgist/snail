@@ -2,7 +2,7 @@ package com.acgist.snail;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.system.format.XML;
+import com.acgist.snail.format.XML;
 
 public class XmlTest extends BaseTest {
 
