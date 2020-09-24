@@ -6,8 +6,8 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.BaseTest;
-import com.acgist.snail.exception.DownloadException;
-import com.acgist.snail.exception.NetException;
+import com.acgist.snail.context.exception.DownloadException;
+import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.bootstrap.TorrentStreamGroup;
 import com.acgist.snail.pojo.ITaskSession.Status;

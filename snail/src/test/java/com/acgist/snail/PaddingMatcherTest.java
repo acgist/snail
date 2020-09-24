@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.exception.NetException;
+import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.torrent.crypt.MSEPaddingSync;
 
 public class PaddingMatcherTest extends BaseTest {

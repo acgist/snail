@@ -14,8 +14,8 @@ open module com.acgist.snail {
 	//================导出================//
 	exports com.acgist.snail.config;
 	exports com.acgist.snail.context;
+	exports com.acgist.snail.context.exception;
 	exports com.acgist.snail.downloader;
-	exports com.acgist.snail.exception;
 	exports com.acgist.snail.format;
 	exports com.acgist.snail.gui;
 	exports com.acgist.snail.gui.event;

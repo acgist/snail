@@ -2,7 +2,7 @@ package com.acgist.snail;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.exception.DownloadException;
+import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.pojo.bean.Magnet;
 import com.acgist.snail.protocol.magnet.bootstrap.MagnetBuilder;
 import com.acgist.snail.utils.Base32Utils;

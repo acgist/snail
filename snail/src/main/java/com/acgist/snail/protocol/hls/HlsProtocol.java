@@ -3,10 +3,10 @@ package com.acgist.snail.protocol.hls;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 
+import com.acgist.snail.context.exception.DownloadException;
+import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.downloader.hls.HlsDownloader;
-import com.acgist.snail.exception.DownloadException;
-import com.acgist.snail.exception.NetException;
 import com.acgist.snail.net.hls.bootstrap.HlsManager;
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.pojo.ITaskSession;

@@ -2,8 +2,8 @@ package com.acgist.snail.downloader.ftp;
 
 import java.io.BufferedInputStream;
 
+import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.downloader.SingleFileDownloader;
-import com.acgist.snail.exception.NetException;
 import com.acgist.snail.net.ftp.FtpClient;
 import com.acgist.snail.net.ftp.bootstrap.FtpClientBuilder;
 import com.acgist.snail.pojo.ITaskSession;

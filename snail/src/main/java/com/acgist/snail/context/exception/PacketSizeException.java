@@ -1,4 +1,4 @@
-package com.acgist.snail.exception;
+package com.acgist.snail.context.exception;
 
 import com.acgist.snail.config.SystemConfig;
 

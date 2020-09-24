@@ -3,7 +3,7 @@ package com.acgist.snail.upnp;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.BaseTest;
-import com.acgist.snail.exception.NetException;
+import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.upnp.bootstrap.UpnpService;
 import com.acgist.snail.protocol.Protocol;
 

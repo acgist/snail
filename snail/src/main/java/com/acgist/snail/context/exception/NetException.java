@@ -1,4 +1,4 @@
-package com.acgist.snail.exception;
+package com.acgist.snail.context.exception;
 
 /**
  * <p>网络异常</p>

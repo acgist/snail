@@ -7,7 +7,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.exception.NetException;
+import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.gui.event.GuiEvent;
 import com.acgist.snail.gui.event.GuiEvent.Type;
 import com.acgist.snail.net.IMessageHandler;

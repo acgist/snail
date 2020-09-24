@@ -1,7 +1,7 @@
 package com.acgist.snail.downloader;
 
-import com.acgist.snail.exception.DownloadException;
-import com.acgist.snail.exception.NetException;
+import com.acgist.snail.context.exception.DownloadException;
+import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
 import com.acgist.snail.pojo.ITaskSession;

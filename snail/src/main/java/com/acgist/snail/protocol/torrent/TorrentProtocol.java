@@ -1,8 +1,8 @@
 package com.acgist.snail.protocol.torrent;
 
+import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.downloader.torrent.TorrentDownloader;
-import com.acgist.snail.exception.DownloadException;
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.pojo.ITaskSession;

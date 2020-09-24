@@ -10,8 +10,8 @@ import com.acgist.snail.config.DownloadConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.StreamContext;
 import com.acgist.snail.context.StreamContext.StreamSession;
-import com.acgist.snail.exception.DownloadException;
-import com.acgist.snail.exception.NetException;
+import com.acgist.snail.context.exception.DownloadException;
+import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.pojo.ITaskSession;
 
 /**

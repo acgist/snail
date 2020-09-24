@@ -2,7 +2,7 @@ package com.acgist.snail;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.exception.NetException;
+import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.torrent.lsd.LocalServiceDiscoveryClient;
 import com.acgist.snail.net.torrent.lsd.LocalServiceDiscoveryServer;
 

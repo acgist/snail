@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.acgist.snail.exception.PacketSizeException;
+import com.acgist.snail.context.exception.PacketSizeException;
 import com.acgist.snail.utils.ObjectUtils;
 
 /**

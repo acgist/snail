@@ -3,9 +3,9 @@ package com.acgist.snail.downloader.hls;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.context.exception.DownloadException;
+import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.downloader.MultifileDownloader;
-import com.acgist.snail.exception.DownloadException;
-import com.acgist.snail.exception.NetException;
 import com.acgist.snail.net.hls.bootstrap.HlsManager;
 import com.acgist.snail.net.hls.bootstrap.TsLinker;
 import com.acgist.snail.pojo.ITaskSession;

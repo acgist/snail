@@ -7,8 +7,8 @@ import java.util.Base64;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.exception.DownloadException;
-import com.acgist.snail.exception.NetException;
+import com.acgist.snail.context.exception.DownloadException;
+import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.pojo.bean.M3u8;
 import com.acgist.snail.protocol.hls.bootstrap.M3u8Builder;
 

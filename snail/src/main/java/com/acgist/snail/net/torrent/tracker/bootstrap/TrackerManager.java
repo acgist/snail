@@ -12,8 +12,8 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.config.TrackerConfig;
-import com.acgist.snail.exception.DownloadException;
-import com.acgist.snail.exception.NetException;
+import com.acgist.snail.context.exception.DownloadException;
+import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.torrent.bootstrap.TrackerLauncher;
 import com.acgist.snail.net.torrent.tracker.bootstrap.impl.HttpTrackerClient;
 import com.acgist.snail.net.torrent.tracker.bootstrap.impl.UdpTrackerClient;
