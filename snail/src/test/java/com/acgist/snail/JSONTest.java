@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.system.format.JSON;
+import com.acgist.snail.format.JSON;
 
 public class JSONTest extends BaseTest {
 	

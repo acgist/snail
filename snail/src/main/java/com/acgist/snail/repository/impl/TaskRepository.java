@@ -3,9 +3,9 @@ package com.acgist.snail.repository.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.repository.Repository;
-import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.FileUtils;
 
 /**

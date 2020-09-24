@@ -13,8 +13,8 @@ import java.util.concurrent.TimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.exception.NetException;
 import com.acgist.snail.net.IMessageHandler;
-import com.acgist.snail.system.exception.NetException;
 
 /**
  * <p>WebSocket消息代理</p>

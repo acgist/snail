@@ -6,11 +6,11 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.format.BEncodeEncoder;
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.GuiManager.Mode;
 import com.acgist.snail.gui.event.GuiEventExtend;
 import com.acgist.snail.pojo.message.ApplicationMessage;
-import com.acgist.snail.system.format.BEncodeEncoder;
 
 /**
  * <p>GUI提示消息事件</p>

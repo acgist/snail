@@ -10,6 +10,12 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.config.PeerConfig.Action;
+import com.acgist.snail.context.SystemThreadContext;
+import com.acgist.snail.exception.DownloadException;
+import com.acgist.snail.exception.NetException;
+import com.acgist.snail.exception.TimerException;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.bootstrap.DhtLauncher;
 import com.acgist.snail.net.torrent.bootstrap.PeerDownloaderGroup;
@@ -29,12 +35,6 @@ import com.acgist.snail.pojo.bean.TorrentInfo;
 import com.acgist.snail.pojo.bean.TorrentPiece;
 import com.acgist.snail.protocol.magnet.bootstrap.MagnetBuilder;
 import com.acgist.snail.protocol.magnet.bootstrap.TorrentBuilder;
-import com.acgist.snail.system.config.PeerConfig.Action;
-import com.acgist.snail.system.config.SystemConfig;
-import com.acgist.snail.system.context.SystemThreadContext;
-import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.system.exception.TimerException;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.FileUtils;
 

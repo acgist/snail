@@ -1,6 +1,6 @@
 package com.acgist.snail.pojo;
 
-import com.acgist.snail.system.IStatistics;
+import com.acgist.snail.context.IStatistics;
 
 /**
  * <p>统计接口</p>

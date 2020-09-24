@@ -3,14 +3,14 @@ package com.acgist.snail.net.torrent.dht.bootstrap.request;
 import java.nio.ByteBuffer;
 import java.util.stream.Collectors;
 
+import com.acgist.snail.config.DhtConfig;
+import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.dht.bootstrap.DhtRequest;
 import com.acgist.snail.net.torrent.dht.bootstrap.NodeManager;
 import com.acgist.snail.net.torrent.dht.bootstrap.response.GetPeersResponse;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.system.config.DhtConfig;
-import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;

@@ -3,9 +3,9 @@ package com.acgist.snail.gui.javafx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.context.SystemContext.SystemType;
 import com.acgist.snail.gui.javafx.theme.ITheme;
 import com.acgist.snail.gui.javafx.theme.WindowsTheme;
-import com.acgist.snail.system.context.SystemContext.SystemType;
 
 import javafx.scene.paint.Color;
 

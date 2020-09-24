@@ -3,11 +3,11 @@ package com.acgist.snail.net.torrent.bootstrap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.net.torrent.PeerConnect;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.system.config.PeerConfig;
 
 /**
  * <p>Peer接入</p>

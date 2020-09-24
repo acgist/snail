@@ -3,9 +3,9 @@ package com.acgist.snail.gui.javafx.about;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.gui.javafx.Controller;
 import com.acgist.snail.gui.utils.DesktopUtils;
-import com.acgist.snail.system.config.SystemConfig;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

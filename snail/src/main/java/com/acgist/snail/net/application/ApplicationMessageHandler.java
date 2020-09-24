@@ -8,7 +8,14 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.context.SystemContext;
 import com.acgist.snail.downloader.DownloaderManager;
+import com.acgist.snail.exception.DownloadException;
+import com.acgist.snail.exception.NetException;
+import com.acgist.snail.exception.PacketSizeException;
+import com.acgist.snail.format.BEncodeDecoder;
+import com.acgist.snail.format.BEncodeEncoder;
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.GuiManager.Mode;
 import com.acgist.snail.net.TcpMessageHandler;
@@ -17,13 +24,6 @@ import com.acgist.snail.net.codec.impl.LineMessageCodec;
 import com.acgist.snail.net.codec.impl.StringMessageCodec;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.message.ApplicationMessage;
-import com.acgist.snail.system.config.SystemConfig;
-import com.acgist.snail.system.context.SystemContext;
-import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.system.exception.PacketSizeException;
-import com.acgist.snail.system.format.BEncodeDecoder;
-import com.acgist.snail.system.format.BEncodeEncoder;
 import com.acgist.snail.utils.StringUtils;
 
 /**

@@ -11,8 +11,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.system.ModifyOptional;
-
 /**
  * <p>网络工具</p>
  * <p>获取地址方法：{@link InetAddress#getHostAddress()}、{@link InetSocketAddress#getHostString()}、<del>{@link InetSocketAddress#getHostName()}</del></p>

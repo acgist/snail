@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.pojo.wrapper.ResultSetWrapper;
-import com.acgist.snail.system.PropertyDescriptor;
 
 /**
  * <p>Bean工具</p>

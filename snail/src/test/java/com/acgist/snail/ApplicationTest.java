@@ -7,13 +7,13 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.context.SystemThreadContext;
+import com.acgist.snail.format.BEncodeEncoder;
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.net.application.ApplicationClient;
 import com.acgist.snail.net.application.ApplicationServer;
 import com.acgist.snail.pojo.message.ApplicationMessage;
 import com.acgist.snail.pojo.message.ApplicationMessage.Type;
-import com.acgist.snail.system.context.SystemThreadContext;
-import com.acgist.snail.system.format.BEncodeEncoder;
 
 public class ApplicationTest extends BaseTest {
 

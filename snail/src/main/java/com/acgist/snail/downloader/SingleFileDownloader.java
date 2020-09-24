@@ -6,13 +6,13 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import com.acgist.snail.config.DownloadConfig;
+import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.context.StreamContext;
+import com.acgist.snail.context.StreamContext.StreamSession;
+import com.acgist.snail.exception.DownloadException;
+import com.acgist.snail.exception.NetException;
 import com.acgist.snail.pojo.ITaskSession;
-import com.acgist.snail.system.config.DownloadConfig;
-import com.acgist.snail.system.config.SystemConfig;
-import com.acgist.snail.system.context.StreamContext;
-import com.acgist.snail.system.context.StreamContext.StreamSession;
-import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.system.exception.NetException;
 
 /**
  * <p>单文件任务下载器</p>

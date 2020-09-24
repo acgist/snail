@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.acgist.snail.config.DownloadConfig;
 import com.acgist.snail.pojo.IStatisticsSession;
-import com.acgist.snail.system.config.DownloadConfig;
 import com.acgist.snail.utils.DateUtils;
 import com.acgist.snail.utils.ThreadUtils;
 

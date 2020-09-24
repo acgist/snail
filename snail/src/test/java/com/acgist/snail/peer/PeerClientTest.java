@@ -7,6 +7,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.BaseTest;
+import com.acgist.snail.config.PeerConfig;
+import com.acgist.snail.exception.DownloadException;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.bootstrap.PeerDownloader;
 import com.acgist.snail.pojo.bean.InfoHash;
@@ -18,8 +20,6 @@ import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.pojo.wrapper.MultifileSelectorWrapper;
 import com.acgist.snail.protocol.Protocol.Type;
-import com.acgist.snail.system.config.PeerConfig;
-import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.PeerUtils;
 import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.ThreadUtils;

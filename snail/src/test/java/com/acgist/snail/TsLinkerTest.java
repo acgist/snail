@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.exception.DownloadException;
 import com.acgist.snail.net.hls.bootstrap.TsLinker;
-import com.acgist.snail.system.exception.DownloadException;
 
 public class TsLinkerTest extends BaseTest {
 

@@ -4,12 +4,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.downloader.MultifileDownloader;
+import com.acgist.snail.exception.DownloadException;
+import com.acgist.snail.exception.NetException;
 import com.acgist.snail.net.hls.bootstrap.HlsManager;
 import com.acgist.snail.net.hls.bootstrap.TsLinker;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.session.HlsSession;
-import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.system.exception.NetException;
 
 /**
  * <p>HLS任务下载器</p>

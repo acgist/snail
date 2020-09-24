@@ -12,8 +12,8 @@ import java.util.Properties;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.system.config.SystemConfig;
-import com.acgist.snail.system.format.XML;
+import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.format.XML;
 
 public class VersionVerifyTest extends BaseTest {
 

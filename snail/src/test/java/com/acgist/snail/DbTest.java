@@ -5,11 +5,11 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.initializer.impl.DatabaseInitializer;
 import com.acgist.snail.pojo.entity.ConfigEntity;
 import com.acgist.snail.pojo.wrapper.ResultSetWrapper;
 import com.acgist.snail.repository.DatabaseManager;
 import com.acgist.snail.repository.impl.ConfigRepository;
-import com.acgist.snail.system.initializer.impl.DatabaseInitializer;
 
 public class DbTest extends BaseTest {
 

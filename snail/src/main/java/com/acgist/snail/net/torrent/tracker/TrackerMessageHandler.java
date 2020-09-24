@@ -6,11 +6,11 @@ import java.nio.ByteBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.TrackerConfig.Action;
 import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerManager;
 import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.message.ScrapeMessage;
-import com.acgist.snail.system.config.TrackerConfig.Action;
 import com.acgist.snail.utils.PeerUtils;
 
 /**

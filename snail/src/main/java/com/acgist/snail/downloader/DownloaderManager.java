@@ -9,12 +9,12 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.DownloadConfig;
+import com.acgist.snail.context.SystemThreadContext;
+import com.acgist.snail.exception.DownloadException;
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.protocol.ProtocolManager;
-import com.acgist.snail.system.config.DownloadConfig;
-import com.acgist.snail.system.context.SystemThreadContext;
-import com.acgist.snail.system.exception.DownloadException;
 
 /**
  * <p>下载器管理器</p>

@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.pojo.ITaskSession.FileType;
 import com.acgist.snail.pojo.entity.TaskEntity;
-import com.acgist.snail.system.PropertyDescriptor;
 import com.acgist.snail.utils.BeanUtils;
+import com.acgist.snail.utils.PropertyDescriptor;
 
 public class BeanUtilsTest extends BaseTest {
 

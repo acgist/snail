@@ -13,16 +13,16 @@ import java.net.http.HttpResponse.BodyHandlers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.DownloadConfig;
+import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.context.StreamContext;
+import com.acgist.snail.context.StreamContext.StreamSession;
+import com.acgist.snail.exception.DownloadException;
+import com.acgist.snail.exception.NetException;
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.session.HlsSession;
 import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
-import com.acgist.snail.system.config.DownloadConfig;
-import com.acgist.snail.system.config.SystemConfig;
-import com.acgist.snail.system.context.StreamContext;
-import com.acgist.snail.system.context.StreamContext.StreamSession;
-import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.IoUtils;
 

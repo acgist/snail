@@ -5,7 +5,7 @@ import java.net.StandardProtocolFamily;
 import java.net.StandardSocketOptions;
 import java.nio.channels.DatagramChannel;
 
-import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.exception.NetException;
 import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.NetUtils;
 

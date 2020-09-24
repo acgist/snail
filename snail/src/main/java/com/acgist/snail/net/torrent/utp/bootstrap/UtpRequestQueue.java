@@ -10,8 +10,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.system.context.SystemThreadContext;
-import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.context.SystemThreadContext;
+import com.acgist.snail.exception.NetException;
 
 /**
  * <p>UTP请求队列</p>

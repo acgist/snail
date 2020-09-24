@@ -1,7 +1,7 @@
 package com.acgist.snail.net.application;
 
+import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.net.TcpServer;
-import com.acgist.snail.system.config.SystemConfig;
 
 /**
  * <p>系统服务端</p>

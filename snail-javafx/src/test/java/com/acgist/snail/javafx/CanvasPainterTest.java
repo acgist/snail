@@ -3,8 +3,8 @@ package com.acgist.snail.javafx;
 import java.util.BitSet;
 import java.util.Random;
 
+import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.gui.javafx.statistics.CanvasPainter;
-import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.ThreadUtils;
 
 import javafx.application.Application;

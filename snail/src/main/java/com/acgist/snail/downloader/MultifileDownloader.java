@@ -2,9 +2,9 @@ package com.acgist.snail.downloader;
 
 import java.time.Duration;
 
+import com.acgist.snail.exception.DownloadException;
+import com.acgist.snail.exception.NetException;
 import com.acgist.snail.pojo.ITaskSession;
-import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**

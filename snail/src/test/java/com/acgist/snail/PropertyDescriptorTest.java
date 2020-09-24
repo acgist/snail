@@ -5,7 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.pojo.entity.TaskEntity;
-import com.acgist.snail.system.PropertyDescriptor;
+import com.acgist.snail.utils.PropertyDescriptor;
 
 public class PropertyDescriptorTest extends BaseTest {
 

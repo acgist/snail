@@ -21,9 +21,9 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.pojo.ITaskSession.FileType;
-import com.acgist.snail.system.config.SystemConfig;
-import com.acgist.snail.system.recycle.RecycleManager;
+import com.acgist.snail.recycle.RecycleManager;
 
 /**
  * <p>文件工具</p>

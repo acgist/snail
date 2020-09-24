@@ -6,9 +6,9 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.system.exception.PacketSizeException;
-import com.acgist.snail.system.format.BEncodeDecoder;
-import com.acgist.snail.system.format.BEncodeEncoder;
+import com.acgist.snail.exception.PacketSizeException;
+import com.acgist.snail.format.BEncodeDecoder;
+import com.acgist.snail.format.BEncodeEncoder;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 

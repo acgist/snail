@@ -3,7 +3,7 @@ package com.acgist.snail.net.codec;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
-import com.acgist.snail.system.exception.NetException;
+import com.acgist.snail.exception.NetException;
 
 /**
  * <p>消息处理器接口</p>

@@ -1,8 +1,8 @@
 package com.acgist.snail.net.ws.tracker;
 
+import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.exception.NetException;
 import com.acgist.snail.net.ws.WebSocketClient;
-import com.acgist.snail.system.config.SystemConfig;
-import com.acgist.snail.system.exception.NetException;
 
 /**
  * <p>Tracker Client（WebSocket）</p>

@@ -8,12 +8,12 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.exception.NetException;
+import com.acgist.snail.format.XML;
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.net.http.HTTPClient.StatusCode;
 import com.acgist.snail.protocol.Protocol;
-import com.acgist.snail.system.config.SystemConfig;
-import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.system.format.XML;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;

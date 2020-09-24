@@ -5,9 +5,9 @@ import java.nio.ByteBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.PeerConfig;
+import com.acgist.snail.config.PeerConfig.ExtensionType;
 import com.acgist.snail.pojo.session.PeerSession;
-import com.acgist.snail.system.config.PeerConfig;
-import com.acgist.snail.system.config.PeerConfig.ExtensionType;
 
 /**
  * <p>下载完成时发送uploadOnly消息</p>

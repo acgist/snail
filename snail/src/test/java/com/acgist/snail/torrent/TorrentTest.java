@@ -3,12 +3,12 @@ package com.acgist.snail.torrent;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.BaseTest;
+import com.acgist.snail.exception.DownloadException;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.pojo.bean.Torrent;
 import com.acgist.snail.pojo.bean.TorrentFile;
 import com.acgist.snail.pojo.bean.TorrentInfo;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.DateUtils;
 import com.acgist.snail.utils.StringUtils;
 

@@ -3,13 +3,13 @@ package com.acgist.snail.net.torrent.tracker.bootstrap.impl;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.acgist.snail.config.TrackerConfig;
+import com.acgist.snail.exception.NetException;
+import com.acgist.snail.format.JSON;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerService;
 import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerClient;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.Protocol;
-import com.acgist.snail.system.config.TrackerConfig;
-import com.acgist.snail.system.exception.NetException;
-import com.acgist.snail.system.format.JSON;
 
 /**
  * <p>Tracker WS（WebSocket）客户端</p>

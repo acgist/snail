@@ -2,8 +2,8 @@ package com.acgist.snail.net.torrent.utp.bootstrap;
 
 import java.nio.ByteBuffer;
 
+import com.acgist.snail.exception.NetException;
 import com.acgist.snail.net.codec.IMessageCodec;
-import com.acgist.snail.system.exception.NetException;
 
 /**
  * <p>UTP请求</p>

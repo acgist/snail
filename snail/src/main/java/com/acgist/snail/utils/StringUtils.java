@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.system.config.SystemConfig;
+import com.acgist.snail.config.SystemConfig;
 
 /**
  * <p>字符串工具</p>

@@ -6,11 +6,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.gui.extend.ExtendGuiManager;
+import com.acgist.snail.context.SystemContext;
+import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.downloader.DownloaderManager;
+import com.acgist.snail.exception.DownloadException;
 import com.acgist.snail.gui.GuiManager;
-import com.acgist.snail.system.context.SystemContext;
-import com.acgist.snail.system.context.SystemThreadContext;
-import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.ArrayUtils;
 
 /**

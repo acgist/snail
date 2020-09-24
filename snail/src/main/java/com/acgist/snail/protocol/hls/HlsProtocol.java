@@ -5,6 +5,8 @@ import java.net.http.HttpResponse.BodyHandlers;
 
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.downloader.hls.HlsDownloader;
+import com.acgist.snail.exception.DownloadException;
+import com.acgist.snail.exception.NetException;
 import com.acgist.snail.net.hls.bootstrap.HlsManager;
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.pojo.ITaskSession;
@@ -12,8 +14,6 @@ import com.acgist.snail.pojo.bean.M3u8;
 import com.acgist.snail.pojo.wrapper.MultifileSelectorWrapper;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.protocol.hls.bootstrap.M3u8Builder;
-import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.FileUtils;
 
 /**

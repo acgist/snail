@@ -5,10 +5,10 @@ import java.net.InetSocketAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.PeerConfig;
+import com.acgist.snail.config.StunConfig;
+import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.net.stun.StunClient;
-import com.acgist.snail.system.config.PeerConfig;
-import com.acgist.snail.system.config.StunConfig;
-import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
 

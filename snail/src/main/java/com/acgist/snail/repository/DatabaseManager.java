@@ -12,8 +12,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.DatabaseConfig;
 import com.acgist.snail.pojo.wrapper.ResultSetWrapper;
-import com.acgist.snail.system.config.DatabaseConfig;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.BeanUtils;
 import com.acgist.snail.utils.CollectionUtils;

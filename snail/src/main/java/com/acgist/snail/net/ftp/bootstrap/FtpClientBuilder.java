@@ -2,8 +2,8 @@ package com.acgist.snail.net.ftp.bootstrap;
 
 import java.net.URI;
 
+import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.net.ftp.FtpClient;
-import com.acgist.snail.system.config.SystemConfig;
 import com.acgist.snail.utils.StringUtils;
 
 /**

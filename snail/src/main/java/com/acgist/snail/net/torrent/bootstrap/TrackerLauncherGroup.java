@@ -7,12 +7,12 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.PeerConfig.Action;
+import com.acgist.snail.context.SystemThreadContext;
+import com.acgist.snail.exception.DownloadException;
 import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerClient;
 import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerManager;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.system.config.PeerConfig.Action;
-import com.acgist.snail.system.context.SystemThreadContext;
-import com.acgist.snail.system.exception.DownloadException;
 
 /**
  * <p>Tracker执行器组</p>

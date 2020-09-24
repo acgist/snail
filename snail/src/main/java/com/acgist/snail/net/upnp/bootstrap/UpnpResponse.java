@@ -1,6 +1,6 @@
 package com.acgist.snail.net.upnp.bootstrap;
 
-import com.acgist.snail.system.format.XML;
+import com.acgist.snail.format.XML;
 import com.acgist.snail.utils.StringUtils;
 
 /**

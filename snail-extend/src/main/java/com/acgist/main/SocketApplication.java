@@ -5,10 +5,10 @@ import java.util.Map;
 import java.util.Scanner;
 
 import com.acgist.gui.extend.ExtendGuiManager;
+import com.acgist.snail.format.BEncodeEncoder;
 import com.acgist.snail.net.application.ApplicationClient;
 import com.acgist.snail.pojo.message.ApplicationMessage;
 import com.acgist.snail.pojo.message.ApplicationMessage.Type;
-import com.acgist.snail.system.format.BEncodeEncoder;
 
 /**
  * <p>Snail启动类</p>

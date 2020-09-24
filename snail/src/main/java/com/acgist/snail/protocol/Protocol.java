@@ -2,14 +2,14 @@ package com.acgist.snail.protocol;
 
 import java.io.File;
 
+import com.acgist.snail.config.DownloadConfig;
 import com.acgist.snail.downloader.IDownloader;
+import com.acgist.snail.exception.DownloadException;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.ITaskSession.Status;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.repository.impl.TaskRepository;
-import com.acgist.snail.system.config.DownloadConfig;
-import com.acgist.snail.system.exception.DownloadException;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 

@@ -7,10 +7,10 @@ import java.util.Base64;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.exception.DownloadException;
+import com.acgist.snail.exception.NetException;
 import com.acgist.snail.pojo.bean.M3u8;
 import com.acgist.snail.protocol.hls.bootstrap.M3u8Builder;
-import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.system.exception.NetException;
 
 public class M3u8Test extends BaseTest {
 

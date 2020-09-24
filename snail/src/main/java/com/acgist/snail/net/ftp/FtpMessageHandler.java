@@ -10,13 +10,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.exception.NetException;
 import com.acgist.snail.net.TcpMessageHandler;
 import com.acgist.snail.net.codec.IMessageCodec;
 import com.acgist.snail.net.codec.impl.LineMessageCodec;
 import com.acgist.snail.net.codec.impl.MultilineMessageCodec;
 import com.acgist.snail.net.codec.impl.StringMessageCodec;
-import com.acgist.snail.system.config.SystemConfig;
-import com.acgist.snail.system.exception.NetException;
 import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;

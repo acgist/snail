@@ -3,7 +3,7 @@ package com.acgist.snail.net.torrent.dht.bootstrap;
 import java.net.InetSocketAddress;
 import java.util.List;
 
-import com.acgist.snail.system.config.DhtConfig;
+import com.acgist.snail.config.DhtConfig;
 
 /**
  * <p>DHT消息</p>

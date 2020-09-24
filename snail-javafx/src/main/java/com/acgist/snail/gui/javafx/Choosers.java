@@ -2,7 +2,7 @@ package com.acgist.snail.gui.javafx;
 
 import java.io.File;
 
-import com.acgist.snail.system.config.DownloadConfig;
+import com.acgist.snail.config.DownloadConfig;
 
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;

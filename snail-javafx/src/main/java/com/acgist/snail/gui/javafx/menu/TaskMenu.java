@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.gui.javafx.Alerts;
 import com.acgist.snail.gui.javafx.Choosers;
 import com.acgist.snail.gui.javafx.Clipboards;
@@ -17,7 +18,6 @@ import com.acgist.snail.gui.javafx.main.MainWindow;
 import com.acgist.snail.gui.javafx.torrent.TorrentWindow;
 import com.acgist.snail.gui.utils.DesktopUtils;
 import com.acgist.snail.protocol.Protocol.Type;
-import com.acgist.snail.system.context.SystemThreadContext;
 import com.acgist.snail.utils.FileUtils;
 
 import javafx.application.Platform;

@@ -6,8 +6,8 @@ import java.security.InvalidKeyException;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.config.CryptConfig;
 import com.acgist.snail.net.torrent.crypt.MSEKeyPairBuilder;
-import com.acgist.snail.system.config.CryptConfig;
 import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.StringUtils;
 

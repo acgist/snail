@@ -6,6 +6,10 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.BaseTest;
+import com.acgist.snail.config.DatabaseConfig;
+import com.acgist.snail.config.PeerConfig;
+import com.acgist.snail.exception.DownloadException;
+import com.acgist.snail.initializer.impl.DatabaseInitializer;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.TorrentServer;
 import com.acgist.snail.net.torrent.bootstrap.PeerDownloader;
@@ -17,10 +21,6 @@ import com.acgist.snail.pojo.session.StatisticsSession;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.wrapper.MultifileSelectorWrapper;
 import com.acgist.snail.protocol.Protocol.Type;
-import com.acgist.snail.system.config.DatabaseConfig;
-import com.acgist.snail.system.config.PeerConfig;
-import com.acgist.snail.system.exception.DownloadException;
-import com.acgist.snail.system.initializer.impl.DatabaseInitializer;
 import com.acgist.snail.utils.ThreadUtils;
 
 public class PeerServerTest extends BaseTest {
