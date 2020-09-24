@@ -52,6 +52,11 @@ public final class WindowsRecycle extends Recycle {
 	 */
 	private String deleteInfoFile;
 
+	/**
+	 * <p>Windows回收站构造器</p>
+	 * 
+	 * @param path 文件路径
+	 */
 	public WindowsRecycle(String path) {
 		super(path);
 		this.buildRecycle();
@@ -94,6 +99,7 @@ public final class WindowsRecycle extends Recycle {
 		}
 		this.deleteFile = FileUtils.file(this.recyclePath, FILE_PREFIX + name);
 		this.deleteInfoFile = FileUtils.file(this.recyclePath, INFO_PREFIX + name);
+		// TODO：换行
 		LOGGER.debug("删除文件路径：{}，删除文件信息文件路径：{}", this.deleteFile, this.deleteInfoFile);
 	}
 	

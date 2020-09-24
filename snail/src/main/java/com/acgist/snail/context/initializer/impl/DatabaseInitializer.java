@@ -57,8 +57,8 @@ public final class DatabaseInitializer extends Initializer {
 	 * <p>执行建表语句</p>
 	 */
 	private void buildTable() {
-		LOGGER.info("数据库建表");
 		final String sql = this.buildTableSQL();
+		LOGGER.info("数据库建表：{}", sql);
 		this.databaseManager.update(sql);
 	}
 

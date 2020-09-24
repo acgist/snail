@@ -24,10 +24,18 @@ public abstract class Initializer {
 	 */
 	private final int delay;
 
+	/**
+	 * <p>立即初始化</p>
+	 */
 	protected Initializer() {
 		this(0);
 	}
 	
+	/**
+	 * <p>延迟初始化</p>
+	 * 
+	 * @param delay 延迟时间
+	 */
 	protected Initializer(int delay) {
 		this.delay = delay;
 	}
