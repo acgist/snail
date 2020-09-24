@@ -213,9 +213,7 @@ public final class BEncodeEncoder {
 		}
 		this.write(BEncodeDecoder.TYPE_D);
 		map.forEach((key, value) -> {
-			final String keyValue = key.toString();
-			final byte[] keyValues = keyValue.getBytes();
-			this.writeBytes(keyValues);
+			this.writeBytes(key.toString().getBytes());
 			this.writeValue(value);
 		});
 		this.write(BEncodeDecoder.TYPE_E);

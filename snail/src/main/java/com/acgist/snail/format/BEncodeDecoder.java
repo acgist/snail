@@ -199,10 +199,10 @@ public final class BEncodeDecoder {
 		final char type = (char) this.inputStream.read();
 		switch (type) {
 		case TYPE_D:
-			this.map = this.readMap(this.inputStream);
+			this.map = readMap(this.inputStream);
 			return this.type = Type.MAP;
 		case TYPE_L:
-			this.list = this.readList(this.inputStream);
+			this.list = readList(this.inputStream);
 			return this.type = Type.LIST;
 		default:
 			LOGGER.warn("B编码错误（类型未适配）：{}", type);
@@ -274,7 +274,7 @@ public final class BEncodeDecoder {
 	 * 
 	 * @return 数值
 	 */
-	private Long readLong(ByteArrayInputStream inputStream) {
+	private static final Long readLong(ByteArrayInputStream inputStream) {
 		int index;
 		char indexChar;
 		final StringBuilder valueBuilder = new StringBuilder();
@@ -302,7 +302,7 @@ public final class BEncodeDecoder {
 	 * 
 	 * @throws PacketSizeException 网络包大小异常
 	 */
-	private Map<String, Object> readMap(ByteArrayInputStream inputStream) throws PacketSizeException {
+	private static final Map<String, Object> readMap(ByteArrayInputStream inputStream) throws PacketSizeException {
 		int index;
 		char indexChar;
 		String key = null;
@@ -315,7 +315,7 @@ public final class BEncodeDecoder {
 				return map;
 			case TYPE_I:
 				if(key != null) {
-					map.put(key, this.readLong(inputStream));
+					map.put(key, readLong(inputStream));
 					key = null;
 				} else {
 					LOGGER.warn("B编码key为空跳过");
@@ -323,7 +323,7 @@ public final class BEncodeDecoder {
 				break;
 			case TYPE_L:
 				if(key != null) {
-					map.put(key, this.readList(inputStream));
+					map.put(key, readList(inputStream));
 					key = null;
 				} else {
 					LOGGER.warn("B编码key为空跳过");
@@ -331,7 +331,7 @@ public final class BEncodeDecoder {
 				break;
 			case TYPE_D:
 				if(key != null) {
-					map.put(key, this.readMap(inputStream));
+					map.put(key, readMap(inputStream));
 					key = null;
 				} else {
 					LOGGER.warn("B编码key为空跳过");
@@ -351,7 +351,7 @@ public final class BEncodeDecoder {
 				break;
 			case SEPARATOR:
 				if(lengthBuilder.length() > 0) {
-					final byte[] bytes = this.read(lengthBuilder, inputStream);
+					final byte[] bytes = read(lengthBuilder, inputStream);
 					if (key == null) {
 						key = new String(bytes);
 					} else {
@@ -379,7 +379,7 @@ public final class BEncodeDecoder {
 	 * 
 	 * @throws PacketSizeException 网络包大小异常
 	 */
-	private List<Object> readList(ByteArrayInputStream inputStream) throws PacketSizeException {
+	private static final List<Object> readList(ByteArrayInputStream inputStream) throws PacketSizeException {
 		int index;
 		char indexChar;
 		final List<Object> list = new ArrayList<Object>();
@@ -390,13 +390,13 @@ public final class BEncodeDecoder {
 			case TYPE_E:
 				return list;
 			case TYPE_I:
-				list.add(this.readLong(inputStream));
+				list.add(readLong(inputStream));
 				break;
 			case TYPE_L:
-				list.add(this.readList(inputStream));
+				list.add(readList(inputStream));
 				break;
 			case TYPE_D:
-				list.add(this.readMap(inputStream));
+				list.add(readMap(inputStream));
 				break;
 			case '0':
 			case '1':
@@ -412,7 +412,7 @@ public final class BEncodeDecoder {
 				break;
 			case SEPARATOR:
 				if(lengthBuilder.length() > 0) {
-					final byte[] bytes = this.read(lengthBuilder, inputStream);
+					final byte[] bytes = read(lengthBuilder, inputStream);
 					list.add(bytes);
 				} else {
 					LOGGER.warn("B编码错误（长度）：{}", lengthBuilder);
@@ -429,21 +429,21 @@ public final class BEncodeDecoder {
 	/**
 	 * <p>读取符合长度的字节数组</p>
 	 * 
-	 * @param lengthBuilder 长度字符串：获取长度后清空
-	 * @param inputStream 字节流
+	 * @param lengthBuilder 字节数组长度：获取长度后清空
+	 * @param inputStream 数据
 	 * 
 	 * @return 字节数组
 	 * 
 	 * @throws PacketSizeException 网络包大小异常
 	 */
-	private byte[] read(StringBuilder lengthBuilder, ByteArrayInputStream inputStream) throws PacketSizeException {
+	private static final byte[] read(StringBuilder lengthBuilder, ByteArrayInputStream inputStream) throws PacketSizeException {
 		final var number = lengthBuilder.toString();
 		if(!StringUtils.isNumeric(number)) {
 			throw new IllegalArgumentException("B编码格式错误（数字）：" + number);
 		}
 		final int length = Integer.parseInt(number);
 		PacketSizeException.verify(length);
-		lengthBuilder.setLength(0);
+		lengthBuilder.setLength(0); // 清空
 		final byte[] bytes = new byte[length];
 		try {
 			final int readLength = inputStream.read(bytes);
