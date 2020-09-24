@@ -6,10 +6,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.PeerConfig;
-import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.config.PeerConfig.ExtensionType;
 import com.acgist.snail.config.PeerConfig.HolepunchErrorCode;
 import com.acgist.snail.config.PeerConfig.HolepunchType;
+import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.net.torrent.utp.UtpClient;
