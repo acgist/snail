@@ -1,8 +1,8 @@
 package com.acgist.snail.downloader.magnet;
 
+import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.downloader.TorrentSessionDownloader;
 import com.acgist.snail.downloader.torrent.TorrentDownloader;
-import com.acgist.snail.exception.DownloadException;
 import com.acgist.snail.pojo.ITaskSession;
 
 /**

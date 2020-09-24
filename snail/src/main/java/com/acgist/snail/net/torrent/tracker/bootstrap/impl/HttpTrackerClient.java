@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.config.TrackerConfig;
-import com.acgist.snail.exception.NetException;
+import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerService;

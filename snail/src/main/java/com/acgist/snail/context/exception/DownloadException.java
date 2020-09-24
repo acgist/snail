@@ -1,4 +1,4 @@
-package com.acgist.snail.exception;
+package com.acgist.snail.context.exception;
 
 /**
  * <p>下载异常</p>

@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.CryptConfig;
-import com.acgist.snail.exception.NetException;
+import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.codec.MessageCodec;
 import com.acgist.snail.net.torrent.crypt.MSECryptHandshakeHandler;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;

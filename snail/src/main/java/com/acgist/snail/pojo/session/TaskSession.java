@@ -9,9 +9,9 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import com.acgist.snail.context.SystemStatistics;
+import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.downloader.IDownloader;
-import com.acgist.snail.exception.DownloadException;
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.ITaskSession;

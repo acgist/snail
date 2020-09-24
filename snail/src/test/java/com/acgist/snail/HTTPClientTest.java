@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.exception.NetException;
+import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
 

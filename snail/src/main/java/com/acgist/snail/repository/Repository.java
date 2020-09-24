@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.exception.RepositoryException;
+import com.acgist.snail.context.exception.RepositoryException;
 import com.acgist.snail.pojo.entity.Entity;
 import com.acgist.snail.pojo.wrapper.ResultSetWrapper;
 import com.acgist.snail.utils.BeanUtils;

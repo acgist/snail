@@ -3,8 +3,8 @@ package com.acgist.snail.tracker;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.BaseTest;
-import com.acgist.snail.exception.DownloadException;
-import com.acgist.snail.exception.NetException;
+import com.acgist.snail.context.exception.DownloadException;
+import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.format.JSON;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.tracker.bootstrap.impl.WsTrackerClient;

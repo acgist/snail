@@ -1,4 +1,4 @@
-package com.acgist.snail.recycle;
+package com.acgist.snail.context.recycle;
 
 import java.io.File;
 

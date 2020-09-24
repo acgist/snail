@@ -1,9 +1,9 @@
 package com.acgist.snail.protocol.ftp;
 
+import com.acgist.snail.context.exception.DownloadException;
+import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.downloader.ftp.FtpDownloader;
-import com.acgist.snail.exception.DownloadException;
-import com.acgist.snail.exception.NetException;
 import com.acgist.snail.net.ftp.FtpClient;
 import com.acgist.snail.net.ftp.bootstrap.FtpClientBuilder;
 import com.acgist.snail.pojo.ITaskSession;

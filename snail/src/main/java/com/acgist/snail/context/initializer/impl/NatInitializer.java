@@ -1,10 +1,10 @@
-package com.acgist.snail.initializer.impl;
+package com.acgist.snail.context.initializer.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.context.NatContext;
-import com.acgist.snail.initializer.Initializer;
+import com.acgist.snail.context.initializer.Initializer;
 
 /**
  * <p>初始化NAT</p>

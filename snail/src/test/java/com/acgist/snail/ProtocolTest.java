@@ -2,8 +2,8 @@ package com.acgist.snail;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.exception.DownloadException;
-import com.acgist.snail.initializer.impl.ProtocolInitializer;
+import com.acgist.snail.context.exception.DownloadException;
+import com.acgist.snail.context.initializer.impl.ProtocolInitializer;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.utils.Base32Utils;

@@ -3,8 +3,8 @@ package com.acgist.snail.protocol;
 import java.io.File;
 
 import com.acgist.snail.config.DownloadConfig;
+import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.downloader.IDownloader;
-import com.acgist.snail.exception.DownloadException;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.ITaskSession.Status;
 import com.acgist.snail.pojo.entity.TaskEntity;

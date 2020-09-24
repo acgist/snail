@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.context.SystemThreadContext;
-import com.acgist.snail.exception.NetException;
+import com.acgist.snail.context.exception.NetException;
 
 /**
  * <p>UTP请求队列</p>

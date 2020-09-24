@@ -8,7 +8,7 @@ import java.nio.file.Paths;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.recycle.RecycleManager;
+import com.acgist.snail.context.recycle.RecycleManager;
 import com.acgist.snail.utils.StringUtils;
 
 public class RecycleTest extends BaseTest {

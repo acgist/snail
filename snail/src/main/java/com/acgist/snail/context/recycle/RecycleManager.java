@@ -1,4 +1,4 @@
-package com.acgist.snail.recycle;
+package com.acgist.snail.context.recycle;
 
 import java.util.function.Function;
 
@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.context.SystemContext;
 import com.acgist.snail.context.SystemContext.SystemType;
-import com.acgist.snail.recycle.windows.WindowsRecycle;
+import com.acgist.snail.context.recycle.windows.WindowsRecycle;
 
 /**
  * <p>回收站管理器</p>

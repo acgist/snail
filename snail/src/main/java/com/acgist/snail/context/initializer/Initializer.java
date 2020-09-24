@@ -1,4 +1,4 @@
-package com.acgist.snail.initializer;
+package com.acgist.snail.context.initializer;
 
 import java.util.concurrent.TimeUnit;
 
