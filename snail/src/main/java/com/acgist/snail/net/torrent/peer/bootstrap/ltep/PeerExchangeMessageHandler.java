@@ -10,8 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.PeerConfig;
-import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.config.PeerConfig.ExtensionType;
+import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.exception.NetException;
 import com.acgist.snail.exception.PacketSizeException;
 import com.acgist.snail.format.BEncodeDecoder;
