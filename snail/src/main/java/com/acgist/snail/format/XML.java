@@ -51,7 +51,7 @@ public final class XML {
 	private Document document;
 	
 	/**
-	 * <p>禁止主动创建实例</p>
+	 * <p>禁止创建实例</p>
 	 */
 	private XML() {
 	}

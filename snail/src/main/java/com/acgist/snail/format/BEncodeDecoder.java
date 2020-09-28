@@ -668,7 +668,6 @@ public final class BEncodeDecoder {
 			return List.of();
 		}
 		return result.stream()
-			.map(value -> value)
 			.collect(Collectors.toList());
 	}
 	
@@ -701,8 +700,7 @@ public final class BEncodeDecoder {
 			return Map.of();
 		}
 		return result.entrySet().stream()
-			.filter(entry -> entry.getKey() != null)
-			.map(entry -> Map.entry(entry.getKey().toString(), entry.getValue()))
+			.map(entry -> Map.entry(entry.getKey() == null ? null : entry.getKey().toString(), entry.getValue()))
 			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new));
 	}
 	
