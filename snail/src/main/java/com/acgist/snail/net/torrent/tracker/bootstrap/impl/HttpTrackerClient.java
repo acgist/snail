@@ -85,8 +85,7 @@ public final class HttpTrackerClient extends TrackerClient {
 		final var decoder = BEncodeDecoder.newInstance(body);
 		decoder.nextMap();
 		if(decoder.isEmpty()) {
-			LOGGER.warn("HTTP Tracker声明消息错误（格式）：{}", decoder.oddString());
-			return;
+			throw new NetException("HTTP Tracker声明消息错误（格式）：" + decoder.oddString());
 		}
 		final var message = convertAnnounceMessage(sid, decoder);
 		this.trackerId = message.getTrackerId(); // 跟踪器ID
