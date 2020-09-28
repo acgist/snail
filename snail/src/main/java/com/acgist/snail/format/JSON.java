@@ -6,9 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.stream.Collectors;
 
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -21,7 +19,7 @@ import com.acgist.snail.utils.StringUtils;
  */
 public final class JSON {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(JSON.class);
+//	private static final Logger LOGGER = LoggerFactory.getLogger(JSON.class);
 	
 	/**
 	 * <p>JSON特殊字符</p>
@@ -124,6 +122,9 @@ public final class JSON {
 	 */
 	private Map<Object, Object> map;
 	
+	/**
+	 * <p>禁止创建实例</p>
+	 */
 	private JSON() {
 	}
 	
@@ -154,7 +155,7 @@ public final class JSON {
 		json.type = Type.LIST;
 		return json;
 	}
-
+	
 	/**
 	 * <p>将字符串转为为JSON对象</p>
 	 * 
@@ -167,6 +168,9 @@ public final class JSON {
 			throw new IllegalArgumentException("JSON格式错误：" + content);
 		}
 		content = content.trim();
+		if(content.isEmpty()) {
+			throw new IllegalArgumentException("JSON格式错误：" + content);
+		}
 		final JSON json = new JSON();
 		final char prefix = content.charAt(0);
 		final char suffix = content.charAt(content.length() - 1);
@@ -190,9 +194,9 @@ public final class JSON {
 	private String serialize() {
 		final StringBuilder builder = new StringBuilder();
 		if(this.type == Type.MAP) {
-			this.serializeMap(this.map, builder);
+			serializeMap(this.map, builder);
 		} else if(this.type == Type.LIST) {
-			this.serializeList(this.list, builder);
+			serializeList(this.list, builder);
 		} else {
 			throw new IllegalArgumentException("JSON类型错误：" + this.type);
 		}
@@ -205,7 +209,7 @@ public final class JSON {
 	 * @param map Map
 	 * @param builder JSON字符串Builder
 	 */
-	private void serializeMap(Map<?, ?> map, StringBuilder builder) {
+	private static final void serializeMap(Map<?, ?> map, StringBuilder builder) {
 		Objects.requireNonNull(map, "JSON序列化错误（Map为空）");
 		builder.append(JSON_MAP_PREFIX);
 		if(!map.isEmpty()) {
@@ -226,7 +230,7 @@ public final class JSON {
 	 * @param list List
 	 * @param builder JSON字符串Builder
 	 */
-	private void serializeList(List<?> list, StringBuilder builder) {
+	private static final void serializeList(List<?> list, StringBuilder builder) {
 		Objects.requireNonNull(list, "JSON序列化错误（List为空）");
 		builder.append(JSON_LIST_PREFIX);
 		if(!list.isEmpty()) {
@@ -245,12 +249,12 @@ public final class JSON {
 	 * @param object Java对象
 	 * @param builder JSON字符串
 	 */
-	private void serializeValue(Object object, StringBuilder builder) {
+	private static final void serializeValue(Object object, StringBuilder builder) {
 		if(object == null) {
 			builder.append(JSON_NULL);
 		} else if(object instanceof String) {
 			builder.append(JSON_STRING)
-				.append(this.encodeValue((String) object))
+				.append(encodeValue((String) object))
 				.append(JSON_STRING);
 		} else if(object instanceof Boolean) {
 			builder.append(object.toString());
@@ -259,12 +263,12 @@ public final class JSON {
 		} else if(object instanceof JSON) {
 			builder.append(object.toString());
 		} else if(object instanceof Map) {
-			this.serializeMap((Map<?, ?>) object, builder);
+			serializeMap((Map<?, ?>) object, builder);
 		} else if(object instanceof List) {
-			this.serializeList((List<?>) object, builder);
+			serializeList((List<?>) object, builder);
 		} else {
 			builder.append(JSON_STRING)
-				.append(this.encodeValue(object.toString()))
+				.append(encodeValue(object.toString()))
 				.append(JSON_STRING);
 		}
 	}
@@ -276,7 +280,7 @@ public final class JSON {
 	 * 
 	 * @return 转义后字符串
 	 */
-	private String encodeValue(String content) {
+	private static final String encodeValue(String content) {
 		int index = -1;
 		final char[] chars = content.toCharArray();
 		final StringBuilder builder = new StringBuilder();
@@ -298,9 +302,11 @@ public final class JSON {
 	 */
 	private void deserialize(String content) {
 		if(this.type == Type.MAP) {
-			this.deserializeMap(content);
+			this.map = new LinkedHashMap<>();
+			deserializeMap(content, this.map);
 		} else if(this.type == Type.LIST) {
-			this.deserializeList(content);
+			this.list = new ArrayList<>();
+			deserializeList(content, this.list);
 		} else {
 			throw new IllegalArgumentException("JSON类型错误：" + this.type);
 		}
@@ -310,14 +316,14 @@ public final class JSON {
 	 * <p>反序列化Map</p>
 	 * 
 	 * @param content JSON字符串
+	 * @param map Map
 	 */
-	private void deserializeMap(String content) {
-		this.map = new LinkedHashMap<>();
+	private static final void deserializeMap(String content, Map<Object, Object> map) {
 		final AtomicInteger index = new AtomicInteger(0);
 		while(index.get() < content.length()) {
-			this.map.put(
-				this.deserializeValue(index, content),
-				this.deserializeValue(index, content)
+			map.put(
+				deserializeValue(index, content),
+				deserializeValue(index, content)
 			);
 		}
 	}
@@ -326,13 +332,13 @@ public final class JSON {
 	 * <p>反序列化List</p>
 	 * 
 	 * @param content JSON字符串
+	 * @param list List
 	 */
-	private void deserializeList(String content) {
-		this.list = new ArrayList<>();
+	private static final void deserializeList(String content, List<Object> list) {
 		final AtomicInteger index = new AtomicInteger(0);
 		while(index.get() < content.length()) {
-			this.list.add(
-				this.deserializeValue(index, content)
+			list.add(
+				deserializeValue(index, content)
 			);
 		}
 	}
@@ -345,35 +351,32 @@ public final class JSON {
 	 * 
 	 * @return Java对象
 	 */
-	private Object deserializeValue(AtomicInteger index, String content) {
+	private static final Object deserializeValue(AtomicInteger index, String content) {
 		char value;
 		String hexValue;
-		boolean json = false; // 是否是JSON对象
-		boolean string = false; // 是否是字符串对象
+		int jsonIndex = 0; // JSON层级
+		int stringIndex = 0; // 字符串层级
 		final StringBuilder builder = new StringBuilder();
 		do {
 			value = content.charAt(index.get());
 			if(value == JSON_STRING) {
-				if(string) {
-					// 结束
-					string = false;
+				if(stringIndex == 0) {
+					stringIndex++; // 层级增加
 				} else {
-					// 开始
-					string = true;
+					stringIndex--; // 层级减少
 				}
 			} else if(value == JSON_MAP_PREFIX || value == JSON_LIST_PREFIX) {
-				// 开始
-				json = true;
+				jsonIndex++;
 			} else if(value == JSON_MAP_SUFFIX || value == JSON_LIST_SUFFIX) {
-				// 结束
-				json = false;
+				jsonIndex--;
 			}
 			// 不属于JSON对象和字符串对象出现分隔符：结束循环
-			if(!string && !json && (value == JSON_KV_SEPARATOR || value == JSON_ATTR_SEPARATOR)) {
+			if(stringIndex == 0 && jsonIndex == 0 && (value == JSON_KV_SEPARATOR || value == JSON_ATTR_SEPARATOR)) {
 				index.incrementAndGet();
 				break;
 			}
-			if (value == '\\') { // 转义：参考{@link #BYTES}
+			// 转移参考：#CHARS
+			if (value == '\\') {
 				index.incrementAndGet();
 				value = content.charAt(index.get());
 				switch (value) {
@@ -393,9 +396,17 @@ public final class JSON {
 					builder.append('\r');
 					break;
 				case '"':
+					// 如果存在JSON对象里面保留转移字符
+					if(jsonIndex != 0) {
+						builder.append('\\');
+					}
 					builder.append(value);
 					break;
 				case '\\':
+					// 如果存在JSON对象里面保留转移字符
+					if(jsonIndex != 0) {
+						builder.append('\\');
+					}
 					builder.append(value);
 					break;
 				case 'u': // Unicode
@@ -404,15 +415,16 @@ public final class JSON {
 					index.addAndGet(4);
 					break;
 				default:
+					// 未知转移类型保留转移字符
+					builder.append('\\');
 					builder.append(value);
-					LOGGER.warn("不支持的JSON转义符号：{}", value);
 					break;
 				}
 			} else {
 				builder.append(value);
 			}
 		} while (index.incrementAndGet() < content.length());
-		return this.convertValue(builder.toString());
+		return convertValue(builder.toString());
 	}
 	
 	/**
@@ -422,10 +434,22 @@ public final class JSON {
 	 * 
 	 * @return Java对象
 	 */
-	private Object convertValue(String content) {
+	private static final Object convertValue(String content) {
 		final String value = content.trim();
 		final int length = value.length();
-		if(
+		if(JSON_NULL.equals(value)) {
+			// null
+			return null;
+		} else if(StringUtils.isDecimal(value)) {
+			// 数字
+			return Integer.valueOf(value);
+		} else if(
+			JSON_BOOLEAN_TRUE.equals(value) ||
+			JSON_BOOLEAN_FALSE.equals(value)
+		) {
+			// Boolean
+			return Boolean.valueOf(value);
+		} else if(
 			length > 1 &&
 			value.charAt(0) == JSON_STRING &&
 			value.charAt(value.length() - 1) == JSON_STRING
@@ -433,27 +457,17 @@ public final class JSON {
 			// 字符串
 			return value.substring(1, length - 1); // 去掉引号
 		} else if(
-			JSON_BOOLEAN_TRUE.equals(value) ||
-			JSON_BOOLEAN_FALSE.equals(value)
-		) {
-			// Boolean
-			return Boolean.valueOf(value);
-		} else if(JSON_NULL.equals(value)) {
-			// null
-			return null;
-		} else if(StringUtils.isDecimal(value)) {
-			// 数字
-			return Integer.valueOf(value);
-		} else if(
 			length > 1 &&
-			value.charAt(0) == JSON_MAP_PREFIX && value.charAt(length - 1) == JSON_MAP_SUFFIX
+			value.charAt(0) == JSON_MAP_PREFIX &&
+			value.charAt(length - 1) == JSON_MAP_SUFFIX
 		) {
 			// MAP：懒加载
 //			return JSON.ofString(value);
 			return value;
 		} else if(
 			length > 1 &&
-			value.charAt(0) == JSON_LIST_PREFIX && value.charAt(length - 1) == JSON_LIST_SUFFIX
+			value.charAt(0) == JSON_LIST_PREFIX &&
+			value.charAt(length - 1) == JSON_LIST_SUFFIX
 		) {
 			// LIST：懒加载
 //			return JSON.ofString(value);
@@ -490,13 +504,21 @@ public final class JSON {
 	 * @return JSON对象
 	 */
 	public JSON getJSON(Object key) {
-		final Object value = get(key);
+		final Object value = this.get(key);
 		if(value == null) {
 			return null;
 		} else if(value instanceof JSON) {
 			return (JSON) value;
 		} else if(value instanceof String) {
 			return JSON.ofString((String) value);
+		} else if(value instanceof Map) {
+			final Map<Object, Object> map = ((Map<?, ?>) value).entrySet().stream()
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new));
+			return JSON.ofMap(map);
+		} else if(value instanceof List) {
+			final List<Object> list = ((List<?>) value).stream()
+				.collect(Collectors.toList());
+			return JSON.ofList(list);
 		} else {
 			throw new IllegalArgumentException("JSON转换错误：" + value);
 		}
