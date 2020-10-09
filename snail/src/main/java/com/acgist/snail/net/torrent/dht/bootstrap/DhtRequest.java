@@ -221,6 +221,7 @@ public class DhtRequest extends DhtMessage {
 		if(ObjectUtils.equals(this, object)) {
 			return true;
 		}
+		// TODO：使用最新instanceof写法
 		if(object instanceof DhtRequest) {
 			final DhtRequest request = (DhtRequest) object;
 			return ArrayUtils.equals(this.t, request.t);
