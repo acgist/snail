@@ -138,6 +138,8 @@ public final class CryptConfig {
 	public static final int VC_LENGTH = 8;
 	/**
 	 * <p>VC数据：八字节（0x00）</p>
+	 * 
+	 * TODO：私有化更安全
 	 */
 	public static final byte[] VC = new byte[VC_LENGTH];
 	/**

@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
  * <p>数据库配置</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class DatabaseConfig extends PropertiesConfig {
 	
@@ -51,23 +50,26 @@ public final class DatabaseConfig extends PropertiesConfig {
 	 */
 	private String tableSQL;
 
+	/**
+	 * <p>禁止创建实例</p>
+	 */
 	private DatabaseConfig() {
 		super(DATABASE_CONFIG);
 	}
 	
 	/**
-	 * <p>初始化</p>
+	 * <p>初始化配置</p>
 	 */
 	private void init() {
-		INSTANCE.url = getString("acgist.database.h2.url");
-		INSTANCE.driver = getString("acgist.database.h2.driver");
-		INSTANCE.user = getString("acgist.database.h2.user");
-		INSTANCE.password = getString("acgist.database.h2.password");
-		INSTANCE.tableSQL = getString("acgist.database.h2.table.sql");
+		INSTANCE.url = this.getString("acgist.database.h2.url");
+		INSTANCE.driver = this.getString("acgist.database.h2.driver");
+		INSTANCE.user = this.getString("acgist.database.h2.user");
+		INSTANCE.password = this.getString("acgist.database.h2.password");
+		INSTANCE.tableSQL = this.getString("acgist.database.h2.table.sql");
 	}
 	
 	/**
-	 * <p>日志</p>
+	 * <p>日志记录</p>
 	 */
 	private void logger() {
 		LOGGER.info("数据库地址：{}", this.url);
