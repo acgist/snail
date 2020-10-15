@@ -67,10 +67,10 @@ public final class ArrayUtils {
 	public static final int compareUnsigned(byte[] sources, byte[] targets) {
 		Objects.requireNonNull(sources, "数组比较参数错误");
 		Objects.requireNonNull(targets, "数组比较参数错误");
-		if(sources.length != targets.length) {
-			return sources.length > targets.length ? 1 : -1;
+		final int length = sources.length;
+		if(length != targets.length) {
+			return length > targets.length ? 1 : -1;
 		} else {
-			final int length = sources.length;
 			for (int index = 0; index < length; index++) {
 				if(sources[index] != targets[index]) {
 					return ((char) (sources[index] & 0xFF)) > ((char) (targets[index] & 0xFF)) ? 1 : -1;

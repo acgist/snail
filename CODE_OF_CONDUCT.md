@@ -71,7 +71,7 @@ list.stream()
 * 注释文本和前面的符号必须有个空格
 * 类变量、静态变量必须使用javadoc注解
 * 单例对象、获取单例方法、无参构造函数不要注释
-* 类、接口必须使用javadoc注解：描述、作者、版本
+* 类、接口必须使用javadoc注解：描述、作者
 * 抽象方法必须使用javadoc注解：描述、参数、返回值、异常
 
 ## 日志
@@ -95,13 +95,15 @@ list.stream()
 
 |包名|描述|
 |:--|:--|
+|config|配置|
+|context|上下文|
 |downloader|下载器|
+|format|数据格式|
 |gui|GUI|
 |net|网络|
 |pojo|POJO|
 |protocol|协议|
 |repository|数据库|
-|system|系统|
 |utils|工具|
 
 #### 类命名

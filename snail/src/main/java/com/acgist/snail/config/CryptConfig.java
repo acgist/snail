@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
  * <p>MSE加密配置</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public final class CryptConfig {
 	
@@ -17,6 +16,8 @@ public final class CryptConfig {
 	
 	/**
 	 * <p>加密算法</p>
+	 * 
+	 * @author acgist
 	 */
 	public enum CryptAlgo {
 		
@@ -30,6 +31,9 @@ public final class CryptConfig {
 		 */
 		private final int provide;
 		
+		/**
+		 * @param provide provide
+		 */
 		private CryptAlgo(int provide) {
 			this.provide = provide;
 		}
@@ -47,6 +51,8 @@ public final class CryptConfig {
 	
 	/**
 	 * <p>加密策略</p>
+	 * 
+	 * @author acgist
 	 */
 	public enum Strategy {
 		
@@ -65,16 +71,23 @@ public final class CryptConfig {
 		private final boolean crypt;
 		/**
 		 * <p>加密模式：crypto_provide</p>
+		 * <p>客户端可能支持多种加密算法，传输或运算计算结果，双方协商最优加密算法。</p>
+		 * 
+		 * @see CryptAlgo#provide
 		 */
 		private final int provide;
 		
+		/**
+		 * @param crypt 是否加密
+		 * @param provide 加密模式
+		 */
 		private Strategy(boolean crypt, int provide) {
 			this.crypt = crypt;
 			this.provide = provide;
 		}
 		
 		/**
-		 * <p>是否加密</p>
+		 * <p>获取是否加密</p>
 		 * 
 		 * @return true-加密；false-不加密；
 		 */
@@ -136,6 +149,9 @@ public final class CryptConfig {
 		LOGGER.info("默认加密策略：{}", CryptConfig.STRATEGY);
 	}
 	
+	/**
+	 * <p>禁止创建实例</p>
+	 */
 	private CryptConfig() {
 	}
 	

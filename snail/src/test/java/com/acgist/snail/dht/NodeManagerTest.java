@@ -21,6 +21,8 @@ public class NodeManagerTest extends BaseTest {
 		this.log(StringUtils.hex(hex1));
 		this.log(StringUtils.hex(hex2));
 		this.log(ArrayUtils.compareUnsigned(hex1, hex2));
+		this.log(ArrayUtils.compareUnsigned(hex1, hex1));
+		this.log(ArrayUtils.compareUnsigned(hex2, hex1));
 	}
 
 	@Test
