@@ -278,7 +278,12 @@ public final class StatisticsController extends Controller implements Initializa
 	 */
 	private TextFlow buildSystemInfo(String name, Object info) {
 		final Label label = new Label(name);
-		final Text text = new Text(info.toString());
+		Text text;
+		if(info == null) {
+			text = new Text("获取失败");
+		} else {
+			text = new Text(info.toString());
+		}
 		return new TextFlow(label, text);
 	}
 	
