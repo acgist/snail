@@ -171,7 +171,7 @@ public final class PeerSession implements IStatistics {
 	 */
 	public void id(byte[] id) {
 		this.id = id;
-		this.clientName = PeerConfig.name(this.id);
+		this.clientName = PeerConfig.clientName(this.id);
 	}
 	
 	/**
@@ -430,7 +430,7 @@ public final class PeerSession implements IStatistics {
 	 * @return 是否支持DHT扩展协议
 	 */
 	public boolean supportDhtProtocol() {
-		return this.reserved != null && (this.reserved[7] & PeerConfig.DHT_PROTOCOL) != 0;
+		return this.reserved != null && (this.reserved[7] & PeerConfig.RESERVED_DHT_PROTOCOL) != 0;
 	}
 	
 	/**
@@ -439,7 +439,7 @@ public final class PeerSession implements IStatistics {
 	 * @return 是否支持扩展协议
 	 */
 	public boolean supportExtensionProtocol() {
-		return this.reserved != null && (this.reserved[5] & PeerConfig.EXTENSION_PROTOCOL) != 0;
+		return this.reserved != null && (this.reserved[5] & PeerConfig.RESERVED_EXTENSION_PROTOCOL) != 0;
 	}
 	
 	/**
@@ -448,7 +448,7 @@ public final class PeerSession implements IStatistics {
 	 * @return 是否支持快速扩展协议
 	 */
 	public boolean supportFastExtensionProtocol() {
-		return this.reserved != null && (this.reserved[7] & PeerConfig.FAST_PROTOCOL) != 0;
+		return this.reserved != null && (this.reserved[7] & PeerConfig.RESERVED_FAST_PROTOCOL) != 0;
 	}
 
 	/**

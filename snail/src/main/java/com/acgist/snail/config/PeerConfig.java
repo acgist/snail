@@ -9,7 +9,6 @@ import java.util.Map;
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0011.html</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class PeerConfig {
 	
@@ -28,38 +27,42 @@ public final class PeerConfig {
 	public static final int PEER_ID_LENGTH = 20;
 	/**
 	 * <p>保留位长度：{@value}</p>
+	 * 
+	 * @see #HANDSHAKE_RESERVED
 	 */
 	public static final int RESERVED_LENGTH = 8;
 	/**
 	 * <p>保留位</p>
 	 * <p>协议链接：http://www.bittorrent.org/beps/bep_0004.html</p>
+	 * 
+	 * TODO：私有化更安全
 	 */
 	public static final byte[] HANDSHAKE_RESERVED = {0, 0, 0, 0, 0, 0, 0, 0};
 	/**
 	 * <p>DHT保留位：{@value}</p>
 	 * <p>[7]-0x01：DHT Protocol</p>
 	 */
-	public static final byte DHT_PROTOCOL = 1 << 0;
+	public static final byte RESERVED_DHT_PROTOCOL = 1 << 0;
 	/**
 	 * <p>PEX保留位：{@value}</p>
 	 * <p>[7]-0x02：Peer Exchange</p>
 	 */
-	public static final byte PEER_EXCHANGE = 1 << 1;
+	public static final byte RESERVED_PEER_EXCHANGE = 1 << 1;
 	/**
 	 * <p>FAST保留位：{@value}</p>
 	 * <p>[7]-0x04：FAST Protocol</p>
 	 */
-	public static final byte FAST_PROTOCOL = 1 << 2;
+	public static final byte RESERVED_FAST_PROTOCOL = 1 << 2;
 	/**
 	 * <p>NAT保留位：{@value}</p>
 	 * <p>[7]-0x08：NAT Traversal</p>
 	 */
-	public static final byte NAT_TRAVERSAL = 1 << 3;
+	public static final byte RESERVED_NAT_TRAVERSAL = 1 << 3;
 	/**
 	 * <p>扩展协议保留位：{@value}</p>
 	 * <p>[5]-0x10：Extension Protocol</p>
 	 */
-	public static final byte EXTENSION_PROTOCOL = 1 << 4;
+	public static final byte RESERVED_EXTENSION_PROTOCOL = 1 << 4;
 	/**
 	 * <p>握手消息长度：{@value}</p>
 	 */
@@ -70,6 +73,8 @@ public final class PeerConfig {
 	public static final String HANDSHAKE_NAME = "BitTorrent protocol";
 	/**
 	 * <p>协议名称字节数组</p>
+	 * 
+	 * TODO：私有化更安全
 	 */
 	public static final byte[] HANDSHAKE_NAME_BYTES = HANDSHAKE_NAME.getBytes();
 	/**
@@ -148,15 +153,16 @@ public final class PeerConfig {
 	 * 	<dd>Shadow's-style：名称（1）+版本（4）-----随机数：S1000-----...</dd>
 	 * </dl>
 	 * <p>支持命名方式：Azureus-style</p>
+	 * <p>PeerId=ClientName</p>
 	 */
 	private static final Map<String, String> PEER_NAMES = new HashMap<>();
 
 	static {
 		//================保留位================//
-		HANDSHAKE_RESERVED[7] |= DHT_PROTOCOL;
-		HANDSHAKE_RESERVED[7] |= PEER_EXCHANGE;
-		HANDSHAKE_RESERVED[7] |= FAST_PROTOCOL;
-		HANDSHAKE_RESERVED[5] |= EXTENSION_PROTOCOL;
+		HANDSHAKE_RESERVED[7] |= RESERVED_DHT_PROTOCOL;
+		HANDSHAKE_RESERVED[7] |= RESERVED_PEER_EXCHANGE;
+		HANDSHAKE_RESERVED[7] |= RESERVED_FAST_PROTOCOL;
+		HANDSHAKE_RESERVED[5] |= RESERVED_EXTENSION_PROTOCOL;
 		//================客户端名称================//
 		PEER_NAMES.put("-AG", "Ares");
 		PEER_NAMES.put("-A~", "Ares");
@@ -225,6 +231,9 @@ public final class PeerConfig {
 		PEER_NAMES.put("-ZT", "ZipTorrent");
 	}
 	
+	/**
+	 * <p>禁止创建实例</p>
+	 */
 	private PeerConfig() {
 	}
 	
@@ -261,7 +270,7 @@ public final class PeerConfig {
 	 * 
 	 * @return 客户端名称
 	 */
-	public static final String name(byte[] peerId) {
+	public static final String clientName(byte[] peerId) {
 		if(peerId == null || peerId.length < 3) {
 			return UNKNOWN;
 		}
@@ -274,12 +283,14 @@ public final class PeerConfig {
 	 * <p>使用STUN穿透时设置保留位NAT配置</p>
 	 */
 	public static final void nat() {
-		HANDSHAKE_RESERVED[7] |= NAT_TRAVERSAL;
+		HANDSHAKE_RESERVED[7] |= RESERVED_NAT_TRAVERSAL;
 	}
 	
 	/**
 	 * <p>Peer协议消息类型</p>
 	 * <p>协议链接：http://www.bittorrent.org/beps/bep_0004.html</p>
+	 * 
+	 * @author acgist
 	 */
 	public enum Type {
 		
@@ -322,6 +333,9 @@ public final class PeerConfig {
 		 */
 		private final byte id;
 		
+		/**
+		 * @param id 消息ID
+		 */
 		private Type(byte id) {
 			this.id = id;
 		}
@@ -336,11 +350,11 @@ public final class PeerConfig {
 		}
 		
 		/**
-		 * <p>通过消息ID获取协议类型</p>
+		 * <p>通过消息ID获取协议消息类型</p>
 		 * 
 		 * @param id 消息ID
 		 * 
-		 * @return 协议类型
+		 * @return 协议消息类型
 		 */
 		public static final Type of(byte id) {
 			final var types = Type.values();
@@ -356,6 +370,8 @@ public final class PeerConfig {
 	
 	/**
 	 * <p>Peer扩展协议消息类型</p>
+	 * 
+	 * @author acgist
 	 */
 	public enum ExtensionType {
 		
@@ -389,6 +405,12 @@ public final class PeerConfig {
 		 */
 		private final boolean notice;
 		
+		/**
+		 * @param id 消息ID
+		 * @param value 协议名称
+		 * @param support 是否支持
+		 * @param notice 是否通知
+		 */
 		private ExtensionType(byte id, String value, boolean support, boolean notice) {
 			this.id = id;
 			this.value = value;
@@ -433,11 +455,11 @@ public final class PeerConfig {
 		}
 		
 		/**
-		 * <p>通过消息ID获取协议消息类型</p>
+		 * <p>通过消息ID获取扩展协议消息类型</p>
 		 * 
 		 * @param id 消息ID
 		 * 
-		 * @return 协议消息类型
+		 * @return 扩展协议消息类型
 		 */
 		public static final ExtensionType of(byte id) {
 			final var types = ExtensionType.values();
@@ -450,11 +472,11 @@ public final class PeerConfig {
 		}
 		
 		/**
-		 * <p>通过协议名称获取协议消息类型</p>
+		 * <p>通过协议名称获取扩展协议消息类型</p>
 		 * 
 		 * @param value 协议名称
 		 * 
-		 * @return 协议消息类型
+		 * @return 扩展协议消息类型
 		 */
 		public static final ExtensionType of(String value) {
 			final var types = ExtensionType.values();
@@ -475,6 +497,8 @@ public final class PeerConfig {
 	
 	/**
 	 * <p>Metadata扩展协议消息类型</p>
+	 * 
+	 * @author acgist
 	 */
 	public enum MetadataType {
 		
@@ -490,6 +514,9 @@ public final class PeerConfig {
 		 */
 		private final byte id;
 		
+		/**
+		 * @param id 消息ID
+		 */
 		private MetadataType(byte id) {
 			this.id = id;
 		}
@@ -504,11 +531,11 @@ public final class PeerConfig {
 		}
 		
 		/**
-		 * <p>通过消息ID获取协议消息类型</p>
+		 * <p>通过消息ID获取扩展协议消息类型</p>
 		 * 
 		 * @param id 消息ID
 		 * 
-		 * @return 协议消息类型
+		 * @return 扩展协议消息类型
 		 */
 		public static final MetadataType of(byte id) {
 			final var types = MetadataType.values();
@@ -524,6 +551,8 @@ public final class PeerConfig {
 
 	/**
 	 * <p>Holepunch扩展协议消息类型</p>
+	 * 
+	 * @author acgist
 	 */
 	public enum HolepunchType {
 		
@@ -539,6 +568,9 @@ public final class PeerConfig {
 		 */
 		private final byte id;
 		
+		/**
+		 * @param id 消息ID
+		 */
 		private HolepunchType(byte id) {
 			this.id = id;
 		}
@@ -553,11 +585,11 @@ public final class PeerConfig {
 		}
 		
 		/**
-		 * <p>通过消息ID获取协议消息类型</p>
+		 * <p>通过消息ID获取扩展协议消息类型</p>
 		 * 
 		 * @param id 消息ID
 		 * 
-		 * @return 协议消息类型
+		 * @return 扩展协议消息类型
 		 */
 		public static final HolepunchType of(byte id) {
 			final var types = HolepunchType.values();
@@ -573,25 +605,20 @@ public final class PeerConfig {
 	
 	/**
 	 * <p>Holepunch扩展协议错误编码</p>
-	 * <ul>
-	 *	<li>0x00：没有错误：成功 </li>
-	 *	<li>0x01：NoSuchPeer：目标无效</li>
-	 *	<li>0x02：NotConnected：目标未连接</li>
-	 *	<li>0x03：NoSupport：目标不支持</li>
-	 *	<li>0x04：NoSelf：目标属于中继</li>
-	 * </ul>
+	 * 
+	 * @author acgist
 	 */
 	public enum HolepunchErrorCode {
 		
 		/** 成功 */
 		CODE_00((byte) 0x00),
-		/** 目标无效 */
+		/** 目标无效：NoSuchPeer */
 		CODE_01((byte) 0x01),
-		/** 目标未连接 */
+		/** 目标未连接：NotConnected */
 		CODE_02((byte) 0x02),
-		/** 目标不支持 */
+		/** 目标不支持：NoSupport */
 		CODE_03((byte) 0x03),
-		/** 目标属于中继 */
+		/** 目标属于中继：NoSelf */
 		CODE_04((byte) 0x04);
 		
 		/**
@@ -599,6 +626,9 @@ public final class PeerConfig {
 		 */
 		private final byte code;
 		
+		/**
+		 * @param code 错误编码
+		 */
 		private HolepunchErrorCode(byte code) {
 			this.code = code;
 		}
