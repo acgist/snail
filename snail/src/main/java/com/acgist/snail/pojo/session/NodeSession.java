@@ -63,6 +63,16 @@ public final class NodeSession implements Comparable<NodeSession> {
 	}
 	
 	/**
+	 * <p>判断节点是否可以保存</p>
+	 * <p>如果节点处于验证状态则不保存</p>
+	 * 
+	 * @return 是否可以保持
+	 */
+	public boolean persistentable() {
+		return this.status != Status.VERIFY;
+	}
+	
+	/**
 	 * <p>获取节点ID</p>
 	 * 
 	 * @return 节点ID

@@ -2,6 +2,7 @@ package com.acgist.snail.config;
 
 import java.time.Duration;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -17,7 +18,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>DHT节点配置</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class DhtConfig extends PropertiesConfig {
 	
@@ -54,17 +54,17 @@ public final class DhtConfig extends PropertiesConfig {
 	/**
 	 * <p>响应消息、响应参数：{@value}</p>
 	 * <p>响应消息：{@link #KEY_Y}</p>
-	 * <p>响应参数类型：{@code Map}</p>
+	 * <p>响应参数类型：{@link Map}</p>
 	 */
 	public static final String KEY_R = "r";
 	/**
 	 * <p>请求参数：{@value}</p>
-	 * <p>请求参数类型：{@code Map}</p>
+	 * <p>请求参数类型：{@link Map}</p>
 	 */
 	public static final String KEY_A = "a";
 	/**
 	 * <p>响应错误：{@value}</p>
-	 * <p>响应错误类型：{@code Map}</p>
+	 * <p>响应错误类型：{@link Map}</p>
 	 * 
 	 * @see ErrorCode
 	 */
@@ -84,7 +84,7 @@ public final class DhtConfig extends PropertiesConfig {
 	public static final String KEY_PORT = "port";
 	/**
 	 * <p>Token：{@value}</p>
-	 * <p>{@linkplain QType#ANNOUNCE_PEER 声明Peer}使用</p>
+	 * <p>发送消息{@link QType#ANNOUNCE_PEER}使用</p>
 	 */
 	public static final String KEY_TOKEN = "token";
 	/**
@@ -123,7 +123,7 @@ public final class DhtConfig extends PropertiesConfig {
 	public static final Integer IMPLIED_PORT_CONFIG = 0;
 	/**
 	 * <p>Peer列表长度：{@value}</p>
-	 * <p>{@linkplain QType#GET_PEERS 查找Peer}使用</p>
+	 * <p>发送消息{@link QType#GET_PEERS}时使用</p>
 	 */
 	public static final int GET_PEER_SIZE = 32;
 	/**
@@ -151,14 +151,9 @@ public final class DhtConfig extends PropertiesConfig {
 	
 	/**
 	 * <p>DHT响应错误</p>
-	 * <dl>
-	 *	<dt>[0]：错误编码</dt>
-	 *	<dd>201：一般错误</dd>
-	 *	<dd>202：服务错误</dd>
-	 *	<dd>203：协议错误（不规范的包、无效参数、错误Token）</dd>
-	 *	<dd>204：未知方法</dd>
-	 *	<dt>[1]：错误描述</dt>
-	 * </dl>
+	 * <p>数据格式：{@link List}[0]=错误编码；{@link List}[1]=错误描述；</p>
+	 * 
+	 * @author acgist
 	 */
 	public enum ErrorCode {
 		
@@ -166,7 +161,7 @@ public final class DhtConfig extends PropertiesConfig {
 		CODE_201(201),
 		/** 服务错误 */
 		CODE_202(202),
-		/** 协议错误 */
+		/** 协议错误：不规范包、无效参数、错误Token */
 		CODE_203(203),
 		/** 未知方法 */
 		CODE_204(204);
@@ -176,6 +171,9 @@ public final class DhtConfig extends PropertiesConfig {
 		 */
 		private final int code;
 		
+		/**
+		 * @param code 错误编码
+		 */
 		private ErrorCode(int code) {
 			this.code = code;
 		}
@@ -193,6 +191,8 @@ public final class DhtConfig extends PropertiesConfig {
 	
 	/**
 	 * <p>DHT请求类型</p>
+	 * 
+	 * @author acgist
 	 */
 	public enum QType {
 		
@@ -206,27 +206,30 @@ public final class DhtConfig extends PropertiesConfig {
 		ANNOUNCE_PEER("announce_peer");
 		
 		/**
-		 * <p>类型名称</p>
+		 * <p>类型标识</p>
 		 */
 		private final String value;
 		
+		/**
+		 * @param value 类型标识
+		 */
 		private QType(String value) {
 			this.value = value;
 		}
 		
 		/**
-		 * <p>获取类型名称</p>
+		 * <p>获取类型标识</p>
 		 * 
-		 * @return 类型名称
+		 * @return 类型标识
 		 */
 		public String value() {
 			return this.value;
 		}
 		
 		/**
-		 * <p>通过类型名称获取类型</p>
+		 * <p>通过类型标识获取类型</p>
 		 * 
-		 * @param value 类型名称
+		 * @param value 类型标识
 		 * 
 		 * @return 类型
 		 */
@@ -248,12 +251,15 @@ public final class DhtConfig extends PropertiesConfig {
 	 */
 	private final Map<String, String> nodes = new LinkedHashMap<>();
 	
+	/**
+	 * <p>禁止创建实例</p>
+	 */
 	private DhtConfig() {
 		super(DHT_CONFIG);
 	}
 	
 	/**
-	 * <p>初始化配置文件</p>
+	 * <p>初始化配置</p>
 	 */
 	private void init() {
 		this.properties.entrySet().forEach(entry -> {
@@ -281,9 +287,8 @@ public final class DhtConfig extends PropertiesConfig {
 	 */
 	public void persistent() {
 		LOGGER.debug("保存DHT节点配置");
-		final var nodes = NodeManager.getInstance().nodes();
-		final var map = nodes.stream()
-			.filter(node -> node.getStatus() != NodeSession.Status.VERIFY)
+		final var map = NodeManager.getInstance().nodes().stream()
+			.filter(NodeSession::persistentable)
 			.limit(MAX_NODE_SIZE)
 			.collect(Collectors.toMap(
 				node -> StringUtils.hex(node.getId()),

@@ -16,7 +16,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>默认从配置文件加载，如果数据库有配置，则使用数据库配置覆盖。</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class DownloadConfig extends PropertiesConfig {
 
@@ -84,6 +83,9 @@ public final class DownloadConfig extends PropertiesConfig {
 		INSTANCE.logger();
 	}
 	
+	/**
+	 * <p>禁止创建实例</p>
+	 */
 	private DownloadConfig() {
 		super(DOWNLOAD_CONFIG);
 	}
@@ -129,7 +131,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	private int memoryBufferByte;
 	
 	/**
-	 * <p>加载配置文件</p>
+	 * <p>初始化配置：配置文件</p>
 	 */
 	private void initFromProperties() {
 		this.path = this.getString(DOWNLOAD_PATH);
@@ -141,7 +143,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>加载数据库配置</p>
+	 * <p>初始化配置：数据库</p>
 	 */
 	private void initFromDatabase() {
 		final ConfigRepository configRepository = new ConfigRepository();
@@ -161,7 +163,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>日志</p>
+	 * <p>日志记录</p>
 	 */
 	private void logger() {
 		LOGGER.info("下载目录：{}", this.path);
@@ -179,6 +181,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	 */
 	public static final void setPath(String path) {
 		if(StringUtils.equals(INSTANCE.path, path)) {
+			// 忽略没有修改
 			return;
 		}
 		INSTANCE.path = path;
@@ -187,11 +190,11 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>获取下载目录</p>
+	 * <p>获取下载目录路径</p>
 	 * <p>下载目录存在：返回下载目录路径</p>
 	 * <p>下载目录不在：返回{@code user.dir}路径 + 下载目录路径</p>
 	 * 
-	 * @return 下载目录
+	 * @return 下载目录路径
 	 */
 	public static final String getPath() {
 		String path = INSTANCE.path;
@@ -205,8 +208,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 
 	/**
-	 * <p>获取文件路径</p>
-	 * <p>下载目录 + 文件名称</p>
+	 * <p>获取文件路径（下载目录 + 文件名称）</p>
 	 * 
 	 * @param fileName 文件名称
 	 * 
@@ -226,6 +228,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	 */
 	public static final void setSize(int size) {
 		if(INSTANCE.size == size) {
+			// 忽略没有修改
 			return;
 		}
 		INSTANCE.size = size;
@@ -250,6 +253,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	 */
 	public static final void setNotice(boolean notice) {
 		if(INSTANCE.notice == notice) {
+			// 忽略没有修改
 			return;
 		}
 		INSTANCE.notice = notice;
@@ -273,6 +277,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	 */
 	public static final void setBuffer(int buffer) {
 		if(INSTANCE.buffer == buffer) {
+			// 忽略没有修改
 			return;
 		}
 		INSTANCE.buffer = buffer;
@@ -323,6 +328,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	 */
 	public static final void setLastPath(String lastPath) {
 		if(StringUtils.equals(INSTANCE.lastPath, lastPath)) {
+			// 忽略没有修改
 			return;
 		}
 		INSTANCE.lastPath = lastPath;
@@ -360,6 +366,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	 */
 	public static final void setMemoryBuffer(int memoryBuffer) {
 		if(INSTANCE.memoryBuffer == memoryBuffer) {
+			// 忽略没有修改
 			return;
 		}
 		INSTANCE.memoryBuffer = memoryBuffer;
