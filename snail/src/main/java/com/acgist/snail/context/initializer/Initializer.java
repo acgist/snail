@@ -9,10 +9,8 @@ import com.acgist.snail.context.SystemThreadContext;
 
 /**
  * <p>初始化</p>
- * <p>设置{@code delay}后将延迟启动</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public abstract class Initializer {
 
@@ -21,19 +19,16 @@ public abstract class Initializer {
 	/**
 	 * <p>延迟启动</p>
 	 * <p>单位：秒</p>
+	 * 
+	 * @see #asyn()
 	 */
 	private final int delay;
 
-	/**
-	 * <p>立即初始化</p>
-	 */
 	protected Initializer() {
 		this(0);
 	}
 	
 	/**
-	 * <p>延迟初始化</p>
-	 * 
 	 * @param delay 延迟时间
 	 */
 	protected Initializer(int delay) {
@@ -55,7 +50,7 @@ public abstract class Initializer {
 	 * <p>异步初始化</p>
 	 */
 	public void asyn() {
-		// 任务
+		// 异步任务
 		final Runnable runnable = () -> {
 			try {
 				this.init();
