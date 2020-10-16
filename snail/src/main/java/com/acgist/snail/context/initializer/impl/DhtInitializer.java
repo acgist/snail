@@ -11,7 +11,6 @@ import com.acgist.snail.net.torrent.dht.bootstrap.NodeManager;
  * <p>初始化DHT</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class DhtInitializer extends Initializer {
 

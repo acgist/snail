@@ -10,7 +10,6 @@ import com.acgist.snail.net.torrent.peer.PeerServer;
  * <p>初始化Peer</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class PeerInitializer extends Initializer {
 

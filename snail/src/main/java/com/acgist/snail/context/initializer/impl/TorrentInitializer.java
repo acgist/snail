@@ -11,7 +11,6 @@ import com.acgist.snail.net.torrent.utp.bootstrap.UtpService;
  * <p>初始化BT（DHT、UTP、STUN）服务</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class TorrentInitializer extends Initializer {
 

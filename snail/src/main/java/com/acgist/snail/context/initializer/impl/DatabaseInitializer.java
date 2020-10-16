@@ -14,7 +14,6 @@ import com.acgist.snail.repository.DatabaseManager;
  * <p>初始化数据库</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class DatabaseInitializer extends Initializer {
 
@@ -32,14 +31,16 @@ public final class DatabaseInitializer extends Initializer {
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * <p>如果数据库表没有创建：执行建表语句</p>
+	 * <p>数据库没有初始化：执行建表语句</p>
 	 */
 	@Override
 	protected void init() {
 		LOGGER.info("初始化数据库");
-		if(this.databaseInit()) { // 已经创建
+		if(this.databaseInit()) {
+			// 已经创建
 			LOGGER.debug("数据库已经初始化");
-		} else { // 没有创建：执行创建语句
+		} else {
+			// 没有创建：执行创建语句
 			this.buildTable();
 		}
 	}
@@ -58,7 +59,7 @@ public final class DatabaseInitializer extends Initializer {
 	 */
 	private void buildTable() {
 		final String sql = this.buildTableSQL();
-		LOGGER.info("数据库建表：{}", sql);
+		LOGGER.info("建表SQL：{}", sql);
 		this.databaseManager.update(sql);
 	}
 

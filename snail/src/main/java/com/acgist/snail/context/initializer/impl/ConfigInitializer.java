@@ -14,7 +14,6 @@ import com.acgist.snail.context.initializer.Initializer;
  * <p>初始化配置</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class ConfigInitializer extends Initializer {
 

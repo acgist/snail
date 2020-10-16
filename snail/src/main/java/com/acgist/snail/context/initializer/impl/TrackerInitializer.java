@@ -12,7 +12,6 @@ import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerManager;
  * <p>初始化Tracker</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class TrackerInitializer extends Initializer {
 

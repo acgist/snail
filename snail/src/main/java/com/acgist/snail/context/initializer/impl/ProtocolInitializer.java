@@ -16,7 +16,6 @@ import com.acgist.snail.protocol.torrent.TorrentProtocol;
  * <p>初始化下载协议</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class ProtocolInitializer extends Initializer {
 
