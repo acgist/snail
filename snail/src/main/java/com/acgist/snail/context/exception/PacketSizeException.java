@@ -3,11 +3,9 @@ package com.acgist.snail.context.exception;
 import com.acgist.snail.config.SystemConfig;
 
 /**
- * <p>网络包数据长度异常</p>
- * <p>数据长度过大或者小于零</p>
+ * <p>网络包大小异常</p>
  * 
  * @author acgist
- * @since 1.1.1
  */
 public class PacketSizeException extends NetException {
 
@@ -15,7 +13,7 @@ public class PacketSizeException extends NetException {
 	
 	/**
 	 * <p>验证网络包大小</p>
-	 * <p>网络包大小格式错误抛出异常：{@link PacketSizeException}</p>
+	 * <p>网络包大小错误抛出异常</p>
 	 * 
 	 * @param length 网络包大小
 	 * 
@@ -31,7 +29,7 @@ public class PacketSizeException extends NetException {
 	
 	/**
 	 * <p>验证网络包大小</p>
-	 * <p>网络包大小格式错误抛出异常：{@link PacketSizeException}</p>
+	 * <p>网络包大小错误抛出异常</p>
 	 * 
 	 * @param length 网络包大小
 	 * 
@@ -46,14 +44,14 @@ public class PacketSizeException extends NetException {
 	}
 
 	public PacketSizeException() {
-		super("网络包数据长度异常");
+		super("网络包大小异常");
 	}
 	
 	/**
 	 * @param size 数据长度
 	 */
 	public PacketSizeException(int size) {
-		super("网络包数据长度错误：" + size);
+		super("网络包大小错误：" + size);
 	}
 
 	/**

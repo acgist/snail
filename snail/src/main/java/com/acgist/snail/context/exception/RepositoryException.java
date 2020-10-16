@@ -7,15 +7,14 @@ import com.acgist.snail.utils.StringUtils;
  * <p>用途：{@linkplain com.acgist.snail.repository 数据库}</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public class RepositoryException extends IllegalArgumentException {
 
 	private static final long serialVersionUID = 1L;
 	
 	/**
-	 * <p>判断参数是否为空</p>
-	 * <p>如果不为空抛出{@linkplain RepositoryException 异常}</p>
+	 * <p>验证参数必须为空</p>
+	 * <p>数据不为空抛出异常</p>
 	 * 
 	 * @param object 参数
 	 */
@@ -26,8 +25,8 @@ public class RepositoryException extends IllegalArgumentException {
 	}
 	
 	/**
-	 * <p>判断参数是否不为空</p>
-	 * <p>如果为空抛出{@linkplain RepositoryException 异常}</p>
+	 * <p>验证参数不能为空</p>
+	 * <p>数据为空抛出异常</p>
 	 * 
 	 * @param object 参数
 	 */
@@ -38,8 +37,8 @@ public class RepositoryException extends IllegalArgumentException {
 	}
 	
 	/**
-	 * <p>判断参数是否匹配正则表达式</p>
-	 * <p>如果不匹配抛出{@linkplain RepositoryException 异常}</p>
+	 * <p>验证参数必须匹配正则表达式</p>
+	 * <p>参数不匹配正则表达式抛出异常</p>
 	 * 
 	 * @param value 参数
 	 * @param regex 正则表达式
