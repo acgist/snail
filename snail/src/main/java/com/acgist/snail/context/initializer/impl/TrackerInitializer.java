@@ -15,7 +15,7 @@ import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerManager;
  */
 public final class TrackerInitializer extends Initializer {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(DownloaderInitializer.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerInitializer.class);
 	
 	private TrackerInitializer() {
 	}
