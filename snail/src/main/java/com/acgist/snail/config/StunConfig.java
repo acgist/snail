@@ -4,7 +4,6 @@ package com.acgist.snail.config;
  * <p>STUN配置</p>
  * 
  * @author acgist
- * @since 1.2.0
  */
 public final class StunConfig {
 
@@ -37,11 +36,16 @@ public final class StunConfig {
 	 */
 	public static final int IPV6 = 0x02;
 	
+	/**
+	 * <p>禁止创建实例</p>
+	 */
 	private StunConfig() {
 	}
 	
 	/**
 	 * <p>方法类型</p>
+	 * 
+	 * @author acgist
 	 */
 	public enum MethodType {
 		
@@ -55,6 +59,9 @@ public final class StunConfig {
 		 */
 		private final short id;
 		
+		/**
+		 * @param id 方法ID
+		 */
 		private MethodType(short id) {
 			this.id = id;
 		}
@@ -72,6 +79,8 @@ public final class StunConfig {
 	
 	/**
 	 * <p>消息类型</p>
+	 * 
+	 * @author acgist
 	 */
 	public enum MessageType {
 		
@@ -102,12 +111,15 @@ public final class StunConfig {
 		 */
 		private final byte id;
 		
+		/**
+		 * @param id 消息ID
+		 */
 		private MessageType(byte id) {
 			this.id = id;
 		}
 		
 		/**
-		 * <p>计算对应方法的MessageType值</p>
+		 * <p>计算对应方法的MessageType标识</p>
 		 * 
 		 * @param methodType 方法类型
 		 * 
@@ -149,6 +161,8 @@ public final class StunConfig {
 	/**
 	 * <p>属性类型</p>
 	 * <p>0x0000：保留</p>
+	 * 
+	 * @author acgist
 	 */
 	public enum AttributeType {
 		
@@ -180,6 +194,9 @@ public final class StunConfig {
 		 */
 		private final short id;
 		
+		/**
+		 * @param id 属性ID
+		 */
 		private AttributeType(short id) {
 			this.id = id;
 		}
@@ -214,6 +231,8 @@ public final class StunConfig {
 
 	/**
 	 * <p>错误编码：300-699</p>
+	 * 
+	 * @author acgist
 	 */
 	public enum ErrorCode {
 		
@@ -235,6 +254,9 @@ public final class StunConfig {
 		 */
 		private final int code;
 		
+		/**
+		 * @param code 错误编码
+		 */
 		private ErrorCode(int code) {
 			this.code = code;
 		}

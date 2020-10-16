@@ -3,60 +3,88 @@ package com.acgist.snail.config;
 /**
  * <p>UTP配置</p>
  * 
- * TODO：帧类型和消息类型可以使用枚举替换
- * 
  * @author acgist
- * @since 1.1.0
  */
 public final class UtpConfig {
 
-	//================帧类型================//
 	/**
-	 * <p>数据：{@value}</p>
+	 * <p>UTP消息类型</p>
+	 * 
+	 * @author acgist
 	 */
-	public static final byte ST_DATA = 0;
-	/**
-	 * <p>结束：{@value}</p>
-	 */
-	public static final byte ST_FIN = 1;
-	/**
-	 * <p>响应：{@value}</p>
-	 */
-	public static final byte ST_STATE = 2;
-	/**
-	 * <p>重置：{@value}</p>
-	 */
-	public static final byte ST_RESET = 3;
-	/**
-	 * <p>握手：{@value}</p>
-	 */
-	public static final byte ST_SYN = 4;
-	//================版本================//
+	public enum Type {
+		
+		/** 数据 */
+		DATA((byte) 0),
+		/** 结束 */
+		FIN((byte) 1),
+		/** 响应 */
+		STATE((byte) 2),
+		/** 重置 */
+		RESET((byte) 3),
+		/** 握手 */
+		SYN((byte) 4);
+		
+		/**
+		 * <p>帧类型</p>
+		 */
+		private final byte type;
+		/**
+		 * <p>消息类型：帧类型 + 版本</p>
+		 */
+		private final byte typeVersion;
+		
+		/**
+		 * @param type 帧类型
+		 */
+		private Type(byte type) {
+			this.type = type;
+			this.typeVersion = (byte) ((type << 4) | (UTP_VERSION & 0xFF));
+		}
+		
+		/**
+		 * <p>获取帧类型</p>
+		 * 
+		 * @return 帧类型
+		 */
+		public byte type() {
+			return this.type;
+		}
+		
+		/**
+		 * <p>获取消息类型</p>
+		 * 
+		 * @return 消息类型
+		 */
+		public byte typeVersion() {
+			return this.typeVersion;
+		}
+		
+		/**
+		 * <p>通过消息类型获取UTP消息类型</p>
+		 * 
+		 * @param typeVersion 消息类型
+		 * 
+		 * @return UTP消息类型
+		 */
+		public static final Type of(byte typeVersion) {
+			final byte value = (byte) (typeVersion >> 4); // 获取帧类型
+			// 使用switch效率是否更高
+			final Type[] types = Type.values();
+			for (Type type : types) {
+				if(type.type == value) {
+					return type;
+				}
+			}
+			return null;
+		}
+		
+	}
+	
 	/**
 	 * <p>版本：{@value}</p>
 	 */
 	public static final byte UTP_VERSION = 1;
-	//================消息类型（帧类型 + 版本）================//
-	/**
-	 * <p>消息类型：数据</p>
-	 */
-	public static final byte TYPE_DATA = (ST_DATA << 4) | (UTP_VERSION & 0xFF);
-	/**
-	 * <p>消息类型：结束</p>
-	 */
-	public static final byte TYPE_FIN = (ST_FIN << 4) | (UTP_VERSION & 0xFF);
-	/**
-	 * <p>消息类型：响应</p>
-	 */
-	public static final byte TYPE_STATE = (ST_STATE << 4) | (UTP_VERSION & 0xFF);
-	/**
-	 * <p>消息类型：重置</p>
-	 */
-	public static final byte TYPE_RESET = (ST_RESET << 4) | (UTP_VERSION & 0xFF);
-	/**
-	 * <p>消息类型：握手</p>
-	 */
-	public static final byte TYPE_SYN = (ST_SYN << 4) | (UTP_VERSION & 0xFF);
 	/**
 	 * <p>扩展</p>
 	 */
@@ -81,27 +109,9 @@ public final class UtpConfig {
 	public static final byte FAST_ACK_RETRY_TIMES = 3;
 	
 	/**
-	 * <p>获取类型名称</p>
-	 * 
-	 * @param type 类型标识
-	 * 
-	 * @return 类型名称
+	 * <p>禁止创建实例</p>
 	 */
-	public static final String type(byte type) {
-		switch (type) {
-		case ST_DATA:
-			return "DATA";
-		case ST_FIN:
-			return "FIN";
-		case ST_STATE:
-			return "STATE";
-		case ST_RESET:
-			return "RESET";
-		case ST_SYN:
-			return "SYN";
-		default:
-			return "UNKNOW";
-		}
+	private UtpConfig() {
 	}
 	
 }

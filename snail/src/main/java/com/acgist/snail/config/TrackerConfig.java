@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerClient;
 import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerManager;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -16,7 +17,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>Tracker服务器配置</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class TrackerConfig extends PropertiesConfig {
 	
@@ -32,7 +32,6 @@ public final class TrackerConfig extends PropertiesConfig {
 	 * <p>配置文件：{@value}</p>
 	 */
 	private static final String TRACKER_CONFIG = "/config/bt.tracker.properties";
-
 	/**
 	 * <p>最大的Tracker服务器保存数量：{@value}</p>
 	 */
@@ -50,6 +49,10 @@ public final class TrackerConfig extends PropertiesConfig {
 	
 	/**
 	 * <p>声明（announce）事件</p>
+	 * 
+	 * @author acgist
+	 * 
+	 * @see Action#ANNOUNCE
 	 */
 	public enum Event {
 		
@@ -71,6 +74,10 @@ public final class TrackerConfig extends PropertiesConfig {
 		 */
 		private final String value;
 
+		/**
+		 * @param id 事件ID
+		 * @param value 事件名称
+		 */
 		private Event(int id, String value) {
 			this.id = id;
 			this.value = value;
@@ -98,6 +105,8 @@ public final class TrackerConfig extends PropertiesConfig {
 	
 	/**
 	 * <p>Tracker动作</p>
+	 * 
+	 * @author acgist
 	 */
 	public enum Action {
 		
@@ -119,6 +128,10 @@ public final class TrackerConfig extends PropertiesConfig {
 		 */
 		private final String value;
 
+		/**
+		 * @param id 动作ID
+		 * @param value 动作名称
+		 */
 		private Action(int id, String value) {
 			this.id = id;
 			this.value = value;
@@ -167,12 +180,15 @@ public final class TrackerConfig extends PropertiesConfig {
 	 */
 	private final List<String> announces = new ArrayList<>();
 	
+	/**
+	 * <p>禁止创建实例</p>
+	 */
 	private TrackerConfig() {
 		super(TRACKER_CONFIG);
 	}
 	
 	/**
-	 * <p>初始化配置文件</p>
+	 * <p>初始化配置</p>
 	 */
 	private void init() {
 		this.properties.entrySet().forEach(entry -> {
@@ -200,11 +216,13 @@ public final class TrackerConfig extends PropertiesConfig {
 	public void persistent() {
 		LOGGER.debug("保存Tracker服务器配置");
 		final AtomicInteger index = new AtomicInteger(0);
-		final var clients = TrackerManager.getInstance().clients();
-		final var map = clients.stream()
-			.filter(client -> client.available())
+		final var map = TrackerManager.getInstance().clients().stream()
+			.filter(TrackerClient::available)
 			.limit(MAX_TRACKER_SIZE)
-			.collect(Collectors.toMap(client -> String.format("%04d", index.incrementAndGet()), client -> client.announceUrl()));
+			.collect(Collectors.toMap(
+				client -> String.format("%04d", index.incrementAndGet()),
+				TrackerClient::announceUrl
+			));
 		this.persistent(map, FileUtils.userDirFile(TRACKER_CONFIG));
 	}
 	

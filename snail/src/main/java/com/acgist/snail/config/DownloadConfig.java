@@ -31,7 +31,6 @@ public final class DownloadConfig extends PropertiesConfig {
 	 * <p>配置文件：{@value}</p>
 	 */
 	private static final String DOWNLOAD_CONFIG = "/config/download.properties";
-	
 	/**
 	 * <p>下载速度和上传速度的比例：{@value}</p>
 	 * <p>比例 = 下载速度 / 上传速度</p>

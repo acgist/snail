@@ -77,9 +77,9 @@ list.stream()
 ## 日志
 
 * 合理使用日志级别
-* 异常必须添加日志记录
 * 重要操作必须添加日志
 * 必须使用日志门面（slf4j）
+* 异常没有抛出必须添加日志记录
 
 ## 命名
 
@@ -109,7 +109,7 @@ list.stream()
 #### 类命名
 
 * 接口必须以`I`开头
-* 测试必须`Test`结尾
+* 测试必须以`Test`结尾
 * 抽象类不使用`Abstract`或`Base`开头（例：TrackerClient -> [UdpTrackerClient | HttpTrackerClient]）
 * 继承时子类命名必须以父类后缀结尾（例：Client、Server、MessageHandler、Downloader、Protocol、Repository等）
 
@@ -124,12 +124,11 @@ list.stream()
 * 能使用单例必须使用单例
 * 不使用魔法值（使用常量代替）
 * 类、变量尽量使用`final`修饰
-* `switch`语句必须包含`default`
 * 方法重写时必须添加注解`@Override`
-* 声明`long`类型时数值后面添加`L`标记
-* 异常如果没有抛出必须使用日志框架记录
+* `switch`语句必须包含`default`
+* 新增代码不能使用除了Java内置模块和已经添加依赖外的其他依赖
 * 必须处理所有警告（不允许通过注解`@SuppressWarnings`忽略）
-* 新增代码不能使用除了Java内置模块和已经添加依赖（h2/slf4j/logback/JavaFX）外的其他依赖
+* 声明`long`类型时数值后面添加`L`标记（`float`、`double`类似）
 
 ```
 // 数组

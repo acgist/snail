@@ -33,7 +33,6 @@ public final class DhtConfig extends PropertiesConfig {
 	 * <p>配置文件：{@value}</p>
 	 */
 	private static final String DHT_CONFIG = "/config/bt.dht.properties";
-	
 	/**
 	 * <p>标记ID：{@value}</p>
 	 * <p>消息ID：请求ID、响应ID（默认两个字节）</p>
@@ -123,7 +122,7 @@ public final class DhtConfig extends PropertiesConfig {
 	public static final Integer IMPLIED_PORT_CONFIG = 0;
 	/**
 	 * <p>Peer列表长度：{@value}</p>
-	 * <p>发送消息{@link QType#GET_PEERS}时使用</p>
+	 * <p>发送消息{@link QType#GET_PEERS}使用</p>
 	 */
 	public static final int GET_PEER_SIZE = 32;
 	/**
@@ -292,8 +291,8 @@ public final class DhtConfig extends PropertiesConfig {
 			.limit(MAX_NODE_SIZE)
 			.collect(Collectors.toMap(
 				node -> StringUtils.hex(node.getId()),
-				node -> node.getHost() + ":" + node.getPort())
-			);
+				node -> node.getHost() + ":" + node.getPort()
+			));
 		this.persistent(map, FileUtils.userDirFile(DHT_CONFIG));
 	}
 	
