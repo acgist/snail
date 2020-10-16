@@ -5,7 +5,6 @@ package com.acgist.snail.context.exception;
  * <p>用途：{@linkplain com.acgist.snail.downloader 下载器}、{@linkplain com.acgist.snail.protocol 下载协议}</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public class DownloadException extends Exception {
 

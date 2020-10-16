@@ -5,7 +5,6 @@ package com.acgist.snail.context.exception;
  * <p>用途：{@linkplain com.acgist.snail.net 网络协议}</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public class NetException extends Exception {
 

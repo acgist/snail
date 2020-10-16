@@ -4,15 +4,14 @@ package com.acgist.snail.context.exception;
  * <p>定时任务时间异常</p>
  * 
  * @author acgist
- * @since 1.2.0
  */
 public class TimerException extends IllegalArgumentException {
 
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * <p>验证时间周期</p>
-	 * <p>如果时间周期格式错误抛出异常：{@link TimerException}</p>
+	 * <p>验证定时时间周期</p>
+	 * <p>定时时间周期错误抛出异常</p>
 	 * 
 	 * @param time 时间周期
 	 */
