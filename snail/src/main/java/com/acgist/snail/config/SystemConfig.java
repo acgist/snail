@@ -12,7 +12,6 @@ import com.acgist.snail.utils.NetUtils;
  * <p>系统配置</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class SystemConfig extends PropertiesConfig {
 
@@ -28,7 +27,6 @@ public final class SystemConfig extends PropertiesConfig {
 	 * <p>配置文件：{@value}</p>
 	 */
 	private static final String SYSTEM_CONFIG = "/config/system.properties";
-	
 	/**
 	 * <p>数据大小比例：{@value}</p>
 	 */
@@ -63,7 +61,7 @@ public final class SystemConfig extends PropertiesConfig {
 	public static final int UDP_BUFFER_LENGTH = 2 * ONE_KB;
 	/**
 	 * <p>数据传输默认大小：{@value}</p>
-	 * <p>一般IO读写缓存数据大小</p>
+	 * <p>一般IO读写缓冲数据大小</p>
 	 */
 	public static final int DEFAULT_EXCHANGE_BYTES_LENGTH = 16 * ONE_KB;
 	/**
@@ -92,7 +90,7 @@ public final class SystemConfig extends PropertiesConfig {
 	public static final int DOWNLOAD_TIMEOUT_MILLIS = DOWNLOAD_TIMEOUT * 1000;
 	/**
 	 * <p>最大的网络包大小：{@value}</p>
-	 * <p>所有创建ByteBuffer和byte[]对象的长度由外部数据设置时需要验证长度：防止恶意攻击导致内存泄露</p>
+	 * <p>如果创建ByteBuffer和byte[]对象的长度是由外部数据决定时需要验证长度：防止恶意攻击导致内存泄露</p>
 	 */
 	public static final int MAX_NET_BUFFER_LENGTH = 4 * ONE_MB;
 	/**
@@ -193,13 +191,29 @@ public final class SystemConfig extends PropertiesConfig {
 	private String support;
 	/**
 	 * <p>STUN服务器</p>
-	 * <dl>
-	 * 	<dt>格式</dt>
-	 * 	<dd>host</dd>
-	 * 	<dd>host:port</dd>
-	 * 	<dd>stun:host</dd>
-	 * 	<dd>stun:host:port</dd>
-	 * </dl>
+	 * <table border="1">
+	 * 	<caption>配置格式</caption>
+	 * 	<tr>
+	 * 		<th>格式</th>
+	 * 		<th>描述</th>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>host</td>
+	 * 		<td>地址</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>host:port</td>
+	 * 		<td>地址：端口</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>stun:host</td>
+	 * 		<td>协议类型：地址</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>stun:host:port</td>
+	 * 		<td>协议类型：地址：端口</td>
+	 * 	</tr>
+	 * </table>
 	 */
 	private String stunServer;
 	/**
@@ -259,12 +273,15 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	private String externalIpAddress;
 	
+	/**
+	 * <p>禁止创建实例</p>
+	 */
 	private SystemConfig() {
 		super(SYSTEM_CONFIG);
 	}
 	
 	/**
-	 * <p>初始化</p>
+	 * <p>初始化配置</p>
 	 */
 	private void init() {
 		this.name = this.getString("acgist.system.name");
@@ -291,7 +308,7 @@ public final class SystemConfig extends PropertiesConfig {
 	}
 
 	/**
-	 * <p>日志</p>
+	 * <p>日志记录</p>
 	 */
 	private void logger() {
 		LOGGER.info("软件名称：{}", this.name);
@@ -561,7 +578,7 @@ public final class SystemConfig extends PropertiesConfig {
 	 * @return 文件路径
 	 */
 	public static final String userDir(String path) {
-		return Paths.get(SystemConfig.USER_DIR, path).toString();
+		return Paths.get(userDir(), path).toString();
 	}
 	
 	/**

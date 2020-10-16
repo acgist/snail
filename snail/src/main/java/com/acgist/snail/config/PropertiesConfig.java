@@ -20,7 +20,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>配置文件</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public abstract class PropertiesConfig {
 	
@@ -42,7 +41,7 @@ public abstract class PropertiesConfig {
 	
 	/**
 	 * <p>加载配置文件</p>
-	 * <p>优先加载用户工作目录（UserDir）配置，如果加载失败则加载默认（Resource）配置。</p>
+	 * <p>优先加载用户工作目录配置（UserDir），如果加载失败则加载默认配置（Resource）。</p>
 	 * 
 	 * @param path 配置文件相对路径
 	 * 
@@ -52,6 +51,9 @@ public abstract class PropertiesConfig {
 		Properties properties = loadFromUserDir(path);
 		if(properties == null) {
 			properties = loadFromResource(path);
+		}
+		if(properties == null) {
+			LOGGER.warn("配置加载失败：{}", path);
 		}
 		return properties;
 	}
@@ -102,7 +104,7 @@ public abstract class PropertiesConfig {
 	/**
 	 * <p>判断配置是否加载成功</p>
 	 * 
-	 * @return {@code true}-成功；{@code false}-失败；
+	 * @return true-成功；false-失败；
 	 */
 	public boolean haveProperties() {
 		return this.properties != null;
@@ -130,7 +132,7 @@ public abstract class PropertiesConfig {
 	}
 	
 	/**
-	 * <p>读取{@code String}配置</p>
+	 * <p>读取{@link String}配置</p>
 	 * <p>没有配置默认返回：{@code null}</p>
 	 * 
 	 * @param name 配置名称
@@ -142,7 +144,7 @@ public abstract class PropertiesConfig {
 	}
 	
 	/**
-	 * <p>读取{@code String}配置</p>
+	 * <p>读取{@link String}配置</p>
 	 * 
 	 * @param name 配置名称
 	 * @param defaultValue 默认值
@@ -155,7 +157,7 @@ public abstract class PropertiesConfig {
 	}
 	
 	/**
-	 * <p>读取{@code String}配置</p>
+	 * <p>读取{@link String}配置</p>
 	 * 
 	 * @param entity 数据库配置
 	 * @param defaultValue 默认值
@@ -167,7 +169,7 @@ public abstract class PropertiesConfig {
 	}
 
 	/**
-	 * <p>读取{@code Boolean}配置</p>
+	 * <p>读取{@link Boolean}配置</p>
 	 * <p>没有配置默认返回：{@code null}</p>
 	 * 
 	 * @param name 配置名称
@@ -186,7 +188,7 @@ public abstract class PropertiesConfig {
 	}
 	
 	/**
-	 * <p>读取{@code Boolean}配置</p>
+	 * <p>读取{@link Boolean}配置</p>
 	 * 
 	 * @param name 配置名称
 	 * @param defaultValue 默认值
@@ -199,7 +201,7 @@ public abstract class PropertiesConfig {
 	}
 
 	/**
-	 * <p>读取{@code Boolean}配置</p>
+	 * <p>读取{@link Boolean}配置</p>
 	 * 
 	 * @param entity 数据库配置
 	 * @param defaultValue 默认值
@@ -211,7 +213,7 @@ public abstract class PropertiesConfig {
 	}
 
 	/**
-	 * <p>读取{@code Integer}配置</p>
+	 * <p>读取{@link Integer}配置</p>
 	 * <p>没有配置默认返回：{@code null}</p>
 	 * 
 	 * @param name 配置名称
@@ -227,20 +229,20 @@ public abstract class PropertiesConfig {
 	}
 	
 	/**
-	 * <p>读取{@code Integer}配置</p>
+	 * <p>读取{@link Integer}配置</p>
 	 * 
-	 * @param naame 配置名称
+	 * @param name 配置名称
 	 * @param defaultValue 默认值
 	 * 
 	 * @return 配置值
 	 */
-	protected int getInteger(String naame, int defaultValue) {
-		final Integer value = this.getInteger(naame);
+	protected int getInteger(String name, int defaultValue) {
+		final Integer value = this.getInteger(name);
 		return value == null ? defaultValue : value;
 	}
 
 	/**
-	 * <p>读取{@code Integer}配置</p>
+	 * <p>读取{@link Integer}配置</p>
 	 * 
 	 * @param entity 数据库配置
 	 * @param defaultValue 默认值

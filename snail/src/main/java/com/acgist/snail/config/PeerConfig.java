@@ -144,14 +144,24 @@ public final class PeerConfig {
 	 */
 	public static final int HOLEPUNCH_LOCK_TIME = 2;
 	/**
+	 * <p>PeerID和客户端名称转换配置</p>
 	 * <p>Peer ID Conventions</p>
 	 * <p>协议链接：http://www.bittorrent.org/beps/bep_0020.html</p>
-	 * <p>PeerID和客户端名称转换</p>
-	 * <dl>
-	 * 	<dt>命名方式</dt>
-	 * 	<dd>Azureus-style：-名称（2）+版本（4）-随机数：-SA1000-...</dd>
-	 * 	<dd>Shadow's-style：名称（1）+版本（4）-----随机数：S1000-----...</dd>
-	 * </dl>
+	 * <table border="1">
+	 * 	<caption>命名方式</caption>
+	 * 	<tr>
+	 * 		<th>名称</th>
+	 * 		<th>格式</th>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>Azureus-style</td>
+	 * 		<td>-名称（2）+版本（4）-随机数：-SA1000-...</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>Shadow's-style</td>
+	 * 		<td>名称（1）+版本（4）-----随机数：S1000-----...</td>
+	 * 	</tr>
+	 * </table>
 	 * <p>支持命名方式：Azureus-style</p>
 	 * <p>PeerId=ClientName</p>
 	 */
