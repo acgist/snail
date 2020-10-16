@@ -157,10 +157,10 @@ public final class SystemThreadContext {
 	public static final ExecutorService newCacheExecutor(String name) {
 		return new ThreadPoolExecutor(
 			0, // 初始线程数量：0
-			Integer.MAX_VALUE, // 不限制线程池大小
+			Integer.MAX_VALUE, // 最大线程数量
 			60L, // 线程存活时间：60S
 			TimeUnit.SECONDS,
-			new SynchronousQueue<Runnable>(),
+			new SynchronousQueue<Runnable>(), // 不限制线程池大小
 			SystemThreadContext.newThreadFactory(name)
 		);
 	}
