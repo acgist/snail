@@ -188,14 +188,11 @@ public final class SystemThreadContext {
 	 * @return 线程池工厂
 	 */
 	private static final ThreadFactory newThreadFactory(String poolName) {
-		return new ThreadFactory() {
-			@Override
-			public Thread newThread(Runnable runnable) {
-				final Thread thread = new Thread(runnable);
-				thread.setName(poolName);
-				thread.setDaemon(true); // 守护线程
-				return thread;
-			}
+		return runnable -> {
+			final Thread thread = new Thread(runnable);
+			thread.setName(poolName);
+			thread.setDaemon(true); // 守护线程
+			return thread;
 		};
 	}
 	
