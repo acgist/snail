@@ -10,7 +10,6 @@ import com.acgist.snail.context.initializer.Initializer;
  * <p>初始化NAT</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class NatInitializer extends Initializer {
 	

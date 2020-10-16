@@ -10,14 +10,13 @@ import com.acgist.snail.net.torrent.lsd.LocalServiceDiscoveryServer;
  * <p>初始化本地发现</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public final class LocalServiceDiscoveryInitializer extends Initializer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LocalServiceDiscoveryInitializer.class);
 
 	/**
-	 * <p>启动延长时间：{@value}</p>
+	 * <p>启动延迟时间：{@value}</p>
 	 */
 	private static final int DELAY = 6;
 	
