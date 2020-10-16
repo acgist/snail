@@ -393,7 +393,7 @@ public final class FileUtils {
 	
 	/**
 	 * <p>创建目录</p>
-	 * <p>如果{@code file}是文件：创建父目录</p>
+	 * <p>如果{@code file}是文件：创建上级目录</p>
 	 * <p>如果{@code file}是目录：创建目录</p>
 	 * 
 	 * @param file 文件

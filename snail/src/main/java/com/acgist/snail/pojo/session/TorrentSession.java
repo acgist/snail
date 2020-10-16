@@ -458,7 +458,7 @@ public final class TorrentSession {
 	 * 
 	 * @return 定时任务
 	 */
-	public ScheduledFuture<?> timer(long delay, long period, TimeUnit unit, Runnable runnable) {
+	public ScheduledFuture<?> timerAtFixedRate(long delay, long period, TimeUnit unit, Runnable runnable) {
 		TimerException.verify(delay);
 		TimerException.verify(period);
 		return this.executorTimer.scheduleAtFixedRate(runnable, delay, period, unit);

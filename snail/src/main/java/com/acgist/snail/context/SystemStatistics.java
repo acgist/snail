@@ -9,7 +9,6 @@ import com.acgist.snail.pojo.session.StatisticsSession;
  * <p>当前系统限制单个任务的速度，如果想要限制整个软件的速度，可以打开{@linkplain #statistics 系统全局统计}限速。</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class SystemStatistics {
 	

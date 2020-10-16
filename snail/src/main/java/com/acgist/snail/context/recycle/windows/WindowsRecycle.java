@@ -20,7 +20,6 @@ import com.acgist.snail.utils.NumberUtils;
  * TODO：测试win7、win xp
  * 
  * @author acgist
- * @since 1.1.0
  */
 public final class WindowsRecycle extends Recycle {
 	
@@ -46,32 +45,32 @@ public final class WindowsRecycle extends Recycle {
 	/**
 	 * <p>删除文件路径</p>
 	 */
-	private String deleteFile;
+	private String deleteFilePath;
 	/**
 	 * <p>删除文件信息文件路径</p>
 	 */
-	private String deleteInfoFile;
+	private String deleteFileInfoFilePath;
 
 	/**
-	 * <p>Windows回收站构造器</p>
-	 * 
 	 * @param path 文件路径
 	 */
 	public WindowsRecycle(String path) {
 		super(path);
 		this.buildRecycle();
-		this.buildRecycleName();
+		this.buildRecycleInfo();
 	}
 
 	/**
 	 * <p>设置回收站路径</p>
 	 */
 	private void buildRecycle() {
-		final String disk = this.path.substring(0, 1).toUpperCase(); // 盘符
+		// 获取盘符
+		final String disk = this.path.substring(0, 1).toUpperCase();
+		// 获取回收站上级目录
 		final String recycleFolder = FileUtils.file(disk + ":", RECYCLE_FOLDER);
 		final File recycleFile = new File(recycleFolder);
 		if(!recycleFile.exists()) {
-			throw new IllegalArgumentException("回收站文件不存在：" + recycleFolder);
+			throw new IllegalArgumentException("回收站上级目录不存在：" + recycleFolder);
 		}
 		// 获取当前用户回收站文件目录
 		final File[] files = recycleFile.listFiles();
@@ -86,9 +85,9 @@ public final class WindowsRecycle extends Recycle {
 	}
 	
 	/**
-	 * <p>设置回收文件名称</p>
+	 * <p>设置删除信息：删除文件、删除文件信息文件</p>
 	 */
-	private void buildRecycleName() {
+	private void buildRecycleInfo() {
 		String ext = null;
 		String name = NumberUtils.build().toString();
 		if(this.file.isFile()) {
@@ -97,10 +96,10 @@ public final class WindowsRecycle extends Recycle {
 		if(ext != null) {
 			name = name + "." + ext;
 		}
-		this.deleteFile = FileUtils.file(this.recyclePath, FILE_PREFIX + name);
-		this.deleteInfoFile = FileUtils.file(this.recyclePath, INFO_PREFIX + name);
+		this.deleteFilePath = FileUtils.file(this.recyclePath, FILE_PREFIX + name);
+		this.deleteFileInfoFilePath = FileUtils.file(this.recyclePath, INFO_PREFIX + name);
 		// TODO：换行
-		LOGGER.debug("删除文件路径：{}，删除文件信息文件路径：{}", this.deleteFile, this.deleteInfoFile);
+		LOGGER.debug("删除文件路径：{}，删除文件信息文件路径：{}", this.deleteFilePath, this.deleteFileInfoFilePath);
 	}
 	
 	/**
@@ -110,14 +109,14 @@ public final class WindowsRecycle extends Recycle {
 	 * @return 是否删除成功
 	 */
 	private boolean buildFile() {
-		return this.file.renameTo(new File(this.deleteFile));
+		return this.file.renameTo(new File(this.deleteFilePath));
 	}
 
 	/**
 	 * <p>创建删除文件信息文件</p>
 	 */
 	private void buildInfoFile() {
-		FileUtils.write(this.deleteInfoFile, this.buildInfo());
+		FileUtils.write(this.deleteFileInfoFilePath, this.buildInfo());
 	}
 	
 	/**
@@ -143,9 +142,9 @@ public final class WindowsRecycle extends Recycle {
 		for (byte value : buffer.array()) {
 			out.write(value);
 		}
-		// 文件路径长度：固定值 + path.length();
+		// 固定值 + 文件路径长度
 		final char length = (char) (1 + path.length());
-		this.putChar(out, length);
+		this.buildInfoChar(out, length);
 		// 固定值
 		for (int index = 0; index < 2; index++) {
 			out.write(0);
@@ -154,7 +153,7 @@ public final class WindowsRecycle extends Recycle {
 		char value;
 		for (int index = 0; index < path.length(); index++) {
 			value = path.charAt(index);
-			this.putChar(out, value);
+			this.buildInfoChar(out, value);
 		}
 		// 固定值
 		for (int index = 0; index < 2; index++) {
@@ -164,13 +163,13 @@ public final class WindowsRecycle extends Recycle {
 	}
 	
 	/**
-	 * <p>写入{@code char}数据</p>
+	 * <p>写入删除文件信息数据</p>
 	 * <p>注意：CPU大小端</p>
 	 * 
 	 * @param out 字符流
 	 * @param value 数据
 	 */
-	private void putChar(ByteArrayOutputStream out, char value) {
+	private void buildInfoChar(ByteArrayOutputStream out, char value) {
 		if(value > 0xFF) {
 			if(ByteOrder.nativeOrder() == ByteOrder.LITTLE_ENDIAN) { // 小端
 				out.write(value & 0xFF);
@@ -191,7 +190,7 @@ public final class WindowsRecycle extends Recycle {
 	}
 
 	/**
-	 * <p>删除文件信息需要将斜杠转换成系统斜杠</p>
+	 * <p>将文件路径斜杠转换成系统斜杠</p>
 	 * 
 	 * @return 删除文件路径
 	 */

@@ -6,7 +6,6 @@ import com.acgist.snail.pojo.IStatisticsSession;
  * <p>统计接口</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public interface IStatistics {
 	

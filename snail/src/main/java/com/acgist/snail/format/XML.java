@@ -140,7 +140,7 @@ public final class XML {
 	/**
 	 * <p>创建节点</p>
 	 * 
-	 * @param node 父节点
+	 * @param node 上级节点
 	 * @param name 节点名称
 	 * 
 	 * @return 节点
@@ -152,7 +152,7 @@ public final class XML {
 	/**
 	 * <p>创建节点</p>
 	 * 
-	 * @param node 父节点
+	 * @param node 上级节点
 	 * @param name 节点名称
 	 * @param text 节点文本
 	 * 
@@ -165,7 +165,7 @@ public final class XML {
 	/**
 	 * <p>创建节点</p>
 	 * 
-	 * @param node 父节点
+	 * @param node 上级节点
 	 * @param name 节点名称
 	 * @param namespaceUri 命名空间
 	 * 
@@ -178,7 +178,7 @@ public final class XML {
 	/**
 	 * <p>创建节点</p>
 	 * 
-	 * @param node 父节点
+	 * @param node 上级节点
 	 * @param name 节点名称
 	 * @param text 节点文本
 	 * @param namespaceUri 命名空间

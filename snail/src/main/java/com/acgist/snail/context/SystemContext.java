@@ -36,7 +36,6 @@ import com.acgist.snail.utils.NetUtils;
  * <p>系统上下文</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class SystemContext {
 
@@ -50,12 +49,18 @@ public final class SystemContext {
 	
 	/**
 	 * <p>系统类型</p>
+	 * 
+	 * @author acgist
 	 */
 	public enum SystemType {
 		
+		/** Mac */
 		MAC("Mac OS", "Mac OS X"),
+		/** Linux */
 		LINUX("Linux"),
+		/** Windows */
 		WINDOWS("Windows XP", "Windows Vista", "Windows 7", "Windows 10"),
+		/** Android */
 		ANDROID("Android");
 		
 		/**
@@ -63,6 +68,9 @@ public final class SystemContext {
 		 */
 		private final String[] osNames;
 
+		/**
+		 * @param osNames 系统名称
+		 */
 		private SystemType(String ... osNames) {
 			this.osNames = osNames;
 		}
@@ -117,12 +125,11 @@ public final class SystemContext {
 	
 	/**
 	 * <p>系统初始化</p>
-	 * <p>数据库必须优先同步初始化</p>
 	 */
 	public static final void init() {
 		LOGGER.info("系统初始化");
 		// 同步
-		DatabaseInitializer.newInstance().sync();
+		DatabaseInitializer.newInstance().sync(); // 数据库必须优先同步初始化
 		// 异步
 		ConfigInitializer.newInstance().asyn();
 		ProtocolInitializer.newInstance().asyn();
@@ -148,14 +155,19 @@ public final class SystemContext {
 		LOGGER.info("Java主目录：{}", System.getProperty("java.home"));
 		LOGGER.info("Java包目录：{}", System.getProperty("java.library.path"));
 		LOGGER.info("虚拟机名称：{}", System.getProperty("java.vm.name"));
-		LOGGER.info("虚拟机最大内存：{}", FileUtils.formatSize(runtime.maxMemory()));
-		LOGGER.info("虚拟机已用内存：{}", FileUtils.formatSize(runtime.totalMemory()));
-		LOGGER.info("虚拟机空闲内存：{}", FileUtils.formatSize(runtime.freeMemory()));
+		final String freeMemory = FileUtils.formatSize(runtime.freeMemory());
+		final String totalMemory = FileUtils.formatSize(runtime.totalMemory());
+		final String maxMemory = FileUtils.formatSize(runtime.maxMemory());
+		LOGGER.info("虚拟机空闲内存：{}", freeMemory);
+		LOGGER.info("虚拟机已用内存：{}", totalMemory);
+		LOGGER.info("虚拟机最大内存：{}", maxMemory);
 		LOGGER.info("用户主目录：{}", System.getProperty("user.home"));
 		LOGGER.info("用户工作目录：{}", System.getProperty("user.dir"));
 		LOGGER.info("文件编码：{}", System.getProperty("file.encoding"));
-		LOGGER.info("本机名称：{}", NetUtils.localHostName());
-		LOGGER.info("本机地址：{}", NetUtils.localHostAddress());
+		final String localHostName = NetUtils.localHostName();
+		final String localHostAddress = NetUtils.localHostAddress();
+		LOGGER.info("本机名称：{}", localHostName);
+		LOGGER.info("本机地址：{}", localHostAddress);
 	}
 
 	/**
@@ -185,7 +197,7 @@ public final class SystemContext {
 				GuiManager.getInstance().exit();
 				SystemThreadContext.shutdown();
 				LOGGER.info("系统已关闭");
-				LoggerUtils.shutdown();
+				LoggerUtils.shutdown(); // 最后关闭日志
 			});
 		} else {
 			GuiManager.getInstance().alert("关闭提示", "系统正在关闭中...");
