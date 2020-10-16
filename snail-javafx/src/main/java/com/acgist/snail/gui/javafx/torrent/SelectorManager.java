@@ -95,7 +95,7 @@ public final class SelectorManager {
 	/**
 	 * <p>创建文件菜单</p>
 	 * 
-	 * @param parent 父节点
+	 * @param parent 上级节点
 	 * @param path 文件路径
 	 * @param name 文件名称
 	 * @param size 文件大小
@@ -117,7 +117,7 @@ public final class SelectorManager {
 		}
 		final TreeItem<HBox> treeItem = new TreeItem<>(box);
 		this.selector.put(path, new Selector(path, size, checkBox, treeItem));
-		if(parent != null) { // 根节点没有父节点
+		if(parent != null) { // 根节点没有上级节点
 			parent.getChildren().add(treeItem);
 		}
 		return treeItem;
@@ -177,12 +177,12 @@ public final class SelectorManager {
 	}
 	
 	/**
-	 * <p>选择父目录</p>
-	 * <p>选中文件时同时选中所有父目录</p>
+	 * <p>选择上级目录</p>
+	 * <p>选中文件时同时选中所有上级目录</p>
 	 */
 	private void selectParentFolder() {
 		final List<TreeItem<HBox>> parents = new ArrayList<>();
-		// 所有父目录
+		// 所有上级目录
 		this.selector.values().stream()
 			.filter(value -> value.isFile())
 			.filter(value -> value.isSelected())
@@ -193,7 +193,7 @@ public final class SelectorManager {
 					parents.add(parent);
 				}
 			});
-		// 选择父目录
+		// 选择上级目录
 		this.selector.values().stream()
 			.filter(value -> parents.contains(value.getTreeItem()))
 			.forEach(value -> value.setSelected(true));
@@ -208,7 +208,7 @@ public final class SelectorManager {
 	
 	/**
 	 * <p>选择框事件</p>
-	 * <p>选择子目录、选择父目录、设置按钮文本</p>
+	 * <p>选择下级目录、选择上级目录、设置按钮文本</p>
 	 */
 	private EventHandler<ActionEvent> selectAction = event -> {
 		final CheckBox checkBox = (CheckBox) event.getSource();
@@ -218,7 +218,7 @@ public final class SelectorManager {
 			.filter(entry -> entry.getValue().getCheckBox() == checkBox)
 			.map(entry -> entry.getKey())
 			.findFirst().get();
-		// 选择子目录
+		// 选择下级目录
 		this.selector.entrySet().stream()
 			.filter(entry -> entry.getKey().startsWith(prefix))
 			.forEach(entry -> entry.getValue().setSelected(selected));

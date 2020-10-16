@@ -48,7 +48,7 @@ public final class TaskDisplay {
 		synchronized (this) {
 			if(this.controller == null) {
 				this.controller = controller;
-				SystemThreadContext.timer(
+				SystemThreadContext.timerAtFixedRate(
 					0,
 					SystemConfig.TASK_REFRESH_INTERVAL.toSeconds(),
 					TimeUnit.SECONDS,

@@ -19,7 +19,6 @@ import com.acgist.snail.utils.ThreadUtils;
  * <p>优先使用UPNP进行端口映射，UPNP映射失败后使用STUN。</p>
  * 
  * @author acgist
- * @since 1.2.0
  */
 public final class NatContext {
 
@@ -33,6 +32,8 @@ public final class NatContext {
 	
 	/**
 	 * <p>内网穿透类型</p>
+	 * 
+	 * @author acgist
 	 */
 	public enum Type {
 		
@@ -100,7 +101,7 @@ public final class NatContext {
 	 */
 	public void shutdown() {
 		LOGGER.info("关闭NAT服务");
-		if(NetUtils.isLocalIp(NetUtils.localHostAddress())) {
+		if(this.type == Type.UPNP) {
 			UpnpService.getInstance().release();
 			UpnpServer.getInstance().close();
 		}

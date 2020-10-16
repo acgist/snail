@@ -20,7 +20,6 @@ import com.acgist.snail.context.exception.TimerException;
  * <p>系统线程上下文</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class SystemThreadContext {
 
@@ -53,7 +52,6 @@ public final class SystemThreadContext {
 	
 	/**
 	 * <p>系统线程池：加快系统运行、防止卡顿</p>
-	 * <p>例如：初始化、关闭资源、文件校验等等</p>
 	 */
 	private static final ExecutorService EXECUTOR;
 	/**
@@ -104,7 +102,7 @@ public final class SystemThreadContext {
 	 * 
 	 * @return 定时任务
 	 */
-	public static final ScheduledFuture<?> timer(long delay, long period, TimeUnit unit, Runnable runnable) {
+	public static final ScheduledFuture<?> timerAtFixedRate(long delay, long period, TimeUnit unit, Runnable runnable) {
 		TimerException.verify(delay);
 		TimerException.verify(period);
 		return EXECUTOR_TIMER.scheduleAtFixedRate(runnable, delay, period, unit);
@@ -134,7 +132,7 @@ public final class SystemThreadContext {
 	 * @param maximumPoolSize 最大线程数量
 	 * @param queueSize 等待线程队列长度
 	 * @param keepAliveTime 线程空闲时间（秒）
-	 * @param name 线程名称
+	 * @param name 线程池名称
 	 * 
 	 * @return 线程池
 	 */
@@ -152,21 +150,15 @@ public final class SystemThreadContext {
 	/**
 	 * <p>创建缓存线程池</p>
 	 * 
-	 * <dl>
-	 * 	<dd>不限制线程池大小</dd>
-	 * 	<dd>初始线程数量：0</dd>
-	 * 	<dd>线程存活时间：60S</dd>
-	 * </dl>
-	 * 
 	 * @param name 线程池名称
 	 * 
 	 * @return 线程池
 	 */
 	public static final ExecutorService newCacheExecutor(String name) {
 		return new ThreadPoolExecutor(
-			0,
-			Integer.MAX_VALUE,
-			60L,
+			0, // 初始线程数量：0
+			Integer.MAX_VALUE, // 不限制线程池大小
+			60L, // 线程存活时间：60S
 			TimeUnit.SECONDS,
 			new SynchronousQueue<Runnable>(),
 			SystemThreadContext.newThreadFactory(name)
@@ -201,7 +193,7 @@ public final class SystemThreadContext {
 			public Thread newThread(Runnable runnable) {
 				final Thread thread = new Thread(runnable);
 				thread.setName(poolName);
-				thread.setDaemon(true);
+				thread.setDaemon(true); // 守护线程
 				return thread;
 			}
 		};
@@ -237,19 +229,17 @@ public final class SystemThreadContext {
 	/**
 	 * <p>关闭线程池</p>
 	 * <p>立即关闭：调用正在运行的任务线程的interrupt方法，队列任务不会被执行，不能继续添加任务。</p>
-	 * <p>不是立即关闭：不能继续添加任务，已添加和正在执行的任务都会执行。</p>
+	 * <p>正常关闭：不能继续添加任务，已添加和正在执行的任务都会执行。</p>
 	 * 
-	 * @param now 是否立即关闭
+	 * @param closeNow 是否立即关闭
 	 * @param executor 线程池
-	 * 
-	 * @since 1.4.1
 	 */
-	private static final void shutdown(boolean now, ExecutorService executor) {
+	private static final void shutdown(boolean closeNow, ExecutorService executor) {
 		if(executor == null || executor.isShutdown()) {
 			return;
 		}
 		try {
-			if(now) {
+			if(closeNow) {
 				executor.shutdownNow();
 			} else {
 				executor.shutdown();
@@ -260,42 +250,37 @@ public final class SystemThreadContext {
 	}
 	
 	/**
-	 * <p>关闭定时线程池</p>
+	 * <p>关闭定时任务</p>
 	 * 
 	 * @param scheduledFuture 定时线程池
-	 * 
-	 * @since 1.4.1
 	 */
 	public static final void shutdown(ScheduledFuture<?> scheduledFuture) {
 		shutdown(false, scheduledFuture);
 	}
 	
 	/**
-	 * <p>关闭定时线程池（立即关闭）</p>
+	 * <p>关闭定时任务（立即关闭）</p>
 	 * 
 	 * @param scheduledFuture 定时线程池
-	 * 
-	 * @since 1.4.1
 	 */
 	public static final void shutdownNow(ScheduledFuture<?> scheduledFuture) {
 		shutdown(true, scheduledFuture);
 	}
 	
 	/**
-	 * <p>关闭定时线程池</p>
-	 * <p>立即关闭：正在运行的任务将被取消执行，反之不会取消执行。</p>
+	 * <p>关闭定时任务</p>
+	 * <p>立即关闭：正在运行的任务将被取消执行</p>
+	 * <p>正常关闭：正在运行的任务不会取消执行</p>
 	 * 
-	 * @param now 是否立即关闭
+	 * @param closeNow 是否立即关闭
 	 * @param scheduledFuture 定时线程池
-	 * 
-	 * @since 1.4.1
 	 */
-	private static final void shutdown(boolean now, ScheduledFuture<?> scheduledFuture) {
+	private static final void shutdown(boolean closeNow, ScheduledFuture<?> scheduledFuture) {
 		if(scheduledFuture == null || scheduledFuture.isCancelled()) {
 			return;
 		}
 		try {
-			scheduledFuture.cancel(now);
+			scheduledFuture.cancel(closeNow);
 		} catch (Exception e) {
 			LOGGER.error("关闭定时任务异常", e);
 		}
@@ -305,8 +290,6 @@ public final class SystemThreadContext {
 	 * <p>关闭异步通道线程池</p>
 	 * 
 	 * @param group 异步通道线程池
-	 * 
-	 * @since 1.5.0
 	 */
 	public static final void shutdown(AsynchronousChannelGroup group) {
 		shutdown(false, group);
@@ -316,8 +299,6 @@ public final class SystemThreadContext {
 	 * <p>关闭异步通道线程池（立即关闭）</p>
 	 * 
 	 * @param group 异步通道线程池
-	 * 
-	 * @since 1.5.0
 	 */
 	public static final void shutdownNow(AsynchronousChannelGroup group) {
 		shutdown(true, group);
@@ -326,17 +307,15 @@ public final class SystemThreadContext {
 	/**
 	 * <p>关闭异步通道线程池</p>
 	 * 
-	 * @param now 是否立即关闭
+	 * @param closeNow 是否立即关闭
 	 * @param group 异步通道线程池
-	 * 
-	 * @since 1.5.0
 	 */
-	private static final void shutdown(boolean now, AsynchronousChannelGroup group) {
+	private static final void shutdown(boolean closeNow, AsynchronousChannelGroup group) {
 		if(group == null || group.isShutdown()) {
 			return;
 		}
 		try {
-			if(now) {
+			if(closeNow) {
 				group.shutdownNow();
 			} else {
 				group.shutdown();

@@ -14,11 +14,9 @@ import com.acgist.snail.utils.IoUtils;
 
 /**
  * <p>数据流上下文</p>
- * <p>HTTP下载时读取数据时会阻塞线程，如果长时间没有数据交流并且没有超时设置，会导致任务不能正常结束。</p>
- * <p>定时查询数据并关闭没有使用的数据流</p>
+ * <p>FTP、HTTP下载时读取数据时会阻塞线程，如果长时间没有数据交流会导致任务不能正常结束，定时查询并关闭没有使用的数据流来结束任务。</p>
  * 
  * @author acgist
- * @version 1.4.1
  */
 public final class StreamContext {
 
@@ -36,7 +34,7 @@ public final class StreamContext {
 	private static final long LIVE_TIME = 10 * DateUtils.ONE_SECOND;
 	/**
 	 * <p>下载有效时间（快速）：{@value}</p>
-	 * <p>如果用户快速开始然后快速暂停，会导致出现任务等待中，只能等待定时任务来关闭任务。</p>
+	 * <p>如果用户开始下载然后快速暂停，会导致出现任务等待中，只能等待定时任务来关闭任务。</p>
 	 */
 	private static final long LIVE_TIME_FAST = 2 * DateUtils.ONE_SECOND;
 	/**
@@ -70,14 +68,14 @@ public final class StreamContext {
 	}
 	
 	/**
-	 * <p>移除数据流信息管理</p>
+	 * <p>移除数据流信息</p>
 	 * 
-	 * @param streamSession 数据流信息
+	 * @param session 数据流信息
 	 */
-	public void removeStreamSession(StreamSession streamSession) {
-		if(streamSession != null) {
+	public void removeStreamSession(StreamSession session) {
+		if(session != null) {
 			synchronized (this.sessions) {
-				this.sessions.remove(streamSession);
+				this.sessions.remove(session);
 			}
 		}
 	}
@@ -87,7 +85,7 @@ public final class StreamContext {
 	 */
 	private void register() {
 		LOGGER.info("注册定时任务：数据流上下文管理");
-		SystemThreadContext.timer(
+		SystemThreadContext.timerAtFixedRate(
 			LIVE_CHECK_INTERVAL,
 			LIVE_CHECK_INTERVAL,
 			TimeUnit.MILLISECONDS,
@@ -97,6 +95,8 @@ public final class StreamContext {
 	
 	/**
 	 * <p>数据流信息</p>
+	 * 
+	 * @author acgist
 	 */
 	public static final class StreamSession {
 		
@@ -109,6 +109,9 @@ public final class StreamContext {
 		 */
 		private volatile long heartbeatTime;
 	
+		/**
+		 * @param input 输入流
+		 */
 		private StreamSession(InputStream input) {
 			this.input = input;
 			this.heartbeatTime = System.currentTimeMillis();
@@ -158,6 +161,8 @@ public final class StreamContext {
 	
 	/**
 	 * <p>数据流清理定时任务</p>
+	 * 
+	 * @author acgist
 	 */
 	public static final class StreamCleanTimer implements Runnable {
 
@@ -166,6 +171,9 @@ public final class StreamContext {
 		 */
 		private final List<StreamSession> sessions;
 		
+		/**
+		 * @param sessions 数据流信息列表
+		 */
 		private StreamCleanTimer(List<StreamSession> sessions) {
 			this.sessions = sessions;
 		}

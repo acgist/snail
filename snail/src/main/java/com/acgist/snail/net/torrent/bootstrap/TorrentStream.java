@@ -195,7 +195,7 @@ public final class TorrentStream {
 	 * @throws DownloadException 下载异常
 	 */
 	private RandomAccessFile buildFileStream() throws DownloadException {
-		// 创建文件父目录：父目录不存在会抛出FileNotFoundException
+		// 创建文件上级目录：上级目录不存在会抛出FileNotFoundException
 		FileUtils.buildFolder(this.file, true);
 		try {
 			return new RandomAccessFile(this.file, "rw");
