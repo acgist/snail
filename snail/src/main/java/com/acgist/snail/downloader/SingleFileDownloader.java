@@ -21,7 +21,6 @@ import com.acgist.snail.pojo.ITaskSession;
  * TODO：大文件下载内存优化
  * 
  * @author acgist
- * @since 1.1.1
  */
 public abstract class SingleFileDownloader extends Downloader {
 
@@ -40,6 +39,9 @@ public abstract class SingleFileDownloader extends Downloader {
 	 */
 	private StreamSession streamSession;
 	
+	/**
+	 * @param taskSession 下载任务
+	 */
 	protected SingleFileDownloader(ITaskSession taskSession) {
 		super(taskSession);
 	}
@@ -62,7 +64,6 @@ public abstract class SingleFileDownloader extends Downloader {
 		this.streamSession = StreamContext.getInstance().newStreamSession(this.input);
 		try {
 			while(this.downloadable()) {
-				// TODO：如果不能读取数据会阻塞任务暂停，可以将streamSession提到类变量，然后在unlockDownload方法中强制关闭。
 				length = this.input.read(bytes, 0, bytes.length);
 				if(this.isComplete(length)) {
 					this.complete = true;
@@ -82,6 +83,7 @@ public abstract class SingleFileDownloader extends Downloader {
 	@Override
 	public void unlockDownload() {
 		if(this.streamSession != null) {
+			// 快速失败
 			this.streamSession.fastCheckLive();
 		}
 	}
@@ -95,7 +97,7 @@ public abstract class SingleFileDownloader extends Downloader {
 	 * 
 	 * @param length 读取数据长度
 	 * 
-	 * @return {@code true}-下载完成；{@code false}-没有完成；
+	 * @return true-下载完成；false-没有完成；
 	 */
 	protected boolean isComplete(int length) {
 		return
@@ -105,6 +107,7 @@ public abstract class SingleFileDownloader extends Downloader {
 	
 	/**
 	 * <p>创建{@linkplain #output 输出流}</p>
+	 * <p>通过判断任务已下载大小判断任务是否支持断点续传</p>
 	 * 
 	 * @throws DownloadException 下载异常
 	 */

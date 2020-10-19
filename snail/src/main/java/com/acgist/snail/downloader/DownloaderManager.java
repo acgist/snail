@@ -20,7 +20,6 @@ import com.acgist.snail.protocol.ProtocolManager;
  * <p>下载器管理器</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class DownloaderManager {
 
@@ -98,7 +97,7 @@ public final class DownloaderManager {
 				if(taskSession == null) {
 					throw new DownloadException("任务信息为空");
 				}
-				var downloader = downloader(taskSession);
+				var downloader = this.downloader(taskSession);
 				if(downloader == null) {
 					downloader = taskSession.buildDownloader();
 				}
@@ -119,7 +118,7 @@ public final class DownloaderManager {
 	 * @param taskSession 任务信息
 	 */
 	public void pause(ITaskSession taskSession) {
-		downloader(taskSession).pause();
+		this.downloader(taskSession).pause();
 	}
 	
 	/**
@@ -128,7 +127,7 @@ public final class DownloaderManager {
 	 * @param taskSession 任务信息
 	 */
 	public void refresh(ITaskSession taskSession) {
-		downloader(taskSession).refresh();
+		this.downloader(taskSession).refresh();
 	}
 
 	/**
@@ -139,7 +138,7 @@ public final class DownloaderManager {
 	 */
 	public void delete(ITaskSession taskSession) {
 		// 定义下载器：防止队列删除后后台删除空指针
-		final var downloader = downloader(taskSession);
+		final var downloader = this.downloader(taskSession);
 		// 后台删除任务
 		SystemThreadContext.submit(() -> downloader.delete());
 		// 下载队列删除

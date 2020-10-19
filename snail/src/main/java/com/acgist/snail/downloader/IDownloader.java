@@ -9,7 +9,6 @@ import com.acgist.snail.pojo.ITaskSession.Status;
  * <p>下载器接口</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public interface IDownloader extends Runnable {
 	
@@ -30,7 +29,7 @@ public interface IDownloader extends Runnable {
 	/**
 	 * <p>判断任务是否正在下载</p>
 	 * 
-	 * @return {@code true}-{@linkplain Status#DOWNLOAD 下载中}；{@code false}-未下载；
+	 * @return true-{@linkplain Status#DOWNLOAD 下载中}；false-未下载；
 	 */
 	boolean downloading();
 	

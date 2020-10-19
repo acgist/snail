@@ -19,7 +19,6 @@ import com.acgist.snail.utils.ThreadUtils;
  * <p>下载器抽象类</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public abstract class Downloader implements IDownloader, IStatistics {
 
@@ -32,12 +31,12 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	
 	/**
 	 * <p>任务失败状态</p>
-	 * <p>{@code true}-失败；{@code false}-正常；</p>
+	 * <p>true-失败；false-正常；</p>
 	 */
 	protected volatile boolean fail = false;
 	/**
 	 * <p>任务完成状态</p>
-	 * <p>{@code true}-下载完成；{@code false}-没有完成；</p>
+	 * <p>true-下载完成；false-没有完成；</p>
 	 */
 	protected volatile boolean complete = false;
 	/**
@@ -46,12 +45,15 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	protected final ITaskSession taskSession;
 	/**
 	 * <p>删除锁</p>
-	 * <p>{@code true}-任务没有下载（可以删除）；</p>
-	 * <p>{@code false}-任务正在下载（不能删除）；</p>
+	 * <p>true-任务没有下载（可以删除）；</p>
+	 * <p>false-任务正在下载（不能删除）；</p>
 	 * <p>任务删除时检查该锁，判断是否可以删除任务，如果任务不能删除需要等待任务结束。</p>
 	 */
 	private final AtomicBoolean deleteLock = new AtomicBoolean(false);
 
+	/**
+	 * @param taskSession 任务信息
+	 */
 	protected Downloader(ITaskSession taskSession) {
 		this.taskSession = taskSession;
 		// 已下载大小
@@ -223,7 +225,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	 * 	<dd>任务处于{@linkplain ITaskSession#download() 下载状态}</dd>
 	 * </dl>
 	 * 
-	 * @return {@code true}-可以下载；{@code false}-不能下载；
+	 * @return true-可以下载；false-不能下载；
 	 */
 	protected boolean downloadable() {
 		return
