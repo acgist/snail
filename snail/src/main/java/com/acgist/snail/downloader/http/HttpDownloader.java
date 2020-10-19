@@ -21,12 +21,14 @@ import com.acgist.snail.utils.IoUtils;
  * <p>HTTP任务下载器</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class HttpDownloader extends SingleFileDownloader {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(HttpDownloader.class);
 	
+	/**
+	 * @param taskSession 任务信息
+	 */
 	private HttpDownloader(ITaskSession taskSession) {
 		super(taskSession);
 	}

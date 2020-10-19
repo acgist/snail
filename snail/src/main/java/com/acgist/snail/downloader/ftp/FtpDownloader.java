@@ -14,7 +14,6 @@ import com.acgist.snail.utils.IoUtils;
  * <p>FTP任务下载器</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class FtpDownloader extends SingleFileDownloader {
 	
@@ -23,6 +22,9 @@ public final class FtpDownloader extends SingleFileDownloader {
 	 */
 	private FtpClient client;
 	
+	/**
+	 * @param taskSession 任务信息
+	 */
 	private FtpDownloader(ITaskSession taskSession) {
 		super(taskSession);
 	}

@@ -15,7 +15,6 @@ import com.acgist.snail.pojo.session.HlsSession;
  * <p>HLS任务下载器</p>
  * 
  * @author acgist
- * @since 1.4.1
  */
 public final class HlsDownloader extends MultifileDownloader {
 
@@ -26,6 +25,9 @@ public final class HlsDownloader extends MultifileDownloader {
 	 */
 	private HlsSession hlsSession;
 	
+	/**
+	 * @param taskSession 任务信息
+	 */
 	protected HlsDownloader(ITaskSession taskSession) {
 		super(taskSession);
 	}
@@ -88,7 +90,7 @@ public final class HlsDownloader extends MultifileDownloader {
 		final TsLinker linker = TsLinker.newInstance(
 			this.taskSession.getName(),
 			this.taskSession.getFile(),
-			HlsManager.getInstance().cipher(this.taskSession),
+			HlsManager.getInstance().cipher(this.taskSession), // 设置加密套件
 			this.taskSession.multifileSelected()
 		);
 		final long size = linker.link();

@@ -12,7 +12,6 @@ import com.acgist.snail.protocol.magnet.bootstrap.MagnetBuilder;
  * <p>BT任务下载器</p>
  * 
  * @author acgist
- * @since 1.1.1
  */
 public abstract class TorrentSessionDownloader extends MultifileDownloader {
 	
@@ -23,6 +22,9 @@ public abstract class TorrentSessionDownloader extends MultifileDownloader {
 	 */
 	protected TorrentSession torrentSession;
 	
+	/**
+	 * @param taskSession 任务信息
+	 */
 	protected TorrentSessionDownloader(ITaskSession taskSession) {
 		super(taskSession);
 	}

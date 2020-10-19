@@ -10,12 +10,14 @@ import com.acgist.snail.pojo.ITaskSession;
  * <p>下载原理：先将磁力链接转为种子文件，然后转为{@link TorrentDownloader}进行下载。</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public final class MagnetDownloader extends TorrentSessionDownloader {
 	
 //	private static final Logger LOGGER = LoggerFactory.getLogger(MagnetDownloader.class);
 
+	/**
+	 * @param taskSession 任务信息
+	 */
 	private MagnetDownloader(ITaskSession taskSession) {
 		super(taskSession);
 	}
