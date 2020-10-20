@@ -15,7 +15,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>JSON处理工具</p>
  * 
  * @author acgist
- * @since 1.2.0
  */
 public final class JSON {
 
@@ -57,19 +56,19 @@ public final class JSON {
 		"\\\"", "\\\\"
 	};
 	/**
-	 * <p>{@code Map}前缀：{@value}</p>
+	 * <p>{@link Map}前缀：{@value}</p>
 	 */
 	private static final char JSON_MAP_PREFIX = '{';
 	/**
-	 * <p>{@code Map}后缀：{@value}</p>
+	 * <p>{@link Map}后缀：{@value}</p>
 	 */
 	private static final char JSON_MAP_SUFFIX = '}';
 	/**
-	 * <p>{@code List}前缀：{@value}</p>
+	 * <p>{@link List}前缀：{@value}</p>
 	 */
 	private static final char JSON_LIST_PREFIX = '[';
 	/**
-	 * <p>{@code List}后缀：{@value}</p>
+	 * <p>{@link List}后缀：{@value}</p>
 	 */
 	private static final char JSON_LIST_SUFFIX = ']';
 	/**
@@ -99,6 +98,8 @@ public final class JSON {
 	
 	/**
 	 * <p>JSON数据类型</p>
+	 * 
+	 * @author acgist
 	 */
 	public enum Type {
 
@@ -121,6 +122,11 @@ public final class JSON {
 	 * <p>Map</p>
 	 */
 	private Map<Object, Object> map;
+	/**
+	 * <p>是否使用懒加载</p>
+	 * <p>懒加载：反序列化JSON时，懒加载不会立即解析所有的JSON对象。</p>
+	 */
+	private static boolean lazy = true;
 	
 	/**
 	 * <p>禁止创建实例</p>
@@ -129,9 +135,9 @@ public final class JSON {
 	}
 	
 	/**
-	 * <p>使用{@code map}生成JSON对象</p>
+	 * <p>使用Map生成JSON对象</p>
 	 * 
-	 * @param map {@code Map}
+	 * @param map {@link Map}
 	 * 
 	 * @return JSON对象
 	 */
@@ -143,9 +149,9 @@ public final class JSON {
 	}
 	
 	/**
-	 * <p>使用{@code list}生成JSON对象</p>
+	 * <p>使用List生成JSON对象</p>
 	 * 
-	 * @param list {@code List}
+	 * @param list {@link List}
 	 * 
 	 * @return JSON对象
 	 */
@@ -184,6 +190,20 @@ public final class JSON {
 		content = content.substring(1, content.length() - 1); // 去掉首位字符
 		json.deserialize(content);
 		return json;
+	}
+	
+	/**
+	 * <p>使用懒加载</p>
+	 */
+	public static final void lazy() {
+		JSON.lazy = true;
+	}
+	
+	/**
+	 * <p>禁用懒加载</p>
+	 */
+	public static final void eager() {
+		JSON.lazy = false;
 	}
 	
 	/**
@@ -247,13 +267,14 @@ public final class JSON {
 	 * <p>序列化Java对象</p>
 	 * 
 	 * @param object Java对象
-	 * @param builder JSON字符串
+	 * @param builder JSON字符串Builder
 	 */
 	private static final void serializeValue(Object object, StringBuilder builder) {
 		if(object == null) {
 			builder.append(JSON_NULL);
 		} else if(object instanceof String) {
-			builder.append(JSON_STRING)
+			builder
+				.append(JSON_STRING)
 				.append(encodeValue((String) object))
 				.append(JSON_STRING);
 		} else if(object instanceof Boolean) {
@@ -267,7 +288,8 @@ public final class JSON {
 		} else if(object instanceof List) {
 			serializeList((List<?>) object, builder);
 		} else {
-			builder.append(JSON_STRING)
+			builder
+				.append(JSON_STRING)
 				.append(encodeValue(object.toString()))
 				.append(JSON_STRING);
 		}
@@ -375,10 +397,9 @@ public final class JSON {
 				index.incrementAndGet();
 				break;
 			}
-			// 转移参考：#CHARS
+			// 转义参考：#CHARS
 			if (value == '\\') {
-				index.incrementAndGet();
-				value = content.charAt(index.get());
+				value = content.charAt(index.incrementAndGet());
 				switch (value) {
 				case 'b':
 					builder.append('\b');
@@ -396,14 +417,14 @@ public final class JSON {
 					builder.append('\r');
 					break;
 				case '"':
-					// 如果存在JSON对象里面保留转移字符
+					// 如果存在JSON对象里面保留转义字符
 					if(jsonIndex != 0) {
 						builder.append('\\');
 					}
 					builder.append(value);
 					break;
 				case '\\':
-					// 如果存在JSON对象里面保留转移字符
+					// 如果存在JSON对象里面保留转义字符
 					if(jsonIndex != 0) {
 						builder.append('\\');
 					}
@@ -415,7 +436,7 @@ public final class JSON {
 					index.addAndGet(4);
 					break;
 				default:
-					// 未知转移类型保留转移字符
+					// 未知转义类型保留转义字符
 					builder.append('\\');
 					builder.append(value);
 					break;
@@ -424,7 +445,7 @@ public final class JSON {
 				builder.append(value);
 			}
 		} while (index.incrementAndGet() < content.length());
-		return convertValue(builder.toString());
+		return decodeValue(builder.toString());
 	}
 	
 	/**
@@ -434,7 +455,7 @@ public final class JSON {
 	 * 
 	 * @return Java对象
 	 */
-	private static final Object convertValue(String content) {
+	private static final Object decodeValue(String content) {
 		final String value = content.trim();
 		final int length = value.length();
 		if(JSON_NULL.equals(value)) {
@@ -461,17 +482,21 @@ public final class JSON {
 			value.charAt(0) == JSON_MAP_PREFIX &&
 			value.charAt(length - 1) == JSON_MAP_SUFFIX
 		) {
-			// MAP：懒加载
-//			return JSON.ofString(value);
-			return value;
+			if(JSON.lazy) {
+				return value;
+			} else {
+				return JSON.ofString(value);
+			}
 		} else if(
 			length > 1 &&
 			value.charAt(0) == JSON_LIST_PREFIX &&
 			value.charAt(length - 1) == JSON_LIST_SUFFIX
 		) {
-			// LIST：懒加载
-//			return JSON.ofString(value);
-			return value;
+			if(JSON.lazy) {
+				return value;
+			} else {
+				return JSON.ofString(value);
+			}
 		} else {
 			throw new IllegalArgumentException("JSON格式错误：" + value);
 		}

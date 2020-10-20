@@ -27,27 +27,25 @@ import com.acgist.snail.utils.StringUtils;
  * 	</tr>
  * 	<tr>
  * 		<td align="center">{@code i}</td>
- * 		<td>数字：{@code Long}</td>
+ * 		<td>数字：{@link Long}</td>
  * 	</tr>
  * 	<tr>
  * 		<td align="center">{@code l}</td>
- * 		<td>列表：{@code List}</td>
+ * 		<td>列表：{@link List}</td>
  * 	</tr>
  * 	<tr>
  * 		<td align="center">{@code d}</td>
- * 		<td>字典：{@code Map}</td>
+ * 		<td>字典：{@link Map}</td>
  * 	</tr>
  * 	<tr>
  * 		<td align="center">{@code e}</td>
  * 		<td>结尾</td>
  * 	</tr>
  * </table>
- * <p>所有类型除了{@code Long}，其他均为{@code byte[]}，需要自己进行类型转换。</p>
- * <p>解析前必须调用{@link #nextType()}、{@link #nextMap()}、{@link #nextList()}任一方法</p>
- * 
+ * <p>所有类型除了{@link Long}，其他均为{@code byte[]}，需要自己进行类型转换。</p>
+ * <p>使用以下方法进行解析：{@link #nextType()}、{@link #nextMap()}、{@link #nextList()}</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class BEncodeDecoder {
 
@@ -55,6 +53,8 @@ public final class BEncodeDecoder {
 	
 	/**
 	 * <p>B编码数据类型</p>
+	 * 
+	 * @author acgist
 	 */
 	public enum Type {
 		
@@ -105,12 +105,26 @@ public final class BEncodeDecoder {
 	 */
 	private final ByteArrayInputStream inputStream;
 	
+	/**
+	 * @param bytes 数据
+	 */
 	private BEncodeDecoder(byte[] bytes) {
 		Objects.requireNonNull(bytes, "B编码内容错误（数据为空）");
 		if(bytes.length < 2) {
 			throw new IllegalArgumentException("B编码内容错误（数据长度）");
 		}
 		this.inputStream = new ByteArrayInputStream(bytes);
+	}
+	
+	/**
+	 * <p>创建B编码解码器</p>
+	 * 
+	 * @param bytes 数据
+	 * 
+	 * @return B编码解码器
+	 */
+	public static final BEncodeDecoder newInstance(byte[] bytes) {
+		return new BEncodeDecoder(bytes);
 	}
 	
 	/**
@@ -140,17 +154,6 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>创建B编码解码器</p>
-	 * 
-	 * @param bytes 数据
-	 * 
-	 * @return B编码解码器
-	 */
-	public static final BEncodeDecoder newInstance(byte[] bytes) {
-		return new BEncodeDecoder(bytes);
-	}
-	
-	/**
 	 * <p>判断是否含有更多数据</p>
 	 * 
 	 * @return 是否含有更多数据
@@ -160,9 +163,9 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>数据是否为空</p>
+	 * <p>判断是否没有数据</p>
 	 * 
-	 * @return {@code true}-空；{@code false}-非空；
+	 * @return true-没有；false-含有；
 	 */
 	public boolean isEmpty() {
 		if(this.type == Type.LIST) {
@@ -175,9 +178,9 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>数据是否非空</p>
+	 * <p>判断是否含有数据</p>
 	 * 
-	 * @return {@code true}-非空；{@code false}-空；
+	 * @return true-含有；false-没有；
 	 */
 	public boolean isNotEmpty() {
 		return !this.isEmpty();
@@ -185,7 +188,7 @@ public final class BEncodeDecoder {
 	
 	/**
 	 * <p>获取下一个数据类型</p>
-	 * <p>获取下一个数据类型，同时解析下一个数据。</p>
+	 * <p>同时解析下一个数据</p>
 	 * 
 	 * @return 下一个数据类型
 	 * 
@@ -212,7 +215,7 @@ public final class BEncodeDecoder {
 	
 	/**
 	 * <p>获取下一个List</p>
-	 * <p>如果下一个数据类型不是{@code List}返回空{@code List}</p>
+	 * <p>如果下一个数据类型不是{@link List}返回空{@link List}</p>
 	 * 
 	 * @return 下一个List
 	 * 
@@ -228,7 +231,7 @@ public final class BEncodeDecoder {
 	
 	/**
 	 * <p>获取下一个Map</p>
-	 * <p>如果下一个数据类型不是{@code Map}返回空{@code Map}</p>
+	 * <p>如果下一个数据类型不是{@link Map}返回空{@link Map}</p>
 	 * 
 	 * @return 下一个Map
 	 * 
@@ -291,6 +294,62 @@ public final class BEncodeDecoder {
 			}
 		}
 		return 0L;
+	}
+	
+	/**
+	 * <p>读取List：{@value #TYPE_L}</p>
+	 * 
+	 * @param inputStream 数据
+	 * 
+	 * @return List
+	 * 
+	 * @throws PacketSizeException 网络包大小异常
+	 */
+	private static final List<Object> readList(ByteArrayInputStream inputStream) throws PacketSizeException {
+		int index;
+		char indexChar;
+		final List<Object> list = new ArrayList<Object>();
+		final StringBuilder lengthBuilder = new StringBuilder();
+		while ((index = inputStream.read()) != -1) {
+			indexChar = (char) index;
+			switch (indexChar) {
+			case TYPE_E:
+				return list;
+			case TYPE_I:
+				list.add(readLong(inputStream));
+				break;
+			case TYPE_L:
+				list.add(readList(inputStream));
+				break;
+			case TYPE_D:
+				list.add(readMap(inputStream));
+				break;
+			case '0':
+			case '1':
+			case '2':
+			case '3':
+			case '4':
+			case '5':
+			case '6':
+			case '7':
+			case '8':
+			case '9':
+				lengthBuilder.append(indexChar);
+				break;
+			case SEPARATOR:
+				if(lengthBuilder.length() > 0) {
+					final byte[] bytes = read(lengthBuilder, inputStream);
+					list.add(bytes);
+				} else {
+					LOGGER.warn("B编码错误（长度）：{}", lengthBuilder);
+				}
+				break;
+			default:
+				LOGGER.debug("B编码错误（类型不支持）：{}", indexChar);
+				break;
+			}
+		}
+		return list;
 	}
 	
 	/**
@@ -368,62 +427,6 @@ public final class BEncodeDecoder {
 			}
 		}
 		return map;
-	}
-	
-	/**
-	 * <p>读取List：{@value #TYPE_L}</p>
-	 * 
-	 * @param inputStream 数据
-	 * 
-	 * @return List
-	 * 
-	 * @throws PacketSizeException 网络包大小异常
-	 */
-	private static final List<Object> readList(ByteArrayInputStream inputStream) throws PacketSizeException {
-		int index;
-		char indexChar;
-		final List<Object> list = new ArrayList<Object>();
-		final StringBuilder lengthBuilder = new StringBuilder();
-		while ((index = inputStream.read()) != -1) {
-			indexChar = (char) index;
-			switch (indexChar) {
-			case TYPE_E:
-				return list;
-			case TYPE_I:
-				list.add(readLong(inputStream));
-				break;
-			case TYPE_L:
-				list.add(readList(inputStream));
-				break;
-			case TYPE_D:
-				list.add(readMap(inputStream));
-				break;
-			case '0':
-			case '1':
-			case '2':
-			case '3':
-			case '4':
-			case '5':
-			case '6':
-			case '7':
-			case '8':
-			case '9':
-				lengthBuilder.append(indexChar);
-				break;
-			case SEPARATOR:
-				if(lengthBuilder.length() > 0) {
-					final byte[] bytes = read(lengthBuilder, inputStream);
-					list.add(bytes);
-				} else {
-					LOGGER.warn("B编码错误（长度）：{}", lengthBuilder);
-				}
-				break;
-			default:
-				LOGGER.debug("B编码错误（类型不支持）：{}", indexChar);
-				break;
-			}
-		}
-		return list;
 	}
 	
 	/**

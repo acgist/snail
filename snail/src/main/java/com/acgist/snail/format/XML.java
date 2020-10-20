@@ -34,7 +34,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>XML</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class XML {
 	
@@ -59,7 +58,7 @@ public final class XML {
 	/**
 	 * <p>创建XML</p>
 	 * 
-	 * @return XML工具对象
+	 * @return XML
 	 */
 	public static final XML build() {
 		final XML xml = new XML();
@@ -77,7 +76,7 @@ public final class XML {
 	 * 
 	 * @param content XML内容
 	 * 
-	 * @return XML工具对象
+	 * @return XML
 	 */
 	public static final XML load(String content) {
 		Objects.requireNonNull(content, "XML内容为空");
@@ -97,7 +96,7 @@ public final class XML {
 	 * 
 	 * @param filePath XML文件路径
 	 * 
-	 * @return XML工具对象
+	 * @return XML
 	 */
 	public static final XML loadFile(String filePath) {
 		String content = null;
@@ -110,9 +109,9 @@ public final class XML {
 	}
 	
 	/**
-	 * <p>创建{@code DocumentBuilderFactory}</p>
+	 * <p>创建{@link DocumentBuilderFactory}</p>
 	 * 
-	 * @return {@code DocumentBuilderFactory}
+	 * @return {@link DocumentBuilderFactory}
 	 */
 	private static final DocumentBuilderFactory buildFactory() {
 		final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -186,6 +185,7 @@ public final class XML {
 	 * @return 节点
 	 */
 	public Element elementNS(Node node, String name, String text, String namespaceUri) {
+		Objects.requireNonNull(node, "上级节点为空");
 		Element element = null;
 		if(StringUtils.isEmpty(namespaceUri)) {
 			element = this.document.createElement(name);
@@ -198,7 +198,7 @@ public final class XML {
 		node.appendChild(element);
 		return element;
 	}
-
+	
 	/**
 	 * <p>读取节点文本</p>
 	 * <p>如果存在多个节点默认返回第一个节点</p>

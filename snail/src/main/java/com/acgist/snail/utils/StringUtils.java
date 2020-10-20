@@ -437,6 +437,7 @@ public final class StringUtils {
 	/**
 	 * <p>获取文本编码</p>
 	 * <p>支持编码：GBK、UTF-8</p>
+	 * <p>首先验证GBK能否编码原始数据，没有乱码返回UTF-8；如果乱码转为GBK然后再次验证GBK能否编码，没有乱码返回GBK，依旧乱码默认返回UTF-8；</p>
 	 * 
 	 * @param content 文本内容
 	 * 
@@ -446,12 +447,10 @@ public final class StringUtils {
 		if(StringUtils.isEmpty(content)) {
 			return SystemConfig.CHARSET_UTF8;
 		}
-		// UTF-8
 		final var gbkEncoder = Charset.forName(SystemConfig.CHARSET_GBK).newEncoder();
 		if(gbkEncoder.canEncode(content)) {
 			return SystemConfig.CHARSET_UTF8;
 		}
-		// GBK
 		final String gbkContent = StringUtils.charsetTo(content, SystemConfig.CHARSET_GBK);
 		if(gbkEncoder.canEncode(gbkContent)) {
 			return SystemConfig.CHARSET_GBK;
@@ -515,6 +514,7 @@ public final class StringUtils {
 		if(encoding != null) {
 			return getString(object, encoding);
 		} else {
+			// encoding为空默认使用UTF-8
 			final String objectUtf8 = getString(object, encoding);
 			final String charset = getCharset(objectUtf8);
 			if(SystemConfig.CHARSET_GBK.equals(charset)) {
