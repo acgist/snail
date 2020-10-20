@@ -28,7 +28,6 @@ import com.acgist.snail.format.BEncodeDecoder.Type;
  * </pre>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class BEncodeEncoder {
 
@@ -139,7 +138,7 @@ public final class BEncodeEncoder {
 	}
 
 	/**
-	 * <p>将List和Map中的数据写入字符流（配合put系列方法使用）</p>
+	 * <p>将数据写入字符流</p>
 	 * 
 	 * @return {@link BEncodeEncoder}
 	 */
@@ -194,7 +193,7 @@ public final class BEncodeEncoder {
 		}
 		this.write(BEncodeDecoder.TYPE_L);
 		list.forEach(value -> {
-			this.writeValue(value);
+			this.writeObject(value);
 		});
 		this.write(BEncodeDecoder.TYPE_E);
 		return this;
@@ -213,8 +212,8 @@ public final class BEncodeEncoder {
 		}
 		this.write(BEncodeDecoder.TYPE_D);
 		map.forEach((key, value) -> {
-			this.writeBytes(key.toString().getBytes());
-			this.writeValue(value);
+			this.writeObject(key);
+			this.writeObject(value);
 		});
 		this.write(BEncodeDecoder.TYPE_E);
 		return this;
@@ -225,7 +224,7 @@ public final class BEncodeEncoder {
 	 * 
 	 * @param value 数据
 	 */
-	private void writeValue(Object value) {
+	private void writeObject(Object value) {
 		if(value instanceof Number) {
 			this.writeNumber((Number) value);
 		} else if(value instanceof byte[]) {

@@ -1,4 +1,4 @@
-package com.acgist.snail;
+package com.acgist.snail.format;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -6,14 +6,13 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.BaseTest;
 import com.acgist.snail.context.exception.PacketSizeException;
-import com.acgist.snail.format.BEncodeDecoder;
-import com.acgist.snail.format.BEncodeEncoder;
 
-public class BCodeTest extends BaseTest {
+public class BEncodeTest extends BaseTest {
 
 	@Test
-	public void testReadWrite() throws PacketSizeException {
+	public void testEncodeDecode() throws PacketSizeException {
 		BEncodeEncoder encoder = BEncodeEncoder.newInstance();
 //		encoder.writeList(List.of("a", "b"));
 //		encoder.writeMap(Map.of("1", "2"));
@@ -37,7 +36,6 @@ public class BCodeTest extends BaseTest {
 			}
 		});
 		this.log(decoder.oddString());
-		
 	}
 	
 	@Test
@@ -46,6 +44,7 @@ public class BCodeTest extends BaseTest {
 		map.put("a", 1);
 		map.put("b", null);
 		map.put("c", "c");
+		map.put(null, "c");
 		String content = new String(BEncodeEncoder.encodeMap(map));
 		this.log(content);
 		var decoder = BEncodeDecoder.newInstance(content);
@@ -56,13 +55,6 @@ public class BCodeTest extends BaseTest {
 				this.log(key + "-" + new String((byte[]) value));
 			}
 		});
-	}
-	
-	@Test
-	public void testMap() throws PacketSizeException {
-		var decoder = BEncodeDecoder.newInstance("d8:completei6e10:downloadedi17e10:incompletei0e8:intervali924e12:min intervali462e5:peers36:����m�Wj���LmA�s;I�ʆL��TTz�e");
-		var map = decoder.nextMap();
-		this.log(map);
 	}
 	
 }
