@@ -1,16 +1,16 @@
-package com.acgist.gui.extend;
+package com.acgist.snail.gui.extend;
 
-import com.acgist.gui.extend.event.AlertEvent;
-import com.acgist.gui.extend.event.BuildEvent;
-import com.acgist.gui.extend.event.ExitEvent;
-import com.acgist.gui.extend.event.HideEvent;
-import com.acgist.gui.extend.event.NoticeEvent;
-import com.acgist.gui.extend.event.RefreshTaskListEvent;
-import com.acgist.gui.extend.event.RefreshTaskStatusEvent;
-import com.acgist.gui.extend.event.ResponseEvent;
-import com.acgist.gui.extend.event.ShowEvent;
-import com.acgist.gui.extend.event.TorrentEvent;
 import com.acgist.snail.gui.GuiManager;
+import com.acgist.snail.gui.extend.event.AlertEvent;
+import com.acgist.snail.gui.extend.event.BuildEvent;
+import com.acgist.snail.gui.extend.event.ExitEvent;
+import com.acgist.snail.gui.extend.event.HideEvent;
+import com.acgist.snail.gui.extend.event.NoticeEvent;
+import com.acgist.snail.gui.extend.event.RefreshTaskListEvent;
+import com.acgist.snail.gui.extend.event.RefreshTaskStatusEvent;
+import com.acgist.snail.gui.extend.event.ResponseEvent;
+import com.acgist.snail.gui.extend.event.ShowEvent;
+import com.acgist.snail.gui.extend.event.TorrentEvent;
 
 /**
  * <p>扩展GUI管理器</p>
