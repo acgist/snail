@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import com.acgist.snail.BaseTest;
 import com.acgist.snail.context.exception.PacketSizeException;
 
-public class BEncodeTest extends BaseTest {
+public class BEncodeDecodeTest extends BaseTest {
 
 	@Test
 	public void testEncodeDecode() throws PacketSizeException {
@@ -55,6 +55,11 @@ public class BEncodeTest extends BaseTest {
 				this.log(key + "-" + new String((byte[]) value));
 			}
 		});
+	}
+	
+	@Test
+	public void testEncode() {
+		this.log(BEncodeEncoder.encodeMapString(Map.of("1", "2")));
 	}
 	
 }

@@ -20,7 +20,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>不能抛出异常：抛出异常会导致创建任务不能正常的删除临时文件</p>
  * 
  * @author acgist
- * @since 1.1.1
  */
 public class TorrentEventAdapter extends GuiEventExtend {
 
@@ -36,11 +35,13 @@ public class TorrentEventAdapter extends GuiEventExtend {
 			LOGGER.warn("种子文件选择（参数错误）：{}", args);
 		} else if(args.length == 1) {
 			final Object object = args[0];
+			// TODO：使用新的类型转换
 			if(object instanceof ITaskSession) {
+				final ITaskSession taskSession = (ITaskSession) object;
 				if(mode == Mode.NATIVE) {
-					this.executeNativeExtend((ITaskSession) object);
+					this.executeNativeExtend(taskSession);
 				} else {
-					this.executeExtendExtend((ITaskSession) object);
+					this.executeExtendExtend(taskSession);
 				}
 			} else {
 				LOGGER.warn("种子文件选择（参数类型错误）：{}", object);
@@ -79,7 +80,9 @@ public class TorrentEventAdapter extends GuiEventExtend {
 			final var torrent = TorrentManager.getInstance().newTorrentSession(taskSession.getTorrent()).torrent();
 			// 选择文件大小
 			final long size = torrent.getInfo().files().stream()
+				// 去掉隐藏文件
 				.filter(file -> !file.path().startsWith(TorrentInfo.PADDING_FILE_PREFIX))
+				// 设置选中文件
 				.filter(file -> selectFiles.contains(file.path()))
 				.collect(Collectors.summingLong(TorrentFile::getLength));
 			taskSession.setSize(size);

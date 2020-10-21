@@ -7,12 +7,13 @@ import com.acgist.snail.gui.GuiManager.Mode;
  * <p>GUI事件</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public abstract class GuiEvent {
 
 	/**
 	 * <p>GUI事件类型</p>
+	 * 
+	 * @author acgist
 	 */
 	public enum Type {
 		

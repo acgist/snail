@@ -7,7 +7,6 @@ import com.acgist.snail.gui.event.GuiEvent;
  * <p>GUI创建窗口事件</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public class BuildEventAdapter extends GuiEvent {
 	
@@ -16,7 +15,7 @@ public class BuildEventAdapter extends GuiEvent {
 	}
 	
 	@Override
-	protected void executeNative(Object... args) {
+	protected void executeNative(Object ... args) {
 		this.executeExtend(args);
 	}
 

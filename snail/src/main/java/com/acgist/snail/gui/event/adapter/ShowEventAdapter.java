@@ -1,12 +1,13 @@
 package com.acgist.snail.gui.event.adapter;
 
+import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.event.GuiEvent;
+import com.acgist.snail.pojo.message.ApplicationMessage;
 
 /**
  * <p>GUI显示窗口事件</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public class ShowEventAdapter extends GuiEvent {
 
@@ -21,6 +22,8 @@ public class ShowEventAdapter extends GuiEvent {
 
 	@Override
 	protected void executeExtend(Object ... args) {
+		final ApplicationMessage message = ApplicationMessage.message(ApplicationMessage.Type.SHOW);
+		GuiManager.getInstance().sendExtendGuiMessage(message);
 	}
 
 }

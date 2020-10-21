@@ -189,8 +189,10 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 			}
 			final String url = decoder.getString("url");
 			final String files = decoder.getString("files");
-			GuiManager.getInstance().files(files); // 设置选择文件
-			DownloaderManager.getInstance().newTask(url); // 开始下载任务
+			synchronized (this) {
+				GuiManager.getInstance().files(files); // 设置选择文件
+				DownloaderManager.getInstance().newTask(url); // 开始下载任务
+			}
 			this.send(ApplicationMessage.response(ApplicationMessage.SUCCESS));
 		} catch (NetException | DownloadException e) {
 			LOGGER.debug("新建下载任务异常：{}", body, e);

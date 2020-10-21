@@ -13,7 +13,6 @@ import com.acgist.snail.pojo.message.ApplicationMessage;
  * <p>GUI响应消息事件</p>
  * 
  * @author acgist
- * @since 1.4.0
  */
 public class ResponseEventAdapter extends GuiEventExtend {
 
@@ -57,8 +56,7 @@ public class ResponseEventAdapter extends GuiEventExtend {
 	 * @param message 消息
 	 */
 	protected void executeExtendExtend(String message) {
-		final ApplicationMessage applicationMessage = ApplicationMessage.message(ApplicationMessage.Type.RESPONSE);
-		applicationMessage.setBody(message);
+		final ApplicationMessage applicationMessage = ApplicationMessage.message(ApplicationMessage.Type.RESPONSE, message);
 		GuiManager.getInstance().sendExtendGuiMessage(applicationMessage);
 	}
 	
