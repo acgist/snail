@@ -8,7 +8,6 @@ import com.acgist.snail.pojo.message.ApplicationMessage;
  * <p>GUI刷新任务状态事件</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public class RefreshTaskStatusEventAdapter extends GuiEvent {
 

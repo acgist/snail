@@ -28,7 +28,9 @@ public class ApplicationMessage {
 	public static final String SUCCESS = "success";
 
 	/**
-	 * <p>系统消息类型</p>
+	 * <p>系统消息、系统通知类型</p>
+	 * 
+	 * @author acgist
 	 */
 	public enum Type {
 		
@@ -57,6 +59,10 @@ public class ApplicationMessage {
 		
 		//================主动消息（系统通知）================//
 		
+		/** 显示窗口 */
+		SHOW,
+		/** 隐藏窗口 */
+		HIDE,
 		/** 提示窗口 */
 		ALERT,
 		/** 提示消息 */

@@ -20,7 +20,6 @@ import com.acgist.snail.utils.ThreadUtils;
  * <p>GUI管理器</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public final class GuiManager {
 	
@@ -34,6 +33,8 @@ public final class GuiManager {
 	
 	/**
 	 * <p>运行模式</p>
+	 * 
+	 * @author acgist
 	 */
 	public enum Mode {
 		
@@ -52,6 +53,8 @@ public final class GuiManager {
 	
 	/**
 	 * <p>消息类型</p>
+	 * 
+	 * @author acgist
 	 */
 	public enum MessageType {
 		
@@ -145,8 +148,7 @@ public final class GuiManager {
 	 * @return GUI管理器
 	 */
 	public GuiManager show() {
-		this.event(Type.SHOW);
-		return this;
+		return this.event(Type.SHOW);
 	}
 	
 	/**
@@ -155,8 +157,7 @@ public final class GuiManager {
 	 * @return GUI管理器
 	 */
 	public GuiManager hide() {
-		this.event(Type.HIDE);
-		return this;
+		return this.event(Type.HIDE);
 	}
 	
 	/**
@@ -165,8 +166,7 @@ public final class GuiManager {
 	 * @return GUI管理器
 	 */
 	public GuiManager exit() {
-		this.event(Type.EXIT);
-		return this;
+		return this.event(Type.EXIT);
 	}
 
 	/**
@@ -175,8 +175,7 @@ public final class GuiManager {
 	 * @return GUI管理器
 	 */
 	public GuiManager build() {
-		this.event(Type.BUILD);
-		return this;
+		return this.event(Type.BUILD);
 	}
 	
 	/**
@@ -188,8 +187,7 @@ public final class GuiManager {
 	 * @return GUI管理器
 	 */
 	public GuiManager alert(String title, String message) {
-		this.alert(title, message, GuiManager.MessageType.INFO);
-		return this;
+		return this.alert(title, message, GuiManager.MessageType.INFO);
 	}
 
 	/**
@@ -202,8 +200,7 @@ public final class GuiManager {
 	 * @return GUI管理器
 	 */
 	public GuiManager alert(String title, String message, GuiManager.MessageType type) {
-		this.event(Type.ALERT, title, message, type);
-		return this;
+		return this.event(Type.ALERT, title, message, type);
 	}
 	
 	/**
@@ -215,8 +212,7 @@ public final class GuiManager {
 	 * @return GUI管理器
 	 */
 	public GuiManager notice(String title, String message) {
-		this.notice(title, message, GuiManager.MessageType.INFO);
-		return this;
+		return this.notice(title, message, GuiManager.MessageType.INFO);
 	}
 	
 	/**
@@ -229,8 +225,7 @@ public final class GuiManager {
 	 * @return GUI管理器
 	 */
 	public GuiManager notice(String title, String message, GuiManager.MessageType type) {
-		this.event(Type.NOTICE, title, message, type);
-		return this;
+		return this.event(Type.NOTICE, title, message, type);
 	}
 	
 	/**
@@ -241,18 +236,18 @@ public final class GuiManager {
 	 * @return GUI管理器
 	 */
 	public GuiManager torrent(ITaskSession taskSession) {
-		this.event(Type.TORRENT, taskSession);
-		return this;
+		return this.event(Type.TORRENT, taskSession);
 	}
 	
 	/**
 	 * <p>响应消息</p>
 	 * 
 	 * @param message 消息
+	 * 
+	 * @return GUI管理器
 	 */
 	public GuiManager response(String message) {
-		this.event(Type.RESPONSE, message);
-		return this;
+		return this.event(Type.RESPONSE, message);
 	}
 	
 	/**
@@ -261,8 +256,7 @@ public final class GuiManager {
 	 * @return GUI管理器
 	 */
 	public GuiManager refreshTaskList() {
-		this.event(Type.REFRESH_TASK_LIST);
-		return this;
+		return this.event(Type.REFRESH_TASK_LIST);
 	}
 	
 	/**
@@ -271,8 +265,7 @@ public final class GuiManager {
 	 * @return GUI管理器
 	 */
 	public GuiManager refreshTaskStatus() {
-		this.event(Type.REFRESH_TASK_STATUS);
-		return this;
+		return this.event(Type.REFRESH_TASK_STATUS);
 	}
 
 	/**
@@ -285,14 +278,14 @@ public final class GuiManager {
 	 */
 	public GuiManager event(GuiEvent.Type type, Object ... args) {
 		if(type == null) {
+			LOGGER.warn("未知GUI事件：{}", type);
 			return this;
 		}
 		final GuiEvent event = EVENTS.get(type);
 		if(event == null) {
-			LOGGER.warn("未知GUI事件：{}", type);
+			LOGGER.warn("GUI事件没有注册：{}", type);
 			return this;
 		}
-		// TODO：线程安全
 		event.execute(this.mode, args);
 		return this;
 	}

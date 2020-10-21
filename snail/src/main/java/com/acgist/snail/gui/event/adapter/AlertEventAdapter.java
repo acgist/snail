@@ -1,6 +1,5 @@
 package com.acgist.snail.gui.event.adapter;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -71,13 +70,13 @@ public class AlertEventAdapter extends GuiEventExtend {
 	 * @param message 消息
 	 */
 	protected void executeExtendExtend(GuiManager.MessageType type, String title, String message) {
-		final ApplicationMessage applicationMessage = ApplicationMessage.message(ApplicationMessage.Type.ALERT);
-		final Map<String, String> map = new HashMap<>(5);
-		map.put("type", type.name());
-		map.put("title", title);
-		map.put("message", message);
+		final Map<String, String> map = Map.of(
+			"type", type.name(),
+			"title", title,
+			"message", message
+		);
 		final String body = BEncodeEncoder.encodeMapString(map);
-		applicationMessage.setBody(body);
+		final ApplicationMessage applicationMessage = ApplicationMessage.message(ApplicationMessage.Type.ALERT, body);
 		GuiManager.getInstance().sendExtendGuiMessage(applicationMessage);
 	}
 

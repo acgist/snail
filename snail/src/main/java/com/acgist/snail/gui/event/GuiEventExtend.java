@@ -8,7 +8,6 @@ import com.acgist.snail.gui.GuiManager.Mode;
  * <p>处理变长参数GUI事件</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public abstract class GuiEventExtend extends GuiEvent {
 

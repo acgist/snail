@@ -258,7 +258,6 @@ d4:type4:TEXT4:body7:messagee
 |开始任务|TASK_START|任务ID|SUCCESS/失败原因|
 |暂停任务|TASK_PAUSE|任务ID|SUCCESS/失败原因|
 |删除任务|TASK_DELETE|任务ID|SUCCESS/失败原因|
-|响应消息|RESPONSE|文本|文本|
 
 ###### 新建任务请求主体
 
@@ -293,9 +292,12 @@ d4:type4:TEXT4:body7:messagee
 
 |名称|类型|主体|
 |:--|:--|:--|
+|显示窗口|SHOW|-|
+|隐藏窗口|HIDE|-|
 |提示窗口|ALERT|B编码Map|
 |提示消息|NOTICE|B编码Map|
 |刷新任务|REFRESH|-|
+|响应消息|RESPONSE|文本|
 
 ###### 提示窗口和提示消息主体
 

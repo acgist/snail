@@ -1,12 +1,13 @@
 package com.acgist.snail.gui.event.adapter;
 
+import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.event.GuiEvent;
+import com.acgist.snail.pojo.message.ApplicationMessage;
 
 /**
  * <p>GUI隐藏窗口事件</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public class HideEventAdapter extends GuiEvent {
 
@@ -15,12 +16,14 @@ public class HideEventAdapter extends GuiEvent {
 	}
 
 	@Override
-	protected void executeNative(Object... args) {
+	protected void executeNative(Object ... args) {
 		this.executeExtend(args);
 	}
 	
 	@Override
 	protected final void executeExtend(Object ... args) {
+		final ApplicationMessage message = ApplicationMessage.message(ApplicationMessage.Type.HIDE);
+		GuiManager.getInstance().sendExtendGuiMessage(message);
 	}
 	
 }
