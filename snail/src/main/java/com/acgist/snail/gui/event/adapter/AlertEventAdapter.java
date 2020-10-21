@@ -16,7 +16,6 @@ import com.acgist.snail.pojo.message.ApplicationMessage;
  * <p>GUI提示窗口事件</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public class AlertEventAdapter extends GuiEventExtend {
 

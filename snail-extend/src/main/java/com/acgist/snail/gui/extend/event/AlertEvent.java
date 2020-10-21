@@ -1,4 +1,4 @@
-package com.acgist.gui.extend.event;
+package com.acgist.snail.gui.extend.event;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
