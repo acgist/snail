@@ -96,7 +96,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 		switch (messageType) {
 		case SUCCESS_RESPONSE:
 		case ERROR_RESPONSE:
-			loopResponseAttribute(buffer);
+			this.loopResponseAttribute(buffer);
 			break;
 		default:
 			LOGGER.warn("处理STUN消息错误（类型未适配）：{}", messageType);
