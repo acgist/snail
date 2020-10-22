@@ -100,6 +100,25 @@ public interface IMessageSender {
 	void close();
 	
 	/**
+	 * <p>数据发送验证</p>
+	 * 
+	 * @param buffer 消息
+	 * 
+	 * @throws NetException 网络异常
+	 */
+	default void check(ByteBuffer buffer) throws NetException {
+		if(!this.available()) {
+			throw new NetException("消息发送失败：通道不可用");
+		}
+		if(buffer.position() != 0) {
+			buffer.flip();
+		}
+		if(buffer.limit() == 0) {
+			throw new NetException("消息发送失败：" + buffer);
+		}
+	}
+	
+	/**
 	 * <p>字符编码</p>
 	 * 
 	 * @param message 消息

@@ -89,17 +89,7 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	
 	@Override
 	public void send(ByteBuffer buffer, int timeout) throws NetException {
-		if(!this.available()) {
-			LOGGER.debug("TCP消息发送失败：Socket不可用");
-			return;
-		}
-		if(buffer.position() != 0) {
-			buffer.flip();
-		}
-		if(buffer.limit() == 0) {
-			LOGGER.warn("TCP消息发送失败：{}", buffer);
-			return;
-		}
+		this.check(buffer);
 		synchronized (this.socket) {
 			try {
 				final Future<Integer> future = this.socket.write(buffer);

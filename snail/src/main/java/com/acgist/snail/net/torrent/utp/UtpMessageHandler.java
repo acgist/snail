@@ -225,18 +225,8 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	 * 
 	 * @throws NetException 网络异常
 	 */
-	private void sendPacket(ByteBuffer buffer) {
-		if(!this.available()) {
-			LOGGER.debug("UTP消息发送失败：通道不可用");
-			return;
-		}
-		if(buffer.position() != 0) {
-			buffer.flip();
-		}
-		if(buffer.limit() == 0) {
-			LOGGER.warn("UTP消息发送失败：{}", buffer);
-			return;
-		}
+	private void sendPacket(ByteBuffer buffer) throws NetException {
+		this.check(buffer);
 		byte[] bytes;
 		int remaining;
 		while((remaining = buffer.remaining()) > 0) { // UDP拆包
