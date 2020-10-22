@@ -1,4 +1,4 @@
-package com.acgist.snail;
+package com.acgist.snail.net.application;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -7,11 +7,10 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.BaseTest;
 import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.format.BEncodeEncoder;
 import com.acgist.snail.gui.GuiManager;
-import com.acgist.snail.net.application.ApplicationClient;
-import com.acgist.snail.net.application.ApplicationServer;
 import com.acgist.snail.pojo.message.ApplicationMessage;
 import com.acgist.snail.pojo.message.ApplicationMessage.Type;
 
