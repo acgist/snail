@@ -20,7 +20,7 @@ import com.acgist.snail.net.codec.IMessageCodec;
  * @author acgist
  * @since 1.0.0
  */
-public abstract class UdpMessageHandler implements IMessageSender, IMessageReceiver{
+public abstract class UdpMessageHandler implements IMessageSender, IMessageReceiver {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpMessageHandler.class);
 
@@ -117,17 +117,7 @@ public abstract class UdpMessageHandler implements IMessageSender, IMessageRecei
 	 * @throws NetException 网络异常
 	 */
 	protected final void send(ByteBuffer buffer, SocketAddress socketAddress) throws NetException {
-		if(!this.available()) {
-			LOGGER.debug("UDP消息发送失败：通道不可用");
-			return;
-		}
-		if(buffer.position() != 0) {
-			buffer.flip();
-		}
-		if(buffer.limit() == 0) {
-			LOGGER.warn("UDP消息发送失败：{}", buffer);
-			return;
-		}
+		this.check(buffer);
 		try {
 			final int size = this.channel.send(buffer, socketAddress);
 			if(size <= 0) {
