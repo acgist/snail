@@ -17,7 +17,7 @@ import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.net.codec.impl.PeerCryptMessageCodec;
 import com.acgist.snail.net.codec.impl.PeerUnpackMessageCodec;
-import com.acgist.snail.net.torrent.IMessageEncryptHandler;
+import com.acgist.snail.net.torrent.IMessageEncryptSender;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.net.torrent.utp.bootstrap.UtpService;
 import com.acgist.snail.net.torrent.utp.bootstrap.UtpWindow;
@@ -49,7 +49,7 @@ import com.acgist.snail.utils.ThreadUtils;
  * @author acgist
  * @since 1.1.0
  */
-public final class UtpMessageHandler extends UdpMessageHandler implements IMessageEncryptHandler {
+public final class UtpMessageHandler extends UdpMessageHandler implements IMessageEncryptSender {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UtpMessageHandler.class);
 	
@@ -125,7 +125,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	
 	private UtpMessageHandler(PeerSubMessageHandler peerSubMessageHandler, InetSocketAddress socketAddress, short connectionId, boolean recv) {
 		this.peerSubMessageHandler = peerSubMessageHandler;
-		this.peerSubMessageHandler.messageEncryptHandler(this);
+		this.peerSubMessageHandler.messageEncryptSender(this);
 		final var peerUnpackMessageCodec = new PeerUnpackMessageCodec(this.peerSubMessageHandler);
 		final var peerCryptMessageCodec = new PeerCryptMessageCodec(peerUnpackMessageCodec, this.peerSubMessageHandler);
 		this.messageCodec = peerCryptMessageCodec;

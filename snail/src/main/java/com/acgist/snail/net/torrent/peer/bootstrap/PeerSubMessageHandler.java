@@ -12,7 +12,7 @@ import com.acgist.snail.config.PeerConfig.Type;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.codec.IMessageCodec;
-import com.acgist.snail.net.torrent.IMessageEncryptHandler;
+import com.acgist.snail.net.torrent.IMessageEncryptSender;
 import com.acgist.snail.net.torrent.PeerConnect;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.bootstrap.PeerDownloader;
@@ -101,7 +101,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	/**
 	 * <p>消息代理</p>
 	 */
-	private IMessageEncryptHandler messageEncryptHandler;
+	private IMessageEncryptSender messageEncryptSender;
 	/**
 	 * <p>扩展消息代理</p>
 	 */
@@ -245,12 +245,12 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	/**
 	 * <p>设置实际消息代理：TCP、UDP（UTP）</p>
 	 * 
-	 * @param messageEncryptHandler 实际消息代理
+	 * @param messageEncryptSender 实际消息代理
 	 * 
 	 * @return Peer消息代理
 	 */
-	public PeerSubMessageHandler messageEncryptHandler(IMessageEncryptHandler messageEncryptHandler) {
-		this.messageEncryptHandler = messageEncryptHandler;
+	public PeerSubMessageHandler messageEncryptSender(IMessageEncryptSender messageEncryptSender) {
+		this.messageEncryptSender = messageEncryptSender;
 		return this;
 	}
 	
@@ -1198,10 +1198,10 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	/**
 	 * <p>释放Peer</p>
 	 * 
-	 * @see IMessageEncryptHandler#close()
+	 * @see IMessageEncryptSender#close()
 	 */
 	public void close() {
-		this.messageEncryptHandler.close();
+		this.messageEncryptSender.close();
 	}
 	
 	/**
@@ -1209,10 +1209,10 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * 
 	 * @return 是否可用
 	 * 
-	 * @see IMessageEncryptHandler#available()
+	 * @see IMessageEncryptSender#available()
 	 */
 	public boolean available() {
-		return this.messageEncryptHandler.available();
+		return this.messageEncryptSender.available();
 	}
 	
 	/**
@@ -1220,11 +1220,11 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * 
 	 * @param buffer 消息
 	 * 
-	 * @see IMessageEncryptHandler#send(ByteBuffer)
+	 * @see IMessageEncryptSender#send(ByteBuffer)
 	 */
 	public void send(ByteBuffer buffer) {
 		try {
-			this.messageEncryptHandler.send(buffer);
+			this.messageEncryptSender.send(buffer);
 		} catch (NetException e) {
 			LOGGER.error("Peer消息发送异常", e);
 		}
@@ -1236,11 +1236,11 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * @param buffer 消息
 	 * @param timeout 超时时间
 	 * 
-	 * @see IMessageEncryptHandler#send(ByteBuffer, int)
+	 * @see IMessageEncryptSender#send(ByteBuffer, int)
 	 */
 	public void send(ByteBuffer buffer, int timeout) {
 		try {
-			this.messageEncryptHandler.send(buffer, timeout);
+			this.messageEncryptSender.send(buffer, timeout);
 		} catch (NetException e) {
 			LOGGER.error("Peer消息发送异常", e);
 		}
@@ -1251,11 +1251,11 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * 
 	 * @param buffer 消息
 	 * 
-	 * @see IMessageEncryptHandler#sendEncrypt(ByteBuffer)
+	 * @see IMessageEncryptSender#sendEncrypt(ByteBuffer)
 	 */
 	public void sendEncrypt(ByteBuffer buffer) {
 		try {
-			this.messageEncryptHandler.sendEncrypt(buffer);
+			this.messageEncryptSender.sendEncrypt(buffer);
 		} catch (NetException e) {
 			LOGGER.error("Peer消息发送异常", e);
 		}
@@ -1267,11 +1267,11 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * @param buffer 消息
 	 * @param timeout 超时时间
 	 * 
-	 * @see IMessageEncryptHandler#sendEncrypt(ByteBuffer, int)
+	 * @see IMessageEncryptSender#sendEncrypt(ByteBuffer, int)
 	 */
 	public void sendEncrypt(ByteBuffer buffer, int timeout) {
 		try {
-			this.messageEncryptHandler.sendEncrypt(buffer, timeout);
+			this.messageEncryptSender.sendEncrypt(buffer, timeout);
 		} catch (NetException e) {
 			LOGGER.error("Peer消息发送异常", e);
 		}
@@ -1280,10 +1280,10 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	/**
 	 * <p>获取远程服务地址</p>
 	 * 
-	 * @see IMessageEncryptHandler#remoteSocketAddress()
+	 * @see IMessageEncryptSender#remoteSocketAddress()
 	 */
 	private InetSocketAddress remoteSocketAddress() {
-		return this.messageEncryptHandler.remoteSocketAddress();
+		return this.messageEncryptSender.remoteSocketAddress();
 	}
 
 	/**

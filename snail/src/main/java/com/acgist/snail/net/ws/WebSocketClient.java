@@ -11,7 +11,7 @@ import java.util.concurrent.TimeoutException;
 
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.ClientMessageHandlerAdapter;
-import com.acgist.snail.net.IMessageHandler;
+import com.acgist.snail.net.IMessageSender;
 import com.acgist.snail.net.http.HTTPClient;
 
 /**
@@ -20,7 +20,7 @@ import com.acgist.snail.net.http.HTTPClient;
  * @author acgist
  * @since 1.1.0
  */
-public abstract class WebSocketClient<T extends WebSocketMessageHandler> extends ClientMessageHandlerAdapter<T> implements IMessageHandler {
+public abstract class WebSocketClient<T extends WebSocketMessageHandler> extends ClientMessageHandlerAdapter<T> implements IMessageSender {
 
 	/**
 	 * <p>WebSocket客户端</p>

@@ -6,7 +6,7 @@ import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.TcpMessageHandler;
 import com.acgist.snail.net.codec.impl.PeerCryptMessageCodec;
 import com.acgist.snail.net.codec.impl.PeerUnpackMessageCodec;
-import com.acgist.snail.net.torrent.IMessageEncryptHandler;
+import com.acgist.snail.net.torrent.IMessageEncryptSender;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 
 /**
@@ -15,7 +15,7 @@ import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
  * @author acgist
  * @since 1.0.0
  */
-public final class PeerMessageHandler extends TcpMessageHandler implements IMessageEncryptHandler {
+public final class PeerMessageHandler extends TcpMessageHandler implements IMessageEncryptSender {
 
 //	private static final Logger LOGGER = LoggerFactory.getLogger(PeerMessageHandler.class);
 	
@@ -41,7 +41,7 @@ public final class PeerMessageHandler extends TcpMessageHandler implements IMess
 		final var peerUnpackMessageCodec = new PeerUnpackMessageCodec(this.peerSubMessageHandler);
 		final var peerCryptMessageCodec = new PeerCryptMessageCodec(peerUnpackMessageCodec, this.peerSubMessageHandler);
 		this.messageCodec = peerCryptMessageCodec;
-		this.peerSubMessageHandler.messageEncryptHandler(this);
+		this.peerSubMessageHandler.messageEncryptSender(this);
 	}
 	
 	@Override

@@ -26,7 +26,7 @@ public abstract class UdpAcceptHandler {
 	 * @param socketAddress 地址
 	 */
 	public void handle(DatagramChannel channel, ByteBuffer buffer, InetSocketAddress socketAddress) {
-		final UdpMessageHandler handler = messageHandler(buffer, socketAddress);
+		final UdpMessageHandler handler = this.messageHandler(buffer, socketAddress);
 		try {
 			handler.handle(channel, socketAddress); // 设置代理
 			if(handler.available()) {

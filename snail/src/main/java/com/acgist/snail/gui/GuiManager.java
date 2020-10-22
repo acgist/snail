@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.gui.event.GuiEvent;
 import com.acgist.snail.gui.event.GuiEvent.Type;
-import com.acgist.snail.net.IMessageHandler;
+import com.acgist.snail.net.IMessageSender;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.message.ApplicationMessage;
 import com.acgist.snail.utils.StringUtils;
@@ -102,7 +102,7 @@ public final class GuiManager {
 	/**
 	 * <p>扩展GUI消息代理</p>
 	 */
-	private IMessageHandler extendGuiMessageHandler;
+	private IMessageSender extendGuiIMessageSender;
 	
 	private GuiManager() {
 	}
@@ -311,17 +311,17 @@ public final class GuiManager {
 	/**
 	 * <p>注册扩展GUI消息代理</p>
 	 * 
-	 * @param extendGuiMessageHandler 扩展GUI消息代理
+	 * @param extendGuiIMessageSender 扩展GUI消息代理
 	 * 
 	 * @return 是否注册成功
 	 */
-	public boolean extendGuiMessageHandler(IMessageHandler extendGuiMessageHandler) {
+	public boolean extendGuiMessageHandler(IMessageSender extendGuiIMessageSender) {
 		if(this.mode == Mode.NATIVE) {
 			LOGGER.debug("已经启用本地GUI：忽略注册扩展GUI消息代理");
 			return false;
 		} else {
 			LOGGER.debug("注册扩展GUI消息代理");
-			this.extendGuiMessageHandler = extendGuiMessageHandler;
+			this.extendGuiIMessageSender = extendGuiIMessageSender;
 			return true;
 		}
 	}
@@ -332,9 +332,9 @@ public final class GuiManager {
 	 * @param message 扩展GUI消息
 	 */
 	public void sendExtendGuiMessage(ApplicationMessage message) {
-		if(this.extendGuiMessageHandler != null && message != null) {
+		if(this.extendGuiIMessageSender != null && message != null) {
 			try {
-				this.extendGuiMessageHandler.send(message.toString());
+				this.extendGuiIMessageSender.send(message.toString());
 			} catch (NetException e) {
 				LOGGER.error("发送扩展GUI消息异常", e);
 			}

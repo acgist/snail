@@ -24,7 +24,7 @@ import com.acgist.snail.utils.IoUtils;
  * @author acgist
  * @since 1.0.0
  */
-public abstract class TcpMessageHandler implements CompletionHandler<Integer, ByteBuffer>, IMessageHandler {
+public abstract class TcpMessageHandler implements CompletionHandler<Integer, ByteBuffer>, IMessageSender, IMessageReceiver {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TcpMessageHandler.class);
 	
@@ -50,6 +50,7 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	 * 
 	 * @throws NetException 网络异常
 	 */
+	@Override
 	public void onReceive(ByteBuffer buffer) throws NetException {
 		if(this.messageCodec == null) {
 			throw new NetException("请实现消息处理器");

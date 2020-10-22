@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.context.exception.NetException;
-import com.acgist.snail.net.IMessageHandler;
+import com.acgist.snail.net.IMessageSender;
 
 /**
  * <p>WebSocket消息代理</p>
@@ -22,7 +22,7 @@ import com.acgist.snail.net.IMessageHandler;
  * @author acgist
  * @since 1.1.0
  */
-public abstract class WebSocketMessageHandler implements IMessageHandler, WebSocket.Listener {
+public abstract class WebSocketMessageHandler implements IMessageSender, WebSocket.Listener {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WebSocketMessageHandler.class);
 	
