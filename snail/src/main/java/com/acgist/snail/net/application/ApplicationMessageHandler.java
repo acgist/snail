@@ -30,7 +30,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>系统消息代理</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class ApplicationMessageHandler extends TcpMessageHandler implements IMessageCodec<String> {
 
@@ -104,6 +103,12 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 		case TASK_DELETE:
 			this.onTaskDelete(message);
 			break;
+		case SHOW:
+			this.onShow();
+			break;
+		case HIDE:
+			this.onHide();
+			break;
 		case ALERT:
 			this.onAlert(message);
 			break;
@@ -111,7 +116,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 			this.onNotice(message);
 			break;
 		case REFRESH:
-			this.onRefresh(message);
+			this.onRefresh();
 			break;
 		case RESPONSE:
 			this.onResponse(message);
@@ -123,7 +128,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	}
 	
 	/**
-	 * <p>注册GUI</p>
+	 * <p>GUI注册</p>
 	 * <p>将当前连接的消息代理注册为GUI消息代理，需要使用{@linkplain Mode#EXTEND 后台模式}启动。</p>
 	 */
 	private void onGui() {
@@ -175,8 +180,6 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	 * </dl>
 	 * 
 	 * @param message 系统消息
-	 * 
-	 * @since 1.1.1
 	 */
 	private void onTaskNew(ApplicationMessage message) {
 		final String body = message.getBody();
@@ -201,14 +204,12 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	}
 
 	/**
-	 * <p>获取任务列表</p>
+	 * <p>任务列表</p>
 	 * <p>返回任务列表（B编码）</p>
-	 * 
-	 * @since 1.1.1
 	 */
 	private void onTaskList() {
 		final List<Map<String, Object>> list = DownloaderManager.getInstance().allTask().stream()
-			.map(session -> session.taskMessage())
+			.map(ITaskSession::taskMessage)
 			.collect(Collectors.toList());
 		final String body = BEncodeEncoder.encodeListString(list);
 		this.send(ApplicationMessage.response(body));
@@ -219,11 +220,9 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	 * <p>body：任务ID</p>
 	 * 
 	 * @param message 系统消息
-	 * 
-	 * @since 1.1.1
 	 */
 	private void onTaskStart(ApplicationMessage message) {
-		final var optional = selectTaskSession(message);
+		final var optional = this.selectTaskSession(message);
 		if(optional.isEmpty()) {
 			this.send(ApplicationMessage.response(ApplicationMessage.FAIL));
 		} else {
@@ -241,11 +240,9 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	 * <p>body：任务ID</p>
 	 * 
 	 * @param message 系统消息
-	 * 
-	 * @since 1.1.1
 	 */
 	private void onTaskPause(ApplicationMessage message) {
-		final var optional = selectTaskSession(message);
+		final var optional = this.selectTaskSession(message);
 		if(optional.isEmpty()) {
 			this.send(ApplicationMessage.response(ApplicationMessage.FAIL));
 		} else {
@@ -259,11 +256,9 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	 * <p>body：任务ID</p>
 	 * 
 	 * @param message 系统消息
-	 * 
-	 * @since 1.1.1
 	 */
 	private void onTaskDelete(ApplicationMessage message) {
-		final var optional = selectTaskSession(message);
+		final var optional = this.selectTaskSession(message);
 		if(optional.isEmpty()) {
 			this.send(ApplicationMessage.response(ApplicationMessage.FAIL));
 		} else {
@@ -273,7 +268,21 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	}
 	
 	/**
-	 * <p>窗口消息</p>
+	 * <p>显示窗口</p>
+	 */
+	private void onShow() {
+		GuiManager.getInstance().show();
+	}
+	
+	/**
+	 * <p>隐藏窗口</p>
+	 */
+	private void onHide() {
+		GuiManager.getInstance().hide();
+	}
+	
+	/**
+	 * <p>提示窗口</p>
 	 * 
 	 * @param message 系统消息
 	 */
@@ -311,11 +320,9 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	}
 	
 	/**
-	 * <p>刷新消息</p>
-	 * 
-	 * @param message 系统消息
+	 * <p>刷新任务</p>
 	 */
-	private void onRefresh(ApplicationMessage message) {
+	private void onRefresh() {
 		GuiManager.getInstance().refreshTaskList();
 	}
 	
@@ -335,8 +342,6 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	 * @param message 系统消息
 	 * 
 	 * @return 任务信息
-	 * 
-	 * @since 1.1.1
 	 */
 	private Optional<ITaskSession> selectTaskSession(ApplicationMessage message) {
 		final String body = message.getBody(); // 任务ID

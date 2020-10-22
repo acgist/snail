@@ -308,7 +308,7 @@ public final class BEncodeDecoder {
 	private static final List<Object> readList(ByteArrayInputStream inputStream) throws PacketSizeException {
 		int index;
 		char indexChar;
-		final List<Object> list = new ArrayList<Object>();
+		final List<Object> list = new ArrayList<>();
 		final StringBuilder lengthBuilder = new StringBuilder();
 		while ((index = inputStream.read()) != -1) {
 			indexChar = (char) index;
