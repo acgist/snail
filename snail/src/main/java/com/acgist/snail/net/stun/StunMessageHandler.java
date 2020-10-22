@@ -114,7 +114,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	 */
 	private void loopResponseAttribute(ByteBuffer buffer) throws PacketSizeException {
 		while(buffer.hasRemaining()) {
-			onResponseAttribute(buffer);
+			this.onResponseAttribute(buffer);
 		}
 	}
 	
@@ -128,7 +128,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	private void onResponseAttribute(ByteBuffer buffer) throws PacketSizeException {
 		if(buffer.remaining() < 4) {
 			final short length = (short) buffer.remaining();
-			final ByteBuffer message = readResponseAttribute(buffer, length);
+			final ByteBuffer message = this.readResponseAttribute(buffer, length);
 			final String body = new String(message.array());
 			LOGGER.error("处理STUN消息-属性错误（长度）：{}-{}", length, body);
 			return;
@@ -143,22 +143,22 @@ public final class StunMessageHandler extends UdpMessageHandler {
 		}
 		final var attributeType = StunConfig.AttributeType.of(typeId);
 		if(attributeType == null) {
-			final ByteBuffer message = readResponseAttribute(buffer, length);
+			final ByteBuffer message = this.readResponseAttribute(buffer, length);
 			final String body = new String(message.array());
 			LOGGER.warn("处理STUN消息-属性错误（类型不支持）：{}-{}", typeId, body);
 			return;
 		}
 		LOGGER.debug("处理STUN消息-属性：{}-{}", attributeType, length);
-		final ByteBuffer message = readResponseAttribute(buffer, length);
+		final ByteBuffer message = this.readResponseAttribute(buffer, length);
 		switch (attributeType) {
 		case MAPPED_ADDRESS:
-			mappedAddress(message);
+			this.mappedAddress(message);
 			break;
 		case XOR_MAPPED_ADDRESS:
-			xorMappedAddress(message);
+			this.xorMappedAddress(message);
 			break;
 		case ERROR_CODE:
-			errorCode(message);
+			this.errorCode(message);
 			break;
 		default:
 			final String body = new String(message.array());
@@ -185,7 +185,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	 * <p>发送{@link AttributeType#MAPPED_ADDRESS}消息</p>
 	 */
 	public void mappedAddress() {
-		pushBindingMessage(StunConfig.MessageType.REQUEST, StunConfig.AttributeType.MAPPED_ADDRESS, null);
+		this.pushBindingMessage(StunConfig.MessageType.REQUEST, StunConfig.AttributeType.MAPPED_ADDRESS, null);
 	}
 	
 	/**
@@ -298,7 +298,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	 * @param value 消息
 	 */
 	private void pushBindingMessage(StunConfig.MessageType messageType, StunConfig.AttributeType attributeType, byte[] value) {
-		final byte[] message = buildBindingMessage(messageType, buildAttributeMessage(attributeType, value));
+		final byte[] message = this.buildBindingMessage(messageType, buildAttributeMessage(attributeType, value));
 		try {
 			this.send(message);
 		} catch (NetException e) {

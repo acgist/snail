@@ -11,6 +11,8 @@ import com.acgist.snail.context.exception.NetException;
  * 
  * @author acgist
  * @since 1.1.0
+ * 
+ * TODO：使用泛型抽象消息，减少send方法数量。
  */
 public interface IMessageHandler {
 	
