@@ -13,7 +13,7 @@ import com.acgist.snail.context.exception.NetException;
  * @author acgist
  * @since 1.1.0
  */
-public abstract class ClientMessageHandlerAdapter<T extends IMessageHandler> implements IMessageHandler {
+public abstract class ClientMessageHandlerAdapter<T extends IMessageSender> implements IMessageSender {
 
 	/**
 	 * <p>消息代理</p>

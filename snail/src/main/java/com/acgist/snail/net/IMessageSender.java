@@ -7,14 +7,14 @@ import java.nio.ByteBuffer;
 import com.acgist.snail.context.exception.NetException;
 
 /**
- * <p>消息代理</p>
+ * <p>消息接收代理</p>
  * 
  * @author acgist
  * @since 1.1.0
  * 
  * TODO：使用泛型抽象消息，减少send方法数量。
  */
-public interface IMessageHandler {
+public interface IMessageSender {
 	
 	/**
 	 * <p>没有超时时间：{@value}</p>

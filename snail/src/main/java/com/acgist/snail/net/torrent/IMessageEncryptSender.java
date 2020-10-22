@@ -3,7 +3,7 @@ package com.acgist.snail.net.torrent;
 import java.nio.ByteBuffer;
 
 import com.acgist.snail.context.exception.NetException;
-import com.acgist.snail.net.IMessageHandler;
+import com.acgist.snail.net.IMessageSender;
 
 /**
  * <p>加密消息代理</p>
@@ -11,7 +11,7 @@ import com.acgist.snail.net.IMessageHandler;
  * @author acgist
  * @since 1.1.1
  */
-public interface IMessageEncryptHandler extends IMessageHandler {
+public interface IMessageEncryptSender extends IMessageSender {
 
 	/**
 	 * <p>消息加密发送</p>

@@ -20,7 +20,7 @@ import com.acgist.snail.net.codec.IMessageCodec;
  * @author acgist
  * @since 1.0.0
  */
-public abstract class UdpMessageHandler implements IMessageHandler {
+public abstract class UdpMessageHandler implements IMessageSender, IMessageReceiver{
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpMessageHandler.class);
 
@@ -51,6 +51,7 @@ public abstract class UdpMessageHandler implements IMessageHandler {
 	 * 
 	 * @throws NetException 网络异常
 	 */
+	@Override
 	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException {
 		if(this.messageCodec == null) {
 			throw new NetException("请实现消息处理器");
