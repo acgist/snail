@@ -1,7 +1,6 @@
 package com.acgist.snail.net.codec;
 
 import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
 
 import com.acgist.snail.context.exception.NetException;
 
@@ -48,23 +47,14 @@ public abstract class MessageCodec<T, X> implements IMessageCodec<T> {
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * <p>消息编码</p>
 	 * 
-	 * <p>必须执行{@linkplain #messageCodec 下一个消息处理器}的{@link #encode(String)}方法</p>
-	 */
-	@Override
-	public String encode(String message) {
-		return this.messageCodec.encode(message);
-	}
-	
-	/**
-	 * {@inheritDoc}
+	 * @param message 原始消息
 	 * 
-	 * <p>必须执行{@linkplain #messageCodec 下一个消息处理器}的{@link #encode(ByteBuffer)}方法</p>
+	 * @return 编码消息
 	 */
-	@Override
-	public void encode(ByteBuffer message) {
-		this.messageCodec.encode(message);
+	public T encode(T message) {
+		return message;
 	}
 	
 	@Override

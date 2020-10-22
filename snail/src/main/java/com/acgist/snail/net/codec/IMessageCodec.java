@@ -1,7 +1,6 @@
 package com.acgist.snail.net.codec;
 
 import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
 
 import com.acgist.snail.context.exception.NetException;
 
@@ -24,25 +23,6 @@ public interface IMessageCodec<T> {
 	 */
 	default boolean done() {
 		return true;
-	}
-	
-	/**
-	 * <p>消息编码</p>
-	 * 
-	 * @param message 消息
-	 * 
-	 * @return 编码后的消息
-	 */
-	default String encode(String message) {
-		return message;
-	}
-
-	/**
-	 * <p>消息编码</p>
-	 * 
-	 * @param message 消息
-	 */
-	default void encode(ByteBuffer message) {
 	}
 	
 	/**
