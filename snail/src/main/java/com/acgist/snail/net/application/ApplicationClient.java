@@ -13,7 +13,6 @@ import com.acgist.snail.utils.NetUtils;
  * <p>系统客户端</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class ApplicationClient extends TcpClient<ApplicationMessageHandler> {
 

@@ -7,7 +7,6 @@ import com.acgist.snail.net.TcpServer;
  * <p>系统服务端</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class ApplicationServer extends TcpServer<ApplicationMessageHandler> {
 

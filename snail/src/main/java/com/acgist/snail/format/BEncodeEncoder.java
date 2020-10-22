@@ -192,9 +192,7 @@ public final class BEncodeEncoder {
 			return this;
 		}
 		this.write(BEncodeDecoder.TYPE_L);
-		list.forEach(value -> {
-			this.writeObject(value);
-		});
+		list.forEach(value -> this.writeObject(value));
 		this.write(BEncodeDecoder.TYPE_E);
 		return this;
 	}
