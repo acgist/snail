@@ -56,7 +56,7 @@ public final class LineMessageCodec extends MessageCodec<String, String> {
 	@Override
 	public String encode(String message) {
 		// 拼接消息分隔符
-		return this.messageCodec.encode(message) + this.separator;
+		return message + this.separator;
 	}
 	
 }

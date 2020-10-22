@@ -39,11 +39,21 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	 * <p>多条消息分隔符：{@value}</p>
 	 */
 	private static final String SEPARATOR = SystemConfig.LINE_COMPAT_SEPARATOR;
+	/**
+	 * <p>行消息处理器</p>
+	 */
+	private final LineMessageCodec lineMessageCodec;
 	
 	public ApplicationMessageHandler() {
 		final var lineMessageCodec = new LineMessageCodec(this, SEPARATOR);
 		final var stringMessageCodec = new StringMessageCodec(lineMessageCodec);
 		this.messageCodec = stringMessageCodec;
+		this.lineMessageCodec = lineMessageCodec;
+	}
+	
+	@Override
+	public void send(String message, String charset) throws NetException {
+		super.send(this.lineMessageCodec.encode(message), charset);
 	}
 	
 	@Override

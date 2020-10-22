@@ -23,6 +23,10 @@ public final class PeerMessageHandler extends TcpMessageHandler implements IMess
 	 * <p>Peer消息代理</p>
 	 */
 	private final PeerSubMessageHandler peerSubMessageHandler;
+	/**
+	 * <p>加密解密消息代理</p>
+	 */
+	private final PeerCryptMessageCodec peerCryptMessageCodec;
 
 	/**
 	 * <p>服务端</p>
@@ -42,11 +46,12 @@ public final class PeerMessageHandler extends TcpMessageHandler implements IMess
 		final var peerCryptMessageCodec = new PeerCryptMessageCodec(peerUnpackMessageCodec, this.peerSubMessageHandler);
 		this.messageCodec = peerCryptMessageCodec;
 		this.peerSubMessageHandler.messageEncryptSender(this);
+		this.peerCryptMessageCodec = peerCryptMessageCodec;
 	}
 	
 	@Override
 	public void sendEncrypt(ByteBuffer buffer, int timeout) throws NetException {
-		this.messageCodec.encode(buffer);
+		this.peerCryptMessageCodec.encode(buffer);
 		this.send(buffer, timeout);
 	}
 

@@ -59,8 +59,7 @@ public final class PeerCryptMessageCodec extends MessageCodec<ByteBuffer, ByteBu
 	}
 
 	@Override
-	public void encode(ByteBuffer buffer) {
-		this.messageCodec.encode(buffer);
+	public ByteBuffer encode(ByteBuffer buffer) {
 		if(this.mseCryptHandshakeHandler.complete()) { // 握手完成
 			this.mseCryptHandshakeHandler.encrypt(buffer); // 加密消息
 		} else { // 握手未完成
@@ -77,6 +76,7 @@ public final class PeerCryptMessageCodec extends MessageCodec<ByteBuffer, ByteBu
 				this.mseCryptHandshakeHandler.plaintext();
 			}
 		}
+		return buffer;
 	}
 	
 }

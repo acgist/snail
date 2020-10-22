@@ -75,19 +75,6 @@ public abstract class UdpMessageHandler implements IMessageSender, IMessageRecei
 		return !this.close && this.channel != null;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * <p>如果没有设置消息处理器，请重写该方法。</p>
-	 */
-	@Override
-	public void send(String message, String charset) throws NetException {
-		if(this.messageCodec == null) {
-			throw new NetException("请实现消息处理器");
-		}
-		this.send(this.charset(this.messageCodec.encode(message), charset));
-	}
-	
 	@Override
 	public void send(ByteBuffer buffer, int timeout) throws NetException {
 		this.send(buffer, this.remoteSocketAddress());
