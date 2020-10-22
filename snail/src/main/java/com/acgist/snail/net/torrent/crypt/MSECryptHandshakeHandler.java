@@ -18,7 +18,7 @@ import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.context.exception.PacketSizeException;
-import com.acgist.snail.net.torrent.PeerUnpackMessageCodec;
+import com.acgist.snail.net.codec.impl.PeerUnpackMessageCodec;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.pojo.bean.InfoHash;
