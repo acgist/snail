@@ -24,20 +24,22 @@ import com.acgist.snail.context.exception.NetException;
  * </table>
  * <p>注意编码解码的逻辑顺序（防止多个处理器结合使用时出现错误）</p>
  * 
- * @param <T> 输入消息泛型
- * @param <X> 输出消息泛型
+ * @param <I> 输入消息泛型
+ * @param <O> 输出消息泛型
  * 
  * @author acgist
- * @since 1.1.1
  */
-public abstract class MessageCodec<T, X> implements IMessageCodec<T> {
+public abstract class MessageCodec<I, O> implements IMessageCodec<I> {
 
 	/**
 	 * <p>下一个消息处理器</p>
 	 */
-	protected final IMessageCodec<X> messageCodec;
+	protected final IMessageCodec<O> messageCodec;
 
-	protected MessageCodec(IMessageCodec<X> messageCodec) {
+	/**
+	 * @param messageCodec 下一个消息处理器
+	 */
+	protected MessageCodec(IMessageCodec<O> messageCodec) {
 		this.messageCodec = messageCodec;
 	}
 
@@ -46,24 +48,13 @@ public abstract class MessageCodec<T, X> implements IMessageCodec<T> {
 		return false;
 	}
 	
-	/**
-	 * <p>消息编码</p>
-	 * 
-	 * @param message 原始消息
-	 * 
-	 * @return 编码消息
-	 */
-	public T encode(T message) {
-		return message;
-	}
-	
 	@Override
-	public void decode(T message) throws NetException {
+	public void decode(I message) throws NetException {
 		this.decode(message, null, false);
 	}
 
 	@Override
-	public void decode(T message, InetSocketAddress address) throws NetException {
+	public void decode(I message, InetSocketAddress address) throws NetException {
 		this.decode(message, address, true);
 	}
 	
@@ -77,7 +68,7 @@ public abstract class MessageCodec<T, X> implements IMessageCodec<T> {
 	 * 
 	 * @throws NetException 网络异常
 	 */
-	protected abstract void decode(T message, InetSocketAddress address, boolean haveAddress) throws NetException;
+	protected abstract void decode(I message, InetSocketAddress address, boolean haveAddress) throws NetException;
 	
 	/**
 	 * <p>执行下一个消息处理器</p>
@@ -88,7 +79,7 @@ public abstract class MessageCodec<T, X> implements IMessageCodec<T> {
 	 * 
 	 * @throws NetException 网络异常
 	 */
-	protected void doNext(X message, InetSocketAddress address, boolean haveAddress) throws NetException {
+	protected void doNext(O message, InetSocketAddress address, boolean haveAddress) throws NetException {
 		if(haveAddress) {
 			if(this.messageCodec.done()) {
 				this.messageCodec.onMessage(message, address);
@@ -110,8 +101,8 @@ public abstract class MessageCodec<T, X> implements IMessageCodec<T> {
 	 * @deprecated 消息最终处理器请实现{@linkplain IMessageCodec 消息处理器接口}
 	 */
 	@Override
-	@Deprecated(since = "1.0.0")
-	public void onMessage(T message) throws NetException {
+	@Deprecated
+	public void onMessage(I message) throws NetException {
 		IMessageCodec.super.onMessage(message);
 	}
 
@@ -121,8 +112,8 @@ public abstract class MessageCodec<T, X> implements IMessageCodec<T> {
 	 * @deprecated 消息最终处理器请实现{@linkplain IMessageCodec 消息处理器接口}
 	 */
 	@Override
-	@Deprecated(since = "1.0.0")
-	public void onMessage(T message, InetSocketAddress address) throws NetException {
+	@Deprecated
+	public void onMessage(I message, InetSocketAddress address) throws NetException {
 		IMessageCodec.super.onMessage(message, address);
 	}
 	

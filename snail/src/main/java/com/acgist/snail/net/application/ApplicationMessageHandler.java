@@ -39,6 +39,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	 * <p>多条消息分隔符：{@value}</p>
 	 */
 	private static final String SEPARATOR = SystemConfig.LINE_COMPAT_SEPARATOR;
+	
 	/**
 	 * <p>行消息处理器</p>
 	 */
@@ -49,6 +50,19 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 		final var stringMessageCodec = new StringMessageCodec(lineMessageCodec);
 		this.messageCodec = stringMessageCodec;
 		this.lineMessageCodec = lineMessageCodec;
+	}
+	
+	/**
+	 * <p>发送系统消息</p>
+	 * 
+	 * @param message 系统消息
+	 */
+	public void send(ApplicationMessage message) {
+		try {
+			this.send(message.toString());
+		} catch (NetException e) {
+			LOGGER.error("发送系统消息异常", e);
+		}
 	}
 	
 	@Override
@@ -358,19 +372,6 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 		return DownloaderManager.getInstance().allTask().stream()
 			.filter(session -> session.getId().equals(body))
 			.findFirst();
-	}
-
-	/**
-	 * <p>发送系统消息</p>
-	 * 
-	 * @param message 系统消息
-	 */
-	private void send(ApplicationMessage message) {
-		try {
-			this.send(message.toString());
-		} catch (NetException e) {
-			LOGGER.error("发送系统消息异常", e);
-		}
 	}
 
 }

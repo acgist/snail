@@ -26,7 +26,6 @@ import com.acgist.snail.utils.ThreadUtils;
  * <p>FTP消息代理</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class FtpMessageHandler extends TcpMessageHandler implements IMessageCodec<String> {
 
@@ -42,7 +41,7 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 	private static final String SEPARATOR = SystemConfig.LINE_COMPAT_SEPARATOR;
 	/**
 	 * <p>多行消息结束符：{@value}</p>
-	 * <p>扩展命令{@code FEAT}返回多行信息</p>
+	 * <p>扩展命令FEAT返回多行信息</p>
 	 */
 	private static final String END_REGEX = "\\d{3} .*";
 	
@@ -64,7 +63,7 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 	private boolean range = false;
 	/**
 	 * <p>编码</p>
-	 * <p>默认编码：{@code GBK}</p>
+	 * <p>默认编码：GBK</p>
 	 */
 	private String charset = SystemConfig.CHARSET_GBK;
 	/**
@@ -90,8 +89,8 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 	}
 	
 	@Override
-	public void send(String message, String charset) throws NetException {
-		super.send(this.lineMessageCodec.encode(message), charset);
+	public void send(String message) throws NetException {
+		super.send(this.lineMessageCodec.encode(message), this.charset);
 	}
 
 	@Override
@@ -153,7 +152,7 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 	/**
 	 * <p>判断是否登陆成功</p>
 	 * 
-	 * @return {@code true}-成功；{@code false}-失败；
+	 * @return true-成功；false-失败；
 	 */
 	public boolean login() {
 		return this.login;
@@ -162,7 +161,7 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 	/**
 	 * <p>判断是否支持断点续传</p>
 	 * 
-	 * @return {@code true}-支持；{@code false}-不支持；
+	 * @return true-支持；false-不支持；
 	 */
 	public boolean range() {
 		return this.range;
@@ -179,7 +178,7 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 	
 	/**
 	 * <p>获取错误信息</p>
-	 * <p>如果没有错误信息默认返回{@code defaultMessage}</p>
+	 * <p>如果没有错误信息默认返回defaultMessage</p>
 	 * 
 	 * @param defaultMessage 默认错误信息
 	 * 

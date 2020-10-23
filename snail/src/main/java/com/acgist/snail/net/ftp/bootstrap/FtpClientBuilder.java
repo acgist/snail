@@ -11,7 +11,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>使用FTP链接创建FTP客户端</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class FtpClientBuilder {
 
@@ -45,6 +44,9 @@ public final class FtpClientBuilder {
 	 */
 	private String filePath;
 	
+	/**
+	 * @param url FTP链接
+	 */
 	private FtpClientBuilder(String url) {
 		this.url = url;
 	}
@@ -81,15 +83,19 @@ public final class FtpClientBuilder {
 	 */
 	private void decodeUrl() {
 		final URI uri = URI.create(this.url);
+		// 用户信息
 		final String userInfo = uri.getUserInfo();
 		this.decodeUserInfo(userInfo);
+		// 地址
 		this.host = uri.getHost();
+		// 端口
 		final int port = uri.getPort();
 		if(port == -1) {
 			this.port = DEFAULT_PORT;
 		} else {
 			this.port = port;
 		}
+		// 文件
 		this.filePath = uri.getPath();
 	}
 

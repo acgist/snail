@@ -1,4 +1,4 @@
-package com.acgist.snail;
+package com.acgist.snail.net.ftp;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.BaseTest;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.ftp.bootstrap.FtpClientBuilder;
 import com.acgist.snail.utils.FileUtils;

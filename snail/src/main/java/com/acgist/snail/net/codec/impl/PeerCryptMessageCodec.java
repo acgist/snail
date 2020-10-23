@@ -16,7 +16,6 @@ import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
  * <p>Peer消息处理器：加密、解密</p>
  * 
  * @author acgist
- * @since 1.1.1
  */
 public final class PeerCryptMessageCodec extends MessageCodec<ByteBuffer, ByteBuffer> {
 
@@ -32,8 +31,6 @@ public final class PeerCryptMessageCodec extends MessageCodec<ByteBuffer, ByteBu
 	private final MSECryptHandshakeHandler mseCryptHandshakeHandler;
 	
 	/**
-	 * <p>Peer消息处理器</p>
-	 * 
 	 * @param peerUnpackMessageCodec Peer消息代理
 	 * @param peerSubMessageHandler MSE加密握手代理
 	 */
@@ -63,11 +60,8 @@ public final class PeerCryptMessageCodec extends MessageCodec<ByteBuffer, ByteBu
 		if(this.mseCryptHandshakeHandler.complete()) { // 握手完成
 			this.mseCryptHandshakeHandler.encrypt(buffer); // 加密消息
 		} else { // 握手未完成
-			/*
-			 * 优先验证Peer是否偏爱加密，再验证软件本身配置加密策略。
-			 */
-			final boolean needEncrypt = this.mseCryptHandshakeHandler.needEncrypt();
-			final boolean encrypt = needEncrypt ? true : CryptConfig.STRATEGY.crypt();
+			// 通过Peer加密策略结合软件加密策略决定是否加密
+			final boolean encrypt = this.mseCryptHandshakeHandler.needEncrypt() && CryptConfig.STRATEGY.crypt();
 			if(encrypt) { // 需要加密
 				this.mseCryptHandshakeHandler.handshake(); // 握手
 				this.mseCryptHandshakeHandler.handshakeLock(); // 握手加锁

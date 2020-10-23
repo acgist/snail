@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.SystemConfig;
-import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.TcpClient;
 import com.acgist.snail.pojo.message.ApplicationMessage;
 import com.acgist.snail.utils.NetUtils;
@@ -28,7 +27,7 @@ public final class ApplicationClient extends TcpClient<ApplicationMessageHandler
 	
 	@Override
 	public boolean connect() {
-		return connect(NetUtils.LOCAL_IP, SystemConfig.getServicePort());
+		return this.connect(NetUtils.LOCAL_IP, SystemConfig.getServicePort());
 	}
 	
 	/**
@@ -37,11 +36,7 @@ public final class ApplicationClient extends TcpClient<ApplicationMessageHandler
 	 * @param message 系统消息
 	 */
 	public void send(ApplicationMessage message) {
-		try {
-			this.send(message.toString());
-		} catch (NetException e) {
-			LOGGER.error("发送系统消息异常", e);
-		}
+		this.handler.send(message);
 	}
 	
 	/**

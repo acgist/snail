@@ -10,7 +10,6 @@ import com.acgist.snail.context.exception.NetException;
  * @param <T> 输入消息泛型
  * 
  * @author acgist
- * @since 1.1.1
  */
 public interface IMessageCodec<T> {
 
@@ -19,10 +18,24 @@ public interface IMessageCodec<T> {
 	 * <p>消息解码：{@link #decode(Object)}、{@link #decode(Object, InetSocketAddress)}</p>
 	 * <p>消息处理：{@link #onMessage(Object)}、{@link #onMessage(Object, InetSocketAddress)}</p>
 	 * 
-	 * @return {@code true}-完成（消息处理）；{@code false}-继续（消息解码）；
+	 * @return true-完成（消息处理）；false-继续（消息解码）；
 	 */
 	default boolean done() {
 		return true;
+	}
+	
+	/**
+	 * <p>消息编码</p>
+	 * <p>处理器可以自行实现编码，发送消息时重写发送方法调用。</p>
+	 * 
+	 * @param message 原始消息
+	 * 
+	 * @return 编码消息
+	 * 
+	 * @throws NetException 网络异常
+	 */
+	default T encode(T message) throws NetException {
+		return message;
 	}
 	
 	/**

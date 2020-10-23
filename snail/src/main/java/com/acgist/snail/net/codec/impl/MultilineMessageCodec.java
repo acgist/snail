@@ -12,7 +12,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>必须配合{@linkplain LineMessageCodec 行消息处理器}一起使用</p>
  * 
  * @author acgist
- * @since 1.1.1
  */
 public final class MultilineMessageCodec extends MessageCodec<String, String> {
 
@@ -31,6 +30,11 @@ public final class MultilineMessageCodec extends MessageCodec<String, String> {
 	 */
 	private final StringBuilder multilineMessage;
 	
+	/**
+	 * @param messageCodec 下一个消息处理器
+	 * @param separator 消息分隔符
+	 * @param endRegex 多行消息结束符
+	 */
 	public MultilineMessageCodec(IMessageCodec<String> messageCodec, String separator, String endRegex) {
 		super(messageCodec);
 		this.separator = separator;
