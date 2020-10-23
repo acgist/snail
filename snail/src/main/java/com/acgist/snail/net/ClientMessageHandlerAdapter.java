@@ -7,6 +7,7 @@ import com.acgist.snail.context.exception.NetException;
 
 /**
  * <p>Client消息代理适配器</p>
+ * <p>发送方法全部重写调用消息代理发送方法</p>
  * 
  * @param <T> 消息代理泛型
  * 
@@ -20,6 +21,9 @@ public abstract class ClientMessageHandlerAdapter<T extends IMessageSender> impl
 	 */
 	protected final T handler;
 	
+	/**
+	 * @param handler 消息代理
+	 */
 	protected ClientMessageHandlerAdapter(T handler) {
 		this.handler = handler;
 	}
@@ -52,7 +56,7 @@ public abstract class ClientMessageHandlerAdapter<T extends IMessageSender> impl
 	public void send(ByteBuffer buffer) throws NetException {
 		this.handler.send(buffer);
 	}
-
+	
 	@Override
 	public void send(ByteBuffer buffer, int timeout) throws NetException {
 		this.handler.send(buffer, timeout);

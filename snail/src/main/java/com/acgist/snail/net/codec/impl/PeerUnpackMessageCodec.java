@@ -15,7 +15,6 @@ import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
  * TODO：握手消息匹配协议名称
  * 
  * @author acgist
- * @since 1.1.0
  */
 public final class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteBuffer> {
 
@@ -39,8 +38,6 @@ public final class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteB
 	private final PeerSubMessageHandler peerSubMessageHandler;
 	
 	/**
-	 * <p>Peer消息处理器</p>
-	 * 
 	 * @param peerSubMessageHandler Peer消息代理
 	 */
 	public PeerUnpackMessageCodec(PeerSubMessageHandler peerSubMessageHandler) {

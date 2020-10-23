@@ -11,8 +11,6 @@ import com.acgist.snail.context.exception.NetException;
  * 
  * @author acgist
  * @since 1.1.0
- * 
- * TODO：使用泛型抽象消息，减少send方法数量。
  */
 public interface IMessageSender {
 	
@@ -100,9 +98,10 @@ public interface IMessageSender {
 	void close();
 	
 	/**
-	 * <p>数据发送验证</p>
+	 * <p>数据验证</p>
+	 * <p>验证发送状态，如果消息没有被重置为发送状态重置。</p>
 	 * 
-	 * @param buffer 消息
+	 * @param buffer 消息内容
 	 * 
 	 * @throws NetException 网络异常
 	 */

@@ -14,10 +14,9 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>FTP客户端</p>
- * <p>登陆成功后发送{@code FEAT}指令，如果服务器支持{@code UTF8}指令，使用{@code UTF-8}编码，否者使用{@code GBK}编码。</p>
+ * <p>登陆成功后发送FEAT指令，如果服务器支持UTF8指令，使用UTF-8编码，否者使用GBK编码。</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class FtpClient extends TcpClient<FtpMessageHandler> {
 
@@ -47,12 +46,14 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	 * <p>文件路径</p>
 	 */
 	private final String filePath;
-	/**
-	 * <p>编码</p>
-	 * <p>默认编码：{@code GBK}</p>
-	 */
-	private String charset = SystemConfig.CHARSET_GBK;
 
+	/**
+	 * @param host 服务器地址
+	 * @param port 服务器端口
+	 * @param user 用户账号
+	 * @param password 用户密码
+	 * @param filePath 文件路径
+	 */
 	private FtpClient(String host, int port, String user, String password, String filePath) {
 		super("FTP Client", SystemConfig.CONNECT_TIMEOUT, new FtpMessageHandler());
 		this.host = host;
@@ -80,7 +81,7 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	@Override
 	public boolean connect() {
 		this.handler.resetLock();
-		this.connect = connect(this.host, this.port);
+		this.connect = this.connect(this.host, this.port);
 		this.handler.lock(); // 锁定：等待FTP欢迎消息
 		if(this.connect) {
 			this.login(); // 登陆
@@ -133,7 +134,7 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	
 	/**
 	 * <p>获取文件大小</p>
-	 * <p>返回格式：{@code -rwx------ 1 user group 102400 Jan 01 2020 SnailLauncher.exe}</p>
+	 * <p>返回格式：-rwx------ 1 user group 102400 Jan 01 2020 SnailLauncher.exe</p>
 	 * <table border="1">
 	 * 	<caption>FTP文件大小格式</caption>
 	 * 	<tr>
@@ -142,8 +143,8 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	 * 	<tr>
 	 * 		<td>-rwx------</td>
 	 * 		<td>
-	 * 			首个字符：{@code d}表示目录、{@code -}表示文件；<br>
-	 * 			其他字符：{@code r}表示可读、{@code w}表示可写、{@code x}表示可执行（参考Linux文件权限）；
+	 * 			首个字符：d-表示目录、--表示文件；<br>
+	 * 			其他字符：r-表示可读、w-表示可写、x-表示可执行（参考Linux文件权限）；
 	 * 		</td>
 	 * 	</tr>
 	 * 	<tr>
@@ -177,7 +178,7 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 			this.command("TYPE A"); // 切换数据模式：ASCII
 			this.command("LIST " + this.filePath); // 列出文件信息
 			final InputStream inputStream = this.handler.inputStream();
-			final String data = StringUtils.ofInputStream(inputStream, this.charset);
+			final String data = StringUtils.ofInputStream(inputStream, this.handler.charset());
 			if(data == null) {
 				throw new NetException(this.failMessage("未知错误"));
 			}
@@ -209,7 +210,7 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	/**
 	 * <p>判断是否支持断点续传</p>
 	 * 
-	 * @return {@code true}-支持；{@code false}-不支持；
+	 * @return true-支持；false-不支持；
 	 * 
 	 * @throws NetException 网络异常
 	 */
@@ -242,8 +243,7 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	 */
 	private void charset() {
 		this.command("FEAT"); // 列出扩展命令
-		this.charset = this.handler.charset();
-		if(SystemConfig.CHARSET_UTF8.equals(this.charset)) {
+		if(SystemConfig.CHARSET_UTF8.equals(this.handler.charset())) {
 			this.command("OPTS UTF8 ON"); // 设置UTF8
 		}
 	}
@@ -276,10 +276,10 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 			LOGGER.debug("发送FTP命令：{}", command);
 			if(lock) {
 				this.handler.resetLock();
-				this.send(command, this.charset);
+				this.send(command);
 				this.handler.lock();
 			} else {
-				this.send(command, this.charset);
+				this.send(command);
 			}
 		} catch (NetException e) {
 			LOGGER.error("发送FTP命令异常：{}", command, e);

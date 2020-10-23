@@ -12,10 +12,12 @@ import com.acgist.snail.utils.StringUtils;
  * <p>字符串消息处理器</p>
  * 
  * @author acgist
- * @since 1.1.1
  */
 public final class StringMessageCodec extends MessageCodec<ByteBuffer, String> {
 
+	/**
+	 * @param messageCodec 下一个消息处理器
+	 */
 	public StringMessageCodec(IMessageCodec<String> messageCodec) {
 		super(messageCodec);
 	}

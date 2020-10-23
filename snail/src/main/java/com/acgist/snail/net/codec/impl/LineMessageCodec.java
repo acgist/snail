@@ -10,7 +10,6 @@ import com.acgist.snail.net.codec.MessageCodec;
  * <p>行消息处理器</p>
  * 
  * @author acgist
- * @since 1.1.1
  */
 public final class LineMessageCodec extends MessageCodec<String, String> {
 
@@ -26,8 +25,6 @@ public final class LineMessageCodec extends MessageCodec<String, String> {
 	private String lastMessage = "";
 	
 	/**
-	 * <p>行消息处理器</p>
-	 * 
 	 * @param messageCodec 下一个消息处理器
 	 * @param separator 消息分隔符
 	 */
