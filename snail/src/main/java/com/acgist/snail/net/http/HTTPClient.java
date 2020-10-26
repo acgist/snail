@@ -44,7 +44,6 @@ import com.acgist.snail.utils.UrlUtils;
  * <p>配置参考：https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class HTTPClient {
 
@@ -53,6 +52,8 @@ public final class HTTPClient {
 	/**
 	 * <p>HTTP状态码</p>
 	 * <p>协议链接：https://www.ietf.org/rfc/rfc2616</p>
+	 * 
+	 * @author acgist
 	 */
 	public enum StatusCode {
 		
@@ -80,6 +81,9 @@ public final class HTTPClient {
 		 */
 		private final int code;
 		
+		/**
+		 * @param code 状态码
+		 */
 		private StatusCode(int code) {
 			this.code = code;
 		}
@@ -98,7 +102,7 @@ public final class HTTPClient {
 		 * 
 		 * @param code 状态码
 		 * 
-		 * @return {@code true}-相等；{@code false}-不等；
+		 * @return true-相等；false-不相等；
 		 */
 		public final boolean equalsCode(int code) {
 			return this.code == code;
@@ -111,7 +115,7 @@ public final class HTTPClient {
 		 * 
 		 * @param response 响应
 		 * 
-		 * @return {@code true}-匹配；{@code false}-不匹配；
+		 * @return true-匹配；false-不匹配；
 		 */
 		public final <T> boolean verifyCode(HttpResponse<T> response) {
 			return response != null && this.equalsCode(response.statusCode());
@@ -153,6 +157,10 @@ public final class HTTPClient {
 	 */
 	private final Builder builder;
 	
+	/**
+	 * @param client 原生HTTP客户端
+	 * @param builder 请求Builder
+	 */
 	private HTTPClient(HttpClient client, Builder builder) {
 		this.client = client;
 		this.builder = builder;
@@ -224,7 +232,7 @@ public final class HTTPClient {
 		final var request = this.builder
 			.GET()
 			.build();
-		return request(request, handler);
+		return this.request(request, handler);
 	}
 	
 	/**
@@ -247,7 +255,7 @@ public final class HTTPClient {
 		}
 		final var request = this.builder
 			.build();
-		return request(request, handler);
+		return this.request(request, handler);
 	}
 	
 	/**
@@ -268,7 +276,7 @@ public final class HTTPClient {
 		final var request = this.builder
 			.POST(newFormBodyPublisher(data))
 			.build();
-		return request(request, handler);
+		return this.request(request, handler);
 	}
 	
 	/**
@@ -282,7 +290,7 @@ public final class HTTPClient {
 		final var request = this.builder
 			.method("HEAD", BodyPublishers.noBody())
 			.build();
-		final var response = request(request, BodyHandlers.discarding());
+		final var response = this.request(request, BodyHandlers.discarding());
 		HttpHeaders httpHeaders = null;
 		if(HTTPClient.StatusCode.OK.verifyCode(response)) {
 			httpHeaders = response.headers();
@@ -389,7 +397,7 @@ public final class HTTPClient {
 	
 	/**
 	 * <p>新建原生HTTP客户端</p>
-	 * <p>设置{@code SSLContext}需要同时设置{@code SSLParameters}</p>
+	 * <p>设置{@link SSLContext}需要同时设置{@link SSLParameters}</p>
 	 * 
 	 * @param timeout 超时时间（连接），单位：秒
 	 * 
@@ -429,9 +437,9 @@ public final class HTTPClient {
 	}
 	
 	/**
-	 * <p>新建{@code SSLParameters}</p>
+	 * <p>新建{@link SSLParameters}</p>
 	 * 
-	 * @return {@code SSLParameters}
+	 * @return {@link SSLParameters}
 	 */
 	public static final SSLParameters newSSLParameters() {
 		final var sslParameters = new SSLParameters();
@@ -452,9 +460,9 @@ public final class HTTPClient {
 	}
 	
 	/**
-	 * <p>新建{@code SSLContext}</p>
+	 * <p>新建{@link SSLContext}</p>
 	 * 
-	 * @return {@code SSLContext}
+	 * @return {@link SSLContext}
 	 */
 	public static final SSLContext newSSLContext() {
 		SSLContext sslContext = null;

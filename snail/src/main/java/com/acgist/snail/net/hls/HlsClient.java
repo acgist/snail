@@ -30,7 +30,6 @@ import com.acgist.snail.utils.IoUtils;
  * <p>HLS客户端</p>
  * 
  * @author acgist
- * @version 1.4.1
  */
 public final class HlsClient implements Runnable {
 
@@ -70,6 +69,11 @@ public final class HlsClient implements Runnable {
 	 */
 	private final HlsSession hlsSession;
 	
+	/**
+	 * @param link 下载路径
+	 * @param taskSession 任务信息
+	 * @param hlsSession HLS任务信息
+	 */
 	public HlsClient(String link, ITaskSession taskSession, HlsSession hlsSession) {
 		this.link = link;
 		final String fileName = FileUtils.fileName(link);

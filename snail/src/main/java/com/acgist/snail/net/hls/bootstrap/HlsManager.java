@@ -16,7 +16,6 @@ import com.acgist.snail.pojo.session.HlsSession;
  * <p>HLS任务信息管理</p>
  * 
  * @author acgist
- * @version 1.4.1
  */
 public final class HlsManager {
 
