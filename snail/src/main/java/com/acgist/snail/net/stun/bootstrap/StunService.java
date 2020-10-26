@@ -16,7 +16,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>Stun Service</p>
  * 
  * @author acgist
- * @since 1.2.0
  */
 public final class StunService {
 

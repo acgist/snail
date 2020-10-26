@@ -12,10 +12,12 @@ import com.acgist.snail.utils.NetUtils;
  * <p>注：简单的STUN客户端（没有实现所有功能）</p>
  * 
  * @author acgist
- * @since 1.2.0
  */
 public final class StunClient extends UdpClient<StunMessageHandler> {
 	
+	/**
+	 * @param socketAddress 服务器地址
+	 */
 	private StunClient(final InetSocketAddress socketAddress) {
 		super("STUN Client", new StunMessageHandler(), socketAddress);
 	}

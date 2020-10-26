@@ -18,10 +18,10 @@ import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.utils.FileUtils;
 
 /**
- * <p>TL文件连接器</p>
+ * <p>TS文件连接器</p>
+ * <p>将下载的文件列表链接成为一个文件</p>
  * 
  * @author acgist
- * @since 1.4.1
  */
 public final class TsLinker {
 
@@ -49,6 +49,12 @@ public final class TsLinker {
 	 */
 	private final List<String> links;
 	
+	/**
+	 * @param name 任务名称
+	 * @param path 文件路径
+	 * @param cipher 加密套件
+	 * @param links 文件链接列表
+	 */
 	private TsLinker(String name, String path, Cipher cipher, List<String> links) {
 		this.name = name;
 		this.path = path;
