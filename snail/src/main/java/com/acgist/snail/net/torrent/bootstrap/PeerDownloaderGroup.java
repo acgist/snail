@@ -68,6 +68,9 @@ public final class PeerDownloaderGroup {
 	 */
 	private final TorrentSession torrentSession;
 	
+	/**
+	 * @param torrentSession BT任务信息
+	 */
 	private PeerDownloaderGroup(TorrentSession torrentSession) {
 		this.taskSession = torrentSession.taskSession();
 		this.torrentSession = torrentSession;
