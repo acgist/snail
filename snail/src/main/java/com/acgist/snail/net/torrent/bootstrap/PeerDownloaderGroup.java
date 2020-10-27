@@ -26,7 +26,6 @@ import com.acgist.snail.utils.ThreadUtils;
  * </dl>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class PeerDownloaderGroup {
 
@@ -90,11 +89,10 @@ public final class PeerDownloaderGroup {
 	/**
 	 * <p>优化PeerDownloader</p>
 	 * <p>剔除劣质PeerDownloader、创建PeerDownloader</p>
-	 * <p>如果没有Peer自旋等待直到找到Peer才开始下载</p>
 	 */
 	public void optimize() {
 		LOGGER.debug("优化PeerDownloader");
-		this.spinLock(); // 开始自旋
+		this.spinLock(); // 自旋等待
 		synchronized (this.peerDownloaders) {
 			try {
 				this.inferiorPeerDownloaders();
@@ -151,12 +149,13 @@ public final class PeerDownloaderGroup {
 		while(this.build.get()) {
 			this.acquire(); // 获取信号量
 			if(!this.build.get()) { // 再次判断状态
+				LOGGER.debug("不能继续创建PeerDownloader：退出循环");
 				break;
 			}
 			this.torrentSession.submit(() -> {
 				boolean ok = true; // 是否继续创建
 				try {
-					ok = buildPeerDownloader();
+					ok = this.buildPeerDownloader();
 				} catch (Exception e) {
 					LOGGER.error("创建PeerDownloader异常", e);
 				} finally {
@@ -180,7 +179,7 @@ public final class PeerDownloaderGroup {
 	 * 	<dd>不能查找到更多的Peer</dd>
 	 * </dl>
 	 * 
-	 * @return 创建状态：{@code true}-继续；{@code false}-停止；
+	 * @return 创建状态：true-继续；false-停止；
 	 */
 	private boolean buildPeerDownloader() {
 		if(!this.taskSession.download()) {
@@ -220,19 +219,16 @@ public final class PeerDownloaderGroup {
 		long tmpDownloadMark = 0; // 当前下载评分
 		long minDownloadMark = 0; // 最小下载评分
 		PeerDownloader tmpDownloader = null; // 当前PeerDownloader
-		PeerDownloader inferiorDownloader = null; // 劣质PeerDownloader
+		PeerDownloader minDownloader = null; // 劣质PeerDownloader
 		final int size = this.peerDownloaders.size();
-		while(true) {
-			if(index++ >= size) {
-				break;
-			}
+		while(index++ < size) {
 			tmpDownloader = this.peerDownloaders.poll();
 			if(tmpDownloader == null) {
 				break;
 			}
 			// 状态不可用直接剔除
 			if(!tmpDownloader.available()) {
-				inferiorPeerDownloader(tmpDownloader);
+				this.inferiorPeerDownloader(tmpDownloader);
 				continue;
 			}
 			// 获取评分同时清除评分
@@ -244,26 +240,26 @@ public final class PeerDownloaderGroup {
 			}
 			// 没有评分
 			if(tmpDownloadMark <= 0) {
-				inferiorPeerDownloader(tmpDownloader);
+				this.inferiorPeerDownloader(tmpDownloader);
 				continue;
 			}
-			if(inferiorDownloader == null) {
-				inferiorDownloader = tmpDownloader;
+			if(minDownloader == null) {
+				minDownloader = tmpDownloader;
 				minDownloadMark = tmpDownloadMark;
 			} else if(tmpDownloadMark < minDownloadMark) {
-				this.offer(inferiorDownloader);
-				inferiorDownloader = tmpDownloader;
+				this.offer(minDownloader);
+				minDownloader = tmpDownloader;
 				minDownloadMark = tmpDownloadMark;
 			} else {
 				this.offer(tmpDownloader);
 			}
 		}
-		if(inferiorDownloader != null) {
+		if(minDownloader != null) {
 			// 如果当前Peer连接数量小于系统配置最大数量不剔除
 			if(this.peerDownloaders.size() < SystemConfig.getPeerSize()) {
-				this.offer(inferiorDownloader);
+				this.offer(minDownloader);
 			} else {
-				inferiorPeerDownloader(inferiorDownloader);
+				this.inferiorPeerDownloader(minDownloader);
 			}
 		}
 	}
@@ -310,7 +306,7 @@ public final class PeerDownloaderGroup {
 	/**
 	 * <p>释放信号量：设置创建状态</p>
 	 * 
-	 * @param build 创建状态：{@code true}-继续；{@code false}-停止；
+	 * @param build 创建状态：true-继续；false-停止；
 	 */
 	private void release(boolean build) {
 		this.build.set(build);

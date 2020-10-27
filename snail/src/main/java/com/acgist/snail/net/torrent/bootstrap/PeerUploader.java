@@ -14,12 +14,16 @@ import com.acgist.snail.pojo.session.TorrentSession;
  * <p>被动接入Peer</p>
  * 
  * @author acgist
- * @since 1.0.2
  */
 public final class PeerUploader extends PeerConnect {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerUploader.class);
-	
+
+	/**
+	 * @param peerSession Peer信息
+	 * @param torrentSession BT任务信息
+	 * @param peerSubMessageHandler Peer消息代理
+	 */
 	private PeerUploader(PeerSession peerSession, TorrentSession torrentSession, PeerSubMessageHandler peerSubMessageHandler) {
 		super(peerSession, torrentSession, peerSubMessageHandler);
 		this.available = true;

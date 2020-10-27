@@ -22,7 +22,6 @@ import com.acgist.snail.pojo.session.TorrentSession;
  * </dl>
  * 
  * @author acgist
- * @since 1.0.2
  */
 public final class PeerUploaderGroup {
 
@@ -37,6 +36,9 @@ public final class PeerUploaderGroup {
 	 */
 	private final TorrentSession torrentSession;
 	
+	/**
+	 * @param torrentSession BT任务信息
+	 */
 	private PeerUploaderGroup(TorrentSession torrentSession) {
 		this.torrentSession = torrentSession;
 	}
@@ -73,7 +75,7 @@ public final class PeerUploaderGroup {
 	public PeerUploader newPeerUploader(PeerSession peerSession, PeerSubMessageHandler peerSubMessageHandler) {
 		synchronized (this.peerUploaders) {
 			LOGGER.debug("Peer接入：{}-{}", peerSession.host(), peerSession.port());
-			if(!connectable(peerSession)) {
+			if(!this.connectable(peerSession)) {
 				LOGGER.debug("Peer接入失败：{}-{}", peerSession.host(), peerSession.port());
 				return null;
 			}
@@ -93,7 +95,7 @@ public final class PeerUploaderGroup {
 	 * 
 	 * @param peerSession Peer信息
 	 * 
-	 * @return {@code true}-允许；{@code false}-不允许；
+	 * @return true-允许；false-不允许；
 	 * 
 	 * TODO：通常大多数数据都是从接入Peer下载获得，是否考虑放大接入限制
 	 */
@@ -112,7 +114,7 @@ public final class PeerUploaderGroup {
 		LOGGER.debug("优化PeerUploader");
 		synchronized (this.peerUploaders) {
 			try {
-				inferiorPeerUploaders();
+				this.inferiorPeerUploaders();
 			} catch (Exception e) {
 				LOGGER.error("优化PeerUploader异常", e);
 			}
@@ -132,7 +134,7 @@ public final class PeerUploaderGroup {
 			this.peerUploaders.clear();
 		}
 	}
-
+	
 	/**
 	 * <p>剔除无效接入</p>
 	 * <ul>
@@ -147,50 +149,49 @@ public final class PeerUploaderGroup {
 		int offerSize = 0; // 有效数量
 		long uploadMark;
 		long downloadMark;
-		PeerUploader tmpDownloader;
+		PeerUploader tmpUploader;
 		final int size = this.peerUploaders.size();
 		final int maxSize = SystemConfig.getPeerSize();
-		while(true) {
-			if(index++ >= size) {
-				break;
-			}
-			tmpDownloader = this.peerUploaders.poll();
-			if(tmpDownloader == null) {
+		while(index++ < size) {
+			tmpUploader = this.peerUploaders.poll();
+			if(tmpUploader == null) {
 				break;
 			}
 			// 状态不可用直接剔除
-			if(!tmpDownloader.available()) {
-				inferiorPeerUploader(tmpDownloader);
+			if(!tmpUploader.available()) {
+				this.inferiorPeerUploader(tmpUploader);
 				continue;
 			}
-			// 获取评分
-			uploadMark = tmpDownloader.uploadMark(); // 上传评分
-			downloadMark = tmpDownloader.downloadMark(); // 下载评分
+			// 获取评分同时清除评分
+			uploadMark = tmpUploader.uploadMark(); // 上传评分
+			downloadMark = tmpUploader.downloadMark(); // 下载评分
 			// 首次评分忽略
-			if(!tmpDownloader.marked()) {
+			if(!tmpUploader.marked()) {
 				offerSize++;
-				this.offer(tmpDownloader);
+				this.offer(tmpUploader);
 				continue;
 			}
 			// 提供下载的Peer提供上传
 			if(downloadMark > 0L) {
 				offerSize++;
-				this.offer(tmpDownloader);
+				this.offer(tmpUploader);
 				continue;
 			}
 			// 提供下载的Peer提供上传
-			if(tmpDownloader.peerSession().downloading()) {
+			if(tmpUploader.peerSession().downloading()) {
 				offerSize++;
-				this.offer(tmpDownloader);
+				this.offer(tmpUploader);
 				continue;
 			}
 			if(uploadMark <= 0L) {
-				inferiorPeerUploader(tmpDownloader);
+				// 没有评分
+				this.inferiorPeerUploader(tmpUploader);
 			} else if(offerSize > maxSize) {
-				inferiorPeerUploader(tmpDownloader);
+				// 超过最大Peer数量
+				this.inferiorPeerUploader(tmpUploader);
 			} else {
 				offerSize++;
-				this.offer(tmpDownloader);
+				this.offer(tmpUploader);
 			}
 		}
 	}
