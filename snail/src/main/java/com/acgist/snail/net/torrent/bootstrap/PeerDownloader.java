@@ -16,12 +16,15 @@ import com.acgist.snail.pojo.session.TorrentSession;
  * <p>主动连接Peer</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public final class PeerDownloader extends PeerConnect {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerDownloader.class);
 	
+	/**
+	 * @param peerSession Peer信息
+	 * @param torrentSession BT任务信息
+	 */
 	private PeerDownloader(PeerSession peerSession, TorrentSession torrentSession) {
 		super(peerSession, torrentSession, PeerSubMessageHandler.newInstance(peerSession, torrentSession));
 	}
@@ -92,7 +95,7 @@ public final class PeerDownloader extends PeerConnect {
 	 * @return 是否连接成功
 	 */
 	private boolean holepunchConnect(boolean utpRetry) {
-		// Peer不可以直接连接使用holepunch协议连接
+		// Peer不可以直接连接：使用holepunch协议连接
 		if(!this.peerSession.outgo()) {
 			final PeerSession pexSource = this.peerSession.pexSource(); // Pex来源：中继
 			if(

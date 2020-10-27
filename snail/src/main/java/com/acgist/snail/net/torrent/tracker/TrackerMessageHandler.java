@@ -51,16 +51,16 @@ public final class TrackerMessageHandler extends UdpMessageHandler {
 		}
 		switch (action) {
 		case CONNECT:
-			doConnect(buffer);
+			this.doConnect(buffer);
 			break;
 		case ANNOUNCE:
-			doAnnounce(buffer);
+			this.doAnnounce(buffer);
 			break;
 		case SCRAPE:
-			doScrape(buffer);
+			this.doScrape(buffer);
 			break;
 		case ERROR:
-			doError(buffer);
+			this.doError(buffer);
 			break;
 		default:
 			LOGGER.debug("处理Tracker消息错误（类型未适配）：{}", action);

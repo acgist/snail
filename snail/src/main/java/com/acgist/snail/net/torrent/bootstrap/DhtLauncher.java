@@ -20,7 +20,6 @@ import com.acgist.snail.utils.NetUtils;
  * <p>定时使用系统最近的DHT节点和{@link #peerNodes}查询Peer</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class DhtLauncher implements Runnable {
 
@@ -36,6 +35,9 @@ public final class DhtLauncher implements Runnable {
 	 */
 	private final List<InetSocketAddress> peerNodes = new ArrayList<>();
 	
+	/**
+	 * @param torrentSession BT任务信息
+	 */
 	private DhtLauncher(TorrentSession torrentSession) {
 		this.infoHash = torrentSession.infoHash();
 	}
@@ -45,7 +47,7 @@ public final class DhtLauncher implements Runnable {
 	 * 
 	 * @param torrentSession BT任务信息
 	 * 
-	 * @return DHT定时任务
+	 * @return DhtLauncher
 	 */
 	public static final DhtLauncher newInstance(TorrentSession torrentSession) {
 		return new DhtLauncher(torrentSession);
@@ -126,8 +128,9 @@ public final class DhtLauncher implements Runnable {
 			LOGGER.debug("DHT定时任务没有节点可用");
 			return;
 		}
+		final byte[] infoHash = this.infoHash.infoHash();
 		for (InetSocketAddress socketAddress : list) {
-			DhtClient.newInstance(socketAddress).getPeers(this.infoHash.infoHash());
+			DhtClient.newInstance(socketAddress).getPeers(infoHash);
 		}
 	}
 	
