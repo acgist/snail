@@ -112,10 +112,10 @@ public final class PeerDownloaderGroup {
 		// 解除信号量：防止暂停任务时正在执行优化任务导致获取不到锁进而卡死暂停任务操作
 		this.release(false);
 		synchronized (this.peerDownloaders) {
-			this.peerDownloaders.forEach(launcher -> {
-				SystemThreadContext.submit(() -> launcher.release());
+			this.peerDownloaders.forEach(downloader -> {
+				SystemThreadContext.submit(() -> downloader.release());
 				// 下载列表中的Peer属于优质Peer
-				PeerManager.getInstance().preference(this.torrentSession.infoHashHex(), launcher.peerSession());
+				PeerManager.getInstance().preference(this.torrentSession.infoHashHex(), downloader.peerSession());
 			});
 			this.peerDownloaders.clear();
 		}

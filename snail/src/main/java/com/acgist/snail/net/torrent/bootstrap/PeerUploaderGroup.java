@@ -60,7 +60,7 @@ public final class PeerUploaderGroup {
 	 */
 	public void download() {
 		synchronized (this.peerUploaders) {
-			this.peerUploaders.forEach(uploader -> uploader.download());
+			this.peerUploaders.forEach(PeerUploader::download);
 		}
 	}
 	
@@ -128,9 +128,7 @@ public final class PeerUploaderGroup {
 	public void release() {
 		LOGGER.debug("释放PeerUploaderGroup");
 		synchronized (this.peerUploaders) {
-			this.peerUploaders.forEach(connect -> {
-				SystemThreadContext.submit(() -> connect.release());
-			});
+			this.peerUploaders.forEach(uploader -> SystemThreadContext.submit(() -> uploader.release()));
 			this.peerUploaders.clear();
 		}
 	}
