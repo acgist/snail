@@ -31,7 +31,6 @@ import com.acgist.snail.utils.StringUtils;
  * TODO：优化使用读写锁
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class TorrentStream {
 	
@@ -54,7 +53,7 @@ public final class TorrentStream {
 	/**
 	 * <p>文件路径</p>
 	 */
-	private final String file;
+	private final String filePath;
 	/**
 	 * <p>文件大小</p>
 	 */
@@ -81,7 +80,8 @@ public final class TorrentStream {
 	private final int filePieceSize;
 	/**
 	 * <p>缓冲大小</p>
-	 * <p>所有文件Piece缓冲数据大小（TorrentStreamGroup中的引用）</p>
+	 * 
+	 * @see TorrentStreamGroup#fileBufferSize
 	 */
 	private final AtomicLong fileBufferSize;
 	/**
@@ -98,8 +98,7 @@ public final class TorrentStream {
 	private final BitSet pieces;
 	/**
 	 * <p>暂停Piece位图</p>
-	 * <p>上次下载失败的Piece，下次请求时不选择，选择成功后清除，以后还可以选择该Piece。</p>
-	 * <p>主要用来处理两个文件处于同一个Piece，并且两个文件没有同时被选择下载。</p>
+	 * <p>上次下载失败的Piece，下次请求时暂时不选择，成功选择Piece后清除，以后还可以选择该Piece。</p>
 	 */
 	private final BitSet pausePieces;
 	/**
@@ -118,12 +117,22 @@ public final class TorrentStream {
 	 */
 	private final TorrentStreamGroup torrentStreamGroup;
 	
+	/**
+	 * @param pieceLength Piece大小
+	 * @param path 文件路径
+	 * @param size 文件大小
+	 * @param pos 文件开始偏移
+	 * @param fileBufferSize 缓冲大小
+	 * @param torrentStreamGroup 文件流组
+	 * 
+	 * @throws DownloadException 下载异常
+	 */
 	private TorrentStream(
-		long pieceLength, String file, long size, long pos,
+		long pieceLength, String path, long size, long pos,
 		AtomicLong fileBufferSize, TorrentStreamGroup torrentStreamGroup
 	) throws DownloadException {
 		this.pieceLength = pieceLength;
-		this.file = file;
+		this.filePath = path;
 		this.fileSize = size;
 		this.fileBeginPos = pos;
 		this.fileEndPos = pos + size;
@@ -149,8 +158,8 @@ public final class TorrentStream {
 	/**
 	 * <p>创建文件流</p>
 	 * 
-	 * @param pieceLength Piece长度
-	 * @param file 文件路径
+	 * @param pieceLength Piece大小
+	 * @param path 文件路径
 	 * @param size 文件大小
 	 * @param pos 文件开始偏移
 	 * @param fileBufferSize 缓冲大小
@@ -164,19 +173,19 @@ public final class TorrentStream {
 	 * @throws DownloadException 下载异常
 	 */
 	public static final TorrentStream newInstance(
-		long pieceLength, String file, long size, long pos,
+		long pieceLength, String path, long size, long pos,
 		AtomicLong fileBufferSize, TorrentStreamGroup torrentStreamGroup,
 		boolean complete, BitSet selectPieces, CountDownLatch sizeCount
 	) throws DownloadException {
-		final var stream = new TorrentStream(pieceLength, file, size, pos, fileBufferSize, torrentStreamGroup);
+		final var stream = new TorrentStream(pieceLength, path, size, pos, fileBufferSize, torrentStreamGroup);
 		stream.buildFileAsyn(complete, sizeCount); // 异步加载文件
 		stream.buildSelectPieces(selectPieces); // 加载被选中的Piece
-		stream.install();
+		stream.install(); // 选中下载
 		// TODO：{}，使用多行文本
 		LOGGER.debug(
 			"创建文件流信息，Piece大小：{}，文件路径：{}，文件大小：{}，文件开始偏移：{}，文件结束偏移：{}，文件Piece数量：{}，文件Piece开始索引：{}，文件Piece结束索引：{}",
 			stream.pieceLength,
-			stream.file,
+			stream.filePath,
 			stream.fileSize,
 			stream.fileBeginPos,
 			stream.fileEndPos,
@@ -196,11 +205,11 @@ public final class TorrentStream {
 	 */
 	private RandomAccessFile buildFileStream() throws DownloadException {
 		// 创建文件上级目录：上级目录不存在会抛出FileNotFoundException
-		FileUtils.buildFolder(this.file, true);
+		FileUtils.buildFolder(this.filePath, true);
 		try {
-			return new RandomAccessFile(this.file, "rw");
+			return new RandomAccessFile(this.filePath, "rw");
 		} catch (FileNotFoundException e) {
-			throw new DownloadException("创建文件流失败：" + this.file, e);
+			throw new DownloadException("创建文件流失败：" + this.filePath, e);
 		}
 	}
 	
@@ -223,21 +232,21 @@ public final class TorrentStream {
 	/**
 	 * <p>判断是否被选中下载</p>
 	 * 
-	 * @return {@code true}-选中；{@code false}-没有选中；
+	 * @return true-选中；false-没有选中；
 	 */
 	public boolean selected() {
 		return this.selected;
 	}
 	
 	/**
-	 * <p>判断{@code path}是不是当前文件流的文件路径</p>
+	 * <p>判断文件路径是不是当前下载文件的文件路径</p>
 	 * 
 	 * @param path 文件路径
 	 * 
-	 * @return {@code true}-是；{@code false}-不是；
+	 * @return true-是；false-不是；
 	 */
 	public boolean equalsPath(String path) {
-		return StringUtils.equals(path, this.file);
+		return StringUtils.equals(path, this.filePath);
 	}
 	
 	/**
@@ -315,13 +324,13 @@ public final class TorrentStream {
 			// 第一块获取开始偏移
 			if(index == this.fileBeginPieceIndex) {
 				verify = false;
-				begin = firstPiecePos();
+				begin = this.firstPiecePos();
 			}
 			int end = (int) this.pieceLength; // Piece结束内偏移
 			// 最后一块获取结束偏移
 			if(index == this.fileEndPieceIndex) {
 				verify = false;
-				end = lastPiecePos();
+				end = this.lastPiecePos();
 			}
 			return TorrentPiece.newInstance(this.pieceLength, index, begin, end, this.torrentStreamGroup.pieceHash(index), verify);
 		}
@@ -342,13 +351,11 @@ public final class TorrentStream {
 			return false;
 		}
 		synchronized (this) {
-			boolean ok = false;
 			if(this.havePiece(piece.getIndex())) { // 最后阶段重复选中可能重复
 				LOGGER.debug("Piece已经下载完成（忽略）：{}", piece.getIndex());
 				return false;
 			}
 			if(this.filePieces.offer(piece)) { // 加入缓存队列
-				ok = true;
 				LOGGER.debug("保存Piece：{}", piece.getIndex());
 				this.done(piece.getIndex());
 				// 更新缓存大小
@@ -360,10 +367,11 @@ public final class TorrentStream {
 					this.flush();
 					// TODO：修改文件为读模式
 				}
+				return true;
 			} else {
 				LOGGER.warn("保存Piece失败：{}", piece.getIndex());
+				return false;
 			}
-			return ok;
 		}
 	}
 	
@@ -379,7 +387,7 @@ public final class TorrentStream {
 	 * @see #read(int, int, int, boolean)
 	 */
 	public byte[] read(int index) {
-		return read(index, (int) this.pieceLength);
+		return this.read(index, (int) this.pieceLength);
 	}
 	
 	/**
@@ -394,7 +402,7 @@ public final class TorrentStream {
 	 * @see #read(int, int, int, boolean)
 	 */
 	public byte[] read(int index, int size) {
-		return read(index, size, 0);
+		return this.read(index, size, 0);
 	}
 	
 	/**
@@ -410,7 +418,7 @@ public final class TorrentStream {
 	 */
 	public byte[] read(int index, int size, int pos) {
 		synchronized (this) {
-			return read(index, size, pos, false);
+			return this.read(index, size, pos, false);
 		}
 	}
 	
@@ -611,12 +619,11 @@ public final class TorrentStream {
 	
 	/**
 	 * <p>异步加载文件</p>
-	 * <p>加载完成{@code sizeCount}计数</p>
 	 * <p>同步加载：小文件、任务已经完成</p>
 	 * <p>异步加载：其他所有情况</p>
 	 * 
 	 * @param complete 任务是否完成
-	 * @param sizeCount 文件加载计算器
+	 * @param sizeCount 文件加载计数器
 	 */
 	private void buildFileAsyn(boolean complete, CountDownLatch sizeCount) {
 		if(complete) { // 同步：任务完成
@@ -723,13 +730,13 @@ public final class TorrentStream {
 		int downloadPieceSize = this.pieces.cardinality();
 		// 第一块Piece大小
 		if(this.havePiece(this.fileBeginPieceIndex)) {
-			size += firstPieceSize();
+			size += this.firstPieceSize();
 			downloadPieceSize--;
 		}
 		if(!this.fileInOnePiece()) {
 			// 最后一块Piece大小
 			if(this.havePiece(this.fileEndPieceIndex)) {
-				size += lastPieceSize();
+				size += this.lastPieceSize();
 				downloadPieceSize--;
 			}
 		}
@@ -739,7 +746,7 @@ public final class TorrentStream {
 	/**
 	 * <p>判断文件是否处于一个Piece之中</p>
 	 * 
-	 * @return {@code true}-是；{@code false}-不是；
+	 * @return true-是；false-不是；
 	 */
 	private boolean fileInOnePiece() {
 		return this.fileBeginPieceIndex == this.fileEndPieceIndex;
@@ -763,7 +770,7 @@ public final class TorrentStream {
 		if(this.fileInOnePiece()) {
 			return this.lastPiecePos() - this.firstPiecePos();
 		} else {
-			return (int) (this.pieceLength - firstPiecePos());
+			return (int) (this.pieceLength - this.firstPiecePos());
 		}
 	}
 
@@ -792,7 +799,7 @@ public final class TorrentStream {
 	/**
 	 * <p>判断是否含有数据</p>
 	 * 
-	 * @return {@code true}-含有；{@code false}-不含；
+	 * @return true-含有；false-不含；
 	 */
 	private boolean haveData(byte[] bytes) {
 		if(bytes == null) {
@@ -811,7 +818,7 @@ public final class TorrentStream {
 	 * 
 	 * @param index Piece索引
 	 * 
-	 * @return {@code true}-包含；{@code false}-不包含；
+	 * @return true-包含；false-不包含；
 	 */
 	private boolean haveIndex(int index) {
 		// 不符合当前文件位置
@@ -822,11 +829,11 @@ public final class TorrentStream {
 	}
 	
 	/**
-	 * <p>判断是否含有Piece数据</p>
+	 * <p>判断是否已下载Piece数据</p>
 	 * 
 	 * @param index Piece索引
 	 * 
-	 * @return {@code true}-含有；{@code false}-不含；
+	 * @return true-已下载；false-未下载；
 	 */
 	private boolean havePiece(int index) {
 		return this.pieces.get(index);
@@ -834,7 +841,7 @@ public final class TorrentStream {
 	
 	@Override
 	public String toString() {
-		return ObjectUtils.toString(this, this.file);
+		return ObjectUtils.toString(this, this.filePath);
 	}
 
 }

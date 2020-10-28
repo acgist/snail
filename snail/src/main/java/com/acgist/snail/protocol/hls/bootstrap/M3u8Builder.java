@@ -120,7 +120,7 @@ public final class M3u8Builder {
 	/**
 	 * <p>新建一个M3U8解析器</p>
 	 * 
-	 * @param file 描述信息
+	 * @param content 描述信息
 	 * @param source 原始链接地址
 	 * 
 	 * @return M3U8解析器
