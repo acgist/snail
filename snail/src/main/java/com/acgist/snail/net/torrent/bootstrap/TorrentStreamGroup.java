@@ -29,7 +29,6 @@ import com.acgist.snail.utils.FileUtils;
  * <p>管理BT任务下载文件</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class TorrentStreamGroup {
 	
@@ -85,6 +84,12 @@ public final class TorrentStreamGroup {
 	 */
 	private final TorrentSession torrentSession;
 
+	/**
+	 * @param pieces 已下载Piece位图
+	 * @param selectPieces 被选中Piece位图
+	 * @param streams 文件流集合
+	 * @param torrentSession BT任务信息
+	 */
 	private TorrentStreamGroup(BitSet pieces, BitSet selectPieces, List<TorrentStream> streams, TorrentSession torrentSession) {
 		this.pieces = pieces;
 		this.selectPieces = selectPieces;
@@ -117,7 +122,7 @@ public final class TorrentStreamGroup {
 		final TorrentStreamGroup torrentStreamGroup = new TorrentStreamGroup(pieces, selectPieces, streams, torrentSession);
 		// 下载文件数量
 		final int fileCount = (int) files.stream()
-			.filter(file -> file.selected())
+			.filter(TorrentFile::selected)
 			.count();
 		torrentStreamGroup.load(fileCount, pieceLength, complete, folder, files);
 		return torrentStreamGroup;
@@ -139,7 +144,7 @@ public final class TorrentStreamGroup {
 			final long pieceLength = torrentInfo.getPieceLength();
 			// 新增加载文件数量：原来没有加载
 			final int loadFileCount = (int) files.stream()
-				.filter(file -> file.selected())
+				.filter(TorrentFile::selected)
 				.filter(file -> {
 					final String path = FileUtils.file(folder, file.path()); // 文佳路径
 					return this.haveStream(path) == null; // 文件未被加载
@@ -155,7 +160,7 @@ public final class TorrentStreamGroup {
 	 * <p>不用下载文件：没有加载-忽略；已经加载-卸载；</p>
 	 * 
 	 * @param loadFileCount 新增加载文件数量
-	 * @param pieceLength Piece长度
+	 * @param pieceLength Piece大小
 	 * @param complete 任务是否完成
 	 * @param folder 任务下载目录
 	 * @param files 任务文件列表
@@ -367,7 +372,7 @@ public final class TorrentStreamGroup {
 	 * 
 	 * @param index Piece索引
 	 * 
-	 * @return {@code true}-已下载；{@code false}-未下载；
+	 * @return true-已下载；false-未下载；
 	 */
 	public boolean havePiece(int index) {
 		if(index < 0) {
@@ -538,7 +543,7 @@ public final class TorrentStreamGroup {
 	 * <p>检测任务是否下载完成</p>
 	 * <p>完成：所有选中文件流下载完成</p>
 	 * 
-	 * @return {@code true}-完成；{@code false}-没有完成；
+	 * @return true-完成；false-没有完成；
 	 */
 	public boolean complete() {
 		for (TorrentStream torrentStream : this.streams) {
