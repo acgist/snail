@@ -19,7 +19,6 @@ import com.acgist.snail.pojo.session.TorrentSession;
  * <p>Tracker执行器加载和管理</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class TrackerLauncherGroup {
 
@@ -34,6 +33,9 @@ public final class TrackerLauncherGroup {
 	 */
 	private final List<TrackerLauncher> trackerLaunchers;
 	
+	/**
+	 * @param torrentSession BT任务信息
+	 */
 	private TrackerLauncherGroup(TorrentSession torrentSession) {
 		this.torrentSession = torrentSession;
 		this.trackerLaunchers = new ArrayList<>();
@@ -94,7 +96,7 @@ public final class TrackerLauncherGroup {
 	 * @see TrackerLauncher#findPeer()
 	 */
 	public void findPeer() {
-		this.trackerLaunchers.forEach(launcher -> launcher.findPeer());
+		this.trackerLaunchers.forEach(TrackerLauncher::findPeer);
 	}
 
 	/**
