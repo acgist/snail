@@ -20,20 +20,10 @@ import com.acgist.snail.utils.NumberUtils;
  * <p>使用TrackerClient查询Peer信息</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class TrackerLauncher {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerLauncher.class);
-	
-	/**
-	 * <p>客户端</p>
-	 */
-	private final TrackerClient client;
-	/**
-	 * <p>BT任务信息</p>
-	 */
-	private final TorrentSession torrentSession;
 	
 	/**
 	 * <p>transaction_id</p>
@@ -61,7 +51,19 @@ public final class TrackerLauncher {
 	 * <p>查找Peer后需要释放</p>
 	 */
 	private boolean needRelease = false;
+	/**
+	 * <p>Tracker客户端</p>
+	 */
+	private final TrackerClient client;
+	/**
+	 * <p>BT任务信息</p>
+	 */
+	private final TorrentSession torrentSession;
 	
+	/**
+	 * @param client Tracker客户端
+	 * @param torrentSession BT任务信息
+	 */
 	private TrackerLauncher(TrackerClient client, TorrentSession torrentSession) {
 		this.id = NumberUtils.build();
 		this.client = client;
@@ -71,7 +73,7 @@ public final class TrackerLauncher {
 	/**
 	 * <p>创建Tracker执行器</p>
 	 * 
-	 * @param client TrackerClient
+	 * @param client Tracker客户端
 	 * @param torrentSession BT任务信息
 	 * 
 	 * @return Tracker执行器
@@ -181,7 +183,7 @@ public final class TrackerLauncher {
 	 * <p>获取是否可用</p>
 	 * <p>可用状态：TrackerLauncher可用、TrackerClient可用</p>
 	 * 
-	 * @return {@code true}-可用；{@code false}-不可用；
+	 * @return true-可用；false-不可用；
 	 */
 	private boolean available() {
 		return this.available && this.client.available();
