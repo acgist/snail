@@ -19,7 +19,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>二的补码（two's complement）：补码（正数=原码、负数=反码+{@code 1}）</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public final class MSEKeyPairBuilder {
 
@@ -71,13 +70,15 @@ public final class MSEKeyPairBuilder {
 
 	/**
 	 * <p>MSE公钥</p>
+	 * 
+	 * @author acgist
 	 */
 	private static final class MSEPublicKey implements PublicKey {
 
 		private static final long serialVersionUID = 1L;
 		
 		/**
-		 * <p>publicKey</p>
+		 * <p>PublicKey</p>
 		 */
 		private final BigInteger value;
 		/**
@@ -85,11 +86,19 @@ public final class MSEKeyPairBuilder {
 		 */
 		private final byte[] encoded;
 
+		/**
+		 * @param value PublicKey
+		 */
 		private MSEPublicKey(BigInteger value) {
 			this.value = value;
 			this.encoded = NumberUtils.encodeBigInteger(value, CryptConfig.PUBLIC_KEY_LENGTH);
 		}
 
+		/**
+		 * <p>获取PublicKey</p>
+		 * 
+		 * @return PublicKey
+		 */
 		public BigInteger getValue() {
 			return this.value;
 		}
@@ -118,23 +127,28 @@ public final class MSEKeyPairBuilder {
 
 	/**
 	 * <p>MSE私钥</p>
+	 * 
+	 * @author acgist
 	 */
 	private static final class MSEPrivateKey implements PrivateKey {
 
 		private static final long serialVersionUID = 1L;
 		
 		/**
-		 * <p>privateKey</p>
+		 * <p>PrivateKey</p>
 		 */
 		private final BigInteger value;
 		/**
-		 * <p>publicKey</p>
+		 * <p>PublicKey</p>
 		 */
 		private final MSEPublicKey publicKey;
 
+		/**
+		 * @param random 随机数工具
+		 */
 		private MSEPrivateKey(Random random) {
-			this.value = buildPrivateKey(random);
-			this.publicKey = buildPublicKey();
+			this.value = this.buildPrivateKey(random);
+			this.publicKey = this.buildPublicKey();
 		}
 
 		/**
@@ -142,7 +156,7 @@ public final class MSEKeyPairBuilder {
 		 * 
 		 * @param random 随机数工具
 		 * 
-		 * @return privateKey
+		 * @return PrivateKey
 		 */
 		private BigInteger buildPrivateKey(Random random) {
 			final byte[] bytes = new byte[CryptConfig.PRIVATE_KEY_LENGTH];
@@ -158,7 +172,7 @@ public final class MSEKeyPairBuilder {
 		 * Pubkey of B: Yb = (G^Xb) mod P
 		 * </pre>
 		 * 
-		 * @return publicKey
+		 * @return PublicKey
 		 */
 		private MSEPublicKey buildPublicKey() {
 			return new MSEPublicKey(CryptConfig.G.modPow(this.value, CryptConfig.P));
@@ -167,7 +181,7 @@ public final class MSEKeyPairBuilder {
 		/**
 		 * <p>DH Secret: S = (Ya^Xb) mod P = (Yb^Xa) mod P</p>
 		 * 
-		 * @param publicKey publicKey
+		 * @param publicKey PublicKey
 		 * 
 		 * @return DH Secret
 		 */
@@ -175,6 +189,11 @@ public final class MSEKeyPairBuilder {
 			return publicKey.getValue().modPow(this.value, CryptConfig.P);
 		}
 		
+		/**
+		 * <p>获取PublicKey</p>
+		 * 
+		 * @return PublicKey
+		 */
 		private MSEPublicKey getPublicKey() {
 			return this.publicKey;
 		}

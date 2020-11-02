@@ -52,7 +52,6 @@ import com.acgist.snail.utils.ThreadUtils;
  * <p>SKEY：InfoHash</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public final class MSECryptHandshakeHandler {
 	
@@ -70,6 +69,8 @@ public final class MSECryptHandshakeHandler {
 	
 	/**
 	 * <p>加密握手步骤</p>
+	 * 
+	 * @author acgist
 	 */
 	public enum Step {
 		
@@ -141,10 +142,19 @@ public final class MSECryptHandshakeHandler {
 	 * <p>Padding数据同步工具</p>
 	 */
 	private MSEPaddingSync msePaddingSync;
-	
+	/**
+	 * <p>Peer消息代理</p>
+	 */
 	private final PeerSubMessageHandler peerSubMessageHandler;
+	/**
+	 * <p>Peer消息处理器</p>
+	 */
 	private final PeerUnpackMessageCodec peerUnpackMessageCodec;
 
+	/**
+	 * @param peerUnpackMessageCodec Peer消息处理器
+	 * @param peerSubMessageHandler Peer消息代理
+	 */
 	private MSECryptHandshakeHandler(PeerUnpackMessageCodec peerUnpackMessageCodec, PeerSubMessageHandler peerSubMessageHandler) {
 		final MSEKeyPairBuilder mseKeyPairBuilder = MSEKeyPairBuilder.newInstance();
 		this.buffer = ByteBuffer.allocate(BUFFER_LENGTH);
@@ -156,7 +166,7 @@ public final class MSECryptHandshakeHandler {
 	/**
 	 * <p>创建加密代理</p>
 	 * 
-	 * @param peerUnpackMessageCodec 消息拆包
+	 * @param peerUnpackMessageCodec Peer消息处理器
 	 * @param peerSubMessageHandler Peer消息代理
 	 * 
 	 * @return 加密代理
@@ -175,7 +185,7 @@ public final class MSECryptHandshakeHandler {
 	/**
 	 * <p>判断握手是否完成</p>
 	 * 
-	 * @return {@code true}-完成；{@code false}-没有完成；
+	 * @return true-完成；false-没有完成；
 	 */
 	public boolean complete() {
 		return this.complete;
@@ -248,7 +258,7 @@ public final class MSECryptHandshakeHandler {
 	/**
 	 * <p>判断是否需要加密</p>
 	 * 
-	 * @return {@code true}-加密；{@code false}-明文；
+	 * @return true-加密；false-明文；
 	 */
 	public boolean needEncrypt() {
 		return this.peerSubMessageHandler.needEncrypt();
@@ -402,7 +412,7 @@ public final class MSECryptHandshakeHandler {
 		buffer.put(ArrayUtils.xor(req2, req3));
 		this.peerSubMessageHandler.send(buffer);
 //		ENCRYPT(VC, crypto_provide, len(PadC), PadC, len(IA))
-		final byte[] padding = buildZeroPadding(CryptConfig.PADDING_MAX_LENGTH);
+		final byte[] padding = this.buildZeroPadding(CryptConfig.PADDING_MAX_LENGTH);
 		final int paddingLength = padding.length;
 		buffer = ByteBuffer.allocate(16 + paddingLength); // 8 + 4 + 2 + Padding + 2 + 0
 		buffer.put(CryptConfig.VC); // VC
@@ -665,7 +675,7 @@ public final class MSECryptHandshakeHandler {
 	 * 
 	 * @param buffer 消息
 	 * 
-	 * @return {@code true}-Peer握手；{@code false}-加密握手；
+	 * @return true-Peer握手；false-加密握手；
 	 * 
 	 * @throws NetException 网络异常
 	 */
@@ -693,7 +703,7 @@ public final class MSECryptHandshakeHandler {
 	 * 
 	 * @param bytes 匹配数据
 	 * 
-	 * @return {@code true}-成功；{@code false}-失败；
+	 * @return true-成功；false-失败；
 	 */
 	private boolean match(byte[] bytes) {
 		int index = 0;
