@@ -22,7 +22,6 @@ import com.acgist.snail.utils.DigestUtils;
  * <p>协议链接：https://baike.baidu.com/item/RC4/3454548</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public final class MSECipher {
 	
@@ -220,7 +219,7 @@ public final class MSECipher {
 	/**
 	 * <p>创建Key</p>
 	 * 
-	 * @param s {@code keyA} | {@code keyB}
+	 * @param s keyA | keyB
 	 * @param S DH Secret
 	 * @param SKEY InfoHash
 	 * 

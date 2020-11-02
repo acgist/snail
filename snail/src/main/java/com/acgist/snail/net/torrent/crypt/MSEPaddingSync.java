@@ -13,7 +13,6 @@ import com.acgist.snail.utils.ObjectUtils;
  * <p>长度数据类型：short</p>
  * 
  * @author acgist
- * @since 1.1.1
  */
 public final class MSEPaddingSync {
 
@@ -34,6 +33,9 @@ public final class MSEPaddingSync {
 	 */
 	private final List<byte[]> list;
 	
+	/**
+	 * @param count Padding数据数量
+	 */
 	private MSEPaddingSync(int count) {
 		this.count = count;
 		this.list = new ArrayList<>(count);
@@ -55,7 +57,7 @@ public final class MSEPaddingSync {
 	 * 
 	 * @param buffer Padding数据
 	 * 
-	 * @return {@code true}-完成；{@code false}-没有完成；
+	 * @return true-完成；false-没有完成；
 	 * 
 	 * @throws PacketSizeException 网络包大小异常
 	 */
