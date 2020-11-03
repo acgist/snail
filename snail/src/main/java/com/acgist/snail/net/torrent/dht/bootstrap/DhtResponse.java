@@ -24,7 +24,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>DHT响应</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public class DhtResponse extends DhtMessage {
 	
@@ -178,7 +177,7 @@ public class DhtResponse extends DhtMessage {
 	/**
 	 * <p>判断是否是成功响应</p>
 	 * 
-	 * @return {@code true}-成功响应；{@code false}-失败响应；
+	 * @return true-成功响应；false-失败响应；
 	 */
 	public boolean success() {
 		return CollectionUtils.isEmpty(this.e);

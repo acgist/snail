@@ -10,7 +10,6 @@ import com.acgist.snail.config.DhtConfig;
  * <p>DHT请求、DHT响应</p>
  *
  * @author acgist
- * @since 1.1.0
  */
 public abstract class DhtMessage {
 
@@ -83,7 +82,7 @@ public abstract class DhtMessage {
 	 * @return 消息ID
 	 */
 	public byte[] getId() {
-		return getT();
+		return this.getT();
 	}
 	
 	/**
@@ -92,7 +91,7 @@ public abstract class DhtMessage {
 	 * @return NodeId
 	 */
 	public byte[] getNodeId() {
-		return getBytes(DhtConfig.KEY_ID);
+		return this.getBytes(DhtConfig.KEY_ID);
 	}
 	
 	/**
@@ -103,7 +102,7 @@ public abstract class DhtMessage {
 	 * @return Integer参数
 	 */
 	public Integer getInteger(String key) {
-		final Long value = getLong(key);
+		final Long value = this.getLong(key);
 		if(value == null) {
 			return null;
 		}
@@ -118,7 +117,7 @@ public abstract class DhtMessage {
 	 * @return 字符串参数
 	 */
 	public String getString(String key) {
-		final byte[] bytes = getBytes(key);
+		final byte[] bytes = this.getBytes(key);
 		if(bytes == null) {
 			return null;
 		}

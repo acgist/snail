@@ -4,7 +4,6 @@ package com.acgist.snail.net.torrent.dht.bootstrap;
  * <p>DHT Service</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class DhtService {
 
