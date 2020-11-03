@@ -9,7 +9,6 @@ import com.acgist.snail.net.torrent.dht.bootstrap.response.FindNodeResponse;
  * <p>查找Node</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class FindNodeRequest extends DhtRequest {
 
@@ -20,7 +19,7 @@ public final class FindNodeRequest extends DhtRequest {
 	/**
 	 * <p>创建请求</p>
 	 * 
-	 * @param target NodeId
+	 * @param target NodeId或者InfoHash
 	 * 
 	 * @return 请求
 	 */
@@ -51,7 +50,7 @@ public final class FindNodeRequest extends DhtRequest {
 	 * @return NodeId或者InfoHash
 	 */
 	public byte[] getTarget() {
-		return getBytes(DhtConfig.KEY_TARGET);
+		return this.getBytes(DhtConfig.KEY_TARGET);
 	}
 
 }

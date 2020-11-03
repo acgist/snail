@@ -10,6 +10,7 @@ import com.acgist.snail.net.torrent.dht.bootstrap.DhtRequest;
 import com.acgist.snail.net.torrent.dht.bootstrap.NodeManager;
 import com.acgist.snail.net.torrent.dht.bootstrap.response.GetPeersResponse;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
+import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NetUtils;
@@ -19,7 +20,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>查找Peer</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class GetPeersRequest extends DhtRequest {
 
@@ -54,14 +54,15 @@ public final class GetPeersRequest extends DhtRequest {
 		final String infoHashHex = StringUtils.hex(infoHash);
 		final TorrentSession torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
 		boolean needNodes = true;
+		// 查找Peer
 		if(torrentSession != null) {
 			final ByteBuffer buffer = ByteBuffer.allocate(SystemConfig.IP_PORT_LENGTH);
 			final var list = PeerManager.getInstance().listPeerSession(infoHashHex);
 			if(CollectionUtils.isNotEmpty(list)) { // 返回Peer
 				needNodes = false;
 				final var values = list.stream()
-					.filter(peer -> peer.available()) // 可用
-					.filter(peer -> peer.connected()) // 连接
+					.filter(PeerSession::available) // 可用
+					.filter(PeerSession::connected) // 连接
 					.limit(DhtConfig.GET_PEER_SIZE)
 					.map(peer -> {
 						buffer.putInt(NetUtils.encodeIpToInt(peer.host()));
@@ -87,7 +88,7 @@ public final class GetPeersRequest extends DhtRequest {
 	 * @return InfoHash
 	 */
 	public byte[] getInfoHash() {
-		return getBytes(DhtConfig.KEY_INFO_HASH);
+		return this.getBytes(DhtConfig.KEY_INFO_HASH);
 	}
 
 }

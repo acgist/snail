@@ -21,7 +21,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>声明当前节点作为Peer进行下载和上传</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class AnnouncePeerRequest extends DhtRequest {
 
@@ -97,7 +96,7 @@ public final class AnnouncePeerRequest extends DhtRequest {
 	 * @return 端口
 	 */
 	public Integer getPort() {
-		return getInteger(DhtConfig.KEY_PORT);
+		return this.getInteger(DhtConfig.KEY_PORT);
 	}
 	
 	/**
@@ -106,7 +105,7 @@ public final class AnnouncePeerRequest extends DhtRequest {
 	 * @return Token
 	 */
 	public byte[] getToken() {
-		return getBytes(DhtConfig.KEY_TOKEN);
+		return this.getBytes(DhtConfig.KEY_TOKEN);
 	}
 	
 	/**
@@ -115,7 +114,7 @@ public final class AnnouncePeerRequest extends DhtRequest {
 	 * @return InfoHash
 	 */
 	public byte[] getInfoHash() {
-		return getBytes(DhtConfig.KEY_INFO_HASH);
+		return this.getBytes(DhtConfig.KEY_INFO_HASH);
 	}
 	
 	/**
@@ -124,7 +123,7 @@ public final class AnnouncePeerRequest extends DhtRequest {
 	 * @return ImpliedPort
 	 */
 	public Integer getImpliedPort() {
-		return getInteger(DhtConfig.KEY_IMPLIED_PORT);
+		return this.getInteger(DhtConfig.KEY_IMPLIED_PORT);
 	}
 
 }

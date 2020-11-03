@@ -22,23 +22,43 @@ import com.acgist.snail.utils.StringUtils;
  * <p>查找Peer</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class GetPeersResponse extends DhtResponse {
 
+	/**
+	 * @param t 节点ID
+	 */
 	private GetPeersResponse(byte[] t) {
 		super(t);
+		// 设置Token
 		this.put(DhtConfig.KEY_TOKEN, NodeManager.getInstance().token());
 	}
 	
+	/**
+	 * @param response 响应
+	 */
 	private GetPeersResponse(DhtResponse response) {
 		super(response.getT(), response.getY(), response.getR(), response.getE());
 	}
 
+	/**
+	 * <p>创建响应</p>
+	 * 
+	 * @param response 响应
+	 * 
+	 * @return 响应
+	 */
 	public static final GetPeersResponse newInstance(DhtResponse response) {
 		return new GetPeersResponse(response);
 	}
 
+	/**
+	 * <p>创建响应</p>
+	 * 
+	 * @param request 请求
+	 * 
+	 * @return 响应
+	 */
 	public static final GetPeersResponse newInstance(DhtRequest request) {
 		return new GetPeersResponse(request.getT());
 	}
@@ -49,11 +69,11 @@ public final class GetPeersResponse extends DhtResponse {
 	 * @return Token
 	 */
 	public byte[] getToken() {
-		return getBytes(DhtConfig.KEY_TOKEN);
+		return this.getBytes(DhtConfig.KEY_TOKEN);
 	}
 	
 	/**
-	 * <p>获取节点并加入系统</p>
+	 * <p>获取节点同时加入系统</p>
 	 * 
 	 * @return 节点列表
 	 */
@@ -76,8 +96,7 @@ public final class GetPeersResponse extends DhtResponse {
 	}
 	
 	/**
-	 * <p>获取Peer列表</p>
-	 * <p>自动加入系统Peer列表</p>
+	 * <p>获取Peer列表同时加入系统</p>
 	 * 
 	 * @param request 请求
 	 * 
@@ -118,30 +137,30 @@ public final class GetPeersResponse extends DhtResponse {
 	/**
 	 * <p>判断是否含有节点</p>
 	 * 
-	 * @return {@code true}-含有；{@code false}-不含；
+	 * @return true-含有；false-不含；
 	 */
 	public boolean haveNodes() {
-		return get(DhtConfig.KEY_NODES) != null;
+		return this.get(DhtConfig.KEY_NODES) != null;
 	}
 	
 	/**
 	 * <p>判断是否含有Peer</p>
 	 * 
-	 * @return {@code true}-含有；{@code false}-不含；
+	 * @return true-含有；false-不含；
 	 * 
 	 * @see #haveValues()
 	 */
 	public boolean havePeers() {
-		return haveValues();
+		return this.haveValues();
 	}
 	
 	/**
 	 * <p>判断是否含有Peer</p>
 	 * 
-	 * @return {@code true}-含有；{@code false}-不含；
+	 * @return true-含有；false-不含；
 	 */
 	public boolean haveValues() {
-		return get(DhtConfig.KEY_VALUES) != null;
+		return this.get(DhtConfig.KEY_VALUES) != null;
 	}
 	
 }
