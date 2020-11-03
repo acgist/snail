@@ -28,7 +28,6 @@ import com.acgist.snail.utils.StringUtils;
  * TODO：观察是否需要定时清理Node
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class NodeManager {
 	
@@ -71,8 +70,8 @@ public final class NodeManager {
 	private final List<NodeSession> nodes;
 	
 	private NodeManager() {
-		this.token = buildToken();
-		this.nodeId = buildNodeId();
+		this.token = this.buildToken();
+		this.nodeId = this.buildNodeId();
 		this.nodes = new ArrayList<>();
 	}
 	

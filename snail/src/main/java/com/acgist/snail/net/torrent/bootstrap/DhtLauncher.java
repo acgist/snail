@@ -31,7 +31,7 @@ public final class DhtLauncher implements Runnable {
 	private final InfoHash infoHash;
 	/**
 	 * <p>客户端节点队列</p>
-	 * <p>如果连接的Peer支持DHT，将该Peer放入到队列，下次查询时使用并加入到系统节点。</p>
+	 * <p>如果连接的Peer支持DHT，将该Peer放入到队列，下次查询时使用同时加入到系统节点。</p>
 	 */
 	private final List<InetSocketAddress> peerNodes = new ArrayList<>();
 	

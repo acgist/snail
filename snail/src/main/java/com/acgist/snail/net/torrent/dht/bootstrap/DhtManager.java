@@ -16,7 +16,6 @@ import com.acgist.snail.utils.ArrayUtils;
  * <p>管理DHT请求</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class DhtManager {
 	
@@ -61,7 +60,7 @@ public final class DhtManager {
 			return;
 		}
 		synchronized (this.requests) {
-			final DhtRequest old = remove(request.getId());
+			final DhtRequest old = this.remove(request.getId());
 			if(old != null) {
 				LOGGER.warn("旧DHT请求没有收到响应（删除）");
 			}
@@ -85,7 +84,7 @@ public final class DhtManager {
 		NodeManager.getInstance().available(response.getNodeId());
 		DhtRequest request = null;
 		synchronized (this.requests) {
-			request = remove(response.getId());
+			request = this.remove(response.getId());
 		}
 		if(request != null) {
 			request.setResponse(response);

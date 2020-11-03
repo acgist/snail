@@ -22,7 +22,6 @@ import com.acgist.snail.utils.ThreadUtils;
  * <p>DHT请求</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public class DhtRequest extends DhtMessage {
 
@@ -132,7 +131,7 @@ public class DhtRequest extends DhtMessage {
 	/**
 	 * <p>判断是否已经响应</p>
 	 * 
-	 * @return {@code true}-已经响应；{@code false}-没有响应；
+	 * @return true-已经响应；false-没有响应；
 	 */
 	public boolean haveResponse() {
 		return this.response != null;
