@@ -50,7 +50,7 @@ public final class DhtClient extends UdpClient<DhtMessageHandler> {
 
 	@Override
 	public boolean open() {
-		return open(TorrentServer.getInstance().channel());
+		return this.open(TorrentServer.getInstance().channel());
 	}
 	
 	/**
