@@ -69,9 +69,17 @@ public final class UrlUtils {
 	 * 
 	 * @return 完整链接
 	 */
-	public static final String redirect(final String source, final String target) {
+	public static final String redirect(final String source, String target) {
 		Objects.requireNonNull(source, "原始页面链接不能为空");
 		Objects.requireNonNull(target, "目标页面链接不能为空");
+		// 去掉引号
+		if(target.startsWith("\"")) {
+			target = target.substring(1);
+		}
+		if(target.endsWith("\"")) {
+			target = target.substring(0, target.length() - 1);
+		}
+		// 执行跳转
 		if(Protocol.Type.HTTP.verify(target)) {
 			// 完整连接
 			return target;
