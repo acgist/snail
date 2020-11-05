@@ -33,7 +33,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0005.html</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class DhtMessageHandler extends UdpMessageHandler {
 	
@@ -246,16 +245,18 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 
 	/**
 	 * <p>处理响应：getPeers</p>
-	 * <p>处理完成后发送声明消息</p>
+	 * <p>处理完成后如果也在下载同一个BT任务发送声明消息</p>
 	 * 
 	 * @param request 请求
 	 * @param response 响应
 	 */
 	private void getPeers(DhtRequest request, DhtResponse response) {
+		final byte[] infoHash = request.getBytes(DhtConfig.KEY_INFO_HASH);
+		final String infoHashHex = StringUtils.hex(infoHash);
 		final GetPeersResponse getPeersResponse = GetPeersResponse.newInstance(response);
 		// 处理Peer
 		if(getPeersResponse.havePeers()) {
-			getPeersResponse.getPeers(request);
+			getPeersResponse.getPeers(infoHashHex);
 		}
 		// 处理节点
 		if(getPeersResponse.haveNodes()) {
@@ -264,10 +265,8 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 		// 发送声明消息
 		final byte[] token = getPeersResponse.getToken();
 		if(token != null) {
-			final byte[] infoHash = request.getBytes(DhtConfig.KEY_INFO_HASH);
-			final String infoHashHex = StringUtils.hex(infoHash);
 			final TorrentSession torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
-			if(torrentSession != null) {
+			if(torrentSession != null && torrentSession.uploadable()) {
 				this.announcePeer(request.getSocketAddress(), token, infoHash);
 			}
 		}

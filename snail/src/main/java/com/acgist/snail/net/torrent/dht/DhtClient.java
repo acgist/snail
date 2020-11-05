@@ -15,12 +15,14 @@ import com.acgist.snail.utils.StringUtils;
  * <p>客户端和服务端使用同一个固定端口{@link SystemConfig#getTorrentPort()}</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class DhtClient extends UdpClient<DhtMessageHandler> {
 
 //	private static final Logger LOGGER = LoggerFactory.getLogger(DhtClient.class);
 	
+	/**
+	 * @param socketAddress 地址
+	 */
 	private DhtClient(InetSocketAddress socketAddress) {
 		super("DHT Client", new DhtMessageHandler(), socketAddress);
 	}
