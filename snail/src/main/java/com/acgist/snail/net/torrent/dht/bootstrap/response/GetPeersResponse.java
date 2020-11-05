@@ -16,7 +16,6 @@ import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.utils.NetUtils;
-import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>查找Peer</p>
@@ -85,26 +84,24 @@ public final class GetPeersResponse extends DhtResponse {
 	/**
 	 * <p>获取Peer列表</p>
 	 * 
-	 * @param request 请求
+	 * @param infoHashHex InfoHash Hex
 	 * 
 	 * @return Peer列表
 	 * 
 	 * @see #getValues(DhtRequest)
 	 */
-	public List<PeerSession> getPeers(DhtRequest request) {
-		return this.getValues(request);
+	public List<PeerSession> getPeers(String infoHashHex) {
+		return this.getValues(infoHashHex);
 	}
 	
 	/**
 	 * <p>获取Peer列表同时加入系统</p>
 	 * 
-	 * @param request 请求
+	 * @param infoHashHex InfoHash Hex
 	 * 
 	 * @return Peer列表
 	 */
-	public List<PeerSession> getValues(DhtRequest request) {
-		final byte[] infoHash = request.getBytes(DhtConfig.KEY_INFO_HASH);
-		final String infoHashHex = StringUtils.hex(infoHash);
+	public List<PeerSession> getValues(String infoHashHex) {
 		final TorrentSession torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
 		if(torrentSession == null) {
 			return List.of();
@@ -162,5 +159,5 @@ public final class GetPeersResponse extends DhtResponse {
 	public boolean haveValues() {
 		return this.get(DhtConfig.KEY_VALUES) != null;
 	}
-	
+
 }
