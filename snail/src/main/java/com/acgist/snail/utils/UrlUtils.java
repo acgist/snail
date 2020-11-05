@@ -73,6 +73,7 @@ public final class UrlUtils {
 		Objects.requireNonNull(source, "原始页面链接不能为空");
 		Objects.requireNonNull(target, "目标页面链接不能为空");
 		// 去掉引号
+		target = target.trim();
 		if(target.startsWith("\"")) {
 			target = target.substring(1);
 		}
