@@ -18,7 +18,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>本地发现客户端</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public final class LocalServiceDiscoveryClient extends UdpClient<LocalServiceDiscoveryMessageHandler> {
 
@@ -29,6 +28,9 @@ public final class LocalServiceDiscoveryClient extends UdpClient<LocalServiceDis
 	 */
 	private static final String PROTOCOL = "BT-SEARCH * HTTP/1.1";
 	
+	/**
+	 * @param socketAddress 地址
+	 */
 	private LocalServiceDiscoveryClient(InetSocketAddress socketAddress) {
 		super("LSD Client", new LocalServiceDiscoveryMessageHandler(), socketAddress);
 	}

@@ -25,7 +25,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0014.html</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public final class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler implements IMessageCodec<String> {
 	

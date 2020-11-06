@@ -14,7 +14,6 @@ import com.acgist.snail.net.torrent.TorrentManager;
  * <p>本地发现服务端</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDiscoveryAcceptHandler> {
 	
