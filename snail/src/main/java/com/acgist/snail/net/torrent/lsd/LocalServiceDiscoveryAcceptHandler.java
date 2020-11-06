@@ -10,7 +10,6 @@ import com.acgist.snail.net.UdpMessageHandler;
  * <p>本地发现接收器</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public final class LocalServiceDiscoveryAcceptHandler extends UdpAcceptHandler {
 
