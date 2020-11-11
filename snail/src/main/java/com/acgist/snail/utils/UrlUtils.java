@@ -38,13 +38,13 @@ public final class UrlUtils {
 		try {
 			return URLEncoder
 				.encode(content, SystemConfig.DEFAULT_CHARSET)
-				.replace("+", "%20"); // 空格变成加号
+				.replace("+", "%20"); // 空格编码变成加号：加号解码变成空格
 		} catch (UnsupportedEncodingException e) {
 			LOGGER.error("URL编码异常：{}", content, e);
 		}
 		return content;
 	}
-
+	
 	/**
 	 * <p>对{@code content}进行URL解码</p>
 	 * 
