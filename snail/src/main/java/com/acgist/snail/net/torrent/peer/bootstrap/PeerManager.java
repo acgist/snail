@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.PeerConfig;
-import com.acgist.snail.net.torrent.peer.bootstrap.ltep.PeerExchangeMessageHandler;
+import com.acgist.snail.net.torrent.peer.bootstrap.extension.PeerExchangeMessageHandler;
 import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.utils.CollectionUtils;
@@ -24,7 +24,6 @@ import com.acgist.snail.utils.CollectionUtils;
  * <p>Peer放入两个队列：{@linkplain #peers 下载队列}、{@linkplain #storagePeers 存档队列}</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class PeerManager {
 	
@@ -88,14 +87,14 @@ public final class PeerManager {
 	 * 
 	 * @param infoHashHex InfoHashHex
 	 * 
-	 * @return {@code true}-找到；{@code false}-没有找到；
+	 * @return true-找到；false-没有找到；
 	 */
 	public boolean havePeerSession(String infoHashHex) {
 		return !this.list(infoHashHex).isEmpty();
 	}
 	
 	/**
-	 * <p>删除{@code InfoHashHex}对应的所有队列</p>
+	 * <p>删除InfoHashHex对应的所有队列</p>
 	 * 
 	 * @param infoHashHex InfoHashHex
 	 */
@@ -213,7 +212,7 @@ public final class PeerManager {
 	 * @param index Piece索引
 	 */
 	public void have(String infoHashHex, int index) {
-		final var list = this.listConnectPeer(infoHashHex);
+		final var list = this.listConnectPeerSession(infoHashHex);
 		final AtomicInteger count = new AtomicInteger(0);
 		list.stream()
 			.forEach(session -> {
@@ -233,7 +232,7 @@ public final class PeerManager {
 	 * @param infoHashHex InfoHashHex
 	 */
 	public void pex(String infoHashHex) {
-		final var list = this.listConnectPeer(infoHashHex);
+		final var list = this.listConnectPeerSession(infoHashHex);
 		// 优质Peer：下载数据
 		final var optimize = list.stream()
 			.filter(session -> session.statistics().downloadSize() > 0)
@@ -262,7 +261,7 @@ public final class PeerManager {
 	 * @param infoHashHex InfoHashHex
 	 */
 	public void uploadOnly(String infoHashHex) {
-		final var list = this.listConnectPeer(infoHashHex);
+		final var list = this.listConnectPeerSession(infoHashHex);
 		final AtomicInteger count = new AtomicInteger(0);
 		list.stream()
 			.forEach(session -> {
@@ -309,7 +308,7 @@ public final class PeerManager {
 	 * 
 	 * @return 连接的Peer队列拷贝
 	 */
-	private List<PeerSession> listConnectPeer(String infoHashHex) {
+	private List<PeerSession> listConnectPeerSession(String infoHashHex) {
 		final var list = this.list(infoHashHex);
 		if(CollectionUtils.isEmpty(list)) {
 			return List.of();

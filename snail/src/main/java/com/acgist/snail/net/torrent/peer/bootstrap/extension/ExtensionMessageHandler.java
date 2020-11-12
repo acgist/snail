@@ -1,4 +1,4 @@
-package com.acgist.snail.net.torrent.peer.bootstrap.ltep;
+package com.acgist.snail.net.torrent.peer.bootstrap.extension;
 
 import java.nio.ByteBuffer;
 import java.util.LinkedHashMap;
@@ -33,7 +33,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0010.html</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	
@@ -76,6 +75,8 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	private static final String EX_E = "e";
 	/**
 	 * <p>支持未完成请求数量：{@value}</p>
+	 * 
+	 * @see #DEFAULT_REQQ
 	 */
 	private static final String EX_REQQ = "reqq";
 //	/**
@@ -101,6 +102,8 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	/**
 	 * <p>种子InfoHash数据大小：{@value}</p>
 	 * <p>ut_metadata协议使用</p>
+	 * 
+	 * @see MetadataMessageHandler
 	 */
 	private static final String EX_METADATA_SIZE = "metadata_size";
 
@@ -112,27 +115,57 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 * <p>是否已经接收握手</p>
 	 */
 	private volatile boolean handshakeRecv = false;
-	
+	/**
+	 * <p>InfoHash</p>
+	 */
 	private final InfoHash infoHash;
+	/**
+	 * <p>Peer信息</p>
+	 */
 	private final PeerSession peerSession;
+	/**
+	 * <p>BT任务信息</p>
+	 */
 	private final TorrentSession torrentSession;
-	
+	/**
+	 * <p>Peer消息代理</p>
+	 */
 	private final PeerSubMessageHandler peerSubMessageHandler;
+	/**
+	 * @see MetadataMessageHandler
+	 */
 	private final MetadataMessageHandler metadataMessageHandler;
+	/**
+	 * @see HolepunchMessageHnadler
+	 */
 	private final HolepunchMessageHnadler holepunchMessageHnadler;
+	/**
+	 * @see PeerExchangeMessageHandler
+	 */
 	private final PeerExchangeMessageHandler peerExchangeMessageHandler;
+	/**
+	 * @see DontHaveExtensionMessageHandler
+	 */
 	private final DontHaveExtensionMessageHandler dontHaveExtensionMessageHandler;
+	/**
+	 * @see UploadOnlyExtensionMessageHandler
+	 */
 	private final UploadOnlyExtensionMessageHandler uploadOnlyExtensionMessageHandler;
 	
+	/**
+	 * @param peerSession Peer信息
+	 * @param torrentSession BT任务信息
+	 * @param peerSubMessageHandler Peer消息代理
+	 */
 	private ExtensionMessageHandler(PeerSession peerSession, TorrentSession torrentSession, PeerSubMessageHandler peerSubMessageHandler) {
 		this.infoHash = torrentSession.infoHash();
 		this.peerSession = peerSession;
 		this.torrentSession = torrentSession;
 		this.peerSubMessageHandler = peerSubMessageHandler;
-		this.metadataMessageHandler = MetadataMessageHandler.newInstance(this.peerSession, this.torrentSession, this);
-		this.holepunchMessageHnadler = HolepunchMessageHnadler.newInstance(this.peerSession, this.torrentSession, this);
-		this.peerExchangeMessageHandler = PeerExchangeMessageHandler.newInstance(this.peerSession, this.torrentSession, this);
-		this.dontHaveExtensionMessageHandler = DontHaveExtensionMessageHandler.newInstance(this.peerSession, this);
+		this.metadataMessageHandler = MetadataMessageHandler.newInstance(peerSession, torrentSession, this);
+		this.holepunchMessageHnadler = HolepunchMessageHnadler.newInstance(peerSession, torrentSession, this);
+		this.peerExchangeMessageHandler = PeerExchangeMessageHandler.newInstance(peerSession, torrentSession, this);
+		this.dontHaveExtensionMessageHandler = DontHaveExtensionMessageHandler.newInstance(peerSession, this);
 		this.uploadOnlyExtensionMessageHandler = UploadOnlyExtensionMessageHandler.newInstance(peerSession, this);
 	}
 	
@@ -433,6 +466,16 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	}
 	
 	/**
+	 * <p>发送扩展消息</p>
+	 * 
+	 * @param type 扩展消息类型
+	 * @param bytes 扩展消息数据
+	 */
+	public void pushMessage(byte type, byte[] bytes) {
+		this.peerSubMessageHandler.pushMessage(PeerConfig.Type.EXTENSION, this.buildMessage(type, bytes));
+	}
+	
+	/**
 	 * <p>创建扩展消息</p>
 	 * 
 	 * @param type 消息类型
@@ -445,16 +488,6 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 		message[0] = type; // 扩展消息类型
 		System.arraycopy(bytes, 0, message, 1, bytes.length);
 		return message;
-	}
-	
-	/**
-	 * <p>发送扩展消息</p>
-	 * 
-	 * @param type 扩展消息类型
-	 * @param bytes 扩展消息数据
-	 */
-	public void pushMessage(byte type, byte[] bytes) {
-		this.peerSubMessageHandler.pushMessage(PeerConfig.Type.EXTENSION, this.buildMessage(type, bytes));
 	}
 
 }

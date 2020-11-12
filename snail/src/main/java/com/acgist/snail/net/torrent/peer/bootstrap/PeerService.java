@@ -16,7 +16,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>管理客户端的PeerId</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class PeerService {
 

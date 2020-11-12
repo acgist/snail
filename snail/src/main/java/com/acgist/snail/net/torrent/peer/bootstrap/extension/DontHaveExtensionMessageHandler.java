@@ -1,4 +1,4 @@
-package com.acgist.snail.net.torrent.peer.bootstrap.ltep;
+package com.acgist.snail.net.torrent.peer.bootstrap.extension;
 
 import java.nio.ByteBuffer;
 
@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.PeerConfig.ExtensionType;
+import com.acgist.snail.net.torrent.peer.bootstrap.ExtensionTypeMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.utils.NumberUtils;
 
@@ -15,12 +16,15 @@ import com.acgist.snail.utils.NumberUtils;
  * <p>宣布不再含有某个Piece</p>
  * 
  * @author acgist
- * @since 1.2.0
  */
 public final class DontHaveExtensionMessageHandler extends ExtensionTypeMessageHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DontHaveExtensionMessageHandler.class);
 	
+	/**
+	 * @param peerSession Peer信息
+	 * @param extensionMessageHandler 扩展协议代理
+	 */
 	private DontHaveExtensionMessageHandler(PeerSession peerSession, ExtensionMessageHandler extensionMessageHandler) {
 		super(ExtensionType.LT_DONTHAVE, peerSession, extensionMessageHandler);
 	}
