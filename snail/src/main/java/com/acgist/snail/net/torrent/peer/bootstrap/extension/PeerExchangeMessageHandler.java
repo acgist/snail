@@ -1,4 +1,4 @@
-package com.acgist.snail.net.torrent.peer.bootstrap.ltep;
+package com.acgist.snail.net.torrent.peer.bootstrap.extension;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;
@@ -16,6 +16,7 @@ import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.context.exception.PacketSizeException;
 import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.format.BEncodeEncoder;
+import com.acgist.snail.net.torrent.peer.bootstrap.ExtensionTypeMessageHandler;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
@@ -30,7 +31,6 @@ import com.acgist.snail.utils.PeerUtils;
  * TODO：IPv6
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandler {
 	
@@ -69,6 +69,11 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 	 */
 	private final TorrentSession torrentSession;
 	
+	/**
+	 * @param peerSession Peer信息
+	 * @param torrentSession BT任务信息
+	 * @param extensionMessageHandler 扩展协议代理
+	 */
 	private PeerExchangeMessageHandler(PeerSession peerSession, TorrentSession torrentSession, ExtensionMessageHandler extensionMessageHandler) {
 		super(ExtensionType.UT_PEX, peerSession, extensionMessageHandler);
 		this.torrentSession = torrentSession;

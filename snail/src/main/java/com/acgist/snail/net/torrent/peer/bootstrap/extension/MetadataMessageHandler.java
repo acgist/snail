@@ -1,4 +1,4 @@
-package com.acgist.snail.net.torrent.peer.bootstrap.ltep;
+package com.acgist.snail.net.torrent.peer.bootstrap.extension;
 
 import java.nio.ByteBuffer;
 import java.util.LinkedHashMap;
@@ -14,6 +14,7 @@ import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.format.BEncodeEncoder;
+import com.acgist.snail.net.torrent.peer.bootstrap.ExtensionTypeMessageHandler;
 import com.acgist.snail.pojo.bean.InfoHash;
 import com.acgist.snail.pojo.bean.Torrent;
 import com.acgist.snail.pojo.session.PeerSession;
@@ -30,7 +31,6 @@ import com.acgist.snail.utils.StringUtils;
  * TODO：大量请求时拒绝请求
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 
@@ -62,6 +62,11 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 	 */
 	private final TorrentSession torrentSession;
 	
+	/**
+	 * @param peerSession Peer信息
+	 * @param torrentSession BT任务信息
+	 * @param extensionMessageHandler 扩展协议代理
+	 */
 	private MetadataMessageHandler(PeerSession peerSession, TorrentSession torrentSession, ExtensionMessageHandler extensionMessageHandler) {
 		super(ExtensionType.UT_METADATA, peerSession, extensionMessageHandler);
 		this.infoHash = torrentSession.infoHash();
@@ -173,13 +178,13 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 	private void data(BEncodeDecoder decoder) {
 		LOGGER.debug("处理metadata消息-data");
 		byte[] bytes = this.infoHash.info();
-		final int piece = decoder.getInteger(ARG_PIECE);
 		// 设置种子Info
 		if(bytes == null) {
 			final int totalSize = decoder.getInteger(ARG_TOTAL_SIZE);
 			bytes = new byte[totalSize];
 			this.infoHash.info(bytes);
 		}
+		final int piece = decoder.getInteger(ARG_PIECE);
 		final int begin = piece * SLICE_LENGTH;
 		final int end = begin + SLICE_LENGTH;
 		if(begin > bytes.length) {

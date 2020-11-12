@@ -1,4 +1,4 @@
-package com.acgist.snail.net.torrent.peer.bootstrap.ltep;
+package com.acgist.snail.net.torrent.peer.bootstrap.extension;
 
 import java.nio.ByteBuffer;
 
@@ -10,6 +10,7 @@ import com.acgist.snail.config.PeerConfig.ExtensionType;
 import com.acgist.snail.config.PeerConfig.HolepunchErrorCode;
 import com.acgist.snail.config.PeerConfig.HolepunchType;
 import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.net.torrent.peer.bootstrap.ExtensionTypeMessageHandler;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.net.torrent.utp.UtpClient;
@@ -30,7 +31,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>Pex交换的Peer如果不能直接连接，Pex源Peer作为中继通过holepunch协议实现连接。</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	
@@ -49,6 +49,11 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	 */
 	private final TorrentSession torrentSession;
 	
+	/**
+	 * @param peerSession Peer信息
+	 * @param torrentSession BT任务信息
+	 * @param extensionMessageHandler 扩展协议代理
+	 */
 	private HolepunchMessageHnadler(PeerSession peerSession, TorrentSession torrentSession, ExtensionMessageHandler extensionMessageHandler) {
 		super(ExtensionType.UT_HOLEPUNCH, peerSession, extensionMessageHandler);
 		this.torrentSession = torrentSession;
@@ -107,14 +112,13 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	/**
 	 * <p>发送消息：rendezvous</p>
 	 * 
-	 * @param peerSession peerSession
+	 * @param peerSession Peer信息
 	 */
 	public void rendezvous(PeerSession peerSession) {
 		final String host = peerSession.host();
 		final int port = peerSession.port();
 		LOGGER.debug("发送holepunch消息-rendezvous：{}-{}", host, port);
-		final ByteBuffer message = this.buildMessage(HolepunchType.RENDEZVOUS, host, port);
-		this.pushMessage(message);
+		this.pushMessage(this.buildMessage(HolepunchType.RENDEZVOUS, host, port));
 		peerSession.holepunchLock(); // 加锁
 	}
 	
@@ -172,7 +176,7 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	 */
 	public void connect(String host, int port) {
 		LOGGER.debug("发送holepunch消息-connect：{}-{}", host, port);
-		this.pushMessage(buildMessage(HolepunchType.CONNECT, host, port));
+		this.pushMessage(this.buildMessage(HolepunchType.CONNECT, host, port));
 	}
 	
 	/**
@@ -223,7 +227,7 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	 */
 	private void error(String host, int port, HolepunchErrorCode errorCode) {
 		LOGGER.debug("发送holepunch消息-error：{}-{}-{}", host, port, errorCode);
-		this.pushMessage(buildMessage(HolepunchType.ERROR, host, port, errorCode));
+		this.pushMessage(this.buildMessage(HolepunchType.ERROR, host, port, errorCode));
 	}
 	
 	/**
@@ -270,7 +274,7 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 		buffer.put(IPV4); // 地址类型：0x00=IPv4；0x01=IPv6；
 		buffer.putInt(NetUtils.encodeIpToInt(host)); // IP地址
 		buffer.putShort(NetUtils.encodePort(port)); // 端口号
-		if(type == HolepunchType.ERROR) { // 非错误消息不发送错误编码
+		if(type == HolepunchType.ERROR && errorCode != null) { // 非错误消息不发送错误编码
 			buffer.putInt(errorCode.code()); // 错误编码
 		}
 		return buffer;

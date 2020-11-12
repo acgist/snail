@@ -17,8 +17,8 @@ import com.acgist.snail.net.torrent.PeerConnect;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.bootstrap.PeerDownloader;
 import com.acgist.snail.net.torrent.bootstrap.PeerUploader;
-import com.acgist.snail.net.torrent.peer.bootstrap.dht.DhtExtensionMessageHandler;
-import com.acgist.snail.net.torrent.peer.bootstrap.ltep.ExtensionMessageHandler;
+import com.acgist.snail.net.torrent.peer.bootstrap.extension.DhtExtensionMessageHandler;
+import com.acgist.snail.net.torrent.peer.bootstrap.extension.ExtensionMessageHandler;
 import com.acgist.snail.pojo.session.PeerConnectSession;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
@@ -58,7 +58,6 @@ import com.acgist.snail.utils.StringUtils;
  * TODO：流水线
  * 
  * @author acgist
- * @since 1.1.0
  */
 public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 
@@ -81,7 +80,6 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * <p>是否是服务端</p>
 	 */
 	private final boolean server;
-	
 	/**
 	 * <p>Peer连接：PeerUploader、PeerDownloader</p>
 	 */
@@ -120,6 +118,9 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 
 	/**
 	 * <p>客户端</p>
+	 * 
+	 * @param peerSession Peer信息
+	 * @param torrentSession BT任务信息
 	 */
 	private PeerSubMessageHandler(PeerSession peerSession, TorrentSession torrentSession) {
 		this.server = false;
@@ -129,7 +130,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	/**
 	 * <p>服务端</p>
 	 * 
-	 * @return {@link PeerSubMessageHandler}
+	 * @return PeerSubMessageHandler
 	 */
 	public static final PeerSubMessageHandler newInstance() {
 		return new PeerSubMessageHandler();
@@ -141,7 +142,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * @param peerSession Peer信息
 	 * @param torrentSession BT任务信息
 	 * 
-	 * @return {@link PeerSubMessageHandler}
+	 * @return PeerSubMessageHandler
 	 */
 	public static final PeerSubMessageHandler newInstance(PeerSession peerSession, TorrentSession torrentSession) {
 		return new PeerSubMessageHandler(peerSession, torrentSession);
@@ -214,7 +215,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	/**
 	 * <p>是否握手完成</p>
 	 * 
-	 * @return {@code true}-完成；{@code false}-没有完成；
+	 * @return true-完成；false-没有完成；
 	 */
 	public boolean handshake() {
 		return this.handshakeRecv;
@@ -233,7 +234,9 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * <p>是否需要加密</p>
 	 * <p>验证Peer是否偏爱加密</p>
 	 * 
-	 * @return {@code true}-加密；{@code false}-明文；
+	 * @return true-加密；false-明文；
+	 * 
+	 * @see PeerSession#encrypt()
 	 */
 	public boolean needEncrypt() {
 		if(this.peerSession == null) {
@@ -334,9 +337,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	/**
 	 * <p>发送握手消息</p>
 	 * <p>注：握手设置超时时间，发送方法默认没有设置超时时间，防止握手一直等待导致一直占用线程。</p>
-	 * <p>
-	 * 格式：pstrlen pstr reserved info_hash peer_id
-	 * </p>
+	 * <p>格式：pstrlen pstr reserved info_hash peer_id</p>
 	 * <pre>
 	 * pstrlen：协议（pstr）的长度：19
 	 * pstr：BitTorrent协议：{@link PeerConfig#HANDSHAKE_NAME}
@@ -427,9 +428,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 
 	/**
 	 * <p>发送心跳消息</p>
-	 * <p>
-	 * 格式：len=0000
-	 * </p>
+	 * <p>格式：len=0000</p>
 	 */
 	public void keepAlive() {
 		LOGGER.debug("发送心跳消息");
@@ -438,9 +437,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	
 	/**
 	 * <p>发送阻塞消息</p>
-	 * <p>
-	 * 格式：len=0001 id=0x00
-	 * </p>
+	 * <p>格式：len=0001 id=0x00</p>
 	 * <p>阻塞后Peer不能进行下载</p>
 	 */
 	public void choke() {
@@ -465,9 +462,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	
 	/**
 	 * <p>发送解除阻塞消息</p>
-	 * <p>
-	 * 格式：len=0001 id=0x01
-	 * </p>
+	 * <p>格式：len=0001 id=0x01</p>
 	 * <p>解除阻塞后Peer才可以进行下载</p>
 	 */
 	private void unchoke() {
@@ -507,9 +502,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	
 	/**
 	 * <p>发送感兴趣消息</p>
-	 * <p>
-	 * 格式：len=0001 id=0x02
-	 * </p>
+	 * <p>格式：len=0001 id=0x02</p>
 	 * <p>收到have消息时，如果客户端没有对应的Piece，发送感兴趣消息表示客户端对Peer感兴趣。</p>
 	 */
 	private void interested() {
@@ -534,9 +527,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 
 	/**
 	 * <p>发送不感兴趣消息</p>
-	 * <p>
-	 * 格式：len=0001 id=0x03
-	 * </p>
+	 * <p>格式：len=0001 id=0x03</p>
 	 * <p>客户端已经拥有Peer所有的Piece时发送不感兴趣</p>
 	 * <p>在交换Piece位图和Piece下载完成后，如果Peer没有更多的Piece时才发送不感兴趣消息，其他情况不发送此消息。</p>
 	 */
@@ -562,12 +553,8 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 
 	/**
 	 * <p>发送have消息</p>
-	 * <p>
-	 * 格式：len=0005 id=0x04 index
-	 * </p>
-	 * <p>
-	 * index：Piece索引
-	 * </p>
+	 * <p>格式：len=0005 id=0x04 index</p>
+	 * <p>index：Piece索引</p>
 	 * <p>当客户端下载完成一个Piece时，发送have消息告诉与客户端连接的Peer已经拥有该Piece。</p>
 	 * 
 	 * @param index Piece索引
@@ -609,9 +596,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 
 	/**
 	 * <p>发送haveAll消息</p>
-	 * <p>
-	 * 格式：len=0001 id=0x0E
-	 * </p>
+	 * <p>格式：len=0001 id=0x0E</p>
 	 */
 	private void haveAll() {
 		if(!this.torrentSession.uploadable()) {
@@ -647,9 +632,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	
 	/**
 	 * <p>发送haveNone消息</p>
-	 * <p>
-	 * 格式：len=0001 id=0x0F
-	 * </p>
+	 * <p>格式：len=0001 id=0x0F</p>
 	 */
 	private void haveNone() {
 		LOGGER.debug("发送haveNone消息");
@@ -668,12 +651,8 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	
 	/**
 	 * <p>发送suggestPiece消息</p>
-	 * <p>
-	 * 格式：len=0005 id=0x0D index
-	 * </p>
-	 * <p>
-	 * index：Piece索引
-	 * </p>
+	 * <p>格式：len=0005 id=0x0D index</p>
+	 * <p>index：Piece索引</p>
 	 * <p>Superseeding使用：下载Piece后发送此消息，Piece数据直接在内存中读取，减少读取硬盘。</p>
 	 * 
 	 * @param index Piece索引
@@ -719,9 +698,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	
 	/**
 	 * <p>发送rejectRequest消息</p>
-	 * <p>
-	 * 格式：len=0013 id=0x10 index begin length
-	 * </p>
+	 * <p>格式：len=0013 id=0x10 index begin length</p>
 	 * 
 	 * @param index Piece索引
 	 * @param begin Piece内偏移
@@ -756,12 +733,8 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	
 	/**
 	 * <p>发送allowedFast消息</p>
-	 * <p>
-	 * 格式：len=0005 id=0x11 index
-	 * </p>
-	 * <p>
-	 * index：Piece索引
-	 * </p>
+	 * <p>格式：len=0005 id=0x11 index</p>
+	 * <p>index：Piece索引</p>
 	 * 
 	 * @param index Piece索引
 	 */
@@ -843,9 +816,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	
 	/**
 	 * <p>发送Piece位图消息</p>
-	 * <p>
-	 * 格式：len=0001+X id=0x05 bitfield
-	 * </p>
+	 * <p>格式：len=0001+X id=0x05 bitfield</p>
 	 * <pre>
 	 * X：bitfield.length
 	 * bitfield：Piece位图
@@ -895,9 +866,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	
 	/**
 	 * <p>发送request消息</p>
-	 * <p>
-	 * 格式：len=0013 id=0x06 index begin length
-	 * </p>
+	 * <p>格式：len=0013 id=0x06 index begin length</p>
 	 * <pre>
 	 * index：Piece索引
 	 * begin：Piece内偏移
@@ -964,9 +933,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 
 	/**
 	 * <p>发送piece消息</p>
-	 * <p>
-	 * 格式：len=0009+X id=0x07 index begin block
-	 * </p>
+	 * <p>格式：len=0009+X id=0x07 index begin block</p>
 	 * <pre>
 	 * index：Piece索引
 	 * begin：Piece内偏移
@@ -1019,9 +986,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 
 	/**
 	 * <p>发送cancel消息</p>
-	 * <p>
-	 * 格式：len=0013 id=0x08 index begin length
-	 * </p>
+	 * <p>格式：len=0013 id=0x08 index begin length</p>
 	 * <p>与request作用相反：取消下载</p>
 	 * 
 	 * @param index Piece索引
@@ -1048,12 +1013,8 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	
 	/**
 	 * <p>发送DHT消息</p>
-	 * <p>
-	 * 格式：len=0003 id=0x09 listen-port
-	 * </p>
-	 * <p>
-	 * listen-port：DHT端口
-	 * </p>
+	 * <p>格式：len=0003 id=0x09 listen-port</p>
+	 * <p>listen-port：DHT端口</p>
 	 * <p>支持DHT的客户端使用：指明DHT监听的端口</p>
 	 * 
 	 * @see DhtExtensionMessageHandler#port()
@@ -1077,9 +1038,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 
 	/**
 	 * <p>发送扩展消息</p>
-	 * <p>
-	 * 格式：len=0001+X id=0x14 ex
-	 * </p>
+	 * <p>格式：len=0001+X id=0x14 ex</p>
 	 * <pre>
 	 * X：ex长度
 	 * ex：扩展消息
@@ -1161,9 +1120,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	
 	/**
 	 * <p>创建消息</p>
-	 * <p>
-	 * 消息格式：length_prefix message_id payload
-	 * </p>
+	 * <p>消息格式：length_prefix message_id payload</p>
 	 * <pre>
 	 * length_prefix（4字节）：message_id长度 + payload长度
 	 * message_id（1字节）：{@linkplain Type 消息类型ID}

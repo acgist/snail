@@ -1,4 +1,4 @@
-package com.acgist.snail.net.torrent.peer.bootstrap.ltep;
+package com.acgist.snail.net.torrent.peer.bootstrap.extension;
 
 import java.nio.ByteBuffer;
 
@@ -7,13 +7,13 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.config.PeerConfig.ExtensionType;
+import com.acgist.snail.net.torrent.peer.bootstrap.ExtensionTypeMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 
 /**
  * <p>下载完成时发送uploadOnly消息</p>
  * 
  * @author acgist
- * @since 1.2.0
  */
 public final class UploadOnlyExtensionMessageHandler extends ExtensionTypeMessageHandler {
 	
@@ -24,6 +24,10 @@ public final class UploadOnlyExtensionMessageHandler extends ExtensionTypeMessag
 	 */
 	private static final byte UPLOAD_ONLY = 0x01;
 	
+	/**
+	 * @param peerSession Peer信息
+	 * @param extensionMessageHandler 扩展消息代理
+	 */
 	private UploadOnlyExtensionMessageHandler(PeerSession peerSession, ExtensionMessageHandler extensionMessageHandler) {
 		super(ExtensionType.UPLOAD_ONLY, peerSession, extensionMessageHandler);
 	}
@@ -31,7 +35,7 @@ public final class UploadOnlyExtensionMessageHandler extends ExtensionTypeMessag
 	/**
 	 * <p>创建uploadOnly消息代理</p>
 	 * 
-	 * @param peerSession Peer
+	 * @param peerSession Peer信息
 	 * @param extensionMessageHandler 扩展消息代理
 	 * 
 	 * @return uploadOnly消息代理

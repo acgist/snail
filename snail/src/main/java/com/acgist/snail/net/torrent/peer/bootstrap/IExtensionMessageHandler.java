@@ -8,7 +8,6 @@ import com.acgist.snail.context.exception.NetException;
  * <p>扩展协议</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public interface IExtensionMessageHandler {
 

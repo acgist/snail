@@ -1,4 +1,4 @@
-package com.acgist.snail.net.torrent.peer.bootstrap.dht;
+package com.acgist.snail.net.torrent.peer.bootstrap.extension;
 
 import java.nio.ByteBuffer;
 
@@ -19,17 +19,29 @@ import com.acgist.snail.utils.NumberUtils;
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0004.html</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class DhtExtensionMessageHandler implements IExtensionMessageHandler {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(DhtExtensionMessageHandler.class);
 	
+	/**
+	 * <p>Peer信息</p>
+	 */
 	private final PeerSession peerSession;
+	/**
+	 * <p>BT任务信息</p>
+	 */
 	private final TorrentSession torrentSession;
-	
+	/**
+	 * <p>Peer消息代理</p>
+	 */
 	private final PeerSubMessageHandler peerSubMessageHandler;
 	
+	/**
+	 * @param peerSession Peer信息
+	 * @param torrentSession BT任务信息
+	 * @param peerSubMessageHandler Peer消息代理
+	 */
 	private DhtExtensionMessageHandler(PeerSession peerSession, TorrentSession torrentSession, PeerSubMessageHandler peerSubMessageHandler) {
 		this.peerSession = peerSession;
 		this.torrentSession = torrentSession;

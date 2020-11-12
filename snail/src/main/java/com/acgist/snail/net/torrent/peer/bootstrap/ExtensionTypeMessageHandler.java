@@ -1,4 +1,4 @@
-package com.acgist.snail.net.torrent.peer.bootstrap.ltep;
+package com.acgist.snail.net.torrent.peer.bootstrap;
 
 import java.nio.ByteBuffer;
 
@@ -7,14 +7,13 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.PeerConfig.ExtensionType;
 import com.acgist.snail.context.exception.NetException;
-import com.acgist.snail.net.torrent.peer.bootstrap.IExtensionMessageHandler;
+import com.acgist.snail.net.torrent.peer.bootstrap.extension.ExtensionMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 
 /**
  * <p>扩展协议类型抽象</p>
  * 
  * @author acgist
- * @since 1.1.1
  */
 public abstract class ExtensionTypeMessageHandler implements IExtensionMessageHandler {
 
@@ -67,7 +66,7 @@ public abstract class ExtensionTypeMessageHandler implements IExtensionMessageHa
 	 * 
 	 * @return true-支持；false-不支持；
 	 */
-	protected boolean supportExtensionType() {
+	public boolean supportExtensionType() {
 		return this.peerSession.supportExtensionType(this.extensionType);
 	}
 	
