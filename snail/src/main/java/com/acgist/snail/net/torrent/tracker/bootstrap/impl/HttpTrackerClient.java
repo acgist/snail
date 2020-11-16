@@ -34,7 +34,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0048.html</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class HttpTrackerClient extends TrackerClient {
 
@@ -55,6 +54,12 @@ public final class HttpTrackerClient extends TrackerClient {
 	 */
 	private String trackerId;
 	
+	/**
+	 * @param scrapeUrl 刮擦URL
+	 * @param announceUrl 声明URL
+	 * 
+	 * @throws NetException 网络异常
+	 */
 	private HttpTrackerClient(String scrapeUrl, String announceUrl) throws NetException {
 		super(scrapeUrl, announceUrl, Protocol.Type.HTTP);
 	}
@@ -213,6 +218,8 @@ public final class HttpTrackerClient extends TrackerClient {
 	 * 
 	 * @param sid sid
 	 * @param decoder B编码解码器
+	 * 
+	 * @return 刮擦消息
 	 */
 	private static final List<ScrapeMessage> convertScrapeMessage(Integer sid, BEncodeDecoder decoder) {
 		final var files = decoder.getMap("files");
@@ -236,7 +243,6 @@ public final class HttpTrackerClient extends TrackerClient {
 	}
 	
 	/**
-	 * <p>创建scrapeUrl</p>
 	 * <p>announceUrl转换scrapeUrl</p>
 	 * <table border="1">
 	 * 	<tr>

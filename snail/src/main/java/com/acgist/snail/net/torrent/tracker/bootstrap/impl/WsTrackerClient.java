@@ -17,7 +17,6 @@ import com.acgist.snail.protocol.Protocol;
  * TODO：实现解析
  * 
  * @author acgist
- * @since 1.1.0
  */
 public final class WsTrackerClient extends TrackerClient {
 
@@ -28,6 +27,12 @@ public final class WsTrackerClient extends TrackerClient {
 	 */
 	private final com.acgist.snail.net.ws.tracker.TrackerClient trackerClient;
 	
+	/**
+	 * @param scrapeUrl 刮擦URL
+	 * @param announceUrl 声明URL
+	 * 
+	 * @throws NetException 网络异常
+	 */
 	private WsTrackerClient(String scrapeUrl, String announceUrl) throws NetException {
 		super(scrapeUrl, announceUrl, Protocol.Type.WS);
 		this.trackerClient = com.acgist.snail.net.ws.tracker.TrackerClient.newInstance(this.announceUrl);

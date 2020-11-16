@@ -24,7 +24,6 @@ import com.acgist.snail.utils.ThreadUtils;
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0015.html</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker.bootstrap.TrackerClient {
 
@@ -57,6 +56,12 @@ public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker
 	 */
 	private final TrackerClient trackerClient;
 
+	/**
+	 * @param scrapeUrl 刮擦URL
+	 * @param announceUrl 声明URL
+	 * 
+	 * @throws NetException 网络异常
+	 */
 	private UdpTrackerClient(String scrapeUrl, String announceUrl) throws NetException {
 		super(scrapeUrl, announceUrl, Protocol.Type.UDP);
 		final URI uri = URI.create(announceUrl);
@@ -198,7 +203,7 @@ public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker
 	 * @param sid sid
 	 * @param torrentSession BT信息
 	 * 
-	 * @return 消息
+	 * @return 刮擦消息
 	 */
 	private ByteBuffer buildScrapeMessage(Integer sid, TorrentSession torrentSession) {
 		final ByteBuffer buffer = ByteBuffer.allocate(36);
