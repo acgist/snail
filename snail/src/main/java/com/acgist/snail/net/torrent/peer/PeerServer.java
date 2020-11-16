@@ -8,7 +8,6 @@ import com.acgist.snail.net.TcpServer;
  * <p>监听端口：{@link SystemConfig#getTorrentPort()}</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class PeerServer extends TcpServer<PeerMessageHandler> {
 	

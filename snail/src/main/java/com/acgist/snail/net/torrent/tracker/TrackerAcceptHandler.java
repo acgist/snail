@@ -10,7 +10,6 @@ import com.acgist.snail.net.UdpMessageHandler;
  * <p>UDP Tracker接收器</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class TrackerAcceptHandler extends UdpAcceptHandler {
 	

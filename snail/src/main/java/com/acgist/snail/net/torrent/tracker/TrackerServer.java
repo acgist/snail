@@ -6,7 +6,6 @@ import com.acgist.snail.net.UdpServer;
  * <p>Tracker服务端</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class TrackerServer extends UdpServer<TrackerAcceptHandler> {
 

@@ -9,7 +9,6 @@ import com.acgist.snail.pojo.session.PeerSession;
  * <p>Peer客户端</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class PeerClient extends TcpClient<PeerMessageHandler> {
 
@@ -22,6 +21,10 @@ public final class PeerClient extends TcpClient<PeerMessageHandler> {
 	 */
 	private final PeerSubMessageHandler peerSubMessageHandler;
 	
+	/**
+	 * @param peerSession Peer信息
+	 * @param peerSubMessageHandler Peer消息代理
+	 */
 	private PeerClient(PeerSession peerSession, PeerSubMessageHandler peerSubMessageHandler) {
 		super("Peer Client", SystemConfig.CONNECT_TIMEOUT, new PeerMessageHandler(peerSubMessageHandler));
 		this.peerSession = peerSession;
@@ -46,9 +49,9 @@ public final class PeerClient extends TcpClient<PeerMessageHandler> {
 	}
 
 	/**
-	 * <p>获取Peer客户端</p>
+	 * <p>获取Peer信息</p>
 	 * 
-	 * @return Peer客户端
+	 * @return Peer信息
 	 */
 	public PeerSession peerSession() {
 		return this.peerSession;

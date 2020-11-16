@@ -15,8 +15,8 @@ public class TrackerClientWsTest extends BaseTest {
 	
 	@Test
 	public void testAnnounce() throws NetException, DownloadException {
-//		String path = "e:/snail/12345.torrent";
-		String path = "e:/snail/sintel.torrent";
+//		String path = "E:/snail/12345.torrent";
+		String path = "E:/snail/sintel.torrent";
 		TorrentSession session = TorrentManager.getInstance().newTorrentSession(path);
 //		WsTrackerClient client = WsTrackerClient.newInstance("wss://tracker.fastcast.nz");
 //		WsTrackerClient client = WsTrackerClient.newInstance("wss://tracker.btorrent.xyz");

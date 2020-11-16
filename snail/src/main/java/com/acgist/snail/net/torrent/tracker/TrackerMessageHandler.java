@@ -17,7 +17,6 @@ import com.acgist.snail.utils.PeerUtils;
  * <p>UDP Tracker消息代理</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class TrackerMessageHandler extends UdpMessageHandler {
 

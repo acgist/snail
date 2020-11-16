@@ -17,7 +17,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>sid：Torrent和Tracker服务器对应的id</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public abstract class TrackerClient implements Comparable<TrackerClient> {
 	
@@ -226,7 +225,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	/**
 	 * <p>判断是否可用</p>
 	 * 
-	 * @return {@code true}-可用；{@code false}-禁用；
+	 * @return true-可用；false-禁用；
 	 */
 	public boolean available() {
 		return this.available;
@@ -246,7 +245,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	 * 
 	 * @param announceUrl 声明地址
 	 * 
-	 * @return {@code true}-相同；{@code fasle}-不同；
+	 * @return true-相同；fasle-不同；
 	 */
 	public boolean equalsAnnounceUrl(String announceUrl) {
 		return this.announceUrl.equals(announceUrl);
@@ -267,7 +266,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	 * 
 	 * @param object 客户端
 	 * 
-	 * @return {@code true}-相等；{@code false}-不等；
+	 * @return true-相等；false-不等；
 	 */
 	@Override
 	public boolean equals(Object object) {

@@ -13,7 +13,6 @@ import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
  * <p>Peer消息代理</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class PeerMessageHandler extends TcpMessageHandler implements IMessageEncryptSender {
 
