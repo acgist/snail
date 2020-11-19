@@ -9,7 +9,6 @@ import com.acgist.snail.pojo.session.PeerSession;
  * <p>UTP客户端</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public final class UtpClient extends UdpClient<UtpMessageHandler> {
 
@@ -22,6 +21,10 @@ public final class UtpClient extends UdpClient<UtpMessageHandler> {
 	 */
 	private final PeerSubMessageHandler peerSubMessageHandler;
 	
+	/**
+	 * @param peerSession Peer信息
+	 * @param peerSubMessageHandler Peer消息代理
+	 */
 	private UtpClient(PeerSession peerSession, PeerSubMessageHandler peerSubMessageHandler) {
 		super("UTP Client", new UtpMessageHandler(peerSubMessageHandler, peerSession.peerSocketAddress()), peerSession.peerSocketAddress());
 		this.peerSession = peerSession;
@@ -48,7 +51,7 @@ public final class UtpClient extends UdpClient<UtpMessageHandler> {
 	/**
 	 * <p>连接</p>
 	 * 
-	 * @return {@code true}-连接成功；{@code false}-连接失败；
+	 * @return true-连接成功；false-连接失败；
 	 */
 	public boolean connect() {
 		return this.handler.connect();

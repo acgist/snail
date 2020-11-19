@@ -18,7 +18,6 @@ import com.acgist.snail.net.torrent.utp.UtpMessageHandler;
  * <p>管理UTP消息代理</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public final class UtpService {
 	
