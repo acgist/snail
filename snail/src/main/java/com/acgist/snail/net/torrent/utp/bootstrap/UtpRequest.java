@@ -9,7 +9,6 @@ import com.acgist.snail.net.codec.IMessageCodec;
  * <p>UTP请求</p>
  * 
  * @author acgist
- * @since 1.2.0
  */
 public final class UtpRequest {
 
@@ -22,6 +21,10 @@ public final class UtpRequest {
 	 */
 	private final IMessageCodec<ByteBuffer> messageCodec;
 	
+	/**
+	 * @param buffer 请求数据
+	 * @param messageCodec 消息处理器
+	 */
 	private UtpRequest(ByteBuffer buffer, IMessageCodec<ByteBuffer> messageCodec) {
 		this.buffer = buffer;
 		this.messageCodec = messageCodec;

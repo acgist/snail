@@ -23,7 +23,6 @@ import com.acgist.snail.utils.DateUtils;
  * <p>UTP滑块窗口</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public final class UtpWindow {
 	
@@ -251,7 +250,7 @@ public final class UtpWindow {
 	 * @param acknr 响应编号：最后处理编号
 	 * @param wndSize 剩余窗口大小
 	 * 
-	 * @return 是否丢包：{@code true}-丢包；{@code false}-没有丢包；
+	 * @return 是否丢包：true-丢包；false-没有丢包；
 	 */
 	public boolean ack(final short acknr, final int wndSize) {
 		synchronized (this) {
@@ -380,7 +379,7 @@ public final class UtpWindow {
 	private UtpWindowData storage(final int timestamp, final short seqnr, final ByteBuffer buffer) {
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
-		return storage(timestamp, seqnr, bytes);
+		return this.storage(timestamp, seqnr, bytes);
 	}
 	
 	/**

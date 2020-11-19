@@ -18,7 +18,6 @@ import com.acgist.snail.context.exception.NetException;
  * <p>请求队列用来异步处理UTP请求，每个接收窗口对应一个请求队列，每个请求队列可以处理多个窗口。</p>
  * 
  * @author acgist
- * @since 1.2.0
  */
 public final class UtpRequestQueue {
 	
@@ -65,7 +64,7 @@ public final class UtpRequestQueue {
 	 */
 	public BlockingQueue<UtpRequest> requestQueue() {
 		final int index = this.index.getAndIncrement() % QUEUE_SIZE;
-		return this.queues.get(index);
+		return this.queues.get(Math.abs(index));
 	}
 	
 	/**
