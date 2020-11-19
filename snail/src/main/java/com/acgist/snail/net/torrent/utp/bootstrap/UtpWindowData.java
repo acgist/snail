@@ -8,7 +8,6 @@ import com.acgist.snail.utils.DateUtils;
  * <p>UTP窗口数据</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public final class UtpWindowData {
 
@@ -34,6 +33,11 @@ public final class UtpWindowData {
 	 */
 	private final int length;
 	
+	/**
+	 * @param seqnr seqnr
+	 * @param timestamp 时间戳
+	 * @param data 负载数据
+	 */
 	private UtpWindowData(short seqnr, int timestamp, byte[] data) {
 		this.pushTimes = 0;
 		this.seqnr = seqnr;
