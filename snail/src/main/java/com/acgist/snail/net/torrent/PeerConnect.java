@@ -200,7 +200,7 @@ public abstract class PeerConnect {
 	 * 
 	 * @return Peer上传评分
 	 */
-	public final int uploadMark() {
+	public final long uploadMark() {
 		return this.markSession.uploadMark();
 	}
 	
@@ -209,7 +209,7 @@ public abstract class PeerConnect {
 	 * 
 	 * @return Peer下载评分
 	 */
-	public final int downloadMark() {
+	public final long downloadMark() {
 		return this.markSession.downloadMark();
 	}
 
