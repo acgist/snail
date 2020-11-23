@@ -8,7 +8,6 @@ import com.acgist.snail.net.UdpServer;
  * <p>监听端口：{@link SystemConfig#getTorrentPort()}</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public final class TorrentServer extends UdpServer<TorrentAcceptHandler> {
 	

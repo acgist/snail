@@ -978,6 +978,8 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		if(buffer.hasRemaining()) {
 			final byte[] bytes = new byte[buffer.remaining()];
 			buffer.get(bytes);
+//			在Piece下载完成时统计：减少统计锁竞争
+			this.peerSession.download(bytes.length);
 			if(this.peerConnect != null) {
 				this.peerConnect.piece(index, begin, bytes);
 			}

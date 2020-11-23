@@ -22,7 +22,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>Torrent管理器</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class TorrentManager {
 
@@ -36,7 +35,7 @@ public final class TorrentManager {
 	
 	/**
 	 * <p>BT任务MAP</p>
-	 * <p>InfoHashHex=BT任务</p>
+	 * <p>InfoHashHex=BT任务信息</p>
 	 */
 	private final Map<String, TorrentSession> torrentSessions;
 	

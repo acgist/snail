@@ -22,7 +22,6 @@ import com.acgist.snail.utils.ThreadUtils;
  * <p>接入：上传、下载（解除阻塞可以下载）</p>
  * 
  * @author acgist
- * @since 1.1.1
  */
 public abstract class PeerConnect {
 	
@@ -233,10 +232,14 @@ public abstract class PeerConnect {
 	 * <p>Peer下载评分</p>
 	 * <p>评分 = 下载数据大小</p>
 	 * <p>评分后清除数据：不累计分数</p>
+	 * <p>下载不使用PeerSession的统计计算评分，PeerSession统计在Piece下载完成时计算，如果Piece过大下载会长时间等待导致被剔除。</p>
 	 * 
 	 * @return Peer下载评分
 	 */
 	public final long downloadMark() {
+//		final long nowSize = this.peerSession.statistics().downloadSize();
+//		final long oldSize = this.downloadMark.getAndSet(nowSize);
+//		return nowSize - oldSize;
 		return this.downloadMark.getAndSet(0);
 	}
 
@@ -402,14 +405,15 @@ public abstract class PeerConnect {
 	 * <p>如果上个Piece没有完成：标记失败</p>
 	 */
 	private void pick() {
-		if(this.downloadPiece == null) { // 没有Piece
+		if(this.downloadPiece == null) {
+			// 没有Piece
 		} else if(this.downloadPiece.complete()) { // 下载完成
 			// 验证数据
 			if(this.downloadPiece.verify()) {
 				// 保存数据
 				final boolean ok = this.torrentSession.write(this.downloadPiece);
 				if(ok) {
-					// 统计下载数据
+					// 统计下载数据：统计有效下载数据
 					this.peerSession.download(this.downloadPiece.getLength());
 				} else {
 					LOGGER.debug("Piece保存失败：{}", this.downloadPiece.getIndex());
