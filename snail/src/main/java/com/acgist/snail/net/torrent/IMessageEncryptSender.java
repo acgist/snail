@@ -9,7 +9,6 @@ import com.acgist.snail.net.IMessageSender;
  * <p>加密消息代理</p>
  * 
  * @author acgist
- * @since 1.1.1
  */
 public interface IMessageEncryptSender extends IMessageSender {
 
