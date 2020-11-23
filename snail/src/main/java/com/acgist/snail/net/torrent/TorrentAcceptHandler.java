@@ -16,7 +16,6 @@ import com.acgist.snail.net.torrent.utp.bootstrap.UtpService;
  * <p>如果不是DHT和STUN消息则属于UTP消息</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public final class TorrentAcceptHandler extends UdpAcceptHandler {
 	
