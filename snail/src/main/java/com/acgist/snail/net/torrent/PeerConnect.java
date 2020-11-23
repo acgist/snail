@@ -3,13 +3,13 @@ package com.acgist.snail.net.torrent;
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.pojo.bean.TorrentPiece;
+import com.acgist.snail.pojo.session.MarkSession;
 import com.acgist.snail.pojo.session.PeerConnectSession;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
@@ -53,11 +53,6 @@ public abstract class PeerConnect {
 	private static final int RELEASE_WAIT_TIME = 4;
 	
 	/**
-	 * <p>是否已被评分</p>
-	 * <p>忽略首次获取评分：防止剔除</p>
-	 */
-	protected volatile boolean marked = false;
-	/**
 	 * <p>连接状态</p>
 	 */
 	protected volatile boolean available = false;
@@ -69,14 +64,6 @@ public abstract class PeerConnect {
 	 * <p>当前下载Piece信息</p>
 	 */
 	private TorrentPiece downloadPiece;
-	/**
-	 * <p>Peer上传评分</p>
-	 */
-	private final AtomicLong uploadMark = new AtomicLong(0);
-	/**
-	 * <p>Peer下载评分</p>
-	 */
-	private final AtomicLong downloadMark = new AtomicLong(0);
 	/**
 	 * <p>Piece分片锁</p>
 	 * 
@@ -93,17 +80,21 @@ public abstract class PeerConnect {
 	 */
 	private final AtomicBoolean completeLock = new AtomicBoolean(false);
 	/**
-	 * <p>Peer连接信息</p>
-	 */
-	protected final PeerConnectSession peerConnectSession = new PeerConnectSession();
-	/**
 	 * <p>Peer信息</p>
 	 */
 	protected final PeerSession peerSession;
 	/**
+	 * <p>评分信息</p>
+	 */
+	protected final MarkSession markSession;
+	/**
 	 * <p>BT任务信息</p>
 	 */
 	protected final TorrentSession torrentSession;
+	/**
+	 * <p>Peer连接信息</p>
+	 */
+	protected final PeerConnectSession peerConnectSession;
 	/**
 	 * <p>Peer消息代理</p>
 	 */
@@ -118,7 +109,9 @@ public abstract class PeerConnect {
 	 */
 	protected PeerConnect(PeerSession peerSession, TorrentSession torrentSession, PeerSubMessageHandler peerSubMessageHandler) {
 		this.peerSession = peerSession;
+		this.markSession = new MarkSession(peerSession.statistics());
 		this.torrentSession = torrentSession;
+		this.peerConnectSession = new PeerConnectSession();
 		this.peerSubMessageHandler = peerSubMessageHandler;
 	}
 
@@ -203,55 +196,23 @@ public abstract class PeerConnect {
 	}
 	
 	/**
-	 * <p>判断是否评分</p>
-	 * 
-	 * @return 是否评分
-	 */
-	public final boolean marked() {
-		if(this.marked) {
-			return this.marked;
-		}
-		this.marked = true;
-		return false;
-	}
-	
-	/**
 	 * <p>Peer上传评分</p>
-	 * <p>评分 = 当前下载大小 - 上次下载大小</p>
-	 * <p>计算评分后记录当前下载大小</p>
 	 * 
 	 * @return Peer上传评分
 	 */
-	public final long uploadMark() {
-		final long nowSize = this.peerSession.statistics().uploadSize();
-		final long oldSize = this.uploadMark.getAndSet(nowSize);
-		return nowSize - oldSize;
+	public final int uploadMark() {
+		return this.markSession.uploadMark();
 	}
 	
 	/**
 	 * <p>Peer下载评分</p>
-	 * <p>评分 = 下载数据大小</p>
-	 * <p>评分后清除数据：不累计分数</p>
-	 * <p>下载不使用PeerSession的统计计算评分，PeerSession统计在Piece下载完成时计算，如果Piece过大下载会长时间等待导致被剔除。</p>
 	 * 
 	 * @return Peer下载评分
 	 */
-	public final long downloadMark() {
-//		final long nowSize = this.peerSession.statistics().downloadSize();
-//		final long oldSize = this.downloadMark.getAndSet(nowSize);
-//		return nowSize - oldSize;
-		return this.downloadMark.getAndSet(0);
+	public final int downloadMark() {
+		return this.markSession.downloadMark();
 	}
 
-	/**
-	 * <p>计算评分</p>
-	 * 
-	 * @param buffer 下载数据大小
-	 */
-	private void downloadMark(int buffer) {
-		this.downloadMark.addAndGet(buffer);
-	}
-	
 	/**
 	 * <p>开始下载</p>
 	 */
@@ -282,7 +243,6 @@ public abstract class PeerConnect {
 			LOGGER.warn("下载Piece索引和当前Piece索引不符：{}-{}", index, this.downloadPiece.getIndex());
 			return;
 		}
-		this.downloadMark(bytes.length); // 下载评分
 		// 请求数据下载完成：释放下载等待
 		synchronized (this.sliceLock) {
 			if (this.sliceLock.decrementAndGet() <= 0) {
@@ -407,14 +367,14 @@ public abstract class PeerConnect {
 	private void pick() {
 		if(this.downloadPiece == null) {
 			// 没有Piece
-		} else if(this.downloadPiece.complete()) { // 下载完成
-			// 验证数据
+		} else if(this.downloadPiece.complete()) {
+			// 下载完成
 			if(this.downloadPiece.verify()) {
-				// 保存数据
+				// 验证数据：保存数据
 				final boolean ok = this.torrentSession.write(this.downloadPiece);
 				if(ok) {
-					// 统计下载数据：统计有效下载数据
-					this.peerSession.download(this.downloadPiece.getLength());
+//					统计下载数据：减少统计锁竞争，不能实时统计。
+//					this.peerSession.download(this.downloadPiece.getLength());
 				} else {
 					LOGGER.debug("Piece保存失败：{}", this.downloadPiece.getIndex());
 					this.undone();

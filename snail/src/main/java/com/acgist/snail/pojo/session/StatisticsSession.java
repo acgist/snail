@@ -51,7 +51,7 @@ public final class StatisticsSession implements IStatisticsSession {
 	/**
 	 * <p>上传限速采样</p>
 	 */
-	private final AtomicLong uploadBufferLimit = new AtomicLong(0);
+	private final AtomicLong uploadBufferLimit;
 	/**
 	 * <p>上传限速最后一次采样时间</p>
 	 */
@@ -59,7 +59,7 @@ public final class StatisticsSession implements IStatisticsSession {
 	/**
 	 * <p>下载限速采样</p>
 	 */
-	private final AtomicLong downloadBufferLimit = new AtomicLong(0);
+	private final AtomicLong downloadBufferLimit;
 	/**
 	 * <p>下载限速最后一次采样时间</p>
 	 */
@@ -96,6 +96,13 @@ public final class StatisticsSession implements IStatisticsSession {
 		final long time = System.currentTimeMillis();
 		this.uploadBufferLimitTime = time;
 		this.downloadBufferLimitTime = time;
+		if(limit) {
+			this.uploadBufferLimit = new AtomicLong(0);
+			this.downloadBufferLimit = new AtomicLong(0);
+		} else {
+			this.uploadBufferLimit = null;
+			this.downloadBufferLimit = null;
+		}
 		if(speed) {
 			this.uploadSpeed = new SpeedSession();
 			this.downloadSpeed = new SpeedSession();

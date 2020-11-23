@@ -157,18 +157,13 @@ public final class PeerUploaderGroup {
 			}
 			// 状态不可用直接剔除
 			if(!tmpUploader.available()) {
+				LOGGER.debug("剔除无效PeerUploader（不可用）");
 				this.inferiorPeerUploader(tmpUploader);
 				continue;
 			}
 			// 获取评分同时清除评分
 			uploadMark = tmpUploader.uploadMark(); // 上传评分
 			downloadMark = tmpUploader.downloadMark(); // 下载评分
-			// 首次评分忽略
-			if(!tmpUploader.marked()) {
-				offerSize++;
-				this.offer(tmpUploader);
-				continue;
-			}
 			// 提供下载的Peer提供上传
 			if(downloadMark > 0L) {
 				offerSize++;
@@ -183,9 +178,11 @@ public final class PeerUploaderGroup {
 			}
 			if(uploadMark <= 0L) {
 				// 没有评分
+				LOGGER.debug("剔除无效PeerUploader（没有评分）");
 				this.inferiorPeerUploader(tmpUploader);
 			} else if(offerSize > maxSize) {
 				// 超过最大Peer数量
+				LOGGER.debug("剔除无效PeerUploader（超过最大数量）");
 				this.inferiorPeerUploader(tmpUploader);
 			} else {
 				offerSize++;

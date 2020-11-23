@@ -228,18 +228,15 @@ public final class PeerDownloaderGroup {
 			}
 			// 状态不可用直接剔除
 			if(!tmpDownloader.available()) {
+				LOGGER.debug("剔除劣质PeerDownloader（不可用）");
 				this.inferiorPeerDownloader(tmpDownloader);
 				continue;
 			}
 			// 获取评分同时清除评分
 			tmpDownloadMark = tmpDownloader.downloadMark();
-			// 首次评分忽略
-			if(!tmpDownloader.marked()) {
-				this.offer(tmpDownloader);
-				continue;
-			}
 			// 没有评分
 			if(tmpDownloadMark <= 0) {
+				LOGGER.debug("剔除劣质PeerDownloader（没有评分）");
 				this.inferiorPeerDownloader(tmpDownloader);
 				continue;
 			}
@@ -259,6 +256,7 @@ public final class PeerDownloaderGroup {
 			if(this.peerDownloaders.size() < SystemConfig.getPeerSize()) {
 				this.offer(minDownloader);
 			} else {
+				LOGGER.debug("剔除劣质PeerDownloader（最低评分）");
 				this.inferiorPeerDownloader(minDownloader);
 			}
 		}
