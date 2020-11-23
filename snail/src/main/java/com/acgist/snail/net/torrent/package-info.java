@@ -35,5 +35,7 @@
  * 		<td>uTP协议</td>
  * 	</tr>
  * </table>
+ * 
+ * @author acgist
  */
 package com.acgist.snail.net.torrent;

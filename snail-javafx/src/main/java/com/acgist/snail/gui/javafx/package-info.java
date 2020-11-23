@@ -5,6 +5,5 @@
  * <p>后台模式参考{@linkplain com.acgist.main.Application#main(String[]) 启动方法}</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 package com.acgist.snail.gui.javafx;
