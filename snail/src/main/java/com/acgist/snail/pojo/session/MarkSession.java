@@ -23,11 +23,11 @@ public final class MarkSession {
 	/**
 	 * <p>上传评分</p>
 	 */
-	private volatile int uploadMark = 8888;
+	private volatile long uploadMark = 8888;
 	/**
 	 * <p>下载评分</p>
 	 */
-	private volatile int downloadMark = 8888;
+	private volatile long downloadMark = 8888;
 	/**
 	 * <p>上次上传大小</p>
 	 */
@@ -61,10 +61,10 @@ public final class MarkSession {
 		if(interval > MIN_MARK_INTERVAL) {
 			this.lastRefreshMarkTime = nowTime;
 			final long uploadSize = this.statisticsSession.uploadSize();
-			this.uploadMark = (int) (uploadSize - this.lastUploadSize);
+			this.uploadMark = uploadSize - this.lastUploadSize;
 			this.lastUploadSize = uploadSize;
 			final long downloadSize = this.statisticsSession.downloadSize();
-			this.downloadMark = (int) (downloadSize - this.lastDownloadSize);
+			this.downloadMark = downloadSize - this.lastDownloadSize;
 			this.lastDownloadSize = downloadSize;
 			LOGGER.debug("刷新评分：{}-{}", uploadSize, downloadSize);
 		}
@@ -75,7 +75,7 @@ public final class MarkSession {
 	 * 
 	 * @return 上传评分
 	 */
-	public final int uploadMark() {
+	public final long uploadMark() {
 		this.refreshMark();
 		return this.uploadMark;
 	}
@@ -85,7 +85,7 @@ public final class MarkSession {
 	 * 
 	 * @return 下载评分
 	 */
-	public final int downloadMark() {
+	public final long downloadMark() {
 		this.refreshMark();
 		return this.downloadMark;
 	}

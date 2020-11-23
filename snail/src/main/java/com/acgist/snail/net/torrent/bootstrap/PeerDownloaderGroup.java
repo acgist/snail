@@ -235,7 +235,7 @@ public final class PeerDownloaderGroup {
 			// 获取评分同时清除评分
 			tmpDownloadMark = tmpDownloader.downloadMark();
 			// 没有评分
-			if(tmpDownloadMark <= 0) {
+			if(tmpDownloadMark <= 0L) {
 				LOGGER.debug("剔除劣质PeerDownloader（没有评分）");
 				this.inferiorPeerDownloader(tmpDownloader);
 				continue;
