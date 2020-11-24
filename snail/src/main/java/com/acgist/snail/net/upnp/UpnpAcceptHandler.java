@@ -10,7 +10,6 @@ import com.acgist.snail.net.UdpMessageHandler;
  * <p>UPNP接收器</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class UpnpAcceptHandler extends UdpAcceptHandler {
 
@@ -23,6 +22,9 @@ public final class UpnpAcceptHandler extends UdpAcceptHandler {
 	private UpnpAcceptHandler() {
 	}
 
+	/**
+	 * <p>UPNP消息代理</p>
+	 */
 	private final UpnpMessageHandler upnpMessageHandler = new UpnpMessageHandler();
 	
 	@Override

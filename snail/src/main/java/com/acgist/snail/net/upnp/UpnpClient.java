@@ -14,7 +14,6 @@ import com.acgist.snail.utils.NetUtils;
  * <p>UPNP客户端</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	
@@ -25,6 +24,9 @@ public final class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	 */
 	private static final String PROTOCOL = "M-SEARCH * HTTP/1.1";
 	
+	/**
+	 * @param socketAddress 地址
+	 */
 	private UpnpClient(InetSocketAddress socketAddress) {
 		super("UPNP Client", new UpnpMessageHandler(), socketAddress);
 	}
