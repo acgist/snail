@@ -7,7 +7,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>UPNP响应</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class UpnpResponse {
 

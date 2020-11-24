@@ -2,6 +2,7 @@ package com.acgist.snail.net.upnp.bootstrap;
 
 import org.w3c.dom.Element;
 
+import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.format.XML;
 import com.acgist.snail.protocol.Protocol;
 
@@ -9,7 +10,6 @@ import com.acgist.snail.protocol.Protocol;
  * <p>UPNP请求</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class UpnpRequest {
 
@@ -27,7 +27,7 @@ public final class UpnpRequest {
 	 */
 	private XML xml;
 	/**
-	 * <p>主体内容</p>
+	 * <p>主体节点</p>
 	 */
 	private Element body;
 	/**
@@ -152,7 +152,7 @@ public final class UpnpRequest {
 		this.xml.element(mapping, "NewInternalPort", String.valueOf(port));
 		this.xml.element(mapping, "NewInternalClient", address);
 		this.xml.element(mapping, "NewEnabled", "1");
-		this.xml.element(mapping, "NewPortMappingDescription", "Snail");
+		this.xml.element(mapping, "NewPortMappingDescription", SystemConfig.getNameEn());
 		this.xml.element(mapping, "NewLeaseDuration", "0");
 		return this.xml();
 	}

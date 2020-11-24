@@ -71,6 +71,7 @@ public final class NatContext {
 		LOGGER.info("初始化NAT服务");
 		if(NetUtils.isLocalIp(NetUtils.localHostAddress())) {
 			UpnpClient.newInstance().mSearch();
+			// UPNP加锁等待
 			synchronized (this.upnpLock) {
 				ThreadUtils.wait(this.upnpLock, Duration.ofSeconds(UPNP_CONFIG_TIMEOUT));
 			}
@@ -110,7 +111,7 @@ public final class NatContext {
 	/**
 	 * <p>释放UPNP等待锁</p>
 	 */
-	public void unlock() {
+	public void unlockUpnp() {
 		synchronized (this.upnpLock) {
 			this.upnpLock.notifyAll();
 		}

@@ -26,7 +26,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>注：多路由环境使用STUN进行内网穿透</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class UpnpService {
 	

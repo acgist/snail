@@ -21,7 +21,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>注：固定IP有时不能正确获取UPNP设置（请设置自动获取IP地址）</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class UpnpMessageHandler extends UdpMessageHandler implements IMessageCodec<String> {
 	
@@ -58,7 +57,7 @@ public final class UpnpMessageHandler extends UdpMessageHandler implements IMess
 		} catch (NetException e) {
 			LOGGER.error("UPNP端口映射异常：{}", location, e);
 		} finally {
-			NatContext.getInstance().unlock(); // 解锁NAT
+			NatContext.getInstance().unlockUpnp();
 		}
 	}
 	
