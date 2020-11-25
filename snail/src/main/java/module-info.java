@@ -33,7 +33,6 @@ open module com.acgist.snail {
 	exports com.acgist.snail.net.torrent.peer.bootstrap;
 	exports com.acgist.snail.net.torrent.tracker.bootstrap;
 	exports com.acgist.snail.net.upnp;
-	exports com.acgist.snail.net.ws;
 	exports com.acgist.snail.pojo;
 	exports com.acgist.snail.pojo.bean;
 	exports com.acgist.snail.pojo.entity;
