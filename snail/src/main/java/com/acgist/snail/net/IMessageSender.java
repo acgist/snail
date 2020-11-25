@@ -22,7 +22,7 @@ public interface IMessageSender {
 	/**
 	 * <p>可用状态</p>
 	 * 
-	 * @return true-可用；false-禁用；
+	 * @return true-可用；false-无用；
 	 */
 	boolean available();
 	
