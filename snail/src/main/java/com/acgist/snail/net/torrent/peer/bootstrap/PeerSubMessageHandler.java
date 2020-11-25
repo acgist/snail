@@ -89,13 +89,13 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 */
 	private PeerSession peerSession;
 	/**
-	 * <p>Peer连接信息</p>
-	 */
-	private PeerConnectSession peerConnectSession;
-	/**
 	 * <p>BT任务信息</p>
 	 */
 	private TorrentSession torrentSession;
+	/**
+	 * <p>Peer连接信息</p>
+	 */
+	private PeerConnectSession peerConnectSession;
 	/**
 	 * <p>消息代理</p>
 	 */
@@ -413,11 +413,6 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 				return;
 			}
 		}
-		// Peer连接成功，还没有握手时，Peer主动发送消息需要判断是否已经连接防止空指针。
-		if(this.peerConnect == null) {
-			LOGGER.warn("Peer消息代理没有连接");
-			return;
-		}
 		this.peerSession.id(peerId); // 设置PeerId
 		this.peerSession.reserved(reserved); // 设置保留位
 		this.extension(); // 发送扩展消息：优先交换扩展
@@ -455,9 +450,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		LOGGER.debug("处理阻塞消息");
 		this.peerConnectSession.peerChoked();
 		// 不释放资源：让系统自动优化剔除
-//		if(this.peerConnect != null) {
-//			this.peerConnect.release();
-//		}
+//		this.peerConnect.release();
 	}
 	
 	/**
@@ -954,7 +947,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			return;
 		}
 		LOGGER.debug("发送piece消息：{}-{}", index, begin);
-		this.peerSession.upload(bytes.length); // 上传数据统计
+		this.peerConnect.uploadMark(bytes.length);
 		final ByteBuffer buffer = ByteBuffer.allocate(8 + bytes.length);
 		buffer.putInt(index);
 		buffer.putInt(begin);
@@ -978,9 +971,8 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		if(buffer.hasRemaining()) {
 			final byte[] bytes = new byte[buffer.remaining()];
 			buffer.get(bytes);
-			// 统计下载数据：可以实时统计，增加统计锁竞争。
-			this.peerSession.download(bytes.length);
 			if(this.peerConnect != null) {
+				this.peerConnect.downloadMark(bytes.length);
 				this.peerConnect.piece(index, begin, bytes);
 			}
 		}

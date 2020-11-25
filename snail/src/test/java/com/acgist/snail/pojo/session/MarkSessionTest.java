@@ -9,7 +9,7 @@ public class MarkSessionTest extends BaseTest {
 
 	@Test
 	public void test() {
-		MarkSession markSession = new MarkSession(new StatisticsSession());
+		MarkSession markSession = new MarkSession();
 		LOGGER.info("下载速度：{}", markSession.uploadMark());
 		ThreadUtils.sleep(1000);
 		LOGGER.info("下载速度：{}", markSession.uploadMark());
