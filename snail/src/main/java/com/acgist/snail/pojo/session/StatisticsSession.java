@@ -7,6 +7,10 @@ import com.acgist.snail.pojo.IStatisticsSession;
 /**
  * <p>统计信息</p>
  * <p>速度、限速、统计等</p>
+ * <p>下载统计时大小必须统计有效下载数据，因为任务大小获取需要使用。</p>
+ * <p>速度统计和速度限制使用实时下载数据，这样数据统计平滑和实时性。</p>
+ * <p>由于下载数据大小是有效数据，但是速度统计时可能存在无效数据，所以下载时间预估不会非常准确。</p>
+ * <p>无效数据：Piece安装Slice下载，速度统计按照Slice统计，但是Piece可能下载失败和验证失败，导致无效数据。</p>
  * 
  * TODO：伪共享
  * 
@@ -30,11 +34,11 @@ public final class StatisticsSession implements IStatisticsSession {
 	/**
 	 * <p>累计上传大小</p>
 	 */
-	private final AtomicLong uploadSize = new AtomicLong(0);
+	private final AtomicLong uploadSize;
 	/**
-	 * <p>已下载大小</p>
+	 * <p>累计下载大小</p>
 	 */
-	private final AtomicLong downloadSize = new AtomicLong(0);
+	private final AtomicLong downloadSize;
 	/**
 	 * <p>上传限速</p>
 	 */
@@ -80,6 +84,8 @@ public final class StatisticsSession implements IStatisticsSession {
 		this.limit = limit;
 		this.speed = speed;
 		this.parent = parent;
+		this.uploadSize = new AtomicLong(0);
+		this.downloadSize = new AtomicLong(0);
 		if(limit) {
 			this.uploadLimit = new LimitSession(LimitSession.Type.UPLOAD);
 			this.downloadLimit = new LimitSession(LimitSession.Type.DOWNLOAD);
@@ -107,9 +113,6 @@ public final class StatisticsSession implements IStatisticsSession {
 			this.parent.upload(buffer);
 		}
 		this.uploadSize.addAndGet(buffer);
-		if(this.speed) {
-			this.uploadSpeed.buffer(buffer);
-		}
 	}
 	
 	/**
@@ -123,9 +126,6 @@ public final class StatisticsSession implements IStatisticsSession {
 			this.parent.download(buffer);
 		}
 		this.downloadSize.addAndGet(buffer);
-		if(this.speed) {
-			this.downloadSpeed.buffer(buffer);
-		}
 	}
 
 	/**
@@ -141,6 +141,9 @@ public final class StatisticsSession implements IStatisticsSession {
 		if(this.limit) {
 			this.uploadLimit.limit(buffer);
 		}
+		if(this.speed) {
+			this.uploadSpeed.buffer(buffer);
+		}
 	}
 	
 	/**
@@ -155,6 +158,9 @@ public final class StatisticsSession implements IStatisticsSession {
 		}
 		if(this.limit) {
 			this.downloadLimit.limit(buffer);
+		}
+		if(this.speed) {
+			this.downloadSpeed.buffer(buffer);
 		}
 	}
 	

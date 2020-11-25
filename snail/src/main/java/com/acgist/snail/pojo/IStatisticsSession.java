@@ -16,6 +16,7 @@ public interface IStatisticsSession {
 	
 	/**
 	 * <p>统计下载数据</p>
+	 * <p>统计有效下载数据：任务大小需要使用</p>
 	 * 
 	 * @param buffer 下载数据大小
 	 */
@@ -64,16 +65,16 @@ public interface IStatisticsSession {
 	void uploadSize(long size);
 	
 	/**
-	 * <p>获取已下载大小</p>
+	 * <p>获取累计下载大小</p>
 	 * 
-	 * @return 已下载大小
+	 * @return 累计下载大小
 	 */
 	long downloadSize();
 	
 	/**
-	 * <p>设置已下载大小</p>
+	 * <p>设置累计下载大小</p>
 	 * 
-	 * @param size 已下载大小
+	 * @param size 累计下载大小
 	 */
 	void downloadSize(long size);
 	
