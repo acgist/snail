@@ -20,8 +20,6 @@ import com.acgist.snail.utils.ThreadUtils;
  * <p>Peer连接</p>
  * <p>连接：下载、上传（解除阻塞可以上传）</p>
  * <p>接入：上传、下载（解除阻塞可以下载）</p>
- * <p>Piece下载完成添加成功才计算大小和下载速度，这样计算才正确。如果在Piece消息计算会导致计算无效Piece大小，从而导致数据错误。</p>
- * <p>限制速度在Piece消息处，这样速度限制比较均匀，不会因为Piece块过大导致等待时间过长。但是这样会导致下载限速速度和实际有效下载速度存在误差。</p>
  * 
  * @author acgist
  */
@@ -224,7 +222,7 @@ public abstract class PeerConnect {
 	 */
 	public final void downloadMark(int buffer) {
 		this.peerConnectSession.download(buffer);
-		this.statisticsSession.uploadLimit(buffer);
+		this.statisticsSession.downloadLimit(buffer);
 	}
 	
 	/**
@@ -365,7 +363,8 @@ public abstract class PeerConnect {
 			}
 		}
 		/*
-		 * <p>此处不论是否有数据返回都需要进行结束等待，防止数据小于{@link #SLICE_REQUEST_SIZE}个slice时直接跳出了slice wait（countLock）导致响应还没有收到就直接结束了。</p>
+		 * 此处不论是否有数据返回都需要进行结束等待
+		 * 防止数据小于{@link #SLICE_REQUEST_SIZE}个slice时直接跳出了slice wait（countLock）导致响应还没有收到就直接结束了
 		 */
 		synchronized (this.completeLock) {
 			if(!this.completeLock.getAndSet(true)) {
@@ -396,6 +395,7 @@ public abstract class PeerConnect {
 				// 验证数据：保存数据
 				final boolean ok = this.torrentSession.write(this.downloadPiece);
 				if(ok) {
+					// 统计下载有效数据
 					this.statisticsSession.download(this.downloadPiece.getLength());
 				} else {
 					LOGGER.debug("Piece保存失败：{}", this.downloadPiece.getIndex());

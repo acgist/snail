@@ -22,7 +22,9 @@ public final class LimitSession {
 	 */
 	public enum Type {
 		
+		/** 上传 */
 		UPLOAD,
+		/** 下载 */
 		DOWNLOAD;
 		
 	}
@@ -80,6 +82,7 @@ public final class LimitSession {
 	
 	/**
 	 * <p>获取限制速度</p>
+	 * <p>不能初始化成常量，否者设置限速后需要重启才生效。</p>
 	 * 
 	 * @return 限制速度
 	 */

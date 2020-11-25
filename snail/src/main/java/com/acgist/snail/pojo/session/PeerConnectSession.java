@@ -39,7 +39,6 @@ public final class PeerConnectSession {
 	 * <p>Peer对客户端感兴趣：感兴趣-1（true）、不感兴趣-0</p>
 	 */
 	private volatile boolean peerInterested;
-	
 	/**
 	 * <p>上传评分</p>
 	 */
