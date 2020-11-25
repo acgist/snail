@@ -5,6 +5,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.utils.DateUtils;
+
 /**
  * <p>Peer连接评分信息</p>
  * <p>评分不能初是为零，防止第一次直接被剔除。</p>
@@ -18,7 +20,7 @@ public final class PeerConnectMarkSession {
 	/**
 	 * <p>评分统计最短时间</p>
 	 */
-	private static final long MIN_MARK_INTERVAL = 60 * 1000L;
+	private static final long MIN_MARK_INTERVAL = 60 * DateUtils.ONE_SECOND;
 	
 	/**
 	 * <p>上传评分</p>

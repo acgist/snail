@@ -52,7 +52,7 @@ public final class TaskDisplay {
 					0,
 					SystemConfig.TASK_REFRESH_INTERVAL.toSeconds(),
 					TimeUnit.SECONDS,
-					() -> refreshTaskStatus()
+					() -> this.refreshTaskStatus()
 				);
 				synchronized (this.lock) {
 					this.lock.notifyAll();
