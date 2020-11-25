@@ -13,7 +13,7 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>Tracker客户端</p>
- * <p>基本协议：TCP（HTTP）、UDP、WS（WebSocket）</p>
+ * <p>基本协议：TCP（HTTP）、UDP</p>
  * <p>sid：Torrent和Tracker服务器对应的id</p>
  * 
  * @author acgist

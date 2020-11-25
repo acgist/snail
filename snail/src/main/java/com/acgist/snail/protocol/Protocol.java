@@ -42,14 +42,6 @@ public abstract class Protocol {
 	 */
 	public enum Type {
 
-		/** ws、wss：websocket */
-		WS(
-			new String[] {"ws://.+", "wss://.+"},
-			new String[] {"ws://", "wss://"},
-			new String[] {},
-			"ws://",
-			""
-		),
 		/** udp */
 		UDP(
 			new String[] {"udp://.+"},

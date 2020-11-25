@@ -327,8 +327,6 @@ public final class TrackerManager {
 	 * @return TrackerClient
 	 * 
 	 * @throws DownloadException 下载异常
-	 * 
-	 * TODO：ws客户端
 	 */
 	private TrackerClient buildClient(final String announceUrl) throws DownloadException {
 		if(Protocol.Type.HTTP.verify(announceUrl)) {
