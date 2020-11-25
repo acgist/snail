@@ -93,10 +93,10 @@ public final class StatisticsSession implements IStatisticsSession {
 		this.limit = limit;
 		this.speed = speed;
 		this.parent = parent;
-		final long time = System.currentTimeMillis();
-		this.uploadBufferLimitTime = time;
-		this.downloadBufferLimitTime = time;
 		if(limit) {
+			final long time = System.currentTimeMillis();
+			this.uploadBufferLimitTime = time;
+			this.downloadBufferLimitTime = time;
 			this.uploadBufferLimit = new AtomicLong(0);
 			this.downloadBufferLimit = new AtomicLong(0);
 		} else {
@@ -197,8 +197,8 @@ public final class StatisticsSession implements IStatisticsSession {
 	 * @param buffer 下载数据大小
 	 */
 	private void uploadBufferLimit(long buffer) {
-		final long interval = System.currentTimeMillis() - this.uploadBufferLimitTime;
 		if(this.limit) { // 限速
+			final long interval = System.currentTimeMillis() - this.uploadBufferLimitTime;
 			final int limitBuffer = DownloadConfig.getUploadBufferByte();
 			final long uploadBuffer = this.uploadBufferLimit.addAndGet(buffer);
 			if(uploadBuffer >= limitBuffer || interval >= DateUtils.ONE_SECOND) { // 限速控制
@@ -219,12 +219,6 @@ public final class StatisticsSession implements IStatisticsSession {
 					}
 				}
 			}
-		} else {
-			if(interval >= DateUtils.ONE_SECOND) {
-//				this.uploadBufferLimit.set(0); // 不限速不清零
-				// 不限速但是必须更新时间
-				this.uploadBufferLimitTime = System.currentTimeMillis();
-			}
 		}
 	}
 	
@@ -234,8 +228,8 @@ public final class StatisticsSession implements IStatisticsSession {
 	 * @param buffer 下载数据大小
 	 */
 	private void downloadBufferLimit(long buffer) {
-		final long interval = System.currentTimeMillis() - this.downloadBufferLimitTime;
 		if(this.limit) { // 限速
+			final long interval = System.currentTimeMillis() - this.downloadBufferLimitTime;
 			final int limitBuffer = DownloadConfig.getDownloadBufferByte();
 			final long downloadBuffer = this.downloadBufferLimit.addAndGet(buffer);
 			if(downloadBuffer >= limitBuffer || interval >= DateUtils.ONE_SECOND) { // 限速控制
@@ -255,12 +249,6 @@ public final class StatisticsSession implements IStatisticsSession {
 						this.downloadBufferLimit.addAndGet(buffer);
 					}
 				}
-			}
-		} else {
-			if(interval >= DateUtils.ONE_SECOND) {
-//				this.downloadBufferLimit.set(0); // 不限速不清零
-				// 不限速但是必须更新时间
-				this.downloadBufferLimitTime = System.currentTimeMillis();
 			}
 		}
 	}

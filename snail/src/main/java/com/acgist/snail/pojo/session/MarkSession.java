@@ -1,9 +1,9 @@
 package com.acgist.snail.pojo.session;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.acgist.snail.pojo.IStatisticsSession;
 
 /**
  * <p>评分信息</p>
@@ -37,19 +37,19 @@ public final class MarkSession {
 	 */
 	private long lastDownloadSize;
 	/**
+	 * <p>累计上传大小</p>
+	 */
+	private final AtomicLong uploadSize = new AtomicLong(0);
+	/**
+	 * <p>累计下载大小</p>
+	 */
+	private final AtomicLong downloadSize = new AtomicLong(0);
+	/**
 	 * <p>最后一次刷新时间</p>
 	 */
 	private volatile long lastRefreshMarkTime = System.currentTimeMillis();
-	/**
-	 * <p>统计信息</p>
-	 */
-	private final IStatisticsSession statisticsSession;
 	
-	/**
-	 * @param statisticsSession 统计信息
-	 */
-	public MarkSession(IStatisticsSession statisticsSession) {
-		this.statisticsSession = statisticsSession;
+	public MarkSession() {
 	}
 	
 	/**
@@ -60,14 +60,23 @@ public final class MarkSession {
 		final long interval = nowTime - this.lastRefreshMarkTime;
 		if(interval > MIN_MARK_INTERVAL) {
 			this.lastRefreshMarkTime = nowTime;
-			final long uploadSize = this.statisticsSession.uploadSize();
+			final long uploadSize = this.uploadSize.get();
 			this.uploadMark = uploadSize - this.lastUploadSize;
 			this.lastUploadSize = uploadSize;
-			final long downloadSize = this.statisticsSession.downloadSize();
+			final long downloadSize = this.downloadSize.get();
 			this.downloadMark = downloadSize - this.lastDownloadSize;
 			this.lastDownloadSize = downloadSize;
 			LOGGER.debug("刷新评分：{}-{}", uploadSize, downloadSize);
 		}
+	}
+	
+	/**
+	 * <p>上传计分</p>
+	 * 
+	 * @param buffer 上次大小
+	 */
+	public final void upload(int buffer) {
+		this.uploadSize.addAndGet(buffer);
 	}
 	
 	/**
@@ -78,6 +87,15 @@ public final class MarkSession {
 	public final long uploadMark() {
 		this.refreshMark();
 		return this.uploadMark;
+	}
+	
+	/**
+	 * <p>下载计分</p>
+	 * 
+	 * @param buffer 下载大小
+	 */
+	public final void download(int buffer) {
+		this.downloadSize.addAndGet(buffer);
 	}
 	
 	/**

@@ -109,7 +109,7 @@ public abstract class PeerConnect {
 	 */
 	protected PeerConnect(PeerSession peerSession, TorrentSession torrentSession, PeerSubMessageHandler peerSubMessageHandler) {
 		this.peerSession = peerSession;
-		this.markSession = new MarkSession(peerSession.statistics());
+		this.markSession = new MarkSession();
 		this.torrentSession = torrentSession;
 		this.peerConnectSession = new PeerConnectSession();
 		this.peerSubMessageHandler = peerSubMessageHandler;
@@ -196,12 +196,32 @@ public abstract class PeerConnect {
 	}
 	
 	/**
+	 * <p>上传计分</p>
+	 * 
+	 * @param buffer 上传大小
+	 */
+	public final void uploadMark(int buffer) {
+		this.markSession.upload(buffer);
+		this.peerSession.upload(buffer);
+	}
+	
+	/**
 	 * <p>Peer上传评分</p>
 	 * 
 	 * @return Peer上传评分
 	 */
 	public final long uploadMark() {
 		return this.markSession.uploadMark();
+	}
+	
+	/**
+	 * <p>下载计分</p>
+	 * 
+	 * @param buffer 下载大小
+	 */
+	public final void downloadMark(int buffer) {
+		// 此次不统计上传大小
+		this.markSession.download(buffer);
 	}
 	
 	/**
@@ -373,8 +393,11 @@ public abstract class PeerConnect {
 				// 验证数据：保存数据
 				final boolean ok = this.torrentSession.write(this.downloadPiece);
 				if(ok) {
-//					统计下载数据：减少统计锁竞争，不能实时统计。
-//					this.peerSession.download(this.downloadPiece.getLength());
+					/*
+					 * Piece下载完成统计：不能实时统计下载速度，但是下载大小计算正确。
+					 * Slice下载完成统计：可以实时统计下载速度，但是下载大小计算错误。
+					 */
+					this.peerSession.download(this.downloadPiece.getLength());
 				} else {
 					LOGGER.debug("Piece保存失败：{}", this.downloadPiece.getIndex());
 					this.undone();
