@@ -13,7 +13,7 @@ import com.acgist.snail.downloader.IDownloader;
  * @author acgist
  * @since 1.2.0
  */
-public interface ITaskSession extends ITaskSessionTable, ITaskSessionEntity, ITaskSessionRepository {
+public interface ITaskSession extends ITaskSessionTable, ITaskSessionEntity, ITaskSessionRepository, IStatisticsSessionGetter {
 
 	/**
 	 * <p>任务状态</p>
@@ -131,13 +131,6 @@ public interface ITaskSession extends ITaskSessionTable, ITaskSessionEntity, ITa
 	 */
 	List<String> multifileSelected();
 
-	/**
-	 * <p>获取统计信息</p>
-	 * 
-	 * @return 统计信息
-	 */
-	IStatisticsSession statistics();
-	
 	/**
 	 * <p>获取已下载大小</p>
 	 * 

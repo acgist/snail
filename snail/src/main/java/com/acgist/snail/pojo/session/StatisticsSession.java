@@ -1,13 +1,8 @@
 package com.acgist.snail.pojo.session;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.concurrent.atomic.AtomicLong;
 
-import com.acgist.snail.config.DownloadConfig;
 import com.acgist.snail.pojo.IStatisticsSession;
-import com.acgist.snail.utils.DateUtils;
-import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * <p>统计信息</p>
@@ -41,6 +36,14 @@ public final class StatisticsSession implements IStatisticsSession {
 	 */
 	private final AtomicLong downloadSize = new AtomicLong(0);
 	/**
+	 * <p>上传限速</p>
+	 */
+	private final LimitSession uploadLimit;
+	/**
+	 * <p>下载限速</p>
+	 */
+	private final LimitSession downloadLimit;
+	/**
 	 * <p>上传速度</p>
 	 */
 	private final SpeedSession uploadSpeed;
@@ -48,22 +51,6 @@ public final class StatisticsSession implements IStatisticsSession {
 	 * <p>下载速度</p>
 	 */
 	private final SpeedSession downloadSpeed;
-	/**
-	 * <p>上传限速采样</p>
-	 */
-	private final AtomicLong uploadBufferLimit;
-	/**
-	 * <p>上传限速最后一次采样时间</p>
-	 */
-	private volatile long uploadBufferLimitTime;
-	/**
-	 * <p>下载限速采样</p>
-	 */
-	private final AtomicLong downloadBufferLimit;
-	/**
-	 * <p>下载限速最后一次采样时间</p>
-	 */
-	private volatile long downloadBufferLimitTime;
 	
 	/**
 	 * <p>统计信息</p>
@@ -94,14 +81,11 @@ public final class StatisticsSession implements IStatisticsSession {
 		this.speed = speed;
 		this.parent = parent;
 		if(limit) {
-			final long time = System.currentTimeMillis();
-			this.uploadBufferLimitTime = time;
-			this.downloadBufferLimitTime = time;
-			this.uploadBufferLimit = new AtomicLong(0);
-			this.downloadBufferLimit = new AtomicLong(0);
+			this.uploadLimit = new LimitSession(LimitSession.Type.UPLOAD);
+			this.downloadLimit = new LimitSession(LimitSession.Type.DOWNLOAD);
 		} else {
-			this.uploadBufferLimit = null;
-			this.downloadBufferLimit = null;
+			this.uploadLimit = null;
+			this.downloadLimit = null;
 		}
 		if(speed) {
 			this.uploadSpeed = new SpeedSession();
@@ -112,33 +96,66 @@ public final class StatisticsSession implements IStatisticsSession {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * <p>更新上级信息</p>
+	 */
 	@Override
 	public void upload(int buffer) {
 		if(this.parent != null) {
 			this.parent.upload(buffer);
 		}
+		this.uploadSize.addAndGet(buffer);
 		if(this.speed) {
 			this.uploadSpeed.buffer(buffer);
 		}
-		this.uploadSize.addAndGet(buffer);
-		this.uploadBufferLimit(buffer);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * <p>更新上级信息</p>
+	 */
 	@Override
 	public void download(int buffer) {
 		if(this.parent != null) {
 			this.parent.download(buffer);
 		}
+		this.downloadSize.addAndGet(buffer);
 		if(this.speed) {
 			this.downloadSpeed.buffer(buffer);
 		}
-		this.downloadSize.addAndGet(buffer);
-		this.downloadBufferLimit(buffer);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * <p>更新上级信息</p>
+	 */
+	@Override
+	public void uploadLimit(int buffer) {
+		if(this.parent != null) {
+			this.parent.uploadLimit(buffer);
+		}
+		if(this.limit) {
+			this.uploadLimit.limit(buffer);
+		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * <p>更新上级信息</p>
+	 */
 	@Override
-	public IStatisticsSession statistics() {
-		return this;
+	public void downloadLimit(int buffer) {
+		if(this.parent != null) {
+			this.parent.downloadLimit(buffer);
+		}
+		if(this.limit) {
+			this.downloadLimit.limit(buffer);
+		}
 	}
 	
 	@Override
@@ -188,68 +205,6 @@ public final class StatisticsSession implements IStatisticsSession {
 	public void resetDownloadSpeed() {
 		if(this.speed) {
 			this.downloadSpeed.reset();
-		}
-	}
-	
-	/**
-	 * <p>上传速度限制</p>
-	 * 
-	 * @param buffer 下载数据大小
-	 */
-	private void uploadBufferLimit(long buffer) {
-		if(this.limit) { // 限速
-			final long interval = System.currentTimeMillis() - this.uploadBufferLimitTime;
-			final int limitBuffer = DownloadConfig.getUploadBufferByte();
-			final long uploadBuffer = this.uploadBufferLimit.addAndGet(buffer);
-			if(uploadBuffer >= limitBuffer || interval >= DateUtils.ONE_SECOND) { // 限速控制
-				synchronized (this.uploadBufferLimit) { // 阻塞其他线程
-					if(uploadBuffer == this.uploadBufferLimit.get()) { // 验证
-						// 期望时间：更加精确：可以使用一秒
-						final long expectTime = BigDecimal.valueOf(uploadBuffer)
-							.multiply(BigDecimal.valueOf(DateUtils.ONE_SECOND))
-							.divide(BigDecimal.valueOf(limitBuffer), RoundingMode.HALF_UP)
-							.longValue();
-						if(interval < expectTime) { // 限速时间
-							ThreadUtils.sleep(expectTime - interval);
-						}
-						this.uploadBufferLimit.set(0); // 清零：不能在休眠前清零
-						this.uploadBufferLimitTime = System.currentTimeMillis();
-					} else { // 防止误差
-						this.uploadBufferLimit.addAndGet(buffer);
-					}
-				}
-			}
-		}
-	}
-	
-	/**
-	 * <p>下载速度限制</p>
-	 * 
-	 * @param buffer 下载数据大小
-	 */
-	private void downloadBufferLimit(long buffer) {
-		if(this.limit) { // 限速
-			final long interval = System.currentTimeMillis() - this.downloadBufferLimitTime;
-			final int limitBuffer = DownloadConfig.getDownloadBufferByte();
-			final long downloadBuffer = this.downloadBufferLimit.addAndGet(buffer);
-			if(downloadBuffer >= limitBuffer || interval >= DateUtils.ONE_SECOND) { // 限速控制
-				synchronized (this.downloadBufferLimit) { // 阻塞其他线程
-					if(downloadBuffer == this.downloadBufferLimit.get()) { // 验证
-						// 期望时间：更加精确：可以使用一秒
-						final long expectTime = BigDecimal.valueOf(downloadBuffer)
-							.multiply(BigDecimal.valueOf(DateUtils.ONE_SECOND))
-							.divide(BigDecimal.valueOf(limitBuffer), RoundingMode.HALF_UP)
-							.longValue();
-						if(interval < expectTime) { // 限速时间
-							ThreadUtils.sleep(expectTime - interval);
-						}
-						this.downloadBufferLimit.set(0); // 清零：不能在休眠前清零
-						this.downloadBufferLimitTime = System.currentTimeMillis();
-					} else { // 防止误差
-						this.downloadBufferLimit.addAndGet(buffer);
-					}
-				}
-			}
 		}
 	}
 	

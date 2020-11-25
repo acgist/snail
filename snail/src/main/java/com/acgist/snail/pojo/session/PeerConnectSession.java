@@ -1,5 +1,13 @@
 package com.acgist.snail.pojo.session;
 
+import java.util.concurrent.atomic.AtomicLong;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.acgist.snail.config.DownloadConfig;
+import com.acgist.snail.utils.DateUtils;
+
 /**
  * <p>Peer连接信息</p>
  * 
@@ -7,6 +15,13 @@ package com.acgist.snail.pojo.session;
  * @since 1.3.0
  */
 public final class PeerConnectSession {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(PeerConnectSession.class);
+	
+	/**
+	 * <p>评分统计最短时间</p>
+	 */
+	private static final long MIN_MARK_INTERVAL = 60 * DateUtils.ONE_SECOND;
 
 	/**
 	 * <p>客户端将Peer阻塞：阻塞-1（true）、非阻塞-0</p>
@@ -26,6 +41,35 @@ public final class PeerConnectSession {
 	private volatile boolean peerInterested;
 	
 	/**
+	 * <p>上传评分</p>
+	 */
+	private volatile long uploadMark;
+	/**
+	 * <p>下载评分</p>
+	 */
+	private volatile long downloadMark;
+	/**
+	 * <p>上次累计上传大小</p>
+	 */
+	private long lastUploadSize;
+	/**
+	 * <p>上次累计下载大小</p>
+	 */
+	private long lastDownloadSize;
+	/**
+	 * <p>累计上传大小</p>
+	 */
+	private final AtomicLong uploadSize = new AtomicLong(0);
+	/**
+	 * <p>累计下载大小</p>
+	 */
+	private final AtomicLong downloadSize = new AtomicLong(0);
+	/**
+	 * <p>最后一次刷新时间</p>
+	 */
+	private volatile long lastRefreshMarkTime = System.currentTimeMillis();
+	
+	/**
 	 * <p>Peer连接信息</p>
 	 * <p>默认：阻塞、不感兴趣</p>
 	 */
@@ -34,6 +78,9 @@ public final class PeerConnectSession {
 		this.amInterested = false;
 		this.peerChoked = true;
 		this.peerInterested = false;
+		// 初始积分不能为零：初始连接开始没有数据
+		this.uploadMark = DownloadConfig.getUploadBufferByte();
+		this.downloadMark = DownloadConfig.getDownloadBufferByte();
 	}
 	
 	/**
@@ -182,6 +229,62 @@ public final class PeerConnectSession {
 	 */
 	public boolean downloadable() {
 		return this.amInterested && !this.peerChoked;
+	}
+	
+	/**
+	 * <p>上传计分</p>
+	 * 
+	 * @param buffer 上次大小
+	 */
+	public final void upload(int buffer) {
+		this.uploadSize.addAndGet(buffer);
+	}
+	
+	/**
+	 * <p>获取上传评分</p>
+	 * 
+	 * @return 上传评分
+	 */
+	public final long uploadMark() {
+		this.refreshMark();
+		return this.uploadMark;
+	}
+	
+	/**
+	 * <p>下载计分</p>
+	 * 
+	 * @param buffer 下载大小
+	 */
+	public final void download(int buffer) {
+		this.downloadSize.addAndGet(buffer);
+	}
+	
+	/**
+	 * <p>获取下载评分</p>
+	 * 
+	 * @return 下载评分
+	 */
+	public final long downloadMark() {
+		this.refreshMark();
+		return this.downloadMark;
+	}
+	
+	/**
+	 * <p>刷新评分</p>
+	 */
+	private final void refreshMark() {
+		final long nowTime = System.currentTimeMillis();
+		final long interval = nowTime - this.lastRefreshMarkTime;
+		if(interval > MIN_MARK_INTERVAL) {
+			this.lastRefreshMarkTime = nowTime;
+			final long uploadSize = this.uploadSize.get();
+			this.uploadMark = uploadSize - this.lastUploadSize;
+			this.lastUploadSize = uploadSize;
+			final long downloadSize = this.downloadSize.get();
+			this.downloadMark = downloadSize - this.lastDownloadSize;
+			this.lastDownloadSize = downloadSize;
+			LOGGER.debug("刷新评分：{}-{}", uploadSize, downloadSize);
+		}
 	}
 	
 }

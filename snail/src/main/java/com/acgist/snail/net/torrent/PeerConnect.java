@@ -8,8 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
+import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.bean.TorrentPiece;
-import com.acgist.snail.pojo.session.PeerConnectMarkSession;
 import com.acgist.snail.pojo.session.PeerConnectSession;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
@@ -20,6 +20,8 @@ import com.acgist.snail.utils.ThreadUtils;
  * <p>Peer连接</p>
  * <p>连接：下载、上传（解除阻塞可以上传）</p>
  * <p>接入：上传、下载（解除阻塞可以下载）</p>
+ * <p>Piece下载完成添加成功才计算大小和下载速度，这样计算才正确。如果在Piece消息计算会导致计算无效Piece大小，从而导致数据错误。</p>
+ * <p>限制速度在Piece消息处，这样速度限制比较均匀，不会因为Piece块过大导致等待时间过长。但是这样会导致下载限速速度和实际有效下载速度存在误差。</p>
  * 
  * @author acgist
  */
@@ -88,13 +90,13 @@ public abstract class PeerConnect {
 	 */
 	protected final TorrentSession torrentSession;
 	/**
+	 * <p>统计信息</p>
+	 */
+	protected final IStatisticsSession statisticsSession;
+	/**
 	 * <p>Peer连接信息</p>
 	 */
 	protected final PeerConnectSession peerConnectSession;
-	/**
-	 * <p>Peer连接评分信息</p>
-	 */
-	protected final PeerConnectMarkSession peerConnectMarkSession;
 	/**
 	 * <p>Peer消息代理</p>
 	 */
@@ -109,7 +111,7 @@ public abstract class PeerConnect {
 	 */
 	protected PeerConnect(PeerSession peerSession, TorrentSession torrentSession, PeerSubMessageHandler peerSubMessageHandler) {
 		this.peerSession = peerSession;
-		this.peerConnectMarkSession = new PeerConnectMarkSession();
+		this.statisticsSession = peerSession.statistics();
 		this.torrentSession = torrentSession;
 		this.peerConnectSession = new PeerConnectSession();
 		this.peerSubMessageHandler = peerSubMessageHandler;
@@ -201,8 +203,9 @@ public abstract class PeerConnect {
 	 * @param buffer 上传大小
 	 */
 	public final void uploadMark(int buffer) {
-		this.peerConnectMarkSession.upload(buffer);
-		this.peerSession.upload(buffer);
+		this.peerConnectSession.upload(buffer);
+		this.statisticsSession.upload(buffer);
+		this.statisticsSession.uploadLimit(buffer);
 	}
 	
 	/**
@@ -211,7 +214,7 @@ public abstract class PeerConnect {
 	 * @return Peer上传评分
 	 */
 	public final long uploadMark() {
-		return this.peerConnectMarkSession.uploadMark();
+		return this.peerConnectSession.uploadMark();
 	}
 	
 	/**
@@ -220,8 +223,8 @@ public abstract class PeerConnect {
 	 * @param buffer 下载大小
 	 */
 	public final void downloadMark(int buffer) {
-		// 此次不统计上传大小
-		this.peerConnectMarkSession.download(buffer);
+		this.peerConnectSession.download(buffer);
+		this.statisticsSession.uploadLimit(buffer);
 	}
 	
 	/**
@@ -230,7 +233,7 @@ public abstract class PeerConnect {
 	 * @return Peer下载评分
 	 */
 	public final long downloadMark() {
-		return this.peerConnectMarkSession.downloadMark();
+		return this.peerConnectSession.downloadMark();
 	}
 
 	/**
@@ -393,11 +396,7 @@ public abstract class PeerConnect {
 				// 验证数据：保存数据
 				final boolean ok = this.torrentSession.write(this.downloadPiece);
 				if(ok) {
-					/*
-					 * Piece下载完成统计：不能实时统计下载速度，但是下载大小计算正确。
-					 * Slice下载完成统计：可以实时统计下载速度，但是下载大小计算错误。
-					 */
-					this.peerSession.download(this.downloadPiece.getLength());
+					this.statisticsSession.download(this.downloadPiece.getLength());
 				} else {
 					LOGGER.debug("Piece保存失败：{}", this.downloadPiece.getIndex());
 					this.undone();

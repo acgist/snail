@@ -7,11 +7,11 @@ import java.util.EnumMap;
 import java.util.Map;
 
 import com.acgist.snail.config.PeerConfig;
-import com.acgist.snail.context.IStatistics;
 import com.acgist.snail.net.torrent.PeerConnect;
 import com.acgist.snail.net.torrent.bootstrap.PeerDownloader;
 import com.acgist.snail.net.torrent.bootstrap.PeerUploader;
 import com.acgist.snail.pojo.IStatisticsSession;
+import com.acgist.snail.pojo.IStatisticsSessionGetter;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.ObjectUtils;
@@ -25,7 +25,7 @@ import com.acgist.snail.utils.ThreadUtils;
  * @author acgist
  * @since 1.0.0
  */
-public final class PeerSession implements IStatistics {
+public final class PeerSession implements IStatisticsSessionGetter {
 	
 	/**
 	 * <p>PeerId</p>
@@ -147,16 +147,6 @@ public final class PeerSession implements IStatistics {
 	 */
 	public static final PeerSession newInstance(IStatisticsSession parent, String host, Integer port) {
 		return new PeerSession(parent, host, port);
-	}
-	
-	@Override
-	public void upload(int buffer) {
-		this.statistics.upload(buffer);
-	}
-
-	@Override
-	public void download(int buffer) {
-		this.statistics.download(buffer);
 	}
 
 	@Override
