@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.pojo.bean.TorrentPiece;
-import com.acgist.snail.pojo.session.MarkSession;
+import com.acgist.snail.pojo.session.PeerConnectMarkSession;
 import com.acgist.snail.pojo.session.PeerConnectSession;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
@@ -84,10 +84,6 @@ public abstract class PeerConnect {
 	 */
 	protected final PeerSession peerSession;
 	/**
-	 * <p>评分信息</p>
-	 */
-	protected final MarkSession markSession;
-	/**
 	 * <p>BT任务信息</p>
 	 */
 	protected final TorrentSession torrentSession;
@@ -95,6 +91,10 @@ public abstract class PeerConnect {
 	 * <p>Peer连接信息</p>
 	 */
 	protected final PeerConnectSession peerConnectSession;
+	/**
+	 * <p>Peer连接评分信息</p>
+	 */
+	protected final PeerConnectMarkSession peerConnectMarkSession;
 	/**
 	 * <p>Peer消息代理</p>
 	 */
@@ -109,7 +109,7 @@ public abstract class PeerConnect {
 	 */
 	protected PeerConnect(PeerSession peerSession, TorrentSession torrentSession, PeerSubMessageHandler peerSubMessageHandler) {
 		this.peerSession = peerSession;
-		this.markSession = new MarkSession();
+		this.peerConnectMarkSession = new PeerConnectMarkSession();
 		this.torrentSession = torrentSession;
 		this.peerConnectSession = new PeerConnectSession();
 		this.peerSubMessageHandler = peerSubMessageHandler;
@@ -196,12 +196,12 @@ public abstract class PeerConnect {
 	}
 	
 	/**
-	 * <p>上传计分</p>
+	 * <p>Peer上传计分</p>
 	 * 
 	 * @param buffer 上传大小
 	 */
 	public final void uploadMark(int buffer) {
-		this.markSession.upload(buffer);
+		this.peerConnectMarkSession.upload(buffer);
 		this.peerSession.upload(buffer);
 	}
 	
@@ -211,17 +211,17 @@ public abstract class PeerConnect {
 	 * @return Peer上传评分
 	 */
 	public final long uploadMark() {
-		return this.markSession.uploadMark();
+		return this.peerConnectMarkSession.uploadMark();
 	}
 	
 	/**
-	 * <p>下载计分</p>
+	 * <p>Peer下载计分</p>
 	 * 
 	 * @param buffer 下载大小
 	 */
 	public final void downloadMark(int buffer) {
 		// 此次不统计上传大小
-		this.markSession.download(buffer);
+		this.peerConnectMarkSession.download(buffer);
 	}
 	
 	/**
@@ -230,7 +230,7 @@ public abstract class PeerConnect {
 	 * @return Peer下载评分
 	 */
 	public final long downloadMark() {
-		return this.markSession.downloadMark();
+		return this.peerConnectMarkSession.downloadMark();
 	}
 
 	/**

@@ -6,14 +6,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <p>评分信息</p>
+ * <p>Peer连接评分信息</p>
  * <p>评分不能初是为零，防止第一次直接被剔除。</p>
  * 
  * @author acgist
  */
-public final class MarkSession {
+public final class PeerConnectMarkSession {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(MarkSession.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PeerConnectMarkSession.class);
 	
 	/**
 	 * <p>评分统计最短时间</p>
@@ -49,7 +49,7 @@ public final class MarkSession {
 	 */
 	private volatile long lastRefreshMarkTime = System.currentTimeMillis();
 	
-	public MarkSession() {
+	public PeerConnectMarkSession() {
 	}
 	
 	/**
