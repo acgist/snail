@@ -31,11 +31,11 @@ public final class PeerConnectMarkSession {
 	 */
 	private volatile long downloadMark = 8888;
 	/**
-	 * <p>上次上传大小</p>
+	 * <p>上次累计上传大小</p>
 	 */
 	private long lastUploadSize;
 	/**
-	 * <p>上次下载大小</p>
+	 * <p>上次累计下载大小</p>
 	 */
 	private long lastDownloadSize;
 	/**

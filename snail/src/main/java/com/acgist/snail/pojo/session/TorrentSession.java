@@ -737,7 +737,7 @@ public final class TorrentSession {
 	 * 
 	 * @see ITaskSession#downloadSize(long)
 	 */
-	public void resize(long size) {
+	public void downloadSize(long size) {
 		this.taskSession.downloadSize(size);
 	}
 	
