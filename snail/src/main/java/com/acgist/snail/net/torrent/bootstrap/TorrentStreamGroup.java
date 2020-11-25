@@ -232,7 +232,7 @@ public final class TorrentStreamGroup {
 				if(ok) {
 					final var finishTime = System.currentTimeMillis(); // 结束时间
 					LOGGER.debug("{}-任务准备完成，消耗时间：{}", this.torrent.name(), (finishTime - startTime));
-					this.torrentSession.resize(this.size());
+					this.torrentSession.downloadSize(this.size());
 					this.fullPieces(this.pieces());
 				} else {
 					LOGGER.warn("{}-任务准备超时", this.torrent.name());

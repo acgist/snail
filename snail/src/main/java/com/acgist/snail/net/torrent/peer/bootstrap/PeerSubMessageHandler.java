@@ -907,7 +907,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			return;
 		}
 		// 累计上传大小超过任务大小：阻塞（不上传）
-		if(this.peerSession.statistics().uploadSize() > this.torrentSession.size()) {
+		if(this.peerSession.uploadSize() > this.torrentSession.size()) {
 			LOGGER.debug("累计上传大小超过任务大小：阻塞");
 			this.choke(); // 发送阻塞消息
 			this.rejectRequest(index, begin, length);

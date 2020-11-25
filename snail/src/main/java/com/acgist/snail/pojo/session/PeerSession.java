@@ -165,6 +165,28 @@ public final class PeerSession implements IStatistics {
 	}
 	
 	/**
+	 * <p>获取累计上传大小</p>
+	 * 
+	 * @return 累计上传大小
+	 * 
+	 * @see IStatisticsSession#uploadSize()
+	 */
+	public long uploadSize() {
+		return this.statistics.uploadSize();
+	}
+	
+	/**
+	 * <p>获取累计下载大小</p>
+	 * 
+	 * @return 累计下载大小
+	 * 
+	 * @see IStatisticsSession#downloadSize()
+	 */
+	public long downloadSize() {
+		return this.statistics.downloadSize();
+	}
+	
+	/**
 	 * <p>设置PeerId和客户端名称</p>
 	 * 
 	 * @param id PeerId
