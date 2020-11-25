@@ -67,7 +67,11 @@ public abstract class UdpMessageHandler implements IMessageSender, IMessageRecei
 
 	@Override
 	public boolean available() {
+		// 不用判断状态：使用服务通道
 		return !this.close && this.channel != null;
+		// 只能判断通道是否打开：bind
+//		return !this.close && this.channel != null && this.channel.isOpen();
+		// 不能判断通道是否连接：connect
 //		return !this.close && this.channel != null && this.channel.isConnected();
 	}
 	

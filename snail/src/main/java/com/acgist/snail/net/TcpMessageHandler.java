@@ -67,8 +67,8 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	
 	@Override
 	public boolean available() {
-		return !this.close && this.socket != null;
-//		return !this.close && this.socket != null && this.socket.isOpen();
+//		return !this.close && this.socket != null;
+		return !this.close && this.socket != null && this.socket.isOpen();
 	}
 	
 	@Override
