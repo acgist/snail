@@ -20,7 +20,6 @@ import com.acgist.snail.utils.NetUtils;
  * <p>TCP客户端</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessageHandlerAdapter<T> {
 
@@ -107,10 +106,6 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 		return ok;
 	}
 	
-	/**
-	 * <p>关闭资源</p>
-	 * <p>使用消息代理关闭资源</p>
-	 */
 	@Override
 	public void close() {
 		LOGGER.debug("关闭TCP Client：{}", this.name);

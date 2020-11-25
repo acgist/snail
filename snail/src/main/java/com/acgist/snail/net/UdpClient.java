@@ -16,8 +16,9 @@ import com.acgist.snail.context.exception.NetException;
  * 	<li>UDP通道使用服务器通道</li>
  * </ul>
  * 
+ * @param <T> UDP消息代理
+ * 
  * @author acgist
- * @since 1.0.0
  */
 public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessageHandlerAdapter<T> implements IUdpChannel {
 	
@@ -33,7 +34,7 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessa
 	protected final InetSocketAddress socketAddress;
 	
 	/**
-	 * <p>新建客户端</p>
+	 * <p>创建客户端时自动打开客户端</p>
 	 * 
 	 * @param name 客户端名称
 	 * @param handler 消息处理器
@@ -48,7 +49,6 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessa
 
 	/**
 	 * <p>打开客户端</p>
-	 * <p>随机端口</p>
 	 * 
 	 * @return 打开状态
 	 */
@@ -73,7 +73,6 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessa
 
 	/**
 	 * <p>打开客户端</p>
-	 * <p>客户端和服务端的使用同一个通道</p>
 	 * 
 	 * @param channel 通道
 	 * 
@@ -88,7 +87,8 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessa
 	}
 	
 	/**
-	 * <p>关闭资源</p>
+	 * {@inheritDoc}
+	 * 
 	 * <p>标记关闭：不能关闭通道（UDP通道单例复用）</p>
 	 */
 	@Override

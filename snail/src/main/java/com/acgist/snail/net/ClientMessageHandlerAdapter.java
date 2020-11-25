@@ -7,12 +7,11 @@ import com.acgist.snail.context.exception.NetException;
 
 /**
  * <p>Client消息代理适配器</p>
- * <p>发送方法全部重写调用消息代理发送方法</p>
+ * <p>发送方法全部重写（调用消息代理发送方法）不重写将会导致发送失败</p>
  * 
  * @param <T> 消息代理泛型
  * 
  * @author acgist
- * @since 1.1.0
  */
 public abstract class ClientMessageHandlerAdapter<T extends IMessageSender> implements IMessageSender {
 

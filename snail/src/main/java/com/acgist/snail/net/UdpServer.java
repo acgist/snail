@@ -27,7 +27,6 @@ import com.acgist.snail.utils.NetUtils;
  * <p>全部使用单例：初始化时立即开始监听（客户端和服务端使用同一个通道）</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public abstract class UdpServer<T extends UdpAcceptHandler> implements IUdpChannel {
 
@@ -67,7 +66,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements IUdpChann
 	 * @param handler 消息代理
 	 */
 	protected UdpServer(String name, T handler) {
-		this(PORT_AUTO, ADDR_LOCAL, ADDR_REUSE_NOT, name, handler);
+		this(PORT_AUTO, ADDR_LOCAL, ADDR_UNREUSE, name, handler);
 	}
 	
 	/**
@@ -79,7 +78,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements IUdpChann
 	 * @param handler 消息代理
 	 */
 	protected UdpServer(int port, String name, T handler) {
-		this(port, ADDR_LOCAL, ADDR_REUSE_NOT, name, handler);
+		this(port, ADDR_LOCAL, ADDR_UNREUSE, name, handler);
 	}
 	
 	/**
@@ -92,7 +91,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements IUdpChann
 	 * @param handler 消息代理
 	 */
 	protected UdpServer(int port, String host, String name, T handler) {
-		this(port, host, ADDR_REUSE_NOT, name, handler);
+		this(port, host, ADDR_UNREUSE, name, handler);
 	}
 	
 	/**
@@ -133,7 +132,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements IUdpChann
 		try {
 			return Selector.open();
 		} catch (IOException e) {
-			LOGGER.error("打开Selector异常", e);
+			LOGGER.error("打开Selector异常：{}", this.name, e);
 		}
 		return null;
 	}
@@ -143,7 +142,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements IUdpChann
 	 * 
 	 * @param port 端口
 	 * @param host 地址
-	 * @param reuse 重用地址
+	 * @param reuse 是否重用地址
 	 * 
 	 * @return UDP通道
 	 */
@@ -151,7 +150,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements IUdpChann
 		try {
 			return this.buildUdpChannel(port, host, reuse);
 		} catch (NetException e) {
-			LOGGER.error("打开UDP通道异常：{}", name, e);
+			LOGGER.error("打开UDP通道异常：{}", this.name, e);
 		}
 		return null;
 	}
@@ -164,7 +163,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements IUdpChann
 	 */
 	public void join(int ttl, String group) {
 		if(this.channel == null) {
-			LOGGER.warn("UDP Server通道没有初始化（join）：{}", this.name);
+			LOGGER.warn("UDP多播失败（通道没有初始化）：{}", this.name);
 			return;
 		}
 		try {
@@ -178,11 +177,10 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements IUdpChann
 	
 	/**
 	 * <p>消息代理</p>
-	 * <p>开始消息轮询</p>
 	 */
-	public void handle() {
+	protected void handle() {
 		if(this.channel == null) {
-			LOGGER.warn("UDP Server通道没有初始化（handle）：{}", this.name);
+			LOGGER.warn("UDP Server通道没有初始化：{}", this.name);
 			return;
 		}
 		if(!this.channel.isOpen()) {
@@ -210,7 +208,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements IUdpChann
 		try {
 			this.channel.register(this.selector, SelectionKey.OP_READ);
 		} catch (ClosedChannelException e) {
-			LOGGER.error("UDP Server注册Selector消息读取异常", e);
+			LOGGER.error("UDP Server注册Selector消息读取异常：{}", this.name, e);
 		}
 	}
 	
@@ -236,7 +234,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements IUdpChann
 				}
 			}
 		} catch (Exception e) {
-			LOGGER.error("UDP Server消息接收异常", e);
+			LOGGER.error("UDP Server消息接收异常：{}", this.name, e);
 		}
 	}
 	

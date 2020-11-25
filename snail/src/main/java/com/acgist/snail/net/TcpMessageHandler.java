@@ -20,9 +20,9 @@ import com.acgist.snail.utils.IoUtils;
 
 /**
  * <p>TCP消息代理</p>
+ * <p>注意：需要提供无参构造方法</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public abstract class TcpMessageHandler implements CompletionHandler<Integer, ByteBuffer>, IMessageSender, IMessageReceiver {
 
@@ -42,13 +42,9 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	protected IMessageCodec<ByteBuffer> messageCodec;
 	
 	/**
-	 * <p>收到消息</p>
-	 * <p>使用消息处理器处理消息</p>
-	 * <p>如果没有实现消息处理器，请重写该方法。</p>
+	 * {@inheritDoc}
 	 * 
-	 * @param buffer 消息
-	 * 
-	 * @throws NetException 网络异常
+	 * <p>使用消息处理器处理消息，如果没有实现消息处理器，请重写该方法。</p>
 	 */
 	@Override
 	public void onReceive(ByteBuffer buffer) throws NetException {
@@ -72,6 +68,7 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	@Override
 	public boolean available() {
 		return !this.close && this.socket != null;
+//		return !this.close && this.socket != null && this.socket.isOpen();
 	}
 	
 	@Override
@@ -142,8 +139,8 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	}
 	
 	@Override
-	public void failed(Throwable ex, ByteBuffer buffer) {
-		LOGGER.error("TCP消息处理异常", ex);
+	public void failed(Throwable throwable, ByteBuffer buffer) {
+		LOGGER.error("TCP消息处理异常", throwable);
 	}
 	
 	/**

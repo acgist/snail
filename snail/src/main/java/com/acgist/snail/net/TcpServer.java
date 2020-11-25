@@ -14,7 +14,6 @@ import com.acgist.snail.utils.NetUtils;
  * <p>TCP服务端</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public abstract class TcpServer<T extends TcpMessageHandler> {
 

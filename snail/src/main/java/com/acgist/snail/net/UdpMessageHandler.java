@@ -18,7 +18,6 @@ import com.acgist.snail.net.codec.IMessageCodec;
  * <p>注：重写请注意避免循环调用</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public abstract class UdpMessageHandler implements IMessageSender, IMessageReceiver {
 	
@@ -42,14 +41,10 @@ public abstract class UdpMessageHandler implements IMessageSender, IMessageRecei
 	protected IMessageCodec<ByteBuffer> messageCodec;
 	
 	/**
-	 * <p>收到消息</p>
+	 * {@inheritDoc}
+	 * 
 	 * <p>使用消息处理器处理消息</p>
 	 * <p>如果没有实现消息处理器，请重写该方法。</p>
-	 * 
-	 * @param buffer 消息
-	 * @param socketAddress 地址
-	 * 
-	 * @throws NetException 网络异常
 	 */
 	@Override
 	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException {
@@ -73,6 +68,7 @@ public abstract class UdpMessageHandler implements IMessageSender, IMessageRecei
 	@Override
 	public boolean available() {
 		return !this.close && this.channel != null;
+//		return !this.close && this.channel != null && this.channel.isConnected();
 	}
 	
 	@Override
@@ -86,7 +82,8 @@ public abstract class UdpMessageHandler implements IMessageSender, IMessageRecei
 	}
 
 	/**
-	 * <p>关闭资源</p>
+	 * {@inheritDoc}
+	 * 
 	 * <p>标记关闭：不能关闭通道（UDP通道单例复用）</p>
 	 */
 	@Override
@@ -106,6 +103,7 @@ public abstract class UdpMessageHandler implements IMessageSender, IMessageRecei
 	protected final void send(ByteBuffer buffer, SocketAddress socketAddress) throws NetException {
 		this.check(buffer);
 		try {
+			// UDP不用加锁
 			final int size = this.channel.send(buffer, socketAddress);
 			if(size <= 0) {
 				LOGGER.warn("UDP消息发送失败：{}-{}", socketAddress, size);

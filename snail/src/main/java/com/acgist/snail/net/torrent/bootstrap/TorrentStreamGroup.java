@@ -439,8 +439,6 @@ public final class TorrentStreamGroup {
 	 * <p>获取剩余选中未下载的Piece数量</p>
 	 * 
 	 * @return 剩余选中未下载的Piece数量
-	 * 
-	 * @since 1.0.2
 	 */
 	public int remainingPieceSize() {
 		final BitSet condition = new BitSet();

@@ -22,7 +22,7 @@ public final class ApplicationServer extends TcpServer<ApplicationMessageHandler
 	
 	@Override
 	public boolean listen() {
-		return listen(SystemConfig.getServicePort());
+		return this.listen(SystemConfig.getServicePort());
 	}
 	
 }
