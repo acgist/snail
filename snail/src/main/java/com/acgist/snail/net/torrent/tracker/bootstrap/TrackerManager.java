@@ -30,7 +30,6 @@ import com.acgist.snail.utils.UrlUtils;
  * <p>管理TrackerClient和TrackerLauncher</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class TrackerManager {
 

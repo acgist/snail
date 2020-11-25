@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
  * <p>UDP消息接收代理</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public abstract class UdpAcceptHandler {
 

@@ -13,7 +13,6 @@ import com.acgist.snail.utils.BeanUtils;
  * <p>TCP客户端接收代理</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class TcpAcceptHandler<T extends TcpMessageHandler> implements CompletionHandler<AsynchronousSocketChannel, AsynchronousServerSocketChannel> {
 
@@ -24,6 +23,9 @@ public final class TcpAcceptHandler<T extends TcpMessageHandler> implements Comp
 	 */
 	private final Class<T> clazz;
 	
+	/**
+	 * @param clazz 消息代理类型
+	 */
 	private TcpAcceptHandler(Class<T> clazz) {
 		this.clazz = clazz;
 	}
@@ -49,8 +51,8 @@ public final class TcpAcceptHandler<T extends TcpMessageHandler> implements Comp
 	}
 	
 	@Override
-	public void failed(Throwable ex, AsynchronousServerSocketChannel client) {
-		LOGGER.error("客户端连接异常", ex);
+	public void failed(Throwable throwable, AsynchronousServerSocketChannel client) {
+		LOGGER.error("客户端连接异常", throwable);
 	}
 	
 	/**

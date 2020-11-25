@@ -16,6 +16,8 @@ public interface IMessageReceiver {
 	 * <p>消息接收</p>
 	 * 
 	 * @param buffer 消息
+	 * 
+	 * @throws NetException 网络异常
 	 */
 	default void onReceive(ByteBuffer buffer) throws NetException {
 	}

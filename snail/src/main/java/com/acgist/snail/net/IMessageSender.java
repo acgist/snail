@@ -10,7 +10,6 @@ import com.acgist.snail.context.exception.NetException;
  * <p>消息接收代理</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public interface IMessageSender {
 	
@@ -45,8 +44,6 @@ public interface IMessageSender {
 	 * @param charset 编码格式
 	 * 
 	 * @throws NetException 网络异常
-	 * 
-	 * @since 1.1.0
 	 */
 	default void send(String message, String charset) throws NetException {
 		this.send(this.charset(message, charset));

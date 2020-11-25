@@ -7,7 +7,6 @@ import com.acgist.snail.net.torrent.dht.bootstrap.DhtResponse;
  * <p>Ping</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class PingResponse extends DhtResponse {
 	
