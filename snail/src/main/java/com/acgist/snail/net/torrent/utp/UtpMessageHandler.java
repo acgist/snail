@@ -67,6 +67,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	
 	/**
 	 * <p>是否连接</p>
+	 * <p>不能使用这个状态{@linkplain #available() 判断是否可用}，发送方法判断这个状态，导致发送连接消息失败。</p>
 	 */
 	private boolean connect;
 	/**

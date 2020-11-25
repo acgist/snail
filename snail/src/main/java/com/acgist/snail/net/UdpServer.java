@@ -171,7 +171,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements IUdpChann
 			this.channel.setOption(StandardSocketOptions.IP_MULTICAST_LOOP, true);
 			this.channel.join(InetAddress.getByName(group), NetUtils.defaultNetworkInterface());
 		} catch (Exception e) {
-			LOGGER.info("UDP多播异常：{}", group, e);
+			LOGGER.info("UDP多播异常：{}-{}", this.name, group, e);
 		}
 	}
 	
