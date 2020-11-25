@@ -131,11 +131,7 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 				LOGGER.error("TCP消息接收异常", e);
 			}
 		}
-		if(this.available()) {
-			this.loopMessage();
-		} else {
-			LOGGER.debug("TCP消息代理跳出循环：{}", result);
-		}
+		this.loopMessage();
 	}
 	
 	@Override
@@ -150,6 +146,8 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 		if(this.available()) {
 			final ByteBuffer buffer = ByteBuffer.allocate(SystemConfig.TCP_BUFFER_LENGTH);
 			this.socket.read(buffer, buffer, this);
+		} else {
+			LOGGER.debug("TCP消息代理退出消息轮询");
 		}
 	}
 
