@@ -1,30 +1,39 @@
 package com.acgist.snail.pojo;
 
-import com.acgist.snail.context.IStatistics;
-
 /**
  * <p>统计接口</p>
  * 
  * @author acgist
- * @since 1.2.0
  */
-public interface IStatisticsSession extends IStatistics {
+public interface IStatisticsSession {
 
 	/**
-	 * {@inheritDoc}
+	 * <p>统计上传数据</p>
 	 * 
-	 * <p>如果存在上级优先更新上级数据：防止限速导致上级更新不及时</p>
+	 * @param buffer 上传数据大小
 	 */
-	@Override
 	void upload(int buffer);
 	
 	/**
-	 * {@inheritDoc}
+	 * <p>统计下载数据</p>
 	 * 
-	 * <p>如果存在上级优先更新上级数据：防止限速导致上级更新不及时</p>
+	 * @param buffer 下载数据大小
 	 */
-	@Override
 	void download(int buffer);
+	
+	/**
+	 * <p>上传限速</p>
+	 * 
+	 * @param buffer 上传数据大小
+	 */
+	void uploadLimit(int buffer);
+	
+	/**
+	 * <p>下载限速</p>
+	 * 
+	 * @param buffer 下载数据大小
+	 */
+	void downloadLimit(int buffer);
 	
 	/**
 	 * <p>获取上传速度</p>

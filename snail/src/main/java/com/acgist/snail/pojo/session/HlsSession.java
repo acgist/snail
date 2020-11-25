@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.net.hls.HlsClient;
+import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.ITaskSession;
 
 /**
@@ -45,6 +46,10 @@ public final class HlsSession {
 	 */
 	private final ITaskSession taskSession;
 	/**
+	 * <p>统计信息</p>
+	 */
+	private final IStatisticsSession statisticsSession;
+	/**
 	 * <p>线程池</p>
 	 */
 	private final ExecutorService executor;
@@ -56,6 +61,7 @@ public final class HlsSession {
 	private HlsSession(ITaskSession taskSession) {
 		this.downloadSize = new AtomicLong();
 		this.taskSession = taskSession;
+		this.statisticsSession = taskSession.statistics();
 		this.executor = SystemThreadContext.newExecutor(POOL_SIZE, POOL_SIZE, 1000, 60L, SystemThreadContext.SNAIL_THREAD_HLS);
 		final var links = taskSession.multifileSelected();
 		this.fileSize = links.size();
@@ -118,7 +124,8 @@ public final class HlsSession {
 	 * @param buffer 速度
 	 */
 	public void download(int buffer) {
-		this.taskSession.statistics().download(buffer);
+		this.statisticsSession.download(buffer);
+		this.statisticsSession.downloadLimit(buffer);
 	}
 	
 	/**

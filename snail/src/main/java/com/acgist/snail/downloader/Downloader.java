@@ -6,7 +6,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.context.IStatistics;
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.ITaskSession;
@@ -20,7 +19,7 @@ import com.acgist.snail.utils.ThreadUtils;
  * 
  * @author acgist
  */
-public abstract class Downloader implements IDownloader, IStatistics {
+public abstract class Downloader implements IDownloader {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Downloader.class);
 	
@@ -44,6 +43,10 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	 */
 	protected final ITaskSession taskSession;
 	/**
+	 * <p>统计信息</p>
+	 */
+	protected final IStatisticsSession statisticsSession;
+	/**
 	 * <p>删除锁</p>
 	 * <p>true-任务没有下载（可以删除）；</p>
 	 * <p>false-任务正在下载（不能删除）；</p>
@@ -56,6 +59,7 @@ public abstract class Downloader implements IDownloader, IStatistics {
 	 */
 	protected Downloader(ITaskSession taskSession) {
 		this.taskSession = taskSession;
+		this.statisticsSession = taskSession.statistics();
 		// 已下载大小
 		this.taskSession.downloadSize(this.downloadSize());
 		// 任务没有下载标记删除锁：true
@@ -200,21 +204,6 @@ public abstract class Downloader implements IDownloader, IStatistics {
 				LOGGER.warn("任务状态错误：{}-{}", name, this.taskSession.getStatus());
 			}
 		}
-	}
-	
-	@Override
-	public void upload(int buffer) {
-		this.taskSession.statistics().upload(buffer);
-	}
-	
-	@Override
-	public void download(int buffer) {
-		this.taskSession.statistics().download(buffer);
-	}
-	
-	@Override
-	public IStatisticsSession statistics() {
-		return this.taskSession.statistics();
 	}
 	
 	/**

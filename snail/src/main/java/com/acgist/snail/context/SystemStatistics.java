@@ -1,6 +1,7 @@
 package com.acgist.snail.context;
 
 import com.acgist.snail.pojo.IStatisticsSession;
+import com.acgist.snail.pojo.IStatisticsSessionGetter;
 import com.acgist.snail.pojo.session.StatisticsSession;
 
 /**
@@ -10,7 +11,7 @@ import com.acgist.snail.pojo.session.StatisticsSession;
  * 
  * @author acgist
  */
-public final class SystemStatistics {
+public final class SystemStatistics implements IStatisticsSessionGetter {
 	
 	private static final SystemStatistics INSTANCE = new SystemStatistics();
 	
@@ -27,22 +28,9 @@ public final class SystemStatistics {
 		this.statistics = new StatisticsSession();
 	}
 	
-	/**
-	 * <p>获取系统全局统计</p>
-	 * 
-	 * @return 系统全局统计
-	 */
+	@Override
 	public IStatisticsSession statistics() {
 		return this.statistics;
-	}
-	
-	/**
-	 * <p>获取下载速度</p>
-	 * 
-	 * @return 下载速度
-	 */
-	public long downloadSpeed() {
-		return this.statistics.downloadSpeed();
 	}
 	
 	/**
@@ -52,6 +40,15 @@ public final class SystemStatistics {
 	 */
 	public long uploadSpeed() {
 		return this.statistics.uploadSpeed();
+	}
+	
+	/**
+	 * <p>获取下载速度</p>
+	 * 
+	 * @return 下载速度
+	 */
+	public long downloadSpeed() {
+		return this.statistics.downloadSpeed();
 	}
 
 }
