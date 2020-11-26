@@ -1,7 +1,5 @@
 package com.acgist.snail.pojo.session;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.acgist.snail.config.DownloadConfig;
@@ -57,17 +55,21 @@ public final class LimitSession {
 	 * @param buffer 数据大小
 	 */
 	public void limit(long buffer) {
-		final long maxLimitBuffer = this.maxLimitBuffer();
 		final long interval = System.currentTimeMillis() - this.lastLimitTime;
 		final long limitBuffer = this.limitBuffer.addAndGet(buffer);
+		final long maxLimitBuffer = this.maxLimitBuffer();
 		if(limitBuffer >= maxLimitBuffer || interval >= DateUtils.ONE_SECOND) { // 限速控制
 			synchronized (this.limitBuffer) { // 阻塞其他线程
 				if(limitBuffer == this.limitBuffer.get()) { // 验证
-					// 期望时间：更加精确：可以使用一秒
-					final long expectTime = BigDecimal.valueOf(limitBuffer)
-						.multiply(BigDecimal.valueOf(DateUtils.ONE_SECOND))
-						.divide(BigDecimal.valueOf(maxLimitBuffer), RoundingMode.HALF_UP)
-						.longValue();
+					// 直接使用一秒：如果缓存较大就会出现误差
+//					final long expectTime = DateUtils.ONE_SECOND;
+					// 通过实际下载大小计算
+//					final long expectTime = BigDecimal.valueOf(limitBuffer)
+//						.multiply(BigDecimal.valueOf(DateUtils.ONE_SECOND))
+//						.divide(BigDecimal.valueOf(maxLimitBuffer), RoundingMode.HALF_UP)
+//						.longValue();
+					// 通过实际下载大小计算
+					final long expectTime = limitBuffer * DateUtils.ONE_SECOND / maxLimitBuffer;
 					if(interval < expectTime) { // 限速时间
 						ThreadUtils.sleep(expectTime - interval);
 					}
