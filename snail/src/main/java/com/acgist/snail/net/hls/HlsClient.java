@@ -193,9 +193,7 @@ public final class HlsClient implements Runnable {
 		// HTTP客户端
 		final var client = HTTPClient.newInstance(this.link, SystemConfig.CONNECT_TIMEOUT, SystemConfig.DOWNLOAD_TIMEOUT);
 		// HTTP响应
-		final HttpResponse<InputStream> response = client
-			.header(HttpHeaderWrapper.HEADER_RANGE, "bytes=" + size + "-")
-			.get(BodyHandlers.ofInputStream());
+		final HttpResponse<InputStream> response = client.range(size).get(BodyHandlers.ofInputStream());
 		// 请求成功和部分请求成功
 		if(
 			HTTPClient.StatusCode.OK.verifyCode(response) ||

@@ -43,6 +43,8 @@ import com.acgist.snail.utils.UrlUtils;
  * <p>使用JDK内置HTTP客户端</p>
  * <p>配置参考：https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html</p>
  * 
+ * TODO：考虑使用使用HttpURLConnection替换
+ * 
  * @author acgist
  */
 public final class HTTPClient {
@@ -217,6 +219,17 @@ public final class HTTPClient {
 		return this;
 	}
 
+	/**
+	 * <p>设置请求范围</p>
+	 * 
+	 * @param size 已下载大小
+	 * 
+	 * @return 客户端
+	 */
+	public HTTPClient range(long size) {
+		return this.header(HttpHeaderWrapper.HEADER_RANGE, "bytes=" + size + "-");
+	}
+	
 	/**
 	 * <p>执行GET请求</p>
 	 * 
