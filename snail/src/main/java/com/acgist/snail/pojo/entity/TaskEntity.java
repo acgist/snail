@@ -11,7 +11,6 @@ import com.acgist.snail.protocol.Protocol.Type;
  * <p>Entity - 任务</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class TaskEntity extends Entity implements ITaskSessionEntity {
 
@@ -65,10 +64,10 @@ public final class TaskEntity extends Entity implements ITaskSessionEntity {
 	 */
 	private Date endDate;
 	/**
-	 * </p>下载描述</p>
-	 * </p>多文件下载时保持下载文件列表（B编码）</p>
-	 * </p>HLS任务文件链接</p>
-	 * </p>BT任务文件列表</p>
+	 * <p>下载描述</p>
+	 * <p>多文件下载时保持下载文件列表（B编码）</p>
+	 * <p>HLS任务文件链接</p>
+	 * <p>BT任务文件列表</p>
 	 */
 	private String description;
 	

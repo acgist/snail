@@ -10,12 +10,13 @@ import com.acgist.snail.utils.ObjectUtils;
  * <p>M3U8信息</p>
  * 
  * @author acgist
- * @since 1.4.1
  */
 public final class M3u8 {
 	
 	/**
 	 * <p>类型</p>
+	 * 
+	 * @author acgist
 	 */
 	public enum Type {
 		
@@ -30,11 +31,16 @@ public final class M3u8 {
 	
 	/**
 	 * <p>加密协议</p>
+	 * 
+	 * @author acgist
 	 */
 	public enum Protocol {
 		
+		/** 明文 */
 		NONE("NONE"),
+		/** AES-128 */
 		AES_128("AES-128"),
+		/** SAMPLE-AES */
 		SAMPLE_AES("SAMPLE-AES");
 		
 		/**
@@ -42,6 +48,9 @@ public final class M3u8 {
 		 */
 		private final String value;
 		
+		/**
+		 * @param value 加密算法名称
+		 */
 		private Protocol(String value) {
 			this.value = value;
 		}
@@ -75,7 +84,7 @@ public final class M3u8 {
 	 */
 	private final Cipher cipher;
 	/**
-	 * <p>文件列表、M3U8列表</p>
+	 * <p>文件列表</p>
 	 * <p>多级M3U8列表：按照码率从小到大排序</p>
 	 */
 	private final List<String> links;

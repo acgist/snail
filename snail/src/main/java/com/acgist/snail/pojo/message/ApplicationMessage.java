@@ -12,7 +12,6 @@ import com.acgist.snail.format.BEncodeEncoder;
  * <p>通过系统消息可以实现系统管理和任务管理</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public class ApplicationMessage {
 	
@@ -100,6 +99,10 @@ public class ApplicationMessage {
 	 */
 	private String body;
 
+	/**
+	 * @param type 消息类型
+	 * @param body 消息内容
+	 */
 	private ApplicationMessage(Type type, String body) {
 		this.type = type;
 		this.body = body;

@@ -10,7 +10,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>Entity - 基类</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public class Entity implements Serializable {
 

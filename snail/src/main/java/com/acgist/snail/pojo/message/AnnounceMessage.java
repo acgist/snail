@@ -11,7 +11,6 @@ import com.acgist.snail.utils.ObjectUtils;
  * <p>HTTP：https://wiki.theory.org/index.php/BitTorrentSpecification</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class AnnounceMessage {
 
