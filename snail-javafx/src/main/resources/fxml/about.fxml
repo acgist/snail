@@ -34,7 +34,7 @@
 	
 	<TextFlow GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="3">
 		<Label>开源协议：</Label>
-		<Text>BSD-3-Clause</Text>
+		<Text>Apache-2.0</Text>
 	</TextFlow>
 	
 	<TextFlow GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.columnSpan="3">
