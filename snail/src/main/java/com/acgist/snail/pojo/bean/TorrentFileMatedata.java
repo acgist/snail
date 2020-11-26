@@ -4,7 +4,6 @@ package com.acgist.snail.pojo.bean;
  * <p>种子文件基本数据</p>
  * 
  * @author acgist
- * @version 1.4.1
  */
 public class TorrentFileMatedata {
 

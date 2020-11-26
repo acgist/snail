@@ -16,7 +16,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>种子文件包含多个下载文件时使用</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class TorrentFile extends TorrentFileMatedata implements Serializable {
 
@@ -48,6 +47,7 @@ public final class TorrentFile extends TorrentFileMatedata implements Serializab
 	public static final String ATTR_PATH_UTF8 = "path.utf-8";
 	
 	//================种子文件自带信息================//
+	
 	/**
 	 * <p>路径</p>
 	 */
@@ -58,6 +58,7 @@ public final class TorrentFile extends TorrentFileMatedata implements Serializab
 	private List<String> pathUtf8;
 	
 	//================种子文件临时信息================//
+	
 	/**
 	 * <p>是否选中下载</p>
 	 */
@@ -81,22 +82,14 @@ public final class TorrentFile extends TorrentFileMatedata implements Serializab
 		file.setEd2k(BEncodeDecoder.getBytes(map, ATTR_ED2K));
 		file.setFilehash(BEncodeDecoder.getBytes(map, ATTR_FILEHASH));
 		final List<Object> path = BEncodeDecoder.getList(map, ATTR_PATH);
-		if(path != null) {
-			file.setPath(readPath(path, encoding));
-		} else {
-			file.setPath(new ArrayList<>());
-		}
+		file.setPath(readPath(path, encoding));
 		final List<Object> pathUtf8 = BEncodeDecoder.getList(map, ATTR_PATH_UTF8);
-		if(pathUtf8 != null) {
-			file.setPathUtf8(readPath(pathUtf8, null)); // 默认编码：UTF-8
-		} else {
-			file.setPathUtf8(new ArrayList<>());
-		}
+		file.setPathUtf8(readPath(pathUtf8, null)); // 默认编码：UTF-8
 		return file;
 	}
 
 	/**
-	 * <p>是否选中下载</p>
+	 * <p>判断是否选中下载</p>
 	 * 
 	 * @return 是否选中下载
 	 */
@@ -105,7 +98,7 @@ public final class TorrentFile extends TorrentFileMatedata implements Serializab
 	}
 
 	/**
-	 * <p>设置选中下载</p>
+	 * <p>设置是否选中下载</p>
 	 * 
 	 * @param selected 是否选中下载
 	 */
@@ -135,6 +128,9 @@ public final class TorrentFile extends TorrentFileMatedata implements Serializab
 	 * @return 文件路径
 	 */
 	private static final List<String> readPath(List<Object> path, String encoding) {
+		if(path == null) {
+			return new ArrayList<>();
+		}
 		return path.stream()
 			.map(value -> StringUtils.getStringCharset(value, encoding))
 			.collect(Collectors.toList());

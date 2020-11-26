@@ -8,6 +8,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -16,11 +19,12 @@ import com.acgist.snail.utils.StringUtils;
  * <p>种子信息</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class Torrent implements Serializable {
-
+	
 	private static final long serialVersionUID = 1L;
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(Torrent.class);
 	
 	/**
 	 * <p>注释：{@value}</p>
@@ -60,6 +64,7 @@ public final class Torrent implements Serializable {
 	public static final String ATTR_NODES = "nodes";
 	
 	// ============== 种子文件自带信息 ============== //
+	
 	/**
 	 * <p>注释</p>
 	 */
@@ -98,9 +103,10 @@ public final class Torrent implements Serializable {
 	private Map<String, Integer> nodes;
 	
 	// ============== 种子文件临时信息 ============== //
+	
 	/**
 	 * <p>InfoHash</p>
-	 * <p>种子文件加载完成时保存InfoHash，防止计算种子Hash不一致。</p>
+	 * <p>种子文件加载完成时保存InfoHash，防止重复计算导致错误。</p>
 	 */
 	private transient InfoHash infoHash;
 
@@ -124,34 +130,22 @@ public final class Torrent implements Serializable {
 		torrent.setCommentUtf8(decoder.getString(ATTR_COMMENT_UTF8));
 		torrent.setCreatedBy(decoder.getString(ATTR_CREATED_BY));
 		torrent.setCreationDate(decoder.getLong(ATTR_CREATION_DATE));
-		// 读取Tracker服务器
 		torrent.setAnnounce(decoder.getString(ATTR_ANNOUNCE));
 		// 读取Tracker服务器列表
 		final List<Object> announceList = decoder.getList(ATTR_ANNOUNCE_LIST);
-		if(announceList != null) {
-			torrent.setAnnounceList(readAnnounceList(announceList));
-		} else {
-			torrent.setAnnounceList(new ArrayList<>(0));
-		}
-		// 读取种子信息
+		torrent.setAnnounceList(readAnnounceList(announceList));
+		// 读取文件信息
 		final Map<String, Object> info = decoder.getMap(ATTR_INFO);
-		if(info != null) {
-			final TorrentInfo torrentInfo = TorrentInfo.valueOf(info, encoding);
-			torrent.setInfo(torrentInfo);
-		}
+		torrent.setInfo(TorrentInfo.valueOf(info, encoding));
 		// 读取DHT节点
 		final List<Object> nodes = decoder.getList(ATTR_NODES);
-		if(nodes != null) {
-			torrent.setNodes(readNodes(nodes));
-		} else {
-			torrent.setNodes(new LinkedHashMap<>());
-		}
+		torrent.setNodes(readNodes(nodes));
 		return torrent;
 	}
 	
 	/**
 	 * <p>获取任务名称</p>
-	 * <p>优先使用{@link TorrentInfo#getNameUtf8()}然后使用{@link TorrentInfo#getName()}</p>
+	 * <p>优先使用{@link TorrentInfo#getNameUtf8()}，如果获取失败，然后使用{@link TorrentInfo#getName()}。</p>
 	 * 
 	 * @return 任务名称
 	 */
@@ -190,6 +184,9 @@ public final class Torrent implements Serializable {
 	 * @return Tracker服务器列表
 	 */
 	private static final List<String> readAnnounceList(List<Object> announceList) {
+		if(announceList == null) {
+			return new ArrayList<>(0);
+		}
 		return announceList.stream()
 			.flatMap(value -> {
 				final List<?> values = (List<?>) value;
@@ -208,21 +205,27 @@ public final class Torrent implements Serializable {
 	 * @return DHT节点
 	 */
 	private static final Map<String, Integer> readNodes(List<Object> nodes) {
+		if(nodes == null) {
+			return new LinkedHashMap<>();
+		}
 		return nodes.stream()
 			.map(value -> {
 				final List<?> values = (List<?>) value;
 				if(values.size() == 2) {
 					final String host = StringUtils.getString(values.get(0));
 					final Long port = (Long) values.get(1);
-					if(StringUtils.isNumeric(host)) { // 紧凑型
+					if(StringUtils.isNumeric(host)) {
+						// 紧凑型
 						return Map.entry(
 							NetUtils.decodeIntToIp(Integer.parseInt(host)),
 							NetUtils.decodePort(port.shortValue())
 						);
-					} else { // 字符串
+					} else {
+						// 字符串
 						return Map.entry(host, port.intValue());
 					}
 				} else {
+					LOGGER.warn("DHT节点错误：{}", value);
 					return null;
 				}
 			})

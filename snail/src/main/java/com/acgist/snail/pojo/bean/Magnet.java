@@ -13,7 +13,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>协议链接：https://baike.baidu.com/item/%E7%A3%81%E5%8A%9B%E9%93%BE%E6%8E%A5/5867775</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public final class Magnet implements Serializable {
 
@@ -21,24 +20,28 @@ public final class Magnet implements Serializable {
 
 	/**
 	 * <p>磁力链接类型</p>
+	 * 
+	 * @author acgist
 	 */
 	public enum Type {
 		
-		/** md5 */
+		/** MD5 */
 		MD5("urn:md5:"),
-		/** aich */
+		/** AICH */
 		AICH("urn:aich:"),
-		/** btih：BitTorrent InfoHash */
+		/** Kazaa */
+		KAZAA("urn:kzhash:"),
+		/** BTIH：BitTorrent */
 		BTIH("urn:btih:"),
-		/** ed2k */
+		/** ED2K */
 		ED2K("urn:ed2k:"),
-		/** sha1 */
+		/** SHA-1 */
 		SHA1("urn:sha1:"),
-		/** crc32 */
+		/** CRC-32 */
 		CRC32("urn:crc32:"),
-		/** tth */
+		/** TTH：TigerTree */
 		TTH("urn:tree:tiger:"),
-		/** bitprint */
+		/** BitPrint */
 		BITPRINT("urn:bitprint:");
 		
 		/**
@@ -46,6 +49,9 @@ public final class Magnet implements Serializable {
 		 */
 		private final String prefix;
 		
+		/**
+		 * @param prefix XT前缀
+		 */
 		private Type(String prefix) {
 			this.prefix = prefix;
 		}
@@ -109,8 +115,8 @@ public final class Magnet implements Serializable {
 	}
 	
 	/**
-	 * <p>是否支持下载</p>
-	 * <p>类型：{@linkplain Type#BTIH BTIH}</p>
+	 * <p>判断是否支持下载</p>
+	 * <p>类型：{@link Type#BTIH}</p>
 	 * 
 	 * @return 是否支持下载
 	 */
@@ -246,7 +252,7 @@ public final class Magnet implements Serializable {
 
 	@Override
 	public String toString() {
-		return ObjectUtils.toString(this, this.dn, this.tr, this.type, this.hash);
+		return ObjectUtils.toString(this, this.dn, this.type, this.hash, this.tr);
 	}
 	
 }

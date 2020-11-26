@@ -9,7 +9,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>下载基于文件下载，所以当某个Piece处于两个文件交接处时，该Piece会被分为两次下载。</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class TorrentPiece {
 
@@ -62,6 +61,14 @@ public final class TorrentPiece {
 	 */
 	private int position;
 	
+	/**
+	 * @param pieceLength Piece大小
+	 * @param index Piece索引
+	 * @param begin Piece开始偏移
+	 * @param end Piece结束偏移
+	 * @param hash 校验数据
+	 * @param verify 是否校验
+	 */
 	private TorrentPiece(long pieceLength, int index, int begin, int end, byte[] hash, boolean verify) {
 		this.pieceLength = pieceLength;
 		this.index = index;
@@ -76,7 +83,7 @@ public final class TorrentPiece {
 	}
 
 	/**
-	 * <p>Piece下载信息</p>
+	 * <p>创建Piece下载信息</p>
 	 * 
 	 * @param pieceLength Piece大小
 	 * @param index Piece索引
@@ -121,11 +128,11 @@ public final class TorrentPiece {
 	 * @return 是否包含
 	 */
 	public boolean contain(long fileBeginPos, long fileEndPos) {
-		final long beginPos = this.beginPos();
 		final long endPos = this.endPos();
 		if(endPos <= fileBeginPos) {
 			return false;
 		}
+		final long beginPos = this.beginPos();
 		if(beginPos >= fileEndPos) {
 			return false;
 		}
@@ -133,7 +140,7 @@ public final class TorrentPiece {
 	}
 	
 	/**
-	 * <p>是否还有更多的数据请求</p>
+	 * <p>判断是否还有更多的数据请求</p>
 	 * 
 	 * @return 是否还有更多
 	 */
@@ -142,7 +149,7 @@ public final class TorrentPiece {
 	}
 	
 	/**
-	 * <p>是否下载完成</p>
+	 * <p>判断是否下载完成</p>
 	 * 
 	 * @return 是否完成
 	 */
@@ -161,8 +168,8 @@ public final class TorrentPiece {
 	
 	/**
 	 * <p>获取本次请求数据大小</p>
-	 * <p>{@code 0}：已经发送所有请求</p>
-	 * <p>修改{@link #position}</p>
+	 * <p>已经发送所有请求返回：{@code 0}</p>
+	 * <p>获取数据后修改{@link #position}</p>
 	 * 
 	 * @return 本地请求数据大小
 	 */
@@ -183,7 +190,7 @@ public final class TorrentPiece {
 	
 	/**
 	 * <p>写入Slice数据</p>
-	 * <p>修改{@link #size}</p>
+	 * <p>写入后修改{@link #size}</p>
 	 * 
 	 * @param begin 数据开始位移：整个Piece内偏移
 	 * @param bytes 数据
@@ -214,15 +221,18 @@ public final class TorrentPiece {
 		if(end <= this.begin) {
 			return null;
 		}
-		int beginPos = 0; // 当前数据开始偏移
+		// 当前数据开始偏移
+		int beginPos = 0;
 		if(begin > this.begin) {
 			beginPos = begin - this.begin;
 		}
-		int endPos = end - this.begin; // 当前数据结束偏移
+		// 当前数据结束偏移
+		int endPos = end - this.begin;
 		if (endPos > this.data.length) {
 			endPos = this.data.length;
 		}
-		final int length = endPos - beginPos; // 读取数据真实长度
+		// 读取数据真实长度
+		final int length = endPos - beginPos;
 		if(length <= 0) {
 			return null;
 		}

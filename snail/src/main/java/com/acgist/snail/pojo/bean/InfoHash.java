@@ -14,7 +14,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>磁力链接：size=0、info=null</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class InfoHash implements Serializable {
 
@@ -33,15 +32,29 @@ public final class InfoHash implements Serializable {
 	 */
 	private final byte[] infoHash;
 	/**
+	 * <p>种子info数据Hash（HEX）</p>
+	 * <p>40位小写</p>
+	 * 
+	 * @see #infoHash
+	 */
+	private final String infoHashHex;
+	/**
 	 * <p>种子info数据Hash（HTTP传输编码）</p>
 	 * 
 	 * @see #infoHash
 	 */
 	private final String infoHashUrl;
 	
+	/**
+	 * @param infoHash infoHash
+	 */
 	private InfoHash(byte[] infoHash) {
 		this.infoHash = infoHash;
-		this.infoHashUrl = this.buildInfoHashUrl();
+		this.infoHashHex = StringUtils.hex(this.infoHash);
+		// 标准编码
+		this.infoHashUrl = PeerUtils.urlEncode(this.infoHash);
+		// 全部编码
+//		this.infoHashUrl = PeerUtils.urlEncode(this.infoHashHex());
 	}
 
 	/**
@@ -79,18 +92,6 @@ public final class InfoHash implements Serializable {
 		} else {
 			throw new DownloadException("不支持的Hash：" + hash);
 		}
-	}
-	
-	/**
-	 * <p>创建InfoHashUrl</p>
-	 * 
-	 * @return InfoHashUrl
-	 */
-	private String buildInfoHashUrl() {
-		// 标准编码
-		return PeerUtils.urlEncode(this.infoHash);
-		// 全部编码
-//		return PeerUtils.urlEncode(this.infoHashHex());
 	}
 	
 	/**
@@ -139,12 +140,12 @@ public final class InfoHash implements Serializable {
 	}
 	
 	/**
-	 * <p>16进制种子info数据Hash（小写）（40位）</p>
+	 * <p>获取种子info数据Hash（HEX）</p>
 	 * 
-	 * @return 16进制种子info数据Hash
+	 * @return 种子info数据Hash（HEX）
 	 */
 	public String infoHashHex() {
-		return StringUtils.hex(this.infoHash);
+		return this.infoHashHex;
 	}
 	
 	/**

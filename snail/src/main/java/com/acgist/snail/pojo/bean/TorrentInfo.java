@@ -15,7 +15,6 @@ import com.acgist.snail.format.BEncodeDecoder;
  * <p>种子文件Hash：此类信息转为B编码计算SHA-1散列值（注意顺序）</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class TorrentInfo extends TorrentFileMatedata implements Serializable {
 
@@ -83,6 +82,8 @@ public final class TorrentInfo extends TorrentFileMatedata implements Serializab
 	 */
 	public static final String ATTR_FILES = "files";
 	
+	//================种子文件自带信息================//
+	
 	/**
 	 * <p>名称</p>
 	 * <p>单文件种子使用</p>
@@ -96,7 +97,7 @@ public final class TorrentInfo extends TorrentFileMatedata implements Serializab
 	/**
 	 * <p>特征信息</p>
 	 * <p>所有Piece Hash集合</p>
-	 * <p>长度：Piece数量 * {@linkplain SystemConfig#SHA1_HASH_LENGTH 20}</p>
+	 * <p>长度：Piece数量 * {@value SystemConfig#SHA1_HASH_LENGTH}</p>
 	 */
 	private byte[] pieces;
 	/**
@@ -158,11 +159,7 @@ public final class TorrentInfo extends TorrentFileMatedata implements Serializab
 		info.setPublisherUrlUtf8(BEncodeDecoder.getString(map, ATTR_PUBLISHER_URL_UTF8));
 		info.setPrivateTorrent(BEncodeDecoder.getLong(map, ATTR_PRIVATE));
 		final List<Object> files = BEncodeDecoder.getList(map, ATTR_FILES);
-		if(files != null) {
-			info.setFiles(readFiles(files, encoding));
-		} else {
-			info.setFiles(new ArrayList<>());
-		}
+		info.setFiles(readFiles(files, encoding));
 		return info;
 	}
 	
@@ -176,7 +173,7 @@ public final class TorrentInfo extends TorrentFileMatedata implements Serializab
 	}
 	
 	/**
-	 * <p>是否是私有种子</p>
+	 * <p>判断是否是私有种子</p>
 	 * 
 	 * @return 是否是私有种子
 	 */
@@ -191,7 +188,8 @@ public final class TorrentInfo extends TorrentFileMatedata implements Serializab
 	 * @return 下载文件列表
 	 */
 	public List<TorrentFile> files() {
-		if (this.files.isEmpty()) { // 单文件种子
+		if (this.files.isEmpty()) {
+			// 单文件种子
 			final TorrentFile file = new TorrentFile();
 			file.setEd2k(this.ed2k);
 			file.setFilehash(this.filehash);
@@ -203,7 +201,8 @@ public final class TorrentInfo extends TorrentFileMatedata implements Serializab
 				file.setPathUtf8(List.of(this.nameUtf8));
 			}
 			return List.of(file);
-		} else { // 多文件种子
+		} else {
+			// 多文件种子
 			return this.files;
 		}
 	}
@@ -218,6 +217,9 @@ public final class TorrentInfo extends TorrentFileMatedata implements Serializab
 	 * @return 文件列表
 	 */
 	private static final List<TorrentFile> readFiles(List<Object> files, String encoding) {
+		if(files == null) {
+			return new ArrayList<>();
+		}
 		return files.stream()
 			.map(value -> (Map<?, ?>) value)
 			.map(value -> TorrentFile.valueOf(value, encoding))

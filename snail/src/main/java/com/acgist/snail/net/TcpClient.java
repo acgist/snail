@@ -82,7 +82,8 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 		AsynchronousSocketChannel socket = null;
 		try {
 			socket = AsynchronousSocketChannel.open(GROUP);
-			socket.setOption(StandardSocketOptions.TCP_NODELAY, true);
+			// TODO：参数调优：TCP_NODELAY
+//			socket.setOption(StandardSocketOptions.TCP_NODELAY, true);
 			socket.setOption(StandardSocketOptions.SO_REUSEADDR, true);
 			socket.setOption(StandardSocketOptions.SO_KEEPALIVE, true);
 			final Future<Void> future = socket.connect(NetUtils.buildSocketAddress(host, port));
