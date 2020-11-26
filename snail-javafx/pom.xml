@@ -62,8 +62,8 @@
 	<!-- 开源许可 -->
 	<licenses>
 		<license>
-			<url>https://opensource.org/licenses/BSD-3-Clause</url>
-			<name>The 3-Clause BSD License</name>
+			<url>https://opensource.org/licenses/Apache-2.0</url>
+			<name>Apache-2.0</name>
 		</license>
 	</licenses>
 
