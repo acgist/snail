@@ -88,16 +88,16 @@ public final class SpeedSession {
 		if(++this.index >= SAMPLE_SIZE) {
 			this.index = 0;
 		}
-		long time = 0L;
-		long value = 0L;
+		long buffer = 0L;
+		long bufferTime = 0L;
 		for (int index = 0; index < SAMPLE_SIZE; index++) {
-			time += this.bufferSampleTimes[index];
-			value += (this.bufferSamples[index] * DateUtils.ONE_SECOND);
+			buffer += this.bufferSamples[index];
+			bufferTime += this.bufferSampleTimes[index];
 		}
-		if(time == 0L) {
+		if(bufferTime <= 0L) {
 			return 0L;
 		} else {
-			return value / time;
+			return buffer * DateUtils.ONE_SECOND / bufferTime;
 		}
 	}
 
