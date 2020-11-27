@@ -1,10 +1,14 @@
 package com.acgist.snail.context;
 
+import java.net.http.HttpResponse.BodyHandlers;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.DhtConfig;
+import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.config.TrackerConfig;
+import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.context.initializer.impl.ConfigInitializer;
 import com.acgist.snail.context.initializer.impl.DatabaseInitializer;
 import com.acgist.snail.context.initializer.impl.DhtInitializer;
@@ -16,12 +20,14 @@ import com.acgist.snail.context.initializer.impl.ProtocolInitializer;
 import com.acgist.snail.context.initializer.impl.TorrentInitializer;
 import com.acgist.snail.context.initializer.impl.TrackerInitializer;
 import com.acgist.snail.downloader.DownloaderManager;
+import com.acgist.snail.format.JSON;
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.net.TcpClient;
 import com.acgist.snail.net.TcpServer;
 import com.acgist.snail.net.UdpServer;
 import com.acgist.snail.net.application.ApplicationClient;
 import com.acgist.snail.net.application.ApplicationServer;
+import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.net.torrent.TorrentServer;
 import com.acgist.snail.net.torrent.lsd.LocalServiceDiscoveryServer;
 import com.acgist.snail.net.torrent.peer.PeerServer;
@@ -220,6 +226,27 @@ public final class SystemContext {
 	 */
 	public static final boolean available() {
 		return INSTANCE.available;
+	}
+	
+	/**
+	 * <p>判断是不是最新版本</p>
+	 * 
+	 * @return 是不是最新版本
+	 */
+	public static final boolean latestRelease() {
+		try {
+			// 本地版本：1.0.0
+			final String version = SystemConfig.getVersion();
+			final var response = HTTPClient.get(SystemConfig.getLatestRelease(), BodyHandlers.ofString());
+			final JSON json = JSON.ofString(response.body());
+			// 最新版本：v1.0.0
+			final String latestVersion = json.getString("tag_name");
+			LOGGER.debug("版本信息：{}-{}", version, latestVersion);
+			return latestVersion.substring(1).equals(version);
+		} catch (NetException e) {
+			LOGGER.error("获取版本信息异常", e);
+		}
+		return true;
 	}
 	
 }

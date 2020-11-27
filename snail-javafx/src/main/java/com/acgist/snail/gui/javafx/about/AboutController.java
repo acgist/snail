@@ -1,15 +1,20 @@
 package com.acgist.snail.gui.javafx.about;
 
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.context.SystemContext;
+import com.acgist.snail.gui.GuiManager;
+import com.acgist.snail.gui.javafx.Alerts;
 import com.acgist.snail.gui.javafx.Controller;
 import com.acgist.snail.gui.utils.DesktopUtils;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 
@@ -43,6 +48,23 @@ public final class AboutController extends Controller implements Initializable {
 	@FXML
 	public void handleAuthorAction(ActionEvent event) {
 		DesktopUtils.browse(SystemConfig.getAuthor());
+	}
+	
+	/**
+	 * <p>检测更新按钮</p>
+	 * 
+	 * @param event 事件
+	 */
+	@FXML
+	public void handleUpdateAction(ActionEvent event) {
+		if(SystemContext.latestRelease()) {
+			Alerts.info("检测更新", "当前已是最新版本");
+		} else {
+			final Optional<ButtonType> optional = Alerts.build("检测更新", "是否下载最新版本？", GuiManager.MessageType.CONFIRM);
+			if(optional.isPresent() && optional.get() == ButtonType.OK) {
+				DesktopUtils.browse(SystemConfig.getSource());
+			}
+		}
 	}
 	
 	/**

@@ -190,6 +190,10 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	private String support;
 	/**
+	 * <p>最新稳定版本</p>
+	 */
+	private String latestRelease;
+	/**
 	 * <p>STUN服务器</p>
 	 * <table border="1">
 	 * 	<caption>配置格式</caption>
@@ -292,6 +296,7 @@ public final class SystemConfig extends PropertiesConfig {
 		this.author = this.getString("acgist.system.author");
 		this.source = this.getString("acgist.system.source");
 		this.support = this.getString("acgist.system.support");
+		this.latestRelease = this.getString("acgist.system.latest.release");
 		this.stunServer = this.getString("acgist.system.stun.server");
 		this.taskFileDelete = this.getBoolean("acgist.task.file.delete", false);
 		this.servicePort = this.getInteger("acgist.service.port", 16888);
@@ -319,6 +324,7 @@ public final class SystemConfig extends PropertiesConfig {
 		LOGGER.info("作者：{}", this.author);
 		LOGGER.info("官网与源码：{}", this.source);
 		LOGGER.info("问题与建议：{}", this.support);
+		LOGGER.info("最新稳定版本：{}", this.latestRelease);
 		LOGGER.info("STUN服务器：{}", this.stunServer);
 		LOGGER.info("删除任务是否删除文件：{}", this.taskFileDelete);
 		LOGGER.info("系统服务端口：{}", this.servicePort);
@@ -405,6 +411,15 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	public static final String getSupport() {
 		return INSTANCE.support;
+	}
+	
+	/**
+	 * <p>获取最新稳定版本</p>
+	 * 
+	 * @return 最新稳定版本
+	 */
+	public static final String getLatestRelease() {
+		return INSTANCE.latestRelease;
 	}
 
 	/**
