@@ -1,7 +1,7 @@
 <h1 align="center">Snail（蜗牛）</h1>
 
 <p align="center">
-基于Java、JavaFX开发的下载工具，支持下载协议：BT（BitTorrent、磁力链接、种子）、FTP、HTTP。
+基于Java、JavaFX开发的下载工具，支持下载协议：BT（BitTorrent、磁力链接、种子）、HLS、FTP、HTTP。
 </p>
 
 <p align="center">

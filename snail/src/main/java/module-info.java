@@ -1,6 +1,6 @@
 /**
  * <h1>Sanil（蜗牛）</h1>
- * <p>基于Java开发的下载工具，支持下载协议：BT（BitTorrent、磁力链接、种子）、FTP、HTTP。</p>
+ * <p>基于Java开发的下载工具，支持下载协议：BT（BitTorrent、磁力链接、种子）、HLS、FTP、HTTP。</p>
  * <p>官网地址：https://gitee.com/acgist/snail</p>
  * 
  * TODO：稀有块、阻塞算法（Peer）
