@@ -7,12 +7,13 @@ import com.acgist.snail.utils.ObjectUtils;
  * <p>DHT节点信息</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class NodeSession implements Comparable<NodeSession> {
 
 	/**
 	 * <p>DHT节点状态</p>
+	 * 
+	 * @author acgist
 	 */
 	public enum Status {
 		
@@ -42,6 +43,11 @@ public final class NodeSession implements Comparable<NodeSession> {
 	 */
 	private Status status;
 
+	/**
+	 * @param id 节点ID
+	 * @param host 节点地址
+	 * @param port 节点端口
+	 */
 	private NodeSession(byte[] id, String host, int port) {
 		this.id = id;
 		this.host = host;
@@ -64,9 +70,8 @@ public final class NodeSession implements Comparable<NodeSession> {
 	
 	/**
 	 * <p>判断节点是否可以保存</p>
-	 * <p>如果节点处于验证状态则不保存</p>
 	 * 
-	 * @return 是否可以保持
+	 * @return 是否可以保存
 	 */
 	public boolean persistentable() {
 		return this.status != Status.VERIFY;

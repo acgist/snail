@@ -15,7 +15,6 @@ import com.acgist.snail.pojo.IStatisticsSession;
  * TODO：伪共享
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class StatisticsSession implements IStatisticsSession {
 

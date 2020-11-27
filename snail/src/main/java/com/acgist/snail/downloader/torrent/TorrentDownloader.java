@@ -38,7 +38,7 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 	public void delete() {
 		if(this.torrentSession != null) {
 			this.torrentSession.releaseUpload(); // 释放上传资源
-			this.statisticsSession.resetUploadSpeed(); // 重置上传速度
+			this.statistics.resetUploadSpeed(); // 重置上传速度
 		}
 		super.delete();
 	}
@@ -68,7 +68,7 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 	public void release() {
 		if(this.torrentSession != null) {
 			this.torrentSession.releaseDownload(); // 释放下载资源
-			this.statisticsSession.resetDownloadSpeed(); // 重置下载速度
+			this.statistics.resetDownloadSpeed(); // 重置下载速度
 		}
 		super.release();
 	}

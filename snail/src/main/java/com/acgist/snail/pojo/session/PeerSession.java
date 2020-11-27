@@ -23,7 +23,6 @@ import com.acgist.snail.utils.ThreadUtils;
  * <p>IP地址、端口、下载统计、上传统计等等</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class PeerSession implements IStatisticsSessionGetter {
 	
@@ -125,6 +124,11 @@ public final class PeerSession implements IStatisticsSessionGetter {
 	 */
 	private final Map<PeerConfig.ExtensionType, Byte> extension;
 
+	/**
+	 * @param parent 上级统计信息
+	 * @param host Peer地址
+	 * @param port Peer端口
+	 */
 	private PeerSession(IStatisticsSession parent, String host, Integer port) {
 		this.host = host;
 		this.port = port;
@@ -344,7 +348,7 @@ public final class PeerSession implements IStatisticsSessionGetter {
 	}
 	
 	/**
-	 * <p>设置快速运行下载Piece位图</p>
+	 * <p>设置快速允许下载Piece位图</p>
 	 * <p>同时设置已下载Piece位图</p>
 	 * 
 	 * @param index Piece索引
@@ -362,7 +366,7 @@ public final class PeerSession implements IStatisticsSessionGetter {
 	public BitSet allowedPieces() {
 		return this.allowedPieces;
 	}
-	
+
 	/**
 	 * <p>判断是否支持快速允许下载</p>
 	 * 
@@ -370,38 +374,6 @@ public final class PeerSession implements IStatisticsSessionGetter {
 	 */
 	public boolean supportAllowedFast() {
 		return !this.allowedPieces.isEmpty(); 
-	}
-	
-	/**
-	 * <p>添加Peer支持的扩展协议</p>
-	 * 
-	 * @param type 扩展协议类型
-	 * @param typeId 扩展协议标识
-	 */
-	public void addExtensionType(PeerConfig.ExtensionType type, byte typeId) {
-		this.extension.put(type, typeId);
-	}
-	
-	/**
-	 * <p>判断Peer是否支持扩展协议</p>
-	 * 
-	 * @param type 扩展协议类型
-	 * 
-	 * @return 是否支持扩展协议
-	 */
-	public boolean supportExtensionType(PeerConfig.ExtensionType type) {
-		return this.extension.containsKey(type);
-	}
-
-	/**
-	 * <p>获取扩展协议标识</p>
-	 * 
-	 * @param type 扩展协议类型
-	 * 
-	 * @return 扩展协议标识
-	 */
-	public Byte extensionTypeId(PeerConfig.ExtensionType type) {
-		return this.extension.get(type);
 	}
 	
 	/**
@@ -414,7 +386,7 @@ public final class PeerSession implements IStatisticsSessionGetter {
 	
 	/**
 	 * <dl>
-	 * 	<dt>是否可用</dt>
+	 * 	<dt>判断是否可用</dt>
 	 * 	<dd>失败次数小于{@linkplain PeerConfig#MAX_FAIL_TIMES 最大失败次数}</dd>
 	 * 	<dd>端口可用（主动连接的客户端可能没有设置端口）</dd>
 	 * </dl>
@@ -437,12 +409,24 @@ public final class PeerSession implements IStatisticsSessionGetter {
 	}
 	
 	/**
+	 * <p>判断是否支持扩展协议</p>
+	 * 
+	 * @param index 保留位索引
+	 * @param location 扩展协议位置
+	 * 
+	 * @return 是否支持
+	 */
+	private boolean supportExtension(int index, int location) {
+		return this.reserved != null && (this.reserved[index] & location) != 0;
+	}
+	
+	/**
 	 * <p>判断是否支持DHT扩展协议</p>
 	 * 
 	 * @return 是否支持DHT扩展协议
 	 */
 	public boolean supportDhtProtocol() {
-		return this.reserved != null && (this.reserved[7] & PeerConfig.RESERVED_DHT_PROTOCOL) != 0;
+		return this.supportExtension(7, PeerConfig.RESERVED_DHT_PROTOCOL);
 	}
 	
 	/**
@@ -451,7 +435,7 @@ public final class PeerSession implements IStatisticsSessionGetter {
 	 * @return 是否支持扩展协议
 	 */
 	public boolean supportExtensionProtocol() {
-		return this.reserved != null && (this.reserved[5] & PeerConfig.RESERVED_EXTENSION_PROTOCOL) != 0;
+		return this.supportExtension(5, PeerConfig.RESERVED_EXTENSION_PROTOCOL);
 	}
 	
 	/**
@@ -460,9 +444,41 @@ public final class PeerSession implements IStatisticsSessionGetter {
 	 * @return 是否支持快速扩展协议
 	 */
 	public boolean supportFastExtensionProtocol() {
-		return this.reserved != null && (this.reserved[7] & PeerConfig.RESERVED_FAST_PROTOCOL) != 0;
+		return this.supportExtension(7, PeerConfig.RESERVED_FAST_PROTOCOL);
 	}
-
+	
+	/**
+	 * <p>添加Peer支持的扩展协议</p>
+	 * 
+	 * @param type 扩展协议类型
+	 * @param typeId 扩展协议标识
+	 */
+	public void addExtensionType(PeerConfig.ExtensionType type, byte typeId) {
+		this.extension.put(type, typeId);
+	}
+	
+	/**
+	 * <p>判断Peer是否支持扩展协议</p>
+	 * 
+	 * @param type 扩展协议类型
+	 * 
+	 * @return 是否支持扩展协议
+	 */
+	public boolean supportExtensionType(PeerConfig.ExtensionType type) {
+		return this.extension.containsKey(type);
+	}
+	
+	/**
+	 * <p>获取扩展协议标识</p>
+	 * 
+	 * @param type 扩展协议类型
+	 * 
+	 * @return 扩展协议标识
+	 */
+	public Byte extensionTypeId(PeerConfig.ExtensionType type) {
+		return this.extension.get(type);
+	}
+	
 	/**
 	 * <p>设置来源</p>
 	 * <p>Peer可以设置多个来源</p>
@@ -476,7 +492,7 @@ public final class PeerSession implements IStatisticsSessionGetter {
 	}
 
 	/**
-	 * <p>验证来源</p>
+	 * <p>判断是否属于来源标识</p>
 	 * 
 	 * @param source 来源标识
 	 * 
@@ -497,7 +513,6 @@ public final class PeerSession implements IStatisticsSessionGetter {
 	
 	/**
 	 * <p>来源：LSD</p>
-	 * <p>本地发现</p>
 	 * 
 	 * @return 是否来自LSD
 	 */
@@ -525,7 +540,6 @@ public final class PeerSession implements IStatisticsSessionGetter {
 	
 	/**
 	 * <p>来源：连接</p>
-	 * <p>主动连接</p>
 	 * 
 	 * @return 是否来自连接
 	 */
@@ -823,7 +837,6 @@ public final class PeerSession implements IStatisticsSessionGetter {
 	
 	/**
 	 * <p>判断是否相等</p>
-	 * <p>相等：IP地址一致（忽略端口）</p>
 	 * 
 	 * @param host Peer地址
 	 * @param port Peer端口

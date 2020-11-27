@@ -10,16 +10,16 @@ import com.acgist.snail.utils.DateUtils;
 
 /**
  * <p>Peer连接信息</p>
+ * <p>每个Peer连接独立保存连接信息，不能放在PeerSession里面，因为每个Peer可能存在多个连接。</p>
  * 
  * @author acgist
- * @since 1.3.0
  */
 public final class PeerConnectSession {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerConnectSession.class);
 	
 	/**
-	 * <p>评分统计最短时间</p>
+	 * <p>评分统计最短时间：{@value}</p>
 	 */
 	private static final long MIN_MARK_INTERVAL = 60 * DateUtils.ONE_SECOND;
 
@@ -69,7 +69,6 @@ public final class PeerConnectSession {
 	private volatile long lastRefreshMarkTime = System.currentTimeMillis();
 	
 	/**
-	 * <p>Peer连接信息</p>
 	 * <p>默认：阻塞、不感兴趣</p>
 	 */
 	public PeerConnectSession() {

@@ -45,7 +45,7 @@ public abstract class Downloader implements IDownloader {
 	/**
 	 * <p>统计信息</p>
 	 */
-	protected final IStatisticsSession statisticsSession;
+	protected final IStatisticsSession statistics;
 	/**
 	 * <p>删除锁</p>
 	 * <p>true-任务没有下载（可以删除）；</p>
@@ -59,7 +59,7 @@ public abstract class Downloader implements IDownloader {
 	 */
 	protected Downloader(ITaskSession taskSession) {
 		this.taskSession = taskSession;
-		this.statisticsSession = taskSession.statistics();
+		this.statistics = taskSession.statistics();
 		// 已下载大小
 		this.taskSession.downloadSize(this.downloadSize());
 		// 任务没有下载标记删除锁：true

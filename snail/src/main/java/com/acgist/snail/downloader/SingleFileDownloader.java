@@ -71,8 +71,8 @@ public abstract class SingleFileDownloader extends Downloader {
 				}
 				this.output.write(bytes, 0, length);
 				this.streamSession.heartbeat();
-				this.statisticsSession.download(length);
-				this.statisticsSession.downloadLimit(length);
+				this.statistics.download(length);
+				this.statistics.downloadLimit(length);
 			}
 		} catch (Exception e) {
 			throw new DownloadException("数据流操作失败", e);

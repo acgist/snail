@@ -29,7 +29,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>任务信息</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class TaskSession implements ITaskSession {
 
@@ -53,6 +52,11 @@ public final class TaskSession implements ITaskSession {
 	 */
 	private final IStatisticsSession statistics;
 	
+	/**
+	 * @param entity 任务
+	 * 
+	 * @throws DownloadException 下载异常
+	 */
 	private TaskSession(TaskEntity entity) throws DownloadException {
 		if(entity == null) {
 			throw new DownloadException("创建TaskSession失败（任务不存在）");
@@ -191,8 +195,9 @@ public final class TaskSession implements ITaskSession {
 	public String getCreateDateValue() {
 		if(this.entity.getCreateDate() == null) {
 			return "-";
+		} else {
+			return FORMATER.get().format(this.entity.getCreateDate());
 		}
-		return FORMATER.get().format(this.entity.getCreateDate());
 	}
 	
 	@Override
@@ -213,8 +218,9 @@ public final class TaskSession implements ITaskSession {
 			} else {
 				return "-";
 			}
+		} else {
+			return FORMATER.get().format(this.entity.getEndDate());
 		}
-		return FORMATER.get().format(this.entity.getEndDate());
 	}
 	
 	//================数据库================//
@@ -230,11 +236,10 @@ public final class TaskSession implements ITaskSession {
 		final TaskRepository repository = new TaskRepository();
 		repository.delete(this.entity);
 	}
-	
 
 	@Override
 	public void updateStatus(Status status) {
-		if(complete()) {
+		if(this.complete()) {
 			return;
 		}
 		if(status == Status.COMPLETE) {
