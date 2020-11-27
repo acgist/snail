@@ -2,14 +2,12 @@ package com.acgist.snail.pojo.session;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.utils.DateUtils;
 
 /**
  * <p>速度信息</p>
  * 
  * @author acgist
- * @since 1.2.2
  */
 public final class SpeedSession {
 	
@@ -21,7 +19,7 @@ public final class SpeedSession {
 	 * <p>速度采样时间</p>
 	 * <p>小于刷新时间：防止统计误差</p>
 	 */
-	private static final long SAMPLE_TIME = SystemConfig.TASK_REFRESH_INTERVAL.toMillis() - DateUtils.ONE_SECOND;
+	private static final long SAMPLE_TIME = 4 * DateUtils.ONE_SECOND;
 
 	/**
 	 * <p>速度</p>
@@ -32,7 +30,7 @@ public final class SpeedSession {
 	 */
 	private byte index = 0;
 	/**
-	 * <p>速度采样</p>
+	 * <p>速度累计采样</p>
 	 */
 	private final AtomicInteger bufferSample = new AtomicInteger(0);
 	/**
@@ -41,7 +39,7 @@ public final class SpeedSession {
 	private long bufferSampleTime = System.currentTimeMillis();
 	/**
 	 * <p>速度采样集合</p>
-	 * <p>每次计算速度时采样一次放入到集合，覆盖超过{@linkplain #SAMPLE_SIZE 采样次数}的样本。</p>
+	 * <p>每次计算速度时采样一次放入到集合</p>
 	 */
 	private final int[] bufferSamples = new int[SAMPLE_SIZE];
 	/**

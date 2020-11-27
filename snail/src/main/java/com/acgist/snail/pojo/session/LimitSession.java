@@ -89,7 +89,7 @@ public final class LimitSession {
 	 * @return 限制速度
 	 */
 	private long maxLimitBuffer() {
-		if(type == Type.UPLOAD) {
+		if(this.type == Type.UPLOAD) {
 			return DownloadConfig.getUploadBufferByte();
 		} else {
 			return DownloadConfig.getDownloadBufferByte();

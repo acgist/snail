@@ -45,7 +45,6 @@ import com.acgist.snail.utils.FileUtils;
  * <p>磁力链接不存在下载和上次状态</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class TorrentSession {
 	

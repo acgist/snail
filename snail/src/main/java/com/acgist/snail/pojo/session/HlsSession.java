@@ -18,7 +18,6 @@ import com.acgist.snail.pojo.ITaskSession;
  * <p>HSL任务信息</p>
  * 
  * @author acgist
- * @version 1.4.1
  */
 public final class HlsSession {
 	
@@ -38,7 +37,7 @@ public final class HlsSession {
 	 */
 	private final int fileSize;
 	/**
-	 * <p>已下载大小</p>
+	 * <p>累计下载大小</p>
 	 */
 	private final AtomicLong downloadSize;
 	/**
@@ -46,23 +45,27 @@ public final class HlsSession {
 	 */
 	private final ITaskSession taskSession;
 	/**
-	 * <p>统计信息</p>
+	 * <p>HLS下载客户端</p>
+	 * <p>如果客户端下载成功移除列表，否者重新添加继续下载。</p>
 	 */
-	private final IStatisticsSession statisticsSession;
+	private final List<HlsClient> clients;
 	/**
 	 * <p>线程池</p>
 	 */
 	private final ExecutorService executor;
 	/**
-	 * <p>HLS下载客户端</p>
+	 * <p>统计信息</p>
 	 */
-	private final List<HlsClient> clients;
+	private final IStatisticsSession statistics;
 	
+	/**
+	 * @param taskSession 任务信息
+	 */
 	private HlsSession(ITaskSession taskSession) {
 		this.downloadSize = new AtomicLong();
 		this.taskSession = taskSession;
-		this.statisticsSession = taskSession.statistics();
-		this.executor = SystemThreadContext.newExecutor(POOL_SIZE, POOL_SIZE, 1000, 60L, SystemThreadContext.SNAIL_THREAD_HLS);
+		this.statistics = taskSession.statistics();
+		this.executor = SystemThreadContext.newExecutor(POOL_SIZE, POOL_SIZE, 10000, 60L, SystemThreadContext.SNAIL_THREAD_HLS);
 		final var links = taskSession.multifileSelected();
 		this.fileSize = links.size();
 		this.clients = new ArrayList<>(this.fileSize);
@@ -91,13 +94,13 @@ public final class HlsSession {
 		this.downloadable = true;
 		synchronized (this.clients) {
 			for (HlsClient client : this.clients) {
-				this.executor.submit(client);
+				this.download(client);
 			}
 		}
 	}
 	
 	/**
-	 * <p>客户端下载失败重复添加</p>
+	 * <p>添加下载客户端</p>
 	 * 
 	 * @param client 客户端
 	 */
@@ -108,7 +111,7 @@ public final class HlsSession {
 	}
 	
 	/**
-	 * <p>下载完成移除客户端</p>
+	 * <p>移除下载客户端</p>
 	 * 
 	 * @param client 客户端
 	 */
@@ -124,12 +127,13 @@ public final class HlsSession {
 	 * @param buffer 速度
 	 */
 	public void download(int buffer) {
-		this.statisticsSession.download(buffer);
-		this.statisticsSession.downloadLimit(buffer);
+		this.statistics.download(buffer);
+		this.statistics.downloadLimit(buffer);
 	}
 	
 	/**
 	 * <p>设置已下载大小</p>
+	 * <p>文件可能存在下载失败，这里重新计算累计下载大小。</p>
 	 * 
 	 * @param size 已下载大小
 	 */

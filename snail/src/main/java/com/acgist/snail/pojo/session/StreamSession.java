@@ -11,6 +11,7 @@ import com.acgist.snail.utils.IoUtils;
 
 /**
  * <p>数据流信息</p>
+ * <p>如果长时间没有数据流交互关闭数据流中断任务</p>
  * 
  * @author acgist
  */
@@ -46,7 +47,7 @@ public final class StreamSession {
 	}
 	
 	/**
-	 * <p>心跳设置</p>
+	 * <p>设置心跳</p>
 	 */
 	public void heartbeat() {
 		this.heartbeatTime = System.currentTimeMillis();
