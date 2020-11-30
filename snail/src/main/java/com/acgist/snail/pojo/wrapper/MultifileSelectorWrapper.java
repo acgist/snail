@@ -1,6 +1,7 @@
 package com.acgist.snail.pojo.wrapper;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -16,7 +17,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>多文件选择包装器</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class MultifileSelectorWrapper {
 	
@@ -88,7 +88,7 @@ public final class MultifileSelectorWrapper {
 		}
 		try {
 			return this.decoder.nextList().stream()
-				.filter(object -> object != null)
+				.filter(Objects::nonNull)
 				.map(object -> StringUtils.getString(object))
 				.collect(Collectors.toList());
 		} catch (PacketSizeException e) {

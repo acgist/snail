@@ -7,7 +7,6 @@ import java.util.Map;
  * <p>Key-Value拼接拆解</p>
  * 
  * @author acgist
- * @version 1.5.0
  */
 public final class KeyValueWrapper {
 
@@ -25,7 +24,7 @@ public final class KeyValueWrapper {
 	private static final char DEFAULT_KV_SEPARATOR = '=';
 	
 	/**
-	 * <p>Key大写</p>
+	 * <p>Key转为大写</p>
 	 */
 	private final boolean keyUpper;
 	/**
@@ -37,6 +36,11 @@ public final class KeyValueWrapper {
 	 */
 	private final char kvSeparator;
 
+	/**
+	 * @param keyUpper Key转为大写
+	 * @param separator 每项连接符
+	 * @param kvSeparator Key-Value连接符
+	 */
 	private KeyValueWrapper(boolean keyUpper, char separator, char kvSeparator) {
 		this.keyUpper = keyUpper;
 		this.separator = separator;
@@ -67,7 +71,7 @@ public final class KeyValueWrapper {
 	/**
 	 * <p>创建工具</p>
 	 * 
-	 * @param keyUpper Key大写
+	 * @param keyUpper Key转为大写
 	 * @param separator 每项连接符
 	 * @param kvSeparator Key-Value连接符
 	 * 
@@ -78,16 +82,18 @@ public final class KeyValueWrapper {
 	}
 	
 	/**
-	 * <p>编码</p>
+	 * <p>数据编码</p>
 	 * 
-	 * @return 编码结果
+	 * @param map 数据
+	 * 
+	 * @return 编码数据
 	 */
 	public String encode(Map<String, String> map) {
 		if(map == null) {
 			return null;
 		}
 		final StringBuilder builder = new StringBuilder();
-		map.forEach((key, value) -> builder.append(key).append(this.kvSeparator).append(value).append(this.separator));
+		map.forEach((key, value) -> builder.append(this.keyUpper(key)).append(this.kvSeparator).append(value).append(this.separator));
 		final int length = builder.length();
 		if(length > 0) {
 			builder.setLength(length - 1);
@@ -96,7 +102,9 @@ public final class KeyValueWrapper {
 	}
 
 	/**
-	 * <p>解码</p>
+	 * <p>数据解码</p>
+	 * 
+	 * @param content 数据
 	 * 
 	 * @return 解码数据
 	 */
@@ -104,29 +112,44 @@ public final class KeyValueWrapper {
 		if(content == null) {
 			return null;
 		}
-		final String[] kvs = content.split(String.valueOf(this.separator));
+		final String[] keyValues = content.split(String.valueOf(this.separator));
 		final Map<String, String> map = new HashMap<>();
 		int index;
 		String key;
 		String value;
-		for (String kv : kvs) {
-			kv = kv.trim();
-			if(kv.isEmpty()) {
+		for (String keyValue : keyValues) {
+			keyValue = keyValue.trim();
+			if(keyValue.isEmpty()) {
 				continue;
 			}
-			index = kv.indexOf(this.kvSeparator);
+			index = keyValue.indexOf(this.kvSeparator);
 			if(index < 0) {
-				map.put(kv, null);
+				map.put(keyValue, null);
 			} else {
-				key = kv.substring(0, index).trim();
-				value = kv.substring(index + 1).trim();
-				if(this.keyUpper) {
-					key = key.toUpperCase();
-				}
-				map.put(key, value);
+				key = keyValue.substring(0, index).trim();
+				value = keyValue.substring(index + 1).trim();
+				map.put(this.keyUpper(key), value);
 			}
 		}
 		return map;
+	}
+	
+	/**
+	 * <p>Key转为大写</p>
+	 * 
+	 * @param key Key
+	 * 
+	 * @return 转换后的Key
+	 */
+	private String keyUpper(String key) {
+		if(key == null) {
+			return key;
+		}
+		if(this.keyUpper) {
+			return key.toUpperCase();
+		} else {
+			return key;
+		}
 	}
 	
 }
