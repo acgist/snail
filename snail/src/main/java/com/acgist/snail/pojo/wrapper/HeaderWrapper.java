@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 
 import org.slf4j.Logger;
@@ -248,11 +249,7 @@ public class HeaderWrapper {
 				key = line.substring(0, index).trim();
 				value = "";
 			}
-			list = headers.get(key);
-			if(list == null) {
-				list = new ArrayList<>();
-				headers.put(key, list);
-			}
+			list = headers.computeIfAbsent(key, newKey -> new ArrayList<>());
 			list.add(value);
 		}
 		return headers;
@@ -296,7 +293,7 @@ public class HeaderWrapper {
 		}
 		final var optional = this.headers.entrySet().stream()
 			.filter(entry -> StringUtils.equalsIgnoreCase(key, entry.getKey()))
-			.map(entry -> entry.getValue())
+			.map(Entry::getValue)
 			.findFirst();
 		if(optional.isEmpty()) {
 			return List.of();
