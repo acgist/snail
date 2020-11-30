@@ -320,11 +320,7 @@ public class HeaderWrapper {
 	 */
 	public HeaderWrapper header(String key, String value) {
 		Objects.requireNonNull(this.headers, "头部信息未初始化");
-		var list = this.headers.get(key);
-		if(list == null) {
-			list = new ArrayList<>();
-			this.headers.put(key, list);
-		}
+		final var list = this.headers.computeIfAbsent(key, newKey -> new ArrayList<>());
 		list.add(value);
 		return this;
 	}
