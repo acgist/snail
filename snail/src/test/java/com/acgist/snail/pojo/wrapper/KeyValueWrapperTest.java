@@ -12,6 +12,8 @@ public class KeyValueWrapperTest extends BaseTest {
 	public void encode() {
 		var wrapper = KeyValueWrapper.newInstance();
 		this.log(wrapper.encode(Map.of("1", "2", "3", "4")));
+		wrapper = KeyValueWrapper.newInstance(true, '-', '=');
+		this.log(wrapper.encode(Map.of("a", "b", "3", "4")));
 	}
 	
 	@Test

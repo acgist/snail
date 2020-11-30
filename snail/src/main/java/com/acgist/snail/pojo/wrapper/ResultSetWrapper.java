@@ -9,7 +9,6 @@ import java.util.Objects;
  * <p>结果集包装器</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class ResultSetWrapper {
 
@@ -37,7 +36,7 @@ public final class ResultSetWrapper {
 	 * @return 字符串
 	 */
 	public String getString(String key) {
-		return (String) getObject(key);
+		return (String) this.getObject(key);
 	}
 	
 	/**
@@ -48,7 +47,7 @@ public final class ResultSetWrapper {
 	 * @return Integer
 	 */
 	public Integer getInteger(String key) {
-		return (Integer) getObject(key);
+		return (Integer) this.getObject(key);
 	}
 
 	/**
@@ -59,7 +58,7 @@ public final class ResultSetWrapper {
 	 * @return Long
 	 */
 	public Long getLong(String key) {
-		return (Long) getObject(key);
+		return (Long) this.getObject(key);
 	}
 
 	/**
@@ -70,7 +69,7 @@ public final class ResultSetWrapper {
 	 * @return 时间
 	 */
 	public Date getDate(String key) {
-		return (Date) getObject(key);
+		return (Date) this.getObject(key);
 	}
 
 	/**

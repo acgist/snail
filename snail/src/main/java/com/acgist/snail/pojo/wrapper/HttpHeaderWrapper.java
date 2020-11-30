@@ -4,6 +4,7 @@ import java.net.http.HttpHeaders;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import com.acgist.snail.config.SystemConfig;
@@ -15,23 +16,13 @@ import com.acgist.snail.utils.UrlUtils;
  * <p>HTTP头部信息包装器</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class HttpHeaderWrapper extends HeaderWrapper {
 
 	/**
-	 * <p>服务器名称：{@value}</p>
-	 */
-	public static final String HEADER_SERVER = "Server";
-	/**
 	 * <p>MIME类型：{@value}</p>
 	 */
 	public static final String HEADER_CONTENT_TYPE = "Content-Type";
-	/**
-	 * <p>接收范围请求：{@value}</p>
-	 * <p>没有接收{@link #HEADER_RANGE}时返回全部数据</p>
-	 */
-	public static final String HEADER_ACCEPT_RANGES = "Accept-Ranges";
 	/**
 	 * <p>请求下载范围：{@value}</p>
 	 * <p>接收{@link #HEADER_RANGE}时返回范围数据</p>
@@ -45,6 +36,11 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	 * <p>下载描述：{@value}</p>
 	 */
 	public static final String HEADER_CONTENT_DISPOSITION = "Content-Disposition";
+	/**
+	 * <p>接收范围请求：{@value}</p>
+	 * <p>没有接收{@link #HEADER_RANGE}时返回全部数据</p>
+	 */
+	public static final String HEADER_ACCEPT_RANGES = "Accept-Ranges";
 	/**
 	 * <p>范围请求：{@value}</p>
 	 * <table border="1">
@@ -81,27 +77,32 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	 * 
 	 * @see #HEADER_ACCEPT_RANGES
 	 */
-	public static final String HEADER_BYTES = "bytes";
+	public static final String HEADER_RANGE_BYTES = "bytes";
 	/**
 	 * <p>文件名称：{@value}</p>
 	 * 
 	 * @see #HEADER_CONTENT_DISPOSITION
 	 */
-	public static final String HEADER_FILENAME = "filename";
+	public static final String HEADER_CONTENT_DISPOSITION_FILENAME = "filename";
 	
+	/**
+	 * @param headers 头部信息
+	 */
 	private HttpHeaderWrapper(Map<String, List<String>> headers) {
 		super(headers);
 	}
 
+	/**
+	 * @param httpHeaders HTTP头部信息
+	 * 
+	 * @return HttpHeaderWrapper
+	 */
 	public static final HttpHeaderWrapper newInstance(HttpHeaders httpHeaders) {
 		Map<String, List<String>> headers = null;
 		if(httpHeaders != null) {
 			headers = httpHeaders.map().entrySet().stream()
 				.filter(entry -> CollectionUtils.isNotEmpty(entry.getValue()))
-				.collect(Collectors.toMap(
-					entry -> entry.getKey(),
-					entry -> entry.getValue()
-				));
+				.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 		}
 		return new HttpHeaderWrapper(headers);
 	}
@@ -120,14 +121,14 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	 * @return 文件名称
 	 */
 	public String fileName(final String defaultName) {
-		String fileName = header(HEADER_CONTENT_DISPOSITION);
+		String fileName = this.header(HEADER_CONTENT_DISPOSITION);
 		if(StringUtils.isEmpty(fileName)) {
 			return defaultName;
 		}
 		final String fileNameLower = fileName.toLowerCase();
-		if(fileNameLower.contains(HEADER_FILENAME)) { // 包含文件名称
-			fileName = extractFileName(fileName);
-			return charsetFileName(fileName, defaultName);
+		if(fileNameLower.contains(HEADER_CONTENT_DISPOSITION_FILENAME)) { // 包含文件名称
+			fileName = this.extractFileName(fileName);
+			return this.charsetFileName(fileName, defaultName);
 		} else {
 			return defaultName;
 		}
@@ -145,9 +146,9 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 		// URL解码
 		fileName = UrlUtils.decode(fileName);
 		// 删除：filename前面内容
-		index = fileName.indexOf(HEADER_FILENAME);
+		index = fileName.indexOf(HEADER_CONTENT_DISPOSITION_FILENAME);
 		if(index != -1) {
-			fileName = fileName.substring(index + HEADER_FILENAME.length());
+			fileName = fileName.substring(index + HEADER_CONTENT_DISPOSITION_FILENAME.length());
 		}
 		// 删除：等号前面内容
 		index = fileName.indexOf('=');
@@ -201,19 +202,14 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 			chars[index] = (char) (chars[index] & 0x00FF);
 		}
 		fileName = new String(chars);
-		// 处理ISO-8859-1编码
-		// GBK
-		final String fileNameGBK = StringUtils.charset(fileName, SystemConfig.CHARSET_ISO_8859_1, SystemConfig.CHARSET_GBK);
-		// UTF-8
+		// 处理ISO-8859-1编码：优先验证UTF-8，因为UTF-8字符不完全属于GBK。
+		// UTF-8：GBK可以编码
 		final String fileNameUTF8 = StringUtils.charsetFrom(fileName, SystemConfig.CHARSET_ISO_8859_1);
-		/*
-		 * <p>判断依据</p>
-		 * <p>GBK转为UTF8基本乱码</p>
-		 * <p>UTF8转为GBK也会乱码，可能只是不是原来的字符，但是可以也是属于GBK字符。</p>
-		 */
 		if(gbkEncoder.canEncode(fileNameUTF8)) {
 			return fileNameUTF8;
 		}
+		// GBK：GBK可以编码
+		final String fileNameGBK = StringUtils.charset(fileName, SystemConfig.CHARSET_ISO_8859_1, SystemConfig.CHARSET_GBK);
 		if(gbkEncoder.canEncode(fileNameGBK)) {
 			return fileNameGBK;
 		}
@@ -229,11 +225,9 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	 */
 	public long fileSize() {
 		long size = 0L;
-		final String value = header(HEADER_CONTENT_LENGTH);
-		if(value != null) {
-			if(StringUtils.isNumeric(value)) {
-				size = Long.parseLong(value);
-			}
+		final String value = this.header(HEADER_CONTENT_LENGTH);
+		if(StringUtils.isNumeric(value)) {
+			size = Long.parseLong(value);
 		}
 		return size;
 	}
@@ -247,10 +241,10 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	 */
 	public boolean range() {
 		boolean range = false;
-		final String acceptRanges = header(HEADER_ACCEPT_RANGES);
-		final String contentRange = header(HEADER_CONTENT_RANGE);
+		final String acceptRanges = this.header(HEADER_ACCEPT_RANGES);
+		final String contentRange = this.header(HEADER_CONTENT_RANGE);
 		if(acceptRanges != null) {
-			range = HEADER_BYTES.equalsIgnoreCase(acceptRanges);
+			range = HEADER_RANGE_BYTES.equalsIgnoreCase(acceptRanges);
 		}
 		if(contentRange != null) {
 			range = true;
@@ -266,10 +260,10 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	 */
 	public long beginRange() {
 		long range = 0L;
-		final String contentRange = header(HEADER_CONTENT_RANGE);
+		final String contentRange = this.header(HEADER_CONTENT_RANGE);
 		if(contentRange != null) {
 			final int endIndex = contentRange.lastIndexOf('-');
-			final String value = contentRange.substring(HEADER_BYTES.length(), endIndex).trim();
+			final String value = contentRange.substring(HEADER_RANGE_BYTES.length(), endIndex).trim();
 			if(StringUtils.isNumeric(value)) {
 				range = Long.parseLong(value);
 			}

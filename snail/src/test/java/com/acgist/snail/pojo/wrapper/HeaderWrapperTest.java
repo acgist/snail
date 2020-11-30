@@ -57,5 +57,33 @@ public class HeaderWrapperTest extends BaseTest {
 			.header("MX", "4");
 		this.log(wrapper.build());
 	}
+
+	@Test
+	public void testWriter() {
+		HeaderWrapper wrapper = HeaderWrapper.newBuilder("GET /");
+		wrapper.header("test", null);
+		wrapper.header("test", "33 ");
+		this.log(wrapper.build());
+	}
+	
+	@Test
+	public void testReader() {
+		HeaderWrapper wrapper = HeaderWrapper.newInstance("GET /\n"
+			+ "TEST: TEST \n"
+			+ "TEST2:  TEST2  \n"
+			+ "TEST3: TEST 1\n"
+			+ "TEST3:TEST 3 \n"
+			+ "TEST6: \n"
+		);
+		this.log(wrapper.protocol());
+		this.log(wrapper.header("test"));
+		this.log(wrapper.header("test2"));
+		this.log(wrapper.header("test3"));
+		this.log(wrapper.headerList("test3"));
+		this.log(wrapper.header("test4"));
+		this.log(wrapper.headerList("test5"));
+		this.log(wrapper.header("test6"));
+		this.log(wrapper.headerList("test6"));
+	}
 	
 }
