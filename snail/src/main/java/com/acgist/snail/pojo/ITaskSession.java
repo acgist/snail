@@ -11,12 +11,13 @@ import com.acgist.snail.downloader.IDownloader;
  * <p>任务信息</p>
  * 
  * @author acgist
- * @since 1.2.0
  */
 public interface ITaskSession extends ITaskSessionTable, ITaskSessionEntity, ITaskSessionRepository, IStatisticsSessionGetter {
 
 	/**
 	 * <p>任务状态</p>
+	 * 
+	 * @author acgist
 	 */
 	public enum Status {
 		
@@ -46,10 +47,18 @@ public interface ITaskSession extends ITaskSessionTable, ITaskSessionEntity, ITa
 		 */
 		private final String value;
 		
+		/**
+		 * @param value 状态名称
+		 */
 		private Status(String value) {
 			this.value = value;
 		}
 
+		/**
+		 * <p>获取状态名称</p>
+		 * 
+		 * @return 状态名称
+		 */
 		public String getValue() {
 			return value;
 		}
@@ -58,6 +67,8 @@ public interface ITaskSession extends ITaskSessionTable, ITaskSessionEntity, ITa
 	
 	/**
 	 * <p>文件类型</p>
+	 * 
+	 * @author acgist
 	 */
 	public enum FileType {
 		
@@ -85,11 +96,19 @@ public interface ITaskSession extends ITaskSessionTable, ITaskSessionEntity, ITa
 		 */
 		private final String value;
 
+		/**
+		 * @param value 类型名称
+		 */
 		private FileType(String value) {
 			this.value = value;
 		}
 
-		public String value() {
+		/**
+		 * <p>获取类型名称</p>
+		 * 
+		 * @return 类型名称
+		 */
+		public String getValue() {
 			return value;
 		}
 

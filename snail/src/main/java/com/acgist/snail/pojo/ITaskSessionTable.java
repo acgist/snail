@@ -4,7 +4,6 @@ package com.acgist.snail.pojo;
  * <p>任务 - Gui面板数据绑定接口</p>
  * 
  * @author acgist
- * @since 1.2.0
  */
 public interface ITaskSessionTable {
 

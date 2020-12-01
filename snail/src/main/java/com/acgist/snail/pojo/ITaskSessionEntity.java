@@ -10,7 +10,6 @@ import com.acgist.snail.protocol.Protocol.Type;
  * <p>任务 - 实体接口</p>
  * 
  * @author acgist
- * @since 1.2.0
  */
 public interface ITaskSessionEntity {
 
