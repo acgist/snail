@@ -246,6 +246,7 @@
 							<id>auto-build-source</id>
 							<phase>package</phase>
 							<goals>
+								<!-- 和jar一样：不会分叉构建 -->
 								<goal>jar-no-fork</goal>
 							</goals>
 							<configuration>
