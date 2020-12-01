@@ -35,19 +35,29 @@ public final class KeyValueWrapper {
 	 */
 	private final char kvSeparator;
 	/**
-	 * <p>数据</p>
+	 * <p>编码数据</p>
+	 */
+	private final String content;
+	/**
+	 * <p>解码数据</p>
 	 */
 	private final Map<String, String> data;
 
 	/**
 	 * @param separator 连接符
 	 * @param kvSeparator Key-Value连接符
-	 * @param data 数据
+	 * @param content 编码数据
+	 * @param data 解码数据
 	 */
-	private KeyValueWrapper(char separator, char kvSeparator, Map<String, String> data) {
+	private KeyValueWrapper(char separator, char kvSeparator, String content, Map<String, String> data) {
 		this.separator = separator;
 		this.kvSeparator = kvSeparator;
-		this.data = data;
+		this.content = content;
+		if(data == null) {
+			this.data = new HashMap<String, String>();
+		} else {
+			this.data = data;
+		}
 	}
 
 	/**
@@ -56,18 +66,29 @@ public final class KeyValueWrapper {
 	 * @return KeyValueWrapper
 	 */
 	public static final KeyValueWrapper newInstance() {
-		return new KeyValueWrapper(DEFAULT_SEPARATOR, DEFAULT_KV_SEPARATOR, new HashMap<String, String>());
+		return new KeyValueWrapper(DEFAULT_SEPARATOR, DEFAULT_KV_SEPARATOR, null, null);
 	}
 	
 	/**
 	 * <p>创建工具</p>
 	 * 
-	 * @param data 数据
+	 * @param content 解码数据
+	 * 
+	 * @return KeyValueWrapper
+	 */
+	public static final KeyValueWrapper newInstance(String content) {
+		return new KeyValueWrapper(DEFAULT_SEPARATOR, DEFAULT_KV_SEPARATOR, content, null);
+	}
+	
+	/**
+	 * <p>创建工具</p>
+	 * 
+	 * @param data 编码数据
 	 * 
 	 * @return KeyValueWrapper
 	 */
 	public static final KeyValueWrapper newInstance(Map<String, String> data) {
-		return new KeyValueWrapper(DEFAULT_SEPARATOR, DEFAULT_KV_SEPARATOR, data);
+		return new KeyValueWrapper(DEFAULT_SEPARATOR, DEFAULT_KV_SEPARATOR, null, data);
 	}
 	
 	/**
@@ -79,7 +100,7 @@ public final class KeyValueWrapper {
 	 * @return KeyValueWrapper
 	 */
 	public static final KeyValueWrapper newInstance(char separator, char kvSeparator) {
-		return new KeyValueWrapper(separator, kvSeparator, new HashMap<String, String>());
+		return new KeyValueWrapper(separator, kvSeparator, null, null);
 	}
 	
 	/**
@@ -87,12 +108,25 @@ public final class KeyValueWrapper {
 	 * 
 	 * @param separator 连接符
 	 * @param kvSeparator Key-Value连接符
-	 * @param data 数据
+	 * @param content 编码数据
+	 * 
+	 * @return KeyValueWrapper
+	 */
+	public static final KeyValueWrapper newInstance(char separator, char kvSeparator, String content) {
+		return new KeyValueWrapper(separator, kvSeparator, content, null);
+	}
+	
+	/**
+	 * <p>创建工具</p>
+	 * 
+	 * @param separator 连接符
+	 * @param kvSeparator Key-Value连接符
+	 * @param data 解码数据
 	 * 
 	 * @return KeyValueWrapper
 	 */
 	public static final KeyValueWrapper newInstance(char separator, char kvSeparator, Map<String, String> data) {
-		return new KeyValueWrapper(separator, kvSeparator, data);
+		return new KeyValueWrapper(separator, kvSeparator, null, data);
 	}
 	
 	/**
@@ -113,18 +147,16 @@ public final class KeyValueWrapper {
 	/**
 	 * <p>数据解码</p>
 	 * 
-	 * @param content 数据
-	 * 
 	 * @return KeyValueWrapper
 	 */
-	public KeyValueWrapper decode(String content) {
-		if(content == null) {
+	public KeyValueWrapper decode() {
+		if(this.content == null) {
 			return this;
 		}
 		int index;
 		String key;
 		String value;
-		final String[] keyValues = content.split(String.valueOf(this.separator));
+		final String[] keyValues = this.content.split(String.valueOf(this.separator));
 		for (String keyValue : keyValues) {
 			keyValue = keyValue.trim();
 			if(keyValue.isEmpty()) {
@@ -171,18 +203,6 @@ public final class KeyValueWrapper {
 			.filter(entry -> StringUtils.equalsIgnoreCase(entry.getKey(), key))
 			.map(Entry::getValue)
 			.findFirst().orElse(null);
-	}
-	
-	/**
-	 * <p>清空数据</p>
-	 * 
-	 * @return KeyValueWrapper
-	 */
-	public KeyValueWrapper clean() {
-		if(this.data != null) {
-			this.data.clear();
-		}
-		return this;
 	}
 	
 	@Override

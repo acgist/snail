@@ -18,20 +18,20 @@ public class KeyValueWrapperTest extends BaseTest {
 	
 	@Test
 	public void testDecode() {
-		var wrapper = KeyValueWrapper.newInstance();
-		this.log(wrapper.decode("1=2&"));
-		wrapper.clean();
-		this.log(wrapper.decode("&1=2&"));
-		wrapper.clean();
-		this.log(wrapper.decode("1=2&3"));
-		wrapper.clean();
-		this.log(wrapper.decode("1=2&3="));
-		wrapper.clean();
-		this.log(wrapper.decode("1=2&3=4"));
-		wrapper.clean();
-		this.log(wrapper.decode("1=2 & 3=4"));
-		wrapper.clean();
-		this.log(wrapper.decode("a=a&B=B&c=C"));
+		var wrapper = KeyValueWrapper.newInstance("1=2&");
+		this.log(wrapper.decode());
+		wrapper = KeyValueWrapper.newInstance("&1=2&");
+		this.log(wrapper.decode());
+		wrapper = KeyValueWrapper.newInstance("1=2&3");
+		this.log(wrapper.decode());
+		wrapper = KeyValueWrapper.newInstance("1=2&3=");
+		this.log(wrapper.decode());
+		wrapper = KeyValueWrapper.newInstance("1=2&3=4");
+		this.log(wrapper.decode());
+		wrapper = KeyValueWrapper.newInstance("1=2 & 3=4");
+		this.log(wrapper.decode());
+		wrapper = KeyValueWrapper.newInstance("a=a&B=B&c=C");
+		this.log(wrapper.decode());
 		this.log(wrapper.get("a"));
 		this.log(wrapper.get("B"));
 		this.log(wrapper.getIgnoreCase("a"));
@@ -42,9 +42,9 @@ public class KeyValueWrapperTest extends BaseTest {
 	@Test
 	public void testCost() {
 		this.cost();
-		var wrapper = KeyValueWrapper.newInstance();
+		var wrapper = KeyValueWrapper.newInstance("a=a&B=B&c=C");
 		for (int i = 0; i < 1000000; i++) {
-			wrapper.decode("a=a&B=B&c=C");
+			wrapper.decode();
 		}
 		this.costed();
 		for (int i = 0; i < 1000000; i++) {
