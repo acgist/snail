@@ -243,8 +243,8 @@ public final class M3u8Builder {
 			return null;
 		}
 		final String value = optional.get().getValue();
-		final var wrapper = KeyValueWrapper.newInstance(',', '=');
-		wrapper.decode(value);
+		final var wrapper = KeyValueWrapper.newInstance(',', '=', value);
+		wrapper.decode();
 		final String method = wrapper.getIgnoreCase("METHOD");
 		final M3u8.Protocol protocol = M3u8.Protocol.of(method);
 		LOGGER.debug("HLS加密算法：{}", method);
