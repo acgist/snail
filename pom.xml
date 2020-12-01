@@ -259,7 +259,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>${maven.javadoc.version}</version>
+					<version>3.0.0</version>
 					<configuration>
 						<!-- 忽略警告：注解、标签等等 -->
 						<doclint>none</doclint>
@@ -269,10 +269,10 @@
 						<docencoding>${encoding}</docencoding>
 						<description>${project.description}</description>
 						<!-- 忽略模块描述 -->
+						<!--
 						<sourceFileExcludes>
 							<sourceFileExclude>**/module-info.java</sourceFileExclude>
 						</sourceFileExcludes>
-						<!--
 						-->
 					</configuration>
 					<executions>
