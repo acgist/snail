@@ -79,7 +79,7 @@ public final class ModifyOptional<T> {
 	 * @return {@code true}-非空；{@code false}-空；
 	 */
 	public boolean isPresent() {
-		return !isEmpty();
+		return !this.isEmpty();
 	}
 	
 }

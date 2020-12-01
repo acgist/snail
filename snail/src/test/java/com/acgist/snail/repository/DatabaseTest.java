@@ -23,6 +23,10 @@ public class DatabaseTest extends BaseTest {
 		List<ResultSetWrapper> list = DatabaseManager.getInstance().select("select * from tb_config");
 		list.forEach(value -> {
 			this.log(value);
+			this.log(value.get("CREATEDATE"));
+			this.log(value.get("createdate"));
+			this.log(value.getIgnoreCase("CREATEDATE"));
+			this.log(value.getIgnoreCase("createdate"));
 		});
 	}
 	

@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -222,14 +221,11 @@ public final class FileUtils {
 			return FileType.UNKNOWN;
 		}
 		final String extLower = ext.toLowerCase();
-		final Optional<FileType> optional = FILE_TYPE_EXT.entrySet().stream()
+		return FILE_TYPE_EXT.entrySet().stream()
 			.filter(entry -> entry.getValue().contains(extLower))
 			.map(Entry::getKey)
-			.findFirst();
-		if(optional.isPresent()) {
-			return optional.get();
-		}
-		return FileType.UNKNOWN;
+			.findFirst()
+			.orElse(FileType.UNKNOWN);
 	}
 	
 	/**

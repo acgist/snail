@@ -177,7 +177,7 @@ public final class BeanUtils {
 		for (String property : properties) {
 			try {
 				final PropertyDescriptor descriptor = new PropertyDescriptor(property, clazz);
-				final Object value = unpack(descriptor.getPropertyType(), wrapper.getObject(property));
+				final Object value = unpack(descriptor.getPropertyType(), wrapper.getIgnoreCase(property));
 				descriptor.getWriteMethod().invoke(instance, value);
 			} catch (Exception e) {
 				LOGGER.info("设置实例属性异常：{}-{}", clazz, property, e);
