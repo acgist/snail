@@ -243,17 +243,17 @@ public final class M3u8Builder {
 			return null;
 		}
 		final String value = optional.get().getValue();
-		final var wrapper = KeyValueWrapper.newInstance(true, ',', '=');
-		final var map = wrapper.decode(value);
-		final String method = map.get("METHOD");
+		final var wrapper = KeyValueWrapper.newInstance(',', '=');
+		wrapper.decode(value);
+		final String method = wrapper.getIgnoreCase("METHOD");
 		final M3u8.Protocol protocol = M3u8.Protocol.of(method);
 		LOGGER.debug("HLS加密算法：{}", method);
 		if(protocol == null || protocol == M3u8.Protocol.NONE) {
 			return null;
 		}
 		if(protocol == M3u8.Protocol.AES_128) {
-			final String iv = map.get("IV");
-			final String uri = map.get("URI");
+			final String iv = wrapper.getIgnoreCase("IV");
+			final String uri = wrapper.getIgnoreCase("URI");
 			return this.buildCipherAes128(iv, uri);
 		}
 		return null;

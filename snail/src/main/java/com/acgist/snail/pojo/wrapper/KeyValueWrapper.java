@@ -2,6 +2,9 @@ package com.acgist.snail.pojo.wrapper;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+
+import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>Key-Value拼接拆解</p>
@@ -22,78 +25,84 @@ public final class KeyValueWrapper {
 	 * @see #kvSeparator
 	 */
 	private static final char DEFAULT_KV_SEPARATOR = '=';
-	
+
 	/**
-	 * <p>Key转为大写</p>
-	 */
-	private final boolean keyUpper;
-	/**
-	 * <p>每项连接符</p>
+	 * <p>连接符</p>
 	 */
 	private final char separator;
 	/**
 	 * <p>Key-Value连接符</p>
 	 */
 	private final char kvSeparator;
+	/**
+	 * <p>数据</p>
+	 */
+	private final Map<String, String> data;
 
 	/**
-	 * @param keyUpper Key转为大写
-	 * @param separator 每项连接符
+	 * @param separator 连接符
 	 * @param kvSeparator Key-Value连接符
+	 * @param data 数据
 	 */
-	private KeyValueWrapper(boolean keyUpper, char separator, char kvSeparator) {
-		this.keyUpper = keyUpper;
+	private KeyValueWrapper(char separator, char kvSeparator, Map<String, String> data) {
 		this.separator = separator;
 		this.kvSeparator = kvSeparator;
+		this.data = data;
 	}
 
 	/**
 	 * <p>创建工具</p>
 	 * 
-	 * @return 工具
+	 * @return KeyValueWrapper
 	 */
 	public static final KeyValueWrapper newInstance() {
-		return new KeyValueWrapper(false, DEFAULT_SEPARATOR, DEFAULT_KV_SEPARATOR);
+		return new KeyValueWrapper(DEFAULT_SEPARATOR, DEFAULT_KV_SEPARATOR, new HashMap<String, String>());
 	}
 	
 	/**
 	 * <p>创建工具</p>
 	 * 
-	 * @param separator 每项连接符
+	 * @param data 数据
+	 * 
+	 * @return KeyValueWrapper
+	 */
+	public static final KeyValueWrapper newInstance(Map<String, String> data) {
+		return new KeyValueWrapper(DEFAULT_SEPARATOR, DEFAULT_KV_SEPARATOR, data);
+	}
+	
+	/**
+	 * <p>创建工具</p>
+	 * 
+	 * @param separator 连接符
 	 * @param kvSeparator Key-Value连接符
 	 * 
-	 * @return 工具
+	 * @return KeyValueWrapper
 	 */
 	public static final KeyValueWrapper newInstance(char separator, char kvSeparator) {
-		return new KeyValueWrapper(false, separator, kvSeparator);
+		return new KeyValueWrapper(separator, kvSeparator, new HashMap<String, String>());
 	}
 	
 	/**
 	 * <p>创建工具</p>
 	 * 
-	 * @param keyUpper Key转为大写
-	 * @param separator 每项连接符
+	 * @param separator 连接符
 	 * @param kvSeparator Key-Value连接符
+	 * @param data 数据
 	 * 
-	 * @return 工具
+	 * @return KeyValueWrapper
 	 */
-	public static final KeyValueWrapper newInstance(boolean keyUpper, char separator, char kvSeparator) {
-		return new KeyValueWrapper(keyUpper, separator, kvSeparator);
+	public static final KeyValueWrapper newInstance(char separator, char kvSeparator, Map<String, String> data) {
+		return new KeyValueWrapper(separator, kvSeparator, data);
 	}
 	
 	/**
 	 * <p>数据编码</p>
 	 * 
-	 * @param map 数据
-	 * 
 	 * @return 编码数据
 	 */
-	public String encode(Map<String, String> map) {
-		if(map == null) {
-			return null;
-		}
+	public String encode() {
 		final StringBuilder builder = new StringBuilder();
-		map.forEach((key, value) -> builder.append(this.keyUpper(key)).append(this.kvSeparator).append(value).append(this.separator));
+		this.data.forEach((key, value) -> builder.append(key).append(this.kvSeparator).append(value).append(this.separator));
 		final int length = builder.length();
 		if(length > 0) {
 			builder.setLength(length - 1);
@@ -106,17 +115,16 @@ public final class KeyValueWrapper {
 	 * 
 	 * @param content 数据
 	 * 
-	 * @return 解码数据
+	 * @return KeyValueWrapper
 	 */
-	public Map<String, String> decode(String content) {
+	public KeyValueWrapper decode(String content) {
 		if(content == null) {
-			return null;
+			return this;
 		}
-		final String[] keyValues = content.split(String.valueOf(this.separator));
-		final Map<String, String> map = new HashMap<>();
 		int index;
 		String key;
 		String value;
+		final String[] keyValues = content.split(String.valueOf(this.separator));
 		for (String keyValue : keyValues) {
 			keyValue = keyValue.trim();
 			if(keyValue.isEmpty()) {
@@ -124,32 +132,62 @@ public final class KeyValueWrapper {
 			}
 			index = keyValue.indexOf(this.kvSeparator);
 			if(index < 0) {
-				map.put(keyValue, null);
+				this.data.put(keyValue, null);
 			} else {
 				key = keyValue.substring(0, index).trim();
 				value = keyValue.substring(index + 1).trim();
-				map.put(this.keyUpper(key), value);
+				this.data.put(key, value);
 			}
 		}
-		return map;
+		return this;
 	}
 	
 	/**
-	 * <p>Key转为大写</p>
+	 * <p>通过Key获取数据</p>
 	 * 
 	 * @param key Key
 	 * 
-	 * @return 转换后的Key
+	 * @return Value
 	 */
-	private String keyUpper(String key) {
-		if(key == null) {
-			return key;
+	public String get(String key) {
+		if(this.data == null) {
+			return null;
 		}
-		if(this.keyUpper) {
-			return key.toUpperCase();
-		} else {
-			return key;
+		return this.data.get(key);
+	}
+
+	/**
+	 * <p>通过Key获取数据（忽略大小写）</p>
+	 * 
+	 * @param key Key
+	 * 
+	 * @return Value
+	 */
+	public String getIgnoreCase(String key) {
+		if(this.data == null) {
+			return null;
 		}
+		return this.data.entrySet().stream()
+			.filter(entry -> StringUtils.equalsIgnoreCase(entry.getKey(), key))
+			.map(Entry::getValue)
+			.findFirst().orElse(null);
+	}
+	
+	/**
+	 * <p>清空数据</p>
+	 * 
+	 * @return KeyValueWrapper
+	 */
+	public KeyValueWrapper clean() {
+		if(this.data != null) {
+			this.data.clear();
+		}
+		return this;
+	}
+	
+	@Override
+	public String toString() {
+		return this.data == null ? null : this.data.toString();
 	}
 	
 }
