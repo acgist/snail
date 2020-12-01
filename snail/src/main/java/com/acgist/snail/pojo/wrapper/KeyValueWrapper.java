@@ -181,9 +181,6 @@ public final class KeyValueWrapper {
 	 * @return Value
 	 */
 	public String get(String key) {
-		if(this.data == null) {
-			return null;
-		}
 		return this.data.get(key);
 	}
 
@@ -195,9 +192,6 @@ public final class KeyValueWrapper {
 	 * @return Value
 	 */
 	public String getIgnoreCase(String key) {
-		if(this.data == null) {
-			return null;
-		}
 		return this.data.entrySet().stream()
 			.filter(entry -> StringUtils.equalsIgnoreCase(entry.getKey(), key))
 			.map(Entry::getValue)
