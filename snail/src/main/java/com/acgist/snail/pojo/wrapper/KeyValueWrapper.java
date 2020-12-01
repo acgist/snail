@@ -3,6 +3,7 @@ package com.acgist.snail.pojo.wrapper;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import com.acgist.snail.utils.StringUtils;
 
@@ -150,9 +151,7 @@ public final class KeyValueWrapper {
 	 * @return KeyValueWrapper
 	 */
 	public KeyValueWrapper decode() {
-		if(this.content == null) {
-			return this;
-		}
+		Objects.requireNonNull(this.content, "解码数据为空");
 		int index;
 		String key;
 		String value;
@@ -202,7 +201,8 @@ public final class KeyValueWrapper {
 		return this.data.entrySet().stream()
 			.filter(entry -> StringUtils.equalsIgnoreCase(entry.getKey(), key))
 			.map(Entry::getValue)
-			.findFirst().orElse(null);
+			.findFirst()
+			.orElse(null);
 	}
 	
 	@Override

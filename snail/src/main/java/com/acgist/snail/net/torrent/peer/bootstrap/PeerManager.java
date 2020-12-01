@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -331,13 +330,10 @@ public final class PeerManager {
 	 * @return Peer信息
 	 */
 	private PeerSession findPeerSession(List<PeerSession> list, String host, Integer port) {
-		final Optional<PeerSession> optional = list.stream()
+		return list.stream()
 			.filter(peer -> peer.equals(host, port))
-			.findFirst();
-		if(optional.isPresent()) {
-			return optional.get();
-		}
-		return null;
+			.findFirst()
+			.orElse(null);
 	}
 
 }
