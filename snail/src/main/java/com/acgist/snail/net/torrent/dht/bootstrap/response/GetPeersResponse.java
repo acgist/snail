@@ -88,7 +88,7 @@ public final class GetPeersResponse extends DhtResponse {
 	 * 
 	 * @return Peer列表
 	 * 
-	 * @see #getValues(DhtRequest)
+	 * @see #getValues(String)
 	 */
 	public List<PeerSession> getPeers(String infoHashHex) {
 		return this.getValues(infoHashHex);
