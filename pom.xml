@@ -177,14 +177,13 @@
 								</excludes>
 							</resource>
 							<resource>
-								<!-- travis-ci配置斜杠编译卡住 -->
-								<directory>./</directory>
+								<directory>../</directory>
 								<filtering>false</filtering>
 								<targetPath>META-INF/</targetPath>
 								<!-- 开源协议、README -->
 								<includes>
-									<include>../LICENSE</include>
-									<include>../README.md</include>
+									<include>LICENSE</include>
+									<include>README.md</include>
 								</includes>
 							</resource>
 						</resources>
