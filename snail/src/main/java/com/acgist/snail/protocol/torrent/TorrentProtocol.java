@@ -1,8 +1,5 @@
 package com.acgist.snail.protocol.torrent;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.downloader.torrent.TorrentDownloader;
@@ -22,8 +19,6 @@ import com.acgist.snail.utils.FileUtils;
  * @author acgist
  */
 public final class TorrentProtocol extends Protocol {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentProtocol.class);
 	
 	private static final TorrentProtocol INSTANCE = new TorrentProtocol();
 	
@@ -194,14 +189,15 @@ public final class TorrentProtocol extends Protocol {
 		try {
 			taskSession = TaskSession.newInstance(this.taskEntity);
 			GuiManager.getInstance().torrent(taskSession);
+		} catch (DownloadException e) {
+			throw e;
 		} catch (Exception e) {
-			LOGGER.error("选择文件异常", e);
-		} finally {
-			if(taskSession == null || taskSession.multifileSelected().isEmpty()) {
-				// 没有选择下载文件：删除已经创建文件
-				FileUtils.delete(this.taskEntity.getFile());
-				throw new DownloadException("请选择下载文件");
-			}
+			throw new DownloadException("选择下载文件错误", e);
+		}
+		if(taskSession.multifileSelected().isEmpty()) {
+			// 没有选择下载文件：删除已经创建文件
+			FileUtils.delete(this.taskEntity.getFile());
+			throw new DownloadException("请选择下载文件");
 		}
 	}
 	

@@ -43,6 +43,7 @@ public final class MainWindow extends Window<MainController> {
 		this.icon();
 		this.help();
 		this.statistics();
+//		Taskbar：任务栏进度条
 	}
 	
 	@Override
