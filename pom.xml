@@ -15,13 +15,8 @@
 	snail/src/main/resources/config/system.properties
 	
 	编译命令：
-	mvn -e clean package deploy -P release -D skipTests
-	跳过生成签名：-D gpg.skip=true
-	跳过源码打包：-D maven.source.skip=true
-	跳过文档生成：-D maven.javadoc.skip=true
-	编译指定系统：-D javafx.platform=win|mac|linux
-	跳过测试（编译测试代码）：-D skipTests
-	跳过测试（跳过编译测试代码）：-D maven.test.skip=true
+	mvn -e clean package|install|deploy
+	编译系统：-D javafx.platform=win|mac|linux
 	-->
 	
 	<modelVersion>4.0.0</modelVersion>
@@ -78,7 +73,7 @@
 		</dependency>
 	</dependencies>
 
-	<!-- 环境：mvn -P develop -->
+	<!-- 环境：-P develop|release -->
 	<profiles>
 		<profile>
 			<id>develop</id>
@@ -146,7 +141,11 @@
 		<!-- 插件管理 -->
 		<pluginManagement>
 			<plugins>
-				<!-- 代码编译 -->
+				<!--
+				编译代码：
+				mvn compile
+				mvn test-compile
+				-->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
@@ -157,7 +156,12 @@
 						<encoding>${encoding}</encoding>
 					</configuration>
 				</plugin>
-				<!-- 资源文件 -->
+				<!--
+				打包资源：
+				mvn resources:resources
+				mvn resources:testResources
+				mvn resources:copy-resources
+				-->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-resources-plugin</artifactId>
@@ -196,6 +200,8 @@
 							<goals>
 								<goal>copy-resources</goal>
 							</goals>
+							<!-- 遗传 -->
+							<inherited>true</inherited>
 							<configuration>
 								<!-- 覆盖资源 -->
 								<overwrite>true</overwrite>
@@ -208,12 +214,15 @@
 									</resource>
 								</resources>
 							</configuration>
-							<!-- 遗传 -->
-							<inherited>true</inherited>
 						</execution>
 					</executions>
 				</plugin>
-				<!-- 打包项目 -->
+				<!--
+				打包项目：
+				mvn package
+				跳过测试（编译测试代码）：-D skipTests=true
+				跳过测试（跳过编译测试代码）：-D maven.test.skip=true
+				-->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
@@ -235,27 +244,43 @@
 						</archive>
 					</configuration>
 				</plugin>
-				<!-- 打包源码 -->
+				<!--
+				打包源码：
+				mvn source:jar
+				mvn source:test-jar
+				跳过打包源码：-D maven.source.skip=true
+				-->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-source-plugin</artifactId>
 					<version>${maven.source.version}</version>
+					<configuration>
+						<attach>true</attach>
+					</configuration>
 					<executions>
 						<!-- 自动打包源码 -->
 						<execution>
 							<id>auto-build-source</id>
-							<phase>package</phase>
+							<!--
+							打包源码：install|deploy
+							package不用打包源码
+							install|deploy不能正常签名
+							-->
+							<phase>verify</phase>
 							<goals>
 								<!-- 和jar一样：不会分叉构建 -->
 								<goal>jar-no-fork</goal>
 							</goals>
-							<configuration>
-								<attach>true</attach>
-							</configuration>
 						</execution>
 					</executions>
 				</plugin>
-				<!-- 打包文档 -->
+				<!--
+				打包文档：
+				mvn site
+				mvn javadoc:jar
+				mvn javadoc:javadoc
+				跳过打包文档：-D maven.javadoc.skip=true
+				-->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
@@ -279,18 +304,33 @@
 						<!-- 自动打包文档 -->
 						<execution>
 							<id>auto-build-javadoc</id>
-							<phase>package</phase>
+							<!--
+							打包文档：install|deploy
+							package不用打包文档
+							install|deploy不能正常签名
+							-->
+							<phase>verify</phase>
 							<goals>
 								<goal>jar</goal>
 							</goals>
 						</execution>
 					</executions>
 				</plugin>
-				<!-- 复制依赖 -->
+				<!--
+				复制依赖：
+				mvn dependency:copy
+				mvn dependency:copy-dependencies
+				-->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-dependency-plugin</artifactId>
 					<version>${maven.dependency.version}</version><!--$NO-MVN-MAN-VER$-->
+					<configuration>
+						<stripVersion>false</stripVersion>
+						<includeScope>compile</includeScope>
+						<excludeTransitive>false</excludeTransitive>
+						<outputDirectory>${project.build.directory}/lib</outputDirectory>
+					</configuration>
 					<executions>
 						<!-- 自动复制依赖 -->
 						<execution>
@@ -299,16 +339,14 @@
 							<goals>
 								<goal>copy-dependencies</goal>
 							</goals>
-							<configuration>
-								<stripVersion>false</stripVersion>
-								<includeScope>compile</includeScope>
-								<excludeTransitive>false</excludeTransitive>
-								<outputDirectory>${project.build.directory}/lib</outputDirectory>
-							</configuration>
 						</execution>
 					</executions>
 				</plugin>
-				<!-- 生成签名 -->
+				<!--
+				生成签名：
+				mvn verify
+				跳过生成签名：-D gpg.skip=true
+				-->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-gpg-plugin</artifactId>
@@ -324,7 +362,10 @@
 						</execution>
 					</executions>
 				</plugin>
-				<!-- 发布项目 -->
+				<!--
+				发布项目：
+				mvn deploy
+				-->
 				<plugin>
 					<groupId>org.sonatype.plugins</groupId>
 					<artifactId>nexus-staging-maven-plugin</artifactId>
@@ -441,7 +482,6 @@
 		<system>Gitee Issues</system>
 	</issueManagement>
 	
-	<!-- 发布：mvn deploy -->
 	<!-- https://oss.sonatype.org/ -->
 	<!-- https://issues.sonatype.org/browse/OSSRH-51336 -->
 	<distributionManagement>

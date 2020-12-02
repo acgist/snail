@@ -581,7 +581,7 @@ public final class PeerSession implements IStatisticsSessionGetter {
 	/**
 	 * <p>验证状态</p>
 	 * 
-	 * @param 状态
+	 * @param status 状态
 	 * 
 	 * @return 是否处于状态
 	 */
