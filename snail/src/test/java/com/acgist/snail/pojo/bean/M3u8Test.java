@@ -2,6 +2,7 @@ package com.acgist.snail.pojo.bean;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.file.Files;
 import java.util.Base64;
 
@@ -10,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import com.acgist.snail.BaseTest;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
+import com.acgist.snail.net.http.HTTPClient;
+import com.acgist.snail.pojo.bean.M3u8.Type;
 import com.acgist.snail.protocol.hls.bootstrap.M3u8Builder;
 
 public class M3u8Test extends BaseTest {
@@ -46,6 +49,18 @@ public class M3u8Test extends BaseTest {
 		final int padding = source[source.length - 1];
 		this.log(padding);
 		this.log(new String(source, 0, source.length - padding));
+	}
+	
+	@Test
+	public void testBuild() throws NetException, DownloadException {
+		String link = "https://youku.cdn4-okzy.com/20201029/11215_04ff548d/index.m3u8";
+		var m3u8 = M3u8Builder.newInstance(HTTPClient.get(link, BodyHandlers.ofString()).body(), link).build();
+		this.log(m3u8);
+		if(m3u8.getType() == Type.M3U8) {
+			link = m3u8.maxRateLink();
+			m3u8 = M3u8Builder.newInstance(HTTPClient.get(link, BodyHandlers.ofString()).body(), link).build();
+			m3u8.getLinks().forEach(this::log);
+		}
 	}
 	
 }
