@@ -13,7 +13,6 @@ import com.acgist.snail.protocol.Protocol;
  * <p>FTP协议</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class FtpProtocol extends Protocol {
 	

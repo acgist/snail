@@ -17,7 +17,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>HTTP协议</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class HttpProtocol extends Protocol {
 
@@ -84,8 +83,8 @@ public final class HttpProtocol extends Protocol {
 	}
 	
 	@Override
-	protected void clean(boolean ok) {
-		super.clean(ok);
+	protected void release(boolean ok) {
+		super.release(ok);
 		this.httpHeaderWrapper = null;
 	}
 

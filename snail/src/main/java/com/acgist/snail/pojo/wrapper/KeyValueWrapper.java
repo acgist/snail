@@ -8,7 +8,7 @@ import java.util.Objects;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>Key-Value拼接拆解</p>
+ * <p>Key-Value包装器</p>
  * 
  * @author acgist
  */

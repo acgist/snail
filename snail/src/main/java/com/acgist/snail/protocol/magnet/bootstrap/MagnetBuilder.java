@@ -18,7 +18,6 @@ import com.acgist.snail.utils.UrlUtils;
  * <p>磁力链接解析只支持单条BT类型磁力链接</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public final class MagnetBuilder {
 	
@@ -104,12 +103,14 @@ public final class MagnetBuilder {
 		int index;
 		String key;
 		String value;
+		// 这里不能解码：空格创建URI抛出异常
 		final URI uri = URI.create(this.url);
 		final String[] querys = uri.getSchemeSpecificPart().substring(1).split("&");
 		for (String query : querys) {
 			index = query.indexOf('=');
 			if(index >= 0 && query.length() > index) {
 				key = query.substring(0, index);
+				// 解码
 				value = UrlUtils.decode(query.substring(index + 1));
 				switch (key) {
 				case QUERY_DN:
@@ -167,18 +168,38 @@ public final class MagnetBuilder {
 		this.magnet.setType(Magnet.Type.BTIH);
 	}
 	
+	/**
+	 * @param value 显示名称
+	 * 
+	 * @see Magnet#setDn(String)
+	 */
 	private void dn(String value) {
 		this.magnet.setDn(value);
 	}
 	
+	/**
+	 * @param value 文件链接
+	 * 
+	 * @see Magnet#setAs(String)
+	 */
 	private void as(String value) {
 		this.magnet.setAs(value);
 	}
 	
+	/**
+	 * @param value 绝对资源
+	 * 
+	 * @see Magnet#setXs(String)
+	 */
 	private void xs(String value) {
 		this.magnet.setXs(value);
 	}
 	
+	/**
+	 * @param value Tracker服务器
+	 * 
+	 * @see Magnet#addTr(String)
+	 */
 	private void tr(String value) {
 		this.magnet.addTr(value);
 	}

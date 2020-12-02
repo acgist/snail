@@ -8,9 +8,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.crypto.Cipher;
@@ -27,7 +25,6 @@ import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.pojo.bean.M3u8;
 import com.acgist.snail.pojo.bean.M3u8.Type;
 import com.acgist.snail.pojo.wrapper.KeyValueWrapper;
-import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.ObjectUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -36,11 +33,32 @@ import com.acgist.snail.utils.UrlUtils;
 /**
  * <p>M3U8解析器</p>
  * 
- * TODO：文件编码
- * TODO：加密解密
+ * <p>M3U8列表：</p>
+ * <pre>
+ * #EXTM3U
+ * #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=800000,RESOLUTION=1080x608
+ * 1000k/hls/index.m3u8
+ * </pre>
+ * <p>M3U8列表：</p>
+ * <pre>
+ * #EXTM3U
+ * #EXT-X-VERSION:3
+ * #EXT-X-KEY:METHOD=AES-128,URI="https://www.acgist.com/key",IV=0x00000000
+ * #EXT-X-TARGETDURATION:8
+ * #EXT-X-MEDIA-SEQUENCE:0
+ * #EXTINF:7.200000,
+ * 7a9cb1ab891000000.ts
+ * #EXTINF:0.920000,
+ * 7a9cb1ab891000001.ts
+ * ...
+ * #EXTINF:4.000000,
+ * 7a9cb1ab891000616.ts
+ * #EXTINF:2.320000,
+ * 7a9cb1ab891000617.ts
+ * #EXT-X-ENDLIST
+ * </pre>
  * 
  * @author acgist
- * @since 1.4.1
  */
 public final class M3u8Builder {
 	
@@ -49,29 +67,30 @@ public final class M3u8Builder {
 	/**
 	 * <p>类型标签</p>
 	 */
-	private static final String TAG_EXTM3U = "EXTM3U";
+	private static final String LABEL_EXTM3U = "EXTM3U";
 	/**
 	 * <p>视频分片</p>
 	 */
-	private static final String TAG_EXTINF = "EXTINF";
+	private static final String LABEL_EXTINF = "EXTINF";
 	/**
 	 * <p>数据加密</p>
 	 * <p>#EXT-X-KEY:METHOD=AES-128,URI="https://www.acgist.com/key",IV=0x00000000</p>
 	 */
-	private static final String TAG_EXT_X_KEY = "EXT-X-KEY";
-	/**
-	 * <p>序列号</p>
-	 */
-	private static final String TAG_EXT_X_MEDIA_SEQUENCE = "EXT-X-MEDIA-SEQUENCE";
+	private static final String LABEL_EXT_X_KEY = "EXT-X-KEY";
 	/**
 	 * <p>视频结束标记</p>
 	 * <p>如果没有这个标记表示为直播流媒体</p>
 	 */
-	private static final String TAG_EXT_X_ENDLIST = "EXT-X-ENDLIST";
+	private static final String LABEL_EXT_X_ENDLIST = "EXT-X-ENDLIST";
 	/**
 	 * <p>多级M3U8列表</p>
 	 */
-	private static final String TAG_EXT_X_STREAM_INF = "EXT-X-STREAM-INF";
+	private static final String LABEL_EXT_X_STREAM_INF = "EXT-X-STREAM-INF";
+	/**
+	 * <p>序列号</p>
+	 * <p>如果没有数据加密IV使用序列号</p>
+	 */
+	private static final String LABEL_EXT_X_MEDIA_SEQUENCE = "EXT-X-MEDIA-SEQUENCE";
 	/**
 	 * <p>码率</p>
 	 */
@@ -89,12 +108,16 @@ public final class M3u8Builder {
 	/**
 	 * <p>标签</p>
 	 */
-	private final List<Tag> tags;
+	private final List<Label> labels;
 	
+	/**
+	 * @param source 原始链接地址
+	 * @param lines M3U8描述信息
+	 */
 	private M3u8Builder(String source, List<String> lines) {
 		this.source = source;
 		this.lines = lines;
-		this.tags = new ArrayList<>();
+		this.labels = new ArrayList<>();
 	}
 	
 	/**
@@ -142,8 +165,8 @@ public final class M3u8Builder {
 		if(CollectionUtils.isEmpty(this.lines)) {
 			throw new DownloadException("M3U8文件解析失败（没有描述信息）");
 		}
-		this.buildTags();
-		this.check();
+		this.buildLabels();
+		this.checkLabels();
 		return this.buildM3u8();
 	}
 	
@@ -156,10 +179,10 @@ public final class M3u8Builder {
 	 * 
 	 * @throws DownloadException 下载异常
 	 */
-	private void buildTags() throws DownloadException {
+	private void buildLabels() throws DownloadException {
 		int jndex;
 		String line;
-		Tag tag = null;
+		Label label = null;
 		// 解析标签
 		for (int index = 0; index < this.lines.size(); index++) {
 			line = this.lines.get(index).trim();
@@ -169,21 +192,23 @@ public final class M3u8Builder {
 			}
 			if(line.indexOf('#') == 0) {
 				// 标签
-				tag = new Tag();
-				this.tags.add(tag);
+				label = new Label();
+				this.labels.add(label);
 				jndex = line.indexOf(':');
 				if(jndex < 0) {
-					tag.setName(line.substring(1));
+					// 没有属性
+					label.setName(line.substring(1).trim());
 				} else {
-					tag.setName(line.substring(1, jndex).trim());
-					tag.setValue(line.substring(jndex + 1).trim());
+					// 含有属性
+					label.setName(line.substring(1, jndex).trim());
+					label.setValue(line.substring(jndex + 1).trim());
 				}
 			} else {
 				// URL
-				if(tag == null) {
+				if(label == null) {
 					throw new DownloadException("M3U8文件解析失败（URL格式错误）");
 				}
-				tag.setUrl(line);
+				label.setUrl(line);
 			}
 		}
 	}
@@ -193,13 +218,13 @@ public final class M3u8Builder {
 	 * 
 	 * @throws DownloadException 下载异常
 	 */
-	private void check() throws DownloadException {
-		if(this.tags.isEmpty()) {
+	private void checkLabels() throws DownloadException {
+		if(this.labels.isEmpty()) {
 			throw new DownloadException("M3U8格式错误（没有标签）");
 		}
 		// 验证类型
-		final String type = this.tags.get(0).getName();
-		if(!TAG_EXTM3U.equalsIgnoreCase(type)) {
+		final String type = this.labels.get(0).getName();
+		if(!LABEL_EXTM3U.equalsIgnoreCase(type)) {
 			throw new DownloadException("M3U8格式错误（头部错误）");
 		}
 	}
@@ -213,9 +238,9 @@ public final class M3u8Builder {
 	 */
 	private M3u8 buildM3u8() throws NetException {
 		// 判断是否是流媒体
-		final boolean stream = this.tags.stream().noneMatch(tag -> TAG_EXT_X_ENDLIST.equalsIgnoreCase(tag.getName()));
+		final boolean stream = this.labels.stream().noneMatch(label -> LABEL_EXT_X_ENDLIST.equalsIgnoreCase(label.getName()));
 		// 判断多级M3U8列表
-		final boolean multiM3u8 = this.tags.stream().anyMatch(tag -> TAG_EXT_X_STREAM_INF.equalsIgnoreCase(tag.getName()));
+		final boolean multiM3u8 = this.labels.stream().anyMatch(label -> LABEL_EXT_X_STREAM_INF.equalsIgnoreCase(label.getName()));
 		final M3u8.Type type = multiM3u8 ? Type.M3U8 : stream ? Type.STREAM : Type.FILE;
 		final Cipher cipher = this.buildCipher();
 		// 读取文件列表
@@ -236,8 +261,8 @@ public final class M3u8Builder {
 	 * @throws NetException 网络异常
 	 */
 	private Cipher buildCipher() throws NetException {
-		final var optional = this.tags.stream()
-			.filter(tag -> TAG_EXT_X_KEY.equalsIgnoreCase(tag.getName()))
+		final var optional = this.labels.stream()
+			.filter(label -> LABEL_EXT_X_KEY.equalsIgnoreCase(label.getName()))
 			.findFirst();
 		if(optional.isEmpty()) {
 			return null;
@@ -245,6 +270,7 @@ public final class M3u8Builder {
 		final String value = optional.get().getValue();
 		final var wrapper = KeyValueWrapper.newInstance(',', '=', value);
 		wrapper.decode();
+		// 加密算法
 		final String method = wrapper.getIgnoreCase("METHOD");
 		final M3u8.Protocol protocol = M3u8.Protocol.of(method);
 		LOGGER.debug("HLS加密算法：{}", method);
@@ -255,6 +281,8 @@ public final class M3u8Builder {
 			final String iv = wrapper.getIgnoreCase("IV");
 			final String uri = wrapper.getIgnoreCase("URI");
 			return this.buildCipherAes128(iv, uri);
+		} else {
+			LOGGER.info("HLS加密算法未实现：{}", protocol);
 		}
 		return null;
 	}
@@ -270,13 +298,27 @@ public final class M3u8Builder {
 	 * @throws NetException 网络异常
 	 */
 	private Cipher buildCipherAes128(String iv, String uri) throws NetException {
-		byte[] ivBytes;
 		final String requestUri = UrlUtils.redirect(this.source, uri);
 		final byte[] secret = HTTPClient.get(requestUri, BodyHandlers.ofByteArray()).body();
+		try {
+			return this.buildCipher(this.buildIv(iv), secret, "AES", "AES/CBC/NoPadding");
+		} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException e) {
+			throw new NetException("获取加密套件失败", e);
+		}
+	}
+	
+	/**
+	 * <p>创建IV</p>
+	 * <p>如果IV不存在使用序列号代替</p>
+	 * 
+	 * @param iv 原始IV
+	 * 
+	 * @return IV
+	 */
+	private byte[] buildIv(String iv) {
 		if(iv == null) {
-			// IV不存在时：使用序列化
-			final var optional = this.tags.stream()
-				.filter(tag -> TAG_EXT_X_MEDIA_SEQUENCE.equalsIgnoreCase(tag.getName()))
+			final var optional = this.labels.stream()
+				.filter(label -> LABEL_EXT_X_MEDIA_SEQUENCE.equalsIgnoreCase(label.getName()))
 				.findFirst();
 			if(optional.isEmpty()) {
 				LOGGER.error("HLS数据缺少序列号：{}", this.source);
@@ -285,27 +327,23 @@ public final class M3u8Builder {
 			final String sequence = optional.get().getValue();
 			final int length = sequence.length();
 			if(length > 32) {
-				LOGGER.error("HLS数据序列号错误：{}", sequence);
+				LOGGER.error("HLS数据序列号错误：{}-{}", this.source, sequence);
 				return null;
+			} else {
+				// 填充：0
+				final String padding = "0".repeat(32 - length);
+				return StringUtils.unhex(padding + sequence);
 			}
-			// 填充：0
-			final String padding = "0".repeat(32 - length);
-			ivBytes = StringUtils.unhex(padding + sequence);
 		} else {
 			if(iv.length() == 32) {
-				ivBytes = StringUtils.unhex(iv);
+				return StringUtils.unhex(iv);
 			} else if(iv.length() == 34) {
 				// 0x....
-				ivBytes = StringUtils.unhex(iv.substring(2));
+				return StringUtils.unhex(iv.substring(2));
 			} else {
 				LOGGER.error("HLS数据IV错误：{}-{}", this.source, iv);
 				return null;
 			}
-		}
-		try {
-			return this.buildCipher(ivBytes, secret, "AES", "AES/CBC/NoPadding");
-		} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException e) {
-			throw new NetException("获取加密套件失败", e);
 		}
 	}
 	
@@ -325,11 +363,9 @@ public final class M3u8Builder {
 	 * @throws InvalidAlgorithmParameterException 参数异常
 	 */
 	private Cipher buildCipher(byte[] iv, byte[] secret, String algorithm, String transformation) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
-		Cipher cipher = null;
 		final SecretKeySpec secretKeySpec = new SecretKeySpec(secret, algorithm);
 		final IvParameterSpec ivParameterSpec = new IvParameterSpec(iv);
-//		PKCS7Padding：最后一个字节填充大小
-		cipher = Cipher.getInstance(transformation);
+		final Cipher cipher = Cipher.getInstance(transformation);
 		cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
 		return cipher;
 	}
@@ -340,19 +376,19 @@ public final class M3u8Builder {
 	 * @return 多级M3U8链接
 	 */
 	private List<String> buildLinksM3u8() {
-		return this.tags.stream()
-			.filter(tag -> TAG_EXT_X_STREAM_INF.equalsIgnoreCase(tag.getName()))
+		return this.labels.stream()
+			.filter(label -> LABEL_EXT_X_STREAM_INF.equalsIgnoreCase(label.getName()))
 			.sorted((source, target) -> {
 				// 码率排序
-				final String sourceBandwidth = source.attrs().get(ATTR_BANDWIDTH);
-				final String targetBandwidth = target.attrs().get(ATTR_BANDWIDTH);
+				final String sourceBandwidth = source.attrs().getIgnoreCase(ATTR_BANDWIDTH);
+				final String targetBandwidth = target.attrs().getIgnoreCase(ATTR_BANDWIDTH);
 				if(sourceBandwidth == null || targetBandwidth == null) {
 					return 0;
 				} else {
 					return Integer.valueOf(sourceBandwidth).compareTo(Integer.valueOf(targetBandwidth));
 				}
 			})
-			.map(tag -> UrlUtils.redirect(this.source, tag.getUrl()))
+			.map(label -> UrlUtils.redirect(this.source, label.getUrl()))
 			.collect(Collectors.toList());
 	}
 	
@@ -362,16 +398,16 @@ public final class M3u8Builder {
 	 * @return 文件链接
 	 */
 	private List<String> buildLinksFile() {
-		return this.tags.stream()
-			.filter(tag -> TAG_EXTINF.equalsIgnoreCase(tag.getName()))
-			.map(tag -> UrlUtils.redirect(this.source, tag.getUrl()))
+		return this.labels.stream()
+			.filter(label -> LABEL_EXTINF.equalsIgnoreCase(label.getName()))
+			.map(label -> UrlUtils.redirect(this.source, label.getUrl()))
 			.collect(Collectors.toList());
 	}
 	
 	/**
 	 * <p>标签</p>
 	 */
-	public static final class Tag {
+	public static final class Label {
 		
 		/**
 		 * <p>标签名称</p>
@@ -385,6 +421,10 @@ public final class M3u8Builder {
 		 * <p>标签链接</p>
 		 */
 		private String url;
+		/**
+		 * <p>属性Key-Value包装器</p>
+		 */
+		private KeyValueWrapper wrapper;
 
 		/**
 		 * <p>获取标签名称</p>
@@ -439,42 +479,20 @@ public final class M3u8Builder {
 		public void setUrl(String url) {
 			this.url = url;
 		}
+
+		/**
+		 * <p>获取属性Key-Value包装器</p>
+		 * 
+		 * @return 属性Key-Value包装器
+		 */
+		public KeyValueWrapper attrs() {
+			if(this.wrapper == null) {
+				this.wrapper = KeyValueWrapper.newInstance(',', '=', this.value);
+				this.wrapper.decode();
+			}
+			return this.wrapper;
+		}
 		
-		/**
-		 * <p>获取标签值数组</p>
-		 * 
-		 * @return 标签值数组
-		 */
-		public String[] values() {
-			if(this.value == null) {
-				return new String[] {};
-			}
-			return this.value.split(",");
-		}
-
-		/**
-		 * <p>获取标签属性数组</p>
-		 * 
-		 * @return 标签属性数组
-		 */
-		public Map<String, String> attrs() {
-			final String[] values = this.values();
-			if(ArrayUtils.isEmpty(values)) {
-				return Map.of();
-			}
-			int index;
-			final Map<String, String> attrs = new HashMap<>(values.length);
-			for (String attr : values) {
-				index = attr.indexOf('=');
-				if(index < 0) {
-					attrs.put(attr, null);
-				} else {
-					attrs.put(attr.substring(0, index), attr.substring(index + 1));
-				}
-			}
-			return attrs;
-		}
-
 		@Override
 		public String toString() {
 			return ObjectUtils.toString(this);

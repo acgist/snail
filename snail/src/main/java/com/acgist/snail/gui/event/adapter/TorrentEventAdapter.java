@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.context.exception.DownloadException;
+import com.acgist.snail.context.exception.PacketSizeException;
 import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.GuiManager.Mode;
@@ -17,7 +19,6 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>GUI种子文件选择事件</p>
- * <p>不能抛出异常：抛出异常会导致创建任务不能正常的删除临时文件</p>
  * 
  * @author acgist
  */
@@ -87,7 +88,7 @@ public class TorrentEventAdapter extends GuiEventExtend {
 				.collect(Collectors.summingLong(TorrentFile::getLength));
 			taskSession.setSize(size);
 			taskSession.setDescription(files);
-		} catch (Exception e) {
+		} catch (DownloadException | PacketSizeException e) {
 			LOGGER.error("设置种子文件选择异常：{}", files, e);
 		}
 	}

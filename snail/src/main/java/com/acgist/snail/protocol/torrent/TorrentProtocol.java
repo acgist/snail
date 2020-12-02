@@ -1,5 +1,8 @@
 package com.acgist.snail.protocol.torrent;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.downloader.torrent.TorrentDownloader;
@@ -17,9 +20,10 @@ import com.acgist.snail.utils.FileUtils;
  * <p>BT协议</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class TorrentProtocol extends Protocol {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentProtocol.class);
 	
 	private static final TorrentProtocol INSTANCE = new TorrentProtocol();
 	
@@ -29,6 +33,8 @@ public final class TorrentProtocol extends Protocol {
 
 	/**
 	 * <p>种子文件操作类型</p>
+	 * 
+	 * @author acgist
 	 */
 	public enum TorrentHandle {
 		
@@ -119,8 +125,8 @@ public final class TorrentProtocol extends Protocol {
 	 * <p>注意：一定先检查BT任务是否已经存在（如果已经存在不能赋值：防止清除已下载任务）</p>
 	 */
 	@Override
-	protected void clean(boolean ok) {
-		super.clean(ok);
+	protected void release(boolean ok) {
+		super.release(ok);
 		if(!ok) {
 			// 清除种子信息
 			if(this.torrentSession != null) {
@@ -184,11 +190,18 @@ public final class TorrentProtocol extends Protocol {
 	 * @throws DownloadException 下载异常
 	 */
 	private void selectTorrentFiles() throws DownloadException {
-		final ITaskSession taskSession = TaskSession.newInstance(this.taskEntity);
-		GuiManager.getInstance().torrent(taskSession); // 不能抛出异常
-		if(taskSession.multifileSelected().isEmpty()) { // 没有选择下载文件
-			FileUtils.delete(this.taskEntity.getFile()); // 删除已经创建文件
-			throw new DownloadException("请选择下载文件");
+		ITaskSession taskSession = null;
+		try {
+			taskSession = TaskSession.newInstance(this.taskEntity);
+			GuiManager.getInstance().torrent(taskSession);
+		} catch (Exception e) {
+			LOGGER.error("选择文件异常", e);
+		} finally {
+			if(taskSession == null || taskSession.multifileSelected().isEmpty()) {
+				// 没有选择下载文件：删除已经创建文件
+				FileUtils.delete(this.taskEntity.getFile());
+				throw new DownloadException("请选择下载文件");
+			}
 		}
 	}
 	

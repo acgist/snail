@@ -21,7 +21,6 @@ import com.acgist.snail.utils.FileUtils;
  * <p>协议链接：https://tools.ietf.org/html/rfc8216</p>
  * 
  * @author acgist
- * @since 1.4.1
  */
 public final class HlsProtocol extends Protocol {
 
@@ -118,9 +117,12 @@ public final class HlsProtocol extends Protocol {
 	}
 	
 	@Override
-	protected void clean(boolean ok) {
-		HlsManager.getInstance().m3u8(this.taskEntity.getId(), this.m3u8);
-		super.clean(ok);
+	protected void release(boolean ok) {
+		if(ok) {
+			// 成功添加管理
+			HlsManager.getInstance().m3u8(this.taskEntity.getId(), this.m3u8);
+		}
+		super.release(ok);
 		this.m3u8 = null;
 	}
 

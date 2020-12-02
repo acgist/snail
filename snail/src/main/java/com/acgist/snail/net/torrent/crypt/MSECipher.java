@@ -33,6 +33,10 @@ public final class MSECipher {
 	private static final String ARC4_ALGO = "ARCFOUR";
 	/**
 	 * <p>加密算法：{@value}</p>
+	 * <p>NoPadding：没有填充</p>
+	 * <p>ZeroPadding：填充零</p>
+	 * <p>PKCS5Padding：块大小固定8的PKCS7Padding</p>
+	 * <p>PKCS7Padding：填充块大小对齐</p>
 	 */
 	private static final String ARC4_ALGO_TRANSFORMATION = ARC4_ALGO + "/ECB/NoPadding";
 

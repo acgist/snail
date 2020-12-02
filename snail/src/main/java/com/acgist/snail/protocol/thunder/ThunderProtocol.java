@@ -16,7 +16,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>迅雷协议</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class ThunderProtocol extends Protocol {
 	

@@ -20,7 +20,6 @@ import com.acgist.snail.utils.StringUtils;
  * TODO：blob:http://
  * 
  * @author acgist
- * @since 1.0.0
  */
 public abstract class Protocol {
 	
@@ -39,6 +38,8 @@ public abstract class Protocol {
 	
 	/**
 	 * <p>协议类型</p>
+	 * 
+	 * @author acgist
 	 */
 	public enum Type {
 
@@ -128,6 +129,13 @@ public abstract class Protocol {
 		 */
 		private final String defaultSuffix;
 		
+		/**
+		 * @param regexs 正则表达式
+		 * @param prefix 前缀
+		 * @param suffix 后缀
+		 * @param defaultPrefix 默认前缀
+		 * @param defaultSuffix 默认后缀
+		 */
 		private Type(String[] regexs, String[] prefix, String[] suffix, String defaultPrefix, String defaultSuffix) {
 			this.regexs = regexs;
 			this.prefix = prefix;
@@ -208,7 +216,7 @@ public abstract class Protocol {
 		 * 
 		 * @param url 链接
 		 * 
-		 * @return {@code true}-匹配；{@code false}-不匹配；
+		 * @return true-匹配；false-不匹配；
 		 */
 		public boolean verify(String url) {
 			for (String regex : this.regexs) {
@@ -239,7 +247,7 @@ public abstract class Protocol {
 		 * 
 		 * @param url 磁力链接
 		 * 
-		 * @return {@code true}-是；{@code false}-不是；
+		 * @return true-是；false-不是；
 		 */
 		public static final boolean verifyMagnet(String url) {
 			return StringUtils.regex(url, MAGNET_BASIC, true);
@@ -250,7 +258,7 @@ public abstract class Protocol {
 		 * 
 		 * @param url 磁力链接
 		 * 
-		 * @return {@code true}-是；{@code false}-不是；
+		 * @return true-是；false-不是；
 		 */
 		public static final boolean verifyMagnetHash32(String url) {
 			return StringUtils.regex(url, MAGNET_HASH_32, true);
@@ -261,7 +269,7 @@ public abstract class Protocol {
 		 * 
 		 * @param url 磁力链接
 		 * 
-		 * @return {@code true}-是；{@code false}-不是；
+		 * @return true-是；false-不是；
 		 */
 		public static final boolean verifyMagnetHash40(String url) {
 			return StringUtils.regex(url, MAGNET_HASH_40, true);
@@ -270,7 +278,7 @@ public abstract class Protocol {
 	}
 	
 	/**
-	 * <p>下载任务类型</p>
+	 * <p>协议类型</p>
 	 */
 	protected final Type type;
 	/**
@@ -282,6 +290,9 @@ public abstract class Protocol {
 	 */
 	protected TaskEntity taskEntity;
 	
+	/**
+	 * @param type 协议类型
+	 */
 	protected Protocol(Type type) {
 		this.type = type;
 	}
@@ -307,7 +318,7 @@ public abstract class Protocol {
 	 * 
 	 * @param url 下载链接
 	 * 
-	 * @return {@code true}-支持；{@code false}-不支持；
+	 * @return true-支持；false-不支持；
 	 */
 	public boolean verify(String url) {
 		if(this.type == null) {
@@ -342,7 +353,7 @@ public abstract class Protocol {
 	 * @throws DownloadException 下载异常
 	 */
 	public synchronized ITaskSession buildTaskSession(String url) throws DownloadException {
-		this.url = url;
+		this.url = url.trim();
 		boolean ok = true;
 		try {
 			this.buildTaskEntity();
@@ -354,7 +365,7 @@ public abstract class Protocol {
 			ok = false;
 			throw new DownloadException("下载失败", e);
 		} finally {
-			this.clean(ok);
+			this.release(ok);
 		}
 	}
 
@@ -496,11 +507,11 @@ public abstract class Protocol {
 	}
 	
 	/**
-	 * <p>清理数据</p>
+	 * <p>释放资源</p>
 	 * 
 	 * @param ok 创建状态：true-成功；false-失败；
 	 */
-	protected void clean(boolean ok) {
+	protected void release(boolean ok) {
 		this.url = null;
 		this.taskEntity = null;
 	}

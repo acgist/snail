@@ -20,7 +20,6 @@ import com.acgist.snail.utils.ThreadUtils;
  * <p>下载协议管理器</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class ProtocolManager {
 	
@@ -50,7 +49,7 @@ public final class ProtocolManager {
 	 * 
 	 * @param protocol 协议
 	 * 
-	 * @return {@link ProtocolManager}
+	 * @return ProtocolManager
 	 */
 	public ProtocolManager register(Protocol protocol) {
 		LOGGER.info("注册下载协议：{}", protocol.name());
@@ -97,7 +96,7 @@ public final class ProtocolManager {
 		if(protocol.isEmpty()) {
 			throw new DownloadException("不支持的下载链接：" + url);
 		}
-		return protocol.get().buildTaskSession(url.trim());
+		return protocol.get().buildTaskSession(url);
 	}
 
 	/**
@@ -105,7 +104,7 @@ public final class ProtocolManager {
 	 * 
 	 * @param url 下载链接
 	 * 
-	 * @return {@code true}-支持；{@code false}-不支持；
+	 * @return true-支持；false-不支持；
 	 */
 	public boolean support(String url) {
 		return this.protocol(url).isPresent();
@@ -118,13 +117,14 @@ public final class ProtocolManager {
 	 * 
 	 * @return 下载协议
 	 */
-	public Optional<Protocol> protocol(String url) {
+	public Optional<Protocol> protocol(final String url) {
 		if(StringUtils.isEmpty(url)) {
 			return Optional.empty();
 		}
+		final String verify = url.trim();
 		return this.protocols.stream()
 			.filter(protocol -> protocol.available())
-			.filter(protocol -> protocol.verify(url.trim()))
+			.filter(protocol -> protocol.verify(verify))
 			.findFirst();
 	}
 
