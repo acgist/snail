@@ -224,6 +224,7 @@ public final class FileUtils {
 		return FILE_TYPE_EXT.entrySet().stream()
 			.filter(entry -> entry.getValue().contains(extLower))
 			.map(Entry::getKey)
+//			.filter(Objects::nonNull) // 绝对有值
 			.findFirst()
 			.orElse(FileType.UNKNOWN);
 	}

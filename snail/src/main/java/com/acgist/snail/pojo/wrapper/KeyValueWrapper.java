@@ -195,6 +195,7 @@ public final class KeyValueWrapper {
 		return this.data.entrySet().stream()
 			.filter(entry -> StringUtils.equalsIgnoreCase(entry.getKey(), key))
 			.map(Entry::getValue)
+			.filter(Objects::nonNull) // 需要判断是否为空
 			.findFirst()
 			.orElse(null);
 	}

@@ -37,10 +37,10 @@ public class UrlUtilsTest extends BaseTest {
 	@Test
 	public void encode() throws UnsupportedEncodingException {
 		// 空格编码变成加号：加号解码变成空格
-		System.out.println(URLEncoder.encode("+ +", "UTF-8"));
-		System.out.println(URLDecoder.decode("%2B+%2B", "UTF-8"));
-		System.out.println(UrlUtils.encode("+ +"));
-		System.out.println(UrlUtils.decode("%2B%20%2B"));
+		this.log(URLEncoder.encode("+ +", "UTF-8"));
+		this.log(URLDecoder.decode("%2B+%2B", "UTF-8"));
+		this.log(UrlUtils.encode("+ +"));
+		this.log(UrlUtils.decode("%2B%20%2B"));
 	}
 	
 }
