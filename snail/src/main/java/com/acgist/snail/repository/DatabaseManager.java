@@ -22,7 +22,6 @@ import com.acgist.snail.utils.CollectionUtils;
  * <p>数据库管理器</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class DatabaseManager {
 
@@ -63,8 +62,8 @@ public final class DatabaseManager {
 	public List<ResultSetWrapper> select(String sql, Object ... parameters) {
 		ResultSet result = null;
 		PreparedStatement statement = null;
+		final Connection connection = this.connection();
 		try {
-			final Connection connection = this.connection();
 			statement = connection.prepareStatement(sql);
 			if(ArrayUtils.isNotEmpty(parameters)) {
 				for (int index = 0; index < parameters.length; index++) {
@@ -93,8 +92,8 @@ public final class DatabaseManager {
 	public boolean update(String sql, Object ... parameters) {
 		boolean ok = false;
 		PreparedStatement statement = null;
+		final Connection connection = this.connection();
 		try {
-			final Connection connection = this.connection();
 			statement = connection.prepareStatement(sql);
 			if(ArrayUtils.isNotEmpty(parameters)) {
 				for (int index = 0; index < parameters.length; index++) {
@@ -168,10 +167,8 @@ public final class DatabaseManager {
 	 * <p>获取连接</p>
 	 * 
 	 * @return 连接
-	 * 
-	 * @throws SQLException SQL异常
 	 */
-	private Connection connection() throws SQLException {
+	private Connection connection() {
 		if(this.connection != null) {
 			return this.connection;
 		}

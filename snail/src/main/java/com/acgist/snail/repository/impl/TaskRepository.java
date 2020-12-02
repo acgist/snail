@@ -12,7 +12,6 @@ import com.acgist.snail.utils.FileUtils;
  * <p>任务</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class TaskRepository extends Repository<TaskEntity> {
 	
