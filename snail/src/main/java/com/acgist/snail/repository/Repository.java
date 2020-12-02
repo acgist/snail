@@ -21,7 +21,6 @@ import com.acgist.snail.utils.CollectionUtils;
  * <p>数据库</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public abstract class Repository<T extends Entity> {
 
@@ -39,6 +38,9 @@ public abstract class Repository<T extends Entity> {
 		!Entity.PROPERTY_ID.equals(property) &&
 		!Entity.PROPERTY_CREATE_DATE.equals(property);
 	
+	/**
+	 * <p>数据库管理器</p>
+	 */
 	private final DatabaseManager databaseManager = DatabaseManager.getInstance();
 	
 	/**
@@ -51,6 +53,10 @@ public abstract class Repository<T extends Entity> {
 	 */
 	private final Class<T> entityClazz;
 	
+	/**
+	 * @param table 数据库表明
+	 * @param entityClazz 实体类型
+	 */
 	protected Repository(String table, Class<T> entityClazz) {
 		this.table = table;
 		this.entityClazz = entityClazz;
@@ -58,8 +64,7 @@ public abstract class Repository<T extends Entity> {
 	
 	/**
 	 * <p>合并</p>
-	 * <p>数据存在：更新</p>
-	 * <p>数据不存在：保存</p>
+	 * <p>数据存在更新，反之新建。</p>
 	 * 
 	 * @param t 实体
 	 */

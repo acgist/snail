@@ -7,7 +7,6 @@ import com.acgist.snail.repository.Repository;
  * <p>配置</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class ConfigRepository extends Repository<ConfigEntity> {
 
@@ -45,8 +44,7 @@ public final class ConfigRepository extends Repository<ConfigEntity> {
 	
 	/**
 	 * <p>合并配置</p>
-	 * <p>配置存在：更新</p>
-	 * <p>配置不存在：保存</p>
+	 * <p>配置存在更新，反之新建。</p>
 	 * 
 	 * @param name 配置名称
 	 * @param value 配置值
