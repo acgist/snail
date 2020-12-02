@@ -45,7 +45,7 @@ public final class SelectorManager {
 	private final Map<String, Selector> selector = new HashMap<>();
 
 	private SelectorManager(String name, Button download, TreeView<HBox> tree) {
-		final TreeItem<HBox> root = buildTreeItem(null, "", name, null);
+		final TreeItem<HBox> root = this.buildTreeItem(null, "", name, null);
 		root.setExpanded(true);
 		tree.setRoot(root);
 		this.root = root;
@@ -217,7 +217,9 @@ public final class SelectorManager {
 		final String prefix = this.selector.entrySet().stream()
 			.filter(entry -> entry.getValue().getCheckBox() == checkBox)
 			.map(entry -> entry.getKey())
-			.findFirst().get();
+//			.filter(Objects::nonNull) // 绝对有值
+			.findFirst()
+			.orElse("");
 		// 选择下级目录
 		this.selector.entrySet().stream()
 			.filter(entry -> entry.getKey().startsWith(prefix))

@@ -291,14 +291,12 @@ public class HeaderWrapper {
 		if(this.isEmpty()) {
 			return List.of();
 		}
-		final var optional = this.headers.entrySet().stream()
+		return this.headers.entrySet().stream()
 			.filter(entry -> StringUtils.equalsIgnoreCase(key, entry.getKey()))
 			.map(Entry::getValue)
-			.findFirst();
-		if(optional.isEmpty()) {
-			return List.of();
-		}
-		return optional.get();
+			.filter(Objects::nonNull) // 需要判断是否为空
+			.findFirst()
+			.orElse(List.of());
 	}
 	
 	/**
