@@ -7,7 +7,6 @@ import com.acgist.snail.gui.event.adapter.ExitEventAdapter;
  * <p>GUI退出窗口事件</p>
  * 
  * @author acgist
- * @since 1.4.0
  */
 public final class ExitEvent extends ExitEventAdapter {
 

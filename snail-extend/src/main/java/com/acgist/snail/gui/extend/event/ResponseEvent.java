@@ -10,7 +10,6 @@ import com.acgist.snail.gui.event.adapter.ResponseEventAdapter;
  * <p>GUI响应消息事件</p>
  * 
  * @author acgist
- * @since 1.4.0
  */
 public final class ResponseEvent extends ResponseEventAdapter {
 	

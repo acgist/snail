@@ -17,7 +17,6 @@ import com.acgist.snail.pojo.message.ApplicationMessage.Type;
  * <p>扩展GUI可以自行实现Socket连接和消息处理</p>
  * 
  * @author acgist
- * @since 1.4.0
  */
 public final class SocketApplication {
 
