@@ -114,7 +114,7 @@ public final class StatisticsController extends Controller implements Initializa
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		this.selectInfoHashs.setOnAction(this.selectEvent);
+		this.selectInfoHashs.setOnAction(this.selectInfoHashsEvent);
 	}
 	
 	/**
@@ -135,7 +135,7 @@ public final class StatisticsController extends Controller implements Initializa
 	@FXML
 	public void handleSystemAction(ActionEvent event) {
 		this.filter = Filter.SYSTEM;
-		this.system();
+		this.buildSelectSystemStatistics();
 	}
 	
 	/**
@@ -146,7 +146,7 @@ public final class StatisticsController extends Controller implements Initializa
 	@FXML
 	public void handlePeerAction(ActionEvent event) {
 		this.filter = Filter.PEER;
-		this.peer();
+		this.buildSelectPeerStatistics();
 	}
 	
 	/**
@@ -157,7 +157,7 @@ public final class StatisticsController extends Controller implements Initializa
 	@FXML
 	public void handleTrafficAction(ActionEvent event) {
 		this.filter = Filter.TRAFFIC;
-		this.traffic();
+		this.buildSelectTrafficStatistics();
 	}
 	
 	/**
@@ -168,22 +168,24 @@ public final class StatisticsController extends Controller implements Initializa
 	@FXML
 	public void handlePieceAction(ActionEvent event) {
 		this.filter = Filter.PIECE;
-		this.piece();
+		this.buildSelectPieceStatistics();
 	}
 	
 	/**
 	 * <p>统计信息</p>
 	 * 
-	 * @see #systemTraffic()
-	 * @see #dht()
-	 * @see #tracker()
-	 * @see #infoHash()
+	 * @see #buildSystemStatistics()
+	 * @see #buildDhtStatistics()
+	 * @see #buildTrackerStatistics()
+	 * @see #buildInfoHashStatistics()
+	 * @see #buildSelectStatistics()
 	 */
 	public void statistics() {
-		this.systemTraffic();
-		this.dht();
-		this.tracker();
-		this.infoHash();
+		this.buildSystemStatistics();
+		this.buildDhtStatistics();
+		this.buildTrackerStatistics();
+		this.buildInfoHashStatistics();
+		this.buildSelectStatistics();
 	}
 	
 	/**
@@ -194,9 +196,24 @@ public final class StatisticsController extends Controller implements Initializa
 	}
 
 	/**
-	 * <p>统计系统流量信息</p>
+	 * <p>创建统计信息</p>
 	 */
-	private void systemTraffic() {
+	private void buildSelectStatistics() {
+		if(this.filter == Filter.PEER) {
+			this.buildSelectPeerStatistics();
+		} else if(this.filter == Filter.TRAFFIC) {
+			this.buildSelectTrafficStatistics();
+		} else if(this.filter == Filter.PIECE) {
+			this.buildSelectPieceStatistics();
+		} else {
+			this.buildSelectSystemStatistics();
+		}
+	}
+	
+	/**
+	 * <p>系统统计信息</p>
+	 */
+	private void buildSystemStatistics() {
 		final var statistics = SystemStatistics.getInstance().statistics();
 		// 累计上传
 		this.upload.setText(FileUtils.formatSize(statistics.uploadSize()));
@@ -205,9 +222,9 @@ public final class StatisticsController extends Controller implements Initializa
 	}
 	
 	/**
-	 * <p>统计DHT信息</p>
+	 * <p>DHT统计信息</p>
 	 */
-	private void dht() {
+	private void buildDhtStatistics() {
 		final List<NodeSession> nodes = NodeManager.getInstance().nodes();
 		final Map<NodeSession.Status, Long> nodeGroup = nodes.stream()
 			.collect(Collectors.groupingBy(NodeSession::getStatus, Collectors.counting()));
@@ -218,9 +235,9 @@ public final class StatisticsController extends Controller implements Initializa
 	}
 	
 	/**
-	 * <p>统计Tracker信息</p>
+	 * <p>Tracker统计信息</p>
 	 */
-	private void tracker() {
+	private void buildTrackerStatistics() {
 		final List<TrackerClient> clients = TrackerManager.getInstance().clients();
 		final Map<Boolean, Long> clientGroup = clients.stream()
 			.collect(Collectors.groupingBy(TrackerClient::available, Collectors.counting()));
@@ -230,9 +247,9 @@ public final class StatisticsController extends Controller implements Initializa
 	}
 	
 	/**
-	 * <p>BT任务选择</p>
+	 * <p>InfoHash统计信息</p>
 	 */
-	private void infoHash() {
+	private void buildInfoHashStatistics() {
 		final var defaultValue = this.selectInfoHashs.getValue();
 		final ObservableList<SelectInfoHash> obs = FXCollections.observableArrayList();
 		TorrentManager.getInstance().allTorrentSession().stream()
@@ -250,19 +267,19 @@ public final class StatisticsController extends Controller implements Initializa
 	}
 
 	/**
-	 * <p>系统信息</p>
+	 * <p>选择系统统计信息</p>
 	 */
-	public void system() {
+	private void buildSelectSystemStatistics() {
 		final VBox systemInfo = new VBox(
-			this.buildSystemInfo("本机IP", NetUtils.localHostAddress()),
-			this.buildSystemInfo("外网IP", SystemConfig.getExternalIpAddress()),
-			this.buildSystemInfo("外网端口", SystemConfig.getTorrentPortExt()),
-			this.buildSystemInfo("内网穿透", NatContext.getInstance().type()),
-			this.buildSystemInfo("软件版本", SystemConfig.getVersion()),
-			this.buildSystemInfo("系统名称", System.getProperty("os.name")),
-			this.buildSystemInfo("系统版本", System.getProperty("os.version")),
-			this.buildSystemInfo("Java版本", System.getProperty("java.version")),
-			this.buildSystemInfo("虚拟机名称", System.getProperty("java.vm.name"))
+			this.buildSystemText("本机IP", NetUtils.localHostAddress()),
+			this.buildSystemText("外网IP", SystemConfig.getExternalIpAddress()),
+			this.buildSystemText("外网端口", SystemConfig.getTorrentPortExt()),
+			this.buildSystemText("内网穿透", NatContext.getInstance().type()),
+			this.buildSystemText("软件版本", SystemConfig.getVersion()),
+			this.buildSystemText("系统名称", System.getProperty("os.name")),
+			this.buildSystemText("系统版本", System.getProperty("os.version")),
+			this.buildSystemText("Java版本", System.getProperty("java.version")),
+			this.buildSystemText("虚拟机名称", System.getProperty("java.vm.name"))
 		);
 		systemInfo.getStyleClass().add("system-info");
 		this.statisticsBox.getChildren().clear();
@@ -270,14 +287,14 @@ public final class StatisticsController extends Controller implements Initializa
 	}
 	
 	/**
-	 * <p>创建系统信息节点</p>
+	 * <p>创建系统统计节点</p>
 	 * 
 	 * @param name 名称
 	 * @param info 信息
 	 * 
 	 * @return 节点
 	 */
-	private TextFlow buildSystemInfo(String name, Object info) {
+	private TextFlow buildSystemText(String name, Object info) {
 		final Label label = new Label(name);
 		Text text;
 		if(info == null) {
@@ -289,9 +306,9 @@ public final class StatisticsController extends Controller implements Initializa
 	}
 	
 	/**
-	 * <p>Peer统计</p>
+	 * <p>选择Peer统计信息</p>
 	 */
-	private void peer() {
+	private void buildSelectPeerStatistics() {
 		final String infoHashHex = this.selectInfoHashHex();
 		if(infoHashHex == null) {
 			return;
@@ -377,9 +394,9 @@ public final class StatisticsController extends Controller implements Initializa
 	}
 	
 	/**
-	 * <p>流量统计</p>
+	 * <p>选择流量统计信息</p>
 	 */
-	private void traffic() {
+	private void buildSelectTrafficStatistics() {
 		final String infoHashHex = this.selectInfoHashHex();
 		if(infoHashHex == null) {
 			return;
@@ -458,9 +475,9 @@ public final class StatisticsController extends Controller implements Initializa
 	}
 	
 	/**
-	 * <p>下载统计</p>
+	 * <p>选择下载统计信息</p>
 	 */
-	private void piece() {
+	private void buildSelectPieceStatistics() {
 		final String infoHashHex = this.selectInfoHashHex();
 		if(infoHashHex == null) {
 			return;
@@ -470,7 +487,7 @@ public final class StatisticsController extends Controller implements Initializa
 		final var torrent = torrentSession.torrent();
 		if(torrent == null) { // 磁力链接为空
 			this.filter = Filter.PEER;
-			this.peer();
+			this.buildSelectPeerStatistics();
 			Alerts.info("提示消息", "磁力链接不能查看下载统计");
 			return;
 		}
@@ -504,16 +521,8 @@ public final class StatisticsController extends Controller implements Initializa
 	/**
 	 * <p>选择BT任务事件</p>
 	 */
-	private EventHandler<ActionEvent> selectEvent = event -> {
-		if(this.filter == Filter.PEER) {
-			this.peer();
-		} else if(this.filter == Filter.TRAFFIC) {
-			this.traffic();
-		} else if(this.filter == Filter.PIECE) {
-			this.piece();
-		} else {
-			this.system();
-		}
+	private EventHandler<ActionEvent> selectInfoHashsEvent = event -> {
+		this.buildSelectStatistics();
 	};
 	
 	/**
