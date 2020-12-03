@@ -1,4 +1,4 @@
-package com.acgist.snail.gui.javafx.main;
+package com.acgist.snail.gui.javafx.window.main;
 
 import com.acgist.snail.gui.javafx.Fonts;
 import com.acgist.snail.gui.javafx.Tooltips;

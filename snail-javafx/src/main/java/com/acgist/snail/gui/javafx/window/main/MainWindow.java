@@ -1,12 +1,12 @@
-package com.acgist.snail.gui.javafx.main;
+package com.acgist.snail.gui.javafx.window.main;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.gui.javafx.Desktops;
 import com.acgist.snail.gui.javafx.Window;
-import com.acgist.snail.gui.javafx.statistics.StatisticsWindow;
-import com.acgist.snail.gui.utils.DesktopUtils;
+import com.acgist.snail.gui.javafx.window.statistics.StatisticsWindow;
 
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -58,7 +58,7 @@ public final class MainWindow extends Window<MainController> {
 	private void help() {
 		this.stage.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
 			if(event.getCode() == KeyCode.F1) {
-				DesktopUtils.browse(SystemConfig.getSupport());
+				Desktops.browse(SystemConfig.getSupport());
 			}
 		});
 	}

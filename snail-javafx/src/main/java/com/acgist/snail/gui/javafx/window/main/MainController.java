@@ -1,4 +1,4 @@
-package com.acgist.snail.gui.javafx.main;
+package com.acgist.snail.gui.javafx.window.main;
 
 import java.io.File;
 import java.net.URL;
@@ -15,13 +15,13 @@ import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.javafx.Alerts;
 import com.acgist.snail.gui.javafx.Controller;
+import com.acgist.snail.gui.javafx.Desktops;
 import com.acgist.snail.gui.javafx.Fonts.SnailIcon;
-import com.acgist.snail.gui.javafx.about.AboutWindow;
-import com.acgist.snail.gui.javafx.build.BuildWindow;
 import com.acgist.snail.gui.javafx.menu.TaskMenu;
-import com.acgist.snail.gui.javafx.setting.SettingWindow;
-import com.acgist.snail.gui.javafx.torrent.TorrentWindow;
-import com.acgist.snail.gui.utils.DesktopUtils;
+import com.acgist.snail.gui.javafx.window.about.AboutWindow;
+import com.acgist.snail.gui.javafx.window.build.BuildWindow;
+import com.acgist.snail.gui.javafx.window.setting.SettingWindow;
+import com.acgist.snail.gui.javafx.window.torrent.TorrentWindow;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.ITaskSession.Status;
 import com.acgist.snail.protocol.Protocol.Type;
@@ -400,7 +400,7 @@ public final class MainController extends Controller implements Initializable {
 					TorrentWindow.getInstance().show(session);
 				} else { // 其他：打开下载文件
 					// TODO：文件可能存在病毒
-					DesktopUtils.open(new File(session.getFile()));
+					Desktops.open(new File(session.getFile()));
 				}
 			} else if(session.inThreadPool()) { // 处于下载线程：暂停下载
 				DownloaderManager.getInstance().pause(session);

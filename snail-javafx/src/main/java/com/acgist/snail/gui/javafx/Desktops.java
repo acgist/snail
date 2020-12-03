@@ -1,4 +1,4 @@
-package com.acgist.snail.gui.utils;
+package com.acgist.snail.gui.javafx;
 
 import java.awt.Desktop;
 import java.awt.Desktop.Action;
@@ -24,14 +24,14 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  * @since 1.0.0
  */
-public final class DesktopUtils {
+public final class Desktops {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(DesktopUtils.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Desktops.class);
 	
 	/**
 	 * <p>工具类禁止实例化</p>
 	 */
-	private DesktopUtils() {
+	private Desktops() {
 	}
 	
 	/**

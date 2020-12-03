@@ -1,7 +1,7 @@
 package com.acgist.snail.gui.javafx.event;
 
 import com.acgist.snail.gui.event.adapter.TorrentEventAdapter;
-import com.acgist.snail.gui.javafx.torrent.TorrentWindow;
+import com.acgist.snail.gui.javafx.window.torrent.TorrentWindow;
 import com.acgist.snail.pojo.ITaskSession;
 
 import javafx.application.Platform;

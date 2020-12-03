@@ -1,4 +1,4 @@
-package com.acgist.snail.gui.javafx.statistics;
+package com.acgist.snail.gui.javafx.window.statistics;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

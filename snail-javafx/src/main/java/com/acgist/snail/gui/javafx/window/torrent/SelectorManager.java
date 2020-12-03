@@ -1,4 +1,4 @@
-package com.acgist.snail.gui.javafx.torrent;
+package com.acgist.snail.gui.javafx.window.torrent;
 
 import java.util.ArrayList;
 import java.util.HashMap;

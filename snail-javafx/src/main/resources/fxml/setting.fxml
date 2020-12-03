@@ -8,7 +8,7 @@
 <FlowPane
 	fx:id="root"
 	styleClass="root,setting" stylesheets="@/style/fxml.css"
-	fx:controller="com.acgist.snail.gui.javafx.setting.SettingController"
+	fx:controller="com.acgist.snail.gui.javafx.window.setting.SettingController"
 	xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
 	
 	<ScrollPane fx:id="scrollPane" vbarPolicy="AS_NEEDED" hbarPolicy="NEVER">

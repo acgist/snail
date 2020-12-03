@@ -2,7 +2,7 @@ package com.acgist.snail.gui.javafx.event;
 
 import com.acgist.snail.gui.event.GuiEvent;
 import com.acgist.snail.gui.event.adapter.RefreshTaskListEventAdapter;
-import com.acgist.snail.gui.javafx.main.TaskDisplay;
+import com.acgist.snail.gui.javafx.window.main.TaskDisplay;
 
 /**
  * <p>GUI刷新任务列表事件</p>

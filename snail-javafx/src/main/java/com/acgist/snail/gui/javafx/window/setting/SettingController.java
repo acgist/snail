@@ -1,4 +1,4 @@
-package com.acgist.snail.gui.javafx.setting;
+package com.acgist.snail.gui.javafx.window.setting;
 
 import java.io.File;
 import java.net.URL;
@@ -8,8 +8,8 @@ import com.acgist.snail.config.DownloadConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.gui.javafx.Choosers;
 import com.acgist.snail.gui.javafx.Controller;
+import com.acgist.snail.gui.javafx.Desktops;
 import com.acgist.snail.gui.javafx.Tooltips;
-import com.acgist.snail.gui.utils.DesktopUtils;
 
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
@@ -128,7 +128,7 @@ public final class SettingController extends Controller implements Initializable
 	 */
 	private EventHandler<MouseEvent> pathClickedAction = event -> {
 		final File file = new File(DownloadConfig.getPath());
-		DesktopUtils.open(file);
+		Desktops.open(file);
 	};
 
 	/**

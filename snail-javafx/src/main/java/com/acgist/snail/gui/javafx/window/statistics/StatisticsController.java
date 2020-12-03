@@ -1,4 +1,4 @@
-package com.acgist.snail.gui.javafx.statistics;
+package com.acgist.snail.gui.javafx.window.statistics;
 
 import java.net.URL;
 import java.util.ArrayList;

@@ -19,12 +19,12 @@ import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.SystemContext;
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.javafx.Controller;
+import com.acgist.snail.gui.javafx.Desktops;
 import com.acgist.snail.gui.javafx.Fonts.SnailIcon;
 import com.acgist.snail.gui.javafx.Menu;
 import com.acgist.snail.gui.javafx.Window;
-import com.acgist.snail.gui.javafx.about.AboutWindow;
-import com.acgist.snail.gui.javafx.main.MainWindow;
-import com.acgist.snail.gui.utils.DesktopUtils;
+import com.acgist.snail.gui.javafx.window.about.AboutWindow;
+import com.acgist.snail.gui.javafx.window.main.MainWindow;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -286,14 +286,14 @@ public final class TrayMenu extends Menu {
 	 * <p>官网与源码</p>
 	 */
 	private EventHandler<ActionEvent> sourceAction = event -> {
-		DesktopUtils.browse(SystemConfig.getSource());
+		Desktops.browse(SystemConfig.getSource());
 	};
 	
 	/**
 	 * <p>问题与建议</p>
 	 */
 	private EventHandler<ActionEvent> supportAction = event -> {
-		DesktopUtils.browse(SystemConfig.getSupport());
+		Desktops.browse(SystemConfig.getSupport());
 	};
 	
 	/**

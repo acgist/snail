@@ -8,7 +8,7 @@
 <FlowPane
 	fx:id="root"
 	styleClass="root,build" stylesheets="@/style/fxml.css"
-	fx:controller="com.acgist.snail.gui.javafx.build.BuildController"
+	fx:controller="com.acgist.snail.gui.javafx.window.build.BuildController"
 	xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
 
 	<VBox>
