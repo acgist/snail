@@ -22,7 +22,6 @@ import javafx.scene.text.Text;
  * <p>关于窗口控制器</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class AboutController extends Controller implements Initializable {
 	

@@ -12,7 +12,6 @@ import javafx.scene.text.Font;
  * <p>字体工具</p>
  * 
  * @author acgist
- * @since 1.3.0
  */
 public final class Fonts {
 

@@ -15,7 +15,6 @@ import javafx.application.Platform;
  * <p>GUI创建窗口事件</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public final class BuildEvent extends BuildEventAdapter {
 	

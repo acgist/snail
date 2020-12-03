@@ -22,7 +22,6 @@ import com.acgist.snail.utils.StringUtils;
  * </pre>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class Desktops {
 
@@ -42,7 +41,7 @@ public final class Desktops {
 	 */
 	public static final void open(final File file) {
 		if(
-			file.exists() &&
+			file != null && file.exists() &&
 			support(Action.OPEN)
 		) {
 			SwingUtilities.invokeLater(() -> {

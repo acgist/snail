@@ -10,7 +10,6 @@ import javafx.application.Platform;
  * <p>GUI显示窗口事件</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public final class ShowEvent extends ShowEventAdapter {
 

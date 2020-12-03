@@ -10,7 +10,6 @@ import javafx.application.Platform;
  * <p>GUI种子文件选择事件</p>
  * 
  * @author acgist
- * @since 1.1.1
  */
 public final class TorrentEvent extends TorrentEventAdapter {
 

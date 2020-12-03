@@ -1,4 +1,4 @@
-package com.acgist.snail.gui.javafx.theme;
+package com.acgist.snail.gui.javafx;
 
 import javafx.scene.paint.Color;
 
@@ -6,7 +6,6 @@ import javafx.scene.paint.Color;
  * <p>系统主题</p>
  * 
  * @author acgist
- * @since 1.4.0
  */
 public interface ITheme {
 	

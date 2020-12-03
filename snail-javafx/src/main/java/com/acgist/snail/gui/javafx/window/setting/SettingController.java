@@ -29,7 +29,6 @@ import javafx.util.StringConverter;
  * <p>设置窗口控制器</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class SettingController extends Controller implements Initializable {
 	
@@ -155,9 +154,11 @@ public final class SettingController extends Controller implements Initializable
 	 */
 	private ChangeListener<? super Number> bufferListener = (obs, oldVal, newVal) -> {
 		int value = newVal.intValue();
-		if(value < SystemConfig.MIN_BUFFER_KB) { // 最小下载速度
+		if(value < SystemConfig.MIN_BUFFER_KB) {
+			// 最小下载速度
 			value = SystemConfig.MIN_BUFFER_KB;
-		} else if(value > STEP_WIDTH) { // 超过滑块大小时设置为滑块大小的整数倍
+		} else if(value > STEP_WIDTH) {
+			// 超过滑块大小时设置为滑块大小的整数倍
 			value = value / STEP_WIDTH * STEP_WIDTH;
 		}
 		this.buffer.setValue(value);

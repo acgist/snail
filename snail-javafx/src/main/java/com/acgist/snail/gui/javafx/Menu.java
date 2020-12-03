@@ -10,7 +10,6 @@ import javafx.scene.control.SeparatorMenuItem;
  * <p>菜单</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public abstract class Menu extends ContextMenu {
 
@@ -38,7 +37,7 @@ public abstract class Menu extends ContextMenu {
 	 * @return 菜单
 	 */
 	protected MenuItem buildMenuItem(String value) {
-		return buildMenuItem(value, null);
+		return this.buildMenuItem(value, null);
 	}
 	
 	/**

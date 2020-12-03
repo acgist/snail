@@ -14,7 +14,6 @@ import javafx.stage.Window;
  * <p>打开选择框时默认设置为上次选择目录，选择后会修改上次选择目录为当前选择目录。</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class Choosers {
 
@@ -30,7 +29,7 @@ public final class Choosers {
 	 * @param window 当前窗体：模态
 	 * @param title 标题
 	 * @param description 过滤器描述
-	 * @param filters 过滤器类型（文件类型后缀）：{@code *.torrent}
+	 * @param filters 过滤器类型（文件类型后缀）：*.torrent
 	 * 
 	 * @return 选择文件
 	 */
@@ -40,8 +39,9 @@ public final class Choosers {
 		lastPath(chooser); // 设置上次选择目录
 		chooser.getExtensionFilters().add(new ExtensionFilter(description, filters));
 		final File file = chooser.showOpenDialog(window);
-		if (file != null) { // 更新上次选择目录
-			DownloadConfig.setLastPath(file.getParent());
+		if (file != null) {
+			// 更新上次选择目录
+			DownloadConfig.setLastPath(file.getParentFile().getAbsolutePath());
 		}
 		return file;
 	}
@@ -59,7 +59,8 @@ public final class Choosers {
 		chooser.setTitle(title);
 		lastPath(chooser); // 设置上次选择目录
 		final File file = chooser.showDialog(window);
-		if (file != null) { // 更新上次选择目录
+		if (file != null) {
+			// 更新上次选择目录
 			DownloadConfig.setLastPath(file.getAbsolutePath());
 		}
 		return file;

@@ -42,7 +42,7 @@ import com.acgist.snail.utils.StringUtils;
  * 		<td>结尾</td>
  * 	</tr>
  * </table>
- * <p>所有类型除了{@link Long}，其他均为{@code byte[]}，需要自己进行类型转换。</p>
+ * <p>所有类型除了Long，其他均为byte[]，需要自己进行类型转换。</p>
  * <p>使用以下方法进行解析：{@link #nextType()}、{@link #nextMap()}、{@link #nextList()}</p>
  * 
  * @author acgist

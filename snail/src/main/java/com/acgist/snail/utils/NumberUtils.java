@@ -43,7 +43,7 @@ public final class NumberUtils {
 	/**
 	 * <p>生成唯一编号</p>
 	 * <p>长度：8</p>
-	 * <p>格式：{@link #index} + {@code HHmm}</p>
+	 * <p>格式：{@link #index} + HHmm</p>
 	 * 
 	 * @return 编号
 	 */

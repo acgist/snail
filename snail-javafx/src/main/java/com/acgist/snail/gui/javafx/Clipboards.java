@@ -7,7 +7,6 @@ import javafx.scene.input.ClipboardContent;
  * <p>剪切板工具</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class Clipboards {
 

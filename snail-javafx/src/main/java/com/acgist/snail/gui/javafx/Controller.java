@@ -9,7 +9,6 @@ import javafx.scene.input.Dragboard;
  * <p>窗口控制器</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public abstract class Controller {
 

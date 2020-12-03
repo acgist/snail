@@ -33,7 +33,6 @@ import javafx.scene.layout.VBox;
  * <p>编辑任务窗口控制器</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class TorrentController extends Controller implements Initializable {
 	
@@ -75,7 +74,7 @@ public final class TorrentController extends Controller implements Initializable
 	 * 
 	 * @param taskSession 任务信息
 	 */
-	public void tree(ITaskSession taskSession) {
+	public void buildTree(ITaskSession taskSession) {
 		Torrent torrent = null;
 		this.taskSession = taskSession;
 		final TreeView<HBox> tree = buildTree();

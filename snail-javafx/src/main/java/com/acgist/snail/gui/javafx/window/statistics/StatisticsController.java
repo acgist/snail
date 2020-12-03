@@ -52,7 +52,6 @@ import javafx.scene.text.TextFlow;
  * <p>统计窗口控制器</p>
  * 
  * @author acgist
- * @since 1.2.0
  */
 public final class StatisticsController extends Controller implements Initializable {
 	
@@ -69,6 +68,8 @@ public final class StatisticsController extends Controller implements Initializa
 	
 	/**
 	 * <p>统计信息筛选</p>
+	 * 
+	 * @author acgist
 	 */
 	public enum Filter {
 		
@@ -517,6 +518,8 @@ public final class StatisticsController extends Controller implements Initializa
 	
 	/**
 	 * <p>下载任务</p>
+	 * 
+	 * @author acgist
 	 */
 	protected static final class SelectInfoHash {
 
@@ -529,15 +532,29 @@ public final class StatisticsController extends Controller implements Initializa
 		 */
 		private final String name;
 
+		/**
+		 * @param hash 任务Hash
+		 * @param name 任务名称
+		 */
 		public SelectInfoHash(String hash, String name) {
 			this.hash = hash;
 			this.name = name;
 		}
 
+		/**
+		 * <p>获取任务Hash</p>
+		 * 
+		 * @return 任务Hash
+		 */
 		public String getHash() {
 			return hash;
 		}
 
+		/**
+		 * <p>获取任务名称</p>
+		 * 
+		 * @return 任务名称
+		 */
 		public String getName() {
 			return name;
 		}
@@ -553,6 +570,7 @@ public final class StatisticsController extends Controller implements Initializa
 				return true;
 			}
 			if(object instanceof SelectInfoHash) {
+				// TODO：新版强转写法
 				final SelectInfoHash selectInfoHash = (SelectInfoHash) object;
 				return StringUtils.equals(this.hash, selectInfoHash.hash);
 			}
@@ -560,8 +578,7 @@ public final class StatisticsController extends Controller implements Initializa
 		}
 		
 		/**
-		 * <p>重写toString设置下拉框显示名称</p>
-		 * <p>或者使用{@code this.selectInfoHashs.converterProperty().set}来设置</p>
+		 * <p>重写toString设置下拉框显示名称或者使用{@code this.selectInfoHashs.converterProperty().set}来设置</p>
 		 */
 		@Override
 		public String toString() {

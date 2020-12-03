@@ -27,7 +27,6 @@ import javafx.scene.layout.FlowPane;
  * <p>新建窗口控制器</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class BuildController extends Controller implements Initializable {
 	
@@ -119,7 +118,7 @@ public final class BuildController extends Controller implements Initializable {
 	 */
 	private EventHandler<DragEvent> dragOverAction = event -> {
 		if (event.getGestureSource() != this.root) {
-			final String url = dragboard(event);
+			final String url = this.dragboard(event);
 			if(ProtocolManager.getInstance().support(url)) {
 				event.acceptTransferModes(TransferMode.COPY);
 			} else {
@@ -133,7 +132,7 @@ public final class BuildController extends Controller implements Initializable {
 	 * <p>拖入文件事件（加载）</p>
 	 */
 	private EventHandler<DragEvent> dragDroppedAction = event -> {
-		final String url = dragboard(event);
+		final String url = this.dragboard(event);
 		if(StringUtils.isNotEmpty(url)) {
 			setUrl(url);
 		}

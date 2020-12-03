@@ -26,7 +26,6 @@ import javafx.scene.text.Text;
  * <p>BT文件选择器</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class SelectorManager {
 
@@ -44,6 +43,11 @@ public final class SelectorManager {
 	 */
 	private final Map<String, Selector> selector = new HashMap<>();
 
+	/**
+	 * @param name 任务名称
+	 * @param download 下载按钮
+	 * @param tree 树形菜单
+	 */
 	private SelectorManager(String name, Button download, TreeView<HBox> tree) {
 		final TreeItem<HBox> root = this.buildTreeItem(null, "", name, null);
 		root.setExpanded(true);
@@ -59,7 +63,7 @@ public final class SelectorManager {
 	 * @param download 下载按钮
 	 * @param tree 树形菜单
 	 * 
-	 * @return {@link SelectorManager}
+	 * @return SelectorManager
 	 */
 	public static final SelectorManager newInstance(String name, Button download, TreeView<HBox> tree) {
 		return new SelectorManager(name, download, tree);
@@ -80,16 +84,17 @@ public final class SelectorManager {
 			final StringBuilder parentPath = new StringBuilder("");
 			final String[] paths = path.split(TorrentFile.SEPARATOR);
 			// 创建路径菜单
-			for (int index = 0; index < paths.length - 1; index++) { // 数量大时forEach效率很低
+			for (int index = 0; index < paths.length - 1; index++) {
+				// 数量大时forEach效率很低
 				final String value = paths[index];
 				parentPath.append(value).append(TorrentFile.SEPARATOR);
-				treeItem = buildTreeItem(parent, parentPath.toString(), value, null);
+				treeItem = this.buildTreeItem(parent, parentPath.toString(), value, null);
 				parent = treeItem;
 			}
 			name = paths[paths.length - 1];
 		}
 		// 创建文件菜单
-		buildTreeItem(parent, path, name, size);
+		this.buildTreeItem(parent, path, name, size);
 	}
 	
 	/**
@@ -117,7 +122,8 @@ public final class SelectorManager {
 		}
 		final TreeItem<HBox> treeItem = new TreeItem<>(box);
 		this.selector.put(path, new Selector(path, size, checkBox, treeItem));
-		if(parent != null) { // 根节点没有上级节点
+		if(parent != null) {
+			// 根节点没有上级节点
 			parent.getChildren().add(treeItem);
 		}
 		return treeItem;
@@ -156,11 +162,13 @@ public final class SelectorManager {
 	 */
 	public void select(ITaskSession taskSession) {
 		final var list = taskSession.multifileSelected();
-		if(CollectionUtils.isNotEmpty(list)) { // 已选择文件
+		if(CollectionUtils.isNotEmpty(list)) {
+			// 已选择文件
 			this.selector.entrySet().stream()
 				.filter(entry -> list.contains(entry.getKey()))
 				.forEach(entry -> entry.getValue().setSelected(true));
-		} else { // 未选择文件：自动选择
+		} else {
+			// 未选择文件：自动选择
 			// 计算平均值
 			final var avgSize = this.selector.values().stream()
 				.collect(Collectors.averagingLong(Selector::getSize));
@@ -172,8 +180,8 @@ public final class SelectorManager {
 				})
 				.forEach(entry -> entry.getValue().setSelected(true));
 		}
-		selectParentFolder();
-		buttonSize();
+		this.selectParentFolder();
+		this.buttonSize();
 	}
 	
 	/**
@@ -203,7 +211,7 @@ public final class SelectorManager {
 	 * <p>设置按钮文本</p>
 	 */
 	private void buttonSize() {
-		this.download.setText("下载（" + FileUtils.formatSize(size()) + "）");
+		this.download.setText("下载（" + FileUtils.formatSize(this.size()) + "）");
 	}
 	
 	/**
@@ -224,12 +232,14 @@ public final class SelectorManager {
 		this.selector.entrySet().stream()
 			.filter(entry -> entry.getKey().startsWith(prefix))
 			.forEach(entry -> entry.getValue().setSelected(selected));
-		selectParentFolder();
-		buttonSize();
+		this.selectParentFolder();
+		this.buttonSize();
 	};
 	
 	/**
 	 * <p>选择文件</p>
+	 * 
+	 * @author acgist
 	 */
 	protected static final class Selector {
 		
@@ -244,7 +254,7 @@ public final class SelectorManager {
 		private final long size;
 		/**
 		 * <p>是否是文件</p>
-		 * <p>{@code true}-文件；{@code false}-目录；</p>
+		 * <p>true-文件；false-目录；</p>
 		 */
 		private final boolean file;
 		/**
@@ -256,6 +266,12 @@ public final class SelectorManager {
 		 */
 		private final TreeItem<HBox> treeItem;
 		
+		/**
+		 * @param path 文件路径
+		 * @param size 文件大小
+		 * @param checkBox 选择框
+		 * @param treeItem 文件菜单节点
+		 */
 		public Selector(String path, Long size, CheckBox checkBox, TreeItem<HBox> treeItem) {
 			this.path = path;
 			this.size = (size == null || size == 0L) ? 0 : size;
@@ -267,7 +283,7 @@ public final class SelectorManager {
 		/**
 		 * <p>判断是否被选中</p>
 		 * 
-		 * @return {@code true}-选中；{@code false}-没有选中；
+		 * @return true-选中；false-没有选中；
 		 */
 		public boolean isSelected() {
 			return this.checkBox.isSelected();
@@ -276,28 +292,53 @@ public final class SelectorManager {
 		/**
 		 * <p>设置是否被选中</p>
 		 * 
-		 * @param selected {@code true}-选中；{@code false}-没有选中；
+		 * @param selected true-选中；false-没有选中；
 		 */
 		public void setSelected(boolean selected) {
 			this.checkBox.setSelected(selected);
 		}
 		
+		/**
+		 * <p>获取文件路径</p>
+		 * 
+		 * @return 文件路径
+		 */
 		public String getPath() {
 			return path;
 		}
 		
+		/**
+		 * <p>获取文件大小</p>
+		 * 
+		 * @return 文件大小
+		 */
 		public long getSize() {
 			return size;
 		}
 		
+		/**
+		 * <p>判断是否是文件</p>
+		 * 
+		 * @return 是否是文件
+		 */
 		public boolean isFile() {
 			return file;
 		}
 		
+		/**
+		 * <p>获取选择框</p>
+		 * 
+		 * @return 选择框
+		 */
 		public CheckBox getCheckBox() {
 			return checkBox;
 		}
 		
+		/**
+		 * <p>获取文件菜单节点</p>
+		 * 
+		 * @return 文件菜单节点
+		 */
 		public TreeItem<HBox> getTreeItem() {
 			return treeItem;
 		}

@@ -11,7 +11,6 @@ import com.acgist.snail.gui.javafx.JavaFXGuiManager;
  * <p>Snail启动类</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class Application {
 
