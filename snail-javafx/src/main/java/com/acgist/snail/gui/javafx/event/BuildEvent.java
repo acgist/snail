@@ -18,7 +18,7 @@ import javafx.application.Platform;
  */
 public final class BuildEvent extends BuildEventAdapter {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(BuildEventAdapter.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(BuildEvent.class);
 
 	private static final BuildEvent INSTANCE = new BuildEvent();
 	

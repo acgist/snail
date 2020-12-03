@@ -40,8 +40,12 @@ public final class Desktops {
 	 * @param file 文件
 	 */
 	public static final void open(final File file) {
+		if(file == null) {
+			LOGGER.debug("文件打开失败：{}", file);
+			return;
+		}
 		if(
-			file != null && file.exists() &&
+			file.exists() &&
 			support(Action.OPEN)
 		) {
 			SwingUtilities.invokeLater(() -> {

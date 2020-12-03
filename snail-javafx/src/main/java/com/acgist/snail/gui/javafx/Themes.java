@@ -12,6 +12,7 @@ import javafx.scene.paint.Color;
 
 /**
  * <p>主题工具</p>
+ * <p>可以使用JNA调用系统接口获取</p>
  * 
  * @author acgist
  */
@@ -58,7 +59,7 @@ public final class Themes {
 		final String colorHex = SYSTEM_THEME_COLOR.toString();
 		final StringBuilder themeStyle = new StringBuilder();
 		// 设置主题颜色
-		themeStyle.append("-fx-snail-main-color:#").append(colorHex.toString().substring(2, colorHex.length() - 2)).append(";");
+		themeStyle.append("-fx-snail-main-color:#").append(colorHex.substring(2, colorHex.length() - 2)).append(";");
 		SYSTEM_THEME_STYLE = themeStyle.toString();
 	}
 	

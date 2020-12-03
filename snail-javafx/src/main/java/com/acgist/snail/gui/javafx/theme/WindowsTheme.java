@@ -2,7 +2,6 @@ package com.acgist.snail.gui.javafx.theme;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,11 +52,9 @@ public final class WindowsTheme implements ITheme {
 		String line;
 		String color = null;
 		Process process = null;
-		OutputStream output = null;
 		BufferedReader reader = null;
 		try {
 			process = Runtime.getRuntime().exec(THEME_COLOR_COMMAND);
-			output = process.getOutputStream();
 			reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 			while ((line = reader.readLine()) != null) {
 				line = line.trim();
@@ -71,7 +68,6 @@ public final class WindowsTheme implements ITheme {
 		} catch (Exception e) {
 			LOGGER.error("获取Windows主题颜色异常", e);
 		} finally {
-			IoUtils.close(output);
 			IoUtils.close(reader);
 			if(process != null) {
 				process.destroy();
