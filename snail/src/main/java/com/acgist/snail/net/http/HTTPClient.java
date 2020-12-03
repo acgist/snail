@@ -34,7 +34,7 @@ import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
-import com.acgist.snail.utils.CollectionUtils;
+import com.acgist.snail.utils.MapUtils;
 import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.UrlUtils;
 
@@ -362,7 +362,7 @@ public final class HTTPClient {
 	 * @return 表单提交器
 	 */
 	private BodyPublisher newFormBodyPublisher(Map<String, String> data) {
-		if(CollectionUtils.isEmpty(data)) {
+		if(MapUtils.isEmpty(data)) {
 			return BodyPublishers.noBody();
 		}
 		final String body = data.entrySet().stream()

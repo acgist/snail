@@ -6,7 +6,6 @@ package com.acgist.snail.utils;
  * @param <T> 数据泛型
  * 
  * @author acgist
- * @since 1.2.0
  */
 public final class ModifyOptional<T> {
 
@@ -18,6 +17,9 @@ public final class ModifyOptional<T> {
 	private ModifyOptional() {
 	}
 	
+	/**
+	 * @param t 数据
+	 */
 	private ModifyOptional(T t) {
 		this.t = t;
 	}
@@ -67,7 +69,7 @@ public final class ModifyOptional<T> {
 	/**
 	 * <p>判断数据是否为空</p>
 	 * 
-	 * @return {@code true}-空；{@code false}-非空；
+	 * @return true-空；false-非空；
 	 */
 	public boolean isEmpty() {
 		return this.t == null;
@@ -76,7 +78,7 @@ public final class ModifyOptional<T> {
 	/**
 	 * <p>判断数据是否非空</p>
 	 * 
-	 * @return {@code true}-非空；{@code false}-空；
+	 * @return true-非空；false-空；
 	 */
 	public boolean isPresent() {
 		return !this.isEmpty();

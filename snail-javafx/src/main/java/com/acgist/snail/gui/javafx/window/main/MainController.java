@@ -25,9 +25,9 @@ import com.acgist.snail.gui.javafx.window.torrent.TorrentWindow;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.ITaskSession.Status;
 import com.acgist.snail.protocol.Protocol.Type;
-import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
+import com.acgist.snail.protocol.ProtocolManager;
 
 import javafx.application.Platform;
 import javafx.beans.binding.DoubleBinding;

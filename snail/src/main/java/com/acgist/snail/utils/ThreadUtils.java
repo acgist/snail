@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
  * <p>线程工具</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class ThreadUtils {
 

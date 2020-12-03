@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
  * <p>数字工具</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class NumberUtils {
 
@@ -43,8 +42,8 @@ public final class NumberUtils {
 	
 	/**
 	 * <p>生成唯一编号</p>
-	 * <p>长度：{@code 8}</p>
-	 * <p>格式：{@link #index} + {@code mmss}</p>
+	 * <p>长度：8</p>
+	 * <p>格式：{@link #index} + {@code HHmm}</p>
 	 * 
 	 * @return 编号
 	 */
@@ -208,22 +207,6 @@ public final class NumberUtils {
 	 */
 	public static final int ceilMult(int dividend, int divisor) {
 		return ceilDiv(dividend, divisor) * divisor;
-	}
-	
-	/**
-	 * <p>统计数字位上是{@code 1}的个数</p>
-	 * 
-	 * @param number 数字
-	 * 
-	 * @return 个数
-	 */
-	public static final byte bitCount(int number) {
-		byte count = 0;
-		while (number != 0) {
-			number = number & (number - 1);
-			count++;
-		}
-		return count;
 	}
 	
 	/**

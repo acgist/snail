@@ -1,13 +1,11 @@
 package com.acgist.snail.utils;
 
 import java.util.Collection;
-import java.util.Map;
 
 /**
- * <p>集合、Map工具</p>
+ * <p>集合工具</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class CollectionUtils {
 
@@ -22,7 +20,7 @@ public final class CollectionUtils {
 	 * 
 	 * @param list 集合
 	 * 
-	 * @return {@code true}-空；{@code false}-非空；
+	 * @return true-空；false-非空；
 	 */
 	public static final boolean isEmpty(Collection<?> list) {
 		return list == null || list.isEmpty();
@@ -33,32 +31,10 @@ public final class CollectionUtils {
 	 * 
 	 * @param list 集合
 	 * 
-	 * @return {@code true}-非空；{@code false}-空；
+	 * @return true-非空；false-空；
 	 */
 	public static final boolean isNotEmpty(Collection<?> list) {
 		return !isEmpty(list);
-	}
-
-	/**
-	 * <p>{@code Map}是否为空</p>
-	 * 
-	 * @param map {@code Map}
-	 * 
-	 * @return {@code true}-空；{@code false}-非空；
-	 */
-	public static final boolean isEmpty(Map<?, ?> map) {
-		return map == null || map.isEmpty();
-	}
-
-	/**
-	 * <p>{@code Map}是否非空</p>
-	 * 
-	 * @param map {@code Map}
-	 * 
-	 * @return {@code true}-非空；{@code false}-空；
-	 */
-	public static final boolean isNotEmpty(Map<?, ?> map) {
-		return !isEmpty(map);
 	}
 
 }

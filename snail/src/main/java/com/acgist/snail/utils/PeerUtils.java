@@ -10,7 +10,6 @@ import com.acgist.snail.config.SystemConfig;
  * <p>Peer工具</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class PeerUtils {
 	
@@ -94,10 +93,10 @@ public final class PeerUtils {
 	}
 	
 	/**
-	 * <p>HTTP传输编码（PeerId、InfoHash）</p>
+	 * <p>HTTP传输编码（PeerId、InfoHashHex）</p>
 	 * <p>全部编码：忽略不用编码字符</p>
 	 * 
-	 * @param hex PeerId、InfoHash
+	 * @param hex PeerId、InfoHashHex
 	 * 
 	 * @return HTTP传输编码结果
 	 */

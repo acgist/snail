@@ -21,7 +21,7 @@ import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.pojo.bean.InfoHash;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.utils.CollectionUtils;
+import com.acgist.snail.utils.MapUtils;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -299,7 +299,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 		}
 		// 支持的扩展协议：扩展协议名称=扩展协议标识
 		final Map<String, Object> supportTypes = decoder.getMap(EX_M);
-		if(CollectionUtils.isNotEmpty(supportTypes)) {
+		if(MapUtils.isNotEmpty(supportTypes)) {
 			supportTypes.entrySet().forEach(entry -> {
 				final Long typeId = (Long) entry.getValue();
 				final String typeValue = entry.getKey();

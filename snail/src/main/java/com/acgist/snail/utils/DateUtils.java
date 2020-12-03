@@ -9,7 +9,6 @@ import java.util.Date;
  * <p>时间工具</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class DateUtils {
 
@@ -29,12 +28,14 @@ public final class DateUtils {
 	private static final int UNIX_JAVA_TIMESTAMP_SCALE = 1000;
 	/**
 	 * <p>Windows系统时间和Java系统时间相差毫秒数：{@value}</p>
-	 * <p>Java时间戳转Windows时间戳：{@value} + {@code System.currentTimeMillis()}</p>
+	 * <p>Java时间戳转Windows时间戳：{@value} + System.currentTimeMillis()</p>
 	 */
 	private static final long WINDOWS_JAVA_DIFF_TIMEMILLIS = 11644473600000L;
 	/**
 	 * <p>Windows开始时间（北京时间）</p>
 	 * <p>开始时间：（1601年1月1日）北京时间（东八区）</p>
+	 * 
+	 * TODO：通过时区优化
 	 */
 	private static final LocalDateTime WINDOWS_BEIJIN_BEGIN_TIME = LocalDateTime.of(1601, 01, 01, 8, 00, 00);
 	/**
@@ -110,13 +111,16 @@ public final class DateUtils {
 	 * <p>时间格式化</p>
 	 * 
 	 * @param date 时间
-	 * @param pattern 格式
+	 * @param pattern 格式，为空默认：{@value #DEFAULT_PATTERN}
 	 * 
 	 * @return 格式化字符串
 	 */
 	public static final String dateToString(Date date, String pattern) {
 		if(date == null) {
 			return null;
+		}
+		if(pattern == null) {
+			pattern = DEFAULT_PATTERN;
 		}
 		final SimpleDateFormat formater = new SimpleDateFormat(pattern);
 		return formater.format(date);

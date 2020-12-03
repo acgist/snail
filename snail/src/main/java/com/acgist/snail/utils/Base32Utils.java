@@ -4,7 +4,6 @@ package com.acgist.snail.utils;
  * <p>Base32编码工具</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class Base32Utils {
 
@@ -40,7 +39,7 @@ public final class Base32Utils {
 	}
 	
 	/**
-	 * <p>编码</p>
+	 * <p>数据编码</p>
 	 * 
 	 * @param bytes 原始数据
 	 * 
@@ -75,7 +74,7 @@ public final class Base32Utils {
 	}
 
 	/**
-	 * <p>解码</p>
+	 * <p>数据解码</p>
 	 * 
 	 * @param content 编码后字符串
 	 * 

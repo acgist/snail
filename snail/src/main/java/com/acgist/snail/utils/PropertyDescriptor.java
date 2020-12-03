@@ -8,12 +8,12 @@ import java.lang.reflect.Modifier;
  * <p>属性操作</p>
  * 
  * @author acgist
- * @since 1.4.0
  */
 public final class PropertyDescriptor {
 
 	/**
 	 * <p>方法前缀：{@value}</p>
+	 * <p>boolean值使用这个前缀作为get方法</p>
 	 */
 	private static final String PREFIX_IS = "is";
 	/**
@@ -34,6 +34,10 @@ public final class PropertyDescriptor {
 	 */
 	private final Class<?> clazz;
 	
+	/**
+	 * @param property 属性
+	 * @param clazz 类型
+	 */
 	public PropertyDescriptor(String property, Class<?> clazz) {
 		this.property = property;
 		this.clazz = clazz;
@@ -42,8 +46,8 @@ public final class PropertyDescriptor {
 	/**
 	 * <p>忽略属性</p>
 	 * <dl>
-	 * 	<dd>静态：{@code static}</dd>
-	 * 	<dd>瞬时：{@code transient}</dd>
+	 * 	<dd>静态：static</dd>
+	 * 	<dd>瞬时：transient</dd>
 	 * </dl>
 	 * 
 	 * @param field 属性
@@ -104,16 +108,14 @@ public final class PropertyDescriptor {
 	 */
 	public Class<?> getPropertyType() {
 		Class<?> clazz = this.clazz;
-		while(true) {
-			if(clazz == null) {
-				break;
-			}
+		while(clazz != null) {
 			final Field[] fields = clazz.getDeclaredFields();
 			for (Field field : fields) {
 				if(!ignoreProperty(field) && field.getName().equals(this.property)) {
 					return field.getType();
 				}
 			}
+			// 获取父类属性
 			clazz = clazz.getSuperclass();
 		}
 		throw new IllegalArgumentException(this.notFoundProperty());

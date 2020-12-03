@@ -21,7 +21,6 @@ import com.acgist.snail.pojo.wrapper.ResultSetWrapper;
  * <p>Bean工具</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class BeanUtils {
 
@@ -44,9 +43,7 @@ public final class BeanUtils {
 	 * @return 实例
 	 */
 	public static final <T> T newInstance(final Class<T> clazz) {
-		if(clazz == null) {
-			return null;
-		}
+		Objects.requireNonNull(clazz);
 		try {
 			return clazz.getDeclaredConstructor().newInstance();
 		} catch (Exception e) {
@@ -56,7 +53,7 @@ public final class BeanUtils {
 	}
 	
 	/**
-	 * <p>获取实例属性{@code Map}</p>
+	 * <p>获取实例属性Map</p>
 	 * 
 	 * <table border="1">
 	 * 	<caption>属性类型转换</caption>
@@ -80,9 +77,9 @@ public final class BeanUtils {
 	 * 
 	 * @param instance 实例
 	 * 
-	 * @return 属性{@code Map}
+	 * @return 属性Map
 	 */
-	public static final Map<String, Object> toMap(Object instance) {
+	public static final Map<String, Object> toMap(final Object instance) {
 		Objects.requireNonNull(instance);
 		final Map<String, Object> map = new HashMap<>();
 		final String[] properties = properties(instance.getClass());
@@ -91,7 +88,8 @@ public final class BeanUtils {
 			if(object instanceof Enum<?>) {
 				map.put(property, ((Enum<?>) object).name());
 			} else if(object instanceof Date) {
-				// TODO：使用JDK最新写法，使用DateUtils工具替换
+				// TODO：强转使用JDK最新写法
+				// TODO：使用DateUtil工具替换
 				final SimpleDateFormat formater = new SimpleDateFormat(DateUtils.DEFAULT_PATTERN);
 				map.put(property, formater.format(object));
 			} else {
@@ -108,11 +106,12 @@ public final class BeanUtils {
 	 * 
 	 * @return 所有属性名称
 	 */
-	public static final String[] properties(Class<?> clazz) {
+	public static final String[] properties(final Class<?> clazz) {
 		Objects.requireNonNull(clazz);
 		String[] properties = null;
 		final Class<?> superClazz = clazz.getSuperclass(); // 父类
-		if(superClazz != null) { // 递归获取属性
+		if(superClazz != null) {
+			// 递归获取属性
 			properties = properties(superClazz);
 		} else {
 			properties = new String[0];
@@ -128,14 +127,16 @@ public final class BeanUtils {
 	}
 	
 	/**
-	 * <p>获取实例指定属性名称的属性值</p>
+	 * <p>获取实例对象指定属性名称的属性值</p>
 	 * 
 	 * @param instance 实例
 	 * @param properties 属性名称
 	 * 
 	 * @return 属性值
 	 */
-	public static final Object[] propertiesValue(Object instance, String[] properties) {
+	public static final Object[] propertiesValue(final Object instance, final String[] properties) {
+		Objects.requireNonNull(instance);
+		Objects.requireNonNull(properties);
 		return Stream
 			.of(properties)
 			.map(property -> propertyValue(instance, property))
@@ -150,7 +151,7 @@ public final class BeanUtils {
 	 * 
 	 * @return 属性值
 	 */
-	public static final Object propertyValue(Object instance, String property) {
+	public static final Object propertyValue(final Object instance, final String property) {
 		Objects.requireNonNull(instance);
 		Objects.requireNonNull(property);
 		final Class<?> clazz = instance.getClass();
@@ -197,7 +198,8 @@ public final class BeanUtils {
 		if(object == null) {
 			return null;
 		}
-		if(object instanceof Enum<?>) { // 枚举类型
+		if(object instanceof Enum<?>) {
+			// 枚举类型
 			final Enum<?> value = (Enum<?>) object;
 			return value.name();
 		}
@@ -217,12 +219,11 @@ public final class BeanUtils {
 		if(clazz == null || value == null) {
 			return null;
 		}
-		// 枚举类型
 		if(clazz.isEnum()) {
+			// 枚举类型
 			return unpackEnum(clazz, value);
-		}
-		// 长字符串
-		if(value instanceof JdbcClob) {
+		} else if(value instanceof JdbcClob) {
+			// 长字符串
 			return unpackJdbcClob(clazz, value);
 		}
 		return value;
@@ -247,7 +248,7 @@ public final class BeanUtils {
 	}
 	
 	/**
-	 * <p>{@code JdbcClob}拆包</p>
+	 * <p>JdbcClob拆包</p>
 	 * 
 	 * @param clazz 类型
 	 * @param value 打包数据

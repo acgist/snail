@@ -9,7 +9,6 @@ import ch.qos.logback.classic.LoggerContext;
  * <p>日志工具</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class LoggerUtils {
 	

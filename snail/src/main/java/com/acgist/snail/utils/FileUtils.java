@@ -21,14 +21,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.SystemConfig;
-import com.acgist.snail.context.recycle.RecycleManager;
 import com.acgist.snail.pojo.ITaskSession.FileType;
 
 /**
  * <p>文件工具</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class FileUtils {
 
@@ -139,25 +137,6 @@ public final class FileUtils {
 	}
 	
 	/**
-	 * <p>使用回收站删除文件</p>
-	 * 
-	 * @param filePath 文件路径
-	 * 
-	 * @return {@code true}-成功；{@code false}-失败；
-	 */
-	public static final boolean recycle(final String filePath) {
-		if(StringUtils.isEmpty(filePath)) {
-			LOGGER.warn("回收文件为空：{}", filePath);
-			return false;
-		}
-		final var recycle = RecycleManager.newInstance(filePath);
-		if(recycle == null) { // 不支持回收站
-			return false;
-		}
-		return recycle.delete();
-	}
-	
-	/**
 	 * <p>从URL中获取文件名称</p>
 	 * <p>过滤：协议、域名、路径、参数</p>
 	 * 
@@ -220,6 +199,7 @@ public final class FileUtils {
 		if(ext == null) {
 			return FileType.UNKNOWN;
 		}
+		// 小写
 		final String extLower = ext.toLowerCase();
 		return FILE_TYPE_EXT.entrySet().stream()
 			.filter(entry -> entry.getValue().contains(extLower))
@@ -348,7 +328,7 @@ public final class FileUtils {
 	
 	/**
 	 * <p>获取文件大小</p>
-	 * <p>如果{@code path}是目录，递归统计目录中所有文件大小。</p>
+	 * <p>如果文件是目录，递归统计目录中所有文件大小。</p>
 	 * 
 	 * @param path 文件路径
 	 * 
@@ -378,8 +358,8 @@ public final class FileUtils {
 	/**
 	 * <p>创建目录</p>
 	 * 
-	 * @param path 文件路径
-	 * @param isFile {@code path}是否是文件：{@code true}-文件；{@code false}-目录；
+	 * @param path 文件路径或目录路径
+	 * @param isFile 路径是否是文件：true-文件；false-目录；
 	 * 
 	 * @see #buildFolder(File, boolean)
 	 */
@@ -390,11 +370,11 @@ public final class FileUtils {
 	
 	/**
 	 * <p>创建目录</p>
-	 * <p>如果{@code file}是文件：创建上级目录</p>
-	 * <p>如果{@code file}是目录：创建目录</p>
+	 * <p>如果路径是文件：创建上级目录</p>
+	 * <p>如果路径是目录：创建目录</p>
 	 * 
-	 * @param file 文件
-	 * @param isFile {@code opt}是否是文件：{@code true}-文件；{@code false}-目录；
+	 * @param file 文件路径或目录路径
+	 * @param isFile 路径是否是文件：true-文件；false-目录；
 	 */
 	public static final void buildFolder(File file, boolean isFile) {
 		if(file == null || file.exists()) {
@@ -436,7 +416,7 @@ public final class FileUtils {
 	
 	/**
 	 * <p>文件散列计算</p>
-	 * <p>如果{@code path}是目录，递归计算目录中的所有文件散列值。</p>
+	 * <p>如果路径是目录，递归计算目录中的所有文件散列值。</p>
 	 * 
 	 * @param path 文件路径
 	 * @param algo 算法名称
@@ -448,7 +428,7 @@ public final class FileUtils {
 		Objects.requireNonNull(algo);
 		final File file = new File(path);
 		if(!file.exists()) {
-			return null;
+			return Map.of();
 		}
 		final Map<String, String> data = new HashMap<>();
 		if (file.isDirectory()) {

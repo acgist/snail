@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
  * <p>获取地址方法：{@link InetAddress#getHostAddress()}、{@link InetSocketAddress#getHostString()}、<del>{@link InetSocketAddress#getHostName()}</del></p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class NetUtils {
 
@@ -143,9 +142,9 @@ public final class NetUtils {
 	/**
 	 * <p>端口编码</p>
 	 * 
-	 * @param port {@code int}端口
+	 * @param port 端口（int）
 	 * 
-	 * @return {@code short}端口
+	 * @return 端口（short）
 	 */
 	public static final short encodePort(int port) {
 		return (short) port;
@@ -154,9 +153,9 @@ public final class NetUtils {
 	/**
 	 * <p>端口解码</p>
 	 * 
-	 * @param port {@code short}端口
+	 * @param port 端口（short）
 	 * 
-	 * @return {@code int}端口
+	 * @return 端口（int）
 	 */
 	public static final int decodePort(short port) {
 		return Short.toUnsignedInt(port);
@@ -167,7 +166,7 @@ public final class NetUtils {
 	 * 
 	 * @param ip IP地址（字符串）
 	 * 
-	 * @return IP地址（{@code int}）
+	 * @return IP地址（int）
 	 */
 	public static final int encodeIpToInt(String ip) {
 		return (int) encodeIpToLong(ip);
@@ -178,7 +177,7 @@ public final class NetUtils {
 	 * 
 	 * @param ip IP地址（字符串）
 	 * 
-	 * @return IP地址（{@code long}）
+	 * @return IP地址（long）
 	 */
 	public static final long encodeIpToLong(String ip) {
 		Objects.requireNonNull(ip, "IP地址不能为空");
@@ -198,7 +197,7 @@ public final class NetUtils {
 	/**
 	 * <p>IP地址解码</p>
 	 * 
-	 * @param value IP地址（{@code int}）
+	 * @param value IP地址（int）
 	 * 
 	 * @return IP地址（字符串）
 	 */
@@ -209,7 +208,7 @@ public final class NetUtils {
 	/**
 	 * <p>IP地址解码</p>
 	 * 
-	 * @param value IP地址（{@code long}）
+	 * @param value IP地址（long）
 	 * 
 	 * @return IP地址（字符串）
 	 */
@@ -279,7 +278,7 @@ public final class NetUtils {
 	 * 
 	 * @param host IP地址
 	 * 
-	 * @return {@code true}-是；{@code false}-不是；
+	 * @return true-是；false-不是；
 	 * 
 	 * TODO：IPv6
 	 */
@@ -292,7 +291,7 @@ public final class NetUtils {
 	 * 
 	 * @param host IP地址
 	 * 
-	 * @return {@code true}-是；{@code false}-不是；
+	 * @return true-是；false-不是；
 	 * 
 	 * TODO：IPv6
 	 */
@@ -307,23 +306,23 @@ public final class NetUtils {
 	}
 	
 	/**
-	 * <p>创建{@code Socket}地址</p>
+	 * <p>创建Socket地址</p>
 	 * 
 	 * @param port 端口
 	 * 
-	 * @return {@code Socket}地址
+	 * @return Socket地址
 	 */
 	public static final InetSocketAddress buildSocketAddress(final int port) {
 		return buildSocketAddress(null, port);
 	}
 	
 	/**
-	 * <p>创建{@code Socket}地址</p>
+	 * <p>创建Socket地址</p>
 	 * 
 	 * @param host 地址
 	 * @param port 端口
 	 * 
-	 * @return {@code Socket}地址
+	 * @return Socket地址
 	 */
 	public static final InetSocketAddress buildSocketAddress(final String host, final int port) {
 		if(StringUtils.isEmpty(host)) {

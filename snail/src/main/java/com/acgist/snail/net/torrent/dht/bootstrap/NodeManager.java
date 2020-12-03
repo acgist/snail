@@ -16,7 +16,7 @@ import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.net.torrent.dht.DhtClient;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.utils.ArrayUtils;
-import com.acgist.snail.utils.CollectionUtils;
+import com.acgist.snail.utils.MapUtils;
 import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -141,7 +141,7 @@ public final class NodeManager {
 	 */
 	public void register() {
 		final var nodes = DhtConfig.getInstance().nodes();
-		if(CollectionUtils.isNotEmpty(nodes)) {
+		if(MapUtils.isNotEmpty(nodes)) {
 			nodes.forEach((nodeId, address) -> {
 				LOGGER.debug("注册默认节点：{}-{}", nodeId, address);
 				final int index = address.lastIndexOf(':');
