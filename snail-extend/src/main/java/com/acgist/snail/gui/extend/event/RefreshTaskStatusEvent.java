@@ -7,7 +7,6 @@ import com.acgist.snail.gui.event.adapter.RefreshTaskStatusEventAdapter;
  * <p>GUI刷新任务状态事件</p>
  * 
  * @author acgist
- * @since 1.4.0
  */
 public final class RefreshTaskStatusEvent extends RefreshTaskStatusEventAdapter {
 

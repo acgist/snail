@@ -4,7 +4,6 @@
  * <p>官网地址：https://gitee.com/acgist/snail</p>
  * 
  * @author acgist
- * @since 1.4.0
  */
 open module com.acgist.snail.extend {
 

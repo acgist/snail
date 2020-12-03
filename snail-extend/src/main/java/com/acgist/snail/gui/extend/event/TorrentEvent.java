@@ -6,7 +6,6 @@ import com.acgist.snail.gui.event.adapter.TorrentEventAdapter;
  * <p>GUI种子文件选择事件</p>
  * 
  * @author acgist
- * @since 1.4.0
  */
 public final class TorrentEvent extends TorrentEventAdapter {
 

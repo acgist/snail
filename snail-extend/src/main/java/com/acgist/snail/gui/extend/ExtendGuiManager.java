@@ -16,7 +16,6 @@ import com.acgist.snail.gui.extend.event.TorrentEvent;
  * <p>扩展GUI管理器</p>
  * 
  * @author acgist
- * @since 1.4.0
  */
 public final class ExtendGuiManager {
 

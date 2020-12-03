@@ -10,7 +10,6 @@ import com.acgist.snail.gui.event.adapter.RefreshTaskListEventAdapter;
  * <p>GUI刷新任务列表事件</p>
  * 
  * @author acgist
- * @since 1.4.0
  */
 public final class RefreshTaskListEvent extends RefreshTaskListEventAdapter {
 
