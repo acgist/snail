@@ -18,24 +18,6 @@ public final class ObjectUtils {
 	}
 	
 	/**
-	 * <p>判断对象是否相等（判断引用）</p>
-	 * 
-	 * @param source 原始对象：this
-	 * @param target 比较对象
-	 * 
-	 * @return true-相等；false-不等；
-	 */
-	public static final boolean equals(Object source, Object target) {
-		if(source == null) {
-			return target == null;
-		} else if(source == target) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	/**
 	 * <p>计算hashCode</p>
 	 * 
 	 * @param values 属性值

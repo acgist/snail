@@ -217,7 +217,7 @@ public class DhtRequest extends DhtMessage {
 	
 	@Override
 	public boolean equals(Object object) {
-		if(ObjectUtils.equals(this, object)) {
+		if(this == object) {
 			return true;
 		}
 		// TODO：使用最新instanceof写法

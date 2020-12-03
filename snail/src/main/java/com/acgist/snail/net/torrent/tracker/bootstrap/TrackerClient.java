@@ -270,7 +270,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if(ObjectUtils.equals(this, object)) {
+		if(this == object) {
 			return true;
 		}
 		if(object instanceof TrackerClient) {

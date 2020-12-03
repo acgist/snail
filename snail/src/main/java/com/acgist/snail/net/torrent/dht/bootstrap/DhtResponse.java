@@ -242,7 +242,7 @@ public class DhtResponse extends DhtMessage {
 	
 	@Override
 	public boolean equals(Object object) {
-		if(ObjectUtils.equals(this, object)) {
+		if(this == object) {
 			return true;
 		}
 		if(object instanceof DhtResponse) {
