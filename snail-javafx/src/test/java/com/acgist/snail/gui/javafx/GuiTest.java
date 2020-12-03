@@ -1,9 +1,8 @@
-package com.acgist.snail.javafx;
+package com.acgist.snail.gui.javafx;
 
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.gui.GuiManager.MessageType;
-import com.acgist.snail.gui.javafx.Alerts;
 
 import javafx.application.Platform;
 

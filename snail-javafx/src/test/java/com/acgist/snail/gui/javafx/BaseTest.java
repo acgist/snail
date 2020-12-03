@@ -1,4 +1,4 @@
-package com.acgist.snail.javafx;
+package com.acgist.snail.gui.javafx;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;

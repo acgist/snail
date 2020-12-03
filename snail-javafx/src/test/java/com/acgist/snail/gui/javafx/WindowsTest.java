@@ -1,8 +1,6 @@
-package com.acgist.snail.javafx;
+package com.acgist.snail.gui.javafx;
 
 import org.junit.jupiter.api.Test;
-
-import com.acgist.snail.gui.javafx.Themes;
 
 public class WindowsTest extends BaseTest {
 
