@@ -15,7 +15,6 @@ import javafx.stage.Stage;
  * <p>提示窗口工具</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class Alerts {
 	
@@ -61,7 +60,7 @@ public final class Alerts {
 	public static final Optional<ButtonType> build(String title, String message, GuiManager.MessageType type) {
 		final Alert alert = new Alert(getAlertType(type));
 		final Scene scene = alert.getDialogPane().getScene();
-		Window.applyTheme(scene);
+		Themes.applyTheme(scene);
 		final Stage stage = (Stage) scene.getWindow();
 		stage.getIcons().add(new Image(Controller.LOGO_ICON_200)); // 设置图标
 		alert.setTitle(title);

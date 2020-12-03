@@ -25,9 +25,9 @@ import com.acgist.snail.gui.javafx.window.torrent.TorrentWindow;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.ITaskSession.Status;
 import com.acgist.snail.protocol.Protocol.Type;
+import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
-import com.acgist.snail.protocol.ProtocolManager;
 
 import javafx.application.Platform;
 import javafx.beans.binding.DoubleBinding;
@@ -59,7 +59,6 @@ import javafx.util.Callback;
  * <p>主窗口控制器</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class MainController extends Controller implements Initializable {
 
@@ -67,6 +66,8 @@ public final class MainController extends Controller implements Initializable {
 	
 	/**
 	 * <p>任务列表显示类型</p>
+	 * 
+	 * @author acgist
 	 */
 	public enum Filter {
 		
@@ -311,7 +312,7 @@ public final class MainController extends Controller implements Initializable {
 	/**
 	 * <p>是否选中任务</p>
 	 * 
-	 * @return {@code true}-选中；{@code false}-没有选中；
+	 * @return true-选中；false-没有选中；
 	 */
 	public boolean haveSelected() {
 		return !this.selected().isEmpty();
@@ -320,7 +321,7 @@ public final class MainController extends Controller implements Initializable {
 	/**
 	 * <p>是否选中BT任务</p>
 	 * 
-	 * @return {@code true}-选中；{@code false}-没有选中；
+	 * @return true-选中；false-没有选中；
 	 */
 	public boolean haveSelectedTorrent() {
 		return this.selected().stream()
@@ -395,16 +396,21 @@ public final class MainController extends Controller implements Initializable {
 			if(session == null) {
 				return;
 			}
-			if(session.complete()) { // 下载完成：打开任务
-				if(session.getType() == Type.MAGNET) { // 磁力链接：转换BT任务
+			if(session.complete()) {
+				// 下载完成：打开任务
+				if(session.getType() == Type.MAGNET) {
+					// 磁力链接：转换BT任务
 					TorrentWindow.getInstance().show(session);
-				} else { // 其他：打开下载文件
+				} else {
+					// 其他：打开下载文件
 					// TODO：文件可能存在病毒
 					Desktops.open(new File(session.getFile()));
 				}
-			} else if(session.inThreadPool()) { // 处于下载线程：暂停下载
+			} else if(session.inThreadPool()) {
+				// 处于下载线程：暂停下载
 				DownloaderManager.getInstance().pause(session);
-			} else { // 其他：开始下载
+			} else {
+				// 其他：开始下载
 				try {
 					DownloaderManager.getInstance().start(session);
 				} catch (DownloadException e) {
@@ -419,7 +425,7 @@ public final class MainController extends Controller implements Initializable {
 	 */
 	private EventHandler<DragEvent> dragOverAction = event -> {
 		if (event.getGestureSource() != this.taskTable) {
-			final String url = dragboard(event);
+			final String url = this.dragboard(event);
 			if(ProtocolManager.getInstance().support(url)) {
 				event.acceptTransferModes(TransferMode.COPY);
 			} else {
@@ -433,7 +439,7 @@ public final class MainController extends Controller implements Initializable {
 	 * <p>拖入文件事件（加载）</p>
 	 */
 	private EventHandler<DragEvent> dragDroppedAction = event -> {
-		final String url = dragboard(event);
+		final String url = this.dragboard(event);
 		if(StringUtils.isNotEmpty(url)) {
 			BuildWindow.getInstance().show(url);
 		}

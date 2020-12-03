@@ -88,11 +88,11 @@ public final class JSON {
 	 */
 	private static final String JSON_NULL = "null";
 	/**
-	 * <p>{@code boolean}类型：{@value}</p>
+	 * <p>boolean类型：{@value}</p>
 	 */
 	private static final String JSON_BOOLEAN_TRUE = "true";
 	/**
-	 * <p>{@code boolean}类型：{@value}</p>
+	 * <p>boolean类型：{@value}</p>
 	 */
 	private static final String JSON_BOOLEAN_FALSE = "false";
 	

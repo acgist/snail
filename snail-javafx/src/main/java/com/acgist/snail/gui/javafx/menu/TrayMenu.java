@@ -22,7 +22,7 @@ import com.acgist.snail.gui.javafx.Controller;
 import com.acgist.snail.gui.javafx.Desktops;
 import com.acgist.snail.gui.javafx.Fonts.SnailIcon;
 import com.acgist.snail.gui.javafx.Menu;
-import com.acgist.snail.gui.javafx.Window;
+import com.acgist.snail.gui.javafx.Themes;
 import com.acgist.snail.gui.javafx.window.about.AboutWindow;
 import com.acgist.snail.gui.javafx.window.main.MainWindow;
 
@@ -47,7 +47,6 @@ import javafx.stage.WindowEvent;
  * </pre>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class TrayMenu extends Menu {
 
@@ -152,7 +151,8 @@ public final class TrayMenu extends Menu {
 		final MouseListener mouseListener = new MouseInputAdapter() {
 			@Override
 			public void mouseClicked(java.awt.event.MouseEvent event) {
-				if (event.getButton() == java.awt.event.MouseEvent.BUTTON1) { // 左键：显示隐藏
+				if (event.getButton() == java.awt.event.MouseEvent.BUTTON1) {
+					// 左键：显示隐藏
 					if (MainWindow.getInstance().isShowing()) {
 						Platform.runLater(() -> {
 							MainWindow.getInstance().hide();
@@ -162,8 +162,8 @@ public final class TrayMenu extends Menu {
 							MainWindow.getInstance().show();
 						});
 					}
-				} else if(event.getButton() == java.awt.event.MouseEvent.BUTTON3) { // 右键：托盘菜单
-					// 显示托盘菜单
+				} else if(event.getButton() == java.awt.event.MouseEvent.BUTTON3) {
+					// 右键：托盘菜单
 					Platform.runLater(() -> {
 						final int x = event.getXOnScreen();
 						final int y = event.getYOnScreen() - MENU_WINDOW_HEIGHT;
@@ -236,7 +236,7 @@ public final class TrayMenu extends Menu {
 		trayPane.setBackground(Background.EMPTY);
 		trayPane.getStyleClass().add("tray"); // 添加托盘样式
 		final Scene trayScene = new Scene(trayPane);
-		Window.applyTheme(trayScene);
+		Themes.applyTheme(trayScene);
 		trayScene.setFill(Color.TRANSPARENT); // 隐藏托盘容器
 		final Stage trayStage = new Stage();
 		trayStage.initStyle(StageStyle.UTILITY);
@@ -269,20 +269,6 @@ public final class TrayMenu extends Menu {
 	};
 	
 	/**
-	 * <p>退出</p>
-	 */
-	private EventHandler<ActionEvent> exitAction = event -> {
-		SystemContext.shutdown();
-	};
-	
-	/**
-	 * <p>关于</p>
-	 */
-	private EventHandler<ActionEvent> aboutAction = event -> {
-		AboutWindow.getInstance().show();
-	};
-	
-	/**
 	 * <p>官网与源码</p>
 	 */
 	private EventHandler<ActionEvent> sourceAction = event -> {
@@ -294,6 +280,20 @@ public final class TrayMenu extends Menu {
 	 */
 	private EventHandler<ActionEvent> supportAction = event -> {
 		Desktops.browse(SystemConfig.getSupport());
+	};
+	
+	/**
+	 * <p>关于</p>
+	 */
+	private EventHandler<ActionEvent> aboutAction = event -> {
+		AboutWindow.getInstance().show();
+	};
+	
+	/**
+	 * <p>退出</p>
+	 */
+	private EventHandler<ActionEvent> exitAction = event -> {
+		SystemContext.shutdown();
 	};
 	
 	/**
@@ -312,9 +312,11 @@ public final class TrayMenu extends Menu {
 	/**
 	 * <p>获取JavaFX消息类型</p>
 	 * 
+	 * @param type 消息类型
+	 * 
 	 * @return JavaFX消息类型
 	 */
-	public final MessageType getMessageType(GuiManager.MessageType type) {
+	public MessageType getMessageType(GuiManager.MessageType type) {
 		switch (type) {
 		case NONE:
 			return MessageType.NONE;

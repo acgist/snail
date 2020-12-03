@@ -9,7 +9,6 @@ import com.acgist.snail.gui.javafx.menu.TrayMenu;
  * <p>GUI提示消息事件</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public final class NoticeEvent extends NoticeEventAdapter {
 

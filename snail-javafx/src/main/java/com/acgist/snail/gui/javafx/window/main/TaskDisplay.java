@@ -14,7 +14,6 @@ import com.acgist.snail.utils.ThreadUtils;
  * <p>任务列表刷新器</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class TaskDisplay {
 

@@ -13,7 +13,6 @@ import javafx.stage.WindowEvent;
  * <p>统计窗口</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class StatisticsWindow extends Window<StatisticsController> {
 	
@@ -36,17 +35,14 @@ public final class StatisticsWindow extends Window<StatisticsController> {
 	@Override
 	public void start(Stage stage) throws Exception {
 		this.buildWindow(stage, "统计", 840, 640, "/fxml/statistics.fxml", Modality.APPLICATION_MODAL);
-		this.disableResize();
 		this.dialogWindow();
 		this.windowHidden();
 	}
-
-	/**
-	 * <p>统计信息</p>
-	 */
-	public void statistics() {
+	
+	@Override
+	public void show() {
 		this.controller.statistics();
-		this.show();
+		super.show();
 	}
 	
 	/**

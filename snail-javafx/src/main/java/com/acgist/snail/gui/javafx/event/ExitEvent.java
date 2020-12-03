@@ -10,7 +10,6 @@ import javafx.application.Platform;
  * <p>GUI退出窗口事件</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public final class ExitEvent extends ExitEventAdapter {
 

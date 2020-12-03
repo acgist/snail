@@ -8,7 +8,6 @@ import javafx.util.Duration;
  * <p>提示框工具</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public final class Tooltips {
 
@@ -42,7 +41,7 @@ public final class Tooltips {
 		final Tooltip tooltip = new Tooltip(value);
 		tooltip.setShowDelay(Duration.millis(millis));
 		final Scene scene = tooltip.getScene();
-		Window.applyTheme(scene);
+		Themes.applyTheme(scene);
 		return tooltip;
 	}
 	

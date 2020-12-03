@@ -4,16 +4,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.context.SystemContext.SystemType;
-import com.acgist.snail.gui.javafx.theme.ITheme;
 import com.acgist.snail.gui.javafx.theme.WindowsTheme;
 
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 
 /**
  * <p>主题工具</p>
  * 
  * @author acgist
- * @since 1.4.0
  */
 public final class Themes {
 	
@@ -62,6 +62,9 @@ public final class Themes {
 		SYSTEM_THEME_STYLE = themeStyle.toString();
 	}
 	
+	/**
+	 * <p>不允许实例化</p>
+	 */
 	private Themes() {
 	}
 	
@@ -72,6 +75,17 @@ public final class Themes {
 	 */
 	public static final String getThemeStyle() {
 		return SYSTEM_THEME_STYLE;
+	}
+	
+	/**
+	 * <p>设置控件主题样式</p>
+	 * 
+	 * @param scene 场景
+	 */
+	public static final void applyTheme(Scene scene) {
+		final Parent root = scene.getRoot();
+		root.setStyle(Themes.getThemeStyle()); // 设置主题样式
+		root.getStylesheets().add(Controller.FXML_STYLE); // 设置样式文件
 	}
 	
 }

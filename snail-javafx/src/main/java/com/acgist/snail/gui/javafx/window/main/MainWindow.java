@@ -17,7 +17,6 @@ import javafx.stage.Stage;
  * <p>主窗口</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class MainWindow extends Window<MainController> {
 
@@ -43,7 +42,6 @@ public final class MainWindow extends Window<MainController> {
 		this.icon();
 		this.help();
 		this.statistics();
-//		Taskbar：任务栏进度条
 	}
 	
 	@Override
@@ -69,7 +67,7 @@ public final class MainWindow extends Window<MainController> {
 	private void statistics() {
 		this.stage.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
 			if(event.getCode() == KeyCode.F12) {
-				StatisticsWindow.getInstance().statistics();
+				StatisticsWindow.getInstance().show();
 			}
 		});
 	}

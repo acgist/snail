@@ -8,7 +8,6 @@ import com.acgist.snail.gui.javafx.window.main.TaskDisplay;
  * <p>GUI刷新任务列表事件</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public final class RefreshTaskListEvent extends RefreshTaskListEventAdapter {
 

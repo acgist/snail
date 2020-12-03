@@ -12,7 +12,6 @@ import javafx.stage.Stage;
  * <p>设置窗口</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class SettingWindow extends Window<SettingController> {
 
@@ -35,7 +34,6 @@ public final class SettingWindow extends Window<SettingController> {
 	@Override
 	public void start(Stage stage) throws Exception {
 		this.buildWindow(stage, "设置", 600, 400, "/fxml/setting.fxml", Modality.APPLICATION_MODAL);
-		this.disableResize();
 		this.dialogWindow();
 	}
 	

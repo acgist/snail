@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.gui.javafx.ITheme;
 import com.acgist.snail.gui.javafx.Themes;
 import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -17,7 +18,6 @@ import javafx.scene.paint.Color;
  * <p>Windows系统主题</p>
  * 
  * @author acgist
- * @since 1.4.0
  */
 public final class WindowsTheme implements ITheme {
 	
@@ -98,7 +98,8 @@ public final class WindowsTheme implements ITheme {
 			final int green = (int) ((value >> 8) & 0xFF);
 			final int red = (int) (value & 0xFF);
 			final double opacity = alpha >= 255D ? 1D : alpha / 255D;
-			if(alpha == 0) { // 没有透明度默认设置不透明
+			if(alpha == 0) {
+				// 没有透明度默认设置不透明
 				theme = Color.rgb(red, green, blud);
 			} else {
 				theme = Color.rgb(red, green, blud, opacity);

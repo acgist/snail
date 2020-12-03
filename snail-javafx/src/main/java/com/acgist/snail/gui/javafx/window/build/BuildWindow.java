@@ -12,7 +12,6 @@ import javafx.stage.Stage;
  * <p>新建窗口</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class BuildWindow extends Window<BuildController> {
 
@@ -35,7 +34,6 @@ public final class BuildWindow extends Window<BuildController> {
 	@Override
 	public void start(Stage stage) throws Exception {
 		this.buildWindow(stage, "新建下载", 600, 300, "/fxml/build.fxml", Modality.APPLICATION_MODAL);
-		this.disableResize();
 		this.dialogWindow();
 	}
 	
@@ -46,7 +44,7 @@ public final class BuildWindow extends Window<BuildController> {
 	 */
 	public void show(String url) {
 		this.controller.setUrl(url);
-		this.show();
+		super.show();
 	}
 	
 }

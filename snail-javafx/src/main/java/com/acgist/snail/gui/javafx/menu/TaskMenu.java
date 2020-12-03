@@ -31,7 +31,6 @@ import javafx.stage.WindowEvent;
  * <p>任务菜单</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class TaskMenu extends Menu {
 
@@ -163,7 +162,7 @@ public final class TaskMenu extends Menu {
 		}
 		MainWindow.getInstance().controller().selected().forEach(session -> {
 			if(session.getType() == Type.TORRENT) {
-				TorrentWindow.getInstance().controller().tree(session);
+				TorrentWindow.getInstance().controller().buildTree(session);
 			}
 		});
 		TorrentWindow.getInstance().show();

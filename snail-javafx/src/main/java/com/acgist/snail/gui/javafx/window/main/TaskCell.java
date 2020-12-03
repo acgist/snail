@@ -15,7 +15,6 @@ import javafx.scene.text.Text;
  * <p>任务单元格</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class TaskCell extends TableCell<ITaskSession, String> {
 
@@ -32,6 +31,11 @@ public final class TaskCell extends TableCell<ITaskSession, String> {
 	 */
 	private final boolean tooltip;
 	
+	/**
+	 * @param pos 对齐方式
+	 * @param icon 是否显示Icon
+	 * @param tooltip 是否显示Tooltip
+	 */
 	public TaskCell(Pos pos, boolean icon, boolean tooltip) {
 		this.pos = pos;
 		this.icon = icon;

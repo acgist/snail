@@ -23,7 +23,6 @@ import javafx.stage.Stage;
  * @param <T> 控制器泛型
  * 
  * @author acgist
- * @since 1.0.0
  */
 public abstract class Window<T extends Controller> extends Application {
 
@@ -48,13 +47,6 @@ public abstract class Window<T extends Controller> extends Application {
 	}
 	
 	/**
-	 * <p>设置Icon</p>
-	 */
-	protected void icon() {
-		this.stage.getIcons().add(new Image(Controller.LOGO_ICON_200));
-	}
-	
-	/**
 	 * <p>设置ESC隐藏窗口</p>
 	 */
 	protected void esc() {
@@ -66,8 +58,15 @@ public abstract class Window<T extends Controller> extends Application {
 	}
 	
 	/**
+	 * <p>设置Icon</p>
+	 */
+	protected void icon() {
+		this.stage.getIcons().add(new Image(Controller.LOGO_ICON_200));
+	}
+	
+	/**
 	 * <p>设置窗口最大化</p>
-	 * <p>如果不设置该项，窗口最小化隐藏到托盘后，从托盘显示出来时不能正常显示窗口。</p>
+	 * <p>窗口最小化隐藏到托盘后，需要设置此项才能正常显示窗口。</p>
 	 */
 	protected void maximize() {
 		this.stage.setIconified(false);
@@ -83,12 +82,14 @@ public abstract class Window<T extends Controller> extends Application {
 	/**
 	 * <p>对话框通用设置</p>
 	 * 
-	 * @see #icon()
 	 * @see #esc()
+	 * @see #icon()
+	 * @see #disableResize()
 	 */
 	protected void dialogWindow() {
-		this.icon();
 		this.esc();
+		this.icon();
+		this.disableResize();
 	}
 	
 	/**
@@ -158,7 +159,7 @@ public abstract class Window<T extends Controller> extends Application {
 	/**
 	 * <p>判断窗口是否显示</p>
 	 * 
-	 * @return {@code true}-显示；{@code false}-隐藏；
+	 * @return true-显示；false-隐藏；
 	 */
 	public boolean isShowing() {
 		return this.stage.isShowing();
@@ -180,17 +181,6 @@ public abstract class Window<T extends Controller> extends Application {
 	 */
 	public T controller() {
 		return this.controller;
-	}
-	
-	/**
-	 * <p>设置控件主题样式</p>
-	 * 
-	 * @param scene 场景
-	 */
-	public static final void applyTheme(Scene scene) {
-		final Parent root = scene.getRoot();
-		root.setStyle(Themes.getThemeStyle()); // 设置主题样式
-		root.getStylesheets().add(Controller.FXML_STYLE); // 设置样式文件
 	}
 	
 }

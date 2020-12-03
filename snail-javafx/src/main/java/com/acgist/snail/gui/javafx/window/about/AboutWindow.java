@@ -12,7 +12,6 @@ import javafx.stage.Stage;
  * <p>关于窗口</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class AboutWindow extends Window<AboutController> {
 
@@ -35,7 +34,6 @@ public final class AboutWindow extends Window<AboutController> {
 	@Override
 	public void start(Stage stage) throws Exception {
 		this.buildWindow(stage, "关于", 600, 300, "/fxml/about.fxml", Modality.APPLICATION_MODAL);
-		this.disableResize();
 		this.dialogWindow();
 	}
 	

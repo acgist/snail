@@ -16,7 +16,6 @@ import javafx.scene.paint.Color;
  * TODO：观察者实时更新
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class CanvasPainter {
 	
@@ -96,14 +95,29 @@ public final class CanvasPainter {
 	 */
 	private GraphicsContext graphics;
 	
+	/**
+	 * @param bitSet 数据
+	 */
 	private CanvasPainter(BitSet bitSet) {
 		this(bitSet.size(), bitSet, bitSet);
 	}
 
+	/**
+	 * @param length 数据长度
+	 * @param bitSet 数据
+	 * @param selectBitSet 选择数据
+	 */
 	private CanvasPainter(int length, BitSet bitSet, BitSet selectBitSet) {
 		this(DEFAULT_WH, DEFAULT_COL, length, bitSet, selectBitSet);
 	}
 	
+	/**
+	 * @param wh 填充高宽
+	 * @param col 列数
+	 * @param length 数据长度
+	 * @param bitSet 数据
+	 * @param selectBitSet 选择数据
+	 */
 	private CanvasPainter(int wh, int col, int length, BitSet bitSet, BitSet selectBitSet) {
 		this(
 			wh, col, length, bitSet, selectBitSet,
@@ -114,6 +128,18 @@ public final class CanvasPainter {
 		);
 	}
 	
+	/**
+	 * @param wh 填充高宽
+	 * @param col 列数
+	 * @param length 数据长度
+	 * @param bitSet 数据
+	 * @param selectBitSet 选择数据
+	 * @param fillColor 存在填充颜色
+	 * @param selectColor 选择填充颜色
+	 * @param noneColor 没有填充颜色
+	 * @param borderColor 边框颜色
+	 * @param background 背景颜色
+	 */
 	private CanvasPainter(
 		int wh, int col,
 		int length, BitSet bitSet, BitSet selectBitSet,
@@ -138,7 +164,7 @@ public final class CanvasPainter {
 	 * 
 	 * @param bitSet 数据
 	 * 
-	 * @return {@link CanvasPainter}
+	 * @return CanvasPainter
 	 */
 	public static final CanvasPainter newInstance(BitSet bitSet) {
 		return new CanvasPainter(bitSet);
@@ -151,7 +177,7 @@ public final class CanvasPainter {
 	 * @param bitSet 数据
 	 * @param selectBitSet 选择数据
 	 * 
-	 * @return {@link CanvasPainter}
+	 * @return CanvasPainter
 	 */
 	public static final CanvasPainter newInstance(int length, BitSet bitSet, BitSet selectBitSet) {
 		return new CanvasPainter(length, bitSet, selectBitSet);
@@ -166,7 +192,7 @@ public final class CanvasPainter {
 	 * @param bitSet 数据
 	 * @param selectBitSet 选择数据
 	 * 
-	 * @return {@link CanvasPainter}
+	 * @return CanvasPainter
 	 */
 	public static final CanvasPainter newInstance(int wh, int col, int length, BitSet bitSet, BitSet selectBitSet) {
 		return new CanvasPainter(wh, col, length, bitSet, selectBitSet);
@@ -186,7 +212,7 @@ public final class CanvasPainter {
 	 * @param borderColor 边框颜色
 	 * @param background 背景颜色
 	 * 
-	 * @return {@link CanvasPainter}
+	 * @return CanvasPainter
 	 */
 	public static final CanvasPainter newInstance(
 		int wh, int col,
@@ -205,7 +231,7 @@ public final class CanvasPainter {
 	/**
 	 * <p>开始画图</p>
 	 * 
-	 * @return {@code this}
+	 * @return CanvasPainter
 	 */
 	public CanvasPainter draw() {
 		this.drawFill();
@@ -217,7 +243,7 @@ public final class CanvasPainter {
 	 * 
 	 * @param bitSet 数据
 	 * 
-	 * @return {@code this}
+	 * @return CanvasPainter
 	 */
 	public CanvasPainter draw(BitSet bitSet) {
 		this.bitSet.or(bitSet);
@@ -234,7 +260,7 @@ public final class CanvasPainter {
 	 * 
 	 * @param index 数据索引
 	 * 
-	 * @return {@code this}
+	 * @return CanvasPainter
 	 */
 	public CanvasPainter draw(int index) {
 		// 已经包含数据
@@ -254,7 +280,7 @@ public final class CanvasPainter {
 	/**
 	 * <p>创建画布、画笔，画出背景和边框。</p>
 	 * 
-	 * @return {@code this}
+	 * @return CanvasPainter
 	 */
 	public CanvasPainter build() {
 		return this.build(null);
@@ -265,7 +291,7 @@ public final class CanvasPainter {
 	 * 
 	 * @param canvas 画布
 	 * 
-	 * @return {@code this}
+	 * @return CanvasPainter
 	 */
 	public CanvasPainter build(Canvas canvas) {
 		if(canvas == null) {

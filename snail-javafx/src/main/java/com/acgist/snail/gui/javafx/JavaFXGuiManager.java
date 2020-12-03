@@ -16,7 +16,6 @@ import com.acgist.snail.gui.javafx.event.TorrentEvent;
  * <p>JavaFX GUI管理器</p>
  * 
  * @author acgist
- * @since 1.1.0
  */
 public final class JavaFXGuiManager {
 

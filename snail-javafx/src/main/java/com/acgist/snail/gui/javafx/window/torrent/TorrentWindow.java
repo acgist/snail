@@ -14,7 +14,6 @@ import javafx.stage.WindowEvent;
  * <p>编辑任务窗口</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class TorrentWindow extends Window<TorrentController> {
 
@@ -37,7 +36,6 @@ public final class TorrentWindow extends Window<TorrentController> {
 	@Override
 	public void start(Stage stage) throws Exception {
 		this.buildWindow(stage, "编辑任务", 800, 600, "/fxml/torrent.fxml", Modality.APPLICATION_MODAL);
-		this.disableResize();
 		this.dialogWindow();
 		this.windowHidden();
 	}
@@ -48,8 +46,8 @@ public final class TorrentWindow extends Window<TorrentController> {
 	 * @param taskSession 任务信息
 	 */
 	public void show(ITaskSession taskSession) {
-		this.controller.tree(taskSession);
-		this.showAndWait();
+		this.controller.buildTree(taskSession);
+		super.showAndWait();
 	}
 	
 	/**
