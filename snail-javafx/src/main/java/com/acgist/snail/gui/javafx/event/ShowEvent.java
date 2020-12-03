@@ -2,7 +2,7 @@ package com.acgist.snail.gui.javafx.event;
 
 import com.acgist.snail.gui.event.GuiEvent;
 import com.acgist.snail.gui.event.adapter.ShowEventAdapter;
-import com.acgist.snail.gui.javafx.main.MainWindow;
+import com.acgist.snail.gui.javafx.window.main.MainWindow;
 
 import javafx.application.Platform;
 

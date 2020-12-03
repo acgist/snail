@@ -1,4 +1,4 @@
-package com.acgist.snail.gui.javafx.build;
+package com.acgist.snail.gui.javafx.window.build;
 
 import java.io.File;
 import java.net.URL;

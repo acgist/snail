@@ -1,4 +1,4 @@
-package com.acgist.snail.gui.javafx.about;
+package com.acgist.snail.gui.javafx.window.about;
 
 import java.net.URL;
 import java.util.Optional;
@@ -9,7 +9,7 @@ import com.acgist.snail.context.SystemContext;
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.javafx.Alerts;
 import com.acgist.snail.gui.javafx.Controller;
-import com.acgist.snail.gui.utils.DesktopUtils;
+import com.acgist.snail.gui.javafx.Desktops;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -47,7 +47,7 @@ public final class AboutController extends Controller implements Initializable {
 	 */
 	@FXML
 	public void handleAuthorAction(ActionEvent event) {
-		DesktopUtils.browse(SystemConfig.getAuthor());
+		Desktops.browse(SystemConfig.getAuthor());
 	}
 	
 	/**
@@ -62,7 +62,7 @@ public final class AboutController extends Controller implements Initializable {
 		} else {
 			final Optional<ButtonType> optional = Alerts.build("检测更新", "是否下载最新版本？", GuiManager.MessageType.CONFIRM);
 			if(optional.isPresent() && optional.get() == ButtonType.OK) {
-				DesktopUtils.browse(SystemConfig.getSource());
+				Desktops.browse(SystemConfig.getSource());
 			}
 		}
 	}
@@ -74,7 +74,7 @@ public final class AboutController extends Controller implements Initializable {
 	 */
 	@FXML
 	public void handleSourceAction(ActionEvent event) {
-		DesktopUtils.browse(SystemConfig.getSource());
+		Desktops.browse(SystemConfig.getSource());
 	}
 	
 	/**
@@ -84,7 +84,7 @@ public final class AboutController extends Controller implements Initializable {
 	 */
 	@FXML
 	public void handleSupportAction(ActionEvent event) {
-		DesktopUtils.browse(SystemConfig.getSupport());
+		Desktops.browse(SystemConfig.getSupport());
 	}
 
 	/**

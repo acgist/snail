@@ -10,7 +10,7 @@
 <BorderPane
 	fx:id="root"
 	styleClass="root,main" stylesheets="@/style/fxml.css"
-	fx:controller="com.acgist.snail.gui.javafx.main.MainController"
+	fx:controller="com.acgist.snail.gui.javafx.window.main.MainController"
 	xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
 	
 	<top>

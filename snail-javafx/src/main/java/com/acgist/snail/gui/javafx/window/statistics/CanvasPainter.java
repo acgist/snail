@@ -1,4 +1,4 @@
-package com.acgist.snail.gui.javafx.statistics;
+package com.acgist.snail.gui.javafx.window.statistics;
 
 import java.util.BitSet;
 import java.util.Objects;

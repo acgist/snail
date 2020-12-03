@@ -1,4 +1,4 @@
-package com.acgist.snail.gui.javafx.main;
+package com.acgist.snail.gui.javafx.window.main;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;

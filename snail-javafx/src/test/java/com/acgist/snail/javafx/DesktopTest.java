@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.gui.utils.DesktopUtils;
+import com.acgist.snail.gui.javafx.Desktops;
 
 public class DesktopTest extends BaseTest {
 
@@ -20,7 +20,7 @@ public class DesktopTest extends BaseTest {
 
 	@Test
 	public void testDesktopUtils() {
-		DesktopUtils.open(new File("e://qrcodes.txt"));
+		Desktops.open(new File("e://qrcodes.txt"));
 	}
 	
 }

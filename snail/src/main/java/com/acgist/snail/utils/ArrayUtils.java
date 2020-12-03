@@ -9,7 +9,6 @@ import com.acgist.snail.config.SystemConfig;
  * <p>数组工具</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class ArrayUtils {
 
@@ -31,7 +30,7 @@ public final class ArrayUtils {
 	 * @param sources 原始数据
 	 * @param targets 比较数据
 	 * 
-	 * @return {@code true}-相等；{@code false}-不等；
+	 * @return true-相等；false-不等；
 	 */
 	public static final boolean equals(byte[] sources, byte[] targets) {
 		if(sources == targets) {
@@ -60,9 +59,7 @@ public final class ArrayUtils {
 	 * @param sources 原始数据
 	 * @param targets 比较数据
 	 * 
-	 * @return {@code 1}-{@code sources}大；{@code -1}-{@code targets}大；{@code 0}-相等；
-	 * 
-	 * @since 1.1.0
+	 * @return 1-sources大；-1-targets大；0-相等；
 	 */
 	public static final int compareUnsigned(byte[] sources, byte[] targets) {
 		Objects.requireNonNull(sources, "数组比较参数错误");
@@ -134,7 +131,7 @@ public final class ArrayUtils {
 	 * 
 	 * @param objects 数组
 	 * 
-	 * @return {@code true}-空；{@code false}-非空；
+	 * @return true-空；false-非空；
 	 */
 	public static final boolean isEmpty(Object[] objects) {
 		return objects == null || objects.length == 0;
@@ -145,7 +142,7 @@ public final class ArrayUtils {
 	 * 
 	 * @param objects 数组
 	 * 
-	 * @return {@code true}-非空；{@code false}-空；
+	 * @return true-非空；false-空；
 	 */
 	public static final boolean isNotEmpty(Object[] objects) {
 		return !isEmpty(objects);
@@ -156,7 +153,7 @@ public final class ArrayUtils {
 	 * 
 	 * @param bytes 字节数组
 	 * 
-	 * @return {@code true}-空；{@code false}-非空；
+	 * @return true-空；false-非空；
 	 */
 	public static final boolean isEmpty(byte[] bytes) {
 		return bytes == null || bytes.length == 0;

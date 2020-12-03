@@ -1,4 +1,4 @@
-package com.acgist.snail.gui.javafx.torrent;
+package com.acgist.snail.gui.javafx.window.torrent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
