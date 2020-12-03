@@ -1,12 +1,10 @@
-package com.acgist.snail.javafx;
+package com.acgist.snail.gui.javafx;
 
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
-
-import com.acgist.snail.gui.javafx.Desktops;
 
 public class DesktopTest extends BaseTest {
 
