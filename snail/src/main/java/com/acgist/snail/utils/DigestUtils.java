@@ -8,7 +8,6 @@ import java.security.NoSuchAlgorithmException;
  * <p>散列算法：计算数据摘要</p>
  * 
  * @author acgist
- * @since 1.1.1
  */
 public final class DigestUtils {
 	

@@ -4,10 +4,9 @@ import java.util.BitSet;
 
 /**
  * <p>Piece位图工具</p>
- * <p>每个Piece占一位，每个字节的高位（末尾）表示八个Piece中的第一块，没有下载的Piece使用{@code 0}占位。</p>
+ * <p>每个Piece占一位，每个字节的高位（末尾）表示八个Piece中的第一块，没有下载的Piece使用0占位。</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class BitfieldUtils {
 
@@ -51,7 +50,7 @@ public final class BitfieldUtils {
 	}
 	
 	/**
-	 * <p>大端小端互转：{@code 0100_0001} -&gt; {@code 1000_0010}</p>
+	 * <p>大端小端互转：0100_0001 -&gt; 1000_0010</p>
 	 * 
 	 * @param value 数据
 	 * 

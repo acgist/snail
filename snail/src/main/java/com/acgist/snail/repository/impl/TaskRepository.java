@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.context.recycle.RecycleManager;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.repository.Repository;
 import com.acgist.snail.utils.FileUtils;
@@ -31,10 +32,11 @@ public final class TaskRepository extends Repository<TaskEntity> {
 		LOGGER.info("删除任务：{}", entity.getName());
 		// 删除文件
 		if(SystemConfig.getTaskFileDelete()) {
-			final boolean ok = FileUtils.recycle(entity.getFile());
+			final var file = entity.getFile();
+			final boolean ok = RecycleManager.recycle(file);
 			if(!ok) {
-				LOGGER.debug("不支持回收站直接删除文件：{}", entity.getFile());
-				FileUtils.delete(entity.getFile());
+				LOGGER.debug("不支持回收站直接删除文件：{}", file);
+				FileUtils.delete(file);
 			}
 		}
 		// 删除数据

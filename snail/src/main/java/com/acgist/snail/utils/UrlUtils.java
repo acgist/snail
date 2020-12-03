@@ -15,7 +15,6 @@ import com.acgist.snail.protocol.Protocol;
  * <p>URL工具</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class UrlUtils {
 
@@ -28,7 +27,7 @@ public final class UrlUtils {
 	}
 	
 	/**
-	 * <p>对{@code content}进行URL编码</p>
+	 * <p>URL编码</p>
 	 * 
 	 * @param content 待编码内容
 	 * 
@@ -46,7 +45,7 @@ public final class UrlUtils {
 	}
 	
 	/**
-	 * <p>对{@code content}进行URL解码</p>
+	 * <p>URL解码</p>
 	 * 
 	 * @param content 待解码内容
 	 * 

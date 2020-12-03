@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.utils.CollectionUtils;
+import com.acgist.snail.utils.MapUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -354,7 +355,7 @@ public class HeaderWrapper {
 	 * @return 是否为空
 	 */
 	public boolean isEmpty() {
-		return CollectionUtils.isEmpty(this.headers);
+		return MapUtils.isEmpty(this.headers);
 	}
 	
 	/**

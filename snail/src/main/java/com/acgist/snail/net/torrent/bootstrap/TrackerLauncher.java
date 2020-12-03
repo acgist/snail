@@ -12,7 +12,7 @@ import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerClient;
 import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerManager;
 import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.utils.CollectionUtils;
+import com.acgist.snail.utils.MapUtils;
 import com.acgist.snail.utils.NumberUtils;
 
 /**
@@ -143,7 +143,7 @@ public final class TrackerLauncher {
 	 * @param peers Peer列表
 	 */
 	private void peer(Map<String, Integer> peers) {
-		if(CollectionUtils.isEmpty(peers)) {
+		if(MapUtils.isEmpty(peers)) {
 			return;
 		}
 		final PeerManager manager = PeerManager.getInstance();

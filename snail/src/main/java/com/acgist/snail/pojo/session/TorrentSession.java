@@ -35,8 +35,8 @@ import com.acgist.snail.pojo.bean.TorrentInfo;
 import com.acgist.snail.pojo.bean.TorrentPiece;
 import com.acgist.snail.protocol.magnet.bootstrap.MagnetBuilder;
 import com.acgist.snail.protocol.magnet.bootstrap.TorrentBuilder;
-import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.FileUtils;
+import com.acgist.snail.utils.MapUtils;
 
 /**
  * <p>BT任务信息</p>
@@ -392,7 +392,7 @@ public final class TorrentSession {
 		this.dhtLauncher = DhtLauncher.newInstance(this);
 		if(this.action == Action.TORRENT) { // 种子下载任务
 			final var nodes = this.torrent.getNodes();
-			if(CollectionUtils.isNotEmpty(nodes)) { // 添加种子自带DHT节点
+			if(MapUtils.isNotEmpty(nodes)) { // 添加种子自带DHT节点
 				nodes.forEach((host, port) -> this.dhtLauncher.put(host, port));
 			}
 		}

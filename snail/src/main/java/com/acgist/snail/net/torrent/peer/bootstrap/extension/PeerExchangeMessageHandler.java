@@ -21,6 +21,7 @@ import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.utils.CollectionUtils;
+import com.acgist.snail.utils.MapUtils;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.PeerUtils;
 
@@ -127,7 +128,7 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 		final byte[] added = decoder.getBytes(ADDED);
 		final byte[] addedf = decoder.getBytes(ADDEDF);
 		final var peers = PeerUtils.read(added);
-		if(CollectionUtils.isNotEmpty(peers)) {
+		if(MapUtils.isNotEmpty(peers)) {
 			final AtomicInteger index = new AtomicInteger(0);
 			peers.forEach((host, port) -> {
 				final PeerSession peerSession = PeerManager.getInstance().newPeerSession(

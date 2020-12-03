@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.context.SystemContext.SystemType;
 import com.acgist.snail.context.recycle.windows.WindowsRecycle;
+import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>回收站管理器</p>
@@ -57,6 +58,25 @@ public final class RecycleManager {
 			return null;
 		}
 		return BUILDER.apply(path);
+	}
+	
+	/**
+	 * <p>使用回收站删除文件</p>
+	 * 
+	 * @param filePath 文件路径
+	 * 
+	 * @return true-成功；false-失败；
+	 */
+	public static final boolean recycle(final String filePath) {
+		if(StringUtils.isEmpty(filePath)) {
+			LOGGER.warn("回收文件为空：{}", filePath);
+			return false;
+		}
+		final var recycle = RecycleManager.newInstance(filePath);
+		if(recycle == null) { // 不支持回收站
+			return false;
+		}
+		return recycle.delete();
 	}
 	
 }

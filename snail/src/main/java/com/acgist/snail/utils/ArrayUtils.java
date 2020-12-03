@@ -164,7 +164,7 @@ public final class ArrayUtils {
 	 * 
 	 * @param bytes 字节数组
 	 * 
-	 * @return {@code true}-非空；{@code false}-空；
+	 * @return true-非空；false-空；
 	 */
 	public static final boolean isNotEmpty(byte[] bytes) {
 		return !isEmpty(bytes);
@@ -187,10 +187,10 @@ public final class ArrayUtils {
 	}
 	
 	/**
-	 * @param values 数组
-	 * @param value 查找数值
+	 * @param values 查找数组
+	 * @param value 查找数据
 	 * 
-	 * @return 索引：{@value #NONE_INDEX}-没有匹配
+	 * @return 数据索引：{@value #NONE_INDEX}-没有匹配
 	 * 
 	 * @see #indexOf(int[], int, int, int)
 	 */
@@ -199,14 +199,14 @@ public final class ArrayUtils {
 	}
 	
 	/**
-	 * <p>查找{@code int}数组索引</p>
+	 * <p>查找数组索引</p>
 	 * 
-	 * @param values {@code int}数组
+	 * @param values 查找数组
 	 * @param begin 开始位置
 	 * @param end 结束位置
-	 * @param value 查找{@code int}
+	 * @param value 查找数据
 	 * 
-	 * @return 索引：{@value #NONE_INDEX}-没有匹配
+	 * @return 数据索引：{@value #NONE_INDEX}-没有匹配
 	 */
 	public static final int indexOf(int[] values, int begin, int end, int value) {
 		for (int index = begin; index < end; index++) {
@@ -218,12 +218,12 @@ public final class ArrayUtils {
 	}
 	
 	/**
-	 * <p>查找{@code char}数组索引</p>
+	 * <p>查找数组索引</p>
 	 * 
-	 * @param chars {@code char}数组
-	 * @param value 查找{@code char}
+	 * @param chars 查找数组
+	 * @param value 查找数据
 	 * 
-	 * @return 索引：{@value #NONE_INDEX}-没有匹配
+	 * @return 数据索引：{@value #NONE_INDEX}-没有匹配
 	 */
 	public static final int indexOf(char[] chars, char value) {
 		for (int index = 0; index < chars.length; index++) {

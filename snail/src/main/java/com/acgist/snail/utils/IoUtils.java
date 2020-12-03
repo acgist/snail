@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
  * <p>IO工具</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class IoUtils {
 
@@ -22,9 +21,9 @@ public final class IoUtils {
 	}
 	
 	/**
-	 * <p>关闭{@code Closeable}</p>
+	 * <p>关闭Closeable</p>
 	 * 
-	 * @param closeable {@code Closeable}
+	 * @param closeable Closeable
 	 */
 	public static final void close(Closeable closeable) {
 		try {

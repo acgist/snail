@@ -5,10 +5,9 @@ import java.util.Map;
 
 /**
  * <p>Object工具</p>
- * <p>提供重写{@code equals}、{@code toString}、{@code hashCode}等方法</p>
+ * <p>提供重写equals、toString、hashCode等方法</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class ObjectUtils {
 	
@@ -21,10 +20,10 @@ public final class ObjectUtils {
 	/**
 	 * <p>判断对象是否相等（判断引用）</p>
 	 * 
-	 * @param source 原始对象：{@code this}
+	 * @param source 原始对象：this
 	 * @param target 比较对象
 	 * 
-	 * @return {@code true}-相等；{@code false}-不等；
+	 * @return true-相等；false-不等；
 	 */
 	public static final boolean equals(Object source, Object target) {
 		if(source == null) {
@@ -37,11 +36,11 @@ public final class ObjectUtils {
 	}
 	
 	/**
-	 * <p>计算{@code hashCode}</p>
+	 * <p>计算hashCode</p>
 	 * 
 	 * @param values 属性值
 	 * 
-	 * @return {@code hashCode}
+	 * @return hashCode
 	 */
 	public static final int hashCode(Object ... values) {
 		if(values == null) {
@@ -57,11 +56,11 @@ public final class ObjectUtils {
 	}
 	
 	/**
-	 * <p>计算{@code hashCode}</p>
+	 * <p>计算hashCode</p>
 	 * 
 	 * @param bytes 字符数组
 	 * 
-	 * @return {@code hashCode}
+	 * @return hashCode
 	 */
 	public static final int hashCode(byte[] bytes) {
 		if(bytes == null) {
@@ -75,13 +74,13 @@ public final class ObjectUtils {
 	}
 	
 	/**
-	 * <p>计算{@code toString}</p>
-	 * <p>如果{@code values}等于{@code null}，{@code object}必须提供{@code getter}。</p>
+	 * <p>计算toString</p>
+	 * <p>如果values等于null，object必须提供getter。</p>
 	 * 
 	 * @param object 对象
 	 * @param values 属性值
 	 * 
-	 * @return {@code toString}
+	 * @return toString
 	 */
 	public static final String toString(Object object, Object ... values) {
 		if(object == null) {
@@ -106,7 +105,9 @@ public final class ObjectUtils {
 						.append(BeanUtils.propertyValue(object, property))
 						.append(",");
 				}
-				builder.setLength(builder.length() - 1);
+				if(ArrayUtils.isNotEmpty(properties)) {
+					builder.setLength(builder.length() - 1);
+				}
 			}
 		} else {
 			for (Object value : values) {

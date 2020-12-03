@@ -25,7 +25,6 @@ import com.acgist.snail.config.SystemConfig;
  * <p>字符串工具</p>
  * 
  * @author acgist
- * @since 1.0.0
  */
 public final class StringUtils {
 
@@ -55,7 +54,7 @@ public final class StringUtils {
 	 * 
 	 * @param value 字符串
 	 * 
-	 * @return {@code true}-空；{@code false}-非空；
+	 * @return true-空；false-非空；
 	 */
 	public static final boolean isEmpty(String value) {
 		return value == null || value.isEmpty();
@@ -66,55 +65,55 @@ public final class StringUtils {
 	 * 
 	 * @param value 字符串
 	 * 
-	 * @return {@code true}-非空；{@code false}-空；
+	 * @return true-非空；false-空；
 	 */
 	public static final boolean isNotEmpty(String value) {
 		return !isEmpty(value);
 	}
 	
 	/**
-	 * <p>判断{@code value}是不是{@linkplain #NUMERIC_REGEX 数值}</p>
+	 * <p>判断字符串是不是{@linkplain #NUMERIC_REGEX 数值}</p>
 	 * <p>正负整数</p>
 	 * 
 	 * @param value 字符串
 	 * 
-	 * @return {@code true}-是；{@code false}-不是；
+	 * @return true-是；false-不是；
 	 */
 	public static final boolean isNumeric(String value) {
 		return StringUtils.regex(value, NUMERIC_REGEX, true);
 	}
 
 	/**
-	 * <p>判断{@code value}是不是{@linkplain #DECIMAL_REGEX 数值}</p>
+	 * <p>判断字符串是不是{@linkplain #DECIMAL_REGEX 数值}</p>
 	 * <p>正负小数、正负整数</p>
 	 * 
 	 * @param value 字符串
 	 * 
-	 * @return {@code true}-是；{@code false}-不是；
+	 * @return true-是；false-不是；
 	 */
 	public static final boolean isDecimal(String value) {
 		return StringUtils.regex(value, DECIMAL_REGEX, true);
 	}
 	
 	/**
-	 * <p>判断{@code value}是不是以{@code prefix}开始</p>
+	 * <p>判断字符串是不是以前缀开始</p>
 	 * 
 	 * @param value 字符串
 	 * @param prefix 前缀
 	 * 
-	 * @return {@code true}-是；{@code false}-不是；
+	 * @return true-是；false-不是；
 	 */
 	public static final boolean startsWith(String value, String prefix) {
 		return value != null && prefix != null && value.startsWith(prefix);
 	}
 	
 	/**
-	 * <p>判断{@code value}是不是以{@code suffix}结束</p>
+	 * <p>判断字符串是不是以后缀结束</p>
 	 * 
 	 * @param value 字符串
 	 * @param suffix 后缀
 	 * 
-	 * @return {@code true}-是；{@code false}-不是；
+	 * @return true-是；false-不是；
 	 */
 	public static final boolean endsWith(String value, String suffix) {
 		return value != null && suffix != null && value.endsWith(suffix);
@@ -136,7 +135,7 @@ public final class StringUtils {
 		for (int index = 0; index < bytes.length; index++) {
 			hex = Integer.toHexString(bytes[index] & 0xFF);
 			if (hex.length() < 2) {
-				builder.append(0);
+				builder.append("0");
 			}
 			builder.append(hex);
 		}
@@ -154,16 +153,14 @@ public final class StringUtils {
 		if(content == null) {
 			return null;
 		}
-		byte[] result;
 		int length = content.length();
-		if (length % 2 == 1) { // 奇数
+		if (length % 2 == 1) {
+			// 奇数
 			length++;
-			result = new byte[(length / 2)];
 			content = "0" + content;
-		} else { // 偶数
-			result = new byte[(length / 2)];
 		}
 		int jndex = 0;
+		final byte[] result = new byte[length / 2];
 		for (int index = 0; index < length; index += 2) {
 			result[jndex] = (byte) Integer.parseInt(content.substring(index, index + 2), 16);
 			jndex++;
@@ -172,7 +169,7 @@ public final class StringUtils {
 	}
 
 	/**
-	 * <p>计算{@code bytes}的SHA-1散列值</p>
+	 * <p>计算字节数组的SHA-1散列值</p>
 	 * 
 	 * @param bytes 字节数组
 	 * 
@@ -185,7 +182,7 @@ public final class StringUtils {
 	}
 	
 	/**
-	 * <p>计算{@code bytes}的SHA-1散列值并转为十六进制字符串</p>
+	 * <p>计算字节数组的SHA-1散列值并转为十六进制字符串</p>
 	 * 
 	 * @param bytes 字节数组
 	 * 
@@ -227,8 +224,8 @@ public final class StringUtils {
 	 * <p>字符串编码转换</p>
 	 * 
 	 * @param value 字符串
-	 * @param from 输入编码：{@code null}-系统默认编码
-	 * @param to 输出编码：{@code null}-系统默认编码
+	 * @param from 输入编码
+	 * @param to 输出编码
 	 * 
 	 * @return 字符串
 	 */
@@ -247,19 +244,19 @@ public final class StringUtils {
 				return new String(value.getBytes(from), to);
 			}
 		} catch (UnsupportedEncodingException e) {
-			LOGGER.error("字符串编码转换异常：{}-{}-{}", from, to, value, e);
+			LOGGER.error("字符串编码转换异常：{}-{}-{}", value, from, to, e);
 		}
 		return value;
 	}
 
 	/**
-	 * <p>判断{@code value}是否匹配正则表达式{@code regex}</p>
+	 * <p>判断字符串是否匹配正则表达式</p>
 	 * 
 	 * @param value 字符串
 	 * @param regex 正则表达式
 	 * @param ignoreCase 是否忽略大小写
 	 * 
-	 * @return {@code true}-匹配；{@code false}-不匹配；
+	 * @return true-匹配；false-不匹配；
 	 */
 	public static final boolean regex(String value, String regex, boolean ignoreCase) {
 		if(value == null || regex == null) {
@@ -281,7 +278,7 @@ public final class StringUtils {
 	 * @param source 原始字符串
 	 * @param target 目标字符串
 	 * 
-	 * @return {@code true}-相等；{@code false}-不等；
+	 * @return true-相等；false-不等；
 	 */
 	public static final boolean equals(String source, String target) {
 		if(source == null) {
@@ -297,7 +294,7 @@ public final class StringUtils {
 	 * @param source 原始字符串
 	 * @param target 目标字符串
 	 * 
-	 * @return {@code true}-相等；{@code false}-不等；
+	 * @return true-相等；false-不等；
 	 */
 	public static final boolean equalsIgnoreCase(String source, String target) {
 		if(source == null) {
@@ -345,7 +342,7 @@ public final class StringUtils {
 	}
 	
 	/**
-	 * <p>将{@code ByteBuffer}转为字符串</p>
+	 * <p>将ByteBuffer转为字符串</p>
 	 * <p>默认编码：{@link SystemConfig#DEFAULT_CHARSET}</p>
 	 * 
 	 * @param buffer 字节缓存
@@ -359,7 +356,7 @@ public final class StringUtils {
 	}
 	
 	/**
-	 * <p>将{@code ByteBuffer}转为字符串</p>
+	 * <p>将ByteBuffer转为字符串</p>
 	 * 
 	 * @param buffer 字节缓冲
 	 * @param charset 编码
@@ -367,18 +364,22 @@ public final class StringUtils {
 	 * @return 字符串
 	 */
 	public static final String ofByteBuffer(ByteBuffer buffer, String charset) {
+		if(buffer == null) {
+			return null;
+		}
 		if(charset == null) {
 			charset = SystemConfig.DEFAULT_CHARSET;
+		}
+		// 重置数据
+		if(buffer.position() != 0) {
+			buffer.flip();
 		}
 		String content = null;
 		final CharsetDecoder decoder = Charset.forName(charset).newDecoder();
 		decoder.onMalformedInput(CodingErrorAction.IGNORE);
 		try {
-			if(buffer.position() != 0) {
-				buffer.flip();
-			}
 			content = decoder.decode(buffer).toString();
-			buffer.compact();
+			buffer.compact(); // 丢弃已经读取数据
 		} catch (CharacterCodingException e) {
 			LOGGER.error("ByteBuffer转为字符串异常", e);
 		}
@@ -424,9 +425,11 @@ public final class StringUtils {
 	 */
 	public static final String argValue(final String arg, final String key) {
 		String value = arg;
-		if(startsWith(value, key)) { // 去掉键
+		if(startsWith(value, key)) {
+			// 去掉键
 			value = value.substring(key.length()).trim();
-			if(startsWith(value, ARG_SEPARATOR)) { // 去掉键值对连接符
+			if(startsWith(value, ARG_SEPARATOR)) {
+				// 去掉连接符
 				value = value.substring(ARG_SEPARATOR.length()).trim();
 				return value;
 			}
@@ -473,7 +476,6 @@ public final class StringUtils {
 	
 	/**
 	 * <p>将对象转为字符串</p>
-	 * <p>编码可以为空，默认编码：UTF-8</p>
 	 * 
 	 * @param object 对象
 	 * @param encoding 编码
@@ -486,16 +488,14 @@ public final class StringUtils {
 		}
 		if(object instanceof byte[]) {
 			final byte[] bytes = (byte[]) object;
-			if(encoding == null) {
-				return new String(bytes);
-			} else {
+			if(encoding != null) {
 				try {
 					return new String(bytes, encoding);
 				} catch (UnsupportedEncodingException e) {
 					LOGGER.error("字符编码异常：{}", encoding, e);
 				}
-				return new String(bytes);
 			}
+			return new String(bytes);
 		} else {
 			return object.toString();
 		}
