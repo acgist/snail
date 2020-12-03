@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.NatContext;
 import com.acgist.snail.context.SystemStatistics;
-import com.acgist.snail.gui.javafx.Alerts;
 import com.acgist.snail.gui.javafx.Controller;
 import com.acgist.snail.gui.javafx.Tooltips;
 import com.acgist.snail.net.torrent.TorrentManager;
@@ -486,9 +485,8 @@ public final class StatisticsController extends Controller implements Initializa
 		// 已下载Piece位图
 		final var torrent = torrentSession.torrent();
 		if(torrent == null) { // 磁力链接为空
-			this.filter = Filter.PEER;
-			this.buildSelectPeerStatistics();
-			Alerts.info("提示消息", "磁力链接不能查看下载统计");
+			this.filter = Filter.SYSTEM;
+			this.buildSelectSystemStatistics();
 			return;
 		}
 		final int pieceSize = torrent.getInfo().pieceSize();
