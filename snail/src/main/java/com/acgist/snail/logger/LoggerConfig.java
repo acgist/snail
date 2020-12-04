@@ -47,13 +47,13 @@ public final class LoggerConfig {
 	 */
 	private final Properties properties;
 	/**
-	 * <p>日志名称</p>
-	 */
-	private String name;
-	/**
 	 * <p>日志级别</p>
 	 */
 	private String level;
+	/**
+	 * <p>日志系统名称</p>
+	 */
+	private String system;
 	/**
 	 * <p>日志适配</p>
 	 */
@@ -67,29 +67,20 @@ public final class LoggerConfig {
 	 */
 	private int fileBuffer;
 	/**
-	 * <p>文件日志最大备份数量</p>
+	 * <p>文件日志最大备份时间</p>
 	 */
-	private int fileMaxSize;
+	private int fileMaxDays;
 	
 	/**
 	 * <p>初始化配置</p>
 	 */
 	private void init() {
-		this.name = this.properties.getProperty("logger.name");
 		this.level = this.properties.getProperty("logger.level");
+		this.system = this.properties.getProperty("logger.system");
 		this.adapter = this.properties.getProperty("logger.adapter");
 		this.fileName = this.properties.getProperty("logger.file.name");
 		this.fileBuffer = Integer.parseInt(this.properties.getProperty("logger.file.buffer", "8192"));
-		this.fileMaxSize = Integer.parseInt(this.properties.getProperty("logger.file.max.size", "30"));
-	}
-
-	/**
-	 * <p>获取日志名称</p>
-	 * 
-	 * @return 日志名称
-	 */
-	public static final String getName() {
-		return INSTANCE.name;
+		this.fileMaxDays = Integer.parseInt(this.properties.getProperty("logger.file.max.days", "30"));
 	}
 
 	/**
@@ -99,6 +90,15 @@ public final class LoggerConfig {
 	 */
 	public static final String getLevel() {
 		return INSTANCE.level;
+	}
+	
+	/**
+	 * <p>获取日志系统名称</p>
+	 * 
+	 * @return 日志系统名称
+	 */
+	public static final String getSystem() {
+		return INSTANCE.system;
 	}
 
 	/**
@@ -146,12 +146,12 @@ public final class LoggerConfig {
 	}
 
 	/**
-	 * <p>获取文件日志最大备份数量</p>
+	 * <p>获取文件日志最大备份时间</p>
 	 * 
-	 * @return 文件日志最大备份数量
+	 * @return 文件日志最大备份时间
 	 */
-	public static final int getFileMaxSize() {
-		return INSTANCE.fileMaxSize;
+	public static final int getFileMaxDays() {
+		return INSTANCE.fileMaxDays;
 	}
 
 }
