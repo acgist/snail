@@ -31,25 +31,25 @@ public final class Logger implements org.slf4j.Logger {
 	 */
 	private final int level;
 	/**
-	 * <p>系统名称</p>
+	 * <p>日志名称</p>
 	 */
 	private final String name;
 	/**
-	 * <p>日志名称</p>
+	 * <p>日志系统名称</p>
 	 */
-	private final String logger;
+	private final String system;
 	/**
 	 * <p>日志上下文</p>
 	 */
 	private final LoggerContext context;
 	
 	/**
-	 * @param logger 日志名称
+	 * @param name 日志名称
 	 */
-	public Logger(String logger) {
+	public Logger(String name) {
+		this.name = name;
 		this.level = LoggerConfig.getLevelInt();
-		this.name = LoggerConfig.getName();
-		this.logger = logger;
+		this.system = LoggerConfig.getSystem();
 		this.context = LoggerContext.getInstance();
 	}
 	
@@ -73,11 +73,11 @@ public final class Logger implements org.slf4j.Logger {
 	private String format(Level level, FormattingTuple message) {
 		final StringBuilder builder = new StringBuilder();
 		builder
-			.append("[").append(this.name).append("]").append(" ")
-			.append(FORMATER.get().format(new Date())).append(" ")
-			.append(Thread.currentThread().getName()).append(" ")
+			.append("[").append(this.system).append("] ")
+			.append(FORMATER.get().format(new Date())).append(" [")
+			.append(Thread.currentThread().getName()).append("] ")
 			.append(level.name()).append(" ")
-			.append(this.logger).append(" ")
+			.append(this.name).append(" ")
 			.append(message.getMessage()).append(" ")
 			.append("\n");
 		final Throwable throwable = message.getThrowable();
@@ -104,7 +104,7 @@ public final class Logger implements org.slf4j.Logger {
 	
 	@Override
 	public String getName() {
-		return "SnailLogger";
+		return this.name;
 	}
 	
 	/**

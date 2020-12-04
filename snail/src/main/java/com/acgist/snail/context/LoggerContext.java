@@ -37,9 +37,9 @@ public final class LoggerContext implements ILoggerFactory {
 	private final List<LoggerAdapter> adapters;
 	
 	private LoggerContext() {
-		this.loggers = new ConcurrentHashMap<String, Logger>();
+		this.loggers = new ConcurrentHashMap<>();
 		final String adapter = LoggerConfig.getAdapter();
-		final List<LoggerAdapter> list = new ArrayList<LoggerAdapter>();
+		final List<LoggerAdapter> list = new ArrayList<>();
 		if(adapter != null && !adapter.isEmpty()) {
 			final String[] adapters = adapter.split(",");
 			for (String value : adapters) {
@@ -95,7 +95,7 @@ public final class LoggerContext implements ILoggerFactory {
 	 * <p>关闭日志</p>
 	 */
 	public static final void shutdown() {
-		INSTANCE.adapters.forEach(adapter -> adapter.release());
+		INSTANCE.adapters.forEach(LoggerAdapter::release);
 	}
 
 }

@@ -10,7 +10,7 @@ import com.acgist.snail.context.LoggerContext;
  * 
  * @author acgist
  */
-public class StaticLoggerBinder implements LoggerFactoryBinder {
+public final class StaticLoggerBinder implements LoggerFactoryBinder {
 
 	private static final StaticLoggerBinder INSTANCE = new StaticLoggerBinder();
 	
