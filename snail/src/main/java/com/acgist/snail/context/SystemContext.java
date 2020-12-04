@@ -35,7 +35,6 @@ import com.acgist.snail.net.torrent.tracker.TrackerServer;
 import com.acgist.snail.net.torrent.utp.bootstrap.UtpRequestQueue;
 import com.acgist.snail.repository.DatabaseManager;
 import com.acgist.snail.utils.FileUtils;
-import com.acgist.snail.utils.LoggerUtils;
 import com.acgist.snail.utils.NetUtils;
 
 /**
@@ -203,7 +202,7 @@ public final class SystemContext {
 				GuiManager.getInstance().exit();
 				SystemThreadContext.shutdown();
 				LOGGER.info("系统已关闭");
-				LoggerUtils.shutdown(); // 最后关闭日志
+				LoggerContext.shutdown();
 			});
 		} else {
 			GuiManager.getInstance().alert("关闭提示", "系统正在关闭中...");

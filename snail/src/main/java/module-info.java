@@ -62,7 +62,5 @@ open module com.acgist.snail {
 	//================依赖================//
 	requires transitive org.slf4j;
 	requires transitive com.h2database;
-	requires transitive ch.qos.logback.core;
-	requires transitive ch.qos.logback.classic;
 
 }

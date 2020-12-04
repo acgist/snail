@@ -26,7 +26,6 @@ public class NodeManagerTest extends BaseTest {
 
 	@Test
 	public void testFindNode() {
-		this.info();
 		final List<NodeSession> nodes = new ArrayList<>();
 		for (int index = 100000; index < 110000; index++) {
 			nodes.add(NodeManager.getInstance().newNodeSession(StringUtils.unhex(buildId()), "0", 0));

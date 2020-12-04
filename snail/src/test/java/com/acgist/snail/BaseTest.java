@@ -10,9 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.utils.ThreadUtils;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.LoggerContext;
-
 public class BaseTest {
 
 	protected Logger LOGGER = LoggerFactory.getLogger(this.getClass());
@@ -21,16 +18,6 @@ public class BaseTest {
 	 * <p>消耗时间标记</p>
 	 */
 	protected AtomicLong cos = new AtomicLong();
-	
-	/**
-	 * <p>设置日志级别：INFO</p>
-	 */
-	protected void info() {
-		final LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-		context.getLoggerList().forEach(logger -> {
-			logger.setLevel(Level.INFO);
-		});
-	}
 	
 	/**
 	 * <p>阻止自动关闭</p>
