@@ -1,5 +1,6 @@
 package com.acgist.snail.utils;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -91,6 +92,26 @@ public class FileUtilsTest extends BaseTest {
 		channel.lock(0, Long.MAX_VALUE, true);
 //		RandomAccessFile file = new RandomAccessFile("e://text.txt", "rw");
 		this.pause();
+	}
+
+	@Test
+	public void testDelete() throws IOException {
+		File folder = new File("E://tmp/delete");
+		File file = new File("E://tmp/delete/delete.txt");
+		if(!folder.exists()) {
+			folder.mkdirs();
+		}
+		if(!file.exists()) {
+			file.createNewFile();
+		}
+//		this.log("删除结果：{}", folder.delete());
+//		this.log("删除结果：{}", file.delete());
+//		this.log("删除结果：{}", folder.delete());
+//		Files.delete(folder.toPath());
+//		Files.delete(file.toPath());
+//		Files.delete(folder.toPath());
+//		FileUtils.delete(file.getAbsolutePath());
+		FileUtils.delete(folder.getAbsolutePath());
 	}
 	
 }

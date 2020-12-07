@@ -17,7 +17,7 @@ public class BaseTest {
 	/**
 	 * <p>消耗时间标记</p>
 	 */
-	protected AtomicLong cos = new AtomicLong();
+	protected AtomicLong cost = new AtomicLong();
 	
 	/**
 	 * <p>阻止自动关闭</p>
@@ -29,7 +29,7 @@ public class BaseTest {
 	/**
 	 * <p>记录日志</p>
 	 * 
-	 * @param obj 日志对象
+	 * @param obj 日志信息
 	 */
 	protected void log(Object obj) {
 		this.log(null, obj);
@@ -52,7 +52,7 @@ public class BaseTest {
 	 * <p>开始计算消耗</p>
 	 */
 	protected void cost() {
-		this.cos.set(System.currentTimeMillis());
+		this.cost.set(System.currentTimeMillis());
 	}
 	
 	/**
@@ -60,7 +60,7 @@ public class BaseTest {
 	 */
 	protected void costed() {
 		final long time = System.currentTimeMillis();
-		final long cos = time - this.cos.getAndSet(time);
+		final long cos = time - this.cost.getAndSet(time);
 		// TODO：多行文本
 		this.LOGGER.info("消耗时间：毫秒：{}，秒：{}", cos, cos / 1000);
 	}

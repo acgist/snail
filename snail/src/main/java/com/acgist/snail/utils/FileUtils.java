@@ -105,13 +105,7 @@ public final class FileUtils {
 			LOGGER.warn("删除文件为空：{}", filePath);
 			return;
 		}
-		final File file = new File(filePath);
-		if(!file.exists()) {
-			LOGGER.debug("删除文件不存在：{}", filePath);
-			return;
-		}
-		LOGGER.info("删除文件：{}", filePath);
-		delete(file);
+		delete(new File(filePath));
 	}
 
 	/**
@@ -121,18 +115,24 @@ public final class FileUtils {
 	 */
 	private static final void delete(final File file) {
 		Objects.requireNonNull(file);
+		if(!file.exists()) {
+			LOGGER.debug("删除文件不存在：{}", file.getAbsolutePath());
+			return;
+		}
 		// 删除目录
 		if(file.isDirectory()) {
+			// 删除目录子文件
 			final File[] files = file.listFiles();
 			for (File children : files) {
-				delete(children); // 删除子文件
+				delete(children);
 			}
 		}
 		// 删除当前文件或目录
-//		优化推荐：Files.delete
-		final var success = file.delete();
-		if(!success) {
-			LOGGER.warn("删除文件失败：{}", file.getAbsolutePath());
+		LOGGER.info("删除文件：{}", file.getAbsolutePath());
+		try {
+			Files.delete(file.toPath());
+		} catch (IOException e) {
+			LOGGER.error("删除文件失败：{}", file.getAbsoluteFile(), e);
 		}
 	}
 	
