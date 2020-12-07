@@ -44,7 +44,7 @@ public final class NatContext {
 	}
 	
 	/**
-	 * <p>UPNP端口映射超时时间</p>
+	 * <p>UPNP端口映射超时时间：{@value}</p>
 	 */
 	private static final int UPNP_TIMEOUT = SystemConfig.CONNECT_TIMEOUT_MILLIS;
 	

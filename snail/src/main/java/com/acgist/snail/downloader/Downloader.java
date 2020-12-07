@@ -131,7 +131,7 @@ public abstract class Downloader implements IDownloader {
 	@Override
 	public void delete() {
 		this.pause(); // 暂停任务
-		this.lockDelete(); // 删除等待
+		this.lockDelete(); // 加锁
 		this.taskSession.delete(); // 删除任务
 	}
 	

@@ -64,7 +64,7 @@ public final class PeerCryptMessageCodec extends MessageCodec<ByteBuffer, ByteBu
 			final boolean encrypt = this.mseCryptHandshakeHandler.needEncrypt() && CryptConfig.STRATEGY.crypt();
 			if(encrypt) { // 需要加密
 				this.mseCryptHandshakeHandler.handshake(); // 握手
-				this.mseCryptHandshakeHandler.handshakeLock(); // 握手加锁
+				this.mseCryptHandshakeHandler.lockHandshake(); // 握手加锁
 				this.mseCryptHandshakeHandler.encrypt(buffer); // 加密消息
 			} else { // 不需要加密：使用明文完成握手
 				this.mseCryptHandshakeHandler.plaintext();

@@ -90,17 +90,17 @@ public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker
 	public void announce(Integer sid, TorrentSession torrentSession) throws NetException {
 		// 获取连接ID
 		if(this.connectionId == null) {
+			// 添加连接锁
 			synchronized (this) {
-				// 发送连接消息
 				if(this.connectionId == null) {
+					// 发送连接消息
 					this.buildConnectionId();
-				}
-				// 添加连接锁
-				try {
-					this.wait(SystemConfig.CONNECT_TIMEOUT_MILLIS);
-				} catch (InterruptedException e) {
-					LOGGER.debug("线程等待异常", e);
-					Thread.currentThread().interrupt();
+					try {
+						this.wait(SystemConfig.CONNECT_TIMEOUT_MILLIS);
+					} catch (InterruptedException e) {
+						LOGGER.debug("线程等待异常", e);
+						Thread.currentThread().interrupt();
+					}
 				}
 			}
 		}

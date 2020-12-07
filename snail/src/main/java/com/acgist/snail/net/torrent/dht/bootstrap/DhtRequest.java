@@ -197,14 +197,16 @@ public class DhtRequest extends DhtMessage {
 	/**
 	 * <p>添加响应锁</p>
 	 */
-	public void waitResponse() {
-		synchronized (this) {
-			if(!this.haveResponse()) {
-				try {
-					this.wait(DhtConfig.TIMEOUT);
-				} catch (InterruptedException e) {
-					LOGGER.debug("线程等待异常", e);
-					Thread.currentThread().interrupt();
+	public void lockResponse() {
+		if(!this.haveResponse()) {
+			synchronized (this) {
+				if(!this.haveResponse()) {
+					try {
+						this.wait(DhtConfig.TIMEOUT);
+					} catch (InterruptedException e) {
+						LOGGER.debug("线程等待异常", e);
+						Thread.currentThread().interrupt();
+					}
 				}
 			}
 		}
@@ -213,7 +215,7 @@ public class DhtRequest extends DhtMessage {
 	/**
 	 * <p>释放响应锁</p>
 	 */
-	public void notifyResponse() {
+	public void unlockResponse() {
 		synchronized (this) {
 			this.notifyAll();
 		}

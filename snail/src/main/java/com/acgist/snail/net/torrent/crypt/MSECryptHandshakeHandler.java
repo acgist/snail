@@ -287,22 +287,11 @@ public final class MSECryptHandshakeHandler {
 	}
 	
 	/**
-	 * <p>加密握手锁</p>
-	 */
-	public void handshakeLock() {
-		this.lockHandshake(); // 加锁
-		// 加密没有完成设置明文
-		if(!this.complete) {
-			LOGGER.debug("加密握手失败：使用明文");
-			this.plaintext();
-		}
-	}
-	
-	/**
 	 * <p>添加加密握手锁</p>
 	 */
-	private void lockHandshake() {
+	public void lockHandshake() {
 		if(!this.complete) {
+			// 加锁
 			synchronized (this.handshakeLock) {
 				if(!this.complete) {
 					try {
@@ -313,6 +302,11 @@ public final class MSECryptHandshakeHandler {
 					}
 				}
 			}
+		}
+		// 加密没有完成设置明文
+		if(!this.complete) {
+			LOGGER.debug("加密握手失败：使用明文");
+			this.plaintext();
 		}
 	}
 	
