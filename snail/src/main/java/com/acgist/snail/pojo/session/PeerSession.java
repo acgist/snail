@@ -737,6 +737,7 @@ public final class PeerSession implements IStatisticsSessionGetter {
 		synchronized (this.holepunchLock) {
 			this.holepunchWait = true;
 			try {
+				// TODO：优化：状态锁一个原子变量
 				this.holepunchLock.wait(PeerConfig.HOLEPUNCH_TIMEOUT);
 			} catch (InterruptedException e) {
 				LOGGER.debug("线程等待异常", e);
