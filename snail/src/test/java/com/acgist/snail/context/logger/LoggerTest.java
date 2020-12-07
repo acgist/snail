@@ -4,16 +4,15 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.BaseTest;
 import com.acgist.snail.pojo.entity.TaskEntity;
-import com.acgist.snail.utils.ThreadUtils;
 
 public class LoggerTest extends BaseTest {
 
 	@Test
-	public void testLogger() {
-		while (true) {
+	public void testCost() {
+		this.cost(100000, 10, index -> {
 			this.log("----" + System.currentTimeMillis());
-			ThreadUtils.sleep(10);
-		}
+//			ThreadUtils.sleep(10);
+		});
 	}
 
 	@Test

@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <p>MSE加密配置</p>
+ * <p>数据流加密（MSE）配置</p>
  * 
  * @author acgist
  */
@@ -21,9 +21,13 @@ public final class CryptConfig {
 	 */
 	public enum CryptAlgo {
 		
-		/** 明文 */
+		/**
+		 * <p>明文</p>
+		 */
 		PLAINTEXT(0x01),
-		/** ARC4 */
+		/**
+		 * <p>ARC4</p>
+		 */
 		ARC4(0x02);
 		
 		/**
@@ -43,7 +47,7 @@ public final class CryptConfig {
 		 * 
 		 * @return provide
 		 */
-		public int provide() {
+		public final int provide() {
 			return this.provide;
 		}
 		
@@ -56,13 +60,21 @@ public final class CryptConfig {
 	 */
 	public enum Strategy {
 		
-		/** 明文 */
+		/**
+		 * <p>明文</p>
+		 */
 		PLAINTEXT(false, CryptAlgo.PLAINTEXT.provide),
-		/** 兼容：偏爱明文 */
+		/**
+		 * <p>兼容：偏爱明文</p>
+		 */
 		PREFER_PLAINTEXT(false, CryptAlgo.PLAINTEXT.provide | CryptAlgo.ARC4.provide),
-		/** 兼容：偏爱加密 */
+		/**
+		 * <p>兼容：偏爱加密</p>
+		 */
 		PREFER_ENCRYPT(true, CryptAlgo.ARC4.provide | CryptAlgo.PLAINTEXT.provide),
-		/** 加密 */
+		/**
+		 * <p>加密</p>
+		 */
 		ENCRYPT(true, CryptAlgo.ARC4.provide);
 		
 		/**
@@ -71,7 +83,7 @@ public final class CryptConfig {
 		private final boolean crypt;
 		/**
 		 * <p>加密模式：crypto_provide</p>
-		 * <p>客户端可能支持多种加密算法，传输或运算计算结果，双方协商最优加密算法。</p>
+		 * <p>客户端可能支持多种加密算法，双方协商最优加密算法。</p>
 		 * 
 		 * @see CryptAlgo#provide
 		 */
@@ -87,11 +99,11 @@ public final class CryptConfig {
 		}
 		
 		/**
-		 * <p>获取是否加密</p>
+		 * <p>判断是否加密</p>
 		 * 
-		 * @return true-加密；false-不加密；
+		 * @return true-加密；false-明文；
 		 */
-		public boolean crypt() {
+		public final boolean crypt() {
 			return this.crypt;
 		}
 		
@@ -100,7 +112,7 @@ public final class CryptConfig {
 		 * 
 		 * @return 加密模式
 		 */
-		public int provide() {
+		public final int provide() {
 			return this.provide;
 		}
 		
@@ -129,17 +141,18 @@ public final class CryptConfig {
 	 */
 	public static final int PRIVATE_KEY_LENGTH = 20;
 	/**
-	 * <p>填充最大随机长度：{@value}</p>
+	 * <p>最大随机填充长度：{@value}</p>
 	 */
 	public static final int PADDING_MAX_LENGTH = 512;
 	/**
 	 * <p>VC长度：{@value}</p>
+	 * 
+	 * @see #VC
 	 */
 	public static final int VC_LENGTH = 8;
 	/**
-	 * <p>VC数据：八字节（0x00）</p>
-	 * 
-	 * TODO：私有化更安全
+	 * <p>VC数据</p>
+	 * <p>默认填充：0x00</p>
 	 */
 	public static final byte[] VC = new byte[VC_LENGTH];
 	/**

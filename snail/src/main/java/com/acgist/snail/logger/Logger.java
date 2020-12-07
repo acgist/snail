@@ -1,5 +1,7 @@
 package com.acgist.snail.logger;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
@@ -59,7 +61,13 @@ public final class Logger implements org.slf4j.Logger {
 	 * @param t 异常
 	 */
 	public static final void error(Throwable t) {
-		t.printStackTrace();
+		try(FileOutputStream outputStream = new FileOutputStream(new File("logs/snail.logger.log"), true)) {
+			final PrintWriter printWriter = new PrintWriter(outputStream);
+			t.printStackTrace(printWriter);
+			printWriter.flush();
+		} catch (Exception e) {
+			error(t);
+		}
 	}
 	
 	/**
@@ -100,11 +108,6 @@ public final class Logger implements org.slf4j.Logger {
 	 */
 	private void output(Level level, FormattingTuple message) {
 		this.context.output(level, this.format(level, message));
-	}
-	
-	@Override
-	public String getName() {
-		return this.name;
 	}
 	
 	/**
@@ -253,6 +256,11 @@ public final class Logger implements org.slf4j.Logger {
 	 */
 	private void log(Level level, Marker marker, String message, Throwable t) {
 		this.log(level, message, t);
+	}
+	
+	@Override
+	public String getName() {
+		return this.name;
 	}
 	
 	@Override

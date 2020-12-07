@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
@@ -61,7 +62,11 @@ public final class FileLoggerAdapter extends LoggerAdapter {
 		final File[] childrens = file.getParentFile().listFiles();
 		for (File children : childrens) {
 			if(this.deleteable(maxDays, fileName, now, children)) {
-				children.delete();
+				try {
+					Files.delete(file.toPath());
+				} catch (IOException e) {
+					Logger.error(e);
+				}
 			}
 		}
 	}
