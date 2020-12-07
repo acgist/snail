@@ -157,6 +157,8 @@ public final class CryptConfig {
 	public static final byte[] VC = new byte[VC_LENGTH];
 	/**
 	 * <p>默认加密策略</p>
+	 * 
+	 * @see Strategy
 	 */
 	public static final Strategy STRATEGY = Strategy.PREFER_PLAINTEXT;
 
