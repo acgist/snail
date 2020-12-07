@@ -78,21 +78,23 @@ public final class TaskDisplay {
 	 * @return 主窗口控制器
 	 */
 	private MainController controller() {
-		if(INSTANCE.controller == null) {
-			// 添加锁
-			synchronized (this.lock) {
-				while(INSTANCE.controller == null) {
-					try {
-						// 注意：wait会释放锁
-						this.lock.wait(DateUtils.ONE_SECOND);
-					} catch (InterruptedException e) {
-						LOGGER.debug("线程等待异常", e);
-						Thread.currentThread().interrupt();
+		synchronized (this) {
+			if(INSTANCE.controller == null) {
+				// 添加锁
+				synchronized (this.lock) {
+					while(INSTANCE.controller == null) {
+						try {
+							// 注意：wait会释放锁
+							this.lock.wait(DateUtils.ONE_SECOND);
+						} catch (InterruptedException e) {
+							LOGGER.debug("线程等待异常", e);
+							Thread.currentThread().interrupt();
+						}
 					}
 				}
 			}
+			return INSTANCE.controller;
 		}
-		return INSTANCE.controller;
 	}
 
 }
