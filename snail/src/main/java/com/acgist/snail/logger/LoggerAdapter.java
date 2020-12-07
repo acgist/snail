@@ -20,7 +20,7 @@ public abstract class LoggerAdapter {
 	protected OutputStream errorOutput;
 	/**
 	 * <p>是否可用</p>
-	 * <p>系统关闭后如果继续输出日志导致异常</p>
+	 * <p>输出流关闭后不再继续记录日志</p>
 	 */
 	private volatile boolean available = true;
 
