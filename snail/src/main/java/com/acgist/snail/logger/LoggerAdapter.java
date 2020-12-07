@@ -18,6 +18,10 @@ public abstract class LoggerAdapter {
 	 * <p>异常日志输出流</p>
 	 */
 	protected OutputStream errorOutput;
+	/**
+	 * <p>是否可用</p>
+	 */
+	private volatile boolean available = true;
 
 	protected LoggerAdapter() {
 	}
@@ -38,7 +42,9 @@ public abstract class LoggerAdapter {
 	 */
 	public void output(String message) {
 		try {
-			this.output.write(message.getBytes());
+			if(this.available) {
+				this.output.write(message.getBytes());
+			}
 		} catch (IOException e) {
 			Logger.error(e);
 		}
@@ -51,7 +57,9 @@ public abstract class LoggerAdapter {
 	 */
 	public void errorOutput(String message) {
 		try {
-			this.errorOutput.write(message.getBytes());
+			if(this.available) {
+				this.errorOutput.write(message.getBytes());
+			}
 		} catch (IOException e) {
 			Logger.error(e);
 		}
@@ -61,6 +69,7 @@ public abstract class LoggerAdapter {
 	 * <p>释放资源</p>
 	 */
 	public void release() {
+		this.available = false;
 		if(this.output != null) {
 			try {
 				this.output.flush();
