@@ -154,7 +154,7 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 		LOGGER.debug("发送DHT请求：ping");
 		final PingRequest request = PingRequest.newRequest();
 		this.pushMessage(request, socketAddress);
-		request.waitResponse();
+		request.lockResponse();
 		final DhtResponse response = request.getResponse();
 		if(RESPONSE_SUCCESS.apply(response)) {
 			final NodeSession nodeSession = NodeManager.getInstance().newNodeSession(response.getNodeId(), socketAddress.getHostString(), socketAddress.getPort());
@@ -184,7 +184,7 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 	 * @param response 响应
 	 */
 	private void ping(DhtRequest request, DhtResponse response) {
-		request.notifyResponse();
+		request.unlockResponse();
 	}
 	
 	/**

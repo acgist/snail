@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.SystemThreadContext;
+import com.acgist.snail.utils.DateUtils;
 
 /**
  * <p>任务列表刷新器</p>
@@ -42,17 +43,20 @@ public final class TaskDisplay {
 	 */
 	public void newTimer(MainController controller) {
 		LOGGER.info("启动任务列表刷新定时器");
-		synchronized (this) {
-			if(this.controller == null) {
-				this.controller = controller;
-				SystemThreadContext.timerAtFixedRate(
-					0,
-					SystemConfig.TASK_REFRESH_INTERVAL.toSeconds(),
-					TimeUnit.SECONDS,
-					() -> this.refreshTaskStatus()
-				);
-				synchronized (this.lock) {
-					this.lock.notifyAll();
+		if(this.controller == null) {
+			synchronized (this) {
+				if(this.controller == null) {
+					this.controller = controller;
+					SystemThreadContext.timerAtFixedRate(
+						0,
+						SystemConfig.TASK_REFRESH_INTERVAL.toSeconds(),
+						TimeUnit.SECONDS,
+						() -> this.refreshTaskStatus()
+					);
+					// 释放锁
+					synchronized (this.lock) {
+						this.lock.notifyAll();
+					}
 				}
 			}
 		}
@@ -78,12 +82,13 @@ public final class TaskDisplay {
 	 * @return 主窗口控制器
 	 */
 	private MainController controller() {
-		while(INSTANCE.controller == null) {
+		if(INSTANCE.controller == null) {
+			// 添加锁
 			synchronized (this.lock) {
-				if(INSTANCE.controller == null) {
+				while(INSTANCE.controller == null) {
 					try {
 						// 注意：wait会释放锁
-						this.lock.wait(Short.MAX_VALUE);
+						this.lock.wait(DateUtils.ONE_SECOND);
 					} catch (InterruptedException e) {
 						LOGGER.debug("线程等待异常", e);
 						Thread.currentThread().interrupt();

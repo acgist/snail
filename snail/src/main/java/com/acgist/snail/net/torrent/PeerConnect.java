@@ -36,7 +36,7 @@ public abstract class PeerConnect {
 	 * <p>SLICE最大请求数量：{@value}</p>
 	 * <p>超过这个数量跳出请求</p>
 	 */
-	private static final int MAX_WAIT_SLICE_REQUEST_SIZE = 4;
+	private static final int SLICE_REQUEST_MAX_SIZE = 4;
 	/**
 	 * <p>SLICE请求等待时间：{@value}</p>
 	 */
@@ -44,7 +44,7 @@ public abstract class PeerConnect {
 	/**
 	 * <p>PICEC完成等待时间：{@value}</p>
 	 */
-	private static final int PIECE_TIMEOUT = 30 * 1000;
+	private static final int COMPLETE_TIMEOUT = 30 * 1000;
 	/**
 	 * <p>释放等待时间：{@value}</p>
 	 */
@@ -63,18 +63,23 @@ public abstract class PeerConnect {
 	 */
 	private TorrentPiece downloadPiece;
 	/**
-	 * <p>Piece分片锁</p>
+	 * <p>slice锁</p>
 	 * 
+	 * @see #SLICE_TIMEOUT
 	 * @see #SLICE_REQUEST_SIZE
-	 * @see #MAX_WAIT_SLICE_REQUEST_SIZE
+	 * @see #SLICE_REQUEST_MAX_SIZE
 	 */
 	private final AtomicInteger sliceLock = new AtomicInteger(0);
 	/**
-	 * <p>Peer释放锁</p>
+	 * <p>释放锁</p>
+	 * 
+	 * @see #RELEASE_TIMEOUT
 	 */
 	private final AtomicBoolean releaseLock = new AtomicBoolean(false);
 	/**
-	 * <p>Piece完成锁</p>
+	 * <p>完成锁</p>
+	 * 
+	 * @see #COMPLETE_TIMEOUT
 	 */
 	private final AtomicBoolean completeLock = new AtomicBoolean(false);
 	/**
@@ -297,7 +302,7 @@ public abstract class PeerConnect {
 				ok = false;
 			}
 		}
-		this.completeLock.set(true);
+		this.completeLock.set(true); // 设置完成
 		this.releaseDownload();
 		this.torrentSession.checkCompletedAndDone();
 		// 验证最后选择的Piece是否下载完成
@@ -311,7 +316,7 @@ public abstract class PeerConnect {
 	 * <p>请求数据</p>
 	 * <p>每次发送{@value #SLICE_REQUEST_SIZE}个请求，然后进入等待，当全部数据响应后，又开始发送请求，直到Piece下载完成。</p>
 	 * <p>请求发送完成后必须进入完成等待</p>
-	 * <p>请求等待队列数量超过{@value #MAX_WAIT_SLICE_REQUEST_SIZE}个时跳出循环</p>
+	 * <p>请求等待队列数量超过{@value #SLICE_REQUEST_MAX_SIZE}个时跳出循环</p>
 	 * 
 	 * @return 是否可以继续下载
 	 */
@@ -336,7 +341,7 @@ public abstract class PeerConnect {
 				this.lockSlice();
 			}
 			// 超过slice最大请求数量跳出循环
-			if (this.sliceLock.get() >= MAX_WAIT_SLICE_REQUEST_SIZE) {
+			if (this.sliceLock.get() >= SLICE_REQUEST_MAX_SIZE) {
 				LOGGER.debug("超过slice最大请求数量跳出循环：{}-{}", this.downloadPiece.getIndex(), this.sliceLock.get());
 				break;
 			}
@@ -446,10 +451,9 @@ public abstract class PeerConnect {
 	 * <p>释放slice锁</p>
 	 */
 	private void unlockSlice() {
-		// TODO：优化逻辑：顺序
-		synchronized (this.sliceLock) {
-			// 请求数据下载完成：释放锁
-			if (this.sliceLock.decrementAndGet() <= 0) {
+		// 请求数据下载完成：释放锁
+		if (this.sliceLock.decrementAndGet() <= 0) {
+			synchronized (this.sliceLock) {
 				this.sliceLock.notifyAll();
 			}
 		}
@@ -460,14 +464,15 @@ public abstract class PeerConnect {
 	 * <p>无论是否有数据返回都需要进行结束等待，防止数据小于{@link #SLICE_REQUEST_SIZE}个slice时直接跳出了slice wait（sliceLock）导致响应还没有收到就直接结束了。</p>
 	 */
 	private void lockComplete() {
-		// TODO：优化逻辑
-		synchronized (this.completeLock) {
-			if(!this.completeLock.getAndSet(true)) {
-				try {
-					this.completeLock.wait(PIECE_TIMEOUT);
-				} catch (InterruptedException e) {
-					LOGGER.debug("线程等待异常", e);
-					Thread.currentThread().interrupt();
+		if(!this.completeLock.get()) {
+			synchronized (this.completeLock) {
+				if(!this.completeLock.get()) {
+					try {
+						this.completeLock.wait(COMPLETE_TIMEOUT);
+					} catch (InterruptedException e) {
+						LOGGER.debug("线程等待异常", e);
+						Thread.currentThread().interrupt();
+					}
 				}
 			}
 		}
@@ -477,11 +482,9 @@ public abstract class PeerConnect {
 	 * <p>释放完成锁</p>
 	 */
 	private void unlockComplete() {
-		// TODO：优化逻辑
 		synchronized (this.completeLock) {
-			if (this.completeLock.getAndSet(true)) {
-				this.completeLock.notifyAll();
-			}
+			this.completeLock.set(true);
+			this.completeLock.notifyAll();
 		}
 	}
 
@@ -489,9 +492,9 @@ public abstract class PeerConnect {
 	 * <p>添加释放锁</p>
 	 */
 	private void lockRelease() {
-		// TODO：优化逻辑
 		if(!this.releaseLock.get()) {
 			synchronized (this.releaseLock) {
+				// 设置释放状态
 				if(!this.releaseLock.getAndSet(true)) {
 					try {
 						this.releaseLock.wait(RELEASE_TIMEOUT);
@@ -508,10 +511,10 @@ public abstract class PeerConnect {
 	 * <p>释放释放锁</p>
 	 */
 	private void unlockRelease() {
-		// TODO：优化逻辑
+		// 释放状态
 		if(this.releaseLock.get()) {
 			synchronized (this.releaseLock) {
-				if(this.releaseLock.getAndSet(true)) {
+				if(this.releaseLock.get()) {
 					this.releaseLock.notifyAll();
 				}
 			}
