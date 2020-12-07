@@ -51,7 +51,7 @@ public final class TaskDisplay {
 					SystemConfig.TASK_REFRESH_INTERVAL.toSeconds(),
 					TimeUnit.SECONDS,
 					() -> this.refreshTaskStatus()
-					);
+				);
 				// 释放锁
 				synchronized (this.lock) {
 					this.lock.notifyAll();
