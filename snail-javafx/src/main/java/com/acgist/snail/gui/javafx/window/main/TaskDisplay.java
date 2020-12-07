@@ -43,17 +43,19 @@ public final class TaskDisplay {
 	 */
 	public void newTimer(MainController controller) {
 		LOGGER.info("启动任务列表刷新定时器");
-		if(this.controller == null) {
-			this.controller = controller;
-			SystemThreadContext.timerAtFixedRate(
-				0,
-				SystemConfig.TASK_REFRESH_INTERVAL.toSeconds(),
-				TimeUnit.SECONDS,
-				() -> this.refreshTaskStatus()
-			);
-			// 释放锁
-			synchronized (this.lock) {
-				this.lock.notifyAll();
+		synchronized (this) {
+			if(this.controller == null) {
+				this.controller = controller;
+				SystemThreadContext.timerAtFixedRate(
+					0,
+					SystemConfig.TASK_REFRESH_INTERVAL.toSeconds(),
+					TimeUnit.SECONDS,
+					() -> this.refreshTaskStatus()
+					);
+				// 释放锁
+				synchronized (this.lock) {
+					this.lock.notifyAll();
+				}
 			}
 		}
 	}
@@ -78,23 +80,21 @@ public final class TaskDisplay {
 	 * @return 主窗口控制器
 	 */
 	private MainController controller() {
-		synchronized (this) {
-			if(INSTANCE.controller == null) {
-				// 添加锁
-				synchronized (this.lock) {
-					while(INSTANCE.controller == null) {
-						try {
-							// 注意：wait会释放锁
-							this.lock.wait(DateUtils.ONE_SECOND);
-						} catch (InterruptedException e) {
-							LOGGER.debug("线程等待异常", e);
-							Thread.currentThread().interrupt();
-						}
+		if(INSTANCE.controller == null) {
+			// 添加锁
+			synchronized (this.lock) {
+				while(INSTANCE.controller == null) {
+					try {
+						// 注意：wait会释放锁
+						this.lock.wait(DateUtils.ONE_SECOND);
+					} catch (InterruptedException e) {
+						LOGGER.debug("线程等待异常", e);
+						Thread.currentThread().interrupt();
 					}
 				}
 			}
-			return INSTANCE.controller;
 		}
+		return INSTANCE.controller;
 	}
 
 }
