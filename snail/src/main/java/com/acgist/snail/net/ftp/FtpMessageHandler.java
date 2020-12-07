@@ -3,7 +3,6 @@ package com.acgist.snail.net.ftp;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
-import java.time.Duration;
 import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -20,7 +19,6 @@ import com.acgist.snail.net.codec.impl.StringMessageCodec;
 import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
-import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * <p>FTP消息代理</p>
@@ -34,7 +32,7 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 	/**
 	 * <p>命令超时时间</p>
 	 */
-	private static final Duration TIMEOUT = Duration.ofSeconds(SystemConfig.RECEIVE_TIMEOUT);
+	private static final int TIMEOUT = SystemConfig.RECEIVE_TIMEOUT_MILLIS;
 	/**
 	 * <p>消息分隔符：{@value}</p>
 	 */
@@ -239,7 +237,12 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 		if(!this.lock.get()) {
 			synchronized (this.lock) {
 				if(!this.lock.get()) {
-					ThreadUtils.wait(this.lock, TIMEOUT);
+					try {
+						this.lock.wait(TIMEOUT);
+					} catch (InterruptedException e) {
+						LOGGER.debug("线程等待异常", e);
+						Thread.currentThread().interrupt();
+					}
 				}
 			}
 		}

@@ -1,6 +1,5 @@
 package com.acgist.snail.gui.javafx.window.main;
 
-import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -8,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.SystemThreadContext;
-import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * <p>任务列表刷新器</p>
@@ -83,7 +81,13 @@ public final class TaskDisplay {
 		while(INSTANCE.controller == null) {
 			synchronized (this.lock) {
 				if(INSTANCE.controller == null) {
-					ThreadUtils.wait(this.lock, Duration.ofSeconds(Byte.MAX_VALUE));
+					try {
+						// 注意：wait会释放锁
+						this.lock.wait(Short.MAX_VALUE);
+					} catch (InterruptedException e) {
+						LOGGER.debug("线程等待异常", e);
+						Thread.currentThread().interrupt();
+					}
 				}
 			}
 		}

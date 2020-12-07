@@ -1,10 +1,12 @@
 package com.acgist.snail.pojo.session;
 
 import java.net.InetSocketAddress;
-import java.time.Duration;
 import java.util.BitSet;
 import java.util.EnumMap;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.net.torrent.PeerConnect;
@@ -16,7 +18,6 @@ import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.ObjectUtils;
 import com.acgist.snail.utils.StringUtils;
-import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * <p>Peer信息</p>
@@ -25,6 +26,8 @@ import com.acgist.snail.utils.ThreadUtils;
  * @author acgist
  */
 public final class PeerSession implements IStatisticsSessionGetter {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(PeerSession.class);
 	
 	/**
 	 * <p>PeerId</p>
@@ -727,13 +730,18 @@ public final class PeerSession implements IStatisticsSessionGetter {
 	/**
 	 * <p>holepunch等待锁</p>
 	 */
-	public void holepunchLock() {
+	public void lockHolepunch() {
 		if(this.holepunchConnect) { // 已经连接
 			return;
 		}
 		synchronized (this.holepunchLock) {
 			this.holepunchWait = true;
-			ThreadUtils.wait(this.holepunchLock, Duration.ofSeconds(PeerConfig.HOLEPUNCH_LOCK_TIME));
+			try {
+				this.holepunchLock.wait(PeerConfig.HOLEPUNCH_TIMEOUT);
+			} catch (InterruptedException e) {
+				LOGGER.debug("线程等待异常", e);
+				Thread.currentThread().interrupt();
+			}
 			this.holepunchWait = false;
 		}
 	}

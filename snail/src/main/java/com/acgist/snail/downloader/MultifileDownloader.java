@@ -1,11 +1,11 @@
 package com.acgist.snail.downloader;
 
-import java.time.Duration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.pojo.ITaskSession;
-import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * <p>多文件任务下载器</p>
@@ -13,6 +13,8 @@ import com.acgist.snail.utils.ThreadUtils;
  * @author acgist
  */
 public abstract class MultifileDownloader extends Downloader {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(MultifileDownloader.class);
 
 	/**
 	 * <p>下载锁</p>
@@ -35,8 +37,15 @@ public abstract class MultifileDownloader extends Downloader {
 	@Override
 	public void download() throws DownloadException {
 		while(this.downloadable()) {
+			// 添加下载锁
 			synchronized (this.downloadLock) {
-				ThreadUtils.wait(this.downloadLock, Duration.ofSeconds(Integer.MAX_VALUE));
+				try {
+					this.downloadLock.wait(Long.MAX_VALUE);
+				} catch (InterruptedException e) {
+					LOGGER.debug("线程等待异常", e);
+					Thread.currentThread().interrupt();
+				}
+				// 完成状态必须在同步块中检查
 				this.complete = this.checkCompleted();
 			}
 		}

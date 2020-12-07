@@ -5,7 +5,6 @@ import java.nio.ByteBuffer;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.MessageDigest;
-import java.time.Duration;
 import java.util.Random;
 
 import org.slf4j.Logger;
@@ -27,7 +26,6 @@ import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.DigestUtils;
 import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.StringUtils;
-import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * <p>MSE握手代理</p>
@@ -65,7 +63,7 @@ public final class MSECryptHandshakeHandler {
 	 * <p>加密握手超时时间：{@value}</p>
 	 * <p>不能超过{@link PeerSubMessageHandler#HANDSHAKE_TIMEOUT}</p>
 	 */
-	private static final int HANDSHAKE_TIMEOUT = PeerSubMessageHandler.HANDSHAKE_TIMEOUT;
+	private static final int HANDSHAKE_TIMEOUT = PeerSubMessageHandler.HANDSHAKE_TIMEOUT * 1000;
 	
 	/**
 	 * <p>加密握手步骤</p>
@@ -292,17 +290,29 @@ public final class MSECryptHandshakeHandler {
 	 * <p>加密握手锁</p>
 	 */
 	public void handshakeLock() {
-		if(!this.complete) {
-			synchronized (this.handshakeLock) {
-				if(!this.complete) {
-					ThreadUtils.wait(this.handshakeLock, Duration.ofSeconds(HANDSHAKE_TIMEOUT));
-				}
-			}
-		}
+		this.lockHandshake(); // 加锁
 		// 加密没有完成设置明文
 		if(!this.complete) {
 			LOGGER.debug("加密握手失败：使用明文");
 			this.plaintext();
+		}
+	}
+	
+	/**
+	 * <p>添加加密握手锁</p>
+	 */
+	private void lockHandshake() {
+		if(!this.complete) {
+			synchronized (this.handshakeLock) {
+				if(!this.complete) {
+					try {
+						this.handshakeLock.wait(HANDSHAKE_TIMEOUT);
+					} catch (InterruptedException e) {
+						LOGGER.debug("线程等待异常", e);
+						Thread.currentThread().interrupt();
+					}
+				}
+			}
 		}
 	}
 	

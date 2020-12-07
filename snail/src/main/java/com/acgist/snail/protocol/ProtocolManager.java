@@ -1,6 +1,5 @@
 package com.acgist.snail.protocol;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +13,6 @@ import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.utils.StringUtils;
-import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * <p>下载协议管理器</p>
@@ -139,7 +137,12 @@ public final class ProtocolManager {
 		if(!this.availableLock.get()) {
 			synchronized (this.availableLock) {
 				if(!this.availableLock.get()) {
-					ThreadUtils.wait(this.availableLock, Duration.ofSeconds(Byte.MAX_VALUE));
+					try {
+						this.availableLock.wait(Short.MAX_VALUE);
+					} catch (InterruptedException e) {
+						LOGGER.debug("线程等待异常", e);
+						Thread.currentThread().interrupt();
+					}
 				}
 			}
 		}
@@ -161,5 +164,5 @@ public final class ProtocolManager {
 			this.availableLock.notifyAll();
 		}
 	}
-
+	
 }

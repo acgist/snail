@@ -1,6 +1,5 @@
 package com.acgist.snail.config;
 
-import java.time.Duration;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -141,7 +140,7 @@ public final class DhtConfig extends PropertiesConfig {
 	/**
 	 * <p>DHT响应超时</p>
 	 */
-	public static final Duration TIMEOUT = Duration.ofSeconds(SystemConfig.RECEIVE_TIMEOUT);
+	public static final int TIMEOUT = SystemConfig.RECEIVE_TIMEOUT_MILLIS;
 	
 	static {
 		LOGGER.info("初始化DHT节点配置");
