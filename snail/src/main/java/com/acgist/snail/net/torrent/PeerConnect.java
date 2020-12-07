@@ -71,17 +71,17 @@ public abstract class PeerConnect {
 	 */
 	private final AtomicInteger sliceLock = new AtomicInteger(0);
 	/**
-	 * <p>释放锁</p>
-	 * 
-	 * @see #RELEASE_TIMEOUT
-	 */
-	private final AtomicBoolean releaseLock = new AtomicBoolean(false);
-	/**
 	 * <p>完成锁</p>
 	 * 
 	 * @see #COMPLETE_TIMEOUT
 	 */
 	private final AtomicBoolean completeLock = new AtomicBoolean(false);
+	/**
+	 * <p>释放锁</p>
+	 * 
+	 * @see #RELEASE_TIMEOUT
+	 */
+	private final AtomicBoolean releaseLock = new AtomicBoolean(false);
 	/**
 	 * <p>Peer信息</p>
 	 */
@@ -304,6 +304,7 @@ public abstract class PeerConnect {
 		}
 		this.completeLock.set(true); // 设置完成
 		this.releaseDownload();
+		// 验证任务是否完成
 		this.torrentSession.checkCompletedAndDone();
 		// 验证最后选择的Piece是否下载完成
 		if(this.downloadPiece != null && !this.downloadPiece.complete()) {
@@ -461,7 +462,7 @@ public abstract class PeerConnect {
 	
 	/**
 	 * <p>添加完成锁</p>
-	 * <p>无论是否有数据返回都需要进行结束等待，防止数据小于{@link #SLICE_REQUEST_SIZE}个slice时直接跳出了slice wait（sliceLock）导致响应还没有收到就直接结束了。</p>
+	 * <p>无论是否有数据返回都需要进行结束等待，防止数据小于{@value #SLICE_REQUEST_SIZE}个slice时直接跳出了slice wait（sliceLock）导致响应还没有收到就直接结束了。</p>
 	 */
 	private void lockComplete() {
 		if(!this.completeLock.get()) {
@@ -494,8 +495,9 @@ public abstract class PeerConnect {
 	private void lockRelease() {
 		if(!this.releaseLock.get()) {
 			synchronized (this.releaseLock) {
-				// 设置释放状态
-				if(!this.releaseLock.getAndSet(true)) {
+				if(!this.releaseLock.get()) {
+					// 设置释放状态
+					this.releaseLock.set(true);
 					try {
 						this.releaseLock.wait(RELEASE_TIMEOUT);
 					} catch (InterruptedException e) {
