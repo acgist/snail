@@ -2,7 +2,6 @@ package com.acgist.snail.net.torrent.tracker.bootstrap.impl;
 
 import java.net.URI;
 import java.nio.ByteBuffer;
-import java.time.Duration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +15,6 @@ import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.NumberUtils;
-import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * <p>Tracker UDP客户端</p>
@@ -93,16 +91,22 @@ public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker
 		// 获取连接ID
 		if(this.connectionId == null) {
 			synchronized (this) {
+				// 发送连接消息
 				if(this.connectionId == null) {
 					this.buildConnectionId();
 				}
-				ThreadUtils.wait(this, Duration.ofSeconds(SystemConfig.CONNECT_TIMEOUT));
-				if(this.connectionId == null) {
-					throw new NetException("UDP Tracker声明消息错误（connectionId）");
+				// 添加连接锁
+				try {
+					this.wait(SystemConfig.CONNECT_TIMEOUT_MILLIS);
+				} catch (InterruptedException e) {
+					LOGGER.debug("线程等待异常", e);
+					Thread.currentThread().interrupt();
 				}
 			}
 		}
-		if(this.connectionId != null) {
+		if(this.connectionId == null) {
+			throw new NetException("UDP Tracker声明消息错误（connectionId）");
+		} else {
 			final ByteBuffer announceMessage = (ByteBuffer) this.buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STARTED);
 			this.send(announceMessage);
 		}
@@ -139,6 +143,7 @@ public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker
 	public void connectionId(Long connectionId) {
 		LOGGER.debug("UDP Tracker设置连接ID：{}", connectionId);
 		this.connectionId = connectionId;
+		// 释放连接锁
 		synchronized (this) {
 			this.notifyAll();
 		}

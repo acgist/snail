@@ -1,6 +1,5 @@
 package com.acgist.snail.downloader;
 
-import java.time.Duration;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
@@ -12,7 +11,6 @@ import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.ITaskSession.Status;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
-import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * <p>下载器抽象类</p>
@@ -24,9 +22,9 @@ public abstract class Downloader implements IDownloader {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Downloader.class);
 	
 	/**
-	 * <p>{@linkplain #deleteLock 删除锁}等待时间（秒）：{@value}</p>
+	 * <p>{@linkplain #deleteLock 删除锁}等待时间（毫秒）：{@value}</p>
 	 */
-	private static final int DELETE_WAIT_TIME = 5;
+	private static final int DELETE_TIMEOUT = 5000;
 	
 	/**
 	 * <p>任务失败状态</p>
@@ -133,14 +131,7 @@ public abstract class Downloader implements IDownloader {
 	@Override
 	public void delete() {
 		this.pause(); // 暂停任务
-		// 等待删除锁释放
-		if(!this.deleteLock.get()) {
-			synchronized (this.deleteLock) {
-				if(!this.deleteLock.get()) {
-					ThreadUtils.wait(this.deleteLock, Duration.ofSeconds(DELETE_WAIT_TIME));
-				}
-			}
-		}
+		this.lockDelete(); // 删除等待
 		this.taskSession.delete(); // 删除任务
 	}
 	
@@ -223,6 +214,24 @@ public abstract class Downloader implements IDownloader {
 			this.taskSession.download();
 	}
 
+	/**
+	 * <p>添加{@linkplain #deleteLock 删除锁}</p>
+	 */
+	private void lockDelete() {
+		if(!this.deleteLock.get()) {
+			synchronized (this.deleteLock) {
+				if(!this.deleteLock.get()) {
+					try {
+						this.deleteLock.wait(DELETE_TIMEOUT);
+					} catch (InterruptedException e) {
+						LOGGER.debug("线程等待异常", e);
+						Thread.currentThread().interrupt();
+					}
+				}
+			}
+		}
+	}
+	
 	/**
 	 * <p>释放{@linkplain #deleteLock 删除锁}</p>
 	 */

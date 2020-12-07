@@ -119,7 +119,7 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 		final int port = peerSession.port();
 		LOGGER.debug("发送holepunch消息-rendezvous：{}-{}", host, port);
 		this.pushMessage(this.buildMessage(HolepunchType.RENDEZVOUS, host, port));
-		peerSession.holepunchLock(); // 加锁
+		peerSession.lockHolepunch(); // 加锁
 	}
 	
 	/**

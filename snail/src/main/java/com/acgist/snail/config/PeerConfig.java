@@ -142,7 +142,7 @@ public final class PeerConfig {
 	/**
 	 * <p>holepunch连接锁定时间</p>
 	 */
-	public static final int HOLEPUNCH_LOCK_TIME = 2;
+	public static final int HOLEPUNCH_TIMEOUT = 2000;
 	/**
 	 * <p>PeerID和客户端名称转换配置</p>
 	 * <p>Peer ID Conventions</p>

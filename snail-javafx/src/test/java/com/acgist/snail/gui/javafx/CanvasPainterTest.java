@@ -3,6 +3,8 @@ package com.acgist.snail.gui.javafx;
 import java.util.BitSet;
 import java.util.Random;
 
+import org.junit.jupiter.api.Test;
+
 import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.gui.javafx.window.statistics.CanvasPainter;
 import com.acgist.snail.utils.ThreadUtils;
@@ -50,8 +52,9 @@ public class CanvasPainterTest extends Application {
 		primaryStage.show();
 	}
 	
-	public static void main(String[] args) {
-		launch(args);
+	@Test
+	public void test() {
+		launch();
 	}
 	
 }

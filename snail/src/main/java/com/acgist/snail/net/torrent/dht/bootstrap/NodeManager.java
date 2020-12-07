@@ -316,7 +316,8 @@ public final class NodeManager {
 	private List<NodeSession> selectNode(final List<NodeSession> nodes, final byte[] target, final int begin, final int end) {
 		Stream<NodeSession> select;
 		if(begin < end) {
-			select = nodes.stream().skip(begin).limit(end - begin);
+			final int size = end - begin;
+			select = nodes.stream().skip(begin).limit(size);
 		} else {
 			select = Stream.concat(nodes.stream().limit(end), nodes.stream().skip(begin));
 		}

@@ -1,7 +1,5 @@
 package com.acgist.snail.context;
 
-import java.time.Duration;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,7 +9,6 @@ import com.acgist.snail.net.upnp.UpnpClient;
 import com.acgist.snail.net.upnp.UpnpServer;
 import com.acgist.snail.net.upnp.bootstrap.UpnpService;
 import com.acgist.snail.utils.NetUtils;
-import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * <p>NAT（内网穿透）</p>
@@ -49,7 +46,7 @@ public final class NatContext {
 	/**
 	 * <p>UPNP端口映射超时时间</p>
 	 */
-	private static final int UPNP_CONFIG_TIMEOUT = SystemConfig.CONNECT_TIMEOUT;
+	private static final int UPNP_TIMEOUT = SystemConfig.CONNECT_TIMEOUT_MILLIS;
 	
 	/**
 	 * <p>UPNP等待锁</p>
@@ -71,10 +68,7 @@ public final class NatContext {
 		LOGGER.info("初始化NAT服务");
 		if(NetUtils.isLocalIp(NetUtils.localHostAddress())) {
 			UpnpClient.newInstance().mSearch();
-			// UPNP加锁等待
-			synchronized (this.upnpLock) {
-				ThreadUtils.wait(this.upnpLock, Duration.ofSeconds(UPNP_CONFIG_TIMEOUT));
-			}
+			this.lockUpnp(); // 加锁
 			if(UpnpService.getInstance().useable()) {
 				LOGGER.info("UPNP映射成功");
 				this.type = Type.UPNP;
@@ -108,6 +102,20 @@ public final class NatContext {
 		}
 	}
 
+	/**
+	 * <p>添加UPNP等待锁</p>
+	 */
+	private void lockUpnp() {
+		synchronized (this.upnpLock) {
+			try {
+				this.upnpLock.wait(UPNP_TIMEOUT);
+			} catch (InterruptedException e) {
+				LOGGER.debug("线程等待异常", e);
+				Thread.currentThread().interrupt();
+			}
+		}
+	}
+	
 	/**
 	 * <p>释放UPNP等待锁</p>
 	 */

@@ -1,6 +1,5 @@
 package com.acgist.snail.net.torrent;
 
-import java.time.Duration;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -14,7 +13,6 @@ import com.acgist.snail.pojo.session.PeerConnectSession;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.utils.ObjectUtils;
-import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * <p>Peer连接</p>
@@ -28,29 +26,29 @@ public abstract class PeerConnect {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerConnect.class);
 
 	/**
-	 * <p>Piece每次请求SLICE数量：{@value}</p>
+	 * <p>SLICE请求数量：{@value}</p>
 	 * <p>注：过大会导致UTP信号量阻塞</p>
 	 * 
 	 * TODO：根据速度优化
 	 */
 	private static final int SLICE_REQUEST_SIZE = 2;
 	/**
-	 * <p>最大等待请求最大数量：{@value}</p>
-	 * <p>超过这个数量直接跳出下载</p>
+	 * <p>SLICE最大请求数量：{@value}</p>
+	 * <p>超过这个数量跳出请求</p>
 	 */
 	private static final int MAX_WAIT_SLICE_REQUEST_SIZE = 4;
 	/**
 	 * <p>SLICE请求等待时间：{@value}</p>
 	 */
-	private static final int SLICE_WAIT_TIME = 10;
+	private static final int SLICE_TIMEOUT = 10 * 1000;
 	/**
 	 * <p>PICEC完成等待时间：{@value}</p>
 	 */
-	private static final int PIECE_WAIT_TIME = 30;
+	private static final int PIECE_TIMEOUT = 30 * 1000;
 	/**
-	 * <p>释放时等待时间：{@value}</p>
+	 * <p>释放等待时间：{@value}</p>
 	 */
-	private static final int RELEASE_WAIT_TIME = 4;
+	private static final int RELEASE_TIMEOUT = 4000;
 	
 	/**
 	 * <p>连接状态</p>
@@ -264,20 +262,12 @@ public abstract class PeerConnect {
 			LOGGER.warn("下载Piece索引和当前Piece索引不符：{}-{}", index, this.downloadPiece.getIndex());
 			return;
 		}
-		// 请求数据下载完成：释放下载等待
-		synchronized (this.sliceLock) {
-			if (this.sliceLock.decrementAndGet() <= 0) {
-				this.sliceLock.notifyAll();
-			}
-		}
+		// 释放slice锁
+		this.unlockSlice();
 		final boolean complete = this.downloadPiece.write(begin, bytes);
-		// 释放下载完成等待
+		// 下载完成：释放完成锁
 		if(complete) {
-			synchronized (this.completeLock) {
-				if (this.completeLock.getAndSet(true)) {
-					this.completeLock.notifyAll();
-				}
-			}
+			this.unlockComplete();
 		}
 	}
 
@@ -319,9 +309,9 @@ public abstract class PeerConnect {
 	
 	/**
 	 * <p>请求数据</p>
-	 * <p>每次发送{@linkplain #SLICE_REQUEST_SIZE 固定数量}请求，然后进入等待，当全部数据响应后，又开始发送请求，直到Piece下载完成。</p>
+	 * <p>每次发送{@value #SLICE_REQUEST_SIZE}个请求，然后进入等待，当全部数据响应后，又开始发送请求，直到Piece下载完成。</p>
 	 * <p>请求发送完成后必须进入完成等待</p>
-	 * <p>请求等待队列数量超过{@linkplain #MAX_WAIT_SLICE_REQUEST_SIZE 最大等待数量}时跳出循环</p>
+	 * <p>请求等待队列数量超过{@value #MAX_WAIT_SLICE_REQUEST_SIZE}个时跳出循环</p>
 	 * 
 	 * @return 是否可以继续下载
 	 */
@@ -340,17 +330,15 @@ public abstract class PeerConnect {
 			return false;
 		}
 		final int index = this.downloadPiece.getIndex();
-		final var sliceAwaitTime = Duration.ofSeconds(SLICE_WAIT_TIME);
 		while(this.available()) {
+			// 超过slice请求数量进入等待
 			if (this.sliceLock.get() >= SLICE_REQUEST_SIZE) {
-				synchronized (this.sliceLock) {
-					ThreadUtils.wait(this.sliceLock, sliceAwaitTime);
-					// 等待slice数量超过最大等待数量跳出循环
-					if (this.sliceLock.get() >= MAX_WAIT_SLICE_REQUEST_SIZE) {
-						LOGGER.debug("请求数量超过最大等待数量：{}-{}", this.downloadPiece.getIndex(), this.sliceLock.get());
-						break;
-					}
-				}
+				this.lockSlice();
+			}
+			// 超过slice最大请求数量跳出循环
+			if (this.sliceLock.get() >= MAX_WAIT_SLICE_REQUEST_SIZE) {
+				LOGGER.debug("超过slice最大请求数量跳出循环：{}-{}", this.downloadPiece.getIndex(), this.sliceLock.get());
+				break;
 			}
 			this.sliceLock.incrementAndGet();
 			// 顺序不能调换：position、length
@@ -362,23 +350,10 @@ public abstract class PeerConnect {
 				break;
 			}
 		}
-		/*
-		 * 此处不论是否有数据返回都需要进行结束等待
-		 * 防止数据小于{@link #SLICE_REQUEST_SIZE}个slice时直接跳出了slice wait（countLock）导致响应还没有收到就直接结束了
-		 */
-		synchronized (this.completeLock) {
-			if(!this.completeLock.getAndSet(true)) {
-				ThreadUtils.wait(this.completeLock, Duration.ofSeconds(PIECE_WAIT_TIME));
-			}
-		}
-		// 如果已经释放：释放释放锁
-		if(this.releaseLock.get()) {
-			synchronized (this.releaseLock) {
-				if(this.releaseLock.getAndSet(true)) {
-					this.releaseLock.notifyAll();
-				}
-			}
-		}
+		// 添加完成锁
+		this.lockComplete();
+		// 释放释放锁
+		this.unlockRelease();
 		return true;
 	}
 	
@@ -444,17 +419,102 @@ public abstract class PeerConnect {
 				this.downloading = false;
 				// 没有完成：等待下载完成
 				if(!this.completeLock.get()) {
-					if(!this.releaseLock.get()) {
-						synchronized (this.releaseLock) {
-							if(!this.releaseLock.getAndSet(true)) {
-								ThreadUtils.wait(this.releaseLock, Duration.ofSeconds(RELEASE_WAIT_TIME));
-							}
-						}
-					}
+					// 添加释放锁
+					this.lockRelease();
 				}
 			}
 		} catch (Exception e) {
 			LOGGER.error("PeerConnect释放下载异常", e);
+		}
+	}
+	
+	/**
+	 * <p>添加slice锁</p>
+	 */
+	private void lockSlice() {
+		synchronized (this.sliceLock) {
+			try {
+				this.sliceLock.wait(SLICE_TIMEOUT);
+			} catch (InterruptedException e) {
+				LOGGER.debug("线程等待异常", e);
+				Thread.currentThread().interrupt();
+			}
+		}
+	}
+	
+	/**
+	 * <p>释放slice锁</p>
+	 */
+	private void unlockSlice() {
+		// TODO：优化逻辑：顺序
+		synchronized (this.sliceLock) {
+			// 请求数据下载完成：释放锁
+			if (this.sliceLock.decrementAndGet() <= 0) {
+				this.sliceLock.notifyAll();
+			}
+		}
+	}
+	
+	/**
+	 * <p>添加完成锁</p>
+	 * <p>无论是否有数据返回都需要进行结束等待，防止数据小于{@link #SLICE_REQUEST_SIZE}个slice时直接跳出了slice wait（sliceLock）导致响应还没有收到就直接结束了。</p>
+	 */
+	private void lockComplete() {
+		// TODO：优化逻辑
+		synchronized (this.completeLock) {
+			if(!this.completeLock.getAndSet(true)) {
+				try {
+					this.completeLock.wait(PIECE_TIMEOUT);
+				} catch (InterruptedException e) {
+					LOGGER.debug("线程等待异常", e);
+					Thread.currentThread().interrupt();
+				}
+			}
+		}
+	}
+	
+	/**
+	 * <p>释放完成锁</p>
+	 */
+	private void unlockComplete() {
+		// TODO：优化逻辑
+		synchronized (this.completeLock) {
+			if (this.completeLock.getAndSet(true)) {
+				this.completeLock.notifyAll();
+			}
+		}
+	}
+
+	/**
+	 * <p>添加释放锁</p>
+	 */
+	private void lockRelease() {
+		// TODO：优化逻辑
+		if(!this.releaseLock.get()) {
+			synchronized (this.releaseLock) {
+				if(!this.releaseLock.getAndSet(true)) {
+					try {
+						this.releaseLock.wait(RELEASE_TIMEOUT);
+					} catch (InterruptedException e) {
+						LOGGER.debug("线程等待异常", e);
+						Thread.currentThread().interrupt();
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * <p>释放释放锁</p>
+	 */
+	private void unlockRelease() {
+		// TODO：优化逻辑
+		if(this.releaseLock.get()) {
+			synchronized (this.releaseLock) {
+				if(this.releaseLock.getAndSet(true)) {
+					this.releaseLock.notifyAll();
+				}
+			}
 		}
 	}
 	

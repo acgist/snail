@@ -3,7 +3,6 @@ package com.acgist.snail.net.torrent.utp;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -24,7 +23,6 @@ import com.acgist.snail.net.torrent.utp.bootstrap.UtpWindow;
 import com.acgist.snail.net.torrent.utp.bootstrap.UtpWindowData;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.DateUtils;
-import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * <p>uTP消息代理</p>
@@ -260,13 +258,8 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	public boolean connect() {
 		this.connect = false;
 		this.syn();
-		if(!this.connectLock.get()) {
-			synchronized (this.connectLock) {
-				if(!this.connectLock.get()) {
-					ThreadUtils.wait(this.connectLock, Duration.ofSeconds(SystemConfig.CONNECT_TIMEOUT));
-				}
-			}
-		}
+		// 添加连接锁
+		this.lockConnect();
 		// 连接失败移除
 		if(!this.connect) {
 			this.closeAll();
@@ -366,10 +359,8 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 			if(this.connect) {
 				this.recvWindow.connect(timestamp, (short) (seqnr - 1)); // 注意：seqnr-1
 			}
-			synchronized (this.connectLock) {
-				this.connectLock.set(true);
-				this.connectLock.notifyAll();
-			}
+			// 释放连接锁
+			this.unlockConnect();
 		}
 		// 快速重传
 		final boolean loss = this.sendWindow.ack(acknr, wndSize); // 是否可能丢包
@@ -525,6 +516,34 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 			this.send(buffer, this.remoteSocketAddress());
 		} catch (NetException e) {
 			LOGGER.error("发送UTP消息异常", e);
+		}
+	}
+	
+	/**
+	 * <p>添加连接锁</p>
+	 */
+	private void lockConnect() {
+		if(!this.connectLock.get()) {
+			synchronized (this.connectLock) {
+				if(!this.connectLock.get()) {
+					try {
+						this.connectLock.wait(SystemConfig.CONNECT_TIMEOUT_MILLIS);
+					} catch (InterruptedException e) {
+						LOGGER.debug("线程等待异常", e);
+						Thread.currentThread().interrupt();
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * <p>释放连接锁</p>
+	 */
+	private void unlockConnect() {
+		synchronized (this.connectLock) {
+			this.connectLock.set(true);
+			this.connectLock.notifyAll();
 		}
 	}
 	

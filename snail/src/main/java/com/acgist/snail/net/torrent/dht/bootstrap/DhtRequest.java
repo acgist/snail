@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.config.DhtConfig.QType;
 import com.acgist.snail.format.BEncodeDecoder;
@@ -16,7 +19,6 @@ import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.ObjectUtils;
 import com.acgist.snail.utils.StringUtils;
-import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * <p>DHT请求</p>
@@ -24,6 +26,8 @@ import com.acgist.snail.utils.ThreadUtils;
  * @author acgist
  */
 public class DhtRequest extends DhtMessage {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(DhtRequest.class);
 
 	/**
 	 * <p>请求类型</p>
@@ -191,18 +195,23 @@ public class DhtRequest extends DhtMessage {
 	}
 	
 	/**
-	 * <p>等待响应</p>
+	 * <p>添加响应锁</p>
 	 */
 	public void waitResponse() {
 		synchronized (this) {
 			if(!this.haveResponse()) {
-				ThreadUtils.wait(this, DhtConfig.TIMEOUT);
+				try {
+					this.wait(DhtConfig.TIMEOUT);
+				} catch (InterruptedException e) {
+					LOGGER.debug("线程等待异常", e);
+					Thread.currentThread().interrupt();
+				}
 			}
 		}
 	}
 	
 	/**
-	 * <p>释放响应等待</p>
+	 * <p>释放响应锁</p>
 	 */
 	public void notifyResponse() {
 		synchronized (this) {

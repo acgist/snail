@@ -338,7 +338,8 @@ public final class CanvasPainter {
 			this.graphics.strokeLine(x, 0, x, this.height);
 		}
 		// 右边框
-		this.graphics.strokeLine(this.width - BORDER_WH, 0, this.width - BORDER_WH, this.height);
+		final int right = this.width - BORDER_WH;
+		this.graphics.strokeLine(right, 0, right, this.height);
 		// 行
 		final int height = this.wh + BORDER_WH;
 		int y = 0;
@@ -347,7 +348,8 @@ public final class CanvasPainter {
 			this.graphics.strokeLine(0, y, this.width, y);
 		}
 		// 底边框
-		this.graphics.strokeLine(0, this.height - BORDER_WH, this.width, this.height - BORDER_WH);
+		final int bottom = this.height - BORDER_WH;
+		this.graphics.strokeLine(0, bottom, this.width, bottom);
 		this.graphics.restore();
 	}
 	
@@ -382,7 +384,9 @@ public final class CanvasPainter {
 		} else {
 			this.graphics.setFill(this.noneColor);
 		}
-		this.graphics.fillRect(col * wh + BORDER_WH, row * wh + BORDER_WH, this.wh, this.wh);
+		final int width = col * wh + BORDER_WH;
+		final int height = row * wh + BORDER_WH;
+		this.graphics.fillRect(width, height, this.wh, this.wh);
 	}
 	
 	/**

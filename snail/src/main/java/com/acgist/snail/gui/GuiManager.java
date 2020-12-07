@@ -1,6 +1,5 @@
 package com.acgist.snail.gui;
 
-import java.time.Duration;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -14,7 +13,6 @@ import com.acgist.snail.net.IMessageSender;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.message.ApplicationMessage;
 import com.acgist.snail.utils.StringUtils;
-import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * <p>GUI管理器</p>
@@ -76,10 +74,6 @@ public final class GuiManager {
 	 * <p>事件类型=事件</p>
 	 */
 	private static final Map<GuiEvent.Type, GuiEvent> EVENTS = new EnumMap<>(GuiEvent.Type.class);
-	/**
-	 * <p>扩展GUI阻塞锁时间（天）：{@value}</p>
-	 */
-	private static final int LOCK_DAYS = 365;
 	/**
 	 * <p>启动参数：运行模式</p>
 	 */
@@ -344,11 +338,16 @@ public final class GuiManager {
 	}
 	
 	/**
-	 * <p>扩展GUI阻塞锁</p>
+	 * <p>添加扩展GUI阻塞锁</p>
 	 */
 	public void lock() {
 		synchronized (this.lock) {
-			ThreadUtils.wait(this.lock, Duration.ofDays(LOCK_DAYS));
+			try {
+				this.lock.wait(Long.MAX_VALUE);
+			} catch (InterruptedException e) {
+				LOGGER.debug("线程等待异常", e);
+				Thread.currentThread().interrupt();
+			}
 		}
 	}
 	
