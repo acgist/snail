@@ -143,7 +143,7 @@ public final class DhtConfig extends PropertiesConfig {
 	public static final int TIMEOUT = SystemConfig.RECEIVE_TIMEOUT_MILLIS;
 	
 	static {
-		LOGGER.info("初始化DHT节点配置");
+		LOGGER.info("初始化DHT节点配置：{}", DHT_CONFIG);
 		INSTANCE.init();
 	}
 	
