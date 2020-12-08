@@ -216,14 +216,14 @@ public final class TrackerConfig extends PropertiesConfig {
 	public void persistent() {
 		LOGGER.debug("保存Tracker服务器配置");
 		final AtomicInteger index = new AtomicInteger(0);
-		final var map = TrackerManager.getInstance().clients().stream()
+		final var data = TrackerManager.getInstance().clients().stream()
 			.filter(TrackerClient::available)
 			.limit(MAX_TRACKER_SIZE)
 			.collect(Collectors.toMap(
 				client -> String.format("%04d", index.incrementAndGet()),
 				TrackerClient::announceUrl
 			));
-		this.persistent(map, FileUtils.userDirFile(TRACKER_CONFIG));
+		this.persistent(data, FileUtils.userDirFile(TRACKER_CONFIG));
 	}
 	
 }

@@ -12,8 +12,16 @@ public final class DatabaseConfig extends PropertiesConfig {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseConfig.class);
 	
+	/**
+	 * <p>单例对象</p>
+	 */
 	private static final DatabaseConfig INSTANCE = new DatabaseConfig();
 	
+	/**
+	 * <p>获取单例对象</p>
+	 * 
+	 * @return 单例对象
+	 */
 	public static final DatabaseConfig getInstance() {
 		return INSTANCE;
 	}
@@ -69,7 +77,7 @@ public final class DatabaseConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>日志记录</p>
+	 * <p>记录日志</p>
 	 */
 	private void logger() {
 		LOGGER.info("数据库地址：{}", this.url);
