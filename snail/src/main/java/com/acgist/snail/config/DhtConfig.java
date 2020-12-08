@@ -332,9 +332,9 @@ public final class DhtConfig extends PropertiesConfig {
 	}
 
 	/**
-	 * <p>获取所有DHT节点</p>
+	 * <p>获取默认DHT节点</p>
 	 * 
-	 * @return 所有DHT节点
+	 * @return 默认DHT节点
 	 */
 	public Map<String, String> nodes() {
 		return this.nodes;
