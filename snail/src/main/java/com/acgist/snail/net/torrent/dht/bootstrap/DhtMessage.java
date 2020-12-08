@@ -24,6 +24,8 @@ public abstract class DhtMessage {
 	 * <p>消息类型</p>
 	 * 
 	 * @see DhtConfig#KEY_Y
+	 * @see DhtConfig#KEY_Q
+	 * @see DhtConfig#KEY_R
 	 */
 	protected final String y;
 	/**

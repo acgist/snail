@@ -3,14 +3,20 @@ package com.acgist.snail.config;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.net.torrent.dht.bootstrap.NodeManager;
+import com.acgist.snail.net.torrent.dht.bootstrap.request.AnnouncePeerRequest;
+import com.acgist.snail.net.torrent.dht.bootstrap.request.FindNodeRequest;
+import com.acgist.snail.net.torrent.dht.bootstrap.request.GetPeersRequest;
+import com.acgist.snail.net.torrent.dht.bootstrap.request.PingRequest;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.utils.FileUtils;
+import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -22,8 +28,16 @@ public final class DhtConfig extends PropertiesConfig {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(DhtConfig.class);
 	
+	/**
+	 * <p>单例对象</p>
+	 */
 	private static final DhtConfig INSTANCE = new DhtConfig();
 	
+	/**
+	 * <p>获取单例对象</p>
+	 * 
+	 * @return 单例对象
+	 */
 	public static final DhtConfig getInstance() {
 		return INSTANCE;
 	}
@@ -33,25 +47,27 @@ public final class DhtConfig extends PropertiesConfig {
 	 */
 	private static final String DHT_CONFIG = "/config/bt.dht.properties";
 	/**
-	 * <p>标记ID：{@value}</p>
-	 * <p>消息ID：请求ID、响应ID（默认两个字节）</p>
+	 * <p>消息ID：{@value}</p>
+	 * <p>请求ID、响应ID（默认两个字节）</p>
 	 */
 	public static final String KEY_T = "t";
 	/**
 	 * <p>消息类型：{@value}</p>
-	 * <p>请求：{@value #KEY_Q}</p>
-	 * <p>响应：{@value #KEY_R}</p>
+	 * <p>请求消息类型：{@link #KEY_Q}</p>
+	 * <p>响应消息类型：{@link #KEY_R}</p>
 	 */
 	public static final String KEY_Y = "y";
 	/**
-	 * <p>请求消息、请求类型：{@value}</p>
-	 * <p>请求消息：{@link #KEY_Y}</p>
+	 * <p>请求消息类型、请求类型：{@value}</p>
+	 * <p>请求消息类型：{@link #KEY_Y}</p>
 	 * <p>请求类型：{@link QType}</p>
+	 * 
+	 * @see QType
 	 */
 	public static final String KEY_Q = "q";
 	/**
-	 * <p>响应消息、响应参数：{@value}</p>
-	 * <p>响应消息：{@link #KEY_Y}</p>
+	 * <p>响应消息类型、响应参数：{@value}</p>
+	 * <p>响应消息类型：{@link #KEY_Y}</p>
 	 * <p>响应参数类型：{@link Map}</p>
 	 */
 	public static final String KEY_R = "r";
@@ -69,37 +85,52 @@ public final class DhtConfig extends PropertiesConfig {
 	public static final String KEY_E = "e";
 	/**
 	 * <p>客户端版本：{@value}</p>
-	 * <p>不一定存在</p>
 	 */
 	public static final String KEY_V = "v";
 	/**
 	 * <p>NodeId：{@value}</p>
+	 * 
+	 * @see NodeManager#nodeId()
 	 */
 	public static final String KEY_ID = "id";
 	/**
 	 * <p>下载端口：{@value}</p>
+	 * 
+	 * @see QType#ANNOUNCE_PEER
+	 * @see SystemConfig#getTorrentPortExt()
 	 */
 	public static final String KEY_PORT = "port";
 	/**
 	 * <p>Token：{@value}</p>
-	 * <p>发送消息{@link QType#ANNOUNCE_PEER}使用</p>
+	 * 
+	 * @see QType#ANNOUNCE_PEER
 	 */
 	public static final String KEY_TOKEN = "token";
 	/**
 	 * <p>节点列表：{@value}</p>
+	 * 
+	 * @see QType#FIND_NODE
+	 * @see QType#GET_PEERS
 	 */
 	public static final String KEY_NODES = "nodes";
 	/**
 	 * <p>Peer列表：{@value}</p>
+	 * 
+	 * @see QType#GET_PEERS
 	 */
 	public static final String KEY_VALUES = "values";
 	/**
 	 * <p>目标：{@value}</p>
-	 * <p>NodeId/InfoHash</p>
+	 * <p>NodeId、InfoHash</p>
+	 * 
+	 * @see QType#FIND_NODE
 	 */
 	public static final String KEY_TARGET = "target";
 	/**
 	 * <p>InfoHash：{@value}</p>
+	 * 
+	 * @see QType#GET_PEERS
+	 * @see QType#ANNOUNCE_PEER
 	 */
 	public static final String KEY_INFO_HASH = "info_hash";
 	/**
@@ -107,6 +138,7 @@ public final class DhtConfig extends PropertiesConfig {
 	 * 
 	 * @see #IMPLIED_PORT_AUTO
 	 * @see #IMPLIED_PORT_CONFIG
+	 * @see QType#ANNOUNCE_PEER
 	 */
 	public static final String KEY_IMPLIED_PORT = "implied_port";
 	/**
@@ -115,13 +147,16 @@ public final class DhtConfig extends PropertiesConfig {
 	 */
 	public static final Integer IMPLIED_PORT_AUTO = 1;
 	/**
-	 * <p>配置端口</p>
-	 * <p>使用消息配置端口</p>
+	 * <p>端口配置</p>
+	 * <p>使用消息端口配置</p>
+	 * 
+	 * @see #KEY_PORT
 	 */
 	public static final Integer IMPLIED_PORT_CONFIG = 0;
 	/**
 	 * <p>Peer列表长度：{@value}</p>
-	 * <p>发送消息{@link QType#GET_PEERS}使用</p>
+	 * 
+	 * @see QType#GET_PEERS
 	 */
 	public static final int GET_PEER_SIZE = 32;
 	/**
@@ -129,16 +164,16 @@ public final class DhtConfig extends PropertiesConfig {
 	 */
 	public static final int NODE_ID_LENGTH = 20;
 	/**
-	 * <p>Node最大数量：{@value}</p>
-	 * <p>超过最大数量均匀剔除多余Node</p>
+	 * <p>Node最大保存数量：{@value}</p>
+	 * <p>超过Node最大保存数量均匀剔除多余节点</p>
 	 */
 	public static final int MAX_NODE_SIZE = 1024;
 	/**
-	 * <p>DHT请求清理周期：{@value}分钟</p>
+	 * <p>DHT请求清理周期（分钟）：{@value}</p>
 	 */
 	public static final int DHT_REQUEST_CLEAN_INTERVAL = 10;
 	/**
-	 * <p>DHT响应超时</p>
+	 * <p>DHT响应超时：{@value}</p>
 	 */
 	public static final int TIMEOUT = SystemConfig.RECEIVE_TIMEOUT_MILLIS;
 	
@@ -148,59 +183,35 @@ public final class DhtConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>DHT响应错误</p>
-	 * <p>数据格式：{@link List}[0]=错误编码；{@link List}[1]=错误描述；</p>
-	 * 
-	 * @author acgist
-	 */
-	public enum ErrorCode {
-		
-		/** 一般错误 */
-		CODE_201(201),
-		/** 服务错误 */
-		CODE_202(202),
-		/** 协议错误：不规范包、无效参数、错误Token */
-		CODE_203(203),
-		/** 未知方法 */
-		CODE_204(204);
-		
-		/**
-		 * <p>错误编码</p>
-		 */
-		private final int code;
-		
-		/**
-		 * @param code 错误编码
-		 */
-		private ErrorCode(int code) {
-			this.code = code;
-		}
-		
-		/**
-		 * <p>获取错误编码</p>
-		 * 
-		 * @return 错误编码
-		 */
-		public int code() {
-			return this.code;
-		}
-		
-	}
-	
-	/**
 	 * <p>DHT请求类型</p>
 	 * 
 	 * @author acgist
 	 */
 	public enum QType {
 		
-		/** ping */
+		/**
+		 * <p>ping</p>
+		 * 
+		 * @see PingRequest
+		 */
 		PING("ping"),
-		/** 查找节点 */
+		/**
+		 * <p>查找节点</p>
+		 * 
+		 * @see FindNodeRequest
+		 */
 		FIND_NODE("find_node"),
-		/** 查找Peer */
+		/**
+		 * <p>查找Peer</p>
+		 * 
+		 * @see GetPeersRequest
+		 */
 		GET_PEERS("get_peers"),
-		/** 声明Peer */
+		/**
+		 * <p>声明Peer</p>
+		 * 
+		 * @see AnnouncePeerRequest
+		 */
 		ANNOUNCE_PEER("announce_peer");
 		
 		/**
@@ -225,11 +236,11 @@ public final class DhtConfig extends PropertiesConfig {
 		}
 		
 		/**
-		 * <p>通过类型标识获取类型</p>
+		 * <p>通过类型标识获取请求类型</p>
 		 * 
 		 * @param value 类型标识
 		 * 
-		 * @return 类型
+		 * @return 请求类型
 		 */
 		public static final QType of(String value) {
 			final var types = QType.values();
@@ -239,6 +250,55 @@ public final class DhtConfig extends PropertiesConfig {
 				}
 			}
 			return null;
+		}
+		
+	}
+	
+	/**
+	 * <p>DHT响应错误</p>
+	 * <p>数据格式：{@link List}</p>
+	 * <p>信息格式：[0]=错误编码；[1]=错误描述；</p>
+	 * 
+	 * @author acgist
+	 */
+	public enum ErrorCode {
+		
+		/**
+		 * <p>一般错误</p>
+		 */
+		CODE_201(201),
+		/**
+		 * <p>服务错误</p>
+		 */
+		CODE_202(202),
+		/**
+		 * <p>协议错误：不规范包、无效参数、错误Token</p>
+		 */
+		CODE_203(203),
+		/**
+		 * <p>未知方法</p>
+		 */
+		CODE_204(204);
+		
+		/**
+		 * <p>错误编码</p>
+		 */
+		private final int code;
+		
+		/**
+		 * @param code 错误编码
+		 */
+		private ErrorCode(int code) {
+			this.code = code;
+		}
+		
+		/**
+		 * <p>获取错误编码</p>
+		 * 
+		 * @return 错误编码
+		 */
+		public int code() {
+			return this.code;
 		}
 		
 	}
@@ -285,14 +345,17 @@ public final class DhtConfig extends PropertiesConfig {
 	 */
 	public void persistent() {
 		LOGGER.debug("保存DHT节点配置");
-		final var map = NodeManager.getInstance().nodes().stream()
+		final var persistentNodes = NodeManager.getInstance().nodes();
+		final int size = persistentNodes.size();
+		final Random random = NumberUtils.random();
+		final var data = persistentNodes.stream()
 			.filter(NodeSession::persistentable)
-			.limit(MAX_NODE_SIZE)
+			.filter(node -> random.nextInt(size) < MAX_NODE_SIZE) // 随机保存
 			.collect(Collectors.toMap(
 				node -> StringUtils.hex(node.getId()),
 				node -> node.getHost() + ":" + node.getPort()
 			));
-		this.persistent(map, FileUtils.userDirFile(DHT_CONFIG));
+		this.persistent(data, FileUtils.userDirFile(DHT_CONFIG));
 	}
 	
 }

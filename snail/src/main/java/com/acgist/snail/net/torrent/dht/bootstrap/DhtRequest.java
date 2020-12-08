@@ -31,10 +31,14 @@ public class DhtRequest extends DhtMessage {
 
 	/**
 	 * <p>请求类型</p>
+	 * 
+	 * @see DhtConfig#KEY_Q
 	 */
 	private final DhtConfig.QType q;
 	/**
 	 * <p>请求参数</p>
+	 * 
+	 * @see DhtConfig#KEY_A
 	 */
 	private final Map<String, Object> a;
 	/**
@@ -47,7 +51,7 @@ public class DhtRequest extends DhtMessage {
 	private DhtResponse response;
 	
 	/**
-	 * <p>生成NodeId</p>
+	 * <p>生成NodeId：创建请求</p>
 	 * 
 	 * @param q 请求类型
 	 */
@@ -57,7 +61,7 @@ public class DhtRequest extends DhtMessage {
 	}
 	
 	/**
-	 * <p>不生成NodeId</p>
+	 * <p>不生成NodeId：解析请求</p>
 	 * 
 	 * @param t 消息ID
 	 * @param y 消息类型：响应

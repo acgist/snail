@@ -31,16 +31,19 @@ public class DhtResponse extends DhtMessage {
 
 	/**
 	 * <p>响应参数</p>
+	 * 
+	 * @see DhtConfig#KEY_R
 	 */
 	private final Map<String, Object> r;
 	/**
 	 * <p>错误参数</p>
-	 * <p>错误代码：{@link ErrorCode}</p>
+	 * 
+	 * @see DhtConfig#KEY_E
 	 */
 	private final List<Object> e;
 
 	/**
-	 * <p>生成NodeId</p>
+	 * <p>生成NodeId：创建响应</p>
 	 * 
 	 * @param t 节点ID
 	 */
@@ -50,7 +53,7 @@ public class DhtResponse extends DhtMessage {
 	}
 	
 	/**
-	 * <p>不生成NodeId</p>
+	 * <p>不生成NodeId：解析响应</p>
 	 * 
 	 * @param t 消息ID
 	 * @param y 消息类型：响应
