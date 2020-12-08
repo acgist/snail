@@ -152,7 +152,7 @@ public final class SystemConfig extends PropertiesConfig {
 	private static final String USER_DIR = System.getProperty("user.dir");
 	
 	static {
-		LOGGER.info("初始化系统配置");
+		LOGGER.info("初始化系统配置：{}", SYSTEM_CONFIG);
 		INSTANCE.init();
 		INSTANCE.logger();
 	}

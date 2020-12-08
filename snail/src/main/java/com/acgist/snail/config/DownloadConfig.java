@@ -74,7 +74,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	private static final String DOWNLOAD_MEMORY_BUFFER = "acgist.download.memory.buffer";
 	
 	static {
-		LOGGER.info("初始化下载配置");
+		LOGGER.info("初始化下载配置：{}", DOWNLOAD_CONFIG);
 		INSTANCE.initFromProperties();
 		INSTANCE.initFromDatabase();
 		INSTANCE.buildDownloadUploadBuffer();

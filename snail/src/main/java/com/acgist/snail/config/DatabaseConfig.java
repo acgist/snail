@@ -24,7 +24,7 @@ public final class DatabaseConfig extends PropertiesConfig {
 	private static final String DATABASE_CONFIG = "/config/database.properties";
 	
 	static {
-		LOGGER.info("初始化数据库配置");
+		LOGGER.info("初始化数据库配置：{}", DATABASE_CONFIG);
 		INSTANCE.init();
 		INSTANCE.logger();
 	}
