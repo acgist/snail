@@ -19,6 +19,7 @@ public class DhtConfigTest extends BaseTest {
 		final DhtConfig config = DhtConfig.getInstance();
 		NodeManager.getInstance().register();
 		config.persistent();
+		assertNotNull(config);
 	}
 	
 }
