@@ -6,11 +6,11 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.BaseTest;
 
-public class DatabaseConfigTest extends BaseTest {
+public class DownloadConfigTest extends BaseTest {
 
 	@Test
 	public void test() {
-		final DatabaseConfig config = DatabaseConfig.getInstance();
+		final var config = DownloadConfig.getInstance();
 		assertNotNull(config);
 	}
 	

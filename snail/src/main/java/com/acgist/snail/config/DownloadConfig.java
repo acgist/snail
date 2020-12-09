@@ -13,7 +13,7 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>下载配置</p>
- * <p>默认从配置文件加载，如果数据库有配置，则使用数据库配置覆盖。</p>
+ * <p>默认加载配置文件配置，如果数据库存在相同配置，则使用数据库配置覆盖。</p>
  * 
  * @author acgist
  */
@@ -21,8 +21,16 @@ public final class DownloadConfig extends PropertiesConfig {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DownloadConfig.class);
 	
+	/**
+	 * <p>单例对象</p>
+	 */
 	private static final DownloadConfig INSTANCE = new DownloadConfig();
 	
+	/**
+	 * <p>获取单例对象</p>
+	 * 
+	 * @return 单例对象
+	 */
 	public static final DownloadConfig getInstance() {
 		return INSTANCE;
 	}
@@ -33,41 +41,41 @@ public final class DownloadConfig extends PropertiesConfig {
 	private static final String DOWNLOAD_CONFIG = "/config/download.properties";
 	/**
 	 * <p>下载速度和上传速度的比例：{@value}</p>
-	 * <p>比例 = 下载速度 / 上传速度</p>
+	 * <p>比例={@link #downloadBufferByte}/{@link #uploadBufferByte}</p>
 	 */
-	private static final int UPLOAD_DOWNLOAD_SCALE = 4;
+	private static final int DOWNLOAD_UPLOAD_SCALE = 4;
 	/**
-	 * <p>配置名称：{@value}</p>
+	 * <p>下载目录配置名称：{@value}</p>
 	 * 
 	 * @see #path
 	 */
 	private static final String DOWNLOAD_PATH = "acgist.download.path";
 	/**
-	 * <p>配置名称：{@value}</p>
+	 * <p>下载数量配置名称：{@value}</p>
 	 * 
 	 * @see #size
 	 */
 	private static final String DOWNLOAD_SIZE = "acgist.download.size";
 	/**
-	 * <p>配置名称：{@value}</p>
+	 * <p>消息提示配置名称：{@value}</p>
 	 * 
 	 * @see #notice
 	 */
 	private static final String DOWNLOAD_NOTICE = "acgist.download.notice";
 	/**
-	 * <p>配置名称：{@value}</p>
+	 * <p>下载速度（单个）（KB）配置名称：{@value}</p>
 	 * 
 	 * @see #buffer
 	 */
 	private static final String DOWNLOAD_BUFFER = "acgist.download.buffer";
 	/**
-	 * <p>配置名称：{@value}</p>
+	 * <p>最后一次选择目录配置名称：{@value}</p>
 	 * 
 	 * @see #lastPath
 	 */
 	private static final String DOWNLOAD_LAST_PATH = "acgist.download.last.path";
 	/**
-	 * <p>配置名称：{@value}</p>
+	 * <p>磁盘缓存（单个）（MB）配置名称：{@value}</p>
 	 * 
 	 * @see #memoryBuffer
 	 */
@@ -77,8 +85,8 @@ public final class DownloadConfig extends PropertiesConfig {
 		LOGGER.info("初始化下载配置：{}", DOWNLOAD_CONFIG);
 		INSTANCE.initFromProperties();
 		INSTANCE.initFromDatabase();
-		INSTANCE.buildDownloadUploadBuffer();
-		INSTANCE.buildMemoryBufferByte();
+		INSTANCE.refreshUploadDownloadBuffer();
+		INSTANCE.refreshMemoryBuffer();
 		INSTANCE.logger();
 	}
 	
@@ -94,7 +102,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	 */
 	private String path;
 	/**
-	 * <p>下载任务数量</p>
+	 * <p>下载数量</p>
 	 */
 	private int size;
 	/**
@@ -162,11 +170,11 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>日志记录</p>
+	 * <p>记录日志</p>
 	 */
 	private void logger() {
 		LOGGER.info("下载目录：{}", this.path);
-		LOGGER.info("下载任务数量：{}", this.size);
+		LOGGER.info("下载数量：{}", this.size);
 		LOGGER.info("消息提示：{}", this.notice);
 		LOGGER.info("下载速度（单个）（KB）：{}", this.buffer);
 		LOGGER.info("最后一次选择目录：{}", this.lastPath);
@@ -174,9 +182,9 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>设置下载目录</p>
+	 * <p>设置下载目录路径</p>
 	 * 
-	 * @param path 下载目录
+	 * @param path 下载目录路径
 	 */
 	public static final void setPath(String path) {
 		if(StringUtils.equals(INSTANCE.path, path)) {
@@ -207,7 +215,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 
 	/**
-	 * <p>获取文件路径（下载目录 + 文件名称）</p>
+	 * <p>获取下载目录下文件路径</p>
 	 * 
 	 * @param fileName 文件名称
 	 * 
@@ -221,9 +229,9 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>设置下载任务数量</p>
+	 * <p>设置下载数量</p>
 	 * 
-	 * @param size 下载任务数量
+	 * @param size 下载数量
 	 */
 	public static final void setSize(int size) {
 		if(INSTANCE.size == size) {
@@ -233,13 +241,14 @@ public final class DownloadConfig extends PropertiesConfig {
 		INSTANCE.size = size;
 		final ConfigRepository configRepository = new ConfigRepository();
 		configRepository.merge(DOWNLOAD_SIZE, String.valueOf(size));
-		DownloaderManager.getInstance().refresh(); // 刷新下载
+		// 刷新下载任务
+		DownloaderManager.getInstance().refresh();
 	}
 
 	/**
-	 * <p>获取下载任务数量</p>
+	 * <p>获取下载数量</p>
 	 * 
-	 * @return 下载任务数量
+	 * @return 下载数量
 	 */
 	public static final int getSize() {
 		return INSTANCE.size;
@@ -282,7 +291,8 @@ public final class DownloadConfig extends PropertiesConfig {
 		INSTANCE.buffer = buffer;
 		final ConfigRepository configRepository = new ConfigRepository();
 		configRepository.merge(DOWNLOAD_BUFFER, String.valueOf(buffer));
-		INSTANCE.buildDownloadUploadBuffer();
+		// 刷新下载速度和上传速度
+		INSTANCE.refreshUploadDownloadBuffer();
 	}
 	
 	/**
@@ -313,11 +323,11 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>设置下载速度和上传速度</p>
+	 * <p>刷新下载速度和上传速度</p>
 	 */
-	private void buildDownloadUploadBuffer() {
-		this.downloadBufferByte = this.buffer * SystemConfig.DATA_SCALE;
-		this.uploadBufferByte = this.downloadBufferByte / UPLOAD_DOWNLOAD_SCALE;
+	private void refreshUploadDownloadBuffer() {
+		this.downloadBufferByte = this.buffer * SystemConfig.ONE_KB;
+		this.uploadBufferByte = this.downloadBufferByte / DOWNLOAD_UPLOAD_SCALE;
 	}
 	
 	/**
@@ -337,7 +347,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	
 	/**
 	 * <p>获取最后一次选择目录</p>
-	 * <p>如果最后一次选择目录为空，返回下载目录。</p>
+	 * <p>如果最后一次选择目录为空返回下载目录</p>
 	 * 
 	 * @return 最后一次选择目录
 	 */
@@ -371,7 +381,8 @@ public final class DownloadConfig extends PropertiesConfig {
 		INSTANCE.memoryBuffer = memoryBuffer;
 		final ConfigRepository configRepository = new ConfigRepository();
 		configRepository.merge(DOWNLOAD_MEMORY_BUFFER, String.valueOf(memoryBuffer));
-		INSTANCE.buildMemoryBufferByte();
+		// 刷新磁盘缓存
+		INSTANCE.refreshMemoryBuffer();
 	}
 
 	/**
@@ -393,9 +404,9 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>设置磁盘缓存</p>
+	 * <p>刷新磁盘缓存</p>
 	 */
-	private void buildMemoryBufferByte() {
+	private void refreshMemoryBuffer() {
 		this.memoryBufferByte = this.memoryBuffer * SystemConfig.ONE_MB;
 	}
 	

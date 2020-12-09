@@ -313,7 +313,7 @@ public final class SystemConfig extends PropertiesConfig {
 	}
 
 	/**
-	 * <p>日志记录</p>
+	 * <p>记录日志</p>
 	 */
 	private void logger() {
 		LOGGER.info("软件名称：{}", this.name);
