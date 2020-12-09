@@ -123,7 +123,7 @@ public final class GetPeersResponse extends DhtResponse {
 				torrentSession.statistics(),
 				NetUtils.decodeIntToIp(buffer.getInt()),
 				NetUtils.decodePort(buffer.getShort()),
-				PeerConfig.SOURCE_DHT
+				PeerConfig.Source.DHT
 			);
 			buffer.flip();
 			list.add(session);

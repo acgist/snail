@@ -1,14 +1,17 @@
 package com.acgist.snail.pojo.session;
 
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.PeerConfig;
+import com.acgist.snail.config.PeerConfig.Source;
 import com.acgist.snail.net.torrent.PeerConnect;
 import com.acgist.snail.net.torrent.bootstrap.PeerDownloader;
 import com.acgist.snail.net.torrent.bootstrap.PeerUploader;
@@ -46,7 +49,8 @@ public final class PeerSession implements IStatisticsSessionGetter {
 	 */
 	private volatile byte status = 0;
 	/**
-	 * <p>来源</p>
+	 * <p>Peer来源</p>
+	 * <p>Peer可以设置多个来源</p>
 	 */
 	private volatile byte source = 0;
 	/**
@@ -483,80 +487,30 @@ public final class PeerSession implements IStatisticsSessionGetter {
 	}
 	
 	/**
-	 * <p>设置来源</p>
-	 * <p>Peer可以设置多个来源</p>
+	 * <p>设置Peer来源</p>
 	 * 
-	 * @param source 来源标识
+	 * @param source Peer来源
 	 */
-	public void source(byte source) {
+	public void source(PeerConfig.Source source) {
 		synchronized (this) {
-			this.source |= source;
+			this.source |= source.value();
 		}
 	}
 
 	/**
-	 * <p>判断是否属于来源标识</p>
+	 * <p>获取所有来源</p>
 	 * 
-	 * @param source 来源标识
-	 * 
-	 * @return 是否属于来源
+	 * @return 所有来源
 	 */
-	private boolean verifySource(byte source) {
-		return (this.source & source) != 0;
-	}
-	
-	/**
-	 * <p>来源：DHT</p>
-	 * 
-	 * @return 是否来自DHT
-	 */
-	public boolean fromDht() {
-		return this.verifySource(PeerConfig.SOURCE_DHT);
-	}
-	
-	/**
-	 * <p>来源：LSD</p>
-	 * 
-	 * @return 是否来自LSD
-	 */
-	public boolean fromLsd() {
-		return this.verifySource(PeerConfig.SOURCE_LSD);
-	}
-	
-	/**
-	 * <p>来源：PEX</p>
-	 * 
-	 * @return 是否来自PEX
-	 */
-	public boolean fromPex() {
-		return this.verifySource(PeerConfig.SOURCE_PEX);
-	}
-
-	/**
-	 * <p>来源：Tracker</p>
-	 * 
-	 * @return 是否来自Tracker
-	 */
-	public boolean fromTacker() {
-		return this.verifySource(PeerConfig.SOURCE_TRACKER);
-	}
-	
-	/**
-	 * <p>来源：连接</p>
-	 * 
-	 * @return 是否来自连接
-	 */
-	public boolean fromConnect() {
-		return this.verifySource(PeerConfig.SOURCE_CONNECT);
-	}
-	
-	/**
-	 * <p>来源：Holepunch</p>
-	 * 
-	 * @return 是否来自Holepunch
-	 */
-	public boolean fromHolepunch() {
-		return this.verifySource(PeerConfig.SOURCE_HOLEPUNCH);
+	public List<PeerConfig.Source> sources() {
+		final PeerConfig.Source[] sources = PeerConfig.Source.values();
+		final List<PeerConfig.Source> list = new ArrayList<>();
+		for (Source source : sources) {
+			if((this.source & source.value()) != 0) {
+				list.add(source);
+			}
+		}
+		return list;
 	}
 	
 	/**
@@ -728,7 +682,7 @@ public final class PeerSession implements IStatisticsSessionGetter {
 	}
 
 	/**
-	 * <p>holepunch等待锁</p>
+	 * <p>添加holepunch等待锁</p>
 	 */
 	public void lockHolepunch() {
 		if(this.holepunchConnect) { // 已经连接

@@ -686,11 +686,11 @@ public final class MSECryptHandshakeHandler {
 	private boolean checkPeerHandshake(ByteBuffer buffer) throws NetException {
 		final byte first = buffer.get();
 		// 判断首个字符
-		if(first == PeerConfig.HANDSHAKE_NAME_LENGTH && buffer.remaining() >= PeerConfig.HANDSHAKE_NAME_LENGTH) {
+		if(first == PeerConfig.PROTOCOL_NAME_LENGTH && buffer.remaining() >= PeerConfig.PROTOCOL_NAME_LENGTH) {
 			// 判断协议名称
-			final byte[] names = new byte[PeerConfig.HANDSHAKE_NAME_LENGTH];
+			final byte[] names = new byte[PeerConfig.PROTOCOL_NAME_LENGTH];
 			buffer.get(names);
-			if(ArrayUtils.equals(names, PeerConfig.HANDSHAKE_NAME_BYTES)) {
+			if(ArrayUtils.equals(names, PeerConfig.PROTOCOL_NAME_BYTES)) {
 				// 握手消息直接使用明文
 				this.plaintext();
 				buffer.position(0); // 重置长度

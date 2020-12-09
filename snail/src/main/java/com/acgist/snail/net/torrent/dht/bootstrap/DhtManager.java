@@ -99,7 +99,7 @@ public final class DhtManager {
 		LOGGER.debug("处理DHT超时请求");
 		synchronized (this.requests) {
 			DhtRequest request;
-			final long timeout = DhtConfig.TIMEOUT;
+			final long timeout = DhtConfig.DHT_TIMEOUT;
 			final long timestamp = System.currentTimeMillis();
 			final var iterator = this.requests.iterator();
 			while(iterator.hasNext()) {

@@ -152,7 +152,7 @@ public final class TrackerLauncher {
 			this.torrentSession.statistics(),
 			host,
 			port,
-			PeerConfig.SOURCE_TRACKER
+			PeerConfig.Source.TRACKER
 		));
 	}
 

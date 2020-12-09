@@ -198,7 +198,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			torrentSession.statistics(),
 			socketAddress.getHostString(),
 			null,
-			PeerConfig.SOURCE_CONNECT
+			PeerConfig.Source.CONNECT
 		);
 		final PeerUploader peerUploader = torrentSession.newPeerUploader(peerSession, this);
 		if(peerUploader != null) {
@@ -340,8 +340,8 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * <p>格式：pstrlen pstr reserved info_hash peer_id</p>
 	 * <pre>
 	 * pstrlen：协议（pstr）的长度：19
-	 * pstr：BitTorrent协议：{@link PeerConfig#HANDSHAKE_NAME}
-	 * reserved：8字节，用于扩展BT协议：{@link PeerConfig#HANDSHAKE_RESERVED}
+	 * pstr：BitTorrent协议：{@link PeerConfig#PROTOCOL_NAME}
+	 * reserved：8字节，用于扩展BT协议：{@link PeerConfig#RESERVED}
 	 * info_hash：info_hash
 	 * peer_id：peer_id
 	 * </pre>
@@ -357,9 +357,9 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			this.peerSession.peerDownloader(peerDownloader);
 		}
 		final ByteBuffer buffer = ByteBuffer.allocate(PeerConfig.HANDSHAKE_LENGTH);
-		buffer.put((byte) PeerConfig.HANDSHAKE_NAME_LENGTH);
-		buffer.put(PeerConfig.HANDSHAKE_NAME_BYTES);
-		buffer.put(PeerConfig.HANDSHAKE_RESERVED);
+		buffer.put((byte) PeerConfig.PROTOCOL_NAME_LENGTH);
+		buffer.put(PeerConfig.PROTOCOL_NAME_BYTES);
+		buffer.put(PeerConfig.RESERVED);
 		buffer.put(this.torrentSession.infoHash().infoHash());
 		buffer.put(PeerService.getInstance().peerId());
 		this.sendEncrypt(buffer, HANDSHAKE_TIMEOUT);
@@ -381,7 +381,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			return;
 		}
 		final byte length = buffer.get();
-		if(length != PeerConfig.HANDSHAKE_NAME_LENGTH) {
+		if(length != PeerConfig.PROTOCOL_NAME_LENGTH) {
 			LOGGER.warn("处理握手消息格式错误（协议长度）：{}", length);
 //			this.close(); // 不关闭：选择忽略
 			return;
@@ -389,7 +389,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		final byte[] names = new byte[length];
 		buffer.get(names);
 		final String name = new String(names);
-		if(!PeerConfig.HANDSHAKE_NAME.equals(name)) {
+		if(!PeerConfig.PROTOCOL_NAME.equals(name)) {
 			LOGGER.warn("处理握手消息格式错误（下载协议错误）：{}", name);
 //			this.close(); // 不关闭：选择忽略
 			return;

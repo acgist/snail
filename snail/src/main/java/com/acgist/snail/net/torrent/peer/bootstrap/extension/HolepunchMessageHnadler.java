@@ -194,7 +194,7 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 				this.torrentSession.statistics(),
 				host,
 				port,
-				PeerConfig.SOURCE_HOLEPUNCH
+				PeerConfig.Source.HOLEPUNCH
 			);
 		}
 		if(peerSession.holepunchWait()) {
