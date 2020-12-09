@@ -26,7 +26,6 @@ public class VersionVerifyTest extends Performance {
 		final String basePath = "E:/gitee/snail/";
 		final String parentPomPath = basePath + "pom.xml";
 		final String snailPomPath = basePath + "snail/pom.xml";
-		final String snailExtendPomPath = basePath + "snail-extend/pom.xml";
 		final String snailJavafxPomPath = basePath + "snail-javafx/pom.xml";
 		final String builderConfigPath = basePath + "builder/config.bat";
 		final String launcherConfigPath = basePath + "SnailLauncher/src/snail.ini";
@@ -37,8 +36,6 @@ public class VersionVerifyTest extends Performance {
 		assertEquals(parentPomVersion, acgistVersion);
 		final String snailPomVersion = xml(snailPomPath, "version");
 		assertEquals(parentPomVersion, snailPomVersion);
-		final String snailExtendPomVersion = xml(snailExtendPomPath, "version");
-		assertEquals(parentPomVersion, snailExtendPomVersion);
 		final String snailJavafxPomVersion = xml(snailJavafxPomPath, "version");
 		assertEquals(parentPomVersion, snailJavafxPomVersion);
 		final String builderConfigVersion = contain(builderConfigPath, acgistVersion);

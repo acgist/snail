@@ -8,7 +8,6 @@
 	版本配置：
 	pom.xml
 	snail/pom.xml
-	snail-extend/pom.xml
 	snail-javafx/pom.xml
 	builder/config.bat
 	SnailLauncher/src/snail.ini
