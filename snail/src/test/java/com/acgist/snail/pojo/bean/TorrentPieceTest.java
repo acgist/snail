@@ -2,9 +2,9 @@ package com.acgist.snail.pojo.bean;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
+import com.acgist.snail.utils.Performance;
 
-public class TorrentPieceTest extends BaseTest {
+public class TorrentPieceTest extends Performance {
 
 	@Test
 	public void testRead() {

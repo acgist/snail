@@ -14,9 +14,7 @@ import java.nio.file.StandardOpenOption;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
-
-public class FileUtilsTest extends BaseTest {
+public class FileUtilsTest extends Performance {
 	
 	@Test
 	public void testFileNameUrl() {

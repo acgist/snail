@@ -4,10 +4,9 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
 import com.acgist.snail.pojo.entity.TaskEntity;
 
-public class PropertyDescriptorTest extends BaseTest {
+public class PropertyDescriptorTest extends Performance {
 
 	@Test
 	public void testRead() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {

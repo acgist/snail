@@ -4,11 +4,10 @@ import java.nio.ByteBuffer;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
 import com.acgist.snail.config.CryptConfig;
 import com.acgist.snail.config.SystemConfig;
 
-public class NumberUtilsTest extends BaseTest {
+public class NumberUtilsTest extends Performance {
 
 	@Test
 	public void testUnsigned() {

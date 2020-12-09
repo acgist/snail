@@ -6,10 +6,10 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
 import com.acgist.snail.context.exception.DownloadException;
+import com.acgist.snail.utils.Performance;
 
-public class TsLinkerTest extends BaseTest {
+public class TsLinkerTest extends Performance {
 
 	@Test
 	public void link() throws DownloadException {

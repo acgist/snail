@@ -8,9 +8,7 @@ import java.net.URLEncoder;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
-
-public class UrlUtilsTest extends BaseTest {
+public class UrlUtilsTest extends Performance {
 
 	@Test
 	public void testRedirect() {

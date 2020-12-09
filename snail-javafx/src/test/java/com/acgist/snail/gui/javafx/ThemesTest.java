@@ -2,7 +2,9 @@ package com.acgist.snail.gui.javafx;
 
 import org.junit.jupiter.api.Test;
 
-public class ThemesTest extends BaseTest {
+import com.acgist.snail.utils.Performance;
+
+public class ThemesTest extends Performance {
 
 	@Test
 	public void testTetThemeStyle() throws Exception {

@@ -9,9 +9,10 @@ import java.util.BitSet;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.StringUtils;
 
-public class ByteBufferTest extends BaseTest {
+public class ByteBufferTest extends Performance {
 
 	@Test
 	public void bitSet() throws IOException {

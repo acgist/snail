@@ -6,9 +6,10 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.ThreadUtils;
 
-public class TaskbarsTest extends BaseTest {
+public class TaskbarsTest extends Performance {
 
 	@Test
 	public void testProgress() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {

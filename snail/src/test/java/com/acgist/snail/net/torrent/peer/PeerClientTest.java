@@ -6,7 +6,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
 import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.net.torrent.TorrentManager;
@@ -21,13 +20,14 @@ import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.pojo.wrapper.MultifileSelectorWrapper;
 import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.utils.PeerUtils;
+import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * <p>结合本地迅雷或者其他BT软件测试</p>
  */
-public class PeerClientTest extends BaseTest {
+public class PeerClientTest extends Performance {
 	
 	@Test
 	public void testDownload() throws DownloadException {

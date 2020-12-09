@@ -2,10 +2,10 @@ package com.acgist.snail.net.torrent.lsd;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
 import com.acgist.snail.context.exception.NetException;
+import com.acgist.snail.utils.Performance;
 
-public class LocalServiceDiscoveryTest extends BaseTest {
+public class LocalServiceDiscoveryTest extends Performance {
 
 	@Test
 	public void testServer() {

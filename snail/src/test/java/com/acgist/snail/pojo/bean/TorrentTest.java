@@ -2,14 +2,14 @@ package com.acgist.snail.pojo.bean;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.utils.DateUtils;
+import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.StringUtils;
 
-public class TorrentTest extends BaseTest {
+public class TorrentTest extends Performance {
 
 	@Test
 	public void testRead() throws Exception {

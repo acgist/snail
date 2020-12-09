@@ -4,7 +4,9 @@ import java.util.Locale;
 
 import org.junit.jupiter.api.Test;
 
-public class LocaleTest extends BaseTest {
+import com.acgist.snail.utils.Performance;
+
+public class LocaleTest extends Performance {
 
 	@Test
 	public void testLocale() {

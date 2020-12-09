@@ -2,9 +2,7 @@ package com.acgist.snail.utils;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
-
-public class DateUtilsTest extends BaseTest {
+public class DateUtilsTest extends Performance {
 
 	@Test
 	public void format() {

@@ -2,11 +2,11 @@ package com.acgist.snail.net.upnp.bootstrap;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.protocol.Protocol;
+import com.acgist.snail.utils.Performance;
 
-public class UpnpServiceTest extends BaseTest {
+public class UpnpServiceTest extends Performance {
 
 	private String serviceUrl = "http://192.168.1.1:10087/rootDesc.xml";
 //	private String serviceUrl = "http://192.168.1.1:5351/rootDesc.xml";

@@ -5,10 +5,9 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
 import com.acgist.snail.pojo.entity.ConfigEntity;
 
-public class ObjectUtilsTest extends BaseTest {
+public class ObjectUtilsTest extends Performance {
 
 	@Test
 	public void testToString() {

@@ -2,13 +2,13 @@ package com.acgist.snail.net.torrent.dht;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.net.torrent.dht.bootstrap.NodeManager;
 import com.acgist.snail.pojo.bean.InfoHash;
+import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.ThreadUtils;
 
-public class DhtClientTest extends BaseTest {
+public class DhtClientTest extends Performance {
 
 	// 本地FDM测试节点
 //	private static final int PORT = 49160;

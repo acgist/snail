@@ -7,7 +7,9 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-public class ReferenceTest extends BaseTest {
+import com.acgist.snail.utils.Performance;
+
+public class ReferenceTest extends Performance {
 
 	@Test
 	public void testReference() {

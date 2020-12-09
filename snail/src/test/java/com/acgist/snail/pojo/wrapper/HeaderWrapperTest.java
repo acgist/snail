@@ -4,12 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.net.upnp.UpnpServer;
+import com.acgist.snail.utils.Performance;
 
-public class HeaderWrapperTest extends BaseTest {
+public class HeaderWrapperTest extends Performance {
 
 	private static final String NEW_LINE = "\r\n";
 	

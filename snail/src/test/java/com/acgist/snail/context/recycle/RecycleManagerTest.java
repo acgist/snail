@@ -2,9 +2,9 @@ package com.acgist.snail.context.recycle;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
+import com.acgist.snail.utils.Performance;
 
-public class RecycleManagerTest extends BaseTest {
+public class RecycleManagerTest extends Performance {
 
 	@Test
 	public void testDelete() {

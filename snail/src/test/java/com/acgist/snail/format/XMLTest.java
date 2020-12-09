@@ -2,9 +2,9 @@ package com.acgist.snail.format;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
+import com.acgist.snail.utils.Performance;
 
-public class XMLTest extends BaseTest {
+public class XMLTest extends Performance {
 
 	@Test
 	public void testBuild() {

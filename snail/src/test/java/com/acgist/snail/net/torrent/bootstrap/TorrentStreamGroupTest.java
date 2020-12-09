@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.torrent.TorrentManager;
@@ -15,10 +14,11 @@ import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.DigestUtils;
+import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.ThreadUtils;
 
-public class TorrentStreamGroupTest extends BaseTest {
+public class TorrentStreamGroupTest extends Performance {
 
 	@Test
 	public void testVerify() throws DownloadException, NetException {

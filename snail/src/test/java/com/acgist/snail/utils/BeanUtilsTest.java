@@ -7,11 +7,10 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
 import com.acgist.snail.pojo.ITaskSession.FileType;
 import com.acgist.snail.pojo.entity.TaskEntity;
 
-public class BeanUtilsTest extends BaseTest {
+public class BeanUtilsTest extends Performance {
 
 	@Test
 	public void testRead() {

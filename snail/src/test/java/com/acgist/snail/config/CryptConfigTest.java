@@ -4,9 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
+import com.acgist.snail.utils.Performance;
 
-public class CryptConfigTest extends BaseTest {
+public class CryptConfigTest extends Performance {
 
 	@Test
 	public void test() {

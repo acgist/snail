@@ -7,14 +7,14 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
 import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.format.BEncodeEncoder;
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.pojo.message.ApplicationMessage;
 import com.acgist.snail.pojo.message.ApplicationMessage.Type;
+import com.acgist.snail.utils.Performance;
 
-public class ApplicationTest extends BaseTest {
+public class ApplicationTest extends Performance {
 
 	@Test
 	public void testServer() {

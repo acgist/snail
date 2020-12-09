@@ -4,10 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
 import com.acgist.snail.net.torrent.dht.bootstrap.NodeManager;
+import com.acgist.snail.utils.Performance;
 
-public class DhtConfigTest extends BaseTest {
+public class DhtConfigTest extends Performance {
 
 	@Test
 	public void testNodes() {

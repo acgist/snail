@@ -8,9 +8,9 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
+import com.acgist.snail.utils.Performance;
 
-public class JSONTest extends BaseTest {
+public class JSONTest extends Performance {
 	
 	@Test
 	public void testSerialize() {

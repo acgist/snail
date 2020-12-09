@@ -2,12 +2,12 @@ package com.acgist.snail.net.stun;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
 import com.acgist.snail.config.StunConfig;
 import com.acgist.snail.config.StunConfig.MethodType;
 import com.acgist.snail.utils.NetUtils;
+import com.acgist.snail.utils.Performance;
 
-public class StunTest extends BaseTest {
+public class StunTest extends Performance {
 
 	@Test
 	public void testMessageType() {

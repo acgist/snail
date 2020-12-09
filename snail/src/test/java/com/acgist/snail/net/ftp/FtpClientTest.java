@@ -6,12 +6,12 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.ftp.bootstrap.FtpClientBuilder;
 import com.acgist.snail.utils.FileUtils;
+import com.acgist.snail.utils.Performance;
 
-public class FtpClientTest extends BaseTest {
+public class FtpClientTest extends Performance {
 
 	@Test
 	public void testDownload() throws FileNotFoundException, IOException, NetException {

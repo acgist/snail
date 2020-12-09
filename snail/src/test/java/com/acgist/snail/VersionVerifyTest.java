@@ -14,8 +14,9 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.format.XML;
+import com.acgist.snail.utils.Performance;
 
-public class VersionVerifyTest extends BaseTest {
+public class VersionVerifyTest extends Performance {
 
 	/**
 	 * <p>版本校验</p>

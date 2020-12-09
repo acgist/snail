@@ -8,14 +8,14 @@ import java.util.Base64;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.pojo.bean.M3u8.Type;
 import com.acgist.snail.protocol.hls.bootstrap.M3u8Builder;
+import com.acgist.snail.utils.Performance;
 
-public class M3u8Test extends BaseTest {
+public class M3u8Test extends Performance {
 
 //	http://ivi.bupt.edu.cn/hls/cctv6hd.m3u8
 //	https://dco4urblvsasc.cloudfront.net/811/81095_ywfZjAuP/game/index.m3u8
