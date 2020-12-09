@@ -55,13 +55,16 @@ public abstract class Performance {
 	/**
 	 * <p>结束统计时间</p>
 	 * <p>重置统计时间</p>
+	 * 
+	 * @return 时间消耗
 	 */
-	protected final void costed() {
+	protected final long costed() {
 		final long time = System.currentTimeMillis();
 		final long costed = time - this.costTime.getAndSet(time);
 		// TODO：多行文本
 		LOGGER.info("消耗时间（毫秒）：{}", costed);
 		LOGGER.info("消耗时间（秒）：{}", costed / DateUtils.ONE_SECOND);
+		return costed;
 	}
 	
 	/**

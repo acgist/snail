@@ -182,8 +182,5 @@ https://p3c.alibaba.com/plugin/eclipse/update
 
 #### 质量检查
 
-使用Sonar对代码进行质量检查
-
-```
-mvn sonar:sonar -D "sonar.projectKey=snail" -D "sonar.host.url=http://localhost:9000" -D "sonar.login=token"
-```
+* 使用Sonar对代码进行质量检查
+* 使用JaCoCo对代码进行覆盖率检测
