@@ -155,6 +155,7 @@ public final class SystemConfig extends PropertiesConfig {
 		LOGGER.info("初始化系统配置：{}", SYSTEM_CONFIG);
 		INSTANCE.init();
 		INSTANCE.logger();
+		INSTANCE.release();
 	}
 	
 	/**

@@ -45,6 +45,7 @@ public final class TrackerConfig extends PropertiesConfig {
 	static {
 		LOGGER.info("初始化Tracker服务器配置：{}", TRACKER_CONFIG);
 		INSTANCE.init();
+		INSTANCE.release();
 	}
 	
 	/**
@@ -199,7 +200,6 @@ public final class TrackerConfig extends PropertiesConfig {
 				LOGGER.warn("注册默认Tracker服务器失败：{}", announce);
 			}
 		});
-		this.properties.clear();
 	}
 
 	/**

@@ -194,6 +194,7 @@ public final class PeerConfig extends PropertiesConfig {
 		//================初始化================//
 		LOGGER.info("初始化Peer配置：{}", CLIENT_NAME_CONFIG);
 		INSTANCE.init();
+		INSTANCE.release();
 	}
 	
 	/**
@@ -745,7 +746,6 @@ public final class PeerConfig extends PropertiesConfig {
 	 */
 	private void init() {
 		this.properties.forEach((key, value) -> PEER_NAMES.put(key.toString(), value.toString()));
-		this.properties.clear();
 	}
 	
 }

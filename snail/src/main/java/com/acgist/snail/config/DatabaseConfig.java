@@ -35,6 +35,7 @@ public final class DatabaseConfig extends PropertiesConfig {
 		LOGGER.info("初始化数据库配置：{}", DATABASE_CONFIG);
 		INSTANCE.init();
 		INSTANCE.logger();
+		INSTANCE.release();
 	}
 	
 	/**

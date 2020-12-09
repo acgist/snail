@@ -88,6 +88,7 @@ public final class DownloadConfig extends PropertiesConfig {
 		INSTANCE.refreshUploadDownloadBuffer();
 		INSTANCE.refreshMemoryBuffer();
 		INSTANCE.logger();
+		INSTANCE.release();
 	}
 	
 	/**
