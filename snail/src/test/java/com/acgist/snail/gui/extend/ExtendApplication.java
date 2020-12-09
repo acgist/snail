@@ -1,11 +1,10 @@
-package com.acgist.main;
+package com.acgist.snail.gui.extend;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.context.SystemContext;
 import com.acgist.snail.gui.GuiManager;
-import com.acgist.snail.gui.extend.ExtendGuiManager;
 import com.acgist.snail.utils.ArrayUtils;
 
 /**

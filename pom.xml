@@ -62,7 +62,6 @@
 	<modules>
 		<module>snail</module>
 		<module>snail-javafx</module>
-		<module>snail-extend</module>
 	</modules>
 
 	<dependencies>
