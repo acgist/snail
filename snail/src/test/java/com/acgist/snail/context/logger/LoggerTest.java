@@ -9,11 +9,8 @@ import com.acgist.snail.utils.Performance;
 public class LoggerTest extends Performance {
 
 	@Test
-	public void testCost() {
-		this.cost(100000, 10, () -> {
-			this.log("----" + System.currentTimeMillis());
-//			ThreadUtils.sleep(10);
-		});
+	public void testCostd() {
+		this.costd(100000, 10, () -> this.log("----" + System.currentTimeMillis()));
 	}
 
 	@Test
