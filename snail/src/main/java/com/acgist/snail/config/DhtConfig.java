@@ -180,6 +180,7 @@ public final class DhtConfig extends PropertiesConfig {
 	static {
 		LOGGER.info("初始化DHT节点配置：{}", DHT_CONFIG);
 		INSTANCE.init();
+		INSTANCE.release();
 	}
 	
 	/**
@@ -329,7 +330,6 @@ public final class DhtConfig extends PropertiesConfig {
 				LOGGER.warn("注册默认DHT节点失败：{}-{}", nodeId, address);
 			}
 		});
-		this.properties.clear();
 	}
 
 	/**

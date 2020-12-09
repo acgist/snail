@@ -253,4 +253,12 @@ public abstract class PropertiesConfig {
 		return entity == null ? defaultValue : Integer.parseInt(entity.getValue());
 	}
 	
+	/**
+	 * <p>释放配置</p>
+	 */
+	protected void release() {
+		this.properties.clear();
+//		this.properties = null;
+	}
+	
 }
