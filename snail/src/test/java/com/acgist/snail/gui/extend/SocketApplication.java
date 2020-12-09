@@ -1,11 +1,10 @@
-package com.acgist.main;
+package com.acgist.snail.gui.extend;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
 import com.acgist.snail.format.BEncodeEncoder;
-import com.acgist.snail.gui.extend.ExtendGuiManager;
 import com.acgist.snail.net.application.ApplicationClient;
 import com.acgist.snail.pojo.message.ApplicationMessage;
 import com.acgist.snail.pojo.message.ApplicationMessage.Type;
