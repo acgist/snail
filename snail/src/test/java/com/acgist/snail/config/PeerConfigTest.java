@@ -4,9 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
+import com.acgist.snail.utils.Performance;
 
-public class PeerConfigTest extends BaseTest {
+public class PeerConfigTest extends Performance {
 
 	@Test
 	public void testReserved() {

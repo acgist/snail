@@ -5,9 +5,7 @@ import java.net.SocketException;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
-
-public class NetUtilsTest extends BaseTest {
+public class NetUtilsTest extends Performance {
 
 	@Test
 	public void ip() {

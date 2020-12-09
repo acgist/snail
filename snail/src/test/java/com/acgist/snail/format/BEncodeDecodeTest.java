@@ -6,10 +6,10 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
 import com.acgist.snail.context.exception.PacketSizeException;
+import com.acgist.snail.utils.Performance;
 
-public class BEncodeDecodeTest extends BaseTest {
+public class BEncodeDecodeTest extends Performance {
 
 	@Test
 	public void testEncodeDecode() throws PacketSizeException {

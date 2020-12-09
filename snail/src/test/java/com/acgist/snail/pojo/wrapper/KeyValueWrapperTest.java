@@ -4,9 +4,9 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
+import com.acgist.snail.utils.Performance;
 
-public class KeyValueWrapperTest extends BaseTest {
+public class KeyValueWrapperTest extends Performance {
 
 	@Test
 	public void testEncode() {

@@ -2,11 +2,11 @@ package com.acgist.snail.net.torrent.utp;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
 import com.acgist.snail.net.torrent.TorrentServer;
 import com.acgist.snail.utils.NetUtils;
+import com.acgist.snail.utils.Performance;
 
-public class UtpMessageHandlerTest extends BaseTest {
+public class UtpMessageHandlerTest extends Performance {
 
 	@Test
 	public void test() {

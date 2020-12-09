@@ -11,8 +11,9 @@ import org.junit.jupiter.api.Test;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerClient;
 import com.acgist.snail.net.torrent.tracker.bootstrap.impl.HttpTrackerClient;
+import com.acgist.snail.utils.Performance;
 
-public class LambdaTest extends BaseTest {
+public class LambdaTest extends Performance {
 
 	@Test
 	public void testMethodReference() throws NetException {

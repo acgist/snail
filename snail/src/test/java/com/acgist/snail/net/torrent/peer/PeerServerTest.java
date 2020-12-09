@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
 import com.acgist.snail.config.DatabaseConfig;
 import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.context.exception.DownloadException;
@@ -20,13 +19,14 @@ import com.acgist.snail.pojo.session.StatisticsSession;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.wrapper.MultifileSelectorWrapper;
 import com.acgist.snail.protocol.Protocol.Type;
+import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * <p>软件本身充当下载的客户端和服务端测试</p>
  * <p>客户端启动时需要修改端口和数据库</p>
  */
-public class PeerServerTest extends BaseTest {
+public class PeerServerTest extends Performance {
 	
 	@Test
 	public void testServer() throws DownloadException {

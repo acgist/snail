@@ -6,12 +6,12 @@ import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.utils.ArrayUtils;
+import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.StringUtils;
 
-public class NodeManagerTest extends BaseTest {
+public class NodeManagerTest extends Performance {
 
 	@Test
 	public void testCompare() {

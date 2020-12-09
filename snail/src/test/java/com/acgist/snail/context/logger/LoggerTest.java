@@ -2,11 +2,11 @@ package com.acgist.snail.context.logger;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.pojo.entity.TaskEntity;
+import com.acgist.snail.utils.Performance;
 
-public class LoggerTest extends BaseTest {
+public class LoggerTest extends Performance {
 
 	@Test
 	public void testCost() {

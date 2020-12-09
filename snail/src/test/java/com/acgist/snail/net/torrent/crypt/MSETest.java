@@ -6,12 +6,12 @@ import java.security.InvalidKeyException;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
 import com.acgist.snail.config.CryptConfig;
 import com.acgist.snail.utils.NumberUtils;
+import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.StringUtils;
 
-public class MSETest extends BaseTest {
+public class MSETest extends Performance {
 
 	@Test
 	public void testMSE() throws InvalidKeyException {

@@ -5,13 +5,13 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
 import com.acgist.snail.context.initializer.impl.DatabaseInitializer;
 import com.acgist.snail.pojo.entity.ConfigEntity;
 import com.acgist.snail.pojo.wrapper.ResultSetWrapper;
 import com.acgist.snail.repository.impl.ConfigRepository;
+import com.acgist.snail.utils.Performance;
 
-public class DatabaseTest extends BaseTest {
+public class DatabaseTest extends Performance {
 
 	@BeforeAll
 	public static final void init() {

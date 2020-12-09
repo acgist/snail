@@ -4,10 +4,10 @@ import java.nio.ByteBuffer;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
 import com.acgist.snail.context.exception.NetException;
+import com.acgist.snail.utils.Performance;
 
-public class MSEPaddingSyncTest extends BaseTest {
+public class MSEPaddingSyncTest extends Performance {
 
 	@Test
 	public void testCost() throws NetException {

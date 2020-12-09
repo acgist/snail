@@ -6,10 +6,10 @@ import java.util.concurrent.Executors;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
 import com.acgist.snail.context.exception.NetException;
+import com.acgist.snail.utils.Performance;
 
-public class HTTPClientTest extends BaseTest {
+public class HTTPClientTest extends Performance {
 	
 	@Test
 	public void testChar() throws Exception {

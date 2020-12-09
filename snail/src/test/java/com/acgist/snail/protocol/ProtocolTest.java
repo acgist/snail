@@ -2,14 +2,14 @@ package com.acgist.snail.protocol;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.initializer.impl.ProtocolInitializer;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.utils.Base32Utils;
+import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.StringUtils;
 
-public class ProtocolTest extends BaseTest {
+public class ProtocolTest extends Performance {
 
 	@Test
 	public void testSupport() {

@@ -3,10 +3,11 @@ package com.acgist.snail.gui.javafx;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.gui.GuiManager.MessageType;
+import com.acgist.snail.utils.Performance;
 
 import javafx.application.Platform;
 
-public class GuiTest extends BaseTest {
+public class GuiTest extends Performance {
 
 	@Test
 	public void testAlert() {

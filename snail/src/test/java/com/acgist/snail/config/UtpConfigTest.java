@@ -4,9 +4,9 @@ import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
+import com.acgist.snail.utils.Performance;
 
-public class UtpConfigTest extends BaseTest {
+public class UtpConfigTest extends Performance {
 
 	@Test
 	public void test() {

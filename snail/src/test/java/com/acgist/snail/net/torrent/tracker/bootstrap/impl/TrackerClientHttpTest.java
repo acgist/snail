@@ -2,13 +2,13 @@ package com.acgist.snail.net.torrent.tracker.bootstrap.impl;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.utils.Performance;
 
-public class TrackerClientHttpTest extends BaseTest {
+public class TrackerClientHttpTest extends Performance {
 
 	@Test
 	public void testAnnounce() throws DownloadException, NetException {

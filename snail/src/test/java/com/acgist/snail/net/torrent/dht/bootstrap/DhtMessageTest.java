@@ -2,9 +2,9 @@ package com.acgist.snail.net.torrent.dht.bootstrap;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
+import com.acgist.snail.utils.Performance;
 
-public class DhtMessageTest extends BaseTest {
+public class DhtMessageTest extends Performance {
 
 	@Test
 	public void testResponse() {

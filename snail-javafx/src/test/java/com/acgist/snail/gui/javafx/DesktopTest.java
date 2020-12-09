@@ -6,7 +6,9 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
 
-public class DesktopTest extends BaseTest {
+import com.acgist.snail.utils.Performance;
+
+public class DesktopTest extends Performance {
 
 	@Test
 	public void test() throws IOException {

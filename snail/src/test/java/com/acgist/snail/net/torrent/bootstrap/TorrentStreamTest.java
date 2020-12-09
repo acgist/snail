@@ -9,10 +9,10 @@ import java.nio.file.StandardOpenOption;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
+import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.StringUtils;
 
-public class TorrentStreamTest extends BaseTest {
+public class TorrentStreamTest extends Performance {
 
 	private final int PIECE_SIZE = 8 * 1024 * 1024;
 	

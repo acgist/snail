@@ -9,9 +9,9 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.BaseTest;
+import com.acgist.snail.utils.Performance;
 
-public class HttpHeaderWrapperTest extends BaseTest {
+public class HttpHeaderWrapperTest extends Performance {
 
 	@Test
 	public void fileName() throws UnsupportedEncodingException {
