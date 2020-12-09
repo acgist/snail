@@ -3,13 +3,14 @@ package com.acgist.snail.context.logger;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.BaseTest;
+import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.pojo.entity.TaskEntity;
 
 public class LoggerTest extends BaseTest {
 
 	@Test
 	public void testCost() {
-		this.cost(100000, 10, index -> {
+		this.cost(100000, 10, () -> {
 			this.log("----" + System.currentTimeMillis());
 //			ThreadUtils.sleep(10);
 		});
@@ -25,7 +26,7 @@ public class LoggerTest extends BaseTest {
 		LOGGER.warn("warn：{}-{}-{}-{}", arga, argb, taskEntity);
 		LOGGER.error("error：{}-{}-{}-{}", arga, argb, taskEntity);
 		try {
-			System.out.println(1 / 0);
+			throw new NetException("错误测试");
 		} catch (Exception e) {
 			LOGGER.debug("debug", e);
 			LOGGER.info("info", e);

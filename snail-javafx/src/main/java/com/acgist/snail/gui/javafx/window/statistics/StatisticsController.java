@@ -314,64 +314,71 @@ public final class StatisticsController extends Controller implements Initializa
 		}
 		final var peers = PeerManager.getInstance().listPeerSession(infoHashHex);
 		// Peer
-		final var utp = new AtomicInteger(0);
-		final var available = new AtomicInteger(0);
-		// 来源数量
-		final var pex = new AtomicInteger(0);
-		final var dht = new AtomicInteger(0);
-		final var lsd = new AtomicInteger(0);
-		final var tracker = new AtomicInteger(0);
-		final var connect = new AtomicInteger(0);
-		final var holepunch = new AtomicInteger(0);
+		final var utpCount = new AtomicInteger(0);
+		final var availableCount = new AtomicInteger(0);
 		// 上传数量、下载数量
-		final var upload = new AtomicInteger(0);
-		final var download = new AtomicInteger(0);
+		final var uploadCount = new AtomicInteger(0);
+		final var downloadCount = new AtomicInteger(0);
+		// 来源数量
+		final var pexCount = new AtomicInteger(0);
+		final var dhtCount = new AtomicInteger(0);
+		final var lsdCount = new AtomicInteger(0);
+		final var trackerCount = new AtomicInteger(0);
+		final var connectCount = new AtomicInteger(0);
+		final var holepunchCount = new AtomicInteger(0);
 		peers.forEach(peer -> {
 			if(peer.utp()) {
-				utp.incrementAndGet();
+				utpCount.incrementAndGet();
 			}
 			if(peer.available()) {
-				available.incrementAndGet();
-			}
-			if(peer.fromDht()) {
-				dht.incrementAndGet();
-			}
-			if(peer.fromPex()) {
-				pex.incrementAndGet();
-			}
-			if(peer.fromLsd()) {
-				lsd.incrementAndGet();
-			}
-			if(peer.fromTacker()) {
-				tracker.incrementAndGet();
-			}
-			if(peer.fromConnect()) {
-				connect.incrementAndGet();
-			}
-			if(peer.fromHolepunch()) {
-				holepunch.incrementAndGet();
+				availableCount.incrementAndGet();
 			}
 			if(peer.uploading()) {
-				upload.incrementAndGet();
+				uploadCount.incrementAndGet();
 			}
 			if(peer.downloading()) {
-				download.incrementAndGet();
+				downloadCount.incrementAndGet();
 			}
+			peer.sources().forEach(source -> {
+				switch (source) {
+				case DHT:
+					dhtCount.incrementAndGet();
+					break;
+				case PEX:
+					pexCount.incrementAndGet();
+					break;
+				case LSD:
+					lsdCount.incrementAndGet();
+					break;
+				case TRACKER:
+					trackerCount.incrementAndGet();
+					break;
+				case CONNECT:
+					connectCount.incrementAndGet();
+					break;
+				case HOLEPUNCH:
+					holepunchCount.incrementAndGet();
+					break;
+				default:
+					LOGGER.warn("未知Peer来源：{}", source);
+					break;
+				}
+			});
 		});
 		// 来源图表
 		final ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
-			new PieChart.Data("DHT", dht.get()),
-			new PieChart.Data("PEX", pex.get()),
-			new PieChart.Data("LSD", lsd.get()),
-			new PieChart.Data("Tracker", tracker.get()),
-			new PieChart.Data("Connect", connect.get()),
-			new PieChart.Data("Holepunch", holepunch.get())
+			new PieChart.Data("DHT", dhtCount.get()),
+			new PieChart.Data("PEX", pexCount.get()),
+			new PieChart.Data("LSD", lsdCount.get()),
+			new PieChart.Data("Tracker", trackerCount.get()),
+			new PieChart.Data("Connect", connectCount.get()),
+			new PieChart.Data("Holepunch", holepunchCount.get())
 		);
 		final PieChart pieChart = new PieChart(pieChartData);
 		pieChart.setTitle(
 			String.format(
 				"总量：%d 可用：%d 下载：%d 上传：%d",
-				peers.size(), available.get(), download.get(), upload.get()
+				peers.size(), availableCount.get(), downloadCount.get(), uploadCount.get()
 			)
 		);
 		// 设置提示信息
@@ -384,11 +391,11 @@ public final class StatisticsController extends Controller implements Initializa
 		this.statisticsBox.getChildren().add(pieChart);
 		LOGGER.debug(
 			"Peer统计，总量：{}、可用：{}、下载：{}、上传：{}",
-			peers.size(), available.get(), download.get(), upload.get()
+			peers.size(), availableCount.get(), downloadCount.get(), uploadCount.get()
 		);
 		LOGGER.debug(
 			"Peer来源，DHT：{}、PEX：{}、LSD：{}、Tracker：{}、Connect：{}、Holepunch：{}",
-			dht.get(), pex.get(), lsd.get(), tracker.get(), connect.get(), holepunch.get()
+			dhtCount.get(), pexCount.get(), lsdCount.get(), trackerCount.get(), connectCount.get(), holepunchCount.get()
 		);
 	}
 	

@@ -113,11 +113,11 @@ public final class PeerManager {
 	 * @param parent 任务下载统计
 	 * @param host 地址
 	 * @param port 端口
-	 * @param source 来源
+	 * @param source Peer来源
 	 * 
 	 * @return PeerSession
 	 */
-	public PeerSession newPeerSession(String infoHashHex, IStatisticsSession parent, String host, Integer port, byte source) {
+	public PeerSession newPeerSession(String infoHashHex, IStatisticsSession parent, String host, Integer port, PeerConfig.Source source) {
 		synchronized (this) {
 			final var list = this.list(infoHashHex); // 存档队列
 			final var deque = this.deque(infoHashHex); // 下载队列
@@ -125,15 +125,9 @@ public final class PeerManager {
 				synchronized (deque) {
 					PeerSession peerSession = this.findPeerSession(list, host, port);
 					if(peerSession == null) {
-						if(LOGGER.isDebugEnabled()) {
-							LOGGER.debug("添加PeerSession：{}-{}，来源：{}", host, port, PeerConfig.source(source));
-						}
+						LOGGER.debug("添加PeerSession：{}-{}，来源：{}", host, port, source);
 						peerSession = PeerSession.newInstance(parent, host, port);
-						if(
-							source == PeerConfig.SOURCE_PEX || // PEX
-							source == PeerConfig.SOURCE_LSD || // 本地发现
-							source == PeerConfig.SOURCE_CONNECT // 主动连接
-						) {
+						if(source.preference()) {
 							deque.offerLast(peerSession); // 插入尾部：优先级高
 						} else {
 							deque.offerFirst(peerSession); // 插入头部：优先级低

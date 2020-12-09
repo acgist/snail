@@ -136,7 +136,7 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 					this.torrentSession.statistics(),
 					host,
 					port,
-					PeerConfig.SOURCE_PEX
+					PeerConfig.Source.PEX
 				);
 				if(addedf != null && addedf.length > index.get()) {
 					peerSession.flags(addedf[index.getAndIncrement()]);

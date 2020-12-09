@@ -175,7 +175,7 @@ public final class DhtConfig extends PropertiesConfig {
 	/**
 	 * <p>DHT响应超时：{@value}</p>
 	 */
-	public static final int TIMEOUT = SystemConfig.RECEIVE_TIMEOUT_MILLIS;
+	public static final int DHT_TIMEOUT = SystemConfig.RECEIVE_TIMEOUT_MILLIS;
 	
 	static {
 		LOGGER.info("初始化DHT节点配置：{}", DHT_CONFIG);
@@ -329,6 +329,7 @@ public final class DhtConfig extends PropertiesConfig {
 				LOGGER.warn("注册默认DHT节点失败：{}-{}", nodeId, address);
 			}
 		});
+		this.properties.clear();
 	}
 
 	/**

@@ -154,7 +154,7 @@ public final class CryptConfig {
 	 * <p>VC数据</p>
 	 * <p>默认填充：0x00</p>
 	 */
-	public static final byte[] VC = new byte[VC_LENGTH];
+	public static final byte[] VC = {0, 0, 0, 0, 0, 0, 0, 0};
 	/**
 	 * <p>默认加密策略</p>
 	 * 

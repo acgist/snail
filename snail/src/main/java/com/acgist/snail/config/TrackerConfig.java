@@ -199,6 +199,7 @@ public final class TrackerConfig extends PropertiesConfig {
 				LOGGER.warn("注册默认Tracker服务器失败：{}", announce);
 			}
 		});
+		this.properties.clear();
 	}
 
 	/**

@@ -80,7 +80,7 @@ public final class AnnouncePeerRequest extends DhtRequest {
 				torrentSession.statistics(),
 				peerHost,
 				peerPort,
-				PeerConfig.SOURCE_DHT
+				PeerConfig.Source.DHT
 			);
 			if(impliedPortAuto) {
 				// 支持UTP

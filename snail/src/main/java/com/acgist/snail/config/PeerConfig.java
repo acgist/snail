@@ -3,22 +3,49 @@ package com.acgist.snail.config;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
+import com.acgist.snail.net.torrent.peer.bootstrap.extension.DhtExtensionMessageHandler;
+import com.acgist.snail.net.torrent.peer.bootstrap.extension.ExtensionMessageHandler;
+import com.acgist.snail.net.torrent.peer.bootstrap.extension.PeerExchangeMessageHandler;
+
 /**
  * <p>Peer配置</p>
- * <p>PEX状态</p>
+ * <p>保留位协议</p>
+ * <p>协议链接：http://www.bittorrent.org/beps/bep_0004.html</p>
+ * <p>PEX协议</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0011.html</p>
+ * <p>Peer ID Conventions</p>
+ * <p>协议链接：http://www.bittorrent.org/beps/bep_0020.html</p>
  * 
  * @author acgist
  */
-public final class PeerConfig {
+public final class PeerConfig extends PropertiesConfig {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(PeerConfig.class);
+	
+	/**
+	 * <p>单例对象</p>
+	 */
+	private static final PeerConfig INSTANCE = new PeerConfig();
+	
+	/**
+	 * <p>获取单例对象</p>
+	 * 
+	 * @return 单例对象
+	 */
+	public static final PeerConfig getInstance() {
+		return INSTANCE;
+	}
 	
 	/**
 	 * <p>未知终端：{@value}</p>
 	 */
 	private static final String UNKNOWN = "unknown";
 	/**
-	 * <p>最大连接失败次数：{@value}</p>
-	 * <p>超过最大次数标记失败</p>
+	 * <p>Peer最大连接失败次数：{@value}</p>
 	 */
 	public static final int MAX_FAIL_TIMES = 3;
 	/**
@@ -28,39 +55,52 @@ public final class PeerConfig {
 	/**
 	 * <p>保留位长度：{@value}</p>
 	 * 
-	 * @see #HANDSHAKE_RESERVED
+	 * @see #RESERVED
 	 */
 	public static final int RESERVED_LENGTH = 8;
 	/**
 	 * <p>保留位</p>
-	 * <p>协议链接：http://www.bittorrent.org/beps/bep_0004.html</p>
 	 * 
-	 * TODO：私有化更安全
+	 * @see #RESERVED_DHT_PROTOCOL
+	 * @see #RESERVED_PEER_EXCHANGE
+	 * @see #RESERVED_FAST_PROTOCOL
+	 * @see #RESERVED_NAT_TRAVERSAL
+	 * @see #RESERVED_EXTENSION_PROTOCOL
 	 */
-	public static final byte[] HANDSHAKE_RESERVED = {0, 0, 0, 0, 0, 0, 0, 0};
+	public static final byte[] RESERVED = {0, 0, 0, 0, 0, 0, 0, 0};
 	/**
-	 * <p>DHT保留位：{@value}</p>
+	 * <p>DHT协议保留位：{@value}</p>
 	 * <p>[7]-0x01：DHT Protocol</p>
+	 * 
+	 * @see DhtExtensionMessageHandler
 	 */
 	public static final byte RESERVED_DHT_PROTOCOL = 1 << 0;
 	/**
-	 * <p>PEX保留位：{@value}</p>
+	 * <p>PEX协议保留位：{@value}</p>
 	 * <p>[7]-0x02：Peer Exchange</p>
+	 * 
+	 * @see PeerExchangeMessageHandler
 	 */
 	public static final byte RESERVED_PEER_EXCHANGE = 1 << 1;
 	/**
-	 * <p>FAST保留位：{@value}</p>
+	 * <p>FAST协议保留位：{@value}</p>
 	 * <p>[7]-0x04：FAST Protocol</p>
+	 * 
+	 * @see PeerSubMessageHandler
 	 */
 	public static final byte RESERVED_FAST_PROTOCOL = 1 << 2;
 	/**
 	 * <p>NAT保留位：{@value}</p>
 	 * <p>[7]-0x08：NAT Traversal</p>
+	 * 
+	 * @see #nat()
 	 */
 	public static final byte RESERVED_NAT_TRAVERSAL = 1 << 3;
 	/**
 	 * <p>扩展协议保留位：{@value}</p>
 	 * <p>[5]-0x10：Extension Protocol</p>
+	 * 
+	 * @see ExtensionMessageHandler
 	 */
 	public static final byte RESERVED_EXTENSION_PROTOCOL = 1 << 4;
 	/**
@@ -70,41 +110,15 @@ public final class PeerConfig {
 	/**
 	 * <p>协议名称：{@value}</p>
 	 */
-	public static final String HANDSHAKE_NAME = "BitTorrent protocol";
+	public static final String PROTOCOL_NAME = "BitTorrent protocol";
 	/**
 	 * <p>协议名称字节数组</p>
-	 * 
-	 * TODO：私有化更安全
 	 */
-	public static final byte[] HANDSHAKE_NAME_BYTES = HANDSHAKE_NAME.getBytes();
+	public static final byte[] PROTOCOL_NAME_BYTES = PROTOCOL_NAME.getBytes();
 	/**
 	 * <p>协议名称字节数组长度</p>
 	 */
-	public static final int HANDSHAKE_NAME_LENGTH = HANDSHAKE_NAME_BYTES.length;
-	/**
-	 * <p>Peer来源：PEX</p>
-	 */
-	public static final byte SOURCE_PEX = 1 << 0;
-	/**
-	 * <p>Peer来源：DHT</p>
-	 */
-	public static final byte SOURCE_DHT = 1 << 1;
-	/**
-	 * <p>Peer来源：本地发现</p>
-	 */
-	public static final byte SOURCE_LSD = 1 << 2;
-	/**
-	 * <p>Peer来源：Tracker</p>
-	 */
-	public static final byte SOURCE_TRACKER = 1 << 3;
-	/**
-	 * <p>Peer来源：客户端接入</p>
-	 */
-	public static final byte SOURCE_CONNECT = 1 << 4;
-	/**
-	 * <p>Peer来源：holepunch</p>
-	 */
-	public static final byte SOURCE_HOLEPUNCH = 1 << 5;
+	public static final int PROTOCOL_NAME_LENGTH = PROTOCOL_NAME_BYTES.length;
 	/**
 	 * <p>Peer状态：上传</p>
 	 */
@@ -114,163 +128,79 @@ public final class PeerConfig {
 	 */
 	public static final byte STATUS_DOWNLOAD = 1 << 0;
 	/**
-	 * <p>pex flags：0x01</p>
-	 * <p>偏爱加密</p>
+	 * <p>pex flags：{@value}</p>
+	 * <p>偏爱加密：0x01</p>
 	 */
 	public static final byte PEX_PREFER_ENCRYPTION = 1 << 0;
 	/**
-	 * <p>pex flags：0x02</p>
-	 * <p>做种、上传：只上传不下载</p>
-	 * <p>不发送消息：解除阻塞、have、Piece位图</p>
+	 * <p>pex flags：{@value}</p>
+	 * <p>只上传不下载：0x02</p>
+	 * <p>此标记Peer不发送消息：解除阻塞、have、Piece位图</p>
 	 */
 	public static final byte PEX_UPLOAD_ONLY = 1 << 1;
 	/**
-	 * <p>pex flags：0x04</p>
-	 * <p>支持UTP协议</p>
+	 * <p>pex flags：{@value}</p>
+	 * <p>支持UTP协议：0x04</p>
 	 */
 	public static final byte PEX_UTP = 1 << 2;
 	/**
-	 * <p>pex flags：0x08</p>
-	 * <p>支持holepunch协议</p>
+	 * <p>pex flags：{@value}</p>
+	 * <p>支持holepunch协议：0x08</p>
 	 */
 	public static final byte PEX_HOLEPUNCH = 1 << 3;
 	/**
-	 * <p>pex flags：0x10</p>
-	 * <p>可以连接：可以直接连接</p>
+	 * <p>pex flags：{@value}</p>
+	 * <p>可以连接：0x10</p>
 	 */
 	public static final byte PEX_OUTGO = 1 << 4;
 	/**
-	 * <p>holepunch连接锁定时间</p>
+	 * <p>holepunch连接超时时间：{@value}</p>
 	 */
 	public static final int HOLEPUNCH_TIMEOUT = 2000;
 	/**
-	 * <p>PeerID和客户端名称转换配置</p>
-	 * <p>Peer ID Conventions</p>
-	 * <p>协议链接：http://www.bittorrent.org/beps/bep_0020.html</p>
+	 * <p>PeerId名称配置：{@value}</p>
+	 */
+	private static final String CLIENT_NAME_CONFIG = "/config/client.name.properties";
+	/**
+	 * <p>PeerID和客户端名称配置</p>
+	 * <p>PeerId名称=ClientName</p>
 	 * <table border="1">
 	 * 	<caption>命名方式</caption>
 	 * 	<tr>
 	 * 		<th>名称</th>
 	 * 		<th>格式</th>
+	 * 		<th>示例</th>
 	 * 	</tr>
 	 * 	<tr>
 	 * 		<td>Azureus-style</td>
-	 * 		<td>-名称（2）+版本（4）-随机数：-SA1000-...</td>
+	 * 		<td>-名称（2）版本（4）-随机数</td>
+	 * 		<td>-SA1000-...</td>
 	 * 	</tr>
 	 * 	<tr>
 	 * 		<td>Shadow's-style</td>
-	 * 		<td>名称（1）+版本（4）-----随机数：S1000-----...</td>
+	 * 		<td>名称（1）版本（4）-----随机数</td>
+	 * 		<td>S1000-----...</td>
 	 * 	</tr>
 	 * </table>
-	 * <p>支持命名方式：Azureus-style</p>
-	 * <p>PeerId=ClientName</p>
 	 */
 	private static final Map<String, String> PEER_NAMES = new HashMap<>();
 
 	static {
 		//================保留位================//
-		HANDSHAKE_RESERVED[7] |= RESERVED_DHT_PROTOCOL;
-		HANDSHAKE_RESERVED[7] |= RESERVED_PEER_EXCHANGE;
-		HANDSHAKE_RESERVED[7] |= RESERVED_FAST_PROTOCOL;
-		HANDSHAKE_RESERVED[5] |= RESERVED_EXTENSION_PROTOCOL;
-		//================客户端名称================//
-		PEER_NAMES.put("-AG", "Ares");
-		PEER_NAMES.put("-A~", "Ares");
-		PEER_NAMES.put("-AR", "Arctic");
-		PEER_NAMES.put("-AS", "Acgist Snail");
-		PEER_NAMES.put("-AV", "Avicora");
-		PEER_NAMES.put("-AX", "BitPump");
-		PEER_NAMES.put("-AZ", "Azureus");
-		PEER_NAMES.put("-BB", "BitBuddy");
-		PEER_NAMES.put("-BC", "BitComet");
-		PEER_NAMES.put("-BF", "Bitflu");
-		PEER_NAMES.put("-BG", "BTG"); // BTG (uses Rasterbar libtorrent)
-		PEER_NAMES.put("-BR", "BitRocket");
-		PEER_NAMES.put("-BS", "BTSlave");
-		PEER_NAMES.put("-BX", "~Bittorrent X");
-		PEER_NAMES.put("-CD", "Enhanced CTorrent");
-		PEER_NAMES.put("-CT", "CTorrent");
-		PEER_NAMES.put("-DE", "DelugeTorrent");
-		PEER_NAMES.put("-DP", "Propagate Data Client");
-		PEER_NAMES.put("-EB", "EBit");
-		PEER_NAMES.put("-ES", "electric sheep");
-		PEER_NAMES.put("-FT", "FoxTorrent");
-		PEER_NAMES.put("-FW", "FrostWire");
-		PEER_NAMES.put("-FX", "Freebox BitTorrent");
-		PEER_NAMES.put("-GS", "GSTorrent");
-		PEER_NAMES.put("-HL", "Halite");
-		PEER_NAMES.put("-HN", "Hydranode");
-		PEER_NAMES.put("-KG", "KGet");
-		PEER_NAMES.put("-KT", "KTorrent");
-		PEER_NAMES.put("-LH", "LH-ABC");
-		PEER_NAMES.put("-LP", "Lphant");
-		PEER_NAMES.put("-LT", "libtorrent");
-		PEER_NAMES.put("-lt", "libTorrent");
-		PEER_NAMES.put("-LW", "LimeWire");
-		PEER_NAMES.put("-MO", "MonoTorrent");
-		PEER_NAMES.put("-MP", "MooPolice");
-		PEER_NAMES.put("-MR", "Miro");
-		PEER_NAMES.put("-MT", "MoonlightTorrent");
-		PEER_NAMES.put("-NX", "Net Transport");
-		PEER_NAMES.put("-PD", "Pando");
-		PEER_NAMES.put("-qB", "qBittorrent");
-		PEER_NAMES.put("-QD", "QQDownload");
-		PEER_NAMES.put("-QT", "Qt 4 Torrent example");
-		PEER_NAMES.put("-RT", "Retriever");
-		PEER_NAMES.put("-S~", "Shareaza alpha/beta");
-		PEER_NAMES.put("-SB", "~Swiftbit");
-		PEER_NAMES.put("-SS", "SwarmScope");
-		PEER_NAMES.put("-ST", "SymTorrent");
-		PEER_NAMES.put("-st", "sharktorrent");
-		PEER_NAMES.put("-SZ", "Shareaza");
-		PEER_NAMES.put("-TN", "TorrentDotNET");
-		PEER_NAMES.put("-TR", "Transmission");
-		PEER_NAMES.put("-TS", "Torrentstorm");
-		PEER_NAMES.put("-TT", "TuoTu");
-		PEER_NAMES.put("-UL", "uLeecher!");
-		PEER_NAMES.put("-UT", "µTorrent");
-		PEER_NAMES.put("-UW", "µTorrent Web");
-		PEER_NAMES.put("-VG", "Vagaa");
-		PEER_NAMES.put("-WD", "WebTorrent Desktop");
-		PEER_NAMES.put("-WT", "BitLet");
-		PEER_NAMES.put("-WW", "WebTorrent");
-		PEER_NAMES.put("-WY", "FireTorrent");
-		PEER_NAMES.put("-XL", "Xunlei");
-		PEER_NAMES.put("-XT", "XanTorrent");
-		PEER_NAMES.put("-XX", "Xtorrent");
-		PEER_NAMES.put("-ZT", "ZipTorrent");
+		RESERVED[7] |= RESERVED_DHT_PROTOCOL;
+		RESERVED[7] |= RESERVED_PEER_EXCHANGE;
+		RESERVED[7] |= RESERVED_FAST_PROTOCOL;
+		RESERVED[5] |= RESERVED_EXTENSION_PROTOCOL;
+		//================初始化================//
+		LOGGER.info("初始化Peer配置：{}", CLIENT_NAME_CONFIG);
+		INSTANCE.init();
 	}
 	
 	/**
 	 * <p>禁止创建实例</p>
 	 */
 	private PeerConfig() {
-	}
-	
-	/**
-	 * <p>获取来源名称</p>
-	 * 
-	 * @param source 来源
-	 * 
-	 * @return 来源名称
-	 */
-	public static final String source(byte source) {
-		switch (source) {
-		case SOURCE_DHT:
-			return "DHT";
-		case SOURCE_PEX:
-			return "PEX";
-		case SOURCE_LSD:
-			return "LSD";
-		case SOURCE_TRACKER:
-			return "TRACKER";
-		case SOURCE_CONNECT:
-			return "CONNECT";
-		case SOURCE_HOLEPUNCH:
-			return "HOLEPUNCH";
-		default:
-			return "UNKNOW";
-		}
+		super(CLIENT_NAME_CONFIG);
 	}
 	
 	/**
@@ -284,16 +214,22 @@ public final class PeerConfig {
 		if(peerId == null || peerId.length < 3) {
 			return UNKNOWN;
 		}
-		final String key = new String(peerId, 0, 3);
+		String key;
+		final char first = (char) peerId[0];
+		if(first == '-') {
+			key = new String(peerId, 1, 2);
+		} else {
+			key = new String(peerId, 0, 1);
+		}
 		return PEER_NAMES.getOrDefault(key, UNKNOWN);
 	}
 	
 	/**
-	 * <p>设置NAT</p>
-	 * <p>使用STUN穿透时设置保留位NAT配置</p>
+	 * <p>设置NAT保留位</p>
+	 * <p>使用STUN穿透时设置NAT保留位</p>
 	 */
 	public static final void nat() {
-		HANDSHAKE_RESERVED[7] |= RESERVED_NAT_TRAVERSAL;
+		RESERVED[7] |= RESERVED_NAT_TRAVERSAL;
 	}
 	
 	/**
@@ -304,38 +240,69 @@ public final class PeerConfig {
 	 */
 	public enum Type {
 		
-		/** 阻塞 */
+		/**
+		 * <p>阻塞</p>
+		 */
 		CHOKE((byte) 0x00),
-		/** 解除阻塞 */
+		/**
+		 * <p>解除阻塞</p>
+		 */
 		UNCHOKE((byte) 0x01),
-		/** 感兴趣 */
+		/**
+		 * <p>感兴趣</p>
+		 */
 		INTERESTED((byte) 0x02),
-		/** 不感兴趣 */
+		/**
+		 * <p>不感兴趣</p>
+		 */
 		NOT_INTERESTED((byte) 0x03),
-		/** have */
+		/**
+		 * <p>have</p>
+		 */
 		HAVE((byte) 0x04),
-		/** Piece位图 */
+		/**
+		 * <p>Piece位图</p>
+		 */
 		BITFIELD((byte) 0x05),
-		/** 请求 */
+		/**
+		 * <p>请求</p>
+		 */
 		REQUEST((byte) 0x06),
-		/** 数据 */
+		/**
+		 * <p>数据</p>
+		 */
 		PIECE((byte) 0x07),
-		/** 取消 */
+		/**
+		 * <p>取消</p>
+		 */
 		CANCEL((byte) 0x08),
-		/** DHT */
+		/**
+		 * <p>DHT</p>
+		 */
 		DHT((byte) 0x09),
-		/** 扩展 */
+		/**
+		 * <p>扩展</p>
+		 */
 		EXTENSION((byte) 0x14),
-		//================FAST Protocol================//
-		/** 所有Piece */
+		/**
+		 * <p>所有Piece</p>
+		 */
 		HAVE_ALL((byte) 0x0E),
-		/** 没有Piece */
+		/**
+		 * <p>没有Piece</p>
+		 */
 		HAVE_NONE((byte) 0x0F),
-		/** 推荐Piece */
+		/**
+		 * <p>推荐Piece</p>
+		 */
 		SUGGEST_PIECE((byte) 0x0D),
-		/** 拒绝请求 */
+		/**
+		 * <p>拒绝请求</p>
+		 */
 		REJECT_REQUEST((byte) 0x10),
-		/** 快速允许 */
+		/**
+		 * <p>快速允许</p>
+		 */
 		ALLOWED_FAST((byte) 0x11);
 		
 		/**
@@ -379,27 +346,105 @@ public final class PeerConfig {
 	}
 	
 	/**
+	 * <p>Peer来源</p>
+	 * 
+	 * @author acgist
+	 */
+	public enum Source {
+		
+		/**
+		 * <p>PEX</p>
+		 */
+		PEX((byte) (1 << 0)),
+		/**
+		 * <p>DHT</p>
+		 */
+		DHT((byte) (1 << 1)),
+		/**
+		 * <p>本地发现</p>
+		 */
+		LSD((byte) (1 << 2)),
+		/**
+		 * <p>Tracker</p>
+		 */
+		TRACKER((byte) (1 << 3)),
+		/**
+		 * <p>主动接入</p>
+		 */
+		CONNECT((byte) (1 << 4)),
+		/**
+		 * <p>holepunch</p>
+		 */
+		HOLEPUNCH((byte) (1 << 5));
+		
+		/**
+		 * <p>来源标识</p>
+		 */
+		private final byte value;
+		
+		/**
+		 * @param value 来源标识
+		 */
+		private Source(byte value) {
+			this.value = value;
+		}
+		
+		/**
+		 * <p>获取来源标识</p>
+		 * 
+		 * @return 来源标识
+		 */
+		public byte value() {
+			return this.value;
+		}
+		
+		/**
+		 * <p>判断是否优先使用</p>
+		 * <p>以下来源优先使用：{@link #PEX}、{@link #LSD}、{@link #CONNECT}</p>
+		 * 
+		 * @return 是否优先使用
+		 */
+		public boolean preference() {
+			return this == PEX || this == LSD || this == CONNECT;
+		}
+		
+	}
+	
+	/**
 	 * <p>Peer扩展协议消息类型</p>
 	 * 
 	 * @author acgist
 	 */
 	public enum ExtensionType {
 		
-		/** 握手 */
+		/**
+		 * <p>握手</p>
+		 */
 		HANDSHAKE((byte) 0x00, "handshake", true, false),
-		/** ut_pex */
+		/**
+		 * <p>ut_pex</p>
+		 */
 		UT_PEX((byte) 0x01, "ut_pex", true, true),
-		/** ut_metadata */
+		/**
+		 * <p>ut_metadata</p>
+		 */
 		UT_METADATA((byte) 0x02, "ut_metadata", true, true),
-		/** ut_holepunch */
+		/**
+		 * <p>ut_holepunch</p>
+		 */
 		UT_HOLEPUNCH((byte) 0x03, "ut_holepunch", true, true),
-		/** upload_only */
+		/**
+		 * <p>upload_only</p>
+		 */
 		UPLOAD_ONLY((byte) 0x04, "upload_only", true, true),
-		/** lt_donthave */
+		/**
+		 * <p>lt_donthave</p>
+		 */
 		LT_DONTHAVE((byte) 0x05, "lt_donthave", true, true);
 
 		/**
-		 * <p>消息ID：自定义</p>
+		 * <p>消息ID</p>
+		 * <p>客户端自定义</p>
 		 */
 		private final byte id;
 		/**
@@ -411,7 +456,8 @@ public final class PeerConfig {
 		 */
 		private final boolean support;
 		/**
-		 * <p>是否通知：握手时通知Peer支持该扩展</p>
+		 * <p>是否通知</p>
+		 * <p>握手时是否通知Peer支持该扩展</p>
 		 */
 		private final boolean notice;
 		
@@ -447,7 +493,7 @@ public final class PeerConfig {
 		}
 		
 		/**
-		 * <p>是否支持</p>
+		 * <p>判断是否支持</p>
 		 * 
 		 * @return true-支持；false-不支持；
 		 */
@@ -456,7 +502,7 @@ public final class PeerConfig {
 		}
 		
 		/**
-		 * <p>是否通知</p>
+		 * <p>判断是否通知</p>
 		 * 
 		 * @return true-通知；false-不通知；
 		 */
@@ -491,7 +537,7 @@ public final class PeerConfig {
 		public static final ExtensionType of(String value) {
 			final var types = ExtensionType.values();
 			for (ExtensionType type : types) {
-				if(type.value.equals(value)) {
+				if(type.value.equalsIgnoreCase(value)) {
 					return type;
 				}
 			}
@@ -512,11 +558,17 @@ public final class PeerConfig {
 	 */
 	public enum MetadataType {
 		
-		/** 请求 */
+		/**
+		 * <p>请求</p>
+		 */
 		REQUEST((byte) 0x00),
-		/** 数据 */
+		/**
+		 * <p>数据</p>
+		 */
 		DATA((byte) 0x01),
-		/** 拒绝 */
+		/**
+		 * <p>拒绝</p>
+		 */
 		REJECT((byte) 0x02);
 		
 		/**
@@ -566,11 +618,17 @@ public final class PeerConfig {
 	 */
 	public enum HolepunchType {
 		
-		/** 约定 */
+		/**
+		 * <p>约定</p>
+		 */
 		RENDEZVOUS((byte) 0x00),
-		/** 连接 */
+		/**
+		 * <p>连接</p>
+		 */
 		CONNECT((byte) 0x01),
-		/** 错误 */
+		/**
+		 * <p>错误</p>
+		 */
 		ERROR((byte) 0x02);
 		
 		/**
@@ -620,15 +678,25 @@ public final class PeerConfig {
 	 */
 	public enum HolepunchErrorCode {
 		
-		/** 成功 */
+		/**
+		 * <p>成功</p>
+		 */
 		CODE_00((byte) 0x00),
-		/** 目标无效：NoSuchPeer */
+		/**
+		 * <p>目标无效：NoSuchPeer</p>
+		 */
 		CODE_01((byte) 0x01),
-		/** 目标未连接：NotConnected */
+		/**
+		 * <p>目标未连接：NotConnected</p>
+		 */
 		CODE_02((byte) 0x02),
-		/** 目标不支持：NoSupport */
+		/**
+		 * <p>目标不支持：NoSupport</p>
+		 */
 		CODE_03((byte) 0x03),
-		/** 目标属于中继：NoSelf */
+		/**
+		 * <p>目标属于中继：NoSelf</p>
+		 */
 		CODE_04((byte) 0x04);
 		
 		/**
@@ -656,14 +724,28 @@ public final class PeerConfig {
 	
 	/**
 	 * <p>任务动作</p>
+	 * 
+	 * @author acgist
 	 */
 	public enum Action {
 		
-		/** 磁力链接 */
+		/**
+		 * <p>磁力链接</p>
+		 */
 		MAGNET,
-		/** BT任务 */
+		/**
+		 * <p>BT任务</p>
+		 */
 		TORRENT;
 		
+	}
+	
+	/**
+	 * <p>初始化配置</p>
+	 */
+	private void init() {
+		this.properties.forEach((key, value) -> PEER_NAMES.put(key.toString(), value.toString()));
+		this.properties.clear();
 	}
 	
 }

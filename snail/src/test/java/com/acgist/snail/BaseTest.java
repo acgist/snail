@@ -3,12 +3,9 @@ package com.acgist.snail;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.acgist.snail.utils.ThreadUtils;
 
 public class BaseTest {
 
@@ -19,11 +16,7 @@ public class BaseTest {
 	 */
 	protected AtomicLong cost = new AtomicLong();
 	
-	/**
-	 * <p>阻止自动关闭</p>
-	 */
-	protected void pause() {
-		ThreadUtils.sleep(Long.MAX_VALUE);
+	public void pause() {
 	}
 	
 	/**
@@ -68,18 +61,32 @@ public class BaseTest {
 	/**
 	 * <p>计算消耗（多次执行）</p>
 	 * 
+	 * @param count 执行次数
+	 * @param function 消耗任务
+	 */
+	protected void cost(int count, Coster function) {
+		this.cost();
+		for (int index = 0; index < count; index++) {
+			function.execute();
+		}
+		this.costed();
+	}
+	
+	/**
+	 * <p>计算消耗（多次执行）</p>
+	 * 
 	 * @param count 任务数量
 	 * @param thread 线程数量
-	 * @param function 任务
+	 * @param function 消耗任务
 	 */
-	protected void cost(int count, int thread, Consumer<Void> function) {
-		this.cost();
-		final CountDownLatch latch = new CountDownLatch(count);
+	protected void cost(int count, int thread, Coster function) {
+		final var latch = new CountDownLatch(count);
 		final var executor = Executors.newFixedThreadPool(thread);
+		this.cost();
 		for (int index = 0; index < count; index++) {
 			executor.submit(() -> {
 				try {
-					function.accept(null);
+					function.execute();
 				} catch (Exception e) {
 					this.LOGGER.error("执行异常", e);
 				} finally {
@@ -94,6 +101,20 @@ public class BaseTest {
 			Thread.currentThread().interrupt();
 		}
 		this.costed();
+	}
+	
+	/**
+	 * <p>消耗任务</p>
+	 * 
+	 * @author acgist
+	 */
+	public interface Coster {
+
+		/**
+		 * <p>执行任务</p>
+		 */
+		public void execute();
+		
 	}
 	
 }
