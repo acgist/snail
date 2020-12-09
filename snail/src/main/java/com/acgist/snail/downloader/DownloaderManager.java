@@ -186,8 +186,8 @@ public final class DownloaderManager {
 	/**
 	 * <dl>
 	 * 	<dt>刷新下载任务</dt>
-	 * 	<dd>如果小于下载任务数量：增加下载任务线程</dd>
-	 * 	<dd>如果大于下载任务数量：减小下载任务线程</dd>
+	 * 	<dd>如果小于下载数量：增加下载任务线程</dd>
+	 * 	<dd>如果大于下载数量：减小下载任务线程</dd>
 	 * </dl>
 	 */
 	public void refresh() {
