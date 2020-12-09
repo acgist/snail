@@ -21,7 +21,7 @@ public abstract class Performance {
 	/**
 	 * <p>消耗时间统计</p>
 	 */
-	protected final AtomicLong cost = new AtomicLong();
+	protected final AtomicLong costTime = new AtomicLong();
 	
 	/**
 	 * <p>记录日志</p>
@@ -49,7 +49,7 @@ public abstract class Performance {
 	 * <p>统计开始时间</p>
 	 */
 	protected final void cost() {
-		this.cost.set(System.currentTimeMillis());
+		this.costTime.set(System.currentTimeMillis());
 	}
 	
 	/**
@@ -58,9 +58,10 @@ public abstract class Performance {
 	 */
 	protected final void costed() {
 		final long time = System.currentTimeMillis();
-		final long costed = time - this.cost.getAndSet(time);
+		final long costed = time - this.costTime.getAndSet(time);
 		// TODO：多行文本
-		LOGGER.info("消耗时间：毫秒：{}，秒：{}", costed, costed / DateUtils.ONE_SECOND);
+		LOGGER.info("消耗时间（毫秒）：{}", costed);
+		LOGGER.info("消耗时间（秒）：{}", costed / DateUtils.ONE_SECOND);
 	}
 	
 	/**
@@ -69,7 +70,7 @@ public abstract class Performance {
 	 * @param count 执行次数
 	 * @param coster 消耗任务
 	 */
-	protected final void cost(int count, Coster coster) {
+	protected final void costd(int count, Coster coster) {
 		this.cost();
 		for (int index = 0; index < count; index++) {
 			coster.execute();
@@ -84,7 +85,7 @@ public abstract class Performance {
 	 * @param thread 线程数量
 	 * @param coster 消耗任务
 	 */
-	protected final void cost(int count, int thread, Coster coster) {
+	protected final void costd(int count, int thread, Coster coster) {
 		final var latch = new CountDownLatch(count);
 		final var executor = Executors.newFixedThreadPool(thread);
 		this.cost();
@@ -113,11 +114,13 @@ public abstract class Performance {
 	 * <p>线程阻塞</p>
 	 */
 	public final void pause() {
-		try {
-			this.wait();
-		} catch (InterruptedException e) {
-			LOGGER.error("等待异常", e);
-			Thread.currentThread().interrupt();
+		synchronized (this) {
+			try {
+				this.wait();
+			} catch (InterruptedException e) {
+				LOGGER.error("等待异常", e);
+				Thread.currentThread().interrupt();
+			}
 		}
 	}
 	
