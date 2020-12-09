@@ -32,8 +32,6 @@
 |:--|:--|
 |snail|下载核心|
 |snail-javafx|电脑GUI|
-|snail-extend|扩展GUI|
-|snail-android|安卓GUI|
 
 ## 使用
 
@@ -50,7 +48,7 @@ mvn clean package -P release -D skipTests
 
 #### 启动
 
-下载核心无法直接启动，需要结合`snail.javafx`或者`snail.extend`使用。
+下载核心无法直接启动，需要结合`snail.javafx`使用。
 
 ```bash
 # Linux
