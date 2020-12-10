@@ -352,7 +352,7 @@ public abstract class PeerConnect {
 			final int length = this.downloadPiece.length();
 			this.peerSubMessageHandler.request(index, begin, length);
 			// 是否还有更多SLICE
-			if(!this.downloadPiece.haveMoreSlice()) {
+			if(!this.downloadPiece.hasMoreSlice()) {
 				break;
 			}
 		}

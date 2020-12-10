@@ -88,7 +88,7 @@ public final class PeerManager {
 	 * 
 	 * @return true-找到；false-没有找到；
 	 */
-	public boolean havePeerSession(String infoHashHex) {
+	public boolean hasPeerSession(String infoHashHex) {
 		return !this.list(infoHashHex).isEmpty();
 	}
 	

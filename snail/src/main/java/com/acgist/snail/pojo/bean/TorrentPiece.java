@@ -144,7 +144,7 @@ public final class TorrentPiece {
 	 * 
 	 * @return 是否还有更多
 	 */
-	public boolean haveMoreSlice() {
+	public boolean hasMoreSlice() {
 		return this.position < this.length;
 	}
 	

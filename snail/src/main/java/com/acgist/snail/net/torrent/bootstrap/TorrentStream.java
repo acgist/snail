@@ -351,7 +351,7 @@ public final class TorrentStream {
 			return false;
 		}
 		synchronized (this) {
-			if(this.havePiece(piece.getIndex())) { // 最后阶段重复选中可能重复
+			if(this.hasPiece(piece.getIndex())) { // 最后阶段重复选中可能重复
 				LOGGER.debug("Piece已经下载完成（忽略）：{}", piece.getIndex());
 				return false;
 			}
@@ -436,11 +436,11 @@ public final class TorrentStream {
 	 */
 	private byte[] read(int index, int size, int pos, boolean ignorePieces) {
 		// 判断Piece不在文件范围内
-		if(!this.haveIndex(index)) {
+		if(!this.hasIndex(index)) {
 			return null;
 		}
 		// 判断Piece数据是否已经下载
-		if(!ignorePieces && !this.havePiece(index)) {
+		if(!ignorePieces && !this.hasPiece(index)) {
 			return null;
 		}
 		// 从Piece缓存中读取数据
@@ -568,7 +568,7 @@ public final class TorrentStream {
 	 */
 	private void flush(TorrentPiece piece) {
 		// 判断Piece不在文件范围内
-		if(!this.haveIndex(piece.getIndex())) {
+		if(!this.hasIndex(piece.getIndex())) {
 			LOGGER.warn("Piece写入文件失败（范围错误）：{}", piece.getIndex());
 			return;
 		}
@@ -708,7 +708,7 @@ public final class TorrentStream {
 					this.done(index);
 				}
 			} else { // 不校验Hash：验证是否有数据
-				if(this.haveData(bytes)) {
+				if(this.hasData(bytes)) {
 					this.done(index);
 				}
 			}
@@ -729,13 +729,13 @@ public final class TorrentStream {
 		// 已下载Piece数量
 		int downloadPieceSize = this.pieces.cardinality();
 		// 第一块Piece大小
-		if(this.havePiece(this.fileBeginPieceIndex)) {
+		if(this.hasPiece(this.fileBeginPieceIndex)) {
 			size += this.firstPieceSize();
 			downloadPieceSize--;
 		}
 		if(!this.fileInOnePiece()) {
 			// 最后一块Piece大小
-			if(this.havePiece(this.fileEndPieceIndex)) {
+			if(this.hasPiece(this.fileEndPieceIndex)) {
 				size += this.lastPieceSize();
 				downloadPieceSize--;
 			}
@@ -801,7 +801,7 @@ public final class TorrentStream {
 	 * 
 	 * @return true-含有；false-不含；
 	 */
-	private boolean haveData(byte[] bytes) {
+	private boolean hasData(byte[] bytes) {
 		if(bytes == null) {
 			return false;
 		}
@@ -820,7 +820,7 @@ public final class TorrentStream {
 	 * 
 	 * @return true-包含；false-不包含；
 	 */
-	private boolean haveIndex(int index) {
+	private boolean hasIndex(int index) {
 		// 不符合当前文件位置
 		if(index < this.fileBeginPieceIndex || index > this.fileEndPieceIndex) {
 			return false;
@@ -835,7 +835,7 @@ public final class TorrentStream {
 	 * 
 	 * @return true-已下载；false-未下载；
 	 */
-	private boolean havePiece(int index) {
+	private boolean hasPiece(int index) {
 		return this.pieces.get(index);
 	}
 	

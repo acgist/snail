@@ -136,7 +136,7 @@ public final class GetPeersResponse extends DhtResponse {
 	 * 
 	 * @return true-含有；false-不含；
 	 */
-	public boolean haveNodes() {
+	public boolean hasNodes() {
 		return this.get(DhtConfig.KEY_NODES) != null;
 	}
 	
@@ -145,10 +145,10 @@ public final class GetPeersResponse extends DhtResponse {
 	 * 
 	 * @return true-含有；false-不含；
 	 * 
-	 * @see #haveValues()
+	 * @see #hasValues()
 	 */
-	public boolean havePeers() {
-		return this.haveValues();
+	public boolean hasPeers() {
+		return this.hasValues();
 	}
 	
 	/**
@@ -156,7 +156,7 @@ public final class GetPeersResponse extends DhtResponse {
 	 * 
 	 * @return true-含有；false-不含；
 	 */
-	public boolean haveValues() {
+	public boolean hasValues() {
 		return this.get(DhtConfig.KEY_VALUES) != null;
 	}
 

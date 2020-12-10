@@ -147,7 +147,7 @@ public final class TorrentStreamGroup {
 				.filter(TorrentFile::selected)
 				.filter(file -> {
 					final String path = FileUtils.file(folder, file.path()); // 文佳路径
-					return this.haveStream(path) == null; // 文件未被加载
+					return this.hasStream(path) == null; // 文件未被加载
 				}).count();
 			return this.load(loadFileCount, pieceLength, false, folder, files);
 		}
@@ -181,7 +181,7 @@ public final class TorrentStreamGroup {
 			long pos = 0; // 数据偏移
 			for (TorrentFile file : files) {
 				final String path = FileUtils.file(folder, file.path()); // 文佳路径
-				final TorrentStream oldStream = this.haveStream(path);
+				final TorrentStream oldStream = this.hasStream(path);
 				try {
 					if(file.selected()) { // 加载选择下载的文件
 						if(oldStream == null) {
@@ -252,7 +252,7 @@ public final class TorrentStreamGroup {
 	 * 
 	 * @return 文件流：{@code null}-没有加载
 	 */
-	private TorrentStream haveStream(String path) {
+	private TorrentStream hasStream(String path) {
 		for (TorrentStream torrentStream : this.streams) {
 			if(torrentStream.equalsPath(path)) {
 				return torrentStream;
@@ -374,7 +374,7 @@ public final class TorrentStreamGroup {
 	 * 
 	 * @return true-已下载；false-未下载；
 	 */
-	public boolean havePiece(int index) {
+	public boolean hasPiece(int index) {
 		if(index < 0) {
 			return false;
 		}

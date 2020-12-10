@@ -305,7 +305,7 @@ public final class PeerSession implements IStatisticsSessionGetter {
 	 * 
 	 * @return 是否含有
 	 */
-	public boolean havePiece(int index) {
+	public boolean hasPiece(int index) {
 		if(index < 0) {
 			return false;
 		}
