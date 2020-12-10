@@ -6,15 +6,13 @@
 	
 	<!--
 	版本配置：
-	pom.xml
-	snail/pom.xml
-	snail-javafx/pom.xml
-	builder/config.bat
-	SnailLauncher/src/snail.ini
-	snail/src/main/resources/config/system.properties
-	
-	编译命令：
-	mvn -e clean package|install|deploy
+		pom.xml
+		snail/pom.xml
+		snail-javafx/pom.xml
+		builder/config.bat
+		SnailLauncher/src/snail.ini
+		snail/src/main/resources/config/system.properties
+	编译命令：mvn -e clean package|install|deploy
 	编译系统：-D javafx.platform=win|mac|linux
 	-->
 	
@@ -34,16 +32,16 @@
 		<module>${project.groupId}.${project.artifactId}</module>
 		<!-- 编码 -->
 		<encoding>UTF-8</encoding>
-		<!-- Java -->
+		<!-- Java版本 -->
 		<java.version>11</java.version>
-		<!-- JavaFX -->
+		<!-- JavaFX版本 -->
 		<javafx.version>11.0.2</javafx.version>
-		<!-- 依赖 -->
+		<!-- 依赖版本 -->
 		<h2.version>1.4.200</h2.version>
 		<slf4j.version>1.7.30</slf4j.version>
-		<!-- JUnit -->
+		<!-- JUnit版本 -->
 		<junit.version>5.6.2</junit.version>
-		<!-- Maven插件 -->
+		<!-- Maven插件版本 -->
 		<maven.gpg.version>1.6</maven.gpg.version>
 		<maven.jar.version>3.2.0</maven.jar.version>
 		<maven.nexus.version>1.6.8</maven.nexus.version>
@@ -145,39 +143,9 @@
 		<pluginManagement>
 			<plugins>
 				<!--
-				测试报告：
-				mvn test jacoco:report
-				mvn test jacoco:prepare-agent
-				体检报告：
-				mvn sonar:sonar -D "sonar.projectKey=snail" -D "sonar.host.url=http://localhost:9000" -D "sonar.login=token"
-				忽略没有测试：-D failIfNoTests=false
-				设置测试路径：-D "test=com.acgist.snail.*"
-				-->
-				<plugin>
-					<groupId>org.jacoco</groupId>
-					<artifactId>jacoco-maven-plugin</artifactId>
-					<version>${maven.jacoco.version}</version>
-					<configuration>
-						<skip>${skipTests}</skip>
-						<!--
-						<skip>${maven.test.skip}</skip>
-						-->
-					</configuration>
-					<executions>
-						<!-- 生成测试数据：提供Sonar展示 -->
-						<!-- 必须显示调用 -->
-						<execution>
-							<id>prepare-agent</id>
-							<goals>
-								<goal>prepare-agent</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
-				<!--
 				编译代码：
-				mvn compile
-				mvn test-compile
+					mvn compile
+					mvn test-compile
 				-->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -191,9 +159,9 @@
 				</plugin>
 				<!--
 				打包资源：
-				mvn resources:resources
-				mvn resources:testResources
-				mvn resources:copy-resources
+					mvn resources:resources
+					mvn resources:testResources
+					mvn resources:copy-resources
 				-->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -251,11 +219,42 @@
 					</executions>
 				</plugin>
 				<!--
-				打包项目：
-				mvn package
-				跳过测试（编译测试代码）：-D skipTests=true
-				跳过测试（跳过编译测试代码）：-D maven.test.skip=true
+				测试报告：
+					mvn test jacoco:report
+					mvn test jacoco:prepare-agent
+				质检报告：
+					mvn sonar:sonar -D "sonar.projectKey=snail" -D "sonar.host.url=http://localhost:9000" -D "sonar.login=token"
+				忽略没有测试：-D failIfNoTests=false
+				设置测试路径：-D "test=com.acgist.snail.*"
+				跳过测试代码（编译测试代码）：-D skipTests=true
+				跳过测试代码（跳过编译测试代码）：-D maven.test.skip=true
 				-->
+				<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<version>${maven.jacoco.version}</version>
+					<configuration>
+						<skip>${skipTests}</skip>
+						<!--
+						<skip>${maven.test.skip}</skip>
+						-->
+					</configuration>
+					<executions>
+						<!--
+						生成测试数据：
+							必须显式调用
+							提供Sonar展示
+							生命周期（phase）默认或者必须前于test-compile
+						-->
+						<execution>
+							<id>prepare-agent</id>
+							<goals>
+								<goal>prepare-agent</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<!-- 打包项目：mvn package -->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
@@ -279,8 +278,8 @@
 				</plugin>
 				<!--
 				打包源码：
-				mvn source:jar
-				mvn source:test-jar
+					mvn source:jar
+					mvn source:test-jar
 				跳过打包源码：-D maven.source.skip=true
 				-->
 				<plugin>
@@ -295,9 +294,10 @@
 						<execution>
 							<id>auto-build-source</id>
 							<!--
-							打包源码：install|deploy
-							package不用打包源码
-							install|deploy不能正常签名
+							打包源码：mvn install|deploy
+							生命周期：
+								package不用打包源码
+								install|deploy不能正常签名
 							-->
 							<phase>verify</phase>
 							<goals>
@@ -309,9 +309,9 @@
 				</plugin>
 				<!--
 				打包文档：
-				mvn site
-				mvn javadoc:jar
-				mvn javadoc:javadoc
+					mvn site
+					mvn javadoc:jar
+					mvn javadoc:javadoc
 				跳过打包文档：-D maven.javadoc.skip=true
 				-->
 				<plugin>
@@ -338,9 +338,10 @@
 						<execution>
 							<id>auto-build-javadoc</id>
 							<!--
-							打包文档：install|deploy
-							package不用打包文档
-							install|deploy不能正常签名
+							打包文档：mvn install|deploy
+							生命周期：
+								package不用打包文档
+								install|deploy不能正常签名
 							-->
 							<phase>verify</phase>
 							<goals>
@@ -351,8 +352,8 @@
 				</plugin>
 				<!--
 				复制依赖：
-				mvn dependency:copy
-				mvn dependency:copy-dependencies
+					mvn dependency:copy
+					mvn dependency:copy-dependencies
 				-->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -376,8 +377,7 @@
 					</executions>
 				</plugin>
 				<!--
-				生成签名：
-				mvn verify
+				生成签名：mvn verify
 				跳过生成签名：-D gpg.skip=true
 				-->
 				<plugin>
@@ -395,10 +395,7 @@
 						</execution>
 					</executions>
 				</plugin>
-				<!--
-				发布项目：
-				mvn deploy
-				-->
+				<!-- 发布项目：mvn deploy -->
 				<plugin>
 					<groupId>org.sonatype.plugins</groupId>
 					<artifactId>nexus-staging-maven-plugin</artifactId>
@@ -428,9 +425,7 @@
 				<artifactId>h2</artifactId>
 				<version>${h2.version}</version>
 			</dependency>
-			<!--
-			日志：slf4j
-			-->
+			<!-- 日志：slf4j -->
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
@@ -441,8 +436,8 @@
 			隐式依赖：javafx-base、javafx-controls、javafx-graphics
 			
 			编译系统和运行系统不一致时：
-			1.添加编译参数：-D javafx.platform=win|mac|linux
-			2.添加依赖属性：<classifier>win|mac|linux</classifier>
+				1.添加编译参数：-D javafx.platform=win|mac|linux
+				2.添加依赖属性：<classifier>win|mac|linux</classifier>
 			-->
 			<dependency>
 				<groupId>org.openjfx</groupId>
@@ -467,7 +462,7 @@
 	<!-- 基本信息 -->
 	<url>https://gitee.com/acgist/snail</url>
 	<name>snail.parent</name>
-	<description>基于Java、JavaFX开发的下载工具，支持下载协议：BT（BitTorrent、磁力链接、种子）、HLS、FTP、HTTP。</description>
+	<description>基于Java、JavaFX开发的下载工具，支持下载协议：BT（BitTorrent、磁力链接、种子文件）、HLS（M3U8）、FTP、HTTP。</description>
 	<inceptionYear>2019</inceptionYear>
 
 	<!-- 仓库信息 -->

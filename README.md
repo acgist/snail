@@ -1,7 +1,7 @@
 <h1 align="center">Snail（蜗牛）</h1>
 
 <p align="center">
-基于Java、JavaFX开发的下载工具，支持下载协议：BT（BitTorrent、磁力链接、种子）、HLS、FTP、HTTP。
+基于Java、JavaFX开发的下载工具，支持下载协议：BT（BitTorrent、磁力链接、种子文件）、HLS（M3U8）、FTP、HTTP。
 </p>
 
 <p align="center">
@@ -35,7 +35,9 @@
 
 ## 使用
 
-Windows稳定版下载：[snail-windows.zip](https://gitee.com/acgist/snail/attach_files)（解压可以直接运行）
+稳定版本下载：[snail-windows.zip](https://gitee.com/acgist/snail/attach_files)（解压可以直接运行）
+
+> 稳定版提供`mac`、`linux`、`windows`三个版本
 
 #### 编译
 
@@ -44,7 +46,7 @@ Windows稳定版下载：[snail-windows.zip](https://gitee.com/acgist/snail/atta
 mvn clean package -P release -D skipTests
 ```
 
-> 推荐下载[发行版](https://gitee.com/acgist/snail/releases)编译（最新分支可能存在未开发完成的任务）
+> 推荐下载[发行版](https://gitee.com/acgist/snail/releases)编译
 
 #### 启动
 
@@ -76,6 +78,7 @@ javaw -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar
 |:--|:--:|
 |BT|○|
 |FTP|√|
+|HLS|√|
 |HTTP|√|
 
 #### 协议进度
@@ -125,7 +128,9 @@ javaw -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar
 |0054|[The lt_donthave extension](http://www.bittorrent.org/beps/bep_0054.html)|√|
 |其他|-|-|
 |-|IPv6|○|
-|-|[HLS(M3U8)](https://tools.ietf.org/html/rfc8216)|√|
+|-|FTP|√|
+|-|[HLS](https://tools.ietf.org/html/rfc8216)|√|
+|-|HTTP|√|
 |-|[STUN](https://www.rfc-editor.org/rfc/rfc5389.txt)|√|
 |-|[UPnP](http://upnp.org/specs/arch/UPnP-arch-DeviceArchitecture-v1.0.pdf)|√|
 |-|upload_only|√|
@@ -135,11 +140,11 @@ javaw -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar
 
 ## 依赖项目
 
-|软件|License|许可|
-|:--|:--:|:--|
-|[h2](http://www.h2database.com)|[License](http://www.h2database.com/html/license.html)|MPL 2.0/EPL 1.0|
-|[slf4j](https://www.slf4j.org)|[License](https://www.slf4j.org/license.html)|MIT|
-|[JavaFX](https://wiki.openjdk.java.net/display/OpenJFX/Main)|[License](http://openjdk.java.net/legal/gplv2+ce.html)|GPL 2.0|
+|软件|许可|
+|:--|:--|
+|[h2](http://www.h2database.com)|[MPL 2.0/EPL 1.0](http://www.h2database.com/html/license.html)|
+|[slf4j](https://www.slf4j.org)|[MIT](https://www.slf4j.org/license.html)|
+|[JavaFX](https://wiki.openjdk.java.net/display/OpenJFX/Main)|[GPL 2.0](http://openjdk.java.net/legal/gplv2+ce.html)|
 
 ## 视频播放
 
@@ -149,7 +154,7 @@ javaw -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar
 
 虽然没有实现边下边播功能，但是理论上下载是按序下载，所以已下载的部分可以直接使用播放器进行播放。
 
-> 可以通过`F12`查看已经下载的部分
+> 可以通过`F12`查看已下载的部分
 
 ## 其他
 
@@ -164,18 +169,14 @@ GITHUB：[https://github.com/acgist/snail](https://github.com/acgist/snail)
 ![蜗牛](https://static.acgist.com/demo/snail/snail.png "蜗牛")
 ![统计](https://static.acgist.com/demo/snail/statistics03.png "统计")
 
-> GUI绘制工具：JavaFX Scene Builder
-
 #### 更多
 
 [https://www.acgist.com/snail](https://www.acgist.com/snail)
 
 ## 贡献
 
-如果遇到问题或者建议可以提交到[Issues](https://gitee.com/acgist/snail/issues)
+提交PR前请阅读[代码规范](./CODE_OF_CONDUCT.md)、[贡献规范](./CONTRIBUTING.md)
 
-提交Issues/PR前请阅读[贡献规范](./CONTRIBUTING.md)
-
-提交PR前请阅读[代码规范](./CODE_OF_CONDUCT.md)
+问题和建议请提交到[Issues](https://gitee.com/acgist/snail/issues)，提交前请阅读[贡献规范](./CONTRIBUTING.md)。
 
 谢谢！

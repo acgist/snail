@@ -48,7 +48,7 @@
 	<!-- 基本信息 -->
 	<url>https://gitee.com/acgist/snail</url>
 	<name>snail.javafx</name>
-	<description>通过JavaFX开发的图形界面管理Snail（蜗牛）</description>
+	<description>基于JavaFX开发的Snail图形管理界面</description>
 	<inceptionYear>2019</inceptionYear>
 
 	<!-- 仓库信息 -->

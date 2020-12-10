@@ -68,17 +68,13 @@ list.stream()
 
 * 允许同行注释
 * 重要功能和代码必须添加注释
-* 注释文本和前面的符号必须有个空格
-* 类变量、静态变量必须使用javadoc注解
-* 单例对象、获取单例方法、无参构造函数不要注释
-* 类、接口必须使用javadoc注解：描述、作者
-* 抽象方法必须使用javadoc注解：描述、参数、返回值、异常
+* javadoc注解必须正确使用
 
 ## 日志
 
 * 合理使用日志级别
-* 重要操作必须添加日志
 * 必须使用日志门面（slf4j）
+* 重要操作必须添加日志
 * 异常没有抛出必须添加日志记录
 
 ## 命名
@@ -100,6 +96,7 @@ list.stream()
 |downloader|下载器|
 |format|数据格式|
 |gui|GUI|
+|logger|日志|
 |net|网络|
 |pojo|POJO|
 |protocol|协议|
@@ -109,26 +106,30 @@ list.stream()
 #### 类命名
 
 * 接口必须以`I`开头
-* 测试必须以`Test`结尾
+* 测试类必须以`Test`结尾
 * 抽象类不使用`Abstract`或`Base`开头（例：TrackerClient -> [UdpTrackerClient | HttpTrackerClient]）
 * 继承时子类命名必须以父类后缀结尾（例：Client、Server、MessageHandler、Downloader、Protocol、Repository等）
+
+#### 方法命名
+
+* 测试方法必须以`test`开头
 
 #### 变量命名
 
 * 基本类型根据用途命名
-* 其他类型使用`Eclipse`自动提示（类名首字母小写）
+* 其他类型使用`Eclipse`自动提示
 
 ## 代码
 
-* 不能使用过时的方法
-* 能使用单例必须使用单例
-* 不使用魔法值（使用常量代替）
+* 禁止使用魔法值
+* 禁止使用过时的方法
+* 可以使用单例必须使用单例
 * 类、变量尽量使用`final`修饰
-* 方法重写时必须添加注解`@Override`
 * `switch`语句必须包含`default`
+* 方法重写时必须添加注解`@Override`
+* 必须处理所有警告（禁止通过注解`@SuppressWarnings`忽略）
+* 声明`long`类型数值后面添加`L`标记（`float`、`double`类似）
 * 新增代码不能使用除了Java内置模块和已经添加依赖外的其他依赖
-* 必须处理所有警告（不允许通过注解`@SuppressWarnings`忽略）
-* 声明`long`类型时数值后面添加`L`标记（`float`、`double`类似）
 
 ```
 // 数组
@@ -170,15 +171,7 @@ public String haveData();
 
 #### 规范检查
 
-使用阿里P3C对代码进行规范检查
-
-###### P3C
-
-https://github.com/alibaba/p3c
-
-###### Eclipse
-
-https://p3c.alibaba.com/plugin/eclipse/update
+使用阿里[P3C](https://github.com/alibaba/p3c)对代码进行规范检查（[Eclipse插件](https://p3c.alibaba.com/plugin/eclipse/update)）
 
 #### 质量检查
 
