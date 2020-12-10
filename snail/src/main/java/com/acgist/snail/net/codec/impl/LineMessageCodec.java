@@ -34,7 +34,7 @@ public final class LineMessageCodec extends MessageCodec<String, String> {
 	}
 
 	@Override
-	protected void decode(String message, InetSocketAddress address, boolean haveAddress) throws NetException {
+	protected void doDecode(String message, InetSocketAddress address) throws NetException {
 		String messageLine; // 独立消息
 		final int length = this.separator.length();
 		message = this.lastMessage + message; // 合并上次没有处理完成的消息
@@ -42,7 +42,7 @@ public final class LineMessageCodec extends MessageCodec<String, String> {
 			int index = message.indexOf(this.separator);
 			while(index >= 0) {
 				messageLine = message.substring(0, index);
-				this.doNext(messageLine, address, haveAddress);
+				this.doNext(messageLine, address);
 				message = message.substring(index + length);
 				index = message.indexOf(this.separator);
 			}

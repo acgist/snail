@@ -23,9 +23,9 @@ public final class StringMessageCodec extends MessageCodec<ByteBuffer, String> {
 	}
 
 	@Override
-	protected void decode(ByteBuffer buffer, InetSocketAddress address, boolean haveAddress) throws NetException {
+	protected void doDecode(ByteBuffer buffer, InetSocketAddress address) throws NetException {
 		final String message = StringUtils.ofByteBuffer(buffer); // 读取字符串
-		this.doNext(message, address, haveAddress);
+		this.doNext(message, address);
 	}
 
 }
