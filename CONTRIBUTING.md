@@ -36,7 +36,7 @@
 
 * 阅读[帮助](./HELP.md)是否已经提供解决方法
 * 检查[Issues](https://gitee.com/acgist/snail/issues)是否已经提交过此问题
-* 检查JDK、网络、路由、防火墙配置（排除环境因素）
+* 检查JDK、网络、路由、防火墙配置
 * 检查运行系统和JavaFX依赖系统是否一致
 
 #### 提交问题规范
@@ -57,6 +57,7 @@
 #### 提交建议准备
 
 * 检查[Issues](https://gitee.com/acgist/snail/issues)是否已经提交过此建议
+* 检查最新版本是否已经实现建议功能
 
 #### 提交建议规范
 
@@ -83,6 +84,6 @@
 
 #### 提交PR步骤
 
-* 将项目fork到自己的项目下（不要直接在仓库下新建分支）
-* 提交PR前先rebase（确保commit记录整洁）
-* 将PR提交到pr分支（不要提交到master分支）
+* 将项目fork到自己的项目下
+* 提交PR前先rebase
+* 将PR提交到pr分支

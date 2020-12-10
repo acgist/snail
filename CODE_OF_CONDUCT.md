@@ -14,7 +14,9 @@
 * [注释](#注释)
 * [日志](#日志)
 * [命名](#命名)
+	* [包命名](#包命名)
 	* [类命名](#类命名)
+	* [方法命名](#方法命名)
 	* [变量命名](#变量命名)
 * [代码](#代码)
 * [顺序](#顺序)
@@ -104,8 +106,8 @@ list.stream()
 
 * 接口必须以`I`开头
 * 测试类必须以`Test`结尾
-* 抽象类不使用`Abstract`或`Base`开头（例：TrackerClient -> [UdpTrackerClient | HttpTrackerClient]）
-* 继承时子类命名必须以父类后缀结尾（例：TrackerClient -> [UdpTrackerClient | HttpTrackerClient]）
+* 抽象类不使用`Abstract`或`Base`开头（例：`TrackerClient` -> [`UdpTrackerClient` | `HttpTrackerClient`]）
+* 继承时子类命名必须以父类后缀结尾（例：`TrackerClient` -> [`UdpTrackerClient` | `HttpTrackerClient`]）
 
 #### 方法命名
 

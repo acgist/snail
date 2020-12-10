@@ -34,7 +34,7 @@
 	<!-- 基本信息 -->
 	<url>https://gitee.com/acgist/snail</url>
 	<name>snail</name>
-	<description>基于Java开发的下载工具，支持下载协议：BT（BitTorrent、磁力链接、种子）、HLS、FTP、HTTP。</description>
+	<description>基于Java开发的下载工具，支持下载协议：BT（BitTorrent、磁力链接、种子文件）、HLS（M3U8）、FTP、HTTP。</description>
 	<inceptionYear>2019</inceptionYear>
 
 	<!-- 仓库信息 -->
