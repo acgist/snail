@@ -96,8 +96,11 @@ mvn clean package -P release -D skipTests
 > 编译系统和运行系统不一致时添加编译参数：-D javafx.platform=win|mac|linux
 
 ```bash
-mvn clean package -P release -D skipTests -D javafx.platform=win
+mvn clean package -P release -D skipTests -D javafx.platform=win|mac|linux
 ```
+
+> 推荐下载[发行版](https://gitee.com/acgist/snail/releases)编译
+
 #### 乱码
 
 Windows控制台乱码设置编码：`chcp 65001`
@@ -120,9 +123,9 @@ javaw -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar
 
 #### 进阶
 
-F1：问题建议
+问题建议：F1
 
-F12：统计面板
+统计面板：F12
 
 下载界面、新建下载界面支持拖拽操作：下载链接、种子文件
 
@@ -136,7 +139,7 @@ F12：统计面板
 
 虽然没有实现边下边播功能，但是理论上下载是按序下载，所以已下载的部分可以直接使用播放器进行播放。
 
-> 可以通过`F12`查看已经下载的部分
+> 可以通过`F12`查看已下载的部分
 
 ### BT任务
 
@@ -158,21 +161,23 @@ BT任务上传速度是下载速度的四分之一，任务只要开始下载都
 * 网络故障
 * 种子损坏
 * 无人分享（做种）
-* 没有可用的Tracker服务器和DHT网络
+* 没有可用的Tracker服务器和DHT网络节点
 
 #### BT文件校验
 
-BT文件是分片下载的，部分任务会存在一个分片里面包含多个文件，这样的分片如果文件不是同时下载时校验就需要下载不需要下载的文件。
-这样的文件大多数客户端可能都不会进行下载，导致文件没有数据分享就会导致下载卡住，所以蜗牛选择忽略这样的片的数据校验（文件第一片和最后一片）。
+BT文件是分片下载的，部分任务会存在一个分片里面包含多个文件，这样的分片如果文件不是同时下载校验时就需要下载不需要下载的文件。
+这样的文件大多数客户端都不会进行下载，导致文件没有数据分享然后导致下载卡住，所以蜗牛选择忽略这样的分片数据校验。
+
+> 分片都是文件第一片和最后一片
 
 ### 私有种子
 
 私有种子下载支持以下特性：
 
-* 只使用种子自带Tracker服务器
 * 不使用PEX协议
 * 不使用DHT网络
 * 不使用本地发现服务
+* 只使用种子自带Tracker服务器
 
 ### 磁力链接任务
 
@@ -212,7 +217,7 @@ BT文件是分片下载的，部分任务会存在一个分片里面包含多个
 ### 优化下载体验
 
 * 使用热门种子
-* 自定义优质的Tracker服务器和DHT网络
+* 自定义优质的Tracker服务器和DHT网络节点
 
 #### 自定义Tracker服务器
 
@@ -230,17 +235,17 @@ BT文件是分片下载的，部分任务会存在一个分片里面包含多个
 
 > NodeID=节点ID
 
-> host:port=服务器地址（域名|IP）:端口
+> host:port=节点地址（域名|IP）:端口
 
 ## 开发帮助
 
 系统消息和系统通知使用B编码Map类型消息，每条消息含有类型`type`和主体`body`。
 
-> 通过`socket`连接系统端口`16888`发送系统消息和接收系统通知
-
 ```
 d4:type4:TEXT4:body7:messagee
 ```
+
+> 通过`socket`连接系统端口`16888`发送系统消息和接收系统通知
 
 ### 系统消息
 
@@ -327,7 +332,7 @@ java -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar mode=[native|exte
 
 ### 内存溢出
 
-使用FTP、HTTP下载大文件时如果出现内存溢出，建议优化JVM参数：`-XX:NewRatio=2 -XX:SurvivorRatio=2`
+使用FTP、HLT、HTTP下载大文件时如果出现内存溢出，建议优化JVM参数：`-XX:NewRatio=2 -XX:SurvivorRatio=2`
 
 ```bash
 # Linux
@@ -350,17 +355,17 @@ javaw -server -Xms128m -Xmx256m -XX:NewRatio=2 -XX:SurvivorRatio=2 -jar snail.ja
 ```bash
 # Linux
 # 查询端口
-netstat -anp|grep 16888
-netstat -anp|grep 18888
+netstat -anp | grep 16888
+netstat -anp | grep 18888
 # 查询占用程序
-ps aux|grep pid
+ps aux | grep pid
 
 #Windows
 # 查询端口
-netstat -ano|findstr 16888
-netstat -ano|findstr 18888
+netstat -ano | findstr 16888
+netstat -ano | findstr 18888
 # 查询占用程序
-tasklist|findstr pid
+tasklist | findstr pid
 ```
 
 > pid：查询进程ID

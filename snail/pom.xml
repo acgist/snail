@@ -28,8 +28,7 @@
 
 	<build>
 		<!-- Maven插件 -->
-		<plugins>
-		</plugins>
+		<plugins></plugins>
 	</build>
 
 	<!-- 基本信息 -->
