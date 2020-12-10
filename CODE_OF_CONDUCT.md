@@ -29,7 +29,6 @@
 ## 括号
 
 ```
-// 不能省略括号
 if(条件) {
 }
 
@@ -43,7 +42,6 @@ Function function = (event) -> {
 ## 换行
 
 ```
-// 语句太长换行
 if(
 	条件 &&
 	条件
@@ -52,7 +50,6 @@ if(
 } else {
 }
 
-// Lambda换行
 list.stream()
 	.filter(peer -> peer.available())
 	.filter(peer -> peer.connected())
@@ -67,13 +64,13 @@ list.stream()
 ## 注释
 
 * 允许同行注释
-* 重要功能和代码必须添加注释
 * javadoc注解必须正确使用
+* 重要功能和代码必须添加注释
 
 ## 日志
 
 * 合理使用日志级别
-* 必须使用日志门面（slf4j）
+* 必须使用日志门面
 * 重要操作必须添加日志
 * 异常没有抛出必须添加日志记录
 
@@ -94,7 +91,7 @@ list.stream()
 |config|配置|
 |context|上下文|
 |downloader|下载器|
-|format|数据格式|
+|format|格式化|
 |gui|GUI|
 |logger|日志|
 |net|网络|
@@ -108,7 +105,7 @@ list.stream()
 * 接口必须以`I`开头
 * 测试类必须以`Test`结尾
 * 抽象类不使用`Abstract`或`Base`开头（例：TrackerClient -> [UdpTrackerClient | HttpTrackerClient]）
-* 继承时子类命名必须以父类后缀结尾（例：Client、Server、MessageHandler、Downloader、Protocol、Repository等）
+* 继承时子类命名必须以父类后缀结尾（例：TrackerClient -> [UdpTrackerClient | HttpTrackerClient]）
 
 #### 方法命名
 
@@ -131,27 +128,6 @@ list.stream()
 * 声明`long`类型数值后面添加`L`标记（`float`、`double`类似）
 * 新增代码不能使用除了Java内置模块和已经添加依赖外的其他依赖
 
-```
-// 数组
-final int[] peers = new int[8];
-
-// 判断
-if(a == b) {
-}
-
-// 三目运算
-final int value = boolean ? a : b;
-
-// 参数传递
-this.method(arg1, arg2, arg3);
-
-// 可变参数
-public String method(String ... args);
-
-// 是否存在方法命名使用haveXXXX
-public String haveData();
-```
-
 ## 顺序
 
 * 日志
@@ -164,8 +140,6 @@ public String haveData();
 * 初始代码
 * 公开函数
 * 私有函数
-
-> 函数按照相关引用排序
 
 ## 检查工具
 
