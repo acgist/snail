@@ -34,7 +34,7 @@
 
 提交问题报告前，请先排除一些基本问题：
 
-* 阅读[帮助](./HELP.md)是否已经提供解决方法
+* 阅读[帮助](./docs/HELP.md)是否已经提供解决方法
 * 检查[Issues](https://gitee.com/acgist/snail/issues)是否已经提交过此问题
 * 检查JDK、网络、路由、防火墙配置
 * 检查运行系统和JavaFX依赖系统是否一致
