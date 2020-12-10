@@ -82,7 +82,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	private static final String DOWNLOAD_MEMORY_BUFFER = "acgist.download.memory.buffer";
 	
 	static {
-		LOGGER.info("初始化下载配置：{}", DOWNLOAD_CONFIG);
+		LOGGER.debug("初始化下载配置：{}", DOWNLOAD_CONFIG);
 		INSTANCE.initFromProperties();
 		INSTANCE.initFromDatabase();
 		INSTANCE.refreshUploadDownloadBuffer();
@@ -174,12 +174,12 @@ public final class DownloadConfig extends PropertiesConfig {
 	 * <p>记录日志</p>
 	 */
 	private void logger() {
-		LOGGER.info("下载目录：{}", this.path);
-		LOGGER.info("下载数量：{}", this.size);
-		LOGGER.info("消息提示：{}", this.notice);
-		LOGGER.info("下载速度（单个）（KB）：{}", this.buffer);
-		LOGGER.info("最后一次选择目录：{}", this.lastPath);
-		LOGGER.info("磁盘缓存（单个）（MB）：{}", this.memoryBuffer);
+		LOGGER.debug("下载目录：{}", this.path);
+		LOGGER.debug("下载数量：{}", this.size);
+		LOGGER.debug("消息提示：{}", this.notice);
+		LOGGER.debug("下载速度（单个）（KB）：{}", this.buffer);
+		LOGGER.debug("最后一次选择目录：{}", this.lastPath);
+		LOGGER.debug("磁盘缓存（单个）（MB）：{}", this.memoryBuffer);
 	}
 	
 	/**

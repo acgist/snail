@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Properties;
 
@@ -17,7 +18,8 @@ import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>配置文件</p>
+ * <p>配置文件超类</p>
+ * <p>读取配置文件并提供读取方法</p>
  * 
  * @author acgist
  */
@@ -27,15 +29,17 @@ public abstract class PropertiesConfig {
 	
 	/**
 	 * <p>配置信息</p>
+	 * <p>配置读取完成可以使用{@link #release()}释放资源</p>
 	 */
 	protected final Properties properties;
 
 	/**
 	 * <p>加载配置文件</p>
 	 * 
-	 * @param path 配置文件路径
+	 * @param path 配置文件相对路径
 	 */
 	protected PropertiesConfig(String path) {
+		LOGGER.debug("加载配置文件：{}", path);
 		this.properties = load(path);
 	}
 	
@@ -53,7 +57,7 @@ public abstract class PropertiesConfig {
 			properties = loadFromResource(path);
 		}
 		if(properties == null) {
-			LOGGER.warn("配置加载失败：{}", path);
+			LOGGER.warn("加载配置文件失败：{}", path);
 		}
 		return properties;
 	}
@@ -61,17 +65,18 @@ public abstract class PropertiesConfig {
 	/**
 	 * <p>加载用户工作目录配置（UserDir）</p>
 	 * 
-	 * @param path 文件路径
+	 * @param path 配置文件相对路径
 	 * 
 	 * @return 配置信息
 	 */
 	private static final Properties loadFromUserDir(String path) {
 		final File file = FileUtils.userDirFile(path);
 		if(file == null || !file.exists()) {
+			// 文件不存在
 			return null;
 		}
 		Properties properties = null;
-		try(final var input = new InputStreamReader(new FileInputStream(file), SystemConfig.DEFAULT_CHARSET)) {
+		try(final var input = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)) {
 			properties = new Properties();
 			properties.load(input);
 		} catch (IOException e) {
@@ -83,16 +88,17 @@ public abstract class PropertiesConfig {
 	/**
 	 * <p>加载默认配置（Resource）</p>
 	 * 
-	 * @param path 文件路径
+	 * @param path 配置文件相对路径
 	 * 
 	 * @return 配置信息
 	 */
 	private static final Properties loadFromResource(String path) {
 		if(PropertiesConfig.class.getResource(path) == null) {
+			// 资源不存在
 			return null;
 		}
 		Properties properties = null;
-		try(final var input = new InputStreamReader(PropertiesConfig.class.getResourceAsStream(path), SystemConfig.DEFAULT_CHARSET)) {
+		try(final var input = new InputStreamReader(PropertiesConfig.class.getResourceAsStream(path), StandardCharsets.UTF_8)) {
 			properties = new Properties();
 			properties.load(input);
 		} catch (IOException e) {
@@ -106,28 +112,29 @@ public abstract class PropertiesConfig {
 	 * 
 	 * @return true-成功；false-失败；
 	 */
-	public boolean haveProperties() {
+	protected final boolean hasProperties() {
 		return this.properties != null;
 	}
 
 	/**
-	 * <p>保存配置</p>
+	 * <p>保存配置文件</p>
 	 * 
 	 * @param data 数据
 	 * @param file 文件
 	 */
-	protected void persistent(Map<String, String> data, File file) {
+	protected final void persistent(Map<String, String> data, File file) {
 		if(data == null || file == null) {
-			LOGGER.warn("保存配置失败：{}-{}", data, file);
+			LOGGER.warn("保存配置文件失败：{}-{}", data, file);
 			return;
 		}
-		FileUtils.buildFolder(file, true);
-		try(final var output = new OutputStreamWriter(new FileOutputStream(file), SystemConfig.DEFAULT_CHARSET)) {
-			final Properties properties = new Properties();
-			properties.putAll(data);
-			properties.store(output, SystemConfig.getName());
+		FileUtils.buildFolder(file, true); // 创建上级目录
+		try(final var output = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {
+			// 不能使用内部变量：数据可能被清空
+			final Properties persistentProperties = new Properties();
+			persistentProperties.putAll(data);
+			persistentProperties.store(output, SystemConfig.getName());
 		} catch (IOException e) {
-			LOGGER.error("保存配置异常：{}", file.getAbsolutePath(), e);
+			LOGGER.error("保存配置文件异常：{}", file.getAbsolutePath(), e);
 		}
 	}
 	
@@ -139,7 +146,7 @@ public abstract class PropertiesConfig {
 	 * 
 	 * @return 配置值
 	 */
-	protected String getString(String name) {
+	protected final String getString(String name) {
 		return this.properties.getProperty(name);
 	}
 	
@@ -151,7 +158,7 @@ public abstract class PropertiesConfig {
 	 * 
 	 * @return 配置值
 	 */
-	protected String getString(String name, String defaultValue) {
+	protected final String getString(String name, String defaultValue) {
 		final String value = this.getString(name);
 		return value == null ? defaultValue : value;
 	}
@@ -164,7 +171,7 @@ public abstract class PropertiesConfig {
 	 * 
 	 * @return 配置值
 	 */
-	protected String getString(ConfigEntity entity, String defaultValue) {
+	protected final String getString(ConfigEntity entity, String defaultValue) {
 		return entity == null ? defaultValue : entity.getValue();
 	}
 
@@ -176,7 +183,7 @@ public abstract class PropertiesConfig {
 	 * 
 	 * @return 配置值
 	 */
-	protected Boolean getBoolean(String name) {
+	protected final Boolean getBoolean(String name) {
 		final String value = this.getString(name);
 		if(Boolean.TRUE.toString().equalsIgnoreCase(value)) {
 			return Boolean.TRUE;
@@ -195,7 +202,7 @@ public abstract class PropertiesConfig {
 	 * 
 	 * @return 配置值
 	 */
-	protected boolean getBoolean(String name, boolean defaultValue) {
+	protected final boolean getBoolean(String name, boolean defaultValue) {
 		final Boolean value = this.getBoolean(name);
 		return value == null ? defaultValue : value;
 	}
@@ -208,7 +215,7 @@ public abstract class PropertiesConfig {
 	 * 
 	 * @return 配置值
 	 */
-	protected boolean getBoolean(ConfigEntity entity, boolean defaultValue) {
+	protected final boolean getBoolean(ConfigEntity entity, boolean defaultValue) {
 		return entity == null ? defaultValue : Boolean.parseBoolean(entity.getValue());
 	}
 
@@ -220,7 +227,7 @@ public abstract class PropertiesConfig {
 	 * 
 	 * @return 配置值
 	 */
-	protected Integer getInteger(String name) {
+	protected final Integer getInteger(String name) {
 		final String value = this.getString(name);
 		if(StringUtils.isNumeric(value)) {
 			return Integer.valueOf(value);
@@ -236,7 +243,7 @@ public abstract class PropertiesConfig {
 	 * 
 	 * @return 配置值
 	 */
-	protected int getInteger(String name, int defaultValue) {
+	protected final int getInteger(String name, int defaultValue) {
 		final Integer value = this.getInteger(name);
 		return value == null ? defaultValue : value;
 	}
@@ -249,16 +256,15 @@ public abstract class PropertiesConfig {
 	 * 
 	 * @return 配置值
 	 */
-	protected int getInteger(ConfigEntity entity, int defaultValue) {
+	protected final int getInteger(ConfigEntity entity, int defaultValue) {
 		return entity == null ? defaultValue : Integer.parseInt(entity.getValue());
 	}
 	
 	/**
 	 * <p>释放配置</p>
 	 */
-	protected void release() {
+	protected final void release() {
 		this.properties.clear();
-//		this.properties = null;
 	}
 	
 }

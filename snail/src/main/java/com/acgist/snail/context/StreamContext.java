@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.pojo.session.StreamSession;
-import com.acgist.snail.utils.DateUtils;
 
 /**
  * <p>数据流上下文</p>
@@ -31,7 +31,7 @@ public final class StreamContext {
 	/**
 	 * <p>定时任务时间：{@value}</p>
 	 */
-	private static final long LIVE_CHECK_INTERVAL = 30 * DateUtils.ONE_SECOND;
+	private static final long LIVE_CHECK_INTERVAL = 30L * SystemConfig.ONE_SECOND_MILLIS;
 	
 	/**
 	 * <p>数据流信息列表</p>

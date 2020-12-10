@@ -32,7 +32,7 @@ public final class DatabaseConfig extends PropertiesConfig {
 	private static final String DATABASE_CONFIG = "/config/database.properties";
 	
 	static {
-		LOGGER.info("初始化数据库配置：{}", DATABASE_CONFIG);
+		LOGGER.debug("初始化数据库配置：{}", DATABASE_CONFIG);
 		INSTANCE.init();
 		INSTANCE.logger();
 		INSTANCE.release();
@@ -81,11 +81,11 @@ public final class DatabaseConfig extends PropertiesConfig {
 	 * <p>记录日志</p>
 	 */
 	private void logger() {
-		LOGGER.info("数据库地址：{}", this.url);
-		LOGGER.info("数据库驱动：{}", this.driver);
-		LOGGER.info("数据库用户：{}", this.user);
-		LOGGER.info("数据库密码：{}", this.password);
-		LOGGER.info("数据库建表文件：{}", this.tableSQL);
+		LOGGER.debug("数据库地址：{}", this.url);
+		LOGGER.debug("数据库驱动：{}", this.driver);
+		LOGGER.debug("数据库用户：{}", this.user);
+		LOGGER.debug("数据库密码：{}", this.password);
+		LOGGER.debug("数据库建表文件：{}", this.tableSQL);
 	}
 	
 	/**

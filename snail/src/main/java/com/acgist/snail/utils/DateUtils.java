@@ -5,6 +5,8 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+import com.acgist.snail.config.SystemConfig;
+
 /**
  * <p>时间工具</p>
  * 
@@ -42,22 +44,6 @@ public final class DateUtils {
 	 * <p>Java和Windows时间戳倍数：{@value}</p>
 	 */
 	private static final int JAVA_WINDOWS_TIMESTAMP_SCALE = 10_000;
-	/**
-	 * <p>一秒钟（毫秒）：{@value}</p>
-	 */
-	public static final long ONE_SECOND = 1000L;
-	/**
-	 * <p>一分钟（秒数）：{@value}</p>
-	 */
-	private static final long ONE_MINUTE = 60L;
-	/**
-	 * <p>一小时（秒数）：{@value}</p>
-	 */
-	private static final long ONE_HOUR = ONE_MINUTE * 60;
-	/**
-	 * <p>一天（秒数）：{@value}</p>
-	 */
-	private static final long ONE_DAY = ONE_HOUR * 24;
 	
 	/**
 	 * <p>时间格式化：保留两个时间单位</p>
@@ -68,23 +54,23 @@ public final class DateUtils {
 	 */
 	public static final String format(long value) {
 		final StringBuilder builder = new StringBuilder();
-		final long day = value / ONE_DAY;
+		final long day = value / SystemConfig.ONE_DAY;
 		if(day != 0) {
 			builder.append(day).append("天");
-			value = value % ONE_DAY;
+			value = value % SystemConfig.ONE_DAY;
 		}
-		final long hour = value / ONE_HOUR;
+		final long hour = value / SystemConfig.ONE_HOUR;
 		if(hour != 0) {
 			builder.append(hour).append("小时");
-			value = value % ONE_HOUR;
+			value = value % SystemConfig.ONE_HOUR;
 			if(day != 0) {
 				return builder.toString();
 			}
 		}
-		final long minute = value / ONE_MINUTE;
+		final long minute = value / SystemConfig.ONE_MINUTE;
 		if(minute != 0) {
 			builder.append(minute).append("分钟");
-			value = value % ONE_MINUTE;
+			value = value % SystemConfig.ONE_MINUTE;
 			if(hour != 0) {
 				return builder.toString();
 			}

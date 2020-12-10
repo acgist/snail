@@ -17,12 +17,12 @@
 	
 	<dependencies>
 		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-fxml</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.acgist</groupId>
 			<artifactId>snail</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-fxml</artifactId>
 		</dependency>
 	</dependencies>
 

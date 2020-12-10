@@ -1,5 +1,6 @@
 package com.acgist.snail.config;
 
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,8 @@ public class DownloadConfigTest extends Performance {
 	public void test() {
 		final var config = DownloadConfig.getInstance();
 		assertNotNull(config);
+		assertNotEquals(0, DownloadConfig.getUploadBufferByte());
+		assertNotEquals(0, DownloadConfig.getDownloadBufferByte());
 	}
 	
 }

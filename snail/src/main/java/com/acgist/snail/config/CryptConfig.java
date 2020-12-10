@@ -163,7 +163,7 @@ public final class CryptConfig {
 	public static final Strategy STRATEGY = Strategy.PREFER_PLAINTEXT;
 
 	static {
-		LOGGER.info("默认加密策略：{}", CryptConfig.STRATEGY);
+		LOGGER.debug("默认加密策略：{}", CryptConfig.STRATEGY);
 	}
 	
 	/**

@@ -2,7 +2,7 @@ package com.acgist.snail.pojo.session;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.acgist.snail.utils.DateUtils;
+import com.acgist.snail.config.SystemConfig;
 
 /**
  * <p>速度信息</p>
@@ -19,7 +19,7 @@ public final class SpeedSession {
 	 * <p>速度采样时间</p>
 	 * <p>小于刷新时间：防止统计误差</p>
 	 */
-	private static final long SAMPLE_TIME = 4 * DateUtils.ONE_SECOND;
+	private static final long SAMPLE_TIME = 4L * SystemConfig.ONE_SECOND_MILLIS;
 
 	/**
 	 * <p>速度</p>
@@ -95,7 +95,7 @@ public final class SpeedSession {
 		if(bufferTime <= 0L) {
 			return 0L;
 		} else {
-			return buffer * DateUtils.ONE_SECOND / bufferTime;
+			return buffer * SystemConfig.ONE_SECOND_MILLIS / bufferTime;
 		}
 	}
 

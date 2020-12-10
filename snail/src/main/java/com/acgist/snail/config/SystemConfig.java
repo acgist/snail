@@ -42,6 +42,34 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	public static final int ONE_MB = DATA_SCALE * ONE_KB;
 	/**
+	 * <p>一秒钟（毫秒）：{@value}</p>
+	 */
+	public static final int ONE_SECOND_MILLIS = 1000;
+	/**
+	 * <p>一分钟（秒数）：{@value}</p>
+	 */
+	public static final long ONE_MINUTE = 60L;
+	/**
+	 * <p>一分钟（毫数）：{@value}</p>
+	 */
+	public static final long ONE_MINUTE_MILLIS = 60L * ONE_SECOND_MILLIS;
+	/**
+	 * <p>一小时（秒数）：{@value}</p>
+	 */
+	public static final long ONE_HOUR = ONE_MINUTE * 60;
+	/**
+	 * <p>一小时（毫数）：{@value}</p>
+	 */
+	public static final long ONE_HOUR_MILLIS = ONE_MINUTE_MILLIS * 60;
+	/**
+	 * <p>一天（秒数）：{@value}</p>
+	 */
+	public static final long ONE_DAY = ONE_HOUR * 24;
+	/**
+	 * <p>一天（毫数）：{@value}</p>
+	 */
+	public static final long ONE_DAY_MILLIS = ONE_HOUR_MILLIS * 24;
+	/**
 	 * <p>最小下载速度：{@value}</p>
 	 * <p>16KB</p>
 	 */
@@ -71,7 +99,7 @@ public final class SystemConfig extends PropertiesConfig {
 	/**
 	 * <p>连接超时时间（毫秒）：{@value}</p>
 	 */
-	public static final int CONNECT_TIMEOUT_MILLIS = CONNECT_TIMEOUT * 1000;
+	public static final int CONNECT_TIMEOUT_MILLIS = CONNECT_TIMEOUT * ONE_SECOND_MILLIS;
 	/**
 	 * <p>接收超时时间（秒）：{@value}</p>
 	 */
@@ -79,7 +107,7 @@ public final class SystemConfig extends PropertiesConfig {
 	/**
 	 * <p>接收超时时间（毫秒）：{@value}</p>
 	 */
-	public static final int RECEIVE_TIMEOUT_MILLIS = RECEIVE_TIMEOUT * 1000;
+	public static final int RECEIVE_TIMEOUT_MILLIS = RECEIVE_TIMEOUT * ONE_SECOND_MILLIS;
 	/**
 	 * <p>下载超时时间（秒）：{@value}</p>
 	 */
@@ -87,7 +115,7 @@ public final class SystemConfig extends PropertiesConfig {
 	/**
 	 * <p>下载超时时间（毫秒）：{@value}</p>
 	 */
-	public static final int DOWNLOAD_TIMEOUT_MILLIS = DOWNLOAD_TIMEOUT * 1000;
+	public static final int DOWNLOAD_TIMEOUT_MILLIS = DOWNLOAD_TIMEOUT * ONE_SECOND_MILLIS;
 	/**
 	 * <p>最大的网络包大小：{@value}</p>
 	 * <p>如果创建ByteBuffer和byte[]对象的长度是由外部数据决定时需要验证长度：防止恶意攻击导致内存泄露</p>
@@ -152,7 +180,7 @@ public final class SystemConfig extends PropertiesConfig {
 	private static final String USER_DIR = System.getProperty("user.dir");
 	
 	static {
-		LOGGER.info("初始化系统配置：{}", SYSTEM_CONFIG);
+		LOGGER.debug("初始化系统配置：{}", SYSTEM_CONFIG);
 		INSTANCE.init();
 		INSTANCE.logger();
 		INSTANCE.release();
@@ -317,29 +345,29 @@ public final class SystemConfig extends PropertiesConfig {
 	 * <p>记录日志</p>
 	 */
 	private void logger() {
-		LOGGER.info("软件名称：{}", this.name);
-		LOGGER.info("软件名称（英文）：{}", this.nameEn);
-		LOGGER.info("软件版本：{}", this.version);
-		LOGGER.info("FTP匿名用户：{}", this.ftpUser);
-		LOGGER.info("FTP匿名密码：{}", this.ftpPassword);
-		LOGGER.info("作者：{}", this.author);
-		LOGGER.info("官网与源码：{}", this.source);
-		LOGGER.info("问题与建议：{}", this.support);
-		LOGGER.info("最新稳定版本：{}", this.latestRelease);
-		LOGGER.info("STUN服务器：{}", this.stunServer);
-		LOGGER.info("删除任务是否删除文件：{}", this.taskFileDelete);
-		LOGGER.info("系统服务端口：{}", this.servicePort);
-		LOGGER.info("BT服务端口（Peer、DHT、UTP、STUN）：{}", this.torrentPort);
-		LOGGER.info("单个任务Peer数量（同时下载）：{}", this.peerSize);
-		LOGGER.info("单个任务Tracker数量：{}", this.trackerSize);
-		LOGGER.info("任务即将完成时可以重复下载的Piece数量：{}", this.pieceRepeatSize);
-		LOGGER.info("HLS下载线程数量：{}", this.hlsThreadSize);
-		LOGGER.info("DHT执行周期（秒）：{}", this.dhtInterval);
-		LOGGER.info("PEX执行周期（秒）：{}", this.pexInterval);
-		LOGGER.info("本地发现执行周期（秒）：{}", this.lsdInterval);
-		LOGGER.info("Tracker执行周期（秒）：{}", this.trackerInterval);
-		LOGGER.info("Peer（连接、接入）优化周期（秒）：{}", this.peerOptimizeInterval);
-		LOGGER.info("用户工作目录：{}", SystemConfig.USER_DIR);
+		LOGGER.debug("软件名称：{}", this.name);
+		LOGGER.debug("软件名称（英文）：{}", this.nameEn);
+		LOGGER.debug("软件版本：{}", this.version);
+		LOGGER.debug("FTP匿名用户：{}", this.ftpUser);
+		LOGGER.debug("FTP匿名密码：{}", this.ftpPassword);
+		LOGGER.debug("作者：{}", this.author);
+		LOGGER.debug("官网与源码：{}", this.source);
+		LOGGER.debug("问题与建议：{}", this.support);
+		LOGGER.debug("最新稳定版本：{}", this.latestRelease);
+		LOGGER.debug("STUN服务器：{}", this.stunServer);
+		LOGGER.debug("删除任务是否删除文件：{}", this.taskFileDelete);
+		LOGGER.debug("系统服务端口：{}", this.servicePort);
+		LOGGER.debug("BT服务端口（Peer、DHT、UTP、STUN）：{}", this.torrentPort);
+		LOGGER.debug("单个任务Peer数量（同时下载）：{}", this.peerSize);
+		LOGGER.debug("单个任务Tracker数量：{}", this.trackerSize);
+		LOGGER.debug("任务即将完成时可以重复下载的Piece数量：{}", this.pieceRepeatSize);
+		LOGGER.debug("HLS下载线程数量：{}", this.hlsThreadSize);
+		LOGGER.debug("DHT执行周期（秒）：{}", this.dhtInterval);
+		LOGGER.debug("PEX执行周期（秒）：{}", this.pexInterval);
+		LOGGER.debug("本地发现执行周期（秒）：{}", this.lsdInterval);
+		LOGGER.debug("Tracker执行周期（秒）：{}", this.trackerInterval);
+		LOGGER.debug("Peer（连接、接入）优化周期（秒）：{}", this.peerOptimizeInterval);
+		LOGGER.debug("用户工作目录：{}", SystemConfig.USER_DIR);
 	}
 	
 	/**
@@ -482,7 +510,7 @@ public final class SystemConfig extends PropertiesConfig {
 	 * @param torrentPortExt BT服务端口
 	 */
 	public static final void setTorrentPortExt(int torrentPortExt) {
-		LOGGER.info("BT服务端口（外网端口：Peer、DHT、UTP、STUN）：{}", torrentPortExt);
+		LOGGER.debug("BT服务端口（外网端口：Peer、DHT、UTP、STUN）：{}", torrentPortExt);
 		INSTANCE.torrentPortExt = torrentPortExt;
 	}
 	
@@ -613,7 +641,7 @@ public final class SystemConfig extends PropertiesConfig {
 	 * @param externalIpAddress 外网IP地址
 	 */
 	public static final void setExternalIpAddress(String externalIpAddress) {
-		LOGGER.info("设置外网IP地址：{}", externalIpAddress);
+		LOGGER.debug("设置外网IP地址：{}", externalIpAddress);
 		INSTANCE.externalIpAddress = externalIpAddress;
 	}
 	

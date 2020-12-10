@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.SystemThreadContext;
-import com.acgist.snail.utils.DateUtils;
 
 /**
  * <p>任务列表刷新器</p>
@@ -86,7 +85,7 @@ public final class TaskDisplay {
 				while(INSTANCE.controller == null) {
 					try {
 						// 注意：wait会释放锁
-						this.lock.wait(DateUtils.ONE_SECOND);
+						this.lock.wait(SystemConfig.ONE_SECOND_MILLIS);
 					} catch (InterruptedException e) {
 						LOGGER.debug("线程等待异常", e);
 						Thread.currentThread().interrupt();

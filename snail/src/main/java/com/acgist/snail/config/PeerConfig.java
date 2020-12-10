@@ -192,7 +192,7 @@ public final class PeerConfig extends PropertiesConfig {
 		RESERVED[7] |= RESERVED_FAST_PROTOCOL;
 		RESERVED[5] |= RESERVED_EXTENSION_PROTOCOL;
 		//================初始化================//
-		LOGGER.info("初始化Peer配置：{}", CLIENT_NAME_CONFIG);
+		LOGGER.debug("初始化Peer配置：{}", CLIENT_NAME_CONFIG);
 		INSTANCE.init();
 		INSTANCE.release();
 	}
