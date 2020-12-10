@@ -561,7 +561,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			LOGGER.debug("发送have消息：Peer只上传不下载");
 			return;
 		}
-		if(this.peerSession.havePiece(index)) {
+		if(this.peerSession.hasPiece(index)) {
 			LOGGER.debug("发送have消息：Peer已经含有该Piece");
 			return;
 		}
@@ -582,7 +582,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		final int index = buffer.getInt();
 		LOGGER.debug("处理have消息：{}", index);
 		this.peerSession.piece(index);
-		if(!this.torrentSession.havePiece(index)) {
+		if(!this.torrentSession.hasPiece(index)) {
 			this.interested();
 		}
 	}
@@ -663,7 +663,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			LOGGER.debug("发送suggestPiece消息：Peer只上传不下载");
 			return;
 		}
-		if(this.peerSession.havePiece(index)) {
+		if(this.peerSession.hasPiece(index)) {
 			LOGGER.debug("发送suggestPiece消息：Peer已经含有该Piece");
 			return;
 		}
@@ -684,7 +684,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		final int index = buffer.getInt();
 		LOGGER.debug("处理suggestPiece消息：{}", index);
 		this.peerSession.suggestPieces(index);
-		if(!this.torrentSession.havePiece(index)) {
+		if(!this.torrentSession.hasPiece(index)) {
 			this.interested();
 		}
 	}
@@ -744,7 +744,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			LOGGER.debug("发送allowedFast消息：Peer只上传不下载");
 			return;
 		}
-		if(this.peerSession.havePiece(index)) {
+		if(this.peerSession.hasPiece(index)) {
 			LOGGER.debug("发送allowedFast消息：Peer已经含有该Piece");
 			return;
 		}
@@ -765,7 +765,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		final int index = buffer.getInt();
 		LOGGER.debug("处理allowedFast消息：{}", index);
 		this.peerSession.allowedPieces(index);
-		if(!this.torrentSession.havePiece(index)) {
+		if(!this.torrentSession.hasPiece(index)) {
 			this.interested();
 		}
 		this.allowedFastDownload();
@@ -914,7 +914,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			return;
 		}
 		LOGGER.debug("处理request消息：{}-{}-{}", index, begin, length);
-		if(this.torrentSession.havePiece(index)) {
+		if(this.torrentSession.hasPiece(index)) {
 			try {
 				final byte[] bytes = this.torrentSession.read(index, begin, length);
 				this.piece(index, begin, bytes);

@@ -157,7 +157,7 @@ public final class TaskMenu extends Menu {
 	 * <p>文件选择</p>
 	 */
 	private EventHandler<ActionEvent> torrentEvent = event -> {
-		if(!MainWindow.getInstance().controller().haveSelectedTorrent()) {
+		if(!MainWindow.getInstance().controller().hasSelectedTorrent()) {
 			return;
 		}
 		MainWindow.getInstance().controller().selected().forEach(session -> {
@@ -172,7 +172,7 @@ public final class TaskMenu extends Menu {
 	 * <p>导出种子</p>
 	 */
 	private EventHandler<ActionEvent> exportTorrentEvent = event -> {
-		if(!MainWindow.getInstance().controller().haveSelectedTorrent()) {
+		if(!MainWindow.getInstance().controller().hasSelectedTorrent()) {
 			return;
 		}
 		final File file = Choosers.chooseDirectory(MainWindow.getInstance().stage(), "种子保存目录");
@@ -232,7 +232,7 @@ public final class TaskMenu extends Menu {
 	 * <p>窗口显示时如果选中任务中有BT任务时显示按钮：文件选择、导出种子</p>
 	 */
 	private EventHandler<WindowEvent> windowShownAction = event -> {
-		if(MainWindow.getInstance().controller().haveSelectedTorrent()) {
+		if(MainWindow.getInstance().controller().hasSelectedTorrent()) {
 			INSTANCE.torrentMenu.setDisable(false);
 			INSTANCE.exportTorrentMenu.setDisable(false);
 		} else {

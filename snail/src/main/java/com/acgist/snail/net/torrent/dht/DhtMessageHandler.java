@@ -255,11 +255,11 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 		final String infoHashHex = StringUtils.hex(infoHash);
 		final GetPeersResponse getPeersResponse = GetPeersResponse.newInstance(response);
 		// 处理Peer
-		if(getPeersResponse.havePeers()) {
+		if(getPeersResponse.hasPeers()) {
 			getPeersResponse.getPeers(infoHashHex);
 		}
 		// 处理节点
-		if(getPeersResponse.haveNodes()) {
+		if(getPeersResponse.hasNodes()) {
 			getPeersResponse.getNodes();
 		}
 		// 发送声明消息

@@ -826,10 +826,10 @@ public final class TorrentSession {
 	 * 
 	 * @return {@code true}-已下载；{@code false}-未下载；
 	 * 
-	 * @see TorrentStreamGroup#havePiece(int)
+	 * @see TorrentStreamGroup#hasPiece(int)
 	 */
-	public boolean havePiece(int index) {
-		return this.torrentStreamGroup.havePiece(index);
+	public boolean hasPiece(int index) {
+		return this.torrentStreamGroup.hasPiece(index);
 	}
 
 	/**

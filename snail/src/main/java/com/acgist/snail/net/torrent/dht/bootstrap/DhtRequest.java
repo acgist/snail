@@ -141,7 +141,7 @@ public class DhtRequest extends DhtMessage {
 	 * 
 	 * @return true-已经响应；false-没有响应；
 	 */
-	public boolean haveResponse() {
+	public boolean hasResponse() {
 		return this.response != null;
 	}
 
@@ -202,9 +202,9 @@ public class DhtRequest extends DhtMessage {
 	 * <p>添加响应锁</p>
 	 */
 	public void lockResponse() {
-		if(!this.haveResponse()) {
+		if(!this.hasResponse()) {
 			synchronized (this) {
-				if(!this.haveResponse()) {
+				if(!this.hasResponse()) {
 					try {
 						this.wait(DhtConfig.DHT_TIMEOUT);
 					} catch (InterruptedException e) {

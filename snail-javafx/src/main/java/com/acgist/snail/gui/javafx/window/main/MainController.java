@@ -314,7 +314,7 @@ public final class MainController extends Controller implements Initializable {
 	 * 
 	 * @return true-选中；false-没有选中；
 	 */
-	public boolean haveSelected() {
+	public boolean hasSelected() {
 		return !this.selected().isEmpty();
 	}
 	
@@ -323,7 +323,7 @@ public final class MainController extends Controller implements Initializable {
 	 * 
 	 * @return true-选中；false-没有选中；
 	 */
-	public boolean haveSelectedTorrent() {
+	public boolean hasSelectedTorrent() {
 		return this.selected().stream()
 			.anyMatch(session -> session.getType() == Type.TORRENT);
 	}
@@ -352,7 +352,7 @@ public final class MainController extends Controller implements Initializable {
 	 * <p>删除选中任务</p>
 	 */
 	public void delete() {
-		if(!this.haveSelected()) {
+		if(!this.hasSelected()) {
 			return;
 		}
 		final var optional = Alerts.build("删除确认", "删除选中任务？", GuiManager.MessageType.CONFIRM);

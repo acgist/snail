@@ -58,7 +58,7 @@ public class HeaderWrapper {
 	/**
 	 * <p>是否含有协议</p>
 	 */
-	private final boolean haveProtocol;
+	private final boolean hasProtocol;
 	/**
 	 * <p>头部信息</p>
 	 */
@@ -86,7 +86,7 @@ public class HeaderWrapper {
 		this.headerSeparator = headerSeparator;
 		this.headerPadding = headerPadding;
 		this.protocol = this.buildProtocol(lines);
-		this.haveProtocol = StringUtils.isNotEmpty(this.protocol);
+		this.hasProtocol = StringUtils.isNotEmpty(this.protocol);
 		this.headers = this.buildHeaders(lines);
 	}
 	
@@ -124,7 +124,7 @@ public class HeaderWrapper {
 		this.headerSeparator = headerSeparator;
 		this.headerPadding = headerPadding;
 		this.protocol = protocol;
-		this.haveProtocol = StringUtils.isNotEmpty(this.protocol);
+		this.hasProtocol = StringUtils.isNotEmpty(this.protocol);
 		this.headers = headers;
 	}
 	
@@ -229,7 +229,7 @@ public class HeaderWrapper {
 		if(lines == null) {
 			return headers;
 		}
-		final int begin = this.haveProtocol ? 1 : 0; // 是否含有协议
+		final int begin = this.hasProtocol ? 1 : 0; // 是否含有协议
 		for (int jndex = begin; jndex < lines.length; jndex++) {
 			line = lines[jndex];
 			if(line == null) {
@@ -331,7 +331,7 @@ public class HeaderWrapper {
 	 */
 	public String build() {
 		final StringBuilder builder = new StringBuilder();
-		if(this.haveProtocol) {
+		if(this.hasProtocol) {
 			builder.append(this.protocol).append(HEADER_LINE_WRITER);
 		}
 		if(this.isNotEmpty()) {

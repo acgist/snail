@@ -129,7 +129,7 @@ public final class PeerDownloaderGroup {
 		final PeerManager peerManager = PeerManager.getInstance();
 		final String infoHashHex = this.torrentSession.infoHashHex();
 		while(this.taskSession.download()) {
-			if(peerManager.havePeerSession(infoHashHex)) {
+			if(peerManager.hasPeerSession(infoHashHex)) {
 				break;
 			}
 			ThreadUtils.sleep(SPIN_LOCK_TIME);
