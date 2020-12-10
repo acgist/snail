@@ -5,8 +5,8 @@ import java.io.InputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.StreamContext;
-import com.acgist.snail.utils.DateUtils;
 import com.acgist.snail.utils.IoUtils;
 
 /**
@@ -22,12 +22,12 @@ public final class StreamSession {
 	/**
 	 * <p>下载有效时间：{@value}</p>
 	 */
-	private static final long LIVE_TIME = 10 * DateUtils.ONE_SECOND;
+	private static final long LIVE_TIME = 10L * SystemConfig.ONE_SECOND_MILLIS;
 	/**
 	 * <p>下载有效时间（快速）：{@value}</p>
 	 * <p>如果用户开始下载然后快速暂停，会导致出现任务等待中，只能等待定时任务来关闭任务。</p>
 	 */
-	private static final long LIVE_TIME_FAST = 2 * DateUtils.ONE_SECOND;
+	private static final long LIVE_TIME_FAST = 2L * SystemConfig.ONE_SECOND_MILLIS;
 	
 	/**
 	 * <p>输入流</p>

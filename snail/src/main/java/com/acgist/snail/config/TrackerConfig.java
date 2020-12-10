@@ -43,7 +43,7 @@ public final class TrackerConfig extends PropertiesConfig {
 	public static final int MAX_FAIL_TIMES = 3;
 	
 	static {
-		LOGGER.info("初始化Tracker服务器配置：{}", TRACKER_CONFIG);
+		LOGGER.debug("初始化Tracker服务器配置：{}", TRACKER_CONFIG);
 		INSTANCE.init();
 		INSTANCE.release();
 	}

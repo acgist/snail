@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.DownloadConfig;
-import com.acgist.snail.utils.DateUtils;
+import com.acgist.snail.config.SystemConfig;
 
 /**
  * <p>Peer连接信息</p>
@@ -21,7 +21,7 @@ public final class PeerConnectSession {
 	/**
 	 * <p>评分统计最短时间：{@value}</p>
 	 */
-	private static final long MIN_MARK_INTERVAL = 60 * DateUtils.ONE_SECOND;
+	private static final long MIN_MARK_INTERVAL = 60L * SystemConfig.ONE_SECOND_MILLIS;
 
 	/**
 	 * <p>客户端将Peer阻塞：阻塞-1（true）、非阻塞-0</p>

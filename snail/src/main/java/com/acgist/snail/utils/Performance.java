@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.SystemThreadContext;
 
 /**
@@ -63,7 +64,7 @@ public abstract class Performance {
 		final long costed = time - this.costTime.getAndSet(time);
 		// TODO：多行文本
 		LOGGER.info("消耗时间（毫秒）：{}", costed);
-		LOGGER.info("消耗时间（秒）：{}", costed / DateUtils.ONE_SECOND);
+		LOGGER.info("消耗时间（秒）：{}", costed / SystemConfig.ONE_SECOND_MILLIS);
 		return costed;
 	}
 	
