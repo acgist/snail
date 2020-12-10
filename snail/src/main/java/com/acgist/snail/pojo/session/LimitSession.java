@@ -62,10 +62,10 @@ public final class LimitSession {
 			synchronized (this.limitBuffer) { // 阻塞其他线程
 				if(limitBuffer == this.limitBuffer.get()) { // 验证
 					// 直接使用一秒：如果缓存较大就会出现误差
-//					final long expectTime = SystemConfig.ONE_SECOND;
+//					final long expectTime = SystemConfig.ONE_SECOND_MILLIS;
 					// 通过实际下载大小计算
 //					final long expectTime = BigDecimal.valueOf(limitBuffer)
-//						.multiply(BigDecimal.valueOf(SystemConfig.ONE_SECOND))
+//						.multiply(BigDecimal.valueOf(SystemConfig.ONE_SECOND_MILLIS))
 //						.divide(BigDecimal.valueOf(maxLimitBuffer), RoundingMode.HALF_UP)
 //						.longValue();
 					// 通过实际下载大小计算

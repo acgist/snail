@@ -50,37 +50,35 @@ public abstract class MessageCodec<I, O> implements IMessageCodec<I> {
 	
 	@Override
 	public void decode(I message) throws NetException {
-		this.decode(message, null, false);
+		this.doDecode(message, null);
 	}
 
 	@Override
 	public void decode(I message, InetSocketAddress address) throws NetException {
-		this.decode(message, address, true);
+		this.doDecode(message, address);
 	}
 	
 	/**
 	 * <p>消息解码</p>
-	 * <p>必须执行{@linkplain #messageCodec 下一个消息处理器}的{@link #doNext(Object, InetSocketAddress, boolean)}方法</p>
+	 * <p>解码完成必须执行{@link #doNext(Object, InetSocketAddress)}方法</p>
 	 * 
 	 * @param message 消息
 	 * @param address 地址
-	 * @param haveAddress 是否包含地址
 	 * 
 	 * @throws NetException 网络异常
 	 */
-	protected abstract void decode(I message, InetSocketAddress address, boolean haveAddress) throws NetException;
+	protected abstract void doDecode(I message, InetSocketAddress address) throws NetException;
 	
 	/**
 	 * <p>执行下一个消息处理器</p>
 	 * 
 	 * @param message 消息
 	 * @param address 地址
-	 * @param haveAddress 是否含有地址
 	 * 
 	 * @throws NetException 网络异常
 	 */
-	protected void doNext(O message, InetSocketAddress address, boolean haveAddress) throws NetException {
-		if(haveAddress) {
+	protected void doNext(O message, InetSocketAddress address) throws NetException {
+		if(address != null) {
 			if(this.messageCodec.done()) {
 				this.messageCodec.onMessage(message, address);
 			} else {
