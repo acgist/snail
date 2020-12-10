@@ -37,7 +37,7 @@
 
 稳定版本下载：[snail-windows.zip](https://gitee.com/acgist/snail/attach_files)（解压可以直接运行）
 
-> 稳定版提供`mac`、`linux`、`windows`三个版本
+> 稳定版本提供`mac`、`linux`、`windows`三个版本
 
 #### 编译
 
