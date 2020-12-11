@@ -521,7 +521,7 @@ public final class SystemConfig extends PropertiesConfig {
 	 * @return BT服务端口
 	 */
 	public static final short getTorrentPortExtShort() {
-		return NetUtils.encodePort(getTorrentPortExt());
+		return NetUtils.portToShort(getTorrentPortExt());
 	}
 	
 	/**

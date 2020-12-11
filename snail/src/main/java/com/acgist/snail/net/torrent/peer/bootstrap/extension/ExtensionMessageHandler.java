@@ -239,7 +239,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 		// 外网IP地址：TODO：IPv6
 		final String yourip = SystemConfig.getExternalIpAddress();
 		if(StringUtils.isNotEmpty(yourip)) {
-			message.put(EX_YOURIP, NumberUtils.intToBytes(NetUtils.encodeIpToInt(yourip)));
+			message.put(EX_YOURIP, NumberUtils.intToBytes(NetUtils.ipToInt(yourip)));
 		}
 		message.put(EX_REQQ, DEFAULT_REQQ);
 		if(PeerConfig.ExtensionType.UT_METADATA.notice()) {

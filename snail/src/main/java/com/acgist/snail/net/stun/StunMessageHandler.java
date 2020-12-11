@@ -212,8 +212,8 @@ public final class StunMessageHandler extends UdpMessageHandler {
 		if(family == StunConfig.IPV4) {
 			final short port = buffer.getShort();
 			final int ip = buffer.getInt();
-			final int portExt = NetUtils.decodePort(port);
-			final String ipExt = NetUtils.decodeIntToIp(ip);
+			final int portExt = NetUtils.portToInt(port);
+			final String ipExt = NetUtils.intToIP(ip);
 			LOGGER.debug("处理STUN消息-MAPPED_ADDRESS：{}-{}-{}-{}", header, family, portExt, ipExt);
 			StunService.getInstance().mapping(ipExt, portExt);
 		} else {
@@ -248,8 +248,8 @@ public final class StunMessageHandler extends UdpMessageHandler {
 			final int ip = buffer.getInt();
 			final short portValue = (short) (port ^ (StunConfig.MAGIC_COOKIE >> 16));
 			final int ipValue = ip ^ StunConfig.MAGIC_COOKIE;
-			final int portExt = NetUtils.decodePort(portValue);
-			final String ipExt = NetUtils.decodeIntToIp(ipValue);
+			final int portExt = NetUtils.portToInt(portValue);
+			final String ipExt = NetUtils.intToIP(ipValue);
 			LOGGER.debug("处理STUN消息-XOR_MAPPED_ADDRESS：{}-{}-{}-{}", header, family, portExt, ipExt);
 			StunService.getInstance().mapping(ipExt, portExt);
 		} else {

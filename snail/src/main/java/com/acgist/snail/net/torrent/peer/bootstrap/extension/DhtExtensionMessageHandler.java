@@ -82,7 +82,7 @@ public final class DhtExtensionMessageHandler implements IExtensionMessageHandle
 	 * @param buffer 消息
 	 */
 	private void port(ByteBuffer buffer) {
-		final int port = NetUtils.decodePort(buffer.getShort());
+		final int port = NetUtils.portToInt(buffer.getShort());
 		final String host = this.peerSession.host();
 		LOGGER.debug("处理DHT消息：{}-{}", host, port);
 		this.peerSession.dhtPort(port);

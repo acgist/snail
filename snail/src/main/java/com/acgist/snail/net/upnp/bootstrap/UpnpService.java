@@ -98,8 +98,7 @@ public final class UpnpService {
 	 * @throws NetException 网络异常
 	 */
 	public UpnpService load(String location) throws NetException {
-		final URIWrapper wrapper = URIWrapper.newInstance(location);
-		wrapper.decode();
+		final URIWrapper wrapper = URIWrapper.newInstance(location).decode();
 		if(!NetUtils.gateway(wrapper.host())) {
 			LOGGER.info("UPNP描述文件错误：{}", location);
 			return this;
@@ -267,7 +266,7 @@ public final class UpnpService {
 		if(this.remapping) {
 			this.remapping = false;
 			final String externalIpAddress = this.getExternalIPAddress();
-			if(NetUtils.isLocalIp(externalIpAddress)) {
+			if(NetUtils.localIPAddress(externalIpAddress)) {
 				LOGGER.warn("UPNP端口映射失败：外网IP地址为内网地址");
 			} else {
 				SystemConfig.setExternalIpAddress(externalIpAddress);

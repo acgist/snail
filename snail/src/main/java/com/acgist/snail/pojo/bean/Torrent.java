@@ -217,8 +217,8 @@ public final class Torrent implements Serializable {
 					if(StringUtils.isNumeric(host)) {
 						// 紧凑型
 						return Map.entry(
-							NetUtils.decodeIntToIp(Integer.parseInt(host)),
-							NetUtils.decodePort(port.shortValue())
+							NetUtils.intToIP(Integer.parseInt(host)),
+							NetUtils.portToInt(port.shortValue())
 						);
 					} else {
 						// 字符串

@@ -84,8 +84,8 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 		int port;
 		String host;
 		if(addrType == IPV4) {
-			host = NetUtils.decodeIntToIp(buffer.getInt());
-			port = NetUtils.decodePort(buffer.getShort());
+			host = NetUtils.intToIP(buffer.getInt());
+			port = NetUtils.portToInt(buffer.getShort());
 		} else {
 			host = null;
 			port = 0;
@@ -272,8 +272,8 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 		final ByteBuffer buffer = ByteBuffer.allocate(12);
 		buffer.put(type.id()); // 消息类型
 		buffer.put(IPV4); // 地址类型：0x00=IPv4；0x01=IPv6；
-		buffer.putInt(NetUtils.encodeIpToInt(host)); // IP地址
-		buffer.putShort(NetUtils.encodePort(port)); // 端口号
+		buffer.putInt(NetUtils.ipToInt(host)); // IP地址
+		buffer.putShort(NetUtils.portToShort(port)); // 端口号
 		if(type == HolepunchType.ERROR && errorCode != null) { // 非错误消息不发送错误编码
 			buffer.putInt(errorCode.code()); // 错误编码
 		}

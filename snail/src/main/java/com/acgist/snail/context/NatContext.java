@@ -66,7 +66,7 @@ public final class NatContext {
 	 */
 	public void init() {
 		LOGGER.info("初始化NAT服务");
-		if(NetUtils.isLocalIp(NetUtils.localHostAddress())) {
+		if(NetUtils.localIPAddress(NetUtils.localHostAddress())) {
 			UpnpClient.newInstance().mSearch();
 			this.lockUpnp(); // 加锁
 			if(UpnpService.getInstance().useable()) {

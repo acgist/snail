@@ -170,8 +170,8 @@ public class DhtResponse extends DhtMessage {
 		if(buffer.hasRemaining()) {
 			final byte[] nodeId = new byte[DhtConfig.NODE_ID_LENGTH];
 			buffer.get(nodeId);
-			final String host = NetUtils.decodeIntToIp(buffer.getInt());
-			final int port = NetUtils.decodePort(buffer.getShort());
+			final String host = NetUtils.intToIP(buffer.getInt());
+			final int port = NetUtils.portToInt(buffer.getShort());
 			return NodeManager.getInstance().newNodeSession(nodeId, host, port);
 		}
 		return null;
