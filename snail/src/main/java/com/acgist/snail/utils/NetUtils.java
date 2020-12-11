@@ -118,7 +118,7 @@ public final class NetUtils {
 //						localHostName.set(address.getHostName()); // 速度太慢
 						localHostAddress.set(address.getHostAddress());
 						defaultNetworkInterface.set(networkInterface);
-						final var length = interfaceAddress.getNetworkPrefixLength(); // mask
+						final var length = interfaceAddress.getNetworkPrefixLength();
 						localHostMask.set(-1 << (32 - length));
 					}
 				});
