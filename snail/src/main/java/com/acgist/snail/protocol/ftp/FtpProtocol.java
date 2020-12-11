@@ -5,7 +5,6 @@ import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.downloader.ftp.FtpDownloader;
 import com.acgist.snail.net.ftp.FtpClient;
-import com.acgist.snail.net.ftp.bootstrap.FtpClientBuilder;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.protocol.Protocol;
 
@@ -43,7 +42,7 @@ public final class FtpProtocol extends Protocol {
 
 	@Override
 	protected void buildSize() throws DownloadException {
-		final FtpClient client = FtpClientBuilder.newInstance(this.url).build();
+		final FtpClient client = FtpClient.newInstance(this.url);
 		try {
 			client.connect();
 			final long size = client.size();

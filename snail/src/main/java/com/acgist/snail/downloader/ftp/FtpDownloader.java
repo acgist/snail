@@ -5,7 +5,6 @@ import java.io.BufferedInputStream;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.downloader.SingleFileDownloader;
 import com.acgist.snail.net.ftp.FtpClient;
-import com.acgist.snail.net.ftp.bootstrap.FtpClientBuilder;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.IoUtils;
@@ -53,7 +52,7 @@ public final class FtpDownloader extends SingleFileDownloader {
 	@Override
 	protected void buildInput() throws NetException {
 		// FTP客户端
-		this.client = FtpClientBuilder.newInstance(this.taskSession.getUrl()).build();
+		this.client = FtpClient.newInstance(this.taskSession.getUrl());
 		final boolean ok = this.client.connect(); // 建立连接
 		if(ok) {
 			// 已下载大小
