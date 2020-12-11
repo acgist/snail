@@ -65,6 +65,17 @@ public final class ModifyOptional<T> {
 	public T get() {
 		return this.t;
 	}
+
+	/**
+	 * <p>获取数据</p>
+	 * 
+	 * @param defaultValue 默认数据
+	 * 
+	 * @return 数据
+	 */
+	public T get(T defaultValue) {
+		return this.isEmpty() ? defaultValue : this.get();
+	}
 	
 	/**
 	 * <p>判断数据是否为空</p>

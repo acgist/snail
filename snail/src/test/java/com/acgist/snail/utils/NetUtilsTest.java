@@ -1,5 +1,8 @@
 package com.acgist.snail.utils;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.net.NetworkInterface;
 import java.net.SocketException;
 
@@ -15,22 +18,21 @@ public class NetUtilsTest extends Performance {
 	
 	@Test
 	public void testAddress() throws SocketException {
-		int mask = 24;
-		mask = (-1 >> (31 - (mask - 1))) << (31 - (mask - 1));
-		this.log(NetUtils.decodeIntToIp(mask));
-		NetworkInterface.networkInterfaces().forEach(x -> {
-			x.getInterfaceAddresses().stream().forEach(i -> {
-				this.log("地址：" + i);
-				final var v = i.getAddress();
-				this.log(i.getBroadcast());
-				this.log(i.getNetworkPrefixLength());
-				this.log(v.isAnyLocalAddress());
-				this.log(v.isLoopbackAddress());
-				this.log(v.isLinkLocalAddress());
-				this.log(v.isSiteLocalAddress());
-				this.log(v.isMulticastAddress());
+		NetworkInterface.networkInterfaces().forEach(networkInterfaces -> {
+			networkInterfaces.getInterfaceAddresses().stream().forEach(networkInterface -> {
+				final var address = networkInterface.getAddress();
+				this.log("地址：{}-{}-{}-{}-{}-{}-{}-{}",
+					networkInterface,
+					networkInterface.getBroadcast(),
+					networkInterface.getNetworkPrefixLength(),
+					address.isAnyLocalAddress(),
+					address.isLoopbackAddress(),
+					address.isLinkLocalAddress(),
+					address.isSiteLocalAddress(),
+					address.isMulticastAddress()
+				);
 			});
-			this.log(x);
+			this.log(networkInterfaces);
 		});
 		this.log(NetUtils.localHostName());
 		this.log(NetUtils.localHostAddress());
@@ -44,6 +46,17 @@ public class NetUtilsTest extends Performance {
 		this.log(StringUtils.hex(bytes));
 		String value = NetUtils.decodeIPv6(bytes);
 		this.log(value);
+	}
+	
+	@Test
+	public void testGateway() {
+		assertTrue(NetUtils.gateway("192.168.1.100"));
+		assertFalse(NetUtils.gateway("192.168.2.100"));
+	}
+
+	@Test
+	public void testCosted() {
+		this.costed(100000, () -> NetUtils.gateway("192.168.1.100"));
 	}
 	
 }

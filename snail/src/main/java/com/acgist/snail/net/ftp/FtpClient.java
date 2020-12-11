@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.TcpClient;
+import com.acgist.snail.pojo.wrapper.URIWrapper;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -21,6 +22,11 @@ import com.acgist.snail.utils.StringUtils;
 public final class FtpClient extends TcpClient<FtpMessageHandler> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FtpClient.class);
+	
+	/**
+	 * <p>FTP默认端口：{@value}</p>
+	 */
+	private static final int DEFAULT_PORT = 21;
 	
 	/**
 	 * <p>连接状态</p>
@@ -78,6 +84,19 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 		return new FtpClient(host, port, user, password, filePath);
 	}
 
+	/**
+	 * <p>创建FTP客户端</p>
+	 * 
+	 * @param url 链接
+	 * 
+	 * @return FtpClient
+	 */
+	public static final FtpClient newInstance(String url) {
+		final URIWrapper wrapper = URIWrapper.newInstance(url, DEFAULT_PORT, SystemConfig.getFtpUser(), SystemConfig.getFtpPassword());
+		wrapper.decode();
+		return newInstance(wrapper.host(), wrapper.port(), wrapper.user(), wrapper.password(), wrapper.path());
+	}
+	
 	@Override
 	public boolean connect() {
 		this.handler.resetLock();

@@ -13,6 +13,7 @@ import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.format.XML;
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.net.http.HTTPClient.StatusCode;
+import com.acgist.snail.pojo.wrapper.URIWrapper;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NetUtils;
@@ -95,13 +96,15 @@ public final class UpnpService {
 	 * @return UpnpService
 	 * 
 	 * @throws NetException 网络异常
-	 * 
-	 * TODO：验证网关IP
 	 */
 	public UpnpService load(String location) throws NetException {
-		LOGGER.info("UPNP设置描述文件地址：{}", location);
-		this.location = location;
-		final var response = HTTPClient.get(this.location, BodyHandlers.ofString());
+		final URIWrapper wrapper = URIWrapper.newInstance(location);
+		wrapper.decode();
+		if(!NetUtils.gateway(wrapper.host())) {
+			LOGGER.info("UPNP描述文件错误：{}", location);
+			return this;
+		}
+		final var response = HTTPClient.get(location, BodyHandlers.ofString());
 		final var body = response.body();
 		final var xml = XML.load(body);
 		// 服务类型和服务地址
@@ -111,18 +114,25 @@ public final class UpnpService {
 			LOGGER.warn("UPNP设置失败（服务类型）：{}", body);
 			return this;
 		}
+		boolean success = false;
 		for (int index = 0; index < serviceTypes.size(); index++) {
 			final String serviceType = serviceTypes.get(index);
 			// 控制地址
 			if(StringUtils.startsWith(serviceType, SERVICE_WANIPC)) {
+				success = true;
 				this.available = true;
-				this.remapping = true; // 控制地址重新映射
+				this.remapping = true;
+				this.location = location;
 				this.serviceType = serviceType;
 				this.buildControlUrl(controlUrls.get(index));
+				LOGGER.info("UPNP描述文件：{}", this.location);
 				LOGGER.info("UPNP服务类型：{}", this.serviceType);
 				LOGGER.info("UPNP控制地址：{}", this.controlUrl);
 				break;
 			}
+		}
+		if(!success) {
+			LOGGER.info("UPNP描述文件无效：{}", location);
 		}
 		return this;
 	}

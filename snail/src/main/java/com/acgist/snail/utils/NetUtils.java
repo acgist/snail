@@ -30,6 +30,10 @@ public final class NetUtils {
 	 */
 	private static final String LOCAL_HOST_ADDRESS;
 	/**
+	 * <p>子网掩码</p>
+	 */
+	private static final int LOCAL_HOST_MASK;
+	/**
 	 * <p>本机默认物理网卡</p>
 	 */
 	private static final NetworkInterface DEFAULT_NETWORK_INTERFACE;
@@ -91,6 +95,7 @@ public final class NetUtils {
 	static {
 		final ModifyOptional<String> localHostName = ModifyOptional.newInstance();
 		final ModifyOptional<String> localHostAddress = ModifyOptional.newInstance();
+		final ModifyOptional<Integer> localHostMask = ModifyOptional.newInstance();
 		final ModifyOptional<NetworkInterface> defaultNetworkInterface = ModifyOptional.newInstance();
 		try {
 			final AtomicInteger index = new AtomicInteger(Integer.MAX_VALUE);
@@ -98,38 +103,36 @@ public final class NetUtils {
 			NetworkInterface.networkInterfaces().forEach(networkInterface -> {
 				final int nowIndex = networkInterface.getIndex();
 				networkInterface.getInterfaceAddresses().forEach(interfaceAddress -> {
-					final var inetAddress = interfaceAddress.getAddress(); // 地址
-					// TODO：获取网关IP
+					final var address = interfaceAddress.getAddress(); // 地址
 //					final var broadcast = interfaceAddress.getBroadcast(); // 广播地址
-//					final var mask = interfaceAddress.getNetworkPrefixLength(); // mask
 					if(
 						index.get() > nowIndex && // 索引最小网卡
-						inetAddress.isSiteLocalAddress() && // 本机地址
-						!inetAddress.isAnyLocalAddress() && // 通配地址
-						!inetAddress.isLoopbackAddress() && // 回环地址
-						!inetAddress.isLinkLocalAddress() && // 连接地址：虚拟网卡
-						!inetAddress.isMulticastAddress() // 广播地址
+						address.isSiteLocalAddress() && // 本机地址
+						!address.isAnyLocalAddress() && // 通配地址
+						!address.isLoopbackAddress() && // 回环地址
+						!address.isLinkLocalAddress() && // 连接地址：虚拟网卡
+						!address.isMulticastAddress() // 广播地址
 					) {
 						index.set(nowIndex);
-//						localHostName.set(inetAddress.getHostName()); // 速度太慢
-						localHostAddress.set(inetAddress.getHostAddress());
+						localHostName.set(getLocalHostName());
+//						localHostName.set(address.getHostName()); // 速度太慢
+						localHostAddress.set(address.getHostAddress());
 						defaultNetworkInterface.set(networkInterface);
+						final var length = interfaceAddress.getNetworkPrefixLength(); // mask
+						localHostMask.set(-1 << (32 - length));
 					}
 				});
 			});
 		} catch (SocketException e) {
 			LOGGER.error("初始化本机网络信息异常", e);
 		}
-		try {
-			localHostName.set(InetAddress.getLocalHost().getHostName());
-		} catch (UnknownHostException e) {
-			LOGGER.error("初始化本机名称异常", e);
-		}
 		LOCAL_HOST_NAME = localHostName.get();
 		LOCAL_HOST_ADDRESS = localHostAddress.get();
+		LOCAL_HOST_MASK = localHostMask.get();
 		DEFAULT_NETWORK_INTERFACE = defaultNetworkInterface.get();
 		LOGGER.info("本机名称：{}", LOCAL_HOST_NAME);
 		LOGGER.info("本机地址：{}", LOCAL_HOST_ADDRESS);
+		LOGGER.info("子网掩码：{}", LOCAL_HOST_MASK);
 		LOGGER.info("本机默认物理网卡：{}", DEFAULT_NETWORK_INTERFACE);
 	}
 	
@@ -271,6 +274,34 @@ public final class NetUtils {
 	 */
 	public static final NetworkInterface defaultNetworkInterface() {
 		return DEFAULT_NETWORK_INTERFACE;
+	}
+
+	/**
+	 * <p>判断是否是同一个网关</p>
+	 * 
+	 * @return 是否是同一个网关
+	 */
+	public static final boolean gateway(String host) {
+		if(isIp(host)) {
+			final int value = encodeIpToInt(host);
+			final int localHostValue = encodeIpToInt(LOCAL_HOST_ADDRESS);
+			return (value & LOCAL_HOST_MASK) == (localHostValue & LOCAL_HOST_MASK);
+		}
+		return false;
+	}
+	
+	/**
+	 * <p>获取本机名称</p>
+	 * 
+	 * @return 本机名称
+	 */
+	private static final String getLocalHostName() {
+		try {
+			return InetAddress.getLocalHost().getHostName();
+		} catch (UnknownHostException e) {
+			LOGGER.error("获取本机名称异常", e);
+		}
+		return null;
 	}
 	
 	/**
