@@ -13,12 +13,9 @@ public class TorrentTest extends Performance {
 
 	@Test
 	public void testRead() throws Exception {
-//		String path = "e:/snail/07E1B909D8D193D80E440A8593FB57A658223A0E.torrent"; // 没有编码：GBK
-		String path = "e:/snail/b3e9dcb123b80078aa5ace79323f925e8f755a6a.torrent"; // 没有编码：UTF-8
-//		String path = "e:/snail/868f1199b18d05bf103aa8a8321f6428854d712e.torrent";
-//		String path = "e:/snail/11e38a5270e15c60534ca48977b7d77a3c4f6340.torrent";
-//		String path = "e:/snail/0B156834B59B0FF64EE0C9305D4D6EDE421196E6.torrent";
-//		String path = "e:/snail/641000d9be79ad8947701c338c06211ba69e1b09.torrent";
+		String path = "e:/snail/07E1B909D8D193D80E440A8593FB57A658223A0E.torrent"; // 没有编码：GBK
+//		String path = "e:/snail/b3e9dcb123b80078aa5ace79323f925e8f755a6a.torrent"; // 没有编码：UTF-8
+//		String path = "e:/snail/902FFAA29EE632C8DC966ED9AB573409BA9A518E.torrent";
 		TorrentSession session = TorrentManager.getInstance().newTorrentSession(path);
 		Torrent torrent = session.torrent();
 		this.log("注释：" + torrent.getComment());

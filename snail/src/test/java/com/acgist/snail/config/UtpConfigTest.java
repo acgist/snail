@@ -1,7 +1,5 @@
 package com.acgist.snail.config;
 
-import java.util.stream.IntStream;
-
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.utils.Performance;
@@ -19,15 +17,8 @@ public class UtpConfigTest extends Performance {
 	
 	@Test
 	public void testCost() {
-		this.cost();
-		IntStream.range(0, 10000000).forEach(index -> {
-			UtpConfig.Type.of((byte) 1);
-		});
-		this.costed();
-		IntStream.range(0, 10000000).forEach(index -> {
-			UtpConfig.Type.of((byte) 65);
-		});
-		this.costed();
+		this.costed(10000000, () -> UtpConfig.Type.of((byte) 1));
+		this.costed(10000000, () -> UtpConfig.Type.of((byte) 65));
 	}
 	
 }
